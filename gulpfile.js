@@ -97,9 +97,10 @@ function copyFile(sFile, sNewFile, callback)
 	callback();
 }
 
-cfg.paths.globjs = 'dev/**/*.{js,jsx,html,css}';
+cfg.paths.globjs = 'dev/**/*.{js,jsx,ts,html,css}';
 cfg.paths.globjsonly = 'dev/**/*.js';
 cfg.paths.globjsxonly = 'dev/**/*.jsx';
+cfg.paths.globtsonly = 'dev/**/*.ts';
 cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
 cfg.paths.staticMinJS = 'rainloop/v/' + cfg.devVersion + '/static/js/min/';
@@ -316,12 +317,7 @@ gulp.task('js:ckeditor:beautify', function() {
 		.pipe(gulp.dest(cfg.paths.static + 'ckeditor/'));
 });
 
-gulp.task('js:webpack:clear', function() {
-	return gulp.src([cfg.paths.staticJS + '*.subapp.js', cfg.paths.staticMinJS + '*.subapp.js'], {read: false})
-		.pipe(require('gulp-rimraf')());
-});
-
-gulp.task('js:webpack', [/*'js:webpack:clear'*/], function(callback) {
+gulp.task('js:webpack', [], function(callback) {
 
 	var
 		webpack = require('webpack'),
@@ -409,16 +405,8 @@ gulp.task('js:admin', ['js:webpack'], function() {
 		.on('error', gutil.log);
 });
 
-gulp.task('js:chunks', ['js:webpack'], function() {
-	return gulp.src(cfg.paths.staticJS + '*.subapp.js')
-		.pipe(header(getHead() + '\n'))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(cfg.paths.staticJS))
-		.on('error', gutil.log);
-});
-
 // - min
-gulp.task('js:min', ['js:app', 'js:admin', 'js:chunks', 'js:validate'], function() {
+gulp.task('js:min', ['js:app', 'js:admin', 'js:validate'], function() {
 	return gulp.src(cfg.paths.staticJS + '*.js')
 		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
 		.pipe(uglify(cfg.uglify))
@@ -450,7 +438,17 @@ gulp.task('js:eslint', function() {
 		.pipe(eslint.failAfterError());
 });
 
-gulp.task('js:validate', ['js:lint', 'js:eslint']);
+gulp.task('js:tslint', function() {
+
+	var tslint = require('gulp-tslint'); // todo
+
+	return gulp.src(cfg.paths.globtsonly)
+		.pipe(tslint())
+		.pipe(tslint.format())
+		.pipe(tslint.failAfterError());
+});
+
+gulp.task('js:validate', ['js:lint', 'js:eslint'/*, 'js:tslint'*/]);
 
 // OTHER
 regOtherMinTask('other:cookie', 'vendors/jquery-cookie/', 'jquery.cookie.js', 'jquery.cookie-1.4.0.min.js',
@@ -667,7 +665,7 @@ gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:md5'], function(cal
 gulp.task('js:pgp', ['js:openpgp', 'js:openpgpworker']);
 
 gulp.task('default', ['js:libs', 'js:pgp', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
-gulp.task('fast-', ['js:app', 'js:admin', 'js:chunks', 'css:main']);
+gulp.task('fast-', ['js:app', 'js:admin', 'css:main']);
 
 gulp.task('fast', ['package:community-on', 'fast-']);
 gulp.task('fast+', ['package:community-off', 'fast-']);

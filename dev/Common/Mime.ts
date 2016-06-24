@@ -1,8 +1,5 @@
 
-/* eslint key-spacing: 0 */
-/* eslint quote-props: 0 */
-
-const Mime = {
+const Mime: { [id: string]: string } = {
 	'eml'	: 'message/rfc822',
 	'mime'	: 'message/rfc822',
 	'txt'	: 'text/plain',

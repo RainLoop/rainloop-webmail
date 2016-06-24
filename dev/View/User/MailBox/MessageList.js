@@ -16,6 +16,7 @@
 		Consts = require('Common/Consts'),
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
+		Spec = require('Common/Spec'),
 		Links = require('Common/Links'),
 		Events = require('Common/Events'),
 		Selector = require('Common/Selector'),
@@ -116,7 +117,7 @@
 			return '' === sValue ? '' : Translator.i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', {'SEARCH': sValue});
 		});
 
-		this.messageListPagenator = ko.computed(Utils.computedPagenatorHelper(
+		this.messageListPagenator = ko.computed(Spec.computedPagenatorHelper(
 			MessageStore.messageListPage, MessageStore.messageListPageCount));
 
 		this.checkAll = ko.computed({

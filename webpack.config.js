@@ -18,8 +18,7 @@ module.exports = {
 		pathinfo: true,
 		path: __dirname + '/rainloop/v/0.0.0/static/js/',
 		filename: '[name].js',
-		publicPath: 'rainloop/v/0.0.0/static/js/',
-		chunkFilename: '[chunkhash].subapp.js'
+		publicPath: 'rainloop/v/0.0.0/static/js/'
 	},
 //	devtool: "#source-map",
 	plugins: [
@@ -28,7 +27,7 @@ module.exports = {
 	],
 	resolve: {
 		modules: [path.resolve(__dirname, 'dev'), 'node_modules'],
-		extensions: ['', '.js', '.jsx'],
+		extensions: ['', '.js', '.jsx', '.ts'],
 		alias: {
 			'Opentip': __dirname  + '/dev/External/Opentip.js',
 			'ko': __dirname  + '/dev/External/ko.js'
@@ -41,13 +40,18 @@ module.exports = {
 				loader: 'raw'
 			},
 			{
-				test: /\.(json)$/,
+				test: /\.json$/,
 				loader: 'json'
+			},
+			{
+				test: /\.tsx?$/,
+				loader: 'babel-loader?' + JSON.stringify(jsLoaderQuery) + '!ts-loader',
+				exclude: /(node_modules|bower_components|vendors)/
 			},
 			{
 				test: /\.jsx$/,
 				loader: 'babel',
-				exclude: /(node_modules|bower_components)/,
+				exclude: /(node_modules|bower_components|vendors)/,
 				query: jsLoaderQuery
 			}
 		]

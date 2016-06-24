@@ -8,6 +8,7 @@
 		ko = require('ko'),
 
 		Utils = require('Common/Utils'),
+		Spec = require('Common/Spec'),
 
 		AttachmentModel = require('Model/Attachment'),
 
@@ -67,11 +68,11 @@
 		}, this);
 
 		this.mimeType = ko.computed(function () {
-			return Utils.mimeContentType(this.fileName());
+			return Spec.mimeContentType(this.fileName());
 		}, this);
 
 		this.fileExt = ko.computed(function () {
-			return Utils.getFileExtension(this.fileName());
+			return Spec.getFileExtension(this.fileName());
 		}, this);
 
 		this.regDisposables([this.progressText, this.progressStyle, this.title, this.friendlySize, this.mimeType, this.fileExt]);

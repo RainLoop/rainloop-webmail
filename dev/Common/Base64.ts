@@ -2,18 +2,16 @@
 // Base64 encode / decode
 // http://www.webtoolkit.info/
 
-const BASE_64_CHR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+const BASE_64_CHR: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
-/* jslint bitwise: true */
-/* eslint-disable */
 const Base64 = {
 
 	// public method for urlsafe encoding
-	urlsafe_encode: (input) => Base64.encode(input)
+	urlsafe_encode: (input: string): string => Base64.encode(input)
 		.replace(/[+]/g, '-').replace(/[\/]/g, '_').replace(/[=]/g, '.'),
 
 	// public method for encoding
-	encode: (input) => {
+	encode: (input: string): string => {
 
 		let
 			output = '',
@@ -52,7 +50,7 @@ const Base64 = {
 	},
 
 	// public method for decoding
-	decode: (input) => {
+	decode: (input: string): string => {
 
 		let
 			output = '',
@@ -90,7 +88,7 @@ const Base64 = {
 	},
 
 	// private method for UTF-8 encoding
-	_utf8_encode: (string) => {
+	_utf8_encode: (string: string): string => {
 
 		string = string.replace(/\r\n/g, "\n");
 
@@ -126,7 +124,7 @@ const Base64 = {
 	},
 
 	// private method for UTF-8 decoding
-	_utf8_decode: (utftext) => {
+	_utf8_decode: (utftext: string): string => {
 
 		let
 			string = '',
@@ -163,8 +161,6 @@ const Base64 = {
 		return string;
 	}
 };
-/* jslint bitwise: false */
-/* eslint-enable */
 
 export const decode = Base64.decode;
 export const encode = Base64.encode;

@@ -81,6 +81,7 @@
 					break;
 				case 'is:unseen,flagged':
 					self.starred(true);
+					/* falls through */
 				case 'is:unseen':
 					self.unseen(true);
 					break;

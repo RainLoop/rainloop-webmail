@@ -5,7 +5,6 @@ import _ from '_';
 import ko from 'ko';
 import {$win, $div, dropdownVisibility, data as GlobalsData} from 'Common/Globals';
 import {ComposeType, EventKeyCode, SaveSettingsStep, FolderType} from 'Common/Enums';
-import {Mime} from 'Common/Mime';
 
 import JSEncrypt from 'JSEncrypt';
 import Autolinker from 'Autolinker';
@@ -1040,45 +1039,6 @@ export function plainToHtml(plain, findEmailAndLinksInText = false)
 window.rainloop_Utils_htmlToPlain = htmlToPlain;
 window.rainloop_Utils_plainToHtml = plainToHtml;
 
-
-/**
- * @param {string} url
- * @param {number} value
- * @param {Function} fCallback
- */
-export function resizeAndCrop(url, value, fCallback)
-{
-	const img = new window.Image();
-	img.onload = function() {
-
-		let
-			diff = [0, 0],
-			canvas = window.document.createElement('canvas'),
-			ctx = canvas.getContext('2d')
-		;
-
-		canvas.width = value;
-		canvas.height = value;
-
-		if (this.width > this.height)
-		{
-			diff = [this.width - this.height, 0];
-		}
-		else
-		{
-			diff = [0, this.height - this.width];
-		}
-
-		ctx.fillStyle = '#fff';
-		ctx.fillRect(0, 0, value, value);
-		ctx.drawImage(this, diff[0] / 2, diff[1] / 2, this.width - diff[0], this.height - diff[1], 0, 0, value, value);
-
-		fCallback(canvas.toDataURL('image/jpeg'));
-	};
-
-	img.src = url;
-}
-
 /**
  * @param {Array} aSystem
  * @param {Array} aList
@@ -1210,121 +1170,6 @@ export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines
 	return aResult;
 }
 
-export function computedPagenatorHelper(koCurrentPage, koPageCount)
-{
-	return () => {
-
-		let
-			iPrev = 0,
-			iNext = 0,
-			iLimit = 2,
-			result = [],
-			iCurrentPage = koCurrentPage(),
-			iPageCount = koPageCount(),
-
-			/**
-			 * @param {number} index
-			 * @param {boolean=} push = true
-			 * @param {string=} customName = ''
-			 */
-			fAdd = (index, push = true, customName = '') => {
-
-				const data = {
-					current: index === iCurrentPage,
-					name: isUnd(customName) || '' === customName ? index.toString() : customName.toString(),
-					custom: isUnd(customName) || '' === customName ? false : true,
-					title: isUnd(customName) || '' === customName ? '' : index.toString(),
-					value: index.toString()
-				};
-
-				if (push)
-				{
-					result.push(data);
-				}
-				else
-				{
-					result.unshift(data);
-				}
-			}
-		;
-
-		if (1 < iPageCount || (0 < iPageCount && iPageCount < iCurrentPage))
-//		if (0 < iPageCount && 0 < iCurrentPage)
-		{
-			if (iPageCount < iCurrentPage)
-			{
-				fAdd(iPageCount);
-				iPrev = iPageCount;
-				iNext = iPageCount;
-			}
-			else
-			{
-				if (3 >= iCurrentPage || iPageCount - 2 <= iCurrentPage)
-				{
-					iLimit += 2;
-				}
-
-				fAdd(iCurrentPage);
-				iPrev = iCurrentPage;
-				iNext = iCurrentPage;
-			}
-
-			while (0 < iLimit) {
-
-				iPrev -= 1;
-				iNext += 1;
-
-				if (0 < iPrev)
-				{
-					fAdd(iPrev, false);
-					iLimit--;
-				}
-
-				if (iPageCount >= iNext)
-				{
-					fAdd(iNext, true);
-					iLimit--;
-				}
-				else if (0 >= iPrev)
-				{
-					break;
-				}
-			}
-
-			if (3 === iPrev)
-			{
-				fAdd(2, false);
-			}
-			else if (3 < iPrev)
-			{
-				fAdd(window.Math.round((iPrev - 1) / 2), false, '...');
-			}
-
-			if (iPageCount - 2 === iNext)
-			{
-				fAdd(iPageCount - 1, true);
-			}
-			else if (iPageCount - 2 > iNext)
-			{
-				fAdd(window.Math.round((iPageCount + iNext) / 2), true, '...');
-			}
-
-			// first and last
-			if (1 < iPrev)
-			{
-				fAdd(1, false);
-			}
-
-			if (iPageCount > iNext)
-			{
-				fAdd(iPageCount, true);
-			}
-		}
-
-		return result;
-	};
-}
-
 export function selectElement(element)
 {
 	let sel, range;
@@ -1369,18 +1214,6 @@ export function triggerAutocompleteInputChange(delay = false) {
 	}
 }
 
-/**
- * @param {string} fileName
- * @return {string}
- */
-export function getFileExtension(fileName)
-{
-	fileName = trim(fileName).toLowerCase();
-
-	const result = fileName.split('.').pop();
-	return (result === fileName) ? '' : result;
-}
-
 let configurationScriptTagCache = {};
 
 /**
@@ -1399,33 +1232,6 @@ export function getConfigurationFromScriptTag(configuration)
 	try {
 		result = JSON.parse(configurationScriptTagCache[configuration].text());
 	} catch (e) {/* eslint-disable-line no-empty */}
-
-	return result;
-}
-
-/**
- * @param {string} fileName
- * @return {string}
- */
-export function mimeContentType(fileName)
-{
-	let
-		ext = '',
-		result = 'application/octet-stream'
-	;
-
-	fileName = trim(fileName).toLowerCase();
-
-	if ('winmail.dat' === fileName)
-	{
-		return 'application/ms-tnef';
-	}
-
-	ext = getFileExtension(fileName);
-	if (ext && 0 < ext.length && !isUnd(Mime[ext]))
-	{
-		result = Mime[ext];
-	}
 
 	return result;
 }
@@ -1575,9 +1381,9 @@ if ('ab'.substr(-1) !== 'b')
 		start = start < 0 ? str.length + start : start;
 		return str.substr(start, length);
 	};
-}
 
-export {substr};
+	window.String.substr = substr;
+}
 
 /**
  * @param {string} mailToUrl
