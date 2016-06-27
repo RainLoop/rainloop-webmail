@@ -5,9 +5,9 @@ import ko from 'ko';
 
 class AbstractComponent
 {
-	disposable = [];
-
-	constructor() {}
+	constructor() {
+		this.disposable = [];
+	}
 
 	dispose() {
 		this.disposable.forEach((funcToDispose) => {

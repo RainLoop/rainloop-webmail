@@ -43,7 +43,7 @@
 		return !!this.openpgp;
 	};
 
-	PgpUserStore.prototype.findKeyByHex = function (aKeys,sHash)
+	PgpUserStore.prototype.findKeyByHex = function (aKeys, sHash)
 	{
 		return _.find(aKeys, function (oItem) {
 			return sHash && oItem && (sHash === oItem.id || -1 < oItem.ids.indexOf(sHash));
@@ -197,7 +197,7 @@
 
 					if (oDecryptedKey)
 					{
-						oMessage.decrypt(oDecryptedKey).then(function(oDecryptedMessage){
+						oMessage.decrypt(oDecryptedKey).then(function(oDecryptedMessage) {
 							var oPrivateKey = null;
 							if (oDecryptedMessage)
 							{

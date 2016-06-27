@@ -1,6 +1,4 @@
 
-/* global require, module */
-
 (function () {
 
 	'use strict';
@@ -54,12 +52,12 @@
 
 		var
 			self = this,
-			fEmailOutInHelper = function (self, oIdentity, sName, bIn) {
-				if (oIdentity && self && oIdentity[sName]() && (bIn ? true : self[sName]()))
+			fEmailOutInHelper = function (context, oIdentity, sName, bIn) {
+				if (oIdentity && context && oIdentity[sName]() && (bIn ? true : context[sName]()))
 				{
 					var
 						sIdentityEmail = oIdentity[sName](),
-						aList = Utils.trim(self[sName]()).split(/[,]/)
+						aList = Utils.trim(context[sName]()).split(/[,]/)
 					;
 
 					aList = _.filter(aList, function (sEmail) {
@@ -72,7 +70,7 @@
 						aList.push(sIdentityEmail);
 					}
 
-					self[sName](aList.join(','));
+					context[sName](aList.join(','));
 				}
 			}
 		;
@@ -323,7 +321,7 @@
 		this.resizer = ko.observable(false).extend({'throttle': 50});
 
 		this.resizer.subscribe(_.bind(function () {
-			if (this.oEditor){
+			if (this.oEditor) {
 				this.oEditor.resize();
 			}
 		}, this));
@@ -335,7 +333,6 @@
 		this.deleteCommand = Utils.createCommand(this, function () {
 
 			var
-				self = this,
 				PopupsAskViewModel = require('View/Popup/Ask')
 			;
 
@@ -524,9 +521,6 @@
 			if (this.allowContacts)
 			{
 				this.skipCommand();
-
-				var self = this;
-
 				_.delay(function () {
 					kn.showScreenPopup(require('View/Popup/Contacts'),
 						[true, self.sLastFocusedField]);
@@ -558,11 +552,10 @@
 			if (window.Dropbox)
 			{
 				window.Dropbox.choose({
-					'success': function(aFiles) {
-
-						if (aFiles && aFiles[0] && aFiles[0]['link'])
+					'success': function(files) {
+						if (files && files[0] && files[0].link)
 						{
-							self.addDropboxAttachment(aFiles[0]);
+							self.addDropboxAttachment(files[0]);
 						}
 					},
 					'linkType': 'direct',
@@ -847,14 +840,14 @@
 			var self = this;
 			if (!this.oEditor && this.composeEditorArea())
 			{
-//_.delay(function () {
+// _.delay(function () {
 				self.oEditor = new HtmlEditor(self.composeEditorArea(), null, function () {
 					fOnInit(self.oEditor);
 					self.resizerTrigger();
 				}, function (bHtml) {
 					self.isHtml(!!bHtml);
 				});
-//}, 1000);
+// }, 1000);
 			}
 			else if (this.oEditor)
 			{
@@ -932,7 +925,7 @@
 
 				sSignature = sSignature.replace(/{{MOMENT:[^}]+}}/g, '');
 			}
-			catch(e) {}
+			catch (e) {/* eslint-disable-line no-empty */}
 		}
 
 		return sSignature;
@@ -1288,8 +1281,8 @@
 		}
 		else if (Utils.isNonEmptyArray(oMessageOrArray))
 		{
-			_.each(oMessageOrArray, function (oMessage) {
-				self.addMessageAsAttachment(oMessage);
+			_.each(oMessageOrArray, function (oItem) {
+				self.addMessageAsAttachment(oItem);
 			});
 
 			this.editor(function (oEditor) {
@@ -1452,7 +1445,7 @@
 			});
 		}
 
-		if (!!Settings.appSettingsGet('allowCtrlEnterOnCompose'))
+		if (Settings.appSettingsGet('allowCtrlEnterOnCompose'))
 		{
 			key('ctrl+enter, command+enter', Enums.KeyState.Compose, function () {
 				self.sendCommand();
@@ -1504,61 +1497,64 @@
 		if (oData && window.XMLHttpRequest && window.google &&
 			oData[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED &&
 			oData[window.google.picker.Response.DOCUMENTS] && oData[window.google.picker.Response.DOCUMENTS][0] &&
-			oData[window.google.picker.Response.DOCUMENTS][0]['id'])
+			oData[window.google.picker.Response.DOCUMENTS][0].id)
 		{
 			var
 				self = this,
 				oRequest = new window.XMLHttpRequest()
 			;
 
-			oRequest.open('GET', 'https://www.googleapis.com/drive/v2/files/' + oData[window.google.picker.Response.DOCUMENTS][0]['id']);
+			oRequest.open('GET', 'https://www.googleapis.com/drive/v2/files/' + oData[window.google.picker.Response.DOCUMENTS][0].id);
 			oRequest.setRequestHeader('Authorization', 'Bearer ' + sAccessToken);
 			oRequest.addEventListener('load', function() {
 				if (oRequest && oRequest.responseText)
 				{
-					var oItem = JSON.parse(oRequest.responseText), fExport = function (oItem, sMimeType, sExt) {
-						if (oItem && oItem['exportLinks'])
-						{
-							if (oItem['exportLinks'][sMimeType])
+					var
+						oResponse = JSON.parse(oRequest.responseText),
+						fExport = function (oItem, sMimeType, sExt) {
+							if (oItem && oItem.exportLinks)
 							{
-								oItem['downloadUrl'] = oItem['exportLinks'][sMimeType];
-								oItem['title'] = oItem['title'] + '.' + sExt;
-								oItem['mimeType'] = sMimeType;
-							}
-							else if (oItem['exportLinks']['application/pdf'])
-							{
-								oItem['downloadUrl'] = oItem['exportLinks']['application/pdf'];
-								oItem['title'] = oItem['title'] + '.pdf';
-								oItem['mimeType'] = 'application/pdf';
+								if (oItem.exportLinks[sMimeType])
+								{
+									oResponse.downloadUrl = oItem.exportLinks[sMimeType];
+									oResponse.title = oItem.title + '.' + sExt;
+									oResponse.mimeType = sMimeType;
+								}
+								else if (oItem.exportLinks['application/pdf'])
+								{
+									oResponse.downloadUrl = oItem.exportLinks['application/pdf'];
+									oResponse.title = oItem.title + '.pdf';
+									oResponse.mimeType = 'application/pdf';
+								}
 							}
 						}
-					};
+					;
 
-					if (oItem && !oItem['downloadUrl'] && oItem['mimeType'] && oItem['exportLinks'])
+					if (oResponse && !oResponse.downloadUrl && oResponse.mimeType && oResponse.exportLinks)
 					{
-						switch (oItem['mimeType'].toString().toLowerCase())
+						switch (oResponse.mimeType.toString().toLowerCase())
 						{
 							case 'application/vnd.google-apps.document':
-								fExport(oItem, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'docx');
+								fExport(oResponse, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'docx');
 								break;
 							case 'application/vnd.google-apps.spreadsheet':
-								fExport(oItem, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xlsx');
+								fExport(oResponse, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xlsx');
 								break;
 							case 'application/vnd.google-apps.drawing':
-								fExport(oItem, 'image/png', 'png');
+								fExport(oResponse, 'image/png', 'png');
 								break;
 							case 'application/vnd.google-apps.presentation':
-								fExport(oItem, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'pptx');
+								fExport(oResponse, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'pptx');
 								break;
 							default:
-								fExport(oItem, 'application/pdf', 'pdf');
+								fExport(oResponse, 'application/pdf', 'pdf');
 								break;
 						}
 					}
 
-					if (oItem && oItem['downloadUrl'])
+					if (oResponse && oResponse.downloadUrl)
 					{
-						self.addDriveAttachment(oItem, sAccessToken);
+						self.addDriveAttachment(oResponse, sAccessToken);
 					}
 				}
 			});
@@ -1607,10 +1603,10 @@
 					fResult = function (oAuthResult) {
 						if (oAuthResult && !oAuthResult.error)
 						{
-							var oAuthToken = window.gapi.auth.getToken();
-							if (oAuthToken)
+							var oToken = window.gapi.auth.getToken();
+							if (oToken)
 							{
-								self.driveCreatePiker(oAuthToken);
+								self.driveCreatePiker(oToken);
 							}
 
 							return true;
@@ -1674,14 +1670,14 @@
 		var self = this;
 		return function () {
 
-			var oItem = _.find(self.attachments(), function (oItem) {
+			var attachment = _.find(self.attachments(), function (oItem) {
 				return oItem && oItem.id === sId;
 			});
 
-			if (oItem)
+			if (attachment)
 			{
-				self.attachments.remove(oItem);
-				Utils.delegateRunOnDestroy(oItem);
+				self.attachments.remove(attachment);
+				Utils.delegateRunOnDestroy(attachment);
 
 				if (oJua)
 				{
@@ -1925,15 +1921,15 @@
 		var
 			oAttachment = null,
 			iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
-			mSize = oDropboxFile['bytes']
+			mSize = oDropboxFile.bytes
 		;
 
 		oAttachment = new ComposeAttachmentModel(
-			oDropboxFile['link'], oDropboxFile['name'], mSize
+			oDropboxFile.link, oDropboxFile.name, mSize
 		);
 
 		oAttachment.fromMessage = false;
-		oAttachment.cancel = this.cancelAttachmentHelper(oDropboxFile['link']);
+		oAttachment.cancel = this.cancelAttachmentHelper(oDropboxFile.link);
 		oAttachment.waiting(false).uploading(true).complete(false);
 
 		this.attachments.push(oAttachment);
@@ -1966,7 +1962,7 @@
 				oAttachment.error(Translator.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded));
 			}
 
-		}, [oDropboxFile['link']]);
+		}, [oDropboxFile.link]);
 
 		return true;
 	};
@@ -1981,15 +1977,15 @@
 		var
 			iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
 			oAttachment = null,
-			mSize = oDriveFile['fileSize'] ? Utils.pInt(oDriveFile['fileSize']) : 0
+			mSize = oDriveFile.fileSize ? Utils.pInt(oDriveFile.fileSize) : 0
 		;
 
 		oAttachment = new ComposeAttachmentModel(
-			oDriveFile['downloadUrl'], oDriveFile['title'], mSize
+			oDriveFile.downloadUrl, oDriveFile.title, mSize
 		);
 
 		oAttachment.fromMessage = false;
-		oAttachment.cancel = this.cancelAttachmentHelper(oDriveFile['downloadUrl']);
+		oAttachment.cancel = this.cancelAttachmentHelper(oDriveFile.downloadUrl);
 		oAttachment.waiting(false).uploading(true).complete(false);
 
 		this.attachments.push(oAttachment);
@@ -2023,7 +2019,7 @@
 				oAttachment.error(Translator.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded));
 			}
 
-		}, oDriveFile['downloadUrl'], sAccessToken);
+		}, oDriveFile.downloadUrl, sAccessToken);
 
 		return true;
 	};
@@ -2089,14 +2085,14 @@
 
 	ComposePopupView.prototype.removeLinkedAttachments = function ()
 	{
-		var oItem = _.find(this.attachments(), function (oItem) {
+		var arrachment = _.find(this.attachments(), function (oItem) {
 			return oItem && oItem.isLinked;
 		});
 
-		if (oItem)
+		if (arrachment)
 		{
-			this.attachments.remove(oItem);
-			Utils.delegateRunOnDestroy(oItem);
+			this.attachments.remove(arrachment);
+			Utils.delegateRunOnDestroy(arrachment);
 		}
 	};
 

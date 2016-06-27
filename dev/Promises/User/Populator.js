@@ -119,7 +119,7 @@
 						}
 					}
 
-					aSubFolders = oFolder['SubFolders'];
+					aSubFolders = oFolder.SubFolders;
 					if (aSubFolders && 'Collection/FolderCollection' === aSubFolders['@Object'] &&
 						aSubFolders['@Collection'] && Utils.isArray(aSubFolders['@Collection']))
 					{
@@ -142,7 +142,7 @@
 		{
 			var
 				iLimit = Utils.pInt(Settings.appSettingsGet('folderSpecLimit')),
-				iC = Utils.pInt(oData['CountRec'])
+				iC = Utils.pInt(oData.CountRec)
 			;
 
 			iLimit = 100 < iLimit ? 100 : (10 > iLimit ? 10 : iLimit);
@@ -169,7 +169,7 @@
 
 			var bUpdate = false;
 
-			if (oData['SystemFolders'] && '' === '' +
+			if (oData.SystemFolders && '' === '' +
 				Settings.settingsGet('SentFolder') +
 				Settings.settingsGet('DraftFolder') +
 				Settings.settingsGet('SpamFolder') +
@@ -177,11 +177,11 @@
 				Settings.settingsGet('ArchiveFolder') +
 				Settings.settingsGet('NullFolder'))
 			{
-				Settings.settingsSet('SentFolder', oData['SystemFolders'][Enums.ServerFolderType.SENT] || null);
-				Settings.settingsSet('DraftFolder', oData['SystemFolders'][Enums.ServerFolderType.DRAFTS] || null);
-				Settings.settingsSet('SpamFolder', oData['SystemFolders'][Enums.ServerFolderType.JUNK] || null);
-				Settings.settingsSet('TrashFolder', oData['SystemFolders'][Enums.ServerFolderType.TRASH] || null);
-				Settings.settingsSet('ArchiveFolder', oData['SystemFolders'][Enums.ServerFolderType.ALL] || null);
+				Settings.settingsSet('SentFolder', oData.SystemFolders[Enums.ServerFolderType.SENT] || null);
+				Settings.settingsSet('DraftFolder', oData.SystemFolders[Enums.ServerFolderType.DRAFTS] || null);
+				Settings.settingsSet('SpamFolder', oData.SystemFolders[Enums.ServerFolderType.JUNK] || null);
+				Settings.settingsSet('TrashFolder', oData.SystemFolders[Enums.ServerFolderType.TRASH] || null);
+				Settings.settingsSet('ArchiveFolder', oData.SystemFolders[Enums.ServerFolderType.ALL] || null);
 
 				bUpdate = true;
 			}
@@ -195,12 +195,12 @@
 			if (bUpdate)
 			{
 				require('Remote/User/Ajax').saveSystemFolders(Utils.noop, {
-					'SentFolder': FolderStore.sentFolder(),
-					'DraftFolder': FolderStore.draftFolder(),
-					'SpamFolder': FolderStore.spamFolder(),
-					'TrashFolder': FolderStore.trashFolder(),
-					'ArchiveFolder': FolderStore.archiveFolder(),
-					'NullFolder': 'NullFolder'
+					SentFolder: FolderStore.sentFolder(),
+					DraftFolder: FolderStore.draftFolder(),
+					SpamFolder: FolderStore.spamFolder(),
+					TrashFolder: FolderStore.trashFolder(),
+					ArchiveFolder: FolderStore.archiveFolder(),
+					NullFolder: 'NullFolder'
 				});
 			}
 

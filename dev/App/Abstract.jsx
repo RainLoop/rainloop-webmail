@@ -18,17 +18,17 @@ import {AbstractBoot} from 'Knoin/AbstractBoot';
 
 class AbstractApp extends AbstractBoot
 {
-	googlePreviewSupportedCache = null;
-	isLocalAutocomplete = true;
-	iframe = null;
-	lastErrorTime = 0;
-
 	/**
 	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 */
 	constructor(Remote)
 	{
 		super();
+
+		this.googlePreviewSupportedCache = null;
+		this.isLocalAutocomplete = true;
+		this.iframe = null;
+		this.lastErrorTime = 0;
 
 		this.iframe = $('<iframe class="internal-hiddden" />').appendTo('body');
 

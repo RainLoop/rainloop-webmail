@@ -708,7 +708,7 @@ class Selector
 	 * @param {Object} item
 	 * @param {Object=} event
 	 */
-	actionClick = function (item, event = null) {
+	actionClick(item, event = null) {
 
 		if (item)
 		{
@@ -761,4 +761,3 @@ class Selector
 }
 
 export {Selector, Selector as default};
-module.exports = Selector;

@@ -187,7 +187,7 @@
 
 			if (oMessage)
 			{
-				 if (Enums.Layout.NoPreview === SettingsStore.layout())
+				if (Enums.Layout.NoPreview === SettingsStore.layout())
 				{
 					AppStore.focusedState(Enums.Focused.MessageView);
 				}
@@ -337,13 +337,13 @@
 			oToFolder = '' === sToFolderFullNameRaw ? null : Cache.getFolderFromCacheList(sToFolderFullNameRaw || ''),
 			sCurrentFolderFullNameRaw = FolderStore.currentFolderFullNameRaw(),
 			oCurrentMessage = this.message(),
-			aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(aMessageList, function (oMessage) {
-				return oMessage && -1 < Utils.inArray(Utils.pInt(oMessage.uid), aUidForRemove);
+			aMessages = sCurrentFolderFullNameRaw === sFromFolderFullNameRaw ? _.filter(aMessageList, function (item) {
+				return item && -1 < Utils.inArray(Utils.pInt(item.uid), aUidForRemove);
 			}) : []
 		;
 
-		_.each(aMessages, function (oMessage) {
-			if (oMessage && oMessage.unseen())
+		_.each(aMessages, function (item) {
+			if (item && item.unseen())
 			{
 				iUnseenCount++;
 			}
@@ -381,27 +381,27 @@
 		{
 			if (bCopy)
 			{
-				_.each(aMessages, function (oMessage) {
-					oMessage.checked(false);
+				_.each(aMessages, function (item) {
+					item.checked(false);
 				});
 			}
 			else
 			{
 				this.messageListIsNotCompleted(true);
 
-				_.each(aMessages, function (oMessage) {
-					if (oCurrentMessage && oCurrentMessage.hash === oMessage.hash)
+				_.each(aMessages, function (item) {
+					if (oCurrentMessage && oCurrentMessage.hash === item.hash)
 					{
 						oCurrentMessage = null;
 						self.message(null);
 					}
 
-					oMessage.deleted(true);
+					item.deleted(true);
 				});
 
 				_.delay(function () {
-					_.each(aMessages, function (oMessage) {
-						self.messageList.remove(oMessage);
+					_.each(aMessages, function (item) {
+						self.messageList.remove(item);
 					});
 				}, 400);
 			}
@@ -421,12 +421,12 @@
 		{
 			aMessageList = this.messageList();
 
-			if (aMessageList && 0 < aMessageList.length && !!_.find(aMessageList, function (oMessage) {
-				return !!(oMessage && oMessage.deleted() && oMessage.uid === self.messageListThreadUid());
+			if (aMessageList && 0 < aMessageList.length && !!_.find(aMessageList, function (item) {
+				return !!(item && item.deleted() && item.uid === self.messageListThreadUid());
 			}))
 			{
-				oMessage = _.find(aMessageList, function (oMessage) {
-					return oMessage && !oMessage.deleted();
+				oMessage = _.find(aMessageList, function (item) {
+					return item && !item.deleted();
 				});
 
 				if (oMessage && this.messageListThreadUid() !== Utils.pString(oMessage.uid))

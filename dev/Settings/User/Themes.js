@@ -18,7 +18,7 @@
 		ThemeStore = require('Stores/Theme'),
 
 		Settings = require('Storage/Settings'),
-		
+
 		Remote = require('Remote/User/Ajax')
 	;
 

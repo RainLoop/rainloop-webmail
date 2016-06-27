@@ -218,8 +218,12 @@
 				{
 					if (bWrapWithLink)
 					{
-						sResult = Utils.encodeHtml('"' + this.name + '" <') +
-							'<a href="mailto:' + Utils.encodeHtml('"' + this.name + '" <' + this.email + '>') + '" target="_blank" tabindex="-1">' + Utils.encodeHtml(sResult) + '</a>' + Utils.encodeHtml('>');
+						sResult = Utils.encodeHtml('"' + this.name + '" <') + '<a href="mailto:' +
+							Utils.encodeHtml('"' + this.name + '" <' + this.email + '>') +
+							'" target="_blank" tabindex="-1">' +
+							Utils.encodeHtml(sResult) +
+							'</a>' +
+							Utils.encodeHtml('>');
 					}
 					else
 					{
@@ -268,9 +272,9 @@
 
 			substr_replace = function (str, replace, start, length) {
 				if (start < 0) {
-					start = start + str.length;
+					start += str.length;
 				}
-				length = length !== undefined ? length : str.length;
+				length = typeof length !== 'undefined' ? length : str.length;
 				if (length < 0) {
 					length = length + str.length - start;
 				}

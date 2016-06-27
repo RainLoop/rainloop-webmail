@@ -77,12 +77,12 @@
 
 	FilterConditionModel.prototype.parse = function (oItem)
 	{
-		if (oItem && oItem['Field'] && oItem['Type'])
+		if (oItem && oItem.Field && oItem.Type)
 		{
-			this.field(Utils.pString(oItem['Field']));
-			this.type(Utils.pString(oItem['Type']));
-			this.value(Utils.pString(oItem['Value']));
-			this.valueSecond(Utils.pString(oItem['ValueSecond']));
+			this.field(Utils.pString(oItem.Field));
+			this.type(Utils.pString(oItem.Type));
+			this.value(Utils.pString(oItem.Value));
+			this.valueSecond(Utils.pString(oItem.ValueSecond));
 
 			return true;
 		}
@@ -93,10 +93,10 @@
 	FilterConditionModel.prototype.toJson = function ()
 	{
 		return {
-			'Field': this.field(),
-			'Type': this.type(),
-			'Value': this.value(),
-			'ValueSecond': this.valueSecond()
+			Field: this.field(),
+			Type: this.type(),
+			Value: this.value(),
+			ValueSecond: this.valueSecond()
 		};
 	};
 

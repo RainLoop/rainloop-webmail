@@ -48,7 +48,7 @@
 	 */
 	MailBoxUserScreen.prototype.oLastRoute = {};
 
-	MailBoxUserScreen.prototype.updateWindowTitle  = function ()
+	MailBoxUserScreen.prototype.updateWindowTitle = function ()
 	{
 		var
 			sEmail = AccountStore.email(),
@@ -195,7 +195,7 @@
 			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
 			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
 			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, {'normalize_': fNormD}],
-			[/^([^\/]*)$/,  {'normalize_': fNormS}]
+			[/^([^\/]*)$/, {'normalize_': fNormS}]
 		];
 	};
 

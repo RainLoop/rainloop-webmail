@@ -58,9 +58,9 @@
 
 	LanguagesPopupView.prototype.setLanguageSelection = function ()
 	{
-		var sCurrent = this.fLang ? ko.unwrap(this.fLang) : '';
-		_.each(this.languages(), function (oItem) {
-			oItem['selected'](oItem['key'] === sCurrent);
+		var currentLang = this.fLang ? ko.unwrap(this.fLang) : '';
+		_.each(this.languages(), function (item) {
+			item.selected(item.key === currentLang);
 		});
 	};
 

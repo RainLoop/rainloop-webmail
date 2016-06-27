@@ -279,7 +279,7 @@
 
 		this.quotaTooltip = _.bind(this.quotaTooltip, this);
 
-		this.selector = new Selector(this.messageList, this.selectorMessageSelected, this.selectorMessageFocused,
+		this.selector = new Selector.Selector(this.messageList, this.selectorMessageSelected, this.selectorMessageFocused,
 			'.messageListItem .actionHandle', '.messageListItem.selected', '.messageListItem .checkboxMessage',
 				'.messageListItem.focused');
 
@@ -510,26 +510,24 @@
 
 		var
 			oEl = Utils.draggablePlace(),
-			aUids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails()
+			updateUidsInfo = function() {
+				var aUids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails();
+				oEl.data('rl-uids', aUids);
+				oEl.find('.text').text('' + aUids.length);
+			}
 		;
 
 		oEl.data('rl-folder', FolderStore.currentFolderFullNameRaw());
-		oEl.data('rl-uids', aUids);
-		oEl.find('.text').text('' + aUids.length);
 
-		_.defer(function () {
-			var aUids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails();
-
-			oEl.data('rl-uids', aUids);
-			oEl.find('.text').text('' + aUids.length);
-		});
+		updateUidsInfo();
+		_.defer(updateUidsInfo);
 
 		return oEl;
 	};
 
 	/**
 	 * @param {string} sFolderFullNameRaw
-	 * @param {string|bool} sUid
+	 * @param {string|bool} mUid
 	 * @param {number} iSetAction
 	 * @param {Array=} aMessages = null
 	 */
@@ -964,9 +962,8 @@
 		{
 			var
 				self = this,
-				oMessage = _.find(this.messageList(), function (oMessage) {
-					return oMessage &&
-						!Cache.hasRequestedMessage(oMessage.folderFullNameRaw, oMessage.uid);
+				oMessage = _.find(this.messageList(), function (oItem) {
+					return oItem && !Cache.hasRequestedMessage(oItem.folderFullNameRaw, oItem.uid);
 				})
 			;
 
@@ -1027,17 +1024,17 @@
 
 		var
 			oJua = new Jua({
-				'action': Links.append(),
-				'name': 'AppendFile',
-				'queueSize': 1,
-				'multipleSizeLimit': 1,
-				'hidden': {
-					'Folder': function () {
+				action: Links.append(),
+				name: 'AppendFile',
+				queueSize: 1,
+				multipleSizeLimit: 1,
+				hidden: {
+					Folder: function () {
 						return FolderStore.currentFolderFullNameRaw();
 					}
 				},
-				'dragAndDropElement': this.dragOverArea(),
-				'dragAndDropBodyElement': this.dragOverBodyArea()
+				dragAndDropElement: this.dragOverArea(),
+				dragAndDropBodyElement: this.dragOverBodyArea()
 			})
 		;
 
@@ -1063,7 +1060,7 @@
 			}, this))
 			.on('onSelect', _.bind(function (sUid, oData) {
 
-				if (sUid && oData && 'message/rfc822' === oData['Type'])
+				if (sUid && oData && 'message/rfc822' === oData.Type)
 				{
 					MessageStore.messageListLoading(true);
 					return true;

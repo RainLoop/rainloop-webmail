@@ -73,7 +73,7 @@
 			parts = (search || '').split(/[\s]+/g)
 		;
 
-		_.each(parts, function(part){
+		_.each(parts, function(part) {
 			switch (part)
 			{
 				case 'has:attachment':

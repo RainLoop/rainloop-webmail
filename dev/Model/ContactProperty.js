@@ -34,8 +34,8 @@
 		this.placeholder = ko.observable(sPlaceholder || '');
 
 		this.placeholderValue = ko.computed(function () {
-			var sPlaceholder = this.placeholder();
-			return sPlaceholder ? Translator.i18n(sPlaceholder) : '';
+			var value = this.placeholder();
+			return value ? Translator.i18n(value) : '';
 		}, this);
 
 		this.largeValue = ko.computed(function () {

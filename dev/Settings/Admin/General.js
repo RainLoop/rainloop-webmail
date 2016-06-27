@@ -46,16 +46,16 @@
 
 		this.mainAttachmentLimit = ko.observable(Utils.pInt(Settings.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
 		this.uploadData = Settings.settingsGet('PhpUploadSizes');
-		this.uploadDataDesc = this.uploadData && (this.uploadData['upload_max_filesize'] || this.uploadData['post_max_size']) ? [
-			this.uploadData['upload_max_filesize'] ? 'upload_max_filesize = ' + this.uploadData['upload_max_filesize'] + '; ' : '',
-			this.uploadData['post_max_size'] ? 'post_max_size = ' + this.uploadData['post_max_size'] : ''
+		this.uploadDataDesc = this.uploadData && (this.uploadData.upload_max_filesize || this.uploadData.post_max_size) ? [
+			this.uploadData.upload_max_filesize ? 'upload_max_filesize = ' + this.uploadData.upload_max_filesize + '; ' : '',
+			this.uploadData.post_max_size ? 'post_max_size = ' + this.uploadData.post_max_size : ''
 		].join('') : '';
 
 		this.themesOptions = ko.computed(function () {
 			return _.map(this.themes(), function (sTheme) {
 				return {
-					'optValue': sTheme,
-					'optText': Utils.convertThemeName(sTheme)
+					optValue: sTheme,
+					optText: Utils.convertThemeName(sTheme)
 				};
 			});
 		}, this);

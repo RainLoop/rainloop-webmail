@@ -73,16 +73,16 @@
 		var bResult = false;
 		if (oItem && 'Object/Contact' === oItem['@Object'])
 		{
-			this.idContact = Utils.pInt(oItem['IdContact']);
-			this.display = Utils.pString(oItem['Display']);
-			this.readOnly = !!oItem['ReadOnly'];
+			this.idContact = Utils.pInt(oItem.IdContact);
+			this.display = Utils.pString(oItem.Display);
+			this.readOnly = !!oItem.ReadOnly;
 
-			if (Utils.isNonEmptyArray(oItem['Properties']))
+			if (Utils.isNonEmptyArray(oItem.Properties))
 			{
-				_.each(oItem['Properties'], function (oProperty) {
-					if (oProperty && oProperty['Type'] && Utils.isNormal(oProperty['Value']) && Utils.isNormal(oProperty['TypeStr']))
+				_.each(oItem.Properties, function (oProperty) {
+					if (oProperty && oProperty.Type && Utils.isNormal(oProperty.Value) && Utils.isNormal(oProperty.TypeStr))
 					{
-						this.properties.push([Utils.pInt(oProperty['Type']), Utils.pString(oProperty['Value']), Utils.pString(oProperty['TypeStr'])]);
+						this.properties.push([Utils.pInt(oProperty.Type), Utils.pString(oProperty.Value), Utils.pString(oProperty.TypeStr)]);
 					}
 				}, this);
 			}

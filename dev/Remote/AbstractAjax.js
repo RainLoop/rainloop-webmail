@@ -65,7 +65,7 @@
 					{
 						if (Globals.data.__APP__ && Globals.data.__APP__.loginAndLogoutReload)
 						{
-							 Globals.data.__APP__.loginAndLogoutReload(false, true);
+							Globals.data.__APP__.loginAndLogoutReload(false, true);
 						}
 					}
 
@@ -75,9 +75,9 @@
 						{
 							Globals.data.__APP__.clearClientSideToken();
 
-							if (!oData.ClearAuth &&  Globals.data.__APP__.loginAndLogoutReload)
+							if (!oData.ClearAuth && Globals.data.__APP__.loginAndLogoutReload)
 							{
-								 Globals.data.__APP__.loginAndLogoutReload(false, true);
+								Globals.data.__APP__.loginAndLogoutReload(false, true);
 							}
 						}
 					}
@@ -169,26 +169,26 @@
 
 		if (bPost)
 		{
-			oParameters['XToken'] = Settings.appSettingsGet('token');
+			oParameters.XToken = Settings.appSettingsGet('token');
 		}
 
 		oDefAjax = $.ajax({
-			'type': bPost ? 'POST' : 'GET',
-			'url': Links.ajax(sGetAdd),
-			'async': true,
-			'dataType': 'json',
-			'data': bPost ? oParameters : {},
-			'headers': oHeaders,
-			'timeout': iTimeOut,
-			'global': true
+			type: bPost ? 'POST' : 'GET',
+			url: Links.ajax(sGetAdd),
+			async: true,
+			dataType: 'json',
+			data: bPost ? oParameters : {},
+			headers: oHeaders,
+			timeout: iTimeOut,
+			global: true
 		});
 
 		oDefAjax.always(function (oData, sType) {
 
 			var bCached = false;
-			if (oData && oData['Time'])
+			if (oData && oData.Time)
 			{
-				bCached = Utils.pInt(oData['Time']) > (new window.Date()).getTime() - iStart;
+				bCached = Utils.pInt(oData.Time) > (new window.Date()).getTime() - iStart;
 			}
 
 			if (sAction && self.oRequests[sAction])

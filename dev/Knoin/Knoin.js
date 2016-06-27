@@ -36,13 +36,13 @@
 	};
 
 	/**
-	 * @param {Object} thisObject
+	 * @param {Object} context
 	 */
-	Knoin.prototype.constructorEnd = function (thisObject)
+	Knoin.prototype.constructorEnd = function (context)
 	{
-		if (Utils.isFunc(thisObject['__constructor_end']))
+		if (Utils.isFunc(context.__constructor_end))
 		{
-			thisObject['__constructor_end'].call(thisObject);
+			context.__constructor_end.call(context);
 		}
 	};
 
@@ -77,13 +77,13 @@
 	Knoin.prototype.addSettingsViewModel = function (SettingsViewModelClass, sTemplate, sLabelName, sRoute, bDefault)
 	{
 		SettingsViewModelClass.__rlSettingsData = {
-			'Label':  sLabelName,
-			'Template':  sTemplate,
-			'Route':  sRoute,
-			'IsDefault':  !!bDefault
+			Label: sLabelName,
+			Template: sTemplate,
+			Route: sRoute,
+			IsDefault: !!bDefault
 		};
 
-		Globals.aViewModels['settings'].push(SettingsViewModelClass);
+		Globals.aViewModels.settings.push(SettingsViewModelClass);
 	};
 
 	/**
@@ -287,7 +287,7 @@
 		var
 			self = this,
 			oScreen = null,
-			bSameScreen= false,
+			bSameScreen = false,
 			oCross = null
 		;
 

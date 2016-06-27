@@ -201,7 +201,7 @@
 				self = this,
 				sPassword = this.password(),
 
-				fLoginRequest = _.bind(function (sPassword) {
+				fLoginRequest = _.bind(function (sLoginPassword) {
 
 					Remote.login(_.bind(function (sResult, oData) {
 
@@ -215,7 +215,7 @@
 									this.additionalCode.visibility(true);
 									this.submitRequest(false);
 
-									_.delay(function(){
+									_.delay(function() {
 										self.additionalCode.focused(true);
 									}, 100);
 								}
@@ -261,13 +261,13 @@
 							this.submitError(Translator.getNotification(Enums.Notification.UnknownError));
 						}
 
-					}, this), this.email(), '', sPassword, !!this.signMe(),
+					}, this), this.email(), '', sLoginPassword, !!this.signMe(),
 						this.bSendLanguage ? this.language() : '',
 						this.additionalCode.visibility() ? this.additionalCode() : '',
 						this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
 					);
 
-					Local.set(Enums.ClientSideKeyName.LastSignMe, !!this.signMe() ? '-1-' : '-0-');
+					Local.set(Enums.ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');
 
 				}, this)
 			;

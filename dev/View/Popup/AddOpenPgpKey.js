@@ -34,51 +34,52 @@
 		this.addOpenPgpKeyCommand = Utils.createCommand(this, function () {
 
 			var
-				iCount = 30,
-				aMatch = null,
-				sKey = Utils.trim(this.key()),
-				oReg = /[\-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}[\s\S]+?[\-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}/gi,
-				oOpenpgpKeyring = PgpStore.openpgpKeyring
+				count = 30,
+				match = null,
+				key = Utils.trim(this.key()),
+				reg = /[\-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}[\s\S]+?[\-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}/gi,
+				openpgpKeyring = PgpStore.openpgpKeyring,
+				done = false
 			;
 
-			if (/[\n]/.test(sKey))
+			if (/[\n]/.test(key))
 			{
-				sKey = sKey.replace(/[\r]+/g, '')
-					.replace(/[\n]{2,}/g, '\n\n');
+				key = key.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
 			}
 
-			this.key.error('' === sKey);
+			this.key.error('' === key);
 
-			if (!oOpenpgpKeyring || this.key.error())
+			if (!openpgpKeyring || this.key.error())
 			{
 				return false;
 			}
 
 			do
 			{
-				aMatch = oReg.exec(sKey);
-				if (!aMatch || 0 > iCount)
+				match = reg.exec(key);
+				if (match && 0 > count)
 				{
-					break;
+					if (match[0] && match[1] && match[2] && match[1] === match[2])
+					{
+						if ('PRIVATE' === match[1])
+						{
+							openpgpKeyring.privateKeys.importKey(match[0]);
+						}
+						else if ('PUBLIC' === match[1])
+						{
+							openpgpKeyring.publicKeys.importKey(match[0]);
+						}
+					}
+
+					count--;
 				}
 
-				if (aMatch[0] && aMatch[1] && aMatch[2] && aMatch[1] === aMatch[2])
-				{
-					if ('PRIVATE' === aMatch[1])
-					{
-						oOpenpgpKeyring.privateKeys.importKey(aMatch[0]);
-					}
-					else if ('PUBLIC' === aMatch[1])
-					{
-						oOpenpgpKeyring.publicKeys.importKey(aMatch[0]);
-					}
-				}
+				done = true;
 
-				iCount--;
 			}
-			while (true);
+			while (done);
 
-			oOpenpgpKeyring.store();
+			openpgpKeyring.store();
 
 			require('App/User').default.reloadOpenPgpKeys();
 			Utils.delegateRun(this, 'cancelCommand');

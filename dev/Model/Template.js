@@ -61,10 +61,10 @@
 		var bResult = false;
 		if (oItem && 'Object/Template' === oItem['@Object'])
 		{
-			this.id = Utils.pString(oItem['ID']);
-			this.name = Utils.pString(oItem['Name']);
-			this.body = Utils.pString(oItem['Body']);
-			this.populated = !!oItem['Populated'];
+			this.id = Utils.pString(oItem.ID);
+			this.name = Utils.pString(oItem.Name);
+			this.body = Utils.pString(oItem.Body);
+			this.populated = !!oItem.Populated;
 
 			bResult = true;
 		}

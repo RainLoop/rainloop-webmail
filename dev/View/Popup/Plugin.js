@@ -60,24 +60,24 @@
 
 		this.saveCommand = Utils.createCommand(this, function () {
 
-			var oList = {};
+			var list = {};
 
-			oList['Name'] = this.name();
+			list.Name = this.name();
 
 			_.each(this.configures(), function (oItem) {
 
-				var mValue = oItem.value();
-				if (false === mValue || true === mValue)
+				var value = oItem.value();
+				if (false === value || true === value)
 				{
-					mValue = mValue ? '1' : '0';
+					value = value ? '1' : '0';
 				}
 
-				oList['_' + oItem['Name']] = mValue;
+				list['_' + oItem.Name] = value;
 
 			}, this);
 
 			this.saveError('');
-			Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, oList);
+			Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, list);
 
 		}, this.hasConfiguration);
 
@@ -120,10 +120,10 @@
 
 		if (oPlugin)
 		{
-			this.name(oPlugin['Name']);
-			this.readme(oPlugin['Readme']);
+			this.name(oPlugin.Name);
+			this.readme(oPlugin.Readme);
 
-			var aConfig = oPlugin['Config'];
+			var aConfig = oPlugin.Config;
 			if (Utils.isNonEmptyArray(aConfig))
 			{
 				this.configures(_.map(aConfig, function (aItem) {

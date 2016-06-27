@@ -163,8 +163,8 @@
 	RemoteAdminStorage.prototype.domainDisable = function (fCallback, sName, bDisabled)
 	{
 		return this.defaultRequest(fCallback, 'AdminDomainDisable', {
-			'Name': sName,
-			'Disabled': !!bDisabled ? '1' : '0'
+			Name: sName,
+			Disabled: bDisabled ? '1' : '0'
 		});
 	};
 
@@ -184,7 +184,7 @@
 	RemoteAdminStorage.prototype.licensing = function (fCallback, bForce)
 	{
 		return this.defaultRequest(fCallback, 'AdminLicensing', {
-			'Force' : bForce ? '1' : '0'
+			Force: bForce ? '1' : '0'
 		});
 	};
 
@@ -196,8 +196,8 @@
 	RemoteAdminStorage.prototype.licensingActivate = function (fCallback, sDomain, sKey)
 	{
 		return this.defaultRequest(fCallback, 'AdminLicensingActivate', {
-			'Domain' : sDomain,
-			'Key' : sKey
+			Domain: sDomain,
+			Key: sKey
 		});
 	};
 
@@ -209,16 +209,16 @@
 	RemoteAdminStorage.prototype.pluginDisable = function (fCallback, sName, bDisabled)
 	{
 		return this.defaultRequest(fCallback, 'AdminPluginDisable', {
-			'Name': sName,
-			'Disabled': !!bDisabled ? '1' : '0'
+			Name: sName,
+			Disabled: bDisabled ? '1' : '0'
 		});
 	};
 
 	RemoteAdminStorage.prototype.createDomainAlias = function (fCallback, sName, sAlias)
 	{
 		this.defaultRequest(fCallback, 'AdminDomainAliasSave', {
-			'Name': sName,
-			'Alias': sAlias
+			Name: sName,
+			Alias: sAlias
 		});
 	};
 

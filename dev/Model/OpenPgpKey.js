@@ -108,3 +108,4 @@
 	module.exports = OpenPgpKeyModel;
 
 }());
+

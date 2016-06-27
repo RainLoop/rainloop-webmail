@@ -56,11 +56,11 @@ import {AbstractApp} from 'App/Abstract';
 
 class AppUser extends AbstractApp
 {
-	oMoveCache = {};
-
 	constructor()
 	{
 		super(Remote);
+
+		this.moveCache = {};
 
 		this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
 		this.moveOrDeleteResponseHelper = _.bind(this.moveOrDeleteResponseHelper, this);
@@ -235,7 +235,7 @@ class AppUser extends AbstractApp
 			sSpamFolder = FolderStore.spamFolder()
 		;
 
-		_.each(this.oMoveCache, (oItem) => {
+		_.each(this.moveCache, (oItem) => {
 
 			var
 				bSpam = sSpamFolder === oItem.To,
@@ -247,22 +247,22 @@ class AppUser extends AbstractApp
 				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''), bSpam || bTrash);
 		});
 
-		this.oMoveCache = {};
+		this.moveCache = {};
 	}
 
 	messagesMoveHelper(sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForMove) {
 
 		var sH = '$$' + sFromFolderFullNameRaw + '$$' + sToFolderFullNameRaw + '$$';
-		if (!this.oMoveCache[sH])
+		if (!this.moveCache[sH])
 		{
-			this.oMoveCache[sH] = {
+			this.moveCache[sH] = {
 				From: sFromFolderFullNameRaw,
 				To: sToFolderFullNameRaw,
 				Uid: []
 			};
 		}
 
-		this.oMoveCache[sH].Uid = _.union(this.oMoveCache[sH].Uid, aUidForMove);
+		this.moveCache[sH].Uid = _.union(this.moveCache[sH].Uid, aUidForMove);
 		this.messagesMoveTrigger();
 	}
 

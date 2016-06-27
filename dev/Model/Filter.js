@@ -79,12 +79,12 @@
 			{
 				case Enums.FiltersAction.MoveTo:
 					sResult = Translator.i18n('SETTINGS_FILTERS/SUBNAME_MOVE_TO', {
-						'FOLDER': fGetRealFolderName(sActionValue)
+						FOLDER: fGetRealFolderName(sActionValue)
 					});
 					break;
 				case Enums.FiltersAction.Forward:
 					sResult = Translator.i18n('SETTINGS_FILTERS/SUBNAME_FORWARD_TO', {
-						'EMAIL': sActionValue
+						EMAIL: sActionValue
 					});
 					break;
 				case Enums.FiltersAction.Vacation:
@@ -211,23 +211,23 @@
 	FilterModel.prototype.toJson = function ()
 	{
 		return {
-			'ID': this.id,
-			'Enabled': this.enabled() ? '1' : '0',
-			'Name': this.name(),
-			'ConditionsType': this.conditionsType(),
-			'Conditions': _.map(this.conditions(), function (oItem) {
+			ID: this.id,
+			Enabled: this.enabled() ? '1' : '0',
+			Name: this.name(),
+			ConditionsType: this.conditionsType(),
+			Conditions: _.map(this.conditions(), function (oItem) {
 				return oItem.toJson();
 			}),
 
-			'ActionValue': this.actionValue(),
-			'ActionValueSecond': this.actionValueSecond(),
-			'ActionValueThird': this.actionValueThird(),
-			'ActionValueFourth': this.actionValueFourth(),
-			'ActionType': this.actionType(),
+			ActionValue: this.actionValue(),
+			ActionValueSecond: this.actionValueSecond(),
+			ActionValueThird: this.actionValueThird(),
+			ActionValueFourth: this.actionValueFourth(),
+			ActionType: this.actionType(),
 
-			'Stop': this.actionNoStop() ? '0' : '1',
-			'Keep': this.actionKeep() ? '1' : '0',
-			'MarkAsRead': this.actionMarkAsRead() ? '1' : '0'
+			Stop: this.actionNoStop() ? '0' : '1',
+			Keep: this.actionKeep() ? '1' : '0',
+			MarkAsRead: this.actionMarkAsRead() ? '1' : '0'
 		};
 	};
 
@@ -252,33 +252,33 @@
 		var bResult = false;
 		if (oItem && 'Object/Filter' === oItem['@Object'])
 		{
-			this.id = Utils.pString(oItem['ID']);
-			this.name(Utils.pString(oItem['Name']));
-			this.enabled(!!oItem['Enabled']);
+			this.id = Utils.pString(oItem.ID);
+			this.name(Utils.pString(oItem.Name));
+			this.enabled(!!oItem.Enabled);
 
-			this.conditionsType(Utils.pString(oItem['ConditionsType']));
+			this.conditionsType(Utils.pString(oItem.ConditionsType));
 
 			this.conditions([]);
 
-			if (Utils.isNonEmptyArray(oItem['Conditions']))
+			if (Utils.isNonEmptyArray(oItem.Conditions))
 			{
-				this.conditions(_.compact(_.map(oItem['Conditions'], function (aData) {
+				this.conditions(_.compact(_.map(oItem.Conditions, function (aData) {
 					var oFilterCondition = new FilterConditionModel();
 					return oFilterCondition && oFilterCondition.parse(aData) ?
 						oFilterCondition : null;
 				})));
 			}
 
-			this.actionType(Utils.pString(oItem['ActionType']));
+			this.actionType(Utils.pString(oItem.ActionType));
 
-			this.actionValue(Utils.pString(oItem['ActionValue']));
-			this.actionValueSecond(Utils.pString(oItem['ActionValueSecond']));
-			this.actionValueThird(Utils.pString(oItem['ActionValueThird']));
-			this.actionValueFourth(Utils.pString(oItem['ActionValueFourth']));
+			this.actionValue(Utils.pString(oItem.ActionValue));
+			this.actionValueSecond(Utils.pString(oItem.ActionValueSecond));
+			this.actionValueThird(Utils.pString(oItem.ActionValueThird));
+			this.actionValueFourth(Utils.pString(oItem.ActionValueFourth));
 
-			this.actionNoStop(!oItem['Stop']);
-			this.actionKeep(!!oItem['Keep']);
-			this.actionMarkAsRead(!!oItem['MarkAsRead']);
+			this.actionNoStop(!oItem.Stop);
+			this.actionKeep(!!oItem.Keep);
+			this.actionMarkAsRead(!!oItem.MarkAsRead);
 
 			bResult = true;
 		}

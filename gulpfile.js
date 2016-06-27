@@ -22,11 +22,6 @@ var
 		zipFile: '',
 
 		paths: {},
-		summary: {
-			verbose: true,
-			reasonCol: 'cyan,bold',
-			codeCol: 'green'
-		},
 		uglify: {
 			mangle: true,
 			compress: true
@@ -100,6 +95,7 @@ function copyFile(sFile, sNewFile, callback)
 cfg.paths.globjs = 'dev/**/*.{js,jsx,html,css}';
 cfg.paths.globjsonly = 'dev/**/*.js';
 cfg.paths.globjsxonly = 'dev/**/*.jsx';
+cfg.paths.globjsall = 'dev/**/*.{js,jsx}';
 cfg.paths.globtsonly = 'dev/**/*.ts';
 cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
@@ -417,38 +413,15 @@ gulp.task('js:min', ['js:app', 'js:admin', 'js:validate'], function() {
 });
 
 // lint
-gulp.task('js:lint', function() {
-
-	var jshint = require('gulp-jshint');
-
-	return gulp.src(cfg.paths.globjsonly)
-		.pipe(jshint('.jshintrc'))
-		.pipe(jshint.reporter('jshint-summary', cfg.summary))
-		.pipe(jshint.reporter('fail'))
-	;
-});
-
 gulp.task('js:eslint', function() {
-
 	var eslint = require('gulp-eslint');
-
-	return gulp.src(cfg.paths.globjsxonly)
+	return gulp.src(cfg.paths.globjsall)
 		.pipe(eslint())
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError());
 });
 
-gulp.task('js:tslint', function() {
-
-	var tslint = require('gulp-tslint'); // todo
-
-	return gulp.src(cfg.paths.globtsonly)
-		.pipe(tslint())
-		.pipe(tslint.format())
-		.pipe(tslint.failAfterError());
-});
-
-gulp.task('js:validate', ['js:lint', 'js:eslint'/*, 'js:tslint'*/]);
+gulp.task('js:validate', ['js:eslint']);
 
 // OTHER
 regOtherMinTask('other:cookie', 'vendors/jquery-cookie/', 'jquery.cookie.js', 'jquery.cookie-1.4.0.min.js',

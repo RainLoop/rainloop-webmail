@@ -56,7 +56,7 @@
 			oViewModelDom = null
 		;
 
-		RoutedSettingsViewModel = _.find(Globals.aViewModels['settings'], function (SettingsViewModel) {
+		RoutedSettingsViewModel = _.find(Globals.aViewModels.settings, function (SettingsViewModel) {
 			return SettingsViewModel && SettingsViewModel.__rlSettingsData &&
 				sSubName === SettingsViewModel.__rlSettingsData.Route;
 		});
@@ -165,17 +165,17 @@
 
 	AbstractSettingsScreen.prototype.onBuild = function ()
 	{
-		_.each(Globals.aViewModels['settings'], function (SettingsViewModel) {
+		_.each(Globals.aViewModels.settings, function (SettingsViewModel) {
 			if (SettingsViewModel && SettingsViewModel.__rlSettingsData &&
 				!_.find(Globals.aViewModels['settings-removed'], function (RemoveSettingsViewModel) {
 					return RemoveSettingsViewModel && RemoveSettingsViewModel === SettingsViewModel;
 				}))
 			{
 				this.menu.push({
-					'route': SettingsViewModel.__rlSettingsData.Route,
-					'label': SettingsViewModel.__rlSettingsData.Label,
-					'selected': ko.observable(false),
-					'disabled': !!_.find(Globals.aViewModels['settings-disabled'], function (DisabledSettingsViewModel) {
+					route: SettingsViewModel.__rlSettingsData.Route,
+					label: SettingsViewModel.__rlSettingsData.Label,
+					selected: ko.observable(false),
+					disabled: !!_.find(Globals.aViewModels['settings-disabled'], function (DisabledSettingsViewModel) {
 						return DisabledSettingsViewModel && DisabledSettingsViewModel === SettingsViewModel;
 					})
 				});
@@ -188,13 +188,14 @@
 	AbstractSettingsScreen.prototype.routes = function ()
 	{
 		var
-			DefaultViewModel = _.find(Globals.aViewModels['settings'], function (SettingsViewModel) {
-				return SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData['IsDefault'];
+			DefaultViewModel = _.find(Globals.aViewModels.settings, function (SettingsViewModel) {
+				return SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData.IsDefault;
 			}),
-			sDefaultRoute = DefaultViewModel ? DefaultViewModel.__rlSettingsData['Route'] : 'general',
+			sDefaultRoute = DefaultViewModel && DefaultViewModel.__rlSettingsData ?
+				DefaultViewModel.__rlSettingsData.Route : 'general',
 			oRules = {
-				'subname': /^(.*)$/,
-				'normalize_': function (oRequest, oVals) {
+				subname: /^(.*)$/,
+				normalize_: function (oRequest, oVals) {
 					oVals.subname = Utils.isUnd(oVals.subname) ? sDefaultRoute : Utils.pString(oVals.subname);
 					return [oVals.subname];
 				}

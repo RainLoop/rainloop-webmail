@@ -170,9 +170,9 @@
 					self.body.loading(false);
 
 					if (Enums.StorageResultType.Success === sResult && oData && oData.Result &&
-						'Object/Template' === oData.Result['@Object'] && Utils.isNormal(oData.Result['Body']))
+						'Object/Template' === oData.Result['@Object'] && Utils.isNormal(oData.Result.Body))
 					{
-						oTemplate.body = oData.Result['Body'];
+						oTemplate.body = oData.Result.Body;
 						oTemplate.populated = true;
 
 						self.body(oTemplate.body);

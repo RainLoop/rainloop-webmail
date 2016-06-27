@@ -71,7 +71,7 @@
 
 			if (bPost)
 			{
-				oParameters['XToken'] = Settings.appSettingsGet('token');
+				oParameters.XToken = Settings.appSettingsGet('token');
 			}
 
 			Plugins.runHook('ajax-default-request', [sAction, oParameters, sAdditionalGetString]);
@@ -79,19 +79,19 @@
 			self.setTrigger(fTrigger, true);
 
 			oH = $.ajax({
-				'type': bPost ? 'POST' : 'GET',
-				'url': Links.ajax(sAdditionalGetString),
-				'async': true,
-				'dataType': 'json',
-				'data': bPost ? (oParameters || {}) : {},
-				'timeout': iTimeOut,
-				'global': true
+				type: bPost ? 'POST' : 'GET',
+				url: Links.ajax(sAdditionalGetString),
+				async: true,
+				dataType: 'json',
+				data: bPost ? (oParameters || {}) : {},
+				timeout: iTimeOut,
+				global: true
 			}).always(function (oData, sTextStatus) {
 
 				var bCached = false, oErrorData = null, sType = Enums.StorageResultType.Error;
-				if (oData && oData['Time'])
+				if (oData && oData.Time)
 				{
-					bCached = Utils.pInt(oData['Time']) > Utils.microtime() - iStart;
+					bCached = Utils.pInt(oData.Time) > Utils.microtime() - iStart;
 				}
 
 				// backward capability
@@ -172,7 +172,7 @@
 					{
 						if (Globals.data.__APP__ && Globals.data.__APP__.loginAndLogoutReload)
 						{
-							 Globals.data.__APP__.loginAndLogoutReload(false, true);
+							Globals.data.__APP__.loginAndLogoutReload(false, true);
 						}
 					}
 
@@ -213,12 +213,12 @@
 		return this.ajaxRequest(sAction, false, iTimeOut, null, sAdditionalGetString, fTrigger);
 	};
 
-	AbstractAjaxPromises.prototype.postRequest = function (sAction, fTrigger, oParameters, iTimeOut)
+	AbstractAjaxPromises.prototype.postRequest = function (action, fTrigger, params, timeOut)
 	{
-		oParameters = oParameters || {};
-		oParameters['Action'] = sAction;
+		params = params || {};
+		params.Action = action;
 
-		return this.ajaxRequest(sAction, true, iTimeOut, oParameters, '', fTrigger);
+		return this.ajaxRequest(action, true, timeOut, params, '', fTrigger);
 	};
 
 	module.exports = AbstractAjaxPromises;

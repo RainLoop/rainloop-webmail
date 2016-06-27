@@ -26,16 +26,16 @@
 		this.packagesReal = PackageStore.packagesReal;
 		this.packagesMainUpdatable = PackageStore.packagesMainUpdatable;
 
-		this.packagesCurrent = this.packages.filter(function (oItem) {
-			return oItem && '' !== oItem['installed'] && !oItem['compare'];
+		this.packagesCurrent = this.packages.filter(function (item) {
+			return item && '' !== item.installed && !item.compare;
 		});
 
-		this.packagesAvailableForUpdate = this.packages.filter(function (oItem) {
-			return oItem && '' !== oItem['installed'] && !!oItem['compare'];
+		this.packagesAvailableForUpdate = this.packages.filter(function (item) {
+			return item && '' !== item.installed && !!item.compare;
 		});
 
-		this.packagesAvailableForInstallation = this.packages.filter(function (oItem) {
-			return oItem && '' === oItem['installed'];
+		this.packagesAvailableForInstallation = this.packages.filter(function (item) {
+			return item && '' === item.installed;
 		});
 
 		this.visibility = ko.computed(function () {
@@ -71,15 +71,15 @@
 				}
 			}
 
-			_.each(self.packages(), function (oItem) {
-				if (oItem && oPackage && oItem['loading']() && oPackage['file'] === oItem['file'])
+			_.each(self.packages(), function (item) {
+				if (item && oPackage && item.loading && item.loading() && oPackage.file === item.file)
 				{
-					oPackage['loading'](false);
-					oItem['loading'](false);
+					oPackage.loading(false);
+					item.loading(false);
 				}
 			});
 
-			if (Enums.StorageResultType.Success === sResult && oData && oData.Result && oData.Result['Reload'])
+			if (Enums.StorageResultType.Success === sResult && oData && oData.Result && oData.Result.Reload)
 			{
 				window.location.reload();
 			}
@@ -94,7 +94,7 @@
 	{
 		if (oPackage)
 		{
-			oPackage['loading'](true);
+			oPackage.loading(true);
 			Remote.packageDelete(this.requestHelper(oPackage, false), oPackage);
 		}
 	};
@@ -103,7 +103,7 @@
 	{
 		if (oPackage)
 		{
-			oPackage['loading'](true);
+			oPackage.loading(true);
 			Remote.packageInstall(this.requestHelper(oPackage, true), oPackage);
 		}
 	};

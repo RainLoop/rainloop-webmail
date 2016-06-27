@@ -7,17 +7,15 @@ import {trim} from 'Common/Utils';
 
 class Audio
 {
-	player = null;
-	notificator = null;
-
-	supported = false;
-	supportedMp3 = false;
-	supportedOgg = false;
-	supportedWav = false;
-	supportedNotification = false;
-
 	constructor()
 	{
+		this.notificator = null;
+
+		this.supportedMp3 = false;
+		this.supportedOgg = false;
+		this.supportedWav = false;
+		this.supportedNotification = false;
+
 		this.player = this.createNewObject();
 
 		this.supported = !bMobileDevice && !bSafari && !!this.player && !!this.player.play;

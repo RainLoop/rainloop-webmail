@@ -210,7 +210,7 @@
 			});
 		}, this);
 
-		this.selector = new Selector(this.contacts, this.currentContact, null,
+		this.selector = new Selector.Selector(this.contacts, this.currentContact, null,
 			'.e-contact-item .actionHandle', '.e-contact-item.selected', '.e-contact-item .checkboxItem',
 				'.e-contact-item.focused');
 
@@ -370,7 +370,6 @@
 
 		this.syncCommand = Utils.createCommand(this, function () {
 
-			var self = this;
 			require('App/User').default.contactsSync(function (sResult, oData) {
 				if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
 				{
@@ -439,8 +438,8 @@
 
 	ContactsPopupView.prototype.addNewOrFocusProperty = function (sType, sTypeStr)
 	{
-		var oItem = _.find(this.viewProperties(), function (oItem) {
-			return sType === oItem.type();
+		var oItem = _.find(this.viewProperties(), function (oProp) {
+			return sType === oProp.type();
 		});
 
 		if (oItem)

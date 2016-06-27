@@ -51,10 +51,10 @@
 				return false;
 			}
 
-			oUserId['email'] = this.email();
+			oUserId.email = this.email();
 			if ('' !== this.name())
 			{
-				oUserId['name'] = this.name();
+				oUserId.name = this.name();
 			}
 
 			this.submitRequest(true);
@@ -66,9 +66,9 @@
 				try {
 
 					mPromise = PgpStore.openpgp.generateKey({
-						'userIds': [oUserId],
-						'numBits': Utils.pInt(self.keyBitLength()),
-						'passphrase': Utils.trim(self.password())
+						userIds: [oUserId],
+						numBits: Utils.pInt(self.keyBitLength()),
+						passphrase: Utils.trim(self.password())
 					});
 
 					mPromise.then(function (mKeyPair) {
@@ -86,7 +86,7 @@
 							Utils.delegateRun(self, 'cancelCommand');
 						}
 
-					})['catch'](function() {
+					}).then(null, function() {
 						self.submitRequest(false);
 					});
 				}

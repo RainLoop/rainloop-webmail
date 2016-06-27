@@ -17,8 +17,8 @@
 
 		this.filters = ko.observableArray([]);
 
-		this.filters.loading = ko.observable(false).extend({'throttle': 200});
-		this.filters.saving = ko.observable(false).extend({'throttle': 200});
+		this.filters.loading = ko.observable(false).extend({throttle: 200});
+		this.filters.saving = ko.observable(false).extend({throttle: 200});
 
 		this.raw = ko.observable('');
 	}

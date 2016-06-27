@@ -50,15 +50,15 @@
 			}
 		;
 
-		if (!!Settings.settingsGet('SQLiteIsSupported'))
+		if (Settings.settingsGet('SQLiteIsSupported'))
 		{
 			aSupportedTypes.push('sqlite');
 		}
-		if (!!Settings.settingsGet('MySqlIsSupported'))
+		if (Settings.settingsGet('MySqlIsSupported'))
 		{
 			aSupportedTypes.push('mysql');
 		}
-		if (!!Settings.settingsGet('PostgreSqlIsSupported'))
+		if (Settings.settingsGet('PostgreSqlIsSupported'))
 		{
 			aSupportedTypes.push('pgsql');
 		}

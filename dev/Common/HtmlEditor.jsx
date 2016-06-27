@@ -5,17 +5,6 @@ import * as Settings from 'Storage/Settings';
 
 class HtmlEditor
 {
-	editor = null;
-	$element = null;
-
-	blurTimer = 0;
-
-	onBlur = null;
-	onReady = null;
-	onModeChange = null;
-
-	__inited = null;
-
 	/**
 	 * @param {Object} element
 	 * @param {Function=} onBlur
@@ -24,6 +13,9 @@ class HtmlEditor
 	 */
 	constructor(element, onBlur = null, onReady = null, onModeChange = null)
 	{
+		this.editor = null;
+		this.blurTimer = 0;
+
 		this.onBlur = onBlur;
 		this.onReady = onReady;
 		this.onModeChange = onModeChange;

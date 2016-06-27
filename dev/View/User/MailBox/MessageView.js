@@ -347,7 +347,7 @@
 		}, this);
 
 		this.messageActiveDom.subscribe(function (oDom) {
-			this.bodyBackgroundColor(oDom ? this.detectDomBackgroundColor(oDom): '');
+			this.bodyBackgroundColor(oDom ? this.detectDomBackgroundColor(oDom) : '');
 		}, this);
 
 		this.message.subscribe(function (oMessage) {
@@ -469,22 +469,22 @@
 			iLimit = 5,
 			sResult = '',
 			aC = null,
-			fFindDom = function (oDom) {
-				var aC = oDom ? oDom.children() : null;
-				return (aC && 1 === aC.length && aC.is('table,div,center')) ? aC : null;
+			fFindDom = function (oInputDom) {
+				var children = oInputDom ? oInputDom.children() : null;
+				return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
 			},
-			fFindColor = function (oDom) {
-				var sResult = '';
-				if (oDom)
+			fFindColor = function (oInputDom) {
+				var color = '';
+				if (oInputDom)
 				{
-					sResult = oDom.css('background-color') || '';
-					if (!oDom.is('table'))
+					color = oInputDom.css('background-color') || '';
+					if (!oInputDom.is('table'))
 					{
-						sResult = 'rgba(0, 0, 0, 0)' === sResult || 'transparent' === sResult ? '' : sResult;
+						color = 'rgba(0, 0, 0, 0)' === color || 'transparent' === color ? '' : color;
 					}
 				}
 
-				return sResult;
+				return color;
 			}
 		;
 
@@ -606,10 +606,10 @@
 						iListIndex++;
 
 						return {
-							'src':  oItem.linkPreview(),
-							'thumb':  oItem.linkThumbnail(),
-							'subHtml': oItem.fileName,
-							'downloadUrl':  oItem.linkPreview()
+							src: oItem.linkPreview(),
+							thumb: oItem.linkThumbnail(),
+							subHtml: oItem.fileName,
+							downloadUrl: oItem.linkPreview()
 						};
 					}
 
@@ -707,7 +707,7 @@
 		oDom
 			.on('click', 'a', function (oEvent) {
 				// setup maito protocol
-				return !(!!oEvent && 3 !== oEvent['which'] && Utils.mailToHelper($(this).attr('href'),
+				return !(!!oEvent && 3 !== oEvent.which && Utils.mailToHelper($(this).attr('href'),
 					Settings.capa(Enums.Capa.Composer) ? require('View/Popup/Compose') : null));
 			})
 //			.on('mouseover', 'a', _.debounce(function (oEvent) {

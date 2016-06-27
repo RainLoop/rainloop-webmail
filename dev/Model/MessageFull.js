@@ -56,7 +56,7 @@
 			if (MessageSimpleModel.prototype.initByJson.call(this, oJson))
 			{
 				this.priority = Utils.pInt(oJson.Priority);
-				this.priority =  Utils.inArray(this.priority, [Enums.MessagePriority.High, Enums.MessagePriority.Low]) ?
+				this.priority = Utils.inArray(this.priority, [Enums.MessagePriority.High, Enums.MessagePriority.Low]) ?
 					this.priority : Enums.MessagePriority.Normal;
 
 				this.hash = Utils.pString(oJson.Hash);

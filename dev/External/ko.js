@@ -22,14 +22,14 @@
 	;
 
 	ko.bindingHandlers.updateWidth = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 			var
 				$w = $(window),
 				$oEl = $(oElement),
 				fValue = fValueAccessor(),
-				fInit = function(){
+				fInit = function() {
 					fValue($oEl.width());
-					window.setTimeout(function(){
+					window.setTimeout(function() {
 						fValue($oEl.width());
 					}, 500);
 				}
@@ -45,10 +45,10 @@
 	};
 
 	ko.bindingHandlers.editor = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 
 			var
-				oEditor  = null,
+				oEditor = null,
 				fValue = fValueAccessor(),
 
 				fUpdateEditorValue = function () {
@@ -88,16 +88,16 @@
 	};
 
 	ko.bindingHandlers.json = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 			$(oElement).text(JSON.stringify(ko.unwrap(fValueAccessor())));
 		},
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 			$(oElement).text(JSON.stringify(ko.unwrap(fValueAccessor())));
 		}
 	};
 
 	ko.bindingHandlers.scrollerShadows = {
-		'init': function (oElement) {
+		init: function (oElement) {
 
 			var
 				iLimit = 8,
@@ -126,7 +126,7 @@
 	};
 
 	ko.bindingHandlers.pikaday = {
-		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+		init: function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 
 			ko.bindingHandlers.textInput.init.apply(oViewModel, Array.prototype.slice.call(arguments));
 
@@ -140,7 +140,7 @@
 	};
 
 	ko.bindingHandlers.tooltip = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 
 			var
 				bi18n = true,
@@ -203,7 +203,7 @@
 				}
 			}
 		},
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 
 			var
 				bi18n = true,
@@ -236,7 +236,7 @@
 	};
 
 	ko.bindingHandlers.tooltipErrorTip = {
-		'init': function (oElement) {
+		init: function (oElement) {
 
 			var $oEl = $(oElement);
 
@@ -258,7 +258,7 @@
 
 			fDisposalTooltipHelper(oElement);
 		},
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 
 			var
 				$oEl = $(oElement),
@@ -297,7 +297,7 @@
 	};
 
 	ko.bindingHandlers.registrateBootstrapDropdown = {
-		'init': function (oElement) {
+		init: function (oElement) {
 			var Globals = require('Common/Globals');
 			if (Globals && Globals.data.aBootstrapDropdowns)
 			{
@@ -314,7 +314,7 @@
 	};
 
 	ko.bindingHandlers.openDropdownTrigger = {
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 			if (ko.unwrap(fValueAccessor()))
 			{
 				var $oEl = $(oElement);
@@ -332,7 +332,7 @@
 	};
 
 	ko.bindingHandlers.dropdownCloser = {
-		'init': function (oElement) {
+		init: function (oElement) {
 			$(oElement).closest('.dropdown').on('click', '.e-item', function () {
 				$(oElement).dropdown('toggle');
 			});
@@ -340,7 +340,7 @@
 	};
 
 	ko.bindingHandlers.popover = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 			$(oElement).popover(ko.unwrap(fValueAccessor()));
 
 			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function () {
@@ -350,8 +350,8 @@
 	};
 
 	ko.bindingHandlers.csstext = {
-		'init': function (oElement, fValueAccessor) {
-			if (oElement && oElement.styleSheet && undefined !== oElement.styleSheet.cssText)
+		init: function (oElement, fValueAccessor) {
+			if (oElement && oElement.styleSheet && (typeof oElement.styleSheet.cssText !== 'undefined'))
 			{
 				oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
 			}
@@ -360,8 +360,8 @@
 				$(oElement).text(ko.unwrap(fValueAccessor()));
 			}
 		},
-		'update': function (oElement, fValueAccessor) {
-			if (oElement && oElement.styleSheet && undefined !== oElement.styleSheet.cssText)
+		update: function (oElement, fValueAccessor) {
+			if (oElement && oElement.styleSheet && (typeof oElement.styleSheet.cssText !== 'undefined'))
 			{
 				oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
 			}
@@ -373,7 +373,7 @@
 	};
 
 	ko.bindingHandlers.resizecrop = {
-		'init': function (oElement) {
+		init: function (oElement) {
 			$(oElement).addClass('resizecrop').resizecrop({
 				'width': '100',
 				'height': '100',
@@ -382,7 +382,7 @@
 				}
 			});
 		},
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 			fValueAccessor()();
 			$(oElement).resizecrop({
 				'width': '100',
@@ -392,7 +392,7 @@
 	};
 
 	ko.bindingHandlers.onEnter = {
-		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+		init: function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 			$(oElement).on('keypress.koOnEnter', function (oEvent) {
 				if (oEvent && 13 === window.parseInt(oEvent.keyCode, 10))
 				{
@@ -408,7 +408,7 @@
 	};
 
 	ko.bindingHandlers.onSpace = {
-		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+		init: function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 			$(oElement).on('keyup.koOnSpace', function (oEvent) {
 				if (oEvent && 32 === window.parseInt(oEvent.keyCode, 10))
 				{
@@ -423,7 +423,7 @@
 	};
 
 	ko.bindingHandlers.onTab = {
-		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+		init: function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 			$(oElement).on('keydown.koOnTab', function (oEvent) {
 				if (oEvent && 9 === window.parseInt(oEvent.keyCode, 10))
 				{
@@ -438,7 +438,7 @@
 	};
 
 	ko.bindingHandlers.onEsc = {
-		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+		init: function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 			$(oElement).on('keypress.koOnEsc', function (oEvent) {
 				if (oEvent && 27 === window.parseInt(oEvent.keyCode, 10))
 				{
@@ -454,7 +454,7 @@
 	};
 
 	ko.bindingHandlers.clickOnTrue = {
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 			if (ko.unwrap(fValueAccessor()))
 			{
 				$(oElement).click();
@@ -463,7 +463,7 @@
 	};
 
 	ko.bindingHandlers.modal = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 
 			var
 				Globals = require('Common/Globals'),
@@ -487,11 +487,11 @@
 				;
 			});
 		},
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 
 			var Globals = require('Common/Globals');
 
-			$(oElement).modal(!!ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
+			$(oElement).modal(ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
 
 			if (Globals.$html.hasClass('rl-anim'))
 			{
@@ -505,12 +505,12 @@
 	};
 
 	ko.bindingHandlers.moment = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 			require('Common/Momentor').momentToNode(
 				$(oElement).addClass('moment').data('moment-time', ko.unwrap(fValueAccessor()))
 			);
 		},
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 			require('Common/Momentor').momentToNode(
 				$(oElement).data('moment-time', ko.unwrap(fValueAccessor()))
 			);
@@ -518,50 +518,50 @@
 	};
 
 	ko.bindingHandlers.i18nInit = {
-		'init': function (oElement) {
+		init: function (oElement) {
 			require('Common/Translator').i18nToNodes(oElement);
 		}
 	};
 
 	ko.bindingHandlers.translatorInit = {
-		'init': function (oElement) {
+		init: function (oElement) {
 			require('Common/Translator').i18nToNodes(oElement);
 		}
 	};
 
 	ko.bindingHandlers.i18nUpdate = {
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 			ko.unwrap(fValueAccessor());
 			require('Common/Translator').i18nToNodes(oElement);
 		}
 	};
 
 	ko.bindingHandlers.link = {
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 			$(oElement).attr('href', ko.unwrap(fValueAccessor()));
 		}
 	};
 
 	ko.bindingHandlers.title = {
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 			$(oElement).attr('title', ko.unwrap(fValueAccessor()));
 		}
 	};
 
 	ko.bindingHandlers.textF = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 			$(oElement).text(ko.unwrap(fValueAccessor()));
 		}
 	};
 
 	ko.bindingHandlers.initDom = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 			fValueAccessor()(oElement);
 		}
 	};
 
 	ko.bindingHandlers.initFixedTrigger = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 			var
 				aValues = ko.unwrap(fValueAccessor()),
 				$oContainer = null,
@@ -588,14 +588,14 @@
 	};
 
 	ko.bindingHandlers.initResizeTrigger = {
-		'init': function (oElement, fValueAccessor) {
+		init: function (oElement, fValueAccessor) {
 			var aValues = ko.unwrap(fValueAccessor());
 			$(oElement).css({
 				'height': aValues[1],
 				'min-height': aValues[1]
 			});
 		},
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 
 			var
 				Utils = require('Common/Utils'),
@@ -625,13 +625,13 @@
 	};
 
 	ko.bindingHandlers.appendDom = {
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 			$(oElement).hide().empty().append(ko.unwrap(fValueAccessor())).show();
 		}
 	};
 
 	ko.bindingHandlers.draggable = {
-		'init': function (oElement, fValueAccessor, fAllBindingsAccessor) {
+		init: function (oElement, fValueAccessor, fAllBindingsAccessor) {
 
 			var
 				Globals = require('Common/Globals'),
@@ -644,19 +644,19 @@
 					iTriggerZone = 100,
 					iScrollSpeed = 3,
 					fAllValueFunc = fAllBindingsAccessor(),
-					sDroppableSelector = fAllValueFunc && fAllValueFunc['droppableSelector'] ? fAllValueFunc['droppableSelector'] : '',
+					sDroppableSelector = fAllValueFunc && fAllValueFunc.droppableSelector ? fAllValueFunc.droppableSelector : '',
 					oConf = {
-						'distance': 20,
-						'handle': '.dragHandle',
-						'cursorAt': {'top': 22, 'left': 3},
-						'refreshPositions': true,
-						'scroll': true
+						distance: 20,
+						handle: '.dragHandle',
+						cursorAt: {top: 22, left: 3},
+						refreshPositions: true,
+						scroll: true
 					}
 				;
 
 				if (sDroppableSelector)
 				{
-					oConf['drag'] = function (oEvent) {
+					oConf.drag = function (oEvent) {
 
 						$(sDroppableSelector).each(function () {
 							var
@@ -697,7 +697,7 @@
 						});
 					};
 
-					oConf['stop'] =	function() {
+					oConf.stop = function() {
 						$(sDroppableSelector).each(function () {
 							window.clearInterval($(this).data('timerScroll'));
 							$(this).data('timerScroll', false);
@@ -705,7 +705,7 @@
 					};
 				}
 
-				oConf['helper'] = function (oEvent) {
+				oConf.helper = function (oEvent) {
 					return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null);
 				};
 
@@ -724,37 +724,37 @@
 	};
 
 	ko.bindingHandlers.droppable = {
-		'init': function (oElement, fValueAccessor, fAllBindingsAccessor) {
+		init: function (oElement, fValueAccessor, fAllBindingsAccessor) {
 			var Globals = require('Common/Globals');
 			if (!Globals.bMobileDevice)
 			{
 				var
 					fValueFunc = fValueAccessor(),
 					fAllValueFunc = fAllBindingsAccessor(),
-					fOverCallback = fAllValueFunc && fAllValueFunc['droppableOver'] ? fAllValueFunc['droppableOver'] : null,
-					fOutCallback = fAllValueFunc && fAllValueFunc['droppableOut'] ? fAllValueFunc['droppableOut'] : null,
+					fOverCallback = fAllValueFunc && fAllValueFunc.droppableOver ? fAllValueFunc.droppableOver : null,
+					fOutCallback = fAllValueFunc && fAllValueFunc.droppableOut ? fAllValueFunc.droppableOut : null,
 					oConf = {
-						'tolerance': 'pointer',
-						'hoverClass': 'droppableHover'
+						tolerance: 'pointer',
+						hoverClass: 'droppableHover'
 					}
 				;
 
 				if (fValueFunc)
 				{
-					oConf['drop'] = function (oEvent, oUi) {
+					oConf.drop = function (oEvent, oUi) {
 						fValueFunc(oEvent, oUi);
 					};
 
 					if (fOverCallback)
 					{
-						oConf['over'] = function (oEvent, oUi) {
+						oConf.over = function (oEvent, oUi) {
 							fOverCallback(oEvent, oUi);
 						};
 					}
 
 					if (fOutCallback)
 					{
-						oConf['out'] = function (oEvent, oUi) {
+						oConf.out = function (oEvent, oUi) {
 							fOutCallback(oEvent, oUi);
 						};
 					}
@@ -770,7 +770,7 @@
 	};
 
 	ko.bindingHandlers.nano = {
-		'init': function (oElement) {
+		init: function (oElement) {
 
 			var
 				Globals = require('Common/Globals'),
@@ -791,7 +791,7 @@
 	};
 
 	ko.bindingHandlers.saveTrigger = {
-		'init': function (oElement) {
+		init: function (oElement) {
 
 			var $oEl = $(oElement);
 
@@ -808,7 +808,7 @@
 				$oEl.addClass('settings-saved-trigger-input');
 			}
 		},
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 			var
 				mValue = ko.unwrap(fValueAccessor()),
 				$oEl = $(oElement)
@@ -870,7 +870,7 @@
 	};
 
 	ko.bindingHandlers.emailsTags = {
-		'init': function(oElement, fValueAccessor, fAllBindingsAccessor) {
+		init: function(oElement, fValueAccessor, fAllBindingsAccessor) {
 
 			var
 				Utils = require('Common/Utils'),
@@ -879,7 +879,7 @@
 				$oEl = $(oElement),
 				fValue = fValueAccessor(),
 				fAllBindings = fAllBindingsAccessor(),
-				fAutoCompleteSource = fAllBindings['autoCompleteSource'] || null,
+				fAutoCompleteSource = fAllBindings.autoCompleteSource || null,
 				fFocusCallback = function (bValue) {
 					if (fValue && fValue.focused)
 					{
@@ -892,7 +892,7 @@
 				'parseOnBlur': true,
 				'allowDragAndDrop': true,
 				'focusCallback': fFocusCallback,
-				'inputDelimiters': [',', ';', "\n"],
+				'inputDelimiters': [',', ';', '\n'],
 				'autoCompleteSource': fAutoCompleteSource,
 //				'elementHook': function (oEl, oItem) {
 //					if (oEl && oItem)
@@ -977,11 +977,11 @@
 			if (fValue && fValue.focused && fValue.focused.subscribe)
 			{
 				fValue.focused.subscribe(function (bValue) {
-					$oEl.inputosaurus(!!bValue ? 'focus' : 'blur');
+					$oEl.inputosaurus(bValue ? 'focus' : 'blur');
 				});
 			}
 		},
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 
 			var
 				$oEl = $(oElement),
@@ -999,7 +999,7 @@
 	};
 
 	ko.bindingHandlers.command = {
-		'init': function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+		init: function (oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 			var
 				jqElement = $(oElement),
 				oCommand = fValueAccessor()
@@ -1015,7 +1015,7 @@
 				.init.apply(oViewModel, Array.prototype.slice.call(arguments));
 		},
 
-		'update': function (oElement, fValueAccessor) {
+		update: function (oElement, fValueAccessor) {
 
 			var
 				bResult = true,

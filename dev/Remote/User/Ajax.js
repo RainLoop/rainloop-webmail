@@ -252,9 +252,11 @@
 
 	/**
 	 * @param {?Function} fCallback
+	 * @param {Array} aFilters
+	 * @param {string} sRaw
+	 * @param {boolean} bRawIsActive
 	 */
-	RemoteUserAjax.prototype.filtersSave = function (fCallback,
-		aFilters, sRaw, bRawIsActive)
+	RemoteUserAjax.prototype.filtersSave = function (fCallback, aFilters, sRaw, bRawIsActive)
 	{
 		this.defaultRequest(fCallback, 'FiltersSave', {
 			'Raw': sRaw,
@@ -282,7 +284,8 @@
 	};
 
 	/**
-	 * @param {?Function} fCallback
+	 * @param {Function} fCallback
+	 * @param {string} sID
 	 */
 	RemoteUserAjax.prototype.templateGetById = function (fCallback, sID)
 	{
@@ -292,7 +295,8 @@
 	};
 
 	/**
-	 * @param {?Function} fCallback
+	 * @param {Function} fCallback
+	 * @param {string} sID
 	 */
 	RemoteUserAjax.prototype.templateDelete = function (fCallback, sID)
 	{
@@ -302,7 +306,10 @@
 	};
 
 	/**
-	 * @param {?Function} fCallback
+	 * @param {Function} fCallback
+	 * @param {string} sID
+	 * @param {string} sName
+	 * @param {string} sBody
 	 */
 	RemoteUserAjax.prototype.templateSetup = function (fCallback, sID, sName, sBody)
 	{
@@ -314,7 +321,7 @@
 	};
 
 	/**
-	 * @param {?Function} fCallback
+	 * @param {Function} fCallback
 	 * @param {string} sFolderFullNameRaw
 	 * @param {number=} iOffset = 0
 	 * @param {number=} iLimit = 20
@@ -354,19 +361,17 @@
 					bUseThreads ? sThreadUid : ''
 				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
 		}
-		else
-		{
-			return this.defaultRequest(fCallback, 'MessageList', {
-				'Folder': sFolderFullNameRaw,
-				'Offset': iOffset,
-				'Limit': iLimit,
-				'Search': sSearch,
-				'UidNext': sInboxUidNext,
-				'UseThreads': bUseThreads ? '1' : '0',
-				'ThreadUid': bUseThreads ? sThreadUid : ''
-			}, '' === sSearch ? Consts.DEFAULT_AJAX_TIMEOUT : Consts.SEARCH_AJAX_TIMEOUT,
-				'', bSilent ? [] : ['MessageList']);
-		}
+
+		return this.defaultRequest(fCallback, 'MessageList', {
+			Folder: sFolderFullNameRaw,
+			Offset: iOffset,
+			Limit: iLimit,
+			Search: sSearch,
+			UidNext: sInboxUidNext,
+			UseThreads: bUseThreads ? '1' : '0',
+			ThreadUid: bUseThreads ? sThreadUid : ''
+		}, '' === sSearch ? Consts.DEFAULT_AJAX_TIMEOUT : Consts.SEARCH_AJAX_TIMEOUT,
+			'', bSilent ? [] : ['MessageList']);
 	};
 
 	/**
@@ -554,6 +559,7 @@
 	 * @param {string} sTo
 	 * @param {string} sCc
 	 * @param {string} sBcc
+	 * @param {string} sReplyTo
 	 * @param {string} sSubject
 	 * @param {boolean} bTextIsHtml
 	 * @param {string} sText

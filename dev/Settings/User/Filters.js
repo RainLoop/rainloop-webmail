@@ -188,7 +188,7 @@
 
 		oNew.generateID();
 		require('Knoin/Knoin').showScreenPopup(
-			require('View/Popup/Filter'), [oNew, function  () {
+			require('View/Popup/Filter'), [oNew, function () {
 				self.filters.push(oNew);
 				self.filterRaw.active(false);
 			}, false]);
@@ -202,7 +202,7 @@
 		;
 
 		require('Knoin/Knoin').showScreenPopup(
-			require('View/Popup/Filter'), [oCloned, function  () {
+			require('View/Popup/Filter'), [oCloned, function () {
 
 				var
 					aFilters = self.filters(),
