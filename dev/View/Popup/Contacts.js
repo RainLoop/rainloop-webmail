@@ -14,7 +14,6 @@
 		Consts = require('Common/Consts'),
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		Spec = require('Common/Spec'),
 		Selector = require('Common/Selector'),
 		Links = require('Common/Links'),
 		Translator = require('Common/Translator'),
@@ -73,7 +72,7 @@
 			return 0 >= iPage ? 1 : iPage;
 		}, this);
 
-		this.contactsPagenator = ko.computed(Spec.computedPagenatorHelper(this.contactsPage, this.contactsPageCount));
+		this.contactsPagenator = ko.computed(Utils.computedPagenatorHelper(this.contactsPage, this.contactsPageCount));
 
 		this.emptySelection = ko.observable(true);
 		this.viewClearSearch = ko.observable(false);

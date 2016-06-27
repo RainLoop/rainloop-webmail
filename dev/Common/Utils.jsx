@@ -5,6 +5,7 @@ import _ from '_';
 import ko from 'ko';
 import {$win, $div, dropdownVisibility, data as GlobalsData} from 'Common/Globals';
 import {ComposeType, EventKeyCode, SaveSettingsStep, FolderType} from 'Common/Enums';
+import {Mime} from 'Common/Mime';
 
 import JSEncrypt from 'JSEncrypt';
 import Autolinker from 'Autolinker';
@@ -1374,15 +1375,195 @@ export function changeTheme(value, themeTrigger)
 	}
 }
 
-let substr = window.String.substr;
-if ('ab'.substr(-1) !== 'b')
+export function computedPagenatorHelper(koCurrentPage, koPageCount)
 {
-	substr = (str, start, length) => {
-		start = start < 0 ? str.length + start : start;
-		return str.substr(start, length);
+	return () => {
+
+		const
+			currentPage = koCurrentPage(),
+			pageCount = koPageCount(),
+			result = [],
+			fAdd = (index, push = true, customName = '') => {
+
+				const data = {
+					current: index === currentPage,
+					name: '' === customName ? index.toString() : customName.toString(),
+					custom: '' === customName ? false : true,
+					title: '' === customName ? '' : index.toString(),
+					value: index.toString()
+				};
+
+				if (push)
+				{
+					result.push(data);
+				}
+				else
+				{
+					result.unshift(data);
+				}
+			}
+		;
+
+		let
+			prev = 0,
+			next = 0,
+			limit = 2
+		;
+
+		if (1 < pageCount || (0 < pageCount && pageCount < currentPage))
+		{
+			if (pageCount < currentPage)
+			{
+				fAdd(pageCount);
+				prev = pageCount;
+				next = pageCount;
+			}
+			else
+			{
+				if (3 >= currentPage || pageCount - 2 <= currentPage)
+				{
+					limit += 2;
+				}
+
+				fAdd(currentPage);
+				prev = currentPage;
+				next = currentPage;
+			}
+
+			while (0 < limit) {
+
+				prev -= 1;
+				next += 1;
+
+				if (0 < prev)
+				{
+					fAdd(prev, false);
+					limit--;
+				}
+
+				if (pageCount >= next)
+				{
+					fAdd(next, true);
+					limit--;
+				}
+				else if (0 >= prev)
+				{
+					break;
+				}
+			}
+
+			if (3 === prev)
+			{
+				fAdd(2, false);
+			}
+			else if (3 < prev)
+			{
+				fAdd(Math.round((prev - 1) / 2), false, '...');
+			}
+
+			if (pageCount - 2 === next)
+			{
+				fAdd(pageCount - 1, true);
+			}
+			else if (pageCount - 2 > next)
+			{
+				fAdd(Math.round((pageCount + next) / 2), true, '...');
+			}
+
+			// first and last
+			if (1 < prev)
+			{
+				fAdd(1, false);
+			}
+
+			if (pageCount > next)
+			{
+				fAdd(pageCount, true);
+			}
+		}
+
+		return result;
+	};
+}
+
+/**
+ * @param {string} fileName
+ * @return {string}
+ */
+export function getFileExtension(fileName)
+{
+	fileName = trim(fileName).toLowerCase();
+
+	const result = fileName.split('.').pop();
+	return result === fileName ? '' : result;
+}
+
+/**
+ * @param {string} fileName
+ * @return {string}
+ */
+export function mimeContentType(fileName)
+{
+	let
+		ext = '',
+		result = 'application/octet-stream'
+	;
+
+	fileName = trim(fileName).toLowerCase();
+
+	if ('winmail.dat' === fileName)
+	{
+		return 'application/ms-tnef';
+	}
+
+	ext = getFileExtension(fileName);
+	if (ext && 0 < ext.length && !isUnd(Mime[ext]))
+	{
+		result = Mime[ext];
+	}
+
+	return result;
+}
+
+/**
+ * @param {string} url
+ * @param {number} value
+ * @param {Function} fCallback
+ */
+export function resizeAndCrop(url, value, fCallback)
+{
+	const img = new Image();
+	img.onload = function() {
+
+		let
+			diff = [0, 0]
+		;
+
+		const
+			canvas = window.document.createElement('canvas'),
+			ctx = canvas.getContext('2d')
+		;
+
+		canvas.width = value;
+		canvas.height = value;
+
+		if (this.width > this.height)
+		{
+			diff = [this.width - this.height, 0];
+		}
+		else
+		{
+			diff = [0, this.height - this.width];
+		}
+
+		ctx.fillStyle = '#fff';
+		ctx.fillRect(0, 0, value, value);
+		ctx.drawImage(this, diff[0] / 2, diff[1] / 2, this.width - diff[0], this.height - diff[1], 0, 0, value, value);
+
+		fCallback(canvas.toDataURL('image/jpeg'));
 	};
 
-	window.String.substr = substr;
+	img.src = url;
 }
 
 /**
@@ -1460,4 +1641,15 @@ export const windowResize = _.debounce((timeout) => {
 export function windowResizeCallback()
 {
 	windowResize();
+}
+
+let substr = window.String.substr;
+if ('ab'.substr(-1) !== 'b')
+{
+	substr = (str, start, length) => {
+		start = start < 0 ? str.length + start : start;
+		return str.substr(start, length);
+	};
+
+	window.String.substr = substr;
 }

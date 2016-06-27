@@ -11,7 +11,6 @@
 		Enums = require('Common/Enums'),
 		Globals = require('Common/Globals'),
 		Utils = require('Common/Utils'),
-		Spec = require('Common/Spec'),
 		Links = require('Common/Links'),
 		Audio = require('Common/Audio'),
 
@@ -103,7 +102,7 @@
 			this.friendlySize = Utils.friendlySize(this.estimatedSize);
 			this.cidWithOutTags = this.cid.replace(/^<+/, '').replace(/>+$/, '');
 
-			this.fileNameExt = Spec.getFileExtension(this.fileName);
+			this.fileNameExt = Utils.getFileExtension(this.fileName);
 			this.fileType = AttachmentModel.staticFileType(this.fileNameExt, this.mimeType);
 
 			bResult = true;
@@ -489,7 +488,7 @@
 
 			aTypes = _.uniq(_.compact(_.map(aData, function (aItem) {
 				return aItem ? AttachmentModel.staticFileType(
-					Spec.getFileExtension(aItem[0]), aItem[1]) : '';
+					Utils.getFileExtension(aItem[0]), aItem[1]) : '';
 			})));
 
 			if (aTypes && 1 === aTypes.length && aTypes[0])

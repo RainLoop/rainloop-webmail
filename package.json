@@ -2,7 +2,7 @@
   "name": "RainLoop",
   "title": "RainLoop Webmail",
   "version": "1.10.2",
-  "release": "135",
+  "release": "136",
   "private": true,
   "ownCloudPackageVersion": "4.19",
   "description": "Simple, modern & fast web-based email client",
@@ -89,8 +89,6 @@
     "pikaday": "^1.4.0",
     "raw-loader": "^0.5.1",
     "rimraf": "*",
-    "ts-loader": "^0.8.2",
-    "typescript": "^1.8.10",
     "webpack": "2.1.0-beta.13"
   }
 }

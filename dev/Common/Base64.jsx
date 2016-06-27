@@ -2,16 +2,17 @@
 // Base64 encode / decode
 // http://www.webtoolkit.info/
 
-const BASE_64_CHR: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+const BASE_64_CHR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
 
+/* eslint-disable  */
 const Base64 = {
 
 	// public method for urlsafe encoding
-	urlsafe_encode: (input: string): string => Base64.encode(input)
+	urlsafe_encode: (input) => Base64.encode(input)
 		.replace(/[+]/g, '-').replace(/[\/]/g, '_').replace(/[=]/g, '.'),
 
 	// public method for encoding
-	encode: (input: string): string => {
+	encode: (input) => {
 
 		let
 			output = '',
@@ -50,7 +51,7 @@ const Base64 = {
 	},
 
 	// public method for decoding
-	decode: (input: string): string => {
+	decode: (input) => {
 
 		let
 			output = '',
@@ -88,7 +89,7 @@ const Base64 = {
 	},
 
 	// private method for UTF-8 encoding
-	_utf8_encode: (string: string): string => {
+	_utf8_encode: (string) => {
 
 		string = string.replace(/\r\n/g, "\n");
 
@@ -124,7 +125,7 @@ const Base64 = {
 	},
 
 	// private method for UTF-8 decoding
-	_utf8_decode: (utftext: string): string => {
+	_utf8_decode: (utftext) => {
 
 		let
 			string = '',
@@ -161,6 +162,7 @@ const Base64 = {
 		return string;
 	}
 };
+/* eslint-enable */
 
 export const decode = Base64.decode;
 export const encode = Base64.encode;

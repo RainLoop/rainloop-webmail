@@ -27,7 +27,7 @@ module.exports = {
 	],
 	resolve: {
 		modules: [path.resolve(__dirname, 'dev'), 'node_modules'],
-		extensions: ['', '.js', '.jsx', '.ts'],
+		extensions: ['', '.js', '.jsx'],
 		alias: {
 			'Opentip': __dirname  + '/dev/External/Opentip.js',
 			'ko': __dirname  + '/dev/External/ko.js'
@@ -37,15 +37,12 @@ module.exports = {
 		loaders: [
 			{
 				test: /\.(html|css)$/,
-				loader: 'raw'
+				loader: 'raw',
+				exclude: /(node_modules|bower_components|vendors)/
 			},
 			{
 				test: /\.json$/,
-				loader: 'json'
-			},
-			{
-				test: /\.tsx?$/,
-				loader: 'babel-loader?' + JSON.stringify(jsLoaderQuery) + '!ts-loader',
+				loader: 'json',
 				exclude: /(node_modules|bower_components|vendors)/
 			},
 			{

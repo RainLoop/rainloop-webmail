@@ -1,4 +1,6 @@
 
+/* eslint quote-props: 0 */
+
 /**
  * @enum {string}
  */
