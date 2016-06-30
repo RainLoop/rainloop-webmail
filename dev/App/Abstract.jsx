@@ -187,7 +187,9 @@ class AbstractApp extends AbstractBoot
 	}
 
 	redirectToAdminPanel() {
-		_.delay(() => window.location.href = Links.rootAdmin(), 100);
+		_.delay(() => {
+			window.location.href = Links.rootAdmin();
+		}, 100);
 	}
 
 	clearClientSideToken() {

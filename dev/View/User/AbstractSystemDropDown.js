@@ -131,6 +131,7 @@ AbstractSystemDropDownUserView.prototype.onBuild = function()
 			require('Knoin/Knoin').showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
 			return false;
 		}
+		return true;
 	});
 };
 

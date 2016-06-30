@@ -85,7 +85,9 @@ PgpUserStore.prototype.findPrivateKeysByEncryptionKeyIds = function(aEncryptionK
 	{
 		aResult = _.uniq(_.compact(_.flatten(_.map(aRecipients, function(sEmail) {
 			var aKeys = sEmail ? self.findAllPrivateKeysByEmailNotNative(sEmail) : null;
-			return aKeys ? (bReturnWrapKeys ? aKeys : _.flatten(_.map(aKeys, function(oKey) {return oKey.getNativeKeys();}), true)) : [null];
+			return aKeys ? (bReturnWrapKeys ? aKeys : _.flatten(_.map(aKeys, function(oKey) {
+				return oKey.getNativeKeys();
+			}), true)) : [null];
 		}), true)), function(oKey) {return oKey.id;});
 	}
 

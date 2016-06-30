@@ -26,31 +26,35 @@ _.extend(KeyboardShortcutsHelpPopupView.prototype, AbstractView.prototype);
 
 KeyboardShortcutsHelpPopupView.prototype.onBuild = function(oDom)
 {
-	key('tab, shift+tab, left, right', Enums.KeyState.PopupKeyboardShortcutsHelp, _.throttle(_.bind(function(event, handler) {
+	key('tab, shift+tab, left, right', Enums.KeyState.PopupKeyboardShortcutsHelp, _.throttle(function(event, handler) {
+
 		if (event && handler)
 		{
 			var
 				$tabs = oDom.find('.nav.nav-tabs > li'),
-				bNext = handler && ('tab' === handler.shortcut || 'right' === handler.shortcut),
-				iIndex = $tabs.index($tabs.filter('.active'));
+				isNext = handler && ('tab' === handler.shortcut || 'right' === handler.shortcut),
+				index = $tabs.index($tabs.filter('.active'));
 
-			if (!bNext && 0 < iIndex)
+			if (!isNext && 0 < index)
 			{
-				iIndex -= 1;
+				index -= 1;
 			}
-			else if (bNext && iIndex < $tabs.length - 1)
+			else if (isNext && index < $tabs.length - 1)
 			{
-				iIndex += 1;
+				index += 1;
 			}
 			else
 			{
-				iIndex = bNext ? 0 : $tabs.length - 1;
+				index = isNext ? 0 : $tabs.length - 1;
 			}
 
-			$tabs.eq(iIndex).find('a[data-toggle="tab"]').tab('show');
+			$tabs.eq(index).find('a[data-toggle="tab"]').tab('show');
 			return false;
 		}
-	}, this), 100));
+
+		return true;
+
+	}, 100));
 };
 
 module.exports = KeyboardShortcutsHelpPopupView;

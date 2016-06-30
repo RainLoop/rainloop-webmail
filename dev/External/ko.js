@@ -407,6 +407,7 @@ ko.bindingHandlers.onTab = {
 			{
 				return fValueAccessor().call(oViewModel, !!oEvent.shiftKey);
 			}
+			return true;
 		});
 
 		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {

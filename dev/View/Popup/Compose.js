@@ -493,6 +493,8 @@ function ComposePopupView()
 			);
 		}
 
+		return true;
+
 	}, this.canBeSentOrSaved);
 
 	this.skipCommand = Utils.createCommand(this, function() {
@@ -1410,6 +1412,8 @@ ComposePopupView.prototype.onBuild = function()
 			self.identitiesDropdownTrigger(true);
 			return false;
 		}
+
+		return true;
 	});
 
 	key('ctrl+`', Enums.KeyState.Compose, function() {

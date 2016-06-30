@@ -293,6 +293,8 @@ function ContactsPopupView()
 			}, 200);
 		}
 
+		return true;
+
 	}, function() {
 		return 0 < this.contactsCheckedOrSelected().length;
 	});

@@ -270,6 +270,8 @@ class HtmlEditor
 						{
 							return false;
 						}
+
+						return true;
 					});
 
 					this.editor.on('blur', () => {

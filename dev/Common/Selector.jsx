@@ -403,6 +403,8 @@ class Selector
 						return false;
 					}
 				}
+
+				return true;
 			});
 		}
 	}

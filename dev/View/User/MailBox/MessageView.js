@@ -820,12 +820,13 @@ MessageViewMailBoxUserView.prototype.escShortcuts = function()
 
 		return false;
 	}
+
+	return true;
 };
 
 MessageViewMailBoxUserView.prototype.initShortcuts = function()
 {
-	var
-		self = this;
+	var self = this;
 
 	// exit fullscreen, back
 	key('esc, backspace', Enums.KeyState.MessageView, _.bind(this.escShortcuts, this));
@@ -843,6 +844,8 @@ MessageViewMailBoxUserView.prototype.initShortcuts = function()
 			self.replyCommand();
 			return false;
 		}
+
+		return true;
 	});
 
 	// replaAll
@@ -852,6 +855,8 @@ MessageViewMailBoxUserView.prototype.initShortcuts = function()
 			self.replyAllCommand();
 			return false;
 		}
+
+		return true;
 	});
 
 	// forward
@@ -861,6 +866,8 @@ MessageViewMailBoxUserView.prototype.initShortcuts = function()
 			self.forwardCommand();
 			return false;
 		}
+
+		return true;
 	});
 
 	// message information
@@ -879,6 +886,8 @@ MessageViewMailBoxUserView.prototype.initShortcuts = function()
 			MessageStore.message().body.find('.rlBlockquoteSwitcher').click();
 			return false;
 		}
+
+		return true;
 	});
 
 	key('ctrl+up, command+up, ctrl+left, command+left', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function() {
@@ -916,6 +925,8 @@ MessageViewMailBoxUserView.prototype.initShortcuts = function()
 
 			return false;
 		}
+
+		return true;
 	});
 
 	// change focused state

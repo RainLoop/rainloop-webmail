@@ -98,6 +98,8 @@ function SecurityAdminSettings()
 			'NewPassword': this.adminPasswordNew()
 		});
 
+		return true;
+
 	}, function() {
 		return '' !== Utils.trim(this.adminLogin()) && '' !== this.adminPassword();
 	});

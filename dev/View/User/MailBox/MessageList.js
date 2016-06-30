@@ -430,6 +430,8 @@ MessageListMailBoxUserView.prototype.goToUpUpOrDownDown = function(bUp)
 		}
 
 	}, 350);
+
+	return true;
 };
 
 MessageListMailBoxUserView.prototype.useAutoSelect = function()
@@ -788,6 +790,8 @@ MessageListMailBoxUserView.prototype.initShortcuts = function()
 			Events.pub('mailbox.message-view.toggle-full-screen');
 			return false;
 		}
+
+		return true;
 	});
 
 	if (Settings.capa(Enums.Capa.MessageListActions))
@@ -816,6 +820,8 @@ MessageListMailBoxUserView.prototype.initShortcuts = function()
 
 				return false;
 			}
+
+			return true;
 		});
 	}
 
@@ -921,6 +927,8 @@ MessageListMailBoxUserView.prototype.initShortcuts = function()
 			self.cancelThreadUid();
 			return false;
 		}
+
+		return true;
 	});
 
 	// change focused state
