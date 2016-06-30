@@ -157,7 +157,7 @@ module.exports = {
 		}],
 
 		"key-spacing": 2,					// enforce consistent spacing between keys and values in object literal properties
-		"linebreak-style": [2, "windows"],	// enforce consistent linebreak style
+		"linebreak-style": [2, "unix"],		// enforce consistent linebreak style
 //		"lines-around-comment": 2,			// require empty lines around comments
 //		"max-depth": 2,						// enforce a maximum depth that blocks can be nested
 		"max-len": [2, 200],				// enforce a maximum line length

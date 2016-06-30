@@ -7,11 +7,16 @@ class NpmTest extends \PHPUnit_Framework_TestCase
 	public function testJsValidate()
 	{
 		$out = array();
-		exec('gulp js:eslint', $out);
-
-		var_dump($out);
+		exec('gulp js:validate', $out);
 
 		$this->assertTrue(0 < \count($out));
-		$this->assertTrue(false === \strpos(\implode('|', $out), 'problem'));
+
+		$noProblem = false === \strpos(\implode('|', $out), 'problem');
+		if (!$noProblem)
+		{
+			var_dump($out);
+		}
+
+		$this->assertTrue($noProblem);
 	}
 }
