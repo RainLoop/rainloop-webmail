@@ -1,76 +1,68 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Enums = require('Common/Enums'),
+	Utils = require('Common/Utils'),
+	Translator = require('Common/Translator'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
+	SettinsStore = require('Stores/User/Settings'),
 
-		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
-		Translator = require('Common/Translator'),
+	Settings = require('Storage/Settings'),
 
-		SettinsStore = require('Stores/User/Settings'),
+	Remote = require('Remote/User/Ajax');
 
-		Settings = require('Storage/Settings'),
+/**
+ * @constructor
+ */
+function SecurityUserSettings()
+{
+	this.capaAutoLogout = Settings.capa(Enums.Capa.AutoLogout);
+	this.capaTwoFactor = Settings.capa(Enums.Capa.TwoFactor);
 
-		Remote = require('Remote/User/Ajax')
-	;
+	this.autoLogout = SettinsStore.autoLogout;
+	this.autoLogout.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
 
-	/**
-	 * @constructor
-	 */
-	function SecurityUserSettings()
+	this.autoLogoutOptions = ko.computed(function() {
+		Translator.trigger();
+		return [
+			{'id': 0, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_NEVER_OPTION_NAME')},
+			{'id': 5, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 5})},
+			{'id': 10, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 10})},
+			{'id': 30, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 30})},
+			{'id': 60, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 60})},
+			{'id': 60 * 2, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 2})},
+			{'id': 60 * 5, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 5})},
+			{'id': 60 * 10, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 10})}
+		];
+	});
+}
+
+SecurityUserSettings.prototype.configureTwoFactor = function()
+{
+	require('Knoin/Knoin').showScreenPopup(require('View/Popup/TwoFactorConfiguration'));
+};
+
+SecurityUserSettings.prototype.onBuild = function()
+{
+	if (this.capaAutoLogout)
 	{
-		this.capaAutoLogout = Settings.capa(Enums.Capa.AutoLogout);
-		this.capaTwoFactor = Settings.capa(Enums.Capa.TwoFactor);
+		var self = this;
 
-		this.autoLogout = SettinsStore.autoLogout;
-		this.autoLogout.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+		_.delay(function() {
 
-		this.autoLogoutOptions = ko.computed(function () {
-			Translator.trigger();
-			return [
-				{'id': 0, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_NEVER_OPTION_NAME')},
-				{'id': 5, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 5})},
-				{'id': 10, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 10})},
-				{'id': 30, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 30})},
-				{'id': 60, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 60})},
-				{'id': 60 * 2, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 2})},
-				{'id': 60 * 5, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 5})},
-				{'id': 60 * 10, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 10})}
-			];
+			var
+				f0 = Utils.settingsSaveHelperSimpleFunction(self.autoLogout.trigger, self);
+
+			self.autoLogout.subscribe(function(sValue) {
+				Remote.saveSettings(f0, {
+					'AutoLogout': Utils.pInt(sValue)
+				});
+			});
+
 		});
 	}
+};
 
-	SecurityUserSettings.prototype.configureTwoFactor = function ()
-	{
-		require('Knoin/Knoin').showScreenPopup(require('View/Popup/TwoFactorConfiguration'));
-	};
-
-	SecurityUserSettings.prototype.onBuild = function ()
-	{
-		if (this.capaAutoLogout)
-		{
-			var self = this;
-
-			_.delay(function () {
-
-				var
-					f0 = Utils.settingsSaveHelperSimpleFunction(self.autoLogout.trigger, self)
-				;
-
-				self.autoLogout.subscribe(function (sValue) {
-					Remote.saveSettings(f0, {
-						'AutoLogout': Utils.pInt(sValue)
-					});
-				});
-
-			});
-		}
-	};
-
-	module.exports = SecurityUserSettings;
-
-}());
+module.exports = SecurityUserSettings;

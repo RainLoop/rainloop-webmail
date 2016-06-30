@@ -8,14 +8,13 @@ class CookieDriver
 	/**
 	 * @param {string} key
 	 * @param {*} data
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	set(key, data) {
 
 		let
 			result = false,
-			storageResult = null
-		;
+			storageResult = null;
 
 		try
 		{
@@ -41,7 +40,7 @@ class CookieDriver
 
 	/**
 	 * @param {string} key
-	 * @return {*}
+	 * @returns {*}
 	 */
 	get(key) {
 
@@ -51,8 +50,7 @@ class CookieDriver
 		{
 			const
 				storageValue = $.cookie(CLIENT_SIDE_STORAGE_INDEX_NAME),
-				storageResult = null === storageValue ? null : JSON.parse(storageValue)
-			;
+				storageResult = null === storageValue ? null : JSON.parse(storageValue);
 
 			result = (storageResult && !isUnd(storageResult[key])) ? storageResult[key] : null;
 		}
@@ -62,7 +60,7 @@ class CookieDriver
 	}
 
 	/**
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	static supported() {
 		return !!(window.navigator && window.navigator.cookieEnabled);

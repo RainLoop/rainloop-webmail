@@ -22,7 +22,7 @@ class AbstractComponent
 /**
  * @param {*} ClassObject
  * @param {string} templateID = ''
- * @return {Object}
+ * @returns {Object}
  */
 const componentExportHelper = (ClassObject, templateID = '') => {
 	return {

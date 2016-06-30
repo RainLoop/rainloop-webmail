@@ -43,41 +43,37 @@ export const sUserAgent = 'navigator' in window && 'userAgent' in window.navigat
 /**
  * @type {boolean}
  */
-export const bIE = sUserAgent.indexOf('msie') > -1;
+export const bIE = -1 < sUserAgent.indexOf('msie');
 
 /**
  * @type {boolean}
  */
-export const bChrome = sUserAgent.indexOf('chrome') > -1;
+export const bChrome = -1 < sUserAgent.indexOf('chrome');
 
 /**
  * @type {boolean}
  */
-export const bSafari = !bChrome && sUserAgent.indexOf('safari') > -1;
+export const bSafari = !bChrome && -1 < sUserAgent.indexOf('safari');
 
 /**
  * @type {boolean}
  */
 export const bMobileDevice =
-	/android/i.test(sUserAgent) ||
-	/iphone/i.test(sUserAgent) ||
-	/ipod/i.test(sUserAgent) ||
-	/ipad/i.test(sUserAgent) ||
-	/blackberry/i.test(sUserAgent)
-;
+	(/android/i).test(sUserAgent) ||
+	(/iphone/i).test(sUserAgent) ||
+	(/ipod/i).test(sUserAgent) ||
+	(/ipad/i).test(sUserAgent) ||
+	(/blackberry/i).test(sUserAgent);
 
 /**
  * @type {boolean}
  */
-export let bDisableNanoScroll = bMobileDevice;
+export const bDisableNanoScroll = bMobileDevice;
 
 /**
  * @type {boolean}
  */
-export let bAnimationSupported = !bMobileDevice &&
-	$html.hasClass('csstransitions') &&
-	$html.hasClass('cssanimations')
-;
+export const bAnimationSupported = !bMobileDevice && $html.hasClass('csstransitions') && $html.hasClass('cssanimations');
 
 /**
  * @type {boolean}
@@ -161,13 +157,13 @@ let bAllowPdfPreview = !bMobileDevice;
 
 if (bAllowPdfPreview && window.navigator && window.navigator.mimeTypes)
 {
-	bAllowPdfPreview = !!_.find(window.navigator.mimeTypes, function (oType) {
+	bAllowPdfPreview = !!_.find(window.navigator.mimeTypes, function(oType) {
 		return oType && 'application/pdf' === oType.type;
 	});
 
 	if (!bAllowPdfPreview)
 	{
-		bAllowPdfPreview = (typeof window.navigator.mimeTypes['application/pdf'] !== 'undefined');
+		bAllowPdfPreview = 'undefined' !== typeof window.navigator.mimeTypes['application/pdf'];
 	}
 }
 
@@ -203,32 +199,31 @@ export const keyScope = ko.computed({
 	read: () => {
 		return keyScopeFake();
 	},
-	write: function (sValue) {
+	write: function(sValue) {
 
 		if (KeyState.Menu !== sValue)
 		{
 			if (KeyState.Compose === sValue)
 			{
 				// disableKeyFilter
-				key.filter = function () {
+				key.filter = function() {
 					return useKeyboardShortcuts();
 				};
 			}
 			else
 			{
 				// restoreKeyFilter
-				key.filter = function (event) {
+				key.filter = function(event) {
 
 					if (useKeyboardShortcuts())
 					{
 						var
 							oElement = event.target || event.srcElement,
-							sTagName = oElement ? oElement.tagName : ''
-						;
+							sTagName = oElement ? oElement.tagName : '';
 
 						sTagName = sTagName.toUpperCase();
-						return !(sTagName === 'INPUT' || sTagName === 'SELECT' || sTagName === 'TEXTAREA' ||
-							(oElement && sTagName === 'DIV' && ('editorHtmlArea' === oElement.className || 'true' === '' + oElement.contentEditable))
+						return !('INPUT' === sTagName || 'SELECT' === sTagName || 'TEXTAREA' === sTagName ||
+							(oElement && 'DIV' === sTagName && ('editorHtmlArea' === oElement.className || 'true' === '' + oElement.contentEditable))
 						);
 					}
 
@@ -247,12 +242,12 @@ export const keyScope = ko.computed({
 	}
 });
 
-keyScopeReal.subscribe(function (sValue) {
+keyScopeReal.subscribe(function(sValue) {
 //	window.console.log('keyScope=' + sValue); // DEBUG
 	key.setScope(sValue);
 });
 
-dropdownVisibility.subscribe(function (bValue) {
+dropdownVisibility.subscribe(function(bValue) {
 	if (bValue)
 	{
 		keyScope(KeyState.Menu);

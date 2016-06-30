@@ -12,7 +12,7 @@ const driver = SupportedStorageDriver ? new SupportedStorageDriver() : null;
 /**
  * @param {number} key
  * @param {*} data
- * @return {boolean}
+ * @returns {boolean}
  */
 export function set(key, data)
 {
@@ -21,7 +21,7 @@ export function set(key, data)
 
 /**
  * @param {number} key
- * @return {*}
+ * @returns {*}
  */
 export function get(key)
 {

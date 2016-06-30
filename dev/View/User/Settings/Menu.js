@@ -1,102 +1,91 @@
 
-(function () {
+var
+	_ = require('_'),
+	key = require('key'),
 
-	'use strict';
+	Enums = require('Common/Enums'),
+	Globals = require('Common/Globals'),
+	Links = require('Common/Links'),
 
-	var
-		_ = require('_'),
-		key = require('key'),
+	Cache = require('Common/Cache'),
+	Settings = require('Storage/Settings'),
 
-		Enums = require('Common/Enums'),
-		Globals = require('Common/Globals'),
-		Links = require('Common/Links'),
+	kn = require('Knoin/Knoin'),
+	AbstractView = require('Knoin/AbstractView');
 
-		Cache = require('Common/Cache'),
-		Settings = require('Storage/Settings'),
+/**
+ * @constructor
+ * @param {Object} oScreen
+ */
+function MenuSettingsUserView(oScreen)
+{
+	AbstractView.call(this, 'Left', 'SettingsMenu');
 
-		kn = require('Knoin/Knoin'),
-		AbstractView = require('Knoin/AbstractView')
-	;
+	this.leftPanelDisabled = Globals.leftPanelDisabled;
 
-	/**
-	 * @param {?} oScreen
-	 *
-	 * @constructor
-	 * @extends AbstractView
-	 */
-	function MenuSettingsUserView(oScreen)
-	{
-		AbstractView.call(this, 'Left', 'SettingsMenu');
+	this.mobile = Settings.appSettingsGet('mobile');
 
-		this.leftPanelDisabled = Globals.leftPanelDisabled;
+	this.menu = oScreen.menu;
 
-		this.mobile = Settings.appSettingsGet('mobile');
+	kn.constructorEnd(this);
+}
 
-		this.menu = oScreen.menu;
+kn.extendAsViewModel(['View/User/Settings/Menu', 'View/App/Settings/Menu', 'SettingsMenuViewModel'], MenuSettingsUserView);
+_.extend(MenuSettingsUserView.prototype, AbstractView.prototype);
 
-		kn.constructorEnd(this);
-	}
-
-	kn.extendAsViewModel(['View/User/Settings/Menu', 'View/App/Settings/Menu', 'SettingsMenuViewModel'], MenuSettingsUserView);
-	_.extend(MenuSettingsUserView.prototype, AbstractView.prototype);
-
-	MenuSettingsUserView.prototype.onBuild = function (oDom)
-	{
+MenuSettingsUserView.prototype.onBuild = function(oDom)
+{
 //		var self = this;
-//		key('esc', Enums.KeyState.Settings, function () {
+//		key('esc', Enums.KeyState.Settings, function() {
 //			self.backToMailBoxClick();
 //		});
 
-		if (this.mobile)
+	if (this.mobile)
+	{
+		oDom
+			.on('click', '.b-settings-menu .e-item.selectable', function() {
+				Globals.leftPanelDisabled(true);
+			});
+	}
+
+	key('up, down', Enums.KeyState.Settings, _.throttle(function(event, handler) {
+
+		var
+			sH = '',
+			iIndex = -1,
+			bUp = handler && 'up' === handler.shortcut,
+			$items = $('.b-settings-menu .e-item', oDom);
+
+		if (event && $items.length)
 		{
-			oDom
-				.on('click', '.b-settings-menu .e-item.selectable', function () {
-					Globals.leftPanelDisabled(true);
-				})
-			;
-		}
-
-		key('up, down', Enums.KeyState.Settings, _.throttle(function (event, handler) {
-
-			var
-				sH = '',
-				iIndex = -1,
-				bUp = handler && 'up' === handler.shortcut,
-				$items = $('.b-settings-menu .e-item', oDom)
-			;
-
-			if (event && $items.length)
+			iIndex = $items.index($items.filter('.selected'));
+			if (bUp && 0 < iIndex)
 			{
-				iIndex = $items.index($items.filter('.selected'));
-				if (bUp && iIndex > 0)
-				{
-					iIndex--;
-				}
-				else if (!bUp && iIndex < $items.length - 1)
-				{
-					iIndex++;
-				}
-
-				sH = $items.eq(iIndex).attr('href');
-				if (sH)
-				{
-					kn.setHash(sH, false, true);
-				}
+				iIndex -= 1;
+			}
+			else if (!bUp && iIndex < $items.length - 1)
+			{
+				iIndex += 1;
 			}
 
-		}, 200));
-	};
+			sH = $items.eq(iIndex).attr('href');
+			if (sH)
+			{
+				kn.setHash(sH, false, true);
+			}
+		}
 
-	MenuSettingsUserView.prototype.link = function (sRoute)
-	{
-		return Links.settings(sRoute);
-	};
+	}, 200));
+};
 
-	MenuSettingsUserView.prototype.backToMailBoxClick = function ()
-	{
-		kn.setHash(Links.inbox(Cache.getFolderInboxName()));
-	};
+MenuSettingsUserView.prototype.link = function(sRoute)
+{
+	return Links.settings(sRoute);
+};
 
-	module.exports = MenuSettingsUserView;
+MenuSettingsUserView.prototype.backToMailBoxClick = function()
+{
+	kn.setHash(Links.inbox(Cache.getFolderInboxName()));
+};
 
-}());
+module.exports = MenuSettingsUserView;

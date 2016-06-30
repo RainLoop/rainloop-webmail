@@ -6,6 +6,7 @@ import {AbstractInput} from 'Component/AbstractInput';
 class TextAreaComponent extends AbstractInput
 {
 	/**
+	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {

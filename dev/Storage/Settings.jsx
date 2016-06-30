@@ -10,7 +10,7 @@ APP_SETTINGS = isNormal(APP_SETTINGS) ? APP_SETTINGS : {};
 
 /**
  * @param {string} name
- * @return {*}
+ * @returns {*}
  */
 export function settingsGet(name)
 {
@@ -28,7 +28,7 @@ export function settingsSet(name, value)
 
 /**
  * @param {string} name
- * @return {*}
+ * @returns {*}
  */
 export function appSettingsGet(name)
 {
@@ -37,7 +37,7 @@ export function appSettingsGet(name)
 
 /**
  * @param {string} name
- * @return {boolean}
+ * @returns {boolean}
  */
 export function capa(name)
 {

@@ -16,15 +16,13 @@ export default (App) => {
 		.on('keydown', kill_CtrlA_CtrlS)
 		.on('unload', () => {
 			GlobalsData.bUnload = true;
-		})
-	;
+		});
 
 	$html
 		.addClass(bMobileDevice ? 'mobile' : 'no-mobile')
 		.on('click.dropdown.data-api', () => {
 			detectDropdownVisibility();
-		})
-	;
+		});
 
 	const rl = window.rl || {};
 
@@ -58,8 +56,7 @@ export default (App) => {
 
 						$html
 							.removeClass('no-js rl-booted-trigger')
-							.addClass('rl-booted')
-						;
+							.addClass('rl-booted');
 
 						App.bootstart();
 

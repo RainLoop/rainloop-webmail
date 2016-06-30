@@ -14,6 +14,11 @@ window.__rlah_set = () => setHash();
 window.__rlah_clear = () => clearHash();
 window.__rlah_data = () => RL_APP_DATA_STORAGE;
 
+/**
+ * @param {string} id
+ * @param {string} name
+ * @returns {string}
+ */
 function getComputedStyle(id, name)
 {
 	var element = window.document.getElementById(id);
@@ -21,16 +26,27 @@ function getComputedStyle(id, name)
 		(window.getComputedStyle ? window.getComputedStyle(element, null).getPropertyValue(name) : null);
 }
 
+/**
+ * @param {string} styles
+ * @returns {void}
+ */
 function includeStyle(styles)
 {
 	window.document.write(unescape('%3Csty' + 'le%3E' + styles + '"%3E%3C/' + 'sty' + 'le%3E'));
 }
 
+/**
+ * @param {string} src
+ * @returns {void}
+ */
 function includeScr(src)
 {
 	window.document.write(unescape('%3Csc' + 'ript type="text/jav' + 'ascr' + 'ipt" data-cfasync="false" sr' + 'c="' + src + '"%3E%3C/' + 'scr' + 'ipt%3E'));
 }
 
+/**
+ * @returns {boolean}
+ */
 function includeLayout()
 {
 	const app = window.document.getElementById('rl-app');
@@ -49,18 +65,25 @@ function includeLayout()
 	return false;
 }
 
-function includeAppScr(data = {})
+/**
+ * @param {mixed} data
+ * @returns {void}
+ */
+function includeAppScr({admin = false, mobile = false, mobileDevice = false})
 {
 	let src = './?/';
-	src += data.admin ? 'Admin' : '';
+	src += admin ? 'Admin' : '';
 	src += 'AppData@';
-	src += data.mobile ? 'mobile' : 'no-mobile';
-	src += data.mobileDevice ? '-1' : '-0';
+	src += mobile ? 'mobile' : 'no-mobile';
+	src += mobileDevice ? '-1' : '-0';
 	src += '/';
 
 	includeScr(src + (window.__rlah ? window.__rlah() || '0' : '0') + '/' + window.Math.random().toString().substr(2) + '/');
 }
 
+/**
+ * @returns {object}
+ */
 function getRainloopBootData()
 {
 	let result = {};
@@ -74,13 +97,16 @@ function getRainloopBootData()
 	return result;
 }
 
+/**
+ * @param {string} additionalError
+ * @returns {void}
+ */
 function showError(additionalError)
 {
 	const
 		oR = window.document.getElementById('rl-loading'),
 		oL = window.document.getElementById('rl-loading-error'),
-		oLA = window.document.getElementById('rl-loading-error-additional')
-	;
+		oLA = window.document.getElementById('rl-loading-error-additional');
 
 	if (oR)
 	{
@@ -104,12 +130,15 @@ function showError(additionalError)
 	}
 }
 
+/**
+ * @param {string} description
+ * @returns {void}
+ */
 function showDescriptionAndLoading(description)
 {
 	const
 		oE = window.document.getElementById('rl-loading'),
-		oElDesc = window.document.getElementById('rl-loading-desc')
-	;
+		oElDesc = window.document.getElementById('rl-loading-desc');
 
 	if (oElDesc && description)
 	{
@@ -125,6 +154,11 @@ function showDescriptionAndLoading(description)
 	}
 }
 
+/**
+ * @param {boolean} withError
+ * @param {string} additionalError
+ * @returns {void}
+ */
 function runMainBoot(withError, additionalError)
 {
 	if (window.__APP_BOOT && !withError)
@@ -139,6 +173,9 @@ function runMainBoot(withError, additionalError)
 	}
 }
 
+/**
+ * @returns {void}
+ */
 function runApp()
 {
 	const appData = window.__rlah_data();
@@ -162,16 +199,14 @@ function runApp()
 						window.$('#rl-bg').attr('style', 'background-image: none !important;')
 							.backstretch(appData.IncludeBackground.replace('{{USER}}',
 								(window.__rlah ? (window.__rlah() || '0') : '0')), {fade: 100, centeredX: true, centeredY: true})
-							.removeAttr('style')
-						;
+							.removeAttr('style');
 					}
 				}
 			}),
 			common = window.Promise.all([
 				window.jassl(appData.TemplatesLink),
 				window.jassl(appData.LangLink)
-			])
-		;
+			]);
 
 		window.Promise.all([libs, common])
 			.then(() => {
@@ -193,8 +228,7 @@ function runApp()
 					window.__initEditor();
 					window.__initEditor = null;
 				}
-			})
-		;
+			});
 	}
 	else
 	{
@@ -202,6 +236,10 @@ function runApp()
 	}
 }
 
+/**
+ * @param {mixed} data
+ * @returns {void}
+ */
 window.__initAppData = function(data) {
 
 	RL_APP_DATA_STORAGE = data;
@@ -226,6 +264,9 @@ window.__initAppData = function(data) {
 	runApp();
 };
 
+/**
+ * @returns {void}
+ */
 window.__runBoot = function() {
 
 	if (!window.navigator || !window.navigator.cookieEnabled)

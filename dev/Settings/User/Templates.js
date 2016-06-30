@@ -1,107 +1,98 @@
 
-(function () {
+var
+	ko = require('ko'),
 
-	'use strict';
+	Translator = require('Common/Translator'),
 
-	var
-		ko = require('ko'),
+	TemplateStore = require('Stores/User/Template'),
 
-		Translator = require('Common/Translator'),
+	Remote = require('Remote/User/Ajax');
 
-		TemplateStore = require('Stores/User/Template'),
+/**
+ * @constructor
+ */
+function TemplatesUserSettings()
+{
+	this.templates = TemplateStore.templates;
 
-		Remote = require('Remote/User/Ajax')
-	;
+	this.processText = ko.computed(function() {
+		return TemplateStore.templates.loading() ? Translator.i18n('SETTINGS_TEMPLETS/LOADING_PROCESS') : '';
+	}, this);
 
-	/**
-	 * @constructor
-	 */
-	function TemplatesUserSettings()
+	this.visibility = ko.computed(function() {
+		return '' === this.processText() ? 'hidden' : 'visible';
+	}, this);
+
+	this.templateForDeletion = ko.observable(null).deleteAccessHelper();
+}
+
+TemplatesUserSettings.prototype.scrollableOptions = function(sWrapper)
+{
+	return {
+		handle: '.drag-handle',
+		containment: sWrapper || 'parent',
+		axis: 'y'
+	};
+};
+
+TemplatesUserSettings.prototype.addNewTemplate = function()
+{
+	require('Knoin/Knoin').showScreenPopup(require('View/Popup/Template'));
+};
+
+TemplatesUserSettings.prototype.editTemplate = function(oTemplateItem)
+{
+	if (oTemplateItem)
 	{
-		this.templates = TemplateStore.templates;
-
-		this.processText = ko.computed(function () {
-			return TemplateStore.templates.loading() ? Translator.i18n('SETTINGS_TEMPLETS/LOADING_PROCESS') : '';
-		}, this);
-
-		this.visibility = ko.computed(function () {
-			return '' === this.processText() ? 'hidden' : 'visible';
-		}, this);
-
-		this.templateForDeletion = ko.observable(null).deleteAccessHelper();
+		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Template'), [oTemplateItem]);
 	}
+};
 
-	TemplatesUserSettings.prototype.scrollableOptions = function (sWrapper)
+/**
+ * @param {AccountModel} oTemplateToRemove
+ */
+TemplatesUserSettings.prototype.deleteTemplate = function(oTemplateToRemove)
+{
+	if (oTemplateToRemove && oTemplateToRemove.deleteAccess())
 	{
-		return {
-			handle: '.drag-handle',
-			containment: sWrapper || 'parent',
-			axis: 'y'
-		};
-	};
+		this.templateForDeletion(null);
 
-	TemplatesUserSettings.prototype.addNewTemplate = function ()
-	{
-		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Template'));
-	};
+		var
+			self = this,
+			fRemoveAccount = function(oAccount) {
+				return oTemplateToRemove === oAccount;
+			};
 
-	TemplatesUserSettings.prototype.editTemplate = function (oTemplateItem)
-	{
-		if (oTemplateItem)
+		if (oTemplateToRemove)
 		{
-			require('Knoin/Knoin').showScreenPopup(require('View/Popup/Template'), [oTemplateItem]);
+			this.templates.remove(fRemoveAccount);
+
+			Remote.templateDelete(function() {
+				self.reloadTemplates();
+			}, oTemplateToRemove.id);
 		}
-	};
+	}
+};
 
-	/**
-	 * @param {AccountModel} oTemplateToRemove
-	 */
-	TemplatesUserSettings.prototype.deleteTemplate = function (oTemplateToRemove)
-	{
-		if (oTemplateToRemove && oTemplateToRemove.deleteAccess())
-		{
-			this.templateForDeletion(null);
+TemplatesUserSettings.prototype.reloadTemplates = function()
+{
+	require('App/User').default.templates();
+};
 
-			var
-				self = this,
-				fRemoveAccount = function (oAccount) {
-					return oTemplateToRemove === oAccount;
-				}
-			;
+TemplatesUserSettings.prototype.onBuild = function(oDom)
+{
+	var self = this;
 
-			if (oTemplateToRemove)
+	oDom
+		.on('click', '.templates-list .template-item .e-action', function() {
+			var oTemplateItem = ko.dataFor(this);
+			if (oTemplateItem)
 			{
-				this.templates.remove(fRemoveAccount);
-
-				Remote.templateDelete(function () {
-					self.reloadTemplates();
-				}, oTemplateToRemove.id);
+				self.editTemplate(oTemplateItem);
 			}
-		}
-	};
+		});
 
-	TemplatesUserSettings.prototype.reloadTemplates = function ()
-	{
-		require('App/User').default.templates();
-	};
+	this.reloadTemplates();
+};
 
-	TemplatesUserSettings.prototype.onBuild = function (oDom)
-	{
-		var self = this;
-
-		oDom
-			.on('click', '.templates-list .template-item .e-action', function () {
-				var oTemplateItem = ko.dataFor(this);
-				if (oTemplateItem)
-				{
-					self.editTemplate(oTemplateItem);
-				}
-			})
-		;
-
-		this.reloadTemplates();
-	};
-
-	module.exports = TemplatesUserSettings;
-
-}());
+module.exports = TemplatesUserSettings;

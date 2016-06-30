@@ -7,6 +7,7 @@ import {AbstractInput} from 'Component/AbstractInput';
 class SelectComponent extends AbstractInput
 {
 	/**
+	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {

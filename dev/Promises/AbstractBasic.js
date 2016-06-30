@@ -1,52 +1,45 @@
 
-(function () {
+var
+	_ = require('_'),
+	Promise = require('Promise'),
 
-	'use strict';
+	Utils = require('Common/Utils');
 
-	var
-		_ = require('_'),
-		Promise = require('Promise'),
+/**
+* @constructor
+*/
+function AbstractBasicPromises()
+{
+	this.oPromisesStack = {};
+}
 
-		Utils = require('Common/Utils')
-	;
+AbstractBasicPromises.prototype.func = function(fFunc)
+{
+	fFunc();
+	return this;
+};
 
-	/**
-	* @constructor
-	*/
-	function AbstractBasicPromises()
+AbstractBasicPromises.prototype.fastResolve = function(mData)
+{
+	return Promise.resolve(mData);
+};
+
+AbstractBasicPromises.prototype.fastReject = function(mData)
+{
+	return Promise.reject(mData);
+};
+
+AbstractBasicPromises.prototype.setTrigger = function(mTrigger, bValue)
+{
+	if (mTrigger)
 	{
-		this.oPromisesStack = {};
+		_.each(Utils.isArray(mTrigger) ? mTrigger : [mTrigger], function(fTrigger) {
+			if (fTrigger)
+			{
+				fTrigger(!!bValue);
+			}
+		});
 	}
+};
 
-	AbstractBasicPromises.prototype.func = function (fFunc)
-	{
-		fFunc();
-		return this;
-	};
-
-	AbstractBasicPromises.prototype.fastResolve = function (mData)
-	{
-		return Promise.resolve(mData);
-	};
-
-	AbstractBasicPromises.prototype.fastReject = function (mData)
-	{
-		return Promise.reject(mData);
-	};
-
-	AbstractBasicPromises.prototype.setTrigger = function (mTrigger, bValue)
-	{
-		if (mTrigger)
-		{
-			_.each(Utils.isArray(mTrigger) ? mTrigger : [mTrigger], function (fTrigger) {
-				if (fTrigger)
-				{
-					fTrigger(!!bValue);
-				}
-			});
-		}
-	};
-
-	module.exports = AbstractBasicPromises;
-
-}());
+module.exports = AbstractBasicPromises;

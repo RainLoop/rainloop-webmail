@@ -5,6 +5,7 @@ import {AbstractComponent, componentExportHelper} from 'Component/Abstract';
 class ScriptComponent extends AbstractComponent
 {
 	/**
+	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {
@@ -17,8 +18,7 @@ class ScriptComponent extends AbstractComponent
 			let script = params.element[0].outerHTML;
 			script = !script ? '' : script
 				.replace(/<x-script/i, '<script')
-				.replace(/<b><\/b><\/x-script>/i, '</script>')
-			;
+				.replace(/<b><\/b><\/x-script>/i, '</script>');
 
 			if (script)
 			{

@@ -45,35 +45,43 @@ const timestamp = () => window.Math.round((new window.Date()).getTime() / 1000);
 const setTimestamp = () => __set(TIME_KEY, timestamp());
 
 const getTimestamp = () => {
-	let time = __get(TIME_KEY, 0);
+	const time = __get(TIME_KEY, 0);
 	return time ? (window.parseInt(time, 10) || 0) : 0;
 };
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function getHash()
 {
 	return __get(STORAGE_KEY);
 }
 
+/**
+ * @returns {void}
+ */
 export function setHash()
 {
 	const
 		key = 'AuthAccountHash',
-		appData = window.__rlah_data()
-	;
+		appData = window.__rlah_data();
 
 	__set(STORAGE_KEY, appData && appData[key] ? appData[key] : '');
 	setTimestamp();
 }
 
+/**
+ * @returns {void}
+ */
 export function clearHash()
 {
 	__set(STORAGE_KEY, '');
 	setTimestamp();
 }
 
+/**
+ * @returns {boolean}
+ */
 export function checkTimestamp()
 {
 	if (timestamp() > getTimestamp() + 1000 * 60 * 60) // 60m

@@ -7,6 +7,7 @@ import {AbstracCheckbox} from 'Component/AbstracCheckbox';
 class CheckboxMaterialDesignComponent extends AbstracCheckbox
 {
 	/**
+	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {
@@ -38,7 +39,8 @@ class CheckboxMaterialDesignComponent extends AbstracCheckbox
 		if (box) {
 			this.animationBoxSetTrue();
 			_.delay(this.animationCheckmarkSetTrue, 200);
-		} else {
+		}
+		else {
 			this.animationCheckmarkSetTrue();
 			_.delay(this.animationBoxSetTrue, 200);
 		}

@@ -3,29 +3,33 @@ import {window} from 'common';
 import {pString, pInt, isUnd, isNormal, trim, encodeURIComponent} from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 
-const ROOT = './';
-const HASH_PREFIX = '#/';
-const SERVER_PREFIX = './?';
-const SUB_QUERY_PREFIX = '&q[]=';
+const
+	ROOT = './',
+	HASH_PREFIX = '#/',
+	SERVER_PREFIX = './?',
+	SUB_QUERY_PREFIX = '&q[]=',
 
-const VERSION = Settings.appSettingsGet('version');
+	VERSION = Settings.appSettingsGet('version'),
 
-const WEB_PREFIX = Settings.appSettingsGet('webPath') || '';
-const VERSION_PREFIX = Settings.appSettingsGet('webVersionPath') || 'rainloop/v/' + VERSION + '/';
-const STATIC_PREFIX = VERSION_PREFIX + 'static/';
+	WEB_PREFIX = Settings.appSettingsGet('webPath') || '',
+	VERSION_PREFIX = Settings.appSettingsGet('webVersionPath') || 'rainloop/v/' + VERSION + '/',
+	STATIC_PREFIX = VERSION_PREFIX + 'static/',
 
-const ADMIN_HOST_USE = !!Settings.appSettingsGet('adminHostUse');
-const ADMIN_PATH = Settings.appSettingsGet('adminPath') || 'admin';
+	ADMIN_HOST_USE = !!Settings.appSettingsGet('adminHostUse'),
+	ADMIN_PATH = Settings.appSettingsGet('adminPath') || 'admin';
 
 let AUTH_PREFIX = Settings.settingsGet('AuthAccountHash') || '0';
 
+/**
+ * @returns {void}
+ */
 export function populateAuthSuffix()
 {
 	AUTH_PREFIX = Settings.settingsGet('AuthAccountHash') || '0';
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function subQueryPrefix()
 {
@@ -34,7 +38,7 @@ export function subQueryPrefix()
 
 /**
  * @param {string=} startupUrl
- * @return {string}
+ * @returns {string}
  */
 export function root(startupUrl = '')
 {
@@ -42,7 +46,7 @@ export function root(startupUrl = '')
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function rootAdmin()
 {
@@ -51,7 +55,7 @@ export function rootAdmin()
 
 /**
  * @param {boolean=} mobile = false
- * @return {string}
+ * @returns {string}
  */
 export function rootUser(mobile = false)
 {
@@ -62,7 +66,7 @@ export function rootUser(mobile = false)
  * @param {string} type
  * @param {string} download
  * @param {string=} customSpecSuffix
- * @return {string}
+ * @returns {string}
  */
 export function attachmentRaw(type, download, customSpecSuffix)
 {
@@ -73,7 +77,7 @@ export function attachmentRaw(type, download, customSpecSuffix)
 /**
  * @param {string} download
  * @param {string=} customSpecSuffix
- * @return {string}
+ * @returns {string}
  */
 export function attachmentDownload(download, customSpecSuffix)
 {
@@ -83,7 +87,7 @@ export function attachmentDownload(download, customSpecSuffix)
 /**
  * @param {string} download
  * @param {string=} customSpecSuffix
- * @return {string}
+ * @returns {string}
  */
 export function attachmentPreview(download, customSpecSuffix)
 {
@@ -93,7 +97,7 @@ export function attachmentPreview(download, customSpecSuffix)
 /**
  * @param {string} download
  * @param {string=} customSpecSuffix
- * @return {string}
+ * @returns {string}
  */
 export function attachmentThumbnailPreview(download, customSpecSuffix)
 {
@@ -103,7 +107,7 @@ export function attachmentThumbnailPreview(download, customSpecSuffix)
 /**
  * @param {string} download
  * @param {string=} customSpecSuffix
- * @return {string}
+ * @returns {string}
  */
 export function attachmentPreviewAsPlain(download, customSpecSuffix)
 {
@@ -113,7 +117,7 @@ export function attachmentPreviewAsPlain(download, customSpecSuffix)
 /**
  * @param {string} download
  * @param {string=} customSpecSuffix
- * @return {string}
+ * @returns {string}
  */
 export function attachmentFramed(download, customSpecSuffix)
 {
@@ -122,7 +126,7 @@ export function attachmentFramed(download, customSpecSuffix)
 
 /**
  * @param {string} type
- * @return {string}
+ * @returns {string}
  */
 export function serverRequest(type)
 {
@@ -130,7 +134,7 @@ export function serverRequest(type)
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function upload()
 {
@@ -138,7 +142,7 @@ export function upload()
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function uploadContacts()
 {
@@ -146,7 +150,7 @@ export function uploadContacts()
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function uploadBackground()
 {
@@ -154,7 +158,7 @@ export function uploadBackground()
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function append()
 {
@@ -163,7 +167,7 @@ export function append()
 
 /**
  * @param {string} email
- * @return {string}
+ * @returns {string}
  */
 export function change(email)
 {
@@ -172,7 +176,7 @@ export function change(email)
 
 /**
  * @param {string} add
- * @return {string}
+ * @returns {string}
  */
 export function ajax(add)
 {
@@ -181,7 +185,7 @@ export function ajax(add)
 
 /**
  * @param {string} requestHash
- * @return {string}
+ * @returns {string}
  */
 export function messageViewLink(requestHash)
 {
@@ -190,7 +194,7 @@ export function messageViewLink(requestHash)
 
 /**
  * @param {string} requestHash
- * @return {string}
+ * @returns {string}
  */
 export function messageDownloadLink(requestHash)
 {
@@ -199,7 +203,7 @@ export function messageDownloadLink(requestHash)
 
 /**
  * @param {string} email
- * @return {string}
+ * @returns {string}
  */
 export function avatarLink(email)
 {
@@ -208,7 +212,7 @@ export function avatarLink(email)
 
 /**
  * @param {string} hash
- * @return {string}
+ * @returns {string}
  */
 export function publicLink(hash)
 {
@@ -217,7 +221,7 @@ export function publicLink(hash)
 
 /**
  * @param {string} hash
- * @return {string}
+ * @returns {string}
  */
 export function userBackground(hash)
 {
@@ -225,7 +229,7 @@ export function userBackground(hash)
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function phpInfo()
 {
@@ -235,7 +239,7 @@ export function phpInfo()
 /**
  * @param {string} lang
  * @param {boolean} isAdmin
- * @return {string}
+ * @returns {string}
  */
 export function langLink(lang, isAdmin)
 {
@@ -243,7 +247,7 @@ export function langLink(lang, isAdmin)
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function exportContactsVcf()
 {
@@ -251,7 +255,7 @@ export function exportContactsVcf()
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function exportContactsCsv()
 {
@@ -260,7 +264,7 @@ export function exportContactsCsv()
 
 /**
  * @param {boolean} xauth = false
- * @return {string}
+ * @returns {string}
  */
 export function socialGoogle(xauth = false)
 {
@@ -269,7 +273,7 @@ export function socialGoogle(xauth = false)
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function socialTwitter()
 {
@@ -278,7 +282,7 @@ export function socialTwitter()
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function socialFacebook()
 {
@@ -288,7 +292,7 @@ export function socialFacebook()
 
 /**
  * @param {string} path
- * @return {string}
+ * @returns {string}
  */
 export function staticPrefix(path)
 {
@@ -296,7 +300,7 @@ export function staticPrefix(path)
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function emptyContactPic()
 {
@@ -305,7 +309,7 @@ export function emptyContactPic()
 
 /**
  * @param {string} fileName
- * @return {string}
+ * @returns {string}
  */
 export function sound(fileName)
 {
@@ -313,7 +317,7 @@ export function sound(fileName)
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function notificationMailIcon()
 {
@@ -321,7 +325,7 @@ export function notificationMailIcon()
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function openPgpJs()
 {
@@ -329,7 +333,7 @@ export function openPgpJs()
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function openPgpWorkerJs()
 {
@@ -337,7 +341,7 @@ export function openPgpWorkerJs()
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function openPgpWorkerPath()
 {
@@ -346,7 +350,7 @@ export function openPgpWorkerPath()
 
 /**
  * @param {string} theme
- * @return {string}
+ * @returns {string}
  */
 export function themePreviewLink(theme)
 {
@@ -362,7 +366,7 @@ export function themePreviewLink(theme)
 
 /**
  * @param {string} inboxFolderName = 'INBOX'
- * @return {string}
+ * @returns {string}
  */
 export function inbox(inboxFolderName = 'INBOX')
 {
@@ -371,7 +375,7 @@ export function inbox(inboxFolderName = 'INBOX')
 
 /**
  * @param {string=} screenName = ''
- * @return {string}
+ * @returns {string}
  */
 export function settings(screenName = '')
 {
@@ -379,7 +383,7 @@ export function settings(screenName = '')
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function about()
 {
@@ -388,12 +392,13 @@ export function about()
 
 /**
  * @param {string} screenName
- * @return {string}
+ * @returns {string}
  */
 export function admin(screenName)
 {
 	let result = HASH_PREFIX;
-	switch (screenName) {
+	switch (screenName)
+	{
 		case 'AdminDomains':
 			result += 'domains';
 			break;
@@ -403,6 +408,7 @@ export function admin(screenName)
 		case 'AdminLicensing':
 			result += 'licensing';
 			break;
+		// no default
 	}
 
 	return result;
@@ -413,7 +419,7 @@ export function admin(screenName)
  * @param {number=} page = 1
  * @param {string=} search = ''
  * @param {string=} threadUid = ''
- * @return {string}
+ * @returns {string}
  */
 export function mailBox(folder, page = 1, search = '', threadUid = '')
 {

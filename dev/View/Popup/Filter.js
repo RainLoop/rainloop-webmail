@@ -1,210 +1,203 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Enums = require('Common/Enums'),
+	Globals = require('Common/Globals'),
+	Utils = require('Common/Utils'),
+	Translator = require('Common/Translator'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
+	FilterStore = require('Stores/User/Filter'),
+	FolderStore = require('Stores/User/Folder'),
 
-		Enums = require('Common/Enums'),
-		Globals = require('Common/Globals'),
-		Utils = require('Common/Utils'),
-		Translator = require('Common/Translator'),
+	kn = require('Knoin/Knoin'),
+	AbstractView = require('Knoin/AbstractView');
 
-		FilterStore = require('Stores/User/Filter'),
-		FolderStore = require('Stores/User/Folder'),
+/**
+ * @constructor
+ * @extends AbstractView
+ */
+function FilterPopupView()
+{
+	AbstractView.call(this, 'Popups', 'PopupsFilter');
 
-		kn = require('Knoin/Knoin'),
-		AbstractView = require('Knoin/AbstractView')
-	;
+	this.isNew = ko.observable(true);
 
-	/**
-	 * @constructor
-	 * @extends AbstractView
-	 */
-	function FilterPopupView()
-	{
-		AbstractView.call(this, 'Popups', 'PopupsFilter');
+	this.modules = FilterStore.modules;
 
-		this.isNew = ko.observable(true);
+	this.fTrueCallback = null;
+	this.filter = ko.observable(null);
 
-		this.modules = FilterStore.modules;
+	this.allowMarkAsRead = ko.observable(false);
 
-		this.fTrueCallback = null;
-		this.filter = ko.observable(null);
+	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+	this.folderSelectList = FolderStore.folderMenuForFilters;
+	this.selectedFolderValue = ko.observable('');
 
-		this.allowMarkAsRead = ko.observable(false);
+	this.selectedFolderValue.subscribe(function() {
+		if (this.filter())
+		{
+			this.filter().actionValue.error(false);
+		}
+	}, this);
 
-		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
-		this.folderSelectList = FolderStore.folderMenuForFilters;
-		this.selectedFolderValue = ko.observable('');
+	this.saveFilter = Utils.createCommand(this, function() {
 
-		this.selectedFolderValue.subscribe(function() {
-			if (this.filter())
+		if (this.filter())
+		{
+			if (Enums.FiltersAction.MoveTo === this.filter().actionType())
 			{
-				this.filter().actionValue.error(false);
-			}
-		}, this);
-
-		this.saveFilter = Utils.createCommand(this, function () {
-
-			if (this.filter())
-			{
-				if (Enums.FiltersAction.MoveTo === this.filter().actionType())
-				{
-					this.filter().actionValue(this.selectedFolderValue());
-				}
-
-				if (!this.filter().verify())
-				{
-					return false;
-				}
-
-				if (this.fTrueCallback)
-				{
-					this.fTrueCallback(this.filter());
-				}
-
-				if (this.modalVisibility())
-				{
-					Utils.delegateRun(this, 'closeCommand');
-				}
+				this.filter().actionValue(this.selectedFolderValue());
 			}
 
-			return true;
-		});
+			if (!this.filter().verify())
+			{
+				return false;
+			}
 
-		this.actionTypeOptions = ko.observableArray([]);
-		this.fieldOptions = ko.observableArray([]);
-		this.typeOptions = ko.observableArray([]);
-		this.typeOptionsSize = ko.observableArray([]);
+			if (this.fTrueCallback)
+			{
+				this.fTrueCallback(this.filter());
+			}
 
-		Translator.initOnStartOrLangChange(this.populateOptions, this);
+			if (this.modalVisibility())
+			{
+				Utils.delegateRun(this, 'closeCommand');
+			}
+		}
 
-		this.modules.subscribe(this.populateOptions, this);
+		return true;
+	});
 
-		kn.constructorEnd(this);
-	}
+	this.actionTypeOptions = ko.observableArray([]);
+	this.fieldOptions = ko.observableArray([]);
+	this.typeOptions = ko.observableArray([]);
+	this.typeOptionsSize = ko.observableArray([]);
 
-	kn.extendAsViewModel(['View/Popup/Filter', 'PopupsFilterViewModel'], FilterPopupView);
-	_.extend(FilterPopupView.prototype, AbstractView.prototype);
+	Translator.initOnStartOrLangChange(this.populateOptions, this);
 
-	FilterPopupView.prototype.populateOptions = function ()
-	{
-		this.actionTypeOptions([]);
+	this.modules.subscribe(this.populateOptions, this);
+
+	kn.constructorEnd(this);
+}
+
+kn.extendAsViewModel(['View/Popup/Filter', 'PopupsFilterViewModel'], FilterPopupView);
+_.extend(FilterPopupView.prototype, AbstractView.prototype);
+
+FilterPopupView.prototype.populateOptions = function()
+{
+	this.actionTypeOptions([]);
 
 //		this.actionTypeOptions.push({'id': Enums.FiltersAction.None,
 //			'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_NONE')});
 
-		var oModules = this.modules();
-		if (oModules)
-		{
-			if (oModules.markasread)
-			{
-				this.allowMarkAsRead(true);
-			}
-
-			if (oModules.moveto)
-			{
-				this.actionTypeOptions.push({'id': Enums.FiltersAction.MoveTo,
-					'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_MOVE_TO')});
-			}
-
-			if (oModules.redirect)
-			{
-				this.actionTypeOptions.push({'id': Enums.FiltersAction.Forward,
-					'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_FORWARD_TO')});
-			}
-
-			if (oModules.reject)
-			{
-				this.actionTypeOptions.push({'id': Enums.FiltersAction.Reject,
-					'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_REJECT')});
-			}
-
-			if (oModules.vacation)
-			{
-				this.actionTypeOptions.push({'id': Enums.FiltersAction.Vacation,
-					'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_VACATION_MESSAGE')});
-
-			}
-		}
-
-		this.actionTypeOptions.push({'id': Enums.FiltersAction.Discard,
-			'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD')});
-
-		this.fieldOptions([
-			{'id': Enums.FilterConditionField.From, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_FROM')},
-			{'id': Enums.FilterConditionField.Recipient, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_RECIPIENTS')},
-			{'id': Enums.FilterConditionField.Subject, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_SUBJECT')},
-			{'id': Enums.FilterConditionField.Size, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_SIZE')},
-			{'id': Enums.FilterConditionField.Header, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_HEADER')}
-		]);
-
-		this.typeOptions([
-			{'id': Enums.FilterConditionType.Contains, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_CONTAINS')},
-			{'id': Enums.FilterConditionType.NotContains, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_CONTAINS')},
-			{'id': Enums.FilterConditionType.EqualTo, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_EQUAL_TO')},
-			{'id': Enums.FilterConditionType.NotEqualTo, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_EQUAL_TO')}
-		]);
-
-		if (oModules && oModules.regex)
-		{
-			this.typeOptions.push({'id': Enums.FilterConditionType.Regex, 'name': 'Regex'});
-		}
-
-		this.typeOptionsSize([
-			{'id': Enums.FilterConditionType.Over, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_OVER')},
-			{'id': Enums.FilterConditionType.Under, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_UNDER')}
-		]);
-	};
-
-
-	FilterPopupView.prototype.removeCondition = function (oConditionToDelete)
+	var oModules = this.modules();
+	if (oModules)
 	{
-		if (this.filter())
+		if (oModules.markasread)
 		{
-			this.filter().removeCondition(oConditionToDelete);
+			this.allowMarkAsRead(true);
 		}
-	};
 
-	FilterPopupView.prototype.clearPopup = function ()
+		if (oModules.moveto)
+		{
+			this.actionTypeOptions.push({'id': Enums.FiltersAction.MoveTo,
+				'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_MOVE_TO')});
+		}
+
+		if (oModules.redirect)
+		{
+			this.actionTypeOptions.push({'id': Enums.FiltersAction.Forward,
+				'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_FORWARD_TO')});
+		}
+
+		if (oModules.reject)
+		{
+			this.actionTypeOptions.push({'id': Enums.FiltersAction.Reject,
+				'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_REJECT')});
+		}
+
+		if (oModules.vacation)
+		{
+			this.actionTypeOptions.push({'id': Enums.FiltersAction.Vacation,
+				'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_VACATION_MESSAGE')});
+
+		}
+	}
+
+	this.actionTypeOptions.push({'id': Enums.FiltersAction.Discard,
+		'name': Translator.i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD')});
+
+	this.fieldOptions([
+		{'id': Enums.FilterConditionField.From, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_FROM')},
+		{'id': Enums.FilterConditionField.Recipient, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_RECIPIENTS')},
+		{'id': Enums.FilterConditionField.Subject, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_SUBJECT')},
+		{'id': Enums.FilterConditionField.Size, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_SIZE')},
+		{'id': Enums.FilterConditionField.Header, 'name': Translator.i18n('POPUPS_FILTER/SELECT_FIELD_HEADER')}
+	]);
+
+	this.typeOptions([
+		{'id': Enums.FilterConditionType.Contains, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_CONTAINS')},
+		{'id': Enums.FilterConditionType.NotContains, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_CONTAINS')},
+		{'id': Enums.FilterConditionType.EqualTo, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_EQUAL_TO')},
+		{'id': Enums.FilterConditionType.NotEqualTo, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_NOT_EQUAL_TO')}
+	]);
+
+	if (oModules && oModules.regex)
 	{
-		this.isNew(true);
+		this.typeOptions.push({'id': Enums.FilterConditionType.Regex, 'name': 'Regex'});
+	}
 
-		this.fTrueCallback = null;
-		this.filter(null);
-	};
+	this.typeOptionsSize([
+		{'id': Enums.FilterConditionType.Over, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_OVER')},
+		{'id': Enums.FilterConditionType.Under, 'name': Translator.i18n('POPUPS_FILTER/SELECT_TYPE_UNDER')}
+	]);
+};
 
-	FilterPopupView.prototype.onShow = function (oFilter, fTrueCallback, bEdit)
+
+FilterPopupView.prototype.removeCondition = function(oConditionToDelete)
+{
+	if (this.filter())
 	{
-		this.clearPopup();
+		this.filter().removeCondition(oConditionToDelete);
+	}
+};
 
-		this.fTrueCallback = fTrueCallback;
-		this.filter(oFilter);
+FilterPopupView.prototype.clearPopup = function()
+{
+	this.isNew(true);
 
-		if (oFilter)
-		{
-			this.selectedFolderValue(oFilter.actionValue());
-		}
+	this.fTrueCallback = null;
+	this.filter(null);
+};
 
-		this.isNew(!bEdit);
+FilterPopupView.prototype.onShow = function(oFilter, fTrueCallback, bEdit)
+{
+	this.clearPopup();
 
-		if (!bEdit && oFilter)
-		{
-			oFilter.name.focused(true);
-		}
-	};
+	this.fTrueCallback = fTrueCallback;
+	this.filter(oFilter);
 
-	FilterPopupView.prototype.onShowWithDelay = function ()
+	if (oFilter)
 	{
-		if (this.isNew() && this.filter() && !Globals.bMobile)
-		{
-			this.filter().name.focused(true);
-		}
-	};
+		this.selectedFolderValue(oFilter.actionValue());
+	}
 
-	module.exports = FilterPopupView;
+	this.isNew(!bEdit);
 
-}());
+	if (!bEdit && oFilter)
+	{
+		oFilter.name.focused(true);
+	}
+};
+
+FilterPopupView.prototype.onShowWithDelay = function()
+{
+	if (this.isNew() && this.filter() && !Globals.bMobile)
+	{
+		this.filter().name.focused(true);
+	}
+};
+
+module.exports = FilterPopupView;

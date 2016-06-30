@@ -5,18 +5,20 @@ import {trim, pInt, isArray} from 'Common/Utils';
 import * as Links from 'Common/Links';
 import * as Settings from 'Storage/Settings';
 
-let FOLDERS_CACHE = {};
-let FOLDERS_NAME_CACHE = {};
-let FOLDERS_HASH_CACHE = {};
-let FOLDERS_UID_NEXT_CACHE = {};
-let MESSAGE_FLAGS_CACHE = {};
+let FOLDERS_CACHE = {},
+	FOLDERS_NAME_CACHE = {},
+	FOLDERS_HASH_CACHE = {},
+	FOLDERS_UID_NEXT_CACHE = {},
+	MESSAGE_FLAGS_CACHE = {},
+	NEW_MESSAGE_CACHE = {},
+	inboxFolderName = '';
 
-let NEW_MESSAGE_CACHE = {};
-let REQUESTED_MESSAGE_CACHE = {};
+const REQUESTED_MESSAGE_CACHE = {},
+	capaGravatar = Settings.capa(Capa.Gravatar);
 
-const capaGravatar = Settings.capa(Capa.Gravatar);
-let inboxFolderName = '';
-
+/**
+ * @returns {void}
+ */
 export function clear()
 {
 	FOLDERS_CACHE = {};
@@ -29,7 +31,7 @@ export function clear()
 /**
  * @param {string} email
  * @param {Function} callback
- * @return {string}
+ * @returns {string}
  */
 export function getUserPic(email, callback)
 {
@@ -40,7 +42,7 @@ export function getUserPic(email, callback)
 /**
  * @param {string} folderFullNameRaw
  * @param {string} uid
- * @return {string}
+ * @returns {string}
  */
 export function getMessageKey(folderFullNameRaw, uid)
 {
@@ -59,7 +61,7 @@ export function addRequestedMessage(folder, uid)
 /**
  * @param {string} folder
  * @param {string} uid
- * @return {boolean}
+ * @returns {boolean}
  */
 export function hasRequestedMessage(folder, uid)
 {
@@ -89,13 +91,16 @@ export function hasNewMessageAndRemoveFromCache(folderFullNameRaw, uid)
 	return false;
 }
 
+/**
+ * @returns {void}
+ */
 export function clearNewMessageCache()
 {
 	NEW_MESSAGE_CACHE = {};
 }
 
 /**
- * @return {string}
+ * @returns {string}
  */
 export function getFolderInboxName()
 {
@@ -104,7 +109,7 @@ export function getFolderInboxName()
 
 /**
  * @param {string} folderHash
- * @return {string}
+ * @returns {string}
  */
 export function getFolderFullNameRaw(folderHash)
 {
@@ -126,7 +131,7 @@ export function setFolderFullNameRaw(folderHash, folderFullNameRaw)
 
 /**
  * @param {string} folderFullNameRaw
- * @return {string}
+ * @returns {string}
  */
 export function getFolderHash(folderFullNameRaw)
 {
@@ -147,7 +152,7 @@ export function setFolderHash(folderFullNameRaw, folderHash)
 
 /**
  * @param {string} folderFullNameRaw
- * @return {string}
+ * @returns {string}
  */
 export function getFolderUidNext(folderFullNameRaw)
 {
@@ -165,7 +170,7 @@ export function setFolderUidNext(folderFullNameRaw, uidNext)
 
 /**
  * @param {string} folderFullNameRaw
- * @return {?FolderModel}
+ * @returns {?FolderModel}
  */
 export function getFolderFromCacheList(folderFullNameRaw)
 {
@@ -192,7 +197,7 @@ export function removeFolderFromCacheList(folderFullNameRaw)
 /**
  * @param {string} folderFullName
  * @param {string} uid
- * @return {?Array}
+ * @returns {?Array}
  */
 export function getMessageFlagsFromCache(folderFullName, uid)
 {
@@ -233,14 +238,13 @@ export function initMessageFlagsFromCache(message)
 	{
 		const
 			uid = message.uid,
-			flags = getMessageFlagsFromCache(message.folderFullNameRaw, uid)
-		;
+			flags = getMessageFlagsFromCache(message.folderFullNameRaw, uid);
 
 		if (flags && 0 < flags.length)
 		{
 			message.flagged(!!flags[1]);
 
-			if (!message.__simple_message__)
+			if (!message.isSimpleMessage)
 			{
 				message.unseen(!!flags[0]);
 				message.answered(!!flags[2]);
@@ -334,6 +338,7 @@ export function storeMessageFlagsToCacheBySetAction(folder, uid, setAction)
 			case MessageSetAction.UnsetFlag:
 				flags[1] = false;
 				break;
+			// no default
 		}
 
 		setMessageFlagsToCache(folder, uid, flags);

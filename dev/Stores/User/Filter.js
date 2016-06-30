@@ -1,28 +1,20 @@
 
-(function () {
+var ko = require('ko');
 
-	'use strict';
+/**
+ * @constructor
+ */
+function FilterUserStore()
+{
+	this.capa = ko.observable('');
+	this.modules = ko.observable({});
 
-	var
-		ko = require('ko')
-	;
+	this.filters = ko.observableArray([]);
 
-	/**
-	 * @constructor
-	 */
-	function FilterUserStore()
-	{
-		this.capa = ko.observable('');
-		this.modules = ko.observable({});
+	this.filters.loading = ko.observable(false).extend({throttle: 200});
+	this.filters.saving = ko.observable(false).extend({throttle: 200});
 
-		this.filters = ko.observableArray([]);
+	this.raw = ko.observable('');
+}
 
-		this.filters.loading = ko.observable(false).extend({throttle: 200});
-		this.filters.saving = ko.observable(false).extend({throttle: 200});
-
-		this.raw = ko.observable('');
-	}
-
-	module.exports = new FilterUserStore();
-
-}());
+module.exports = new FilterUserStore();

@@ -32,12 +32,13 @@ export function silentTryCatch(callback)
 {
 	try {
 		callback();
-	} catch (e) {/* eslint-disable-line no-empty */}
+	}
+	catch (e) {/* eslint-disable-line no-empty */}
 }
 
 /**
  * @param {*} value
- * @return {boolean}
+ * @returns {boolean}
  */
 export function isNormal(value)
 {
@@ -47,7 +48,7 @@ export function isNormal(value)
 /**
  * @param {(string|number)} value
  * @param {boolean=} includeZero = true
- * @return {boolean}
+ * @returns {boolean}
  */
 export function isPosNumeric(value, includeZero = true)
 {
@@ -58,7 +59,7 @@ export function isPosNumeric(value, includeZero = true)
 /**
  * @param {*} value
  * @param {number=} defaultValur = 0
- * @return {number}
+ * @returns {number}
  */
 export function pInt(value, defaultValur = 0)
 {
@@ -68,7 +69,7 @@ export function pInt(value, defaultValur = 0)
 
 /**
  * @param {*} value
- * @return {string}
+ * @returns {string}
  */
 export function pString(value)
 {
@@ -77,7 +78,7 @@ export function pString(value)
 
 /**
  * @param {*} value
- * @return {boolean}
+ * @returns {boolean}
  */
 export function pBool(value)
 {
@@ -86,7 +87,7 @@ export function pBool(value)
 
 /**
  * @param {*} values
- * @return {boolean}
+ * @returns {boolean}
  */
 export function isNonEmptyArray(values)
 {
@@ -95,7 +96,7 @@ export function isNonEmptyArray(values)
 
 /**
  * @param {string} component
- * @return {string}
+ * @returns {string}
  */
 export function encodeURIComponent(component)
 {
@@ -104,7 +105,7 @@ export function encodeURIComponent(component)
 
 /**
  * @param {string} component
- * @return {string}
+ * @returns {string}
  */
 export function decodeURIComponent(component)
 {
@@ -113,20 +114,17 @@ export function decodeURIComponent(component)
 
 /**
  * @param {string} queryString
- * @return {Object}
+ * @returns {Object}
  */
 export function simpleQueryParser(queryString)
 {
-	let
-		params = {},
-		queries = [],
-		temp = [],
-		index = 0,
-		len = 0
-	;
+	let index = 0, len = 0, temp = null;
 
-	queries = queryString.split('&');
-	for (index = 0, len = queries.length; index < len; index++)
+	const
+		queries = queryString.split('&'),
+		params = {};
+
+	for (len = queries.length; index < len; index++)
 	{
 		temp = queries[index].split('=');
 		params[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
@@ -137,14 +135,13 @@ export function simpleQueryParser(queryString)
 
 /**
  * @param {number=} len = 32
- * @return {string}
+ * @returns {string}
  */
 export function fakeMd5(len = 32)
 {
 	const
 		line = '0123456789abcdefghijklmnopqrstuvwxyz',
-		lineLen = line.length
-	;
+		lineLen = line.length;
 
 	len = pInt(len);
 
@@ -162,7 +159,7 @@ let encryptObject = null;
 /**
  * @param {constructor} JSEncryptClass
  * @param {string} publicKey
- * @return {JSEncrypt|boolean}
+ * @returns {JSEncrypt|boolean}
  */
 const rsaObject = (JSEncryptClass, publicKey) => {
 
@@ -184,16 +181,14 @@ const rsaObject = (JSEncryptClass, publicKey) => {
 /**
  * @param {string} value
  * @param {string} publicKey
- * @return {string}
+ * @returns {string}
  */
 const rsaEncode = (value, publicKey) => {
 
 	if (window.crypto && window.crypto.getRandomValues && publicKey)
 	{
-		let
-			resultValue = false,
-			encrypt = rsaObject(JSEncrypt, publicKey)
-		;
+		let resultValue = false;
+		const encrypt = rsaObject(JSEncrypt, publicKey);
 
 		if (encrypt)
 		{
@@ -214,7 +209,7 @@ export {rsaEncode};
 
 /**
  * @param {string} text
- * @return {string}
+ * @returns {string}
  */
 export function encodeHtml(text)
 {
@@ -224,7 +219,7 @@ export function encodeHtml(text)
 /**
  * @param {string} text
  * @param {number=} iLen = 100
- * @return {string}
+ * @returns {string}
  */
 export function splitPlainText(text, len = 100)
 {
@@ -233,8 +228,7 @@ export function splitPlainText(text, len = 100)
 		subText = '',
 		result = text,
 		spacePos = 0,
-		newLinePos = 0
-	;
+		newLinePos = 0;
 
 	while (result.length > len)
 	{
@@ -259,8 +253,8 @@ export function splitPlainText(text, len = 100)
 	return prefix + result;
 }
 
-const timeOutAction = (function () {
-	let timeOuts = {};
+const timeOutAction = (function() {
+	const timeOuts = {};
 	return (action, fFunction, timeOut) => {
 		timeOuts[action] = isUnd(timeOuts[action]) ? 0 : timeOuts[action];
 		window.clearTimeout(timeOuts[action]);
@@ -268,8 +262,8 @@ const timeOutAction = (function () {
 	};
 }());
 
-const timeOutActionSecond = (function () {
-	let timeOuts = {};
+const timeOutActionSecond = (function() {
+	const timeOuts = {};
 	return (action, fFunction, timeOut) => {
 		if (!timeOuts[action])
 		{
@@ -284,7 +278,7 @@ const timeOutActionSecond = (function () {
 export {timeOutAction, timeOutActionSecond};
 
 /**
- * @return {boolean}
+ * @returns {boolean}
  */
 export function inFocus()
 {
@@ -301,6 +295,10 @@ export function inFocus()
 	return false;
 }
 
+/**
+ * @param {boolean} force
+ * @returns {void}
+ */
 export function removeInFocus(force)
 {
 	if (window.document && window.document.activeElement && window.document.activeElement.blur)
@@ -313,12 +311,16 @@ export function removeInFocus(force)
 			}
 			else if (force)
 			{
-					window.document.activeElement.blur();
+				window.document.activeElement.blur();
 			}
-		} catch (e) {/* eslint-disable-line no-empty */}
+		}
+		catch (e) {/* eslint-disable-line no-empty */}
 	}
 }
 
+/**
+ * @returns {void}
+ */
 export function removeSelection()
 {
 	try {
@@ -334,41 +336,42 @@ export function removeSelection()
 		{
 			window.document.selection.empty();
 		}
-	} catch (e) {/* eslint-disable-line no-empty */}
+	}
+	catch (e) {/* eslint-disable-line no-empty */}
 }
 
 /**
  * @param {string} prefix
  * @param {string} subject
- * @return {string}
+ * @returns {string}
  */
 export function replySubjectAdd(prefix, subject)
 {
 	prefix = trim(prefix.toUpperCase());
 	subject = trim(subject.replace(/[\s]+/g, ' '));
 
-	let
-		drop = false,
-		parts = [],
+	let drop = false,
 		re = 'RE' === prefix,
-		fwd = 'FWD' === prefix,
-		prefixIsRe = !fwd
-	;
+		fwd = 'FWD' === prefix;
+
+	const
+		parts = [],
+		prefixIsRe = !fwd;
 
 	if ('' !== subject)
 	{
 		_.each(subject.split(':'), (part) => {
 			const trimmedPart = trim(part);
-			if (!drop && (/^(RE|FWD)$/i.test(trimmedPart) || /^(RE|FWD)[\[\(][\d]+[\]\)]$/i.test(trimmedPart)))
+			if (!drop && ((/^(RE|FWD)$/i).test(trimmedPart) || (/^(RE|FWD)[\[\(][\d]+[\]\)]$/i).test(trimmedPart)))
 			{
 				if (!re)
 				{
-					re = !!(/^RE/i.test(trimmedPart));
+					re = !!(/^RE/i).test(trimmedPart);
 				}
 
 				if (!fwd)
 				{
-					fwd = !!(/^FWD/i.test(trimmedPart));
+					fwd = !!(/^FWD/i).test(trimmedPart);
 				}
 			}
 			else
@@ -399,7 +402,7 @@ export function replySubjectAdd(prefix, subject)
 /**
  * @param {number} num
  * @param {number} dec
- * @return {number}
+ * @returns {number}
  */
 export function roundNumber(num, dec)
 {
@@ -408,23 +411,21 @@ export function roundNumber(num, dec)
 
 /**
  * @param {(number|string)} sizeInBytes
- * @return {string}
+ * @returns {string}
  */
 export function friendlySize(sizeInBytes)
 {
 	sizeInBytes = pInt(sizeInBytes);
 
-	if (sizeInBytes >= 1073741824)
+	switch (true)
 	{
-		return roundNumber(sizeInBytes / 1073741824, 1) + 'GB';
-	}
-	else if (sizeInBytes >= 1048576)
-	{
-		return roundNumber(sizeInBytes / 1048576, 1) + 'MB';
-	}
-	else if (sizeInBytes >= 1024)
-	{
-		return roundNumber(sizeInBytes / 1024, 0) + 'KB';
+		case 1073741824 <= sizeInBytes:
+			return roundNumber(sizeInBytes / 1073741824, 1) + 'GB';
+		case 1048576 <= sizeInBytes:
+			return roundNumber(sizeInBytes / 1048576, 1) + 'MB';
+		case 1024 <= sizeInBytes:
+			return roundNumber(sizeInBytes / 1024, 0) + 'KB';
+		// no default
 	}
 
 	return sizeInBytes + 'B';
@@ -506,21 +507,19 @@ export function kill_CtrlA_CtrlS(event)
  * @param {(Object|null|undefined)} context
  * @param {Function} fExecute
  * @param {(Function|boolean|null)=} fCanExecute = true
- * @return {Function}
+ * @returns {Function}
  */
 export function createCommand(context, fExecute, fCanExecute = true)
 {
 
-	let
-		fResult = null,
-		fNonEmpty = (...args) => {
-			if (fResult && fResult.canExecute && fResult.canExecute())
-			{
-				fExecute.apply(context, args);
-			}
-			return false;
+	let fResult = null;
+	const fNonEmpty = (...args) => {
+		if (fResult && fResult.canExecute && fResult.canExecute())
+		{
+			fExecute.apply(context, args);
 		}
-	;
+		return false;
+	};
 
 	fResult = fExecute ? fNonEmpty : noop;
 	fResult.enabled = ko.observable(true);
@@ -543,7 +542,7 @@ export function createCommand(context, fExecute, fCanExecute = true)
 
 /**
  * @param {string} theme
- * @return {string}
+ * @returns {string}
  */
 export const convertThemeName = _.memoize((theme) => {
 
@@ -557,7 +556,7 @@ export const convertThemeName = _.memoize((theme) => {
 
 /**
  * @param {string} name
- * @return {string}
+ * @returns {string}
  */
 export function quoteName(name)
 {
@@ -565,7 +564,7 @@ export function quoteName(name)
 }
 
 /**
- * @return {number}
+ * @returns {number}
  */
 export function microtime()
 {
@@ -573,7 +572,7 @@ export function microtime()
 }
 
 /**
- * @return {number}
+ * @returns {number}
  */
 export function timestamp()
 {
@@ -584,7 +583,7 @@ export function timestamp()
  *
  * @param {string} language
  * @param {boolean=} isEng = false
- * @return {string}
+ * @returns {string}
  */
 export function convertLangName(language, isEng = false)
 {
@@ -592,6 +591,9 @@ export function convertLangName(language, isEng = false)
 		language.toUpperCase().replace(/[^a-zA-Z0-9]+/g, '_'), null, language);
 }
 
+/**
+ * @returns {object}
+ */
 export function draggablePlace()
 {
 	return $('<div class="draggablePlace">' +
@@ -602,14 +604,18 @@ export function draggablePlace()
 	).appendTo('#rl-hidden');
 }
 
-export function defautOptionsAfterRender(domOption, item)
+/**
+ * @param {object} domOption
+ * @param {object} item
+ * @returns {void}
+ */
+export function defautOptionsAfterRender(domItem, item)
 {
-	if (item && !isUnd(item.disabled) && domOption)
+	if (item && !isUnd(item.disabled) && domItem)
 	{
-		$(domOption)
+		$(domItem)
 			.toggleClass('disabled', item.disabled)
-			.prop('disabled', item.disabled)
-		;
+			.prop('disabled', item.disabled);
 	}
 }
 
@@ -638,8 +644,7 @@ export function previewMessage(title, body, isHtml, print)
 		win = window.open(''),
 		doc = win.document,
 		bodyClone = body.clone(),
-		bodyClass = isHtml ? 'html' : 'plain'
-	;
+		bodyClass = isHtml ? 'html' : 'plain';
 
 	clearBqSwitcher(bodyClone);
 
@@ -734,7 +739,7 @@ body.plain blockquote blockquote blockquote {
  * @param {?} koTrigger
  * @param {?} context = null
  * @param {number=} timer = 1000
- * @return {Function}
+ * @returns {Function}
  */
 export function settingsSaveHelperFunction(fCallback, koTrigger, context = null, timer = 1000)
 {
@@ -751,11 +756,23 @@ export function settingsSaveHelperFunction(fCallback, koTrigger, context = null,
 	};
 }
 
+/**
+ * @param {object} koTrigger
+ * @param {mixed} context
+ * @returns {mixed}
+ */
 export function settingsSaveHelperSimpleFunction(koTrigger, context)
 {
 	return settingsSaveHelperFunction(null, koTrigger, context, 1000);
 }
 
+/**
+ * @param {object} remote
+ * @param {string} settingName
+ * @param {string} type
+ * @param {function} fTriggerFunction
+ * @returns {function}
+ */
 export function settingsSaveHelperSubscribeFunction(remote, settingName, type, fTriggerFunction)
 {
 	return (value) => {
@@ -764,9 +781,6 @@ export function settingsSaveHelperSubscribeFunction(remote, settingName, type, f
 		{
 			switch (type)
 			{
-				default:
-					value = pString(value);
-					break;
 				case 'bool':
 				case 'boolean':
 					value = value ? '1' : '0';
@@ -779,9 +793,12 @@ export function settingsSaveHelperSubscribeFunction(remote, settingName, type, f
 				case 'trim':
 					value = trim(value);
 					break;
+				default:
+					value = pString(value);
+					break;
 			}
 
-			let data = {};
+			const data = {};
 			data[settingName] = value;
 
 			if (remote.saveAdminConfig)
@@ -798,7 +815,7 @@ export function settingsSaveHelperSubscribeFunction(remote, settingName, type, f
 
 /**
  * @param {string} html
- * @return {string}
+ * @returns {string}
  */
 export function findEmailAndLinks(html)
 {
@@ -809,7 +826,7 @@ export function findEmailAndLinks(html)
 		urls: true,
 		email: true,
 		twitter: false,
-		replaceFn: function (autolinker, match) {
+		replaceFn: function(autolinker, match) {
 			return !(autolinker && match && 'url' === match.getType() && match.matchedText && 0 !== match.matchedText.indexOf('http'));
 		}
 	});
@@ -817,7 +834,7 @@ export function findEmailAndLinks(html)
 
 /**
  * @param {string} html
- * @return {string}
+ * @returns {string}
  */
 export function htmlToPlain(html)
 {
@@ -828,8 +845,7 @@ export function htmlToPlain(html)
 		iP2 = 0,
 		iP3 = 0,
 
-		text = ''
-	;
+		text = '';
 
 	const
 
@@ -867,8 +883,7 @@ export function htmlToPlain(html)
 
 		convertLinks = (...args) => {
 			return (args && 1 < args.length) ? trim(args[1]) : '';
-		}
-	;
+		};
 
 	text = html
 		.replace(/\u0002([\s\S]*)\u0002/gm, '\u200C$1\u200C')
@@ -893,8 +908,7 @@ export function htmlToPlain(html)
 		.replace(/<\/div>/gi, '\n')
 		.replace(/&nbsp;/gi, ' ')
 		.replace(/&quot;/gi, '"')
-		.replace(/<[^>]*>/gm, '')
-	;
+		.replace(/<[^>]*>/gm, '');
 
 	text = $div.html(text).text();
 
@@ -903,8 +917,7 @@ export function htmlToPlain(html)
 		.replace(/[\n]{3,}/gm, '\n\n')
 		.replace(/&gt;/gi, '>')
 		.replace(/&lt;/gi, '<')
-		.replace(/&amp;/gi, '&')
-	;
+		.replace(/&amp;/gi, '&');
 
 	text = splitPlainText(trim(text));
 
@@ -913,7 +926,7 @@ export function htmlToPlain(html)
 
 	while (0 < limit)
 	{
-		limit--;
+		limit -= 1;
 		iP1 = text.indexOf('__bq__start__', pos);
 		if (-1 < iP1)
 		{
@@ -945,8 +958,7 @@ export function htmlToPlain(html)
 
 	text = text
 		.replace(/__bq__start__/gm, '')
-		.replace(/__bq__end__/gm, '')
-	;
+		.replace(/__bq__end__/gm, '');
 
 	return text;
 }
@@ -954,7 +966,7 @@ export function htmlToPlain(html)
 /**
  * @param {string} plain
  * @param {boolean} findEmailAndLinksInText = false
- * @return {string}
+ * @returns {string}
  */
 export function plainToHtml(plain, findEmailAndLinksInText = false)
 {
@@ -971,8 +983,7 @@ export function plainToHtml(plain, findEmailAndLinksInText = false)
 		aNextText = [],
 		sLine = '',
 		iIndex = 0,
-		aText = plain.split('\n')
-	;
+		aText = plain.split('\n');
 
 	do
 	{
@@ -1031,8 +1042,7 @@ export function plainToHtml(plain, findEmailAndLinksInText = false)
 		.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 		.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
 		.replace(/\u200C([\s\S]*)\u200C/g, '\u0002$1\u0002')
-		.replace(/\n/g, '<br />')
-	;
+		.replace(/\n/g, '<br />');
 
 	return findEmailAndLinksInText ? findEmailAndLinks(plain) : plain;
 }
@@ -1051,7 +1061,7 @@ window.rainloop_Utils_plainToHtml = plainToHtml;
  * @param {Function=} fRenameCallback
  * @param {boolean=} bSystem
  * @param {boolean=} bBuildUnvisible
- * @return {Array}
+ * @returns {Array}
  */
 export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines,
 	iUnDeep, fDisableCallback, fVisibleCallback, fRenameCallback, bSystem, bBuildUnvisible)
@@ -1064,9 +1074,9 @@ export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines
 		bSep = false,
 		iIndex = 0,
 		iLen = 0,
-		sDeepPrefix = '\u00A0\u00A0\u00A0',
-		aResult = []
-	;
+		aResult = [];
+
+	const sDeepPrefix = '\u00A0\u00A0\u00A0';
 
 	bBuildUnvisible = isUnd(bBuildUnvisible) ? false : !!bBuildUnvisible;
 	bSystem = !isNormal(bSystem) ? 0 < aSystem.length : bSystem;
@@ -1171,6 +1181,10 @@ export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines
 	return aResult;
 }
 
+/**
+ * @param {object} element
+ * @returns {void}
+ */
 export function selectElement(element)
 {
 	let sel, range;
@@ -1215,26 +1229,26 @@ export function triggerAutocompleteInputChange(delay = false) {
 	}
 }
 
-let configurationScriptTagCache = {};
+const configurationScriptTagCache = {};
 
 /**
  * @param {string} configuration
- * @return {object}
+ * @returns {object}
  */
 export function getConfigurationFromScriptTag(configuration)
 {
-	let result = {};
-
 	if (!configurationScriptTagCache[configuration])
 	{
 		configurationScriptTagCache[configuration] = $('script[type="application/json"][data-configuration="' + configuration + '"]');
 	}
 
-	try {
-		result = JSON.parse(configurationScriptTagCache[configuration].text());
-	} catch (e) {/* eslint-disable-line no-empty */}
+	try
+	{
+		return JSON.parse(configurationScriptTagCache[configuration].text());
+	}
+	catch (e) {/* eslint-disable-line no-empty */}
 
-	return result;
+	return {};
 }
 
 /**
@@ -1244,7 +1258,7 @@ export function getConfigurationFromScriptTag(configuration)
 export function disposeOne(propOrValue, value)
 {
 	const disposable = value || propOrValue;
-	if (disposable && typeof disposable.dispose === 'function')
+	if (disposable && 'function' === typeof disposable.dispose)
 	{
 		disposable.dispose();
 	}
@@ -1268,6 +1282,7 @@ export function disposeObject(object)
 
 /**
  * @param {Object|Array} objectOrObjects
+ * @returns {void}
  */
 export function delegateRunOnDestroy(objectOrObjects)
 {
@@ -1286,6 +1301,11 @@ export function delegateRunOnDestroy(objectOrObjects)
 	}
 }
 
+/**
+ * @param {object} $styleTag
+ * @param {string} css
+ * @returns {boolean}
+ */
 export function appendStyles($styleTag, css)
 {
 	if ($styleTag && $styleTag[0])
@@ -1307,20 +1327,25 @@ export function appendStyles($styleTag, css)
 
 let
 	__themeTimer = 0,
-	__themeAjax = null
-;
+	__themeAjax = null;
 
+/**
+ * @param {string} value
+ * @param {function} themeTrigger
+ * @returns {void}
+ */
 export function changeTheme(value, themeTrigger)
 {
-	let
+	const
 		themeLink = $('#app-theme-link'),
-		themeStyle = $('#app-theme-style'),
-		url = themeLink.attr('href'),
 		clearTimer = () => {
 			__themeTimer = window.setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
 			__themeAjax = null;
-		}
-	;
+		};
+
+	let
+		themeStyle = $('#app-theme-style'),
+		url = themeLink.attr('href');
 
 	if (!url)
 	{
@@ -1375,6 +1400,9 @@ export function changeTheme(value, themeTrigger)
 	}
 }
 
+/**
+ * @returns {function}
+ */
 export function computedPagenatorHelper(koCurrentPage, koPageCount)
 {
 	return () => {
@@ -1388,7 +1416,7 @@ export function computedPagenatorHelper(koCurrentPage, koPageCount)
 				const data = {
 					current: index === currentPage,
 					name: '' === customName ? index.toString() : customName.toString(),
-					custom: '' === customName ? false : true,
+					custom: '' !== customName,
 					title: '' === customName ? '' : index.toString(),
 					value: index.toString()
 				};
@@ -1401,14 +1429,12 @@ export function computedPagenatorHelper(koCurrentPage, koPageCount)
 				{
 					result.unshift(data);
 				}
-			}
-		;
+			};
 
 		let
 			prev = 0,
 			next = 0,
-			limit = 2
-		;
+			limit = 2;
 
 		if (1 < pageCount || (0 < pageCount && pageCount < currentPage))
 		{
@@ -1438,13 +1464,13 @@ export function computedPagenatorHelper(koCurrentPage, koPageCount)
 				if (0 < prev)
 				{
 					fAdd(prev, false);
-					limit--;
+					limit -= 1;
 				}
 
 				if (pageCount >= next)
 				{
 					fAdd(next, true);
-					limit--;
+					limit -= 1;
 				}
 				else if (0 >= prev)
 				{
@@ -1488,7 +1514,7 @@ export function computedPagenatorHelper(koCurrentPage, koPageCount)
 
 /**
  * @param {string} fileName
- * @return {string}
+ * @returns {string}
  */
 export function getFileExtension(fileName)
 {
@@ -1500,14 +1526,13 @@ export function getFileExtension(fileName)
 
 /**
  * @param {string} fileName
- * @return {string}
+ * @returns {string}
  */
 export function mimeContentType(fileName)
 {
 	let
 		ext = '',
-		result = 'application/octet-stream'
-	;
+		result = 'application/octet-stream';
 
 	fileName = trim(fileName).toLowerCase();
 
@@ -1536,13 +1561,11 @@ export function resizeAndCrop(url, value, fCallback)
 	img.onload = function() {
 
 		let
-			diff = [0, 0]
-		;
+			diff = [0, 0];
 
 		const
 			canvas = window.document.createElement('canvas'),
-			ctx = canvas.getContext('2d')
-		;
+			ctx = canvas.getContext('2d');
 
 		canvas.width = value;
 		canvas.height = value;
@@ -1569,7 +1592,7 @@ export function resizeAndCrop(url, value, fCallback)
 /**
  * @param {string} mailToUrl
  * @param {Function} PopupComposeVoreModel
- * @return {boolean}
+ * @returns {boolean}
  */
 export function mailToHelper(mailToUrl, PopupComposeVoreModel)
 {
@@ -1586,22 +1609,22 @@ export function mailToHelper(mailToUrl, PopupComposeVoreModel)
 			to = [],
 			cc = null,
 			bcc = null,
-			params = {},
-			EmailModel = require('Model/Email'),
+			params = {};
+
+		const
 			email = mailToUrl.replace(/\?.+$/, ''),
-			queryString = mailToUrl.replace(/^[^\?]*\?/, ''),
+			query = mailToUrl.replace(/^[^\?]*\?/, ''),
+			EmailModel = require('Model/Email'),
 			fParseEmailLine = (line) => {
 				return line ? _.compact(_.map(decodeURIComponent(line).split(/[,]/), (item) => {
 					const emailObj = new EmailModel();
 					emailObj.mailsoParse(item);
 					return '' !== emailObj.email ? emailObj : null;
 				})) : null;
-			}
-		;
+			};
 
 		to = fParseEmailLine(email);
-
-		params = simpleQueryParser(queryString);
+		params = simpleQueryParser(query);
 
 		if (!isUnd(params.cc))
 		{
@@ -1638,16 +1661,19 @@ export const windowResize = _.debounce((timeout) => {
 	}
 }, 50);
 
+/**
+ * @returns {void}
+ */
 export function windowResizeCallback()
 {
 	windowResize();
 }
 
 let substr = window.String.substr;
-if ('ab'.substr(-1) !== 'b')
+if ('b' !== 'ab'.substr(-1))
 {
 	substr = (str, start, length) => {
-		start = start < 0 ? str.length + start : start;
+		start = 0 > start ? str.length + start : start;
 		return str.substr(start, length);
 	};
 

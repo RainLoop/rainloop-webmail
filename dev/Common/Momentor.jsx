@@ -13,12 +13,18 @@ const updateMomentNowUnix = _.debounce(() => {
 	_momentNow = moment().unix();
 }, 500, true);
 
+/**
+ * @returns {moment}
+ */
 export function momentNow()
 {
 	updateMomentNow();
 	return _moment || moment();
 }
 
+/**
+ * @returns {number}
+ */
 export function momentNowUnix()
 {
 	updateMomentNowUnix();
@@ -27,7 +33,7 @@ export function momentNowUnix()
 
 /**
  * @param {number} date
- * @return {string}
+ * @returns {string}
  */
 export function searchSubtractFormatDateHelper(date)
 {
@@ -36,14 +42,14 @@ export function searchSubtractFormatDateHelper(date)
 
 /**
  * @param {Object} m
- * @return {string}
+ * @returns {string}
  */
 function formatCustomShortDate(m)
 {
 	const now = momentNow();
 	if (m && now)
 	{
-		switch(true)
+		switch (true)
 		{
 			case 4 >= now.diff(m, 'hours'):
 				return m.fromNow();
@@ -57,6 +63,7 @@ function formatCustomShortDate(m)
 				});
 			case now.year() === m.year():
 				return m.format('D MMM.');
+			// no default
 		}
 	}
 
@@ -66,15 +73,14 @@ function formatCustomShortDate(m)
 /**
  * @param {number} timeStampInUTC
  * @param {string} formatStr
- * @return {string}
+ * @returns {string}
  */
 export function format(timeStampInUTC, formatStr)
 {
 
 	let
 		m = null,
-		result = ''
-	;
+		result = '';
 
 	const now = momentNowUnix();
 
@@ -112,14 +118,14 @@ export function format(timeStampInUTC, formatStr)
 
 /**
  * @param {Object} element
+ * @returns {void}
  */
 export function momentToNode(element)
 {
 	var
 		key = '',
 		time = 0,
-		$el = $(element)
-	;
+		$el = $(element);
 
 	time = $el.data('moment-time');
 	if (time)
@@ -138,6 +144,9 @@ export function momentToNode(element)
 	}
 }
 
+/**
+ * @returns {void}
+ */
 export function reload()
 {
 	_.defer(() => {

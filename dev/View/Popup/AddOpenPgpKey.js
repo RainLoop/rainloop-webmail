@@ -1,114 +1,106 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Utils = require('Common/Utils'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
+	PgpStore = require('Stores/User/Pgp'),
 
-		Utils = require('Common/Utils'),
+	kn = require('Knoin/Knoin'),
+	AbstractView = require('Knoin/AbstractView');
 
-		PgpStore = require('Stores/User/Pgp'),
+/**
+ * @constructor
+ * @extends AbstractView
+ */
+function AddOpenPgpKeyPopupView()
+{
+	AbstractView.call(this, 'Popups', 'PopupsAddOpenPgpKey');
 
-		kn = require('Knoin/Knoin'),
-		AbstractView = require('Knoin/AbstractView')
-	;
+	this.key = ko.observable('');
+	this.key.error = ko.observable(false);
+	this.key.focus = ko.observable(false);
 
-	/**
-	 * @constructor
-	 * @extends AbstractView
-	 */
-	function AddOpenPgpKeyPopupView()
-	{
-		AbstractView.call(this, 'Popups', 'PopupsAddOpenPgpKey');
+	this.key.subscribe(function() {
+		this.key.error(false);
+	}, this);
 
-		this.key = ko.observable('');
-		this.key.error = ko.observable(false);
-		this.key.focus = ko.observable(false);
+	this.addOpenPgpKeyCommand = Utils.createCommand(this, function() {
 
-		this.key.subscribe(function () {
-			this.key.error(false);
-		}, this);
+		var
+			count = 30,
+			match = null,
+			key = Utils.trim(this.key()),
+			reg = /[\-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}[\s\S]+?[\-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}/gi,
+			openpgpKeyring = PgpStore.openpgpKeyring,
+			done = false;
 
-		this.addOpenPgpKeyCommand = Utils.createCommand(this, function () {
+		if (/[\n]/.test(key))
+		{
+			key = key.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
+		}
 
-			var
-				count = 30,
-				match = null,
-				key = Utils.trim(this.key()),
-				reg = /[\-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}[\s\S]+?[\-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}/gi,
-				openpgpKeyring = PgpStore.openpgpKeyring,
-				done = false
-			;
+		this.key.error('' === key);
 
-			if (/[\n]/.test(key))
+		if (!openpgpKeyring || this.key.error())
+		{
+			return false;
+		}
+
+		do
+		{
+			match = reg.exec(key);
+			if (match && 0 > count)
 			{
-				key = key.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
-			}
-
-			this.key.error('' === key);
-
-			if (!openpgpKeyring || this.key.error())
-			{
-				return false;
-			}
-
-			do
-			{
-				match = reg.exec(key);
-				if (match && 0 > count)
+				if (match[0] && match[1] && match[2] && match[1] === match[2])
 				{
-					if (match[0] && match[1] && match[2] && match[1] === match[2])
+					if ('PRIVATE' === match[1])
 					{
-						if ('PRIVATE' === match[1])
-						{
-							openpgpKeyring.privateKeys.importKey(match[0]);
-						}
-						else if ('PUBLIC' === match[1])
-						{
-							openpgpKeyring.publicKeys.importKey(match[0]);
-						}
+						openpgpKeyring.privateKeys.importKey(match[0]);
 					}
-
-					count--;
+					else if ('PUBLIC' === match[1])
+					{
+						openpgpKeyring.publicKeys.importKey(match[0]);
+					}
 				}
 
-				done = true;
-
+				count -= 1;
 			}
-			while (done);
 
-			openpgpKeyring.store();
+			done = true;
 
-			require('App/User').default.reloadOpenPgpKeys();
-			Utils.delegateRun(this, 'cancelCommand');
+		}
+		while (done);
 
-			return true;
-		});
+		openpgpKeyring.store();
 
-		kn.constructorEnd(this);
-	}
+		require('App/User').default.reloadOpenPgpKeys();
+		Utils.delegateRun(this, 'cancelCommand');
 
-	kn.extendAsViewModel(['View/Popup/AddOpenPgpKey', 'PopupsAddOpenPgpKeyViewModel'], AddOpenPgpKeyPopupView);
-	_.extend(AddOpenPgpKeyPopupView.prototype, AbstractView.prototype);
+		return true;
+	});
 
-	AddOpenPgpKeyPopupView.prototype.clearPopup = function ()
-	{
-		this.key('');
-		this.key.error(false);
-	};
+	kn.constructorEnd(this);
+}
 
-	AddOpenPgpKeyPopupView.prototype.onShow = function ()
-	{
-		this.clearPopup();
-	};
+kn.extendAsViewModel(['View/Popup/AddOpenPgpKey', 'PopupsAddOpenPgpKeyViewModel'], AddOpenPgpKeyPopupView);
+_.extend(AddOpenPgpKeyPopupView.prototype, AbstractView.prototype);
 
-	AddOpenPgpKeyPopupView.prototype.onShowWithDelay = function ()
-	{
-		this.key.focus(true);
-	};
+AddOpenPgpKeyPopupView.prototype.clearPopup = function()
+{
+	this.key('');
+	this.key.error(false);
+};
 
-	module.exports = AddOpenPgpKeyPopupView;
+AddOpenPgpKeyPopupView.prototype.onShow = function()
+{
+	this.clearPopup();
+};
 
-}());
+AddOpenPgpKeyPopupView.prototype.onShowWithDelay = function()
+{
+	this.key.focus(true);
+};
+
+module.exports = AddOpenPgpKeyPopupView;

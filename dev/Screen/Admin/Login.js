@@ -1,32 +1,25 @@
 
-(function () {
+var
+	_ = require('_'),
 
-	'use strict';
+	AbstractScreen = require('Knoin/AbstractScreen');
 
-	var
-		_ = require('_'),
+/**
+ * @constructor
+ * @extends AbstractScreen
+ */
+function LoginAdminScreen()
+{
+	AbstractScreen.call(this, 'login', [
+		require('View/Admin/Login')
+	]);
+}
 
-		AbstractScreen = require('Knoin/AbstractScreen')
-	;
+_.extend(LoginAdminScreen.prototype, AbstractScreen.prototype);
 
-	/**
-	 * @constructor
-	 * @extends AbstractScreen
-	 */
-	function LoginAdminScreen()
-	{
-		AbstractScreen.call(this, 'login', [
-			require('View/Admin/Login')
-		]);
-	}
+LoginAdminScreen.prototype.onShow = function()
+{
+	require('App/Admin').default.setWindowTitle('');
+};
 
-	_.extend(LoginAdminScreen.prototype, AbstractScreen.prototype);
-
-	LoginAdminScreen.prototype.onShow = function ()
-	{
-		require('App/Admin').default.setWindowTitle('');
-	};
-
-	module.exports = LoginAdminScreen;
-
-}());
+module.exports = LoginAdminScreen;

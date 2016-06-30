@@ -1,32 +1,25 @@
 
-(function () {
+var
+	_ = require('_'),
 
-	'use strict';
+	AbstractScreen = require('Knoin/AbstractScreen');
 
-	var
-		_ = require('_'),
+/**
+ * @constructor
+ * @extends AbstractScreen
+ */
+function AboutUserScreen()
+{
+	AbstractScreen.call(this, 'about', [
+		require('View/User/About')
+	]);
+}
 
-		AbstractScreen = require('Knoin/AbstractScreen')
-	;
+_.extend(AboutUserScreen.prototype, AbstractScreen.prototype);
 
-	/**
-	 * @constructor
-	 * @extends AbstractScreen
-	 */
-	function AboutUserScreen()
-	{
-		AbstractScreen.call(this, 'about', [
-			require('View/User/About')
-		]);
-	}
+AboutUserScreen.prototype.onShow = function()
+{
+	require('App/User').default.setWindowTitle('RainLoop');
+};
 
-	_.extend(AboutUserScreen.prototype, AbstractScreen.prototype);
-
-	AboutUserScreen.prototype.onShow = function ()
-	{
-		require('App/User').default.setWindowTitle('RainLoop');
-	};
-
-	module.exports = AboutUserScreen;
-
-}());
+module.exports = AboutUserScreen;

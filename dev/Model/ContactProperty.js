@@ -1,52 +1,45 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Enums = require('Common/Enums'),
+	Utils = require('Common/Utils'),
+	Translator = require('Common/Translator'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
+	AbstractModel = require('Knoin/AbstractModel');
 
-		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
-		Translator = require('Common/Translator'),
+/**
+ * @constructor
+ * @param {number=} iType = Enums.ContactPropertyType.Unknown
+ * @param {string=} sTypeStr = ''
+ * @param {string=} sValue = ''
+ * @param {boolean=} bFocused = false
+ * @param {string=} sPlaceholder = ''
+ */
+function ContactPropertyModel(iType, sTypeStr, sValue, bFocused, sPlaceholder)
+{
+	AbstractModel.call(this, 'ContactPropertyModel');
 
-		AbstractModel = require('Knoin/AbstractModel')
-	;
+	this.type = ko.observable(Utils.isUnd(iType) ? Enums.ContactPropertyType.Unknown : iType);
+	this.typeStr = ko.observable(Utils.isUnd(sTypeStr) ? '' : sTypeStr);
+	this.focused = ko.observable(Utils.isUnd(bFocused) ? false : !!bFocused);
+	this.value = ko.observable(Utils.pString(sValue));
 
-	/**
-	 * @constructor
-	 * @param {number=} iType = Enums.ContactPropertyType.Unknown
-	 * @param {string=} sTypeStr = ''
-	 * @param {string=} sValue = ''
-	 * @param {boolean=} bFocused = false
-	 * @param {string=} sPlaceholder = ''
-	 */
-	function ContactPropertyModel(iType, sTypeStr, sValue, bFocused, sPlaceholder)
-	{
-		AbstractModel.call(this, 'ContactPropertyModel');
+	this.placeholder = ko.observable(sPlaceholder || '');
 
-		this.type = ko.observable(Utils.isUnd(iType) ? Enums.ContactPropertyType.Unknown : iType);
-		this.typeStr = ko.observable(Utils.isUnd(sTypeStr) ? '' : sTypeStr);
-		this.focused = ko.observable(Utils.isUnd(bFocused) ? false : !!bFocused);
-		this.value = ko.observable(Utils.pString(sValue));
+	this.placeholderValue = ko.computed(function() {
+		var value = this.placeholder();
+		return value ? Translator.i18n(value) : '';
+	}, this);
 
-		this.placeholder = ko.observable(sPlaceholder || '');
+	this.largeValue = ko.computed(function() {
+		return Enums.ContactPropertyType.Note === this.type();
+	}, this);
 
-		this.placeholderValue = ko.computed(function () {
-			var value = this.placeholder();
-			return value ? Translator.i18n(value) : '';
-		}, this);
+	this.regDisposables([this.placeholderValue, this.largeValue]);
+}
 
-		this.largeValue = ko.computed(function () {
-			return Enums.ContactPropertyType.Note === this.type();
-		}, this);
+_.extend(ContactPropertyModel.prototype, AbstractModel.prototype);
 
-		this.regDisposables([this.placeholderValue, this.largeValue]);
-	}
-
-	_.extend(ContactPropertyModel.prototype, AbstractModel.prototype);
-
-	module.exports = ContactPropertyModel;
-
-}());
+module.exports = ContactPropertyModel;

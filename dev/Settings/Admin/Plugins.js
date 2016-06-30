@@ -1,119 +1,111 @@
 
 /* global RL_COMMUNITY */
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Enums = require('Common/Enums'),
+	Utils = require('Common/Utils'),
+	Translator = require('Common/Translator'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
+	Settings = require('Storage/Settings'),
 
-		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
-		Translator = require('Common/Translator'),
+	AppStore = require('Stores/Admin/App'),
+	PluginStore = require('Stores/Admin/Plugin'),
 
-		Settings = require('Storage/Settings'),
+	Remote = require('Remote/Admin/Ajax');
 
-		AppStore = require('Stores/Admin/App'),
-		PluginStore = require('Stores/Admin/Plugin'),
+/**
+ * @constructor
+ */
+function PluginsAdminSettings()
+{
+	this.enabledPlugins = ko.observable(!!Settings.settingsGet('EnabledPlugins'));
 
-		Remote = require('Remote/Admin/Ajax')
-	;
+	this.plugins = PluginStore.plugins;
+	this.pluginsError = PluginStore.plugins.error;
 
-	/**
-	 * @constructor
-	 */
-	function PluginsAdminSettings()
-	{
-		this.enabledPlugins = ko.observable(!!Settings.settingsGet('EnabledPlugins'));
+	this.community = RL_COMMUNITY || AppStore.community();
 
-		this.plugins = PluginStore.plugins;
-		this.pluginsError = PluginStore.plugins.error;
+	this.visibility = ko.computed(function() {
+		return PluginStore.plugins.loading() ? 'visible' : 'hidden';
+	}, this);
 
-		this.community = RL_COMMUNITY || AppStore.community();
+	this.onPluginLoadRequest = _.bind(this.onPluginLoadRequest, this);
+	this.onPluginDisableRequest = _.bind(this.onPluginDisableRequest, this);
+}
 
-		this.visibility = ko.computed(function () {
-			return PluginStore.plugins.loading() ? 'visible' : 'hidden';
-		}, this);
+PluginsAdminSettings.prototype.disablePlugin = function(oPlugin)
+{
+	oPlugin.disabled(!oPlugin.disabled());
+	Remote.pluginDisable(this.onPluginDisableRequest, oPlugin.name, oPlugin.disabled());
+};
 
-		this.onPluginLoadRequest = _.bind(this.onPluginLoadRequest, this);
-		this.onPluginDisableRequest = _.bind(this.onPluginDisableRequest, this);
-	}
+PluginsAdminSettings.prototype.configurePlugin = function(oPlugin)
+{
+	Remote.plugin(this.onPluginLoadRequest, oPlugin.name);
+};
 
-	PluginsAdminSettings.prototype.disablePlugin = function (oPlugin)
-	{
-		oPlugin.disabled(!oPlugin.disabled());
-		Remote.pluginDisable(this.onPluginDisableRequest, oPlugin.name, oPlugin.disabled());
-	};
+PluginsAdminSettings.prototype.onBuild = function(oDom)
+{
+	var self = this;
 
-	PluginsAdminSettings.prototype.configurePlugin = function (oPlugin)
-	{
-		Remote.plugin(this.onPluginLoadRequest, oPlugin.name);
-	};
-
-	PluginsAdminSettings.prototype.onBuild = function (oDom)
-	{
-		var self = this;
-
-		oDom
-			.on('click', '.e-item .configure-plugin-action', function () {
-				var oPlugin = ko.dataFor(this);
-				if (oPlugin)
-				{
-					self.configurePlugin(oPlugin);
-				}
-			})
-			.on('click', '.e-item .disabled-plugin', function () {
-				var oPlugin = ko.dataFor(this);
-				if (oPlugin)
-				{
-					self.disablePlugin(oPlugin);
-				}
-			})
-		;
-
-		this.enabledPlugins.subscribe(function (bValue) {
-			Remote.saveAdminConfig(Utils.noop, {
-				'EnabledPlugins': bValue ? '1' : '0'
-			});
-		});
-	};
-
-	PluginsAdminSettings.prototype.onShow = function ()
-	{
-		PluginStore.plugins.error('');
-		require('App/Admin').default.reloadPluginList();
-	};
-
-	PluginsAdminSettings.prototype.onPluginLoadRequest = function (sResult, oData)
-	{
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-		{
-			require('Knoin/Knoin').showScreenPopup(require('View/Popup/Plugin'), [oData.Result]);
-		}
-	};
-
-	PluginsAdminSettings.prototype.onPluginDisableRequest = function (sResult, oData)
-	{
-		if (Enums.StorageResultType.Success === sResult && oData)
-		{
-			if (!oData.Result && oData.ErrorCode)
+	oDom
+		.on('click', '.e-item .configure-plugin-action', function() {
+			var oPlugin = ko.dataFor(this);
+			if (oPlugin)
 			{
-				if (Enums.Notification.UnsupportedPluginPackage === oData.ErrorCode && oData.ErrorMessage && '' !== oData.ErrorMessage)
-				{
-					PluginStore.plugins.error(oData.ErrorMessage);
-				}
-				else
-				{
-					PluginStore.plugins.error(Translator.getNotification(oData.ErrorCode));
-				}
+				self.configurePlugin(oPlugin);
+			}
+		})
+		.on('click', '.e-item .disabled-plugin', function() {
+			var oPlugin = ko.dataFor(this);
+			if (oPlugin)
+			{
+				self.disablePlugin(oPlugin);
+			}
+		});
+
+	this.enabledPlugins.subscribe(function(bValue) {
+		Remote.saveAdminConfig(Utils.noop, {
+			'EnabledPlugins': bValue ? '1' : '0'
+		});
+	});
+};
+
+PluginsAdminSettings.prototype.onShow = function()
+{
+	PluginStore.plugins.error('');
+	require('App/Admin').default.reloadPluginList();
+};
+
+PluginsAdminSettings.prototype.onPluginLoadRequest = function(sResult, oData)
+{
+	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+	{
+		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Plugin'), [oData.Result]);
+	}
+};
+
+PluginsAdminSettings.prototype.onPluginDisableRequest = function(sResult, oData)
+{
+	if (Enums.StorageResultType.Success === sResult && oData)
+	{
+		if (!oData.Result && oData.ErrorCode)
+		{
+			if (Enums.Notification.UnsupportedPluginPackage === oData.ErrorCode && oData.ErrorMessage && '' !== oData.ErrorMessage)
+			{
+				PluginStore.plugins.error(oData.ErrorMessage);
+			}
+			else
+			{
+				PluginStore.plugins.error(Translator.getNotification(oData.ErrorCode));
 			}
 		}
+	}
 
-		require('App/Admin').default.reloadPluginList();
-	};
+	require('App/Admin').default.reloadPluginList();
+};
 
-	module.exports = PluginsAdminSettings;
-
-}());
+module.exports = PluginsAdminSettings;

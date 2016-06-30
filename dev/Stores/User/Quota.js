@@ -1,43 +1,35 @@
 
-(function () {
+var
+	window = require('window'),
+	ko = require('ko');
 
-	'use strict';
+/**
+ * @constructor
+ */
+function QuotaUserStore()
+{
+	this.quota = ko.observable(0);
+	this.usage = ko.observable(0);
 
-	var
-		window = require('window'),
-		ko = require('ko')
-	;
+	this.percentage = ko.computed(function() {
 
-	/**
-	 * @constructor
-	 */
-	function QuotaUserStore()
-	{
-		this.quota = ko.observable(0);
-		this.usage = ko.observable(0);
+		var
+			iQuota = this.quota(),
+			iUsed = this.usage();
 
-		this.percentage = ko.computed(function () {
+		return 0 < iQuota ? window.Math.ceil((iUsed / iQuota) * 100) : 0;
 
-			var
-				iQuota = this.quota(),
-				iUsed = this.usage()
-			;
+	}, this);
+}
 
-			return 0 < iQuota ? window.Math.ceil((iUsed / iQuota) * 100) : 0;
+/**
+ * @param {number} iQuota
+ * @param {number} iUsage
+ */
+QuotaUserStore.prototype.populateData = function(iQuota, iUsage)
+{
+	this.quota(iQuota * 1024);
+	this.usage(iUsage * 1024);
+};
 
-		}, this);
-	}
-
-	/**
-	 * @param {number} iQuota
-	 * @param {number} iUsage
-	 */
-	QuotaUserStore.prototype.populateData = function(iQuota, iUsage)
-	{
-		this.quota(iQuota * 1024);
-		this.usage(iUsage * 1024);
-	};
-
-	module.exports = new QuotaUserStore();
-
-}());
+module.exports = new QuotaUserStore();

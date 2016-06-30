@@ -1,80 +1,73 @@
 
-(function () {
+/**
+ * @constructor
+ */
+function SocialUserSettings()
+{
+	var
+		Utils = require('Common/Utils'),
+		SocialStore = require('Stores/Social');
 
-	'use strict';
+	this.googleEnable = SocialStore.google.enabled;
+	this.googleEnableAuth = SocialStore.google.capa.auth;
+	this.googleEnableAuthFast = SocialStore.google.capa.authFast;
+	this.googleEnableDrive = SocialStore.google.capa.drive;
+	this.googleEnablePreview = SocialStore.google.capa.preview;
 
-	/**
-	 * @constructor
-	 */
-	function SocialUserSettings()
-	{
-		var
-			Utils = require('Common/Utils'),
-			SocialStore = require('Stores/Social')
-		;
+	this.googleActions = SocialStore.google.loading;
+	this.googleLoggined = SocialStore.google.loggined;
+	this.googleUserName = SocialStore.google.userName;
 
-		this.googleEnable = SocialStore.google.enabled;
-		this.googleEnableAuth = SocialStore.google.capa.auth;
-		this.googleEnableAuthFast = SocialStore.google.capa.authFast;
-		this.googleEnableDrive = SocialStore.google.capa.drive;
-		this.googleEnablePreview = SocialStore.google.capa.preview;
+	this.facebookEnable = SocialStore.facebook.enabled;
 
-		this.googleActions = SocialStore.google.loading;
-		this.googleLoggined = SocialStore.google.loggined;
-		this.googleUserName = SocialStore.google.userName;
+	this.facebookActions = SocialStore.facebook.loading;
+	this.facebookLoggined = SocialStore.facebook.loggined;
+	this.facebookUserName = SocialStore.facebook.userName;
 
-		this.facebookEnable = SocialStore.facebook.enabled;
+	this.twitterEnable = SocialStore.twitter.enabled;
 
-		this.facebookActions = SocialStore.facebook.loading;
-		this.facebookLoggined = SocialStore.facebook.loggined;
-		this.facebookUserName = SocialStore.facebook.userName;
+	this.twitterActions = SocialStore.twitter.loading;
+	this.twitterLoggined = SocialStore.twitter.loggined;
+	this.twitterUserName = SocialStore.twitter.userName;
 
-		this.twitterEnable = SocialStore.twitter.enabled;
+	this.connectGoogle = Utils.createCommand(this, function() {
+		if (!this.googleLoggined())
+		{
+			require('App/User').default.googleConnect();
+		}
+	}, function() {
+		return !this.googleLoggined() && !this.googleActions();
+	});
 
-		this.twitterActions = SocialStore.twitter.loading;
-		this.twitterLoggined = SocialStore.twitter.loggined;
-		this.twitterUserName = SocialStore.twitter.userName;
+	this.disconnectGoogle = Utils.createCommand(this, function() {
+		require('App/User').default.googleDisconnect();
+	});
 
-		this.connectGoogle = Utils.createCommand(this, function () {
-			if (!this.googleLoggined())
-			{
-				require('App/User').default.googleConnect();
-			}
-		}, function () {
-			return !this.googleLoggined() && !this.googleActions();
-		});
+	this.connectFacebook = Utils.createCommand(this, function() {
+		if (!this.facebookLoggined())
+		{
+			require('App/User').default.facebookConnect();
+		}
+	}, function() {
+		return !this.facebookLoggined() && !this.facebookActions();
+	});
 
-		this.disconnectGoogle = Utils.createCommand(this, function () {
-			require('App/User').default.googleDisconnect();
-		});
+	this.disconnectFacebook = Utils.createCommand(this, function() {
+		require('App/User').default.facebookDisconnect();
+	});
 
-		this.connectFacebook = Utils.createCommand(this, function () {
-			if (!this.facebookLoggined())
-			{
-				require('App/User').default.facebookConnect();
-			}
-		}, function () {
-			return !this.facebookLoggined() && !this.facebookActions();
-		});
+	this.connectTwitter = Utils.createCommand(this, function() {
+		if (!this.twitterLoggined())
+		{
+			require('App/User').default.twitterConnect();
+		}
+	}, function() {
+		return !this.twitterLoggined() && !this.twitterActions();
+	});
 
-		this.disconnectFacebook = Utils.createCommand(this, function () {
-			require('App/User').default.facebookDisconnect();
-		});
+	this.disconnectTwitter = Utils.createCommand(this, function() {
+		require('App/User').default.twitterDisconnect();
+	});
+}
 
-		this.connectTwitter = Utils.createCommand(this, function () {
-			if (!this.twitterLoggined())
-			{
-				require('App/User').default.twitterConnect();
-			}
-		}, function () {
-			return !this.twitterLoggined() && !this.twitterActions();
-		});
-
-		this.disconnectTwitter = Utils.createCommand(this, function () {
-			require('App/User').default.twitterDisconnect();
-		});
-	}
-
-	module.exports = SocialUserSettings;
-
-}());
+module.exports = SocialUserSettings;

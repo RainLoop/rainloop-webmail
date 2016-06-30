@@ -1,117 +1,110 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Enums = require('Common/Enums'),
+	Globals = require('Common/Globals'),
+	Utils = require('Common/Utils'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
+	Translator = require('Common/Translator'),
 
-		Enums = require('Common/Enums'),
-		Globals = require('Common/Globals'),
-		Utils = require('Common/Utils'),
+	DomainStore = require('Stores/Admin/Domain'),
 
-		Translator = require('Common/Translator'),
+	Remote = require('Remote/Admin/Ajax'),
 
-		DomainStore = require('Stores/Admin/Domain'),
+	kn = require('Knoin/Knoin'),
+	AbstractView = require('Knoin/AbstractView');
 
-		Remote = require('Remote/Admin/Ajax'),
+/**
+ * @constructor
+ * @extends AbstractView
+ */
+function DomainAliasPopupView()
+{
+	AbstractView.call(this, 'Popups', 'PopupsDomainAlias');
 
-		kn = require('Knoin/Knoin'),
-		AbstractView = require('Knoin/AbstractView')
-	;
+	this.saving = ko.observable(false);
+	this.savingError = ko.observable('');
 
-	/**
-	 * @constructor
-	 * @extends AbstractView
-	 */
-	function DomainAliasPopupView()
+	this.name = ko.observable('');
+	this.name.focused = ko.observable(false);
+
+	this.alias = ko.observable('');
+
+	this.domains = DomainStore.domainsWithoutAliases;
+
+	this.domainsOptions = ko.computed(function() {
+		return _.map(this.domains(), function(item) {
+			return {
+				optValue: item.name,
+				optText: item.name
+			};
+		});
+	}, this);
+
+	this.canBeSaved = ko.computed(function() {
+		return !this.saving() && '' !== this.name() && '' !== this.alias();
+	}, this);
+
+	this.createCommand = Utils.createCommand(this, function() {
+		this.saving(true);
+		Remote.createDomainAlias(
+			_.bind(this.onDomainAliasCreateOrSaveResponse, this),
+			this.name(),
+			this.alias()
+		);
+	}, this.canBeSaved);
+
+	kn.constructorEnd(this);
+}
+
+kn.extendAsViewModel(['View/Popup/DomainAlias', 'PopupsDomainAliasViewModel'], DomainAliasPopupView);
+_.extend(DomainAliasPopupView.prototype, AbstractView.prototype);
+
+DomainAliasPopupView.prototype.onDomainAliasCreateOrSaveResponse = function(sResult, oData)
+{
+	this.saving(false);
+	if (Enums.StorageResultType.Success === sResult && oData)
 	{
-		AbstractView.call(this, 'Popups', 'PopupsDomainAlias');
-
-		this.saving = ko.observable(false);
-		this.savingError = ko.observable('');
-
-		this.name = ko.observable('');
-		this.name.focused = ko.observable(false);
-
-		this.alias = ko.observable('');
-
-		this.domains = DomainStore.domainsWithoutAliases;
-
-		this.domainsOptions = ko.computed(function () {
-			return _.map(this.domains(), function(item) {
-				return {
-					optValue: item.name,
-					optText: item.name
-				};
-			});
-		}, this);
-
-		this.canBeSaved = ko.computed(function () {
-			return !this.saving() && '' !== this.name() && '' !== this.alias();
-		}, this);
-
-		this.createCommand = Utils.createCommand(this, function () {
-			this.saving(true);
-			Remote.createDomainAlias(
-				_.bind(this.onDomainAliasCreateOrSaveResponse, this),
-				this.name(),
-				this.alias()
-			);
-		}, this.canBeSaved);
-
-		kn.constructorEnd(this);
+		if (oData.Result)
+		{
+			require('App/Admin').default.reloadDomainList();
+			this.closeCommand();
+		}
+		else if (Enums.Notification.DomainAlreadyExists === oData.ErrorCode)
+		{
+			this.savingError(Translator.i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));
+		}
 	}
-
-	kn.extendAsViewModel(['View/Popup/DomainAlias', 'PopupsDomainAliasViewModel'], DomainAliasPopupView);
-	_.extend(DomainAliasPopupView.prototype, AbstractView.prototype);
-
-	DomainAliasPopupView.prototype.onDomainAliasCreateOrSaveResponse = function (sResult, oData)
+	else
 	{
-		this.saving(false);
-		if (Enums.StorageResultType.Success === sResult && oData)
-		{
-			if (oData.Result)
-			{
-				require('App/Admin').default.reloadDomainList();
-				this.closeCommand();
-			}
-			else if (Enums.Notification.DomainAlreadyExists === oData.ErrorCode)
-			{
-				this.savingError(Translator.i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));
-			}
-		}
-		else
-		{
-			this.savingError(Translator.i18n('ERRORS/UNKNOWN_ERROR'));
-		}
-	};
+		this.savingError(Translator.i18n('ERRORS/UNKNOWN_ERROR'));
+	}
+};
 
-	DomainAliasPopupView.prototype.onShow = function ()
+DomainAliasPopupView.prototype.onShow = function()
+{
+	this.clearForm();
+};
+
+DomainAliasPopupView.prototype.onShowWithDelay = function()
+{
+	if ('' === this.name() && !Globals.bMobile)
 	{
-		this.clearForm();
-	};
+		this.name.focused(true);
+	}
+};
 
-	DomainAliasPopupView.prototype.onShowWithDelay = function ()
-	{
-		if ('' === this.name() && !Globals.bMobile)
-		{
-			this.name.focused(true);
-		}
-	};
+DomainAliasPopupView.prototype.clearForm = function()
+{
+	this.saving(false);
+	this.savingError('');
 
-	DomainAliasPopupView.prototype.clearForm = function ()
-	{
-		this.saving(false);
-		this.savingError('');
+	this.name('');
+	this.name.focused(false);
 
-		this.name('');
-		this.name.focused(false);
+	this.alias('');
+};
 
-		this.alias('');
-	};
-
-	module.exports = DomainAliasPopupView;
-
-}());
+module.exports = DomainAliasPopupView;

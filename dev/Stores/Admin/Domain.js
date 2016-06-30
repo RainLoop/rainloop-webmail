@@ -1,25 +1,17 @@
 
-(function () {
+var ko = require('ko');
 
-	'use strict';
+/**
+ * @constructor
+ */
+function DomainAdminStore()
+{
+	this.domains = ko.observableArray([]);
+	this.domains.loading = ko.observable(false).extend({'throttle': 100});
 
-	var
-		ko = require('ko')
-	;
+	this.domainsWithoutAliases = this.domains.filter(function(oItem) {
+		return oItem && !oItem.alias;
+	});
+}
 
-	/**
-	 * @constructor
-	 */
-	function DomainAdminStore()
-	{
-		this.domains = ko.observableArray([]);
-		this.domains.loading = ko.observable(false).extend({'throttle': 100});
-
-		this.domainsWithoutAliases = this.domains.filter(function (oItem) {
-			return oItem && !oItem.alias;
-		});
-	}
-
-	module.exports = new DomainAdminStore();
-
-}());
+module.exports = new DomainAdminStore();

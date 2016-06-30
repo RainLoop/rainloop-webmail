@@ -1,51 +1,44 @@
 
-(function () {
+var
+	window = require('window'),
+	Opentip = window.Opentip;
 
-	'use strict';
+Opentip.styles.rainloop = {
 
-	var
-		window = require('window'),
-		Opentip = window.Opentip
-	;
+	'extends': 'standard',
 
-	Opentip.styles.rainloop = {
+	'fixed': true,
+	'target': true,
 
-		'extends': 'standard',
+	'delay': 0.2,
+	'hideDelay': 0,
 
-		'fixed': true,
-		'target': true,
+	'hideEffect': 'fade',
+	'hideEffectDuration': 0.2,
 
-		'delay': 0.2,
-		'hideDelay': 0,
+	'showEffect': 'fade',
+	'showEffectDuration': 0.2,
 
-		'hideEffect': 'fade',
-		'hideEffectDuration': 0.2,
+	'showOn': 'mouseover click',
+	'removeElementsOnHide': true,
 
-		'showEffect': 'fade',
-		'showEffectDuration': 0.2,
+	'background': '#fff',
+	'shadow': false,
 
-		'showOn': 'mouseover click',
-		'removeElementsOnHide': true,
+	'borderColor': '#999',
+	'borderRadius': 2,
+	'borderWidth': 1
+};
 
-		'background': '#fff',
-		'shadow': false,
+Opentip.styles.rainloopTip = {
+	'extends': 'rainloop',
+	'delay': 0.4,
+	'group': 'rainloopTips'
+};
 
-		'borderColor': '#999',
-		'borderRadius': 2,
-		'borderWidth': 1
-	};
+Opentip.styles.rainloopErrorTip = {
+	'extends': 'rainloop',
+	'className': 'rainloopErrorTip'
+};
 
-	Opentip.styles.rainloopTip = {
-		'extends': 'rainloop',
-		'delay': 0.4,
-		'group': 'rainloopTips'
-	};
-
-	Opentip.styles.rainloopErrorTip = {
-		'extends': 'rainloop',
-		'className': 'rainloopErrorTip'
-	};
-
-	module.exports = Opentip;
-
-}());
+module.exports = Opentip;

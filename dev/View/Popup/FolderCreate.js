@@ -1,120 +1,111 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Enums = require('Common/Enums'),
+	Consts = require('Common/Consts'),
+	Globals = require('Common/Globals'),
+	Utils = require('Common/Utils'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
+	FolderStore = require('Stores/User/Folder'),
 
-		Enums = require('Common/Enums'),
-		Consts = require('Common/Consts'),
-		Globals = require('Common/Globals'),
-		Utils = require('Common/Utils'),
+	Promises = require('Promises/User/Ajax'),
 
-		FolderStore = require('Stores/User/Folder'),
+	kn = require('Knoin/Knoin'),
+	AbstractView = require('Knoin/AbstractView');
 
-		Promises = require('Promises/User/Ajax'),
+/**
+ * @constructor
+ * @extends AbstractView
+ */
+function FolderCreateView()
+{
+	AbstractView.call(this, 'Popups', 'PopupsFolderCreate');
 
-		kn = require('Knoin/Knoin'),
-		AbstractView = require('Knoin/AbstractView')
-	;
+	this.folderName = ko.observable('');
+	this.folderName.focused = ko.observable(false);
 
-	/**
-	 * @constructor
-	 * @extends AbstractView
-	 */
-	function FolderCreateView()
-	{
-		AbstractView.call(this, 'Popups', 'PopupsFolderCreate');
+	this.selectedParentValue = ko.observable(Consts.UNUSED_OPTION_VALUE);
 
-		this.folderName = ko.observable('');
-		this.folderName.focused = ko.observable(false);
+	this.parentFolderSelectList = ko.computed(function() {
 
-		this.selectedParentValue = ko.observable(Consts.UNUSED_OPTION_VALUE);
+		var
+			aTop = [],
+			fDisableCallback = null,
+			fVisibleCallback = null,
+			aList = FolderStore.folderList(),
+			fRenameCallback = function(oItem) {
+				return oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '';
+			};
 
-		this.parentFolderSelectList = ko.computed(function () {
+		aTop.push(['', '']);
 
-			var
-				aTop = [],
-				fDisableCallback = null,
-				fVisibleCallback = null,
-				aList = FolderStore.folderList(),
-				fRenameCallback = function (oItem) {
-					return oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '';
-				}
-			;
-
-			aTop.push(['', '']);
-
-			if ('' !== FolderStore.namespace)
-			{
-				fDisableCallback = function (oItem)
-				{
-					return FolderStore.namespace !== oItem.fullNameRaw.substr(0, FolderStore.namespace.length);
-				};
-			}
-
-			return Utils.folderListOptionsBuilder([], aList, [], aTop, null, fDisableCallback, fVisibleCallback, fRenameCallback);
-
-		}, this);
-
-		// commands
-		this.createFolder = Utils.createCommand(this, function () {
-
-			var
-				sParentFolderName = this.selectedParentValue()
-			;
-
-			if ('' === sParentFolderName && 1 < FolderStore.namespace.length)
-			{
-				sParentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
-			}
-
-			require('App/User').default.foldersPromisesActionHelper(
-				Promises.folderCreate(this.folderName(), sParentFolderName, FolderStore.foldersCreating),
-				Enums.Notification.CantCreateFolder
-			);
-
-			this.cancelCommand();
-
-		}, function () {
-			return this.simpleFolderNameValidation(this.folderName());
-		});
-
-		this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
-
-		kn.constructorEnd(this);
-	}
-
-	kn.extendAsViewModel(['View/Popup/FolderCreate', 'PopupsFolderCreateViewModel'], FolderCreateView);
-	_.extend(FolderCreateView.prototype, AbstractView.prototype);
-
-	FolderCreateView.prototype.simpleFolderNameValidation = function (sName)
-	{
-		return (/^[^\\\/]+$/g).test(Utils.trim(sName));
-	};
-
-	FolderCreateView.prototype.clearPopup = function ()
-	{
-		this.folderName('');
-		this.selectedParentValue('');
-		this.folderName.focused(false);
-	};
-
-	FolderCreateView.prototype.onShow = function ()
-	{
-		this.clearPopup();
-	};
-
-	FolderCreateView.prototype.onShowWithDelay = function ()
-	{
-		if (!Globals.bMobile)
+		if ('' !== FolderStore.namespace)
 		{
-			this.folderName.focused(true);
+			fDisableCallback = function(oItem)
+			{
+				return FolderStore.namespace !== oItem.fullNameRaw.substr(0, FolderStore.namespace.length);
+			};
 		}
-	};
 
-	module.exports = FolderCreateView;
+		return Utils.folderListOptionsBuilder([], aList, [], aTop, null, fDisableCallback, fVisibleCallback, fRenameCallback);
 
-}());
+	}, this);
+
+	// commands
+	this.createFolder = Utils.createCommand(this, function() {
+
+		var
+			sParentFolderName = this.selectedParentValue();
+
+		if ('' === sParentFolderName && 1 < FolderStore.namespace.length)
+		{
+			sParentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
+		}
+
+		require('App/User').default.foldersPromisesActionHelper(
+			Promises.folderCreate(this.folderName(), sParentFolderName, FolderStore.foldersCreating),
+			Enums.Notification.CantCreateFolder
+		);
+
+		this.cancelCommand();
+
+	}, function() {
+		return this.simpleFolderNameValidation(this.folderName());
+	});
+
+	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
+
+	kn.constructorEnd(this);
+}
+
+kn.extendAsViewModel(['View/Popup/FolderCreate', 'PopupsFolderCreateViewModel'], FolderCreateView);
+_.extend(FolderCreateView.prototype, AbstractView.prototype);
+
+FolderCreateView.prototype.simpleFolderNameValidation = function(sName)
+{
+	return (/^[^\\\/]+$/g).test(Utils.trim(sName));
+};
+
+FolderCreateView.prototype.clearPopup = function()
+{
+	this.folderName('');
+	this.selectedParentValue('');
+	this.folderName.focused(false);
+};
+
+FolderCreateView.prototype.onShow = function()
+{
+	this.clearPopup();
+};
+
+FolderCreateView.prototype.onShowWithDelay = function()
+{
+	if (!Globals.bMobile)
+	{
+		this.folderName.focused(true);
+	}
+};
+
+module.exports = FolderCreateView;

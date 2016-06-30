@@ -7,6 +7,7 @@ import {AbstractComponent} from 'Component/Abstract';
 class AbstractInput extends AbstractComponent
 {
 	/**
+	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {
@@ -32,10 +33,9 @@ class AbstractInput extends AbstractComponent
 			var
 				size = ko.unwrap(this.size),
 				suffixValue = this.trigger ?
-					' ' + trim('settings-saved-trigger-input ' + this.classForTrigger()) : ''
-			;
+					' ' + trim('settings-saved-trigger-input ' + this.classForTrigger()) : '';
 
-			return (size > 0 ? 'span' + size : '') + suffixValue;
+			return (0 < size ? 'span' + size : '') + suffixValue;
 
 		}, this);
 

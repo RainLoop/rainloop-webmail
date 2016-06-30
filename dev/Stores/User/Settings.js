@@ -1,100 +1,93 @@
 
-(function () {
+var
+	window = require('window'),
+	ko = require('ko'),
 
-	'use strict';
+	Consts = require('Common/Consts'),
+	Enums = require('Common/Enums'),
+	Globals = require('Common/Globals'),
+	Utils = require('Common/Utils'),
+	Events = require('Common/Events'),
 
-	var
-		window = require('window'),
-		ko = require('ko'),
+	Settings = require('Storage/Settings');
 
-		Consts = require('Common/Consts'),
-		Enums = require('Common/Enums'),
-		Globals = require('Common/Globals'),
-		Utils = require('Common/Utils'),
-		Events = require('Common/Events'),
+/**
+ * @constructor
+ */
+function SettingsUserStore()
+{
+	this.iAutoLogoutTimer = 0;
 
-		Settings = require('Storage/Settings')
-	;
+	this.layout = ko.observable(Enums.Layout.SidePreview)
+		.extend({'limitedList': [
+			Enums.Layout.SidePreview, Enums.Layout.BottomPreview, Enums.Layout.NoPreview
+		]});
 
-	/**
-	 * @constructor
-	 */
-	function SettingsUserStore()
-	{
-		this.iAutoLogoutTimer = 0;
+	this.editorDefaultType = ko.observable(Enums.EditorDefaultType.Html)
+		.extend({'limitedList': [
+			Enums.EditorDefaultType.Html, Enums.EditorDefaultType.Plain,
+			Enums.EditorDefaultType.HtmlForced, Enums.EditorDefaultType.PlainForced
+		]});
 
-		this.layout = ko.observable(Enums.Layout.SidePreview)
-			.extend({'limitedList': [
-				Enums.Layout.SidePreview, Enums.Layout.BottomPreview, Enums.Layout.NoPreview
-			]});
+	this.messagesPerPage = ko.observable(Consts.MESSAGES_PER_PAGE)
+		.extend({'limitedList': Consts.MESSAGES_PER_PAGE_VALUES});
 
-		this.editorDefaultType = ko.observable(Enums.EditorDefaultType.Html)
-			.extend({'limitedList': [
-				Enums.EditorDefaultType.Html, Enums.EditorDefaultType.Plain,
-				Enums.EditorDefaultType.HtmlForced, Enums.EditorDefaultType.PlainForced
-			]});
+	this.showImages = ko.observable(false);
+	this.useCheckboxesInList = ko.observable(true);
+	this.useThreads = ko.observable(false);
+	this.replySameFolder = ko.observable(false);
 
-		this.messagesPerPage = ko.observable(Consts.MESSAGES_PER_PAGE)
-			.extend({'limitedList': Consts.MESSAGES_PER_PAGE_VALUES});
+	this.autoLogout = ko.observable(30);
 
-		this.showImages = ko.observable(false);
-		this.useCheckboxesInList = ko.observable(true);
-		this.useThreads = ko.observable(false);
-		this.replySameFolder = ko.observable(false);
+	this.computers();
+	this.subscribers();
+}
 
-		this.autoLogout = ko.observable(30);
+SettingsUserStore.prototype.computers = function()
+{
+	this.usePreviewPane = ko.computed(function() {
+		return Enums.Layout.NoPreview !== this.layout();
+	}, this);
+};
 
-		this.computers();
-		this.subscribers();
-	}
+SettingsUserStore.prototype.subscribers = function()
+{
+	this.layout.subscribe(function(nValue) {
 
-	SettingsUserStore.prototype.computers = function ()
-	{
-		this.usePreviewPane = ko.computed(function () {
-			return Enums.Layout.NoPreview !== this.layout();
-		}, this);
-	};
+		Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
+		Globals.$html.toggleClass('rl-side-preview-pane', Enums.Layout.SidePreview === nValue);
+		Globals.$html.toggleClass('rl-bottom-preview-pane', Enums.Layout.BottomPreview === nValue);
 
-	SettingsUserStore.prototype.subscribers = function ()
-	{
-		this.layout.subscribe(function (nValue) {
+		Events.pub('layout', [nValue]);
+	});
+};
 
-			Globals.$html.toggleClass('rl-no-preview-pane', Enums.Layout.NoPreview === nValue);
-			Globals.$html.toggleClass('rl-side-preview-pane', Enums.Layout.SidePreview === nValue);
-			Globals.$html.toggleClass('rl-bottom-preview-pane', Enums.Layout.BottomPreview === nValue);
+SettingsUserStore.prototype.populate = function()
+{
+	this.layout(Utils.pInt(Settings.settingsGet('Layout')));
+	this.editorDefaultType(Settings.settingsGet('EditorDefaultType'));
 
-			Events.pub('layout', [nValue]);
-		});
-	};
+	this.autoLogout(Utils.pInt(Settings.settingsGet('AutoLogout')));
+	this.messagesPerPage(Settings.settingsGet('MPP'));
 
-	SettingsUserStore.prototype.populate = function ()
-	{
-		this.layout(Utils.pInt(Settings.settingsGet('Layout')));
-		this.editorDefaultType(Settings.settingsGet('EditorDefaultType'));
+	this.showImages(!!Settings.settingsGet('ShowImages'));
+	this.useCheckboxesInList(!!Settings.settingsGet('UseCheckboxesInList'));
+	this.useThreads(!!Settings.settingsGet('UseThreads'));
+	this.replySameFolder(!!Settings.settingsGet('ReplySameFolder'));
 
-		this.autoLogout(Utils.pInt(Settings.settingsGet('AutoLogout')));
-		this.messagesPerPage(Settings.settingsGet('MPP'));
+	var self = this;
 
-		this.showImages(!!Settings.settingsGet('ShowImages'));
-		this.useCheckboxesInList(!!Settings.settingsGet('UseCheckboxesInList'));
-		this.useThreads(!!Settings.settingsGet('UseThreads'));
-		this.replySameFolder(!!Settings.settingsGet('ReplySameFolder'));
+	Events.sub('rl.auto-logout-refresh', function() {
+		window.clearTimeout(self.iAutoLogoutTimer);
+		if (0 < self.autoLogout() && !Settings.settingsGet('AccountSignMe'))
+		{
+			self.iAutoLogoutTimer = window.setTimeout(function() {
+				Events.pub('rl.auto-logout');
+			}, self.autoLogout() * 1000 * 60);
+		}
+	});
 
-		var self = this;
+	Events.pub('rl.auto-logout-refresh');
+};
 
-		Events.sub('rl.auto-logout-refresh', function () {
-			window.clearTimeout(self.iAutoLogoutTimer);
-			if (0 < self.autoLogout() && !Settings.settingsGet('AccountSignMe'))
-			{
-				self.iAutoLogoutTimer = window.setTimeout(function () {
-					Events.pub('rl.auto-logout');
-				}, self.autoLogout() * 1000 * 60);
-			}
-		});
-
-		Events.pub('rl.auto-logout-refresh');
-	};
-
-	module.exports = new SettingsUserStore();
-
-}());
+module.exports = new SettingsUserStore();

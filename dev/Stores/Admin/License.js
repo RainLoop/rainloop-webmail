@@ -1,26 +1,18 @@
 
-(function () {
+var ko = require('ko');
 
-	'use strict';
+/**
+ * @constructor
+ */
+function LicenseAdminStore()
+{
+	this.licensing = ko.observable(false);
+	this.licensingProcess = ko.observable(false);
+	this.licenseValid = ko.observable(false);
+	this.licenseExpired = ko.observable(0);
+	this.licenseError = ko.observable('');
 
-	var
-		ko = require('ko')
-	;
+	this.licenseTrigger = ko.observable(false);
+}
 
-	/**
-	 * @constructor
-	 */
-	function LicenseAdminStore()
-	{
-		this.licensing = ko.observable(false);
-		this.licensingProcess = ko.observable(false);
-		this.licenseValid = ko.observable(false);
-		this.licenseExpired = ko.observable(0);
-		this.licenseError = ko.observable('');
-
-		this.licenseTrigger = ko.observable(false);
-	}
-
-	module.exports = new LicenseAdminStore();
-
-}());
+module.exports = new LicenseAdminStore();

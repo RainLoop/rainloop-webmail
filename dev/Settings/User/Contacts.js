@@ -1,58 +1,51 @@
 
-(function () {
+var
+	ko = require('ko'),
 
-	'use strict';
+	AppStore = require('Stores/User/App'),
+	ContactStore = require('Stores/User/Contact'),
 
-	var
-		ko = require('ko'),
+	Remote = require('Remote/User/Ajax');
 
-		AppStore = require('Stores/User/App'),
-		ContactStore = require('Stores/User/Contact'),
+/**
+ * @constructor
+ */
+function ContactsUserSettings()
+{
+	this.contactsAutosave = AppStore.contactsAutosave;
 
-		Remote = require('Remote/User/Ajax')
-	;
+	this.allowContactsSync = ContactStore.allowContactsSync;
+	this.enableContactsSync = ContactStore.enableContactsSync;
+	this.contactsSyncUrl = ContactStore.contactsSyncUrl;
+	this.contactsSyncUser = ContactStore.contactsSyncUser;
+	this.contactsSyncPass = ContactStore.contactsSyncPass;
 
-	/**
-	 * @constructor
-	 */
-	function ContactsUserSettings()
-	{
-		this.contactsAutosave = AppStore.contactsAutosave;
+	this.saveTrigger = ko.computed(function() {
+		return [
+			this.enableContactsSync() ? '1' : '0',
+			this.contactsSyncUrl(),
+			this.contactsSyncUser(),
+			this.contactsSyncPass()
+		].join('|');
+	}, this).extend({'throttle': 500});
+}
 
-		this.allowContactsSync = ContactStore.allowContactsSync;
-		this.enableContactsSync = ContactStore.enableContactsSync;
-		this.contactsSyncUrl = ContactStore.contactsSyncUrl;
-		this.contactsSyncUser = ContactStore.contactsSyncUser;
-		this.contactsSyncPass = ContactStore.contactsSyncPass;
-
-		this.saveTrigger = ko.computed(function () {
-			return [
-				this.enableContactsSync() ? '1' : '0',
-				this.contactsSyncUrl(),
-				this.contactsSyncUser(),
-				this.contactsSyncPass()
-			].join('|');
-		}, this).extend({'throttle': 500});
-	}
-
-	ContactsUserSettings.prototype.onBuild = function ()
-	{
-		this.contactsAutosave.subscribe(function (bValue) {
-			Remote.saveSettings(null, {
-				'ContactsAutosave': bValue ? '1' : '0'
-			});
+ContactsUserSettings.prototype.onBuild = function()
+{
+	this.contactsAutosave.subscribe(function(bValue) {
+		Remote.saveSettings(null, {
+			'ContactsAutosave': bValue ? '1' : '0'
 		});
+	});
 
-		this.saveTrigger.subscribe(function () {
-			Remote.saveContactsSyncData(null,
-				this.enableContactsSync(),
-				this.contactsSyncUrl(),
-				this.contactsSyncUser(),
-				this.contactsSyncPass()
-			);
-		}, this);
-	};
+	this.saveTrigger.subscribe(function() {
+		Remote.saveContactsSyncData(null,
+			this.enableContactsSync(),
+			this.contactsSyncUrl(),
+			this.contactsSyncUser(),
+			this.contactsSyncPass()
+		);
+	}, this);
+};
 
-	module.exports = ContactsUserSettings;
-
-}());
+module.exports = ContactsUserSettings;

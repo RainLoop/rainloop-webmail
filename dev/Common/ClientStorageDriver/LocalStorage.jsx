@@ -8,14 +8,13 @@ class LocalStorageDriver
 	/**
 	 * @param {string} key
 	 * @param {*} data
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	set(key, data) {
 
 		let
 			result = false,
-			storageResult = null
-		;
+			storageResult = null;
 
 		try
 		{
@@ -38,7 +37,7 @@ class LocalStorageDriver
 
 	/**
 	 * @param {string} key
-	 * @return {*}
+	 * @returns {*}
 	 */
 	get(key) {
 
@@ -48,8 +47,7 @@ class LocalStorageDriver
 		{
 			const
 				storageValue = window.localStorage[CLIENT_SIDE_STORAGE_INDEX_NAME] || null,
-				storageResult = null === storageValue ? null : JSON.parse(storageValue)
-			;
+				storageResult = null === storageValue ? null : JSON.parse(storageValue);
 
 			result = (storageResult && !isUnd(storageResult[key])) ? storageResult[key] : null;
 		}
@@ -59,7 +57,7 @@ class LocalStorageDriver
 	}
 
 	/**
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	static supported() {
 		return !!window.localStorage;

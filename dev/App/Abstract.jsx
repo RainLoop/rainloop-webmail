@@ -19,6 +19,7 @@ import {AbstractBoot} from 'Knoin/AbstractBoot';
 class AbstractApp extends AbstractBoot
 {
 	/**
+	 * @constructor
 	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 */
 	constructor(Remote)
@@ -58,16 +59,15 @@ class AbstractApp extends AbstractBoot
 			}
 		});
 
-		$win.on('resize', function () {
+		$win.on('resize', function() {
 			Events.pub('window.resize');
 		});
 
-		Events.sub('window.resize', _.throttle(function () {
+		Events.sub('window.resize', _.throttle(function() {
 
 			var
 				iH = $win.height(),
-				iW = $win.height()
-			;
+				iW = $win.height();
 
 			if ($win.__sizes[0] !== iH || $win.__sizes[1] !== iW)
 			{
@@ -81,31 +81,31 @@ class AbstractApp extends AbstractBoot
 
 // DEBUG
 //		Events.sub({
-//			'window.resize': function () {
+//			'window.resize': function() {
 //				window.console.log('window.resize');
 //			},
-//			'window.resize.real': function () {
+//			'window.resize.real': function() {
 //				window.console.log('window.resize.real');
 //			}
 //		});
 
-		$doc.on('keydown', function (oEvent) {
+		$doc.on('keydown', function(oEvent) {
 			if (oEvent && oEvent.ctrlKey)
 			{
 				$html.addClass('rl-ctrl-key-pressed');
 			}
-		}).on('keyup', function (oEvent) {
+		}).on('keyup', function(oEvent) {
 			if (oEvent && !oEvent.ctrlKey)
 			{
 				$html.removeClass('rl-ctrl-key-pressed');
 			}
 		});
 
-		$doc.on('mousemove keypress click', _.debounce(function () {
+		$doc.on('mousemove keypress click', _.debounce(function() {
 			Events.pub('rl.auto-logout-refresh');
 		}, 5000));
 
-		key('esc, enter', KeyState.All, _.bind(function () {
+		key('esc, enter', KeyState.All, _.bind(function() {
 			detectDropdownVisibility();
 		}, this));
 	}
@@ -124,11 +124,11 @@ class AbstractApp extends AbstractBoot
 
 	/**
 	 * @param {string} link
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	download(link) {
 
-		if (sUserAgent && (sUserAgent.indexOf('chrome') > -1 || sUserAgent.indexOf('chrome') > -1))
+		if (sUserAgent && (-1 < sUserAgent.indexOf('chrome') || -1 < sUserAgent.indexOf('chrome')))
 		{
 			const oLink = window.document.createElement('a');
 			oLink.href = link;
@@ -160,7 +160,7 @@ class AbstractApp extends AbstractBoot
 	}
 
 	/**
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	googlePreviewSupported() {
 		if (null === this.googlePreviewSupportedCache)
@@ -220,8 +220,7 @@ class AbstractApp extends AbstractBoot
 		const
 			kn = require('Knoin/Knoin'),
 			mobile = Settings.appSettingsGet('mobile'),
-			inIframe = !!Settings.appSettingsGet('inIframe')
-		;
+			inIframe = !!Settings.appSettingsGet('inIframe');
 
 		let customLogoutLink = pString(Settings.appSettingsGet('customLogoutLink'));
 
@@ -282,8 +281,7 @@ class AbstractApp extends AbstractBoot
 		const
 			mobile = Settings.appSettingsGet('mobile'),
 			ssm = require('ssm'),
-			ko = require('ko')
-		;
+			ko = require('ko');
 
 		ko.components.register('SaveTrigger', require('Component/SaveTrigger'));
 		ko.components.register('Input', require('Component/Input'));

@@ -1,195 +1,187 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Utils = require('Common/Utils'),
+	Translator = require('Common/Translator'),
 
+	MessageStore = require('Stores/User/Message'),
+
+	kn = require('Knoin/Knoin'),
+	AbstractView = require('Knoin/AbstractView');
+
+/**
+ * @constructor
+ * @extends AbstractView
+ */
+function AdvancedSearchPopupView()
+{
+	AbstractView.call(this, 'Popups', 'PopupsAdvancedSearch');
+
+	this.fromFocus = ko.observable(false);
+
+	this.from = ko.observable('');
+	this.to = ko.observable('');
+	this.subject = ko.observable('');
+	this.text = ko.observable('');
+	this.selectedDateValue = ko.observable(-1);
+
+	this.hasAttachment = ko.observable(false);
+	this.starred = ko.observable(false);
+	this.unseen = ko.observable(false);
+
+	this.searchCommand = Utils.createCommand(this, function() {
+
+		var sSearch = this.buildSearchString();
+		if ('' !== sSearch)
+		{
+			MessageStore.mainMessageListSearch(sSearch);
+		}
+
+		this.cancelCommand();
+	});
+
+	this.selectedDates = ko.computed(function() {
+		Translator.trigger();
+		return [
+			{'id': -1, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_ALL')},
+			{'id': 3, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_3_DAYS')},
+			{'id': 7, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_7_DAYS')},
+			{'id': 30, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_MONTH')},
+			{'id': 90, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_3_MONTHS')},
+			{'id': 180, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_6_MONTHS')},
+			{'id': 365, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_YEAR')}
+		];
+	}, this);
+
+	kn.constructorEnd(this);
+}
+
+kn.extendAsViewModel(['View/Popup/AdvancedSearch', 'PopupsAdvancedSearchViewModel'], AdvancedSearchPopupView);
+_.extend(AdvancedSearchPopupView.prototype, AbstractView.prototype);
+
+AdvancedSearchPopupView.prototype.parseSearchStringValue = function(search)
+{
 	var
-		_ = require('_'),
-		ko = require('ko'),
+		self = this,
+		parts = (search || '').split(/[\s]+/g);
 
-		Utils = require('Common/Utils'),
-		Translator = require('Common/Translator'),
+	_.each(parts, function(part) {
+		switch (part)
+		{
+			case 'has:attachment':
+				self.hasAttachment(true);
+				break;
+			case 'is:unseen,flagged':
+				self.starred(true);
+				/* falls through */
+			case 'is:unseen':
+				self.unseen(true);
+				break;
+			// no default
+		}
+	});
+};
 
-		MessageStore = require('Stores/User/Message'),
-
-		kn = require('Knoin/Knoin'),
-		AbstractView = require('Knoin/AbstractView')
-	;
-
-	/**
-	 * @constructor
-	 * @extends AbstractView
-	 */
-	function AdvancedSearchPopupView()
+AdvancedSearchPopupView.prototype.buildSearchStringValue = function(sValue)
+{
+	if (-1 < sValue.indexOf(' '))
 	{
-		AbstractView.call(this, 'Popups', 'PopupsAdvancedSearch');
-
-		this.fromFocus = ko.observable(false);
-
-		this.from = ko.observable('');
-		this.to = ko.observable('');
-		this.subject = ko.observable('');
-		this.text = ko.observable('');
-		this.selectedDateValue = ko.observable(-1);
-
-		this.hasAttachment = ko.observable(false);
-		this.starred = ko.observable(false);
-		this.unseen = ko.observable(false);
-
-		this.searchCommand = Utils.createCommand(this, function () {
-
-			var sSearch = this.buildSearchString();
-			if ('' !== sSearch)
-			{
-				MessageStore.mainMessageListSearch(sSearch);
-			}
-
-			this.cancelCommand();
-		});
-
-		this.selectedDates = ko.computed(function () {
-			Translator.trigger();
-			return [
-				{'id': -1, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_ALL')},
-				{'id': 3, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_3_DAYS')},
-				{'id': 7, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_7_DAYS')},
-				{'id': 30, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_MONTH')},
-				{'id': 90, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_3_MONTHS')},
-				{'id': 180, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_6_MONTHS')},
-				{'id': 365, 'name': Translator.i18n('SEARCH/LABEL_ADV_DATE_YEAR')}
-			];
-		}, this);
-
-		kn.constructorEnd(this);
+		sValue = '"' + sValue + '"';
 	}
 
-	kn.extendAsViewModel(['View/Popup/AdvancedSearch', 'PopupsAdvancedSearchViewModel'], AdvancedSearchPopupView);
-	_.extend(AdvancedSearchPopupView.prototype, AbstractView.prototype);
+	return sValue;
+};
 
-	AdvancedSearchPopupView.prototype.parseSearchStringValue = function (search)
+AdvancedSearchPopupView.prototype.buildSearchString = function()
+{
+	var
+		aResult = [],
+		sFrom = Utils.trim(this.from()),
+		sTo = Utils.trim(this.to()),
+		sSubject = Utils.trim(this.subject()),
+		sText = Utils.trim(this.text()),
+		aIs = [],
+		aHas = [];
+
+	if (sFrom && '' !== sFrom)
 	{
-		var
-			self = this,
-			parts = (search || '').split(/[\s]+/g)
-		;
+		aResult.push('from:' + this.buildSearchStringValue(sFrom));
+	}
 
-		_.each(parts, function(part) {
-			switch (part)
-			{
-				case 'has:attachment':
-					self.hasAttachment(true);
-					break;
-				case 'is:unseen,flagged':
-					self.starred(true);
-					/* falls through */
-				case 'is:unseen':
-					self.unseen(true);
-					break;
-			}
-		});
-	};
-
-	AdvancedSearchPopupView.prototype.buildSearchStringValue = function (sValue)
+	if (sTo && '' !== sTo)
 	{
-		if (-1 < sValue.indexOf(' '))
-		{
-			sValue = '"' + sValue + '"';
-		}
+		aResult.push('to:' + this.buildSearchStringValue(sTo));
+	}
 
-		return sValue;
-	};
-
-	AdvancedSearchPopupView.prototype.buildSearchString = function ()
+	if (sSubject && '' !== sSubject)
 	{
-		var
-			aResult = [],
-			sFrom = Utils.trim(this.from()),
-			sTo = Utils.trim(this.to()),
-			sSubject = Utils.trim(this.subject()),
-			sText = Utils.trim(this.text()),
-			aIs = [],
-			aHas = []
-		;
+		aResult.push('subject:' + this.buildSearchStringValue(sSubject));
+	}
 
-		if (sFrom && '' !== sFrom)
-		{
-			aResult.push('from:' + this.buildSearchStringValue(sFrom));
-		}
-
-		if (sTo && '' !== sTo)
-		{
-			aResult.push('to:' + this.buildSearchStringValue(sTo));
-		}
-
-		if (sSubject && '' !== sSubject)
-		{
-			aResult.push('subject:' + this.buildSearchStringValue(sSubject));
-		}
-
-		if (this.hasAttachment())
-		{
-			aHas.push('attachment');
-		}
-
-		if (this.unseen())
-		{
-			aIs.push('unseen');
-		}
-
-		if (this.starred())
-		{
-			aIs.push('flagged');
-		}
-
-		if (0 < aHas.length)
-		{
-			aResult.push('has:' + aHas.join(','));
-		}
-
-		if (0 < aIs.length)
-		{
-			aResult.push('is:' + aIs.join(','));
-		}
-
-		if (-1 < this.selectedDateValue())
-		{
-			aResult.push('date:' + require('Common/Momentor').searchSubtractFormatDateHelper(this.selectedDateValue()) + '/');
-		}
-
-		if (sText && '' !== sText)
-		{
-			aResult.push('text:' + this.buildSearchStringValue(sText));
-		}
-
-		return Utils.trim(aResult.join(' '));
-	};
-
-	AdvancedSearchPopupView.prototype.clearPopup = function ()
+	if (this.hasAttachment())
 	{
-		this.from('');
-		this.to('');
-		this.subject('');
-		this.text('');
+		aHas.push('attachment');
+	}
 
-		this.selectedDateValue(-1);
-		this.hasAttachment(false);
-		this.starred(false);
-		this.unseen(false);
-
-		this.fromFocus(true);
-	};
-
-	AdvancedSearchPopupView.prototype.onShow = function (search)
+	if (this.unseen())
 	{
-		this.clearPopup();
-		this.parseSearchStringValue(search);
-	};
+		aIs.push('unseen');
+	}
 
-	AdvancedSearchPopupView.prototype.onShowWithDelay = function ()
+	if (this.starred())
 	{
-		this.fromFocus(true);
-	};
+		aIs.push('flagged');
+	}
 
-	module.exports = AdvancedSearchPopupView;
+	if (0 < aHas.length)
+	{
+		aResult.push('has:' + aHas.join(','));
+	}
 
-}());
+	if (0 < aIs.length)
+	{
+		aResult.push('is:' + aIs.join(','));
+	}
+
+	if (-1 < this.selectedDateValue())
+	{
+		aResult.push('date:' + require('Common/Momentor').searchSubtractFormatDateHelper(this.selectedDateValue()) + '/');
+	}
+
+	if (sText && '' !== sText)
+	{
+		aResult.push('text:' + this.buildSearchStringValue(sText));
+	}
+
+	return Utils.trim(aResult.join(' '));
+};
+
+AdvancedSearchPopupView.prototype.clearPopup = function()
+{
+	this.from('');
+	this.to('');
+	this.subject('');
+	this.text('');
+
+	this.selectedDateValue(-1);
+	this.hasAttachment(false);
+	this.starred(false);
+	this.unseen(false);
+
+	this.fromFocus(true);
+};
+
+AdvancedSearchPopupView.prototype.onShow = function(search)
+{
+	this.clearPopup();
+	this.parseSearchStringValue(search);
+};
+
+AdvancedSearchPopupView.prototype.onShowWithDelay = function()
+{
+	this.fromFocus(true);
+};
+
+module.exports = AdvancedSearchPopupView;

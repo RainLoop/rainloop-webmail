@@ -1,130 +1,123 @@
 
-(function () {
+var
+	ko = require('ko'),
 
-	'use strict';
+	Enums = require('Common/Enums'),
+	Utils = require('Common/Utils'),
+	Globals = require('Common/Globals');
 
-	var
-		ko = require('ko'),
+/**
+ * @constructor
+ * @param {string=} sPosition = ''
+ * @param {string=} sTemplate = ''
+ */
+function AbstractView(sPosition, sTemplate)
+{
+	this.bDisabeCloseOnEsc = false;
+	this.sPosition = Utils.pString(sPosition);
+	this.sTemplate = Utils.pString(sTemplate);
 
-		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
-		Globals = require('Common/Globals')
-	;
+	this.sDefaultKeyScope = Enums.KeyState.None;
+	this.sCurrentKeyScope = this.sDefaultKeyScope;
 
-	/**
-	 * @constructor
-	 * @param {string=} sPosition = ''
-	 * @param {string=} sTemplate = ''
-	 */
-	function AbstractView(sPosition, sTemplate)
-	{
-		this.bDisabeCloseOnEsc = false;
-		this.sPosition = Utils.pString(sPosition);
-		this.sTemplate = Utils.pString(sTemplate);
+	this.viewModelVisibility = ko.observable(false);
+	this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
 
-		this.sDefaultKeyScope = Enums.KeyState.None;
-		this.sCurrentKeyScope = this.sDefaultKeyScope;
+	this.viewModelName = '';
+	this.viewModelNames = [];
+	this.viewModelDom = null;
+}
 
-		this.viewModelVisibility = ko.observable(false);
-		this.modalVisibility = ko.observable(false).extend({'rateLimit': 0});
+/**
+ * @type {boolean}
+ */
+AbstractView.prototype.bDisabeCloseOnEsc = false;
 
-		this.viewModelName = '';
-		this.viewModelNames = [];
-		this.viewModelDom = null;
-	}
+/**
+ * @type {string}
+ */
+AbstractView.prototype.sPosition = '';
 
-	/**
-	 * @type {boolean}
-	 */
-	AbstractView.prototype.bDisabeCloseOnEsc = false;
+/**
+ * @type {string}
+ */
+AbstractView.prototype.sTemplate = '';
 
-	/**
-	 * @type {string}
-	 */
-	AbstractView.prototype.sPosition = '';
+/**
+ * @type {string}
+ */
+AbstractView.prototype.sDefaultKeyScope = Enums.KeyState.None;
 
-	/**
-	 * @type {string}
-	 */
-	AbstractView.prototype.sTemplate = '';
+/**
+ * @type {string}
+ */
+AbstractView.prototype.sCurrentKeyScope = Enums.KeyState.None;
 
-	/**
-	 * @type {string}
-	 */
-	AbstractView.prototype.sDefaultKeyScope = Enums.KeyState.None;
+/**
+ * @type {string}
+ */
+AbstractView.prototype.viewModelName = '';
 
-	/**
-	 * @type {string}
-	 */
-	AbstractView.prototype.sCurrentKeyScope = Enums.KeyState.None;
+/**
+ * @type {Array}
+ */
+AbstractView.prototype.viewModelNames = [];
 
-	/**
-	 * @type {string}
-	 */
-	AbstractView.prototype.viewModelName = '';
+/**
+ * @type {?}
+ */
+AbstractView.prototype.viewModelDom = null;
 
-	/**
-	 * @type {Array}
-	 */
-	AbstractView.prototype.viewModelNames = [];
+/**
+ * @returns {string}
+ */
+AbstractView.prototype.viewModelTemplate = function()
+{
+	return this.sTemplate;
+};
 
-	/**
-	 * @type {?}
-	 */
-	AbstractView.prototype.viewModelDom = null;
+/**
+ * @returns {string}
+ */
+AbstractView.prototype.viewModelPosition = function()
+{
+	return this.sPosition;
+};
 
-	/**
-	 * @return {string}
-	 */
-	AbstractView.prototype.viewModelTemplate = function ()
-	{
-		return this.sTemplate;
-	};
+AbstractView.prototype.cancelCommand = function() {};
+AbstractView.prototype.closeCommand = function() {};
 
-	/**
-	 * @return {string}
-	 */
-	AbstractView.prototype.viewModelPosition = function ()
-	{
-		return this.sPosition;
-	};
+AbstractView.prototype.storeAndSetKeyScope = function()
+{
+	this.sCurrentKeyScope = Globals.keyScope();
+	Globals.keyScope(this.sDefaultKeyScope);
+};
 
-	AbstractView.prototype.cancelCommand = function () {};
-	AbstractView.prototype.closeCommand = function () {};
+AbstractView.prototype.restoreKeyScope = function()
+{
+	Globals.keyScope(this.sCurrentKeyScope);
+};
 
-	AbstractView.prototype.storeAndSetKeyScope = function ()
-	{
-		this.sCurrentKeyScope = Globals.keyScope();
-		Globals.keyScope(this.sDefaultKeyScope);
-	};
+AbstractView.prototype.registerPopupKeyDown = function()
+{
+	var self = this;
 
-	AbstractView.prototype.restoreKeyScope = function ()
-	{
-		Globals.keyScope(this.sCurrentKeyScope);
-	};
-
-	AbstractView.prototype.registerPopupKeyDown = function ()
-	{
-		var self = this;
-
-		Globals.$win.on('keydown', function (oEvent) {
-			if (oEvent && self.modalVisibility && self.modalVisibility())
+	Globals.$win.on('keydown', function(oEvent) {
+		if (oEvent && self.modalVisibility && self.modalVisibility())
+		{
+			if (!this.bDisabeCloseOnEsc && Enums.EventKeyCode.Esc === oEvent.keyCode)
 			{
-				if (!this.bDisabeCloseOnEsc && Enums.EventKeyCode.Esc === oEvent.keyCode)
-				{
-					Utils.delegateRun(self, 'cancelCommand');
-					return false;
-				}
-				else if (Enums.EventKeyCode.Backspace === oEvent.keyCode && !Utils.inFocus())
-				{
-					return false;
-				}
+				Utils.delegateRun(self, 'cancelCommand');
+				return false;
 			}
+			else if (Enums.EventKeyCode.Backspace === oEvent.keyCode && !Utils.inFocus())
+			{
+				return false;
+			}
+		}
 
-			return true;
-		});
-	};
+		return true;
+	});
+};
 
-	module.exports = AbstractView;
-
-}());
+module.exports = AbstractView;

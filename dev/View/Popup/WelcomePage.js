@@ -1,62 +1,56 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Promises = require('Promises/User/Ajax'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
+	kn = require('Knoin/Knoin'),
+	AbstractView = require('Knoin/AbstractView');
 
-		Promises = require('Promises/User/Ajax'),
+/**
+ * @constructor
+ * @extends AbstractView
+ */
+function WelcomePagePopupView()
+{
+	AbstractView.call(this, 'Popups', 'PopupsWelcomePage');
 
-		kn = require('Knoin/Knoin'),
-		AbstractView = require('Knoin/AbstractView')
-	;
+	this.welcomePageURL = ko.observable('');
 
-	/**
-	 * @constructor
-	 * @extends AbstractView
-	 */
-	function WelcomePagePopupView()
-	{
-		AbstractView.call(this, 'Popups', 'PopupsWelcomePage');
+	this.closeFocused = ko.observable(false);
 
-		this.welcomePageURL = ko.observable('');
+	kn.constructorEnd(this);
+}
 
-		this.closeFocused = ko.observable(false);
+kn.extendAsViewModel(['View/Popup/WelcomePage', 'WelcomePagePopupViewModel'], WelcomePagePopupView);
+_.extend(WelcomePagePopupView.prototype, AbstractView.prototype);
 
-		kn.constructorEnd(this);
-	}
+WelcomePagePopupView.prototype.clearPopup = function()
+{
+	this.welcomePageURL('');
+	this.closeFocused(false);
+};
 
-	kn.extendAsViewModel(['View/Popup/WelcomePage', 'WelcomePagePopupViewModel'], WelcomePagePopupView);
-	_.extend(WelcomePagePopupView.prototype, AbstractView.prototype);
+/**
+ * @param {string} sUrl
+ * @returns {void}
+ */
+WelcomePagePopupView.prototype.onShow = function(sUrl)
+{
+	this.clearPopup();
 
-	WelcomePagePopupView.prototype.clearPopup = function ()
-	{
-		this.welcomePageURL('');
-		this.closeFocused(false);
-	};
+	this.welcomePageURL(sUrl);
+};
 
-	/**
-	 * @param {string} sUrl
-	 */
-	WelcomePagePopupView.prototype.onShow = function (sUrl)
-	{
-		this.clearPopup();
+WelcomePagePopupView.prototype.onShowWithDelay = function()
+{
+	this.closeFocused(true);
+};
 
-		this.welcomePageURL(sUrl);
-	};
+WelcomePagePopupView.prototype.onHide = function()
+{
+	Promises.welcomeClose();
+};
 
-	WelcomePagePopupView.prototype.onShowWithDelay = function ()
-	{
-		this.closeFocused(true);
-	};
-
-	WelcomePagePopupView.prototype.onHide = function ()
-	{
-		Promises.welcomeClose();
-	};
-
-	module.exports = WelcomePagePopupView;
-
-}());
+module.exports = WelcomePagePopupView;

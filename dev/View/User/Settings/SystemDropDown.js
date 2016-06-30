@@ -1,28 +1,21 @@
 
-(function () {
+var
+	_ = require('_'),
 
-	'use strict';
+	kn = require('Knoin/Knoin'),
+	AbstractSystemDropDownUserView = require('View/User/AbstractSystemDropDown');
 
-	var
-		_ = require('_'),
+/**
+ * @constructor
+ * @extends AbstractSystemDropDownUserView
+ */
+function SystemDropDownSettingsUserView()
+{
+	AbstractSystemDropDownUserView.call(this);
+	kn.constructorEnd(this);
+}
 
-		kn = require('Knoin/Knoin'),
-		AbstractSystemDropDownUserView = require('View/User/AbstractSystemDropDown')
-	;
+kn.extendAsViewModel(['View/User/Settings/SystemDropDown', 'View/App/Settings/SystemDropDown', 'SettingsSystemDropDownViewModel'], SystemDropDownSettingsUserView);
+_.extend(SystemDropDownSettingsUserView.prototype, AbstractSystemDropDownUserView.prototype);
 
-	/**
-	 * @constructor
-	 * @extends AbstractSystemDropDownUserView
-	 */
-	function SystemDropDownSettingsUserView()
-	{
-		AbstractSystemDropDownUserView.call(this);
-		kn.constructorEnd(this);
-	}
-
-	kn.extendAsViewModel(['View/User/Settings/SystemDropDown', 'View/App/Settings/SystemDropDown', 'SettingsSystemDropDownViewModel'], SystemDropDownSettingsUserView);
-	_.extend(SystemDropDownSettingsUserView.prototype, AbstractSystemDropDownUserView.prototype);
-
-	module.exports = SystemDropDownSettingsUserView;
-
-}());
+module.exports = SystemDropDownSettingsUserView;

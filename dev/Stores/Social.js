@@ -1,111 +1,103 @@
 
-(function () {
+var ko = require('ko');
 
-	'use strict';
+/**
+ * @constructor
+ */
+function SocialStore()
+{
+	this.google = {};
+	this.twitter = {};
+	this.facebook = {};
+	this.dropbox = {};
 
-	var
-		ko = require('ko')
-	;
+	// Google
+	this.google.enabled = ko.observable(false);
 
-	/**
-	 * @constructor
-	 */
-	function SocialStore()
-	{
-		this.google = {};
-		this.twitter = {};
-		this.facebook = {};
-		this.dropbox = {};
+	this.google.clientID = ko.observable('');
+	this.google.clientSecret = ko.observable('');
+	this.google.apiKey = ko.observable('');
 
-		// Google
-		this.google.enabled = ko.observable(false);
+	this.google.loading = ko.observable(false);
+	this.google.userName = ko.observable('');
 
-		this.google.clientID = ko.observable('');
-		this.google.clientSecret = ko.observable('');
-		this.google.apiKey = ko.observable('');
+	this.google.loggined = ko.computed(function() {
+		return '' !== this.google.userName();
+	}, this);
 
-		this.google.loading = ko.observable(false);
-		this.google.userName = ko.observable('');
+	this.google.capa = {};
+	this.google.capa.auth = ko.observable(false);
+	this.google.capa.authFast = ko.observable(false);
+	this.google.capa.drive = ko.observable(false);
+	this.google.capa.preview = ko.observable(false);
 
-		this.google.loggined = ko.computed(function () {
-			return '' !== this.google.userName();
-		}, this);
+	this.google.require = {};
+	this.google.require.clientSettings = ko.computed(function() {
+		return this.google.enabled() && (this.google.capa.auth() || this.google.capa.drive());
+	}, this);
 
-		this.google.capa = {};
-		this.google.capa.auth = ko.observable(false);
-		this.google.capa.authFast = ko.observable(false);
-		this.google.capa.drive = ko.observable(false);
-		this.google.capa.preview = ko.observable(false);
+	this.google.require.apiKeySettings = ko.computed(function() {
+		return this.google.enabled() && this.google.capa.drive();
+	}, this);
 
-		this.google.require = {};
-		this.google.require.clientSettings = ko.computed(function () {
-			return this.google.enabled() && (this.google.capa.auth() || this.google.capa.drive());
-		}, this);
+	// Facebook
+	this.facebook.enabled = ko.observable(false);
+	this.facebook.appID = ko.observable('');
+	this.facebook.appSecret = ko.observable('');
+	this.facebook.loading = ko.observable(false);
+	this.facebook.userName = ko.observable('');
+	this.facebook.supported = ko.observable(false);
 
-		this.google.require.apiKeySettings = ko.computed(function () {
-			return this.google.enabled() && this.google.capa.drive();
-		}, this);
+	this.facebook.loggined = ko.computed(function() {
+		return '' !== this.facebook.userName();
+	}, this);
 
-		// Facebook
-		this.facebook.enabled = ko.observable(false);
-		this.facebook.appID = ko.observable('');
-		this.facebook.appSecret = ko.observable('');
-		this.facebook.loading = ko.observable(false);
-		this.facebook.userName = ko.observable('');
-		this.facebook.supported = ko.observable(false);
+	// Twitter
+	this.twitter.enabled = ko.observable(false);
+	this.twitter.consumerKey = ko.observable('');
+	this.twitter.consumerSecret = ko.observable('');
+	this.twitter.loading = ko.observable(false);
+	this.twitter.userName = ko.observable('');
 
-		this.facebook.loggined = ko.computed(function () {
-			return '' !== this.facebook.userName();
-		}, this);
+	this.twitter.loggined = ko.computed(function() {
+		return '' !== this.twitter.userName();
+	}, this);
 
-		// Twitter
-		this.twitter.enabled = ko.observable(false);
-		this.twitter.consumerKey = ko.observable('');
-		this.twitter.consumerSecret = ko.observable('');
-		this.twitter.loading = ko.observable(false);
-		this.twitter.userName = ko.observable('');
+	// Dropbox
+	this.dropbox.enabled = ko.observable(false);
+	this.dropbox.apiKey = ko.observable('');
+}
 
-		this.twitter.loggined = ko.computed(function () {
-			return '' !== this.twitter.userName();
-		}, this);
+SocialStore.prototype.google = {};
+SocialStore.prototype.twitter = {};
+SocialStore.prototype.facebook = {};
+SocialStore.prototype.dropbox = {};
 
-		// Dropbox
-		this.dropbox.enabled = ko.observable(false);
-		this.dropbox.apiKey = ko.observable('');
-	}
+SocialStore.prototype.populate = function()
+{
+	var Settings = require('Storage/Settings');
 
-	SocialStore.prototype.google = {};
-	SocialStore.prototype.twitter = {};
-	SocialStore.prototype.facebook = {};
-	SocialStore.prototype.dropbox = {};
+	this.google.enabled(!!Settings.settingsGet('AllowGoogleSocial'));
+	this.google.clientID(Settings.settingsGet('GoogleClientID'));
+	this.google.clientSecret(Settings.settingsGet('GoogleClientSecret'));
+	this.google.apiKey(Settings.settingsGet('GoogleApiKey'));
 
-	SocialStore.prototype.populate = function ()
-	{
-		var Settings = require('Storage/Settings');
+	this.google.capa.auth(!!Settings.settingsGet('AllowGoogleSocialAuth'));
+	this.google.capa.authFast(!!Settings.settingsGet('AllowGoogleSocialAuthFast'));
+	this.google.capa.drive(!!Settings.settingsGet('AllowGoogleSocialDrive'));
+	this.google.capa.preview(!!Settings.settingsGet('AllowGoogleSocialPreview'));
 
-		this.google.enabled(!!Settings.settingsGet('AllowGoogleSocial'));
-		this.google.clientID(Settings.settingsGet('GoogleClientID'));
-		this.google.clientSecret(Settings.settingsGet('GoogleClientSecret'));
-		this.google.apiKey(Settings.settingsGet('GoogleApiKey'));
+	this.facebook.enabled(!!Settings.settingsGet('AllowFacebookSocial'));
+	this.facebook.appID(Settings.settingsGet('FacebookAppID'));
+	this.facebook.appSecret(Settings.settingsGet('FacebookAppSecret'));
+	this.facebook.supported(!!Settings.settingsGet('SupportedFacebookSocial'));
 
-		this.google.capa.auth(!!Settings.settingsGet('AllowGoogleSocialAuth'));
-		this.google.capa.authFast(!!Settings.settingsGet('AllowGoogleSocialAuthFast'));
-		this.google.capa.drive(!!Settings.settingsGet('AllowGoogleSocialDrive'));
-		this.google.capa.preview(!!Settings.settingsGet('AllowGoogleSocialPreview'));
+	this.twitter.enabled = ko.observable(!!Settings.settingsGet('AllowTwitterSocial'));
+	this.twitter.consumerKey = ko.observable(Settings.settingsGet('TwitterConsumerKey'));
+	this.twitter.consumerSecret = ko.observable(Settings.settingsGet('TwitterConsumerSecret'));
 
-		this.facebook.enabled(!!Settings.settingsGet('AllowFacebookSocial'));
-		this.facebook.appID(Settings.settingsGet('FacebookAppID'));
-		this.facebook.appSecret(Settings.settingsGet('FacebookAppSecret'));
-		this.facebook.supported(!!Settings.settingsGet('SupportedFacebookSocial'));
+	this.dropbox.enabled(!!Settings.settingsGet('AllowDropboxSocial'));
+	this.dropbox.apiKey(Settings.settingsGet('DropboxApiKey'));
+};
 
-		this.twitter.enabled = ko.observable(!!Settings.settingsGet('AllowTwitterSocial'));
-		this.twitter.consumerKey = ko.observable(Settings.settingsGet('TwitterConsumerKey'));
-		this.twitter.consumerSecret = ko.observable(Settings.settingsGet('TwitterConsumerSecret'));
-
-		this.dropbox.enabled(!!Settings.settingsGet('AllowDropboxSocial'));
-		this.dropbox.apiKey(Settings.settingsGet('DropboxApiKey'));
-	};
-
-	module.exports = new SocialStore();
-
-}());
+module.exports = new SocialStore();

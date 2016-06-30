@@ -17,12 +17,10 @@ class AppUserStore extends AbstractAppStore
 
 		this.focusedState = ko.observable(Focused.None);
 
-		this.focusedState.subscribe(function (value) {
+		this.focusedState.subscribe(function(value) {
 
 			switch (value)
 			{
-				default:
-					break;
 				case Focused.MessageList:
 					keyScope(KeyState.MessageList);
 					break;
@@ -31,6 +29,8 @@ class AppUserStore extends AbstractAppStore
 					break;
 				case Focused.FolderList:
 					keyScope(KeyState.FolderList);
+					break;
+				default:
 					break;
 			}
 

@@ -1,39 +1,32 @@
 
-(function () {
+var
+	ko = require('ko'),
 
-	'use strict';
+	Utils = require('Common/Utils'),
 
-	var
-		ko = require('ko'),
+	Settings = require('Storage/Settings');
 
-		Utils = require('Common/Utils'),
+/**
+ * @constructor
+ */
+function ThemeStore()
+{
+	this.themes = ko.observableArray([]);
+	this.themeBackgroundName = ko.observable('');
+	this.themeBackgroundHash = ko.observable('');
 
-		Settings = require('Storage/Settings')
-	;
+	this.theme = ko.observable('')
+		.extend({'limitedList': this.themes});
+}
 
-	/**
-	 * @constructor
-	 */
-	function ThemeStore()
-	{
-		this.themes = ko.observableArray([]);
-		this.themeBackgroundName = ko.observable('');
-		this.themeBackgroundHash = ko.observable('');
+ThemeStore.prototype.populate = function()
+{
+	var aThemes = Settings.appSettingsGet('themes');
 
-		this.theme = ko.observable('')
-			.extend({'limitedList': this.themes});
-	}
+	this.themes(Utils.isArray(aThemes) ? aThemes : []);
+	this.theme(Settings.settingsGet('Theme'));
+	this.themeBackgroundName(Settings.settingsGet('UserBackgroundName'));
+	this.themeBackgroundHash(Settings.settingsGet('UserBackgroundHash'));
+};
 
-	ThemeStore.prototype.populate = function ()
-	{
-		var aThemes = Settings.appSettingsGet('themes');
-
-		this.themes(Utils.isArray(aThemes) ? aThemes : []);
-		this.theme(Settings.settingsGet('Theme'));
-		this.themeBackgroundName(Settings.settingsGet('UserBackgroundName'));
-		this.themeBackgroundHash(Settings.settingsGet('UserBackgroundHash'));
-	};
-
-	module.exports = new ThemeStore();
-
-}());
+module.exports = new ThemeStore();

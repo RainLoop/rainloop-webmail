@@ -17,8 +17,7 @@ const Base64 = {
 		let
 			output = '',
 			chr1, chr2, chr3, enc1, enc2, enc3, enc4,
-			i = 0
-		;
+			i = 0;
 
 		input = Base64._utf8_encode(input);
 
@@ -56,8 +55,7 @@ const Base64 = {
 		let
 			output = '',
 			chr1, chr2, chr3, enc1, enc2, enc3, enc4,
-			i = 0
-		;
+			i = 0;
 
 		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
 
@@ -97,8 +95,7 @@ const Base64 = {
 			utftext = '',
 			n = 0,
 			l = string.length,
-			c = 0
-		;
+			c = 0;
 
 		for (; n < l; n++) {
 
@@ -132,8 +129,7 @@ const Base64 = {
 			i = 0,
 			c = 0,
 			c2 = 0,
-			c3 = 0
-		;
+			c3 = 0;
 
 		while ( i < utftext.length )
 		{

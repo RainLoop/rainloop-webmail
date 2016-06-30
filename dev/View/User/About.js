@@ -1,34 +1,27 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Settings = require('Storage/Settings'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
+	kn = require('Knoin/Knoin'),
+	AbstractView = require('Knoin/AbstractView');
 
-		Settings = require('Storage/Settings'),
+/**
+ * @constructor
+ * @extends AbstractView
+ */
+function AboutUserView()
+{
+	AbstractView.call(this, 'Center', 'About');
 
-		kn = require('Knoin/Knoin'),
-		AbstractView = require('Knoin/AbstractView')
-	;
+	this.version = ko.observable(Settings.appSettingsGet('version'));
 
-	/**
-	 * @constructor
-	 * @extends AbstractView
-	 */
-	function AboutUserView()
-	{
-		AbstractView.call(this, 'Center', 'About');
+	kn.constructorEnd(this);
+}
 
-		this.version = ko.observable(Settings.appSettingsGet('version'));
+kn.extendAsViewModel(['View/User/About', 'View/App/About', 'AboutViewModel'], AboutUserView);
+_.extend(AboutUserView.prototype, AbstractView.prototype);
 
-		kn.constructorEnd(this);
-	}
-
-	kn.extendAsViewModel(['View/User/About', 'View/App/About', 'AboutViewModel'], AboutUserView);
-	_.extend(AboutUserView.prototype, AbstractView.prototype);
-
-	module.exports = AboutUserView;
-
-}());
+module.exports = AboutUserView;

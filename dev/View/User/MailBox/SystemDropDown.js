@@ -1,28 +1,21 @@
 
-(function () {
+var
+	_ = require('_'),
 
-	'use strict';
+	kn = require('Knoin/Knoin'),
+	AbstractSystemDropDownViewModel = require('View/User/AbstractSystemDropDown');
 
-	var
-		_ = require('_'),
+/**
+ * @constructor
+ * @extends AbstractSystemDropDownViewModel
+ */
+function SystemDropDownMailBoxUserView()
+{
+	AbstractSystemDropDownViewModel.call(this);
+	kn.constructorEnd(this);
+}
 
-		kn = require('Knoin/Knoin'),
-		AbstractSystemDropDownViewModel = require('View/User/AbstractSystemDropDown')
-	;
+kn.extendAsViewModel(['View/User/MailBox/SystemDropDown', 'View/App/MailBox/SystemDropDown', 'MailBoxSystemDropDownViewModel'], SystemDropDownMailBoxUserView);
+_.extend(SystemDropDownMailBoxUserView.prototype, AbstractSystemDropDownViewModel.prototype);
 
-	/**
-	 * @constructor
-	 * @extends AbstractSystemDropDownViewModel
-	 */
-	function SystemDropDownMailBoxUserView()
-	{
-		AbstractSystemDropDownViewModel.call(this);
-		kn.constructorEnd(this);
-	}
-
-	kn.extendAsViewModel(['View/User/MailBox/SystemDropDown', 'View/App/MailBox/SystemDropDown', 'MailBoxSystemDropDownViewModel'], SystemDropDownMailBoxUserView);
-	_.extend(SystemDropDownMailBoxUserView.prototype, AbstractSystemDropDownViewModel.prototype);
-
-	module.exports = SystemDropDownMailBoxUserView;
-
-}());
+module.exports = SystemDropDownMailBoxUserView;

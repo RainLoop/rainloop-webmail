@@ -78,10 +78,8 @@ class AdminApp extends AbstractApp
 				PackageStore.packagesReal(!!data.Result.Real);
 				PackageStore.packagesMainUpdatable(!!data.Result.MainUpdatable);
 
-				let
-					list = [],
-					loading = {}
-				;
+				let list = [];
+				const loading = {};
 
 				_.each(PackageStore.packages(), (item) => {
 					if (item && item.loading())

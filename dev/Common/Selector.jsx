@@ -129,8 +129,7 @@ class Selector
 			aCache = [],
 			aCheckedCache = [],
 			mFocused = null,
-			mSelected = null
-		;
+			mSelected = null;
 
 		this.list.subscribe((items) => {
 
@@ -168,8 +167,7 @@ class Selector
 				mNextFocused = mFocused,
 				bChecked = false,
 				bSelected = false,
-				iLen = 0
-			;
+				iLen = 0;
 
 			this.selectedItemUseCallback = false;
 
@@ -195,7 +193,7 @@ class Selector
 					{
 						bChecked = true;
 						oItem.checked(true);
-						iLen--;
+						iLen -= 1;
 					}
 
 					if (!bChecked && null !== mSelected && mSelected === sUid)
@@ -350,8 +348,7 @@ class Selector
 							item.checked(!item.checked());
 						}
 					}
-				})
-			;
+				});
 
 			key('enter', keyScope, () => {
 				if (this.focusedItem() && !this.focusedItem().selected())
@@ -397,6 +394,7 @@ class Selector
 						case 'pagedown':
 							eventKey = EventKeyCode.PageDown;
 							break;
+						// no default
 					}
 
 					if (0 < eventKey)
@@ -410,7 +408,7 @@ class Selector
 	}
 
 	/**
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	autoSelect() {
 		return !!(this.oCallbacks.onAutoSelect || noopTrue)();
@@ -425,7 +423,7 @@ class Selector
 
 	/**
 	 * @param {Object} oItem
-	 * @return {string}
+	 * @returns {string}
 	 */
 	getItemUid(item) {
 
@@ -455,8 +453,7 @@ class Selector
 			oResult = null,
 			aList = this.list(),
 			iListLen = aList ? aList.length : 0,
-			oFocused = this.focusedItem()
-		;
+			oFocused = this.focusedItem();
 
 		if (0 < iListLen)
 		{
@@ -482,29 +479,31 @@ class Selector
 					_.each(aList, (item) => {
 						if (!bStop)
 						{
-							switch (iEventKeyCode) {
-							case EventKeyCode.Up:
-								if (oFocused === item)
-								{
-									bStop = true;
-								}
-								else
-								{
-									oResult = item;
-								}
-								break;
-							case EventKeyCode.Down:
-							case EventKeyCode.Insert:
-								if (bNext)
-								{
-									oResult = item;
-									bStop = true;
-								}
-								else if (oFocused === item)
-								{
-									bNext = true;
-								}
-								break;
+							switch (iEventKeyCode)
+							{
+								case EventKeyCode.Up:
+									if (oFocused === item)
+									{
+										bStop = true;
+									}
+									else
+									{
+										oResult = item;
+									}
+									break;
+								case EventKeyCode.Down:
+								case EventKeyCode.Insert:
+									if (bNext)
+									{
+										oResult = item;
+										bStop = true;
+									}
+									else if (oFocused === item)
+									{
+										bNext = true;
+									}
+									break;
+								// no default
 							}
 						}
 					});
@@ -540,7 +539,7 @@ class Selector
 				}
 				else if (EventKeyCode.PageUp === iEventKeyCode)
 				{
-					for (iIndex = iListLen; iIndex >= 0; iIndex--)
+					for (iIndex = iListLen; 0 <= iIndex; iIndex--)
 					{
 						if (oFocused === aList[iIndex])
 						{
@@ -597,7 +596,7 @@ class Selector
 	}
 
 	/**
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	scrollToFocused() {
 
@@ -612,17 +611,16 @@ class Selector
 			$focused = $(this.sItemFocusedSelector, this.oContentScrollable),
 			pos = $focused.position(),
 			visibleHeight = this.oContentVisible.height(),
-			focusedHeight = $focused.outerHeight()
-		;
+			focusedHeight = $focused.outerHeight();
 
 		if (list && list[0] && list[0].focused())
 		{
 			this.oContentScrollable.scrollTop(0);
 			return true;
 		}
-		else if (pos && (pos.top < 0 || pos.top + focusedHeight > visibleHeight))
+		else if (pos && (0 > pos.top || pos.top + focusedHeight > visibleHeight))
 		{
-			this.oContentScrollable.scrollTop(pos.top < 0 ?
+			this.oContentScrollable.scrollTop(0 > pos.top ?
 				this.oContentScrollable.scrollTop() + pos.top - offset :
 				this.oContentScrollable.scrollTop() + pos.top - visibleHeight + focusedHeight + offset
 			);
@@ -635,7 +633,7 @@ class Selector
 
 	/**
 	 * @param {boolean=} fast = false
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	scrollToTop(fast = false) {
 
@@ -666,8 +664,7 @@ class Selector
 			list = [],
 			checked = false,
 			listItem = null,
-			lineUid = ''
-		;
+			lineUid = '';
 
 		const uid = this.getItemUid(item);
 		if (event && event.shiftKey)

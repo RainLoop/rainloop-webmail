@@ -1,24 +1,16 @@
 
-(function () {
+var ko = require('ko');
 
-	'use strict';
+/**
+ * @constructor
+ */
+function PackageAdminStore()
+{
+	this.packages = ko.observableArray([]);
+	this.packages.loading = ko.observable(false).extend({'throttle': 100});
 
-	var
-		ko = require('ko')
-	;
+	this.packagesReal = ko.observable(true);
+	this.packagesMainUpdatable = ko.observable(true);
+}
 
-	/**
-	 * @constructor
-	 */
-	function PackageAdminStore()
-	{
-		this.packages = ko.observableArray([]);
-		this.packages.loading = ko.observable(false).extend({'throttle': 100});
-
-		this.packagesReal = ko.observable(true);
-		this.packagesMainUpdatable = ko.observable(true);
-	}
-
-	module.exports = new PackageAdminStore();
-
-}());
+module.exports = new PackageAdminStore();

@@ -88,14 +88,13 @@ export const trigger = ko.observable(false);
  * @param {string} key
  * @param {Object=} valueList
  * @param {string=} defaulValue
- * @return {string}
+ * @returns {string}
  */
 export function i18n(key, valueList, defaulValue)
 {
 	let
 		valueName = '',
-		result = I18N_DATA[key]
-	;
+		result = I18N_DATA[key];
 
 	if (isUnd(result))
 	{
@@ -120,8 +119,7 @@ const i18nToNode = (element) => {
 
 	const
 		$el = $(element),
-		key = $el.data('i18n')
-	;
+		key = $el.data('i18n');
 
 	if (key)
 	{
@@ -138,6 +136,7 @@ const i18nToNode = (element) => {
 				case '[title':
 					$el.attr('title', i18n(key.substr(7)));
 					break;
+				// no default
 			}
 		}
 		else
@@ -187,6 +186,9 @@ const reloadData = () => {
 	window.rainloopI18N = null;
 };
 
+/**
+ * @returns {void}
+ */
 export function initNotificationLanguage()
 {
 	I18N_NOTIFICATION_MAP.forEach((item) => {
@@ -227,7 +229,7 @@ export function initOnStartOrLangChange(callback, scope, langCallback = null)
  * @param {number} code
  * @param {*=} message = ''
  * @param {*=} defCode = null
- * @return {string}
+ * @returns {string}
  */
 export function getNotification(code, message = '', defCode = null)
 {
@@ -246,7 +248,7 @@ export function getNotification(code, message = '', defCode = null)
 /**
  * @param {object} response
  * @param {number} defCode = Notification.UnknownNotification
- * @return {string}
+ * @returns {string}
  */
 export function getNotificationFromResponse(response, defCode = Notification.UnknownNotification)
 {
@@ -256,7 +258,7 @@ export function getNotificationFromResponse(response, defCode = Notification.Unk
 
 /**
  * @param {*} code
- * @return {string}
+ * @returns {string}
  */
 export function getUploadErrorDescByCode(code)
 {
@@ -314,9 +316,8 @@ export function reload(admin, language)
 				$html
 					.removeClass('rl-changing-language')
 					.removeClass('rl-rtl rl-ltr')
-					.addClass(isRtl ? 'rl-rtl' : 'rl-ltr')
 //					.attr('dir', isRtl ? 'rtl' : 'ltr')
-				;
+					.addClass(isRtl ? 'rl-rtl' : 'rl-ltr');
 
 				resolve();
 

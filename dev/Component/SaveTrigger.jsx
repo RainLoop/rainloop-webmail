@@ -6,6 +6,7 @@ import {AbstractComponent, componentExportHelper} from 'Component/Abstract';
 class SaveTriggerComponent extends AbstractComponent
 {
 	/**
+	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {
@@ -47,30 +48,26 @@ class SaveTriggerComponent extends AbstractComponent
 				this.element
 					.find('.animated,.error').hide().removeClass('visible')
 					.end()
-					.find('.success').show().addClass('visible')
-				;
+					.find('.success').show().addClass('visible');
 				break;
 			case SaveSettingsStep.FalseResult:
 				this.element
 					.find('.animated,.success').hide().removeClass('visible')
 					.end()
-					.find('.error').show().addClass('visible')
-				;
+					.find('.error').show().addClass('visible');
 				break;
 			case SaveSettingsStep.Animate:
 				this.element
 					.find('.error,.success').hide().removeClass('visible')
 					.end()
-					.find('.animated').show().addClass('visible')
-				;
+					.find('.animated').show().addClass('visible');
 				break;
-			default:
 			case SaveSettingsStep.Idle:
+			default:
 				this.element
 					.find('.animated').hide()
 					.end()
-					.find('.error,.success').removeClass('visible')
-				;
+					.find('.error,.success').removeClass('visible');
 				break;
 		}
 	}

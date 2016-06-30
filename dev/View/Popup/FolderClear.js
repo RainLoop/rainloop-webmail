@@ -1,127 +1,118 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
 
-	'use strict';
+	Enums = require('Common/Enums'),
+	Utils = require('Common/Utils'),
+	Translator = require('Common/Translator'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
+	Cache = require('Common/Cache'),
 
-		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
-		Translator = require('Common/Translator'),
+	MessageStore = require('Stores/User/Message'),
 
-		Cache = require('Common/Cache'),
+	Remote = require('Remote/User/Ajax'),
 
-		MessageStore = require('Stores/User/Message'),
+	kn = require('Knoin/Knoin'),
+	AbstractView = require('Knoin/AbstractView');
 
-		Remote = require('Remote/User/Ajax'),
+/**
+ * @constructor
+ * @extends AbstractView
+ */
+function FolderClearPopupView()
+{
+	AbstractView.call(this, 'Popups', 'PopupsFolderClear');
 
-		kn = require('Knoin/Knoin'),
-		AbstractView = require('Knoin/AbstractView')
-	;
+	this.selectedFolder = ko.observable(null);
+	this.clearingProcess = ko.observable(false);
+	this.clearingError = ko.observable('');
 
-	/**
-	 * @constructor
-	 * @extends AbstractView
-	 */
-	function FolderClearPopupView()
-	{
-		AbstractView.call(this, 'Popups', 'PopupsFolderClear');
+	this.folderFullNameForClear = ko.computed(function() {
+		var oFolder = this.selectedFolder();
+		return oFolder ? oFolder.printableFullName() : '';
+	}, this);
 
-		this.selectedFolder = ko.observable(null);
-		this.clearingProcess = ko.observable(false);
-		this.clearingError = ko.observable('');
+	this.folderNameForClear = ko.computed(function() {
+		var oFolder = this.selectedFolder();
+		return oFolder ? oFolder.localName() : '';
+	}, this);
 
-		this.folderFullNameForClear = ko.computed(function () {
-			var oFolder = this.selectedFolder();
-			return oFolder ? oFolder.printableFullName() : '';
-		}, this);
+	this.dangerDescHtml = ko.computed(function() {
+		return Translator.i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', {
+			'FOLDER': this.folderNameForClear()
+		});
+	}, this);
 
-		this.folderNameForClear = ko.computed(function () {
-			var oFolder = this.selectedFolder();
-			return oFolder ? oFolder.localName() : '';
-		}, this);
+	this.clearCommand = Utils.createCommand(this, function() {
 
-		this.dangerDescHtml = ko.computed(function () {
-			return Translator.i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', {
-				'FOLDER': this.folderNameForClear()
-			});
-		}, this);
+		var
+			self = this,
+			oFolderToClear = this.selectedFolder();
 
-		this.clearCommand = Utils.createCommand(this, function () {
+		if (oFolderToClear)
+		{
+			MessageStore.message(null);
+			MessageStore.messageList([]);
 
-			var
-				self = this,
-				oFolderToClear = this.selectedFolder()
-			;
+			this.clearingProcess(true);
 
-			if (oFolderToClear)
-			{
-				MessageStore.message(null);
-				MessageStore.messageList([]);
+			oFolderToClear.messageCountAll(0);
+			oFolderToClear.messageCountUnread(0);
 
-				this.clearingProcess(true);
+			Cache.setFolderHash(oFolderToClear.fullNameRaw, '');
 
-				oFolderToClear.messageCountAll(0);
-				oFolderToClear.messageCountUnread(0);
+			Remote.folderClear(function(sResult, oData) {
 
-				Cache.setFolderHash(oFolderToClear.fullNameRaw, '');
-
-				Remote.folderClear(function (sResult, oData) {
-
-					self.clearingProcess(false);
-					if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+				self.clearingProcess(false);
+				if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+				{
+					require('App/User').default.reloadMessageList(true);
+					self.cancelCommand();
+				}
+				else
+				{
+					if (oData && oData.ErrorCode)
 					{
-						require('App/User').default.reloadMessageList(true);
-						self.cancelCommand();
+						self.clearingError(Translator.getNotification(oData.ErrorCode));
 					}
 					else
 					{
-						if (oData && oData.ErrorCode)
-						{
-							self.clearingError(Translator.getNotification(oData.ErrorCode));
-						}
-						else
-						{
-							self.clearingError(Translator.getNotification(Enums.Notification.MailServerError));
-						}
+						self.clearingError(Translator.getNotification(Enums.Notification.MailServerError));
 					}
-				}, oFolderToClear.fullNameRaw);
-			}
-
-		}, function () {
-
-			var
-				oFolder = this.selectedFolder(),
-				bIsClearing = this.clearingProcess()
-			;
-
-			return !bIsClearing && null !== oFolder;
-
-		});
-
-		kn.constructorEnd(this);
-	}
-
-	kn.extendAsViewModel(['View/Popup/FolderClear', 'PopupsFolderClearViewModel'], FolderClearPopupView);
-	_.extend(FolderClearPopupView.prototype, AbstractView.prototype);
-
-	FolderClearPopupView.prototype.clearPopup = function ()
-	{
-		this.clearingProcess(false);
-		this.selectedFolder(null);
-	};
-
-	FolderClearPopupView.prototype.onShow = function (oFolder)
-	{
-		this.clearPopup();
-		if (oFolder)
-		{
-			this.selectedFolder(oFolder);
+				}
+			}, oFolderToClear.fullNameRaw);
 		}
-	};
 
-	module.exports = FolderClearPopupView;
+	}, function() {
 
-}());
+		var
+			oFolder = this.selectedFolder(),
+			bIsClearing = this.clearingProcess();
+
+		return !bIsClearing && null !== oFolder;
+
+	});
+
+	kn.constructorEnd(this);
+}
+
+kn.extendAsViewModel(['View/Popup/FolderClear', 'PopupsFolderClearViewModel'], FolderClearPopupView);
+_.extend(FolderClearPopupView.prototype, AbstractView.prototype);
+
+FolderClearPopupView.prototype.clearPopup = function()
+{
+	this.clearingProcess(false);
+	this.selectedFolder(null);
+};
+
+FolderClearPopupView.prototype.onShow = function(oFolder)
+{
+	this.clearPopup();
+	if (oFolder)
+	{
+		this.selectedFolder(oFolder);
+	}
+};
+
+module.exports = FolderClearPopupView;

@@ -41,7 +41,7 @@ export function runHook(name, args = [])
 
 /**
  * @param {string} name
- * @return {?}
+ * @returns {?}
  */
 export function mainSettingsGet(name)
 {
@@ -98,7 +98,7 @@ export function runSettingsViewModelHooks(admin)
 /**
  * @param {string} pluginSection
  * @param {string} name
- * @return {?}
+ * @returns {?}
  */
 export function settingsGet(pluginSection, name)
 {

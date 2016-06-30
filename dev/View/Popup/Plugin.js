@@ -1,175 +1,167 @@
 
-(function () {
+var
+	_ = require('_'),
+	ko = require('ko'),
+	key = require('key'),
 
-	'use strict';
+	Enums = require('Common/Enums'),
+	Utils = require('Common/Utils'),
+	Translator = require('Common/Translator'),
 
-	var
-		_ = require('_'),
-		ko = require('ko'),
-		key = require('key'),
+	Remote = require('Remote/Admin/Ajax'),
 
-		Enums = require('Common/Enums'),
-		Utils = require('Common/Utils'),
-		Translator = require('Common/Translator'),
+	kn = require('Knoin/Knoin'),
+	AbstractView = require('Knoin/AbstractView');
 
-		Remote = require('Remote/Admin/Ajax'),
+/**
+ * @constructor
+ * @extends AbstractView
+ */
+function PluginPopupView()
+{
+	AbstractView.call(this, 'Popups', 'PopupsPlugin');
 
-		kn = require('Knoin/Knoin'),
-		AbstractView = require('Knoin/AbstractView')
-	;
+	var self = this;
 
-	/**
-	 * @constructor
-	 * @extends AbstractView
-	 */
-	function PluginPopupView()
-	{
-		AbstractView.call(this, 'Popups', 'PopupsPlugin');
+	this.onPluginSettingsUpdateResponse = _.bind(this.onPluginSettingsUpdateResponse, this);
 
-		var self = this;
+	this.saveError = ko.observable('');
 
-		this.onPluginSettingsUpdateResponse = _.bind(this.onPluginSettingsUpdateResponse, this);
+	this.name = ko.observable('');
+	this.readme = ko.observable('');
 
-		this.saveError = ko.observable('');
+	this.configures = ko.observableArray([]);
 
-		this.name = ko.observable('');
-		this.readme = ko.observable('');
+	this.hasReadme = ko.computed(function() {
+		return '' !== this.readme();
+	}, this);
 
-		this.configures = ko.observableArray([]);
+	this.hasConfiguration = ko.computed(function() {
+		return 0 < this.configures().length;
+	}, this);
 
-		this.hasReadme = ko.computed(function () {
-			return '' !== this.readme();
-		}, this);
-
-		this.hasConfiguration = ko.computed(function () {
-			return 0 < this.configures().length;
-		}, this);
-
-		this.readmePopoverConf = {
-			'placement': 'right',
-			'trigger': 'hover',
+	this.readmePopoverConf = {
+		'placement': 'right',
+		'trigger': 'hover',
 //			'trigger': 'click',
-			'title': Translator.i18n('POPUPS_PLUGIN/TOOLTIP_ABOUT_TITLE'),
-			'container': 'body',
-			'html': true,
-			'content': function () {
-				return '<pre>' + self.readme() + '</pre>';
+		'title': Translator.i18n('POPUPS_PLUGIN/TOOLTIP_ABOUT_TITLE'),
+		'container': 'body',
+		'html': true,
+		'content': function() {
+			return '<pre>' + self.readme() + '</pre>';
 //					.replace(/[\r]/g, '').replace(/[\n]/g, '<br />').replace(/[\t]/g, '&nbsp;&nbsp;&nbsp;');
+		}
+	};
+
+	this.saveCommand = Utils.createCommand(this, function() {
+
+		var list = {};
+
+		list.Name = this.name();
+
+		_.each(this.configures(), function(oItem) {
+
+			var value = oItem.value();
+			if (false === value || true === value)
+			{
+				value = value ? '1' : '0';
 			}
-		};
 
-		this.saveCommand = Utils.createCommand(this, function () {
+			list['_' + oItem.Name] = value;
 
-			var list = {};
+		}, this);
 
-			list.Name = this.name();
+		this.saveError('');
+		Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, list);
 
-			_.each(this.configures(), function (oItem) {
+	}, this.hasConfiguration);
 
-				var value = oItem.value();
-				if (false === value || true === value)
-				{
-					value = value ? '1' : '0';
-				}
+	this.bDisabeCloseOnEsc = true;
+	this.sDefaultKeyScope = Enums.KeyState.All;
 
-				list['_' + oItem.Name] = value;
+	this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), 200);
 
-			}, this);
+	kn.constructorEnd(this);
+}
 
-			this.saveError('');
-			Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, list);
+kn.extendAsViewModel(['View/Popup/Plugin', 'PopupsPluginViewModel'], PluginPopupView);
+_.extend(PluginPopupView.prototype, AbstractView.prototype);
 
-		}, this.hasConfiguration);
-
-		this.bDisabeCloseOnEsc = true;
-		this.sDefaultKeyScope = Enums.KeyState.All;
-
-		this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), 200);
-
-		kn.constructorEnd(this);
-	}
-
-	kn.extendAsViewModel(['View/Popup/Plugin', 'PopupsPluginViewModel'], PluginPopupView);
-	_.extend(PluginPopupView.prototype, AbstractView.prototype);
-
-	PluginPopupView.prototype.onPluginSettingsUpdateResponse = function (sResult, oData)
+PluginPopupView.prototype.onPluginSettingsUpdateResponse = function(sResult, oData)
+{
+	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 	{
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
+		this.cancelCommand();
+	}
+	else
+	{
+		this.saveError('');
+		if (oData && oData.ErrorCode)
 		{
-			this.cancelCommand();
+			this.saveError(Translator.getNotification(oData.ErrorCode));
 		}
 		else
 		{
-			this.saveError('');
-			if (oData && oData.ErrorCode)
-			{
-				this.saveError(Translator.getNotification(oData.ErrorCode));
-			}
-			else
-			{
-				this.saveError(Translator.getNotification(Enums.Notification.CantSavePluginSettings));
-			}
+			this.saveError(Translator.getNotification(Enums.Notification.CantSavePluginSettings));
 		}
-	};
+	}
+};
 
-	PluginPopupView.prototype.onShow = function (oPlugin)
+PluginPopupView.prototype.onShow = function(oPlugin)
+{
+	this.name();
+	this.readme();
+	this.configures([]);
+
+	if (oPlugin)
 	{
-		this.name();
-		this.readme();
-		this.configures([]);
+		this.name(oPlugin.Name);
+		this.readme(oPlugin.Readme);
 
-		if (oPlugin)
+		var aConfig = oPlugin.Config;
+		if (Utils.isNonEmptyArray(aConfig))
 		{
-			this.name(oPlugin.Name);
-			this.readme(oPlugin.Readme);
-
-			var aConfig = oPlugin.Config;
-			if (Utils.isNonEmptyArray(aConfig))
-			{
-				this.configures(_.map(aConfig, function (aItem) {
-					return {
-						'value': ko.observable(aItem[0]),
-						'placeholder': ko.observable(aItem[6]),
-						'Name': aItem[1],
-						'Type': aItem[2],
-						'Label': aItem[3],
-						'Default': aItem[4],
-						'Desc': aItem[5]
-					};
-				}));
-			}
+			this.configures(_.map(aConfig, function(aItem) {
+				return {
+					'value': ko.observable(aItem[0]),
+					'placeholder': ko.observable(aItem[6]),
+					'Name': aItem[1],
+					'Type': aItem[2],
+					'Label': aItem[3],
+					'Default': aItem[4],
+					'Desc': aItem[5]
+				};
+			}));
 		}
-	};
+	}
+};
 
-	PluginPopupView.prototype.tryToClosePopup = function ()
+PluginPopupView.prototype.tryToClosePopup = function()
+{
+	var
+		self = this,
+		PopupsAskViewModel = require('View/Popup/Ask');
+
+	if (!kn.isPopupVisible(PopupsAskViewModel))
 	{
-		var
-			self = this,
-			PopupsAskViewModel = require('View/Popup/Ask')
-		;
+		kn.showScreenPopup(PopupsAskViewModel, [Translator.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function() {
+			if (self.modalVisibility())
+			{
+				Utils.delegateRun(self, 'cancelCommand');
+			}
+		}]);
+	}
+};
 
-		if (!kn.isPopupVisible(PopupsAskViewModel))
+PluginPopupView.prototype.onBuild = function()
+{
+	key('esc', Enums.KeyState.All, _.bind(function() {
+		if (this.modalVisibility())
 		{
-			kn.showScreenPopup(PopupsAskViewModel, [Translator.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function () {
-				if (self.modalVisibility())
-				{
-					Utils.delegateRun(self, 'cancelCommand');
-				}
-			}]);
+			this.tryToClosePopup();
 		}
-	};
+		return false;
+	}, this));
+};
 
-	PluginPopupView.prototype.onBuild = function ()
-	{
-		key('esc', Enums.KeyState.All, _.bind(function () {
-			if (this.modalVisibility())
-			{
-				this.tryToClosePopup();
-			}
-			return false;
-		}, this));
-	};
-
-	module.exports = PluginPopupView;
-
-}());
+module.exports = PluginPopupView;

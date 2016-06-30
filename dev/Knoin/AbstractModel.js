@@ -1,48 +1,41 @@
 
-(function () {
+var
+	_ = require('_'),
 
-	'use strict';
+	Utils = require('Common/Utils');
 
-	var
-		_ = require('_'),
+/**
+ * @constructor
+ *
+ * @param {string} sModelName
+ */
+function AbstractModel(sModelName)
+{
+	this.sModelName = sModelName || '';
+	this.disposables = [];
+}
 
-		Utils = require('Common/Utils')
-	;
-
-	/**
-	 * @constructor
-	 *
-	 * @param {string} sModelName
-	 */
-	function AbstractModel(sModelName)
+/**
+ * @param {Array|Object} mInputValue
+ */
+AbstractModel.prototype.regDisposables = function(mInputValue)
+{
+	if (Utils.isArray(mInputValue))
 	{
-		this.sModelName = sModelName || '';
-		this.disposables = [];
+		_.each(mInputValue, function(mValue) {
+			this.disposables.push(mValue);
+		}, this);
+	}
+	else if (mInputValue)
+	{
+		this.disposables.push(mInputValue);
 	}
 
-	/**
-	 * @param {Array|Object} mInputValue
-	 */
-	AbstractModel.prototype.regDisposables = function (mInputValue)
-	{
-		if (Utils.isArray(mInputValue))
-		{
-			_.each(mInputValue, function (mValue) {
-				this.disposables.push(mValue);
-			}, this);
-		}
-		else if (mInputValue)
-		{
-			this.disposables.push(mInputValue);
-		}
+};
 
-	};
+AbstractModel.prototype.onDestroy = function()
+{
+	Utils.disposeObject(this);
+};
 
-	AbstractModel.prototype.onDestroy = function ()
-	{
-		Utils.disposeObject(this);
-	};
-
-	module.exports = AbstractModel;
-
-}());
+module.exports = AbstractModel;

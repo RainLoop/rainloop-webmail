@@ -4,25 +4,25 @@ import EmailModel from 'Model/Email';
 
 class MessageHelper
 {
+	/**
+	 * @constructor
+	 */
 	constructor() {}
 
 	/**
 	 * @param {Array.<EmailModel>} emails
 	 * @param {boolean=} friendlyView = false
 	 * @param {boolean=} wrapWithLink = false
-	 * @return {string}
+	 * @returns {string}
 	 */
 	emailArrayToString(emails, friendlyView = false, wrapWithLink = false) {
 
-		let
-			result = [],
-			index = 0,
-			len = 0
-		;
+		let index = 0, len = 0;
+		const result = [];
 
 		if (isNonEmptyArray(emails))
 		{
-			for (index = 0, len = emails.length; index < len; index++)
+			for (len = emails.length; index < len; index++)
 			{
 				result.push(emails[index].toLine(friendlyView, wrapWithLink));
 			}
@@ -33,19 +33,16 @@ class MessageHelper
 
 	/**
 	 * @param {Array.<EmailModel>} emails
-	 * @return {string}
+	 * @returns {string}
 	 */
 	emailArrayToStringClear(emails) {
 
-		let
-			result = [],
-			index = 0,
-			len = 0
-		;
+		let index = 0, len = 0;
+		const result = [];
 
 		if (isNonEmptyArray(emails))
 		{
-			for (index = 0, len = emails.length; index < len; index++)
+			for (len = emails.length; index < len; index++)
 			{
 				if (emails[index] && emails[index].email && '' !== emails[index].name)
 				{
@@ -59,16 +56,12 @@ class MessageHelper
 
 	/**
 	 * @param {?Array} json
-	 * @return {Array.<EmailModel>}
+	 * @returns {Array.<EmailModel>}
 	 */
 	emailArrayFromJson(json) {
 
-		let
-			index = 0,
-			len = 0,
-			email = null,
-			result = []
-		;
+		let index = 0, len = 0, email = null;
+		const result = [];
 
 		if (isNonEmptyArray(json))
 		{

@@ -110,8 +110,7 @@ class AppUser extends AbstractApp
 						centeredX: true,
 						centeredY: true
 					})
-					.removeAttr('style')
-				;
+					.removeAttr('style');
 			}, 1000);
 		}
 
@@ -147,8 +146,7 @@ class AppUser extends AbstractApp
 	reloadMessageList(bDropPagePosition = false, bDropCurrenFolderCache = false) {
 
 		let
-			iOffset = (MessageStore.messageListPage() - 1) * SettingsStore.messagesPerPage()
-		;
+			iOffset = (MessageStore.messageListPage() - 1) * SettingsStore.messagesPerPage();
 
 		if (bDropCurrenFolderCache)
 		{
@@ -203,7 +201,7 @@ class AppUser extends AbstractApp
 
 	/**
 	 * @param {Function} fResultFunc
-	 * @return {boolean}
+	 * @returns {boolean}
 	 */
 	contactsSync(fResultFunc) {
 
@@ -232,16 +230,14 @@ class AppUser extends AbstractApp
 
 		const
 			sTrashFolder = FolderStore.trashFolder(),
-			sSpamFolder = FolderStore.spamFolder()
-		;
+			sSpamFolder = FolderStore.spamFolder();
 
 		_.each(this.moveCache, (oItem) => {
 
 			var
 				bSpam = sSpamFolder === oItem.To,
 				bTrash = sTrashFolder === oItem.To,
-				bHam = !bSpam && sSpamFolder === oItem.From && Cache.getFolderInboxName() === oItem.To
-			;
+				bHam = !bSpam && sSpamFolder === oItem.From && Cache.getFolderInboxName() === oItem.To;
 
 			Remote.messagesMove(this.moveOrDeleteResponseHelper, oItem.From, oItem.To, oItem.Uid,
 				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''), bSpam || bTrash);
@@ -326,8 +322,7 @@ class AppUser extends AbstractApp
 
 		let
 			oMoveFolder = null,
-			nSetSystemFoldersNotification = null
-		;
+			nSetSystemFoldersNotification = null;
 
 		switch (iDeleteType)
 		{
@@ -346,6 +341,7 @@ class AppUser extends AbstractApp
 				oMoveFolder = Cache.getFolderFromCacheList(FolderStore.archiveFolder());
 				nSetSystemFoldersNotification = SetSystemFoldersNotification.Archive;
 				break;
+			// no default
 		}
 
 		bUseFolder = isUnd(bUseFolder) ? true : !!bUseFolder;
@@ -390,8 +386,7 @@ class AppUser extends AbstractApp
 		{
 			const
 				oFromFolder = Cache.getFolderFromCacheList(sFromFolderFullNameRaw),
-				oToFolder = Cache.getFolderFromCacheList(sToFolderFullNameRaw)
-			;
+				oToFolder = Cache.getFolderFromCacheList(sToFolderFullNameRaw);
 
 			if (oFromFolder && oToFolder)
 			{
@@ -441,8 +436,7 @@ class AppUser extends AbstractApp
 			}, (errorCode) => {
 				FolderStore.folderList.error(getNotification(errorCode, '', errorDefCode));
 				Promises.foldersReloadWithTimeout(FolderStore.foldersLoading);
-			})
-		;
+			});
 	}
 
 	reloadOpenPgpKeys() {
@@ -453,8 +447,7 @@ class AppUser extends AbstractApp
 				aKeys = [],
 				oEmail = new EmailModel(),
 				oOpenpgpKeyring = PgpStore.openpgpKeyring,
-				oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.getAllKeys() : []
-			;
+				oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.getAllKeys() : [];
 
 			_.each(oOpenpgpKeys, (oItem, iIndex) => {
 				if (oItem && oItem.primaryKey)
@@ -463,9 +456,8 @@ class AppUser extends AbstractApp
 						aEmails = [],
 						aUsers = [],
 						oPrimaryUser = oItem.getPrimaryUser(),
-						sUser = (oPrimaryUser && oPrimaryUser.user) ? oPrimaryUser.user.userId.userid
-							: (oItem.users && oItem.users[0] ? oItem.users[0].userId.userid : '')
-					;
+						sUser = (oPrimaryUser && oPrimaryUser.user) ? oPrimaryUser.user.userId.userid :
+							(oItem.users && oItem.users[0] ? oItem.users[0].userId.userid : '');
 
 					if (oItem.users)
 					{
@@ -550,8 +542,7 @@ class AppUser extends AbstractApp
 				var
 					aCounts = {},
 					sParentEmail = Settings.settingsGet('ParentEmail'),
-					sAccountEmail = AccountStore.email()
-				;
+					sAccountEmail = AccountStore.email();
 
 				sParentEmail = '' === sParentEmail ? sAccountEmail : sParentEmail;
 
@@ -582,8 +573,7 @@ class AppUser extends AbstractApp
 						const
 							sId = pString(oIdentityData.Id),
 							sEmail = pString(oIdentityData.Email),
-							oIdentity = new IdentityModel(sId, sEmail)
-						;
+							oIdentity = new IdentityModel(sId, sEmail);
 
 						oIdentity.name(pString(oIdentityData.Name));
 						oIdentity.replyTo(pString(oIdentityData.ReplyTo));
@@ -646,8 +636,7 @@ class AppUser extends AbstractApp
 						let
 							uid = '',
 							check = false,
-							unreadCountChange = false
-						;
+							unreadCountChange = false;
 
 						const folderFromCache = Cache.getFolderFromCacheList(data.Result.Folder);
 						if (folderFromCache)
@@ -739,8 +728,7 @@ class AppUser extends AbstractApp
 							var
 								sHash = Cache.getFolderHash(oItem.Folder),
 								oFolder = Cache.getFolderFromCacheList(oItem.Folder),
-								bUnreadCountChange = false
-							;
+								bUnreadCountChange = false;
 
 							if (oFolder)
 							{
@@ -813,8 +801,7 @@ class AppUser extends AbstractApp
 		var
 			oFolder = null,
 			aRootUids = [],
-			iAlreadyUnread = 0
-		;
+			iAlreadyUnread = 0;
 
 		if (isUnd(aMessages))
 		{
@@ -825,7 +812,8 @@ class AppUser extends AbstractApp
 
 		if ('' !== sFolderFullNameRaw && 0 < aRootUids.length)
 		{
-			switch (iSetAction) {
+			switch (iSetAction)
+			{
 				case MessageSetAction.SetSeen:
 
 					_.each(aRootUids, (sSubUid) => {
@@ -877,6 +865,7 @@ class AppUser extends AbstractApp
 
 					Remote.messageSetFlagged(noop, sFolderFullNameRaw, aRootUids, false);
 					break;
+				// no default
 			}
 
 			this.reloadFlagsCurrentMessageListAndMessageFromCache();
@@ -1019,8 +1008,7 @@ class AppUser extends AbstractApp
 						})
 						.on('mouseup', () => {
 							$html.removeClass('rl-resizer');
-						})
-					;
+						});
 				}
 			},
 
@@ -1062,8 +1050,7 @@ class AppUser extends AbstractApp
 					{
 						oTop
 							.resizable('destroy')
-							.removeAttr('style')
-						;
+							.removeAttr('style');
 					}
 
 					if (oBottom)
@@ -1084,8 +1071,7 @@ class AppUser extends AbstractApp
 					const iHeight = pInt(Local.get(sClientSideKeyName)) || 300;
 					fSetHeight(iHeight > iMinHeight ? iHeight : iMinHeight);
 				}
-			}
-		;
+			};
 
 		fDisable(false);
 
@@ -1144,8 +1130,7 @@ class AppUser extends AbstractApp
 						})
 						.on('mouseup', () => {
 							$html.removeClass('rl-resizer');
-						})
-					;
+						});
 				}
 			},
 			fResizeResizeFunction = _.debounce(() => {
@@ -1173,8 +1158,7 @@ class AppUser extends AbstractApp
 						height: ''
 					});
 				}
-			}
-		;
+			};
 
 		if (null !== mLeftWidth)
 		{
@@ -1236,7 +1220,7 @@ class AppUser extends AbstractApp
 			kn.setHash(Links.root(), true);
 			kn.routeOff();
 
-			_.defer(function () {
+			_.defer(function() {
 				window.location.href = customLoginLink;
 			});
 		}
@@ -1271,8 +1255,7 @@ class AppUser extends AbstractApp
 			iContactsSyncInterval = pInt(Settings.settingsGet('ContactsSyncInterval')),
 			bGoogle = Settings.settingsGet('AllowGoogleSocial'),
 			bFacebook = Settings.settingsGet('AllowFacebookSocial'),
-			bTwitter = Settings.settingsGet('AllowTwitterSocial')
-		;
+			bTwitter = Settings.settingsGet('AllowTwitterSocial');
 
 		if (progressJs)
 		{
@@ -1423,7 +1406,8 @@ class AppUser extends AbstractApp
 									window.navigator.registerProtocolHandler('mailto',
 										window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
 										'' + (Settings.settingsGet('Title') || 'RainLoop'));
-								} catch (e) {/* eslint-disable-line no-empty */}
+								}
+								catch (e) {/* eslint-disable-line no-empty */}
 
 								if (Settings.settingsGet('MailToEmail'))
 								{
