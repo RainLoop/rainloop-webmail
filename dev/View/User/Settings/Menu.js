@@ -35,11 +35,6 @@ _.extend(MenuSettingsUserView.prototype, AbstractView.prototype);
 
 MenuSettingsUserView.prototype.onBuild = function(oDom)
 {
-//		var self = this;
-//		key('esc', Enums.KeyState.Settings, function() {
-//			self.backToMailBoxClick();
-//		});
-
 	if (this.mobile)
 	{
 		oDom
@@ -75,7 +70,7 @@ MenuSettingsUserView.prototype.onBuild = function(oDom)
 			}
 		}
 
-	}, 200));
+	}, 200)); // eslint-disable-line no-magic-numbers
 };
 
 MenuSettingsUserView.prototype.link = function(sRoute)

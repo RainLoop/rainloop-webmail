@@ -45,6 +45,8 @@ var
 	gulpif = require('gulp-if'),
 	eol = require('gulp-eol'),
 	livereload = require('gulp-livereload'),
+	eslint = require('gulp-eslint'),
+	cache = require('gulp-cached'),
 	gutil = require('gulp-util')
 ;
 
@@ -414,9 +416,10 @@ gulp.task('js:min', ['js:app', 'js:admin', 'js:validate'], function() {
 
 // lint
 gulp.task('js:eslint', function() {
-	var eslint = require('gulp-eslint');
 	return gulp.src(cfg.paths.globjsall)
+		.pipe(cache('eslint'))
 		.pipe(eslint())
+		.pipe(gulpif(cfg.watch, plumber({errorHandler: notify.onError("Error: <%= error.message %>")})))
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError());
 });
@@ -662,6 +665,7 @@ gulp.task('watch', ['fast'], function() {
 	cfg.watch = true;
 	livereload.listen();
 	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:app', 'js:admin']);
+	gulp.watch(cfg.paths.globjsall, {interval: cfg.watchInterval}, ['js:validate']);
 	gulp.watch(cfg.paths.less.main.watch, {interval: cfg.watchInterval}, ['css:main']);
 });
 
@@ -669,6 +673,7 @@ gulp.task('watch+', ['fast+'], function() {
 	cfg.watch = true;
 	livereload.listen();
 	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:app', 'js:admin']);
+	gulp.watch(cfg.paths.globjsall, {interval: cfg.watchInterval}, ['js:validate']);
 	gulp.watch(cfg.paths.less.main.watch, {interval: cfg.watchInterval}, ['css:main']);
 });
 

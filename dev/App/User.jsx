@@ -1,10 +1,12 @@
 
-import {window, _, $} from 'common';
+import window from 'window';
+import _ from '_';
+import $ from '$';
 import progressJs from 'progressJs';
 import Tinycon from 'Tinycon';
 
 import {
-	noop, trim, log, isArray, inArray, isUnd, isNormal, isPosNumeric, isNonEmptyArray,
+	noop, trim, log, has, isArray, inArray, isUnd, isNormal, isPosNumeric, isNonEmptyArray,
 	pInt, pString, delegateRunOnDestroy, mailToHelper, windowResize
 } from 'Common/Utils';
 
@@ -411,18 +413,17 @@ class AppUser extends AbstractApp
 	 * @param {Function=} callback = null
 	 */
 	foldersReload(callback = null) {
-
-		Promises.foldersReload(FolderStore.foldersLoading).then((value) => {
-			if (callback)
-			{
+		const prom = Promises.foldersReload(FolderStore.foldersLoading);
+		if (callback)
+		{
+			prom.then((value) => {
 				callback(!!value);
-			}
-		}).catch(() => {
-			if (callback)
-			{
-				_.delay(() => callback(false), 1);
-			}
-		});
+			}).catch(() => {
+				_.delay(() => {
+					callback(false);
+				}, 1);
+			});
+		}
 	}
 
 	foldersPromisesActionHelper(promise, errorDefCode) {
@@ -481,7 +482,9 @@ class AppUser extends AbstractApp
 							iIndex,
 							oItem.primaryKey.getFingerprint(),
 							oItem.primaryKey.getKeyId().toHex().toLowerCase(),
-							_.uniq(_.compact(_.map(oItem.getKeyIds(), (item) => item && item.toHex ? item.toHex() : null))),
+							_.uniq(_.compact(_.map(
+								oItem.getKeyIds(), (item) => (item && item.toHex ? item.toHex() : null)
+							))),
 							aUsers,
 							aEmails,
 							oItem.isPrivate(),
@@ -672,7 +675,7 @@ class AppUser extends AbstractApp
 							{
 								for (uid in data.Result.Flags)
 								{
-									if (data.Result.Flags.hasOwnProperty(uid))
+									if (has(data.Result.Flags, uid))
 									{
 										check = true;
 										const flags = data.Result.Flags[uid];
@@ -808,7 +811,7 @@ class AppUser extends AbstractApp
 			aMessages = MessageStore.messageListChecked();
 		}
 
-		aRootUids = _.uniq(_.compact(_.map(aMessages, (oMessage) => (oMessage && oMessage.uid) ? oMessage.uid : null)));
+		aRootUids = _.uniq(_.compact(_.map(aMessages, (oMessage) => (oMessage && oMessage.uid ? oMessage.uid : null))));
 
 		if ('' !== sFolderFullNameRaw && 0 < aRootUids.length)
 		{
@@ -934,18 +937,17 @@ class AppUser extends AbstractApp
 
 	/**
 	 * @param {string} query
-	 * @param {Function} callback
+	 * @param {Function} autocompleteCallback
 	 */
-	getAutocomplete(query, callback) {
+	getAutocomplete(query, autocompleteCallback) {
 		Remote.suggestions((result, data) => {
 			if (StorageResultType.Success === result && data && isArray(data.Result))
 			{
-				callback(_.compact(_.map(data.Result,
-					(item) => item && item[0] ? new EmailModel(item[0], item[1]) : null)));
+				autocompleteCallback(_.compact(_.map(data.Result, (item) => (item && item[0] ? new EmailModel(item[0], item[1]) : null))));
 			}
 			else if (StorageResultType.Abort !== result)
 			{
-				callback([]);
+				autocompleteCallback([]);
 			}
 		}, query);
 	}
@@ -1407,7 +1409,7 @@ class AppUser extends AbstractApp
 										window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
 										'' + (Settings.settingsGet('Title') || 'RainLoop'));
 								}
-								catch (e) {/* eslint-disable-line no-empty */}
+								catch (e) {} // eslint-disable-line no-empty
 
 								if (Settings.settingsGet('MailToEmail'))
 								{

@@ -5,11 +5,6 @@ import EmailModel from 'Model/Email';
 class MessageHelper
 {
 	/**
-	 * @constructor
-	 */
-	constructor() {}
-
-	/**
 	 * @param {Array.<EmailModel>} emails
 	 * @param {boolean=} friendlyView = false
 	 * @param {boolean=} wrapWithLink = false

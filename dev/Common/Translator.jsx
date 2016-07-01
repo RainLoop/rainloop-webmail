@@ -1,5 +1,7 @@
 
-import {window, $, _} from 'common';
+import window from 'window';
+import _ from '_';
+import $ from '$';
 import ko from 'ko';
 import {Notification, UploadErrorCode} from 'Common/Enums';
 import {pInt, isUnd, isNull, has, microtime, inArray} from 'Common/Utils';

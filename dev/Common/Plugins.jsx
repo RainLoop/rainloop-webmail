@@ -1,12 +1,13 @@
 
-import {_} from 'common';
+import _ from '_';
 import {isFunc, isArray, isUnd} from 'Common/Utils';
 import {data as GlobalsData} from 'Common/Globals';
 import * as Settings from 'Storage/Settings';
 
-const SIMPLE_HOOKS = {};
-const USER_VIEW_MODELS_HOOKS = [];
-const ADMIN_VIEW_MODELS_HOOKS = [];
+const
+	SIMPLE_HOOKS = {},
+	USER_VIEW_MODELS_HOOKS = [],
+	ADMIN_VIEW_MODELS_HOOKS = [];
 
 /**
  * @param {string} name
@@ -34,7 +35,7 @@ export function runHook(name, args = [])
 	if (isArray(SIMPLE_HOOKS[name]))
 	{
 		_.each(SIMPLE_HOOKS[name], (callback) => {
-			callback.apply(null, args);
+			callback(...args);
 		});
 	}
 }

@@ -1472,6 +1472,28 @@
       "from": "gulp-beautify@*",
       "resolved": "https://registry.npmjs.org/gulp-beautify/-/gulp-beautify-2.0.0.tgz"
     },
+    "gulp-cached": {
+      "version": "1.1.0",
+      "from": "gulp-cached@*",
+      "resolved": "https://registry.npmjs.org/gulp-cached/-/gulp-cached-1.1.0.tgz",
+      "dependencies": {
+        "readable-stream": {
+          "version": "1.0.34",
+          "from": "readable-stream@>=1.0.17 <1.1.0",
+          "resolved": "https://registry.npmjs.org/readable-stream/-/readable-stream-1.0.34.tgz"
+        },
+        "through2": {
+          "version": "0.5.1",
+          "from": "through2@>=0.5.1 <0.6.0",
+          "resolved": "https://registry.npmjs.org/through2/-/through2-0.5.1.tgz"
+        },
+        "xtend": {
+          "version": "3.0.0",
+          "from": "xtend@>=3.0.0 <3.1.0",
+          "resolved": "https://registry.npmjs.org/xtend/-/xtend-3.0.0.tgz"
+        }
+      }
+    },
     "gulp-clean-css": {
       "version": "2.0.10",
       "from": "gulp-clean-css@>=2.0.7 <3.0.0",

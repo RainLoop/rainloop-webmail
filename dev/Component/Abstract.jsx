@@ -1,7 +1,7 @@
 
-import {$} from 'common';
-import {isUnd} from 'Common/Utils';
+import $ from '$';
 import ko from 'ko';
+import {isUnd} from 'Common/Utils';
 
 class AbstractComponent
 {
@@ -24,32 +24,30 @@ class AbstractComponent
  * @param {string} templateID = ''
  * @returns {Object}
  */
-const componentExportHelper = (ClassObject, templateID = '') => {
-	return {
-		template: templateID ? {element: templateID} : '<b></b>',
-		viewModel: {
-			createViewModel: (params, componentInfo) => {
+const componentExportHelper = (ClassObject, templateID = '') => ({
+	template: templateID ? {element: templateID} : '<b></b>',
+	viewModel: {
+		createViewModel: (params, componentInfo) => {
 
-				params = params || {};
-				params.element = null;
+			params = params || {};
+			params.element = null;
 
-				if (componentInfo && componentInfo.element)
+			if (componentInfo && componentInfo.element)
+			{
+				params.component = componentInfo;
+				params.element = $(componentInfo.element);
+
+				require('Common/Translator').i18nToNodes(params.element);
+
+				if (!isUnd(params.inline) && ko.unwrap(params.inline))
 				{
-					params.component = componentInfo;
-					params.element = $(componentInfo.element);
-
-					require('Common/Translator').i18nToNodes(params.element);
-
-					if (!isUnd(params.inline) && ko.unwrap(params.inline))
-					{
-						params.element.css('display', 'inline-block');
-					}
+					params.element.css('display', 'inline-block');
 				}
-
-				return new ClassObject(params);
 			}
+
+			return new ClassObject(params);
 		}
-	};
-};
+	}
+});
 
 export {AbstractComponent, componentExportHelper};

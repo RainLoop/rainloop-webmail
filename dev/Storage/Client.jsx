@@ -1,5 +1,5 @@
 
-import {_} from 'common';
+import _ from '_';
 import {CookieDriver} from 'Common/ClientStorageDriver/Cookie';
 import {LocalStorageDriver} from 'Common/ClientStorageDriver/LocalStorage';
 

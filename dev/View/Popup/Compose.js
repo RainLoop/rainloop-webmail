@@ -916,7 +916,7 @@ ComposePopupView.prototype.converSignature = function(sSignature)
 
 			sSignature = sSignature.replace(/{{MOMENT:[^}]+}}/g, '');
 		}
-		catch (e) {/* eslint-disable-line no-empty */}
+		catch (e) {} // eslint-disable-line no-empty
 	}
 
 	return sSignature;
@@ -1324,7 +1324,7 @@ ComposePopupView.prototype.onMessageUploadAttachments = function(sResult, oData)
 		{
 			for (sTempName in oData.Result)
 			{
-				if (oData.Result.hasOwnProperty(sTempName))
+				if (Utils.has(oData.Result, oData.Result))
 				{
 					oAttachment = this.getAttachmentById(oData.Result[sTempName]);
 					if (oAttachment)

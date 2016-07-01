@@ -1,5 +1,7 @@
 
-import {window, _, $} from 'common';
+import window from 'window';
+import _ from '_';
+import $ from '$';
 import {oHtmlEditorDefaultConfig, oHtmlEditorLangsMap} from 'Common/Globals';
 import * as Settings from 'Storage/Settings';
 
@@ -115,7 +117,7 @@ class HtmlEditor
 							this.editor.getData() + '</div>' : this.editor.getData();
 				}
 			}
-			catch (e) {/* eslint-disable-line no-empty */}
+			catch (e) {} // eslint-disable-line no-empty
 
 			if (clearSignatureSigns)
 			{
@@ -154,7 +156,7 @@ class HtmlEditor
 					}
 				}
 			}
-			catch (e) {/* eslint-disable-line no-empty */}
+			catch (e) {} // eslint-disable-line no-empty
 
 			if (resize)
 			{
@@ -184,7 +186,7 @@ class HtmlEditor
 			try {
 				this.editor.setData(html);
 			}
-			catch (e) {/* eslint-disable-line no-empty */}
+			catch (e) {} // eslint-disable-line no-empty
 
 			if (focus)
 			{
@@ -200,7 +202,7 @@ class HtmlEditor
 				this.editor.setData(
 					this.editor.getData().replace(find, replaceHtml));
 			}
-			catch (e) {/* eslint-disable-line no-empty */}
+			catch (e) {} // eslint-disable-line no-empty
 		}
 	}
 
@@ -217,7 +219,7 @@ class HtmlEditor
 				try {
 					this.editor.setData(plain);
 				}
-				catch (e) {/* eslint-disable-line no-empty */}
+				catch (e) {} // eslint-disable-line no-empty
 			}
 
 			if (focus)
@@ -358,7 +360,7 @@ class HtmlEditor
 			try {
 				this.editor.focus();
 			}
-			catch (e) {/* eslint-disable-line no-empty */}
+			catch (e) {} // eslint-disable-line no-empty
 		}
 	}
 
@@ -368,7 +370,7 @@ class HtmlEditor
 			try {
 				return !!this.editor.focusManager.hasFocus;
 			}
-			catch (e) {/* eslint-disable-line no-empty */}
+			catch (e) {} // eslint-disable-line no-empty
 		}
 
 		return false;
@@ -380,7 +382,7 @@ class HtmlEditor
 			try {
 				this.editor.focusManager.blur(true);
 			}
-			catch (e) {/* eslint-disable-line no-empty */}
+			catch (e) {} // eslint-disable-line no-empty
 		}
 	}
 
@@ -390,7 +392,7 @@ class HtmlEditor
 			try {
 				this.editor.resize(this.$element.width(), this.$element.innerHeight());
 			}
-			catch (e) {/* eslint-disable-line no-empty */}
+			catch (e) {} // eslint-disable-line no-empty
 		}
 	}
 
@@ -400,7 +402,7 @@ class HtmlEditor
 			try {
 				this.editor.setReadOnly(!!value);
 			}
-			catch (e) {/* eslint-disable-line no-empty */}
+			catch (e) {} // eslint-disable-line no-empty
 		}
 	}
 

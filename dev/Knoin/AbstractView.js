@@ -84,8 +84,8 @@ AbstractView.prototype.viewModelPosition = function()
 	return this.sPosition;
 };
 
-AbstractView.prototype.cancelCommand = function() {};
-AbstractView.prototype.closeCommand = function() {};
+AbstractView.prototype.cancelCommand = Utils.noop;
+AbstractView.prototype.closeCommand = Utils.noop;
 
 AbstractView.prototype.storeAndSetKeyScope = function()
 {

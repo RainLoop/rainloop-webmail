@@ -1,5 +1,5 @@
 
-import {$} from 'common';
+import $ from '$';
 import {AbstractComponent, componentExportHelper} from 'Component/Abstract';
 
 class ScriptComponent extends AbstractComponent

@@ -1,5 +1,6 @@
 
-import {window, JSON} from 'common';
+import window from 'window';
+import JSON from 'JSON';
 import {isUnd} from 'Common/Utils';
 import {CLIENT_SIDE_STORAGE_INDEX_NAME} from 'Common/Consts';
 
@@ -21,7 +22,7 @@ class LocalStorageDriver
 			const storageValue = window.localStorage[CLIENT_SIDE_STORAGE_INDEX_NAME] || null;
 			storageResult = null === storageValue ? null : JSON.parse(storageValue);
 		}
-		catch (e) {/* eslint-disable-line no-empty */}
+		catch (e) {} // eslint-disable-line no-empty
 
 		(storageResult || (storageResult = {}))[key] = data;
 
@@ -30,7 +31,7 @@ class LocalStorageDriver
 			window.localStorage[CLIENT_SIDE_STORAGE_INDEX_NAME] = JSON.stringify(storageResult);
 			result = true;
 		}
-		catch (e) {/* eslint-disable-line no-empty */}
+		catch (e) {} // eslint-disable-line no-empty
 
 		return result;
 	}
@@ -51,7 +52,7 @@ class LocalStorageDriver
 
 			result = (storageResult && !isUnd(storageResult[key])) ? storageResult[key] : null;
 		}
-		catch (e) {/* eslint-disable-line no-empty */}
+		catch (e) {} // eslint-disable-line no-empty
 
 		return result;
 	}

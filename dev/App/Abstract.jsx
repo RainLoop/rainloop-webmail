@@ -1,5 +1,8 @@
 
-import {window, _, $, key} from 'common';
+import window from 'window';
+import $ from '$';
+import _ from '_';
+import key from 'key';
 
 import {
 	$win, $html, $doc,

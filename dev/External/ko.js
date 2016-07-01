@@ -120,7 +120,8 @@ ko.bindingHandlers.scrollerShadows = {
 ko.bindingHandlers.pikaday = {
 	init: function(oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
 
-		ko.bindingHandlers.textInput.init.apply(oViewModel, Array.prototype.slice.call(arguments));
+		ko.bindingHandlers.textInput
+			.init.apply(oViewModel, Array.prototype.slice.call(arguments)); // eslint-disable-line prefer-rest-params
 
 		if (Pikaday)
 		{
@@ -971,7 +972,7 @@ ko.bindingHandlers.command = {
 
 		jqElement.addClass('command');
 		ko.bindingHandlers[jqElement.is('form') ? 'submit' : 'click']
-			.init.apply(oViewModel, Array.prototype.slice.call(arguments));
+			.init.apply(oViewModel, Array.prototype.slice.call(arguments)); // eslint-disable-line prefer-rest-params
 	},
 
 	update: function(oElement, fValueAccessor) {

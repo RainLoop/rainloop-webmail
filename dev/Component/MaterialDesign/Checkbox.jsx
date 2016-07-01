@@ -1,5 +1,5 @@
 
-import {_} from 'common';
+import _ from '_';
 import ko from 'ko';
 import {componentExportHelper} from 'Component/Abstract';
 import {AbstracCheckbox} from 'Component/AbstracCheckbox';

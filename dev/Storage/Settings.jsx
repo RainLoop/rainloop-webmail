@@ -1,5 +1,5 @@
 
-import {window} from 'common';
+import window from 'window';
 import {isUnd, isNormal, isArray, inArray} from 'Common/Utils';
 
 let SETTINGS = window.__rlah_data() || null;

@@ -1,5 +1,6 @@
 
-import {window, $} from 'common';
+import window from 'window';
+import $ from '$';
 import {bMobileDevice, bSafari} from 'Common/Globals';
 import * as Links from 'Common/Links';
 import * as Events from 'Common/Events';

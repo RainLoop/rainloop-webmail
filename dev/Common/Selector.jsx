@@ -1,5 +1,7 @@
 
-import {$, _, key} from 'common';
+import $ from '$';
+import _ from '_';
+import key from 'key';
 import ko from 'ko';
 import {EventKeyCode} from 'Common/Enums';
 import {isArray, inArray, noop, noopTrue} from 'Common/Utils';
@@ -21,10 +23,7 @@ class Selector
 	{
 		this.list = koList;
 
-		this.listChecked = ko.computed(() => {
-			return _.filter(this.list(), (item) => item.checked());
-		}, this).extend({rateLimit: 0});
-
+		this.listChecked = ko.computed(() => _.filter(this.list(), (item) => item.checked())).extend({rateLimit: 0});
 		this.isListChecked = ko.computed(() => 0 < this.listChecked().length);
 
 		this.focusedItem = koFocusedItem || ko.observable(null);

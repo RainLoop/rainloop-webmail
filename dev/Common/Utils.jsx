@@ -19,21 +19,21 @@ const isUnd = _.isUndefined;
 const isNull = _.isNull;
 const has = _.has;
 const bind = _.bind;
-const noop = () => {};
+const noop = () => {}; // eslint-disable-line no-empty-function
 const noopTrue = () => true;
 const noopFalse = () => false;
 
 export {trim, inArray, isArray, isObject, isFunc, isUnd, isNull, has, bind, noop, noopTrue, noopFalse};
 
 /**
- * @param {Function} callback
+ * @param {Function} func
  */
-export function silentTryCatch(callback)
+export function silentTryCatch(func)
 {
 	try {
-		callback();
+		func();
 	}
-	catch (e) {/* eslint-disable-line no-empty */}
+	catch (e) {} // eslint-disable-line no-empty
 }
 
 /**
@@ -314,7 +314,7 @@ export function removeInFocus(force)
 				window.document.activeElement.blur();
 			}
 		}
-		catch (e) {/* eslint-disable-line no-empty */}
+		catch (e) {} // eslint-disable-line no-empty
 	}
 }
 
@@ -337,7 +337,7 @@ export function removeSelection()
 			window.document.selection.empty();
 		}
 	}
-	catch (e) {/* eslint-disable-line no-empty */}
+	catch (e) {} // eslint-disable-line no-empty
 }
 
 /**
@@ -453,14 +453,16 @@ export function delegateRun(object, methodName, params, delay = 0)
 	if (object && object[methodName])
 	{
 		delay = pInt(delay);
+		params = isArray(params) ? params : [];
+
 		if (0 >= delay)
 		{
-			object[methodName].apply(object, isArray(params) ? params : []);
+			object[methodName](...params);
 		}
 		else
 		{
 			_.delay(() => {
-				object[methodName].apply(object, isArray(params) ? params : []);
+				object[methodName](...params);
 			}, delay);
 		}
 	}
@@ -511,7 +513,6 @@ export function kill_CtrlA_CtrlS(event)
  */
 export function createCommand(context, fExecute, fCanExecute = true)
 {
-
 	let fResult = null;
 	const fNonEmpty = (...args) => {
 		if (fResult && fResult.canExecute && fResult.canExecute())
@@ -526,15 +527,11 @@ export function createCommand(context, fExecute, fCanExecute = true)
 
 	if (isFunc(fCanExecute))
 	{
-		fResult.canExecute = ko.computed(() => {
-			return fResult.enabled() && fCanExecute.call(context);
-		});
+		fResult.canExecute = ko.computed(() => fResult.enabled() && fCanExecute.call(context));
 	}
 	else
 	{
-		fResult.canExecute = ko.computed(() => {
-			return fResult.enabled() && !!fCanExecute;
-		});
+		fResult.canExecute = ko.computed(() => fResult.enabled() && !!fCanExecute);
 	}
 
 	return fResult;
@@ -848,14 +845,11 @@ export function htmlToPlain(html)
 		text = '';
 
 	const
-
 		convertBlockquote = (blockquoteText) => {
 			blockquoteText = '> ' + trim(blockquoteText).replace(/\n/gm, '\n> ');
-			return blockquoteText.replace(/(^|\n)([> ]+)/gm, (...args) => {
-				return (args && 2 < args.length) ? args[1] + trim(args[2].replace(/[\s]/g, '')) + ' ' : '';
-			});
+			return blockquoteText.replace(/(^|\n)([> ]+)/gm,
+				(...args) => (args && 2 < args.length ? args[1] + trim(args[2].replace(/[\s]/g, '')) + ' ' : ''));
 		},
-
 		convertDivs = (...args) => {
 			if (args && 1 < args.length)
 			{
@@ -871,19 +865,9 @@ export function htmlToPlain(html)
 
 			return '';
 		},
-
-		convertPre = (...args) => {
-			return (args && 1 < args.length) ?
-				args[1].toString().replace(/[\n]/gm, '<br />').replace(/[\r]/gm, '') : '';
-		},
-
-		fixAttibuteValue = (...args) => {
-			return (args && 1 < args.length) ? '' + args[1] + _.escape(args[2]) : '';
-		},
-
-		convertLinks = (...args) => {
-			return (args && 1 < args.length) ? trim(args[1]) : '';
-		};
+		convertPre = (...args) => (args && 1 < args.length ? args[1].toString().replace(/[\n]/gm, '<br />').replace(/[\r]/gm, '') : ''),
+		fixAttibuteValue = (...args) => (args && 1 < args.length ? '' + args[1] + _.escape(args[2]) : ''),
+		convertLinks = (...args) => (args && 1 < args.length ? trim(args[1]) : '');
 
 	text = html
 		.replace(/\u0002([\s\S]*)\u0002/gm, '\u200C$1\u200C')
@@ -971,10 +955,7 @@ export function htmlToPlain(html)
 export function plainToHtml(plain, findEmailAndLinksInText = false)
 {
 	plain = plain.toString().replace(/\r/g, '');
-
-	plain = plain.replace(/^>[> ]>+/gm, ([match]) => {
-		return match ? match.replace(/[ ]+/g, '') : match;
-	});
+	plain = plain.replace(/^>[> ]>+/gm, ([match]) => (match ? match.replace(/[ ]+/g, '') : match));
 
 	let
 		bIn = false,
@@ -1110,7 +1091,7 @@ export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines
 	for (iIndex = 0, iLen = aSystem.length; iIndex < iLen; iIndex++)
 	{
 		oItem = aSystem[iIndex];
-		if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
+		if (fVisibleCallback ? fVisibleCallback(oItem) : true)
 		{
 			if (bSep && 0 < aResult.length)
 			{
@@ -1126,11 +1107,11 @@ export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines
 			bSep = false;
 			aResult.push({
 				id: oItem.fullNameRaw,
-				name: fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name(),
+				name: fRenameCallback ? fRenameCallback(oItem) : oItem.name(),
 				system: true,
 				seporator: false,
 				disabled: !oItem.selectable || -1 < inArray(oItem.fullNameRaw, aDisabled) ||
-					(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
+					(fDisableCallback ? fDisableCallback(oItem) : false)
 			});
 		}
 	}
@@ -1142,7 +1123,7 @@ export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines
 //			if (oItem.subScribed() || !oItem.existen || bBuildUnvisible)
 		if ((oItem.subScribed() || !oItem.existen || bBuildUnvisible) && (oItem.selectable || oItem.hasSubScribedSubfolders()))
 		{
-			if (fVisibleCallback ? fVisibleCallback.call(null, oItem) : true)
+			if (fVisibleCallback ? fVisibleCallback(oItem) : true)
 			{
 				if (FolderType.User === oItem.type() || !bSystem || oItem.hasSubScribedSubfolders())
 				{
@@ -1161,11 +1142,11 @@ export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines
 					aResult.push({
 						id: oItem.fullNameRaw,
 						name: (new window.Array(oItem.deep + 1 - iUnDeep)).join(sDeepPrefix) +
-							(fRenameCallback ? fRenameCallback.call(null, oItem) : oItem.name()),
+							(fRenameCallback ? fRenameCallback(oItem) : oItem.name()),
 						system: false,
 						seporator: false,
 						disabled: !oItem.selectable || -1 < inArray(oItem.fullNameRaw, aDisabled) ||
-							(fDisableCallback ? fDisableCallback.call(null, oItem) : false)
+							(fDisableCallback ? fDisableCallback(oItem) : false)
 					});
 				}
 			}
@@ -1187,7 +1168,7 @@ export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines
  */
 export function selectElement(element)
 {
-	let sel, range;
+	let sel = null, range = null;
 	if (window.getSelection)
 	{
 		sel = window.getSelection();
@@ -1205,9 +1186,7 @@ export function selectElement(element)
 }
 
 export const detectDropdownVisibility = _.debounce(() => {
-	dropdownVisibility(!!_.find(GlobalsData.aBootstrapDropdowns, (item) => {
-		return item.hasClass('open');
-	}));
+	dropdownVisibility(!!_.find(GlobalsData.aBootstrapDropdowns, (item) => item.hasClass('open')));
 }, 50);
 
 /**
@@ -1246,7 +1225,7 @@ export function getConfigurationFromScriptTag(configuration)
 	{
 		return JSON.parse(configurationScriptTagCache[configuration].text());
 	}
-	catch (e) {/* eslint-disable-line no-empty */}
+	catch (e) {} // eslint-disable-line no-empty
 
 	return {};
 }
@@ -1615,13 +1594,12 @@ export function mailToHelper(mailToUrl, PopupComposeVoreModel)
 			email = mailToUrl.replace(/\?.+$/, ''),
 			query = mailToUrl.replace(/^[^\?]*\?/, ''),
 			EmailModel = require('Model/Email'),
-			fParseEmailLine = (line) => {
-				return line ? _.compact(_.map(decodeURIComponent(line).split(/[,]/), (item) => {
-					const emailObj = new EmailModel();
-					emailObj.mailsoParse(item);
-					return '' !== emailObj.email ? emailObj : null;
-				})) : null;
-			};
+			emailObj = new EmailModel(),
+			fParseEmailLine = (line) => (line ? _.compact(_.map(decodeURIComponent(line).split(/[,]/), (item) => {
+				emailObj.clear();
+				emailObj.mailsoParse(item);
+				return '' !== emailObj.email ? emailObj : null;
+			})) : null);
 
 		to = fParseEmailLine(email);
 		params = simpleQueryParser(query);

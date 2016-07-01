@@ -1,5 +1,8 @@
 
-import {window, $, _, moment} from 'common';
+import window from 'window';
+import _ from '_';
+import $ from '$';
+import moment from 'moment';
 import {i18n} from 'Common/Translator';
 
 let _moment = null;

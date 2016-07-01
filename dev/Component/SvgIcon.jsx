@@ -1,5 +1,5 @@
 
-import {$} from 'common';
+import $ from '$';
 
 let cachedUrl = null;
 const getUrl = () => {

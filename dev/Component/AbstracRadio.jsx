@@ -1,5 +1,5 @@
 
-import {_} from 'common';
+import _ from '_';
 import ko from 'ko';
 import {isUnd} from 'Common/Utils';
 import {AbstractComponent} from 'Component/Abstract';
@@ -27,9 +27,7 @@ class AbstracRadio extends AbstractComponent
 
 		if (params.values)
 		{
-			this.values(_.map(params.values, (label, value) => {
-				return {label: label, value: value};
-			}));
+			this.values(_.map(params.values, (label, value) => ({label: label, value: value})));
 		}
 
 		this.click = _.bind(this.click, this);

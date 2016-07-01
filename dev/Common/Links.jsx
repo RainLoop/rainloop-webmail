@@ -1,5 +1,5 @@
 
-import {window} from 'common';
+import window from 'window';
 import {pString, pInt, isUnd, isNormal, trim, encodeURIComponent} from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 

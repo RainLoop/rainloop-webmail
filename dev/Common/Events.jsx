@@ -1,5 +1,5 @@
 
-import {_} from 'common';
+import _ from '_';
 import {isObject, isUnd} from 'Common/Utils';
 import * as Plugins from 'Common/Plugins';
 

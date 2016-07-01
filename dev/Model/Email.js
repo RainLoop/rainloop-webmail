@@ -250,10 +250,11 @@ EmailModel.prototype.mailsoParse = function($sEmailAddress)
 
 	var
 		substr = function(str, start, len) {
-			str += '';
+			str = Utils.pString(str);
 			var	end = str.length;
 
-			if (0 > start) {
+			if (0 > start)
+			{
 				start += end;
 			}
 
@@ -263,11 +264,15 @@ EmailModel.prototype.mailsoParse = function($sEmailAddress)
 		},
 
 		substrReplace = function(str, replace, start, length) {
-			if (0 > start) {
+			str = Utils.pString(str);
+			if (0 > start)
+			{
 				start += str.length;
 			}
-			length = 'undefined' === typeof length ? length : str.length;
-			if (0 > length) {
+
+			length = 'undefined' !== typeof length ? length : str.length;
+			if (0 > length)
+			{
 				length = length + str.length - start;
 			}
 			return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);

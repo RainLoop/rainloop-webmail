@@ -695,8 +695,9 @@ MessageViewMailBoxUserView.prototype.onBuild = function(oDom)
 	oDom
 		.on('click', 'a', function(oEvent) {
 			// setup maito protocol
-			return !(!!oEvent && 3 !== oEvent.which && Utils.mailToHelper($(this).attr('href'),
-				Settings.capa(Enums.Capa.Composer) ? require('View/Popup/Compose') : null));
+			return !(!!oEvent && 3 !== oEvent.which && Utils.mailToHelper(
+				$(this).attr('href'), Settings.capa(Enums.Capa.Composer) ? require('View/Popup/Compose') : null
+			));
 		})
 //			.on('mouseover', 'a', _.debounce(function(oEvent) {
 //

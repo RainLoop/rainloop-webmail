@@ -1,5 +1,5 @@
 
-import {_} from 'common';
+import _ from '_';
 import {Capa, MessageSetAction} from 'Common/Enums';
 import {trim, pInt, isArray} from 'Common/Utils';
 import * as Links from 'Common/Links';

@@ -1,6 +1,9 @@
 
 /* global RL_COMMUNITY */
-import {window, _, $, key} from 'common';
+import window from 'window';
+import _ from '_';
+import $ from '$';
+import key from 'key';
 import ko from 'ko';
 import {KeyState} from 'Common/Enums';
 
@@ -182,9 +185,7 @@ export const leftPanelWidth = ko.observable(0);
 // popups
 export const popupVisibilityNames = ko.observableArray([]);
 
-export const popupVisibility = ko.computed(() => {
-	return 0 < popupVisibilityNames().length;
-});
+export const popupVisibility = ko.computed(() => 0 < popupVisibilityNames().length);
 
 popupVisibility.subscribe((bValue) => {
 	$html.toggleClass('rl-modal', bValue);
@@ -196,9 +197,7 @@ export const keyScopeFake = ko.observable(KeyState.All);
 
 export const keyScope = ko.computed({
 	owner: this,
-	read: () => {
-		return keyScopeFake();
-	},
+	read: () => keyScopeFake(),
 	write: function(sValue) {
 
 		if (KeyState.Menu !== sValue)

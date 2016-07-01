@@ -1,6 +1,7 @@
 
 import window from 'window';
 import progressJs from 'progressJs';
+import Promise from 'Promise';
 
 import STYLES_CSS from 'Styles/@Boot.css';
 import LAYOUT_HTML from 'Html/Layout.html';
@@ -32,7 +33,7 @@ function getComputedStyle(id, name)
  */
 function includeStyle(styles)
 {
-	window.document.write(unescape('%3Csty' + 'le%3E' + styles + '"%3E%3C/' + 'sty' + 'le%3E'));
+	window.document.write(unescape('%3Csty' + 'le%3E' + styles + '"%3E%3C/' + 'sty' + 'le%3E')); // eslint-disable-line no-useless-concat
 }
 
 /**
@@ -41,7 +42,7 @@ function includeStyle(styles)
  */
 function includeScr(src)
 {
-	window.document.write(unescape('%3Csc' + 'ript type="text/jav' + 'ascr' + 'ipt" data-cfasync="false" sr' + 'c="' + src + '"%3E%3C/' + 'scr' + 'ipt%3E'));
+	window.document.write(unescape('%3Csc' + 'ript type="text/jav' + 'ascr' + 'ipt" data-cfasync="false" sr' + 'c="' + src + '"%3E%3C/' + 'scr' + 'ipt%3E')); // eslint-disable-line no-useless-concat
 }
 
 /**
@@ -203,27 +204,30 @@ function runApp()
 					}
 				}
 			}),
-			common = window.Promise.all([
+			common = Promise.all([
 				window.jassl(appData.TemplatesLink),
 				window.jassl(appData.LangLink)
 			]);
 
-		window.Promise.all([libs, common])
+		Promise.all([libs, common])
 			.then(() => {
 				p.set(30);
 				return window.jassl(appData.StaticAppJsLink);
-			}).then(() => {
+			})
+			.then(() => {
 				p.set(50);
 				return appData.PluginsLink ? window.jassl(appData.PluginsLink) : window.Promise.resolve();
-			}).then(() => {
+			})
+			.then(() => {
 				p.set(70);
 				runMainBoot(false);
-			}).catch((e) => {
+			})
+			.catch((e) => {
 				runMainBoot(true);
 				throw e;
-			}).then(() => {
-				return window.jassl(appData.StaticEditorJsLink);
-			}).then(() => {
+			})
+			.then(() => window.jassl(appData.StaticEditorJsLink))
+			.then(() => {
 				if (window.CKEDITOR && window.__initEditor) {
 					window.__initEditor();
 					window.__initEditor = null;

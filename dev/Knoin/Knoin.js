@@ -37,7 +37,7 @@ Knoin.prototype.constructorEnd = function(context)
 {
 	if (Utils.isFunc(context.__constructor_end))
 	{
-		context.__constructor_end.call(context);
+		context.__constructor_end();
 	}
 };
 

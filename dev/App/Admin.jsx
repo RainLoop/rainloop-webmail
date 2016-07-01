@@ -1,5 +1,6 @@
 
-import {window, _} from 'common';
+import window from 'window';
+import _ from '_';
 import ko from 'ko';
 import progressJs from 'progressJs';
 
@@ -39,14 +40,12 @@ class AdminApp extends AbstractApp
 			DomainStore.domains.loading(false);
 			if (StorageResultType.Success === result && data && data.Result)
 			{
-				DomainStore.domains(_.map(data.Result, ([enabled, alias], name) => {
-					return {
-						name: name,
-						disabled: ko.observable(!enabled),
-						alias: alias,
-						deleteAccess: ko.observable(false)
-					};
-				}));
+				DomainStore.domains(_.map(data.Result, ([enabled, alias], name) => ({
+					name: name,
+					disabled: ko.observable(!enabled),
+					alias: alias,
+					deleteAccess: ko.observable(false)
+				})));
 			}
 		});
 	}
@@ -57,13 +56,11 @@ class AdminApp extends AbstractApp
 			PluginStore.plugins.loading(false);
 			if (StorageResultType.Success === result && data && data.Result)
 			{
-				PluginStore.plugins(_.map(data.Result, (item) => {
-					return {
-						name: item.Name,
-						disabled: ko.observable(!item.Enabled),
-						configured: ko.observable(!!item.Configured)
-					};
-				}));
+				PluginStore.plugins(_.map(data.Result, (item) => ({
+					name: item.Name,
+					disabled: ko.observable(!item.Enabled),
+					configured: ko.observable(!!item.Configured)
+				})));
 			}
 		});
 	}
@@ -203,15 +200,15 @@ class AdminApp extends AbstractApp
 		}, force);
 	}
 
-	bootend(callback = null) {
+	bootend(bootendCallback = null) {
 		if (progressJs)
 		{
 			progressJs.end();
 		}
 
-		if (callback)
+		if (bootendCallback)
 		{
-			callback();
+			bootendCallback();
 		}
 	}
 

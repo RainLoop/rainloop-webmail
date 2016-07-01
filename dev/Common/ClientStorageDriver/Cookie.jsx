@@ -1,5 +1,7 @@
 
-import {window, JSON, $} from 'common';
+import window from 'window';
+import $ from '$';
+import JSON from 'JSON';
 import {isUnd} from 'Common/Utils';
 import {CLIENT_SIDE_STORAGE_INDEX_NAME} from 'Common/Consts';
 
@@ -21,7 +23,7 @@ class CookieDriver
 			const storageValue = $.cookie(CLIENT_SIDE_STORAGE_INDEX_NAME);
 			storageResult = null === storageValue ? null : JSON.parse(storageValue);
 		}
-		catch (e) {/* eslint-disable-line no-empty */}
+		catch (e) {} // eslint-disable-line no-empty
 
 		(storageResult || (storageResult = {}))[key] = data;
 
@@ -33,7 +35,7 @@ class CookieDriver
 
 			result = true;
 		}
-		catch (e) {/* eslint-disable-line no-empty */}
+		catch (e) {} // eslint-disable-line no-empty
 
 		return result;
 	}
@@ -54,7 +56,7 @@ class CookieDriver
 
 			result = (storageResult && !isUnd(storageResult[key])) ? storageResult[key] : null;
 		}
-		catch (e) {/* eslint-disable-line no-empty */}
+		catch (e) {} // eslint-disable-line no-empty
 
 		return result;
 	}
