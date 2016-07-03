@@ -89,6 +89,7 @@ nb_NO:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domener"
     BUTTON_ADD_DOMAIN: "Legg til domene"
+    BUTTON_ADD_ALIAS: "Legg til alias"
     DELETE_ARE_YOU_SURE: "Er du sikker?"
     HTML_DOMAINS_HELPER: |
       Liste over domener som programmet kan få tilgang til.
@@ -186,6 +187,12 @@ nb_NO:
       Nøkkelen kan bare tas i bruk for ett domene.
       <br /><br />
       Du kan ikke angre på å ta en nøkkel i bruk.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Legg til alias"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Domene"
+    BUTTON_CLOSE: "Lukk"
+    BUTTON_ADD: "Legg til"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Legg til domene"
     TITLE_ADD_DOMAIN_WITH_NAME: "Legg til «%NAME%»"

@@ -462,6 +462,7 @@ et_EE:
     LABEL_AUTOLOGOUT: "Automaatne välja logimine"
     AUTOLOGIN_NEVER_OPTION_NAME: "Mitte kunagi"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minutit"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% tund(i)"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Üldine"
     LABEL_LANGUAGE: "Keel"

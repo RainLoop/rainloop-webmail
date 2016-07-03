@@ -90,6 +90,7 @@ ja_JP:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "ドメイン"
     BUTTON_ADD_DOMAIN: "ドメインを追加"
+    BUTTON_ADD_ALIAS: "エイリアスを追加"
     DELETE_ARE_YOU_SURE: "よろしいですか？"
     HTML_DOMAINS_HELPER: |
       ドメインの一覧は、Web メールのアクセスを許可されています。
@@ -187,6 +188,12 @@ ja_JP:
       そのサブスクリプションキーは、1つのドメインのみアクティベートできます。
       <br /><br />
       一度アクティベーションの処理を開始すると、中止またはキャンセルすることはできません。
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "エイリアスを追加"
+    LABEL_ALIAS: "エイリアス"
+    LABEL_DOMAIN: "ドメイン"
+    BUTTON_CLOSE: "閉じる"
+    BUTTON_ADD: "追加"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "ドメインを追加"
     TITLE_ADD_DOMAIN_WITH_NAME: "ドメイン \"%NAME%\" を追加"

@@ -2,7 +2,7 @@
   "name": "RainLoop",
   "title": "RainLoop Webmail",
   "version": "1.10.2",
-  "release": "137",
+  "release": "140",
   "private": true,
   "ownCloudPackageVersion": "4.19",
   "description": "Simple, modern & fast web-based email client",
@@ -11,7 +11,7 @@
   "author": {
     "name": "RainLoop Team",
     "email": "support@rainloop.net",
-    "web": "http://rainloop.net"
+    "web": "http://www.rainloop.net"
   },
   "repository": {
     "type": "git",
