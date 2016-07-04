@@ -2800,6 +2800,11 @@
       "from": "normalize-range@>=0.1.2 <0.2.0",
       "resolved": "https://registry.npmjs.org/normalize-range/-/normalize-range-0.1.2.tgz"
     },
+    "normalize.css": {
+      "version": "4.2.0",
+      "from": "normalize.css@*",
+      "resolved": "https://registry.npmjs.org/normalize.css/-/normalize.css-4.2.0.tgz"
+    },
     "num2fraction": {
       "version": "1.2.2",
       "from": "num2fraction@>=1.2.2 <2.0.0",

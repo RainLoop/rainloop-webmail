@@ -122,8 +122,8 @@ cfg.paths.css = {
 	main: {
 		name: 'app.css',
 		src: [
+			'node_modules/normalize.css/normalize.css',
 			'vendors/jquery-ui/css/smoothness/jquery-ui-1.10.3.custom.css',
-			'vendors/normalize/normalize.css',
 			'vendors/fontastic/styles.css',
 			'vendors/jquery-nanoscroller/nanoscroller.css',
 			'vendors/jquery-letterfx/jquery-letterfx.min.css',
