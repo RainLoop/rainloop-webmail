@@ -1324,7 +1324,7 @@ ComposePopupView.prototype.onMessageUploadAttachments = function(sResult, oData)
 		{
 			for (sTempName in oData.Result)
 			{
-				if (Utils.has(oData.Result, oData.Result))
+				if (Utils.has(oData.Result, sTempName))
 				{
 					oAttachment = this.getAttachmentById(oData.Result[sTempName]);
 					if (oAttachment)
