@@ -83,7 +83,7 @@ function MessageOpenPgpPopupView()
 			this.cancelCommand();
 			this.resultCallback(oPrivateKey);
 
-		}, this), 100);
+		}, this), Enums.Magics.Time100ms);
 
 	}, function() {
 		return !this.submitRequest();

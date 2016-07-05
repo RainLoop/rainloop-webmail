@@ -290,7 +290,7 @@ function ContactsPopupView()
 			_.delay(function() {
 				kn.showScreenPopup(require('View/Popup/Compose'),
 					[Enums.ComposeType.Empty, null, aToEmails, aCcEmails, aBccEmails]);
-			}, 200);
+			}, Enums.Magics.Time200ms);
 		}
 
 		return true;
@@ -338,7 +338,7 @@ function ContactsPopupView()
 
 			_.delay(function() {
 				self.viewSaveTrigger(bRes ? Enums.SaveSettingsStep.TrueResult : Enums.SaveSettingsStep.FalseResult);
-			}, 300);
+			}, Enums.Magics.Time350ms);
 
 			if (bRes)
 			{
@@ -346,7 +346,7 @@ function ContactsPopupView()
 
 				_.delay(function() {
 					self.viewSaveTrigger(Enums.SaveSettingsStep.Idle);
-				}, 1000);
+				}, Enums.Magics.Time1s);
 			}
 
 		}, sRequestUid, this.viewID(), aProperties);
@@ -549,13 +549,11 @@ ContactsPopupView.prototype.removeCheckedOrSelectedContactsFromList = function()
 		}
 
 		_.delay(function() {
-
 			_.each(aContacts, function(oContact) {
 				oKoContacts.remove(oContact);
 				Utils.delegateRunOnDestroy(oContact);
 			});
-
-		}, 500);
+		}, Enums.Magics.Time500ms);
 	}
 };
 
@@ -578,7 +576,7 @@ ContactsPopupView.prototype.deleteSelectedContacts = function()
  */
 ContactsPopupView.prototype.deleteResponse = function(sResult, oData)
 {
-	if (500 < (Enums.StorageResultType.Success === sResult && oData && oData.Time ? Utils.pInt(oData.Time) : 0))
+	if (Enums.Magics.Time500ms < (Enums.StorageResultType.Success === sResult && oData && oData.Time ? Utils.pInt(oData.Time) : 0))
 	{
 		this.reloadContactList(this.bDropPageAfterDelete);
 	}
@@ -587,7 +585,7 @@ ContactsPopupView.prototype.deleteResponse = function(sResult, oData)
 		var self = this;
 		_.delay(function() {
 			self.reloadContactList(self.bDropPageAfterDelete);
-		}, 500);
+		}, Enums.Magics.Time500ms);
 	}
 };
 

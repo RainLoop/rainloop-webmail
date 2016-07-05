@@ -212,7 +212,7 @@ function LoginUserView()
 
 								_.delay(function() {
 									self.additionalCode.focused(true);
-								}, 100);
+								}, Enums.Magics.Time100ms);
 							}
 							else if (oData.Admin)
 							{
@@ -476,7 +476,7 @@ LoginUserView.prototype.onBuild = function()
 
 		});
 
-	}, 50);
+	}, Enums.Magics.Time50ms);
 
 	Utils.triggerAutocompleteInputChange(true);
 };
@@ -500,7 +500,7 @@ LoginUserView.prototype.selectLanguageOnTab = function(bShift)
 		var self = this;
 		_.delay(function() {
 			self.emailFocus(true);
-		}, 5);
+		}, Enums.Magics.Time50ms);
 
 		return false;
 	}

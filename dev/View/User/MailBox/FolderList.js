@@ -143,7 +143,7 @@ FolderListMailBoxUserView.prototype.onBuild = function(oDom)
 
 		var
 			iIndex = -1,
-			iKeyCode = handler && 'up' === handler.shortcut ? 38 : 40,
+			iKeyCode = handler && 'up' === handler.shortcut ? Enums.EventKeyCode.Up : Enums.EventKeyCode.Down,
 			$items = $('.b-folders .e-item .e-link:not(.hidden):visible', oDom);
 
 		if (event && $items.length)
@@ -154,11 +154,11 @@ FolderListMailBoxUserView.prototype.onBuild = function(oDom)
 				$items.eq(iIndex).removeClass('focused');
 			}
 
-			if (38 === iKeyCode && 0 < iIndex)
+			if (Enums.EventKeyCode.Up === iKeyCode && 0 < iIndex)
 			{
 				iIndex -= 1;
 			}
-			else if (40 === iKeyCode && iIndex < $items.length - 1)
+			else if (Enums.EventKeyCode.Down === iKeyCode && iIndex < $items.length - 1)
 			{
 				iIndex += 1;
 			}
@@ -220,7 +220,7 @@ FolderListMailBoxUserView.prototype.messagesDropOver = function(oFolder)
 			oFolder.collapsed(false);
 			require('App/User').default.setExpandedFolder(oFolder.fullNameHash, true);
 			Utils.windowResize();
-		}, 500);
+		}, Enums.Magics.Time500ms);
 	}
 };
 

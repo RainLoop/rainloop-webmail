@@ -83,7 +83,7 @@ SettingsUserStore.prototype.populate = function()
 		{
 			self.iAutoLogoutTimer = window.setTimeout(function() {
 				Events.pub('rl.auto-logout');
-			}, self.autoLogout() * 1000 * 60);
+			}, self.autoLogout() * Enums.Magics.Time1m);
 		}
 	});
 

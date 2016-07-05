@@ -50,7 +50,7 @@ function GeneralUserSettings()
 		return Utils.convertLangName(this.language());
 	}, this);
 
-	this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': 100});
+	this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': Enums.Magics.Time100ms});
 
 	this.mppTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
 	this.editorDefaultTypeTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
@@ -121,7 +121,7 @@ GeneralUserSettings.prototype.onBuild = function()
 					self.languageTrigger(iSaveSettingsStep);
 					_.delay(function() {
 						self.languageTrigger(Enums.SaveSettingsStep.Idle);
-					}, 1000);
+					}, Enums.Magics.Time1s);
 				};
 			};
 
@@ -163,7 +163,7 @@ GeneralUserSettings.prototype.onBuild = function()
 				Remote.saveSettings(null, {
 					'DesktopNotifications': bValue ? '1' : '0'
 				});
-			}, 3000);
+			}, Enums.Magics.Time3s);
 		});
 
 		self.enableSoundNotification.subscribe(function(bValue) {
@@ -171,7 +171,7 @@ GeneralUserSettings.prototype.onBuild = function()
 				Remote.saveSettings(null, {
 					'SoundNotification': bValue ? '1' : '0'
 				});
-			}, 3000);
+			}, Enums.Magics.Time3s);
 		});
 
 		self.replySameFolder.subscribe(function(bValue) {
@@ -179,7 +179,7 @@ GeneralUserSettings.prototype.onBuild = function()
 				Remote.saveSettings(null, {
 					'ReplySameFolder': bValue ? '1' : '0'
 				});
-			}, 3000);
+			}, Enums.Magics.Time3s);
 		});
 
 		self.useThreads.subscribe(function(bValue) {
@@ -206,7 +206,7 @@ GeneralUserSettings.prototype.onBuild = function()
 			});
 		});
 
-	}, 50);
+	}, Enums.Magics.Time50ms);
 };
 
 GeneralUserSettings.prototype.onShow = function()

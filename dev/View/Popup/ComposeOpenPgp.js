@@ -231,7 +231,7 @@ function ComposeOpenPgpPopupView()
 
 				self.submitRequest(false);
 
-			}, 10);
+			}, Enums.Magics.Time20ms);
 		}
 		else
 		{

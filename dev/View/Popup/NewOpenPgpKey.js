@@ -3,6 +3,7 @@ var
 	_ = require('_'),
 	ko = require('ko'),
 
+	Enums = require('Common/Enums'),
 	Utils = require('Common/Utils'),
 
 	PgpStore = require('Stores/User/Pgp'),
@@ -24,7 +25,7 @@ function NewOpenPgpKeyPopupView()
 
 	this.name = ko.observable('');
 	this.password = ko.observable('');
-	this.keyBitLength = ko.observable(2048);
+	this.keyBitLength = ko.observable(Enums.Magics.BitLength2048);
 
 	this.submitRequest = ko.observable(false);
 
@@ -90,7 +91,7 @@ function NewOpenPgpKeyPopupView()
 				self.submitRequest(false);
 			}
 
-		}, 100);
+		}, Enums.Magics.Time100ms);
 
 		return true;
 	});
@@ -108,7 +109,7 @@ NewOpenPgpKeyPopupView.prototype.clearPopup = function()
 
 	this.email('');
 	this.email.error(false);
-	this.keyBitLength(2048);
+	this.keyBitLength(Enums.Magics.BitLength2048);
 };
 
 NewOpenPgpKeyPopupView.prototype.onShow = function()

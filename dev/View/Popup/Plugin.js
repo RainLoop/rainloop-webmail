@@ -79,7 +79,7 @@ function PluginPopupView()
 	this.bDisabeCloseOnEsc = true;
 	this.sDefaultKeyScope = Enums.KeyState.All;
 
-	this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), 200);
+	this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Enums.Magics.Time200ms);
 
 	kn.constructorEnd(this);
 }

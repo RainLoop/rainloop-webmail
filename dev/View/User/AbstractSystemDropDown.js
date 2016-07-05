@@ -72,7 +72,7 @@ AbstractSystemDropDownUserView.prototype.accountClick = function(oAccount, oEven
 
 		_.delay(function() {
 			AccountStore.accounts.loading(false);
-		}, 1000);
+		}, Enums.Magics.Time1s);
 	}
 
 	return true;

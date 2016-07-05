@@ -198,7 +198,7 @@ NotificationUserStore.prototype.displayDesktopNotification = function(sImageSrc,
 						oLocalNotifications.close();
 					}
 				};
-			}(oNotification)), 7000);
+			}(oNotification)), Enums.Magics.Time7s);
 		}
 	}
 };

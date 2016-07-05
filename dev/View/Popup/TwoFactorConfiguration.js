@@ -91,10 +91,9 @@ function TwoFactorConfigurationPopupView()
 
 	this.viewTwoFactorStatus = ko.computed(function() {
 		Translator.trigger();
-		return Translator.i18n(
-			this.twoFactorStatus() ?
-				'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_CONFIGURED_DESC' :
-				'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC'
+		return Translator.i18n(this.twoFactorStatus() ?
+			'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_CONFIGURED_DESC' :
+			'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC'
 		);
 	}, this);
 
@@ -110,7 +109,6 @@ function TwoFactorConfigurationPopupView()
 
 kn.extendAsViewModel(['View/Popup/TwoFactorConfiguration', 'TwoFactorConfigurationPopupView'], TwoFactorConfigurationPopupView);
 _.extend(TwoFactorConfigurationPopupView.prototype, AbstractView.prototype);
-
 
 TwoFactorConfigurationPopupView.prototype.showSecret = function()
 {

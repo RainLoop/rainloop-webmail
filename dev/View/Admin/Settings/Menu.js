@@ -3,6 +3,7 @@ var
 	_ = require('_'),
 
 	Globals = require('Common/Globals'),
+	Enums = require('Common/Enums'),
 
 	kn = require('Knoin/Knoin'),
 	AbstractView = require('Knoin/AbstractView');
@@ -61,7 +62,7 @@ MenuSettingsAdminView.prototype.onBuild = function(oDom)
 			}
 		}
 
-	}, 200));
+	}, Enums.Magics.Time200ms));
 };
 
 module.exports = MenuSettingsAdminView;

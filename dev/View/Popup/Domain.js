@@ -248,19 +248,18 @@ function DomainPopupView()
 		if (this.enableSmartPorts())
 		{
 			var iPort = Utils.pInt(this.imapPort());
-			sValue = Utils.pString(sValue);
-			switch (sValue)
+			switch (Utils.pString(sValue))
 			{
 				case '0':
-					if (993 === iPort)
+					if (Enums.Ports.ImapSsl === iPort)
 					{
-						this.imapPort('143');
+						this.imapPort(Utils.pString(Enums.Ports.Imap));
 					}
 					break;
 				case '1':
-					if (143 === iPort)
+					if (Enums.Ports.Imap === iPort)
 					{
-						this.imapPort('993');
+						this.imapPort(Utils.pString(Enums.Ports.ImapSsl));
 					}
 					break;
 				// no default
@@ -272,25 +271,24 @@ function DomainPopupView()
 		if (this.enableSmartPorts())
 		{
 			var iPort = Utils.pInt(this.smtpPort());
-			sValue = Utils.pString(sValue);
-			switch (sValue)
+			switch (Utils.pString(sValue))
 			{
 				case '0':
-					if (465 === iPort || 587 === iPort)
+					if (Enums.Ports.SmtpSsl === iPort || Enums.Ports.SmtpStartTls === iPort)
 					{
-						this.smtpPort('25');
+						this.smtpPort(Utils.pString(Enums.Ports.Smtp));
 					}
 					break;
 				case '1':
-					if (25 === iPort || 587 === iPort)
+					if (Enums.Ports.Smtp === iPort || Enums.Ports.SmtpStartTls === iPort)
 					{
-						this.smtpPort('465');
+						this.smtpPort(Utils.pString(Enums.Ports.SmtpSsl));
 					}
 					break;
 				case '2':
-					if (25 === iPort || 465 === iPort)
+					if (Enums.Ports.Smtp === iPort || Enums.Ports.SmtpSsl === iPort)
 					{
-						this.smtpPort('587');
+						this.smtpPort(Utils.pString(Enums.Ports.SmtpStartTls));
 					}
 					break;
 				// no default
@@ -397,7 +395,6 @@ DomainPopupView.prototype.onHide = function()
 	this.page('main');
 	this.sieveSettings(false);
 };
-
 
 DomainPopupView.prototype.onShow = function(oDomain)
 {

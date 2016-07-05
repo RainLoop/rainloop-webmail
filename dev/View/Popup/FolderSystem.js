@@ -65,7 +65,7 @@ function FolderSystemPopupView()
 			'NullFolder': 'NullFolder'
 		});
 
-	}, 1000);
+	}, Enums.Magics.Time1s);
 
 	fCallback = function() {
 

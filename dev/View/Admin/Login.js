@@ -119,7 +119,7 @@ LoginAdminView.prototype.onShow = function()
 
 	_.delay(_.bind(function() {
 		this.loginFocus(true);
-	}, this), 100);
+	}, this), Enums.Magics.Time100ms);
 
 };
 

@@ -547,7 +547,7 @@ MessageViewMailBoxUserView.prototype.checkHeaderHeight = function()
 	if (this.oHeaderDom)
 	{
 		this.viewBodyTopValue(this.message() ? this.oHeaderDom.height() +
-			20 /* padding-(top/bottom): 20px */ + 1 /* borded-bottom: 1px */ : 0);
+			Enums.Magics.Size20px /* padding-(top/bottom): 20px */ + Enums.Magics.Size1px /* borded-bottom: 1px */ : 0);
 	}
 };
 
@@ -661,13 +661,13 @@ MessageViewMailBoxUserView.prototype.onBuild = function(oDom)
 
 	Events.sub('window.resize', _.throttle(function() {
 		_.delay(fCheckHeaderHeight, 1);
-		_.delay(fCheckHeaderHeight, 200);
-		_.delay(fCheckHeaderHeight, 500);
-	}, 50));
+		_.delay(fCheckHeaderHeight, Enums.Magics.Time200ms);
+		_.delay(fCheckHeaderHeight, Enums.Magics.Time500ms);
+	}, Enums.Magics.Time50ms));
 
 	this.showFullInfo.subscribe(function(value) {
 		Utils.windowResize();
-		Utils.windowResize(250);
+		Utils.windowResize(Enums.Magics.Time200ms);
 		Local.set(Enums.ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0');
 	});
 
@@ -695,7 +695,7 @@ MessageViewMailBoxUserView.prototype.onBuild = function(oDom)
 	oDom
 		.on('click', 'a', function(oEvent) {
 			// setup maito protocol
-			return !(!!oEvent && 3 !== oEvent.which && Utils.mailToHelper(
+			return !(!!oEvent && Enums.Magics.EventWhichMouseMiddle !== oEvent.which && Utils.mailToHelper(
 				$(this).attr('href'), Settings.capa(Enums.Capa.Composer) ? require('View/Popup/Compose') : null
 			));
 		})
@@ -1033,11 +1033,11 @@ MessageViewMailBoxUserView.prototype.scrollMessageToTop = function()
 {
 	if (this.oMessageScrollerDom)
 	{
-		if (50 < this.oMessageScrollerDom.scrollTop())
+		if (Enums.Size50px < this.oMessageScrollerDom.scrollTop())
 		{
 			this.oMessageScrollerDom
-				.scrollTop(50)
-				.animate({'scrollTop': 0}, 200);
+				.scrollTop(Enums.Size50px)
+				.animate({'scrollTop': 0}, Enums.Time200ms);
 		}
 		else
 		{
@@ -1192,7 +1192,7 @@ MessageViewMailBoxUserView.prototype.showImages = function(oMessage)
 MessageViewMailBoxUserView.prototype.printableCheckedMessageCount = function()
 {
 	var iCnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
-	return 0 < iCnt ? (100 > iCnt ? iCnt : '99+') : '';
+	return 0 < iCnt ? (100 > iCnt ? iCnt : '99+') : ''; // eslint-disable-line no-magic-numbers
 };
 
 /**

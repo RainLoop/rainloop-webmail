@@ -54,7 +54,7 @@ KeyboardShortcutsHelpPopupView.prototype.onBuild = function(oDom)
 
 		return true;
 
-	}, 100));
+	}, Enums.Magics.Time100ms));
 };
 
 module.exports = KeyboardShortcutsHelpPopupView;

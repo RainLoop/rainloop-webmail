@@ -439,7 +439,6 @@ Knoin.prototype.startScreens = function(aScreensClasses)
 
 	}, this);
 
-
 	_.each(this.oScreens, function(oScreen) {
 		if (oScreen && !oScreen.__started && oScreen.__start)
 		{

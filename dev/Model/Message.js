@@ -592,7 +592,6 @@ MessageModel.prototype.findAttachmentByContentLocation = function(sContentLocati
 	return oResult || null;
 };
 
-
 /**
  * @returns {string}
  */

@@ -429,7 +429,7 @@ MessageListMailBoxUserView.prototype.goToUpUpOrDownDown = function(bUp)
 			self.gotoPage(bUp ? oPrev : oNext);
 		}
 
-	}, 350);
+	}, Enums.Magics.Time350ms);
 
 	return true;
 };
@@ -461,7 +461,7 @@ MessageListMailBoxUserView.prototype.searchEnterAction = function()
 MessageListMailBoxUserView.prototype.printableMessageCountForDeletion = function()
 {
 	var iCnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
-	return 1 < iCnt ? ' (' + (100 > iCnt ? iCnt : '99+') + ')' : '';
+	return 1 < iCnt ? ' (' + (100 > iCnt ? iCnt : '99+') + ')' : ''; // eslint-disable-line no-magic-numbers
 };
 
 MessageListMailBoxUserView.prototype.cancelSearch = function()
@@ -772,7 +772,7 @@ MessageListMailBoxUserView.prototype.onBuild = function(oDom)
 
 	if (!Globals.bMobileDevice && ifvisible && Settings.capa(Enums.Capa.Prefetch))
 	{
-		ifvisible.setIdleDuration(10);
+		ifvisible.setIdleDuration(Enums.Magics.ifvisibleIdle10s);
 
 		ifvisible.idle(function() {
 			self.prefetchNextTick();
@@ -980,7 +980,7 @@ MessageListMailBoxUserView.prototype.prefetchNextTick = function()
 					{
 						self.prefetchNextTick();
 					}
-				}, 1000);
+				}, Enums.Magics.Time1s);
 
 			}, oMessage.folderFullNameRaw, oMessage.uid);
 		}

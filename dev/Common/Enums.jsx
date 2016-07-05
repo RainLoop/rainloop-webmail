@@ -417,6 +417,46 @@ export const ContactPropertyType = {
 /**
  * @enum {number}
  */
+export const Magics = {
+	'EventWhichMouseMiddle': 3,
+	'ifvisibleIdle10s': 10,
+
+	'BitLength2048': 2048,
+	'BitLength1024': 1024,
+
+	'Size50px': 50,
+	'Size20px': 20,
+	'Size1px': 1,
+
+	'Time1m': 60000,
+	'Time30s': 30000,
+	'Time7s': 7000,
+	'Time5s': 5000,
+	'Time3s': 3000,
+	'Time1s': 1000,
+	'Time500ms': 500,
+	'Time350ms': 350,
+	'Time250ms': 250,
+	'Time200ms': 200,
+	'Time100ms': 100,
+	'Time50ms': 50,
+	'Time20ms': 20
+};
+
+/**
+ * @enum {number}
+ */
+export const Ports = {
+	'Imap': 143,
+	'ImapSsl': 993,
+	'Smtp': 25,
+	'SmtpSsl': 465,
+	'SmtpStartTls': 587
+};
+
+/**
+ * @enum {number}
+ */
 export const Notification = {
 	'InvalidToken': 101,
 	'AuthError': 102,

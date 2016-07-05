@@ -519,7 +519,7 @@ function ComposePopupView()
 			_.delay(function() {
 				kn.showScreenPopup(require('View/Popup/Contacts'),
 					[true, self.sLastFocusedField]);
-			}, 200);
+			}, Enums.Magics.Time200ms);
 		}
 
 	}, function() {
@@ -586,7 +586,7 @@ function ComposePopupView()
 	this.bDisabeCloseOnEsc = true;
 	this.sDefaultKeyScope = Enums.KeyState.Compose;
 
-	this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), 200);
+	this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Enums.Magics.Time200ms);
 
 	this.emailsSource = _.bind(this.emailsSource, this);
 	this.autosaveFunction = _.bind(this.autosaveFunction, this);
@@ -613,7 +613,7 @@ ComposePopupView.prototype.autosaveFunction = function()
 ComposePopupView.prototype.autosaveStart = function()
 {
 	window.clearTimeout(this.iTimer);
-	this.iTimer = window.setTimeout(this.autosaveFunction, 1000 * 60 * 1);
+	this.iTimer = window.setTimeout(this.autosaveFunction, Enums.Magics.Time1m);
 };
 
 ComposePopupView.prototype.autosaveStop = function()
@@ -1361,7 +1361,7 @@ ComposePopupView.prototype.setFocusInPopup = function()
 				}
 			}
 
-		}, 100);
+		}, Enums.Magics.Time100ms);
 	}
 };
 
@@ -1451,7 +1451,7 @@ ComposePopupView.prototype.onBuild = function()
 	});
 
 	Events.sub('window.resize.real', this.resizerTrigger);
-	Events.sub('window.resize.real', _.debounce(this.resizerTrigger, 50));
+	Events.sub('window.resize.real', _.debounce(this.resizerTrigger, Enums.Magics.Time50ms));
 
 	if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
 	{
@@ -1478,7 +1478,7 @@ ComposePopupView.prototype.onBuild = function()
 		{
 			self.oEditor.resize();
 		}
-	}, 5000);
+	}, Enums.Magics.Time5s);
 };
 
 ComposePopupView.prototype.driveCallback = function(sAccessToken, oData)

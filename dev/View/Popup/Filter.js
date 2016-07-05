@@ -155,7 +155,6 @@ FilterPopupView.prototype.populateOptions = function()
 	]);
 };
 
-
 FilterPopupView.prototype.removeCondition = function(oConditionToDelete)
 {
 	if (this.filter())

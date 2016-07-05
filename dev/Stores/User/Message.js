@@ -70,7 +70,7 @@ function MessageUserStore()
 		return this.messageCurrentLoading();
 	}, this);
 
-	this.messageLoadingThrottle = ko.observable(false).extend({'throttle': 50});
+	this.messageLoadingThrottle = ko.observable(false).extend({'throttle': Enums.Magics.Time50ms});
 
 	this.messageFullScreenMode = ko.observable(false);
 
@@ -82,7 +82,7 @@ function MessageUserStore()
 
 	this.onMessageResponse = _.bind(this.onMessageResponse, this);
 
-	this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, 1000 * 30);
+	this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, Enums.Magics.Time30s);
 }
 
 MessageUserStore.prototype.computers = function()
@@ -174,7 +174,7 @@ MessageUserStore.prototype.subscribers = function()
 				oItem.newForAnimation(false);
 			}
 		});
-	}, 500));
+	}, Enums.Magics.Time500ms));
 
 	this.message.subscribe(function(oMessage) {
 
@@ -240,7 +240,7 @@ MessageUserStore.prototype.purgeMessageBodyCache = function()
 			{
 				_.delay(function() {
 					oMessagesDom.find('.rl-cache-purge').remove();
-				}, 300);
+				}, Enums.Magics.Time350ms);
 			}
 		}
 	}
@@ -393,7 +393,7 @@ MessageUserStore.prototype.removeMessagesFromList = function(
 				_.each(aMessages, function(item) {
 					self.messageList.remove(item);
 				});
-			}, 400);
+			}, Enums.Magics.Time350ms);
 		}
 	}
 

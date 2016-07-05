@@ -585,7 +585,6 @@ RemoteUserAjax.prototype.saveMessage = function(fCallback, sIdentityID, sMessage
 	}, Consts.SAVE_MESSAGE_AJAX_TIMEOUT);
 };
 
-
 /**
  * @param {?Function} fCallback
  * @param {string} sMessageFolder
