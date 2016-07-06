@@ -23,8 +23,8 @@ var
 
 	Remote = require('Remote/User/Ajax'),
 
-	MessageModel = require('Model/Message'),
-	MessageHelper = require('Helper/Message').default;
+	MessageModel = require('Model/Message').default,
+	MessageHelper = require('Helper/Message');
 
 /**
  * @constructor

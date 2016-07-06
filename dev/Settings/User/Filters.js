@@ -118,7 +118,7 @@ FiltersUserSettings.prototype.updateList = function()
 {
 	var
 		self = this,
-		FilterModel = require('Model/Filter');
+		FilterModel = require('Model/Filter').default;
 
 	if (!this.filters.loading())
 	{
@@ -176,7 +176,7 @@ FiltersUserSettings.prototype.addFilter = function()
 {
 	var
 		self = this,
-		FilterModel = require('Model/Filter'),
+		FilterModel = require('Model/Filter').default,
 		oNew = new FilterModel();
 
 	oNew.generateID();

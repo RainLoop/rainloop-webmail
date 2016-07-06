@@ -1593,7 +1593,7 @@ export function mailToHelper(mailToUrl, PopupComposeVoreModel)
 		const
 			email = mailToUrl.replace(/\?.+$/, ''),
 			query = mailToUrl.replace(/^[^\?]*\?/, ''),
-			EmailModel = require('Model/Email'),
+			EmailModel = require('Model/Email').default,
 			emailObj = new EmailModel(),
 			fParseEmailLine = (line) => (line ? _.compact(_.map(decodeURIComponent(line).split(/[,]/), (item) => {
 				emailObj.clear();

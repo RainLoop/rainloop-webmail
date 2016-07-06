@@ -838,7 +838,7 @@ ko.bindingHandlers.emailsTags = {
 
 		var
 			Utils = require('Common/Utils'),
-			EmailModel = require('Model/Email'),
+			EmailModel = require('Model/Email').default,
 
 			$oEl = $(oElement),
 			fValue = fValueAccessor(),

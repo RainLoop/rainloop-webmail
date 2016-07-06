@@ -6,7 +6,7 @@ import {$win, $html, data as GlobalsData, bMobileDevice} from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
 import {i18n} from 'Common/Translator';
-import EmailModel from 'Model/Email';
+import {EmailModel} from 'Model/Email';
 
 export default (App) => {
 

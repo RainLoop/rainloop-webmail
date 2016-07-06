@@ -11,7 +11,7 @@ var
 
 	PgpStore = require('Stores/User/Pgp'),
 
-	EmailModel = require('Model/Email'),
+	EmailModel = require('Model/Email').default,
 
 	kn = require('Knoin/Knoin'),
 	AbstractView = require('Knoin/AbstractView');

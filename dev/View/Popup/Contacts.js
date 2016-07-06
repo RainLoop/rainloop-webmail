@@ -21,9 +21,9 @@ var
 
 	Remote = require('Remote/User/Ajax'),
 
-	EmailModel = require('Model/Email'),
-	ContactModel = require('Model/Contact'),
-	ContactPropertyModel = require('Model/ContactProperty'),
+	EmailModel = require('Model/Email').default,
+	ContactModel = require('Model/Contact').default,
+	ContactPropertyModel = require('Model/ContactProperty').default,
 
 	kn = require('Knoin/Knoin'),
 	AbstractView = require('Knoin/AbstractView');

@@ -46,11 +46,11 @@ import {checkTimestamp} from 'Storage/RainLoop';
 import Remote from 'Remote/User/Ajax';
 import Promises from 'Promises/User/Ajax';
 
-import EmailModel from 'Model/Email';
-import AccountModel from 'Model/Account';
-import IdentityModel from 'Model/Identity';
-import TemplateModel from 'Model/Template';
-import OpenPgpKeyModel from 'Model/OpenPgpKey';
+import {EmailModel} from 'Model/Email';
+import {AccountModel} from 'Model/Account';
+import {IdentityModel} from 'Model/Identity';
+import {TemplateModel} from 'Model/Template';
+import {OpenPgpKeyModel} from 'Model/OpenPgpKey';
 
 import kn from 'Knoin/Knoin';
 

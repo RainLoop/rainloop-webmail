@@ -558,7 +558,7 @@ MessageViewMailBoxUserView.prototype.checkHeaderHeight = function()
 //		var
 //			sResult = '',
 //			aTo = [],
-//			EmailModel = require('Model/Email'),
+//			EmailModel = require('Model/Email').default,
 //			fParseEmailLine = function(sLine) {
 //				return sLine ? _.compact(_.map([window.decodeURIComponent(sLine)], function(sItem) {
 //						var oEmailModel = new EmailModel();

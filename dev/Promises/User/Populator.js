@@ -13,7 +13,7 @@ var
 	Settings = require('Storage/Settings'),
 	Local = require('Storage/Client'),
 
-	FolderModel = require('Model/Folder'),
+	FolderModel = require('Model/Folder').default,
 
 	AbstractBasicPromises = require('Promises/AbstractBasic');
 

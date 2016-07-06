@@ -32,7 +32,7 @@ var
 	Settings = require('Storage/Settings'),
 	Remote = require('Remote/User/Ajax'),
 
-	ComposeAttachmentModel = require('Model/ComposeAttachment'),
+	ComposeAttachmentModel = require('Model/ComposeAttachment').default,
 
 	kn = require('Knoin/Knoin'),
 	AbstractView = require('Knoin/AbstractView');
