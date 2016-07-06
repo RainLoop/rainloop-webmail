@@ -52,6 +52,11 @@ import {IdentityModel} from 'Model/Identity';
 import {TemplateModel} from 'Model/Template';
 import {OpenPgpKeyModel} from 'Model/OpenPgpKey';
 
+// import {AboutUserScreen} from 'Screen/User/About';
+import {LoginUserScreen} from 'Screen/User/Login';
+import {MailBoxUserScreen} from 'Screen/User/MailBox';
+import {SettingsUserScreen} from 'Screen/User/Settings';
+
 import kn from 'Knoin/Knoin';
 
 import {AbstractApp} from 'App/Abstract';
@@ -1210,7 +1215,7 @@ class AppUser extends AbstractApp
 		if (!customLoginLink)
 		{
 			kn.startScreens([
-				require('Screen/User/Login')
+				LoginUserScreen
 			]);
 
 			Plugins.runHook('rl-start-login-screens');
@@ -1345,9 +1350,9 @@ class AppUser extends AbstractApp
 						}
 
 						kn.startScreens([
-							require('Screen/User/MailBox'),
-							Settings.capa(Capa.Settings) ? require('Screen/User/Settings') : null
-//							false ? require('Screen/User/About') : null
+							MailBoxUserScreen,
+							Settings.capa(Capa.Settings) ? SettingsUserScreen : null
+//							false ? AboutUserScreen : null
 						]);
 
 						if (bGoogle || bFacebook || bTwitter)

@@ -75,7 +75,7 @@ function FilterPopupView()
 	this.typeOptions = ko.observableArray([]);
 	this.typeOptionsSize = ko.observableArray([]);
 
-	Translator.initOnStartOrLangChange(this.populateOptions, this);
+	Translator.initOnStartOrLangChange(_.bind(this.populateOptions, this));
 
 	this.modules.subscribe(this.populateOptions, this);
 

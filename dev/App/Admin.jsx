@@ -19,6 +19,9 @@ import PackageStore from 'Stores/Admin/Package';
 import CoreStore from 'Stores/Admin/Core';
 import Remote from 'Remote/Admin/Ajax';
 
+import {SettingsAdminScreen} from 'Screen/Admin/Settings';
+import {LoginAdminScreen} from 'Screen/Admin/Login';
+
 import kn from 'Knoin/Knoin';
 
 import {AbstractApp} from 'App/Abstract';
@@ -236,13 +239,13 @@ class AdminApp extends AbstractApp
 			if (Settings.settingsGet('Auth'))
 			{
 				kn.startScreens([
-					require('Screen/Admin/Settings')
+					SettingsAdminScreen
 				]);
 			}
 			else
 			{
 				kn.startScreens([
-					require('Screen/Admin/Login')
+					LoginAdminScreen
 				]);
 			}
 		}

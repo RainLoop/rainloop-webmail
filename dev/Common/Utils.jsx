@@ -113,6 +113,24 @@ export function decodeURIComponent(component)
 }
 
 /**
+ * @param {string} url
+ * @returns {string}
+ */
+export function decodeURI(url)
+{
+	return window.decodeURI(url);
+}
+
+/**
+ * @param {string} url
+ * @returns {string}
+ */
+export function encodeURI(url)
+{
+	return window.encodeURI(url);
+}
+
+/**
  * @param {string} queryString
  * @returns {Object}
  */

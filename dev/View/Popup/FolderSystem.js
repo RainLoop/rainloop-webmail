@@ -24,10 +24,10 @@ function FolderSystemPopupView()
 {
 	AbstractView.call(this, 'Popups', 'PopupsFolderSystem');
 
-	Translator.initOnStartOrLangChange(function() {
+	Translator.initOnStartOrLangChange(_.bind(function() {
 		this.sChooseOnText = Translator.i18n('POPUPS_SYSTEM_FOLDERS/SELECT_CHOOSE_ONE');
 		this.sUnuseText = Translator.i18n('POPUPS_SYSTEM_FOLDERS/SELECT_UNUSE_NAME');
-	}, this);
+	}, this));
 
 	this.notification = ko.observable('');
 

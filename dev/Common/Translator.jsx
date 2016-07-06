@@ -199,31 +199,30 @@ export function initNotificationLanguage()
 }
 
 /**
- * @param {Function} callback
- * @param {Object} scope
+ * @param {Function} startCallback
  * @param {Function=} langCallback = null
  */
-export function initOnStartOrLangChange(callback, scope, langCallback = null)
+export function initOnStartOrLangChange(startCallback, langCallback = null)
 {
-	if (callback)
+	if (startCallback)
 	{
-		callback.call(scope);
+		startCallback();
 	}
 
 	if (langCallback)
 	{
 		trigger.subscribe(() => {
-			if (callback)
+			if (startCallback)
 			{
-				callback.call(scope);
+				startCallback();
 			}
 
-			langCallback.call(scope);
+			langCallback();
 		});
 	}
-	else if (callback)
+	else if (startCallback)
 	{
-		trigger.subscribe(callback, scope);
+		trigger.subscribe(startCallback);
 	}
 }
 

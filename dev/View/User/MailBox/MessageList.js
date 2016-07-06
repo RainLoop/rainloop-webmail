@@ -84,9 +84,9 @@ function MessageListMailBoxUserView()
 	this.messageListCompleteLoadingThrottle = MessageStore.messageListCompleteLoadingThrottle;
 	this.messageListCompleteLoadingThrottleForAnimation = MessageStore.messageListCompleteLoadingThrottleForAnimation;
 
-	Translator.initOnStartOrLangChange(function() {
+	Translator.initOnStartOrLangChange(_.bind(function() {
 		this.emptySubjectValue = Translator.i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT');
-	}, this);
+	}, this));
 
 	this.userQuota = QuotaStore.quota;
 	this.userUsageSize = QuotaStore.usage;
