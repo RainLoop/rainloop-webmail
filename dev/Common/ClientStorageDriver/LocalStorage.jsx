@@ -2,24 +2,31 @@
 import window from 'window';
 import JSON from 'JSON';
 import {isUnd} from 'Common/Utils';
+import {isStorageSupported} from 'Storage/RainLoop';
 import {CLIENT_SIDE_STORAGE_INDEX_NAME} from 'Common/Consts';
 
 class LocalStorageDriver
 {
+	constructor()
+	{
+		this.s = window.localStorage || null;
+	}
+
 	/**
 	 * @param {string} key
 	 * @param {*} data
 	 * @returns {boolean}
 	 */
 	set(key, data) {
+		if (!this.s)
+		{
+			return false;
+		}
 
-		let
-			result = false,
-			storageResult = null;
-
+		let storageResult = null;
 		try
 		{
-			const storageValue = window.localStorage[CLIENT_SIDE_STORAGE_INDEX_NAME] || null;
+			const storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null;
 			storageResult = null === storageValue ? null : JSON.parse(storageValue);
 		}
 		catch (e) {} // eslint-disable-line no-empty
@@ -28,12 +35,12 @@ class LocalStorageDriver
 
 		try
 		{
-			window.localStorage[CLIENT_SIDE_STORAGE_INDEX_NAME] = JSON.stringify(storageResult);
-			result = true;
+			this.s.setItem(CLIENT_SIDE_STORAGE_INDEX_NAME, JSON.stringify(storageResult));
+			return true;
 		}
 		catch (e) {} // eslint-disable-line no-empty
 
-		return result;
+		return false;
 	}
 
 	/**
@@ -41,27 +48,29 @@ class LocalStorageDriver
 	 * @returns {*}
 	 */
 	get(key) {
-
-		let result = null;
+		if (!this.s)
+		{
+			return null;
+		}
 
 		try
 		{
 			const
-				storageValue = window.localStorage[CLIENT_SIDE_STORAGE_INDEX_NAME] || null,
+				storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null,
 				storageResult = null === storageValue ? null : JSON.parse(storageValue);
 
-			result = (storageResult && !isUnd(storageResult[key])) ? storageResult[key] : null;
+			return (storageResult && !isUnd(storageResult[key])) ? storageResult[key] : null;
 		}
 		catch (e) {} // eslint-disable-line no-empty
 
-		return result;
+		return null;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	static supported() {
-		return !!window.localStorage;
+		return isStorageSupported('localStorage');
 	}
 }
 

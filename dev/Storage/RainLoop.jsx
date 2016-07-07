@@ -5,7 +5,34 @@ import JSON from 'JSON';
 const STORAGE_KEY = '__rlA';
 const TIME_KEY = '__rlT';
 
-const SESS_STORAGE = window.sessionStorage || null;
+/**
+ * @param {string} storageName
+ * @returns {boolean}
+ */
+export function isStorageSupported(storageName)
+{
+	if (storageName in window && window[storageName] && window[storageName].setItem)
+	{
+		const
+			s = window[storageName],
+			key = 'testLocalStorage_' + window.Math.random();
+
+		try
+		{
+			s.setItem(key, key);
+			if (key === s.getItem(key))
+			{
+				s.removeItem(key);
+				return true;
+			}
+		}
+		catch (e) {} // eslint-disable-line no-empty
+	}
+
+	return false;
+}
+
+const SESS_STORAGE = isStorageSupported('sessionStorage') ? (window.sessionStorage || null) : null;
 const WIN_STORAGE = window.top || window || null;
 
 const __get = (key) => {
@@ -93,6 +120,4 @@ export function checkTimestamp()
 }
 
 // init section
-window.setInterval(() => {
-	setTimestamp();
-}, 1000 * 60); // 1m
+window.setInterval(setTimestamp, 1000 * 60); // 1m
