@@ -7,7 +7,7 @@ import {aViewModels as VIEW_MODELS} from 'Common/Globals';
 import {delegateRun, windowResize, log, isUnd, pString} from 'Common/Utils';
 import {settings} from 'Common/Links';
 
-import kn from 'Knoin/Knoin';
+import {setHash} from 'Knoin/Knoin';
 import {AbstractScreen} from 'Knoin/AbstractScreen';
 
 class AbstractSettingsScreen extends AbstractScreen
@@ -135,7 +135,7 @@ class AbstractSettingsScreen extends AbstractScreen
 		}
 		else
 		{
-			kn.setHash(settings(), false, true);
+			setHash(settings(), false, true);
 		}
 	}
 

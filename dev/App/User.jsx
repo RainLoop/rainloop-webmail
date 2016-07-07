@@ -57,7 +57,10 @@ import {LoginUserScreen} from 'Screen/User/Login';
 import {MailBoxUserScreen} from 'Screen/User/MailBox';
 import {SettingsUserScreen} from 'Screen/User/Settings';
 
-import kn from 'Knoin/Knoin';
+import {
+	hideLoading, routeOff, routeOn, setHash,
+	startScreens, showScreenPopup
+} from 'Knoin/Knoin';
 
 import {AbstractApp} from 'App/Abstract';
 
@@ -166,7 +169,7 @@ class AppUser extends AbstractApp
 			MessageStore.messageListPageBeforeThread(1);
 			iOffset = 0;
 
-			kn.setHash(Links.mailBox(
+			setHash(Links.mailBox(
 				FolderStore.currentFolderFullNameHash(),
 				MessageStore.messageListPage(),
 				MessageStore.messageListSearch(),
@@ -364,12 +367,12 @@ class AppUser extends AbstractApp
 
 		if (!oMoveFolder && bUseFolder)
 		{
-			kn.showScreenPopup(require('View/Popup/FolderSystem'), [nSetSystemFoldersNotification]);
+			showScreenPopup(require('View/Popup/FolderSystem'), [nSetSystemFoldersNotification]);
 		}
 		else if (!bUseFolder || (FolderType.Trash === iDeleteType &&
 			(sFromFolderFullNameRaw === FolderStore.spamFolder() || sFromFolderFullNameRaw === FolderStore.trashFolder())))
 		{
-			kn.showScreenPopup(require('View/Popup/Ask'), [i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), () => {
+			showScreenPopup(require('View/Popup/Ask'), [i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), () => {
 				this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
 				MessageStore.removeMessagesFromList(sFromFolderFullNameRaw, aUidForRemove);
 			}]);
@@ -1200,11 +1203,11 @@ class AppUser extends AbstractApp
 	}
 
 	bootstartTwoFactorScreen() {
-		kn.showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
+		showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
 	}
 
 	bootstartWelcomePopup(url) {
-		kn.showScreenPopup(require('View/Popup/WelcomePage'), [url]);
+		showScreenPopup(require('View/Popup/WelcomePage'), [url]);
 	}
 
 	bootstartLoginScreen() {
@@ -1214,7 +1217,7 @@ class AppUser extends AbstractApp
 		const customLoginLink = pString(Settings.appSettingsGet('customLoginLink'));
 		if (!customLoginLink)
 		{
-			kn.startScreens([
+			startScreens([
 				LoginUserScreen
 			]);
 
@@ -1223,9 +1226,9 @@ class AppUser extends AbstractApp
 		}
 		else
 		{
-			kn.routeOff();
-			kn.setHash(Links.root(), true);
-			kn.routeOff();
+			routeOff();
+			setHash(Links.root(), true);
+			routeOff();
 
 			_.defer(function() {
 				window.location.href = customLoginLink;
@@ -1236,14 +1239,9 @@ class AppUser extends AbstractApp
 	bootend() {
 		if (progressJs)
 		{
-			kn.hideLoading();
-
 			progressJs.set(100).end();
 		}
-		else
-		{
-			kn.hideLoading();
-		}
+		hideLoading();
 	}
 
 	bootstart() {
@@ -1299,9 +1297,9 @@ class AppUser extends AbstractApp
 					{
 						if ('' !== sStartupUrl)
 						{
-							kn.routeOff();
-							kn.setHash(Links.root(sStartupUrl), true);
-							kn.routeOn();
+							routeOff();
+							setHash(Links.root(sStartupUrl), true);
+							routeOn();
 						}
 
 						if (window.jassl && window.crypto && window.crypto.getRandomValues && Settings.capa(Capa.OpenPGP))
@@ -1349,7 +1347,7 @@ class AppUser extends AbstractApp
 							PgpStore.capaOpenPGP(false);
 						}
 
-						kn.startScreens([
+						startScreens([
 							MailBoxUserScreen,
 							Settings.capa(Capa.Settings) ? SettingsUserScreen : null
 //							false ? AboutUserScreen : null
@@ -1442,7 +1440,6 @@ class AppUser extends AbstractApp
 					{
 						this.logout();
 					}
-
 				});
 
 // }); // require code splitting

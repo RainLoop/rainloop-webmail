@@ -22,8 +22,7 @@ import Remote from 'Remote/Admin/Ajax';
 import {SettingsAdminScreen} from 'Screen/Admin/Settings';
 import {LoginAdminScreen} from 'Screen/Admin/Login';
 
-import kn from 'Knoin/Knoin';
-
+import {hideLoading, routeOff, setHash, startScreens} from 'Knoin/Knoin';
 import {AbstractApp} from 'App/Abstract';
 
 class AdminApp extends AbstractApp
@@ -222,13 +221,13 @@ class AdminApp extends AbstractApp
 		require('Stores/Admin/App').populate();
 		require('Stores/Admin/Capa').populate();
 
-		kn.hideLoading();
+		hideLoading();
 
 		if (!Settings.appSettingsGet('allowAdminPanel'))
 		{
-			kn.routeOff();
-			kn.setHash(Links.root(), true);
-			kn.routeOff();
+			routeOff();
+			setHash(Links.root(), true);
+			routeOff();
 
 			_.defer(() => {
 				window.location.href = '/';
@@ -238,13 +237,13 @@ class AdminApp extends AbstractApp
 		{
 			if (Settings.settingsGet('Auth'))
 			{
-				kn.startScreens([
+				startScreens([
 					SettingsAdminScreen
 				]);
 			}
 			else
 			{
-				kn.startScreens([
+				startScreens([
 					LoginAdminScreen
 				]);
 			}

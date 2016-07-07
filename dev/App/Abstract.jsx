@@ -10,19 +10,24 @@ import {
 	sUserAgent, bMobileDevice, bAnimationSupported
 } from 'Common/Globals';
 
+import {
+	noop, isNormal, pString, inArray, microtime, timestamp,
+	detectDropdownVisibility, windowResizeCallback
+} from 'Common/Utils';
+
 import {KeyState} from 'Common/Enums';
-import {noop, isNormal, pString, inArray, microtime, timestamp, detectDropdownVisibility, windowResizeCallback} from 'Common/Utils';
 import * as Links from 'Common/Links';
 import * as Settings from 'Storage/Settings';
 import * as Events from 'Common/Events';
 import {initOnStartOrLangChange, initNotificationLanguage} from 'Common/Translator';
+import {toggle as toggleCmd} from 'Common/Cmd';
 
+import {routeOff, setHash} from 'Knoin/Knoin';
 import {AbstractBoot} from 'Knoin/AbstractBoot';
 
 class AbstractApp extends AbstractBoot
 {
 	/**
-	 * @constructor
 	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 */
 	constructor(Remote)
@@ -62,13 +67,12 @@ class AbstractApp extends AbstractBoot
 			}
 		});
 
-		$win.on('resize', function() {
+		$win.on('resize', () => {
 			Events.pub('window.resize');
 		});
 
-		Events.sub('window.resize', _.throttle(function() {
-
-			var
+		Events.sub('window.resize', _.throttle(() => {
+			const
 				iH = $win.height(),
 				iW = $win.height();
 
@@ -79,7 +83,6 @@ class AbstractApp extends AbstractBoot
 
 				Events.pub('window.resize.real');
 			}
-
 		}, 50));
 
 // DEBUG
@@ -92,25 +95,29 @@ class AbstractApp extends AbstractBoot
 //			}
 //		});
 
-		$doc.on('keydown', function(oEvent) {
-			if (oEvent && oEvent.ctrlKey)
+		$doc.on('keydown', (event) => {
+			if (event && event.ctrlKey)
 			{
 				$html.addClass('rl-ctrl-key-pressed');
 			}
-		}).on('keyup', function(oEvent) {
-			if (oEvent && !oEvent.ctrlKey)
+		}).on('keyup', (event) => {
+			if (event && !event.ctrlKey)
 			{
 				$html.removeClass('rl-ctrl-key-pressed');
 			}
 		});
 
-		$doc.on('mousemove keypress click', _.debounce(function() {
+		$doc.on('mousemove keypress click', _.debounce(() => {
 			Events.pub('rl.auto-logout-refresh');
 		}, 5000));
 
-		key('esc, enter', KeyState.All, _.bind(function() {
+		key('esc, enter', KeyState.All, () => {
 			detectDropdownVisibility();
-		}, this));
+		});
+
+		key('ctrl+shift+`', KeyState.All, () => {
+			toggleCmd();
+		});
 	}
 
 	remote() {
@@ -223,7 +230,6 @@ class AbstractApp extends AbstractBoot
 	loginAndLogoutReload(admin = false, logout = false, close = false) {
 
 		const
-			kn = require('Knoin/Knoin'),
 			mobile = Settings.appSettingsGet('mobile'),
 			inIframe = !!Settings.appSettingsGet('inIframe');
 
@@ -256,9 +262,9 @@ class AbstractApp extends AbstractBoot
 		}
 		else
 		{
-			kn.routeOff();
-			kn.setHash(Links.root(), true);
-			kn.routeOff();
+			routeOff();
+			setHash(Links.root(), true);
+			routeOff();
 
 			_.delay(() => {
 				if (inIframe && window.parent)
