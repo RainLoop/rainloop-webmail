@@ -295,7 +295,8 @@ class Service
 			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
 			'{{BaseContentSecurityPolicy}}' => $sContentSecurityPolicy ?
 				'<meta http-equiv="Content-Security-Policy" content="'.$sContentSecurityPolicy.'" />' : '',
-			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr'
+			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
+			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json')
 		);
 
 		$aTemplateParameters['{{RainloopBootData}}'] = \json_encode(array(
