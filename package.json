@@ -83,6 +83,7 @@
     "node-fs": "*",
     "node-notifier": "~4.2.3",
     "normalize.css": "^4.2.0",
+    "openpgp": "^2.3.2",
     "pikaday": "^1.4.0",
     "raw-loader": "^0.5.1",
     "rimraf": "*",

@@ -144,13 +144,13 @@ cfg.paths.js = {
 	openpgp: {
 		name: 'openpgp.min.js',
 		src: [
-			'vendors/openpgp/2.3.0/openpgp.min.js'
+			'node_modules/openpgp/dist/openpgp.min.js'
 		]
 	},
 	openpgpworker: {
 		name: 'openpgp.worker.min.js',
 		src: [
-			'vendors/openpgp/2.3.0/openpgp.worker.min.js'
+			'node_modules/openpgp/dist/openpgp.worker.min.js'
 		]
 	},
 	encrypt: {

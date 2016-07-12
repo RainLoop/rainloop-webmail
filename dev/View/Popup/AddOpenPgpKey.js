@@ -51,7 +51,7 @@ function AddOpenPgpKeyPopupView()
 		do
 		{
 			match = reg.exec(key);
-			if (match && 0 > count)
+			if (match && 0 < count)
 			{
 				if (match[0] && match[1] && match[2] && match[1] === match[2])
 				{
@@ -66,12 +66,14 @@ function AddOpenPgpKeyPopupView()
 				}
 
 				count -= 1;
+				done = false;
 			}
-
-			done = true;
-
+			else
+			{
+				done = true;
+			}
 		}
-		while (done);
+		while (!done);
 
 		openpgpKeyring.store();
 
