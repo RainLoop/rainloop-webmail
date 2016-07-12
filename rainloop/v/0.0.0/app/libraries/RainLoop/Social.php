@@ -125,9 +125,70 @@ class Social
 	/**
 	 * @return string
 	 */
-	public function GooglePopupService($bGmail = false)
+	public function popupServiceResult($sTypeStr, $sLoginUrl, $bLogin, $iErrorCode)
 	{
 		$sResult = '';
+		$bNiceSocialRedirect = $this->oActions->Config()->Get('labs', 'nice_social_redirect', true);
+		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
+
+		$sIcon = $sTypeStr;
+		if ('facebook' === $sIcon)
+		{
+			$sIcon = $sIcon.'-alt';
+		}
+
+		if ($sLoginUrl)
+		{
+			if (!$bNiceSocialRedirect)
+			{
+				$this->oActions->Location($sLoginUrl);
+			}
+			else
+			{
+				$this->oHttp->ServerNoCache();
+				@\header('Content-Type: text/html; charset=utf-8');
+
+				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Social.html'), array(
+					'{{RefreshMeta}}' => '<meta http-equiv="refresh" content="0; URL='.$sLoginUrl.'" />',
+					'{{Stylesheet}}' => $this->oActions->StaticPath('css/social'.($bAppCssDebug ? '' : '.min').'.css'),
+					'{{Icon}}' => $sIcon,
+					'{{Script}}' => ''
+				));
+			}
+		}
+		else
+		{
+			$this->oHttp->ServerNoCache();
+			@\header('Content-Type: text/html; charset=utf-8');
+
+			$sCallBackType = $bLogin ? '_login' : '';
+			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_'.$sTypeStr.$sCallBackType.'_service';
+
+			if (!$bNiceSocialRedirect)
+			{
+				$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
+					$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
+			}
+			else
+			{
+				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Social.html'), array(
+					'{{RefreshMeta}}' => '',
+					'{{Stylesheet}}' => $this->oActions->StaticPath('css/social'.($bAppCssDebug ? '' : '.min').'.css'),
+					'{{Icon}}' => $sIcon,
+					'{{Script}}' => '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
+						$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>'
+				));
+			}
+		}
+
+		return $sResult;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function GooglePopupService($bGmail = false)
+	{
 		$sLoginUrl = '';
 		$oAccount = null;
 
@@ -276,20 +337,7 @@ class Social
 			$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 		}
 
-		if ($sLoginUrl)
-		{
-			$this->oActions->Location($sLoginUrl);
-		}
-		else
-		{
-			@\header('Content-Type: text/html; charset=utf-8');
-			$sCallBackType = $bLogin ? '_login' : '';
-			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_google'.$sCallBackType.'_service';
-			$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
-				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
-		}
-
-		return $sResult;
+		return $this->popupServiceResult('google', $sLoginUrl, $bLogin, $iErrorCode);
 	}
 
 	/**
@@ -297,7 +345,6 @@ class Social
 	 */
 	public function FacebookPopupService()
 	{
-		$sResult = '';
 		$sLoginUrl = '';
 		$sSocialName = '';
 
@@ -393,23 +440,7 @@ class Social
 			}
 		}
 
-		if ($sLoginUrl)
-		{
-			$this->oActions->Location($sLoginUrl);
-		}
-		else
-		{
-			$this->oHttp->ServerNoCache();
-
-			@\header('Content-Type: text/html; charset=utf-8');
-
-			$sCallBackType = $bLogin ? '_login' : '';
-			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_facebook'.$sCallBackType.'_service';
-			$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
-				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
-		}
-
-		return $sResult;
+		return $this->popupServiceResult('facebook', $sLoginUrl, $bLogin, $iErrorCode);
 	}
 
 	/**
@@ -417,7 +448,6 @@ class Social
 	 */
 	public function TwitterPopupService()
 	{
-		$sResult = '';
 		$sLoginUrl = '';
 
 		$sSocialName = '';
@@ -585,20 +615,7 @@ class Social
 			$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 		}
 
-		if ($sLoginUrl)
-		{
-			$this->oActions->Location($sLoginUrl);
-		}
-		else
-		{
-			@\header('Content-Type: text/html; charset=utf-8');
-			$sCallBackType = $bLogin ? '_login' : '';
-			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_twitter'.$sCallBackType.'_service';
-			$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
-				$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
-		}
-
-		return $sResult;
+		return $this->popupServiceResult('twitter', $sLoginUrl, $bLogin, $iErrorCode);
 	}
 
 	/**

@@ -137,6 +137,13 @@ cfg.paths.css = {
 			'node_modules/pikaday/css/pikaday.css',
 			cfg.paths.staticCSS + cfg.paths.less.main.name
 		]
+	},
+	social: {
+		name: 'social.css',
+		src: [
+			'vendors/fontastic/styles.css',
+			'dev/Styles/_social.css'
+		]
 	}
 };
 
@@ -229,12 +236,18 @@ gulp.task('less:main', function() {
 		.on('error', gutil.log);
 });
 
-gulp.task('css:main-begin', ['less:main'], function() {
+gulp.task('css:social', function() {
+	var autoprefixer = require('gulp-autoprefixer');
+	return gulp.src(cfg.paths.css.social.src)
+		.pipe(concat(cfg.paths.css.social.name))
+		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
+		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(cfg.paths.staticCSS));
+});
 
-	var
-		autoprefixer = require('gulp-autoprefixer')
-	;
-
+gulp.task('css:main-begin', ['less:main', 'css:social'], function() {
+	var autoprefixer = require('gulp-autoprefixer');
 	return gulp.src(cfg.paths.css.main.src)
 		.pipe(concat(cfg.paths.css.main.name))
 		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
@@ -262,13 +275,24 @@ gulp.task('css:clear-less', ['css:main-begin'], function() {
 gulp.task('css:main', ['css:clear-less']);
 
 gulp.task('css:main:min', ['css:main'], function() {
-	var cleanCSS  = require('gulp-clean-css');
+	var cleanCSS = require('gulp-clean-css');
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.css.main.name)
 		.pipe(cleanCSS())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS));
 });
+
+gulp.task('css:social:min', ['css:social'], function() {
+	var cleanCSS = require('gulp-clean-css');
+	return gulp.src(cfg.paths.staticCSS + cfg.paths.css.social.name)
+		.pipe(cleanCSS())
+		.pipe(rename({suffix: '.min'}))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(cfg.paths.staticCSS));
+});
+
+gulp.task('css:min', ['css:main:min', 'css:social:min']);
 
 // JS
 gulp.task('js:encrypt', function() {
@@ -640,7 +664,7 @@ gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:md5'], function(cal
 // MAIN
 gulp.task('js:pgp', ['js:openpgp', 'js:openpgpworker']);
 
-gulp.task('default', ['js:libs', 'js:pgp', 'js:min', 'css:main:min', 'ckeditor', 'fontastic']);
+gulp.task('default', ['js:libs', 'js:pgp', 'js:min', 'css:min', 'ckeditor', 'fontastic']);
 gulp.task('fast-', ['js:app', 'js:admin', 'css:main']);
 
 gulp.task('fast', ['package:community-on', 'fast-']);
