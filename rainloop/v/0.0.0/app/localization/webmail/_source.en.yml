@@ -528,7 +528,7 @@ en:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Folder List"
     BUTTON_CREATE: "Create Folder"
-    BUTTON_SYSTEM: "Select System Folders"
+    BUTTON_SYSTEM: "System Folders"
     BUTTON_DELETE: "Delete"
     BUTTON_SUBSCRIBE: "Subscribe"
     BUTTON_UNSUBSCRIBE: "Unsubscribe"

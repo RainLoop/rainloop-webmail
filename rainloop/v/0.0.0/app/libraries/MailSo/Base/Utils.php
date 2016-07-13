@@ -1276,6 +1276,13 @@ END;
 	 */
 	public static function ResetTimeLimit($iTimeToReset = 15, $iTimeToAdd = 120)
 	{
+		$iTime = \time();
+		if ($iTime < \MailSo\Base\Loader::$InitTime + 5)
+		{
+			// do nothing first 5s
+			return true;
+		}
+
 		static $bValidateAction = null;
 		static $iResetTimer = null;
 
@@ -1289,9 +1296,9 @@ END;
 			$bValidateAction = !$bSafeMode && \MailSo\Base\Utils::FunctionExistsAndEnabled('set_time_limit');
 		}
 
-		if ($bValidateAction && $iTimeToReset < \time() - $iResetTimer)
+		if ($bValidateAction && $iTimeToReset < $iTime - $iResetTimer)
 		{
-			$iResetTimer = \time();
+			$iResetTimer = $iTime;
 			if (!@\set_time_limit($iTimeToAdd))
 			{
 				$bValidateAction = false;

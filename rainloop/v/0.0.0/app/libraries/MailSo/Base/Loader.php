@@ -23,6 +23,16 @@ class Loader
 	public static $StoreStatistic = true;
 
 	/**
+	 * @var int
+	 */
+	public static $InitTime = 0;
+
+	/**
+	 * @var float
+	 */
+	public static $InitMicrotimeTime = 0;
+
+	/**
 	 * @var array
 	 */
 	private static $aIncStatistic = array();
@@ -43,7 +53,11 @@ class Loader
 		if (!$bIsInited)
 		{
 			$bIsInited = true;
-			self::SetStatistic('Inited', \microtime(true));
+
+			self::$InitTime = \time();
+			self::$InitMicrotimeTime = \microtime(true);
+
+			self::SetStatistic('Inited', self::$InitMicrotimeTime);
 		}
 	}
 
