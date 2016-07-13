@@ -1292,7 +1292,12 @@ END;
 		if ($bValidateAction && $iTimeToReset < \time() - $iResetTimer)
 		{
 			$iResetTimer = \time();
-			\set_time_limit($iTimeToAdd);
+			if (!@\set_time_limit($iTimeToAdd))
+			{
+				$bValidateAction = false;
+				return false;
+			}
+
 			return true;
 		}
 
