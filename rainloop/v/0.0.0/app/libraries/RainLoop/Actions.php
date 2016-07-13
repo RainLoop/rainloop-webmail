@@ -9968,24 +9968,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$mResult['InReplyTo'] = $mResponse->InReplyTo();
 					$mResult['References'] = $mResponse->References();
 
-					$fAdditionalDomReader = null;
-					if (0 < \strlen($sHtml) && $this->Config()->Get('labs', 'emogrifier', false))
-					{
-						if (!\class_exists('RainLoopVendor\Pelago\Emogrifier', false))
-						{
-							include_once APP_VERSION_ROOT_PATH.'app/libraries/emogrifier/Emogrifier.php';
-						}
-
-						if (\class_exists('RainLoopVendor\Pelago\Emogrifier', false))
-						{
-							$fAdditionalDomReader = function ($oDom) {
-								$oEmogrifier = new \RainLoopVendor\Pelago\Emogrifier();
-								$oEmogrifier->preserveEncoding = false;
-								return $oEmogrifier->emogrify($oDom);
-							};
-						}
-					}
-
 					$fAdditionalExternalFilter = null;
 					if (!!$this->Config()->Get('labs', 'use_local_proxy_for_external_images', false))
 					{
@@ -10004,8 +9986,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 					$mResult['Html'] = 0 === \strlen($sHtml) ? '' : \MailSo\Base\HtmlUtils::ClearHtml(
 						$sHtml, $bHasExternals, $mFoundedCIDs, $aContentLocationUrls, $mFoundedContentLocationUrls, false, false,
-						$fAdditionalExternalFilter, $fAdditionalDomReader,
-						!!$this->Config()->Get('labs', 'try_to_detect_hidden_images', false)
+						$fAdditionalExternalFilter, null, !!$this->Config()->Get('labs', 'try_to_detect_hidden_images', false)
 					);
 
 					$mResult['ExternalProxy'] = null !== $fAdditionalExternalFilter;

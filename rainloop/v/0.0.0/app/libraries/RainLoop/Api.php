@@ -134,6 +134,52 @@ class Api
 					}
 				});
 			}
+
+			\MailSo\Config::$HtmlStrictDebug = !!\RainLoop\Api::Config()->Get('debug', 'enable', false);
+
+			if (\RainLoop\Api::Config()->Get('labs', 'strict_html_parser', true))
+			{
+				\MailSo\Config::$HtmlStrictAllowedAttributes = array(
+					// rainloop
+					'data-wrp',
+					// defaults
+					'name',
+					'dir', 'lang', 'style', 'title',
+					'background', 'bgcolor', 'alt', 'height', 'width', 'src', 'href',
+					'border', 'bordercolor', 'charset', 'direction', 'language',
+					// a
+					'coords', 'download', 'hreflang', 'shape',
+					// body
+					'alink', 'bgproperties', 'bottommargin', 'leftmargin', 'link', 'rightmargin', 'text', 'topmargin', 'vlink',
+					'marginwidth', 'marginheight', 'offset',
+					// button,
+					'disabled', 'type', 'value',
+					// col
+					'align', 'valign',
+					// font
+					'color', 'face', 'size',
+					// form
+					'novalidate',
+					// hr
+					'noshade',
+					// img
+					'hspace', 'sizes', 'srcset', 'vspace', 'usemap',
+					// input, textarea
+					'checked', 'max', 'min', 'maxlength', 'multiple', 'pattern', 'placeholder', 'readonly', 'required', 'step', 'wrap',
+					// label
+					'for',
+					// meter
+					'low', 'high', 'optimum',
+					// ol
+					'reversed', 'start',
+					// option
+					'selected', 'label',
+					// table
+					'cols', 'rows', 'frame', 'rules', 'summary', 'cellpadding', 'cellspacing',
+					// td
+					'abbr', 'axis', 'colspan', 'rowspan', 'headers', 'nowrap'
+				);
+			}
 		}
 	}
 

@@ -272,7 +272,7 @@ class HtmlUtils
 			$sHtml = \str_replace('<o:p></o:p>', '', $sHtml);
 		}
 
-		$sHtml = \str_replace('<o:p>', '<span data-ms="o:p">', $sHtml);
+		$sHtml = \str_replace('<o:p>', '<span>', $sHtml);
 		$sHtml = \str_replace('</o:p>', '</span>', $sHtml);
 
 		return $sHtml;
@@ -337,16 +337,23 @@ class HtmlUtils
 			$aRemoveTags[] = 'style';
 		}
 
+		$aHtmlAllowedTags = isset(\MailSo\Config::$HtmlStrictAllowedTags) &&
+			\is_array(\MailSo\Config::$HtmlStrictAllowedTags) && 0 < \count(\MailSo\Config::$HtmlStrictAllowedTags) ?
+				\MailSo\Config::$HtmlStrictAllowedTags : null;
+
 		$aRemove = array();
 		$aNodes = $oDom->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 		{
 			if ($oElement)
 			{
-				$sTagNameLower = \strtolower($oElement->tagName);
-				if ('' !== $sTagNameLower && \in_array($sTagNameLower, $aRemoveTags))
+				$sTagNameLower = \trim(\strtolower($oElement->tagName));
+				if ('' !== $sTagNameLower)
 				{
-					$aRemove[] = @$oElement;
+					if (\in_array($sTagNameLower, $aRemoveTags) || ($aHtmlAllowedTags && !\in_array($sTagNameLower, $aHtmlAllowedTags)))
+					{
+						$aRemove[] = @$oElement;
+					}
 				}
 			}
 		}
@@ -913,6 +920,7 @@ class HtmlUtils
 		$aNodes = $oDom->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
 		{
+			$aRemovedAttrs = array();
 			$sTagNameLower = \strtolower($oElement->tagName);
 
 			// convert body attributes to styles
@@ -929,14 +937,14 @@ class HtmlUtils
 
 				if (isset($oElement->attributes))
 				{
-					foreach ($oElement->attributes as $sAttributeName => /* @var $oAttributeNode \DOMNode */ $oAttributeNode)
+					foreach ($oElement->attributes as $sAttrName => /* @var $oAttributeNode \DOMNode */ $oAttributeNode)
 					{
 						if ($oAttributeNode && isset($oAttributeNode->nodeValue))
 						{
-							$sAttributeNameLower = \strtolower($sAttributeName);
-							if (isset($aAttrs[$sAttributeNameLower]) && '' === $aAttrs[$sAttributeNameLower])
+							$sAttrNameLower = \trim(\strtolower($sAttrName));
+							if (isset($aAttrs[$sAttrNameLower]) && '' === $aAttrs[$sAttrNameLower])
 							{
-								$aAttrs[$sAttributeNameLower] = array($sAttributeName, \trim($oAttributeNode->nodeValue));
+								$aAttrs[$sAttrNameLower] = array($sAttrName, \trim($oAttributeNode->nodeValue));
 							}
 						}
 					}
@@ -998,33 +1006,43 @@ class HtmlUtils
 					'color: '.$sLinkColor.\trim((empty($sStyles) ? '' : '; '.$sStyles)));
 			}
 
-			if (\in_array($sTagNameLower, array('a', 'form', 'area')))
-			{
-				$oElement->setAttribute('target', '_blank');
-			}
-
-			if (\in_array($sTagNameLower, array('a', 'form', 'area', 'input', 'button', 'textarea')))
-			{
-				$oElement->setAttribute('tabindex', '-1');
-			}
-
 			if ($oElement->hasAttributes() && isset($oElement->attributes) && $oElement->attributes)
 			{
-				foreach ($oElement->attributes as $oAttr)
+				$aHtmlAllowedAttributes = isset(\MailSo\Config::$HtmlStrictAllowedAttributes) &&
+					\is_array(\MailSo\Config::$HtmlStrictAllowedAttributes) && 0 < \count(\MailSo\Config::$HtmlStrictAllowedAttributes) ?
+						\MailSo\Config::$HtmlStrictAllowedAttributes : null;
+
+				$sAttrsForRemove = array();
+				foreach ($oElement->attributes as $sAttrName => $oAttr)
 				{
-					if ($oAttr && !empty($oAttr->nodeName))
+					if ($sAttrName && $oAttr)
 					{
-						$sAttrName = \trim(\strtolower($oAttr->nodeName));
-						if ('on' === \substr($sAttrName, 0, 2) || in_array($sAttrName, array(
-							'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest',
+						$sAttrNameLower = \trim(\strtolower($sAttrName));
+						if ($aHtmlAllowedAttributes && !\in_array($sAttrNameLower, $aHtmlAllowedAttributes))
+						{
+							$sAttrsForRemove[] = $sAttrName;
+						}
+						else if ('on' === \substr($sAttrNameLower, 0, 2) || in_array($sAttrNameLower, array(
+							'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest', 'action',
 							'data-bind', 'data-reactid', 'xmlns', 'srcset', 'data-x-skip-style',
 							'fscommand', 'seeksegmenttime'
 						)))
 						{
-							@$oElement->removeAttribute($oAttr->nodeName);
+							$sAttrsForRemove[] = $sAttrName;
 						}
 					}
 				}
+
+				if (0 < \count($sAttrsForRemove))
+				{
+					foreach ($sAttrsForRemove as $sName)
+					{
+						@$oElement->removeAttribute($sName);
+						$aRemovedAttrs[\trim(\strtolower($sName))] = true;
+					}
+				}
+
+				unset($sAttrsForRemove);
 			}
 
 			if ($oElement->hasAttribute('href'))
@@ -1038,8 +1056,18 @@ class HtmlUtils
 
 				if ('a' === $sTagNameLower)
 				{
-					$oElement->setAttribute('rel', 'external nofollow');
+					$oElement->setAttribute('rel', 'external nofollow noopener noreferrer');
 				}
+			}
+
+			if (\in_array($sTagNameLower, array('a', 'form', 'area')))
+			{
+				$oElement->setAttribute('target', '_blank');
+			}
+
+			if (\in_array($sTagNameLower, array('a', 'form', 'area', 'input', 'button', 'textarea')))
+			{
+				$oElement->setAttribute('tabindex', '-1');
 			}
 
 			if ($bTryToDetectHiddenImages && 'img' === $sTagNameLower)
@@ -1177,6 +1205,17 @@ class HtmlUtils
 			}
 
 			$oElement->removeAttribute('data-x-skip-style');
+
+			if (\MailSo\Config::$HtmlStrictDebug && 0 < \count($aRemovedAttrs))
+			{
+				unset($aRemovedAttrs['class'], $aRemovedAttrs['target'], $aRemovedAttrs['id'], $aRemovedAttrs['name']);
+
+				$aRemovedAttrs = \array_keys($aRemovedAttrs);
+				if (0 < \count($aRemovedAttrs))
+				{
+					$oElement->setAttribute('data-removed-attrs', \implode(',', $aRemovedAttrs));
+				}
+			}
 		}
 
 		$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv);
@@ -1251,16 +1290,6 @@ class HtmlUtils
 				$oElement->removeAttribute('data-x-href');
 			}
 
-			if ($oElement->hasAttribute('data-x-additional-src'))
-			{
-				$oElement->removeAttribute('data-x-additional-src');
-			}
-
-			if ($oElement->hasAttribute('data-x-additional-style-url'))
-			{
-				$oElement->removeAttribute('data-x-additional-style-url');
-			}
-
 			if ($oElement->hasAttribute('data-x-style-cid-name') && $oElement->hasAttribute('data-x-style-cid'))
 			{
 				$sCidName = $oElement->getAttribute('data-x-style-cid-name');
@@ -1290,14 +1319,15 @@ class HtmlUtils
 				}
 			}
 
-			if ($oElement->hasAttribute('data-original'))
+			foreach (array(
+				'data-x-additional-src', 'data-x-additional-style-url', 'data-removed-attrs',
+				'data-original', 'data-x-div-type', 'data-wrp', 'data-bind'
+			) as $sName)
 			{
-				$oElement->removeAttribute('data-original');
-			}
-
-			if ($oElement->hasAttribute('data-x-div-type'))
-			{
-				$oElement->removeAttribute('data-x-div-type');
+				if ($oElement->hasAttribute($sName))
+				{
+					$oElement->removeAttribute($sName);
+				}
 			}
 
 			if ($oElement->hasAttribute('data-x-style-url'))

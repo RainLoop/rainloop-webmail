@@ -27,6 +27,21 @@ class Config
 	public static $MBSTRING = true;
 
 	/**
+	 * @var array|null
+	 */
+	public static $HtmlStrictAllowedTags = null;
+
+	/**
+	 * @var array|null
+	 */
+	public static $HtmlStrictAllowedAttributes = null;
+
+	/**
+	 * @var boolean
+	 */
+	public static $HtmlStrictDebug = false;
+
+	/**
 	 * @var bool
 	 */
 	public static $FixIconvByMbstring = true;

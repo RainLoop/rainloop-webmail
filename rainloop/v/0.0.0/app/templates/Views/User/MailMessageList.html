@@ -145,9 +145,7 @@
 					<div class="input-append pull-right" data-bind="visible: allowSearch">
 						<div class="close-input-wrp">
 							<a class="close" data-bind="click: cancelSearch, visible: '' !== messageListSearchDesc()">&times;</a>
-							<input type="search" class="i18n span4 inputSearch" tabindex="-1"
-								placeholder="Search" autocorrect="off" autocapitalize="off"
-								data-i18n="[placeholder]SEARCH/MAIN_INPUT_PLACEHOLDER" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
+							<input type="text" class="i18n span4 inputSearch" tabindex="-1" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]SEARCH/MAIN_INPUT_PLACEHOLDER" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
 						</div>
 						<a class="btn buttonMoreSearch" data-bind="visible: allowSearchAdv, click: advancedSearchClick">
 							<span class="caret"></span>
