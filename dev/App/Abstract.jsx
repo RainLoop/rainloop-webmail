@@ -229,10 +229,7 @@ class AbstractApp extends AbstractBoot
 	 */
 	loginAndLogoutReload(admin = false, logout = false, close = false) {
 
-		const
-			mobile = Settings.appSettingsGet('mobile'),
-			inIframe = !!Settings.appSettingsGet('inIframe');
-
+		const inIframe = !!Settings.appSettingsGet('inIframe');
 		let customLogoutLink = pString(Settings.appSettingsGet('customLogoutLink'));
 
 		if (logout)
@@ -245,7 +242,7 @@ class AbstractApp extends AbstractBoot
 			window.close();
 		}
 
-		customLogoutLink = customLogoutLink || (admin ? Links.rootAdmin(mobile) : Links.rootUser(mobile));
+		customLogoutLink = customLogoutLink || (admin ? Links.rootAdmin() : Links.rootUser());
 
 		if (logout && window.location.href !== customLogoutLink)
 		{

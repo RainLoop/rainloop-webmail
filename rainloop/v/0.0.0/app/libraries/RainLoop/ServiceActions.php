@@ -1155,10 +1155,7 @@ class ServiceActions
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceChange()
+	private function changeAction()
 	{
 		$this->oHttp->ServerNoCache();
 
@@ -1184,7 +1181,24 @@ class ServiceActions
 				$this->oActions->AuthToken($oAccountToLogin);
 			}
 		}
+	}
 
+	/**
+	 * @return string
+	 */
+	public function ServiceChangeMobile()
+	{
+		$this->changeAction();
+		$this->oActions->Location('./?/Mobile/');
+		return '';
+	}
+
+	/**
+	 * @return string
+	 */
+	public function ServiceChange()
+	{
+		$this->changeAction();
 		$this->oActions->Location('./');
 		return '';
 	}
