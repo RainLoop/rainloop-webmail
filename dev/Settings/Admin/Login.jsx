@@ -63,4 +63,4 @@ LoginAdminSettings.prototype.onBuild = function()
 	}, 50);
 };
 
-module.exports = LoginAdminSettings;
+export {LoginAdminSettings, LoginAdminSettings as default};

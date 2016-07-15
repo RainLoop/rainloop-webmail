@@ -65,4 +65,4 @@ SecurityUserSettings.prototype.onBuild = function()
 	}
 };
 
-module.exports = SecurityUserSettings;
+export {SecurityUserSettings, SecurityUserSettings as default};

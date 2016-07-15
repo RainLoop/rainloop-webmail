@@ -48,4 +48,4 @@ ContactsUserSettings.prototype.onBuild = function()
 	}, this);
 };
 
-module.exports = ContactsUserSettings;
+export {ContactsUserSettings, ContactsUserSettings as default};

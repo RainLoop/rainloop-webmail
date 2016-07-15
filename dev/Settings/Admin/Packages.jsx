@@ -103,4 +103,4 @@ PackagesAdminSettings.prototype.installPackage = function(oPackage)
 	}
 };
 
-module.exports = PackagesAdminSettings;
+export {PackagesAdminSettings, PackagesAdminSettings as default};

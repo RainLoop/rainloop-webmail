@@ -73,4 +73,4 @@ OpenPgpUserSettings.prototype.deleteOpenPgpKey = function(oOpenPgpKeyToRemove)
 	}
 };
 
-module.exports = OpenPgpUserSettings;
+export {OpenPgpUserSettings, OpenPgpUserSettings as default};

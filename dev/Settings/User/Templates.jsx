@@ -95,4 +95,4 @@ TemplatesUserSettings.prototype.onBuild = function(oDom)
 	this.reloadTemplates();
 };
 
-module.exports = TemplatesUserSettings;
+export {TemplatesUserSettings, TemplatesUserSettings as default};

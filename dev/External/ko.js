@@ -1201,6 +1201,13 @@ ko.extenders.specialThrottle = function(oTarget, iOption)
 	return oTarget;
 };
 
+ko.extenders.idleTrigger = function(oTarget)
+{
+	var Enums = require('Common/Enums');
+	oTarget.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+	return oTarget;
+};
+
 // functions
 
 ko.observable.fn.validateNone = function()

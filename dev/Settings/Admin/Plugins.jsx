@@ -1,6 +1,4 @@
 
-/* global RL_COMMUNITY */
-
 var
 	_ = require('_'),
 	ko = require('ko'),
@@ -108,4 +106,4 @@ PluginsAdminSettings.prototype.onPluginDisableRequest = function(sResult, oData)
 	require('App/Admin').default.reloadPluginList();
 };
 
-module.exports = PluginsAdminSettings;
+export {PluginsAdminSettings, PluginsAdminSettings as default};

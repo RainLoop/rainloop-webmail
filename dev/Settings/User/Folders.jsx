@@ -189,4 +189,4 @@ FoldersUserSettings.prototype.checkableFalseFolder = function(oFolder)
 	oFolder.checkable(false);
 };
 
-module.exports = FoldersUserSettings;
+export {FoldersUserSettings, FoldersUserSettings as default};

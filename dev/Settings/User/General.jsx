@@ -221,4 +221,4 @@ GeneralUserSettings.prototype.selectLanguage = function()
 	]);
 };
 
-module.exports = GeneralUserSettings;
+export {GeneralUserSettings, GeneralUserSettings as default};

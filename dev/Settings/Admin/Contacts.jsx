@@ -231,4 +231,4 @@ ContactsAdminSettings.prototype.onBuild = function()
 	}, 50);
 };
 
-module.exports = ContactsAdminSettings;
+export {ContactsAdminSettings, ContactsAdminSettings as default};

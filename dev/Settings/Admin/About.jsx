@@ -1,6 +1,4 @@
 
-/* global RL_COMMUNITY */
-
 var
 	ko = require('ko'),
 
@@ -91,4 +89,4 @@ AboutAdminSettings.prototype.updateCoreData = function()
 	}
 };
 
-module.exports = AboutAdminSettings;
+export {AboutAdminSettings, AboutAdminSettings as default};

@@ -151,4 +151,4 @@ AccountsUserSettings.prototype.onBuild = function(oDom)
 		});
 };
 
-module.exports = AccountsUserSettings;
+export {AccountsUserSettings, AccountsUserSettings as default};

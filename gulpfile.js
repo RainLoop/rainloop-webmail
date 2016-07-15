@@ -665,6 +665,7 @@ gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:md5'], function(cal
 gulp.task('js:pgp', ['js:openpgp', 'js:openpgpworker']);
 
 gulp.task('default', ['js:libs', 'js:pgp', 'js:min', 'css:min', 'ckeditor', 'fontastic']);
+gulp.task('default+', ['package:community-off', 'default']);
 gulp.task('fast-', ['js:app', 'js:admin', 'css:main']);
 
 gulp.task('fast', ['package:community-on', 'fast-']);
@@ -708,6 +709,8 @@ gulp.task('build+', ['rainloop+']);
 gulp.task('js:v', ['js:validate']);
 gulp.task('v', ['js:v']);
 
+gulp.task('d', ['default']);
+gulp.task('d+', ['default+']);
 gulp.task('w', ['watch']);
 gulp.task('w+', ['watch+']);
 gulp.task('f', ['fast']);

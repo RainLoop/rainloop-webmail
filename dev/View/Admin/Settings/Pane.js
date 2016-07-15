@@ -1,6 +1,4 @@
 
-/* global RL_COMMUNITY */
-
 var
 	_ = require('_'),
 	ko = require('ko'),

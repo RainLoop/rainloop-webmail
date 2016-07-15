@@ -1,7 +1,6 @@
 
 import ko from 'ko';
-import * as Settings from 'Storage/Settings';
-
+import {settingsGet} from 'Storage/Settings';
 import {AbstractAppStore} from 'Stores/AbstractApp';
 
 class AppAdminStore extends AbstractAppStore
@@ -18,14 +17,13 @@ class AppAdminStore extends AbstractAppStore
 	}
 
 	populate() {
-
 		super.populate();
 
-		this.determineUserLanguage(!!Settings.settingsGet('DetermineUserLanguage'));
-		this.determineUserDomain(!!Settings.settingsGet('DetermineUserDomain'));
+		this.determineUserLanguage(!!settingsGet('DetermineUserLanguage'));
+		this.determineUserDomain(!!settingsGet('DetermineUserDomain'));
 
-		this.weakPassword(!!Settings.settingsGet('WeakPassword'));
-		this.useLocalProxyForExternalImages(!!Settings.settingsGet('UseLocalProxyForExternalImages'));
+		this.weakPassword(!!settingsGet('WeakPassword'));
+		this.useLocalProxyForExternalImages(!!settingsGet('UseLocalProxyForExternalImages'));
 	}
 }
 

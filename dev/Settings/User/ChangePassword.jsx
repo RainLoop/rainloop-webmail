@@ -114,4 +114,4 @@ ChangePasswordUserSettings.prototype.onChangePasswordResponse = function(sResult
 	}
 };
 
-module.exports = ChangePasswordUserSettings;
+export {ChangePasswordUserSettings, ChangePasswordUserSettings as default};

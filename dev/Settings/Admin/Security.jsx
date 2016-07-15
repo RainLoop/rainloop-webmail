@@ -179,4 +179,4 @@ SecurityAdminSettings.prototype.phpInfoLink = function()
 	return Links.phpInfo();
 };
 
-module.exports = SecurityAdminSettings;
+export {SecurityAdminSettings, SecurityAdminSettings as default};

@@ -70,4 +70,4 @@ function SocialUserSettings()
 	});
 }
 
-module.exports = SocialUserSettings;
+export {SocialUserSettings, SocialUserSettings as default};

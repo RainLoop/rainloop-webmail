@@ -231,4 +231,4 @@ FiltersUserSettings.prototype.onShow = function()
 	this.updateList();
 };
 
-module.exports = FiltersUserSettings;
+export {FiltersUserSettings, FiltersUserSettings as default};

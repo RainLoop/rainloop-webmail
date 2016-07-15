@@ -199,4 +199,4 @@ GeneralAdminSettings.prototype.phpInfoLink = function()
 	return Links.phpInfo();
 };
 
-module.exports = GeneralAdminSettings;
+export {GeneralAdminSettings, GeneralAdminSettings as default};

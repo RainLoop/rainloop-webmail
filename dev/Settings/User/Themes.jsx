@@ -174,4 +174,4 @@ ThemesUserSettings.prototype.initUploader = function()
 	}
 };
 
-module.exports = ThemesUserSettings;
+export {ThemesUserSettings, ThemesUserSettings as default};

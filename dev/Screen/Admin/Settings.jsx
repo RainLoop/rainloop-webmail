@@ -1,11 +1,19 @@
 
-/* global RL_COMMUNITY */
-
 import {addSettingsViewModel} from 'Knoin/Knoin';
 import {runSettingsViewModelHooks} from 'Common/Plugins';
 
 import {AbstractSettingsScreen} from 'Screen/AbstractSettings';
 import App from 'App/Admin';
+
+import {GeneralAdminSettings} from 'Settings/Admin/General';
+import {LoginAdminSettings} from 'Settings/Admin/Login';
+import {ContactsAdminSettings} from 'Settings/Admin/Contacts';
+import {DomainsAdminSettings} from 'Settings/Admin/Domains';
+import {SecurityAdminSettings} from 'Settings/Admin/Security';
+import {SocialAdminSettings} from 'Settings/Admin/Social';
+import {PluginsAdminSettings} from 'Settings/Admin/Plugins';
+import {PackagesAdminSettings} from 'Settings/Admin/Packages';
+// import {AboutAdminSettings} from 'Settings/Admin/About';
 
 class SettingsAdminScreen extends AbstractSettingsScreen
 {
@@ -21,49 +29,49 @@ class SettingsAdminScreen extends AbstractSettingsScreen
 	 * @param {Function=} fCallback = null
 	 */
 	setupSettings(fCallback = null) {
-		addSettingsViewModel(require('Settings/Admin/General'),
+		addSettingsViewModel(GeneralAdminSettings,
 			'AdminSettingsGeneral', 'TABS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
-		addSettingsViewModel(require('Settings/Admin/Login'),
+		addSettingsViewModel(LoginAdminSettings,
 			'AdminSettingsLogin', 'TABS_LABELS/LABEL_LOGIN_NAME', 'login');
 
 		if (RL_COMMUNITY)
 		{
-			addSettingsViewModel(require('Settings/Admin/Branding'),
+			addSettingsViewModel(require('Settings/Admin/Branding').default,
 				'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
 		}
 		else
 		{
-			addSettingsViewModel(require('Settings/Admin/Prem/Branding'),
+			addSettingsViewModel(require('Settings/Admin/Prem/Branding').default,
 				'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
 		}
 
-		addSettingsViewModel(require('Settings/Admin/Contacts'),
+		addSettingsViewModel(ContactsAdminSettings,
 			'AdminSettingsContacts', 'TABS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 
-		addSettingsViewModel(require('Settings/Admin/Domains'),
+		addSettingsViewModel(DomainsAdminSettings,
 			'AdminSettingsDomains', 'TABS_LABELS/LABEL_DOMAINS_NAME', 'domains');
 
-		addSettingsViewModel(require('Settings/Admin/Security'),
+		addSettingsViewModel(SecurityAdminSettings,
 			'AdminSettingsSecurity', 'TABS_LABELS/LABEL_SECURITY_NAME', 'security');
 
-		addSettingsViewModel(require('Settings/Admin/Social'),
+		addSettingsViewModel(SocialAdminSettings,
 			'AdminSettingsSocial', 'TABS_LABELS/LABEL_INTEGRATION_NAME', 'integrations');
 
-		addSettingsViewModel(require('Settings/Admin/Plugins'),
+		addSettingsViewModel(PluginsAdminSettings,
 			'AdminSettingsPlugins', 'TABS_LABELS/LABEL_PLUGINS_NAME', 'plugins');
 
-		addSettingsViewModel(require('Settings/Admin/Packages'),
+		addSettingsViewModel(PackagesAdminSettings,
 			'AdminSettingsPackages', 'TABS_LABELS/LABEL_PACKAGES_NAME', 'packages');
 
 		if (!RL_COMMUNITY)
 		{
-			addSettingsViewModel(require('Settings/Admin/Prem/Licensing'),
+			addSettingsViewModel(require('Settings/Admin/Prem/Licensing').default,
 				'AdminSettingsLicensing', 'TABS_LABELS/LABEL_LICENSING_NAME', 'licensing');
 		}
 
-		addSettingsViewModel(require('Settings/Admin/About'),
-			'AdminSettingsAbout', 'TABS_LABELS/LABEL_ABOUT_NAME', 'about');
+		// addSettingsViewModel(AboutAdminSettings,
+		// 	'AdminSettingsAbout', 'TABS_LABELS/LABEL_ABOUT_NAME', 'about');
 
 		runSettingsViewModelHooks(true);
 

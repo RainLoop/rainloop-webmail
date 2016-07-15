@@ -86,6 +86,15 @@ export function pBool(value)
 }
 
 /**
+ * @param {*} value
+ * @returns {string}
+ */
+export function boolToAjax(value)
+{
+	return value ? '1' : '0';
+}
+
+/**
  * @param {*} values
  * @returns {boolean}
  */

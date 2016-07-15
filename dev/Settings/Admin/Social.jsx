@@ -171,4 +171,4 @@ SocialAdminSettings.prototype.onBuild = function()
 	}, 50);
 };
 
-module.exports = SocialAdminSettings;
+export {SocialAdminSettings, SocialAdminSettings as default};

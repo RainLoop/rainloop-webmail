@@ -75,4 +75,4 @@ DomainsAdminSettings.prototype.onDomainListChangeRequest = function()
 	require('App/Admin').default.reloadDomainList();
 };
 
-module.exports = DomainsAdminSettings;
+export {DomainsAdminSettings, DomainsAdminSettings as default};
