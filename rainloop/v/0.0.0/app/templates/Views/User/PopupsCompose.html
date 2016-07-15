@@ -3,13 +3,11 @@
 		<div class="modal-header b-header-toolbar g-ui-user-select-none">
 			<a class="btn btn-large button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
 				<i class="icon-white" data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner animated big': sending()}"></i>
-				&nbsp;&nbsp;
-				<span class="i18n" data-i18n="COMPOSE/BUTTON_SEND"></span>
+				<span class="i18n btn-text hide-on-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
 			</a>
 			<a class="btn button-save" data-bind="visible: allowFolders, command: saveCommand, tooltipErrorTip: savedErrorDesc, css: {'btn-danger': savedError }">
 				<i data-bind="css: {'icon-floppy': !saving(), 'icon-spinner animated': saving(), 'icon-white': savedError()}"></i>
-				&nbsp;&nbsp;
-				<span class="i18n" data-i18n="COMPOSE/BUTTON_SAVE"></span>
+				<span class="i18n btn-text hide-on-mobile" data-i18n="COMPOSE/BUTTON_SAVE"></span>
 			</a>
 
 			<a class="close-custom" data-tooltip-join="top" data-bind="click: tryToClosePopup, tooltip: 'COMPOSE/BUTTON_CANCEL'">&times;</a>
