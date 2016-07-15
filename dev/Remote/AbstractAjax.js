@@ -83,10 +83,10 @@ AbstractAjaxRemote.prototype.defaultResponse = function(fCallback, sRequestActio
 				Globals.data.iTokenErrorCount = 0;
 			}
 
+			Plugins.runHook('ajax-default-response', [sRequestAction, Enums.StorageResultType.Success === sType ? oData : null, sType, bCached, oRequestParameters]);
+
 			if (fCallback)
 			{
-				Plugins.runHook('ajax-default-response', [sRequestAction, Enums.StorageResultType.Success === sType ? oData : null, sType, bCached, oRequestParameters]);
-
 				fCallback(
 					sType,
 					Enums.StorageResultType.Success === sType ? oData : null,

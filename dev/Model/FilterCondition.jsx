@@ -8,8 +8,7 @@ import {AbstractModel} from 'Knoin/AbstractModel';
 
 class FilterConditionModel extends AbstractModel
 {
-	constructor()
-	{
+	constructor() {
 		super('FilterConditionModel');
 
 		this.field = ko.observable(FilterConditionField.From);

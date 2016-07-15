@@ -4,8 +4,7 @@ import ko from 'ko';
 
 class IdentityUserStore
 {
-	constructor()
-	{
+	constructor() {
 		this.identities = ko.observableArray([]);
 		this.identities.loading = ko.observable(false).extend({throttle: 100});
 

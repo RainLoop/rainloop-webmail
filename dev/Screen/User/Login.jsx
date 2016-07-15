@@ -4,8 +4,7 @@ import App from 'App/User';
 
 class LoginUserScreen extends AbstractScreen
 {
-	constructor()
-	{
+	constructor() {
 		super('login', [
 			require('View/User/Login')
 		]);

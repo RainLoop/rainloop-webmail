@@ -28,6 +28,7 @@ function NewOpenPgpKeyPopupView()
 	this.keyBitLength = ko.observable(Enums.Magics.BitLength2048);
 
 	this.submitRequest = ko.observable(false);
+	this.submitError = ko.observable('');
 
 	this.email.subscribe(function() {
 		this.email.error(false);
@@ -53,6 +54,7 @@ function NewOpenPgpKeyPopupView()
 		}
 
 		this.submitRequest(true);
+		this.submitError('');
 
 		_.delay(function() {
 
@@ -81,14 +83,15 @@ function NewOpenPgpKeyPopupView()
 						Utils.delegateRun(self, 'cancelCommand');
 					}
 
-				}).then(null, function() {
+				}).then(null, function(e) {
 					self.submitRequest(false);
+					self.showError(e);
 				});
 			}
 			catch (e)
 			{
-				Utils.log(e);
 				self.submitRequest(false);
+				self.showError(e);
 			}
 
 		}, Enums.Magics.Time100ms);
@@ -102,6 +105,15 @@ function NewOpenPgpKeyPopupView()
 kn.extendAsViewModel(['View/Popup/NewOpenPgpKey', 'PopupsNewOpenPgpKeyViewModel'], NewOpenPgpKeyPopupView);
 _.extend(NewOpenPgpKeyPopupView.prototype, AbstractView.prototype);
 
+NewOpenPgpKeyPopupView.prototype.showError = function(e)
+{
+	Utils.log(e);
+	if (e && e.message)
+	{
+		this.submitError(e.message);
+	}
+};
+
 NewOpenPgpKeyPopupView.prototype.clearPopup = function()
 {
 	this.name('');
@@ -110,6 +122,8 @@ NewOpenPgpKeyPopupView.prototype.clearPopup = function()
 	this.email('');
 	this.email.error(false);
 	this.keyBitLength(Enums.Magics.BitLength2048);
+
+	this.submitError('');
 };
 
 NewOpenPgpKeyPopupView.prototype.onShow = function()

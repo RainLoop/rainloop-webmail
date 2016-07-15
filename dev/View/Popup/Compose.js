@@ -4,6 +4,7 @@ var
 	_ = require('_'),
 	$ = require('$'),
 	ko = require('ko'),
+	key = require('key'),
 	JSON = require('JSON'),
 	Jua = require('Jua'),
 
@@ -928,7 +929,10 @@ ComposePopupView.prototype.setSignatureFromIdentity = function(oIdentity)
 	{
 		var self = this;
 		this.editor(function(oEditor) {
-			var bHtml = false, sSignature = oIdentity.signature();
+			var
+				bHtml = false,
+				sSignature = oIdentity.signature();
+
 			if ('' !== sSignature)
 			{
 				if (':HTML:' === sSignature.substr(0, 6))

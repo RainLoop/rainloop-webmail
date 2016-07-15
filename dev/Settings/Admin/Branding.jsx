@@ -9,26 +9,25 @@ import {settingsGet} from 'Storage/Settings';
 
 class BrandingAdminSettings
 {
-	constructor()
-	{
+	constructor() {
 		const AppStore = require('Stores/Admin/App');
 
 		this.capa = AppStore.prem;
 
-		this.title = ko.observable(settingsGet('Title')).extend({idleTrigger: true});
-		this.loadingDesc = ko.observable(settingsGet('LoadingDescription')).extend({idleTrigger: true});
-		this.faviconUrl = ko.observable(settingsGet('FaviconUrl')).extend({idleTrigger: true});
-		this.loginLogo = ko.observable(settingsGet('LoginLogo') || '').extend({idleTrigger: true});
-		this.loginBackground = ko.observable(settingsGet('LoginBackground') || '').extend({idleTrigger: true});
-		this.userLogo = ko.observable(settingsGet('UserLogo') || '').extend({idleTrigger: true});
-		this.userLogoMessage = ko.observable(settingsGet('UserLogoMessage') || '').extend({idleTrigger: true});
-		this.userIframeMessage = ko.observable(settingsGet('UserIframeMessage') || '').extend({idleTrigger: true});
-		this.userLogoTitle = ko.observable(settingsGet('UserLogoTitle') || '').extend({idleTrigger: true});
-		this.loginDescription = ko.observable(settingsGet('LoginDescription')).extend({idleTrigger: true});
-		this.loginCss = ko.observable(settingsGet('LoginCss')).extend({idleTrigger: true});
-		this.userCss = ko.observable(settingsGet('UserCss')).extend({idleTrigger: true});
-		this.welcomePageUrl = ko.observable(settingsGet('WelcomePageUrl')).extend({idleTrigger: true});
-		this.welcomePageDisplay = ko.observable(settingsGet('WelcomePageDisplay')).extend({idleTrigger: true});
+		this.title = ko.observable(settingsGet('Title')).idleTrigger();
+		this.loadingDesc = ko.observable(settingsGet('LoadingDescription')).idleTrigger();
+		this.faviconUrl = ko.observable(settingsGet('FaviconUrl')).idleTrigger();
+		this.loginLogo = ko.observable(settingsGet('LoginLogo') || '').idleTrigger();
+		this.loginBackground = ko.observable(settingsGet('LoginBackground') || '').idleTrigger();
+		this.userLogo = ko.observable(settingsGet('UserLogo') || '').idleTrigger();
+		this.userLogoMessage = ko.observable(settingsGet('UserLogoMessage') || '').idleTrigger();
+		this.userIframeMessage = ko.observable(settingsGet('UserIframeMessage') || '').idleTrigger();
+		this.userLogoTitle = ko.observable(settingsGet('UserLogoTitle') || '').idleTrigger();
+		this.loginDescription = ko.observable(settingsGet('LoginDescription')).idleTrigger();
+		this.loginCss = ko.observable(settingsGet('LoginCss')).idleTrigger();
+		this.userCss = ko.observable(settingsGet('UserCss')).idleTrigger();
+		this.welcomePageUrl = ko.observable(settingsGet('WelcomePageUrl')).idleTrigger();
+		this.welcomePageDisplay = ko.observable(settingsGet('WelcomePageDisplay')).idleTrigger();
 		this.welcomePageDisplay.options = ko.computed(() => {
 			translatorTrigger();
 			return [

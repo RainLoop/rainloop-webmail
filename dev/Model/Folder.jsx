@@ -12,8 +12,7 @@ import {AbstractModel} from 'Knoin/AbstractModel';
 
 class FolderModel extends AbstractModel
 {
-	constructor()
-	{
+	constructor() {
 		super('FolderModel');
 
 		this.name = ko.observable('');

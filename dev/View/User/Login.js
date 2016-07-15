@@ -135,7 +135,6 @@ function LoginUserView()
 	}, this);
 
 	this.submitCommand = Utils.createCommand(this, function() {
-
 		Utils.triggerAutocompleteInputChange();
 
 		this.emailError(false);
@@ -276,7 +275,6 @@ function LoginUserView()
 		}
 
 		return true;
-
 	}, function() {
 		return !this.submitRequest();
 	});
@@ -284,12 +282,9 @@ function LoginUserView()
 	this.facebookLoginEnabled = ko.observable(false);
 
 	this.facebookCommand = Utils.createCommand(this, function() {
-
 		window.open(Links.socialFacebook(), 'Facebook',
-			'left=200,top=100,width=650,height=450,menubar=no,status=no,resizable=yes,scrollbars=yes');
-
+			'left=200,top=100,width=500,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
 		return true;
-
 	}, function() {
 		return !this.submitRequest() && this.facebookLoginEnabled();
 	});
@@ -298,23 +293,17 @@ function LoginUserView()
 	this.googleFastLoginEnabled = ko.observable(false);
 
 	this.googleCommand = Utils.createCommand(this, function() {
-
 		window.open(Links.socialGoogle(), 'Google',
-			'left=200,top=100,width=650,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
-
+			'left=200,top=100,width=550,height=550,menubar=no,status=no,resizable=yes,scrollbars=yes');
 		return true;
-
 	}, function() {
 		return !this.submitRequest() && this.googleLoginEnabled();
 	});
 
 	this.googleFastCommand = Utils.createCommand(this, function() {
-
 		window.open(Links.socialGoogle(true), 'Google',
-			'left=200,top=100,width=650,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
-
+			'left=200,top=100,width=550,height=550,menubar=no,status=no,resizable=yes,scrollbars=yes');
 		return true;
-
 	}, function() {
 		return !this.submitRequest() && this.googleFastLoginEnabled();
 	});
@@ -322,18 +311,14 @@ function LoginUserView()
 	this.twitterLoginEnabled = ko.observable(false);
 
 	this.twitterCommand = Utils.createCommand(this, function() {
-
 		window.open(Links.socialTwitter(), 'Twitter',
-			'left=200,top=100,width=650,height=450,menubar=no,status=no,resizable=yes,scrollbars=yes');
-
+			'left=200,top=100,width=500,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
 		return true;
-
 	}, function() {
 		return !this.submitRequest() && this.twitterLoginEnabled();
 	});
 
 	this.socialLoginEnabled = ko.computed(function() {
-
 		var
 			bF = this.facebookLoginEnabled(),
 			bG = this.googleLoginEnabled(),

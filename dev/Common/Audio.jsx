@@ -8,8 +8,7 @@ import {trim} from 'Common/Utils';
 
 class Audio
 {
-	constructor()
-	{
+	constructor() {
 		this.notificator = null;
 
 		this.supportedMp3 = false;

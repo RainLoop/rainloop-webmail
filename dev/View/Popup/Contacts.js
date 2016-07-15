@@ -6,6 +6,8 @@ var
 	ko = require('ko'),
 	key = require('key'),
 
+	Jua = require('Jua'),
+
 	Enums = require('Common/Enums'),
 	Consts = require('Common/Consts'),
 	Globals = require('Common/Globals'),

@@ -60,15 +60,14 @@ function PluginPopupView()
 		list.Name = this.name();
 
 		_.each(this.configures(), function(oItem) {
-
 			var value = oItem.value();
+
 			if (false === value || true === value)
 			{
 				value = value ? '1' : '0';
 			}
 
 			list['_' + oItem.Name] = value;
-
 		}, this);
 
 		this.saveError('');
@@ -119,6 +118,7 @@ PluginPopupView.prototype.onShow = function(oPlugin)
 		this.readme(oPlugin.Readme);
 
 		var aConfig = oPlugin.Config;
+
 		if (Utils.isNonEmptyArray(aConfig))
 		{
 			this.configures(_.map(aConfig, function(aItem) {
@@ -160,6 +160,7 @@ PluginPopupView.prototype.onBuild = function()
 		{
 			this.tryToClosePopup();
 		}
+
 		return false;
 	}, this));
 };

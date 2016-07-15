@@ -233,8 +233,7 @@ export const staticCombinedIconClass = (data) => {
 
 class AttachmentModel extends AbstractModel
 {
-	constructor()
-	{
+	constructor() {
 		super('AttachmentModel');
 
 		this.checked = ko.observable(false);

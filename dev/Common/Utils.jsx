@@ -145,7 +145,10 @@ export function encodeURI(url)
  */
 export function simpleQueryParser(queryString)
 {
-	let index = 0, len = 0, temp = null;
+	let
+		index = 0,
+		len = 0,
+		temp = null;
 
 	const
 		queries = queryString.split('&'),
@@ -498,7 +501,7 @@ export function delegateRun(object, methodName, params, delay = 0)
 /**
  * @param {?} event
  */
-export function kill_CtrlA_CtrlS(event)
+export function killCtrlACtrlS(event)
 {
 	event = event || window.event;
 	if (event && event.ctrlKey && !event.shiftKey && !event.altKey)
@@ -1055,8 +1058,8 @@ export function plainToHtml(plain, findEmailAndLinksInText = false)
 	return findEmailAndLinksInText ? findEmailAndLinks(plain) : plain;
 }
 
-window.rainloop_Utils_htmlToPlain = htmlToPlain;
-window.rainloop_Utils_plainToHtml = plainToHtml;
+window['rainloop_Utils_htmlToPlain'] = htmlToPlain; // eslint-disable-line dot-notation
+window['rainloop_Utils_plainToHtml'] = plainToHtml; // eslint-disable-line dot-notation
 
 /**
  * @param {Array} aSystem
@@ -1195,7 +1198,10 @@ export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines
  */
 export function selectElement(element)
 {
-	let sel = null, range = null;
+	let
+		sel = null,
+		range = null;
+
 	if (window.getSelection)
 	{
 		sel = window.getSelection();

@@ -1068,7 +1068,10 @@ MessageViewMailBoxUserView.prototype.getAttachmentsHashes = function()
 
 MessageViewMailBoxUserView.prototype.downloadAsZip = function()
 {
-	var self = this, aHashes = this.getAttachmentsHashes();
+	var
+		self = this,
+		aHashes = this.getAttachmentsHashes();
+
 	if (0 < aHashes.length)
 	{
 		Promises.attachmentsActions('Zip', aHashes, this.downloadAsZipLoading).then(function(oResult) {
@@ -1094,7 +1097,10 @@ MessageViewMailBoxUserView.prototype.downloadAsZip = function()
 
 MessageViewMailBoxUserView.prototype.saveToOwnCloud = function()
 {
-	var self = this, aHashes = this.getAttachmentsHashes();
+	var
+		self = this,
+		aHashes = this.getAttachmentsHashes();
+
 	if (0 < aHashes.length)
 	{
 		Promises.attachmentsActions('OwnCloud', aHashes, this.saveToOwnCloudLoading).then(function(oResult) {
@@ -1118,7 +1124,11 @@ MessageViewMailBoxUserView.prototype.saveToOwnCloud = function()
 
 MessageViewMailBoxUserView.prototype.saveToDropbox = function()
 {
-	var self = this, aFiles = [], aHashes = this.getAttachmentsHashes();
+	var
+		self = this,
+		aFiles = [],
+		aHashes = this.getAttachmentsHashes();
+
 	if (0 < aHashes.length)
 	{
 		if (window.Dropbox)

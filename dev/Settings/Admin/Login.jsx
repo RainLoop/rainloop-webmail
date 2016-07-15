@@ -1,66 +1,55 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import _ from '_';
+import ko from 'ko';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
+import {settingsSaveHelperSimpleFunction, boolToAjax, trim} from 'Common/Utils';
+import {settingsGet} from 'Storage/Settings';
 
-	AppAdminStore = require('Stores/Admin/App'),
+import AppAdminStore from 'Stores/Admin/App';
 
-	Settings = require('Storage/Settings');
-
-/**
- * @constructor
- */
-function LoginAdminSettings()
+class LoginAdminSettings
 {
-	this.determineUserLanguage = AppAdminStore.determineUserLanguage;
-	this.determineUserDomain = AppAdminStore.determineUserDomain;
+	constructor() {
+		this.determineUserLanguage = AppAdminStore.determineUserLanguage;
+		this.determineUserDomain = AppAdminStore.determineUserDomain;
 
-	this.defaultDomain = ko.observable(Settings.settingsGet('LoginDefaultDomain'));
+		this.defaultDomain = ko.observable(settingsGet('LoginDefaultDomain')).idleTrigger();
+		this.allowLanguagesOnLogin = AppAdminStore.allowLanguagesOnLogin;
 
-	this.allowLanguagesOnLogin = AppAdminStore.allowLanguagesOnLogin;
-	this.defaultDomainTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
+		this.dummy = ko.observable(false);
+	}
 
-	this.dummy = ko.observable(false);
+	onBuild() {
+		_.delay(() => {
+			const
+				Remote = require('Remote/Admin/Ajax'),
+				f1 = settingsSaveHelperSimpleFunction(this.defaultDomain.trigger, this);
+
+			this.determineUserLanguage.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'DetermineUserLanguage': boolToAjax(value)
+				});
+			});
+
+			this.determineUserDomain.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'DetermineUserDomain': boolToAjax(value)
+				});
+			});
+
+			this.allowLanguagesOnLogin.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'AllowLanguagesOnLogin': boolToAjax(value)
+				});
+			});
+
+			this.defaultDomain.subscribe((value) => {
+				Remote.saveAdminConfig(f1, {
+					'LoginDefaultDomain': trim(value)
+				});
+			});
+		}, 50);
+	}
 }
-
-LoginAdminSettings.prototype.onBuild = function()
-{
-	var
-		self = this,
-		Remote = require('Remote/Admin/Ajax');
-
-	_.delay(function() {
-
-		var f1 = Utils.settingsSaveHelperSimpleFunction(self.defaultDomainTrigger, self);
-
-		self.determineUserLanguage.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'DetermineUserLanguage': bValue ? '1' : '0'
-			});
-		});
-
-		self.determineUserDomain.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'DetermineUserDomain': bValue ? '1' : '0'
-			});
-		});
-
-		self.allowLanguagesOnLogin.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'AllowLanguagesOnLogin': bValue ? '1' : '0'
-			});
-		});
-
-		self.defaultDomain.subscribe(function(sValue) {
-			Remote.saveAdminConfig(f1, {
-				'LoginDefaultDomain': Utils.trim(sValue)
-			});
-		});
-
-	}, 50);
-};
 
 export {LoginAdminSettings, LoginAdminSettings as default};

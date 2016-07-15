@@ -1,3 +1,4 @@
+
 module.exports = {
 	'extends': 'eslint:recommended',
 	'ecmaFeatures': {
@@ -14,18 +15,7 @@ module.exports = {
 		'browser': true
 	},
 	'globals': {
-		'RL_COMMUNITY': true,
-		'ko': true,
-		'ssm': true,
-		'moment': true,
-		'ifvisible': true,
-		'crossroads': true,
-		'hasher': true,
-		'key': true,
-		'Jua': true,
-		'_': true,
-		'$': true,
-		'Dropbox': true
+		'RL_COMMUNITY': true
 	},
 	// http://eslint.org/docs/rules/
 	'rules': {
@@ -166,7 +156,7 @@ module.exports = {
 		'array-bracket-spacing': 2,
 		'block-spacing': [2, 'never'],
 //		'brace-style': [2, 'allman'],
-//		'camelcase': 2,
+		'camelcase': 2,
 		'comma-dangle': [2, 'never'],
 		'comma-spacing': 2,
 		'comma-style': 2,
@@ -234,9 +224,9 @@ module.exports = {
 //		'one-var': [2, {
 //			'var': 'always',
 //			'let': 'always',
-//			'const': 'never'
+//			'const': 'always'
 //		}],
-//		'one-var-declaration-per-line': [2, 'always'],
+		'one-var-declaration-per-line': [2, 'always'],
 		'operator-assignment': 2,
 		'operator-linebreak': [2, 'after'],
 //		'padded-blocks': [2, 'never'],
@@ -284,7 +274,7 @@ module.exports = {
 //		'prefer-template': 2,
 		'require-yield': 2,
 		'rest-spread-spacing': 2,
-		'sort-imports': 0,
+		'sort-imports': 0, // off
 		'template-curly-spacing': 2,
 		'yield-star-spacing': 2
 	}

@@ -1,202 +1,176 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import _ from '_';
+import ko from 'ko';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
-	Links = require('Common/Links'),
-	Translator = require('Common/Translator'),
+import {
+	trim, pInt, boolToAjax, settingsSaveHelperSimpleFunction,
+	changeTheme, convertThemeName, convertLangName
+} from 'Common/Utils';
 
-	ThemeStore = require('Stores/Theme'),
-	LanguageStore = require('Stores/Language'),
-	AppAdminStore = require('Stores/Admin/App'),
-	CapaAdminStore = require('Stores/Admin/Capa'),
+import {SaveSettingsStep, Magics} from 'Common/Enums';
+import {reload as translatorReload} from 'Common/Translator';
+import {phpInfo} from 'Common/Links';
 
-	Settings = require('Storage/Settings');
+import {settingsGet} from 'Storage/Settings';
+import {showScreenPopup} from 'Knoin/Knoin';
 
-/**
- * @constructor
- */
-function GeneralAdminSettings()
+import ThemeStore from 'Stores/Theme';
+import LanguageStore from 'Stores/Language';
+import AppAdminStore from 'Stores/Admin/App';
+import CapaAdminStore from 'Stores/Admin/Capa';
+
+class GeneralAdminSettings
 {
-	this.language = LanguageStore.language;
-	this.languages = LanguageStore.languages;
-	this.languageAdmin = LanguageStore.languageAdmin;
-	this.languagesAdmin = LanguageStore.languagesAdmin;
+	constructor() {
+		this.language = LanguageStore.language;
+		this.languages = LanguageStore.languages;
+		this.languageAdmin = LanguageStore.languageAdmin;
+		this.languagesAdmin = LanguageStore.languagesAdmin;
 
-	this.theme = ThemeStore.theme;
-	this.themes = ThemeStore.themes;
+		this.theme = ThemeStore.theme;
+		this.themes = ThemeStore.themes;
 
-	this.capaThemes = CapaAdminStore.themes;
-	this.capaUserBackground = CapaAdminStore.userBackground;
-	this.capaGravatar = CapaAdminStore.gravatar;
-	this.capaAdditionalAccounts = CapaAdminStore.additionalAccounts;
-	this.capaIdentities = CapaAdminStore.identities;
-	this.capaAttachmentThumbnails = CapaAdminStore.attachmentThumbnails;
-	this.capaTemplates = CapaAdminStore.templates;
+		this.capaThemes = CapaAdminStore.themes;
+		this.capaUserBackground = CapaAdminStore.userBackground;
+		this.capaGravatar = CapaAdminStore.gravatar;
+		this.capaAdditionalAccounts = CapaAdminStore.additionalAccounts;
+		this.capaIdentities = CapaAdminStore.identities;
+		this.capaAttachmentThumbnails = CapaAdminStore.attachmentThumbnails;
+		this.capaTemplates = CapaAdminStore.templates;
 
-	this.allowLanguagesOnSettings = AppAdminStore.allowLanguagesOnSettings;
-	this.weakPassword = AppAdminStore.weakPassword;
+		this.allowLanguagesOnSettings = AppAdminStore.allowLanguagesOnSettings;
+		this.weakPassword = AppAdminStore.weakPassword;
 
-	this.mainAttachmentLimit = ko.observable(Utils.pInt(Settings.settingsGet('AttachmentLimit')) / (1024 * 1024)).extend({'posInterer': 25});
-	this.uploadData = Settings.settingsGet('PhpUploadSizes');
-	this.uploadDataDesc = this.uploadData && (this.uploadData.upload_max_filesize || this.uploadData.post_max_size) ? [
-		this.uploadData.upload_max_filesize ? 'upload_max_filesize = ' + this.uploadData.upload_max_filesize + '; ' : '',
-		this.uploadData.post_max_size ? 'post_max_size = ' + this.uploadData.post_max_size : ''
-	].join('') : '';
+		this.mainAttachmentLimit = ko.observable(pInt(settingsGet('AttachmentLimit')) / (Magics.BitLength1024 * Magics.BitLength1024)).extend({posInterer: 25});
 
-	this.themesOptions = ko.computed(function() {
-		return _.map(this.themes(), function(sTheme) {
-			return {
-				optValue: sTheme,
-				optText: Utils.convertThemeName(sTheme)
-			};
-		});
-	}, this);
+		this.uploadData = settingsGet('PhpUploadSizes');
+		this.uploadDataDesc = this.uploadData && (this.uploadData.upload_max_filesize || this.uploadData.post_max_size) ? [
+			this.uploadData.upload_max_filesize ? 'upload_max_filesize = ' + this.uploadData.upload_max_filesize + '; ' : '',
+			this.uploadData.post_max_size ? 'post_max_size = ' + this.uploadData.post_max_size : ''
+		].join('') : '';
 
-	this.languageFullName = ko.computed(function() {
-		return Utils.convertLangName(this.language());
-	}, this);
+		this.themesOptions = ko.computed(() => _.map(this.themes(), (theme) => ({optValue: theme, optText: convertThemeName(theme)})));
 
-	this.languageAdminFullName = ko.computed(function() {
-		return Utils.convertLangName(this.languageAdmin());
-	}, this);
+		this.languageFullName = ko.computed(() => convertLangName(this.language()));
+		this.languageAdminFullName = ko.computed(() => convertLangName(this.languageAdmin()));
 
-	this.attachmentLimitTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
-	this.languageTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
-	this.languageAdminTrigger = ko.observable(Enums.SaveSettingsStep.Idle).extend({'throttle': 100});
-	this.themeTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
-}
+		this.attachmentLimitTrigger = ko.observable(SaveSettingsStep.Idle);
+		this.languageTrigger = ko.observable(SaveSettingsStep.Idle);
+		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({throttle: Magics.Time100ms});
+		this.themeTrigger = ko.observable(SaveSettingsStep.Idle);
+	}
 
-GeneralAdminSettings.prototype.onBuild = function()
-{
-	var
-		self = this,
-		Remote = require('Remote/Admin/Ajax');
-
-	_.delay(function() {
-
-		var
-			f1 = Utils.settingsSaveHelperSimpleFunction(self.attachmentLimitTrigger, self),
-			f2 = Utils.settingsSaveHelperSimpleFunction(self.languageTrigger, self),
-			f3 = Utils.settingsSaveHelperSimpleFunction(self.themeTrigger, self),
-			fReloadLanguageHelper = function(iSaveSettingsStep) {
-				return function() {
-					self.languageAdminTrigger(iSaveSettingsStep);
-					_.delay(function() {
-						self.languageAdminTrigger(Enums.SaveSettingsStep.Idle);
-					}, 1000);
+	onBuild() {
+		_.delay(() => {
+			const
+				Remote = require('Remote/Admin/Ajax'),
+				f1 = settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this),
+				f2 = settingsSaveHelperSimpleFunction(this.languageTrigger, this),
+				f3 = settingsSaveHelperSimpleFunction(this.themeTrigger, this),
+				fReloadLanguageHelper = (saveSettingsStep) => () => {
+					this.languageAdminTrigger(saveSettingsStep);
+					_.delay(() => this.languageAdminTrigger(SaveSettingsStep.Idle), Magics.Time1s);
 				};
-			};
 
-		self.mainAttachmentLimit.subscribe(function(sValue) {
-			Remote.saveAdminConfig(f1, {
-				'AttachmentLimit': Utils.pInt(sValue)
-			});
-		});
-
-		self.language.subscribe(function(sValue) {
-			Remote.saveAdminConfig(f2, {
-				'Language': Utils.trim(sValue)
-			});
-		});
-
-		self.languageAdmin.subscribe(function(sValue) {
-
-			self.languageAdminTrigger(Enums.SaveSettingsStep.Animate);
-
-			Translator.reload(true, sValue).then(
-				fReloadLanguageHelper(Enums.SaveSettingsStep.TrueResult),
-				fReloadLanguageHelper(Enums.SaveSettingsStep.FalseResult)
-			).then(function() {
-				Remote.saveAdminConfig(null, {
-					'LanguageAdmin': Utils.trim(sValue)
+			this.mainAttachmentLimit.subscribe((value) => {
+				Remote.saveAdminConfig(f1, {
+					'AttachmentLimit': pInt(value)
 				});
 			});
 
-		});
-
-		self.theme.subscribe(function(sValue) {
-
-			Utils.changeTheme(sValue, self.themeTrigger);
-
-			Remote.saveAdminConfig(f3, {
-				'Theme': Utils.trim(sValue)
+			this.language.subscribe((value) => {
+				Remote.saveAdminConfig(f2, {
+					'Language': trim(value)
+				});
 			});
-		});
 
-		self.capaAdditionalAccounts.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'CapaAdditionalAccounts': bValue ? '1' : '0'
+			this.languageAdmin.subscribe((value) => {
+				this.languageAdminTrigger(SaveSettingsStep.Animate);
+				translatorReload(true, value).then(
+					fReloadLanguageHelper(SaveSettingsStep.TrueResult),
+					fReloadLanguageHelper(SaveSettingsStep.FalseResult)
+				).then(() => {
+					Remote.saveAdminConfig(null, {
+						'LanguageAdmin': trim(value)
+					});
+				});
 			});
-		});
 
-		self.capaIdentities.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'CapaIdentities': bValue ? '1' : '0'
+			this.theme.subscribe((value) => {
+				changeTheme(value, this.themeTrigger);
+				Remote.saveAdminConfig(f3, {
+					'Theme': trim(value)
+				});
 			});
-		});
 
-		self.capaTemplates.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'CapaTemplates': bValue ? '1' : '0'
+			this.capaAdditionalAccounts.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'CapaAdditionalAccounts': boolToAjax(value)
+				});
 			});
-		});
 
-		self.capaGravatar.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'CapaGravatar': bValue ? '1' : '0'
+			this.capaIdentities.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'CapaIdentities': boolToAjax(value)
+				});
 			});
-		});
 
-		self.capaAttachmentThumbnails.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'CapaAttachmentThumbnails': bValue ? '1' : '0'
+			this.capaTemplates.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'CapaTemplates': boolToAjax(value)
+				});
 			});
-		});
 
-		self.capaThemes.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'CapaThemes': bValue ? '1' : '0'
+			this.capaGravatar.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'CapaGravatar': boolToAjax(value)
+				});
 			});
-		});
 
-		self.capaUserBackground.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'CapaUserBackground': bValue ? '1' : '0'
+			this.capaAttachmentThumbnails.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'CapaAttachmentThumbnails': boolToAjax(value)
+				});
 			});
-		});
 
-		self.allowLanguagesOnSettings.subscribe(function(bValue) {
-			Remote.saveAdminConfig(null, {
-				'AllowLanguagesOnSettings': bValue ? '1' : '0'
+			this.capaThemes.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'CapaThemes': boolToAjax(value)
+				});
 			});
-		});
 
-	}, 50);
-};
+			this.capaUserBackground.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'CapaUserBackground': boolToAjax(value)
+				});
+			});
 
-GeneralAdminSettings.prototype.selectLanguage = function()
-{
-	require('Knoin/Knoin').showScreenPopup(require('View/Popup/Languages'), [
-		this.language, this.languages(), LanguageStore.userLanguage()
-	]);
-};
+			this.allowLanguagesOnSettings.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'AllowLanguagesOnSettings': boolToAjax(value)
+				});
+			});
+		}, Magics.Time50ms);
+	}
 
-GeneralAdminSettings.prototype.selectLanguageAdmin = function()
-{
-	require('Knoin/Knoin').showScreenPopup(require('View/Popup/Languages'), [
-		this.languageAdmin, this.languagesAdmin(), LanguageStore.userLanguageAdmin()
-	]);
-};
+	selectLanguage() {
+		showScreenPopup(require('View/Popup/Languages'), [
+			this.language, this.languages(), LanguageStore.userLanguage()
+		]);
+	}
 
-/**
- * @returns {string}
- */
-GeneralAdminSettings.prototype.phpInfoLink = function()
-{
-	return Links.phpInfo();
-};
+	selectLanguageAdmin() {
+		showScreenPopup(require('View/Popup/Languages'), [
+			this.languageAdmin, this.languagesAdmin(), LanguageStore.userLanguageAdmin()
+		]);
+	}
+
+	/**
+	 * @returns {string}
+	 */
+	phpInfoLink() {
+		return phpInfo();
+	}
+}
 
 export {GeneralAdminSettings, GeneralAdminSettings as default};

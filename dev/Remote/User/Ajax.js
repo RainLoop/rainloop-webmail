@@ -670,6 +670,21 @@ RemoteUserAjax.prototype.saveSettings = function(fCallback, oData)
 };
 
 /**
+ * @param {string} key
+ * @param {?Function} valueFn
+ * @param {?Function} fn
+ */
+RemoteUserAjax.prototype.saveSettingsHelper = function(key, valueFn, fn)
+{
+	var self = this;
+	return function(value) {
+		var data = {};
+		data[key] = valueFn ? valueFn(value) : value;
+		self.saveSettings(fn || null, data);
+	};
+};
+
+/**
  * @param {?Function} fCallback
  * @param {string} sPrevPassword
  * @param {string} sNewPassword

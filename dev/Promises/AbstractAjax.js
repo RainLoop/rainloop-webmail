@@ -81,8 +81,11 @@ AbstractAjaxPromises.prototype.ajaxRequest = function(sAction, bPost, iTimeOut, 
 			timeout: iTimeOut,
 			global: true
 		}).always(function(oData, sTextStatus) {
+			var
+				bCached = false,
+				oErrorData = null,
+				sType = Enums.StorageResultType.Error;
 
-			var bCached = false, oErrorData = null, sType = Enums.StorageResultType.Error;
 			if (oData && oData.Time)
 			{
 				bCached = Utils.pInt(oData.Time) > Utils.microtime() - iStart;

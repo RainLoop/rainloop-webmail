@@ -20,8 +20,7 @@ import {AbstractModel} from 'Knoin/AbstractModel';
 
 class MessageModel extends AbstractModel
 {
-	constructor()
-	{
+	constructor() {
 		super('MessageModel');
 
 		this.folderFullNameRaw = '';

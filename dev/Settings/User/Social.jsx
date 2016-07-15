@@ -1,73 +1,70 @@
 
-/**
- * @constructor
- */
-function SocialUserSettings()
+import {createCommand} from 'Common/Utils';
+
+import SocialStore from 'Stores/Social';
+
+class SocialUserSettings
 {
-	var
-		Utils = require('Common/Utils'),
-		SocialStore = require('Stores/Social');
+	constructor() {
+		this.googleEnable = SocialStore.google.enabled;
+		this.googleEnableAuth = SocialStore.google.capa.auth;
+		this.googleEnableAuthFast = SocialStore.google.capa.authFast;
+		this.googleEnableDrive = SocialStore.google.capa.drive;
+		this.googleEnablePreview = SocialStore.google.capa.preview;
 
-	this.googleEnable = SocialStore.google.enabled;
-	this.googleEnableAuth = SocialStore.google.capa.auth;
-	this.googleEnableAuthFast = SocialStore.google.capa.authFast;
-	this.googleEnableDrive = SocialStore.google.capa.drive;
-	this.googleEnablePreview = SocialStore.google.capa.preview;
+		this.googleActions = SocialStore.google.loading;
+		this.googleLoggined = SocialStore.google.loggined;
+		this.googleUserName = SocialStore.google.userName;
 
-	this.googleActions = SocialStore.google.loading;
-	this.googleLoggined = SocialStore.google.loggined;
-	this.googleUserName = SocialStore.google.userName;
+		this.facebookEnable = SocialStore.facebook.enabled;
 
-	this.facebookEnable = SocialStore.facebook.enabled;
+		this.facebookActions = SocialStore.facebook.loading;
+		this.facebookLoggined = SocialStore.facebook.loggined;
+		this.facebookUserName = SocialStore.facebook.userName;
 
-	this.facebookActions = SocialStore.facebook.loading;
-	this.facebookLoggined = SocialStore.facebook.loggined;
-	this.facebookUserName = SocialStore.facebook.userName;
+		this.twitterEnable = SocialStore.twitter.enabled;
 
-	this.twitterEnable = SocialStore.twitter.enabled;
+		this.twitterActions = SocialStore.twitter.loading;
+		this.twitterLoggined = SocialStore.twitter.loggined;
+		this.twitterUserName = SocialStore.twitter.userName;
 
-	this.twitterActions = SocialStore.twitter.loading;
-	this.twitterLoggined = SocialStore.twitter.loggined;
-	this.twitterUserName = SocialStore.twitter.userName;
+		this.connectGoogle = createCommand(this, () => {
+			if (!this.googleLoggined())
+			{
+				this.getApp().googleConnect();
+			}
+		}, () => !this.googleLoggined() && !this.googleActions());
 
-	this.connectGoogle = Utils.createCommand(this, function() {
-		if (!this.googleLoggined())
-		{
-			require('App/User').default.googleConnect();
-		}
-	}, function() {
-		return !this.googleLoggined() && !this.googleActions();
-	});
+		this.disconnectGoogle = createCommand(this, () => {
+			this.getApp().googleDisconnect();
+		});
 
-	this.disconnectGoogle = Utils.createCommand(this, function() {
-		require('App/User').default.googleDisconnect();
-	});
+		this.connectFacebook = createCommand(this, () => {
+			if (!this.facebookLoggined())
+			{
+				this.getApp().facebookConnect();
+			}
+		}, () => !this.facebookLoggined() && !this.facebookActions());
 
-	this.connectFacebook = Utils.createCommand(this, function() {
-		if (!this.facebookLoggined())
-		{
-			require('App/User').default.facebookConnect();
-		}
-	}, function() {
-		return !this.facebookLoggined() && !this.facebookActions();
-	});
+		this.disconnectFacebook = createCommand(this, () => {
+			this.getApp().facebookDisconnect();
+		});
 
-	this.disconnectFacebook = Utils.createCommand(this, function() {
-		require('App/User').default.facebookDisconnect();
-	});
+		this.connectTwitter = createCommand(this, () => {
+			if (!this.twitterLoggined())
+			{
+				this.getApp().twitterConnect();
+			}
+		}, () => !this.twitterLoggined() && !this.twitterActions());
 
-	this.connectTwitter = Utils.createCommand(this, function() {
-		if (!this.twitterLoggined())
-		{
-			require('App/User').default.twitterConnect();
-		}
-	}, function() {
-		return !this.twitterLoggined() && !this.twitterActions();
-	});
+		this.disconnectTwitter = createCommand(this, () => {
+			this.getApp().twitterDisconnect();
+		});
+	}
 
-	this.disconnectTwitter = Utils.createCommand(this, function() {
-		require('App/User').default.twitterDisconnect();
-	});
+	getApp() {
+		return require('App/User').default;
+	}
 }
 
 export {SocialUserSettings, SocialUserSettings as default};

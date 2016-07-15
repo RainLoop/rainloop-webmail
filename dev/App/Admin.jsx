@@ -27,8 +27,7 @@ import {AbstractApp} from 'App/Abstract';
 
 class AdminApp extends AbstractApp
 {
-	constructor()
-	{
+	constructor() {
 		super(Remote);
 	}
 

@@ -27,8 +27,7 @@ import {OpenPgpUserSettings} from 'Settings/User/OpenPgp';
 
 class SettingsUserScreen extends AbstractSettingsScreen
 {
-	constructor()
-	{
+	constructor() {
 		super([
 			require('View/User/Settings/SystemDropDown'),
 			require('View/User/Settings/Menu'),

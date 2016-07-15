@@ -1,68 +1,57 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import _ from '_';
+import ko from 'ko';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
-	Translator = require('Common/Translator'),
+import {pInt, settingsSaveHelperSimpleFunction} from 'Common/Utils';
+import {Capa, SaveSettingsStep} from 'Common/Enums';
+import {i18n, trigger as translatorTrigger} from 'Common/Translator';
 
-	SettinsStore = require('Stores/User/Settings'),
+import {capa} from 'Storage/Settings';
 
-	Settings = require('Storage/Settings'),
+import {showScreenPopup} from 'Knoin/Knoin';
 
-	Remote = require('Remote/User/Ajax');
+import SettinsStore from 'Stores/User/Settings';
 
-/**
- * @constructor
- */
-function SecurityUserSettings()
+import Remote from 'Remote/User/Ajax';
+
+class SecurityUserSettings
 {
-	this.capaAutoLogout = Settings.capa(Enums.Capa.AutoLogout);
-	this.capaTwoFactor = Settings.capa(Enums.Capa.TwoFactor);
+	constructor() {
+		this.capaAutoLogout = capa(Capa.AutoLogout);
+		this.capaTwoFactor = capa(Capa.TwoFactor);
 
-	this.autoLogout = SettinsStore.autoLogout;
-	this.autoLogout.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
+		this.autoLogout = SettinsStore.autoLogout;
+		this.autoLogout.trigger = ko.observable(SaveSettingsStep.Idle);
 
-	this.autoLogoutOptions = ko.computed(function() {
-		Translator.trigger();
-		return [
-			{'id': 0, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_NEVER_OPTION_NAME')},
-			{'id': 5, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 5})},
-			{'id': 10, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 10})},
-			{'id': 30, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 30})},
-			{'id': 60, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 60})},
-			{'id': 60 * 2, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 2})},
-			{'id': 60 * 5, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 5})},
-			{'id': 60 * 10, 'name': Translator.i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 10})}
-		];
-	});
-}
-
-SecurityUserSettings.prototype.configureTwoFactor = function()
-{
-	require('Knoin/Knoin').showScreenPopup(require('View/Popup/TwoFactorConfiguration'));
-};
-
-SecurityUserSettings.prototype.onBuild = function()
-{
-	if (this.capaAutoLogout)
-	{
-		var self = this;
-
-		_.delay(function() {
-
-			var
-				f0 = Utils.settingsSaveHelperSimpleFunction(self.autoLogout.trigger, self);
-
-			self.autoLogout.subscribe(function(sValue) {
-				Remote.saveSettings(f0, {
-					'AutoLogout': Utils.pInt(sValue)
-				});
-			});
-
+		this.autoLogoutOptions = ko.computed(() => {
+			translatorTrigger();
+			return [
+				{'id': 0, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_NEVER_OPTION_NAME')},
+				{'id': 5, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 5})},
+				{'id': 10, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 10})},
+				{'id': 30, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 30})},
+				{'id': 60, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_MINUTES_OPTION_NAME', {'MINUTES': 60})},
+				{'id': 60 * 2, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 2})},
+				{'id': 60 * 5, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 5})},
+				{'id': 60 * 10, 'name': i18n('SETTINGS_SECURITY/AUTOLOGIN_HOURS_OPTION_NAME', {'HOURS': 10})}
+			];
 		});
 	}
-};
+
+	configureTwoFactor() {
+		showScreenPopup(require('View/Popup/TwoFactorConfiguration'));
+	}
+
+	onBuild() {
+		if (this.capaAutoLogout)
+		{
+			_.delay(() => {
+				const f0 = settingsSaveHelperSimpleFunction(this.autoLogout.trigger, this);
+
+				this.autoLogout.subscribe(Remote.saveSettingsHelper('AutoLogout', pInt, f0));
+			});
+		}
+	}
+}
 
 export {SecurityUserSettings, SecurityUserSettings as default};

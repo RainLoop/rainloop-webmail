@@ -83,14 +83,19 @@ export const bAnimationSupported = !bMobileDevice && $html.hasClass('csstransiti
 export const bXMLHttpRequestSupported = !!window.XMLHttpRequest;
 
 /**
+ * @type {boolean}
+ */
+export const bIsHttps = window.document && window.document.location ? 'https:' === window.document.location.protocol : false;
+
+/**
  * @type {Object}
  */
 export const oHtmlEditorDefaultConfig = {
-	title: false,
-	stylesSet: false,
-	customConfig: '',
-	contentsCss: '',
-	toolbarGroups: [
+	'title': false,
+	'stylesSet': false,
+	'customConfig': '',
+	'contentsCss': '',
+	'toolbarGroups': [
 		{name: 'spec'},
 		{name: 'styles'},
 		{name: 'basicstyles', groups: ['basicstyles', 'cleanup', 'bidi']},
@@ -102,54 +107,54 @@ export const oHtmlEditorDefaultConfig = {
 		{name: 'others'}
 	],
 
-	removePlugins: 'liststyle',
-	removeButtons: 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll,Source',
-	removeDialogTabs: 'link:advanced;link:target;image:advanced;images:advanced',
+	'removePlugins': 'liststyle',
+	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll,Source',
+	'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 
-	extraPlugins: 'plain,signature',
+	'extraPlugins': 'plain,signature',
 
-	allowedContent: true,
-	extraAllowedContent: true,
+	'allowedContent': true,
+	'extraAllowedContent': true,
 
-	fillEmptyBlocks: false,
-	ignoreEmptyParagraph: true,
-	disableNativeSpellChecker: false,
+	'fillEmptyBlocks': false,
+	'ignoreEmptyParagraph': true,
+	'disableNativeSpellChecker': false,
 
-	font_defaultLabel: 'Arial',
-	fontSize_defaultLabel: '13',
-	fontSize_sizes: '10/10px;12/12px;13/13px;14/14px;16/16px;18/18px;20/20px;24/24px;28/28px;36/36px;48/48px'
+	'font_defaultLabel': 'Arial',
+	'fontSize_defaultLabel': '13',
+	'fontSize_sizes': '10/10px;12/12px;13/13px;14/14px;16/16px;18/18px;20/20px;24/24px;28/28px;36/36px;48/48px'
 };
 
 /**
  * @type {Object}
  */
 export const oHtmlEditorLangsMap = {
-	bg_bg: 'bg',
-	de_de: 'de',
-	el_gr: 'el',
-	es_es: 'es',
-	fr_fr: 'fr',
-	hu_hu: 'hu',
-	is_is: 'is',
-	it_it: 'it',
-	ja_jp: 'ja',
-	ko_kr: 'ko',
-	lt_lt: 'lt',
-	lv_lv: 'lv',
-	nl_nl: 'nl',
-	bg_no: 'no',
-	pl_pl: 'pl',
-	pt_pt: 'pt',
-	pt_br: 'pt-br',
-	ro_ro: 'ro',
-	ru_ru: 'ru',
-	sk_sk: 'sk',
-	sl_si: 'sl',
-	sv_se: 'sv',
-	tr_tr: 'tr',
-	uk_ua: 'ru',
-	zh_tw: 'zh',
-	zh_cn: 'zh-cn'
+	'bg_bg': 'bg',
+	'de_de': 'de',
+	'el_gr': 'el',
+	'es_es': 'es',
+	'fr_fr': 'fr',
+	'hu_hu': 'hu',
+	'is_is': 'is',
+	'it_it': 'it',
+	'ja_jp': 'ja',
+	'ko_kr': 'ko',
+	'lt_lt': 'lt',
+	'lv_lv': 'lv',
+	'nl_nl': 'nl',
+	'bg_no': 'no',
+	'pl_pl': 'pl',
+	'pt_pt': 'pt',
+	'pt_br': 'pt-br',
+	'ro_ro': 'ro',
+	'ru_ru': 'ru',
+	'sk_sk': 'sk',
+	'sl_si': 'sl',
+	'sv_se': 'sv',
+	'tr_tr': 'tr',
+	'uk_ua': 'ru',
+	'zh_tw': 'zh',
+	'zh_cn': 'zh-cn'
 };
 
 /**

@@ -1,7 +1,7 @@
 
 import window from 'window';
 import $ from '$';
-import {kill_CtrlA_CtrlS, detectDropdownVisibility, createCommand} from 'Common/Utils';
+import {killCtrlACtrlS, detectDropdownVisibility, createCommand} from 'Common/Utils';
 import {$win, $html, data as GlobalsData, bMobileDevice} from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
@@ -13,7 +13,7 @@ export default (App) => {
 	GlobalsData.__APP__ = App;
 
 	$win
-		.on('keydown', kill_CtrlA_CtrlS)
+		.on('keydown', killCtrlACtrlS)
 		.on('unload', () => {
 			GlobalsData.bUnload = true;
 		});

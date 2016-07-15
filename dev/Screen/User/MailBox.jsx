@@ -21,8 +21,7 @@ import App from 'App/User';
 
 class MailBoxUserScreen extends AbstractScreen
 {
-	constructor()
-	{
+	constructor() {
 		super('mailbox', [
 			require('View/User/MailBox/SystemDropDown'),
 			require('View/User/MailBox/FolderList'),

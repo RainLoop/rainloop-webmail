@@ -9,8 +9,7 @@ import {AbstractAppStore} from 'Stores/AbstractApp';
 
 class AppUserStore extends AbstractAppStore
 {
-	constructor()
-	{
+	constructor() {
 		super();
 
 		this.currentAudio = ko.observable('');

@@ -10,10 +10,12 @@ import {getHash, setHash, clearHash} from 'Storage/RainLoop';
 
 let RL_APP_DATA_STORAGE = null;
 
+/* eslint-disable  */
 window.__rlah = () => getHash();
 window.__rlah_set = () => setHash();
 window.__rlah_clear = () => clearHash();
 window.__rlah_data = () => RL_APP_DATA_STORAGE;
+/* eslint-enable */
 
 /**
  * @param {string} id

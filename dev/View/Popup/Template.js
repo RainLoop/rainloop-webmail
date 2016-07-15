@@ -124,9 +124,10 @@ TemplatePopupView.prototype.populateBodyFromEditor = function()
 
 TemplatePopupView.prototype.editorSetBody = function(sBody)
 {
+	var self = this;
+
 	if (!this.editor && this.signatureDom())
 	{
-		var self = this;
 		this.editor = new HtmlEditor(self.signatureDom(), function() {
 			self.populateBodyFromEditor();
 		}, function() {

@@ -9,10 +9,11 @@ import {EmailModel} from 'Model/Email';
  * @returns {string}
  */
 export function emailArrayToString(emails, friendlyView = false, wrapWithLink = false) {
+	let
+		index = 0,
+		len = 0;
 
-	let index = 0, len = 0;
 	const result = [];
-
 	if (isNonEmptyArray(emails))
 	{
 		for (len = emails.length; index < len; index++)
@@ -29,10 +30,11 @@ export function emailArrayToString(emails, friendlyView = false, wrapWithLink = 
  * @returns {string}
  */
 export function emailArrayToStringClear(emails) {
+	let
+		index = 0,
+		len = 0;
 
-	let index = 0, len = 0;
 	const result = [];
-
 	if (isNonEmptyArray(emails))
 	{
 		for (len = emails.length; index < len; index++)
@@ -52,10 +54,12 @@ export function emailArrayToStringClear(emails) {
  * @returns {Array.<EmailModel>}
  */
 export function emailArrayFromJson(json) {
+	let
+		index = 0,
+		len = 0,
+		email = null;
 
-	let index = 0, len = 0, email = null;
 	const result = [];
-
 	if (isNonEmptyArray(json))
 	{
 		for (index = 0, len = json.length; index < len; index++)

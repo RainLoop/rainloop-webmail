@@ -5,8 +5,7 @@ import {AbstractAppStore} from 'Stores/AbstractApp';
 
 class AppAdminStore extends AbstractAppStore
 {
-	constructor()
-	{
+	constructor() {
 		super();
 
 		this.determineUserLanguage = ko.observable(false);

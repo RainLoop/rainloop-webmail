@@ -1210,6 +1210,11 @@ ko.extenders.idleTrigger = function(oTarget)
 
 // functions
 
+ko.observable.fn.idleTrigger = function()
+{
+	return this.extend({'idleTrigger': true});
+};
+
 ko.observable.fn.validateNone = function()
 {
 	this.hasError = ko.observable(false);

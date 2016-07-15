@@ -1,6 +1,7 @@
 
 var
 	_ = require('_'),
+	$ = require('$'),
 	key = require('key'),
 
 	Enums = require('Common/Enums'),

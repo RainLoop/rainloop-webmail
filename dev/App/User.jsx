@@ -66,8 +66,7 @@ import {AbstractApp} from 'App/Abstract';
 
 class AppUser extends AbstractApp
 {
-	constructor()
-	{
+	constructor() {
 		super(Remote);
 
 		this.moveCache = {};

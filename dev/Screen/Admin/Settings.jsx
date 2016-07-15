@@ -13,12 +13,11 @@ import {SecurityAdminSettings} from 'Settings/Admin/Security';
 import {SocialAdminSettings} from 'Settings/Admin/Social';
 import {PluginsAdminSettings} from 'Settings/Admin/Plugins';
 import {PackagesAdminSettings} from 'Settings/Admin/Packages';
-// import {AboutAdminSettings} from 'Settings/Admin/About';
+import {AboutAdminSettings} from 'Settings/Admin/About';
 
 class SettingsAdminScreen extends AbstractSettingsScreen
 {
-	constructor()
-	{
+	constructor() {
 		super([
 			require('View/Admin/Settings/Menu'),
 			require('View/Admin/Settings/Pane')
@@ -70,8 +69,8 @@ class SettingsAdminScreen extends AbstractSettingsScreen
 				'AdminSettingsLicensing', 'TABS_LABELS/LABEL_LICENSING_NAME', 'licensing');
 		}
 
-		// addSettingsViewModel(AboutAdminSettings,
-		// 	'AdminSettingsAbout', 'TABS_LABELS/LABEL_ABOUT_NAME', 'about');
+		addSettingsViewModel(AboutAdminSettings,
+			'AdminSettingsAbout', 'TABS_LABELS/LABEL_ABOUT_NAME', 'about');
 
 		runSettingsViewModelHooks(true);
 

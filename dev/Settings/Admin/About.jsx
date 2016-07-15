@@ -1,92 +1,86 @@
 
-var
-	ko = require('ko'),
+import ko from 'ko';
 
-	Translator = require('Common/Translator'),
+import {i18n, trigger as translatorTrigger} from 'Common/Translator';
+import {appSettingsGet, settingsGet} from 'Storage/Settings';
 
-	Settings = require('Storage/Settings'),
-	CoreStore = require('Stores/Admin/Core'),
-	AppStore = require('Stores/Admin/App');
+import CoreStore from 'Stores/Admin/Core';
+import AppStore from 'Stores/Admin/App';
 
-/**
- * @constructor
- */
-function AboutAdminSettings()
+class AboutAdminSettings
 {
-	this.version = ko.observable(Settings.appSettingsGet('version'));
-	this.access = ko.observable(!!Settings.settingsGet('CoreAccess'));
-	this.errorDesc = ko.observable('');
+	constructor() {
+		this.version = ko.observable(appSettingsGet('version'));
+		this.access = ko.observable(!!settingsGet('CoreAccess'));
+		this.errorDesc = ko.observable('');
 
-	this.coreReal = CoreStore.coreReal;
-	this.coreChannel = CoreStore.coreChannel;
-	this.coreType = CoreStore.coreType;
-	this.coreUpdatable = CoreStore.coreUpdatable;
-	this.coreAccess = CoreStore.coreAccess;
-	this.coreChecking = CoreStore.coreChecking;
-	this.coreUpdating = CoreStore.coreUpdating;
-	this.coreWarning = CoreStore.coreWarning;
-	this.coreVersion = CoreStore.coreVersion;
-	this.coreRemoteVersion = CoreStore.coreRemoteVersion;
-	this.coreRemoteRelease = CoreStore.coreRemoteRelease;
-	this.coreVersionCompare = CoreStore.coreVersionCompare;
+		this.coreReal = CoreStore.coreReal;
+		this.coreChannel = CoreStore.coreChannel;
+		this.coreType = CoreStore.coreType;
+		this.coreUpdatable = CoreStore.coreUpdatable;
+		this.coreAccess = CoreStore.coreAccess;
+		this.coreChecking = CoreStore.coreChecking;
+		this.coreUpdating = CoreStore.coreUpdating;
+		this.coreWarning = CoreStore.coreWarning;
+		this.coreVersion = CoreStore.coreVersion;
+		this.coreRemoteVersion = CoreStore.coreRemoteVersion;
+		this.coreRemoteRelease = CoreStore.coreRemoteRelease;
+		this.coreVersionCompare = CoreStore.coreVersionCompare;
 
-	this.community = RL_COMMUNITY || AppStore.community();
+		this.community = RL_COMMUNITY || AppStore.community();
 
-	this.coreRemoteVersionHtmlDesc = ko.computed(function() {
-		Translator.trigger();
-		return Translator.i18n('TAB_ABOUT/HTML_NEW_VERSION', {'VERSION': this.coreRemoteVersion()});
-	}, this);
+		this.coreRemoteVersionHtmlDesc = ko.computed(() => {
+			translatorTrigger();
+			return i18n('TAB_ABOUT/HTML_NEW_VERSION', {'VERSION': this.coreRemoteVersion()});
+		});
 
-	this.statusType = ko.computed(function() {
+		this.statusType = ko.computed(() => {
+			let type = '';
+			const
+				versionToCompare = this.coreVersionCompare(),
+				isChecking = this.coreChecking(),
+				isUpdating = this.coreUpdating(),
+				isReal = this.coreReal();
 
-		var
-			sType = '',
-			iVersionCompare = this.coreVersionCompare(),
-			bChecking = this.coreChecking(),
-			bUpdating = this.coreUpdating(),
-			bReal = this.coreReal();
+			if (isChecking)
+			{
+				type = 'checking';
+			}
+			else if (isUpdating)
+			{
+				type = 'updating';
+			}
+			else if (isReal && 0 === versionToCompare)
+			{
+				type = 'up-to-date';
+			}
+			else if (isReal && -1 === versionToCompare)
+			{
+				type = 'available';
+			}
+			else if (!isReal)
+			{
+				type = 'error';
+				this.errorDesc('Cannot access the repository at the moment.');
+			}
 
-		if (bChecking)
+			return type;
+		});
+	}
+
+	onBuild() {
+		if (this.access() && !this.community)
 		{
-			sType = 'checking';
+			require('App/Admin').default.reloadCoreData();
 		}
-		else if (bUpdating)
-		{
-			sType = 'updating';
-		}
-		else if (bReal && 0 === iVersionCompare)
-		{
-			sType = 'up-to-date';
-		}
-		else if (bReal && -1 === iVersionCompare)
-		{
-			sType = 'available';
-		}
-		else if (!bReal)
-		{
-			sType = 'error';
-			this.errorDesc('Cannot access the repository at the moment.');
-		}
+	}
 
-		return sType;
-
-	}, this);
+	updateCoreData() {
+		if (!this.coreUpdating() && !this.community)
+		{
+			require('App/Admin').default.updateCoreData();
+		}
+	}
 }
-
-AboutAdminSettings.prototype.onBuild = function()
-{
-	if (this.access() && !this.community)
-	{
-		require('App/Admin').default.reloadCoreData();
-	}
-};
-
-AboutAdminSettings.prototype.updateCoreData = function()
-{
-	if (!this.coreUpdating() && !this.community)
-	{
-		require('App/Admin').default.updateCoreData();
-	}
-};
 
 export {AboutAdminSettings, AboutAdminSettings as default};

@@ -3,6 +3,13 @@
 		transform: rotate(1turn);
 	}
 }
+
+html, body {
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+}
+
 .social-icon-wrp {
 	position: absolute;
 	top: 0;

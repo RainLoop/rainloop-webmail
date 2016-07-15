@@ -10,21 +10,21 @@ var
  * @constructor
  * @extends AbstractAjaxRemote
  */
-function RemoteAdminStorage()
+function RemoteAdminAjax()
 {
 	AbstractAjaxRemote.call(this);
 
 	this.oRequests = {};
 }
 
-_.extend(RemoteAdminStorage.prototype, AbstractAjaxRemote.prototype);
+_.extend(RemoteAdminAjax.prototype, AbstractAjaxRemote.prototype);
 
 /**
  * @param {?Function} fCallback
  * @param {string} sLogin
  * @param {string} sPassword
  */
-RemoteAdminStorage.prototype.adminLogin = function(fCallback, sLogin, sPassword)
+RemoteAdminAjax.prototype.adminLogin = function(fCallback, sLogin, sPassword)
 {
 	this.defaultRequest(fCallback, 'AdminLogin', {
 		'Login': sLogin,
@@ -35,7 +35,7 @@ RemoteAdminStorage.prototype.adminLogin = function(fCallback, sLogin, sPassword)
 /**
  * @param {?Function} fCallback
  */
-RemoteAdminStorage.prototype.adminLogout = function(fCallback)
+RemoteAdminAjax.prototype.adminLogout = function(fCallback)
 {
 	this.defaultRequest(fCallback, 'AdminLogout');
 };
@@ -44,16 +44,31 @@ RemoteAdminStorage.prototype.adminLogout = function(fCallback)
  * @param {?Function} fCallback
  * @param {?} oData
  */
-RemoteAdminStorage.prototype.saveAdminConfig = function(fCallback, oData)
+RemoteAdminAjax.prototype.saveAdminConfig = function(fCallback, oData)
 {
 	this.defaultRequest(fCallback, 'AdminSettingsUpdate', oData);
+};
+
+/**
+ * @param {string} key
+ * @param {?Function} valueFn
+ * @param {?Function} fn
+ */
+RemoteAdminAjax.prototype.saveAdminConfigHelper = function(key, valueFn, fn)
+{
+	var self = this;
+	return function(value) {
+		var data = {};
+		data[key] = valueFn ? valueFn(value) : value;
+		self.saveAdminConfig(fn || null, data);
+	};
 };
 
 /**
  * @param {?Function} fCallback
  * @param {boolean=} bIncludeAliases = true
  */
-RemoteAdminStorage.prototype.domainList = function(fCallback, bIncludeAliases)
+RemoteAdminAjax.prototype.domainList = function(fCallback, bIncludeAliases)
 {
 	bIncludeAliases = Utils.isUnd(bIncludeAliases) ? true : bIncludeAliases;
 	this.defaultRequest(fCallback, 'AdminDomainList', {
@@ -64,7 +79,7 @@ RemoteAdminStorage.prototype.domainList = function(fCallback, bIncludeAliases)
 /**
  * @param {?Function} fCallback
  */
-RemoteAdminStorage.prototype.pluginList = function(fCallback)
+RemoteAdminAjax.prototype.pluginList = function(fCallback)
 {
 	this.defaultRequest(fCallback, 'AdminPluginList');
 };
@@ -72,7 +87,7 @@ RemoteAdminStorage.prototype.pluginList = function(fCallback)
 /**
  * @param {?Function} fCallback
  */
-RemoteAdminStorage.prototype.packagesList = function(fCallback)
+RemoteAdminAjax.prototype.packagesList = function(fCallback)
 {
 	this.defaultRequest(fCallback, 'AdminPackagesList');
 };
@@ -80,7 +95,7 @@ RemoteAdminStorage.prototype.packagesList = function(fCallback)
 /**
  * @param {?Function} fCallback
  */
-RemoteAdminStorage.prototype.coreData = function(fCallback)
+RemoteAdminAjax.prototype.coreData = function(fCallback)
 {
 	this.defaultRequest(fCallback, 'AdminCoreData');
 };
@@ -88,7 +103,7 @@ RemoteAdminStorage.prototype.coreData = function(fCallback)
 /**
  * @param {?Function} fCallback
  */
-RemoteAdminStorage.prototype.updateCoreData = function(fCallback)
+RemoteAdminAjax.prototype.updateCoreData = function(fCallback)
 {
 	this.defaultRequest(fCallback, 'AdminUpdateCoreData', {}, 90000);
 };
@@ -97,7 +112,7 @@ RemoteAdminStorage.prototype.updateCoreData = function(fCallback)
  * @param {?Function} fCallback
  * @param {Object} oPackage
  */
-RemoteAdminStorage.prototype.packageInstall = function(fCallback, oPackage)
+RemoteAdminAjax.prototype.packageInstall = function(fCallback, oPackage)
 {
 	this.defaultRequest(fCallback, 'AdminPackageInstall', {
 		'Id': oPackage.id,
@@ -110,7 +125,7 @@ RemoteAdminStorage.prototype.packageInstall = function(fCallback, oPackage)
  * @param {?Function} fCallback
  * @param {Object} oPackage
  */
-RemoteAdminStorage.prototype.packageDelete = function(fCallback, oPackage)
+RemoteAdminAjax.prototype.packageDelete = function(fCallback, oPackage)
 {
 	this.defaultRequest(fCallback, 'AdminPackageDelete', {
 		'Id': oPackage.id
@@ -121,7 +136,7 @@ RemoteAdminStorage.prototype.packageDelete = function(fCallback, oPackage)
  * @param {?Function} fCallback
  * @param {string} sName
  */
-RemoteAdminStorage.prototype.domain = function(fCallback, sName)
+RemoteAdminAjax.prototype.domain = function(fCallback, sName)
 {
 	this.defaultRequest(fCallback, 'AdminDomainLoad', {
 		'Name': sName
@@ -132,7 +147,7 @@ RemoteAdminStorage.prototype.domain = function(fCallback, sName)
  * @param {?Function} fCallback
  * @param {string} sName
  */
-RemoteAdminStorage.prototype.plugin = function(fCallback, sName)
+RemoteAdminAjax.prototype.plugin = function(fCallback, sName)
 {
 	this.defaultRequest(fCallback, 'AdminPluginLoad', {
 		'Name': sName
@@ -143,7 +158,7 @@ RemoteAdminStorage.prototype.plugin = function(fCallback, sName)
  * @param {?Function} fCallback
  * @param {string} sName
  */
-RemoteAdminStorage.prototype.domainDelete = function(fCallback, sName)
+RemoteAdminAjax.prototype.domainDelete = function(fCallback, sName)
 {
 	this.defaultRequest(fCallback, 'AdminDomainDelete', {
 		'Name': sName
@@ -155,7 +170,7 @@ RemoteAdminStorage.prototype.domainDelete = function(fCallback, sName)
  * @param {string} sName
  * @param {boolean} bDisabled
  */
-RemoteAdminStorage.prototype.domainDisable = function(fCallback, sName, bDisabled)
+RemoteAdminAjax.prototype.domainDisable = function(fCallback, sName, bDisabled)
 {
 	return this.defaultRequest(fCallback, 'AdminDomainDisable', {
 		Name: sName,
@@ -167,7 +182,7 @@ RemoteAdminStorage.prototype.domainDisable = function(fCallback, sName, bDisable
  * @param {?Function} fCallback
  * @param {Object} oConfig
  */
-RemoteAdminStorage.prototype.pluginSettingsUpdate = function(fCallback, oConfig)
+RemoteAdminAjax.prototype.pluginSettingsUpdate = function(fCallback, oConfig)
 {
 	return this.defaultRequest(fCallback, 'AdminPluginSettingsUpdate', oConfig);
 };
@@ -176,7 +191,7 @@ RemoteAdminStorage.prototype.pluginSettingsUpdate = function(fCallback, oConfig)
  * @param {?Function} fCallback
  * @param {boolean} bForce
  */
-RemoteAdminStorage.prototype.licensing = function(fCallback, bForce)
+RemoteAdminAjax.prototype.licensing = function(fCallback, bForce)
 {
 	return this.defaultRequest(fCallback, 'AdminLicensing', {
 		Force: bForce ? '1' : '0'
@@ -188,7 +203,7 @@ RemoteAdminStorage.prototype.licensing = function(fCallback, bForce)
  * @param {string} sDomain
  * @param {string} sKey
  */
-RemoteAdminStorage.prototype.licensingActivate = function(fCallback, sDomain, sKey)
+RemoteAdminAjax.prototype.licensingActivate = function(fCallback, sDomain, sKey)
 {
 	return this.defaultRequest(fCallback, 'AdminLicensingActivate', {
 		Domain: sDomain,
@@ -201,7 +216,7 @@ RemoteAdminStorage.prototype.licensingActivate = function(fCallback, sDomain, sK
  * @param {string} sName
  * @param {boolean} bDisabled
  */
-RemoteAdminStorage.prototype.pluginDisable = function(fCallback, sName, bDisabled)
+RemoteAdminAjax.prototype.pluginDisable = function(fCallback, sName, bDisabled)
 {
 	return this.defaultRequest(fCallback, 'AdminPluginDisable', {
 		Name: sName,
@@ -209,7 +224,7 @@ RemoteAdminStorage.prototype.pluginDisable = function(fCallback, sName, bDisable
 	});
 };
 
-RemoteAdminStorage.prototype.createDomainAlias = function(fCallback, sName, sAlias)
+RemoteAdminAjax.prototype.createDomainAlias = function(fCallback, sName, sAlias)
 {
 	this.defaultRequest(fCallback, 'AdminDomainAliasSave', {
 		Name: sName,
@@ -217,7 +232,7 @@ RemoteAdminStorage.prototype.createDomainAlias = function(fCallback, sName, sAli
 	});
 };
 
-RemoteAdminStorage.prototype.createOrUpdateDomain = function(fCallback,
+RemoteAdminAjax.prototype.createOrUpdateDomain = function(fCallback,
 	bCreate, sName,
 	sIncHost, iIncPort, sIncSecure, bIncShortLogin,
 	bUseSieve, sSieveAllowRaw, sSieveHost, iSievePort, sSieveSecure,
@@ -250,7 +265,7 @@ RemoteAdminStorage.prototype.createOrUpdateDomain = function(fCallback,
 	});
 };
 
-RemoteAdminStorage.prototype.testConnectionForDomain = function(fCallback, sName,
+RemoteAdminAjax.prototype.testConnectionForDomain = function(fCallback, sName,
 	sIncHost, iIncPort, sIncSecure,
 	bUseSieve, sSieveHost, iSievePort, sSieveSecure,
 	sOutHost, iOutPort, sOutSecure, bOutAuth, bOutPhpMail)
@@ -276,7 +291,7 @@ RemoteAdminStorage.prototype.testConnectionForDomain = function(fCallback, sName
  * @param {?Function} fCallback
  * @param {?} oData
  */
-RemoteAdminStorage.prototype.testContacts = function(fCallback, oData)
+RemoteAdminAjax.prototype.testContacts = function(fCallback, oData)
 {
 	this.defaultRequest(fCallback, 'AdminContactsTest', oData);
 };
@@ -285,7 +300,7 @@ RemoteAdminStorage.prototype.testContacts = function(fCallback, oData)
  * @param {?Function} fCallback
  * @param {?} oData
  */
-RemoteAdminStorage.prototype.saveNewAdminPassword = function(fCallback, oData)
+RemoteAdminAjax.prototype.saveNewAdminPassword = function(fCallback, oData)
 {
 	this.defaultRequest(fCallback, 'AdminPasswordUpdate', oData);
 };
@@ -293,9 +308,9 @@ RemoteAdminStorage.prototype.saveNewAdminPassword = function(fCallback, oData)
 /**
  * @param {?Function} fCallback
  */
-RemoteAdminStorage.prototype.adminPing = function(fCallback)
+RemoteAdminAjax.prototype.adminPing = function(fCallback)
 {
 	this.defaultRequest(fCallback, 'AdminPing');
 };
 
-module.exports = new RemoteAdminStorage();
+module.exports = new RemoteAdminAjax();

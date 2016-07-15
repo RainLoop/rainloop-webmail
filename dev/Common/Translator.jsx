@@ -163,12 +163,12 @@ export function i18nToNodes(elements, animate = false)
 		if (animate && bAnimationSupported)
 		{
 			$('.i18n-animation[data-i18n]', elements).letterfx({
-				fx: 'fall fade',
-				backwards: false,
-				timing: 50,
-				fx_duration: '50ms',
-				letter_end: 'restore',
-				element_end: 'restore'
+				'fx': 'fall fade',
+				'backwards': false,
+				'timing': 50,
+				'fx_duration': '50ms',
+				'letter_end': 'restore',
+				'element_end': 'restore'
 			});
 		}
 	});

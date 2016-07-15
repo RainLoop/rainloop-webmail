@@ -75,7 +75,10 @@ PgpUserStore.prototype.findPublicKeysBySigningKeyIds = function(aSigningKeyIds)
 
 PgpUserStore.prototype.findPrivateKeysByEncryptionKeyIds = function(aEncryptionKeyIds, aRecipients, bReturnWrapKeys)
 {
-	var self = this, aResult = [];
+	var
+		self = this,
+		aResult = [];
+
 	aResult = Utils.isArray(aEncryptionKeyIds) ? _.compact(_.flatten(_.map(aEncryptionKeyIds, function(oId) {
 		var oKey = oId && oId.toHex ? self.findPrivateKeyByHex(oId.toHex()) : null;
 		return oKey ? (bReturnWrapKeys ? [oKey] : oKey.getNativeKeys()) : [null];
@@ -184,7 +187,10 @@ PgpUserStore.prototype.findSelfPrivateKey = function(sPassword)
 
 PgpUserStore.prototype.decryptMessage = function(oMessage, aRecipients, fCallback)
 {
-	var self = this, aPrivateKeys = [];
+	var
+		self = this,
+		aPrivateKeys = [];
+
 	if (oMessage && oMessage.getEncryptionKeyIds)
 	{
 		aPrivateKeys = this.findPrivateKeysByEncryptionKeyIds(oMessage.getEncryptionKeyIds(), aRecipients, true);
@@ -254,7 +260,12 @@ PgpUserStore.prototype.findKeyExternal = function(sEmail, fCallback)
 
 PgpUserStore.prototype.verifyMessage = function(oMessage, fCallback)
 {
-	var oValid = null, aResult = [], aPublicKeys = [], aSigningKeyIds = [];
+	var
+		oValid = null,
+		aResult = [],
+		aPublicKeys = [],
+		aSigningKeyIds = [];
+
 	if (oMessage && oMessage.getSigningKeyIds)
 	{
 		aSigningKeyIds = oMessage.getSigningKeyIds();
@@ -323,8 +334,9 @@ PgpUserStore.prototype.controlsHelper = function(mDom, oVerControl, bSuccess, sT
 PgpUserStore.domControlEncryptedClickHelper = function(store, mDom, sArmoredMessage, aRecipients)
 {
 	return function() {
-
-		var oMessage = null, $this = $(this);
+		var
+			oMessage = null,
+			$this = $(this);
 
 		if ($this.hasClass('success'))
 		{
@@ -393,7 +405,10 @@ PgpUserStore.domControlSignedClickHelper = function(store, mDom, sArmoredMessage
 {
 	return function() {
 
-		var oMessage = null, $this = $(this);
+		var
+			oMessage = null,
+			$this = $(this);
+
 		if ($this.hasClass('success') || $this.hasClass('error'))
 		{
 			return false;

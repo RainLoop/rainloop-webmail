@@ -182,7 +182,11 @@ FolderListMailBoxUserView.prototype.onBuild = function(oDom)
 	});
 
 	key('space', Enums.KeyState.FolderList, function() {
-		var bCollapsed = true, oFolder = null, $items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
+		var
+			bCollapsed = true,
+			oFolder = null,
+			$items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
+
 		if ($items.length && $items[0])
 		{
 			oFolder = ko.dataFor($items[0]);

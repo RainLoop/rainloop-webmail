@@ -5,8 +5,7 @@ import * as Settings from 'Storage/Settings';
 
 class AbstractAppStore
 {
-	constructor()
-	{
+	constructor() {
 		this.allowLanguagesOnSettings = ko.observable(true);
 		this.allowLanguagesOnLogin = ko.observable(true);
 

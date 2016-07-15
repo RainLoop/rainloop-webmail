@@ -1,182 +1,174 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import _ from '_';
+import ko from 'ko';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
-	Links = require('Common/Links'),
+import {createCommand, trim, boolToAjax} from 'Common/Utils';
+import {phpInfo} from 'Common/Links';
+import {StorageResultType} from 'Common/Enums';
 
-	AppAdminStore = require('Stores/Admin/App'),
-	CapaAdminStore = require('Stores/Admin/Capa'),
+import {settingsGet} from 'Storage/Settings';
 
-	Settings = require('Storage/Settings'),
-	Remote = require('Remote/Admin/Ajax');
+import AppAdminStore from 'Stores/Admin/App';
+import CapaAdminStore from 'Stores/Admin/Capa';
 
-/**
- * @constructor
- */
-function SecurityAdminSettings()
+import Remote from 'Remote/Admin/Ajax';
+
+class SecurityAdminSettings
 {
-	this.useLocalProxyForExternalImages = AppAdminStore.useLocalProxyForExternalImages;
+	constructor() {
+		this.useLocalProxyForExternalImages = AppAdminStore.useLocalProxyForExternalImages;
 
-	this.weakPassword = AppAdminStore.weakPassword;
+		this.weakPassword = AppAdminStore.weakPassword;
 
-	this.capaOpenPGP = CapaAdminStore.openPGP;
+		this.capaOpenPGP = CapaAdminStore.openPGP;
 
-	this.capaTwoFactorAuth = CapaAdminStore.twoFactorAuth;
-	this.capaTwoFactorAuthForce = CapaAdminStore.twoFactorAuthForce;
+		this.capaTwoFactorAuth = CapaAdminStore.twoFactorAuth;
+		this.capaTwoFactorAuthForce = CapaAdminStore.twoFactorAuthForce;
 
-	this.capaTwoFactorAuth.subscribe(function(bValue) {
-		if (!bValue)
-		{
-			this.capaTwoFactorAuthForce(false);
-		}
-	}, this);
-
-	this.verifySslCertificate = ko.observable(!!Settings.settingsGet('VerifySslCertificate'));
-	this.allowSelfSigned = ko.observable(!!Settings.settingsGet('AllowSelfSigned'));
-
-	this.verifySslCertificate.subscribe(function(bValue) {
-		if (!bValue)
-		{
-			this.allowSelfSigned(true);
-		}
-	}, this);
-
-	this.adminLogin = ko.observable(Settings.settingsGet('AdminLogin'));
-	this.adminLoginError = ko.observable(false);
-	this.adminPassword = ko.observable('');
-	this.adminPasswordNew = ko.observable('');
-	this.adminPasswordNew2 = ko.observable('');
-	this.adminPasswordNewError = ko.observable(false);
-
-	this.adminPasswordUpdateError = ko.observable(false);
-	this.adminPasswordUpdateSuccess = ko.observable(false);
-
-	this.adminPassword.subscribe(function() {
-		this.adminPasswordUpdateError(false);
-		this.adminPasswordUpdateSuccess(false);
-	}, this);
-
-	this.adminLogin.subscribe(function() {
-		this.adminLoginError(false);
-	}, this);
-
-	this.adminPasswordNew.subscribe(function() {
-		this.adminPasswordUpdateError(false);
-		this.adminPasswordUpdateSuccess(false);
-		this.adminPasswordNewError(false);
-	}, this);
-
-	this.adminPasswordNew2.subscribe(function() {
-		this.adminPasswordUpdateError(false);
-		this.adminPasswordUpdateSuccess(false);
-		this.adminPasswordNewError(false);
-	}, this);
-
-	this.saveNewAdminPasswordCommand = Utils.createCommand(this, function() {
-
-		if ('' === Utils.trim(this.adminLogin()))
-		{
-			this.adminLoginError(true);
-			return false;
-		}
-
-		if (this.adminPasswordNew() !== this.adminPasswordNew2())
-		{
-			this.adminPasswordNewError(true);
-			return false;
-		}
-
-		this.adminPasswordUpdateError(false);
-		this.adminPasswordUpdateSuccess(false);
-
-		Remote.saveNewAdminPassword(this.onNewAdminPasswordResponse, {
-			'Login': this.adminLogin(),
-			'Password': this.adminPassword(),
-			'NewPassword': this.adminPasswordNew()
+		this.capaTwoFactorAuth.subscribe((value) => {
+			if (!value)
+			{
+				this.capaTwoFactorAuthForce(false);
+			}
 		});
 
-		return true;
+		this.verifySslCertificate = ko.observable(!!settingsGet('VerifySslCertificate'));
+		this.allowSelfSigned = ko.observable(!!settingsGet('AllowSelfSigned'));
 
-	}, function() {
-		return '' !== Utils.trim(this.adminLogin()) && '' !== this.adminPassword();
-	});
+		this.verifySslCertificate.subscribe((value) => {
+			if (!value)
+			{
+				this.allowSelfSigned(true);
+			}
+		});
 
-	this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
-}
+		this.adminLogin = ko.observable(settingsGet('AdminLogin'));
+		this.adminLoginError = ko.observable(false);
+		this.adminPassword = ko.observable('');
+		this.adminPasswordNew = ko.observable('');
+		this.adminPasswordNew2 = ko.observable('');
+		this.adminPasswordNewError = ko.observable(false);
 
-SecurityAdminSettings.prototype.onNewAdminPasswordResponse = function(sResult, oData)
-{
-	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-	{
+		this.adminPasswordUpdateError = ko.observable(false);
+		this.adminPasswordUpdateSuccess = ko.observable(false);
+
+		this.adminPassword.subscribe(() => {
+			this.adminPasswordUpdateError(false);
+			this.adminPasswordUpdateSuccess(false);
+		});
+
+		this.adminLogin.subscribe(() => {
+			this.adminLoginError(false);
+		});
+
+		this.adminPasswordNew.subscribe(() => {
+			this.adminPasswordUpdateError(false);
+			this.adminPasswordUpdateSuccess(false);
+			this.adminPasswordNewError(false);
+		});
+
+		this.adminPasswordNew2.subscribe(() => {
+			this.adminPasswordUpdateError(false);
+			this.adminPasswordUpdateSuccess(false);
+			this.adminPasswordNewError(false);
+		});
+
+		this.saveNewAdminPasswordCommand = createCommand(this, () => {
+
+			if ('' === trim(this.adminLogin()))
+			{
+				this.adminLoginError(true);
+				return false;
+			}
+
+			if (this.adminPasswordNew() !== this.adminPasswordNew2())
+			{
+				this.adminPasswordNewError(true);
+				return false;
+			}
+
+			this.adminPasswordUpdateError(false);
+			this.adminPasswordUpdateSuccess(false);
+
+			Remote.saveNewAdminPassword(this.onNewAdminPasswordResponse, {
+				'Login': this.adminLogin(),
+				'Password': this.adminPassword(),
+				'NewPassword': this.adminPasswordNew()
+			});
+
+			return true;
+		}, () => '' !== trim(this.adminLogin()) && '' !== this.adminPassword());
+
+		this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
+	}
+
+	onNewAdminPasswordResponse(result, data) {
+		if (StorageResultType.Success === result && data && data.Result)
+		{
+			this.adminPassword('');
+			this.adminPasswordNew('');
+			this.adminPasswordNew2('');
+
+			this.adminPasswordUpdateSuccess(true);
+
+			this.weakPassword(!!data.Result.Weak);
+		}
+		else
+		{
+			this.adminPasswordUpdateError(true);
+		}
+	}
+
+	onBuild() {
+		this.capaOpenPGP.subscribe((value) => {
+			Remote.saveAdminConfig(null, {
+				'CapaOpenPGP': boolToAjax(value)
+			});
+		});
+
+		this.capaTwoFactorAuth.subscribe((value) => {
+			Remote.saveAdminConfig(null, {
+				'CapaTwoFactorAuth': boolToAjax(value)
+			});
+		});
+
+		this.capaTwoFactorAuthForce.subscribe((value) => {
+			Remote.saveAdminConfig(null, {
+				'CapaTwoFactorAuthForce': boolToAjax(value)
+			});
+		});
+
+		this.useLocalProxyForExternalImages.subscribe((value) => {
+			Remote.saveAdminConfig(null, {
+				'UseLocalProxyForExternalImages': boolToAjax(value)
+			});
+		});
+
+		this.verifySslCertificate.subscribe((value) => {
+			Remote.saveAdminConfig(null, {
+				'VerifySslCertificate': boolToAjax(value)
+			});
+		});
+
+		this.allowSelfSigned.subscribe((value) => {
+			Remote.saveAdminConfig(null, {
+				'AllowSelfSigned': boolToAjax(value)
+			});
+		});
+	}
+
+	onHide() {
 		this.adminPassword('');
 		this.adminPasswordNew('');
 		this.adminPasswordNew2('');
-
-		this.adminPasswordUpdateSuccess(true);
-
-		this.weakPassword(!!oData.Result.Weak);
 	}
-	else
-	{
-		this.adminPasswordUpdateError(true);
+
+	/**
+	 * @returns {string}
+	 */
+	phpInfoLink() {
+		return phpInfo();
 	}
-};
-
-SecurityAdminSettings.prototype.onBuild = function()
-{
-	this.capaOpenPGP.subscribe(function(bValue) {
-		Remote.saveAdminConfig(Utils.noop, {
-			'CapaOpenPGP': bValue ? '1' : '0'
-		});
-	});
-
-	this.capaTwoFactorAuth.subscribe(function(bValue) {
-		Remote.saveAdminConfig(Utils.noop, {
-			'CapaTwoFactorAuth': bValue ? '1' : '0'
-		});
-	});
-
-	this.capaTwoFactorAuthForce.subscribe(function(bValue) {
-		Remote.saveAdminConfig(Utils.noop, {
-			'CapaTwoFactorAuthForce': bValue ? '1' : '0'
-		});
-	});
-
-	this.useLocalProxyForExternalImages.subscribe(function(bValue) {
-		Remote.saveAdminConfig(null, {
-			'UseLocalProxyForExternalImages': bValue ? '1' : '0'
-		});
-	});
-
-	this.verifySslCertificate.subscribe(function(bValue) {
-		Remote.saveAdminConfig(null, {
-			'VerifySslCertificate': bValue ? '1' : '0'
-		});
-	});
-
-	this.allowSelfSigned.subscribe(function(bValue) {
-		Remote.saveAdminConfig(null, {
-			'AllowSelfSigned': bValue ? '1' : '0'
-		});
-	});
-};
-
-SecurityAdminSettings.prototype.onHide = function()
-{
-	this.adminPassword('');
-	this.adminPasswordNew('');
-	this.adminPasswordNew2('');
-};
-
-/**
- * @returns {string}
- */
-SecurityAdminSettings.prototype.phpInfoLink = function()
-{
-	return Links.phpInfo();
-};
+}
 
 export {SecurityAdminSettings, SecurityAdminSettings as default};
