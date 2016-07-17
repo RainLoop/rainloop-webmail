@@ -172,7 +172,8 @@ class MailClient
 			\MailSo\Mime\Enumerations\Header::REPLY_TO,
 			\MailSo\Mime\Enumerations\Header::DATE,
 			\MailSo\Mime\Enumerations\Header::SUBJECT,
-			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE
+			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+			\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE,
 		), true);
 	}
 
@@ -213,6 +214,7 @@ class MailClient
 			\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO,
 			\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS,
 			\MailSo\Mime\Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS,
+			\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE,
 		), true);
 //
 //		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
