@@ -99,16 +99,16 @@ class Social
 		if ($oAccount && $oTwitter)
 		{
 			$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
-			$sEncodedeData = $oSettings->GetConf('TwitterAccessToken', '');
+			$sEncodedData = $oSettings->GetConf('TwitterAccessToken', '');
 
-			if (!empty($sEncodedeData))
+			if (!empty($sEncodedData))
 			{
-				$aData = \RainLoop\Utils::DecodeKeyValues($sEncodedeData);
-				if (is_array($aData) && isset($aData['user_id']))
+				$aData = \RainLoop\Utils::DecodeKeyValues($sEncodedData);
+				if (is_array($aData) && isset($aData['id']))
 				{
 					$this->oActions->StorageProvider()->Clear(null,
 						\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-						$this->TwitterUserLoginStorageKey($oTwitter, $aData['user_id'])
+						$this->TwitterUserLoginStorageKey($oTwitter, $aData['id'])
 					);
 				}
 			}
@@ -387,6 +387,7 @@ class Social
 						if ($mData && 0 < \strlen($mData))
 						{
 							$aUserData = array(
+								'id' => $mData,
 								'Email' => $oAccount->Email(),
 								'Password' => $oAccount->Password()
 							);
@@ -394,7 +395,6 @@ class Social
 							$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
 							$oSettings->SetConf('FacebookSocialName', $sSocialName);
 							$oSettings->SetConf('FacebookAccessToken', \RainLoop\Utils::EncodeKeyValues(array('id' => $mData)));
-
 
 							$this->oActions->SettingsProvider()->Save($oAccount, $oSettings);
 
@@ -498,6 +498,8 @@ class Social
 								$aAccessToken = $oTwitter->extract_params($oTwitter->response['response']);
 								if ($aAccessToken && isset($aAccessToken['oauth_token']) && !empty($aAccessToken['user_id']))
 								{
+									$aAccessToken['id'] = $aAccessToken['user_id'];
+
 									$oTwitter->config['user_token'] = $aAccessToken['oauth_token'];
 									$oTwitter->config['user_secret'] = $aAccessToken['oauth_token_secret'];
 
@@ -505,6 +507,7 @@ class Social
 									$sSocialName = \trim($sSocialName);
 
 									$aUserData = array(
+										'id' => $aAccessToken['id'],
 										'Email' => $oAccount->Email(),
 										'Password' => $oAccount->Password()
 									);
@@ -516,7 +519,7 @@ class Social
 
 									$this->oActions->StorageProvider()->Put(null,
 										\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY,
-										$this->TwitterUserLoginStorageKey($oTwitter, $aAccessToken['user_id']),
+										$this->TwitterUserLoginStorageKey($oTwitter, $aAccessToken['id']),
 										\RainLoop\Utils::EncodeKeyValues($aUserData));
 
 									$iErrorCode = 0;
@@ -574,8 +577,7 @@ class Social
 									$aUserData = \RainLoop\Utils::DecodeKeyValues($sUserData);
 
 									if ($aUserData && \is_array($aUserData) &&
-										!empty($aUserData['Email']) &&
-										isset($aUserData['Password']))
+										!empty($aUserData['Email']) && isset($aUserData['Password']))
 									{
 										$iErrorCode = $this->loginProcess($oAccount, $aUserData['Email'], $aUserData['Password']);
 									}
@@ -762,7 +764,7 @@ class Social
 	 */
 	public function TwitterUserLoginStorageKey($oTwitter, $sTwitterUserId)
 	{
-		return \implode('_', array('twitter', \md5($oTwitter->config['consumer_secret']), $sTwitterUserId, APP_SALT));
+		return \implode('_', array('twitter_2', \md5($oTwitter->config['consumer_secret']), $sTwitterUserId, APP_SALT));
 	}
 
 	/**
