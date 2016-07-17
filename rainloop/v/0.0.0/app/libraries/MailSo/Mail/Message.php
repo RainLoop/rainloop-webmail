@@ -160,6 +160,11 @@ class Message
 	/**
 	 * @var array
 	 */
+	private $aUnsubsribeLinks;
+
+	/**
+	 * @var array
+	 */
 	private $aThreads;
 
 	/**
@@ -223,6 +228,7 @@ class Message
 
 		$this->sInReplyTo = '';
 		$this->sReferences = '';
+		$this->aUnsubsribeLinks = array();
 
 		$this->iSensitivity = \MailSo\Mime\Enumerations\Sensitivity::NOTHING;
 		$this->iPriority = \MailSo\Mime\Enumerations\MessagePriority::NORMAL;
@@ -499,6 +505,14 @@ class Message
 	}
 
 	/**
+	 * @return array
+	 */
+	public function UnsubsribeLinks()
+	{
+		return $this->aUnsubsribeLinks;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function ReadingConfirmation()
@@ -684,6 +698,23 @@ class Message
 			if (empty($this->sReadReceipt))
 			{
 				$this->sReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO));
+			}
+
+			//Unsubscribe links
+			$this->aUnsubsribeLinks = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE);
+			if (empty($this->aUnsubsribeLinks))
+			{
+				$this->aUnsubsribeLinks = array();
+			}
+			else
+			{
+				$this->aUnsubsribeLinks = explode(',', $this->aUnsubsribeLinks);
+				$this->aUnsubsribeLinks = array_map(
+					function ($link) {
+						return trim($link, ' <>');
+					},
+					$this->aUnsubsribeLinks
+				);
 			}
 
 			$sDraftInfo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO);

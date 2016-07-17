@@ -66,4 +66,6 @@ class Header
 	const X_MSMAIL_PRIORITY = 'X-MSMail-Priority';
 	const IMPORTANCE = 'Importance';
 	const X_PRIORITY = 'X-Priority';
+
+	const LIST_UNSUBSCRIBE = 'List-Unsubscribe';
 }

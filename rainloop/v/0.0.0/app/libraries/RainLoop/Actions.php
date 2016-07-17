@@ -9888,6 +9888,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					'Priority' => $mResponse->Priority(),
 					'Threads' => $mResponse->Threads(),
 					'Sensitivity' => $mResponse->Sensitivity(),
+					'UnsubsribeLinks' => $mResponse->UnsubsribeLinks(),
 					'ExternalProxy' => false,
 					'ReadReceipt' => ''
 				));
@@ -9966,6 +9967,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 					$mResult['DraftInfo'] = $mResponse->DraftInfo();
 					$mResult['InReplyTo'] = $mResponse->InReplyTo();
+					$mResult['UnsubsribeLinks'] = $mResponse->UnsubsribeLinks();
 					$mResult['References'] = $mResponse->References();
 
 					$fAdditionalExternalFilter = null;

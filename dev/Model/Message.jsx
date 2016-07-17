@@ -53,6 +53,7 @@ class MessageModel extends AbstractModel
 		this.bcc = [];
 		this.replyTo = [];
 		this.deliveredTo = [];
+		this.unsubsribeLinks = [];
 
 		this.newForAnimation = ko.observable(false);
 
@@ -141,6 +142,7 @@ class MessageModel extends AbstractModel
 		this.bcc = [];
 		this.replyTo = [];
 		this.deliveredTo = [];
+		this.unsubsribeLinks = [];
 
 		this.newForAnimation(false);
 
@@ -246,6 +248,7 @@ class MessageModel extends AbstractModel
 			this.bcc = emailArrayFromJson(json.Bcc);
 			this.replyTo = emailArrayFromJson(json.ReplyTo);
 			this.deliveredTo = emailArrayFromJson(json.DeliveredTo);
+			this.unsubsribeLinks = json.UnsubsribeLinks;
 
 			this.subject(json.Subject);
 			if (isArray(json.SubjectParts))
@@ -716,6 +719,7 @@ class MessageModel extends AbstractModel
 			this.bcc = message.bcc;
 			this.replyTo = message.replyTo;
 			this.deliveredTo = message.deliveredTo;
+			this.unsubsribeLinks = message.unsubsribeLinks;
 
 			this.unseen(message.unseen());
 			this.flagged(message.flagged());

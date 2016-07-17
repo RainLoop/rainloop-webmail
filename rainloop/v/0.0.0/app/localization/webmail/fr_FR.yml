@@ -102,6 +102,7 @@ fr_FR:
     BUTTON_BACK: "Retour"
     BUTTON_CLOSE: "Fermer"
     BUTTON_DELETE: "Supprimer"
+    BUTTON_UNSUBSCRIBE: "Se désabonner de cette liste"
     BUTTON_ARCHIVE: "Archive"
     BUTTON_SPAM: "Indésirable"
     BUTTON_NOT_SPAM: "Acceptable"

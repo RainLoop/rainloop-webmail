@@ -290,6 +290,7 @@ function MessageViewMailBoxUserView()
 	this.viewSize = ko.observable('');
 	this.viewLineAsCss = ko.observable('');
 	this.viewViewLink = ko.observable('');
+	this.viewUnsubscribeLink = ko.observable('');
 	this.viewDownloadLink = ko.observable('');
 	this.viewUserPic = ko.observable(Consts.DATA_IMAGE_USER_DOT_PIC);
 	this.viewUserPicVisible = ko.observable(false);
@@ -374,6 +375,7 @@ function MessageViewMailBoxUserView()
 			this.viewSize(oMessage.friendlySize());
 			this.viewLineAsCss(oMessage.lineAsCss());
 			this.viewViewLink(oMessage.viewLink());
+			this.viewUnsubscribeLink(oMessage.unsubsribeLinks[0]);
 			this.viewDownloadLink(oMessage.downloadLink());
 			this.viewIsImportant(oMessage.isImportant());
 			this.viewIsFlagged(oMessage.flagged());
