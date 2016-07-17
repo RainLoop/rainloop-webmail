@@ -147,7 +147,7 @@
 												<span class="i18n" data-i18n="MESSAGE/BUTTON_DELETE"></span>
 											</a>
 										</li>
-										<li class="e-item" role="presentation" data-bind="visible: message() && message().unsubsribeLinks[0]">
+										<li class="e-item" role="presentation" data-bind="visible: message() && message().hasUnsubsribeLinks()">
 											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewUnsubscribeLink()">
 												<i class="icon-remove"></i>
 												&nbsp;&nbsp;

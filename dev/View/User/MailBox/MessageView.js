@@ -375,7 +375,7 @@ function MessageViewMailBoxUserView()
 			this.viewSize(oMessage.friendlySize());
 			this.viewLineAsCss(oMessage.lineAsCss());
 			this.viewViewLink(oMessage.viewLink());
-			this.viewUnsubscribeLink(oMessage.unsubsribeLinks[0]);
+			this.viewUnsubscribeLink(oMessage.getFirstUnsubsribeLink());
 			this.viewDownloadLink(oMessage.downloadLink());
 			this.viewIsImportant(oMessage.isImportant());
 			this.viewIsFlagged(oMessage.flagged());

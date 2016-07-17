@@ -4,7 +4,7 @@ import ko from 'ko';
 
 import {createCommand, trim, boolToAjax} from 'Common/Utils';
 import {phpInfo} from 'Common/Links';
-import {StorageResultType} from 'Common/Enums';
+import {StorageResultType, Magics} from 'Common/Enums';
 
 import {settingsGet} from 'Storage/Settings';
 
@@ -41,6 +41,10 @@ class SecurityAdminSettings
 				this.allowSelfSigned(true);
 			}
 		});
+
+		this.isTwoFactorDropperShown = ko.observable(false);
+		this.twoFactorDropperUser = ko.observable('');
+		this.twoFactorDropperUser.focused = ko.observable(false);
 
 		this.adminLogin = ko.observable(settingsGet('AdminLogin'));
 		this.adminLoginError = ko.observable(false);
@@ -102,6 +106,15 @@ class SecurityAdminSettings
 		this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
 	}
 
+	showTwoFactorDropper() {
+		this.twoFactorDropperUser('');
+		this.isTwoFactorDropperShown(true);
+
+		_.delay(() => {
+			this.twoFactorDropperUser.focused(true);
+		}, Magics.Time50ms);
+	}
+
 	onNewAdminPasswordResponse(result, data) {
 		if (StorageResultType.Success === result && data && data.Result)
 		{
@@ -161,6 +174,10 @@ class SecurityAdminSettings
 		this.adminPassword('');
 		this.adminPasswordNew('');
 		this.adminPasswordNew2('');
+
+		this.isTwoFactorDropperShown(false);
+		this.twoFactorDropperUser('');
+		this.twoFactorDropperUser.focused(false);
 	}
 
 	/**

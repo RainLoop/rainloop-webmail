@@ -247,7 +247,7 @@ class MessageModel extends AbstractModel
 			this.bcc = emailArrayFromJson(json.Bcc);
 			this.replyTo = emailArrayFromJson(json.ReplyTo);
 			this.deliveredTo = emailArrayFromJson(json.DeliveredTo);
-			this.unsubsribeLinks = json.UnsubsribeLinks;
+			this.unsubsribeLinks = isNonEmptyArray(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
 
 			this.subject(json.Subject);
 			if (isArray(json.SubjectParts))
@@ -356,6 +356,20 @@ class MessageModel extends AbstractModel
 		}
 
 		return result;
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	hasUnsubsribeLinks() {
+		return this.unsubsribeLinks && 0 < this.unsubsribeLinks.length;
+	}
+
+	/**
+	 * @returns {string}
+	 */
+	getFirstUnsubsribeLink() {
+		return this.unsubsribeLinks && 0 < this.unsubsribeLinks.length ? (this.unsubsribeLinks[0] || '') : '';
 	}
 
 	/**
