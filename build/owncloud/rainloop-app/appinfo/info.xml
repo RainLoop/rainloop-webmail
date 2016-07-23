@@ -10,6 +10,7 @@
 	<ocsid>165254</ocsid>
 	<dependencies>
         <php min-version="5.3"/>
+        <owncloud min-version="6"/>
     </dependencies>
 	<category>productivity</category>
 	<website>http://www.rainloop.net/</website>
