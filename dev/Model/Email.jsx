@@ -172,7 +172,7 @@ class EmailModel
 			if (friendlyView && '' !== this.name)
 			{
 				result = wrapWithLink ? '<a href="mailto:' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
-					'" target="_blank" tabindex="-1">' + encodeHtml(this.name) + '</a>' : (encodeHtml ? encodeHtml(this.name) : this.name);
+					'" target="_blank" tabindex="-1">' + encodeHtml(this.name) + '</a>' : (useEncodeHtml ? encodeHtml(this.name) : this.name);
 			}
 			else
 			{

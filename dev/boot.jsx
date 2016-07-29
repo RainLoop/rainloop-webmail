@@ -2,7 +2,7 @@
 import window from 'window';
 
 import {Promise} from 'es6-promise-polyfill/promise.js';
-import {progressJs} from '../vendors/progress.js/src/progress.js';
+import {progressJs} from '../node_modules/Progress.js/src/progress.js';
 import {jassl} from 'jassl';
 
 window.jassl = jassl;
@@ -13,14 +13,17 @@ window.progressJs.onbeforeend(() => {
 	const _$ = window.$;
 	if (_$)
 	{
-		_$('.progressjs-container').hide();
-		window.setTimeout(() => {
-			_$('.progressjs-container').remove();
-		}, 200); // eslint-disable-line no-magic-numbers
+		try {
+			_$('.progressjs-container').hide();
+			window.setTimeout(() => {
+				_$('.progressjs-container').remove();
+			}, 200); // eslint-disable-line no-magic-numbers
+		}
+		catch (e) {} // eslint-disable-line no-empty
 	}
 });
 
-require('../vendors/json2/json2.js');
+require('json3');
 require('../vendors/modernizr/modernizr-custom.js');
 
 require('Common/Booter.jsx');

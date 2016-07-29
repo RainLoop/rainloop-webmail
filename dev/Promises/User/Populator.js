@@ -29,12 +29,12 @@ _.extend(PromisesUserPopulator.prototype, AbstractBasicPromises.prototype);
 
 /**
  * @param {string} sFullNameHash
+ * @param {Array?} expandedFolders
  * @returns {boolean}
  */
-PromisesUserPopulator.prototype.isFolderExpanded = function(sFullNameHash)
+PromisesUserPopulator.prototype.isFolderExpanded = function(sFullNameHash, expandedFolders)
 {
-	var aExpandedList = Local.get(Enums.ClientSideKeyName.ExpandedFolders);
-	return Utils.isArray(aExpandedList) && -1 !== _.indexOf(aExpandedList, sFullNameHash);
+	return expandedFolders && Utils.isArray(expandedFolders) && -1 !== _.indexOf(expandedFolders, sFullNameHash);
 };
 
 /**
@@ -50,9 +50,10 @@ PromisesUserPopulator.prototype.normalizeFolder = function(sFolderFullNameRaw)
 /**
  * @param {string} sNamespace
  * @param {Array} aFolders
+ * @param {Array?} expandedFolders
  * @returns {Array}
  */
-PromisesUserPopulator.prototype.folderResponseParseRec = function(sNamespace, aFolders)
+PromisesUserPopulator.prototype.folderResponseParseRec = function(sNamespace, aFolders, expandedFolders)
 {
 	var
 		self = this,
@@ -60,6 +61,7 @@ PromisesUserPopulator.prototype.folderResponseParseRec = function(sNamespace, aF
 		iLen = 0,
 		oFolder = null,
 		oCacheFolder = null,
+		bDisplaySpecSetting = FolderStore.displaySpecSetting(),
 		sFolderFullNameRaw = '',
 		aSubFolders = [],
 		aList = [];
@@ -84,16 +86,16 @@ PromisesUserPopulator.prototype.folderResponseParseRec = function(sNamespace, aF
 
 			if (oCacheFolder)
 			{
-				if (!FolderStore.displaySpecSetting())
-				{
-					oCacheFolder.checkable(true);
-				}
-				else
+				if (bDisplaySpecSetting)
 				{
 					oCacheFolder.checkable(!!oFolder.Checkable);
 				}
+				else
+				{
+					oCacheFolder.checkable(true);
+				}
 
-				oCacheFolder.collapsed(!self.isFolderExpanded(oCacheFolder.fullNameHash));
+				oCacheFolder.collapsed(!self.isFolderExpanded(oCacheFolder.fullNameHash, expandedFolders));
 
 				if (oFolder.Extended)
 				{
@@ -118,7 +120,7 @@ PromisesUserPopulator.prototype.folderResponseParseRec = function(sNamespace, aF
 					aSubFolders['@Collection'] && Utils.isArray(aSubFolders['@Collection']))
 				{
 					oCacheFolder.subFolders(
-						this.folderResponseParseRec(sNamespace, aSubFolders['@Collection']));
+						this.folderResponseParseRec(sNamespace, aSubFolders['@Collection'], expandedFolders));
 				}
 
 				aList.push(oCacheFolder);
@@ -135,14 +137,16 @@ PromisesUserPopulator.prototype.foldersList = function(oData)
 		oData['@Collection'] && Utils.isArray(oData['@Collection']))
 	{
 		var
+			folderList = [],
+			expandedFolders = Local.get(Enums.ClientSideKeyName.ExpandedFolders),
 			iLimit = Utils.pInt(Settings.appSettingsGet('folderSpecLimit')),
 			iC = Utils.pInt(oData.CountRec);
 
 		iLimit = 100 < iLimit ? 100 : (10 > iLimit ? 10 : iLimit);
 
 		FolderStore.displaySpecSetting(0 >= iC || iLimit < iC);
-		FolderStore.folderList(this.folderResponseParseRec(
-			Utils.isUnd(oData.Namespace) ? '' : oData.Namespace, oData['@Collection']));
+		folderList = this.folderResponseParseRec(Utils.isUnd(oData.Namespace) ? '' : oData.Namespace, oData['@Collection'], expandedFolders);
+		FolderStore.folderList(folderList); // @todo optimization required
 	}
 };
 

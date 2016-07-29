@@ -7,7 +7,6 @@ import {$win, $div, dropdownVisibility, data as GlobalsData} from 'Common/Global
 import {ComposeType, EventKeyCode, SaveSettingsStep, FolderType} from 'Common/Enums';
 import {Mime} from 'Common/Mime';
 
-import JSEncrypt from 'JSEncrypt';
 import Autolinker from 'Autolinker';
 
 const trim = $.trim;
@@ -184,59 +183,6 @@ export function fakeMd5(len = 32)
 	return result;
 }
 
-let encryptObject = null;
-
-/**
- * @param {constructor} JSEncryptClass
- * @param {string} publicKey
- * @returns {JSEncrypt|boolean}
- */
-const rsaObject = (JSEncryptClass, publicKey) => {
-
-	if (JSEncryptClass && publicKey && (null === encryptObject || (encryptObject && encryptObject.__publicKey !== publicKey)) &&
-		window.crypto && window.crypto.getRandomValues)
-	{
-		encryptObject = new JSEncryptClass();
-		encryptObject.setPublicKey(publicKey);
-		encryptObject.__publicKey = publicKey;
-	}
-	else
-	{
-		encryptObject = false;
-	}
-
-	return encryptObject;
-};
-
-/**
- * @param {string} value
- * @param {string} publicKey
- * @returns {string}
- */
-const rsaEncode = (value, publicKey) => {
-
-	if (window.crypto && window.crypto.getRandomValues && publicKey)
-	{
-		let resultValue = false;
-		const encrypt = rsaObject(JSEncrypt, publicKey);
-
-		if (encrypt)
-		{
-			resultValue = encrypt.encrypt(fakeMd5() + ':' + value + ':' + fakeMd5());
-			if (false !== resultValue && isNormal(resultValue))
-			{
-				return 'rsa:xxx:' + resultValue;
-			}
-		}
-	}
-
-	return value;
-};
-
-rsaEncode.supported = !!(window.crypto && window.crypto.getRandomValues && false && JSEncrypt);
-
-export {rsaEncode};
-
 /**
  * @param {string} text
  * @returns {string}
@@ -248,7 +194,7 @@ export function encodeHtml(text)
 
 /**
  * @param {string} text
- * @param {number=} iLen = 100
+ * @param {number=} len = 100
  * @returns {string}
  */
 export function splitPlainText(text, len = 100)
@@ -312,15 +258,18 @@ export {timeOutAction, timeOutActionSecond};
  */
 export function inFocus()
 {
-	if (window.document.activeElement)
-	{
-		if (isUnd(window.document.activeElement.__inFocusCache))
+	try {
+		if (window.document.activeElement)
 		{
-			window.document.activeElement.__inFocusCache = $(window.document.activeElement).is('input,textarea,iframe,.cke_editable');
-		}
+			if (isUnd(window.document.activeElement.__inFocusCache))
+			{
+				window.document.activeElement.__inFocusCache = $(window.document.activeElement).is('input,textarea,iframe,.cke_editable');
+			}
 
-		return !!window.document.activeElement.__inFocusCache;
+			return !!window.document.activeElement.__inFocusCache;
+		}
 	}
+	catch (e) {} // eslint-disable-line no-empty
 
 	return false;
 }
@@ -853,6 +802,8 @@ export function findEmailAndLinks(html)
 		urls: true,
 		email: true,
 		twitter: false,
+		phone: false,
+		hashtag: false,
 		replaceFn: function(autolinker, match) {
 			return !(autolinker && match && 'url' === match.getType() && match.matchedText && 0 !== match.matchedText.indexOf('http'));
 		}

@@ -40,7 +40,7 @@ export function momentNowUnix()
  */
 export function searchSubtractFormatDateHelper(date)
 {
-	return momentNow().clone().subtract('days', date).format('YYYY.MM.DD');
+	return momentNow().clone().subtract(date, 'days').format('YYYY.MM.DD');
 }
 
 /**
@@ -60,7 +60,7 @@ function formatCustomShortDate(m)
 				return i18n('MESSAGE_LIST/TODAY_AT', {
 					TIME: m.format('LT')
 				});
-			case now.clone().subtract('days', 1).format('L') === m.format('L'):
+			case now.clone().subtract(1, 'days').format('L') === m.format('L'):
 				return i18n('MESSAGE_LIST/YESTERDAY_AT', {
 					TIME: m.format('LT')
 				});

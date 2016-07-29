@@ -449,14 +449,16 @@ ko.bindingHandlers.modal = {
 			Globals = require('Common/Globals'),
 			Utils = require('Common/Utils');
 
-		$(oElement).toggleClass('fade', !Globals.bMobileDevice).modal({
-			'keyboard': false,
-			'show': ko.unwrap(fValueAccessor())
-		})
-		.on('shown.koModal', Utils.windowResizeCallback)
-		.find('.close').on('click.koModal', function() {
-			fValueAccessor()(false);
-		});
+		$(oElement)
+			.toggleClass('fade', !Globals.bMobileDevice)
+			.modal({
+				'keyboard': false,
+				'show': ko.unwrap(fValueAccessor())
+			})
+			.on('shown.koModal', Utils.windowResizeCallback)
+			.find('.close').on('click.koModal', function() {
+				fValueAccessor()(false);
+			});
 
 		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
 			$(oElement)

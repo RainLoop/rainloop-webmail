@@ -330,7 +330,7 @@ class AbstractApp extends AbstractBoot
 		{
 			ssm.addState({
 				id: 'mobile',
-				maxWidth: 767,
+				query: '(max-width: 767px)',
 				onEnter: () => {
 					$html.addClass('ssm-state-mobile');
 					Events.pub('ssm.mobile-enter');
@@ -343,8 +343,7 @@ class AbstractApp extends AbstractBoot
 
 			ssm.addState({
 				id: 'tablet',
-				minWidth: 768,
-				maxWidth: 999,
+				query: '(min-width: 768px) and (max-width: 999px)',
 				onEnter: function() {
 					$html.addClass('ssm-state-tablet');
 				},
@@ -355,8 +354,7 @@ class AbstractApp extends AbstractBoot
 
 			ssm.addState({
 				id: 'desktop',
-				minWidth: 1000,
-				maxWidth: 1400,
+				query: '(min-width: 1000px) and (max-width: 1400px)',
 				onEnter: () => {
 					$html.addClass('ssm-state-desktop');
 				},
@@ -367,7 +365,7 @@ class AbstractApp extends AbstractBoot
 
 			ssm.addState({
 				id: 'desktop-large',
-				minWidth: 1400,
+				query: '(min-width: 1401px)',
 				onEnter: () => {
 					$html.addClass('ssm-state-desktop-large');
 				},
@@ -393,8 +391,6 @@ class AbstractApp extends AbstractBoot
 		});
 
 		leftPanelDisabled.valueHasMutated();
-
-		ssm.ready();
 
 		require('Stores/Language').populate();
 		require('Stores/Theme').populate();

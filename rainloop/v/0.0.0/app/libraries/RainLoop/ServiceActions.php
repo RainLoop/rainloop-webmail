@@ -1340,7 +1340,7 @@ class ServiceActions
 	{
 		$aResultLang = array();
 
-		$sMoment = 'window.moment && window.moment.lang && window.moment.lang(\'en\');';
+		$sMoment = 'window.moment && window.moment.locale && window.moment.locale(\'en\');';
 		$sMomentFileName = APP_VERSION_ROOT_PATH.'app/localization/moment/'.
 			$this->convertLanguageNameToMomentLanguageName($sLanguage).'.js';
 

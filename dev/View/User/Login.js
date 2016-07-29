@@ -265,14 +265,7 @@ function LoginUserView()
 
 			}, this);
 
-		if (Settings.appSettingsGet('rsaPublicKey') && Utils.rsaEncode.supported)
-		{
-			fLoginRequest(Utils.rsaEncode(sPassword, Settings.appSettingsGet('rsaPublicKey')));
-		}
-		else
-		{
-			fLoginRequest(sPassword);
-		}
+		fLoginRequest(sPassword);
 
 		return true;
 	}, function() {

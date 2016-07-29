@@ -1420,17 +1420,6 @@ class Actions
 	{
 		$oConfig = $this->Config();
 
-		$sRsaPublicKey = '';
-		if ($oConfig->Get('security', 'use_rsa_encryption', false) &&
-			\file_exists(APP_PRIVATE_DATA.'rsa/public') && \file_exists(APP_PRIVATE_DATA.'rsa/private'))
-		{
-			$sRsaPublicKey = @\file_get_contents(APP_PRIVATE_DATA.'rsa/public') || '';
-			if (false === \strpos($sRsaPublicKey, 'PUBLIC KEY'))
-			{
-				$sRsaPublicKey = '';
-			}
-		}
-
 		$aAttachmentsActions = array();
 		if ($this->GetCapa(false, $bMobile, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
 		{
@@ -1478,7 +1467,6 @@ class Actions
 			'languages' => $this->GetLanguages(false),
 			'languagesAdmin' => $this->GetLanguages(true),
 			'attachmentsActions' => $aAttachmentsActions,
-			'rsaPublicKey' => $sRsaPublicKey,
 			'openpgpPublicKeyServer' => $oConfig->Get('security', 'openpgp_public_key_server', '')
 		), $bAdmin ? array(
 			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
@@ -1957,8 +1945,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$bAppJsDebug = !!$this->Config()->Get('labs', 'use_app_debug_js', false);
 
-		$aResult['StaticLibJsLink'] = $this->StaticPath('js/min/libs.js');
-		$aResult['StaticAppJsLink'] =  $this->StaticPath('js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js');
+		$aResult['StaticLibJsLink'] = $this->StaticPath('js/'.($bAppJsDebug ? '' : 'min/').'libs.js');
+		$aResult['StaticAppJsLink'] = $this->StaticPath('js/'.($bAppJsDebug ? '' : 'min/').($bAdmin ? 'admin' : 'app').'.js');
 		$aResult['StaticEditorJsLink'] = $this->StaticPath('ckeditor/ckeditor.js');
 
 		$aResult['EditorDefaultType'] = \in_array($aResult['EditorDefaultType'], array('Plain', 'Html', 'HtmlForced', 'PlainForced')) ?
@@ -2336,38 +2324,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param string $sEncryptedData
-	 *
-	 * @return string
-	 */
-	private function clientRsaDecryptHelper($sEncryptedData)
-	{
-//		$aMatch = array();
-//		if ('rsa:xxx:' === \substr($sEncryptedData, 0, 8) && $this->Config()->Get('security', 'use_rsa_encryption', false))
-//		{
-//			$oLogger = $this->Logger();
-//			$oLogger->Write('Trying to decode encrypted data', \MailSo\Log\Enumerations\Type::INFO, 'RSA');
-//			$oLogger->HideErrorNotices(true);
-//
-//			$sData = \trim(\substr($sEncryptedData, 8));
-//			$sData = \RainLoop\Utils::DecryptStringRSA(\base64_decode($sData));
-//
-//			if (false !== $sData && \preg_match('/^[a-z0-9]{32}:(.+):[a-z0-9]{32}$/', $sData, $aMatch) && isset($aMatch[1]))
-//			{
-//				$sEncryptedData = $aMatch[1];
-//			}
-//			else
-//			{
-//				$oLogger->Write('Invalid decrypted data', \MailSo\Log\Enumerations\Type::WARNING, 'RSA');
-//			}
-//
-//			$oLogger->HideErrorNotices(false);
-//		}
-
-		return $sEncryptedData;
-	}
-
-	/**
 	 * @param string $sEmail
 	 *
 	 * @return string
@@ -2394,7 +2350,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$oAccount = null;
 
-		$sPassword = $this->clientRsaDecryptHelper($sPassword);
 		$this->Logger()->AddSecret($sPassword);
 
 		if ('sleep@sleep.dev' === $sEmail && 0 < \strlen($sPassword) &&

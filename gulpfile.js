@@ -103,6 +103,7 @@ cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
 cfg.paths.staticMinJS = 'rainloop/v/' + cfg.devVersion + '/static/js/min/';
 cfg.paths.staticCSS = 'rainloop/v/' + cfg.devVersion + '/static/css/';
+cfg.paths.momentLocales = 'rainloop/v/' + cfg.devVersion + '/app/localization/moment/';
 
 cfg.paths.less = {
 	main: {
@@ -127,14 +128,14 @@ cfg.paths.css = {
 			'vendors/fontastic/styles.css',
 			'vendors/jquery-nanoscroller/nanoscroller.css',
 			'vendors/jquery-letterfx/jquery-letterfx.min.css',
-			'vendors/progress.js/minified/progressjs.min.css',
-			'vendors/progress.js/minified/progressjs.rainloop.css',
 			'vendors/inputosaurus/inputosaurus.css',
-			'vendors/opentip/opentip.css',
 			'vendors/flags/flags-fixed.css',
-			'vendors/lightGallery/dist/css/lightgallery.min.css',
-			'vendors/lightGallery/dist/css/lg-transitions-lg-lollipop.css',
+			'node_modules/opentip/css/opentip.css',
 			'node_modules/pikaday/css/pikaday.css',
+			'node_modules/lightgallery/dist/css/lightgallery.min.css',
+			'node_modules/lightgallery/dist/css/lg-transitions.min.css',
+			'node_modules/Progress.js/minified/progressjs.min.css',
+			'dev/Styles/_progressjs.css',
 			cfg.paths.staticCSS + cfg.paths.less.main.name
 		]
 	},
@@ -160,57 +161,49 @@ cfg.paths.js = {
 			'node_modules/openpgp/dist/openpgp.worker.min.js'
 		]
 	},
-	encrypt: {
-		name: 'bundle.js',
-		header: '(function (window) {',
-		footer: '}(window));',
-		dest: 'vendors/jsbn/',
-		src: [
-			'vendors/jsbn/jsbn.js',
-			'vendors/jsbn/prng4.js',
-			'vendors/jsbn/rng.js',
-			'vendors/jsbn/rsa.js',
-			'vendors/jsbn/fix.js'
+	moment: {
+		locales: [
+			'node_modules/moment/locale/*.js'
 		]
 	},
 	libs: {
 		name: 'libs.js',
 		src: [
-			'vendors/underscore/1.6.0/underscore-min.js',
-			'vendors/jquery/jquery-2.2.4.min.js',
-//			'vendors/jquery/jquery-3.0.0-rc1.min.js',
-			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js',
-			'vendors/jquery-cookie/jquery.cookie-1.4.0.min.js',
-			'vendors/jquery-finger/jquery.finger.min.js',
-			'vendors/jquery-mousewheel/jquery.mousewheel-3.1.4.min.js',
-			'vendors/jquery-scrollstop/jquery.scrollstop.min.js',
-			'vendors/jquery-lazyload/jquery.lazyload.min.js',
-			'vendors/jquery-nanoscroller/jquery.nanoscroller-0.7.min.js',
-			'vendors/jquery-wakeup/jquery.wakeup.min.js',
-			'vendors/jquery-letterfx/jquery-letterfx.min.js',
-			'vendors/jquery-backstretch/jquery.backstretch.min.js',
-			'vendors/inputosaurus/inputosaurus.min.js',
-			'vendors/moment/min/moment.min.js ',
-			'vendors/tinycon/tinycon.min.js ',
-			'vendors/routes/signals.min.js',
-			'vendors/routes/hasher.min.js',
-			'vendors/routes/crossroads.min.js',
-			'vendors/knockout/knockout-3.4.0.js',
-			'vendors/knockout-projections/knockout-projections-1.1.0.min.js',
-			'vendors/knockout-sortable/knockout-sortable.min.js',
-			'vendors/ssm/ssm.min.js',
-			'vendors/jua/jua.min.js',
-			'vendors/opentip/opentip-jquery.min.js',
-			'vendors/Autolinker/Autolinker.min.js',
-			'vendors/lightGallery/dist/js/lightgallery.min.js',
-			'vendors/lightGallery/dist/js/lg-fullscreen.min.js',
-			'vendors/lightGallery/dist/js/lg-thumbnail.min.js',
-			'vendors/lightGallery/dist/js/lg-zoom.min.js',
-			'vendors/lightGallery/dist/js/lg-autoplay.min.js',
-			'vendors/keymaster/keymaster.min.js',
-			'vendors/ifvisible/ifvisible.min.js',
-			'vendors/qr.js/qr.min.js',
-			'vendors/bootstrap/js/bootstrap.min.js'
+			'node_modules/jquery/dist/jquery.min.js',
+			'node_modules/jquery-mousewheel/jquery.mousewheel.js',
+			'node_modules/jquery-scrollstop/jquery.scrollstop.js',
+			'node_modules/jquery-lazyload/jquery.lazyload.js ',
+			'node_modules/jquery.backstretch/jquery.backstretch.min.js',
+			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js', // custom
+			'vendors/jquery-nanoscroller/jquery.nanoscroller.js', // custom (modified)
+			'vendors/jquery-wakeup/jquery.wakeup.js', // no-npm
+			'vendors/jquery-letterfx/jquery-letterfx.min.js', // no-npm
+			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
+			'vendors/routes/signals.min.js', // fixed
+			'vendors/routes/hasher.min.js', // fixed
+			'vendors/routes/crossroads.min.js', // fixed
+			'vendors/jua/jua.min.js', // custom
+			'vendors/keymaster/keymaster.js', // custom (modified)
+			'vendors/qr.js/qr.min.js', // fixed
+			'vendors/bootstrap/js/bootstrap.min.js', // fixed
+			'node_modules/underscore/underscore-min.js',
+			'node_modules/moment/min/moment.min.js',
+			'node_modules/tinycon/tinycon.min.js',
+			'node_modules/knockout/build/output/knockout-latest.js',
+			'node_modules/knockout-projections/dist/knockout-projections.min.js',
+			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',
+			'node_modules/matchmedia-polyfill/matchMedia.js',
+			'node_modules/matchmedia-polyfill/matchMedia.addListener.js',
+			'node_modules/simplestatemanager/dist/ssm.min.js',
+			'node_modules/autolinker/dist/Autolinker.min.js',
+			'node_modules/opentip/lib/opentip.js',
+			'node_modules/opentip/lib/adapter-jquery.js',
+			'node_modules/lightgallery/dist/js/lightgallery.min.js',
+			'node_modules/lightgallery/dist/js/lg-fullscreen.min.js',
+			'node_modules/lightgallery/dist/js/lg-thumbnail.min.js',
+			'node_modules/lightgallery/dist/js/lg-zoom.min.js',
+			'node_modules/lightgallery/dist/js/lg-autoplay.min.js',
+			'node_modules/ifvisible.js/src/ifvisible.min.js'
 		]
 	},
 	app: {
@@ -295,17 +288,6 @@ gulp.task('css:social:min', ['css:social'], function() {
 gulp.task('css:min', ['css:main:min', 'css:social:min']);
 
 // JS
-gulp.task('js:encrypt', function() {
-	return gulp.src(cfg.paths.js.encrypt.src)
-		.pipe(concat(cfg.paths.js.encrypt.name))
-		.pipe(concat.header(cfg.paths.js.encrypt.header || ''))
-		.pipe(concat.footer(cfg.paths.js.encrypt.footer || ''))
-		.pipe(uglify(cfg.uglify))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(cfg.paths.js.encrypt.dest))
-		.on('error', gutil.log);
-});
-
 gulp.task('js:openpgp', function() {
 	return gulp.src(cfg.paths.js.openpgp.src)
 		.pipe(rename(cfg.paths.js.openpgp.name))
@@ -320,12 +302,21 @@ gulp.task('js:openpgpworker', function() {
 		.pipe(gulp.dest(cfg.paths.staticMinJS));
 });
 
+gulp.task('js:moment:locales-clear', function() {
+	return cleanDir('rainloop/v/' + cfg.devVersion + '/app/localization/moment/*.js');
+});
+
+gulp.task('js:moment:locales', ['js:moment:locales-clear'], function() {
+	return gulp.src(cfg.paths.js.moment.locales)
+		.pipe(gulp.dest(cfg.paths.momentLocales));
+});
+
 gulp.task('js:libs', function() {
 	return gulp.src(cfg.paths.js.libs.src)
 		.pipe(concat(cfg.paths.js.libs.name, {separator: '\n\n'}))
 		.pipe(eol('\n', true))
 		.pipe(replace(/sourceMappingURL=[a-z0-9\.\-_]{1,20}\.map/ig, ''))
-		.pipe(gulp.dest(cfg.paths.staticMinJS));
+		.pipe(gulp.dest(cfg.paths.staticJS));
 });
 
 gulp.task('js:ckeditor:beautify', function() {
@@ -451,32 +442,9 @@ gulp.task('js:eslint', function() {
 gulp.task('js:validate', ['js:eslint']);
 
 // OTHER
-regOtherMinTask('other:cookie', 'vendors/jquery-cookie/', 'jquery.cookie.js', 'jquery.cookie-1.4.0.min.js',
-	'/*! jquery.cookie v1.4.0 (c) 2013 Klaus Hartl | MIT */\n');
-
-regOtherMinTask('other:ifvisible', 'vendors/ifvisible/', 'src/ifvisible.js', 'ifvisible.min.js',
-	'/*!ifvisible.js v1.0.0 (c) 2013 Serkan Yersen | MIT */\n');
-
-regOtherMinTask('other:keymaster', 'vendors/keymaster/', 'keymaster.js', 'keymaster.min.js',
-	'/*!keymaster.js (c) 2011-2013 Thomas Fuchs | MIT */\n');
-
-regOtherMinTask('other:wakeup', 'vendors/jquery-wakeup/', 'jquery.wakeup.js', 'jquery.wakeup.min.js',
-	'/*! jQuery WakeUp plugin (c) 2013 Paul Okopny <paul.okopny@gmail.com> | MIT */\n');
-
-regOtherMinTask('other:mousewheel', 'vendors/jquery-mousewheel/', 'jquery.mousewheel.js', 'jquery.mousewheel-3.1.4.min.js',
-	'/*! jquery.mousewheel v3.1.4 (c) 2013 Brandon Aaron (http://brandon.aaron.sh) | MIT */\n');
-
-regOtherMinTask('other:nano', 'vendors/jquery-nanoscroller/', 'jquery.nanoscroller.js', 'jquery.nanoscroller-0.7.min.js',
-	'/*! nanoScrollerJS v0.7 (c) 2013 James Florentino; modified by RainLoop Team | MIT */\n');
-
-regOtherMinTask('other:inputosaurus', 'vendors/inputosaurus/', 'inputosaurus.js', 'inputosaurus.min.js',
-	'/*! Inputosaurus Text v0.1.6 (c) 2013 Dan Kielp <dan@sproutsocial.com>; modified by RainLoop Team | MIT */\n');
-
-regOtherMinTask('other:pace', 'vendors/simple-pace/', 'simple-pace.js', 'simple-pace-1.0.min.js',
-	'/*! RainLoop Simple Pace v1.0 (c) 2014 RainLoop Team; Licensed under MIT */\n');
-
-regOtherMinTask('other:rl', 'vendors/rl/', 'rl.js', 'rl-1.5.min.js',
-	'/*! RainLoop Index Helper v1.5 (c) 2015 RainLoop Team; Licensed under MIT */\n');
+gulp.task('lightgallery-fonts:clear', function() {
+	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/lg.*');
+});
 
 gulp.task('fontastic-fonts:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/rainloop.*');
@@ -484,6 +452,11 @@ gulp.task('fontastic-fonts:clear', function() {
 
 gulp.task('fontastic-svg:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/svg/*.svg');
+});
+
+gulp.task('lightgallery-fonts:copy', ['lightgallery-fonts:clear'], function() {
+	return gulp.src('node_modules/lightgallery/dist/fonts/lg.*')
+		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/fonts'));
 });
 
 gulp.task('fontastic-fonts:copy', ['fontastic-fonts:clear'], function() {
@@ -496,6 +469,7 @@ gulp.task('fontastic-svg:copy', ['fontastic-svg:clear'], function() {
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/svg'));
 });
 
+gulp.task('lightgallery', ['lightgallery-fonts:copy']);
 gulp.task('fontastic', ['fontastic-fonts:copy', 'fontastic-svg:copy']);
 
 gulp.task('ckeditor:clear', function() {
@@ -663,8 +637,9 @@ gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:md5'], function(cal
 
 // MAIN
 gulp.task('js:pgp', ['js:openpgp', 'js:openpgpworker']);
+gulp.task('js:moment', ['js:moment:locales']);
 
-gulp.task('default', ['js:libs', 'js:pgp', 'js:min', 'css:min', 'ckeditor', 'fontastic']);
+gulp.task('default', ['js:libs', 'js:pgp', 'js:moment', 'js:min', 'css:min', 'ckeditor', 'fontastic', 'lightgallery']);
 gulp.task('default+', ['package:community-off', 'default']);
 gulp.task('fast-', ['js:app', 'js:admin', 'css:main']);
 

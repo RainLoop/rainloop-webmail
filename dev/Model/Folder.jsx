@@ -32,7 +32,6 @@ class FolderModel extends AbstractModel
 		this.focused = ko.observable(false);
 		this.selected = ko.observable(false);
 		this.edited = ko.observable(false);
-		this.collapsed = ko.observable(true);
 		this.subScribed = ko.observable(true);
 		this.checkable = ko.observable(false);
 		this.subFolders = ko.observableArray([]);

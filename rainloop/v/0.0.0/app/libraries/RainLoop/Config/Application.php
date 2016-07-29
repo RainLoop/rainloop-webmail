@@ -202,7 +202,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'openpgp'					=> array(false),
 				'openpgp_public_key_server' => array(''),
 
-				'use_rsa_encryption'		=> array(false),
 				'admin_login'				=> array('admin', 'Login and password for web admin panel'),
 				'admin_password'			=> array('12345'),
 				'allow_admin_panel'			=> array(true, 'Access settings'),
