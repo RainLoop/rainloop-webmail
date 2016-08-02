@@ -1,6 +1,6 @@
 <?php
 
-class ISPmailChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
+class IspmailChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	public function Init()
 	{

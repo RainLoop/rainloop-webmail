@@ -1,6 +1,6 @@
 <?php
 
-class PostfixAdminChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
+class PostfixadminChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	public function Init()
 	{

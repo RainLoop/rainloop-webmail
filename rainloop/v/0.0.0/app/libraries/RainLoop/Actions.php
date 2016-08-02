@@ -1783,7 +1783,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
 				$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
 
-				$aResult['SubscriptionEnabled'] = (bool) \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain']);
+				$aResult['SubscriptionEnabled'] = (bool) \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain'], true);
 //					|| \MailSo\Base\Utils::ValidateIP($aResult['AdminDomain']);
 
 				$aResult['WeakPassword'] = (bool) $oConfig->ValidatePassword('12345');
