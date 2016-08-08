@@ -23,9 +23,9 @@ nb_NO:
     LABEL_LANGUAGE: "Språk"
     LABEL_LANGUAGE_ADMIN: "Språk (admin)"
     LABEL_THEME: "Tema"
-    LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "La brukeren velge språk på oppsettsskjermen"
-    LABEL_ALLOW_THEMES_ON_SETTINGS: "La brukeren velge tema på oppsettsskjermen"
-    LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "La brukeren velge bakgrunn på oppsettsskjermen"
+    LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "La brukere velge språk på oppsettsskjerm"
+    LABEL_ALLOW_THEMES_ON_SETTINGS: "La brukere velge tema på oppsettsskjerm"
+    LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "La brukere velge bakgrunn på oppsettsskjerm"
     LABEL_SHOW_THUMBNAILS: "Vis miniatyrer (vedlegg)"
     LABEL_ALLOW_GRAVATAR: "Tillat Gravatar"
     LEGEND_MAIN: "Hoved"
@@ -44,7 +44,7 @@ nb_NO:
     LEGEND_LOGIN_SCREEN: "Innloggingsskjerm"
     LABEL_DEFAULT_DOMAIN: "Standard-domene"
     LABEL_DETERMINE_USER_DOMAIN: "Prøv å finne brukerens domene"
-    LABEL_ALLOW_LANGUAGES_ON_LOGIN: "La brukeren velge språk på innloggingsskjermen"
+    LABEL_ALLOW_LANGUAGES_ON_LOGIN: "La brukere velge språk på innloggingsskjerm"
     LABEL_DETERMINE_USER_LANGUAGE: "Prøv å finne brukerens språk"
   TAB_BRANDING:
     LEGEND_BRANDING: "Utforming"
@@ -252,14 +252,14 @@ nb_NO:
     CONNECTION_ERROR: "Klarte ikke å koble til tjener"
     CAPTCHA_ERROR: "Feil CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Denne sosiale ID-en er ikke knyttet til en e-postkonto enda. Logg inn med e-post-akkreditiver
-      og slå på denne funksjonen i kontooppsettet.
+        Denne sosiale ID-en er ikke knyttet til en e-postkonto enda. Logg inn med
+        e-post-akkreditiver og slå på denne funksjonen i kontooppsettet.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Denne sosiale ID-en er ikke knyttet til en e-postkonto enda. Logg inn med e-post-akkreditiver
-      og slå på denne funksjonen i kontooppsettet.
+        Denne sosiale ID-en er ikke knyttet til en e-postkonto enda. Logg inn med
+        e-post-akkreditiver og slå på denne funksjonen i kontooppsettet.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Denne sosiale ID-en er ikke knyttet til en e-postkonto enda. Logg inn med e-post-akkreditiver
-      og slå på denne funksjonen i kontooppsettet.
+        Denne sosiale ID-en er ikke knyttet til en e-postkonto enda. Logg inn med
+        e-post-akkreditiver og slå på denne funksjonen i kontooppsettet.
     DOMAIN_NOT_ALLOWED: "Domenet tillates ikke"
     ACCOUNT_NOT_ALLOWED: "Kontoen tillates ikke"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "To-stegsbekreftelse kreves"

@@ -88,6 +88,7 @@ de_DE:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domains"
     BUTTON_ADD_DOMAIN: "Domain hinzufügen"
+    BUTTON_ADD_ALIAS: "Alias hinzufügen"
     DELETE_ARE_YOU_SURE: "Sind Sie sicher?"
     HTML_DOMAINS_HELPER: |
       Liste der Domains, die Webmail abrufen darf.
@@ -185,6 +186,12 @@ de_DE:
       Beachten Sie, dass ein Subscription-Schlüssel nur für eine einzelne Domain aktiviert werden kann.
       <br /><br />
       Nach dem Start kann der Aktivierungsprozess nicht unterbrochen oder abgebrochen werden.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Alias hinzufügen"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Domain"
+    BUTTON_CLOSE: "Schließen"
+    BUTTON_ADD: "Hinzufügen"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Domain hinzufügen"
     TITLE_ADD_DOMAIN_WITH_NAME: "Domain \"%NAME%\" hinzufügen"
@@ -244,17 +251,17 @@ de_DE:
     CONNECTION_ERROR: "Serververbindung kann nicht hergestellt werden"
     CAPTCHA_ERROR: "Falsche CAPTCHA-Eingabe."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
-      mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
-      Konteneinstellungen.
+        Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
+        mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
+        Konteneinstellungen.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
-      mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
-      Konteneinstellungen.
+        Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
+        mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
+        Konteneinstellungen.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
-      mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
-      Konteneinstellungen.
+        Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
+        mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
+        Konteneinstellungen.
     DOMAIN_NOT_ALLOWED: "Diese Domain ist nicht zugelassen."
     ACCOUNT_NOT_ALLOWED: "Konto ist nicht zugelassen."
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Zwei-Faktor-Authentifizierung erforderlich"

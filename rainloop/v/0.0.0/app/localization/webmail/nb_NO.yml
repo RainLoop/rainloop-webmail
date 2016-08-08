@@ -102,6 +102,7 @@ nb_NO:
     BUTTON_BACK: "Tilbake"
     BUTTON_CLOSE: "Lukk"
     BUTTON_DELETE: "Slett"
+    BUTTON_UNSUBSCRIBE: "Meld av e-postliste"
     BUTTON_ARCHIVE: "Arkiv"
     BUTTON_SPAM: "Søppelpost"
     BUTTON_NOT_SPAM: "Ikke søppelpost"
@@ -393,11 +394,11 @@ nb_NO:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Satt opp"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Ikke satt opp"
     TWO_FACTOR_SECRET_DESC: >-
-      Importer denne informasjonen til din Google Authenticator klient (eller andre
-      klienter) ved å bruke QR-koden under, eller ved å skrive inn koden manuelt.
+        Importer denne informasjonen til din Google Authenticator klient (eller andre
+        klienter) ved å bruke QR-koden under, eller ved å skrive inn koden manuelt.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      Hvis du ikke mottar koder fra Google Authenticator, kan du bruke reservekodene
-      for å logge inn. Disse kodene kan bare brukes én gang.
+        Hvis du ikke mottar koder fra Google Authenticator, kan du bruke reservekodene
+        for å logge inn. Disse kodene kan bare brukes én gang.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Du kan ikke endre denne innstillinga før du tester den."
   TITLES:
     LOADING: "Laster inn"
@@ -414,7 +415,6 @@ nb_NO:
     ERROR_FILE_TYPE: "Ugyldig filtype"
     ERROR_UNKNOWN: "Det oppstod en ukjent feil under opplasting av fil"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Ren tekst"
     TEXT_SWITCHER_RICH_FORMATTING: "Rik tekst"
     TEXT_SWITCHER_CONFIRM: "Tekstformatering og bilder går tapt. Er du sikker på at du vil fortsette?"
   SETTINGS_LABELS:
@@ -527,7 +527,7 @@ nb_NO:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Mappeliste"
     BUTTON_CREATE: "Lag mappe"
-    BUTTON_SYSTEM: "Velg systemmapper"
+    BUTTON_SYSTEM: "Systemmapper"
     BUTTON_DELETE: "Slett"
     BUTTON_SUBSCRIBE: "Abonner"
     BUTTON_UNSUBSCRIBE: "Stopp abonnement"
@@ -638,14 +638,14 @@ nb_NO:
     CONNECTION_ERROR: "Klarte ikke å koble til tjeneren"
     CAPTCHA_ERROR: "Feil CAPTCHA"
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Denne kontoen er ikke knyttet til en e-postadresse ennå. Logg inn med e-postadresse
-      og passord, og slå på denne funksjonen i kontoinnstillingene.
+        Denne kontoen er ikke knyttet til en e-postadresse ennå. Logg inn med e-postadresse
+        og passord, og slå på denne funksjonen i kontoinnstillingene.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Denne kontoen er ikke knyttet til en e-postadresse ennå. Logg inn med e-postadresse
-      og passord, og slå på denne funksjonen i kontoinnstillingene.
+        Denne kontoen er ikke knyttet til en e-postadresse ennå. Logg inn med e-postadresse
+        og passord, og slå på denne funksjonen i kontoinnstillingene.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Denne kontoen er ikke knyttet til en e-postadresse ennå. Logg inn med e-postadresse
-      og passord, og slå på denne funksjonen i kontoinnstillingene.
+        Denne kontoen er ikke knyttet til en e-postadresse ennå. Logg inn med e-postadresse
+        og passord, og slå på denne funksjonen i kontoinnstillingene.
     DOMAIN_NOT_ALLOWED: "Dette domenet tillates ikke"
     ACCOUNT_NOT_ALLOWED: "Denne kontoen tillates ikke"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "To-stegsbekreftelse kreves"

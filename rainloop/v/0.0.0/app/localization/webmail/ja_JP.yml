@@ -102,6 +102,7 @@ ja_JP:
     BUTTON_BACK: "戻る"
     BUTTON_CLOSE: "閉じる"
     BUTTON_DELETE: "削除"
+    BUTTON_UNSUBSCRIBE: "このリストから登録解除"
     BUTTON_ARCHIVE: "アーカイブ"
     BUTTON_SPAM: "迷惑メール"
     BUTTON_NOT_SPAM: "非スパム"
@@ -393,11 +394,11 @@ ja_JP:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "設定済み"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "未設定"
     TWO_FACTOR_SECRET_DESC: >
-      提供された QR コードを使用するか、もしくは、手動でコードを入力することによって、Google 認証システム(もしくは、他の TOTP クライアント)へインポートします。
+        提供された QR コードを使用するか、もしくは、手動でコードを入力することによって、Google 認証システム(もしくは、他の TOTP クライアント)へインポートします。
     TWO_FACTOR_BACKUP_CODES_DESC: >
-      Google認証システム(もしくは、他のTOTPクライアント）でコードを受け取ることができない場合は、バックアップコードを使用してサインインすることができます。
+        Google認証システム(もしくは、他のTOTPクライアント）でコードを受け取ることができない場合は、バックアップコードを使用してサインインすることができます。
 
-      バックアップコードを使用してサインインすると、2段階認証は非アクティブになります。
+        バックアップコードを使用してサインインすると、2段階認証は非アクティブになります。
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "テストをしなければ設定を変更できません"
   TITLES:
     LOADING: "読み込み中"
@@ -414,7 +415,6 @@ ja_JP:
     ERROR_FILE_TYPE: "無効なファイル種類"
     ERROR_UNKNOWN: "不明なファイルアップロードエラーが発生しました"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "プレーンテキスト"
     TEXT_SWITCHER_RICH_FORMATTING: "書式付きテキスト"
     TEXT_SWITCHER_CONFIRM: "テキスト書式と画像は、失われます。続けてもよろしいですか？"
   SETTINGS_LABELS:
@@ -527,7 +527,7 @@ ja_JP:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "フォルダー一覧"
     BUTTON_CREATE: "フォルダを作成"
-    BUTTON_SYSTEM: "システムフォルダーを選択"
+    BUTTON_SYSTEM: "システムフォルダー"
     BUTTON_DELETE: "削除"
     BUTTON_SUBSCRIBE: "購読"
     BUTTON_UNSUBSCRIBE: "購読解除"
@@ -638,11 +638,11 @@ ja_JP:
     CONNECTION_ERROR: "サーバーへ接続できません"
     CAPTCHA_ERROR: "間違った CAPTCHA"
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      このSNSユーザーIDは、まだメールアカウント用に割り当てられていません。電子メールの資格情報を使用してログインし、アカウント設定でこの機能を有効にします。
+        このSNSユーザーIDは、まだメールアカウント用に割り当てられていません。電子メールの資格情報を使用してログインし、アカウント設定でこの機能を有効にします。
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      このSNSユーザーIDは、まだメールアカウント用に割り当てられていません。電子メールの資格情報を使用してログインし、アカウント設定でこの機能を有効にします。
+        このSNSユーザーIDは、まだメールアカウント用に割り当てられていません。電子メールの資格情報を使用してログインし、アカウント設定でこの機能を有効にします。
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      このSNSユーザーIDは、まだメールアカウント用に割り当てられていません。電子メールの資格情報を使用してログインし、アカウント設定でこの機能を有効にします。
+        このSNSユーザーIDは、まだメールアカウント用に割り当てられていません。電子メールの資格情報を使用してログインし、アカウント設定でこの機能を有効にします。
     DOMAIN_NOT_ALLOWED: "ドメインは、許可されていません"
     ACCOUNT_NOT_ALLOWED: "アカウントは、許可されていません"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "2要素認証が必要です"

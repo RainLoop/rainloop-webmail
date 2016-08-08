@@ -393,12 +393,12 @@ nl_NL:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Geconfigureerd"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Niet geconfigureerd"
     TWO_FACTOR_SECRET_DESC: >-
-      Importeer deze informatie in uw Google Authenticator-client (of andere TOTP-client)
-      door gebruik te maken van de QR code hier beneden of door de code handmatig
-      in te voeren.
+        Importeer deze informatie in uw Google Authenticator-client (of andere TOTP-client)
+        door gebruik te maken van de QR code hier beneden of door de code handmatig
+        in te voeren.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      Als u geen codes ontvangt via de Google Authenticator kunt u de backup codes
-      gebruiken om in te loggen. Na gebruik van de backup code wordt deze inactief.
+        Als u geen codes ontvangt via de Google Authenticator kunt u de backup codes
+        gebruiken om in te loggen. Na gebruik van de backup code wordt deze inactief.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "U kunt deze instelling niet wijzigen voor het testen."
   TITLES:
     LOADING: "Ophalen..."
@@ -415,7 +415,6 @@ nl_NL:
     ERROR_FILE_TYPE: "Onjuist bestandstype"
     ERROR_UNKNOWN: "Er is een onbekende fout opgetreden"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Platte tekst"
     TEXT_SWITCHER_RICH_FORMATTING: "Tekst met opmaak"
     TEXT_SWITCHER_CONFIRM: "Tekst opmaak zal verloren gaan. Wenst u verder te gaan?"
   SETTINGS_LABELS:
@@ -526,7 +525,6 @@ nl_NL:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Mappen lijst"
     BUTTON_CREATE: "Maak een map"
-    BUTTON_SYSTEM: "Selecteer systeem mappen"
     BUTTON_DELETE: "Verwijder"
     BUTTON_SUBSCRIBE: "Abonneer"
     BUTTON_UNSUBSCRIBE: "Abonnement opzeggen"
@@ -637,14 +635,17 @@ nl_NL:
     CONNECTION_ERROR: "Kan geen verbinding maken met de Server"
     CAPTCHA_ERROR: "Onjuiste CAPTCHA"
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
-      adres en wachtwoord en schakel deze functie in in het account instellingen menu.
+        Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
+        adres en wachtwoord en schakel deze functie in in het account instellingen
+        menu.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
-      adres en wachtwoord en schakel deze functie in in het account instellingen menu.
+        Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
+        adres en wachtwoord en schakel deze functie in in het account instellingen
+        menu.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
-      adres en wachtwoord en schakel deze functie in in het account instellingen menu.
+        Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
+        adres en wachtwoord en schakel deze functie in in het account instellingen
+        menu.
     DOMAIN_NOT_ALLOWED: "Domein is niet toegestaan"
     ACCOUNT_NOT_ALLOWED: "Account is niet toegestaan"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "2-Stap verificatie vereist"

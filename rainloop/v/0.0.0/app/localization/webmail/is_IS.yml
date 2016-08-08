@@ -387,11 +387,11 @@ is_IS:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configured"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Not configured"
     TWO_FACTOR_SECRET_DESC: >-
-      Import this info into your Google Authenticator client (or other TOTP client)
-      using the provided QR code below or by entering the code manually.
+        Import this info into your Google Authenticator client (or other TOTP client)
+        using the provided QR code below or by entering the code manually.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      If you can't receive codes via Google Authenticator, you can use backup codes
-      to sign in. After you’ve used a backup code to sign in, it will become inactive.
+        If you can't receive codes via Google Authenticator, you can use backup codes
+        to sign in. After you’ve used a backup code to sign in, it will become inactive.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
   TITLES:
     LOADING: "Hleð"
@@ -408,7 +408,6 @@ is_IS:
     ERROR_FILE_TYPE: "Röng skráar tegund"
     ERROR_UNKNOWN: "Óþekkt innsendingar villa kom upp"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Venjulegur texti"
     TEXT_SWITCHER_RICH_FORMATTING: "Rich forsnið"
     TEXT_SWITCHER_CONFIRM: "Texta forsnið og myndir munu týnast. Ertu viss um að þú viljir halda áfram?"
   SETTINGS_LABELS:
@@ -519,7 +518,6 @@ is_IS:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Möppulisti"
     BUTTON_CREATE: "Búa til möppu"
-    BUTTON_SYSTEM: "Velja Kerfis Möppur"
     BUTTON_DELETE: "Eyða"
     BUTTON_SUBSCRIBE: "Áskrift"
     BUTTON_UNSUBSCRIBE: "Afskrá"
@@ -628,14 +626,14 @@ is_IS:
     CONNECTION_ERROR: "Get ekki tengst á netþjón"
     CAPTCHA_ERROR: "Rangt CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Þetta samfélags ID er ekki úthlutað á neitt netfang ennþá. Skráðu þig inn með
-      netfangs upplýsingum og bættu þessum valmöguleika við í aðgangsstillingum.
+        Þetta samfélags ID er ekki úthlutað á neitt netfang ennþá. Skráðu þig inn
+        með netfangs upplýsingum og bættu þessum valmöguleika við í aðgangsstillingum.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Þetta samfélags ID er ekki úthlutað á neitt netfang ennþá. Skráðu þig inn með
-      netfangs upplýsingum og bættu þessum valmöguleika við í aðgangsstillingum.
+        Þetta samfélags ID er ekki úthlutað á neitt netfang ennþá. Skráðu þig inn
+        með netfangs upplýsingum og bættu þessum valmöguleika við í aðgangsstillingum.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Þetta samfélags ID er ekki úthlutað á neitt netfang ennþá. Skráðu þig inn með
-      netfangs upplýsingum og bættu þessum valmöguleika við í aðgangsstillingum.
+        Þetta samfélags ID er ekki úthlutað á neitt netfang ennþá. Skráðu þig inn
+        með netfangs upplýsingum og bættu þessum valmöguleika við í aðgangsstillingum.
     DOMAIN_NOT_ALLOWED: "Lén ekki leyft"
     ACCOUNT_NOT_ALLOWED: "Account is not allowed"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Two factor verification required"

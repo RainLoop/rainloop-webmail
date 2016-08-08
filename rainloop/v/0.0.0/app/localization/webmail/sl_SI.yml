@@ -393,11 +393,11 @@ sl_SI:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Nastavljena"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Ni nastavljena"
     TWO_FACTOR_SECRET_DESC: >
-      Uvozite te podatke v Google Authenticator (ali drugo TOTP aplikacijo) z uporabo
-      spodnje QR kode ali ročnim vnosom kode.
+        Uvozite te podatke v Google Authenticator (ali drugo TOTP aplikacijo) z uporabo
+        spodnje QR kode ali ročnim vnosom kode.
     TWO_FACTOR_BACKUP_CODES_DESC: >
-      Če ne morete prejeti kode preko Google Authenticator (ali druge TOTP aplikacije),
-      lahko uporabite pomožne kode za vpis. Vsaka pomožna koda je za enkratno uporabo.
+        Če ne morete prejeti kode preko Google Authenticator (ali druge TOTP aplikacije),
+        lahko uporabite pomožne kode za vpis. Vsaka pomožna koda je za enkratno uporabo.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Ne morete spremenite te nastavitve brez preizkusa."
   TITLES:
     LOADING: "Nalaganje"
@@ -414,7 +414,6 @@ sl_SI:
     ERROR_FILE_TYPE: "Neveljaven tip datoteke"
     ERROR_UNKNOWN: "Neznana napaka pri nalaganju datoteke"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Navadno besedilo"
     TEXT_SWITCHER_RICH_FORMATTING: "Obogateno besedilo"
     TEXT_SWITCHER_CONFIRM: "Oblikovanje ter postavitev besedila in slik bosta izgubljena. Želite nadaljevati?"
   SETTINGS_LABELS:
@@ -527,7 +526,6 @@ sl_SI:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Seznam map"
     BUTTON_CREATE: "Ustvari mapo"
-    BUTTON_SYSTEM: "Izberi sistemske mape"
     BUTTON_DELETE: "Izbriši"
     BUTTON_SUBSCRIBE: "Spremljaj"
     BUTTON_UNSUBSCRIBE: "Ne spremljaj"
@@ -638,14 +636,14 @@ sl_SI:
     CONNECTION_ERROR: "Ni mogoče vzpostaviti povezave s strežnikom"
     CAPTCHA_ERROR: "Napačen CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Ta družabni ID še ni določen nobenemu e-poštnemu računu. Prijavite se z podatki
-      za e-pošto in omogočite to v nastavitvah računa.
+        Ta družabni ID še ni določen nobenemu e-poštnemu računu. Prijavite se z podatki
+        za e-pošto in omogočite to v nastavitvah računa.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Ta družabni ID še ni določen nobenemu e-poštnemu računu. Prijavite se z podatki
-      za e-pošto in omogočite to v nastavitvah računa.
+        Ta družabni ID še ni določen nobenemu e-poštnemu računu. Prijavite se z podatki
+        za e-pošto in omogočite to v nastavitvah računa.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Ta družabni ID še ni določen nobenemu e-poštnemu računu. Prijavite se z podatki
-      za e-pošto in omogočite to v nastavitvah računa.
+        Ta družabni ID še ni določen nobenemu e-poštnemu računu. Prijavite se z podatki
+        za e-pošto in omogočite to v nastavitvah računa.
     DOMAIN_NOT_ALLOWED: "Domena ni dovoljena"
     ACCOUNT_NOT_ALLOWED: "Račun ni dovoljen"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Obvezno 2-stopenjsko overjanje"

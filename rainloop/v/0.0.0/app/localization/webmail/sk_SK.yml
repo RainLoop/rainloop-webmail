@@ -389,11 +389,11 @@ sk_SK:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configured"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Not configured"
     TWO_FACTOR_SECRET_DESC: >-
-      Import this info into your Google Authenticator client (or other TOTP client)
-      using the provided QR code below or by entering the code manually.
+        Import this info into your Google Authenticator client (or other TOTP client)
+        using the provided QR code below or by entering the code manually.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      If you can't receive codes via Google Authenticator, you can use backup codes
-      to sign in. After you’ve used a backup code to sign in, it will become inactive.
+        If you can't receive codes via Google Authenticator, you can use backup codes
+        to sign in. After you’ve used a backup code to sign in, it will become inactive.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
   TITLES:
     LOADING: "Načítavam"
@@ -410,7 +410,6 @@ sk_SK:
     ERROR_FILE_TYPE: "Nesprávny typ súboru"
     ERROR_UNKNOWN: "Nastala neznáma chyba pri nahrávaní"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Neformátovaný text"
     TEXT_SWITCHER_RICH_FORMATTING: "Formátovaný text"
     TEXT_SWITCHER_CONFIRM: "Formátovanie textu a obrázky budú stratené. Želáte si pokračovať?"
   SETTINGS_LABELS:
@@ -521,7 +520,6 @@ sk_SK:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Zoznam priečinkov"
     BUTTON_CREATE: "Vytvoriť priečinok"
-    BUTTON_SYSTEM: "Spravovať Systémové priečinky"
     BUTTON_DELETE: "Odstrániť"
     BUTTON_SUBSCRIBE: "Prihlásiť sa"
     BUTTON_UNSUBSCRIBE: "Odhlásiť sa"
@@ -630,14 +628,14 @@ sk_SK:
     CONNECTION_ERROR: "Nepodarilo sa pripojiť k serveru"
     CAPTCHA_ERROR: "Nesprávne CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
+        This social ID is not assigned for any email account yet. Log in using email
+        credentials and enable this feature in account settings.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
+        This social ID is not assigned for any email account yet. Log in using email
+        credentials and enable this feature in account settings.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
+        This social ID is not assigned for any email account yet. Log in using email
+        credentials and enable this feature in account settings.
     DOMAIN_NOT_ALLOWED: "Doména nie je povolená"
     ACCOUNT_NOT_ALLOWED: "Účet nie je povolený"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Two factor verification required"

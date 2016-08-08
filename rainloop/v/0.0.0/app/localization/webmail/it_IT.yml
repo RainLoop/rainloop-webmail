@@ -390,12 +390,12 @@ it_IT:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configurato"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Non configurato"
     TWO_FACTOR_SECRET_DESC: >-
-      Importa questo codice nel tuo client di Google Authenticator (o un altro client
-      TOTP) usando il codice QR presente sotto o inserendo il codice manualmente.
+        Importa questo codice nel tuo client di Google Authenticator (o un altro client
+        TOTP) usando il codice QR presente sotto o inserendo il codice manualmente.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      Se non puoi ricevere codici da Google Authenticator, puoi usare i codici di
-      riserva per entrare. Dopo aver usato un codice di riserva per entrare, esso
-      si disattiverà.
+        Se non puoi ricevere codici da Google Authenticator, puoi usare i codici di
+        riserva per entrare. Dopo aver usato un codice di riserva per entrare, esso
+        si disattiverà.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Non puoi salvare quest'impostazione senza prima verificarne il funzionamento."
   TITLES:
     LOADING: "Caricamento..."
@@ -412,7 +412,6 @@ it_IT:
     ERROR_FILE_TYPE: "Il tipo di file non è valido"
     ERROR_UNKNOWN: "Si è verificato un errore sconosciuto durante il caricamento del file"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Testo normale"
     TEXT_SWITCHER_RICH_FORMATTING: "Testo formattato"
     TEXT_SWITCHER_CONFIRM: "La formattazione del testo e le immagini andranno perse. Sei sicuro di voler continuare?"
   SETTINGS_LABELS:
@@ -524,7 +523,6 @@ it_IT:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Lista delle cartelle"
     BUTTON_CREATE: "Crea una cartella"
-    BUTTON_SYSTEM: "Seleziona le cartelle di sistema"
     BUTTON_DELETE: "Elimina"
     BUTTON_SUBSCRIBE: "Sottoscrivi"
     BUTTON_UNSUBSCRIBE: "Rimuovi sottoscrizione"
@@ -635,14 +633,14 @@ it_IT:
     CONNECTION_ERROR: "Impossibile connettersi al server"
     CAPTCHA_ERROR: "CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Questo ID sociale non è collegato ad alcun indirizzo email. Entra utilizzando
-      le credenziali delle email e abilita questa funzionalità nelle impostazioni.
+        Questo ID sociale non è collegato ad alcun indirizzo email. Entra utilizzando
+        le credenziali delle email e abilita questa funzionalità nelle impostazioni.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Questo ID sociale non è collegato ad alcun indirizzo email. Entra utilizzando
-      le credenziali delle email e abilita questa funzionalità nelle impostazioni.
+        Questo ID sociale non è collegato ad alcun indirizzo email. Entra utilizzando
+        le credenziali delle email e abilita questa funzionalità nelle impostazioni.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Questo ID sociale non è collegato ad alcun indirizzo email. Entra utilizzando
-      le credenziali delle email e abilita questa funzionalità nelle impostazioni.
+        Questo ID sociale non è collegato ad alcun indirizzo email. Entra utilizzando
+        le credenziali delle email e abilita questa funzionalità nelle impostazioni.
     DOMAIN_NOT_ALLOWED: "Il dominio non è autorizzato"
     ACCOUNT_NOT_ALLOWED: "L'account non è autorizzato"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "La verifica a due fattori è richiesta"

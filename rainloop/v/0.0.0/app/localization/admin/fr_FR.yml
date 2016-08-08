@@ -89,6 +89,7 @@ fr_FR:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domaines"
     BUTTON_ADD_DOMAIN: "Ajouter un domaine"
+    BUTTON_ADD_ALIAS: "Ajouter un alias"
     DELETE_ARE_YOU_SURE: "Êtes-vous sûr ?"
     HTML_DOMAINS_HELPER: |
       Liste des domaines autorisés.
@@ -186,6 +187,12 @@ fr_FR:
       Notez que la clé de souscription ne peut être activée que pour un seul domaine.
       <br /><br />
       Une fois lancé, le processus d'activation ne peut pas être annulé ou abandonné.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Ajouter un alias"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Domaine"
+    BUTTON_CLOSE: "Fermer"
+    BUTTON_ADD: "Ajouter"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Ajouter un domaine"
     TITLE_ADD_DOMAIN_WITH_NAME: "Ajouter le domaine \"%NAME%\""
@@ -245,17 +252,17 @@ fr_FR:
     CONNECTION_ERROR: "Serveur injoignable"
     CAPTCHA_ERROR: "CAPTCHA incorrect."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous en
-      utilisant les informations d'identification du courrier électronique et activez
-      cette fonctionnalité dans les paramètres de votre compte.
+        Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous
+        en utilisant les informations d'identification du courrier électronique et
+        activez cette fonctionnalité dans les paramètres de votre compte.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous en
-      utilisant les informations d'identification du courrier électronique et activez
-      cette fonctionnalité dans les paramètres de votre compte.
+        Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous
+        en utilisant les informations d'identification du courrier électronique et
+        activez cette fonctionnalité dans les paramètres de votre compte.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous en
-      utilisant les informations d'identification du courrier électronique et activez
-      cette fonctionnalité dans les paramètres de votre compte.
+        Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous
+        en utilisant les informations d'identification du courrier électronique et
+        activez cette fonctionnalité dans les paramètres de votre compte.
     DOMAIN_NOT_ALLOWED: "Ce domaine n'est pas autorisé"
     ACCOUNT_NOT_ALLOWED: "Ce compte n'est pas autorisé"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Double authentification requise"

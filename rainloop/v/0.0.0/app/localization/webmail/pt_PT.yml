@@ -389,12 +389,12 @@ pt_PT:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configurado"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Não configurado"
     TWO_FACTOR_SECRET_DESC: >-
-      Importe esta informação no seu cliente Google Authenticator (ou outro cliente
-      TOTP) utilizando o código QR fornecido abaixo ou introduzindo o código manualmente.
+        Importe esta informação no seu cliente Google Authenticator (ou outro cliente
+        TOTP) utilizando o código QR fornecido abaixo ou introduzindo o código manualmente.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      Se não consegue receber códigos através do Google Authenticator, pode usar os
-      códigos secundários para entrar. Após ter usado um código secundário para entrar,
-      este será desativado.
+        Se não consegue receber códigos através do Google Authenticator, pode usar
+        os códigos secundários para entrar. Após ter usado um código secundário para
+        entrar, este será desativado.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Não pode alterar este parâmetro antes de testar."
   TITLES:
     LOADING: "A carregar"
@@ -411,7 +411,6 @@ pt_PT:
     ERROR_FILE_TYPE: "Tipo de ficheiro inválido"
     ERROR_UNKNOWN: "Ocorreu um erro desconhecido durante o carregamento do ficheiro"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Texto simples"
     TEXT_SWITCHER_RICH_FORMATTING: "Formatação avançada"
     TEXT_SWITCHER_CONFIRM: "A formatação de texto e as imagens serão perdidas. Tem certeza de que deseja continuar?"
   SETTINGS_LABELS:
@@ -523,7 +522,6 @@ pt_PT:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Lista de pastas"
     BUTTON_CREATE: "Criar pasta"
-    BUTTON_SYSTEM: "Selecione as pastas de sistema"
     BUTTON_DELETE: "Excluir"
     BUTTON_SUBSCRIBE: "Assinar"
     BUTTON_UNSUBSCRIBE: "Anular"
@@ -633,17 +631,17 @@ pt_PT:
     CONNECTION_ERROR: "Não foi possível conectar ao servidor"
     CAPTCHA_ERROR: "Verificação CAPTCHA inválido."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Esse usuário Facebook não está associado a nenhuma conta de email ainda. Entre
-      utilizando seu email e senha e habilite essa função em suas configurações de
-      conta.
+        Esse usuário Facebook não está associado a nenhuma conta de email ainda. Entre
+        utilizando seu email e senha e habilite essa função em suas configurações
+        de conta.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Esse usuário Twitter não está associado a nenhuma conta de email ainda. Entre
-      utilizando seu email e senha e habilite essa função em suas configurações de
-      conta.
+        Esse usuário Twitter não está associado a nenhuma conta de email ainda. Entre
+        utilizando seu email e senha e habilite essa função em suas configurações
+        de conta.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Esse usuário Google não está associado a nenhuma conta de email ainda. Entre
-      utilizando seu email e senha e habilite essa função em suas configurações de
-      conta.
+        Esse usuário Google não está associado a nenhuma conta de email ainda. Entre
+        utilizando seu email e senha e habilite essa função em suas configurações
+        de conta.
     DOMAIN_NOT_ALLOWED: "Este domínio não é permitido"
     ACCOUNT_NOT_ALLOWED: "Esta conta não é permitida"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "É necessária a verificação em duas etapas"

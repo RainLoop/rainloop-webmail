@@ -393,12 +393,12 @@ pt_BR:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configurado"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Não configurado"
     TWO_FACTOR_SECRET_DESC: >-
-      Importe este código no seu cliente Google Authenticator (ou outro cliente TOTP)
-      usando o QR code abaixo ou informando o código manualmente.
+        Importe este código no seu cliente Google Authenticator (ou outro cliente
+        TOTP) usando o QR code abaixo ou informando o código manualmente.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      Se você não puder receber os códigos via Google Authenticator, você pode usar
-      esses códigos de backup para acessar sua conta. Depois de você usar um código
-      de backup, ele se expira.
+        Se você não puder receber os códigos via Google Authenticator, você pode usar
+        esses códigos de backup para acessar sua conta. Depois de você usar um código
+        de backup, ele se expira.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Você não pode alterar essa configuração antes do teste."
   TITLES:
     LOADING: "Carregando"
@@ -415,7 +415,6 @@ pt_BR:
     ERROR_FILE_TYPE: "Tipo de arquivo inválido"
     ERROR_UNKNOWN: "Ocorreu um erro de envio de arquivo desconhecido"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Texto simples"
     TEXT_SWITCHER_RICH_FORMATTING: "Formatação avançada"
     TEXT_SWITCHER_CONFIRM: "A formatação de texto e as imagens serão perdidas. Tem certeza de que deseja continuar?"
   SETTINGS_LABELS:
@@ -527,7 +526,6 @@ pt_BR:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Lista de pastas"
     BUTTON_CREATE: "Criar pasta"
-    BUTTON_SYSTEM: "Selecione as pastas do sistema"
     BUTTON_DELETE: "Excluir"
     BUTTON_SUBSCRIBE: "Acompanhar"
     BUTTON_UNSUBSCRIBE: "Não acompanhar"
@@ -638,17 +636,17 @@ pt_BR:
     CONNECTION_ERROR: "Não foi possível conectar-se ao servidor"
     CAPTCHA_ERROR: "Verificação CAPTCHA incorreta."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Esta ID social não é atribuído para qualquer conta de e-mail ainda. Entre usando
-      suas credenciais de e-mail e ative o recursso de logar pelo Facebook em configurações
-      de conta.
+        Esta ID social não é atribuído para qualquer conta de e-mail ainda. Entre
+        usando suas credenciais de e-mail e ative o recursso de logar pelo Facebook
+        em configurações de conta.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Esta ID social não é atribuído para qualquer conta de e-mail ainda. Entre usando
-      suas credenciais de e-mail e ative o recursso de logar pelo Twitter em configurações
-      de conta.
+        Esta ID social não é atribuído para qualquer conta de e-mail ainda. Entre
+        usando suas credenciais de e-mail e ative o recursso de logar pelo Twitter
+        em configurações de conta.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Esta ID social não é atribuído para qualquer conta de e-mail ainda. Entre usando
-      suas credenciais de e-mail e ative o recursso de logar pelo Google em configurações
-      de conta.
+        Esta ID social não é atribuído para qualquer conta de e-mail ainda. Entre
+        usando suas credenciais de e-mail e ative o recursso de logar pelo Google
+        em configurações de conta.
     DOMAIN_NOT_ALLOWED: "Este domínio não é permitido"
     ACCOUNT_NOT_ALLOWED: "Conta não permitida"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Verificação de duas etapas requerida"

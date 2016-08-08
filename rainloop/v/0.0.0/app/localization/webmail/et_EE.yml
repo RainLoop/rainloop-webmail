@@ -393,12 +393,12 @@ et_EE:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Seadistatud"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Seadistamata"
     TWO_FACTOR_SECRET_DESC: >
-      Impordi see info oma Google Authenticator klienti (või mõnesse teise TOTP klienti)
-      kasutades juuresolevat QR koodi või käsitsi sisestades.
+        Impordi see info oma Google Authenticator klienti (või mõnesse teise TOTP
+        klienti) kasutades juuresolevat QR koodi või käsitsi sisestades.
     TWO_FACTOR_BACKUP_CODES_DESC: >
-      Kui sul ei õnnestu Google Authenticatori (või muu TOTP kliendi) abil siseneda,
-      võid kasutada sisenemiseks varukoode. Kui oled varukoodi korra kasutanud, lõpetab
-      see töö.
+        Kui sul ei õnnestu Google Authenticatori (või muu TOTP kliendi) abil siseneda,
+        võid kasutada sisenemiseks varukoode. Kui oled varukoodi korra kasutanud,
+        lõpetab see töö.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Seda sätet ei saa enne testimist muuta."
   TITLES:
     LOADING: "Laadin"
@@ -415,7 +415,6 @@ et_EE:
     ERROR_FILE_TYPE: "Puudulik faili tüüp"
     ERROR_UNKNOWN: "Faili üleslaadimisel tekkis tundmatu iseloomuga viga"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Lihttekst"
     TEXT_SWITCHER_RICH_FORMATTING: "Rikastekst"
     TEXT_SWITCHER_CONFIRM: "Teksti vorming ja sellesse sisestatud pildid lähevad kaduma. Kas oled kindel, et soovid jätkata?"
   SETTINGS_LABELS:
@@ -528,7 +527,6 @@ et_EE:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Kaustade nimekiri"
     BUTTON_CREATE: "Loo kaust"
-    BUTTON_SYSTEM: "Vali süsteemne kaust"
     BUTTON_DELETE: "Kustuta"
     BUTTON_SUBSCRIBE: "Telli"
     BUTTON_UNSUBSCRIBE: "Loobu tellimusest"
@@ -639,17 +637,17 @@ et_EE:
     CONNECTION_ERROR: "Serveriga ühendumine ebaõnnestus"
     CAPTCHA_ERROR: "Puudulik CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      See sotsiaalvõrgustiku kasutaja ei ole seotud ühegi e-posti kontoga. Sisene
-      esmalt e-posti konto andmetega ja seo sotsiaalvõrgustiku konto sellega konto
-      sätete all.
+        See sotsiaalvõrgustiku kasutaja ei ole seotud ühegi e-posti kontoga. Sisene
+        esmalt e-posti konto andmetega ja seo sotsiaalvõrgustiku konto sellega konto
+        sätete all.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      See sotsiaalvõrgustiku kasutaja ei ole seotud ühegi e-posti kontoga. Sisene
-      esmalt e-posti konto andmetega ja seo sotsiaalvõrgustiku konto sellega konto
-      sätete all.
+        See sotsiaalvõrgustiku kasutaja ei ole seotud ühegi e-posti kontoga. Sisene
+        esmalt e-posti konto andmetega ja seo sotsiaalvõrgustiku konto sellega konto
+        sätete all.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      See sotsiaalvõrgustiku kasutaja ei ole seotud ühegi e-posti kontoga. Sisene
-      esmalt e-posti konto andmetega ja seo sotsiaalvõrgustiku konto sellega konto
-      sätete all.
+        See sotsiaalvõrgustiku kasutaja ei ole seotud ühegi e-posti kontoga. Sisene
+        esmalt e-posti konto andmetega ja seo sotsiaalvõrgustiku konto sellega konto
+        sätete all.
     DOMAIN_NOT_ALLOWED: "Domeenil ei ole lubatud siseneda"
     ACCOUNT_NOT_ALLOWED: "Kasutajakontol ei ole lubatud siseneda"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Kahe faktoriga autentimine on kohustuslik"

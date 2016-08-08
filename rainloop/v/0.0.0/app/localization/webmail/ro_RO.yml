@@ -388,11 +388,11 @@ ro_RO:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configured"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Not configured"
     TWO_FACTOR_SECRET_DESC: >-
-      Import this info into your Google Authenticator client (or other TOTP client)
-      using the provided QR code below or by entering the code manually.
+        Import this info into your Google Authenticator client (or other TOTP client)
+        using the provided QR code below or by entering the code manually.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      If you can't receive codes via Google Authenticator, you can use backup codes
-      to sign in. After you’ve used a backup code to sign in, it will become inactive.
+        If you can't receive codes via Google Authenticator, you can use backup codes
+        to sign in. After you’ve used a backup code to sign in, it will become inactive.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
   TITLES:
     LOADING: "Se încarcă"
@@ -409,7 +409,6 @@ ro_RO:
     ERROR_FILE_TYPE: "Tip de fișier invalid"
     ERROR_UNKNOWN: "Eroare la încărcarea de fișiere"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Text Simplu"
     TEXT_SWITCHER_RICH_FORMATTING: "Text formatat"
     TEXT_SWITCHER_CONFIRM: "Formatarea textului și imaginile vor fi pierdute. Sigur doriți să continuați?"
   SETTINGS_LABELS:
@@ -520,7 +519,6 @@ ro_RO:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Lista de dosare"
     BUTTON_CREATE: "Creare dosar"
-    BUTTON_SYSTEM: "Atribuirea dosarelor de sistem"
     BUTTON_DELETE: "Șterge"
     BUTTON_SUBSCRIBE: "Abonare"
     BUTTON_UNSUBSCRIBE: "Dezabonare"
@@ -629,14 +627,14 @@ ro_RO:
     CONNECTION_ERROR: "Eroare la conectarea la server."
     CAPTCHA_ERROR: "Cuvântul de securitate nu este corect."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Pentru acest utilizator nu sa asigurat încă un cont de e-mail. Conectați-vă
-      cu contul dvs. de e-mail și activați această caracteristică în setările.
+        Pentru acest utilizator nu sa asigurat încă un cont de e-mail. Conectați-vă
+        cu contul dvs. de e-mail și activați această caracteristică în setările.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Pentru acest utilizator nu sa asigurat încă un cont de e-mail. Conectați-vă
-      cu contul dvs. de e-mail și activați această caracteristică în setările.
+        Pentru acest utilizator nu sa asigurat încă un cont de e-mail. Conectați-vă
+        cu contul dvs. de e-mail și activați această caracteristică în setările.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Pentru acest utilizator nu sa asigurat încă un cont de e-mail. Conectați-vă
-      cu contul dvs. de e-mail și activați această caracteristică în setările.
+        Pentru acest utilizator nu sa asigurat încă un cont de e-mail. Conectați-vă
+        cu contul dvs. de e-mail și activați această caracteristică în setările.
     DOMAIN_NOT_ALLOWED: "Domeniul nu apartine de Wey5"
     ACCOUNT_NOT_ALLOWED: "Contul nu are permisiunea de conectare"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Two factor verification required"

@@ -90,7 +90,7 @@ export const bIsHttps = window.document && window.document.location ? 'https:' =
 /**
  * @type {Object}
  */
-export const oHtmlEditorDefaultConfig = {
+export const htmlEditorDefaultConfig = {
 	'title': false,
 	'stylesSet': false,
 	'customConfig': '',
@@ -128,11 +128,14 @@ export const oHtmlEditorDefaultConfig = {
 /**
  * @type {Object}
  */
-export const oHtmlEditorLangsMap = {
+export const htmlEditorLangsMap = {
+	'ar_sa': 'ar-sa',
 	'bg_bg': 'bg',
+	'cs_CZ': 'cs',
 	'de_de': 'de',
 	'el_gr': 'el',
 	'es_es': 'es',
+	'et_ee': 'et',
 	'fr_fr': 'fr',
 	'hu_hu': 'hu',
 	'is_is': 'is',
@@ -141,20 +144,20 @@ export const oHtmlEditorLangsMap = {
 	'ko_kr': 'ko',
 	'lt_lt': 'lt',
 	'lv_lv': 'lv',
+	'nb_no': 'nb',
 	'nl_nl': 'nl',
-	'bg_no': 'no',
 	'pl_pl': 'pl',
-	'pt_pt': 'pt',
 	'pt_br': 'pt-br',
+	'pt_pt': 'pt',
 	'ro_ro': 'ro',
 	'ru_ru': 'ru',
 	'sk_sk': 'sk',
 	'sl_si': 'sl',
 	'sv_se': 'sv',
 	'tr_tr': 'tr',
-	'uk_ua': 'ru',
-	'zh_tw': 'zh',
-	'zh_cn': 'zh-cn'
+	'uk_ua': 'uk',
+	'zh_cn': 'zh-cn',
+	'zh_tw': 'zh'
 };
 
 /**

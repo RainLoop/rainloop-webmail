@@ -393,12 +393,12 @@ lt_LT:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Sukonfiguruota"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Nesukonfiguruota"
     TWO_FACTOR_SECRET_DESC: >-
-      Importuoti šią informaciją į Google autentifikavimo klientą naudojant žemiau
-      pateiktą QR kodą arba įveskite kodą rankiniu būdu.
+        Importuoti šią informaciją į Google autentifikavimo klientą naudojant žemiau
+        pateiktą QR kodą arba įveskite kodą rankiniu būdu.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      Jei negaunate kodo per Google autentifikavimo klientą, galite nautotis savo
-      sukurta atsargine kodų kopija. Kai panaudosite atsarginę kopiją prisijungimui,
-      ji taps neaktyvi.
+        Jei negaunate kodo per Google autentifikavimo klientą, galite nautotis savo
+        sukurta atsargine kodų kopija. Kai panaudosite atsarginę kopiją prisijungimui,
+        ji taps neaktyvi.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Negalite paksiti šio nustatymo nepratestavę."
   TITLES:
     LOADING: "Kraunasi"
@@ -415,7 +415,6 @@ lt_LT:
     ERROR_FILE_TYPE: "Neleidžiamas failo tipas"
     ERROR_UNKNOWN: "Nežinoma klaida įkeliant failą"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Paprastas tekstas"
     TEXT_SWITCHER_RICH_FORMATTING: "Raiškusis formatas"
     TEXT_SWITCHER_CONFIRM: "Teksto farmatas ir paveikslėliai bus prarasti. Tikrai norite tęsti?"
   SETTINGS_LABELS:
@@ -527,7 +526,6 @@ lt_LT:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Katalogų sąrašas"
     BUTTON_CREATE: "Sukurti katalogą"
-    BUTTON_SYSTEM: "Pasirinkti sisteminius katalogus"
     BUTTON_DELETE: "Pašalinti"
     BUTTON_SUBSCRIBE: "Prenumeruoti"
     BUTTON_UNSUBSCRIBE: "Atsisakyti prenumeratos"
@@ -638,14 +636,14 @@ lt_LT:
     CONNECTION_ERROR: "Nepavyskta prisijungti prie serverio"
     CAPTCHA_ERROR: "Neteisingas CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
-      elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
+        Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
+        elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
-      elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
+        Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
+        elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
-      elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
+        Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
+        elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
     DOMAIN_NOT_ALLOWED: "Šis subdomenas neleidžiamas"
     ACCOUNT_NOT_ALLOWED: "Paskyra neleidžiama"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Būtinas dviejų veiksnių patikrinimas"

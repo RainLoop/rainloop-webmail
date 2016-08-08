@@ -35,14 +35,13 @@ cs_CZ:
     LABEL_ALLOW_TEMPLATES: "Povolit šablony"
     ALERT_WARNING: "Upozornění!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Používáte defaultní administrátorské heslo.
+      Používáte výchozí administrátorské heslo.
       <br />
-      Z bezpečnostních důvodů prosím
-      <strong><a href="#/security">změnte</a></strong>
-      svoje heslo.
+      Z bezpečnostních důvodů jeji prosím
+      <strong><a href="#/security">změnte</a></strong>.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Přihlašovací obrazovka"
-    LABEL_DEFAULT_DOMAIN: "Defaultní doména"
+    LABEL_DEFAULT_DOMAIN: "Výchozí doména"
     LABEL_DETERMINE_USER_DOMAIN: "Zkoušet odvodit doménu z uživatelského jména"
     LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Povolit výběr jazyka na přihlašovací obrazovce"
     LABEL_DETERMINE_USER_LANGUAGE: "Zkoušet odvodit jazyk pro uživatele"
@@ -152,10 +151,12 @@ cs_CZ:
     TYPE_BASIC_HINT_2: "Tato doména nemůže být licencována."
     HTML_ALERT_TOP_1: "RainLoop Webmail je licencován pod"
     HTML_ALERT_TOP_2: "Můžete tento nástroj <b>volně</b> používat pro vaše <b>osobní</b> projekty."
-    HTML_ALERT_TOP_3: "Komerční užívání (s přidanými doplňky) <b>RainLoop Webmail</b> vyžaduje získání \n\n<a href=\"http://www.rainloop.net/purchase/\"\
-      \ target=\"_blank\">licence</a>.\n"
+    HTML_ALERT_TOP_3: |
+      Komerční užívání (s přidanými doplňky) <b>RainLoop Webmail</b> vyžaduje získání
+
+      <a href="http://www.rainloop.net/purchase/" target="_blank">licence</a>.
     TYPE_PREMIUM_LIFETIME: "Lifetime"
-    LABEL_SUB_EXPIRES: "Licence vypršela"
+    LABEL_SUB_EXPIRES: "Licence vyprší"
     BUTTON_ACTIVATE: "Aktivační licenční klíč pro tuto doménu"
     BUTTON_PURCHASE: "Koupit"
     BUTTON_TRIAL: "Trial"
@@ -245,14 +246,14 @@ cs_CZ:
     CONNECTION_ERROR: "Nelze se spojit se serverem"
     CAPTCHA_ERROR: "Nesprávná CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
-      a nastavte si tuto možnost.
+        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        a nastavte si tuto možnost.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
-      a nastavte si tuto možnost.
+        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        a nastavte si tuto možnost.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
-      a nastavte si tuto možnost.
+        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        a nastavte si tuto možnost.
     DOMAIN_NOT_ALLOWED: "Doména není povolená"
     ACCOUNT_NOT_ALLOWED: "Účet není povolený"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Je vyžadováno dvoufázové ověření"

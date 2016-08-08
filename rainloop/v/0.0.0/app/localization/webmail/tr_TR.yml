@@ -387,11 +387,12 @@ tr_TR:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Yapılandırılmış"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Yapılandırılmamış"
     TWO_FACTOR_SECRET_DESC: >-
-      Aşağıda sunulan QR kodu kullanarak Google Şifrematik istemcisi (veya başka TOTP
-      istemci) içine veya elle kod girerek bu bilgi aktarın.
+        Aşağıda sunulan QR kodu kullanarak Google Şifrematik istemcisi (veya başka
+        TOTP istemci) içine veya elle kod girerek bu bilgi aktarın.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      Google Şifrematik'te aracılığıyla kodları alamıyorsa Eğer oturum için bir yedek
-      kod kullandım sonra, bunu pasif olacaktır, oturum yedekleme kodlarını kullanabilirsiniz.
+        Google Şifrematik'te aracılığıyla kodları alamıyorsa Eğer oturum için bir
+        yedek kod kullandım sonra, bunu pasif olacaktır, oturum yedekleme kodlarını
+        kullanabilirsiniz.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
   TITLES:
     LOADING: "Yükleniyor"
@@ -408,7 +409,6 @@ tr_TR:
     ERROR_FILE_TYPE: "Geçersiz dosya tipi"
     ERROR_UNKNOWN: "Bilinmeyen bir dosya yükleme bir hatası oluştu"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Düz Metin"
     TEXT_SWITCHER_RICH_FORMATTING: "Zengin yazı formatı"
     TEXT_SWITCHER_CONFIRM: "Metin biçimlendirme ve görüntüleri kaybolacak. Devam etmek istediğinizden emin misiniz?"
   SETTINGS_LABELS:
@@ -519,7 +519,6 @@ tr_TR:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Klasör Listesi"
     BUTTON_CREATE: "Klasör Oluştur"
-    BUTTON_SYSTEM: "Sistem Dosyalarını Seç"
     BUTTON_DELETE: "Sil"
     BUTTON_SUBSCRIBE: "Abone"
     BUTTON_UNSUBSCRIBE: "Abonelikten Çık"
@@ -629,17 +628,17 @@ tr_TR:
     CONNECTION_ERROR: "Sunucuya bağlanılamadı"
     CAPTCHA_ERROR: "Yanlış Güvenlik Kodu."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Bu, sosyal kimliği henüz herhangi bir e-posta hesabı için atanmadı.E-kimlik
-      bilgilerini kullanarak oturum ve hesap ayarlarında bu özelliği etkinleştirmek
-      ekleyin.
+        Bu, sosyal kimliği henüz herhangi bir e-posta hesabı için atanmadı.E-kimlik
+        bilgilerini kullanarak oturum ve hesap ayarlarında bu özelliği etkinleştirmek
+        ekleyin.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Bu, sosyal kimliği henüz herhangi bir e-posta hesabı için atanmadı.E-kimlik
-      bilgilerini kullanarak oturum ve hesap ayarlarında bu özelliği etkinleştirmek
-      ekleyin.
+        Bu, sosyal kimliği henüz herhangi bir e-posta hesabı için atanmadı.E-kimlik
+        bilgilerini kullanarak oturum ve hesap ayarlarında bu özelliği etkinleştirmek
+        ekleyin.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Bu, sosyal kimliği henüz herhangi bir e-posta hesabı için atanmadı.E-kimlik
-      bilgilerini kullanarak oturum ve hesap ayarlarında bu özelliği etkinleştirmek
-      ekleyin.
+        Bu, sosyal kimliği henüz herhangi bir e-posta hesabı için atanmadı.E-kimlik
+        bilgilerini kullanarak oturum ve hesap ayarlarında bu özelliği etkinleştirmek
+        ekleyin.
     DOMAIN_NOT_ALLOWED: "Alan Adına izin verilmemiş"
     ACCOUNT_NOT_ALLOWED: "Hesaba izin verilmemiş"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "İki Aşamalı Doğrulama Gerekiyor"

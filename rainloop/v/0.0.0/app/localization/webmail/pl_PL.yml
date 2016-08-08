@@ -102,6 +102,7 @@ pl_PL:
     BUTTON_BACK: "Wstecz"
     BUTTON_CLOSE: "Zamknij"
     BUTTON_DELETE: "Usuń"
+    BUTTON_UNSUBSCRIBE: "Zrezygnuj z subskrypcji"
     BUTTON_ARCHIVE: "Archiwizuj"
     BUTTON_SPAM: "Oznacz jako niechcianą"
     BUTTON_NOT_SPAM: "Oznacz jako pożądaną"
@@ -393,11 +394,11 @@ pl_PL:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Skonfigurowana"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Nie skonfigurowana"
     TWO_FACTOR_SECRET_DESC: >-
-      Użyj tych informacji w usłudze Google Authenticator (lub innym kliencie TOTP),
-      używając poniższego kodu QR lub wpisując kod ręcznie.
+        Użyj tych informacji w usłudze Google Authenticator (lub innym kliencie TOTP),
+        używając poniższego kodu QR lub wpisując kod ręcznie.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      Jeżeli nie możesz otrzymać kodu poprzez usługę Google Authenticator, możesz
-      użyć kodów zapasowych. Po zużyciu kodów, opcja ta będzie nieaktywna.
+        Jeżeli nie możesz otrzymać kodu poprzez usługę Google Authenticator, możesz
+        użyć kodów zapasowych. Po zużyciu kodów, opcja ta będzie nieaktywna.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Nie możesz zmienić tego ustawienia przed jego przetestowaniem."
   TITLES:
     LOADING: "Ładowanie..."
@@ -414,7 +415,6 @@ pl_PL:
     ERROR_FILE_TYPE: "Nieprawidłowy typ pliku"
     ERROR_UNKNOWN: "Wystąpił nieznany błąd w trakcie przesyłania pliku"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Zwykły tekst"
     TEXT_SWITCHER_RICH_FORMATTING: "Wzbogacony format tekstowy"
     TEXT_SWITCHER_CONFIRM: "Formatowanie tekstu oraz wszystkie wstawione obrazy zostaną utracone. Czy na pewno chcesz kontynuować?"
   SETTINGS_LABELS:
@@ -525,9 +525,9 @@ pl_PL:
     BUTTON_TWITTER_DISCONNECT: "Odłącz"
     MAIN_TWITTER_DESC: "Po zezwoleniu na logowanie przez: Twitter, możesz zalogować się na to konto używając przycisku: \"Twitter\" w panelu logowania."
   SETTINGS_FOLDERS:
-    LEGEND_FOLDERS: "Lista Folderów"
+    LEGEND_FOLDERS: "Lista folderów"
     BUTTON_CREATE: "Utwórz folder"
-    BUTTON_SYSTEM: "Wybierz foldery systemowe"
+    BUTTON_SYSTEM: "Foldery systemowe"
     BUTTON_DELETE: "Usuń"
     BUTTON_SUBSCRIBE: "Subskrybuj"
     BUTTON_UNSUBSCRIBE: "Zrezygnuj z subskrypcji"
@@ -638,17 +638,17 @@ pl_PL:
     CONNECTION_ERROR: "Błąd połączenia z serwerem"
     CAPTCHA_ERROR: "Nieprawidłowy kod CAPTCHA"
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      To społecznościowe ID (Facebooku), nie jest powiązane z żadnym kontem pocztowym.
-      Zaloguj się używając danych swojego konta e-mail i skonfiguruj tę opcję w: Ustawienia
-      > Sieci społecznościowe.
+        To społecznościowe ID (Facebooku), nie jest powiązane z żadnym kontem pocztowym.
+        Zaloguj się używając danych swojego konta e-mail i skonfiguruj tę opcję w:
+        Ustawienia > Sieci społecznościowe.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      To społecznościowe ID (Twitter), nie jest powiązane z żadnym kontem pocztowym.
-      Zaloguj się używając danych swojego konta e-mail i skonfiguruj tę opcję w: Ustawienia
-      > Sieci społecznościowe.
+        To społecznościowe ID (Twitter), nie jest powiązane z żadnym kontem pocztowym.
+        Zaloguj się używając danych swojego konta e-mail i skonfiguruj tę opcję w:
+        Ustawienia > Sieci społecznościowe.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      To społecznościowe ID (Konto Google), nie jest powiązane z żadnym kontem pocztowym.
-      Zaloguj się używając danych swojego konta e-mail i skonfiguruj tę opcję w: Ustawienia
-      > Sieci społecznościowe.
+        To społecznościowe ID (Konto Google), nie jest powiązane z żadnym kontem pocztowym.
+        Zaloguj się używając danych swojego konta e-mail i skonfiguruj tę opcję w:
+        Ustawienia > Sieci społecznościowe.
     DOMAIN_NOT_ALLOWED: "Domena niedozwolona"
     ACCOUNT_NOT_ALLOWED: "Konto nie jest dozwolone"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Wymagana dwuskładnikowa autoryzacja"

@@ -384,11 +384,11 @@ ko_KR:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configured"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Not configured"
     TWO_FACTOR_SECRET_DESC: >-
-      Import this info into your Google Authenticator client (or other TOTP client)
-      using the provided QR code below or by entering the code manually.
+        Import this info into your Google Authenticator client (or other TOTP client)
+        using the provided QR code below or by entering the code manually.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      If you can't receive codes via Google Authenticator, you can use backup codes
-      to sign in. After you’ve used a backup code to sign in, it will become inactive.
+        If you can't receive codes via Google Authenticator, you can use backup codes
+        to sign in. After you’ve used a backup code to sign in, it will become inactive.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
   TITLES:
     LOADING: "로딩 중"
@@ -405,7 +405,6 @@ ko_KR:
     ERROR_FILE_TYPE: "정상적인 파일 형식이 아닙니다."
     ERROR_UNKNOWN: "알 수 없는 오류가 발생했습니다."
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "텍스트 모드"
     TEXT_SWITCHER_RICH_FORMATTING: "위지윅 모드"
     TEXT_SWITCHER_CONFIRM: "본문 형식과 이미지가 삭제됩니다. 정말 진행하시겠습니까?"
   SETTINGS_LABELS:
@@ -516,7 +515,6 @@ ko_KR:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "폴더 목록"
     BUTTON_CREATE: "새 폴더 만들기"
-    BUTTON_SYSTEM: "시스템 폴더 지정"
     BUTTON_DELETE: "삭제"
     BUTTON_SUBSCRIBE: "보기"
     BUTTON_UNSUBSCRIBE: "보이지 않기"
@@ -625,11 +623,11 @@ ko_KR:
     CONNECTION_ERROR: "서버에 연결할 수 없습니다."
     CAPTCHA_ERROR: "보안문자를 잘못 입력하였습니다."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      이 페이스북 아이디는 아직 어떠한 이메일 계정에도 연결되지 않았습니다. 이메일 계정으로 로그인 하신 후 소셜 설정에서 소셜 계정에 연결해주세요.
+        이 페이스북 아이디는 아직 어떠한 이메일 계정에도 연결되지 않았습니다. 이메일 계정으로 로그인 하신 후 소셜 설정에서 소셜 계정에 연결해주세요.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      이 트위터 아이디는 아직 어떠한 이메일 계정에도 연결되지 않았습니다. 이메일 계정으로 로그인 하신 후 소셜 설정에서 소셜 계정에 연결해주세요.
+        이 트위터 아이디는 아직 어떠한 이메일 계정에도 연결되지 않았습니다. 이메일 계정으로 로그인 하신 후 소셜 설정에서 소셜 계정에 연결해주세요.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      이 구글 아이디는 아직 어떠한 이메일 계정에도 연결되지 않았습니다. 이메일 계정으로 로그인 하신 후 소셜 설정에서 소셜 계정에 연결해주세요.
+        이 구글 아이디는 아직 어떠한 이메일 계정에도 연결되지 않았습니다. 이메일 계정으로 로그인 하신 후 소셜 설정에서 소셜 계정에 연결해주세요.
     DOMAIN_NOT_ALLOWED: "허용된 도메인이 아닙니다."
     ACCOUNT_NOT_ALLOWED: "허용된 계정이 아닙니다."
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Two factor verification required"

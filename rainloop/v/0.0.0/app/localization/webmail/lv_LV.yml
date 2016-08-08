@@ -387,11 +387,11 @@ lv_LV:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configured"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Not configured"
     TWO_FACTOR_SECRET_DESC: >-
-      Import this info into your Google Authenticator client (or other TOTP client)
-      using the provided QR code below or by entering the code manually.
+        Import this info into your Google Authenticator client (or other TOTP client)
+        using the provided QR code below or by entering the code manually.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      If you can't receive codes via Google Authenticator, you can use backup codes
-      to sign in. After you’ve used a backup code to sign in, it will become inactive.
+        If you can't receive codes via Google Authenticator, you can use backup codes
+        to sign in. After you’ve used a backup code to sign in, it will become inactive.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
   TITLES:
     LOADING: "Lādējas"
@@ -408,7 +408,6 @@ lv_LV:
     ERROR_FILE_TYPE: "Nepareizs faila tips"
     ERROR_UNKNOWN: "Nezināma faila ielādes kļūda"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Teksta noformējums"
     TEXT_SWITCHER_RICH_FORMATTING: "Papildus teksta noformēums"
     TEXT_SWITCHER_CONFIRM: "Bildes un teksta noformējums pazudīs. Vai tiešām turpināt?"
   SETTINGS_LABELS:
@@ -519,7 +518,6 @@ lv_LV:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Mapes"
     BUTTON_CREATE: "Izveidot mapi"
-    BUTTON_SYSTEM: "Izvēlēties sistēas mapes"
     BUTTON_DELETE: "Dzēst"
     BUTTON_SUBSCRIBE: "Abonēt"
     BUTTON_UNSUBSCRIBE: "Atcelt abonēšanu"
@@ -628,14 +626,14 @@ lv_LV:
     CONNECTION_ERROR: "Nevar savienoties ar serveri"
     CAPTCHA_ERROR: "Nepareizs kods"
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Sociālā ID nav pievienot nevienam e-pastam. Ielogojaties ar e-pastu un ieslēdzat
-      šādu iespeju uzstādijumos.
+        Sociālā ID nav pievienot nevienam e-pastam. Ielogojaties ar e-pastu un ieslēdzat
+        šādu iespeju uzstādijumos.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Sociālā ID nav pievienot nevienam e-pastam. Ielogojaties ar e-pastu un ieslēdzat
-      šādu iespeju uzstādijumos.
+        Sociālā ID nav pievienot nevienam e-pastam. Ielogojaties ar e-pastu un ieslēdzat
+        šādu iespeju uzstādijumos.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Sociālā ID nav pievienot nevienam e-pastam. Ielogojaties ar e-pastu un ieslēdzat
-      šādu iespeju uzstādijumos.
+        Sociālā ID nav pievienot nevienam e-pastam. Ielogojaties ar e-pastu un ieslēdzat
+        šādu iespeju uzstādijumos.
     DOMAIN_NOT_ALLOWED: "Šis domēns nav atļauts"
     ACCOUNT_NOT_ALLOWED: "Account is not allowed"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Two factor verification required"

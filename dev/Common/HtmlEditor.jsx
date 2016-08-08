@@ -2,7 +2,7 @@
 import window from 'window';
 import _ from '_';
 import $ from '$';
-import {oHtmlEditorDefaultConfig, oHtmlEditorLangsMap} from 'Common/Globals';
+import {htmlEditorDefaultConfig, htmlEditorLangsMap} from 'Common/Globals';
 import * as Settings from 'Storage/Settings';
 
 class HtmlEditor
@@ -236,7 +236,7 @@ class HtmlEditor
 				initFunc = () => {
 
 					const
-						config = oHtmlEditorDefaultConfig,
+						config = htmlEditorDefaultConfig,
 						language = Settings.settingsGet('Language'),
 						allowSource = !!Settings.appSettingsGet('allowHtmlEditorSourceButton'),
 						biti = !!Settings.appSettingsGet('allowHtmlEditorBitiButtons');
@@ -259,7 +259,7 @@ class HtmlEditor
 					config.enterMode = window.CKEDITOR.ENTER_BR;
 					config.shiftEnterMode = window.CKEDITOR.ENTER_P;
 
-					config.language = oHtmlEditorLangsMap[language] || 'en';
+					config.language = htmlEditorLangsMap[(language || 'en').toLowerCase()] || 'en';
 					if (window.CKEDITOR.env)
 					{
 						window.CKEDITOR.env.isCompatible = true;

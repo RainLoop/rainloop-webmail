@@ -102,6 +102,7 @@ hu_HU:
     BUTTON_BACK: "Vissza"
     BUTTON_CLOSE: "Bezárás"
     BUTTON_DELETE: "Tőrlés"
+    BUTTON_UNSUBSCRIBE: "Leiratkozás erről a listáról"
     BUTTON_ARCHIVE: "Archívum"
     BUTTON_SPAM: "Levélszemét"
     BUTTON_NOT_SPAM: "Nem levélszemét"
@@ -394,12 +395,12 @@ hu_HU:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Beállítva"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Nincs beállítva"
     TWO_FACTOR_SECRET_DESC: >
-      Importáld ezt az infót a Google Authenticator kliensedbe (vagy más TOTP kliensbe)
-      az alábbi QR kód használatával vagy a kód manuális megadatásával.
+        Importáld ezt az infót a Google Authenticator kliensedbe (vagy más TOTP kliensbe)
+        az alábbi QR kód használatával vagy a kód manuális megadatásával.
     TWO_FACTOR_BACKUP_CODES_DESC: >
-      Ha nem kapod meg a kódokat a Google Authenticator kliensből (vagy más TOTP kliensből),
-      akkor a bejelentkezéshez használhatod a biztonsági kódot. A biztonsági kód használata
-      után inaktívvá válik.
+        Ha nem kapod meg a kódokat a Google Authenticator kliensből (vagy más TOTP
+        kliensből), akkor a bejelentkezéshez használhatod a biztonsági kódot. A biztonsági
+        kód használata után inaktívvá válik.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Tesztelés nélkül nem lehet megváltoztatni ezt a beállítást."
   TITLES:
     LOADING: "Betöltés"
@@ -416,7 +417,6 @@ hu_HU:
     ERROR_FILE_TYPE: "Érvénytelen fájltípus"
     ERROR_UNKNOWN: "Ismeretlen fájl feltöltési hiba történt"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Egyszerű szöveg"
     TEXT_SWITCHER_RICH_FORMATTING: "Formázott szöveg"
     TEXT_SWITCHER_CONFIRM: "A szövegformázás és a képek el fognak veszni. Biztos, hogy folytatni akarod?"
   SETTINGS_LABELS:
@@ -529,7 +529,7 @@ hu_HU:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Mappa lista"
     BUTTON_CREATE: "Mappa létrehozás"
-    BUTTON_SYSTEM: "Rendszermappák kiválasztása"
+    BUTTON_SYSTEM: "Rendszermappák"
     BUTTON_DELETE: "Törlés"
     BUTTON_SUBSCRIBE: "Feliratkozás"
     BUTTON_UNSUBSCRIBE: "Leiratkozás"
@@ -640,17 +640,17 @@ hu_HU:
     CONNECTION_ERROR: "Nem lehet kapcsolódni a szerverhez"
     CAPTCHA_ERROR: "Érvénytelen CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Ez a közösségi azonosító még egyetlen e-mail fiókhoz sincs hozzárendelve. Lépj
-      be az e-mail fiókod hitelesítő adataival majd engedélyezd ezt a lehetőséget
-      a fiók beállításoknál.
+        Ez a közösségi azonosító még egyetlen e-mail fiókhoz sincs hozzárendelve.
+        Lépj be az e-mail fiókod hitelesítő adataival majd engedélyezd ezt a lehetőséget
+        a fiók beállításoknál.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Ez a közösségi azonosító még egyetlen e-mail fiókhoz sincs hozzárendelve. Lépj
-      be az e-mail fiókod hitelesítő adataival majd engedélyezd ezt a lehetőséget
-      a fiók beállításoknál.
+        Ez a közösségi azonosító még egyetlen e-mail fiókhoz sincs hozzárendelve.
+        Lépj be az e-mail fiókod hitelesítő adataival majd engedélyezd ezt a lehetőséget
+        a fiók beállításoknál.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Ez a közösségi azonosító még egyetlen e-mail fiókhoz sincs hozzárendelve. Lépj
-      be az e-mail fiókod hitelesítő adataival majd engedélyezd ezt a lehetőséget
-      a fiók beállításoknál.
+        Ez a közösségi azonosító még egyetlen e-mail fiókhoz sincs hozzárendelve.
+        Lépj be az e-mail fiókod hitelesítő adataival majd engedélyezd ezt a lehetőséget
+        a fiók beállításoknál.
     DOMAIN_NOT_ALLOWED: "A domain nem engedélyezett"
     ACCOUNT_NOT_ALLOWED: "A fiók nem engedélyezett"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Kétlépcsős azonosítás kötelező"

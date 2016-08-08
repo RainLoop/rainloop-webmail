@@ -389,11 +389,12 @@ sv_SE:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Konfigurerad"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Inte konfigurarad"
     TWO_FACTOR_SECRET_DESC: >-
-      Importera denna information till din Google Authenticator klient (eller annan
-      TOTP klient) med denna QR kod eller manuellt med koden här nedan.
+        Importera denna information till din Google Authenticator klient (eller annan
+        TOTP klient) med denna QR kod eller manuellt med koden här nedan.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      Om du inte kan ta emot koderna med Google Authenticator, så använd backupkoderna
-      för att logga in. När du använt backupkoderna för att logga in så blir dom inaktiva.
+        Om du inte kan ta emot koderna med Google Authenticator, så använd backupkoderna
+        för att logga in. När du använt backupkoderna för att logga in så blir dom
+        inaktiva.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
   TITLES:
     LOADING: "Laddar"
@@ -410,7 +411,6 @@ sv_SE:
     ERROR_FILE_TYPE: "Ogiltig filtyp"
     ERROR_UNKNOWN: "Okänt uppladdingsfel"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Enkel text"
     TEXT_SWITCHER_RICH_FORMATTING: "HTML-formatering"
     TEXT_SWITCHER_CONFIRM: "Textformatering och bilder kommer att försvinna. Vill du fortsätta?"
   SETTINGS_LABELS:
@@ -521,7 +521,6 @@ sv_SE:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Mapplista"
     BUTTON_CREATE: "Skapa mapp"
-    BUTTON_SYSTEM: "Välj Systemmapp"
     BUTTON_DELETE: "Ta bort"
     BUTTON_SUBSCRIBE: "Prenumerera"
     BUTTON_UNSUBSCRIBE: "Avprenumerera"
@@ -631,14 +630,14 @@ sv_SE:
     CONNECTION_ERROR: "Kan inte ansluta till servern"
     CAPTCHA_ERROR: "Felaktig CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Detta ID är inte tilldelat något epost konto än. Logga in med epost uppgifter
-      och aktivera detta i konto inställningarna.
+        Detta ID är inte tilldelat något epost konto än. Logga in med epost uppgifter
+        och aktivera detta i konto inställningarna.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Detta ID är inte tilldelat något epost konto än. Logga in med epost uppgifter
-      och aktivera detta i konto inställningarna.
+        Detta ID är inte tilldelat något epost konto än. Logga in med epost uppgifter
+        och aktivera detta i konto inställningarna.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Detta ID är inte tilldelat något epost konto än. Logga in med epost uppgifter
-      och aktivera detta i konto inställningarna.
+        Detta ID är inte tilldelat något epost konto än. Logga in med epost uppgifter
+        och aktivera detta i konto inställningarna.
     DOMAIN_NOT_ALLOWED: "Domän är inte tillåtet"
     ACCOUNT_NOT_ALLOWED: "Konto är inte tillåtet"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Tvåstegs-verifikation krävs"

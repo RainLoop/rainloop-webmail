@@ -393,12 +393,12 @@ bg_BG:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Настроена"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Не е настроена"
     TWO_FACTOR_SECRET_DESC: >
-      Внесете тази информация във вашият Google Authenticator клиент (или друг TOTP
-      клиент) чрез предоставения QR код или чрез въвеждане на кода ръчно.
+        Внесете тази информация във вашият Google Authenticator клиент (или друг TOTP
+        клиент) чрез предоставения QR код или чрез въвеждане на кода ръчно.
     TWO_FACTOR_BACKUP_CODES_DESC: >
-      Ако не можете да получавате кодове от Google Authenticator (или друг TOTP клиент),
-      можете да използвате резервни кодове за влизане. След като използвате някой,
-      той става невалиден.
+        Ако не можете да получавате кодове от Google Authenticator (или друг TOTP
+        клиент), можете да използвате резервни кодове за влизане. След като използвате
+        някой, той става невалиден.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Не можете да промените настройките, преди да ги тествате."
   TITLES:
     LOADING: "Зареждане"
@@ -415,7 +415,6 @@ bg_BG:
     ERROR_FILE_TYPE: "Невалиден тип на файла"
     ERROR_UNKNOWN: "Възникна неизвестна грешка при качването на файла"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Обикновен текст"
     TEXT_SWITCHER_RICH_FORMATTING: "Форматиран текст"
     TEXT_SWITCHER_CONFIRM: "Форматирането и изображенията ще бъдат изгубени. Сигурни ли сте, че желаете да продължите?"
   SETTINGS_LABELS:
@@ -528,7 +527,6 @@ bg_BG:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Списък с папки"
     BUTTON_CREATE: "Създай папка"
-    BUTTON_SYSTEM: "Избери системни папки"
     BUTTON_DELETE: "Изтриване"
     BUTTON_SUBSCRIBE: "Абонирай се"
     BUTTON_UNSUBSCRIBE: "Отписване"
@@ -639,14 +637,14 @@ bg_BG:
     CONNECTION_ERROR: "Не може да се свърже със сървъра"
     CAPTCHA_ERROR: "Некорекно въведена CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Това социално ID не е присвоено към никой email акаунт. Влезте чрез email-а
-      и пуснете тази опция чрез Настройки.
+        Това социално ID не е присвоено към никой email акаунт. Влезте чрез email-а
+        и пуснете тази опция чрез Настройки.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Това социално ID не е присвоено към никой email акаунт. Влезте чрез email-а
-      и пуснете тази опция чрез Настройки.
+        Това социално ID не е присвоено към никой email акаунт. Влезте чрез email-а
+        и пуснете тази опция чрез Настройки.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Това социално ID не е присвоено към никой email акаунт. Влезте чрез email-а
-      и пуснете тази опция чрез Настройки.
+        Това социално ID не е присвоено към никой email акаунт. Влезте чрез email-а
+        и пуснете тази опция чрез Настройки.
     DOMAIN_NOT_ALLOWED: "Този домейн не е разрешен"
     ACCOUNT_NOT_ALLOWED: "Този акаунт не е разрешен"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Задължителна е двустъпкова проверка"

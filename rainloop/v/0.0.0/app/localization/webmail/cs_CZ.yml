@@ -392,11 +392,11 @@ cs_CZ:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Nastaveno"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Nenastaveno"
     TWO_FACTOR_SECRET_DESC: >-
-      Import this info into your Google Authenticator client (or other TOTP client)
-      using the provided QR code below or by entering the code manually.
+        Import this info into your Google Authenticator client (or other TOTP client)
+        using the provided QR code below or by entering the code manually.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      If you can't receive codes via Google Authenticator, you can use backup codes
-      to sign in. After you’ve used a backup code to sign in, it will become inactive.
+        If you can't receive codes via Google Authenticator, you can use backup codes
+        to sign in. After you’ve used a backup code to sign in, it will become inactive.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
   TITLES:
     LOADING: "Načítám"
@@ -413,7 +413,6 @@ cs_CZ:
     ERROR_FILE_TYPE: "Nesprávny typ souboru"
     ERROR_UNKNOWN: "Nastala neznámá chyba při nahrávaní"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Neformátovaný text"
     TEXT_SWITCHER_RICH_FORMATTING: "Formátovaný text"
     TEXT_SWITCHER_CONFIRM: "Formátování textu a obrázky budou odstraněné. Chcete pokračovat?"
   SETTINGS_LABELS:
@@ -525,7 +524,6 @@ cs_CZ:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Seznam složek"
     BUTTON_CREATE: "Vytvořit složku"
-    BUTTON_SYSTEM: "Spravovat systémové složky"
     BUTTON_DELETE: "Odstranit"
     BUTTON_SUBSCRIBE: "Přihlásit se"
     BUTTON_UNSUBSCRIBE: "Odhlásit se"
@@ -636,14 +634,14 @@ cs_CZ:
     CONNECTION_ERROR: "Nepodařilo se připojit k serveru"
     CAPTCHA_ERROR: "Nesprávná CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
-      a nastavte si tuto možnost.
+        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        a nastavte si tuto možnost.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
-      a nastavte si tuto možnost.
+        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        a nastavte si tuto možnost.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
-      a nastavte si tuto možnost.
+        Toto ID není přiřazeno k žádnému účtu. Přihlašte se pomocí vaší emailové adresy
+        a nastavte si tuto možnost.
     DOMAIN_NOT_ALLOWED: "Doména není povolená"
     ACCOUNT_NOT_ALLOWED: "Účet není povolený"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Je vyžadováno dvoufázové ověření"

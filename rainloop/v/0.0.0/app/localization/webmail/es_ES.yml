@@ -393,13 +393,14 @@ es_ES:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configurado"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "No configurado"
     TWO_FACTOR_SECRET_DESC: >-
-      Importar esta información en su cliente Google Authenticator (u otro cliente
-      TOTP) utilizando el código QR ​​se indica debajo o introduciendo el código manualmente.
+        Importar esta información en su cliente Google Authenticator (u otro cliente
+        TOTP) utilizando el código QR ​​se indica debajo o introduciendo el código
+        manualmente.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      Si usted no puede recibir los códigos a través de Google Authenticator, puede
-      utilizar códigos de copia de seguridad para firmar pulg Después de que usted
-      ha utilizado un código de copia de seguridad para iniciar sesión, se convertirá
-      en inactiva.
+        Si usted no puede recibir los códigos a través de Google Authenticator, puede
+        utilizar códigos de copia de seguridad para firmar pulg Después de que usted
+        ha utilizado un código de copia de seguridad para iniciar sesión, se convertirá
+        en inactiva.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
   TITLES:
     LOADING: "Cargando"
@@ -416,7 +417,6 @@ es_ES:
     ERROR_FILE_TYPE: "Tipo de archivo inválido"
     ERROR_UNKNOWN: "Se ha producido un error de carga de archivo desconocido"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "Texto sin formato"
     TEXT_SWITCHER_RICH_FORMATTING: "Texto enriquecido"
     TEXT_SWITCHER_CONFIRM: "Se perderá el formato de texto e imágenes. ¿Está seguro que desea continuar?"
   SETTINGS_LABELS:
@@ -528,7 +528,6 @@ es_ES:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Lista de Carpetas"
     BUTTON_CREATE: "Crear carpeta"
-    BUTTON_SYSTEM: "Seleccione las carpetas del sistema"
     BUTTON_DELETE: "Eliminar"
     BUTTON_SUBSCRIBE: "Suscribir"
     BUTTON_UNSUBSCRIBE: "Darse de baja"
@@ -639,17 +638,17 @@ es_ES:
     CONNECTION_ERROR: "No se puede conectar al servidor"
     CAPTCHA_ERROR: "CAPTCHA Incorrecto."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Este ID no está asignado a ninguna cuenta de Email todavía. Inicie sesión con
-      las credenciales de correo electrónico y habilite esta característica en la
-      configuración de cuenta.
+        Este ID no está asignado a ninguna cuenta de Email todavía. Inicie sesión
+        con las credenciales de correo electrónico y habilite esta característica
+        en la configuración de cuenta.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Este ID no está asignado a ninguna cuenta de Email todavía. Inicie sesión con
-      las credenciales de correo electrónico y habilite esta característica en la
-      configuración de cuenta.
+        Este ID no está asignado a ninguna cuenta de Email todavía. Inicie sesión
+        con las credenciales de correo electrónico y habilite esta característica
+        en la configuración de cuenta.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Este ID no está asignado a ninguna cuenta de Email todavía. Inicie sesión con
-      las credenciales de correo electrónico y habilite esta característica en la
-      configuración de cuenta.
+        Este ID no está asignado a ninguna cuenta de Email todavía. Inicie sesión
+        con las credenciales de correo electrónico y habilite esta característica
+        en la configuración de cuenta.
     DOMAIN_NOT_ALLOWED: "Dominio no permitido"
     ACCOUNT_NOT_ALLOWED: "La cuenta no está permitida"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Factor de verificación en dos pasos requerido"

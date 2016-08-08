@@ -389,11 +389,11 @@ zh_CN:
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Configured"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Not configured"
     TWO_FACTOR_SECRET_DESC: >-
-      Import this info into your Google Authenticator client (or other TOTP client)
-      using the provided QR code below or by entering the code manually.
+        Import this info into your Google Authenticator client (or other TOTP client)
+        using the provided QR code below or by entering the code manually.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-      If you can't receive codes via Google Authenticator, you can use backup codes
-      to sign in. After you’ve used a backup code to sign in, it will become inactive.
+        If you can't receive codes via Google Authenticator, you can use backup codes
+        to sign in. After you’ve used a backup code to sign in, it will become inactive.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
   TITLES:
     LOADING: "加载中"
@@ -410,7 +410,6 @@ zh_CN:
     ERROR_FILE_TYPE: "无效文件类型"
     ERROR_UNKNOWN: "未知文件上传错误"
   EDITOR:
-    TEXT_SWITCHER_PLAINT_TEXT: "简单文本"
     TEXT_SWITCHER_RICH_FORMATTING: "富文本"
     TEXT_SWITCHER_CONFIRM: "文件格式及图片将丢失，您确定继续这么做？"
   SETTINGS_LABELS:
@@ -521,7 +520,6 @@ zh_CN:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "文件夹"
     BUTTON_CREATE: "新建文件夹"
-    BUTTON_SYSTEM: "系统文件夹设置"
     BUTTON_DELETE: "删除"
     BUTTON_SUBSCRIBE: "订阅"
     BUTTON_UNSUBSCRIBE: "取消订阅"
@@ -630,14 +628,14 @@ zh_CN:
     CONNECTION_ERROR: "无法连接服务器"
     CAPTCHA_ERROR: "验证码不正确。"
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
+        This social ID is not assigned for any email account yet. Log in using email
+        credentials and enable this feature in account settings.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
+        This social ID is not assigned for any email account yet. Log in using email
+        credentials and enable this feature in account settings.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
+        This social ID is not assigned for any email account yet. Log in using email
+        credentials and enable this feature in account settings.
     DOMAIN_NOT_ALLOWED: "域不允许"
     ACCOUNT_NOT_ALLOWED: "账户不允许"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Two factor verification required"
