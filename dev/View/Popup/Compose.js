@@ -14,7 +14,7 @@ var
 	Globals = require('Common/Globals'),
 	Events = require('Common/Events'),
 	Links = require('Common/Links'),
-	HtmlEditor = require('Common/HtmlEditor'),
+	HtmlEditor = require('Common/HtmlEditor').default,
 
 	Translator = require('Common/Translator'),
 	Momentor = require('Common/Momentor'),

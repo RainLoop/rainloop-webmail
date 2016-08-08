@@ -65,7 +65,7 @@ ko.bindingHandlers.editor = {
 				fUpdateEditorValue();
 			},
 
-			HtmlEditor = require('Common/HtmlEditor');
+			HtmlEditor = require('Common/HtmlEditor').default;
 
 		if (ko.isObservable(fValue) && HtmlEditor)
 		{

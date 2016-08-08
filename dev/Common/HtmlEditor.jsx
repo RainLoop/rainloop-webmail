@@ -3,6 +3,7 @@ import window from 'window';
 import _ from '_';
 import $ from '$';
 import {htmlEditorDefaultConfig, htmlEditorLangsMap} from 'Common/Globals';
+import {EventKeyCode} from 'Common/Enums';
 import * as Settings from 'Storage/Settings';
 
 class HtmlEditor
@@ -268,7 +269,7 @@ class HtmlEditor
 					this.editor = window.CKEDITOR.appendTo(this.$element[0], config);
 
 					this.editor.on('key', (event) => {
-						if (event && event.data && 9 /* Tab */ === event.data.keyCode)
+						if (event && event.data && EventKeyCode.Tab === event.data.keyCode)
 						{
 							return false;
 						}
@@ -412,4 +413,3 @@ class HtmlEditor
 }
 
 export {HtmlEditor, HtmlEditor as default};
-module.exports = HtmlEditor;

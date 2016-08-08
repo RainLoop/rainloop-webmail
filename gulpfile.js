@@ -33,6 +33,9 @@ var
 	path = require('path'),
 	notifier = require('node-notifier'),
 
+	webpack = require('webpack'),
+	webpackCfg = require('./webpack.config.js'),
+
 	gulp = require('gulp'),
 	concat = require('gulp-concat-util'),
 	header = require('gulp-header'),
@@ -49,6 +52,38 @@ var
 	cache = require('gulp-cached'),
 	gutil = require('gulp-util')
 ;
+
+// webpack
+if (webpackCfg && webpackCfg.output)
+{
+	webpackCfg.output.publicPath = cfg.paths.staticJS;
+}
+
+if (webpackCfg && webpackCfg.plugins)
+{
+	webpackCfg.plugins.push(new webpack.DefinePlugin({
+		'RL_COMMUNITY': !!cfg.community,
+		'process.env': {
+			NODE_ENV: '"production"'
+		}
+	}));
+}
+
+function webpackError(err) {
+	if (err)
+	{
+		gutil.log('[webpack]', '---');
+		gutil.log('[webpack]', err.error ? err.error.toString() : '');
+		gutil.log('[webpack]', err.message || '');
+		gutil.log('[webpack]', '---');
+
+		notifier.notify({
+			'sound': true,
+			'title': 'webpack',
+			'message': err.error ? err.error.toString() : err.message
+		});
+	}
+}
 
 function getHead()
 {
@@ -330,67 +365,25 @@ gulp.task('js:ckeditor:beautify', function() {
 		.pipe(gulp.dest(cfg.paths.static + 'ckeditor/'));
 });
 
-gulp.task('js:webpack', [], function(callback) {
-
-	var
-		webpack = require('webpack'),
-		webpackCfg = require('./webpack.config.js')
-	;
-
-	if (webpackCfg && webpackCfg.output)
-	{
-		webpackCfg.output.publicPath = cfg.paths.staticJS;
-	}
-
-	if (webpackCfg && webpackCfg.plugins)
-	{
-		webpackCfg.plugins.push(new webpack.DefinePlugin({
-            'RL_COMMUNITY': !!cfg.community,
-			'process.env': {
-				NODE_ENV: '"production"'
-			}
-        }));
-	}
-
+gulp.task('js:webpack', function(callback) {
 	webpack(webpackCfg, function(err, stats) {
 
-		var
-			fN = function (err) {
-				if (err)
-				{
-					gutil.log('[webpack]', '---');
-					gutil.log('[webpack]', err.error ? err.error.toString() : '');
-					gutil.log('[webpack]', err.message || '');
-					gutil.log('[webpack]', '---');
-
-					notifier.notify({
-						'sound': true,
-						'title': 'webpack',
-						'message': err.error ? err.error.toString() : err.message
-					});
-				}
-			}
-		;
-
-        if (err)
+		if (err)
 		{
 			if (cfg.watch)
 			{
-				fN(err);
+				webpackError(err);
 			}
 			else
 			{
 				throw new gutil.PluginError('webpack', err);
 			}
 		}
-		else if (stats && stats.compilation && stats.compilation.errors &&
-			stats.compilation.errors[0])
+		else if (stats && stats.compilation && stats.compilation.errors && stats.compilation.errors[0])
 		{
 			if (cfg.watch)
 			{
-				_.each(stats.compilation.errors, function (err) {
-					fN(err);
-				});
+				_.each(stats.compilation.errors, webpackError);
 			}
 			else
 			{

@@ -6,7 +6,7 @@ var
 	Enums = require('Common/Enums'),
 	Utils = require('Common/Utils'),
 	Translator = require('Common/Translator'),
-	HtmlEditor = require('Common/HtmlEditor'),
+	HtmlEditor = require('Common/HtmlEditor').default,
 
 	Remote = require('Remote/User/Ajax'),
 
