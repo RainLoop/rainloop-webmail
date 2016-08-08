@@ -423,7 +423,6 @@ gulp.task('js:min', ['js:app', 'js:admin', 'js:validate'], function() {
 	return gulp.src(cfg.paths.staticJS + '*.js')
 		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
 		.pipe(uglify(cfg.uglify))
-		.pipe(header(getHead() + '\n'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticMinJS))
 		.on('error', gutil.log);

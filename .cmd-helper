@@ -1,0 +1,10 @@
+
+# dependencies checker
+npm-check --skip-unused
+
+# dependencies locker
+npm shrinkwrap --dev
+
+# code validation
+gulp v
+
