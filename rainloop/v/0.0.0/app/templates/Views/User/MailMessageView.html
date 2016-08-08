@@ -20,10 +20,10 @@
 						<i class="icon-archive"></i>
 					</a>
 					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-join="top" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
-						<i class="icon-angry-smiley"></i>
+						<i class="icon-warning"></i>
 					</a>
 					<a class="btn btn-dark-disabled-border button-not-spam" data-tooltip-join="top" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand, tooltip: 'MESSAGE/BUTTON_NOT_SPAM'">
-						<i class="icon-happy-smiley"></i>
+						<i class="icon-check-mark-circle-two"></i>
 					</a>
 					<a class="btn last btn-dark-disabled-border button-delete" data-tooltip-join="top" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
 						<i class="icon-trash"></i>
@@ -128,14 +128,14 @@
 										</li>
 										<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
 											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: spamCommand">
-												<i class="icon-angry-smiley"></i>
+												<i class="icon-warning"></i>
 												&nbsp;&nbsp;
 												<span class="i18n" data-i18n="MESSAGE/BUTTON_SPAM"></span>
 											</a>
 										</li>
 										<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled()">
 											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: notSpamCommand">
-												<i class="icon-happy-smiley"></i>
+												<i class="icon-check-mark-circle-two"></i>
 												&nbsp;&nbsp;
 												<span class="i18n" data-i18n="MESSAGE/BUTTON_NOT_SPAM"></span>
 											</a>
