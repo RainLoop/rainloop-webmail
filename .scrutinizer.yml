@@ -12,3 +12,4 @@ filter:
         - 'data/*'
 checks:
     javascript: true
+    php: true

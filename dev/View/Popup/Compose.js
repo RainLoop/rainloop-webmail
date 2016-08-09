@@ -1380,13 +1380,9 @@ ComposePopupView.prototype.onBuild = function()
 {
 	this.initUploader();
 
-	var
-		self = this,
-		oScript = null;
+	var self = this;
 
-	key('ctrl+q, command+q, ctrl+w, command+w', Enums.KeyState.Compose, function() {
-		return false;
-	});
+	key('ctrl+q, command+q, ctrl+w, command+w', Enums.KeyState.Compose, Utils.noopFalse);
 
 	key('`', Enums.KeyState.Compose, function() {
 		if (self.oEditor && !self.oEditor.hasFocus() && !Utils.inFocus())
@@ -1437,7 +1433,7 @@ ComposePopupView.prototype.onBuild = function()
 
 	if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
 	{
-		oScript = window.document.createElement('script');
+		var oScript = window.document.createElement('script');
 		oScript.type = 'text/javascript';
 		oScript.src = 'https://www.dropbox.com/static/api/2/dropins.js';
 		$(oScript).attr('id', 'dropboxjs').attr('data-app-key', self.dropboxApiKey());
@@ -1690,18 +1686,15 @@ ComposePopupView.prototype.initUploader = function()
 					this.dragAndDropVisible(false);
 				}, this))
 				.on('onProgress', _.bind(function(sId, iLoaded, iTotal) {
-					var oItem = null;
-					if (Utils.isUnd(oUploadCache[sId]))
+
+					var oItem = oUploadCache[sId];
+					if (!oItem)
 					{
 						oItem = this.getAttachmentById(sId);
 						if (oItem)
 						{
 							oUploadCache[sId] = oItem;
 						}
-					}
-					else
-					{
-						oItem = oUploadCache[sId];
 					}
 
 					if (oItem)
@@ -1740,20 +1733,14 @@ ComposePopupView.prototype.initUploader = function()
 				}, this))
 				.on('onStart', _.bind(function(sId) {
 
-					var
-						oItem = null;
-
-					if (Utils.isUnd(oUploadCache[sId]))
+					var oItem = oUploadCache[sId];
+					if (!oItem)
 					{
 						oItem = this.getAttachmentById(sId);
 						if (oItem)
 						{
 							oUploadCache[sId] = oItem;
 						}
-					}
-					else
-					{
-						oItem = oUploadCache[sId];
 					}
 
 					if (oItem)

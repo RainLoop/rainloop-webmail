@@ -90,7 +90,7 @@ AbstractAjaxPromises.prototype.ajaxRequest = function(sAction, bPost, iTimeOut, 
 			}
 
 			// backward capability
-			var sType = Enums.StorageResultType.Error;
+			var sType = '';
 			switch (true)
 			{
 				case 'success' === sTextStatus && oData && oData.Result && sAction === oData.Action:

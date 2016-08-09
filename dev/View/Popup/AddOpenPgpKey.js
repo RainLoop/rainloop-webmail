@@ -46,13 +46,11 @@ function AddOpenPgpKeyPopupView()
 			return false;
 		}
 
-		var
-			done = false,
-			match = null;
+		var done = false;
 
 		do
 		{
-			match = reg.exec(keyTrimmed);
+			var match = reg.exec(keyTrimmed);
 			if (match && 0 < count)
 			{
 				if (match[0] && match[1] && match[2] && match[1] === match[2])
