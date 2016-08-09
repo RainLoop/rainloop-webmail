@@ -39,15 +39,13 @@ function MessageOpenPgpPopupView()
 
 		_.delay(_.bind(function() {
 
-			var
-				oPrivateKeys = [],
-				oPrivateKey = null;
+			var oPrivateKey = null;
 
 			try
 			{
 				if (this.resultCallback && this.selectedKey())
 				{
-					oPrivateKeys = this.selectedKey().getNativeKeys();
+					var oPrivateKeys = this.selectedKey().getNativeKeys();
 					oPrivateKey = oPrivateKeys && oPrivateKeys[0] ? oPrivateKeys[0] : null;
 
 					if (oPrivateKey)

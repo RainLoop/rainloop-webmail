@@ -58,17 +58,13 @@ function NewOpenPgpKeyPopupView()
 
 		_.delay(function() {
 
-			var mPromise = false;
-
 			try {
 
-				mPromise = PgpStore.openpgp.generateKey({
+				PgpStore.openpgp.generateKey({
 					userIds: [oUserId],
 					numBits: Utils.pInt(self.keyBitLength()),
 					passphrase: Utils.trim(self.password())
-				});
-
-				mPromise.then(function(mKeyPair) {
+				}).then(function(mKeyPair) {
 
 					self.submitRequest(false);
 

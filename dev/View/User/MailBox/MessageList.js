@@ -538,14 +538,9 @@ MessageListMailBoxUserView.prototype.setAction = function(sFolderFullNameRaw, mU
  */
 MessageListMailBoxUserView.prototype.setActionForAll = function(sFolderFullNameRaw, iSetAction)
 {
-	var
-		oFolder = null,
-		aMessages = MessageStore.messageList();
-
 	if ('' !== sFolderFullNameRaw)
 	{
-		oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
-
+		var oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
 		if (oFolder)
 		{
 			switch (iSetAction)
@@ -554,7 +549,7 @@ MessageListMailBoxUserView.prototype.setActionForAll = function(sFolderFullNameR
 					oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
 					if (oFolder)
 					{
-						_.each(aMessages, function(oMessage) {
+						_.each(MessageStore.messageList(), function(oMessage) {
 							oMessage.unseen(false);
 						});
 
@@ -568,7 +563,7 @@ MessageListMailBoxUserView.prototype.setActionForAll = function(sFolderFullNameR
 					oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
 					if (oFolder)
 					{
-						_.each(aMessages, function(oMessage) {
+						_.each(MessageStore.messageList(), function(oMessage) {
 							oMessage.unseen(true);
 						});
 
@@ -644,18 +639,15 @@ MessageListMailBoxUserView.prototype.flagMessages = function(oCurrentMessage)
 
 MessageListMailBoxUserView.prototype.flagMessagesFast = function(bFlag)
 {
-	var
-		aChecked = this.messageListCheckedOrSelected(),
-		aFlagged = [];
-
+	var aChecked = this.messageListCheckedOrSelected();
 	if (0 < aChecked.length)
 	{
-		aFlagged = _.filter(aChecked, function(oMessage) {
-			return oMessage.flagged();
-		});
-
 		if (Utils.isUnd(bFlag))
 		{
+			var aFlagged = _.filter(aChecked, function(oMessage) {
+				return oMessage.flagged();
+			});
+
 			this.setAction(aChecked[0].folderFullNameRaw, true,
 				aChecked.length === aFlagged.length ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, aChecked);
 		}
@@ -669,18 +661,15 @@ MessageListMailBoxUserView.prototype.flagMessagesFast = function(bFlag)
 
 MessageListMailBoxUserView.prototype.seenMessagesFast = function(bSeen)
 {
-	var
-		aChecked = this.messageListCheckedOrSelected(),
-		aUnseen = [];
-
+	var aChecked = this.messageListCheckedOrSelected();
 	if (0 < aChecked.length)
 	{
-		aUnseen = _.filter(aChecked, function(oMessage) {
-			return oMessage.unseen();
-		});
-
 		if (Utils.isUnd(bSeen))
 		{
+			var aUnseen = _.filter(aChecked, function(oMessage) {
+				return oMessage.unseen();
+			});
+
 			this.setAction(aChecked[0].folderFullNameRaw, true,
 				0 < aUnseen.length ? Enums.MessageSetAction.SetSeen : Enums.MessageSetAction.UnsetSeen, aChecked);
 		}

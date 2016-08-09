@@ -118,13 +118,10 @@ FolderListMailBoxUserView.prototype.onBuild = function(oDom)
 	oDom
 		.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function(oEvent) {
 
-			var
-				oFolder = ko.dataFor(this),
-				bCollapsed = false;
-
+			var oFolder = ko.dataFor(this);
 			if (oFolder && oEvent)
 			{
-				bCollapsed = oFolder.collapsed();
+				var bCollapsed = oFolder.collapsed();
 				require('App/User').default.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
 
 				oFolder.collapsed(!bCollapsed);
@@ -142,13 +139,12 @@ FolderListMailBoxUserView.prototype.onBuild = function(oDom)
 	key('up, down', Enums.KeyState.FolderList, function(event, handler) {
 
 		var
-			iIndex = -1,
 			iKeyCode = handler && 'up' === handler.shortcut ? Enums.EventKeyCode.Up : Enums.EventKeyCode.Down,
 			$items = $('.b-folders .e-item .e-link:not(.hidden):visible', oDom);
 
 		if (event && $items.length)
 		{
-			iIndex = $items.index($items.filter('.focused'));
+			var iIndex = $items.index($items.filter('.focused'));
 			if (-1 < iIndex)
 			{
 				$items.eq(iIndex).removeClass('focused');
@@ -182,17 +178,13 @@ FolderListMailBoxUserView.prototype.onBuild = function(oDom)
 	});
 
 	key('space', Enums.KeyState.FolderList, function() {
-		var
-			bCollapsed = true,
-			oFolder = null,
-			$items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
-
+		var $items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
 		if ($items.length && $items[0])
 		{
-			oFolder = ko.dataFor($items[0]);
+			var oFolder = ko.dataFor($items[0]);
 			if (oFolder)
 			{
-				bCollapsed = oFolder.collapsed();
+				var bCollapsed = oFolder.collapsed();
 				require('App/User').default.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
 				oFolder.collapsed(!bCollapsed);
 			}

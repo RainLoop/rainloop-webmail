@@ -4,7 +4,6 @@ var
 	ko = window.ko,
 	_ = require('_'),
 	$ = require('$'),
-	JSON = require('JSON'),
 	Opentip = require('Opentip'),
 	Pikaday = require('pikaday'),
 
@@ -83,10 +82,10 @@ ko.bindingHandlers.editor = {
 
 ko.bindingHandlers.json = {
 	init: function(oElement, fValueAccessor) {
-		$(oElement).text(JSON.stringify(ko.unwrap(fValueAccessor())));
+		$(oElement).text(window.JSON.stringify(ko.unwrap(fValueAccessor())));
 	},
 	update: function(oElement, fValueAccessor) {
-		$(oElement).text(JSON.stringify(ko.unwrap(fValueAccessor())));
+		$(oElement).text(window.JSON.stringify(ko.unwrap(fValueAccessor())));
 	}
 };
 
@@ -198,8 +197,6 @@ ko.bindingHandlers.tooltip = {
 	update: function(oElement, fValueAccessor) {
 
 		var
-			bi18n = true,
-			sValue = '',
 			$oEl = $(oElement),
 			fValue = fValueAccessor(),
 			bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
@@ -207,13 +204,11 @@ ko.bindingHandlers.tooltip = {
 
 		if ((!Globals.bMobileDevice || bMobile) && oElement.__opentip)
 		{
-			bi18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
-			sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
-
+			var sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 			if (sValue)
 			{
-				oElement.__opentip.setContent(
-					bi18n ? require('Common/Translator').i18n(sValue) : sValue);
+				var i18n = 'on' === ($oEl.data('tooltip-i18n') || 'on');
+				oElement.__opentip.setContent(i18n ? require('Common/Translator').i18n(sValue) : sValue);
 				oElement.__opentip.activate();
 			}
 			else
@@ -636,8 +631,6 @@ ko.bindingHandlers.draggable = {
 
 					$(sDroppableSelector).each(function() {
 						var
-							moveUp = null,
-							moveDown = null,
 							$this = $(this),
 							oOffset = $this.offset(),
 							bottomPos = oOffset.top + $this.height();
@@ -649,7 +642,7 @@ ko.bindingHandlers.draggable = {
 						{
 							if (oEvent.pageY >= bottomPos - iTriggerZone && oEvent.pageY <= bottomPos)
 							{
-								moveUp = function() {
+								var moveUp = function() {
 									$this.scrollTop($this.scrollTop() + iScrollSpeed);
 									Utils.windowResize();
 								};
@@ -660,7 +653,7 @@ ko.bindingHandlers.draggable = {
 
 							if (oEvent.pageY >= oOffset.top && oEvent.pageY <= oOffset.top + iTriggerZone)
 							{
-								moveDown = function() {
+								var moveDown = function() {
 									$this.scrollTop($this.scrollTop() - iScrollSpeed);
 									Utils.windowResize();
 								};
@@ -869,19 +862,14 @@ ko.bindingHandlers.emailsTags = {
 			'parseHook': function(aInput) {
 
 				return _.map(aInput, function(sInputValue) {
-
-					var
-						sValue = Utils.trim(sInputValue),
-						oEmail = null;
-
-					if ('' !== sValue)
+					var value = Utils.trim(sInputValue);
+					if ('' !== value)
 					{
-						oEmail = new EmailModel();
-						oEmail.mailsoParse(sValue);
-						return [oEmail.toLine(false), oEmail];
+						var email = new EmailModel();
+						email.mailsoParse(value);
+						return [email.toLine(false), email];
 					}
-
-					return [sValue, null];
+					return [value, null];
 
 				});
 
@@ -976,15 +964,13 @@ ko.bindingHandlers.command = {
 		ko.bindingHandlers[jqElement.is('form') ? 'submit' : 'click']
 			.init.apply(oViewModel, Array.prototype.slice.call(arguments)); // eslint-disable-line prefer-rest-params
 	},
-
 	update: function(oElement, fValueAccessor) {
 
 		var
-			bResult = true,
 			jqElement = $(oElement),
-			oCommand = fValueAccessor();
+			oCommand = fValueAccessor(),
+			bResult = oCommand.enabled();
 
-		bResult = oCommand.enabled();
 		jqElement.toggleClass('command-not-enabled', !bResult);
 
 		if (bResult)

@@ -47,14 +47,12 @@ MenuSettingsUserView.prototype.onBuild = function(oDom)
 	key('up, down', Enums.KeyState.Settings, _.throttle(function(event, handler) {
 
 		var
-			sH = '',
-			iIndex = -1,
 			bUp = handler && 'up' === handler.shortcut,
 			$items = $('.b-settings-menu .e-item', oDom);
 
 		if (event && $items.length)
 		{
-			iIndex = $items.index($items.filter('.selected'));
+			var iIndex = $items.index($items.filter('.selected'));
 			if (bUp && 0 < iIndex)
 			{
 				iIndex -= 1;
@@ -64,7 +62,7 @@ MenuSettingsUserView.prototype.onBuild = function(oDom)
 				iIndex += 1;
 			}
 
-			sH = $items.eq(iIndex).attr('href');
+			var sH = $items.eq(iIndex).attr('href');
 			if (sH)
 			{
 				kn.setHash(sH, false, true);

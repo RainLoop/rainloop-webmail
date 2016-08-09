@@ -302,25 +302,15 @@ function MessageViewMailBoxUserView()
 	}, this);
 
 	this.viewFromDkimStatusIconClass = ko.computed(function() {
-
-		var sResult = 'icon-none iconcolor-display-none';
-//			var sResult = 'icon-warning-alt iconcolor-grey';
 		switch (this.viewFromDkimData()[0])
 		{
 			case 'none':
-				break;
+				return 'icon-none iconcolor-display-none';
 			case 'pass':
-				sResult = 'icon-ok iconcolor-green';
-//					sResult = 'icon-warning-alt iconcolor-green';
-				break;
+				return 'icon-ok iconcolor-green';
 			default:
-				sResult = 'icon-warning-alt iconcolor-red';
-				break;
-			// no default
+				return 'icon-warning-alt iconcolor-red';
 		}
-
-		return sResult;
-
 	}, this);
 
 	this.viewFromDkimStatusTitle = ko.computed(function() {
@@ -465,7 +455,6 @@ MessageViewMailBoxUserView.prototype.detectDomBackgroundColor = function(oDom)
 	var
 		iLimit = 5,
 		sResult = '',
-		aC = null,
 		fFindDom = function(oInputDom) {
 			var children = oInputDom ? oInputDom.children() : null;
 			return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
@@ -486,7 +475,7 @@ MessageViewMailBoxUserView.prototype.detectDomBackgroundColor = function(oDom)
 
 	if (oDom && 1 === oDom.length)
 	{
-		aC = oDom;
+		var aC = oDom;
 		while ('' === sResult)
 		{
 			iLimit -= 1;
@@ -643,8 +632,7 @@ MessageViewMailBoxUserView.prototype.onBuild = function(oDom)
 {
 	var
 		self = this,
-		oScript = null,
-//			sErrorMessage = Translator.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
+//		sErrorMessage = Translator.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
 		fCheckHeaderHeight = _.bind(this.checkHeaderHeight, this);
 
 	this.oDom = oDom;
@@ -675,7 +663,7 @@ MessageViewMailBoxUserView.prototype.onBuild = function(oDom)
 
 	if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
 	{
-		oScript = window.document.createElement('script');
+		var oScript = window.document.createElement('script');
 		oScript.type = 'text/javascript';
 		oScript.src = 'https://www.dropbox.com/static/api/2/dropins.js';
 		$(oScript).attr('id', 'dropboxjs').attr('data-app-key', self.dropboxApiKey());

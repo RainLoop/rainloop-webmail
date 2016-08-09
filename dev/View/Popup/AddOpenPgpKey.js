@@ -30,27 +30,29 @@ function AddOpenPgpKeyPopupView()
 
 		var
 			count = 30,
-			match = null,
-			key = Utils.trim(this.key()),
+			keyTrimmed = Utils.trim(this.key()),
 			reg = /[\-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}[\s\S]+?[\-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}/gi,
-			openpgpKeyring = PgpStore.openpgpKeyring,
-			done = false;
+			openpgpKeyring = PgpStore.openpgpKeyring;
 
-		if (/[\n]/.test(key))
+		if (/[\n]/.test(keyTrimmed))
 		{
-			key = key.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
+			keyTrimmed = keyTrimmed.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
 		}
 
-		this.key.error('' === key);
+		this.key.error('' === keyTrimmed);
 
 		if (!openpgpKeyring || this.key.error())
 		{
 			return false;
 		}
 
+		var
+			done = false,
+			match = null;
+
 		do
 		{
-			match = reg.exec(key);
+			match = reg.exec(keyTrimmed);
 			if (match && 0 < count)
 			{
 				if (match[0] && match[1] && match[2] && match[1] === match[2])

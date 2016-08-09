@@ -41,23 +41,22 @@ MenuSettingsAdminView.prototype.onBuild = function(oDom)
 
 		var
 			sH = '',
-			iIndex = -1,
 			bUp = handler && 'up' === handler.shortcut,
 			$items = $('.b-admin-menu .e-item', oDom);
 
 		if (event && $items.length)
 		{
-			iIndex = $items.index($items.filter('.selected'));
-			if (bUp && 0 < iIndex)
+			var index = $items.index($items.filter('.selected'));
+			if (bUp && 0 < index)
 			{
-				iIndex -= 1;
+				index -= 1;
 			}
-			else if (!bUp && iIndex < $items.length - 1)
+			else if (!bUp && index < $items.length - 1)
 			{
-				iIndex += 1;
+				index += 1;
 			}
 
-			sH = $items.eq(iIndex).attr('href');
+			sH = $items.eq(index).attr('href');
 			if (sH)
 			{
 				kn.setHash(sH, false, true);

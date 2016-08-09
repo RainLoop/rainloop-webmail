@@ -87,7 +87,6 @@ function ComposeOpenPgpPopupView()
 		var
 			bResult = true,
 			oPrivateKey = null,
-			aPrivateKeys = [],
 			aPublicKeys = [];
 
 		this.submitRequest(true);
@@ -110,7 +109,7 @@ function ComposeOpenPgpPopupView()
 
 			if (bResult)
 			{
-				aPrivateKeys = this.signKey().key.getNativeKeys();
+				var aPrivateKeys = this.signKey().key.getNativeKeys();
 				oPrivateKey = aPrivateKeys[0] || null;
 
 				try
@@ -248,22 +247,19 @@ function ComposeOpenPgpPopupView()
 
 		var
 			sKeyId = this.selectedPrivateKey(),
-			oKey = null,
 			oOption = sKeyId ? _.find(this.privateKeysOptions(), function(oItem) {
 				return oItem && sKeyId === oItem.id;
 			}) : null;
 
 		if (oOption)
 		{
-			oKey = {
+			this.signKey({
 				'empty': !oOption.key,
 				'selected': ko.observable(!!oOption.key),
 				'users': oOption.key.users,
 				'hash': oOption.key.id.substr(-8).toUpperCase(),
 				'key': oOption.key
-			};
-
-			this.signKey(oKey);
+			});
 		}
 	});
 
@@ -402,7 +398,6 @@ ComposeOpenPgpPopupView.prototype.onShow = function(fCallback, sText, oIdentity,
 		self = this,
 		aRec = [],
 		sEmail = '',
-		aKeys = [],
 		oEmail = new EmailModel();
 
 	this.resultCallback = fCallback;
@@ -433,7 +428,8 @@ ComposeOpenPgpPopupView.prototype.onShow = function(fCallback, sText, oIdentity,
 	{
 		sEmail = oIdentity.email();
 		aRec.unshift(sEmail);
-		aKeys = PgpStore.findAllPrivateKeysByEmailNotNative(sEmail);
+
+		var aKeys = PgpStore.findAllPrivateKeysByEmailNotNative(sEmail);
 		if (aKeys && aKeys[0])
 		{
 			this.signKey({

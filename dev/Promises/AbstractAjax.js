@@ -56,9 +56,7 @@ AbstractAjaxPromises.prototype.ajaxRequest = function(sAction, bPost, iTimeOut, 
 	var self = this;
 	return new Promise(function(resolve, reject) {
 
-		var
-			oH = null,
-			iStart = Utils.microtime();
+		var iStart = Utils.microtime();
 
 		iTimeOut = Utils.isNormal(iTimeOut) ? iTimeOut : Consts.DEFAULT_AJAX_TIMEOUT;
 		sAdditionalGetString = Utils.isUnd(sAdditionalGetString) ? '' : Utils.pString(sAdditionalGetString);
@@ -72,7 +70,7 @@ AbstractAjaxPromises.prototype.ajaxRequest = function(sAction, bPost, iTimeOut, 
 
 		self.setTrigger(fTrigger, true);
 
-		oH = $.ajax({
+		var oH = $.ajax({
 			type: bPost ? 'POST' : 'GET',
 			url: Links.ajax(sAdditionalGetString),
 			async: true,
@@ -81,10 +79,10 @@ AbstractAjaxPromises.prototype.ajaxRequest = function(sAction, bPost, iTimeOut, 
 			timeout: iTimeOut,
 			global: true
 		}).always(function(oData, sTextStatus) {
+
 			var
 				bCached = false,
-				oErrorData = null,
-				sType = Enums.StorageResultType.Error;
+				oErrorData = null;
 
 			if (oData && oData.Time)
 			{
@@ -92,6 +90,7 @@ AbstractAjaxPromises.prototype.ajaxRequest = function(sAction, bPost, iTimeOut, 
 			}
 
 			// backward capability
+			var sType = Enums.StorageResultType.Error;
 			switch (true)
 			{
 				case 'success' === sTextStatus && oData && oData.Result && sAction === oData.Action:
@@ -100,7 +99,9 @@ AbstractAjaxPromises.prototype.ajaxRequest = function(sAction, bPost, iTimeOut, 
 				case 'abort' === sTextStatus && (!oData || !oData.__aborted__):
 					sType = Enums.StorageResultType.Abort;
 					break;
-				// no default
+				default:
+					sType = Enums.StorageResultType.Error;
+					break;
 			}
 
 			Plugins.runHook('ajax-default-response', [sAction,

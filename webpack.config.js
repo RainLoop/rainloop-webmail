@@ -55,7 +55,6 @@ module.exports = {
 	},
 	externals: {
 		'window': 'window',
-		'JSON': 'window.JSON',
 		'progressJs': 'window.progressJs',
 		'moment': 'window.moment',
 		'ifvisible': 'window.ifvisible',

@@ -5,7 +5,6 @@ var
 	$ = require('$'),
 	ko = require('ko'),
 	key = require('key'),
-	JSON = require('JSON'),
 	Jua = require('Jua'),
 
 	Enums = require('Common/Enums'),
@@ -1481,7 +1480,7 @@ ComposePopupView.prototype.driveCallback = function(sAccessToken, oData)
 			if (oRequest && oRequest.responseText)
 			{
 				var
-					oResponse = JSON.parse(oRequest.responseText),
+					oResponse = window.JSON.parse(oRequest.responseText),
 					fExport = function(oItem, sMimeType, sExt) {
 						if (oItem && oItem.exportLinks)
 						{
@@ -1849,12 +1848,10 @@ ComposePopupView.prototype.addMessageAsAttachment = function(oMessage)
 {
 	if (oMessage)
 	{
-		var
-			oAttachment = null,
-			sTemp = oMessage.subject();
-
+		var sTemp = oMessage.subject();
 		sTemp = '.eml' === sTemp.substr(-4).toLowerCase() ? sTemp : sTemp + '.eml';
-		oAttachment = new ComposeAttachmentModel(
+
+		var oAttachment = new ComposeAttachmentModel(
 			oMessage.requestHash, sTemp, oMessage.size()
 		);
 

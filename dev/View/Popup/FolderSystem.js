@@ -38,45 +38,41 @@ function FolderSystemPopupView()
 		], null, null, null, null, null, true);
 	}, this);
 
-	var
-		fSaveSystemFolders = null,
-		fCallback = null;
-
 	this.sentFolder = FolderStore.sentFolder;
 	this.draftFolder = FolderStore.draftFolder;
 	this.spamFolder = FolderStore.spamFolder;
 	this.trashFolder = FolderStore.trashFolder;
 	this.archiveFolder = FolderStore.archiveFolder;
 
-	fSaveSystemFolders = _.debounce(function() {
+	var
+		fSaveSystemFolders = _.debounce(function() {
+			Settings.settingsSet('SentFolder', FolderStore.sentFolder());
+			Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
+			Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
+			Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
+			Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
 
-		Settings.settingsSet('SentFolder', FolderStore.sentFolder());
-		Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
-		Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
-		Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
-		Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
+			Remote.saveSystemFolders(Utils.noop, {
+				'SentFolder': FolderStore.sentFolder(),
+				'DraftFolder': FolderStore.draftFolder(),
+				'SpamFolder': FolderStore.spamFolder(),
+				'TrashFolder': FolderStore.trashFolder(),
+				'ArchiveFolder': FolderStore.archiveFolder(),
+				'NullFolder': 'NullFolder'
+			});
 
-		Remote.saveSystemFolders(Utils.noop, {
-			'SentFolder': FolderStore.sentFolder(),
-			'DraftFolder': FolderStore.draftFolder(),
-			'SpamFolder': FolderStore.spamFolder(),
-			'TrashFolder': FolderStore.trashFolder(),
-			'ArchiveFolder': FolderStore.archiveFolder(),
-			'NullFolder': 'NullFolder'
-		});
+		}, Enums.Magics.Time1s);
 
-	}, Enums.Magics.Time1s);
+	var
+		fCallback = function() {
+			Settings.settingsSet('SentFolder', FolderStore.sentFolder());
+			Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
+			Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
+			Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
+			Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
 
-	fCallback = function() {
-
-		Settings.settingsSet('SentFolder', FolderStore.sentFolder());
-		Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
-		Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
-		Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
-		Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
-
-		fSaveSystemFolders();
-	};
+			fSaveSystemFolders();
+		};
 
 	FolderStore.sentFolder.subscribe(fCallback);
 	FolderStore.draftFolder.subscribe(fCallback);

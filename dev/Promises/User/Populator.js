@@ -57,30 +57,20 @@ PromisesUserPopulator.prototype.folderResponseParseRec = function(sNamespace, aF
 {
 	var
 		self = this,
-		iIndex = 0,
-		iLen = 0,
-		oFolder = null,
-		oCacheFolder = null,
 		bDisplaySpecSetting = FolderStore.displaySpecSetting(),
-		sFolderFullNameRaw = '',
-		aSubFolders = [],
 		aList = [];
 
-	for (iIndex = 0, iLen = aFolders.length; iIndex < iLen; iIndex++)
-	{
-		oFolder = aFolders[iIndex];
+	_.each(aFolders, function(oFolder) {
 		if (oFolder)
 		{
-			sFolderFullNameRaw = oFolder.FullNameRaw;
-
-			oCacheFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
+			var oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
 			if (!oCacheFolder)
 			{
 				oCacheFolder = FolderModel.newInstanceFromJson(oFolder);
 				if (oCacheFolder)
 				{
-					Cache.setFolderToCacheList(sFolderFullNameRaw, oCacheFolder);
-					Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, sFolderFullNameRaw, oCacheFolder);
+					Cache.setFolderToCacheList(oFolder.FullNameRaw, oCacheFolder);
+					Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, oFolder.FullNameRaw, oCacheFolder);
 				}
 			}
 
@@ -115,18 +105,17 @@ PromisesUserPopulator.prototype.folderResponseParseRec = function(sNamespace, aF
 					}
 				}
 
-				aSubFolders = oFolder.SubFolders;
-				if (aSubFolders && 'Collection/FolderCollection' === aSubFolders['@Object'] &&
-					aSubFolders['@Collection'] && Utils.isArray(aSubFolders['@Collection']))
+				if (oFolder.SubFolders && 'Collection/FolderCollection' === oFolder.SubFolders['@Object'] &&
+					oFolder.SubFolders['@Collection'] && Utils.isArray(oFolder.SubFolders['@Collection']))
 				{
 					oCacheFolder.subFolders(
-						this.folderResponseParseRec(sNamespace, aSubFolders['@Collection'], expandedFolders));
+						self.folderResponseParseRec(sNamespace, oFolder.SubFolders['@Collection'], expandedFolders));
 				}
 
 				aList.push(oCacheFolder);
 			}
 		}
-	}
+	});
 
 	return aList;
 };
@@ -137,7 +126,6 @@ PromisesUserPopulator.prototype.foldersList = function(oData)
 		oData['@Collection'] && Utils.isArray(oData['@Collection']))
 	{
 		var
-			folderList = [],
 			expandedFolders = Local.get(Enums.ClientSideKeyName.ExpandedFolders),
 			iLimit = Utils.pInt(Settings.appSettingsGet('folderSpecLimit')),
 			iC = Utils.pInt(oData.CountRec);
@@ -145,8 +133,9 @@ PromisesUserPopulator.prototype.foldersList = function(oData)
 		iLimit = 100 < iLimit ? 100 : (10 > iLimit ? 10 : iLimit);
 
 		FolderStore.displaySpecSetting(0 >= iC || iLimit < iC);
-		folderList = this.folderResponseParseRec(Utils.isUnd(oData.Namespace) ? '' : oData.Namespace, oData['@Collection'], expandedFolders);
-		FolderStore.folderList(folderList); // @todo optimization required
+
+		FolderStore.folderList(this.folderResponseParseRec(
+			Utils.isUnd(oData.Namespace) ? '' : oData.Namespace, oData['@Collection'], expandedFolders)); // @todo optimization required
 	}
 };
 

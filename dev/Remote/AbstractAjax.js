@@ -135,7 +135,6 @@ AbstractAjaxRemote.prototype.ajaxRequest = function(fResultCallback, oParameters
 		bPost = '' === sGetAdd,
 		oHeaders = {},
 		iStart = (new window.Date()).getTime(),
-		oDefAjax = null,
 		sAction = '';
 
 	oParameters = oParameters || {};
@@ -165,7 +164,7 @@ AbstractAjaxRemote.prototype.ajaxRequest = function(fResultCallback, oParameters
 		oParameters.XToken = Settings.appSettingsGet('token');
 	}
 
-	oDefAjax = $.ajax({
+	var oDefAjax = $.ajax({
 		type: bPost ? 'POST' : 'GET',
 		url: Links.ajax(sGetAdd),
 		async: true,
