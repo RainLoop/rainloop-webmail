@@ -355,8 +355,7 @@ function ComposePopupView()
 			sTo = Utils.trim(this.to()),
 			sCc = Utils.trim(this.cc()),
 			sBcc = Utils.trim(this.bcc()),
-			sSentFolder = FolderStore.sentFolder(),
-			aFlagsCache = [];
+			sSentFolder = FolderStore.sentFolder();
 
 		this.attachmentsInProcessError(false);
 		this.attachmentsInErrorError(false);
@@ -404,7 +403,7 @@ function ComposePopupView()
 
 				if (Utils.isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length)
 				{
-					aFlagsCache = Cache.getMessageFlagsFromCache(this.aDraftInfo[2], this.aDraftInfo[1]);
+					var aFlagsCache = Cache.getMessageFlagsFromCache(this.aDraftInfo[2], this.aDraftInfo[1]);
 					if (aFlagsCache)
 					{
 						if ('forward' === this.aDraftInfo[0])
@@ -767,9 +766,7 @@ ComposePopupView.prototype.sendMessageResponse = function(sResult, oData)
 
 ComposePopupView.prototype.saveMessageResponse = function(sResult, oData)
 {
-	var
-		bResult = false,
-		oMessage = null;
+	var bResult = false;
 
 	this.saving(false);
 
@@ -781,7 +778,7 @@ ComposePopupView.prototype.saveMessageResponse = function(sResult, oData)
 
 			if (this.bFromDraft)
 			{
-				oMessage = MessageStore.message();
+				var oMessage = MessageStore.message();
 				if (oMessage && this.draftFolder() === oMessage.folderFullNameRaw && this.draftUid() === oMessage.uid)
 				{
 					MessageStore.message(null);
@@ -854,7 +851,6 @@ ComposePopupView.prototype.converSignature = function(sSignature)
 {
 	var
 		iLimit = 10,
-		oMatch = null,
 		aMoments = [],
 		oMomentRegx = /{{MOMENT:([^}]+)}}/g,
 		sFrom = '';
@@ -893,6 +889,7 @@ ComposePopupView.prototype.converSignature = function(sSignature)
 	{
 		try
 		{
+			var oMatch = null;
 			while (null !== (oMatch = oMomentRegx.exec(sSignature))) // eslint-disable-line no-cond-assign
 			{
 				if (oMatch && oMatch[0] && oMatch[1])
@@ -1057,14 +1054,11 @@ ComposePopupView.prototype.initOnShow = function(sType, oMessageOrArray,
 		sCc = '',
 		sDate = '',
 		sSubject = '',
-		oText = null,
 		sText = '',
 		sReplyTitle = '',
-		aResplyAllParts = [],
 		oExcludeEmail = {},
 		oIdentity = null,
 		mEmail = AccountStore.email(),
-		aDownloads = [],
 		aDraftInfo = null,
 		oMessage = null,
 		sComposeType = sType || Enums.ComposeType.Empty;
@@ -1112,7 +1106,7 @@ ComposePopupView.prototype.initOnShow = function(sType, oMessageOrArray,
 		sSubject = oMessage.subject();
 		aDraftInfo = oMessage.aDraftInfo;
 
-		oText = $(oMessage.body).clone();
+		var oText = $(oMessage.body).clone();
 		if (oText)
 		{
 			Utils.clearBqSwitcher(oText);
@@ -1135,7 +1129,7 @@ ComposePopupView.prototype.initOnShow = function(sType, oMessageOrArray,
 				break;
 
 			case Enums.ComposeType.ReplyAll:
-				aResplyAllParts = oMessage.replyAllEmails(oExcludeEmail);
+				var aResplyAllParts = oMessage.replyAllEmails(oExcludeEmail);
 				this.to(this.emailArrayToStringLineHelper(aResplyAllParts[0]));
 				this.cc(this.emailArrayToStringLineHelper(aResplyAllParts[1]));
 				this.subject(Utils.replySubjectAdd('Re', sSubject));
@@ -1302,10 +1296,10 @@ ComposePopupView.prototype.initOnShow = function(sType, oMessageOrArray,
 		this.setFocusInPopup();
 	}
 
-	aDownloads = this.getAttachmentsDownloadsForUpload();
-	if (Utils.isNonEmptyArray(aDownloads))
+	var downloads = this.getAttachmentsDownloadsForUpload();
+	if (Utils.isNonEmptyArray(downloads))
 	{
-		Remote.messageUploadAttachments(this.onMessageUploadAttachments, aDownloads);
+		Remote.messageUploadAttachments(this.onMessageUploadAttachments, downloads);
 	}
 
 	if (oIdentity)
@@ -1320,24 +1314,17 @@ ComposePopupView.prototype.onMessageUploadAttachments = function(sResult, oData)
 {
 	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
 	{
-		var
-			oAttachment = null,
-			sTempName = '';
-
+		var self = this;
 		if (!this.viewModelVisibility())
 		{
-			for (sTempName in oData.Result)
-			{
-				if (Utils.has(oData.Result, sTempName))
+			_.each(oData.Result, function(id, tempName) {
+				var attachment = self.getAttachmentById(id);
+				if (attachment)
 				{
-					oAttachment = this.getAttachmentById(oData.Result[sTempName]);
-					if (oAttachment)
-					{
-						oAttachment.tempName(sTempName);
-						oAttachment.waiting(false).uploading(false).complete(true);
-					}
+					attachment.tempName(tempName);
+					attachment.waiting(false).uploading(false).complete(true);
 				}
-			}
+			});
 		}
 	}
 	else

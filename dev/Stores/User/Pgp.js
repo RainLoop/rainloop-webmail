@@ -261,7 +261,6 @@ PgpUserStore.prototype.findKeyExternal = function(sEmail, fCallback)
 PgpUserStore.prototype.verifyMessage = function(oMessage, fCallback)
 {
 	var
-		oValid = null,
 		aResult = [],
 		aPublicKeys = [],
 		aSigningKeyIds = [];
@@ -281,7 +280,7 @@ PgpUserStore.prototype.verifyMessage = function(oMessage, fCallback)
 				try
 				{
 					aResult = oMessage.verify(aPublicKeys);
-					oValid = _.find(_.isArray(aResult) ? aResult : [], function(oItem) {
+					var oValid = _.find(_.isArray(aResult) ? aResult : [], function(oItem) {
 						return oItem && oItem.valid && oItem.keyid;
 					});
 
