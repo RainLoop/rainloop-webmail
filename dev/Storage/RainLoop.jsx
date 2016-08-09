@@ -1,6 +1,5 @@
 
 import window from 'window';
-import JSON from 'JSON';
 
 const STORAGE_KEY = '__rlA';
 const TIME_KEY = '__rlT';
@@ -42,9 +41,9 @@ const __get = (key) => {
 	{
 		result = SESS_STORAGE.getItem(key) || null;
 	}
-	else if (WIN_STORAGE && JSON)
+	else if (WIN_STORAGE && window.JSON)
 	{
-		const data = WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString().substr(0, 1) ? JSON.parse(WIN_STORAGE.name.toString()) : null;
+		const data = WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString().substr(0, 1) ? window.JSON.parse(WIN_STORAGE.name.toString()) : null;
 		result = data ? (data[key] || null) : null;
 	}
 
@@ -57,13 +56,13 @@ const __set = (key, value) => {
 	{
 		SESS_STORAGE.setItem(key, value);
 	}
-	else if (WIN_STORAGE && JSON)
+	else if (WIN_STORAGE && window.JSON)
 	{
-		let data = WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString().substr(0, 1) ? JSON.parse(WIN_STORAGE.name.toString()) : null;
+		let data = WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString().substr(0, 1) ? window.JSON.parse(WIN_STORAGE.name.toString()) : null;
 		data = data || {};
 		data[key] = value;
 
-		WIN_STORAGE.name = JSON.stringify(data);
+		WIN_STORAGE.name = window.JSON.stringify(data);
 	}
 };
 

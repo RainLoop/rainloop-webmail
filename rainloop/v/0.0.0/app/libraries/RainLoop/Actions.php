@@ -9687,9 +9687,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 */
 	public function StaticPath($sPath)
 	{
-		$sResult = \RainLoop\Utils::WebStaticPath().$sPath;
-		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&').
+		$sKey = defined('APP_VERSION_TYPE') && 0 < strlen(APP_VERSION_TYPE) ? APP_VERSION_TYPE :
 			($this->IsOpen() ? 'community' : 'standard');
+
+		$sResult = \RainLoop\Utils::WebStaticPath().$sPath;
+		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&').$sKey;
 	}
 
 	/**

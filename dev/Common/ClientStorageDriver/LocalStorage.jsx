@@ -1,6 +1,5 @@
 
 import window from 'window';
-import JSON from 'JSON';
 import {isUnd} from 'Common/Utils';
 import {isStorageSupported} from 'Storage/RainLoop';
 import {CLIENT_SIDE_STORAGE_INDEX_NAME} from 'Common/Consts';
@@ -26,7 +25,7 @@ class LocalStorageDriver
 		try
 		{
 			const storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null;
-			storageResult = null === storageValue ? null : JSON.parse(storageValue);
+			storageResult = null === storageValue ? null : window.JSON.parse(storageValue);
 		}
 		catch (e) {} // eslint-disable-line no-empty
 
@@ -34,7 +33,7 @@ class LocalStorageDriver
 
 		try
 		{
-			this.s.setItem(CLIENT_SIDE_STORAGE_INDEX_NAME, JSON.stringify(storageResult));
+			this.s.setItem(CLIENT_SIDE_STORAGE_INDEX_NAME, window.JSON.stringify(storageResult));
 			return true;
 		}
 		catch (e) {} // eslint-disable-line no-empty
@@ -56,7 +55,7 @@ class LocalStorageDriver
 		{
 			const
 				storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null,
-				storageResult = null === storageValue ? null : JSON.parse(storageValue);
+				storageResult = null === storageValue ? null : window.JSON.parse(storageValue);
 
 			return (storageResult && !isUnd(storageResult[key])) ? storageResult[key] : null;
 		}

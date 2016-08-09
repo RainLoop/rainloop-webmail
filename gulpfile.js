@@ -20,6 +20,7 @@ var
 		cleanPath: '',
 		zipSrcPath: '',
 		zipFile: '',
+		zipFileShort: '',
 
 		paths: {},
 		uglify: {
@@ -35,6 +36,8 @@ var
 
 	webpack = require('webpack'),
 	webpackCfg = require('./webpack.config.js'),
+
+	argv = require('yargs').argv,
 
 	gulp = require('gulp'),
 	concat = require('gulp-concat-util'),
@@ -52,6 +55,8 @@ var
 	cache = require('gulp-cached'),
 	gutil = require('gulp-util')
 ;
+
+cfg.community = !argv.pro;
 
 // webpack
 if (webpackCfg && webpackCfg.output)
@@ -115,19 +120,42 @@ function cleanDir(sDir)
 		.pipe(require('gulp-rimraf')());
 }
 
-function renameFileWithMd5Hash(sFile, callback)
-{
-	var sHash = require('crypto').createHash('md5').update(fs.readFileSync(sFile)).digest('hex');
-	cfg.lastMd5File = sFile.replace(/\.zip$/, '-' + sHash + '.zip');
-	fs.renameSync(sFile, cfg.lastMd5File);
-	callback();
-}
-
 function copyFile(sFile, sNewFile, callback)
 {
 	fs.writeFileSync(sNewFile, fs.readFileSync(sFile));
 	callback();
 }
+
+function signFile(sFile, callback)
+{
+	var exec = require('child_process').exec;
+	exec('gpg2 --openpgp -u 87DA4591 -a -b ' + sFile, function(err) {
+		if (err) {
+			gutil.log('gpg error: skip');
+		}
+		callback();
+	});
+}
+
+function signFileTask(callback) {
+	if (argv.sign)
+	{
+		signFile(cfg.destPath + cfg.zipFile, function() {
+			if (cfg.zipFileShort)
+			{
+				signFile(cfg.destPath + cfg.zipFileShort, callback);
+			}
+			else
+			{
+				callback();
+			}
+		});
+	}
+	else
+	{
+		callback();
+	}
+};
 
 cfg.paths.globjs = 'dev/**/*.{js,jsx,html,css}';
 cfg.paths.globjsonly = 'dev/**/*.js';
@@ -283,16 +311,6 @@ gulp.task('css:main-begin', ['less:main', 'css:social'], function() {
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS))
 		.pipe(livereload());
-});
-
-gulp.task('package:community-on', function() {
-	cfg.community = true;
-	return true;
-});
-
-gulp.task('package:community-off', function() {
-	cfg.community = false;
-	return true;
 });
 
 gulp.task('css:clear-less', ['css:main-begin'], function() {
@@ -511,8 +529,11 @@ gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 	fs.writeFileSync(dist + 'data/VERSION', versionFull);
 	fs.writeFileSync(dist + 'data/EMPTY', versionFull);
 
-	fs.writeFileSync(dist + 'index.php',
-		fs.readFileSync('index.php', 'utf8').replace('\'APP_VERSION\', \'0.0.0\'', '\'APP_VERSION\', \'' + versionFull + '\''));
+	fs.writeFileSync(dist + 'index.php', fs.readFileSync('index.php', 'utf8')
+		.replace('\'APP_VERSION\', \'0.0.0\'', '\'APP_VERSION\', \'' + versionFull + '\''));
+
+	fs.writeFileSync(dist + 'index.php', fs.readFileSync('index.php', 'utf8')
+		.replace('\'APP_VERSION_TYPE\', \'source\'', '\'APP_VERSION\', \'' + (cfg.community ? 'community' : 'standard') + '\''));
 
 	fs.writeFileSync(dist + 'rainloop/v/' + versionFull + '/index.php.root', fs.readFileSync(dist + 'index.php'));
 
@@ -525,8 +546,7 @@ gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 	cfg.cleanPath = dist;
 	cfg.zipSrcPath = dist;
 	cfg.zipFile = 'rainloop-' + (cfg.community ? 'community-' : '') + versionFull + '.zip';
-	cfg.md5File = cfg.zipFile;
-	cfg.lastMd5File = '';
+	cfg.zipFileShort = 'rainloop-' + (cfg.community ? 'community-' : '') + 'latest.zip';
 
 	cfg.rainloopBuilded = true;
 });
@@ -536,18 +556,15 @@ gulp.task('rainloop:zip', ['rainloop:copy', 'rainloop:setup'], function() {
 		zipDir(cfg.zipSrcPath, cfg.destPath, cfg.zipFile) : false;
 });
 
-gulp.task('rainloop:md5', ['rainloop:zip'], function(callback) {
-	renameFileWithMd5Hash(cfg.destPath + cfg.md5File, callback);
-});
-
 gulp.task('rainloop:clean', ['rainloop:copy', 'rainloop:setup', 'rainloop:zip'], function() {
 	return (cfg.cleanPath) ? cleanDir(cfg.cleanPath) : false;
 });
 
-gulp.task('rainloop:shortname', ['rainloop:md5'], function(callback) {
-	copyFile(cfg.lastMd5File, cfg.destPath +
-		'rainloop' + (cfg.community ? '-community' : '') + '-latest.zip', callback);
+gulp.task('rainloop:shortname', ['rainloop:zip'], function(callback) {
+	copyFile(cfg.destPath + cfg.zipFile, cfg.destPath + cfg.zipFileShort, callback);
 });
+
+gulp.task('rainloop:sign', ['rainloop:shortname'], signFileTask);
 
 // BUILD (OwnCloud)
 gulp.task('rainloop:owncloud:copy', function() {
@@ -584,8 +601,7 @@ gulp.task('rainloop:owncloud:copy-rainloop:clean', ['rainloop:owncloud:copy-rain
 	return (cfg.cleanPath) ? cleanDir(cfg.cleanPath) : false;
 });
 
-gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy',
-	'rainloop:owncloud:copy-rainloop'], function() {
+gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy', 'rainloop:owncloud:copy-rainloop'], function() {
 
 	var
 		versionFull = pkg.ownCloudPackageVersion,
@@ -605,8 +621,7 @@ gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy',
 	cfg.cleanPath = dist;
 	cfg.zipSrcPath = dist;
 	cfg.zipFile = 'rainloop-owncloud-app-' + (cfg.community ? '' : 'standard-') + versionFull + '.zip';
-	cfg.md5File = cfg.zipFile;
-
+	cfg.zipFileShort = 'rainloop' + (cfg.community ? '' : '-standard') + '.zip';
 });
 
 gulp.task('rainloop:owncloud:zip', ['rainloop:owncloud:copy', 'rainloop:owncloud:setup'], function() {
@@ -614,43 +629,30 @@ gulp.task('rainloop:owncloud:zip', ['rainloop:owncloud:copy', 'rainloop:owncloud
 		zipDir(cfg.zipSrcPath, cfg.destPath, cfg.zipFile) : false;
 });
 
-gulp.task('rainloop:owncloud:md5', ['rainloop:owncloud:zip'], function(callback) {
-	renameFileWithMd5Hash(cfg.destPath +  cfg.md5File, callback);
-});
-
 gulp.task('rainloop:owncloud:clean', ['rainloop:owncloud:copy', 'rainloop:owncloud:setup', 'rainloop:owncloud:zip'], function() {
 	return (cfg.cleanPath) ? cleanDir(cfg.cleanPath) : false;
 });
 
-gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:md5'], function(callback) {
-	copyFile(cfg.lastMd5File, cfg.destPath +
-		'rainloop' + (cfg.community ? '' : '-standard') + '.zip', callback);
+gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:zip'], function(callback) {
+	copyFile(cfg.destPath + cfg.zipFile, cfg.destPath + cfg.zipFileShort, callback);
 });
+
+gulp.task('rainloop:owncloud:sign', ['rainloop:owncloud:shortname'], signFileTask);
 
 // MAIN
 gulp.task('js:pgp', ['js:openpgp', 'js:openpgpworker']);
 gulp.task('js:moment', ['js:moment:locales']);
 
 gulp.task('default', ['js:libs', 'js:pgp', 'js:moment', 'js:min', 'css:min', 'ckeditor', 'fontastic', 'lightgallery']);
-gulp.task('default+', ['package:community-off', 'default']);
-gulp.task('fast-', ['js:app', 'js:admin', 'css:main']);
-
-gulp.task('fast', ['package:community-on', 'fast-']);
-gulp.task('fast+', ['package:community-off', 'fast-']);
+gulp.task('fast', ['js:app', 'js:admin', 'css:main']);
 
 gulp.task('rainloop:start', ['rainloop:copy', 'rainloop:setup']);
 
-gulp.task('rainloop-', ['rainloop:start', 'rainloop:zip', 'rainloop:md5', 'rainloop:clean', 'rainloop:shortname']);
+gulp.task('rainloop', ['rainloop:start', 'rainloop:zip', 'rainloop:clean', 'rainloop:shortname', 'rainloop:sign']);
 
-gulp.task('rainloop', ['package:community-on', 'rainloop-']);
-gulp.task('rainloop+', ['package:community-off', 'rainloop-']);
-
-gulp.task('owncloud-', ['rainloop:owncloud:copy',
+gulp.task('owncloud', ['rainloop:owncloud:copy',
 	'rainloop:owncloud:copy-rainloop', 'rainloop:owncloud:copy-rainloop:clean',
-	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:md5', 'rainloop:owncloud:clean', 'rainloop:owncloud:shortname']);
-
-gulp.task('owncloud', ['package:community-on', 'owncloud-']);
-gulp.task('owncloud+', ['package:community-off', 'owncloud-']);
+	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:clean', 'rainloop:owncloud:shortname', 'rainloop:owncloud:sign']);
 
 //WATCH
 gulp.task('watch', ['fast'], function() {
@@ -661,30 +663,15 @@ gulp.task('watch', ['fast'], function() {
 	gulp.watch(cfg.paths.less.main.watch, {interval: cfg.watchInterval}, ['css:main']);
 });
 
-gulp.task('watch+', ['fast+'], function() {
-	cfg.watch = true;
-	livereload.listen();
-	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:app', 'js:admin']);
-	gulp.watch(cfg.paths.globjsall, {interval: cfg.watchInterval}, ['js:validate']);
-	gulp.watch(cfg.paths.less.main.watch, {interval: cfg.watchInterval}, ['css:main']);
-});
-
 // ALIASES
 gulp.task('build', ['rainloop']);
-gulp.task('build+', ['rainloop+']);
 
 gulp.task('js:v', ['js:validate']);
 gulp.task('v', ['js:v']);
 
 gulp.task('d', ['default']);
-gulp.task('d+', ['default+']);
 gulp.task('w', ['watch']);
-gulp.task('w+', ['watch+']);
 gulp.task('f', ['fast']);
-gulp.task('f+', ['fast+']);
 
 gulp.task('b', ['build']);
-gulp.task('b+', ['build+']);
-
 gulp.task('o', ['owncloud']);
-gulp.task('o+', ['owncloud+']);
