@@ -994,21 +994,18 @@ ComposePopupView.prototype.onShow = function(sType, oMessageOrArray,
 
 /**
  * @param {Function} fKoValue
- * @param {Array} aEmails
+ * @param {Array} emails
  */
-ComposePopupView.prototype.addEmailsTo = function(fKoValue, aEmails)
+ComposePopupView.prototype.addEmailsTo = function(fKoValue, emails)
 {
-	var
-		sValue = Utils.trim(fKoValue()),
-		aValue = [];
-
-	if (Utils.isNonEmptyArray(aEmails))
+	var value = Utils.trim(fKoValue());
+	if (Utils.isNonEmptyArray(emails))
 	{
-		aValue = _.uniq(_.compact(_.map(aEmails, function(oItem) {
+		var values = _.uniq(_.compact(_.map(emails, function(oItem) {
 			return oItem ? oItem.toLine(false) : null;
 		})));
 
-		fKoValue(sValue + ('' === sValue ? '' : ', ') + Utils.trim(aValue.join(', ')));
+		fKoValue(value + ('' === value ? '' : ', ') + Utils.trim(values.join(', ')));
 	}
 };
 
@@ -1020,15 +1017,10 @@ ComposePopupView.prototype.addEmailsTo = function(fKoValue, aEmails)
  */
 ComposePopupView.prototype.emailArrayToStringLineHelper = function(aList, bFriendly)
 {
-	var
-		iIndex = 0,
-		iLen = aList.length,
-		aResult = [];
-
-	for (; iIndex < iLen; iIndex++)
-	{
-		aResult.push(aList[iIndex].toLine(!!bFriendly));
-	}
+	bFriendly = !!bFriendly;
+	var aResult = _.map(aList, function(item) {
+		return item.toLine(bFriendly);
+	});
 
 	return aResult.join(', ');
 };
@@ -1775,12 +1767,9 @@ ComposePopupView.prototype.initUploader = function()
 
 					var
 						sError = '',
-						mErrorCode = null,
-						oAttachmentJson = null,
-						oAttachment = this.getAttachmentById(sId);
-
-					oAttachmentJson = bResult && oData && oData.Result && oData.Result.Attachment ? oData.Result.Attachment : null;
-					mErrorCode = oData && oData.Result && oData.Result.ErrorCode ? oData.Result.ErrorCode : null;
+						oAttachment = this.getAttachmentById(sId),
+						mErrorCode = oData && oData.Result && oData.Result.ErrorCode ? oData.Result.ErrorCode : null,
+						oAttachmentJson = bResult && oData && oData.Result && oData.Result.Attachment ? oData.Result.Attachment : null;
 
 					if (null !== mErrorCode)
 					{
@@ -1878,27 +1867,36 @@ ComposePopupView.prototype.addMessageAsAttachment = function(oMessage)
 };
 
 /**
+ * @param {string} url
+ * @param {string} name
+ * @param {number} size
+ * @returns {ComposeAttachmentModel}
+ */
+ComposePopupView.prototype.addAttachmentHelper = function(url, name, size)
+{
+	var oAttachment = new ComposeAttachmentModel(url, name, size);
+
+	oAttachment.fromMessage = false;
+	oAttachment.cancel = this.cancelAttachmentHelper(url);
+	oAttachment.waiting(false).uploading(true).complete(false);
+
+	this.attachments.push(oAttachment);
+
+	this.attachmentsPlace(true);
+
+	return oAttachment;
+};
+
+/**
  * @param {Object} oDropboxFile
  * @returns {boolean}
  */
 ComposePopupView.prototype.addDropboxAttachment = function(oDropboxFile)
 {
 	var
-		oAttachment = null,
 		iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
-		mSize = oDropboxFile.bytes;
-
-	oAttachment = new ComposeAttachmentModel(
-		oDropboxFile.link, oDropboxFile.name, mSize
-	);
-
-	oAttachment.fromMessage = false;
-	oAttachment.cancel = this.cancelAttachmentHelper(oDropboxFile.link);
-	oAttachment.waiting(false).uploading(true).complete(false);
-
-	this.attachments.push(oAttachment);
-
-	this.attachmentsPlace(true);
+		mSize = oDropboxFile.bytes,
+		oAttachment = this.addAttachmentHelper(oDropboxFile.link, oDropboxFile.name, mSize);
 
 	if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
 	{
@@ -1940,20 +1938,8 @@ ComposePopupView.prototype.addDriveAttachment = function(oDriveFile, sAccessToke
 {
 	var
 		iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
-		oAttachment = null,
-		mSize = oDriveFile.fileSize ? Utils.pInt(oDriveFile.fileSize) : 0;
-
-	oAttachment = new ComposeAttachmentModel(
-		oDriveFile.downloadUrl, oDriveFile.title, mSize
-	);
-
-	oAttachment.fromMessage = false;
-	oAttachment.cancel = this.cancelAttachmentHelper(oDriveFile.downloadUrl);
-	oAttachment.waiting(false).uploading(true).complete(false);
-
-	this.attachments.push(oAttachment);
-
-	this.attachmentsPlace(true);
+		mSize = oDriveFile.fileSize ? Utils.pInt(oDriveFile.fileSize) : 0,
+		oAttachment = this.addAttachmentHelper(oDriveFile.downloadUrl, oDriveFile.title, mSize);
 
 	if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
 	{
@@ -1995,25 +1981,15 @@ ComposePopupView.prototype.prepearMessageAttachments = function(oMessage, sType)
 {
 	if (oMessage)
 	{
-		var
-			aAttachments = Utils.isNonEmptyArray(oMessage.attachments()) ? oMessage.attachments() : [],
-			iIndex = 0,
-			iLen = aAttachments.length,
-			oAttachment = null,
-			oItem = null,
-			bAdd = false;
-
 		if (Enums.ComposeType.ForwardAsAttachment === sType)
 		{
 			this.addMessageAsAttachment(oMessage);
 		}
 		else
 		{
-			for (; iIndex < iLen; iIndex++)
-			{
-				oItem = aAttachments[iIndex];
-
-				bAdd = false;
+			var aAttachments = oMessage.attachments();
+			_.each(Utils.isNonEmptyArray(aAttachments) ? aAttachments : [], function(oItem) {
+				var bAdd = false;
 				switch (sType)
 				{
 					case Enums.ComposeType.Reply:
@@ -2031,7 +2007,7 @@ ComposePopupView.prototype.prepearMessageAttachments = function(oMessage, sType)
 
 				if (bAdd)
 				{
-					oAttachment = new ComposeAttachmentModel(
+					var oAttachment = new ComposeAttachmentModel(
 						oItem.download, oItem.fileName, oItem.estimatedSize,
 						oItem.isInline, oItem.isLinked, oItem.cid, oItem.contentLocation
 					);
@@ -2042,7 +2018,7 @@ ComposePopupView.prototype.prepearMessageAttachments = function(oMessage, sType)
 
 					this.attachments.push(oAttachment);
 				}
-			}
+			});
 		}
 	}
 };

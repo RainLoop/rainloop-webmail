@@ -320,7 +320,6 @@ MessageUserStore.prototype.removeMessagesFromList = function(
 	var
 		self = this,
 		iUnseenCount = 0,
-		oMessage = null,
 		sTrashFolder = FolderStore.trashFolder(),
 		sSpamFolder = FolderStore.spamFolder(),
 		aMessageList = this.messageList(),
@@ -415,7 +414,7 @@ MessageUserStore.prototype.removeMessagesFromList = function(
 			return !!(item && item.deleted() && item.uid === self.messageListThreadUid());
 		}))
 		{
-			oMessage = _.find(aMessageList, function(item) {
+			var oMessage = _.find(aMessageList, function(item) {
 				return item && !item.deleted();
 			});
 
@@ -510,25 +509,19 @@ MessageUserStore.prototype.setMessage = function(oData, bCached)
 {
 	var
 		bNew = false,
-		bIsHtml = false,
-		bHasExternals = false,
-		bHasInternals = false,
 		oBody = null,
-		oTextBody = null,
 		sId = '',
 		sPlain = '',
 		sResultHtml = '',
 		bPgpSigned = false,
-		bPgpEncrypted = false,
 		oMessagesDom = this.messagesBodiesDom(),
 		oSelectedMessage = this.selectorMessageSelected(),
-		oMessage = this.message(),
-		aThreads = [];
+		oMessage = this.message();
 
 	if (oData && oMessage && oData.Result && 'Object/Message' === oData.Result['@Object'] &&
 		oMessage.folderFullNameRaw === oData.Result.Folder)
 	{
-		aThreads = oMessage.threads();
+		var aThreads = oMessage.threads();
 		if (oMessage.uid !== oData.Result.Uid && 1 < aThreads.length &&
 			-1 < Utils.inArray(oData.Result.Uid, aThreads))
 		{
@@ -561,13 +554,11 @@ MessageUserStore.prototype.setMessage = function(oData, bCached)
 			if (oMessagesDom)
 			{
 				sId = 'rl-mgs-' + oMessage.hash.replace(/[^a-zA-Z0-9]/g, '');
-				oTextBody = oMessagesDom.find('#' + sId);
 
+				var oTextBody = oMessagesDom.find('#' + sId);
 				if (!oTextBody || !oTextBody[0])
 				{
-					bHasExternals = !!oData.Result.HasExternals;
-					bHasInternals = !!oData.Result.HasInternals;
-
+					var bIsHtml = false;
 					if (Utils.isNormal(oData.Result.Html) && '' !== oData.Result.Html)
 					{
 						bIsHtml = true;
@@ -582,7 +573,7 @@ MessageUserStore.prototype.setMessage = function(oData, bCached)
 						{
 							sPlain = Utils.pString(oData.Result.Plain);
 
-							bPgpEncrypted = (/---BEGIN PGP MESSAGE---/).test(sPlain);
+							var bPgpEncrypted = (/---BEGIN PGP MESSAGE---/).test(sPlain);
 							if (!bPgpEncrypted)
 							{
 								bPgpSigned = (/-----BEGIN PGP SIGNED MESSAGE-----/).test(sPlain) &&
@@ -608,8 +599,6 @@ MessageUserStore.prototype.setMessage = function(oData, bCached)
 							{
 								sResultHtml = '<pre>' + sResultHtml + '</pre>';
 							}
-
-							sPlain = '';
 
 							Globals.$div.empty();
 
@@ -637,7 +626,7 @@ MessageUserStore.prototype.setMessage = function(oData, bCached)
 						.addClass('b-text-part ' + (bIsHtml ? 'html' : 'plain'));
 
 					oMessage.isHtml(!!bIsHtml);
-					oMessage.hasImages(!!bHasExternals);
+					oMessage.hasImages(!!oData.Result.HasExternals);
 
 					oMessage.body = oBody;
 					if (oMessage.body)
@@ -647,7 +636,7 @@ MessageUserStore.prototype.setMessage = function(oData, bCached)
 
 					oMessage.storeDataInDom();
 
-					if (bHasInternals)
+					if (oData.Result.HasInternals)
 					{
 						oMessage.showInternalImages(true);
 					}
@@ -815,14 +804,9 @@ MessageUserStore.prototype.setMessageList = function(oData, bCached)
 		oData.Result['@Collection'] && Utils.isArray(oData.Result['@Collection']))
 	{
 		var
-			iIndex = 0,
-			iLen = 0,
 			iCount = 0,
 			iOffset = 0,
 			aList = [],
-			oJsonMessage = null,
-			oMessage = null,
-			oFolder = null,
 			iNewCount = 0,
 			iUtc = require('Common/Momentor').momentNowUnix(),
 			bUnreadCountChange = false;
@@ -830,9 +814,7 @@ MessageUserStore.prototype.setMessageList = function(oData, bCached)
 		iCount = Utils.pInt(oData.Result.MessageResultCount);
 		iOffset = Utils.pInt(oData.Result.Offset);
 
-		oFolder = Cache.getFolderFromCacheList(
-			Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
-
+		var oFolder = Cache.getFolderFromCacheList(Utils.isNormal(oData.Result.Folder) ? oData.Result.Folder : '');
 		if (oFolder && !bCached)
 		{
 			oFolder.interval = iUtc;
@@ -862,12 +844,10 @@ MessageUserStore.prototype.setMessageList = function(oData, bCached)
 			Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
 		}
 
-		for (iIndex = 0, iLen = oData.Result['@Collection'].length; iIndex < iLen; iIndex++)
-		{
-			oJsonMessage = oData.Result['@Collection'][iIndex];
+		_.each(oData.Result['@Collection'], function(oJsonMessage) {
 			if (oJsonMessage && 'Object/Message' === oJsonMessage['@Object'])
 			{
-				oMessage = MessageModel.newInstanceFromJson(oJsonMessage);
+				var oMessage = MessageModel.newInstanceFromJson(oJsonMessage);
 				if (oMessage)
 				{
 					if (Cache.hasNewMessageAndRemoveFromCache(oMessage.folderFullNameRaw, oMessage.uid) && 5 >= iNewCount)
@@ -890,7 +870,7 @@ MessageUserStore.prototype.setMessageList = function(oData, bCached)
 					aList.push(oMessage);
 				}
 			}
-		}
+		});
 
 		this.messageListCount(iCount);
 		this.messageListSearch(Utils.isNormal(oData.Result.Search) ? oData.Result.Search : '');
