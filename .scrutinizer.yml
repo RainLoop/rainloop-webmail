@@ -1,15 +1,15 @@
 filter:
-	path:
-		- 'rainloop-webmail/rainloop/v/0.0.0/app/libraries/MailSo/*'
-		- 'rainloop-webmail/rainloop/v/0.0.0/app/libraries/RainLoop/*'
-		- 'dev/*'
-		- 'plugins/*'
-	excluded_paths:
-		- '*.min.js'
-		- '*/min/*'
-		- '*.min.css'
-		- 'vendors/*'
-		- 'build/*'
-		- 'data/*'
+  path:
+    - 'rainloop-webmail/rainloop/v/0.0.0/app/libraries/MailSo/*'
+    - 'rainloop-webmail/rainloop/v/0.0.0/app/libraries/RainLoop/*'
+    - 'dev/*'
+    - 'plugins/*'
+  excluded_paths:
+    - '*.min.js'
+    - '*/min/*'
+    - '*.min.css'
+    - 'vendors/*'
+    - 'build/*'
+    - 'data/*'
 checks:
-	javascript: true
+  javascript: true
