@@ -1,10 +1,12 @@
 
+# transifex
+tx pull -a
+
 # dependencies checker
 npm-check --skip-unused
 
 # dependencies locker
 npm shrinkwrap --dev
 
-# code validation
+# js code validation
 gulp v
-

@@ -1,9 +1,9 @@
 
-var
-	window = require('window'),
-	_ = require('_'),
-	ko = require('ko'),
+import window from 'window';
+import _ from '_';
+import ko from 'ko';
 
+var
 	Enums = require('Common/Enums'),
 	Utils = require('Common/Utils'),
 	Links = require('Common/Links'),

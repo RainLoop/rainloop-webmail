@@ -17,6 +17,46 @@ window.__rlah_clear = () => clearHash();
 window.__rlah_data = () => RL_APP_DATA_STORAGE;
 /* eslint-enable */
 
+const useJsNextBundle = (function() {
+
+	if (!RL_ES6)
+	{
+		return false;
+	}
+
+	/* eslint-disable  */
+	try {
+
+		eval(`
+ // let + const
+const x = 5; let y = 4; var z = 4;
+
+ // Arrow Function
+const f = () => 'rainloop';
+
+ // Default + Rest + Spread
+const d = (test = 1, ...t) => 'rainloop';
+d(...[1, 2, 3]);
+
+// Destructuring
+let [a, b] = [1, 2];
+({a, b} = {a: 1, b: 2});
+
+// Class
+class Q1 { constructor() {} }
+
+// Class extends + super
+class Q2 extends Q1 { constructor() { super() } }
+
+`);
+		return true;
+	}
+	catch (e) {}
+
+    return false;
+	/* eslint-enable */
+}());
+
 /**
  * @param {string} id
  * @param {string} name
@@ -184,7 +224,7 @@ function runApp()
 	const appData = window.__rlah_data();
 
 	if (window.jassl && progressJs && appData && appData.TemplatesLink && appData.LangLink &&
-		appData.StaticLibJsLink && appData.StaticAppJsLink && appData.StaticEditorJsLink)
+		appData.StaticLibJsLink && appData.StaticAppJsLink && appData.StaticAppJsNextLink && appData.StaticEditorJsLink)
 	{
 		const p = progressJs;
 
@@ -214,7 +254,7 @@ function runApp()
 		Promise.all([libs, common])
 			.then(() => {
 				p.set(30);
-				return window.jassl(appData.StaticAppJsLink);
+				return window.jassl(useJsNextBundle ? appData.StaticAppJsNextLink : appData.StaticAppJsLink);
 			})
 			.then(() => {
 				p.set(50);
@@ -280,10 +320,15 @@ window.__runBoot = function() {
 		window.document.location.replace('./?/NoCookie');
 	}
 
+	const root = document.documentElement;
 	if ('none' !== getComputedStyle('rl-check', 'display'))
 	{
-		const root = document.documentElement;
 		root.className += ' no-css';
+	}
+
+	if (useJsNextBundle)
+	{
+		root.className += ' js-next';
 	}
 
 	if (includeLayout())

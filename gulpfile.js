@@ -22,20 +22,17 @@ var
 		zipFile: '',
 		zipFileShort: '',
 
-		paths: {},
-		uglify: {
-			mangle: true,
-			compress: true
-		}
+		paths: {}
 	},
 
 	_ = require('lodash'),
 	fs = require('node-fs'),
 	path = require('path'),
 	notifier = require('node-notifier'),
+	runSequence = require('run-sequence'),
 
 	webpack = require('webpack'),
-	webpackCfg = require('./webpack.config.js'),
+	webpackCfgBuilder = require('./webpack.config.builder.js'),
 
 	argv = require('yargs').argv,
 
@@ -53,25 +50,68 @@ var
 	livereload = require('gulp-livereload'),
 	eslint = require('gulp-eslint'),
 	cache = require('gulp-cached'),
+	ignore = require('gulp-ignore'),
+	filter = require('gulp-filter'),
 	gutil = require('gulp-util')
 ;
 
 cfg.community = !argv.pro;
+cfg.next = !!argv.next;
 
 // webpack
-if (webpackCfg && webpackCfg.output)
+function initWebpackCfg(wpCfg)
 {
-	webpackCfg.output.publicPath = cfg.paths.staticJS;
+	if (wpCfg)
+	{
+		if (wpCfg.output)
+		{
+			wpCfg.output.publicPath = cfg.paths.staticJS;
+		}
+
+		if (wpCfg.plugins)
+		{
+			wpCfg.plugins.push(new webpack.DefinePlugin({
+				'RL_COMMUNITY': cfg.community,
+				'RL_ES6': cfg.next,
+				'process.env': {
+					NODE_ENV: '"production"'
+				}
+			}));
+		}
+	}
+
+	return wpCfg;
 }
 
-if (webpackCfg && webpackCfg.plugins)
+function webpackCallback(callback)
 {
-	webpackCfg.plugins.push(new webpack.DefinePlugin({
-		'RL_COMMUNITY': !!cfg.community,
-		'process.env': {
-			NODE_ENV: '"production"'
+	return function(err, stats) {
+
+		if (err)
+		{
+			if (cfg.watch)
+			{
+				webpackError(err);
+			}
+			else
+			{
+				throw new gutil.PluginError('webpack', err);
+			}
 		}
-	}));
+		else if (stats && stats.compilation && stats.compilation.errors && stats.compilation.errors[0])
+		{
+			if (cfg.watch)
+			{
+				_.each(stats.compilation.errors, webpackError);
+			}
+			else
+			{
+				throw new gutil.PluginError('webpack', stats.compilation.errors[0]);
+			}
+		}
+
+        callback();
+    };
 }
 
 function webpackError(err) {
@@ -93,18 +133,6 @@ function webpackError(err) {
 function getHead()
 {
 	return !cfg.community ? head.rainloop : head.agpl;
-}
-
-function regOtherMinTask(sName, sPath, sInc, sOut, sHeader)
-{
-	gulp.task(sName, function() {
-		return gulp.src(sPath + sInc)
-			.pipe(uglify())
-			.pipe(header(sHeader || ''))
-			.pipe(rename(sOut))
-			.pipe(eol('\n', true))
-			.pipe(gulp.dest(sPath));
-	});
 }
 
 function zipDir(sSrcDir, sDestDir, sFileName)
@@ -170,7 +198,6 @@ cfg.paths.momentLocales = 'rainloop/v/' + cfg.devVersion + '/app/localization/mo
 
 cfg.paths.less = {
 	main: {
-		name: 'less.css',
 		src: 'dev/Styles/@Main.less',
 		watch: ['dev/Styles/*.less'],
 		options: {
@@ -198,8 +225,7 @@ cfg.paths.css = {
 			'node_modules/lightgallery/dist/css/lightgallery.min.css',
 			'node_modules/lightgallery/dist/css/lg-transitions.min.css',
 			'node_modules/Progress.js/minified/progressjs.min.css',
-			'dev/Styles/_progressjs.css',
-			cfg.paths.staticCSS + cfg.paths.less.main.name
+			'dev/Styles/_progressjs.css'
 		]
 	},
 	social: {
@@ -278,47 +304,41 @@ cfg.paths.js = {
 };
 
 // CSS
-gulp.task('less:main', function() {
-	var less = require('gulp-less');
 
-	return gulp.src(cfg.paths.less.main.src)
+gulp.task('css:clean', function() {
+	return cleanDir(cfg.paths.staticCSS + '/*.css');
+});
+
+gulp.task('css:main', function() {
+	var autoprefixer = require('gulp-autoprefixer'),
+		less = require('gulp-less'),
+		lessFilter = filter('**/*.less', {restore: true}),
+		src = cfg.paths.css.main.src.concat([cfg.paths.less.main.src]);
+
+	return gulp.src(src)
+		.pipe(lessFilter)
 		.pipe(gulpif(cfg.watch, plumber({errorHandler: notify.onError("Error: <%= error.message %>")})))
 		.pipe(less({
 			'paths': cfg.paths.less.main.options.paths
 		}))
-		.pipe(rename(cfg.paths.less.main.name))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(cfg.paths.staticCSS))
-		.on('error', gutil.log);
-});
-
-gulp.task('css:social', function() {
-	var autoprefixer = require('gulp-autoprefixer');
-	return gulp.src(cfg.paths.css.social.src)
-		.pipe(concat(cfg.paths.css.social.name))
-		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
-		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(cfg.paths.staticCSS));
-});
-
-gulp.task('css:main-begin', ['less:main', 'css:social'], function() {
-	var autoprefixer = require('gulp-autoprefixer');
-	return gulp.src(cfg.paths.css.main.src)
+		.pipe(lessFilter.restore)
 		.pipe(concat(cfg.paths.css.main.name))
-		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'Firefox ESR', 'Opera 12.1'))
+		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'ie 10', 'ie 11', 'Firefox ESR'))
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS))
 		.pipe(livereload());
 });
 
-gulp.task('css:clear-less', ['css:main-begin'], function() {
-	return gulp.src(cfg.paths.staticCSS + cfg.paths.less.main.name, {read: false})
-		.pipe(require('gulp-rimraf')());
+gulp.task('css:social', function() {
+	var autoprefixer = require('gulp-autoprefixer');
+	return gulp.src(cfg.paths.css.social.src)
+		.pipe(concat(cfg.paths.css.social.name))
+		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'ie 10', 'ie 11', 'Firefox ESR'))
+		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(cfg.paths.staticCSS));
 });
-
-gulp.task('css:main', ['css:clear-less']);
 
 gulp.task('css:main:min', ['css:main'], function() {
 	var cleanCSS = require('gulp-clean-css');
@@ -355,11 +375,11 @@ gulp.task('js:openpgpworker', function() {
 		.pipe(gulp.dest(cfg.paths.staticMinJS));
 });
 
-gulp.task('js:moment:locales-clear', function() {
+gulp.task('moment:locales-clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/app/localization/moment/*.js');
 });
 
-gulp.task('js:moment:locales', ['js:moment:locales-clear'], function() {
+gulp.task('moment:locales', ['moment:locales-clear'], function() {
 	return gulp.src(cfg.paths.js.moment.locales)
 		.pipe(gulp.dest(cfg.paths.momentLocales));
 });
@@ -383,35 +403,26 @@ gulp.task('js:ckeditor:beautify', function() {
 		.pipe(gulp.dest(cfg.paths.static + 'ckeditor/'));
 });
 
-gulp.task('js:webpack', function(callback) {
-	webpack(webpackCfg, function(err, stats) {
-
-		if (err)
-		{
-			if (cfg.watch)
-			{
-				webpackError(err);
-			}
-			else
-			{
-				throw new gutil.PluginError('webpack', err);
-			}
-		}
-		else if (stats && stats.compilation && stats.compilation.errors && stats.compilation.errors[0])
-		{
-			if (cfg.watch)
-			{
-				_.each(stats.compilation.errors, webpackError);
-			}
-			else
-			{
-				throw new gutil.PluginError('webpack', stats.compilation.errors[0]);
-			}
-		}
-
-        callback();
-    });
+gulp.task('js:clean', function() {
+	return cleanDir(cfg.paths.staticJS + '/**/*.js');
 });
+
+gulp.task('js:webpack:main', function(callback) {
+	webpack(initWebpackCfg(webpackCfgBuilder()), webpackCallback(callback));
+});
+
+gulp.task('js:webpack:next', function(callback) {
+	if (cfg.next)
+	{
+		webpack(initWebpackCfg(webpackCfgBuilder(true)), webpackCallback(callback));
+	}
+	else
+	{
+		callback();
+	}
+});
+
+gulp.task('js:webpack', ['js:webpack:main', 'js:webpack:next']);
 
 gulp.task('js:app', ['js:webpack'], function() {
 	return gulp.src(cfg.paths.staticJS + cfg.paths.js.app.name)
@@ -432,8 +443,12 @@ gulp.task('js:admin', ['js:webpack'], function() {
 // - min
 gulp.task('js:min', ['js:app', 'js:admin', 'js:validate'], function() {
 	return gulp.src(cfg.paths.staticJS + '*.js')
+		.pipe(ignore.exclude('*.next.js'))
 		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
-		.pipe(uglify(cfg.uglify))
+		.pipe(uglify({
+			mangle: true,
+			compress: true
+		}))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticMinJS))
 		.on('error', gutil.log);
@@ -640,10 +655,20 @@ gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:zip'], function(cal
 gulp.task('rainloop:owncloud:sign', ['rainloop:owncloud:shortname'], signFileTask);
 
 // MAIN
-gulp.task('js:pgp', ['js:openpgp', 'js:openpgpworker']);
-gulp.task('js:moment', ['js:moment:locales']);
+gulp.task('moment', ['moment:locales']);
+gulp.task('openpgp', ['js:openpgp', 'js:openpgpworker']);
 
-gulp.task('default', ['js:libs', 'js:pgp', 'js:moment', 'js:min', 'css:min', 'ckeditor', 'fontastic', 'lightgallery']);
+gulp.task('js', ['js:libs', 'js:min']);
+gulp.task('css', ['css:min']);
+
+gulp.task('vendors', ['moment', 'openpgp', 'ckeditor', 'fontastic', 'lightgallery']);
+
+gulp.task('clean', ['js:clean', 'css:clean']);
+
+gulp.task('default', function(callback) {
+	runSequence('clean', ['js', 'css', 'vendors'], callback);
+});
+
 gulp.task('fast', ['js:app', 'js:admin', 'css:main']);
 
 gulp.task('rainloop:start', ['rainloop:copy', 'rainloop:setup']);
