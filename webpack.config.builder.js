@@ -7,12 +7,12 @@ var
 module.exports = function(es6) {
 	return {
 		entry: es6 ? {
-			'app.next': __dirname + '/dev/app.jsx',
-			'admin.next': __dirname + '/dev/admin.jsx'
+			'app.next': __dirname + '/dev/app.js',
+			'admin.next': __dirname + '/dev/admin.js'
 		} : {
-			'boot': __dirname + '/dev/boot.jsx',
-			'app': __dirname + '/dev/app.jsx',
-			'admin': __dirname + '/dev/admin.jsx'
+			'boot': __dirname + '/dev/boot.js',
+			'app': __dirname + '/dev/app.js',
+			'admin': __dirname + '/dev/admin.js'
 		},
 		output: {
 			pathinfo: true,
@@ -25,7 +25,7 @@ module.exports = function(es6) {
 		],
 		resolve: {
 			modules: [devPath, 'node_modules'],
-			extensions: ['', '.js', '.jsx'],
+			extensions: ['', '.js'],
 			alias: {
 				'Opentip': __dirname  + '/dev/External/Opentip.js',
 				'ko': __dirname  + '/dev/External/ko.js'
@@ -121,5 +121,5 @@ module.exports = function(es6) {
 			'Promise': 'window.Promise',
 			'$': 'window.jQuery'
 		}
-	}
+	};
 };

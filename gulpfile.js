@@ -185,11 +185,8 @@ function signFileTask(callback) {
 	}
 };
 
-cfg.paths.globjs = 'dev/**/*.{js,jsx,html,css}';
-cfg.paths.globjsonly = 'dev/**/*.js';
-cfg.paths.globjsxonly = 'dev/**/*.jsx';
-cfg.paths.globjsall = 'dev/**/*.{js,jsx}';
-cfg.paths.globtsonly = 'dev/**/*.ts';
+cfg.paths.globall = 'dev/**/*.{js,html,css}';
+cfg.paths.globjs = 'dev/**/*.{js}';
 cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
 cfg.paths.staticMinJS = 'rainloop/v/' + cfg.devVersion + '/static/js/min/';
@@ -445,6 +442,7 @@ gulp.task('js:min', ['js:app', 'js:admin', 'js:validate'], function() {
 	return gulp.src(cfg.paths.staticJS + '*.js')
 		.pipe(ignore.exclude('*.next.js'))
 		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
+		.pipe(rename({suffix: '.min'}))
 		.pipe(uglify({
 			mangle: true,
 			compress: true
@@ -456,7 +454,7 @@ gulp.task('js:min', ['js:app', 'js:admin', 'js:validate'], function() {
 
 // lint
 gulp.task('js:eslint', function() {
-	return gulp.src(cfg.paths.globjsall)
+	return gulp.src(cfg.paths.globjs)
 		.pipe(cache('eslint'))
 		.pipe(eslint())
 		.pipe(gulpif(cfg.watch, plumber({errorHandler: notify.onError("Error: <%= error.message %>")})))
@@ -684,7 +682,7 @@ gulp.task('watch', ['fast'], function() {
 	cfg.watch = true;
 	livereload.listen();
 	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:app', 'js:admin']);
-	gulp.watch(cfg.paths.globjsall, {interval: cfg.watchInterval}, ['js:validate']);
+	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:validate']);
 	gulp.watch(cfg.paths.less.main.watch, {interval: cfg.watchInterval}, ['css:main']);
 });
 

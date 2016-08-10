@@ -26,7 +26,7 @@ window.progressJs.onbeforeend(() => {
 require('json3');
 require('../vendors/modernizr/modernizr-custom.js');
 
-require('Common/Booter.jsx');
+require('Common/Booter');
 
 if (window.__runBoot)
 {
