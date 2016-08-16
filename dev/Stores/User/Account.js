@@ -1,64 +1,50 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import ko from 'ko';
+import _ from '_';
+import * as Settings from 'Storage/Settings';
 
-	Settings = require('Storage/Settings');
-
-/**
- * @constructor
- */
-function AccountUserStore()
+class AccountUserStore
 {
-	this.email = ko.observable('');
-	this.parentEmail = ko.observable('');
-//		this.incLogin = ko.observable('');
-//		this.outLogin = ko.observable('');
+	constructor() {
+		this.email = ko.observable('');
+		this.parentEmail = ko.observable('');
 
-	this.signature = ko.observable('');
+		this.signature = ko.observable('');
 
-	this.accounts = ko.observableArray([]);
-	this.accounts.loading = ko.observable(false).extend({'throttle': 100});
+		this.accounts = ko.observableArray([]);
+		this.accounts.loading = ko.observable(false).extend({throttle: 100});
 
-	this.computers();
-}
+		this.computers();
+	}
 
-AccountUserStore.prototype.computers = function()
-{
-	this.accountsEmails = ko.computed(function() {
-		return _.compact(_.map(this.accounts(), function(oItem) {
-			return oItem ? oItem.email : null;
-		}));
-	}, this);
+	computers() {
+		this.accountsEmails = ko.computed(
+			() => _.compact(_.map(this.accounts(), (item) => (item ? item.email : null))));
 
-	this.accountsUnreadCount = ko.computed(function() {
-
-		var iResult = 0;
-
-//			_.each(this.accounts(), function(oItem) {
-//				if (oItem)
+		this.accountsUnreadCount = ko.computed(() => 0);
+//		this.accountsUnreadCount = ko.computed(() => {
+//			let result = 0;
+//			_.each(this.accounts(), (item) => {
+//				if (item)
 //				{
-//					iResult += oItem.count();
+//					result += item.count();
 //				}
 //			});
+//			return result;
+//		});
+	}
 
-		return iResult;
+	populate() {
+		this.email(Settings.settingsGet('Email'));
+		this.parentEmail(Settings.settingsGet('ParentEmail'));
+	}
 
-	}, this);
-};
-
-AccountUserStore.prototype.populate = function()
-{
-	this.email(Settings.settingsGet('Email'));
-	this.parentEmail(Settings.settingsGet('ParentEmail'));
-};
-
-/**
- * @returns {boolean}
- */
-AccountUserStore.prototype.isRootAccount = function()
-{
-	return '' === this.parentEmail();
-};
+	/**
+	 * @returns {boolean}
+	 */
+	isRootAccount() {
+		return '' === this.parentEmail();
+	}
+}
 
 module.exports = new AccountUserStore();

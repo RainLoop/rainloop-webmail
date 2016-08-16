@@ -1,2121 +1,1994 @@
 
-var
-	window = require('window'),
-	_ = require('_'),
-	$ = require('$'),
-	ko = require('ko'),
-	key = require('key'),
-	Jua = require('Jua'),
+import window from 'window';
+import _ from '_';
+import $ from '$';
+import ko from 'ko';
+import key from 'key';
+import Jua from 'Jua';
 
-	Enums = require('Common/Enums'),
-	Consts = require('Common/Consts'),
-	Utils = require('Common/Utils'),
-	Globals = require('Common/Globals'),
-	Events = require('Common/Events'),
-	Links = require('Common/Links'),
-	HtmlEditor = require('Common/HtmlEditor').default,
+import {
+	Capa, Magics, KeyState, ComposeType, StorageResultType,
+	EditorDefaultType, Notification, SetSystemFoldersNotification,
+	UploadErrorCode
+} from 'Common/Enums';
 
-	Translator = require('Common/Translator'),
-	Momentor = require('Common/Momentor'),
+import {
+	trim, isArray, isNormal, createCommand, delegateRun,
+	isNonEmptyArray, clearBqSwitcher, replySubjectAdd,
+	encodeHtml, noopFalse, inFocus, delegateRunOnDestroy,
+	pInt, isUnd
+} from 'Common/Utils';
 
-	Cache = require('Common/Cache'),
+import {UNUSED_OPTION_VALUE} from 'Common/Consts';
+import {bXMLHttpRequestSupported, bMobileDevice} from 'Common/Globals';
+import {upload} from 'Common/Links';
+import {i18n, getNotification, getUploadErrorDescByCode} from 'Common/Translator';
+import {format as momentorFormat} from 'Common/Momentor';
+import {getMessageFlagsFromCache, setMessageFlagsToCache, setFolderHash} from 'Common/Cache';
 
-	AppStore = require('Stores/User/App'),
-	SettingsStore = require('Stores/User/Settings'),
-	IdentityStore = require('Stores/User/Identity'),
-	AccountStore = require('Stores/User/Account'),
-	FolderStore = require('Stores/User/Folder'),
-	PgpStore = require('Stores/User/Pgp'),
-	MessageStore = require('Stores/User/Message'),
-	SocialStore = require('Stores/Social'),
+import {HtmlEditor} from 'Common/HtmlEditor';
 
-	Settings = require('Storage/Settings'),
-	Remote = require('Remote/User/Ajax'),
+import AppStore from 'Stores/User/App';
+import SettingsStore from 'Stores/User/Settings';
+import IdentityStore from 'Stores/User/Identity';
+import AccountStore from 'Stores/User/Account';
+import FolderStore from 'Stores/User/Folder';
+import PgpStore from 'Stores/User/Pgp';
+import MessageStore from 'Stores/User/Message';
+import SocialStore from 'Stores/Social';
 
-	ComposeAttachmentModel = require('Model/ComposeAttachment').default,
+import Remote from 'Remote/User/Ajax';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import * as Settings from 'Storage/Settings';
+import * as Events from 'Common/Events';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function ComposePopupView()
+import {ComposeAttachmentModel} from 'Model/ComposeAttachment';
+
+import {getApp} from 'Helper/Apps/User';
+
+import {view, ViewType, isPopupVisible, showScreenPopup, hideScreenPopup, routeOn, routeOff} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+@view({
+	name: 'View/Popup/Compose',
+	type: ViewType.Popup,
+	templateID: 'PopupsCompose'
+})
+class ComposePopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsCompose');
+	constructor() {
+		super();
 
-	var
-		self = this,
-		fEmailOutInHelper = function(context, oIdentity, sName, bIn) {
-			if (oIdentity && context && oIdentity[sName]() && (bIn ? true : context[sName]()))
-			{
-				var
-					sIdentityEmail = oIdentity[sName](),
-					aList = Utils.trim(context[sName]()).split(/[,]/);
-
-				aList = _.filter(aList, function(sEmail) {
-					sEmail = Utils.trim(sEmail);
-					return sEmail && Utils.trim(sIdentityEmail) !== sEmail;
-				});
-
-				if (bIn)
+		const
+			fEmailOutInHelper = (context, identity, name, isIn) => {
+				if (identity && context && identity[name]() && (isIn ? true : context[name]()))
 				{
-					aList.push(sIdentityEmail);
-				}
-
-				context[sName](aList.join(','));
-			}
-		};
-
-	this.oLastMessage = null;
-	this.oEditor = null;
-	this.aDraftInfo = null;
-	this.sInReplyTo = '';
-	this.bFromDraft = false;
-	this.sReferences = '';
-
-	this.sLastFocusedField = 'to';
-
-	this.resizerTrigger = _.bind(this.resizerTrigger, this);
-
-	this.allowContacts = !!AppStore.contactsIsAllowed();
-	this.allowFolders = !!Settings.capa(Enums.Capa.Folders);
-
-	this.bSkipNextHide = false;
-	this.composeInEdit = AppStore.composeInEdit;
-	this.editorDefaultType = SettingsStore.editorDefaultType;
-
-	this.capaOpenPGP = PgpStore.capaOpenPGP;
-
-	this.identitiesDropdownTrigger = ko.observable(false);
-
-	this.to = ko.observable('');
-	this.to.focused = ko.observable(false);
-	this.cc = ko.observable('');
-	this.cc.focused = ko.observable(false);
-	this.bcc = ko.observable('');
-	this.bcc.focused = ko.observable(false);
-	this.replyTo = ko.observable('');
-	this.replyTo.focused = ko.observable(false);
-
-	ko.computed(function() {
-		switch (true)
-		{
-			case this.to.focused():
-				this.sLastFocusedField = 'to';
-				break;
-			case this.cc.focused():
-				this.sLastFocusedField = 'cc';
-				break;
-			case this.bcc.focused():
-				this.sLastFocusedField = 'bcc';
-				break;
-			// no default
-		}
-	}, this).extend({'notify': 'always'});
-
-	this.subject = ko.observable('');
-	this.subject.focused = ko.observable(false);
-
-	this.isHtml = ko.observable(false);
-
-	this.requestDsn = ko.observable(false);
-	this.requestReadReceipt = ko.observable(false);
-	this.markAsImportant = ko.observable(false);
-
-	this.sendError = ko.observable(false);
-	this.sendSuccessButSaveError = ko.observable(false);
-	this.savedError = ko.observable(false);
-
-	this.sendButtonSuccess = ko.computed(function() {
-		return !this.sendError() && !this.sendSuccessButSaveError();
-	}, this);
-
-	this.sendErrorDesc = ko.observable('');
-	this.savedErrorDesc = ko.observable('');
-
-	this.sendError.subscribe(function(bValue) {
-		if (!bValue)
-		{
-			this.sendErrorDesc('');
-		}
-	}, this);
-
-	this.savedError.subscribe(function(bValue) {
-		if (!bValue)
-		{
-			this.savedErrorDesc('');
-		}
-	}, this);
-
-	this.sendSuccessButSaveError.subscribe(function(bValue) {
-		if (!bValue)
-		{
-			this.savedErrorDesc('');
-		}
-	}, this);
-
-	this.savedTime = ko.observable(0);
-	this.savedTimeText = ko.computed(function() {
-		return 0 < this.savedTime() ? Translator.i18n('COMPOSE/SAVED_TIME', {
-			'TIME': Momentor.format(this.savedTime() - 1, 'LT')
-		}) : '';
-	}, this);
-
-	this.emptyToError = ko.observable(false);
-	this.emptyToErrorTooltip = ko.computed(function() {
-		return this.emptyToError() ? Translator.i18n('COMPOSE/EMPTY_TO_ERROR_DESC') : '';
-	}, this);
-
-	this.attachmentsInProcessError = ko.observable(false);
-	this.attachmentsInErrorError = ko.observable(false);
-
-	this.attachmentsErrorTooltip = ko.computed(function() {
-
-		var sResult = '';
-		switch (true)
-		{
-			case this.attachmentsInProcessError():
-				sResult = Translator.i18n('COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC');
-				break;
-			case this.attachmentsInErrorError():
-				sResult = Translator.i18n('COMPOSE/ATTACHMENTS_ERROR_DESC');
-				break;
-			// no default
-		}
-
-		return sResult;
-
-	}, this);
-
-	this.showCc = ko.observable(false);
-	this.showBcc = ko.observable(false);
-	this.showReplyTo = ko.observable(false);
-
-	this.cc.subscribe(function(aValue) {
-		if (false === self.showCc() && 0 < aValue.length)
-		{
-			self.showCc(true);
-		}
-	}, this);
-
-	this.bcc.subscribe(function(aValue) {
-		if (false === self.showBcc() && 0 < aValue.length)
-		{
-			self.showBcc(true);
-		}
-	}, this);
-
-	this.replyTo.subscribe(function(aValue) {
-		if (false === self.showReplyTo() && 0 < aValue.length)
-		{
-			self.showReplyTo(true);
-		}
-	}, this);
-
-	this.draftFolder = ko.observable('');
-	this.draftUid = ko.observable('');
-	this.sending = ko.observable(false);
-	this.saving = ko.observable(false);
-	this.attachments = ko.observableArray([]);
-
-	this.attachmentsInProcess = this.attachments.filter(function(oItem) {
-		return oItem && !oItem.complete();
-	});
-
-	this.attachmentsInReady = this.attachments.filter(function(oItem) {
-		return oItem && oItem.complete();
-	});
-
-	this.attachmentsInError = this.attachments.filter(function(oItem) {
-		return oItem && '' !== oItem.error();
-	});
-
-	this.attachmentsCount = ko.computed(function() {
-		return this.attachments().length;
-	}, this);
-
-	this.attachmentsInErrorCount = ko.computed(function() {
-		return this.attachmentsInError().length;
-	}, this);
-
-	this.attachmentsInProcessCount = ko.computed(function() {
-		return this.attachmentsInProcess().length;
-	}, this);
-
-	this.isDraftFolderMessage = ko.computed(function() {
-		return '' !== this.draftFolder() && '' !== this.draftUid();
-	}, this);
-
-	this.attachmentsPlace = ko.observable(false);
-
-	this.attachments.subscribe(this.resizerTrigger);
-	this.attachmentsPlace.subscribe(this.resizerTrigger);
-
-	this.attachmentsInErrorCount.subscribe(function(iN) {
-		if (0 === iN)
-		{
-			this.attachmentsInErrorError(false);
-		}
-	}, this);
-
-	this.composeUploaderButton = ko.observable(null);
-	this.composeUploaderDropPlace = ko.observable(null);
-	this.dragAndDropEnabled = ko.observable(false);
-	this.dragAndDropOver = ko.observable(false).extend({'throttle': 1});
-	this.dragAndDropVisible = ko.observable(false).extend({'throttle': 1});
-	this.attacheMultipleAllowed = ko.observable(false);
-	this.addAttachmentEnabled = ko.observable(false);
-
-	this.composeEditorArea = ko.observable(null);
-
-	this.identities = IdentityStore.identities;
-	this.identitiesOptions = ko.computed(function() {
-		return _.map(IdentityStore.identities(), function(oItem) {
-			return {
-				'item': oItem,
-				'optValue': oItem.id(),
-				'optText': oItem.formattedName()
-			};
-		});
-	}, this);
-
-	this.currentIdentity = ko.observable(
-		this.identities()[0] ? this.identities()[0] : null);
-
-	this.currentIdentity.extend({'toggleSubscribe': [this,
-		function(oIdentity) {
-			fEmailOutInHelper(this, oIdentity, 'bcc');
-			fEmailOutInHelper(this, oIdentity, 'replyTo');
-		}, function(oIdentity) {
-			fEmailOutInHelper(this, oIdentity, 'bcc', true);
-			fEmailOutInHelper(this, oIdentity, 'replyTo', true);
-		}
-	]});
-
-	this.currentIdentityView = ko.computed(function() {
-		var oItem = this.currentIdentity();
-		return oItem ? oItem.formattedName() : 'unknown';
-	}, this);
-
-	this.to.subscribe(function(sValue) {
-		if (this.emptyToError() && 0 < sValue.length)
-		{
-			this.emptyToError(false);
-		}
-	}, this);
-
-	this.attachmentsInProcess.subscribe(function(aValue) {
-		if (this.attachmentsInProcessError() && Utils.isArray(aValue) && 0 === aValue.length)
-		{
-			this.attachmentsInProcessError(false);
-		}
-	}, this);
-
-	this.resizer = ko.observable(false).extend({'throttle': 50});
-
-	this.resizer.subscribe(_.bind(function() {
-		if (this.oEditor) {
-			this.oEditor.resize();
-		}
-	}, this));
-
-	this.canBeSentOrSaved = ko.computed(function() {
-		return !this.sending() && !this.saving();
-	}, this);
-
-	this.deleteCommand = Utils.createCommand(this, function() {
-
-		var
-			PopupsAskViewModel = require('View/Popup/Ask');
-
-		if (!kn.isPopupVisible(PopupsAskViewModel) && this.modalVisibility())
-		{
-			kn.showScreenPopup(PopupsAskViewModel, [Translator.i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), function() {
-				if (self.modalVisibility())
-				{
-					require('App/User').default.deleteMessagesFromFolderWithoutCheck(self.draftFolder(), [self.draftUid()]);
-					kn.hideScreenPopup(ComposePopupView);
-				}
-			}]);
-		}
-
-	}, function() {
-		return this.isDraftFolderMessage();
-	});
-
-	this.sendMessageResponse = _.bind(this.sendMessageResponse, this);
-	this.saveMessageResponse = _.bind(this.saveMessageResponse, this);
-
-	this.sendCommand = Utils.createCommand(this, function() {
-
-		var
-			sTo = Utils.trim(this.to()),
-			sCc = Utils.trim(this.cc()),
-			sBcc = Utils.trim(this.bcc()),
-			sSentFolder = FolderStore.sentFolder();
-
-		this.attachmentsInProcessError(false);
-		this.attachmentsInErrorError(false);
-		this.emptyToError(false);
-
-		if (0 < this.attachmentsInProcess().length)
-		{
-			this.attachmentsInProcessError(true);
-			this.attachmentsPlace(true);
-		}
-		else if (0 < this.attachmentsInError().length)
-		{
-			this.attachmentsInErrorError(true);
-			this.attachmentsPlace(true);
-		}
-
-		if ('' === sTo && '' === sCc && '' === sBcc)
-		{
-			this.emptyToError(true);
-		}
-
-		if (!this.emptyToError() && !this.attachmentsInErrorError() && !this.attachmentsInProcessError())
-		{
-			if (SettingsStore.replySameFolder())
-			{
-				if (Utils.isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length && Utils.isNormal(this.aDraftInfo[2]) && 0 < this.aDraftInfo[2].length)
-				{
-					sSentFolder = this.aDraftInfo[2];
-				}
-			}
-
-			if (!this.allowFolders)
-			{
-				sSentFolder = Consts.UNUSED_OPTION_VALUE;
-			}
-
-			if ('' === sSentFolder)
-			{
-				kn.showScreenPopup(require('View/Popup/FolderSystem'), [Enums.SetSystemFoldersNotification.Sent]);
-			}
-			else
-			{
-				this.sendError(false);
-				this.sending(true);
-
-				if (Utils.isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length)
-				{
-					var aFlagsCache = Cache.getMessageFlagsFromCache(this.aDraftInfo[2], this.aDraftInfo[1]);
-					if (aFlagsCache)
+					const identityEmail = identity[name]();
+					let list = trim(context[name]()).split(/[,]/);
+
+					list = _.filter(list, (email) => {
+						email = trim(email);
+						return email && trim(identityEmail) !== email;
+					});
+
+					if (isIn)
 					{
-						if ('forward' === this.aDraftInfo[0])
-						{
-							aFlagsCache[3] = true;
-						}
-						else
-						{
-							aFlagsCache[2] = true;
-						}
+						list.push(identityEmail);
+					}
 
-						Cache.setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], aFlagsCache);
-						require('App/User').default.reloadFlagsCurrentMessageListAndMessageFromCache();
-						Cache.setFolderHash(this.aDraftInfo[2], '');
+					context[name](list.join(','));
+				}
+			};
+
+		this.oLastMessage = null;
+		this.oEditor = null;
+		this.aDraftInfo = null;
+		this.sInReplyTo = '';
+		this.bFromDraft = false;
+		this.sReferences = '';
+
+		this.sLastFocusedField = 'to';
+
+		this.resizerTrigger = _.bind(this.resizerTrigger, this);
+
+		this.allowContacts = !!AppStore.contactsIsAllowed();
+		this.allowFolders = !!Settings.capa(Capa.Folders);
+
+		this.bSkipNextHide = false;
+		this.composeInEdit = AppStore.composeInEdit;
+		this.editorDefaultType = SettingsStore.editorDefaultType;
+
+		this.capaOpenPGP = PgpStore.capaOpenPGP;
+
+		this.identitiesDropdownTrigger = ko.observable(false);
+
+		this.to = ko.observable('');
+		this.to.focused = ko.observable(false);
+		this.cc = ko.observable('');
+		this.cc.focused = ko.observable(false);
+		this.bcc = ko.observable('');
+		this.bcc.focused = ko.observable(false);
+		this.replyTo = ko.observable('');
+		this.replyTo.focused = ko.observable(false);
+
+		ko.computed(() => {
+			switch (true)
+			{
+				case this.to.focused():
+					this.sLastFocusedField = 'to';
+					break;
+				case this.cc.focused():
+					this.sLastFocusedField = 'cc';
+					break;
+				case this.bcc.focused():
+					this.sLastFocusedField = 'bcc';
+					break;
+				// no default
+			}
+		}).extend({notify: 'always'});
+
+		this.subject = ko.observable('');
+		this.subject.focused = ko.observable(false);
+
+		this.isHtml = ko.observable(false);
+
+		this.requestDsn = ko.observable(false);
+		this.requestReadReceipt = ko.observable(false);
+		this.markAsImportant = ko.observable(false);
+
+		this.sendError = ko.observable(false);
+		this.sendSuccessButSaveError = ko.observable(false);
+		this.savedError = ko.observable(false);
+
+		this.sendButtonSuccess = ko.computed(
+			() => !this.sendError() && !this.sendSuccessButSaveError()
+		);
+
+		this.sendErrorDesc = ko.observable('');
+		this.savedErrorDesc = ko.observable('');
+
+		this.sendError.subscribe((value) => {
+			if (!value)
+			{
+				this.sendErrorDesc('');
+			}
+		});
+
+		this.savedError.subscribe((value) => {
+			if (!value)
+			{
+				this.savedErrorDesc('');
+			}
+		});
+
+		this.sendSuccessButSaveError.subscribe((value) => {
+			if (!value)
+			{
+				this.savedErrorDesc('');
+			}
+		});
+
+		this.savedTime = ko.observable(0);
+		this.savedTimeText = ko.computed(
+			() => (0 < this.savedTime() ? i18n('COMPOSE/SAVED_TIME', {'TIME': momentorFormat(this.savedTime() - 1, 'LT')}) : '')
+		);
+
+		this.emptyToError = ko.observable(false);
+		this.emptyToErrorTooltip = ko.computed(
+			() => (this.emptyToError() ? i18n('COMPOSE/EMPTY_TO_ERROR_DESC') : '')
+		);
+
+		this.attachmentsInProcessError = ko.observable(false);
+		this.attachmentsInErrorError = ko.observable(false);
+
+		this.attachmentsErrorTooltip = ko.computed(() => {
+			let result = '';
+			switch (true)
+			{
+				case this.attachmentsInProcessError():
+					result = i18n('COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC');
+					break;
+				case this.attachmentsInErrorError():
+					result = i18n('COMPOSE/ATTACHMENTS_ERROR_DESC');
+					break;
+				// no default
+			}
+			return result;
+		});
+
+		this.showCc = ko.observable(false);
+		this.showBcc = ko.observable(false);
+		this.showReplyTo = ko.observable(false);
+
+		this.cc.subscribe((value) => {
+			if (false === this.showCc() && 0 < value.length)
+			{
+				this.showCc(true);
+			}
+		});
+
+		this.bcc.subscribe((value) => {
+			if (false === this.showBcc() && 0 < value.length)
+			{
+				this.showBcc(true);
+			}
+		});
+
+		this.replyTo.subscribe((value) => {
+			if (false === this.showReplyTo() && 0 < value.length)
+			{
+				this.showReplyTo(true);
+			}
+		});
+
+		this.draftFolder = ko.observable('');
+		this.draftUid = ko.observable('');
+		this.sending = ko.observable(false);
+		this.saving = ko.observable(false);
+		this.attachments = ko.observableArray([]);
+
+		this.attachmentsInProcess = this.attachments.filter((item) => item && !item.complete());
+		this.attachmentsInReady = this.attachments.filter((item) => item && item.complete());
+		this.attachmentsInError = this.attachments.filter((item) => item && '' !== item.error());
+
+		this.attachmentsCount = ko.computed(() => this.attachments().length);
+		this.attachmentsInErrorCount = ko.computed(() => this.attachmentsInError().length);
+		this.attachmentsInProcessCount = ko.computed(() => this.attachmentsInProcess().length);
+		this.isDraftFolderMessage = ko.computed(() => '' !== this.draftFolder() && '' !== this.draftUid());
+
+		this.attachmentsPlace = ko.observable(false);
+
+		this.attachments.subscribe(this.resizerTrigger);
+		this.attachmentsPlace.subscribe(this.resizerTrigger);
+
+		this.attachmentsInErrorCount.subscribe((value) => {
+			if (0 === value)
+			{
+				this.attachmentsInErrorError(false);
+			}
+		});
+
+		this.composeUploaderButton = ko.observable(null);
+		this.composeUploaderDropPlace = ko.observable(null);
+		this.dragAndDropEnabled = ko.observable(false);
+		this.dragAndDropOver = ko.observable(false).extend({throttle: 1});
+		this.dragAndDropVisible = ko.observable(false).extend({throttle: 1});
+		this.attacheMultipleAllowed = ko.observable(false);
+		this.addAttachmentEnabled = ko.observable(false);
+
+		this.composeEditorArea = ko.observable(null);
+
+		this.identities = IdentityStore.identities;
+		this.identitiesOptions = ko.computed(
+			() => _.map(IdentityStore.identities(), (item) => ({
+				'item': item,
+				'optValue': item.id(),
+				'optText': item.formattedName()
+			}))
+		);
+
+		this.currentIdentity = ko.observable(
+			this.identities()[0] ? this.identities()[0] : null);
+
+		this.currentIdentity.extend({toggleSubscribe: [
+			this,
+			(identity) => {
+				fEmailOutInHelper(this, identity, 'bcc');
+				fEmailOutInHelper(this, identity, 'replyTo');
+			},
+			(identity) => {
+				fEmailOutInHelper(this, identity, 'bcc', true);
+				fEmailOutInHelper(this, identity, 'replyTo', true);
+			}
+		]});
+
+		this.currentIdentityView = ko.computed(() => {
+			const item = this.currentIdentity();
+			return item ? item.formattedName() : 'unknown';
+		});
+
+		this.to.subscribe((value) => {
+			if (this.emptyToError() && 0 < value.length)
+			{
+				this.emptyToError(false);
+			}
+		});
+
+		this.attachmentsInProcess.subscribe((value) => {
+			if (this.attachmentsInProcessError() && isArray(value) && 0 === value.length)
+			{
+				this.attachmentsInProcessError(false);
+			}
+		});
+
+		this.resizer = ko.observable(false).extend({throttle: 50});
+
+		this.resizer.subscribe(() => {
+			if (this.oEditor) {
+				this.oEditor.resize();
+			}
+		});
+
+		this.canBeSentOrSaved = ko.computed(() => !this.sending() && !this.saving());
+
+		this.deleteCommand = createCommand(() => {
+			const PopupsAskViewModel = require('View/Popup/Ask');
+			if (!isPopupVisible(PopupsAskViewModel) && this.modalVisibility())
+			{
+				showScreenPopup(PopupsAskViewModel, [i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), () => {
+					if (this.modalVisibility())
+					{
+						getApp().deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
+						hideScreenPopup(ComposePopupView);
+					}
+				}]);
+			}
+
+		}, () => this.isDraftFolderMessage());
+
+		this.sendMessageResponse = _.bind(this.sendMessageResponse, this);
+		this.saveMessageResponse = _.bind(this.saveMessageResponse, this);
+
+		this.sendCommand = createCommand(() => {
+
+			const
+				sTo = trim(this.to()),
+				sCc = trim(this.cc()),
+				sBcc = trim(this.bcc());
+			let
+				sSentFolder = FolderStore.sentFolder();
+
+			this.attachmentsInProcessError(false);
+			this.attachmentsInErrorError(false);
+			this.emptyToError(false);
+
+			if (0 < this.attachmentsInProcess().length)
+			{
+				this.attachmentsInProcessError(true);
+				this.attachmentsPlace(true);
+			}
+			else if (0 < this.attachmentsInError().length)
+			{
+				this.attachmentsInErrorError(true);
+				this.attachmentsPlace(true);
+			}
+
+			if ('' === sTo && '' === sCc && '' === sBcc)
+			{
+				this.emptyToError(true);
+			}
+
+			if (!this.emptyToError() && !this.attachmentsInErrorError() && !this.attachmentsInProcessError())
+			{
+				if (SettingsStore.replySameFolder())
+				{
+					if (isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length && isNormal(this.aDraftInfo[2]) && 0 < this.aDraftInfo[2].length)
+					{
+						sSentFolder = this.aDraftInfo[2];
 					}
 				}
 
-				sSentFolder = Consts.UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
+				if (!this.allowFolders)
+				{
+					sSentFolder = UNUSED_OPTION_VALUE;
+				}
 
-				Cache.setFolderHash(this.draftFolder(), '');
-				Cache.setFolderHash(sSentFolder, '');
+				if ('' === sSentFolder)
+				{
+					showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Sent]);
+				}
+				else
+				{
+					this.sendError(false);
+					this.sending(true);
 
-				Remote.sendMessage(
-					this.sendMessageResponse,
+					if (isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length)
+					{
+						const flagsCache = getMessageFlagsFromCache(this.aDraftInfo[2], this.aDraftInfo[1]);
+						if (flagsCache)
+						{
+							if ('forward' === this.aDraftInfo[0])
+							{
+								flagsCache[3] = true;
+							}
+							else
+							{
+								flagsCache[2] = true;
+							}
+
+							setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
+							getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
+							setFolderHash(this.aDraftInfo[2], '');
+						}
+					}
+
+					sSentFolder = UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
+
+					setFolderHash(this.draftFolder(), '');
+					setFolderHash(sSentFolder, '');
+
+					Remote.sendMessage(
+						this.sendMessageResponse,
+						this.currentIdentity() ? this.currentIdentity().id() : '',
+						this.draftFolder(),
+						this.draftUid(),
+						sSentFolder,
+						sTo,
+						this.cc(),
+						this.bcc(),
+						this.replyTo(),
+						this.subject(),
+						this.oEditor ? this.oEditor.isHtml() : false,
+						this.oEditor ? this.oEditor.getData(true) : '',
+						this.prepearAttachmentsForSendOrSave(),
+						this.aDraftInfo,
+						this.sInReplyTo,
+						this.sReferences,
+						this.requestDsn(),
+						this.requestReadReceipt(),
+						this.markAsImportant()
+					);
+				}
+			}
+
+		}, this.canBeSentOrSaved);
+
+		this.saveCommand = createCommand(() => {
+
+			if (!this.allowFolders)
+			{
+				return false;
+			}
+
+			if (FolderStore.draftFolderNotEnabled())
+			{
+				showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Draft]);
+			}
+			else
+			{
+				this.savedError(false);
+				this.saving(true);
+
+				this.autosaveStart();
+
+				setFolderHash(FolderStore.draftFolder(), '');
+
+				Remote.saveMessage(
+					this.saveMessageResponse,
 					this.currentIdentity() ? this.currentIdentity().id() : '',
 					this.draftFolder(),
 					this.draftUid(),
-					sSentFolder,
-					sTo,
+					FolderStore.draftFolder(),
+					this.to(),
 					this.cc(),
 					this.bcc(),
 					this.replyTo(),
 					this.subject(),
 					this.oEditor ? this.oEditor.isHtml() : false,
-					this.oEditor ? this.oEditor.getData(true, true) : '',
+					this.oEditor ? this.oEditor.getData(true) : '',
 					this.prepearAttachmentsForSendOrSave(),
 					this.aDraftInfo,
 					this.sInReplyTo,
 					this.sReferences,
-					this.requestDsn(),
-					this.requestReadReceipt(),
 					this.markAsImportant()
 				);
 			}
-		}
 
-	}, this.canBeSentOrSaved);
+			return true;
 
-	this.saveCommand = Utils.createCommand(this, function() {
+		}, this.canBeSentOrSaved);
 
-		if (!this.allowFolders)
-		{
-			return false;
-		}
+		this.skipCommand = createCommand(() => {
 
-		if (FolderStore.draftFolderNotEnabled())
-		{
-			kn.showScreenPopup(require('View/Popup/FolderSystem'), [Enums.SetSystemFoldersNotification.Draft]);
-		}
-		else
-		{
-			this.savedError(false);
-			this.saving(true);
+			this.bSkipNextHide = true;
 
-			this.autosaveStart();
+			if (this.modalVisibility() && !this.saving() && !this.sending() &&
+				!FolderStore.draftFolderNotEnabled())
+			{
+				this.saveCommand();
+			}
 
-			Cache.setFolderHash(FolderStore.draftFolder(), '');
+			this.tryToClosePopup();
 
-			Remote.saveMessage(
-				this.saveMessageResponse,
-				this.currentIdentity() ? this.currentIdentity().id() : '',
-				this.draftFolder(),
-				this.draftUid(),
-				FolderStore.draftFolder(),
-				this.to(),
-				this.cc(),
-				this.bcc(),
-				this.replyTo(),
-				this.subject(),
-				this.oEditor ? this.oEditor.isHtml() : false,
-				this.oEditor ? this.oEditor.getData(true) : '',
-				this.prepearAttachmentsForSendOrSave(),
-				this.aDraftInfo,
-				this.sInReplyTo,
-				this.sReferences,
-				this.markAsImportant()
-			);
-		}
+		}, this.canBeSentOrSaved);
 
-		return true;
+		this.contactsCommand = createCommand(() => {
 
-	}, this.canBeSentOrSaved);
+			if (this.allowContacts)
+			{
+				this.skipCommand();
+				_.delay(() => {
+					showScreenPopup(require('View/Popup/Contacts'), [true, this.sLastFocusedField]);
+				}, Magics.Time200ms);
+			}
 
-	this.skipCommand = Utils.createCommand(this, function() {
+		}, () => this.allowContacts);
 
-		this.bSkipNextHide = true;
+		Events.sub('interval.2m', () => {
+			if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
+				!this.saving() && !this.sending() && !this.savedError())
+			{
+				this.saveCommand();
+			}
+		});
 
-		if (this.modalVisibility() && !this.saving() && !this.sending() &&
-			!FolderStore.draftFolderNotEnabled())
-		{
-			this.saveCommand();
-		}
+		this.showCc.subscribe(this.resizerTrigger);
+		this.showBcc.subscribe(this.resizerTrigger);
+		this.showReplyTo.subscribe(this.resizerTrigger);
 
-		this.tryToClosePopup();
+		this.dropboxEnabled = SocialStore.dropbox.enabled;
+		this.dropboxApiKey = SocialStore.dropbox.apiKey;
 
-	}, this.canBeSentOrSaved);
+		this.dropboxCommand = createCommand(() => {
 
-	this.contactsCommand = Utils.createCommand(this, function() {
+			if (window.Dropbox)
+			{
+				window.Dropbox.choose({
+					success: (files) => {
+						if (files && files[0] && files[0].link)
+						{
+							this.addDropboxAttachment(files[0]);
+						}
+					},
+					linkType: 'direct',
+					multiselect: false
+				});
+			}
 
-		if (this.allowContacts)
-		{
-			this.skipCommand();
-			_.delay(function() {
-				kn.showScreenPopup(require('View/Popup/Contacts'),
-					[true, self.sLastFocusedField]);
-			}, Enums.Magics.Time200ms);
-		}
+			return true;
 
-	}, function() {
-		return this.allowContacts;
-	});
+		}, () => this.dropboxEnabled());
 
-	Events.sub('interval.2m', function() {
+		this.driveEnabled = ko.observable(bXMLHttpRequestSupported &&
+			!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialDrive') &&
+			!!Settings.settingsGet('GoogleClientID') && !!Settings.settingsGet('GoogleApiKey'));
 
+		this.driveVisible = ko.observable(false);
+
+		this.driveCommand = createCommand(() => {
+			this.driveOpenPopup();
+			return true;
+		}, () => this.driveEnabled());
+
+		this.driveCallback = _.bind(this.driveCallback, this);
+
+		this.onMessageUploadAttachments = _.bind(this.onMessageUploadAttachments, this);
+
+		this.bDisabeCloseOnEsc = true;
+		this.sDefaultKeyScope = KeyState.Compose;
+
+		this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Magics.Time200ms);
+
+		this.emailsSource = _.bind(this.emailsSource, this);
+		this.autosaveFunction = _.bind(this.autosaveFunction, this);
+
+		this.iTimer = 0;
+	}
+
+	autosaveFunction() {
 		if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
 			!this.saving() && !this.sending() && !this.savedError())
 		{
 			this.saveCommand();
 		}
-	}, this);
 
-	this.showCc.subscribe(this.resizerTrigger);
-	this.showBcc.subscribe(this.resizerTrigger);
-	this.showReplyTo.subscribe(this.resizerTrigger);
+		this.autosaveStart();
+	}
 
-	this.dropboxEnabled = SocialStore.dropbox.enabled;
-	this.dropboxApiKey = SocialStore.dropbox.apiKey;
+	autosaveStart() {
+		window.clearTimeout(this.iTimer);
+		this.iTimer = window.setTimeout(this.autosaveFunction, Magics.Time1m);
+	}
 
-	this.dropboxCommand = Utils.createCommand(this, function() {
+	autosaveStop() {
+		window.clearTimeout(this.iTimer);
+	}
 
-		if (window.Dropbox)
+	emailsSource(oData, fResponse) {
+		getApp().getAutocomplete(oData.term, (aData) => {
+			fResponse(_.map(aData, (oEmailItem) => oEmailItem.toLine(false)));
+		});
+	}
+
+	openOpenPgpPopup() {
+		if (PgpStore.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml())
 		{
-			window.Dropbox.choose({
-				'success': function(files) {
-					if (files && files[0] && files[0].link)
-					{
-						self.addDropboxAttachment(files[0]);
-					}
+			showScreenPopup(require('View/Popup/ComposeOpenPgp'), [
+				(result) => {
+					this.editor((editor) => {
+						editor.setPlain(result);
+					});
 				},
-				'linkType': 'direct',
-				'multiselect': false
-			});
+				this.oEditor.getData(false),
+				this.currentIdentity(),
+				this.to(),
+				this.cc(),
+				this.bcc()
+			]);
 		}
-
-		return true;
-
-	}, function() {
-		return this.dropboxEnabled();
-	});
-
-	this.driveEnabled = ko.observable(Globals.bXMLHttpRequestSupported &&
-		!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialDrive') &&
-		!!Settings.settingsGet('GoogleClientID') && !!Settings.settingsGet('GoogleApiKey'));
-
-	this.driveVisible = ko.observable(false);
-
-	this.driveCommand = Utils.createCommand(this, function() {
-
-		this.driveOpenPopup();
-		return true;
-
-	}, function() {
-		return this.driveEnabled();
-	});
-
-	this.driveCallback = _.bind(this.driveCallback, this);
-
-	this.onMessageUploadAttachments = _.bind(this.onMessageUploadAttachments, this);
-
-	this.bDisabeCloseOnEsc = true;
-	this.sDefaultKeyScope = Enums.KeyState.Compose;
-
-	this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Enums.Magics.Time200ms);
-
-	this.emailsSource = _.bind(this.emailsSource, this);
-	this.autosaveFunction = _.bind(this.autosaveFunction, this);
-
-	this.iTimer = 0;
-
-	kn.constructorEnd(this);
-}
-
-kn.extendAsViewModel(['View/Popup/Compose', 'PopupsComposeViewModel'], ComposePopupView);
-_.extend(ComposePopupView.prototype, AbstractView.prototype);
-
-ComposePopupView.prototype.autosaveFunction = function()
-{
-	if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
-		!this.saving() && !this.sending() && !this.savedError())
-	{
-		this.saveCommand();
 	}
 
-	this.autosaveStart();
-};
-
-ComposePopupView.prototype.autosaveStart = function()
-{
-	window.clearTimeout(this.iTimer);
-	this.iTimer = window.setTimeout(this.autosaveFunction, Enums.Magics.Time1m);
-};
-
-ComposePopupView.prototype.autosaveStop = function()
-{
-	window.clearTimeout(this.iTimer);
-};
-
-ComposePopupView.prototype.emailsSource = function(oData, fResponse)
-{
-	require('App/User').default.getAutocomplete(oData.term, function(aData) {
-		fResponse(_.map(aData, function(oEmailItem) {
-			return oEmailItem.toLine(false);
-		}));
-	});
-};
-
-ComposePopupView.prototype.openOpenPgpPopup = function()
-{
-	if (PgpStore.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml())
-	{
-		var self = this;
-		kn.showScreenPopup(require('View/Popup/ComposeOpenPgp'), [
-			function(sResult) {
-				self.editor(function(oEditor) {
-					oEditor.setPlain(sResult);
-				});
-			},
-			this.oEditor.getData(false, true),
-			this.currentIdentity(),
-			this.to(),
-			this.cc(),
-			this.bcc()
-		]);
-	}
-};
-
-ComposePopupView.prototype.reloadDraftFolder = function()
-{
-	var
-		sDraftFolder = FolderStore.draftFolder();
-
-	if ('' !== sDraftFolder && Consts.UNUSED_OPTION_VALUE !== sDraftFolder)
-	{
-		Cache.setFolderHash(sDraftFolder, '');
-		if (FolderStore.currentFolderFullNameRaw() === sDraftFolder)
+	reloadDraftFolder() {
+		const draftFolder = FolderStore.draftFolder();
+		if ('' !== draftFolder && UNUSED_OPTION_VALUE !== draftFolder)
 		{
-			require('App/User').default.reloadMessageList(true);
-		}
-		else
-		{
-			require('App/User').default.folderInformation(sDraftFolder);
-		}
-	}
-};
-
-ComposePopupView.prototype.findIdentityByMessage = function(sComposeType, oMessage)
-{
-	var
-		aIdentities = IdentityStore.identities(),
-		iResultIndex = 1000,
-		oResultIdentity = null,
-		oIdentitiesCache = {},
-
-		fEachHelper = function(oItem) {
-
-			if (oItem && oItem.email && oIdentitiesCache[oItem.email])
+			setFolderHash(draftFolder, '');
+			if (FolderStore.currentFolderFullNameRaw() === draftFolder)
 			{
-				if (!oResultIdentity || iResultIndex > oIdentitiesCache[oItem.email][1])
-				{
-					oResultIdentity = oIdentitiesCache[oItem.email][0];
-					iResultIndex = oIdentitiesCache[oItem.email][1];
-				}
+				getApp().reloadMessageList(true);
 			}
-		};
-
-	_.each(aIdentities, function(oItem, iIndex) {
-		oIdentitiesCache[oItem.email()] = [oItem, iIndex];
-	});
-
-	if (oMessage)
-	{
-		switch (sComposeType)
-		{
-			case Enums.ComposeType.Empty:
-				break;
-			case Enums.ComposeType.Reply:
-			case Enums.ComposeType.ReplyAll:
-			case Enums.ComposeType.Forward:
-			case Enums.ComposeType.ForwardAsAttachment:
-				_.each(_.union(oMessage.to, oMessage.cc, oMessage.bcc), fEachHelper);
-				if (!oResultIdentity) {
-					_.each(oMessage.deliveredTo, fEachHelper);
-				}
-				break;
-			case Enums.ComposeType.Draft:
-				_.each(_.union(oMessage.from, oMessage.replyTo), fEachHelper);
-				break;
-			// no default
-		}
-	}
-
-	return oResultIdentity || aIdentities[0] || null;
-};
-
-ComposePopupView.prototype.selectIdentity = function(oIdentity)
-{
-	if (oIdentity && oIdentity.item)
-	{
-		this.currentIdentity(oIdentity.item);
-		this.setSignatureFromIdentity(oIdentity.item);
-	}
-};
-
-ComposePopupView.prototype.sendMessageResponse = function(sResult, oData)
-{
-	var
-		bResult = false,
-		sMessage = '';
-
-	this.sending(false);
-
-	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-	{
-		bResult = true;
-		if (this.modalVisibility())
-		{
-			Utils.delegateRun(this, 'closeCommand');
-		}
-	}
-
-	if (this.modalVisibility() && !bResult)
-	{
-		if (oData && Enums.Notification.CantSaveMessage === oData.ErrorCode)
-		{
-			this.sendSuccessButSaveError(true);
-			this.savedErrorDesc(Utils.trim(Translator.i18n('COMPOSE/SAVED_ERROR_ON_SEND')));
-		}
-		else
-		{
-			sMessage = Translator.getNotification(oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.CantSendMessage,
-				oData && oData.ErrorMessage ? oData.ErrorMessage : '');
-
-			this.sendError(true);
-			this.sendErrorDesc(sMessage || Translator.getNotification(Enums.Notification.CantSendMessage));
-		}
-	}
-
-	this.reloadDraftFolder();
-};
-
-ComposePopupView.prototype.saveMessageResponse = function(sResult, oData)
-{
-	var bResult = false;
-
-	this.saving(false);
-
-	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-	{
-		if (oData.Result.NewFolder && oData.Result.NewUid)
-		{
-			bResult = true;
-
-			if (this.bFromDraft)
+			else
 			{
-				var oMessage = MessageStore.message();
-				if (oMessage && this.draftFolder() === oMessage.folderFullNameRaw && this.draftUid() === oMessage.uid)
-				{
-					MessageStore.message(null);
-				}
-			}
-
-			this.draftFolder(oData.Result.NewFolder);
-			this.draftUid(oData.Result.NewUid);
-
-			this.savedTime(window.Math.round((new window.Date()).getTime() / 1000));
-
-			if (this.bFromDraft)
-			{
-				Cache.setFolderHash(this.draftFolder(), '');
+				getApp().folderInformation(draftFolder);
 			}
 		}
 	}
 
-	if (!bResult)
-	{
-		this.savedError(true);
-		this.savedErrorDesc(Translator.getNotification(Enums.Notification.CantSaveMessage));
-	}
+	findIdentityByMessage(composeType, message) {
 
-	this.reloadDraftFolder();
-};
-
-ComposePopupView.prototype.onHide = function()
-{
-	this.autosaveStop();
-
-	if (!this.bSkipNextHide)
-	{
-		AppStore.composeInEdit(false);
-		this.reset();
-	}
-
-	this.bSkipNextHide = false;
-
-	this.to.focused(false);
-
-	kn.routeOn();
-};
-
-ComposePopupView.prototype.editor = function(fOnInit)
-{
-	if (fOnInit)
-	{
-		var self = this;
-		if (!this.oEditor && this.composeEditorArea())
-		{
-// _.delay(function() {
-			self.oEditor = new HtmlEditor(self.composeEditorArea(), null, function() {
-				fOnInit(self.oEditor);
-				self.resizerTrigger();
-			}, function(bHtml) {
-				self.isHtml(!!bHtml);
-			});
-// }, 1000);
-		}
-		else if (this.oEditor)
-		{
-			fOnInit(this.oEditor);
-			this.resizerTrigger();
-		}
-	}
-};
-
-ComposePopupView.prototype.converSignature = function(sSignature)
-{
-	var
-		iLimit = 10,
-		aMoments = [],
-		oMomentRegx = /{{MOMENT:([^}]+)}}/g,
-		sFrom = '';
-
-	sSignature = sSignature.replace(/[\r]/g, '');
-
-	sFrom = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
-	if ('' !== sFrom)
-	{
-		sSignature = sSignature.replace(/{{FROM-FULL}}/g, sFrom);
-
-		if (-1 === sFrom.indexOf(' ') && 0 < sFrom.indexOf('@'))
-		{
-			sFrom = sFrom.replace(/@[\S]+/, '');
-		}
-
-		sSignature = sSignature.replace(/{{FROM}}/g, sFrom);
-	}
-
-	sSignature = sSignature.replace(/[\s]{1,2}{{FROM}}/g, '{{FROM}}');
-	sSignature = sSignature.replace(/[\s]{1,2}{{FROM-FULL}}/g, '{{FROM-FULL}}');
-
-	sSignature = sSignature.replace(/{{FROM}}/g, '');
-	sSignature = sSignature.replace(/{{FROM-FULL}}/g, '');
-
-	if (-1 < sSignature.indexOf('{{DATE}}'))
-	{
-		sSignature = sSignature.replace(/{{DATE}}/g, Momentor.format(0, 'llll'));
-	}
-
-	if (-1 < sSignature.indexOf('{{TIME}}'))
-	{
-		sSignature = sSignature.replace(/{{TIME}}/g, Momentor.format(0, 'LT'));
-	}
-	if (-1 < sSignature.indexOf('{{MOMENT:'))
-	{
-		try
-		{
-			var oMatch = null;
-			while (null !== (oMatch = oMomentRegx.exec(sSignature))) // eslint-disable-line no-cond-assign
-			{
-				if (oMatch && oMatch[0] && oMatch[1])
+		let
+			resultIndex = 1000,
+			resultIdentity = null;
+		const
+			identities = IdentityStore.identities(),
+			identitiesCache = {},
+			fEachHelper = (item) => {
+				if (item && item.email && identitiesCache[item.email])
 				{
-					aMoments.push([oMatch[0], oMatch[1]]);
+					if (!resultIdentity || resultIndex > identitiesCache[item.email][1])
+					{
+						resultIdentity = identitiesCache[item.email][0];
+						resultIndex = identitiesCache[item.email][1];
+					}
 				}
+			};
 
-				iLimit -= 1;
-				if (0 === iLimit)
-				{
+		_.each(identities, (item, index) => {
+			identitiesCache[item.email()] = [item, index];
+		});
+
+		if (message)
+		{
+			switch (composeType)
+			{
+				case ComposeType.Empty:
 					break;
-				}
+				case ComposeType.Reply:
+				case ComposeType.ReplyAll:
+				case ComposeType.Forward:
+				case ComposeType.ForwardAsAttachment:
+					_.each(_.union(message.to, message.cc, message.bcc), fEachHelper);
+					if (!resultIdentity) {
+						_.each(message.deliveredTo, fEachHelper);
+					}
+					break;
+				case ComposeType.Draft:
+					_.each(_.union(message.from, message.replyTo), fEachHelper);
+					break;
+				// no default
 			}
-
-			if (aMoments && 0 < aMoments.length)
-			{
-				_.each(aMoments, function(aData) {
-					sSignature = sSignature.replace(
-						aData[0], Momentor.format(0, aData[1]));
-				});
-			}
-
-			sSignature = sSignature.replace(/{{MOMENT:[^}]+}}/g, '');
 		}
-		catch (e) {} // eslint-disable-line no-empty
+
+		return resultIdentity || identities[0] || null;
 	}
 
-	return sSignature;
-};
+	selectIdentity(identity) {
+		if (identity && identity.item)
+		{
+			this.currentIdentity(identity.item);
+			this.setSignatureFromIdentity(identity.item);
+		}
+	}
 
-ComposePopupView.prototype.setSignatureFromIdentity = function(oIdentity)
-{
-	if (oIdentity)
-	{
-		var self = this;
-		this.editor(function(oEditor) {
-			var
-				bHtml = false,
-				sSignature = oIdentity.signature();
+	sendMessageResponse(statusResult, data) {
+		let
+			result = false,
+			message = '';
 
-			if ('' !== sSignature)
+		this.sending(false);
+
+		if (StorageResultType.Success === statusResult && data && data.Result)
+		{
+			result = true;
+			if (this.modalVisibility())
 			{
-				if (':HTML:' === sSignature.substr(0, 6))
+				delegateRun(this, 'closeCommand');
+			}
+		}
+
+		if (this.modalVisibility() && !result)
+		{
+			if (data && Notification.CantSaveMessage === data.ErrorCode)
+			{
+				this.sendSuccessButSaveError(true);
+				this.savedErrorDesc(trim(i18n('COMPOSE/SAVED_ERROR_ON_SEND')));
+			}
+			else
+			{
+				message = getNotification(data && data.ErrorCode ? data.ErrorCode : Notification.CantSendMessage,
+					data && data.ErrorMessage ? data.ErrorMessage : '');
+
+				this.sendError(true);
+				this.sendErrorDesc(message || getNotification(Notification.CantSendMessage));
+			}
+		}
+
+		this.reloadDraftFolder();
+	}
+
+	saveMessageResponse(statusResult, oData) {
+
+		let result = false;
+
+		this.saving(false);
+
+		if (StorageResultType.Success === statusResult && oData && oData.Result)
+		{
+			if (oData.Result.NewFolder && oData.Result.NewUid)
+			{
+				result = true;
+
+				if (this.bFromDraft)
 				{
-					bHtml = true;
-					sSignature = sSignature.substr(6);
+					const message = MessageStore.message();
+					if (message && this.draftFolder() === message.folderFullNameRaw && this.draftUid() === message.uid)
+					{
+						MessageStore.message(null);
+					}
+				}
+
+				this.draftFolder(oData.Result.NewFolder);
+				this.draftUid(oData.Result.NewUid);
+
+				this.savedTime(window.Math.round((new window.Date()).getTime() / 1000));
+
+				if (this.bFromDraft)
+				{
+					setFolderHash(this.draftFolder(), '');
 				}
 			}
+		}
 
-			oEditor.setSignature(self.converSignature(sSignature),
-				bHtml, !!oIdentity.signatureInsertBefore());
-		});
-	}
-};
-
-/**
- * @param {string=} sType = Enums.ComposeType.Empty
- * @param {?MessageModel|Array=} oMessageOrArray = null
- * @param {Array=} aToEmails = null
- * @param {Array=} aCcEmails = null
- * @param {Array=} aBccEmails = null
- * @param {string=} sCustomSubject = null
- * @param {string=} sCustomPlainText = null
- */
-ComposePopupView.prototype.onShow = function(sType, oMessageOrArray,
-	aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText)
-{
-	kn.routeOff();
-
-	this.autosaveStart();
-
-	if (AppStore.composeInEdit())
-	{
-		sType = sType || Enums.ComposeType.Empty;
-
-		var self = this;
-
-		if (Enums.ComposeType.Empty !== sType)
+		if (!result)
 		{
-			kn.showScreenPopup(require('View/Popup/Ask'), [Translator.i18n('COMPOSE/DISCARD_UNSAVED_DATA'), function() {
-				self.initOnShow(sType, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
-			}, null, null, null, false]);
+			this.savedError(true);
+			this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
+		}
+
+		this.reloadDraftFolder();
+	}
+
+	onHide() {
+		this.autosaveStop();
+
+		if (!this.bSkipNextHide)
+		{
+			AppStore.composeInEdit(false);
+			this.reset();
+		}
+
+		this.bSkipNextHide = false;
+
+		this.to.focused(false);
+
+		routeOn();
+	}
+
+	editor(fOnInit) {
+		if (fOnInit)
+		{
+			if (!this.oEditor && this.composeEditorArea())
+			{
+// _.delay(() => {
+				this.oEditor = new HtmlEditor(this.composeEditorArea(), null, () => {
+					fOnInit(this.oEditor);
+					this.resizerTrigger();
+				}, (bHtml) => {
+					this.isHtml(!!bHtml);
+				});
+// }, 1000);
+			}
+			else if (this.oEditor)
+			{
+				fOnInit(this.oEditor);
+				this.resizerTrigger();
+			}
+		}
+	}
+
+	converSignature(signature) {
+		let
+			limit = 10,
+			fromLine = '';
+
+		const
+			moments = [],
+			momentRegx = /{{MOMENT:([^}]+)}}/g;
+
+		signature = signature.replace(/[\r]/g, '');
+
+		fromLine = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
+		if ('' !== fromLine)
+		{
+			signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
+
+			if (-1 === fromLine.indexOf(' ') && 0 < fromLine.indexOf('@'))
+			{
+				fromLine = fromLine.replace(/@[\S]+/, '');
+			}
+
+			signature = signature.replace(/{{FROM}}/g, fromLine);
+		}
+
+		signature = signature.replace(/[\s]{1,2}{{FROM}}/g, '{{FROM}}');
+		signature = signature.replace(/[\s]{1,2}{{FROM-FULL}}/g, '{{FROM-FULL}}');
+
+		signature = signature.replace(/{{FROM}}/g, '');
+		signature = signature.replace(/{{FROM-FULL}}/g, '');
+
+		if (-1 < signature.indexOf('{{DATE}}'))
+		{
+			signature = signature.replace(/{{DATE}}/g, momentorFormat(0, 'llll'));
+		}
+
+		if (-1 < signature.indexOf('{{TIME}}'))
+		{
+			signature = signature.replace(/{{TIME}}/g, momentorFormat(0, 'LT'));
+		}
+		if (-1 < signature.indexOf('{{MOMENT:'))
+		{
+			try
+			{
+				let match = null;
+				while (null !== (match = momentRegx.exec(signature))) // eslint-disable-line no-cond-assign
+				{
+					if (match && match[0] && match[1])
+					{
+						moments.push([match[0], match[1]]);
+					}
+
+					limit -= 1;
+					if (0 === limit)
+					{
+						break;
+					}
+				}
+
+				if (moments && 0 < moments.length)
+				{
+					_.each(moments, (data) => {
+						signature = signature.replace(data[0], momentorFormat(0, data[1]));
+					});
+				}
+
+				signature = signature.replace(/{{MOMENT:[^}]+}}/g, '');
+			}
+			catch (e) {} // eslint-disable-line no-empty
+		}
+
+		return signature;
+	}
+
+	setSignatureFromIdentity(oIdentity) {
+		if (oIdentity)
+		{
+			this.editor((editor) => {
+				let
+					isHtml = false,
+					signature = oIdentity.signature();
+
+				if ('' !== signature)
+				{
+					if (':HTML:' === signature.substr(0, 6))
+					{
+						isHtml = true;
+						signature = signature.substr(6);
+					}
+				}
+
+				editor.setSignature(this.converSignature(signature), isHtml, !!oIdentity.signatureInsertBefore());
+			});
+		}
+	}
+
+	/**
+	 * @param {string=} type = ComposeType.Empty
+	 * @param {?MessageModel|Array=} oMessageOrArray = null
+	 * @param {Array=} aToEmails = null
+	 * @param {Array=} aCcEmails = null
+	 * @param {Array=} aBccEmails = null
+	 * @param {string=} sCustomSubject = null
+	 * @param {string=} sCustomPlainText = null
+	 */
+	onShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText) {
+
+		routeOff();
+
+		this.autosaveStart();
+
+		if (AppStore.composeInEdit())
+		{
+			type = type || ComposeType.Empty;
+			if (ComposeType.Empty !== type)
+			{
+				showScreenPopup(require('View/Popup/Ask'), [i18n('COMPOSE/DISCARD_UNSAVED_DATA'), () => {
+					this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
+				}, null, null, null, false]);
+			}
+			else
+			{
+				this.addEmailsTo(this.to, aToEmails);
+				this.addEmailsTo(this.cc, aCcEmails);
+				this.addEmailsTo(this.bcc, aBccEmails);
+
+				if (isNormal(sCustomSubject) && '' !== sCustomSubject && '' === this.subject())
+				{
+					this.subject(sCustomSubject);
+				}
+			}
 		}
 		else
 		{
-			this.addEmailsTo(this.to, aToEmails);
-			this.addEmailsTo(this.cc, aCcEmails);
-			this.addEmailsTo(this.bcc, aBccEmails);
-
-			if (Utils.isNormal(sCustomSubject) && '' !== sCustomSubject &&
-				'' === this.subject())
-			{
-				this.subject(sCustomSubject);
-			}
+			this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
 		}
 	}
-	else
-	{
-		this.initOnShow(sType, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
-	}
-};
 
-/**
- * @param {Function} fKoValue
- * @param {Array} emails
- */
-ComposePopupView.prototype.addEmailsTo = function(fKoValue, emails)
-{
-	var value = Utils.trim(fKoValue());
-	if (Utils.isNonEmptyArray(emails))
-	{
-		var values = _.uniq(_.compact(_.map(emails, function(oItem) {
-			return oItem ? oItem.toLine(false) : null;
-		})));
-
-		fKoValue(value + ('' === value ? '' : ', ') + Utils.trim(values.join(', ')));
-	}
-};
-
-/**
- *
- * @param {Array} aList
- * @param {boolean} bFriendly
- * @returns {string}
- */
-ComposePopupView.prototype.emailArrayToStringLineHelper = function(aList, bFriendly)
-{
-	bFriendly = !!bFriendly;
-	var aResult = _.map(aList, function(item) {
-		return item.toLine(bFriendly);
-	});
-
-	return aResult.join(', ');
-};
-
-/**
- * @param {string=} sType = Enums.ComposeType.Empty
- * @param {?MessageModel|Array=} oMessageOrArray = null
- * @param {Array=} aToEmails = null
- * @param {Array=} aCcEmails = null
- * @param {Array=} aBccEmails = null
- * @param {string=} sCustomSubject = null
- * @param {string=} sCustomPlainText = null
- */
-ComposePopupView.prototype.initOnShow = function(sType, oMessageOrArray,
-	aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText)
-{
-	AppStore.composeInEdit(true);
-
-	var
-		self = this,
-		sFrom = '',
-		sTo = '',
-		sCc = '',
-		sDate = '',
-		sSubject = '',
-		sText = '',
-		sReplyTitle = '',
-		oExcludeEmail = {},
-		oIdentity = null,
-		mEmail = AccountStore.email(),
-		aDraftInfo = null,
-		oMessage = null,
-		sComposeType = sType || Enums.ComposeType.Empty;
-
-	oMessageOrArray = oMessageOrArray || null;
-	if (oMessageOrArray && Utils.isNormal(oMessageOrArray))
-	{
-		oMessage = Utils.isArray(oMessageOrArray) && 1 === oMessageOrArray.length ? oMessageOrArray[0] :
-			(!Utils.isArray(oMessageOrArray) ? oMessageOrArray : null);
-	}
-
-	this.oLastMessage = oMessage;
-
-	if (null !== mEmail)
-	{
-		oExcludeEmail[mEmail] = true;
-	}
-
-	this.reset();
-
-	oIdentity = this.findIdentityByMessage(sComposeType, oMessage);
-	if (oIdentity)
-	{
-		oExcludeEmail[oIdentity.email()] = true;
-	}
-
-	if (Utils.isNonEmptyArray(aToEmails))
-	{
-		this.to(this.emailArrayToStringLineHelper(aToEmails));
-	}
-
-	if (Utils.isNonEmptyArray(aCcEmails))
-	{
-		this.cc(this.emailArrayToStringLineHelper(aCcEmails));
-	}
-
-	if (Utils.isNonEmptyArray(aBccEmails))
-	{
-		this.bcc(this.emailArrayToStringLineHelper(aBccEmails));
-	}
-
-	if ('' !== sComposeType && oMessage)
-	{
-		sDate = Momentor.format(oMessage.dateTimeStampInUTC(), 'FULL');
-		sSubject = oMessage.subject();
-		aDraftInfo = oMessage.aDraftInfo;
-
-		var oText = $(oMessage.body).clone();
-		if (oText)
+	onWarmUp() {
+		if (this.modalVisibility && !this.modalVisibility())
 		{
-			Utils.clearBqSwitcher(oText);
+			this.editor((editor) => editor.modeToggle(false));
+		}
+	}
 
-			sText = oText.html();
+	/**
+	 * @param {Function} fKoValue
+	 * @param {Array} emails
+	 */
+	addEmailsTo(fKoValue, emails) {
+		if (isNonEmptyArray(emails))
+		{
+			const
+				value = trim(fKoValue()),
+				values = _.uniq(_.compact(_.map(emails, (item) => (item ? item.toLine(false) : null))));
+
+			fKoValue(value + ('' === value ? '' : ', ') + trim(values.join(', ')));
+		}
+	}
+
+	/**
+	 *
+	 * @param {Array} aList
+	 * @param {boolean} bFriendly
+	 * @returns {string}
+	 */
+	emailArrayToStringLineHelper(aList, bFriendly) {
+		bFriendly = !!bFriendly;
+		return _.map(aList, (item) => item.toLine(bFriendly)).join(', ');
+	}
+
+	/**
+	 * @param {string=} sType = ComposeType.Empty
+	 * @param {?MessageModel|Array=} oMessageOrArray = null
+	 * @param {Array=} aToEmails = null
+	 * @param {Array=} aCcEmails = null
+	 * @param {Array=} aBccEmails = null
+	 * @param {string=} sCustomSubject = null
+	 * @param {string=} sCustomPlainText = null
+	 */
+	initOnShow(sType, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText)
+	{
+		AppStore.composeInEdit(true);
+
+		let
+			sFrom = '',
+			sTo = '',
+			sCc = '',
+			sDate = '',
+			sSubject = '',
+			sText = '',
+			sReplyTitle = '',
+			identity = null,
+			aDraftInfo = null,
+			message = null;
+
+		const
+			excludeEmail = {},
+			mEmail = AccountStore.email(),
+			lineComposeType = sType || ComposeType.Empty;
+
+		oMessageOrArray = oMessageOrArray || null;
+		if (oMessageOrArray && isNormal(oMessageOrArray))
+		{
+			message = isArray(oMessageOrArray) &&
+				1 === oMessageOrArray.length ? oMessageOrArray[0] :
+					(!isArray(oMessageOrArray) ? oMessageOrArray : null);
 		}
 
-		switch (sComposeType)
+		this.oLastMessage = message;
+
+		if (null !== mEmail)
 		{
-			case Enums.ComposeType.Empty:
-				break;
-
-			case Enums.ComposeType.Reply:
-				this.to(this.emailArrayToStringLineHelper(oMessage.replyEmails(oExcludeEmail)));
-				this.subject(Utils.replySubjectAdd('Re', sSubject));
-				this.prepearMessageAttachments(oMessage, sComposeType);
-				this.aDraftInfo = ['reply', oMessage.uid, oMessage.folderFullNameRaw];
-				this.sInReplyTo = oMessage.sMessageId;
-				this.sReferences = Utils.trim(this.sInReplyTo + ' ' + oMessage.sReferences);
-				break;
-
-			case Enums.ComposeType.ReplyAll:
-				var aResplyAllParts = oMessage.replyAllEmails(oExcludeEmail);
-				this.to(this.emailArrayToStringLineHelper(aResplyAllParts[0]));
-				this.cc(this.emailArrayToStringLineHelper(aResplyAllParts[1]));
-				this.subject(Utils.replySubjectAdd('Re', sSubject));
-				this.prepearMessageAttachments(oMessage, sComposeType);
-				this.aDraftInfo = ['reply', oMessage.uid, oMessage.folderFullNameRaw];
-				this.sInReplyTo = oMessage.sMessageId;
-				this.sReferences = Utils.trim(this.sInReplyTo + ' ' + oMessage.references());
-				break;
-
-			case Enums.ComposeType.Forward:
-				this.subject(Utils.replySubjectAdd('Fwd', sSubject));
-				this.prepearMessageAttachments(oMessage, sComposeType);
-				this.aDraftInfo = ['forward', oMessage.uid, oMessage.folderFullNameRaw];
-				this.sInReplyTo = oMessage.sMessageId;
-				this.sReferences = Utils.trim(this.sInReplyTo + ' ' + oMessage.sReferences);
-				break;
-
-			case Enums.ComposeType.ForwardAsAttachment:
-				this.subject(Utils.replySubjectAdd('Fwd', sSubject));
-				this.prepearMessageAttachments(oMessage, sComposeType);
-				this.aDraftInfo = ['forward', oMessage.uid, oMessage.folderFullNameRaw];
-				this.sInReplyTo = oMessage.sMessageId;
-				this.sReferences = Utils.trim(this.sInReplyTo + ' ' + oMessage.sReferences);
-				break;
-
-			case Enums.ComposeType.Draft:
-				this.to(this.emailArrayToStringLineHelper(oMessage.to));
-				this.cc(this.emailArrayToStringLineHelper(oMessage.cc));
-				this.bcc(this.emailArrayToStringLineHelper(oMessage.bcc));
-				this.replyTo(this.emailArrayToStringLineHelper(oMessage.replyTo));
-
-				this.bFromDraft = true;
-
-				this.draftFolder(oMessage.folderFullNameRaw);
-				this.draftUid(oMessage.uid);
-
-				this.subject(sSubject);
-				this.prepearMessageAttachments(oMessage, sComposeType);
-
-				this.aDraftInfo = Utils.isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
-				this.sInReplyTo = oMessage.sInReplyTo;
-				this.sReferences = oMessage.sReferences;
-				break;
-
-			case Enums.ComposeType.EditAsNew:
-				this.to(this.emailArrayToStringLineHelper(oMessage.to));
-				this.cc(this.emailArrayToStringLineHelper(oMessage.cc));
-				this.bcc(this.emailArrayToStringLineHelper(oMessage.bcc));
-				this.replyTo(this.emailArrayToStringLineHelper(oMessage.replyTo));
-
-				this.subject(sSubject);
-				this.prepearMessageAttachments(oMessage, sComposeType);
-
-				this.aDraftInfo = Utils.isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
-				this.sInReplyTo = oMessage.sInReplyTo;
-				this.sReferences = oMessage.sReferences;
-				break;
-			// no default
+			excludeEmail[mEmail] = true;
 		}
 
-		switch (sComposeType)
+		this.reset();
+
+		identity = this.findIdentityByMessage(lineComposeType, message);
+		if (identity)
 		{
-			case Enums.ComposeType.Reply:
-			case Enums.ComposeType.ReplyAll:
-				sFrom = oMessage.fromToLine(false, true);
-				sReplyTitle = Translator.i18n('COMPOSE/REPLY_MESSAGE_TITLE', {
-					'DATETIME': sDate,
-					'EMAIL': sFrom
-				});
-
-				sText = '<br /><br />' + sReplyTitle + ':' +
-					'<blockquote>' + Utils.trim(sText) + '</blockquote>';
-//						'<blockquote><p>' + Utils.trim(sText) + '</p></blockquote>';
-
-				break;
-
-			case Enums.ComposeType.Forward:
-				sFrom = oMessage.fromToLine(false, true);
-				sTo = oMessage.toToLine(false, true);
-				sCc = oMessage.ccToLine(false, true);
-				sText = '<br /><br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
-						'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_FROM') + ': ' + sFrom +
-						'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_TO') + ': ' + sTo +
-						(0 < sCc.length ? '<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
-						'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') + ': ' + Utils.encodeHtml(sDate) +
-						'<br />' + Translator.i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') + ': ' + Utils.encodeHtml(sSubject) +
-						'<br /><br />' + Utils.trim(sText) + '<br /><br />';
-				break;
-
-			case Enums.ComposeType.ForwardAsAttachment:
-				sText = '';
-				break;
-			// no default
+			excludeEmail[identity.email()] = true;
 		}
 
-		this.editor(function(oEditor) {
-
-			oEditor.setHtml(sText, false);
-
-			if (Enums.EditorDefaultType.PlainForced === self.editorDefaultType() ||
-				(!oMessage.isHtml() && Enums.EditorDefaultType.HtmlForced !== self.editorDefaultType()))
-			{
-				oEditor.modeToggle(false);
-			}
-
-			if (oIdentity && Enums.ComposeType.Draft !== sComposeType && Enums.ComposeType.EditAsNew !== sComposeType)
-			{
-				self.setSignatureFromIdentity(oIdentity);
-			}
-
-			self.setFocusInPopup();
-		});
-	}
-	else if (Enums.ComposeType.Empty === sComposeType)
-	{
-		this.subject(Utils.isNormal(sCustomSubject) ? '' + sCustomSubject : '');
-
-		sText = Utils.isNormal(sCustomPlainText) ? '' + sCustomPlainText : '';
-
-		this.editor(function(oEditor) {
-
-			oEditor.setHtml(sText, false);
-
-			if (Enums.EditorDefaultType.Html !== self.editorDefaultType() &&
-				Enums.EditorDefaultType.HtmlForced !== self.editorDefaultType())
-			{
-				oEditor.modeToggle(false);
-			}
-
-			if (oIdentity)
-			{
-				self.setSignatureFromIdentity(oIdentity);
-			}
-
-			self.setFocusInPopup();
-		});
-	}
-	else if (Utils.isNonEmptyArray(oMessageOrArray))
-	{
-		_.each(oMessageOrArray, function(oItem) {
-			self.addMessageAsAttachment(oItem);
-		});
-
-		this.editor(function(oEditor) {
-
-			oEditor.setHtml('', false);
-
-			if (Enums.EditorDefaultType.Html !== self.editorDefaultType() &&
-				Enums.EditorDefaultType.HtmlForced !== self.editorDefaultType())
-			{
-				oEditor.modeToggle(false);
-			}
-
-			if (oIdentity && Enums.ComposeType.Draft !== sComposeType && Enums.ComposeType.EditAsNew !== sComposeType)
-			{
-				self.setSignatureFromIdentity(oIdentity);
-			}
-
-			self.setFocusInPopup();
-		});
-	}
-	else
-	{
-		this.setFocusInPopup();
-	}
-
-	var downloads = this.getAttachmentsDownloadsForUpload();
-	if (Utils.isNonEmptyArray(downloads))
-	{
-		Remote.messageUploadAttachments(this.onMessageUploadAttachments, downloads);
-	}
-
-	if (oIdentity)
-	{
-		this.currentIdentity(oIdentity);
-	}
-
-	this.resizerTrigger();
-};
-
-ComposePopupView.prototype.onMessageUploadAttachments = function(sResult, oData)
-{
-	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-	{
-		var self = this;
-		if (!this.viewModelVisibility())
+		if (isNonEmptyArray(aToEmails))
 		{
-			_.each(oData.Result, function(id, tempName) {
-				var attachment = self.getAttachmentById(id);
-				if (attachment)
+			this.to(this.emailArrayToStringLineHelper(aToEmails));
+		}
+
+		if (isNonEmptyArray(aCcEmails))
+		{
+			this.cc(this.emailArrayToStringLineHelper(aCcEmails));
+		}
+
+		if (isNonEmptyArray(aBccEmails))
+		{
+			this.bcc(this.emailArrayToStringLineHelper(aBccEmails));
+		}
+
+		if ('' !== lineComposeType && message)
+		{
+			sDate = momentorFormat(message.dateTimeStampInUTC(), 'FULL');
+			sSubject = message.subject();
+			aDraftInfo = message.aDraftInfo;
+
+			const clonedText = $(message.body).clone();
+			if (clonedText)
+			{
+				clearBqSwitcher(clonedText);
+
+				sText = clonedText.html();
+			}
+
+			let resplyAllParts = null;
+			switch (lineComposeType)
+			{
+				case ComposeType.Empty:
+					break;
+
+				case ComposeType.Reply:
+					this.to(this.emailArrayToStringLineHelper(message.replyEmails(excludeEmail)));
+					this.subject(replySubjectAdd('Re', sSubject));
+					this.prepearMessageAttachments(message, lineComposeType);
+					this.aDraftInfo = ['reply', message.uid, message.folderFullNameRaw];
+					this.sInReplyTo = message.sMessageId;
+					this.sReferences = trim(this.sInReplyTo + ' ' + message.sReferences);
+					break;
+
+				case ComposeType.ReplyAll:
+					resplyAllParts = message.replyAllEmails(excludeEmail);
+					this.to(this.emailArrayToStringLineHelper(resplyAllParts[0]));
+					this.cc(this.emailArrayToStringLineHelper(resplyAllParts[1]));
+					this.subject(replySubjectAdd('Re', sSubject));
+					this.prepearMessageAttachments(message, lineComposeType);
+					this.aDraftInfo = ['reply', message.uid, message.folderFullNameRaw];
+					this.sInReplyTo = message.sMessageId;
+					this.sReferences = trim(this.sInReplyTo + ' ' + message.references());
+					break;
+
+				case ComposeType.Forward:
+					this.subject(replySubjectAdd('Fwd', sSubject));
+					this.prepearMessageAttachments(message, lineComposeType);
+					this.aDraftInfo = ['forward', message.uid, message.folderFullNameRaw];
+					this.sInReplyTo = message.sMessageId;
+					this.sReferences = trim(this.sInReplyTo + ' ' + message.sReferences);
+					break;
+
+				case ComposeType.ForwardAsAttachment:
+					this.subject(replySubjectAdd('Fwd', sSubject));
+					this.prepearMessageAttachments(message, lineComposeType);
+					this.aDraftInfo = ['forward', message.uid, message.folderFullNameRaw];
+					this.sInReplyTo = message.sMessageId;
+					this.sReferences = trim(this.sInReplyTo + ' ' + message.sReferences);
+					break;
+
+				case ComposeType.Draft:
+					this.to(this.emailArrayToStringLineHelper(message.to));
+					this.cc(this.emailArrayToStringLineHelper(message.cc));
+					this.bcc(this.emailArrayToStringLineHelper(message.bcc));
+					this.replyTo(this.emailArrayToStringLineHelper(message.replyTo));
+
+					this.bFromDraft = true;
+
+					this.draftFolder(message.folderFullNameRaw);
+					this.draftUid(message.uid);
+
+					this.subject(sSubject);
+					this.prepearMessageAttachments(message, lineComposeType);
+
+					this.aDraftInfo = isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
+					this.sInReplyTo = message.sInReplyTo;
+					this.sReferences = message.sReferences;
+					break;
+
+				case ComposeType.EditAsNew:
+					this.to(this.emailArrayToStringLineHelper(message.to));
+					this.cc(this.emailArrayToStringLineHelper(message.cc));
+					this.bcc(this.emailArrayToStringLineHelper(message.bcc));
+					this.replyTo(this.emailArrayToStringLineHelper(message.replyTo));
+
+					this.subject(sSubject);
+					this.prepearMessageAttachments(message, lineComposeType);
+
+					this.aDraftInfo = isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
+					this.sInReplyTo = message.sInReplyTo;
+					this.sReferences = message.sReferences;
+					break;
+				// no default
+			}
+
+			switch (lineComposeType)
+			{
+				case ComposeType.Reply:
+				case ComposeType.ReplyAll:
+					sFrom = message.fromToLine(false, true);
+					sReplyTitle = i18n('COMPOSE/REPLY_MESSAGE_TITLE', {
+						'DATETIME': sDate,
+						'EMAIL': sFrom
+					});
+
+					sText = '<br /><br />' + sReplyTitle + ':' +
+						'<blockquote>' + trim(sText) + '</blockquote>';
+	//						'<blockquote><p>' + trim(sText) + '</p></blockquote>';
+
+					break;
+
+				case ComposeType.Forward:
+					sFrom = message.fromToLine(false, true);
+					sTo = message.toToLine(false, true);
+					sCc = message.ccToLine(false, true);
+					sText = '<br /><br />' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
+							'<br />' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_FROM') + ': ' + sFrom +
+							'<br />' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_TO') + ': ' + sTo +
+							(0 < sCc.length ? '<br />' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
+							'<br />' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') + ': ' + encodeHtml(sDate) +
+							'<br />' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') + ': ' + encodeHtml(sSubject) +
+							'<br /><br />' + trim(sText) + '<br /><br />';
+					break;
+
+				case ComposeType.ForwardAsAttachment:
+					sText = '';
+					break;
+				// no default
+			}
+
+			this.editor((editor) => {
+
+				editor.setHtml(sText, false);
+
+				if (EditorDefaultType.PlainForced === this.editorDefaultType() ||
+					(!message.isHtml() && EditorDefaultType.HtmlForced !== this.editorDefaultType()))
 				{
-					attachment.tempName(tempName);
-					attachment.waiting(false).uploading(false).complete(true);
+					editor.modeToggle(false);
+				}
+
+				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType)
+				{
+					this.setSignatureFromIdentity(identity);
+				}
+
+				this.setFocusInPopup();
+			});
+		}
+		else if (ComposeType.Empty === lineComposeType)
+		{
+			this.subject(isNormal(sCustomSubject) ? '' + sCustomSubject : '');
+
+			sText = isNormal(sCustomPlainText) ? '' + sCustomPlainText : '';
+
+			this.editor((editor) => {
+
+				editor.setHtml(sText, false);
+
+				if (EditorDefaultType.Html !== this.editorDefaultType() &&
+					EditorDefaultType.HtmlForced !== this.editorDefaultType())
+				{
+					editor.modeToggle(false);
+				}
+
+				if (identity)
+				{
+					this.setSignatureFromIdentity(identity);
+				}
+
+				this.setFocusInPopup();
+			});
+		}
+		else if (isNonEmptyArray(oMessageOrArray))
+		{
+			_.each(oMessageOrArray, (item) => {
+				this.addMessageAsAttachment(item);
+			});
+
+			this.editor((editor) => {
+
+				editor.setHtml('', false);
+
+				if (EditorDefaultType.Html !== this.editorDefaultType() &&
+					EditorDefaultType.HtmlForced !== this.editorDefaultType())
+				{
+					editor.modeToggle(false);
+				}
+
+				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType)
+				{
+					this.setSignatureFromIdentity(identity);
+				}
+
+				this.setFocusInPopup();
+			});
+		}
+		else
+		{
+			this.setFocusInPopup();
+		}
+
+		const downloads = this.getAttachmentsDownloadsForUpload();
+		if (isNonEmptyArray(downloads))
+		{
+			Remote.messageUploadAttachments(this.onMessageUploadAttachments, downloads);
+		}
+
+		if (identity)
+		{
+			this.currentIdentity(identity);
+		}
+
+		this.resizerTrigger();
+	}
+
+	onMessageUploadAttachments(sResult, oData) {
+		if (StorageResultType.Success === sResult && oData && oData.Result)
+		{
+			if (!this.viewModelVisibility())
+			{
+				_.each(oData.Result, (id, tempName) => {
+					const attachment = this.getAttachmentById(id);
+					if (attachment)
+					{
+						attachment.tempName(tempName);
+						attachment.waiting(false).uploading(false).complete(true);
+					}
+				});
+			}
+		}
+		else
+		{
+			this.setMessageAttachmentFailedDownloadText();
+		}
+	}
+
+	setFocusInPopup() {
+		if (!bMobileDevice)
+		{
+			_.delay(() => {
+
+				if ('' === this.to())
+				{
+					this.to.focused(true);
+				}
+				else if (this.oEditor)
+				{
+					if (!this.to.focused())
+					{
+						this.oEditor.focus();
+					}
+				}
+
+			}, Magics.Time100ms);
+		}
+	}
+
+	onShowWithDelay() {
+		this.resizerTrigger();
+	}
+
+	tryToClosePopup() {
+		const PopupsAskViewModel = require('View/Popup/Ask');
+		if (!isPopupVisible(PopupsAskViewModel) && this.modalVisibility())
+		{
+			if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid()))
+			{
+				delegateRun(this, 'closeCommand');
+			}
+			else
+			{
+				showScreenPopup(PopupsAskViewModel, [i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), () => {
+					if (this.modalVisibility())
+					{
+						delegateRun(this, 'closeCommand');
+					}
+				}]);
+			}
+		}
+	}
+
+	onBuild() {
+		this.initUploader();
+
+		key('ctrl+q, command+q, ctrl+w, command+w', KeyState.Compose, noopFalse);
+
+		key('`', KeyState.Compose, () => {
+			if (this.oEditor && !this.oEditor.hasFocus() && !inFocus())
+			{
+				this.identitiesDropdownTrigger(true);
+				return false;
+			}
+
+			return true;
+		});
+
+		key('ctrl+`', KeyState.Compose, () => {
+			this.identitiesDropdownTrigger(true);
+			return false;
+		});
+
+		key('esc, ctrl+down, command+down', KeyState.Compose, () => {
+			this.skipCommand();
+			return false;
+		});
+
+		if (this.allowFolders)
+		{
+			key('ctrl+s, command+s', KeyState.Compose, () => {
+				this.saveCommand();
+				return false;
+			});
+		}
+
+		if (Settings.appSettingsGet('allowCtrlEnterOnCompose'))
+		{
+			key('ctrl+enter, command+enter', KeyState.Compose, () => {
+				this.sendCommand();
+				return false;
+			});
+		}
+
+		key('shift+esc', KeyState.Compose, () => {
+			if (this.modalVisibility())
+			{
+				this.tryToClosePopup();
+			}
+			return false;
+		});
+
+		Events.sub('window.resize.real', this.resizerTrigger);
+		Events.sub('window.resize.real', _.debounce(this.resizerTrigger, Magics.Time50ms));
+
+		SocialStore.appendDropbox();
+
+		if (this.driveEnabled())
+		{
+			$.getScript('https://apis.google.com/js/api.js', () => {
+				if (window.gapi)
+				{
+					this.driveVisible(true);
+				}
+			});
+		}
+
+		window.setInterval(() => {
+			if (this.modalVisibility() && this.oEditor)
+			{
+				this.oEditor.resize();
+			}
+		}, Magics.Time5s);
+	}
+
+	driveCallback(accessToken, data) {
+		if (data && window.XMLHttpRequest && window.google &&
+			data[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED &&
+			data[window.google.picker.Response.DOCUMENTS] && data[window.google.picker.Response.DOCUMENTS][0] &&
+			data[window.google.picker.Response.DOCUMENTS][0].id)
+		{
+			const request = new window.XMLHttpRequest();
+			request.open('GET', 'https://www.googleapis.com/drive/v2/files/' + data[window.google.picker.Response.DOCUMENTS][0].id);
+			request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+			request.addEventListener('load', () => {
+				if (request && request.responseText)
+				{
+					const
+						response = window.JSON.parse(request.responseText),
+						fExport = (item, mimeType, ext) => {
+							if (item && item.exportLinks)
+							{
+								if (item.exportLinks[mimeType])
+								{
+									response.downloadUrl = item.exportLinks[mimeType];
+									response.title = item.title + '.' + ext;
+									response.mimeType = mimeType;
+								}
+								else if (item.exportLinks['application/pdf'])
+								{
+									response.downloadUrl = item.exportLinks['application/pdf'];
+									response.title = item.title + '.pdf';
+									response.mimeType = 'application/pdf';
+								}
+							}
+						};
+
+					if (response && !response.downloadUrl && response.mimeType && response.exportLinks)
+					{
+						switch (response.mimeType.toString().toLowerCase())
+						{
+							case 'application/vnd.google-apps.document':
+								fExport(response, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'docx');
+								break;
+							case 'application/vnd.google-apps.spreadsheet':
+								fExport(response, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xlsx');
+								break;
+							case 'application/vnd.google-apps.drawing':
+								fExport(response, 'image/png', 'png');
+								break;
+							case 'application/vnd.google-apps.presentation':
+								fExport(response, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'pptx');
+								break;
+							default:
+								fExport(response, 'application/pdf', 'pdf');
+								break;
+						}
+					}
+
+					if (response && response.downloadUrl)
+					{
+						this.addDriveAttachment(response, accessToken);
+					}
+				}
+			});
+
+			request.send();
+		}
+	}
+
+	driveCreatePiker(authToken) {
+		if (window.gapi && authToken && authToken.access_token)
+		{
+			window.gapi.load('picker', {
+				callback: () => {
+					if (window.google && window.google.picker)
+					{
+						const drivePicker = new window.google.picker.PickerBuilder()
+							// .addView(window.google.picker.ViewId.FOLDERS)
+							.addView(window.google.picker.ViewId.DOCS)
+							.setAppId(Settings.settingsGet('GoogleClientID'))
+							.setOAuthToken(authToken.access_token)
+							.setCallback(_.bind(this.driveCallback, this, authToken.access_token))
+							.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
+							// .setOrigin(window.location.protocol + '//' + window.location.host)
+							.build();
+
+						drivePicker.setVisible(true);
+					}
 				}
 			});
 		}
 	}
-	else
-	{
-		this.setMessageAttachmentFailedDownloadText();
-	}
-};
 
-ComposePopupView.prototype.setFocusInPopup = function()
-{
-	if (!Globals.bMobileDevice)
-	{
-		var self = this;
-		_.delay(function() {
-
-			if ('' === self.to())
-			{
-				self.to.focused(true);
-			}
-			else if (self.oEditor)
-			{
-				if (!self.to.focused())
-				{
-					self.oEditor.focus();
-				}
-			}
-
-		}, Enums.Magics.Time100ms);
-	}
-};
-
-ComposePopupView.prototype.onShowWithDelay = function()
-{
-	this.resizerTrigger();
-};
-
-ComposePopupView.prototype.tryToClosePopup = function()
-{
-	var
-		self = this,
-		PopupsAskViewModel = require('View/Popup/Ask');
-
-	if (!kn.isPopupVisible(PopupsAskViewModel) && this.modalVisibility())
-	{
-		if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid()))
+	driveOpenPopup() {
+		if (window.gapi)
 		{
-			Utils.delegateRun(self, 'closeCommand');
-		}
-		else
-		{
-			kn.showScreenPopup(PopupsAskViewModel, [Translator.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function() {
-				if (self.modalVisibility())
-				{
-					Utils.delegateRun(self, 'closeCommand');
-				}
-			}]);
-		}
-	}
-};
-
-ComposePopupView.prototype.onBuild = function()
-{
-	this.initUploader();
-
-	var self = this;
-
-	key('ctrl+q, command+q, ctrl+w, command+w', Enums.KeyState.Compose, Utils.noopFalse);
-
-	key('`', Enums.KeyState.Compose, function() {
-		if (self.oEditor && !self.oEditor.hasFocus() && !Utils.inFocus())
-		{
-			self.identitiesDropdownTrigger(true);
-			return false;
-		}
-
-		return true;
-	});
-
-	key('ctrl+`', Enums.KeyState.Compose, function() {
-		self.identitiesDropdownTrigger(true);
-		return false;
-	});
-
-	key('esc, ctrl+down, command+down', Enums.KeyState.Compose, function() {
-		self.skipCommand();
-		return false;
-	});
-
-	if (this.allowFolders)
-	{
-		key('ctrl+s, command+s', Enums.KeyState.Compose, function() {
-			self.saveCommand();
-			return false;
-		});
-	}
-
-	if (Settings.appSettingsGet('allowCtrlEnterOnCompose'))
-	{
-		key('ctrl+enter, command+enter', Enums.KeyState.Compose, function() {
-			self.sendCommand();
-			return false;
-		});
-	}
-
-	key('shift+esc', Enums.KeyState.Compose, function() {
-		if (self.modalVisibility())
-		{
-			self.tryToClosePopup();
-		}
-		return false;
-	});
-
-	Events.sub('window.resize.real', this.resizerTrigger);
-	Events.sub('window.resize.real', _.debounce(this.resizerTrigger, Enums.Magics.Time50ms));
-
-	if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
-	{
-		var oScript = window.document.createElement('script');
-		oScript.type = 'text/javascript';
-		oScript.src = 'https://www.dropbox.com/static/api/2/dropins.js';
-		$(oScript).attr('id', 'dropboxjs').attr('data-app-key', self.dropboxApiKey());
-
-		window.document.body.appendChild(oScript);
-	}
-
-	if (this.driveEnabled())
-	{
-		$.getScript('https://apis.google.com/js/api.js', function() {
-			if (window.gapi)
-			{
-				self.driveVisible(true);
-			}
-		});
-	}
-
-	window.setInterval(function() {
-		if (self.modalVisibility() && self.oEditor)
-		{
-			self.oEditor.resize();
-		}
-	}, Enums.Magics.Time5s);
-};
-
-ComposePopupView.prototype.driveCallback = function(sAccessToken, oData)
-{
-	if (oData && window.XMLHttpRequest && window.google &&
-		oData[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED &&
-		oData[window.google.picker.Response.DOCUMENTS] && oData[window.google.picker.Response.DOCUMENTS][0] &&
-		oData[window.google.picker.Response.DOCUMENTS][0].id)
-	{
-		var
-			self = this,
-			oRequest = new window.XMLHttpRequest();
-
-		oRequest.open('GET', 'https://www.googleapis.com/drive/v2/files/' + oData[window.google.picker.Response.DOCUMENTS][0].id);
-		oRequest.setRequestHeader('Authorization', 'Bearer ' + sAccessToken);
-		oRequest.addEventListener('load', function() {
-			if (oRequest && oRequest.responseText)
-			{
-				var
-					oResponse = window.JSON.parse(oRequest.responseText),
-					fExport = function(oItem, sMimeType, sExt) {
-						if (oItem && oItem.exportLinks)
-						{
-							if (oItem.exportLinks[sMimeType])
+			window.gapi.load('auth', {
+				callback: () => {
+					const
+						authToken = window.gapi.auth.getToken(),
+						fResult = (authResult) => {
+							if (authResult && !authResult.error)
 							{
-								oResponse.downloadUrl = oItem.exportLinks[sMimeType];
-								oResponse.title = oItem.title + '.' + sExt;
-								oResponse.mimeType = sMimeType;
+								const token = window.gapi.auth.getToken();
+								if (token)
+								{
+									this.driveCreatePiker(token);
+								}
+
+								return true;
 							}
-							else if (oItem.exportLinks['application/pdf'])
-							{
-								oResponse.downloadUrl = oItem.exportLinks['application/pdf'];
-								oResponse.title = oItem.title + '.pdf';
-								oResponse.mimeType = 'application/pdf';
-							}
-						}
-					};
 
-				if (oResponse && !oResponse.downloadUrl && oResponse.mimeType && oResponse.exportLinks)
-				{
-					switch (oResponse.mimeType.toString().toLowerCase())
-					{
-						case 'application/vnd.google-apps.document':
-							fExport(oResponse, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'docx');
-							break;
-						case 'application/vnd.google-apps.spreadsheet':
-							fExport(oResponse, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xlsx');
-							break;
-						case 'application/vnd.google-apps.drawing':
-							fExport(oResponse, 'image/png', 'png');
-							break;
-						case 'application/vnd.google-apps.presentation':
-							fExport(oResponse, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'pptx');
-							break;
-						default:
-							fExport(oResponse, 'application/pdf', 'pdf');
-							break;
-					}
-				}
+							return false;
+						};
 
-				if (oResponse && oResponse.downloadUrl)
-				{
-					self.addDriveAttachment(oResponse, sAccessToken);
-				}
-			}
-		});
-
-		oRequest.send();
-	}
-};
-
-ComposePopupView.prototype.driveCreatePiker = function(oOauthToken)
-{
-	if (window.gapi && oOauthToken && oOauthToken.access_token)
-	{
-		var self = this;
-
-		window.gapi.load('picker', {'callback': function() {
-
-			if (window.google && window.google.picker)
-			{
-				var drivePicker = new window.google.picker.PickerBuilder()
-					// .addView(window.google.picker.ViewId.FOLDERS)
-					.addView(window.google.picker.ViewId.DOCS)
-					.setAppId(Settings.settingsGet('GoogleClientID'))
-					.setOAuthToken(oOauthToken.access_token)
-					.setCallback(_.bind(self.driveCallback, self, oOauthToken.access_token))
-					.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
-					// .setOrigin(window.location.protocol + '//' + window.location.host)
-					.build();
-
-				drivePicker.setVisible(true);
-			}
-		}});
-	}
-};
-
-ComposePopupView.prototype.driveOpenPopup = function()
-{
-	if (window.gapi)
-	{
-		var self = this;
-
-		window.gapi.load('auth', {'callback': function() {
-
-			var
-				oAuthToken = window.gapi.auth.getToken(),
-				fResult = function(oAuthResult) {
-					if (oAuthResult && !oAuthResult.error)
-					{
-						var oToken = window.gapi.auth.getToken();
-						if (oToken)
-						{
-							self.driveCreatePiker(oToken);
-						}
-
-						return true;
-					}
-
-					return false;
-				};
-
-			if (!oAuthToken)
-			{
-				window.gapi.auth.authorize({
-					'client_id': Settings.settingsGet('GoogleClientID'),
-					'scope': 'https://www.googleapis.com/auth/drive.readonly',
-					'immediate': true
-				}, function(oAuthResult) {
-
-					if (!fResult(oAuthResult))
+					if (!authToken)
 					{
 						window.gapi.auth.authorize({
 							'client_id': Settings.settingsGet('GoogleClientID'),
 							'scope': 'https://www.googleapis.com/auth/drive.readonly',
-							'immediate': false
-						}, fResult);
+							'immediate': true
+						}, (authResult) => {
+							if (!fResult(authResult))
+							{
+								window.gapi.auth.authorize({
+									'client_id': Settings.settingsGet('GoogleClientID'),
+									'scope': 'https://www.googleapis.com/auth/drive.readonly',
+									'immediate': false
+								}, fResult);
+							}
+						});
 					}
-				});
-			}
-			else
-			{
-				self.driveCreatePiker(oAuthToken);
-			}
-		}});
-	}
-};
-
-/**
- * @param {string} sId
- * @returns {?Object}
- */
-ComposePopupView.prototype.getAttachmentById = function(sId)
-{
-	var
-		aAttachments = this.attachments(),
-		iIndex = 0,
-		iLen = aAttachments.length;
-
-	for (; iIndex < iLen; iIndex++)
-	{
-		if (aAttachments[iIndex] && sId === aAttachments[iIndex].id)
-		{
-			return aAttachments[iIndex];
+					else
+					{
+						this.driveCreatePiker(authToken);
+					}
+				}
+			});
 		}
 	}
 
-	return null;
-};
+	/**
+	 * @param {string} id
+	 * @returns {?Object}
+	 */
+	getAttachmentById(id) {
+		return _.find(this.attachments(), (item) => item && id === item.id);
+	}
 
-ComposePopupView.prototype.cancelAttachmentHelper = function(sId, oJua) {
+	cancelAttachmentHelper(id, oJua) {
+		return () => {
+			const attachment = _.find(this.attachments(), (item) => item && item.id === id);
+			if (attachment)
+			{
+				this.attachments.remove(attachment);
+				delegateRunOnDestroy(attachment);
 
-	var self = this;
-	return function() {
+				if (oJua)
+				{
+					oJua.cancel(id);
+				}
+			}
+		};
+	}
 
-		var attachment = _.find(self.attachments(), function(oItem) {
-			return oItem && oItem.id === sId;
-		});
-
-		if (attachment)
+	initUploader() {
+		if (this.composeUploaderButton())
 		{
-			self.attachments.remove(attachment);
-			Utils.delegateRunOnDestroy(attachment);
+			const
+				uploadCache = {},
+				attachmentSizeLimit = pInt(Settings.settingsGet('AttachmentLimit')),
+				oJua = new Jua({
+					'action': upload(),
+					'name': 'uploader',
+					'queueSize': 2,
+					'multipleSizeLimit': 50,
+					'clickElement': this.composeUploaderButton(),
+					'dragAndDropElement': this.composeUploaderDropPlace()
+				});
 
 			if (oJua)
 			{
-				oJua.cancel(sId);
+				oJua
+					// .on('onLimitReached', (limit) => {
+					// 	alert(limit);
+					// })
+					.on('onDragEnter', () => {
+						this.dragAndDropOver(true);
+					})
+					.on('onDragLeave', () => {
+						this.dragAndDropOver(false);
+					})
+					.on('onBodyDragEnter', () => {
+						this.attachmentsPlace(true);
+						this.dragAndDropVisible(true);
+					})
+					.on('onBodyDragLeave', () => {
+						this.dragAndDropVisible(false);
+					})
+					.on('onProgress', (id, loaded, total) => {
+
+						let item = uploadCache[id];
+						if (!item)
+						{
+							item = this.getAttachmentById(id);
+							if (item)
+							{
+								uploadCache[id] = item;
+							}
+						}
+
+						if (item)
+						{
+							item.progress(window.Math.floor(loaded / total * 100));
+						}
+
+					})
+					.on('onSelect', (sId, oData) => {
+
+						this.dragAndDropOver(false);
+
+						const
+							fileName = isUnd(oData.FileName) ? '' : oData.FileName.toString(),
+							size = isNormal(oData.Size) ? pInt(oData.Size) : null,
+							attachment = new ComposeAttachmentModel(sId, fileName, size);
+
+						attachment.cancel = this.cancelAttachmentHelper(sId, oJua);
+
+						this.attachments.push(attachment);
+
+						this.attachmentsPlace(true);
+
+						if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size)
+						{
+							attachment
+								.waiting(false).uploading(true).complete(true)
+								.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+
+							return false;
+						}
+
+						return true;
+					})
+					.on('onStart', (id) => {
+
+						let item = uploadCache[id];
+						if (!item)
+						{
+							item = this.getAttachmentById(id);
+							if (item)
+							{
+								uploadCache[id] = item;
+							}
+						}
+
+						if (item)
+						{
+							item.waiting(false).uploading(true).complete(false);
+						}
+					})
+					.on('onComplete', (id, result, data) => {
+
+						const
+							attachment = this.getAttachmentById(id),
+							errorCode = data && data.Result && data.Result.ErrorCode ? data.Result.ErrorCode : null,
+							attachmentJson = result && data && data.Result && data.Result.Attachment ? data.Result.Attachment : null;
+
+						let error = '';
+						if (null !== errorCode)
+						{
+							error = getUploadErrorDescByCode(errorCode);
+						}
+						else if (!attachmentJson)
+						{
+							error = i18n('UPLOAD/ERROR_UNKNOWN');
+						}
+
+						if (attachment)
+						{
+							if ('' !== error && 0 < error.length)
+							{
+								attachment
+									.waiting(false)
+									.uploading(false)
+									.complete(true)
+									.error(error);
+							}
+							else if (attachmentJson)
+							{
+								attachment
+									.waiting(false)
+									.uploading(false)
+									.complete(true);
+
+								attachment.initByUploadJson(attachmentJson);
+							}
+
+							if (isUnd(uploadCache[id]))
+							{
+								delete (uploadCache[id]);
+							}
+						}
+					});
+
+				this
+					.addAttachmentEnabled(true)
+					.dragAndDropEnabled(oJua.isDragAndDropSupported());
 			}
-		}
-	};
-
-};
-
-ComposePopupView.prototype.initUploader = function()
-{
-	if (this.composeUploaderButton())
-	{
-		var
-			oUploadCache = {},
-			iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
-			oJua = new Jua({
-				'action': Links.upload(),
-				'name': 'uploader',
-				'queueSize': 2,
-				'multipleSizeLimit': 50,
-				'clickElement': this.composeUploaderButton(),
-				'dragAndDropElement': this.composeUploaderDropPlace()
-			});
-
-		if (oJua)
-		{
-			oJua
-//				.on('onLimitReached', function(iLimit) {
-//					alert(iLimit);
-//				})
-				.on('onDragEnter', _.bind(function() {
-					this.dragAndDropOver(true);
-				}, this))
-				.on('onDragLeave', _.bind(function() {
-					this.dragAndDropOver(false);
-				}, this))
-				.on('onBodyDragEnter', _.bind(function() {
-					this.attachmentsPlace(true);
-					this.dragAndDropVisible(true);
-				}, this))
-				.on('onBodyDragLeave', _.bind(function() {
-					this.dragAndDropVisible(false);
-				}, this))
-				.on('onProgress', _.bind(function(sId, iLoaded, iTotal) {
-
-					var oItem = oUploadCache[sId];
-					if (!oItem)
-					{
-						oItem = this.getAttachmentById(sId);
-						if (oItem)
-						{
-							oUploadCache[sId] = oItem;
-						}
-					}
-
-					if (oItem)
-					{
-						oItem.progress(window.Math.floor(iLoaded / iTotal * 100));
-					}
-
-				}, this))
-				.on('onSelect', _.bind(function(sId, oData) {
-
-					this.dragAndDropOver(false);
-
-					var
-						self = this,
-						sFileName = Utils.isUnd(oData.FileName) ? '' : oData.FileName.toString(),
-						mSize = Utils.isNormal(oData.Size) ? Utils.pInt(oData.Size) : null,
-						oAttachment = new ComposeAttachmentModel(sId, sFileName, mSize);
-
-					oAttachment.cancel = self.cancelAttachmentHelper(sId, oJua);
-
-					this.attachments.push(oAttachment);
-
-					this.attachmentsPlace(true);
-
-					if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
-					{
-						oAttachment
-							.waiting(false).uploading(true).complete(true)
-							.error(Translator.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
-
-						return false;
-					}
-
-					return true;
-
-				}, this))
-				.on('onStart', _.bind(function(sId) {
-
-					var oItem = oUploadCache[sId];
-					if (!oItem)
-					{
-						oItem = this.getAttachmentById(sId);
-						if (oItem)
-						{
-							oUploadCache[sId] = oItem;
-						}
-					}
-
-					if (oItem)
-					{
-						oItem.waiting(false).uploading(true).complete(false);
-					}
-
-				}, this))
-				.on('onComplete', _.bind(function(sId, bResult, oData) {
-
-					var
-						sError = '',
-						oAttachment = this.getAttachmentById(sId),
-						mErrorCode = oData && oData.Result && oData.Result.ErrorCode ? oData.Result.ErrorCode : null,
-						oAttachmentJson = bResult && oData && oData.Result && oData.Result.Attachment ? oData.Result.Attachment : null;
-
-					if (null !== mErrorCode)
-					{
-						sError = Translator.getUploadErrorDescByCode(mErrorCode);
-					}
-					else if (!oAttachmentJson)
-					{
-						sError = Translator.i18n('UPLOAD/ERROR_UNKNOWN');
-					}
-
-					if (oAttachment)
-					{
-						if ('' !== sError && 0 < sError.length)
-						{
-							oAttachment
-								.waiting(false)
-								.uploading(false)
-								.complete(true)
-								.error(sError);
-						}
-						else if (oAttachmentJson)
-						{
-							oAttachment
-								.waiting(false)
-								.uploading(false)
-								.complete(true);
-
-							oAttachment.initByUploadJson(oAttachmentJson);
-						}
-
-						if (Utils.isUnd(oUploadCache[sId]))
-						{
-							delete (oUploadCache[sId]);
-						}
-					}
-
-				}, this));
-
-			this
-				.addAttachmentEnabled(true)
-				.dragAndDropEnabled(oJua.isDragAndDropSupported());
-		}
-		else
-		{
-			this
-				.addAttachmentEnabled(false)
-				.dragAndDropEnabled(false);
-		}
-	}
-};
-
-/**
- * @returns {Object}
- */
-ComposePopupView.prototype.prepearAttachmentsForSendOrSave = function()
-{
-	var oResult = {};
-	_.each(this.attachmentsInReady(), function(oItem) {
-		if (oItem && '' !== oItem.tempName() && oItem.enabled())
-		{
-			oResult[oItem.tempName()] = [
-				oItem.fileName(),
-				oItem.isInline ? '1' : '0',
-				oItem.CID,
-				oItem.contentLocation
-			];
-		}
-	});
-
-	return oResult;
-};
-
-/**
- * @param {MessageModel} oMessage
- */
-ComposePopupView.prototype.addMessageAsAttachment = function(oMessage)
-{
-	if (oMessage)
-	{
-		var sTemp = oMessage.subject();
-		sTemp = '.eml' === sTemp.substr(-4).toLowerCase() ? sTemp : sTemp + '.eml';
-
-		var oAttachment = new ComposeAttachmentModel(
-			oMessage.requestHash, sTemp, oMessage.size()
-		);
-
-		oAttachment.fromMessage = true;
-		oAttachment.cancel = this.cancelAttachmentHelper(oMessage.requestHash);
-		oAttachment.waiting(false).uploading(true).complete(true);
-
-		this.attachments.push(oAttachment);
-	}
-};
-
-/**
- * @param {string} url
- * @param {string} name
- * @param {number} size
- * @returns {ComposeAttachmentModel}
- */
-ComposePopupView.prototype.addAttachmentHelper = function(url, name, size)
-{
-	var oAttachment = new ComposeAttachmentModel(url, name, size);
-
-	oAttachment.fromMessage = false;
-	oAttachment.cancel = this.cancelAttachmentHelper(url);
-	oAttachment.waiting(false).uploading(true).complete(false);
-
-	this.attachments.push(oAttachment);
-
-	this.attachmentsPlace(true);
-
-	return oAttachment;
-};
-
-/**
- * @param {Object} oDropboxFile
- * @returns {boolean}
- */
-ComposePopupView.prototype.addDropboxAttachment = function(oDropboxFile)
-{
-	var
-		iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
-		mSize = oDropboxFile.bytes,
-		oAttachment = this.addAttachmentHelper(oDropboxFile.link, oDropboxFile.name, mSize);
-
-	if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
-	{
-		oAttachment.uploading(false).complete(true);
-		oAttachment.error(Translator.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
-		return false;
-	}
-
-	Remote.composeUploadExternals(function(sResult, oData) {
-
-		var bResult = false;
-		oAttachment.uploading(false).complete(true);
-
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-		{
-			if (oData.Result[oAttachment.id])
+			else
 			{
-				bResult = true;
-				oAttachment.tempName(oData.Result[oAttachment.id]);
+				this
+					.addAttachmentEnabled(false)
+					.dragAndDropEnabled(false);
 			}
 		}
-
-		if (!bResult)
-		{
-			oAttachment.error(Translator.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded));
-		}
-
-	}, [oDropboxFile.link]);
-
-	return true;
-};
-
-/**
- * @param {Object} oDriveFile
- * @param {string} sAccessToken
- * @returns {boolean}
- */
-ComposePopupView.prototype.addDriveAttachment = function(oDriveFile, sAccessToken)
-{
-	var
-		iAttachmentSizeLimit = Utils.pInt(Settings.settingsGet('AttachmentLimit')),
-		mSize = oDriveFile.fileSize ? Utils.pInt(oDriveFile.fileSize) : 0,
-		oAttachment = this.addAttachmentHelper(oDriveFile.downloadUrl, oDriveFile.title, mSize);
-
-	if (0 < mSize && 0 < iAttachmentSizeLimit && iAttachmentSizeLimit < mSize)
-	{
-		oAttachment.uploading(false).complete(true);
-		oAttachment.error(Translator.i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
-		return false;
 	}
 
-	Remote.composeUploadDrive(function(sResult, oData) {
-
-		var bResult = false;
-		oAttachment.uploading(false).complete(true);
-
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-		{
-			if (oData.Result[oAttachment.id])
+	/**
+	 * @returns {Object}
+	 */
+	prepearAttachmentsForSendOrSave() {
+		const result = {};
+		_.each(this.attachmentsInReady(), (item) => {
+			if (item && '' !== item.tempName() && item.enabled())
 			{
-				bResult = true;
-				oAttachment.tempName(oData.Result[oAttachment.id][0]);
-				oAttachment.size(Utils.pInt(oData.Result[oAttachment.id][1]));
+				result[item.tempName()] = [
+					item.fileName(),
+					item.isInline ? '1' : '0',
+					item.CID,
+					item.contentLocation
+				];
+			}
+		});
+
+		return result;
+	}
+
+	/**
+	 * @param {MessageModel} message
+	 */
+	addMessageAsAttachment(message) {
+		if (message)
+		{
+			let temp = message.subject();
+			temp = '.eml' === temp.substr(-4).toLowerCase() ? temp : temp + '.eml';
+
+			const attachment = new ComposeAttachmentModel(
+				message.requestHash, temp, message.size()
+			);
+
+			attachment.fromMessage = true;
+			attachment.cancel = this.cancelAttachmentHelper(message.requestHash);
+			attachment.waiting(false).uploading(true).complete(true);
+
+			this.attachments.push(attachment);
+		}
+	}
+
+	/**
+	 * @param {string} url
+	 * @param {string} name
+	 * @param {number} size
+	 * @returns {ComposeAttachmentModel}
+	 */
+	addAttachmentHelper(url, name, size) {
+		const attachment = new ComposeAttachmentModel(url, name, size);
+
+		attachment.fromMessage = false;
+		attachment.cancel = this.cancelAttachmentHelper(url);
+		attachment.waiting(false).uploading(true).complete(false);
+
+		this.attachments.push(attachment);
+
+		this.attachmentsPlace(true);
+
+		return attachment;
+	}
+
+	/**
+	 * @param {Object} dropboxFile
+	 * @returns {boolean}
+	 */
+	addDropboxAttachment(dropboxFile) {
+		const
+			attachmentSizeLimit = pInt(Settings.settingsGet('AttachmentLimit')),
+			mSize = dropboxFile.bytes,
+			attachment = this.addAttachmentHelper(dropboxFile.link, dropboxFile.name, mSize);
+
+		if (0 < mSize && 0 < attachmentSizeLimit && attachmentSizeLimit < mSize)
+		{
+			attachment.uploading(false).complete(true);
+			attachment.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+			return false;
+		}
+
+		Remote.composeUploadExternals((statusResult, data) => {
+
+			let result = false;
+			attachment.uploading(false).complete(true);
+
+			if (StorageResultType.Success === statusResult && data && data.Result)
+			{
+				if (data.Result[attachment.id])
+				{
+					result = true;
+					attachment.tempName(data.Result[attachment.id]);
+				}
+			}
+
+			if (!result)
+			{
+				attachment.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
+			}
+
+		}, [dropboxFile.link]);
+
+		return true;
+	}
+
+	/**
+	 * @param {Object} driveFile
+	 * @param {string} accessToken
+	 * @returns {boolean}
+	 */
+	addDriveAttachment(driveFile, accessToken) {
+		const
+			attachmentSizeLimit = pInt(Settings.settingsGet('AttachmentLimit')),
+			size = driveFile.fileSize ? pInt(driveFile.fileSize) : 0,
+			attachment = this.addAttachmentHelper(driveFile.downloadUrl, driveFile.title, size);
+
+		if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size)
+		{
+			attachment.uploading(false).complete(true);
+			attachment.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
+			return false;
+		}
+
+		Remote.composeUploadDrive((statusResult, data) => {
+
+			let result = false;
+			attachment.uploading(false).complete(true);
+
+			if (StorageResultType.Success === statusResult && data && data.Result)
+			{
+				if (data.Result[attachment.id])
+				{
+					result = true;
+					attachment.tempName(data.Result[attachment.id][0]);
+					attachment.size(pInt(data.Result[attachment.id][1]));
+				}
+			}
+
+			if (!result)
+			{
+				attachment.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
+			}
+
+		}, driveFile.downloadUrl, accessToken);
+
+		return true;
+	}
+
+	/**
+	 * @param {MessageModel} message
+	 * @param {string} type
+	 */
+	prepearMessageAttachments(message, type) {
+		if (message)
+		{
+			if (ComposeType.ForwardAsAttachment === type)
+			{
+				this.addMessageAsAttachment(message);
+			}
+			else
+			{
+				const attachments = message.attachments();
+				_.each(isNonEmptyArray(attachments) ? attachments : [], (item) => {
+					let add = false;
+					switch (type)
+					{
+						case ComposeType.Reply:
+						case ComposeType.ReplyAll:
+							add = item.isLinked;
+							break;
+
+						case ComposeType.Forward:
+						case ComposeType.Draft:
+						case ComposeType.EditAsNew:
+							add = true;
+							break;
+						// no default
+					}
+
+					if (add)
+					{
+						const attachment = new ComposeAttachmentModel(
+							item.download, item.fileName, item.estimatedSize,
+							item.isInline, item.isLinked, item.cid, item.contentLocation
+						);
+
+						attachment.fromMessage = true;
+						attachment.cancel = this.cancelAttachmentHelper(item.download);
+						attachment.waiting(false).uploading(true).complete(false);
+
+						this.attachments.push(attachment);
+					}
+				});
 			}
 		}
+	}
 
-		if (!bResult)
+	removeLinkedAttachments() {
+		const arrachment = _.find(this.attachments(), (item) => item && item.isLinked);
+		if (arrachment)
 		{
-			oAttachment.error(Translator.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded));
-		}
-
-	}, oDriveFile.downloadUrl, sAccessToken);
-
-	return true;
-};
-
-/**
- * @param {MessageModel} oMessage
- * @param {string} sType
- */
-ComposePopupView.prototype.prepearMessageAttachments = function(oMessage, sType)
-{
-	if (oMessage)
-	{
-		if (Enums.ComposeType.ForwardAsAttachment === sType)
-		{
-			this.addMessageAsAttachment(oMessage);
-		}
-		else
-		{
-			var aAttachments = oMessage.attachments();
-			_.each(Utils.isNonEmptyArray(aAttachments) ? aAttachments : [], function(oItem) {
-				var bAdd = false;
-				switch (sType)
-				{
-					case Enums.ComposeType.Reply:
-					case Enums.ComposeType.ReplyAll:
-						bAdd = oItem.isLinked;
-						break;
-
-					case Enums.ComposeType.Forward:
-					case Enums.ComposeType.Draft:
-					case Enums.ComposeType.EditAsNew:
-						bAdd = true;
-						break;
-					// no default
-				}
-
-				if (bAdd)
-				{
-					var oAttachment = new ComposeAttachmentModel(
-						oItem.download, oItem.fileName, oItem.estimatedSize,
-						oItem.isInline, oItem.isLinked, oItem.cid, oItem.contentLocation
-					);
-
-					oAttachment.fromMessage = true;
-					oAttachment.cancel = this.cancelAttachmentHelper(oItem.download);
-					oAttachment.waiting(false).uploading(true).complete(false);
-
-					this.attachments.push(oAttachment);
-				}
-			});
+			this.attachments.remove(arrachment);
+			delegateRunOnDestroy(arrachment);
 		}
 	}
-};
 
-ComposePopupView.prototype.removeLinkedAttachments = function()
-{
-	var arrachment = _.find(this.attachments(), function(oItem) {
-		return oItem && oItem.isLinked;
-	});
-
-	if (arrachment)
-	{
-		this.attachments.remove(arrachment);
-		Utils.delegateRunOnDestroy(arrachment);
+	setMessageAttachmentFailedDownloadText() {
+		_.each(this.attachments(), (attachment) => {
+			if (attachment && attachment.fromMessage)
+			{
+				attachment
+					.waiting(false)
+					.uploading(false)
+					.complete(true)
+					.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
+			}
+		});
 	}
-};
 
-ComposePopupView.prototype.setMessageAttachmentFailedDownloadText = function()
-{
-	_.each(this.attachments(), function(oAttachment) {
-		if (oAttachment && oAttachment.fromMessage)
+	/**
+	 * @param {boolean=} includeAttachmentInProgress = true
+	 * @returns {boolean}
+	 */
+	isEmptyForm(includeAttachmentInProgress = true) {
+
+		const withoutAttachment = includeAttachmentInProgress ?
+			0 === this.attachments().length : 0 === this.attachmentsInReady().length;
+
+		return 0 === this.to().length &&
+			0 === this.cc().length &&
+			0 === this.bcc().length &&
+			0 === this.replyTo().length &&
+			0 === this.subject().length &&
+			withoutAttachment &&
+			(!this.oEditor || '' === this.oEditor.getData());
+	}
+
+	reset() {
+		this.to('');
+		this.cc('');
+		this.bcc('');
+		this.replyTo('');
+		this.subject('');
+
+		this.requestDsn(false);
+		this.requestReadReceipt(false);
+		this.markAsImportant(false);
+
+		this.attachmentsPlace(false);
+
+		this.aDraftInfo = null;
+		this.sInReplyTo = '';
+		this.bFromDraft = false;
+		this.sReferences = '';
+
+		this.sendError(false);
+		this.sendSuccessButSaveError(false);
+		this.savedError(false);
+		this.savedTime(0);
+		this.emptyToError(false);
+		this.attachmentsInProcessError(false);
+
+		this.showCc(false);
+		this.showBcc(false);
+		this.showReplyTo(false);
+
+		delegateRunOnDestroy(this.attachments());
+		this.attachments([]);
+
+		this.dragAndDropOver(false);
+		this.dragAndDropVisible(false);
+
+		this.draftFolder('');
+		this.draftUid('');
+
+		this.sending(false);
+		this.saving(false);
+
+		if (this.oEditor)
 		{
-			oAttachment
-				.waiting(false)
-				.uploading(false)
-				.complete(true)
-				.error(Translator.getUploadErrorDescByCode(Enums.UploadErrorCode.FileNoUploaded));
+			this.oEditor.clear(false);
 		}
-	}, this);
-};
-
-/**
- * @param {boolean=} bIncludeAttachmentInProgress = true
- * @returns {boolean}
- */
-ComposePopupView.prototype.isEmptyForm = function(bIncludeAttachmentInProgress)
-{
-	bIncludeAttachmentInProgress = Utils.isUnd(bIncludeAttachmentInProgress) ? true : !!bIncludeAttachmentInProgress;
-	var bWithoutAttach = bIncludeAttachmentInProgress ?
-		0 === this.attachments().length : 0 === this.attachmentsInReady().length;
-
-	return 0 === this.to().length &&
-		0 === this.cc().length &&
-		0 === this.bcc().length &&
-		0 === this.replyTo().length &&
-		0 === this.subject().length &&
-		bWithoutAttach &&
-		(!this.oEditor || '' === this.oEditor.getData());
-};
-
-ComposePopupView.prototype.reset = function()
-{
-	this.to('');
-	this.cc('');
-	this.bcc('');
-	this.replyTo('');
-	this.subject('');
-
-	this.requestDsn(false);
-	this.requestReadReceipt(false);
-	this.markAsImportant(false);
-
-	this.attachmentsPlace(false);
-
-	this.aDraftInfo = null;
-	this.sInReplyTo = '';
-	this.bFromDraft = false;
-	this.sReferences = '';
-
-	this.sendError(false);
-	this.sendSuccessButSaveError(false);
-	this.savedError(false);
-	this.savedTime(0);
-	this.emptyToError(false);
-	this.attachmentsInProcessError(false);
-
-	this.showCc(false);
-	this.showBcc(false);
-	this.showReplyTo(false);
-
-	Utils.delegateRunOnDestroy(this.attachments());
-	this.attachments([]);
-
-	this.dragAndDropOver(false);
-	this.dragAndDropVisible(false);
-
-	this.draftFolder('');
-	this.draftUid('');
-
-	this.sending(false);
-	this.saving(false);
-
-	if (this.oEditor)
-	{
-		this.oEditor.clear(false);
 	}
-};
 
-/**
- * @returns {Array}
- */
-ComposePopupView.prototype.getAttachmentsDownloadsForUpload = function()
-{
-	return _.map(_.filter(this.attachments(), function(oItem) {
-		return oItem && '' === oItem.tempName();
-	}), function(oItem) {
-		return oItem.id;
-	});
-};
+	/**
+	 * @returns {Array}
+	 */
+	getAttachmentsDownloadsForUpload() {
+		return _.map(_.filter(
+			this.attachments(), (item) => item && '' === item.tempName(),
+		), (item) => item.id);
+	}
 
-ComposePopupView.prototype.resizerTrigger = function()
-{
-	this.resizer(!this.resizer());
-};
+	resizerTrigger() {
+		this.resizer(!this.resizer());
+	}
+}
 
 module.exports = ComposePopupView;

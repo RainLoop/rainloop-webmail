@@ -1,21 +1,10 @@
 
-var
-	_ = require('_'),
+import {view} from 'Knoin/Knoin';
+import {AbstractSystemDropDownUserView} from 'View/User/AbstractSystemDropDown';
 
-	kn = require('Knoin/Knoin'),
-	AbstractSystemDropDownUserView = require('View/User/AbstractSystemDropDown');
+@view({
+	name: 'View/User/Settings/SystemDropDown'
+})
+class SystemDropDownSettingsUserView extends AbstractSystemDropDownUserView {}
 
-/**
- * @constructor
- * @extends AbstractSystemDropDownUserView
- */
-function SystemDropDownSettingsUserView()
-{
-	AbstractSystemDropDownUserView.call(this);
-	kn.constructorEnd(this);
-}
-
-kn.extendAsViewModel(['View/User/Settings/SystemDropDown', 'View/App/Settings/SystemDropDown', 'SettingsSystemDropDownViewModel'], SystemDropDownSettingsUserView);
-_.extend(SystemDropDownSettingsUserView.prototype, AbstractSystemDropDownUserView.prototype);
-
-module.exports = SystemDropDownSettingsUserView;
+export {SystemDropDownSettingsUserView, SystemDropDownSettingsUserView as default};

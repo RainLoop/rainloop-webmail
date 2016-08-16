@@ -218,10 +218,10 @@ class EmailModel
 			return false;
 		}
 
-		var
-			substr = function(str, start, len) {
+		const
+			substr = (str, start, len) => {
 				str = pString(str);
-				var	end = str.length;
+				let	end = str.length;
 
 				if (0 > start)
 				{
@@ -233,7 +233,7 @@ class EmailModel
 				return start >= str.length || 0 > start || start > end ? false : str.slice(start, end);
 			},
 
-			substrReplace = function(str, replace, start, length) {
+			substrReplace = (str, replace, start, length) => {
 				str = pString(str);
 				if (0 > start)
 				{
@@ -246,8 +246,9 @@ class EmailModel
 					length = length + str.length - start;
 				}
 				return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
-			},
+			};
 
+		let
 			$sName = '',
 			$sEmail = '',
 			$sComment = '',

@@ -8,11 +8,13 @@ import {root} from 'Common/Links';
 
 import {capa} from 'Storage/Settings';
 
-import {showScreenPopup, routeOff, setHash} from 'Knoin/Knoin';
-
 import AccountStore from 'Stores/User/Account';
 import IdentityStore from 'Stores/User/Identity';
 import Remote from 'Remote/User/Ajax';
+
+import {getApp} from 'Helper/Apps/User';
+
+import {showScreenPopup, routeOff, setHash} from 'Knoin/Knoin';
 
 class AccountsUserSettings
 {
@@ -66,7 +68,7 @@ class AccountsUserSettings
 			{
 				this.accounts.remove((account) => accountToRemove === account);
 
-				Remote.accountDelete(function(result, data) {
+				Remote.accountDelete((result, data) => {
 
 					if (StorageResultType.Success === result && data && data.Result && data.Reload)
 					{
@@ -78,7 +80,7 @@ class AccountsUserSettings
 					}
 					else
 					{
-						require('App/User').default.accountsAndIdentities();
+						getApp().accountsAndIdentities();
 					}
 
 				}, accountToRemove.email);
@@ -100,7 +102,7 @@ class AccountsUserSettings
 				IdentityStore.identities.remove((oIdentity) => identityToRemove === oIdentity);
 
 				Remote.identityDelete(() => {
-					require('App/User').default.accountsAndIdentities();
+					getApp().accountsAndIdentities();
 				}, identityToRemove.id);
 			}
 		}
@@ -112,18 +114,19 @@ class AccountsUserSettings
 	}
 
 	onBuild(oDom) {
-		var self = this;
+
+		const self = this;
 
 		oDom
-			.on('click', '.accounts-list .account-item .e-action', function() {
-				const account = ko.dataFor(this);
+			.on('click', '.accounts-list .account-item .e-action', function() { // eslint-disable-line prefer-arrow-callback
+				const account = ko.dataFor(this); // eslint-disable-line no-invalid-this
 				if (account)
 				{
 					self.editAccount(account);
 				}
 			})
-			.on('click', '.identities-list .identity-item .e-action', function() {
-				const identity = ko.dataFor(this);
+			.on('click', '.identities-list .identity-item .e-action', function() { // eslint-disable-line prefer-arrow-callback
+				const identity = ko.dataFor(this); // eslint-disable-line no-invalid-this
 				if (identity)
 				{
 					self.editIdentity(identity);

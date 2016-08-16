@@ -9,6 +9,8 @@ import {getNotification} from 'Common/Translator';
 import PackageStore from 'Stores/Admin/Package';
 import Remote from 'Remote/Admin/Ajax';
 
+import {getApp} from 'Helper/Apps/Admin';
+
 class PackagesAdminSettings
 {
 	constructor() {
@@ -30,7 +32,7 @@ class PackagesAdminSettings
 	}
 
 	onBuild() {
-		require('App/Admin').default.reloadPackagesList();
+		getApp().reloadPackagesList();
 	}
 
 	requestHelper(packageToRequest, install) {
@@ -63,7 +65,7 @@ class PackagesAdminSettings
 			}
 			else
 			{
-				require('App/Admin').default.reloadPackagesList();
+				getApp().reloadPackagesList();
 			}
 		};
 	}

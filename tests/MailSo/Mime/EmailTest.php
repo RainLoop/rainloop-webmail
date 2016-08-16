@@ -6,14 +6,13 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 {
 	public function testNewInstance()
 	{
-		$oMail = \MailSo\Mime\Email::NewInstance('admin@example.com', 'Administrator', 'Remark');
+		$oMail = \MailSo\Mime\Email::NewInstance('admin@example.com', 'Administrator');
 		$this->assertEquals('admin@example.com', $oMail->GetEmail());
 		$this->assertEquals('Administrator', $oMail->GetDisplayName());
-		$this->assertEquals('Remark', $oMail->GetRemark());
 		$this->assertEquals('admin', $oMail->GetAccountName());
 		$this->assertEquals('example.com', $oMail->GetDomain());
-		$this->assertEquals('"Administrator" <admin@example.com> (Remark)', $oMail->ToString());
-		$this->assertEquals(array('Administrator', 'admin@example.com', 'Remark', 'none', ''), $oMail->ToArray());
+		$this->assertEquals('"Administrator" <admin@example.com>', $oMail->ToString());
+		$this->assertEquals(array('Administrator', 'admin@example.com', 'none', ''), $oMail->ToArray());
 	}
 
 	public function testNewInstance1()
@@ -21,9 +20,8 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 		$oMail = \MailSo\Mime\Email::NewInstance('admin@example.com');
 		$this->assertEquals('admin@example.com', $oMail->GetEmail());
 		$this->assertEquals('', $oMail->GetDisplayName());
-		$this->assertEquals('', $oMail->GetRemark());
 		$this->assertEquals('admin@example.com', $oMail->ToString());
-		$this->assertEquals(array('', 'admin@example.com', '', 'none', ''), $oMail->ToArray());
+		$this->assertEquals(array('', 'admin@example.com', 'none', ''), $oMail->ToArray());
 	}
 
 	public function testNewInstance2()
@@ -31,19 +29,17 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 		$oMail = \MailSo\Mime\Email::NewInstance('admin@example.com', 'Administrator');
 		$this->assertEquals('admin@example.com', $oMail->GetEmail());
 		$this->assertEquals('Administrator', $oMail->GetDisplayName());
-		$this->assertEquals('', $oMail->GetRemark());
 		$this->assertEquals('"Administrator" <admin@example.com>', $oMail->ToString());
-		$this->assertEquals(array('Administrator', 'admin@example.com', '', 'none', ''), $oMail->ToArray());
+		$this->assertEquals(array('Administrator', 'admin@example.com', 'none', ''), $oMail->ToArray());
 	}
 
 	public function testNewInstance3()
 	{
-		$oMail = \MailSo\Mime\Email::NewInstance('admin@example.com', '', 'Remark');
+		$oMail = \MailSo\Mime\Email::NewInstance('admin@example.com', '');
 		$this->assertEquals('admin@example.com', $oMail->GetEmail());
 		$this->assertEquals('', $oMail->GetDisplayName());
-		$this->assertEquals('Remark', $oMail->GetRemark());
-		$this->assertEquals('<admin@example.com> (Remark)', $oMail->ToString());
-		$this->assertEquals(array('', 'admin@example.com', 'Remark', 'none', ''), $oMail->ToArray());
+		$this->assertEquals('admin@example.com', $oMail->ToString());
+		$this->assertEquals(array('', 'admin@example.com', 'none', ''), $oMail->ToArray());
 	}
 
 	/**
@@ -65,27 +61,25 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 
 	public function testParse2()
 	{
-		$oMail = \MailSo\Mime\Email::Parse('"Тест" <help@example.com> (Ремарка)');
-		$this->assertEquals('"Тест" <help@example.com> (Ремарка)', $oMail->ToString());
+		$oMail = \MailSo\Mime\Email::Parse('"Тест" <help@example.com>');
+		$this->assertEquals('"Тест" <help@example.com>', $oMail->ToString());
 	}
 
 	public static function providerForParse()
 	{
 		return array(
 			array('test <help@example.com>',
-				array('test', 'help@example.com', '')),
+				array('test', 'help@example.com')),
 			array('test<help@example.com>',
-				array('test', 'help@example.com', '')),
+				array('test', 'help@example.com')),
 			array('test< help@example.com >',
-				array('test', 'help@example.com', '')),
-			array('<help@example.com> (Remark)',
-				array('', 'help@example.com', 'Remark')),
-			array('"New \" Admin" <help@example.com> (Rem)',
-				array('New " Admin', 'help@example.com', 'Rem')),
-			array('"Тест" <help@example.com> (Ремарка)',
-				array('Тест', 'help@example.com', 'Ремарка')),
+				array('test', 'help@example.com')),
+			array('"New \" Admin" <help@example.com>',
+				array('New " Admin', 'help@example.com')),
+			array('"Тест" <help@example.com>',
+				array('Тест', 'help@example.com')),
 			array('Microsoft Outlook<MicrosoftExchange329e71ec88ae4615bbc36ab6ce41109e@PPTH.PRIVATE>',
-				array('Microsoft Outlook', 'MicrosoftExchange329e71ec88ae4615bbc36ab6ce41109e@ppth.private', '')),
+				array('Microsoft Outlook', 'MicrosoftExchange329e71ec88ae4615bbc36ab6ce41109e@ppth.private')),
 		);
 	}
 
@@ -93,7 +87,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 	{
 		return array(
 			array('help@xn--d1abbgf6aiiy.xn--p1ai',
-				array('', 'help@президент.рф', '')),
+				array('', 'help@президент.рф')),
 		);
 	}
 
@@ -120,7 +114,7 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testParse5()
 	{
-		$oMail = \MailSo\Mime\Email::Parse('');
+		\MailSo\Mime\Email::Parse('');
 	}
 
 	/**
@@ -128,6 +122,6 @@ class EmailTest extends \PHPUnit_Framework_TestCase
 	 */
 	public function testParse6()
 	{
-		$oMail = \MailSo\Mime\Email::Parse('example.com');
+		\MailSo\Mime\Email::Parse('example.com');
 	}
 }

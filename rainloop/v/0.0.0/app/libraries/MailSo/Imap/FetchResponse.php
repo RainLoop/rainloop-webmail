@@ -92,8 +92,8 @@ class FetchResponse
 					$sDisplayName = \MailSo\Base\Utils::DecodeHeaderValue(
 						self::findEnvelopeIndex($aEmailItem, 0, ''), $sParentCharset);
 
-					$sRemark = \MailSo\Base\Utils::DecodeHeaderValue(
-						self::findEnvelopeIndex($aEmailItem, 1, ''), $sParentCharset);
+//					$sRemark = \MailSo\Base\Utils::DecodeHeaderValue(
+//						self::findEnvelopeIndex($aEmailItem, 1, ''), $sParentCharset);
 
 					$sLocalPart = self::findEnvelopeIndex($aEmailItem, 2, '');
 					$sDomainPart = self::findEnvelopeIndex($aEmailItem, 3, '');
@@ -101,8 +101,7 @@ class FetchResponse
 					if (0 < strlen($sLocalPart) && 0 < strlen($sDomainPart))
 					{
 						$oResult->Add(
-							\MailSo\Mime\Email::NewInstance(
-								$sLocalPart.'@'.$sDomainPart, $sDisplayName, $sRemark)
+							\MailSo\Mime\Email::NewInstance($sLocalPart.'@'.$sDomainPart, $sDisplayName)
 						);
 					}
 				}
@@ -114,7 +113,7 @@ class FetchResponse
 
 	/**
 	 * @param string $sRfc822SubMimeIndex = ''
-	 * 
+	 *
 	 * @return \MailSo\Imap\BodyStructure|null
 	 */
 	public function GetFetchBodyStructure($sRfc822SubMimeIndex = '')
@@ -243,7 +242,7 @@ class FetchResponse
 			&& is_array($oImapResponse->ResponseList[3])
 		);
 	}
-	
+
 	/**
 	 * @param \MailSo\Imap\Response $oImapResponse
 	 *

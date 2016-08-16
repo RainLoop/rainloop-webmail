@@ -11,7 +11,6 @@ import * as Settings from 'Storage/Settings';
 import {addSettingsViewModel} from 'Knoin/Knoin';
 
 import {AbstractSettingsScreen} from 'Screen/AbstractSettings';
-import App from 'App/User';
 
 import {GeneralUserSettings} from 'Settings/User/General';
 import {ContactsUserSettings} from 'Settings/User/Contacts';
@@ -25,13 +24,19 @@ import {FoldersUserSettings} from 'Settings/User/Folders';
 import {ThemesUserSettings} from 'Settings/User/Themes';
 import {OpenPgpUserSettings} from 'Settings/User/OpenPgp';
 
+import {SystemDropDownSettingsUserView} from 'View/User/Settings/SystemDropDown';
+import {MenuSettingsUserView} from 'View/User/Settings/Menu';
+import {PaneSettingsUserView} from 'View/User/Settings/Pane';
+
+import {getApp} from 'Helper/Apps/User';
+
 class SettingsUserScreen extends AbstractSettingsScreen
 {
 	constructor() {
 		super([
-			require('View/User/Settings/SystemDropDown'),
-			require('View/User/Settings/Menu'),
-			require('View/User/Settings/Pane')
+			SystemDropDownSettingsUserView,
+			MenuSettingsUserView,
+			PaneSettingsUserView
 		]);
 
 		initOnStartOrLangChange(() => {
@@ -144,7 +149,7 @@ class SettingsUserScreen extends AbstractSettingsScreen
 
 	setSettingsTitle() {
 		const sEmail = AccountStore.email();
-		App.setWindowTitle(('' === sEmail ? '' : sEmail + ' - ') + this.sSettingsTitle);
+		getApp().setWindowTitle(('' === sEmail ? '' : sEmail + ' - ') + this.sSettingsTitle);
 	}
 }
 

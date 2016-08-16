@@ -1,4 +1,6 @@
 
+/* global RL_COMMUNITY */
+
 import window from 'window';
 import _ from '_';
 import $ from '$';
@@ -167,9 +169,7 @@ let bAllowPdfPreview = !bMobileDevice;
 
 if (bAllowPdfPreview && window.navigator && window.navigator.mimeTypes)
 {
-	bAllowPdfPreview = !!_.find(window.navigator.mimeTypes, function(oType) {
-		return oType && 'application/pdf' === oType.type;
-	});
+	bAllowPdfPreview = !!_.find(window.navigator.mimeTypes, (type) => type && 'application/pdf' === type.type);
 
 	if (!bAllowPdfPreview)
 	{
@@ -203,33 +203,29 @@ export const keyScopeReal = ko.observable(KeyState.All);
 export const keyScopeFake = ko.observable(KeyState.All);
 
 export const keyScope = ko.computed({
-	owner: this,
 	read: () => keyScopeFake(),
-	write: function(sValue) {
+	write: (value) => {
 
-		if (KeyState.Menu !== sValue)
+		if (KeyState.Menu !== value)
 		{
-			if (KeyState.Compose === sValue)
+			if (KeyState.Compose === value)
 			{
 				// disableKeyFilter
-				key.filter = function() {
-					return useKeyboardShortcuts();
-				};
+				key.filter = () => useKeyboardShortcuts();
 			}
 			else
 			{
 				// restoreKeyFilter
-				key.filter = function(event) {
+				key.filter = (event) => {
 
 					if (useKeyboardShortcuts())
 					{
-						var
-							oElement = event.target || event.srcElement,
-							sTagName = oElement ? oElement.tagName : '';
+						const
+							el = event.target || event.srcElement,
+							tagName = el ? el.tagName.toUpperCase() : '';
 
-						sTagName = sTagName.toUpperCase();
-						return !('INPUT' === sTagName || 'SELECT' === sTagName || 'TEXTAREA' === sTagName ||
-							(oElement && 'DIV' === sTagName && ('editorHtmlArea' === oElement.className || 'true' === '' + oElement.contentEditable))
+						return !('INPUT' === tagName || 'SELECT' === tagName || 'TEXTAREA' === tagName ||
+							(el && 'DIV' === tagName && ('editorHtmlArea' === el.className || 'true' === '' + el.contentEditable))
 						);
 					}
 
@@ -237,24 +233,24 @@ export const keyScope = ko.computed({
 				};
 			}
 
-			keyScopeFake(sValue);
+			keyScopeFake(value);
 			if (dropdownVisibility())
 			{
-				sValue = KeyState.Menu;
+				value = KeyState.Menu;
 			}
 		}
 
-		keyScopeReal(sValue);
+		keyScopeReal(value);
 	}
 });
 
-keyScopeReal.subscribe(function(sValue) {
+keyScopeReal.subscribe((value) => {
 //	window.console.log('keyScope=' + sValue); // DEBUG
-	key.setScope(sValue);
+	key.setScope(value);
 });
 
-dropdownVisibility.subscribe(function(bValue) {
-	if (bValue)
+dropdownVisibility.subscribe((value) => {
+	if (value)
 	{
 		keyScope(KeyState.Menu);
 	}

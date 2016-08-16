@@ -1,18 +1,17 @@
 
-var ko = require('ko');
+import ko from 'ko';
 
-/**
- * @constructor
- */
-function LicenseAdminStore()
+class LicenseAdminStore
 {
-	this.licensing = ko.observable(false);
-	this.licensingProcess = ko.observable(false);
-	this.licenseValid = ko.observable(false);
-	this.licenseExpired = ko.observable(0);
-	this.licenseError = ko.observable('');
+	constructor() {
+		this.licensing = ko.observable(false);
+		this.licensingProcess = ko.observable(false);
+		this.licenseValid = ko.observable(false);
+		this.licenseExpired = ko.observable(0);
+		this.licenseError = ko.observable('');
 
-	this.licenseTrigger = ko.observable(false);
+		this.licenseTrigger = ko.observable(false);
+	}
 }
 
 module.exports = new LicenseAdminStore();

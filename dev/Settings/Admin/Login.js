@@ -5,16 +5,16 @@ import ko from 'ko';
 import {settingsSaveHelperSimpleFunction, boolToAjax, trim} from 'Common/Utils';
 import {settingsGet} from 'Storage/Settings';
 
-import AppAdminStore from 'Stores/Admin/App';
+import AppStore from 'Stores/Admin/App';
 
 class LoginAdminSettings
 {
 	constructor() {
-		this.determineUserLanguage = AppAdminStore.determineUserLanguage;
-		this.determineUserDomain = AppAdminStore.determineUserDomain;
+		this.determineUserLanguage = AppStore.determineUserLanguage;
+		this.determineUserDomain = AppStore.determineUserDomain;
 
 		this.defaultDomain = ko.observable(settingsGet('LoginDefaultDomain')).idleTrigger();
-		this.allowLanguagesOnLogin = AppAdminStore.allowLanguagesOnLogin;
+		this.allowLanguagesOnLogin = AppStore.allowLanguagesOnLogin;
 
 		this.dummy = ko.observable(false);
 	}

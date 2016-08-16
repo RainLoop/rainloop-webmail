@@ -1,138 +1,121 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
-	key = require('key'),
+import _ from '_';
+import ko from 'ko';
+import key from 'key';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
-	Links = require('Common/Links'),
-	Events = require('Common/Events'),
+import AppStore from 'Stores/User/App';
+import AccountStore from 'Stores/User/Account';
+import MessageStore from 'Stores/User/Message';
 
-	AppStore = require('Stores/User/App'),
-	AccountStore = require('Stores/User/Account'),
-	MessageStore = require('Stores/User/Message'),
+import {Capa, Magics, KeyState} from 'Common/Enums';
+import {trim, isUnd} from 'Common/Utils';
+import {settings} from 'Common/Links';
 
-	Settings = require('Storage/Settings'),
+import * as Events from 'Common/Events';
+import * as Settings from 'Storage/Settings';
 
-	AbstractView = require('Knoin/AbstractView');
+import {getApp} from 'Helper/Apps/User';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function AbstractSystemDropDownUserView()
+import {view, ViewType, showScreenPopup, setHash} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+@view({
+	type: ViewType.Right,
+	templateID: 'SystemDropDown'
+})
+class AbstractSystemDropDownUserView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Right', 'SystemDropDown');
+	constructor() {
+		super();
 
-	this.logoImg = Utils.trim(Settings.settingsGet('UserLogo'));
-	this.logoTitle = Utils.trim(Settings.settingsGet('UserLogoTitle'));
+		this.logoImg = trim(Settings.settingsGet('UserLogo'));
+		this.logoTitle = trim(Settings.settingsGet('UserLogoTitle'));
 
-	this.mobile = !!Settings.appSettingsGet('mobile');
-	this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+		this.mobile = !!Settings.appSettingsGet('mobile');
+		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
 
-	this.allowSettings = !!Settings.capa(Enums.Capa.Settings);
-	this.allowHelp = !!Settings.capa(Enums.Capa.Help);
+		this.allowSettings = !!Settings.capa(Capa.Settings);
+		this.allowHelp = !!Settings.capa(Capa.Help);
 
-	this.currentAudio = AppStore.currentAudio;
+		this.currentAudio = AppStore.currentAudio;
 
-	this.accountEmail = AccountStore.email;
+		this.accountEmail = AccountStore.email;
 
-	this.accounts = AccountStore.accounts;
-	this.accountsUnreadCount = AccountStore.accountsUnreadCount;
+		this.accounts = AccountStore.accounts;
+		this.accountsUnreadCount = AccountStore.accountsUnreadCount;
 
-	this.accountMenuDropdownTrigger = ko.observable(false);
-	this.capaAdditionalAccounts = ko.observable(Settings.capa(Enums.Capa.AdditionalAccounts));
+		this.accountMenuDropdownTrigger = ko.observable(false);
+		this.capaAdditionalAccounts = ko.observable(Settings.capa(Capa.AdditionalAccounts));
 
-	this.accountClick = _.bind(this.accountClick, this);
+		this.addAccountClick = _.bind(this.addAccountClick, this);
 
-	this.accountClick = _.bind(this.accountClick, this);
+		Events.sub('audio.stop', () => AppStore.currentAudio(''));
+		Events.sub('audio.start', (sName) => AppStore.currentAudio(sName));
+	}
 
-	Events.sub('audio.stop', function() {
-		AppStore.currentAudio('');
-	});
+	stopPlay() {
+		Events.pub('audio.api.stop');
+	}
 
-	Events.sub('audio.start', function(sName) {
-		AppStore.currentAudio(sName);
-	});
+	accountClick(oAccount, oEvent) {
+		if (oAccount && oEvent && !isUnd(oEvent.which) && 1 === oEvent.which)
+		{
+			AccountStore.accounts.loading(true);
+			_.delay(() => AccountStore.accounts.loading(false), Magics.Time1s);
+		}
+
+		return true;
+	}
+
+	emailTitle() {
+		return AccountStore.email();
+	}
+
+	settingsClick() {
+		if (Settings.capa(Capa.Settings))
+		{
+			setHash(settings());
+		}
+	}
+
+	settingsHelp()
+	{
+		if (Settings.capa(Capa.Help))
+		{
+			showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
+		}
+	}
+
+	addAccountClick() {
+		if (this.capaAdditionalAccounts())
+		{
+			showScreenPopup(require('View/Popup/Account'));
+		}
+	}
+
+	logoutClick() {
+		getApp().logout();
+	}
+
+	onBuild() {
+		key('`', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
+			if (this.viewModelVisibility())
+			{
+				MessageStore.messageFullScreenMode(false);
+				this.accountMenuDropdownTrigger(true);
+			}
+		});
+
+		// shortcuts help
+		key('shift+/', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
+			if (this.viewModelVisibility())
+			{
+				showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
+				return false;
+			}
+			return true;
+		});
+	}
 }
 
-_.extend(AbstractSystemDropDownUserView.prototype, AbstractView.prototype);
-
-AbstractSystemDropDownUserView.prototype.stopPlay = function()
-{
-	Events.pub('audio.api.stop');
-};
-
-AbstractSystemDropDownUserView.prototype.accountClick = function(oAccount, oEvent)
-{
-	if (oAccount && oEvent && !Utils.isUnd(oEvent.which) && 1 === oEvent.which)
-	{
-		AccountStore.accounts.loading(true);
-
-		_.delay(function() {
-			AccountStore.accounts.loading(false);
-		}, Enums.Magics.Time1s);
-	}
-
-	return true;
-};
-
-AbstractSystemDropDownUserView.prototype.emailTitle = function()
-{
-	return AccountStore.email();
-};
-
-AbstractSystemDropDownUserView.prototype.settingsClick = function()
-{
-	if (Settings.capa(Enums.Capa.Settings))
-	{
-		require('Knoin/Knoin').setHash(Links.settings());
-	}
-};
-
-AbstractSystemDropDownUserView.prototype.settingsHelp = function()
-{
-	if (Settings.capa(Enums.Capa.Help))
-	{
-		require('Knoin/Knoin').showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
-	}
-};
-
-AbstractSystemDropDownUserView.prototype.addAccountClick = function()
-{
-	if (this.capaAdditionalAccounts())
-	{
-		require('Knoin/Knoin').showScreenPopup(require('View/Popup/Account'));
-	}
-};
-
-AbstractSystemDropDownUserView.prototype.logoutClick = function()
-{
-	require('App/User').default.logout();
-};
-
-AbstractSystemDropDownUserView.prototype.onBuild = function()
-{
-	var self = this;
-	key('`', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function() {
-		if (self.viewModelVisibility())
-		{
-			MessageStore.messageFullScreenMode(false);
-
-			self.accountMenuDropdownTrigger(true);
-		}
-	});
-
-	// shortcuts help
-	key('shift+/', [Enums.KeyState.MessageList, Enums.KeyState.MessageView, Enums.KeyState.Settings], function() {
-		if (self.viewModelVisibility())
-		{
-			require('Knoin/Knoin').showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
-			return false;
-		}
-		return true;
-	});
-};
-
-module.exports = AbstractSystemDropDownUserView;
+export {AbstractSystemDropDownUserView, AbstractSystemDropDownUserView as default};

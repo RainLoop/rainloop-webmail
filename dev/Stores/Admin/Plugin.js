@@ -1,14 +1,13 @@
 
-var ko = require('ko');
+import ko from 'ko';
 
-/**
- * @constructor
- */
-function PluginAdminStore()
+class PluginAdminStore
 {
-	this.plugins = ko.observableArray([]);
-	this.plugins.loading = ko.observable(false).extend({'throttle': 100});
-	this.plugins.error = ko.observable('');
+	constructor() {
+		this.plugins = ko.observableArray([]);
+		this.plugins.loading = ko.observable(false).extend({throttle: 100});
+		this.plugins.error = ko.observable('');
+	}
 }
 
 module.exports = new PluginAdminStore();

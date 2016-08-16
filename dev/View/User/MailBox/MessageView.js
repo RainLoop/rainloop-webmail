@@ -1,1221 +1,1160 @@
 
-var
-	window = require('window'),
-	_ = require('_'),
-	$ = require('$'),
-	ko = require('ko'),
-	key = require('key'),
+import window from 'window';
+import _ from '_';
+import $ from '$';
+import ko from 'ko';
+import key from 'key';
 
-	Consts = require('Common/Consts'),
-	Enums = require('Common/Enums'),
-	Globals = require('Common/Globals'),
-	Utils = require('Common/Utils'),
-	Events = require('Common/Events'),
-	Translator = require('Common/Translator'),
-	Audio = require('Common/Audio'),
-	Links = require('Common/Links'),
+import {DATA_IMAGE_USER_DOT_PIC, UNUSED_OPTION_VALUE} from 'Common/Consts';
 
-	Cache = require('Common/Cache'),
+import {
+	Capa, ComposeType, ClientSideKeyName, KeyState,
+	FolderType, Focused, Layout, Magics, MessageSetAction
+} from 'Common/Enums';
 
-	SocialStore = require('Stores/Social'),
-	AppStore = require('Stores/User/App'),
-	SettingsStore = require('Stores/User/Settings'),
-	AccountStore = require('Stores/User/Account'),
-	FolderStore = require('Stores/User/Folder'),
-	MessageStore = require('Stores/User/Message'),
+import {
+	$html,
+	leftPanelDisabled,
+	keyScopeReal,
+	useKeyboardShortcuts
+} from 'Common/Globals';
 
-	Local = require('Storage/Client'),
-	Settings = require('Storage/Settings'),
-	Remote = require('Remote/User/Ajax'),
+import {
+	createCommand, inArray, trim, noop,
+	isNonEmptyArray, windowResize, windowResizeCallback,
+	removeSelection, removeInFocus, mailToHelper,
+	inFocus, isArray
+} from 'Common/Utils';
 
-	Promises = require('Promises/User/Ajax'),
+import Audio from 'Common/Audio';
+import * as Events from 'Common/Events';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {i18n} from 'Common/Translator';
+import {attachmentDownload} from 'Common/Links';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function MessageViewMailBoxUserView()
+import {
+	getUserPic,
+	storeMessageFlagsToCache
+} from 'Common/Cache';
+
+import SocialStore from 'Stores/Social';
+import AppStore from 'Stores/User/App';
+import SettingsStore from 'Stores/User/Settings';
+import AccountStore from 'Stores/User/Account';
+import FolderStore from 'Stores/User/Folder';
+import MessageStore from 'Stores/User/Message';
+
+import * as Local from 'Storage/Client';
+import * as Settings from 'Storage/Settings';
+
+import Remote from 'Remote/User/Ajax';
+import Promises from 'Promises/User/Ajax';
+
+import {getApp} from 'Helper/Apps/User';
+
+import {view, ViewType, showScreenPopup} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+@view({
+	name: 'View/User/MailBox/MessageView',
+	type: ViewType.Right,
+	templateID: 'MailMessageView'
+})
+class MessageViewMailBoxUserView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Right', 'MailMessageView');
+	constructor() {
+		super();
 
-	var
-		self = this,
-		sLastEmail = '',
-		createCommandHelper = function(sType) {
-			return Utils.createCommand(self, function() {
-				this.lastReplyAction(sType);
-				this.replyOrforward(sType);
-			}, self.canBeRepliedOrForwarded);
-		};
+		let lastEmail = '';
+		const createCommandHelper = (type) => createCommand(() => {
+			this.lastReplyAction(type);
+			this.replyOrforward(type);
+		}, this.canBeRepliedOrForwarded);
 
-	this.oDom = null;
-	this.oHeaderDom = null;
-	this.oMessageScrollerDom = null;
+		this.oDom = null;
+		this.oHeaderDom = null;
+		this.oMessageScrollerDom = null;
 
-	this.bodyBackgroundColor = ko.observable('');
+		this.bodyBackgroundColor = ko.observable('');
 
-	this.pswp = null;
+		this.pswp = null;
 
-	this.allowComposer = !!Settings.capa(Enums.Capa.Composer);
-	this.allowMessageActions = !!Settings.capa(Enums.Capa.MessageActions);
-	this.allowMessageListActions = !!Settings.capa(Enums.Capa.MessageListActions);
+		this.allowComposer = !!Settings.capa(Capa.Composer);
+		this.allowMessageActions = !!Settings.capa(Capa.MessageActions);
+		this.allowMessageListActions = !!Settings.capa(Capa.MessageListActions);
 
-	this.logoImg = Utils.trim(Settings.settingsGet('UserLogoMessage'));
-	this.logoIframe = Utils.trim(Settings.settingsGet('UserIframeMessage'));
+		this.logoImg = trim(Settings.settingsGet('UserLogoMessage'));
+		this.logoIframe = trim(Settings.settingsGet('UserIframeMessage'));
 
-	this.mobile = !!Settings.appSettingsGet('mobile');
+		this.mobile = !!Settings.appSettingsGet('mobile');
 
-	this.attachmentsActions = AppStore.attachmentsActions;
+		this.attachmentsActions = AppStore.attachmentsActions;
 
-	this.message = MessageStore.message;
-	this.messageListChecked = MessageStore.messageListChecked;
-	this.hasCheckedMessages = MessageStore.hasCheckedMessages;
-	this.messageListCheckedOrSelectedUidsWithSubMails = MessageStore.messageListCheckedOrSelectedUidsWithSubMails;
-	this.messageLoadingThrottle = MessageStore.messageLoadingThrottle;
-	this.messagesBodiesDom = MessageStore.messagesBodiesDom;
-	this.useThreads = SettingsStore.useThreads;
-	this.replySameFolder = SettingsStore.replySameFolder;
-	this.layout = SettingsStore.layout;
-	this.usePreviewPane = SettingsStore.usePreviewPane;
-	this.isMessageSelected = MessageStore.isMessageSelected;
-	this.messageActiveDom = MessageStore.messageActiveDom;
-	this.messageError = MessageStore.messageError;
+		this.message = MessageStore.message;
+		this.messageListChecked = MessageStore.messageListChecked;
+		this.hasCheckedMessages = MessageStore.hasCheckedMessages;
+		this.messageListCheckedOrSelectedUidsWithSubMails = MessageStore.messageListCheckedOrSelectedUidsWithSubMails;
+		this.messageLoadingThrottle = MessageStore.messageLoadingThrottle;
+		this.messagesBodiesDom = MessageStore.messagesBodiesDom;
+		this.useThreads = SettingsStore.useThreads;
+		this.replySameFolder = SettingsStore.replySameFolder;
+		this.layout = SettingsStore.layout;
+		this.usePreviewPane = SettingsStore.usePreviewPane;
+		this.isMessageSelected = MessageStore.isMessageSelected;
+		this.messageActiveDom = MessageStore.messageActiveDom;
+		this.messageError = MessageStore.messageError;
 
-	this.fullScreenMode = MessageStore.messageFullScreenMode;
+		this.fullScreenMode = MessageStore.messageFullScreenMode;
 
-	this.messageListOfThreadsLoading = ko.observable(false).extend({'rateLimit': 1});
+		this.messageListOfThreadsLoading = ko.observable(false).extend({rateLimit: 1});
+		this.highlightUnselectedAttachments = ko.observable(false).extend({falseTimeout: 2000});
 
-	this.highlightUnselectedAttachments = ko.observable(false).extend({'falseTimeout': 2000});
+		this.showAttachmnetControls = ko.observable(false);
 
-	this.showAttachmnetControls = ko.observable(false);
+		this.allowAttachmnetControls = ko.computed(
+			() => 0 < this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions)
+		);
 
-	this.allowAttachmnetControls = ko.computed(function() {
-		return 0 < this.attachmentsActions().length &&
-			Settings.capa(Enums.Capa.AttachmentsActions);
-	}, this);
+		this.downloadAsZipAllowed = ko.computed(
+			() => -1 < inArray('zip', this.attachmentsActions()) && this.allowAttachmnetControls()
+		);
 
-	this.downloadAsZipAllowed = ko.computed(function() {
-		return -1 < Utils.inArray('zip', this.attachmentsActions()) &&
-			this.allowAttachmnetControls();
-	}, this);
+		this.downloadAsZipLoading = ko.observable(false);
+		this.downloadAsZipError = ko.observable(false).extend({falseTimeout: 7000});
 
-	this.downloadAsZipLoading = ko.observable(false);
-	this.downloadAsZipError = ko.observable(false).extend({'falseTimeout': 7000});
+		this.saveToOwnCloudAllowed = ko.computed(
+			() => -1 < inArray('owncloud', this.attachmentsActions()) && this.allowAttachmnetControls()
+		);
 
-	this.saveToOwnCloudAllowed = ko.computed(function() {
-		return -1 < Utils.inArray('owncloud', this.attachmentsActions()) &&
-			this.allowAttachmnetControls();
-	}, this);
+		this.saveToOwnCloudLoading = ko.observable(false);
+		this.saveToOwnCloudSuccess = ko.observable(false).extend({falseTimeout: 2000});
+		this.saveToOwnCloudError = ko.observable(false).extend({falseTimeout: 7000});
 
-	this.saveToOwnCloudLoading = ko.observable(false);
-	this.saveToOwnCloudSuccess = ko.observable(false).extend({'falseTimeout': 2000});
-	this.saveToOwnCloudError = ko.observable(false).extend({'falseTimeout': 7000});
+		this.saveToOwnCloudSuccess.subscribe((v) => {
+			if (v)
+			{
+				this.saveToOwnCloudError(false);
+			}
+		});
 
-	this.saveToOwnCloudSuccess.subscribe(function(bV) {
-		if (bV)
-		{
-			this.saveToOwnCloudError(false);
-		}
-	}, this);
+		this.saveToOwnCloudError.subscribe((v) => {
+			if (v)
+			{
+				this.saveToOwnCloudSuccess(false);
+			}
+		});
 
-	this.saveToOwnCloudError.subscribe(function(bV) {
-		if (bV)
-		{
-			this.saveToOwnCloudSuccess(false);
-		}
-	}, this);
+		this.saveToDropboxAllowed = ko.computed(
+			() => -1 < inArray('dropbox', this.attachmentsActions()) && this.allowAttachmnetControls()
+		);
 
-	this.saveToDropboxAllowed = ko.computed(function() {
-		return -1 < Utils.inArray('dropbox', this.attachmentsActions()) &&
-			this.allowAttachmnetControls();
-	}, this);
+		this.saveToDropboxLoading = ko.observable(false);
+		this.saveToDropboxSuccess = ko.observable(false).extend({falseTimeout: 2000});
+		this.saveToDropboxError = ko.observable(false).extend({falseTimeout: 7000});
 
-	this.saveToDropboxLoading = ko.observable(false);
-	this.saveToDropboxSuccess = ko.observable(false).extend({'falseTimeout': 2000});
-	this.saveToDropboxError = ko.observable(false).extend({'falseTimeout': 7000});
+		this.saveToDropboxSuccess.subscribe((v) => {
+			if (v)
+			{
+				this.saveToDropboxError(false);
+			}
+		});
 
-	this.saveToDropboxSuccess.subscribe(function(bV) {
-		if (bV)
-		{
-			this.saveToDropboxError(false);
-		}
-	}, this);
+		this.saveToDropboxError.subscribe((v) => {
+			if (v)
+			{
+				this.saveToDropboxSuccess(false);
+			}
+		});
 
-	this.saveToDropboxError.subscribe(function(bV) {
-		if (bV)
-		{
-			this.saveToDropboxSuccess(false);
-		}
-	}, this);
+		this.showAttachmnetControls.subscribe((v) => {
+			if (this.message())
+			{
+				_.each(this.message().attachments(), (item) => {
+					if (item)
+					{
+						item.checked(!!v);
+					}
+				});
+			}
+		});
 
-	this.showAttachmnetControls.subscribe(function(bV) {
-		if (this.message())
-		{
-			_.each(this.message().attachments(), function(oItem) {
-				if (oItem)
+		this.lastReplyAction_ = ko.observable('');
+		this.lastReplyAction = ko.computed({
+			read: this.lastReplyAction_,
+			write: (value) => {
+				this.lastReplyAction_(-1 === inArray(value, [
+					ComposeType.Reply, ComposeType.ReplyAll, ComposeType.Forward
+				]) ? ComposeType.Reply : value);
+			}
+		});
+
+		this.lastReplyAction(Local.get(ClientSideKeyName.LastReplyAction) || ComposeType.Reply);
+
+		this.lastReplyAction_.subscribe((value) => {
+			Local.set(ClientSideKeyName.LastReplyAction, value);
+		});
+
+		this.showFullInfo = ko.observable('1' === Local.get(ClientSideKeyName.MessageHeaderFullInfo));
+
+		this.moreDropdownTrigger = ko.observable(false);
+		this.messageDomFocused = ko.observable(false).extend({rateLimit: 0});
+
+		this.messageVisibility = ko.computed(() => !this.messageLoadingThrottle() && !!this.message());
+
+		this.message.subscribe((message) => {
+			if (!message)
+			{
+				MessageStore.selectorMessageSelected(null);
+			}
+		});
+
+		this.canBeRepliedOrForwarded = ko.computed(() => {
+			const v = this.messageVisibility();
+			return !this.isDraftFolder() && v;
+		});
+
+		// commands
+		this.closeMessage = createCommand(() => {
+			MessageStore.message(null);
+		});
+
+		this.replyCommand = createCommandHelper(ComposeType.Reply);
+		this.replyAllCommand = createCommandHelper(ComposeType.ReplyAll);
+		this.forwardCommand = createCommandHelper(ComposeType.Forward);
+		this.forwardAsAttachmentCommand = createCommandHelper(ComposeType.ForwardAsAttachment);
+		this.editAsNewCommand = createCommandHelper(ComposeType.EditAsNew);
+
+		this.messageVisibilityCommand = createCommand(noop, this.messageVisibility);
+
+		this.messageEditCommand = createCommand(() => {
+			this.editMessage();
+		}, this.messageVisibility);
+
+		this.deleteCommand = createCommand(() => {
+			const message = this.message();
+			if (message && this.allowMessageListActions)
+			{
+				this.message(null);
+				getApp().deleteMessagesFromFolder(FolderType.Trash,
+					message.folderFullNameRaw, [message.uid], true);
+			}
+		}, this.messageVisibility);
+
+		this.deleteWithoutMoveCommand = createCommand(() => {
+			const message = this.message();
+			if (message && this.allowMessageListActions)
+			{
+				this.message(null);
+				getApp().deleteMessagesFromFolder(FolderType.Trash,
+					message.folderFullNameRaw, [message.uid], false);
+			}
+		}, this.messageVisibility);
+
+		this.archiveCommand = createCommand(() => {
+			const message = this.message();
+			if (message && this.allowMessageListActions)
+			{
+				this.message(null);
+				getApp().deleteMessagesFromFolder(FolderType.Archive,
+					message.folderFullNameRaw, [message.uid], true);
+			}
+		}, this.messageVisibility);
+
+		this.spamCommand = createCommand(() => {
+			const message = this.message();
+			if (message && this.allowMessageListActions)
+			{
+				this.message(null);
+				getApp().deleteMessagesFromFolder(FolderType.Spam,
+					message.folderFullNameRaw, [message.uid], true);
+			}
+		}, this.messageVisibility);
+
+		this.notSpamCommand = createCommand(() => {
+			const message = this.message();
+			if (message && this.allowMessageListActions)
+			{
+				this.message(null);
+				getApp().deleteMessagesFromFolder(FolderType.NotSpam,
+					message.folderFullNameRaw, [message.uid], true);
+			}
+		}, this.messageVisibility);
+
+		this.dropboxEnabled = SocialStore.dropbox.enabled;
+		this.dropboxApiKey = SocialStore.dropbox.apiKey;
+
+		// viewer
+
+		this.viewBodyTopValue = ko.observable(0);
+
+		this.viewFolder = '';
+		this.viewUid = '';
+		this.viewHash = '';
+		this.viewSubject = ko.observable('');
+		this.viewFromShort = ko.observable('');
+		this.viewFromDkimData = ko.observable(['none', '']);
+		this.viewToShort = ko.observable('');
+		this.viewFrom = ko.observable('');
+		this.viewTo = ko.observable('');
+		this.viewCc = ko.observable('');
+		this.viewBcc = ko.observable('');
+		this.viewReplyTo = ko.observable('');
+		this.viewTimeStamp = ko.observable(0);
+		this.viewSize = ko.observable('');
+		this.viewLineAsCss = ko.observable('');
+		this.viewViewLink = ko.observable('');
+		this.viewUnsubscribeLink = ko.observable('');
+		this.viewDownloadLink = ko.observable('');
+		this.viewUserPic = ko.observable(DATA_IMAGE_USER_DOT_PIC);
+		this.viewUserPicVisible = ko.observable(false);
+		this.viewIsImportant = ko.observable(false);
+		this.viewIsFlagged = ko.observable(false);
+
+		this.viewFromDkimVisibility = ko.computed(() => 'none' !== this.viewFromDkimData()[0]);
+
+		this.viewFromDkimStatusIconClass = ko.computed(() => {
+			switch (this.viewFromDkimData()[0])
+			{
+				case 'none':
+					return 'icon-none iconcolor-display-none';
+				case 'pass':
+					return 'icon-ok iconcolor-green';
+				default:
+					return 'icon-warning-alt iconcolor-red';
+			}
+		});
+
+		this.viewFromDkimStatusTitle = ko.computed(() => {
+
+			const status = this.viewFromDkimData();
+			if (isNonEmptyArray(status))
+			{
+				if (status[0] && status[1])
 				{
-					oItem.checked(!!bV);
+					return status[1];
 				}
-			});
-		}
-	}, this);
-
-	this.lastReplyAction_ = ko.observable('');
-	this.lastReplyAction = ko.computed({
-		read: this.lastReplyAction_,
-		write: function(sValue) {
-			sValue = -1 === Utils.inArray(sValue, [
-				Enums.ComposeType.Reply, Enums.ComposeType.ReplyAll, Enums.ComposeType.Forward
-			]) ? Enums.ComposeType.Reply : sValue;
-			this.lastReplyAction_(sValue);
-		},
-		owner: this
-	});
-
-	this.lastReplyAction(Local.get(Enums.ClientSideKeyName.LastReplyAction) || Enums.ComposeType.Reply);
-	this.lastReplyAction_.subscribe(function(sValue) {
-		Local.set(Enums.ClientSideKeyName.LastReplyAction, sValue);
-	});
-
-	this.showFullInfo = ko.observable('1' === Local.get(Enums.ClientSideKeyName.MessageHeaderFullInfo));
-	this.moreDropdownTrigger = ko.observable(false);
-	this.messageDomFocused = ko.observable(false).extend({'rateLimit': 0});
-
-	this.messageVisibility = ko.computed(function() {
-		return !this.messageLoadingThrottle() && !!this.message();
-	}, this);
-
-	this.message.subscribe(function(oMessage) {
-		if (!oMessage)
-		{
-			MessageStore.selectorMessageSelected(null);
-		}
-	}, this);
-
-	this.canBeRepliedOrForwarded = ko.computed(function() {
-		var bV = this.messageVisibility();
-		return !this.isDraftFolder() && bV;
-	}, this);
-
-	// commands
-	this.closeMessage = Utils.createCommand(this, function() {
-		MessageStore.message(null);
-	});
-
-	this.replyCommand = createCommandHelper(Enums.ComposeType.Reply);
-	this.replyAllCommand = createCommandHelper(Enums.ComposeType.ReplyAll);
-	this.forwardCommand = createCommandHelper(Enums.ComposeType.Forward);
-	this.forwardAsAttachmentCommand = createCommandHelper(Enums.ComposeType.ForwardAsAttachment);
-	this.editAsNewCommand = createCommandHelper(Enums.ComposeType.EditAsNew);
-
-	this.messageVisibilityCommand = Utils.createCommand(this, Utils.noop, this.messageVisibility);
-
-	this.messageEditCommand = Utils.createCommand(this, function() {
-		this.editMessage();
-	}, this.messageVisibility);
-
-	this.deleteCommand = Utils.createCommand(this, function() {
-		var oMessage = this.message();
-		if (oMessage && this.allowMessageListActions)
-		{
-			this.message(null);
-			require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Trash,
-				oMessage.folderFullNameRaw, [oMessage.uid], true);
-		}
-	}, this.messageVisibility);
-
-	this.deleteWithoutMoveCommand = Utils.createCommand(this, function() {
-		var oMessage = this.message();
-		if (oMessage && this.allowMessageListActions)
-		{
-			this.message(null);
-			require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Trash,
-				oMessage.folderFullNameRaw, [oMessage.uid], false);
-		}
-	}, this.messageVisibility);
-
-	this.archiveCommand = Utils.createCommand(this, function() {
-		var oMessage = this.message();
-		if (oMessage && this.allowMessageListActions)
-		{
-			this.message(null);
-			require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Archive,
-				oMessage.folderFullNameRaw, [oMessage.uid], true);
-		}
-	}, this.messageVisibility);
-
-	this.spamCommand = Utils.createCommand(this, function() {
-		var oMessage = this.message();
-		if (oMessage && this.allowMessageListActions)
-		{
-			this.message(null);
-			require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.Spam,
-				oMessage.folderFullNameRaw, [oMessage.uid], true);
-		}
-	}, this.messageVisibility);
-
-	this.notSpamCommand = Utils.createCommand(this, function() {
-		var oMessage = this.message();
-		if (oMessage && this.allowMessageListActions)
-		{
-			this.message(null);
-			require('App/User').default.deleteMessagesFromFolder(Enums.FolderType.NotSpam,
-				oMessage.folderFullNameRaw, [oMessage.uid], true);
-		}
-	}, this.messageVisibility);
-
-	this.dropboxEnabled = SocialStore.dropbox.enabled;
-	this.dropboxApiKey = SocialStore.dropbox.apiKey;
-
-	// viewer
-
-	this.viewBodyTopValue = ko.observable(0);
-
-	this.viewFolder = '';
-	this.viewUid = '';
-	this.viewHash = '';
-	this.viewSubject = ko.observable('');
-	this.viewFromShort = ko.observable('');
-	this.viewFromDkimData = ko.observable(['none', '']);
-	this.viewToShort = ko.observable('');
-	this.viewFrom = ko.observable('');
-	this.viewTo = ko.observable('');
-	this.viewCc = ko.observable('');
-	this.viewBcc = ko.observable('');
-	this.viewReplyTo = ko.observable('');
-	this.viewTimeStamp = ko.observable(0);
-	this.viewSize = ko.observable('');
-	this.viewLineAsCss = ko.observable('');
-	this.viewViewLink = ko.observable('');
-	this.viewUnsubscribeLink = ko.observable('');
-	this.viewDownloadLink = ko.observable('');
-	this.viewUserPic = ko.observable(Consts.DATA_IMAGE_USER_DOT_PIC);
-	this.viewUserPicVisible = ko.observable(false);
-	this.viewIsImportant = ko.observable(false);
-	this.viewIsFlagged = ko.observable(false);
-
-	this.viewFromDkimVisibility = ko.computed(function() {
-		return 'none' !== this.viewFromDkimData()[0];
-	}, this);
-
-	this.viewFromDkimStatusIconClass = ko.computed(function() {
-		switch (this.viewFromDkimData()[0])
-		{
-			case 'none':
-				return 'icon-none iconcolor-display-none';
-			case 'pass':
-				return 'icon-ok iconcolor-green';
-			default:
-				return 'icon-warning-alt iconcolor-red';
-		}
-	}, this);
-
-	this.viewFromDkimStatusTitle = ko.computed(function() {
-
-		var aStatus = this.viewFromDkimData();
-		if (Utils.isNonEmptyArray(aStatus))
-		{
-			if (aStatus[0] && aStatus[1])
-			{
-				return aStatus[1];
+				else if (status[0])
+				{
+					return 'DKIM: ' + status[0];
+				}
 			}
-			else if (aStatus[0])
+
+			return '';
+		});
+
+		this.messageActiveDom.subscribe((dom) => {
+			this.bodyBackgroundColor(dom ? this.detectDomBackgroundColor(dom) : '');
+		}, this);
+
+		this.message.subscribe((message) => {
+
+			this.messageActiveDom(null);
+
+			if (message)
 			{
-				return 'DKIM: ' + aStatus[0];
+				this.showAttachmnetControls(false);
+
+				if (this.viewHash !== message.hash)
+				{
+					this.scrollMessageToTop();
+				}
+
+				this.viewFolder = message.folderFullNameRaw;
+				this.viewUid = message.uid;
+				this.viewHash = message.hash;
+				this.viewSubject(message.subject());
+				this.viewFromShort(message.fromToLine(true, true));
+				this.viewFromDkimData(message.fromDkimData());
+				this.viewToShort(message.toToLine(true, true));
+				this.viewFrom(message.fromToLine(false));
+				this.viewTo(message.toToLine(false));
+				this.viewCc(message.ccToLine(false));
+				this.viewBcc(message.bccToLine(false));
+				this.viewReplyTo(message.replyToToLine(false));
+				this.viewTimeStamp(message.dateTimeStampInUTC());
+				this.viewSize(message.friendlySize());
+				this.viewLineAsCss(message.lineAsCss());
+				this.viewViewLink(message.viewLink());
+				this.viewUnsubscribeLink(message.getFirstUnsubsribeLink());
+				this.viewDownloadLink(message.downloadLink());
+				this.viewIsImportant(message.isImportant());
+				this.viewIsFlagged(message.flagged());
+
+				lastEmail = message.fromAsSingleEmail();
+				getUserPic(lastEmail, (pic, email) => {
+					if (pic !== this.viewUserPic() && lastEmail === email)
+					{
+						this.viewUserPicVisible(false);
+						this.viewUserPic(DATA_IMAGE_USER_DOT_PIC);
+						if ('' !== pic)
+						{
+							this.viewUserPicVisible(true);
+							this.viewUserPic(pic);
+						}
+					}
+				});
 			}
-		}
-
-		return '';
-
-	}, this);
-
-	this.messageActiveDom.subscribe(function(oDom) {
-		this.bodyBackgroundColor(oDom ? this.detectDomBackgroundColor(oDom) : '');
-	}, this);
-
-	this.message.subscribe(function(oMessage) {
-
-		this.messageActiveDom(null);
-
-		if (oMessage)
-		{
-			this.showAttachmnetControls(false);
-
-			if (this.viewHash !== oMessage.hash)
+			else
 			{
+				this.viewFolder = '';
+				this.viewUid = '';
+				this.viewHash = '';
+
 				this.scrollMessageToTop();
 			}
 
-			this.viewFolder = oMessage.folderFullNameRaw;
-			this.viewUid = oMessage.uid;
-			this.viewHash = oMessage.hash;
-			this.viewSubject(oMessage.subject());
-			this.viewFromShort(oMessage.fromToLine(true, true));
-			this.viewFromDkimData(oMessage.fromDkimData());
-			this.viewToShort(oMessage.toToLine(true, true));
-			this.viewFrom(oMessage.fromToLine(false));
-			this.viewTo(oMessage.toToLine(false));
-			this.viewCc(oMessage.ccToLine(false));
-			this.viewBcc(oMessage.bccToLine(false));
-			this.viewReplyTo(oMessage.replyToToLine(false));
-			this.viewTimeStamp(oMessage.dateTimeStampInUTC());
-			this.viewSize(oMessage.friendlySize());
-			this.viewLineAsCss(oMessage.lineAsCss());
-			this.viewViewLink(oMessage.viewLink());
-			this.viewUnsubscribeLink(oMessage.getFirstUnsubsribeLink());
-			this.viewDownloadLink(oMessage.downloadLink());
-			this.viewIsImportant(oMessage.isImportant());
-			this.viewIsFlagged(oMessage.flagged());
+		});
 
-			sLastEmail = oMessage.fromAsSingleEmail();
-			Cache.getUserPic(sLastEmail, function(sPic, sEmail) {
-				if (sPic !== self.viewUserPic() && sLastEmail === sEmail)
+		this.message.viewTrigger.subscribe(() => {
+			const message = this.message();
+			if (message)
+			{
+				this.viewIsFlagged(message.flagged());
+			}
+			else
+			{
+				this.viewIsFlagged(false);
+			}
+		});
+
+		this.fullScreenMode.subscribe((value) => {
+			$html.toggleClass('rl-message-fullscreen', value);
+			windowResize();
+		});
+
+		this.messageLoadingThrottle.subscribe(windowResizeCallback);
+
+		this.messageFocused = ko.computed(() => Focused.MessageView === AppStore.focusedState());
+
+		this.messageListAndMessageViewLoading = ko.computed(
+			() => MessageStore.messageListCompleteLoadingThrottle() || MessageStore.messageLoadingThrottle()
+		);
+
+		this.goUpCommand = createCommand(() => {
+			Events.pub('mailbox.message-list.selector.go-up', [
+				Layout.NoPreview === this.layout() ? !!this.message() : true
+			]);
+		}, () => !this.messageListAndMessageViewLoading());
+
+		this.goDownCommand = createCommand(() => {
+			Events.pub('mailbox.message-list.selector.go-down', [
+				Layout.NoPreview === this.layout() ? !!this.message() : true
+			]);
+		}, () => !this.messageListAndMessageViewLoading());
+
+		Events.sub('mailbox.message-view.toggle-full-screen', () => {
+			this.toggleFullScreen();
+		});
+
+		this.attachmentPreview = _.bind(this.attachmentPreview, this);
+	}
+
+	detectDomBackgroundColor(dom) {
+		let
+			limit = 5,
+			result = '';
+
+		const
+			fFindDom = function(inputDom) {
+				const children = inputDom ? inputDom.children() : null;
+				return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
+			},
+			fFindColor = function(inputDom) {
+				let color = '';
+				if (inputDom)
 				{
-					self.viewUserPicVisible(false);
-					self.viewUserPic(Consts.DATA_IMAGE_USER_DOT_PIC);
-					if ('' !== sPic)
+					color = inputDom.css('background-color') || '';
+					if (!inputDom.is('table'))
 					{
-						self.viewUserPicVisible(true);
-						self.viewUserPic(sPic);
+						color = 'rgba(0, 0, 0, 0)' === color || 'transparent' === color ? '' : color;
 					}
 				}
+
+				return color;
+			};
+
+		if (dom && 1 === dom.length)
+		{
+			let aC = dom;
+			while ('' === result)
+			{
+				limit -= 1;
+				if (0 >= limit)
+				{
+					break;
+				}
+
+				aC = fFindDom(aC);
+				if (aC)
+				{
+					result = fFindColor(aC);
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			result = 'rgba(0, 0, 0, 0)' === result || 'transparent' === result ? '' : result;
+		}
+
+		return result;
+	}
+
+	fullScreen() {
+		this.fullScreenMode(true);
+		windowResize();
+	}
+
+	unFullScreen() {
+		this.fullScreenMode(false);
+		windowResize();
+	}
+
+	toggleFullScreen() {
+		removeSelection();
+
+		this.fullScreenMode(!this.fullScreenMode());
+		windowResize();
+	}
+
+	/**
+	 * @param {string} sType
+	 * @returns {void}
+	 */
+	replyOrforward(sType) {
+		if (Settings.capa(Capa.Composer))
+		{
+			showScreenPopup(require('View/Popup/Compose'), [sType, MessageStore.message()]);
+		}
+	}
+
+	checkHeaderHeight() {
+		if (this.oHeaderDom)
+		{
+			this.viewBodyTopValue(this.message() ? this.oHeaderDom.height() +
+				Magics.Size20px /* padding-(top/bottom): 20px */ + Magics.Size1px /* borded-bottom: 1px */ : 0);
+		}
+	}
+
+	//  displayMailToPopup(sMailToUrl) {
+	//		sMailToUrl = sMailToUrl.replace(/\?.+$/, '');
+	//
+	//		var
+	//			sResult = '',
+	//			aTo = [],
+	//			EmailModel = require('Model/Email').default,
+	//			fParseEmailLine = function(sLine) {
+	//				return sLine ? _.compact(_.map([window.decodeURIComponent(sLine)], function(sItem) {
+	//						var oEmailModel = new EmailModel();
+	//						oEmailModel.mailsoParse(sItem);
+	//						return '' !== oEmailModel.email ? oEmailModel : null;
+	//					})) : null;
+	//			}
+	//		;
+	//
+	//		aTo = fParseEmailLine(sMailToUrl);
+	//		sResult = aTo && aTo[0] ? aTo[0].email : '';
+	//
+	//		return sResult;
+	//	}
+
+	/**
+	 * @param {Object} oAttachment
+	 * @returns {boolean}
+	 */
+	attachmentPreview(attachment) {
+		if (attachment && attachment.isImage() && !attachment.isLinked && this.message() && this.message().attachments())
+		{
+			let
+				index = 0,
+				listIndex = 0;
+
+			const
+				div = $('<div>'),
+				dynamicEls = _.compact(_.map(this.message().attachments(), (item) => {
+					if (item && !item.isLinked && item.isImage())
+					{
+						if (item === attachment)
+						{
+							index = listIndex;
+						}
+
+						listIndex += 1;
+
+						return {
+							src: item.linkPreview(),
+							thumb: item.linkThumbnail(),
+							subHtml: item.fileName,
+							downloadUrl: item.linkPreview()
+						};
+					}
+
+					return null;
+				}));
+
+			if (0 < dynamicEls.length)
+			{
+				div.on('onBeforeOpen.lg', () => {
+					useKeyboardShortcuts(false);
+					removeInFocus(true);
+				});
+
+				div.on('onCloseAfter.lg', () => {
+					useKeyboardShortcuts(true);
+				});
+
+				div.lightGallery({
+					dynamic: true,
+					loadYoutubeThumbnail: false,
+					loadVimeoThumbnail: false,
+					thumbWidth: 80,
+					thumbContHeight: 95,
+					showThumbByDefault: false,
+					mode: 'lg-lollipop', // 'lg-slide',
+					index: index,
+					dynamicEl: dynamicEls
+				});
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
+	onBuild(dom) {
+
+		const
+			self = this,
+			fCheckHeaderHeight = _.bind(this.checkHeaderHeight, this);
+
+		this.oDom = dom;
+
+		this.fullScreenMode.subscribe((value) => {
+			if (value && this.message())
+			{
+				AppStore.focusedState(Focused.MessageView);
+			}
+		});
+
+		this.showAttachmnetControls.subscribe(fCheckHeaderHeight);
+		this.fullScreenMode.subscribe(fCheckHeaderHeight);
+		this.showFullInfo.subscribe(fCheckHeaderHeight);
+		this.message.subscribe(fCheckHeaderHeight);
+
+		Events.sub('window.resize', _.throttle(() => {
+			_.delay(fCheckHeaderHeight, 1);
+			_.delay(fCheckHeaderHeight, Magics.Time200ms);
+			_.delay(fCheckHeaderHeight, Magics.Time500ms);
+		}, Magics.Time50ms));
+
+		this.showFullInfo.subscribe((value) => {
+			windowResize();
+			windowResize(Magics.Time200ms);
+			Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0');
+		});
+
+		SocialStore.appendDropbox();
+
+		this.oHeaderDom = $('.messageItemHeader', dom);
+		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
+
+		if (this.mobile)
+		{
+			dom.on('click', () => {
+				leftPanelDisabled(true);
+			});
+		}
+
+		dom
+			.on('click', 'a', function(event) { // eslint-disable-line prefer-arrow-callback
+				// setup maito protocol
+				return !(!!event && Magics.EventWhichMouseMiddle !== event.which && mailToHelper(
+					$(this).attr('href'), Settings.capa(Capa.Composer) ? require('View/Popup/Compose') : null // eslint-disable-line no-invalid-this
+				));
+			})
+			.on('click', '.attachmentsPlace .attachmentIconParent', (event) => {
+				if (event && event.stopPropagation)
+				{
+					event.stopPropagation();
+				}
+			})
+			.on('click', '.attachmentsPlace .showPreplay', function(event) { // eslint-disable-line prefer-arrow-callback
+				if (event && event.stopPropagation)
+				{
+					event.stopPropagation();
+				}
+
+				const attachment = ko.dataFor(this); // eslint-disable-line no-invalid-this
+				if (attachment && Audio.supported)
+				{
+					switch (true)
+					{
+						case Audio.supportedMp3 && attachment.isMp3():
+							Audio.playMp3(attachment.linkDownload(), attachment.fileName);
+							break;
+						case Audio.supportedOgg && attachment.isOgg():
+							Audio.playOgg(attachment.linkDownload(), attachment.fileName);
+							break;
+						case Audio.supportedWav && attachment.isWav():
+							Audio.playWav(attachment.linkDownload(), attachment.fileName);
+							break;
+						// no default
+					}
+				}
+			})
+			.on('click', '.attachmentsPlace .attachmentItem .attachmentNameParent', function() { // eslint-disable-line prefer-arrow-callback
+				const attachment = ko.dataFor(this); // eslint-disable-line no-invalid-this
+				if (attachment && attachment.download)
+				{
+					getApp().download(attachment.linkDownload());
+				}
+			})
+			.on('click', '.messageItemHeader .subjectParent .flagParent', function() { // eslint-disable-line prefer-arrow-callback
+				const message = self.message();
+				if (message)
+				{
+					getApp().messageListAction(message.folderFullNameRaw, message.uid,
+						message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag, [message]);
+				}
+			})
+			.on('click', '.thread-list .flagParent', function() { // eslint-disable-line prefer-arrow-callback
+				const message = ko.dataFor(this); // eslint-disable-line no-invalid-this
+				if (message && message.folder && message.uid)
+				{
+					getApp().messageListAction(
+						message.folder, message.uid,
+						message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag, [message]);
+				}
+
+				self.threadsDropdownTrigger(true);
+
+				return false;
+			});
+
+		AppStore.focusedState.subscribe((value) => {
+			if (Focused.MessageView !== value)
+			{
+				this.scrollMessageToTop();
+				this.scrollMessageToLeft();
+			}
+		});
+
+		keyScopeReal.subscribe((value) => {
+			this.messageDomFocused(KeyState.MessageView === value && !inFocus());
+		});
+
+		this.oMessageScrollerDom = dom.find('.messageItem .content');
+		this.oMessageScrollerDom = this.oMessageScrollerDom && this.oMessageScrollerDom[0] ? this.oMessageScrollerDom : null;
+
+		this.initShortcuts();
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	escShortcuts() {
+		if (this.viewModelVisibility() && this.message())
+		{
+			if (this.fullScreenMode())
+			{
+				this.fullScreenMode(false);
+
+				if (Layout.NoPreview !== this.layout())
+				{
+					AppStore.focusedState(Focused.MessageList);
+				}
+			}
+			else if (Layout.NoPreview === this.layout())
+			{
+				this.message(null);
+			}
+			else
+			{
+				AppStore.focusedState(Focused.MessageList);
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
+	initShortcuts() {
+
+		// exit fullscreen, back
+		key('esc, backspace', KeyState.MessageView, _.bind(this.escShortcuts, this));
+
+		// fullscreen
+		key('enter', KeyState.MessageView, () => {
+			this.toggleFullScreen();
+			return false;
+		});
+
+		// reply
+		key('r', [KeyState.MessageList, KeyState.MessageView], () => {
+			if (MessageStore.message())
+			{
+				this.replyCommand();
+				return false;
+			}
+
+			return true;
+		});
+
+		// replaAll
+		key('a', [KeyState.MessageList, KeyState.MessageView], () => {
+			if (MessageStore.message())
+			{
+				this.replyAllCommand();
+				return false;
+			}
+
+			return true;
+		});
+
+		// forward
+		key('f', [KeyState.MessageList, KeyState.MessageView], () => {
+			if (MessageStore.message())
+			{
+				this.forwardCommand();
+				return false;
+			}
+
+			return true;
+		});
+
+		// message information
+		key('ctrl+i, command+i', [KeyState.MessageList, KeyState.MessageView], () => {
+			if (MessageStore.message())
+			{
+				this.showFullInfo(!this.showFullInfo());
+			}
+			return false;
+		});
+
+		// toggle message blockquotes
+		key('b', [KeyState.MessageList, KeyState.MessageView], () => {
+			if (MessageStore.message() && MessageStore.message().body)
+			{
+				MessageStore.message().body.find('.rlBlockquoteSwitcher').click();
+				return false;
+			}
+
+			return true;
+		});
+
+		key('ctrl+up, command+up, ctrl+left, command+left', [KeyState.MessageList, KeyState.MessageView], () => {
+			this.goUpCommand();
+			return false;
+		});
+
+		key('ctrl+down, command+down, ctrl+right, command+right', [KeyState.MessageList, KeyState.MessageView], () => {
+			this.goDownCommand();
+			return false;
+		});
+
+		// print
+		key('ctrl+p, command+p', [KeyState.MessageView, KeyState.MessageList], () => {
+			if (this.message())
+			{
+				this.message().printMessage();
+			}
+
+			return false;
+		});
+
+		// delete
+		key('delete, shift+delete', KeyState.MessageView, (event, handler) => {
+			if (event)
+			{
+				if (handler && 'shift+delete' === handler.shortcut)
+				{
+					this.deleteWithoutMoveCommand();
+				}
+				else
+				{
+					this.deleteCommand();
+				}
+
+				return false;
+			}
+
+			return true;
+		});
+
+		// change focused state
+		key('tab, shift+tab, left', KeyState.MessageView, (event, handler) => {
+			if (!this.fullScreenMode() && this.message() && Layout.NoPreview !== this.layout())
+			{
+				if (event && handler && 'left' === handler.shortcut)
+				{
+					if (this.oMessageScrollerDom && 0 < this.oMessageScrollerDom.scrollLeft())
+					{
+						return true;
+					}
+
+					AppStore.focusedState(Focused.MessageList);
+				}
+				else
+				{
+					AppStore.focusedState(Focused.MessageList);
+				}
+			}
+			else if (this.message() && Layout.NoPreview === this.layout() && event && handler && 'left' === handler.shortcut)
+			{
+				return true;
+			}
+
+			return false;
+		});
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	isDraftFolder() {
+		return MessageStore.message() && FolderStore.draftFolder() === MessageStore.message().folderFullNameRaw;
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	isSentFolder() {
+		return MessageStore.message() && FolderStore.sentFolder() === MessageStore.message().folderFullNameRaw;
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	isSpamFolder() {
+		return MessageStore.message() && FolderStore.spamFolder() === MessageStore.message().folderFullNameRaw;
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	isSpamDisabled() {
+		return MessageStore.message() && FolderStore.spamFolder() === UNUSED_OPTION_VALUE;
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	isArchiveFolder() {
+		return MessageStore.message() && FolderStore.archiveFolder() === MessageStore.message().folderFullNameRaw;
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	isArchiveDisabled() {
+		return MessageStore.message() && FolderStore.archiveFolder() === UNUSED_OPTION_VALUE;
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	isDraftOrSentFolder() {
+		return this.isDraftFolder() || this.isSentFolder();
+	}
+
+	composeClick() {
+		if (Settings.capa(Capa.Composer))
+		{
+			showScreenPopup(require('View/Popup/Compose'));
+		}
+	}
+
+	editMessage() {
+		if (Settings.capa(Capa.Composer) && MessageStore.message())
+		{
+			showScreenPopup(require('View/Popup/Compose'), [ComposeType.Draft, MessageStore.message()]);
+		}
+	}
+
+	scrollMessageToTop() {
+		if (this.oMessageScrollerDom)
+		{
+			if (Magics.Size50px < this.oMessageScrollerDom.scrollTop())
+			{
+				this.oMessageScrollerDom
+					.scrollTop(Magics.Size50px)
+					.animate({'scrollTop': 0}, Magics.Time200ms);
+			}
+			else
+			{
+				this.oMessageScrollerDom.scrollTop(0);
+			}
+
+			windowResize();
+		}
+	}
+
+	scrollMessageToLeft() {
+		if (this.oMessageScrollerDom)
+		{
+			this.oMessageScrollerDom.scrollLeft(0);
+			windowResize();
+		}
+	}
+
+	getAttachmentsHashes() {
+		const atts = this.message() ? this.message().attachments() : [];
+		return _.compact(_.map(atts, (item) => (item && !item.isLinked && item.checked() ? item.download : '')));
+	}
+
+	downloadAsZip() {
+		const hashes = this.getAttachmentsHashes();
+		if (0 < hashes.length)
+		{
+			Promises.attachmentsActions('Zip', hashes, this.downloadAsZipLoading).then((result) => {
+				if (result && result.Result && result.Result.Files &&
+					result.Result.Files[0] && result.Result.Files[0].Hash)
+				{
+					getApp().download(attachmentDownload(result.Result.Files[0].Hash));
+				}
+				else
+				{
+					this.downloadAsZipError(true);
+				}
+			}).catch(() => {
+				this.downloadAsZipError(true);
 			});
 		}
 		else
 		{
-			this.viewFolder = '';
-			this.viewUid = '';
-			this.viewHash = '';
-
-			this.scrollMessageToTop();
+			this.highlightUnselectedAttachments(true);
 		}
+	}
 
-	}, this);
+	saveToOwnCloud() {
 
-	this.message.viewTrigger.subscribe(function() {
-		var oMessage = this.message();
-		if (oMessage)
+		const hashes = this.getAttachmentsHashes();
+		if (0 < hashes.length)
 		{
-			this.viewIsFlagged(oMessage.flagged());
+			Promises.attachmentsActions('OwnCloud', hashes, this.saveToOwnCloudLoading).then((result) => {
+				if (result && result.Result)
+				{
+					this.saveToOwnCloudSuccess(true);
+				}
+				else
+				{
+					this.saveToOwnCloudError(true);
+				}
+			}).catch(() => {
+				this.saveToOwnCloudError(true);
+			});
 		}
 		else
 		{
-			this.viewIsFlagged(false);
+			this.highlightUnselectedAttachments(true);
 		}
-	}, this);
+	}
 
-	this.fullScreenMode.subscribe(function(bValue) {
-		Globals.$html.toggleClass('rl-message-fullscreen', bValue);
-		Utils.windowResize();
-	});
+	saveToDropbox() {
 
-	this.messageLoadingThrottle.subscribe(Utils.windowResizeCallback);
+		const
+			files = [],
+			hashes = this.getAttachmentsHashes();
 
-	this.messageFocused = ko.computed(function() {
-		return Enums.Focused.MessageView === AppStore.focusedState();
-	});
+		if (0 < hashes.length)
+		{
+			if (window.Dropbox)
+			{
+				Promises.attachmentsActions('Dropbox', hashes, this.saveToDropboxLoading).then((result) => {
+					if (result && result.Result && result.Result.Url && result.Result.ShortLife && result.Result.Files)
+					{
+						if (window.Dropbox && isArray(result.Result.Files))
+						{
+							_.each(result.Result.Files, (item) => {
+								files.push({
+									url: result.Result.Url + attachmentDownload(item.Hash, result.Result.ShortLife),
+									filename: item.FileName
+								});
+							});
 
-	this.messageListAndMessageViewLoading = ko.computed(function() {
-		return MessageStore.messageListCompleteLoadingThrottle() || MessageStore.messageLoadingThrottle();
-	});
+							window.Dropbox.save({
+								files: files,
+								progress: () => {
+									this.saveToDropboxLoading(true);
+									this.saveToDropboxError(false);
+									this.saveToDropboxSuccess(false);
+								},
+								cancel: () => {
+									this.saveToDropboxSuccess(false);
+									this.saveToDropboxError(false);
+									this.saveToDropboxLoading(false);
+								},
+								success: () => {
+									this.saveToDropboxSuccess(true);
+									this.saveToDropboxLoading(false);
+								},
+								error: () => {
+									this.saveToDropboxError(true);
+									this.saveToDropboxLoading(false);
+								}
+							});
+						}
+						else
+						{
+							this.saveToDropboxError(true);
+						}
+					}
+				}).catch(() => {
+					this.saveToDropboxError(true);
+				});
+			}
+		}
+		else
+		{
+			this.highlightUnselectedAttachments(true);
+		}
+	}
 
-	this.goUpCommand = Utils.createCommand(this, function() {
-		Events.pub('mailbox.message-list.selector.go-up', [
-			Enums.Layout.NoPreview === this.layout() ? !!this.message() : true
-		]);
-	}, function() {
-		return !this.messageListAndMessageViewLoading();
-	});
+	/**
+	 * @param {MessageModel} oMessage
+	 * @returns {void}
+	 */
+	showImages(message) {
+		if (message && message.showExternalImages)
+		{
+			message.showExternalImages(true);
+		}
 
-	this.goDownCommand = Utils.createCommand(this, function() {
-		Events.pub('mailbox.message-list.selector.go-down', [
-			Enums.Layout.NoPreview === this.layout() ? !!this.message() : true
-		]);
-	}, function() {
-		return !this.messageListAndMessageViewLoading();
-	});
+		this.checkHeaderHeight();
+	}
 
-	Events.sub('mailbox.message-view.toggle-full-screen', function() {
-		this.toggleFullScreen();
-	}, this);
+	/**
+	 * @returns {string}
+	 */
+	printableCheckedMessageCount() {
+		const cnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
+		return 0 < cnt ? (100 > cnt ? cnt : '99+') : ''; // eslint-disable-line no-magic-numbers
+	}
 
-	this.attachmentPreview = _.bind(this.attachmentPreview, this);
+	/**
+	 * @param {MessageModel} oMessage
+	 * @returns {void}
+	 */
+	readReceipt(oMessage) {
+		if (oMessage && '' !== oMessage.readReceipt())
+		{
+			Remote.sendReadReceiptMessage(noop, oMessage.folderFullNameRaw, oMessage.uid,
+				oMessage.readReceipt(),
+				i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
+				i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': AccountStore.email()}));
 
-	kn.constructorEnd(this);
+			oMessage.isReadReceipt(true);
+
+			storeMessageFlagsToCache(oMessage);
+
+			getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
+		}
+
+		this.checkHeaderHeight();
+	}
 }
 
-kn.extendAsViewModel(['View/User/MailBox/MessageView', 'View/App/MailBox/MessageView', 'MailBoxMessageViewViewModel'], MessageViewMailBoxUserView);
-_.extend(MessageViewMailBoxUserView.prototype, AbstractView.prototype);
-
-MessageViewMailBoxUserView.prototype.detectDomBackgroundColor = function(oDom)
-{
-	var
-		iLimit = 5,
-		sResult = '',
-		fFindDom = function(oInputDom) {
-			var children = oInputDom ? oInputDom.children() : null;
-			return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
-		},
-		fFindColor = function(oInputDom) {
-			var color = '';
-			if (oInputDom)
-			{
-				color = oInputDom.css('background-color') || '';
-				if (!oInputDom.is('table'))
-				{
-					color = 'rgba(0, 0, 0, 0)' === color || 'transparent' === color ? '' : color;
-				}
-			}
-
-			return color;
-		};
-
-	if (oDom && 1 === oDom.length)
-	{
-		var aC = oDom;
-		while ('' === sResult)
-		{
-			iLimit -= 1;
-			if (0 >= iLimit)
-			{
-				break;
-			}
-
-			aC = fFindDom(aC);
-			if (aC)
-			{
-				sResult = fFindColor(aC);
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		sResult = 'rgba(0, 0, 0, 0)' === sResult || 'transparent' === sResult ? '' : sResult;
-	}
-
-	return sResult;
-};
-
-MessageViewMailBoxUserView.prototype.fullScreen = function()
-{
-	this.fullScreenMode(true);
-	Utils.windowResize();
-};
-
-MessageViewMailBoxUserView.prototype.unFullScreen = function()
-{
-	this.fullScreenMode(false);
-	Utils.windowResize();
-};
-
-MessageViewMailBoxUserView.prototype.toggleFullScreen = function()
-{
-	Utils.removeSelection();
-
-	this.fullScreenMode(!this.fullScreenMode());
-	Utils.windowResize();
-};
-
-/**
- * @param {string} sType
- * @returns {void}
- */
-MessageViewMailBoxUserView.prototype.replyOrforward = function(sType)
-{
-	if (Settings.capa(Enums.Capa.Composer))
-	{
-		kn.showScreenPopup(require('View/Popup/Compose'), [sType, MessageStore.message()]);
-	}
-};
-
-MessageViewMailBoxUserView.prototype.checkHeaderHeight = function()
-{
-	if (this.oHeaderDom)
-	{
-		this.viewBodyTopValue(this.message() ? this.oHeaderDom.height() +
-			Enums.Magics.Size20px /* padding-(top/bottom): 20px */ + Enums.Magics.Size1px /* borded-bottom: 1px */ : 0);
-	}
-};
-
-//	MessageViewMailBoxUserView.prototype.displayMailToPopup = function(sMailToUrl)
-//	{
-//		sMailToUrl = sMailToUrl.replace(/\?.+$/, '');
-//
-//		var
-//			sResult = '',
-//			aTo = [],
-//			EmailModel = require('Model/Email').default,
-//			fParseEmailLine = function(sLine) {
-//				return sLine ? _.compact(_.map([window.decodeURIComponent(sLine)], function(sItem) {
-//						var oEmailModel = new EmailModel();
-//						oEmailModel.mailsoParse(sItem);
-//						return '' !== oEmailModel.email ? oEmailModel : null;
-//					})) : null;
-//			}
-//		;
-//
-//		aTo = fParseEmailLine(sMailToUrl);
-//		sResult = aTo && aTo[0] ? aTo[0].email : '';
-//
-//		return sResult;
-//	};
-
-/**
- * @param {Object} oAttachment
- * @returns {boolean}
- */
-MessageViewMailBoxUserView.prototype.attachmentPreview = function(oAttachment)
-{
-	if (oAttachment && oAttachment.isImage() && !oAttachment.isLinked && this.message() && this.message().attachments())
-	{
-		var
-			oDiv = $('<div>'),
-			iIndex = 0,
-			iListIndex = 0,
-			aDynamicEl = _.compact(_.map(this.message().attachments(), function(oItem) {
-				if (oItem && !oItem.isLinked && oItem.isImage())
-				{
-					if (oItem === oAttachment)
-					{
-						iIndex = iListIndex;
-					}
-
-					iListIndex += 1;
-
-					return {
-						src: oItem.linkPreview(),
-						thumb: oItem.linkThumbnail(),
-						subHtml: oItem.fileName,
-						downloadUrl: oItem.linkPreview()
-					};
-				}
-
-				return null;
-			}));
-
-		if (0 < aDynamicEl.length)
-		{
-			oDiv.on('onBeforeOpen.lg', function() {
-				Globals.useKeyboardShortcuts(false);
-				Utils.removeInFocus(true);
-			});
-
-			oDiv.on('onCloseAfter.lg', function() {
-				Globals.useKeyboardShortcuts(true);
-			});
-
-			oDiv.lightGallery({
-				dynamic: true,
-				loadYoutubeThumbnail: false,
-				loadVimeoThumbnail: false,
-				thumbWidth: 80,
-				thumbContHeight: 95,
-				showThumbByDefault: false,
-				mode: 'lg-lollipop', // 'lg-slide',
-				index: iIndex,
-				dynamicEl: aDynamicEl
-			});
-		}
-
-		return false;
-	}
-
-	return true;
-};
-
-MessageViewMailBoxUserView.prototype.onBuild = function(oDom)
-{
-	var
-		self = this,
-//		sErrorMessage = Translator.i18n('PREVIEW_POPUP/IMAGE_ERROR'),
-		fCheckHeaderHeight = _.bind(this.checkHeaderHeight, this);
-
-	this.oDom = oDom;
-
-	this.fullScreenMode.subscribe(function(bValue) {
-		if (bValue && self.message())
-		{
-			AppStore.focusedState(Enums.Focused.MessageView);
-		}
-	}, this);
-
-	this.showAttachmnetControls.subscribe(fCheckHeaderHeight);
-	this.fullScreenMode.subscribe(fCheckHeaderHeight);
-	this.showFullInfo.subscribe(fCheckHeaderHeight);
-	this.message.subscribe(fCheckHeaderHeight);
-
-	Events.sub('window.resize', _.throttle(function() {
-		_.delay(fCheckHeaderHeight, 1);
-		_.delay(fCheckHeaderHeight, Enums.Magics.Time200ms);
-		_.delay(fCheckHeaderHeight, Enums.Magics.Time500ms);
-	}, Enums.Magics.Time50ms));
-
-	this.showFullInfo.subscribe(function(value) {
-		Utils.windowResize();
-		Utils.windowResize(Enums.Magics.Time200ms);
-		Local.set(Enums.ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0');
-	});
-
-	if (this.dropboxEnabled() && this.dropboxApiKey() && !window.Dropbox)
-	{
-		var oScript = window.document.createElement('script');
-		oScript.type = 'text/javascript';
-		oScript.src = 'https://www.dropbox.com/static/api/2/dropins.js';
-		$(oScript).attr('id', 'dropboxjs').attr('data-app-key', self.dropboxApiKey());
-
-		window.document.body.appendChild(oScript);
-	}
-
-	this.oHeaderDom = $('.messageItemHeader', oDom);
-	this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
-
-	if (this.mobile)
-	{
-		oDom
-			.on('click', function() {
-				Globals.leftPanelDisabled(true);
-			});
-	}
-
-	oDom
-		.on('click', 'a', function(oEvent) {
-			// setup maito protocol
-			return !(!!oEvent && Enums.Magics.EventWhichMouseMiddle !== oEvent.which && Utils.mailToHelper(
-				$(this).attr('href'), Settings.capa(Enums.Capa.Composer) ? require('View/Popup/Compose') : null
-			));
-		})
-//			.on('mouseover', 'a', _.debounce(function(oEvent) {
-//
-//				if (oEvent)
-//				{
-//					var sMailToUrl = $(this).attr('href');
-//					if (sMailToUrl && 'mailto:' === sMailToUrl.toString().substr(0, 7).toLowerCase())
-//					{
-//						sMailToUrl = sMailToUrl.toString().substr(7);
-//						self.displayMailToPopup(sMailToUrl);
-//					}
-//				}
-//
-//				return true;
-//
-//			}, 1000))
-		.on('click', '.attachmentsPlace .attachmentIconParent', function(oEvent) {
-			if (oEvent && oEvent.stopPropagation)
-			{
-				oEvent.stopPropagation();
-			}
-		})
-		.on('click', '.attachmentsPlace .showPreplay', function(oEvent) {
-			if (oEvent && oEvent.stopPropagation)
-			{
-				oEvent.stopPropagation();
-			}
-
-			var oAttachment = ko.dataFor(this);
-			if (oAttachment && Audio.supported)
-			{
-				switch (true)
-				{
-					case Audio.supportedMp3 && oAttachment.isMp3():
-						Audio.playMp3(oAttachment.linkDownload(), oAttachment.fileName);
-						break;
-					case Audio.supportedOgg && oAttachment.isOgg():
-						Audio.playOgg(oAttachment.linkDownload(), oAttachment.fileName);
-						break;
-					case Audio.supportedWav && oAttachment.isWav():
-						Audio.playWav(oAttachment.linkDownload(), oAttachment.fileName);
-						break;
-					// no default
-				}
-			}
-		})
-		.on('click', '.attachmentsPlace .attachmentItem .attachmentNameParent', function() {
-
-			var
-				oAttachment = ko.dataFor(this);
-
-			if (oAttachment && oAttachment.download)
-			{
-				require('App/User').default.download(oAttachment.linkDownload());
-			}
-		})
-		.on('click', '.messageItemHeader .subjectParent .flagParent', function() {
-			var oMessage = self.message();
-			if (oMessage)
-			{
-				require('App/User').default.messageListAction(oMessage.folderFullNameRaw, oMessage.uid,
-					oMessage.flagged() ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oMessage]);
-			}
-		})
-		.on('click', '.thread-list .flagParent', function() {
-			var oMessage = ko.dataFor(this);
-			if (oMessage && oMessage.folder && oMessage.uid)
-			{
-				require('App/User').default.messageListAction(
-					oMessage.folder, oMessage.uid,
-					oMessage.flagged() ? Enums.MessageSetAction.UnsetFlag : Enums.MessageSetAction.SetFlag, [oMessage]);
-			}
-
-			self.threadsDropdownTrigger(true);
-
-			return false;
-		});
-
-	AppStore.focusedState.subscribe(function(sValue) {
-		if (Enums.Focused.MessageView !== sValue)
-		{
-			this.scrollMessageToTop();
-			this.scrollMessageToLeft();
-		}
-	}, this);
-
-	Globals.keyScopeReal.subscribe(function(sValue) {
-		this.messageDomFocused(Enums.KeyState.MessageView === sValue && !Utils.inFocus());
-	}, this);
-
-	this.oMessageScrollerDom = oDom.find('.messageItem .content');
-	this.oMessageScrollerDom = this.oMessageScrollerDom && this.oMessageScrollerDom[0] ? this.oMessageScrollerDom : null;
-
-	this.initShortcuts();
-};
-
-/**
- * @returns {boolean}
- */
-MessageViewMailBoxUserView.prototype.escShortcuts = function()
-{
-	if (this.viewModelVisibility() && this.message())
-	{
-		if (this.fullScreenMode())
-		{
-			this.fullScreenMode(false);
-
-			if (Enums.Layout.NoPreview !== this.layout())
-			{
-				AppStore.focusedState(Enums.Focused.MessageList);
-			}
-		}
-		else if (Enums.Layout.NoPreview === this.layout())
-		{
-			this.message(null);
-		}
-		else
-		{
-			AppStore.focusedState(Enums.Focused.MessageList);
-		}
-
-		return false;
-	}
-
-	return true;
-};
-
-MessageViewMailBoxUserView.prototype.initShortcuts = function()
-{
-	var self = this;
-
-	// exit fullscreen, back
-	key('esc, backspace', Enums.KeyState.MessageView, _.bind(this.escShortcuts, this));
-
-	// fullscreen
-	key('enter', Enums.KeyState.MessageView, function() {
-		self.toggleFullScreen();
-		return false;
-	});
-
-	// reply
-	key('r', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function() {
-		if (MessageStore.message())
-		{
-			self.replyCommand();
-			return false;
-		}
-
-		return true;
-	});
-
-	// replaAll
-	key('a', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function() {
-		if (MessageStore.message())
-		{
-			self.replyAllCommand();
-			return false;
-		}
-
-		return true;
-	});
-
-	// forward
-	key('f', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function() {
-		if (MessageStore.message())
-		{
-			self.forwardCommand();
-			return false;
-		}
-
-		return true;
-	});
-
-	// message information
-	key('ctrl+i, command+i', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function() {
-		if (MessageStore.message())
-		{
-			self.showFullInfo(!self.showFullInfo());
-		}
-		return false;
-	});
-
-	// toggle message blockquotes
-	key('b', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function() {
-		if (MessageStore.message() && MessageStore.message().body)
-		{
-			MessageStore.message().body.find('.rlBlockquoteSwitcher').click();
-			return false;
-		}
-
-		return true;
-	});
-
-	key('ctrl+up, command+up, ctrl+left, command+left', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function() {
-		self.goUpCommand();
-		return false;
-	});
-
-	key('ctrl+down, command+down, ctrl+right, command+right', [Enums.KeyState.MessageList, Enums.KeyState.MessageView], function() {
-		self.goDownCommand();
-		return false;
-	});
-
-	// print
-	key('ctrl+p, command+p', [Enums.KeyState.MessageView, Enums.KeyState.MessageList], function() {
-		if (self.message())
-		{
-			self.message().printMessage();
-		}
-
-		return false;
-	});
-
-	// delete
-	key('delete, shift+delete', Enums.KeyState.MessageView, function(event, handler) {
-		if (event)
-		{
-			if (handler && 'shift+delete' === handler.shortcut)
-			{
-				self.deleteWithoutMoveCommand();
-			}
-			else
-			{
-				self.deleteCommand();
-			}
-
-			return false;
-		}
-
-		return true;
-	});
-
-	// change focused state
-	key('tab, shift+tab, left', Enums.KeyState.MessageView, function(event, handler) {
-		if (!self.fullScreenMode() && self.message() && Enums.Layout.NoPreview !== self.layout())
-		{
-			if (event && handler && 'left' === handler.shortcut)
-			{
-				if (self.oMessageScrollerDom && 0 < self.oMessageScrollerDom.scrollLeft())
-				{
-					return true;
-				}
-
-				AppStore.focusedState(Enums.Focused.MessageList);
-			}
-			else
-			{
-				AppStore.focusedState(Enums.Focused.MessageList);
-			}
-		}
-		else if (self.message() && Enums.Layout.NoPreview === self.layout() && event && handler && 'left' === handler.shortcut)
-		{
-			return true;
-		}
-
-		return false;
-	});
-};
-
-/**
- * @returns {boolean}
- */
-MessageViewMailBoxUserView.prototype.isDraftFolder = function()
-{
-	return MessageStore.message() && FolderStore.draftFolder() === MessageStore.message().folderFullNameRaw;
-};
-
-/**
- * @returns {boolean}
- */
-MessageViewMailBoxUserView.prototype.isSentFolder = function()
-{
-	return MessageStore.message() && FolderStore.sentFolder() === MessageStore.message().folderFullNameRaw;
-};
-
-/**
- * @returns {boolean}
- */
-MessageViewMailBoxUserView.prototype.isSpamFolder = function()
-{
-	return MessageStore.message() && FolderStore.spamFolder() === MessageStore.message().folderFullNameRaw;
-};
-
-/**
- * @returns {boolean}
- */
-MessageViewMailBoxUserView.prototype.isSpamDisabled = function()
-{
-	return MessageStore.message() && FolderStore.spamFolder() === Consts.UNUSED_OPTION_VALUE;
-};
-
-/**
- * @returns {boolean}
- */
-MessageViewMailBoxUserView.prototype.isArchiveFolder = function()
-{
-	return MessageStore.message() && FolderStore.archiveFolder() === MessageStore.message().folderFullNameRaw;
-};
-
-/**
- * @returns {boolean}
- */
-MessageViewMailBoxUserView.prototype.isArchiveDisabled = function()
-{
-	return MessageStore.message() && FolderStore.archiveFolder() === Consts.UNUSED_OPTION_VALUE;
-};
-
-/**
- * @returns {boolean}
- */
-MessageViewMailBoxUserView.prototype.isDraftOrSentFolder = function()
-{
-	return this.isDraftFolder() || this.isSentFolder();
-};
-
-MessageViewMailBoxUserView.prototype.composeClick = function()
-{
-	if (Settings.capa(Enums.Capa.Composer))
-	{
-		kn.showScreenPopup(require('View/Popup/Compose'));
-	}
-};
-
-MessageViewMailBoxUserView.prototype.editMessage = function()
-{
-	if (Settings.capa(Enums.Capa.Composer) && MessageStore.message())
-	{
-		kn.showScreenPopup(require('View/Popup/Compose'), [Enums.ComposeType.Draft, MessageStore.message()]);
-	}
-};
-
-MessageViewMailBoxUserView.prototype.scrollMessageToTop = function()
-{
-	if (this.oMessageScrollerDom)
-	{
-		if (Enums.Size50px < this.oMessageScrollerDom.scrollTop())
-		{
-			this.oMessageScrollerDom
-				.scrollTop(Enums.Size50px)
-				.animate({'scrollTop': 0}, Enums.Time200ms);
-		}
-		else
-		{
-			this.oMessageScrollerDom.scrollTop(0);
-		}
-
-		Utils.windowResize();
-	}
-};
-
-MessageViewMailBoxUserView.prototype.scrollMessageToLeft = function()
-{
-	if (this.oMessageScrollerDom)
-	{
-		this.oMessageScrollerDom.scrollLeft(0);
-		Utils.windowResize();
-	}
-};
-
-MessageViewMailBoxUserView.prototype.getAttachmentsHashes = function()
-{
-	return _.compact(_.map(this.message() ? this.message().attachments() : [], function(oItem) {
-		return oItem && !oItem.isLinked && oItem.checked() ? oItem.download : '';
-	}));
-};
-
-MessageViewMailBoxUserView.prototype.downloadAsZip = function()
-{
-	var
-		self = this,
-		aHashes = this.getAttachmentsHashes();
-
-	if (0 < aHashes.length)
-	{
-		Promises.attachmentsActions('Zip', aHashes, this.downloadAsZipLoading).then(function(oResult) {
-			if (oResult && oResult.Result && oResult.Result.Files &&
-				oResult.Result.Files[0] && oResult.Result.Files[0].Hash)
-			{
-				require('App/User').default.download(
-					Links.attachmentDownload(oResult.Result.Files[0].Hash));
-			}
-			else
-			{
-				self.downloadAsZipError(true);
-			}
-		}).catch(function() {
-			self.downloadAsZipError(true);
-		});
-	}
-	else
-	{
-		this.highlightUnselectedAttachments(true);
-	}
-};
-
-MessageViewMailBoxUserView.prototype.saveToOwnCloud = function()
-{
-	var
-		self = this,
-		aHashes = this.getAttachmentsHashes();
-
-	if (0 < aHashes.length)
-	{
-		Promises.attachmentsActions('OwnCloud', aHashes, this.saveToOwnCloudLoading).then(function(oResult) {
-			if (oResult && oResult.Result)
-			{
-				self.saveToOwnCloudSuccess(true);
-			}
-			else
-			{
-				self.saveToOwnCloudError(true);
-			}
-		}).catch(function() {
-			self.saveToOwnCloudError(true);
-		});
-	}
-	else
-	{
-		this.highlightUnselectedAttachments(true);
-	}
-};
-
-MessageViewMailBoxUserView.prototype.saveToDropbox = function()
-{
-	var
-		self = this,
-		aFiles = [],
-		aHashes = this.getAttachmentsHashes();
-
-	if (0 < aHashes.length)
-	{
-		if (window.Dropbox)
-		{
-			Promises.attachmentsActions('Dropbox', aHashes, this.saveToDropboxLoading).then(function(oResult) {
-				if (oResult && oResult.Result && oResult.Result.Url && oResult.Result.ShortLife && oResult.Result.Files)
-				{
-					if (window.Dropbox && Utils.isArray(oResult.Result.Files))
-					{
-						_.each(oResult.Result.Files, function(oItem) {
-							aFiles.push({
-								'url': oResult.Result.Url +
-									Links.attachmentDownload(oItem.Hash, oResult.Result.ShortLife),
-								'filename': oItem.FileName
-							});
-						});
-
-						window.Dropbox.save({
-							'files': aFiles,
-							'progress': function() {
-								self.saveToDropboxLoading(true);
-								self.saveToDropboxError(false);
-								self.saveToDropboxSuccess(false);
-							},
-							'cancel': function() {
-								self.saveToDropboxSuccess(false);
-								self.saveToDropboxError(false);
-								self.saveToDropboxLoading(false);
-							},
-							'success': function() {
-								self.saveToDropboxSuccess(true);
-								self.saveToDropboxLoading(false);
-							},
-							'error': function() {
-								self.saveToDropboxError(true);
-								self.saveToDropboxLoading(false);
-							}
-						});
-					}
-					else
-					{
-						self.saveToDropboxError(true);
-					}
-				}
-			}).catch(function() {
-				self.saveToDropboxError(true);
-			});
-		}
-	}
-	else
-	{
-		this.highlightUnselectedAttachments(true);
-	}
-};
-
-/**
- * @param {MessageModel} oMessage
- * @returns {void}
- */
-MessageViewMailBoxUserView.prototype.showImages = function(oMessage)
-{
-	if (oMessage && oMessage.showExternalImages)
-	{
-		oMessage.showExternalImages(true);
-	}
-
-	this.checkHeaderHeight();
-};
-
-/**
- * @returns {string}
- */
-MessageViewMailBoxUserView.prototype.printableCheckedMessageCount = function()
-{
-	var iCnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
-	return 0 < iCnt ? (100 > iCnt ? iCnt : '99+') : ''; // eslint-disable-line no-magic-numbers
-};
-
-/**
- * @param {MessageModel} oMessage
- * @returns {void}
- */
-MessageViewMailBoxUserView.prototype.readReceipt = function(oMessage)
-{
-	if (oMessage && '' !== oMessage.readReceipt())
-	{
-		Remote.sendReadReceiptMessage(Utils.noop, oMessage.folderFullNameRaw, oMessage.uid,
-			oMessage.readReceipt(),
-			Translator.i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
-			Translator.i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': AccountStore.email()}));
-
-		oMessage.isReadReceipt(true);
-
-		Cache.storeMessageFlagsToCache(oMessage);
-
-		require('App/User').default.reloadFlagsCurrentMessageListAndMessageFromCache();
-	}
-
-	this.checkHeaderHeight();
-};
-
-module.exports = MessageViewMailBoxUserView;
+export {MessageViewMailBoxUserView, MessageViewMailBoxUserView as default};

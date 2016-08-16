@@ -1,141 +1,131 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import ko from 'ko';
+import _ from '_';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
-	Translator = require('Common/Translator'),
+import {
+	trim, createCommand,
+	triggerAutocompleteInputChange
+} from 'Common/Utils';
 
-	Settings = require('Storage/Settings'),
-	Remote = require('Remote/Admin/Ajax'),
+import {StorageResultType, Notification, Magics} from 'Common/Enums';
+import {getNotification} from 'Common/Translator';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import * as Settings from 'Storage/Settings';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function LoginAdminView()
+import Remote from 'Remote/Admin/Ajax';
+
+import {getApp} from 'Helper/Apps/Admin';
+
+import {view, ViewType, routeOff} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+@view({
+	name: 'View/Admin/Login',
+	type: ViewType.Center,
+	templateID: 'AdminLogin'
+})
+class LoginAdminView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Center', 'AdminLogin');
+	constructor() {
+		super();
 
-	this.logoPowered = !!Settings.settingsGet('LoginPowered');
+		this.logoPowered = !!Settings.settingsGet('LoginPowered');
 
-	this.mobile = !!Settings.appSettingsGet('mobile');
-	this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+		this.mobile = !!Settings.appSettingsGet('mobile');
+		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
 
-	this.login = ko.observable('');
-	this.password = ko.observable('');
+		this.login = ko.observable('');
+		this.password = ko.observable('');
 
-	this.loginError = ko.observable(false);
-	this.passwordError = ko.observable(false);
+		this.loginError = ko.observable(false);
+		this.passwordError = ko.observable(false);
 
-	this.loginErrorAnimation = ko.observable(false).extend({'falseTimeout': 500});
-	this.passwordErrorAnimation = ko.observable(false).extend({'falseTimeout': 500});
+		this.loginErrorAnimation = ko.observable(false).extend({'falseTimeout': 500});
+		this.passwordErrorAnimation = ko.observable(false).extend({'falseTimeout': 500});
 
-	this.loginFocus = ko.observable(false);
+		this.loginFocus = ko.observable(false);
 
-	this.formHidden = ko.observable(false);
+		this.formHidden = ko.observable(false);
 
-	this.formError = ko.computed(function() {
-		return this.loginErrorAnimation() || this.passwordErrorAnimation();
-	}, this);
+		this.formError = ko.computed(() => this.loginErrorAnimation() || this.passwordErrorAnimation());
 
-	this.login.subscribe(function() {
-		this.loginError(false);
-	}, this);
+		this.login.subscribe(() => this.loginError(false));
 
-	this.password.subscribe(function() {
-		this.passwordError(false);
-	}, this);
+		this.password.subscribe(() => this.passwordError(false));
 
-	this.loginError.subscribe(function(bV) {
-		this.loginErrorAnimation(!!bV);
-	}, this);
+		this.loginError.subscribe((v) => this.loginErrorAnimation(!!v));
 
-	this.passwordError.subscribe(function(bV) {
-		this.passwordErrorAnimation(!!bV);
-	}, this);
+		this.passwordError.subscribe((v) => {
+			this.passwordErrorAnimation(!!v);
+		});
 
-	this.submitRequest = ko.observable(false);
-	this.submitError = ko.observable('');
+		this.submitRequest = ko.observable(false);
+		this.submitError = ko.observable('');
 
-	this.submitCommand = Utils.createCommand(this, function() {
+		this.submitCommand = createCommand(() => {
 
-		Utils.triggerAutocompleteInputChange();
+			triggerAutocompleteInputChange();
 
-		this.loginError(false);
-		this.passwordError(false);
+			this.loginError(false);
+			this.passwordError(false);
 
-		this.loginError('' === Utils.trim(this.login()));
-		this.passwordError('' === Utils.trim(this.password()));
+			this.loginError('' === trim(this.login()));
+			this.passwordError('' === trim(this.password()));
 
-		if (this.loginError() || this.passwordError())
-		{
-			return false;
-		}
-
-		this.submitRequest(true);
-
-		Remote.adminLogin(_.bind(function(sResult, oData) {
-
-			if (Enums.StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action)
+			if (this.loginError() || this.passwordError())
 			{
-				if (oData.Result)
+				return false;
+			}
+
+			this.submitRequest(true);
+
+			Remote.adminLogin((sResult, oData) => {
+
+				if (StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action)
 				{
-					require('App/Admin').default.loginAndLogoutReload(true);
+					if (oData.Result)
+					{
+						getApp().loginAndLogoutReload(true);
+					}
+					else if (oData.ErrorCode)
+					{
+						this.submitRequest(false);
+						this.submitError(getNotification(oData.ErrorCode));
+					}
 				}
-				else if (oData.ErrorCode)
+				else
 				{
 					this.submitRequest(false);
-					this.submitError(Translator.getNotification(oData.ErrorCode));
+					this.submitError(getNotification(Notification.UnknownError));
 				}
-			}
-			else
-			{
-				this.submitRequest(false);
-				this.submitError(Translator.getNotification(Enums.Notification.UnknownError));
-			}
 
-		}, this), this.login(), this.password());
+			}, this.login(), this.password());
 
-		return true;
+			return true;
 
-	}, function() {
-		return !this.submitRequest();
-	});
+		}, () => !this.submitRequest());
+	}
 
-	kn.constructorEnd(this);
+	onShow() {
+
+		routeOff();
+
+		_.delay(() => {
+			this.loginFocus(true);
+		}, Magics.Time100ms);
+	}
+
+	onHide() {
+		this.loginFocus(false);
+	}
+
+	onBuild() {
+		triggerAutocompleteInputChange(true);
+	}
+
+	submitForm() {
+		this.submitCommand();
+	}
 }
 
-kn.extendAsViewModel(['View/Admin/Login', 'AdminLoginViewModel'], LoginAdminView);
-_.extend(LoginAdminView.prototype, AbstractView.prototype);
-
-LoginAdminView.prototype.onShow = function()
-{
-	kn.routeOff();
-
-	_.delay(_.bind(function() {
-		this.loginFocus(true);
-	}, this), Enums.Magics.Time100ms);
-
-};
-
-LoginAdminView.prototype.onHide = function()
-{
-	this.loginFocus(false);
-};
-
-LoginAdminView.prototype.onBuild = function()
-{
-	Utils.triggerAutocompleteInputChange(true);
-};
-
-LoginAdminView.prototype.submitForm = function()
-{
-	this.submitCommand();
-};
-
-module.exports = LoginAdminView;
+export {LoginAdminView, LoginAdminView as default};

@@ -1,69 +1,66 @@
 
-var
-	_ = require('_'),
-	$ = require('$'),
-	key = require('key'),
+import _ from '_';
+import $ from '$';
+import key from 'key';
 
-	Globals = require('Common/Globals'),
-	Enums = require('Common/Enums'),
+import {leftPanelDisabled} from 'Common/Globals';
+import {Magics} from 'Common/Enums';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {view, ViewType, setHash} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-/**
- * @constructor
- * @param {?} oScreen
- *
- * @extends AbstractView
- */
-function MenuSettingsAdminView(oScreen)
+@view({
+	name: 'View/Admin/Settings/Menu',
+	type: ViewType.Left,
+	templateID: 'AdminMenu'
+})
+class MenuSettingsAdminView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Left', 'AdminMenu');
+	/**
+	 * @param {?} screen
+	 */
+	constructor(screen) {
 
-	this.leftPanelDisabled = Globals.leftPanelDisabled;
+		super();
 
-	this.menu = oScreen.menu;
+		this.leftPanelDisabled = leftPanelDisabled;
 
-	kn.constructorEnd(this);
+		this.menu = screen.menu;
+	}
+
+	link(route) {
+		return '#/' + route;
+	}
+
+	onBuild(dom) {
+
+		key('up, down', _.throttle((event, handler) => {
+
+			const
+				up = handler && 'up' === handler.shortcut,
+				$items = $('.b-admin-menu .e-item', dom);
+
+			if (event && $items.length)
+			{
+				let index = $items.index($items.filter('.selected'));
+				if (up && 0 < index)
+				{
+					index -= 1;
+				}
+				else if (!up && index < $items.length - 1)
+				{
+					index += 1;
+				}
+
+				const sH = $items.eq(index).attr('href');
+				if (sH)
+				{
+					setHash(sH, false, true);
+				}
+			}
+
+		}, Magics.Time200ms));
+	}
 }
 
-kn.extendAsViewModel(['View/Admin/Settings/Menu', 'AdminSettingsMenuViewModel'], MenuSettingsAdminView);
-_.extend(MenuSettingsAdminView.prototype, AbstractView.prototype);
-
-MenuSettingsAdminView.prototype.link = function(sRoute)
-{
-	return '#/' + sRoute;
-};
-
-MenuSettingsAdminView.prototype.onBuild = function(oDom)
-{
-	key('up, down', _.throttle(function(event, handler) {
-
-		var
-			sH = '',
-			bUp = handler && 'up' === handler.shortcut,
-			$items = $('.b-admin-menu .e-item', oDom);
-
-		if (event && $items.length)
-		{
-			var index = $items.index($items.filter('.selected'));
-			if (bUp && 0 < index)
-			{
-				index -= 1;
-			}
-			else if (!bUp && index < $items.length - 1)
-			{
-				index += 1;
-			}
-
-			sH = $items.eq(index).attr('href');
-			if (sH)
-			{
-				kn.setHash(sH, false, true);
-			}
-		}
-
-	}, Enums.Magics.Time200ms));
-};
-
-module.exports = MenuSettingsAdminView;
+export {MenuSettingsAdminView, MenuSettingsAdminView as default};

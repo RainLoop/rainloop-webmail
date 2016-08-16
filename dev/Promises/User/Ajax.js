@@ -1,78 +1,64 @@
 
-var
-	window = require('window'),
-	_ = require('_'),
+import window from 'window';
 
-	PromisesPopulator = require('Promises/User/Populator'),
-	AbstractAjaxPromises = require('Promises/AbstractAjax');
+import PromisesPopulator from 'Promises/User/Populator';
+import {AbstractAjaxPromises} from 'Promises/AbstractAjax';
 
-/**
- * @constructor
- * @extends AbstractAjaxPromises
- */
-function UserAjaxUserPromises()
+class UserAjaxUserPromises extends AbstractAjaxPromises
 {
-	AbstractAjaxPromises.call(this);
-}
+	constructor() {
+		super();
 
-_.extend(UserAjaxUserPromises.prototype, AbstractAjaxPromises.prototype);
+		this.foldersTimeout = 0;
+	}
 
-UserAjaxUserPromises.prototype.foldersReload = function(fTrigger)
-{
-	return this.abort('Folders')
-		.postRequest('Folders', fTrigger).then(function(oData) {
-			PromisesPopulator.foldersList(oData.Result);
-			PromisesPopulator.foldersAdditionalParameters(oData.Result);
+	foldersReload(fTrigger) {
+		return this.abort('Folders').postRequest('Folders', fTrigger).then((data) => {
+			PromisesPopulator.foldersList(data.Result);
+			PromisesPopulator.foldersAdditionalParameters(data.Result);
 			return true;
 		});
-};
+	}
 
-UserAjaxUserPromises.prototype.foldersTimeout = 0;
-UserAjaxUserPromises.prototype.foldersReloadWithTimeout = function(fTrigger)
-{
-	this.setTrigger(fTrigger, true);
+	foldersReloadWithTimeout(fTrigger) {
+		this.setTrigger(fTrigger, true);
 
-	var self = this;
-	window.clearTimeout(this.foldersTimeout);
-	this.foldersTimeout = window.setTimeout(function() {
-		self.foldersReload(fTrigger);
-	}, 500);
-};
+		window.clearTimeout(this.foldersTimeout);
+		this.foldersTimeout = window.setTimeout(() => {
+			this.foldersReload(fTrigger);
+		}, 500);
+	}
 
-UserAjaxUserPromises.prototype.folderDelete = function(sFolderFullNameRaw, fTrigger)
-{
-	return this.postRequest('FolderDelete', fTrigger, {
-		'Folder': sFolderFullNameRaw
-	});
-};
+	folderDelete(sFolderFullNameRaw, fTrigger) {
+		return this.postRequest('FolderDelete', fTrigger, {
+			'Folder': sFolderFullNameRaw
+		});
+	}
 
-UserAjaxUserPromises.prototype.folderCreate = function(sNewFolderName, sParentName, fTrigger)
-{
-	return this.postRequest('FolderCreate', fTrigger, {
-		'Folder': sNewFolderName,
-		'Parent': sParentName
-	});
-};
+	folderCreate(sNewFolderName, sParentName, fTrigger) {
+		return this.postRequest('FolderCreate', fTrigger, {
+			'Folder': sNewFolderName,
+			'Parent': sParentName
+		});
+	}
 
-UserAjaxUserPromises.prototype.folderRename = function(sPrevFolderFullNameRaw, sNewFolderName, fTrigger)
-{
-	return this.postRequest('FolderRename', fTrigger, {
-		'Folder': sPrevFolderFullNameRaw,
-		'NewFolderName': sNewFolderName
-	});
-};
+	folderRename(sPrevFolderFullNameRaw, sNewFolderName, fTrigger) {
+		return this.postRequest('FolderRename', fTrigger, {
+			'Folder': sPrevFolderFullNameRaw,
+			'NewFolderName': sNewFolderName
+		});
+	}
 
-UserAjaxUserPromises.prototype.attachmentsActions = function(sAction, aHashes, fTrigger)
-{
-	return this.postRequest('AttachmentsActions', fTrigger, {
-		'Do': sAction,
-		'Hashes': aHashes
-	});
-};
+	attachmentsActions(sAction, aHashes, fTrigger) {
+		return this.postRequest('AttachmentsActions', fTrigger, {
+			'Do': sAction,
+			'Hashes': aHashes
+		});
+	}
 
-UserAjaxUserPromises.prototype.welcomeClose = function()
-{
-	return this.postRequest('WelcomeClose');
-};
+	welcomeClose() {
+		return this.postRequest('WelcomeClose');
+	}
+}
 
 module.exports = new UserAjaxUserPromises();

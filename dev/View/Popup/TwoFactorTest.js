@@ -1,84 +1,73 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import ko from 'ko';
 
-	Enums = require('Common/Enums'),
-	Globals = require('Common/Globals'),
-	Utils = require('Common/Utils'),
+import {StorageResultType} from 'Common/Enums';
+import {bMobileDevice} from 'Common/Globals';
+import {createCommand} from 'Common/Utils';
 
-	Remote = require('Remote/User/Ajax'),
+import Remote from 'Remote/User/Ajax';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {view, ViewType} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function TwoFactorTestPopupView()
+@view({
+	name: 'View/Popup/TwoFactorTest',
+	type: ViewType.Popup,
+	templateID: 'PopupsTwoFactorTest'
+})
+class TwoFactorTestPopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsTwoFactorTest');
+	constructor() {
+		super();
 
-	var self = this;
+		this.code = ko.observable('');
+		this.code.focused = ko.observable(false);
+		this.code.status = ko.observable(null);
 
-	this.code = ko.observable('');
-	this.code.focused = ko.observable(false);
-	this.code.status = ko.observable(null);
+		this.koTestedTrigger = null;
 
-	this.koTestedTrigger = null;
+		this.testing = ko.observable(false);
 
-	this.testing = ko.observable(false);
+		// commands
+		this.testCode = createCommand(() => {
 
-	// commands
-	this.testCode = Utils.createCommand(this, function() {
+			this.testing(true);
+			Remote.testTwoFactor((result, data) => {
 
-		this.testing(true);
-		Remote.testTwoFactor(function(sResult, oData) {
+				this.testing(false);
+				this.code.status(StorageResultType.Success === result && data && !!data.Result);
 
-			self.testing(false);
-			self.code.status(Enums.StorageResultType.Success === sResult && oData && !!oData.Result);
+				if (this.koTestedTrigger && this.code.status())
+				{
+					this.koTestedTrigger(true);
+				}
 
-			if (self.koTestedTrigger && self.code.status())
-			{
-				self.koTestedTrigger(true);
-			}
+			}, this.code());
 
-		}, this.code());
-
-	}, function() {
-		return '' !== this.code() && !this.testing();
-	});
-
-	kn.constructorEnd(this);
-}
-
-kn.extendAsViewModel(['View/Popup/TwoFactorTest', 'PopupsTwoFactorTestViewModel'], TwoFactorTestPopupView);
-_.extend(TwoFactorTestPopupView.prototype, AbstractView.prototype);
-
-TwoFactorTestPopupView.prototype.clearPopup = function()
-{
-	this.code('');
-	this.code.focused(false);
-	this.code.status(null);
-	this.testing(false);
-
-	this.koTestedTrigger = null;
-};
-
-TwoFactorTestPopupView.prototype.onShow = function(koTestedTrigger)
-{
-	this.clearPopup();
-
-	this.koTestedTrigger = koTestedTrigger;
-};
-
-TwoFactorTestPopupView.prototype.onShowWithDelay = function()
-{
-	if (!Globals.bMobile)
-	{
-		this.code.focused(true);
+		}, () => '' !== this.code() && !this.testing());
 	}
-};
+
+	clearPopup() {
+		this.code('');
+		this.code.focused(false);
+		this.code.status(null);
+		this.testing(false);
+
+		this.koTestedTrigger = null;
+	}
+
+	onShow(koTestedTrigger) {
+		this.clearPopup();
+
+		this.koTestedTrigger = koTestedTrigger;
+	}
+
+	onShowWithDelay() {
+		if (!bMobileDevice)
+		{
+			this.code.focused(true);
+		}
+	}
+}
 
 module.exports = TwoFactorTestPopupView;

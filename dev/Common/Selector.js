@@ -159,14 +159,16 @@ class Selector
 
 		this.list.subscribe((aItems) => {
 
-			var
-				oTemp = null,
-				bGetNext = false,
-				aUids = [],
-				mNextFocused = mFocused,
-				bChecked = false,
-				bSelected = false,
-				iLen = 0;
+			let
+				temp = null,
+				getNext = false,
+				isNextFocused = mFocused,
+				isChecked = false,
+				isSelected = false,
+				len = 0;
+
+			const
+				uids = [];
 
 			this.selectedItemUseCallback = false;
 
@@ -175,37 +177,37 @@ class Selector
 
 			if (isArray(aItems))
 			{
-				iLen = aCheckedCache.length;
+				len = aCheckedCache.length;
 
-				_.each(aItems, (oItem) => {
+				_.each(aItems, (item) => {
 
-					var sUid = this.getItemUid(oItem);
-					aUids.push(sUid);
+					const uid = this.getItemUid(item);
+					uids.push(uid);
 
-					if (null !== mFocused && mFocused === sUid)
+					if (null !== mFocused && mFocused === uid)
 					{
-						this.focusedItem(oItem);
+						this.focusedItem(item);
 						mFocused = null;
 					}
 
-					if (0 < iLen && -1 < inArray(sUid, aCheckedCache))
+					if (0 < len && -1 < inArray(uid, aCheckedCache))
 					{
-						bChecked = true;
-						oItem.checked(true);
-						iLen -= 1;
+						isChecked = true;
+						item.checked(true);
+						len -= 1;
 					}
 
-					if (!bChecked && null !== mSelected && mSelected === sUid)
+					if (!isChecked && null !== mSelected && mSelected === uid)
 					{
-						bSelected = true;
-						this.selectedItem(oItem);
+						isSelected = true;
+						this.selectedItem(item);
 						mSelected = null;
 					}
 				});
 
 				this.selectedItemUseCallback = true;
 
-				if (!bChecked && !bSelected && this.autoSelect())
+				if (!isChecked && !isSelected && this.autoSelect())
 				{
 					if (this.focusedItem())
 					{
@@ -213,53 +215,53 @@ class Selector
 					}
 					else if (0 < aItems.length)
 					{
-						if (null !== mNextFocused)
+						if (null !== isNextFocused)
 						{
-							bGetNext = false;
-							mNextFocused = _.find(aCache, (sUid) => {
-								if (bGetNext && -1 < inArray(sUid, aUids))
+							getNext = false;
+							isNextFocused = _.find(aCache, (sUid) => {
+								if (getNext && -1 < inArray(sUid, uids))
 								{
 									return sUid;
 								}
-								else if (mNextFocused === sUid)
+								else if (isNextFocused === sUid)
 								{
-									bGetNext = true;
+									getNext = true;
 								}
 								return false;
 							});
 
-							if (mNextFocused)
+							if (isNextFocused)
 							{
-								oTemp = _.find(aItems, (oItem) => mNextFocused === this.getItemUid(oItem));
+								temp = _.find(aItems, (oItem) => isNextFocused === this.getItemUid(oItem));
 							}
 						}
 
-						this.selectedItem(oTemp || null);
+						this.selectedItem(temp || null);
 						this.focusedItem(this.selectedItem());
 					}
 				}
 
 				if ((0 !== this.iSelectNextHelper || 0 !== this.iFocusedNextHelper) && 0 < aItems.length && !this.focusedItem())
 				{
-					oTemp = null;
+					temp = null;
 					if (0 !== this.iFocusedNextHelper)
 					{
-						oTemp = aItems[-1 === this.iFocusedNextHelper ? aItems.length - 1 : 0] || null;
+						temp = aItems[-1 === this.iFocusedNextHelper ? aItems.length - 1 : 0] || null;
 					}
 
-					if (!oTemp && 0 !== this.iSelectNextHelper)
+					if (!temp && 0 !== this.iSelectNextHelper)
 					{
-						oTemp = aItems[-1 === this.iSelectNextHelper ? aItems.length - 1 : 0] || null;
+						temp = aItems[-1 === this.iSelectNextHelper ? aItems.length - 1 : 0] || null;
 					}
 
-					if (oTemp)
+					if (temp)
 					{
 						if (0 !== this.iSelectNextHelper)
 						{
-							this.selectedItem(oTemp || null);
+							this.selectedItem(temp || null);
 						}
 
-						this.focusedItem(oTemp || null);
+						this.focusedItem(temp || null);
 
 						this.scrollToFocused();
 
@@ -288,12 +290,9 @@ class Selector
 				(this.oCallbacks.onItemSelect || noop)(item || null);
 			}
 		}
-		else
+		else if (item)
 		{
-			if (item)
-			{
-				(this.oCallbacks.onItemSelect || noop)(item);
-			}
+			(this.oCallbacks.onItemSelect || noop)(item);
 		}
 	}
 
@@ -446,62 +445,64 @@ class Selector
 	 */
 	newSelectPosition(iEventKeyCode, bShiftKey, bForceSelect) {
 
-		var
-			iIndex = 0,
-			iPageStep = 10,
-			bNext = false,
-			bStop = false,
-			oResult = null,
-			aList = this.list(),
-			iListLen = aList ? aList.length : 0,
-			oFocused = this.focusedItem();
+		let
+			index = 0,
+			isNext = false,
+			isStop = false,
+			result = null;
 
-		if (0 < iListLen)
+		const
+			pageStep = 10,
+			list = this.list(),
+			listLen = list ? list.length : 0,
+			focused = this.focusedItem();
+
+		if (0 < listLen)
 		{
-			if (!oFocused)
+			if (!focused)
 			{
 				if (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Insert === iEventKeyCode ||
 					EventKeyCode.Space === iEventKeyCode || EventKeyCode.Home === iEventKeyCode ||
 					EventKeyCode.PageUp === iEventKeyCode)
 				{
-					oResult = aList[0];
+					result = list[0];
 				}
 				else if (EventKeyCode.Up === iEventKeyCode || EventKeyCode.End === iEventKeyCode ||
 					EventKeyCode.PageDown === iEventKeyCode)
 				{
-					oResult = aList[aList.length - 1];
+					result = list[list.length - 1];
 				}
 			}
-			else if (oFocused)
+			else if (focused)
 			{
 				if (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Up === iEventKeyCode ||
 					EventKeyCode.Insert === iEventKeyCode || EventKeyCode.Space === iEventKeyCode)
 				{
-					_.each(aList, (item) => {
-						if (!bStop)
+					_.each(list, (item) => {
+						if (!isStop)
 						{
 							switch (iEventKeyCode)
 							{
 								case EventKeyCode.Up:
-									if (oFocused === item)
+									if (focused === item)
 									{
-										bStop = true;
+										isStop = true;
 									}
 									else
 									{
-										oResult = item;
+										result = item;
 									}
 									break;
 								case EventKeyCode.Down:
 								case EventKeyCode.Insert:
-									if (bNext)
+									if (isNext)
 									{
-										oResult = item;
-										bStop = true;
+										result = item;
+										isStop = true;
 									}
-									else if (oFocused === item)
+									else if (focused === item)
 									{
-										bNext = true;
+										isNext = true;
 									}
 									break;
 								// no default
@@ -509,7 +510,7 @@ class Selector
 						}
 					});
 
-					if (!oResult && (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Up === iEventKeyCode))
+					if (!result && (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Up === iEventKeyCode))
 					{
 						this.doUpUpOrDownDown(EventKeyCode.Up === iEventKeyCode);
 					}
@@ -518,35 +519,35 @@ class Selector
 				{
 					if (EventKeyCode.Home === iEventKeyCode)
 					{
-						oResult = aList[0];
+						result = list[0];
 					}
 					else if (EventKeyCode.End === iEventKeyCode)
 					{
-						oResult = aList[aList.length - 1];
+						result = list[list.length - 1];
 					}
 				}
 				else if (EventKeyCode.PageDown === iEventKeyCode)
 				{
-					for (; iIndex < iListLen; iIndex++)
+					for (; index < listLen; index++)
 					{
-						if (oFocused === aList[iIndex])
+						if (focused === list[index])
 						{
-							iIndex += iPageStep;
-							iIndex = iListLen - 1 < iIndex ? iListLen - 1 : iIndex;
-							oResult = aList[iIndex];
+							index += pageStep;
+							index = listLen - 1 < index ? listLen - 1 : index;
+							result = list[index];
 							break;
 						}
 					}
 				}
 				else if (EventKeyCode.PageUp === iEventKeyCode)
 				{
-					for (iIndex = iListLen; 0 <= iIndex; iIndex--)
+					for (index = listLen; 0 <= index; index--)
 					{
-						if (oFocused === aList[iIndex])
+						if (focused === list[index])
 						{
-							iIndex -= iPageStep;
-							iIndex = 0 > iIndex ? 0 : iIndex;
-							oResult = aList[iIndex];
+							index -= pageStep;
+							index = 0 > index ? 0 : index;
+							result = list[index];
 							break;
 						}
 					}
@@ -554,45 +555,45 @@ class Selector
 			}
 		}
 
-		if (oResult)
+		if (result)
 		{
-			this.focusedItem(oResult);
+			this.focusedItem(result);
 
-			if (oFocused)
+			if (focused)
 			{
 				if (bShiftKey)
 				{
 					if (EventKeyCode.Up === iEventKeyCode || EventKeyCode.Down === iEventKeyCode)
 					{
-						oFocused.checked(!oFocused.checked());
+						focused.checked(!focused.checked());
 					}
 				}
 				else if (EventKeyCode.Insert === iEventKeyCode || EventKeyCode.Space === iEventKeyCode)
 				{
-					oFocused.checked(!oFocused.checked());
+					focused.checked(!focused.checked());
 				}
 			}
 
 			if ((this.autoSelect() || !!bForceSelect) &&
 				!this.isListChecked() && EventKeyCode.Space !== iEventKeyCode)
 			{
-				this.selectedItem(oResult);
+				this.selectedItem(result);
 			}
 
 			this.scrollToFocused();
 		}
-		else if (oFocused)
+		else if (focused)
 		{
 			if (bShiftKey && (EventKeyCode.Up === iEventKeyCode || EventKeyCode.Down === iEventKeyCode))
 			{
-				oFocused.checked(!oFocused.checked());
+				focused.checked(!focused.checked());
 			}
 			else if (EventKeyCode.Insert === iEventKeyCode || EventKeyCode.Space === iEventKeyCode)
 			{
-				oFocused.checked(!oFocused.checked());
+				focused.checked(!focused.checked());
 			}
 
-			this.focusedItem(oFocused);
+			this.focusedItem(focused);
 		}
 	}
 

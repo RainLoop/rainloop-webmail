@@ -1,168 +1,141 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
-	key = require('key'),
+import _ from '_';
+import ko from 'ko';
+import key from 'key';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
-	Translator = require('Common/Translator'),
+import {KeyState, Magics, StorageResultType, Notification} from 'Common/Enums';
+import {createCommand, isNonEmptyArray, delegateRun} from 'Common/Utils';
+import {getNotification, i18n} from 'Common/Translator';
 
-	Remote = require('Remote/Admin/Ajax'),
+import Remote from 'Remote/Admin/Ajax';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {view, ViewType, isPopupVisible, showScreenPopup} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function PluginPopupView()
+@view({
+	name: 'View/Popup/Plugin',
+	type: ViewType.Popup,
+	templateID: 'PopupsPlugin'
+})
+class PluginPopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsPlugin');
+	constructor() {
+		super();
 
-	var self = this;
+		this.onPluginSettingsUpdateResponse = _.bind(this.onPluginSettingsUpdateResponse, this);
 
-	this.onPluginSettingsUpdateResponse = _.bind(this.onPluginSettingsUpdateResponse, this);
+		this.saveError = ko.observable('');
 
-	this.saveError = ko.observable('');
+		this.name = ko.observable('');
+		this.readme = ko.observable('');
 
-	this.name = ko.observable('');
-	this.readme = ko.observable('');
+		this.configures = ko.observableArray([]);
 
-	this.configures = ko.observableArray([]);
+		this.hasReadme = ko.computed(() => '' !== this.readme());
+		this.hasConfiguration = ko.computed(() => 0 < this.configures().length);
 
-	this.hasReadme = ko.computed(function() {
-		return '' !== this.readme();
-	}, this);
+		this.readmePopoverConf = {
+			'placement': 'right',
+			'trigger': 'hover',
+			'title': i18n('POPUPS_PLUGIN/TOOLTIP_ABOUT_TITLE'),
+			'container': 'body',
+			'html': true,
+			'content': () => `<pre>${this.readme()}</pre>`
+		};
 
-	this.hasConfiguration = ko.computed(function() {
-		return 0 < this.configures().length;
-	}, this);
+		this.saveCommand = createCommand(() => {
 
-	this.readmePopoverConf = {
-		'placement': 'right',
-		'trigger': 'hover',
-//			'trigger': 'click',
-		'title': Translator.i18n('POPUPS_PLUGIN/TOOLTIP_ABOUT_TITLE'),
-		'container': 'body',
-		'html': true,
-		'content': function() {
-			return '<pre>' + self.readme() + '</pre>';
-//					.replace(/[\r]/g, '').replace(/[\n]/g, '<br />').replace(/[\t]/g, '&nbsp;&nbsp;&nbsp;');
-		}
-	};
+			const list = {};
+			list.Name = this.name();
 
-	this.saveCommand = Utils.createCommand(this, function() {
+			_.each(this.configures(), (oItem) => {
+				let value = oItem.value();
+				if (false === value || true === value)
+				{
+					value = value ? '1' : '0';
+				}
+				list['_' + oItem.Name] = value;
+			});
 
-		var list = {};
+			this.saveError('');
+			Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, list);
 
-		list.Name = this.name();
+		}, this.hasConfiguration);
 
-		_.each(this.configures(), function(oItem) {
-			var value = oItem.value();
+		this.bDisabeCloseOnEsc = true;
+		this.sDefaultKeyScope = KeyState.All;
 
-			if (false === value || true === value)
-			{
-				value = value ? '1' : '0';
-			}
-
-			list['_' + oItem.Name] = value;
-		}, this);
-
-		this.saveError('');
-		Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, list);
-
-	}, this.hasConfiguration);
-
-	this.bDisabeCloseOnEsc = true;
-	this.sDefaultKeyScope = Enums.KeyState.All;
-
-	this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Enums.Magics.Time200ms);
-
-	kn.constructorEnd(this);
-}
-
-kn.extendAsViewModel(['View/Popup/Plugin', 'PopupsPluginViewModel'], PluginPopupView);
-_.extend(PluginPopupView.prototype, AbstractView.prototype);
-
-PluginPopupView.prototype.onPluginSettingsUpdateResponse = function(sResult, oData)
-{
-	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-	{
-		this.cancelCommand();
+		this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Magics.Time200ms);
 	}
-	else
-	{
-		this.saveError('');
-		if (oData && oData.ErrorCode)
+
+	onPluginSettingsUpdateResponse(result, data) {
+		if (StorageResultType.Success === result && data && data.Result)
 		{
-			this.saveError(Translator.getNotification(oData.ErrorCode));
+			this.cancelCommand();
 		}
 		else
 		{
-			this.saveError(Translator.getNotification(Enums.Notification.CantSavePluginSettings));
-		}
-	}
-};
-
-PluginPopupView.prototype.onShow = function(oPlugin)
-{
-	this.name();
-	this.readme();
-	this.configures([]);
-
-	if (oPlugin)
-	{
-		this.name(oPlugin.Name);
-		this.readme(oPlugin.Readme);
-
-		var aConfig = oPlugin.Config;
-
-		if (Utils.isNonEmptyArray(aConfig))
-		{
-			this.configures(_.map(aConfig, function(aItem) {
-				return {
-					'value': ko.observable(aItem[0]),
-					'placeholder': ko.observable(aItem[6]),
-					'Name': aItem[1],
-					'Type': aItem[2],
-					'Label': aItem[3],
-					'Default': aItem[4],
-					'Desc': aItem[5]
-				};
-			}));
-		}
-	}
-};
-
-PluginPopupView.prototype.tryToClosePopup = function()
-{
-	var
-		self = this,
-		PopupsAskViewModel = require('View/Popup/Ask');
-
-	if (!kn.isPopupVisible(PopupsAskViewModel))
-	{
-		kn.showScreenPopup(PopupsAskViewModel, [Translator.i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), function() {
-			if (self.modalVisibility())
+			this.saveError('');
+			if (data && data.ErrorCode)
 			{
-				Utils.delegateRun(self, 'cancelCommand');
+				this.saveError(getNotification(data.ErrorCode));
 			}
-		}]);
-	}
-};
-
-PluginPopupView.prototype.onBuild = function()
-{
-	key('esc', Enums.KeyState.All, _.bind(function() {
-		if (this.modalVisibility())
-		{
-			this.tryToClosePopup();
+			else
+			{
+				this.saveError(getNotification(Notification.CantSavePluginSettings));
+			}
 		}
+	}
 
-		return false;
-	}, this));
-};
+	onShow(oPlugin) {
+		this.name();
+		this.readme();
+		this.configures([]);
+
+		if (oPlugin)
+		{
+			this.name(oPlugin.Name);
+			this.readme(oPlugin.Readme);
+
+			const config = oPlugin.Config;
+			if (isNonEmptyArray(config))
+			{
+				this.configures(_.map(config, (item) => ({
+					'value': ko.observable(item[0]),
+					'placeholder': ko.observable(item[6]),
+					'Name': item[1],
+					'Type': item[2],
+					'Label': item[3],
+					'Default': item[4],
+					'Desc': item[5]
+				})));
+			}
+		}
+	}
+
+	tryToClosePopup() {
+		const PopupsAskViewModel = require('View/Popup/Ask');
+		if (!isPopupVisible(PopupsAskViewModel))
+		{
+			showScreenPopup(PopupsAskViewModel, [i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'), () => {
+				if (this.modalVisibility())
+				{
+					delegateRun(this, 'cancelCommand');
+				}
+			}]);
+		}
+	}
+
+	onBuild() {
+		key('esc', KeyState.All, () => {
+			if (this.modalVisibility())
+			{
+				this.tryToClosePopup();
+			}
+
+			return false;
+		});
+	}
+}
 
 module.exports = PluginPopupView;

@@ -7,7 +7,7 @@ import Tinycon from 'Tinycon';
 
 import {
 	noop, trim, log, has, isArray, inArray, isUnd, isNormal, isPosNumeric, isNonEmptyArray,
-	pInt, pString, delegateRunOnDestroy, mailToHelper, windowResize
+	pInt, pString, delegateRunOnDestroy, mailToHelper, windowResize, jassl
 } from 'Common/Utils';
 
 import {
@@ -241,33 +241,33 @@ class AppUser extends AbstractApp
 			sTrashFolder = FolderStore.trashFolder(),
 			sSpamFolder = FolderStore.spamFolder();
 
-		_.each(this.moveCache, (oItem) => {
+		_.each(this.moveCache, (item) => {
 
-			var
-				bSpam = sSpamFolder === oItem.To,
-				bTrash = sTrashFolder === oItem.To,
-				bHam = !bSpam && sSpamFolder === oItem.From && Cache.getFolderInboxName() === oItem.To;
+			const
+				isSpam = sSpamFolder === item.To,
+				isTrash = sTrashFolder === item.To,
+				isHam = !isSpam && sSpamFolder === item.From && Cache.getFolderInboxName() === item.To;
 
-			Remote.messagesMove(this.moveOrDeleteResponseHelper, oItem.From, oItem.To, oItem.Uid,
-				bSpam ? 'SPAM' : (bHam ? 'HAM' : ''), bSpam || bTrash);
+			Remote.messagesMove(this.moveOrDeleteResponseHelper, item.From, item.To, item.Uid,
+				isSpam ? 'SPAM' : (isHam ? 'HAM' : ''), isSpam || isTrash);
 		});
 
 		this.moveCache = {};
 	}
 
-	messagesMoveHelper(sFromFolderFullNameRaw, sToFolderFullNameRaw, aUidForMove) {
+	messagesMoveHelper(fromFolderFullNameRaw, toFolderFullNameRaw, uidsForMove) {
 
-		var sH = '$$' + sFromFolderFullNameRaw + '$$' + sToFolderFullNameRaw + '$$';
-		if (!this.moveCache[sH])
+		const hash = '$$' + fromFolderFullNameRaw + '$$' + toFolderFullNameRaw + '$$';
+		if (!this.moveCache[hash])
 		{
-			this.moveCache[sH] = {
-				From: sFromFolderFullNameRaw,
-				To: sToFolderFullNameRaw,
+			this.moveCache[hash] = {
+				From: fromFolderFullNameRaw,
+				To: toFolderFullNameRaw,
 				Uid: []
 			};
 		}
 
-		this.moveCache[sH].Uid = _.union(this.moveCache[sH].Uid, aUidForMove);
+		this.moveCache[hash].Uid = _.union(this.moveCache[hash].Uid, uidsForMove);
 		this.messagesMoveTrigger();
 	}
 
@@ -451,20 +451,20 @@ class AppUser extends AbstractApp
 
 		if (PgpStore.capaOpenPGP())
 		{
-			var
-				aKeys = [],
-				oEmail = new EmailModel(),
-				oOpenpgpKeyring = PgpStore.openpgpKeyring,
-				oOpenpgpKeys = oOpenpgpKeyring ? oOpenpgpKeyring.getAllKeys() : [];
+			const
+				keys = [],
+				email = new EmailModel(),
+				openpgpKeyring = PgpStore.openpgpKeyring,
+				openpgpKeys = openpgpKeyring ? openpgpKeyring.getAllKeys() : [];
 
-			_.each(oOpenpgpKeys, (oItem, iIndex) => {
+			_.each(openpgpKeys, (oItem, iIndex) => {
 				if (oItem && oItem.primaryKey)
 				{
-					var
+					const
 						aEmails = [],
 						aUsers = [],
-						oPrimaryUser = oItem.getPrimaryUser(),
-						sUser = (oPrimaryUser && oPrimaryUser.user) ? oPrimaryUser.user.userId.userid :
+						primaryUser = oItem.getPrimaryUser(),
+						user = (primaryUser && primaryUser.user) ? primaryUser.user.userId.userid :
 							(oItem.users && oItem.users[0] ? oItem.users[0].userId.userid : '');
 
 					if (oItem.users)
@@ -472,11 +472,11 @@ class AppUser extends AbstractApp
 						_.each(oItem.users, (item) => {
 							if (item.userId)
 							{
-								oEmail.clear();
-								oEmail.mailsoParse(item.userId.userid);
-								if (oEmail.validate())
+								email.clear();
+								email.mailsoParse(item.userId.userid);
+								if (email.validate())
 								{
-									aEmails.push(oEmail.email);
+									aEmails.push(email.email);
 									aUsers.push(item.userId.userid);
 								}
 							}
@@ -485,7 +485,7 @@ class AppUser extends AbstractApp
 
 					if (aEmails.length)
 					{
-						aKeys.push(new OpenPgpKeyModel(
+						keys.push(new OpenPgpKeyModel(
 							iIndex,
 							oItem.primaryKey.getFingerprint(),
 							oItem.primaryKey.getKeyId().toHex().toLowerCase(),
@@ -496,14 +496,14 @@ class AppUser extends AbstractApp
 							aEmails,
 							oItem.isPrivate(),
 							oItem.armor(),
-							sUser)
+							user)
 						);
 					}
 				}
 			});
 
 			delegateRunOnDestroy(PgpStore.openpgpkeys());
-			PgpStore.openpgpkeys(aKeys);
+			PgpStore.openpgpkeys(keys);
 		}
 	}
 
@@ -549,10 +549,11 @@ class AppUser extends AbstractApp
 
 			if (StorageResultType.Success === sResult && oData.Result)
 			{
-				var
+				const
 					aCounts = {},
-					sParentEmail = Settings.settingsGet('ParentEmail'),
 					sAccountEmail = AccountStore.email();
+				let
+					sParentEmail = Settings.settingsGet('ParentEmail');
 
 				sParentEmail = '' === sParentEmail ? sAccountEmail : sParentEmail;
 
@@ -735,14 +736,15 @@ class AppUser extends AbstractApp
 						const utc = Momentor.momentNowUnix();
 						_.each(oData.Result.List, (oItem) => {
 
-							var
-								sHash = Cache.getFolderHash(oItem.Folder),
-								oFolder = Cache.getFolderFromCacheList(oItem.Folder),
-								bUnreadCountChange = false;
+							const
+								hash = Cache.getFolderHash(oItem.Folder),
+								folder = Cache.getFolderFromCacheList(oItem.Folder);
+							let
+								unreadCountChange = false;
 
-							if (oFolder)
+							if (folder)
 							{
-								oFolder.interval = utc;
+								folder.interval = utc;
 
 								if (oItem.Hash)
 								{
@@ -751,39 +753,39 @@ class AppUser extends AbstractApp
 
 								if (isNormal(oItem.MessageCount))
 								{
-									oFolder.messageCountAll(oItem.MessageCount);
+									folder.messageCountAll(oItem.MessageCount);
 								}
 
 								if (isNormal(oItem.MessageUnseenCount))
 								{
-									if (pInt(oFolder.messageCountUnread()) !== pInt(oItem.MessageUnseenCount))
+									if (pInt(folder.messageCountUnread()) !== pInt(oItem.MessageUnseenCount))
 									{
-										bUnreadCountChange = true;
+										unreadCountChange = true;
 									}
 
-									oFolder.messageCountUnread(oItem.MessageUnseenCount);
+									folder.messageCountUnread(oItem.MessageUnseenCount);
 								}
 
-								if (bUnreadCountChange)
+								if (unreadCountChange)
 								{
-									Cache.clearMessageFlagsFromCacheByFolder(oFolder.fullNameRaw);
+									Cache.clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
 								}
 
-								if (oItem.Hash !== sHash || '' === sHash)
+								if (oItem.Hash !== hash || '' === hash)
 								{
-									if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
+									if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 									{
 										this.reloadMessageList();
 									}
 								}
-								else if (bUnreadCountChange)
+								else if (unreadCountChange)
 								{
-									if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
+									if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 									{
 										const aList = MessageStore.messageList();
 										if (isNonEmptyArray(aList))
 										{
-											this.folderInformation(oFolder.fullNameRaw, aList);
+											this.folderInformation(folder.fullNameRaw, aList);
 										}
 									}
 								}
@@ -804,76 +806,76 @@ class AppUser extends AbstractApp
 	 * @param {string} sFolderFullNameRaw
 	 * @param {string|bool} mUid
 	 * @param {number} iSetAction
-	 * @param {Array=} aMessages = null
+	 * @param {Array=} messages = null
 	 */
-	messageListAction(sFolderFullNameRaw, mUid, iSetAction, aMessages) {
+	messageListAction(sFolderFullNameRaw, mUid, iSetAction, messages) {
 
-		var
-			oFolder = null,
-			aRootUids = [],
-			iAlreadyUnread = 0;
+		let
+			folder = null,
+			alreadyUnread = 0,
+			rootUids = [];
 
-		if (isUnd(aMessages))
+		if (isUnd(messages) || !messages)
 		{
-			aMessages = MessageStore.messageListChecked();
+			messages = MessageStore.messageListChecked();
 		}
 
-		aRootUids = _.uniq(_.compact(_.map(aMessages, (oMessage) => (oMessage && oMessage.uid ? oMessage.uid : null))));
+		rootUids = _.uniq(_.compact(_.map(messages, (oMessage) => (oMessage && oMessage.uid ? oMessage.uid : null))));
 
-		if ('' !== sFolderFullNameRaw && 0 < aRootUids.length)
+		if ('' !== sFolderFullNameRaw && 0 < rootUids.length)
 		{
 			switch (iSetAction)
 			{
 				case MessageSetAction.SetSeen:
 
-					_.each(aRootUids, (sSubUid) => {
-						iAlreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
+					_.each(rootUids, (sSubUid) => {
+						alreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
-					oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
-					if (oFolder)
+					folder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
+					if (folder)
 					{
-						oFolder.messageCountUnread(oFolder.messageCountUnread() - iAlreadyUnread);
+						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread);
 					}
 
-					Remote.messageSetSeen(noop, sFolderFullNameRaw, aRootUids, true);
+					Remote.messageSetSeen(noop, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetSeen:
 
-					_.each(aRootUids, (sSubUid) => {
-						iAlreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
+					_.each(rootUids, (sSubUid) => {
+						alreadyUnread += Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
-					oFolder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
-					if (oFolder)
+					folder = Cache.getFolderFromCacheList(sFolderFullNameRaw);
+					if (folder)
 					{
-						oFolder.messageCountUnread(oFolder.messageCountUnread() - iAlreadyUnread + aRootUids.length);
+						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + rootUids.length);
 					}
 
-					Remote.messageSetSeen(noop, sFolderFullNameRaw, aRootUids, false);
+					Remote.messageSetSeen(noop, sFolderFullNameRaw, rootUids, false);
 					break;
 
 				case MessageSetAction.SetFlag:
 
-					_.each(aRootUids, (sSubUid) => {
+					_.each(rootUids, (sSubUid) => {
 						Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
-					Remote.messageSetFlagged(noop, sFolderFullNameRaw, aRootUids, true);
+					Remote.messageSetFlagged(noop, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetFlag:
 
-					_.each(aRootUids, (sSubUid) => {
+					_.each(rootUids, (sSubUid) => {
 						Cache.storeMessageFlagsToCacheBySetAction(
 							sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
-					Remote.messageSetFlagged(noop, sFolderFullNameRaw, aRootUids, false);
+					Remote.messageSetFlagged(noop, sFolderFullNameRaw, rootUids, false);
 					break;
 				// no default
 			}
@@ -985,12 +987,13 @@ class AppUser extends AbstractApp
 
 	initHorizontalLayoutResizer(sClientSideKeyName) {
 
-		var
-			iMinHeight = 200,
-			iMaxHeight = 500,
+		let
 			oTop = null,
-			oBottom = null,
+			oBottom = null;
 
+		const
+			minHeight = 200,
+			maxHeight = 500,
 			fSetHeight = (height) => {
 				if (height)
 				{
@@ -1009,9 +1012,7 @@ class AppUser extends AbstractApp
 			fResizeCreateFunction = (event) => {
 				if (event && event.target)
 				{
-					var oResizableHandle = $(event.target).find('.ui-resizable-handle');
-
-					oResizableHandle
+					$(event.target).find('.ui-resizable-handle')
 						.on('mousedown', () => {
 							$html.addClass('rl-resizer');
 						})
@@ -1043,8 +1044,8 @@ class AppUser extends AbstractApp
 
 			oOptions = {
 				helper: 'ui-resizable-helper-h',
-				minHeight: iMinHeight,
-				maxHeight: iMaxHeight,
+				minHeight: minHeight,
+				maxHeight: maxHeight,
 				handles: 's',
 				create: fResizeCreateFunction,
 				resize: fResizeResizeFunction,
@@ -1078,7 +1079,7 @@ class AppUser extends AbstractApp
 					}
 
 					const iHeight = pInt(Local.get(sClientSideKeyName)) || 300;
-					fSetHeight(iHeight > iMinHeight ? iHeight : iMinHeight);
+					fSetHeight(iHeight > minHeight ? iHeight : minHeight);
 				}
 			};
 
@@ -1091,11 +1092,11 @@ class AppUser extends AbstractApp
 
 	initVerticalLayoutResizer(sClientSideKeyName) {
 
-		var
-			iDisabledWidth = 60,
-			iMinWidth = 155,
-			oLeft = $('#rl-left'),
-			oRight = $('#rl-right'),
+		const
+			disabledWidth = 60,
+			minWidth = 155,
+			lLeft = $('#rl-left'),
+			right = $('#rl-right'),
 
 			mLeftWidth = Local.get(sClientSideKeyName) || null,
 
@@ -1106,11 +1107,11 @@ class AppUser extends AbstractApp
 
 					$html.removeClass('rl-resizer');
 
-					oLeft.css({
+					lLeft.css({
 						width: '' + iWidth + 'px'
 					});
 
-					oRight.css({
+					right.css({
 						left: '' + iWidth + 'px'
 					});
 				}
@@ -1119,14 +1120,14 @@ class AppUser extends AbstractApp
 			fDisable = (bDisable) => {
 				if (bDisable)
 				{
-					oLeft.resizable('disable');
-					fSetWidth(iDisabledWidth);
+					lLeft.resizable('disable');
+					fSetWidth(disabledWidth);
 				}
 				else
 				{
-					oLeft.resizable('enable');
-					var iWidth = pInt(Local.get(sClientSideKeyName)) || iMinWidth;
-					fSetWidth(iWidth > iMinWidth ? iWidth : iMinWidth);
+					lLeft.resizable('enable');
+					const width = pInt(Local.get(sClientSideKeyName)) || minWidth;
+					fSetWidth(width > minWidth ? width : minWidth);
 				}
 			},
 
@@ -1156,11 +1157,11 @@ class AppUser extends AbstractApp
 
 					leftPanelWidth(oObject.size.width);
 
-					oRight.css({
+					right.css({
 						left: '' + oObject.size.width + 'px'
 					});
 
-					oLeft.css({
+					lLeft.css({
 						position: '',
 						top: '',
 						left: '',
@@ -1171,12 +1172,12 @@ class AppUser extends AbstractApp
 
 		if (null !== mLeftWidth)
 		{
-			fSetWidth(mLeftWidth > iMinWidth ? mLeftWidth : iMinWidth);
+			fSetWidth(mLeftWidth > minWidth ? mLeftWidth : minWidth);
 		}
 
-		oLeft.resizable({
+		lLeft.resizable({
 			helper: 'ui-resizable-helper-w',
-			minWidth: iMinWidth,
+			minWidth: minWidth,
 			maxWidth: 350,
 			handles: 'e',
 			create: fResizeCreateFunction,
@@ -1229,7 +1230,7 @@ class AppUser extends AbstractApp
 			setHash(Links.root(), true);
 			routeOff();
 
-			_.defer(function() {
+			_.defer(() => {
 				window.location.href = customLoginLink;
 			});
 		}
@@ -1253,13 +1254,15 @@ class AppUser extends AbstractApp
 		require('Stores/User/Account').populate();
 		require('Stores/User/Contact').populate();
 
-		var
-			sJsHash = Settings.appSettingsGet('jsHash'),
-			sStartupUrl = pString(Settings.settingsGet('StartupUrl')),
-			iContactsSyncInterval = pInt(Settings.settingsGet('ContactsSyncInterval')),
-			bGoogle = Settings.settingsGet('AllowGoogleSocial'),
-			bFacebook = Settings.settingsGet('AllowFacebookSocial'),
-			bTwitter = Settings.settingsGet('AllowTwitterSocial');
+		let
+			contactsSyncInterval = pInt(Settings.settingsGet('ContactsSyncInterval'));
+
+		const
+			jsHash = Settings.appSettingsGet('jsHash'),
+			startupUrl = pString(Settings.settingsGet('StartupUrl')),
+			allowGoogle = Settings.settingsGet('AllowGoogleSocial'),
+			allowFacebook = Settings.settingsGet('AllowFacebookSocial'),
+			allowTwitter = Settings.settingsGet('AllowTwitterSocial');
 
 		if (progressJs)
 		{
@@ -1294,14 +1297,14 @@ class AppUser extends AbstractApp
 
 					if (value)
 					{
-						if ('' !== sStartupUrl)
+						if ('' !== startupUrl)
 						{
 							routeOff();
-							setHash(Links.root(sStartupUrl), true);
+							setHash(Links.root(startupUrl), true);
 							routeOn();
 						}
 
-						if (window.jassl && window.crypto && window.crypto.getRandomValues && Settings.capa(Capa.OpenPGP))
+						if (jassl && window.crypto && window.crypto.getRandomValues && Settings.capa(Capa.OpenPGP))
 						{
 							const openpgpCallback = (openpgp) => {
 
@@ -1333,7 +1336,7 @@ class AppUser extends AbstractApp
 							}
 							else
 							{
-								window.jassl(Links.openPgpJs()).then(() => {
+								jassl(Links.openPgpJs()).then(() => {
 									if (window.openpgp)
 									{
 										openpgpCallback(window.openpgp);
@@ -1352,7 +1355,7 @@ class AppUser extends AbstractApp
 //							false ? AboutUserScreen : null
 						]);
 
-						if (bGoogle || bFacebook || bTwitter)
+						if (allowGoogle || allowFacebook || allowTwitter)
 						{
 							this.socialUsers(true);
 						}
@@ -1370,13 +1373,13 @@ class AppUser extends AbstractApp
 						Events.sub('interval.15m', () => this.quota());
 						Events.sub('interval.20m', () => this.foldersReload());
 
-						iContactsSyncInterval = 5 <= iContactsSyncInterval ? iContactsSyncInterval : 20;
-						iContactsSyncInterval = 320 >= iContactsSyncInterval ? iContactsSyncInterval : 320;
+						contactsSyncInterval = 5 <= contactsSyncInterval ? contactsSyncInterval : 20;
+						contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
 
 						_.delay(() => this.contactsSync(), 10000);
 						_.delay(() => this.folderInformationMultiply(true), 2000);
 
-						window.setInterval(() => this.contactsSync(), iContactsSyncInterval * 60000 + 5000);
+						window.setInterval(() => this.contactsSync(), contactsSyncInterval * 60000 + 5000);
 
 						this.accountsAndIdentities(true);
 
@@ -1451,25 +1454,25 @@ class AppUser extends AbstractApp
 			this.bootstartLoginScreen();
 		}
 
-		if (bGoogle)
+		if (allowGoogle)
 		{
-			window['rl_' + sJsHash + '_google_service'] = () => {
+			window['rl_' + jsHash + '_google_service'] = () => {
 				SocialStore.google.loading(true);
 				this.socialUsers();
 			};
 		}
 
-		if (bFacebook)
+		if (allowFacebook)
 		{
-			window['rl_' + sJsHash + '_facebook_service'] = () => {
+			window['rl_' + jsHash + '_facebook_service'] = () => {
 				SocialStore.facebook.loading(true);
 				this.socialUsers();
 			};
 		}
 
-		if (bTwitter)
+		if (allowTwitter)
 		{
-			window['rl_' + sJsHash + '_twitter_service'] = () => {
+			window['rl_' + jsHash + '_twitter_service'] = () => {
 				SocialStore.twitter.loading(true);
 				this.socialUsers();
 			};

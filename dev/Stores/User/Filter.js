@@ -1,20 +1,19 @@
 
-var ko = require('ko');
+import ko from 'ko';
 
-/**
- * @constructor
- */
-function FilterUserStore()
+class FilterUserStore
 {
-	this.capa = ko.observable('');
-	this.modules = ko.observable({});
+	constructor() {
+		this.capa = ko.observable('');
+		this.modules = ko.observable({});
 
-	this.filters = ko.observableArray([]);
+		this.filters = ko.observableArray([]);
 
-	this.filters.loading = ko.observable(false).extend({throttle: 200});
-	this.filters.saving = ko.observable(false).extend({throttle: 200});
+		this.filters.loading = ko.observable(false).extend({throttle: 200});
+		this.filters.saving = ko.observable(false).extend({throttle: 200});
 
-	this.raw = ko.observable('');
+		this.raw = ko.observable('');
+	}
 }
 
 module.exports = new FilterUserStore();

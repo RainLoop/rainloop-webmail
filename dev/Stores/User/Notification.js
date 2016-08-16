@@ -1,220 +1,207 @@
 
-var
-	window = require('window'),
-	ko = require('ko'),
+import window from 'window';
+import ko from 'ko';
 
-	Enums = require('Common/Enums'),
-	Events = require('Common/Events'),
-	Audio = require('Common/Audio'),
+import {DesktopNotification, Magics} from 'Common/Enums';
+import * as Events from 'Common/Events';
+import Audio from 'Common/Audio';
 
-	Settings = require('Storage/Settings');
+import * as Settings from 'Storage/Settings';
 
-/**
- * @constructor
- */
-function NotificationUserStore()
+class NotificationUserStore
 {
-	var self = this;
+	constructor() {
+		this.enableSoundNotification = ko.observable(false);
+		this.soundNotificationIsSupported = ko.observable(false);
 
-	this.enableSoundNotification = ko.observable(false);
-	this.soundNotificationIsSupported = ko.observable(false);
+		this.allowDesktopNotification = ko.observable(false);
 
-	this.allowDesktopNotification = ko.observable(false);
+		this.desktopNotificationPermissions = ko.computed(() => {
 
-	this.desktopNotificationPermissions = ko.computed(function() {
+			this.allowDesktopNotification();
 
-		this.allowDesktopNotification();
+			let result = DesktopNotification.NotSupported;
 
-		var
-			NotificationClass = this.notificationClass(),
-			iResult = Enums.DesktopNotification.NotSupported;
-
-		if (NotificationClass && NotificationClass.permission)
-		{
-			switch (NotificationClass.permission.toLowerCase())
+			const NotificationClass = this.notificationClass();
+			if (NotificationClass && NotificationClass.permission)
 			{
-				case 'granted':
-					iResult = Enums.DesktopNotification.Allowed;
-					break;
-				case 'denied':
-					iResult = Enums.DesktopNotification.Denied;
-					break;
-				case 'default':
-					iResult = Enums.DesktopNotification.NotAllowed;
-					break;
-				// no default
-			}
-		}
-		else if (window.webkitNotifications && window.webkitNotifications.checkPermission)
-		{
-			iResult = window.webkitNotifications.checkPermission();
-		}
-
-		return iResult;
-
-	}, this).extend({'notify': 'always'});
-
-	this.enableDesktopNotification = ko.computed({
-		'owner': this,
-		'read': function() {
-			return this.allowDesktopNotification() &&
-				Enums.DesktopNotification.Allowed === this.desktopNotificationPermissions();
-		},
-		'write': function(bValue) {
-			if (bValue)
-			{
-				var
-					NotificationClass = this.notificationClass(),
-					iPermission = this.desktopNotificationPermissions();
-
-				if (NotificationClass && Enums.DesktopNotification.Allowed === iPermission)
+				switch (NotificationClass.permission.toLowerCase())
 				{
-					this.allowDesktopNotification(true);
+					case 'granted':
+						result = DesktopNotification.Allowed;
+						break;
+					case 'denied':
+						result = DesktopNotification.Denied;
+						break;
+					case 'default':
+						result = DesktopNotification.NotAllowed;
+						break;
+					// no default
 				}
-				else if (NotificationClass && Enums.DesktopNotification.NotAllowed === iPermission)
+			}
+			else if (window.webkitNotifications && window.webkitNotifications.checkPermission)
+			{
+				result = window.webkitNotifications.checkPermission();
+			}
+
+			return result;
+
+		}).extend({notify: 'always'});
+
+		this.enableDesktopNotification = ko.computed({
+			read: () => this.allowDesktopNotification() && DesktopNotification.Allowed === this.desktopNotificationPermissions(),
+			write: (value) => {
+				if (value)
 				{
-					NotificationClass.requestPermission(function() {
-						self.allowDesktopNotification.valueHasMutated();
-						if (Enums.DesktopNotification.Allowed === self.desktopNotificationPermissions())
-						{
-							if (self.allowDesktopNotification())
+					const
+						NotificationClass = this.notificationClass(),
+						permission = this.desktopNotificationPermissions();
+
+					if (NotificationClass && DesktopNotification.Allowed === permission)
+					{
+						this.allowDesktopNotification(true);
+					}
+					else if (NotificationClass && DesktopNotification.NotAllowed === permission)
+					{
+						NotificationClass.requestPermission(() => {
+
+							this.allowDesktopNotification.valueHasMutated();
+
+							if (DesktopNotification.Allowed === this.desktopNotificationPermissions())
 							{
-								self.allowDesktopNotification.valueHasMutated();
+								if (this.allowDesktopNotification())
+								{
+									this.allowDesktopNotification.valueHasMutated();
+								}
+								else
+								{
+									this.allowDesktopNotification(true);
+								}
 							}
 							else
 							{
-								self.allowDesktopNotification(true);
+								if (this.allowDesktopNotification())
+								{
+									this.allowDesktopNotification(false);
+								}
+								else
+								{
+									this.allowDesktopNotification.valueHasMutated();
+								}
 							}
-						}
-						else
-						{
-							if (self.allowDesktopNotification())
-							{
-								self.allowDesktopNotification(false);
-							}
-							else
-							{
-								self.allowDesktopNotification.valueHasMutated();
-							}
-						}
-					});
+						});
+					}
+					else
+					{
+						this.allowDesktopNotification(false);
+					}
 				}
 				else
 				{
 					this.allowDesktopNotification(false);
 				}
 			}
-			else
-			{
-				this.allowDesktopNotification(false);
-			}
-		}
-	}).extend({'notify': 'always'});
+		}).extend({notify: 'always'});
 
-	if (!this.enableDesktopNotification.valueHasMutated)
-	{
-		this.enableDesktopNotification.valueHasMutated = function() {
-			self.allowDesktopNotification.valueHasMutated();
-		};
-	}
-
-	this.computers();
-
-	this.initNotificationPlayer();
-}
-
-NotificationUserStore.prototype.computers = function()
-{
-	this.isDesktopNotificationSupported = ko.computed(function() {
-		return Enums.DesktopNotification.NotSupported !== this.desktopNotificationPermissions();
-	}, this);
-
-	this.isDesktopNotificationDenied = ko.computed(function() {
-		return Enums.DesktopNotification.NotSupported === this.desktopNotificationPermissions() ||
-			Enums.DesktopNotification.Denied === this.desktopNotificationPermissions();
-	}, this);
-};
-
-NotificationUserStore.prototype.initNotificationPlayer = function()
-{
-	if (Audio && Audio.supportedNotification)
-	{
-		this.soundNotificationIsSupported(true);
-	}
-	else
-	{
-		this.enableSoundNotification(false);
-		this.soundNotificationIsSupported(false);
-	}
-};
-
-NotificationUserStore.prototype.playSoundNotification = function(bSkipSetting)
-{
-	if (Audio && Audio.supportedNotification && (bSkipSetting ? true : this.enableSoundNotification()))
-	{
-		Audio.playNotification();
-	}
-};
-
-NotificationUserStore.prototype.displayDesktopNotification = function(sImageSrc, sTitle, sText, oMessageData)
-{
-	if (this.enableDesktopNotification())
-	{
-		var
-			NotificationClass = this.notificationClass(),
-			oNotification = NotificationClass ? new NotificationClass(sTitle, {
-				'body': sText,
-				'icon': sImageSrc
-			}) : null;
-
-		if (oNotification)
+		if (!this.enableDesktopNotification.valueHasMutated)
 		{
-			if (oNotification.show)
-			{
-				oNotification.show();
-			}
+			this.enableDesktopNotification.valueHasMutated = () => {
+				this.allowDesktopNotification.valueHasMutated();
+			};
+		}
 
-			if (oMessageData)
-			{
-				oNotification.onclick = function() {
+		this.computers();
 
-					window.focus();
+		this.initNotificationPlayer();
+	}
 
-					if (oMessageData.Folder && oMessageData.Uid)
-					{
-						Events.pub('mailbox.message.show', [oMessageData.Folder, oMessageData.Uid]);
-					}
-				};
-			}
+	computers() {
+		this.isDesktopNotificationSupported = ko.computed(
+			() => DesktopNotification.NotSupported !== this.desktopNotificationPermissions()
+		);
 
-			window.setTimeout((function(oLocalNotifications) {
-				return function() {
-					if (oLocalNotifications.cancel)
-					{
-						oLocalNotifications.cancel();
-					}
-					else if (oLocalNotifications.close)
-					{
-						oLocalNotifications.close();
-					}
-				};
-			}(oNotification)), Enums.Magics.Time7s);
+		this.isDesktopNotificationDenied = ko.computed(
+			() => DesktopNotification.NotSupported === this.desktopNotificationPermissions() ||
+				DesktopNotification.Denied === this.desktopNotificationPermissions()
+		);
+	}
+
+	initNotificationPlayer() {
+		if (Audio && Audio.supportedNotification)
+		{
+			this.soundNotificationIsSupported(true);
+		}
+		else
+		{
+			this.enableSoundNotification(false);
+			this.soundNotificationIsSupported(false);
 		}
 	}
-};
 
-NotificationUserStore.prototype.populate = function()
-{
-	this.enableSoundNotification(!!Settings.settingsGet('SoundNotification'));
-	this.enableDesktopNotification(!!Settings.settingsGet('DesktopNotifications'));
-};
+	playSoundNotification(skipSetting) {
+		if (Audio && Audio.supportedNotification && (skipSetting ? true : this.enableSoundNotification()))
+		{
+			Audio.playNotification();
+		}
+	}
 
-/**
- * @returns {*|null}
- */
-NotificationUserStore.prototype.notificationClass = function()
-{
-	return window.Notification && window.Notification.requestPermission ? window.Notification : null;
-};
+	displayDesktopNotification(imageSrc, title, text, nessageData) {
+		if (this.enableDesktopNotification())
+		{
+			const
+				NotificationClass = this.notificationClass(),
+				notification = NotificationClass ? new NotificationClass(title, {
+					body: text,
+					icon: imageSrc
+				}) : null;
+
+			if (notification)
+			{
+				if (notification.show)
+				{
+					notification.show();
+				}
+
+				if (nessageData)
+				{
+					notification.onclick = () => {
+
+						window.focus();
+
+						if (nessageData.Folder && nessageData.Uid)
+						{
+							Events.pub('mailbox.message.show', [nessageData.Folder, nessageData.Uid]);
+						}
+					};
+				}
+
+				window.setTimeout((function(localNotifications) {
+					return () => {
+						if (localNotifications.cancel)
+						{
+							localNotifications.cancel();
+						}
+						else if (localNotifications.close)
+						{
+							localNotifications.close();
+						}
+					};
+				}(notification)), Magics.Time7s);
+			}
+		}
+	}
+
+	populate() {
+		this.enableSoundNotification(!!Settings.settingsGet('SoundNotification'));
+		this.enableDesktopNotification(!!Settings.settingsGet('DesktopNotifications'));
+	}
+
+	/**
+	 * @returns {*|null}
+	 */
+	notificationClass() {
+		return window.Notification && window.Notification.requestPermission ? window.Notification : null;
+	}
+}
 
 module.exports = new NotificationUserStore();

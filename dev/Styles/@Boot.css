@@ -45,10 +45,10 @@ html.no-css .thm-body {
 html.no-css .thm-loading {
 	color: #333 !important;
 	text-shadow: none !important;
+}
 
-	.e-spinner .e-bounce {
-		display: none !important;
-	}
+html.no-css .thm-loading .e-spinner .e-bounce {
+	display: none !important;
 }
 
 html.no-css .thm-login-desc .desc {

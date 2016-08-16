@@ -1,306 +1,290 @@
 
-var
-	window = require('window'),
-	_ = require('_'),
-	$ = require('$'),
-	ko = require('ko'),
-	key = require('key'),
+import window from 'window';
+import $ from '$';
+import ko from 'ko';
+import key from 'key';
 
-	Utils = require('Common/Utils'),
-	Enums = require('Common/Enums'),
-	Globals = require('Common/Globals'),
-	Links = require('Common/Links'),
+import {trim, isNormal, isArray, windowResize} from 'Common/Utils';
+import {Capa, Focused, Layout, KeyState, EventKeyCode, Magics} from 'Common/Enums';
+import {$html, leftPanelDisabled} from 'Common/Globals';
+import {mailBox, settings} from 'Common/Links';
+import {setFolderHash} from 'Common/Cache';
 
-	Cache = require('Common/Cache'),
+import AppStore from 'Stores/User/App';
+import SettingsStore from 'Stores/User/Settings';
+import FolderStore from 'Stores/User/Folder';
+import MessageStore from 'Stores/User/Message';
 
-	AppStore = require('Stores/User/App'),
-	SettingsStore = require('Stores/User/Settings'),
-	FolderStore = require('Stores/User/Folder'),
-	MessageStore = require('Stores/User/Message'),
+import * as Settings from 'Storage/Settings';
 
-	Settings = require('Storage/Settings'),
+import {getApp} from 'Helper/Apps/User';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {view, ViewType, showScreenPopup, setHash} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function FolderListMailBoxUserView()
+@view({
+	name: 'View/User/MailBox/FolderList',
+	type: ViewType.Left,
+	templateID: 'MailFolderList'
+})
+class FolderListMailBoxUserView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Left', 'MailFolderList');
+	constructor() {
+		super();
 
-	this.oContentVisible = null;
-	this.oContentScrollable = null;
+		this.oContentVisible = null;
+		this.oContentScrollable = null;
 
-	this.composeInEdit = AppStore.composeInEdit;
+		this.composeInEdit = AppStore.composeInEdit;
 
-	this.messageList = MessageStore.messageList;
-	this.folderList = FolderStore.folderList;
-	this.folderListSystem = FolderStore.folderListSystem;
-	this.foldersChanging = FolderStore.foldersChanging;
+		this.messageList = MessageStore.messageList;
+		this.folderList = FolderStore.folderList;
+		this.folderListSystem = FolderStore.folderListSystem;
+		this.foldersChanging = FolderStore.foldersChanging;
 
-	this.foldersListWithSingleInboxRootFolder = FolderStore.foldersListWithSingleInboxRootFolder;
+		this.foldersListWithSingleInboxRootFolder = FolderStore.foldersListWithSingleInboxRootFolder;
 
-	this.leftPanelDisabled = Globals.leftPanelDisabled;
+		this.leftPanelDisabled = leftPanelDisabled;
 
-	this.iDropOverTimer = 0;
+		this.iDropOverTimer = 0;
 
-	this.allowComposer = !!Settings.capa(Enums.Capa.Composer);
-	this.allowContacts = !!AppStore.contactsIsAllowed();
-	this.allowFolders = !!Settings.capa(Enums.Capa.Folders);
+		this.allowComposer = !!Settings.capa(Capa.Composer);
+		this.allowContacts = !!AppStore.contactsIsAllowed();
+		this.allowFolders = !!Settings.capa(Capa.Folders);
 
-	this.folderListFocused = ko.computed(function() {
-		return Enums.Focused.FolderList === AppStore.focusedState();
-	});
+		this.folderListFocused = ko.computed(() => Focused.FolderList === AppStore.focusedState());
 
-	this.isInboxStarred = ko.computed(function() {
-		return FolderStore.currentFolder() &&
-			FolderStore.currentFolder().isInbox() &&
-			-1 < Utils.trim(MessageStore.messageListSearch()).indexOf('is:flagged');
-	});
+		this.isInboxStarred = ko.computed(
+			() => FolderStore.currentFolder() &&
+				FolderStore.currentFolder().isInbox() &&
+				-1 < trim(MessageStore.messageListSearch()).indexOf('is:flagged')
+		);
+	}
 
-	kn.constructorEnd(this);
-}
+	onBuild(dom) {
 
-kn.extendAsViewModel(['View/User/MailBox/FolderList', 'View/App/MailBox/FolderList', 'MailBoxFolderListViewModel'], FolderListMailBoxUserView);
-_.extend(FolderListMailBoxUserView.prototype, AbstractView.prototype);
+		this.oContentVisible = $('.b-content', dom);
+		this.oContentScrollable = $('.content', this.oContentVisible);
 
-FolderListMailBoxUserView.prototype.onBuild = function(oDom)
-{
-	this.oContentVisible = $('.b-content', oDom);
-	this.oContentScrollable = $('.content', this.oContentVisible);
+		const
+			self = this,
+			isMobile = Settings.appSettingsGet('mobile'),
+			fSelectFolder = (el, event, starred) => {
 
-	var
-		self = this,
-		bMobile = Settings.appSettingsGet('mobile'),
-		fSelectFolder = function(oEvent, bStarred) {
-
-			if (bMobile)
-			{
-				Globals.leftPanelDisabled(true);
-			}
-
-			oEvent.preventDefault();
-
-			if (bStarred)
-			{
-				oEvent.stopPropagation();
-			}
-
-			var
-				oFolder = ko.dataFor(this);
-
-			if (oFolder)
-			{
-				if (Enums.Layout.NoPreview === SettingsStore.layout())
+				if (isMobile)
 				{
-					MessageStore.message(null);
+					leftPanelDisabled(true);
 				}
 
-				if (oFolder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
+				event.preventDefault();
+
+				if (starred)
 				{
-					Cache.setFolderHash(oFolder.fullNameRaw, '');
+					event.stopPropagation();
 				}
 
-				if (bStarred)
+				const folder = ko.dataFor(el);
+				if (folder)
 				{
-					kn.setHash(Links.mailBox(oFolder.fullNameHash, 1, 'is:flagged'));
+					if (Layout.NoPreview === SettingsStore.layout())
+					{
+						MessageStore.message(null);
+					}
+
+					if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
+					{
+						setFolderHash(folder.fullNameRaw, '');
+					}
+
+					if (starred)
+					{
+						setHash(mailBox(folder.fullNameHash, 1, 'is:flagged'));
+					}
+					else
+					{
+						setHash(mailBox(folder.fullNameHash));
+					}
 				}
-				else
+			};
+
+		dom
+			.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function(event) { // eslint-disable-line prefer-arrow-callback
+				const folder = ko.dataFor(this); // eslint-disable-line no-invalid-this
+				if (folder && event)
 				{
-					kn.setHash(Links.mailBox(oFolder.fullNameHash));
+					const collapsed = folder.collapsed();
+					getApp().setExpandedFolder(folder.fullNameHash, collapsed);
+
+					folder.collapsed(!collapsed);
+					event.preventDefault();
+					event.stopPropagation();
 				}
-			}
-		};
+			})
+			.on('click', '.b-folders .e-item .e-link.selectable .inbox-star-icon', function(event) { // eslint-disable-line prefer-arrow-callback
+				fSelectFolder(this, event, !self.isInboxStarred()); // eslint-disable-line no-invalid-this
+			})
+			.on('click', '.b-folders .e-item .e-link.selectable', function(event) { // eslint-disable-line prefer-arrow-callback
+				fSelectFolder(this, event, false); // eslint-disable-line no-invalid-this
+			});
 
-	oDom
-		.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function(oEvent) {
+		key('up, down', KeyState.FolderList, (event, handler) => {
 
-			var oFolder = ko.dataFor(this);
-			if (oFolder && oEvent)
+			const
+				keyCode = handler && 'up' === handler.shortcut ? EventKeyCode.Up : EventKeyCode.Down,
+				$items = $('.b-folders .e-item .e-link:not(.hidden):visible', dom);
+
+			if (event && $items.length)
 			{
-				var bCollapsed = oFolder.collapsed();
-				require('App/User').default.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
+				let index = $items.index($items.filter('.focused'));
+				if (-1 < index)
+				{
+					$items.eq(index).removeClass('focused');
+				}
 
-				oFolder.collapsed(!bCollapsed);
-				oEvent.preventDefault();
-				oEvent.stopPropagation();
+				if (EventKeyCode.Up === keyCode && 0 < index)
+				{
+					index -= 1;
+				}
+				else if (EventKeyCode.Down === keyCode && index < $items.length - 1)
+				{
+					index += 1;
+				}
+
+				$items.eq(index).addClass('focused');
+				self.scrollToFocused();
 			}
-		})
-		.on('click', '.b-folders .e-item .e-link.selectable .inbox-star-icon', function(oEvent) {
-			fSelectFolder.call(this, oEvent, !self.isInboxStarred());
-		})
-		.on('click', '.b-folders .e-item .e-link.selectable', function(oEvent) {
-			fSelectFolder.call(this, oEvent, false);
+
+			return false;
 		});
 
-	key('up, down', Enums.KeyState.FolderList, function(event, handler) {
-
-		var
-			iKeyCode = handler && 'up' === handler.shortcut ? Enums.EventKeyCode.Up : Enums.EventKeyCode.Down,
-			$items = $('.b-folders .e-item .e-link:not(.hidden):visible', oDom);
-
-		if (event && $items.length)
-		{
-			var iIndex = $items.index($items.filter('.focused'));
-			if (-1 < iIndex)
+		key('enter', KeyState.FolderList, () => {
+			const $items = $('.b-folders .e-item .e-link:not(.hidden).focused', dom);
+			if ($items.length && $items[0])
 			{
-				$items.eq(iIndex).removeClass('focused');
+				AppStore.focusedState(Focused.MessageList);
+				$items.click();
 			}
 
-			if (Enums.EventKeyCode.Up === iKeyCode && 0 < iIndex)
+			return false;
+		});
+
+		key('space', KeyState.FolderList, () => {
+			const $items = $('.b-folders .e-item .e-link:not(.hidden).focused', dom);
+			if ($items.length && $items[0])
 			{
-				iIndex -= 1;
+				const folder = ko.dataFor($items[0]);
+				if (folder)
+				{
+					const collapsed = folder.collapsed();
+					getApp().setExpandedFolder(folder.fullNameHash, collapsed);
+					folder.collapsed(!collapsed);
+				}
 			}
-			else if (Enums.EventKeyCode.Down === iKeyCode && iIndex < $items.length - 1)
+
+			return false;
+		});
+
+		key('esc, tab, shift+tab, right', KeyState.FolderList, () => {
+			AppStore.focusedState(Focused.MessageList);
+			return false;
+		});
+
+		AppStore.focusedState.subscribe((value) => {
+			$('.b-folders .e-item .e-link.focused', dom).removeClass('focused');
+			if (Focused.FolderList === value)
 			{
-				iIndex += 1;
+				$('.b-folders .e-item .e-link.selected', dom).addClass('focused');
 			}
+		});
+	}
 
-			$items.eq(iIndex).addClass('focused');
-			self.scrollToFocused();
+	messagesDropOver(folder) {
+		window.clearTimeout(this.iDropOverTimer);
+		if (folder && folder.collapsed())
+		{
+			this.iDropOverTimer = window.setTimeout(() => {
+				folder.collapsed(false);
+				getApp().setExpandedFolder(folder.fullNameHash, true);
+				windowResize();
+			}, Magics.Time500ms);
+		}
+	}
+
+	messagesDropOut() {
+		window.clearTimeout(this.iDropOverTimer);
+	}
+
+	scrollToFocused() {
+		if (!this.oContentVisible || !this.oContentScrollable)
+		{
+			return false;
 		}
 
-		return false;
-	});
+		const
+			offset = 20,
+			focused = $('.e-item .e-link.focused', this.oContentScrollable),
+			pos = focused.position(),
+			visibleHeight = this.oContentVisible.height(),
+			focusedHeight = focused.outerHeight();
 
-	key('enter', Enums.KeyState.FolderList, function() {
-		var $items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
-		if ($items.length && $items[0])
+		if (pos && (0 > pos.top || pos.top + focusedHeight > visibleHeight))
 		{
-			AppStore.focusedState(Enums.Focused.MessageList);
-			$items.click();
-		}
-
-		return false;
-	});
-
-	key('space', Enums.KeyState.FolderList, function() {
-		var $items = $('.b-folders .e-item .e-link:not(.hidden).focused', oDom);
-		if ($items.length && $items[0])
-		{
-			var oFolder = ko.dataFor($items[0]);
-			if (oFolder)
+			if (0 > pos.top)
 			{
-				var bCollapsed = oFolder.collapsed();
-				require('App/User').default.setExpandedFolder(oFolder.fullNameHash, bCollapsed);
-				oFolder.collapsed(!bCollapsed);
+				this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + pos.top - offset);
+			}
+			else
+			{
+				this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + pos.top - visibleHeight + focusedHeight + offset);
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param {FolderModel} toFolder
+	 * @param {{helper:jQuery}} ui
+	 * @returns {void}
+	 */
+	messagesDrop(toFolder, ui) {
+		if (toFolder && ui && ui.helper)
+		{
+			const
+				fromFolderFullNameRaw = ui.helper.data('rl-folder'),
+				copy = $html.hasClass('rl-ctrl-key-pressed'),
+				uids = ui.helper.data('rl-uids');
+
+			if (isNormal(fromFolderFullNameRaw) && '' !== fromFolderFullNameRaw && isArray(uids))
+			{
+				getApp().moveMessagesToFolder(fromFolderFullNameRaw, uids, toFolder.fullNameRaw, copy);
 			}
 		}
-
-		return false;
-	});
-
-	key('esc, tab, shift+tab, right', Enums.KeyState.FolderList, function() {
-		AppStore.focusedState(Enums.Focused.MessageList);
-		return false;
-	});
-
-	AppStore.focusedState.subscribe(function(mValue) {
-		$('.b-folders .e-item .e-link.focused', oDom).removeClass('focused');
-		if (Enums.Focused.FolderList === mValue)
-		{
-			$('.b-folders .e-item .e-link.selected', oDom).addClass('focused');
-		}
-	});
-};
-
-FolderListMailBoxUserView.prototype.messagesDropOver = function(oFolder)
-{
-	window.clearTimeout(this.iDropOverTimer);
-	if (oFolder && oFolder.collapsed())
-	{
-		this.iDropOverTimer = window.setTimeout(function() {
-			oFolder.collapsed(false);
-			require('App/User').default.setExpandedFolder(oFolder.fullNameHash, true);
-			Utils.windowResize();
-		}, Enums.Magics.Time500ms);
-	}
-};
-
-FolderListMailBoxUserView.prototype.messagesDropOut = function()
-{
-	window.clearTimeout(this.iDropOverTimer);
-};
-
-FolderListMailBoxUserView.prototype.scrollToFocused = function()
-{
-	if (!this.oContentVisible || !this.oContentScrollable)
-	{
-		return false;
 	}
 
-	var
-		iOffset = 20,
-		oFocused = $('.e-item .e-link.focused', this.oContentScrollable),
-		oPos = oFocused.position(),
-		iVisibleHeight = this.oContentVisible.height(),
-		iFocusedHeight = oFocused.outerHeight();
-
-	if (oPos && (0 > oPos.top || oPos.top + iFocusedHeight > iVisibleHeight))
-	{
-		if (0 > oPos.top)
+	composeClick() {
+		if (Settings.capa(Capa.Composer))
 		{
-			this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + oPos.top - iOffset);
-		}
-		else
-		{
-			this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + oPos.top - iVisibleHeight + iFocusedHeight + iOffset);
-		}
-
-		return true;
-	}
-
-	return false;
-};
-
-/**
- * @param {FolderModel} oToFolder
- * @param {{helper:jQuery}} oUi
- * @returns {void}
- */
-FolderListMailBoxUserView.prototype.messagesDrop = function(oToFolder, oUi)
-{
-	if (oToFolder && oUi && oUi.helper)
-	{
-		var
-			sFromFolderFullNameRaw = oUi.helper.data('rl-folder'),
-			bCopy = Globals.$html.hasClass('rl-ctrl-key-pressed'),
-			aUids = oUi.helper.data('rl-uids');
-
-		if (Utils.isNormal(sFromFolderFullNameRaw) && '' !== sFromFolderFullNameRaw && Utils.isArray(aUids))
-		{
-			require('App/User').default.moveMessagesToFolder(sFromFolderFullNameRaw, aUids, oToFolder.fullNameRaw, bCopy);
+			showScreenPopup(require('View/Popup/Compose'));
 		}
 	}
-};
 
-FolderListMailBoxUserView.prototype.composeClick = function()
-{
-	if (Settings.capa(Enums.Capa.Composer))
-	{
-		kn.showScreenPopup(require('View/Popup/Compose'));
+	createFolder() {
+		showScreenPopup(require('View/Popup/FolderCreate'));
 	}
-};
 
-FolderListMailBoxUserView.prototype.createFolder = function()
-{
-	kn.showScreenPopup(require('View/Popup/FolderCreate'));
-};
-
-FolderListMailBoxUserView.prototype.configureFolders = function()
-{
-	kn.setHash(Links.settings('folders'));
-};
-
-FolderListMailBoxUserView.prototype.contactsClick = function()
-{
-	if (this.allowContacts)
-	{
-		kn.showScreenPopup(require('View/Popup/Contacts'));
+	configureFolders() {
+		setHash(settings('folders'));
 	}
-};
 
-module.exports = FolderListMailBoxUserView;
+	contactsClick() {
+		if (this.allowContacts)
+		{
+			showScreenPopup(require('View/Popup/Contacts'));
+		}
+	}
+}
+
+export {FolderListMailBoxUserView, FolderListMailBoxUserView as default};

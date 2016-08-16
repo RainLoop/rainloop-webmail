@@ -165,7 +165,7 @@ class GeneralUserSettings
 				});
 			});
 
-			this.layout.subscribe(function(value) {
+			this.layout.subscribe((value) => {
 				MessageStore.messageList([]);
 				Remote.saveSettings(f2, {
 					'Layout': value

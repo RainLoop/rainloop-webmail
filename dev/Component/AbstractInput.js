@@ -29,15 +29,11 @@ class AbstractInput extends AbstractComponent
 		this.classForTrigger = ko.observable('');
 
 		this.className = ko.computed(() => {
-
-			var
+			const
 				size = ko.unwrap(this.size),
-				suffixValue = this.trigger ?
-					' ' + trim('settings-saved-trigger-input ' + this.classForTrigger()) : '';
-
+				suffixValue = this.trigger ? ' ' + trim('settings-saved-trigger-input ' + this.classForTrigger()) : '';
 			return (0 < size ? 'span' + size : '') + suffixValue;
-
-		}, this);
+		});
 
 		if (!isUnd(params.width) && params.element)
 		{

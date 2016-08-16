@@ -2,8 +2,11 @@
 import _ from '_';
 import $ from '$';
 import ko from 'ko';
+import moment from 'moment';
+import classnames from 'classnames';
 
 import {MessagePriority, SignedVerifyStatus} from 'Common/Enums';
+import {i18n} from 'Common/Translator';
 
 import {
 	pInt, inArray, isArray, isUnd, trim,
@@ -455,73 +458,24 @@ class MessageModel extends AbstractModel
 	 * @return string
 	 */
 	lineAsCss() {
-		const result = [];
-		if (this.deleted())
-		{
-			result.push('deleted');
-		}
-		if (this.deletedMark())
-		{
-			result.push('deleted-mark');
-		}
-		if (this.selected())
-		{
-			result.push('selected');
-		}
-		if (this.checked())
-		{
-			result.push('checked');
-		}
-		if (this.flagged())
-		{
-			result.push('flagged');
-		}
-		if (this.unseen())
-		{
-			result.push('unseen');
-		}
-		if (this.answered())
-		{
-			result.push('answered');
-		}
-		if (this.forwarded())
-		{
-			result.push('forwarded');
-		}
-		if (this.focused())
-		{
-			result.push('focused');
-		}
-		if (this.isImportant())
-		{
-			result.push('important');
-		}
-		if (this.hasAttachments())
-		{
-			result.push('withAttachments');
-		}
-		if (this.newForAnimation())
-		{
-			result.push('new');
-		}
-		if ('' === this.subject())
-		{
-			result.push('emptySubject');
-		}
-//		if (1 < this.threadsLen())
-//		{
-//			result.push('hasChildrenMessage');
-//		}
-		if (this.hasUnseenSubMessage())
-		{
-			result.push('hasUnseenSubMessage');
-		}
-		if (this.hasFlaggedSubMessage())
-		{
-			result.push('hasFlaggedSubMessage');
-		}
-
-		return result.join(' ');
+		return classnames({
+			'deleted': this.deleted(),
+			'deleted-mark': this.deletedMark(),
+			'selected': this.selected(),
+			'checked': this.checked(),
+			'flagged': this.flagged(),
+			'unseen': this.unseen(),
+			'answered': this.answered(),
+			'forwarded': this.forwarded(),
+			'focused': this.focused(),
+			'important': this.isImportant(),
+			'withAttachments': this.hasAttachments(),
+			'new': this.newForAnimation(),
+			'emptySubject': '' === this.subject(),
+			// 'hasChildrenMessage': 1 < this.threadsLen(),
+			'hasUnseenSubMessage': this.hasUnseenSubMessage(),
+			'hasFlaggedSubMessage': this.hasFlaggedSubMessage()
+		});
 	}
 
 	/**
@@ -680,7 +634,19 @@ class MessageModel extends AbstractModel
 	 */
 	viewPopupMessage(print = false) {
 		this.showLazyExternalImagesInBody();
-		previewMessage(this.subject(), this.body, this.isHtml(), print);
+
+		const
+			timeStampInUTC = this.dateTimeStampInUTC() || 0,
+			m = 0 < timeStampInUTC ? moment.unix(timeStampInUTC) : null;
+
+		previewMessage({
+			title: this.subject(),
+			subject: this.subject(),
+			date: m ? m.format('LLL') : '',
+			fromCreds: this.fromToLine(false),
+			toLabel: i18n('MESSAGE/LABEL_TO'),
+			toCreds: this.toToLine(false)
+		}, this.body, this.isHtml(), print);
 	}
 
 	printMessage() {
@@ -770,7 +736,7 @@ class MessageModel extends AbstractModel
 		if (this.body)
 		{
 			$('.lazy.lazy-inited[data-original]', this.body).each(function() {
-				$(this).attr('src', $(this).attr('data-original')).removeAttr('data-original');
+				$(this).attr('src', $(this).attr('data-original')).removeAttr('data-original'); // eslint-disable-line no-invalid-this
 			});
 		}
 	}
@@ -781,26 +747,28 @@ class MessageModel extends AbstractModel
 			this.hasImages(false);
 			this.body.data('rl-has-images', false);
 
-			var sAttr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
-			$('[' + sAttr + ']', this.body).each(function() {
-				if (lazy && $(this).is('img'))
+			let attr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
+			$('[' + attr + ']', this.body).each(function() {
+				const $this = $(this); // eslint-disable-line no-invalid-this
+				if (lazy && $this.is('img'))
 				{
-					$(this)
+					$this
 						.addClass('lazy')
-						.attr('data-original', $(this).attr(sAttr))
-						.removeAttr(sAttr);
+						.attr('data-original', $this.attr(attr))
+						.removeAttr(attr);
 				}
 				else
 				{
-					$(this).attr('src', $(this).attr(sAttr)).removeAttr(sAttr);
+					$this.attr('src', $this.attr(attr)).removeAttr(attr);
 				}
 			});
 
-			sAttr = this.proxy ? 'data-x-additional-style-url' : 'data-x-style-url';
-			$('[' + sAttr + ']', this.body).each(function() {
-				var sStyle = trim($(this).attr('style'));
-				sStyle = '' === sStyle ? '' : (';' === sStyle.substr(-1) ? sStyle + ' ' : sStyle + '; ');
-				$(this).attr('style', sStyle + $(this).attr(sAttr)).removeAttr(sAttr);
+			attr = this.proxy ? 'data-x-additional-style-url' : 'data-x-style-url';
+			$('[' + attr + ']', this.body).each(function() {
+				const $this = $(this); // eslint-disable-line no-invalid-this
+				let style = trim($this.attr('style'));
+				style = '' === style ? '' : (';' === style.substr(-1) ? style + ' ' : style + '; ');
+				$this.attr('style', style + $this.attr(attr)).removeAttr(attr);
 			});
 
 			if (lazy)
@@ -824,43 +792,47 @@ class MessageModel extends AbstractModel
 		{
 			this.body.data('rl-init-internal-images', true);
 
-			var self = this;
+			const self = this;
 
 			$('[data-x-src-cid]', this.body).each(function() {
-				const attachment = self.findAttachmentByCid($(this).attr('data-x-src-cid'));
+				const
+					$this = $(this), // eslint-disable-line no-invalid-this
+					attachment = self.findAttachmentByCid($this.attr('data-x-src-cid'));
+
 				if (attachment && attachment.download)
 				{
-					if (lazy && $(this).is('img'))
+					if (lazy && $this.is('img'))
 					{
-						$(this)
+						$this
 							.addClass('lazy')
 							.attr('data-original', attachment.linkPreview());
 					}
 					else
 					{
-						$(this).attr('src', attachment.linkPreview());
+						$this.attr('src', attachment.linkPreview());
 					}
 				}
 			});
 
 			$('[data-x-src-location]', this.body).each(function() {
-				let attachment = self.findAttachmentByContentLocation($(this).attr('data-x-src-location'));
+				const $this = $(this); // eslint-disable-line no-invalid-this
+				let attachment = self.findAttachmentByContentLocation($this.attr('data-x-src-location'));
 				if (!attachment)
 				{
-					attachment = self.findAttachmentByCid($(this).attr('data-x-src-location'));
+					attachment = self.findAttachmentByCid($this.attr('data-x-src-location'));
 				}
 
 				if (attachment && attachment.download)
 				{
-					if (lazy && $(this).is('img'))
+					if (lazy && $this.is('img'))
 					{
-						$(this)
+						$this
 							.addClass('lazy')
 							.attr('data-original', attachment.linkPreview());
 					}
 					else
 					{
-						$(this).attr('src', attachment.linkPreview());
+						$this.attr('src', attachment.linkPreview());
 					}
 				}
 			});
@@ -869,16 +841,19 @@ class MessageModel extends AbstractModel
 				let
 					style = '',
 					name = '';
-				const attachment = self.findAttachmentByCid($(this).attr('data-x-style-cid'));
+
+				const
+					$this = $(this), // eslint-disable-line no-invalid-this
+					attachment = self.findAttachmentByCid($this.attr('data-x-style-cid'));
 
 				if (attachment && attachment.linkPreview)
 				{
-					name = $(this).attr('data-x-style-cid-name');
+					name = $this.attr('data-x-style-cid-name');
 					if ('' !== name)
 					{
-						style = trim($(this).attr('style'));
+						style = trim($this.attr('style'));
 						style = '' === style ? '' : (';' === style.substr(-1) ? style + ' ' : style + '; ');
-						$(this).attr('style', style + name + ': url(\'' + attachment.linkPreview() + '\')');
+						$this.attr('style', style + name + ': url(\'' + attachment.linkPreview() + '\')');
 					}
 				}
 			});

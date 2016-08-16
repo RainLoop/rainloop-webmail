@@ -6,6 +6,7 @@ import ko from 'ko';
 import {$win, $div, dropdownVisibility, data as GlobalsData} from 'Common/Globals';
 import {ComposeType, EventKeyCode, SaveSettingsStep, FolderType} from 'Common/Enums';
 import {Mime} from 'Common/Mime';
+import {jassl} from 'Common/Jassl';
 
 import Autolinker from 'Autolinker';
 
@@ -22,7 +23,7 @@ const noop = () => {}; // eslint-disable-line no-empty-function
 const noopTrue = () => true;
 const noopFalse = () => false;
 
-export {trim, inArray, isArray, isObject, isFunc, isUnd, isNull, has, bind, noop, noopTrue, noopFalse};
+export {trim, inArray, isArray, isObject, isFunc, isUnd, isNull, has, bind, noop, noopTrue, noopFalse, jassl};
 
 /**
  * @param {Function} func
@@ -490,7 +491,7 @@ export function killCtrlACtrlS(event)
  * @param {(Function|boolean|null)=} fCanExecute = true
  * @returns {Function}
  */
-export function createCommand(context, fExecute, fCanExecute = true)
+export function createCommandLegacy(context, fExecute, fCanExecute = true)
 {
 	let fResult = null;
 	const fNonEmpty = (...args) => {
@@ -514,6 +515,16 @@ export function createCommand(context, fExecute, fCanExecute = true)
 	}
 
 	return fResult;
+}
+
+/**
+ * @param {Function} fExecute
+ * @param {(Function|boolean|null)=} fCanExecute = true
+ * @returns {Function}
+ */
+export function createCommand(fExecute, fCanExecute = true)
+{
+	return createCommandLegacy(null, fExecute, fCanExecute);
 }
 
 /**
@@ -609,12 +620,13 @@ export function clearBqSwitcher(body)
 }
 
 /**
- * @param {string} title
+ * @param {object} messageData
  * @param {Object} body
  * @param {boolean} isHtml
  * @param {boolean} print
+ * @returns {void}
  */
-export function previewMessage(title, body, isHtml, print)
+export function previewMessage({title, subject, date, fromCreds, toCreds, toLabel}, body, isHtml, print)
 {
 	const
 		win = window.open(''),
@@ -626,81 +638,16 @@ export function previewMessage(title, body, isHtml, print)
 
 	const html = bodyClone ? bodyClone.html() : '';
 
-	title = encodeHtml(title);
-
-	doc.write(`<html>
-<head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="user-scalable=no" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="robots" content="noindex, nofollow, noodp" />
-	<title>${title}</title>
-	<style>
-html, body {
-	background-color: #fff;
-	font-size: 13px;
-	font-family: arial, sans-serif;
-}
-
-a {color: blue; text-decoration: underline}
-a:visited {color: #609}
-a:active {color: red}
-blockquote {border-left: 2px solid black; margin: 0; padding: 0px 10px}
-
-pre {
-	margin: 0px;
-	padding: 0px;
-	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
-	background: #fff;
-	border: none;
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	word-break: break-all;
-}
-
-body.html pre {
-	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	word-break: normal;
-}
-
-body.plain {
-
-	padding: 15px;
-	white-space: pre-wrap;
-	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
-}
-
-body.plain pre {
-	margin: 0px;
-	padding: 0px;
-	background: #fff;
-	border: none;
-	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
-	white-space: pre-wrap;
-	word-wrap: break-word;
-	word-break: normal;
-}
-
-body.plain blockquote {
-	border-left: 2px solid blue;
-	color: blue;
-}
-
-body.plain blockquote blockquote {
-	border-left: 2px solid green;
-	color: green;
-}
-
-body.plain blockquote blockquote blockquote {
-	border-left: 2px solid red;
-	color: red;
-}
-	</style>
-</head>
-<body class="${bodyClass}">${html}</body>
-</html>`);
+	doc.write(require('Html/PreviewMessage.html')
+		.replace('{{title}}', encodeHtml(title))
+		.replace('{{subject}}', encodeHtml(subject))
+		.replace('{{date}}', encodeHtml(date))
+		.replace('{{fromCreds}}', encodeHtml(fromCreds))
+		.replace('{{toCreds}}', encodeHtml(toCreds))
+		.replace('{{toLabel}}', encodeHtml(toLabel))
+		.replace('{{bodyClass}}', bodyClass)
+		.replace('{{html}}', html)
+	);
 
 	doc.close();
 
@@ -851,7 +798,6 @@ export function htmlToPlain(html)
 		convertLinks = (...args) => (args && 1 < args.length ? trim(args[1]) : '');
 
 	text = html
-		.replace(/\u0002([\s\S]*)\u0002/gm, '\u200C$1\u200C')
 		.replace(/<p[^>]*><\/p>/gi, '')
 		.replace(/<pre[^>]*>([\s\S\r\n\t]*)<\/pre>/gmi, convertPre)
 		.replace(/[\s]+/gm, ' ')
@@ -1003,7 +949,6 @@ export function plainToHtml(plain, findEmailAndLinksInText = false)
 		.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 		.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 		.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
-		.replace(/\u200C([\s\S]*)\u200C/g, '\u0002$1\u0002')
 		.replace(/\n/g, '<br />');
 
 	return findEmailAndLinksInText ? findEmailAndLinks(plain) : plain;
@@ -1520,7 +1465,7 @@ export function mimeContentType(fileName)
  */
 export function resizeAndCrop(url, value, fCallback)
 {
-	const img = new Image();
+	const img = new window.Image();
 	img.onload = function() {
 
 		let

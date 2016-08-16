@@ -1,4 +1,4 @@
-RainLoop Webmail [![Build Status](https://travis-ci.org/RainLoop/rainloop-webmail.svg?branch=master)](https://travis-ci.org/RainLoop/rainloop-webmail)
+RainLoop Webmail [![Build Status](https://travis-ci.org/RainLoop/rainloop-webmail.svg?branch=master)](https://travis-ci.org/RainLoop/rainloop-webmail) [![devDependency Status](https://david-dm.org/RainLoop/rainloop-webmail/dev-status.svg)](https://david-dm.org/RainLoop/rainloop-webmail?type=dev)
 ==================
 
 Simple, modern &amp; fast web-based email client.

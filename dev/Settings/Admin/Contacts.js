@@ -91,11 +91,11 @@ class ContactsAdminSettings
 			}
 		}).extend({notify: 'always'});
 
-		this.contactsType.subscribe(function() {
+		this.contactsType.subscribe(() => {
 			this.testContactsSuccess(false);
 			this.testContactsError(false);
 			this.testContactsErrorMessage('');
-		}, this);
+		});
 
 		this.pdoDsn = ko.observable(settingsGet('ContactsPdoDsn'));
 		this.pdoUser = ko.observable(settingsGet('ContactsPdoUser'));
@@ -111,7 +111,7 @@ class ContactsAdminSettings
 		this.testContactsError = ko.observable(false);
 		this.testContactsErrorMessage = ko.observable('');
 
-		this.testContactsCommand = createCommand(this, () => {
+		this.testContactsCommand = createCommand(() => {
 
 			this.testContactsSuccess(false);
 			this.testContactsError(false);

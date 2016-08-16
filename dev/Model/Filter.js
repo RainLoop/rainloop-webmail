@@ -190,9 +190,7 @@ class FilterModel extends AbstractModel
 			Enabled: this.enabled() ? '1' : '0',
 			Name: this.name(),
 			ConditionsType: this.conditionsType(),
-			Conditions: _.map(this.conditions(), function(oItem) {
-				return oItem.toJson();
-			}),
+			Conditions: _.map(this.conditions(), (item) => item.toJson()),
 
 			ActionValue: this.actionValue(),
 			ActionValueSecond: this.actionValueSecond(),
@@ -257,7 +255,8 @@ class FilterModel extends AbstractModel
 	}
 
 	cloneSelf() {
-		var filter = new FilterModel();
+
+		const filter = new FilterModel();
 
 		filter.id = this.id;
 

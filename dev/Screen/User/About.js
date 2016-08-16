@@ -1,17 +1,18 @@
 
 import {AbstractScreen} from 'Knoin/AbstractScreen';
-import App from 'App/User';
+
+import {AboutUserView} from 'View/User/About';
+
+import {getApp} from 'Helper/Apps/User';
 
 class AboutUserScreen extends AbstractScreen
 {
 	constructor() {
-		super('about', [
-			require('View/User/About')
-		]);
+		super('about', [AboutUserView]);
 	}
 
 	onShow() {
-		App.setWindowTitle('RainLoop');
+		getApp().setWindowTitle('RainLoop');
 	}
 }
 

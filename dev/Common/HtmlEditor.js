@@ -88,19 +88,10 @@ class HtmlEditor
 	}
 
 	/**
-	 * @param {string} text
-	 * @returns {string}
-	 */
-	clearSignatureSigns(text) {
-		return text.replace(/(\u200C|\u0002)/g, '');
-	}
-
-	/**
 	 * @param {boolean=} wrapIsHtml = false
-	 * @param {boolean=} clearSignatureSigns = false
 	 * @returns {string}
 	 */
-	getData(wrapIsHtml = false, clearSignatureSigns = false) {
+	getData(wrapIsHtml = false) {
 
 		let result = '';
 		if (this.editor)
@@ -119,11 +110,6 @@ class HtmlEditor
 				}
 			}
 			catch (e) {} // eslint-disable-line no-empty
-
-			if (clearSignatureSigns)
-			{
-				result = this.clearSignatureSigns(result);
-			}
 		}
 
 		return result;
@@ -131,11 +117,10 @@ class HtmlEditor
 
 	/**
 	 * @param {boolean=} wrapIsHtml = false
-	 * @param {boolean=} clearSignatureSigns = false
 	 * @returns {string}
 	 */
-	getDataWithHtmlMark(wrapIsHtml = false, clearSignatureSigns = false) {
-		return (this.isHtml() ? ':HTML:' : '') + this.getData(wrapIsHtml, clearSignatureSigns);
+	getDataWithHtmlMark(wrapIsHtml = false) {
+		return (this.isHtml() ? ':HTML:' : '') + this.getData(wrapIsHtml);
 	}
 
 	modeToggle(plain, resize) {
@@ -149,12 +134,9 @@ class HtmlEditor
 						this.editor.setMode('wysiwyg');
 					}
 				}
-				else
+				else if ('wysiwyg' === this.editor.mode)
 				{
-					if ('wysiwyg' === this.editor.mode)
-					{
-						this.editor.setMode('plain');
-					}
+					this.editor.setMode('plain');
 				}
 			}
 			catch (e) {} // eslint-disable-line no-empty
@@ -302,7 +284,7 @@ class HtmlEditor
 								if (file && window.FileReader && event.data.dataTransfer.id &&
 									file.type && file.type.match(/^image/i))
 								{
-									var
+									const
 										id = event.data.dataTransfer.id,
 										imageId = `[img=${id}]`,
 										reader = new window.FileReader();

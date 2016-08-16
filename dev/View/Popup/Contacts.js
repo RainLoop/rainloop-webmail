@@ -1,777 +1,725 @@
 
-var
-	window = require('window'),
-	_ = require('_'),
-	$ = require('$'),
-	ko = require('ko'),
-	key = require('key'),
+import window from 'window';
+import _ from '_';
+import $ from '$';
+import ko from 'ko';
+import key from 'key';
+import Jua from 'Jua';
 
-	Jua = require('Jua'),
+import {
+	SaveSettingsStep, ContactPropertyType, ComposeType,
+	Capa, Magics, StorageResultType, Notification, KeyState
+} from 'Common/Enums';
 
-	Enums = require('Common/Enums'),
-	Consts = require('Common/Consts'),
-	Globals = require('Common/Globals'),
-	Utils = require('Common/Utils'),
-	Selector = require('Common/Selector'),
-	Links = require('Common/Links'),
-	Translator = require('Common/Translator'),
+import {
+	delegateRunOnDestroy, computedPagenatorHelper,
+	inArray, trim, windowResizeCallback, createCommand,
+	isNonEmptyArray, fakeMd5, pInt, isUnd
+} from 'Common/Utils';
 
-	SettingsStore = require('Stores/User/Settings'),
-	ContactStore = require('Stores/User/Contact'),
+import {CONTACTS_PER_PAGE} from 'Common/Consts';
+import {bMobileDevice} from 'Common/Globals';
 
-	Settings = require('Storage/Settings'),
+import {Selector} from 'Common/Selector';
+import {exportContactsVcf, exportContactsCsv, uploadContacts} from 'Common/Links';
+import {i18n, getNotification} from 'Common/Translator';
 
-	Remote = require('Remote/User/Ajax'),
+import SettingsStore from 'Stores/User/Settings';
+import ContactStore from 'Stores/User/Contact';
 
-	EmailModel = require('Model/Email').default,
-	ContactModel = require('Model/Contact').default,
-	ContactPropertyModel = require('Model/ContactProperty').default,
+import Remote from 'Remote/User/Ajax';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import * as Settings from 'Storage/Settings';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function ContactsPopupView()
+import {EmailModel} from 'Model/Email';
+import {ContactModel} from 'Model/Contact';
+import {ContactPropertyModel} from 'Model/ContactProperty';
+
+import {getApp} from 'Helper/Apps/User';
+
+import {view, ViewType, showScreenPopup, hideScreenPopup, routeOn, routeOff} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+@view({
+	name: 'View/Popup/Contacts',
+	type: ViewType.Popup,
+	templateID: 'PopupsContacts'
+})
+class ContactsPopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsContacts');
+	constructor() {
+		super();
 
-	var
-		self = this,
-		fFastClearEmptyListHelper = function(aList) {
-			if (aList && 0 < aList.length) {
-				self.viewProperties.removeAll(aList);
-				Utils.delegateRunOnDestroy(aList);
-			}
-		};
-
-	this.bBackToCompose = false;
-	this.sLastComposeFocusedField = '';
-
-	this.allowContactsSync = ContactStore.allowContactsSync;
-	this.enableContactsSync = ContactStore.enableContactsSync;
-	this.allowExport = !Globals.bMobileDevice;
-
-	this.search = ko.observable('');
-	this.contactsCount = ko.observable(0);
-	this.contacts = ContactStore.contacts;
-
-	this.currentContact = ko.observable(null);
-
-	this.importUploaderButton = ko.observable(null);
-
-	this.contactsPage = ko.observable(1);
-	this.contactsPageCount = ko.computed(function() {
-		var iPage = window.Math.ceil(this.contactsCount() / Consts.CONTACTS_PER_PAGE);
-		return 0 >= iPage ? 1 : iPage;
-	}, this);
-
-	this.contactsPagenator = ko.computed(Utils.computedPagenatorHelper(this.contactsPage, this.contactsPageCount));
-
-	this.emptySelection = ko.observable(true);
-	this.viewClearSearch = ko.observable(false);
-
-	this.viewID = ko.observable('');
-	this.viewReadOnly = ko.observable(false);
-	this.viewProperties = ko.observableArray([]);
-
-	this.viewSaveTrigger = ko.observable(Enums.SaveSettingsStep.Idle);
-
-	this.viewPropertiesNames = this.viewProperties.filter(function(oProperty) {
-		return -1 < Utils.inArray(oProperty.type(), [
-			Enums.ContactPropertyType.FirstName, Enums.ContactPropertyType.LastName
-		]);
-	});
-
-	this.viewPropertiesOther = this.viewProperties.filter(function(oProperty) {
-		return -1 < Utils.inArray(oProperty.type(), [
-			Enums.ContactPropertyType.Note
-		]);
-	});
-
-	this.viewPropertiesOther = ko.computed(function() {
-
-		var aList = _.filter(this.viewProperties(), function(oProperty) {
-			return -1 < Utils.inArray(oProperty.type(), [
-				Enums.ContactPropertyType.Nick
-			]);
-		});
-
-		return _.sortBy(aList, function(oProperty) {
-			return oProperty.type();
-		});
-
-	}, this);
-
-	this.viewPropertiesEmails = this.viewProperties.filter(function(oProperty) {
-		return Enums.ContactPropertyType.Email === oProperty.type();
-	});
-
-	this.viewPropertiesWeb = this.viewProperties.filter(function(oProperty) {
-		return Enums.ContactPropertyType.Web === oProperty.type();
-	});
-
-	this.viewHasNonEmptyRequaredProperties = ko.computed(function() {
-
-		var
-			aNames = this.viewPropertiesNames(),
-			aEmail = this.viewPropertiesEmails(),
-			fHelper = function(oProperty) {
-				return '' !== Utils.trim(oProperty.value());
+		const
+			fFastClearEmptyListHelper = (list) => {
+				if (list && 0 < list.length) {
+					this.viewProperties.removeAll(list);
+					delegateRunOnDestroy(list);
+				}
 			};
 
-		return !!(_.find(aNames, fHelper) || _.find(aEmail, fHelper));
-	}, this);
+		this.bBackToCompose = false;
+		this.sLastComposeFocusedField = '';
 
-	this.viewPropertiesPhones = this.viewProperties.filter(function(oProperty) {
-		return Enums.ContactPropertyType.Phone === oProperty.type();
-	});
+		this.allowContactsSync = ContactStore.allowContactsSync;
+		this.enableContactsSync = ContactStore.enableContactsSync;
+		this.allowExport = !bMobileDevice;
 
-	this.viewPropertiesEmailsNonEmpty = this.viewPropertiesNames.filter(function(oProperty) {
-		return '' !== Utils.trim(oProperty.value());
-	});
+		this.search = ko.observable('');
+		this.contactsCount = ko.observable(0);
+		this.contacts = ContactStore.contacts;
 
-	this.viewPropertiesEmailsEmptyAndOnFocused = this.viewPropertiesEmails.filter(function(oProperty) {
-		var bF = oProperty.focused();
-		return '' === Utils.trim(oProperty.value()) && !bF;
-	});
+		this.currentContact = ko.observable(null);
 
-	this.viewPropertiesPhonesEmptyAndOnFocused = this.viewPropertiesPhones.filter(function(oProperty) {
-		var bF = oProperty.focused();
-		return '' === Utils.trim(oProperty.value()) && !bF;
-	});
+		this.importUploaderButton = ko.observable(null);
 
-	this.viewPropertiesWebEmptyAndOnFocused = this.viewPropertiesWeb.filter(function(oProperty) {
-		var bF = oProperty.focused();
-		return '' === Utils.trim(oProperty.value()) && !bF;
-	});
-
-	this.viewPropertiesOtherEmptyAndOnFocused = ko.computed(function() {
-		return _.filter(this.viewPropertiesOther(), function(oProperty) {
-			var bF = oProperty.focused();
-			return '' === Utils.trim(oProperty.value()) && !bF;
-		});
-	}, this);
-
-	this.viewPropertiesEmailsEmptyAndOnFocused.subscribe(function(aList) {
-		fFastClearEmptyListHelper(aList);
-	});
-
-	this.viewPropertiesPhonesEmptyAndOnFocused.subscribe(function(aList) {
-		fFastClearEmptyListHelper(aList);
-	});
-
-	this.viewPropertiesWebEmptyAndOnFocused.subscribe(function(aList) {
-		fFastClearEmptyListHelper(aList);
-	});
-
-	this.viewPropertiesOtherEmptyAndOnFocused.subscribe(function(aList) {
-		fFastClearEmptyListHelper(aList);
-	});
-
-	this.viewSaving = ko.observable(false);
-
-	this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
-
-	this.search.subscribe(function() {
-		this.reloadContactList();
-	}, this);
-
-	this.contacts.subscribe(Utils.windowResizeCallback);
-	this.viewProperties.subscribe(Utils.windowResizeCallback);
-
-	this.contactsChecked = ko.computed(function() {
-		return _.filter(this.contacts(), function(oItem) {
-			return oItem.checked();
-		});
-	}, this);
-
-	this.contactsCheckedOrSelected = ko.computed(function() {
-
-		var
-			aChecked = this.contactsChecked(),
-			oSelected = this.currentContact();
-
-		return _.union(aChecked, oSelected ? [oSelected] : []);
-
-	}, this);
-
-	this.contactsCheckedOrSelectedUids = ko.computed(function() {
-		return _.map(this.contactsCheckedOrSelected(), function(oContact) {
-			return oContact.idContact;
-		});
-	}, this);
-
-	this.selector = new Selector.Selector(this.contacts, this.currentContact, null,
-		'.e-contact-item .actionHandle', '.e-contact-item.selected', '.e-contact-item .checkboxItem',
-			'.e-contact-item.focused');
-
-	this.selector.on('onItemSelect', _.bind(function(oContact) {
-		this.populateViewContact(oContact ? oContact : null);
-		if (!oContact)
-		{
-			this.emptySelection(true);
-		}
-	}, this));
-
-	this.selector.on('onItemGetUid', function(oContact) {
-		return oContact ? oContact.generateUid() : '';
-	});
-
-	this.newCommand = Utils.createCommand(this, function() {
-		this.populateViewContact(null);
-		this.currentContact(null);
-	});
-
-	this.deleteCommand = Utils.createCommand(this, function() {
-		this.deleteSelectedContacts();
-		this.emptySelection(true);
-	}, function() {
-		return 0 < this.contactsCheckedOrSelected().length;
-	});
-
-	this.newMessageCommand = Utils.createCommand(this, function() {
-
-		if (!Settings.capa(Enums.Capa.Composer))
-		{
-			return false;
-		}
-
-		var
-			aE = [],
-			aC = this.contactsCheckedOrSelected(),
-			aToEmails = null,
-			aCcEmails = null,
-			aBccEmails = null;
-
-		if (Utils.isNonEmptyArray(aC))
-		{
-			aE = _.map(aC, function(oItem) {
-				if (oItem)
-				{
-					var
-						aData = oItem.getNameAndEmailHelper(),
-						oEmail = aData ? new EmailModel(aData[0], aData[1]) : null;
-
-					if (oEmail && oEmail.validate())
-					{
-						return oEmail;
-					}
-				}
-
-				return null;
-			});
-
-			aE = _.compact(aE);
-		}
-
-		if (Utils.isNonEmptyArray(aE))
-		{
-			self.bBackToCompose = false;
-
-			kn.hideScreenPopup(require('View/Popup/Contacts'));
-
-			switch (self.sLastComposeFocusedField)
-			{
-				case 'cc':
-					aCcEmails = aE;
-					break;
-				case 'bcc':
-					aBccEmails = aE;
-					break;
-				case 'to':
-				default:
-					aToEmails = aE;
-					break;
-			}
-
-			self.sLastComposeFocusedField = '';
-
-			_.delay(function() {
-				kn.showScreenPopup(require('View/Popup/Compose'),
-					[Enums.ComposeType.Empty, null, aToEmails, aCcEmails, aBccEmails]);
-			}, Enums.Magics.Time200ms);
-		}
-
-		return true;
-
-	}, function() {
-		return 0 < this.contactsCheckedOrSelected().length;
-	});
-
-	this.clearCommand = Utils.createCommand(this, function() {
-		this.search('');
-	});
-
-	this.saveCommand = Utils.createCommand(this, function() {
-
-		this.viewSaving(true);
-		this.viewSaveTrigger(Enums.SaveSettingsStep.Animate);
-
-		var
-			sRequestUid = Utils.fakeMd5(),
-			aProperties = [];
-
-		_.each(this.viewProperties(), function(oItem) {
-			if (oItem.type() && '' !== Utils.trim(oItem.value()))
-			{
-				aProperties.push([oItem.type(), oItem.value(), oItem.typeStr()]);
-			}
+		this.contactsPage = ko.observable(1);
+		this.contactsPageCount = ko.computed(() => {
+			const iPage = window.Math.ceil(this.contactsCount() / CONTACTS_PER_PAGE);
+			return 0 >= iPage ? 1 : iPage;
 		});
 
-		Remote.contactSave(function(sResult, oData) {
+		this.contactsPagenator = ko.computed(computedPagenatorHelper(this.contactsPage, this.contactsPageCount));
 
-			var bRes = false;
-			self.viewSaving(false);
+		this.emptySelection = ko.observable(true);
+		this.viewClearSearch = ko.observable(false);
 
-			if (Enums.StorageResultType.Success === sResult && oData && oData.Result &&
-				oData.Result.RequestUid === sRequestUid && 0 < Utils.pInt(oData.Result.ResultID))
-			{
-				if ('' === self.viewID())
-				{
-					self.viewID(Utils.pInt(oData.Result.ResultID));
-				}
+		this.viewID = ko.observable('');
+		this.viewReadOnly = ko.observable(false);
+		this.viewProperties = ko.observableArray([]);
 
-				self.reloadContactList();
-				bRes = true;
-			}
+		this.viewSaveTrigger = ko.observable(SaveSettingsStep.Idle);
 
-			_.delay(function() {
-				self.viewSaveTrigger(bRes ? Enums.SaveSettingsStep.TrueResult : Enums.SaveSettingsStep.FalseResult);
-			}, Enums.Magics.Time350ms);
-
-			if (bRes)
-			{
-				self.watchDirty(false);
-
-				_.delay(function() {
-					self.viewSaveTrigger(Enums.SaveSettingsStep.Idle);
-				}, Enums.Magics.Time1s);
-			}
-
-		}, sRequestUid, this.viewID(), aProperties);
-
-	}, function() {
-		var
-			bV = this.viewHasNonEmptyRequaredProperties(),
-			bReadOnly = this.viewReadOnly();
-		return !this.viewSaving() && bV && !bReadOnly;
-	});
-
-	this.syncCommand = Utils.createCommand(this, function() {
-
-		require('App/User').default.contactsSync(function(sResult, oData) {
-			if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
-			{
-				window.alert(Translator.getNotification(
-					oData && oData.ErrorCode ? oData.ErrorCode : Enums.Notification.ContactsSyncError));
-			}
-
-			self.reloadContactList(true);
-		});
-
-	}, function() {
-		return !this.contacts.syncing() && !this.contacts.importing();
-	});
-
-	this.bDropPageAfterDelete = false;
-
-	this.watchDirty = ko.observable(false);
-	this.watchHash = ko.observable(false);
-
-	this.viewHash = ko.computed(function() {
-		return '' + _.map(self.viewProperties(), function(oItem) {
-			return oItem.value();
-		}).join('');
-	});
-
-//	this.saveCommandDebounce = _.debounce(_.bind(this.saveCommand, this), 1000);
-
-	this.viewHash.subscribe(function() {
-		if (this.watchHash() && !this.viewReadOnly() && !this.watchDirty())
-		{
-			this.watchDirty(true);
-		}
-	}, this);
-
-	this.sDefaultKeyScope = Enums.KeyState.ContactList;
-
-	kn.constructorEnd(this);
-}
-
-kn.extendAsViewModel(['View/Popup/Contacts', 'PopupsContactsViewModel'], ContactsPopupView);
-_.extend(ContactsPopupView.prototype, AbstractView.prototype);
-
-ContactsPopupView.prototype.getPropertyPlaceholder = function(sType)
-{
-	var sResult = '';
-	switch (sType)
-	{
-		case Enums.ContactPropertyType.LastName:
-			sResult = 'CONTACTS/PLACEHOLDER_ENTER_LAST_NAME';
-			break;
-		case Enums.ContactPropertyType.FirstName:
-			sResult = 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME';
-			break;
-		case Enums.ContactPropertyType.Nick:
-			sResult = 'CONTACTS/PLACEHOLDER_ENTER_NICK_NAME';
-			break;
-		// no default
-	}
-
-	return sResult;
-};
-
-ContactsPopupView.prototype.addNewProperty = function(sType, sTypeStr)
-{
-	this.viewProperties.push(new ContactPropertyModel(sType, sTypeStr || '', '', true, this.getPropertyPlaceholder(sType)));
-};
-
-ContactsPopupView.prototype.addNewOrFocusProperty = function(sType, sTypeStr)
-{
-	var oItem = _.find(this.viewProperties(), function(oProp) {
-		return sType === oProp.type();
-	});
-
-	if (oItem)
-	{
-		oItem.focused(true);
-	}
-	else
-	{
-		this.addNewProperty(sType, sTypeStr);
-	}
-};
-
-ContactsPopupView.prototype.addNewEmail = function()
-{
-	this.addNewProperty(Enums.ContactPropertyType.Email, 'Home');
-};
-
-ContactsPopupView.prototype.addNewPhone = function()
-{
-	this.addNewProperty(Enums.ContactPropertyType.Phone, 'Mobile');
-};
-
-ContactsPopupView.prototype.addNewWeb = function()
-{
-	this.addNewProperty(Enums.ContactPropertyType.Web);
-};
-
-ContactsPopupView.prototype.addNewNickname = function()
-{
-	this.addNewOrFocusProperty(Enums.ContactPropertyType.Nick);
-};
-
-ContactsPopupView.prototype.addNewNotes = function()
-{
-	this.addNewOrFocusProperty(Enums.ContactPropertyType.Note);
-};
-
-ContactsPopupView.prototype.addNewBirthday = function()
-{
-	this.addNewOrFocusProperty(Enums.ContactPropertyType.Birthday);
-};
-
-ContactsPopupView.prototype.exportVcf = function()
-{
-	require('App/User').default.download(Links.exportContactsVcf());
-};
-
-ContactsPopupView.prototype.exportCsv = function()
-{
-	require('App/User').default.download(Links.exportContactsCsv());
-};
-
-ContactsPopupView.prototype.initUploader = function()
-{
-	if (this.importUploaderButton())
-	{
-		var
-			oJua = new Jua({
-				'action': Links.uploadContacts(),
-				'name': 'uploader',
-				'queueSize': 1,
-				'multipleSizeLimit': 1,
-				'disableDragAndDrop': true,
-				'disableMultiple': true,
-				'disableDocumentDropPrevent': true,
-				'clickElement': this.importUploaderButton()
-			});
-
-		if (oJua)
-		{
-			oJua
-				.on('onStart', _.bind(function() {
-					this.contacts.importing(true);
-				}, this))
-				.on('onComplete', _.bind(function(sId, bResult, oData) {
-
-					this.contacts.importing(false);
-					this.reloadContactList();
-
-					if (!sId || !bResult || !oData || !oData.Result)
-					{
-						window.alert(Translator.i18n('CONTACTS/ERROR_IMPORT_FILE'));
-					}
-
-				}, this));
-		}
-	}
-};
-
-ContactsPopupView.prototype.removeCheckedOrSelectedContactsFromList = function()
-{
-	var
-		self = this,
-		oKoContacts = this.contacts,
-		oCurrentContact = this.currentContact(),
-		iCount = this.contacts().length,
-		aContacts = this.contactsCheckedOrSelected();
-
-	if (0 < aContacts.length)
-	{
-		_.each(aContacts, function(oContact) {
-
-			if (oCurrentContact && oCurrentContact.idContact === oContact.idContact)
-			{
-				oCurrentContact = null;
-				self.currentContact(null);
-			}
-
-			oContact.deleted(true);
-			iCount -= 1;
-		});
-
-		if (0 >= iCount)
-		{
-			this.bDropPageAfterDelete = true;
-		}
-
-		_.delay(function() {
-			_.each(aContacts, function(oContact) {
-				oKoContacts.remove(oContact);
-				Utils.delegateRunOnDestroy(oContact);
-			});
-		}, Enums.Magics.Time500ms);
-	}
-};
-
-ContactsPopupView.prototype.deleteSelectedContacts = function()
-{
-	if (0 < this.contactsCheckedOrSelected().length)
-	{
-		Remote.contactsDelete(
-			_.bind(this.deleteResponse, this),
-			this.contactsCheckedOrSelectedUids()
+		this.viewPropertiesNames = this.viewProperties.filter(
+			(property) => -1 < inArray(property.type(), [ContactPropertyType.FirstName, ContactPropertyType.LastName])
 		);
 
-		this.removeCheckedOrSelectedContactsFromList();
-	}
-};
+		this.viewPropertiesOther = this.viewProperties.filter(
+			(property) => -1 < inArray(property.type(), [ContactPropertyType.Note])
+		);
 
-/**
- * @param {string} sResult
- * @param {AjaxJsonDefaultResponse} oData
- */
-ContactsPopupView.prototype.deleteResponse = function(sResult, oData)
-{
-	if (Enums.Magics.Time500ms < (Enums.StorageResultType.Success === sResult && oData && oData.Time ? Utils.pInt(oData.Time) : 0))
-	{
-		this.reloadContactList(this.bDropPageAfterDelete);
-	}
-	else
-	{
-		var self = this;
-		_.delay(function() {
-			self.reloadContactList(self.bDropPageAfterDelete);
-		}, Enums.Magics.Time500ms);
-	}
-};
+		this.viewPropertiesOther = ko.computed(() => {
+			const list = _.filter(this.viewProperties(),
+				(property) => -1 < inArray(property.type(), [ContactPropertyType.Nick])
+			);
+			return _.sortBy(list, (property) => property.type());
+		});
 
-ContactsPopupView.prototype.removeProperty = function(oProp)
-{
-	this.viewProperties.remove(oProp);
-	Utils.delegateRunOnDestroy(oProp);
-};
+		this.viewPropertiesEmails = this.viewProperties.filter(
+			(property) => ContactPropertyType.Email === property.type()
+		);
 
-/**
- * @param {?ContactModel} oContact
- */
-ContactsPopupView.prototype.populateViewContact = function(oContact)
-{
-	var
-		sId = '',
-		sLastName = '',
-		sFirstName = '',
-		aList = [];
+		this.viewPropertiesWeb = this.viewProperties.filter(
+			(property) => ContactPropertyType.Web === property.type()
+		);
 
-	this.watchHash(false);
+		this.viewHasNonEmptyRequaredProperties = ko.computed(() => {
+			const
+				names = this.viewPropertiesNames(),
+				emails = this.viewPropertiesEmails(),
+				fFilter = (property) => '' !== trim(property.value());
 
-	this.emptySelection(false);
-	this.viewReadOnly(false);
+			return !!(_.find(names, fFilter) || _.find(emails, fFilter));
+		});
 
-	if (oContact)
-	{
-		sId = oContact.idContact;
-		if (Utils.isNonEmptyArray(oContact.properties))
-		{
-			_.each(oContact.properties, function(aProperty) {
-				if (aProperty && aProperty[0])
-				{
-					if (Enums.ContactPropertyType.LastName === aProperty[0])
-					{
-						sLastName = aProperty[1];
-					}
-					else if (Enums.ContactPropertyType.FirstName === aProperty[0])
-					{
-						sFirstName = aProperty[1];
-					}
-					else
-					{
-						aList.push(new ContactPropertyModel(aProperty[0], aProperty[2] || '', aProperty[1]));
-					}
-				}
-			});
-		}
+		this.viewPropertiesPhones = this.viewProperties.filter(
+			(property) => ContactPropertyType.Phone === property.type()
+		);
 
-		this.viewReadOnly(!!oContact.readOnly);
-	}
+		this.viewPropertiesEmailsNonEmpty = this.viewPropertiesNames.filter(
+			(property) => '' !== trim(property.value())
+		);
 
-	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.LastName, '', sLastName, false,
-		this.getPropertyPlaceholder(Enums.ContactPropertyType.LastName)));
+		this.viewPropertiesEmailsEmptyAndOnFocused = this.viewPropertiesEmails.filter((property) => {
+			const foc = property.focused();
+			return '' === trim(property.value()) && !foc;
+		});
 
-	aList.unshift(new ContactPropertyModel(Enums.ContactPropertyType.FirstName, '', sFirstName, !oContact,
-		this.getPropertyPlaceholder(Enums.ContactPropertyType.FirstName)));
+		this.viewPropertiesPhonesEmptyAndOnFocused = this.viewPropertiesPhones.filter((property) => {
+			const foc = property.focused();
+			return '' === trim(property.value()) && !foc;
+		});
 
-	this.viewID(sId);
+		this.viewPropertiesWebEmptyAndOnFocused = this.viewPropertiesWeb.filter((property) => {
+			const foc = property.focused();
+			return '' === trim(property.value()) && !foc;
+		});
 
-	Utils.delegateRunOnDestroy(this.viewProperties());
+		this.viewPropertiesOtherEmptyAndOnFocused = ko.computed(
+			() => _.filter(this.viewPropertiesOther(), (property) => {
+				const foc = property.focused();
+				return '' === trim(property.value()) && !foc;
+			})
+		);
 
-	this.viewProperties([]);
-	this.viewProperties(aList);
+		this.viewPropertiesEmailsEmptyAndOnFocused.subscribe((list) => {
+			fFastClearEmptyListHelper(list);
+		});
 
-	this.watchDirty(false);
-	this.watchHash(true);
-};
+		this.viewPropertiesPhonesEmptyAndOnFocused.subscribe((list) => {
+			fFastClearEmptyListHelper(list);
+		});
 
-/**
- * @param {boolean=} bDropPagePosition = false
- */
-ContactsPopupView.prototype.reloadContactList = function(bDropPagePosition)
-{
-	var
-		self = this,
-		iOffset = (this.contactsPage() - 1) * Consts.CONTACTS_PER_PAGE;
+		this.viewPropertiesWebEmptyAndOnFocused.subscribe((list) => {
+			fFastClearEmptyListHelper(list);
+		});
 
-	this.bDropPageAfterDelete = false;
+		this.viewPropertiesOtherEmptyAndOnFocused.subscribe((list) => {
+			fFastClearEmptyListHelper(list);
+		});
 
-	if (Utils.isUnd(bDropPagePosition) ? false : !!bDropPagePosition)
-	{
-		this.contactsPage(1);
-		iOffset = 0;
-	}
+		this.viewSaving = ko.observable(false);
 
-	this.contacts.loading(true);
-	Remote.contacts(function(sResult, oData) {
+		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
 
-		var
-			iCount = 0,
-			aList = [];
+		this.search.subscribe(() => {
+			this.reloadContactList();
+		});
 
-		if (Enums.StorageResultType.Success === sResult && oData && oData.Result && oData.Result.List)
-		{
-			if (Utils.isNonEmptyArray(oData.Result.List))
+		this.contacts.subscribe(windowResizeCallback);
+		this.viewProperties.subscribe(windowResizeCallback);
+
+		this.contactsChecked = ko.computed(
+			() => _.filter(this.contacts(), (item) => item.checked())
+		);
+
+		this.contactsCheckedOrSelected = ko.computed(() => {
+			const
+				checked = this.contactsChecked(),
+				selected = this.currentContact();
+
+			return _.union(checked, selected ? [selected] : []);
+		});
+
+		this.contactsCheckedOrSelectedUids = ko.computed(
+			() => _.map(this.contactsCheckedOrSelected(), (contact) => contact.idContact)
+		);
+
+		this.selector = new Selector(
+			this.contacts, this.currentContact, null,
+			'.e-contact-item .actionHandle', '.e-contact-item.selected',
+			'.e-contact-item .checkboxItem', '.e-contact-item.focused');
+
+		this.selector.on('onItemSelect', (contact) => {
+			this.populateViewContact(contact ? contact : null);
+			if (!contact)
 			{
-				aList = _.map(oData.Result.List, function(oItem) {
-					var oContact = new ContactModel();
-					return oContact.parse(oItem) ? oContact : null;
-				});
-
-				aList = _.compact(aList);
-
-				iCount = Utils.pInt(oData.Result.Count);
-				iCount = 0 < iCount ? iCount : 0;
-			}
-		}
-
-		self.contactsCount(iCount);
-
-		Utils.delegateRunOnDestroy(self.contacts());
-		self.contacts(aList);
-
-		self.contacts.loading(false);
-		self.viewClearSearch('' !== self.search());
-
-	}, iOffset, Consts.CONTACTS_PER_PAGE, this.search());
-};
-
-ContactsPopupView.prototype.onBuild = function(oDom)
-{
-	this.oContentVisible = $('.b-list-content', oDom);
-	this.oContentScrollable = $('.content', this.oContentVisible);
-
-	this.selector.init(this.oContentVisible, this.oContentScrollable, Enums.KeyState.ContactList);
-
-	var self = this;
-
-	key('delete', Enums.KeyState.ContactList, function() {
-		self.deleteCommand();
-		return false;
-	});
-
-	key('c, w', Enums.KeyState.ContactList, function() {
-		self.newMessageCommand();
-		return false;
-	});
-
-	oDom
-		.on('click', '.e-pagenator .e-page', function() {
-			var oPage = ko.dataFor(this);
-			if (oPage)
-			{
-				self.contactsPage(Utils.pInt(oPage.value));
-				self.reloadContactList();
+				this.emptySelection(true);
 			}
 		});
 
-	this.initUploader();
-};
+		this.selector.on('onItemGetUid', (contact) => (contact ? contact.generateUid() : ''));
 
-ContactsPopupView.prototype.onShow = function(bBackToCompose, sLastComposeFocusedField)
-{
-	this.bBackToCompose = Utils.isUnd(bBackToCompose) ? false : !!bBackToCompose;
-	this.sLastComposeFocusedField = Utils.isUnd(sLastComposeFocusedField) ? '' : sLastComposeFocusedField;
+		this.newCommand = createCommand(() => {
+			this.populateViewContact(null);
+			this.currentContact(null);
+		});
 
-	kn.routeOff();
-	this.reloadContactList(true);
-};
+		this.deleteCommand = createCommand(() => {
+			this.deleteSelectedContacts();
+			this.emptySelection(true);
+		}, () => 0 < this.contactsCheckedOrSelected().length);
 
-ContactsPopupView.prototype.onHide = function()
-{
-	kn.routeOn();
+		this.newMessageCommand = createCommand(() => {
 
-	this.currentContact(null);
-	this.emptySelection(true);
-	this.search('');
-	this.contactsCount(0);
+			if (!Settings.capa(Capa.Composer))
+			{
+				return false;
+			}
 
-	Utils.delegateRunOnDestroy(this.contacts());
-	this.contacts([]);
+			let
+				aE = [],
+				toEmails = null,
+				ccEmails = null,
+				bccEmails = null;
 
-	this.sLastComposeFocusedField = '';
+			const aC = this.contactsCheckedOrSelected();
+			if (isNonEmptyArray(aC))
+			{
+				aE = _.map(aC, (oItem) => {
+					if (oItem)
+					{
+						const
+							data = oItem.getNameAndEmailHelper(),
+							email = data ? new EmailModel(data[0], data[1]) : null;
 
-	if (this.bBackToCompose)
-	{
-		this.bBackToCompose = false;
+						if (email && email.validate())
+						{
+							return email;
+						}
+					}
 
-		if (Settings.capa(Enums.Capa.Composer))
+					return null;
+				});
+
+				aE = _.compact(aE);
+			}
+
+			if (isNonEmptyArray(aE))
+			{
+				this.bBackToCompose = false;
+
+				hideScreenPopup(require('View/Popup/Contacts'));
+
+				switch (this.sLastComposeFocusedField)
+				{
+					case 'cc':
+						ccEmails = aE;
+						break;
+					case 'bcc':
+						bccEmails = aE;
+						break;
+					case 'to':
+					default:
+						toEmails = aE;
+						break;
+				}
+
+				this.sLastComposeFocusedField = '';
+
+				_.delay(() => {
+					showScreenPopup(require('View/Popup/Compose'), [ComposeType.Empty, null, toEmails, ccEmails, bccEmails]);
+				}, Magics.Time200ms);
+			}
+
+			return true;
+
+		}, () => 0 < this.contactsCheckedOrSelected().length);
+
+		this.clearCommand = createCommand(() => {
+			this.search('');
+		});
+
+		this.saveCommand = createCommand(() => {
+
+			this.viewSaving(true);
+			this.viewSaveTrigger(SaveSettingsStep.Animate);
+
+			const
+				requestUid = fakeMd5(),
+				properties = [];
+
+			_.each(this.viewProperties(), (oItem) => {
+				if (oItem.type() && '' !== trim(oItem.value()))
+				{
+					properties.push([oItem.type(), oItem.value(), oItem.typeStr()]);
+				}
+			});
+
+			Remote.contactSave((sResult, oData) => {
+
+				let res = false;
+				this.viewSaving(false);
+
+				if (StorageResultType.Success === sResult && oData && oData.Result &&
+					oData.Result.RequestUid === requestUid && 0 < pInt(oData.Result.ResultID))
+				{
+					if ('' === this.viewID())
+					{
+						this.viewID(pInt(oData.Result.ResultID));
+					}
+
+					this.reloadContactList();
+					res = true;
+				}
+
+				_.delay(() => {
+					this.viewSaveTrigger(res ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult);
+				}, Magics.Time350ms);
+
+				if (res)
+				{
+					this.watchDirty(false);
+
+					_.delay(() => {
+						this.viewSaveTrigger(SaveSettingsStep.Idle);
+					}, Magics.Time1s);
+				}
+
+			}, requestUid, this.viewID(), properties);
+
+		}, () => {
+			const
+				bV = this.viewHasNonEmptyRequaredProperties(),
+				bReadOnly = this.viewReadOnly();
+			return !this.viewSaving() && bV && !bReadOnly;
+		});
+
+		this.syncCommand = createCommand(() => {
+
+			getApp().contactsSync((result, data) => {
+				if (StorageResultType.Success !== result || !data || !data.Result)
+				{
+					window.alert(getNotification(
+						data && data.ErrorCode ? data.ErrorCode : Notification.ContactsSyncError));
+				}
+
+				this.reloadContactList(true);
+			});
+
+		}, () => !this.contacts.syncing() && !this.contacts.importing());
+
+		this.bDropPageAfterDelete = false;
+
+		this.watchDirty = ko.observable(false);
+		this.watchHash = ko.observable(false);
+
+		this.viewHash = ko.computed(() => '' + _.map(this.viewProperties(), (oItem) => oItem.value()).join(''));
+
+	//	this.saveCommandDebounce = _.debounce(_.bind(this.saveCommand, this), 1000);
+
+		this.viewHash.subscribe(() => {
+			if (this.watchHash() && !this.viewReadOnly() && !this.watchDirty())
+			{
+				this.watchDirty(true);
+			}
+		});
+
+		this.sDefaultKeyScope = KeyState.ContactList;
+	}
+
+	getPropertyPlaceholder(type) {
+		let result = '';
+		switch (type)
 		{
-			kn.showScreenPopup(require('View/Popup/Compose'));
+			case ContactPropertyType.LastName:
+				result = 'CONTACTS/PLACEHOLDER_ENTER_LAST_NAME';
+				break;
+			case ContactPropertyType.FirstName:
+				result = 'CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME';
+				break;
+			case ContactPropertyType.Nick:
+				result = 'CONTACTS/PLACEHOLDER_ENTER_NICK_NAME';
+				break;
+			// no default
+		}
+
+		return result;
+	}
+
+	addNewProperty(type, typeStr) {
+		this.viewProperties.push(new ContactPropertyModel(type, typeStr || '', '', true, this.getPropertyPlaceholder(type)));
+	}
+
+	addNewOrFocusProperty(type, typeStr) {
+		const item = _.find(this.viewProperties(), (prop) => type === prop.type());
+		if (item)
+		{
+			item.focused(true);
+		}
+		else
+		{
+			this.addNewProperty(type, typeStr);
 		}
 	}
-};
+
+	addNewEmail() {
+		this.addNewProperty(ContactPropertyType.Email, 'Home');
+	}
+
+	addNewPhone() {
+		this.addNewProperty(ContactPropertyType.Phone, 'Mobile');
+	}
+
+	addNewWeb() {
+		this.addNewProperty(ContactPropertyType.Web);
+	}
+
+	addNewNickname() {
+		this.addNewOrFocusProperty(ContactPropertyType.Nick);
+	}
+
+	addNewNotes() {
+		this.addNewOrFocusProperty(ContactPropertyType.Note);
+	}
+
+	addNewBirthday() {
+		this.addNewOrFocusProperty(ContactPropertyType.Birthday);
+	}
+
+	exportVcf() {
+		getApp().download(exportContactsVcf());
+	}
+
+	exportCsv() {
+		getApp().download(exportContactsCsv());
+	}
+
+	initUploader() {
+		if (this.importUploaderButton())
+		{
+			const
+				j = new Jua({
+					'action': uploadContacts(),
+					'name': 'uploader',
+					'queueSize': 1,
+					'multipleSizeLimit': 1,
+					'disableDragAndDrop': true,
+					'disableMultiple': true,
+					'disableDocumentDropPrevent': true,
+					'clickElement': this.importUploaderButton()
+				});
+
+			if (j)
+			{
+				j
+					.on('onStart', () => {
+						this.contacts.importing(true);
+					})
+					.on('onComplete', (id, result, data) => {
+						this.contacts.importing(false);
+						this.reloadContactList();
+						if (!id || !result || !data || !data.Result)
+						{
+							window.alert(i18n('CONTACTS/ERROR_IMPORT_FILE'));
+						}
+					});
+			}
+		}
+	}
+
+	removeCheckedOrSelectedContactsFromList() {
+		const
+			koContacts = this.contacts,
+			contacts = this.contactsCheckedOrSelected();
+
+		let
+			currentContact = this.currentContact(),
+			count = this.contacts().length;
+
+		if (0 < contacts.length)
+		{
+			_.each(contacts, (contact) => {
+
+				if (currentContact && currentContact.idContact === contact.idContact)
+				{
+					currentContact = null;
+					this.currentContact(null);
+				}
+
+				contact.deleted(true);
+				count -= 1;
+			});
+
+			if (0 >= count)
+			{
+				this.bDropPageAfterDelete = true;
+			}
+
+			_.delay(() => {
+				_.each(contacts, (contact) => {
+					koContacts.remove(contact);
+					delegateRunOnDestroy(contact);
+				});
+			}, Magics.Time500ms);
+		}
+	}
+
+	deleteSelectedContacts() {
+		if (0 < this.contactsCheckedOrSelected().length)
+		{
+			Remote.contactsDelete(
+				_.bind(this.deleteResponse, this),
+				this.contactsCheckedOrSelectedUids()
+			);
+
+			this.removeCheckedOrSelectedContactsFromList();
+		}
+	}
+
+	/**
+	 * @param {string} sResult
+	 * @param {AjaxJsonDefaultResponse} oData
+	 */
+	deleteResponse(sResult, oData) {
+		if (Magics.Time500ms < (StorageResultType.Success === sResult && oData && oData.Time ? pInt(oData.Time) : 0))
+		{
+			this.reloadContactList(this.bDropPageAfterDelete);
+		}
+		else
+		{
+			_.delay(() => {
+				this.reloadContactList(this.bDropPageAfterDelete);
+			}, Magics.Time500ms);
+		}
+	}
+
+	removeProperty(oProp) {
+		this.viewProperties.remove(oProp);
+		delegateRunOnDestroy(oProp);
+	}
+
+	/**
+	 * @param {?ContactModel} contact
+	 */
+	populateViewContact(contact) {
+		let
+			id = '',
+			lastName = '',
+			firstName = '';
+		const
+			list = [];
+
+		this.watchHash(false);
+
+		this.emptySelection(false);
+		this.viewReadOnly(false);
+
+		if (contact)
+		{
+			id = contact.idContact;
+			if (isNonEmptyArray(contact.properties))
+			{
+				_.each(contact.properties, (property) => {
+					if (property && property[0])
+					{
+						if (ContactPropertyType.LastName === property[0])
+						{
+							lastName = property[1];
+						}
+						else if (ContactPropertyType.FirstName === property[0])
+						{
+							firstName = property[1];
+						}
+						else
+						{
+							list.push(new ContactPropertyModel(property[0], property[2] || '', property[1]));
+						}
+					}
+				});
+			}
+
+			this.viewReadOnly(!!contact.readOnly);
+		}
+
+		list.unshift(new ContactPropertyModel(ContactPropertyType.LastName, '', lastName, false,
+			this.getPropertyPlaceholder(ContactPropertyType.LastName)));
+
+		list.unshift(new ContactPropertyModel(ContactPropertyType.FirstName, '', firstName, !contact,
+			this.getPropertyPlaceholder(ContactPropertyType.FirstName)));
+
+		this.viewID(id);
+
+		delegateRunOnDestroy(this.viewProperties());
+
+		this.viewProperties([]);
+		this.viewProperties(list);
+
+		this.watchDirty(false);
+		this.watchHash(true);
+	}
+
+	/**
+	 * @param {boolean=} dropPagePosition = false
+	 */
+	reloadContactList(dropPagePosition = false) {
+
+		let offset = (this.contactsPage() - 1) * CONTACTS_PER_PAGE;
+
+		this.bDropPageAfterDelete = false;
+
+		if (dropPagePosition)
+		{
+			this.contactsPage(1);
+			offset = 0;
+		}
+
+		this.contacts.loading(true);
+		Remote.contacts((result, data) => {
+
+			let
+				count = 0,
+				list = [];
+
+			if (StorageResultType.Success === result && data && data.Result && data.Result.List)
+			{
+				if (isNonEmptyArray(data.Result.List))
+				{
+					list = _.map(data.Result.List, (item) => {
+						const contact = new ContactModel();
+						return contact.parse(item) ? contact : null;
+					});
+
+					list = _.compact(list);
+
+					count = pInt(data.Result.Count);
+					count = 0 < count ? count : 0;
+				}
+			}
+
+			this.contactsCount(count);
+
+			delegateRunOnDestroy(this.contacts());
+			this.contacts(list);
+
+			this.contacts.loading(false);
+			this.viewClearSearch('' !== this.search());
+
+		}, offset, CONTACTS_PER_PAGE, this.search());
+	}
+
+	onBuild(dom) {
+		this.oContentVisible = $('.b-list-content', dom);
+		this.oContentScrollable = $('.content', this.oContentVisible);
+
+		this.selector.init(this.oContentVisible, this.oContentScrollable, KeyState.ContactList);
+
+		key('delete', KeyState.ContactList, () => {
+			this.deleteCommand();
+			return false;
+		});
+
+		key('c, w', KeyState.ContactList, () => {
+			this.newMessageCommand();
+			return false;
+		});
+
+		const self = this;
+
+		dom
+			.on('click', '.e-pagenator .e-page', function() { // eslint-disable-line prefer-arrow-callback
+				const page = ko.dataFor(this); // eslint-disable-line no-invalid-this
+				if (page)
+				{
+					self.contactsPage(pInt(page.value));
+					self.reloadContactList();
+				}
+			});
+
+		this.initUploader();
+	}
+
+	onShow(bBackToCompose, sLastComposeFocusedField) {
+		this.bBackToCompose = isUnd(bBackToCompose) ? false : !!bBackToCompose;
+		this.sLastComposeFocusedField = isUnd(sLastComposeFocusedField) ? '' : sLastComposeFocusedField;
+
+		routeOff();
+		this.reloadContactList(true);
+	}
+
+	onHide() {
+		routeOn();
+
+		this.currentContact(null);
+		this.emptySelection(true);
+		this.search('');
+		this.contactsCount(0);
+
+		delegateRunOnDestroy(this.contacts());
+		this.contacts([]);
+
+		this.sLastComposeFocusedField = '';
+
+		if (this.bBackToCompose)
+		{
+			this.bBackToCompose = false;
+
+			if (Settings.capa(Capa.Composer))
+			{
+				showScreenPopup(require('View/Popup/Compose'));
+			}
+		}
+	}
+}
 
 module.exports = ContactsPopupView;

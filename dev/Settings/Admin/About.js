@@ -1,11 +1,15 @@
 
+/* global RL_COMMUNITY */
+
 import ko from 'ko';
 
 import {i18n, trigger as translatorTrigger} from 'Common/Translator';
 import {appSettingsGet, settingsGet} from 'Storage/Settings';
 
-import CoreStore from 'Stores/Admin/Core';
 import AppStore from 'Stores/Admin/App';
+import CoreStore from 'Stores/Admin/Core';
+
+import {getApp} from 'Helper/Apps/Admin';
 
 class AboutAdminSettings
 {
@@ -71,14 +75,14 @@ class AboutAdminSettings
 	onBuild() {
 		if (this.access() && !this.community)
 		{
-			require('App/Admin').default.reloadCoreData();
+			getApp().reloadCoreData();
 		}
 	}
 
 	updateCoreData() {
 		if (!this.coreUpdating() && !this.community)
 		{
-			require('App/Admin').default.updateCoreData();
+			getApp().updateCoreData();
 		}
 	}
 }

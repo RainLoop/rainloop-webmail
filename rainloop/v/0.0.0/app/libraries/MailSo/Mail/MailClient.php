@@ -2184,10 +2184,10 @@ class MailClient
 
 			$aFilteredNames = array(
 				'inbox',
-				'sent', 'outbox', 'sentmail',
-				'drafts',
-				'junk', 'spam',
-				'trash', 'bin',
+				'sent', 'send', 'outbox', 'sentmail', 'sendmail',
+				'drafts', 'draft',
+				'junk', 'spam', 'spambucket',
+				'trash', 'bin', 'deleted',
 				'archives', 'archive', 'allmail', 'all',
 				'starred', 'flagged', 'important',
 				'contacts', 'chats'
@@ -2200,7 +2200,7 @@ class MailClient
 			foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder \MailSo\Mail\Folder */ $oFolder)
 			{
 				// mandatory folders
-				if ($oFolder && \in_array(\strtolower($oFolder->NameRaw()), $aFilteredNames))
+				if ($oFolder && \in_array(\str_replace(' ', '', \strtolower($oFolder->NameRaw())), $aFilteredNames))
 				{
 					$aNewMailFoldersHelper[] = $oFolder;
 					$aMailFoldersHelper[$iIndex] = null;

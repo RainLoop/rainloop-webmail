@@ -1,7 +1,9 @@
 
-var
-	window = require('window'),
-	Opentip = window.Opentip;
+import window from 'window';
+
+const Opentip = window.Opentip || {};
+
+Opentip.styles = Opentip.styles || {};
 
 Opentip.styles.rainloop = {
 
@@ -41,4 +43,4 @@ Opentip.styles.rainloopErrorTip = {
 	'className': 'rainloopErrorTip'
 };
 
-module.exports = Opentip;
+export {Opentip, Opentip as default};

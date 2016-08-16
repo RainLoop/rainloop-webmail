@@ -250,3 +250,93 @@ html.no-css {
 		text-shadow: none !important;
 	}
 }
+
+// glass style
+html.glass {
+
+	@glass-color: #fff !important;
+	@glass-p-color: #aaa !important;
+	@glass-m-color: rgba(255, 255, 255, .8) !important;
+
+	.thm-login {
+		border: none !important;
+		background: none !important;
+		background: rgba(0, 0, 0, .3) !important;
+		box-shadow: none !important;
+
+		.controls {
+			.input-append .add-on i {
+				color: @glass-m-color;
+				text-shadow: none !important;
+				outline: none !important;
+				box-shadow: none !important;
+			}
+
+
+
+			input {
+				border: 1px solid none !important;
+				background: none !important;
+				outline: none !important;
+				text-shadow: none !important;
+				box-shadow: none !important;
+
+				color: @glass-color;
+				border-color: @glass-m-color;
+
+				&::-webkit-input-placeholder{
+					color: @glass-color;
+					text-shadow: none !important;
+				}
+				&::-moz-placeholder{
+					color: @glass-color;
+					text-shadow: none !important;
+				}
+				&:-moz-placeholder{
+					color: @glass-color;
+					text-shadow: none !important;
+				}
+				&:-ms-input-placeholder{
+					color: @glass-color;
+					text-shadow: none !important;
+				}
+				&:input-placeholder{
+					color: @glass-color;
+					text-shadow: none !important;
+				}
+				&:placeholder{
+					color: @glass-color;
+					text-shadow: none !important;
+				}
+
+				&:focus{
+					border-color: @glass-color;
+				}
+			}
+			.btn {
+				border: 1px solid none !important;
+				background: none !important;
+				outline: none !important;
+				text-shadow: none !important;
+				box-shadow: none !important;
+
+				color: @glass-color;
+				border-color: @glass-m-color;
+
+				&:hover, &:active{
+					border-color: @glass-color;
+				}
+			}
+		}
+	}
+
+	.thm-login-text {
+		color: @glass-m-color;
+		text-shadow: none !important;
+
+		.legend, .e-checkbox-icon, .g-ui-link, .social-button, .language-button {
+			color: @glass-m-color;
+			text-shadow: none !important;
+		}
+	}
+}

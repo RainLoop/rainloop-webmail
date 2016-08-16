@@ -39,7 +39,6 @@ class Audio
 		if (this.supported)
 		{
 			$(this.player).on('ended error', () => this.stop());
-
 			Events.sub('audio.api.stop', () => this.stop());
 		}
 	}

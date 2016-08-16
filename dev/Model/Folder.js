@@ -64,9 +64,9 @@ class FolderModel extends AbstractModel
 
 		this.isInbox = ko.computed(() => FolderType.Inbox === this.type());
 
-		this.hasSubScribedSubfolders = ko.computed(function() {
-			return !!_.find(this.subFolders(), (oFolder) => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder());
-		}, this);
+		this.hasSubScribedSubfolders = ko.computed(
+			() => !!_.find(this.subFolders(), (oFolder) => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder())
+		);
 
 		this.canBeEdited = ko.computed(() => FolderType.User === this.type() && this.existen && this.selectable);
 
@@ -236,9 +236,9 @@ class FolderModel extends AbstractModel
 
 		this.hasUnreadMessages = ko.computed(() => 0 < this.messageCountUnread() && '' !== this.printableUnreadCount());
 
-		this.hasSubScribedUnreadMessagesSubfolders = ko.computed(function() {
-			return !!_.find(this.subFolders(), (folder) => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders());
-		}, this);
+		this.hasSubScribedUnreadMessagesSubfolders = ko.computed(
+			() => !!_.find(this.subFolders(), (folder) => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders())
+		);
 
 		// subscribe
 		this.name.subscribe((value) => {

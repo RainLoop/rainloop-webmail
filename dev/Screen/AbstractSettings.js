@@ -37,16 +37,15 @@ class AbstractSettingsScreen extends AbstractScreen
 		}
 	}
 
-	onRoute(sSubName) {
-		var
-			self = this,
-			oSettingsScreen = null,
+	onRoute(subName) {
+		let
+			settingsScreen = null,
 			RoutedSettingsViewModel = null,
-			oViewModelPlace = null,
-			oViewModelDom = null;
+			viewModelPlace = null,
+			viewModelDom = null;
 
 		RoutedSettingsViewModel = _.find(VIEW_MODELS.settings,
-			(SettingsViewModel) => SettingsViewModel && SettingsViewModel.__rlSettingsData && sSubName === SettingsViewModel.__rlSettingsData.Route
+			(SettingsViewModel) => SettingsViewModel && SettingsViewModel.__rlSettingsData && subName === SettingsViewModel.__rlSettingsData.Route
 		);
 
 		if (RoutedSettingsViewModel)
@@ -67,32 +66,32 @@ class AbstractSettingsScreen extends AbstractScreen
 		{
 			if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm)
 			{
-				oSettingsScreen = RoutedSettingsViewModel.__vm;
+				settingsScreen = RoutedSettingsViewModel.__vm;
 			}
 			else
 			{
-				oViewModelPlace = this.oViewModelPlace;
-				if (oViewModelPlace && 1 === oViewModelPlace.length)
+				viewModelPlace = this.oViewModelPlace;
+				if (viewModelPlace && 1 === viewModelPlace.length)
 				{
-					oSettingsScreen = new RoutedSettingsViewModel();
+					settingsScreen = new RoutedSettingsViewModel();
 
-					oViewModelDom = $('<div></div>').addClass('rl-settings-view-model').hide();
-					oViewModelDom.appendTo(oViewModelPlace);
+					viewModelDom = $('<div></div>').addClass('rl-settings-view-model').hide();
+					viewModelDom.appendTo(viewModelPlace);
 
-					oSettingsScreen.viewModelDom = oViewModelDom;
+					settingsScreen.viewModelDom = viewModelDom;
 
-					oSettingsScreen.__rlSettingsData = RoutedSettingsViewModel.__rlSettingsData;
+					settingsScreen.__rlSettingsData = RoutedSettingsViewModel.__rlSettingsData;
 
-					RoutedSettingsViewModel.__dom = oViewModelDom;
+					RoutedSettingsViewModel.__dom = viewModelDom;
 					RoutedSettingsViewModel.__builded = true;
-					RoutedSettingsViewModel.__vm = oSettingsScreen;
+					RoutedSettingsViewModel.__vm = settingsScreen;
 
-					ko.applyBindingAccessorsToNode(oViewModelDom[0], {
+					ko.applyBindingAccessorsToNode(viewModelDom[0], {
 						translatorInit: true,
 						template: () => ({name: RoutedSettingsViewModel.__rlSettingsData.Template})
-					}, oSettingsScreen);
+					}, settingsScreen);
 
-					delegateRun(oSettingsScreen, 'onBuild', [oViewModelDom]);
+					delegateRun(settingsScreen, 'onBuild', [viewModelDom]);
 				}
 				else
 				{
@@ -100,29 +99,29 @@ class AbstractSettingsScreen extends AbstractScreen
 				}
 			}
 
-			if (oSettingsScreen)
+			if (settingsScreen)
 			{
-				_.defer(function() {
+				_.defer(() => {
 					// hide
-					if (self.oCurrentSubScreen)
+					if (this.oCurrentSubScreen)
 					{
-						delegateRun(self.oCurrentSubScreen, 'onHide');
-						self.oCurrentSubScreen.viewModelDom.hide();
+						delegateRun(this.oCurrentSubScreen, 'onHide');
+						this.oCurrentSubScreen.viewModelDom.hide();
 					}
 					// --
 
-					self.oCurrentSubScreen = oSettingsScreen;
+					this.oCurrentSubScreen = settingsScreen;
 
 					// show
-					if (self.oCurrentSubScreen)
+					if (this.oCurrentSubScreen)
 					{
-						delegateRun(self.oCurrentSubScreen, 'onBeforeShow');
-						self.oCurrentSubScreen.viewModelDom.show();
-						delegateRun(self.oCurrentSubScreen, 'onShow');
-						delegateRun(self.oCurrentSubScreen, 'onShowWithDelay', [], 200);
+						delegateRun(this.oCurrentSubScreen, 'onBeforeShow');
+						this.oCurrentSubScreen.viewModelDom.show();
+						delegateRun(this.oCurrentSubScreen, 'onShow');
+						delegateRun(this.oCurrentSubScreen, 'onShowWithDelay', [], 200);
 
-						_.each(self.menu(), (oItem) => {
-							oItem.selected(oSettingsScreen && oSettingsScreen.__rlSettingsData && oItem.route === oSettingsScreen.__rlSettingsData.Route);
+						_.each(this.menu(), (item) => {
+							item.selected(settingsScreen && settingsScreen.__rlSettingsData && item.route === settingsScreen.__rlSettingsData.Route);
 						});
 
 						$('#rl-content .b-settings .b-content .content').scrollTop(0);
@@ -166,22 +165,23 @@ class AbstractSettingsScreen extends AbstractScreen
 	}
 
 	routes() {
-		var
+		const
 			DefaultViewModel = _.find(VIEW_MODELS.settings,
-				(SettingsViewModel) => SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData.IsDefault),
+				(SettingsViewModel) => SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData.IsDefault
+			),
 			defaultRoute = DefaultViewModel && DefaultViewModel.__rlSettingsData ? DefaultViewModel.__rlSettingsData.Route : 'general',
-			oRules = {
+			rules = {
 				subname: /^(.*)$/,
-				normalize_: (oRequest, oVals) => {
-					oVals.subname = isUnd(oVals.subname) ? defaultRoute : pString(oVals.subname);
-					return [oVals.subname];
+				normalize_: (rquest, vals) => {
+					vals.subname = isUnd(vals.subname) ? defaultRoute : pString(vals.subname);
+					return [vals.subname];
 				}
 			};
 
 		return [
-			['{subname}/', oRules],
-			['{subname}', oRules],
-			['', oRules]
+			['{subname}/', rules],
+			['{subname}', rules],
+			['', rules]
 		];
 	}
 }

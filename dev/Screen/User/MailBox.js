@@ -16,17 +16,25 @@ import SettingsStore from 'Stores/User/Settings';
 import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
 
+import {SystemDropDownMailBoxUserView} from 'View/User/MailBox/SystemDropDown';
+import {FolderListMailBoxUserView} from 'View/User/MailBox/FolderList';
+import {MessageListMailBoxUserView} from 'View/User/MailBox/MessageList';
+import {MessageViewMailBoxUserView} from 'View/User/MailBox/MessageView';
+
+import {getApp} from 'Helper/Apps/User';
+
+import {warmUpScreenPopup} from 'Knoin/Knoin';
+
 import {AbstractScreen} from 'Knoin/AbstractScreen';
-import App from 'App/User';
 
 class MailBoxUserScreen extends AbstractScreen
 {
 	constructor() {
 		super('mailbox', [
-			require('View/User/MailBox/SystemDropDown'),
-			require('View/User/MailBox/FolderList'),
-			require('View/User/MailBox/MessageList'),
-			require('View/User/MailBox/MessageView')
+			SystemDropDownMailBoxUserView,
+			FolderListMailBoxUserView,
+			MessageListMailBoxUserView,
+			MessageViewMailBoxUserView
 		]);
 	}
 
@@ -42,7 +50,7 @@ class MailBoxUserScreen extends AbstractScreen
 			foldersInboxUnreadCount = 0;
 		}
 
-		App.setWindowTitle(('' === email ? '' : '' + (0 < foldersInboxUnreadCount ? '(' + foldersInboxUnreadCount + ') ' : ' ') + email + ' - ') + i18n('TITLES/MAILBOX'));
+		getApp().setWindowTitle(('' === email ? '' : '' + (0 < foldersInboxUnreadCount ? '(' + foldersInboxUnreadCount + ') ' : ' ') + email + ' - ') + i18n('TITLES/MAILBOX'));
 	}
 
 	/**
@@ -73,6 +81,7 @@ class MailBoxUserScreen extends AbstractScreen
 	 * @param {string} folderHash
 	 * @param {number} page
 	 * @param {string} search
+	 * @returns {void}
 	 */
 	onRoute(folderHash, page, search) {
 		let threadUid = folderHash.replace(/^(.+)~([\d]+)$/, '$2');
@@ -91,7 +100,7 @@ class MailBoxUserScreen extends AbstractScreen
 			MessageStore.messageListSearch(search);
 			MessageStore.messageListThreadUid(threadUid);
 
-			App.reloadMessageList();
+			getApp().reloadMessageList();
 		}
 	}
 
@@ -104,9 +113,8 @@ class MailBoxUserScreen extends AbstractScreen
 		MessageStore.messageList.subscribe(windowResizeCallback);
 		MessageStore.message.subscribe(windowResizeCallback);
 
-		_.delay(() => {
-			SettingsStore.layout.valueHasMutated();
-		}, Magics.Time50ms);
+		_.delay(() => SettingsStore.layout.valueHasMutated(), Magics.Time50ms);
+		_.delay(() => warmUpScreenPopup(require('View/Popup/Compose')), Magics.Time500ms);
 
 		Events.sub('mailbox.inbox-unread-count', (count) => {
 			FolderStore.foldersInboxUnreadCount(count);
@@ -130,7 +138,7 @@ class MailBoxUserScreen extends AbstractScreen
 		if (!bMobileDevice && !Settings.appSettingsGet('mobile'))
 		{
 			_.defer(() => {
-				App.initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize);
+				getApp().initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize);
 			});
 		}
 	}
@@ -139,7 +147,7 @@ class MailBoxUserScreen extends AbstractScreen
 	 * @returns {Array}
 	 */
 	routes() {
-		var
+		const
 			inboxFolderName = getFolderInboxName(),
 			fNormS = (request, vals) => {
 				vals[0] = pString(vals[0]);

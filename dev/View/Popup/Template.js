@@ -1,199 +1,186 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import ko from 'ko';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
-	Translator = require('Common/Translator'),
-	HtmlEditor = require('Common/HtmlEditor').default,
+import {StorageResultType, Notification} from 'Common/Enums';
+import {trim, isNormal, createCommand} from 'Common/Utils';
+import {getNotification} from 'Common/Translator';
+import {HtmlEditor} from 'Common/HtmlEditor';
 
-	Remote = require('Remote/User/Ajax'),
+import Remote from 'Remote/User/Ajax';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {getApp} from 'Helper/Apps/User';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function TemplatePopupView()
+import {view, ViewType} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+@view({
+	name: 'View/Popup/Template',
+	type: ViewType.Popup,
+	templateID: 'PopupsTemplate'
+})
+class TemplatePopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsTemplate');
+	constructor() {
+		super();
 
-	this.editor = null;
-	this.signatureDom = ko.observable(null);
+		this.editor = null;
+		this.signatureDom = ko.observable(null);
 
-	this.id = ko.observable('');
+		this.id = ko.observable('');
 
-	this.name = ko.observable('');
-	this.name.error = ko.observable(false);
-	this.name.focus = ko.observable(false);
+		this.name = ko.observable('');
+		this.name.error = ko.observable(false);
+		this.name.focus = ko.observable(false);
 
-	this.body = ko.observable('');
-	this.body.loading = ko.observable(false);
-	this.body.error = ko.observable(false);
+		this.body = ko.observable('');
+		this.body.loading = ko.observable(false);
+		this.body.error = ko.observable(false);
 
-	this.name.subscribe(function() {
-		this.name.error(false);
-	}, this);
-
-	this.body.subscribe(function() {
-		this.body.error(false);
-	}, this);
-
-	this.submitRequest = ko.observable(false);
-	this.submitError = ko.observable('');
-
-	this.addTemplateCommand = Utils.createCommand(this, function() {
-
-		this.populateBodyFromEditor();
-
-		this.name.error('' === Utils.trim(this.name()));
-		this.body.error('' === Utils.trim(this.body()) ||
-			':HTML:' === Utils.trim(this.body()));
-
-		if (this.name.error() || this.body.error())
-		{
-			return false;
-		}
-
-		this.submitRequest(true);
-
-		Remote.templateSetup(_.bind(function(sResult, oData) {
-
-			this.submitRequest(false);
-			if (Enums.StorageResultType.Success === sResult && oData)
-			{
-				if (oData.Result)
-				{
-					require('App/User').default.templates();
-					this.cancelCommand();
-				}
-				else if (oData.ErrorCode)
-				{
-					this.submitError(Translator.getNotification(oData.ErrorCode));
-				}
-			}
-			else
-			{
-				this.submitError(Translator.getNotification(Enums.Notification.UnknownError));
-			}
-
-		}, this), this.id(), this.name(), this.body());
-
-		return true;
-
-	}, function() {
-		return !this.submitRequest();
-	});
-
-	kn.constructorEnd(this);
-}
-
-kn.extendAsViewModel(['View/Popup/Template'], TemplatePopupView);
-_.extend(TemplatePopupView.prototype, AbstractView.prototype);
-
-TemplatePopupView.prototype.clearPopup = function()
-{
-	this.id('');
-
-	this.name('');
-	this.name.error(false);
-
-	this.body('');
-	this.body.loading(false);
-	this.body.error(false);
-
-	this.submitRequest(false);
-	this.submitError('');
-
-	if (this.editor)
-	{
-		this.editor.setPlain('', false);
-	}
-};
-
-TemplatePopupView.prototype.populateBodyFromEditor = function()
-{
-	if (this.editor)
-	{
-		this.body(this.editor.getDataWithHtmlMark());
-	}
-};
-
-TemplatePopupView.prototype.editorSetBody = function(sBody)
-{
-	var self = this;
-
-	if (!this.editor && this.signatureDom())
-	{
-		this.editor = new HtmlEditor(self.signatureDom(), function() {
-			self.populateBodyFromEditor();
-		}, function() {
-			self.editor.setHtmlOrPlain(sBody);
+		this.name.subscribe(() => {
+			this.name.error(false);
 		});
-	}
-	else
-	{
-		this.editor.setHtmlOrPlain(sBody);
-	}
-};
 
-TemplatePopupView.prototype.onShow = function(oTemplate)
-{
-	var self = this;
+		this.body.subscribe(() => {
+			this.body.error(false);
+		});
 
-	this.clearPopup();
+		this.submitRequest = ko.observable(false);
+		this.submitError = ko.observable('');
 
-	if (oTemplate && oTemplate.id)
-	{
-		this.id(oTemplate.id);
-		this.name(oTemplate.name);
-		this.body(oTemplate.body);
+		this.addTemplateCommand = createCommand(() => {
 
-		if (oTemplate.populated)
-		{
-			self.editorSetBody(this.body());
-		}
-		else
-		{
-			this.body.loading(true);
-			self.body.error(false);
+			this.populateBodyFromEditor();
 
-			Remote.templateGetById(function(sResult, oData) {
+			this.name.error('' === trim(this.name()));
+			this.body.error('' === trim(this.body()) || ':HTML:' === trim(this.body()));
 
-				self.body.loading(false);
+			if (this.name.error() || this.body.error())
+			{
+				return false;
+			}
 
-				if (Enums.StorageResultType.Success === sResult && oData && oData.Result &&
-					'Object/Template' === oData.Result['@Object'] && Utils.isNormal(oData.Result.Body))
+			this.submitRequest(true);
+
+			Remote.templateSetup((result, data) => {
+
+				this.submitRequest(false);
+				if (StorageResultType.Success === result && data)
 				{
-					oTemplate.body = oData.Result.Body;
-					oTemplate.populated = true;
-
-					self.body(oTemplate.body);
-					self.body.error(false);
+					if (data.Result)
+					{
+						getApp().templates();
+						this.cancelCommand();
+					}
+					else if (data.ErrorCode)
+					{
+						this.submitError(getNotification(data.ErrorCode));
+					}
 				}
 				else
 				{
-					self.body('');
-					self.body.error(true);
+					this.submitError(getNotification(Notification.UnknownError));
 				}
 
-				self.editorSetBody(self.body());
+			}, this.id(), this.name(), this.body());
 
-			}, this.id());
+			return true;
+
+		}, () => !this.submitRequest());
+	}
+
+	clearPopup() {
+		this.id('');
+
+		this.name('');
+		this.name.error(false);
+
+		this.body('');
+		this.body.loading(false);
+		this.body.error(false);
+
+		this.submitRequest(false);
+		this.submitError('');
+
+		if (this.editor)
+		{
+			this.editor.setPlain('', false);
 		}
 	}
-	else
-	{
-		self.editorSetBody('');
-	}
-};
 
-TemplatePopupView.prototype.onShowWithDelay = function()
-{
-	this.name.focus(true);
-};
+	populateBodyFromEditor() {
+		if (this.editor)
+		{
+			this.body(this.editor.getDataWithHtmlMark());
+		}
+	}
+
+	editorSetBody(sBody) {
+		if (!this.editor && this.signatureDom())
+		{
+			this.editor = new HtmlEditor(this.signatureDom(), () => {
+				this.populateBodyFromEditor();
+			}, () => {
+				this.editor.setHtmlOrPlain(sBody);
+			});
+		}
+		else
+		{
+			this.editor.setHtmlOrPlain(sBody);
+		}
+	}
+
+	onShow(template) {
+
+		this.clearPopup();
+
+		if (template && template.id)
+		{
+			this.id(template.id);
+			this.name(template.name);
+			this.body(template.body);
+
+			if (template.populated)
+			{
+				this.editorSetBody(this.body());
+			}
+			else
+			{
+				this.body.loading(true);
+				this.body.error(false);
+
+				Remote.templateGetById((result, data) => {
+
+					this.body.loading(false);
+
+					if (StorageResultType.Success === result && data && data.Result &&
+						'Object/Template' === data.Result['@Object'] && isNormal(data.Result.Body))
+					{
+						template.body = data.Result.Body;
+						template.populated = true;
+
+						this.body(template.body);
+						this.body.error(false);
+					}
+					else
+					{
+						this.body('');
+						this.body.error(true);
+					}
+
+					this.editorSetBody(this.body());
+
+				}, this.id());
+			}
+		}
+		else
+		{
+			this.editorSetBody('');
+		}
+	}
+
+	onShowWithDelay() {
+		this.name.focus(true);
+	}
+}
 
 module.exports = TemplatePopupView;

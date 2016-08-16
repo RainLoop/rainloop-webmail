@@ -1,475 +1,460 @@
 
-var
-	_ = require('_'),
-	$ = require('$'),
-	ko = require('ko'),
-	key = require('key'),
+import _ from '_';
+import $ from '$';
+import ko from 'ko';
+import key from 'key';
 
-	Utils = require('Common/Utils'),
-	Enums = require('Common/Enums'),
-	Translator = require('Common/Translator'),
+import {
+	inArray, createCommand,
+	pString, log, isUnd, trim,
+	defautOptionsAfterRender
+} from 'Common/Utils';
 
-	PgpStore = require('Stores/User/Pgp'),
+import {Magics, KeyState} from 'Common/Enums';
+import {i18n} from 'Common/Translator';
 
-	EmailModel = require('Model/Email').default,
+import PgpStore from 'Stores/User/Pgp';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {EmailModel} from 'Model/Email';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function ComposeOpenPgpPopupView()
+import {view, ViewType} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+@view({
+	name: 'View/Popup/ComposeOpenPgp',
+	type: ViewType.Popup,
+	templateID: 'PopupsComposeOpenPgp'
+})
+class ComposeOpenPgpPopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsComposeOpenPgp');
+	constructor() {
+		super();
 
-	var self = this;
+		this.publicKeysOptionsCaption = i18n('PGP_NOTIFICATIONS/ADD_A_PUBLICK_KEY');
+		this.privateKeysOptionsCaption = i18n('PGP_NOTIFICATIONS/SELECT_A_PRIVATE_KEY');
 
-	this.publicKeysOptionsCaption = Translator.i18n('PGP_NOTIFICATIONS/ADD_A_PUBLICK_KEY');
-	this.privateKeysOptionsCaption = Translator.i18n('PGP_NOTIFICATIONS/SELECT_A_PRIVATE_KEY');
+		this.notification = ko.observable('');
 
-	this.notification = ko.observable('');
+		this.sign = ko.observable(false);
+		this.encrypt = ko.observable(false);
 
-	this.sign = ko.observable(false);
-	this.encrypt = ko.observable(false);
+		this.password = ko.observable('');
+		this.password.focus = ko.observable(false);
+		this.buttonFocus = ko.observable(false);
 
-	this.password = ko.observable('');
-	this.password.focus = ko.observable(false);
-	this.buttonFocus = ko.observable(false);
+		this.text = ko.observable('');
+		this.selectedPrivateKey = ko.observable(null);
+		this.selectedPublicKey = ko.observable(null);
 
-	this.text = ko.observable('');
-	this.selectedPrivateKey = ko.observable(null);
-	this.selectedPublicKey = ko.observable(null);
+		this.signKey = ko.observable(null);
+		this.encryptKeys = ko.observableArray([]);
 
-	this.signKey = ko.observable(null);
-	this.encryptKeys = ko.observableArray([]);
+		this.encryptKeysView = ko.computed(
+			() => _.compact(_.map(this.encryptKeys(), (oKey) => (oKey ? oKey.key : null)))
+		);
 
-	this.encryptKeysView = ko.computed(function() {
-		return _.compact(_.map(this.encryptKeys(), function(oKey) {
-			return oKey ? oKey.key : null;
-		}));
-	}, this);
-
-	this.privateKeysOptions = ko.computed(function() {
-		return _.compact(_.flatten(_.map(PgpStore.openpgpkeysPrivate(), function(oKey, iIndex) {
-			return self.signKey() && self.signKey().key.id === oKey.id ? null : _.map(oKey.users, function(sUser) {
-				return {
+		this.privateKeysOptions = ko.computed(() => {
+			const opts = _.map(PgpStore.openpgpkeysPrivate(), (oKey, iIndex) => {
+				if (this.signKey() && this.signKey().key.id === oKey.id)
+				{
+					return null;
+				}
+				return _.map(oKey.users, (user) => ({
 					'id': oKey.guid,
-					'name': '(' + oKey.id.substr(-8).toUpperCase() + ') ' + sUser,
+					'name': '(' + oKey.id.substr(-8).toUpperCase() + ') ' + user,
 					'key': oKey,
 					'class': iIndex % 2 ? 'odd' : 'even'
-				};
-			});
-		}), true));
-	});
-
-	this.publicKeysOptions = ko.computed(function() {
-		return _.compact(_.flatten(_.map(PgpStore.openpgpkeysPublic(), function(oKey, iIndex) {
-			return -1 < Utils.inArray(oKey, self.encryptKeysView()) ? null : _.map(oKey.users, function(sUser) {
-				return {
-					'id': oKey.guid,
-					'name': '(' + oKey.id.substr(-8).toUpperCase() + ') ' + sUser,
-					'key': oKey,
-					'class': iIndex % 2 ? 'odd' : 'even'
-				};
-			});
-		}), true));
-	});
-
-	this.submitRequest = ko.observable(false);
-
-	this.resultCallback = null;
-
-	// commands
-	this.doCommand = Utils.createCommand(this, function() {
-
-		var
-			bResult = true,
-			oPrivateKey = null,
-			aPublicKeys = [];
-
-		this.submitRequest(true);
-
-		if (bResult && this.sign())
-		{
-			if (!this.signKey())
-			{
-				this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND'));
-				bResult = false;
-			}
-			else if (!this.signKey().key)
-			{
-				this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
-					'EMAIL': this.signKey().email
 				}));
+			});
 
-				bResult = false;
-			}
+			return _.compact(_.flatten(opts, true));
+		});
 
-			if (bResult)
-			{
-				var aPrivateKeys = this.signKey().key.getNativeKeys();
-				oPrivateKey = aPrivateKeys[0] || null;
-
-				try
+		this.publicKeysOptions = ko.computed(() => {
+			const opts = _.map(PgpStore.openpgpkeysPublic(), (oKey, index) => {
+				if (-1 < inArray(oKey, this.encryptKeysView()))
 				{
-					if (oPrivateKey)
-					{
-						oPrivateKey.decrypt(Utils.pString(this.password()));
-					}
+					return null;
 				}
-				catch (e)
-				{
-					oPrivateKey = null;
-				}
+				return _.map(oKey.users, (user) => ({
+					'id': oKey.guid,
+					'name': '(' + oKey.id.substr(-8).toUpperCase() + ') ' + user,
+					'key': oKey,
+					'class': index % 2 ? 'odd' : 'even'
+				}));
+			});
+			return _.compact(_.flatten(opts, true));
+		});
 
-				if (!oPrivateKey)
-				{
-					this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND'));
-					bResult = false;
-				}
-			}
-		}
+		this.submitRequest = ko.observable(false);
 
-		if (bResult && this.encrypt())
-		{
-			if (0 === this.encryptKeys().length)
-			{
-				this.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND'));
-				bResult = false;
-			}
-			else if (this.encryptKeys())
-			{
+		this.resultCallback = null;
+
+		// commands
+		this.doCommand = createCommand(() => {
+
+			let
+				result = true,
+				privateKey = null,
 				aPublicKeys = [];
 
-				_.each(this.encryptKeys(), function(oKey) {
-					if (oKey && oKey.key)
-					{
-						aPublicKeys = aPublicKeys.concat(_.compact(_.flatten(oKey.key.getNativeKeys())));
-					}
-					else if (oKey && oKey.email)
-					{
-						self.notification(Translator.i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
-							'EMAIL': oKey.email
-						}));
+			this.submitRequest(true);
 
-						bResult = false;
-					}
-				});
-
-				if (bResult && (0 === aPublicKeys.length || this.encryptKeys().length !== aPublicKeys.length))
+			if (result && this.sign())
+			{
+				if (!this.signKey())
 				{
-					bResult = false;
+					this.notification(i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND'));
+					result = false;
 				}
-			}
-		}
-
-		if (bResult && self.resultCallback)
-		{
-			_.delay(function() {
-
-				var oPromise = null;
-
-				try
+				else if (!this.signKey().key)
 				{
-					if (oPrivateKey && 0 === aPublicKeys.length)
-					{
-						oPromise = PgpStore.openpgp.sign({
-							data: self.text(),
-							privateKeys: [oPrivateKey]
-						});
-					}
-					else if (oPrivateKey && 0 < aPublicKeys.length)
-					{
-						oPromise = PgpStore.openpgp.encrypt({
-							data: self.text(),
-							publicKeys: aPublicKeys,
-							privateKeys: [oPrivateKey]
-						});
-					}
-					else if (!oPrivateKey && 0 < aPublicKeys.length)
-					{
-						oPromise = PgpStore.openpgp.encrypt({
-							data: self.text(),
-							publicKeys: aPublicKeys
-						});
-					}
-				}
-				catch (e)
-				{
-					Utils.log(e);
-
-					self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
-						'ERROR': '' + e
+					this.notification(i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
+						'EMAIL': this.signKey().email
 					}));
+
+					result = false;
 				}
 
-				if (oPromise)
+				if (result)
 				{
+					const privateKeys = this.signKey().key.getNativeKeys();
+					privateKey = privateKeys[0] || null;
+
 					try
 					{
-						oPromise.then(function(mData) {
-
-							self.resultCallback(mData.data);
-							self.cancelCommand();
-
-						}).then(null, function(e) {
-							self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
-								'ERROR': '' + e
-							}));
-						});
+						if (privateKey)
+						{
+							privateKey.decrypt(pString(this.password()));
+						}
 					}
 					catch (e)
 					{
-						self.notification(Translator.i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+						privateKey = null;
+					}
+
+					if (!privateKey)
+					{
+						this.notification(i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND'));
+						result = false;
+					}
+				}
+			}
+
+			if (result && this.encrypt())
+			{
+				if (0 === this.encryptKeys().length)
+				{
+					this.notification(i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND'));
+					result = false;
+				}
+				else if (this.encryptKeys())
+				{
+					aPublicKeys = [];
+
+					_.each(this.encryptKeys(), (oKey) => {
+						if (oKey && oKey.key)
+						{
+							aPublicKeys = aPublicKeys.concat(_.compact(_.flatten(oKey.key.getNativeKeys())));
+						}
+						else if (oKey && oKey.email)
+						{
+							this.notification(i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
+								'EMAIL': oKey.email
+							}));
+
+							result = false;
+						}
+					});
+
+					if (result && (0 === aPublicKeys.length || this.encryptKeys().length !== aPublicKeys.length))
+					{
+						result = false;
+					}
+				}
+			}
+
+			if (result && this.resultCallback)
+			{
+				_.delay(() => {
+
+					let pgpPromise = null;
+
+					try
+					{
+						if (privateKey && 0 === aPublicKeys.length)
+						{
+							pgpPromise = PgpStore.openpgp.sign({
+								data: this.text(),
+								privateKeys: [privateKey]
+							});
+						}
+						else if (privateKey && 0 < aPublicKeys.length)
+						{
+							pgpPromise = PgpStore.openpgp.encrypt({
+								data: this.text(),
+								publicKeys: aPublicKeys,
+								privateKeys: [privateKey]
+							});
+						}
+						else if (!privateKey && 0 < aPublicKeys.length)
+						{
+							pgpPromise = PgpStore.openpgp.encrypt({
+								data: this.text(),
+								publicKeys: aPublicKeys
+							});
+						}
+					}
+					catch (e)
+					{
+						log(e);
+
+						this.notification(i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
 							'ERROR': '' + e
 						}));
 					}
-				}
 
-				self.submitRequest(false);
+					if (pgpPromise)
+					{
+						try
+						{
+							pgpPromise.then((mData) => {
+								this.resultCallback(mData.data);
+								this.cancelCommand();
+							}).catch((e) => {
+								this.notification(i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+									'ERROR': '' + e
+								}));
+							});
+						}
+						catch (e)
+						{
+							this.notification(i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+								'ERROR': '' + e
+							}));
+						}
+					}
 
-			}, Enums.Magics.Time20ms);
+					this.submitRequest(false);
+
+				}, Magics.Time20ms);
+			}
+			else
+			{
+				this.submitRequest(false);
+			}
+
+			return result;
+
+		}, () => !this.submitRequest() && (this.sign() || this.encrypt()));
+
+		this.selectCommand = createCommand(() => {
+
+			const
+				keyId = this.selectedPrivateKey(),
+				option = keyId ? _.find(this.privateKeysOptions(), (oItem) => oItem && keyId === oItem.id) : null;
+
+			if (option)
+			{
+				this.signKey({
+					'empty': !option.key,
+					'selected': ko.observable(!!option.key),
+					'users': option.key.users,
+					'hash': option.key.id.substr(-8).toUpperCase(),
+					'key': option.key
+				});
+			}
+		});
+
+		this.addCommand = createCommand(() => {
+
+			const
+				keyId = this.selectedPublicKey(),
+				keys = this.encryptKeys(),
+				option = keyId ? _.find(this.publicKeysOptions(), (item) => (item && keyId === item.id)) : null;
+
+			if (option)
+			{
+				keys.push({
+					'empty': !option.key,
+					'selected': ko.observable(!!option.key),
+					'removable': ko.observable(!this.sign() || !this.signKey() || this.signKey().key.id !== option.key.id),
+					'users': option.key.users,
+					'hash': option.key.id.substr(-8).toUpperCase(),
+					'key': option.key
+				});
+
+				this.encryptKeys(keys);
+			}
+		});
+
+		this.updateCommand = createCommand(() => {
+			_.each(this.encryptKeys(), (oKey) => {
+				oKey.removable(!this.sign() || !this.signKey() || this.signKey().key.id !== oKey.key.id);
+			});
+		});
+
+		this.selectedPrivateKey.subscribe((value) => {
+			if (value)
+			{
+				this.selectCommand();
+				this.updateCommand();
+			}
+		});
+
+		this.selectedPublicKey.subscribe((value) => {
+			if (value)
+			{
+				this.addCommand();
+			}
+		});
+
+		this.sDefaultKeyScope = KeyState.PopupComposeOpenPGP;
+
+		this.defautOptionsAfterRender = defautOptionsAfterRender;
+
+		this.addOptionClass = (domOption, item) => {
+
+			this.defautOptionsAfterRender(domOption, item);
+
+			if (item && !isUnd(item.class) && domOption)
+			{
+				$(domOption).addClass(item.class);
+			}
+		};
+
+		this.deletePublickKey = _.bind(this.deletePublickKey, this);
+	}
+
+	deletePublickKey(publicKey) {
+		this.encryptKeys.remove(publicKey);
+	}
+
+	clearPopup() {
+		this.notification('');
+
+		this.sign(false);
+		this.encrypt(false);
+
+		this.password('');
+		this.password.focus(false);
+		this.buttonFocus(false);
+
+		this.signKey(null);
+		this.encryptKeys([]);
+		this.text('');
+
+		this.resultCallback = null;
+	}
+
+	onBuild() {
+		key('tab,shift+tab', KeyState.PopupComposeOpenPGP, () => {
+			switch (true)
+			{
+				case this.password.focus():
+					this.buttonFocus(true);
+					break;
+				case this.buttonFocus():
+					this.password.focus(true);
+					break;
+				// no default
+			}
+			return false;
+		});
+	}
+
+	onHideWithDelay() {
+		this.clearPopup();
+	}
+
+	onShowWithDelay() {
+		if (this.sign())
+		{
+			this.password.focus(true);
 		}
 		else
 		{
-			self.submitRequest(false);
-		}
-
-		return bResult;
-
-	}, function() {
-		return !this.submitRequest() &&	(this.sign() || this.encrypt());
-	});
-
-	this.selectCommand = Utils.createCommand(this, function() {
-
-		var
-			sKeyId = this.selectedPrivateKey(),
-			oOption = sKeyId ? _.find(this.privateKeysOptions(), function(oItem) {
-				return oItem && sKeyId === oItem.id;
-			}) : null;
-
-		if (oOption)
-		{
-			this.signKey({
-				'empty': !oOption.key,
-				'selected': ko.observable(!!oOption.key),
-				'users': oOption.key.users,
-				'hash': oOption.key.id.substr(-8).toUpperCase(),
-				'key': oOption.key
-			});
-		}
-	});
-
-	this.addCommand = Utils.createCommand(this, function() {
-
-		var
-			sKeyId = this.selectedPublicKey(),
-			aKeys = this.encryptKeys(),
-			oOption = sKeyId ? _.find(this.publicKeysOptions(), function(oItem) {
-				return oItem && sKeyId === oItem.id;
-			}) : null;
-
-		if (oOption)
-		{
-			aKeys.push({
-				'empty': !oOption.key,
-				'selected': ko.observable(!!oOption.key),
-				'removable': ko.observable(!this.sign() || !this.signKey() || this.signKey().key.id !== oOption.key.id),
-				'users': oOption.key.users,
-				'hash': oOption.key.id.substr(-8).toUpperCase(),
-				'key': oOption.key
-			});
-
-			this.encryptKeys(aKeys);
-		}
-	});
-
-	this.updateCommand = Utils.createCommand(this, function() {
-		_.each(this.encryptKeys(), function(oKey) {
-			oKey.removable(!self.sign() || !self.signKey() || self.signKey().key.id !== oKey.key.id);
-		});
-	});
-
-	this.selectedPrivateKey.subscribe(function(sValue) {
-		if (sValue)
-		{
-			this.selectCommand();
-			this.updateCommand();
-		}
-	}, this);
-
-	this.selectedPublicKey.subscribe(function(sValue) {
-		if (sValue)
-		{
-			this.addCommand();
-		}
-	}, this);
-
-	this.sDefaultKeyScope = Enums.KeyState.PopupComposeOpenPGP;
-
-	this.defautOptionsAfterRender = Utils.defautOptionsAfterRender;
-
-	this.addOptionClass = function(oDomOption, oItem) {
-
-		self.defautOptionsAfterRender(oDomOption, oItem);
-
-		if (oItem && !Utils.isUnd(oItem.class) && oDomOption)
-		{
-			$(oDomOption).addClass(oItem.class);
-		}
-	};
-
-	this.deletePublickKey = _.bind(this.deletePublickKey, this);
-
-	kn.constructorEnd(this);
-}
-
-kn.extendAsViewModel(['View/Popup/ComposeOpenPgp', 'PopupsComposeOpenPgpViewModel'], ComposeOpenPgpPopupView);
-_.extend(ComposeOpenPgpPopupView.prototype, AbstractView.prototype);
-
-ComposeOpenPgpPopupView.prototype.deletePublickKey = function(oKey)
-{
-	this.encryptKeys.remove(oKey);
-};
-
-ComposeOpenPgpPopupView.prototype.clearPopup = function()
-{
-	this.notification('');
-
-	this.sign(false);
-	this.encrypt(false);
-
-	this.password('');
-	this.password.focus(false);
-	this.buttonFocus(false);
-
-	this.signKey(null);
-	this.encryptKeys([]);
-	this.text('');
-
-	this.resultCallback = null;
-};
-
-ComposeOpenPgpPopupView.prototype.onBuild = function()
-{
-	key('tab,shift+tab', Enums.KeyState.PopupComposeOpenPGP, _.bind(function() {
-
-		switch (true)
-		{
-			case this.password.focus():
-				this.buttonFocus(true);
-				break;
-			case this.buttonFocus():
-				this.password.focus(true);
-				break;
-			// no default
-		}
-
-		return false;
-
-	}, this));
-};
-
-ComposeOpenPgpPopupView.prototype.onHideWithDelay = function()
-{
-	this.clearPopup();
-};
-
-ComposeOpenPgpPopupView.prototype.onShowWithDelay = function()
-{
-	if (this.sign())
-	{
-		this.password.focus(true);
-	}
-	else
-	{
-		this.buttonFocus(true);
-	}
-};
-
-ComposeOpenPgpPopupView.prototype.onShow = function(fCallback, sText, oIdentity, sTo, sCc, sBcc)
-{
-	this.clearPopup();
-
-	var
-		self = this,
-		aRec = [],
-		sEmail = '',
-		oEmail = new EmailModel();
-
-	this.resultCallback = fCallback;
-
-	if ('' !== sTo)
-	{
-		aRec.push(sTo);
-	}
-
-	if ('' !== sCc)
-	{
-		aRec.push(sCc);
-	}
-
-	if ('' !== sBcc)
-	{
-		aRec.push(sBcc);
-	}
-
-	aRec = aRec.join(', ').split(',');
-	aRec = _.compact(_.map(aRec, function(sValue) {
-		oEmail.clear();
-		oEmail.mailsoParse(Utils.trim(sValue));
-		return '' === oEmail.email ? false : oEmail.email;
-	}));
-
-	if (oIdentity && oIdentity.email())
-	{
-		sEmail = oIdentity.email();
-		aRec.unshift(sEmail);
-
-		var aKeys = PgpStore.findAllPrivateKeysByEmailNotNative(sEmail);
-		if (aKeys && aKeys[0])
-		{
-			this.signKey({
-				'users': aKeys[0].users || [sEmail],
-				'hash': aKeys[0].id.substr(-8).toUpperCase(),
-				'key': aKeys[0]
-			});
+			this.buttonFocus(true);
 		}
 	}
 
-	if (this.signKey())
-	{
-		this.sign(true);
-	}
+	onShow(fCallback, sText, identity, sTo, sCc, sBcc) {
 
-	if (aRec && 0 < aRec.length)
-	{
-		this.encryptKeys(_.uniq(_.compact(_.flatten(_.map(aRec, function(sRecEmail) {
-			var keys = PgpStore.findAllPublicKeysByEmailNotNative(sRecEmail);
-			return keys ? _.map(keys, function(oKey) {
-				return {
-					'empty': !oKey,
-					'selected': ko.observable(!!oKey),
-					'removable': ko.observable(!self.sign() || !self.signKey() || self.signKey().key.id !== oKey.id),
-					'users': oKey ? (oKey.users || [sRecEmail]) : [sRecEmail],
-					'hash': oKey ? oKey.id.substr(-8).toUpperCase() : '',
-					'key': oKey
-				};
-			}) : [];
-		}), true)), function(oEncryptKey) {
-			return oEncryptKey.hash;
+		this.clearPopup();
+
+		let
+			rec = [],
+			emailLine = '';
+
+		const email = new EmailModel();
+
+		this.resultCallback = fCallback;
+
+		if ('' !== sTo)
+		{
+			rec.push(sTo);
+		}
+
+		if ('' !== sCc)
+		{
+			rec.push(sCc);
+		}
+
+		if ('' !== sBcc)
+		{
+			rec.push(sBcc);
+		}
+
+		rec = rec.join(', ').split(',');
+		rec = _.compact(_.map(rec, (value) => {
+			email.clear();
+			email.mailsoParse(trim(value));
+			return '' === email.email ? false : email.email;
 		}));
 
-		if (0 < this.encryptKeys().length)
+		if (identity && identity.email())
 		{
-			this.encrypt(true);
-		}
-	}
+			emailLine = identity.email();
+			rec.unshift(emailLine);
 
-	this.text(sText);
-};
+			const keys = PgpStore.findAllPrivateKeysByEmailNotNative(emailLine);
+			if (keys && keys[0])
+			{
+				this.signKey({
+					'users': keys[0].users || [emailLine],
+					'hash': keys[0].id.substr(-8).toUpperCase(),
+					'key': keys[0]
+				});
+			}
+		}
+
+		if (this.signKey())
+		{
+			this.sign(true);
+		}
+
+		if (rec && 0 < rec.length)
+		{
+			this.encryptKeys(_.uniq(_.compact(_.flatten(_.map(rec, (recEmail) => {
+				const keys = PgpStore.findAllPublicKeysByEmailNotNative(recEmail);
+				return keys ? _.map(keys, (oKey) => ({
+					'empty': !oKey,
+					'selected': ko.observable(!!oKey),
+					'removable': ko.observable(!this.sign() || !this.signKey() || this.signKey().key.id !== oKey.id),
+					'users': oKey ? (oKey.users || [recEmail]) : [recEmail],
+					'hash': oKey ? oKey.id.substr(-8).toUpperCase() : '',
+					'key': oKey
+				})) : [];
+			}), true)), (encryptKey) => encryptKey.hash));
+
+			if (0 < this.encryptKeys().length)
+			{
+				this.encrypt(true);
+			}
+		}
+
+		this.text(sText);
+	}
+}
 
 module.exports = ComposeOpenPgpPopupView;

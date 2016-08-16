@@ -820,9 +820,9 @@ class Actions
 	{
 		if (null === $this->oPremProvider)
 		{
-			if (\file_exists(APP_VERSION_ROOT_PATH.'app/libraries/RainLoop/Prem/Provider.php'))
+			if (\file_exists(APP_VERSION_ROOT_PATH.'app/libraries/RainLoop/Providers/Prem.php'))
 			{
-				$this->oPremProvider = new \RainLoop\Prem\Provider(
+				$this->oPremProvider = new \RainLoop\Providers\Prem(
 					$this->Config(), $this->Logger(), $this->Cacher(null, true)
 				);
 			}
@@ -1466,8 +1466,7 @@ class Actions
 			'themes' => $this->GetThemes($bMobile, false),
 			'languages' => $this->GetLanguages(false),
 			'languagesAdmin' => $this->GetLanguages(true),
-			'attachmentsActions' => $aAttachmentsActions,
-			'openpgpPublicKeyServer' => $oConfig->Get('security', 'openpgp_public_key_server', '')
+			'attachmentsActions' => $aAttachmentsActions
 		), $bAdmin ? array(
 			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
 			'adminPath' => \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin')),
@@ -2357,7 +2356,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->Logger()->AddSecret($sPassword);
 
 		if ('sleep@sleep.dev' === $sEmail && 0 < \strlen($sPassword) &&
-			\is_numeric($sPassword) && $this->Config()->Get('debug', 'enable', false)
+			\is_numeric($sPassword) && $this->Config()->Get('debug', 'enable', false) &&
+			0 < (int) $sPassword && 30 > (int) $sPassword
 		)
 		{
 			\sleep((int) $sPassword);
@@ -5179,8 +5179,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$aCache = array(
 
 				'Sent' => \MailSo\Imap\Enumerations\FolderType::SENT,
-
 				'Send' => \MailSo\Imap\Enumerations\FolderType::SENT,
+
+				'Outbox' => \MailSo\Imap\Enumerations\FolderType::SENT,
+				'Out box' => \MailSo\Imap\Enumerations\FolderType::SENT,
+
 				'Sent Item' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Sent Items' => \MailSo\Imap\Enumerations\FolderType::SENT,
 				'Send Item' => \MailSo\Imap\Enumerations\FolderType::SENT,
@@ -5199,6 +5202,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				'Drafts Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 
 				'Spam' => \MailSo\Imap\Enumerations\FolderType::JUNK,
+				'Spams' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 
 				'Junk' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 				'Bulk Mail' => \MailSo\Imap\Enumerations\FolderType::JUNK,
@@ -5209,13 +5213,21 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				'Bin' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 
 				'Archive' => \MailSo\Imap\Enumerations\FolderType::ALL,
+				'Archives' => \MailSo\Imap\Enumerations\FolderType::ALL,
 
 				'All' => \MailSo\Imap\Enumerations\FolderType::ALL,
 				'All Mail' => \MailSo\Imap\Enumerations\FolderType::ALL,
 				'All Mails' => \MailSo\Imap\Enumerations\FolderType::ALL,
-				'AllMail' => \MailSo\Imap\Enumerations\FolderType::ALL,
-				'AllMails' => \MailSo\Imap\Enumerations\FolderType::ALL,
 			);
+
+			$aNewCache = array();
+			foreach ($aCache as $sKey => $iType)
+			{
+				$aNewCache[$sKey] = $iType;
+				$aNewCache[\str_replace(' ', '', $sKey)] = $iType;
+			}
+
+			$aCache = $aNewCache;
 
 			$this->Plugins()->RunHook('filter.system-folders-names', array($oAccount, &$aCache));
 		}
@@ -8416,34 +8428,34 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				case 1:
 					break;
 
-				case 2: // horizontal flip
+				case 2: // flip horizontal
 					$oImage->flipHorizontally();
 					break;
 
-				case 3: // 180 rotate left
+				case 3: // rotate 180
 					$oImage->rotate(180);
 					break;
 
-				case 4: // vertical flip
+				case 4: // flip vertical
 					$oImage->flipVertically();
 					break;
 
-				case 5: // vertical flip + 90 rotate right
+				case 5: // vertical flip + 90 rotate
 					$oImage->flipVertically();
-					$oImage->rotate(-90);
-					break;
-
-				case 6: // 90 rotate right
-					$oImage->rotate(-90);
-					break;
-
-				case 7: // horizontal flip + 90 rotate right
-					$oImage->flipHorizontally();
-					$oImage->rotate(-90);
-					break;
-
-				case 8: // 90 rotate left
 					$oImage->rotate(90);
+					break;
+
+				case 6: // rotate 90
+					$oImage->rotate(90);
+					break;
+
+				case 7: // horizontal flip + 90 rotate
+					$oImage->flipHorizontally();
+					$oImage->rotate(90);
+					break;
+
+				case 8: // rotate 270
+					$oImage->rotate(270);
 					break;
 			}
 		}
@@ -8586,8 +8598,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$self->cacheByKey($sRawKey);
 
 					$sLoadedData = null;
-					$bDetectImageOrientation = false;
-
 					if (!$bDownload)
 					{
 						if ($bThumbnail)
@@ -9606,7 +9616,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	private function hashFolderFullName($sFolderFullName)
 	{
 		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts',
-			'spam', 'junk', 'bin', 'trash', 'archive', 'allmail')) ?
+			'spam', 'junk', 'bin', 'trash', 'archive', 'allmail', 'all')) ?
 				$sFolderFullName : \md5($sFolderFullName);
 	}
 

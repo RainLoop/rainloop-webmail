@@ -5,9 +5,11 @@ import ko from 'ko';
 import {delegateRunOnDestroy} from 'Common/Utils';
 import {bIsHttps} from 'Common/Globals';
 
-import {showScreenPopup} from 'Knoin/Knoin';
-
 import PgpStore from 'Stores/User/Pgp';
+
+import {getApp} from 'Helper/Apps/User';
+
+import {showScreenPopup} from 'Knoin/Knoin';
 
 class OpenPgpUserSettings
 {
@@ -60,7 +62,7 @@ class OpenPgpUserSettings
 					PgpStore.openpgpKeyring.store();
 				}
 
-				require('App/User').default.reloadOpenPgpKeys();
+				getApp().reloadOpenPgpKeys();
 			}
 		}
 	}

@@ -19,30 +19,30 @@ class FilterConditionModel extends AbstractModel
 		this.valueSecond = ko.observable('');
 		this.valueSecond.error = ko.observable(false);
 
-		this.template = ko.computed(function() {
+		this.template = ko.computed(() => {
 
-			var sTemplate = '';
+			let template = '';
 			switch (this.field())
 			{
 				case FilterConditionField.Size:
-					sTemplate = 'SettingsFiltersConditionSize';
+					template = 'SettingsFiltersConditionSize';
 					break;
 				case FilterConditionField.Header:
-					sTemplate = 'SettingsFiltersConditionMore';
+					template = 'SettingsFiltersConditionMore';
 					break;
 				default:
-					sTemplate = 'SettingsFiltersConditionDefault';
+					template = 'SettingsFiltersConditionDefault';
 					break;
 			}
 
-			return sTemplate;
+			return template;
 
 		}, this);
 
-		this.field.subscribe(function() {
+		this.field.subscribe(() => {
 			this.value('');
 			this.valueSecond('');
-		}, this);
+		});
 
 		this.regDisposables([this.template]);
 	}

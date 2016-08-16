@@ -13,6 +13,7 @@
 /rainloop/v/0.0.0/static/css/*.css
 /rainloop/v/0.0.0/static/js/*.js
 /rainloop/v/0.0.0/static/js/**/*.js
+!/rainloop/v/0.0.0/static/js/min/.gitempty
 /rainloop/v/0.0.0/app/localization/moment/*
 !/rainloop/v/0.0.0/app/localization/moment/.gitempty
 /node_modules

@@ -1,11 +1,11 @@
 
+/* global RL_ES6 */
+
 import window from 'window';
 import progressJs from 'progressJs';
 import Promise from 'Promise';
 
-import STYLES_CSS from 'Styles/@Boot.css';
-import LAYOUT_HTML from 'Html/Layout.html';
-
+import {jassl} from 'Common/Jassl';
 import {getHash, setHash, clearHash} from 'Storage/RainLoop';
 
 let RL_APP_DATA_STORAGE = null;
@@ -64,7 +64,7 @@ class Q2 extends Q1 { constructor() { super() } }
  */
 function getComputedStyle(id, name)
 {
-	var element = window.document.getElementById(id);
+	const element = window.document.getElementById(id);
 	return element.currentStyle ? element.currentStyle[name] :
 		(window.getComputedStyle ? window.getComputedStyle(element, null).getPropertyValue(name) : null);
 }
@@ -94,14 +94,11 @@ function includeLayout()
 {
 	const app = window.document.getElementById('rl-app');
 
-	if (STYLES_CSS)
-	{
-		includeStyle(STYLES_CSS);
-	}
+	require('style-loader!Styles/@Boot.css');
 
-	if (app && LAYOUT_HTML)
+	if (app)
 	{
-		app.innerHTML = LAYOUT_HTML.replace(/[\r\n\t]+/g, '');
+		app.innerHTML = require('Html/Layout.html').replace(/[\r\n\t]+/g, '');
 		return true;
 	}
 
@@ -223,7 +220,7 @@ function runApp()
 {
 	const appData = window.__rlah_data();
 
-	if (window.jassl && progressJs && appData && appData.TemplatesLink && appData.LangLink &&
+	if (jassl && progressJs && appData && appData.TemplatesLink && appData.LangLink &&
 		appData.StaticLibJsLink && appData.StaticAppJsLink && appData.StaticAppJsNextLink && appData.StaticEditorJsLink)
 	{
 		const p = progressJs;
@@ -232,7 +229,7 @@ function runApp()
 		p.start().set(5);
 
 		const
-			libs = window.jassl(appData.StaticLibJsLink).then(() => {
+			libs = jassl(appData.StaticLibJsLink).then(() => {
 				if (window.$)
 				{
 					window.$('#rl-check').remove();
@@ -247,18 +244,18 @@ function runApp()
 				}
 			}),
 			common = Promise.all([
-				window.jassl(appData.TemplatesLink),
-				window.jassl(appData.LangLink)
+				jassl(appData.TemplatesLink),
+				jassl(appData.LangLink)
 			]);
 
 		Promise.all([libs, common])
 			.then(() => {
 				p.set(30);
-				return window.jassl(useJsNextBundle ? appData.StaticAppJsNextLink : appData.StaticAppJsLink);
+				return jassl(useJsNextBundle ? appData.StaticAppJsNextLink : appData.StaticAppJsLink);
 			})
 			.then(() => {
 				p.set(50);
-				return appData.PluginsLink ? window.jassl(appData.PluginsLink) : window.Promise.resolve();
+				return appData.PluginsLink ? jassl(appData.PluginsLink) : window.Promise.resolve();
 			})
 			.then(() => {
 				p.set(70);
@@ -268,7 +265,7 @@ function runApp()
 				runMainBoot(true);
 				throw e;
 			})
-			.then(() => window.jassl(appData.StaticEditorJsLink))
+			.then(() => jassl(appData.StaticEditorJsLink))
 			.then(() => {
 				if (window.CKEDITOR && window.__initEditor) {
 					window.__initEditor();
@@ -320,7 +317,7 @@ window.__runBoot = function() {
 		window.document.location.replace('./?/NoCookie');
 	}
 
-	const root = document.documentElement;
+	const root = window.document.documentElement;
 	if ('none' !== getComputedStyle('rl-check', 'display'))
 	{
 		root.className += ' no-css';

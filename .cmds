@@ -3,10 +3,10 @@
 tx pull -a
 
 # dependencies checker
-npm-check --skip-unused
+npm-check --skip-unused --save-exact
 
 # dependencies locker
 npm shrinkwrap --dev
 
-# js code validation
-gulp v
+# webpack
+webpack --color --watch

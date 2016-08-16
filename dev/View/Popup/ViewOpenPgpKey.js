@@ -1,64 +1,56 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
-	key = require('key'),
+import ko from 'ko';
+import key from 'key';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
+import {KeyState} from 'Common/Enums';
+import {selectElement} from 'Common/Utils';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {view, ViewType} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function ViewOpenPgpKeyPopupView()
+@view({
+	name: 'View/Popup/ViewOpenPgpKey',
+	type: ViewType.Popup,
+	templateID: 'PopupsTwoFactorTest'
+})
+class ViewOpenPgpKeyPopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsViewOpenPgpKey');
+	constructor() {
+		super();
 
-	this.key = ko.observable('');
-	this.keyDom = ko.observable(null);
+		this.key = ko.observable('');
+		this.keyDom = ko.observable(null);
 
-	this.sDefaultKeyScope = Enums.KeyState.PopupViewOpenPGP;
+		this.sDefaultKeyScope = KeyState.PopupViewOpenPGP;
+	}
 
-	kn.constructorEnd(this);
+	clearPopup() {
+		this.key('');
+	}
+
+	selectKey() {
+		const el = this.keyDom();
+		if (el)
+		{
+			selectElement(el);
+		}
+	}
+
+	onShow(oOpenPgpKey) {
+		this.clearPopup();
+
+		if (oOpenPgpKey)
+		{
+			this.key(oOpenPgpKey.armor);
+		}
+	}
+
+	onBuild() {
+		key('ctrl+a, command+a', KeyState.PopupViewOpenPGP, () => {
+			this.selectKey();
+			return false;
+		});
+	}
 }
-
-kn.extendAsViewModel(['View/Popup/ViewOpenPgpKey', 'PopupsViewOpenPgpKeyViewModel'], ViewOpenPgpKeyPopupView);
-_.extend(ViewOpenPgpKeyPopupView.prototype, AbstractView.prototype);
-
-ViewOpenPgpKeyPopupView.prototype.clearPopup = function()
-{
-	this.key('');
-};
-
-ViewOpenPgpKeyPopupView.prototype.selectKey = function()
-{
-	var oEl = this.keyDom();
-	if (oEl)
-	{
-		Utils.selectElement(oEl);
-	}
-};
-
-ViewOpenPgpKeyPopupView.prototype.onShow = function(oOpenPgpKey)
-{
-	this.clearPopup();
-
-	if (oOpenPgpKey)
-	{
-		this.key(oOpenPgpKey.armor);
-	}
-};
-
-ViewOpenPgpKeyPopupView.prototype.onBuild = function()
-{
-	key('ctrl+a, command+a', Enums.KeyState.PopupViewOpenPGP, _.bind(function() {
-		this.selectKey();
-		return false;
-	}, this));
-};
 
 module.exports = ViewOpenPgpKeyPopupView;

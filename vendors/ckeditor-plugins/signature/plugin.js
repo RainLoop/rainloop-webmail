@@ -1,63 +1,81 @@
 
-(function (CKEDITOR, $, undefined) {
+(function(CKEDITOR, $, undefined) {
 
 	'use strict';
 
-	var rl_signature_replacer = function (editor, sText, sSignature, bHtml, bInsertBefore)
-	{
-		if (!bHtml)
-		{
-			sText = sText
-				.replace(/\u200C([\s\S]*)\u200C/g, '\u0002$1\u0002')
-				.replace(/\u200C/g, '')
-			;
-		}
+	var rl_signature_replacer = function(editor, text, signature, isHtml, insertBefore) {
 
 		var
-			sP = '~~~~@~~~~',
-			bEmptyText = false,
-			sNewLine = (bHtml ? '<br />' : "\n")
-		;
+			skipInsert = false,
+			isEmptyText = false,
+			newLine = (isHtml ? '<br />' : "\n"),
+			clearHtmlLine = function(html) {
+				return $.trim(editor.__plainUtils.htmlToPlain(html));
+			};
 
-		sText = sText.replace(/\u0002([\s\S]*)\u0002/gm, sP + '$1' + sP);
-
-		if (editor.__previos_signature)
+		isEmptyText = '' === $.trim(text);
+		if (!isEmptyText && isHtml)
 		{
-			sText = sText
-				.replace(sP + editor.__previos_signature + sP, '')
-				.replace(sP + editor.__previos_signature + sP, '')
-				.replace(sP + editor.__previos_signature + sP, '')
-			;
+			isEmptyText = '' === clearHtmlLine(text);
 		}
 
-		sText = sText.replace(sP, '').replace(sP, '').replace(sP, '').replace(sP, '');
-
-		bEmptyText = '' === $.trim(sText);
-		if (!bEmptyText && bHtml)
+		if (editor.__previos_signature && !isEmptyText)
 		{
-			bEmptyText = '' !== $.trim(editor.__plainUtils.htmlToPlain(sText));
+			if (isHtml && !editor.__previos_signature_is_html)
+			{
+				editor.__previos_signature = editor.__plainUtils.plainToHtml(editor.__previos_signature);
+				editor.__previos_signature_is_html = true;
+			}
+			else if (!isHtml && editor.__previos_signature_is_html)
+			{
+				editor.__previos_signature = editor.__plainUtils.htmlToPlain(editor.__previos_signature);
+				editor.__previos_signature_is_html = false;
+			}
+
+			skipInsert = true;
+			if (isHtml)
+			{
+				var clearSig = clearHtmlLine(editor.__previos_signature);
+				text = text.replace(/<signature>([\s\S]*)<\/signature>/igm, function(all){
+					var c = clearSig === clearHtmlLine(all);
+					if (c) {
+						skipInsert = false;
+					}
+					return c ? '' : all;
+				});
+			}
+			else
+			{
+				var textLen = text.length;
+				text = text
+					.replace('' + editor.__previos_signature, '')
+					.replace('' + editor.__previos_signature, '');
+
+				if (textLen > text.length)
+				{
+					skipInsert = false;
+				}
+			}
 		}
 
-		if (bInsertBefore)
+		if (!skipInsert)
 		{
-			sText = "\u0002" + sSignature + (bEmptyText ? '' : sNewLine) + "\u0002" + sText;
-			editor.__previos_signature = sSignature + (bEmptyText ? '' : sNewLine);
-		}
-		else
-		{
-			sText = sText + "\u0002" + (bEmptyText ? '' : sNewLine) + sSignature + "\u0002";
-			editor.__previos_signature = (bEmptyText ? '' : sNewLine) + sSignature;
+			signature = insertBefore ? signature + (isEmptyText ? '' : newLine) : (isEmptyText ? '' : newLine) + signature;
+			if (isHtml)
+			{
+				signature = '<signature>' + signature + '</signature>';
+			}
+
+			text = insertBefore ? signature + text : text + signature;
+
+			if (10 < signature.length)
+			{
+				editor.__previos_signature = signature;
+				editor.__previos_signature_is_html = isHtml;
+			}
 		}
 
-		if (!bHtml)
-		{
-			sText = sText
-				.replace(/\u0002([\s\S]*)\u0002/g, '\u200C$1\u200C')
-				.replace(/\u0002/g, '')
-			;
-		}
-
-		return sText;
+		return text;
 	};
 
 	CKEDITOR.plugins.add('signature', {

@@ -1,240 +1,217 @@
 
-var
-	window = require('window'),
-	_ = require('_'),
-	ko = require('ko'),
-	qr = require('qr'),
+import window from 'window';
+import _ from '_';
+import ko from 'ko';
+import qr from 'qr';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
-	Translator = require('Common/Translator'),
+import {Capa, StorageResultType} from 'Common/Enums';
+import {pString} from 'Common/Utils';
+import {i18n, trigger as translatorTrigger} from 'Common/Translator';
 
-	Settings = require('Storage/Settings'),
+import * as Settings from 'Storage/Settings';
 
-	Remote = require('Remote/User/Ajax'),
+import Remote from 'Remote/User/Ajax';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {getApp} from 'Helper/Apps/User';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function TwoFactorConfigurationPopupView()
+import {view, ViewType, showScreenPopup} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+@view({
+	name: 'View/Popup/TwoFactorConfiguration',
+	type: ViewType.Popup,
+	templateID: 'PopupsTwoFactorConfiguration'
+})
+class TwoFactorConfigurationPopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsTwoFactorConfiguration');
+	constructor() {
+		super();
 
-	this.lock = ko.observable(false);
+		this.lock = ko.observable(false);
 
-	this.capaTwoFactor = Settings.capa(Enums.Capa.TwoFactor);
+		this.capaTwoFactor = Settings.capa(Capa.TwoFactor);
 
-	this.processing = ko.observable(false);
-	this.clearing = ko.observable(false);
-	this.secreting = ko.observable(false);
+		this.processing = ko.observable(false);
+		this.clearing = ko.observable(false);
+		this.secreting = ko.observable(false);
 
-	this.viewUser = ko.observable('');
-	this.twoFactorStatus = ko.observable(false);
+		this.viewUser = ko.observable('');
+		this.twoFactorStatus = ko.observable(false);
 
-	this.twoFactorTested = ko.observable(false);
+		this.twoFactorTested = ko.observable(false);
 
-	this.viewSecret = ko.observable('');
-	this.viewBackupCodes = ko.observable('');
-	this.viewUrlTitle = ko.observable('');
-	this.viewUrl = ko.observable('');
+		this.viewSecret = ko.observable('');
+		this.viewBackupCodes = ko.observable('');
+		this.viewUrlTitle = ko.observable('');
+		this.viewUrl = ko.observable('');
 
-	this.viewEnable_ = ko.observable(false);
+		this.viewEnable_ = ko.observable(false);
 
-	this.viewEnable = ko.computed({
-		'owner': this,
-		'read': this.viewEnable_,
-		'write': function(bValue) {
-
-			var self = this;
-
-			bValue = !!bValue;
-
-			if (bValue && this.twoFactorTested())
-			{
-				this.viewEnable_(bValue);
-
-				Remote.enableTwoFactor(function(sResult, oData) {
-					if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
-					{
-						self.viewEnable_(false);
-					}
-
-				}, true);
-			}
-			else
-			{
-				if (!bValue)
+		this.viewEnable = ko.computed({
+			read: this.viewEnable_,
+			write: (value) => {
+				value = !!value;
+				if (value && this.twoFactorTested())
 				{
-					this.viewEnable_(bValue);
+					this.viewEnable_(value);
+					Remote.enableTwoFactor((result, data) => {
+						if (StorageResultType.Success !== result || !data || !data.Result)
+						{
+							this.viewEnable_(false);
+						}
+					}, true);
 				}
-
-				Remote.enableTwoFactor(function(sResult, oData) {
-					if (Enums.StorageResultType.Success !== sResult || !oData || !oData.Result)
+				else
+				{
+					if (!value)
 					{
-						self.viewEnable_(false);
+						this.viewEnable_(value);
 					}
 
-				}, false);
+					Remote.enableTwoFactor((result, data) => {
+						if (StorageResultType.Success !== result || !data || !data.Result)
+						{
+							this.viewEnable_(false);
+						}
+					}, false);
+				}
 			}
-		}
-	});
+		});
 
-	this.viewTwoFactorEnableTooltip = ko.computed(function() {
-		Translator.trigger();
-		return this.twoFactorTested() || this.viewEnable_() ? '' :
-			Translator.i18n('POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_TEST_BEFORE_DESC');
-	}, this);
+		this.viewTwoFactorEnableTooltip = ko.computed(() => {
+			translatorTrigger();
+			return this.twoFactorTested() || this.viewEnable_() ? '' :
+				i18n('POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_TEST_BEFORE_DESC');
+		});
 
-	this.viewTwoFactorStatus = ko.computed(function() {
-		Translator.trigger();
-		return Translator.i18n(this.twoFactorStatus() ?
-			'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_CONFIGURED_DESC' :
-			'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC'
-		);
-	}, this);
+		this.viewTwoFactorStatus = ko.computed(() => {
+			translatorTrigger();
+			return i18n(this.twoFactorStatus() ?
+				'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_CONFIGURED_DESC' :
+				'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC'
+			);
+		});
 
-	this.twoFactorAllowedEnable = ko.computed(function() {
-		return this.viewEnable() || this.twoFactorTested();
-	}, this);
+		this.twoFactorAllowedEnable = ko.computed(() => this.viewEnable() || this.twoFactorTested());
 
-	this.onResult = _.bind(this.onResult, this);
-	this.onShowSecretResult = _.bind(this.onShowSecretResult, this);
-
-	kn.constructorEnd(this);
-}
-
-kn.extendAsViewModel(['View/Popup/TwoFactorConfiguration', 'TwoFactorConfigurationPopupView'], TwoFactorConfigurationPopupView);
-_.extend(TwoFactorConfigurationPopupView.prototype, AbstractView.prototype);
-
-TwoFactorConfigurationPopupView.prototype.showSecret = function()
-{
-	this.secreting(true);
-	Remote.showTwoFactorSecret(this.onShowSecretResult);
-};
-
-TwoFactorConfigurationPopupView.prototype.hideSecret = function()
-{
-	this.viewSecret('');
-	this.viewBackupCodes('');
-	this.viewUrlTitle('');
-	this.viewUrl('');
-};
-
-TwoFactorConfigurationPopupView.prototype.createTwoFactor = function()
-{
-	this.processing(true);
-	Remote.createTwoFactor(this.onResult);
-};
-
-TwoFactorConfigurationPopupView.prototype.logout = function()
-{
-	require('App/User').default.logout();
-};
-
-TwoFactorConfigurationPopupView.prototype.testTwoFactor = function()
-{
-	require('Knoin/Knoin').showScreenPopup(require('View/Popup/TwoFactorTest'), [this.twoFactorTested]);
-};
-
-TwoFactorConfigurationPopupView.prototype.clearTwoFactor = function()
-{
-	this.viewSecret('');
-	this.viewBackupCodes('');
-	this.viewUrlTitle('');
-	this.viewUrl('');
-
-	this.twoFactorTested(false);
-
-	this.clearing(true);
-	Remote.clearTwoFactor(this.onResult);
-};
-
-TwoFactorConfigurationPopupView.prototype.onShow = function(bLock)
-{
-	this.lock(!!bLock);
-
-	this.viewSecret('');
-	this.viewBackupCodes('');
-	this.viewUrlTitle('');
-	this.viewUrl('');
-};
-
-TwoFactorConfigurationPopupView.prototype.onHide = function()
-{
-	if (this.lock())
-	{
-		window.location.reload();
+		this.onResult = _.bind(this.onResult, this);
+		this.onShowSecretResult = _.bind(this.onShowSecretResult, this);
 	}
-};
 
-TwoFactorConfigurationPopupView.prototype.getQr = function()
-{
-	return 'otpauth://totp/' + window.encodeURIComponent(this.viewUser()) +
-		'?secret=' + window.encodeURIComponent(this.viewSecret()) +
-		'&issuer=' + window.encodeURIComponent('');
-};
-
-TwoFactorConfigurationPopupView.prototype.onResult = function(sResult, oData)
-{
-	this.processing(false);
-	this.clearing(false);
-
-	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-	{
-		this.viewUser(Utils.pString(oData.Result.User));
-		this.viewEnable_(!!oData.Result.Enable);
-		this.twoFactorStatus(!!oData.Result.IsSet);
-		this.twoFactorTested(!!oData.Result.Tested);
-
-		this.viewSecret(Utils.pString(oData.Result.Secret));
-		this.viewBackupCodes(Utils.pString(oData.Result.BackupCodes).replace(/[\s]+/g, '  '));
-
-		this.viewUrlTitle(Utils.pString(oData.Result.UrlTitle));
-		this.viewUrl(qr.toDataURL({level: 'M', size: 8, value: this.getQr()}));
+	showSecret() {
+		this.secreting(true);
+		Remote.showTwoFactorSecret(this.onShowSecretResult);
 	}
-	else
-	{
-		this.viewUser('');
-		this.viewEnable_(false);
-		this.twoFactorStatus(false);
+
+	hideSecret() {
+		this.viewSecret('');
+		this.viewBackupCodes('');
+		this.viewUrlTitle('');
+		this.viewUrl('');
+	}
+
+	createTwoFactor() {
+		this.processing(true);
+		Remote.createTwoFactor(this.onResult);
+	}
+
+	logout() {
+		getApp().logout();
+	}
+
+	testTwoFactor() {
+		showScreenPopup(require('View/Popup/TwoFactorTest'), [this.twoFactorTested]);
+	}
+
+	clearTwoFactor() {
+		this.viewSecret('');
+		this.viewBackupCodes('');
+		this.viewUrlTitle('');
+		this.viewUrl('');
+
 		this.twoFactorTested(false);
+
+		this.clearing(true);
+		Remote.clearTwoFactor(this.onResult);
+	}
+
+	onShow(bLock) {
+		this.lock(!!bLock);
 
 		this.viewSecret('');
 		this.viewBackupCodes('');
 		this.viewUrlTitle('');
 		this.viewUrl('');
 	}
-};
 
-TwoFactorConfigurationPopupView.prototype.onShowSecretResult = function(sResult, oData)
-{
-	this.secreting(false);
+	onHide() {
+		if (this.lock())
+		{
+			window.location.reload();
+		}
+	}
 
-	if (Enums.StorageResultType.Success === sResult && oData && oData.Result)
-	{
-		this.viewSecret(Utils.pString(oData.Result.Secret));
-		this.viewUrlTitle(Utils.pString(oData.Result.UrlTitle));
-		this.viewUrl(qr.toDataURL({level: 'M', size: 6, value: this.getQr()}));
+	getQr() {
+		return 'otpauth://totp/' + window.encodeURIComponent(this.viewUser()) +
+			'?secret=' + window.encodeURIComponent(this.viewSecret()) +
+			'&issuer=' + window.encodeURIComponent('');
 	}
-	else
-	{
-		this.viewSecret('');
-		this.viewUrlTitle('');
-		this.viewUrl('');
-	}
-};
 
-TwoFactorConfigurationPopupView.prototype.onBuild = function()
-{
-	if (this.capaTwoFactor)
-	{
-		this.processing(true);
-		Remote.getTwoFactor(this.onResult);
+	onResult(sResult, oData) {
+		this.processing(false);
+		this.clearing(false);
+
+		if (StorageResultType.Success === sResult && oData && oData.Result)
+		{
+			this.viewUser(pString(oData.Result.User));
+			this.viewEnable_(!!oData.Result.Enable);
+			this.twoFactorStatus(!!oData.Result.IsSet);
+			this.twoFactorTested(!!oData.Result.Tested);
+
+			this.viewSecret(pString(oData.Result.Secret));
+			this.viewBackupCodes(pString(oData.Result.BackupCodes).replace(/[\s]+/g, '  '));
+
+			this.viewUrlTitle(pString(oData.Result.UrlTitle));
+			this.viewUrl(qr.toDataURL({level: 'M', size: 8, value: this.getQr()}));
+		}
+		else
+		{
+			this.viewUser('');
+			this.viewEnable_(false);
+			this.twoFactorStatus(false);
+			this.twoFactorTested(false);
+
+			this.viewSecret('');
+			this.viewBackupCodes('');
+			this.viewUrlTitle('');
+			this.viewUrl('');
+		}
 	}
-};
+
+	onShowSecretResult(result, data) {
+		this.secreting(false);
+
+		if (StorageResultType.Success === result && data && data.Result)
+		{
+			this.viewSecret(pString(data.Result.Secret));
+			this.viewUrlTitle(pString(data.Result.UrlTitle));
+			this.viewUrl(qr.toDataURL({level: 'M', size: 6, value: this.getQr()}));
+		}
+		else
+		{
+			this.viewSecret('');
+			this.viewUrlTitle('');
+			this.viewUrl('');
+		}
+	}
+
+	onBuild() {
+		if (this.capaTwoFactor)
+		{
+			this.processing(true);
+			Remote.getTwoFactor(this.onResult);
+		}
+	}
+}
 
 module.exports = TwoFactorConfigurationPopupView;

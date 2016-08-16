@@ -3,6 +3,8 @@ import {createCommand} from 'Common/Utils';
 
 import SocialStore from 'Stores/Social';
 
+import {getApp} from 'Helper/Apps/User';
+
 class SocialUserSettings
 {
 	constructor() {
@@ -28,42 +30,38 @@ class SocialUserSettings
 		this.twitterLoggined = SocialStore.twitter.loggined;
 		this.twitterUserName = SocialStore.twitter.userName;
 
-		this.connectGoogle = createCommand(this, () => {
+		this.connectGoogle = createCommand(() => {
 			if (!this.googleLoggined())
 			{
-				this.getApp().googleConnect();
+				getApp().googleConnect();
 			}
 		}, () => !this.googleLoggined() && !this.googleActions());
 
-		this.disconnectGoogle = createCommand(this, () => {
-			this.getApp().googleDisconnect();
+		this.disconnectGoogle = createCommand(() => {
+			getApp().googleDisconnect();
 		});
 
-		this.connectFacebook = createCommand(this, () => {
+		this.connectFacebook = createCommand(() => {
 			if (!this.facebookLoggined())
 			{
-				this.getApp().facebookConnect();
+				getApp().facebookConnect();
 			}
 		}, () => !this.facebookLoggined() && !this.facebookActions());
 
-		this.disconnectFacebook = createCommand(this, () => {
-			this.getApp().facebookDisconnect();
+		this.disconnectFacebook = createCommand(() => {
+			getApp().facebookDisconnect();
 		});
 
-		this.connectTwitter = createCommand(this, () => {
+		this.connectTwitter = createCommand(() => {
 			if (!this.twitterLoggined())
 			{
-				this.getApp().twitterConnect();
+				getApp().twitterConnect();
 			}
 		}, () => !this.twitterLoggined() && !this.twitterActions());
 
-		this.disconnectTwitter = createCommand(this, () => {
-			this.getApp().twitterDisconnect();
+		this.disconnectTwitter = createCommand(() => {
+			getApp().twitterDisconnect();
 		});
-	}
-
-	getApp() {
-		return require('App/User').default;
 	}
 }
 

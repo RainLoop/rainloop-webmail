@@ -16,8 +16,7 @@ class AppUserStore extends AbstractAppStore
 
 		this.focusedState = ko.observable(Focused.None);
 
-		this.focusedState.subscribe(function(value) {
-
+		this.focusedState.subscribe((value) => {
 			switch (value)
 			{
 				case Focused.MessageList:
@@ -32,8 +31,7 @@ class AppUserStore extends AbstractAppStore
 				default:
 					break;
 			}
-
-		}, this);
+		});
 
 		this.projectHash = ko.observable('');
 		this.threadsAllowed = ko.observable(false);

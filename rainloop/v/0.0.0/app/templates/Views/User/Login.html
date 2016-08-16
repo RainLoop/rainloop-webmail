@@ -11,7 +11,7 @@
 				<span class="desc" data-bind="text: loginDescription"></span>
 			</div>
 			{{INCLUDE/AfterLogo/PLACE}}
-			<div class="alert alertError" data-bind="visible: '' !== submitError()">
+			<div class="alert alertError" data-bind="visibleAnimated: '' !== submitError()">
 				<button type="button" class="close" data-bind="click: function () { submitError('') }">&times;</button>
 				<span data-bind="text: submitError"></span>
 				<div data-bind="visible: '' !== submitErrorAddidional()">

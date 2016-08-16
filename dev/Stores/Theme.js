@@ -1,32 +1,26 @@
 
-var
-	ko = require('ko'),
+import ko from 'ko';
+import {isArray} from 'Common/Utils';
+import * as Settings from 'Storage/Settings';
 
-	Utils = require('Common/Utils'),
-
-	Settings = require('Storage/Settings');
-
-/**
- * @constructor
- */
-function ThemeStore()
+class ThemeStore
 {
-	this.themes = ko.observableArray([]);
-	this.themeBackgroundName = ko.observable('');
-	this.themeBackgroundHash = ko.observable('');
+	constructor() {
+		this.themes = ko.observableArray([]);
+		this.themeBackgroundName = ko.observable('');
+		this.themeBackgroundHash = ko.observable('');
 
-	this.theme = ko.observable('')
-		.extend({'limitedList': this.themes});
+		this.theme = ko.observable('').extend({limitedList: this.themes});
+	}
+
+	populate() {
+		const themes = Settings.appSettingsGet('themes');
+
+		this.themes(isArray(themes) ? themes : []);
+		this.theme(Settings.settingsGet('Theme'));
+		this.themeBackgroundName(Settings.settingsGet('UserBackgroundName'));
+		this.themeBackgroundHash(Settings.settingsGet('UserBackgroundHash'));
+	}
 }
-
-ThemeStore.prototype.populate = function()
-{
-	var aThemes = Settings.appSettingsGet('themes');
-
-	this.themes(Utils.isArray(aThemes) ? aThemes : []);
-	this.theme(Settings.settingsGet('Theme'));
-	this.themeBackgroundName(Settings.settingsGet('UserBackgroundName'));
-	this.themeBackgroundHash(Settings.settingsGet('UserBackgroundHash'));
-};
 
 module.exports = new ThemeStore();

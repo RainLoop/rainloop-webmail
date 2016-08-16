@@ -1,135 +1,129 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import _ from '_';
+import ko from 'ko';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
+import {Magics} from 'Common/Enums';
+import {trim, log, createCommand, delegateRun, pInt} from 'Common/Utils';
 
-	PgpStore = require('Stores/User/Pgp'),
+import PgpStore from 'Stores/User/Pgp';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {getApp} from 'Helper/Apps/User';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function NewOpenPgpKeyPopupView()
+import {view, ViewType} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+@view({
+	name: 'View/Popup/NewOpenPgpKey',
+	type: ViewType.Popup,
+	templateID: 'PopupsNewOpenPgpKey'
+})
+class NewOpenPgpKeyPopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsNewOpenPgpKey');
+	constructor() {
+		super();
 
-	this.email = ko.observable('');
-	this.email.focus = ko.observable('');
-	this.email.error = ko.observable(false);
+		this.email = ko.observable('');
+		this.email.focus = ko.observable('');
+		this.email.error = ko.observable(false);
 
-	this.name = ko.observable('');
-	this.password = ko.observable('');
-	this.keyBitLength = ko.observable(Enums.Magics.BitLength2048);
+		this.name = ko.observable('');
+		this.password = ko.observable('');
+		this.keyBitLength = ko.observable(Magics.BitLength2048);
 
-	this.submitRequest = ko.observable(false);
-	this.submitError = ko.observable('');
+		this.submitRequest = ko.observable(false);
+		this.submitError = ko.observable('');
 
-	this.email.subscribe(function() {
-		this.email.error(false);
-	}, this);
+		this.email.subscribe(() => {
+			this.email.error(false);
+		});
 
-	this.generateOpenPgpKeyCommand = Utils.createCommand(this, function() {
+		this.generateOpenPgpKeyCommand = createCommand(() => {
 
-		var
-			self = this,
-			oUserId = {},
-			oOpenpgpKeyring = PgpStore.openpgpKeyring;
+			const
+				userId = {},
+				openpgpKeyring = PgpStore.openpgpKeyring;
 
-		this.email.error('' === Utils.trim(this.email()));
-		if (!oOpenpgpKeyring || this.email.error())
-		{
-			return false;
-		}
-
-		oUserId.email = this.email();
-		if ('' !== this.name())
-		{
-			oUserId.name = this.name();
-		}
-
-		this.submitRequest(true);
-		this.submitError('');
-
-		_.delay(function() {
-
-			try {
-
-				PgpStore.openpgp.generateKey({
-					userIds: [oUserId],
-					numBits: Utils.pInt(self.keyBitLength()),
-					passphrase: Utils.trim(self.password())
-				}).then(function(mKeyPair) {
-
-					self.submitRequest(false);
-
-					if (mKeyPair && mKeyPair.privateKeyArmored)
-					{
-						oOpenpgpKeyring.privateKeys.importKey(mKeyPair.privateKeyArmored);
-						oOpenpgpKeyring.publicKeys.importKey(mKeyPair.publicKeyArmored);
-
-						oOpenpgpKeyring.store();
-
-						require('App/User').default.reloadOpenPgpKeys();
-						Utils.delegateRun(self, 'cancelCommand');
-					}
-
-				}).then(null, function(e) {
-					self.submitRequest(false);
-					self.showError(e);
-				});
-			}
-			catch (e)
+			this.email.error('' === trim(this.email()));
+			if (!openpgpKeyring || this.email.error())
 			{
-				self.submitRequest(false);
-				self.showError(e);
+				return false;
 			}
 
-		}, Enums.Magics.Time100ms);
+			userId.email = this.email();
+			if ('' !== this.name())
+			{
+				userId.name = this.name();
+			}
 
-		return true;
-	});
+			this.submitRequest(true);
+			this.submitError('');
 
-	kn.constructorEnd(this);
-}
+			_.delay(() => {
 
-kn.extendAsViewModel(['View/Popup/NewOpenPgpKey', 'PopupsNewOpenPgpKeyViewModel'], NewOpenPgpKeyPopupView);
-_.extend(NewOpenPgpKeyPopupView.prototype, AbstractView.prototype);
+				try {
 
-NewOpenPgpKeyPopupView.prototype.showError = function(e)
-{
-	Utils.log(e);
-	if (e && e.message)
-	{
-		this.submitError(e.message);
+					PgpStore.openpgp.generateKey({
+						userIds: [userId],
+						numBits: pInt(this.keyBitLength()),
+						passphrase: trim(this.password())
+					}).then((keyPair) => {
+
+						this.submitRequest(false);
+
+						if (keyPair && keyPair.privateKeyArmored)
+						{
+							openpgpKeyring.privateKeys.importKey(keyPair.privateKeyArmored);
+							openpgpKeyring.publicKeys.importKey(keyPair.publicKeyArmored);
+
+							openpgpKeyring.store();
+
+							getApp().reloadOpenPgpKeys();
+							delegateRun(this, 'cancelCommand');
+						}
+
+					}).catch((e) => {
+						this.submitRequest(false);
+						this.showError(e);
+					});
+				}
+				catch (e)
+				{
+					this.submitRequest(false);
+					this.showError(e);
+				}
+
+			}, Magics.Time100ms);
+
+			return true;
+		});
 	}
-};
 
-NewOpenPgpKeyPopupView.prototype.clearPopup = function()
-{
-	this.name('');
-	this.password('');
+	showError(e) {
+		log(e);
+		if (e && e.message)
+		{
+			this.submitError(e.message);
+		}
+	}
 
-	this.email('');
-	this.email.error(false);
-	this.keyBitLength(Enums.Magics.BitLength2048);
+	clearPopup() {
+		this.name('');
+		this.password('');
 
-	this.submitError('');
-};
+		this.email('');
+		this.email.error(false);
+		this.keyBitLength(Magics.BitLength2048);
 
-NewOpenPgpKeyPopupView.prototype.onShow = function()
-{
-	this.clearPopup();
-};
+		this.submitError('');
+	}
 
-NewOpenPgpKeyPopupView.prototype.onShowWithDelay = function()
-{
-	this.email.focus(true);
-};
+	onShow() {
+		this.clearPopup();
+	}
+
+	onShowWithDelay() {
+		this.email.focus(true);
+	}
+}
 
 module.exports = NewOpenPgpKeyPopupView;

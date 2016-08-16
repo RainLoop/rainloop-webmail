@@ -1,115 +1,113 @@
 
-var
-	window = require('window'),
-	ko = window.ko,
-	_ = require('_'),
-	$ = require('$'),
-	Opentip = require('Opentip'),
-	Pikaday = require('pikaday'),
+import window from 'window';
+import _ from '_';
+import $ from '$';
+import Opentip from 'Opentip';
+import Pikaday from 'pikaday';
 
-	fDisposalTooltipHelper = function(oElement) {
-		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-			if (oElement && oElement.__opentip)
+import {SaveSettingsStep, Magics} from 'Common/Enums';
+
+const
+	ko = window.ko,
+	$win = $(window),
+	fDisposalTooltipHelper = (element) => {
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			if (element && element.__opentip)
 			{
-				oElement.__opentip.deactivate();
+				element.__opentip.deactivate();
 			}
 		});
 	};
 
 ko.bindingHandlers.updateWidth = {
-	init: function(oElement, fValueAccessor) {
-		var
-			$w = $(window),
-			$oEl = $(oElement),
+	init: (element, fValueAccessor) => {
+		const
+			$el = $(element),
 			fValue = fValueAccessor(),
-			fInit = function() {
-				fValue($oEl.width());
-				window.setTimeout(function() {
-					fValue($oEl.width());
-				}, 500);
+			fInit = () => {
+				fValue($el.width());
+				window.setTimeout(() => {
+					fValue($el.width());
+				}, Magics.Time500ms);
 			};
 
-		$w.on('resize', fInit);
+		$win.on('resize', fInit);
 		fInit();
 
-		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-			$w.off('resize', fInit);
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			$win.off('resize', fInit);
 		});
 	}
 };
 
 ko.bindingHandlers.editor = {
-	init: function(oElement, fValueAccessor) {
+	init: (element, fValueAccessor) => {
 
-		var
-			oEditor = null,
+		let editor = null;
+
+		const
 			fValue = fValueAccessor(),
-
-			fUpdateEditorValue = function() {
+			HtmlEditor = require('Common/HtmlEditor').default,
+			fUpdateEditorValue = () => {
 				if (fValue && fValue.__editor)
 				{
 					fValue.__editor.setHtmlOrPlain(fValue());
 				}
 			},
-
-			fUpdateKoValue = function() {
+			fUpdateKoValue = () => {
 				if (fValue && fValue.__editor)
 				{
 					fValue(fValue.__editor.getDataWithHtmlMark());
 				}
 			},
-
-			fOnReady = function() {
-				fValue.__editor = oEditor;
+			fOnReady = () => {
+				fValue.__editor = editor;
 				fUpdateEditorValue();
-			},
-
-			HtmlEditor = require('Common/HtmlEditor').default;
+			};
 
 		if (ko.isObservable(fValue) && HtmlEditor)
 		{
-			oEditor = new HtmlEditor(oElement, fUpdateKoValue, fOnReady, fUpdateKoValue);
+			editor = new HtmlEditor(element, fUpdateKoValue, fOnReady, fUpdateKoValue);
 
 			fValue.__fetchEditorValue = fUpdateKoValue;
 
 			fValue.subscribe(fUpdateEditorValue);
 
-//				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-//				});
+//			ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+//			});
 		}
 	}
 };
 
 ko.bindingHandlers.json = {
-	init: function(oElement, fValueAccessor) {
-		$(oElement).text(window.JSON.stringify(ko.unwrap(fValueAccessor())));
+	init: (element, fValueAccessor) => {
+		$(element).text(window.JSON.stringify(ko.unwrap(fValueAccessor())));
 	},
-	update: function(oElement, fValueAccessor) {
-		$(oElement).text(window.JSON.stringify(ko.unwrap(fValueAccessor())));
+	update: (element, fValueAccessor) => {
+		$(element).text(window.JSON.stringify(ko.unwrap(fValueAccessor())));
 	}
 };
 
 ko.bindingHandlers.scrollerShadows = {
-	init: function(oElement) {
+	init: (element) => {
 
-		var
-			iLimit = 8,
-			$oEl = $(oElement),
-			$win = $(window),
-			oCont = $oEl.find('[data-scroller-shadows-content]')[0] || null,
-			fFunc = _.throttle(function() {
-				$oEl
-					.toggleClass('scroller-shadow-top', iLimit < oCont.scrollTop)
-					.toggleClass('scroller-shadow-bottom', oCont.scrollTop + iLimit < oCont.scrollHeight - oCont.clientHeight);
+		const
+			limit = 8,
+			$el = $(element),
+			cont = $el.find('[data-scroller-shadows-content]')[0] || null,
+			fFunc = _.throttle(() => {
+				$el
+					.toggleClass('scroller-shadow-top', limit < cont.scrollTop)
+					.toggleClass('scroller-shadow-bottom', cont.scrollTop + limit < cont.scrollHeight - cont.clientHeight);
 			}, 100);
 
-		if (oCont)
+		if (cont)
 		{
-			$(oCont).on('scroll resize', fFunc);
+			$(cont).on('scroll resize', fFunc);
 			$win.on('resize', fFunc);
 
-			ko.utils.domNodeDisposal.addDisposeCallback(oCont, function() {
-				$(oCont).off();
+			ko.utils.domNodeDisposal.addDisposeCallback(cont, () => {
+				$(cont).off();
 				$win.off('resize', fFunc);
 			});
 		}
@@ -117,197 +115,217 @@ ko.bindingHandlers.scrollerShadows = {
 };
 
 ko.bindingHandlers.pikaday = {
-	init: function(oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
+	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext) => {
 
-		ko.bindingHandlers.textInput
-			.init.apply(oViewModel, Array.prototype.slice.call(arguments)); // eslint-disable-line prefer-rest-params
+		ko.bindingHandlers.textInput.init(element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext);
 
 		if (Pikaday)
 		{
-			oElement.__pikaday = new Pikaday({
-				field: oElement
+			element.__pikaday = new Pikaday({
+				field: element
 			});
 		}
 	}
 };
 
-ko.bindingHandlers.tooltip = {
-	init: function(oElement, fValueAccessor) {
+ko.bindingHandlers.visibleAnimated = {
+	init: (element, fValueAccessor) => {
+		const $el = $(element);
+		$el.addClass('rl-animated-visible');
+		if (ko.unwrap(fValueAccessor())) {
+			$el.how();
+		} else {
+			$el.hide();
+		}
+	},
+	update: (element, fValueAccessor) => {
+		const $el = $(element);
+		if (ko.unwrap(fValueAccessor())) {
+			$el.addClass('rl-animated-hidden').show();
+			_.delay(() => {
+				$el.removeClass('rl-animated-hidden');
+			}, 10);
+		} else {
+			$el.hide().removeClass('rl-animated-hidden');
+		}
+	}
+};
 
-		var
-			sValue = '',
-			Translator = null,
-			$oEl = $(oElement),
+ko.bindingHandlers.tooltip = {
+	init: (element, fValueAccessor) => {
+
+		const
+			$el = $(element),
 			fValue = fValueAccessor(),
-			bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
+			isMobile = 'on' === ($el.data('tooltip-mobile') || 'off'),
 			Globals = require('Common/Globals');
 
-		if (!Globals.bMobileDevice || bMobile)
+		if (!Globals.bMobileDevice || isMobile)
 		{
-			sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
+			const sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
-			oElement.__opentip = new Opentip(oElement, {
+			element.__opentip = new Opentip(element, {
 				'style': 'rainloopTip',
-				'element': oElement,
-				'tipJoint': $oEl.data('tooltip-join') || 'bottom'
+				'element': element,
+				'tipJoint': $el.data('tooltip-join') || 'bottom'
 			});
 
-			Globals.dropdownVisibility.subscribe(function(bV) {
-				if (bV) {
-					oElement.__opentip.hide();
+			Globals.dropdownVisibility.subscribe((v) => {
+				if (v) {
+					element.__opentip.hide();
 				}
 			});
 
 			if ('' === sValue)
 			{
-				oElement.__opentip.hide();
-				oElement.__opentip.deactivate();
-				oElement.__opentip.setContent('');
+				element.__opentip.hide();
+				element.__opentip.deactivate();
+				element.__opentip.setContent('');
 			}
 			else
 			{
-				oElement.__opentip.activate();
+				element.__opentip.activate();
 			}
 
-			if ('on' === ($oEl.data('tooltip-i18n') || 'on'))
+			if ('on' === ($el.data('tooltip-i18n') || 'on'))
 			{
-				Translator = require('Common/Translator');
+				const Translator = require('Common/Translator');
 
-				oElement.__opentip.setContent(Translator.i18n(sValue));
+				element.__opentip.setContent(Translator.i18n(sValue));
 
-				Translator.trigger.subscribe(function() {
-					oElement.__opentip.setContent(Translator.i18n(sValue));
+				Translator.trigger.subscribe(() => {
+					element.__opentip.setContent(Translator.i18n(sValue));
 				});
 
-				Globals.dropdownVisibility.subscribe(function() {
-					if (oElement && oElement.__opentip)
+				Globals.dropdownVisibility.subscribe(() => {
+					if (element && element.__opentip)
 					{
-						oElement.__opentip.setContent(require('Common/Translator').i18n(sValue));
+						element.__opentip.setContent(Translator.i18n(sValue));
 					}
 				});
 			}
 			else
 			{
-				oElement.__opentip.setContent(sValue);
+				element.__opentip.setContent(sValue);
 			}
 		}
 	},
-	update: function(oElement, fValueAccessor) {
+	update: (element, fValueAccessor) => {
 
-		var
-			$oEl = $(oElement),
+		const
+			$el = $(element),
 			fValue = fValueAccessor(),
-			bMobile = 'on' === ($oEl.data('tooltip-mobile') || 'off'),
+			isMobile = 'on' === ($el.data('tooltip-mobile') || 'off'),
 			Globals = require('Common/Globals');
 
-		if ((!Globals.bMobileDevice || bMobile) && oElement.__opentip)
+		if ((!Globals.bMobileDevice || isMobile) && element.__opentip)
 		{
-			var sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
+			const sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 			if (sValue)
 			{
-				oElement.__opentip.setContent('on' === ($oEl.data('tooltip-i18n') || 'on') ?
+				element.__opentip.setContent('on' === ($el.data('tooltip-i18n') || 'on') ?
 					require('Common/Translator').i18n(sValue) : sValue);
 
-				oElement.__opentip.activate();
+				element.__opentip.activate();
 			}
 			else
 			{
-				oElement.__opentip.hide();
-				oElement.__opentip.deactivate();
-				oElement.__opentip.setContent('');
+				element.__opentip.hide();
+				element.__opentip.deactivate();
+				element.__opentip.setContent('');
 			}
 		}
 	}
 };
 
 ko.bindingHandlers.tooltipErrorTip = {
-	init: function(oElement) {
+	init: function(element) {
 
-		var $oEl = $(oElement);
+		const $el = $(element);
 
-		oElement.__opentip = new Opentip(oElement, {
-			'style': 'rainloopErrorTip',
-			'hideOn': 'mouseout click',
-			'element': oElement,
-			'tipJoint': $oEl.data('tooltip-join') || 'top'
+		element.__opentip = new Opentip(element, {
+			style: 'rainloopErrorTip',
+			hideOn: 'mouseout click',
+			element: element,
+			tipJoint: $el.data('tooltip-join') || 'top'
 		});
 
-		oElement.__opentip.deactivate();
+		element.__opentip.deactivate();
 
-		$(window.document).on('click', function() {
-			if (oElement && oElement.__opentip)
+		$(window.document).on('click', () => {
+			if (element && element.__opentip)
 			{
-				oElement.__opentip.hide();
+				element.__opentip.hide();
 			}
 		});
 
-		fDisposalTooltipHelper(oElement);
+		fDisposalTooltipHelper(element);
 	},
-	update: function(oElement, fValueAccessor) {
+	update: (element, fValueAccessor) => {
 
-		var
-			$oEl = $(oElement),
+		const
+			$el = $(element),
 			fValue = fValueAccessor(),
-			sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue),
-			oOpenTips = oElement.__opentip;
+			value = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue),
+			openTips = element.__opentip;
 
-		if (oOpenTips)
+		if (openTips)
 		{
-			if ('' === sValue)
+			if ('' === value)
 			{
-				oOpenTips.hide();
-				oOpenTips.deactivate();
-				oOpenTips.setContent('');
+				openTips.hide();
+				openTips.deactivate();
+				openTips.setContent('');
 			}
 			else
 			{
-				_.delay(function() {
-					if ($oEl.is(':visible'))
+				_.delay(() => {
+					if ($el.is(':visible'))
 					{
-						oOpenTips.setContent(sValue);
-						oOpenTips.activate();
-						oOpenTips.show();
+						openTips.setContent(value);
+						openTips.activate();
+						openTips.show();
 					}
 					else
 					{
-						oOpenTips.hide();
-						oOpenTips.deactivate();
-						oOpenTips.setContent('');
+						openTips.hide();
+						openTips.deactivate();
+						openTips.setContent('');
 					}
-				}, 100);
+				}, Magics.Time100ms);
 			}
 		}
 	}
 };
 
 ko.bindingHandlers.registrateBootstrapDropdown = {
-	init: function(oElement) {
-		var Globals = require('Common/Globals');
+	init: (element) => {
+		const Globals = require('Common/Globals');
 		if (Globals && Globals.data.aBootstrapDropdowns)
 		{
-			Globals.data.aBootstrapDropdowns.push($(oElement));
+			Globals.data.aBootstrapDropdowns.push($(element));
 
-			$(oElement).click(function() {
+			$(element).click(() => {
 				require('Common/Utils').detectDropdownVisibility();
 			});
 
-//				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-//				});
+//			ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+//			});
 		}
 	}
 };
 
 ko.bindingHandlers.openDropdownTrigger = {
-	update: function(oElement, fValueAccessor) {
+	update: (element, fValueAccessor) => {
 		if (ko.unwrap(fValueAccessor()))
 		{
-			var $oEl = $(oElement);
-			if (!$oEl.hasClass('open'))
+			const $el = $(element);
+			if (!$el.hasClass('open'))
 			{
-				$oEl.find('.dropdown-toggle').dropdown('toggle');
+				$el.find('.dropdown-toggle').dropdown('toggle');
 			}
 
-			$oEl.find('.dropdown-toggle').focus();
+			$el.find('.dropdown-toggle').focus();
 
 			require('Common/Utils').detectDropdownVisibility();
 			fValueAccessor()(false);
@@ -316,38 +334,38 @@ ko.bindingHandlers.openDropdownTrigger = {
 };
 
 ko.bindingHandlers.dropdownCloser = {
-	init: function(oElement) {
-		$(oElement).closest('.dropdown').on('click', '.e-item', function() {
-			$(oElement).dropdown('toggle');
+	init: (element) => {
+		$(element).closest('.dropdown').on('click', '.e-item', () => {
+			$(element).dropdown('toggle');
 		});
 	}
 };
 
 ko.bindingHandlers.popover = {
-	init: function(oElement, fValueAccessor) {
-		$(oElement).popover(ko.unwrap(fValueAccessor()));
+	init: function(element, fValueAccessor) {
+		$(element).popover(ko.unwrap(fValueAccessor()));
 
-		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-			$(oElement).popover('destroy');
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			$(element).popover('destroy');
 		});
 	}
 };
 
 ko.bindingHandlers.csstext = {};
-ko.bindingHandlers.csstext.init = ko.bindingHandlers.csstext.update = function(oElement, fValueAccessor) {
-	if (oElement && oElement.styleSheet && 'undefined' !== typeof oElement.styleSheet.cssText)
+ko.bindingHandlers.csstext.init = ko.bindingHandlers.csstext.update = (element, fValueAccessor) => {
+	if (element && element.styleSheet && 'undefined' !== typeof element.styleSheet.cssText)
 	{
-		oElement.styleSheet.cssText = ko.unwrap(fValueAccessor());
+		element.styleSheet.cssText = ko.unwrap(fValueAccessor());
 	}
 	else
 	{
-		$(oElement).text(ko.unwrap(fValueAccessor()));
+		$(element).text(ko.unwrap(fValueAccessor()));
 	}
 };
 
 ko.bindingHandlers.resizecrop = {
-	init: function(oElement) {
-		$(oElement).addClass('resizecrop').resizecrop({
+	init: (element) => {
+		$(element).addClass('resizecrop').resizecrop({
 			'width': '100',
 			'height': '100',
 			'wrapperCSS': {
@@ -355,9 +373,9 @@ ko.bindingHandlers.resizecrop = {
 			}
 		});
 	},
-	update: function(oElement, fValueAccessor) {
+	update: (element, fValueAccessor) => {
 		fValueAccessor()();
-		$(oElement).resizecrop({
+		$(element).resizecrop({
 			'width': '100',
 			'height': '100'
 		});
@@ -365,195 +383,191 @@ ko.bindingHandlers.resizecrop = {
 };
 
 ko.bindingHandlers.onEnter = {
-	init: function(oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
-		$(oElement).on('keypress.koOnEnter', function(oEvent) {
-			if (oEvent && 13 === window.parseInt(oEvent.keyCode, 10))
+	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
+		$(element).on('keypress.koOnEnter', (event) => {
+			if (event && 13 === window.parseInt(event.keyCode, 10))
 			{
-				$(oElement).trigger('change');
-				fValueAccessor().call(oViewModel);
+				$(element).trigger('change');
+				fValueAccessor().call(viewModel);
 			}
 		});
 
-		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-			$(oElement).off('keypress.koOnEnter');
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			$(element).off('keypress.koOnEnter');
 		});
 	}
 };
 
 ko.bindingHandlers.onSpace = {
-	init: function(oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
-		$(oElement).on('keyup.koOnSpace', function(oEvent) {
-			if (oEvent && 32 === window.parseInt(oEvent.keyCode, 10))
+	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
+		$(element).on('keyup.koOnSpace', (event) => {
+			if (event && 32 === window.parseInt(event.keyCode, 10))
 			{
-				fValueAccessor().call(oViewModel, oEvent);
+				fValueAccessor().call(viewModel, event);
 			}
 		});
 
-		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-			$(oElement).off('keyup.koOnSpace');
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			$(element).off('keyup.koOnSpace');
 		});
 	}
 };
 
 ko.bindingHandlers.onTab = {
-	init: function(oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
-		$(oElement).on('keydown.koOnTab', function(oEvent) {
-			if (oEvent && 9 === window.parseInt(oEvent.keyCode, 10))
+	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
+		$(element).on('keydown.koOnTab', (event) => {
+			if (event && 9 === window.parseInt(event.keyCode, 10))
 			{
-				return fValueAccessor().call(oViewModel, !!oEvent.shiftKey);
+				return fValueAccessor().call(viewModel, !!event.shiftKey);
 			}
 			return true;
 		});
 
-		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-			$(oElement).off('keydown.koOnTab');
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			$(element).off('keydown.koOnTab');
 		});
 	}
 };
 
 ko.bindingHandlers.onEsc = {
-	init: function(oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
-		$(oElement).on('keypress.koOnEsc', function(oEvent) {
-			if (oEvent && 27 === window.parseInt(oEvent.keyCode, 10))
+	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
+		$(element).on('keypress.koOnEsc', (event) => {
+			if (event && 27 === window.parseInt(event.keyCode, 10))
 			{
-				$(oElement).trigger('change');
-				fValueAccessor().call(oViewModel);
+				$(element).trigger('change');
+				fValueAccessor().call(viewModel);
 			}
 		});
 
-		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-			$(oElement).off('keypress.koOnEsc');
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			$(element).off('keypress.koOnEsc');
 		});
 	}
 };
 
 ko.bindingHandlers.clickOnTrue = {
-	update: function(oElement, fValueAccessor) {
+	update: (element, fValueAccessor) => {
 		if (ko.unwrap(fValueAccessor()))
 		{
-			$(oElement).click();
+			$(element).click();
 		}
 	}
 };
 
 ko.bindingHandlers.modal = {
-	init: function(oElement, fValueAccessor) {
+	init: (element, fValueAccessor) => {
 
-		var
+		const
 			Globals = require('Common/Globals'),
 			Utils = require('Common/Utils');
 
-		$(oElement)
+		$(element)
 			.toggleClass('fade', !Globals.bMobileDevice)
 			.modal({
 				'keyboard': false,
 				'show': ko.unwrap(fValueAccessor())
 			})
 			.on('shown.koModal', Utils.windowResizeCallback)
-			.find('.close').on('click.koModal', function() {
+			.find('.close').on('click.koModal', () => {
 				fValueAccessor()(false);
 			});
 
-		ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-			$(oElement)
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			$(element)
 				.off('shown.koModal')
 				.find('.close')
 				.off('click.koModal');
 		});
 	},
-	update: function(oElement, fValueAccessor) {
+	update: (element, fValueAccessor) => {
 
-		var Globals = require('Common/Globals');
+		const Globals = require('Common/Globals');
 
-		$(oElement).modal(ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
+		$(element).modal(ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
 
 		if (Globals.$html.hasClass('rl-anim'))
 		{
 			Globals.$html.addClass('rl-modal-animation');
-			_.delay(function() {
+			_.delay(() => {
 				Globals.$html.removeClass('rl-modal-animation');
-			}, 400);
+			}, Magics.Time500ms);
 		}
 
 	}
 };
 
 ko.bindingHandlers.moment = {
-	init: function(oElement, fValueAccessor) {
+	init: (element, fValueAccessor) => {
 		require('Common/Momentor').momentToNode(
-			$(oElement).addClass('moment').data('moment-time', ko.unwrap(fValueAccessor()))
+			$(element).addClass('moment').data('moment-time', ko.unwrap(fValueAccessor()))
 		);
 	},
-	update: function(oElement, fValueAccessor) {
+	update: (element, fValueAccessor) => {
 		require('Common/Momentor').momentToNode(
-			$(oElement).data('moment-time', ko.unwrap(fValueAccessor()))
+			$(element).data('moment-time', ko.unwrap(fValueAccessor()))
 		);
 	}
 };
 
 ko.bindingHandlers.i18nInit = {
-	init: function(oElement) {
-		require('Common/Translator').i18nToNodes(oElement);
+	init: (element) => {
+		require('Common/Translator').i18nToNodes(element);
 	}
 };
 
 ko.bindingHandlers.translatorInit = {
-	init: function(oElement) {
-		require('Common/Translator').i18nToNodes(oElement);
+	init: (element) => {
+		require('Common/Translator').i18nToNodes(element);
 	}
 };
 
 ko.bindingHandlers.i18nUpdate = {
-	update: function(oElement, fValueAccessor) {
+	update: (element, fValueAccessor) => {
 		ko.unwrap(fValueAccessor());
-		require('Common/Translator').i18nToNodes(oElement);
+		require('Common/Translator').i18nToNodes(element);
 	}
 };
 
 ko.bindingHandlers.link = {
-	update: function(oElement, fValueAccessor) {
-		$(oElement).attr('href', ko.unwrap(fValueAccessor()));
+	update: function(element, fValueAccessor) {
+		$(element).attr('href', ko.unwrap(fValueAccessor()));
 	}
 };
 
 ko.bindingHandlers.title = {
-	update: function(oElement, fValueAccessor) {
-		$(oElement).attr('title', ko.unwrap(fValueAccessor()));
+	update: function(element, fValueAccessor) {
+		$(element).attr('title', ko.unwrap(fValueAccessor()));
 	}
 };
 
 ko.bindingHandlers.textF = {
-	init: function(oElement, fValueAccessor) {
-		$(oElement).text(ko.unwrap(fValueAccessor()));
+	init: function(element, fValueAccessor) {
+		$(element).text(ko.unwrap(fValueAccessor()));
 	}
 };
 
 ko.bindingHandlers.initDom = {
-	init: function(oElement, fValueAccessor) {
-		fValueAccessor()(oElement);
+	init: function(element, fValueAccessor) {
+		fValueAccessor()(element);
 	}
 };
 
 ko.bindingHandlers.initFixedTrigger = {
-	init: function(oElement, fValueAccessor) {
-		var
-			aValues = ko.unwrap(fValueAccessor()),
-			$oContainer = null,
-			$oElement = $(oElement),
-			oOffset = null,
+	init: (element, fValueAccessor) => {
+		const
+			values = ko.unwrap(fValueAccessor()),
+			$el = $(element),
+			top = values[1] || 0;
 
-			iTop = aValues[1] || 0;
-
-		$oContainer = $(aValues[0] || null);
-		$oContainer = $oContainer[0] ? $oContainer : null;
-
-		if ($oContainer)
+		let $container = $(values[0] || null);
+		$container = $container[0] ? $container : null;
+		if ($container)
 		{
-			$(window).resize(function() {
-				oOffset = $oContainer.offset();
-				if (oOffset && oOffset.top)
+			$win.resize(() => {
+				const offset = $container.offset();
+				if (offset && offset.top)
 				{
-					$oElement.css('top', oOffset.top + iTop);
+					$el.css('top', offset.top + top);
 				}
 			});
 		}
@@ -561,62 +575,64 @@ ko.bindingHandlers.initFixedTrigger = {
 };
 
 ko.bindingHandlers.initResizeTrigger = {
-	init: function(oElement, fValueAccessor) {
-		var aValues = ko.unwrap(fValueAccessor());
-		$(oElement).css({
-			'height': aValues[1],
-			'min-height': aValues[1]
+	init: (element, fValueAccessor) => {
+		const values = ko.unwrap(fValueAccessor());
+		$(element).css({
+			'height': values[1],
+			'min-height': values[1]
 		});
 	},
-	update: function(oElement, fValueAccessor) {
+	update: (oElement, fValueAccessor) => {
 
-		var
+		const
 			Utils = require('Common/Utils'),
 			Globals = require('Common/Globals'),
-			aValues = ko.unwrap(fValueAccessor()),
-			iValue = Utils.pInt(aValues[1]),
-			iSize = 0,
-			iOffset = $(oElement).offset().top;
+			values = ko.unwrap(fValueAccessor());
 
-		if (0 < iOffset)
+		let
+			value = Utils.pInt(values[1]),
+			size = 0,
+			offset = $(oElement).offset().top;
+
+		if (0 < offset)
 		{
-			iOffset += Utils.pInt(aValues[2]);
-			iSize = Globals.$win.height() - iOffset;
+			offset += Utils.pInt(values[2]);
+			size = Globals.$win.height() - offset;
 
-			if (iValue < iSize)
+			if (value < size)
 			{
-				iValue = iSize;
+				value = size;
 			}
 
 			$(oElement).css({
-				'height': iValue,
-				'min-height': iValue
+				'height': value,
+				'min-height': value
 			});
 		}
 	}
 };
 
 ko.bindingHandlers.appendDom = {
-	update: function(oElement, fValueAccessor) {
-		$(oElement).hide().empty().append(ko.unwrap(fValueAccessor())).show();
+	update: (element, fValueAccessor) => {
+		$(element).hide().empty().append(ko.unwrap(fValueAccessor())).show();
 	}
 };
 
 ko.bindingHandlers.draggable = {
-	init: function(oElement, fValueAccessor, fAllBindingsAccessor) {
+	init: (element, fValueAccessor, fAllBindingsAccessor) => {
 
-		var
+		const
 			Globals = require('Common/Globals'),
 			Utils = require('Common/Utils');
 
 		if (!Globals.bMobileDevice)
 		{
-			var
-				iTriggerZone = 100,
-				iScrollSpeed = 3,
+			const
+				triggerZone = 100,
+				scrollSpeed = 3,
 				fAllValueFunc = fAllBindingsAccessor(),
-				sDroppableSelector = fAllValueFunc && fAllValueFunc.droppableSelector ? fAllValueFunc.droppableSelector : '',
-				oConf = {
+				droppableSelector = fAllValueFunc && fAllValueFunc.droppableSelector ? fAllValueFunc.droppableSelector : '',
+				conf = {
 					distance: 20,
 					handle: '.dragHandle',
 					cursorAt: {top: 22, left: 3},
@@ -624,25 +640,25 @@ ko.bindingHandlers.draggable = {
 					scroll: true
 				};
 
-			if (sDroppableSelector)
+			if (droppableSelector)
 			{
-				oConf.drag = function(oEvent) {
+				conf.drag = (event) => {
 
-					$(sDroppableSelector).each(function() {
-						var
-							$this = $(this),
-							oOffset = $this.offset(),
-							bottomPos = oOffset.top + $this.height();
+					$(droppableSelector).each(function() {
+						const
+							$this = $(this), // eslint-disable-line no-invalid-this
+							offset = $this.offset(),
+							bottomPos = offset.top + $this.height();
 
 						window.clearInterval($this.data('timerScroll'));
 						$this.data('timerScroll', false);
 
-						if (oEvent.pageX >= oOffset.left && oEvent.pageX <= oOffset.left + $this.width())
+						if (event.pageX >= offset.left && event.pageX <= offset.left + $this.width())
 						{
-							if (oEvent.pageY >= bottomPos - iTriggerZone && oEvent.pageY <= bottomPos)
+							if (event.pageY >= bottomPos - triggerZone && event.pageY <= bottomPos)
 							{
-								var moveUp = function() {
-									$this.scrollTop($this.scrollTop() + iScrollSpeed);
+								const moveUp = () => {
+									$this.scrollTop($this.scrollTop() + scrollSpeed);
 									Utils.windowResize();
 								};
 
@@ -650,10 +666,10 @@ ko.bindingHandlers.draggable = {
 								moveUp();
 							}
 
-							if (oEvent.pageY >= oOffset.top && oEvent.pageY <= oOffset.top + iTriggerZone)
+							if (event.pageY >= offset.top && event.pageY <= offset.top + triggerZone)
 							{
-								var moveDown = function() {
-									$this.scrollTop($this.scrollTop() - iScrollSpeed);
+								const moveDown = () => {
+									$this.scrollTop($this.scrollTop() - scrollSpeed);
 									Utils.windowResize();
 								};
 
@@ -664,24 +680,23 @@ ko.bindingHandlers.draggable = {
 					});
 				};
 
-				oConf.stop = function() {
-					$(sDroppableSelector).each(function() {
-						window.clearInterval($(this).data('timerScroll'));
-						$(this).data('timerScroll', false);
+				conf.stop = () => {
+					$(droppableSelector).each(function() {
+						const $this = $(this); // eslint-disable-line no-invalid-this
+						window.clearInterval($this.data('timerScroll'));
+						$this.data('timerScroll', false);
 					});
 				};
 			}
 
-			oConf.helper = function(oEvent) {
-				return fValueAccessor()(oEvent && oEvent.target ? ko.dataFor(oEvent.target) : null);
-			};
+			conf.helper = (event) => fValueAccessor()(event && event.target ? ko.dataFor(event.target) : null);
 
-			$(oElement).draggable(oConf).on('mousedown.koDraggable', function() {
+			$(element).draggable(conf).on('mousedown.koDraggable', () => {
 				Utils.removeInFocus();
 			});
 
-			ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-				$(oElement)
+			ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+				$(element)
 					.off('mousedown.koDraggable')
 					.draggable('destroy');
 			});
@@ -690,44 +705,44 @@ ko.bindingHandlers.draggable = {
 };
 
 ko.bindingHandlers.droppable = {
-	init: function(oElement, fValueAccessor, fAllBindingsAccessor) {
-		var Globals = require('Common/Globals');
+	init: (element, fValueAccessor, fAllBindingsAccessor) => {
+		const Globals = require('Common/Globals');
 		if (!Globals.bMobileDevice)
 		{
-			var
+			const
 				fValueFunc = fValueAccessor(),
 				fAllValueFunc = fAllBindingsAccessor(),
 				fOverCallback = fAllValueFunc && fAllValueFunc.droppableOver ? fAllValueFunc.droppableOver : null,
 				fOutCallback = fAllValueFunc && fAllValueFunc.droppableOut ? fAllValueFunc.droppableOut : null,
-				oConf = {
+				conf = {
 					tolerance: 'pointer',
 					hoverClass: 'droppableHover'
 				};
 
 			if (fValueFunc)
 			{
-				oConf.drop = function(oEvent, oUi) {
-					fValueFunc(oEvent, oUi);
+				conf.drop = (event, ui) => {
+					fValueFunc(event, ui);
 				};
 
 				if (fOverCallback)
 				{
-					oConf.over = function(oEvent, oUi) {
-						fOverCallback(oEvent, oUi);
+					conf.over = (event, ui) => {
+						fOverCallback(event, ui);
 					};
 				}
 
 				if (fOutCallback)
 				{
-					oConf.out = function(oEvent, oUi) {
-						fOutCallback(oEvent, oUi);
+					conf.out = (event, ui) => {
+						fOutCallback(event, ui);
 					};
 				}
 
-				$(oElement).droppable(oConf);
+				$(element).droppable(conf);
 
-				ko.utils.domNodeDisposal.addDisposeCallback(oElement, function() {
-					$(oElement).droppable('destroy');
+				ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+					$(element).droppable('destroy');
 				});
 			}
 		}
@@ -735,71 +750,71 @@ ko.bindingHandlers.droppable = {
 };
 
 ko.bindingHandlers.nano = {
-	init: function(oElement) {
+	init: (element) => {
 
-		var
+		const
 			Globals = require('Common/Globals'),
 			Settings = require('Storage/Settings');
 
 		if (!Globals.bDisableNanoScroll && !Settings.appSettingsGet('useNativeScrollbars'))
 		{
-			$(oElement)
+			$(element)
 				.addClass('nano')
 				.nanoScroller({
-					'iOSNativeScrolling': false,
-					'preventPageScrolling': true
+					iOSNativeScrolling: false,
+					preventPageScrolling: true
 				});
 		}
 	}
 };
 
 ko.bindingHandlers.saveTrigger = {
-	init: function(oElement) {
+	init: (element) => {
 
-		var $oEl = $(oElement);
+		const $el = $(element);
 
-		$oEl.data('save-trigger-type', $oEl.is('input[type=text],input[type=email],input[type=password],select,textarea') ? 'input' : 'custom');
+		$el.data('save-trigger-type', $el.is('input[type=text],input[type=email],input[type=password],select,textarea') ? 'input' : 'custom');
 
-		if ('custom' === $oEl.data('save-trigger-type'))
+		if ('custom' === $el.data('save-trigger-type'))
 		{
-			$oEl.append(
+			$el.append(
 				'&nbsp;&nbsp;<i class="icon-spinner animated"></i><i class="icon-remove error"></i><i class="icon-ok success"></i>'
 			).addClass('settings-saved-trigger');
 		}
 		else
 		{
-			$oEl.addClass('settings-saved-trigger-input');
+			$el.addClass('settings-saved-trigger-input');
 		}
 	},
-	update: function(oElement, fValueAccessor) {
-		var
-			mValue = ko.unwrap(fValueAccessor()),
-			$oEl = $(oElement);
+	update: (element, fValueAccessor) => {
+		const
+			value = ko.unwrap(fValueAccessor()),
+			$el = $(element);
 
-		if ('custom' === $oEl.data('save-trigger-type'))
+		if ('custom' === $el.data('save-trigger-type'))
 		{
-			switch (mValue.toString())
+			switch (value.toString())
 			{
 				case '1':
-					$oEl
+					$el
 						.find('.animated,.error').hide().removeClass('visible')
 						.end()
 						.find('.success').show().addClass('visible');
 					break;
 				case '0':
-					$oEl
+					$el
 						.find('.animated,.success').hide().removeClass('visible')
 						.end()
 						.find('.error').show().addClass('visible');
 					break;
 				case '-2':
-					$oEl
+					$el
 						.find('.error,.success').hide().removeClass('visible')
 						.end()
 						.find('.animated').show().addClass('visible');
 					break;
 				default:
-					$oEl
+					$el
 						.find('.animated').hide()
 						.end()
 						.find('.error,.success').removeClass('visible');
@@ -808,19 +823,18 @@ ko.bindingHandlers.saveTrigger = {
 		}
 		else
 		{
-			switch (mValue.toString())
+			switch (value.toString())
 			{
 				case '1':
-					$oEl.addClass('success').removeClass('error');
+					$el.addClass('success').removeClass('error');
 					break;
 				case '0':
-					$oEl.addClass('error').removeClass('success');
+					$el.addClass('error').removeClass('success');
 					break;
 				case '-2':
-//					$oEl;
 					break;
 				default:
-					$oEl.removeClass('error success');
+					$el.removeClass('error success');
 					break;
 			}
 		}
@@ -828,130 +842,79 @@ ko.bindingHandlers.saveTrigger = {
 };
 
 ko.bindingHandlers.emailsTags = {
-	init: function(oElement, fValueAccessor, fAllBindingsAccessor) {
+	init: (element, fValueAccessor, fAllBindingsAccessor) => {
 
-		var
+		const
 			Utils = require('Common/Utils'),
 			EmailModel = require('Model/Email').default,
 
-			$oEl = $(oElement),
+			$el = $(element),
 			fValue = fValueAccessor(),
 			fAllBindings = fAllBindingsAccessor(),
 			fAutoCompleteSource = fAllBindings.autoCompleteSource || null,
-			fFocusCallback = function(bValue) {
+			fFocusCallback = (value) => {
 				if (fValue && fValue.focused)
 				{
-					fValue.focused(!!bValue);
+					fValue.focused(!!value);
 				}
 			};
 
-		$oEl.inputosaurus({
-			'parseOnBlur': true,
-			'allowDragAndDrop': true,
-			'focusCallback': fFocusCallback,
-			'inputDelimiters': [',', ';', '\n'],
-			'autoCompleteSource': fAutoCompleteSource,
-//				'elementHook': function(oEl, oItem) {
-//					if (oEl && oItem)
-//					{
-//						oEl.addClass('pgp');
-//						window.console.log(arguments);
-//					}
-//				},
-			'parseHook': function(aInput) {
+		$el.inputosaurus({
+			parseOnBlur: true,
+			allowDragAndDrop: true,
+			focusCallback: fFocusCallback,
+			inputDelimiters: [',', ';', '\n'],
+			autoCompleteSource: fAutoCompleteSource,
+//			elementHook: (el, item) => {
+//				if (el && item)
+//				{
+//					el.addClass('pgp');
+//				}
+//			},
+			parseHook: (input) => _.map(input, (inputValue) => {
+				const value = Utils.trim(inputValue);
+				if ('' !== value)
+				{
+					const email = new EmailModel();
+					email.mailsoParse(value);
+					return [email.toLine(false), email];
+				}
+				return [value, null];
 
-				return _.map(aInput, function(sInputValue) {
-					var value = Utils.trim(sInputValue);
-					if ('' !== value)
-					{
-						var email = new EmailModel();
-						email.mailsoParse(value);
-						return [email.toLine(false), email];
-					}
-					return [value, null];
-
-				});
-
-//					var aResult = [];
-//
-//					_.each(aInput, function(sInputValue) {
-//
-//						var
-//							aM = null,
-//							aValues = [],
-//							sValue = Utils.trim(sInputValue),
-//							oEmail = null
-//						;
-//
-//						if ('' !== sValue)
-//						{
-//							aM = sValue.match(/[@]/g);
-//							if (aM && 0 < aM.length)
-//							{
-//								sValue = sValue.replace(/[\r\n]+/g, '; ').replace(/[\s]+/g, ' ');
-//								aValues = EmailModel.splitHelper(sValue, ';');
-//
-//								_.each(aValues, function(sV) {
-//
-//									oEmail = new EmailModel();
-//									oEmail.mailsoParse(sV);
-//
-//									if (oEmail.email)
-//									{
-//										aResult.push([oEmail.toLine(false), oEmail]);
-//									}
-//									else
-//									{
-//										aResult.push(['', null]);
-//									}
-//								});
-//							}
-//							else
-//							{
-//								aResult.push([sInputValue, null]);
-//							}
-//						}
-//						else
-//						{
-//							aResult.push([sInputValue, null]);
-//						}
-//					});
-//
-//					return aResult;
-			},
-			'change': _.bind(function(oEvent) {
-				$oEl.data('EmailsTagsValue', oEvent.target.value);
-				fValue(oEvent.target.value);
-			}, this)
+			}),
+			'change': (event) => {
+				$el.data('EmailsTagsValue', event.target.value);
+				fValue(event.target.value);
+			}
 		});
 
 		if (fValue && fValue.focused && fValue.focused.subscribe)
 		{
-			fValue.focused.subscribe(function(bValue) {
-				$oEl.inputosaurus(bValue ? 'focus' : 'blur');
+			fValue.focused.subscribe((value) => {
+				$el.inputosaurus(value ? 'focus' : 'blur');
 			});
 		}
 	},
-	update: function(oElement, fValueAccessor) {
+	update: (element, fValueAccessor) => {
 
-		var
-			$oEl = $(oElement),
+		const
+			$oEl = $(element),
 			fValue = fValueAccessor(),
-			sValue = ko.unwrap(fValue);
+			value = ko.unwrap(fValue);
 
-		if ($oEl.data('EmailsTagsValue') !== sValue)
+		if ($oEl.data('EmailsTagsValue') !== value)
 		{
-			$oEl.val(sValue);
-			$oEl.data('EmailsTagsValue', sValue);
+			$oEl.val(value);
+			$oEl.data('EmailsTagsValue', value);
 			$oEl.inputosaurus('refresh');
 		}
 	}
 };
 
 ko.bindingHandlers.command = {
-	init: function(oElement, fValueAccessor, fAllBindingsAccessor, oViewModel) {
-		var
-			jqElement = $(oElement),
+	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext) => {
+		const
+			jqElement = $(element),
 			oCommand = fValueAccessor();
 
 		if (!oCommand || !oCommand.enabled || !oCommand.canExecute)
@@ -961,295 +924,272 @@ ko.bindingHandlers.command = {
 
 		jqElement.addClass('command');
 		ko.bindingHandlers[jqElement.is('form') ? 'submit' : 'click']
-			.init.apply(oViewModel, Array.prototype.slice.call(arguments)); // eslint-disable-line prefer-rest-params
+			.init(element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext);
 	},
-	update: function(oElement, fValueAccessor) {
+	update: (element, fValueAccessor) => {
 
-		var
-			jqElement = $(oElement),
-			oCommand = fValueAccessor(),
-			bResult = oCommand.enabled();
+		const
+			jqElement = $(element),
+			command = fValueAccessor();
 
-		jqElement.toggleClass('command-not-enabled', !bResult);
+		let result = command.enabled();
 
-		if (bResult)
+		jqElement.toggleClass('command-not-enabled', !result);
+
+		if (result)
 		{
-			bResult = oCommand.canExecute();
-			jqElement.toggleClass('command-can-not-be-execute', !bResult);
+			result = command.canExecute();
+			jqElement.toggleClass('command-can-not-be-execute', !result);
 		}
 
-		jqElement.toggleClass('command-disabled disable disabled', !bResult).toggleClass('no-disabled', !!bResult);
+		jqElement.toggleClass('command-disabled disable disabled', !result).toggleClass('no-disabled', !!result);
 
 		if (jqElement.is('input') || jqElement.is('button'))
 		{
-			jqElement.prop('disabled', !bResult);
+			jqElement.prop('disabled', !result);
 		}
 	}
 };
 
 // extenders
 
-ko.extenders.trimmer = function(oTarget)
-{
-	var
+ko.extenders.trimmer = (target) => {
+	const
 		Utils = require('Common/Utils'),
-		oResult = ko.computed({
-			'read': oTarget,
-			'write': function(sNewValue) {
-				oTarget(Utils.trim(sNewValue.toString()));
-			},
-			'owner': this
-		});
-
-	oResult(oTarget());
-	return oResult;
-};
-
-ko.extenders.posInterer = function(oTarget, iDefault)
-{
-	var
-		Utils = require('Common/Utils'),
-		oResult = ko.computed({
-			'read': oTarget,
-			'write': function(sNewValue) {
-				var iNew = Utils.pInt(sNewValue.toString(), iDefault);
-				if (0 >= iNew)
-				{
-					iNew = iDefault;
-				}
-
-				if (iNew === oTarget() && '' + iNew !== '' + sNewValue)
-				{
-					oTarget(iNew + 1);
-				}
-
-				oTarget(iNew);
+		result = ko.computed({
+			read: target,
+			write: (newValue) => {
+				target(Utils.trim(newValue.toString()));
 			}
 		});
 
-	oResult(oTarget());
-	return oResult;
+	result(target());
+	return result;
 };
 
-ko.extenders.limitedList = function(oTarget, mList)
-{
-	var
+ko.extenders.posInterer = (target, defaultVal) => {
+	const
 		Utils = require('Common/Utils'),
-		oResult = ko.computed({
-			'read': oTarget,
-			'write': function(sNewValue) {
-
-				var
-					sCurrentValue = ko.unwrap(oTarget),
-					aList = ko.unwrap(mList);
-
-				if (Utils.isNonEmptyArray(aList))
+		result = ko.computed({
+			read: target,
+			write: (newValue) => {
+				let val = Utils.pInt(newValue.toString(), defaultVal);
+				if (0 >= val)
 				{
-					if (-1 < Utils.inArray(sNewValue, aList))
+					val = defaultVal;
+				}
+
+				if (val === target() && '' + val !== '' + newValue)
+				{
+					target(val + 1);
+				}
+
+				target(val);
+			}
+		});
+
+	result(target());
+	return result;
+};
+
+ko.extenders.limitedList = (target, limitedList) => {
+	const
+		Utils = require('Common/Utils'),
+		result = ko.computed({
+			read: target,
+			write: (newValue) => {
+
+				const
+					currentValue = ko.unwrap(target),
+					list = ko.unwrap(limitedList);
+
+				if (Utils.isNonEmptyArray(list))
+				{
+					if (-1 < Utils.inArray(newValue, list))
 					{
-						oTarget(sNewValue);
+						target(newValue);
 					}
-					else if (-1 < Utils.inArray(sCurrentValue, aList))
+					else if (-1 < Utils.inArray(currentValue, list))
 					{
-						oTarget(sCurrentValue + ' ');
-						oTarget(sCurrentValue);
+						target(currentValue + ' ');
+						target(currentValue);
 					}
 					else
 					{
-						oTarget(aList[0] + ' ');
-						oTarget(aList[0]);
+						target(list[0] + ' ');
+						target(list[0]);
 					}
 				}
 				else
 				{
-					oTarget('');
+					target('');
 				}
 			}
-		}).extend({'notify': 'always'});
+		}).extend({notify: 'always'});
 
-	oResult(oTarget());
+	result(target());
 
-	if (!oResult.valueHasMutated)
+	if (!result.valueHasMutated)
 	{
-		oResult.valueHasMutated = function() {
-			oTarget.valueHasMutated();
+		result.valueHasMutated = () => {
+			target.valueHasMutated();
 		};
 	}
 
-	return oResult;
+	return result;
 };
 
-ko.extenders.reversible = function(oTarget)
-{
-	var mValue = oTarget();
+ko.extenders.reversible = (target) => {
 
-	oTarget.commit = function()
-	{
-		mValue = oTarget();
+	let value = target();
+
+	target.commit = () => {
+		value = target();
 	};
 
-	oTarget.reverse = function()
-	{
-		oTarget(mValue);
+	target.reverse = () => {
+		target(value);
 	};
 
-	oTarget.commitedValue = function()
-	{
-		return mValue;
-	};
-
-	return oTarget;
+	target.commitedValue = () => value;
+	return target;
 };
 
-ko.extenders.toggleSubscribe = function(oTarget, oOptions)
-{
-	oTarget.subscribe(oOptions[1], oOptions[0], 'beforeChange');
-	oTarget.subscribe(oOptions[2], oOptions[0]);
-
-	return oTarget;
+ko.extenders.toggleSubscribe = (target, options) => {
+	target.subscribe(options[1], options[0], 'beforeChange');
+	target.subscribe(options[2], options[0]);
+	return target;
 };
 
-ko.extenders.toggleSubscribeProperty = function(oTarget, oOptions)
-{
-	var sProp = oOptions[1];
+ko.extenders.toggleSubscribeProperty = (target, options) => {
 
-	if (sProp)
+	const prop = options[1];
+	if (prop)
 	{
-		oTarget.subscribe(function(oPrev) {
-			if (oPrev && oPrev[sProp])
+		target.subscribe((prev) => {
+			if (prev && prev[prop])
 			{
-				oPrev[sProp](false);
+				prev[prop](false);
 			}
-		}, oOptions[0], 'beforeChange');
+		}, options[0], 'beforeChange');
 
-		oTarget.subscribe(function(oNext) {
-			if (oNext && oNext[sProp])
+		target.subscribe((next) => {
+			if (next && next[prop])
 			{
-				oNext[sProp](true);
+				next[prop](true);
 			}
-		}, oOptions[0]);
+		}, options[0]);
 	}
 
-	return oTarget;
+	return target;
 };
 
-ko.extenders.falseTimeout = function(oTarget, iOption)
-{
-	oTarget.iFalseTimeoutTimeout = 0;
-	oTarget.subscribe(function(bValue) {
-		if (bValue)
+ko.extenders.falseTimeout = (target, option) => {
+	target.iFalseTimeoutTimeout = 0;
+	target.subscribe((value) => {
+		if (value)
 		{
-			window.clearTimeout(oTarget.iFalseTimeoutTimeout);
-			oTarget.iFalseTimeoutTimeout = window.setTimeout(function() {
-				oTarget(false);
-				oTarget.iFalseTimeoutTimeout = 0;
-			}, require('Common/Utils').pInt(iOption));
+			window.clearTimeout(target.iFalseTimeoutTimeout);
+			target.iFalseTimeoutTimeout = window.setTimeout(() => {
+				target(false);
+				target.iFalseTimeoutTimeout = 0;
+			}, require('Common/Utils').pInt(option));
 		}
 	});
 
-	return oTarget;
+	return target;
 };
 
-ko.extenders.specialThrottle = function(oTarget, iOption)
-{
-	oTarget.iSpecialThrottleTimeoutValue = require('Common/Utils').pInt(iOption);
-	if (0 < oTarget.iSpecialThrottleTimeoutValue)
+ko.extenders.specialThrottle = (target, option) => {
+	target.iSpecialThrottleTimeoutValue = require('Common/Utils').pInt(option);
+	if (0 < target.iSpecialThrottleTimeoutValue)
 	{
-		oTarget.iSpecialThrottleTimeout = 0;
-		oTarget.valueForRead = ko.observable(!!oTarget()).extend({'throttle': 10});
+		target.iSpecialThrottleTimeout = 0;
+		target.valueForRead = ko.observable(!!target()).extend({throttle: 10});
 
 		return ko.computed({
-			'read': oTarget.valueForRead,
-			'write': function(bValue) {
+			read: target.valueForRead,
+			write: (bValue) => {
 
 				if (bValue)
 				{
-					oTarget.valueForRead(bValue);
+					target.valueForRead(bValue);
 				}
 				else
 				{
-					if (oTarget.valueForRead())
+					if (target.valueForRead())
 					{
-						window.clearTimeout(oTarget.iSpecialThrottleTimeout);
-						oTarget.iSpecialThrottleTimeout = window.setTimeout(function() {
-							oTarget.valueForRead(false);
-							oTarget.iSpecialThrottleTimeout = 0;
-						}, oTarget.iSpecialThrottleTimeoutValue);
+						window.clearTimeout(target.iSpecialThrottleTimeout);
+						target.iSpecialThrottleTimeout = window.setTimeout(() => {
+							target.valueForRead(false);
+							target.iSpecialThrottleTimeout = 0;
+						}, target.iSpecialThrottleTimeoutValue);
 					}
 					else
 					{
-						oTarget.valueForRead(bValue);
+						target.valueForRead(bValue);
 					}
 				}
 			}
 		});
 	}
 
-	return oTarget;
+	return target;
 };
 
-ko.extenders.idleTrigger = function(oTarget)
-{
-	var Enums = require('Common/Enums');
-	oTarget.trigger = ko.observable(Enums.SaveSettingsStep.Idle);
-	return oTarget;
+ko.extenders.idleTrigger = (target) => {
+	target.trigger = ko.observable(SaveSettingsStep.Idle);
+	return target;
 };
 
 // functions
 
-ko.observable.fn.idleTrigger = function()
-{
+ko.observable.fn.idleTrigger = function() {
 	return this.extend({'idleTrigger': true});
 };
 
-ko.observable.fn.validateNone = function()
-{
+ko.observable.fn.validateNone = function() {
 	this.hasError = ko.observable(false);
 	return this;
 };
 
-ko.observable.fn.validateEmail = function()
-{
-	var Utils = require('Common/Utils');
+ko.observable.fn.validateEmail = function() {
 
 	this.hasError = ko.observable(false);
 
-	this.subscribe(function(sValue) {
-		sValue = Utils.trim(sValue);
-		this.hasError('' !== sValue && !(/^[^@\s]+@[^@\s]+$/.test(sValue)));
-	}, this);
+	this.subscribe((value) => {
+		this.hasError('' !== value && !(/^[^@\s]+@[^@\s]+$/.test(value)));
+	});
 
 	this.valueHasMutated();
 	return this;
 };
 
-ko.observable.fn.validateSimpleEmail = function()
-{
-	var Utils = require('Common/Utils');
+ko.observable.fn.validateSimpleEmail = function() {
 
 	this.hasError = ko.observable(false);
 
-	this.subscribe(function(sValue) {
-		sValue = Utils.trim(sValue);
-		this.hasError('' !== sValue && !(/^.+@.+$/.test(sValue)));
-	}, this);
+	this.subscribe((value) => {
+		this.hasError('' !== value && !(/^.+@.+$/.test(value)));
+	});
 
 	this.valueHasMutated();
 	return this;
 };
 
-ko.observable.fn.deleteAccessHelper = function()
-{
-	this.extend({'falseTimeout': 3000}).extend({'toggleSubscribe': [null,
-		function(oPrev) {
-			if (oPrev && oPrev.deleteAccess)
+ko.observable.fn.deleteAccessHelper = function() {
+	this.extend({falseTimeout: 3000}).extend({toggleSubscribe: [
+		null,
+		(prev) => {
+			if (prev && prev.deleteAccess)
 			{
-				oPrev.deleteAccess(false);
+				prev.deleteAccess(false);
 			}
-		}, function(oNext) {
-			if (oNext && oNext.deleteAccess)
+		},
+		(next) => {
+			if (next && next.deleteAccess)
 			{
-				oNext.deleteAccess(true);
+				next.deleteAccess(true);
 			}
 		}
 	]});
@@ -1257,17 +1197,15 @@ ko.observable.fn.deleteAccessHelper = function()
 	return this;
 };
 
-ko.observable.fn.validateFunc = function(fFunc)
-{
-	var Utils = require('Common/Utils');
+ko.observable.fn.validateFunc = function(fFunc) {
 
 	this.hasFuncError = ko.observable(false);
 
-	if (Utils.isFunc(fFunc))
+	if (_.isFunction(fFunc))
 	{
-		this.subscribe(function(sValue) {
-			this.hasFuncError(!fFunc(sValue));
-		}, this);
+		this.subscribe((value) => {
+			this.hasFuncError(!fFunc(value));
+		});
 
 		this.valueHasMutated();
 	}

@@ -1,85 +1,81 @@
 
-var
-	_ = require('_'),
-	$ = require('$'),
-	key = require('key'),
+import _ from '_';
+import $ from '$';
+import key from 'key';
 
-	Enums = require('Common/Enums'),
-	Globals = require('Common/Globals'),
-	Links = require('Common/Links'),
+import {KeyState, Magics} from 'Common/Enums';
+import {leftPanelDisabled} from 'Common/Globals';
+import {settings, inbox} from 'Common/Links';
+import {getFolderInboxName} from 'Common/Cache';
 
-	Cache = require('Common/Cache'),
-	Settings = require('Storage/Settings'),
+import * as Settings from 'Storage/Settings';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {view, ViewType, setHash} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-/**
- * @constructor
- * @param {Object} oScreen
- */
-function MenuSettingsUserView(oScreen)
+@view({
+	name: 'View/User/Settings/Menu',
+	type: ViewType.Left,
+	templateID: 'SettingsMenu'
+})
+class MenuSettingsUserView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Left', 'SettingsMenu');
+	/**
+	 * @param {Object} screen
+	 */
+	constructor(screen) {
+		super();
 
-	this.leftPanelDisabled = Globals.leftPanelDisabled;
+		this.leftPanelDisabled = leftPanelDisabled;
 
-	this.mobile = Settings.appSettingsGet('mobile');
+		this.mobile = Settings.appSettingsGet('mobile');
 
-	this.menu = oScreen.menu;
-
-	kn.constructorEnd(this);
-}
-
-kn.extendAsViewModel(['View/User/Settings/Menu', 'View/App/Settings/Menu', 'SettingsMenuViewModel'], MenuSettingsUserView);
-_.extend(MenuSettingsUserView.prototype, AbstractView.prototype);
-
-MenuSettingsUserView.prototype.onBuild = function(oDom)
-{
-	if (this.mobile)
-	{
-		oDom
-			.on('click', '.b-settings-menu .e-item.selectable', function() {
-				Globals.leftPanelDisabled(true);
-			});
+		this.menu = screen.menu;
 	}
 
-	key('up, down', Enums.KeyState.Settings, _.throttle(function(event, handler) {
-
-		var
-			bUp = handler && 'up' === handler.shortcut,
-			$items = $('.b-settings-menu .e-item', oDom);
-
-		if (event && $items.length)
+	onBuild(dom) {
+		if (this.mobile)
 		{
-			var iIndex = $items.index($items.filter('.selected'));
-			if (bUp && 0 < iIndex)
-			{
-				iIndex -= 1;
-			}
-			else if (!bUp && iIndex < $items.length - 1)
-			{
-				iIndex += 1;
-			}
-
-			var sH = $items.eq(iIndex).attr('href');
-			if (sH)
-			{
-				kn.setHash(sH, false, true);
-			}
+			dom.on('click', '.b-settings-menu .e-item.selectable', () => {
+				leftPanelDisabled(true);
+			});
 		}
 
-	}, 200)); // eslint-disable-line no-magic-numbers
-};
+		key('up, down', KeyState.Settings, _.throttle((event, handler) => {
 
-MenuSettingsUserView.prototype.link = function(sRoute)
-{
-	return Links.settings(sRoute);
-};
+			const
+				up = handler && 'up' === handler.shortcut,
+				$items = $('.b-settings-menu .e-item', dom);
 
-MenuSettingsUserView.prototype.backToMailBoxClick = function()
-{
-	kn.setHash(Links.inbox(Cache.getFolderInboxName()));
-};
+			if (event && $items.length)
+			{
+				let iIndex = $items.index($items.filter('.selected'));
+				if (up && 0 < iIndex)
+				{
+					iIndex -= 1;
+				}
+				else if (!up && iIndex < $items.length - 1)
+				{
+					iIndex += 1;
+				}
 
-module.exports = MenuSettingsUserView;
+				const sH = $items.eq(iIndex).attr('href');
+				if (sH)
+				{
+					setHash(sH, false, true);
+				}
+			}
+
+		}, Magics.Time200ms));
+	}
+
+	link(sRoute) {
+		return settings(sRoute);
+	}
+
+	backToMailBoxClick() {
+		setHash(inbox(getFolderInboxName()));
+	}
+}
+
+export {MenuSettingsUserView, MenuSettingsUserView as default};

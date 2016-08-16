@@ -8,6 +8,8 @@ import {showScreenPopup} from 'Knoin/Knoin';
 import DomainStore from 'Stores/Admin/Domain';
 import Remote from 'Remote/Admin/Ajax';
 
+import {getApp} from 'Helper/Apps/Admin';
+
 class DomainsAdminSettings
 {
 	constructor() {
@@ -42,15 +44,15 @@ class DomainsAdminSettings
 	onBuild(oDom) {
 		const self = this;
 		oDom
-			.on('click', '.b-admin-domains-list-table .e-item .e-action', function() {
-				const domainItem = ko.dataFor(this);
+			.on('click', '.b-admin-domains-list-table .e-item .e-action', function() { // eslint-disable-line prefer-arrow-callback
+				const domainItem = ko.dataFor(this); // eslint-disable-line no-invalid-this
 				if (domainItem)
 				{
 					Remote.domain(self.onDomainLoadRequest, domainItem.name);
 				}
 			});
 
-		require('App/Admin').default.reloadDomainList();
+		getApp().reloadDomainList();
 	}
 
 	onDomainLoadRequest(sResult, oData) {
@@ -61,7 +63,7 @@ class DomainsAdminSettings
 	}
 
 	onDomainListChangeRequest() {
-		require('App/Admin').default.reloadDomainList();
+		getApp().reloadDomainList();
 	}
 }
 

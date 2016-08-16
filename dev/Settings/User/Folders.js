@@ -10,12 +10,14 @@ import {removeFolderFromCacheList} from 'Common/Cache';
 import {appSettingsGet} from 'Storage/Settings';
 import * as Local from 'Storage/Client';
 
-import {showScreenPopup} from 'Knoin/Knoin';
-
 import FolderStore from 'Stores/User/Folder';
 
 import Promises from 'Promises/User/Ajax';
 import Remote from 'Remote/User/Ajax';
+
+import {getApp} from 'Helper/Apps/User';
+
+import {showScreenPopup} from 'Knoin/Knoin';
 
 class FoldersUserSettings
 {
@@ -61,7 +63,7 @@ class FoldersUserSettings
 		{
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
 
-			require('App/User').default.foldersPromisesActionHelper(
+			getApp().foldersPromisesActionHelper(
 				Promises.folderRename(folder.fullNameRaw, nameToEdit, FolderStore.foldersRenaming),
 				Notification.CantRenameFolder
 			);
@@ -131,7 +133,7 @@ class FoldersUserSettings
 
 				FolderStore.folderList.remove(fRemoveFolder);
 
-				require('App/User').default.foldersPromisesActionHelper(
+				getApp().foldersPromisesActionHelper(
 					Promises.folderDelete(folderToRemove.fullNameRaw, FolderStore.foldersDeleting),
 					Notification.CantDeleteFolder
 				);

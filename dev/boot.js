@@ -3,9 +3,7 @@ import window from 'window';
 
 import {Promise} from 'es6-promise-polyfill/promise.js';
 import {progressJs} from '../node_modules/Progress.js/src/progress.js';
-import {jassl} from 'jassl';
 
-window.jassl = jassl;
 window.Promise = window.Promise || Promise;
 window.progressJs = window.progressJs || progressJs();
 
@@ -25,7 +23,6 @@ window.progressJs.onbeforeend(() => {
 
 require('json3');
 require('../vendors/modernizr/modernizr-custom.js');
-
 require('Common/Booter');
 
 if (window.__runBoot)

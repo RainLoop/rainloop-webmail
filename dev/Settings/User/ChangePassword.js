@@ -8,6 +8,8 @@ import {getNotificationFromResponse, i18n} from 'Common/Translator';
 
 import Remote from 'Remote/User/Ajax';
 
+import {getApp} from 'Helper/Apps/User';
+
 class ChangePasswordUserSettings
 {
 	constructor() {
@@ -41,7 +43,7 @@ class ChangePasswordUserSettings
 			this.passwordMismatch(false);
 		});
 
-		this.saveNewPasswordCommand = createCommand(this, () => {
+		this.saveNewPasswordCommand = createCommand(() => {
 			if (this.newPassword() !== this.newPassword2())
 			{
 				this.passwordMismatch(true);
@@ -90,7 +92,7 @@ class ChangePasswordUserSettings
 			this.passwordUpdateSuccess(true);
 			this.currentPassword.error(false);
 
-			require('App/User').default.setClientSideToken(data.Result);
+			getApp().setClientSideToken(data.Result);
 		}
 		else
 		{

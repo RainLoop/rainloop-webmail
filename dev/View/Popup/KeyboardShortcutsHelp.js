@@ -1,60 +1,55 @@
 
-var
-	_ = require('_'),
-	key = require('key'),
+import _ from '_';
+import key from 'key';
 
-	Enums = require('Common/Enums'),
+import {KeyState, Magics} from 'Common/Enums';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {view, ViewType} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function KeyboardShortcutsHelpPopupView()
+@view({
+	name: 'View/Popup/KeyboardShortcutsHelp',
+	type: ViewType.Popup,
+	templateID: 'PopupsKeyboardShortcutsHelp'
+})
+class KeyboardShortcutsHelpPopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsKeyboardShortcutsHelp');
+	constructor() {
+		super();
+		this.sDefaultKeyScope = KeyState.PopupKeyboardShortcutsHelp;
+	}
 
-	this.sDefaultKeyScope = Enums.KeyState.PopupKeyboardShortcutsHelp;
+	onBuild(dom) {
+		key('tab, shift+tab, left, right', KeyState.PopupKeyboardShortcutsHelp, _.throttle((event, handler) => {
 
-	kn.constructorEnd(this);
+			if (event && handler)
+			{
+				const
+					$tabs = dom.find('.nav.nav-tabs > li'),
+					isNext = handler && ('tab' === handler.shortcut || 'right' === handler.shortcut);
+
+				let index = $tabs.index($tabs.filter('.active'));
+				if (!isNext && 0 < index)
+				{
+					index -= 1;
+				}
+				else if (isNext && index < $tabs.length - 1)
+				{
+					index += 1;
+				}
+				else
+				{
+					index = isNext ? 0 : $tabs.length - 1;
+				}
+
+				$tabs.eq(index).find('a[data-toggle="tab"]').tab('show');
+				return false;
+			}
+
+			return true;
+
+		}, Magics.Time100ms));
+	}
 }
-
-kn.extendAsViewModel(['View/Popup/KeyboardShortcutsHelp', 'PopupsKeyboardShortcutsHelpViewModel'], KeyboardShortcutsHelpPopupView);
-_.extend(KeyboardShortcutsHelpPopupView.prototype, AbstractView.prototype);
-
-KeyboardShortcutsHelpPopupView.prototype.onBuild = function(oDom)
-{
-	key('tab, shift+tab, left, right', Enums.KeyState.PopupKeyboardShortcutsHelp, _.throttle(function(event, handler) {
-
-		if (event && handler)
-		{
-			var
-				$tabs = oDom.find('.nav.nav-tabs > li'),
-				isNext = handler && ('tab' === handler.shortcut || 'right' === handler.shortcut),
-				index = $tabs.index($tabs.filter('.active'));
-
-			if (!isNext && 0 < index)
-			{
-				index -= 1;
-			}
-			else if (isNext && index < $tabs.length - 1)
-			{
-				index += 1;
-			}
-			else
-			{
-				index = isNext ? 0 : $tabs.length - 1;
-			}
-
-			$tabs.eq(index).find('a[data-toggle="tab"]').tab('show');
-			return false;
-		}
-
-		return true;
-
-	}, Enums.Magics.Time100ms));
-};
 
 module.exports = KeyboardShortcutsHelpPopupView;

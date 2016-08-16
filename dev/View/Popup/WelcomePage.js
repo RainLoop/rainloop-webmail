@@ -1,56 +1,48 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import ko from 'ko';
 
-	Promises = require('Promises/User/Ajax'),
+import Promises from 'Promises/User/Ajax';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {view, ViewType} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function WelcomePagePopupView()
+@view({
+	name: 'View/Popup/WelcomePage',
+	type: ViewType.Popup,
+	templateID: 'PopupsWelcomePage'
+})
+class WelcomePagePopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsWelcomePage');
+	constructor() {
+		super();
 
-	this.welcomePageURL = ko.observable('');
+		this.welcomePageURL = ko.observable('');
 
-	this.closeFocused = ko.observable(false);
+		this.closeFocused = ko.observable(false);
+	}
 
-	kn.constructorEnd(this);
+	clearPopup() {
+		this.welcomePageURL('');
+		this.closeFocused(false);
+	}
+
+	/**
+	 * @param {string} sUrl
+	 * @returns {void}
+	 */
+	onShow(sUrl) {
+		this.clearPopup();
+
+		this.welcomePageURL(sUrl);
+	}
+
+	onShowWithDelay() {
+		this.closeFocused(true);
+	}
+
+	onHide() {
+		Promises.welcomeClose();
+	}
 }
-
-kn.extendAsViewModel(['View/Popup/WelcomePage', 'WelcomePagePopupViewModel'], WelcomePagePopupView);
-_.extend(WelcomePagePopupView.prototype, AbstractView.prototype);
-
-WelcomePagePopupView.prototype.clearPopup = function()
-{
-	this.welcomePageURL('');
-	this.closeFocused(false);
-};
-
-/**
- * @param {string} sUrl
- * @returns {void}
- */
-WelcomePagePopupView.prototype.onShow = function(sUrl)
-{
-	this.clearPopup();
-
-	this.welcomePageURL(sUrl);
-};
-
-WelcomePagePopupView.prototype.onShowWithDelay = function()
-{
-	this.closeFocused(true);
-};
-
-WelcomePagePopupView.prototype.onHide = function()
-{
-	Promises.welcomeClose();
-};
 
 module.exports = WelcomePagePopupView;

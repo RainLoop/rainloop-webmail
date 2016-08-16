@@ -1,223 +1,213 @@
 
-var
-	$ = require('$'),
-	_ = require('_'),
-	Promise = require('Promise'),
+import $ from '$';
+import Promise from 'Promise';
 
-	Consts = require('Common/Consts'),
-	Enums = require('Common/Enums'),
-	Globals = require('Common/Globals'),
-	Utils = require('Common/Utils'),
-	Links = require('Common/Links'),
-	Plugins = require('Common/Plugins'),
+import {ajax} from 'Common/Links';
+import {microtime, isUnd, isNormal, pString, pInt, inArray} from 'Common/Utils';
+import {DEFAULT_AJAX_TIMEOUT, TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT} from 'Common/Consts';
+import {StorageResultType, Notification} from 'Common/Enums';
+import {data as GlobalsData} from 'Common/Globals';
+import * as Plugins from 'Common/Plugins';
+import * as Settings from 'Storage/Settings';
 
-	Settings = require('Storage/Settings'),
+import {AbstractBasicPromises} from 'Promises/AbstractBasic';
 
-	AbstractBasicPromises = require('Promises/AbstractBasic');
-
-/**
-* @constructor
-*/
-function AbstractAjaxPromises()
+class AbstractAjaxPromises extends AbstractBasicPromises
 {
-	AbstractBasicPromises.call(this);
-
-	this.clear();
-}
-
-_.extend(AbstractAjaxPromises.prototype, AbstractBasicPromises.prototype);
-
-AbstractAjaxPromises.prototype.oRequests = {};
-
-AbstractAjaxPromises.prototype.clear = function()
-{
-	this.oRequests = {};
-};
-
-AbstractAjaxPromises.prototype.abort = function(sAction, bClearOnly)
-{
-	if (this.oRequests[sAction])
-	{
-		if (!bClearOnly && this.oRequests[sAction].abort)
-		{
-			this.oRequests[sAction].__aborted__ = true;
-			this.oRequests[sAction].abort();
-		}
-
-		this.oRequests[sAction] = null;
-		delete this.oRequests[sAction];
+	constructor() {
+		super();
+		this.oRequests = {};
+		this.clear();
 	}
 
-	return this;
-};
+	clear() {
+		this.oRequests = {};
+	}
 
-AbstractAjaxPromises.prototype.ajaxRequest = function(sAction, bPost, iTimeOut, oParameters, sAdditionalGetString, fTrigger)
-{
-	var self = this;
-	return new Promise(function(resolve, reject) {
-
-		var iStart = Utils.microtime();
-
-		iTimeOut = Utils.isNormal(iTimeOut) ? iTimeOut : Consts.DEFAULT_AJAX_TIMEOUT;
-		sAdditionalGetString = Utils.isUnd(sAdditionalGetString) ? '' : Utils.pString(sAdditionalGetString);
-
-		if (bPost)
+	abort(sAction, bClearOnly) {
+		if (this.oRequests[sAction])
 		{
-			oParameters.XToken = Settings.appSettingsGet('token');
+			if (!bClearOnly && this.oRequests[sAction].abort)
+			{
+				this.oRequests[sAction].__aborted__ = true;
+				this.oRequests[sAction].abort();
+			}
+
+			this.oRequests[sAction] = null;
+			delete this.oRequests[sAction];
 		}
 
-		Plugins.runHook('ajax-default-request', [sAction, oParameters, sAdditionalGetString]);
+		return this;
+	}
 
-		self.setTrigger(fTrigger, true);
+	ajaxRequest(action, isPost, timeOut, params, additionalGetString, fTrigger) {
 
-		var oH = $.ajax({
-			type: bPost ? 'POST' : 'GET',
-			url: Links.ajax(sAdditionalGetString),
-			async: true,
-			dataType: 'json',
-			data: bPost ? (oParameters || {}) : {},
-			timeout: iTimeOut,
-			global: true
-		}).always(function(oData, sTextStatus) {
+		return new Promise((resolve, reject) => {
 
-			var
-				bCached = false,
-				oErrorData = null;
+			const start = microtime();
 
-			if (oData && oData.Time)
+			timeOut = isNormal(timeOut) ? timeOut : DEFAULT_AJAX_TIMEOUT;
+			additionalGetString = isUnd(additionalGetString) ? '' : pString(additionalGetString);
+
+			if (isPost)
 			{
-				bCached = Utils.pInt(oData.Time) > Utils.microtime() - iStart;
+				params.XToken = Settings.appSettingsGet('token');
 			}
 
-			// backward capability
-			var sType = '';
-			switch (true)
-			{
-				case 'success' === sTextStatus && oData && oData.Result && sAction === oData.Action:
-					sType = Enums.StorageResultType.Success;
-					break;
-				case 'abort' === sTextStatus && (!oData || !oData.__aborted__):
-					sType = Enums.StorageResultType.Abort;
-					break;
-				default:
-					sType = Enums.StorageResultType.Error;
-					break;
-			}
+			Plugins.runHook('ajax-default-request', [action, params, additionalGetString]);
 
-			Plugins.runHook('ajax-default-response', [sAction,
-				Enums.StorageResultType.Success === sType ? oData : null, sType, bCached, oParameters]);
+			this.setTrigger(fTrigger, true);
 
-			if ('success' === sTextStatus)
-			{
-				if (oData && oData.Result && sAction === oData.Action)
+			const oH = $.ajax({
+				type: isPost ? 'POST' : 'GET',
+				url: ajax(additionalGetString),
+				async: true,
+				dataType: 'json',
+				data: isPost ? (params || {}) : {},
+				timeout: timeOut,
+				global: true
+			}).always((data, textStatus) => {
+
+				let
+					isCached = false,
+					errorData = null;
+
+				if (data && data.Time)
 				{
-					oData.__cached__ = bCached;
-					resolve(oData);
+					isCached = pInt(data.Time) > microtime() - start;
 				}
-				else if (oData && oData.Action)
+
+				// backward capability
+				let type = '';
+				switch (true)
 				{
-					oErrorData = oData;
-					reject(oData.ErrorCode ? oData.ErrorCode : Enums.Notification.AjaxFalse);
+					case 'success' === textStatus && data && data.Result && action === data.Action:
+						type = StorageResultType.Success;
+						break;
+					case 'abort' === textStatus && (!data || !data.__aborted__):
+						type = StorageResultType.Abort;
+						break;
+					default:
+						type = StorageResultType.Error;
+						break;
+				}
+
+				Plugins.runHook('ajax-default-response', [
+					action, StorageResultType.Success === type ? data : null, type, isCached, params
+				]);
+
+				if ('success' === textStatus)
+				{
+					if (data && data.Result && action === data.Action)
+					{
+						data.__cached__ = isCached;
+						resolve(data);
+					}
+					else if (data && data.Action)
+					{
+						errorData = data;
+						reject(data.ErrorCode ? data.ErrorCode : Notification.AjaxFalse);
+					}
+					else
+					{
+						errorData = data;
+						reject(Notification.AjaxParse);
+					}
+				}
+				else if ('timeout' === textStatus)
+				{
+					errorData = data;
+					reject(Notification.AjaxTimeout);
+				}
+				else if ('abort' === textStatus)
+				{
+					if (!data || !data.__aborted__)
+					{
+						reject(Notification.AjaxAbort);
+					}
 				}
 				else
 				{
-					oErrorData = oData;
-					reject(Enums.Notification.AjaxParse);
-				}
-			}
-			else if ('timeout' === sTextStatus)
-			{
-				oErrorData = oData;
-				reject(Enums.Notification.AjaxTimeout);
-			}
-			else if ('abort' === sTextStatus)
-			{
-				if (!oData || !oData.__aborted__)
-				{
-					reject(Enums.Notification.AjaxAbort);
-				}
-			}
-			else
-			{
-				oErrorData = oData;
-				reject(Enums.Notification.AjaxParse);
-			}
-
-			if (self.oRequests[sAction])
-			{
-				self.oRequests[sAction] = null;
-				delete self.oRequests[sAction];
-			}
-
-			self.setTrigger(fTrigger, false);
-
-			if (oErrorData)
-			{
-				if (-1 < Utils.inArray(oErrorData.ErrorCode, [
-					Enums.Notification.AuthError, Enums.Notification.AccessError,
-					Enums.Notification.ConnectionError, Enums.Notification.DomainNotAllowed, Enums.Notification.AccountNotAllowed,
-					Enums.Notification.MailServerError,	Enums.Notification.UnknownNotification, Enums.Notification.UnknownError
-				]))
-				{
-					Globals.data.iAjaxErrorCount += 1;
+					errorData = data;
+					reject(Notification.AjaxParse);
 				}
 
-				if (Enums.Notification.InvalidToken === oErrorData.ErrorCode)
+				if (this.oRequests[action])
 				{
-					Globals.data.iTokenErrorCount += 1;
+					this.oRequests[action] = null;
+					delete this.oRequests[action];
 				}
 
-				if (Consts.TOKEN_ERROR_LIMIT < Globals.data.iTokenErrorCount)
+				this.setTrigger(fTrigger, false);
+
+				if (errorData)
 				{
-					if (Globals.data.__APP__ && Globals.data.__APP__.loginAndLogoutReload)
+					if (-1 < inArray(errorData.ErrorCode, [
+						Notification.AuthError, Notification.AccessError,
+						Notification.ConnectionError, Notification.DomainNotAllowed, Notification.AccountNotAllowed,
+						Notification.MailServerError,	Notification.UnknownNotification, Notification.UnknownError
+					]))
 					{
-						Globals.data.__APP__.loginAndLogoutReload(false, true);
+						GlobalsData.iAjaxErrorCount += 1;
+					}
+
+					if (Notification.InvalidToken === errorData.ErrorCode)
+					{
+						GlobalsData.iTokenErrorCount += 1;
+					}
+
+					if (TOKEN_ERROR_LIMIT < GlobalsData.iTokenErrorCount)
+					{
+						if (GlobalsData.__APP__ && GlobalsData.__APP__.loginAndLogoutReload)
+						{
+							GlobalsData.__APP__.loginAndLogoutReload(false, true);
+						}
+					}
+
+					if (errorData.ClearAuth || errorData.Logout || AJAX_ERROR_LIMIT < GlobalsData.iAjaxErrorCount)
+					{
+						if (GlobalsData.__APP__ && GlobalsData.__APP__.clearClientSideToken)
+						{
+							GlobalsData.__APP__.clearClientSideToken();
+						}
+
+						if (GlobalsData.__APP__ && !errorData.ClearAuth && GlobalsData.__APP__.loginAndLogoutReload)
+						{
+							GlobalsData.__APP__.loginAndLogoutReload(false, true);
+						}
 					}
 				}
 
-				if (oErrorData.ClearAuth || oErrorData.Logout || Consts.AJAX_ERROR_LIMIT < Globals.data.iAjaxErrorCount)
+			});
+
+			if (oH)
+			{
+				if (this.oRequests[action])
 				{
-					if (Globals.data.__APP__ && Globals.data.__APP__.clearClientSideToken)
-					{
-						Globals.data.__APP__.clearClientSideToken();
-					}
-
-					if (Globals.data.__APP__ && !oErrorData.ClearAuth && Globals.data.__APP__.loginAndLogoutReload)
-					{
-						Globals.data.__APP__.loginAndLogoutReload(false, true);
-					}
+					this.oRequests[action] = null;
+					delete this.oRequests[action];
 				}
-			}
 
+				this.oRequests[action] = oH;
+			}
 		});
+	}
 
-		if (oH)
-		{
-			if (self.oRequests[sAction])
-			{
-				self.oRequests[sAction] = null;
-				delete self.oRequests[sAction];
-			}
+	getRequest(sAction, fTrigger, sAdditionalGetString, iTimeOut) {
 
-			self.oRequests[sAction] = oH;
-		}
-	});
-};
+		sAdditionalGetString = isUnd(sAdditionalGetString) ? '' : pString(sAdditionalGetString);
+		sAdditionalGetString = sAction + '/' + sAdditionalGetString;
 
-AbstractAjaxPromises.prototype.getRequest = function(sAction, fTrigger, sAdditionalGetString, iTimeOut)
-{
-	sAdditionalGetString = Utils.isUnd(sAdditionalGetString) ? '' : Utils.pString(sAdditionalGetString);
-	sAdditionalGetString = sAction + '/' + sAdditionalGetString;
+		return this.ajaxRequest(sAction, false, iTimeOut, null, sAdditionalGetString, fTrigger);
+	}
 
-	return this.ajaxRequest(sAction, false, iTimeOut, null, sAdditionalGetString, fTrigger);
-};
+	postRequest(action, fTrigger, params, timeOut) {
 
-AbstractAjaxPromises.prototype.postRequest = function(action, fTrigger, params, timeOut)
-{
-	params = params || {};
-	params.Action = action;
+		params = params || {};
+		params.Action = action;
 
-	return this.ajaxRequest(action, true, timeOut, params, '', fTrigger);
-};
+		return this.ajaxRequest(action, true, timeOut, params, '', fTrigger);
+	}
+}
 
-module.exports = AbstractAjaxPromises;
+export {AbstractAjaxPromises, AbstractAjaxPromises as default};

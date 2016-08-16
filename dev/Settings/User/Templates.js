@@ -3,10 +3,12 @@ import ko from 'ko';
 
 import {i18n} from 'Common/Translator';
 
-import {showScreenPopup} from 'Knoin/Knoin';
-
 import TemplateStore from 'Stores/User/Template';
 import Remote from 'Remote/User/Ajax';
+
+import {getApp} from 'Helper/Apps/User';
+
+import {showScreenPopup} from 'Knoin/Knoin';
 
 class TemplatesUserSettings
 {
@@ -55,19 +57,16 @@ class TemplatesUserSettings
 	}
 
 	reloadTemplates() {
-		this.getApp().templates();
-	}
-
-	getApp() {
-		return require('App/User').default;
+		getApp().templates();
 	}
 
 	onBuild(oDom) {
-		var self = this;
+
+		const self = this;
 
 		oDom
-			.on('click', '.templates-list .template-item .e-action', function() {
-				const template = ko.dataFor(this);
+			.on('click', '.templates-list .template-item .e-action', function() { // eslint-disable-line prefer-arrow-callback
+				const template = ko.dataFor(this); // eslint-disable-line no-invalid-this
 				if (template)
 				{
 					self.editTemplate(template);

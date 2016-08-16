@@ -125,9 +125,10 @@ export function format(timeStampInUTC, formatStr)
  */
 export function momentToNode(element)
 {
-	var
+	let
 		key = '',
-		time = 0,
+		time = 0;
+	const
 		$el = $(element);
 
 	time = $el.data('moment-time');

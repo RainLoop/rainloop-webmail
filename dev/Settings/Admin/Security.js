@@ -77,7 +77,7 @@ class SecurityAdminSettings
 			this.adminPasswordNewError(false);
 		});
 
-		this.saveNewAdminPasswordCommand = createCommand(this, () => {
+		this.saveNewAdminPasswordCommand = createCommand(() => {
 
 			if ('' === trim(this.adminLogin()))
 			{

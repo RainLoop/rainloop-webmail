@@ -1,16 +1,15 @@
 
-var ko = require('ko');
+import ko from 'ko';
 
-/**
- * @constructor
- */
-function PackageAdminStore()
+class PackageAdminStore
 {
-	this.packages = ko.observableArray([]);
-	this.packages.loading = ko.observable(false).extend({'throttle': 100});
+	constructor() {
+		this.packages = ko.observableArray([]);
+		this.packages.loading = ko.observable(false).extend({throttle: 100});
 
-	this.packagesReal = ko.observable(true);
-	this.packagesMainUpdatable = ko.observable(true);
+		this.packagesReal = ko.observable(true);
+		this.packagesMainUpdatable = ko.observable(true);
+	}
 }
 
 module.exports = new PackageAdminStore();

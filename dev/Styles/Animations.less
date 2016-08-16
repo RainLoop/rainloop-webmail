@@ -73,6 +73,15 @@ html {
 
 html.rl-anim {
 
+	.rl-animated-visible {
+		opacity: 1;
+		.transition(opacity 0.5s linear);
+
+		&.rl-animated-hidden {
+			opacity: 0;
+		}
+	}
+
 	&.cssanimations.csstransitions.no-mobile .b-login-content .errorAnimated {
 		animation: login-form-shake 400ms ease-in-out;
 	}

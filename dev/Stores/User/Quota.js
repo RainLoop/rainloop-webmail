@@ -1,35 +1,32 @@
 
-var
-	window = require('window'),
-	ko = require('ko');
+import window from 'window';
+import ko from 'ko';
 
-/**
- * @constructor
- */
-function QuotaUserStore()
+class QuotaUserStore
 {
-	this.quota = ko.observable(0);
-	this.usage = ko.observable(0);
+	constructor() {
+		this.quota = ko.observable(0);
+		this.usage = ko.observable(0);
 
-	this.percentage = ko.computed(function() {
+		this.percentage = ko.computed(() => {
 
-		var
-			iQuota = this.quota(),
-			iUsed = this.usage();
+			const
+				quota = this.quota(),
+				usage = this.usage();
 
-		return 0 < iQuota ? window.Math.ceil((iUsed / iQuota) * 100) : 0;
+			return 0 < quota ? window.Math.ceil((usage / quota) * 100) : 0;
 
-	}, this);
+		});
+	}
+
+	/**
+	 * @param {number} quota
+	 * @param {number} usage
+	 */
+	populateData(quota, usage) {
+		this.quota(quota * 1024);
+		this.usage(usage * 1024);
+	}
 }
-
-/**
- * @param {number} iQuota
- * @param {number} iUsage
- */
-QuotaUserStore.prototype.populateData = function(iQuota, iUsage)
-{
-	this.quota(iQuota * 1024);
-	this.usage(iUsage * 1024);
-};
 
 module.exports = new QuotaUserStore();

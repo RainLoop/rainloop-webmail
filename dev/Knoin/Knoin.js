@@ -9,7 +9,7 @@ import {runHook} from 'Common/Plugins';
 import {$html, aViewModels as VIEW_MODELS, popupVisibilityNames} from 'Common/Globals';
 
 import {
-	isFunc, isArray, isUnd, pString, log,
+	isArray, isUnd, pString, log,
 	createCommand, delegateRun, isNonEmptyArray
 } from 'Common/Utils';
 
@@ -19,6 +19,13 @@ let
 
 const SCREENS = {};
 
+export const ViewType = {
+	Popup: 'Popups',
+	Left: 'Left',
+	Right: 'Right',
+	Center: 'Center'
+};
+
 /**
  * @returns {void}
  */
@@ -26,40 +33,6 @@ export function hideLoading()
 {
 	$('#rl-content').addClass('rl-content-show');
 	$('#rl-loading').hide().remove();
-}
-
-/**
- * @param {Object} context
- * @returns {void}
- */
-export function constructorEnd(context)
-{
-	if (isFunc(context.__constructor_end))
-	{
-		context.__constructor_end();
-	}
-}
-
-/**
- * @param {string|Array} name
- * @param {Function} ViewModelClass
- * @returns {void}
- */
-export function extendAsViewModel(name, ViewModelClass)
-{
-	if (ViewModelClass)
-	{
-		if (isArray(name))
-		{
-			ViewModelClass.__names = name;
-		}
-		else
-		{
-			ViewModelClass.__names = [name];
-		}
-
-		ViewModelClass.__name = ViewModelClass.__names[0];
-	}
 }
 
 /**
@@ -161,8 +134,8 @@ export function buildViewModel(ViewModelClass, vmScreen)
 		let vmDom = null;
 		const
 			vm = new ViewModelClass(vmScreen),
-			position = vm.viewModelPosition(),
-			vmPlace = $('#rl-content #rl-' + position.toLowerCase());
+			position = ViewModelClass.__type || '',
+			vmPlace = position ? $('#rl-content #rl-' + position.toLowerCase()) : null;
 
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = vm;
@@ -172,18 +145,20 @@ export function buildViewModel(ViewModelClass, vmScreen)
 
 		vm.viewModelName = ViewModelClass.__name;
 		vm.viewModelNames = ViewModelClass.__names;
+		vm.viewModelTemplateID = ViewModelClass.__templateID;
+		vm.viewModelPosition = ViewModelClass.__type;
 
 		if (vmPlace && 1 === vmPlace.length)
 		{
-			vmDom = $('<div></div>').addClass('rl-view-model').addClass('RL-' + vm.viewModelTemplate()).hide();
+			vmDom = $('<div></div>').addClass('rl-view-model').addClass('RL-' + vm.viewModelTemplateID).hide();
 			vmDom.appendTo(vmPlace);
 
 			vm.viewModelDom = vmDom;
 			ViewModelClass.__dom = vmDom;
 
-			if ('Popups' === position)
+			if (ViewType.Popup === position)
 			{
-				vm.cancelCommand = vm.closeCommand = createCommand(vm, () => {
+				vm.cancelCommand = vm.closeCommand = createCommand(() => {
 					hideScreenPopup(ViewModelClass);
 				});
 
@@ -229,11 +204,11 @@ export function buildViewModel(ViewModelClass, vmScreen)
 
 			ko.applyBindingAccessorsToNode(vmDom[0], {
 				translatorInit: true,
-				template: () => ({name: vm.viewModelTemplate()})
+				template: () => ({name: vm.viewModelTemplateID})
 			}, vm);
 
 			delegateRun(vm, 'onBuild', [vmDom]);
-			if (vm && 'Popups' === position)
+			if (vm && ViewType.Popup === position)
 			{
 				vm.registerPopupKeyDown();
 			}
@@ -269,6 +244,23 @@ export function showScreenPopup(ViewModelClassToShow, params = [])
 			delegateRun(ViewModelClassToShow.__vm, 'onShow', params || []);
 
 			vmRunHook('view-model-on-show', ViewModelClassToShow, params || []);
+		}
+	}
+}
+
+/**
+ * @param {Function} ViewModelClassToShow
+ * @returns {void}
+ */
+export function warmUpScreenPopup(ViewModelClassToShow)
+{
+	if (ViewModelClassToShow)
+	{
+		buildViewModel(ViewModelClassToShow);
+
+		if (ViewModelClassToShow.__vm && ViewModelClassToShow.__dom)
+		{
+			delegateRun(ViewModelClassToShow.__vm, 'onWarmUp');
 		}
 	}
 }
@@ -345,7 +337,7 @@ export function screenOnRoute(screenName, subPart)
 					if (isNonEmptyArray(currentScreen.viewModels()))
 					{
 						_.each(currentScreen.viewModels(), (ViewModelClass) => {
-							if (ViewModelClass.__vm && ViewModelClass.__dom && 'Popups' !== ViewModelClass.__vm.viewModelPosition())
+							if (ViewModelClass.__vm && ViewModelClass.__dom && ViewType.Popup !== ViewModelClass.__vm.viewModelPosition)
 							{
 								ViewModelClass.__dom.hide();
 								ViewModelClass.__vm.viewModelVisibility(false);
@@ -380,7 +372,7 @@ export function screenOnRoute(screenName, subPart)
 					{
 						_.each(currentScreen.viewModels(), (ViewModelClass) => {
 
-							if (ViewModelClass.__vm && ViewModelClass.__dom && 'Popups' !== ViewModelClass.__vm.viewModelPosition())
+							if (ViewModelClass.__vm && ViewModelClass.__dom && ViewType.Popup !== ViewModelClass.__vm.viewModelPosition)
 							{
 								delegateRun(ViewModelClass.__vm, 'onBeforeShow');
 
@@ -486,3 +478,41 @@ export function setHash(hash, silence = false, replace = false)
 		hasher.setHash(hash);
 	}
 }
+
+/**
+ * @param {Object} params
+ * @returns {void}
+ */
+function viewDecorator({name, type, templateID})
+{
+	return (target) => {
+		if (target)
+		{
+			if (name)
+			{
+				if (isArray(name))
+				{
+					target.__names = name;
+				}
+				else
+				{
+					target.__names = [name];
+				}
+
+				target.__name = target.__names[0];
+			}
+
+			if (type)
+			{
+				target.__type = type;
+			}
+
+			if (templateID)
+			{
+				target.__templateID = templateID;
+			}
+		}
+	};
+}
+
+export {viewDecorator, viewDecorator as view, viewDecorator as viewModel};

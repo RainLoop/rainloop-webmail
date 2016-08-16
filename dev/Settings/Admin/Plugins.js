@@ -1,4 +1,6 @@
 
+/* global RL_COMMUNITY */
+
 import _ from '_';
 import ko from 'ko';
 
@@ -13,6 +15,8 @@ import AppStore from 'Stores/Admin/App';
 import PluginStore from 'Stores/Admin/Plugin';
 
 import Remote from 'Remote/Admin/Ajax';
+
+import {getApp} from 'Helper/Apps/Admin';
 
 class PluginsAdminSettings
 {
@@ -40,17 +44,19 @@ class PluginsAdminSettings
 	}
 
 	onBuild(oDom) {
+
 		const self = this;
+
 		oDom
-			.on('click', '.e-item .configure-plugin-action', function() {
-				const plugin = ko.dataFor(this);
+			.on('click', '.e-item .configure-plugin-action', function() { // eslint-disable-line prefer-arrow-callback
+				const plugin = ko.dataFor(this); // eslint-disable-line no-invalid-this
 				if (plugin)
 				{
 					self.configurePlugin(plugin);
 				}
 			})
-			.on('click', '.e-item .disabled-plugin', function() {
-				const plugin = ko.dataFor(this);
+			.on('click', '.e-item .disabled-plugin', function() { // eslint-disable-line prefer-arrow-callback
+				const plugin = ko.dataFor(this); // eslint-disable-line no-invalid-this
 				if (plugin)
 				{
 					self.disablePlugin(plugin);
@@ -66,7 +72,7 @@ class PluginsAdminSettings
 
 	onShow() {
 		PluginStore.plugins.error('');
-		require('App/Admin').default.reloadPluginList();
+		getApp().reloadPluginList();
 	}
 
 	onPluginLoadRequest(result, data) {
@@ -92,7 +98,7 @@ class PluginsAdminSettings
 			}
 		}
 
-		require('App/Admin').default.reloadPluginList();
+		getApp().reloadPluginList();
 	}
 }
 

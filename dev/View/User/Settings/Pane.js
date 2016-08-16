@@ -1,68 +1,60 @@
 
-var
-	_ = require('_'),
+import {inbox} from 'Common/Links';
+import {getFolderInboxName} from 'Common/Cache';
+import {leftPanelDisabled} from 'Common/Globals';
 
-	Globals = require('Common/Globals'),
+import * as Settings from 'Storage/Settings';
 
-	Settings = require('Storage/Settings'),
+import MessageStore from 'Stores/User/Message';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {view, ViewType, setHash} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function PaneSettingsUserView()
+@view({
+	name: 'View/User/Settings/Pane',
+	type: ViewType.Right,
+	templateID: 'SettingsPane'
+})
+class PaneSettingsUserView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Right', 'SettingsPane');
+	constructor() {
+		super();
 
-	this.mobile = Settings.appSettingsGet('mobile');
+		this.mobile = Settings.appSettingsGet('mobile');
 
-	this.leftPanelDisabled = Globals.leftPanelDisabled;
+		this.leftPanelDisabled = leftPanelDisabled;
+	}
 
-	kn.constructorEnd(this);
+	onShow() {
+		MessageStore.message(null);
+	}
+
+	hideLeft(oItem, oEvent) {
+		oEvent.preventDefault();
+		oEvent.stopPropagation();
+
+		leftPanelDisabled(true);
+	}
+
+	showLeft(oItem, oEvent) {
+		oEvent.preventDefault();
+		oEvent.stopPropagation();
+
+		leftPanelDisabled(false);
+	}
+
+	onBuild(dom) {
+		if (this.mobile)
+		{
+			dom.on('click', () => {
+				leftPanelDisabled(true);
+			});
+		}
+	}
+
+	backToMailBoxClick() {
+		setHash(inbox(getFolderInboxName()));
+	}
 }
 
-kn.extendAsViewModel(['View/User/Settings/Pane', 'View/App/Settings/Pane', 'SettingsPaneViewModel'], PaneSettingsUserView);
-_.extend(PaneSettingsUserView.prototype, AbstractView.prototype);
-
-PaneSettingsUserView.prototype.onShow = function()
-{
-	require('Stores/User/Message').message(null);
-};
-
-PaneSettingsUserView.prototype.hideLeft = function(oItem, oEvent)
-{
-	oEvent.preventDefault();
-	oEvent.stopPropagation();
-
-	Globals.leftPanelDisabled(true);
-};
-
-PaneSettingsUserView.prototype.showLeft = function(oItem, oEvent)
-{
-	oEvent.preventDefault();
-	oEvent.stopPropagation();
-
-	Globals.leftPanelDisabled(false);
-};
-
-PaneSettingsUserView.prototype.onBuild = function(oDom)
-{
-	if (this.mobile)
-	{
-		oDom
-			.on('click', function() {
-				Globals.leftPanelDisabled(true);
-			});
-	}
-};
-
-PaneSettingsUserView.prototype.backToMailBoxClick = function()
-{
-	kn.setHash(require('Common/Links').inbox(
-		require('Common/Cache').getFolderInboxName()));
-};
-
-module.exports = PaneSettingsUserView;
+export {PaneSettingsUserView, PaneSettingsUserView as default};

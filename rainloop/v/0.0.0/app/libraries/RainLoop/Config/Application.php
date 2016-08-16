@@ -200,7 +200,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'x_frame_options_header'	=> array(''),
 
 				'openpgp'					=> array(false),
-				'openpgp_public_key_server' => array(''),
 
 				'admin_login'				=> array('admin', 'Login and password for web admin panel'),
 				'admin_password'			=> array('12345'),

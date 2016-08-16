@@ -52,37 +52,12 @@ var
 	cache = require('gulp-cached'),
 	ignore = require('gulp-ignore'),
 	filter = require('gulp-filter'),
-	gutil = require('gulp-util')
-;
+	gutil = require('gulp-util');
 
 cfg.community = !argv.pro;
 cfg.next = !!argv.next;
 
 // webpack
-function initWebpackCfg(wpCfg)
-{
-	if (wpCfg)
-	{
-		if (wpCfg.output)
-		{
-			wpCfg.output.publicPath = cfg.paths.staticJS;
-		}
-
-		if (wpCfg.plugins)
-		{
-			wpCfg.plugins.push(new webpack.DefinePlugin({
-				'RL_COMMUNITY': cfg.community,
-				'RL_ES6': cfg.next,
-				'process.env': {
-					NODE_ENV: '"production"'
-				}
-			}));
-		}
-	}
-
-	return wpCfg;
-}
-
 function webpackCallback(callback)
 {
 	return function(err, stats) {
@@ -185,8 +160,7 @@ function signFileTask(callback) {
 	}
 };
 
-cfg.paths.globall = 'dev/**/*.{js,html,css}';
-cfg.paths.globjs = 'dev/**/*.{js}';
+cfg.paths.globjs = 'dev/**/*.js';
 cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
 cfg.paths.staticMinJS = 'rainloop/v/' + cfg.devVersion + '/static/js/min/';
@@ -235,18 +209,6 @@ cfg.paths.css = {
 };
 
 cfg.paths.js = {
-	openpgp: {
-		name: 'openpgp.min.js',
-		src: [
-			'node_modules/openpgp/dist/openpgp.min.js'
-		]
-	},
-	openpgpworker: {
-		name: 'openpgp.worker.min.js',
-		src: [
-			'node_modules/openpgp/dist/openpgp.worker.min.js'
-		]
-	},
 	moment: {
 		locales: [
 			'node_modules/moment/locale/*.js'
@@ -358,20 +320,6 @@ gulp.task('css:social:min', ['css:social'], function() {
 gulp.task('css:min', ['css:main:min', 'css:social:min']);
 
 // JS
-gulp.task('js:openpgp', function() {
-	return gulp.src(cfg.paths.js.openpgp.src)
-		.pipe(rename(cfg.paths.js.openpgp.name))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(cfg.paths.staticMinJS));
-});
-
-gulp.task('js:openpgpworker', function() {
-	return gulp.src(cfg.paths.js.openpgpworker.src)
-		.pipe(rename(cfg.paths.js.openpgpworker.name))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(cfg.paths.staticMinJS));
-});
-
 gulp.task('moment:locales-clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/app/localization/moment/*.js');
 });
@@ -405,13 +353,13 @@ gulp.task('js:clean', function() {
 });
 
 gulp.task('js:webpack:main', function(callback) {
-	webpack(initWebpackCfg(webpackCfgBuilder()), webpackCallback(callback));
+	webpack(webpackCfgBuilder(cfg.paths.staticJS, !cfg.community, false), webpackCallback(callback));
 });
 
 gulp.task('js:webpack:next', function(callback) {
 	if (cfg.next)
 	{
-		webpack(initWebpackCfg(webpackCfgBuilder(true)), webpackCallback(callback));
+		webpack(webpackCfgBuilder(cfg.paths.staticJS, !cfg.community, true), webpackCallback(callback));
 	}
 	else
 	{
@@ -438,7 +386,7 @@ gulp.task('js:admin', ['js:webpack'], function() {
 });
 
 // - min
-gulp.task('js:min', ['js:app', 'js:admin', 'js:validate'], function() {
+gulp.task('js:min', ['js:app', 'js:admin'], function() {
 	return gulp.src(cfg.paths.staticJS + '*.js')
 		.pipe(ignore.exclude('*.next.js'))
 		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
@@ -464,7 +412,7 @@ gulp.task('js:eslint', function() {
 
 gulp.task('js:validate', ['js:eslint']);
 
-// OTHER
+// other
 gulp.task('lightgallery-fonts:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/lg.*');
 });
@@ -516,7 +464,7 @@ gulp.task('ckeditor', ['ckeditor:copy-plugins'], function () {
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
 });
 
-// BUILD (RainLoop)
+// build (RainLoop)
 gulp.task('rainloop:copy', ['default'], function() {
 
 	var
@@ -552,7 +500,7 @@ gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 
 	if (cfg.community)
 	{
-		require('rimraf').sync(dist + 'rainloop/v/' + versionFull + '/app/libraries/RainLoop/Prem/');
+		require('rimraf').sync(dist + 'rainloop/v/' + versionFull + '/app/libraries/RainLoop/Providers/Prem.php');
 	}
 
 	cfg.destPath = cfg.releasesPath + '/webmail/' + versionFull + '/';
@@ -579,7 +527,7 @@ gulp.task('rainloop:shortname', ['rainloop:zip'], function(callback) {
 
 gulp.task('rainloop:sign', ['rainloop:shortname'], signFileTask);
 
-// BUILD (OwnCloud)
+// build (OwnCloud)
 gulp.task('rainloop:owncloud:copy', function() {
 
 	var
@@ -652,22 +600,14 @@ gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:zip'], function(cal
 
 gulp.task('rainloop:owncloud:sign', ['rainloop:owncloud:shortname'], signFileTask);
 
-// MAIN
+// main
 gulp.task('moment', ['moment:locales']);
-gulp.task('openpgp', ['js:openpgp', 'js:openpgpworker']);
-
-gulp.task('js', ['js:libs', 'js:min']);
+gulp.task('js', ['js:libs', 'js:min', 'js:validate']);
 gulp.task('css', ['css:min']);
 
-gulp.task('vendors', ['moment', 'openpgp', 'ckeditor', 'fontastic', 'lightgallery']);
+gulp.task('vendors', ['moment', 'ckeditor', 'fontastic', 'lightgallery']);
 
 gulp.task('clean', ['js:clean', 'css:clean']);
-
-gulp.task('default', function(callback) {
-	runSequence('clean', ['js', 'css', 'vendors'], callback);
-});
-
-gulp.task('fast', ['js:app', 'js:admin', 'css:main']);
 
 gulp.task('rainloop:start', ['rainloop:copy', 'rainloop:setup']);
 
@@ -677,24 +617,31 @@ gulp.task('owncloud', ['rainloop:owncloud:copy',
 	'rainloop:owncloud:copy-rainloop', 'rainloop:owncloud:copy-rainloop:clean',
 	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:clean', 'rainloop:owncloud:shortname', 'rainloop:owncloud:sign']);
 
-//WATCH
-gulp.task('watch', ['fast'], function() {
+// default
+gulp.task('default', function(callback) {
+	runSequence('clean', ['js', 'css', 'vendors'], callback);
+});
+
+// watch
+gulp.task('css:watch', ['css:main'], function() {
 	cfg.watch = true;
 	livereload.listen();
-	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:app', 'js:admin']);
-	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:validate']);
 	gulp.watch(cfg.paths.less.main.watch, {interval: cfg.watchInterval}, ['css:main']);
 });
 
-// ALIASES
-gulp.task('build', ['rainloop']);
+gulp.task('js:validate:watch', ['js:validate'], function() {
+	cfg.watch = true;
+	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:validate']);
+});
 
-gulp.task('js:v', ['js:validate']);
-gulp.task('v', ['js:v']);
+// aliases
+gulp.task('build', ['rainloop']);
+gulp.task('watch', ['css:watch', 'js:validate:watch']);
 
 gulp.task('d', ['default']);
 gulp.task('w', ['watch']);
-gulp.task('f', ['fast']);
+gulp.task('l', ['js:libs']);
+gulp.task('v', ['js:validate']);
 
 gulp.task('b', ['build']);
 gulp.task('o', ['owncloud']);

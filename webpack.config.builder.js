@@ -2,26 +2,41 @@
 var
 	path = require('path'),
 	webpack = require('webpack'),
-	devPath = path.resolve(__dirname, 'dev');
+	devPath = path.resolve(__dirname, 'dev'),
 
-module.exports = function(es6) {
+	CopyWebpackPlugin = require('copy-webpack-plugin'),
+	WebpackNotifierPlugin = require('webpack-notifier');
+
+module.exports = function(publicPath, pro, es6) {
 	return {
 		entry: es6 ? {
-			'app.next': __dirname + '/dev/app.js',
-			'admin.next': __dirname + '/dev/admin.js'
+			'js/app.next': __dirname + '/dev/app.js',
+			'js/admin.next': __dirname + '/dev/admin.js'
 		} : {
-			'boot': __dirname + '/dev/boot.js',
-			'app': __dirname + '/dev/app.js',
-			'admin': __dirname + '/dev/admin.js'
+			'js/boot': __dirname + '/dev/boot.js',
+			'js/app': __dirname + '/dev/app.js',
+			'js/admin': __dirname + '/dev/admin.js'
 		},
 		output: {
 			pathinfo: true,
-			path: __dirname + '/rainloop/v/0.0.0/static/js/',
+			path: __dirname + '/rainloop/v/0.0.0/static/',
 			filename: '[name].js',
-			publicPath: 'rainloop/v/0.0.0/static/js/'
+			publicPath: publicPath || 'rainloop/v/0.0.0/static/'
 		},
 		plugins: [
-			new webpack.optimize.OccurrenceOrderPlugin()
+			new webpack.optimize.OccurrenceOrderPlugin(),
+			new webpack.DefinePlugin({
+				'RL_COMMUNITY': !pro,
+				'RL_ES6': !!es6,
+				'process.env': {
+					NODE_ENV: '"production"'
+				}
+			}),
+			new WebpackNotifierPlugin(),
+			new CopyWebpackPlugin([
+				{from: 'node_modules/openpgp/dist/openpgp.min.js', to: 'js/min/openpgp.min.js'},
+				{from: 'node_modules/openpgp/dist/openpgp.worker.min.js', to: 'js/min/openpgp.worker.min.js'}
+			])
 		],
 		resolve: {
 			modules: [devPath, 'node_modules'],
@@ -34,13 +49,13 @@ module.exports = function(es6) {
 		module: {
 			loaders: [
 				{
-					test: /\.jsx?$/,
+					test: /\.js$/,
 					loader: 'babel',
 					include: [devPath],
 					query: !es6 ? {
 						cacheDirectory: true,
 						presets: [['es2015', {loose: true, modules: false}], 'es2016', 'stage-0'],
-						plugins: ['transform-runtime']
+						plugins: ['transform-runtime', 'transform-decorators-legacy']
 					} : {
 						cacheDirectory: true,
 						plugins: [
@@ -80,15 +95,16 @@ module.exports = function(es6) {
 // stage-2
 "transform-class-properties",
 "transform-object-rest-spread",
-"transform-decorators",
+// "transform-decorators",
 
 // stage-3
 "syntax-trailing-function-commas",
 "transform-async-to-generator",
 "transform-exponentiation-operator",
 
-// runtime
-'transform-runtime'
+// other
+'transform-runtime',
+'transform-decorators-legacy'
 						]
 					}
 				},
@@ -104,6 +120,7 @@ module.exports = function(es6) {
 				}
 			]
 		},
+		eslint: {},
 		externals: {
 			'window': 'window',
 			'progressJs': 'window.progressJs',

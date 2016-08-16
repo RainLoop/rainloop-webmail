@@ -11,9 +11,9 @@ class AbstractAppStore
 
 		this.interfaceAnimation = ko.observable(true);
 
-		this.interfaceAnimation.subscribe(function(bValue) {
-			const bAnim = bMobileDevice || !bValue;
-			$html.toggleClass('rl-anim', !bAnim).toggleClass('no-rl-anim', bAnim);
+		this.interfaceAnimation.subscribe((value) => {
+			const anim = bMobileDevice || !value;
+			$html.toggleClass('rl-anim', !anim).toggleClass('no-rl-anim', anim);
 		});
 
 		this.interfaceAnimation.valueHasMutated();

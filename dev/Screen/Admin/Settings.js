@@ -1,9 +1,10 @@
 
+/* global RL_COMMUNITY */
+
 import {addSettingsViewModel} from 'Knoin/Knoin';
 import {runSettingsViewModelHooks} from 'Common/Plugins';
 
 import {AbstractSettingsScreen} from 'Screen/AbstractSettings';
-import App from 'App/Admin';
 
 import {GeneralAdminSettings} from 'Settings/Admin/General';
 import {LoginAdminSettings} from 'Settings/Admin/Login';
@@ -15,12 +16,17 @@ import {PluginsAdminSettings} from 'Settings/Admin/Plugins';
 import {PackagesAdminSettings} from 'Settings/Admin/Packages';
 import {AboutAdminSettings} from 'Settings/Admin/About';
 
+import {getApp} from 'Helper/Apps/Admin';
+
+import {MenuSettingsAdminView} from 'View/Admin/Settings/Menu';
+import {PaneSettingsAdminView} from 'View/Admin/Settings/Pane';
+
 class SettingsAdminScreen extends AbstractSettingsScreen
 {
 	constructor() {
 		super([
-			require('View/Admin/Settings/Menu'),
-			require('View/Admin/Settings/Pane')
+			MenuSettingsAdminView,
+			PaneSettingsAdminView
 		]);
 	}
 
@@ -81,7 +87,7 @@ class SettingsAdminScreen extends AbstractSettingsScreen
 	}
 
 	onShow() {
-		App.setWindowTitle('');
+		getApp().setWindowTitle('');
 	}
 }
 

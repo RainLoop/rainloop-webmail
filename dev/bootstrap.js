@@ -1,7 +1,7 @@
 
 import window from 'window';
 import $ from '$';
-import {killCtrlACtrlS, detectDropdownVisibility, createCommand} from 'Common/Utils';
+import {killCtrlACtrlS, detectDropdownVisibility, createCommandLegacy} from 'Common/Utils';
 import {$win, $html, data as GlobalsData, bMobileDevice} from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
@@ -27,7 +27,7 @@ export default (App) => {
 	const rl = window.rl || {};
 
 	rl.i18n = i18n;
-	rl.createCommand = createCommand;
+	rl.createCommand = createCommandLegacy;
 
 	rl.addSettingsViewModel = Plugins.addSettingsViewModel;
 	rl.addSettingsViewModelForAdmin = Plugins.addSettingsViewModelForAdmin;

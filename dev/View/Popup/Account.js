@@ -1,128 +1,121 @@
 
-var
-	_ = require('_'),
-	ko = require('ko'),
+import ko from 'ko';
 
-	Enums = require('Common/Enums'),
-	Utils = require('Common/Utils'),
-	Translator = require('Common/Translator'),
+import {StorageResultType, Notification} from 'Common/Enums';
+import {trim, createCommand} from 'Common/Utils';
+import {getNotification} from 'Common/Translator';
 
-	Remote = require('Remote/User/Ajax'),
+import Remote from 'Remote/User/Ajax';
 
-	kn = require('Knoin/Knoin'),
-	AbstractView = require('Knoin/AbstractView');
+import {getApp} from 'Helper/Apps/User';
 
-/**
- * @constructor
- * @extends AbstractView
- */
-function AccountPopupView()
+import {view, ViewType} from 'Knoin/Knoin';
+import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+@view({
+	name: 'View/Popup/Account',
+	type: ViewType.Popup,
+	templateID: 'PopupsAccount'
+})
+class AccountPopupView extends AbstractViewNext
 {
-	AbstractView.call(this, 'Popups', 'PopupsAccount');
+	constructor() {
+		super();
 
-	this.isNew = ko.observable(true);
+		this.isNew = ko.observable(true);
 
-	this.email = ko.observable('');
-	this.password = ko.observable('');
+		this.email = ko.observable('');
+		this.password = ko.observable('');
 
-	this.emailError = ko.observable(false);
-	this.passwordError = ko.observable(false);
+		this.emailError = ko.observable(false);
+		this.passwordError = ko.observable(false);
 
-	this.email.subscribe(function() {
-		this.emailError(false);
-	}, this);
+		this.email.subscribe(() => {
+			this.emailError(false);
+		});
 
-	this.password.subscribe(function() {
-		this.passwordError(false);
-	}, this);
+		this.password.subscribe(() => {
+			this.passwordError(false);
+		});
 
-	this.submitRequest = ko.observable(false);
-	this.submitError = ko.observable('');
-	this.submitErrorAdditional = ko.observable('');
+		this.submitRequest = ko.observable(false);
+		this.submitError = ko.observable('');
+		this.submitErrorAdditional = ko.observable('');
 
-	this.emailFocus = ko.observable(false);
+		this.emailFocus = ko.observable(false);
 
-	this.addAccountCommand = Utils.createCommand(this, function() {
+		this.addAccountCommand = createCommand(() => {
 
-		this.emailError('' === Utils.trim(this.email()));
-		this.passwordError('' === Utils.trim(this.password()));
+			this.emailError('' === trim(this.email()));
+			this.passwordError('' === trim(this.password()));
 
-		if (this.emailError() || this.passwordError())
-		{
-			return false;
-		}
-
-		this.submitRequest(true);
-
-		Remote.accountSetup(_.bind(function(sResult, oData) {
-
-			this.submitRequest(false);
-			if (Enums.StorageResultType.Success === sResult && oData)
+			if (this.emailError() || this.passwordError())
 			{
-				if (oData.Result)
+				return false;
+			}
+
+			this.submitRequest(true);
+
+			Remote.accountSetup((result, data) => {
+
+				this.submitRequest(false);
+				if (StorageResultType.Success === result && data)
 				{
-					require('App/User').default.accountsAndIdentities();
-					this.cancelCommand();
+					if (data.Result)
+					{
+						getApp().accountsAndIdentities();
+						this.cancelCommand();
+					}
+					else
+					{
+						this.submitError(data.ErrorCode ? getNotification(data.ErrorCode) :
+							getNotification(Notification.UnknownError));
+
+						if (data.ErrorMessageAdditional)
+						{
+							this.submitErrorAdditional(data.ErrorMessageAdditional);
+						}
+					}
 				}
 				else
 				{
-					this.submitError(oData.ErrorCode ? Translator.getNotification(oData.ErrorCode) :
-						Translator.getNotification(Enums.Notification.UnknownError));
-
-					if (oData.ErrorMessageAdditional)
-					{
-						this.submitErrorAdditional(oData.ErrorMessageAdditional);
-					}
+					this.submitError(getNotification(Notification.UnknownError));
+					this.submitErrorAdditional('');
 				}
-			}
-			else
-			{
-				this.submitError(Translator.getNotification(Enums.Notification.UnknownError));
-				this.submitErrorAdditional('');
-			}
 
-		}, this), this.email(), this.password(), this.isNew());
+			}, this.email(), this.password(), this.isNew());
 
-		return true;
+			return true;
 
-	}, function() {
-		return !this.submitRequest();
-	});
-
-	kn.constructorEnd(this);
-}
-
-kn.extendAsViewModel(['View/Popup/Account', 'View/Popup/AddAccount', 'PopupsAddAccountViewModel'], AccountPopupView);
-_.extend(AccountPopupView.prototype, AbstractView.prototype);
-
-AccountPopupView.prototype.clearPopup = function()
-{
-	this.isNew(true);
-
-	this.email('');
-	this.password('');
-
-	this.emailError(false);
-	this.passwordError(false);
-
-	this.submitRequest(false);
-	this.submitError('');
-	this.submitErrorAdditional('');
-};
-
-AccountPopupView.prototype.onShow = function(oAccount)
-{
-	this.clearPopup();
-	if (oAccount && oAccount.canBeEdit())
-	{
-		this.isNew(false);
-		this.email(oAccount.email);
+		}, () => !this.submitRequest());
 	}
-};
 
-AccountPopupView.prototype.onShowWithDelay = function()
-{
-	this.emailFocus(true);
-};
+	clearPopup() {
+		this.isNew(true);
+
+		this.email('');
+		this.password('');
+
+		this.emailError(false);
+		this.passwordError(false);
+
+		this.submitRequest(false);
+		this.submitError('');
+		this.submitErrorAdditional('');
+	}
+
+	onShow(account) {
+		this.clearPopup();
+		if (account && account.canBeEdit())
+		{
+			this.isNew(false);
+			this.email(account.email);
+		}
+	}
+
+	onShowWithDelay() {
+		this.emailFocus(true);
+	}
+}
 
 module.exports = AccountPopupView;

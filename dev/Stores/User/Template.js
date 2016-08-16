@@ -1,33 +1,28 @@
 
-var
-	_ = require('_'),
-	ko = require('ko');
+import ko from 'ko';
+import _ from '_';
 
 //	Remote = require('Remote/User/Ajax');
 
-/**
- * @constructor
- */
-function TemplateUserStore()
+class TemplateUserStore
 {
-	this.templates = ko.observableArray([]);
-	this.templates.loading = ko.observable(false).extend({'throttle': 100});
+	constructor() {
+		this.templates = ko.observableArray([]);
+		this.templates.loading = ko.observable(false).extend({throttle: 100});
 
-	this.templatesNames = ko.observableArray([]).extend({'throttle': 1000});
-	this.templatesNames.skipFirst = true;
+		this.templatesNames = ko.observableArray([]).extend({throttle: 1000});
+		this.templatesNames.skipFirst = true;
 
-	this.subscribers();
-}
+		this.subscribers();
+	}
 
-TemplateUserStore.prototype.subscribers = function()
-{
-	this.templates.subscribe(function(aList) {
-		this.templatesNames(_.compact(_.map(aList, function(oItem) {
-			return oItem ? oItem.name : null;
-		})));
-	}, this);
+	subscribers() {
 
-//	this.templatesNames.subscribe(function(aList) {
+		this.templates.subscribe((list) => {
+			this.templatesNames(_.compact(_.map(list, (item) => (item ? item.name : null))));
+		});
+
+//	this.templatesNames.subscribe((aList) => {
 //		if (this.templatesNames.skipFirst)
 //		{
 //			this.templatesNames.skipFirst = false;
@@ -36,7 +31,8 @@ TemplateUserStore.prototype.subscribers = function()
 //		{
 //			Remote.templatesSortOrder(null, aList);
 //		}
-//	}, this);
-};
+//	});
+	}
+}
 
 module.exports = new TemplateUserStore();

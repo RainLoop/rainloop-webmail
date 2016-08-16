@@ -1,45 +1,39 @@
 
-var
-	_ = require('_'),
-	Promise = require('Promise'),
+import _ from '_';
+import Promise from 'Promise';
+import {isArray} from 'Common/Utils';
 
-	Utils = require('Common/Utils');
-
-/**
-* @constructor
-*/
-function AbstractBasicPromises()
+class AbstractBasicPromises
 {
-	this.oPromisesStack = {};
+	constructor() {
+		this.oPromisesStack = {};
+	}
+
+	func(fFunc) {
+		fFunc();
+		return this;
+	}
+
+	fastResolve(mData) {
+		return Promise.resolve(mData);
+	}
+
+	fastReject(mData) {
+		return Promise.reject(mData);
+	}
+
+	setTrigger(trigger, value) {
+		if (trigger)
+		{
+			value = !!value;
+			_.each(isArray(trigger) ? trigger : [trigger], (fTrigger) => {
+				if (fTrigger)
+				{
+					fTrigger(value);
+				}
+			});
+		}
+	}
 }
 
-AbstractBasicPromises.prototype.func = function(fFunc)
-{
-	fFunc();
-	return this;
-};
-
-AbstractBasicPromises.prototype.fastResolve = function(mData)
-{
-	return Promise.resolve(mData);
-};
-
-AbstractBasicPromises.prototype.fastReject = function(mData)
-{
-	return Promise.reject(mData);
-};
-
-AbstractBasicPromises.prototype.setTrigger = function(mTrigger, bValue)
-{
-	if (mTrigger)
-	{
-		_.each(Utils.isArray(mTrigger) ? mTrigger : [mTrigger], function(fTrigger) {
-			if (fTrigger)
-			{
-				fTrigger(!!bValue);
-			}
-		});
-	}
-};
-
-module.exports = AbstractBasicPromises;
+export {AbstractBasicPromises, AbstractBasicPromises as default};

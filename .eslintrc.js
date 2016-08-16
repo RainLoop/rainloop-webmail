@@ -4,6 +4,7 @@ module.exports = {
 	'ecmaFeatures': {
 		'modules': true
 	},
+	"parser": "babel-eslint",
 	'parserOptions': {
 		'ecmaVersion': 6,
         'sourceType': 'module'
@@ -11,8 +12,7 @@ module.exports = {
 	'env': {
 		'node': true,
 		'commonjs': true,
-		'es6': true,
-		'browser': true
+		'es6': true
 	},
 	'globals': {
 		'RL_COMMUNITY': true,
@@ -84,7 +84,7 @@ module.exports = {
 		'no-implicit-coercion': [2, {'allow': ['!!', '+']}],
 		'no-implicit-globals': 2,
 		'no-implied-eval': 2,
-//		'no-invalid-this': 2,
+		'no-invalid-this': 2,
 		'no-iterator': 2,
 		'no-labels': 2,
 		'no-lone-blocks': 2,
@@ -263,9 +263,9 @@ module.exports = {
 		'no-useless-computed-key': 2,
 		'no-useless-constructor': 2,
 		'no-useless-rename': 2,
-//		'no-var': 2,
+		'no-var': 2,
 //		'object-shorthand': 2,
-//		'prefer-arrow-callback': 2,
+		'prefer-arrow-callback': 2,
 		'prefer-const': 2,
 //		'prefer-reflect': 2,
 
