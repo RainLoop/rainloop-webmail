@@ -312,7 +312,7 @@ export function reload(admin, language)
 
 				reloadData();
 
-				const isRtl = -1 < inArray(language, ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir']);
+				const isRtl = -1 < inArray((language || '').toLowerCase(), ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir']);
 
 				$html
 					.removeClass('rl-changing-language')

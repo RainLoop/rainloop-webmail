@@ -1441,6 +1441,7 @@ class Actions
 
 		return \array_merge(array(
 			'version' => APP_VERSION,
+			'admin' => $bAdmin,
 			'mobile' => $bMobile,
 			'mobileDevice' => $bMobileDevice,
 			'webPath' => \RainLoop\Utils::WebPath(),
@@ -1461,11 +1462,13 @@ class Actions
 			'materialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'folderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
 			'faviconStatus' => (bool) $oConfig->Get('labs', 'favicon_status', true),
+			'allowCmdInterface' => (bool) $oConfig->Get('labs', 'allow_cmd', false),
 			'useNativeScrollbars' => (bool) $oConfig->Get('interface', 'use_native_scrollbars', false),
 			'listPermanentFiltered' => '' !== \trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
 			'themes' => $this->GetThemes($bMobile, false),
 			'languages' => $this->GetLanguages(false),
 			'languagesAdmin' => $this->GetLanguages(true),
+			'appVersionType' => APP_VERSION_TYPE,
 			'attachmentsActions' => $aAttachmentsActions
 		), $bAdmin ? array(
 			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),

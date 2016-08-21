@@ -4,7 +4,7 @@ import _ from '_';
 import ko from 'ko';
 import progressJs from 'progressJs';
 
-import * as Links from 'Common/Links';
+import {root} from 'Common/Links';
 import {getNotification} from 'Common/Translator';
 import {StorageResultType, Notification} from 'Common/Enums';
 import {pInt, isNormal, isArray, inArray, isUnd} from 'Common/Utils';
@@ -225,7 +225,7 @@ class AdminApp extends AbstractApp
 		if (!Settings.appSettingsGet('allowAdminPanel'))
 		{
 			routeOff();
-			setHash(Links.root(), true);
+			setHash(root(), true);
 			routeOff();
 
 			_.defer(() => {

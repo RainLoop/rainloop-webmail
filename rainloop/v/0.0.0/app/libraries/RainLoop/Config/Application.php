@@ -446,6 +446,7 @@ Enables caching in the system'),
 				'startup_url' => array(''),
 				'nice_social_redirect' => array(true),
 				'strict_html_parser' => array(false),
+				'allow_cmd' => array(false),
 				'dev_email' => array(''),
 				'dev_password' => array('')
 			),

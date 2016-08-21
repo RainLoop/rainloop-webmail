@@ -1,0 +1,10 @@
+<div class="rl-cmd" data-bind="css: {opened: opened}, click: function() { focused(true) }">
+	<div class="rl-cmd-wrp">
+		<div class="rl-cmd-history"><div class="rl-cmd-history-data"></div></div>
+		<div class="rl-cmd-input-wrp">
+			<div class="rl-cmd-input-helper" data-bind="text: cmdHelper"></div>
+			<div class="rl-cmd-input-prefix">#</div>
+			<input type="text" class="rl-cmd-input" data-bind="textInput: cmd, hasFocus: focused, onEnter: onEnter, onKeyDown: onKeyDown, onEsc: onEsc, onTab: onTab" />
+		</div>
+	</div>
+</div>

@@ -65,7 +65,7 @@ module.exports = function(publicPath, pro, es6) {
 "transform-es2015-function-name",
 // ["transform-es2015-arrow-functions")],
 "transform-es2015-block-scoped-functions",
-// ["transform-es2015-classes", loose],
+// ["transform-es2015-classes", {loose: true}],
 // "transform-es2015-object-super",
 "transform-es2015-shorthand-properties",
 "transform-es2015-duplicate-keys",
@@ -104,7 +104,7 @@ module.exports = function(publicPath, pro, es6) {
 
 // other
 'transform-runtime',
-'transform-decorators-legacy'
+'transform-decorators-legacy' // -> transform-decorators // from stage-2
 						]
 					}
 				},

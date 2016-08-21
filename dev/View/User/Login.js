@@ -431,11 +431,11 @@ class LoginUserView extends AbstractViewNext
 
 		_.delay(() => {
 
-			LanguageStore.language.subscribe((sValue) => {
+			LanguageStore.language.subscribe((value) => {
 
 				this.langRequest(true);
 
-				translatorReload(false, sValue).then(() => {
+				translatorReload(false, value).then(() => {
 					this.langRequest(false);
 					this.bSendLanguage = true;
 				}, () => {

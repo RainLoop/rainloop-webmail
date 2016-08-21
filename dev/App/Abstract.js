@@ -115,9 +115,12 @@ class AbstractApp extends AbstractBoot
 			detectDropdownVisibility();
 		});
 
-		key('ctrl+shift+`', KeyState.All, () => {
-			toggleCmd();
-		});
+		if (Settings.appSettingsGet('allowCmdInterface'))
+		{
+			key('ctrl+shift+`', KeyState.All, () => {
+				toggleCmd();
+			});
+		}
 	}
 
 	remote() {

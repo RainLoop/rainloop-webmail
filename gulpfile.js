@@ -491,10 +491,9 @@ gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 	fs.writeFileSync(dist + 'data/EMPTY', versionFull);
 
 	fs.writeFileSync(dist + 'index.php', fs.readFileSync('index.php', 'utf8')
-		.replace('\'APP_VERSION\', \'0.0.0\'', '\'APP_VERSION\', \'' + versionFull + '\''));
-
-	fs.writeFileSync(dist + 'index.php', fs.readFileSync('index.php', 'utf8')
-		.replace('\'APP_VERSION_TYPE\', \'source\'', '\'APP_VERSION\', \'' + (cfg.community ? 'community' : 'standard') + '\''));
+		.replace('\'APP_VERSION\', \'0.0.0\'', '\'APP_VERSION\', \'' + versionFull + '\'')
+		.replace('\'APP_VERSION_TYPE\', \'source\'', '\'APP_VERSION_TYPE\', \'' + (cfg.community ? 'community' : 'standard') + '\'')
+	);
 
 	fs.writeFileSync(dist + 'rainloop/v/' + versionFull + '/index.php.root', fs.readFileSync(dist + 'index.php'));
 

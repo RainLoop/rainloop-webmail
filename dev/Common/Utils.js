@@ -1239,10 +1239,10 @@ let
 
 /**
  * @param {string} value
- * @param {function} themeTrigger
+ * @param {function=} themeTrigger = noop
  * @returns {void}
  */
-export function changeTheme(value, themeTrigger)
+export function changeTheme(value, themeTrigger = noop)
 {
 	const
 		themeLink = $('#app-theme-link'),
@@ -1272,6 +1272,7 @@ export function changeTheme(value, themeTrigger)
 		}
 
 		window.clearTimeout(__themeTimer);
+
 		themeTrigger(SaveSettingsStep.Animate);
 
 		if (__themeAjax && __themeAjax.abort)

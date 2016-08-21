@@ -382,6 +382,23 @@ ko.bindingHandlers.resizecrop = {
 	}
 };
 
+ko.bindingHandlers.onKeyDown = {
+	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
+		$(element).on('keydown.koOnKeyDown', (event) => {
+			if (event)
+			{
+				return fValueAccessor().call(viewModel, event);
+			}
+
+			return true;
+		});
+
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			$(element).off('keydown.koOnKeyDown');
+		});
+	}
+};
+
 ko.bindingHandlers.onEnter = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keypress.koOnEnter', (event) => {
@@ -431,7 +448,7 @@ ko.bindingHandlers.onTab = {
 
 ko.bindingHandlers.onEsc = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
-		$(element).on('keypress.koOnEsc', (event) => {
+		$(element).on('keyup.koOnEsc', (event) => {
 			if (event && 27 === window.parseInt(event.keyCode, 10))
 			{
 				$(element).trigger('change');
@@ -440,7 +457,7 @@ ko.bindingHandlers.onEsc = {
 		});
 
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			$(element).off('keypress.koOnEsc');
+			$(element).off('keyup.koOnEsc');
 		});
 	}
 };
