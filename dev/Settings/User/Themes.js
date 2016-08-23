@@ -61,7 +61,7 @@ class ThemesUserSettings
 			else
 			{
 				$bg.attr('style', 'background-image: none !important;').backstretch(userBackground(value), {
-					fade: 1000, centeredX: true, centeredY: true
+					fade: Magics.Time1s, centeredX: true, centeredY: true
 				}).removeAttr('style');
 			}
 		});

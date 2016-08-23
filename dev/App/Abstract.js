@@ -15,12 +15,12 @@ import {
 	detectDropdownVisibility, windowResizeCallback
 } from 'Common/Utils';
 
-import {KeyState} from 'Common/Enums';
-import * as Links from 'Common/Links';
-import * as Settings from 'Storage/Settings';
-import * as Events from 'Common/Events';
+import {KeyState, Magics} from 'Common/Enums';
+import {root, rootAdmin, rootUser, populateAuthSuffix} from 'Common/Links';
 import {initOnStartOrLangChange, initNotificationLanguage} from 'Common/Translator';
 import {toggle as toggleCmd} from 'Common/Cmd';
+import * as Events from 'Common/Events';
+import * as Settings from 'Storage/Settings';
 
 import {routeOff, setHash} from 'Knoin/Knoin';
 import {AbstractBoot} from 'Knoin/AbstractBoot';
@@ -83,7 +83,7 @@ class AbstractApp extends AbstractBoot
 
 				Events.pub('window.resize.real');
 			}
-		}, 50));
+		}, Magics.Time50ms));
 
 // DEBUG
 //		Events.sub({
@@ -109,7 +109,7 @@ class AbstractApp extends AbstractBoot
 
 		$doc.on('mousemove keypress click', _.debounce(() => {
 			Events.pub('rl.auto-logout-refresh');
-		}, 5000));
+		}, Magics.Time5s));
 
 		key('esc, enter', KeyState.All, () => {
 			detectDropdownVisibility();
@@ -201,8 +201,8 @@ class AbstractApp extends AbstractBoot
 
 	redirectToAdminPanel() {
 		_.delay(() => {
-			window.location.href = Links.rootAdmin();
-		}, 100);
+			window.location.href = rootAdmin();
+		}, Magics.Time100ms);
 	}
 
 	clearClientSideToken() {
@@ -220,8 +220,8 @@ class AbstractApp extends AbstractBoot
 		{
 			window.__rlah_set(token);
 
-			require('Storage/Settings').settingsSet('AuthAccountHash', token);
-			require('Common/Links').populateAuthSuffix();
+			Settings.settingsSet('AuthAccountHash', token);
+			populateAuthSuffix();
 		}
 	}
 
@@ -245,7 +245,7 @@ class AbstractApp extends AbstractBoot
 			window.close();
 		}
 
-		customLogoutLink = customLogoutLink || (admin ? Links.rootAdmin() : Links.rootUser());
+		customLogoutLink = customLogoutLink || (admin ? rootAdmin() : rootUser());
 
 		if (logout && window.location.href !== customLogoutLink)
 		{
@@ -258,12 +258,12 @@ class AbstractApp extends AbstractBoot
 				{
 					window.location.href = customLogoutLink;
 				}
-			}, 100);
+			}, Magics.Time100ms);
 		}
 		else
 		{
 			routeOff();
-			setHash(Links.root(), true);
+			setHash(root(), true);
 			routeOff();
 
 			_.delay(() => {
@@ -275,7 +275,7 @@ class AbstractApp extends AbstractBoot
 				{
 					window.location.reload();
 				}
-			}, 100);
+			}, Magics.Time100ms);
 		}
 	}
 
@@ -319,7 +319,7 @@ class AbstractApp extends AbstractBoot
 
 		initOnStartOrLangChange(initNotificationLanguage);
 
-		_.delay(windowResizeCallback, 1000);
+		_.delay(windowResizeCallback, Magics.Time1s);
 
 		Events.sub('ssm.mobile-enter', () => {
 			leftPanelDisabled(true);
@@ -347,10 +347,10 @@ class AbstractApp extends AbstractBoot
 			ssm.addState({
 				id: 'tablet',
 				query: '(min-width: 768px) and (max-width: 999px)',
-				onEnter: function() {
+				onEnter: () => {
 					$html.addClass('ssm-state-tablet');
 				},
-				onLeave: function() {
+				onLeave: () => {
 					$html.removeClass('ssm-state-tablet');
 				}
 			});

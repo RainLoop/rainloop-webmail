@@ -4,16 +4,18 @@
 import _ from '_';
 import ko from 'ko';
 
-import {settingsSaveHelperSimpleFunction, trim} from 'Common/Utils';
+import {Magics} from 'Common/Enums';
+import {settingsSaveHelperSimpleFunction, trim, log} from 'Common/Utils';
 import {i18n, trigger as translatorTrigger} from 'Common/Translator';
+
+import Remote from 'Remote/Admin/Ajax';
+import AppStore from 'Stores/Admin/App';
 
 import {settingsGet} from 'Storage/Settings';
 
 class BrandingAdminSettings
 {
 	constructor() {
-		const AppStore = require('Stores/Admin/App');
-
 		this.capa = AppStore.prem;
 
 		this.title = ko.observable(settingsGet('Title')).idleTrigger();
@@ -33,9 +35,9 @@ class BrandingAdminSettings
 		this.welcomePageDisplay.options = ko.computed(() => {
 			translatorTrigger();
 			return [
-				{'optValue': 'none', 'optText': i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_NONE')},
-				{'optValue': 'once', 'optText': i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_ONCE')},
-				{'optValue': 'always', 'optText': i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_ALWAYS')}
+				{optValue: 'none', optText: i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_NONE')},
+				{optValue: 'once', optText: i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_ONCE')},
+				{optValue: 'always', optText: i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_ALWAYS')}
 			];
 		});
 
@@ -46,7 +48,6 @@ class BrandingAdminSettings
 	onBuild() {
 		_.delay(() => {
 			const
-				Remote = require('Remote/Admin/Ajax'),
 				f1 = settingsSaveHelperSimpleFunction(this.title.trigger, this),
 				f2 = settingsSaveHelperSimpleFunction(this.loadingDesc.trigger, this),
 				f3 = settingsSaveHelperSimpleFunction(this.faviconUrl.trigger, this);
@@ -68,7 +69,7 @@ class BrandingAdminSettings
 					'FaviconUrl': trim(value)
 				});
 			});
-		}, 50);
+		}, Magics.Time50ms);
 	}
 }
 

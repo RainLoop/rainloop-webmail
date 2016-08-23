@@ -20,6 +20,8 @@ import {EmailModel} from 'Model/Email';
 import {view, ViewType} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
+const KEY_NAME_SUBSTR = -8;
+
 @view({
 	name: 'View/Popup/ComposeOpenPgp',
 	type: ViewType.Popup,
@@ -61,7 +63,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext
 				}
 				return _.map(oKey.users, (user) => ({
 					'id': oKey.guid,
-					'name': '(' + oKey.id.substr(-8).toUpperCase() + ') ' + user,
+					'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
 					'key': oKey,
 					'class': iIndex % 2 ? 'odd' : 'even'
 				}));
@@ -78,7 +80,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext
 				}
 				return _.map(oKey.users, (user) => ({
 					'id': oKey.guid,
-					'name': '(' + oKey.id.substr(-8).toUpperCase() + ') ' + user,
+					'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
 					'key': oKey,
 					'class': index % 2 ? 'odd' : 'even'
 				}));
@@ -252,7 +254,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext
 
 			const
 				keyId = this.selectedPrivateKey(),
-				option = keyId ? _.find(this.privateKeysOptions(), (oItem) => oItem && keyId === oItem.id) : null;
+				option = keyId ? _.find(this.privateKeysOptions(), (item) => item && keyId === item.id) : null;
 
 			if (option)
 			{
@@ -260,7 +262,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext
 					'empty': !option.key,
 					'selected': ko.observable(!!option.key),
 					'users': option.key.users,
-					'hash': option.key.id.substr(-8).toUpperCase(),
+					'hash': option.key.id.substr(KEY_NAME_SUBSTR).toUpperCase(),
 					'key': option.key
 				});
 			}
@@ -280,7 +282,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext
 					'selected': ko.observable(!!option.key),
 					'removable': ko.observable(!this.sign() || !this.signKey() || this.signKey().key.id !== option.key.id),
 					'users': option.key.users,
-					'hash': option.key.id.substr(-8).toUpperCase(),
+					'hash': option.key.id.substr(KEY_NAME_SUBSTR).toUpperCase(),
 					'key': option.key
 				});
 
@@ -422,7 +424,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext
 			{
 				this.signKey({
 					'users': keys[0].users || [emailLine],
-					'hash': keys[0].id.substr(-8).toUpperCase(),
+					'hash': keys[0].id.substr(KEY_NAME_SUBSTR).toUpperCase(),
 					'key': keys[0]
 				});
 			}
@@ -437,13 +439,13 @@ class ComposeOpenPgpPopupView extends AbstractViewNext
 		{
 			this.encryptKeys(_.uniq(_.compact(_.flatten(_.map(rec, (recEmail) => {
 				const keys = PgpStore.findAllPublicKeysByEmailNotNative(recEmail);
-				return keys ? _.map(keys, (oKey) => ({
-					'empty': !oKey,
-					'selected': ko.observable(!!oKey),
-					'removable': ko.observable(!this.sign() || !this.signKey() || this.signKey().key.id !== oKey.id),
-					'users': oKey ? (oKey.users || [recEmail]) : [recEmail],
-					'hash': oKey ? oKey.id.substr(-8).toUpperCase() : '',
-					'key': oKey
+				return keys ? _.map(keys, (publicKey) => ({
+					'empty': !publicKey,
+					'selected': ko.observable(!!publicKey),
+					'removable': ko.observable(!this.sign() || !this.signKey() || this.signKey().key.id !== publicKey.id),
+					'users': publicKey ? (publicKey.users || [recEmail]) : [recEmail],
+					'hash': publicKey ? publicKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() : '',
+					'key': publicKey
 				})) : [];
 			}), true)), (encryptKey) => encryptKey.hash));
 

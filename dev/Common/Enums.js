@@ -424,12 +424,24 @@ export const Magics = {
 	'BitLength2048': 2048,
 	'BitLength1024': 1024,
 
+	'Size350px': 350,
 	'Size50px': 50,
 	'Size20px': 20,
 	'Size1px': 1,
 
+	'Time30mInMin': 30,
+
+	'Time60m': 60000 * 60,
+	'Time30m': 60000 * 30,
+	'Time20m': 60000 * 20,
+	'Time15m': 60000 * 15,
+	'Time10m': 60000 * 10,
+	'Time5m': 60000 * 5,
+	'Time3m': 60000 * 3,
+	'Time2m': 60000 * 2,
 	'Time1m': 60000,
 	'Time30s': 30000,
+	'Time10s': 10000,
 	'Time7s': 7000,
 	'Time5s': 5000,
 	'Time3s': 3000,
@@ -440,7 +452,9 @@ export const Magics = {
 	'Time200ms': 200,
 	'Time100ms': 100,
 	'Time50ms': 50,
-	'Time20ms': 20
+	'Time20ms': 20,
+	'Time10ms': 10,
+	'Time1ms': 1
 };
 
 /**

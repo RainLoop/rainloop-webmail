@@ -76,33 +76,8 @@ class Selector
 
 		}, this);
 
-		this.selectedItem = this.selectedItem.extend({toggleSubscribe: [null,
-			(prev) => {
-				if (prev)
-				{
-					prev.selected(false);
-				}
-			}, (next) => {
-				if (next)
-				{
-					next.selected(true);
-				}
-			}
-		]});
-
-		this.focusedItem = this.focusedItem.extend({toggleSubscribe: [null,
-			(prev) => {
-				if (prev)
-				{
-					prev.focused(false);
-				}
-			}, (next) => {
-				if (next)
-				{
-					next.focused(true);
-				}
-			}
-		]});
+		this.selectedItem = this.selectedItem.extend({toggleSubscribeProperty: [this, 'selected']});
+		this.focusedItem = this.focusedItem.extend({toggleSubscribeProperty: [null, 'focused']});
 
 		this.iSelectNextHelper = 0;
 		this.iFocusedNextHelper = 0;

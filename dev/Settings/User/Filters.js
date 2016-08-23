@@ -44,8 +44,7 @@ class FiltersUserSettings
 		this.filterRaw.allow = ko.observable(false);
 		this.filterRaw.error = ko.observable(false);
 
-		this.filterForDeletion = ko.observable(null)
-			.extend({falseTimeout: 3000}).extend({toggleSubscribeProperty: [this, 'deleteAccess']});
+		this.filterForDeletion = ko.observable(null).deleteAccessHelper();
 
 		this.saveChanges = createCommand(() => {
 			if (!this.filters.saving())

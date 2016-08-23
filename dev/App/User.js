@@ -12,7 +12,7 @@ import {
 
 import {
 	Layout, Capa, StorageResultType, Notification, FolderType,
-	SetSystemFoldersNotification, MessageSetAction, ClientSideKeyName
+	SetSystemFoldersNotification, MessageSetAction, ClientSideKeyName, Magics
 } from 'Common/Enums';
 
 import {
@@ -51,6 +51,7 @@ import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
 import MessageStore from 'Stores/User/Message';
 import ContactStore from 'Stores/User/Contact';
+import QuotaStore from 'Stores/User/Quota';
 
 import * as Local from 'Storage/Client';
 import * as Settings from 'Storage/Settings';
@@ -84,23 +85,23 @@ class AppUser extends AbstractApp
 
 		this.moveCache = {};
 
-		this.quotaDebounce = _.debounce(this.quota, 1000 * 30);
+		this.quotaDebounce = _.debounce(this.quota, Magics.Time30s);
 		this.moveOrDeleteResponseHelper = _.bind(this.moveOrDeleteResponseHelper, this);
 
 		this.messagesMoveTrigger = _.debounce(this.messagesMoveTrigger, 500);
 
-		window.setInterval(() => Events.pub('interval.30s'), 30000);
-		window.setInterval(() => Events.pub('interval.1m'), 60000);
-		window.setInterval(() => Events.pub('interval.2m'), 60000 * 2);
-		window.setInterval(() => Events.pub('interval.3m'), 60000 * 3);
-		window.setInterval(() => Events.pub('interval.5m'), 60000 * 5);
-		window.setInterval(() => Events.pub('interval.10m'), 60000 * 10);
-		window.setInterval(() => Events.pub('interval.15m'), 60000 * 15);
-		window.setInterval(() => Events.pub('interval.20m'), 60000 * 15);
+		window.setInterval(() => Events.pub('interval.30s'), Magics.Time30s);
+		window.setInterval(() => Events.pub('interval.1m'), Magics.Time1m);
+		window.setInterval(() => Events.pub('interval.2m'), Magics.Time2m);
+		window.setInterval(() => Events.pub('interval.3m'), Magics.Time3m);
+		window.setInterval(() => Events.pub('interval.5m'), Magics.Time5m);
+		window.setInterval(() => Events.pub('interval.10m'), Magics.Time10m);
+		window.setInterval(() => Events.pub('interval.15m'), Magics.Time15m);
+		window.setInterval(() => Events.pub('interval.20m'), Magics.Time20m);
 
-		window.setTimeout(() => window.setInterval(() => Events.pub('interval.2m-after5m'), 60000 * 2), 60000 * 5);
-		window.setTimeout(() =>	window.setInterval(() => Events.pub('interval.5m-after5m'), 60000 * 5), 60000 * 5);
-		window.setTimeout(() => window.setInterval(() => Events.pub('interval.10m-after5m'), 60000 * 10), 60000 * 5);
+		window.setTimeout(() => window.setInterval(() => Events.pub('interval.2m-after5m'), Magics.Time2m), Magics.Time5m);
+		window.setTimeout(() =>	window.setInterval(() => Events.pub('interval.5m-after5m'), Magics.Time5m), Magics.Time5m);
+		window.setTimeout(() => window.setInterval(() => Events.pub('interval.10m-after5m'), Magics.Time10m), Magics.Time5m);
 
 		$.wakeUp(() => {
 			if (checkTimestamp())
@@ -115,7 +116,7 @@ class AppUser extends AbstractApp
 				}
 			}, Settings.appSettingsGet('version'));
 
-		}, {}, 60 * 60 * 1000);
+		}, {}, Magics.Time60m);
 
 		if (checkTimestamp())
 		{
@@ -128,12 +129,12 @@ class AppUser extends AbstractApp
 				$('#rl-bg')
 					.attr('style', 'background-image: none !important;')
 					.backstretch(userBackground(Settings.settingsGet('UserBackgroundHash')), {
-						fade: bAnimationSupported ? 1000 : 0,
+						fade: bAnimationSupported ? Magics.Time1s : 0,
 						centeredX: true,
 						centeredY: true
 					})
 					.removeAttr('style');
-			}, 1000);
+			}, Magics.Time1s);
 		}
 
 		this.socialUsers = _.bind(this.socialUsers, this);
@@ -447,7 +448,6 @@ class AppUser extends AbstractApp
 	}
 
 	foldersPromisesActionHelper(promise, errorDefCode) {
-
 		Promises
 			.abort('Folders')
 			.fastResolve(true)
@@ -563,23 +563,23 @@ class AppUser extends AbstractApp
 			if (StorageResultType.Success === sResult && oData.Result)
 			{
 				const
-					aCounts = {},
+					counts = {},
 					sAccountEmail = AccountStore.email();
 				let
-					sParentEmail = Settings.settingsGet('ParentEmail');
+					parentEmail = Settings.settingsGet('ParentEmail');
 
-				sParentEmail = '' === sParentEmail ? sAccountEmail : sParentEmail;
+				parentEmail = '' === parentEmail ? sAccountEmail : parentEmail;
 
 				if (isArray(oData.Result.Accounts))
 				{
 					_.each(AccountStore.accounts(), (oAccount) => {
-						aCounts[oAccount.email] = oAccount.count();
+						counts[oAccount.email] = oAccount.count();
 					});
 
 					delegateRunOnDestroy(AccountStore.accounts());
 
 					AccountStore.accounts(_.map(oData.Result.Accounts,
-						(sValue) => new AccountModel(sValue, sValue !== sParentEmail, aCounts[sValue] || 0)));
+						(sValue) => new AccountModel(sValue, sValue !== parentEmail, counts[sValue] || 0)));
 				}
 
 				if (isUnd(bBoot) ? false : !!bBoot)
@@ -592,20 +592,20 @@ class AppUser extends AbstractApp
 				{
 					delegateRunOnDestroy(IdentityStore.identities());
 
-					IdentityStore.identities(_.map(oData.Result.Identities, (oIdentityData) => {
+					IdentityStore.identities(_.map(oData.Result.Identities, (identityData) => {
 
 						const
-							sId = pString(oIdentityData.Id),
-							sEmail = pString(oIdentityData.Email),
-							oIdentity = new IdentityModel(sId, sEmail);
+							id = pString(identityData.Id),
+							email = pString(identityData.Email),
+							identity = new IdentityModel(id, email);
 
-						oIdentity.name(pString(oIdentityData.Name));
-						oIdentity.replyTo(pString(oIdentityData.ReplyTo));
-						oIdentity.bcc(pString(oIdentityData.Bcc));
-						oIdentity.signature(pString(oIdentityData.Signature));
-						oIdentity.signatureInsertBefore(!!oIdentityData.SignatureInsertBefore);
+						identity.name(pString(identityData.Name));
+						identity.replyTo(pString(identityData.ReplyTo));
+						identity.bcc(pString(identityData.Bcc));
+						identity.signature(pString(identityData.Signature));
+						identity.signatureInsertBefore(!!identityData.SignatureInsertBefore);
 
-						return oIdentity;
+						return identity;
 					}));
 				}
 			}
@@ -639,8 +639,7 @@ class AppUser extends AbstractApp
 				isArray(data.Result) && 1 < data.Result.length &&
 				isPosNumeric(data.Result[0], true) && isPosNumeric(data.Result[1], true))
 			{
-				require('Stores/User/Quota').populateData(
-					pInt(data.Result[1]), pInt(data.Result[0]));
+				QuotaStore.populateData(pInt(data.Result[1]), pInt(data.Result[0]));
 			}
 		});
 	}
@@ -747,11 +746,11 @@ class AppUser extends AbstractApp
 					if (oData && oData.Result && oData.Result.List && isNonEmptyArray(oData.Result.List))
 					{
 						const utc = momentNowUnix();
-						_.each(oData.Result.List, (oItem) => {
+						_.each(oData.Result.List, (item) => {
 
 							const
-								hash = getFolderHash(oItem.Folder),
-								folder = getFolderFromCacheList(oItem.Folder);
+								hash = getFolderHash(item.Folder),
+								folder = getFolderFromCacheList(item.Folder);
 							let
 								unreadCountChange = false;
 
@@ -759,24 +758,24 @@ class AppUser extends AbstractApp
 							{
 								folder.interval = utc;
 
-								if (oItem.Hash)
+								if (item.Hash)
 								{
-									setFolderHash(oItem.Folder, oItem.Hash);
+									setFolderHash(item.Folder, item.Hash);
 								}
 
-								if (isNormal(oItem.MessageCount))
+								if (isNormal(item.MessageCount))
 								{
-									folder.messageCountAll(oItem.MessageCount);
+									folder.messageCountAll(item.MessageCount);
 								}
 
-								if (isNormal(oItem.MessageUnseenCount))
+								if (isNormal(item.MessageUnseenCount))
 								{
-									if (pInt(folder.messageCountUnread()) !== pInt(oItem.MessageUnseenCount))
+									if (pInt(folder.messageCountUnread()) !== pInt(item.MessageUnseenCount))
 									{
 										unreadCountChange = true;
 									}
 
-									folder.messageCountUnread(oItem.MessageUnseenCount);
+									folder.messageCountUnread(item.MessageUnseenCount);
 								}
 
 								if (unreadCountChange)
@@ -784,7 +783,7 @@ class AppUser extends AbstractApp
 									clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
 								}
 
-								if (oItem.Hash !== hash || '' === hash)
+								if (item.Hash !== hash || '' === hash)
 								{
 									if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 									{
@@ -795,10 +794,10 @@ class AppUser extends AbstractApp
 								{
 									if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
 									{
-										const aList = MessageStore.messageList();
-										if (isNonEmptyArray(aList))
+										const list = MessageStore.messageList();
+										if (isNonEmptyArray(list))
 										{
-											this.folderInformation(folder.fullNameRaw, aList);
+											this.folderInformation(folder.fullNameRaw, list);
 										}
 									}
 								}
@@ -998,8 +997,8 @@ class AppUser extends AbstractApp
 	initHorizontalLayoutResizer(sClientSideKeyName) {
 
 		let
-			oTop = null,
-			oBottom = null;
+			top = null,
+			bottom = null;
 
 		const
 			minHeight = 200,
@@ -1007,14 +1006,14 @@ class AppUser extends AbstractApp
 			fSetHeight = (height) => {
 				if (height)
 				{
-					if (oTop)
+					if (top)
 					{
-						oTop.attr('style', 'height:' + height + 'px');
+						top.attr('style', 'height:' + height + 'px');
 					}
 
-					if (oBottom)
+					if (bottom)
 					{
-						oBottom.attr('style', 'top:' + (55 /* top toolbar */ + height) + 'px');
+						bottom.attr('style', 'top:' + (55 /* top toolbar */ + height) + 'px');
 					}
 				}
 			},
@@ -1066,26 +1065,26 @@ class AppUser extends AbstractApp
 			fDisable = (bDisable) => {
 				if (bDisable)
 				{
-					if (oTop && oTop.hasClass('ui-resizable'))
+					if (top && top.hasClass('ui-resizable'))
 					{
-						oTop
+						top
 							.resizable('destroy')
 							.removeAttr('style');
 					}
 
-					if (oBottom)
+					if (bottom)
 					{
-						oBottom.removeAttr('style');
+						bottom.removeAttr('style');
 					}
 				}
 				else if ($html.hasClass('rl-bottom-preview-pane'))
 				{
-					oTop = $('.b-message-list-wrapper');
-					oBottom = $('.b-message-view-wrapper');
+					top = $('.b-message-list-wrapper');
+					bottom = $('.b-message-view-wrapper');
 
-					if (!oTop.hasClass('ui-resizable'))
+					if (!top.hasClass('ui-resizable'))
 					{
-						oTop.resizable(oOptions);
+						top.resizable(oOptions);
 					}
 
 					const iHeight = pInt(Local.get(sClientSideKeyName)) || 300;
@@ -1141,10 +1140,10 @@ class AppUser extends AbstractApp
 				}
 			},
 
-			fResizeCreateFunction = (oEvent) => {
-				if (oEvent && oEvent.target)
+			fResizeCreateFunction = (event) => {
+				if (event && event.target)
 				{
-					$(oEvent.target).find('.ui-resizable-handle')
+					$(event.target).find('.ui-resizable-handle')
 						.on('mousedown', () => {
 							$html.addClass('rl-resizer');
 						})
@@ -1159,16 +1158,16 @@ class AppUser extends AbstractApp
 			fResizeStartFunction = () => {
 				$html.addClass('rl-resizer');
 			},
-			fResizeStopFunction = (oEvent, oObject) => {
+			fResizeStopFunction = (event, obj) => {
 				$html.removeClass('rl-resizer');
-				if (oObject && oObject.size && oObject.size.width)
+				if (obj && obj.size && obj.size.width)
 				{
-					Local.set(sClientSideKeyName, oObject.size.width);
+					Local.set(sClientSideKeyName, obj.size.width);
 
-					leftPanelWidth(oObject.size.width);
+					leftPanelWidth(obj.size.width);
 
 					right.css({
-						left: '' + oObject.size.width + 'px'
+						left: '' + obj.size.width + 'px'
 					});
 
 					lLeft.css({
@@ -1188,7 +1187,7 @@ class AppUser extends AbstractApp
 		lLeft.resizable({
 			helper: 'ui-resizable-helper-w',
 			minWidth: minWidth,
-			maxWidth: 350,
+			maxWidth: Magics.Size350px,
 			handles: 'e',
 			create: fResizeCreateFunction,
 			resize: fResizeResizeFunction,
@@ -1386,8 +1385,8 @@ class AppUser extends AbstractApp
 						contactsSyncInterval = 5 <= contactsSyncInterval ? contactsSyncInterval : 20;
 						contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
 
-						_.delay(() => this.contactsSync(), 10000);
-						_.delay(() => this.folderInformationMultiply(true), 2000);
+						_.delay(() => this.contactsSync(), Magics.Time10s);
+						_.delay(() => this.folderInformationMultiply(true), Magics.Time2s);
 
 						window.setInterval(() => this.contactsSync(), contactsSyncInterval * 60000 + 5000);
 

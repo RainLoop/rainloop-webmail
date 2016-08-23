@@ -1,19 +1,22 @@
 
 import _ from '_';
 import {settingsSaveHelperSimpleFunction, trim, boolToAjax} from 'Common/Utils';
+import {Magics} from 'Common/Enums';
+
+import Remote from 'Remote/Admin/Ajax';
 
 import {BrandingAdminSettings} from 'Settings/Admin/Branding';
 
 class BrandingPremAdminSettings extends BrandingAdminSettings
 {
-	onBuild(oDom) {
-		super.onBuild(oDom);
+	onBuild(dom) {
+		super.onBuild(dom);
 
 		if (this.capa && this.capa() && !this.community)
 		{
 			_.delay(() => {
+
 				const
-					Remote = require('Remote/Admin/Ajax'),
 					f1 = settingsSaveHelperSimpleFunction(this.loginLogo.trigger, this),
 					f2 = settingsSaveHelperSimpleFunction(this.loginDescription.trigger, this),
 					f3 = settingsSaveHelperSimpleFunction(this.loginCss.trigger, this),
@@ -97,7 +100,8 @@ class BrandingPremAdminSettings extends BrandingAdminSettings
 						'LoginPowered': boolToAjax(value)
 					});
 				});
-			}, 50);
+
+			}, Magics.Time50ms);
 		}
 	}
 }

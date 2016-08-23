@@ -33,7 +33,7 @@ class SettingsUserStore
 		this.useThreads = ko.observable(false);
 		this.replySameFolder = ko.observable(false);
 
-		this.autoLogout = ko.observable(30);
+		this.autoLogout = ko.observable(Magics.Time30mInMin);
 
 		this.computers();
 		this.subscribers();
@@ -44,11 +44,11 @@ class SettingsUserStore
 	}
 
 	subscribers() {
-		this.layout.subscribe((nValue) => {
-			$html.toggleClass('rl-no-preview-pane', Layout.NoPreview === nValue);
-			$html.toggleClass('rl-side-preview-pane', Layout.SidePreview === nValue);
-			$html.toggleClass('rl-bottom-preview-pane', Layout.BottomPreview === nValue);
-			Events.pub('layout', [nValue]);
+		this.layout.subscribe((value) => {
+			$html.toggleClass('rl-no-preview-pane', Layout.NoPreview === value);
+			$html.toggleClass('rl-side-preview-pane', Layout.SidePreview === value);
+			$html.toggleClass('rl-bottom-preview-pane', Layout.BottomPreview === value);
+			Events.pub('layout', [value]);
 		});
 	}
 

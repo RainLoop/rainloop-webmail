@@ -622,14 +622,10 @@ gulp.task('default', function(callback) {
 });
 
 // watch
-gulp.task('css:watch', ['css:main'], function() {
+gulp.task('watch', ['css:watch', 'js:validate:watch'], function() {
 	cfg.watch = true;
 	livereload.listen();
 	gulp.watch(cfg.paths.less.main.watch, {interval: cfg.watchInterval}, ['css:main']);
-});
-
-gulp.task('js:validate:watch', ['js:validate'], function() {
-	cfg.watch = true;
 	gulp.watch(cfg.paths.globjs, {interval: cfg.watchInterval}, ['js:validate']);
 });
 

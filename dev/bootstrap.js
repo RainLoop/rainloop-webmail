@@ -60,7 +60,7 @@ export default (App) => {
 
 						App.bootstart();
 
-					}, 10);
+					}, Enums.Magics.Time10ms);
 				}
 				else
 				{
@@ -69,7 +69,7 @@ export default (App) => {
 
 				window.__APP_BOOT = null;
 
-			}, 10);
+			}, Enums.Magics.Time10ms);
 
 		});
 	};

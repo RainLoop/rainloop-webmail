@@ -1,7 +1,7 @@
 
 import ko from 'ko';
 
-import {ClientSideKeyName, Notification} from 'Common/Enums';
+import {ClientSideKeyName, Notification, Magics} from 'Common/Enums';
 import {trim, noop} from 'Common/Utils';
 import {getNotification, i18n} from 'Common/Translator';
 
@@ -25,33 +25,21 @@ class FoldersUserSettings
 		this.displaySpecSetting = FolderStore.displaySpecSetting;
 		this.folderList = FolderStore.folderList;
 
-		this.folderListHelp = ko.observable('').extend({throttle: 100});
+		this.folderListHelp = ko.observable('').extend({throttle: Magics.Time100ms});
 
 		this.loading = ko.computed(() => {
 			const
-				bLoading = FolderStore.foldersLoading(),
-				bCreating = FolderStore.foldersCreating(),
-				bDeleting = FolderStore.foldersDeleting(),
-				bRenaming = FolderStore.foldersRenaming();
+				loading = FolderStore.foldersLoading(),
+				creating = FolderStore.foldersCreating(),
+				deleting = FolderStore.foldersDeleting(),
+				renaming = FolderStore.foldersRenaming();
 
-			return bLoading || bCreating || bDeleting || bRenaming;
+			return loading || creating || deleting || renaming;
 		});
 
 		this.folderForDeletion = ko.observable(null).deleteAccessHelper();
 
-		this.folderForEdit = ko.observable(null).extend({toggleSubscribe: [this,
-			(prev) => {
-				if (prev)
-				{
-					prev.edited(false);
-				}
-			}, (next) => {
-				if (next && next.canBeEdited())
-				{
-					next.edited(true);
-				}
-			}
-		]});
+		this.folderForEdit = ko.observable(null).extend({toggleSubscribeProperty: [this, 'edited']});
 
 		this.useImapSubscribe = !!appSettingsGet('useImapSubscribe');
 	}

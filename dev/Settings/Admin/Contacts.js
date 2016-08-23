@@ -71,8 +71,8 @@ class ContactsAdminSettings
 		this.contactsType = ko.observable('');
 
 		this.mainContactsType = ko.computed({
-			'read': this.contactsType,
-			'write': (value) => {
+			read: this.contactsType,
+			write: (value) => {
 				if (value !== this.contactsType())
 				{
 					if (-1 < inArray(value, supportedTypes))

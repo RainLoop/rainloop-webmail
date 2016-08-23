@@ -31,19 +31,7 @@ class FolderUserStore
 
 		this.foldersInboxUnreadCount = ko.observable(0);
 
-		this.currentFolder = ko.observable(null).extend({toggleSubscribe: [
-			null,
-			(prev) => {
-				if (prev) {
-					prev.selected(false);
-				}
-			},
-			(next) => {
-				if (next) {
-					next.selected(true);
-				}
-			}
-		]});
+		this.currentFolder = ko.observable(null).extend({toggleSubscribeProperty: [this, 'selected']});
 
 		this.computers();
 		this.subscribers();

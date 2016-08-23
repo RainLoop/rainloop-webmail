@@ -95,7 +95,7 @@ module.exports = function(publicPath, pro, es6) {
 // stage-2
 "transform-class-properties",
 "transform-object-rest-spread",
-// "transform-decorators",
+// "transform-decorators", // -> transform-decorators-legacy
 
 // stage-3
 "syntax-trailing-function-commas",

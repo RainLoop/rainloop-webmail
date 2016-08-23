@@ -1195,22 +1195,7 @@ ko.observable.fn.validateSimpleEmail = function() {
 };
 
 ko.observable.fn.deleteAccessHelper = function() {
-	this.extend({falseTimeout: 3000}).extend({toggleSubscribe: [
-		null,
-		(prev) => {
-			if (prev && prev.deleteAccess)
-			{
-				prev.deleteAccess(false);
-			}
-		},
-		(next) => {
-			if (next && next.deleteAccess)
-			{
-				next.deleteAccess(true);
-			}
-		}
-	]});
-
+	this.extend({falseTimeout: 3000}).extend({toggleSubscribeProperty: [this, 'deleteAccess']});
 	return this;
 };
 
