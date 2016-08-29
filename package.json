@@ -49,13 +49,13 @@
   },
   "devDependencies": {
     "Progress.js": "github:usablica/progress.js",
-    "autolinker": "^0.27.0",
-    "babel-core": "^6.13.2",
+    "autolinker": "^0.28.0",
+    "babel-core": "6.14.0",
     "babel-eslint": "^6.1.2",
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "babel-plugin-transform-runtime": "^6.9.0",
-    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-es2015": "6.14.0",
     "babel-preset-es2016": "^6.11.3",
     "babel-preset-stage-0": "^6.5.0",
     "babel-runtime": "^6.1.18",
@@ -102,7 +102,7 @@
     "matchmedia-polyfill": "^0.3.0",
     "moment": "^2.14.1",
     "node-fs": "^0.1.7",
-    "node-notifier": "^4.6.0",
+    "node-notifier": "4.6.1",
     "normalize.css": "^4.2.0",
     "openpgp": "^2.3.3",
     "opentip": "^2.4.3",
@@ -111,11 +111,11 @@
     "rifraf": "^2.0.2",
     "rimraf": "^2.5.4",
     "run-sequence": "^1.2.2",
-    "simplestatemanager": "^3.1.3",
+    "simplestatemanager": "3.2.0",
     "style-loader": "^0.13.1",
     "tinycon": "github:tommoor/tinycon",
     "underscore": "^1.8.3",
     "webpack": "^2.1.0-beta.21",
-    "webpack-notifier": "^1.3.2"
+    "webpack-notifier": "1.4.1"
   }
 }

@@ -24,6 +24,7 @@ class HtmlEditor
 		this.onReady = onReady;
 		this.onModeChange = onModeChange;
 
+		this.element = element;
 		this.$element = $(element);
 
 		this.resize = _.throttle(_.bind(this.resize, this), 100);
@@ -213,7 +214,7 @@ class HtmlEditor
 	}
 
 	init() {
-		if (this.$element && this.$element[0] && !this.editor)
+		if (this.element && !this.editor)
 		{
 			const
 				initFunc = () => {
@@ -248,7 +249,7 @@ class HtmlEditor
 						window.CKEDITOR.env.isCompatible = true;
 					}
 
-					this.editor = window.CKEDITOR.appendTo(this.$element[0], config);
+					this.editor = window.CKEDITOR.appendTo(this.element, config);
 
 					this.editor.on('key', (event) => {
 						if (event && event.data && EventKeyCode.Tab === event.data.keyCode)

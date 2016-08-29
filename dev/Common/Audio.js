@@ -1,6 +1,5 @@
 
 import window from 'window';
-import $ from '$';
 import {bMobileDevice, bSafari} from 'Common/Globals';
 import * as Links from 'Common/Links';
 import * as Events from 'Common/Events';
@@ -38,8 +37,12 @@ class Audio
 
 		if (this.supported)
 		{
-			$(this.player).on('ended error', () => this.stop());
-			Events.sub('audio.api.stop', () => this.stop());
+			const stopFn = () => this.stop();
+
+			this.player.addEventListener('ended', stopFn);
+			this.player.addEventListener('error', stopFn);
+
+			Events.sub('audio.api.stop', stopFn);
 		}
 	}
 

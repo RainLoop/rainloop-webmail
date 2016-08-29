@@ -244,6 +244,7 @@ function runApp()
 				}
 			}),
 			common = Promise.all([
+//				jassl('https://code.jquery.com/jquery-migrate-3.0.0.js'),
 				jassl(appData.TemplatesLink),
 				jassl(appData.LangLink)
 			]);

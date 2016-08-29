@@ -1,7 +1,6 @@
 
 import window from 'window';
-import $ from '$';
-import {killCtrlACtrlS, detectDropdownVisibility, createCommandLegacy} from 'Common/Utils';
+import {killCtrlACtrlS, detectDropdownVisibility, createCommandLegacy, domReady} from 'Common/Utils';
 import {$win, $html, data as GlobalsData, bMobileDevice} from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
@@ -20,9 +19,7 @@ export default (App) => {
 
 	$html
 		.addClass(bMobileDevice ? 'mobile' : 'no-mobile')
-		.on('click.dropdown.data-api', () => {
-			detectDropdownVisibility();
-		});
+		.on('click.dropdown.data-api', detectDropdownVisibility);
 
 	const rl = window.rl || {};
 
@@ -44,13 +41,13 @@ export default (App) => {
 
 	window.__APP_BOOT = (fErrorCallback) => {
 
-		$(() => {
+		domReady(() => {
 
 			window.setTimeout(() => {
 
 				if (window.rainloopTEMPLATES && window.rainloopTEMPLATES[0])
 				{
-					$('#rl-templates').html(window.rainloopTEMPLATES[0]);
+					window.document.getElementById('rl-templates').innerHTML = window.rainloopTEMPLATES[0];
 
 					window.setTimeout(() => {
 

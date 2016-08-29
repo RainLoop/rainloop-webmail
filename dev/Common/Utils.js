@@ -1556,6 +1556,24 @@ export function mailToHelper(mailToUrl, PopupComposeVoreModel)
 	return false;
 }
 
+/**
+ * @param {Function} fn
+ * @returns {void}
+ */
+export function domReady(fn)
+{
+	$(() => fn());
+//
+//	if ('loading' !== window.document.readyState)
+//	{
+//		fn();
+//	}
+//	else
+//	{
+//		window.document.addEventListener('DOMContentLoaded', fn);
+//	}
+}
+
 export const windowResize = _.debounce((timeout) => {
 	if (isUnd(timeout) || isNull(timeout))
 	{
