@@ -5,7 +5,7 @@ import _ from '_';
 import ko from 'ko';
 
 import {Magics} from 'Common/Enums';
-import {settingsSaveHelperSimpleFunction, trim, log} from 'Common/Utils';
+import {settingsSaveHelperSimpleFunction, trim} from 'Common/Utils';
 import {i18n, trigger as translatorTrigger} from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Ajax';

@@ -75,7 +75,7 @@ class HtmlUtils
 		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
 			'<html '.$sHtmlAttrs.'><head>'.
 			'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'.
-			'<body '.$sBodyAttrs.'><div data-wrp="rainloop">'.$sText.'</div></body></html>');
+			'<body '.$sBodyAttrs.'><div data-wrp="rainloop">'.\MailSo\Base\Utils::Utf8Clear($sText).'</div></body></html>');
 
 		@$oDom->normalizeDocument();
 
@@ -196,12 +196,7 @@ class HtmlUtils
 			else
 			{
 				$sResult = self::domToString($oDiv, $oDom);
-				if (0 === strpos($sResult, '<div>') && '</div>' === substr($sResult, -6))
-				{
-					$sResult = substr($sResult, 5);
-					$sResult = substr($sResult, 0, -6);
-					$sResult = \trim($sResult);
-				}
+				$sResult = \MailSo\Base\HtmlUtils::UnWrapTag($sResult);
 			}
 		}
 		else
@@ -217,7 +212,37 @@ class HtmlUtils
 
 	/**
 	 * @param string $sHtml
-	 * @param string $sHtmlAttrs = '
+	 * @param string $sTag = 'div'
+	 * @param string $iUnwrapCount = 10
+	 *
+	 * @return string
+	 */
+	public static function UnWrapTag($sHtml, $sTag = 'div', $iUnwrapCount = 5)
+	{
+		$iUnwrapCount = 0 < $iUnwrapCount ? $iUnwrapCount : 1;
+		$iUnwrapCount = 10 < $iUnwrapCount ? 10 : $iUnwrapCount;
+
+		$sTag = $sTag ? $sTag : 'div';
+		$iTagLen = \strlen($sTag);
+
+		while (0 < $iUnwrapCount)
+		{
+			$sHtml = \trim($sHtml);
+			if (0 === \strpos($sHtml, '<'.$sTag.'>') && '</'.$sTag.'>' === \substr($sHtml, -3 - $iTagLen))
+			{
+				$sHtml = \substr(\substr($sHtml, 2 + $iTagLen), 0, -3 - $iTagLen);
+				$sHtml = \trim($sHtml);
+			}
+
+			$iUnwrapCount--;
+		}
+
+		return $sHtml;
+	}
+
+	/**
+	 * @param string $sHtml
+	 * @param string $sHtmlAttrs = ''
 	 * @param string $sBodyAttrs = ''
 	 *
 	 * @return string
@@ -247,14 +272,23 @@ class HtmlUtils
 //			$sHtml = 0 < $iPos ? \substr($sHtml, $iPos) : $sHtml;
 //		}
 
+		$sHtml = \preg_replace('/<head([^>]*)>/si', '', $sHtml);
 		$sHtml = \preg_replace('/<body([^>]*)>/si', '', $sHtml);
 		$sHtml = \preg_replace('/<\/body>/i', '', $sHtml);
 		$sHtml = \preg_replace('/<html([^>]*)>/i', '', $sHtml);
 		$sHtml = \preg_replace('/<\/html>/i', '', $sHtml);
 
 		$sHtmlAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/i', '', $sHtmlAttrs);
+		$sHtmlAttrs = \preg_replace('/xmlns:[a-z]=\'[^\']*\'/i', '', $sHtmlAttrs);
 		$sHtmlAttrs = \preg_replace('/xmlns="[^"]*"/i', '', $sHtmlAttrs);
+		$sHtmlAttrs = \preg_replace('/xmlns=\'[^\']*\'/i', '', $sHtmlAttrs);
 		$sBodyAttrs = \preg_replace('/xmlns:[a-z]="[^"]*"/i', '', $sBodyAttrs);
+		$sBodyAttrs = \preg_replace('/xmlns:[a-z]=\'[^\']*\'/i', '', $sBodyAttrs);
+
+		$sHtmlAttrs = trim($sHtmlAttrs);
+		$sBodyAttrs = trim($sBodyAttrs);
+
+		$sHtml = \MailSo\Base\HtmlUtils::UnWrapTag($sHtml);
 
 		return $sHtml;
 	}

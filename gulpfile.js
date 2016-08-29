@@ -622,7 +622,7 @@ gulp.task('default', function(callback) {
 });
 
 // watch
-gulp.task('watch', ['css:watch', 'js:validate:watch'], function() {
+gulp.task('watch', ['css:main', 'js:validate'], function() {
 	cfg.watch = true;
 	livereload.listen();
 	gulp.watch(cfg.paths.less.main.watch, {interval: cfg.watchInterval}, ['css:main']);
@@ -631,7 +631,6 @@ gulp.task('watch', ['css:watch', 'js:validate:watch'], function() {
 
 // aliases
 gulp.task('build', ['rainloop']);
-gulp.task('watch', ['css:watch', 'js:validate:watch']);
 
 gulp.task('d', ['default']);
 gulp.task('w', ['watch']);
