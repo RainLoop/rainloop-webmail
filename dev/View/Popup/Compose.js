@@ -869,13 +869,13 @@ class ComposePopupView extends AbstractViewNext
 		return signature;
 	}
 
-	setSignatureFromIdentity(oIdentity) {
-		if (oIdentity)
+	setSignatureFromIdentity(identity) {
+		if (identity)
 		{
 			this.editor((editor) => {
 				let
 					isHtml = false,
-					signature = oIdentity.signature();
+					signature = identity.signature();
 
 				if ('' !== signature)
 				{
@@ -886,7 +886,7 @@ class ComposePopupView extends AbstractViewNext
 					}
 				}
 
-				editor.setSignature(this.converSignature(signature), isHtml, !!oIdentity.signatureInsertBefore());
+				editor.setSignature(this.converSignature(signature), isHtml, !!identity.signatureInsertBefore());
 			});
 		}
 	}

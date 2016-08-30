@@ -32,14 +32,14 @@
 				editor.__previos_signature_is_html = false;
 			}
 
-			skipInsert = true;
+			skipInsert = false;
 			if (isHtml)
 			{
 				var clearSig = clearHtmlLine(editor.__previos_signature);
 				text = text.replace(/<signature>([\s\S]*)<\/signature>/igm, function(all){
 					var c = clearSig === clearHtmlLine(all);
-					if (c) {
-						skipInsert = false;
+					if (!c) {
+						skipInsert = true;
 					}
 					return c ? '' : all;
 				});
@@ -51,9 +51,9 @@
 					.replace('' + editor.__previos_signature, '')
 					.replace('' + editor.__previos_signature, '');
 
-				if (textLen > text.length)
+				if (textLen === text.length)
 				{
-					skipInsert = false;
+					skipInsert = true;
 				}
 			}
 		}
@@ -81,15 +81,21 @@
 	CKEDITOR.plugins.add('signature', {
 		init: function(editor) {
 			editor.addCommand('insertSignature', {
-				modes: { wysiwyg: 1, plain: 1 },
-				exec: function (editor, cfg)
-				{
+				modes: {wysiwyg: 1, plain: 1},
+				exec: function(editor, cfg) {
+
+					if (cfg && cfg.clearCache)
+					{
+						editor.__previos_signature = undefined;
+						editor.__previos_signature_is_html = undefined;
+						return true;
+					}
+
 					var
 						bIsHtml = false,
 						bInsertBefore = false,
 						sSignature = '',
-						sResultSignature = ''
-					;
+						sResultSignature = '';
 
 					if (cfg)
 					{

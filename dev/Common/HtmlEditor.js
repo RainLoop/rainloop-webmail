@@ -59,9 +59,22 @@ class HtmlEditor
 	}
 
 	/**
+	 * @returns {void}
+	 */
+	clearCachedSignature() {
+		if (this.editor)
+		{
+			this.editor.execCommand('insertSignature', {
+				clearCache: true
+			});
+		}
+	}
+
+	/**
 	 * @param {string} signature
 	 * @param {bool} html
 	 * @param {bool} insertBefore
+	 * @returns {void}
 	 */
 	setSignature(signature, html, insertBefore) {
 		if (this.editor)
@@ -163,6 +176,8 @@ class HtmlEditor
 	setHtml(html, focus) {
 		if (this.editor && this.__inited)
 		{
+			this.clearCachedSignature();
+
 			this.modeToggle(true);
 
 			html = html.replace(/<p[^>]*><\/p>/ig, '');
@@ -193,6 +208,8 @@ class HtmlEditor
 	setPlain(plain, focus) {
 		if (this.editor && this.__inited)
 		{
+			this.clearCachedSignature();
+
 			this.modeToggle(false);
 			if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain)
 			{
