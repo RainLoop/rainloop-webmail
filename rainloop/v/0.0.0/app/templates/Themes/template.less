@@ -259,10 +259,12 @@ html.glass {
 	@glass-m-color: rgba(255, 255, 255, .8) !important;
 
 	.thm-login {
-		border: none !important;
 		background: none !important;
-		background: rgba(0, 0, 0, .3) !important;
+		background: rgba(0, 0, 0, .5) !important;
 		box-shadow: none !important;
+
+		border: none !important;
+		border: 1px solid rgba(255, 255, 255, .2) !important;
 
 		.controls {
 			.input-append .add-on i {
@@ -271,8 +273,6 @@ html.glass {
 				outline: none !important;
 				box-shadow: none !important;
 			}
-
-
 
 			input {
 				border: 1px solid none !important;
@@ -322,6 +322,9 @@ html.glass {
 
 				color: @glass-color;
 				border-color: @glass-m-color;
+
+				text-transform: uppercase;
+				font-size: 13px;
 
 				&:hover, &:active{
 					border-color: @glass-color;

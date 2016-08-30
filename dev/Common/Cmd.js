@@ -41,10 +41,39 @@ function cmdHelp(cmds) {
 }
 
 /**
+ * @returns {void}
+ */
+function initGlass() {
+	let state = null;
+	try {
+		if (window.localStorage && window.localStorage.setItem)
+		{
+			state = '1' === '' + window.localStorage.getItem('rl-labs-glass');
+		}
+	}
+	catch (e) {} // eslint-disable-line no-empty
+
+	if (null !== state)
+	{
+		$html.toggleClass('glass', !!state);
+	}
+}
+
+/**
  * @returns {string}
  */
 function cmdGlass() {
-	$html.toggleClass('glass', !$html.hasClass('glass'));
+	const state = !$html.hasClass('glass');
+
+	try {
+		if (window.localStorage && window.localStorage.setItem)
+		{
+			window.localStorage.setItem('rl-labs-glass', state ? '1' : '0');
+		}
+	}
+	catch (e) {} // eslint-disable-line no-empty
+
+	$html.toggleClass('glass', state);
 	return '';
 }
 
@@ -199,8 +228,8 @@ class CmdContoller
 
 	onCmd(isTab) {
 		const
-			cmdLine = trim(this.cmd()).replace(/[\s]+/, ' '),
-			cmdParts = cmdLine.replace().split(/[\s]+/),
+			cmdLine = this.cmd().replace(/[\s]+/, ' '),
+			cmdParts = trim(cmdLine).replace().split(/[\s]+/),
 			cmd = cmdParts.shift();
 
 		if (isTab)
@@ -348,3 +377,6 @@ export function toggle()
 		}, 50);
 	}
 }
+
+// init
+initGlass();
