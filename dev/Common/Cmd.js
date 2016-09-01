@@ -232,6 +232,11 @@ class CmdContoller
 			cmdParts = trim(cmdLine).replace().split(/[\s]+/),
 			cmd = cmdParts.shift();
 
+		if ('' === trim(cmdLine))
+		{
+			return false;
+		}
+
 		if (isTab)
 		{
 			if (-1 < inArray(cmd, this.cmds))
@@ -274,6 +279,8 @@ class CmdContoller
 				}, 50);
 			}
 		}
+
+		return true;
 	}
 
 	onEsc() {

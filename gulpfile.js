@@ -337,17 +337,6 @@ gulp.task('js:libs', function() {
 		.pipe(gulp.dest(cfg.paths.staticJS));
 });
 
-gulp.task('js:ckeditor:beautify', function() {
-	var beautify = require('gulp-beautify');
-	return gulp.src(cfg.paths.static + 'ckeditor/ckeditor.js')
-		.pipe(beautify({
-			'indentSize': 2
-		}))
-		.pipe(rename('ckeditor.beautify.js'))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(cfg.paths.static + 'ckeditor/'));
-});
-
 gulp.task('js:clean', function() {
 	return cleanDir(cfg.paths.staticJS + '/**/*.js');
 });
@@ -421,10 +410,6 @@ gulp.task('fontastic-fonts:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/fonts/rainloop.*');
 });
 
-gulp.task('fontastic-svg:clear', function() {
-	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/css/svg/*.svg');
-});
-
 gulp.task('lightgallery-fonts:copy', ['lightgallery-fonts:clear'], function() {
 	return gulp.src('node_modules/lightgallery/dist/fonts/lg.*')
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/fonts'));
@@ -435,20 +420,15 @@ gulp.task('fontastic-fonts:copy', ['fontastic-fonts:clear'], function() {
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/fonts'));
 });
 
-gulp.task('fontastic-svg:copy', ['fontastic-svg:clear'], function() {
-	return gulp.src('vendors/fontastic/svg/*.svg')
-		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/svg'));
-});
-
 gulp.task('lightgallery', ['lightgallery-fonts:copy']);
-gulp.task('fontastic', ['fontastic-fonts:copy', 'fontastic-svg:copy']);
+gulp.task('fontastic', ['fontastic-fonts:copy']);
 
 gulp.task('ckeditor:clear', function() {
 	return cleanDir('rainloop/v/' + cfg.devVersion + '/static/ckeditor');
 });
 
 gulp.task('ckeditor:copy', ['ckeditor:clear'], function() {
-	return gulp.src(['vendors/ckeditor/**/*', 'vendors/ckeditor/.gitempty', '!vendors/ckeditor/samples{,/**}', '!vendors/ckeditor/adapters{,/**}', '!vendors/ckeditor/*.md'])
+	return gulp.src(['vendors/ckeditor/**/*', '!vendors/ckeditor/samples{,/**}', '!vendors/ckeditor/adapters{,/**}', '!vendors/ckeditor/*.md'])
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
 });
 
@@ -457,7 +437,7 @@ gulp.task('ckeditor:copy-plugins', ['ckeditor:copy'], function() {
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor/plugins'));
 });
 
-gulp.task('ckeditor', ['ckeditor:copy-plugins'], function () {
+gulp.task('ckeditor', ['ckeditor:copy-plugins', 'ckeditor:copy', 'ckeditor:clear'], function () {
 	return gulp.src('rainloop/v/' + cfg.devVersion + '/static/ckeditor/*.js')
 		.pipe(stripbom())
 		.pipe(header("\uFEFF")) // BOM

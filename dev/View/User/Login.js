@@ -15,7 +15,7 @@ import {
 import {
 	trim, inArray, pInt,
 	convertLangName,
-	createCommand,
+	createCommand, createCommandLegacy,
 	triggerAutocompleteInputChange
 } from 'Common/Utils';
 
@@ -150,137 +150,6 @@ class LoginUserView extends AbstractViewNext
 			() => LoginSignMeType.Unused !== this.signMeType()
 		);
 
-		this.submitCommand = createCommand(() => {
-			triggerAutocompleteInputChange();
-
-			this.emailError(false);
-			this.passwordError(false);
-
-			this.emailError('' === trim(this.email()));
-			this.passwordError('' === trim(this.password()));
-
-			if (this.additionalCode.visibility())
-			{
-				this.additionalCode.error(false);
-				this.additionalCode.error('' === trim(this.additionalCode()));
-			}
-
-			if (this.emailError() || this.passwordError() ||
-				(this.additionalCode.visibility() && this.additionalCode.error()))
-			{
-				switch (true)
-				{
-					case this.emailError():
-						this.emailFocus(true);
-						break;
-					case this.passwordError():
-						this.passwordFocus(true);
-						break;
-					case this.additionalCode.visibility() && this.additionalCode.error():
-						this.additionalCode.focused(true);
-						break;
-					// no default
-				}
-
-				return false;
-			}
-
-			let
-				pluginResultCode = 0,
-				pluginResultMessage = '';
-
-			const
-				fSubmitResult = (iResultCode, sResultMessage) => {
-					pluginResultCode = iResultCode || 0;
-					pluginResultMessage = sResultMessage || '';
-				};
-
-			Plugins.runHook('user-login-submit', [fSubmitResult]);
-			if (0 < pluginResultCode)
-			{
-				this.submitError(getNotification(pluginResultCode));
-				return false;
-			}
-			else if ('' !== pluginResultMessage)
-			{
-				this.submitError(pluginResultMessage);
-				return false;
-			}
-
-			this.submitRequest(true);
-
-			const
-				fLoginRequest = (sLoginPassword) => {
-
-					Remote.login((sResult, oData) => {
-
-						if (StorageResultType.Success === sResult && oData && 'Login' === oData.Action)
-						{
-							if (oData.Result)
-							{
-								if (oData.TwoFactorAuth)
-								{
-									this.additionalCode('');
-									this.additionalCode.visibility(true);
-									this.submitRequest(false);
-
-									_.delay(() => this.additionalCode.focused(true), Magics.Time100ms);
-								}
-								else if (oData.Admin)
-								{
-									getApp().redirectToAdminPanel();
-								}
-								else
-								{
-									getApp().loginAndLogoutReload(false);
-								}
-							}
-							else if (oData.ErrorCode)
-							{
-								this.submitRequest(false);
-								if (-1 < inArray(oData.ErrorCode, [Notification.InvalidInputArgument]))
-								{
-									oData.ErrorCode = Notification.AuthError;
-								}
-
-								this.submitError(getNotificationFromResponse(oData));
-
-								if ('' === this.submitError())
-								{
-									this.submitError(getNotification(Notification.UnknownError));
-								}
-								else if (oData.ErrorMessageAdditional)
-								{
-									this.submitErrorAddidional(oData.ErrorMessageAdditional);
-								}
-							}
-							else
-							{
-								this.submitRequest(false);
-							}
-						}
-						else
-						{
-							this.submitRequest(false);
-							this.submitError(getNotification(Notification.UnknownError));
-						}
-
-					}, this.email(), '', sLoginPassword, !!this.signMe(),
-						this.bSendLanguage ? this.language() : '',
-						this.additionalCode.visibility() ? this.additionalCode() : '',
-						this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
-					);
-
-					Local.set(ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');
-
-				};
-
-			fLoginRequest(this.password());
-
-			return true;
-
-		}, () => !this.submitRequest());
-
 		this.facebookLoginEnabled = ko.observable(false);
 
 		this.facebookCommand = createCommand(() => {
@@ -325,6 +194,140 @@ class LoginUserView extends AbstractViewNext
 		{
 			this.submitError(Settings.settingsGet('AdditionalLoginError'));
 		}
+
+		// commands // todo
+		this.submitCommand = createCommandLegacy(this, this.submitCommand, () => !this.submitRequest());
+	}
+
+	submitCommand() {
+
+		triggerAutocompleteInputChange();
+
+		this.emailError(false);
+		this.passwordError(false);
+
+		this.emailError('' === trim(this.email()));
+		this.passwordError('' === trim(this.password()));
+
+		if (this.additionalCode.visibility())
+		{
+			this.additionalCode.error(false);
+			this.additionalCode.error('' === trim(this.additionalCode()));
+		}
+
+		if (this.emailError() || this.passwordError() ||
+			(this.additionalCode.visibility() && this.additionalCode.error()))
+		{
+			switch (true)
+			{
+				case this.emailError():
+					this.emailFocus(true);
+					break;
+				case this.passwordError():
+					this.passwordFocus(true);
+					break;
+				case this.additionalCode.visibility() && this.additionalCode.error():
+					this.additionalCode.focused(true);
+					break;
+				// no default
+			}
+
+			return false;
+		}
+
+		let
+			pluginResultCode = 0,
+			pluginResultMessage = '';
+
+		const
+			fSubmitResult = (iResultCode, sResultMessage) => {
+				pluginResultCode = iResultCode || 0;
+				pluginResultMessage = sResultMessage || '';
+			};
+
+		Plugins.runHook('user-login-submit', [fSubmitResult]);
+		if (0 < pluginResultCode)
+		{
+			this.submitError(getNotification(pluginResultCode));
+			return false;
+		}
+		else if ('' !== pluginResultMessage)
+		{
+			this.submitError(pluginResultMessage);
+			return false;
+		}
+
+		this.submitRequest(true);
+
+		const
+			fLoginRequest = (sLoginPassword) => {
+
+				Remote.login((sResult, oData) => {
+
+					if (StorageResultType.Success === sResult && oData && 'Login' === oData.Action)
+					{
+						if (oData.Result)
+						{
+							if (oData.TwoFactorAuth)
+							{
+								this.additionalCode('');
+								this.additionalCode.visibility(true);
+								this.submitRequest(false);
+
+								_.delay(() => this.additionalCode.focused(true), Magics.Time100ms);
+							}
+							else if (oData.Admin)
+							{
+								getApp().redirectToAdminPanel();
+							}
+							else
+							{
+								getApp().loginAndLogoutReload(false);
+							}
+						}
+						else if (oData.ErrorCode)
+						{
+							this.submitRequest(false);
+							if (-1 < inArray(oData.ErrorCode, [Notification.InvalidInputArgument]))
+							{
+								oData.ErrorCode = Notification.AuthError;
+							}
+
+							this.submitError(getNotificationFromResponse(oData));
+
+							if ('' === this.submitError())
+							{
+								this.submitError(getNotification(Notification.UnknownError));
+							}
+							else if (oData.ErrorMessageAdditional)
+							{
+								this.submitErrorAddidional(oData.ErrorMessageAdditional);
+							}
+						}
+						else
+						{
+							this.submitRequest(false);
+						}
+					}
+					else
+					{
+						this.submitRequest(false);
+						this.submitError(getNotification(Notification.UnknownError));
+					}
+
+				}, this.email(), '', sLoginPassword, !!this.signMe(),
+					this.bSendLanguage ? this.language() : '',
+					this.additionalCode.visibility() ? this.additionalCode() : '',
+					this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
+				);
+
+				Local.set(ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');
+
+			};
+
+		fLoginRequest(this.password());
+
+		return true;
 	}
 
 	displayMainForm() {

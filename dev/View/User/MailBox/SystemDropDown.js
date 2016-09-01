@@ -1,9 +1,11 @@
 
-import {view} from 'Knoin/Knoin';
+import {view, ViewType} from 'Knoin/Knoin';
 import {AbstractSystemDropDownUserView} from 'View/User/AbstractSystemDropDown';
 
 @view({
-	name: 'View/User/MailBox/SystemDropDown'
+	name: 'View/User/MailBox/SystemDropDown',
+	type: ViewType.Right,
+	templateID: 'SystemDropDown'
 })
 class SystemDropDownMailBoxUserView extends AbstractSystemDropDownUserView {}
 

@@ -16,13 +16,9 @@ import * as Settings from 'Storage/Settings';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType, showScreenPopup, setHash} from 'Knoin/Knoin';
+import {showScreenPopup, setHash} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
-	type: ViewType.Right,
-	templateID: 'SystemDropDown'
-})
 class AbstractSystemDropDownUserView extends AbstractViewNext
 {
 	constructor() {
