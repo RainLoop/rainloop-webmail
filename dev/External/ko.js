@@ -131,6 +131,7 @@ ko.bindingHandlers.pikaday = {
 ko.bindingHandlers.visibleAnimated = {
 	init: (element, fValueAccessor) => {
 		const $el = $(element);
+		$el.addClass('rl-animated-inited');
 		if (ko.unwrap(fValueAccessor())) {
 			$el.show();
 		} else {

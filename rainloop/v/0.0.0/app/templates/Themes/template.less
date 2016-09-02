@@ -256,6 +256,7 @@ html.glass {
 
 	@glass-color: #fff !important;
 	@glass-p-color: #aaa !important;
+	@glass-error-color: #f76260 !important;
 	@glass-m-color: rgba(255, 255, 255, .8) !important;
 
 	.thm-login {
@@ -328,6 +329,17 @@ html.glass {
 
 				&:hover, &:active{
 					border-color: @glass-color;
+				}
+			}
+
+			&.error {
+				.input-append .add-on i {
+					color: @glass-error-color;
+				}
+
+				input {
+					color: @glass-error-color;
+					border-color: @glass-error-color;
 				}
 			}
 		}
