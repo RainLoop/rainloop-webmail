@@ -1,0 +1,16 @@
+{
+	"name": "RainLoop Webmail",
+	"short_name": "RainLoop",
+	"description": "Simple, modern & fast web-based email client",
+	"display": "standalone",
+	"icons": [{
+		"src": "apple-touch-icon.png",
+		"sizes": "64x64",
+		"type": "image/png"
+	}, {
+		"src": "android-icon.png",
+		"sizes": "192x192",
+		"type": "image/png"
+	}],
+	"start_url": "../../../../"
+}

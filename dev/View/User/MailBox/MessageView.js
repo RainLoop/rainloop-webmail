@@ -20,10 +20,10 @@ import {
 } from 'Common/Globals';
 
 import {
-	createCommand, inArray, trim, noop,
-	isNonEmptyArray, windowResize, windowResizeCallback,
+	inArray, isArray, isNonEmptyArray, trim, noop,
+	windowResize, windowResizeCallback, inFocus,
 	removeSelection, removeInFocus, mailToHelper,
-	inFocus, isArray
+	createCommand
 } from 'Common/Utils';
 
 import Audio from 'Common/Audio';
@@ -52,7 +52,7 @@ import Promises from 'Promises/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType, showScreenPopup} from 'Knoin/Knoin';
+import {view, command, ViewType, showScreenPopup} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
 @view({
@@ -66,10 +66,22 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		super();
 
 		let lastEmail = '';
-		const createCommandHelper = (type) => createCommand(() => {
-			this.lastReplyAction(type);
-			this.replyOrforward(type);
-		}, this.canBeRepliedOrForwarded);
+
+		const
+			createCommandReplyHelper = (type) => createCommand(() => {
+				this.lastReplyAction(type);
+				this.replyOrforward(type);
+			}, this.canBeRepliedOrForwarded),
+
+			createCommandActionHelper = (folderType, useFolder) => createCommand(() => {
+				const message = this.message();
+				if (message && this.allowMessageListActions)
+				{
+					this.message(null);
+					getApp().deleteMessagesFromFolder(
+						folderType, message.folderFullNameRaw, [message.uid], useFolder);
+				}
+			}, this.messageVisibility);
 
 		this.oDom = null;
 		this.oHeaderDom = null;
@@ -214,71 +226,17 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		});
 
 		// commands
-		this.closeMessage = createCommand(() => {
-			MessageStore.message(null);
-		});
+		this.replyCommand = createCommandReplyHelper(ComposeType.Reply);
+		this.replyAllCommand = createCommandReplyHelper(ComposeType.ReplyAll);
+		this.forwardCommand = createCommandReplyHelper(ComposeType.Forward);
+		this.forwardAsAttachmentCommand = createCommandReplyHelper(ComposeType.ForwardAsAttachment);
+		this.editAsNewCommand = createCommandReplyHelper(ComposeType.EditAsNew);
 
-		this.replyCommand = createCommandHelper(ComposeType.Reply);
-		this.replyAllCommand = createCommandHelper(ComposeType.ReplyAll);
-		this.forwardCommand = createCommandHelper(ComposeType.Forward);
-		this.forwardAsAttachmentCommand = createCommandHelper(ComposeType.ForwardAsAttachment);
-		this.editAsNewCommand = createCommandHelper(ComposeType.EditAsNew);
-
-		this.messageVisibilityCommand = createCommand(noop, this.messageVisibility);
-
-		this.messageEditCommand = createCommand(() => {
-			this.editMessage();
-		}, this.messageVisibility);
-
-		this.deleteCommand = createCommand(() => {
-			const message = this.message();
-			if (message && this.allowMessageListActions)
-			{
-				this.message(null);
-				getApp().deleteMessagesFromFolder(FolderType.Trash,
-					message.folderFullNameRaw, [message.uid], true);
-			}
-		}, this.messageVisibility);
-
-		this.deleteWithoutMoveCommand = createCommand(() => {
-			const message = this.message();
-			if (message && this.allowMessageListActions)
-			{
-				this.message(null);
-				getApp().deleteMessagesFromFolder(FolderType.Trash,
-					message.folderFullNameRaw, [message.uid], false);
-			}
-		}, this.messageVisibility);
-
-		this.archiveCommand = createCommand(() => {
-			const message = this.message();
-			if (message && this.allowMessageListActions)
-			{
-				this.message(null);
-				getApp().deleteMessagesFromFolder(FolderType.Archive,
-					message.folderFullNameRaw, [message.uid], true);
-			}
-		}, this.messageVisibility);
-
-		this.spamCommand = createCommand(() => {
-			const message = this.message();
-			if (message && this.allowMessageListActions)
-			{
-				this.message(null);
-				getApp().deleteMessagesFromFolder(FolderType.Spam,
-					message.folderFullNameRaw, [message.uid], true);
-			}
-		}, this.messageVisibility);
-
-		this.notSpamCommand = createCommand(() => {
-			const message = this.message();
-			if (message && this.allowMessageListActions)
-			{
-				this.message(null);
-				getApp().deleteMessagesFromFolder(FolderType.NotSpam,
-					message.folderFullNameRaw, [message.uid], true);
-			}
-		}, this.messageVisibility);
+		this.deleteCommand = createCommandActionHelper(FolderType.Trash, true);
+		this.deleteWithoutMoveCommand = createCommandActionHelper(FolderType.Trash, false);
+		this.archiveCommand = createCommandActionHelper(FolderType.Archive, true);
+		this.spamCommand = createCommandActionHelper(FolderType.Spam, true);
+		this.notSpamCommand = createCommandActionHelper(FolderType.NotSpam, true);
 
 		this.dropboxEnabled = SocialStore.dropbox.enabled;
 		this.dropboxApiKey = SocialStore.dropbox.apiKey;
@@ -430,23 +388,38 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 			() => MessageStore.messageListCompleteLoadingThrottle() || MessageStore.messageLoadingThrottle()
 		);
 
-		this.goUpCommand = createCommand(() => {
-			Events.pub('mailbox.message-list.selector.go-up', [
-				Layout.NoPreview === this.layout() ? !!this.message() : true
-			]);
-		}, () => !this.messageListAndMessageViewLoading());
-
-		this.goDownCommand = createCommand(() => {
-			Events.pub('mailbox.message-list.selector.go-down', [
-				Layout.NoPreview === this.layout() ? !!this.message() : true
-			]);
-		}, () => !this.messageListAndMessageViewLoading());
-
 		Events.sub('mailbox.message-view.toggle-full-screen', () => {
 			this.toggleFullScreen();
 		});
 
 		this.attachmentPreview = _.bind(this.attachmentPreview, this);
+	}
+
+	@command()
+	closeMessageCommand() {
+		MessageStore.message(null);
+	}
+
+	@command((self) => self.messageVisibility())
+	messageVisibilityCommand() {} // eslint-disable-line no-empty-function
+
+	@command((self) => self.messageVisibility())
+	messageEditCommand() {
+		this.editMessage();
+	}
+
+	@command((self) => !self.messageListAndMessageViewLoading())
+	goUpCommand() {
+		Events.pub('mailbox.message-list.selector.go-up', [
+			Layout.NoPreview === this.layout() ? !!this.message() : true
+		]);
+	}
+
+	@command((self) => !self.messageListAndMessageViewLoading())
+	goDownCommand() {
+		Events.pub('mailbox.message-list.selector.go-down', [
+			Layout.NoPreview === this.layout() ? !!this.message() : true
+		]);
 	}
 
 	detectDomBackgroundColor(dom) {

@@ -504,6 +504,7 @@ export function createCommandLegacy(context, fExecute, fCanExecute = true)
 
 	fResult = fExecute ? fNonEmpty : noop;
 	fResult.enabled = ko.observable(true);
+	fResult.isCommand = true;
 
 	if (isFunc(fCanExecute))
 	{

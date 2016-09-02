@@ -29,16 +29,16 @@ class PaneSettingsUserView extends AbstractViewNext
 		MessageStore.message(null);
 	}
 
-	hideLeft(oItem, oEvent) {
-		oEvent.preventDefault();
-		oEvent.stopPropagation();
+	hideLeft(item, event) {
+		event.preventDefault();
+		event.stopPropagation();
 
 		leftPanelDisabled(true);
 	}
 
-	showLeft(oItem, oEvent) {
-		oEvent.preventDefault();
-		oEvent.stopPropagation();
+	showLeft(item, event) {
+		event.preventDefault();
+		event.stopPropagation();
 
 		leftPanelDisabled(false);
 	}

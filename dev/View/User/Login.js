@@ -14,9 +14,7 @@ import {
 
 import {
 	trim, inArray, pInt,
-	convertLangName,
-	createCommand, createCommandLegacy,
-	triggerAutocompleteInputChange
+	convertLangName, triggerAutocompleteInputChange
 } from 'Common/Utils';
 
 import {socialFacebook, socialGoogle, socialTwitter} from 'Common/Links';
@@ -34,7 +32,7 @@ import Remote from 'Remote/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType, routeOff, showScreenPopup} from 'Knoin/Knoin';
+import {view, command, ViewType, routeOff, showScreenPopup} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
 @view({
@@ -151,35 +149,9 @@ class LoginUserView extends AbstractViewNext
 		);
 
 		this.facebookLoginEnabled = ko.observable(false);
-
-		this.facebookCommand = createCommand(() => {
-			window.open(socialFacebook(), 'Facebook',
-				'left=200,top=100,width=500,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
-			return true;
-		}, () => !this.submitRequest() && this.facebookLoginEnabled());
-
 		this.googleLoginEnabled = ko.observable(false);
 		this.googleFastLoginEnabled = ko.observable(false);
-
-		this.googleCommand = createCommand(() => {
-			window.open(socialGoogle(), 'Google',
-				'left=200,top=100,width=550,height=550,menubar=no,status=no,resizable=yes,scrollbars=yes');
-			return true;
-		}, () => !this.submitRequest() && this.googleLoginEnabled());
-
-		this.googleFastCommand = createCommand(() => {
-			window.open(socialGoogle(true), 'Google',
-				'left=200,top=100,width=550,height=550,menubar=no,status=no,resizable=yes,scrollbars=yes');
-			return true;
-		}, () => !this.submitRequest() && this.googleFastLoginEnabled());
-
 		this.twitterLoginEnabled = ko.observable(false);
-
-		this.twitterCommand = createCommand(() => {
-			window.open(socialTwitter(), 'Twitter',
-				'left=200,top=100,width=500,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
-			return true;
-		}, () => !this.submitRequest() && this.twitterLoginEnabled());
 
 		this.socialLoginEnabled = ko.computed(() => {
 			const
@@ -194,11 +166,33 @@ class LoginUserView extends AbstractViewNext
 		{
 			this.submitError(Settings.settingsGet('AdditionalLoginError'));
 		}
-
-		// commands // todo
-		this.submitCommand = createCommandLegacy(this, this.submitCommand, () => !this.submitRequest());
 	}
 
+	@command((self) => !self.submitRequest() && self.facebookLoginEnabled())
+	facebookCommand() {
+		window.open(socialFacebook(), 'Facebook', 'left=200,top=100,width=500,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		return true;
+	}
+
+	@command((self) => !self.submitRequest() && self.googleLoginEnabled())
+	googleCommand() {
+		window.open(socialGoogle(), 'Google', 'left=200,top=100,width=550,height=550,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		return true;
+	}
+
+	@command((self) => !self.submitRequest() && self.googleFastLoginEnabled())
+	googleFastCommand() {
+		window.open(socialGoogle(true), 'Google', 'left=200,top=100,width=550,height=550,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		return true;
+	}
+
+	@command((self) => !self.submitRequest() && self.twitterLoginEnabled())
+	twitterCommand() {
+		window.open(socialTwitter(), 'Twitter', 'left=200,top=100,width=500,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		return true;
+	}
+
+	@command((self) => !self.submitRequest())
 	submitCommand() {
 
 		triggerAutocompleteInputChange();
@@ -383,10 +377,8 @@ class LoginUserView extends AbstractViewNext
 
 		this.facebookLoginEnabled(!!Settings.settingsGet('AllowFacebookSocial'));
 		this.twitterLoginEnabled(!!Settings.settingsGet('AllowTwitterSocial'));
-		this.googleLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial') &&
-			!!Settings.settingsGet('AllowGoogleSocialAuth'));
-		this.googleFastLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial') &&
-			!!Settings.settingsGet('AllowGoogleSocialAuthFast'));
+		this.googleLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuth'));
+		this.googleFastLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuthFast'));
 
 		switch (signMe)
 		{

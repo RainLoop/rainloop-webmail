@@ -4,7 +4,7 @@
 			<nobr>
 			<div class="messageButtons btn-toolbar">
 				<div class="btn-group" data-tooltip-join="top" data-bind="tooltip: 'MESSAGE/BUTTON_CLOSE'">
-					<a class="btn single btn-dark-disabled-border buttonClose" data-bind="command: closeMessage">
+					<a class="btn single btn-dark-disabled-border buttonClose" data-bind="command: closeMessageCommand">
 						<i class="icon-remove"></i>
 					</a>
 				</div>
@@ -216,7 +216,7 @@
 				<div data-bind="visible: message">
 					<div class="messageItemHeader" data-bind="css: {'emptySubject': '' === viewSubject()}">
 						<div class="subjectParent">
-							<button class="close" data-bind="command: closeMessage" style="margin-top: -2px;">&times;</button>
+							<button class="close" data-bind="command: closeMessageCommand" style="margin-top: -2px;">&times;</button>
 							<span class="infoParent g-ui-user-select-none" data-bind="click: function() { showFullInfo(!showFullInfo()); }">
 								<i class="icon-info" style="padding-top: 1px;"></i>
 							</span>

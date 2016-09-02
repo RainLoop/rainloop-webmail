@@ -931,11 +931,29 @@ ko.bindingHandlers.command = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext) => {
 		const
 			jqElement = $(element),
-			oCommand = fValueAccessor();
+			command = fValueAccessor();
 
-		if (!oCommand || !oCommand.enabled || !oCommand.canExecute)
+		if (!command || !command.isCommand)
 		{
-			throw new Error('You are not using command function');
+			throw new Error('Value should be a command');
+		}
+
+		if (!command.enabled)
+		{
+			command.enabled = ko.observable(true);
+		}
+
+		if (!command.canExecute)
+		{
+			const __realCanExecute = command.__realCanExecute;
+			if (_.isFunction(__realCanExecute))
+			{
+				command.canExecute = ko.computed(() => command.enabled() && __realCanExecute.call(viewModel, viewModel));
+			}
+			else
+			{
+				command.canExecute = ko.computed(() => command.enabled() && !!__realCanExecute);
+			}
 		}
 
 		jqElement.addClass('command');

@@ -46,15 +46,15 @@ class AbstractSystemDropDownUserView extends AbstractViewNext
 		this.addAccountClick = _.bind(this.addAccountClick, this);
 
 		Events.sub('audio.stop', () => AppStore.currentAudio(''));
-		Events.sub('audio.start', (sName) => AppStore.currentAudio(sName));
+		Events.sub('audio.start', (name) => AppStore.currentAudio(name));
 	}
 
 	stopPlay() {
 		Events.pub('audio.api.stop');
 	}
 
-	accountClick(oAccount, oEvent) {
-		if (oAccount && oEvent && !isUnd(oEvent.which) && 1 === oEvent.which)
+	accountClick(account, event) {
+		if (account && event && !isUnd(event.which) && 1 === event.which)
 		{
 			AccountStore.accounts.loading(true);
 			_.delay(() => AccountStore.accounts.loading(false), Magics.Time1s);

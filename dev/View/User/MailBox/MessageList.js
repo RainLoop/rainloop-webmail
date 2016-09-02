@@ -26,7 +26,6 @@ import {
 import {
 	noop,
 	noopFalse,
-	createCommand,
 	computedPagenatorHelper,
 	draggablePlace,
 	friendlySize,
@@ -55,8 +54,10 @@ import Remote from 'Remote/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType, showScreenPopup, setHash} from 'Knoin/Knoin';
+import {view, command, ViewType, showScreenPopup, setHash} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+
+const canBeMovedHelper = (self) => self.canBeMoved();
 
 @view({
 	name: 'View/User/MailBox/MessageList',
@@ -226,63 +227,6 @@ class MessageListMailBoxUserView extends AbstractViewNext
 
 		this.canBeMoved = this.hasCheckedOrSelectedLines;
 
-		this.clearCommand = createCommand(() => {
-			if (Settings.capa(Capa.DangerousActions))
-			{
-				showScreenPopup(require('View/Popup/FolderClear'), [FolderStore.currentFolder()]);
-			}
-		});
-
-		this.multyForwardCommand = createCommand(() => {
-			if (Settings.capa(Capa.Composer))
-			{
-				showScreenPopup(require('View/Popup/Compose'), [
-					ComposeType.ForwardAsAttachment, MessageStore.messageListCheckedOrSelected()]);
-			}
-		}, this.canBeMoved);
-
-		this.deleteWithoutMoveCommand = createCommand(() => {
-			if (Settings.capa(Capa.DangerousActions))
-			{
-				getApp().deleteMessagesFromFolder(FolderType.Trash,
-					FolderStore.currentFolderFullNameRaw(),
-					MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), false);
-			}
-		}, this.canBeMoved);
-
-		this.deleteCommand = createCommand(() => {
-			getApp().deleteMessagesFromFolder(FolderType.Trash,
-				FolderStore.currentFolderFullNameRaw(),
-				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
-		}, this.canBeMoved);
-
-		this.archiveCommand = createCommand(() => {
-			getApp().deleteMessagesFromFolder(FolderType.Archive,
-				FolderStore.currentFolderFullNameRaw(),
-				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
-		}, this.canBeMoved);
-
-		this.spamCommand = createCommand(() => {
-			getApp().deleteMessagesFromFolder(FolderType.Spam,
-				FolderStore.currentFolderFullNameRaw(),
-				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
-		}, this.canBeMoved);
-
-		this.notSpamCommand = createCommand(() => {
-			getApp().deleteMessagesFromFolder(FolderType.NotSpam,
-				FolderStore.currentFolderFullNameRaw(),
-				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
-		}, this.canBeMoved);
-
-		this.moveCommand = createCommand(noop, this.canBeMoved);
-
-		this.reloadCommand = createCommand(() => {
-			if (!MessageStore.messageListCompleteLoadingThrottleForAnimation() && this.allowReload)
-			{
-				getApp().reloadMessageList(false, true);
-			}
-		});
-
 		this.quotaTooltip = _.bind(this.quotaTooltip, this);
 
 		this.selector = new Selector(
@@ -340,16 +284,82 @@ class MessageListMailBoxUserView extends AbstractViewNext
 		});
 	}
 
-	hideLeft(oItem, oEvent) {
-		oEvent.preventDefault();
-		oEvent.stopPropagation();
+	@command()
+	clearCommand() {
+		if (Settings.capa(Capa.DangerousActions))
+		{
+			showScreenPopup(require('View/Popup/FolderClear'), [FolderStore.currentFolder()]);
+		}
+	}
+
+	@command()
+	reloadCommand() {
+		if (!MessageStore.messageListCompleteLoadingThrottleForAnimation() && this.allowReload)
+		{
+			getApp().reloadMessageList(false, true);
+		}
+	}
+
+	@command(canBeMovedHelper)
+	multyForwardCommand() {
+		if (Settings.capa(Capa.Composer))
+		{
+			showScreenPopup(require('View/Popup/Compose'), [
+				ComposeType.ForwardAsAttachment, MessageStore.messageListCheckedOrSelected()]);
+		}
+	}
+
+	@command(canBeMovedHelper)
+	deleteWithoutMoveCommand() {
+		if (Settings.capa(Capa.DangerousActions))
+		{
+			getApp().deleteMessagesFromFolder(FolderType.Trash,
+				FolderStore.currentFolderFullNameRaw(),
+				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), false);
+		}
+	}
+
+	@command(canBeMovedHelper)
+	deleteCommand() {
+		getApp().deleteMessagesFromFolder(FolderType.Trash,
+			FolderStore.currentFolderFullNameRaw(),
+			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
+	}
+
+	@command(canBeMovedHelper)
+	archiveCommand() {
+		getApp().deleteMessagesFromFolder(FolderType.Archive,
+			FolderStore.currentFolderFullNameRaw(),
+			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
+	}
+
+	@command(canBeMovedHelper)
+	spamCommand() {
+		getApp().deleteMessagesFromFolder(FolderType.Spam,
+			FolderStore.currentFolderFullNameRaw(),
+			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
+	}
+
+	@command(canBeMovedHelper)
+	notSpamCommand() {
+		getApp().deleteMessagesFromFolder(FolderType.NotSpam,
+			FolderStore.currentFolderFullNameRaw(),
+			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(), true);
+	}
+
+	@command(canBeMovedHelper)
+	moveCommand() {} // eslint-disable-line no-empty-function
+
+	hideLeft(item, event) {
+		event.preventDefault();
+		event.stopPropagation();
 
 		leftPanelDisabled(true);
 	}
 
-	showLeft(oItem, oEvent) {
-		oEvent.preventDefault();
-		oEvent.stopPropagation();
+	showLeft(item, event) {
+		event.preventDefault();
+		event.stopPropagation();
 
 		leftPanelDisabled(false);
 	}

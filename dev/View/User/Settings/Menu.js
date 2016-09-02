@@ -69,8 +69,8 @@ class MenuSettingsUserView extends AbstractViewNext
 		}, Magics.Time200ms));
 	}
 
-	link(sRoute) {
-		return settings(sRoute);
+	link(route) {
+		return settings(route);
 	}
 
 	backToMailBoxClick() {

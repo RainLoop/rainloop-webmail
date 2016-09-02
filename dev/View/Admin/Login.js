@@ -3,8 +3,7 @@ import ko from 'ko';
 import _ from '_';
 
 import {
-	trim, createCommand,
-	triggerAutocompleteInputChange
+	trim, triggerAutocompleteInputChange
 } from 'Common/Utils';
 
 import {StorageResultType, Notification, Magics} from 'Common/Enums';
@@ -16,7 +15,7 @@ import Remote from 'Remote/Admin/Ajax';
 
 import {getApp} from 'Helper/Apps/Admin';
 
-import {view, ViewType, routeOff} from 'Knoin/Knoin';
+import {view, command, ViewType, routeOff} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
 @view({
@@ -61,53 +60,52 @@ class LoginAdminView extends AbstractViewNext
 
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');
+	}
 
-		this.submitCommand = createCommand(() => {
+	@command((self) => !self.submitRequest())
+	submitCommand() {
 
-			triggerAutocompleteInputChange();
+		triggerAutocompleteInputChange();
 
-			this.loginError(false);
-			this.passwordError(false);
+		this.loginError(false);
+		this.passwordError(false);
 
-			this.loginError('' === trim(this.login()));
-			this.passwordError('' === trim(this.password()));
+		this.loginError('' === trim(this.login()));
+		this.passwordError('' === trim(this.password()));
 
-			if (this.loginError() || this.passwordError())
+		if (this.loginError() || this.passwordError())
+		{
+			return false;
+		}
+
+		this.submitRequest(true);
+
+		Remote.adminLogin((sResult, oData) => {
+
+			if (StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action)
 			{
-				return false;
-			}
-
-			this.submitRequest(true);
-
-			Remote.adminLogin((sResult, oData) => {
-
-				if (StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action)
+				if (oData.Result)
 				{
-					if (oData.Result)
-					{
-						getApp().loginAndLogoutReload(true);
-					}
-					else if (oData.ErrorCode)
-					{
-						this.submitRequest(false);
-						this.submitError(getNotification(oData.ErrorCode));
-					}
+					getApp().loginAndLogoutReload(true);
 				}
-				else
+				else if (oData.ErrorCode)
 				{
 					this.submitRequest(false);
-					this.submitError(getNotification(Notification.UnknownError));
+					this.submitError(getNotification(oData.ErrorCode));
 				}
+			}
+			else
+			{
+				this.submitRequest(false);
+				this.submitError(getNotification(Notification.UnknownError));
+			}
 
-			}, this.login(), this.password());
+		}, this.login(), this.password());
 
-			return true;
-
-		}, () => !this.submitRequest());
+		return true;
 	}
 
 	onShow() {
-
 		routeOff();
 
 		_.delay(() => {

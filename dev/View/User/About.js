@@ -15,7 +15,6 @@ class AboutUserView extends AbstractViewNext
 {
 	constructor() {
 		super();
-
 		this.version = ko.observable(Settings.appSettingsGet('version'));
 	}
 }

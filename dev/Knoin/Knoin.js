@@ -9,7 +9,7 @@ import {runHook} from 'Common/Plugins';
 import {$html, aViewModels as VIEW_MODELS, popupVisibilityNames} from 'Common/Globals';
 
 import {
-	isArray, isUnd, pString, log,
+	isArray, isUnd, pString, log, isFunc,
 	createCommand, delegateRun, isNonEmptyArray
 } from 'Common/Utils';
 
@@ -481,7 +481,7 @@ export function setHash(hash, silence = false, replace = false)
 
 /**
  * @param {Object} params
- * @returns {void}
+ * @returns {Function}
  */
 function viewDecorator({name, type, templateID})
 {
@@ -515,4 +515,37 @@ function viewDecorator({name, type, templateID})
 	};
 }
 
-export {viewDecorator, viewDecorator as view, viewDecorator as viewModel};
+/**
+ * @param {Function} canExecute
+ * @returns {Function}
+ */
+function commandDecorator(canExecute = true)
+{
+	return (target, key, descriptor) => {
+
+		if (!key || !key.match(/Command$/))
+		{
+			throw new Error(`name "${key}" should end with Command suffix`);
+		}
+
+		const
+			value = descriptor.value || descriptor.initializer(),
+			normCanExecute = isFunc(canExecute) ? canExecute : () => !!canExecute;
+
+		descriptor.value = function(...args) {
+			if (normCanExecute.call(this, this))
+			{
+				value.apply(this, args);
+			}
+
+			return false;
+		};
+
+		descriptor.value.__realCanExecute = normCanExecute;
+		descriptor.value.isCommand = true;
+
+		return descriptor;
+	};
+}
+
+export {commandDecorator, commandDecorator as command, viewDecorator, viewDecorator as view, viewDecorator as viewModel};
