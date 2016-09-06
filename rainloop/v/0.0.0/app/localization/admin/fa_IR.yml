@@ -1,0 +1,325 @@
+fa_IR:
+  LOGIN:
+    LABEL_LOGIN: "ورود"
+    LABEL_PASSWORD: "گذرواژه"
+    BUTTON_LOGIN: "ورود به صفحه مدیریت"
+  TOP_PANEL:
+    LABEL_PREMIUM: "پریمیوم"
+    LABEL_ADMIN_PANEL: "صفحه مدیریت"
+  TABS_LABELS:
+    LABEL_GENERAL_NAME: "عمومی"
+    LABEL_LOGIN_NAME: "ورود"
+    LABEL_BRANDING_NAME: "برندسازی"
+    LABEL_CONTACTS_NAME: "تماس‌ها"
+    LABEL_DOMAINS_NAME: "دامنه‌ها"
+    LABEL_SECURITY_NAME: "امنیت"
+    LABEL_INTEGRATION_NAME: "یکپارچه‌سازی"
+    LABEL_PLUGINS_NAME: "افزونه‌ها"
+    LABEL_PACKAGES_NAME: "بسته‌ها"
+    LABEL_LICENSING_NAME: "مجوزها"
+    LABEL_ABOUT_NAME: "درباره"
+  TAB_GENERAL:
+    LEGEND_INTERFACE: "رابط"
+    LABEL_LANGUAGE: "زبان"
+    LABEL_LANGUAGE_ADMIN: "زبان (مدیر)"
+    LABEL_THEME: "پوسته"
+    LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "زبان در صفحه تنظیمات قابل انتخاب باشد"
+    LABEL_ALLOW_THEMES_ON_SETTINGS: "پوسته در صفحه تنظیمات قابل انتخاب باشد"
+    LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "تصویر پشت زمینه در صفحه تنظیمات قابل انتخاب باشد"
+    LABEL_SHOW_THUMBNAILS: "اندازه کوچک را نشان بده (پیوست‌ها)"
+    LABEL_ALLOW_GRAVATAR: "اجازه استفاده از آواتار"
+    LEGEND_MAIN: "اصلی"
+    LABEL_ATTACHMENT_SIZE_LIMIT: "محدودیت اندازه پیوست"
+    LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "مجوز استفاده از نام‌های کاربری دیگر"
+    LABEL_ALLOW_IDENTITIES: "اجازه استفاده از چندین شناسه"
+    LABEL_ALLOW_TEMPLATES: "اجازه استفاده از پوسته‌ها"
+    ALERT_WARNING: "اخطار!"
+    HTML_ALERT_WEAK_PASSWORD: |+
+      شما در حال استفاده از گذرواژه پیش‌فرض کاربر مدیر هستید.
+      <br />
+      بدلیل رعایت مسائل امنیتی
+      <strong><a href="#/security">گذرواژه</a></strong>
+      را به کلمه دیگری تغییر دهید.
+
+  TAB_LOGIN:
+    LEGEND_LOGIN_SCREEN: "صفحه ورود"
+    LABEL_DEFAULT_DOMAIN: "دامنه پیش‌فرض"
+    LABEL_DETERMINE_USER_DOMAIN: "برای تشخیص دامنه کاربر تلاش شود"
+    LABEL_ALLOW_LANGUAGES_ON_LOGIN: "انتخاب زبان در صفحه ورود"
+    LABEL_DETERMINE_USER_LANGUAGE: "برای تشخیص زبان کاربر تلاش شود"
+  TAB_BRANDING:
+    LEGEND_BRANDING: "برندسازی"
+    LABEL_PAGE_TITLE: "عنوان صفحه"
+    LABEL_LOADING_DESCRIPTION: "بارگذاری توضیحات"
+    LABEL_FAVICON_URL: "Favicon"
+    LEGEND_LOGIN: "ورود"
+    LABEL_LOGIN_LOGO: "لوگو"
+    LABEL_LOGIN_DESCRIPTION: "توضیحات"
+    LABEL_LOGIN_BACKGROUND: "پشت‌زمینه"
+    LABEL_LOGIN_CUSTOM_CSS: "CSS سفارشی‌سازی"
+    LABEL_LOGIN_SHOW_POWERED_LINK: "نمایش لینک \"قدرت گرفته از RainLoop\""
+    LEGEND_USER: "کاربر"
+    LABEL_USER_LOGO: "لوگو"
+    LABEL_USER_LOGO_TITLE: "عنوان لوگو"
+    LABEL_USER_LOGO_MESSAGE: "لوگو (مشاهده پیام)"
+    LABEL_USER_CUSTOM_CSS: "CSS سفارشی‌سازی"
+    LEGEND_WELCOME_PAGE: "صفحه خوش‌آمدگویی"
+    LABEL_WELCOME_PAGE_TITLE: "عنوان"
+    LABEL_WELCOME_PAGE_URL: "تارنما"
+    LABEL_WELCOME_PAGE_DISPLAY: "نمایش"
+    OPTION_WELCOME_PAGE_DISPLAY_NONE: "هیچ‌کدام"
+    OPTION_WELCOME_PAGE_DISPLAY_ONCE: "یک‌بار"
+    OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "همیشه"
+    HTML_ALERT_PREMIUM: "این قابلیت برای نسخه <strong><a href=\"#/licensing\">Premium</a></strong> مشترکین در دسترس هست."
+  TAB_CONTACTS:
+    LEGEND_CONTACTS: "تماس‌ها"
+    LEGEND_STORAGE: "فضای‌ ذخیره‌سازی (pdo)"
+    LABEL_ENABLE_CONTACTS: "فعال‌سازی تماس‌ها"
+    LABEL_ALLOW_SYNC: "اجازه‌ همگام‌سازی تماس‌ها (با یک سرویس خارجی CardDAV)"
+    LABEL_STORAGE_TYPE: "نوع"
+    LABEL_STORAGE_DSN: "Dsn"
+    LABEL_STORAGE_USER: "کاربر"
+    LABEL_STORAGE_PASSWORD: "گذرواژه"
+    BUTTON_TEST: "تست"
+    ALERT_NOTICE: "توجه!"
+    HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "از این پایگاه داده برای کاربران زیاد استفاده نکنید."
+    HTML_ALERT_DOES_NOT_SUPPORTED: |
+      سیستم از تماس‌ها پشتیبانی نمی‌کند
+      <br />
+      شما باید افزونه <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> را نصب کنید یا اینکه فعال کنید.
+  TAB_DOMAINS:
+    LEGEND_DOMAINS: "دامنه‌ها"
+    BUTTON_ADD_DOMAIN: "اضافه‌کردن دامنه"
+    BUTTON_ADD_ALIAS: "اضافه‌کردن نام مستعار"
+    DELETE_ARE_YOU_SURE: "آیا مطمئن هستید؟"
+    HTML_DOMAINS_HELPER: |
+      لیستی از دامنه‌هایی که وب‌میل اجازه دسترسی به آنها را دارد.
+      <br />
+      روی دامنه دامنه جهت پیکربندی کلیک کنید.
+  TAB_SECURITY:
+    LEGEND_SECURITY: "امنیت"
+    LABEL_ALLOW_TWO_STEP: "اعتبارسنجی دو مرحله‌ای"
+    LABEL_FORCE_TWO_STEP: "اعتبارسنجی دو مرحله‌ای اجباری"
+    LABEL_USE_IMAGE_PROXY: "از پروکسی محلی برای عکسهای خارج از سرور استفاده شود"
+    LABEL_ALLOW_OPEN_PGP: "فعال‌سازی OpenPGP"
+    LABEL_SHOW_PHP_INFO: "نمایش اطلاعات PHP"
+    LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS: "اعتبار مجوز دسترسی به صفحه مدیریت"
+    LABEL_CURRENT_PASSWORD: "گذرواژه فعلی"
+    LABEL_NEW_LOGIN: "نام کاربری جدید"
+    LABEL_NEW_PASSWORD: "گذرواژه جدید"
+    LABEL_REPEAT_PASSWORD: "تکرار"
+    BUTTON_UPDATE_PASSWORD: "بروز‌رسانی گذرواژه"
+    LEGEND_SSL: "SSL"
+    LABEL_REQUIRE_VERIFICATION: "به بررسی گواهینامه SSL نیاز داشته باشد (IMAP/SMTP)"
+    LABEL_ALLOW_SELF_SIGNED: "به گواهی‌نامه‌هایی که توسط خودشان امضاء شده‌اند اجازه بده"
+  TAB_INTEGRATIONS:
+    LEGEND_GOOGLE: "گوگل"
+    LABEL_ENABLE_GOOGLE: "فعال‌سازی یکپارچگی با گوگل"
+    LABEL_GOOGLE_AUTH: "احراز مجوز"
+    LABEL_GOOGLE_DRIVE: "یکپارچگی با گوگل درایور (قسمت ایجاد پیام)"
+    LABEL_GOOGLE_PREVIEW: "یکپارچگی با نمایش فایلهای اداری گوگل (پیش نمایش برای Work, Excel, PowerPoint)"
+    LABEL_GOOGLE_CLIENT_ID: "شناسه کلاینت"
+    LABEL_GOOGLE_CLIENT_SECRET: "رمز کلاینت"
+    LABEL_GOOGLE_API_KEY: "کلید API"
+    HINT_GOOGLE_API_KEY: "اجباری برای دریافت کننده فایل گوگل درایو"
+    LEGEND_FACEBOOK: "فیس‌بوک"
+    LABEL_ENABLE_FACEBOOK: "فعال‌سازی یکپارچگی با فیس‌بوک (احراز هویت)"
+    LABEL_FACEBOOK_APP_ID: "شناسه برنامه"
+    LABEL_FACEBOOK_APP_SECRET: "رمز برنامه"
+    LEGEND_TWITTER: "توییتر"
+    LABEL_ENABLE_TWITTER: "فعال‌سازی یکپارچگی با توییتر (احراز هویت)"
+    LABEL_TWITTER_CONSUMER_KEY: "کلید مشتری"
+    LABEL_TWITTER_CONSUMER_SECRET: "رمز مشتری"
+    LEGEND_DROPBOX: "دارپ‌باکس"
+    LABEL_ENABLE_DROPBOX: "فعال‌سازی یکپارچگی با دراپ‌باکس"
+    LABEL_DROPBOX_API_KEY: "کلید API"
+    TOP_ALERT: "جزییات اطلاعات یکپارچگی با شبکه اجتماعی پیدا شد"
+  TAB_PLUGINS:
+    LEGEND_PLUGINS: "افزونه‌ها"
+    LABEL_ENABLE_PLUGINS: "فعال‌سازی افزونه‌ها"
+    ALERT_NO_PLUGINS: "هیچ افزونه‌ای نصب نشده است"
+    LINK_INSTALL_NEW: "اینجا برای نصب جدید کلیک کنید"
+    HINT_CLICK_NAME: "روی نام هر افزونه برای پیکربندی آن کلیک کنید"
+  TAB_PACKAGES:
+    LEGEND_AVAILABLE_FOR_UPDATE: "برای بروزرسانی در دسترس هست"
+    LEGEND_AVAILABLE_FOR_INSTALLATION: "برای نصب در دسترس هست"
+    LEGEND_INSTALLED_PACKAGES: "بسته‌های نصب شده"
+    ALERT_CANNOT_ACCESS_REPOSITORY: "در این لحظه دسترسی به مخزن امکان‌پذیر نیست"
+  TAB_LICENSING:
+    LABEL_YOUR_DOMAIN: "دامنه شما"
+    LABEL_VERSION: "نسخه"
+    LABEL_CHECKING: "در حال چک کردن"
+    TYPE_BASIC_HINT: "این دامنه مجوز استفاده تجاری را ندارد (با قابلیت‌های بیشتر)"
+    TYPE_BASIC_HINT_2: "به این دامنه مجوز داده نشده است."
+    HTML_ALERT_TOP_1: "وبمیل RainLoop تحت مجوز"
+    HTML_ALERT_TOP_2: " شما <b>برای استفاده از آن </b> آزاد <b>personal</b> projects. هستید"
+    HTML_ALERT_TOP_3: |
+      استفاده تجاری (با قابلیت‌های بیشتر) از <b>RainLoop Webmail</b> نیاز به پرداخت <a href="http://www.rainloop.net/purchase/" target="_blank">حق اشتراک</a> دارد.
+    TYPE_PREMIUM_LIFETIME: "مادام العمر"
+    LABEL_SUB_EXPIRES: "انقضای حق اشتراک"
+    BUTTON_ACTIVATE: "فعال‌کردن حق اشتراک این دامنه"
+    BUTTON_PURCHASE: "خرید"
+    BUTTON_TRIAL: "آزمایشی"
+  TAB_ABOUT:
+    LEGEND_ABOUT: "درباره"
+    LABEL_TAG_HINT: "یک رابط کاربری پست الکترونیک ساده، پیشرفته و سریع"
+    LABEL_ALL_RIGHTS_RESERVED: "همه حقوق محفوظ هست"
+    HINT_READ_CHANGE_LOG: "فایل وقایع را قبل از بروزرسانی بخوانید."
+    HINT_IS_UP_TO_DATE: "RainLoop بروز هست"
+    HTML_NEW_VERSION: "نسخه <b>%VERSION%</b>  در دسترس هست"
+    LABEL_UPDATING: "در حال بروزرسانی"
+    LABEL_CHECKING: "چک کردن برای بروزرسانی"
+    BUTTON_UPDATE: "بروزرسانی"
+    BUTTON_DOWNLOAD: "دریافت"
+    BUTTON_CHANGELOG: "تغییرات"
+  POPUPS_ACTIVATE:
+    TITLE_ACTIVATE: "حق اشتراک فعال شده است؟"
+    TITLE_ACTIVATION: "در حال فعال‌سازی..."
+    LABEL_DOMAIN: "دامن"
+    LABEL_SUB_KEY: "کلید حق اشتراک"
+    BUTTON_ACTIVATE: "فعال‌سازی"
+    LABEL_ACTIVATED: "فعال شده است"
+    ERROR_INVALID_SUBS_KEY: "کلید حق اشتراک نامعتبر"
+    SUBS_KEY_ACTIVATED: "کلید حق اشتراک با موفقیت فعال شد"
+    HTML_DESC: |
+      بعد از فعال‌سازی، سطح بالاتر اشتراک برای <b>%DOMAIN%</b>  گسترش خواهد یافت.
+      <br />
+      توجه کنید که کلید اشتراک فقط برای یک دامنه می‌تواند فعال شود.
+      <br /><br />
+      زمانی که شروع کردید، فرآیند فعال‌سازی قابل انصراف نیست.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "اضافه کردن نام مستعار"
+    LABEL_ALIAS: "مستعار"
+    LABEL_DOMAIN: "دامنه"
+    BUTTON_CLOSE: "بستن"
+    BUTTON_ADD: "اضافه‌کردن"
+  POPUPS_DOMAIN:
+    TITLE_ADD_DOMAIN: "اضافه‌کردن دامنه"
+    TITLE_ADD_DOMAIN_WITH_NAME: "اضافه کردن دامنه \"%NAME%\""
+    TITLE_EDIT_DOMAIN: "ویرایش دامنه \"%NAME%\""
+    LABEL_NAME: "نام"
+    NAME_HELPER: "پشتیبانی از wildcard"
+    LABEL_IMAP: "IMAP"
+    LABEL_SMTP: "SMTP"
+    LABEL_SIEVE: "SIEVE"
+    LABEL_SERVER: "سرور"
+    LABEL_PORT: "پورت"
+    LABEL_SECURE: "امن"
+    LABEL_WHITE_LIST: "لیست سفید"
+    SECURE_OPTION_NONE: "هیچ‌کدام"
+    SECURE_OPTION_SSL: "SSL/TLS"
+    SECURE_OPTION_STARTTLS: "STARTTLS"
+    LABEL_ALLOW_SIEVE_SCRIPTS: "اجازه به اجرا‌شونده‌های sieve"
+    LABEL_ALLOW_USER_SCRIPT: "اجازه به اجرا‌شونده‌های سفارشی کاربر"
+    LABEL_USE_SHORT_LOGIN: "استفاده از ورود کوتاه بدون دامنه"
+    LABEL_USE_AUTH: "استفاده از احراز هویت"
+    LABEL_USE_PHP_MAIL: "استفاده از تابع mail() زبان PHP"
+    BUTTON_TEST: "تست"
+    BUTTON_WHITE_LIST: "لیست سفید"
+    BUTTON_SIEVE_CONFIGURATION: "پیکربندی Sieve"
+    BUTTON_BACK_TO_IMAP: "برگشت به تنظیمات IMAP"
+    BUTTON_BACK: "برگشت"
+    BUTTON_CLOSE: "بستن"
+    BUTTON_ADD: "اضافه‌کردن"
+    BUTTON_UPDATE: "بروزرسانی"
+    NEW_DOMAIN_DESC: "این تنظیمات دامنه به شما اجازه کار کردن <br />با پست الکترونیک <i>%NAME%</i> را می‌دهد."
+    WHITE_LIST_ALERT: |
+      لیستی از دامنه‌ها که کاربران وب‌میل می‌توانند به آنها دسترسی داشته باشند.
+      از فاصله جهت جدا کردن استفاده کنید.
+  POPUPS_PLUGIN:
+    TITLE_PLUGIN: "افزونه"
+    DESC_NOTHING_TO_CONFIGURE: "چیزی برای پیکربندی نیست"
+    BUTTON_CLOSE: "بستن"
+    BUTTON_SAVE: "ذخیره"
+    TOOLTIP_ABOUT_TITLE: "درباره"
+  POPUPS_ASK:
+    DESC_WANT_CLOSE_THIS_WINDOW: "آیا شما از بستن این پنجره اطمینان دارید؟"
+  POPUPS_LANGUAGES:
+    TITLE_LANGUAGES: "زبان خود را انتخاب کنید"
+  HINTS:
+    BETA: "آزمایشی"
+    UNSTABLE: "ناپایدار"
+    WARNING: "هشدار!"
+    NOT_SUPPORTED: "پشتیبانی نمی‌شود"
+    REQUIRES_PHP_54: "به نسخه PHP 5.4 و بالاتر نیاز دارید"
+  ERRORS:
+    DOMAIN_ALREADY_EXISTS: "دامنه وجود دارد"
+    UNKNOWN_ERROR: "خطای نامشخص"
+  NOTIFICATIONS:
+    INVALID_TOKEN: "توکن نامعتبر"
+    AUTH_ERROR: "احراز هویت انجام نشد"
+    ACCESS_ERROR: "خطا در دسترسی"
+    CONNECTION_ERROR: "عدم اتصال به سرور"
+    CAPTCHA_ERROR: "تصویر اشتباه وارد شده است"
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+        این شناسه اجتماعی برای هیچ کاربر پست الکترونیکی تاکنون تخصیص داده نشده است.
+        با استفاده از اعتبار کاربر پست الکترونیک خود وارد شوید و سپس این ویژگی را
+        در تنظیمات کاربر خود فعال کنید.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+        این شناسه اجتماعی برای هیچ کاربر پست الکترونیکی تاکنون تخصیص داده نشده است.
+        با استفاده از اعتبار کاربر پست الکترونیک خود وارد شوید و سپس این ویژگی را
+        در تنظیمات کاربر خود فعال کنید.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+        این شناسه اجتماعی برای هیچ کاربر پست الکترونیکی تاکنون تخصیص داده نشده است.
+        با استفاده از اعتبار کاربر پست الکترونیک خود وارد شوید و سپس این ویژگی را
+        در تنظیمات کاربر خود فعال کنید.
+    DOMAIN_NOT_ALLOWED: "دامنه اجازه داده نشده است"
+    ACCOUNT_NOT_ALLOWED: "کاربر اجازه داده نشده است"
+    ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "اعتبارسنجی دو مرحله‌ای مورد نیاز است"
+    ACCOUNT_TWO_FACTOR_AUTH_ERROR: "خطا در اعتبارسنجی دو مرحله‌ای"
+    COULD_NOT_SAVE_NEW_PASSWORD: "گذرواژه جدید ذخیره نشد"
+    CURRENT_PASSWORD_INCORRECT: "گذرواژه فعلی اشتباه است"
+    NEW_PASSWORD_SHORT: "گذرواژه کوتاه است"
+    NEW_PASSWORD_WEAK: "گذرواژه بسیار ساده است"
+    NEW_PASSWORD_FORBIDDENT: "گذرواژه شامل کاراکترهای غیرمجاز است"
+    CONTACTS_SYNC_ERROR: "همگام‌سازی تماس‌ها با خطا همراه بود"
+    CANT_GET_MESSAGE_LIST: "امکان دریافت لیست پیام‌ها نیست"
+    CANT_GET_MESSAGE: "امکان دریافت پیام نیست"
+    CANT_DELETE_MESSAGE: "امکان حذف پیام نیست"
+    CANT_MOVE_MESSAGE: "امکان انتقال پیام نیست"
+    CANT_SAVE_MESSAGE: "امکان ذخیره پیام نیست"
+    CANT_SEND_MESSAGE: "امکان ارسال پیام نیست"
+    INVALID_RECIPIENTS: "گیرنده نامعتبر"
+    CANT_SAVE_FILTERS: "امکان ذخیره فیلترها نیست"
+    CANT_GET_FILTERS: "امکان دریافت فیلترها نیست"
+    FILTERS_ARE_NOT_CORRECT: "فیلترها صحیح نیستند"
+    CANT_CREATE_FOLDER: "امکان ایجاد شاخه وجود ندارد"
+    CANT_RENAME_FOLDER: "امکان تغییر نام شاخه نیست"
+    CANT_DELETE_FOLDER: "امکان حذف شاخه نیست"
+    CANT_DELETE_NON_EMPTY_FOLDER: "امکان حذف شاخه‌ای که خالی نیست وجود ندارد"
+    CANT_SUBSCRIBE_FOLDER: "امکان اشتراک شاخه نیست"
+    CANT_UNSUBSCRIBE_FOLDER: "امکان عدم اشتراک شاخه نیست"
+    CANT_SAVE_SETTINGS: "امکان ذخیره تنظیمات نیست"
+    CANT_SAVE_PLUGIN_SETTINGS: "امکان ذخیره تنظیمات نیست"
+    DOMAIN_ALREADY_EXISTS: "دامنه در حال حاضر موجود است"
+    CANT_INSTALL_PACKAGE: "نصب بسته با خطا همراه بود"
+    CANT_DELETE_PACKAGE: "حذف بسته با خطا همراه بو"
+    INVALID_PLUGIN_PACKAGE: "بسته افزونه نامعتبر است"
+    UNSUPPORTED_PLUGIN_PACKAGE: "بسته افزونه پشتیبانی نمی‌شود"
+    LICENSING_SERVER_IS_UNAVAILABLE: "سرور مشترک شدن در دسترس نیست"
+    LICENSING_DOMAIN_EXPIRED: "اشتراک برای این دامنه منقضی شده است"
+    LICENSING_DOMAIN_BANNED: "اشتراک برای این دامنه مسدود شده است"
+    DEMO_SEND_MESSAGE_ERROR: "بنابر اهداف امنیتی، این کاربر اجازه ارسال ایمیل به یک ایمیل خارج از دامنه را ندارد!"
+    DEMO_ACCOUNT_ERROR: "بنابر اهداف امنیتی، این کاربر اجازه انجام این عملیات را ندارد!"
+    ACCOUNT_ALREADY_EXISTS: "کاربر وجود دارد"
+    ACCOUNT_DOES_NOT_EXIST: "کاربر وجود ندارد"
+    MAIL_SERVER_ERROR: "یک خطا در زمان دسترسی به سرویس پست الکترونیک رخ داد"
+    INVALID_INPUT_ARGUMENT: "پارامترهای ورودی نامعتبر"
+    UNKNOWN_ERROR: "خطای نامشخص"
+  STATIC:
+    BACK_LINK: "بارگذاری مجدد"
+    DOMAIN_LIST_DESC: "لیستی از دامنه‌های وب‌میل که برای دسترسی مجاز است."
+    PHP_EXSTENSIONS_ERROR_DESC: "به یک افزونه PHP نیاز دارد که در تنظیمات مربوط به PHP شما وجود ندارد!"
+    PHP_VERSION_ERROR_DESC: "نسخه PHP شما  (%VERSION%)  کمتر از حداقل نسخه مورد انتظار 5.3.0 هست!"
+    NO_SCRIPT_TITLE: "جاوا‌اسکریپت برای این برنامه مورد نیاز است."
+    NO_SCRIPT_DESC: |
+      پشتیبانی از جاوااسکریپت در مرورگر شما وجود ندارد.
+      لطفا پشتیبانی از جاوا‌اسکریپت را در تنظیمات مرورگر خود فعال کنید و مجددا تلاش کنید.
+    NO_COOKIE_TITLE: "Cookie باید بر روی مرورگر شما جهت استفاده از برنامه فعال باشد."
+    NO_COOKIE_DESC: |
+      پشتیبانی از Cookie در مرورگر شما فعال نیست.
+      لطفا Cookie را در تنظیمات مرورگر خود فعال کنید و مجددا تلاش کنید.
+    BAD_BROWSER_TITLE: "نسخه مرورگر شما قدیمی است."
+    BAD_BROWSER_DESC: |
+      برای استفاده از تمام قابلیتهای برنامه،
+      یکی از مرورگرهای زیر را دریافت و نصب کنید.

@@ -417,6 +417,7 @@ hu_HU:
     ERROR_FILE_TYPE: "Érvénytelen fájltípus"
     ERROR_UNKNOWN: "Ismeretlen fájl feltöltési hiba történt"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXT"
     TEXT_SWITCHER_RICH_FORMATTING: "Formázott szöveg"
     TEXT_SWITCHER_CONFIRM: "A szövegformázás és a képek el fognak veszni. Biztos, hogy folytatni akarod?"
   SETTINGS_LABELS:

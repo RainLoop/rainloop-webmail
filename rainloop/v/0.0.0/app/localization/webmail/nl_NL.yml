@@ -102,6 +102,7 @@ nl_NL:
     BUTTON_BACK: "Terug"
     BUTTON_CLOSE: "Sluiten"
     BUTTON_DELETE: "Verwijderen"
+    BUTTON_UNSUBSCRIBE: "Abonnement op deze e-mail lijst opzeggen"
     BUTTON_ARCHIVE: "Archiveren"
     BUTTON_SPAM: "Ongewenste e-mail"
     BUTTON_NOT_SPAM: "Geen ongewenste e-mail"
@@ -399,7 +400,7 @@ nl_NL:
     TWO_FACTOR_BACKUP_CODES_DESC: >-
         Als u geen codes ontvangt via de Google Authenticator kunt u de backup codes
         gebruiken om in te loggen. Na gebruik van de backup code wordt deze inactief.
-    TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "U kunt deze instelling niet wijzigen voor het testen."
+    TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "U kunt 2-stap verificatie niet activeren voordat u het succesvol getest heeft."
   TITLES:
     LOADING: "Ophalen..."
     LOGIN: "Inloggen"
@@ -415,6 +416,7 @@ nl_NL:
     ERROR_FILE_TYPE: "Onjuist bestandstype"
     ERROR_UNKNOWN: "Er is een onbekende fout opgetreden"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEKST"
     TEXT_SWITCHER_RICH_FORMATTING: "Tekst met opmaak"
     TEXT_SWITCHER_CONFIRM: "Tekst opmaak zal verloren gaan. Wenst u verder te gaan?"
   SETTINGS_LABELS:
@@ -457,9 +459,11 @@ nl_NL:
     LABEL_ADD_SIGNATURE_TO_ALL: "Handtekening standaard toevoegen aan bericht"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Beveiliging"
+    LABEL_CONFIGURE_TWO_FACTOR: "Configureer 2-stap verificatie"
     LABEL_AUTOLOGOUT: "Automatisch uitloggen"
     AUTOLOGIN_NEVER_OPTION_NAME: "Nooit"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minuten"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% uur"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Algemeen"
     LABEL_LANGUAGE: "Taal"
@@ -525,6 +529,7 @@ nl_NL:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Mappen lijst"
     BUTTON_CREATE: "Maak een map"
+    BUTTON_SYSTEM: "Systeem mappen"
     BUTTON_DELETE: "Verwijder"
     BUTTON_SUBSCRIBE: "Abonneer"
     BUTTON_UNSUBSCRIBE: "Abonnement opzeggen"

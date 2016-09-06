@@ -17,6 +17,9 @@ zh_CN:
     BUTTON_SETTINGS: "设置"
     BUTTON_HELP: "帮助"
     BUTTON_LOGOUT: "注销"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "移动端版本"
+    BUTTON_DESKTOP_VERSION: "桌面端版本"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "搜索"
     TITLE_ADV: "高级搜索"
@@ -50,6 +53,7 @@ zh_CN:
   FOLDER_LIST:
     BUTTON_COMPOSE: "写邮件"
     BUTTON_CONTACTS: "联系人"
+    BUTTON_NEW_MESSAGE: "新信息"
     INBOX_NAME: "收件箱"
     SENT_NAME: "已发邮件"
     DRAFTS_NAME: "草稿"
@@ -98,6 +102,7 @@ zh_CN:
     BUTTON_BACK: "返回"
     BUTTON_CLOSE: "关闭"
     BUTTON_DELETE: "删除"
+    BUTTON_UNSUBSCRIBE: "从此列表取消订阅"
     BUTTON_ARCHIVE: "存档"
     BUTTON_SPAM: "垃圾邮件"
     BUTTON_NOT_SPAM: "不是垃圾邮件"
@@ -410,6 +415,7 @@ zh_CN:
     ERROR_FILE_TYPE: "无效文件类型"
     ERROR_UNKNOWN: "未知文件上传错误"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXT"
     TEXT_SWITCHER_RICH_FORMATTING: "富文本"
     TEXT_SWITCHER_CONFIRM: "文件格式及图片将丢失，您确定继续这么做？"
   SETTINGS_LABELS:
@@ -452,9 +458,11 @@ zh_CN:
     LABEL_ADD_SIGNATURE_TO_ALL: "Add your signature to all the outgoing messages"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Security"
+    LABEL_CONFIGURE_TWO_FACTOR: "配置2步验证"
     LABEL_AUTOLOGOUT: "Auto Logout"
     AUTOLOGIN_NEVER_OPTION_NAME: "Never"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minute(s)"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS%小时"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "一般设置"
     LABEL_LANGUAGE: "语言"
@@ -520,6 +528,7 @@ zh_CN:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "文件夹"
     BUTTON_CREATE: "新建文件夹"
+    BUTTON_SYSTEM: "系统文件夹"
     BUTTON_DELETE: "删除"
     BUTTON_SUBSCRIBE: "订阅"
     BUTTON_UNSUBSCRIBE: "取消订阅"
@@ -615,6 +624,7 @@ zh_CN:
     NO_PRIVATE_KEY_FOUND: "No private key found"
     NO_PRIVATE_KEY_FOUND_FOR: "No private key found for \"%EMAIL%\" email"
     ADD_A_PUBLICK_KEY: "Add a public key"
+    SELECT_A_PRIVATE_KEY: "选择一个私钥"
     UNVERIFIRED_SIGNATURE: "Unverified signature"
     DECRYPTION_ERROR: "OpenPGP decryption error"
     GOOD_SIGNATURE: "Good signature from %USER%"

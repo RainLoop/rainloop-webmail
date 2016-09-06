@@ -415,6 +415,7 @@ pl_PL:
     ERROR_FILE_TYPE: "Nieprawidłowy typ pliku"
     ERROR_UNKNOWN: "Wystąpił nieznany błąd w trakcie przesyłania pliku"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> zwykły tekst"
     TEXT_SWITCHER_RICH_FORMATTING: "Wzbogacony format tekstowy"
     TEXT_SWITCHER_CONFIRM: "Formatowanie tekstu oraz wszystkie wstawione obrazy zostaną utracone. Czy na pewno chcesz kontynuować?"
   SETTINGS_LABELS:

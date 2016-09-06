@@ -9092,7 +9092,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		if (\is_array($aLang))
 		{
 			$aHelper = array('en' => 'en_us', 'ar' => 'ar_sa', 'cs' => 'cs_cz', 'no' => 'nb_no', 'ua' => 'uk_ua',
-				'cn' => 'zh_cn', 'zh' => 'zh_cn', 'tw' => 'zh_tw');
+				'cn' => 'zh_cn', 'zh' => 'zh_cn', 'tw' => 'zh_tw', 'fa' => 'fa_ir');
 
 			$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : $sLanguage;
 			$sDefault = isset($aHelper[$sDefault]) ? $aHelper[$sDefault] : $sDefault;

@@ -414,6 +414,7 @@ sl_SI:
     ERROR_FILE_TYPE: "Neveljaven tip datoteke"
     ERROR_UNKNOWN: "Neznana napaka pri nalaganju datoteke"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> Navadno besedilo"
     TEXT_SWITCHER_RICH_FORMATTING: "Obogateno besedilo"
     TEXT_SWITCHER_CONFIRM: "Oblikovanje ter postavitev besedila in slik bosta izgubljena. Želite nadaljevati?"
   SETTINGS_LABELS:
@@ -526,6 +527,7 @@ sl_SI:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Seznam map"
     BUTTON_CREATE: "Ustvari mapo"
+    BUTTON_SYSTEM: "Sistemske mape"
     BUTTON_DELETE: "Izbriši"
     BUTTON_SUBSCRIBE: "Spremljaj"
     BUTTON_UNSUBSCRIBE: "Ne spremljaj"

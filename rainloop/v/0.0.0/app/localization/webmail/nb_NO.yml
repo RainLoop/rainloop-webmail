@@ -247,13 +247,13 @@ nb_NO:
   POPUPS_LANGUAGES:
     TITLE_LANGUAGES: "Velg språk"
   POPUPS_ADD_ACCOUNT:
-    TITLE_ADD_ACCOUNT: "Vil du legge til en konto?"
+    TITLE_ADD_ACCOUNT: "Legg til konto"
     BUTTON_ADD_ACCOUNT: "Legg til"
-    TITLE_UPDATE_ACCOUNT: "Vil du oppdatere en konto?"
+    TITLE_UPDATE_ACCOUNT: "Oppdater konto"
     BUTTON_UPDATE_ACCOUNT: "Oppdater"
   POPUPS_IDENTITY:
     TITLE_ADD_IDENTITY: "Vil du legge til en identitet?"
-    TITLE_UPDATE_IDENTITY: "Vil du oppdatere identitet?"
+    TITLE_UPDATE_IDENTITY: "Oppdater identitet"
     BUTTON_ADD_IDENTITY: "Legg til"
     BUTTON_UPDATE_IDENTITY: "Oppdater"
     LABEL_EMAIL: "E-post"
@@ -313,7 +313,7 @@ nb_NO:
     BUTTON_TEST: "Test"
   POPUPS_FILTER:
     TITLE_CREATE_FILTER: "Vil du lage et filter?"
-    TITLE_EDIT_FILTER: "Vil du oppdatere et filter?"
+    TITLE_EDIT_FILTER: "Oppdater filter"
     FILTER_NAME: "Navn"
     LEGEND_CONDITIONS: "Betingelser"
     LEGEND_ACTIONS: "Handlinger"
@@ -415,6 +415,7 @@ nb_NO:
     ERROR_FILE_TYPE: "Ugyldig filtype"
     ERROR_UNKNOWN: "Det oppstod en ukjent feil under opplasting av fil"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEKST"
     TEXT_SWITCHER_RICH_FORMATTING: "Rik tekst"
     TEXT_SWITCHER_CONFIRM: "Tekstformatering og bilder går tapt. Er du sikker på at du vil fortsette?"
   SETTINGS_LABELS:
@@ -573,7 +574,7 @@ nb_NO:
   SETTINGS_OPEN_PGP:
     LEGEND_OPEN_PGP: "OpenPGP"
     BUTTON_ADD_OPEN_PGP_KEY: "Importer OpenPGP-nøkkel"
-    BUTTON_GENERATE_OPEN_PGP_KEYS: "Generer OpenPGP-nøkler"
+    BUTTON_GENERATE_OPEN_PGP_KEYS: "Lag OpenPGP-nøkler"
     TITLE_PRIVATE: "Privat"
     TITLE_PUBLIC: "Offentlig"
     DELETING_ASK: "Er du sikker?"
@@ -682,7 +683,7 @@ nb_NO:
     LICENSING_SERVER_IS_UNAVAILABLE: "Abonnementstjeneren er utilgjengelig"
     LICENSING_DOMAIN_EXPIRED: "Abonnementet på dette domenet er utløpt."
     LICENSING_DOMAIN_BANNED: "Abonnementet på dette domenet er forbudt."
-    DEMO_SEND_MESSAGE_ERROR: "Av sikkerhetshensyn er denne demo-kontoen blokkert fra å sende meldinger til eksterne e-postadresser."
+    DEMO_SEND_MESSAGE_ERROR: "Denne demo-kontoen er blokkert fra å sende meldinger til eksterne e-postadresser av sikkerhetshensyn."
     DEMO_ACCOUNT_ERROR: "Av sikkerhetshensyn er denne kontoen blokkert fra å utføre denne handlinga."
     ACCOUNT_ALREADY_EXISTS: "Kontoen finnes allerede"
     ACCOUNT_DOES_NOT_EXIST: "Kontoen finnes ikke"

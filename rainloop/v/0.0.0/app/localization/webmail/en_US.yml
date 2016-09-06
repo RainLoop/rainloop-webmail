@@ -416,6 +416,7 @@ en_US:
     ERROR_FILE_TYPE: "Invalid file type"
     ERROR_UNKNOWN: "An unknown file upload error occurred"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXT"
     TEXT_SWITCHER_RICH_FORMATTING: "Rich formatting"
     TEXT_SWITCHER_CONFIRM: "Text formatting and images will be lost. Are you sure you want to continue?"
   SETTINGS_LABELS:

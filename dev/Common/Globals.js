@@ -146,6 +146,7 @@ export const htmlEditorLangsMap = {
 	'ko_kr': 'ko',
 	'lt_lt': 'lt',
 	'lv_lv': 'lv',
+	'fa_ir': 'fa',
 	'nb_no': 'nb',
 	'nl_nl': 'nl',
 	'pl_pl': 'pl',

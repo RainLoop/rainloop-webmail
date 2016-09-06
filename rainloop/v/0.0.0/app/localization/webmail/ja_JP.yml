@@ -415,6 +415,7 @@ ja_JP:
     ERROR_FILE_TYPE: "無効なファイル種類"
     ERROR_UNKNOWN: "不明なファイルアップロードエラーが発生しました"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXT"
     TEXT_SWITCHER_RICH_FORMATTING: "書式付きテキスト"
     TEXT_SWITCHER_CONFIRM: "テキスト書式と画像は、失われます。続けてもよろしいですか？"
   SETTINGS_LABELS:
