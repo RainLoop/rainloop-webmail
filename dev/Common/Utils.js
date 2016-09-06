@@ -3,12 +3,12 @@ import window from 'window';
 import $ from '$';
 import _ from '_';
 import ko from 'ko';
+import Autolinker from 'Autolinker';
+
 import {$win, $div, dropdownVisibility, data as GlobalsData} from 'Common/Globals';
 import {ComposeType, EventKeyCode, SaveSettingsStep, FolderType} from 'Common/Enums';
 import {Mime} from 'Common/Mime';
 import {jassl} from 'Common/Jassl';
-
-import Autolinker from 'Autolinker';
 
 const trim = $.trim;
 const inArray = $.inArray;
@@ -744,18 +744,18 @@ export function settingsSaveHelperSubscribeFunction(remote, settingName, type, f
 export function findEmailAndLinks(html)
 {
 //	return html;
-	return Autolinker.link(html, {
+	return Autolinker ? Autolinker.link(html, {
 		newWindow: true,
 		stripPrefix: false,
 		urls: true,
 		email: true,
-		twitter: false,
+		mention: false,
 		phone: false,
 		hashtag: false,
-		replaceFn: function(autolinker, match) {
-			return !(autolinker && match && 'url' === match.getType() && match.matchedText && 0 !== match.matchedText.indexOf('http'));
+		replaceFn: function(match) {
+			return !(match && 'url' === match.getType() && match.matchedText && 0 !== match.matchedText.indexOf('http'));
 		}
-	});
+	}) : html;
 }
 
 /**
