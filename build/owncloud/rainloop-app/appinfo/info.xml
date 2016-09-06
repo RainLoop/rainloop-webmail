@@ -9,8 +9,8 @@
 	<require>6.0</require>
 	<ocsid>165254</ocsid>
 	<dependencies>
-        <php min-version="5.3"/>
-        <owncloud min-version="6"/>
+        <php min-version="5.4" />
+        <owncloud min-version="6" max-version="9.1" />
     </dependencies>
 	<category>productivity</category>
 	<website>http://www.rainloop.net/</website>
