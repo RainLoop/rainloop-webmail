@@ -273,7 +273,7 @@ gulp.task('asserts:clean', function() {
 	return cleanDir(cfg.paths.static);
 });
 
-gulp.task('asserts', ['asserts:clean'], function() {
+gulp.task('asserts', function() {
 	return gulp.src(cfg.paths.asserts.src)
 		.pipe(gulp.dest(cfg.paths.static));
 });
