@@ -10,7 +10,7 @@ import {$html, aViewModels as VIEW_MODELS, popupVisibilityNames} from 'Common/Gl
 
 import {
 	isArray, isUnd, pString, log, isFunc,
-	createCommand, delegateRun, isNonEmptyArray
+	createCommandLegacy, delegateRun, isNonEmptyArray
 } from 'Common/Utils';
 
 let
@@ -33,6 +33,16 @@ export function hideLoading()
 {
 	$('#rl-content').addClass('rl-content-show');
 	$('#rl-loading').hide().remove();
+}
+
+/**
+ * @param {Function} fExecute
+ * @param {(Function|boolean|null)=} fCanExecute = true
+ * @returns {Function}
+ */
+export function createCommand(fExecute, fCanExecute = true)
+{
+	return createCommandLegacy(null, fExecute, fCanExecute);
 }
 
 /**
@@ -99,14 +109,34 @@ export function screen(screenName)
 }
 
 /**
+ * @param {Function} ViewModelClassToShow
+ * @returns {Function|null}
+ */
+export function getScreenPopup(PopuViewModelClass)
+{
+	let result = null;
+	if (PopuViewModelClass)
+	{
+		result = PopuViewModelClass;
+		if (PopuViewModelClass.default)
+		{
+			result = PopuViewModelClass.default;
+		}
+	}
+
+	return result;
+}
+
+/**
  * @param {Function} ViewModelClassToHide
  * @returns {void}
  */
 export function hideScreenPopup(ViewModelClassToHide)
 {
-	if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom)
+	const ModalView = getScreenPopup(ViewModelClassToHide);
+	if (ModalView && ModalView.__vm && ModalView.__dom)
 	{
-		ViewModelClassToHide.__vm.modalVisibility(false);
+		ModalView.__vm.modalVisibility(false);
 	}
 }
 
@@ -231,19 +261,20 @@ export function buildViewModel(ViewModelClass, vmScreen)
  */
 export function showScreenPopup(ViewModelClassToShow, params = [])
 {
-	if (ViewModelClassToShow)
+	const ModalView = getScreenPopup(ViewModelClassToShow);
+	if (ModalView)
 	{
-		buildViewModel(ViewModelClassToShow);
+		buildViewModel(ModalView);
 
-		if (ViewModelClassToShow.__vm && ViewModelClassToShow.__dom)
+		if (ModalView.__vm && ModalView.__dom)
 		{
-			delegateRun(ViewModelClassToShow.__vm, 'onBeforeShow', params || []);
+			delegateRun(ModalView.__vm, 'onBeforeShow', params || []);
 
-			ViewModelClassToShow.__vm.modalVisibility(true);
+			ModalView.__vm.modalVisibility(true);
 
-			delegateRun(ViewModelClassToShow.__vm, 'onShow', params || []);
+			delegateRun(ModalView.__vm, 'onShow', params || []);
 
-			vmRunHook('view-model-on-show', ViewModelClassToShow, params || []);
+			vmRunHook('view-model-on-show', ModalView, params || []);
 		}
 	}
 }
@@ -254,13 +285,14 @@ export function showScreenPopup(ViewModelClassToShow, params = [])
  */
 export function warmUpScreenPopup(ViewModelClassToShow)
 {
-	if (ViewModelClassToShow)
+	const ModalView = getScreenPopup(ViewModelClassToShow);
+	if (ModalView)
 	{
-		buildViewModel(ViewModelClassToShow);
+		buildViewModel(ModalView);
 
-		if (ViewModelClassToShow.__vm && ViewModelClassToShow.__dom)
+		if (ModalView.__vm && ModalView.__dom)
 		{
-			delegateRun(ViewModelClassToShow.__vm, 'onWarmUp');
+			delegateRun(ModalView.__vm, 'onWarmUp');
 		}
 	}
 }
@@ -271,7 +303,8 @@ export function warmUpScreenPopup(ViewModelClassToShow)
  */
 export function isPopupVisible(ViewModelClassToShow)
 {
-	return ViewModelClassToShow && ViewModelClassToShow.__vm ? ViewModelClassToShow.__vm.modalVisibility() : false;
+	const ModalView = getScreenPopup(ViewModelClassToShow);
+	return ModalView && ModalView.__vm ? ModalView.__vm.modalVisibility() : false;
 }
 
 /**
@@ -394,7 +427,7 @@ export function screenOnRoute(screenName, subPart)
 				}
 				// --
 
-				cross = vmScreen.__cross ? vmScreen.__cross() : null;
+				cross = vmScreen && vmScreen.__cross ? vmScreen.__cross() : null;
 				if (cross)
 				{
 					cross.parse(subPart);
@@ -516,6 +549,15 @@ function viewDecorator({name, type, templateID})
 }
 
 /**
+ * @param {Object} params
+ * @returns {Function}
+ */
+function popupDecorator({name, templateID})
+{
+	return viewDecorator({name, type: ViewType.Popup, templateID});
+}
+
+/**
  * @param {Function} canExecute
  * @returns {Function}
  */
@@ -548,4 +590,8 @@ function commandDecorator(canExecute = true)
 	};
 }
 
-export {commandDecorator, commandDecorator as command, viewDecorator, viewDecorator as view, viewDecorator as viewModel};
+export {
+	commandDecorator, commandDecorator as command,
+	viewDecorator, viewDecorator as view, viewDecorator as viewModel,
+	popupDecorator, popupDecorator as popup
+};

@@ -216,8 +216,10 @@ export function initOnStartOrLangChange(startCallback, langCallback = null)
 			{
 				startCallback();
 			}
-
-			langCallback();
+			if (langCallback)
+			{
+				langCallback();
+			}
 		});
 	}
 	else if (startCallback)

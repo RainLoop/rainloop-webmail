@@ -2,19 +2,16 @@
 import _ from '_';
 import ko from 'ko';
 
+import {windowResizeCallback, isArray, trim, delegateRunOnDestroy} from 'Common/Utils';
 import {StorageResultType, Notification} from 'Common/Enums';
 import {getNotification} from 'Common/Translator';
-
-import {
-	windowResizeCallback, createCommand, isArray, trim, delegateRunOnDestroy
-} from 'Common/Utils';
-
-import {showScreenPopup} from 'Knoin/Knoin';
 
 import FilterStore from 'Stores/User/Filter';
 import Remote from 'Remote/User/Ajax';
 
 import {FilterModel} from 'Model/Filter';
+
+import {showScreenPopup, command} from 'Knoin/Knoin';
 
 class FiltersUserSettings
 {
@@ -46,41 +43,6 @@ class FiltersUserSettings
 
 		this.filterForDeletion = ko.observable(null).deleteAccessHelper();
 
-		this.saveChanges = createCommand(() => {
-			if (!this.filters.saving())
-			{
-				if (this.filterRaw.active() && '' === trim(this.filterRaw()))
-				{
-					this.filterRaw.error(true);
-					return false;
-				}
-
-				this.filters.saving(true);
-				this.saveErrorText('');
-
-				Remote.filtersSave((result, data) => {
-					this.filters.saving(false);
-
-					if (StorageResultType.Success === result && data && data.Result)
-					{
-						this.haveChanges(false);
-						this.updateList();
-					}
-					else if (data && data.ErrorCode)
-					{
-						this.saveErrorText(data.ErrorMessageAdditional || getNotification(data.ErrorCode));
-					}
-					else
-					{
-						this.saveErrorText(getNotification(Notification.CantSaveFilters));
-					}
-
-				}, this.filters(), this.filterRaw(), this.filterRaw.active());
-			}
-
-			return true;
-		}, () => this.haveChanges());
-
 		this.filters.subscribe(() => {
 			this.haveChanges(true);
 		});
@@ -98,6 +60,42 @@ class FiltersUserSettings
 			this.haveChanges(true);
 			this.filterRaw.error(false);
 		});
+	}
+
+	@command((self) => self.haveChanges())
+	saveChangesCommand() {
+		if (!this.filters.saving())
+		{
+			if (this.filterRaw.active() && '' === trim(this.filterRaw()))
+			{
+				this.filterRaw.error(true);
+				return false;
+			}
+
+			this.filters.saving(true);
+			this.saveErrorText('');
+
+			Remote.filtersSave((result, data) => {
+				this.filters.saving(false);
+
+				if (StorageResultType.Success === result && data && data.Result)
+				{
+					this.haveChanges(false);
+					this.updateList();
+				}
+				else if (data && data.ErrorCode)
+				{
+					this.saveErrorText(data.ErrorMessageAdditional || getNotification(data.ErrorCode));
+				}
+				else
+				{
+					this.saveErrorText(getNotification(Notification.CantSaveFilters));
+				}
+
+			}, this.filters(), this.filterRaw(), this.filterRaw.active());
+		}
+
+		return true;
 	}
 
 	scrollableOptions(wrapper) {

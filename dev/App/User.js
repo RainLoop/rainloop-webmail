@@ -437,11 +437,12 @@ class AppUser extends AbstractApp
 		const prom = Promises.foldersReload(FolderStore.foldersLoading);
 		if (callback)
 		{
-			prom.then((value) => {
-				callback(!!value);
-			}).catch(() => {
+			prom.then((value) => !!value).then(callback).catch(() => {
 				_.delay(() => {
-					callback(false);
+					if (callback)
+					{
+						callback(false); // eslint-disable-line callback-return
+					}
 				}, 1);
 			});
 		}

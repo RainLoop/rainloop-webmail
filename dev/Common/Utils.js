@@ -508,24 +508,14 @@ export function createCommandLegacy(context, fExecute, fCanExecute = true)
 
 	if (isFunc(fCanExecute))
 	{
-		fResult.canExecute = ko.computed(() => fResult.enabled() && fCanExecute.call(context));
+		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && fCanExecute.call(context));
 	}
 	else
 	{
-		fResult.canExecute = ko.computed(() => fResult.enabled() && !!fCanExecute);
+		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && !!fCanExecute);
 	}
 
 	return fResult;
-}
-
-/**
- * @param {Function} fExecute
- * @param {(Function|boolean|null)=} fCanExecute = true
- * @returns {Function}
- */
-export function createCommand(fExecute, fCanExecute = true)
-{
-	return createCommandLegacy(null, fExecute, fCanExecute);
 }
 
 /**
@@ -1264,8 +1254,8 @@ export function changeTheme(value, themeTrigger = noop)
 	if (url)
 	{
 		url = url.toString().replace(/\/-\/[^\/]+\/\-\//, '/-/' + value + '/-/');
-		url = url.toString().replace(/\/Css\/[^\/]+\/User\//, '/Css/0/User/');
-		url = url.toString().replace(/\/Hash\/[^\/]+\//, '/Hash/-/');
+		url = url.replace(/\/Css\/[^\/]+\/User\//, '/Css/0/User/');
+		url = url.replace(/\/Hash\/[^\/]+\//, '/Hash/-/');
 
 		if ('Json/' !== url.substring(url.length - 5, url.length))
 		{

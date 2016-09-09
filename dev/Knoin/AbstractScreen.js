@@ -5,9 +5,12 @@ import {isArray, isNonEmptyArray, noop} from 'Common/Utils';
 
 class AbstractScreen
 {
+	oCross = null;
+	sScreenName;
+	aViewModels;
+
 	constructor(screenName, viewModels = [])
 	{
-		this.oCross = null;
 		this.sScreenName = screenName;
 		this.aViewModels = isArray(viewModels) ? viewModels : [];
 	}
@@ -54,8 +57,11 @@ class AbstractScreen
 			fMatcher = _.bind(this.onRoute || noop, this);
 			route = crossroads.create();
 
-			_.each(routes, (aItem) => {
-				route.addRoute(aItem[0], fMatcher).rules = aItem[1];
+			_.each(routes, (item) => {
+				if (item && route)
+				{
+					route.addRoute(item[0], fMatcher).rules = item[1];
+				}
 			});
 
 			this.oCross = route;

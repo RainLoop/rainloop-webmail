@@ -3,6 +3,11 @@ import {trim, pString, encodeHtml} from 'Common/Utils';
 
 class EmailModel
 {
+	email = '';
+	name = '';
+	dkimStatus = '';
+	dkimValue = '';
+
 	/**
 	 * @param {string=} email = ''
 	 * @param {string=} name = ''

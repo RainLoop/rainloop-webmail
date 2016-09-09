@@ -13,7 +13,7 @@ import {
 
 import {
 	delegateRunOnDestroy, computedPagenatorHelper,
-	inArray, trim, windowResizeCallback, createCommand,
+	inArray, trim, windowResizeCallback,
 	isNonEmptyArray, fakeMd5, pInt, isUnd
 } from 'Common/Utils';
 
@@ -37,12 +37,11 @@ import {ContactPropertyModel} from 'Model/ContactProperty';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType, showScreenPopup, hideScreenPopup, routeOn, routeOff} from 'Knoin/Knoin';
+import {popup, command, showScreenPopup, hideScreenPopup, routeOn, routeOff} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/Contacts',
-	type: ViewType.Popup,
 	templateID: 'PopupsContacts'
 })
 class ContactsPopupView extends AbstractViewNext
@@ -210,155 +209,6 @@ class ContactsPopupView extends AbstractViewNext
 
 		this.selector.on('onItemGetUid', (contact) => (contact ? contact.generateUid() : ''));
 
-		this.newCommand = createCommand(() => {
-			this.populateViewContact(null);
-			this.currentContact(null);
-		});
-
-		this.deleteCommand = createCommand(() => {
-			this.deleteSelectedContacts();
-			this.emptySelection(true);
-		}, () => 0 < this.contactsCheckedOrSelected().length);
-
-		this.newMessageCommand = createCommand(() => {
-
-			if (!Settings.capa(Capa.Composer))
-			{
-				return false;
-			}
-
-			let
-				aE = [],
-				toEmails = null,
-				ccEmails = null,
-				bccEmails = null;
-
-			const aC = this.contactsCheckedOrSelected();
-			if (isNonEmptyArray(aC))
-			{
-				aE = _.map(aC, (oItem) => {
-					if (oItem)
-					{
-						const
-							data = oItem.getNameAndEmailHelper(),
-							email = data ? new EmailModel(data[0], data[1]) : null;
-
-						if (email && email.validate())
-						{
-							return email;
-						}
-					}
-
-					return null;
-				});
-
-				aE = _.compact(aE);
-			}
-
-			if (isNonEmptyArray(aE))
-			{
-				this.bBackToCompose = false;
-
-				hideScreenPopup(require('View/Popup/Contacts'));
-
-				switch (this.sLastComposeFocusedField)
-				{
-					case 'cc':
-						ccEmails = aE;
-						break;
-					case 'bcc':
-						bccEmails = aE;
-						break;
-					case 'to':
-					default:
-						toEmails = aE;
-						break;
-				}
-
-				this.sLastComposeFocusedField = '';
-
-				_.delay(() => {
-					showScreenPopup(require('View/Popup/Compose'), [ComposeType.Empty, null, toEmails, ccEmails, bccEmails]);
-				}, Magics.Time200ms);
-			}
-
-			return true;
-
-		}, () => 0 < this.contactsCheckedOrSelected().length);
-
-		this.clearCommand = createCommand(() => {
-			this.search('');
-		});
-
-		this.saveCommand = createCommand(() => {
-
-			this.viewSaving(true);
-			this.viewSaveTrigger(SaveSettingsStep.Animate);
-
-			const
-				requestUid = fakeMd5(),
-				properties = [];
-
-			_.each(this.viewProperties(), (oItem) => {
-				if (oItem.type() && '' !== trim(oItem.value()))
-				{
-					properties.push([oItem.type(), oItem.value(), oItem.typeStr()]);
-				}
-			});
-
-			Remote.contactSave((sResult, oData) => {
-
-				let res = false;
-				this.viewSaving(false);
-
-				if (StorageResultType.Success === sResult && oData && oData.Result &&
-					oData.Result.RequestUid === requestUid && 0 < pInt(oData.Result.ResultID))
-				{
-					if ('' === this.viewID())
-					{
-						this.viewID(pInt(oData.Result.ResultID));
-					}
-
-					this.reloadContactList();
-					res = true;
-				}
-
-				_.delay(() => {
-					this.viewSaveTrigger(res ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult);
-				}, Magics.Time350ms);
-
-				if (res)
-				{
-					this.watchDirty(false);
-
-					_.delay(() => {
-						this.viewSaveTrigger(SaveSettingsStep.Idle);
-					}, Magics.Time1s);
-				}
-
-			}, requestUid, this.viewID(), properties);
-
-		}, () => {
-			const
-				bV = this.viewHasNonEmptyRequaredProperties(),
-				bReadOnly = this.viewReadOnly();
-			return !this.viewSaving() && bV && !bReadOnly;
-		});
-
-		this.syncCommand = createCommand(() => {
-
-			getApp().contactsSync((result, data) => {
-				if (StorageResultType.Success !== result || !data || !data.Result)
-				{
-					window.alert(getNotification(
-						data && data.ErrorCode ? data.ErrorCode : Notification.ContactsSyncError));
-				}
-
-				this.reloadContactList(true);
-			});
-
-		}, () => !this.contacts.syncing() && !this.contacts.importing());
-
 		this.bDropPageAfterDelete = false;
 
 		this.watchDirty = ko.observable(false);
@@ -376,6 +226,157 @@ class ContactsPopupView extends AbstractViewNext
 		});
 
 		this.sDefaultKeyScope = KeyState.ContactList;
+	}
+
+	@command()
+	newCommand() {
+		this.populateViewContact(null);
+		this.currentContact(null);
+	}
+
+	@command((self) => 0 < self.contactsCheckedOrSelected().length)
+	deleteCommand() {
+		this.deleteSelectedContacts();
+		this.emptySelection(true);
+	}
+
+	@command((self) => 0 < self.contactsCheckedOrSelected().length)
+	newMessageCommand() {
+
+		if (!Settings.capa(Capa.Composer))
+		{
+			return false;
+		}
+
+		let
+			aE = [],
+			toEmails = null,
+			ccEmails = null,
+			bccEmails = null;
+
+		const aC = this.contactsCheckedOrSelected();
+		if (isNonEmptyArray(aC))
+		{
+			aE = _.map(aC, (oItem) => {
+				if (oItem)
+				{
+					const
+						data = oItem.getNameAndEmailHelper(),
+						email = data ? new EmailModel(data[0], data[1]) : null;
+
+					if (email && email.validate())
+					{
+						return email;
+					}
+				}
+
+				return null;
+			});
+
+			aE = _.compact(aE);
+		}
+
+		if (isNonEmptyArray(aE))
+		{
+			this.bBackToCompose = false;
+
+			hideScreenPopup(require('View/Popup/Contacts'));
+
+			switch (this.sLastComposeFocusedField)
+			{
+				case 'cc':
+					ccEmails = aE;
+					break;
+				case 'bcc':
+					bccEmails = aE;
+					break;
+				case 'to':
+				default:
+					toEmails = aE;
+					break;
+			}
+
+			this.sLastComposeFocusedField = '';
+
+			_.delay(() => {
+				showScreenPopup(require('View/Popup/Compose'), [ComposeType.Empty, null, toEmails, ccEmails, bccEmails]);
+			}, Magics.Time200ms);
+		}
+
+		return true;
+	}
+
+	@command()
+	clearCommand() {
+		this.search('');
+	}
+
+	@command((self) => {
+		const
+			bV = self.viewHasNonEmptyRequaredProperties(),
+			bReadOnly = self.viewReadOnly();
+		return !self.viewSaving() && bV && !bReadOnly;
+	})
+	saveCommand() {
+
+		this.viewSaving(true);
+		this.viewSaveTrigger(SaveSettingsStep.Animate);
+
+		const
+			requestUid = fakeMd5(),
+			properties = [];
+
+		_.each(this.viewProperties(), (oItem) => {
+			if (oItem.type() && '' !== trim(oItem.value()))
+			{
+				properties.push([oItem.type(), oItem.value(), oItem.typeStr()]);
+			}
+		});
+
+		Remote.contactSave((sResult, oData) => {
+
+			let res = false;
+			this.viewSaving(false);
+
+			if (StorageResultType.Success === sResult && oData && oData.Result &&
+				oData.Result.RequestUid === requestUid && 0 < pInt(oData.Result.ResultID))
+			{
+				if ('' === this.viewID())
+				{
+					this.viewID(pInt(oData.Result.ResultID));
+				}
+
+				this.reloadContactList();
+				res = true;
+			}
+
+			_.delay(() => {
+				this.viewSaveTrigger(res ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult);
+			}, Magics.Time350ms);
+
+			if (res)
+			{
+				this.watchDirty(false);
+
+				_.delay(() => {
+					this.viewSaveTrigger(SaveSettingsStep.Idle);
+				}, Magics.Time1s);
+			}
+
+		}, requestUid, this.viewID(), properties);
+	}
+
+	@command((self) => !self.contacts.syncing() && !self.contacts.importing())
+	syncCommand() {
+		getApp().contactsSync((result, data) => {
+			if (StorageResultType.Success !== result || !data || !data.Result)
+			{
+				window.alert(getNotification(
+					data && data.ErrorCode ? data.ErrorCode : Notification.ContactsSyncError));
+			}
+
+			this.reloadContactList(true);
+		});
 	}
 
 	getPropertyPlaceholder(type) {
@@ -722,4 +723,4 @@ class ContactsPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = ContactsPopupView;
+export {ContactsPopupView, ContactsPopupView as default};

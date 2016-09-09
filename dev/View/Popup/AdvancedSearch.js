@@ -2,18 +2,17 @@
 import _ from '_';
 import ko from 'ko';
 
-import {trim, createCommand} from 'Common/Utils';
+import {trim} from 'Common/Utils';
 import {i18n, trigger as translatorTrigger} from 'Common/Translator';
 import {searchSubtractFormatDateHelper} from 'Common/Momentor';
 
 import MessageStore from 'Stores/User/Message';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/AdvancedSearch',
-	type: ViewType.Popup,
 	templateID: 'PopupsAdvancedSearch'
 })
 class AdvancedSearchPopupView extends AbstractViewNext
@@ -33,16 +32,6 @@ class AdvancedSearchPopupView extends AbstractViewNext
 		this.starred = ko.observable(false);
 		this.unseen = ko.observable(false);
 
-		this.searchCommand = createCommand(() => {
-			const search = this.buildSearchString();
-			if ('' !== search)
-			{
-				MessageStore.mainMessageListSearch(search);
-			}
-
-			this.cancelCommand();
-		});
-
 		this.selectedDates = ko.computed(() => {
 			translatorTrigger();
 			return [
@@ -55,6 +44,17 @@ class AdvancedSearchPopupView extends AbstractViewNext
 				{id: 365, name: i18n('SEARCH/LABEL_ADV_DATE_YEAR')}
 			];
 		});
+	}
+
+	@command()
+	searchCommand() {
+		const search = this.buildSearchString();
+		if ('' !== search)
+		{
+			MessageStore.mainMessageListSearch(search);
+		}
+
+		this.cancelCommand();
 	}
 
 	parseSearchStringValue(search) {
@@ -171,4 +171,4 @@ class AdvancedSearchPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = AdvancedSearchPopupView;
+export {AdvancedSearchPopupView, AdvancedSearchPopupView as default};

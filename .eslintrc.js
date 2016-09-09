@@ -90,7 +90,7 @@ module.exports = {
 		'no-lone-blocks': 2,
 		'no-loop-func': 2,
 //		'no-magic-numbers': [2, {
-//			'ignore': [-1, 0, 1, 2],
+//			'ignore': [-1, 0, 1, 2, 10, 100],
 //			'ignoreArrayIndexes': true
 //		}],
 		'no-multi-spaces': 2,

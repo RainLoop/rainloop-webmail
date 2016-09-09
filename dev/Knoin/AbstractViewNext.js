@@ -7,18 +7,16 @@ import {$win, keyScope} from 'Common/Globals';
 
 class AbstractViewNext
 {
-	constructor() {
-		this.bDisabeCloseOnEsc = false;
-		this.sDefaultKeyScope = KeyState.None;
-		this.sCurrentKeyScope = this.sDefaultKeyScope;
+	bDisabeCloseOnEsc = false;
+	sDefaultKeyScope = KeyState.None;
+	sCurrentKeyScope = KeyState.None;
 
-		this.viewModelVisibility = ko.observable(false);
-		this.modalVisibility = ko.observable(false).extend({rateLimit: 0});
+	viewModelVisibility = ko.observable(false);
+	modalVisibility = ko.observable(false).extend({rateLimit: 0});
 
-		this.viewModelName = '';
-		this.viewModelNames = [];
-		this.viewModelDom = null;
-	}
+	viewModelName = '';
+	viewModelNames = [];
+	viewModelDom = null;
 
 	/**
 	 * @returns {void}

@@ -5,7 +5,6 @@ import {AbstractComponent, componentExportHelper} from 'Component/Abstract';
 class ScriptComponent extends AbstractComponent
 {
 	/**
-	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {

@@ -12,12 +12,11 @@ import FolderStore from 'Stores/User/Folder';
 import * as Settings from 'Storage/Settings';
 import Remote from 'Remote/User/Ajax';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/FolderSystem',
-	type: ViewType.Popup,
 	templateID: 'PopupsFolderSystem'
 })
 class FolderSystemPopupView extends AbstractViewNext
@@ -110,4 +109,4 @@ class FolderSystemPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = FolderSystemPopupView;
+export {FolderSystemPopupView, FolderSystemPopupView as default};

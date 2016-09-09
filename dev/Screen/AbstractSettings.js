@@ -86,9 +86,10 @@ class AbstractSettingsScreen extends AbstractScreen
 					RoutedSettingsViewModel.__builded = true;
 					RoutedSettingsViewModel.__vm = settingsScreen;
 
+					const tmpl = {name: RoutedSettingsViewModel.__rlSettingsData.Template};
 					ko.applyBindingAccessorsToNode(viewModelDom[0], {
 						translatorInit: true,
-						template: () => ({name: RoutedSettingsViewModel.__rlSettingsData.Template})
+						template: () => tmpl
 					}, settingsScreen);
 
 					delegateRun(settingsScreen, 'onBuild', [viewModelDom]);

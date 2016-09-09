@@ -581,7 +581,7 @@ ko.bindingHandlers.initFixedTrigger = {
 		if ($container)
 		{
 			$win.resize(() => {
-				const offset = $container.offset();
+				const offset = $container ? $container.offset() : null;
 				if (offset && offset.top)
 				{
 					$el.css('top', offset.top + top);
@@ -654,7 +654,10 @@ ko.bindingHandlers.draggable = {
 					handle: '.dragHandle',
 					cursorAt: {top: 22, left: 3},
 					refreshPositions: true,
-					scroll: true
+					scroll: true,
+					drag: null,
+					stop: null,
+					helper: null
 				};
 
 			if (droppableSelector)
@@ -733,7 +736,10 @@ ko.bindingHandlers.droppable = {
 				fOutCallback = fAllValueFunc && fAllValueFunc.droppableOut ? fAllValueFunc.droppableOut : null,
 				conf = {
 					tolerance: 'pointer',
-					hoverClass: 'droppableHover'
+					hoverClass: 'droppableHover',
+					drop: null,
+					over: null,
+					out: null
 				};
 
 			if (fValueFunc)

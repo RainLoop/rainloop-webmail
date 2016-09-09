@@ -4,12 +4,11 @@ import key from 'key';
 
 import {KeyState, Magics} from 'Common/Enums';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/KeyboardShortcutsHelp',
-	type: ViewType.Popup,
 	templateID: 'PopupsKeyboardShortcutsHelp'
 })
 class KeyboardShortcutsHelpPopupView extends AbstractViewNext
@@ -52,4 +51,4 @@ class KeyboardShortcutsHelpPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = KeyboardShortcutsHelpPopupView;
+export {KeyboardShortcutsHelpPopupView, KeyboardShortcutsHelpPopupView as default};

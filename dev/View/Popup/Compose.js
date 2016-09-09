@@ -13,7 +13,7 @@ import {
 } from 'Common/Enums';
 
 import {
-	trim, isArray, isNormal, createCommand, delegateRun,
+	trim, isArray, isNormal, delegateRun,
 	isNonEmptyArray, clearBqSwitcher, replySubjectAdd,
 	encodeHtml, noopFalse, inFocus, delegateRunOnDestroy,
 	pInt, isUnd
@@ -46,12 +46,11 @@ import {ComposeAttachmentModel} from 'Model/ComposeAttachment';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType, isPopupVisible, showScreenPopup, hideScreenPopup, routeOn, routeOff} from 'Knoin/Knoin';
+import {popup, command, isPopupVisible, showScreenPopup, hideScreenPopup, routeOn, routeOff} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/Compose',
-	type: ViewType.Popup,
 	templateID: 'PopupsCompose'
 })
 class ComposePopupView extends AbstractViewNext
@@ -311,198 +310,8 @@ class ComposePopupView extends AbstractViewNext
 
 		this.canBeSentOrSaved = ko.computed(() => !this.sending() && !this.saving());
 
-		this.deleteCommand = createCommand(() => {
-			const PopupsAskViewModel = require('View/Popup/Ask');
-			if (!isPopupVisible(PopupsAskViewModel) && this.modalVisibility())
-			{
-				showScreenPopup(PopupsAskViewModel, [i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), () => {
-					if (this.modalVisibility())
-					{
-						getApp().deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
-						hideScreenPopup(ComposePopupView);
-					}
-				}]);
-			}
-
-		}, () => this.isDraftFolderMessage());
-
 		this.sendMessageResponse = _.bind(this.sendMessageResponse, this);
 		this.saveMessageResponse = _.bind(this.saveMessageResponse, this);
-
-		this.sendCommand = createCommand(() => {
-
-			const
-				sTo = trim(this.to()),
-				sCc = trim(this.cc()),
-				sBcc = trim(this.bcc());
-			let
-				sSentFolder = FolderStore.sentFolder();
-
-			this.attachmentsInProcessError(false);
-			this.attachmentsInErrorError(false);
-			this.emptyToError(false);
-
-			if (0 < this.attachmentsInProcess().length)
-			{
-				this.attachmentsInProcessError(true);
-				this.attachmentsPlace(true);
-			}
-			else if (0 < this.attachmentsInError().length)
-			{
-				this.attachmentsInErrorError(true);
-				this.attachmentsPlace(true);
-			}
-
-			if ('' === sTo && '' === sCc && '' === sBcc)
-			{
-				this.emptyToError(true);
-			}
-
-			if (!this.emptyToError() && !this.attachmentsInErrorError() && !this.attachmentsInProcessError())
-			{
-				if (SettingsStore.replySameFolder())
-				{
-					if (isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length && isNormal(this.aDraftInfo[2]) && 0 < this.aDraftInfo[2].length)
-					{
-						sSentFolder = this.aDraftInfo[2];
-					}
-				}
-
-				if (!this.allowFolders)
-				{
-					sSentFolder = UNUSED_OPTION_VALUE;
-				}
-
-				if ('' === sSentFolder)
-				{
-					showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Sent]);
-				}
-				else
-				{
-					this.sendError(false);
-					this.sending(true);
-
-					if (isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length)
-					{
-						const flagsCache = getMessageFlagsFromCache(this.aDraftInfo[2], this.aDraftInfo[1]);
-						if (flagsCache)
-						{
-							if ('forward' === this.aDraftInfo[0])
-							{
-								flagsCache[3] = true;
-							}
-							else
-							{
-								flagsCache[2] = true;
-							}
-
-							setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
-							getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
-							setFolderHash(this.aDraftInfo[2], '');
-						}
-					}
-
-					sSentFolder = UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
-
-					setFolderHash(this.draftFolder(), '');
-					setFolderHash(sSentFolder, '');
-
-					Remote.sendMessage(
-						this.sendMessageResponse,
-						this.currentIdentity() ? this.currentIdentity().id() : '',
-						this.draftFolder(),
-						this.draftUid(),
-						sSentFolder,
-						sTo,
-						this.cc(),
-						this.bcc(),
-						this.replyTo(),
-						this.subject(),
-						this.oEditor ? this.oEditor.isHtml() : false,
-						this.oEditor ? this.oEditor.getData(true) : '',
-						this.prepearAttachmentsForSendOrSave(),
-						this.aDraftInfo,
-						this.sInReplyTo,
-						this.sReferences,
-						this.requestDsn(),
-						this.requestReadReceipt(),
-						this.markAsImportant()
-					);
-				}
-			}
-
-		}, this.canBeSentOrSaved);
-
-		this.saveCommand = createCommand(() => {
-
-			if (!this.allowFolders)
-			{
-				return false;
-			}
-
-			if (FolderStore.draftFolderNotEnabled())
-			{
-				showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Draft]);
-			}
-			else
-			{
-				this.savedError(false);
-				this.saving(true);
-
-				this.autosaveStart();
-
-				setFolderHash(FolderStore.draftFolder(), '');
-
-				Remote.saveMessage(
-					this.saveMessageResponse,
-					this.currentIdentity() ? this.currentIdentity().id() : '',
-					this.draftFolder(),
-					this.draftUid(),
-					FolderStore.draftFolder(),
-					this.to(),
-					this.cc(),
-					this.bcc(),
-					this.replyTo(),
-					this.subject(),
-					this.oEditor ? this.oEditor.isHtml() : false,
-					this.oEditor ? this.oEditor.getData(true) : '',
-					this.prepearAttachmentsForSendOrSave(),
-					this.aDraftInfo,
-					this.sInReplyTo,
-					this.sReferences,
-					this.markAsImportant()
-				);
-			}
-
-			return true;
-
-		}, this.canBeSentOrSaved);
-
-		this.skipCommand = createCommand(() => {
-
-			this.bSkipNextHide = true;
-
-			if (this.modalVisibility() && !this.saving() && !this.sending() &&
-				!FolderStore.draftFolderNotEnabled())
-			{
-				this.saveCommand();
-			}
-
-			this.tryToClosePopup();
-
-		}, this.canBeSentOrSaved);
-
-		this.contactsCommand = createCommand(() => {
-
-			if (this.allowContacts)
-			{
-				this.skipCommand();
-				_.delay(() => {
-					showScreenPopup(require('View/Popup/Contacts'), [true, this.sLastFocusedField]);
-				}, Magics.Time200ms);
-			}
-
-		}, () => this.allowContacts);
 
 		Events.sub('interval.2m', () => {
 			if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
@@ -519,36 +328,11 @@ class ComposePopupView extends AbstractViewNext
 		this.dropboxEnabled = SocialStore.dropbox.enabled;
 		this.dropboxApiKey = SocialStore.dropbox.apiKey;
 
-		this.dropboxCommand = createCommand(() => {
-
-			if (window.Dropbox)
-			{
-				window.Dropbox.choose({
-					success: (files) => {
-						if (files && files[0] && files[0].link)
-						{
-							this.addDropboxAttachment(files[0]);
-						}
-					},
-					linkType: 'direct',
-					multiselect: false
-				});
-			}
-
-			return true;
-
-		}, () => this.dropboxEnabled());
-
 		this.driveEnabled = ko.observable(bXMLHttpRequestSupported &&
 			!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialDrive') &&
 			!!Settings.settingsGet('GoogleClientID') && !!Settings.settingsGet('GoogleApiKey'));
 
 		this.driveVisible = ko.observable(false);
-
-		this.driveCommand = createCommand(() => {
-			this.driveOpenPopup();
-			return true;
-		}, () => this.driveEnabled());
 
 		this.driveCallback = _.bind(this.driveCallback, this);
 
@@ -563,6 +347,219 @@ class ComposePopupView extends AbstractViewNext
 		this.autosaveFunction = _.bind(this.autosaveFunction, this);
 
 		this.iTimer = 0;
+	}
+
+	@command((self) => self.canBeSentOrSaved())
+	sendCommand() {
+
+		const
+			sTo = trim(this.to()),
+			sCc = trim(this.cc()),
+			sBcc = trim(this.bcc());
+		let
+			sSentFolder = FolderStore.sentFolder();
+
+		this.attachmentsInProcessError(false);
+		this.attachmentsInErrorError(false);
+		this.emptyToError(false);
+
+		if (0 < this.attachmentsInProcess().length)
+		{
+			this.attachmentsInProcessError(true);
+			this.attachmentsPlace(true);
+		}
+		else if (0 < this.attachmentsInError().length)
+		{
+			this.attachmentsInErrorError(true);
+			this.attachmentsPlace(true);
+		}
+
+		if ('' === sTo && '' === sCc && '' === sBcc)
+		{
+			this.emptyToError(true);
+		}
+
+		if (!this.emptyToError() && !this.attachmentsInErrorError() && !this.attachmentsInProcessError())
+		{
+			if (SettingsStore.replySameFolder())
+			{
+				if (isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length && isNormal(this.aDraftInfo[2]) && 0 < this.aDraftInfo[2].length)
+				{
+					sSentFolder = this.aDraftInfo[2];
+				}
+			}
+
+			if (!this.allowFolders)
+			{
+				sSentFolder = UNUSED_OPTION_VALUE;
+			}
+
+			if ('' === sSentFolder)
+			{
+				showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Sent]);
+			}
+			else
+			{
+				this.sendError(false);
+				this.sending(true);
+
+				if (isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length)
+				{
+					const flagsCache = getMessageFlagsFromCache(this.aDraftInfo[2], this.aDraftInfo[1]);
+					if (flagsCache)
+					{
+						if ('forward' === this.aDraftInfo[0])
+						{
+							flagsCache[3] = true;
+						}
+						else
+						{
+							flagsCache[2] = true;
+						}
+
+						setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
+						getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
+						setFolderHash(this.aDraftInfo[2], '');
+					}
+				}
+
+				sSentFolder = UNUSED_OPTION_VALUE === sSentFolder ? '' : sSentFolder;
+
+				setFolderHash(this.draftFolder(), '');
+				setFolderHash(sSentFolder, '');
+
+				Remote.sendMessage(
+					this.sendMessageResponse,
+					this.currentIdentity() ? this.currentIdentity().id() : '',
+					this.draftFolder(),
+					this.draftUid(),
+					sSentFolder,
+					sTo,
+					this.cc(),
+					this.bcc(),
+					this.replyTo(),
+					this.subject(),
+					this.oEditor ? this.oEditor.isHtml() : false,
+					this.oEditor ? this.oEditor.getData(true) : '',
+					this.prepearAttachmentsForSendOrSave(),
+					this.aDraftInfo,
+					this.sInReplyTo,
+					this.sReferences,
+					this.requestDsn(),
+					this.requestReadReceipt(),
+					this.markAsImportant()
+				);
+			}
+		}
+	}
+
+	@command((self) => self.canBeSentOrSaved())
+	saveCommand() {
+
+		if (!this.allowFolders)
+		{
+			return false;
+		}
+
+		if (FolderStore.draftFolderNotEnabled())
+		{
+			showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Draft]);
+		}
+		else
+		{
+			this.savedError(false);
+			this.saving(true);
+
+			this.autosaveStart();
+
+			setFolderHash(FolderStore.draftFolder(), '');
+
+			Remote.saveMessage(
+				this.saveMessageResponse,
+				this.currentIdentity() ? this.currentIdentity().id() : '',
+				this.draftFolder(),
+				this.draftUid(),
+				FolderStore.draftFolder(),
+				this.to(),
+				this.cc(),
+				this.bcc(),
+				this.replyTo(),
+				this.subject(),
+				this.oEditor ? this.oEditor.isHtml() : false,
+				this.oEditor ? this.oEditor.getData(true) : '',
+				this.prepearAttachmentsForSendOrSave(),
+				this.aDraftInfo,
+				this.sInReplyTo,
+				this.sReferences,
+				this.markAsImportant()
+			);
+		}
+
+		return true;
+	}
+
+	@command((self) => self.isDraftFolderMessage())
+	deleteCommand() {
+		const PopupsAskViewModel = require('View/Popup/Ask');
+		if (!isPopupVisible(PopupsAskViewModel) && this.modalVisibility())
+		{
+			showScreenPopup(PopupsAskViewModel, [i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'), () => {
+				if (this.modalVisibility())
+				{
+					getApp().deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
+					hideScreenPopup(ComposePopupView);
+				}
+			}]);
+		}
+	}
+
+	@command((self) => self.canBeSentOrSaved())
+	skipCommand() {
+
+		this.bSkipNextHide = true;
+
+		if (this.modalVisibility() && !this.saving() && !this.sending() &&
+			!FolderStore.draftFolderNotEnabled())
+		{
+			this.saveCommand();
+		}
+
+		this.tryToClosePopup();
+	}
+
+	@command((self) => self.allowContacts)
+	contactsCommand() {
+		if (this.allowContacts)
+		{
+			this.skipCommand();
+			_.delay(() => {
+				showScreenPopup(require('View/Popup/Contacts'), [true, this.sLastFocusedField]);
+			}, Magics.Time200ms);
+		}
+	}
+
+	@command((self) => self.dropboxEnabled())
+	dropboxCommand() {
+		if (window.Dropbox)
+		{
+			window.Dropbox.choose({
+				success: (files) => {
+					if (files && files[0] && files[0].link)
+					{
+						this.addDropboxAttachment(files[0]);
+					}
+				},
+				linkType: 'direct',
+				multiselect: false
+			});
+		}
+		return true;
+	}
+
+	@command((self) => self.driveEnabled())
+	driveCommand() {
+		this.driveOpenPopup();
+		return true;
 	}
 
 	autosaveFunction() {
@@ -1991,4 +1988,4 @@ class ComposePopupView extends AbstractViewNext
 	}
 }
 
-module.exports = ComposePopupView;
+export {ComposePopupView, ComposePopupView as default};

@@ -20,7 +20,7 @@
 			</a>
 			&nbsp;&nbsp;
 			<a class="btn hide-on-disabled-command" data-placement="bottom" data-join="top"
-				data-bind="command: saveChanges, tooltipErrorTip: saveErrorText, css: {'btn-danger': '' !== saveErrorText()}">
+				data-bind="command: saveChangesCommand, tooltipErrorTip: saveErrorText, css: {'btn-danger': '' !== saveErrorText()}">
 				<i data-bind="css: {'icon-floppy': !filters.saving(), 'icon-spinner animated': filters.saving()}"></i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n="SETTINGS_FILTERS/BUTTON_SAVE"></span>

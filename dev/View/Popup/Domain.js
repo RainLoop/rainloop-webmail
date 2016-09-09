@@ -5,7 +5,7 @@ import ko from 'ko';
 import {StorageResultType, ServerSecure, Ports, Notification} from 'Common/Enums';
 import {IMAP_DEFAULT_PORT, SIEVE_DEFAULT_PORT, SMTP_DEFAULT_PORT} from 'Common/Consts';
 import {bMobileDevice} from 'Common/Globals';
-import {createCommand, trim, pInt, pString} from 'Common/Utils';
+import {trim, pInt, pString} from 'Common/Utils';
 import {i18n} from 'Common/Translator';
 
 import CapaAdminStore from 'Stores/Admin/Capa';
@@ -14,12 +14,11 @@ import Remote from 'Remote/Admin/Ajax';
 
 import {getApp} from 'Helper/Apps/Admin';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/Domain',
-	type: ViewType.Popup,
 	templateID: 'PopupsDomain'
 })
 class DomainPopupView extends AbstractViewNext
@@ -141,79 +140,6 @@ class DomainPopupView extends AbstractViewNext
 		this.canBeTested = ko.computed(() => !this.testing() && this.domainIsComputed());
 		this.canBeSaved = ko.computed(() => !this.saving() && this.domainIsComputed());
 
-		this.createOrAddCommand = createCommand(() => {
-			this.saving(true);
-			Remote.createOrUpdateDomain(
-				_.bind(this.onDomainCreateOrSaveResponse, this),
-				!this.edit(),
-				this.name(),
-
-				this.imapServer(),
-				pInt(this.imapPort()),
-				this.imapSecure(),
-				this.imapShortLogin(),
-
-				this.useSieve(),
-				this.sieveAllowRaw(),
-				this.sieveServer(),
-				pInt(this.sievePort()),
-				this.sieveSecure(),
-
-				this.smtpServer(),
-				pInt(this.smtpPort()),
-				this.smtpSecure(),
-				this.smtpShortLogin(),
-				this.smtpAuth(),
-				this.smtpPhpMail(),
-
-				this.whiteList()
-			);
-		}, this.canBeSaved);
-
-		this.testConnectionCommand = createCommand(() => {
-
-			this.page('main');
-
-			this.testingDone(false);
-			this.testingImapError(false);
-			this.testingSieveError(false);
-			this.testingSmtpError(false);
-			this.testing(true);
-
-			Remote.testConnectionForDomain(
-				_.bind(this.onTestConnectionResponse, this),
-				this.name(),
-
-				this.imapServer(),
-				pInt(this.imapPort()),
-				this.imapSecure(),
-
-				this.useSieve(),
-				this.sieveServer(),
-				pInt(this.sievePort()),
-				this.sieveSecure(),
-
-				this.smtpServer(),
-				pInt(this.smtpPort()),
-				this.smtpSecure(),
-				this.smtpAuth(),
-				this.smtpPhpMail()
-			);
-		}, this.canBeTested);
-
-		this.whiteListCommand = createCommand(() => {
-			this.page('white-list');
-		});
-
-		this.backCommand = createCommand(() => {
-			this.page('main');
-		});
-
-		this.sieveCommand = createCommand(() => {
-			this.sieveSettings(!this.sieveSettings());
-			this.clearTesting();
-		});
-
 		this.page.subscribe(() => {
 			this.sieveSettings(false);
 		});
@@ -291,6 +217,84 @@ class DomainPopupView extends AbstractViewNext
 				}
 			}
 		});
+	}
+
+	@command((self) => self.canBeSaved())
+	createOrAddCommand() {
+		this.saving(true);
+		Remote.createOrUpdateDomain(
+			_.bind(this.onDomainCreateOrSaveResponse, this),
+			!this.edit(),
+			this.name(),
+
+			this.imapServer(),
+			pInt(this.imapPort()),
+			this.imapSecure(),
+			this.imapShortLogin(),
+
+			this.useSieve(),
+			this.sieveAllowRaw(),
+			this.sieveServer(),
+			pInt(this.sievePort()),
+			this.sieveSecure(),
+
+			this.smtpServer(),
+			pInt(this.smtpPort()),
+			this.smtpSecure(),
+			this.smtpShortLogin(),
+			this.smtpAuth(),
+			this.smtpPhpMail(),
+
+			this.whiteList()
+		);
+	}
+
+	@command((self) => self.canBeTested())
+	testConnectionCommand() {
+
+		this.page('main');
+
+		this.testingDone(false);
+		this.testingImapError(false);
+		this.testingSieveError(false);
+		this.testingSmtpError(false);
+		this.testing(true);
+
+		Remote.testConnectionForDomain(
+			_.bind(this.onTestConnectionResponse, this),
+			this.name(),
+
+			this.imapServer(),
+			pInt(this.imapPort()),
+			this.imapSecure(),
+
+			this.useSieve(),
+			this.sieveServer(),
+			pInt(this.sievePort()),
+			this.sieveSecure(),
+
+			this.smtpServer(),
+			pInt(this.smtpPort()),
+			this.smtpSecure(),
+			this.smtpAuth(),
+			this.smtpPhpMail()
+		);
+	}
+
+	@command()
+	whiteListCommand() {
+		this.page('white-list');
+	}
+
+	@command()
+	backCommand() {
+		this.page('main');
+	}
+
+	@command()
+	sieveCommand() {
+		this.sieveSettings(!this.sieveSettings());
+		this.clearTesting();
 	}
 
 	onTestConnectionResponse(sResult, oData) {
@@ -462,4 +466,4 @@ class DomainPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = DomainPopupView;
+export {DomainPopupView, DomainPopupView as default};

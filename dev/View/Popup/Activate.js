@@ -2,7 +2,7 @@
 import ko from 'ko';
 
 import {StorageResultType, Notification} from 'Common/Enums';
-import {trim, isUnd, createCommand} from 'Common/Utils';
+import {trim, isUnd} from 'Common/Utils';
 import {RAINLOOP_TRIAL_KEY} from 'Common/Consts';
 import {i18n, getNotification} from 'Common/Translator';
 
@@ -11,12 +11,11 @@ import * as Settings from 'Storage/Settings';
 import Remote from 'Remote/Admin/Ajax';
 import LicenseStore from 'Stores/Admin/License';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/Activate',
-	type: ViewType.Popup,
 	templateID: 'PopupsActivate'
 })
 class ActivatePopupView extends AbstractViewNext
@@ -48,54 +47,54 @@ class ActivatePopupView extends AbstractViewNext
 				this.licenseTrigger(!this.licenseTrigger());
 			}
 		});
+	}
 
-		this.activateCommand = createCommand(() => {
+	@command((self) => !self.activateProcess() && '' !== self.domain() && '' !== self.key() && !self.activationSuccessed())
+	activateCommand() {
 
-			this.activateProcess(true);
-			if (this.validateSubscriptionKey())
-			{
-				Remote.licensingActivate((sResult, oData) => {
+		this.activateProcess(true);
+		if (this.validateSubscriptionKey())
+		{
+			Remote.licensingActivate((sResult, oData) => {
 
-					this.activateProcess(false);
-					if (StorageResultType.Success === sResult && oData.Result)
+				this.activateProcess(false);
+				if (StorageResultType.Success === sResult && oData.Result)
+				{
+					if (true === oData.Result)
 					{
-						if (true === oData.Result)
-						{
-							this.activationSuccessed(true);
-							this.activateText(i18n('POPUPS_ACTIVATE/SUBS_KEY_ACTIVATED'));
-							this.activateText.isError(false);
-						}
-						else
-						{
-							this.activateText(oData.Result);
-							this.activateText.isError(true);
-							this.key.focus(true);
-						}
-					}
-					else if (oData.ErrorCode)
-					{
-						this.activateText(getNotification(oData.ErrorCode));
-						this.activateText.isError(true);
-						this.key.focus(true);
+						this.activationSuccessed(true);
+						this.activateText(i18n('POPUPS_ACTIVATE/SUBS_KEY_ACTIVATED'));
+						this.activateText.isError(false);
 					}
 					else
 					{
-						this.activateText(getNotification(Notification.UnknownError));
+						this.activateText(oData.Result);
 						this.activateText.isError(true);
 						this.key.focus(true);
 					}
+				}
+				else if (oData.ErrorCode)
+				{
+					this.activateText(getNotification(oData.ErrorCode));
+					this.activateText.isError(true);
+					this.key.focus(true);
+				}
+				else
+				{
+					this.activateText(getNotification(Notification.UnknownError));
+					this.activateText.isError(true);
+					this.key.focus(true);
+				}
 
-				}, this.domain(), this.key());
-			}
-			else
-			{
-				this.activateProcess(false);
-				this.activateText(i18n('POPUPS_ACTIVATE/ERROR_INVALID_SUBS_KEY'));
-				this.activateText.isError(true);
-				this.key.focus(true);
-			}
-
-		}, () => !this.activateProcess() && '' !== this.domain() && '' !== this.key() && !this.activationSuccessed());
+			}, this.domain(), this.key());
+		}
+		else
+		{
+			this.activateProcess(false);
+			this.activateText(i18n('POPUPS_ACTIVATE/ERROR_INVALID_SUBS_KEY'));
+			this.activateText.isError(true);
+			this.key.focus(true);
+		}
 	}
 
 	onShow(isTrial) {
@@ -127,4 +126,4 @@ class ActivatePopupView extends AbstractViewNext
 	}
 }
 
-module.exports = ActivatePopupView;
+export {ActivatePopupView, ActivatePopupView as default};

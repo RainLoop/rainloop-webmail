@@ -2,7 +2,7 @@
 import ko from 'ko';
 
 import {StorageResultType, Notification} from 'Common/Enums';
-import {trim, isNormal, createCommand} from 'Common/Utils';
+import {trim, isNormal} from 'Common/Utils';
 import {getNotification} from 'Common/Translator';
 import {HtmlEditor} from 'Common/HtmlEditor';
 
@@ -10,12 +10,11 @@ import Remote from 'Remote/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/Template',
-	type: ViewType.Popup,
 	templateID: 'PopupsTemplate'
 })
 class TemplatePopupView extends AbstractViewNext
@@ -46,46 +45,46 @@ class TemplatePopupView extends AbstractViewNext
 
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');
+	}
 
-		this.addTemplateCommand = createCommand(() => {
+	@command((self) => !self.submitRequest())
+	addTemplateCommand() {
 
-			this.populateBodyFromEditor();
+		this.populateBodyFromEditor();
 
-			this.name.error('' === trim(this.name()));
-			this.body.error('' === trim(this.body()) || ':HTML:' === trim(this.body()));
+		this.name.error('' === trim(this.name()));
+		this.body.error('' === trim(this.body()) || ':HTML:' === trim(this.body()));
 
-			if (this.name.error() || this.body.error())
+		if (this.name.error() || this.body.error())
+		{
+			return false;
+		}
+
+		this.submitRequest(true);
+
+		Remote.templateSetup((result, data) => {
+
+			this.submitRequest(false);
+			if (StorageResultType.Success === result && data)
 			{
-				return false;
+				if (data.Result)
+				{
+					getApp().templates();
+					this.cancelCommand();
+				}
+				else if (data.ErrorCode)
+				{
+					this.submitError(getNotification(data.ErrorCode));
+				}
+			}
+			else
+			{
+				this.submitError(getNotification(Notification.UnknownError));
 			}
 
-			this.submitRequest(true);
+		}, this.id(), this.name(), this.body());
 
-			Remote.templateSetup((result, data) => {
-
-				this.submitRequest(false);
-				if (StorageResultType.Success === result && data)
-				{
-					if (data.Result)
-					{
-						getApp().templates();
-						this.cancelCommand();
-					}
-					else if (data.ErrorCode)
-					{
-						this.submitError(getNotification(data.ErrorCode));
-					}
-				}
-				else
-				{
-					this.submitError(getNotification(Notification.UnknownError));
-				}
-
-			}, this.id(), this.name(), this.body());
-
-			return true;
-
-		}, () => !this.submitRequest());
+		return true;
 	}
 
 	clearPopup() {
@@ -183,4 +182,4 @@ class TemplatePopupView extends AbstractViewNext
 	}
 }
 
-module.exports = TemplatePopupView;
+export {TemplatePopupView, TemplatePopupView as default};

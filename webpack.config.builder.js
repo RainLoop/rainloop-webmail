@@ -3,9 +3,9 @@ var
 	path = require('path'),
 	webpack = require('webpack'),
 	devPath = path.resolve(__dirname, 'dev'),
-
 	CopyWebpackPlugin = require('copy-webpack-plugin'),
-	WebpackNotifierPlugin = require('webpack-notifier');
+	WebpackNotifierPlugin = require('webpack-notifier'),
+	loose = true;
 
 module.exports = function(publicPath, pro, es6) {
 	return {
@@ -54,29 +54,29 @@ module.exports = function(publicPath, pro, es6) {
 					include: [devPath],
 					query: !es6 ? {
 						cacheDirectory: true,
-						presets: [['es2015', {loose: true, modules: false}], 'es2016', 'stage-0'],
+						presets: [['es2015', {loose: loose, modules: false}], 'es2016', 'stage-0'],
 						plugins: ['transform-runtime', 'transform-decorators-legacy']
 					} : {
 						cacheDirectory: true,
 						plugins: [
 // es2015
-["transform-es2015-template-literals", {loose: true}],
+["transform-es2015-template-literals", {loose: loose}],
 "transform-es2015-literals",
 "transform-es2015-function-name",
 // ["transform-es2015-arrow-functions")],
 "transform-es2015-block-scoped-functions",
-// ["transform-es2015-classes", {loose: true}],
+// ["transform-es2015-classes", {loose: loose}],
 // "transform-es2015-object-super",
 "transform-es2015-shorthand-properties",
 "transform-es2015-duplicate-keys",
-["transform-es2015-computed-properties", {loose: true}],
-["transform-es2015-for-of", {loose: true}],
+["transform-es2015-computed-properties", {loose: loose}],
+["transform-es2015-for-of", {loose: loose}],
 "transform-es2015-sticky-regex",
 "transform-es2015-unicode-regex",
 // "check-es2015-constants",
-//["transform-es2015-spread", {loose: true}],
+//["transform-es2015-spread", {loose: loose}],
 // "transform-es2015-parameters",
-//["transform-es2015-destructuring", {loose: true}],
+//["transform-es2015-destructuring", {loose: loose}],
 // "transform-es2015-block-scoping",
 "transform-es2015-typeof-symbol",
 // ["transform-regenerator", { async: false, asyncGenerators: false }],

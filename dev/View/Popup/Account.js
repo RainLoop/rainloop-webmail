@@ -2,19 +2,18 @@
 import ko from 'ko';
 
 import {StorageResultType, Notification} from 'Common/Enums';
-import {trim, createCommand} from 'Common/Utils';
+import {trim} from 'Common/Utils';
 import {getNotification} from 'Common/Translator';
 
 import Remote from 'Remote/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/Account',
-	type: ViewType.Popup,
 	templateID: 'PopupsAccount'
 })
 class AccountPopupView extends AbstractViewNext
@@ -43,51 +42,51 @@ class AccountPopupView extends AbstractViewNext
 		this.submitErrorAdditional = ko.observable('');
 
 		this.emailFocus = ko.observable(false);
+	}
 
-		this.addAccountCommand = createCommand(() => {
+	@command((self) => !self.submitRequest())
+	addAccountCommand() {
 
-			this.emailError('' === trim(this.email()));
-			this.passwordError('' === trim(this.password()));
+		this.emailError('' === trim(this.email()));
+		this.passwordError('' === trim(this.password()));
 
-			if (this.emailError() || this.passwordError())
+		if (this.emailError() || this.passwordError())
+		{
+			return false;
+		}
+
+		this.submitRequest(true);
+
+		Remote.accountSetup((result, data) => {
+
+			this.submitRequest(false);
+			if (StorageResultType.Success === result && data)
 			{
-				return false;
-			}
-
-			this.submitRequest(true);
-
-			Remote.accountSetup((result, data) => {
-
-				this.submitRequest(false);
-				if (StorageResultType.Success === result && data)
+				if (data.Result)
 				{
-					if (data.Result)
-					{
-						getApp().accountsAndIdentities();
-						this.cancelCommand();
-					}
-					else
-					{
-						this.submitError(data.ErrorCode ? getNotification(data.ErrorCode) :
-							getNotification(Notification.UnknownError));
-
-						if (data.ErrorMessageAdditional)
-						{
-							this.submitErrorAdditional(data.ErrorMessageAdditional);
-						}
-					}
+					getApp().accountsAndIdentities();
+					this.cancelCommand();
 				}
 				else
 				{
-					this.submitError(getNotification(Notification.UnknownError));
-					this.submitErrorAdditional('');
+					this.submitError(data.ErrorCode ? getNotification(data.ErrorCode) :
+						getNotification(Notification.UnknownError));
+
+					if (data.ErrorMessageAdditional)
+					{
+						this.submitErrorAdditional(data.ErrorMessageAdditional);
+					}
 				}
+			}
+			else
+			{
+				this.submitError(getNotification(Notification.UnknownError));
+				this.submitErrorAdditional('');
+			}
 
-			}, this.email(), this.password(), this.isNew());
+		}, this.email(), this.password(), this.isNew());
 
-			return true;
-
-		}, () => !this.submitRequest());
+		return true;
 	}
 
 	clearPopup() {
@@ -118,4 +117,4 @@ class AccountPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = AccountPopupView;
+export {AccountPopupView, AccountPopupView as default};

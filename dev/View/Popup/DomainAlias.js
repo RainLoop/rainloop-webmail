@@ -4,7 +4,6 @@ import ko from 'ko';
 
 import {StorageResultType, Notification} from 'Common/Enums';
 import {bMobileDevice} from 'Common/Globals';
-import {createCommand} from 'Common/Utils';
 import {i18n} from 'Common/Translator';
 
 import DomainStore from 'Stores/Admin/Domain';
@@ -13,12 +12,11 @@ import Remote from 'Remote/Admin/Ajax';
 
 import {getApp} from 'Helper/Apps/Admin';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/DomainAlias',
-	type: ViewType.Popup,
 	templateID: 'PopupsDomainAlias'
 })
 class DomainAliasPopupView extends AbstractViewNext
@@ -42,16 +40,17 @@ class DomainAliasPopupView extends AbstractViewNext
 
 		this.canBeSaved = ko.computed(() => !this.saving() && '' !== this.name() && '' !== this.alias());
 
-		this.createCommand = createCommand(() => {
-			this.saving(true);
-			Remote.createDomainAlias(
-				this.onDomainAliasCreateOrSaveResponse,
-				this.name(),
-				this.alias()
-			);
-		}, this.canBeSaved);
-
 		this.onDomainAliasCreateOrSaveResponse = _.bind(this.onDomainAliasCreateOrSaveResponse, this);
+	}
+
+	@command((self) => self.canBeSaved())
+	createCommand() {
+		this.saving(true);
+		Remote.createDomainAlias(
+			this.onDomainAliasCreateOrSaveResponse,
+			this.name(),
+			this.alias()
+		);
 	}
 
 	onDomainAliasCreateOrSaveResponse(result, data) {
@@ -96,4 +95,4 @@ class DomainAliasPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = DomainAliasPopupView;
+export {DomainAliasPopupView, DomainAliasPopupView as default};

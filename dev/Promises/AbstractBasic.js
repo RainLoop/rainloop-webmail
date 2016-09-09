@@ -5,9 +5,7 @@ import {isArray} from 'Common/Utils';
 
 class AbstractBasicPromises
 {
-	constructor() {
-		this.oPromisesStack = {};
-	}
+	oPromisesStack = {};
 
 	func(fFunc) {
 		fFunc();

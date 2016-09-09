@@ -6,6 +6,8 @@ import {CLIENT_SIDE_STORAGE_INDEX_NAME} from 'Common/Consts';
 
 class LocalStorageDriver
 {
+	s = null;
+
 	constructor() {
 		this.s = window.localStorage || null;
 	}

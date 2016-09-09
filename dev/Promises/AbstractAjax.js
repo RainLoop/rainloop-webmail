@@ -14,9 +14,11 @@ import {AbstractBasicPromises} from 'Promises/AbstractBasic';
 
 class AbstractAjaxPromises extends AbstractBasicPromises
 {
+	oRequests = {};
+
 	constructor() {
 		super();
-		this.oRequests = {};
+
 		this.clear();
 	}
 

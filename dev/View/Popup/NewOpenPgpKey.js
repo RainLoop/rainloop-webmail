@@ -3,18 +3,17 @@ import _ from '_';
 import ko from 'ko';
 
 import {Magics} from 'Common/Enums';
-import {trim, log, createCommand, delegateRun, pInt} from 'Common/Utils';
+import {trim, log, delegateRun, pInt} from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/NewOpenPgpKey',
-	type: ViewType.Popup,
 	templateID: 'PopupsNewOpenPgpKey'
 })
 class NewOpenPgpKeyPopupView extends AbstractViewNext
@@ -36,66 +35,67 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext
 		this.email.subscribe(() => {
 			this.email.error(false);
 		});
+	}
 
-		this.generateOpenPgpKeyCommand = createCommand(() => {
+	@command()
+	generateOpenPgpKeyCommand() {
 
-			const
-				userId = {},
-				openpgpKeyring = PgpStore.openpgpKeyring;
+		const
+			userId = {},
+			openpgpKeyring = PgpStore.openpgpKeyring;
 
-			this.email.error('' === trim(this.email()));
-			if (!openpgpKeyring || this.email.error())
-			{
-				return false;
-			}
+		this.email.error('' === trim(this.email()));
+		if (!openpgpKeyring || this.email.error())
+		{
+			return false;
+		}
 
-			userId.email = this.email();
-			if ('' !== this.name())
-			{
-				userId.name = this.name();
-			}
+		userId.email = this.email();
+		if ('' !== this.name())
+		{
+			userId.name = this.name();
+		}
 
-			this.submitRequest(true);
-			this.submitError('');
+		this.submitRequest(true);
+		this.submitError('');
 
-			_.delay(() => {
+		_.delay(() => {
 
-				try {
+			try {
 
-					PgpStore.openpgp.generateKey({
-						userIds: [userId],
-						numBits: pInt(this.keyBitLength()),
-						passphrase: trim(this.password())
-					}).then((keyPair) => {
+				PgpStore.openpgp.generateKey({
+					userIds: [userId],
+					numBits: pInt(this.keyBitLength()),
+					passphrase: trim(this.password())
+				}).then((keyPair) => {
 
-						this.submitRequest(false);
+					this.submitRequest(false);
 
-						if (keyPair && keyPair.privateKeyArmored)
-						{
-							openpgpKeyring.privateKeys.importKey(keyPair.privateKeyArmored);
-							openpgpKeyring.publicKeys.importKey(keyPair.publicKeyArmored);
+					if (keyPair && keyPair.privateKeyArmored)
+					{
+						openpgpKeyring.privateKeys.importKey(keyPair.privateKeyArmored);
+						openpgpKeyring.publicKeys.importKey(keyPair.publicKeyArmored);
 
-							openpgpKeyring.store();
+						openpgpKeyring.store();
 
-							getApp().reloadOpenPgpKeys();
-							delegateRun(this, 'cancelCommand');
-						}
+						getApp().reloadOpenPgpKeys();
+						delegateRun(this, 'cancelCommand');
+					}
 
-					}).catch((e) => {
-						this.submitRequest(false);
-						this.showError(e);
-					});
-				}
-				catch (e)
-				{
+				}).catch((e) => {
 					this.submitRequest(false);
 					this.showError(e);
-				}
+				});
+			}
+			catch (e)
+			{
+				this.submitRequest(false);
+				this.showError(e);
+			}
 
-			}, Magics.Time100ms);
+		}, Magics.Time100ms);
 
-			return true;
-		});
+		return true;
 	}
 
 	showError(e) {
@@ -126,4 +126,4 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = NewOpenPgpKeyPopupView;
+export {NewOpenPgpKeyPopupView, NewOpenPgpKeyPopupView as default};

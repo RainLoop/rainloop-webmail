@@ -4,15 +4,14 @@ import ko from 'ko';
 import key from 'key';
 import $ from '$';
 
-import {createCommand, pString, log} from 'Common/Utils';
+import {pString, log} from 'Common/Utils';
 import {KeyState, Magics} from 'Common/Enums';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/MessageOpenPgp',
-	type: ViewType.Popup,
 	templateID: 'PopupsMessageOpenPgp'
 })
 class MessageOpenPgpPopupView extends AbstractViewNext
@@ -33,60 +32,59 @@ class MessageOpenPgpPopupView extends AbstractViewNext
 
 		this.submitRequest = ko.observable(false);
 
-		// commands
-		this.doCommand = createCommand(() => {
+		this.sDefaultKeyScope = KeyState.PopupMessageOpenPGP;
+	}
 
-			this.submitRequest(true);
+	@command((self) => !self.submitRequest())
+	doCommand() {
 
-			_.delay(() => {
+		this.submitRequest(true);
 
-				let privateKey = null;
+		_.delay(() => {
 
-				try
+			let privateKey = null;
+
+			try
+			{
+				if (this.resultCallback && this.selectedKey())
 				{
-					if (this.resultCallback && this.selectedKey())
-					{
-						const privateKeys = this.selectedKey().getNativeKeys();
-						privateKey = privateKeys && privateKeys[0] ? privateKeys[0] : null;
+					const privateKeys = this.selectedKey().getNativeKeys();
+					privateKey = privateKeys && privateKeys[0] ? privateKeys[0] : null;
 
-						if (privateKey)
+					if (privateKey)
+					{
+						try
 						{
-							try
+							if (!privateKey.decrypt(pString(this.password())))
 							{
-								if (!privateKey.decrypt(pString(this.password())))
-								{
-									log('Error: Private key cannot be decrypted');
-									privateKey = null;
-								}
-							}
-							catch (e)
-							{
-								log(e);
+								log('Error: Private key cannot be decrypted');
 								privateKey = null;
 							}
 						}
-						else
+						catch (e)
 						{
-							log('Error: Private key cannot be found');
+							log(e);
+							privateKey = null;
 						}
 					}
+					else
+					{
+						log('Error: Private key cannot be found');
+					}
 				}
-				catch (e)
-				{
-					log(e);
-					privateKey = null;
-				}
+			}
+			catch (e)
+			{
+				log(e);
+				privateKey = null;
+			}
 
-				this.submitRequest(false);
+			this.submitRequest(false);
 
-				this.cancelCommand();
-				this.resultCallback(privateKey);
+			this.cancelCommand();
+			this.resultCallback(privateKey);
 
-			}, Magics.Time100ms);
-
-		}, () => !this.submitRequest());
-
-		this.sDefaultKeyScope = KeyState.PopupMessageOpenPGP;
+		}, Magics.Time100ms);
 	}
 
 	clearPopup() {
@@ -162,4 +160,4 @@ class MessageOpenPgpPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = MessageOpenPgpPopupView;
+export {MessageOpenPgpPopupView, MessageOpenPgpPopupView as default};

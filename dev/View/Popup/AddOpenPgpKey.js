@@ -1,17 +1,16 @@
 
 import ko from 'ko';
-import {trim, delegateRun, createCommand, log} from 'Common/Utils';
+import {trim, delegateRun, log} from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/AddOpenPgpKey',
-	type: ViewType.Popup,
 	templateID: 'PopupsAddOpenPgpKey'
 })
 class AddOpenPgpKeyPopupView extends AbstractViewNext
@@ -28,80 +27,81 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext
 			this.key.error(false);
 			this.key.errorMessage('');
 		});
+	}
 
-		this.addOpenPgpKeyCommand = createCommand(() => {
+	@command()
+	addOpenPgpKeyCommand() {
 
-			const
-				reg = /[\-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}[\s\S]+?[\-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}/gi,
-				openpgpKeyring = PgpStore.openpgpKeyring;
+		const
+			reg = /[\-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}[\s\S]+?[\-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[\-]{3,6}/gi,
+			openpgpKeyring = PgpStore.openpgpKeyring;
 
-			let keyTrimmed = trim(this.key());
+		let keyTrimmed = trim(this.key());
 
-			if (/[\n]/.test(keyTrimmed))
+		if (/[\n]/.test(keyTrimmed))
+		{
+			keyTrimmed = keyTrimmed.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
+		}
+
+		this.key.error('' === keyTrimmed);
+		this.key.errorMessage('');
+
+		if (!openpgpKeyring || this.key.error())
+		{
+			return false;
+		}
+
+		let
+			match = null,
+			count = 30,
+			done = false;
+
+		do
+		{
+			match = reg.exec(keyTrimmed);
+			if (match && 0 < count)
 			{
-				keyTrimmed = keyTrimmed.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
-			}
-
-			this.key.error('' === keyTrimmed);
-			this.key.errorMessage('');
-
-			if (!openpgpKeyring || this.key.error())
-			{
-				return false;
-			}
-
-			let
-				match = null,
-				count = 30,
-				done = false;
-
-			do
-			{
-				match = reg.exec(keyTrimmed);
-				if (match && 0 < count)
+				if (match[0] && match[1] && match[2] && match[1] === match[2])
 				{
-					if (match[0] && match[1] && match[2] && match[1] === match[2])
+					let err = null;
+					if ('PRIVATE' === match[1])
 					{
-						let err = null;
-						if ('PRIVATE' === match[1])
-						{
-							err = openpgpKeyring.privateKeys.importKey(match[0]);
-						}
-						else if ('PUBLIC' === match[1])
-						{
-							err = openpgpKeyring.publicKeys.importKey(match[0]);
-						}
-
-						if (err)
-						{
-							this.key.error(true);
-							this.key.errorMessage(err && err[0] ? '' + err[0] : '');
-							log(err);
-						}
+						err = openpgpKeyring.privateKeys.importKey(match[0]);
+					}
+					else if ('PUBLIC' === match[1])
+					{
+						err = openpgpKeyring.publicKeys.importKey(match[0]);
 					}
 
-					count -= 1;
-					done = false;
+					if (err)
+					{
+						this.key.error(true);
+						this.key.errorMessage(err && err[0] ? '' + err[0] : '');
+						log(err);
+					}
 				}
-				else
-				{
-					done = true;
-				}
+
+				count -= 1;
+				done = false;
 			}
-			while (!done);
-
-			openpgpKeyring.store();
-
-			getApp().reloadOpenPgpKeys();
-
-			if (this.key.error())
+			else
 			{
-				return false;
+				done = true;
 			}
+		}
+		while (!done);
 
-			delegateRun(this, 'cancelCommand');
-			return true;
-		});
+		openpgpKeyring.store();
+
+		getApp().reloadOpenPgpKeys();
+
+		if (this.key.error())
+		{
+			return false;
+		}
+
+		delegateRun(this, 'cancelCommand');
+		return true;
 	}
 
 	clearPopup() {
@@ -119,4 +119,4 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = AddOpenPgpKeyPopupView;
+export {AddOpenPgpKeyPopupView, AddOpenPgpKeyPopupView as default};

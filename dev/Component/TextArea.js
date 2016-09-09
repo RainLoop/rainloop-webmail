@@ -8,7 +8,6 @@ const DEFAULT_ROWS = 5;
 class TextAreaComponent extends AbstractInput
 {
 	/**
-	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {

@@ -1,9 +1,9 @@
 
-import {createCommand} from 'Common/Utils';
-
 import SocialStore from 'Stores/Social';
 
 import {getApp} from 'Helper/Apps/User';
+
+import {command} from 'Knoin/Knoin';
 
 class SocialUserSettings
 {
@@ -29,39 +29,45 @@ class SocialUserSettings
 		this.twitterActions = SocialStore.twitter.loading;
 		this.twitterLoggined = SocialStore.twitter.loggined;
 		this.twitterUserName = SocialStore.twitter.userName;
+	}
 
-		this.connectGoogle = createCommand(() => {
-			if (!this.googleLoggined())
-			{
-				getApp().googleConnect();
-			}
-		}, () => !this.googleLoggined() && !this.googleActions());
+	@command((self) => !self.googleLoggined() && !self.googleActions())
+	connectGoogleCommand() {
+		if (!this.googleLoggined())
+		{
+			getApp().googleConnect();
+		}
+	}
 
-		this.disconnectGoogle = createCommand(() => {
-			getApp().googleDisconnect();
-		});
+	@command()
+	disconnectGoogleCommand() {
+		getApp().googleDisconnect();
+	}
 
-		this.connectFacebook = createCommand(() => {
-			if (!this.facebookLoggined())
-			{
-				getApp().facebookConnect();
-			}
-		}, () => !this.facebookLoggined() && !this.facebookActions());
+	@command((self) => !self.facebookLoggined() && !self.facebookActions())
+	connectFacebookCommand() {
+		if (!this.facebookLoggined())
+		{
+			getApp().facebookConnect();
+		}
+	}
 
-		this.disconnectFacebook = createCommand(() => {
-			getApp().facebookDisconnect();
-		});
+	@command()
+	disconnectFacebookCommand() {
+		getApp().facebookDisconnect();
+	}
 
-		this.connectTwitter = createCommand(() => {
-			if (!this.twitterLoggined())
-			{
-				getApp().twitterConnect();
-			}
-		}, () => !this.twitterLoggined() && !this.twitterActions());
+	@command((self) => !self.twitterLoggined() && !self.twitterActions())
+	connectTwitterCommand() {
+		if (!this.twitterLoggined())
+		{
+			getApp().twitterConnect();
+		}
+	}
 
-		this.disconnectTwitter = createCommand(() => {
-			getApp().twitterDisconnect();
-		});
+	@command()
+	disconnectTwitterCommand() {
+		getApp().twitterDisconnect();
 	}
 }
 

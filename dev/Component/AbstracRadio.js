@@ -7,7 +7,6 @@ import {AbstractComponent} from 'Component/Abstract';
 class AbstracRadio extends AbstractComponent
 {
 	/**
-	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {

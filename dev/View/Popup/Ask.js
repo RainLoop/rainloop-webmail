@@ -6,12 +6,11 @@ import {KeyState} from 'Common/Enums';
 import {isFunc} from 'Common/Utils';
 import {i18n} from 'Common/Translator';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/Ask',
-	type: ViewType.Popup,
 	templateID: 'PopupsAsk'
 })
 class AskPopupView extends AbstractViewNext
@@ -122,4 +121,4 @@ class AskPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = AskPopupView;
+export {AskPopupView, AskPopupView as default};

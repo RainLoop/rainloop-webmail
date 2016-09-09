@@ -14,12 +14,11 @@ import Remote from 'Remote/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType, showScreenPopup} from 'Knoin/Knoin';
+import {popup, showScreenPopup} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/TwoFactorConfiguration',
-	type: ViewType.Popup,
 	templateID: 'PopupsTwoFactorConfiguration'
 })
 class TwoFactorConfigurationPopupView extends AbstractViewNext
@@ -214,4 +213,4 @@ class TwoFactorConfigurationPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = TwoFactorConfigurationPopupView;
+export {TwoFactorConfigurationPopupView, TwoFactorConfigurationPopupView as default};

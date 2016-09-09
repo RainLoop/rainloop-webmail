@@ -6,7 +6,6 @@ import {AbstractComponent} from 'Component/Abstract';
 class AbstracCheckbox extends AbstractComponent
 {
 	/**
-	 * @constructor
 	 * @param {Object} params = {}
 	 */
 	constructor(params = {}) {

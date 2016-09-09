@@ -4,13 +4,15 @@ import ko from 'ko';
 
 import {
 	settingsSaveHelperSimpleFunction,
-	defautOptionsAfterRender, createCommand,
+	defautOptionsAfterRender,
 	inArray, trim, boolToAjax
 } from 'Common/Utils';
 
 import {SaveSettingsStep, StorageResultType, Magics} from 'Common/Enums';
 import {i18n} from 'Common/Translator';
 import {settingsGet} from 'Storage/Settings';
+import Remote from 'Remote/Admin/Ajax';
+import {command} from 'Knoin/Knoin';
 
 class ContactsAdminSettings
 {
@@ -21,7 +23,6 @@ class ContactsAdminSettings
 		this.contactsSync = ko.observable(!!settingsGet('ContactsSync'));
 
 		const
-			Remote = require('Remote/Admin/Ajax'),
 			supportedTypes = [],
 			types = ['sqlite', 'mysql', 'pgsql'],
 			getTypeName = (name) => {
@@ -111,25 +112,24 @@ class ContactsAdminSettings
 		this.testContactsError = ko.observable(false);
 		this.testContactsErrorMessage = ko.observable('');
 
-		this.testContactsCommand = createCommand(() => {
-
-			this.testContactsSuccess(false);
-			this.testContactsError(false);
-			this.testContactsErrorMessage('');
-			this.testing(true);
-
-			Remote.testContacts(this.onTestContactsResponse, {
-				'ContactsPdoType': this.contactsType(),
-				'ContactsPdoDsn': this.pdoDsn(),
-				'ContactsPdoUser': this.pdoUser(),
-				'ContactsPdoPassword': this.pdoPassword()
-			});
-
-		}, () => '' !== this.pdoDsn() && '' !== this.pdoUser());
-
 		this.contactsType(settingsGet('ContactsPdoType'));
 
 		this.onTestContactsResponse = _.bind(this.onTestContactsResponse, this);
+	}
+
+	@command((self) => '' !== self.pdoDsn() && '' !== self.pdoUser())
+	testContactsCommand() {
+		this.testContactsSuccess(false);
+		this.testContactsError(false);
+		this.testContactsErrorMessage('');
+		this.testing(true);
+
+		Remote.testContacts(this.onTestContactsResponse, {
+			'ContactsPdoType': this.contactsType(),
+			'ContactsPdoDsn': this.pdoDsn(),
+			'ContactsPdoUser': this.pdoUser(),
+			'ContactsPdoPassword': this.pdoPassword()
+		});
 	}
 
 	onTestContactsResponse(result, data) {
@@ -166,7 +166,6 @@ class ContactsAdminSettings
 	onBuild() {
 		_.delay(() => {
 			const
-				Remote = require('Remote/Admin/Ajax'),
 				f1 = settingsSaveHelperSimpleFunction(this.pdoDsnTrigger, this),
 				f3 = settingsSaveHelperSimpleFunction(this.pdoUserTrigger, this),
 				f4 = settingsSaveHelperSimpleFunction(this.pdoPasswordTrigger, this),

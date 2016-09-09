@@ -22,8 +22,7 @@ import {
 import {
 	inArray, isArray, isNonEmptyArray, trim, noop,
 	windowResize, windowResizeCallback, inFocus,
-	removeSelection, removeInFocus, mailToHelper,
-	createCommand
+	removeSelection, removeInFocus, mailToHelper
 } from 'Common/Utils';
 
 import Audio from 'Common/Audio';
@@ -52,7 +51,7 @@ import Promises from 'Promises/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, command, ViewType, showScreenPopup} from 'Knoin/Knoin';
+import {view, command, ViewType, showScreenPopup, createCommand} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
 @view({

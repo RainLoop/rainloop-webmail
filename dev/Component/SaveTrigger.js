@@ -6,7 +6,6 @@ import {AbstractComponent, componentExportHelper} from 'Component/Abstract';
 class SaveTriggerComponent extends AbstractComponent
 {
 	/**
-	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {

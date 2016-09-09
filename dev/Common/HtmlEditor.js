@@ -3,13 +3,27 @@ import window from 'window';
 import _ from '_';
 import $ from '$';
 import {htmlEditorDefaultConfig, htmlEditorLangsMap} from 'Common/Globals';
-import {EventKeyCode} from 'Common/Enums';
+import {EventKeyCode, Magics} from 'Common/Enums';
 import * as Settings from 'Storage/Settings';
 
 class HtmlEditor
 {
+	editor;
+	blurTimer = 0;
+
+	__resizable = false;
+	__inited = false;
+
+	onBlur = null;
+	onReady = null;
+	onModeChange = null;
+
+	element;
+	$element;
+
+	resize;
+
 	/**
-	 * @constructor
 	 * @param {Object} element
 	 * @param {Function=} onBlur
 	 * @param {Function=} onReady
@@ -17,9 +31,6 @@ class HtmlEditor
 	 */
 	constructor(element, onBlur = null, onReady = null, onModeChange = null)
 	{
-		this.editor = null;
-		this.blurTimer = 0;
-
 		this.onBlur = onBlur;
 		this.onReady = onReady;
 		this.onModeChange = onModeChange;
@@ -27,11 +38,16 @@ class HtmlEditor
 		this.element = element;
 		this.$element = $(element);
 
-		this.resize = _.throttle(_.bind(this.resize, this), 100);
-
-		this.__inited = false;
+		this.resize = _.throttle(_.bind(this.resizeEditor, this), 100);
 
 		this.init();
+	}
+
+	runOnBlur() {
+		if (this.onBlur)
+		{
+			this.onBlur();
+		}
 	}
 
 	blurTrigger() {
@@ -39,8 +55,8 @@ class HtmlEditor
 		{
 			window.clearTimeout(this.blurTimer);
 			this.blurTimer = window.setTimeout(() => {
-				this.onBlur();
-			}, 200);
+				this.runOnBlur();
+			}, Magics.Time200ms);
 		}
 	}
 
@@ -198,8 +214,7 @@ class HtmlEditor
 		if (this.editor && this.__inited && 'wysiwyg' === this.editor.mode)
 		{
 			try {
-				this.editor.setData(
-					this.editor.getData().replace(find, replaceHtml));
+				this.editor.setData(this.editor.getData().replace(find, replaceHtml));
 			}
 			catch (e) {} // eslint-disable-line no-empty
 		}
@@ -387,7 +402,7 @@ class HtmlEditor
 		}
 	}
 
-	resize() {
+	resizeEditor() {
 		if (this.editor && this.__resizable)
 		{
 			try {

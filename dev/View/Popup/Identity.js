@@ -3,19 +3,18 @@ import ko from 'ko';
 
 import {StorageResultType, Notification} from 'Common/Enums';
 import {bMobileDevice} from 'Common/Globals';
-import {createCommand, trim, fakeMd5} from 'Common/Utils';
+import {trim, fakeMd5} from 'Common/Utils';
 import {getNotification} from 'Common/Translator';
 
 import Remote from 'Remote/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/Identity',
-	type: ViewType.Popup,
 	templateID: 'PopupsIdentity'
 })
 class IdentityPopupView extends AbstractViewNext
@@ -58,68 +57,68 @@ class IdentityPopupView extends AbstractViewNext
 				this.showReplyTo(true);
 			}
 		});
+	}
 
-		this.addOrEditIdentityCommand = createCommand(() => {
+	@command((self) => !self.submitRequest())
+	addOrEditIdentityCommand() {
 
-			if (this.signature && this.signature.__fetchEditorValue)
+		if (this.signature && this.signature.__fetchEditorValue)
+		{
+			this.signature.__fetchEditorValue();
+		}
+
+		if (!this.email.hasError())
+		{
+			this.email.hasError('' === trim(this.email()));
+		}
+
+		if (this.email.hasError())
+		{
+			if (!this.owner())
 			{
-				this.signature.__fetchEditorValue();
+				this.email.focused(true);
 			}
 
-			if (!this.email.hasError())
-			{
-				this.email.hasError('' === trim(this.email()));
-			}
+			return false;
+		}
 
-			if (this.email.hasError())
+		if (this.replyTo.hasError())
+		{
+			this.replyTo.focused(true);
+			return false;
+		}
+
+		if (this.bcc.hasError())
+		{
+			this.bcc.focused(true);
+			return false;
+		}
+
+		this.submitRequest(true);
+
+		Remote.identityUpdate((result, data) => {
+
+			this.submitRequest(false);
+			if (StorageResultType.Success === result && data)
 			{
-				if (!this.owner())
+				if (data.Result)
 				{
-					this.email.focused(true);
+					getApp().accountsAndIdentities();
+					this.cancelCommand();
 				}
-
-				return false;
-			}
-
-			if (this.replyTo.hasError())
-			{
-				this.replyTo.focused(true);
-				return false;
-			}
-
-			if (this.bcc.hasError())
-			{
-				this.bcc.focused(true);
-				return false;
-			}
-
-			this.submitRequest(true);
-
-			Remote.identityUpdate((result, data) => {
-
-				this.submitRequest(false);
-				if (StorageResultType.Success === result && data)
+				else if (data.ErrorCode)
 				{
-					if (data.Result)
-					{
-						getApp().accountsAndIdentities();
-						this.cancelCommand();
-					}
-					else if (data.ErrorCode)
-					{
-						this.submitError(getNotification(data.ErrorCode));
-					}
+					this.submitError(getNotification(data.ErrorCode));
 				}
-				else
-				{
-					this.submitError(getNotification(Notification.UnknownError));
-				}
+			}
+			else
+			{
+				this.submitError(getNotification(Notification.UnknownError));
+			}
 
-			}, this.id, this.email(), this.name(), this.replyTo(), this.bcc(), this.signature(), this.signatureInsertBefore());
+		}, this.id, this.email(), this.name(), this.replyTo(), this.bcc(), this.signature(), this.signatureInsertBefore());
 
-			return true;
-
-		}, () => !this.submitRequest());
+		return true;
 	}
 
 	clearPopup() {
@@ -184,4 +183,4 @@ class IdentityPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = IdentityPopupView;
+export {IdentityPopupView, IdentityPopupView as default};

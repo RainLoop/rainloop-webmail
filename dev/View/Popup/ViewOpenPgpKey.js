@@ -5,12 +5,11 @@ import key from 'key';
 import {KeyState} from 'Common/Enums';
 import {selectElement} from 'Common/Utils';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/ViewOpenPgpKey',
-	type: ViewType.Popup,
 	templateID: 'PopupsTwoFactorTest'
 })
 class ViewOpenPgpKeyPopupView extends AbstractViewNext
@@ -53,4 +52,4 @@ class ViewOpenPgpKeyPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = ViewOpenPgpKeyPopupView;
+export {ViewOpenPgpKeyPopupView, ViewOpenPgpKeyPopupView as default};

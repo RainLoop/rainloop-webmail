@@ -4,7 +4,7 @@
 			<span class="i18n" data-i18n="SETTINGS_SOCIAL/LEGEND_GOOGLE"></span>
 		</div>
 		<div class="control-group" data-bind="visible: !googleLoggined()">
-			<button class="btn" data-bind="command: connectGoogle">
+			<button class="btn" data-bind="command: connectGoogleCommand">
 				<i class="icon-google" data-bind="visible: !googleActions()"></i>
 				<i class="icon-spinner animated" data-bind="visible: googleActions()"></i>
 				&nbsp;&nbsp;
@@ -24,7 +24,7 @@
 			</strong>
 			<br />
 			<br />
-			<button class="btn" data-bind="command: disconnectGoogle">
+			<button class="btn" data-bind="command: disconnectGoogleCommand">
 				<i class="icon-remove" data-bind="visible: !googleActions()"></i>
 				<i class="icon-spinner animated" data-bind="visible: googleActions()"></i>
 				&nbsp;&nbsp;
@@ -37,7 +37,7 @@
 			<span class="i18n" data-i18n="SETTINGS_SOCIAL/LEGEND_FACEBOOK"></span>
 		</div>
 		<div class="control-group" data-bind="visible: !facebookLoggined()">
-			<button class="btn" data-bind="command: connectFacebook">
+			<button class="btn" data-bind="command: connectFacebookCommand">
 				<i class="icon-facebook" data-bind="visible: !facebookActions()"></i>
 				<i class="icon-spinner animated" data-bind="visible: facebookActions()"></i>
 				&nbsp;&nbsp;
@@ -57,7 +57,7 @@
 			</strong>
 			<br />
 			<br />
-			<button class="btn" data-bind="command: disconnectFacebook">
+			<button class="btn" data-bind="command: disconnectFacebookCommand">
 				<i class="icon-remove" data-bind="visible: !facebookActions()"></i>
 				<i class="icon-spinner animated" data-bind="visible: facebookActions()"></i>
 				&nbsp;&nbsp;
@@ -70,7 +70,7 @@
 			<span class="i18n" data-i18n="SETTINGS_SOCIAL/LEGEND_TWITTER"></span>
 		</div>
 		<div class="control-group" data-bind="visible: !twitterLoggined()">
-			<button class="btn" data-bind="command: connectTwitter">
+			<button class="btn" data-bind="command: connectTwitterCommand">
 				<i class="icon-twitter" data-bind="visible: !twitterActions()"></i>
 				<i class="icon-spinner animated" data-bind="visible: twitterActions()"></i>
 				&nbsp;&nbsp;
@@ -90,7 +90,7 @@
 			</strong>
 			<br />
 			<br />
-			<button class="btn" data-bind="command: disconnectTwitter">
+			<button class="btn" data-bind="command: disconnectTwitterCommand">
 				<i class="icon-remove" data-bind="visible: !twitterActions()"></i>
 				<i class="icon-spinner animated" data-bind="visible: twitterActions()"></i>
 				&nbsp;&nbsp;

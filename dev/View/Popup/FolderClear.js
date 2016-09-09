@@ -2,7 +2,6 @@
 import ko from 'ko';
 
 import {StorageResultType, Notification} from 'Common/Enums';
-import {createCommand} from 'Common/Utils';
 import {i18n, getNotification} from 'Common/Translator';
 import {setFolderHash} from 'Common/Cache';
 
@@ -12,12 +11,11 @@ import Remote from 'Remote/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/FolderClear',
-	type: ViewType.Popup,
 	templateID: 'PopupsFolderClear'
 })
 class FolderClearPopupView extends AbstractViewNext
@@ -42,51 +40,51 @@ class FolderClearPopupView extends AbstractViewNext
 		this.dangerDescHtml = ko.computed(
 			() => i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', {'FOLDER': this.folderNameForClear()})
 		);
+	}
 
-		this.clearCommand = createCommand(() => {
+	@command((self) => {
+		const
+			folder = self.selectedFolder(),
+			isClearing = self.clearingProcess();
 
-			const folderToClear = this.selectedFolder();
-			if (folderToClear)
-			{
-				MessageStore.message(null);
-				MessageStore.messageList([]);
+		return !isClearing && null !== folder;
+	})
+	clearCommand() {
 
-				this.clearingProcess(true);
+		const folderToClear = this.selectedFolder();
+		if (folderToClear)
+		{
+			MessageStore.message(null);
+			MessageStore.messageList([]);
 
-				folderToClear.messageCountAll(0);
-				folderToClear.messageCountUnread(0);
+			this.clearingProcess(true);
 
-				setFolderHash(folderToClear.fullNameRaw, '');
+			folderToClear.messageCountAll(0);
+			folderToClear.messageCountUnread(0);
 
-				Remote.folderClear((result, data) => {
+			setFolderHash(folderToClear.fullNameRaw, '');
 
-					this.clearingProcess(false);
-					if (StorageResultType.Success === result && data && data.Result)
+			Remote.folderClear((result, data) => {
+
+				this.clearingProcess(false);
+				if (StorageResultType.Success === result && data && data.Result)
+				{
+					getApp().reloadMessageList(true);
+					this.cancelCommand();
+				}
+				else
+				{
+					if (data && data.ErrorCode)
 					{
-						getApp().reloadMessageList(true);
-						this.cancelCommand();
+						this.clearingError(getNotification(data.ErrorCode));
 					}
 					else
 					{
-						if (data && data.ErrorCode)
-						{
-							this.clearingError(getNotification(data.ErrorCode));
-						}
-						else
-						{
-							this.clearingError(getNotification(Notification.MailServerError));
-						}
+						this.clearingError(getNotification(Notification.MailServerError));
 					}
-				}, folderToClear.fullNameRaw);
-			}
-
-		}, () => {
-			const
-				folder = this.selectedFolder(),
-				isClearing = this.clearingProcess();
-
-			return !isClearing && null !== folder;
-		});
+				}
+			}, folderToClear.fullNameRaw);
+		}
 	}
 
 	clearPopup() {
@@ -103,4 +101,4 @@ class FolderClearPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = FolderClearPopupView;
+export {FolderClearPopupView, FolderClearPopupView as default};

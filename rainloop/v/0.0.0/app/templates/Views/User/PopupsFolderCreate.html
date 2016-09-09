@@ -16,7 +16,7 @@
 						</label>
 						<div class="controls">
 							<input type="text" class="uiInput inputName" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-								data-bind="textInput: folderName, hasfocus: folderName.focused, onEnter: createFolder" />
+								data-bind="textInput: folderName, hasfocus: folderName.focused, onEnter: createFolderCommand" />
 						</div>
 					</div>
 					<div class="control-group">
@@ -31,7 +31,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<a class="btn buttonCreate" data-bind="command: createFolder">
+				<a class="btn buttonCreate" data-bind="command: createFolderCommand">
 					<i class="icon-folder-add"></i>
 					&nbsp;&nbsp;
 					<span class="i18n" data-i18n="POPUPS_CREATE_FOLDER/BUTTON_CREATE"></span>

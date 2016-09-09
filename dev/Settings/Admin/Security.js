@@ -2,7 +2,7 @@
 import _ from '_';
 import ko from 'ko';
 
-import {createCommand, trim, boolToAjax} from 'Common/Utils';
+import {trim, boolToAjax} from 'Common/Utils';
 import {phpInfo} from 'Common/Links';
 import {StorageResultType, Magics} from 'Common/Enums';
 
@@ -12,6 +12,8 @@ import AppAdminStore from 'Stores/Admin/App';
 import CapaAdminStore from 'Stores/Admin/Capa';
 
 import Remote from 'Remote/Admin/Ajax';
+
+import {command} from 'Knoin/Knoin';
 
 class SecurityAdminSettings
 {
@@ -77,33 +79,34 @@ class SecurityAdminSettings
 			this.adminPasswordNewError(false);
 		});
 
-		this.saveNewAdminPasswordCommand = createCommand(() => {
-
-			if ('' === trim(this.adminLogin()))
-			{
-				this.adminLoginError(true);
-				return false;
-			}
-
-			if (this.adminPasswordNew() !== this.adminPasswordNew2())
-			{
-				this.adminPasswordNewError(true);
-				return false;
-			}
-
-			this.adminPasswordUpdateError(false);
-			this.adminPasswordUpdateSuccess(false);
-
-			Remote.saveNewAdminPassword(this.onNewAdminPasswordResponse, {
-				'Login': this.adminLogin(),
-				'Password': this.adminPassword(),
-				'NewPassword': this.adminPasswordNew()
-			});
-
-			return true;
-		}, () => '' !== trim(this.adminLogin()) && '' !== this.adminPassword());
-
 		this.onNewAdminPasswordResponse = _.bind(this.onNewAdminPasswordResponse, this);
+	}
+
+	@command((self) => '' !== trim(self.adminLogin()) && '' !== self.adminPassword())
+	saveNewAdminPasswordCommand() {
+
+		if ('' === trim(this.adminLogin()))
+		{
+			this.adminLoginError(true);
+			return false;
+		}
+
+		if (this.adminPasswordNew() !== this.adminPasswordNew2())
+		{
+			this.adminPasswordNewError(true);
+			return false;
+		}
+
+		this.adminPasswordUpdateError(false);
+		this.adminPasswordUpdateSuccess(false);
+
+		Remote.saveNewAdminPassword(this.onNewAdminPasswordResponse, {
+			'Login': this.adminLogin(),
+			'Password': this.adminPassword(),
+			'NewPassword': this.adminPasswordNew()
+		});
+
+		return true;
 	}
 
 	showTwoFactorDropper() {

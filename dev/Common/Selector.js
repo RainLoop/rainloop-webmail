@@ -8,8 +8,31 @@ import {isArray, inArray, noop, noopTrue} from 'Common/Utils';
 
 class Selector
 {
+	list;
+	listChecked;
+	isListChecked;
+
+	focusedItem;
+	selectedItem;
+
+	itemSelectedThrottle;
+
+	selectedItemUseCallback = true;
+
+	iSelectNextHelper = 0;
+	iFocusedNextHelper = 0;
+	oContentVisible;
+	oContentScrollable;
+
+	sItemSelector;
+	sItemSelectedSelector;
+	sItemCheckedSelector;
+	sItemFocusedSelector;
+
+	sLastUid = '';
+	oCallbacks = {};
+
 	/**
-	 * @constructor
 	 * @param {koProperty} koList
 	 * @param {koProperty} koSelectedItem
 	 * @param {koProperty} koFocusedItem
@@ -28,7 +51,6 @@ class Selector
 
 		this.focusedItem = koFocusedItem || ko.observable(null);
 		this.selectedItem = koSelectedItem || ko.observable(null);
-		this.selectedItemUseCallback = true;
 
 		this.itemSelectedThrottle = _.debounce(_.bind(this.itemSelected, this), 300);
 
@@ -79,18 +101,10 @@ class Selector
 		this.selectedItem = this.selectedItem.extend({toggleSubscribeProperty: [this, 'selected']});
 		this.focusedItem = this.focusedItem.extend({toggleSubscribeProperty: [null, 'focused']});
 
-		this.iSelectNextHelper = 0;
-		this.iFocusedNextHelper = 0;
-		this.oContentVisible = null;
-		this.oContentScrollable = null;
-
 		this.sItemSelector = sItemSelector;
 		this.sItemSelectedSelector = sItemSelectedSelector;
 		this.sItemCheckedSelector = sItemCheckedSelector;
 		this.sItemFocusedSelector = sItemFocusedSelector;
-
-		this.sLastUid = '';
-		this.oCallbacks = {};
 
 		this.focusedItem.subscribe((item) => {
 			if (item)
@@ -253,7 +267,7 @@ class Selector
 			mFocused = null;
 			mSelected = null;
 
-		}, this);
+		});
 	}
 
 	itemSelected(item) {

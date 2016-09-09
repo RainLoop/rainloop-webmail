@@ -4,7 +4,7 @@ import ko from 'ko';
 import {Notification} from 'Common/Enums';
 import {UNUSED_OPTION_VALUE} from 'Common/Consts';
 import {bMobileDevice} from 'Common/Globals';
-import {trim, createCommand, defautOptionsAfterRender, folderListOptionsBuilder} from 'Common/Utils';
+import {trim, defautOptionsAfterRender, folderListOptionsBuilder} from 'Common/Utils';
 
 import FolderStore from 'Stores/User/Folder';
 
@@ -12,12 +12,11 @@ import Promises from 'Promises/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/FolderCreate',
-	type: ViewType.Popup,
 	templateID: 'PopupsFolderCreate'
 })
 class FolderCreateView extends AbstractViewNext
@@ -49,25 +48,24 @@ class FolderCreateView extends AbstractViewNext
 
 		});
 
-		// commands
-		this.createFolder = createCommand(() => {
-
-			let parentFolderName = this.selectedParentValue();
-			if ('' === parentFolderName && 1 < FolderStore.namespace.length)
-			{
-				parentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
-			}
-
-			getApp().foldersPromisesActionHelper(
-				Promises.folderCreate(this.folderName(), parentFolderName, FolderStore.foldersCreating),
-				Notification.CantCreateFolder
-			);
-
-			this.cancelCommand();
-
-		}, () => this.simpleFolderNameValidation(this.folderName()));
-
 		this.defautOptionsAfterRender = defautOptionsAfterRender;
+	}
+
+	@command((self) => self.simpleFolderNameValidation(self.folderName()))
+	createFolderCommand() {
+
+		let parentFolderName = this.selectedParentValue();
+		if ('' === parentFolderName && 1 < FolderStore.namespace.length)
+		{
+			parentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
+		}
+
+		getApp().foldersPromisesActionHelper(
+			Promises.folderCreate(this.folderName(), parentFolderName, FolderStore.foldersCreating),
+			Notification.CantCreateFolder
+		);
+
+		this.cancelCommand();
 	}
 
 	simpleFolderNameValidation(sName) {
@@ -92,4 +90,4 @@ class FolderCreateView extends AbstractViewNext
 	}
 }
 
-module.exports = FolderCreateView;
+export {FolderCreateView, FolderCreateView as default};

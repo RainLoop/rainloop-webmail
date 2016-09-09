@@ -7,7 +7,6 @@ import {AbstracCheckbox} from 'Component/AbstracCheckbox';
 class CheckboxMaterialDesignComponent extends AbstracCheckbox
 {
 	/**
-	 * @constructor
 	 * @param {Object} params
 	 */
 	constructor(params) {

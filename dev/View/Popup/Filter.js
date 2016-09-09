@@ -4,18 +4,17 @@ import ko from 'ko';
 
 import {FiltersAction, FilterConditionField, FilterConditionType} from 'Common/Enums';
 import {bMobileDevice} from 'Common/Globals';
-import {defautOptionsAfterRender, createCommand, delegateRun} from 'Common/Utils';
+import {defautOptionsAfterRender, delegateRun} from 'Common/Utils';
 import {i18n, initOnStartOrLangChange} from 'Common/Translator';
 
 import FilterStore from 'Stores/User/Filter';
 import FolderStore from 'Stores/User/Folder';
 
-import {view, ViewType} from 'Knoin/Knoin';
+import {popup, command} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/Filter',
-	type: ViewType.Popup,
 	templateID: 'PopupsFilter'
 })
 class FilterPopupView extends AbstractViewNext
@@ -43,34 +42,6 @@ class FilterPopupView extends AbstractViewNext
 			}
 		});
 
-		this.saveFilter = createCommand(() => {
-
-			if (this.filter())
-			{
-				if (FiltersAction.MoveTo === this.filter().actionType())
-				{
-					this.filter().actionValue(this.selectedFolderValue());
-				}
-
-				if (!this.filter().verify())
-				{
-					return false;
-				}
-
-				if (this.fTrueCallback)
-				{
-					this.fTrueCallback(this.filter());
-				}
-
-				if (this.modalVisibility())
-				{
-					delegateRun(this, 'closeCommand');
-				}
-			}
-
-			return true;
-		});
-
 		this.actionTypeOptions = ko.observableArray([]);
 		this.fieldOptions = ko.observableArray([]);
 		this.typeOptions = ko.observableArray([]);
@@ -79,6 +50,35 @@ class FilterPopupView extends AbstractViewNext
 		initOnStartOrLangChange(_.bind(this.populateOptions, this));
 
 		this.modules.subscribe(this.populateOptions, this);
+	}
+
+	@command()
+	saveFilterCommand() {
+
+		if (this.filter())
+		{
+			if (FiltersAction.MoveTo === this.filter().actionType())
+			{
+				this.filter().actionValue(this.selectedFolderValue());
+			}
+
+			if (!this.filter().verify())
+			{
+				return false;
+			}
+
+			if (this.fTrueCallback)
+			{
+				this.fTrueCallback(this.filter());
+			}
+
+			if (this.modalVisibility())
+			{
+				delegateRun(this, 'closeCommand');
+			}
+		}
+
+		return true;
 	}
 
 	populateOptions() {
@@ -191,4 +191,4 @@ class FilterPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = FilterPopupView;
+export {FilterPopupView, FilterPopupView as default};

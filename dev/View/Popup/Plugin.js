@@ -4,17 +4,16 @@ import ko from 'ko';
 import key from 'key';
 
 import {KeyState, Magics, StorageResultType, Notification} from 'Common/Enums';
-import {createCommand, isNonEmptyArray, delegateRun} from 'Common/Utils';
+import {isNonEmptyArray, delegateRun} from 'Common/Utils';
 import {getNotification, i18n} from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Ajax';
 
-import {view, ViewType, isPopupVisible, showScreenPopup} from 'Knoin/Knoin';
+import {popup, command, isPopupVisible, showScreenPopup} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
-@view({
+@popup({
 	name: 'View/Popup/Plugin',
-	type: ViewType.Popup,
 	templateID: 'PopupsPlugin'
 })
 class PluginPopupView extends AbstractViewNext
@@ -43,29 +42,29 @@ class PluginPopupView extends AbstractViewNext
 			'content': () => `<pre>${this.readme()}</pre>`
 		};
 
-		this.saveCommand = createCommand(() => {
-
-			const list = {};
-			list.Name = this.name();
-
-			_.each(this.configures(), (oItem) => {
-				let value = oItem.value();
-				if (false === value || true === value)
-				{
-					value = value ? '1' : '0';
-				}
-				list['_' + oItem.Name] = value;
-			});
-
-			this.saveError('');
-			Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, list);
-
-		}, this.hasConfiguration);
-
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = KeyState.All;
 
 		this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Magics.Time200ms);
+	}
+
+	@command((self) => self.hasConfiguration())
+	saveCommand() {
+
+		const list = {};
+		list.Name = this.name();
+
+		_.each(this.configures(), (oItem) => {
+			let value = oItem.value();
+			if (false === value || true === value)
+			{
+				value = value ? '1' : '0';
+			}
+			list['_' + oItem.Name] = value;
+		});
+
+		this.saveError('');
+		Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, list);
 	}
 
 	onPluginSettingsUpdateResponse(result, data) {
@@ -138,4 +137,4 @@ class PluginPopupView extends AbstractViewNext
 	}
 }
 
-module.exports = PluginPopupView;
+export {PluginPopupView, PluginPopupView as default};

@@ -4,13 +4,15 @@ import {isArray, disposeObject} from 'Common/Utils';
 
 class AbstractModel
 {
+	sModelName = '';
+	disposables = [];
+
 	/**
-	 * @param {string} modelName
+	 * @param {string} modelName = ''
 	 */
-	constructor(modelName)
+	constructor(modelName = '')
 	{
 		this.sModelName = modelName || '';
-		this.disposables = [];
 	}
 
 	regDisposables(value) {

@@ -3,12 +3,12 @@ import _ from '_';
 import ko from 'ko';
 
 import {StorageResultType, Notification} from 'Common/Enums';
-import {createCommand} from 'Common/Utils';
 import {getNotificationFromResponse, i18n} from 'Common/Translator';
 
 import Remote from 'Remote/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
+import {command} from 'Knoin/Knoin';
 
 class ChangePasswordUserSettings
 {
@@ -43,28 +43,28 @@ class ChangePasswordUserSettings
 			this.passwordMismatch(false);
 		});
 
-		this.saveNewPasswordCommand = createCommand(() => {
-			if (this.newPassword() !== this.newPassword2())
-			{
-				this.passwordMismatch(true);
-				this.errorDescription(i18n('SETTINGS_CHANGE_PASSWORD/ERROR_PASSWORD_MISMATCH'));
-			}
-			else
-			{
-				this.changeProcess(true);
-
-				this.passwordUpdateError(false);
-				this.passwordUpdateSuccess(false);
-				this.currentPassword.error(false);
-				this.passwordMismatch(false);
-				this.errorDescription('');
-
-				Remote.changePassword(this.onChangePasswordResponse, this.currentPassword(), this.newPassword());
-			}
-
-		}, () => !this.changeProcess() && '' !== this.currentPassword() && '' !== this.newPassword() && '' !== this.newPassword2());
-
 		this.onChangePasswordResponse = _.bind(this.onChangePasswordResponse, this);
+	}
+
+	@command((self) => !self.changeProcess() && '' !== self.currentPassword() && '' !== self.newPassword() && '' !== self.newPassword2())
+	saveNewPasswordCommand() {
+		if (this.newPassword() !== this.newPassword2())
+		{
+			this.passwordMismatch(true);
+			this.errorDescription(i18n('SETTINGS_CHANGE_PASSWORD/ERROR_PASSWORD_MISMATCH'));
+		}
+		else
+		{
+			this.changeProcess(true);
+
+			this.passwordUpdateError(false);
+			this.passwordUpdateSuccess(false);
+			this.currentPassword.error(false);
+			this.passwordMismatch(false);
+			this.errorDescription('');
+
+			Remote.changePassword(this.onChangePasswordResponse, this.currentPassword(), this.newPassword());
+		}
 	}
 
 	onHide() {

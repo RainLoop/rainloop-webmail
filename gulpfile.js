@@ -391,19 +391,32 @@ gulp.task('js:admin', ['js:webpack'], function() {
 });
 
 // - min
-gulp.task('js:min', ['js:app', 'js:admin'], function() {
+gulp.task('js:es5:min', ['js:app', 'js:admin'], function() {
 	return gulp.src(cfg.paths.staticJS + '*.js')
 		.pipe(ignore.exclude('*.next.js'))
 		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(uglify({
 			mangle: true,
-			compress: true
+			compress: true,
+			'screw-ie8': true
 		}))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticMinJS))
 		.on('error', gutil.log);
 });
+
+gulp.task('js:es6:min', ['js:app', 'js:admin'], function() {
+	return cfg.next ? gulp.src(cfg.paths.staticJS + '*.next.js')
+		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
+	// TODO
+		.pipe(eol('\n', true))
+		.pipe(rename({suffix: '.min'}))
+		.pipe(gulp.dest(cfg.paths.staticMinJS))
+		.on('error', gutil.log) : true;
+});
+
+gulp.task('js:min', ['js:es5:min', 'js:es6:min']);
 
 // lint
 gulp.task('js:eslint', function() {

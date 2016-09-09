@@ -5,9 +5,7 @@ import {isUnd} from 'Common/Utils';
 
 class AbstractComponent
 {
-	constructor() {
-		this.disposable = [];
-	}
+	disposable = [];
 
 	dispose() {
 		this.disposable.forEach((funcToDispose) => {

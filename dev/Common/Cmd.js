@@ -4,7 +4,7 @@ import $ from '$';
 import _ from '_';
 import ko from 'ko';
 import {$html, $body} from 'Common/Globals';
-import {EventKeyCode} from 'Common/Enums';
+import {EventKeyCode, Magics} from 'Common/Enums';
 import {trim, inArray, changeTheme} from 'Common/Utils';
 import {reload as translatorReload} from 'Common/Translator';
 
@@ -111,25 +111,28 @@ function cmdVersion() {
 
 class CmdContoller
 {
+	dom = null;
+
+	opened = ko.observable(false);
+	cmd = ko.observable('');
+	focused = ko.observable(false);
+
+	themes = ThemeStore.themes;
+
+	cmdHistory = [];
+	cmdHistoryShift = 0;
+
+	cmdHelper = ko.observable('');
+
+	cmds = ['help', 'version', 'glass', 'clear', 'theme', 'lang'];
+	cmdsWithParameters = ['theme', 'lang'];
+
+	isAdmin = false;
+
 	constructor(dom)
 	{
 		this.dom = dom;
-
-		this.opened = ko.observable(false);
-		this.cmd = ko.observable('');
-		this.focused = ko.observable(false);
-
-		this.themes = ThemeStore.themes;
-
-		this.cmdHistory = [];
-		this.cmdHistoryShift = 0;
-
-		this.cmdHelper = ko.observable('');
-
-		this.cmds = ['help', 'version', 'glass', 'clear', 'theme', 'lang'];
-		this.cmdsWithParameters = ['theme', 'lang'];
-
-		this.isAdmin = Settings.appSettingsGet('admin');
+		this.isAdmin = !!Settings.appSettingsGet('admin');
 	}
 
 	runCmd(cmd, params, isTab) {
@@ -377,11 +380,14 @@ export function toggle()
 				if (contoller.opened())
 				{
 					_.delay(() => {
-						contoller.focused(true);
-					}, 50);
+						if (contoller && contoller.focused)
+						{
+							contoller.focused(true);
+						}
+					}, Magics.Time50ms);
 				}
 			}
-		}, 50);
+		}, Magics.Time50ms);
 	}
 }
 
