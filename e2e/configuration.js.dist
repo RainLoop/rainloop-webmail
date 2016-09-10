@@ -1,0 +1,6 @@
+
+module.exports = {
+	url: 'http://rainloop.domain.com/',
+	user: 'user"domain.com',
+	pass: '12345'
+};
