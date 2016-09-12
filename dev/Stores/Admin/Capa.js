@@ -36,4 +36,4 @@ class CapaAdminStore
 	}
 }
 
-module.exports = new CapaAdminStore();
+export default new CapaAdminStore();

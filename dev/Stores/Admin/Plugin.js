@@ -10,4 +10,4 @@ class PluginAdminStore
 	}
 }
 
-module.exports = new PluginAdminStore();
+export default new PluginAdminStore();

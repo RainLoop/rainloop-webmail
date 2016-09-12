@@ -13,4 +13,4 @@ class IdentityUserStore
 	}
 }
 
-module.exports = new IdentityUserStore();
+export default new IdentityUserStore();

@@ -7,6 +7,8 @@ import {UNUSED_OPTION_VALUE} from 'Common/Consts';
 import {isArray, folderListOptionsBuilder} from 'Common/Utils';
 import {getFolderInboxName, getFolderFromCacheList} from 'Common/Cache';
 
+import {momentNowUnix} from 'Common/Momentor';
+
 class FolderUserStore
 {
 	constructor() {
@@ -157,7 +159,7 @@ class FolderUserStore
 		const
 			result = [],
 			limit = 5,
-			utc = require('Common/Momentor').momentNowUnix(),
+			utc = momentNowUnix(),
 			timeout = utc - 60 * 5,
 			timeouts = [],
 			inboxFolderName = getFolderInboxName(),
@@ -208,4 +210,4 @@ class FolderUserStore
 	}
 }
 
-module.exports = new FolderUserStore();
+export default new FolderUserStore();

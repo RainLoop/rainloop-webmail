@@ -14,6 +14,8 @@ import {phpInfo} from 'Common/Links';
 import {settingsGet} from 'Storage/Settings';
 import {showScreenPopup} from 'Knoin/Knoin';
 
+import Remote from 'Remote/Admin/Ajax';
+
 import ThemeStore from 'Stores/Theme';
 import LanguageStore from 'Stores/Language';
 import AppAdminStore from 'Stores/Admin/App';
@@ -63,7 +65,6 @@ class GeneralAdminSettings
 	onBuild() {
 		_.delay(() => {
 			const
-				Remote = require('Remote/Admin/Ajax'),
 				f1 = settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this),
 				f2 = settingsSaveHelperSimpleFunction(this.languageTrigger, this),
 				f3 = settingsSaveHelperSimpleFunction(this.themeTrigger, this),

@@ -35,6 +35,7 @@ import {MESSAGE_BODY_CACHE_LIMIT} from 'Common/Consts';
 import {data as GlobalsData, $div} from 'Common/Globals';
 import {mailBox, notificationMailIcon} from 'Common/Links';
 import {i18n, getNotification} from 'Common/Translator';
+import {momentNowUnix} from 'Common/Momentor';
 
 import * as MessageHelper from 'Helper/Message';
 import {MessageModel} from 'Model/Message';
@@ -42,9 +43,11 @@ import {MessageModel} from 'Model/Message';
 import {setHash} from 'Knoin/Knoin';
 
 import AppStore from 'Stores/User/App';
+import AccountStore from 'Stores/User/Account';
 import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
 import SettingsStore from 'Stores/User/Settings';
+import NotificationStore from 'Stores/User/Notification';
 
 import {getApp} from 'Helper/Apps/User';
 
@@ -253,21 +256,18 @@ class MessageUserStore
 		{
 			if (isArray(newMessages) && 0 < newMessages.length)
 			{
-				const
-					len = newMessages.length,
-					NotificationStore = require('Stores/User/Notification');
-
 				_.each(newMessages, (item) => {
 					addNewMessageCache(folder, item.Uid);
 				});
 
 				NotificationStore.playSoundNotification();
 
+				const len = newMessages.length;
 				if (3 < len)
 				{
 					NotificationStore.displayDesktopNotification(
 						notificationMailIcon(),
-						require('Stores/User/Account').email(),
+						AccountStore.email(),
 						i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': len
 						}),
@@ -551,7 +551,7 @@ class MessageUserStore
 							isHtml = false;
 							resultHtml = plainToHtml(data.Result.Plain.toString(), false);
 
-							if ((message.isPgpSigned() || message.isPgpEncrypted()) && require('Stores/User/Pgp').capaOpenPGP())
+							if ((message.isPgpSigned() || message.isPgpEncrypted()) && PgpStore.capaOpenPGP())
 							{
 								plain = pString(data.Result.Plain);
 
@@ -780,7 +780,7 @@ class MessageUserStore
 
 			const
 				list = [],
-				utc = require('Common/Momentor').momentNowUnix(),
+				utc = momentNowUnix(),
 				iCount = pInt(data.Result.MessageResultCount),
 				iOffset = pInt(data.Result.Offset);
 
@@ -876,4 +876,4 @@ class MessageUserStore
 	}
 }
 
-module.exports = new MessageUserStore();
+export default new MessageUserStore();

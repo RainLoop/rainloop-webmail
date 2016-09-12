@@ -30,4 +30,4 @@ class ContactUserStore
 	}
 }
 
-module.exports = new ContactUserStore();
+export default new ContactUserStore();

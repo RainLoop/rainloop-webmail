@@ -37,4 +37,4 @@ class LanguageStore
 	}
 }
 
-module.exports = new LanguageStore();
+export default new LanguageStore();

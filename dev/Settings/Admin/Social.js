@@ -7,6 +7,8 @@ import {settingsSaveHelperSimpleFunction, trim, boolToAjax} from 'Common/Utils';
 
 import SocialStore from 'Stores/Social';
 
+import Remote from 'Remote/Admin/Ajax';
+
 class SocialAdminSettings
 {
 	constructor() {
@@ -51,7 +53,6 @@ class SocialAdminSettings
 	onBuild() {
 		_.delay(() => {
 			const
-				Remote = require('Remote/Admin/Ajax'),
 				f1 = settingsSaveHelperSimpleFunction(this.facebookTrigger1, this),
 				f2 = settingsSaveHelperSimpleFunction(this.facebookTrigger2, this),
 				f3 = settingsSaveHelperSimpleFunction(this.twitterTrigger1, this),

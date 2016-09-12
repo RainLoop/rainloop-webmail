@@ -31,4 +31,4 @@ class QuotaUserStore
 	}
 }
 
-module.exports = new QuotaUserStore();
+export default new QuotaUserStore();

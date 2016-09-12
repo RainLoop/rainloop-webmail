@@ -17,4 +17,4 @@ class FilterUserStore
 	}
 }
 
-module.exports = new FilterUserStore();
+export default new FilterUserStore();

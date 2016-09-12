@@ -14,4 +14,4 @@ class LicenseAdminStore
 	}
 }
 
-module.exports = new LicenseAdminStore();
+export default new LicenseAdminStore();

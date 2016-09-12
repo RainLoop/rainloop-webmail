@@ -2,7 +2,7 @@
 import ko from 'ko';
 import _ from '_';
 
-//	Remote = require('Remote/User/Ajax');
+// import Remote from 'Remote/User/Ajax';
 
 class TemplateUserStore
 {
@@ -35,4 +35,4 @@ class TemplateUserStore
 	}
 }
 
-module.exports = new TemplateUserStore();
+export default new TemplateUserStore();

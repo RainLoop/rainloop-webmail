@@ -16,6 +16,9 @@ import {
 import {$win} from 'Common/Globals';
 import {messageViewLink, messageDownloadLink} from 'Common/Links';
 
+import FolderStore from 'Stores/User/Folder';
+import PgpStore from 'Stores/User/Pgp';
+
 import {emailArrayFromJson, emailArrayToStringClear, emailArrayToString, replyHelper} from 'Helper/Message';
 
 import {AttachmentModel, staticCombinedIconClass} from 'Model/Attachment';
@@ -211,8 +214,8 @@ class MessageModel extends AbstractModel
 
 	computeSenderEmail() {
 		const
-			sentFolder = require('Stores/User/Folder').sentFolder(),
-			draftFolder = require('Stores/User/Folder').draftFolder();
+			sentFolder = FolderStore.sentFolder(),
+			draftFolder = FolderStore.draftFolder();
 
 		this.senderEmailsString(this.folderFullNameRaw === sentFolder || this.folderFullNameRaw === draftFolder ?
 			this.toEmailsString() : this.fromEmailString());
@@ -307,7 +310,7 @@ class MessageModel extends AbstractModel
 
 			this.proxy = !!json.ExternalProxy;
 
-			if (require('Stores/User/Pgp').capaOpenPGP())
+			if (PgpStore.capaOpenPGP())
 			{
 				this.isPgpSigned(!!json.PgpSigned);
 				this.isPgpEncrypted(!!json.PgpEncrypted);

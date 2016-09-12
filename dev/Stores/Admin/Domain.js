@@ -10,4 +10,4 @@ class DomainAdminStore
 	}
 }
 
-module.exports = new DomainAdminStore();
+export default new DomainAdminStore();

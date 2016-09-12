@@ -23,4 +23,4 @@ class ThemeStore
 	}
 }
 
-module.exports = new ThemeStore();
+export default new ThemeStore();

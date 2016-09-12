@@ -279,4 +279,4 @@ class RemoteAdminAjax extends AbstractAjaxRemote
 	}
 }
 
-module.exports = new RemoteAdminAjax();
+export default new RemoteAdminAjax();

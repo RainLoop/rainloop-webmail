@@ -12,6 +12,7 @@ import {pInt, isNormal, isArray, inArray, isUnd} from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 
 import AppStore from 'Stores/Admin/App';
+import CapaStore from 'Stores/Admin/Capa';
 import DomainStore from 'Stores/Admin/Domain';
 import PluginStore from 'Stores/Admin/Plugin';
 import LicenseStore from 'Stores/Admin/License';
@@ -217,8 +218,8 @@ class AdminApp extends AbstractApp
 
 		super.bootstart();
 
-		require('Stores/Admin/App').populate();
-		require('Stores/Admin/Capa').populate();
+		AppStore.populate();
+		CapaStore.populate();
 
 		hideLoading();
 

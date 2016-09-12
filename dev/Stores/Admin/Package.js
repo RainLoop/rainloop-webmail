@@ -12,4 +12,4 @@ class PackageAdminStore
 	}
 }
 
-module.exports = new PackageAdminStore();
+export default new PackageAdminStore();

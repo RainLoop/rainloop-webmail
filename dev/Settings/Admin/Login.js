@@ -7,6 +7,8 @@ import {settingsGet} from 'Storage/Settings';
 
 import AppStore from 'Stores/Admin/App';
 
+import Remote from 'Remote/Admin/Ajax';
+
 class LoginAdminSettings
 {
 	constructor() {
@@ -21,9 +23,7 @@ class LoginAdminSettings
 
 	onBuild() {
 		_.delay(() => {
-			const
-				Remote = require('Remote/Admin/Ajax'),
-				f1 = settingsSaveHelperSimpleFunction(this.defaultDomain.trigger, this);
+			const f1 = settingsSaveHelperSimpleFunction(this.defaultDomain.trigger, this);
 
 			this.determineUserLanguage.subscribe((value) => {
 				Remote.saveAdminConfig(null, {

@@ -9,9 +9,9 @@
 /rainloop/v/0.0.0/static/*
 /rainloop/v/0.0.0/app/localization/moment/*
 !/rainloop/v/0.0.0/app/localization/moment/.gitempty
-/e2e/configuration.js
-/e2e/output/*
-!/e2e/output/.gitempty
+/tests/e2e/configuration.js
+/tests/e2e/output/*
+!/tests/e2e/output/.gitempty
 /vendors/.*
 /node_modules
 /build/local

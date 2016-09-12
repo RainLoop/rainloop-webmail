@@ -3,10 +3,12 @@ import ko from 'ko';
 import _ from '_';
 import $ from '$';
 
-import {showScreenPopup} from 'Knoin/Knoin';
-
 import {i18n} from 'Common/Translator';
 import {log, isArray, isNonEmptyArray, pString, isUnd, trim} from 'Common/Utils';
+
+import AccountStore from 'Stores/User/Account';
+
+import {showScreenPopup} from 'Knoin/Knoin';
 
 class PgpUserStore
 {
@@ -139,7 +141,7 @@ class PgpUserStore
 	 * @returns {?}
 	 */
 	findSelfPrivateKey(password) {
-		return this.findPrivateKeyByEmail(require('Stores/User/Account').email(), password);
+		return this.findPrivateKeyByEmail(AccountStore.email(), password);
 	}
 
 	decryptMessage(message, recipients, fCallback) {
@@ -400,4 +402,4 @@ class PgpUserStore
 	}
 }
 
-module.exports = new PgpUserStore();
+export default new PgpUserStore();

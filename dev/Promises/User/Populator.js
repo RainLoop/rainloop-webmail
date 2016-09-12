@@ -12,6 +12,8 @@ import * as Local from 'Storage/Client';
 import AppStore from 'Stores/User/App';
 import FolderStore from 'Stores/User/Folder';
 
+import Remote from 'Remote/User/Ajax';
+
 import {FolderModel} from 'Model/Folder';
 import {AbstractBasicPromises} from 'Promises/AbstractBasic';
 
@@ -165,7 +167,7 @@ class PromisesUserPopulator extends AbstractBasicPromises
 
 			if (update)
 			{
-				require('Remote/User/Ajax').saveSystemFolders(noop, {
+				Remote.saveSystemFolders(noop, {
 					SentFolder: FolderStore.sentFolder(),
 					DraftFolder: FolderStore.draftFolder(),
 					SpamFolder: FolderStore.spamFolder(),
@@ -180,4 +182,4 @@ class PromisesUserPopulator extends AbstractBasicPromises
 	}
 }
 
-module.exports = new PromisesUserPopulator();
+export default new PromisesUserPopulator();

@@ -26,4 +26,4 @@ class AppAdminStore extends AbstractAppStore
 	}
 }
 
-module.exports = new AppAdminStore();
+export default new AppAdminStore();

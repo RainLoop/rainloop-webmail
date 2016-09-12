@@ -854,4 +854,4 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	}
 }
 
-module.exports = new RemoteUserAjax();
+export default new RemoteUserAjax();

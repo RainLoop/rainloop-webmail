@@ -43,14 +43,16 @@ import * as Events from 'Common/Events';
 import {getNotification, i18n} from 'Common/Translator';
 
 import SocialStore from 'Stores/Social';
+import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
+import NotificationStore from 'Stores/User/Notification';
 import AccountStore from 'Stores/User/Account';
+import ContactStore from 'Stores/User/Contact';
 import IdentityStore from 'Stores/User/Identity';
 import TemplateStore from 'Stores/User/Template';
 import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
 import MessageStore from 'Stores/User/Message';
-import ContactStore from 'Stores/User/Contact';
 import QuotaStore from 'Stores/User/Quota';
 
 import * as Local from 'Storage/Client';
@@ -1258,11 +1260,11 @@ class AppUser extends AbstractApp
 
 		super.bootstart();
 
-		require('Stores/User/App').populate();
-		require('Stores/User/Settings').populate();
-		require('Stores/User/Notification').populate();
-		require('Stores/User/Account').populate();
-		require('Stores/User/Contact').populate();
+		AppStore.populate();
+		SettingsStore.populate();
+		NotificationStore.populate();
+		AccountStore.populate();
+		ContactStore.populate();
 
 		let
 			contactsSyncInterval = pInt(Settings.settingsGet('ContactsSyncInterval'));

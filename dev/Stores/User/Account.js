@@ -48,4 +48,4 @@ class AccountUserStore
 	}
 }
 
-module.exports = new AccountUserStore();
+export default new AccountUserStore();

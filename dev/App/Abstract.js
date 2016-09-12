@@ -2,7 +2,9 @@
 import window from 'window';
 import $ from '$';
 import _ from '_';
+import ko from 'ko';
 import key from 'key';
+import ssm from 'ssm';
 
 import {
 	$win, $html, $doc,
@@ -21,6 +23,10 @@ import {initOnStartOrLangChange, initNotificationLanguage} from 'Common/Translat
 import {toggle as toggleCmd} from 'Common/Cmd';
 import * as Events from 'Common/Events';
 import * as Settings from 'Storage/Settings';
+
+import LanguageStore from 'Stores/Language';
+import ThemeStore from 'Stores/Theme';
+import SocialStore from 'Stores/Social';
 
 import {routeOff, setHash} from 'Knoin/Knoin';
 import {AbstractBoot} from 'Knoin/AbstractBoot';
@@ -289,10 +295,7 @@ class AbstractApp extends AbstractBoot
 
 		Events.pub('rl.bootstart');
 
-		const
-			mobile = Settings.appSettingsGet('mobile'),
-			ssm = require('ssm'),
-			ko = require('ko');
+		const mobile = Settings.appSettingsGet('mobile');
 
 		ko.components.register('SaveTrigger', require('Component/SaveTrigger'));
 		ko.components.register('Input', require('Component/Input'));
@@ -395,9 +398,9 @@ class AbstractApp extends AbstractBoot
 
 		leftPanelDisabled.valueHasMutated();
 
-		require('Stores/Language').populate();
-		require('Stores/Theme').populate();
-		require('Stores/Social').populate();
+		LanguageStore.populate();
+		ThemeStore.populate();
+		SocialStore.populate();
 	}
 }
 

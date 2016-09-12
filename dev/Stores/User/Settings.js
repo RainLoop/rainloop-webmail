@@ -78,4 +78,4 @@ class SettingsUserStore
 	}
 }
 
-module.exports = new SettingsUserStore();
+export default new SettingsUserStore();

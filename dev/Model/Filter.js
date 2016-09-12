@@ -7,6 +7,8 @@ import {pString, inArray, isNonEmptyArray, fakeMd5, delegateRunOnDestroy, window
 import {i18n} from 'Common/Translator';
 import {getFolderFromCacheList} from 'Common/Cache';
 
+import AccountStore from 'Stores/User/Account';
+
 import {FilterConditionModel} from 'Model/FilterCondition';
 import {AbstractModel} from 'Knoin/AbstractModel';
 
@@ -214,7 +216,7 @@ class FilterModel extends AbstractModel
 	}
 
 	setRecipients() {
-		this.actionValueFourth(require('Stores/User/Account').accountsEmails().join(', '));
+		this.actionValueFourth(AccountStore.accountsEmails().join(', '));
 	}
 
 	parse(json) {

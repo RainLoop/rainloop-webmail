@@ -19,4 +19,4 @@ class CoreAdminStore
 	}
 }
 
-module.exports = new CoreAdminStore();
+export default new CoreAdminStore();

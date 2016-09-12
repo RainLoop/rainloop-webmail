@@ -69,4 +69,4 @@ class AppUserStore extends AbstractAppStore
 	}
 }
 
-module.exports = new AppUserStore();
+export default new AppUserStore();

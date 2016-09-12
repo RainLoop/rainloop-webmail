@@ -1,0 +1,6 @@
+
+# phantomjs
+phantomjs --webdriver=4444
+
+# codecept
+codeceptjs run

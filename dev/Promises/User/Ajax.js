@@ -61,4 +61,4 @@ class UserAjaxUserPromises extends AbstractAjaxPromises
 	}
 }
 
-module.exports = new UserAjaxUserPromises();
+export default new UserAjaxUserPromises();

@@ -100,4 +100,4 @@ class SocialStore
 	}
 }
 
-module.exports = new SocialStore();
+export default new SocialStore();

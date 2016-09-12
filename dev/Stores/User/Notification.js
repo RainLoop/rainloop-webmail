@@ -204,4 +204,4 @@ class NotificationUserStore
 	}
 }
 
-module.exports = new NotificationUserStore();
+export default new NotificationUserStore();
