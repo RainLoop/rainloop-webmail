@@ -2428,6 +2428,7 @@ END;
 		{
 			include_once MAILSO_LIBRARY_ROOT_PATH.'Vendors/Net/IDNA2.php';
 			$oIdn = new \Net_IDNA2();
+			$oIdn->setParams('utf8', true);
 		}
 
 		return $oIdn;
@@ -2441,7 +2442,7 @@ END;
 	 */
 	public static function IdnToUtf8($sStr, $bLowerIfAscii = false)
 	{
-		if (0 < \strlen($sStr) && \preg_match('/(^|\.)xn--/i', $sStr))
+		if (0 < \strlen($sStr) && \preg_match('/(^|\.|@)xn--/i', $sStr))
 		{
 			try
 			{
