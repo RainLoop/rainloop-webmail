@@ -9,7 +9,7 @@ Before((I) => {
 	I.waitForElement('.e-powered', 10);
 	I.fillField('.inputEmail', cfg.user);
 	I.fillField('.inputPassword', cfg.pass);
-	I.click('.buttonLogin');
+	I.click('.login-submit-icon');
 	I.waitForText('test@rainloop.de', 10, '.accountPlace');
 	I.resizeWindow(1000, 1000);
 });

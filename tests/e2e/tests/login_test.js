@@ -12,18 +12,10 @@ Scenario('login/page', function(I) {
 	I.see('Remember Me');
 });
 
-Scenario('login/empty-fields-error', function(I) {
-	I.fillField('.inputEmail', '');
-	I.fillField('.inputPassword', '');
-	I.click('.buttonLogin');
-	I.see('Remember Me');
-	I.seeElement('.controls.error');
-});
-
 Scenario('login/auth-error', function(I) {
 	I.fillField('.inputEmail', 'xxx');
 	I.fillField('.inputPassword', 'yyy');
-	I.click('.buttonLogin');
+	I.click('.login-submit-icon');
 	I.waitForVisible('.alertError', 3);
 	I.see('Authentication failed', '.alertError');
 });

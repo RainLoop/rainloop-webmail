@@ -36,7 +36,7 @@ import {view, command, ViewType, routeOff, showScreenPopup} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
 @view({
-	name: 'View/User/Login',
+	name: ['View/App/Login', 'View/User/Login'],
 	type: ViewType.Center,
 	templateID: 'Login'
 })
@@ -83,7 +83,6 @@ class LoginUserView extends AbstractViewNext
 
 		this.emailFocus = ko.observable(false);
 		this.passwordFocus = ko.observable(false);
-		this.submitFocus = ko.observable(false);
 
 		this.email.subscribe(() => {
 			this.emailError(false);
@@ -335,7 +334,7 @@ class LoginUserView extends AbstractViewNext
 	onShowWithDelay() {
 		if ('' !== this.email() && '' !== this.password())
 		{
-			this.submitFocus(true);
+			this.passwordFocus(true);
 		}
 		else if ('' === this.email())
 		{
@@ -352,7 +351,6 @@ class LoginUserView extends AbstractViewNext
 	}
 
 	onHide() {
-		this.submitFocus(false);
 		this.emailFocus(false);
 		this.passwordFocus(false);
 	}

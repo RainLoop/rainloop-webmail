@@ -1455,6 +1455,7 @@ class Actions
 			'customLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'forgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
 			'registrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
+			'loginGlassStyle' => (bool) $oConfig->Get('login', 'glass_style', true),
 			'jsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
 			'useImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'useImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),

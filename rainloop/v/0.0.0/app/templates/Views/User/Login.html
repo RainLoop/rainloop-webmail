@@ -44,8 +44,9 @@
 								style="padding-right: 35px;"
 								autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="textInput: password, hasFocus: passwordFocus, disable: submitRequest" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD" />
-							<span class="add-on">
-								<i class="icon-key"></i>
+							<span class="add-on i18n" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_SIGN_IN'">
+								<i class="icon-key" data-bind="visible: '' === password()"></i>
+								<i class="icon-right-middle login-submit-icon" data-bind="visible: '' !== password()"></i>
 							</span>
 						</div>
 					</div>
@@ -70,12 +71,12 @@
 						}"></div>
 					</div>
 					{{INCLUDE/BottomControlGroup/PLACE}}
-					<div class="controls">
-						<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand, hasFocus: submitFocus">
+					<div class="controls controls-submit-wrp display-none">
+						<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
 							<span class="i18n i18n-animation" data-i18n="LOGIN/BUTTON_SIGN_IN"></span>
 						</button>
 					</div>
-					<div class="controls clearfix" style="margin-bottom: 20px">
+					<div class="controls clearfix" style="margin-bottom: 10px">
 						<div class="pull-right social-buttons">
 							<a href="#" tabindex="-1" class="social-button" data-bind="visible: facebookLoginEnabled, command: facebookCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_FACEBOOK'">
 								<i class="icon-facebook-alt"></i>

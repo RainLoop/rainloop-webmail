@@ -1,5 +1,6 @@
 
 import ko from 'ko';
+import moment from 'moment';
 
 import {settingsGet} from 'Storage/Settings';
 import {showScreenPopup} from 'Knoin/Knoin';
@@ -60,7 +61,6 @@ class LicensingPremAdminSettings
 	 */
 	licenseExpiredMomentValue() {
 		const
-			moment = require('moment'),
 			time = this.licenseExpired(),
 			momentUnix = moment.unix(time);
 

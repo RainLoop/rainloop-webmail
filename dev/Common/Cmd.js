@@ -3,7 +3,7 @@ import window from 'window';
 import $ from '$';
 import _ from '_';
 import ko from 'ko';
-import {$html, $body} from 'Common/Globals';
+import {$body} from 'Common/Globals';
 import {EventKeyCode, Magics} from 'Common/Enums';
 import {trim, inArray, changeTheme} from 'Common/Utils';
 import {reload as translatorReload} from 'Common/Translator';
@@ -38,43 +38,6 @@ function cmdClear(dom) {
  */
 function cmdHelp(cmds) {
 	return require('Html/Cmds/Help.html').replace('{{ commands }}', cmds.join(' '));
-}
-
-/**
- * @returns {void}
- */
-function initGlass() {
-	let state = null;
-	try {
-		if (window.localStorage && window.localStorage.setItem)
-		{
-			state = '1' === '' + window.localStorage.getItem('rl-labs-glass');
-		}
-	}
-	catch (e) {} // eslint-disable-line no-empty
-
-	if (null !== state)
-	{
-		$html.toggleClass('glass', !!state);
-	}
-}
-
-/**
- * @returns {string}
- */
-function cmdGlass() {
-	const state = !$html.hasClass('glass');
-
-	try {
-		if (window.localStorage && window.localStorage.setItem)
-		{
-			window.localStorage.setItem('rl-labs-glass', state ? '1' : '0');
-		}
-	}
-	catch (e) {} // eslint-disable-line no-empty
-
-	$html.toggleClass('glass', state);
-	return '';
 }
 
 /**
@@ -124,7 +87,7 @@ class CmdContoller
 
 	cmdHelper = ko.observable('');
 
-	cmds = ['help', 'version', 'glass', 'clear', 'theme', 'lang'];
+	cmds = ['help', 'version', 'clear', 'theme', 'lang'];
 	cmdsWithParameters = ['theme', 'lang'];
 
 	isAdmin = false;
@@ -204,9 +167,6 @@ class CmdContoller
 			case 'ls':
 			case 'help':
 				result = cmdHelp(this.cmds);
-				break;
-			case 'glass':
-				result = cmdGlass();
 				break;
 			case 'v':
 			case 'version':
@@ -390,6 +350,3 @@ export function toggle()
 		}, Magics.Time50ms);
 	}
 }
-
-// init
-initGlass();

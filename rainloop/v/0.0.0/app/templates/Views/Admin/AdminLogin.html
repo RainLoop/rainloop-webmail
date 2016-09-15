@@ -26,12 +26,13 @@
 								style="padding-right: 35px;"
 								autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
 								data-bind="textInput: password, disable: submitRequest" />
-							<span class="add-on">
-								<i class="icon-key"></i>
+							<span class="add-on" data-bind="command: submitCommand">
+								<i class="icon-key" data-bind="visible: '' === password()"></i>
+								<i class="icon-right-middle login-submit-icon" data-bind="visible: '' !== password()"></i>
 							</span>
 						</div>
 					</div>
-					<div class="controls">
+					<div class="controls controls-submit-wrp display-none">
 						<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
 							<span data-i18n="LOGIN/BUTTON_LOGIN"></span>
 						</button>
