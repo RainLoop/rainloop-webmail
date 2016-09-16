@@ -316,18 +316,18 @@ gulp.task('css:social', function() {
 });
 
 gulp.task('css:main:min', ['css:main'], function() {
-	var csso = require('gulp-csso');
+	var cleanCss = require('gulp-clean-css');
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.css.main.name)
-		.pipe(csso())
+		.pipe(cleanCss())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS));
 });
 
 gulp.task('css:social:min', ['css:social'], function() {
-	var csso = require('gulp-csso');
+	var cleanCss = require('gulp-clean-css');
 	return gulp.src(cfg.paths.staticCSS + cfg.paths.css.social.name)
-		.pipe(csso())
+		.pipe(cleanCss())
 		.pipe(rename({suffix: '.min'}))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS));
