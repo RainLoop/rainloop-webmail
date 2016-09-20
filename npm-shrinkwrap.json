@@ -3919,9 +3919,9 @@
       "resolved": "https://registry.npmjs.org/signal-exit/-/signal-exit-3.0.1.tgz"
     },
     "simplestatemanager": {
-      "version": "3.2.0",
-      "from": "simplestatemanager@3.2.0",
-      "resolved": "https://registry.npmjs.org/simplestatemanager/-/simplestatemanager-3.2.0.tgz"
+      "version": "3.4.0",
+      "from": "simplestatemanager@3.4.0",
+      "resolved": "https://registry.npmjs.org/simplestatemanager/-/simplestatemanager-3.4.0.tgz"
     },
     "slash": {
       "version": "1.0.0",
