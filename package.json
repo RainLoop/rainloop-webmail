@@ -4,7 +4,7 @@
   "description": "Simple, modern & fast web-based email client",
   "private": true,
   "version": "1.10.4",
-  "release": "179",
+  "release": "180",
   "ownCloudPackageVersion": "4.24",
   "homepage": "http://rainloop.net",
   "main": "gulpfile.js",
