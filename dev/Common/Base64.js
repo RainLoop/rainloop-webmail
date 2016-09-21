@@ -9,7 +9,7 @@ const Base64 = {
 
 	// public method for urlsafe encoding
 	urlsafe_encode: (input) => Base64.encode(input)
-		.replace(/[+]/g, '-').replace(/[\/]/g, '_').replace(/[=]/g, '.'),
+		.replace(/[+]/g, '-').replace(/[\/]/g, '_').replace(/[=]/g, ''),
 
 	// public method for encoding
 	encode: (input) => {

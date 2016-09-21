@@ -80,22 +80,21 @@
 								</a>
 								<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-view-dropdown-id">
 									<div data-bind="visible: allowComposer && !isDraftFolder()">
-										<li class="e-item" role="presentation" data-bind="visible: 'reply' !== lastReplyAction()">
+										<li class="e-item" role="presentation">
 											<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyCommand">
 												<i class="icon-reply"></i>
 												&nbsp;&nbsp;
 												<span class="i18n" data-i18n="MESSAGE/BUTTON_REPLY"></span>
 											</a>
 										</li>
-										<li class="e-item" role="presentation" data-bind="visible: 'replyall' !== lastReplyAction()">
+										<li class="e-item" role="presentation">
 											<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyAllCommand">
 												<i class="icon-reply-all"></i>
 												&nbsp;&nbsp;
 												<span class="i18n" data-i18n="MESSAGE/BUTTON_REPLY_ALL"></span>
 											</a>
 										</li>
-										<li class="e-item" role="presentation"
-											data-bind="visible: 'forward' !== lastReplyAction()">
+										<li class="e-item" role="presentation">
 											<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardCommand">
 												<i class="icon-forward"></i>
 												&nbsp;&nbsp;

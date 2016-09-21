@@ -3125,9 +3125,9 @@
       }
     },
     "moment": {
-      "version": "2.15.0",
-      "from": "moment@2.15.0",
-      "resolved": "https://registry.npmjs.org/moment/-/moment-2.15.0.tgz"
+      "version": "2.15.1",
+      "from": "moment@2.15.1",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.15.1.tgz"
     },
     "ms": {
       "version": "0.7.1",

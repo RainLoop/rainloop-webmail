@@ -46,7 +46,9 @@
 								data-bind="textInput: password, hasFocus: passwordFocus, disable: submitRequest" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD" />
 							<span class="add-on i18n" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_SIGN_IN'">
 								<i class="icon-key" data-bind="visible: '' === password()"></i>
-								<i class="icon-right-middle login-submit-icon" data-bind="visible: '' !== password()"></i>
+								<button type="submit" class="btn-submit-icon-wrp" data-bind="visible: '' !== password()">
+									<i class="icon-right-middle login-submit-icon"></i>
+								</button>
 							</span>
 						</div>
 					</div>
