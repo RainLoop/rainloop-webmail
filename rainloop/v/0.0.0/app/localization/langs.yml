@@ -15,6 +15,7 @@ Common:
         LANG_RO_RO: Română
         LANG_UK_UA: Українська
         LANG_DE_DE: Deutsch
+        LANG_FI_FI: Suomi
         LANG_FR_FR: Français (France)
         LANG_FR_CA: Français (Canada)
         LANG_PT_PT: Português (Portugal)
@@ -56,6 +57,7 @@ Common:
         LANG_RO_RO: Romanian
         LANG_UK_UA: Ukrainian
         LANG_DE_DE: German
+        LANG_FI_FI: Finnish
         LANG_FR_FR: French (France)
         LANG_FR_CA: France (Canada)
         LANG_PT_PT: Portuguese (Portugal)

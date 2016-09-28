@@ -8,6 +8,7 @@ import {
 
 import {StorageResultType, Notification, Magics} from 'Common/Enums';
 import {getNotification} from 'Common/Translator';
+import {$win} from 'Common/Globals';
 
 import * as Settings from 'Storage/Settings';
 
@@ -28,10 +29,12 @@ class LoginAdminView extends AbstractViewNext
 	constructor() {
 		super();
 
-		this.logoPowered = !!Settings.settingsGet('LoginPowered');
+		this.loginPowered = !!Settings.settingsGet('LoginPowered');
 
 		this.mobile = !!Settings.appSettingsGet('mobile');
 		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+
+		this.hideSubmitButton = !!Settings.appSettingsGet('hideSubmitButton');
 
 		this.login = ko.observable('');
 		this.password = ko.observable('');
@@ -79,8 +82,12 @@ class LoginAdminView extends AbstractViewNext
 		}
 
 		this.submitRequest(true);
+		$win.trigger('rl.tooltips.diactivate');
 
 		Remote.adminLogin((sResult, oData) => {
+
+			$win.trigger('rl.tooltips.diactivate');
+			$win.trigger('rl.tooltips.activate');
 
 			if (StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action)
 			{

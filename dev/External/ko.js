@@ -208,6 +208,15 @@ ko.bindingHandlers.tooltip = {
 			{
 				element.__opentip.setContent(sValue);
 			}
+
+			$win.on('rl.tooltips.diactivate', () => {
+				element.__opentip.hide();
+				element.__opentip.deactivate();
+			});
+
+			$win.on('rl.tooltips.activate', () => {
+				element.__opentip.activate();
+			});
 		}
 	},
 	update: (element, fValueAccessor) => {

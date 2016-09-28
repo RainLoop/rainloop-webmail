@@ -256,6 +256,7 @@ class AbstractApp extends AbstractBoot
 		if (logout && window.location.href !== customLogoutLink)
 		{
 			_.delay(() => {
+
 				if (inIframe && window.parent)
 				{
 					window.parent.location.href = customLogoutLink;
@@ -264,6 +265,9 @@ class AbstractApp extends AbstractBoot
 				{
 					window.location.href = customLogoutLink;
 				}
+
+				$win.trigger('rl.tooltips.diactivate');
+
 			}, Magics.Time100ms);
 		}
 		else
@@ -273,6 +277,7 @@ class AbstractApp extends AbstractBoot
 			routeOff();
 
 			_.delay(() => {
+
 				if (inIframe && window.parent)
 				{
 					window.parent.location.reload();
@@ -281,6 +286,9 @@ class AbstractApp extends AbstractBoot
 				{
 					window.location.reload();
 				}
+
+				$win.trigger('rl.tooltips.diactivate');
+
 			}, Magics.Time100ms);
 		}
 	}

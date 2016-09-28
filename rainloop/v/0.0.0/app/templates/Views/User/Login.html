@@ -44,7 +44,7 @@
 								style="padding-right: 35px;"
 								autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="textInput: password, hasFocus: passwordFocus, disable: submitRequest" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD" />
-							<span class="add-on i18n" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_SIGN_IN'">
+							<span class="add-on" tabindex="-1" data-tooltip-join="left" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_SIGN_IN'">
 								<i class="icon-key" data-bind="visible: '' === password()"></i>
 								<button type="submit" class="btn-submit-icon-wrp" data-bind="visible: '' !== password()">
 									<i class="icon-right-middle login-submit-icon"></i>
@@ -73,7 +73,7 @@
 						}"></div>
 					</div>
 					{{INCLUDE/BottomControlGroup/PLACE}}
-					<div class="controls controls-submit-wrp display-none">
+					<div class="controls controls-submit-wrp" data-bind="css: {'display-none': hideSubmitButton}">
 						<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
 							<span class="i18n i18n-animation" data-i18n="LOGIN/BUTTON_SIGN_IN"></span>
 						</button>
@@ -117,7 +117,7 @@
 					</div>
 				</form>
 			</div>
-			<div class="e-powered thm-powered" data-bind="visible: logoPowered">Powered by <a href="http://www.rainloop.net" target="_blank">RainLoop</a></div>
+			<div class="e-powered thm-powered" data-bind="visible: loginPowered">Powered by <a href="http://www.rainloop.net" target="_blank">RainLoop</a></div>
 			<div class="e-mobile-switcher thm-mobile-switcher">
 				<span data-bind="visible: !mobile && mobileDevice">
 					<i class="icon-mobile"></i>

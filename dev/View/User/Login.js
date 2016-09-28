@@ -17,6 +17,7 @@ import {
 	convertLangName, triggerAutocompleteInputChange
 } from 'Common/Utils';
 
+import {$win} from 'Common/Globals';
 import {socialFacebook, socialGoogle, socialTwitter} from 'Common/Links';
 import {getNotification, getNotificationFromResponse, reload as translatorReload} from 'Common/Translator';
 
@@ -45,6 +46,8 @@ class LoginUserView extends AbstractViewNext
 	constructor() {
 		super();
 
+		this.hideSubmitButton = !!Settings.appSettingsGet('hideSubmitButton');
+
 		this.welcome = ko.observable(!!Settings.settingsGet('UseLoginWelcomePage'));
 
 		this.email = ko.observable('');
@@ -59,7 +62,7 @@ class LoginUserView extends AbstractViewNext
 		this.additionalCodeSignMe = ko.observable(false);
 
 		this.logoImg = trim(Settings.settingsGet('LoginLogo'));
-		this.logoPowered = !!Settings.settingsGet('LoginPowered');
+		this.loginPowered = !!Settings.settingsGet('LoginPowered');
 		this.loginDescription = trim(Settings.settingsGet('LoginDescription'));
 
 		this.mobile = !!Settings.appSettingsGet('mobile');
@@ -251,11 +254,15 @@ class LoginUserView extends AbstractViewNext
 		}
 
 		this.submitRequest(true);
+		$win.trigger('rl.tooltips.diactivate');
 
 		const
 			fLoginRequest = (sLoginPassword) => {
 
 				Remote.login((sResult, oData) => {
+
+					$win.trigger('rl.tooltips.diactivate');
+					$win.trigger('rl.tooltips.activate');
 
 					if (StorageResultType.Success === sResult && oData && 'Login' === oData.Action)
 					{

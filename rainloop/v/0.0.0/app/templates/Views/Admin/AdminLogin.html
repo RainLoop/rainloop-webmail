@@ -26,7 +26,7 @@
 								style="padding-right: 35px;"
 								autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
 								data-bind="textInput: password, disable: submitRequest" />
-							<span class="add-on" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_LOGIN'">
+							<span class="add-on" tabindex="-1" data-tooltip-join="left" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_LOGIN'">
 								<i class="icon-key" data-bind="visible: '' === password()"></i>
 								<button type="submit" class="btn-submit-icon-wrp" data-bind="visible: '' !== password()">
 									<i class="icon-right-middle login-submit-icon"></i>
@@ -34,14 +34,14 @@
 							</span>
 						</div>
 					</div>
-					<div class="controls controls-submit-wrp display-none">
+					<div class="controls controls-submit-wrp" data-bind="css: {'display-none': hideSubmitButton}">
 						<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
 							<span data-i18n="LOGIN/BUTTON_LOGIN"></span>
 						</button>
 					</div>
 				</form>
 			</div>
-			<div class="e-powered thm-powered" data-bind="visible: logoPowered">
+			<div class="e-powered thm-powered" data-bind="visible: loginPowered">
 				Powered by <a href="http://www.rainloop.net" target="_blank">RainLoop</a>
 			</div>
 		</center>
