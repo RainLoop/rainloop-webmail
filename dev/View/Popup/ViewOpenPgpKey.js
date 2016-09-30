@@ -10,7 +10,7 @@ import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/ViewOpenPgpKey',
-	templateID: 'PopupsTwoFactorTest'
+	templateID: 'PopupsViewOpenPgpKey'
 })
 class ViewOpenPgpKeyPopupView extends AbstractViewNext
 {
@@ -35,12 +35,12 @@ class ViewOpenPgpKeyPopupView extends AbstractViewNext
 		}
 	}
 
-	onShow(oOpenPgpKey) {
+	onShow(openPgpKey) {
 		this.clearPopup();
 
-		if (oOpenPgpKey)
+		if (openPgpKey)
 		{
-			this.key(oOpenPgpKey.armor);
+			this.key(openPgpKey.armor);
 		}
 	}
 

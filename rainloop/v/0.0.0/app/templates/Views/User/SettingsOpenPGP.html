@@ -38,17 +38,17 @@
 						<div class="open-pgp-key-user-address" data-bind="text: $data"></div>
 					<!-- /ko -->
 					</span>
-					<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oOpenPGP) { $root.deleteOpenPgpKey(oOpenPGP); }">
+					<a class="btn btn-small btn-small-small btn-danger pull-right button-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(openPgpKey) { $root.deleteOpenPgpKey(openPgpKey); }">
 						<span class="i18n" data-i18n="SETTINGS_OPEN_PGP/DELETING_ASK"></span>
 					</a>
 				</td>
 				<td>
-					<span class="delete-open-pgp-key" data-bind="visible: !deleteAccess(), click: function (oOpenPGP) { $root.openPgpKeyForDeletion(oOpenPGP); }">
+					<span class="delete-open-pgp-key" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">
 						<i class="icon-trash"></i>
 					</span>
 				</td>
 				<td>
-					<span class="view-open-pgp-key" data-bind="click: function (oOpenPgpKey) { $root.viewOpenPgpKey(oOpenPgpKey); }">
+					<span class="view-open-pgp-key" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">
 						<i class="icon-eye"></i>
 					</span>
 				</td>
@@ -72,12 +72,12 @@
 					</a>
 				</td>
 				<td>
-					<span class="delete-open-pgp-key" data-bind="visible: !deleteAccess(), click: function (oOpenPgpKey) { $root.openPgpKeyForDeletion(oOpenPgpKey); }">
+					<span class="delete-open-pgp-key" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">
 						<i class="icon-trash"></i>
 					</span>
 				</td>
 				<td>
-					<span class="view-open-pgp-key" data-bind="click: function (oOpenPgpKey) { $root.viewOpenPgpKey(oOpenPgpKey); }">
+					<span class="view-open-pgp-key" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">
 						<i class="icon-eye"></i>
 					</span>
 				</td>
