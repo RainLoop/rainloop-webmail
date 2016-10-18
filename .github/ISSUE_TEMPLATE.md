@@ -1,8 +1,8 @@
 
-### RainLoop version, browser, OS:
+**RainLoop version, browser, OS:**
 
-### Expected behavior and actual behavior:
+**Expected behavior and actual behavior:**
 
-### Steps to reproduce the problem:
+**Steps to reproduce the problem:**
 
-### Logs or screenshots:
+**Logs or screenshots:**

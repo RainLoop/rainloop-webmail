@@ -3,7 +3,7 @@ import _ from '_';
 import crossroads from 'crossroads';
 import {isArray, isNonEmptyArray, noop} from 'Common/Utils';
 
-class AbstractScreen
+export class AbstractScreen
 {
 	oCross = null;
 	sScreenName;
@@ -57,7 +57,7 @@ class AbstractScreen
 			fMatcher = _.bind(this.onRoute || noop, this);
 			route = crossroads.create();
 
-			_.each(routes, (item) => {
+			routes.forEach((item) => {
 				if (item && route)
 				{
 					route.addRoute(item[0], fMatcher).rules = item[1];
@@ -68,5 +68,3 @@ class AbstractScreen
 		}
 	}
 }
-
-export {AbstractScreen, AbstractScreen as default};

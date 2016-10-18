@@ -180,7 +180,7 @@ if (bAllowPdfPreview && window.navigator && window.navigator.mimeTypes)
 
 export {bAllowPdfPreview};
 
-export const aViewModels = {
+export const VIEW_MODELS = {
 	settings: [],
 	'settings-removed': [],
 	'settings-disabled': []

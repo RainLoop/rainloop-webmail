@@ -409,7 +409,6 @@ gulp.task('js:es5:min', ['js:app', 'js:admin'], function() {
 gulp.task('js:es6:min', ['js:app', 'js:admin'], function() {
 	return cfg.next ? gulp.src(cfg.paths.staticJS + '*.next.js')
 		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
-	// TODO
 		.pipe(eol('\n', true))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(gulp.dest(cfg.paths.staticMinJS))

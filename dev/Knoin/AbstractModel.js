@@ -1,8 +1,7 @@
 
-import _ from '_';
 import {isArray, disposeObject} from 'Common/Utils';
 
-class AbstractModel
+export class AbstractModel
 {
 	sModelName = '';
 	disposables = [];
@@ -18,7 +17,7 @@ class AbstractModel
 	regDisposables(value) {
 		if (isArray(value))
 		{
-			_.each(value, (item) => {
+			value.forEach((item) => {
 				this.disposables.push(item);
 			});
 		}
@@ -32,5 +31,3 @@ class AbstractModel
 		disposeObject(this);
 	}
 }
-
-export {AbstractModel, AbstractModel as default};

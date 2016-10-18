@@ -49,8 +49,8 @@
   },
   "devDependencies": {
     "Progress.js": "github:usablica/progress.js",
-    "autolinker": "^1.1.0",
-    "babel-core": "^6.16.0",
+    "autolinker": "^1.2.0",
+    "babel-core": "^6.17.0",
     "babel-eslint": "^7.0.0",
     "babel-loader": "^6.2.5",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
@@ -102,7 +102,7 @@
     "moment": "^2.15.1",
     "node-fs": "^0.1.7",
     "node-notifier": "4.6.1",
-    "normalize.css": "^4.2.0",
+    "normalize.css": "^5.0.0",
     "openpgp": "^2.3.3",
     "opentip": "^2.4.3",
     "pikaday": "^1.4.0",
@@ -114,7 +114,7 @@
     "style-loader": "^0.13.1",
     "tinycon": "github:tommoor/tinycon",
     "underscore": "^1.8.3",
-    "webpack": "2.1.0-beta.22",
+    "webpack": "^2.1.0-beta.25",
     "webpack-notifier": "1.4.1"
   }
 }

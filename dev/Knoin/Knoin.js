@@ -6,7 +6,7 @@ import hasher from 'hasher';
 import crossroads from 'crossroads';
 
 import {runHook} from 'Common/Plugins';
-import {$html, aViewModels as VIEW_MODELS, popupVisibilityNames} from 'Common/Globals';
+import {$html, VIEW_MODELS, popupVisibilityNames} from 'Common/Globals';
 
 import {
 	isArray, isUnd, pString, log, isFunc,

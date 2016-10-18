@@ -1954,7 +1954,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$aResult['StaticAppJsLink'] = $this->StaticPath('js/'.($bAppJsDebug ? '' : 'min/').
 			($bAdmin ? 'admin' : 'app').($bAppJsDebug ? '' : '.min').'.js');
 
-		$aResult['StaticAppJsNextLink'] = $this->StaticPath('js/'.($bAdmin ? 'admin' : 'app').'.next.js'); // todo min
+		$aResult['StaticAppJsNextLink'] = $this->StaticPath('js/'.($bAdmin ? 'admin' : 'app').'.next.js');
 		$aResult['StaticEditorJsLink'] = $this->StaticPath('ckeditor/ckeditor.js');
 
 		$aResult['EditorDefaultType'] = \in_array($aResult['EditorDefaultType'], array('Plain', 'Html', 'HtmlForced', 'PlainForced')) ?

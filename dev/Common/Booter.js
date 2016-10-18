@@ -25,33 +25,36 @@ const useJsNextBundle = (function() {
 	}
 
 	/* eslint-disable  */
-	try {
-
-		eval(`
- // let + const
-const x = 5; let y = 4; var z = 4;
-
- // Arrow Function
-const f = () => 'rainloop';
-
- // Default + Rest + Spread
-const d = (test = 1, ...t) => 'rainloop';
-d(...[1, 2, 3]);
-
-// Destructuring
-let [a, b] = [1, 2];
-({a, b} = {a: 1, b: 2});
-
-// Class
-class Q1 { constructor() {} }
-
-// Class extends + super
-class Q2 extends Q1 { constructor() { super() } }
-
-`);
-		return true;
-	}
-	catch (e) {}
+//	try {
+//
+//		(function() {
+//			eval(`
+// // let + const
+//const x = 5; let y = 4; var z = 4;
+//
+// // Arrow Function
+//const f = () => 'rainloop';
+//
+// // Default + Rest + Spread
+//const d = (test = 1, ...t) => 'rainloop';
+//d(...[1, 2, 3]);
+//
+//// Destructuring
+//let [a, b] = [1, 2];
+//({a, b} = {a: 1, b: 2});
+//
+//// Class
+//class Q1 { constructor() {} }
+//
+//// Class extends + super
+//class Q2 extends Q1 { constructor() { super() } }
+//
+//`);
+//		}());
+//
+//		return true;
+//	}
+//	catch (e) {}
 
     return false;
 	/* eslint-enable */
@@ -65,7 +68,7 @@ class Q2 extends Q1 { constructor() { super() } }
 function getComputedStyle(id, name)
 {
 	const element = window.document.getElementById(id);
-	return element.currentStyle ? element.currentStyle[name] :
+	return element && element.currentStyle ? element.currentStyle[name] :
 		(window.getComputedStyle ? window.getComputedStyle(element, null).getPropertyValue(name) : null);
 }
 
@@ -106,7 +109,9 @@ function includeLayout()
 }
 
 /**
- * @param {mixed} data
+ * @param {boolean} admin = false
+ * @param {boolean} mobile = false
+ * @param {boolean} mobileDevice = false
  * @returns {void}
  */
 function includeAppScr({admin = false, mobile = false, mobileDevice = false})

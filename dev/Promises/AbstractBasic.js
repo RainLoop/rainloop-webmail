@@ -1,9 +1,8 @@
 
-import _ from '_';
 import Promise from 'Promise';
 import {isArray} from 'Common/Utils';
 
-class AbstractBasicPromises
+export class AbstractBasicPromises
 {
 	oPromisesStack = {};
 
@@ -24,7 +23,7 @@ class AbstractBasicPromises
 		if (trigger)
 		{
 			value = !!value;
-			_.each(isArray(trigger) ? trigger : [trigger], (fTrigger) => {
+			(isArray(trigger) ? trigger : [trigger]).forEach((fTrigger) => {
 				if (fTrigger)
 				{
 					fTrigger(value);
@@ -33,5 +32,3 @@ class AbstractBasicPromises
 		}
 	}
 }
-
-export {AbstractBasicPromises, AbstractBasicPromises as default};

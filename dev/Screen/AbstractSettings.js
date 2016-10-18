@@ -3,7 +3,7 @@ import _ from '_';
 import $ from '$';
 import ko from 'ko';
 
-import {aViewModels as VIEW_MODELS} from 'Common/Globals';
+import {VIEW_MODELS} from 'Common/Globals';
 import {delegateRun, windowResize, log, isUnd, pString} from 'Common/Utils';
 import {settings} from 'Common/Links';
 

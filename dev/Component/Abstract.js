@@ -1,7 +1,9 @@
 
 import $ from '$';
 import ko from 'ko';
+
 import {isUnd} from 'Common/Utils';
+import {i18nToNodes} from 'Common/Translator';
 
 class AbstractComponent
 {
@@ -35,7 +37,7 @@ const componentExportHelper = (ClassObject, templateID = '') => ({
 				params.component = componentInfo;
 				params.element = $(componentInfo.element);
 
-				require('Common/Translator').i18nToNodes(params.element);
+				i18nToNodes(params.element);
 
 				if (!isUnd(params.inline) && ko.unwrap(params.inline))
 				{

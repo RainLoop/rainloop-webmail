@@ -4,7 +4,6 @@ tx pull -a
 
 # dependencies checker
 npm-check --skip-unused --save-exact
-npm dedupe
 
 # dependencies locker
 npm shrinkwrap --dev

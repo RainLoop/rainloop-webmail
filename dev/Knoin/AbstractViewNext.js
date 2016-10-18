@@ -5,7 +5,7 @@ import {delegateRun, inFocus} from 'Common/Utils';
 import {KeyState, EventKeyCode} from 'Common/Enums';
 import {$win, keyScope} from 'Common/Globals';
 
-class AbstractViewNext
+export class AbstractViewNext
 {
 	bDisabeCloseOnEsc = false;
 	sDefaultKeyScope = KeyState.None;
@@ -58,5 +58,3 @@ class AbstractViewNext
 	cancelCommand() {} // eslint-disable-line no-empty-function
 	closeCommand() {} // eslint-disable-line no-empty-function
 }
-
-export {AbstractViewNext, AbstractViewNext as default};
