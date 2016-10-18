@@ -88,6 +88,7 @@ nl_NL:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domeinen"
     BUTTON_ADD_DOMAIN: "Domein toevoegen"
+    BUTTON_ADD_ALIAS: "Voeg alias toe"
     DELETE_ARE_YOU_SURE: "Weet u het zeker?"
     HTML_DOMAINS_HELPER: |
       Lijst van toegestane domeinen.
@@ -184,6 +185,12 @@ nl_NL:
       Let op: een activatie code kan slechts voor één domein worden gebruikt.
       <br /><br />
       Het activatieproces kan niet meer worden afgebroken of geannuleerd nadat het is gestart.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Voeg alias toe"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Domein"
+    BUTTON_CLOSE: "Sluiten"
+    BUTTON_ADD: "Toevoegen"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Voeg domein toe"
     TITLE_ADD_DOMAIN_WITH_NAME: "Voeg domein \"%NAME%\" toe"
@@ -243,14 +250,14 @@ nl_NL:
     CONNECTION_ERROR: "Verbinding met Server mislukt"
     CAPTCHA_ERROR: "Onjuiste CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Deze integratie ID is nog niet gekoppeld aan een e-mail adres. Log in met uw
-      e-mail aanmeldingsgegevens en activeer deze functie in de instellingen.
+        Deze integratie ID is nog niet gekoppeld aan een e-mail adres. Log in met
+        uw e-mail aanmeldingsgegevens en activeer deze functie in de instellingen.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Deze integratie ID is nog niet gekoppeld aan een e-mail adres. Log in met uw
-      e-mail aanmeldingsgegevens en activeer deze functie in de instellingen.
+        Deze integratie ID is nog niet gekoppeld aan een e-mail adres. Log in met
+        uw e-mail aanmeldingsgegevens en activeer deze functie in de instellingen.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Deze integratie ID is nog niet gekoppeld aan een e-mail adres. Log in met uw
-      e-mail aanmeldingsgegevens en activeer deze functie in de instellingen.
+        Deze integratie ID is nog niet gekoppeld aan een e-mail adres. Log in met
+        uw e-mail aanmeldingsgegevens en activeer deze functie in de instellingen.
     DOMAIN_NOT_ALLOWED: "Domein is niet toegestaan"
     ACCOUNT_NOT_ALLOWED: "Account is niet toegestaan"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "2-Stap verificatie is vereist"

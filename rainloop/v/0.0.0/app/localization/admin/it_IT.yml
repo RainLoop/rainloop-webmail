@@ -89,6 +89,7 @@ it_IT:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domini"
     BUTTON_ADD_DOMAIN: "Aggiungi dominio"
+    BUTTON_ADD_ALIAS: "Aggiungi alias"
     DELETE_ARE_YOU_SURE: "Ne sei sicuro?"
     HTML_DOMAINS_HELPER: |
       Lista di domini a cui la webmail è abilitata ad accedere.
@@ -186,6 +187,12 @@ it_IT:
       Una chiave di licenza può essere attivata su un solo dominio.
       <br /><br />
       Una volta iniziato, il processo di attivazione non potrà essere bloccato od annullato.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Aggiungi alias"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Dominio"
+    BUTTON_CLOSE: "Chiudi"
+    BUTTON_ADD: "Aggiungi"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Aggiungi dominio"
     TITLE_ADD_DOMAIN_WITH_NAME: "Aggiungi il dominio \"%NAME%\""
@@ -245,14 +252,17 @@ it_IT:
     CONNECTION_ERROR: "Impossibile connettersi al server"
     CAPTCHA_ERROR: "CAPTCHA non corretto."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Questo account social non è assegnato ancora a nessun indirizzo email. Accedi
-      utilizzando le credenziali dell'indirizzo e abilita la funzionalità nelle impostazioni.
+        Questo account social non è assegnato ancora a nessun indirizzo email. Accedi
+        utilizzando le credenziali dell'indirizzo e abilita la funzionalità nelle
+        impostazioni.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Questo account social non è assegnato ancora a nessun indirizzo email. Accedi
-      utilizzando le credenziali dell'indirizzo e abilita la funzionalità nelle impostazioni.
+        Questo account social non è assegnato ancora a nessun indirizzo email. Accedi
+        utilizzando le credenziali dell'indirizzo e abilita la funzionalità nelle
+        impostazioni.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Questo account social non è assegnato ancora a nessun indirizzo email. Accedi
-      utilizzando le credenziali dell'indirizzo e abilita la funzionalità nelle impostazioni.
+        Questo account social non è assegnato ancora a nessun indirizzo email. Accedi
+        utilizzando le credenziali dell'indirizzo e abilita la funzionalità nelle
+        impostazioni.
     DOMAIN_NOT_ALLOWED: "Dominio non autorizzato"
     ACCOUNT_NOT_ALLOWED: "Account non autorizzato"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Autenticazione a due fattori richiesta"
