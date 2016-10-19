@@ -1,18 +1,21 @@
 <?xml version="1.0"?>
-<info>
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
 	<id>rainloop</id>
 	<name>RainLoop</name>
+	<summary>RainLoop Webmail</summary>
 	<description>Simple, modern and fast web-based email client.</description>
-	<version>0.0</version>
-	<licence></licence>
+	<version>4.26</version>
+	<licence>AGPLv3</licence>
 	<author>RainLoop Team</author>
 	<require>6.0</require>
 	<ocsid>165254</ocsid>
 	<dependencies>
         <php min-version="5.4" />
         <owncloud min-version="6" max-version="9.2" />
+				<nextcloud min-version="10"/>
     </dependencies>
-	<category>productivity</category>
+	<category>social</category>
 	<website>http://www.rainloop.net/</website>
 	<bugs>https://github.com/RainLoop/rainloop-webmail/issues</bugs>
 </info>
