@@ -14,8 +14,9 @@
         <php min-version="5.4" />
         <owncloud min-version="6" max-version="9.2" />
 				<nextcloud min-version="10"/>
-    </dependencies>
+  </dependencies>
 	<category>social</category>
+  <category>tools</category>
 	<website>http://www.rainloop.net/</website>
 	<bugs>https://github.com/RainLoop/rainloop-webmail/issues</bugs>
 </info>
