@@ -249,8 +249,9 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'welcome_page' => array(false, ''),
 
-				'glass_style' => array(true, ''),
-				'hide_submit_button' => array(true, ''),
+				'glass_style' => array(true),
+				'hide_submit_button' => array(true),
+				'active_backgroud' => array(true),
 
 				'forgot_password_link_url' => array('', ''),
 				'registration_link_url' => array('', ''),

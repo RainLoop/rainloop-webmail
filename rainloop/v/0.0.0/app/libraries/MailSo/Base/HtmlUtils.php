@@ -117,7 +117,7 @@ class HtmlUtils
 	/**
 	 * @param \DOMDocument|\DOMElement $oElem
 	 *
-	 * @return type
+	 * @return string
 	 */
 	private static function domToString($oElem, $oDom = null)
 	{
@@ -196,7 +196,6 @@ class HtmlUtils
 			else
 			{
 				$sResult = self::domToString($oDiv, $oDom);
-				$sResult = \MailSo\Base\HtmlUtils::UnWrapTag($sResult);
 			}
 		}
 		else
@@ -208,36 +207,6 @@ class HtmlUtils
 		$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
 
 		return $sResult;
-	}
-
-	/**
-	 * @param string $sHtml
-	 * @param string $sTag = 'div'
-	 * @param string $iUnwrapCount = 10
-	 *
-	 * @return string
-	 */
-	public static function UnWrapTag($sHtml, $sTag = 'div', $iUnwrapCount = 5)
-	{
-		$iUnwrapCount = 0 < $iUnwrapCount ? $iUnwrapCount : 1;
-		$iUnwrapCount = 10 < $iUnwrapCount ? 10 : $iUnwrapCount;
-
-		$sTag = $sTag ? $sTag : 'div';
-		$iTagLen = \strlen($sTag);
-
-		while (0 < $iUnwrapCount)
-		{
-			$sHtml = \trim($sHtml);
-			if (0 === \strpos($sHtml, '<'.$sTag.'>') && '</'.$sTag.'>' === \substr($sHtml, -3 - $iTagLen))
-			{
-				$sHtml = \substr(\substr($sHtml, 2 + $iTagLen), 0, -3 - $iTagLen);
-				$sHtml = \trim($sHtml);
-			}
-
-			$iUnwrapCount--;
-		}
-
-		return $sHtml;
 	}
 
 	/**
@@ -287,8 +256,6 @@ class HtmlUtils
 
 		$sHtmlAttrs = trim($sHtmlAttrs);
 		$sBodyAttrs = trim($sBodyAttrs);
-
-		$sHtml = \MailSo\Base\HtmlUtils::UnWrapTag($sHtml);
 
 		return $sHtml;
 	}
@@ -1242,7 +1209,8 @@ class HtmlUtils
 
 			if (\MailSo\Config::$HtmlStrictDebug && 0 < \count($aRemovedAttrs))
 			{
-				unset($aRemovedAttrs['class'], $aRemovedAttrs['target'], $aRemovedAttrs['id'], $aRemovedAttrs['name']);
+				unset($aRemovedAttrs['class'], $aRemovedAttrs['target'], $aRemovedAttrs['id'], $aRemovedAttrs['name'],
+					$aRemovedAttrs['itemprop'], $aRemovedAttrs['itemscope'], $aRemovedAttrs['itemtype']);
 
 				$aRemovedAttrs = \array_keys($aRemovedAttrs);
 				if (0 < \count($aRemovedAttrs))

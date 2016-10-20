@@ -447,6 +447,11 @@ class LoginUserView extends AbstractViewNext
 		}, Magics.Time50ms);
 
 		triggerAutocompleteInputChange(true);
+
+		if (Settings.appSettingsGet('activeBackgroud'))
+		{
+			this.initActiveBackgroud();
+		}
 	}
 
 	submitForm() {
@@ -470,6 +475,26 @@ class LoginUserView extends AbstractViewNext
 		}
 
 		return true;
+	}
+
+	initActiveBackgroud() {
+
+		const
+			$bg = $('#rl-bg'),
+			movementStrength = 25,
+			winHeight = $win.height(),
+			winWidth = $win.width(),
+			height = movementStrength / winHeight,
+			width = movementStrength / winWidth,
+			winHeightHalf = winHeight / 2,
+			winWidthHalf = winWidth / 2;
+
+		$('#rl-app').on('mousemove', _.throttle((e) => {
+			$bg.css({
+				top: height * (e.pageY - winHeightHalf) * -1 - movementStrength,
+				left: width * (e.pageX - winWidthHalf) * -1 - movementStrength
+			});
+		}, 1));
 	}
 }
 
