@@ -5,7 +5,7 @@ import _ from '_';
 import ko from 'ko';
 import Autolinker from 'Autolinker';
 
-import {$win, $div, dropdownVisibility, data as GlobalsData} from 'Common/Globals';
+import {$win, $div, $hcont, dropdownVisibility, data as GlobalsData} from 'Common/Globals';
 import {ComposeType, EventKeyCode, SaveSettingsStep, FolderType} from 'Common/Enums';
 import {Mime} from 'Common/Mime';
 import {jassl} from 'Common/Jassl';
@@ -1447,6 +1447,18 @@ export function mimeContentType(fileName)
 		result = Mime[ext];
 	}
 
+	return result;
+}
+
+/**
+ * @param {Object} $el
+ * @returns {number}
+ */
+export function getRealHeight($el)
+{
+	$el.clone().show().appendTo($hcont);
+	const result = $hcont.height();
+	$hcont.empty();
 	return result;
 }
 

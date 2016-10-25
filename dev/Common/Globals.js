@@ -21,6 +21,9 @@ export const $body = $('body');
 
 export const $div = $('<div></div>');
 
+export const $hcont = $('<div></div>');
+$hcont.attr('area', 'hidden').css({position: 'absolute', left: -5000}).appendTo($body);
+
 export const startMicrotime = (new window.Date()).getTime();
 
 /**

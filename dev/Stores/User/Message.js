@@ -14,7 +14,8 @@ import {
 import {
 	trim, isNormal, isArray, inArray,
 	pInt, pString, plainToHtml,
-	windowResize, findEmailAndLinks
+	windowResize, findEmailAndLinks,
+	getRealHeight
 } from 'Common/Utils';
 
 import {
@@ -459,7 +460,14 @@ class MessageUserStore
 			{
 				$oList.each(function() {
 					const $this = $(this); // eslint-disable-line no-invalid-this
-					if ('' !== trim($this.text()))
+
+					let h = $this.height();
+					if (0 === h)
+					{
+						h = getRealHeight($this);
+					}
+
+					if ('' !== trim($this.text()) && (0 === h || 100 < h))
 					{
 						$this.addClass('rl-bq-switcher hidden-bq');
 						$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
