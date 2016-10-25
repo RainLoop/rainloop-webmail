@@ -376,7 +376,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 				$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
 
-				if (\preg_match('/dkim=[^;]+/i', $sHeaderValue, $aMatch) && !empty($aMatch[0]))
+				if (\preg_match('/dkim=.+/i', $sHeaderValue, $aMatch) && !empty($aMatch[0]))
 				{
 					$sDkimLine = $aMatch[0];
 
