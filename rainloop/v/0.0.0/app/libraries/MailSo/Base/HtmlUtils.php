@@ -75,7 +75,7 @@ class HtmlUtils
 		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
 			'<html '.$sHtmlAttrs.'><head>'.
 			'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'.
-			'<body '.$sBodyAttrs.'><div data-wrp="rainloop">'.\MailSo\Base\Utils::Utf8Clear($sText).'</div></body></html>');
+			'<body '.$sBodyAttrs.'>'.\MailSo\Base\Utils::Utf8Clear($sText).'</body></html>');
 
 		@$oDom->normalizeDocument();
 
@@ -156,7 +156,7 @@ class HtmlUtils
 	 *
 	 * @return string
 	 */
-	public static function GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv = true)
+	public static function GetTextFromDom_($oDom, $bWrapByFakeHtmlAndBodyDiv = true)
 	{
 		$sResult = '';
 
@@ -201,6 +201,56 @@ class HtmlUtils
 		else
 		{
 			$sResult = self::domToString($oDom);
+		}
+
+		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
+		$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
+
+		return $sResult;
+	}
+
+	/**
+	 * @param \DOMDocument $oDom
+	 * @param bool $bWrapByFakeHtmlAndBodyDiv = true
+	 *
+	 * @return string
+	 */
+	public static function GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv = true)
+	{
+		$sResult = '';
+
+		$oHtml = $oDom->getElementsByTagName('html')->item(0);
+		$oBody = $oDom->getElementsByTagName('body')->item(0);
+
+		foreach ($oBody->childNodes as $oChild)
+		{
+			$sResult .= $oDom->saveHTML($oChild);
+		}
+
+		if ($bWrapByFakeHtmlAndBodyDiv)
+		{
+			$aHtmlAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oHtml);
+			$aBodylAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oBody);
+
+			$oWrapHtml = $oDom->createElement('div');
+			$oWrapHtml->setAttribute('data-x-div-type', 'html');
+			foreach ($aHtmlAttrs as $sKey => $sValue)
+			{
+				$oWrapHtml->setAttribute($sKey, $sValue);
+			}
+
+			$oWrapDom = $oDom->createElement('div', 'xxx');
+			$oWrapDom->setAttribute('data-x-div-type', 'body');
+			foreach ($aBodylAttrs as $sKey => $sValue)
+			{
+				$oWrapDom->setAttribute($sKey, $sValue);
+			}
+
+			$oWrapHtml->appendChild($oWrapDom);
+
+			$sWrp = $oDom->saveHTML($oWrapHtml);
+
+			$sResult = \str_replace('xxx', $sResult, $sWrp);
 		}
 
 		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
