@@ -866,7 +866,7 @@ class ComposePopupView extends AbstractViewNext
 		return signature;
 	}
 
-	setSignatureFromIdentity(identity) {
+	setSignatureFromIdentity(identity, first = false) {
 		if (identity)
 		{
 			this.editor((editor) => {
@@ -883,7 +883,7 @@ class ComposePopupView extends AbstractViewNext
 					}
 				}
 
-				editor.setSignature(this.converSignature(signature), isHtml, !!identity.signatureInsertBefore());
+				editor.setSignature(this.converSignature(signature), isHtml, !!identity.signatureInsertBefore(), first);
 			});
 		}
 	}
@@ -1133,8 +1133,8 @@ class ComposePopupView extends AbstractViewNext
 					});
 
 					sText = '<br /><br />' + sReplyTitle + ':' +
+						'<br /><br />' +
 						'<blockquote>' + trim(sText) + '</blockquote>';
-	//						'<blockquote><p>' + trim(sText) + '</p></blockquote>';
 
 					break;
 
@@ -1169,7 +1169,7 @@ class ComposePopupView extends AbstractViewNext
 
 				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType)
 				{
-					this.setSignatureFromIdentity(identity);
+					this.setSignatureFromIdentity(identity, true);
 				}
 
 				this.setFocusInPopup();
@@ -1193,7 +1193,7 @@ class ComposePopupView extends AbstractViewNext
 
 				if (identity)
 				{
-					this.setSignatureFromIdentity(identity);
+					this.setSignatureFromIdentity(identity, true);
 				}
 
 				this.setFocusInPopup();
@@ -1217,7 +1217,7 @@ class ComposePopupView extends AbstractViewNext
 
 				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType)
 				{
-					this.setSignatureFromIdentity(identity);
+					this.setSignatureFromIdentity(identity, true);
 				}
 
 				this.setFocusInPopup();

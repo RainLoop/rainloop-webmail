@@ -1,9 +1,4 @@
 
-import $ from '$';
-import _ from '_';
-
-import {$win} from 'Common/Globals';
-
 import {AbstractScreen} from 'Knoin/AbstractScreen';
 
 import {LoginUserView} from 'View/User/Login';

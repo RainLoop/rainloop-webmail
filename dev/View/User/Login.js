@@ -1,5 +1,6 @@
 
 import window from 'window';
+import $ from '$';
 import _ from '_';
 import ko from 'ko';
 

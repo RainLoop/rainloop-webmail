@@ -92,11 +92,12 @@ class HtmlEditor
 	 * @param {bool} insertBefore
 	 * @returns {void}
 	 */
-	setSignature(signature, html, insertBefore) {
+	setSignature(signature, html, insertBefore = false, first = false) {
 		if (this.editor)
 		{
 			this.editor.execCommand('insertSignature', {
 				isHtml: html,
+				isFirst: first,
 				insertBefore: insertBefore,
 				signature: signature
 			});
