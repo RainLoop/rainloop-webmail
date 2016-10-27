@@ -97,6 +97,7 @@ abstract class AbstractConfig
 			switch ($sType)
 			{
 				default:
+				case 'float':
 				case 'string':
 					$this->aData[$sSectionKey][$sParamKey][0] = (string) $mParamValue;
 					break;

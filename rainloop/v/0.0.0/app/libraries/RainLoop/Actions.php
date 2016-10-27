@@ -430,9 +430,9 @@ class Actions
 
 		if (false !== \strpos($sLine, '{date:'))
 		{
-			$iTimeOffset = (int) $this->Config()->Get('logs', 'time_offset', 0);
-			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($iTimeOffset, $bUrlEncode) {
-				return \RainLoop\Utils::UrlEncode(\MailSo\Log\Logger::DateHelper($aMatch[1], $iTimeOffset), $bUrlEncode);
+			$sTimeOffset = (string) $this->Config()->Get('logs', 'time_offset', '0');
+			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($sTimeOffset, $bUrlEncode) {
+				return \RainLoop\Utils::UrlEncode(\MailSo\Log\Logger::DateHelper($aMatch[1], $sTimeOffset), $bUrlEncode);
 			}, $sLine);
 
 			$aClear['/\{date:([^}]*)\}/'] = 'date';
@@ -1073,7 +1073,7 @@ class Actions
 					}
 				}
 
-				$iTimeOffset = (int) $this->Config()->Get('logs', 'time_offset', 0);
+				$sTimeOffset = (string) $this->Config()->Get('logs', 'time_offset', '0');
 
 				$this->oLogger->SetShowSecter(!$this->Config()->Get('logs', 'hide_passwords', true));
 
@@ -1101,7 +1101,7 @@ class Actions
 					->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', false))
 					->WriteOnPhpErrorOnly($this->Config()->Get('logs', 'write_on_php_error_only', false))
 					->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 0))
-					->SetTimeOffset($iTimeOffset)
+					->SetTimeOffset($sTimeOffset)
 				);
 
 				if (!$this->Config()->Get('debug', 'enable', false))
@@ -1113,9 +1113,9 @@ class Actions
 
 				$oHttp = $this->Http();
 
-				$this->oLogger->Write('[DATE:'.\MailSo\Log\Logger::DateHelper('d.m.y', $iTimeOffset).
-					(0 !== $iTimeOffset ? '][OFFSET:'.(0 < $iTimeOffset ? '+' : '-').
-						\str_pad((string) \abs($iTimeOffset), 2, '0', STR_PAD_LEFT) : '').
+				$this->oLogger->Write('[DATE:'.\MailSo\Log\Logger::DateHelper('d.m.y', $sTimeOffset).
+					(0 !== $sTimeOffset ? '][OFFSET:'.(0 < $sTimeOffset ? '+' : '-').
+						\str_pad((string) \abs($sTimeOffset), 2, '0', STR_PAD_LEFT) : '').
 					'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
 					$oHttp->GetClientIp($this->Config()->Get('labs', 'http_client_ip_check_proxy', false)).'][PID:'.
 					(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').']['.

@@ -38,6 +38,11 @@ abstract class Driver
 	protected $bGuidPrefix;
 
 	/**
+	 * @var string
+	 */
+	protected $sTimeOffset;
+
+	/**
 	 * @var bool
 	 */
 	protected $bTimePrefix;
@@ -89,7 +94,7 @@ abstract class Driver
 		$this->bTypedPrefix = true;
 		$this->bGuidPrefix = true;
 
-		$this->iTimeOffset = 0;
+		$this->sTimeOffset = '0';
 
 		$this->iWriteOnTimeoutOnly = 0;
 		$this->bWriteOnErrorOnly = false;
@@ -115,13 +120,13 @@ abstract class Driver
 	}
 
 	/**
-	 * @param int $iTimeOffset
+	 * @param string $sTimeOffset
 	 *
 	 * @return \MailSo\Log\Driver
 	 */
-	public function SetTimeOffset($iTimeOffset)
+	public function SetTimeOffset($sTimeOffset)
 	{
-		$this->iTimeOffset = $iTimeOffset;
+		$this->sTimeOffset = (string) $sTimeOffset;
 		return $this;
 	}
 
@@ -236,7 +241,7 @@ abstract class Driver
 	protected function getTimeWithMicroSec()
 	{
 		$aMicroTimeItems = \explode(' ', \microtime());
-		return \MailSo\Log\Logger::DateHelper($this->sDatePattern, $this->iTimeOffset, $aMicroTimeItems[1]).'.'.
+		return \MailSo\Log\Logger::DateHelper($this->sDatePattern, $this->sTimeOffset, $aMicroTimeItems[1]).'.'.
 			\str_pad((int) ($aMicroTimeItems[0] * 1000), 3, '0', STR_PAD_LEFT);
 	}
 

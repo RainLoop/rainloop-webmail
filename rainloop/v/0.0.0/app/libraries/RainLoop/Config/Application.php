@@ -293,7 +293,7 @@ Values:
 				'hide_passwords' => array(true, 'Required for development purposes only.
 Disabling this option is not recommended.'),
 
-				'time_offset' => array(0),
+				'time_offset' => array('0'),
 				'session_filter' => array(''),
 
 				'filename' => array('log-{date:Y-m-d}.txt',
