@@ -122,7 +122,7 @@ pl_PL:
     BUTTON_THREAD_MORE: "Więcej wiadomości"
     MENU_HEADERS: "Pokaż nagłówki wiadomości"
     MENU_VIEW_ORIGINAL: "Pokaż zródło"
-    MENU_DOWNLOAD_ORIGINAL: "Pobież jako plik eml"
+    MENU_DOWNLOAD_ORIGINAL: "Pobierz jako plik eml"
     MENU_FILTER_SIMILAR: "Filtruj podobne wiadomości"
     MENU_PRINT: "Drukuj"
     EMPTY_SUBJECT_TEXT: "(Brak tematu)"
