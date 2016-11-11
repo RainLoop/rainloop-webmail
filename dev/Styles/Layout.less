@@ -2,10 +2,15 @@
 #rl-bg {
 	z-index: -1;
 	position: absolute;
-	left: -0;
-	right: -25px;
+	left: 0;
+	right: 0;
 	top: 0;
-	bottom: -25px;
+	bottom: 0;
+
+	&.animated {
+		right: -25px;
+		bottom: -25px;
+	}
 }
 
 #rl-content {

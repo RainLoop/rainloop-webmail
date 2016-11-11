@@ -239,7 +239,7 @@ class HtmlUtils
 				$oWrapHtml->setAttribute($sKey, $sValue);
 			}
 
-			$oWrapDom = $oDom->createElement('div', 'xxx');
+			$oWrapDom = $oDom->createElement('div', '___xxx___');
 			$oWrapDom->setAttribute('data-x-div-type', 'body');
 			foreach ($aBodylAttrs as $sKey => $sValue)
 			{
@@ -250,7 +250,7 @@ class HtmlUtils
 
 			$sWrp = $oDom->saveHTML($oWrapHtml);
 
-			$sResult = \str_replace('xxx', $sResult, $sWrp);
+			$sResult = \str_replace('___xxx___', $sResult, $sWrp);
 		}
 
 		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
@@ -279,17 +279,6 @@ class HtmlUtils
 		{
 			$sBodyAttrs = $aMatch[1];
 		}
-
-//		$iPos = \stripos($sHtml, '<body>');
-//		if (0 < $iPos)
-//		{
-//			$sHtml = \substr($sHtml, $iPos);
-//		}
-//		else
-//		{
-//			$iPos = \stripos($sHtml, '<body ');
-//			$sHtml = 0 < $iPos ? \substr($sHtml, $iPos) : $sHtml;
-//		}
 
 		$sHtml = \preg_replace('/<head([^>]*)>/si', '', $sHtml);
 		$sHtml = \preg_replace('/<body([^>]*)>/si', '', $sHtml);

@@ -490,6 +490,8 @@ class LoginUserView extends AbstractViewNext
 			winHeightHalf = winHeight / 2,
 			winWidthHalf = winWidth / 2;
 
+		$bg.addClass('animated');
+
 		$('#rl-app').on('mousemove', _.throttle((e) => {
 			$bg.css({
 				top: height * (e.pageY - winHeightHalf) * -1 - movementStrength,
