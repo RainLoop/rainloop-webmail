@@ -71,7 +71,7 @@ pt_BR:
     BUTTON_NOT_SPAM: "Não é Lixo Eletrônico"
     BUTTON_EMPTY_FOLDER: "Esvaziar Pasta"
     BUTTON_MULTY_FORWARD: "Encaminhar mensagens"
-    BUTTON_DELETE_WITHOUT_MOVE: "Excluir penmanentemente"
+    BUTTON_DELETE_WITHOUT_MOVE: "Excluir permanentemente"
     BUTTON_MORE: "Mais"
     MENU_SET_SEEN: "Marcar como lida"
     MENU_SET_ALL_SEEN: "Marcar todas como lidas"
