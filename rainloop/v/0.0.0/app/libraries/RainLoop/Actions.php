@@ -7211,10 +7211,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$sFolder = $this->GetActionParam('Folder', '');
 		$bSetAction = '1' === (string) $this->GetActionParam('SetAction', '0');
+		$sThreadUids = \trim($this->GetActionParam('ThreadUids', ''));
 
 		try
 		{
-			$this->MailClient()->MessageSetSeenToAll($sFolder, $bSetAction);
+			$this->MailClient()->MessageSetSeenToAll($sFolder, $bSetAction,
+				!empty($sThreadUids) ? explode(',', $sThreadUids) : null);
 		}
 		catch (\Exception $oException)
 		{

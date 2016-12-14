@@ -171,27 +171,31 @@ class LoginUserView extends AbstractViewNext
 		}
 	}
 
+	windowOpenFeatures(wh) {
+		return `left=200,top=100,width=${wh},height=${wh},menubar=no,status=no,resizable=yes,scrollbars=yes`;
+	}
+
 	@command((self) => !self.submitRequest() && self.facebookLoginEnabled())
 	facebookCommand() {
-		window.open(socialFacebook(), 'Facebook', 'left=200,top=100,width=500,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(socialFacebook(), 'Facebook', this.windowOpenFeatures(500));
 		return true;
 	}
 
 	@command((self) => !self.submitRequest() && self.googleLoginEnabled())
 	googleCommand() {
-		window.open(socialGoogle(), 'Google', 'left=200,top=100,width=550,height=550,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(socialGoogle(), 'Google', this.windowOpenFeatures(550));
 		return true;
 	}
 
 	@command((self) => !self.submitRequest() && self.googleFastLoginEnabled())
 	googleFastCommand() {
-		window.open(socialGoogle(true), 'Google', 'left=200,top=100,width=550,height=550,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(socialGoogle(true), 'Google', this.windowOpenFeatures(550));
 		return true;
 	}
 
 	@command((self) => !self.submitRequest() && self.twitterLoginEnabled())
 	twitterCommand() {
-		window.open(socialTwitter(), 'Twitter', 'left=200,top=100,width=500,height=500,menubar=no,status=no,resizable=yes,scrollbars=yes');
+		window.open(socialTwitter(), 'Twitter', this.windowOpenFeatures(500));
 		return true;
 	}
 

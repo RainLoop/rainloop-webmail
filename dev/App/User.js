@@ -819,11 +819,10 @@ class AppUser extends AbstractApp
 
 	/**
 	 * @param {string} sFolderFullNameRaw
-	 * @param {string|bool} mUid
 	 * @param {number} iSetAction
 	 * @param {Array=} messages = null
 	 */
-	messageListAction(sFolderFullNameRaw, mUid, iSetAction, messages) {
+	messageListAction(sFolderFullNameRaw, iSetAction, messages) {
 
 		let
 			folder = null,

@@ -225,13 +225,14 @@ class MailClient
 	 * @param string $sMessageFlag
 	 * @param bool $bSetAction = true
 	 * @param bool $sSkipUnsupportedFlag = false
+	 * @param array $aCustomUids = null
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 * @throws \MailSo\Mail\Exceptions\Exception
 	 */
-	public function MessageSetFlagToAll($sFolderName, $sMessageFlag, $bSetAction = true, $sSkipUnsupportedFlag = false)
+	public function MessageSetFlagToAll($sFolderName, $sMessageFlag, $bSetAction = true, $sSkipUnsupportedFlag = false, $aCustomUids = null)
 	{
 		$this->oImapClient->FolderSelect($sFolderName);
 
@@ -251,7 +252,17 @@ class MailClient
 				: \MailSo\Imap\Enumerations\StoreAction::REMOVE_FLAGS_SILENT
 			;
 
-			$this->oImapClient->MessageStoreFlag('1:*', false, array($sMessageFlag), $sStoreAction);
+			if (is_array($aCustomUids))
+			{
+				if (0 < count($aCustomUids))
+				{
+					$this->oImapClient->MessageStoreFlag(implode(',', $aCustomUids), true, array($sMessageFlag), $sStoreAction);
+				}
+			}
+			else
+			{
+				$this->oImapClient->MessageStoreFlag('1:*', false, array($sMessageFlag), $sStoreAction);
+			}
 		}
 	}
 
@@ -312,14 +323,15 @@ class MailClient
 	/**
 	 * @param string $sFolderName
 	 * @param bool $bSetAction = true
+	 * @param array $aCustomUids = null
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSetSeenToAll($sFolderName, $bSetAction = true)
+	public function MessageSetSeenToAll($sFolderName, $bSetAction = true, $aCustomUids = null)
 	{
-		$this->MessageSetFlagToAll($sFolderName, \MailSo\Imap\Enumerations\MessageFlag::SEEN, $bSetAction, true);
+		$this->MessageSetFlagToAll($sFolderName, \MailSo\Imap\Enumerations\MessageFlag::SEEN, $bSetAction, true, $aCustomUids);
 	}
 
 	/**

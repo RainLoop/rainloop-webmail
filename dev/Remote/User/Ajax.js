@@ -499,11 +499,13 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {?Function} fCallback
 	 * @param {string} sFolderFullNameRaw
 	 * @param {boolean} bSetSeen
+	 * @param {Array} aThreadUids = null
 	 */
-	messageSetSeenToAll(fCallback, sFolderFullNameRaw, bSetSeen) {
+	messageSetSeenToAll(fCallback, sFolderFullNameRaw, bSetSeen, aThreadUids = null) {
 		this.defaultRequest(fCallback, 'MessageSetSeenToAll', {
 			'Folder': sFolderFullNameRaw,
-			'SetAction': bSetSeen ? '1' : '0'
+			'SetAction': bSetSeen ? '1' : '0',
+			'ThreadUids': aThreadUids ? aThreadUids.join(',') : ''
 		});
 	}
 

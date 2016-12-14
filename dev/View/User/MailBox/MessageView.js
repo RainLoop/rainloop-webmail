@@ -687,7 +687,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 				const message = self.message();
 				if (message)
 				{
-					getApp().messageListAction(message.folderFullNameRaw, message.uid,
+					getApp().messageListAction(message.folderFullNameRaw,
 						message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag, [message]);
 				}
 			})
@@ -695,8 +695,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 				const message = ko.dataFor(this); // eslint-disable-line no-invalid-this
 				if (message && message.folder && message.uid)
 				{
-					getApp().messageListAction(
-						message.folder, message.uid,
+					getApp().messageListAction(message.folder,
 						message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag, [message]);
 				}
 
