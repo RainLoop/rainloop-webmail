@@ -1,12 +1,12 @@
 
+# yarn
+yarn install
+
 # transifex
 tx pull -a
 
-# dependencies checker
+# dependencies checker (checking only)
 npm-check --skip-unused --save-exact
-
-# dependencies locker
-npm shrinkwrap --dev
 
 # webpack
 webpack --color --watch

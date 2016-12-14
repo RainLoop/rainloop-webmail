@@ -545,7 +545,7 @@ class MessageListMailBoxUserView extends AbstractViewNext
 							_.each(MessageStore.messageList(), (message) => {
 								if (message.unseen())
 								{
-									cnt++;
+									cnt += 1;
 								}
 
 								message.unseen(false);
@@ -577,7 +577,7 @@ class MessageListMailBoxUserView extends AbstractViewNext
 							_.each(MessageStore.messageList(), (message) => {
 								if (!message.unseen())
 								{
-									cnt++;
+									cnt += 1;
 								}
 
 								message.unseen(true);

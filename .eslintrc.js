@@ -115,7 +115,7 @@ module.exports = {
 		'no-unused-labels': 2,
 		'no-useless-call': 2,
 		'no-useless-concat': 2,
-		'no-useless-escape': 2,
+		'no-useless-escape': 0,
 		'no-void': 2,
 		'no-warning-comments': 2,
 		'no-with': 2,

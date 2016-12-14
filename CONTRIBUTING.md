@@ -1,20 +1,20 @@
 **Thanks for contributing to RainLoop Webmail!**
 
-1. Sign the CLA (individual or corporate) at <http://www.rainloop.net/contribute/>.
-2. Fork the repo, do work in a feature branch.
-3. Issue a pull request.
+1. Fork the repo, do work in a feature branch.
+2. Issue a pull request.
 
 ---
 
 **Getting started**
 
 1. Install node.js - `https://nodejs.org/download/`
-2. Install gulp - `npm install gulp -g`
-3. Fork rainloop - `https://github.com/RainLoop/rainloop-webmail/issues/new#fork-destination-box`
-4. Clone rainloop - `git clone git@github.com:USERNAME/rainloop-webmail.git rainloop`
-5. `cd rainloop`
-6. Install gulp add gulp plugins into project directory - `npm install`
-7. Run gulp - `gulp`
+2. Install yarn - `https://yarnpkg.com/en/docs/install`
+3. Install gulp - `npm install gulp -g`
+4. Fork rainloop - `https://github.com/RainLoop/rainloop-webmail/issues/new#fork-destination-box`
+5. Clone rainloop - `git clone git@github.com:USERNAME/rainloop-webmail.git rainloop`
+6. `cd rainloop`
+7. Install install all dependencies - `yarn install`
+8. Run gulp - `gulp`
 
 ---
 

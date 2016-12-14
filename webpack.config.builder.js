@@ -50,7 +50,7 @@ module.exports = function(publicPath, pro, es6) {
 			loaders: [
 				{
 					test: /\.js$/,
-					loader: 'babel',
+					loader: 'babel-loader',
 					include: [devPath],
 					options: !es6 ? {
 						cacheDirectory: true,
@@ -110,12 +110,12 @@ module.exports = function(publicPath, pro, es6) {
 				},
 				{
 					test: /\.(html|css)$/,
-					loader: 'raw',
+					loader: 'raw-loader',
 					include: [devPath]
 				},
 				{
 					test: /\.json$/,
-					loader: 'json',
+					loader: 'json-loader',
 					include: [devPath]
 				}
 			]
