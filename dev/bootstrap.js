@@ -1,4 +1,4 @@
-/* @flow */
+
 import window from 'window';
 import {killCtrlACtrlS, detectDropdownVisibility, createCommandLegacy, domReady} from 'Common/Utils';
 import {$win, $html, data as GlobalsData, bMobileDevice} from 'Common/Globals';

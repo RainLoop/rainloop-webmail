@@ -167,8 +167,8 @@ cfg.paths.staticMinJS = 'rainloop/v/' + cfg.devVersion + '/static/js/min/';
 cfg.paths.staticCSS = 'rainloop/v/' + cfg.devVersion + '/static/css/';
 cfg.paths.momentLocales = 'rainloop/v/' + cfg.devVersion + '/app/localization/moment/';
 
-cfg.paths.asserts = {
-	src: 'asserts/**/*.*'
+cfg.paths.assets = {
+	src: 'assets/**/*.*'
 };
 
 cfg.paths.less = {
@@ -269,12 +269,12 @@ cfg.paths.js = {
 
 // assers
 
-gulp.task('asserts:clean', function() {
+gulp.task('assets:clean', function() {
 	return cleanDir(cfg.paths.static);
 });
 
-gulp.task('asserts', function() {
-	return gulp.src(cfg.paths.asserts.src)
+gulp.task('assets', function() {
+	return gulp.src(cfg.paths.assets.src)
 		.pipe(gulp.dest(cfg.paths.static));
 });
 
@@ -284,7 +284,7 @@ gulp.task('css:clean', function() {
 	return cleanDir(cfg.paths.staticCSS + '/*.css');
 });
 
-gulp.task('css:main', ['asserts'], function() {
+gulp.task('css:main', ['assets'], function() {
 	var autoprefixer = require('gulp-autoprefixer'),
 		less = require('gulp-less'),
 		lessFilter = filter('**/*.less', {restore: true}),
@@ -614,7 +614,7 @@ gulp.task('css', ['css:min']);
 
 gulp.task('vendors', ['moment', 'ckeditor', 'fontastic', 'lightgallery']);
 
-gulp.task('clean', ['js:clean', 'css:clean', 'asserts:clean']);
+gulp.task('clean', ['js:clean', 'css:clean', 'assets:clean']);
 
 gulp.task('rainloop:start', ['rainloop:copy', 'rainloop:setup']);
 

@@ -2137,12 +2137,13 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 * @param string $sSignMeToken = ''
 	 * @param string $sAdditionalCode = ''
 	 * @param string $bAdditionalCodeSignMe = false
+	 * @param string $bSkipTwoFactorAuth = false
 	 *
 	 * @return \RainLoop\Model\Account
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	public function LoginProcess(&$sEmail, &$sPassword, $sSignMeToken = '',
-		$sAdditionalCode = '', $bAdditionalCodeSignMe = false)
+		$sAdditionalCode = '', $bAdditionalCodeSignMe = false, $bSkipTwoFactorAuth = false)
 	{
 		$sInputEmail = $sEmail;
 
@@ -2265,8 +2266,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			throw $oException;
 		}
 
-		// Two factor auth
-		if ($this->TwoFactorAuthProvider()->IsActive())
+		// 2FA
+		if (!$bSkipTwoFactorAuth && $this->TwoFactorAuthProvider()->IsActive())
 		{
 			$aData = $this->getTwoFactorInfo($oAccount);
 			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable'])
@@ -2852,7 +2853,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountDoesNotExist);
 		}
 
-		$oNewAccount = $this->LoginProcess($sEmail, $sPassword);
+		$oNewAccount = $this->LoginProcess($sEmail, $sPassword, '', '', false, true);
 		$oNewAccount->SetParentEmail($sParentEmail);
 
 		$aAccounts[$oNewAccount->Email()] = $oNewAccount->GetAuthToken();
