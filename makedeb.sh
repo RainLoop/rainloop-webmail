@@ -33,7 +33,6 @@ mv data $DIR/var/lib/rainloop;
 
 #Update settings for Debian package
 sed -i "s/\$sCustomDataPath = '';/\$sCustomDataPath = '\/var\/lib\/rainloop';/" $DIR/usr/share/rainloop/rainloop/v/$VERSION/include.php
-sed -i "s/\$sCustomDataPath = \(.*\) : '';/\$sCustomDataPath = \1 : \$sCustomDataPath;/" $DIR/usr/share/rainloop/rainloop/v/$VERSION/include.php
 
 #Set up Debian packaging tools
 cd $DIR;
