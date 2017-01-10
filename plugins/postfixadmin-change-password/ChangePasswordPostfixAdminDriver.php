@@ -273,7 +273,7 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 				break;
 
 			case 'md5':
-				$sResult = md5($sPassword);
+				$sResult = '{PLAIN-MD5}' . md5($sPassword);
 				break;
 
 			case 'system':
