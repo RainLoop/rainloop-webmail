@@ -128,7 +128,6 @@ class Social
 	public function popupServiceResult($sTypeStr, $sLoginUrl, $bLogin, $iErrorCode)
 	{
 		$sResult = '';
-		$bNiceSocialRedirect = $this->oActions->Config()->Get('labs', 'nice_social_redirect', true);
 		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
 
 		$sIcon = $sTypeStr;
@@ -139,22 +138,15 @@ class Social
 
 		if ($sLoginUrl)
 		{
-			if (!$bNiceSocialRedirect)
-			{
-				$this->oActions->Location($sLoginUrl);
-			}
-			else
-			{
-				$this->oHttp->ServerNoCache();
-				@\header('Content-Type: text/html; charset=utf-8');
+			$this->oHttp->ServerNoCache();
+			@\header('Content-Type: text/html; charset=utf-8');
 
-				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Social.html'), array(
-					'{{RefreshMeta}}' => '<meta http-equiv="refresh" content="0; URL='.$sLoginUrl.'" />',
-					'{{Stylesheet}}' => $this->oActions->StaticPath('css/social'.($bAppCssDebug ? '' : '.min').'.css'),
-					'{{Icon}}' => $sIcon,
-					'{{Script}}' => ''
-				));
-			}
+			$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Social.html'), array(
+				'{{RefreshMeta}}' => '<meta http-equiv="refresh" content="0; URL='.$sLoginUrl.'" />',
+				'{{Stylesheet}}' => $this->oActions->StaticPath('css/social'.($bAppCssDebug ? '' : '.min').'.css'),
+				'{{Icon}}' => $sIcon,
+				'{{Script}}' => ''
+			));
 		}
 		else
 		{
@@ -164,21 +156,13 @@ class Social
 			$sCallBackType = $bLogin ? '_login' : '';
 			$sConnectionFunc = 'rl_'.\md5(\RainLoop\Utils::GetConnectionToken()).'_'.$sTypeStr.$sCallBackType.'_service';
 
-			if (!$bNiceSocialRedirect)
-			{
-				$sResult = '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
-					$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>';
-			}
-			else
-			{
-				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Social.html'), array(
-					'{{RefreshMeta}}' => '',
-					'{{Stylesheet}}' => $this->oActions->StaticPath('css/social'.($bAppCssDebug ? '' : '.min').'.css'),
-					'{{Icon}}' => $sIcon,
-					'{{Script}}' => '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
-						$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>'
-				));
-			}
+			$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Social.html'), array(
+				'{{RefreshMeta}}' => '',
+				'{{Stylesheet}}' => $this->oActions->StaticPath('css/social'.($bAppCssDebug ? '' : '.min').'.css'),
+				'{{Icon}}' => $sIcon,
+				'{{Script}}' => '<script data-cfasync="false">opener && opener.'.$sConnectionFunc.' && opener.'.
+					$sConnectionFunc.'('.$iErrorCode.'); self && self.close && self.close();</script>'
+			));
 		}
 
 		return $sResult;

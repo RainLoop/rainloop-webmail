@@ -12,9 +12,9 @@
 	<dependencies>
 		<php min-version="5.4" />
 		<owncloud min-version="6" max-version="9.2" />
-		<nextcloud min-version="10" />
+		<nextcloud min-version="8" max-version="11" />
 	</dependencies>
 	<category>tools</category>
-	<website>http://www.rainloop.net/</website>
+	<website>https://www.rainloop.net/</website>
 	<bugs>https://github.com/RainLoop/rainloop-webmail/issues</bugs>
 </info>

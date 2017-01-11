@@ -933,7 +933,7 @@ class MailClient
 			'UidNext' => $sUidNext,
 			'Flags' => $aFlags,
 			'HighestModSeq' => $sHighestModSeq,
-			'NewMessages' => 'INBOX' === $sFolderName ?
+			'NewMessages' => 'INBOX' === $sFolderName && \MailSo\Config::$CheckNewMessages ?
 				$this->getFolderNextMessageInformation($sFolderName, $sPrevUidNext, $sUidNext) : array()
 		);
 

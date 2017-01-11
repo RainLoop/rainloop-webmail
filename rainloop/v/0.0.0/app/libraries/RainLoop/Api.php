@@ -137,6 +137,8 @@ class Api
 
 			\MailSo\Config::$HtmlStrictDebug = !!\RainLoop\Api::Config()->Get('debug', 'enable', false);
 
+			\MailSo\Config::$CheckNewMessages = !!\RainLoop\Api::Config()->Get('labs', 'check_new_messages', true);
+
 			if (\RainLoop\Api::Config()->Get('labs', 'strict_html_parser', true))
 			{
 				\MailSo\Config::$HtmlStrictAllowedAttributes = array(

@@ -89,6 +89,11 @@ class Config
 	/**
 	 * @var bool
 	 */
+	public static $CheckNewMessages = true;
+
+	/**
+	 * @var bool
+	 */
 	public static $PreferStartTlsIfAutoDetect = true;
 
 	/**
