@@ -1,9 +1,12 @@
-(p=!!k[n],"br"!=n||!f
-
-(p=k&&!!k[n],"br"!=n||!f
+:(t=!!k[n],"br"!=n||!e.data("cke-eol")
+:(t=k&&!!k[n],"br"!=n||!e.data("cke-eol")
 
 ---
 
-for(R=null;t&&!E[t.getName()][G.name];)
+for(F=null;y&&!p[y.getName()][L.name];){
+for(F=null;y&&(!p||!p[y.getName()]||!p[y.getName()][L.name]);){
 
-for(R=null;t&&(!E||!E[t.getName()]||!E[t.getName()][G.name]);)
+---
+
+a.window.$.getSelection().removeAllRanges()
+a.window&&a.window.$&&a.window.$.getSelection().removeAllRanges()

@@ -6,6 +6,11 @@
 	border: 1px solid #ccc !important;
 }
 
+.cke_toolgroup {
+	padding-right: 0 !important;
+	background: #FBFBFB !important;
+}
+
 .cke_toolgroup, .cke_combo_button {
 	border: 1px solid #A6A6A6 !important;
 }
@@ -16,18 +21,43 @@
 	-webkit-box-shadow: none !important;
 	box-shadow: none !important;
 	border-bottom: 1px solid #b6b6b6 !important;
+	background: #F0F0F0 !important;
+}
+
+.cke_combo_on a.cke_combo_button,
+.cke_combo_off a.cke_combo_button:hover,
+.cke_combo_off a.cke_combo_button:focus,
+.cke_combo_off a.cke_combo_button:active {
+	padding: 1px !important;
+	margin-left: 0 !important;
+}
+
+.cke_toolgroup a.cke_button:last-child:after,
+.cke_toolgroup a.cke_button.cke_button_disabled:hover:last-child:after {
+	border: none !important;
+	height: 0 !important;
+	width: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
 }
 
 .cke_button_on {
 	background: #ddd !important;
 }
 
-.cke_button {
-	padding: 5px 6px !important;
+.cke_combo {
+	margin-top: 1px !important;
+}
+
+.cke_combo__fontsize {
+	margin-left: 3px !important;
+	.cke_combo_text {
+		width: 40px !important;
+	}
 }
 
 .cke_combo_text {
-	line-height: 28px !important;
+	line-height: 24px !important;
 	padding-left: 8px !important;
 }
 
@@ -53,7 +83,6 @@
 
 	padding: 10px;
 	padding-right: 0;
-	/*font-family: arial, sans-serif;*/
 	white-space: pre-wrap;
 	font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
 	font-size: 13px;
