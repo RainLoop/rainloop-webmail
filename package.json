@@ -50,7 +50,7 @@
   "devDependencies": {
     "Progress.js": "github:usablica/progress.js",
     "autolinker": "1.4.0",
-    "babel-core": "6.20.0",
+    "babel-core": "6.21.0",
     "babel-eslint": "7.1.1",
     "babel-loader": "6.2.10",
     "babel-plugin-transform-decorators-legacy": "1.3.4",
@@ -65,11 +65,11 @@
     "gulp": "3.9.1",
     "gulp-autoprefixer": "3.1.1",
     "gulp-cached": "1.1.1",
-    "gulp-clean-css": "2.3.0",
+    "gulp-clean-css": "2.3.2",
     "gulp-concat-util": "0.5.5",
     "gulp-eol": "0.1.2",
     "gulp-eslint": "3.0.1",
-    "gulp-filter": "4.0.0",
+    "gulp-filter": "5.0.0",
     "gulp-header": "1.8.8",
     "gulp-if": "2.0.2",
     "gulp-ignore": "2.0.2",
@@ -83,7 +83,7 @@
     "gulp-stripbom": "1.0.4",
     "gulp-through": "0.4.0",
     "gulp-uglify": "2.0.0",
-    "gulp-util": "3.0.7",
+    "gulp-util": "3.0.8",
     "gulp-zip": "3.2.0",
     "ifvisible.js": "1.0.6",
     "jquery": "2.2.4",
@@ -115,6 +115,6 @@
     "tinycon": "github:tommoor/tinycon",
     "underscore": "1.8.3",
     "webpack": "2.1.0-beta.25",
-    "webpack-notifier": "1.4.1"
+    "webpack-notifier": "1.5.0"
   }
 }
