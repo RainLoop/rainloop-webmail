@@ -1,5 +1,5 @@
 :(t=!!k[n],"br"!=n||!e.data("cke-eol")
-:(t=k&&!!k[n],"br"!=n||!e.data("cke-eol")
+:(t=!k||!!k[n],"br"!=n||!e.data("cke-eol")
 
 ---
 

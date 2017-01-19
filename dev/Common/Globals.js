@@ -125,6 +125,9 @@ export const htmlEditorDefaultConfig = {
 	'ignoreEmptyParagraph': true,
 	'disableNativeSpellChecker': false,
 
+	'colorButton_enableAutomatic': false,
+	'colorButton_enableMore': true,
+
 	'font_defaultLabel': 'Arial',
 	'fontSize_defaultLabel': '13',
 	'fontSize_sizes': '10/10px;12/12px;13/13px;14/14px;16/16px;18/18px;20/20px;24/24px;28/28px;36/36px;48/48px'
