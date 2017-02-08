@@ -788,7 +788,7 @@ END;
 			{
 				if (0 < \strlen($sLine))
 				{
-					$sFirst = $sLine{1};
+					$sFirst = \substr($sLine,0,1);
 					if (' ' === $sFirst || "\t" === $sFirst)
 					{
 						if (!$bSkip)
