@@ -17,6 +17,9 @@ tr_TR:
     BUTTON_SETTINGS: "Ayarlar"
     BUTTON_HELP: "Yardım"
     BUTTON_LOGOUT: "Çıkış"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Mobil versiyonu"
+    BUTTON_DESKTOP_VERSION: "Masaüstü versiyonu"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Arama"
     TITLE_ADV: "Detaylı Arama"
@@ -50,6 +53,7 @@ tr_TR:
   FOLDER_LIST:
     BUTTON_COMPOSE: "Yaz"
     BUTTON_CONTACTS: "Kişi Listesi"
+    BUTTON_NEW_MESSAGE: "Yeni Mesaj"
     INBOX_NAME: "Gelen Kutusu"
     SENT_NAME: "Gönderilen"
     DRAFTS_NAME: "Taslaklar"
@@ -98,6 +102,7 @@ tr_TR:
     BUTTON_BACK: "Geri"
     BUTTON_CLOSE: "Kapat"
     BUTTON_DELETE: "Sil"
+    BUTTON_UNSUBSCRIBE: "Bu listeden aboneliği sonlandir"
     BUTTON_ARCHIVE: "Arşiv"
     BUTTON_SPAM: "Spam"
     BUTTON_NOT_SPAM: "Spam Değil"
@@ -409,6 +414,7 @@ tr_TR:
     ERROR_FILE_TYPE: "Geçersiz dosya tipi"
     ERROR_UNKNOWN: "Bilinmeyen bir dosya yükleme bir hatası oluştu"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> Yazi Formati"
     TEXT_SWITCHER_RICH_FORMATTING: "Zengin yazı formatı"
     TEXT_SWITCHER_CONFIRM: "Metin biçimlendirme ve görüntüleri kaybolacak. Devam etmek istediğinizden emin misiniz?"
   SETTINGS_LABELS:
@@ -451,9 +457,11 @@ tr_TR:
     LABEL_ADD_SIGNATURE_TO_ALL: "Tüm giden iletilere imza ekle"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Security"
+    LABEL_CONFIGURE_TWO_FACTOR: "2 Aşamali Güvenlik Konfikasyonu"
     LABEL_AUTOLOGOUT: "Auto Logout"
     AUTOLOGIN_NEVER_OPTION_NAME: "Never"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minute(s)"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% saat"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Genel"
     LABEL_LANGUAGE: "Dil"
@@ -519,6 +527,7 @@ tr_TR:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Klasör Listesi"
     BUTTON_CREATE: "Klasör Oluştur"
+    BUTTON_SYSTEM: "Sistem Klasörleri"
     BUTTON_DELETE: "Sil"
     BUTTON_SUBSCRIBE: "Abone"
     BUTTON_UNSUBSCRIBE: "Abonelikten Çık"
@@ -615,6 +624,7 @@ tr_TR:
     NO_PRIVATE_KEY_FOUND: "Private key bulunamadı"
     NO_PRIVATE_KEY_FOUND_FOR: "Private key bulunamadı %EMAIL%"
     ADD_A_PUBLICK_KEY: "Add a public key"
+    SELECT_A_PRIVATE_KEY: "Özel anahtari seç"
     UNVERIFIRED_SIGNATURE: "Doğrulanmamış imza"
     DECRYPTION_ERROR: "OpenPGP çözme hatası"
     GOOD_SIGNATURE: "Geçerli imza %USER%"

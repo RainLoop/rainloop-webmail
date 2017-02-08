@@ -89,6 +89,7 @@ lt_LT:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domenai"
     BUTTON_ADD_DOMAIN: "Pridėti Domeną"
+    BUTTON_ADD_ALIAS: "Pridėti Alias"
     DELETE_ARE_YOU_SURE: "Ar jūs įsitikinę?"
     HTML_DOMAINS_HELPER: |
       Leidžiamų Domenų sąrašas
@@ -151,8 +152,9 @@ lt_LT:
     TYPE_BASIC_HINT_2: "Šis domenas negali būti licencijuotas."
     HTML_ALERT_TOP_1: "RainLoop Webmail licencijuotas"
     HTML_ALERT_TOP_2: "Jūs galite <b>nemokamai</b> naudoti savo <b>asmeniniams</b> projektams."
-    HTML_ALERT_TOP_3: "Komerciniam <b>RainLoop Webmail</b> naudojimui (su papildomomis galimybėmis) turite įsigyti \n<a href=\"http://www.rainloop.net/purchase/\"\
-      \ target=\"_blank\">prenumeratą</a>.\n"
+    HTML_ALERT_TOP_3: |
+      Komerciniam <b>RainLoop Webmail</b> naudojimui (su papildomomis galimybėmis) turite įsigyti
+      <a href="http://www.rainloop.net/purchase/" target="_blank">prenumeratą</a>.
     TYPE_PREMIUM_LIFETIME: "Visam laikui"
     LABEL_SUB_EXPIRES: "Prenumerata baigiasi"
     BUTTON_ACTIVATE: "Aktyvuoti prenumeratos raktą šiam domenui"
@@ -185,6 +187,12 @@ lt_LT:
       Įsidėmėkite, kad prenumeratos raktas gali būti aktyvuotas tik vienam domenui.
       <br /><br />
       Pradėjus aktyvavimo procesą jis nebegalės būti atšauktas.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Pridėti Alias"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Domenas"
+    BUTTON_CLOSE: "Uždaryti"
+    BUTTON_ADD: "Pridėti"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Pridėti Domeną"
     TITLE_ADD_DOMAIN_WITH_NAME: "Pridėti Domeną \"%NAME%\""
@@ -244,14 +252,14 @@ lt_LT:
     CONNECTION_ERROR: "Nepavyskta prisijungti prie serverio"
     CAPTCHA_ERROR: "Neteisingas CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
-      elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
+        Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
+        elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
-      elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
+        Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
+        elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
-      elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
+        Šis socialinis ID nepriskirtas jokiai e-pašto paskyrai. Prisijunkite naudojant
+        elektroninio pašto rekvizitus ir įjunkite šią funkciją paskyros nustatymuose.
     DOMAIN_NOT_ALLOWED: "Šis subdomenas neleidžiamas"
     ACCOUNT_NOT_ALLOWED: "Paskyra neleidžiama"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Būtinas dviejų veiksnių patikrinimas"

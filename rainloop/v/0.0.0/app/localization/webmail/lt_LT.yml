@@ -74,7 +74,7 @@ lt_LT:
     BUTTON_DELETE_WITHOUT_MOVE: "Naikinti visam laikui"
     BUTTON_MORE: "Daugiau"
     MENU_SET_SEEN: "Pažymėti kaip skaitytą"
-    MENU_SET_ALL_SEEN: "Pažymėti visus kaip neskaitytus"
+    MENU_SET_ALL_SEEN: "Pažymėti visus kaip skaitytus"
     MENU_UNSET_SEEN: "Pažymėti kaip neskaitytą"
     MENU_SET_FLAG: "Pažymėti žvaigždute"
     MENU_UNSET_FLAG: "Panaikinti žymėjimą"
@@ -102,6 +102,7 @@ lt_LT:
     BUTTON_BACK: "Atgal"
     BUTTON_CLOSE: "Uždaryti"
     BUTTON_DELETE: "Naikinti"
+    BUTTON_UNSUBSCRIBE: "Atsisakyti šios prenumeratos"
     BUTTON_ARCHIVE: "Archyvas"
     BUTTON_SPAM: "Šlamštas"
     BUTTON_NOT_SPAM: "Ne šlamštas"
@@ -415,6 +416,7 @@ lt_LT:
     ERROR_FILE_TYPE: "Neleidžiamas failo tipas"
     ERROR_UNKNOWN: "Nežinoma klaida įkeliant failą"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEKSTAS"
     TEXT_SWITCHER_RICH_FORMATTING: "Raiškusis formatas"
     TEXT_SWITCHER_CONFIRM: "Teksto farmatas ir paveikslėliai bus prarasti. Tikrai norite tęsti?"
   SETTINGS_LABELS:
@@ -461,6 +463,7 @@ lt_LT:
     LABEL_AUTOLOGOUT: "Automatinis atsijungimas"
     AUTOLOGIN_NEVER_OPTION_NAME: "Niekada"
     AUTOLOGIN_MINUTES_OPTION_NAME: "po %MINUTES% minučių"
+    AUTOLOGIN_HOURS_OPTION_NAME: "po %HOURS% valandų"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Pagrindiniai"
     LABEL_LANGUAGE: "Kalba"
@@ -526,6 +529,7 @@ lt_LT:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Katalogų sąrašas"
     BUTTON_CREATE: "Sukurti katalogą"
+    BUTTON_SYSTEM: "Sisteminiai katalogai"
     BUTTON_DELETE: "Pašalinti"
     BUTTON_SUBSCRIBE: "Prenumeruoti"
     BUTTON_UNSUBSCRIBE: "Atsisakyti prenumeratos"

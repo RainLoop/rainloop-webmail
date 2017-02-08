@@ -245,14 +245,14 @@ pt_BR:
     CONNECTION_ERROR: "Não foi possível conectar ao servidor"
     CAPTCHA_ERROR: "Verificação CAPTCHA inválido."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Esse usuário Facebook não está associado a nenhuma conta de email ainda. Entre
-      utilizando seu email e senha e habilite essa função em configurações de conta.
+        Esse usuário Facebook não está associado a nenhuma conta de email ainda. Entre
+        utilizando seu email e senha e habilite essa função em configurações de conta.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Esse usuário Twitter não está associado a nenhuma conta de email ainda. Entre
-      utilizando seu email e senha e habilite essa função em configurações de conta.
+        Esse usuário Twitter não está associado a nenhuma conta de email ainda. Entre
+        utilizando seu email e senha e habilite essa função em configurações de conta.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Esse usuário Google não está associado a nenhuma conta de email ainda. Entre
-      utilizando seu email e senha e habilite essa função em configurações de conta.
+        Esse usuário Google não está associado a nenhuma conta de email ainda. Entre
+        utilizando seu email e senha e habilite essa função em configurações de conta.
     DOMAIN_NOT_ALLOWED: "Este domínio não é permitido"
     ACCOUNT_NOT_ALLOWED: "Conta não permitida"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Verificação de duas etapas requerida"

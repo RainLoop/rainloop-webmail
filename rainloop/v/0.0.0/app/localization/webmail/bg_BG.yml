@@ -102,6 +102,7 @@ bg_BG:
     BUTTON_BACK: "Назад"
     BUTTON_CLOSE: "Затвори"
     BUTTON_DELETE: "Изтрий"
+    BUTTON_UNSUBSCRIBE: "Отписване от този лист"
     BUTTON_ARCHIVE: "Архивирай"
     BUTTON_SPAM: "Спам"
     BUTTON_NOT_SPAM: "Не е спам"
@@ -342,7 +343,7 @@ bg_BG:
     SELECT_MATCH_ANY: "Съвпада с КОЕТО И ДА Е правило от"
     SELECT_MATCH_ALL: "Съвпада с ВСИЧКИ правила от"
     MARK_AS_READ_LABEL: "Отбележи като прочетено"
-    REPLY_INTERVAL_LABEL: "Кога е отговорено (дни)"
+    REPLY_INTERVAL_LABEL: "За колко време (дни)"
     KEEP_LABEL: "Запази"
     STOP_LABEL: "Да не спира да обработва правилата"
     EMAIL_LABEL: "Email"
@@ -415,6 +416,7 @@ bg_BG:
     ERROR_FILE_TYPE: "Невалиден тип на файла"
     ERROR_UNKNOWN: "Възникна неизвестна грешка при качването на файла"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> ТЕКСТ"
     TEXT_SWITCHER_RICH_FORMATTING: "Форматиран текст"
     TEXT_SWITCHER_CONFIRM: "Форматирането и изображенията ще бъдат изгубени. Сигурни ли сте, че желаете да продължите?"
   SETTINGS_LABELS:
@@ -527,6 +529,7 @@ bg_BG:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Списък с папки"
     BUTTON_CREATE: "Създай папка"
+    BUTTON_SYSTEM: "Системни папки"
     BUTTON_DELETE: "Изтриване"
     BUTTON_SUBSCRIBE: "Абонирай се"
     BUTTON_UNSUBSCRIBE: "Отписване"

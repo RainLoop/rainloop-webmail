@@ -252,14 +252,14 @@ en_US:
     CONNECTION_ERROR: "Can't connect to server"
     CAPTCHA_ERROR: "Incorrect CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
+        This social ID is not assigned for any email account yet. Log in using email
+        credentials and enable this feature in account settings.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
+        This social ID is not assigned for any email account yet. Log in using email
+        credentials and enable this feature in account settings.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      This social ID is not assigned for any email account yet. Log in using email
-      credentials and enable this feature in account settings.
+        This social ID is not assigned for any email account yet. Log in using email
+        credentials and enable this feature in account settings.
     DOMAIN_NOT_ALLOWED: "Domain is not allowed"
     ACCOUNT_NOT_ALLOWED: "Account is not allowed"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Two factor verification required"

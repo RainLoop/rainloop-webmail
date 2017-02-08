@@ -423,7 +423,7 @@ fi_FI:
     LABEL_CONTACTS_NAME: "Yhteystiedot"
     LABEL_FOLDERS_NAME: "kansiot"
     LABEL_ACCOUNTS_NAME: "Tilit"
-    LABEL_IDENTITY_NAME: "identiteetti"
+    LABEL_IDENTITY_NAME: "Identiteetti"
     LABEL_IDENTITIES_NAME: "Identiteetit"
     LABEL_FILTERS_NAME: "Suodattimet"
     LABEL_TEMPLATES_NAME: "Mallipohjat"
@@ -465,7 +465,7 @@ fi_FI:
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Yleiset"
     LABEL_LANGUAGE: "Kieli"
-    LABEL_IDENTITY: "identiteetti"
+    LABEL_IDENTITY: "Identiteetti"
     LABEL_LAYOUT: "Asettelu"
     LABEL_LAYOUT_NO_SPLIT: "Ei jakoa"
     LABEL_LAYOUT_VERTICAL_SPLIT: "Pystysuora jako"

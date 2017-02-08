@@ -252,14 +252,14 @@ sl_SI:
     CONNECTION_ERROR: "Neuspešna povezava s strežnikom"
     CAPTCHA_ERROR: "Napačen CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Ta družabni ID ni še določen nobenemu E-poštnemu računu. Prijavite se z podatki
-      za E-pošto in omogočite to v nastavitvah računa.
+        Ta družabni ID ni še določen nobenemu E-poštnemu računu. Prijavite se z podatki
+        za E-pošto in omogočite to v nastavitvah računa.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Ta družabni ID ni še določen nobenemu E-poštnemu računu. Prijavite se z podatki
-      za E-pošto in omogočite to v nastavitvah računa.
+        Ta družabni ID ni še določen nobenemu E-poštnemu računu. Prijavite se z podatki
+        za E-pošto in omogočite to v nastavitvah računa.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Ta družabni ID ni še določen nobenemu E-poštnemu računu. Prijavite se z podatki
-      za E-pošto in omogočite to v nastavitvah računa.
+        Ta družabni ID ni še določen nobenemu E-poštnemu računu. Prijavite se z podatki
+        za E-pošto in omogočite to v nastavitvah računa.
     DOMAIN_NOT_ALLOWED: "Domena ni dovoljena"
     ACCOUNT_NOT_ALLOWED: "Račun ni dovoljen"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Obvezno 2-stopenjsko overjanje"

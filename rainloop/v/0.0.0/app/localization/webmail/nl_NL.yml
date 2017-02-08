@@ -467,7 +467,7 @@ nl_NL:
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Algemeen"
     LABEL_LANGUAGE: "Taal"
-    LABEL_IDENTITY: "Identity"
+    LABEL_IDENTITY: "Identiteit"
     LABEL_LAYOUT: "Indeling"
     LABEL_LAYOUT_NO_SPLIT: "Geen splitsing"
     LABEL_LAYOUT_VERTICAL_SPLIT: "Verticale splitsing"

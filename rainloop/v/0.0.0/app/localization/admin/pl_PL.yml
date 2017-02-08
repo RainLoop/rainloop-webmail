@@ -252,17 +252,17 @@ pl_PL:
     CONNECTION_ERROR: "Nie można połączyć się z serwerem"
     CAPTCHA_ERROR: "Niepoprawny kod CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-      Logowanie poprzez tą platformę, nie zostało jeszcze aktywowane dla żadnego z
-      kont e-mail. Zaloguj się używając loginu i hasła, a następnie włącz tą funkcję
-      w ustawieniach konta.
+        Logowanie poprzez tą platformę, nie zostało jeszcze aktywowane dla żadnego
+        z kont e-mail. Zaloguj się używając loginu i hasła, a następnie włącz tą funkcję
+        w ustawieniach konta.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-      Logowanie poprzez tą platformę, nie zostało jeszcze aktywowane dla żadnego z
-      kont e-mail. Zaloguj się używając loginu i hasła, a następnie włącz tą funkcję
-      w ustawieniach konta.
+        Logowanie poprzez tą platformę, nie zostało jeszcze aktywowane dla żadnego
+        z kont e-mail. Zaloguj się używając loginu i hasła, a następnie włącz tą funkcję
+        w ustawieniach konta.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-      Logowanie poprzez tą platformę, nie zostało jeszcze aktywowane dla żadnego z
-      kont e-mail. Zaloguj się używając loginu i hasła, a następnie włącz tą funkcję
-      w ustawieniach konta.
+        Logowanie poprzez tą platformę, nie zostało jeszcze aktywowane dla żadnego
+        z kont e-mail. Zaloguj się używając loginu i hasła, a następnie włącz tą funkcję
+        w ustawieniach konta.
     DOMAIN_NOT_ALLOWED: "Brak zezwolenia na użycie tej domeny"
     ACCOUNT_NOT_ALLOWED: "Brak zezwolenia dla tego konta"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Wymagana dwuskładnikowa autoryzacja"

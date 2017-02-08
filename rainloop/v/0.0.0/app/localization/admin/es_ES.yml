@@ -34,8 +34,12 @@ es_ES:
     LABEL_ALLOW_IDENTITIES: "Permitir múltiples identidades"
     LABEL_ALLOW_TEMPLATES: "Permitir plantillas"
     ALERT_WARNING: "¡Atención!"
-    HTML_ALERT_WEAK_PASSWORD: "Estas utilizando la contraseña por defecto.\n<br />\nDebido a razones de seguridad, debes \n<strong><a href=\"#/security\"\
-      >cambiar</a></strong>\ntu contraseña inmediatamente.\n"
+    HTML_ALERT_WEAK_PASSWORD: |
+      Estas utilizando la contraseña por defecto.
+      <br />
+      Debido a razones de seguridad, debes
+      <strong><a href="#/security">cambiar</a></strong>
+      tu contraseña inmediatamente.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Pantalla de Ingreso"
     LABEL_DEFAULT_DOMAIN: "Dominio por defecto"
@@ -237,17 +241,17 @@ es_ES:
     CONNECTION_ERROR: "No se puede conectar al servidor"
     CAPTCHA_ERROR: "CAPTCHA Incorrecto."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      La cuenta social (ID) no está asignada a ninguna cuenta de correo todavía. Inicie
-      sesión con las credenciales de correo electrónico y habilite esta característica
-      en la configuración de cuenta.
+        La cuenta social (ID) no está asignada a ninguna cuenta de correo todavía.
+        Inicie sesión con las credenciales de correo electrónico y habilite esta característica
+        en la configuración de cuenta.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      La cuenta social (ID) no está asignada a ninguna cuenta de correo todavía. Inicie
-      sesión con las credenciales de correo electrónico y habilite esta característica
-      en la configuración de cuenta.
+        La cuenta social (ID) no está asignada a ninguna cuenta de correo todavía.
+        Inicie sesión con las credenciales de correo electrónico y habilite esta característica
+        en la configuración de cuenta.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >+
-      La cuenta social (ID) no está asignada a ninguna cuenta de correo todavía. Inicie
-      sesión con las credenciales de correo electrónico y habilite esta característica
-      en la configuración de cuenta.
+        La cuenta social (ID) no está asignada a ninguna cuenta de correo todavía.
+        Inicie sesión con las credenciales de correo electrónico y habilite esta característica
+        en la configuración de cuenta.
 
     DOMAIN_NOT_ALLOWED: "Dominio no permitido"
     ACCOUNT_NOT_ALLOWED: "La cuenta no está permitida"
@@ -298,9 +302,11 @@ es_ES:
     PHP_EXSTENSIONS_ERROR_DESC: "¡La extensión de PHP requerida no está disponible en su configuración de PHP!"
     PHP_VERSION_ERROR_DESC: "¡La versión de PHP (%VERSION%) es menor a la mínima requerida 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript es requerido para esta aplicación."
-    NO_SCRIPT_DESC: "JavaScript está desactivado. Por favor habilite JavaScript en la configuración de su navegador e inténtelo de nuevo. \n"
+    NO_SCRIPT_DESC: |
+      JavaScript está desactivado. Por favor habilite JavaScript en la configuración de su navegador e inténtelo de nuevo.
     NO_COOKIE_TITLE: "Las Cookies son requeridas para esta aplicación."
-    NO_COOKIE_DESC: "Las Cookies están desactivadas. Por favor habilite las Cookies en la configuración de su navegador e inténtelo de nuevo. \n"
+    NO_COOKIE_DESC: |
+      Las Cookies están desactivadas. Por favor habilite las Cookies en la configuración de su navegador e inténtelo de nuevo.
     BAD_BROWSER_TITLE: "El navegador no está actualizado"
     BAD_BROWSER_DESC: |
       Para usar todas las características de esta aplicación,

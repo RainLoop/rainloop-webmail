@@ -251,14 +251,14 @@ hu_HU:
     CONNECTION_ERROR: "Nem lehet csatlakozni a szerverhez"
     CAPTCHA_ERROR: "Helytelen CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-      Ez a közösségi azonosító még nincs összekapcsolva egy email fiókkal sem. Lépj
-      be az email fiókba és a beállításoknál  engedélyezd ezt a funkciót.
+        Ez a közösségi azonosító még nincs összekapcsolva egy email fiókkal sem. Lépj
+        be az email fiókba és a beállításoknál  engedélyezd ezt a funkciót.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-      Ez a közösségi azonosító még nincs összekapcsolva egy email fiókkal sem. Lépj
-      be az email fiókba és a beállításoknál  engedélyezd ezt a funkciót.
+        Ez a közösségi azonosító még nincs összekapcsolva egy email fiókkal sem. Lépj
+        be az email fiókba és a beállításoknál  engedélyezd ezt a funkciót.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-      Ez a közösségi azonosító még nincs összekapcsolva egy email fiókkal sem. Lépj
-      be az email fiókba és a beállításoknál  engedélyezd ezt a funkciót.
+        Ez a közösségi azonosító még nincs összekapcsolva egy email fiókkal sem. Lépj
+        be az email fiókba és a beállításoknál  engedélyezd ezt a funkciót.
     DOMAIN_NOT_ALLOWED: "A domain nem engedélyezett"
     ACCOUNT_NOT_ALLOWED: "A fiók nem engedélyezett"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Kétlépcsős hitelesítés szükséges"
