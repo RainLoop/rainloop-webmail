@@ -6,7 +6,7 @@ import key from 'key';
 
 import {trim, isNormal, isArray, windowResize} from 'Common/Utils';
 import {Capa, Focused, Layout, KeyState, EventKeyCode, Magics} from 'Common/Enums';
-import {$html, leftPanelDisabled} from 'Common/Globals';
+import {$html, leftPanelDisabled, moveAction} from 'Common/Globals';
 import {mailBox, settings} from 'Common/Links';
 import {setFolderHash} from 'Common/Cache';
 
@@ -42,6 +42,8 @@ class FolderListMailBoxUserView extends AbstractViewNext
 		this.folderListSystem = FolderStore.folderListSystem;
 		this.foldersChanging = FolderStore.foldersChanging;
 
+		this.moveAction = moveAction;
+
 		this.foldersListWithSingleInboxRootFolder = FolderStore.foldersListWithSingleInboxRootFolder;
 
 		this.leftPanelDisabled = leftPanelDisabled;
@@ -71,6 +73,7 @@ class FolderListMailBoxUserView extends AbstractViewNext
 			isMobile = Settings.appSettingsGet('mobile'),
 			fSelectFolder = (el, event, starred) => {
 
+				const isMove = moveAction();
 				if (isMobile)
 				{
 					leftPanelDisabled(true);
@@ -86,24 +89,39 @@ class FolderListMailBoxUserView extends AbstractViewNext
 				const folder = ko.dataFor(el);
 				if (folder)
 				{
-					if (Layout.NoPreview === SettingsStore.layout())
+					if (isMove)
 					{
-						MessageStore.message(null);
-					}
-
-					if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
-					{
-						setFolderHash(folder.fullNameRaw, '');
-					}
-
-					if (starred)
-					{
-						setHash(mailBox(folder.fullNameHash, 1, 'is:flagged'));
+						moveAction(false);
+						getApp().moveMessagesToFolder(
+							FolderStore.currentFolderFullNameRaw(),
+							MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
+							folder.fullNameRaw,
+							false
+						);
 					}
 					else
 					{
-						setHash(mailBox(folder.fullNameHash));
+						if (Layout.NoPreview === SettingsStore.layout())
+						{
+							MessageStore.message(null);
+						}
+
+						if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw())
+						{
+							setFolderHash(folder.fullNameRaw, '');
+						}
+
+						if (starred)
+						{
+							setHash(mailBox(folder.fullNameHash, 1, 'is:flagged'));
+						}
+						else
+						{
+							setHash(mailBox(folder.fullNameHash));
+						}
 					}
+
+					AppStore.focusedState(Focused.MessageList);
 				}
 			};
 
@@ -186,6 +204,7 @@ class FolderListMailBoxUserView extends AbstractViewNext
 
 		key('esc, tab, shift+tab, right', KeyState.FolderList, () => {
 			AppStore.focusedState(Focused.MessageList);
+			moveAction(false);
 			return false;
 		});
 

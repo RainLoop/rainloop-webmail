@@ -1,7 +1,8 @@
 
 import ko from 'ko';
 import {Focused, KeyState} from 'Common/Enums';
-import {keyScope} from 'Common/Globals';
+
+import {keyScope, leftPanelDisabled} from 'Common/Globals';
 import {isNonEmptyArray} from 'Common/Utils';
 
 import * as Settings from 'Storage/Settings';
@@ -17,17 +18,28 @@ class AppUserStore extends AbstractAppStore
 
 		this.focusedState = ko.observable(Focused.None);
 
+		const isMobile = Settings.appSettingsGet('mobile');
+
 		this.focusedState.subscribe((value) => {
 			switch (value)
 			{
 				case Focused.MessageList:
 					keyScope(KeyState.MessageList);
+					if (isMobile) {
+						leftPanelDisabled(true);
+					}
 					break;
 				case Focused.MessageView:
 					keyScope(KeyState.MessageView);
+					if (isMobile) {
+						leftPanelDisabled(true);
+					}
 					break;
 				case Focused.FolderList:
 					keyScope(KeyState.FolderList);
+					if (isMobile) {
+						leftPanelDisabled(false);
+					}
 					break;
 				default:
 					break;

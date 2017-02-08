@@ -42,6 +42,7 @@ class GeneralAdminSettings
 
 		this.allowLanguagesOnSettings = AppAdminStore.allowLanguagesOnSettings;
 		this.weakPassword = AppAdminStore.weakPassword;
+		this.newMoveToFolder = AppAdminStore.newMoveToFolder;
 
 		this.mainAttachmentLimit = ko.observable(pInt(settingsGet('AttachmentLimit')) / (Magics.BitLength1024 * Magics.BitLength1024)).extend({posInterer: 25});
 
@@ -149,6 +150,12 @@ class GeneralAdminSettings
 			this.allowLanguagesOnSettings.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
 					'AllowLanguagesOnSettings': boolToAjax(value)
+				});
+			});
+
+			this.newMoveToFolder.subscribe((value) => {
+				Remote.saveAdminConfig(null, {
+					'NewMoveToFolder': boolToAjax(value)
 				});
 			});
 		}, Magics.Time50ms);

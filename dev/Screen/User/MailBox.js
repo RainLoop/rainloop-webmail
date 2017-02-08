@@ -2,7 +2,7 @@
 import _ from '_';
 
 import {Focused, Capa, ClientSideKeyName, Magics} from 'Common/Enums';
-import {leftPanelDisabled, leftPanelType, bMobileDevice} from 'Common/Globals';
+import {$html, leftPanelDisabled, leftPanelType, moveAction, bMobileDevice} from 'Common/Globals';
 import {pString, pInt, decodeURI, windowResizeCallback} from 'Common/Utils';
 import {getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName} from 'Common/Cache';
 import {i18n} from 'Common/Translator';
@@ -141,6 +141,10 @@ class MailBoxUserScreen extends AbstractScreen
 				getApp().initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize);
 			});
 		}
+
+		$html.on('click', '#rl-right', () => {
+			moveAction(false);
+		});
 	}
 
 	/**

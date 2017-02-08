@@ -26,6 +26,7 @@ en:
     LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Allow language selection on settings screen"
     LABEL_ALLOW_THEMES_ON_SETTINGS: "Allow theme selection on settings screen"
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Allow background selection on settings screen"
+    LABEL_NEW_FOLDER_MOVE: "New \"move to folder\" button"
     LABEL_SHOW_THUMBNAILS: "Show thumbnails (attachments)"
     LABEL_ALLOW_GRAVATAR: "Allow Gravatar"
     LEGEND_MAIN: "Main"

@@ -28,6 +28,7 @@
 					</a>
 				</div>
 				<div class="btn-group" data-bind="visible: allowReload && mobileCheckedStateHide()">&nbsp;</div>
+				<!-- ko if: !newMoveToFolder() -->
 				<div class="btn-group dropdown colored-toggle hide-on-mobile" data-bind="visible: allowMessageListActions, registrateBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
 					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn single btn-dark-disabled-border dropdown-toggle buttonMove" data-toggle="dropdown" data-tooltip-join="top" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
 						<i class="icon-copy visible-on-ctrl-btn"></i>
@@ -46,6 +47,15 @@
 						<!-- /ko -->
 					</ul>
 				</div>
+				<!-- /ko -->
+				<!-- ko if: newMoveToFolder() -->
+				<div class="btn-group" data-bind="visible: allowMessageListActions && mobileCheckedStateShow()">
+					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn single btn-dark-disabled-border buttonMove" data-tooltip-join="top" data-bind="command: moveNewCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
+						<i class="icon-copy visible-on-ctrl-btn"></i>
+						<i class="icon-folder hidden-on-ctrl-btn"></i>
+					</a>
+				</div>
+				<!-- /ko -->
 				<div class="btn-group" data-bind="visible: allowMessageListActions && mobileCheckedStateHide()">&nbsp;</div>
 				<div class="btn-group" data-bind="visible: allowMessageListActions && mobileCheckedStateShow()">
 					<a class="btn first btn-dark-disabled-border button-archive" data-tooltip-join="top"

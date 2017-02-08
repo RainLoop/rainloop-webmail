@@ -160,7 +160,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'interface' => array(
 				'show_attachment_thumbnail' => array(true, ''),
-				'use_native_scrollbars' => array(false)
+				'use_native_scrollbars' => array(false),
+				'new_move_to_folder_button' => array(true)
 			),
 
 			'branding' => array(

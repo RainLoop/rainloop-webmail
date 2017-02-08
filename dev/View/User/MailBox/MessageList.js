@@ -20,7 +20,8 @@ import {
 import {
 	bMobileDevice,
 	popupVisibility,
-	leftPanelDisabled
+	leftPanelDisabled,
+	moveAction
 } from 'Common/Globals';
 
 import {
@@ -76,6 +77,7 @@ class MessageListMailBoxUserView extends AbstractViewNext
 		this.iGoToUpUpOrDownDownTimeout = 0;
 
 		this.mobile = !!Settings.appSettingsGet('mobile');
+		this.newMoveToFolder = AppStore.newMoveToFolder;
 
 		this.allowReload = !!Settings.capa(Capa.Reload);
 		this.allowSearch = !!Settings.capa(Capa.Search);
@@ -349,6 +351,30 @@ class MessageListMailBoxUserView extends AbstractViewNext
 
 	@command(canBeMovedHelper)
 	moveCommand() {} // eslint-disable-line no-empty-function
+
+	@command(canBeMovedHelper)
+	moveNewCommand(vm, event) {
+		if (this.newMoveToFolder() && this.mobileCheckedStateShow())
+		{
+			if (vm && event && event.preventDefault) {
+				event.preventDefault();
+				if (event.stopPropagation) {
+					event.stopPropagation();
+				}
+			}
+
+			if (moveAction())
+			{
+				AppStore.focusedState(Focused.MessageList);
+				moveAction(false);
+			}
+			else
+			{
+				AppStore.focusedState(Focused.FolderList);
+				moveAction(true);
+			}
+		}
+	}
 
 	hideLeft(item, event) {
 		event.preventDefault();
@@ -869,7 +895,16 @@ class MessageListMailBoxUserView extends AbstractViewNext
 		{
 			// move
 			key('m', KeyState.MessageList, () => {
-				this.moveDropdownTrigger(true);
+
+				if (this.newMoveToFolder())
+				{
+					this.moveNewCommand();
+				}
+				else
+				{
+					this.moveDropdownTrigger(true);
+				}
+
 				return false;
 			});
 		}

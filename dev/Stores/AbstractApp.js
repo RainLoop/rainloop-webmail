@@ -8,6 +8,7 @@ class AbstractAppStore
 	constructor() {
 		this.allowLanguagesOnSettings = ko.observable(true);
 		this.allowLanguagesOnLogin = ko.observable(true);
+		this.newMoveToFolder = ko.observable(true);
 
 		this.interfaceAnimation = ko.observable(true);
 
@@ -25,6 +26,7 @@ class AbstractAppStore
 	populate() {
 		this.allowLanguagesOnLogin(!!Settings.settingsGet('AllowLanguagesOnLogin'));
 		this.allowLanguagesOnSettings(!!Settings.settingsGet('AllowLanguagesOnSettings'));
+		this.newMoveToFolder(!!Settings.settingsGet('NewMoveToFolder'));
 
 		this.interfaceAnimation(!!Settings.settingsGet('InterfaceAnimation'));
 

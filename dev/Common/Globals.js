@@ -192,9 +192,22 @@ export const VIEW_MODELS = {
 	'settings-disabled': []
 };
 
+export const moveAction = ko.observable(false);
 export const leftPanelDisabled = ko.observable(false);
 export const leftPanelType = ko.observable('');
 export const leftPanelWidth = ko.observable(0);
+
+leftPanelDisabled.subscribe((value) => {
+	if (value && moveAction()) {
+		moveAction(false);
+	}
+});
+
+moveAction.subscribe((value) => {
+	if (value && leftPanelDisabled()) {
+		leftPanelDisabled(false);
+	}
+});
 
 // popups
 export const popupVisibilityNames = ko.observableArray([]);
