@@ -238,7 +238,7 @@ class Service
 
 			if (\RainLoop\Utils::IsOwnCloud())
 			{
-				$sResult .= '][owncloud:true';
+				$sResult .= '][cloud:true';
 			}
 
 			$sResult .= ']-->';

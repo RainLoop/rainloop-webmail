@@ -20,4 +20,4 @@ It's not recommended to use in production environment.
 **GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
 http://www.gnu.org/licenses/agpl-3.0.html
 
-Copyright (c) 2016 Rainloop Team
+Copyright (c) 2017 Rainloop Team

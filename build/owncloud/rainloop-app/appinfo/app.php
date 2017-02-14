@@ -4,7 +4,7 @@
  * ownCloud - RainLoop mail plugin
  *
  * @author RainLoop Team
- * @copyright 2016 RainLoop Team
+ * @copyright 2017 RainLoop Team
  *
  * https://github.com/RainLoop/owncloud
  */

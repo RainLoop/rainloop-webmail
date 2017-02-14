@@ -86,7 +86,7 @@ class ActivatePopupView extends AbstractViewNext
 					this.key.focus(true);
 				}
 
-			}, this.domain(), this.key());
+			}, this.domain(), this.key().replace(/[^A-Z0-9\-]/gi, ''));
 		}
 		else
 		{
@@ -122,7 +122,7 @@ class ActivatePopupView extends AbstractViewNext
 	 */
 	validateSubscriptionKey() {
 		const value = this.key();
-		return '' === value || RAINLOOP_TRIAL_KEY === value || !!(/^RL[\d]+-[A-Z0-9\-]+Z$/).test(trim(value));
+		return '' === value || RAINLOOP_TRIAL_KEY === value || !!(/^RL[\d]+-[A-Z0-9\-]+Z$/).test(trim(value).replace(/[^A-Z0-9\-]/gi, ''));
 	}
 }
 

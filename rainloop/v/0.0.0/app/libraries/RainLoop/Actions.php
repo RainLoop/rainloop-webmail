@@ -1131,7 +1131,7 @@ class Actions
 					'][APC:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off').
 					'][MB:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off').
 					'][PDO:'.$sPdo.
-					(\RainLoop\Utils::IsOwnCloud() ? '][ownCloud:true' : '').
+					(\RainLoop\Utils::IsOwnCloud() ? '][cloud:true' : '').
 					'][Streams:'.\implode(',', \stream_get_transports()).
 				']');
 
@@ -2951,7 +2951,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		if (!empty($sAction) && !$bError && \is_array($aData) && 0 < \count($aData) &&
 			$oFilesProvider && $oFilesProvider->IsActive())
 		{
-
 			$bError = false;
 			switch (\strtolower($sAction))
 			{
