@@ -18,4 +18,11 @@
 
 ---
 
+**Debugging JavaScript**
+
+1. Edit data/\_data_/\_default_/configs/application.ini
+2. Set 'use_app_debug_js' (and optionally 'use_app_debug_css') to 'On'
+
+---
+
 If you have any questions, open an issue or email support@rainloop.net.
