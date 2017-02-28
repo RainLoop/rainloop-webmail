@@ -21,60 +21,25 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\HttpClients;
+namespace Facebook\PseudoRandomString;
 
 /**
- * Class FacebookStream
- *
- * Abstraction for the procedural stream elements so that the functions can be
- * mocked and the implementation can be tested.
+ * Interface
  *
  * @package Facebook
  */
-class FacebookStream
+interface PseudoRandomStringGeneratorInterface
 {
     /**
-     * @var resource Context stream resource instance
-     */
-    protected $stream;
-
-    /**
-     * @var array Response headers from the stream wrapper
-     */
-    protected $responseHeaders;
-
-    /**
-     * Make a new context stream reference instance
+     * Get a cryptographically secure pseudo-random string of arbitrary length.
      *
-     * @param array $options
-     */
-    public function streamContextCreate(array $options)
-    {
-        $this->stream = stream_context_create($options);
-    }
-
-    /**
-     * The response headers from the stream wrapper
+     * @see http://sockpuppet.org/blog/2014/02/25/safely-generate-random-numbers/
      *
-     * @return array|null
-     */
-    public function getResponseHeaders()
-    {
-        return $this->responseHeaders;
-    }
-
-    /**
-     * Send a stream wrapped request
+     * @param int $length The length of the string to return.
      *
-     * @param string $url
+     * @return string
      *
-     * @return mixed
+     * @throws \Facebook\Exceptions\FacebookSDKException|\InvalidArgumentException
      */
-    public function fileGetContents($url)
-    {
-        $rawResponse = file_get_contents($url, false, $this->stream);
-        $this->responseHeaders = $http_response_header;
-
-        return $rawResponse;
-    }
+    public function getPseudoRandomString($length);
 }

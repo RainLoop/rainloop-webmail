@@ -21,60 +21,33 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\HttpClients;
+namespace Facebook\PersistentData;
 
 /**
- * Class FacebookStream
- *
- * Abstraction for the procedural stream elements so that the functions can be
- * mocked and the implementation can be tested.
+ * Class FacebookMemoryPersistentDataHandler
  *
  * @package Facebook
  */
-class FacebookStream
+class FacebookMemoryPersistentDataHandler implements PersistentDataInterface
 {
     /**
-     * @var resource Context stream resource instance
+     * @var array The session data to keep in memory.
      */
-    protected $stream;
+    protected $sessionData = [];
 
     /**
-     * @var array Response headers from the stream wrapper
+     * @inheritdoc
      */
-    protected $responseHeaders;
-
-    /**
-     * Make a new context stream reference instance
-     *
-     * @param array $options
-     */
-    public function streamContextCreate(array $options)
+    public function get($key)
     {
-        $this->stream = stream_context_create($options);
+        return isset($this->sessionData[$key]) ? $this->sessionData[$key] : null;
     }
 
     /**
-     * The response headers from the stream wrapper
-     *
-     * @return array|null
+     * @inheritdoc
      */
-    public function getResponseHeaders()
+    public function set($key, $value)
     {
-        return $this->responseHeaders;
-    }
-
-    /**
-     * Send a stream wrapped request
-     *
-     * @param string $url
-     *
-     * @return mixed
-     */
-    public function fileGetContents($url)
-    {
-        $rawResponse = file_get_contents($url, false, $this->stream);
-        $this->responseHeaders = $http_response_header;
-
-        return $rawResponse;
+        $this->sessionData[$key] = $value;
     }
 }

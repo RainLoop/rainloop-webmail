@@ -23,180 +23,388 @@
  */
 namespace Facebook;
 
+use Facebook\GraphNodes\GraphNodeFactory;
+use Facebook\Exceptions\FacebookResponseException;
+use Facebook\Exceptions\FacebookSDKException;
+
 /**
  * Class FacebookResponse
+ *
  * @package Facebook
- * @author Fosco Marotto <fjm@fb.com>
- * @author David Poll <depoll@fb.com>
  */
 class FacebookResponse
 {
+    /**
+     * @var int The HTTP status code response from Graph.
+     */
+    protected $httpStatusCode;
 
-  /**
-   * @var FacebookRequest The request which produced this response
-   */
-  private $request;
+    /**
+     * @var array The headers returned from Graph.
+     */
+    protected $headers;
 
-  /**
-   * @var array The decoded response from the Graph API
-   */
-  private $responseData;
+    /**
+     * @var string The raw body of the response from Graph.
+     */
+    protected $body;
 
-  /**
-   * @var string The raw response from the Graph API
-   */
-  private $rawResponse;
+    /**
+     * @var array The decoded body of the Graph response.
+     */
+    protected $decodedBody = [];
 
-  /**
-   * @var bool Indicates whether sent ETag matched the one on the FB side
-   */
-  private $etagHit;
+    /**
+     * @var FacebookRequest The original request that returned this response.
+     */
+    protected $request;
 
-  /**
-   * @var string ETag received with the response. `null` in case of ETag hit.
-   */
-  private $etag;
+    /**
+     * @var FacebookSDKException The exception thrown by this request.
+     */
+    protected $thrownException;
 
-  /**
-   * Creates a FacebookResponse object for a given request and response.
-   *
-   * @param FacebookRequest $request
-   * @param array $responseData JSON Decoded response data
-   * @param string $rawResponse Raw string response
-   * @param bool $etagHit Indicates whether sent ETag matched the one on the FB side
-   * @param string|null $etag ETag received with the response. `null` in case of ETag hit.
-   */
-  public function __construct($request, $responseData, $rawResponse, $etagHit = false, $etag = null)
-  {
-    $this->request = $request;
-    $this->responseData = $responseData;
-    $this->rawResponse = $rawResponse;
-    $this->etagHit = $etagHit;
-    $this->etag = $etag;
-  }
+    /**
+     * Creates a new Response entity.
+     *
+     * @param FacebookRequest $request
+     * @param string|null     $body
+     * @param int|null        $httpStatusCode
+     * @param array|null      $headers
+     */
+    public function __construct(FacebookRequest $request, $body = null, $httpStatusCode = null, array $headers = [])
+    {
+        $this->request = $request;
+        $this->body = $body;
+        $this->httpStatusCode = $httpStatusCode;
+        $this->headers = $headers;
 
-  /**
-   * Returns the request which produced this response.
-   *
-   * @return FacebookRequest
-   */
-  public function getRequest()
-  {
-    return $this->request;
-  }
-
-  /**
-   * Returns the decoded response data.
-   *
-   * @return array
-   */
-  public function getResponse()
-  {
-    return $this->responseData;
-  }
-
-  /**
-   * Returns the raw response
-   *
-   * @return string
-   */
-  public function getRawResponse()
-  {
-    return $this->rawResponse;
-  }
-
-  /**
-   * Returns true if ETag matched the one sent with a request
-   *
-   * @return bool
-   */
-  public function isETagHit()
-  {
-    return $this->etagHit;
-  }
-
-  /**
-   * Returns the ETag
-   *
-   * @return string
-   */
-  public function getETag()
-  {
-    return $this->etag;
-  }
-
-  /**
-   * Gets the result as a GraphObject.  If a type is specified, returns the
-   *   strongly-typed subclass of GraphObject for the data.
-   *
-   * @param string $type
-   *
-   * @return mixed
-   */
-  public function getGraphObject($type = 'Facebook\GraphObject') {
-    return (new GraphObject($this->responseData))->cast($type);
-  }
-
-  /**
-   * Returns an array of GraphObject returned by the request.  If a type is
-   * specified, returns the strongly-typed subclass of GraphObject for the data.
-   *
-   * @param string $type
-   *
-   * @return mixed
-   */
-  public function getGraphObjectList($type = 'Facebook\GraphObject') {
-    $out = array();
-    $data = $this->responseData->data;
-    for ($i = 0; $i < count($data); $i++) {
-      $out[] = (new GraphObject($data[$i]))->cast($type);
+        $this->decodeBody();
     }
-    return $out;
-  }
 
-  /**
-   * If this response has paginated data, returns the FacebookRequest for the
-   *   next page, or null.
-   *
-   * @return FacebookRequest|null
-   */
-  public function getRequestForNextPage()
-  {
-    return $this->handlePagination('next');
-  }
-
-  /**
-   * If this response has paginated data, returns the FacebookRequest for the
-   *   previous page, or null.
-   *
-   * @return FacebookRequest|null
-   */
-  public function getRequestForPreviousPage()
-  {
-    return $this->handlePagination('previous');
-  }
-
-  /**
-   * Returns the FacebookRequest for the previous or next page, or null.
-   *
-   * @param string $direction
-   *
-   * @return FacebookRequest|null
-   */
-  private function handlePagination($direction) {
-    if (isset($this->responseData->paging->$direction)) {
-      $url = parse_url($this->responseData->paging->$direction);
-      parse_str($url['query'], $params);
-
-      return new FacebookRequest(
-        $this->request->getSession(),
-        $this->request->getMethod(),
-        $this->request->getPath(),
-        $params
-      );
-    } else {
-      return null;
+    /**
+     * Return the original request that returned this response.
+     *
+     * @return FacebookRequest
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
-  }
 
+    /**
+     * Return the FacebookApp entity used for this response.
+     *
+     * @return FacebookApp
+     */
+    public function getApp()
+    {
+        return $this->request->getApp();
+    }
+
+    /**
+     * Return the access token that was used for this response.
+     *
+     * @return string|null
+     */
+    public function getAccessToken()
+    {
+        return $this->request->getAccessToken();
+    }
+
+    /**
+     * Return the HTTP status code for this response.
+     *
+     * @return int
+     */
+    public function getHttpStatusCode()
+    {
+        return $this->httpStatusCode;
+    }
+
+    /**
+     * Return the HTTP headers for this response.
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * Return the raw body response.
+     *
+     * @return string
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    /**
+     * Return the decoded body response.
+     *
+     * @return array
+     */
+    public function getDecodedBody()
+    {
+        return $this->decodedBody;
+    }
+
+    /**
+     * Get the app secret proof that was used for this response.
+     *
+     * @return string|null
+     */
+    public function getAppSecretProof()
+    {
+        return $this->request->getAppSecretProof();
+    }
+
+    /**
+     * Get the ETag associated with the response.
+     *
+     * @return string|null
+     */
+    public function getETag()
+    {
+        return isset($this->headers['ETag']) ? $this->headers['ETag'] : null;
+    }
+
+    /**
+     * Get the version of Graph that returned this response.
+     *
+     * @return string|null
+     */
+    public function getGraphVersion()
+    {
+        return isset($this->headers['Facebook-API-Version']) ? $this->headers['Facebook-API-Version'] : null;
+    }
+
+    /**
+     * Returns true if Graph returned an error message.
+     *
+     * @return boolean
+     */
+    public function isError()
+    {
+        return isset($this->decodedBody['error']);
+    }
+
+    /**
+     * Throws the exception.
+     *
+     * @throws FacebookSDKException
+     */
+    public function throwException()
+    {
+        throw $this->thrownException;
+    }
+
+    /**
+     * Instantiates an exception to be thrown later.
+     */
+    public function makeException()
+    {
+        $this->thrownException = FacebookResponseException::create($this);
+    }
+
+    /**
+     * Returns the exception that was thrown for this request.
+     *
+     * @return FacebookSDKException|null
+     */
+    public function getThrownException()
+    {
+        return $this->thrownException;
+    }
+
+    /**
+     * Convert the raw response into an array if possible.
+     *
+     * Graph will return 2 types of responses:
+     * - JSON(P)
+     *    Most responses from Grpah are JSON(P)
+     * - application/x-www-form-urlencoded key/value pairs
+     *    Happens on the `/oauth/access_token` endpoint when exchanging
+     *    a short-lived access token for a long-lived access token
+     * - And sometimes nothing :/ but that'd be a bug.
+     */
+    public function decodeBody()
+    {
+        $this->decodedBody = json_decode($this->body, true);
+
+        if ($this->decodedBody === null) {
+            $this->decodedBody = [];
+            parse_str($this->body, $this->decodedBody);
+        } elseif (is_bool($this->decodedBody)) {
+            // Backwards compatibility for Graph < 2.1.
+            // Mimics 2.1 responses.
+            // @TODO Remove this after Graph 2.0 is no longer supported
+            $this->decodedBody = ['success' => $this->decodedBody];
+        } elseif (is_numeric($this->decodedBody)) {
+            $this->decodedBody = ['id' => $this->decodedBody];
+        }
+
+        if (!is_array($this->decodedBody)) {
+            $this->decodedBody = [];
+        }
+
+        if ($this->isError()) {
+            $this->makeException();
+        }
+    }
+
+    /**
+     * Instantiate a new GraphObject from response.
+     *
+     * @param string|null $subclassName The GraphNode sub class to cast to.
+     *
+     * @return \Facebook\GraphNodes\GraphObject
+     *
+     * @throws FacebookSDKException
+     *
+     * @deprecated 5.0.0 getGraphObject() has been renamed to getGraphNode()
+     * @todo v6: Remove this method
+     */
+    public function getGraphObject($subclassName = null)
+    {
+        return $this->getGraphNode($subclassName);
+    }
+
+    /**
+     * Instantiate a new GraphNode from response.
+     *
+     * @param string|null $subclassName The GraphNode sub class to cast to.
+     *
+     * @return \Facebook\GraphNodes\GraphNode
+     *
+     * @throws FacebookSDKException
+     */
+    public function getGraphNode($subclassName = null)
+    {
+        $factory = new GraphNodeFactory($this);
+
+        return $factory->makeGraphNode($subclassName);
+    }
+
+    /**
+     * Convenience method for creating a GraphAlbum collection.
+     *
+     * @return \Facebook\GraphNodes\GraphAlbum
+     *
+     * @throws FacebookSDKException
+     */
+    public function getGraphAlbum()
+    {
+        $factory = new GraphNodeFactory($this);
+
+        return $factory->makeGraphAlbum();
+    }
+
+    /**
+     * Convenience method for creating a GraphPage collection.
+     *
+     * @return \Facebook\GraphNodes\GraphPage
+     *
+     * @throws FacebookSDKException
+     */
+    public function getGraphPage()
+    {
+        $factory = new GraphNodeFactory($this);
+
+        return $factory->makeGraphPage();
+    }
+
+    /**
+     * Convenience method for creating a GraphSessionInfo collection.
+     *
+     * @return \Facebook\GraphNodes\GraphSessionInfo
+     *
+     * @throws FacebookSDKException
+     */
+    public function getGraphSessionInfo()
+    {
+        $factory = new GraphNodeFactory($this);
+
+        return $factory->makeGraphSessionInfo();
+    }
+
+    /**
+     * Convenience method for creating a GraphUser collection.
+     *
+     * @return \Facebook\GraphNodes\GraphUser
+     *
+     * @throws FacebookSDKException
+     */
+    public function getGraphUser()
+    {
+        $factory = new GraphNodeFactory($this);
+
+        return $factory->makeGraphUser();
+    }
+
+    /**
+     * Convenience method for creating a GraphEvent collection.
+     *
+     * @return \Facebook\GraphNodes\GraphEvent
+     *
+     * @throws FacebookSDKException
+     */
+    public function getGraphEvent()
+    {
+        $factory = new GraphNodeFactory($this);
+
+        return $factory->makeGraphEvent();
+    }
+
+    /**
+     * Convenience method for creating a GraphGroup collection.
+     *
+     * @return \Facebook\GraphNodes\GraphGroup
+     *
+     * @throws FacebookSDKException
+     */
+    public function getGraphGroup()
+    {
+        $factory = new GraphNodeFactory($this);
+
+        return $factory->makeGraphGroup();
+    }
+
+    /**
+     * Instantiate a new GraphList from response.
+     *
+     * @param string|null $subclassName The GraphNode sub class to cast list items to.
+     * @param boolean     $auto_prefix  Toggle to auto-prefix the subclass name.
+     *
+     * @return \Facebook\GraphNodes\GraphList
+     *
+     * @throws FacebookSDKException
+     *
+     * @deprecated 5.0.0 getGraphList() has been renamed to getGraphEdge()
+     * @todo v6: Remove this method
+     */
+    public function getGraphList($subclassName = null, $auto_prefix = true)
+    {
+        return $this->getGraphEdge($subclassName, $auto_prefix);
+    }
+
+    /**
+     * Instantiate a new GraphEdge from response.
+     *
+     * @param string|null $subclassName The GraphNode sub class to cast list items to.
+     * @param boolean     $auto_prefix  Toggle to auto-prefix the subclass name.
+     *
+     * @return \Facebook\GraphNodes\GraphEdge
+     *
+     * @throws FacebookSDKException
+     */
+    public function getGraphEdge($subclassName = null, $auto_prefix = true)
+    {
+        $factory = new GraphNodeFactory($this);
+
+        return $factory->makeGraphEdge($subclassName, $auto_prefix);
+    }
 }

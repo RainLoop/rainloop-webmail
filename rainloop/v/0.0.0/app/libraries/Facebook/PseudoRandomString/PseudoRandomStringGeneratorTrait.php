@@ -21,60 +21,38 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\HttpClients;
+namespace Facebook\PseudoRandomString;
 
-/**
- * Class FacebookStream
- *
- * Abstraction for the procedural stream elements so that the functions can be
- * mocked and the implementation can be tested.
- *
- * @package Facebook
- */
-class FacebookStream
+trait PseudoRandomStringGeneratorTrait
 {
     /**
-     * @var resource Context stream resource instance
-     */
-    protected $stream;
-
-    /**
-     * @var array Response headers from the stream wrapper
-     */
-    protected $responseHeaders;
-
-    /**
-     * Make a new context stream reference instance
+     * Validates the length argument of a random string.
      *
-     * @param array $options
+     * @param int $length The length to validate.
+     *
+     * @throws \InvalidArgumentException
      */
-    public function streamContextCreate(array $options)
+    public function validateLength($length)
     {
-        $this->stream = stream_context_create($options);
+        if (!is_int($length)) {
+            throw new \InvalidArgumentException('getPseudoRandomString() expects an integer for the string length');
+        }
+
+        if ($length < 1) {
+            throw new \InvalidArgumentException('getPseudoRandomString() expects a length greater than 1');
+        }
     }
 
     /**
-     * The response headers from the stream wrapper
+     * Converts binary data to hexadecimal of arbitrary length.
      *
-     * @return array|null
+     * @param string $binaryData The binary data to convert to hex.
+     * @param int    $length     The length of the string to return.
+     *
+     * @return string
      */
-    public function getResponseHeaders()
+    public function binToHex($binaryData, $length)
     {
-        return $this->responseHeaders;
-    }
-
-    /**
-     * Send a stream wrapped request
-     *
-     * @param string $url
-     *
-     * @return mixed
-     */
-    public function fileGetContents($url)
-    {
-        $rawResponse = file_get_contents($url, false, $this->stream);
-        $this->responseHeaders = $http_response_header;
-
-        return $rawResponse;
+        return mb_substr(bin2hex($binaryData), 0, $length);
     }
 }

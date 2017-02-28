@@ -21,60 +21,32 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\HttpClients;
+namespace Facebook\Helpers;
 
 /**
- * Class FacebookStream
- *
- * Abstraction for the procedural stream elements so that the functions can be
- * mocked and the implementation can be tested.
+ * Class FacebookCanvasLoginHelper
  *
  * @package Facebook
  */
-class FacebookStream
+class FacebookCanvasHelper extends FacebookSignedRequestFromInputHelper
 {
     /**
-     * @var resource Context stream resource instance
-     */
-    protected $stream;
-
-    /**
-     * @var array Response headers from the stream wrapper
-     */
-    protected $responseHeaders;
-
-    /**
-     * Make a new context stream reference instance
+     * Returns the app data value.
      *
-     * @param array $options
+     * @return mixed|null
      */
-    public function streamContextCreate(array $options)
+    public function getAppData()
     {
-        $this->stream = stream_context_create($options);
+        return $this->signedRequest ? $this->signedRequest->get('app_data') : null;
     }
 
     /**
-     * The response headers from the stream wrapper
+     * Get raw signed request from POST.
      *
-     * @return array|null
+     * @return string|null
      */
-    public function getResponseHeaders()
+    public function getRawSignedRequest()
     {
-        return $this->responseHeaders;
-    }
-
-    /**
-     * Send a stream wrapped request
-     *
-     * @param string $url
-     *
-     * @return mixed
-     */
-    public function fileGetContents($url)
-    {
-        $rawResponse = file_get_contents($url, false, $this->stream);
-        $this->responseHeaders = $http_response_header;
-
-        return $rawResponse;
+        return $this->getRawSignedRequestFromPost() ?: null;
     }
 }

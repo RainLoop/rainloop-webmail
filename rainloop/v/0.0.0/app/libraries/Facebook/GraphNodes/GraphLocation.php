@@ -21,60 +21,82 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\HttpClients;
+namespace Facebook\GraphNodes;
 
 /**
- * Class FacebookStream
- *
- * Abstraction for the procedural stream elements so that the functions can be
- * mocked and the implementation can be tested.
+ * Class GraphLocation
  *
  * @package Facebook
  */
-class FacebookStream
+class GraphLocation extends GraphNode
 {
     /**
-     * @var resource Context stream resource instance
-     */
-    protected $stream;
-
-    /**
-     * @var array Response headers from the stream wrapper
-     */
-    protected $responseHeaders;
-
-    /**
-     * Make a new context stream reference instance
+     * Returns the street component of the location
      *
-     * @param array $options
+     * @return string|null
      */
-    public function streamContextCreate(array $options)
+    public function getStreet()
     {
-        $this->stream = stream_context_create($options);
+        return $this->getField('street');
     }
 
     /**
-     * The response headers from the stream wrapper
+     * Returns the city component of the location
      *
-     * @return array|null
+     * @return string|null
      */
-    public function getResponseHeaders()
+    public function getCity()
     {
-        return $this->responseHeaders;
+        return $this->getField('city');
     }
 
     /**
-     * Send a stream wrapped request
+     * Returns the state component of the location
      *
-     * @param string $url
-     *
-     * @return mixed
+     * @return string|null
      */
-    public function fileGetContents($url)
+    public function getState()
     {
-        $rawResponse = file_get_contents($url, false, $this->stream);
-        $this->responseHeaders = $http_response_header;
+        return $this->getField('state');
+    }
 
-        return $rawResponse;
+    /**
+     * Returns the country component of the location
+     *
+     * @return string|null
+     */
+    public function getCountry()
+    {
+        return $this->getField('country');
+    }
+
+    /**
+     * Returns the zipcode component of the location
+     *
+     * @return string|null
+     */
+    public function getZip()
+    {
+        return $this->getField('zip');
+    }
+
+    /**
+     * Returns the latitude component of the location
+     *
+     * @return float|null
+     */
+    public function getLatitude()
+    {
+        return $this->getField('latitude');
+    }
+
+    /**
+     * Returns the street component of the location
+     *
+     * @return float|null
+     */
+    public function getLongitude()
+    {
+        return $this->getField('longitude');
     }
 }

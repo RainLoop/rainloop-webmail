@@ -347,24 +347,26 @@ class Social
 
 		$oAccount = $this->oActions->GetAccount();
 
-		$oFacebook = $this->FacebookConnector($oAccount);
+		$sRedirectUrl = '';
+		$oFacebook = $this->FacebookConnector($oAccount, $sRedirectUrl);
 		if ($oFacebook)
 		{
 			try
 			{
-				$oSession = $oFacebook->getSessionFromRedirect();
-				if (!$oSession && !$this->oHttp->HasQuery('state'))
-				{
-					$sLoginUrl = $oFacebook->getLoginUrl().'&display=popup';
-				}
-				else if ($oSession)
-				{
-					$oRequest = new \Facebook\FacebookRequest($oSession, 'GET', '/me');
-					$oResponse = $oRequest->execute();
-					$oGraphObject = $oResponse->getGraphObject();
+				$oRedirectLoginHelper = $oFacebook->getRedirectLoginHelper();
+				$oAccessToken = $oRedirectLoginHelper->getAccessToken();
 
-					$mData = $oGraphObject->getProperty('id');
-					$sSocialName = $oGraphObject->getProperty('name');
+				if (!$oAccessToken && !$this->oHttp->HasQuery('state'))
+				{
+					$sLoginUrl = $oFacebook->getRedirectLoginHelper()->getLoginUrl($sRedirectUrl.'&display=popup');
+				}
+				else if ($oAccessToken)
+				{
+					$oResponse = $oFacebook->get('/me?fields=id,name', (string) $oAccessToken);
+					$oGraphUser = $oResponse->getGraphUser();
+
+					$mData = $oGraphUser->getId();
+					$sSocialName = $oGraphUser->getName();
 
 					if ($oAccount)
 					{
@@ -677,24 +679,23 @@ class Social
 
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount = null
+	 * @param string $sRedirectUrl = ''
 	 *
 	 * @return \RainLoop\Common\RainLoopFacebookRedirectLoginHelper|null
 	 */
-	public function FacebookConnector($oAccount = null)
+	public function FacebookConnector($oAccount = null, &$sRedirectUrl = '')
 	{
 		$oFacebook = false;
 		$oConfig = $this->oActions->Config();
 		$sAppID = \trim($oConfig->Get('social', 'fb_app_id', ''));
+		$sAppSecret = \trim($oConfig->Get('social', 'fb_app_secret', ''));
 
 		if (\version_compare(PHP_VERSION, '5.4.0', '>=') &&
 			$oConfig->Get('social', 'fb_enable', false) && '' !== $sAppID &&
 			'' !== \trim($oConfig->Get('social', 'fb_app_secret', '')) &&
-			\class_exists('Facebook\FacebookSession')
+			\class_exists('Facebook\Facebook')
 		)
 		{
-			\Facebook\FacebookSession::setDefaultApplication($sAppID,
-				\trim($oConfig->Get('social', 'fb_app_secret', '')));
-
 			$sRedirectUrl = $this->oHttp->GetFullUrl().'?SocialFacebook';
 			if (0 < \strlen($this->oActions->GetSpecAuthToken()))
 			{
@@ -710,12 +711,12 @@ class Social
 			{
 				$oAccount = $this->oActions->GetAccount();
 
-				$oFacebook = new \RainLoop\Common\RainLoopFacebookRedirectLoginHelper($sRedirectUrl);
-				$oFacebook->initRainLoopData(array(
-					'rlAppId' => $sAppID,
-					'rlAccount' => $oAccount,
-					'rlUserHash' => \RainLoop\Utils::GetConnectionToken(),
-					'rlStorageProvaider' => $this->oActions->StorageProvider()
+				$oFacebook = new \Facebook\Facebook(array(
+					'app_id' => $sAppID, // Replace {app-id} with your app id
+					'app_secret' => $sAppSecret,
+					'persistent_data_handler' => new \RainLoop\Common\FacebookRainLoopPersistentDataHandler(
+						$oAccount, \RainLoop\Utils::GetConnectionToken(), $this->oActions->StorageProvider()
+					)
 				));
 			}
 			catch (\Exception $oException)
@@ -740,7 +741,7 @@ class Social
 	 */
 	public function FacebookUserLoginStorageKey($oFacebook, $sFacebookUserId)
 	{
-		return \implode('_', array('facebookNew', \md5($oFacebook->GetRLAppId()), $sFacebookUserId, APP_SALT));
+		return \implode('_', array('facebookNew', \md5($oFacebook->getApp()->getId()), $sFacebookUserId, APP_SALT));
 	}
 
 	/**

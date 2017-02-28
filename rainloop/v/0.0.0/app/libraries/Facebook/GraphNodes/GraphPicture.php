@@ -21,60 +21,52 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\HttpClients;
+namespace Facebook\GraphNodes;
 
 /**
- * Class FacebookStream
- *
- * Abstraction for the procedural stream elements so that the functions can be
- * mocked and the implementation can be tested.
+ * Class GraphPicture
  *
  * @package Facebook
  */
-class FacebookStream
+class GraphPicture extends GraphNode
 {
     /**
-     * @var resource Context stream resource instance
-     */
-    protected $stream;
-
-    /**
-     * @var array Response headers from the stream wrapper
-     */
-    protected $responseHeaders;
-
-    /**
-     * Make a new context stream reference instance
+     * Returns true if user picture is silhouette.
      *
-     * @param array $options
+     * @return bool|null
      */
-    public function streamContextCreate(array $options)
+    public function isSilhouette()
     {
-        $this->stream = stream_context_create($options);
+        return $this->getField('is_silhouette');
     }
 
     /**
-     * The response headers from the stream wrapper
+     * Returns the url of user picture if it exists
      *
-     * @return array|null
+     * @return string|null
      */
-    public function getResponseHeaders()
+    public function getUrl()
     {
-        return $this->responseHeaders;
+        return $this->getField('url');
     }
 
     /**
-     * Send a stream wrapped request
+     * Returns the width of user picture if it exists
      *
-     * @param string $url
-     *
-     * @return mixed
+     * @return int|null
      */
-    public function fileGetContents($url)
+    public function getWidth()
     {
-        $rawResponse = file_get_contents($url, false, $this->stream);
-        $this->responseHeaders = $http_response_header;
+        return $this->getField('width');
+    }
 
-        return $rawResponse;
+    /**
+     * Returns the height of user picture if it exists
+     *
+     * @return int|null
+     */
+    public function getHeight()
+    {
+        return $this->getField('height');
     }
 }

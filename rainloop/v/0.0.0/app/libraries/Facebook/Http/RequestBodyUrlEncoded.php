@@ -21,60 +21,35 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\HttpClients;
+namespace Facebook\Http;
 
 /**
- * Class FacebookStream
- *
- * Abstraction for the procedural stream elements so that the functions can be
- * mocked and the implementation can be tested.
+ * Class RequestBodyUrlEncoded
  *
  * @package Facebook
  */
-class FacebookStream
+class RequestBodyUrlEncoded implements RequestBodyInterface
 {
     /**
-     * @var resource Context stream resource instance
+     * @var array The parameters to send with this request.
      */
-    protected $stream;
+    protected $params = [];
 
     /**
-     * @var array Response headers from the stream wrapper
-     */
-    protected $responseHeaders;
-
-    /**
-     * Make a new context stream reference instance
+     * Creates a new GraphUrlEncodedBody entity.
      *
-     * @param array $options
+     * @param array $params
      */
-    public function streamContextCreate(array $options)
+    public function __construct(array $params)
     {
-        $this->stream = stream_context_create($options);
+        $this->params = $params;
     }
 
     /**
-     * The response headers from the stream wrapper
-     *
-     * @return array|null
+     * @inheritdoc
      */
-    public function getResponseHeaders()
+    public function getBody()
     {
-        return $this->responseHeaders;
-    }
-
-    /**
-     * Send a stream wrapped request
-     *
-     * @param string $url
-     *
-     * @return mixed
-     */
-    public function fileGetContents($url)
-    {
-        $rawResponse = file_get_contents($url, false, $this->stream);
-        $this->responseHeaders = $http_response_header;
-
-        return $rawResponse;
+        return http_build_query($this->params, null, '&');
     }
 }

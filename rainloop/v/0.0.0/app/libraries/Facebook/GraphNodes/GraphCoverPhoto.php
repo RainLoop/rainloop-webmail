@@ -21,60 +21,52 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\HttpClients;
+namespace Facebook\GraphNodes;
 
 /**
- * Class FacebookStream
- *
- * Abstraction for the procedural stream elements so that the functions can be
- * mocked and the implementation can be tested.
+ * Class GraphCoverPhoto
  *
  * @package Facebook
  */
-class FacebookStream
+class GraphCoverPhoto extends GraphNode
 {
     /**
-     * @var resource Context stream resource instance
-     */
-    protected $stream;
-
-    /**
-     * @var array Response headers from the stream wrapper
-     */
-    protected $responseHeaders;
-
-    /**
-     * Make a new context stream reference instance
+     * Returns the id of cover if it exists
      *
-     * @param array $options
+     * @return int|null
      */
-    public function streamContextCreate(array $options)
+    public function getId()
     {
-        $this->stream = stream_context_create($options);
+        return $this->getField('id');
+    }
+    
+    /**
+     * Returns the source of cover if it exists
+     *
+     * @return string|null
+     */
+    public function getSource()
+    {
+        return $this->getField('source');
     }
 
     /**
-     * The response headers from the stream wrapper
+     * Returns the offset_x of cover if it exists
      *
-     * @return array|null
+     * @return int|null
      */
-    public function getResponseHeaders()
+    public function getOffsetX()
     {
-        return $this->responseHeaders;
+        return $this->getField('offset_x');
     }
 
     /**
-     * Send a stream wrapped request
+     * Returns the offset_y of cover if it exists
      *
-     * @param string $url
-     *
-     * @return mixed
+     * @return int|null
      */
-    public function fileGetContents($url)
+    public function getOffsetY()
     {
-        $rawResponse = file_get_contents($url, false, $this->stream);
-        $this->responseHeaders = $http_response_header;
-
-        return $rawResponse;
+        return $this->getField('offset_y');
     }
 }

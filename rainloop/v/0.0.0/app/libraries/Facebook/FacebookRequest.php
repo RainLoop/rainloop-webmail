@@ -23,291 +23,514 @@
  */
 namespace Facebook;
 
-use Facebook\HttpClients\FacebookHttpable;
-use Facebook\HttpClients\FacebookCurlHttpClient;
-use Facebook\HttpClients\FacebookStreamHttpClient;
+use Facebook\Authentication\AccessToken;
+use Facebook\Url\FacebookUrlManipulator;
+use Facebook\FileUpload\FacebookFile;
+use Facebook\FileUpload\FacebookVideo;
+use Facebook\Http\RequestBodyMultipart;
+use Facebook\Http\RequestBodyUrlEncoded;
+use Facebook\Exceptions\FacebookSDKException;
 
 /**
- * Class FacebookRequest
+ * Class Request
+ *
  * @package Facebook
- * @author Fosco Marotto <fjm@fb.com>
- * @author David Poll <depoll@fb.com>
  */
 class FacebookRequest
 {
+    /**
+     * @var FacebookApp The Facebook app entity.
+     */
+    protected $app;
 
-  /**
-   * @const string Version number of the Facebook PHP SDK.
-   */
-  const VERSION = '4.0.9';
+    /**
+     * @var string|null The access token to use for this request.
+     */
+    protected $accessToken;
 
-  /**
-   * @const string Default Graph API version for requests
-   */
-  const GRAPH_API_VERSION = 'v2.0';
+    /**
+     * @var string The HTTP method for this request.
+     */
+    protected $method;
 
-  /**
-   * @const string Graph API URL
-   */
-  const BASE_GRAPH_URL = 'https://graph.facebook.com';
+    /**
+     * @var string The Graph endpoint for this request.
+     */
+    protected $endpoint;
 
-  /**
-   * @var FacebookSession The session used for this request
-   */
-  private $session;
+    /**
+     * @var array The headers to send with this request.
+     */
+    protected $headers = [];
 
-  /**
-   * @var string The HTTP method for the request
-   */
-  private $method;
+    /**
+     * @var array The parameters to send with this request.
+     */
+    protected $params = [];
 
-  /**
-   * @var string The path for the request
-   */
-  private $path;
+    /**
+     * @var array The files to send with this request.
+     */
+    protected $files = [];
 
-  /**
-   * @var array The parameters for the request
-   */
-  private $params;
+    /**
+     * @var string ETag to send with this request.
+     */
+    protected $eTag;
 
-  /**
-   * @var string The Graph API version for the request
-   */
-  private $version;
+    /**
+     * @var string Graph version to use for this request.
+     */
+    protected $graphVersion;
 
-  /**
-   * @var string ETag sent with the request
-   */
-  private $etag;
-
-  /**
-   * @var FacebookHttpable HTTP client handler
-   */
-  private static $httpClientHandler;
-
-  /**
-   * @var int The number of calls that have been made to Graph.
-   */
-  public static $requestCount = 0;
-
-  /**
-   * getSession - Returns the associated FacebookSession.
-   *
-   * @return FacebookSession
-   */
-  public function getSession()
-  {
-    return $this->session;
-  }
-
-  /**
-   * getPath - Returns the associated path.
-   *
-   * @return string
-   */
-  public function getPath()
-  {
-    return $this->path;
-  }
-
-  /**
-   * getParameters - Returns the associated parameters.
-   *
-   * @return array
-   */
-  public function getParameters()
-  {
-    return $this->params;
-  }
-
-  /**
-   * getMethod - Returns the associated method.
-   *
-   * @return string
-   */
-  public function getMethod()
-  {
-    return $this->method;
-  }
-
-  /**
-   * getETag - Returns the ETag sent with the request.
-   *
-   * @return string
-   */
-  public function getETag()
-  {
-    return $this->etag;
-  }
-
-  /**
-   * setHttpClientHandler - Returns an instance of the HTTP client
-   * handler
-   *
-   * @param \Facebook\HttpClients\FacebookHttpable
-   */
-  public static function setHttpClientHandler(FacebookHttpable $handler)
-  {
-    static::$httpClientHandler = $handler;
-  }
-
-  /**
-   * getHttpClientHandler - Returns an instance of the HTTP client
-   * data handler
-   *
-   * @return FacebookHttpable
-   */
-  public static function getHttpClientHandler()
-  {
-    if (static::$httpClientHandler) {
-      return static::$httpClientHandler;
-    }
-    return function_exists('curl_init') ? new FacebookCurlHttpClient() : new FacebookStreamHttpClient();
-  }
-
-  /**
-   * FacebookRequest - Returns a new request using the given session.  optional
-   *   parameters hash will be sent with the request.  This object is
-   *   immutable.
-   *
-   * @param FacebookSession $session
-   * @param string $method
-   * @param string $path
-   * @param array|null $parameters
-   * @param string|null $version
-   * @param string|null $etag
-   */
-  public function __construct(
-    FacebookSession $session, $method, $path, $parameters = null, $version = null, $etag = null
-  )
-  {
-    $this->session = $session;
-    $this->method = $method;
-    $this->path = $path;
-    if ($version) {
-      $this->version = $version;
-    } else {
-      $this->version = static::GRAPH_API_VERSION;
-    }
-    $this->etag = $etag;
-
-    $params = ($parameters ?: array());
-    if ($session
-      && !isset($params["access_token"])) {
-      $params["access_token"] = $session->getToken();
-    }
-    if (FacebookSession::useAppSecretProof()
-      && !isset($params["appsecret_proof"])) {
-      $params["appsecret_proof"] = $this->getAppSecretProof(
-        $params["access_token"]
-      );
-    }
-    $this->params = $params;
-  }
-
-  /**
-   * Returns the base Graph URL.
-   *
-   * @return string
-   */
-  protected function getRequestURL()
-  {
-    return static::BASE_GRAPH_URL . '/' . $this->version . $this->path;
-  }
-
-  /**
-   * execute - Makes the request to Facebook and returns the result.
-   *
-   * @return FacebookResponse
-   *
-   * @throws FacebookSDKException
-   * @throws FacebookRequestException
-   */
-  public function execute()
-  {
-    $url = $this->getRequestURL();
-    $params = $this->getParameters();
-
-    if ($this->method === "GET") {
-      $url = self::appendParamsToUrl($url, $params);
-      $params = array();
+    /**
+     * Creates a new Request entity.
+     *
+     * @param FacebookApp|null        $app
+     * @param AccessToken|string|null $accessToken
+     * @param string|null             $method
+     * @param string|null             $endpoint
+     * @param array|null              $params
+     * @param string|null             $eTag
+     * @param string|null             $graphVersion
+     */
+    public function __construct(FacebookApp $app = null, $accessToken = null, $method = null, $endpoint = null, array $params = [], $eTag = null, $graphVersion = null)
+    {
+        $this->setApp($app);
+        $this->setAccessToken($accessToken);
+        $this->setMethod($method);
+        $this->setEndpoint($endpoint);
+        $this->setParams($params);
+        $this->setETag($eTag);
+        $this->graphVersion = $graphVersion ?: Facebook::DEFAULT_GRAPH_VERSION;
     }
 
-    $connection = self::getHttpClientHandler();
-    $connection->addRequestHeader('User-Agent', 'fb-php-' . self::VERSION);
-    $connection->addRequestHeader('Accept-Encoding', '*'); // Support all available encodings.
+    /**
+     * Set the access token for this request.
+     *
+     * @param AccessToken|string
+     *
+     * @return FacebookRequest
+     */
+    public function setAccessToken($accessToken)
+    {
+        $this->accessToken = $accessToken;
+        if ($accessToken instanceof AccessToken) {
+            $this->accessToken = $accessToken->getValue();
+        }
 
-    // ETag
-    if (isset($this->etag)) {
-      $connection->addRequestHeader('If-None-Match', $this->etag);
+        return $this;
     }
 
-    // Should throw `FacebookSDKException` exception on HTTP client error.
-    // Don't catch to allow it to bubble up.
-    $result = $connection->send($url, $this->method, $params);
+    /**
+     * Sets the access token with one harvested from a URL or POST params.
+     *
+     * @param string $accessToken The access token.
+     *
+     * @return FacebookRequest
+     *
+     * @throws FacebookSDKException
+     */
+    public function setAccessTokenFromParams($accessToken)
+    {
+        $existingAccessToken = $this->getAccessToken();
+        if (!$existingAccessToken) {
+            $this->setAccessToken($accessToken);
+        } elseif ($accessToken !== $existingAccessToken) {
+            throw new FacebookSDKException('Access token mismatch. The access token provided in the FacebookRequest and the one provided in the URL or POST params do not match.');
+        }
 
-    static::$requestCount++;
-
-    $etagHit = 304 == $connection->getResponseHttpStatusCode();
-
-    $headers = $connection->getResponseHeaders();
-    $etagReceived = isset($headers['ETag']) ? $headers['ETag'] : null;
-
-    $decodedResult = json_decode($result);
-    if ($decodedResult === null) {
-      $out = array();
-      parse_str($result, $out);
-      return new FacebookResponse($this, $out, $result, $etagHit, $etagReceived);
-    }
-    if (isset($decodedResult->error)) {
-      throw FacebookRequestException::create(
-        $result,
-        $decodedResult->error,
-        $connection->getResponseHttpStatusCode()
-      );
+        return $this;
     }
 
-    return new FacebookResponse($this, $decodedResult, $result, $etagHit, $etagReceived);
-  }
-
-  /**
-   * Generate and return the appsecret_proof value for an access_token
-   *
-   * @param string $token
-   *
-   * @return string
-   */
-  public function getAppSecretProof($token)
-  {
-    return hash_hmac('sha256', $token, FacebookSession::_getTargetAppSecret());
-  }
-
-  /**
-   * appendParamsToUrl - Gracefully appends params to the URL.
-   *
-   * @param string $url
-   * @param array $params
-   *
-   * @return string
-   */
-  public static function appendParamsToUrl($url, $params = array())
-  {
-    if (!$params) {
-      return $url;
+    /**
+     * Return the access token for this request.
+     *
+     * @return string|null
+     */
+    public function getAccessToken()
+    {
+        return $this->accessToken;
     }
 
-    if (strpos($url, '?') === false) {
-      return $url . '?' . http_build_query($params, null, '&');
+    /**
+     * Return the access token for this request an an AccessToken entity.
+     *
+     * @return AccessToken|null
+     */
+    public function getAccessTokenEntity()
+    {
+        return $this->accessToken ? new AccessToken($this->accessToken) : null;
     }
 
-    list($path, $query_string) = explode('?', $url, 2);
-    parse_str($query_string, $query_array);
+    /**
+     * Set the FacebookApp entity used for this request.
+     *
+     * @param FacebookApp|null $app
+     */
+    public function setApp(FacebookApp $app = null)
+    {
+        $this->app = $app;
+    }
 
-    // Favor params from the original URL over $params
-    $params = array_merge($params, $query_array);
+    /**
+     * Return the FacebookApp entity used for this request.
+     *
+     * @return FacebookApp
+     */
+    public function getApp()
+    {
+        return $this->app;
+    }
 
-    return $path . '?' . http_build_query($params, null, '&');
-  }
+    /**
+     * Generate an app secret proof to sign this request.
+     *
+     * @return string|null
+     */
+    public function getAppSecretProof()
+    {
+        if (!$accessTokenEntity = $this->getAccessTokenEntity()) {
+            return null;
+        }
 
+        return $accessTokenEntity->getAppSecretProof($this->app->getSecret());
+    }
+
+    /**
+     * Validate that an access token exists for this request.
+     *
+     * @throws FacebookSDKException
+     */
+    public function validateAccessToken()
+    {
+        $accessToken = $this->getAccessToken();
+        if (!$accessToken) {
+            throw new FacebookSDKException('You must provide an access token.');
+        }
+    }
+
+    /**
+     * Set the HTTP method for this request.
+     *
+     * @param string
+     *
+     * @return FacebookRequest
+     */
+    public function setMethod($method)
+    {
+        $this->method = strtoupper($method);
+    }
+
+    /**
+     * Return the HTTP method for this request.
+     *
+     * @return string
+     */
+    public function getMethod()
+    {
+        return $this->method;
+    }
+
+    /**
+     * Validate that the HTTP method is set.
+     *
+     * @throws FacebookSDKException
+     */
+    public function validateMethod()
+    {
+        if (!$this->method) {
+            throw new FacebookSDKException('HTTP method not specified.');
+        }
+
+        if (!in_array($this->method, ['GET', 'POST', 'DELETE'])) {
+            throw new FacebookSDKException('Invalid HTTP method specified.');
+        }
+    }
+
+    /**
+     * Set the endpoint for this request.
+     *
+     * @param string
+     *
+     * @return FacebookRequest
+     *
+     * @throws FacebookSDKException
+     */
+    public function setEndpoint($endpoint)
+    {
+        // Harvest the access token from the endpoint to keep things in sync
+        $params = FacebookUrlManipulator::getParamsAsArray($endpoint);
+        if (isset($params['access_token'])) {
+            $this->setAccessTokenFromParams($params['access_token']);
+        }
+
+        // Clean the token & app secret proof from the endpoint.
+        $filterParams = ['access_token', 'appsecret_proof'];
+        $this->endpoint = FacebookUrlManipulator::removeParamsFromUrl($endpoint, $filterParams);
+
+        return $this;
+    }
+
+    /**
+     * Return the HTTP method for this request.
+     *
+     * @return string
+     */
+    public function getEndpoint()
+    {
+        // For batch requests, this will be empty
+        return $this->endpoint;
+    }
+
+    /**
+     * Generate and return the headers for this request.
+     *
+     * @return array
+     */
+    public function getHeaders()
+    {
+        $headers = static::getDefaultHeaders();
+
+        if ($this->eTag) {
+            $headers['If-None-Match'] = $this->eTag;
+        }
+
+        return array_merge($this->headers, $headers);
+    }
+
+    /**
+     * Set the headers for this request.
+     *
+     * @param array $headers
+     */
+    public function setHeaders(array $headers)
+    {
+        $this->headers = array_merge($this->headers, $headers);
+    }
+
+    /**
+     * Sets the eTag value.
+     *
+     * @param string $eTag
+     */
+    public function setETag($eTag)
+    {
+        $this->eTag = $eTag;
+    }
+
+    /**
+     * Set the params for this request.
+     *
+     * @param array $params
+     *
+     * @return FacebookRequest
+     *
+     * @throws FacebookSDKException
+     */
+    public function setParams(array $params = [])
+    {
+        if (isset($params['access_token'])) {
+            $this->setAccessTokenFromParams($params['access_token']);
+        }
+
+        // Don't let these buggers slip in.
+        unset($params['access_token'], $params['appsecret_proof']);
+
+        // @TODO Refactor code above with this
+        //$params = $this->sanitizeAuthenticationParams($params);
+        $params = $this->sanitizeFileParams($params);
+        $this->dangerouslySetParams($params);
+
+        return $this;
+    }
+
+    /**
+     * Set the params for this request without filtering them first.
+     *
+     * @param array $params
+     *
+     * @return FacebookRequest
+     */
+    public function dangerouslySetParams(array $params = [])
+    {
+        $this->params = array_merge($this->params, $params);
+
+        return $this;
+    }
+
+    /**
+     * Iterate over the params and pull out the file uploads.
+     *
+     * @param array $params
+     *
+     * @return array
+     */
+    public function sanitizeFileParams(array $params)
+    {
+        foreach ($params as $key => $value) {
+            if ($value instanceof FacebookFile) {
+                $this->addFile($key, $value);
+                unset($params[$key]);
+            }
+        }
+
+        return $params;
+    }
+
+    /**
+     * Add a file to be uploaded.
+     *
+     * @param string       $key
+     * @param FacebookFile $file
+     */
+    public function addFile($key, FacebookFile $file)
+    {
+        $this->files[$key] = $file;
+    }
+
+    /**
+     * Removes all the files from the upload queue.
+     */
+    public function resetFiles()
+    {
+        $this->files = [];
+    }
+
+    /**
+     * Get the list of files to be uploaded.
+     *
+     * @return array
+     */
+    public function getFiles()
+    {
+        return $this->files;
+    }
+
+    /**
+     * Let's us know if there is a file upload with this request.
+     *
+     * @return boolean
+     */
+    public function containsFileUploads()
+    {
+        return !empty($this->files);
+    }
+
+    /**
+     * Let's us know if there is a video upload with this request.
+     *
+     * @return boolean
+     */
+    public function containsVideoUploads()
+    {
+        foreach ($this->files as $file) {
+            if ($file instanceof FacebookVideo) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns the body of the request as multipart/form-data.
+     *
+     * @return RequestBodyMultipart
+     */
+    public function getMultipartBody()
+    {
+        $params = $this->getPostParams();
+
+        return new RequestBodyMultipart($params, $this->files);
+    }
+
+    /**
+     * Returns the body of the request as URL-encoded.
+     *
+     * @return RequestBodyUrlEncoded
+     */
+    public function getUrlEncodedBody()
+    {
+        $params = $this->getPostParams();
+
+        return new RequestBodyUrlEncoded($params);
+    }
+
+    /**
+     * Generate and return the params for this request.
+     *
+     * @return array
+     */
+    public function getParams()
+    {
+        $params = $this->params;
+
+        $accessToken = $this->getAccessToken();
+        if ($accessToken) {
+            $params['access_token'] = $accessToken;
+            $params['appsecret_proof'] = $this->getAppSecretProof();
+        }
+
+        return $params;
+    }
+
+    /**
+     * Only return params on POST requests.
+     *
+     * @return array
+     */
+    public function getPostParams()
+    {
+        if ($this->getMethod() === 'POST') {
+            return $this->getParams();
+        }
+
+        return [];
+    }
+
+    /**
+     * The graph version used for this request.
+     *
+     * @return string
+     */
+    public function getGraphVersion()
+    {
+        return $this->graphVersion;
+    }
+
+    /**
+     * Generate and return the URL for this request.
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        $this->validateMethod();
+
+        $graphVersion = FacebookUrlManipulator::forceSlashPrefix($this->graphVersion);
+        $endpoint = FacebookUrlManipulator::forceSlashPrefix($this->getEndpoint());
+
+        $url = $graphVersion . $endpoint;
+
+        if ($this->getMethod() !== 'POST') {
+            $params = $this->getParams();
+            $url = FacebookUrlManipulator::appendParamsToUrl($url, $params);
+        }
+
+        return $url;
+    }
+
+    /**
+     * Return the default headers that every request should use.
+     *
+     * @return array
+     */
+    public static function getDefaultHeaders()
+    {
+        return [
+            'User-Agent' => 'fb-php-' . Facebook::VERSION,
+            'Accept-Encoding' => '*',
+        ];
+    }
 }

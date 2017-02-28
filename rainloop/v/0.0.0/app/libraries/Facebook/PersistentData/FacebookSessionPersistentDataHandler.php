@@ -21,60 +21,56 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\HttpClients;
+namespace Facebook\PersistentData;
+
+use Facebook\Exceptions\FacebookSDKException;
 
 /**
- * Class FacebookStream
- *
- * Abstraction for the procedural stream elements so that the functions can be
- * mocked and the implementation can be tested.
+ * Class FacebookSessionPersistentDataHandler
  *
  * @package Facebook
  */
-class FacebookStream
+class FacebookSessionPersistentDataHandler implements PersistentDataInterface
 {
     /**
-     * @var resource Context stream resource instance
+     * @var string Prefix to use for session variables.
      */
-    protected $stream;
+    protected $sessionPrefix = 'FBRLH_';
 
     /**
-     * @var array Response headers from the stream wrapper
-     */
-    protected $responseHeaders;
-
-    /**
-     * Make a new context stream reference instance
+     * Init the session handler.
      *
-     * @param array $options
+     * @param boolean $enableSessionCheck
+     *
+     * @throws FacebookSDKException
      */
-    public function streamContextCreate(array $options)
+    public function __construct($enableSessionCheck = true)
     {
-        $this->stream = stream_context_create($options);
+        if ($enableSessionCheck && session_status() !== PHP_SESSION_ACTIVE) {
+            throw new FacebookSDKException(
+                'Sessions are not active. Please make sure session_start() is at the top of your script.',
+                720
+            );
+        }
     }
 
     /**
-     * The response headers from the stream wrapper
-     *
-     * @return array|null
+     * @inheritdoc
      */
-    public function getResponseHeaders()
+    public function get($key)
     {
-        return $this->responseHeaders;
+        if (isset($_SESSION[$this->sessionPrefix . $key])) {
+            return $_SESSION[$this->sessionPrefix . $key];
+        }
+
+        return null;
     }
 
     /**
-     * Send a stream wrapped request
-     *
-     * @param string $url
-     *
-     * @return mixed
+     * @inheritdoc
      */
-    public function fileGetContents($url)
+    public function set($key, $value)
     {
-        $rawResponse = file_get_contents($url, false, $this->stream);
-        $this->responseHeaders = $http_response_header;
-
-        return $rawResponse;
+        $_SESSION[$this->sessionPrefix . $key] = $value;
     }
 }

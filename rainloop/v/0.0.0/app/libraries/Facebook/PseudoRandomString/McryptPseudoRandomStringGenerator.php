@@ -21,60 +21,48 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\HttpClients;
+namespace Facebook\PseudoRandomString;
 
-/**
- * Class FacebookStream
- *
- * Abstraction for the procedural stream elements so that the functions can be
- * mocked and the implementation can be tested.
- *
- * @package Facebook
- */
-class FacebookStream
+use Facebook\Exceptions\FacebookSDKException;
+
+class McryptPseudoRandomStringGenerator implements PseudoRandomStringGeneratorInterface
 {
-    /**
-     * @var resource Context stream resource instance
-     */
-    protected $stream;
+    use PseudoRandomStringGeneratorTrait;
 
     /**
-     * @var array Response headers from the stream wrapper
+     * @const string The error message when generating the string fails.
      */
-    protected $responseHeaders;
+    const ERROR_MESSAGE = 'Unable to generate a cryptographically secure pseudo-random string from mcrypt_create_iv(). ';
 
     /**
-     * Make a new context stream reference instance
-     *
-     * @param array $options
+     * @throws FacebookSDKException
      */
-    public function streamContextCreate(array $options)
+    public function __construct()
     {
-        $this->stream = stream_context_create($options);
+        if (!function_exists('mcrypt_create_iv')) {
+            throw new FacebookSDKException(
+                static::ERROR_MESSAGE .
+                'The function mcrypt_create_iv() does not exist.'
+            );
+        }
     }
 
     /**
-     * The response headers from the stream wrapper
-     *
-     * @return array|null
+     * @inheritdoc
      */
-    public function getResponseHeaders()
+    public function getPseudoRandomString($length)
     {
-        return $this->responseHeaders;
-    }
+        $this->validateLength($length);
 
-    /**
-     * Send a stream wrapped request
-     *
-     * @param string $url
-     *
-     * @return mixed
-     */
-    public function fileGetContents($url)
-    {
-        $rawResponse = file_get_contents($url, false, $this->stream);
-        $this->responseHeaders = $http_response_header;
+        $binaryString = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
 
-        return $rawResponse;
+        if ($binaryString === false) {
+            throw new FacebookSDKException(
+                static::ERROR_MESSAGE .
+                'mcrypt_create_iv() returned an error.'
+            );
+        }
+
+        return $this->binToHex($binaryString, $length);
     }
 }
