@@ -35,4 +35,4 @@ class ScriptComponent extends AbstractComponent
 	}
 }
 
-module.exports = componentExportHelper(ScriptComponent, 'ScriptComponent');
+export default componentExportHelper(ScriptComponent, 'ScriptComponent');

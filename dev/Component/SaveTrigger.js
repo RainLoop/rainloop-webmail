@@ -72,4 +72,4 @@ class SaveTriggerComponent extends AbstractComponent
 	}
 }
 
-module.exports = componentExportHelper(SaveTriggerComponent, 'SaveTriggerComponent');
+export default componentExportHelper(SaveTriggerComponent, 'SaveTriggerComponent');

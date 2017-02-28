@@ -28,4 +28,4 @@ class SelectComponent extends AbstractInput
 	}
 }
 
-module.exports = componentExportHelper(SelectComponent, 'SelectComponent');
+export default componentExportHelper(SelectComponent, 'SelectComponent');

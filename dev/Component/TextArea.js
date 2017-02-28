@@ -19,4 +19,4 @@ class TextAreaComponent extends AbstractInput
 	}
 }
 
-module.exports = componentExportHelper(TextAreaComponent, 'TextAreaComponent');
+export default componentExportHelper(TextAreaComponent, 'TextAreaComponent');

@@ -4,4 +4,4 @@ import {AbstracCheckbox} from 'Component/AbstracCheckbox';
 
 class ClassicCheckboxComponent extends AbstracCheckbox {}
 
-module.exports = componentExportHelper(ClassicCheckboxComponent, 'ClassicCheckboxComponent');
+export default componentExportHelper(ClassicCheckboxComponent, 'ClassicCheckboxComponent');

@@ -46,4 +46,4 @@ class CheckboxMaterialDesignComponent extends AbstracCheckbox
 	}
 }
 
-module.exports = componentExportHelper(CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');
+export default componentExportHelper(CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');

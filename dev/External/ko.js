@@ -1248,4 +1248,4 @@ ko.observable.fn.validateFunc = function(fFunc) {
 	return this;
 };
 
-module.exports = ko;
+export default ko;

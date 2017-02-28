@@ -4,4 +4,4 @@ import {AbstracRadio} from 'Component/AbstracRadio';
 
 class RadioComponent extends AbstracRadio {}
 
-module.exports = componentExportHelper(RadioComponent, 'RadioComponent');
+export default componentExportHelper(RadioComponent, 'RadioComponent');

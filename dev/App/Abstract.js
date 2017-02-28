@@ -305,27 +305,27 @@ class AbstractApp extends AbstractBoot
 
 		const mobile = Settings.appSettingsGet('mobile');
 
-		ko.components.register('SaveTrigger', require('Component/SaveTrigger'));
-		ko.components.register('Input', require('Component/Input'));
-		ko.components.register('Select', require('Component/Select'));
-		ko.components.register('Radio', require('Component/Radio'));
-		ko.components.register('TextArea', require('Component/TextArea'));
-		ko.components.register('Date', require('Component/Date'));
+		ko.components.register('SaveTrigger', require('Component/SaveTrigger').default);
+		ko.components.register('Input', require('Component/Input').default);
+		ko.components.register('Select', require('Component/Select').default);
+		ko.components.register('Radio', require('Component/Radio').default);
+		ko.components.register('TextArea', require('Component/TextArea').default);
+		ko.components.register('Date', require('Component/Date').default);
 
-		ko.components.register('x-script', require('Component/Script'));
-//		ko.components.register('svg-icon', require('Component/SvgIcon'));
+		ko.components.register('x-script', require('Component/Script').default);
+//		ko.components.register('svg-icon', require('Component/SvgIcon').default);
 
 		if (Settings.appSettingsGet('materialDesign') && bAnimationSupported)
 		{
-			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox'));
-			ko.components.register('CheckboxSimple', require('Component/Checkbox'));
+			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox').default);
+			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
 		}
 		else
 		{
-//			ko.components.register('Checkbox', require('Component/Classic/Checkbox'));
-//			ko.components.register('CheckboxSimple', require('Component/Classic/Checkbox'));
-			ko.components.register('Checkbox', require('Component/Checkbox'));
-			ko.components.register('CheckboxSimple', require('Component/Checkbox'));
+//			ko.components.register('Checkbox', require('Component/Classic/Checkbox').default);
+//			ko.components.register('CheckboxSimple', require('Component/Classic/Checkbox').default);
+			ko.components.register('Checkbox', require('Component/Checkbox').default);
+			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
 		}
 
 		initOnStartOrLangChange(initNotificationLanguage);

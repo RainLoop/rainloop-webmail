@@ -10,16 +10,16 @@ var
 module.exports = function(publicPath, pro, es6) {
 	return {
 		entry: es6 ? {
-			'js/app.next': __dirname + '/dev/app.js',
-			'js/admin.next': __dirname + '/dev/admin.js'
+			'js/app.next': path.join(__dirname, 'dev', 'app.js'),
+			'js/admin.next': path.join(__dirname, 'dev', 'admin.js')
 		} : {
-			'js/boot': __dirname + '/dev/boot.js',
-			'js/app': __dirname + '/dev/app.js',
-			'js/admin': __dirname + '/dev/admin.js'
+			'js/boot': path.join(__dirname, 'dev', 'boot.js'),
+			'js/app': path.join(__dirname, 'dev', 'app.js'),
+			'js/admin': path.join(__dirname, 'dev', 'admin.js')
 		},
 		output: {
 			pathinfo: true,
-			path: __dirname + '/rainloop/v/0.0.0/static/',
+			path: path.join(__dirname, 'rainloop', 'v', '0.0.0', 'static'),
 			filename: '[name].js',
 			publicPath: publicPath || 'rainloop/v/0.0.0/static/'
 		},
@@ -42,12 +42,12 @@ module.exports = function(publicPath, pro, es6) {
 			modules: [devPath, 'node_modules'],
 			extensions: ['.js'],
 			alias: {
-				'Opentip': __dirname  + '/dev/External/Opentip.js',
-				'ko': __dirname  + '/dev/External/ko.js'
+				'Opentip$': __dirname  + '/dev/External/Opentip.js',
+				'ko$': __dirname  + '/dev/External/ko.js'
 			}
 		},
 		module: {
-			loaders: [
+			rules: [
 				{
 					test: /\.js$/,
 					loader: 'babel-loader',

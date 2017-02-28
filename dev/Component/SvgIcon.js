@@ -12,7 +12,7 @@ const getUrl = () => {
 	return cachedUrl;
 };
 
-module.exports = {
+export default {
 	template: '<b></b>',
 	viewModel: {
 		createViewModel: ({icon = 'null'}, componentInfo) => {
