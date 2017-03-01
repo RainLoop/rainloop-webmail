@@ -16,7 +16,8 @@ import {
 	$html,
 	leftPanelDisabled,
 	keyScopeReal,
-	useKeyboardShortcuts
+	useKeyboardShortcuts,
+	moveAction
 } from 'Common/Globals';
 
 import {
@@ -89,6 +90,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		this.bodyBackgroundColor = ko.observable('');
 
 		this.pswp = null;
+
+		this.moveAction = moveAction;
 
 		this.allowComposer = !!Settings.capa(Capa.Composer);
 		this.allowMessageActions = !!Settings.capa(Capa.MessageActions);

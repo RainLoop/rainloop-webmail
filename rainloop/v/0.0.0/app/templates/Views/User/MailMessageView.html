@@ -43,6 +43,14 @@
 		</div>
 		<div class="b-content b-message-view-wrapper thm-message-view-background-color">
 			<div style="height: 100%">
+				<div class="b-message-view-backdrop" data-bind="visible: moveAction">
+					<div class="backdrop-message-wrp">
+						<div class="backdrop-message">
+							<i class="icon-folder" style="padding: 0 7px; font-size: 24px; width: 24px; line-height: 24px;"></i>
+							<span class="i18n" style="vertical-align: middle; padding: 0 7px" data-i18n="MESSAGE/MESSAGE_VIEW_MOVE_DESC"></span>
+						</div>
+					</div>
+				</div>
 				<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages()">
 					<span data-bind="text: printableCheckedMessageCount()"></span>
 					<i class="icon-mail"></i>

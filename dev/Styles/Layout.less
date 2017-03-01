@@ -81,6 +81,36 @@ html.rl-mobile {
 	bottom: 0;
 	right: 0;
 	left: 500px;
+
+	.b-message-view-backdrop {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: rgba(0, 0, 0, .4);
+		z-index: 10;
+
+		.backdrop-message-wrp {
+
+			position: absolute;
+			top: calc(~'50% - 50px');
+			left: 0;
+			right: 0;
+			text-align: center;
+
+			.backdrop-message {
+				display: inline-block;
+				color: white;
+				font-size: 20px;
+				line-height: 30px;
+				background: rgba(0, 0, 0, .6);
+				padding: 15px;
+				border-radius: 5px;
+				text-shadow: 0px 1px 1px #000;
+			}
+		}
+	}
 }
 
 html.ssm-state-desktop-large {
@@ -317,8 +347,6 @@ html.rl-bottom-preview-pane {
 			top: 356px;
 			left: 0;
 			right: 5px;
-
-
 			box-shadow: none;
 		}
 	}

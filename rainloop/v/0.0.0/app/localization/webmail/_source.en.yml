@@ -145,6 +145,7 @@ en:
     PRINT_LABEL_ATTACHMENTS: "Attachments"
     MESSAGE_LOADING: "Loading"
     MESSAGE_VIEW_DESC: "Select message in list to view it here."
+    MESSAGE_VIEW_MOVE_DESC: "Choose folder to move..."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Password"
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP signed message (click to verify)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP encrypted message (click to decrypt)"
