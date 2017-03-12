@@ -3,7 +3,6 @@ import window from 'window';
 import _ from '_';
 import $ from '$';
 import progressJs from 'progressJs';
-import Tinycon from 'Tinycon';
 
 import {
 	noop, trim, log, has, isArray, inArray, isUnd, isNormal, isPosNumeric, isNonEmptyArray,
@@ -1437,16 +1436,6 @@ class AppUser extends AbstractApp
 						if (!bMobileDevice)
 						{
 							_.defer(() => this.initVerticalLayoutResizer(ClientSideKeyName.FolderListSize));
-
-							if (Tinycon && Settings.appSettingsGet('faviconStatus') && !Settings.appSettingsGet('listPermanentFiltered'))
-							{
-								Tinycon.setOptions({
-									fallback: false
-								});
-
-								Events.sub('mailbox.inbox-unread-count',
-									(iCount) => Tinycon.setBubble(0 < iCount ? (99 < iCount ? 99 : iCount) : 0));
-							}
 						}
 					}
 					else

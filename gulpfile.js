@@ -50,12 +50,11 @@ var
 	livereload = require('gulp-livereload'),
 	eslint = require('gulp-eslint'),
 	cache = require('gulp-cached'),
-	ignore = require('gulp-ignore'),
 	filter = require('gulp-filter'),
+	expect = require('gulp-expect-file'),
 	gutil = require('gulp-util');
 
 cfg.community = !argv.pro;
-cfg.next = !!argv.next;
 
 // webpack
 function webpackCallback(callback)
@@ -240,7 +239,6 @@ cfg.paths.js = {
 			'vendors/bootstrap/js/bootstrap.min.js', // fixed
 			'node_modules/underscore/underscore-min.js',
 			'node_modules/moment/min/moment.min.js',
-			'node_modules/tinycon/tinycon.min.js',
 			'node_modules/knockout/build/output/knockout-latest.js',
 			'node_modules/knockout-projections/dist/knockout-projections.min.js',
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',
@@ -291,6 +289,7 @@ gulp.task('css:main', ['assets'], function() {
 		src = cfg.paths.css.main.src.concat([cfg.paths.less.main.src]);
 
 	return gulp.src(src)
+		.pipe(expect.real({errorOnFailure: true}, src))
 		.pipe(lessFilter)
 		.pipe(gulpif(cfg.watch, plumber({errorHandler: notify.onError("Error: <%= error.message %>")})))
 		.pipe(less({
@@ -298,7 +297,7 @@ gulp.task('css:main', ['assets'], function() {
 		}))
 		.pipe(lessFilter.restore)
 		.pipe(concat(cfg.paths.css.main.name))
-		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'ie 10', 'ie 11', 'Firefox ESR'))
+		.pipe(autoprefixer('last 3 versions', 'ie >= 9', 'Firefox ESR'))
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS))
@@ -306,10 +305,12 @@ gulp.task('css:main', ['assets'], function() {
 });
 
 gulp.task('css:social', function() {
-	var autoprefixer = require('gulp-autoprefixer');
-	return gulp.src(cfg.paths.css.social.src)
+	var autoprefixer = require('gulp-autoprefixer'),
+		src = cfg.paths.css.social.src;
+	return gulp.src(src)
+		.pipe(expect.real({errorOnFailure: true}, src))
 		.pipe(concat(cfg.paths.css.social.name))
-		.pipe(autoprefixer('last 3 versions', '> 1%', 'ie 9', 'ie 10', 'ie 11', 'Firefox ESR'))
+		.pipe(autoprefixer('last 3 versions', 'ie >= 9', 'Firefox ESR'))
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS));
@@ -346,7 +347,9 @@ gulp.task('moment:locales', ['moment:locales-clear'], function() {
 });
 
 gulp.task('js:libs', function() {
-	return gulp.src(cfg.paths.js.libs.src)
+	var src = cfg.paths.js.libs.src;
+	return gulp.src(src)
+		.pipe(expect.real({errorOnFailure: true}, src))
 		.pipe(concat(cfg.paths.js.libs.name, {separator: '\n\n'}))
 		.pipe(eol('\n', true))
 		.pipe(replace(/sourceMappingURL=[a-z0-9\.\-_]{1,20}\.map/ig, ''))
@@ -357,22 +360,9 @@ gulp.task('js:clean', function() {
 	return cleanDir(cfg.paths.staticJS + '/**/*.js');
 });
 
-gulp.task('js:webpack:main', function(callback) {
+gulp.task('js:webpack', function(callback) {
 	webpack(webpackCfgBuilder(cfg.paths.staticJS, !cfg.community, false), webpackCallback(callback));
 });
-
-gulp.task('js:webpack:next', function(callback) {
-	if (cfg.next)
-	{
-		webpack(webpackCfgBuilder(cfg.paths.staticJS, !cfg.community, true), webpackCallback(callback));
-	}
-	else
-	{
-		callback();
-	}
-});
-
-gulp.task('js:webpack', ['js:webpack:main', 'js:webpack:next']);
 
 gulp.task('js:app', ['js:webpack'], function() {
 	return gulp.src(cfg.paths.staticJS + cfg.paths.js.app.name)
@@ -391,9 +381,8 @@ gulp.task('js:admin', ['js:webpack'], function() {
 });
 
 // - min
-gulp.task('js:es5:min', ['js:app', 'js:admin'], function() {
+gulp.task('js:min', ['js:app', 'js:admin'], function() {
 	return gulp.src(cfg.paths.staticJS + '*.js')
-		.pipe(ignore.exclude('*.next.js'))
 		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(uglify({
@@ -405,17 +394,6 @@ gulp.task('js:es5:min', ['js:app', 'js:admin'], function() {
 		.pipe(gulp.dest(cfg.paths.staticMinJS))
 		.on('error', gutil.log);
 });
-
-gulp.task('js:es6:min', ['js:app', 'js:admin'], function() {
-	return cfg.next ? gulp.src(cfg.paths.staticJS + '*.next.js')
-		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
-		.pipe(eol('\n', true))
-		.pipe(rename({suffix: '.min'}))
-		.pipe(gulp.dest(cfg.paths.staticMinJS))
-		.on('error', gutil.log) : true;
-});
-
-gulp.task('js:min', ['js:es5:min', 'js:es6:min']);
 
 // lint
 gulp.task('js:eslint', function() {

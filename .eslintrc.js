@@ -14,12 +14,16 @@ module.exports = {
 		'commonjs': true,
 		'es6': true
 	},
+	'plugins': ['compat'],
 	'globals': {
 		'RL_COMMUNITY': true,
 		'RL_ES6': true
 	},
+
 	// http://eslint.org/docs/rules/
 	'rules': {
+		// plugins
+		'compat/compat': 2,
 
 		// errors
 		'no-cond-assign': [2, 'always'],

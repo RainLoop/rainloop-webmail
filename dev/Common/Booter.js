@@ -1,6 +1,4 @@
 
-/* global RL_ES6 */
-
 import window from 'window';
 import progressJs from 'progressJs';
 import Promise from 'Promise';
@@ -18,11 +16,6 @@ window.__rlah_data = () => RL_APP_DATA_STORAGE;
 /* eslint-enable */
 
 const useJsNextBundle = (function() {
-
-	if (!RL_ES6)
-	{
-		return false;
-	}
 
 	/* eslint-disable  */
 //	try {
