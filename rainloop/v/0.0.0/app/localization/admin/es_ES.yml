@@ -26,6 +26,7 @@ es_ES:
     LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Permitir selección del idioma"
     LABEL_ALLOW_THEMES_ON_SETTINGS: "Permitir personalización de la interfaz"
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Permitir cambiar el fondo de pantalla"
+    LABEL_NEW_FOLDER_MOVE: "Nuevo botón \"mover a carpeta\""
     LABEL_SHOW_THUMBNAILS: "Mostrar previsualización (adjuntos)"
     LABEL_ALLOW_GRAVATAR: "Usar Gravatar"
     LEGEND_MAIN: "Principal"
@@ -89,6 +90,7 @@ es_ES:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Dominios"
     BUTTON_ADD_DOMAIN: "Agregar dominio"
+    BUTTON_ADD_ALIAS: "Agregar alias"
     DELETE_ARE_YOU_SURE: "¿Estás seguro?"
     HTML_DOMAINS_HELPER: |
       Lista de los dominios de correo al que se permite ingresar.
@@ -182,6 +184,12 @@ es_ES:
     SUBS_KEY_ACTIVATED: "Clave de Suscripción activada correctamente"
     HTML_DESC: "Después de la activación, la suscripción para <b>%DOMAIN%</b> será extendida.\n<br />\nTome nota que esta llave de suscripci\tón podrá\
       \ ser activada solo para un dominio.\n<br /><br />\nUna vez comenzado, el proceso de activación no puede ser abortado ni cancelado.\n"
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Agregar alias"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Dominio"
+    BUTTON_CLOSE: "Cerrar"
+    BUTTON_ADD: "Agregar"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Agregar dominio"
     TITLE_ADD_DOMAIN_WITH_NAME: "Agregar \"%NAME%\" como dominio"

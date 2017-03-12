@@ -1,0 +1,323 @@
+da_DK:
+  LOGIN:
+    LABEL_LOGIN: "Log ind"
+    LABEL_PASSWORD: "Adgangskode"
+    BUTTON_LOGIN: "Log ind i administrationspanelet"
+  TOP_PANEL:
+    LABEL_PREMIUM: "Premium"
+    LABEL_ADMIN_PANEL: "Admin Panel"
+  TABS_LABELS:
+    LABEL_GENERAL_NAME: "Generelt"
+    LABEL_LOGIN_NAME: "Log ind"
+    LABEL_BRANDING_NAME: "Branding"
+    LABEL_CONTACTS_NAME: "Kontakter"
+    LABEL_DOMAINS_NAME: "Domæner"
+    LABEL_SECURITY_NAME: "Sikkerhed"
+    LABEL_INTEGRATION_NAME: "Integrationer"
+    LABEL_PLUGINS_NAME: "Plugins"
+    LABEL_PACKAGES_NAME: "Pakker"
+    LABEL_LICENSING_NAME: "Licensering"
+    LABEL_ABOUT_NAME: "Om"
+  TAB_GENERAL:
+    LEGEND_INTERFACE: "Grænseflade"
+    LABEL_LANGUAGE: "Sprog"
+    LABEL_LANGUAGE_ADMIN: "Sprog (admin)"
+    LABEL_THEME: "Tema"
+    LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Tillad sprogvalg i indstillinger"
+    LABEL_ALLOW_THEMES_ON_SETTINGS: "Tillad temavalg i indstillinger"
+    LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Tillad baggrundsvalg i indstillinger"
+    LABEL_NEW_FOLDER_MOVE: "Ny \"flyt til mappe\" knap"
+    LABEL_SHOW_THUMBNAILS: "Vis miniaturer (vedhæftede filer)"
+    LABEL_ALLOW_GRAVATAR: "Tillad Gravatar"
+    LEGEND_MAIN: "Primære"
+    LABEL_ATTACHMENT_SIZE_LIMIT: "Vedhæftet filers størrelsesgrænse"
+    LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Tillad flere konti"
+    LABEL_ALLOW_IDENTITIES: "Tillad flere identiteter"
+    LABEL_ALLOW_TEMPLATES: "Tillad skabeloner"
+    ALERT_WARNING: "Advarsler!"
+    HTML_ALERT_WEAK_PASSWORD: |
+      Du bruger standard admin adgangskoden.
+      <br />
+      Af sikkerhedsmæssige hensyn bør du venligst
+      <strong><a href="#/security">ændre</a></strong>
+      adgangskoden til noget andet snarest.
+  TAB_LOGIN:
+    LEGEND_LOGIN_SCREEN: "Log ind skærm"
+    LABEL_DEFAULT_DOMAIN: "Standard domæne"
+    LABEL_DETERMINE_USER_DOMAIN: "Forsøg at bestemme brugerens domæne"
+    LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Tillad sprogvalg ved log ind"
+    LABEL_DETERMINE_USER_LANGUAGE: "Forsøg at bestemme brugerens sprog"
+  TAB_BRANDING:
+    LEGEND_BRANDING: "Branding"
+    LABEL_PAGE_TITLE: "Sidetitel"
+    LABEL_LOADING_DESCRIPTION: "Indlæsningsbeskrivelse"
+    LABEL_FAVICON_URL: "Favicon"
+    LEGEND_LOGIN: "Log ind"
+    LABEL_LOGIN_LOGO: "Logo"
+    LABEL_LOGIN_DESCRIPTION: "Beskrivelse"
+    LABEL_LOGIN_BACKGROUND: "Baggrund"
+    LABEL_LOGIN_CUSTOM_CSS: "Brugerdefinerede CSS"
+    LABEL_LOGIN_SHOW_POWERED_LINK: "Vis \"Powered by RainLoop\" link"
+    LEGEND_USER: "Bruger"
+    LABEL_USER_LOGO: "Logo"
+    LABEL_USER_LOGO_TITLE: "Logotitel"
+    LABEL_USER_LOGO_MESSAGE: "Logo (Beskedvisning)"
+    LABEL_USER_CUSTOM_CSS: "Brugerdefinerede CSS"
+    LEGEND_WELCOME_PAGE: "Velkomstside"
+    LABEL_WELCOME_PAGE_TITLE: "Titel"
+    LABEL_WELCOME_PAGE_URL: "URL"
+    LABEL_WELCOME_PAGE_DISPLAY: "Visning"
+    OPTION_WELCOME_PAGE_DISPLAY_NONE: "Ingen"
+    OPTION_WELCOME_PAGE_DISPLAY_ONCE: "én enkelt gang"
+    OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Altid"
+    HTML_ALERT_PREMIUM: "Denne funktionalitet er tilgængelig for <strong><a href=\"#/licensing\">Premium</a></strong> abonnenter."
+  TAB_CONTACTS:
+    LEGEND_CONTACTS: "Kontakter"
+    LEGEND_STORAGE: "Lagring (PDO)"
+    LABEL_ENABLE_CONTACTS: "Aktiver kontakter"
+    LABEL_ALLOW_SYNC: "Tillad kontaktsynkronisering (med ektern CardDAV server)"
+    LABEL_STORAGE_TYPE: "Type"
+    LABEL_STORAGE_DSN: "Dsn"
+    LABEL_STORAGE_USER: "Bruger"
+    LABEL_STORAGE_PASSWORD: "Adgangskode"
+    BUTTON_TEST: "Test"
+    ALERT_NOTICE: "Underretning!"
+    HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Brug ikke denne database type med større antal af aktive brugere."
+    HTML_ALERT_DOES_NOT_SUPPORTED: |
+      Dit system ser ikke ud til at understøtte kontakter.
+      <br />
+      Du skal installere og aktivere <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> udvidelsen på din server.
+  TAB_DOMAINS:
+    LEGEND_DOMAINS: "Domæner"
+    BUTTON_ADD_DOMAIN: "Tilføj domæne"
+    BUTTON_ADD_ALIAS: "Tilføj alias"
+    DELETE_ARE_YOU_SURE: "Er du sikker?"
+    HTML_DOMAINS_HELPER: |
+      Liste over domæner webmail er tilladt adgang til.
+      <br />
+      Klik på navnet for at konfigurere domænet.
+  TAB_SECURITY:
+    LEGEND_SECURITY: "Sikkerhed"
+    LABEL_ALLOW_TWO_STEP: "Tillad 2-trins verificering"
+    LABEL_FORCE_TWO_STEP: "Gennemtving 2-trins verificering"
+    LABEL_USE_IMAGE_PROXY: "Brug lokal proxy til eksterne billeder"
+    LABEL_ALLOW_OPEN_PGP: "Tillad OpenPGP"
+    LABEL_SHOW_PHP_INFO: "Vis PHP informationer"
+    LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS: "Admin Panel Adgangsoplysninger"
+    LABEL_CURRENT_PASSWORD: "Nuværende adgangskode"
+    LABEL_NEW_LOGIN: "Nyt log ind"
+    LABEL_NEW_PASSWORD: "Ny adgangskode"
+    LABEL_REPEAT_PASSWORD: "Gentag"
+    BUTTON_UPDATE_PASSWORD: "Opdater adgangskode"
+    LEGEND_SSL: "SSL"
+    LABEL_REQUIRE_VERIFICATION: "Kræv verificering af brugte SSL certifikat (IMAP/SMTP)"
+    LABEL_ALLOW_SELF_SIGNED: "Tillad selvsigneret certifikater"
+  TAB_INTEGRATIONS:
+    LEGEND_GOOGLE: "Google"
+    LABEL_ENABLE_GOOGLE: "Aktiver Google integration"
+    LABEL_GOOGLE_AUTH: "Autorisation"
+    LABEL_GOOGLE_DRIVE: "Google Drive integration (Komponerede visning)"
+    LABEL_GOOGLE_PREVIEW: "Google Viewer integration (Visning af Microsoft Word, Excel og PowerPoint filer)"
+    LABEL_GOOGLE_CLIENT_ID: "Klient ID"
+    LABEL_GOOGLE_CLIENT_SECRET: "Klient hemmelighed"
+    LABEL_GOOGLE_API_KEY: "API nøgle"
+    HINT_GOOGLE_API_KEY: "Krævet af Google Drive File Picker"
+    LEGEND_FACEBOOK: "Facebook"
+    LABEL_ENABLE_FACEBOOK: "Aktiver Facebook integration (Autorisation)"
+    LABEL_FACEBOOK_APP_ID: "App ID"
+    LABEL_FACEBOOK_APP_SECRET: "App hemmelighed"
+    LEGEND_TWITTER: "Twitter"
+    LABEL_ENABLE_TWITTER: "Aktiver Twitter integrering (Godkendelse)"
+    LABEL_TWITTER_CONSUMER_KEY: "Bruger nøgle"
+    LABEL_TWITTER_CONSUMER_SECRET: "Bruger hemmelighed"
+    LEGEND_DROPBOX: "Dropbox"
+    LABEL_ENABLE_DROPBOX: "Aktiver Dropbox integrering"
+    LABEL_DROPBOX_API_KEY: "API nøgle"
+    TOP_ALERT: "Mere information omkring integrring med sociale netværk kan finder på"
+  TAB_PLUGINS:
+    LEGEND_PLUGINS: "Plugins"
+    LABEL_ENABLE_PLUGINS: "Aktiver plugins"
+    ALERT_NO_PLUGINS: "Ingen tilføjelser er installeret endnu."
+    LINK_INSTALL_NEW: "Tryk her for at installere nyt!"
+    HINT_CLICK_NAME: "Tryk på navnet for at konfigurere tilføjelse."
+  TAB_PACKAGES:
+    LEGEND_AVAILABLE_FOR_UPDATE: "Opdatering tilgængelig"
+    LEGEND_AVAILABLE_FOR_INSTALLATION: "Installation tilgængelig"
+    LEGEND_INSTALLED_PACKAGES: "Installerede pakker"
+    ALERT_CANNOT_ACCESS_REPOSITORY: "Kan ikke tilgå depotet lige nu."
+  TAB_LICENSING:
+    LABEL_YOUR_DOMAIN: "Dit domæne"
+    LABEL_VERSION: "Version"
+    LABEL_CHECKING: "Tjekker"
+    TYPE_BASIC_HINT: "Dette domæne er ikke licenseret til kommercielt brug (med ekstra funktioner)."
+    TYPE_BASIC_HINT_2: "Dette domæne kan ikke licenseret."
+    HTML_ALERT_TOP_1: "RainLoop Webmail er licenseret under"
+    HTML_ALERT_TOP_2: "Du er velkommen til at bruge det til personlige projekter."
+    HTML_ALERT_TOP_3: |
+      Kommercielt brug (med ekstra funktioner) af <b>RainLoop Webmail</b> kræver et
+      <a href="http://www.rainloop.net/purchase/" target="_blank">abonnement</a>.
+    TYPE_PREMIUM_LIFETIME: "Livstid"
+    LABEL_SUB_EXPIRES: "Abonnement udløber"
+    BUTTON_ACTIVATE: "Aktiver abonnements kode for dette domæne"
+    BUTTON_PURCHASE: "Køb"
+    BUTTON_TRIAL: "Prøv"
+  TAB_ABOUT:
+    LEGEND_ABOUT: "Om"
+    LABEL_TAG_HINT: "Simpel, moderne & hurtig web-baseret e-mail klient"
+    LABEL_ALL_RIGHTS_RESERVED: "alle rettigheder forbeholdes."
+    HINT_READ_CHANGE_LOG: "Læs ændrings listen før der opdateres."
+    HINT_IS_UP_TO_DATE: "RainLoop is up to date."
+    HTML_NEW_VERSION: "Ny  <b>%VERSION%</b> version tilgængelig"
+    LABEL_UPDATING: "Opdatere"
+    LABEL_CHECKING: "Tjekker for opdateringer"
+    BUTTON_UPDATE: "Opdater"
+    BUTTON_DOWNLOAD: "Download"
+    BUTTON_CHANGELOG: "Ændrings liste"
+  POPUPS_ACTIVATE:
+    TITLE_ACTIVATE: "Aktiver abonnements kode?"
+    TITLE_ACTIVATION: "Aktivering..."
+    LABEL_DOMAIN: "Domæne"
+    LABEL_SUB_KEY: "Abonnements kode"
+    BUTTON_ACTIVATE: "Aktiver"
+    LABEL_ACTIVATED: "Aktiveret"
+    ERROR_INVALID_SUBS_KEY: "Ugyldig abonnements kode"
+    SUBS_KEY_ACTIVATED: "Abonnements kode aktivering var succesfuld"
+    HTML_DESC: |
+      Efter aktiveren, vil abonnementet for <b>%DOMAIN%</b> blive forlænget.
+      <br />
+      Bemærk at en abonnements kode kun kan blive aktiveret for et enkelt domæne.
+      <br /><br />
+      Når aktiverings processen er startet kan den ikke afbrydes eller annulleres.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Tilføj alias"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Domæne"
+    BUTTON_CLOSE: "Luk"
+    BUTTON_ADD: "Tilføj"
+  POPUPS_DOMAIN:
+    TITLE_ADD_DOMAIN: "Tilføj domæne"
+    TITLE_ADD_DOMAIN_WITH_NAME: "Tilføj domæne \"%NAME%\""
+    TITLE_EDIT_DOMAIN: "Rediger domæne \"%NAME%\""
+    LABEL_NAME: "Navn"
+    NAME_HELPER: "specieltegn understøttet"
+    LABEL_IMAP: "IMAP"
+    LABEL_SMTP: "SMTP"
+    LABEL_SIEVE: "SIEVE"
+    LABEL_SERVER: "Server"
+    LABEL_PORT: "Port"
+    LABEL_SECURE: "Sikker"
+    LABEL_WHITE_LIST: "Whitelist"
+    SECURE_OPTION_NONE: "Ingen"
+    SECURE_OPTION_SSL: "SSL/TLS"
+    SECURE_OPTION_STARTTLS: "STARTTLS"
+    LABEL_ALLOW_SIEVE_SCRIPTS: "Tillad sieve skripts"
+    LABEL_ALLOW_USER_SCRIPT: "Tillad brugerdefinerede skripts"
+    LABEL_USE_SHORT_LOGIN: "Brug kort log ind"
+    LABEL_USE_AUTH: "Brug godkendelse"
+    LABEL_USE_PHP_MAIL: "Brug php mail()"
+    BUTTON_TEST: "Test"
+    BUTTON_WHITE_LIST: "Whitelist"
+    BUTTON_SIEVE_CONFIGURATION: "Sieve opsætning"
+    BUTTON_BACK_TO_IMAP: "Tilbage til IMAP instillinger"
+    BUTTON_BACK: "Tilbage"
+    BUTTON_CLOSE: "Luk"
+    BUTTON_ADD: "Tilføj"
+    BUTTON_UPDATE: "Opdater"
+    NEW_DOMAIN_DESC: "Denne domæne konfiguration tillader <i>%NAME%</i> e-mail adresser."
+    WHITE_LIST_ALERT: |
+      Liste med godkendte domæne for webmail opsætning.
+      Brug mellemrum til at separere domæner.
+  POPUPS_PLUGIN:
+    TITLE_PLUGIN: "Tilføjelse"
+    DESC_NOTHING_TO_CONFIGURE: "Intet at opsætte"
+    BUTTON_CLOSE: "Luk"
+    BUTTON_SAVE: "Gem"
+    TOOLTIP_ABOUT_TITLE: "Om"
+  POPUPS_ASK:
+    DESC_WANT_CLOSE_THIS_WINDOW: "Vil du lukke vinduet?"
+  POPUPS_LANGUAGES:
+    TITLE_LANGUAGES: "Vælg sprog"
+  HINTS:
+    BETA: "beta"
+    UNSTABLE: "ustabil"
+    WARNING: "Advarsel!"
+    NOT_SUPPORTED: "ikke understøttet"
+    REQUIRES_PHP_54: "PHP 5.4 eller højere er et krav"
+  ERRORS:
+    DOMAIN_ALREADY_EXISTS: "Domæne eksisterer allerede"
+    UNKNOWN_ERROR: "Ukendt fejl"
+  NOTIFICATIONS:
+    INVALID_TOKEN: "Ugyldigt tegn"
+    AUTH_ERROR: "Godkendelse fejlede"
+    ACCESS_ERROR: "Adgangsfejl"
+    CONNECTION_ERROR: "Kan ikke kontakte server"
+    CAPTCHA_ERROR: "Forkert CAPTCHA"
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+        Dette sociale ID er ikke knyttet til en e-mail konto endnu. Log ind ved brug
+        af e-mail og tilføj ID'et under konto indstillinger.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+        Dette sociale ID er ikke knyttet til en e-mail konto endnu. Log ind ved brug
+        af e-mail og tilføj ID'et under konto indstillinger.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+        Dette sociale ID er ikke knyttet til en e-mail konto endnu. Log ind ved brug
+        af e-mail og tilføj ID'et under konto indstillinger.
+    DOMAIN_NOT_ALLOWED: "Domæne ikke tilladt"
+    ACCOUNT_NOT_ALLOWED: "Konto ikke tilladt"
+    ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "2-faktor verificering påbudt."
+    ACCOUNT_TWO_FACTOR_AUTH_ERROR: "2-faktor verifikations fejl"
+    COULD_NOT_SAVE_NEW_PASSWORD: "Kunne ikke gemme ny adgangskode"
+    CURRENT_PASSWORD_INCORRECT: "Nuværende adgangskode forkert"
+    NEW_PASSWORD_SHORT: "Adgangskoden for kort"
+    NEW_PASSWORD_WEAK: "Adgangskoden for simpel"
+    NEW_PASSWORD_FORBIDDENT: "Adgangskode indenholder forbudte tegn"
+    CONTACTS_SYNC_ERROR: "Fejl ved synkronisering af kontakter"
+    CANT_GET_MESSAGE_LIST: "Kan ikke indlæse meddelelses oversigt "
+    CANT_GET_MESSAGE: "Kan ikke indlæse meddelelse"
+    CANT_DELETE_MESSAGE: "Kan ikke slette meddelelse"
+    CANT_MOVE_MESSAGE: "Kan ikke flytte meddelelse"
+    CANT_SAVE_MESSAGE: "Kan ikke gemme meddelelse"
+    CANT_SEND_MESSAGE: "Kan ikke sende meddelelse"
+    INVALID_RECIPIENTS: "Ugyldige modtagere"
+    CANT_SAVE_FILTERS: "Kan ikke gemme filtre"
+    CANT_GET_FILTERS: "Kan ikke indlæse filtre"
+    FILTERS_ARE_NOT_CORRECT: "Fejl i filtre"
+    CANT_CREATE_FOLDER: "Kan ikke oprette mappe"
+    CANT_RENAME_FOLDER: "Kan ikke omdøbe mappe"
+    CANT_DELETE_FOLDER: "Kan ikke slette mappe"
+    CANT_DELETE_NON_EMPTY_FOLDER: "Kan ikke slette mappe som ikke er tom"
+    CANT_SUBSCRIBE_FOLDER: "Kan ikke abonnere på mappe"
+    CANT_UNSUBSCRIBE_FOLDER: "Kan ikke afmelde mappe"
+    CANT_SAVE_SETTINGS: "Kan ikke gemme instillinger"
+    CANT_SAVE_PLUGIN_SETTINGS: "Kan ikke gemme instillinger"
+    DOMAIN_ALREADY_EXISTS: "Domæne eksisterer allerede"
+    CANT_INSTALL_PACKAGE: "Installation af pakke mislykkedes"
+    CANT_DELETE_PACKAGE: "Fjernelse af pakke mislykkedes"
+    INVALID_PLUGIN_PACKAGE: "Ugyldig tilføjelses pakke"
+    UNSUPPORTED_PLUGIN_PACKAGE: "Tilføjelses pakke ikke understøttet"
+    LICENSING_SERVER_IS_UNAVAILABLE: "Abonnomentsserver ikke tilgængelig"
+    LICENSING_DOMAIN_EXPIRED: "Abonnement på domæne udløbet."
+    LICENSING_DOMAIN_BANNED: "Abonnement på domæne forbudt."
+    DEMO_SEND_MESSAGE_ERROR: "Denne konto kan af sikkerheds hensyn ikke sende e-mails til eksterne adresser!"
+    DEMO_ACCOUNT_ERROR: "Denne konto kan af sikkerheds hensyn ikke udføre denne handling!"
+    ACCOUNT_ALREADY_EXISTS: "Kontoen eksistere allerede"
+    ACCOUNT_DOES_NOT_EXIST: "Kontoen eksiterer ikke"
+    MAIL_SERVER_ERROR: "Der skete en fejl under adgang til e-mail serveren"
+    INVALID_INPUT_ARGUMENT: "Ugyldigt argument"
+    UNKNOWN_ERROR: "Ukendt fejl"
+  STATIC:
+    BACK_LINK: "Genindlæs"
+    DOMAIN_LIST_DESC: "Liste over domæner webmail er tilladt adgang til."
+    PHP_EXSTENSIONS_ERROR_DESC: "Nødvendige PHP udvidelser er ikke tilgengænlige!"
+    PHP_VERSION_ERROR_DESC: "PHP versionen (%VERSION%) er for gammel.  Minimum 5.3.0 er nødvendig!"
+    NO_SCRIPT_TITLE: "JavaScript er nødvendig for dette program."
+    NO_SCRIPT_DESC: |
+      JavaScript er slået fra i din browser.
+      Slå JavaScript til og prøv igen.
+    NO_COOKIE_TITLE: "Cookies er nødvendige for dette program."
+    NO_COOKIE_DESC: |
+      Cookies er slået fra i din browser.
+      Slå Cookies til og prøv igen.
+    BAD_BROWSER_TITLE: "Din browser er forældet."
+    BAD_BROWSER_DESC: |
+      Enkle funktioner fungere ikke med denne browser.
+      For at bruge alle funktioner, hent en af følgende:

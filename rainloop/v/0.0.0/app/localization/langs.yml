@@ -41,6 +41,7 @@ Common:
         LANG_BG_BG: Български
         LANG_CS_CZ: Čeština
         LANG_AR_SA: ‏العربية‏
+        LANG_DA_DK: Dansk
 
     LANGS_NAMES_EN:
         LANG_EN: English
@@ -83,4 +84,5 @@ Common:
         LANG_BG_BG: Bulgarian
         LANG_CS_CZ: Czech
         LANG_AR_SA: Arabic
+        LANG_DA_DK: Danish
 

@@ -26,6 +26,7 @@ hu_HU:
     LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Nyelv választás engedélyezés a beállításoknál"
     LABEL_ALLOW_THEMES_ON_SETTINGS: "Téma választás engedélyezés a beállításoknál"
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Háttér választás engedélyezés a beállításoknál"
+    LABEL_NEW_FOLDER_MOVE: "Új \"áthelyezés mappába\" gomb"
     LABEL_SHOW_THUMBNAILS: "Előnézetek megjelenítése (mellékletek)"
     LABEL_ALLOW_GRAVATAR: "Gravatar engedélyezés"
     LEGEND_MAIN: "Fontos"

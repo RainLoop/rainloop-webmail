@@ -26,6 +26,7 @@ it_IT:
     LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Permetti di cambiare lingua all'accesso"
     LABEL_ALLOW_THEMES_ON_SETTINGS: "Permetti di cambiare tema dalle impostazioni"
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Permetti di scegliere lo sfondo dalle impostazioni"
+    LABEL_NEW_FOLDER_MOVE: "Nuovo bottone \"Sposta in\""
     LABEL_SHOW_THUMBNAILS: "Visualizza anteprime degli allegati"
     LABEL_ALLOW_GRAVATAR: "Abilita Gravatar"
     LEGEND_MAIN: "Principale"

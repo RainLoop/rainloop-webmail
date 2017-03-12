@@ -145,6 +145,7 @@ ru_RU:
     PRINT_LABEL_ATTACHMENTS: "Файлы"
     MESSAGE_LOADING: "Загрузка"
     MESSAGE_VIEW_DESC: "Выберите сообщение для просмотра."
+    MESSAGE_VIEW_MOVE_DESC: "Выберите папку для перемещения..."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Пароль"
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP подписанное сообщение (нажмите, чтобы подтвердить)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP шифрованное сообщение (нажмите, чтобы расшифровать)"
@@ -416,6 +417,7 @@ ru_RU:
     ERROR_FILE_TYPE: "Неверный тип файла"
     ERROR_UNKNOWN: "Ошибка загрузки файла"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXT"
     TEXT_SWITCHER_RICH_FORMATTING: "Форматированный текст"
     TEXT_SWITCHER_CONFIRM: "Форматирование текста и изображения будут потеряны. Вы уверены, что хотите продолжить?"
   SETTINGS_LABELS:

@@ -102,6 +102,7 @@ es_ES:
     BUTTON_BACK: "Atrás"
     BUTTON_CLOSE: "Cerrar"
     BUTTON_DELETE: "Eliminar"
+    BUTTON_UNSUBSCRIBE: "Eliminar suscripción de esta lista"
     BUTTON_ARCHIVE: "Archivar"
     BUTTON_SPAM: "Correo electrónico no deseado"
     BUTTON_NOT_SPAM: "Es correo deseado"
@@ -417,6 +418,7 @@ es_ES:
     ERROR_FILE_TYPE: "Tipo de archivo inválido"
     ERROR_UNKNOWN: "Se ha producido un error de carga de archivo desconocido"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXTO"
     TEXT_SWITCHER_RICH_FORMATTING: "Texto enriquecido"
     TEXT_SWITCHER_CONFIRM: "Se perderá el formato de texto e imágenes. ¿Está seguro que desea continuar?"
   SETTINGS_LABELS:
@@ -459,6 +461,7 @@ es_ES:
     LABEL_ADD_SIGNATURE_TO_ALL: "Agregar su firma a todos los mensajes salientes"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Security"
+    LABEL_CONFIGURE_TWO_FACTOR: "Configurar verificación de 2-Pasos"
     LABEL_AUTOLOGOUT: "Auto Logout"
     AUTOLOGIN_NEVER_OPTION_NAME: "Never"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minute(s)"
@@ -528,6 +531,7 @@ es_ES:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Lista de Carpetas"
     BUTTON_CREATE: "Crear carpeta"
+    BUTTON_SYSTEM: "Carpetas del sistema"
     BUTTON_DELETE: "Eliminar"
     BUTTON_SUBSCRIBE: "Suscribir"
     BUTTON_UNSUBSCRIBE: "Darse de baja"
