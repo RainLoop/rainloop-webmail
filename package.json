@@ -53,7 +53,7 @@
     "firefox esr"
   ],
   "devDependencies": {
-    "Progress.js": "github:usablica/progress.js#0.1.0",
+    "Progress.js": "github:usablica/progress.js#v0.1.0",
     "autolinker": "1.4.2",
     "babel-core": "6.23.1",
     "babel-eslint": "7.1.1",
@@ -101,7 +101,7 @@
     "json-loader": "0.5.4",
     "json3": "3.3.2",
     "knockout": "3.4.2",
-    "knockout-projections": "github:stevesanderson/knockout-projections#1.1.0",
+    "knockout-projections": "github:stevesanderson/knockout-projections#v1.1.0",
     "knockout-sortable": "0.14.1",
     "lightgallery": "1.2.21",
     "matchmedia-polyfill": "0.3.0",
