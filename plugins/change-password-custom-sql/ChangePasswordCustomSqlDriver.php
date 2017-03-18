@@ -117,7 +117,7 @@ class ChangePasswordCustomSqlDriver implements \RainLoop\Providers\ChangePasswor
 
 		return $this;
 	}
-	
+
 	/**
 	 * @param \RainLoop\Account $oAccount
 	 *
@@ -125,8 +125,7 @@ class ChangePasswordCustomSqlDriver implements \RainLoop\Providers\ChangePasswor
 	 */
 	public function PasswordChangePossibility($oAccount)
 	{
-		return $oAccount && $oAccount->Email() &&
-			\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->sAllowedEmails);
+		return $oAccount && $oAccount->Email();
 	}
 
 	/**
@@ -157,45 +156,35 @@ class ChangePasswordCustomSqlDriver implements \RainLoop\Providers\ChangePasswor
 			$conn = new PDO($dsn,$this->mUser,$this->mPass,$options);
 
 			//prepare SQL varaibles
-      $sEmail = $oAccount->Email();
+			$sEmail = $oAccount->Email();
 			$sEmailUser = \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail);
 			$sEmailDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
 
 			//simple check
 
-        $old = array(':email', ':oldpass', ':newpass', ':domain', ':username', ':table' );
-        $new = array($sEmail, $sPrevPassword, $sNewPassword, $sEmailDomain, $sEmailUser, $this->mTable);
-        
-        $this->mSql = str_replace($old, $new, $this->mSql);
-        
-				$update = $conn->prepare($this->mSql);
-				$mSqlReturn = $update->execute(array());
-/*				$mSqlReturn = $update->execute(array(
-					':email'    => $sEmail,
-					':oldpass'    => $sPrevPassword,
-					':newpass'    => $sNewPassword,
-					':domain'    => $sEmailDomain,
-					':username'    => $sEmailUser,
-					':table'    => $this->mTable
-				));
-*/
-        if ($mSqlReturn == true)
-          {
-  				$bResult = true;
-   				if ($this->oLogger)
-            {
-                    $this->oLogger->Write('Success! Password changed.');
-            }
-  		  }
-			  else
-			  {
-				  $bResult = false;
-				  if ($this->oLogger)
-                		{
-                        		$this->oLogger->Write('Something went wrong. Either current password is incorrect, or new password does not match criteria.');
-                		}
-			  }
+			$old = array(':email', ':oldpass', ':newpass', ':domain', ':username', ':table' );
+			$new = array($sEmail, $sPrevPassword, $sNewPassword, $sEmailDomain, $sEmailUser, $this->mTable);
 
+			$this->mSql = str_replace($old, $new, $this->mSql);
+
+			$update = $conn->prepare($this->mSql);
+			$mSqlReturn = $update->execute(array());
+			if ($mSqlReturn == true)
+			{
+				$bResult = true;
+				if ($this->oLogger)
+				{
+					$this->oLogger->Write('Success! Password changed.');
+				}
+			}
+			else
+			{
+				$bResult = false;
+				if ($this->oLogger)
+				{
+					$this->oLogger->Write('Something went wrong. Either current password is incorrect, or new password does not match criteria.');
+				}
+			}
 		}
 		catch (\Exception $oException)
 		{

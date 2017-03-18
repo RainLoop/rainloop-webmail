@@ -16,21 +16,17 @@ class ChangePasswordCustomSqlPlugin extends \RainLoop\Plugins\AbstractPlugin
 		switch ($sName)
 		{
 			case 'change-password':
-
 				include_once __DIR__.'/ChangePasswordCustomSqlDriver.php';
-
 				$oProvider = new ChangePasswordCustomSqlDriver();
-
 				$oProvider
-						->SetLogger($this->Manager()->Actions()->Logger())
-						->SetmHost($this->Config()->Get('plugin', 'mHost', ''))
-						->SetmUser($this->Config()->Get('plugin', 'mUser', ''))
-						->SetmPass($this->Config()->Get('plugin', 'mPass', ''))
-						->SetmDatabase($this->Config()->Get('plugin', 'mDatabase', ''))
-						->SetmTable($this->Config()->Get('plugin', 'mTable', ''))
-						->SetmSql($this->Config()->Get('plugin', 'mSql', ''))
+					->SetLogger($this->Manager()->Actions()->Logger())
+					->SetmHost($this->Config()->Get('plugin', 'mHost', ''))
+					->SetmUser($this->Config()->Get('plugin', 'mUser', ''))
+					->SetmPass($this->Config()->Get('plugin', 'mPass', ''))
+					->SetmDatabase($this->Config()->Get('plugin', 'mDatabase', ''))
+					->SetmTable($this->Config()->Get('plugin', 'mTable', ''))
+					->SetmSql($this->Config()->Get('plugin', 'mSql', ''))
 				;
-				
 				break;
 		}
 	}
@@ -50,7 +46,7 @@ class ChangePasswordCustomSqlPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('mTable')->SetLabel('MySQL Table'),
 			\RainLoop\Plugins\Property::NewInstance('mSql')->SetLabel('SQL statement')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
-				->SetDescription('SQL statement (allowed wildcards :table, :email, :oldpass, :newpass, :domain, :username).When using MD5 OR SHA1 at tables, write it directly here as SQL functions. Fro non-SQL encryptions use another plugin or wait for new version.')
+				->SetDescription('SQL statement (allowed wildcards :table, :email, :oldpass, :newpass, :domain, :username). When using MD5 OR SHA1 at tables, write it directly here as SQL functions. Fro non-SQL encryptions use another plugin or wait for new version.')
 				->SetDefaultValue('UPDATE :table SET password = md5(:newpass) WHERE domain = :domain AND username = :username and oldpass = md5(:oldpass)')
 		);
 	}
