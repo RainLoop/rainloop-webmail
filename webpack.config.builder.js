@@ -7,6 +7,7 @@ var
 	WebpackNotifierPlugin = require('webpack-notifier'),
 	loose = true;
 
+process.noDeprecation = true;
 module.exports = function(publicPath, pro) {
 	return {
 		entry: {

@@ -156,9 +156,9 @@ class MessageUserStore
 				return _.union(checked, selectedMessage ? [selectedMessage] : []);
 			} else if (selectedMessage) {
 				return [selectedMessage];
-			} else {
-				return focusedMessage ? [focusedMessage] : [];
 			}
+
+			return focusedMessage ? [focusedMessage] : [];
 		});
 
 		this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(() => {
