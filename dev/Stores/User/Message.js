@@ -152,7 +152,13 @@ class MessageUserStore
 				selectedMessage = this.selectorMessageSelected(),
 				focusedMessage = this.selectorMessageFocused();
 
-			return _.union(checked, selectedMessage ? [selectedMessage] : [], focusedMessage ? [focusedMessage] : []);
+			if (checked.length) {
+				return _.union(checked, selectedMessage ? [selectedMessage] : []);
+			} else if (selectedMessage) {
+				return [selectedMessage];
+			} else {
+				return focusedMessage ? [focusedMessage] : [];
+			}
 		});
 
 		this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(() => {
