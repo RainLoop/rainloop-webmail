@@ -707,7 +707,7 @@ class Http
 	}
 
 	/**
-	 * @staticvar bool $bCache
+	 * @staticvar boolean $bCache
 	 */
 	public function ServerNoCache()
 	{
@@ -724,7 +724,7 @@ class Http
 	}
 
 	/**
-	 * @staticvar bool $bCache
+	 * @staticvar boolean $bCache
 	 * @param string $sEtag
 	 * @param int $iLastModified
 	 * @param int $iExpires

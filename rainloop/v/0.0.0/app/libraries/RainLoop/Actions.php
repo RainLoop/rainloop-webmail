@@ -8331,6 +8331,16 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	/**
 	 * @param string $sKey
+	 *
+	 * @return string
+	 */
+	public function etag($sKey)
+	{
+		return \md5('Etag:'.\md5($sKey.\md5($this->Config()->Get('cache', 'index', ''))));
+	}
+
+	/**
+	 * @param string $sKey
 	 * @param bool $bForce = false
 	 *
 	 * @return bool
@@ -8338,13 +8348,19 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	public function cacheByKey($sKey, $bForce = false)
 	{
 		$bResult = false;
-		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))
+		if (!empty($sKey) && ($bForce || ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true))))
 		{
-			$this->oHttp->ServerUseCache(
-				\md5('Etag:'.\md5($sKey.\md5($this->Config()->Get('cache', 'index', '')))),
-				1382478804, 2002478804);
+			$iExpires = $this->Config()->Get('cache', 'http_expires', 3600);
+			if (0 < $iExpires)
+			{
+				$this->oHttp->ServerUseCache($this->etag($sKey), 1382478804, time() + $iExpires);
+				$bResult = true;
+			}
+		}
 
-			$bResult = true;
+		if (!$bResult)
+		{
+			$this->oHttp->ServerNoCache();
 		}
 
 		return $bResult;
@@ -8360,10 +8376,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))
 		{
-			$sIfModifiedSince = $this->Http()->GetHeader('If-Modified-Since', '');
 			$sIfNoneMatch = $this->Http()->GetHeader('If-None-Match', '');
-
-			if (!empty($sIfModifiedSince) || !empty($sIfNoneMatch))
+			if ($this->etag($sKey) === $sIfNoneMatch)
 			{
 				$this->Http()->StatusHeader(304);
 				$this->cacheByKey($sKey);

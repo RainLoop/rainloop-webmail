@@ -368,6 +368,8 @@ Enables caching in the system'),
 				'fast_cache_index' => array('v1', 'Additional caching key. If changed, fast cache is purged'),
 
 				'http' => array(true, 'Browser-level cache. If enabled, caching is maintainted without using files'),
+				'http_expires' => array(3600, 'Browser-level cache time (seconds, Expires header)'),
+
 				'server_uids' => array(true, 'Caching message UIDs when searching and sorting (threading)')
 			),
 
