@@ -301,7 +301,7 @@ es_ES:
     LABEL_PASSWORD: "Contraseña"
     BUTTON_SIGN: "Firmar"
     BUTTON_ENCRYPT: "Encriptar"
-    BUTTON_SIGN_AND_ENCRYPT: "Firmar and encriptar"
+    BUTTON_SIGN_AND_ENCRYPT: "Firmar y encriptar"
   POPUPS_MESSAGE_OPEN_PGP:
     TITLE_MESSAGE_OPEN_PGP: "Descifrar OpenPGP"
     LABEL_KEY: "Clave privada"
