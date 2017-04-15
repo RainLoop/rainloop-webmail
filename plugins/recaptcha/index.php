@@ -85,10 +85,13 @@ class RecaptchaPlugin extends \RainLoop\Plugins\AbstractPlugin
 		{
 			$bResult = false;
 
-			$sResult = $this->Manager()->Actions()->Http()->GetUrlAsString(
-				'https://www.google.com/recaptcha/api/siteverify?secret='.
-					\urlencode($this->Config()->Get('plugin', 'private_key', '')).'&response='.
-					\urlencode($this->Manager()->Actions()->GetActionParam('RecaptchaResponse', '')));
+			$sResult = $this->Manager()->Actions()->Http()->SendPostRequest(
+				'https://www.google.com/recaptcha/api/siteverify',
+				array(
+					'secret' => $this->Config()->Get('plugin', 'private_key', ''),
+					'response' => $this->Manager()->Actions()->GetActionParam('RecaptchaResponse', '')
+				)
+			);
 
 			if ($sResult)
 			{
