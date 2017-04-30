@@ -59,7 +59,7 @@
 			define('APP_DATA_FOLDER_PATH', 0 === strlen($sCustomDataPath) ? APP_INDEX_ROOT_PATH.'data/' : $sCustomDataPath.'/');
 			unset($sCustomDataPath);
 
-			$sCustomConfiguration = function_exists('__get_additional_configuration_name') ? trim(__get_additional_configuration_name()) : '';
+			$sCustomConfiguration = function_exists('__get_additional_configuration_name') ? trim(__get_additional_configuration_name()) : $sCustomConfiguration;
 			define('APP_ADDITIONAL_CONFIGURATION_NAME', $sCustomConfiguration);
 			unset($sCustomConfiguration);
 
