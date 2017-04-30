@@ -464,7 +464,7 @@ gulp.task('rainloop:copy', ['default'], function() {
 	fs.mkdirSync(dist + 'rainloop/v/' + versionFull, '0777', true);
 
 	return gulp.src('rainloop/v/' + cfg.devVersion + '/**/*', {base: 'rainloop/v/' + cfg.devVersion})
-		.pipe(chmod(644, 755))
+		.pipe(chmod(0o644, 0o755))
 		.pipe(gulp.dest(dist + 'rainloop/v/' + versionFull));
 });
 
