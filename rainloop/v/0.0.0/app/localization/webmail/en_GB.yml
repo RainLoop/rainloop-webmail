@@ -261,6 +261,7 @@ en_GB:
     LABEL_SIGNATURE_INSERT_BEFORE: "Insert this signature before quoted text in replies"
   POPUPS_CREATE_FOLDER:
     TITLE_CREATE_FOLDER: "Create a folder?"
+    SELECT_NO_PARENT: "No parent"
     LABEL_NAME: "Folder name"
     LABEL_PARENT: "Parent folder"
     BUTTON_CREATE: "Create"
