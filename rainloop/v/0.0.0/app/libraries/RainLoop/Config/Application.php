@@ -207,6 +207,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'allow_admin_panel'			=> array(true, 'Access settings'),
 				'allow_two_factor_auth'		=> array(false),
 				'force_two_factor_auth'		=> array(false),
+				'hide_x_mailer_header'		=> array(false),
 				'admin_panel_host'			=> array(''),
 				'admin_panel_key'			=> array('admin'),
 				'content_security_policy'	=> array(''),

@@ -5877,9 +5877,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$sReferences = $this->GetActionParam('References', '');
 
 		$oMessage = \MailSo\Mime\Message::NewInstance();
-		$oMessage->RegenerateMessageId();
 
-		$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
+		if (!$this->Config()->Get('security', 'hide_x_mailer_header', false))
+		{
+			$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
+		}
 
 		$oFromIdentity = $this->GetIdentityByID($oAccount, $sIdentityID);
 		if ($oFromIdentity)
@@ -5891,6 +5893,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			$oMessage->SetFrom(\MailSo\Mime\Email::Parse($oAccount->Email()));
 		}
+
+		$oFrom = $oMessage->GetFrom();
+		$oMessage->RegenerateMessageId($oFrom ? $oFrom->GetDomain() : '');
 
 		if (!empty($sReplyTo))
 		{
@@ -6063,11 +6068,16 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 
 		$oMessage = \MailSo\Mime\Message::NewInstance();
-		$oMessage->RegenerateMessageId();
 
-		$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
+		if (!$this->Config()->Get('security', 'hide_x_mailer_header', false))
+		{
+			$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
+		}
 
 		$oMessage->SetFrom(\MailSo\Mime\Email::NewInstance($oIdentity->Email(), $oIdentity->Name()));
+
+		$oFrom = $oMessage->GetFrom();
+		$oMessage->RegenerateMessageId($oFrom ? $oFrom->GetDomain() : '');
 
 		$sReplyTo = $oIdentity->ReplyTo();
 		if (!empty($sReplyTo))
