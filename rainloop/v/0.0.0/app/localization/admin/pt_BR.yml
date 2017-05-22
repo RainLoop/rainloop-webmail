@@ -26,6 +26,7 @@ pt_BR:
     LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Permitir escolha do idioma na tela de configurações"
     LABEL_ALLOW_THEMES_ON_SETTINGS: "Permitir escolha do tema na tela de configurações"
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Permitir escolha de Imagem de Fundo na tela de configurações"
+    LABEL_NEW_FOLDER_MOVE: "Novo botão \"Mover para pasta\""
     LABEL_SHOW_THUMBNAILS: "Mostrar imagem miniatura (Anexos)"
     LABEL_ALLOW_GRAVATAR: "Permitir Gravatar"
     LEGEND_MAIN: "Principal"
@@ -89,6 +90,7 @@ pt_BR:
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domínios"
     BUTTON_ADD_DOMAIN: "Adicionar Domínio"
+    BUTTON_ADD_ALIAS: "Adicionar apelido (Alias)"
     DELETE_ARE_YOU_SURE: "Você tem certeza?"
     HTML_DOMAINS_HELPER: |
       Lista dos domínios com acesso permitido ao webmail.
@@ -186,6 +188,12 @@ pt_BR:
       Note que chave de assinatura é ativada apenas para um único domínio.
       <br /><br />
       Uma vez iniciado, o processo de ativação não poderá ser interrompido ou cancelado.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Adicionar apelido (Alias)"
+    LABEL_ALIAS: "Apelido (Alias)"
+    LABEL_DOMAIN: "Domínio"
+    BUTTON_CLOSE: "Fechar"
+    BUTTON_ADD: "Adicionar"
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Adicionar Domínio"
     TITLE_ADD_DOMAIN_WITH_NAME: "Adicionar Domínio \"%NAME%\""

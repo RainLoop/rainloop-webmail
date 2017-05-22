@@ -7,8 +7,8 @@ yarn upgrade xxx@1.2.3
 tx pull -a
 
 # dependencies checker (checking only)
-npm-check --skip-unused --save-exact
 yarn outdated
+npm-check --skip-unused --save-exact
 
 # webpack
 webpack --color --watch

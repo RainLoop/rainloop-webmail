@@ -145,6 +145,7 @@ sv_SE:
     PRINT_LABEL_ATTACHMENTS: "Bilagor"
     MESSAGE_LOADING: "Laddar"
     MESSAGE_VIEW_DESC: "Välj meddelande i listan att visa här."
+    MESSAGE_VIEW_MOVE_DESC: "Klicka på mapp till vänster för att välja mål mapp."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Lösenord"
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP signerat meddelande (klicka för att verifiera)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP krypterat meddelande (klicka för att dekryptera)"

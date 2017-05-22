@@ -26,6 +26,7 @@ nl_NL:
     LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Sta taalselectie toe in het instellingen scherm"
     LABEL_ALLOW_THEMES_ON_SETTINGS: "Sta thema selectie toe in het instellingen scherm"
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Sta achtergrond selectie toe in het instellingen scherm"
+    LABEL_NEW_FOLDER_MOVE: "Nieuwe \"verplaats naar map\" knop"
     LABEL_SHOW_THUMBNAILS: "Toon miniaturen (bijlage)"
     LABEL_ALLOW_GRAVATAR: "Toon Gravatar"
     LEGEND_MAIN: "Diverse"

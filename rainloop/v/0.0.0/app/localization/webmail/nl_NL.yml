@@ -145,6 +145,7 @@ nl_NL:
     PRINT_LABEL_ATTACHMENTS: "Bijlagen"
     MESSAGE_LOADING: "Bericht ophalen"
     MESSAGE_VIEW_DESC: "Selecteer een bericht in de lijst om hier te bekijken"
+    MESSAGE_VIEW_MOVE_DESC: "Klik op de doel map in het linker paneel."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Wachtwoord"
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP ondertekend bericht (klik om te verifiëren)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP versleuteld bericht (klik om te ontsleutelen)"

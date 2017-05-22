@@ -145,7 +145,7 @@ ru_RU:
     PRINT_LABEL_ATTACHMENTS: "Файлы"
     MESSAGE_LOADING: "Загрузка"
     MESSAGE_VIEW_DESC: "Выберите сообщение для просмотра."
-    MESSAGE_VIEW_MOVE_DESC: "Выберите папку для перемещения..."
+    MESSAGE_VIEW_MOVE_DESC: "Выберите имя папки в левой панели, чтобы переместить сообщения."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Пароль"
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP подписанное сообщение (нажмите, чтобы подтвердить)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP шифрованное сообщение (нажмите, чтобы расшифровать)"

@@ -145,6 +145,7 @@ nb_NO:
     PRINT_LABEL_ATTACHMENTS: "Vedlegg"
     MESSAGE_LOADING: "Laster inn"
     MESSAGE_VIEW_DESC: "Trykk på en melding for å lese den"
+    MESSAGE_VIEW_MOVE_DESC: "Trykk på mappenavn i panelet til venstre for å velge mål."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Passord"
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP-signert melding (trykk for å bekrefte)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP-kryptert melding (trykk for å dekryptere)"

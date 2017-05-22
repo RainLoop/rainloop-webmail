@@ -145,6 +145,7 @@ ja_JP:
     PRINT_LABEL_ATTACHMENTS: "添付ファイル"
     MESSAGE_LOADING: "読み込み中"
     MESSAGE_VIEW_DESC: "選択したメールがここに表示されます。"
+    MESSAGE_VIEW_MOVE_DESC: "左側のパネルでフォルダ名をクリックして移動先を選択します。"
     PGP_PASSWORD_INPUT_PLACEHOLDER: "パスワード"
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP 署名済みメッセージ (クリックして検証)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP 暗号化メッセージ (クリックして復号化)"

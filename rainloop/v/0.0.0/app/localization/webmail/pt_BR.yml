@@ -102,6 +102,7 @@ pt_BR:
     BUTTON_BACK: "Voltar"
     BUTTON_CLOSE: "Fechar"
     BUTTON_DELETE: "Excluir"
+    BUTTON_UNSUBSCRIBE: "Cancelar a assinatura desta lista"
     BUTTON_ARCHIVE: "Arquivar"
     BUTTON_SPAM: "Lixo Eletrônico"
     BUTTON_NOT_SPAM: "Não é Lixo Eletrônico"
@@ -144,6 +145,7 @@ pt_BR:
     PRINT_LABEL_ATTACHMENTS: "Anexos"
     MESSAGE_LOADING: "Carregando"
     MESSAGE_VIEW_DESC: "Selecione uma mensagem para visualizá-la aqui."
+    MESSAGE_VIEW_MOVE_DESC: "Clique no nome da pasta no painel esquerdo para selecionar o destino."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Senha"
     PGP_SIGNED_MESSAGE_DESC: "Mensagem assinada com OpenPGP (clique para verificar)"
     PGP_ENCRYPTED_MESSAGE_DESC: "Mensagem criptografada com OpenPGP (clique para descriptografar)"
@@ -415,6 +417,7 @@ pt_BR:
     ERROR_FILE_TYPE: "Tipo de arquivo inválido"
     ERROR_UNKNOWN: "Ocorreu um erro de envio de arquivo desconhecido"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXTO"
     TEXT_SWITCHER_RICH_FORMATTING: "Formatação avançada"
     TEXT_SWITCHER_CONFIRM: "A formatação de texto e as imagens serão perdidas. Tem certeza de que deseja continuar?"
   SETTINGS_LABELS:
@@ -461,6 +464,7 @@ pt_BR:
     LABEL_AUTOLOGOUT: "Deslogar Automaticamente"
     AUTOLOGIN_NEVER_OPTION_NAME: "Nunca"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minutos"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% hora(s)"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Geral"
     LABEL_LANGUAGE: "Idioma"
@@ -526,6 +530,7 @@ pt_BR:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Lista de pastas"
     BUTTON_CREATE: "Criar pasta"
+    BUTTON_SYSTEM: "Pastas do Sistema"
     BUTTON_DELETE: "Excluir"
     BUTTON_SUBSCRIBE: "Acompanhar"
     BUTTON_UNSUBSCRIBE: "Não acompanhar"
