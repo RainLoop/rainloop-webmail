@@ -389,7 +389,7 @@ gulp.task('js:min', ['js:app', 'js:admin'], function() {
 		.pipe(uglify({
 			mangle: true,
 			compress: true,
-			'screw-ie8': true
+			ie8: false
 		}))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticMinJS))
