@@ -253,11 +253,20 @@
 										</div>
 										<div class="clearfix"></div>
 									</div>
-									<div class="senderParent -bottom" data-bind="visible: viewTo">
+									<div class="senderParent" data-bind="visible: viewTo, css: {'-middle': viewCc(), '-bottom': !viewCc()}">
+										<div class="informationShort" data-bind="event: { 'dblclick': toggleFullScreen }, css: {'-middle': viewCc(), '-bottom': !viewCc()}">
+											<span>
+												<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_TO"
+													 ></span>:&nbsp;<span class="to" data-bind="text: viewTo"></span>
+											</span>
+										</div>
+										<div class="clearfix"></div>
+									</div>
+									<div class="senderParent -bottom" data-bind="visible: viewCc">
 										<div class="informationShort -bottom" data-bind="event: { 'dblclick': toggleFullScreen }">
 											<span>
-												<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_TO"></span>:
-												<span class="to" data-bind="text: viewTo"></span>
+												<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_CC"
+													 ></span>:&nbsp;<span class="to" data-bind="text: viewCc"></span>
 											</span>
 										</div>
 										<div class="clearfix"></div>
