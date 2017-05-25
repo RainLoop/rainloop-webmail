@@ -779,11 +779,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 		do
 		{
 			$this->getNextBuffer();
-			$aParts = \preg_split('/([\s-]+)/', $this->sResponseBuffer, 2, PREG_SPLIT_DELIM_CAPTURE);
+			$aParts = \preg_split('/([\s\-]+)/', $this->sResponseBuffer, 2, PREG_SPLIT_DELIM_CAPTURE);
 
 			if (\is_array($aParts) && 3 === \count($aParts) && \is_numeric($aParts[0]))
 			{
-				if ('-' !== trim($aParts[1]) && !\in_array((int) $aParts[0], $mExpectCode))
+				if ('-' !== \substr($aParts[1], 0, 1) && !\in_array((int) $aParts[0], $mExpectCode))
 				{
 					$this->writeLogException(
 						new Exceptions\NegativeResponseException($this->aResults, \trim(
@@ -801,7 +801,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 			$this->aResults[] = $this->sResponseBuffer;
 		}
-		while ('-' === \trim($aParts[1]));
+		while ('-' === \substr($aParts[1], 0, 1));
 
 		$this->writeLog((microtime(true) - $this->iRequestTime),
 			\MailSo\Log\Enumerations\Type::TIME);
