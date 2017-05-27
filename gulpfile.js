@@ -455,7 +455,7 @@ gulp.task('ckeditor', ['ckeditor:copy-plugins', 'ckeditor:copy', 'ckeditor:clear
 gulp.task('rainloop:copy', ['default'], function() {
 
 	var
-		versionFull = pkg.version + '.' + parseInt(pkg.release, 10),
+		versionFull = pkg.version,
 		dist = cfg.releasesPath + '/webmail/' + versionFull + '/src/'
 	;
 
@@ -471,7 +471,7 @@ gulp.task('rainloop:copy', ['default'], function() {
 gulp.task('rainloop:setup', ['rainloop:copy'], function() {
 
 	var
-		versionFull = pkg.version + '.' + parseInt(pkg.release, 10),
+		versionFull = pkg.version,
 		dist = cfg.releasesPath + '/webmail/' + versionFull + '/src/'
 	;
 
@@ -518,7 +518,7 @@ gulp.task('rainloop:sign', ['rainloop:shortname'], signFileTask);
 gulp.task('rainloop:owncloud:copy', function() {
 
 	var
-		versionFull = pkg.ownCloudPackageVersion,
+		versionFull = pkg.ownCloudVersion,
 		dist = cfg.releasesPath + '/owncloud/' + versionFull + '/src/'
 	;
 
@@ -532,7 +532,7 @@ gulp.task('rainloop:owncloud:copy', function() {
 gulp.task('rainloop:owncloud:copy-rainloop', ['rainloop:start', 'rainloop:owncloud:copy'], function() {
 
 	var
-		versionFull = pkg.ownCloudPackageVersion,
+		versionFull = pkg.ownCloudVersion,
 		dist = cfg.releasesPath + '/owncloud/' + versionFull + '/src/rainloop/'
 	;
 
@@ -552,7 +552,7 @@ gulp.task('rainloop:owncloud:copy-rainloop:clean', ['rainloop:owncloud:copy-rain
 gulp.task('rainloop:owncloud:setup', ['rainloop:owncloud:copy', 'rainloop:owncloud:copy-rainloop'], function() {
 
 	var
-		versionFull = pkg.ownCloudPackageVersion,
+		versionFull = pkg.ownCloudVersion,
 		dist = cfg.releasesPath + '/owncloud/' + versionFull + '/src/'
 	;
 
