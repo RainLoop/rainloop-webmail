@@ -165,36 +165,17 @@ html.rl-no-preview-pane {
 				vertical-align: middle;
 			}
 
-			.senderParent {
-				margin: 7px 0;
-				&.-top {
-					margin-top: 0;
-				}
-				&.-middle {
-					margin-top: -5px;
-					margin-bottom: -5px;
-				}
-				&.-bottom {
-					margin-bottom: 0;
-				}
-			}
-
 			.messageButtons {
 				margin-top: 5px;
 			}
 
 			.informationShort {
+				margin: 4px 0;
 				margin-left: 5px;
 				margin-right: 50px;
 
 				a {
 					.g-ui-link;
-				}
-
-				&.-bottom {
-					margin-right: 5px;
-					max-height: 100px;
-					overflow-y: auto;
 				}
 
 				html.rl-mobile &{
@@ -203,6 +184,14 @@ html.rl-no-preview-pane {
 					white-space: nowrap;
 				}
 			}
+
+			.informationShortWrp {
+				max-height: 100px;
+				overflow-y: auto;
+				min-height: 30px;
+				margin-top: 4px;
+			}
+
 			.informationFull {
 				margin-top: 10px;
 				border: 1px solid #ddd;

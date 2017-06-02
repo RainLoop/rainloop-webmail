@@ -238,38 +238,31 @@
 							<div>
 								<img class="fromPic" data-bind="visible: viewUserPicVisible, attr: {'src': viewUserPic() }">
 								<div style="overflow: hidden;">
-									<div class="senderParent -top">
-										<div class="informationShort -top" data-bind="event: { 'dblclick': toggleFullScreen }">
-											<span>
-												<span class="from" data-bind="html: viewFromShort, title: viewFrom"></span>
-												<span data-bind="visible: viewFromDkimVisibility">
-													&nbsp;
-													<i data-bind="css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle" />
-												</span>
+									<div class="informationShort" data-bind="event: { 'dblclick': toggleFullScreen }">
+										<span>
+											<span class="from" data-bind="html: viewFromShort, title: viewFrom"></span>
+											<span data-bind="visible: viewFromDkimVisibility">
+												&nbsp;
+												<i data-bind="css: viewFromDkimStatusIconClass, title: viewFromDkimStatusTitle" />
 											</span>
-											<span data-bind="visible: 0 < viewTimeStamp()">
-												(<span class="date" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>)
-											</span>
-										</div>
-										<div class="clearfix"></div>
+										</span>
+										<span data-bind="visible: 0 < viewTimeStamp()">
+											(<span class="date" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>)
+										</span>
 									</div>
-									<div class="senderParent" data-bind="visible: viewTo, css: {'-middle': viewCc(), '-bottom': !viewCc()}">
-										<div class="informationShort" data-bind="event: { 'dblclick': toggleFullScreen }, css: {'-middle': viewCc(), '-bottom': !viewCc()}">
+									<div class="informationShortWrp">
+										<div class="informationShort" data-bind="visible: viewTo, event: { 'dblclick': toggleFullScreen }">
 											<span>
 												<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_TO"
-													 ></span>:&nbsp;<span class="to" data-bind="text: viewTo"></span>
+													></span>:&nbsp;<span class="to" data-bind="text: viewTo"></span>
 											</span>
 										</div>
-										<div class="clearfix"></div>
-									</div>
-									<div class="senderParent -bottom" data-bind="visible: viewCc">
-										<div class="informationShort -bottom" data-bind="event: { 'dblclick': toggleFullScreen }">
+										<div class="informationShort" data-bind="visible: viewCc, event: { 'dblclick': toggleFullScreen }">
 											<span>
 												<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_CC"
-													 ></span>:&nbsp;<span class="to" data-bind="text: viewCc"></span>
+													></span>:&nbsp;<span class="to" data-bind="text: viewCc"></span>
 											</span>
 										</div>
-										<div class="clearfix"></div>
 									</div>
 								</div>
 								<div class="clearfix"></div>
