@@ -7,6 +7,7 @@ Common:
         LANG_EN_UK: English (UK)
         LANG_EN_CA: English (Canadian)
 
+        LANG_TH_TH: ภาษาไทย
         LANG_EL_GR: Ελληνικά
         LANG_NL_NL: Nederlands
         LANG_NB_NO: Norsk (bokmål)
@@ -50,6 +51,7 @@ Common:
         LANG_EN_UK: English (UK)
         LANG_EN_CA: English (Canadian)
 
+        LANG_TH_TH: Thai
         LANG_EL_GR: Greek
         LANG_NL_NL: Dutch
         LANG_NB_NO: Norwegian (bokmal)
