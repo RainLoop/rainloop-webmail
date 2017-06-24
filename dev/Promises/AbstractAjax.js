@@ -1,6 +1,6 @@
 
+import window from 'window';
 import $ from '$';
-import Promise from 'Promise';
 
 import {ajax} from 'Common/Links';
 import {microtime, isUnd, isNormal, pString, pInt, inArray} from 'Common/Utils';
@@ -44,7 +44,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises
 
 	ajaxRequest(action, isPost, timeOut, params, additionalGetString, fTrigger) {
 
-		return new Promise((resolve, reject) => {
+		return new window.Promise((resolve, reject) => {
 
 			const start = microtime();
 

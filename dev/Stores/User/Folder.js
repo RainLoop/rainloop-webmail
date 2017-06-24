@@ -129,7 +129,8 @@ class FolderUserStore
 				{
 					folder.type(FolderType.User);
 				}
-			},
+			};
+		const
 			fSetSystemFolderType = (type) => (value) => {
 				const folder = getFolderFromCacheList(value);
 				if (folder)

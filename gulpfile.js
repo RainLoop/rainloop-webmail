@@ -53,6 +53,7 @@ var
 	filter = require('gulp-filter'),
 	expect = require('gulp-expect-file'),
 	chmod = require('gulp-chmod'),
+	size = require('gulp-size'),
 	gutil = require('gulp-util');
 
 cfg.community = !argv.pro;
@@ -385,6 +386,10 @@ gulp.task('js:admin', ['js:webpack'], function() {
 gulp.task('js:min', ['js:app', 'js:admin'], function() {
 	return gulp.src(cfg.paths.staticJS + '*.js')
 		.pipe(replace(/"rainloop\/v\/([^\/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
+		.pipe(size({
+			showFiles: true,
+			showTotal: false
+		}))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(uglify({
 			mangle: true,
@@ -392,6 +397,10 @@ gulp.task('js:min', ['js:app', 'js:admin'], function() {
 			ie8: false
 		}))
 		.pipe(eol('\n', true))
+		.pipe(size({
+			showFiles: true,
+			showTotal: false
+		}))
 		.pipe(gulp.dest(cfg.paths.staticMinJS))
 		.on('error', gutil.log);
 });

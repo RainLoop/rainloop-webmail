@@ -23,16 +23,16 @@ class AccountUserStore
 			() => _.compact(_.map(this.accounts(), (item) => (item ? item.email : null))));
 
 		this.accountsUnreadCount = ko.computed(() => 0);
-//		this.accountsUnreadCount = ko.computed(() => {
-//			let result = 0;
-//			_.each(this.accounts(), (item) => {
-//				if (item)
-//				{
-//					result += item.count();
-//				}
-//			});
-//			return result;
-//		});
+		// this.accountsUnreadCount = ko.computed(() => {
+		// 	let result = 0;
+		// 	_.each(this.accounts(), (item) => {
+		// 		if (item)
+		// 		{
+		// 			result += item.count();
+		// 		}
+		// 	});
+		// 	return result;
+		// });
 	}
 
 	populate() {

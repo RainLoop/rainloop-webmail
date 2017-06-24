@@ -91,15 +91,15 @@ class AbstractApp extends AbstractBoot
 			}
 		}, Magics.Time50ms));
 
-// DEBUG
-//		Events.sub({
-//			'window.resize': function() {
-//				window.console.log('window.resize');
-//			},
-//			'window.resize.real': function() {
-//				window.console.log('window.resize.real');
-//			}
-//		});
+		// DEBUG
+		//		Events.sub({
+		//			'window.resize': function() {
+		//				window.console.log('window.resize');
+		//			},
+		//			'window.resize.real': function() {
+		//				window.console.log('window.resize.real');
+		//			}
+		//		});
 
 		$doc.on('keydown', (event) => {
 			if (event && event.ctrlKey)
@@ -172,7 +172,7 @@ class AbstractApp extends AbstractBoot
 		else
 		{
 			this.iframe.attr('src', link);
-	//		window.document.location.href = link;
+			// window.document.location.href = link;
 		}
 
 		return true;
@@ -313,7 +313,7 @@ class AbstractApp extends AbstractBoot
 		ko.components.register('Date', require('Component/Date').default);
 
 		ko.components.register('x-script', require('Component/Script').default);
-//		ko.components.register('svg-icon', require('Component/SvgIcon').default);
+		// ko.components.register('svg-icon', require('Component/SvgIcon').default);
 
 		if (Settings.appSettingsGet('materialDesign') && bAnimationSupported)
 		{
@@ -322,8 +322,8 @@ class AbstractApp extends AbstractBoot
 		}
 		else
 		{
-//			ko.components.register('Checkbox', require('Component/Classic/Checkbox').default);
-//			ko.components.register('CheckboxSimple', require('Component/Classic/Checkbox').default);
+			// ko.components.register('Checkbox', require('Component/Classic/Checkbox').default);
+			// ko.components.register('CheckboxSimple', require('Component/Classic/Checkbox').default);
 			ko.components.register('Checkbox', require('Component/Checkbox').default);
 			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
 		}

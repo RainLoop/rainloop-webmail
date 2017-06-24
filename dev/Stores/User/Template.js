@@ -22,16 +22,16 @@ class TemplateUserStore
 			this.templatesNames(_.compact(_.map(list, (item) => (item ? item.name : null))));
 		});
 
-//	this.templatesNames.subscribe((aList) => {
-//		if (this.templatesNames.skipFirst)
-//		{
-//			this.templatesNames.skipFirst = false;
-//		}
-//		else if (aList && 1 < aList.length)
-//		{
-//			Remote.templatesSortOrder(null, aList);
-//		}
-//	});
+		// this.templatesNames.subscribe((aList) => {
+		// 	if (this.templatesNames.skipFirst)
+		// 	{
+		// 		this.templatesNames.skipFirst = false;
+		// 	}
+		// 	else if (aList && 1 < aList.length)
+		// 	{
+		// 		Remote.templatesSortOrder(null, aList);
+		// 	}
+		// });
 	}
 }
 

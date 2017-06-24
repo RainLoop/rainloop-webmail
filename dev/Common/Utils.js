@@ -763,27 +763,29 @@ export function htmlToPlain(html)
 
 		text = '';
 
-	const
-		convertBlockquote = (blockquoteText) => {
-			blockquoteText = '> ' + trim(blockquoteText).replace(/\n/gm, '\n> ');
-			return blockquoteText.replace(/(^|\n)([> ]+)/gm,
-				(...args) => (args && 2 < args.length ? args[1] + trim(args[2].replace(/[\s]/g, '')) + ' ' : ''));
-		},
-		convertDivs = (...args) => {
-			if (args && 1 < args.length)
-			{
-				let divText = trim(args[1]);
-				if (0 < divText.length)
-				{
-					divText = divText.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gmi, convertDivs);
-					divText = '\n' + trim(divText) + '\n';
-				}
+	const convertBlockquote = (blockquoteText) => {
+		blockquoteText = '> ' + trim(blockquoteText).replace(/\n/gm, '\n> ');
+		return blockquoteText.replace(/(^|\n)([> ]+)/gm,
+			(...args) => (args && 2 < args.length ? args[1] + trim(args[2].replace(/[\s]/g, '')) + ' ' : ''));
+	};
 
-				return divText;
+	const convertDivs = (...args) => {
+		if (args && 1 < args.length)
+		{
+			let divText = trim(args[1]);
+			if (0 < divText.length)
+			{
+				divText = divText.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gmi, convertDivs);
+				divText = '\n' + trim(divText) + '\n';
 			}
 
-			return '';
-		},
+			return divText;
+		}
+
+		return '';
+	};
+
+	const
 		convertPre = (...args) => (args && 1 < args.length ? args[1].toString().replace(/[\n]/gm, '<br />').replace(/[\r]/gm, '') : ''),
 		fixAttibuteValue = (...args) => (args && 1 < args.length ? '' + args[1] + _.escape(args[2]) : ''),
 		convertLinks = (...args) => (args && 1 < args.length ? trim(args[1]) : '');
@@ -935,7 +937,7 @@ export function plainToHtml(plain, findEmailAndLinksInText = false)
 	plain = aText.join('\n');
 
 	plain = plain
-//			.replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
+		// .replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
 		.replace(/&/g, '&amp;')
 		.replace(/>/g, '&gt;').replace(/</g, '&lt;')
 		.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
@@ -1037,7 +1039,7 @@ export function folderListOptionsBuilder(aSystem, aList, aDisabled, aHeaderLines
 	for (iIndex = 0, iLen = aList.length; iIndex < iLen; iIndex++)
 	{
 		oItem = aList[iIndex];
-//			if (oItem.subScribed() || !oItem.existen || bBuildUnvisible)
+		// if (oItem.subScribed() || !oItem.existen || bBuildUnvisible)
 		if ((oItem.subScribed() || !oItem.existen || bBuildUnvisible) && (oItem.selectable || oItem.hasSubScribedSubfolders()))
 		{
 			if (fVisibleCallback ? fVisibleCallback(oItem) : true)

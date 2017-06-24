@@ -1,5 +1,5 @@
 
-import Promise from 'Promise';
+import window from 'window';
 import {isArray} from 'Common/Utils';
 
 export class AbstractBasicPromises
@@ -12,11 +12,11 @@ export class AbstractBasicPromises
 	}
 
 	fastResolve(mData) {
-		return Promise.resolve(mData);
+		return window.Promise.resolve(mData);
 	}
 
 	fastReject(mData) {
-		return Promise.reject(mData);
+		return window.Promise.reject(mData);
 	}
 
 	setTrigger(trigger, value) {

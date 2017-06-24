@@ -223,35 +223,34 @@ class EmailModel
 			return false;
 		}
 
-		const
-			substr = (str, start, len) => {
-				str = pString(str);
-				let	end = str.length;
+		const substr = (str, start, len) => {
+			str = pString(str);
+			let	end = str.length;
 
-				if (0 > start)
-				{
-					start += end;
-				}
+			if (0 > start)
+			{
+				start += end;
+			}
 
-				end = 'undefined' === typeof len ? end : (0 > len ? len + end : len + start);
+			end = 'undefined' === typeof len ? end : (0 > len ? len + end : len + start);
 
-				return start >= str.length || 0 > start || start > end ? false : str.slice(start, end);
-			},
+			return start >= str.length || 0 > start || start > end ? false : str.slice(start, end);
+		};
 
-			substrReplace = (str, replace, start, length) => {
-				str = pString(str);
-				if (0 > start)
-				{
-					start += str.length;
-				}
+		const substrReplace = (str, replace, start, length) => {
+			str = pString(str);
+			if (0 > start)
+			{
+				start += str.length;
+			}
 
-				length = 'undefined' !== typeof length ? length : str.length;
-				if (0 > length)
-				{
-					length = length + str.length - start;
-				}
-				return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
-			};
+			length = 'undefined' !== typeof length ? length : str.length;
+			if (0 > length)
+			{
+				length = length + str.length - start;
+			}
+			return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
+		};
 
 		let
 			$sName = '',

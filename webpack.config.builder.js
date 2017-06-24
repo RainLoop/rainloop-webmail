@@ -22,7 +22,7 @@ module.exports = function(publicPath, pro) {
 			publicPath: publicPath || 'rainloop/v/0.0.0/static/'
 		},
 		plugins: [
-			new webpack.optimize.OccurrenceOrderPlugin(),
+			new webpack.optimize.ModuleConcatenationPlugin(),
 			new webpack.DefinePlugin({
 				'RL_COMMUNITY': !pro,
 				'process.env': {
@@ -86,7 +86,6 @@ module.exports = function(publicPath, pro) {
 			'key': 'window.key',
 			'_': 'window._',
 			'qr': 'window.qr',
-			'Promise': 'window.Promise',
 			'$': 'window.jQuery'
 		}
 	};

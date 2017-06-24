@@ -68,20 +68,27 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		let lastEmail = '';
 
 		const
-			createCommandReplyHelper = (type) => createCommand(() => {
-				this.lastReplyAction(type);
-				this.replyOrforward(type);
-			}, this.canBeRepliedOrForwarded),
+			createCommandReplyHelper = (type) => createCommand(
+				() => {
+					this.lastReplyAction(type);
+					this.replyOrforward(type);
+				},
+				this.canBeRepliedOrForwarded
+			);
 
-			createCommandActionHelper = (folderType, useFolder) => createCommand(() => {
-				const message = this.message();
-				if (message && this.allowMessageListActions)
-				{
-					this.message(null);
-					getApp().deleteMessagesFromFolder(
-						folderType, message.folderFullNameRaw, [message.uid], useFolder);
-				}
-			}, this.messageVisibility);
+		const
+			createCommandActionHelper = (folderType, useFolder) => createCommand(
+				() => {
+					const message = this.message();
+					if (message && this.allowMessageListActions)
+					{
+						this.message(null);
+						getApp().deleteMessagesFromFolder(
+							folderType, message.folderFullNameRaw, [message.uid], useFolder);
+					}
+				},
+				this.messageVisibility
+			);
 
 		this.oDom = null;
 		this.oHeaderDom = null;
@@ -431,9 +438,9 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		const
 			fFindDom = function(inputDom) {
-				const children = inputDom ? inputDom.children() : null;
-				return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
-			},
+					const children = inputDom ? inputDom.children() : null;
+					return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
+				},
 			fFindColor = function(inputDom) {
 				let color = '';
 				if (inputDom)

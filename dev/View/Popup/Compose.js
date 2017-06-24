@@ -776,14 +776,14 @@ class ComposePopupView extends AbstractViewNext
 		{
 			if (!this.oEditor && this.composeEditorArea())
 			{
-// _.delay(() => {
+				// _.delay(() => {
 				this.oEditor = new HtmlEditor(this.composeEditorArea(), null, () => {
 					fOnInit(this.oEditor);
 					this.resizerTrigger();
 				}, (bHtml) => {
 					this.isHtml(!!bHtml);
 				});
-// }, 1000);
+				// }, 1000);
 			}
 			else if (this.oEditor)
 			{
@@ -996,9 +996,8 @@ class ComposePopupView extends AbstractViewNext
 		oMessageOrArray = oMessageOrArray || null;
 		if (oMessageOrArray && isNormal(oMessageOrArray))
 		{
-			message = isArray(oMessageOrArray) &&
-				1 === oMessageOrArray.length ? oMessageOrArray[0] :
-					(!isArray(oMessageOrArray) ? oMessageOrArray : null);
+			message = isArray(oMessageOrArray) && 1 === oMessageOrArray.length ? oMessageOrArray[0] :
+				(!isArray(oMessageOrArray) ? oMessageOrArray : null);
 		}
 
 		this.oLastMessage = message;

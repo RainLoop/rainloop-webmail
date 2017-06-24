@@ -264,63 +264,68 @@ class LoginUserView extends AbstractViewNext
 		const
 			fLoginRequest = (sLoginPassword) => {
 
-				Remote.login((sResult, oData) => {
+				Remote.login(
+					(sResult, oData) => {
 
-					$win.trigger('rl.tooltips.diactivate');
-					$win.trigger('rl.tooltips.activate');
+						$win.trigger('rl.tooltips.diactivate');
+						$win.trigger('rl.tooltips.activate');
 
-					if (StorageResultType.Success === sResult && oData && 'Login' === oData.Action)
-					{
-						if (oData.Result)
+						if (StorageResultType.Success === sResult && oData && 'Login' === oData.Action)
 						{
-							if (oData.TwoFactorAuth)
+							if (oData.Result)
 							{
-								this.additionalCode('');
-								this.additionalCode.visibility(true);
-								this.submitRequest(false);
+								if (oData.TwoFactorAuth)
+								{
+									this.additionalCode('');
+									this.additionalCode.visibility(true);
+									this.submitRequest(false);
 
-								_.delay(() => this.additionalCode.focused(true), Magics.Time100ms);
+									_.delay(() => this.additionalCode.focused(true), Magics.Time100ms);
+								}
+								else if (oData.Admin)
+								{
+									getApp().redirectToAdminPanel();
+								}
+								else
+								{
+									getApp().loginAndLogoutReload(false);
+								}
 							}
-							else if (oData.Admin)
+							else if (oData.ErrorCode)
 							{
-								getApp().redirectToAdminPanel();
+								this.submitRequest(false);
+								if (-1 < inArray(oData.ErrorCode, [Notification.InvalidInputArgument]))
+								{
+									oData.ErrorCode = Notification.AuthError;
+								}
+
+								this.submitError(getNotificationFromResponse(oData));
+
+								if ('' === this.submitError())
+								{
+									this.submitError(getNotification(Notification.UnknownError));
+								}
+								else if (oData.ErrorMessageAdditional)
+								{
+									this.submitErrorAddidional(oData.ErrorMessageAdditional);
+								}
 							}
 							else
 							{
-								getApp().loginAndLogoutReload(false);
-							}
-						}
-						else if (oData.ErrorCode)
-						{
-							this.submitRequest(false);
-							if (-1 < inArray(oData.ErrorCode, [Notification.InvalidInputArgument]))
-							{
-								oData.ErrorCode = Notification.AuthError;
-							}
-
-							this.submitError(getNotificationFromResponse(oData));
-
-							if ('' === this.submitError())
-							{
-								this.submitError(getNotification(Notification.UnknownError));
-							}
-							else if (oData.ErrorMessageAdditional)
-							{
-								this.submitErrorAddidional(oData.ErrorMessageAdditional);
+								this.submitRequest(false);
 							}
 						}
 						else
 						{
 							this.submitRequest(false);
+							this.submitError(getNotification(Notification.UnknownError));
 						}
-					}
-					else
-					{
-						this.submitRequest(false);
-						this.submitError(getNotification(Notification.UnknownError));
-					}
 
-				}, this.email(), '', sLoginPassword, !!this.signMe(),
+					},
+					this.email(),
+					'',
+					sLoginPassword,
+					!!this.signMe(),
 					this.bSendLanguage ? this.language() : '',
 					this.additionalCode.visibility() ? this.additionalCode() : '',
 					this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false

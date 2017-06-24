@@ -73,8 +73,8 @@ ko.bindingHandlers.editor = {
 
 			fValue.subscribe(fUpdateEditorValue);
 
-//			ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-//			});
+			// ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			// });
 		}
 	}
 };
@@ -318,8 +318,8 @@ ko.bindingHandlers.registrateBootstrapDropdown = {
 				require('Common/Utils').detectDropdownVisibility();
 			});
 
-//			ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-//			});
+			// ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			// });
 		}
 	}
 };
@@ -897,12 +897,12 @@ ko.bindingHandlers.emailsTags = {
 			focusCallback: fFocusCallback,
 			inputDelimiters: [',', ';', '\n'],
 			autoCompleteSource: fAutoCompleteSource,
-//			elementHook: (el, item) => {
-//				if (el && item)
-//				{
-//					el.addClass('pgp');
-//				}
-//			},
+			// elementHook: (el, item) => {
+			// 	if (el && item)
+			// 	{
+			// 		el.addClass('pgp');
+			// 	}
+			// },
 			parseHook: (input) => _.map(input, (inputValue) => {
 				const value = Utils.trim(inputValue);
 				if ('' !== value)

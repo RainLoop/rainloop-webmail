@@ -1,6 +1,6 @@
 <?php
 
-// Rename this file to "include.php" to enable it.
+// Name this file as "include.php" to enable it.
 
 /**
  * @return string

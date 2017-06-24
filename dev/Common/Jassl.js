@@ -1,6 +1,5 @@
 
 import window from 'window';
-import Promise from 'Promise';
 
 // let rainloopCaches = window.caches && window.caches.open ? window.caches : null;
 
@@ -11,7 +10,7 @@ import Promise from 'Promise';
  */
 export function jassl(src, async = false) {
 
-	if (!Promise || !Promise.all)
+	if (!window.Promise || !window.Promise.all)
 	{
 		throw new Error('Promises are not available your environment.');
 	}
@@ -21,7 +20,7 @@ export function jassl(src, async = false) {
 		throw new Error('src should not be empty.');
 	}
 
-	return new Promise((resolve, reject) => {
+	return new window.Promise((resolve, reject) => {
 
 		const element = window.document.createElement('script');
 

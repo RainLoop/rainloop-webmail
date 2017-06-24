@@ -8,7 +8,6 @@ import {pInt, isUnd, isNull, has, microtime, inArray} from 'Common/Utils';
 import {$html, bAnimationSupported} from 'Common/Globals';
 import {reload as momentorReload} from 'Common/Momentor';
 import {langLink} from 'Common/Links';
-import Promise from 'Promise';
 
 let I18N_DATA = window.rainloopI18N || {};
 
@@ -304,7 +303,7 @@ export function reload(admin, language)
 
 	$html.addClass('rl-changing-language');
 
-	return new Promise((resolve, reject) => {
+	return new window.Promise((resolve, reject) => {
 		$.ajax({
 			url: langLink(language, admin),
 			dataType: 'script',
@@ -319,7 +318,7 @@ export function reload(admin, language)
 				$html
 					.removeClass('rl-changing-language')
 					.removeClass('rl-rtl rl-ltr')
-//					.attr('dir', isRtl ? 'rtl' : 'ltr')
+					// .attr('dir', isRtl ? 'rtl' : 'ltr')
 					.addClass(isRtl ? 'rl-rtl' : 'rl-ltr');
 
 				resolve();

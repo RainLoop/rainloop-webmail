@@ -216,7 +216,7 @@ class ContactsPopupView extends AbstractViewNext
 
 		this.viewHash = ko.computed(() => '' + _.map(this.viewProperties(), (oItem) => oItem.value()).join(''));
 
-	//	this.saveCommandDebounce = _.debounce(_.bind(this.saveCommand, this), 1000);
+		// this.saveCommandDebounce = _.debounce(_.bind(this.saveCommand, this), 1000);
 
 		this.viewHash.subscribe(() => {
 			if (this.watchHash() && !this.viewReadOnly() && !this.watchDirty())

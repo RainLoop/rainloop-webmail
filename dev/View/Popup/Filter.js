@@ -84,8 +84,8 @@ class FilterPopupView extends AbstractViewNext
 	populateOptions() {
 		this.actionTypeOptions([]);
 
-	//		this.actionTypeOptions.push({'id': FiltersAction.None,
-	//			'name': i18n('POPUPS_FILTER/SELECT_ACTION_NONE')});
+		// this.actionTypeOptions.push({'id': FiltersAction.None,
+		// 'name': i18n('POPUPS_FILTER/SELECT_ACTION_NONE')});
 
 		const modules = this.modules();
 		if (modules)

@@ -26,6 +26,7 @@ sl_SI:
     LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Dovoli izbor jezika v nastavitvah"
     LABEL_ALLOW_THEMES_ON_SETTINGS: "Dovoli izbor teme v nastavitvah"
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Dovoli izbor ozadja v nastavitvah"
+    LABEL_NEW_FOLDER_MOVE: "Novi gumb \"Premakni v mapo\""
     LABEL_SHOW_THUMBNAILS: "Pokaži predoglede (priloge)"
     LABEL_ALLOW_GRAVATAR: "Dovoli Gravatar"
     LEGEND_MAIN: "Glavno"

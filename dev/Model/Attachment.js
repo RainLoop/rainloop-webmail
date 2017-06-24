@@ -63,21 +63,15 @@ export const staticFileType = _.memoize((ext, mimeType) => {
 			break;
 		case -1 < inArray(mimeTypeParts[1], [
 			'zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2', 'x-zip', 'x-7z', 'x-rar', 'x-tar', 'x-gzip', 'x-bzip', 'x-bzip2', 'x-zip-compressed', 'x-7z-compressed', 'x-rar-compressed'
-		]) || -1 < inArray(ext, [
-			'zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2'
-		]):
+		]) || -1 < inArray(ext, ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2']):
 			result = FileType.Archive;
 			break;
-		case -1 < inArray(mimeTypeParts[1], ['pdf', 'x-pdf']) || -1 < inArray(ext, [
-			'pdf'
-		]):
+		case -1 < inArray(mimeTypeParts[1], ['pdf', 'x-pdf']) || -1 < inArray(ext, ['pdf']):
 			result = FileType.Pdf;
 			break;
 		case -1 < inArray(mimeType, [
 			'application/pgp-signature', 'application/pgp-keys'
-		]) || -1 < inArray(ext, [
-			'asc', 'pem', 'ppk'
-		]):
+		]) || -1 < inArray(ext, ['asc', 'pem', 'ppk']):
 			result = FileType.Certificate;
 			break;
 		case -1 < inArray(mimeType, ['application/pkcs7-signature']) ||

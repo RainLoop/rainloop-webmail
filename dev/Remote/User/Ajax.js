@@ -337,8 +337,7 @@ class RemoteUserAjax extends AbstractAjaxRemote
 			UidNext: inboxUidNext,
 			UseThreads: useThreads ? '1' : '0',
 			ThreadUid: useThreads ? sThreadUid : ''
-		}, '' === sSearch ? DEFAULT_AJAX_TIMEOUT : SEARCH_AJAX_TIMEOUT,
-			'', bSilent ? [] : ['MessageList']);
+		}, '' === sSearch ? DEFAULT_AJAX_TIMEOUT : SEARCH_AJAX_TIMEOUT, '', bSilent ? [] : ['MessageList']);
 	}
 
 	/**

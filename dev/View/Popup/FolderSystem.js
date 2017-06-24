@@ -48,23 +48,26 @@ class FolderSystemPopupView extends AbstractViewNext
 
 		const
 			fSetSystemFolders = () => {
-				Settings.settingsSet('SentFolder', FolderStore.sentFolder());
-				Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
-				Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
-				Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
-				Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
-			},
-			fSaveSystemFolders = _.debounce(() => {
-				fSetSystemFolders();
-				Remote.saveSystemFolders(noop, {
-					SentFolder: FolderStore.sentFolder(),
-					DraftFolder: FolderStore.draftFolder(),
-					SpamFolder: FolderStore.spamFolder(),
-					TrashFolder: FolderStore.trashFolder(),
-					ArchiveFolder: FolderStore.archiveFolder(),
-					NullFolder: 'NullFolder'
-				});
-			}, Magics.Time1s),
+					Settings.settingsSet('SentFolder', FolderStore.sentFolder());
+					Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
+					Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
+					Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
+					Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
+				},
+			fSaveSystemFolders = _.debounce(
+				() => {
+					fSetSystemFolders();
+					Remote.saveSystemFolders(noop, {
+						SentFolder: FolderStore.sentFolder(),
+						DraftFolder: FolderStore.draftFolder(),
+						SpamFolder: FolderStore.spamFolder(),
+						TrashFolder: FolderStore.trashFolder(),
+						ArchiveFolder: FolderStore.archiveFolder(),
+						NullFolder: 'NullFolder'
+					});
+				},
+				Magics.Time1s
+			),
 			fCallback = () => {
 				fSetSystemFolders();
 				fSaveSystemFolders();

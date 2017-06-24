@@ -192,31 +192,37 @@ class AppUser extends AbstractApp
 		}
 
 		MessageStore.messageListLoading(true);
-		Remote.messageList((sResult, oData, bCached) => {
+		Remote.messageList(
+			(sResult, oData, bCached) => {
 
-			if (StorageResultType.Success === sResult && oData && oData.Result)
-			{
-				MessageStore.messageListError('');
-				MessageStore.messageListLoading(false);
+				if (StorageResultType.Success === sResult && oData && oData.Result)
+				{
+					MessageStore.messageListError('');
+					MessageStore.messageListLoading(false);
 
-				MessageStore.setMessageList(oData, bCached);
-			}
-			else if (StorageResultType.Unload === sResult)
-			{
-				MessageStore.messageListError('');
-				MessageStore.messageListLoading(false);
-			}
-			else if (StorageResultType.Abort !== sResult)
-			{
-				MessageStore.messageList([]);
-				MessageStore.messageListLoading(false);
-				MessageStore.messageListError(oData && oData.ErrorCode ?
-					getNotification(oData.ErrorCode) : i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
-				);
-			}
+					MessageStore.setMessageList(oData, bCached);
+				}
+				else if (StorageResultType.Unload === sResult)
+				{
+					MessageStore.messageListError('');
+					MessageStore.messageListLoading(false);
+				}
+				else if (StorageResultType.Abort !== sResult)
+				{
+					MessageStore.messageList([]);
+					MessageStore.messageListLoading(false);
+					MessageStore.messageListError(oData && oData.ErrorCode ?
+						getNotification(oData.ErrorCode) : i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
+					);
+				}
 
-		}, FolderStore.currentFolderFullNameRaw(), iOffset, SettingsStore.messagesPerPage(),
-			MessageStore.messageListSearch(), MessageStore.messageListThreadUid());
+			},
+			FolderStore.currentFolderFullNameRaw(),
+			iOffset,
+			SettingsStore.messagesPerPage(),
+			MessageStore.messageListSearch(),
+			MessageStore.messageListThreadUid()
+		);
 	}
 
 	recacheInboxMessageList() {
@@ -524,32 +530,32 @@ class AppUser extends AbstractApp
 
 	accountsCounts() {
 		return false;
-//		AccountStore.accounts.loading(true);
-//
-//		Remote.accountsCounts((sResult, oData) => {
-//
-//			AccountStore.accounts.loading(false);
-//
-//			if (StorageResultType.Success === sResult && oData.Result && oData.Result['Counts'])
-//			{
-//				var
-//					sEmail = AccountStore.email(),
-//					aAcounts = AccountStore.accounts()
-//				;
-//
-//				_.each(oData.Result['Counts'], (oItem) => {
-//
-//					var oAccount = _.find(aAcounts, (oAccount) => {
-//						return oAccount && oItem[0] === oAccount.email && sEmail !== oAccount.email;
-//					});
-//
-//					if (oAccount)
-//					{
-//						oAccount.count(pInt(oItem[1]));
-//					}
-//				});
-//			}
-//		});
+		// AccountStore.accounts.loading(true);
+		//
+		// Remote.accountsCounts((sResult, oData) => {
+		//
+		// 	AccountStore.accounts.loading(false);
+		//
+		// 	if (StorageResultType.Success === sResult && oData.Result && oData.Result['Counts'])
+		// 	{
+		// 		var
+		// 			sEmail = AccountStore.email(),
+		// 			aAcounts = AccountStore.accounts()
+		// 		;
+		//
+		// 		_.each(oData.Result['Counts'], (oItem) => {
+		//
+		// 			var oAccount = _.find(aAcounts, (oAccount) => {
+		// 				return oAccount && oItem[0] === oAccount.email && sEmail !== oAccount.email;
+		// 			});
+		//
+		// 			if (oAccount)
+		// 			{
+		// 				oAccount.count(pInt(oItem[1]));
+		// 			}
+		// 		});
+		// 	}
+		// });
 	}
 
 	accountsAndIdentities(bBoot) {
@@ -1299,7 +1305,7 @@ class AppUser extends AbstractApp
 			{
 				this.setWindowTitle(i18n('TITLES/LOADING'));
 
-// require.ensure([], function() { // require code splitting
+				// require.ensure([], function() { // require code splitting
 
 				this.foldersReload((value) => {
 
@@ -1362,7 +1368,7 @@ class AppUser extends AbstractApp
 						startScreens([
 							MailBoxUserScreen,
 							Settings.capa(Capa.Settings) ? SettingsUserScreen : null
-//							false ? AboutUserScreen : null
+							// false ? AboutUserScreen : null
 						]);
 
 						if (allowGoogle || allowFacebook || allowTwitter)
@@ -1444,8 +1450,7 @@ class AppUser extends AbstractApp
 					}
 				});
 
-// }); // require code splitting
-
+				// }); // require code splitting
 			}
 		}
 		else

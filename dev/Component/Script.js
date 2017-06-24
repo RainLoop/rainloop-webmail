@@ -23,9 +23,11 @@ class ScriptComponent extends AbstractComponent
 			{
 				params.element.text('');
 				params.element.replaceWith(
-					$(script).text(params.component.templateNodes[0] &&
-						params.component.templateNodes[0].nodeValue ?
-							params.component.templateNodes[0].nodeValue : ''));
+					$(script).text(
+						params.component.templateNodes[0] && params.component.templateNodes[0].nodeValue ?
+							params.component.templateNodes[0].nodeValue : ''
+					)
+				);
 			}
 			else
 			{

@@ -8,7 +8,6 @@ tx pull -a
 
 # dependencies checker (checking only)
 yarn outdated
-npm-check --skip-unused --save-exact
 
 # webpack
 webpack --color --watch

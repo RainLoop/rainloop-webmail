@@ -1,9 +1,6 @@
 
 module.exports = {
 	'extends': 'eslint:recommended',
-	'ecmaFeatures': {
-		'modules': true
-	},
 	"parser": "babel-eslint",
 	'parserOptions': {
 		'ecmaVersion': 6,
@@ -173,13 +170,9 @@ module.exports = {
 		'id-blacklist': [2, 'x'],
 		'id-length': [2, {'min': 1, 'max': 50}],
 		'id-match': 2,
-		'indent': [2, 'tab', {
+		'indent': ['error', 'tab', {
 			'SwitchCase': 1,
-			'VariableDeclarator': {
-				'var': 1,
-				'let': 1,
-				'const': 1
-			}
+			'VariableDeclarator': 1
 		}],
 		'jsx-quotes': 2,
 		'key-spacing': 2,

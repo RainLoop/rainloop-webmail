@@ -1,7 +1,6 @@
 
 import window from 'window';
 import progressJs from 'progressJs';
-import Promise from 'Promise';
 
 import {jassl} from 'Common/Jassl';
 import {getHash, setHash, clearHash} from 'Storage/RainLoop';
@@ -226,28 +225,30 @@ function runApp()
 		p.setOptions({theme: 'rainloop'});
 		p.start().set(5);
 
-		const
-			libs = jassl(appData.StaticLibJsLink).then(() => {
-				if (window.$)
+		const libs = jassl(appData.StaticLibJsLink).then(() => {
+			if (window.$)
+			{
+				window.$('#rl-check').remove();
+
+				if (appData.IncludeBackground)
 				{
-					window.$('#rl-check').remove();
-
-					if (appData.IncludeBackground)
-					{
-						window.$('#rl-bg').attr('style', 'background-image: none !important;')
-							.backstretch(appData.IncludeBackground.replace('{{USER}}',
-								(window.__rlah ? (window.__rlah() || '0') : '0')), {fade: 100, centeredX: true, centeredY: true})
-							.removeAttr('style');
-					}
+					window.$('#rl-bg')
+						.attr('style', 'background-image: none !important;')
+						.backstretch(
+							appData.IncludeBackground.replace('{{USER}}', (window.__rlah ? (window.__rlah() || '0') : '0')),
+							{fade: 100, centeredX: true, centeredY: true}
+						)
+						.removeAttr('style');
 				}
-			}),
-			common = Promise.all([
-//				jassl('https://code.jquery.com/jquery-migrate-3.0.0.js'),
-				jassl(appData.TemplatesLink),
-				jassl(appData.LangLink)
-			]);
+			}
+		});
 
-		Promise.all([libs, common])
+		const common = window.Promise.all([
+			jassl(appData.TemplatesLink),
+			jassl(appData.LangLink)
+		]);
+
+		window.Promise.all([libs, common])
 			.then(() => {
 				p.set(30);
 				return jassl(useJsNextBundle ? appData.StaticAppJsNextLink : appData.StaticAppJsLink);
