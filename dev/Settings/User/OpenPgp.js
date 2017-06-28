@@ -2,10 +2,14 @@
 import _ from '_';
 import ko from 'ko';
 
-import {delegateRunOnDestroy} from 'Common/Utils';
+import {delegateRunOnDestroy, boolToAjax} from 'Common/Utils';
+import {Magics} from 'Common/Enums';
 import {bIsHttps} from 'Common/Globals';
 
 import PgpStore from 'Stores/User/Pgp';
+import SettingsStore from 'Stores/User/Settings';
+
+import Remote from 'Remote/User/Ajax';
 
 import {getApp} from 'Helper/Apps/User';
 
@@ -19,6 +23,8 @@ class OpenPgpUserSettings
 		this.openpgpkeysPrivate = PgpStore.openpgpkeysPrivate;
 
 		this.openPgpKeyForDeletion = ko.observable(null).deleteAccessHelper();
+
+		this.allowDraftAutosave = SettingsStore.allowDraftAutosave;
 
 		this.isHttps = bIsHttps;
 	}
@@ -65,6 +71,16 @@ class OpenPgpUserSettings
 				getApp().reloadOpenPgpKeys();
 			}
 		}
+	}
+
+	onBuild() {
+		_.delay(() => {
+
+			this.allowDraftAutosave.subscribe(
+				Remote.saveSettingsHelper('AllowDraftAutosave', boolToAjax)
+			);
+
+		}, Magics.Time50ms);
 	}
 }
 

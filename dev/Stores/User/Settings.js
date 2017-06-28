@@ -30,6 +30,7 @@ class SettingsUserStore
 
 		this.showImages = ko.observable(false);
 		this.useCheckboxesInList = ko.observable(true);
+		this.allowDraftAutosave = ko.observable(true);
 		this.useThreads = ko.observable(false);
 		this.replySameFolder = ko.observable(false);
 
@@ -61,6 +62,7 @@ class SettingsUserStore
 
 		this.showImages(!!Settings.settingsGet('ShowImages'));
 		this.useCheckboxesInList(!!Settings.settingsGet('UseCheckboxesInList'));
+		this.allowDraftAutosave(!!Settings.settingsGet('AllowDraftAutosave'));
 		this.useThreads(!!Settings.settingsGet('UseThreads'));
 		this.replySameFolder(!!Settings.settingsGet('ReplySameFolder'));
 

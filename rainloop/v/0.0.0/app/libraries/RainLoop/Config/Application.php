@@ -281,6 +281,7 @@ Values:
 				'show_images'			=> array(false),
 				'contacts_autosave'		=> array(true),
 				'mail_use_threads'		=> array(false),
+				'allow_draft_autosave'	=> array(true),
 				'mail_reply_same_folder' => array(false)
 			),
 

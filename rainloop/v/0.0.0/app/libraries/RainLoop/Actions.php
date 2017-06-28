@@ -1834,6 +1834,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$aResult['UseCheckboxesInList'] = (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true);
 		$aResult['AutoLogout'] = (int) $oConfig->Get('defaults', 'autologout', 30);
 		$aResult['UseThreads'] = (bool) $oConfig->Get('defaults', 'mail_use_threads', false);
+		$aResult['AllowDraftAutosave'] = (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true);
 		$aResult['ReplySameFolder'] = (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false);
 		$aResult['ContactsAutosave'] = (bool) $oConfig->Get('defaults', 'contacts_autosave', true);
 		$aResult['EnableTwoFactor'] = false;
@@ -1876,6 +1877,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$aResult['SoundNotification'] = (bool) $oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
 					$aResult['DesktopNotifications'] = (bool) $oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
 					$aResult['UseCheckboxesInList'] = (bool) $oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
+					$aResult['AllowDraftAutosave'] = (bool) $oSettings->GetConf('AllowDraftAutosave', $aResult['AllowDraftAutosave']);
 					$aResult['AutoLogout'] = (int) $oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
 					$aResult['Layout'] = (int) $oSettings->GetConf('Layout', $aResult['Layout']);
 
@@ -5016,6 +5018,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->setSettingsFromParams($oSettings, 'DesktopNotifications', 'bool');
 		$this->setSettingsFromParams($oSettings, 'SoundNotification', 'bool');
 		$this->setSettingsFromParams($oSettings, 'UseCheckboxesInList', 'bool');
+		$this->setSettingsFromParams($oSettings, 'AllowDraftAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'AutoLogout', 'int');
 
 		$this->setSettingsFromParams($oSettings, 'EnableTwoFactor', 'bool');

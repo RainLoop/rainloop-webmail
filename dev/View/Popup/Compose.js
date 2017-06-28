@@ -314,8 +314,8 @@ class ComposePopupView extends AbstractViewNext
 		this.saveMessageResponse = _.bind(this.saveMessageResponse, this);
 
 		Events.sub('interval.2m', () => {
-			if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
-				!this.saving() && !this.sending() && !this.savedError())
+			if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && SettingsStore.allowDraftAutosave() &&
+				!this.isEmptyForm(false) && !this.saving() && !this.sending() && !this.savedError())
 			{
 				this.saveCommand();
 			}
@@ -519,7 +519,7 @@ class ComposePopupView extends AbstractViewNext
 		this.bSkipNextHide = true;
 
 		if (this.modalVisibility() && !this.saving() && !this.sending() &&
-			!FolderStore.draftFolderNotEnabled())
+			!FolderStore.draftFolderNotEnabled() && SettingsStore.allowDraftAutosave())
 		{
 			this.saveCommand();
 		}
@@ -563,8 +563,8 @@ class ComposePopupView extends AbstractViewNext
 	}
 
 	autosaveFunction() {
-		if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && !this.isEmptyForm(false) &&
-			!this.saving() && !this.sending() && !this.savedError())
+		if (this.modalVisibility() && !FolderStore.draftFolderNotEnabled() && SettingsStore.allowDraftAutosave() &&
+			!this.isEmptyForm(false) && !this.saving() && !this.sending() && !this.savedError())
 		{
 			this.saveCommand();
 		}
