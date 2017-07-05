@@ -617,7 +617,7 @@ export function clearBqSwitcher(body)
  * @param {boolean} print
  * @returns {void}
  */
-export function previewMessage({title, subject, date, fromCreds, toCreds, toLabel}, body, isHtml, print)
+export function previewMessage({title, subject, date, fromCreds, toCreds, toLabel, ccClass, ccCreds, ccLabel}, body, isHtml, print)
 {
 	const
 		win = window.open(''),
@@ -636,6 +636,9 @@ export function previewMessage({title, subject, date, fromCreds, toCreds, toLabe
 		.replace('{{fromCreds}}', encodeHtml(fromCreds))
 		.replace('{{toCreds}}', encodeHtml(toCreds))
 		.replace('{{toLabel}}', encodeHtml(toLabel))
+		.replace('{{ccClass}}', encodeHtml(ccClass))
+		.replace('{{ccCreds}}', encodeHtml(ccCreds))
+		.replace('{{ccLabel}}', encodeHtml(ccLabel))
 		.replace('{{bodyClass}}', bodyClass)
 		.replace('{{html}}', html)
 	);

@@ -72,42 +72,39 @@ pre {
 	border-left: 2px solid red;
 	color: red;
 }
-
-.rl-previre-subject {
+.rl-preview-subject {
 	font-size: 16px;
 	font-weight: bold;
 	padding: 15px;
-	border-bottom: 1px solid #ccc;
 }
-
-.rl-previre-creds-from, .rl-previre-creds-to {
+.rl-preview-creds-from, .rl-preview-creds-to, .rl-preview-creds-cc {
 	font-size: 12px;
-	padding: 10px 15px;
+	padding: 5px 15px;
 }
-
-.rl-previre-creds-from {
-	padding-bottom: 0;
-}
-
-.rl-previre-creds-to {
-	border-bottom: 1px solid #ccc;
-}
-
-.rl-previre-date {
+.rl-preview-date {
 	float: right;
 	font-size: 12px;
 	padding: 10px 15px;
 }
+.rl-preview-section {
+	padding: 0;
+	margin: 0;
+	border-bottom: 1px solid #ccc;
+}
+.rl-preview-hide {
+	display: none;
+}
 	</style>
 </head>
 <body>
-	<div>
-		<div class="rl-previre-subject">{{subject}}</div>
+	<div class="rl-preview-section">
+		<div class="rl-preview-subject">{{subject}}</div>
 	</div>
-	<div>
-		<div class="rl-previre-date">{{date}}</div>
-		<div class="rl-previre-creds-from">{{fromCreds}}</div>
-		<div class="rl-previre-creds-to">{{toLabel}}: {{toCreds}}</div>
+	<div class="rl-preview-section">
+		<div class="rl-preview-date">{{date}}</div>
+		<div class="rl-preview-creds-from">{{fromCreds}}</div>
+		<div class="rl-preview-creds-to">{{toLabel}}: {{toCreds}}</div>
+		<div class="rl-preview-creds-cc {{ccClass}}">{{ccLabel}}: {{ccCreds}}</div>
 	</div>
 	<div class="body-wrp {{bodyClass}}">{{html}}</div>
 </body>

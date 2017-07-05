@@ -640,6 +640,7 @@ class MessageModel extends AbstractModel
 
 		const
 			timeStampInUTC = this.dateTimeStampInUTC() || 0,
+			ccLine = this.ccToLine(false),
 			m = 0 < timeStampInUTC ? moment.unix(timeStampInUTC) : null;
 
 		previewMessage({
@@ -648,7 +649,10 @@ class MessageModel extends AbstractModel
 			date: m ? m.format('LLL') : '',
 			fromCreds: this.fromToLine(false),
 			toLabel: i18n('MESSAGE/LABEL_TO'),
-			toCreds: this.toToLine(false)
+			toCreds: this.toToLine(false),
+			ccClass: ccLine ? '' : 'rl-preview-hide',
+			ccLabel: i18n('MESSAGE/LABEL_CC'),
+			ccCreds: ccLine
 		}, this.body, this.isHtml(), print);
 	}
 
