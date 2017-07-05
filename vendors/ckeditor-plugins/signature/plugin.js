@@ -10,7 +10,7 @@
 			isEmptyText = false,
 			newLine = (isHtml ? '<br />' : "\n"),
 			clearHtmlLine = function(html) {
-				return $.trim(editor.__plainUtils.htmlToPlain(html));
+				return $.trim(editor.__textUtils.htmlToPlain(html));
 			};
 
 		isEmptyText = '' === $.trim(text);
@@ -23,12 +23,12 @@
 		{
 			if (isHtml && !editor.__previos_signature_is_html)
 			{
-				editor.__previos_signature = editor.__plainUtils.plainToHtml(editor.__previos_signature);
+				editor.__previos_signature = editor.__textUtils.plainToHtml(editor.__previos_signature);
 				editor.__previos_signature_is_html = true;
 			}
 			else if (!isHtml && editor.__previos_signature_is_html)
 			{
-				editor.__previos_signature = editor.__plainUtils.htmlToPlain(editor.__previos_signature);
+				editor.__previos_signature = editor.__textUtils.htmlToPlain(editor.__previos_signature);
 				editor.__previos_signature_is_html = false;
 			}
 
@@ -104,13 +104,13 @@
 
 					try
 					{
-						if ('plain' === editor.mode && editor.__plain && editor.__plainUtils)
+						if ('plain' === editor.mode && editor.__plain && editor.__textUtils)
 						{
-							if (editor.__plainUtils && editor.__plainUtils.htmlToPlain)
+							if (editor.__textUtils && editor.__textUtils.htmlToPlain)
 							{
 								if (bIsHtml)
 								{
-									sResultSignature = editor.__plainUtils.htmlToPlain(sResultSignature);
+									sResultSignature = editor.__textUtils.htmlToPlain(sResultSignature);
 								}
 							}
 
@@ -120,11 +120,11 @@
 						}
 						else
 						{
-							if (editor.__plainUtils && editor.__plainUtils.plainToHtml)
+							if (editor.__textUtils && editor.__textUtils.plainToHtml)
 							{
 								if (!bIsHtml)
 								{
-									sResultSignature = editor.__plainUtils.plainToHtml(sResultSignature);
+									sResultSignature = editor.__textUtils.plainToHtml(sResultSignature);
 								}
 							}
 

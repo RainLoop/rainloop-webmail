@@ -280,7 +280,7 @@ class ContactsPopupView extends AbstractViewNext
 		{
 			this.bBackToCompose = false;
 
-			hideScreenPopup(require('View/Popup/Contacts'));
+			hideScreenPopup(ContactsPopupView);
 
 			switch (this.sLastComposeFocusedField)
 			{
