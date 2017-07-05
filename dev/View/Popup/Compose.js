@@ -866,7 +866,7 @@ class ComposePopupView extends AbstractViewNext
 		return signature;
 	}
 
-	setSignatureFromIdentity(identity, first = false) {
+	setSignatureFromIdentity(identity) {
 		if (identity)
 		{
 			this.editor((editor) => {
@@ -883,7 +883,7 @@ class ComposePopupView extends AbstractViewNext
 					}
 				}
 
-				editor.setSignature(this.converSignature(signature), isHtml, !!identity.signatureInsertBefore(), first);
+				editor.setSignature(this.converSignature(signature), isHtml, !!identity.signatureInsertBefore());
 			});
 		}
 	}
@@ -1168,7 +1168,7 @@ class ComposePopupView extends AbstractViewNext
 
 				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType)
 				{
-					this.setSignatureFromIdentity(identity, true);
+					this.setSignatureFromIdentity(identity);
 				}
 
 				this.setFocusInPopup();
@@ -1192,7 +1192,7 @@ class ComposePopupView extends AbstractViewNext
 
 				if (identity)
 				{
-					this.setSignatureFromIdentity(identity, true);
+					this.setSignatureFromIdentity(identity);
 				}
 
 				this.setFocusInPopup();
@@ -1216,7 +1216,7 @@ class ComposePopupView extends AbstractViewNext
 
 				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType)
 				{
-					this.setSignatureFromIdentity(identity, true);
+					this.setSignatureFromIdentity(identity);
 				}
 
 				this.setFocusInPopup();

@@ -826,7 +826,7 @@ export function htmlToPlain(html)
 		.replace(/&lt;/gi, '<')
 		.replace(/&amp;/gi, '&');
 
-	text = splitPlainText(trim(text));
+	text = splitPlainText(text);
 
 	pos = 0;
 	limit = 800;

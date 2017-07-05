@@ -340,11 +340,6 @@ class AbstractApp extends AbstractBoot
 			leftPanelDisabled(false);
 		});
 
-		if (Settings.appSettingsGet('loginGlassStyle'))
-		{
-			$html.addClass('glass');
-		}
-
 		if (!mobile)
 		{
 			ssm.addState({

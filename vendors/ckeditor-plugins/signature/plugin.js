@@ -3,7 +3,7 @@
 
 	'use strict';
 
-	var rl_signature_replacer = function(editor, text, signature, isHtml, insertBefore, isFirst) {
+	var rl_signature_replacer = function(editor, text, signature, isHtml, insertBefore) {
 
 		var
 			skipInsert = false,
@@ -60,19 +60,7 @@
 
 		if (!skipInsert)
 		{
-			if (isEmptyText)
-			{
-				signature = newLine + newLine + signature;
-			}
-			else
-			{
-				signature = insertBefore ? signature + newLine + newLine : newLine + newLine + signature;
-			}
-
-			if (isHtml)
-			{
-				signature = '<signature>' + signature + '</signature>';
-			}
+			signature = newLine + newLine + (isHtml ? '<signature>' : '') + signature + (isHtml ? '</signature>' : '');
 
 			text = insertBefore ? signature + text : text + signature;
 
@@ -101,7 +89,6 @@
 
 					var
 						bIsHtml = false,
-						bIsFirst = false,
 						bInsertBefore = false,
 						sSignature = '',
 						sResultSignature = '';
@@ -109,7 +96,6 @@
 					if (cfg)
 					{
 						bIsHtml = undefined === cfg.isHtml ? false : !!cfg.isHtml;
-						bIsFirst = undefined === cfg.isFirst ? false : !!cfg.isFirst;
 						bInsertBefore = undefined === cfg.insertBefore ? false : !!cfg.insertBefore;
 						sSignature = undefined === cfg.signature ? '' : cfg.signature;
 					}
@@ -129,7 +115,7 @@
 							}
 
 							editor.__plain.setRawData(
-								rl_signature_replacer(editor, editor.__plain.getRawData(), sResultSignature, false, bInsertBefore, bIsFirst));
+								rl_signature_replacer(editor, editor.__plain.getRawData(), sResultSignature, false, bInsertBefore));
 
 						}
 						else
@@ -143,7 +129,7 @@
 							}
 
 							editor.setData(
-								rl_signature_replacer(editor, editor.getData(), sResultSignature, true, bInsertBefore, bIsFirst));
+								rl_signature_replacer(editor, editor.getData(), sResultSignature, true, bInsertBefore));
 						}
 					}
 					catch (e) {}
