@@ -2291,31 +2291,31 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					{
 						$this->Logger()->Write('TFA: Verify Code for '.$oAccount->ParentEmailHelper().' account.');
 
-						$bGood = false;
+						$bUseBackupCode = false;
 						if (6 < \strlen($sAdditionalCode) && !empty($aData['BackupCodes']))
 						{
 							$aBackupCodes = \explode(' ', \trim(\preg_replace('/[^\d]+/', ' ', $aData['BackupCodes'])));
-							$bGood = \in_array($sAdditionalCode, $aBackupCodes);
+							$bUseBackupCode = \in_array($sAdditionalCode, $aBackupCodes);
 
-							if ($bGood)
+							if ($bUseBackupCode)
 							{
 								$this->removeBackupCodeFromTwoFactorInfo($oAccount->ParentEmailHelper(), $sAdditionalCode);
 							}
 						}
 
-						if ($bAdditionalCodeSignMe)
-						{
-							\RainLoop\Utils::SetCookie(self::AUTH_TFA_SIGN_ME_TOKEN_KEY, $sSecretHash,
-								\time() + 60 * 60 * 24 * 14);
-						}
-
-						if (!$bGood && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sAdditionalCode))
+						if (!$bUseBackupCode && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sAdditionalCode))
 						{
 							$this->loginErrorDelay();
 
 							$this->LoggerAuthHelper($oAccount);
 
 							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AccountTwoFactorAuthError);
+						}
+
+						if ($bAdditionalCodeSignMe)
+						{
+							\RainLoop\Utils::SetCookie(self::AUTH_TFA_SIGN_ME_TOKEN_KEY, $sSecretHash,
+								\time() + 60 * 60 * 24 * 14);
 						}
 					}
 				}
