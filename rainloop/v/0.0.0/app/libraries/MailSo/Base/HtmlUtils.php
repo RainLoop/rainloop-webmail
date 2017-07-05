@@ -1529,8 +1529,6 @@ class HtmlUtils
 			'/<th[^>]*>(.+?)<\/th>/i',
 			'/&nbsp;/i',
 			'/&quot;/i',
-			'/&gt;/i',
-			'/&lt;/i',
 			'/&amp;/i',
 			'/&copy;/i',
 			'/&trade;/i',
@@ -1573,8 +1571,6 @@ class HtmlUtils
 			"\t\\1\n",
 			' ',
 			'"',
-			'>',
-			'<',
 			'&',
 			'(c)',
 			'(tm)',
@@ -1600,6 +1596,14 @@ class HtmlUtils
 		$sText = \strip_tags($sText, '');
 		$sText = \preg_replace("/\n\\s+\n/", "\n", $sText);
 		$sText = \preg_replace("/[\n]{3,}/", "\n\n", $sText);
+
+		$sText = \preg_replace(array(
+			'/&gt;/i',
+			'/&lt;/i'
+		), array(
+			'>',
+			'<'
+		), $sText);
 
 		return \trim($sText);
 	}
