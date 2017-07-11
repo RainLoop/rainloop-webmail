@@ -1,16 +1,15 @@
 
-import _ from '_';
 import $ from '$';
 import key from 'key';
 
-import {KeyState, Magics} from 'Common/Enums';
+import {KeyState} from 'Common/Enums';
 import {leftPanelDisabled} from 'Common/Globals';
 import {settings, inbox} from 'Common/Links';
 import {getFolderInboxName} from 'Common/Cache';
 
 import * as Settings from 'Storage/Settings';
 
-import {view, ViewType, setHash} from 'Knoin/Knoin';
+import {view, ViewType, setHash, settingsMenuKeysHendler} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
 @view({
@@ -41,32 +40,7 @@ class MenuSettingsUserView extends AbstractViewNext
 			});
 		}
 
-		key('up, down', KeyState.Settings, _.throttle((event, handler) => {
-
-			const
-				up = handler && 'up' === handler.shortcut,
-				$items = $('.b-settings-menu .e-item', dom);
-
-			if (event && $items.length)
-			{
-				let iIndex = $items.index($items.filter('.selected'));
-				if (up && 0 < iIndex)
-				{
-					iIndex -= 1;
-				}
-				else if (!up && iIndex < $items.length - 1)
-				{
-					iIndex += 1;
-				}
-
-				const sH = $items.eq(iIndex).attr('href');
-				if (sH)
-				{
-					setHash(sH, false, true);
-				}
-			}
-
-		}, Magics.Time200ms));
+		key('up, down', KeyState.Settings, settingsMenuKeysHendler($('.b-settings-menu .e-item', dom)));
 	}
 
 	link(route) {

@@ -7,9 +7,9 @@ import {runSettingsViewModelHooks} from 'Common/Plugins';
 import {AbstractSettingsScreen} from 'Screen/AbstractSettings';
 
 import {GeneralAdminSettings} from 'Settings/Admin/General';
+import {DomainsAdminSettings} from 'Settings/Admin/Domains';
 import {LoginAdminSettings} from 'Settings/Admin/Login';
 import {ContactsAdminSettings} from 'Settings/Admin/Contacts';
-import {DomainsAdminSettings} from 'Settings/Admin/Domains';
 import {SecurityAdminSettings} from 'Settings/Admin/Security';
 import {SocialAdminSettings} from 'Settings/Admin/Social';
 import {PluginsAdminSettings} from 'Settings/Admin/Plugins';
@@ -34,28 +34,37 @@ class SettingsAdminScreen extends AbstractSettingsScreen
 	 * @param {Function=} fCallback = null
 	 */
 	setupSettings(fCallback = null) {
+
+		let branding = null,
+			licensing = null;
+
+		if (RL_COMMUNITY)
+		{
+			branding = require('Settings/Admin/Branding').default;
+		}
+		else
+		{
+			branding = require('Settings/Admin/Prem/Branding').default;
+			licensing = require('Settings/Admin/Prem/Licensing').default;
+		}
+
 		addSettingsViewModel(GeneralAdminSettings,
 			'AdminSettingsGeneral', 'TABS_LABELS/LABEL_GENERAL_NAME', 'general', true);
+
+		addSettingsViewModel(DomainsAdminSettings,
+			'AdminSettingsDomains', 'TABS_LABELS/LABEL_DOMAINS_NAME', 'domains');
 
 		addSettingsViewModel(LoginAdminSettings,
 			'AdminSettingsLogin', 'TABS_LABELS/LABEL_LOGIN_NAME', 'login');
 
-		if (RL_COMMUNITY)
+		if (branding)
 		{
-			addSettingsViewModel(require('Settings/Admin/Branding').default,
-				'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
-		}
-		else
-		{
-			addSettingsViewModel(require('Settings/Admin/Prem/Branding').default,
+			addSettingsViewModel(branding,
 				'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
 		}
 
 		addSettingsViewModel(ContactsAdminSettings,
 			'AdminSettingsContacts', 'TABS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
-
-		addSettingsViewModel(DomainsAdminSettings,
-			'AdminSettingsDomains', 'TABS_LABELS/LABEL_DOMAINS_NAME', 'domains');
 
 		addSettingsViewModel(SecurityAdminSettings,
 			'AdminSettingsSecurity', 'TABS_LABELS/LABEL_SECURITY_NAME', 'security');
@@ -69,9 +78,9 @@ class SettingsAdminScreen extends AbstractSettingsScreen
 		addSettingsViewModel(PackagesAdminSettings,
 			'AdminSettingsPackages', 'TABS_LABELS/LABEL_PACKAGES_NAME', 'packages');
 
-		if (!RL_COMMUNITY)
+		if (licensing)
 		{
-			addSettingsViewModel(require('Settings/Admin/Prem/Licensing').default,
+			addSettingsViewModel(licensing,
 				'AdminSettingsLicensing', 'TABS_LABELS/LABEL_LICENSING_NAME', 'licensing');
 		}
 

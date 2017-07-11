@@ -1,12 +1,11 @@
 
-import _ from '_';
 import $ from '$';
 import key from 'key';
 
 import {leftPanelDisabled} from 'Common/Globals';
-import {Magics} from 'Common/Enums';
+import {KeyState} from 'Common/Enums';
 
-import {view, ViewType, setHash} from 'Knoin/Knoin';
+import {view, ViewType, settingsMenuKeysHendler} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
 @view({
@@ -33,33 +32,7 @@ class MenuSettingsAdminView extends AbstractViewNext
 	}
 
 	onBuild(dom) {
-
-		key('up, down', _.throttle((event, handler) => {
-
-			const
-				up = handler && 'up' === handler.shortcut,
-				$items = $('.b-admin-menu .e-item', dom);
-
-			if (event && $items.length)
-			{
-				let index = $items.index($items.filter('.selected'));
-				if (up && 0 < index)
-				{
-					index -= 1;
-				}
-				else if (!up && index < $items.length - 1)
-				{
-					index += 1;
-				}
-
-				const sH = $items.eq(index).attr('href');
-				if (sH)
-				{
-					setHash(sH, false, true);
-				}
-			}
-
-		}, Magics.Time200ms));
+		key('up, down', KeyState.Settings, settingsMenuKeysHendler($('.b-admin-menu .e-item', dom)));
 	}
 }
 

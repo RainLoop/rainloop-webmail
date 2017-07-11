@@ -5,6 +5,7 @@ import ko from 'ko';
 import hasher from 'hasher';
 import crossroads from 'crossroads';
 
+import {Magics} from 'Common/Enums';
 import {runHook} from 'Common/Plugins';
 import {$html, VIEW_MODELS, popupVisibilityNames} from 'Common/Globals';
 
@@ -590,8 +591,41 @@ function commandDecorator(canExecute = true)
 	};
 }
 
+/**
+ * @param {miced} $items
+ * @returns {Function}
+ */
+function settingsMenuKeysHendler($items)
+{
+	return _.throttle((event, handler) => {
+
+		const up = handler && 'up' === handler.shortcut;
+
+		if (event && $items.length)
+		{
+			let index = $items.index($items.filter('.selected'));
+			if (up && 0 < index)
+			{
+				index -= 1;
+			}
+			else if (!up && index < $items.length - 1)
+			{
+				index += 1;
+			}
+
+			const resultHash = $items.eq(index).attr('href');
+			if (resultHash)
+			{
+				setHash(resultHash, false, true);
+			}
+		}
+
+	}, Magics.Time200ms);
+}
+
 export {
 	commandDecorator, commandDecorator as command,
 	viewDecorator, viewDecorator as view, viewDecorator as viewModel,
-	popupDecorator, popupDecorator as popup
+	popupDecorator, popupDecorator as popup,
+	settingsMenuKeysHendler
 };

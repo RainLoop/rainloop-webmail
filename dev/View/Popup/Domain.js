@@ -173,6 +173,7 @@ class DomainPopupView extends AbstractViewNext
 				switch (pString(value))
 				{
 					case '0':
+					case '2':
 						if (Ports.ImapSsl === port)
 						{
 							this.imapPort(pString(Ports.Imap));

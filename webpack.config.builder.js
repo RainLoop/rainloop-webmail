@@ -22,7 +22,7 @@ module.exports = function(publicPath, pro) {
 			publicPath: publicPath || 'rainloop/v/0.0.0/static/'
 		},
 		plugins: [
-			new webpack.optimize.ModuleConcatenationPlugin(),
+			// new webpack.optimize.ModuleConcatenationPlugin(),
 			new webpack.DefinePlugin({
 				'RL_COMMUNITY': !pro,
 				'process.env': {
