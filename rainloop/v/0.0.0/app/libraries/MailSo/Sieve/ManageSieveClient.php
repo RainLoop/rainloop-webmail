@@ -166,8 +166,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				{
 					$sAuth = \base64_encode($sLoginAuthKey."\0".$sLogin."\0".$sPassword);
 
-					$this->sendRequest('AUTHENTICATE "PLAIN" {'.\strlen($sAuth).'+}');
-					$this->sendRequest($sAuth);
+					$this->sendRequest('AUTHENTICATE "PLAIN" "'.$sAuth.'"');
 
 					$mResponse = $this->parseResponse();
 					$this->validateResponse($mResponse);
