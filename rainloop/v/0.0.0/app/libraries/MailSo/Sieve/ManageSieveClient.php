@@ -33,6 +33,11 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	private $iRequestTime;
 
 	/**
+	 * @var bool
+	 */
+	public $__USE_INITIAL_AUTH_PLAIN_COMMAND;
+
+	/**
 	 * @access protected
 	 */
 	protected function __construct()
@@ -43,6 +48,8 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		$this->iRequestTime = 0;
 		$this->aCapa = array();
 		$this->aModules = array();
+
+		$this->__USE_INITIAL_AUTH_PLAIN_COMMAND = true;
 	}
 
 	/**
@@ -166,7 +173,15 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				{
 					$sAuth = \base64_encode($sLoginAuthKey."\0".$sLogin."\0".$sPassword);
 
-					$this->sendRequest('AUTHENTICATE "PLAIN" "'.$sAuth.'"');
+					if ($this->__USE_INITIAL_AUTH_PLAIN_COMMAND)
+					{
+						$this->sendRequest('AUTHENTICATE "PLAIN" "'.$sAuth.'"');
+					}
+					else
+					{
+						$this->sendRequest('AUTHENTICATE "PLAIN" {'.\strlen($sAuth).'+}');
+						$this->sendRequest($sAuth);
+					}
 
 					$mResponse = $this->parseResponse();
 					$this->validateResponse($mResponse);

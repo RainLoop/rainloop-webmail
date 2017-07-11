@@ -59,7 +59,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		$aFilters = array();
 
 		$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance()->SetLogger($this->oLogger);
-		$oSieveClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'sieve_timeout', 10));
+		$oSieveClient->SetTimeOuts(10, (int) $this->oConfig->Get('labs', 'sieve_timeout', 10));
 
 		if ($oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig))
 		{

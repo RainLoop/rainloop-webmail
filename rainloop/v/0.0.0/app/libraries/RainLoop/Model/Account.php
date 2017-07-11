@@ -547,18 +547,24 @@ class Account extends \RainLoop\Account // for backward compatibility
 			'Login' => $this->IncLogin(),
 			'Password' => $this->Password(),
 			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
-			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true)
+			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
+			'InitialAuthPlain' => !!$oConfig->Get('ssl', 'sieve_auth_plain_initial', true)
 		);
 
 		$oPlugins->RunHook('filter.sieve-credentials', array($this, &$aSieveCredentials));
 
 		$oPlugins->RunHook('event.sieve-pre-connect', array($this, $aSieveCredentials['UseConnect'], $aSieveCredentials));
 
-		if ($aSieveCredentials['UseConnect'] && $oSieveClient)
+		if ($oSieveClient)
 		{
-			$oSieveClient->Connect($aSieveCredentials['Host'], $aSieveCredentials['Port'],
-				$aSieveCredentials['Secure'], $aSieveCredentials['VerifySsl'], $aSieveCredentials['AllowSelfSigned']
-			);
+			$oSieveClient->__USE_INITIAL_AUTH_PLAIN_COMMAND = $aSieveCredentials['InitialAuthPlain'];
+
+			if ($aSieveCredentials['UseConnect'])
+			{
+				$oSieveClient->Connect($aSieveCredentials['Host'], $aSieveCredentials['Port'],
+					$aSieveCredentials['Secure'], $aSieveCredentials['VerifySsl'], $aSieveCredentials['AllowSelfSigned']
+				);
+			}
 		}
 
 		$oPlugins->RunHook('event.sieve-post-connect', array($this, $aSieveCredentials['UseConnect'], $aSieveCredentials));
