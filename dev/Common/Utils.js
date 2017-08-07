@@ -1456,6 +1456,15 @@ export function mimeContentType(fileName)
 }
 
 /**
+ * @param {string} color
+ * @returns {boolean}
+ */
+export function isTransparent(color)
+{
+	return 'rgba(0, 0, 0, 0)' === color || 'transparent' === color;
+}
+
+/**
  * @param {Object} $el
  * @returns {number}
  */

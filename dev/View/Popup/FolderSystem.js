@@ -48,12 +48,12 @@ class FolderSystemPopupView extends AbstractViewNext
 
 		const
 			fSetSystemFolders = () => {
-					Settings.settingsSet('SentFolder', FolderStore.sentFolder());
-					Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
-					Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
-					Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
-					Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
-				},
+				Settings.settingsSet('SentFolder', FolderStore.sentFolder());
+				Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
+				Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
+				Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
+				Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
+			},
 			fSaveSystemFolders = _.debounce(
 				() => {
 					fSetSystemFolders();

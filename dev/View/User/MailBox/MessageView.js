@@ -23,7 +23,7 @@ import {
 import {
 	inArray, isArray, isNonEmptyArray, trim, noop,
 	windowResize, windowResizeCallback, inFocus,
-	removeSelection, removeInFocus, mailToHelper
+	removeSelection, removeInFocus, mailToHelper, isTransparent
 } from 'Common/Utils';
 
 import Audio from 'Common/Audio';
@@ -438,9 +438,9 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		const
 			fFindDom = function(inputDom) {
-					const children = inputDom ? inputDom.children() : null;
-					return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
-				},
+				const children = inputDom ? inputDom.children() : null;
+				return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
+			},
 			fFindColor = function(inputDom) {
 				let color = '';
 				if (inputDom)
@@ -448,7 +448,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 					color = inputDom.css('background-color') || '';
 					if (!inputDom.is('table'))
 					{
-						color = 'rgba(0, 0, 0, 0)' === color || 'transparent' === color ? '' : color;
+						color = isTransparent(color) ? '' : color;
 					}
 				}
 
@@ -477,7 +477,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 				}
 			}
 
-			result = 'rgba(0, 0, 0, 0)' === result || 'transparent' === result ? '' : result;
+			result = isTransparent(result) ? '' : result;
 		}
 
 		return result;
