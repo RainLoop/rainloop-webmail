@@ -2,6 +2,8 @@
 import ko from 'ko';
 import _ from '_';
 
+import {settingsGet} from 'Storage/Settings';
+
 import {FolderType} from 'Common/Enums';
 import {UNUSED_OPTION_VALUE} from 'Common/Consts';
 import {isArray, folderListOptionsBuilder} from 'Common/Utils';
@@ -34,6 +36,8 @@ class FolderUserStore
 		this.foldersInboxUnreadCount = ko.observable(0);
 
 		this.currentFolder = ko.observable(null).extend({toggleSubscribeProperty: [this, 'selected']});
+
+		this.sieveAllowFileintoInbox = !!settingsGet('SieveAllowFileintoInbox');
 
 		this.computers();
 		this.subscribers();
@@ -117,7 +121,7 @@ class FolderUserStore
 		this.folderMenuForFilters = ko.computed(
 			() => folderListOptionsBuilder(
 				this.folderListSystem(), this.folderList(),
-				['INBOX'], [['', '']], null, null, null, (item) => (item ? item.localName() : ''))
+				[(this.sieveAllowFileintoInbox ? '' : 'INBOX')], [['', '']], null, null, null, (item) => (item ? item.localName() : ''))
 		);
 	}
 
