@@ -32,6 +32,11 @@ class Account extends \RainLoop\Account // for backward compatibility
 	/**
 	 * @var string
 	 */
+	private $sClientCert;
+
+	/**
+	 * @var string
+	 */
 	private $sSignMeToken;
 
 	/**
@@ -56,7 +61,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 	 * @return void
 	 */
 	protected function __construct($sEmail, $sLogin, $sPassword, \RainLoop\Model\Domain $oDomain,
-		$sSignMeToken = '', $sProxyAuthUser = '', $sProxyAuthPassword = '')
+		$sSignMeToken = '', $sProxyAuthUser = '', $sProxyAuthPassword = '', $sClientCert = '')
 	{
 		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 		$this->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
@@ -65,6 +70,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 		$this->sSignMeToken = $sSignMeToken;
 		$this->sProxyAuthUser = $sProxyAuthUser;
 		$this->sProxyAuthPassword = $sProxyAuthPassword;
+		$this->sClientCert = $sClientCert;
 		$this->sParentEmail = '';
 	}
 
@@ -80,9 +86,9 @@ class Account extends \RainLoop\Account // for backward compatibility
 	 * @return \RainLoop\Model\Account
 	 */
 	public static function NewInstance($sEmail, $sLogin, $sPassword, \RainLoop\Model\Domain $oDomain,
-		$sSignMeToken = '', $sProxyAuthUser = '', $sProxyAuthPassword = '')
+		$sSignMeToken = '', $sProxyAuthUser = '', $sProxyAuthPassword = '', $sClientCert = '')
 	{
-		return new self($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, $sProxyAuthUser, $sProxyAuthPassword);
+		return new self($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, $sProxyAuthUser, $sProxyAuthPassword, $sClientCert);
 	}
 
 	/**
@@ -183,6 +189,14 @@ class Account extends \RainLoop\Account // for backward compatibility
 	public function Password()
 	{
 		return $this->IncPassword();
+	}
+
+	/**
+	 * @return string
+	 */
+	public function ClientCert()
+	{
+		return $this->sClientCert;
 	}
 
 	/**
@@ -362,7 +376,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 			\RainLoop\Utils::GetShortToken(),	// 7
 			$this->sProxyAuthUser,				// 8
 			$this->sProxyAuthPassword,			// 9
-			0									// 10 // timelife
+			0,					// 10 // timelife
+			$this->sClientCert			// 11
 		));
 	}
 
@@ -382,7 +397,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 			\RainLoop\Utils::GetShortToken(),	// 7
 			$this->sProxyAuthUser,				// 8
 			$this->sProxyAuthPassword,			// 9
-			0									// 10 // timelife
+			0,					// 10 // timelife
+			$this->sClientCert			// 11
 		));
 	}
 
@@ -408,6 +424,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 			'ProxyAuthUser' => $this->ProxyAuthUser(),
 			'ProxyAuthPassword' => $this->ProxyAuthPassword(),
 			'VerifySsl' => !!$oConfig->Get('ssl', 'verify_certificate', false),
+			'ClientCert' => $this->ClientCert(),
 			'AllowSelfSigned' => !!$oConfig->Get('ssl', 'allow_self_signed', true),
 			'UseAuthPlainIfSupported' => !!$oConfig->Get('labs', 'imap_use_auth_plain', true),
 			'UseAuthCramMd5IfSupported' => !!$oConfig->Get('labs', 'imap_use_auth_cram_md5', true)
@@ -421,7 +438,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 		{
 			$oMailClient
 				->Connect($aImapCredentials['Host'], $aImapCredentials['Port'],
-					$aImapCredentials['Secure'], $aImapCredentials['VerifySsl'], $aImapCredentials['AllowSelfSigned']);
+					$aImapCredentials['Secure'], $aImapCredentials['VerifySsl'], 
+					$aImapCredentials['AllowSelfSigned'], $aImapCredentials['ClientCert']);
 
 		}
 
