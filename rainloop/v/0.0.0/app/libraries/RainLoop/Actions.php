@@ -1261,11 +1261,12 @@ class Actions
 	 * @param string $sLogin
 	 * @param string $sPassword
 	 * @param string $sSignMeToken = ''
+	 * @param string $sClientCert = ''
 	 * @param bool $bThrowProvideException = false
 	 *
 	 * @return \RainLoop\Model\Account|null
 	 */
-	public function LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken = '', $bThrowProvideException = false)
+	public function LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken = '', $sClientCert = '', $bThrowProvideException = false)
 	{
 		$oAccount = null;
 		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword))
@@ -1275,7 +1276,7 @@ class Actions
 			{
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin))
 				{
-					$oAccount = \RainLoop\Model\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken);
+					$oAccount = \RainLoop\Model\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, '', '', $sClientCert);
 					$this->Plugins()->RunHook('filter.acount', array(&$oAccount));
 
 					if ($bThrowProvideException && !($oAccount instanceof \RainLoop\Model\Account))
@@ -1320,7 +1321,7 @@ class Actions
 			)
 			{
 				$oAccount = $this->LoginProvide($aAccountHash[1], $aAccountHash[2], $aAccountHash[3],
-					empty($aAccountHash[5]) ? '' : $aAccountHash[5], $bThrowExceptionOnFalse);
+					empty($aAccountHash[5]) ? '' : $aAccountHash[5], empty($aAccountHash[11]) ? '' : $aAccountHash[11], $bThrowExceptionOnFalse);
 
 				if ($oAccount instanceof \RainLoop\Model\Account)
 				{
@@ -2243,10 +2244,10 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->Plugins()->RunHook('event.login-pre-login-provide', array());
 
 		$oAccount = null;
-
+		$sClientCert = \trim($this->Config()->Get('ssl', 'client_cert', ''));
 		try
 		{
-			$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken, true);
+			$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken, $sClientCert, true);
 
 			if (!($oAccount instanceof \RainLoop\Model\Account))
 			{
@@ -4140,7 +4141,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$iTime = \microtime(true);
 				$oImapClient->Connect($oDomain->IncHost(), $oDomain->IncPort(), $oDomain->IncSecure(),
 					!!$this->Config()->Get('ssl', 'verify_certificate', false),
-					!!$this->Config()->Get('ssl', 'allow_self_signed', true)
+					!!$this->Config()->Get('ssl', 'allow_self_signed', true),
+					$this->Config()->Get('ssl', 'client_cert', '')
 				);
 
 				$iImapTime = \microtime(true) - $iTime;

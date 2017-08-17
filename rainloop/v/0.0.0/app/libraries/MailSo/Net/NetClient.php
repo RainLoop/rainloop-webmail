@@ -196,6 +196,7 @@ abstract class NetClient
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
 	 * @param bool $bVerifySsl = false
 	 * @param bool $bAllowSelfSigned = true
+	 * @param string $sClientCert = NULL
 	 *
 	 * @return void
 	 *
@@ -205,7 +206,8 @@ abstract class NetClient
 	 */
 	public function Connect($sServerName, $iPort,
 		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		$bVerifySsl = false, $bAllowSelfSigned = true)
+		$bVerifySsl = false, $bAllowSelfSigned = true,
+		$sClientCert = '')
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sServerName, true) || !\MailSo\Base\Validator::PortInt($iPort))
 		{
@@ -254,13 +256,13 @@ abstract class NetClient
 
 		$bVerifySsl = !!$bVerifySsl;
 		$bAllowSelfSigned = $bVerifySsl ? !!$bAllowSelfSigned : true;
-
 		$aStreamContextSettings = array(
 			'ssl' => array(
 				'verify_host' => $bVerifySsl,
 				'verify_peer' => $bVerifySsl,
 				'verify_peer_name' => $bVerifySsl,
-				'allow_self_signed' => $bAllowSelfSigned
+				'allow_self_signed' => $bAllowSelfSigned,
+				'local_cert' => $sClientCert
 			)
 		);
 
