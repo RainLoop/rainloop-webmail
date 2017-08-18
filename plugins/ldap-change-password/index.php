@@ -14,7 +14,7 @@ class LdapChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if (!\function_exists('ldap_connect'))
 		{
-			return 'The LDAP PHP exention must be installed to use this plugin';
+			return 'The LDAP PHP extension must be installed to use this plugin';
 		}
 
 		return '';

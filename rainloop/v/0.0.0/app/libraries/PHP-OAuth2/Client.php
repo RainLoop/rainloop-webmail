@@ -148,7 +148,7 @@ class Client
     public function __construct($client_id, $client_secret, $client_auth = self::AUTH_TYPE_URI, $certificate_file = null)
     {
         if (!extension_loaded('curl')) {
-            throw new Exception('The PHP exention curl must be installed to use this library.', Exception::CURL_NOT_FOUND);
+            throw new Exception('The PHP extension curl must be installed to use this library.', Exception::CURL_NOT_FOUND);
         }
 
         $this->client_id     = $client_id;
