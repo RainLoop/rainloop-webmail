@@ -14,13 +14,13 @@ class IspconfigChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if (!extension_loaded('pdo') || !class_exists('PDO'))
 		{
-			return 'The PHP exention PDO (mysql) must be installed to use this plugin';
+			return 'The PHP extension PDO (mysql) must be installed to use this plugin';
 		}
 
 		$aDrivers = \PDO::getAvailableDrivers();
 		if (!is_array($aDrivers) || !in_array('mysql', $aDrivers))
 		{
-			return 'The PHP exention PDO (mysql) must be installed to use this plugin';
+			return 'The PHP extension PDO (mysql) must be installed to use this plugin';
 		}
 
 		return '';
