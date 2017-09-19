@@ -130,37 +130,6 @@ function copyFile(sFile, sNewFile, callback)
 	callback();
 }
 
-function signFile(sFile, callback)
-{
-	var exec = require('child_process').exec;
-	exec('gpg2 --openpgp -u 87DA4591 -a -b ' + sFile, function(err) {
-		if (err) {
-			gutil.log('gpg error: skip');
-		}
-		callback();
-	});
-}
-
-function signFileTask(callback) {
-	if (argv.sign)
-	{
-		signFile(cfg.destPath + cfg.zipFile, function() {
-			if (cfg.zipFileShort)
-			{
-				signFile(cfg.destPath + cfg.zipFileShort, callback);
-			}
-			else
-			{
-				callback();
-			}
-		});
-	}
-	else
-	{
-		callback();
-	}
-};
-
 cfg.paths.globjs = 'dev/**/*.js';
 cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
@@ -521,7 +490,13 @@ gulp.task('rainloop:shortname', ['rainloop:zip'], function(callback) {
 	copyFile(cfg.destPath + cfg.zipFile, cfg.destPath + cfg.zipFileShort, callback);
 });
 
-gulp.task('rainloop:sign', ['rainloop:shortname'], signFileTask);
+gulp.task('rainloop:copy-dist', ['rainloop:shortname'], function(callback) {
+	var newPath = cfg.destPath.replace('build/dist/releases', 'dist/releases');
+	fs.mkdirSync(newPath, '0777', true);
+	copyFile(cfg.destPath + cfg.zipFile, newPath + cfg.zipFile, function() {
+		copyFile(cfg.destPath + cfg.zipFileShort, newPath + cfg.zipFileShort, callback);
+	});
+});
 
 // build (OwnCloud)
 gulp.task('rainloop:owncloud:copy', function() {
@@ -594,7 +569,13 @@ gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:zip'], function(cal
 	copyFile(cfg.destPath + cfg.zipFile, cfg.destPath + cfg.zipFileShort, callback);
 });
 
-gulp.task('rainloop:owncloud:sign', ['rainloop:owncloud:shortname'], signFileTask);
+gulp.task('rainloop:owncloud:copy-dist', ['rainloop:owncloud:shortname'], function(callback) {
+	var newPath = cfg.destPath.replace('build/dist/releases', 'dist/releases');
+	fs.mkdirSync(newPath, '0777', true);
+	copyFile(cfg.destPath + cfg.zipFile, newPath + cfg.zipFile, function() {
+		copyFile(cfg.destPath + cfg.zipFileShort, newPath + cfg.zipFileShort, callback);
+	});
+});
 
 // main
 gulp.task('moment', ['moment:locales']);
@@ -607,11 +588,13 @@ gulp.task('clean', ['js:clean', 'css:clean', 'assets:clean']);
 
 gulp.task('rainloop:start', ['rainloop:copy', 'rainloop:setup']);
 
-gulp.task('rainloop', ['rainloop:start', 'rainloop:zip', 'rainloop:clean', 'rainloop:shortname', 'rainloop:sign']);
+gulp.task('rainloop', ['rainloop:start', 'rainloop:zip', 'rainloop:clean', 'rainloop:shortname']);
+gulp.task('rainloop:docker', ['rainloop', 'rainloop:copy-dist']);
 
 gulp.task('owncloud', ['rainloop:owncloud:copy',
 	'rainloop:owncloud:copy-rainloop', 'rainloop:owncloud:copy-rainloop:clean',
-	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:clean', 'rainloop:owncloud:shortname', 'rainloop:owncloud:sign']);
+	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:clean', 'rainloop:owncloud:shortname']);
+gulp.task('owncloud:docker', ['owncloud', 'rainloop:owncloud:copy-dist']);
 
 // default
 gulp.task('default', function(callback) {
@@ -628,6 +611,14 @@ gulp.task('watch', ['css:main', 'js:validate'], function() {
 
 // aliases
 gulp.task('build', ['rainloop']);
+
+gulp.task('all', function(callback) {
+	runSequence('rainloop', 'owncloud', callback);
+});
+
+gulp.task('all:docker', function(callback) {
+	runSequence('rainloop:docker', 'owncloud:docker', callback);
+});
 
 gulp.task('d', ['default']);
 gulp.task('w', ['watch']);

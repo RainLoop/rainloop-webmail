@@ -1,0 +1,24 @@
+version: '2'
+services:
+  node:
+    image: node:8.4-alpine
+    working_dir: /usr/app
+    command: sh -c 'yarn install && yarn global add gulp@3.9.1 && gulp all:docker'
+    volumes:
+      - ./dev:/usr/app/dev
+      - ./rainloop:/usr/app/rainloop
+      - ./assets:/usr/app/assets
+      - ./vendors:/usr/app/vendors
+      - ./build/owncloud:/usr/app/build/owncloud
+      - ./dist:/usr/app/dist
+
+      - ./.eslintrc.js:/usr/app/.eslintrc.js
+      - ./gulpfile.js:/usr/app/gulpfile.js
+      - ./index.php:/usr/app/index.php
+      - ./package.json:/usr/app/package.json
+      - ./webpack.config.builder.js:/usr/app/webpack.config.builder.js
+      - ./webpack.config.js:/usr/app/webpack.config.js
+      - ./yarn.lock:/usr/app/yarn.lock
+
+      - ./build/docker/node_modules:/usr/app/node_modules
+      - ./build/docker/tmp:/tmp
