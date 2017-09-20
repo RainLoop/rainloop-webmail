@@ -668,7 +668,8 @@ END;
 
 		$aEncodeArray = array('');
 		$aMatch = array();
-		\preg_match_all('/=\?[^\?]+\?[q|b|Q|B]\?[^\?]*(\?=)/', $sValue, $aMatch);
+//		\preg_match_all('/=\?[^\?]+\?[q|b|Q|B]\?[^\?]*?\?=/', $sValue, $aMatch);
+		\preg_match_all('/=\?[^\?]+\?[q|b|Q|B]\?.*?\?=/', $sValue, $aMatch);
 
 		if (isset($aMatch[0]) && \is_array($aMatch[0]))
 		{
