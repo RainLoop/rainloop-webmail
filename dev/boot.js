@@ -22,6 +22,7 @@ window.progressJs.onbeforeend(() => {
 });
 
 require('json3');
+require('intersection-observer');
 require('../vendors/modernizr/modernizr-custom.js');
 require('Common/Booter');
 

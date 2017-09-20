@@ -4,9 +4,11 @@ import $ from '$';
 import ko from 'ko';
 import moment from 'moment';
 import classnames from 'classnames';
+import lozad from 'lozad';
 
 import {MessagePriority, SignedVerifyStatus} from 'Common/Enums';
 import {i18n} from 'Common/Translator';
+import {DATA_IMAGE_LAZY_PLACEHOLDER_PIC} from 'Common/Consts';
 
 import {
 	pInt, inArray, isArray, isUnd, trim,
@@ -743,9 +745,26 @@ class MessageModel extends AbstractModel
 		if (this.body)
 		{
 			$('.lazy.lazy-inited[data-original]', this.body).each(function() {
-				$(this).attr('src', $(this).attr('data-original')).removeAttr('data-original'); // eslint-disable-line no-invalid-this
+				$(this).attr('src', $(this).attr('data-original')) // eslint-disable-line no-invalid-this
+					.removeAttr('data-original').removeAttr('data-loaded');
 			});
 		}
+	}
+
+	lozad() {
+		lozad('img.lazy:not(.lazy-inited)', {
+			threshold: 0.4,
+			load: (element) => {
+				// console.log('lazy', element.dataset.original);
+				element.src = DATA_IMAGE_LAZY_PLACEHOLDER_PIC;
+				$(element)
+					.addClass('lazy-inited')
+					.attr('src', element.dataset.original)
+					.removeAttr('data-loaded')
+					.css({opacity: 0.3})
+					.animate({opacity: 1}, 500);
+			}
+		}).observe();
 	}
 
 	showExternalImages(lazy = false) {
@@ -762,11 +781,13 @@ class MessageModel extends AbstractModel
 					$this
 						.addClass('lazy')
 						.attr('data-original', $this.attr(attr))
+						.removeAttr('data-loaded')
 						.removeAttr(attr);
 				}
 				else
 				{
-					$this.attr('src', $this.attr(attr)).removeAttr(attr);
+					$this.attr('src', $this.attr(attr))
+						.removeAttr('data-loaded').removeAttr(attr);
 				}
 			});
 
@@ -780,13 +801,7 @@ class MessageModel extends AbstractModel
 
 			if (lazy)
 			{
-				$('img.lazy', this.body).addClass('lazy-inited').lazyload({
-					'threshold': 400,
-					'effect': 'fadeIn',
-					'skip_invisible': false,
-					'container': $('.RL-MailMessageView .messageView .messageItem .content')[0]
-				});
-
+				this.lozad();
 				$win.resize();
 			}
 
@@ -867,16 +882,8 @@ class MessageModel extends AbstractModel
 
 			if (lazy)
 			{
-				(function($oImg, oContainer) {
-					_.delay(() => {
-						$oImg.addClass('lazy-inited').lazyload({
-							'threshold': 400,
-							'effect': 'fadeIn',
-							'skip_invisible': false,
-							'container': oContainer
-						});
-					}, 300);
-				}($('img.lazy', self.body), $('.RL-MailMessageView .messageView .messageItem .content')[0]));
+				// $('.RL-MailMessageView .messageView .messageItem .content')[0]
+				_.delay(() => this.lozad(), 300);
 			}
 
 			windowResize(500);

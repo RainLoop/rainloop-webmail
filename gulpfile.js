@@ -194,7 +194,7 @@ cfg.paths.js = {
 			'node_modules/jquery/dist/jquery.min.js',
 			'node_modules/jquery-mousewheel/jquery.mousewheel.js',
 			'node_modules/jquery-scrollstop/jquery.scrollstop.js',
-			'node_modules/jquery-lazyload/jquery.lazyload.js ',
+			// 'node_modules/jquery-lazyload/jquery.lazyload.js',
 			'node_modules/jquery-backstretch/jquery.backstretch.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js', // custom
 			'vendors/jquery-nanoscroller/jquery.nanoscroller.js', // custom (modified)
