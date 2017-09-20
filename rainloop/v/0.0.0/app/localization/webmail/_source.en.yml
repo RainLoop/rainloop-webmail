@@ -151,6 +151,7 @@ en:
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP encrypted message (click to decrypt)"
     LINK_DOWNLOAD_AS_ZIP: "Download as zip"
     LINK_SAVE_TO_OWNCLOUD: "Save to ownCloud"
+    LINK_SAVE_TO_CLOUD: "Save to Cloud"
     LINK_SAVE_TO_DROPBOX: "Save to Dropbox"
   READ_RECEIPT:
     SUBJECT: "Return Receipt (displayed) - %SUBJECT%"
