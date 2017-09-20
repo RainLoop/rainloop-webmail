@@ -183,7 +183,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'contacts' => array(
 				'enable'			=> array(false, 'Enable contacts'),
-				'allow_sharing'		=> array(true),
 				'allow_sync'		=> array(false),
 				'sync_interval'		=> array(20),
 				'type'				=> array('sqlite', ''),
