@@ -6,7 +6,7 @@
 			if (!el) {
 				return;
 			}
-			if(end === undefined) {
+			if (end === undefined) {
 				end = start;
 			}
 			if('selectionStart' in el) {
@@ -20,6 +20,12 @@
 				range.moveEnd('character', end);
 				range.moveStart('character', start);
 				range.select();
+			}
+		},
+		toTop = function (el) {
+			selectRange(el, 0);
+			if (el) {
+				el.scrollTop = 0;
 			}
 		},
 		simplePlainToHtml = function (sPlain) {
@@ -144,7 +150,7 @@
 				editor.focus();
 
 				if (editor.mode === 'plain') {
-					selectRange(editor.__textarea, 0);
+					toTop(editor.__textarea);
 				}
 			});
 
