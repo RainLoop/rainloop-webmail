@@ -315,7 +315,7 @@
 
     NanoScroll.prototype.preventScrolling = function(e, direction) {
       if (!this.isActive && !this.isActive2) {
-        return;
+       return;
       }
       if (e.type === DOMSCROLL) {
         if (direction === DOWN && e.originalEvent.detail > 0 || direction === UP && e.originalEvent.detail < 0) {
@@ -325,7 +325,12 @@
         if (!e.originalEvent || !e.originalEvent.wheelDelta) {
           return;
         }
-        if (direction === DOWN && e.originalEvent.wheelDelta < 0 || direction === UP && e.originalEvent.wheelDelta > 0) {
+        if (
+          direction === DOWN && e.originalEvent.wheelDelta < 0 ||
+          direction === UP && e.originalEvent.wheelDelta > 0 ||
+          direction === 'down2' && e.originalEvent.wheelDelta < 0 ||
+          direction === 'up2' && e.originalEvent.wheelDelta > 0
+        ) {
           e.preventDefault();
         }
       }
@@ -385,17 +390,17 @@
         this.sliderTop = this.contentScrollTop * this.maxSliderTop / this.maxScrollTop;
         this.slider2Left = this.contentScroll2Left * this.maxSlider2Left / this.maxScroll2Left;
 
-		if (limit < this.sliderTop) {
-			this.$el.addClass('nano-scrolllimit-top');
-		} else {
-			this.$el.removeClass('nano-scrolllimit-top');
-		}
+        if (limit < this.sliderTop) {
+          this.$el.addClass('nano-scrolllimit-top');
+        } else {
+          this.$el.removeClass('nano-scrolllimit-top');
+        }
 
-		if (this.contentScrollTop + limit >= this.maxScrollTop) {
-			this.$el.removeClass('nano-scrolllimit-bottom');
-		} else {
-			this.$el.addClass('nano-scrolllimit-bottom');
-		}
+        if (this.contentScrollTop + limit >= this.maxScrollTop) {
+          this.$el.removeClass('nano-scrolllimit-bottom');
+        } else {
+          this.$el.addClass('nano-scrolllimit-bottom');
+        }
       }
 	  };
 
@@ -491,16 +496,31 @@
           if (!e) {
             return;
           }
-          if (_this.contentScrollTop >= _this.maxScrollTop) {
-            if (_this.options.preventPageScrolling) {
-              _this.preventScrolling(e, DOWN);
+
+          if (e.shiftKey) {
+            if (_this.contentScroll2Left >= _this.maxScroll2Left) {
+              if (_this.options.preventPageScrolling) {
+                _this.preventScrolling(e, 'down2');
+              }
+              _this.$el.trigger('scrollright');
+            } else if (_this.contentScroll2Left === 0) {
+              if (_this.options.preventPageScrolling) {
+                _this.preventScrolling(e, 'up2');
+              }
+              _this.$el.trigger('scrollleft');
             }
-            _this.$el.trigger('scrollend');
-          } else if (_this.contentScrollTop === 0) {
-            if (_this.options.preventPageScrolling) {
-              _this.preventScrolling(e, UP);
+          } else {
+            if (_this.contentScrollTop >= _this.maxScrollTop) {
+              if (_this.options.preventPageScrolling) {
+                _this.preventScrolling(e, DOWN);
+              }
+              _this.$el.trigger('scrollend');
+            } else if (_this.contentScrollTop === 0) {
+              if (_this.options.preventPageScrolling) {
+                _this.preventScrolling(e, UP);
+              }
+              _this.$el.trigger('scrolltop');
             }
-            _this.$el.trigger('scrolltop');
           }
 
 		  if (!_this.iOSNativeScrolling) {
