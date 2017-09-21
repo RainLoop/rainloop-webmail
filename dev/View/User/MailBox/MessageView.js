@@ -132,6 +132,10 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		this.showAttachmnetControls = ko.observable(false);
 
+		this.showAttachmnetControlsState = (v) => {
+			Local.set(ClientSideKeyName.MessageAttachmnetControls, !!v);
+		};
+
 		this.allowAttachmnetControls = ko.computed(
 			() => 0 < this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions)
 		);
@@ -320,6 +324,12 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 			if (message)
 			{
 				this.showAttachmnetControls(false);
+				if (Local.get(ClientSideKeyName.MessageAttachmnetControls))
+				{
+					_.delay(() => {
+						this.showAttachmnetControls(true);
+					}, Magics.Time50ms);
+				}
 
 				if (this.viewHash !== message.hash)
 				{

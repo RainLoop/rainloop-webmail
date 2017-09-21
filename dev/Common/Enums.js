@@ -210,7 +210,8 @@ export const ClientSideKeyName = {
 	'LastReplyAction': 6,
 	'LastSignMe': 7,
 	'ComposeLastIdentityID': 8,
-	'MessageHeaderFullInfo': 9
+	'MessageHeaderFullInfo': 9,
+	'MessageAttachmnetControls': 10
 };
 
 /**
