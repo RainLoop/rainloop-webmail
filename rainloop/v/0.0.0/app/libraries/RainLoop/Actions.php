@@ -213,30 +213,26 @@ class Actions
 		if (null === $this->oConfig)
 		{
 			$this->oConfig = new \RainLoop\Config\Application();
-
-			$bSave = defined('APP_INSTALLED_START');
-
-			$bLoaded = $this->oConfig->Load();
-			if (!$bLoaded && !$bSave)
+			if (!$this->oConfig->Load())
 			{
-				usleep(10000); // TODO
-				$bLoaded = $this->oConfig->Load();
+				usleep(10000);
+				$this->oConfig->Load();
 			}
 
-			if (!$bLoaded && !$this->oConfig->IsFileExists())
-			{
-				$bSave = true;
-			}
-
-			if ($bLoaded && !$bSave)
-			{
-				$bSave = APP_VERSION !== $this->oConfig->Get('version', 'current');
-			}
-
-			if ($bSave)
-			{
-				$this->oConfig->Save();
-			}
+//			if (!$bLoaded && !$this->oConfig->IsFileExists())
+//			{
+//				$bSave = true;
+//			}
+//
+//			if ($bLoaded && !$bSave)
+//			{
+//				$bSave = APP_VERSION !== $this->oConfig->Get('version', 'current');
+//			}
+//
+//			if ($bSave)
+//			{
+//				$this->oConfig->Save();
+//			}
 		}
 
 		return $this->oConfig;
