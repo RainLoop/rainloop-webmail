@@ -156,8 +156,11 @@ class Service
 
 		if ($this->oActions->Config()->Get('labs', 'allow_mobile_version', false))
 		{
+			$bUseMobileVersionForTablets = $this->oActions->Config()->Get('labs', 'use_mobile_version_for_tablets', false);
+
 			$oMobileDetect = new \Detection\MobileDetect();
-			$bMobileDevice = $oMobileDetect->isMobile() && !$oMobileDetect->isTablet();
+			$bMobileDevice = $oMobileDetect->isMobile() &&
+				($bUseMobileVersionForTablets ? true : !$oMobileDetect->isTablet());
 
 			$bMobile = (0 < \count($aPaths) && !empty($aPaths[0]) && 'mobile' === \strtolower($aPaths[0]));
 		}
