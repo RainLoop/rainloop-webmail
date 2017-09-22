@@ -16,7 +16,8 @@
 			define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
 
 			define('APP_USE_APC_CACHE', true);
-			define('APP_DEFAULT_DENY_ALL_HTACCESS', "Deny from all\n<IfModule mod_autoindex.c>\nOptions -Indexes\n</ifModule>");
+			define('APP_DEFAULT_DENY_ALL_HTACCESS', @file_exists(APP_VERSION_ROOT_PATH.'app/.htaccess') ?
+				@file_get_contents(APP_VERSION_ROOT_PATH.'app/.htaccess') : '');
 
 			if (function_exists('date_default_timezone_set'))
 			{
@@ -150,7 +151,9 @@
 				@file_put_contents(APP_DATA_FOLDER_PATH.'VERSION', APP_VERSION);
 				@file_put_contents(APP_DATA_FOLDER_PATH.'index.html', 'Forbidden');
 				@file_put_contents(APP_DATA_FOLDER_PATH.'index.php', 'Forbidden');
-				@file_put_contents(APP_DATA_FOLDER_PATH.'.htaccess', APP_DEFAULT_DENY_ALL_HTACCESS);
+				if (0 < strlen(APP_DEFAULT_DENY_ALL_HTACCESS)) {
+					@file_put_contents(APP_DATA_FOLDER_PATH.'.htaccess', APP_DEFAULT_DENY_ALL_HTACCESS);
+				}
 
 				if (!@is_dir(APP_PRIVATE_DATA))
 				{
