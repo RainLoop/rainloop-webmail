@@ -8918,7 +8918,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$iCode = 0;
 			$sContentType = '';
 
-			$sGravatarUrl = 'http://gravatar.com/avatar/'.\md5($sEmail).'.jpg?s=80&d=404';
+			$sGravatarUrl = 'http://gravatar.com/avatar/'.\md5(strtolower($sEmail)).'.jpg?s=80&d=404';
 
 			$this->Logger()->Write('gravatar: '.$sGravatarUrl);
 
