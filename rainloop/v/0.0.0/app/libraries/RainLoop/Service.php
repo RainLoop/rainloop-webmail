@@ -162,18 +162,20 @@ class Service
 			$bMobileDevice = $oMobileDetect->isMobile() &&
 				($bUseMobileVersionForTablets ? true : !$oMobileDetect->isTablet());
 
-			$bMobile = (0 < \count($aPaths) && !empty($aPaths[0]) && 'mobile' === \strtolower($aPaths[0]));
-		}
-
-		if ($bIndex && !$bMobile)
-		{
-			$iMobileKey = (int) \RainLoop\Utils::GetCookie(\RainLoop\Actions::RL_SKIP_MOBILE_KEY, 0);
-			if (1 !== $iMobileKey)
+			if ($bIndex)
 			{
-				if ($bMobileDevice)
-				{
-					$this->oActions->Location('./?/Mobile/');
-					return $this;
+				$sMobileType = (string) \RainLoop\Utils::GetCookie(\RainLoop\Actions::RL_MOBILE_TYPE, '');
+				switch ($sMobileType) {
+					default:
+						$sMobileType = '';
+						$bMobile = $bMobileDevice;
+						break;
+					case 'mobile':
+						$bMobile = true;
+						break;
+					case 'desktop':
+						$bMobile = false;
+						break;
 				}
 			}
 		}

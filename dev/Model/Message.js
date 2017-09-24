@@ -761,6 +761,7 @@ class MessageModel extends AbstractModel
 					.addClass('lazy-inited')
 					.attr('src', element.dataset.original)
 					.removeAttr('data-loaded')
+					.removeAttr('data-original')
 					.css({opacity: 0.3})
 					.animate({opacity: 1}, 500);
 			}
@@ -781,13 +782,12 @@ class MessageModel extends AbstractModel
 					$this
 						.addClass('lazy')
 						.attr('data-original', $this.attr(attr))
-						.removeAttr('data-loaded')
-						.removeAttr(attr);
+						.removeAttr('data-loaded');
 				}
 				else
 				{
 					$this.attr('src', $this.attr(attr))
-						.removeAttr('data-loaded').removeAttr(attr);
+						.removeAttr('data-loaded');
 				}
 			});
 
@@ -796,7 +796,7 @@ class MessageModel extends AbstractModel
 				const $this = $(this); // eslint-disable-line no-invalid-this
 				let style = trim($this.attr('style'));
 				style = '' === style ? '' : (';' === style.substr(-1) ? style + ' ' : style + '; ');
-				$this.attr('style', style + $this.attr(attr)).removeAttr(attr);
+				$this.attr('style', style + $this.attr(attr));
 			});
 
 			if (lazy)

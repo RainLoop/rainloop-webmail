@@ -10,7 +10,6 @@ const
 	SUB_QUERY_PREFIX = '&q[]=',
 
 	VERSION = Settings.appSettingsGet('version'),
-	IS_MOBILE = Settings.appSettingsGet('mobile'),
 
 	WEB_PREFIX = Settings.appSettingsGet('webPath') || '',
 	VERSION_PREFIX = Settings.appSettingsGet('webVersionPath') || 'rainloop/v/' + VERSION + '/',
@@ -59,7 +58,7 @@ export function rootAdmin()
  */
 export function rootUser()
 {
-	return IS_MOBILE ? SERVER_PREFIX + '/Mobile/' : ROOT;
+	return ROOT;
 }
 
 /**
@@ -171,7 +170,7 @@ export function append()
  */
 export function change(email)
 {
-	return serverRequest('Change' + (IS_MOBILE ? 'Mobile' : '')) + encodeURIComponent(email) + '/';
+	return serverRequest('Change') + encodeURIComponent(email) + '/';
 }
 
 /**

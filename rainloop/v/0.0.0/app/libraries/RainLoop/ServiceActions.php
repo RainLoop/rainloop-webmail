@@ -829,9 +829,9 @@ class ServiceActions
 	/**
 	 * @return string
 	 */
-	public function ServiceSkipMobile()
+	public function ServiceMobileVersion()
 	{
-		\RainLoop\Utils::SetCookie(\RainLoop\Actions::RL_SKIP_MOBILE_KEY, 1);
+		\RainLoop\Utils::SetCookie(\RainLoop\Actions::RL_MOBILE_TYPE, 'mobile');
 		$this->oActions->Location('./');
 		return '';
 	}
@@ -839,9 +839,9 @@ class ServiceActions
 	/**
 	 * @return string
 	 */
-	public function ServiceClearSkipMobile()
+	public function ServiceDesktopVersion()
 	{
-		\RainLoop\Utils::ClearCookie(\RainLoop\Actions::RL_SKIP_MOBILE_KEY);
+		\RainLoop\Utils::SetCookie(\RainLoop\Actions::RL_MOBILE_TYPE, 'desktop');
 		$this->oActions->Location('./');
 		return '';
 	}
@@ -1181,16 +1181,6 @@ class ServiceActions
 				$this->oActions->AuthToken($oAccountToLogin);
 			}
 		}
-	}
-
-	/**
-	 * @return string
-	 */
-	public function ServiceChangeMobile()
-	{
-		$this->changeAction();
-		$this->oActions->Location('./?/Mobile/');
-		return '';
 	}
 
 	/**
