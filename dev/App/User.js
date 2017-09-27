@@ -494,7 +494,7 @@ class AppUser extends AbstractApp
 							if (item.userId)
 							{
 								email.clear();
-								email.mailsoParse(item.userId.userid);
+								email.parse(item.userId.userid);
 								if (email.validate())
 								{
 									aEmails.push(email.email);

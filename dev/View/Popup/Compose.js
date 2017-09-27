@@ -110,6 +110,8 @@ class ComposePopupView extends AbstractViewNext
 		this.replyTo = ko.observable('');
 		this.replyTo.focused = ko.observable(false);
 
+		// this.to.subscribe((v) => console.log(v));
+
 		ko.computed(() => {
 			switch (true)
 			{

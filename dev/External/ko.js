@@ -884,6 +884,7 @@ ko.bindingHandlers.emailsTags = {
 			fValue = fValueAccessor(),
 			fAllBindings = fAllBindingsAccessor(),
 			fAutoCompleteSource = fAllBindings.autoCompleteSource || null,
+			inputDelimiters = [',', ';', '\n'],
 			fFocusCallback = (value) => {
 				if (fValue && fValue.focused)
 				{
@@ -895,26 +896,26 @@ ko.bindingHandlers.emailsTags = {
 			parseOnBlur: true,
 			allowDragAndDrop: true,
 			focusCallback: fFocusCallback,
-			inputDelimiters: [',', ';', '\n'],
+			inputDelimiters: inputDelimiters,
 			autoCompleteSource: fAutoCompleteSource,
-			// elementHook: (el, item) => {
-			// 	if (el && item)
-			// 	{
-			// 		el.addClass('pgp');
-			// 	}
-			// },
-			parseHook: (input) => _.map(input, (inputValue) => {
-				const value = Utils.trim(inputValue);
-				if ('' !== value)
-				{
-					const email = new EmailModel();
-					email.mailsoParse(value);
-					return [email.toLine(false), email];
+			splitHook: (value) => {
+				const v = Utils.trim(value);
+				if (v && -1 < inputDelimiters.indexOf(v.substr(-1))) {
+					return EmailModel.splitEmailLine(value);
 				}
-				return [value, null];
-
-			}),
-			'change': (event) => {
+				return null;
+			},
+			parseHook: (input) => _.map(
+				_.flatten(_.map(
+					input,
+					(inputValue) => {
+						const values = EmailModel.parseEmailLine(inputValue);
+						return values.length ? values : inputValue;
+					}
+				)),
+				(item) => (_.isObject(item) ? [item.toLine(false), item] : [item, null])
+			),
+			change: (event) => {
 				$el.data('EmailsTagsValue', event.target.value);
 				fValue(event.target.value);
 			}

@@ -539,7 +539,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	//			fParseEmailLine = function(sLine) {
 	//				return sLine ? _.compact(_.map([window.decodeURIComponent(sLine)], function(sItem) {
 	//						var oEmailModel = new EmailModel();
-	//						oEmailModel.mailsoParse(sItem);
+	//						oEmailModel.parse(sItem);
 	//						return '' !== oEmailModel.email ? oEmailModel : null;
 	//					})) : null;
 	//			}
