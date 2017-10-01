@@ -44,6 +44,8 @@ class GeneralAdminSettings
 		this.weakPassword = AppAdminStore.weakPassword;
 		this.newMoveToFolder = AppAdminStore.newMoveToFolder;
 
+		this.dataFolderAccess = AppAdminStore.dataFolderAccess;
+
 		this.mainAttachmentLimit = ko.observable(pInt(settingsGet('AttachmentLimit')) / (Magics.BitLength1024 * Magics.BitLength1024)).extend({posInterer: 25});
 
 		this.uploadData = settingsGet('PhpUploadSizes');

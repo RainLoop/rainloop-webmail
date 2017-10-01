@@ -577,6 +577,36 @@ gulp.task('rainloop:owncloud:copy-dist', ['rainloop:owncloud:shortname'], functi
 	});
 });
 
+gulp.task('plugins:build', [], function() {
+
+	var name = argv.name || '';
+	if (true === name || !name) {
+		throw new Error('Empty name parameter');
+	}
+
+	var
+		source = 'plugins/' + name,
+		vesrion = fs.readFileSync(source + '/VERSION', 'utf8')
+	;
+
+	cfg.destPath = 'build/dist/plugins/';
+	cfg.zipFile = name + '-' + vesrion + '.zip';
+
+	fs.mkdirSync(cfg.destPath, '0777', true);
+
+	return gulp.src(source + '/**/*', {base: source})
+		.pipe(require('gulp-zip')(cfg.zipFile))
+		.pipe(gulp.dest(cfg.destPath));
+});
+
+gulp.task('plugins:build:copy-dist', ['plugins:build'], function(callback) {
+	var newPath = cfg.destPath.replace('build/dist/plugins', 'dist/plugins');
+	fs.mkdirSync(newPath, '0777', true);
+	copyFile(cfg.destPath + cfg.zipFile, newPath + cfg.zipFile, callback);
+});
+
+gulp.task('plugins:build:docker', ['plugins:build', 'plugins:build:copy-dist']);
+
 // main
 gulp.task('moment', ['moment:locales']);
 gulp.task('js', ['js:libs', 'js:min', 'js:validate']);
@@ -627,3 +657,6 @@ gulp.task('v', ['js:validate']);
 
 gulp.task('b', ['build']);
 gulp.task('o', ['owncloud']);
+
+gulp.task('p', ['plugins:build']);
+gulp.task('p:d', ['plugins:build:docker']);

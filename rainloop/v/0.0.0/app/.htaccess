@@ -1,19 +1,9 @@
-<IfModule mod_version.c>
-<IfVersion < 2.4>
-Deny from All
-</IfVersion>
-<IfVersion >= 2.4>
-Require all denied
-</IfVersion>
-</IfModule>
-<IfModule !mod_version.c>
-<IfModule !mod_authz_core.c>
-Deny from all
-</IfModule>
-<IfModule mod_authz_core.c>
-Require all denied
-</IfModule>
-</IfModule>
+<ifModule mod_authz_core.c>
+    Require all denied
+</ifModule>
+<ifModule !mod_authz_core.c>
+    Deny from all
+</ifModule>
 <IfModule mod_autoindex.c>
-Options -Indexes
+	Options -Indexes
 </ifModule>

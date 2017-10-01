@@ -13,6 +13,8 @@ class AppAdminStore extends AbstractAppStore
 
 		this.weakPassword = ko.observable(false);
 		this.useLocalProxyForExternalImages = ko.observable(false);
+
+		this.dataFolderAccess = ko.observable(false);
 	}
 
 	populate() {
@@ -23,6 +25,14 @@ class AppAdminStore extends AbstractAppStore
 
 		this.weakPassword(!!settingsGet('WeakPassword'));
 		this.useLocalProxyForExternalImages(!!settingsGet('UseLocalProxyForExternalImages'));
+
+		if (settingsGet('Auth')) {
+			this.checkDataFolder();
+		}
+	}
+
+	checkDataFolder() {
+		$.get('./data/VERSION?' + window.Math.random()).then((value) => this.dataFolderAccess(true));
 	}
 }
 

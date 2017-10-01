@@ -35,6 +35,7 @@ en:
     LABEL_ALLOW_IDENTITIES: "Allow multiple identities"
     LABEL_ALLOW_TEMPLATES: "Allow templates"
     ALERT_WARNING: "Warning!"
+    ALERT_DATA_ACCESS: "RainLoop data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:"
     HTML_ALERT_WEAK_PASSWORD: |
       You are using the default admin password.
       <br />
