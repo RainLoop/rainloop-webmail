@@ -640,6 +640,7 @@ gulp.task('watch', ['css:main', 'js:validate'], function() {
 });
 
 // aliases
+gulp.task('lint', ['js:eslint']);
 gulp.task('build', ['rainloop']);
 
 gulp.task('all', function(callback) {

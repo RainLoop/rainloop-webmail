@@ -1,4 +1,6 @@
 
+import window from 'window';
+import $ from '$';
 import ko from 'ko';
 import {settingsGet} from 'Storage/Settings';
 import {AbstractAppStore} from 'Stores/AbstractApp';
@@ -27,12 +29,8 @@ class AppAdminStore extends AbstractAppStore
 		this.useLocalProxyForExternalImages(!!settingsGet('UseLocalProxyForExternalImages'));
 
 		if (settingsGet('Auth')) {
-			this.checkDataFolder();
+			$.get('./data/VERSION?' + window.Math.random()).then(() => this.dataFolderAccess(true));
 		}
-	}
-
-	checkDataFolder() {
-		$.get('./data/VERSION?' + window.Math.random()).then((value) => this.dataFolderAccess(true));
 	}
 }
 

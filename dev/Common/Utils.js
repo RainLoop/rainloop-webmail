@@ -1542,8 +1542,33 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel)
 			query = mailToUrl.replace(/^[^\?]*\?/, ''),
 			EmailModel = require('Model/Email').default;
 
-		to = EmailModel.parseEmailLine(email);
 		params = simpleQueryParser(query);
+
+		if (!isUnd(params.to))
+		{
+			to = EmailModel.parseEmailLine(decodeURIComponent(email + ',' + params.to));
+			to = _.values(to.reduce((result, value) => {
+				if (value)
+				{
+					if (result[value.email])
+					{
+						if (!result[value.email].name)
+						{
+							result[value.email] = value;
+						}
+					}
+					else
+					{
+						result[value.email] = value;
+					}
+				}
+				return result;
+			}, {}));
+		}
+		else
+		{
+			to = EmailModel.parseEmailLine(email);
+		}
 
 		if (!isUnd(params.cc))
 		{

@@ -112,8 +112,10 @@ class EmailModel
 		{
 			if (friendlyView && '' !== this.name)
 			{
-				result = wrapWithLink ? '<a href="mailto:' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
+				result = wrapWithLink ? '<a href="mailto:' + encodeHtml(this.email) + '?to=' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
 					'" target="_blank" tabindex="-1">' + encodeHtml(this.name) + '</a>' : (useEncodeHtml ? encodeHtml(this.name) : this.name);
+				// result = wrapWithLink ? '<a href="mailto:' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
+				// 	'" target="_blank" tabindex="-1">' + encodeHtml(this.name) + '</a>' : (useEncodeHtml ? encodeHtml(this.name) : this.name);
 			}
 			else
 			{
@@ -123,11 +125,17 @@ class EmailModel
 					if (wrapWithLink)
 					{
 						result = encodeHtml('"' + this.name + '" <') + '<a href="mailto:' +
-							encodeHtml('"' + this.name + '" <' + this.email + '>') +
+							encodeHtml(this.email) + '?to=' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
 							'" target="_blank" tabindex="-1">' +
 							encodeHtml(result) +
 							'</a>' +
 							encodeHtml('>');
+						// result = encodeHtml('"' + this.name + '" <') + '<a href="mailto:' +
+						// 	encodeHtml('"' + this.name + '" <' + this.email + '>') +
+						// 	'" target="_blank" tabindex="-1">' +
+						// 	encodeHtml(result) +
+						// 	'</a>' +
+						// 	encodeHtml('>');
 					}
 					else
 					{
