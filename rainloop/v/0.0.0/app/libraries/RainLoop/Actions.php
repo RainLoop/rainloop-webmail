@@ -1272,7 +1272,7 @@ class Actions
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin))
 				{
 					$oAccount = \RainLoop\Model\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken);
-					$this->Plugins()->RunHook('filter.acount', array(&$oAccount));
+					$this->Plugins()->RunHook('filter.account', array(&$oAccount));
 
 					if ($bThrowProvideException && !($oAccount instanceof \RainLoop\Model\Account))
 					{
@@ -2145,7 +2145,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$this->Plugins()->RunHook('filter.login-credentials.step-1', array(&$sEmail, &$sPassword));
 
-		$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii(\MailSo\Base\Utils::Trim($sEmail));
+		$sEmail = \MailSo\Base\Utils::Trim($sEmail);
+		if ($this->Config()->Get('login', 'login_lowercase', true))
+		{
+			$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii($sEmail);
+		}
 
 		if (false === \strpos($sEmail, '@'))
 		{
@@ -2231,6 +2235,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->Logger()->AddSecret($sPassword);
 
 		$sLogin = $sEmail;
+		if ($this->Config()->Get('login', 'login_lowercase', true))
+		{
+			$sLogin = \MailSo\Base\Utils::StrToLowerIfAscii($sLogin);
+		}
+
 		$this->Plugins()->RunHook('filter.login-credentials', array(&$sEmail, &$sLogin, &$sPassword));
 
 		$this->Logger()->AddSecret($sPassword);
