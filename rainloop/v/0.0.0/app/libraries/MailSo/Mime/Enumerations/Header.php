@@ -60,7 +60,7 @@ class Header
 	const DISPOSITION_NOTIFICATION_TO = 'Disposition-Notification-To';
 	const X_CONFIRM_READING_TO = 'X-Confirm-Reading-To';
 
-	const MIME_VERSION = 'Mime-Version';
+	const MIME_VERSION = 'MIME-Version';
 	const X_MAILER = 'X-Mailer';
 
 	const X_MSMAIL_PRIORITY = 'X-MSMail-Priority';
