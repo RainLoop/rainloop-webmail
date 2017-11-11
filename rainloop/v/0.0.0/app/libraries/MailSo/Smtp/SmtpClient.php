@@ -413,7 +413,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$sCmd .= ' NOTIFY=SUCCESS,FAILURE';
 		}
 
-		$this->sendRequestWithCheck('RCPT', array(250, 251), $sCmd);
+		$this->sendRequestWithCheck(
+			'RCPT', array(250, 251), $sCmd, false,
+			'Failed to add recipient "'.$sTo.'"'
+		);
 
 		$this->bRcpt = true;
 
@@ -657,6 +660,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @param int|array $mExpectCode
 	 * @param string $sAddToCommand = ''
 	 * @param bool $bSecureLog = false
+	 * @param string $sErrorPrefix = ''
 	 *
 	 * @return void
 	 *
@@ -664,10 +668,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	private function sendRequestWithCheck($sCommand, $mExpectCode, $sAddToCommand = '', $bSecureLog = false)
+	private function sendRequestWithCheck($sCommand, $mExpectCode, $sAddToCommand = '', $bSecureLog = false, $sErrorPrefix = '')
 	{
 		$this->sendRequest($sCommand, $sAddToCommand, $bSecureLog);
-		$this->validateResponse($mExpectCode);
+		$this->validateResponse($mExpectCode, $sErrorPrefix);
 	}
 
 	/**
@@ -758,12 +762,13 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param int|array $mExpectCode
+	 * @param string $sErrorPrefix = ''
 	 *
 	 * @return void
 	 *
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
-	private function validateResponse($mExpectCode)
+	private function validateResponse($mExpectCode, $sErrorPrefix = '')
 	{
 		if (!\is_array($mExpectCode))
 		{
@@ -786,7 +791,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 				if ('-' !== \substr($aParts[1], 0, 1) && !\in_array((int) $aParts[0], $mExpectCode))
 				{
 					$this->writeLogException(
-						new Exceptions\NegativeResponseException($this->aResults, \trim(
+						new Exceptions\NegativeResponseException($this->aResults,
+							('' === $sErrorPrefix ? '' : $sErrorPrefix.': ').\trim(
 							(0 < \count($this->aResults) ? \implode("\r\n", $this->aResults)."\r\n" : '').
 							$this->sResponseBuffer)), \MailSo\Log\Enumerations\Type::ERROR, true);
 				}
@@ -794,7 +800,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 			else
 			{
 				$this->writeLogException(
-					new Exceptions\ResponseException($this->aResults, \trim(
+					new Exceptions\ResponseException($this->aResults,
+						('' === $sErrorPrefix ? '' : $sErrorPrefix.': ').\trim(
 						(0 < \count($this->aResults) ? \implode("\r\n", $this->aResults)."\r\n" : '').
 						$this->sResponseBuffer)), \MailSo\Log\Enumerations\Type::ERROR, true);
 			}
