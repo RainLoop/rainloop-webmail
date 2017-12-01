@@ -63,7 +63,7 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	private $oLogger = null;
 
 	/**
-	 * @param string $sHost
+	 * @param string $sEngine
 	 *
 	 * @return \ChangePasswordPostfixAdminDriver
 	 */
@@ -232,7 +232,7 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 			try
 			{
 				$sDsn = '';
-				switch($sEngine){
+				switch($this->sEngine){
 				  case 'MySQL':
 					  $sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
 					  break;
