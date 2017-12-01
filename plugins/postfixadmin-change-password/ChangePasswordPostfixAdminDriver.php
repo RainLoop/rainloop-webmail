@@ -232,15 +232,15 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 			try
 			{
 				switch($sEngine){
-					case 'MySQL':
-						$sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
-						break;
-					case 'PostgreSQL':
+				  case 'MySQL':
+					  $sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+					  break;
+				  case 'PostgreSQL':
 					  $sDsn = 'pgsql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
 						break;
-					default:
-						$sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
-						break;
+				  default:
+				    $sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+					  break;
 				}
 
 
