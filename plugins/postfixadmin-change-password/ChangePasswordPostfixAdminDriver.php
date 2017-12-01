@@ -233,15 +233,15 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 			{
 				$sDsn = '';
 				switch($this->sEngine){
-				  case 'MySQL':
-					  $sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
-					  break;
-				  case 'PostgreSQL':
-					  $sDsn = 'pgsql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+					case 'MySQL':
+				  		$sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
 						break;
-				  default:
-				    $sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
-					  break;
+				  	case 'PostgreSQL':
+				 		$sDsn = 'pgsql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+						break;
+				  	default:
+				    		$sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+					  	break;
 				}
 
 
@@ -318,19 +318,19 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 
 			case 'mysql_encrypt':
 			  if($this->sEngine == 'MySQL'){
-					$oStmt = $oPdo->prepare('SELECT ENCRYPT(?) AS encpass');
-					if ($oStmt->execute(array($sPassword)))
+			  	$oStmt = $oPdo->prepare('SELECT ENCRYPT(?) AS encpass');
+				if ($oStmt->execute(array($sPassword)))
+				{
+					$aFetchResult = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+					if (\is_array($aFetchResult) && isset($aFetchResult[0]['encpass']))
 					{
-						$aFetchResult = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
-						if (\is_array($aFetchResult) && isset($aFetchResult[0]['encpass']))
-						{
-							$sResult = $aFetchResult[0]['encpass'];
-						}
+						$sResult = $aFetchResult[0]['encpass'];
 					}
-				}else{
-					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CouldNotSaveNewPassword);
 				}
-				break;
+			}else{
+				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CouldNotSaveNewPassword);
+			}
+			break;
 		}
 
 		return $sResult;
