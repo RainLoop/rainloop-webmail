@@ -317,14 +317,18 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 				break;
 
 			case 'mysql_encrypt':
-				$oStmt = $oPdo->prepare('SELECT ENCRYPT(?) AS encpass');
-				if ($oStmt->execute(array($sPassword)))
-				{
-					$aFetchResult = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
-					if (\is_array($aFetchResult) && isset($aFetchResult[0]['encpass']))
+			  if($this->sEngine == 'MySQL'){
+					$oStmt = $oPdo->prepare('SELECT ENCRYPT(?) AS encpass');
+					if ($oStmt->execute(array($sPassword)))
 					{
-						$sResult = $aFetchResult[0]['encpass'];
+						$aFetchResult = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
+						if (\is_array($aFetchResult) && isset($aFetchResult[0]['encpass']))
+						{
+							$sResult = $aFetchResult[0]['encpass'];
+						}
 					}
+				}else{
+					throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CouldNotSaveNewPassword);
 				}
 				break;
 		}
