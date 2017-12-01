@@ -2,6 +2,11 @@
 
 class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePassword\ChangePasswordInterface
 {
+  /**
+	* @var string
+	*/
+	private $sEngine = 'MySQL';
+
 	/**
 	 * @var string
 	 */
@@ -56,6 +61,17 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	 * @var \MailSo\Log\Logger
 	 */
 	private $oLogger = null;
+
+	/**
+	 * @param string $sHost
+	 *
+	 * @return \ChangePasswordPostfixAdminDriver
+	 */
+	 public function SetEngine($sEngine)
+	 {
+		 $this->sEngine = $sEngine;
+		 return $this;
+	 }
 
 	/**
 	 * @param string $sHost
@@ -215,7 +231,18 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 		{
 			try
 			{
-				$sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+				switch($sEngine){
+					case 'MySQL':
+						$sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+						break;
+					case 'PostgreSQL':
+					  $sDsn = 'pgsql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+						break;
+					default:
+						$sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+						break;
+				}
+
 
 				$oPdo = new \PDO($sDsn, $this->sUser, $this->sPassword);
 				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
