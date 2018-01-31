@@ -984,40 +984,47 @@ class Actions
 			$this->aCachers[$sIndexKey] = \MailSo\Cache\CacheClient::NewInstance();
 
 			$oDriver = null;
-			$sDriver = \strtoupper(\trim($this->Config()->Get('cache', 'fast_cache_driver', 'files')));
+			$sDriver = $bForceFile ? 'FILES' : \strtoupper(\trim($this->Config()->Get('cache', 'fast_cache_driver', 'files')));
 
-			switch (true)
+			switch ($sDriver)
 			{
 				default:
-				case $bForceFile:
+				case 'FILES':
 					$oDriver = \MailSo\Cache\Drivers\File::NewInstance(APP_PRIVATE_DATA.'cache', $sKey);
 					break;
 
-				case ('APC' === $sDriver || 'APCU' === $sDriver) &&
-					\MailSo\Base\Utils::FunctionExistsAndEnabled(array(
-						'apc_store', 'apc_fetch', 'apc_delete', 'apc_clear_cache')):
-
-					$oDriver = \MailSo\Cache\Drivers\APC::NewInstance($sKey);
+				case 'APC':
+				case 'APCU':
+					if (\MailSo\Base\Utils::FunctionExistsAndEnabled(array(
+						'apc_store', 'apc_fetch', 'apc_delete', 'apc_clear_cache')))
+					{
+						$oDriver = \MailSo\Cache\Drivers\APC::NewInstance($sKey);
+					}
 					break;
 
-				case ('MEMCACHE' === $sDriver || 'MEMCACHED' === $sDriver) &&
-					\MailSo\Base\Utils::FunctionExistsAndEnabled('memcache_connect'):
-
-					$oDriver = \MailSo\Cache\Drivers\Memcache::NewInstance(
-						$this->Config()->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
-						(int) $this->Config()->Get('labs', 'fast_cache_memcache_port', 11211),
-						43200,
-						$sKey
-					);
+				case 'MEMCACHE':
+				case 'MEMCACHED':
+					if (\MailSo\Base\Utils::FunctionExistsAndEnabled('memcache_connect'))
+					{
+						$oDriver = \MailSo\Cache\Drivers\Memcache::NewInstance(
+							$this->Config()->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
+							(int) $this->Config()->Get('labs', 'fast_cache_memcache_port', 11211),
+							43200,
+							$sKey
+						);
+					}
 					break;
 
-				case 'REDIS' === $sDriver && \class_exists('Predis\Client'):
-					$oDriver = \MailSo\Cache\Drivers\Redis::NewInstance(
-						$this->Config()->Get('labs', 'fast_cache_redis_host', '127.0.0.1'),
-						(int) $this->Config()->Get('labs', 'fast_cache_redis_port', 6379),
-						43200,
-						$sKey
-					);
+				case 'REDIS':
+					if (\class_exists('Predis\Client'))
+					{
+						$oDriver = \MailSo\Cache\Drivers\Redis::NewInstance(
+							$this->Config()->Get('labs', 'fast_cache_redis_host', '127.0.0.1'),
+							(int) $this->Config()->Get('labs', 'fast_cache_redis_port', 6379),
+							43200,
+							$sKey
+						);
+					}
 					break;
 			}
 
