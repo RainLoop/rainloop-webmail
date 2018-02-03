@@ -55,7 +55,7 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 			if (!empty($aSmtpCredentials['Host']) && 'auto' === $aSmtpCredentials['Host'])
 			{
 				$domain = substr(strrchr($oAccount->Email(), "@"), 1);
-                		$aImapCredentials['Host'] = $this->smtp_prefix.$domain;
+                		$aSmtpCredentials['Host'] = $this->smtp_prefix.$domain;
 			}
 		}
 	}
