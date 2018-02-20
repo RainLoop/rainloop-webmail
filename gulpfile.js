@@ -194,7 +194,6 @@ cfg.paths.js = {
 			'node_modules/jquery/dist/jquery.min.js',
 			'node_modules/jquery-mousewheel/jquery.mousewheel.js',
 			'node_modules/jquery-scrollstop/jquery.scrollstop.js',
-			// 'node_modules/jquery-lazyload/jquery.lazyload.js',
 			'node_modules/jquery-backstretch/jquery.backstretch.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js', // custom
 			'vendors/jquery-nanoscroller/jquery.nanoscroller.js', // custom (modified)
@@ -211,7 +210,7 @@ cfg.paths.js = {
 			'node_modules/underscore/underscore-min.js',
 			'node_modules/moment/min/moment.min.js',
 			'node_modules/knockout/build/output/knockout-latest.js',
-			'node_modules/knockout-projections/dist/knockout-projections.min.js',
+			'node_modules/knockout-transformations/dist/knockout-transformations.min.js',
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',
 			'node_modules/matchmedia-polyfill/matchMedia.js',
 			'node_modules/matchmedia-polyfill/matchMedia.addListener.js',
