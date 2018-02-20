@@ -1787,7 +1787,8 @@ CREATE TABLE IF NOT EXISTS rainloop_ab_properties (
 
 	PRIMARY KEY(id_prop),
 	INDEX id_user_rainloop_ab_properties_index (id_user),
-	INDEX id_user_id_contact_rainloop_ab_properties_index (id_user, id_contact)
+	INDEX id_user_id_contact_rainloop_ab_properties_index (id_user, id_contact),
+	INDEX id_contact_prop_type_rainloop_ab_properties_index (id_contact, prop_type)
 
 )/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
 
