@@ -155,7 +155,7 @@ cs_CZ:
     BODY: |
       Toto je potrvzení o zaslání emailu na adresu %READ-RECEIPT%.
 
-      Poznámka: Toto potvrzení zajištujě, že zpráva byla zobrazena v poštovní schrnánce příjemce. Nezajišťuje, že ji příjemce čelt a rozuměl jí.
+      Poznámka: Toto potvrzení zajištuje, že zpráva byla zobrazena v poštovní schránce příjemce. Nezajišťuje však, že ji příjemce četl a rozuměl jí.
   SUGGESTIONS:
     SEARCHING_DESC: "Hledám..."
   CONTACTS:
@@ -167,7 +167,7 @@ cs_CZ:
     BUTTON_IMPORT: "Importovat (csv, vcf, vCard)"
     BUTTON_EXPORT_VCARD: "Exportovat (vcf, vCard)"
     BUTTON_EXPORT_CSV: "Exportovat (csv)"
-    ERROR_IMPORT_FILE: "Chyba importu (nesprávny formát souboru)"
+    ERROR_IMPORT_FILE: "Chyba importu (nesprávný formát souboru)"
     LIST_LOADING: "Načítám"
     EMPTY_LIST: "Nemáte žádné kontakty"
     EMPTY_SEARCH: "Nebyly nalezeny žádné kontakty"
@@ -362,16 +362,16 @@ cs_CZ:
     BUTTON_CANCEL: "Zrušit"
     BUTTON_CLOSE: "Zavřít"
     NOTIFICATION_SENT: |
-      Nevybrali jste systémovou složku "Odeslané" kam budou uložené zprávy po jejich odeslání.
+      Nevybrali jste systémovou složku "Odeslané", do které budou uloženy zprávy po jejich odeslání.
       Pokud nechcete ukládat odeslané zprávy, vyberete možnost "Nepoužívat".
-    NOTIFICATION_DRAFTS: "Nevybrali jste systémovou složku pro \"Koncepty\" kam jsou ukládány zprávy během jejich psaní."
+    NOTIFICATION_DRAFTS: "Nevybrali jste systémovou složku pro \"Koncepty\", do které jsou ukládány zprávy během jejich psaní."
     NOTIFICATION_SPAM: |
-      Nevybrali jste systémovou složku pro "Spam" kam je ukládána nevyžádaná pošta.
+      Nevybrali jste systémovou složku pro "Spam", do které je ukládána nevyžádaná pošta.
       Pokud chcete tyto zprávy odstranit natrvalo, vyberte prosím možnost "Nepoužívat".
     NOTIFICATION_TRASH: |
-      Nevybrali jste systémovou složku pro "Koš" kam jsou zprávy přesunuté pro jejich odstranění.
+      Nevybrali jste systémovou složku pro "Koš", do které jsou zprávy přesunuty pro jejich odstranění.
       Pokud chcete zprávy odstranit natrvalo, vyberte prosím možnost "Nepoužívat".
-    NOTIFICATION_ARCHIVE: "Nevybrali jste systémovou složku \"Archiv\", kam se ukládají archivované zprávy."
+    NOTIFICATION_ARCHIVE: "Nevybrali jste systémovou složku \"Archiv\", do které se ukládají archivované zprávy."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Dvoufázové ověření"
     LABEL_ENABLE_TWO_FACTOR: "Povlit dvoufázové ověření"
@@ -409,12 +409,12 @@ cs_CZ:
     ERROR_FILE_PARTIALLY_UPLOADED: "Z důvodu neznámé chyby byl soubor nahrán jen částečně"
     ERROR_NO_FILE_UPLOADED: "Soubor nebyl nahrán"
     ERROR_MISSING_TEMP_FOLDER: "Chybí dočasný soubor"
-    ERROR_ON_SAVING_FILE: "Nastala neznámá chyba při ukládání"
-    ERROR_FILE_TYPE: "Nesprávny typ souboru"
-    ERROR_UNKNOWN: "Nastala neznámá chyba při nahrávaní"
+    ERROR_ON_SAVING_FILE: "Nastala neznámá chyba během ukládání"
+    ERROR_FILE_TYPE: "Nesprávný typ souboru"
+    ERROR_UNKNOWN: "Nastala neznámá chyba během nahrávaní"
   EDITOR:
     TEXT_SWITCHER_RICH_FORMATTING: "Formátovaný text"
-    TEXT_SWITCHER_CONFIRM: "Formátování textu a obrázky budou odstraněné. Chcete pokračovat?"
+    TEXT_SWITCHER_CONFIRM: "Formátování textu a obrázky budou odstraněny. Chcete pokračovat?"
   SETTINGS_LABELS:
     LABEL_PERSONAL_NAME: "Osobní"
     LABEL_GENERAL_NAME: "Všeobecné"
@@ -477,11 +477,11 @@ cs_CZ:
     LABEL_ANIMATION_NORMAL: "Normální"
     LABEL_ANIMATION_NONE: "Žádné"
     LABEL_VIEW_OPTIONS: "Možnosti zobrazení"
-    LABEL_USE_PREVIEW_PANE: "Používate panel rychlého zobrazení"
+    LABEL_USE_PREVIEW_PANE: "Používáte panel rychlého zobrazení"
     LABEL_USE_CHECKBOXES_IN_LIST: "Zobrazení zaškrtávacích políček v seznamu"
     LABEL_USE_THREADS: "Zobrazit jako konverzace"
     LABEL_REPLY_SAME_FOLDER: "Ukládat odpovědi do složky se zprávou, které se týkají"
-    LABEL_SHOW_IMAGES: "Vždy zobrazovat obrázky v těle správy"
+    LABEL_SHOW_IMAGES: "Vždy zobrazovat obrázky v těle zprávy"
     LABEL_SHOW_ANIMATION: "Animovat"
     LABEL_MESSAGE_PER_PAGE: "Zpráv na stranu"
     LABEL_NOTIFICATIONS: "Notifikace"
@@ -527,10 +527,10 @@ cs_CZ:
     BUTTON_DELETE: "Odstranit"
     BUTTON_SUBSCRIBE: "Přihlásit se"
     BUTTON_UNSUBSCRIBE: "Odhlásit se"
-    LOADING_PROCESS: "Aktualizuji seznam složek"
-    CREATING_PROCESS: "Vytvářím složku"
-    DELETING_PROCESS: "Odstraňuji složku"
-    RENAMING_PROCESS: "Přejmenovávám složku"
+    LOADING_PROCESS: "Aktualizace seznamu složek"
+    CREATING_PROCESS: "Vytváření složky"
+    DELETING_PROCESS: "Odstraňování složky"
+    RENAMING_PROCESS: "Přejmenovávání složky"
     DELETING_ASK: "Opravdu to chcete?"
     TO_MANY_FOLDERS_DESC_1: "Máte moc složek!"
     TO_MANY_FOLDERS_DESC_2: "Můžeme zobrazit jen část z nich, abychom zabránili problémům s výkonem."
@@ -596,37 +596,37 @@ cs_CZ:
     LABEL_IMPORTANT: "Označit vybrané zprávy jako důležité"
     LABEL_SEARCH: "Hledat"
     LABEL_CANCEL_SEARCH: "Zrušit hledání"
-    LABEL_FULLSCREEN_ENTER: "Fullscreen (Preview pane layout)"
-    LABEL_VIEW_MESSAGE_ENTER: "View message (No preview pane layout)"
-    LABEL_SWITCH_TO_MESSAGE: "Switch focus to selected message"
-    LABEL_SWITCH_TO_FOLDER_LIST: "Switch focus to folder list"
-    LABEL_FULLSCREEN_TOGGLE: "Toggle fullscreen mode"
-    LABEL_BLOCKQUOTES_TOGGLE: "Toggle message blockquotes"
-    LABEL_THREAD_NEXT: "Next message in thread"
-    LABEL_THREAD_PREV: "Previous message in thread"
+    LABEL_FULLSCREEN_ENTER: "Celá obrozovka"
+    LABEL_VIEW_MESSAGE_ENTER: "Zobrazit zprávy"
+    LABEL_SWITCH_TO_MESSAGE: "Přepnout se na vybrané zprávy"
+    LABEL_SWITCH_TO_FOLDER_LIST: "Přepnout se na seznam složek"
+    LABEL_FULLSCREEN_TOGGLE: "Přepnout celoobrazovkový režim"
+    LABEL_BLOCKQUOTES_TOGGLE: "Přepnout blok citace zprávy"
+    LABEL_THREAD_NEXT: "Následující zpráva ve vlákně"
+    LABEL_THREAD_PREV: "Předcházející zpráva ve vlákně"
     LABEL_PRINT: "Tisk"
-    LABEL_EXIT_FULLSCREEN: "Exit fullscreen mode"
-    LABEL_CLOSE_MESSAGE: "Close message (No preview pane layout)"
-    LABEL_SWITCH_TO_LIST: "Switch focus back to message list"
-    LABEL_OPEN_COMPOSE_POPUP: "Open compose popup"
-    LABEL_MINIMIZE_COMPOSE_POPUP: "Minimize compose popup"
+    LABEL_EXIT_FULLSCREEN: "Ukončit celoobrazovkový režim"
+    LABEL_CLOSE_MESSAGE: "Zavřít zprávu"
+    LABEL_SWITCH_TO_LIST: "Přepnout se zpět na seznam zpráv"
+    LABEL_OPEN_COMPOSE_POPUP: "Otevřít komponovací okno"
+    LABEL_MINIMIZE_COMPOSE_POPUP: "Minimalizovat komponovací okno"
     LABEL_OPEN_IDENTITIES_DROPDOWN: "Open identities dropdown"
-    LABEL_SAVE_MESSAGE: "Save message"
-    LABEL_SEND_MESSAGE: "Send message"
-    LABEL_CLOSE_COMPOSE: "Close compose"
+    LABEL_SAVE_MESSAGE: "Uložit zprávu"
+    LABEL_SEND_MESSAGE: "Odeslat zprávu"
+    LABEL_CLOSE_COMPOSE: "Zavřít komponovací okno"
   PGP_NOTIFICATIONS:
-    NO_PUBLIC_KEYS_FOUND: "No public keys found"
-    NO_PUBLIC_KEYS_FOUND_FOR: "No public keys found for \"%EMAIL%\" email"
-    NO_PRIVATE_KEY_FOUND: "No private key found"
-    NO_PRIVATE_KEY_FOUND_FOR: "No private key found for \"%EMAIL%\" email"
-    ADD_A_PUBLICK_KEY: "Add a public key"
+    NO_PUBLIC_KEYS_FOUND: "Veřejný klíč nenalezen"
+    NO_PUBLIC_KEYS_FOUND_FOR: "Veřejný klíč pro \"%EMAIL%\" nenalezen"
+    NO_PRIVATE_KEY_FOUND: "Soukromý klíč nenalezen"
+    NO_PRIVATE_KEY_FOUND_FOR: "Soukromý klíč pro \"%EMAIL%\" nenalezen"
+    ADD_A_PUBLICK_KEY: "Přidat veřejný klíč"
     SELECT_A_PRIVATE_KEY: "Vyberte soukromý klíč"
-    UNVERIFIRED_SIGNATURE: "Unverified signature"
+    UNVERIFIRED_SIGNATURE: "Neovšřený podpis"
     DECRYPTION_ERROR: "OpenPGP decryption error"
-    GOOD_SIGNATURE: "Good signature from %USER%"
-    PGP_ERROR: "OpenPGP error: %ERROR%"
-    SPECIFY_FROM_EMAIL: "Please specify FROM email address"
-    SPECIFY_AT_LEAST_ONE_RECIPIENT: "Please specify at least one recipient"
+    GOOD_SIGNATURE: "Správný podpis od %USER%"
+    PGP_ERROR: "OpenPGP chyba: %ERROR%"
+    SPECIFY_FROM_EMAIL: "Prosím specifikujte FROM emailovou adresu"
+    SPECIFY_AT_LEAST_ONE_RECIPIENT: "Prosím zadejte alespoň jednoho příjemce"
   NOTIFICATIONS:
     INVALID_TOKEN: "Neplatný token"
     AUTH_ERROR: "Ověření selhalo"
@@ -658,16 +658,16 @@ cs_CZ:
     CANT_MOVE_MESSAGE: "Zprávu se nepodařilo přesunout"
     CANT_SAVE_MESSAGE: "Zprávu se nepodařilo uložit"
     CANT_SEND_MESSAGE: "Zprávu se nepodařilo odeslat"
-    INVALID_RECIPIENTS: "Neplatný příjemci"
+    INVALID_RECIPIENTS: "Neplatní příjemci"
     CANT_SAVE_FILTERS: "Nelze uložit filtry"
     CANT_GET_FILTERS: "Nelze načíst filtry"
-    FILTERS_ARE_NOT_CORRECT: "Filtry nejsou validní"
+    FILTERS_ARE_NOT_CORRECT: "Filtry nejsou správné"
     CANT_CREATE_FOLDER: "Složku se nepodařilo vytvořit"
     CANT_RENAME_FOLDER: "Složku se nepodařilo přejmenovat"
     CANT_DELETE_FOLDER: "Složku se nepodařilo odstranit"
-    CANT_DELETE_NON_EMPTY_FOLDER: "Nelze odstranit neprázdnou složku"
-    CANT_SUBSCRIBE_FOLDER: "Can't subscribe folder"
-    CANT_UNSUBSCRIBE_FOLDER: "Can't unsubscribe folder"
+    CANT_DELETE_NON_EMPTY_FOLDER: "Nelze odstranit složku, která není prázdná"
+    CANT_SUBSCRIBE_FOLDER: "Nelze odebírat složku"
+    CANT_UNSUBSCRIBE_FOLDER: "Nelze přestat odebírat složku"
     CANT_SAVE_SETTINGS: "Nastavení se nepodařilo uložit"
     CANT_SAVE_PLUGIN_SETTINGS: "Nastavení se nepodařilo uložit"
     DOMAIN_ALREADY_EXISTS: "Táto doména již existuje"
@@ -679,7 +679,7 @@ cs_CZ:
     LICENSING_DOMAIN_EXPIRED: "Licence pro tuto doménu vypršela."
     LICENSING_DOMAIN_BANNED: "Licence pro tuto doménu byla zablokována."
     DEMO_SEND_MESSAGE_ERROR: "Z důvodu bezpečnosti tento demo účet není oprávněn posílat zprávy na externí emaily!"
-    DEMO_ACCOUNT_ERROR: "Z důvodu bezpečnosti tento účet nemá oprávnění toto provést!"
+    DEMO_ACCOUNT_ERROR: "Z důvodu bezpečnosti tento účet nemá oprávnění k provedení!"
     ACCOUNT_ALREADY_EXISTS: "Účet už existuje"
     ACCOUNT_DOES_NOT_EXIST: "Účet neexistuje"
     MAIL_SERVER_ERROR: "Nastala chyba během přístupu na poštovní server"
@@ -688,7 +688,7 @@ cs_CZ:
   STATIC:
     BACK_LINK: "Obnovit"
     DOMAIN_LIST_DESC: "Seznam domén, ke kterým je možné přistupovat přes webmail."
-    PHP_EXSTENSIONS_ERROR_DESC: "Potřebné rošíření PHP nejsou dostupné v konfiguraci PHP!"
+    PHP_EXSTENSIONS_ERROR_DESC: "Potřebná rošíření PHP nejsou dostupná v konfiguraci PHP!"
     PHP_VERSION_ERROR_DESC: "Vaše verze PHP (%VERSION%) je nižší než požadovaná 5.3.0!"
     NO_SCRIPT_TITLE: "Tato aplikace vyžaduje JavaScript."
     NO_SCRIPT_DESC: |
@@ -700,5 +700,5 @@ cs_CZ:
       Prosím povolte podporu Cookies v nastavení vašeho internetového prohlížeče a zkuste to znovu.
     BAD_BROWSER_TITLE: "Používáte zastaralý internetový prohlížeč."
     BAD_BROWSER_DESC: |
-      Abyste mohli využívat všechny funkcie této aplikace,
+      Abyste mohli využívat všechny funkce této aplikace,
       použijte některý z následujících internetových prohlížečů:
