@@ -2,6 +2,11 @@
 
 class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePassword\ChangePasswordInterface
 {
+  /**
+	* @var string
+	*/
+	private $sEngine = 'MySQL';
+
 	/**
 	 * @var string
 	 */
@@ -56,6 +61,17 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	 * @var \MailSo\Log\Logger
 	 */
 	private $oLogger = null;
+
+	/**
+	 * @param string $sEngine
+	 *
+	 * @return \ChangePasswordPostfixAdminDriver
+	 */
+	 public function SetEngine($sEngine)
+	 {
+		 $this->sEngine = $sEngine;
+		 return $this;
+	 }
 
 	/**
 	 * @param string $sHost
@@ -215,7 +231,19 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 		{
 			try
 			{
-				$sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+				$sDsn = '';
+				switch($this->sEngine){
+					case 'MySQL':
+				  		$sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+						break;
+				  	case 'PostgreSQL':
+				 		$sDsn = 'pgsql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+						break;
+				  	default:
+				    		$sDsn = 'mysql:host='.$this->sHost.';port='.$this->iPort.';dbname='.$this->sDatabase;
+					  	break;
+				}
+
 
 				$oPdo = new \PDO($sDsn, $this->sUser, $this->sPassword);
 				$oPdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -289,7 +317,8 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 				break;
 
 			case 'mysql_encrypt':
-				$oStmt = $oPdo->prepare('SELECT ENCRYPT(?) AS encpass');
+			  if($this->sEngine == 'MySQL'){
+			  	$oStmt = $oPdo->prepare('SELECT ENCRYPT(?) AS encpass');
 				if ($oStmt->execute(array($sPassword)))
 				{
 					$aFetchResult = $oStmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -298,7 +327,10 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 						$sResult = $aFetchResult[0]['encpass'];
 					}
 				}
-				break;
+			}else{
+				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CouldNotSaveNewPassword);
+			}
+			break;
 		}
 
 		return $sResult;
