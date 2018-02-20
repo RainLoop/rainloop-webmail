@@ -42,7 +42,7 @@ class VestaChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
         return array(
             \RainLoop\Plugins\Property::NewInstance('vesta_host')->SetLabel('Vesta Host')
                 ->SetDefaultValue('')
-                ->SetDescription('Allowed patterns: {user:host-imap}, {user:host-smtp}, {user:domain}'),
+                ->SetDescription('Ex: localhost or domain.com'),
             \RainLoop\Plugins\Property::NewInstance('Vesta_port')->SetLabel('Vesta Port')
                 ->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
                 ->SetDefaultValue(8083),
