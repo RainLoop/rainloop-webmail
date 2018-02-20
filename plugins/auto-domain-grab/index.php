@@ -12,6 +12,10 @@
 
 class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	
+	private $imap_prefix = "mail.";
+	private $smtp_prefix = "mail.";
+	
 	public function Init()
 	{
 		$this->addHook('filter.smtp-credentials', 'FilterSmtpCredentials');
@@ -31,7 +35,8 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 			// Check for mail.$DOMAIN as entered value in RL settings
 			if (!empty($aImapCredentials['Host']) && 'auto' === $aImapCredentials['Host'])
 			{
-				$aImapCredentials['Host'] = \MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email());
+				$domain = substr(strrchr($oAccount->Email(), "@"), 1);
+                		$aImapCredentials['Host'] = $this->imap_prefix.$domain;
 			}
 		}
 	}
@@ -49,7 +54,8 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 			// Check for mail.$DOMAIN as entered value in RL settings
 			if (!empty($aSmtpCredentials['Host']) && 'auto' === $aSmtpCredentials['Host'])
 			{
-				$aSmtpCredentials['Host'] = \MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email());
+				$domain = substr(strrchr($oAccount->Email(), "@"), 1);
+                		$aSmtpCredentials['Host'] = $this->smtp_prefix.$domain;
 			}
 		}
 	}
