@@ -8696,12 +8696,14 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 					if ($bDownload || $sLoadedData)
 					{
-						\header('Content-Type: '.$sContentTypeOut);
-						\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
+						if (!headers_sent()) {
+							\header('Content-Type: '.$sContentTypeOut);
+							\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
 							\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
 
-						\header('Accept-Ranges: bytes');
-						\header('Content-Transfer-Encoding: binary');
+							\header('Accept-Ranges: bytes');
+							\header('Content-Transfer-Encoding: binary');
+						}
 
 						if ($bIsRangeRequest && !$sLoadedData)
 						{
