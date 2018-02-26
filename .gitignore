@@ -19,6 +19,8 @@
 /build/dist
 /build/tmp
 /build/docker
+/.docker/.cache
+/.docker/mail/config
 /dist
 /data
 .DS_Store

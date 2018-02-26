@@ -1,4 +1,5 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
+/* eslint-disable  */
 'use strict';
 
 var
@@ -86,8 +87,8 @@ function webpackCallback(callback)
 			}
 		}
 
-        callback();
-    };
+		callback();
+	};
 }
 
 function webpackError(err) {
@@ -489,14 +490,6 @@ gulp.task('rainloop:shortname', ['rainloop:zip'], function(callback) {
 	copyFile(cfg.destPath + cfg.zipFile, cfg.destPath + cfg.zipFileShort, callback);
 });
 
-gulp.task('rainloop:copy-dist', ['rainloop:shortname'], function(callback) {
-	var newPath = cfg.destPath.replace('build/dist/releases', 'dist/releases');
-	fs.mkdirSync(newPath, '0777', true);
-	copyFile(cfg.destPath + cfg.zipFile, newPath + cfg.zipFile, function() {
-		copyFile(cfg.destPath + cfg.zipFileShort, newPath + cfg.zipFileShort, callback);
-	});
-});
-
 // build (OwnCloud)
 gulp.task('rainloop:owncloud:copy', function() {
 
@@ -568,14 +561,6 @@ gulp.task('rainloop:owncloud:shortname', ['rainloop:owncloud:zip'], function(cal
 	copyFile(cfg.destPath + cfg.zipFile, cfg.destPath + cfg.zipFileShort, callback);
 });
 
-gulp.task('rainloop:owncloud:copy-dist', ['rainloop:owncloud:shortname'], function(callback) {
-	var newPath = cfg.destPath.replace('build/dist/releases', 'dist/releases');
-	fs.mkdirSync(newPath, '0777', true);
-	copyFile(cfg.destPath + cfg.zipFile, newPath + cfg.zipFile, function() {
-		copyFile(cfg.destPath + cfg.zipFileShort, newPath + cfg.zipFileShort, callback);
-	});
-});
-
 gulp.task('plugins:build', [], function() {
 
 	var name = argv.name || '';
@@ -598,14 +583,6 @@ gulp.task('plugins:build', [], function() {
 		.pipe(gulp.dest(cfg.destPath));
 });
 
-gulp.task('plugins:build:copy-dist', ['plugins:build'], function(callback) {
-	var newPath = cfg.destPath.replace('build/dist/plugins', 'dist/plugins');
-	fs.mkdirSync(newPath, '0777', true);
-	copyFile(cfg.destPath + cfg.zipFile, newPath + cfg.zipFile, callback);
-});
-
-gulp.task('plugins:build:docker', ['plugins:build', 'plugins:build:copy-dist']);
-
 // main
 gulp.task('moment', ['moment:locales']);
 gulp.task('js', ['js:libs', 'js:min', 'js:validate']);
@@ -618,12 +595,10 @@ gulp.task('clean', ['js:clean', 'css:clean', 'assets:clean']);
 gulp.task('rainloop:start', ['rainloop:copy', 'rainloop:setup']);
 
 gulp.task('rainloop', ['rainloop:start', 'rainloop:zip', 'rainloop:clean', 'rainloop:shortname']);
-gulp.task('rainloop:docker', ['rainloop', 'rainloop:copy-dist']);
 
 gulp.task('owncloud', ['rainloop:owncloud:copy',
 	'rainloop:owncloud:copy-rainloop', 'rainloop:owncloud:copy-rainloop:clean',
 	'rainloop:owncloud:setup', 'rainloop:owncloud:zip', 'rainloop:owncloud:clean', 'rainloop:owncloud:shortname']);
-gulp.task('owncloud:docker', ['owncloud', 'rainloop:owncloud:copy-dist']);
 
 // default
 gulp.task('default', function(callback) {
@@ -646,10 +621,6 @@ gulp.task('all', function(callback) {
 	runSequence('rainloop', 'owncloud', callback);
 });
 
-gulp.task('all:docker', function(callback) {
-	runSequence('rainloop:docker', 'owncloud:docker', callback);
-});
-
 gulp.task('d', ['default']);
 gulp.task('w', ['watch']);
 gulp.task('l', ['js:libs']);
@@ -659,4 +630,3 @@ gulp.task('b', ['build']);
 gulp.task('o', ['owncloud']);
 
 gulp.task('p', ['plugins:build']);
-gulp.task('p:d', ['plugins:build:docker']);

@@ -1698,11 +1698,7 @@ elliptic@^6.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-email-addresses@3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/email-addresses/-/email-addresses-3.0.1.tgz#c1fc20c189e7f96d4012d375db5feaccdd24391c"
-
-emailjs-addressparser@^1.0.1:
+emailjs-addressparser@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/emailjs-addressparser/-/emailjs-addressparser-1.0.1.tgz#8b19b38f6ee67ba176a31a97f45678dc12e549cf"
 
@@ -3173,19 +3169,11 @@ istextorbinary@1.0.2:
     binaryextensions "~1.0.0"
     textextensions "~1.0.0"
 
-jasmine-reporters@~0.2.1:
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/jasmine-reporters/-/jasmine-reporters-0.2.1.tgz#395f6e5170692de1a966cd95a70d7a37bf3f2bc3"
-
 jquery-backstretch@2.1.16:
   version "2.1.16"
   resolved "https://registry.yarnpkg.com/jquery-backstretch/-/jquery-backstretch-2.1.16.tgz#4ee7547dcb85cf69eed2639cac0c9131651dc5e7"
   dependencies:
     jquery "^3.1.1"
-
-jquery-lazyload@1.9.7:
-  version "1.9.7"
-  resolved "https://registry.yarnpkg.com/jquery-lazyload/-/jquery-lazyload-1.9.7.tgz#9982b388c533c0b611214b3c5aaa0b9fede071f7"
 
 jquery-mousewheel@3.1.13:
   version "3.1.13"
@@ -3303,24 +3291,17 @@ klaw@^1.0.0:
   optionalDependencies:
     graceful-fs "^4.1.9"
 
-"knockout-projections@github:stevesanderson/knockout-projections#v1.1.0":
-  version "1.1.0"
-  resolved "https://codeload.github.com/stevesanderson/knockout-projections/tar.gz/01cb07b27b305c0240de7aa92687110e68432706"
-  dependencies:
-    jasmine-reporters "~0.2.1"
-    knockout "~3.0.0"
-
 knockout-sortable@0.14.1:
   version "0.14.1"
   resolved "https://registry.yarnpkg.com/knockout-sortable/-/knockout-sortable-0.14.1.tgz#bdf40412451969729d0dd37c61bb7333cdd46e1e"
 
+knockout-transformations@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/knockout-transformations/-/knockout-transformations-2.1.0.tgz#c9a9148dbe1649dc00518eccea704379aadb0097"
+
 knockout@3.4.2:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/knockout/-/knockout-3.4.2.tgz#e87958de77ad1e936f7ce645bab8b5d7c456d937"
-
-knockout@~3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/knockout/-/knockout-3.0.0.tgz#fd8d43ee446237cde7df650f5c7dbcf68ae49a80"
 
 lazy-cache@^1.0.3:
   version "1.0.4"

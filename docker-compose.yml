@@ -1,24 +1,83 @@
 version: '2'
 services:
-  node:
-    image: node:8.4-alpine
-    working_dir: /usr/app
-    command: sh -c 'yarn install && yarn global add gulp@3.9.1 && gulp all:docker'
+  mail:
+    image: tvial/docker-mailserver:latest
+    hostname: mail
+    container_name: rl.mail
+    domainname: domain.com
+    restart: always
+    ports:
+      - 25:25
+      - 143:143
     volumes:
-      - ./dev:/usr/app/dev
-      - ./rainloop:/usr/app/rainloop
-      - ./assets:/usr/app/assets
-      - ./vendors:/usr/app/vendors
-      - ./build/owncloud:/usr/app/build/owncloud
-      - ./dist:/usr/app/dist
+      - maildata:/var/mail
+      - mailstate:/var/mail-state
+      - ./.docker/mail/config/:/tmp/docker-mailserver/
+    environment:
+      - ENABLE_SPAMASSASSIN=0
+      - ENABLE_CLAMAV=0
+      - ENABLE_FAIL2BAN=0
+      - ENABLE_POSTGREY=0
+      - ENABLE_MANAGESIEVE=1
+      - ONE_DIR=1
+      - DMS_DEBUG=0
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+  db:
+    image: mysql:5.7
+    hostname: db
+    container_name: rl.db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: rainloop
+      MYSQL_PASSWORD: rainloop
+      MYSQL_DATABASE: rainloop
+    volumes:
+      - mysql:/var/lib/mysql
+      - ./.docker/.cache/mysql/tmp:/tmp
+  php:
+    build:
+      context: ./.docker/php
+    hostname: php
+    container_name: rl.php
+    expose:
+      - 9000
+    depends_on:
+      - db
+      - mail
+    volumes:
+      - ./:/var/www
+      - ./.docker/php/rainloop.ini:/usr/local/etc/php/conf.d/rainloop.ini
+      - ./.docker/.cache/php/tmp:/tmp
+  node:
+    build:
+      context: ./.docker/node
+    hostname: node
+    container_name: rl.node
+    working_dir: /var/www
+    command: sh -c 'yarn install'
+    volumes:
+      - ./:/var/www
+      - ./.docker/.cache/node/tmp:/tmp
+  nginx:
+    image: nginx:latest
+    hostname: nginx
+    container_name: rl.nginx
+    depends_on:
+      - php
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./.docker/.cache/nginx/tmp:/tmp
 
-      - ./.eslintrc.js:/usr/app/.eslintrc.js
-      - ./gulpfile.js:/usr/app/gulpfile.js
-      - ./index.php:/usr/app/index.php
-      - ./package.json:/usr/app/package.json
-      - ./webpack.config.builder.js:/usr/app/webpack.config.builder.js
-      - ./webpack.config.js:/usr/app/webpack.config.js
-      - ./yarn.lock:/usr/app/yarn.lock
-
-      - ./build/docker/node_modules:/usr/app/node_modules
-      - ./build/docker/tmp:/tmp
+volumes:
+  mysql:
+    driver: local
+  maildata:
+    driver: local
+  mailstate:
+    driver: local
