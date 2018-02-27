@@ -157,7 +157,7 @@ class EmailModel
 	}
 
 	static splitEmailLine(line) {
-		const parsedResult = addressparser.parse(line);
+		const parsedResult = addressparser(line);
 		if (isNonEmptyArray(parsedResult))
 		{
 			const result = [];
@@ -182,7 +182,7 @@ class EmailModel
 	}
 
 	static parseEmailLine(line) {
-		const parsedResult = addressparser.parse(line);
+		const parsedResult = addressparser(line);
 		if (isNonEmptyArray(parsedResult))
 		{
 			return _.compact(parsedResult.map(
@@ -207,7 +207,7 @@ class EmailModel
 			return false;
 		}
 
-		const result = addressparser.parse(emailAddress);
+		const result = addressparser(emailAddress);
 		if (isNonEmptyArray(result) && result[0])
 		{
 			this.name = result[0].name || '';
