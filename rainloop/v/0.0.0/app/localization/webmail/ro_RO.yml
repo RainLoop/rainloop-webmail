@@ -4,19 +4,22 @@ ro_RO:
     LABEL_LOGIN: "Conectare"
     LABEL_PASSWORD: "Parolă"
     LABEL_SIGN_ME: "Ține-mă minte"
-    LABEL_VERIFICATION_CODE: "Verification Code"
-    LABEL_DONT_ASK_VERIFICATION_CODE: "Don't ask for the code for 2 weeks"
+    LABEL_VERIFICATION_CODE: "Cod de verificare"
+    LABEL_DONT_ASK_VERIFICATION_CODE: "Nu mai cereți codul timp de 2 săptămâni"
     BUTTON_SIGN_IN: "Conectare"
-    TITLE_SIGN_IN_GOOGLE: "Войти, используя Google"
-    TITLE_SIGN_IN_FACEBOOK: "Войти, используя Facebook"
-    TITLE_SIGN_IN_TWITTER: "Войти, используя Twitter"
-    LABEL_FORGOT_PASSWORD: "Forgot password"
-    LABEL_REGISTRATION: "Registration"
+    TITLE_SIGN_IN_GOOGLE: "Conectați-vă cu Google"
+    TITLE_SIGN_IN_FACEBOOK: "Conectați-vă cu Facebook"
+    TITLE_SIGN_IN_TWITTER: "Conectați-vă cu Twitter"
+    LABEL_FORGOT_PASSWORD: "Am uitat parola"
+    LABEL_REGISTRATION: "Înregistrare"
   TOP_TOOLBAR:
     BUTTON_ADD_ACCOUNT: "Adaugă un cont"
     BUTTON_SETTINGS: "Opțiuni"
     BUTTON_HELP: "Help"
     BUTTON_LOGOUT: "Deconectare"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Versiunea de mobil"
+    BUTTON_DESKTOP_VERSION: "Versiunea desktop"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Caută în mesaje"
     TITLE_ADV: "Căutare avansată"
@@ -24,7 +27,7 @@ ro_RO:
     LABEL_ADV_TO: "către"
     LABEL_ADV_SUBJECT: "Subiect"
     LABEL_ADV_TEXT: "Conținut"
-    LABEL_ADV_HAS_ATTACHMENT: "Has attachment"
+    LABEL_ADV_HAS_ATTACHMENT: "Are atașament"
     LABEL_ADV_HAS_ATTACHMENTS: "Atașamente"
     LABEL_ADV_FLAGGED: "Importante"
     LABEL_ADV_UNSEEN: "Necitit"
@@ -44,12 +47,13 @@ ro_RO:
     LOADING: "Se îcarcă..."
     GALLERY_PREV: "Precedentul (Стрелка ←)"
     GALLERY_NEXT: "Următorul (Стрелка →)"
-    GALLERY_COUNTER: "%curr% из %total%"
-    IMAGE_ERROR: "<a href=\"%url%\" target=\"_blank\">Изображение</a> не загрузилось."
-    AJAX_ERROR: "<a href=\"%url%\" target=\"_blank\">Данные</a> не загрузились."
+    GALLERY_COUNTER: "%curr% din %total%"
+    IMAGE_ERROR: "<a href=\"%url%\" target=\"_blank\">Imaginea</a> nu a putut fi încărcată"
+    AJAX_ERROR: "<a href=\"%url%\" target=\"_blank\">Conținutul</a> nu a putut fi încărcat"
   FOLDER_LIST:
     BUTTON_COMPOSE: "Compune"
     BUTTON_CONTACTS: "Contacte"
+    BUTTON_NEW_MESSAGE: "Mesaj nou"
     INBOX_NAME: "Intrări"
     SENT_NAME: "Trimise"
     DRAFTS_NAME: "Salvate"
@@ -84,22 +88,23 @@ ro_RO:
     EMPTY_LIST: "Nimic aici, deocamdată"
     EMPTY_SEARCH_LIST: "Nu am găsit nimic."
     SEARCH_RESULT_FOR: "Rezultat căutare \"%SEARCH%\""
-    BACK_TO_MESSAGE_LIST: "back to message list"
+    BACK_TO_MESSAGE_LIST: "înapoi la lista de mesaje"
     LIST_LOADING: "Caut..."
     EMPTY_SUBJECT_TEXT: "(nici un subiect)"
-    PUT_MESSAGE_HERE: "EROARE CONTACTATI ADIMISTRATORUL!(trimite-ti un prt.scr)"
+    PUT_MESSAGE_HERE: "EROARE! CONTACTAȚI ADIMISTRATORUL! (trimiteți un prt.scr)"
     TODAY_AT: "azi %TIME%"
     YESTERDAY_AT: "ieri %TIME%"
     SEARCH_PLACEHOLDER: "caută mesaje"
     NEW_MESSAGE_NOTIFICATION: "Aveți %COUNT% mesaje noi!"
-    QUOTA_SIZE: "A-ți folosit <strong>%SIZE% (%PROC%%)</strong> din <strong>%LIMIT%</strong>"
+    QUOTA_SIZE: "Ați folosit <strong>%SIZE% (%PROC%%)</strong> din <strong>%LIMIT%</strong>"
   MESSAGE:
     BUTTON_EDIT: "Editează"
     BUTTON_BACK: "Înapoi"
     BUTTON_CLOSE: "Închide"
     BUTTON_DELETE: "Șterge"
+    BUTTON_UNSUBSCRIBE: "Dezabonare de la această listă"
     BUTTON_ARCHIVE: "Archive"
-    BUTTON_SPAM: "SPAM"
+    BUTTON_SPAM: "Spam"
     BUTTON_NOT_SPAM: "Not Spam"
     BUTTON_MOVE_TO: "Mută la"
     BUTTON_MORE: "Mai mult"
@@ -112,9 +117,9 @@ ro_RO:
     BUTTON_NOTIFY_READ_RECEIPT: "Anunță expeditorul că am citit mesajul"
     BUTTON_IN_NEW_WINDOW: "Deschide într-o fereastră separată"
     BUTTON_THREAD_LIST: "Thread list"
-    BUTTON_THREAD_PREV: "Previous"
-    BUTTON_THREAD_NEXT: "Next"
-    BUTTON_THREAD_MORE: "More messages"
+    BUTTON_THREAD_PREV: "Înapoi"
+    BUTTON_THREAD_NEXT: "Înainte"
+    BUTTON_THREAD_MORE: "Mai multe mesaje"
     MENU_HEADERS: "Vezi titlurile"
     MENU_VIEW_ORIGINAL: "Vezi originalul"
     MENU_DOWNLOAD_ORIGINAL: "Descărcați ca fișier eml"
@@ -139,19 +144,21 @@ ro_RO:
     PRINT_LABEL_SUBJECT: "Subiect"
     PRINT_LABEL_ATTACHMENTS: "Atașament"
     MESSAGE_LOADING: "Se încarcă..."
-    MESSAGE_VIEW_DESC: "Selectați un mesaj pentru al vizualiza."
-    PGP_PASSWORD_INPUT_PLACEHOLDER: "Password"
+    MESSAGE_VIEW_DESC: "Selectați un mesaj pentru a-l vizualiza."
+    MESSAGE_VIEW_MOVE_DESC: "Faceți clic pe numele dosarului din panoul din stânga pentru a selecta destinația."
+    PGP_PASSWORD_INPUT_PLACEHOLDER: "Parolă"
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP signed message (click to verify)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP encrypted message (click to decrypt)"
     LINK_DOWNLOAD_AS_ZIP: "Download as zip"
     LINK_SAVE_TO_OWNCLOUD: "Save to ownCloud"
+    LINK_SAVE_TO_CLOUD: "Salvați în Cloud"
     LINK_SAVE_TO_DROPBOX: "Save to Dropbox"
   READ_RECEIPT:
     SUBJECT: "Mesajul dumneavoastră a fost citit - %SUBJECT%"
     BODY: |
-      Aceasta este o confirmare de citire pentru mesajul trimis la adresa %READ-RECEIPT%.
+        Aceasta este o confirmare de citire pentru mesajul trimis la adresa %READ-RECEIPT%.
 
-      Примечание: Această notificare de citire însemnă că mesajul ajuns la destinatar. Această funție nu garanteză că destinatarul a citit conținutul mesajului
+        Примечание: Această notificare de citire însemnă că mesajul ajuns la destinatar. Această funție nu garanteză că destinatarul a citit conținutul mesajului
   SUGGESTIONS:
     SEARCHING_DESC: "Căutare..."
   CONTACTS:
@@ -168,7 +175,7 @@ ro_RO:
     EMPTY_LIST: "Agenda este goală"
     EMPTY_SEARCH: "Nu am găsit nimic."
     CLEAR_SEARCH: "Golește căutarea"
-    CONTACT_VIEW_DESC: "Selectați un contact pentru al vizualiza"
+    CONTACT_VIEW_DESC: "Selectați un contact pentru a-l vizualiza"
     LABEL_DISPLAY_NAME: "Nume complet"
     LABEL_EMAIL: "Adresa de eMail"
     LABEL_PHONE: "Тelefon"
@@ -358,15 +365,15 @@ ro_RO:
     BUTTON_CANCEL: "Anulează"
     BUTTON_CLOSE: "Închide"
     NOTIFICATION_SENT: |
-      Вы еще не выбрали системную папку "Отправленные", в которую складываются все сообщения после отправки.
-      Если вы не хотите сохранять отправленные письма, пожалуйста, выберите пункт "Не использовать".
+        Вы еще не выбрали системную папку "Отправленные", в которую складываются все сообщения после отправки.
+        Если вы не хотите сохранять отправленные письма, пожалуйста, выберите пункт "Не использовать".
     NOTIFICATION_DRAFTS: "Вы еще не выбрали системную папку \"Черновики\", в которую складываются все сохраненые сообщения."
     NOTIFICATION_SPAM: |
-      Вы еще не выбрали системную папку "Спам", в которую складываются все спамовые сообщения.
-      Если же вы хотите удалять письма сразу, пожалуйста, выберите пункт "Не использовать".
+        Вы еще не выбрали системную папку "Спам", в которую складываются все спамовые сообщения.
+        Если же вы хотите удалять письма сразу, пожалуйста, выберите пункт "Не использовать".
     NOTIFICATION_TRASH: |
-      Вы еще не выбрали системную папку "Удаленные", в которую складываются все сообщения после удаления.
-      Если же вы хотите удалять письма сразу, пожалуйста, выберите пункт "Не использовать".
+        Вы еще не выбрали системную папку "Удаленные", в которую складываются все сообщения после удаления.
+        Если же вы хотите удалять письма сразу, пожалуйста, выберите пункт "Не использовать".
     NOTIFICATION_ARCHIVE: "You haven't selected \"Archive\" system folder achived messages are placed to.\n"
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-Step Verification"
@@ -409,6 +416,7 @@ ro_RO:
     ERROR_FILE_TYPE: "Tip de fișier invalid"
     ERROR_UNKNOWN: "Eroare la încărcarea de fișiere"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXT"
     TEXT_SWITCHER_RICH_FORMATTING: "Text formatat"
     TEXT_SWITCHER_CONFIRM: "Formatarea textului și imaginile vor fi pierdute. Sigur doriți să continuați?"
   SETTINGS_LABELS:
@@ -451,9 +459,11 @@ ro_RO:
     LABEL_ADD_SIGNATURE_TO_ALL: "Adăugă semnătura la toate mesajele trimise"
   SETTINGS_SECURITY:
     LEGEND_SECURITY: "Security"
+    LABEL_CONFIGURE_TWO_FACTOR: "Configurați verificarea în 2 pași"
     LABEL_AUTOLOGOUT: "Auto Logout"
     AUTOLOGIN_NEVER_OPTION_NAME: "Never"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minute(s)"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% oră(ore)"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Setări de bază"
     LABEL_LANGUAGE: "Limbă"
@@ -519,6 +529,7 @@ ro_RO:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Lista de dosare"
     BUTTON_CREATE: "Creare dosar"
+    BUTTON_SYSTEM: "System Folders"
     BUTTON_DELETE: "Șterge"
     BUTTON_SUBSCRIBE: "Abonare"
     BUTTON_UNSUBSCRIBE: "Dezabonare"
@@ -569,6 +580,7 @@ ro_RO:
     TITLE_PUBLIC: "Public"
     DELETING_ASK: "Are you sure?"
     GENERATE_ONLY_HTTPS: "HTTPS only"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Salvează ciorna automat"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Keyboard shortcuts help"
     TAB_MAILBOX: "Mailbox"
@@ -588,6 +600,7 @@ ro_RO:
     LABEL_MOVE: "Move"
     LABEL_READ: "Read selected messages"
     LABEL_UNREAD: "Unread selected messages"
+    LABEL_IMPORTANT: "Important, flag selected messages"
     LABEL_SEARCH: "Search"
     LABEL_CANCEL_SEARCH: "Cancel search"
     LABEL_FULLSCREEN_ENTER: "Fullscreen (Preview pane layout)"
@@ -614,6 +627,7 @@ ro_RO:
     NO_PRIVATE_KEY_FOUND: "No private key found"
     NO_PRIVATE_KEY_FOUND_FOR: "No private key found for \"%EMAIL%\" email"
     ADD_A_PUBLICK_KEY: "Add a public key"
+    SELECT_A_PRIVATE_KEY: "Setectați o cheie privată"
     UNVERIFIRED_SIGNATURE: "Unverified signature"
     DECRYPTION_ERROR: "OpenPGP decryption error"
     GOOD_SIGNATURE: "Good signature from %USER%"
@@ -674,6 +688,7 @@ ro_RO:
     DEMO_SEND_MESSAGE_ERROR: "Cont demo trimite e-mail la adresele de e-mail externe este interzisă!"
     DEMO_ACCOUNT_ERROR: "For security purposes, this account is not allowed for this action!"
     ACCOUNT_ALREADY_EXISTS: "Contul deja există"
+    ACCOUNT_DOES_NOT_EXIST: "contul nu există"
     MAIL_SERVER_ERROR: "Nu am reușit să accesez serverul de e-mail"
     INVALID_INPUT_ARGUMENT: "Invalid input argument"
     UNKNOWN_ERROR: "Eroare necunoscută"
@@ -684,13 +699,13 @@ ro_RO:
     PHP_VERSION_ERROR_DESC: "Versiunea dvs. de PHP (%VERSION%) este mai mica de cea dorită, 5.3.0!"
     NO_SCRIPT_TITLE: "Pentru rulare este necesar JavaScript."
     NO_SCRIPT_DESC: |
-      Aparent, JavaScript nu este instalat, sau nu este acceptat de browserul dumneavoastră.
-      Activați JavaScript, schimband optiunile browserului dvs., apoi încercați din nou.
+        Aparent, JavaScript nu este instalat, sau nu este acceptat de browserul dumneavoastră.
+        Activați JavaScript, schimband optiunile browserului dvs., apoi încercați din nou.
     NO_COOKIE_TITLE: "Cererea necesită Cookie-uri."
     NO_COOKIE_DESC: |
-      Aparent, Cookie sau nu este acceptat de browser-ul dvs. sau oprit.
-      Întoarceți Cookie, schimband optiunile browserului dvs., apoi încercați din nou.
+        Aparent, Cookie sau nu este acceptat de browser-ul dvs. sau oprit.
+        Întoarceți Cookie, schimband optiunile browserului dvs., apoi încercați din nou.
     BAD_BROWSER_TITLE: "Browser-ul dvs. este depășit."
     BAD_BROWSER_DESC: |
-      Pentru a utiliza toate caracteristicile cererii,
-      descărcați și instalați unul dintre aceste browsere:
+        Pentru a utiliza toate caracteristicile cererii,
+        descărcați și instalați unul dintre aceste browsere:

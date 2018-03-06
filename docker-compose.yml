@@ -73,6 +73,17 @@ services:
       - ./:/var/www
       - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./.docker/.cache/nginx/tmp:/tmp
+  tx:
+    build:
+      context: ./.docker/tx
+    hostname: tx
+    container_name: rl.tx
+    working_dir: /var/www
+    command: sh -c 'tx --version'
+    volumes:
+      - ./:/var/www
+      - ./.docker/.cache/tx/root:/root
+      - ./.docker/.cache/tx/tmp:/tmp
 
 volumes:
   mysql:
