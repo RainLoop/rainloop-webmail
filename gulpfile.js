@@ -168,9 +168,9 @@ cfg.paths.css = {
 			'vendors/flags/flags-fixed.css',
 			'node_modules/opentip/css/opentip.css',
 			'node_modules/pikaday/css/pikaday.css',
-			'node_modules/lightgallery/dist/css/lightgallery.min.css',
-			'node_modules/lightgallery/dist/css/lg-transitions.min.css',
-			'node_modules/Progress.js/minified/progressjs.min.css',
+			'vendors/lightgallery/dist/css/lightgallery.min.css',
+			'vendors/lightgallery/dist/css/lg-transitions.min.css',
+			'vendors/Progress.js/minified/progressjs.min.css',
 			'dev/Styles/_progressjs.css'
 		]
 	},
@@ -219,11 +219,11 @@ cfg.paths.js = {
 			'node_modules/autolinker/dist/Autolinker.min.js',
 			'node_modules/opentip/lib/opentip.js',
 			'node_modules/opentip/lib/adapter-jquery.js',
-			'node_modules/lightgallery/dist/js/lightgallery.min.js',
-			'node_modules/lightgallery/dist/js/lg-fullscreen.min.js',
-			'node_modules/lightgallery/dist/js/lg-thumbnail.min.js',
-			'node_modules/lightgallery/dist/js/lg-zoom.min.js',
-			'node_modules/lightgallery/dist/js/lg-autoplay.min.js',
+			'vendors/lightgallery/dist/js/lightgallery.min.js',
+			'vendors/lightgallery/dist/js/lg-fullscreen.min.js',
+			'vendors/lightgallery/dist/js/lg-thumbnail.min.js',
+			'vendors/lightgallery/dist/js/lg-zoom.min.js',
+			'vendors/lightgallery/dist/js/lg-autoplay.min.js',
 			'node_modules/ifvisible.js/src/ifvisible.min.js'
 		]
 	},
@@ -236,7 +236,7 @@ cfg.paths.js = {
 };
 
 
-// assers
+// assets
 
 gulp.task('assets:clean', function() {
 	return cleanDir(cfg.paths.static);
@@ -396,7 +396,7 @@ gulp.task('fontastic-fonts:clear', function() {
 });
 
 gulp.task('lightgallery-fonts:copy', ['lightgallery-fonts:clear'], function() {
-	return gulp.src('node_modules/lightgallery/dist/fonts/lg.*')
+	return gulp.src('vendors/lightgallery/dist/fonts/lg.*')
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/fonts'));
 });
 

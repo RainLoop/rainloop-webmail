@@ -1,5 +1,5 @@
 
-var
+const
 	path = require('path'),
 	webpack = require('webpack'),
 	devPath = path.resolve(__dirname, 'dev'),
@@ -39,8 +39,8 @@ module.exports = function(publicPath, pro) {
 			modules: [devPath, 'node_modules'],
 			extensions: ['.js'],
 			alias: {
-				'Opentip$': __dirname  + '/dev/External/Opentip.js',
-				'ko$': __dirname  + '/dev/External/ko.js'
+				'Opentip$': path.join(__dirname, 'dev', 'External', 'Opentip.js'),
+				'ko$': path.join(__dirname, 'dev', 'External', 'ko.js')
 			}
 		},
 		module: {

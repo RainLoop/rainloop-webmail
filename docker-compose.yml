@@ -68,9 +68,11 @@ services:
     depends_on:
       - php
     ports:
+      - 443:443
       - 80:80
     volumes:
       - ./:/var/www
+      - ./.docker/nginx/ssl:/etc/nginx/ssl
       - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./.docker/.cache/nginx/tmp:/tmp
   tx:

@@ -1,22 +1,21 @@
 #!make
 
-rebuild: stop
+rebuild: _down
 	docker-compose build --no-cache
 
-up:
+up: _up status
+_up:
 	docker-compose up -d
-	@$(MAKE) status
 
-stop:
+stop: _stop status
+_stop:
 	docker-compose stop
-	@$(MAKE) status
 
-down:
+down: _down status
+_down:
 	docker-compose down
 
-restart:
-	@$(MAKE) stop
-	@$(MAKE) up
+restart: _stop _up status
 
 status:
 	@docker-compose ps
@@ -30,8 +29,7 @@ console-tx:
 	@docker-compose run --no-deps --rm tx sh
 console-php:
 	@docker-compose exec php sh
-console:
-	@$(MAKE) console-node
+console: console-node
 
 logs:
 	@docker-compose logs --tail=100 -f
@@ -48,9 +46,19 @@ logs-mail:
 logs-tx:
 	@docker-compose logs --tail=100 -f tx
 
+rl-lint:
+	@docker-compose run --no-deps --rm node gulp lint
 rl-dev:
-	@docker-compose run --no-deps --rm node gulp build
+	@docker-compose run --no-deps --rm node gulp
+rl-watch:
+	@docker-compose run --no-deps --rm node gulp watch
 rl-build:
 	@docker-compose run --no-deps --rm node gulp all
 rl-build-pro:
 	@docker-compose run --no-deps --rm node gulp all --pro
+
+gpg:
+	docker run -it --rm -w=/var/www \
+		-v $(shell pwd)/.docker/.cache/.gnupg:/root/.gnupg \
+		-v $(shell pwd):/var/www \
+		ubuntu:latest bash

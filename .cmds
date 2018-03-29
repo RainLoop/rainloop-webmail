@@ -11,3 +11,7 @@ yarn outdated
 
 # webpack
 webpack --color --watch
+
+#
+gpg --import x
+gpg --detach-sign --armor --openpgp -u 87DA4591 x

@@ -3,7 +3,7 @@ import window from 'window';
 import elementDatasetPolyfill from 'element-dataset';
 
 import {Promise} from 'es6-promise-polyfill/promise.js';
-import {progressJs} from '../node_modules/Progress.js/src/progress.js';
+import {progressJs} from '../vendors/Progress.js/src/progress.js';
 
 window.Promise = window.Promise || Promise;
 window.progressJs = window.progressJs || progressJs();
