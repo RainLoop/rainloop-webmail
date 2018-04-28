@@ -155,10 +155,10 @@ sk_SK:
   READ_RECEIPT:
     SUBJECT: "Return Receipt (displayed) - %SUBJECT%"
     BODY: |
-      This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
+        This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
 
-      Note: This Return Receipt only acknowledges that the message was displayed on the recipient's computer.
-      There is no guarantee that the recipient has read or understood the message contents.
+        Note: This Return Receipt only acknowledges that the message was displayed on the recipient's computer.
+        There is no guarantee that the recipient has read or understood the message contents.
   SUGGESTIONS:
     SEARCHING_DESC: "Hľadám..."
   CONTACTS:
@@ -365,15 +365,15 @@ sk_SK:
     BUTTON_CANCEL: "Zrušiť"
     BUTTON_CLOSE: "Zatvoriť"
     NOTIFICATION_SENT: |
-      Nepriradili ste systémový priečinok "Odoslané" kam budú správy presunuté po ich odoslaní.
-      Ak nechcete ukladať odoslané správy, vyberte prosím možnosť "Nepoužívať".
+        Nepriradili ste systémový priečinok "Odoslané" kam budú správy presunuté po ich odoslaní.
+        Ak nechcete ukladať odoslané správy, vyberte prosím možnosť "Nepoužívať".
     NOTIFICATION_DRAFTS: "Nepriradili ste systémový priečinok pre \"Koncepty\" kam sú správy ukladané počas ich písania."
     NOTIFICATION_SPAM: |
-      Nepriradili ste systémový priečinok pre "Spam" kam sú ukladané nevyžiadané správy.
-      Ak si želáte takéto správy odstraňovať natrvalo, vyberte prosím možnosť "Nepoužívať".
+        Nepriradili ste systémový priečinok pre "Spam" kam sú ukladané nevyžiadané správy.
+        Ak si želáte takéto správy odstraňovať natrvalo, vyberte prosím možnosť "Nepoužívať".
     NOTIFICATION_TRASH: |
-      Nepriradili ste systémový priečinok pre "Kôš" kam sú správy presunuté po ich odstránení.
-      Ak si želáte takéto správy odstraňovať natrvalo, vyberte prosím možnosť "Nepoužívať".
+        Nepriradili ste systémový priečinok pre "Kôš" kam sú správy presunuté po ich odstránení.
+        Ak si želáte takéto správy odstraňovať natrvalo, vyberte prosím možnosť "Nepoužívať".
     NOTIFICATION_ARCHIVE: "You haven't selected \"Archive\" system folder achived messages are placed to.\n"
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-Step Verification"
@@ -698,13 +698,13 @@ sk_SK:
     PHP_VERSION_ERROR_DESC: "Your PHP version (%VERSION%) is lower than the minimal required 5.3.0!"
     NO_SCRIPT_TITLE: "Táto aplikácia vyžaduje JavaScript."
     NO_SCRIPT_DESC: |
-      Váš internetový prehliadač nepodporuje JavaScript.
-      Prosím povoľte podporu JavaScriptu v nastaveniach vášho internetového prehliadača a skúste to znova.
+        Váš internetový prehliadač nepodporuje JavaScript.
+        Prosím povoľte podporu JavaScriptu v nastaveniach vášho internetového prehliadača a skúste to znova.
     NO_COOKIE_TITLE: "Táto aplikácia vyžaduje podporu Cookies."
     NO_COOKIE_DESC: |
-      Váš internetový prehliadač nepodporuje Cookies.
-      Prosím povoľte podporu Cookies v nastaveniach vášho internetového prehliadača a skúste to znova.
+        Váš internetový prehliadač nepodporuje Cookies.
+        Prosím povoľte podporu Cookies v nastaveniach vášho internetového prehliadača a skúste to znova.
     BAD_BROWSER_TITLE: "Používate zastaralý internetový prehliadač."
     BAD_BROWSER_DESC: |
-      Aby ste mohli využívať všetky funkcie tejto aplikácie,
-      použite niektorý z nasledujúcich internetových prehliadačov:
+        Aby ste mohli využívať všetky funkcie tejto aplikácie,
+        použite niektorý z nasledujúcich internetových prehliadačov:

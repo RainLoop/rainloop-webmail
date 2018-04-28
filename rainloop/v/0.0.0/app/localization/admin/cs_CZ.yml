@@ -35,10 +35,10 @@ cs_CZ:
     LABEL_ALLOW_TEMPLATES: "Povolit šablony"
     ALERT_WARNING: "Upozornění!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Používáte výchozí administrátorské heslo.
-      <br />
-      Z bezpečnostních důvodů jeji prosím
-      <strong><a href="#/security">změnte</a></strong>.
+        Používáte výchozí administrátorské heslo.
+        <br />
+        Z bezpečnostních důvodů jeji prosím
+        <strong><a href="#/security">změnte</a></strong>.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Přihlašovací obrazovka"
     LABEL_DEFAULT_DOMAIN: "Výchozí doména"
@@ -82,18 +82,18 @@ cs_CZ:
     ALERT_NOTICE: "Upozornění!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Nepoužívejte tento typ databáze při velkém počtu aktivních uživatelů."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Váš systém nepodporuje kontakty.
-      <br />
-      Je potřeba nainstalovat nebo povolit <strong>PDO (SQLite / MySQL / PostgreSQL)</strong>
-      rozšíření na vašem serveru.
+        Váš systém nepodporuje kontakty.
+        <br />
+        Je potřeba nainstalovat nebo povolit <strong>PDO (SQLite / MySQL / PostgreSQL)</strong>
+        rozšíření na vašem serveru.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domény"
     BUTTON_ADD_DOMAIN: "Přidat Doménu"
     DELETE_ARE_YOU_SURE: "Jste si jistí?"
     HTML_DOMAINS_HELPER: |
-      Seznam domén, ke kterým je možné přistupovat přes webmail.
-      <br />
-      Klikněte na jméno domény pro její konfiguraci.
+        Seznam domén, ke kterým je možné přistupovat přes webmail.
+        <br />
+        Klikněte na jméno domény pro její konfiguraci.
   TAB_SECURITY:
     LEGEND_SECURITY: "Zabezpečení"
     LABEL_ALLOW_TWO_STEP: "Povolit dvoufázové ověření"
@@ -152,9 +152,9 @@ cs_CZ:
     HTML_ALERT_TOP_1: "RainLoop Webmail je licencován pod"
     HTML_ALERT_TOP_2: "Můžete tento nástroj <b>volně</b> používat pro vaše <b>osobní</b> projekty."
     HTML_ALERT_TOP_3: |
-      Komerční užívání (s přidanými doplňky) <b>RainLoop Webmail</b> vyžaduje získání
+        Komerční užívání (s přidanými doplňky) <b>RainLoop Webmail</b> vyžaduje získání
 
-      <a href="http://www.rainloop.net/purchase/" target="_blank">licence</a>.
+        <a href="http://www.rainloop.net/purchase/" target="_blank">licence</a>.
     TYPE_PREMIUM_LIFETIME: "Lifetime"
     LABEL_SUB_EXPIRES: "Licence vyprší"
     BUTTON_ACTIVATE: "Aktivační licenční klíč pro tuto doménu"
@@ -182,11 +182,11 @@ cs_CZ:
     ERROR_INVALID_SUBS_KEY: "Nevalidní licenční klíč"
     SUBS_KEY_ACTIVATED: "Licenční klíč byl úspěšně aktivován"
     HTML_DESC: |
-      Po aktivaci bude prémiové licence pro doménu <b>%DOMAIN%</b> prodloužena.
-      <br />
-      Aktivační klíč lze použít pouze pro jednu doménu.
-      <br /><br />
-      Jakmile začnete proces aktivace, nelze ho přerušit nebo ukončit.
+        Po aktivaci bude prémiové licence pro doménu <b>%DOMAIN%</b> prodloužena.
+        <br />
+        Aktivační klíč lze použít pouze pro jednu doménu.
+        <br /><br />
+        Jakmile začnete proces aktivace, nelze ho přerušit nebo ukončit.
   POPUPS_DOMAIN:
     TITLE_ADD_DOMAIN: "Přidat Doménu"
     TITLE_ADD_DOMAIN_WITH_NAME: "Přidat Doménu \"%NAME%\""
@@ -218,8 +218,8 @@ cs_CZ:
     BUTTON_UPDATE: "Aktualizovat"
     NEW_DOMAIN_DESC: "Konfigurace této domény umožní používat <i>%NAME%</i> adresy."
     WHITE_LIST_ALERT: |
-      Seznam domén s povoleným uživatelským přístupem
-      Použijte mezeru pro jejich oddělení.
+        Seznam domén s povoleným uživatelským přístupem
+        Použijte mezeru pro jejich oddělení.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Plugin"
     DESC_NOTHING_TO_CONFIGURE: "Není zde nic ke konfiguraci"
@@ -304,13 +304,13 @@ cs_CZ:
     PHP_VERSION_ERROR_DESC: "Vaše verze PHP (%VERSION%) je nižší než požadovaná 5.3.0!"
     NO_SCRIPT_TITLE: "Tato aplikace vyžaduje JavaScript."
     NO_SCRIPT_DESC: |
-      Váš internetový prohlížeč nepodporuje JavaScript.
-      Prosím povolte podporu JavaScriptu v nastavení vašeho internetového prohlížeče a zkuste to znovu.
+        Váš internetový prohlížeč nepodporuje JavaScript.
+        Prosím povolte podporu JavaScriptu v nastavení vašeho internetového prohlížeče a zkuste to znovu.
     NO_COOKIE_TITLE: "Tato aplikace vyžaduje podporu Cookies."
     NO_COOKIE_DESC: |
-      Váš internetový prohlížeč nepodporuje Cookies.
-      Prosím povolte podporu Cookies v nastavení vašeho internetového prohlížeče a zkuste to znovu.
+        Váš internetový prohlížeč nepodporuje Cookies.
+        Prosím povolte podporu Cookies v nastavení vašeho internetového prohlížeče a zkuste to znovu.
     BAD_BROWSER_TITLE: "Používáte zastaralý internetový prohlížeč."
     BAD_BROWSER_DESC: |
-      Abyste mohli využívat všechny funkcie této aplikace,
-      použijte některý z následujících internetových prohlížečů:
+        Abyste mohli využívat všechny funkcie této aplikace,
+        použijte některý z následujících internetových prohlížečů:

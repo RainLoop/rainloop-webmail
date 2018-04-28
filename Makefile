@@ -21,7 +21,7 @@ status:
 	@docker-compose ps
 
 tx:
-	@docker-compose run --no-deps --rm tx tx pull -a
+	@docker-compose run --no-deps --rm tx tx pull -a -s -f -d
 
 console-node:
 	@docker-compose run --no-deps --rm node sh

@@ -36,11 +36,11 @@ sv_SE:
     LABEL_ALLOW_TEMPLATES: "Tillåt mallar"
     ALERT_WARNING: "Advarsel!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Du använder standardlösenord.
-      <br />
-      För säkerhetsskäl
-      <strong><a href="#/security">ändra</a></strong>
-      lösenord till något annat
+        Du använder standardlösenord.
+        <br />
+        För säkerhetsskäl
+        <strong><a href="#/security">ändra</a></strong>
+        lösenord till något annat
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Inloggningsskärm"
     LABEL_DEFAULT_DOMAIN: "Standarddomän"
@@ -84,18 +84,18 @@ sv_SE:
     ALERT_NOTICE: "Notis"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Använd inte denna typ av databas med ett stort antal aktiva användare."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Systemet stöder inte kontakter
-      <br />
-      Du behöver installera eller aktivera <strong>SUB (SQLite/MySQL/PostgreSQL)</strong> förlängning på server.
+        Systemet stöder inte kontakter
+        <br />
+        Du behöver installera eller aktivera <strong>SUB (SQLite/MySQL/PostgreSQL)</strong> förlängning på server.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domäner"
     BUTTON_ADD_DOMAIN: "Lägg till domän"
     BUTTON_ADD_ALIAS: "Lägg till Alias"
     DELETE_ARE_YOU_SURE: "Är du säker?"
     HTML_DOMAINS_HELPER: |
-      Lista med domäner webmail tillåts access.
-      <br />
-      Klicka på namnet för att konfigurera domain.
+        Lista med domäner webmail tillåts access.
+        <br />
+        Klicka på namnet för att konfigurera domain.
   TAB_SECURITY:
     LEGEND_SECURITY: "Säkerhet"
     LABEL_ALLOW_TWO_STEP: "Låt 2-tvåstegsverifiering"
@@ -154,8 +154,8 @@ sv_SE:
     HTML_ALERT_TOP_1: "RainLoop Webmail är licensierat under"
     HTML_ALERT_TOP_2: "Du är <b>gratis</ b> för att använda den för dina <b>personliga</ b> projekt."
     HTML_ALERT_TOP_3: |
-      Kommersiellt bruk (med ytterligare funktioner) av <b>RainLoop Webmail</ b> kräver att få
-      <a href="http://www.rainloop.net/purchase/" target="_blank"> prenumerations</a>.
+        Kommersiellt bruk (med ytterligare funktioner) av <b>RainLoop Webmail</ b> kräver att få
+        <a href="http://www.rainloop.net/purchase/" target="_blank"> prenumerations</a>.
     TYPE_PREMIUM_LIFETIME: "Livstid"
     LABEL_SUB_EXPIRES: "Abonnemang löper ut"
     BUTTON_ACTIVATE: "Aktivera prenumerationsnyckel för den här domänen"
@@ -183,11 +183,11 @@ sv_SE:
     ERROR_INVALID_SUBS_KEY: "Ogiltig prenumerationsnyckel"
     SUBS_KEY_ACTIVATED: "Lyckades aktivera prenumerationsnyckel"
     HTML_DESC: |
-      Efter aktivering, premium prenumeration för <b>%DOMAIN%</b> kommer att förängas.
-      <br />
-      Observera att prenumerationsnyckel kan aktiveras för en enda domän.
-      <br /> <br />
-      När processen för aktivering har påbörjats så kan den inte avbrytas.
+        Efter aktivering, premium prenumeration för <b>%DOMAIN%</b> kommer att förängas.
+        <br />
+        Observera att prenumerationsnyckel kan aktiveras för en enda domän.
+        <br /> <br />
+        När processen för aktivering har påbörjats så kan den inte avbrytas.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Lägg till Alias"
     LABEL_ALIAS: "Alias"
@@ -225,8 +225,8 @@ sv_SE:
     BUTTON_UPDATE: "Uppdatera"
     NEW_DOMAIN_DESC: "Denna domän konfiguration gör att du kan arbeta <br />med <i>%NAME%</ i> e-postadresser."
     WHITE_LIST_ALERT: |
-      Lista över domänanvändare som tillåts.
-      Använda ett utrymme som avgränsare.
+        Lista över domänanvändare som tillåts.
+        Använda ett utrymme som avgränsare.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Plugin"
     DESC_NOTHING_TO_CONFIGURE: "Inget att konfigurera"
@@ -312,13 +312,13 @@ sv_SE:
     PHP_VERSION_ERROR_DESC: "Din PHP version (%VERSION%) är lägre än den minimala som krävs 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript krävs för denna applikation."
     NO_SCRIPT_DESC: |
-      JavaScript stöd är inte tillgängligt i din webläsare.
-      Vänligen aktivera JavaScript stöd i din webbläsares inställningar och försök igen.
+        JavaScript stöd är inte tillgängligt i din webläsare.
+        Vänligen aktivera JavaScript stöd i din webbläsares inställningar och försök igen.
     NO_COOKIE_TITLE: "Cookies stöd krävs för denna applikation."
     NO_COOKIE_DESC: |
-      Cookies stöd är inte tillgängligt i din webbläsare.
-      Vänligen aktivera Cookie stöd i webbläsarens inställningar och försök igen.
+        Cookies stöd är inte tillgängligt i din webbläsare.
+        Vänligen aktivera Cookie stöd i webbläsarens inställningar och försök igen.
     BAD_BROWSER_TITLE: "Din webbläsare är föråldrad."
     BAD_BROWSER_DESC: |
-      För att kunna använda alla funktioner i ansökan,
-      hämta och installera en av dessa webbläsare:
+        För att kunna använda alla funktioner i ansökan,
+        hämta och installera en av dessa webbläsare:

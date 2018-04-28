@@ -155,10 +155,10 @@ de_DE:
   READ_RECEIPT:
     SUBJECT: "Empfangsbestätigung (angezeigt) - %SUBJECT%"
     BODY: |
-      Dies ist eine Empfangsbestätigung für die Nachricht, die Sie an %READ-RECEIPT% gesendet haben.
+        Dies ist eine Empfangsbestätigung für die Nachricht, die Sie an %READ-RECEIPT% gesendet haben.
 
-      Hinweis: Diese Empfangsbestätigung bestätigt nur, dass die Nachricht auf dem Computer des Empfängers angezeigt wurde.
-      Es besteht keine Garantie, dass der Empfänger den Inhalt der Nachricht gelesen oder verstanden hat.
+        Hinweis: Diese Empfangsbestätigung bestätigt nur, dass die Nachricht auf dem Computer des Empfängers angezeigt wurde.
+        Es besteht keine Garantie, dass der Empfänger den Inhalt der Nachricht gelesen oder verstanden hat.
   SUGGESTIONS:
     SEARCHING_DESC: "Suche läuft..."
   CONTACTS:
@@ -365,15 +365,15 @@ de_DE:
     BUTTON_CANCEL: "Abbrechen"
     BUTTON_CLOSE: "Schließen"
     NOTIFICATION_SENT: |
-      Sie haben keinen "Gesendet"-Systemordner gewählt, in dem Nachrichten nach dem Versenden gespeichert werden.
-      Falls Sie versandte Nachrichten nicht speichern möchten, wählen Sie die Option "Nicht anwenden".
+        Sie haben keinen "Gesendet"-Systemordner gewählt, in dem Nachrichten nach dem Versenden gespeichert werden.
+        Falls Sie versandte Nachrichten nicht speichern möchten, wählen Sie die Option "Nicht anwenden".
     NOTIFICATION_DRAFTS: "Sie haben keinen \"Entwürfe\"-Systemordner gewählt, in dem Nachrichten beim Erstellen gespeichert werden."
     NOTIFICATION_SPAM: |
-      Sie haben keinen "Spam"-Systemordner gewählt, in dem die Spam-Nachrichten abgelegt werden.
-      Falls Sie Spam-Nachrichten endgültig löschen möchten, wählen Sie die Option "Nicht anwenden".
+        Sie haben keinen "Spam"-Systemordner gewählt, in dem die Spam-Nachrichten abgelegt werden.
+        Falls Sie Spam-Nachrichten endgültig löschen möchten, wählen Sie die Option "Nicht anwenden".
     NOTIFICATION_TRASH: |
-      Sie haben keinen  "Papierkorb"-Systemordner gewählt, in dem die gelöschten Nachrichten abgelegt werden.
-      Falls Sie gelöschte Nachrichten endgültig löschen möchten, wählen Sie die Option "Nicht anwenden".
+        Sie haben keinen  "Papierkorb"-Systemordner gewählt, in dem die gelöschten Nachrichten abgelegt werden.
+        Falls Sie gelöschte Nachrichten endgültig löschen möchten, wählen Sie die Option "Nicht anwenden".
     NOTIFICATION_ARCHIVE: "Sie haben keinen \"Archiv\"-Systemordner gewählt, in dem die archivierten Nachrichten abgelegt werden."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Zwei-Faktor-Authentifizierung"
@@ -703,13 +703,13 @@ de_DE:
     PHP_VERSION_ERROR_DESC: "Ihre PHP Version (%VERSION%) ist älter als die notwendige Version: 5.3.0!"
     NO_SCRIPT_TITLE: "Diese Anwendung benötigt JavaScript."
     NO_SCRIPT_DESC: |
-      Ihr Browser unterstützt JavaScript nicht.
-      Aktivieren Sie bitte die JavaScript-Unterstützung in Ihrem Browser und versuchen Sie es erneut.
+        Ihr Browser unterstützt JavaScript nicht.
+        Aktivieren Sie bitte die JavaScript-Unterstützung in Ihrem Browser und versuchen Sie es erneut.
     NO_COOKIE_TITLE: "Diese Anwendung benötigt Cookies."
     NO_COOKIE_DESC: |
-      Ihr Browser unterstützt Cookies nicht.
-      Aktivieren Sie bitte die Cookie-Unterstützung in Ihrem Browser und versuchen Sie es erneut.
+        Ihr Browser unterstützt Cookies nicht.
+        Aktivieren Sie bitte die Cookie-Unterstützung in Ihrem Browser und versuchen Sie es erneut.
     BAD_BROWSER_TITLE: "Ihr Browser ist veraltet."
     BAD_BROWSER_DESC: |
-      Um alle Funktionen dieser Anwendung nutzen zu können,
-      sollten Sie einen der folgenden Browser herunterladen und installieren
+        Um alle Funktionen dieser Anwendung nutzen zu können,
+        sollten Sie einen der folgenden Browser herunterladen und installieren

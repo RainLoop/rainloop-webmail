@@ -149,10 +149,10 @@ zh_TW:
   READ_RECEIPT:
     SUBJECT: "Return Receipt (displayed) - %SUBJECT%"
     BODY: |
-      This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
+        This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
 
-      Note: This Return Receipt only acknowledges that the message was displayed on the recipient's computer.
-      There is no guarantee that the recipient has read or understood the message contents.
+        Note: This Return Receipt only acknowledges that the message was displayed on the recipient's computer.
+        There is no guarantee that the recipient has read or understood the message contents.
   SUGGESTIONS:
     SEARCHING_DESC: "搜索中..."
   CONTACTS:
@@ -359,15 +359,15 @@ zh_TW:
     BUTTON_CANCEL: "取消"
     BUTTON_CLOSE: "關閉"
     NOTIFICATION_SENT: |
-      您沒有選擇 已發郵件 資料夾來存儲已發送郵件。
-      如果您不希望保存已發郵件，請選擇 不使用 選項。
+        您沒有選擇 已發郵件 資料夾來存儲已發送郵件。
+        如果您不希望保存已發郵件，請選擇 不使用 選項。
     NOTIFICATION_DRAFTS: "您沒有選擇 草稿 資料夾來存儲郵件草稿。"
     NOTIFICATION_SPAM: |
-      您沒有選擇 垃圾郵件 資料夾來存儲垃圾郵件。
-      如果您希望永久刪除郵件，請選擇 不使用 選項。
+        您沒有選擇 垃圾郵件 資料夾來存儲垃圾郵件。
+        如果您希望永久刪除郵件，請選擇 不使用 選項。
     NOTIFICATION_TRASH: |
-      您沒有選擇 已刪除郵件 資料夾來存儲垃圾郵件。
-      如果您希望永久刪除郵件，請選擇 不使用 選項。
+        您沒有選擇 已刪除郵件 資料夾來存儲垃圾郵件。
+        如果您希望永久刪除郵件，請選擇 不使用 選項。
     NOTIFICATION_ARCHIVE: "You haven't selected \"Archive\" system folder achived messages are placed to.\n"
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "兩步驗證"
@@ -685,13 +685,13 @@ zh_TW:
     PHP_VERSION_ERROR_DESC: "您的PHP版本 (%VERSION%) 低於所需的 5.3.0！"
     NO_SCRIPT_TITLE: "JavaScript 需要啟用！"
     NO_SCRIPT_DESC: |
-      您的瀏覽器不支持JavaScript。
-      請啟用瀏覽器的JavaScript支持並重試。
+        您的瀏覽器不支持JavaScript。
+        請啟用瀏覽器的JavaScript支持並重試。
     NO_COOKIE_TITLE: "Cookies 需要啟用！"
     NO_COOKIE_DESC: |
-      您的瀏覽器不支持Cookies。
-      請啟用瀏覽器的Cookies支持並重試。
+        您的瀏覽器不支持Cookies。
+        請啟用瀏覽器的Cookies支持並重試。
     BAD_BROWSER_TITLE: "您的瀏覽器過時了"
     BAD_BROWSER_DESC: |
-      為了使用所有特性，
-      下載並安裝其中一款瀏覽器：
+        為了使用所有特性，
+        下載並安裝其中一款瀏覽器：

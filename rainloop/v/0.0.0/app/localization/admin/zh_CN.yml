@@ -35,11 +35,11 @@ zh_CN:
     LABEL_ALLOW_TEMPLATES: "允许使用模板"
     ALERT_WARNING: "警告"
     HTML_ALERT_WEAK_PASSWORD: |
-      您正在使用默认的管理员密码
-      <br />
-      安全起见，请立即将密码
-      <strong><a href="#/security">更改</a></strong>
-      为其他的字符串。
+        您正在使用默认的管理员密码
+        <br />
+        安全起见，请立即将密码
+        <strong><a href="#/security">更改</a></strong>
+        为其他的字符串。
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "登陆界面"
     LABEL_DEFAULT_DOMAIN: "默认域名"
@@ -83,18 +83,18 @@ zh_CN:
     ALERT_NOTICE: "提示!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "如果有大量的活跃用户,请不要选择此数据库类型."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      你的系统不支持联系人
-      <br />
-      你需要在你的服务器上安装或启用<strong>PDO (SQLite / MySQL / PostgreSQL)</strong> 组件.
+        你的系统不支持联系人
+        <br />
+        你需要在你的服务器上安装或启用<strong>PDO (SQLite / MySQL / PostgreSQL)</strong> 组件.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "域名"
     BUTTON_ADD_DOMAIN: "添加域名"
     BUTTON_ADD_ALIAS: "添加别名"
     DELETE_ARE_YOU_SURE: "你确定吗?"
     HTML_DOMAINS_HELPER: |
-      允许访问的域。
-      <br />
-      点击域名进行设置。
+        允许访问的域。
+        <br />
+        点击域名进行设置。
   TAB_SECURITY:
     LEGEND_SECURITY: "安全"
     LABEL_ALLOW_TWO_STEP: "允许2步验证"
@@ -153,7 +153,7 @@ zh_CN:
     HTML_ALERT_TOP_1: "RainLoop Webmail位于的许可证下"
     HTML_ALERT_TOP_2: "你可以<b>自由地</b>将它用于你的 <b>私人</b> 项目."
     HTML_ALERT_TOP_3: |
-      商业版的<b>RainLoop Webmail</b>自带更多功能，需要<a href="http://www.rainloop.net/purchase/" target="_blank">订阅</a>。
+        商业版的<b>RainLoop Webmail</b>自带更多功能，需要<a href="http://www.rainloop.net/purchase/" target="_blank">订阅</a>。
     TYPE_PREMIUM_LIFETIME: "永久"
     LABEL_SUB_EXPIRES: "订阅失效"
     BUTTON_ACTIVATE: "为此域名启用订阅密钥"
@@ -181,10 +181,10 @@ zh_CN:
     ERROR_INVALID_SUBS_KEY: "无效的订阅密钥"
     SUBS_KEY_ACTIVATED: "订阅密钥成功启用"
     HTML_DESC: |
-      激活后，域<b>%DOMAIN%</b>的订阅时间将会续展。
-      请注意，订阅密匙只可用于一个域。
-      <br /><br />
-      激活开始后，激活过程中不可被中断或取消。
+        激活后，域<b>%DOMAIN%</b>的订阅时间将会续展。
+        请注意，订阅密匙只可用于一个域。
+        <br /><br />
+        激活开始后，激活过程中不可被中断或取消。
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "添加别名"
     LABEL_ALIAS: "别名"
@@ -222,8 +222,8 @@ zh_CN:
     BUTTON_UPDATE: "更新"
     NEW_DOMAIN_DESC: "此域名配置将允许你<br />和<i>%NAME%</i>电子邮件地址一起工作."
     WHITE_LIST_ALERT: |
-      允许访问的域用户。
-      使用空格分隔。
+        允许访问的域用户。
+        使用空格分隔。
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "插件"
     DESC_NOTHING_TO_CONFIGURE: "无可用配置"
@@ -305,13 +305,13 @@ zh_CN:
     PHP_VERSION_ERROR_DESC: "您的PHP版本 (%VERSION%) 低于最低所需的 5.3.0！"
     NO_SCRIPT_TITLE: "此应用需要JavaScript支持！"
     NO_SCRIPT_DESC: |
-      您的浏览器不支持JavaScript。
-      请启用浏览器的JavaScript支持并重试。
+        您的浏览器不支持JavaScript。
+        请启用浏览器的JavaScript支持并重试。
     NO_COOKIE_TITLE: "此应用需要Cookies支持！"
     NO_COOKIE_DESC: |
-      您的浏览器不支持Cookies。
-      请启用浏览器的Cookies支持并重试。
+        您的浏览器不支持Cookies。
+        请启用浏览器的Cookies支持并重试。
     BAD_BROWSER_TITLE: "您的浏览器过时了。"
     BAD_BROWSER_DESC: |
-      为了使用所有特性，
-      下载并安装其中一款浏览器：
+        为了使用所有特性，
+        下载并安装其中一款浏览器：

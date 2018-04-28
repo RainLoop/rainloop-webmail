@@ -153,10 +153,10 @@ et_EE:
   READ_RECEIPT:
     SUBJECT: "Kohaletoimetamise kinnitus - %SUBJECT%"
     BODY: |
-      See on kohaletoimetamise kinnitus kirjale, mille saatsid aadressile %READ-RECEIPT%.
+        See on kohaletoimetamise kinnitus kirjale, mille saatsid aadressile %READ-RECEIPT%.
 
-      Tähelepanu: Kinnitus tähendab vaid seda, et kirja kuvati saaja arvutis.
-      Kirja sisu lugemise või mõistmise kohta see teavitus granatiisid ei anna.
+        Tähelepanu: Kinnitus tähendab vaid seda, et kirja kuvati saaja arvutis.
+        Kirja sisu lugemise või mõistmise kohta see teavitus granatiisid ei anna.
   SUGGESTIONS:
     SEARCHING_DESC: "Otsin..."
   CONTACTS:
@@ -363,15 +363,15 @@ et_EE:
     BUTTON_CANCEL: "Tühista"
     BUTTON_CLOSE: "Sulge"
     NOTIFICATION_SENT: |
-      Sa pole valinud süsteemset kausta saadetud kirjadele.
-      Kui sa ei soovi saadetud kirju salvestada, vali "Ära kasuta".
+        Sa pole valinud süsteemset kausta saadetud kirjadele.
+        Kui sa ei soovi saadetud kirju salvestada, vali "Ära kasuta".
     NOTIFICATION_DRAFTS: "Sa pole valinud kausta, kuhu mustandid kirjutamise ajal salvestatakse."
     NOTIFICATION_SPAM: |
-      Sa pole valinud süsteemset kausta rämpspostiks märgitud kirjadele.
-      Kui sa ei soovi rämpspostiks märgitud kirju salvestada, vali "Ära kasuta".
+        Sa pole valinud süsteemset kausta rämpspostiks märgitud kirjadele.
+        Kui sa ei soovi rämpspostiks märgitud kirju salvestada, vali "Ära kasuta".
     NOTIFICATION_TRASH: |
-      Sa pole valinud süsteemset kausta kustutatud kirjadele.
-      Kui sa ei soovi kustutatud kirju salvestada, vali "Ära kasuta".
+        Sa pole valinud süsteemset kausta kustutatud kirjadele.
+        Kui sa ei soovi kustutatud kirju salvestada, vali "Ära kasuta".
     NOTIFICATION_ARCHIVE: "Sa pole valinud kausta, kuhu arhiveeritud kirjad salvestatakse."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2. faktoriga autentimine (TOTP)"
@@ -698,13 +698,13 @@ et_EE:
     PHP_VERSION_ERROR_DESC: "Sinu PHP versioon (%VERSION%) on väiksem, kui minimaalselt nõutud 5.3.0!"
     NO_SCRIPT_TITLE: "See rakendus vajab tööks JavaScripti"
     NO_SCRIPT_DESC: |
-      Sinu veebilehitseja ei toeta JavaScripti.
-      Luba selle kasutus veebilehitseja sätetes ja proovi uuesti.
+        Sinu veebilehitseja ei toeta JavaScripti.
+        Luba selle kasutus veebilehitseja sätetes ja proovi uuesti.
     NO_COOKIE_TITLE: "See rakendus vajab oma tööks veebiküpsiste tuge"
     NO_COOKIE_DESC: |
-      Sinu veebilehitseja ei toeta veebiküpsiseid.
-      Luba nende kasutus veebilehitseja sätetes ja proovi uuesti.
+        Sinu veebilehitseja ei toeta veebiküpsiseid.
+        Luba nende kasutus veebilehitseja sätetes ja proovi uuesti.
     BAD_BROWSER_TITLE: "Sinu veebilehitseja on aegunud"
     BAD_BROWSER_DESC: |
-      Rakenduse kõikide võimaluste kasutamiseks,
-      lae alla ja paigalda mõni nendest veebilehitsejatest:
+        Rakenduse kõikide võimaluste kasutamiseks,
+        lae alla ja paigalda mõni nendest veebilehitsejatest:

@@ -145,19 +145,21 @@ it_IT:
     PRINT_LABEL_ATTACHMENTS: "Allegati"
     MESSAGE_LOADING: "Caricamento..."
     MESSAGE_VIEW_DESC: "Seleziona un messaggio dalla lista per visualizzarlo qui"
+    MESSAGE_VIEW_MOVE_DESC: "Clicca sul nome della cartella nel pannello sinistro per selezionare la destinazione."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Password"
     PGP_SIGNED_MESSAGE_DESC: "Messaggio firmato con OpenPGP (clicca qui per verificarlo)"
     PGP_ENCRYPTED_MESSAGE_DESC: "Messaggio cifrato con OpenPGP (clicca qui per decifrarlo)"
     LINK_DOWNLOAD_AS_ZIP: "Scarica come archivio ZIP"
     LINK_SAVE_TO_OWNCLOUD: "Salva su OwnCloud"
+    LINK_SAVE_TO_CLOUD: "Salva nel cloud"
     LINK_SAVE_TO_DROPBOX: "Salva su DropBox"
   READ_RECEIPT:
     SUBJECT: "Avviso di lettura - %SUBJECT%"
     BODY: |
-      Questo è un avviso di lettura per la mail che hai inviato a %READ-RECEIPT%.
+        Questo è un avviso di lettura per la mail che hai inviato a %READ-RECEIPT%.
 
-      Attenzione: questa notifica di lettura significa solo che il messaggio è stato visualizzato nel computer del destinatario.
-      Non c'è alcuna garanzia che il destinatario abbia letto o capito il contenuto del messaggio.
+        Attenzione: questa notifica di lettura significa solo che il messaggio è stato visualizzato nel computer del destinatario.
+        Non c'è alcuna garanzia che il destinatario abbia letto o capito il contenuto del messaggio.
   SUGGESTIONS:
     SEARCHING_DESC: "Cerca..."
   CONTACTS:
@@ -364,15 +366,15 @@ it_IT:
     BUTTON_CANCEL: "Annulla"
     BUTTON_CLOSE: "Chiudi"
     NOTIFICATION_SENT: |
-      Non hai selezionato una cartella di sistema per la posta inviata.
-      Se non vuoi salvare i messaggi inviati seleziona "Non usarla".
+        Non hai selezionato una cartella di sistema per la posta inviata.
+        Se non vuoi salvare i messaggi inviati seleziona "Non usarla".
     NOTIFICATION_DRAFTS: "Non hai selezionato una cartella di sistema per le bozze."
     NOTIFICATION_SPAM: |
-      Non hai selezionato una cartella di sistema per i messaggi spam.
-      Se li vuoi eliminare permanentemente seleziona "Non usarla".
+        Non hai selezionato una cartella di sistema per i messaggi spam.
+        Se li vuoi eliminare permanentemente seleziona "Non usarla".
     NOTIFICATION_TRASH: |
-      Non hai selezionato una cartella di sistema per il cestino.
-      Se non lo vuoi usare (e quindi eliminare i messaggi permanentemente) seleziona "Non usarla".
+        Non hai selezionato una cartella di sistema per il cestino.
+        Se non lo vuoi usare (e quindi eliminare i messaggi permanentemente) seleziona "Non usarla".
     NOTIFICATION_ARCHIVE: "Non hai selezionato una cartella di sistema per i messaggi archiviati."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Autenticazione a due fattori"
@@ -580,6 +582,7 @@ it_IT:
     TITLE_PUBLIC: "Pubblica"
     DELETING_ASK: "Sei sicuro?"
     GENERATE_ONLY_HTTPS: "solo tramite HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Salva automaticamente la bozza"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Aiuto sulle scorciatoie da tastiera"
     TAB_MAILBOX: "Casella di posta"
@@ -698,13 +701,13 @@ it_IT:
     PHP_VERSION_ERROR_DESC: "La tua versione di PHP (%VERSION%) è meno recente della 5.3.0!"
     NO_SCRIPT_TITLE: "È richiesto JavaScript per questa applicazione."
     NO_SCRIPT_DESC: |
-      Il supporto a JavaScript è disabilitato.
-      Abilitare il supporto a JavaScript e riprovare.
+        Il supporto a JavaScript è disabilitato.
+        Abilitare il supporto a JavaScript e riprovare.
     NO_COOKIE_TITLE: "Sono richiesti i Cookie per questa applicazione."
     NO_COOKIE_DESC: |
-      Il supporto ai Cookie è disabilitato.
-      Abilitare il supporto ai Cookie e riprovare.
+        Il supporto ai Cookie è disabilitato.
+        Abilitare il supporto ai Cookie e riprovare.
     BAD_BROWSER_TITLE: "Il tuo browser è troppo vecchio"
     BAD_BROWSER_DESC: |
-      Per usare tutte le funzionalità dell'applicazione,
-      scarica ed installa uno dei seguenti browser:
+        Per usare tutte le funzionalità dell'applicazione,
+        scarica ed installa uno dei seguenti browser:

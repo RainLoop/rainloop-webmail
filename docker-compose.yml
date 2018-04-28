@@ -36,7 +36,7 @@ services:
       MYSQL_DATABASE: rainloop
     volumes:
       - mysql:/var/lib/mysql
-      - ./.docker/.cache/mysql/tmp:/tmp
+      - tmp:/tmp
   php:
     build:
       context: ./.docker/php
@@ -49,18 +49,19 @@ services:
       - mail
     volumes:
       - ./:/var/www
+      # - ./build/local/:/var/www
       - ./.docker/php/rainloop.ini:/usr/local/etc/php/conf.d/rainloop.ini
-      - ./.docker/.cache/php/tmp:/tmp
+      - tmp:/tmp
   node:
     build:
       context: ./.docker/node
     hostname: node
     container_name: rl.node
     working_dir: /var/www
-    command: sh -c 'yarn install'
+    command: sh -c 'yarn --version'
     volumes:
       - ./:/var/www
-      - ./.docker/.cache/node/tmp:/tmp
+      - tmp:/tmp
   nginx:
     image: nginx:latest
     hostname: nginx
@@ -72,9 +73,10 @@ services:
       - 80:80
     volumes:
       - ./:/var/www
+      # - ./build/local/:/var/www
       - ./.docker/nginx/ssl:/etc/nginx/ssl
       - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./.docker/.cache/nginx/tmp:/tmp
+      - tmp:/tmp
   tx:
     build:
       context: ./.docker/tx
@@ -85,7 +87,7 @@ services:
     volumes:
       - ./:/var/www
       - ./.docker/.cache/tx/root:/root
-      - ./.docker/.cache/tx/tmp:/tmp
+      - tmp:/tmp
 
 volumes:
   mysql:
@@ -93,4 +95,6 @@ volumes:
   maildata:
     driver: local
   mailstate:
+    driver: local
+  tmp:
     driver: local

@@ -154,10 +154,10 @@ tr_TR:
   READ_RECEIPT:
     SUBJECT: "Return Receipt (displayed) - %SUBJECT%"
     BODY: |
-      This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
+        This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
 
-      Note: This Return Receipt only acknowledges that the message was displayed on the recipient's computer.
-      There is no guarantee that the recipient has read or understood the message contents.
+        Note: This Return Receipt only acknowledges that the message was displayed on the recipient's computer.
+        There is no guarantee that the recipient has read or understood the message contents.
   SUGGESTIONS:
     SEARCHING_DESC: "Aranıyor..."
   CONTACTS:
@@ -364,13 +364,13 @@ tr_TR:
     BUTTON_CANCEL: "Vazgeç"
     BUTTON_CLOSE: "Kapat"
     NOTIFICATION_SENT: |
-      Herhangi bir sistem gönderilen klasörü seçmediniz normalde mesaj gönderildikten sonra "Gönderilen"'ler klasörüne kaydedilir
-      Eğer gönderilenlerin kaydedilmesini istemiyorsanız lütfen ayarlardan "Kullanma" seçeneğini seçin.
+        Herhangi bir sistem gönderilen klasörü seçmediniz normalde mesaj gönderildikten sonra "Gönderilen"'ler klasörüne kaydedilir
+        Eğer gönderilenlerin kaydedilmesini istemiyorsanız lütfen ayarlardan "Kullanma" seçeneğini seçin.
     NOTIFICATION_DRAFTS: "Herhangi bir sistem taslak klasörü seçmediniz.\"Taslak\" klasörü otomatik mesajınızı kaydeder"
     NOTIFICATION_SPAM: |-
-      Herhangi bir sistem spam klasörü seçmediniz."Spam" klasörü spam iletileri barındırır.
+        Herhangi bir sistem spam klasörü seçmediniz."Spam" klasörü spam iletileri barındırır.
     NOTIFICATION_TRASH: |-
-      Herhangi bir sistem çöp kutusu klasörü seçmediniz normalde mesaj silindikten sonra "Çöp Kutusu" klasörüne kaydedilir
+        Herhangi bir sistem çöp kutusu klasörü seçmediniz normalde mesaj silindikten sonra "Çöp Kutusu" klasörüne kaydedilir
     NOTIFICATION_ARCHIVE: "Herhangi bir sistem arşiv klasörü seçmediniz."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-Basamaklı doğrumalama"
@@ -698,13 +698,13 @@ tr_TR:
     PHP_VERSION_ERROR_DESC: "PHP sürümünüz (%VERSION%) en az php 5.3.0 sürümü gerekli!"
     NO_SCRIPT_TITLE: "JavaScript bu uygulama için gereklidir."
     NO_SCRIPT_DESC: |
-      JavaScript desteği tarayıcınızda mevcut değil.
-      Tarayıcı ayarlarında JavaScript desteğini etkinleştirin ve yeniden deneyin.
+        JavaScript desteği tarayıcınızda mevcut değil.
+        Tarayıcı ayarlarında JavaScript desteğini etkinleştirin ve yeniden deneyin.
     NO_COOKIE_TITLE: "Çerezler desteği bu uygulama için gerekli."
     NO_COOKIE_DESC: |
-      Çerezler destek tarayıcınızda mevcut değil.
-      Tarayıcı ayarlarında Cookie desteği etkinleştirin ve yeniden deneyin.
+        Çerezler destek tarayıcınızda mevcut değil.
+        Tarayıcı ayarlarında Cookie desteği etkinleştirin ve yeniden deneyin.
     BAD_BROWSER_TITLE: "Tarayıcınız çok eski."
     BAD_BROWSER_DESC: |
-      Uygulamanın tüm özelliklerini kullanmak için,
-      Bu tarayıcılardan birini indirmek ve yükleyin:
+        Uygulamanın tüm özelliklerini kullanmak için,
+        Bu tarayıcılardan birini indirmek ve yükleyin:

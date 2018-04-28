@@ -154,10 +154,10 @@ pl_PL:
   READ_RECEIPT:
     SUBJECT: "Potwierdzenie wyświetlenia wiadomości o tytule: %SUBJECT%"
     BODY: |
-      Potwierdzenie wyświetlenia wiadomości wysłanej na adres: %READ-RECEIPT%.
+        Potwierdzenie wyświetlenia wiadomości wysłanej na adres: %READ-RECEIPT%.
 
-      Uwaga: Otrzymanie tego potwierdzenia jest dowodem na to, że wiadomość została wyświetlona na komputerze odbiorcy.
-      Nie ma jednak żadnej gwarancji, że odbiorca faktycznie zapoznał się z jej treścią.
+        Uwaga: Otrzymanie tego potwierdzenia jest dowodem na to, że wiadomość została wyświetlona na komputerze odbiorcy.
+        Nie ma jednak żadnej gwarancji, że odbiorca faktycznie zapoznał się z jej treścią.
   SUGGESTIONS:
     SEARCHING_DESC: "Wyszukiwanie..."
   CONTACTS:
@@ -364,15 +364,15 @@ pl_PL:
     BUTTON_CANCEL: "Anuluj"
     BUTTON_CLOSE: "Zamknij"
     NOTIFICATION_SENT: |
-      Nie wybrano folderu: "Wysłane", do którego przenoszone są wysłane wiadomości.
-      Jeżeli wysyłane wiadomości nie mają być przechowywane, proszę zaznaczyć opcję: "Nie używaj".
+        Nie wybrano folderu: "Wysłane", do którego przenoszone są wysłane wiadomości.
+        Jeżeli wysyłane wiadomości nie mają być przechowywane, proszę zaznaczyć opcję: "Nie używaj".
     NOTIFICATION_DRAFTS: "Nie wybrano folderu: \"Wersje robocze\", do którego są zapisywane wiadomości w trakcie ich tworzenia."
     NOTIFICATION_SPAM: |
-      Nie wybrano folderu: "Niechciane", do którego przenoszone są niepożadane wiadomości.
-      Jeżeli niechciane wiadomości mają być usuwane na stałe, proszę o zaznaczenie opcji: "Nie używaj".
+        Nie wybrano folderu: "Niechciane", do którego przenoszone są niepożadane wiadomości.
+        Jeżeli niechciane wiadomości mają być usuwane na stałe, proszę o zaznaczenie opcji: "Nie używaj".
     NOTIFICATION_TRASH: |
-      Nie wybrano folderu: "Kosz", do którego przenoszone są wszystkie usunięte wiadomości.
-      Jeżeli wiadomości mają być usuwane na stałe, proszę o zaznaczenie opcji: "Nie używaj".
+        Nie wybrano folderu: "Kosz", do którego przenoszone są wszystkie usunięte wiadomości.
+        Jeżeli wiadomości mają być usuwane na stałe, proszę o zaznaczenie opcji: "Nie używaj".
     NOTIFICATION_ARCHIVE: "Nie został wybrany folder \"Archiwum\", zostanie użyty systemowy folder archiwizacji wiadomości."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Dwuskładnikowa autoryzacja"
@@ -700,13 +700,13 @@ pl_PL:
     PHP_VERSION_ERROR_DESC: "Aktualnie zainstalowana wersja PHP: (%VERSION%), jest niższa niż minimalnie wymagana 5.3.0!"
     NO_SCRIPT_TITLE: "Ta aplikacja wymaga JavaScript"
     NO_SCRIPT_DESC: |
-      Twoja przeglądarka nie obsługuje JavaScript
-      Proszę o umożliwienie obsługi JavaScript w przeglądarce, oraz ponowne załadowanie tej strony.
+        Twoja przeglądarka nie obsługuje JavaScript
+        Proszę o umożliwienie obsługi JavaScript w przeglądarce, oraz ponowne załadowanie tej strony.
     NO_COOKIE_TITLE: "Ta aplikacja wymaga plików Cookies"
     NO_COOKIE_DESC: |
-      Obsługa Cookies jest wyłączona w twojej przeglądarce
-      Proszę o umożliwienie obsługi plików Cookie w przeglądarce oraz ponowne uruchomienie tej strony.
+        Obsługa Cookies jest wyłączona w twojej przeglądarce
+        Proszę o umożliwienie obsługi plików Cookie w przeglądarce oraz ponowne uruchomienie tej strony.
     BAD_BROWSER_TITLE: "Twoja przeglądarka jest przestarzała!"
     BAD_BROWSER_DESC: |
-      W celu wykorzystania wszystkich funkcji tej aplikacji,
-      zaktualizuj aktualnie używaną lub pobierz i zainstaluj jedną z poniższych przeglądarek:
+        W celu wykorzystania wszystkich funkcji tej aplikacji,
+        zaktualizuj aktualnie używaną lub pobierz i zainstaluj jedną z poniższych przeglądarek:

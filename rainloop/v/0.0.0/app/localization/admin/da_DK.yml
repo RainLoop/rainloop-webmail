@@ -36,11 +36,11 @@ da_DK:
     LABEL_ALLOW_TEMPLATES: "Tillad skabeloner"
     ALERT_WARNING: "Advarsler!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Du bruger standard admin adgangskoden.
-      <br />
-      Af sikkerhedsmæssige hensyn bør du venligst
-      <strong><a href="#/security">ændre</a></strong>
-      adgangskoden til noget andet snarest.
+        Du bruger standard admin adgangskoden.
+        <br />
+        Af sikkerhedsmæssige hensyn bør du venligst
+        <strong><a href="#/security">ændre</a></strong>
+        adgangskoden til noget andet snarest.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Log ind skærm"
     LABEL_DEFAULT_DOMAIN: "Standard domæne"
@@ -84,18 +84,18 @@ da_DK:
     ALERT_NOTICE: "Underretning!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Brug ikke denne database type med større antal af aktive brugere."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Dit system ser ikke ud til at understøtte kontakter.
-      <br />
-      Du skal installere og aktivere <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> udvidelsen på din server.
+        Dit system ser ikke ud til at understøtte kontakter.
+        <br />
+        Du skal installere og aktivere <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> udvidelsen på din server.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domæner"
     BUTTON_ADD_DOMAIN: "Tilføj domæne"
     BUTTON_ADD_ALIAS: "Tilføj alias"
     DELETE_ARE_YOU_SURE: "Er du sikker?"
     HTML_DOMAINS_HELPER: |
-      Liste over domæner webmail er tilladt adgang til.
-      <br />
-      Klik på navnet for at konfigurere domænet.
+        Liste over domæner webmail er tilladt adgang til.
+        <br />
+        Klik på navnet for at konfigurere domænet.
   TAB_SECURITY:
     LEGEND_SECURITY: "Sikkerhed"
     LABEL_ALLOW_TWO_STEP: "Tillad 2-trins verifikation"
@@ -154,8 +154,8 @@ da_DK:
     HTML_ALERT_TOP_1: "RainLoop Webmail er licenseret under"
     HTML_ALERT_TOP_2: "Du er velkommen til at bruge det til personlige projekter."
     HTML_ALERT_TOP_3: |
-      Kommercielt brug (med ekstra funktioner) af <b>RainLoop Webmail</b> kræver et
-      <a href="http://www.rainloop.net/purchase/" target="_blank">abonnement</a>.
+        Kommercielt brug (med ekstra funktioner) af <b>RainLoop Webmail</b> kræver et
+        <a href="http://www.rainloop.net/purchase/" target="_blank">abonnement</a>.
     TYPE_PREMIUM_LIFETIME: "Livstid"
     LABEL_SUB_EXPIRES: "Abonnement udløber"
     BUTTON_ACTIVATE: "Aktiver abonnements kode for dette domæne"
@@ -183,11 +183,11 @@ da_DK:
     ERROR_INVALID_SUBS_KEY: "Ugyldig abonnements kode"
     SUBS_KEY_ACTIVATED: "Abonnements kode aktivering var succesfuld"
     HTML_DESC: |
-      Efter aktiveren, vil abonnementet for <b>%DOMAIN%</b> blive forlænget.
-      <br />
-      Bemærk at en abonnements kode kun kan blive aktiveret for et enkelt domæne.
-      <br /><br />
-      Når aktiverings processen er startet kan den ikke afbrydes eller annulleres.
+        Efter aktiveren, vil abonnementet for <b>%DOMAIN%</b> blive forlænget.
+        <br />
+        Bemærk at en abonnements kode kun kan blive aktiveret for et enkelt domæne.
+        <br /><br />
+        Når aktiverings processen er startet kan den ikke afbrydes eller annulleres.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Tilføj alias"
     LABEL_ALIAS: "Alias"
@@ -225,8 +225,8 @@ da_DK:
     BUTTON_UPDATE: "Opdater"
     NEW_DOMAIN_DESC: "Denne domæne konfiguration tillader <i>%NAME%</i> e-mail adresser."
     WHITE_LIST_ALERT: |
-      Liste med godkendte domæne for webmail opsætning.
-      Brug mellemrum til at separere domæner.
+        Liste med godkendte domæne for webmail opsætning.
+        Brug mellemrum til at separere domæner.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Tilføjelse"
     DESC_NOTHING_TO_CONFIGURE: "Intet at opsætte"
@@ -311,13 +311,13 @@ da_DK:
     PHP_VERSION_ERROR_DESC: "PHP versionen (%VERSION%) er for gammel.  Minimum 5.3.0 er nødvendig!"
     NO_SCRIPT_TITLE: "JavaScript er nødvendig for dette program."
     NO_SCRIPT_DESC: |
-      JavaScript er slået fra i din browser.
-      Slå JavaScript til og prøv igen.
+        JavaScript er slået fra i din browser.
+        Slå JavaScript til og prøv igen.
     NO_COOKIE_TITLE: "Cookies er nødvendige for dette program."
     NO_COOKIE_DESC: |
-      Cookies er slået fra i din browser.
-      Slå Cookies til og prøv igen.
+        Cookies er slået fra i din browser.
+        Slå Cookies til og prøv igen.
     BAD_BROWSER_TITLE: "Din browser er forældet."
     BAD_BROWSER_DESC: |
-      Enkle funktioner fungere ikke med denne browser.
-      For at bruge alle funktioner, hent en af følgende:
+        Enkle funktioner fungere ikke med denne browser.
+        For at bruge alle funktioner, hent en af følgende:

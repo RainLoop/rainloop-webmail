@@ -36,11 +36,11 @@ it_IT:
     LABEL_ALLOW_TEMPLATES: "Permetti di creare template"
     ALERT_WARNING: "Attenzione!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Stai usando la password di amministrazione predefinita.
-      <br />
-      Per ragioni di sicurezza,
-      <strong><a href="#/security">cambiala</a></strong>
-      con una nuova password immediatamente.
+        Stai usando la password di amministrazione predefinita.
+        <br />
+        Per ragioni di sicurezza,
+        <strong><a href="#/security">cambiala</a></strong>
+        con una nuova password immediatamente.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Schermata di accesso"
     LABEL_DEFAULT_DOMAIN: "Dominio predefinito"
@@ -84,18 +84,18 @@ it_IT:
     ALERT_NOTICE: "Attenzione!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Non usare questo tipo di database con un alto numero di utenti attivi."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Il tuo server non supporta il salvataggio dei contatti.
-      <br />
-      Devi abilitare l'estensione <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> sul tuo server.
+        Il tuo server non supporta il salvataggio dei contatti.
+        <br />
+        Devi abilitare l'estensione <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> sul tuo server.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domini"
     BUTTON_ADD_DOMAIN: "Aggiungi dominio"
     BUTTON_ADD_ALIAS: "Aggiungi alias"
     DELETE_ARE_YOU_SURE: "Ne sei sicuro?"
     HTML_DOMAINS_HELPER: |
-      Lista di domini a cui la webmail è abilitata ad accedere.
-      <br />
-      Clicca su un nome per configurare quel dominio.
+        Lista di domini a cui la webmail è abilitata ad accedere.
+        <br />
+        Clicca su un nome per configurare quel dominio.
   TAB_SECURITY:
     LEGEND_SECURITY: "Security"
     LABEL_ALLOW_TWO_STEP: "Abilita l'autenticazione a due fattori"
@@ -154,8 +154,8 @@ it_IT:
     HTML_ALERT_TOP_1: "RainLoop Webmail è rilasciato sotto la licenza"
     HTML_ALERT_TOP_2: "Sei <b>libero</b> di usarla per i tuoi progetti <b>personali</b>."
     HTML_ALERT_TOP_3: |
-      L'uso commerciale (con funzionalità aggiuntive) di <b>RainLoop Webmail</b> richiede di ottenere una
-      <a href=http://www.rainloop.net/purchase/ target=_blank>licenza</a>.
+        L'uso commerciale (con funzionalità aggiuntive) di <b>RainLoop Webmail</b> richiede di ottenere una
+        <a href=http://www.rainloop.net/purchase/ target=_blank>licenza</a>.
     TYPE_PREMIUM_LIFETIME: "A vita"
     LABEL_SUB_EXPIRES: "La licenza scade il"
     BUTTON_ACTIVATE: "Attiva una chiave di licenza per questo dominio"
@@ -183,11 +183,11 @@ it_IT:
     ERROR_INVALID_SUBS_KEY: "Chiave di licenza non valida"
     SUBS_KEY_ACTIVATED: "Chiave di licenza attivata correttamente"
     HTML_DESC: |
-      Dopo l'attivazione, la licenza Premium per <b>%DOMAIN%</b> sarà estesa.
-      <br />
-      Una chiave di licenza può essere attivata su un solo dominio.
-      <br /><br />
-      Una volta iniziato, il processo di attivazione non potrà essere bloccato od annullato.
+        Dopo l'attivazione, la licenza Premium per <b>%DOMAIN%</b> sarà estesa.
+        <br />
+        Una chiave di licenza può essere attivata su un solo dominio.
+        <br /><br />
+        Una volta iniziato, il processo di attivazione non potrà essere bloccato od annullato.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Aggiungi alias"
     LABEL_ALIAS: "Alias"
@@ -225,8 +225,8 @@ it_IT:
     BUTTON_UPDATE: "Aggiorna"
     NEW_DOMAIN_DESC: "La configurazione di questo dominio ti permette di lavorare <br />con <i>%NAME%</i> indirizzi email."
     WHITE_LIST_ALERT: |
-      Lista di domini a cui gli utenti sono autorizzati ad accedere.
-      Utilizzare uno spazio come separatore.
+        Lista di domini a cui gli utenti sono autorizzati ad accedere.
+        Utilizzare uno spazio come separatore.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Plugin"
     DESC_NOTHING_TO_CONFIGURE: "Niente da configurare"
@@ -314,13 +314,13 @@ it_IT:
     PHP_VERSION_ERROR_DESC: "La versione di PHP corrente (%VERSION%) è più vecchia di quella minima supportata (PHP 5.3.0)"
     NO_SCRIPT_TITLE: "Questa applicazione richiede JacaScript"
     NO_SCRIPT_DESC: |
-      Il supporto a JavaScript è disabilitato nel browser.
-      Abilita JavaScript e ricarica la pagina.
+        Il supporto a JavaScript è disabilitato nel browser.
+        Abilita JavaScript e ricarica la pagina.
     NO_COOKIE_TITLE: "Questa applicazione richiede i cookie"
     NO_COOKIE_DESC: |
-      Il supporto ai cookie è disabilitato nel browser.
-      Abilita i cookie e ricarica la pagina.
+        Il supporto ai cookie è disabilitato nel browser.
+        Abilita i cookie e ricarica la pagina.
     BAD_BROWSER_TITLE: "Il tuo browser è troppo vecchio"
     BAD_BROWSER_DESC: |
-      Per usare tutte le funzionalità dell'applicazione,
-      scarica ed installa uno dei seguenti browser:
+        Per usare tutte le funzionalità dell'applicazione,
+        scarica ed installa uno dei seguenti browser:

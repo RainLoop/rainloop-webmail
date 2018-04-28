@@ -195,10 +195,10 @@ sk_SK:
     PHP_VERSION_ERROR_DESC: "Vaša PHP verzia (%VERSION%) je nižšia ako minimálne vyžadovaná 5.3.0!"
     NO_SCRIPT_TITLE: "Táto aplikácia vyžaduje JavaScript."
     NO_SCRIPT_DESC: |
-      Váš internetový prehliadač nepodporuje JavaScript.
-      Prosím povoľte podporu JavaScriptu v nastaveniach vášho internetového prehliadača a skúste to znova.
+        Váš internetový prehliadač nepodporuje JavaScript.
+        Prosím povoľte podporu JavaScriptu v nastaveniach vášho internetového prehliadača a skúste to znova.
     NO_COOKIE_TITLE: "Táto aplikácia vyžaduje podporu Cookies."
     NO_COOKIE_DESC: |
-      Váš internetový prehliadač nepodporuje Cookies.
-      Prosím povoľte podporu Cookies v nastaveniach vášho internetového prehliadača a skúste to znova.
+        Váš internetový prehliadač nepodporuje Cookies.
+        Prosím povoľte podporu Cookies v nastaveniach vášho internetového prehliadača a skúste to znova.
     BAD_BROWSER_TITLE: "Používate zastaralý internetový prehliadač."

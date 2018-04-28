@@ -151,14 +151,15 @@ hu_HU:
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP kódolt üzenet (kattints a visszafejtéshez)"
     LINK_DOWNLOAD_AS_ZIP: "Letöltés zip fájlként"
     LINK_SAVE_TO_OWNCLOUD: "Mentés ownCloud-ra"
+    LINK_SAVE_TO_CLOUD: "Mentés a felhőbe"
     LINK_SAVE_TO_DROPBOX: "Mentés Dropbox-ra"
   READ_RECEIPT:
     SUBJECT: "Visszaigazolás (megjelenítve) - %SUBJECT%"
     BODY: |
-      Ez egy ide küldött üzenet olvasási visszaigazolása: %READ-RECEIPT%.
+        Ez egy ide küldött üzenet olvasási visszaigazolása: %READ-RECEIPT%.
 
-      Megjegyzés: Ez az olvasási visszaigazolás csak azt igazolja, hogy az üzenet megjelenítésre került a címzett számítógépén.
-      Nincs rá garancia, hogy a címzett elolvasta volna az üzenetet illetve megértette volna annak tartalmát.
+        Megjegyzés: Ez az olvasási visszaigazolás csak azt igazolja, hogy az üzenet megjelenítésre került a címzett számítógépén.
+        Nincs rá garancia, hogy a címzett elolvasta volna az üzenetet illetve megértette volna annak tartalmát.
   SUGGESTIONS:
     SEARCHING_DESC: "Keresés..."
   CONTACTS:
@@ -365,16 +366,16 @@ hu_HU:
     BUTTON_CANCEL: "Mégse"
     BUTTON_CLOSE: "Bezárás"
     NOTIFICATION_SENT: |
-      Nem választottál "Elküldött" rendszermappát a törölt levelek tárolásához.
-      Ha nem szeretnéd tárolni az elküldött leveleket, akkor válaszd a "Ne használd" lehetőséget.
+        Nem választottál "Elküldött" rendszermappát a törölt levelek tárolásához.
+        Ha nem szeretnéd tárolni az elküldött leveleket, akkor válaszd a "Ne használd" lehetőséget.
     NOTIFICATION_DRAFTS: "Nem választottál \"Piszkozatok\" rendszermappát a szerkesztett üzenetek tárolásához."
     NOTIFICATION_SPAM: |+
-      Nem választottál "Levélszemét" rendszermappát a kéretlen üzenetek tárolásához.
-      Az üzenetek végleges törléséhez válaszd a "Ne használd" lehetőséget.
+        Nem választottál "Levélszemét" rendszermappát a kéretlen üzenetek tárolásához.
+        Az üzenetek végleges törléséhez válaszd a "Ne használd" lehetőséget.
 
     NOTIFICATION_TRASH: |
-      Nem választottál "Lomtár" rendszermappát a törölt levelek tárolásához.
-      Az üzenetek végleges törléséhez válaszd a "Ne használd" lehetőséget.
+        Nem választottál "Lomtár" rendszermappát a törölt levelek tárolásához.
+        Az üzenetek végleges törléséhez válaszd a "Ne használd" lehetőséget.
     NOTIFICATION_ARCHIVE: "Nem választottál \"Archívum\" rendszermappát az archivált üzenetek tárolásához."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2 lépcsős hitelesítés"
@@ -582,6 +583,7 @@ hu_HU:
     TITLE_PUBLIC: "Publikus"
     DELETING_ASK: "Biztos vagy benne?"
     GENERATE_ONLY_HTTPS: "csak HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Piszkozat automatikus mentése"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Billentyű kombináció súgó"
     TAB_MAILBOX: "Postaláda"
@@ -703,13 +705,13 @@ hu_HU:
     PHP_VERSION_ERROR_DESC: "A PHP verziód (%VERSION%) kisebb mint a minimálisan szükséges 5.3.0!"
     NO_SCRIPT_TITLE: "Az alkalmazáshoz JavaScript szükséges."
     NO_SCRIPT_DESC: |
-      A JavaScript támogatás nem érhető el a böngésződben.
-      Kérlek engedélyezd böngésződben a JavaScript támogatást, majd próbáld újra.
+        A JavaScript támogatás nem érhető el a böngésződben.
+        Kérlek engedélyezd böngésződben a JavaScript támogatást, majd próbáld újra.
     NO_COOKIE_TITLE: "Az alkalmazáshoz Cookie támogatásra van szükség."
     NO_COOKIE_DESC: |
-      A Cookie támogatás nem érhető el a böngésződben.
-      Kérlek engedélyezd böngésződben a Cookie támogatást, majd próbáld újra.
+        A Cookie támogatás nem érhető el a böngésződben.
+        Kérlek engedélyezd böngésződben a Cookie támogatást, majd próbáld újra.
     BAD_BROWSER_TITLE: "A böngésződ elavult."
     BAD_BROWSER_DESC: |
-      Az alkalmazás összes funkciójának használatához
-      tölts le és telepítsd az alábbi böngészők egyikét:
+        Az alkalmazás összes funkciójának használatához
+        tölts le és telepítsd az alábbi böngészők egyikét:

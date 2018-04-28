@@ -155,10 +155,10 @@ sl_SI:
   READ_RECEIPT:
     SUBJECT: "Povratno poročilo (prikazano) - %SUBJECT%"
     BODY: |
-      To je povratno poročilo za sporočilo, ki je bilo poslano na %READ-RECEIPT%.
+        To je povratno poročilo za sporočilo, ki je bilo poslano na %READ-RECEIPT%.
 
-      Opomba: "To povratno poročilo pomeni le, da je bilo sporočilo prikazano na računalniku prejemnika."
-      Ni jamstva za prejemnikovo razumevanje vsebine sporočila.
+        Opomba: "To povratno poročilo pomeni le, da je bilo sporočilo prikazano na računalniku prejemnika."
+        Ni jamstva za prejemnikovo razumevanje vsebine sporočila.
   SUGGESTIONS:
     SEARCHING_DESC: "Iskanje..."
   CONTACTS:
@@ -365,15 +365,15 @@ sl_SI:
     BUTTON_CANCEL: "Prekliči"
     BUTTON_CLOSE: "Zapri"
     NOTIFICATION_SENT: |
-      Niste izbrali sistemske mape "Poslano" za shranjevanje poslanih sporočil.
-      Če ne želite shranjevati poslanih sporočil, izberite možnost "Ne uporabi".
+        Niste izbrali sistemske mape "Poslano" za shranjevanje poslanih sporočil.
+        Če ne želite shranjevati poslanih sporočil, izberite možnost "Ne uporabi".
     NOTIFICATION_DRAFTS: "Niste izbrali sistemske mape \"Osnutki\" za začasno shranjevanje sporočil med sestavljanjem."
     NOTIFICATION_SPAM: |
-      Niste izbrali sistemske mape "Vsiljena pošta" za shranjevanje vsiljene pošte.
-      Če želite vsiljeno pošto sproti brisati, izberite možnost "Ne uporabi".
+        Niste izbrali sistemske mape "Vsiljena pošta" za shranjevanje vsiljene pošte.
+        Če želite vsiljeno pošto sproti brisati, izberite možnost "Ne uporabi".
     NOTIFICATION_TRASH: |
-      Niste izbrali sistemske mape "Smetnjak" za izbrisana sporočila pred trajnim brisanjem.
-      Če jih želite vedno trajno izbrisati, izberite možnost "Ne uporabi".
+        Niste izbrali sistemske mape "Smetnjak" za izbrisana sporočila pred trajnim brisanjem.
+        Če jih želite vedno trajno izbrisati, izberite možnost "Ne uporabi".
     NOTIFICATION_ARCHIVE: "Niste izbrali sistemske mape \"Arhiv\" za trajno arhiviranje sporočil."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-stopenjsko overjanje (TOTP)"
@@ -698,13 +698,13 @@ sl_SI:
     PHP_VERSION_ERROR_DESC: "Vaša PHP verzija (%VERSION%) je manjša kot potrebna 5.3.0!"
     NO_SCRIPT_TITLE: "Ta aplikacija potrebuje omogočen JavaScript."
     NO_SCRIPT_DESC: |
-      Brskalnik nima podpore za JavaScript.
-      Omogočite JavaScript v brskalniku in poskusite znova.
+        Brskalnik nima podpore za JavaScript.
+        Omogočite JavaScript v brskalniku in poskusite znova.
     NO_COOKIE_TITLE: "Ta aplikacije potrebuje omogočene piškotke."
     NO_COOKIE_DESC: |
-      Brskalnik nima omogočenih piškotkov.
-      Omogočite piškotke v brskalniku in poskusite znova.
+        Brskalnik nima omogočenih piškotkov.
+        Omogočite piškotke v brskalniku in poskusite znova.
     BAD_BROWSER_TITLE: "Brskalnik je zastarel."
     BAD_BROWSER_DESC: |
-      Za uporabo vseh funkcij te aplikacije
-      prenesite in namestite enega od teh brskalnikov:
+        Za uporabo vseh funkcij te aplikacije
+        prenesite in namestite enega od teh brskalnikov:

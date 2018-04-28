@@ -153,9 +153,9 @@ cs_CZ:
   READ_RECEIPT:
     SUBJECT: "Potvrzení o zobrazení zprávy - %SUBJECT%"
     BODY: |
-      Toto je potrvzení o zaslání emailu na adresu %READ-RECEIPT%.
+        Toto je potrvzení o zaslání emailu na adresu %READ-RECEIPT%.
 
-      Poznámka: Toto potvrzení zajištujě, že zpráva byla zobrazena v poštovní schrnánce příjemce. Nezajišťuje, že ji příjemce čelt a rozuměl jí.
+        Poznámka: Toto potvrzení zajištujě, že zpráva byla zobrazena v poštovní schrnánce příjemce. Nezajišťuje, že ji příjemce čelt a rozuměl jí.
   SUGGESTIONS:
     SEARCHING_DESC: "Hledám..."
   CONTACTS:
@@ -362,15 +362,15 @@ cs_CZ:
     BUTTON_CANCEL: "Zrušit"
     BUTTON_CLOSE: "Zavřít"
     NOTIFICATION_SENT: |
-      Nevybrali jste systémovou složku "Odeslané" kam budou uložené zprávy po jejich odeslání.
-      Pokud nechcete ukládat odeslané zprávy, vyberete možnost "Nepoužívat".
+        Nevybrali jste systémovou složku "Odeslané" kam budou uložené zprávy po jejich odeslání.
+        Pokud nechcete ukládat odeslané zprávy, vyberete možnost "Nepoužívat".
     NOTIFICATION_DRAFTS: "Nevybrali jste systémovou složku pro \"Koncepty\" kam jsou ukládány zprávy během jejich psaní."
     NOTIFICATION_SPAM: |
-      Nevybrali jste systémovou složku pro "Spam" kam je ukládána nevyžádaná pošta.
-      Pokud chcete tyto zprávy odstranit natrvalo, vyberte prosím možnost "Nepoužívat".
+        Nevybrali jste systémovou složku pro "Spam" kam je ukládána nevyžádaná pošta.
+        Pokud chcete tyto zprávy odstranit natrvalo, vyberte prosím možnost "Nepoužívat".
     NOTIFICATION_TRASH: |
-      Nevybrali jste systémovou složku pro "Koš" kam jsou zprávy přesunuté pro jejich odstranění.
-      Pokud chcete zprávy odstranit natrvalo, vyberte prosím možnost "Nepoužívat".
+        Nevybrali jste systémovou složku pro "Koš" kam jsou zprávy přesunuté pro jejich odstranění.
+        Pokud chcete zprávy odstranit natrvalo, vyberte prosím možnost "Nepoužívat".
     NOTIFICATION_ARCHIVE: "Nevybrali jste systémovou složku \"Archiv\", kam se ukládají archivované zprávy."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Dvoufázové ověření"
@@ -692,13 +692,13 @@ cs_CZ:
     PHP_VERSION_ERROR_DESC: "Vaše verze PHP (%VERSION%) je nižší než požadovaná 5.3.0!"
     NO_SCRIPT_TITLE: "Tato aplikace vyžaduje JavaScript."
     NO_SCRIPT_DESC: |
-      Váš internetový prohlížeč nepodporuje JavaScript.
-      Prosím povolte podporu JavaScriptu v nastavení vašeho internetového prohlížeče a zkuste to znovu.
+        Váš internetový prohlížeč nepodporuje JavaScript.
+        Prosím povolte podporu JavaScriptu v nastavení vašeho internetového prohlížeče a zkuste to znovu.
     NO_COOKIE_TITLE: "Tato aplikace vyžaduje podporu Cookies."
     NO_COOKIE_DESC: |
-      Váš internetový prohlížeč nepodporuje Cookies.
-      Prosím povolte podporu Cookies v nastavení vašeho internetového prohlížeče a zkuste to znovu.
+        Váš internetový prohlížeč nepodporuje Cookies.
+        Prosím povolte podporu Cookies v nastavení vašeho internetového prohlížeče a zkuste to znovu.
     BAD_BROWSER_TITLE: "Používáte zastaralý internetový prohlížeč."
     BAD_BROWSER_DESC: |
-      Abyste mohli využívat všechny funkcie této aplikace,
-      použijte některý z následujících internetových prohlížečů:
+        Abyste mohli využívat všechny funkcie této aplikace,
+        použijte některý z následujících internetových prohlížečů:

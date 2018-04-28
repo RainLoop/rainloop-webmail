@@ -36,11 +36,11 @@ sl_SI:
     LABEL_ALLOW_TEMPLATES: "Dovoli predloge"
     ALERT_WARNING: "Pozor!"
     HTML_ALERT_WEAK_PASSWORD: |
-      V uporabi je privzeto geslo administratorja
-      <br />
-      Iz varnostnih razlogov
-      <strong><a href="#/security">spremenite</a></strong>
-      geslo v nekaj drugega.
+        V uporabi je privzeto geslo administratorja
+        <br />
+        Iz varnostnih razlogov
+        <strong><a href="#/security">spremenite</a></strong>
+        geslo v nekaj drugega.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Prijavni zaslon"
     LABEL_DEFAULT_DOMAIN: "Privzeta domena"
@@ -84,18 +84,18 @@ sl_SI:
     ALERT_NOTICE: "Obvestilo!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Ta tip podatkovne baze ni priporočljiv za večje število uporabnikov."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Sistem ne podpira stikov.
-      <br />
-      Namestite ali omogočite <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> razširitev na strežniku.
+        Sistem ne podpira stikov.
+        <br />
+        Namestite ali omogočite <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> razširitev na strežniku.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domene"
     BUTTON_ADD_DOMAIN: "Dodaj domeno"
     BUTTON_ADD_ALIAS: "Dodaj vzdevek"
     DELETE_ARE_YOU_SURE: "Ste prepričani?"
     HTML_DOMAINS_HELPER: |
-      Seznam domen, do katerih je omogočen dostop.
-      <br />
-      Kliknite ime za konfiguracijo domene.
+        Seznam domen, do katerih je omogočen dostop.
+        <br />
+        Kliknite ime za konfiguracijo domene.
   TAB_SECURITY:
     LEGEND_SECURITY: "Varnost"
     LABEL_ALLOW_TWO_STEP: "Dovoli 2-stopenjsko overjanje"
@@ -154,8 +154,8 @@ sl_SI:
     HTML_ALERT_TOP_1: "RainLoop Webmail izdana pod licenco"
     HTML_ALERT_TOP_2: "Smete jo <b>prosto in zastonj</b> uporabljati za <b>osebne</b> projekte."
     HTML_ALERT_TOP_3: |
-      Za komercialno uporabo (z dodatnimi funkcijami) <b>RainLoop Webmail</b> je potrebno pridobiti
-      <a href="http://www.rainloop.net/purchase/" target="_blank">naročnino</a>.
+        Za komercialno uporabo (z dodatnimi funkcijami) <b>RainLoop Webmail</b> je potrebno pridobiti
+        <a href="http://www.rainloop.net/purchase/" target="_blank">naročnino</a>.
     TYPE_PREMIUM_LIFETIME: "Obdobje"
     LABEL_SUB_EXPIRES: "Naročnina poteče"
     BUTTON_ACTIVATE: "Aktiviraj naročniški ključ za to domeno"
@@ -183,11 +183,11 @@ sl_SI:
     ERROR_INVALID_SUBS_KEY: "Neveljaven naročniški ključ"
     SUBS_KEY_ACTIVATED: "Naročniški ključ je bil uspešno aktiviran"
     HTML_DESC: |
-      Po aktivaciji bo premium naročnina za <b>%DOMAIN%</b> podaljšana.
-      <br />
-      Naročniški ključ je lahko uporabljen zgolj za eno domeno.
-      <br /><br />
-      Po začetku procesa aktivacije ni mogoče prekiniti ali preklicati.
+        Po aktivaciji bo premium naročnina za <b>%DOMAIN%</b> podaljšana.
+        <br />
+        Naročniški ključ je lahko uporabljen zgolj za eno domeno.
+        <br /><br />
+        Po začetku procesa aktivacije ni mogoče prekiniti ali preklicati.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Dodajanje domene"
     LABEL_ALIAS: "Vzdevek"
@@ -225,8 +225,8 @@ sl_SI:
     BUTTON_UPDATE: "Posodobi"
     NEW_DOMAIN_DESC: "Ta konfiguiracija domene bo omogočala delo <br />z <i>%NAME%</i> e-naslovi."
     WHITE_LIST_ALERT: |
-      Seznam uporabnikov domene, do katerih je omogočen dostop.
-      Uporabnike ločite s presledkom.
+        Seznam uporabnikov domene, do katerih je omogočen dostop.
+        Uporabnike ločite s presledkom.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Vtičnik"
     DESC_NOTHING_TO_CONFIGURE: "Ni nastavitev za spreminjati"
@@ -311,13 +311,13 @@ sl_SI:
     PHP_VERSION_ERROR_DESC: "Vaša PHP verzija (%VERSION%) je manjša kot potrebna 5.3.0!"
     NO_SCRIPT_TITLE: "Ta aplikacija potrebuje omogočen JavaScript."
     NO_SCRIPT_DESC: |
-      Brskalnik nima podpore za JavaScript.
-      Omogočite JavaScript v brskalniku in poskusite znova.
+        Brskalnik nima podpore za JavaScript.
+        Omogočite JavaScript v brskalniku in poskusite znova.
     NO_COOKIE_TITLE: "Ta aplikacije potrebuje omogočene piškotke."
     NO_COOKIE_DESC: |
-      Brskalnik nima omogočenih piškotkov.
-      Omogočite piškotke v brskalniku in poskusite znova.
+        Brskalnik nima omogočenih piškotkov.
+        Omogočite piškotke v brskalniku in poskusite znova.
     BAD_BROWSER_TITLE: "Brskalnik je zastarel."
     BAD_BROWSER_DESC: |
-      Za uporabo vseh funkcij te aplikacije
-      prenesite in namestite enega od teh brskalnikov:
+        Za uporabo vseh funkcij te aplikacije
+        prenesite in namestite enega od teh brskalnikov:

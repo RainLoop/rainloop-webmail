@@ -151,14 +151,15 @@ ja_JP:
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP 暗号化メッセージ (クリックして復号化)"
     LINK_DOWNLOAD_AS_ZIP: "Zip としてダウンロード"
     LINK_SAVE_TO_OWNCLOUD: "ownCloud へ保存"
+    LINK_SAVE_TO_CLOUD: "クラウドに保存する"
     LINK_SAVE_TO_DROPBOX: "Dropbox へ保存"
   READ_RECEIPT:
     SUBJECT: "開封確認メッセージ - %SUBJECT%"
     BODY: |
-      これは %READ-RECEIPT% に送信されたメールの開封確認です。
+        これは %READ-RECEIPT% に送信されたメールの開封確認です。
 
-      注： 「この開封確認は、メッセージが受信者のコンピュータ上に表示されたことだけを意味しています。 」
-      受信者が読んだり、メッセージの内容を理解しているという保証はありません。
+        注： 「この開封確認は、メッセージが受信者のコンピュータ上に表示されたことだけを意味しています。 」
+        受信者が読んだり、メッセージの内容を理解しているという保証はありません。
   SUGGESTIONS:
     SEARCHING_DESC: "検索中..."
   CONTACTS:
@@ -186,7 +187,7 @@ ja_JP:
     LINK_BIRTHDAY: "誕生日を追加"
     PLACEHOLDER_ENTER_DISPLAY_NAME: "表示名を入力してください"
     PLACEHOLDER_ENTER_LAST_NAME: "姓を入力してください"
-    PLACEHOLDER_ENTER_FIRST_NAME: "姓を入力してください"
+    PLACEHOLDER_ENTER_FIRST_NAME: "名を入力してください"
     PLACEHOLDER_ENTER_NICK_NAME: "ニックネームを入力してください"
     LABEL_READ_ONLY: "読み取り専用"
     LABEL_SHARE: "共有"
@@ -365,15 +366,15 @@ ja_JP:
     BUTTON_CANCEL: "キャンセル"
     BUTTON_CLOSE: "閉じる"
     NOTIFICATION_SENT: |
-      送信済みメッセージを置くための ”Sent” システムフォルダが選択されていません。
-      送信済みメッセージを保存する必要がないのなら、"使用しない"オプションを選択してください。
+        送信済みメッセージを置くための ”Sent” システムフォルダが選択されていません。
+        送信済みメッセージを保存する必要がないのなら、"使用しない"オプションを選択してください。
     NOTIFICATION_DRAFTS: "下書きメッセージを置くための ”Sent” システムフォルダが選択されていません。"
     NOTIFICATION_SPAM: |
-      迷惑メールを置くための ”Spam” システムフォルダが選択されていません。
-      迷惑メールが完全に削除されるのを望むのなら、"使用しない"オプションを選択してください。
+        迷惑メールを置くための ”Spam” システムフォルダが選択されていません。
+        迷惑メールが完全に削除されるのを望むのなら、"使用しない"オプションを選択してください。
     NOTIFICATION_TRASH: |
-      削除されたメッセージを置くための ”Trash” システムフォルダが選択されていません。
-      削除されたメッセージが完全に削除されるのを望むのなら、"使用しない"オプションを選択してください。
+        削除されたメッセージを置くための ”Trash” システムフォルダが選択されていません。
+        削除されたメッセージが完全に削除されるのを望むのなら、"使用しない"オプションを選択してください。
     NOTIFICATION_ARCHIVE: "アーカイブされたメッセージを置くための ”Archive” システムフォルダが選択されていません。"
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2段階認証 (TOTP)"
@@ -580,6 +581,7 @@ ja_JP:
     TITLE_PUBLIC: "パブリック"
     DELETING_ASK: "よろしいですか？"
     GENERATE_ONLY_HTTPS: "HTTPS only"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "下書きを自動的に保存する"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "キーボード ショートカット ヘルプ"
     TAB_MAILBOX: "メールボックス"
@@ -695,13 +697,13 @@ ja_JP:
     PHP_VERSION_ERROR_DESC: "PHP バージョン  (%VERSION%) が、 最低バージョンの 5.3.0 よりも低いです！"
     NO_SCRIPT_TITLE: "このアプリケーションでは  JavaScript が必要です。"
     NO_SCRIPT_DESC: |
-      ブラウザで JavaScript が、有効になっていません。
-      JavaScript を有効にして、再度試してください。
+        ブラウザで JavaScript が、有効になっていません。
+        JavaScript を有効にして、再度試してください。
     NO_COOKIE_TITLE: "このアプリケーションでは  Cookie が必要です。"
     NO_COOKIE_DESC: |
-      ブラウザで Cookie が、有効になっていません。
-      Cookie を有効にして、再度試してください。
+        ブラウザで Cookie が、有効になっていません。
+        Cookie を有効にして、再度試してください。
     BAD_BROWSER_TITLE: "ブラウザが古いです。"
     BAD_BROWSER_DESC: |
-      アプリケーションのすべての機能を使用するには、
-      これらのブラウザの1つをダウンロードしてインストールします：
+        アプリケーションのすべての機能を使用するには、
+        これらのブラウザの1つをダウンロードしてインストールします：

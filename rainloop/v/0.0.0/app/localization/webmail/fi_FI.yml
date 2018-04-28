@@ -154,9 +154,9 @@ fi_FI:
   READ_RECEIPT:
     SUBJECT: "Kuitattu luetuksi - %SUBJECT%"
     BODY: |
-      Tämä on Kuitattu luetuksi viestille jonka lähetit %READ-RECEIPT%lle.
+        Tämä on Kuitattu luetuksi viestille jonka lähetit %READ-RECEIPT%lle.
 
-      Huom: Tämä viesti kertoo vain että lähetetty viesti on näytetty vastaanottajan koneella.
+        Huom: Tämä viesti kertoo vain että lähetetty viesti on näytetty vastaanottajan koneella.
   SUGGESTIONS:
     SEARCHING_DESC: "Hakee..."
   CONTACTS:
@@ -363,15 +363,15 @@ fi_FI:
     BUTTON_CANCEL: "Peruuta"
     BUTTON_CLOSE: "Sulje"
     NOTIFICATION_SENT: |
-      Et ole valinnut "Lähetetyt" järjestelmäkansiota jonne viestit laitetaan lähetyksen jälkeen.
-      Jos et halua tallentaa lähetettyjä viestejä, valitse "Älä käytä".
+        Et ole valinnut "Lähetetyt" järjestelmäkansiota jonne viestit laitetaan lähetyksen jälkeen.
+        Jos et halua tallentaa lähetettyjä viestejä, valitse "Älä käytä".
     NOTIFICATION_DRAFTS: "Et ole valinnut \"Luonnokset\" kansiota minne tallennetaan viestit kirjoitettaessa."
     NOTIFICATION_SPAM: |
-      Et ole valinnut "Roskaposti" kansiota mihin roskapostiksi merkityt viestit siirretään.
-      Jos haluat positaa viestit lopullisesti, valitse "Älä käytä".
+        Et ole valinnut "Roskaposti" kansiota mihin roskapostiksi merkityt viestit siirretään.
+        Jos haluat positaa viestit lopullisesti, valitse "Älä käytä".
     NOTIFICATION_TRASH: |
-      Et ole valinnut "Roskakori" järjestelmäkansiota mihin poistetut viestit laitetaan.
-      Jos haluat positaa viestit lopullisesti, valitse "Älä käytä".
+        Et ole valinnut "Roskakori" järjestelmäkansiota mihin poistetut viestit laitetaan.
+        Jos haluat positaa viestit lopullisesti, valitse "Älä käytä".
     NOTIFICATION_ARCHIVE: "Et ole valinnut \"Arkisto\" järjestelmäkansiota."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-osainen todentaminen"
@@ -696,13 +696,13 @@ fi_FI:
     PHP_VERSION_ERROR_DESC: "PHP versiosi (%VERSION%) on alle vaaditun 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript vaaditaan."
     NO_SCRIPT_DESC: |
-      JavaScript tuki ei ole saatavilla selaimessasi.
-      Aktivoi JavaScript selaimessasi ja yritä uudelleen.
+        JavaScript tuki ei ole saatavilla selaimessasi.
+        Aktivoi JavaScript selaimessasi ja yritä uudelleen.
     NO_COOKIE_TITLE: "Eväste-tuki vaaditaan."
     NO_COOKIE_DESC: |
-      Eväste (cookie) tuki ei ole saatavilla selaimessasi.
-      Aktivoi evästeet (cookiet) selaimessasi ja yritä uudelleen.
+        Eväste (cookie) tuki ei ole saatavilla selaimessasi.
+        Aktivoi evästeet (cookiet) selaimessasi ja yritä uudelleen.
     BAD_BROWSER_TITLE: "Selaimesi on vanhentunut."
     BAD_BROWSER_DESC: |
-      Käyttääksesi kaikkia ominaisuuksia,
-      lataa ja asenna jokin näistä selaimista:
+        Käyttääksesi kaikkia ominaisuuksia,
+        lataa ja asenna jokin näistä selaimista:

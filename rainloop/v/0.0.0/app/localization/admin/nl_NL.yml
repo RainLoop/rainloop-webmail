@@ -36,10 +36,10 @@ nl_NL:
     LABEL_ALLOW_TEMPLATES: "Sta templates toe"
     ALERT_WARNING: "Waarschuwing!"
     HTML_ALERT_WEAK_PASSWORD: |
-      U gebruikt het standaard beheer wachtwoord.
-      <br />
-      <strong><a href="#/security">Wijzig</a></strong>
-      a.u.b. voor uw veiligheid direct het wachtwoord.
+        U gebruikt het standaard beheer wachtwoord.
+        <br />
+        <strong><a href="#/security">Wijzig</a></strong>
+        a.u.b. voor uw veiligheid direct het wachtwoord.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Inlogscherm"
     LABEL_DEFAULT_DOMAIN: "Standaard domein"
@@ -83,18 +83,18 @@ nl_NL:
     ALERT_NOTICE: "Aandacht!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Gegruik deze database soort niet met een groot aantal actieve gebrukers."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Uw systeem ondersteund geen contactpersonen.
-      <br />
-      U moet een <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> extentie op uw server installeren of activeren.
+        Uw systeem ondersteund geen contactpersonen.
+        <br />
+        U moet een <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> extentie op uw server installeren of activeren.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domeinen"
     BUTTON_ADD_DOMAIN: "Domein toevoegen"
     BUTTON_ADD_ALIAS: "Voeg alias toe"
     DELETE_ARE_YOU_SURE: "Weet u het zeker?"
     HTML_DOMAINS_HELPER: |
-      Lijst van toegestane domeinen.
-      <br />
-      Klik op de domeinnaam om deze te configureren.
+        Lijst van toegestane domeinen.
+        <br />
+        Klik op de domeinnaam om deze te configureren.
   TAB_SECURITY:
     LEGEND_SECURITY: "Beveiliging"
     LABEL_ALLOW_TWO_STEP: "2-Stap verificatie toestaan"
@@ -153,7 +153,7 @@ nl_NL:
     HTML_ALERT_TOP_1: "RainLoop Webmail is gelicentieerd onder de"
     HTML_ALERT_TOP_2: "U staat u <b>vrij</b> om dit voor uw <b>persoonlijk</b> project te gebruiken."
     HTML_ALERT_TOP_3: |
-      Voor commercieel gebruik (met additionele functies) van <b>RainLoop Webmail</b> moet u een <a href=http://www.rainloop.net/purchase/ target=_blank>activatie code</a>.
+        Voor commercieel gebruik (met additionele functies) van <b>RainLoop Webmail</b> moet u een <a href=http://www.rainloop.net/purchase/ target=_blank>activatie code</a>.
     TYPE_PREMIUM_LIFETIME: "Levenslang"
     LABEL_SUB_EXPIRES: "Activatie verloopt"
     BUTTON_ACTIVATE: "Activeer de activatie code voor dit domein."
@@ -181,11 +181,11 @@ nl_NL:
     ERROR_INVALID_SUBS_KEY: "Onjuiste activatie code"
     SUBS_KEY_ACTIVATED: "Activatie code is al succesvol geactiveerd"
     HTML_DESC: |
-      Na activatie wordt het premium abonnement voor <b>%DOMAIN%</b> verlengd.
-      <br />
-      Let op: een activatie code kan slechts voor één domein worden gebruikt.
-      <br /><br />
-      Het activatieproces kan niet meer worden afgebroken of geannuleerd nadat het is gestart.
+        Na activatie wordt het premium abonnement voor <b>%DOMAIN%</b> verlengd.
+        <br />
+        Let op: een activatie code kan slechts voor één domein worden gebruikt.
+        <br /><br />
+        Het activatieproces kan niet meer worden afgebroken of geannuleerd nadat het is gestart.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Voeg alias toe"
     LABEL_ALIAS: "Alias"
@@ -223,8 +223,8 @@ nl_NL:
     BUTTON_UPDATE: "Update"
     NEW_DOMAIN_DESC: "Dit domein stelt u in staat om <br />met <i>%NAME%</i> e-mail adressen te werken."
     WHITE_LIST_ALERT: |
-      Lijst van gebruikers die dit domein mogen gebruiken.
-      Gebruik een spatie als scheidingsteken.
+        Lijst van gebruikers die dit domein mogen gebruiken.
+        Gebruik een spatie als scheidingsteken.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Invoegtoepassing"
     DESC_NOTHING_TO_CONFIGURE: "Niets om te configureren"
@@ -309,13 +309,13 @@ nl_NL:
     PHP_VERSION_ERROR_DESC: "Your PHP version (%VERSION%) is lower than the minimal required 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript is required for this application."
     NO_SCRIPT_DESC: |
-      JavaScript support is not available in your browser.
-      Please enable JavaScript support in your browser settings and retry.
+        JavaScript support is not available in your browser.
+        Please enable JavaScript support in your browser settings and retry.
     NO_COOKIE_TITLE: "Cookies support is required for this application."
     NO_COOKIE_DESC: |
-      Cookies support is not available in your browser.
-      Please enable Cookie support in your browser settings and retry.
+        Cookies support is not available in your browser.
+        Please enable Cookie support in your browser settings and retry.
     BAD_BROWSER_TITLE: "Your browser is outdated."
     BAD_BROWSER_DESC: |
-      Om alle functies van deze applicatie te gebruiken,
-      download en installeer een van de volgende browsers:
+        Om alle functies van deze applicatie te gebruiken,
+        download en installeer een van de volgende browsers:
