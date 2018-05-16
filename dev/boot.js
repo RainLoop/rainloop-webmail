@@ -2,6 +2,8 @@
 import window from 'window';
 import elementDatasetPolyfill from 'element-dataset';
 
+import 'es6-object-assign/auto';
+
 import {Promise} from 'es6-promise-polyfill/promise.js';
 import {progressJs} from '../vendors/Progress.js/src/progress.js';
 
