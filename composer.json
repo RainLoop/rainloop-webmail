@@ -1,0 +1,18 @@
+{
+    "config": {
+        "vendor-dir": "rainloop/v/0.0.0/app/vendor"
+    },
+    "require": {
+        "facebook/graph-sdk": "^5.6",
+        "mobiledetect/mobiledetectlib": "^2.8",
+        "phpgangsta/googleauthenticator": "dev-master",
+        "predis/predis": "^1.1",
+        "themattharris/tmhoauth": "^0.8.4",
+        "imagine/imagine": "^0.7.1",
+        "pclzip/pclzip": "^2.8",
+        "adoy/oauth2": "^1.3",
+        "mustangostang/spyc": "^0.6.2",
+        "sabre/dav": "^3.2",
+        "oyejorge/less.php": "v1.7.0.14"
+    }
+}

@@ -352,7 +352,7 @@ class Utils
 			$isYml = '.yml' === substr($sFileName, -4);
 			if ($isYml)
 			{
-				$aLang = \spyc_load(\str_replace(array(': >-', ': |-', ': |+'), array(': >', ': |', ': |'), \file_get_contents($sFileName)));
+				$aLang = \Spyc::YAMLLoad(\str_replace(array(': >-', ': |-', ': |+'), array(': >', ': |', ': |'), \file_get_contents($sFileName)));
 				if (\is_array($aLang))
 				{
 					\reset($aLang);

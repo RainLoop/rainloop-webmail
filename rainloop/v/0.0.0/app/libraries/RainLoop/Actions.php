@@ -4727,8 +4727,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		if ('' !== $sTmp)
 		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/pclzip/pclzip.lib.php';
-
 			$oArchive = new \PclZip($sTmp);
 			if ('plugin' === $sType)
 			{

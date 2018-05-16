@@ -38,6 +38,7 @@ var
 	argv = require('yargs').argv,
 
 	gulp = require('gulp'),
+	composer = require('gulp-composer'),
 	concat = require('gulp-concat-util'),
 	header = require('gulp-header'),
 	stripbom = require('gulp-stripbom'),
@@ -132,6 +133,7 @@ function copyFile(sFile, sNewFile, callback)
 }
 
 cfg.paths.globjs = 'dev/**/*.js';
+cfg.paths.php = 'rainloop/v/' + cfg.devVersion + '/app/vendor/';
 cfg.paths.static = 'rainloop/v/' + cfg.devVersion + '/static/';
 cfg.paths.staticJS = 'rainloop/v/' + cfg.devVersion + '/static/js/';
 cfg.paths.staticMinJS = 'rainloop/v/' + cfg.devVersion + '/static/js/min/';
@@ -236,6 +238,15 @@ cfg.paths.js = {
 	}
 };
 
+
+// PHP
+gulp.task('php:clean', function() {
+	return cleanDir(cfg.paths.php);
+});
+
+gulp.task('php', function() {
+	composer();
+});
 
 // assets
 
@@ -591,7 +602,7 @@ gulp.task('css', ['css:min']);
 
 gulp.task('vendors', ['moment', 'ckeditor', 'fontastic', 'lightgallery']);
 
-gulp.task('clean', ['js:clean', 'css:clean', 'assets:clean']);
+gulp.task('clean', ['php:clean', 'js:clean', 'css:clean', 'assets:clean']);
 
 gulp.task('rainloop:start', ['rainloop:copy', 'rainloop:setup']);
 
@@ -603,7 +614,7 @@ gulp.task('owncloud', ['rainloop:owncloud:copy',
 
 // default
 gulp.task('default', function(callback) {
-	runSequence('clean', ['js', 'css', 'vendors'], callback);
+	runSequence('clean', ['php', 'js', 'css', 'vendors'], callback);
 });
 
 // watch

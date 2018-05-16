@@ -617,11 +617,6 @@ class Social
 			'' !== \trim($oConfig->Get('social', 'google_client_id', '')) &&
 			'' !== \trim($oConfig->Get('social', 'google_client_secret', '')))
 		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/Client.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/GrantType/IGrantType.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/GrantType/AuthorizationCode.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/PHP-OAuth2/GrantType/RefreshToken.php';
-
 			try
 			{
 				$oGoogle = new \OAuth2\Client(
@@ -660,9 +655,6 @@ class Social
 			'' !== \trim($oConfig->Get('social', 'twitter_consumer_key', '')) &&
 			'' !== \trim($oConfig->Get('social', 'twitter_consumer_secret', '')))
 		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/tmhOAuth/tmhOAuth.php';
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/tmhOAuth/tmhUtilities.php';
-
 			$sProxy = $this->oActions->Config()->Get('labs', 'curl_proxy', '');
 			$sProxyAuth = $this->oActions->Config()->Get('labs', 'curl_proxy_auth', '');
 

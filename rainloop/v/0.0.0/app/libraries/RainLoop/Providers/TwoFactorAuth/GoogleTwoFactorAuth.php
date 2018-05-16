@@ -14,8 +14,6 @@ class GoogleTwoFactorAuth
 	 */
 	public function VerifyCode($sSecret, $sCode)
 	{
-		include_once APP_VERSION_ROOT_PATH.'app/libraries/PHPGangsta/GoogleAuthenticator.php';
-
 		$oGoogleAuthenticator = new \PHPGangsta_GoogleAuthenticator();
 		return $oGoogleAuthenticator->verifyCode($sSecret, $sCode, 8);
 	}
@@ -25,8 +23,6 @@ class GoogleTwoFactorAuth
 	 */
 	public function CreateSecret()
 	{
-		include_once APP_VERSION_ROOT_PATH.'app/libraries/PHPGangsta/GoogleAuthenticator.php';
-
 		$oGoogleAuthenticator = new \PHPGangsta_GoogleAuthenticator();
 		return $oGoogleAuthenticator->createSecret();
 	}

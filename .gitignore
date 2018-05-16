@@ -10,6 +10,7 @@
 /rainloop/v/0.0.0/static/*
 /rainloop/v/0.0.0/app/localization/moment/*
 !/rainloop/v/0.0.0/app/localization/moment/.gitempty
+/rainloop/v/0.0.0/app/vendor/*
 /tests/e2e/configuration.js
 /tests/e2e/output/*
 !/tests/e2e/output/.gitempty

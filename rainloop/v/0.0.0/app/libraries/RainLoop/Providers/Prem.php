@@ -291,8 +291,6 @@ class Prem
 		$sTmp = $oActions->downloadRemotePackageByUrl($sFile);
 		if (!empty($sTmp))
 		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/pclzip/pclzip.lib.php';
-
 			$oArchive = new \PclZip($sTmp);
 			$sTmpFolder = APP_PRIVATE_DATA.\md5($sTmp);
 

@@ -4,8 +4,8 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 {
 	\define('RAINLOOP_APP_PATH', \rtrim(\realpath(__DIR__), '\\/').'/');
 	\define('RAINLOOP_APP_LIBRARIES_PATH', RAINLOOP_APP_PATH.'libraries/');
+	\define('RAINLOOP_APP_VENDOR_PATH', RAINLOOP_APP_PATH.'vendor/');
 	\define('RAINLOOP_MB_SUPPORTED', \function_exists('mb_strtoupper'));
-
 	\define('RAINLOOP_INCLUDE_AS_API_DEF', isset($_ENV['RAINLOOP_INCLUDE_AS_API']) && $_ENV['RAINLOOP_INCLUDE_AS_API']);
 
 	if (!defined('RL_BACKWARD_CAPABILITY'))
@@ -14,15 +14,16 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 		include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/BackwardCapability/Account.php';
 	}
 
-	/**
-	 * @param string $sClassName
-	 *
-	 * @return mixed
-	 */
-	function rainLoopSplAutoloadNamespaces()
+	if (!RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))
 	{
-		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop', 'Predis') :
-			array('RainLoop', 'Facebook', 'PHPThumb', 'Predis', 'SabreForRainLoop', 'Imagine', 'Detection');
+		\define('RL_MB_FIXED', true);
+		include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/MbStringFix.php';
+	}
+
+	if (!defined('RL_VENDOR_LIBRARY_LOADER'))
+	{
+		\define('RL_VENDOR_LIBRARY_LOADER', true);
+		include_once RAINLOOP_APP_VENDOR_PATH.'autoload.php';
 	}
 
 	/**
@@ -37,24 +38,9 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 			$sClassName = \substr($sClassName, 1);
 		}
 
-		foreach (rainLoopSplAutoloadNamespaces() as $sNamespaceName)
+		if (0 === \strpos($sClassName, 'RainLoop\\'))
 		{
-			if (0 === \strpos($sClassName, $sNamespaceName.'\\'))
-			{
-				$sPrefix = '';
-				if ('Detection' === $sNamespaceName)
-				{
-					$sPrefix = 'Mobile_Detect/namespaced/';
-				}
-
-				if ('SabreForRainLoop' === $sNamespaceName && !RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))
-				{
-					\define('RL_MB_FIXED', true);
-					include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/MbStringFix.php';
-				}
-
-				return include RAINLOOP_APP_LIBRARIES_PATH.$sPrefix.\strtr($sClassName, '\\', '/').'.php';
-			}
+				return include RAINLOOP_APP_LIBRARIES_PATH.\strtr($sClassName, '\\', '/').'.php';
 		}
 
 		return false;
@@ -67,12 +53,7 @@ if (\class_exists('RainLoop\Api'))
 {
 	if (!\class_exists('MailSo\Version', false))
 	{
-		include APP_VERSION_ROOT_PATH.'app/libraries/MailSo/MailSo.php';
-	}
-
-	if (!\function_exists('spyc_load_file'))
-	{
-		include APP_VERSION_ROOT_PATH.'app/libraries/spyc/Spyc.php';
+		include RAINLOOP_APP_LIBRARIES_PATH.'MailSo/MailSo.php';
 	}
 
 	if (\class_exists('MailSo\Version'))
