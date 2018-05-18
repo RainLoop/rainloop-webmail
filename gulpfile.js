@@ -205,8 +205,8 @@ cfg.paths.js = {
 			'vendors/routes/crossroads.min.js', // fixed
 			'vendors/jua/jua.min.js', // custom
 			'vendors/keymaster/keymaster.js', // custom (modified)
-			'vendors/qr.js/qr.min.js', // fixed (license)
 			'vendors/bootstrap/js/bootstrap.min.js', // fixed
+			'node_modules/qrious/dist/qrious.min.js',
 			'node_modules/underscore/underscore-min.js',
 			'node_modules/moment/min/moment.min.js',
 			'node_modules/knockout/build/output/knockout-latest.js',

@@ -2,7 +2,7 @@
 import window from 'window';
 import _ from '_';
 import ko from 'ko';
-import qr from 'qr';
+import QRious from 'qrious';
 
 import {Capa, StorageResultType} from 'Common/Enums';
 import {pString} from 'Common/Utils';
@@ -171,7 +171,7 @@ class TwoFactorConfigurationPopupView extends AbstractViewNext
 			this.viewBackupCodes(pString(oData.Result.BackupCodes).replace(/[\s]+/g, '  '));
 
 			this.viewUrlTitle(pString(oData.Result.UrlTitle));
-			this.viewUrl(qr.toDataURL({level: 'M', size: 8, value: this.getQr()}));
+			this.viewUrl(new QRious({level: 'M', size: 8, value: this.getQr()}).toDataUrl());
 		}
 		else
 		{
@@ -194,7 +194,7 @@ class TwoFactorConfigurationPopupView extends AbstractViewNext
 		{
 			this.viewSecret(pString(data.Result.Secret));
 			this.viewUrlTitle(pString(data.Result.UrlTitle));
-			this.viewUrl(qr.toDataURL({level: 'M', size: 6, value: this.getQr()}));
+			this.viewUrl(new QRious({level: 'M', size: 6, value: this.getQr()}).toDataUrl());
 		}
 		else
 		{

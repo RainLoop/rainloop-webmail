@@ -115,7 +115,6 @@ module.exports = function(publicPath, pro, mode) {
 			'ssm': 'window.ssm',
 			'key': 'window.key',
 			'_': 'window._',
-			'qr': 'window.qr',
 			'$': 'window.jQuery'
 		}
 	};
