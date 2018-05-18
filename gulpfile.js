@@ -168,8 +168,8 @@ cfg.paths.css = {
 			'vendors/flags/flags-fixed.css',
 			'node_modules/opentip/css/opentip.css',
 			'node_modules/pikaday/css/pikaday.css',
-			'vendors/lightgallery/dist/css/lightgallery.min.css',
-			'vendors/lightgallery/dist/css/lg-transitions.min.css',
+			'node_modules/lightgallery/dist/css/lightgallery.min.css',
+			'node_modules/lightgallery/dist/css/lg-transitions.min.css',
 			'vendors/Progress.js/minified/progressjs.min.css',
 			'dev/Styles/_progressjs.css'
 		]
@@ -220,11 +220,11 @@ cfg.paths.js = {
 			'node_modules/autolinker/dist/Autolinker.min.js',
 			'node_modules/opentip/lib/opentip.js',
 			'node_modules/opentip/lib/adapter-jquery.js',
-			'vendors/lightgallery/dist/js/lightgallery.min.js',  // license
-			'vendors/lightgallery/dist/js/lg-fullscreen.min.js',
-			'vendors/lightgallery/dist/js/lg-thumbnail.min.js',
-			'vendors/lightgallery/dist/js/lg-zoom.min.js',
-			'vendors/lightgallery/dist/js/lg-autoplay.min.js',
+			'node_modules/lightgallery/dist/js/lightgallery.min.js',
+			'node_modules/lightgallery/modules/lg-fullscreen.min.js',
+			'node_modules/lightgallery/modules/lg-thumbnail.min.js',
+			'node_modules/lightgallery/modules/lg-zoom.min.js',
+			'node_modules/lightgallery/modules/lg-autoplay.min.js',
 			'node_modules/ifvisible.js/src/ifvisible.min.js'
 		]
 	},
@@ -397,7 +397,7 @@ gulp.task('fontastic-fonts:clear', function() {
 });
 
 gulp.task('lightgallery-fonts:copy', ['lightgallery-fonts:clear'], function() {
-	return gulp.src('vendors/lightgallery/dist/fonts/lg.*')
+	return gulp.src('node_modules/lightgallery/dist/fonts/lg.*')
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/css/fonts'));
 });
 
@@ -414,7 +414,7 @@ gulp.task('ckeditor:clear', function() {
 });
 
 gulp.task('ckeditor:copy', ['ckeditor:clear'], function() {
-	return gulp.src(['vendors/ckeditor/**/*', '!vendors/ckeditor/samples{,/**}', '!vendors/ckeditor/adapters{,/**}', '!vendors/ckeditor/*.md'])
+	return gulp.src(['node_modules/ckeditor/**/*', '!node_modules/ckeditor/samples{,/**}', '!node_modules/ckeditor/adapters{,/**}', '!node_modules/ckeditor/*.md'])
 		.pipe(gulp.dest('rainloop/v/' + cfg.devVersion + '/static/ckeditor'));
 });
 

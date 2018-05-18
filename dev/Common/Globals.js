@@ -112,11 +112,11 @@ export const htmlEditorDefaultConfig = {
 		{name: 'others'}
 	],
 
-	'removePlugins': 'liststyle',
+	'removePlugins': 'a11yhelp,contextmenu,resize,elementspath,filebrowser,format,horizontalrule,htmlwriter,magicline,pastetext,pastefromword,showborders,specialchar,scayt,stylescombo,tab,tableselection,tabletools,uploadimage,wsc', // eslint-disable-line max-len
 	'removeButtons': 'Format,Undo,Redo,Cut,Copy,Paste,Anchor,Strike,Subscript,Superscript,Image,SelectAll,Source',
 	'removeDialogTabs': 'link:advanced;link:target;image:advanced;images:advanced',
 
-	'extraPlugins': 'plain,signature',
+	'extraPlugins': 'plain,signature,base64image,quicktable,autolink,bidi,colorbutton,colordialog,divarea,font,image2',
 
 	'allowedContent': true,
 	'extraAllowedContent': true,
