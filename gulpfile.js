@@ -163,7 +163,6 @@ cfg.paths.css = {
 			'vendors/jquery-ui/css/smoothness/jquery-ui-1.10.3.custom.css',
 			'vendors/fontastic/styles.css',
 			'vendors/jquery-nanoscroller/nanoscroller.css',
-			'vendors/jquery-letterfx/jquery-letterfx.min.css',
 			'vendors/inputosaurus/inputosaurus.css',
 			'vendors/flags/flags-fixed.css',
 			'node_modules/opentip/css/opentip.css',
@@ -200,7 +199,6 @@ cfg.paths.js = {
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js', // custom
 			'vendors/jquery-nanoscroller/jquery.nanoscroller.js', // custom (modified)
 			'vendors/jquery-wakeup/jquery.wakeup.js', // no-npm
-			'vendors/jquery-letterfx/jquery-letterfx.min.js', // no-npm
 			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
 			'vendors/routes/signals.min.js', // fixed
 			'vendors/routes/hasher.min.js', // fixed

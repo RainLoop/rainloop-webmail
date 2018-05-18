@@ -5,7 +5,7 @@ import $ from '$';
 import ko from 'ko';
 import {Notification, UploadErrorCode} from 'Common/Enums';
 import {pInt, isUnd, isNull, has, microtime, inArray} from 'Common/Utils';
-import {$html, bAnimationSupported} from 'Common/Globals';
+import {$html} from 'Common/Globals';
 import {reload as momentorReload} from 'Common/Momentor';
 import {langLink} from 'Common/Links';
 
@@ -149,27 +149,13 @@ const i18nToNode = (element) => {
 
 /**
  * @param {Object} elements
- * @param {boolean=} animate = false
  */
-export function i18nToNodes(elements, animate = false)
+export function i18nToNodes(elements)
 {
 	_.defer(() => {
-
 		$('[data-i18n]', elements).each((index, item) => {
 			i18nToNode(item);
 		});
-
-		if (animate && bAnimationSupported)
-		{
-			$('.i18n-animation[data-i18n]', elements).letterfx({
-				'fx': 'fall fade',
-				'backwards': false,
-				'timing': 50,
-				'fx_duration': '50ms',
-				'letter_end': 'restore',
-				'element_end': 'restore'
-			});
-		}
 	});
 }
 
