@@ -198,9 +198,6 @@ cfg.paths.js = {
 			'vendors/jquery-nanoscroller/jquery.nanoscroller.js', // custom (modified)
 			'vendors/jquery-wakeup/jquery.wakeup.js', // no-npm
 			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
-			'vendors/routes/signals.min.js', // fixed
-			'vendors/routes/hasher.min.js', // fixed
-			'vendors/routes/crossroads.min.js', // fixed
 			'vendors/jua/jua.min.js', // custom
 			'vendors/keymaster/keymaster.js', // custom (modified)
 			'vendors/bootstrap/js/bootstrap.min.js', // fixed

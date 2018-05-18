@@ -108,8 +108,6 @@ module.exports = function(publicPath, pro, mode) {
 			'progressJs': 'window.progressJs',
 			'moment': 'window.moment',
 			'ifvisible': 'window.ifvisible',
-			'crossroads': 'window.crossroads',
-			'hasher': 'window.hasher',
 			'Jua': 'window.Jua',
 			'Autolinker': 'window.Autolinker',
 			'key': 'window.key',

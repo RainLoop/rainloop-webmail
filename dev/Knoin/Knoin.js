@@ -478,8 +478,12 @@ export function startScreens(screensClasses)
 	const cross = crossroads.create();
 	cross.addRoute(/^([a-zA-Z0-9\-]*)\/?(.*)$/, screenOnRoute);
 
-	hasher.initialized.add(cross.parse, cross);
-	hasher.changed.add(cross.parse, cross);
+	hasher.initialized.add((hash) => {
+		cross.parse(hash);
+	});
+	hasher.changed.add((hash) => {
+		cross.parse(hash);
+	});
 	hasher.init();
 
 	_.delay(() => $html.removeClass('rl-started-trigger').addClass('rl-started'), 100);
