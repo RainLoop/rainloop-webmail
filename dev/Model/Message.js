@@ -3,7 +3,6 @@ import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import moment from 'moment';
-import classnames from 'classnames';
 import lozad from 'lozad';
 
 import {MessagePriority, SignedVerifyStatus} from 'Common/Enums';
@@ -463,24 +462,24 @@ class MessageModel extends AbstractModel
 	 * @return string
 	 */
 	lineAsCss() {
-		return classnames({
-			'deleted': this.deleted(),
-			'deleted-mark': this.deletedMark(),
-			'selected': this.selected(),
-			'checked': this.checked(),
-			'flagged': this.flagged(),
-			'unseen': this.unseen(),
-			'answered': this.answered(),
-			'forwarded': this.forwarded(),
-			'focused': this.focused(),
-			'important': this.isImportant(),
-			'withAttachments': this.hasAttachments(),
-			'new': this.newForAnimation(),
-			'emptySubject': '' === this.subject(),
-			// 'hasChildrenMessage': 1 < this.threadsLen(),
-			'hasUnseenSubMessage': this.hasUnseenSubMessage(),
-			'hasFlaggedSubMessage': this.hasFlaggedSubMessage()
-		});
+		let classnames = '';
+		classnames += this.deleted() ? 'deleted ' : '';
+		classnames += this.deletedMark() ? 'deleted-mark ' : '';
+		classnames += this.selected() ? 'selected ' : '';
+		classnames += this.checked() ? 'checked ' : '';
+		classnames += this.flagged() ? 'flagged ' : '';
+		classnames += this.unseen() ? 'unseen ' : '';
+		classnames += this.answered() ? 'answered ' : '';
+		classnames += this.forwarded() ? 'forwarded ' : '';
+		classnames += this.focused() ? 'focused ' : '';
+		classnames += this.isImportant() ? 'important ' : '';
+		classnames += this.hasAttachments() ? 'withAttachments ' : '';
+		classnames += this.newForAnimation() ? 'new ' : '';
+		classnames += ('' === this.subject()) ? 'emptySubject ' : '';
+		// classnames += (1 < this.threadsLen()) ? 'hasChildrenMessage ' : '';
+		classnames += this.hasUnseenSubMessage() ? 'hasUnseenSubMessage ' : '';
+		classnames += this.hasFlaggedSubMessage() ? 'hasFlaggedSubMessage ' : '';
+		return classnames.trim();
 	}
 
 	/**
