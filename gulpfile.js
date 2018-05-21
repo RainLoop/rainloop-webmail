@@ -169,7 +169,6 @@ cfg.paths.css = {
 			'node_modules/pikaday/css/pikaday.css',
 			'node_modules/lightgallery/dist/css/lightgallery.min.css',
 			'node_modules/lightgallery/dist/css/lg-transitions.min.css',
-			'vendors/Progress.js/minified/progressjs.min.css',
 			'dev/Styles/_progressjs.css'
 		]
 	},

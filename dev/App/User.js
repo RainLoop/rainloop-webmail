@@ -2,7 +2,7 @@
 import window from 'window';
 import _ from '_';
 import $ from '$';
-import progressJs from 'progressJs';
+import progress from 'progressjs';
 
 import {
 	noop, trim, log, has, isArray, inArray, isUnd, isNormal, isPosNumeric, isNonEmptyArray,
@@ -1253,10 +1253,7 @@ class AppUser extends AbstractApp
 	}
 
 	bootend() {
-		if (progressJs)
-		{
-			progressJs.set(100).end();
-		}
+		progress.set(100).end();
 		hideLoading();
 	}
 
@@ -1280,10 +1277,7 @@ class AppUser extends AbstractApp
 			allowFacebook = Settings.settingsGet('AllowFacebookSocial'),
 			allowTwitter = Settings.settingsGet('AllowTwitterSocial');
 
-		if (progressJs)
-		{
-			progressJs.set(90);
-		}
+		progress.set(90);
 
 		leftPanelDisabled.subscribe((value) => {
 			Events.pub('left-panel.' + (value ? 'off' : 'on'));

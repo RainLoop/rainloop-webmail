@@ -3,12 +3,19 @@
 	z-index: 2000;
 }
 
-.progressjs-theme-rainloop .progressjs-inner {
+.progressjs-theme-rainloop .progressjs-progress {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+}
 
+.progressjs-theme-rainloop .progressjs-inner {
 	background-color: #939595;
 	position: relative;
 	z-index: 2000;
 	height: 3px;
+	width: 0;
 	overflow: hidden;
 
 	-webkit-transition: width .5s;

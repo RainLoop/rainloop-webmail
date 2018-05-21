@@ -2,7 +2,7 @@
 import window from 'window';
 import _ from '_';
 import ko from 'ko';
-import progressJs from 'progressJs';
+import progress from 'progressjs';
 
 import {root} from 'Common/Links';
 import {getNotification} from 'Common/Translator';
@@ -203,10 +203,7 @@ class AdminApp extends AbstractApp
 	}
 
 	bootend(bootendCallback = null) {
-		if (progressJs)
-		{
-			progressJs.end();
-		}
+		progress.set(100).end();
 
 		if (bootendCallback)
 		{

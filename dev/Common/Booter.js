@@ -1,7 +1,6 @@
 
 import window from 'window';
-import progressJs from 'progressJs';
-
+import progress from 'progressjs';
 import {jassl} from 'Common/Jassl';
 import {getHash, setHash, clearHash} from 'Storage/RainLoop';
 
@@ -158,10 +157,7 @@ function showError(additionalError)
 		oLA.innerHTML = additionalError;
 	}
 
-	if (progressJs)
-	{
-		progressJs.set(100).end();
-	}
+	progress.set(100).end();
 }
 
 /**
@@ -214,12 +210,11 @@ function runApp()
 {
 	const appData = window.__rlah_data();
 
-	if (jassl && progressJs && appData && appData.TemplatesLink && appData.LangLink &&
+	if (jassl && appData && appData.TemplatesLink && appData.LangLink &&
 		appData.StaticLibJsLink && appData.StaticAppJsLink && appData.StaticAppJsNextLink && appData.StaticEditorJsLink)
 	{
-		const p = progressJs;
+		const p = progress;
 
-		p.setOptions({theme: 'rainloop'});
 		p.start().set(5);
 
 		const libs = () => jassl(appData.StaticLibJsLink).then(() => {

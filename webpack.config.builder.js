@@ -76,7 +76,8 @@ module.exports = function(publicPath, pro, mode) {
 			alias: {
 				'key$': path.join(externalPathJoin, 'key.js'),
 				'ko$': path.join(externalPathJoin, 'ko.js'),
-				'Opentip$': path.join(externalPathJoin, 'Opentip.js')
+				'Opentip$': path.join(externalPathJoin, 'Opentip.js'),
+				'progressjs$': path.join(externalPathJoin, 'progress.js')
 			}
 		},
 		module: {
