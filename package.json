@@ -100,8 +100,6 @@
     "jquery": "3.3.1",
     "jquery-backstretch": "2.1.17",
     "jquery-migrate": "3.0.1",
-    "jquery-mousewheel": "3.1.13",
-    "jquery-scrollstop": "1.2.0",
     "js-cookie": "2.2.0",
     "json-loader": "0.5.7",
     "json3": "3.3.2",
