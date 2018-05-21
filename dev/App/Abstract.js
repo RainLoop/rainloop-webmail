@@ -4,7 +4,6 @@ import $ from '$';
 import _ from '_';
 import ko from 'ko';
 import key from 'key';
-import ssm from 'ssm';
 
 import {
 	$win, $html, $doc,
@@ -324,11 +323,11 @@ class AbstractApp extends AbstractBoot
 
 		_.delay(windowResizeCallback, Magics.Time1s);
 
-		Events.sub('ssm.mobile-enter', () => {
+		Events.sub('state.mobile-enter', () => {
 			leftPanelDisabled(true);
 		});
 
-		Events.sub('ssm.mobile-leave', () => {
+		Events.sub('state.mobile-leave', () => {
 			leftPanelDisabled(false);
 		});
 
@@ -336,56 +335,48 @@ class AbstractApp extends AbstractBoot
 		{
 			$html.addClass('rl-desktop');
 
-			ssm.addState({
-				id: 'mobile',
-				query: '(max-width: 767px)',
-				onEnter: () => {
-					$html.addClass('ssm-state-mobile');
-					Events.pub('ssm.mobile-enter');
-				},
-				onLeave: () => {
-					$html.removeClass('ssm-state-mobile');
-					Events.pub('ssm.mobile-leave');
+			window.addEventListener('resize', () => {
+				if (768 < window.innerWidth && $html.hasClass('state-mobile')) {
+					Events.pub('state.mobile-leave');
 				}
-			});
 
-			ssm.addState({
-				id: 'tablet',
-				query: '(min-width: 768px) and (max-width: 999px)',
-				onEnter: () => {
-					$html.addClass('ssm-state-tablet');
-				},
-				onLeave: () => {
-					$html.removeClass('ssm-state-tablet');
+				if (768 >= window.innerWidth)
+				{
+					Events.pub('state.mobile-enter');
+					$html.addClass('state-mobile');
+					$html.removeClass('state-tablet');
+					$html.removeClass('state-desktop');
+					$html.removeClass('state-desktop-large');
 				}
-			});
+				else if (1000 >= window.innerWidth)
+				{
+					$html.removeClass('state-mobile');
+					$html.addClass('state-tablet');
+					$html.removeClass('state-desktop');
+					$html.removeClass('state-desktop-large');
+				}
+				else if (1400 >= window.innerWidth)
+				{
+					$html.removeClass('state-mobile');
+					$html.removeClass('state-tablet');
+					$html.addClass('state-desktop');
+					$html.removeClass('state-desktop-large');
+				}
+				else
+				{
+					$html.removeClass('state-mobile');
+					$html.removeClass('state-tablet');
+					$html.removeClass('state-desktop');
+					$html.addClass('state-desktop-large');
+				}
+			}, true);
 
-			ssm.addState({
-				id: 'desktop',
-				query: '(min-width: 1000px) and (max-width: 1400px)',
-				onEnter: () => {
-					$html.addClass('ssm-state-desktop');
-				},
-				onLeave: () => {
-					$html.removeClass('ssm-state-desktop');
-				}
-			});
-
-			ssm.addState({
-				id: 'desktop-large',
-				query: '(min-width: 1401px)',
-				onEnter: () => {
-					$html.addClass('ssm-state-desktop-large');
-				},
-				onLeave: () => {
-					$html.removeClass('ssm-state-desktop-large');
-				}
-			});
+			window.dispatchEvent(new window.Event('resize'));
 		}
 		else
 		{
-			$html.addClass('ssm-state-mobile').addClass('rl-mobile');
-			Events.pub('ssm.mobile-enter');
+			$html.addClass('state-mobile').addClass('rl-mobile');
+			Events.pub('state.mobile-enter');
 		}
 
 		leftPanelDisabled.subscribe((bValue) => {

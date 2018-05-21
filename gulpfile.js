@@ -212,7 +212,6 @@ cfg.paths.js = {
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',
 			'node_modules/matchmedia-polyfill/matchMedia.js',
 			'node_modules/matchmedia-polyfill/matchMedia.addListener.js',
-			'node_modules/simplestatemanager/dist/ssm.min.js',
 			'node_modules/autolinker/dist/Autolinker.min.js',
 			'node_modules/opentip/lib/opentip.js',
 			'node_modules/opentip/lib/adapter-jquery.js',

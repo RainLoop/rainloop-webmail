@@ -112,7 +112,6 @@ module.exports = function(publicPath, pro, mode) {
 			'hasher': 'window.hasher',
 			'Jua': 'window.Jua',
 			'Autolinker': 'window.Autolinker',
-			'ssm': 'window.ssm',
 			'key': 'window.key',
 			'_': 'window._',
 			'$': 'window.jQuery'
