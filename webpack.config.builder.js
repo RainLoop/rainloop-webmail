@@ -74,8 +74,9 @@ module.exports = function(publicPath, pro, mode) {
 			modules: [devPath, 'node_modules'],
 			extensions: ['.js'],
 			alias: {
-				'Opentip$': path.join(externalPathJoin, 'Opentip.js'),
-				'ko$': path.join(externalPathJoin, 'ko.js')
+				'key$': path.join(externalPathJoin, 'key.js'),
+				'ko$': path.join(externalPathJoin, 'ko.js'),
+				'Opentip$': path.join(externalPathJoin, 'Opentip.js')
 			}
 		},
 		module: {
@@ -110,7 +111,7 @@ module.exports = function(publicPath, pro, mode) {
 			'ifvisible': 'window.ifvisible',
 			'Jua': 'window.Jua',
 			'Autolinker': 'window.Autolinker',
-			'key': 'window.key',
+			'keymaster': 'window.key',
 			'_': 'window._',
 			'$': 'window.jQuery'
 		}

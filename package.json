@@ -105,6 +105,7 @@
     "js-cookie": "2.2.0",
     "json-loader": "0.5.7",
     "json3": "3.3.2",
+    "keymaster": "1.6.2",
     "knockout": "3.4.2",
     "knockout-sortable": "1.1.1",
     "knockout-transformations": "2.1.0",

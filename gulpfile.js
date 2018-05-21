@@ -199,8 +199,8 @@ cfg.paths.js = {
 			'vendors/jquery-wakeup/jquery.wakeup.js', // no-npm
 			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
 			'vendors/jua/jua.min.js', // custom
-			'vendors/keymaster/keymaster.js', // custom (modified)
 			'vendors/bootstrap/js/bootstrap.min.js', // fixed
+			'node_modules/keymaster/keymaster.js',
 			'node_modules/qrious/dist/qrious.min.js',
 			'node_modules/underscore/underscore-min.js',
 			'node_modules/moment/min/moment.min.js',
