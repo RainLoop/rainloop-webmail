@@ -109,7 +109,6 @@ module.exports = function(publicPath, pro, mode) {
 			'window': 'window',
 			'progressJs': 'window.progressJs',
 			'moment': 'window.moment',
-			'ifvisible': 'window.ifvisible',
 			'Jua': 'window.Jua',
 			'Autolinker': 'window.Autolinker',
 			'keymaster': 'window.key',

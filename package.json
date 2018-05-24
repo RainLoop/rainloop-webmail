@@ -97,7 +97,6 @@
     "gulp-util": "3.0.8",
     "gulp-zip": "4.2.0",
     "hasher": "1.2.0",
-    "ifvisible.js": "1.0.6",
     "intersection-observer": "0.5.1",
     "jquery": "3.3.1",
     "jquery-backstretch": "2.1.17",

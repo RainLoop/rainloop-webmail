@@ -5,7 +5,6 @@ import $ from '$';
 import ko from 'ko';
 import key from 'key';
 import Jua from 'Jua';
-import ifvisible from 'ifvisible';
 
 import {
 	Capa, Layout, Focused, ComposeType,
@@ -789,12 +788,22 @@ class MessageListMailBoxUserView extends AbstractViewNext
 		this.initUploaderForAppend();
 		this.initShortcuts();
 
-		if (!bMobileDevice && ifvisible && Settings.capa(Capa.Prefetch))
+		if (!bMobileDevice && Settings.capa(Capa.Prefetch))
 		{
-			ifvisible.setIdleDuration(Magics.ifvisibleIdle10s);
+			// Prefetch when user is idle for 10s
+			const startIdleTimer = () => {
+				this.idleTimer = window.setTimeout(() => {
+					this.prefetchNextTick();
+				}, Magics.Time10s);
+			};
+			const resetIdleTimer = () => {
+				window.clearTimeout(this.idleTimer);
+				startIdleTimer();
+			};
 
-			ifvisible.idle(() => {
-				this.prefetchNextTick();
+			startIdleTimer();
+			$(window.document).on('mousemove scroll keypress touchdown', () => {
+				resetIdleTimer();
 			});
 		}
 	}
@@ -976,7 +985,7 @@ class MessageListMailBoxUserView extends AbstractViewNext
 	}
 
 	prefetchNextTick() {
-		if (ifvisible && !this.bPrefetch && !ifvisible.now() && this.viewModelVisibility())
+		if (!this.bPrefetch && this.viewModelVisibility())
 		{
 			const message = _.find(this.messageList(), (item) => item && !hasRequestedMessage(item.folderFullNameRaw, item.uid));
 			if (message)

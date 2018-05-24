@@ -215,7 +215,6 @@ cfg.paths.js = {
 			'node_modules/lightgallery/modules/lg-thumbnail.min.js',
 			'node_modules/lightgallery/modules/lg-zoom.min.js',
 			'node_modules/lightgallery/modules/lg-autoplay.min.js',
-			'node_modules/ifvisible.js/src/ifvisible.min.js'
 		]
 	},
 	app: {
