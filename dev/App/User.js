@@ -104,20 +104,25 @@ class AppUser extends AbstractApp
 		window.setTimeout(() =>	window.setInterval(() => Events.pub('interval.5m-after5m'), Magics.Time5m), Magics.Time5m);
 		window.setTimeout(() => window.setInterval(() => Events.pub('interval.10m-after5m'), Magics.Time10m), Magics.Time5m);
 
-		$.wakeUp(() => {
-			if (checkTimestamp())
-			{
-				this.reload();
-			}
-
-			Remote.jsVersion((sResult, oData) => {
-				if (StorageResultType.Success === sResult && oData && !oData.Result)
+		// Check for sleep/hibernation (elapsed interval > set interval)
+		let lastTime = (new Date()).getTime();
+		window.setInterval(() => {
+			const currentTime = (new Date()).getTime();
+			if (currentTime > (lastTime + Magics.Time60m + 1000)) {
+				if (checkTimestamp())
 				{
 					this.reload();
 				}
-			}, Settings.appSettingsGet('version'));
 
-		}, {}, Magics.Time60m);
+				Remote.jsVersion((sResult, oData) => {
+					if (StorageResultType.Success === sResult && oData && !oData.Result)
+					{
+						this.reload();
+					}
+				}, Settings.appSettingsGet('version'));
+			}
+			lastTime = currentTime;
+		}, Magics.Time60m);
 
 		if (checkTimestamp())
 		{

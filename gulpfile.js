@@ -195,7 +195,6 @@ cfg.paths.js = {
 			'node_modules/jquery-backstretch/jquery.backstretch.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js', // custom
 			'vendors/jquery-nanoscroller/jquery.nanoscroller.js', // custom (modified)
-			'vendors/jquery-wakeup/jquery.wakeup.js', // no-npm
 			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
 			'vendors/jua/jua.min.js', // custom
 			'vendors/bootstrap/js/bootstrap.min.js', // fixed
