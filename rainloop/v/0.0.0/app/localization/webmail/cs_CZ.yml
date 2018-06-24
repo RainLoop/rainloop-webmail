@@ -599,7 +599,7 @@ cs_CZ:
     LABEL_FULLSCREEN_ENTER: "Celoobrazovkové rozložení"
     LABEL_VIEW_MESSAGE_ENTER: "Zobrazit zprávu na celou obrazovku"
     LABEL_SWITCH_TO_MESSAGE: "Skočit do panelu vybrané zprávy"
-    LABEL_SWITCH_TO_FOLDER_LIST: "Skočit do panelu adresářů"
+    LABEL_SWITCH_TO_FOLDER_LIST: "Skočit do panelu složek"
     LABEL_FULLSCREEN_TOGGLE: "Přepnout režim celé obrazovky"
     LABEL_BLOCKQUOTES_TOGGLE: "Přepnout zobrazení přiložených zpráv"
     LABEL_THREAD_NEXT: "Následující zpráva ve vlákně"
