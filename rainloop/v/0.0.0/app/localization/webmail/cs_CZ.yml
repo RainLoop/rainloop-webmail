@@ -395,7 +395,7 @@ cs_CZ:
         Importujte klíč do Vašeho Google Authenticatoru (nebo jiného TOTP klienta)
         pomocí níže uvedeného QR kódu nebo zadáním kódu ručně.
     TWO_FACTOR_BACKUP_CODES_DESC: >-
-        POkud nemůžete získat kódy skrze Google Authenticator, můžete použít záložní kódy
+        Pokud nemůžete získat kódy skrze Google Authenticator, můžete použít záložní kódy
         k přihlášení. Po tom, co použijete záložní klíč, stane se nadále neaktivním.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Toto nastavení nelze změnit před otestováním."
   TITLES:
