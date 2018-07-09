@@ -225,7 +225,7 @@ function runApp()
 		p.setOptions({theme: 'rainloop'});
 		p.start().set(5);
 
-		const libs = jassl(appData.StaticLibJsLink).then(() => {
+		const libs = () => jassl(appData.StaticLibJsLink).then(() => {
 			if (window.$)
 			{
 				window.$('#rl-check').remove();
@@ -243,12 +243,14 @@ function runApp()
 			}
 		});
 
-		const common = window.Promise.all([
-			jassl(appData.TemplatesLink),
-			jassl(appData.LangLink)
-		]);
-
-		window.Promise.all([libs, common])
+		libs()
+			.then(() => {
+				p.set(20);
+				return window.Promise.all([
+					jassl(appData.TemplatesLink),
+					jassl(appData.LangLink)
+				]);
+			})
 			.then(() => {
 				p.set(30);
 				return jassl(useJsNextBundle ? appData.StaticAppJsNextLink : appData.StaticAppJsLink);

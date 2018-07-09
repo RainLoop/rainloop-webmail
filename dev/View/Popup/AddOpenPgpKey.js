@@ -38,7 +38,7 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext
 
 		let keyTrimmed = trim(this.key());
 
-		if (/[\n]/.test(keyTrimmed))
+		if ((/[\n]/).test(keyTrimmed))
 		{
 			keyTrimmed = keyTrimmed.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
 		}

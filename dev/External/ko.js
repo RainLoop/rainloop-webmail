@@ -1209,7 +1209,7 @@ ko.observable.fn.validateEmail = function() {
 	this.hasError = ko.observable(false);
 
 	this.subscribe((value) => {
-		this.hasError('' !== value && !(/^[^@\s]+@[^@\s]+$/.test(value)));
+		this.hasError('' !== value && !((/^[^@\s]+@[^@\s]+$/).test(value)));
 	});
 
 	this.valueHasMutated();
@@ -1221,7 +1221,7 @@ ko.observable.fn.validateSimpleEmail = function() {
 	this.hasError = ko.observable(false);
 
 	this.subscribe((value) => {
-		this.hasError('' !== value && !(/^.+@.+$/.test(value)));
+		this.hasError('' !== value && !((/^.+@.+$/).test(value)));
 	});
 
 	this.valueHasMutated();
