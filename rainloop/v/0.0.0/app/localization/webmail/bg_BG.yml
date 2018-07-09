@@ -314,7 +314,7 @@ bg_BG:
     LABEL_CODE: "Код"
     BUTTON_TEST: "Тест"
   POPUPS_FILTER:
-    TITLE_CREATE_FILTER: "Въздай филтър?"
+    TITLE_CREATE_FILTER: "Създай филтър?"
     TITLE_EDIT_FILTER: "Обнови филтъра?"
     FILTER_NAME: "Име"
     LEGEND_CONDITIONS: "Условия"

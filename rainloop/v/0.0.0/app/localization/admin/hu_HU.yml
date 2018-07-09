@@ -34,6 +34,7 @@ hu_HU:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "További fiókok engedélyezése"
     LABEL_ALLOW_IDENTITIES: "Több identitás engedélyezése"
     LABEL_ALLOW_TEMPLATES: "Sablonok engedélyezése"
+    ALERT_DATA_ACCESS: "A RainLoop adatmappája hozzáférhető. Kérlek állítsd be úgy a webszervert, hogy az adatmappát rejtse el a külső hozzáférés elől. További tudnivalók itt:"
     ALERT_WARNING: "Figyelmeztetés!"
     HTML_ALERT_WEAK_PASSWORD: |
         Az alapértelmezett admin jelszót használod

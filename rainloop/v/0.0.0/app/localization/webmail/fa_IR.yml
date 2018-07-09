@@ -145,11 +145,13 @@ fa_IR:
     PRINT_LABEL_ATTACHMENTS: "پیوست‌ها"
     MESSAGE_LOADING: "در حال بارگذاری"
     MESSAGE_VIEW_DESC: "پیام را در لیست جهت مشاهده انتخاب کنید"
+    MESSAGE_VIEW_MOVE_DESC: "بر روی نام شاخه در پنل سمت راست جهت انتخاب مقصد کلیک کنید"
     PGP_PASSWORD_INPUT_PLACEHOLDER: "گذرواژه"
     PGP_SIGNED_MESSAGE_DESC: "پیام توسط  OpenPGP امضاء شد (برای بررسی کلیک کنید)"
     PGP_ENCRYPTED_MESSAGE_DESC: "پیام توسط  OpenPGP رمزنگاری شد (برای خارج شدن از حالت رمز کلیک کنید)"
     LINK_DOWNLOAD_AS_ZIP: "دریافت با پسوند zip"
     LINK_SAVE_TO_OWNCLOUD: "ذخیره در OwnCloud"
+    LINK_SAVE_TO_CLOUD: "در فضای ابری ذخیره کن"
     LINK_SAVE_TO_DROPBOX: "ذخیره در Dropbox"
   READ_RECEIPT:
     SUBJECT: "برگرداندن گیرنده (نمایش داده شد) - %SUBJECT%"
@@ -580,6 +582,7 @@ fa_IR:
     TITLE_PUBLIC: "عمومی"
     DELETING_ASK: "اطمینان دارید؟"
     GENERATE_ONLY_HTTPS: "تنها HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "ذخیره خودکار پیش‌نویس"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "راهنمای میانبر‌های کیبرد"
     TAB_MAILBOX: "صندوق پستی"

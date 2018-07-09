@@ -673,7 +673,7 @@ nb_NO:
     CANT_CREATE_FOLDER: "Klarte ikke å lage mappe"
     CANT_RENAME_FOLDER: "Klarte ikke å endre navn på mappe"
     CANT_DELETE_FOLDER: "Klarte ikke å slette mappe"
-    CANT_DELETE_NON_EMPTY_FOLDER: "Klarte ikke å slette mappe med innhold"
+    CANT_DELETE_NON_EMPTY_FOLDER: "Du må slette mappeinnholdet før du kan slette mappa"
     CANT_SUBSCRIBE_FOLDER: "Klarte ikke å abonnere på mappe"
     CANT_UNSUBSCRIBE_FOLDER: "Klarte ikke å avslutte abonnement"
     CANT_SAVE_SETTINGS: "Klarte ikke å lagre innstillinger"

@@ -34,6 +34,7 @@ nb_NO:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Tillat bruk av flere kontoer"
     LABEL_ALLOW_IDENTITIES: "Tillat bruk av flere identiteter"
     LABEL_ALLOW_TEMPLATES: "Tillat bruk av maler"
+    ALERT_DATA_ACCESS: "RainLoop-datamappa di er offentlig tiljgengelig. Sett opp webtjeneren slik at den ikke viser datamappa. Les mer her:"
     ALERT_WARNING: "Advarsel!"
     HTML_ALERT_WEAK_PASSWORD: |
         Du bruker forvalgt admin-passord.

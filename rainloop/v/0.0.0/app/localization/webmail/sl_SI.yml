@@ -151,6 +151,7 @@ sl_SI:
     PGP_ENCRYPTED_MESSAGE_DESC: "Sporočilo, šifrirano z OpenPGP (kliknite za dešifriranje)"
     LINK_DOWNLOAD_AS_ZIP: "Prenesi kot .zip datoteko"
     LINK_SAVE_TO_OWNCLOUD: "Shrani na ownCloud"
+    LINK_SAVE_TO_CLOUD: "Shrani v oblak"
     LINK_SAVE_TO_DROPBOX: "Shrani na Dropbox"
   READ_RECEIPT:
     SUBJECT: "Povratno poročilo (prikazano) - %SUBJECT%"
@@ -580,6 +581,7 @@ sl_SI:
     TITLE_PUBLIC: "Javni"
     DELETING_ASK: "Ste prepričani?"
     GENERATE_ONLY_HTTPS: "Samo HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Samodejno shrani osnutek"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Tipkovne bližnjice"
     TAB_MAILBOX: "Nabiralnik"

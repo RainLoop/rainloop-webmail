@@ -26,6 +26,7 @@ fa_IR:
     LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "زبان در صفحه تنظیمات قابل انتخاب باشد"
     LABEL_ALLOW_THEMES_ON_SETTINGS: "پوسته در صفحه تنظیمات قابل انتخاب باشد"
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "تصویر پشت زمینه در صفحه تنظیمات قابل انتخاب باشد"
+    LABEL_NEW_FOLDER_MOVE: "دکمه جدید «انتقال به پوشه»"
     LABEL_SHOW_THUMBNAILS: "اندازه کوچک را نشان بده (پیوست‌ها)"
     LABEL_ALLOW_GRAVATAR: "اجازه استفاده از آواتار"
     LEGEND_MAIN: "اصلی"
@@ -33,6 +34,7 @@ fa_IR:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "مجوز استفاده از نام‌های کاربری دیگر"
     LABEL_ALLOW_IDENTITIES: "اجازه استفاده از چندین شناسه"
     LABEL_ALLOW_TEMPLATES: "اجازه استفاده از پوسته‌ها"
+    ALERT_DATA_ACCESS: "شاخه data قابل دسترس هست. تنظیمات وب‌سرور را طوری انجام دهید این شاخه از بیرون قابل دسترس نباشد. اطلاعات بیشتر اینجا هست:"
     ALERT_WARNING: "اخطار!"
     HTML_ALERT_WEAK_PASSWORD: |+
         شما در حال استفاده از گذرواژه پیش‌فرض کاربر مدیر هستید.
