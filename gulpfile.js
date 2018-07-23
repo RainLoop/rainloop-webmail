@@ -193,6 +193,7 @@ cfg.paths.js = {
 		name: 'libs.js',
 		src: [
 			'node_modules/jquery/dist/jquery.min.js',
+			'node_modules/jquery-migrate/dist/jquery-migrate.min.js',
 			'node_modules/jquery-mousewheel/jquery.mousewheel.js',
 			'node_modules/jquery-scrollstop/jquery.scrollstop.js',
 			'node_modules/jquery-backstretch/jquery.backstretch.min.js',
