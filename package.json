@@ -49,7 +49,7 @@
     "firefox esr"
   ],
   "devDependencies": {
-    "autolinker": "1.6.2",
+    "autolinker": "1.7.0",
     "babel-core": "6.26.3",
     "babel-eslint": "8.2.6",
     "babel-loader": "7.1.5",
@@ -87,9 +87,9 @@
     "gulp-size": "3.0.0",
     "gulp-stripbom": "1.0.4",
     "gulp-through": "0.4.0",
-    "gulp-uglify": "3.0.0",
+    "gulp-uglify": "3.0.1",
     "gulp-util": "3.0.8",
-    "gulp-zip": "4.1.0",
+    "gulp-zip": "4.2.0",
     "ifvisible.js": "1.0.6",
     "intersection-observer": "0.5.0",
     "jquery": "3.3.1",
@@ -103,7 +103,7 @@
     "knockout": "3.4.2",
     "knockout-sortable": "1.1.0",
     "knockout-transformations": "2.1.0",
-    "lozad": "1.5.0",
+    "lozad": "1.6.0",
     "matchmedia-polyfill": "0.3.1",
     "moment": "2.22.2",
     "node-fs": "0.1.7",
@@ -118,7 +118,7 @@
     "simplestatemanager": "4.1.1",
     "style-loader": "0.21.0",
     "underscore": "1.9.1",
-    "webpack": "4.16.2",
+    "webpack": "4.16.3",
     "webpack-notifier": "1.6.0"
   }
 }
