@@ -343,7 +343,7 @@ pl_PL:
     SELECT_MATCH_ANY: "Spełnia dowolny z warunków"
     SELECT_MATCH_ALL: "Spełnia wszystkie warunki"
     MARK_AS_READ_LABEL: "Oznacz jako przeczytane"
-    REPLY_INTERVAL_LABEL: "Liczba dni, po których wysłać odp."
+    REPLY_INTERVAL_LABEL: "Liczba dni, przez które wysłać wiadomość wakacyjną"
     KEEP_LABEL: "Zachowaj"
     STOP_LABEL: "Nie zatrzymuj przetwarzania reguł"
     EMAIL_LABEL: "Adres e-mail"
