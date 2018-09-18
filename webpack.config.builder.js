@@ -21,8 +21,11 @@ module.exports = function(publicPath, pro) {
 			filename: '[name].js',
 			publicPath: publicPath || 'rainloop/v/0.0.0/static/'
 		},
+		optimization: {
+			concatenateModules: false,
+			minimize: false
+		},
 		plugins: [
-			// new webpack.optimize.ModuleConcatenationPlugin(),
 			new webpack.DefinePlugin({
 				'RL_COMMUNITY': !pro,
 				'process.env': {
@@ -46,19 +49,29 @@ module.exports = function(publicPath, pro) {
 		module: {
 			rules: [
 				{
-					test: /\.js$/,
+					test: /\.(js|ts)$/,
 					loader: 'babel-loader',
 					include: [devPath],
 					options: {
 						cacheDirectory: true,
-						presets: [['env', {
-							loose: loose,
-							modules: false,
-							targets: {
-								browsers: ['last 3 versions', 'ie >= 9', 'firefox esr']
-							}
-						}], 'stage-0'],
-						plugins: ['transform-runtime', 'transform-decorators-legacy']
+						presets: [
+							['@babel/preset-env', {
+								loose: loose,
+								modules: false,
+								targets: {
+									browsers: ['last 3 versions', 'ie >= 9', 'firefox esr']
+								}
+							}]
+						],
+						plugins: [
+							['@babel/plugin-transform-runtime', {
+								corejs: 2
+							}],
+							['@babel/plugin-proposal-decorators', {
+								legacy: true
+							}],
+							'@babel/plugin-proposal-class-properties'
+						]
 					}
 				},
 				{

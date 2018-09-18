@@ -57,6 +57,13 @@ rl-build:
 rl-build-pro:
 	@docker-compose run --no-deps --rm node gulp all --pro
 
+yarn-install:
+	@docker-compose run --no-deps --rm node yarn install
+yarn-outdated:
+	@docker-compose run --no-deps --rm node yarn outdated
+yarn-upgrade:
+	@docker-compose run --no-deps --rm node yarn upgrade-interactive --exact --latest
+
 gpg:
 	docker run -it --rm -w=/var/www \
 		-v $(shell pwd)/.docker/.cache/.gnupg:/root/.gnupg \
