@@ -701,13 +701,13 @@ id_ID:
     PHP_VERSION_ERROR_DESC: "Versi PHP anda  (%VERSION%) lebih rendah dari syarat minimal yaitu 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript diperlukan oleh aplikasi ini."
     NO_SCRIPT_DESC: |
-        Dukungan Javascript tidak tersedia di peramban anda
+        Dukungan Javascript tidak tersedia di browser anda
         Silahkan aktifkan dukungan Javascript di pengaturan peramban anda dan coba lagi.
     NO_COOKIE_TITLE: "Dukurangan Cookies diperlukan oleh aplikasi ini."
     NO_COOKIE_DESC: |
         Dukungan cookies tidak tersedia di peramban anda.
-        Silahkan aktifkan dukungan Cookies di pengaturan peramban dan coba lagi.
-    BAD_BROWSER_TITLE: "Peramban anda kadaluarsa."
+        Silahkan aktifkan dukungan Cookies di pengaturan browser dan coba lagi.
+    BAD_BROWSER_TITLE: "Browser anda kadaluarsa."
     BAD_BROWSER_DESC: |
         Untuk bisa menggunakan semua fitur aplikasi,
-        unduh dan pasang salah satu peramban berikut:
+        unduh dan pasang salah satu browser berikut:

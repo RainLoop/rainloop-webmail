@@ -34,6 +34,7 @@ ja_JP:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "追加のアカウントを使用する"
     LABEL_ALLOW_IDENTITIES: "複数の表示名を使用する"
     LABEL_ALLOW_TEMPLATES: "テンプレートを許可する"
+    ALERT_DATA_ACCESS: "RainLoop のデータフォルダがアクセス可能になっています。外部から RainLoop のデータフォルダにアクセスできないよう、Web サーバーを設定してください。詳しくは以下をご覧ください:"
     ALERT_WARNING: "警告！"
     HTML_ALERT_WEAK_PASSWORD: |
         デフォルトの管理者パスワードを使用しています。

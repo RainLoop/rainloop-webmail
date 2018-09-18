@@ -149,13 +149,14 @@ cs_CZ:
     PGP_ENCRYPTED_MESSAGE_DESC: "Zpráva šifrovaná OpenPGP (klikněte pro dešifraci)"
     LINK_DOWNLOAD_AS_ZIP: "Stáhnout jako zip"
     LINK_SAVE_TO_OWNCLOUD: "Uložit do ownCloud"
+    LINK_SAVE_TO_CLOUD: "Uložit do Cloudu"
     LINK_SAVE_TO_DROPBOX: "Uložit do Dropbox"
   READ_RECEIPT:
     SUBJECT: "Potvrzení o zobrazení zprávy - %SUBJECT%"
     BODY: |
         Toto je potrvzení o zaslání emailu na adresu %READ-RECEIPT%.
 
-        Poznámka: Toto potvrzení zajištujě, že zpráva byla zobrazena v poštovní schrnánce příjemce. Nezajišťuje, že ji příjemce čelt a rozuměl jí.
+        Poznámka: Toto potvrzení zajišťuje, že zpráva byla zobrazena v poštovní schránce příjemce. Nezajišťuje, že ji příjemce četl a rozuměl jí.
   SUGGESTIONS:
     SEARCHING_DESC: "Hledám..."
   CONTACTS:

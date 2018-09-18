@@ -580,6 +580,7 @@ sk_SK:
     TITLE_PUBLIC: "Public"
     DELETING_ASK: "Are you sure?"
     GENERATE_ONLY_HTTPS: "HTTPS only"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Automaticky uložiť koncept."
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Keyboard shortcuts help"
     TAB_MAILBOX: "Mailbox"
