@@ -1,3 +1,5 @@
-<Files *>
-  Deny from All
-</Files>
+<IfVersion > 2.2>
+  <Files *>
+    Deny from All
+  </Files>
+</IfVersion>
