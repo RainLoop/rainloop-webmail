@@ -736,7 +736,6 @@ export function settingsSaveHelperSubscribeFunction(remote, settingName, type, f
  */
 export function findEmailAndLinks(html)
 {
-//	return html;
 	return Autolinker ? Autolinker.link(html, {
 		newWindow: true,
 		stripPrefix: false,

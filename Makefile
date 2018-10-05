@@ -50,8 +50,11 @@ rl-lint:
 	@docker-compose run --no-deps --rm node gulp lint
 rl-dev:
 	@docker-compose run --no-deps --rm node gulp
-rl-watch:
-	@docker-compose run --no-deps --rm node gulp watch
+rl-watch-css:
+	@docker-compose run --no-deps --rm node npm run watch-css
+rl-watch-js:
+	@docker-compose run --no-deps --rm node npm run watch-js
+
 rl-build:
 	@docker-compose run --no-deps --rm node gulp all
 rl-build-pro:

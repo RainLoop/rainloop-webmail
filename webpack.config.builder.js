@@ -7,9 +7,34 @@ const
 	WebpackNotifierPlugin = require('webpack-notifier'),
 	loose = true;
 
+const babelLoaderOptions = function() {
+	return {
+		cacheDirectory: true,
+		presets: [
+			['@babel/preset-env', {
+				loose: loose,
+				modules: false,
+				targets: {
+					browsers: ['last 3 versions', 'ie >= 9', 'firefox esr']
+				}
+			}]
+		],
+		plugins: [
+			['@babel/plugin-transform-runtime', {
+				corejs: 2
+			}],
+			['@babel/plugin-proposal-decorators', {
+				legacy: true
+			}],
+			'@babel/plugin-proposal-class-properties'
+		]
+	};
+};
+
 process.noDeprecation = true;
 module.exports = function(publicPath, pro) {
 	return {
+		mode: 'production',
 		entry: {
 			'js/boot': path.join(__dirname, 'dev', 'boot.js'),
 			'js/app': path.join(__dirname, 'dev', 'app.js'),
@@ -20,6 +45,9 @@ module.exports = function(publicPath, pro) {
 			path: path.join(__dirname, 'rainloop', 'v', '0.0.0', 'static'),
 			filename: '[name].js',
 			publicPath: publicPath || 'rainloop/v/0.0.0/static/'
+		},
+		performance: {
+			hints: false
 		},
 		optimization: {
 			concatenateModules: false,
@@ -49,30 +77,10 @@ module.exports = function(publicPath, pro) {
 		module: {
 			rules: [
 				{
-					test: /\.(js|ts)$/,
+					test: /\.js$/,
 					loader: 'babel-loader',
 					include: [devPath],
-					options: {
-						cacheDirectory: true,
-						presets: [
-							['@babel/preset-env', {
-								loose: loose,
-								modules: false,
-								targets: {
-									browsers: ['last 3 versions', 'ie >= 9', 'firefox esr']
-								}
-							}]
-						],
-						plugins: [
-							['@babel/plugin-transform-runtime', {
-								corejs: 2
-							}],
-							['@babel/plugin-proposal-decorators', {
-								legacy: true
-							}],
-							'@babel/plugin-proposal-class-properties'
-						]
-					}
+					options: babelLoaderOptions()
 				},
 				{
 					test: /\.(html|css)$/,

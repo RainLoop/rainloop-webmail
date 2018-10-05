@@ -6,7 +6,6 @@
   "version": "1.12.1",
   "ownCloudVersion": "5.1.1",
   "homepage": "https://www.rainloop.net",
-  "main": "gulpfile.js",
   "author": {
     "name": "RainLoop Team",
     "email": "support@rainloop.net",
@@ -15,6 +14,10 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/RainLoop/rainloop-webmail.git"
+  },
+  "scripts": {
+    "watch-css": "gulp watch",
+    "watch-js": "webpack --color --watch"
   },
   "license": "SEE LICENSE IN LICENSE",
   "licenses": [
@@ -49,22 +52,22 @@
     "firefox esr"
   ],
   "devDependencies": {
-    "@babel/core": "7.1.0",
+    "@babel/core": "7.1.2",
     "@babel/plugin-proposal-class-properties": "7.1.0",
-    "@babel/plugin-proposal-decorators": "7.1.0",
+    "@babel/plugin-proposal-decorators": "7.1.2",
     "@babel/plugin-transform-runtime": "7.1.0",
     "@babel/preset-env": "7.1.0",
-    "@babel/runtime-corejs2": "7.0.0",
+    "@babel/runtime-corejs2": "7.1.2",
     "autolinker": "1.7.1",
-    "babel-eslint": "9.0.0",
-    "babel-loader": "8.0.2",
+    "babel-eslint": "10.0.1",
+    "babel-loader": "8.0.4",
     "classnames": "2.2.6",
     "copy-webpack-plugin": "4.5.2",
     "element-dataset": "2.2.6",
     "emailjs-addressparser": "2.0.2",
     "es6-object-assign": "1.1.0",
     "es6-promise-polyfill": "1.2.0",
-    "eslint": "5.6.0",
+    "eslint": "5.6.1",
     "gulp": "3.9.1",
     "gulp-autoprefixer": "6.0.0",
     "gulp-cached": "1.1.1",
@@ -118,7 +121,8 @@
     "simplestatemanager": "4.1.1",
     "style-loader": "0.23.0",
     "underscore": "1.9.1",
-    "webpack": "4.19.1",
+    "webpack": "4.20.2",
+    "webpack-cli": "3.1.2",
     "webpack-notifier": "1.6.0"
   }
 }

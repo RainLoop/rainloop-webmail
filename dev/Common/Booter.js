@@ -7,16 +7,13 @@ import {getHash, setHash, clearHash} from 'Storage/RainLoop';
 
 let RL_APP_DATA_STORAGE = null;
 
-/* eslint-disable  */
+/* eslint-disable camelcase,spaced-comment  */
 window.__rlah = () => getHash();
 window.__rlah_set = () => setHash();
 window.__rlah_clear = () => clearHash();
 window.__rlah_data = () => RL_APP_DATA_STORAGE;
-/* eslint-enable */
 
 const useJsNextBundle = (function() {
-
-	/* eslint-disable  */
 //	try {
 //
 //		(function() {
@@ -47,10 +44,9 @@ const useJsNextBundle = (function() {
 //		return true;
 //	}
 //	catch (e) {}
-
-    return false;
-	/* eslint-enable */
+	return false;
 }());
+/* eslint-enable */
 
 /**
  * @param {string} id
