@@ -161,16 +161,13 @@ class ChangePasswordCustomSqlDriver implements \RainLoop\Providers\ChangePasswor
 			$sEmailDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
 
 			// some variables cannot be prepared
-			/*
 			$this->mSql = str_replace(array(
 				':table'
 			), array(
 				$this->mTable
 			), $this->mSql);
-			*/
 
 			$placeholders = array(
-				':table' => $this->mTable,
 				':email' => $sEmail,
 				':oldpass' => $sPrevPassword, 
 				':newpass' => $sNewPassword, 
@@ -178,24 +175,36 @@ class ChangePasswordCustomSqlDriver implements \RainLoop\Providers\ChangePasswor
 				':username' => $sEmailUser
 			);
 
+			// we have to check that all placehoders are used in the query, passing any unused placeholders will generate an error
+			$used_placeholders = array();
+
+			foreach($placeholders as $placeholder => $value) {
+				if(preg_match_all('/'.$placeholder . '(?![a-zA-Z0-9\-])'.'/', $this->mSql) === 1) {
+					// backwards-compabitibility: remove single and double quotes around placeholders
+					$this->mSql = str_replace('`'.$placeholder.'`', $placeholder, $this->mSql);
+					$this->mSql = str_replace("'".$placeholder."'", $placeholder, $this->mSql);
+					$this->mSql = str_replace('"'.$placeholder.'"', $placeholder, $this->mSql);
+					$used_placeholders[$placeholder] = $value;
+				}
+			}
+
 			$statement = $conn->prepare($this->mSql);
 
-			$this->oLogger->Write($this->mSql); 
+			// everything is ready (hopefully), bind the values
+			foreach($used_placeholders as $placeholder => $value) {
+				$statement->bindValue($placeholder, $value);
+			}
 
-			$statement->bindValue(':table', 'accounts');
-			$statement->bindValue(':email', $sEmail);
-			$statement->bindValue(':oldpass', $sPrevPassword);
-			$statement->bindValue(':newpass', $sNewPassword);
-			$statement->bindValue(':domain', $sEmailDomain);
-			$statement->bindValue(':username', $sEmailUser);
-
+			// and execute
 			$mSqlReturn = $statement->execute();
 
+			/* can be used for debugging
 			ob_start();
 			$statement->debugDumpParams();
 			$r = ob_get_contents();
 			ob_end_clean();
 			$this->oLogger->Write($r);
+			*/
 
 			if ($mSqlReturn == true)
 			{
