@@ -146,7 +146,7 @@ class ChangePasswordCustomSqlDriver implements \RainLoop\Providers\ChangePasswor
 
 		$dsn = 'mysql:host='.$this->mHost.';dbname='.$this->mDatabase.';charset=utf8';
 		$options = array(
-			PDO::ATTR_EMULATE_PREPARES  => false,
+			PDO::ATTR_EMULATE_PREPARES  => true,
 			PDO::ATTR_PERSISTENT        => true,
 			PDO::ATTR_ERRMODE           => PDO::ERRMODE_EXCEPTION
 		);
@@ -160,15 +160,52 @@ class ChangePasswordCustomSqlDriver implements \RainLoop\Providers\ChangePasswor
 			$sEmailUser = \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail);
 			$sEmailDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
 
-			//simple check
+			// some variables cannot be prepared
+			$this->mSql = str_replace(array(
+				':table'
+			), array(
+				$this->mTable
+			), $this->mSql);
 
-			$old = array(':email', ':oldpass', ':newpass', ':domain', ':username', ':table' );
-			$new = array($sEmail, $sPrevPassword, $sNewPassword, $sEmailDomain, $sEmailUser, $this->mTable);
+			$placeholders = array(
+				':email' => $sEmail,
+				':oldpass' => $sPrevPassword, 
+				':newpass' => $sNewPassword, 
+				':domain' => $sEmailDomain, 
+				':username' => $sEmailUser
+			);
 
-			$this->mSql = str_replace($old, $new, $this->mSql);
+			// we have to check that all placehoders are used in the query, passing any unused placeholders will generate an error
+			$used_placeholders = array();
 
-			$update = $conn->prepare($this->mSql);
-			$mSqlReturn = $update->execute(array());
+			foreach($placeholders as $placeholder => $value) {
+				if(preg_match_all('/'.$placeholder . '(?![a-zA-Z0-9\-])'.'/', $this->mSql) === 1) {
+					// backwards-compabitibility: remove single and double quotes around placeholders
+					$this->mSql = str_replace('`'.$placeholder.'`', $placeholder, $this->mSql);
+					$this->mSql = str_replace("'".$placeholder."'", $placeholder, $this->mSql);
+					$this->mSql = str_replace('"'.$placeholder.'"', $placeholder, $this->mSql);
+					$used_placeholders[$placeholder] = $value;
+				}
+			}
+
+			$statement = $conn->prepare($this->mSql);
+
+			// everything is ready (hopefully), bind the values
+			foreach($used_placeholders as $placeholder => $value) {
+				$statement->bindValue($placeholder, $value);
+			}
+
+			// and execute
+			$mSqlReturn = $statement->execute();
+
+			/* can be used for debugging
+			ob_start();
+			$statement->debugDumpParams();
+			$r = ob_get_contents();
+			ob_end_clean();
+			$this->oLogger->Write($r);
+			*/
+
 			if ($mSqlReturn == true)
 			{
 				$bResult = true;
