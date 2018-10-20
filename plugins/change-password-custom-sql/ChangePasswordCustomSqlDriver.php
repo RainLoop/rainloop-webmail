@@ -146,7 +146,7 @@ class ChangePasswordCustomSqlDriver implements \RainLoop\Providers\ChangePasswor
 
 		$dsn = 'mysql:host='.$this->mHost.';dbname='.$this->mDatabase.';charset=utf8';
 		$options = array(
-			PDO::ATTR_EMULATE_PREPARES  => false,
+			PDO::ATTR_EMULATE_PREPARES  => true,
 			PDO::ATTR_PERSISTENT        => true,
 			PDO::ATTR_ERRMODE           => PDO::ERRMODE_EXCEPTION
 		);
@@ -160,15 +160,43 @@ class ChangePasswordCustomSqlDriver implements \RainLoop\Providers\ChangePasswor
 			$sEmailUser = \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail);
 			$sEmailDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
 
-			//simple check
+			// some variables cannot be prepared
+			/*
+			$this->mSql = str_replace(array(
+				':table'
+			), array(
+				$this->mTable
+			), $this->mSql);
+			*/
 
-			$old = array(':email', ':oldpass', ':newpass', ':domain', ':username', ':table' );
-			$new = array($sEmail, $sPrevPassword, $sNewPassword, $sEmailDomain, $sEmailUser, $this->mTable);
+			$placeholders = array(
+				':table' => $this->mTable,
+				':email' => $sEmail,
+				':oldpass' => $sPrevPassword, 
+				':newpass' => $sNewPassword, 
+				':domain' => $sEmailDomain, 
+				':username' => $sEmailUser
+			);
 
-			$this->mSql = str_replace($old, $new, $this->mSql);
+			$statement = $conn->prepare($this->mSql);
 
-			$update = $conn->prepare($this->mSql);
-			$mSqlReturn = $update->execute(array());
+			$this->oLogger->Write($this->mSql); 
+
+			$statement->bindValue(':table', 'accounts');
+			$statement->bindValue(':email', $sEmail);
+			$statement->bindValue(':oldpass', $sPrevPassword);
+			$statement->bindValue(':newpass', $sNewPassword);
+			$statement->bindValue(':domain', $sEmailDomain);
+			$statement->bindValue(':username', $sEmailUser);
+
+			$mSqlReturn = $statement->execute();
+
+			ob_start();
+			$statement->debugDumpParams();
+			$r = ob_get_contents();
+			ob_end_clean();
+			$this->oLogger->Write($r);
+
 			if ($mSqlReturn == true)
 			{
 				$bResult = true;
