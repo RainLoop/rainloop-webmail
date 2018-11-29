@@ -23,7 +23,7 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	/**
-	 * This function detects the IMAP Host, and if it is set to "auto", replaces it with the email domain.
+	 * This function detects the IMAP Host, and if it is set to "auto", replaces it with the MX or email domain.
 	 *
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aImapCredentials
@@ -50,7 +50,7 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	/**
-	 * This function detects the SMTP Host, and if it is set to "auto", replaces it with the email domain.
+	 * This function detects the SMTP Host, and if it is set to "auto", replaces it with the MX or email domain.
 	 *
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aSmtpCredentials
