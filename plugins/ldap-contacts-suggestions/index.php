@@ -44,8 +44,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sNameField = \trim($this->Config()->Get('plugin', 'name_field', ''));
 				$sEmailField = \trim($this->Config()->Get('plugin', 'mail_field', ''));
 
-				if (0 < \strlen($sAccessDn) && 0 < \strlen($sAccessPassword) && 0 < \strlen($sUsersDn) &&
-					0 < \strlen($sObjectClass) && 0 < \strlen($sEmailField))
+				if (0 < \strlen($sUsersDn) && 0 < \strlen($sObjectClass) && 0 < \strlen($sEmailField))
 				{
 					include_once __DIR__.'/LdapContactsSuggestions.php';
 
@@ -71,6 +70,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDefaultValue(389),
 			\RainLoop\Plugins\Property::NewInstance('access_dn')->SetLabel('Access dn (login)')
+				->SetDescription('LDAP bind DN to authentifcate with. If left blank, anonymous bind will be tried and Access password will be ignored')
 				->SetDefaultValue(''),
 			\RainLoop\Plugins\Property::NewInstance('access_password')->SetLabel('Access password')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::PASSWORD)
