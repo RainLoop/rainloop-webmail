@@ -18,7 +18,7 @@ de_DE:
     BUTTON_HELP: "Hilfe"
     BUTTON_LOGOUT: "Abmelden"
   MOBILE:
-    BUTTON_MOBILE_VERSION: "mobile Version"
+    BUTTON_MOBILE_VERSION: "Mobile Version"
     BUTTON_DESKTOP_VERSION: "Desktop Version"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Suche"
@@ -582,6 +582,7 @@ de_DE:
     TITLE_PUBLIC: "Öffentlich"
     DELETING_ASK: "Sind Sie sicher?"
     GENERATE_ONLY_HTTPS: "Nur HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Automatisch Entwürfe speichern"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Tastaturkürzel-Hilfe"
     TAB_MAILBOX: "Postfach"
