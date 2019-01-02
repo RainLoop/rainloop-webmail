@@ -2012,6 +2012,8 @@ class ImapClient extends \MailSo\Net\NetClient
 		$bCountOneInited = false;
 		$bCountTwoInited = false;
 
+		$bIsLISTCmd = false;
+
 		$sAtomBuilder = $bTreatAsAtom ? '' : null;
 		$aList = array();
 		if (null !== $oImapResponse)
@@ -2163,6 +2165,11 @@ class ImapClient extends \MailSo\Net\NetClient
 				$sChar = $this->sResponseBuffer[$iPos];
 			}
 
+			if (preg_match('/^\* LIST/', $this->sResponseBuffer))
+			{
+				$bIsLISTCmd = true;
+			}
+
 			switch (true)
 			{
 				case ']' === $sChar:
@@ -2182,7 +2189,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					}
 					$iPos++;
 					break;
-				case '[' === $sChar:
+				case '[' === $sChar && false === $bIsLISTCmd:
 					$bIsClosingBracketSquare = true;
 				case '(' === $sChar:
 					if ('(' === $sChar)
