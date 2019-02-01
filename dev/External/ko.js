@@ -158,6 +158,7 @@ ko.bindingHandlers.tooltip = {
 			$el = $(element),
 			fValue = fValueAccessor(),
 			isMobile = 'on' === ($el.data('tooltip-mobile') || 'off'),
+			isI18N = 'on' === ($el.data('tooltip-i18n') || 'on'),
 			Globals = require('Common/Globals');
 
 		if (!Globals.bMobileDevice || isMobile)
@@ -187,7 +188,7 @@ ko.bindingHandlers.tooltip = {
 				element.__opentip.activate();
 			}
 
-			if ('on' === ($el.data('tooltip-i18n') || 'on'))
+			if (isI18N)
 			{
 				const Translator = require('Common/Translator');
 
@@ -225,6 +226,7 @@ ko.bindingHandlers.tooltip = {
 			$el = $(element),
 			fValue = fValueAccessor(),
 			isMobile = 'on' === ($el.data('tooltip-mobile') || 'off'),
+			isI18N = 'on' === ($el.data('tooltip-i18n') || 'on'),
 			Globals = require('Common/Globals');
 
 		if ((!Globals.bMobileDevice || isMobile) && element.__opentip)
@@ -232,9 +234,7 @@ ko.bindingHandlers.tooltip = {
 			const sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 			if (sValue)
 			{
-				element.__opentip.setContent('on' === ($el.data('tooltip-i18n') || 'on') ?
-					require('Common/Translator').i18n(sValue) : sValue);
-
+				element.__opentip.setContent(isI18N ? require('Common/Translator').i18n(sValue) : sValue);
 				element.__opentip.activate();
 			}
 			else
