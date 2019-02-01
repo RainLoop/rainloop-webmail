@@ -10,7 +10,7 @@ pl_PL:
     TITLE_SIGN_IN_GOOGLE: "Zaloguj się przez Google"
     TITLE_SIGN_IN_FACEBOOK: "Zaloguj się przez Facebook"
     TITLE_SIGN_IN_TWITTER: "Zaloguj się przez Twitter"
-    LABEL_FORGOT_PASSWORD: "Zapomniałem(-am) hasło"
+    LABEL_FORGOT_PASSWORD: "Zapomniane hasło"
     LABEL_REGISTRATION: "Rejestracja"
   TOP_TOOLBAR:
     BUTTON_ADD_ACCOUNT: "Dodaj konto"
@@ -89,20 +89,20 @@ pl_PL:
     EMPTY_SEARCH_LIST: "Brak wiadomości spełniających kryteria wyszukiwania."
     SEARCH_RESULT_FOR: "Wyniki wyszukiwania dla \"%SEARCH%\""
     BACK_TO_MESSAGE_LIST: "powrót do listy wiadomości"
-    LIST_LOADING: "Ładowanie..."
+    LIST_LOADING: "Ładowanie"
     EMPTY_SUBJECT_TEXT: "(Brak tematu)"
-    PUT_MESSAGE_HERE: "Przeciągnij wiadomość tutaj, żeby zobaczyć ją na liście"
+    PUT_MESSAGE_HERE: "Upuść wiadomość tutaj, aby zobaczyć ją na liście"
     TODAY_AT: "dzisiaj o %TIME%"
     YESTERDAY_AT: "wczoraj o %TIME%"
     SEARCH_PLACEHOLDER: "Szukaj"
-    NEW_MESSAGE_NOTIFICATION: "Masz: %COUNT% now(-ą,-e,-ych) wiadomości!"
+    NEW_MESSAGE_NOTIFICATION: "Masz %COUNT% now(-ą,-e,-ych) wiadomość(-ci)!"
     QUOTA_SIZE: "Wykorzystano <strong>%SIZE% (%PROC%%)</strong> z <strong>%LIMIT%</strong>"
   MESSAGE:
     BUTTON_EDIT: "Edytuj"
     BUTTON_BACK: "Wstecz"
     BUTTON_CLOSE: "Zamknij"
     BUTTON_DELETE: "Usuń"
-    BUTTON_UNSUBSCRIBE: "Zrezygnuj z subskrypcji"
+    BUTTON_UNSUBSCRIBE: "Zrezygnuj z subskrypcji tej listy"
     BUTTON_ARCHIVE: "Archiwizuj"
     BUTTON_SPAM: "Oznacz jako niechcianą"
     BUTTON_NOT_SPAM: "Oznacz jako pożądaną"
@@ -165,7 +165,7 @@ pl_PL:
   CONTACTS:
     LEGEND_CONTACTS: "Kontakty"
     SEARCH_INPUT_PLACEHOLDER: "Szukaj"
-    BUTTON_ADD_CONTACT: "Dodaj Kontakt"
+    BUTTON_ADD_CONTACT: "Dodaj kontakt"
     BUTTON_CREATE_CONTACT: "Utwórz"
     BUTTON_UPDATE_CONTACT: "Zaktualizuj"
     BUTTON_IMPORT: "Importuj (csv, vcf, vCard)"
@@ -224,7 +224,7 @@ pl_PL:
     ATTACH_ITEM_CANCEL: "Anuluj"
     DROPBOX: "Dropbox"
     GOOGLE_DRIVE: "Dysk Google"
-    REPLY_MESSAGE_TITLE: "%DATETIME%, %EMAIL%"
+    REPLY_MESSAGE_TITLE: "%DATETIME%, %EMAIL% napisał/-a/"
     FORWARD_MESSAGE_TOP_TITLE: "-------- Wiadomość przekazana -------"
     FORWARD_MESSAGE_TOP_FROM: "Od"
     FORWARD_MESSAGE_TOP_TO: "Do"
@@ -235,7 +235,7 @@ pl_PL:
     NO_ATTACHMENTS_HERE_DESC: "Brak załączników."
     ATTACHMENTS_ERROR_DESC: "Ostrzeżenie! Nie wszystkie załączniki zostały przesłane na serwer."
     ATTACHMENTS_UPLOAD_ERROR_DESC: "Jeszcze nie wszystkie załączniki zostały przesłane na serwer."
-    BUTTON_REQUEST_READ_RECEIPT: "Żądaj potwierdzenia wyświetlenia wiadomości"
+    BUTTON_REQUEST_READ_RECEIPT: "Żądaj potwierdzenia przeczytania wiadomości"
     BUTTON_MARK_AS_IMPORTANT: "Oznacz jako ważną"
     BUTTON_OPEN_PGP: "OpenPGP (tylko wiadomości tekstowe)"
     BUTTON_REQUEST_DSN: "Żądaj potwierdzenia dostarczenia wiadomości"
@@ -244,8 +244,8 @@ pl_PL:
   POPUPS_ASK:
     BUTTON_YES: "Tak"
     BUTTON_NO: "Nie"
-    DESC_WANT_CLOSE_THIS_WINDOW: "Na pewno zamknąć to okno?"
-    DESC_WANT_DELETE_MESSAGES: "Na pewno usunąć wiadomość(-ci)?"
+    DESC_WANT_CLOSE_THIS_WINDOW: "Na pewno chcesz zamknąć to okno?"
+    DESC_WANT_DELETE_MESSAGES: "Na pewno chcesz usunąć wiadomość(-ci)?"
   POPUPS_LANGUAGES:
     TITLE_LANGUAGES: "Wybierz język"
   POPUPS_ADD_ACCOUNT:
@@ -275,7 +275,7 @@ pl_PL:
     TITLE_CREATING_PROCESS: "Tworzenie folderu"
   POPUPS_CLEAR_FOLDER:
     TITLE_CLEAR_FOLDER: "Czy usunąć wszystkie wiadomości z folderu?"
-    BUTTON_CLEAR: "Usuń wszystkie"
+    BUTTON_CLEAR: "Wyczyść"
     BUTTON_CANCEL: "Anuluj"
     BUTTON_CLOSE: "Zamknij"
     DANGER_DESC_WARNING: "Ostrzeżenie!"
@@ -338,8 +338,8 @@ pl_PL:
     SELECT_TYPE_NOT_MATCHES: "nie zawiera (*, ?)"
     SELECT_TYPE_REGEXP: "Wyrażenie regularne"
     SELECT_TYPE_NOT_REGEXP: "Niepoprawne wyrażenie regularne"
-    SELECT_TYPE_EQUAL_TO: "równy"
-    SELECT_TYPE_NOT_EQUAL_TO: "nierówny"
+    SELECT_TYPE_EQUAL_TO: "Równa się"
+    SELECT_TYPE_NOT_EQUAL_TO: "Nie równa się"
     SELECT_TYPE_OVER: "powyżej"
     SELECT_TYPE_UNDER: "poniżej"
     SELECT_MATCH_ANY: "Spełnia dowolny z warunków"
@@ -357,7 +357,7 @@ pl_PL:
   POPUPS_SYSTEM_FOLDERS:
     TITLE_SYSTEM_FOLDERS: "Wybierz foldery systemowe"
     SELECT_CHOOSE_ONE: "Wybierz"
-    SELECT_UNUSE_NAME: "nie używaj"
+    SELECT_UNUSE_NAME: "Nie używaj"
     LABEL_SENT: "Wysłane"
     LABEL_DRAFTS: "Szkice"
     LABEL_SPAM: "Spam"
@@ -383,15 +383,15 @@ pl_PL:
     LABEL_TWO_FACTOR_STATUS: "Status"
     LABEL_TWO_FACTOR_SECRET: "Tajna fraza"
     LABEL_TWO_FACTOR_BACKUP_CODES: "Kody zapasowe"
-    BUTTON_CREATE: "Utwórz nową frazę"
+    BUTTON_CREATE: "Utwórz sekretną frazę"
     BUTTON_ACTIVATE: "Aktywuj"
     BUTTON_CLEAR: "Wyczyść"
     BUTTON_LOGOUT: "Wyloguj"
     BUTTON_DONE: "Zamknij"
     BUTTON_TEST: "Testuj"
     LINK_TEST: "test"
-    BUTTON_SHOW_SECRET: "Pokaż frazę"
-    BUTTON_HIDE_SECRET: "Ukryj frazę"
+    BUTTON_SHOW_SECRET: "Pokaż sekretną frazę"
+    BUTTON_HIDE_SECRET: "Ukryj sekretną frazę"
     TWO_FACTOR_REQUIRE_DESC: "Twoje konto wymaga skonfigurowania autoryzacji 2-etapowej."
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Skonfigurowano"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Nie skonfigurowano"
@@ -419,7 +419,7 @@ pl_PL:
   EDITOR:
     TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> zwykły tekst"
     TEXT_SWITCHER_RICH_FORMATTING: "Wzbogacony format tekstowy"
-    TEXT_SWITCHER_CONFIRM: "Formatowanie tekstu oraz wszystkie wstawione obrazy zostaną utracone. Czy na pewno chcesz kontynuować?"
+    TEXT_SWITCHER_CONFIRM: "Formatowanie tekstu oraz wstawione obrazy zostaną utracone. Czy na pewno chcesz kontynuować?"
   SETTINGS_LABELS:
     LABEL_PERSONAL_NAME: "Osobiste"
     LABEL_GENERAL_NAME: "Ogólne"
@@ -450,7 +450,7 @@ pl_PL:
     SUBNAME_DISCARD: "Porzuć"
     CAPABILITY_LABEL: "Możliwości"
     LOADING_PROCESS: "Aktualizowanie listy filtrów"
-    DELETING_ASK: "Czy jesteś pewny(a)?"
+    DELETING_ASK: "Jesteś pewien/pewna?"
     CHACHES_NEED_TO_BE_SAVED_DESC: "Zmiany te muszą zostać zapisane na serwerze."
   SETTINGS_IDENTITY:
     LEGEND_IDENTITY: "Tożsamość"
@@ -538,7 +538,7 @@ pl_PL:
     CREATING_PROCESS: "Tworzenie folderu"
     DELETING_PROCESS: "Usuwanie folderu"
     RENAMING_PROCESS: "Zmiana nazwy folderu"
-    DELETING_ASK: "Czy na pewno usunąć?"
+    DELETING_ASK: "Jesteś pewien/pewna?"
     TO_MANY_FOLDERS_DESC_1: "Masz za dużo folderów!"
     TO_MANY_FOLDERS_DESC_2: "Pokazaliśmy tylko część z nich aby uniknąć problemów z wydajnością."
     HELP_DELETE_FOLDER: "Usuń folder"
@@ -552,7 +552,7 @@ pl_PL:
     BUTTON_ADD_IDENTITY: "Dodaj tożsamość"
     BUTTON_DELETE: "Usuń"
     LOADING_PROCESS: "Trwa aktualizowanie listy kont"
-    DELETING_ASK: "Czy na pewno usunąć?"
+    DELETING_ASK: "Jesteś pewien/pewna?"
     DEFAULT_IDENTITY_LABEL: "domyślna"
   SETTINGS_IDENTITIES:
     LEGEND_IDENTITY: "Tożsamość"
@@ -565,7 +565,7 @@ pl_PL:
     BUTTON_ADD_IDENTITY: "Dodaj tożsamość"
     BUTTON_DELETE: "Usuń"
     LOADING_PROCESS: "Trwa aktualizowanie listy tożsamości"
-    DELETING_ASK: "Czy na pewno chcesz usunąć?"
+    DELETING_ASK: "Jesteś pewien/pewna?"
   SETTINGS_CHANGE_PASSWORD:
     LEGEND_CHANGE_PASSWORD: "Zmiana hasła"
     LABEL_CURRENT_PASSWORD: "Aktualne hasło"
@@ -579,7 +579,7 @@ pl_PL:
     BUTTON_GENERATE_OPEN_PGP_KEYS: "Generuj klucz OpenPGP"
     TITLE_PRIVATE: "Prywatny"
     TITLE_PUBLIC: "Publiczny"
-    DELETING_ASK: "Czy na pewno chcesz usunąć?"
+    DELETING_ASK: "Jesteś pewien/pewna?"
     GENERATE_ONLY_HTTPS: "Tylko HTTPS"
     LABEL_ALLOW_DRAFT_AUTOSAVE: "Automatycznie zapisuj szkic"
   SHORTCUTS_HELP:
@@ -642,22 +642,22 @@ pl_PL:
     CONNECTION_ERROR: "Błąd połączenia z serwerem"
     CAPTCHA_ERROR: "Nieprawidłowy kod CAPTCHA."
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-        Ten identyfikator społecznościowy (Facebook) nie jest powiązany z żadnym kontem
+        Ten identyfikator społecznościowy Facebook nie jest powiązany z żadnym kontem
         pocztowym. Zaloguj się używając danych swojego konta e-mail i skonfiguruj
         tę opcję w: Ustawienia > Sieci społecznościowe.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-        Ten identyfikator społecznościowy (Twitter) nie jest powiązany z żadnym kontem
+        Ten identyfikator społecznościowy Twitter nie jest powiązany z żadnym kontem
         pocztowym. Zaloguj się używając danych swojego konta e-mail i skonfiguruj
         tę opcję w: Ustawienia > Sieci społecznościowe.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-        Ten identyfikator społecznościowy (Konto Google) nie jest powiązany z żadnym
+        Ten identyfikator społecznościowy Konto Google nie jest powiązany z żadnym
         kontem pocztowym. Zaloguj się używając danych swojego konta e-mail i skonfiguruj
         tę opcję w: Ustawienia > Sieci społecznościowe.
-    DOMAIN_NOT_ALLOWED: "Domena niedozwolona"
+    DOMAIN_NOT_ALLOWED: "Domena jest niedozwolona"
     ACCOUNT_NOT_ALLOWED: "Konto nie jest dozwolone"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Wymagana autoryzacja dwuetapowa"
     ACCOUNT_TWO_FACTOR_AUTH_ERROR: "Błąd autoryzacji dwuetapowej"
-    COULD_NOT_SAVE_NEW_PASSWORD: "Nie można było zapisać nowego hasła"
+    COULD_NOT_SAVE_NEW_PASSWORD: "Nie można zapisać nowego hasła"
     CURRENT_PASSWORD_INCORRECT: "Obecne hasło jest niepoprawne"
     NEW_PASSWORD_SHORT: "Hasło jest za krótkie"
     NEW_PASSWORD_WEAK: "Hasło jest zbyt łatwe"

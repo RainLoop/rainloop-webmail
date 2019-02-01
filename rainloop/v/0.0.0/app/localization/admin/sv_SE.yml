@@ -34,7 +34,8 @@ sv_SE:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Tillåt ytterligare konton"
     LABEL_ALLOW_IDENTITIES: "Tillåt multiidentiteter"
     LABEL_ALLOW_TEMPLATES: "Tillåt mallar"
-    ALERT_WARNING: "Advarsel!"
+    ALERT_DATA_ACCESS: "RainLoops datamapp är åtkomstbar. Var vänlig konfigurera din webb-server för att förhindra extern åtkomst och synlighet. Läs mer här: "
+    ALERT_WARNING: "Varning!"
     HTML_ALERT_WEAK_PASSWORD: |
         Du använder standardlösenord.
         <br />

@@ -1,9 +1,10 @@
 sk_SK:
   LOGIN:
-    LABEL_LOGIN: "Používateľské meno"
+    LABEL_LOGIN: "Prihlasovanie"
     LABEL_PASSWORD: "Heslo"
     BUTTON_LOGIN: "Prihlásiť sa do admin panelu"
   TOP_PANEL:
+    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Admin Panel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Všeobecné"
@@ -13,6 +14,7 @@ sk_SK:
     LABEL_DOMAINS_NAME: "Domény"
     LABEL_SECURITY_NAME: "Zabezpečenie"
     LABEL_INTEGRATION_NAME: "Integrácie"
+    LABEL_PLUGINS_NAME: "Doplnky"
     LABEL_PACKAGES_NAME: "Balíčky"
     LABEL_LICENSING_NAME: "Licencovanie"
     LABEL_ABOUT_NAME: "O programe"
@@ -21,13 +23,33 @@ sk_SK:
     LABEL_LANGUAGE: "Jazyk"
     LABEL_LANGUAGE_ADMIN: "Jazyk (admin)"
     LABEL_THEME: "Téma"
+    LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Povoliť výber jazyka v nastaveniach"
+    LABEL_ALLOW_THEMES_ON_SETTINGS: "Povoliť výber témy v nastaveniach"
+    LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Povoliť výber pozadia v nastaveniach"
+    LABEL_SHOW_THUMBNAILS: "Zobraziť náhľady (prílohy)"
+    LABEL_ALLOW_GRAVATAR: "Povoliť Gravatar"
     LEGEND_MAIN: "Všeobecné"
+    LABEL_ATTACHMENT_SIZE_LIMIT: "Maximálna veľkosť prílohy"
+    LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Povoliť ďalšie účty"
+    LABEL_ALLOW_IDENTITIES: "Povoliť viaceré identity"
     LABEL_ALLOW_TEMPLATES: "Povoliť šablóny"
+    ALERT_DATA_ACCESS: "Adresár data je dostupný. Prosím skonfigurujte svoj webserver tak, aby bol adresár data nedostupný. Viac informácií:"
     ALERT_WARNING: "Upozornenie!"
+    HTML_ALERT_WEAK_PASSWORD: |
+        Používate predvolené administrátorské heslo.
+        <br />
+        Kvôli bezpečnosti prosím
+        <strong><a href="#/security">zmeňte</a></strong>
+        heslo na iné.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Prihlasovacia obrazovka"
     LABEL_DEFAULT_DOMAIN: "Predvolená doména"
+    LABEL_DETERMINE_USER_DOMAIN: "Pokúsiť sa určiť doménu používateľa"
+    LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Povoliť výber jazyka na prihlasovacej obrazovke"
+    LABEL_DETERMINE_USER_LANGUAGE: "Pokúsiť sa určiť používateľov jazyk"
   TAB_BRANDING:
+    LEGEND_BRANDING: "Vlastné označenie"
+    LABEL_PAGE_TITLE: "Názov stránky"
     LABEL_FAVICON_URL: "Favicon"
     LEGEND_LOGIN: "Používateľské meno"
     LABEL_LOGIN_LOGO: "Logo"
@@ -37,6 +59,8 @@ sk_SK:
     LABEL_LOGIN_SHOW_POWERED_LINK: "Zobraziť link \"Powered by RainLoop\""
     LEGEND_USER: "Užívateľ"
     LABEL_USER_LOGO: "Logo"
+    LABEL_USER_LOGO_TITLE: "Nadpis loga"
+    LABEL_USER_LOGO_MESSAGE: "Logo (zobrazenie správy)"
     LABEL_USER_CUSTOM_CSS: "Vlastné CSS"
     LEGEND_WELCOME_PAGE: "Uvítacia stránka"
     LABEL_WELCOME_PAGE_TITLE: "Nadpis"
@@ -47,12 +71,15 @@ sk_SK:
     OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Vždy"
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakty"
+    LEGEND_STORAGE: "Úložisko (PDO)"
     LABEL_ENABLE_CONTACTS: "Zapnúť kontakty"
+    LABEL_ALLOW_SYNC: "Povoliť synchronizáciu kontaktov (s externým CardDAV serverom)"
     LABEL_STORAGE_TYPE: "Typ"
     LABEL_STORAGE_DSN: "Dsn"
     LABEL_STORAGE_USER: "Užívateľ"
     LABEL_STORAGE_PASSWORD: "Heslo"
     BUTTON_TEST: "Test"
+    HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Nepoužívajte tento typ databázy, ak máte veľký počet aktívnych používateľov."
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domény"
     BUTTON_ADD_DOMAIN: "Pridať doménu"
@@ -60,20 +87,32 @@ sk_SK:
     DELETE_ARE_YOU_SURE: "Ste si istí?"
   TAB_SECURITY:
     LEGEND_SECURITY: "Bezpečnosť"
+    LABEL_ALLOW_TWO_STEP: "Povoliť 2-krokovú verifikáciu"
+    LABEL_FORCE_TWO_STEP: "Vyžadovať 2-krokovú verifikáciu"
+    LABEL_ALLOW_OPEN_PGP: "Povoliť OpenPGP"
+    LABEL_SHOW_PHP_INFO: "Zobraziť informácie o PHP"
     LABEL_CURRENT_PASSWORD: "Súčasné heslo"
+    LABEL_NEW_LOGIN: "Nový login"
     LABEL_NEW_PASSWORD: "Nové heslo"
     LABEL_REPEAT_PASSWORD: "Opakovať"
+    BUTTON_UPDATE_PASSWORD: "Zmeniť heslo"
     LEGEND_SSL: "SSL"
   TAB_INTEGRATIONS:
     LEGEND_GOOGLE: "Google"
+    LABEL_ENABLE_GOOGLE: "Povoliť integráciu s Google"
     LABEL_GOOGLE_AUTH: "Overenie"
     LABEL_GOOGLE_CLIENT_ID: "ID klienta"
     LABEL_GOOGLE_API_KEY: "Api kľúč"
     LEGEND_FACEBOOK: "Facebook"
+    LABEL_ENABLE_FACEBOOK: "Povoliť integráciu s Facebook (autorizácia)"
     LEGEND_TWITTER: "Twitter"
     LABEL_ENABLE_TWITTER: "Povoliť Twitter intergáciu (overenie)"
     LEGEND_DROPBOX: "Dropbox"
+    LABEL_ENABLE_DROPBOX: "Povoliť integráciu s Dropbox"
     LABEL_DROPBOX_API_KEY: "Api kľúč"
+  TAB_PLUGINS:
+    LEGEND_PLUGINS: "Doplnky"
+    LABEL_ENABLE_PLUGINS: "Povoliť doplnky"
   TAB_PACKAGES:
     LEGEND_AVAILABLE_FOR_UPDATE: "Dostupné na aktualizáciu"
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Dostupné na inštaláciu"
@@ -88,6 +127,7 @@ sk_SK:
     BUTTON_PURCHASE: "Kúpiť"
     BUTTON_TRIAL: "Skúšobná verzia"
   TAB_ABOUT:
+    LEGEND_ABOUT: "O programe"
     LABEL_TAG_HINT: "Jednoduchý, moderný a rýchly webmail klient"
     LABEL_ALL_RIGHTS_RESERVED: "Všetky práva vyhradené."
     HINT_READ_CHANGE_LOG: "Prosím prečítajte si zoznam zmien pred aktualizáciou."
@@ -120,22 +160,27 @@ sk_SK:
     LABEL_SERVER: "Server"
     LABEL_PORT: "Port"
     LABEL_SECURE: "Bezpečné"
+    LABEL_WHITE_LIST: "Zoznam povolených"
     SECURE_OPTION_NONE: "Žiadne"
     SECURE_OPTION_SSL: "SSL/TLS"
     SECURE_OPTION_STARTTLS: "STARTTLS"
+    LABEL_ALLOW_SIEVE_SCRIPTS: "Povoliť Sieve skripty"
     LABEL_USE_SHORT_LOGIN: "Použiť skrátené prihlásenie"
     LABEL_USE_AUTH: "Použiť overenie"
     LABEL_USE_PHP_MAIL: "Použiť php mail() funkciu"
     BUTTON_TEST: "Test"
-    BUTTON_SIEVE_CONFIGURATION: "Uložiť nastavenia"
+    BUTTON_WHITE_LIST: "Zoznam povolených"
+    BUTTON_SIEVE_CONFIGURATION: "Nastavenia Sieve"
     BUTTON_BACK_TO_IMAP: "Späť do IMAP nastavení"
     BUTTON_BACK: "Späť"
     BUTTON_CLOSE: "Zatvoriť"
     BUTTON_ADD: "Pridať"
     BUTTON_UPDATE: "Aktualizovať"
   POPUPS_PLUGIN:
+    TITLE_PLUGIN: "Doplnok"
     BUTTON_CLOSE: "Zatvoriť"
     BUTTON_SAVE: "Uložiť"
+    TOOLTIP_ABOUT_TITLE: "O programe"
   POPUPS_LANGUAGES:
     TITLE_LANGUAGES: "Zvoľte jazyk"
   HINTS:
