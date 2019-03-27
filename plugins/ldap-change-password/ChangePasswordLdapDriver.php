@@ -119,22 +119,24 @@ class ChangePasswordLdapDriver implements \RainLoop\Providers\ChangePassword\Cha
 				'{imap:login}' => $oAccount->Login(),
 				'{imap:host}' => $oAccount->DomainIncHost(),
 				'{imap:port}' => $oAccount->DomainIncPort(),
-                '{gecos}' => posix_getpwnam($oAccount->Login())
+				'{gecos}' => function_exists('posix_getpwnam') ? posix_getpwnam($oAccount->Login()) : ''
 			));
 
 			$oCon = @\ldap_connect($this->sHostName, $this->iHostPort);
 			if ($oCon)
 			{
-                if (!@\ldap_set_option($oCon, LDAP_OPT_PROTOCOL_VERSION, 3)) {
-                    $this->oLogger->Write("Failed to set LDAP Protocol version to 3, TLS not supported.",
-                        \MailSo\Log\Enumerations\Type::WARNING, 'LDAP');
-                }
-                else {
-                    if (!ldap_start_tls($oCon)) {
-                        $this->oLogger->Write("Ldap_start_tls failed: ".$oCon,
-                            \MailSo\Log\Enumerations\Type::WARNING, 'LDAP');
-                    }
-                }
+				if (!@\ldap_set_option($oCon, LDAP_OPT_PROTOCOL_VERSION, 3))
+				{
+					$this->oLogger->Write(
+						'Failed to set LDAP Protocol version to 3, TLS not supported.',
+						\MailSo\Log\Enumerations\Type::WARNING,
+						'LDAP'
+					);
+				}
+				else if (@!ldap_start_tls($oCon))
+				{
+					$this->oLogger->Write("ldap_start_tls failed: ".$oCon, \MailSo\Log\Enumerations\Type::WARNING, 'LDAP');
+				}
 
 				if (!@\ldap_bind($oCon, $sUserDn, $sPrevPassword))
 				{
