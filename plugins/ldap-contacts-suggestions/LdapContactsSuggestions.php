@@ -15,12 +15,12 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @var string
 	 */
-	private $sAccessDn = NULL;
+	private $sAccessDn = null;
 
 	/**
 	 * @var string
 	 */
-	private $sAccessPassword = NULL;
+	private $sAccessPassword = null;
 
 	/**
 	 * @var string
@@ -202,11 +202,15 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 
 			if (!@\ldap_bind($oCon, $this->sAccessDn, $this->sAccessPassword))
 			{
-				if ( is_null($this->sAccessDn) ) {
+				if (is_null($this->sAccessDn))
+				{
 					$this->logLdapError($oCon, 'ldap_bind (anonymous)');
-				} else {
+				}
+				else
+				{
 					$this->logLdapError($oCon, 'ldap_bind');
 				}
+
 				return $aResult;
 			}
 
