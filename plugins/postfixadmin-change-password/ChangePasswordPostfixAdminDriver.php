@@ -286,7 +286,11 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 	private function cryptPassword($sPassword, $oPdo)
 	{
 		$sResult = '';
-		$sSalt = substr(str_shuffle('./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, 16);
+		if (function_exists('random_bytes')) {
+			$sSalt = substr(base64_encode(random_bytes(32)), 0, 16);
+		} else {
+			$sSalt = substr(str_shuffle('./ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'), 0, 16);	
+		}
 		switch (strtolower($this->sEncrypt))
 		{
 			default:
