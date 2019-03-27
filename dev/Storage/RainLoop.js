@@ -11,11 +11,13 @@ const TIME_KEY = '__rlT';
 export function isStorageSupported(storageName)
 {
 	let storageIsAvailable = false;
-	try {
+	try
+	{
+		// at: window[storageName] firefox throws SecurityError: The operation is insecure. when in iframe
 		storageIsAvailable = storageName in window && window[storageName] && window[storageName].setItem;
-	} 
-	catch(e) {} // at: window[storageName] firefox throws SecurityError: The operation is insecure. when in iframe
-	
+	}
+	catch (e) {} // eslint-disable-line no-empty
+
 	if (storageIsAvailable)
 	{
 		const
@@ -34,7 +36,6 @@ export function isStorageSupported(storageName)
 		catch (e) {} // eslint-disable-line no-empty
 	}
 
-	
 	return false;
 }
 
