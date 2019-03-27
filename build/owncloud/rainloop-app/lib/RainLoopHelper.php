@@ -258,7 +258,12 @@ class OC_RainLoop_Helper
 				}
 				else if (class_exists('OC'))
 				{
-					$sData = rtrim(trim(OC::$server->getSystemConfig()->getValue('datadirectory', \OC::$SERVERROOT . '/data')), '\\/').'/';
+					$sData = rtrim(trim(
+						OC::$server->getSystemConfig()->getValue(
+							'datadirectory', 
+							isset(\OC::$SERVERROOT) ? \OC::$SERVERROOT.'/data' : ''
+						)
+					), '\\/').'/';
 				}
 
 				return @is_dir($sData) ? $sData.'rainloop-storage' : '';
