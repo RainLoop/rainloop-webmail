@@ -245,7 +245,7 @@ id_ID:
     BUTTON_YES: "Ya"
     BUTTON_NO: "Tidak"
     DESC_WANT_CLOSE_THIS_WINDOW: "Anda yakin untuk menutup jendela ini?"
-    DESC_WANT_DELETE_MESSAGES: "Anda yakin untuk menutup semua jendela ini?"
+    DESC_WANT_DELETE_MESSAGES: "Anda yakin menghapus permanen semua pesan?"
   POPUPS_LANGUAGES:
     TITLE_LANGUAGES: "Pilih bahasa"
   POPUPS_ADD_ACCOUNT:
