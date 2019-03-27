@@ -1,0 +1,9 @@
+{
+  "name": "Progress.js",
+  "version": "0.1.0",
+  "description": "Themeable HTML5 progress bar library",
+  "keywords": ["progress", "progressbar", "loading"],
+  "homepage": "http://usablica.github.io/progress.js/",
+  "author": "Afshin Mehrabani",
+  "main": ["src/progress.js","src/progressjs.css"]
+}

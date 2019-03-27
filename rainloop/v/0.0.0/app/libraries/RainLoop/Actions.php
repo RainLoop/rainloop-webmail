@@ -14,7 +14,7 @@ class Actions
 	const AUTH_SPEC_LOGOUT_TOKEN_KEY = 'rlspeclogout';
 	const AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY = 'rlspeclogoutcmk';
 	const AUTH_ADMIN_TOKEN_KEY = 'rlaauth';
-	const RL_SKIP_MOBILE_KEY = 'rlmobile';
+	const RL_MOBILE_TYPE = 'rlmobiletype';
 
 	/**
 	 * @var \MailSo\Base\Http
@@ -213,30 +213,26 @@ class Actions
 		if (null === $this->oConfig)
 		{
 			$this->oConfig = new \RainLoop\Config\Application();
-
-			$bSave = defined('APP_INSTALLED_START');
-
-			$bLoaded = $this->oConfig->Load();
-			if (!$bLoaded && !$bSave)
+			if (!$this->oConfig->Load())
 			{
-				usleep(10000); // TODO
-				$bLoaded = $this->oConfig->Load();
+				usleep(10000);
+				$this->oConfig->Load();
 			}
 
-			if (!$bLoaded && !$this->oConfig->IsFileExists())
-			{
-				$bSave = true;
-			}
-
-			if ($bLoaded && !$bSave)
-			{
-				$bSave = APP_VERSION !== $this->oConfig->Get('version', 'current');
-			}
-
-			if ($bSave)
-			{
-				$this->oConfig->Save();
-			}
+//			if (!$bLoaded && !$this->oConfig->IsFileExists())
+//			{
+//				$bSave = true;
+//			}
+//
+//			if ($bLoaded && !$bSave)
+//			{
+//				$bSave = APP_VERSION !== $this->oConfig->Get('version', 'current');
+//			}
+//
+//			if ($bSave)
+//			{
+//				$this->oConfig->Save();
+//			}
 		}
 
 		return $this->oConfig;
@@ -1532,6 +1528,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'DetermineUserDomain' => (bool) $oConfig->Get('login', 'determine_user_domain', false),
 			'UseLoginWelcomePage' => (bool) $oConfig->Get('login', 'welcome_page', false),
 			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
+			'SieveAllowFileintoInbox' => (bool) $oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false),
 			'ContactsIsAllowed' => false,
 			'ChangePasswordIsAllowed' => false,
 			'RequireTwoFactor' => false,
@@ -1578,7 +1575,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$aResult['AccountSignMe'] = $oAccount->SignMe();
 				$aResult['ChangePasswordIsAllowed'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
 				$aResult['ContactsIsAllowed'] = $oAddressBookProvider->IsActive();
-				$aResult['ContactsSharingIsAllowed'] = $oAddressBookProvider->IsSharingAllowed();
 				$aResult['ContactsSyncIsAllowed'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);
 				$aResult['ContactsSyncInterval'] = (int) $oConfig->Get('contacts', 'sync_interval', 20);
 
@@ -1758,7 +1754,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$aResult['PostgreSqlIsSupported'] = \is_array($aDrivers) ? \in_array('pgsql', $aDrivers) : false;
 
 				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
-				$aResult['ContactsSharing'] = (bool) $oConfig->Get('contacts', 'allow_sharing', false);
 				$aResult['ContactsSync'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);
 				$aResult['ContactsPdoType'] = (string) $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
 				$aResult['ContactsPdoDsn'] = (string) $oConfig->Get('contacts', 'pdo_dsn', '');
@@ -2151,7 +2146,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$this->Plugins()->RunHook('filter.login-credentials.step-1', array(&$sEmail, &$sPassword));
 
-		$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii(\MailSo\Base\Utils::Trim($sEmail));
+		$sEmail = \MailSo\Base\Utils::Trim($sEmail);
+		if ($this->Config()->Get('login', 'login_lowercase', true))
+		{
+			$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii($sEmail);
+		}
 
 		if (false === \strpos($sEmail, '@'))
 		{
@@ -2237,6 +2236,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->Logger()->AddSecret($sPassword);
 
 		$sLogin = $sEmail;
+		if ($this->Config()->Get('login', 'login_lowercase', true))
+		{
+			$sLogin = \MailSo\Base\Utils::StrToLowerIfAscii($sLogin);
+		}
+
 		$this->Plugins()->RunHook('filter.login-credentials', array(&$sEmail, &$sLogin, &$sPassword));
 
 		$this->Logger()->AddSecret($sPassword);
@@ -3756,7 +3760,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->setConfigFromParams($oConfig, 'LoginDefaultDomain', 'login', 'default_domain', 'string');
 
 		$this->setConfigFromParams($oConfig, 'ContactsEnable', 'contacts', 'enable', 'bool');
-		$this->setConfigFromParams($oConfig, 'ContactsSharing', 'contacts', 'allow_sharing', 'bool');
 		$this->setConfigFromParams($oConfig, 'ContactsSync', 'contacts', 'allow_sync', 'bool');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoDsn', 'contacts', 'pdo_dsn', 'string');
 		$this->setConfigFromParams($oConfig, 'ContactsPdoUser', 'contacts', 'pdo_user', 'string');
@@ -5213,6 +5216,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				'Draft Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
+				
+				'Junk E-mail' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 
 				'Spam' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 				'Spams' => \MailSo\Imap\Enumerations\FolderType::JUNK,
@@ -5220,6 +5225,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				'Junk' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 				'Bulk Mail' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 				'Bulk Mails' => \MailSo\Imap\Enumerations\FolderType::JUNK,
+				
+				'Deleted Items' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 
 				'Trash' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 				'Deleted' => \MailSo\Imap\Enumerations\FolderType::TRASH,
@@ -8691,12 +8698,14 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 					if ($bDownload || $sLoadedData)
 					{
-						\header('Content-Type: '.$sContentTypeOut);
-						\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
+						if (!headers_sent()) {
+							\header('Content-Type: '.$sContentTypeOut);
+							\header('Content-Disposition: '.($bDownload ? 'attachment' : 'inline').'; '.
 							\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
 
-						\header('Accept-Ranges: bytes');
-						\header('Content-Transfer-Encoding: binary');
+							\header('Accept-Ranges: bytes');
+							\header('Content-Transfer-Encoding: binary');
+						}
 
 						if ($bIsRangeRequest && !$sLoadedData)
 						{
@@ -8926,7 +8935,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$iCode = 0;
 			$sContentType = '';
 
-			$sGravatarUrl = 'http://gravatar.com/avatar/'.\md5($sEmail).'.jpg?s=80&d=404';
+			$sGravatarUrl = 'http://gravatar.com/avatar/'.\md5(strtolower($sEmail)).'.jpg?s=80&d=404';
 
 			$this->Logger()->Write('gravatar: '.$sGravatarUrl);
 

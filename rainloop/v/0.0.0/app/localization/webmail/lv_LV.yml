@@ -154,10 +154,10 @@ lv_LV:
   READ_RECEIPT:
     SUBJECT: "Return Receipt (displayed) - %SUBJECT%"
     BODY: |
-      This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
+        This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
 
-      Note: This Return Receipt only acknowledges that the message was displayed on the recipient's computer.
-      There is no guarantee that the recipient has read or understood the message contents.
+        Note: This Return Receipt only acknowledges that the message was displayed on the recipient's computer.
+        There is no guarantee that the recipient has read or understood the message contents.
   SUGGESTIONS:
     SEARCHING_DESC: "Meklē..."
   CONTACTS:
@@ -364,15 +364,15 @@ lv_LV:
     BUTTON_CANCEL: "Atcelt"
     BUTTON_CLOSE: "Aizvērt"
     NOTIFICATION_SENT: |
-      Tu neesi izvēlējies "Izsūtne" sistēmas mapi, kurā ziņojumi tiek ielikti pēc nosūtīšanas.
-      Ja nevēlie saglabāt nosūtīto ziņu, lūdzu izvēlies "Nelietot" opciju.
+        Tu neesi izvēlējies "Izsūtne" sistēmas mapi, kurā ziņojumi tiek ielikti pēc nosūtīšanas.
+        Ja nevēlie saglabāt nosūtīto ziņu, lūdzu izvēlies "Nelietot" opciju.
     NOTIFICATION_DRAFTS: "Tu neesi izvēlējies \"Melnraksti\" sistemas mapi, kurā tiktu saglabāti ziņojumi, kamēr tie tiek rakstīti."
     NOTIFICATION_SPAM: |
-      Tu neesi izvēlējies "Spams" sistēmas mapi, kurā tiks ievietoti spam ziņojumi.
-      Ja tu vēlies izdzēst ziņojumus pavisam, izvēlies "Neizmantot" opciju.
+        Tu neesi izvēlējies "Spams" sistēmas mapi, kurā tiks ievietoti spam ziņojumi.
+        Ja tu vēlies izdzēst ziņojumus pavisam, izvēlies "Neizmantot" opciju.
     NOTIFICATION_TRASH: |
-      Tu neesi izvēlējies "Miskaste" sistēmas mapi.
-      Ja tu vēlies izdzēst ziņojumus pavisam, izvēlies "Neizmantot" opciju.
+        Tu neesi izvēlējies "Miskaste" sistēmas mapi.
+        Ja tu vēlies izdzēst ziņojumus pavisam, izvēlies "Neizmantot" opciju.
     NOTIFICATION_ARCHIVE: "You haven't selected \"Archive\" system folder achived messages are placed to.\n"
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-Step Verification"
@@ -697,13 +697,13 @@ lv_LV:
     PHP_VERSION_ERROR_DESC: "Jūsus PHP versija (%VERSION%) ir zemāka nekā atļauts 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript ir nepieciešams."
     NO_SCRIPT_DESC: |
-      Jūsu pārlūkprogramma neatbalsta JavaScript.
-      Lūdzu ieslēdziet JavaScript atbalstu.
+        Jūsu pārlūkprogramma neatbalsta JavaScript.
+        Lūdzu ieslēdziet JavaScript atbalstu.
     NO_COOKIE_TITLE: "Cookies atbalsts ir nepieciešams."
     NO_COOKIE_DESC: |
-      Cookies atbalsts nav pieejams šai pārlūkprogrammai.
-      Lūdzu ieslēdziet Cookies atbalstu.
+        Cookies atbalsts nav pieejams šai pārlūkprogrammai.
+        Lūdzu ieslēdziet Cookies atbalstu.
     BAD_BROWSER_TITLE: "Jūsu pārlūkprogramma ir novecojusi."
     BAD_BROWSER_DESC: |
-      Lai izmantotu pilnas šis aplikācijas iespējas,
-      lejupielādējat un uzinstalējas kādu no šīm pārlukprogrammām:
+        Lai izmantotu pilnas šis aplikācijas iespējas,
+        lejupielādējat un uzinstalējas kādu no šīm pārlukprogrammām:

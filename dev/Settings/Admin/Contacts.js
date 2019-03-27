@@ -19,7 +19,6 @@ class ContactsAdminSettings
 	constructor() {
 		this.defautOptionsAfterRender = defautOptionsAfterRender;
 		this.enableContacts = ko.observable(!!settingsGet('ContactsEnable'));
-		this.contactsSharing = ko.observable(!!settingsGet('ContactsSharing'));
 		this.contactsSync = ko.observable(!!settingsGet('ContactsSync'));
 
 		const
@@ -174,12 +173,6 @@ class ContactsAdminSettings
 			this.enableContacts.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
 					'ContactsEnable': boolToAjax(value)
-				});
-			});
-
-			this.contactsSharing.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'ContactsSharing': boolToAjax(value)
 				});
 			});
 

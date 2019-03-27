@@ -36,10 +36,10 @@ de_DE:
     LABEL_ALLOW_TEMPLATES: "Vorlagen erlauben"
     ALERT_WARNING: "Warnung!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Sie verwenden das Standard-Admin-Passwort.
-      <br />
-      Bitte <strong><a href="#/security">ändern</a></strong> Sie
-      aus Sicherheitsgründen das Passwort jetzt.
+        Sie verwenden das Standard-Admin-Passwort.
+        <br />
+        Bitte <strong><a href="#/security">ändern</a></strong> Sie
+        aus Sicherheitsgründen das Passwort jetzt.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Anmeldebildschirm"
     LABEL_DEFAULT_DOMAIN: "Standarddomain"
@@ -83,18 +83,18 @@ de_DE:
     ALERT_NOTICE: "Hinweis!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Verwenden Sie diesen Datenbanktyp nicht bei einer hohen Anzahl aktiver Benutzer."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Ihr System unterstützt keine Kontakte.
-      <br />
-      Sie müssen die <strong>PDO-Erweiterung (SQLite / MySQL / PostgreSQL)</strong> auf Ihrem Server installieren oder aktivieren.
+        Ihr System unterstützt keine Kontakte.
+        <br />
+        Sie müssen die <strong>PDO-Erweiterung (SQLite / MySQL / PostgreSQL)</strong> auf Ihrem Server installieren oder aktivieren.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domains"
     BUTTON_ADD_DOMAIN: "Domain hinzufügen"
     BUTTON_ADD_ALIAS: "Alias hinzufügen"
     DELETE_ARE_YOU_SURE: "Sind Sie sicher?"
     HTML_DOMAINS_HELPER: |
-      Liste der Domains, die Webmail abrufen darf.
-      <br />
-      Klicken Sie auf den Namen, um die Domain zu konfigurieren.
+        Liste der Domains, die Webmail abrufen darf.
+        <br />
+        Klicken Sie auf den Namen, um die Domain zu konfigurieren.
   TAB_SECURITY:
     LEGEND_SECURITY: "Sicherheit"
     LABEL_ALLOW_TWO_STEP: "Zwei-Faktor-Authentifizierung erlauben"
@@ -153,8 +153,8 @@ de_DE:
     HTML_ALERT_TOP_1: "RainLoop Webmail steht unter folgender Lizenz:"
     HTML_ALERT_TOP_2: "Sie <b>dürfen</b> es für <b>persönliche</b> Projekte nutzen."
     HTML_ALERT_TOP_3: |
-      Kommerzielle Nutzung (mit zusätzlichen Funktionen) von <b>RainLoop Webmail</b> erfordert eine
-      <a href=http://www.rainloop.net/purchase/ target=_blank>Subscription</a>.
+        Kommerzielle Nutzung (mit zusätzlichen Funktionen) von <b>RainLoop Webmail</b> erfordert eine
+        <a href=http://www.rainloop.net/purchase/ target=_blank>Subscription</a>.
     TYPE_PREMIUM_LIFETIME: "Lebenszeit"
     LABEL_SUB_EXPIRES: "Ablauf der Subscription"
     BUTTON_ACTIVATE: "Subscription-Schlüssel für diese Domain aktivieren"
@@ -182,11 +182,11 @@ de_DE:
     ERROR_INVALID_SUBS_KEY: "Ungültiger Subscription-Schlüssel"
     SUBS_KEY_ACTIVATED: "Subscription-Schlüssel erfolgreich aktiviert"
     HTML_DESC: |
-      Nach der Aktivierung wird <b>%DOMAIN%</b> um die Premium-Subscription erweitert.
-      <br />
-      Beachten Sie, dass ein Subscription-Schlüssel nur für eine einzelne Domain aktiviert werden kann.
-      <br /><br />
-      Nach dem Start kann der Aktivierungsprozess nicht unterbrochen oder abgebrochen werden.
+        Nach der Aktivierung wird <b>%DOMAIN%</b> um die Premium-Subscription erweitert.
+        <br />
+        Beachten Sie, dass ein Subscription-Schlüssel nur für eine einzelne Domain aktiviert werden kann.
+        <br /><br />
+        Nach dem Start kann der Aktivierungsprozess nicht unterbrochen oder abgebrochen werden.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Alias hinzufügen"
     LABEL_ALIAS: "Alias"
@@ -224,8 +224,8 @@ de_DE:
     BUTTON_UPDATE: "Aktualisieren"
     NEW_DOMAIN_DESC: "Diese Domain Konfiguration wird es dir möglich machen <br />mit <i>%NAME%</i> Mailadressen zu arbeiten."
     WHITE_LIST_ALERT: |
-      Liste der User, die Webmail abrufen darf.
-      Verwenden Sie Leerzeichen als Trenner.
+        Liste der User, die Webmail abrufen darf.
+        Verwenden Sie Leerzeichen als Trenner.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Plugin"
     DESC_NOTHING_TO_CONFIGURE: "Nichts zu konfigurieren"
@@ -313,13 +313,13 @@ de_DE:
     PHP_VERSION_ERROR_DESC: "Ihre PHP Version (%VERSION%) ist älter als die notwendige Version: 5.3.0!"
     NO_SCRIPT_TITLE: "Diese Anwendung benötigt JavaScript."
     NO_SCRIPT_DESC: |
-      Ihr Browser unterstützt JavaScript nicht.
-      Aktivieren Sie bitte die JavaScript-Unterstützung in Ihrem Browser und versuchen Sie es erneut.
+        Ihr Browser unterstützt JavaScript nicht.
+        Aktivieren Sie bitte die JavaScript-Unterstützung in Ihrem Browser und versuchen Sie es erneut.
     NO_COOKIE_TITLE: "Diese Anwendung benötigt Cookies."
     NO_COOKIE_DESC: |
-      Ihr Browser unterstützt Cookies nicht.
-      Aktivieren Sie bitte die Cookie-Unterstützung in Ihrem Browser und versuchen Sie es erneut.
+        Ihr Browser unterstützt Cookies nicht.
+        Aktivieren Sie bitte die Cookie-Unterstützung in Ihrem Browser und versuchen Sie es erneut.
     BAD_BROWSER_TITLE: "Ihr Browser ist veraltet."
     BAD_BROWSER_DESC: |
-      Um alle Funktionen dieser Anwendung nutzen zu können,
-      sollten Sie einen der folgenden Browser herunterladen und installieren
+        Um alle Funktionen dieser Anwendung nutzen zu können,
+        sollten Sie einen der folgenden Browser herunterladen und installieren

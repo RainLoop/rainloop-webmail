@@ -18,6 +18,12 @@
 /build/local
 /build/dist
 /build/tmp
+/build/docker
+/.docker/.cache
+/.docker/mail/config
+/.docker/nginx/ssl/*
+!/.docker/nginx/ssl/.gitempty
+/dist
 /data
 .DS_Store
 /tests/fix.php

@@ -14,7 +14,7 @@ class HmailserverChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if (!class_exists('COM'))
 		{
-			return 'The PHP exention COM must be installed to use this plugin';
+			return 'The PHP extension COM must be installed to use this plugin';
 		}
 
 		return '';

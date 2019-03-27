@@ -118,13 +118,25 @@ class ChangePasswordLdapDriver implements \RainLoop\Providers\ChangePassword\Cha
 				'{login}' => $oAccount->Login(),
 				'{imap:login}' => $oAccount->Login(),
 				'{imap:host}' => $oAccount->DomainIncHost(),
-				'{imap:port}' => $oAccount->DomainIncPort()
+				'{imap:port}' => $oAccount->DomainIncPort(),
+				'{gecos}' => function_exists('posix_getpwnam') ? posix_getpwnam($oAccount->Login()) : ''
 			));
 
 			$oCon = @\ldap_connect($this->sHostName, $this->iHostPort);
 			if ($oCon)
 			{
-				@\ldap_set_option($oCon, LDAP_OPT_PROTOCOL_VERSION, 3);
+				if (!@\ldap_set_option($oCon, LDAP_OPT_PROTOCOL_VERSION, 3))
+				{
+					$this->oLogger->Write(
+						'Failed to set LDAP Protocol version to 3, TLS not supported.',
+						\MailSo\Log\Enumerations\Type::WARNING,
+						'LDAP'
+					);
+				}
+				else if (@!ldap_start_tls($oCon))
+				{
+					$this->oLogger->Write("ldap_start_tls failed: ".$oCon, \MailSo\Log\Enumerations\Type::WARNING, 'LDAP');
+				}
 
 				if (!@\ldap_bind($oCon, $sUserDn, $sPrevPassword))
 				{

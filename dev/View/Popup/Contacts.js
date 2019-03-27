@@ -327,7 +327,7 @@ class ContactsPopupView extends AbstractViewNext
 			properties = [];
 
 		_.each(this.viewProperties(), (oItem) => {
-			if (oItem.type() && '' !== trim(oItem.value()))
+			if (oItem.type() && oItem.type() !== ContactPropertyType.FullName && '' !== trim(oItem.value()))
 			{
 				properties.push([oItem.type(), oItem.value(), oItem.typeStr()]);
 			}

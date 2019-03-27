@@ -15,12 +15,12 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	/**
 	 * @var string
 	 */
-	private $sAccessDn = '';
+	private $sAccessDn = null;
 
 	/**
 	 * @var string
 	 */
-	private $sAccessPassword = '';
+	private $sAccessPassword = null;
 
 	/**
 	 * @var string
@@ -31,6 +31,11 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	 * @var string
 	 */
 	private $sObjectClass = 'inetOrgPerson';
+
+	/**
+	 * @var string
+	 */
+	private $sUidField = 'uid';
 
 	/**
 	 * @var string
@@ -64,14 +69,18 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	 *
 	 * @return \LdapContactsSuggestions
 	 */
-	public function SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sNameField, $sEmailField)
+	public function SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sUidField, $sNameField, $sEmailField)
 	{
 		$this->sHostName = $sHostName;
 		$this->iHostPort = $iHostPort;
-		$this->sAccessDn = $sAccessDn;
-		$this->sAccessPassword = $sAccessPassword;
+		if (0 < \strlen($sAccessDn))
+		{
+			$this->sAccessDn = $sAccessDn;
+			$this->sAccessPassword = $sAccessPassword;
+		}
 		$this->sUsersDn = $sUsersDn;
 		$this->sObjectClass = $sObjectClass;
+		$this->sUidField = $sUidField;
 		$this->sNameField = $sNameField;
 		$this->sEmailField = $sEmailField;
 
@@ -128,9 +137,9 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 	 *
 	 * @return array
 	 */
-	private function findNameAndEmail($aLdapItem, $aEmailFields, $aNameFields)
+	private function findNameAndEmail($aLdapItem, $aEmailFields, $aNameFields, $aUidFields)
 	{
-		$sEmail = $sName = '';
+		$sEmail = $sName = $sUid = '';
 		if ($aLdapItem)
 		{
 			foreach ($aEmailFields as $sField)
@@ -156,9 +165,21 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 					}
 				}
 			}
+
+			foreach ($aUidFields as $sField)
+			{
+				if (!empty($aLdapItem[$sField][0]))
+				{
+					$sUid = \trim($aLdapItem[$sField][0]);
+					if (!empty($sUid))
+					{
+						break;
+					}
+				}
+			}
 		}
 
-		return array($sEmail, $sName);
+		return array($sEmail, $sName, $sUid);
 	}
 
 	/**
@@ -181,7 +202,15 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 
 			if (!@\ldap_bind($oCon, $this->sAccessDn, $this->sAccessPassword))
 			{
-				$this->logLdapError($oCon, 'ldap_bind');
+				if (is_null($this->sAccessDn))
+				{
+					$this->logLdapError($oCon, 'ldap_bind (anonymous)');
+				}
+				else
+				{
+					$this->logLdapError($oCon, 'ldap_bind');
+				}
+
 				return $aResult;
 			}
 
@@ -200,11 +229,13 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 
 			$aEmails = empty($this->sEmailField) ? array() : \explode(',', $this->sEmailField);
 			$aNames = empty($this->sNameField) ? array() : \explode(',', $this->sNameField);
+			$aUIDs = empty($this->sUidField) ? array() : \explode(',', $this->sUidField);
 
 			$aEmails = \array_map('trim', $aEmails);
 			$aNames = \array_map('trim', $aNames);
+			$aUIDs = \array_map('trim', $aUIDs);
 
-			$aFields = \array_merge($aEmails, $aNames);
+			$aFields = \array_merge($aEmails, $aNames, $aUIDs);
 
 			$aItems = array();
 			$sSubFilter = '';
@@ -238,7 +269,7 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 						if ($aItem)
 						{
 							$sName = $sEmail = '';
-							list ($sEmail, $sName) = $this->findNameAndEmail($aItem, $aEmails, $aNames);
+							list ($sEmail, $sName) = $this->findNameAndEmail($aItem, $aEmails, $aNames, $aUIDs);
 							if (!empty($sEmail))
 							{
 								$aResult[] = array($sEmail, $sName);

@@ -150,8 +150,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 			$sEmail = $mAccount;
 		}
 
-		$sEmail = \preg_replace('/[^a-z0-9\-\.@]+/', '_', $sEmail);
-		$sSubEmail = \preg_replace('/[^a-z0-9\-\.@]+/', '_', $sSubEmail);
+		$sEmail = \preg_replace('/[^a-z0-9\-\.@]+/i', '_', $sEmail);
+		$sSubEmail = \preg_replace('/[^a-z0-9\-\.@]+/i', '_', $sSubEmail);
 
 		$sTypePath = $sKeyPath = '';
 		switch ($iStorageType)

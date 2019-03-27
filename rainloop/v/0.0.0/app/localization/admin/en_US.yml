@@ -35,11 +35,11 @@ en_US:
     LABEL_ALLOW_TEMPLATES: "Allow templates"
     ALERT_WARNING: "Warning!"
     HTML_ALERT_WEAK_PASSWORD: |
-      You are using the default admin password.
-      <br />
-      For security reasons please
-      <strong><a href="#/security">change</a></strong>
-      password to something else now.
+        You are using the default admin password.
+        <br />
+        For security reasons please
+        <strong><a href="#/security">change</a></strong>
+        password to something else now.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Login Screen"
     LABEL_DEFAULT_DOMAIN: "Default Domain"
@@ -83,18 +83,18 @@ en_US:
     ALERT_NOTICE: "Notice!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Don't use this database type with a large number of active users."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Your system doesn't support contacts.
-      <br />
-      You need to install or enable <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> extension on your server.
+        Your system doesn't support contacts.
+        <br />
+        You need to install or enable <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> extension on your server.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domains"
     BUTTON_ADD_DOMAIN: "Add Domain"
     BUTTON_ADD_ALIAS: "Add Alias"
     DELETE_ARE_YOU_SURE: "Are you sure?"
     HTML_DOMAINS_HELPER: |
-      List of domains webmail is allowed to access.
-      <br />
-      Click on the name to configure the domain.
+        List of domains webmail is allowed to access.
+        <br />
+        Click on the name to configure the domain.
   TAB_SECURITY:
     LEGEND_SECURITY: "Security"
     LABEL_ALLOW_TWO_STEP: "Allow 2-Step Verification"
@@ -153,8 +153,8 @@ en_US:
     HTML_ALERT_TOP_1: "RainLoop Webmail is licensed under"
     HTML_ALERT_TOP_2: "You are <b>free</b> to use it for your <b>personal</b> projects."
     HTML_ALERT_TOP_3: |
-      Commercial use (with additional features) of <b>RainLoop Webmail</b> requires getting a
-      <a href="http://www.rainloop.net/purchase/" target="_blank">subscription</a>.
+        Commercial use (with additional features) of <b>RainLoop Webmail</b> requires getting a
+        <a href="http://www.rainloop.net/purchase/" target="_blank">subscription</a>.
     TYPE_PREMIUM_LIFETIME: "Lifetime"
     LABEL_SUB_EXPIRES: "Subscription expires"
     BUTTON_ACTIVATE: "Activate Subscription Key for this domain"
@@ -182,11 +182,11 @@ en_US:
     ERROR_INVALID_SUBS_KEY: "Invalid Subscription Key"
     SUBS_KEY_ACTIVATED: "Subscription Key Activated Successfully"
     HTML_DESC: |
-      After activation, premium subscription for <b>%DOMAIN%</b> will be extended.
-      <br />
-      Note that subscription key can be activated for a single domain only.
-      <br /><br />
-      Once started, the process of activation cannot be aborted or cancelled.
+        After activation, premium subscription for <b>%DOMAIN%</b> will be extended.
+        <br />
+        Note that subscription key can be activated for a single domain only.
+        <br /><br />
+        Once started, the process of activation cannot be aborted or cancelled.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Add Alias"
     LABEL_ALIAS: "Alias"
@@ -224,8 +224,8 @@ en_US:
     BUTTON_UPDATE: "Update"
     NEW_DOMAIN_DESC: "This domain configuration will allow you to work <br />with <i>%NAME%</i> email addresses."
     WHITE_LIST_ALERT: |
-      List of domain users webmail is allowed to access.
-      Use a space as delimiter.
+        List of domain users webmail is allowed to access.
+        Use a space as delimiter.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Plugin"
     DESC_NOTHING_TO_CONFIGURE: "Nothing to configure"
@@ -310,13 +310,13 @@ en_US:
     PHP_VERSION_ERROR_DESC: "Your PHP version (%VERSION%) is lower than the minimal required 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript is required for this application."
     NO_SCRIPT_DESC: |
-      JavaScript support is not available in your browser.
-      Please enable JavaScript support in your browser settings and retry.
+        JavaScript support is not available in your browser.
+        Please enable JavaScript support in your browser settings and retry.
     NO_COOKIE_TITLE: "Cookies support is required for this application."
     NO_COOKIE_DESC: |
-      Cookies support is not available in your browser.
-      Please enable Cookie support in your browser settings and retry.
+        Cookies support is not available in your browser.
+        Please enable Cookie support in your browser settings and retry.
     BAD_BROWSER_TITLE: "Your browser is outdated."
     BAD_BROWSER_DESC: |
-      To use all the features of the application,
-      download and install one of these browsers:
+        To use all the features of the application,
+        download and install one of these browsers:

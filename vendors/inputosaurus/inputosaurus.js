@@ -218,14 +218,23 @@
 		parseInput : function(ev) {
 			var widget = (ev && ev.data.widget) || this,
 				val,
+				hook,
 				delimiterFound = false,
 				values = [];
 
 			val = widget.elements.input.val();
 
-			val && (delimiterFound = widget._containsDelimiter(val));
+			if (val) {
+				if ($.isFunction(widget.options.splitHook)) {
+					hook = widget.options.splitHook(val);
+				} else {
+					delimiterFound = widget._containsDelimiter(val);
+				}
+			}
 
-			if(delimiterFound !== false){
+			if (hook) {
+				values = hook;
+			} else if(delimiterFound !== false){
 				values = val.split(delimiterFound);
 			} else if(!ev || ev.which === $.ui.keyCode.ENTER && !$('.ui-menu-item .ui-state-focus').size() && !$('#ui-active-menuitem').size()){
 				values.push(val);
@@ -456,7 +465,7 @@
 
 				v = $.trim(a[0]);
 
-				$.each(self._chosenValues, function(kk,vv) {
+				$.each(self._chosenValues, function(kk, vv) {
 					if (vv.value === self.elements.lastEdit)
 					{
 						lastIndex = kk;
@@ -465,7 +474,7 @@
 					vv.value === v && (exists = true);
 				});
 
-				if(v !== '' && (!exists || self.options.allowDuplicates)){
+				if(v !== '' && a && a[1] && (!exists || self.options.allowDuplicates)){
 
 					obj.key = 'mi_' + Math.random().toString( 16 ).slice( 2, 10 );
 					obj.value = v;
@@ -499,7 +508,7 @@
 				value = '';
 
 			$.each(this._chosenValues, function(k,v) {
-				value +=  value.length ? widget.options.outputDelimiter + v.value : v.value;
+				value += value.length ? widget.options.outputDelimiter + v.value : v.value;
 			});
 
 			return value;
@@ -551,7 +560,9 @@
 
 			$.each(this._chosenValues, function(k, v) {
 				var el = self._createTag(v.value, v.key, v.obj);
-				self.elements.ul.find('li.inputosaurus-input').before(el);
+				if (el) {
+					self.elements.ul.find('li.inputosaurus-input').before(el);
+				}
 			});
 		},
 
@@ -632,7 +643,17 @@
 				values = [];
 
 			values.push(val);
-			delim && (values = val.split(delim));
+
+			if (val) {
+				if ($.isFunction(this.options.splitHook)) {
+					var hook = this.options.splitHook(val);
+					if (hook) {
+						values = hook;
+					}
+				} else {
+					delim && (values = val.split(delim));
+				}
+			}
 
 			if (values.length) {
 				this._chosenValues = [];

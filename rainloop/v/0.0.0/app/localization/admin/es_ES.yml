@@ -36,11 +36,11 @@ es_ES:
     LABEL_ALLOW_TEMPLATES: "Permitir plantillas"
     ALERT_WARNING: "¡Atención!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Estas utilizando la contraseña por defecto.
-      <br />
-      Debido a razones de seguridad, debes
-      <strong><a href="#/security">cambiar</a></strong>
-      tu contraseña inmediatamente.
+        Estas utilizando la contraseña por defecto.
+        <br />
+        Debido a razones de seguridad, debes
+        <strong><a href="#/security">cambiar</a></strong>
+        tu contraseña inmediatamente.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Pantalla de Ingreso"
     LABEL_DEFAULT_DOMAIN: "Dominio por defecto"
@@ -84,18 +84,18 @@ es_ES:
     ALERT_NOTICE: "¡Advertencia!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "No utilices este tipo de Base de Datos para un número grande de usuarios."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Tu sistema no soporta el uso de Contactos.
-      <br />
-      Debes instalar o habilitar el uso de <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> en tu servidor.
+        Tu sistema no soporta el uso de Contactos.
+        <br />
+        Debes instalar o habilitar el uso de <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> en tu servidor.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Dominios"
     BUTTON_ADD_DOMAIN: "Agregar dominio"
     BUTTON_ADD_ALIAS: "Agregar alias"
     DELETE_ARE_YOU_SURE: "¿Estás seguro?"
     HTML_DOMAINS_HELPER: |
-      Lista de los dominios de correo al que se permite ingresar.
-      <br />
-      Haz click en el nombre de un dominio para modificarlo.
+        Lista de los dominios de correo al que se permite ingresar.
+        <br />
+        Haz click en el nombre de un dominio para modificarlo.
   TAB_SECURITY:
     LEGEND_SECURITY: "Seguridad"
     LABEL_ALLOW_TWO_STEP: "Activar la verificación de 2 pasos"
@@ -154,8 +154,8 @@ es_ES:
     HTML_ALERT_TOP_1: "RainLoop Webmail está licenciado bajo"
     HTML_ALERT_TOP_2: "Eres <b>libre</b> de usarlo para un uso <b>personal</b>."
     HTML_ALERT_TOP_3: |
-      Para utilizar <b>RainLoop Webmail</b> de forma comercial (con características adicionales) debes adquirir una licencia
-      <a href="http://www.rainloop.net/purchase/" target="_blank">Premium</a>.
+        Para utilizar <b>RainLoop Webmail</b> de forma comercial (con características adicionales) debes adquirir una licencia
+        <a href="http://www.rainloop.net/purchase/" target="_blank">Premium</a>.
     TYPE_PREMIUM_LIFETIME: "De por vida"
     LABEL_SUB_EXPIRES: "La suscripción finaliza"
     BUTTON_ACTIVATE: "Activar clave de suscripción para este dominio"
@@ -221,8 +221,8 @@ es_ES:
     BUTTON_UPDATE: "Actualizar"
     NEW_DOMAIN_DESC: "Esta configuración de Dominio le permitirá trabajar <br />con direcciones de correo tipo @<i>%NAME%</i>."
     WHITE_LIST_ALERT: |
-      Lista de dominios con que los usuarios pueden ingresar.
-      Use un espacio como delimitador.
+        Lista de dominios con que los usuarios pueden ingresar.
+        Use un espacio como delimitador.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Plugin"
     DESC_NOTHING_TO_CONFIGURE: "Nada para configurar"
@@ -311,11 +311,11 @@ es_ES:
     PHP_VERSION_ERROR_DESC: "¡La versión de PHP (%VERSION%) es menor a la mínima requerida 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript es requerido para esta aplicación."
     NO_SCRIPT_DESC: |
-      JavaScript está desactivado. Por favor habilite JavaScript en la configuración de su navegador e inténtelo de nuevo.
+        JavaScript está desactivado. Por favor habilite JavaScript en la configuración de su navegador e inténtelo de nuevo.
     NO_COOKIE_TITLE: "Las Cookies son requeridas para esta aplicación."
     NO_COOKIE_DESC: |
-      Las Cookies están desactivadas. Por favor habilite las Cookies en la configuración de su navegador e inténtelo de nuevo.
+        Las Cookies están desactivadas. Por favor habilite las Cookies en la configuración de su navegador e inténtelo de nuevo.
     BAD_BROWSER_TITLE: "El navegador no está actualizado"
     BAD_BROWSER_DESC: |
-      Para usar todas las características de esta aplicación,
-      descargue e instale uno de estos navegadores:
+        Para usar todas las características de esta aplicación,
+        descargue e instale uno de estos navegadores:

@@ -7,16 +7,13 @@ import {getHash, setHash, clearHash} from 'Storage/RainLoop';
 
 let RL_APP_DATA_STORAGE = null;
 
-/* eslint-disable  */
+/* eslint-disable camelcase,spaced-comment  */
 window.__rlah = () => getHash();
 window.__rlah_set = () => setHash();
 window.__rlah_clear = () => clearHash();
 window.__rlah_data = () => RL_APP_DATA_STORAGE;
-/* eslint-enable */
 
 const useJsNextBundle = (function() {
-
-	/* eslint-disable  */
 //	try {
 //
 //		(function() {
@@ -47,10 +44,9 @@ const useJsNextBundle = (function() {
 //		return true;
 //	}
 //	catch (e) {}
-
-    return false;
-	/* eslint-enable */
+	return false;
 }());
+/* eslint-enable */
 
 /**
  * @param {string} id
@@ -89,11 +85,12 @@ function includeLayout()
 {
 	const app = window.document.getElementById('rl-app');
 
-	require('style-loader!Styles/@Boot.css');
+	require('Styles/@Boot.css');
 
 	if (app)
 	{
-		app.innerHTML = require('Html/Layout.html').replace(/[\r\n\t]+/g, '');
+		const layout = require('Html/Layout.html');
+		app.innerHTML = ((layout && layout.default ? layout.default : layout) || '').replace(/[\r\n\t]+/g, '');
 		return true;
 	}
 
@@ -225,7 +222,7 @@ function runApp()
 		p.setOptions({theme: 'rainloop'});
 		p.start().set(5);
 
-		const libs = jassl(appData.StaticLibJsLink).then(() => {
+		const libs = () => jassl(appData.StaticLibJsLink).then(() => {
 			if (window.$)
 			{
 				window.$('#rl-check').remove();
@@ -243,12 +240,14 @@ function runApp()
 			}
 		});
 
-		const common = window.Promise.all([
-			jassl(appData.TemplatesLink),
-			jassl(appData.LangLink)
-		]);
-
-		window.Promise.all([libs, common])
+		libs()
+			.then(() => {
+				p.set(20);
+				return window.Promise.all([
+					jassl(appData.TemplatesLink),
+					jassl(appData.LangLink)
+				]);
+			})
 			.then(() => {
 				p.set(30);
 				return jassl(useJsNextBundle ? appData.StaticAppJsNextLink : appData.StaticAppJsLink);

@@ -36,11 +36,11 @@ fr_FR:
     LABEL_ALLOW_TEMPLATES: "Autoriser les modèles"
     ALERT_WARNING: "ATTENTION !"
     HTML_ALERT_WEAK_PASSWORD: |
-      Vous utilisez le mot de passe administrateur par défaut.
-      <br />
-      Pour des raisons de sécurité, veuillez
-      <strong><a href="#/security">changer le mot de passe </a></strong>
-      dès maintenant.
+        Vous utilisez le mot de passe administrateur par défaut.
+        <br />
+        Pour des raisons de sécurité, veuillez
+        <strong><a href="#/security">changer le mot de passe </a></strong>
+        dès maintenant.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Ecran de connexion"
     LABEL_DEFAULT_DOMAIN: "Domaine par défaut"
@@ -84,18 +84,18 @@ fr_FR:
     ALERT_NOTICE: "Avis !"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "N'utilisez pas ce type de base de données avec un grand nombre d'utilisateurs actifs."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Votre système ne supporte pas les contacts.
-      <br />
-      Vous devez installer ou autoriser l'extension <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> sur votre serveur.
+        Votre système ne supporte pas les contacts.
+        <br />
+        Vous devez installer ou autoriser l'extension <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> sur votre serveur.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domaines"
     BUTTON_ADD_DOMAIN: "Ajouter un domaine"
     BUTTON_ADD_ALIAS: "Ajouter un alias"
     DELETE_ARE_YOU_SURE: "Êtes-vous sûr ?"
     HTML_DOMAINS_HELPER: |
-      Liste des domaines autorisés.
-      <br />
-      Cliquez sur le nom pour configurer le domaine.
+        Liste des domaines autorisés.
+        <br />
+        Cliquez sur le nom pour configurer le domaine.
   TAB_SECURITY:
     LEGEND_SECURITY: "Sécurité"
     LABEL_ALLOW_TWO_STEP: "Autoriser l'authentification en deux étapes"
@@ -154,8 +154,8 @@ fr_FR:
     HTML_ALERT_TOP_1: "La licence RainLoop Webmail appartient à"
     HTML_ALERT_TOP_2: "Vous êtes <b>libre</b> de l'utiliser pour vos projets <b>personnels</b>"
     HTML_ALERT_TOP_3: |
-      L'usage commercial (avec des fonctionnalités supplémentaires) de <b>RainLoop Webmail</b> nécessite une
-      <a href="http://www.rainloop.net/purchase/" target="_blank">souscription</a>.
+        L'usage commercial (avec des fonctionnalités supplémentaires) de <b>RainLoop Webmail</b> nécessite une
+        <a href="http://www.rainloop.net/purchase/" target="_blank">souscription</a>.
     TYPE_PREMIUM_LIFETIME: "A vie"
     LABEL_SUB_EXPIRES: "La souscription expire"
     BUTTON_ACTIVATE: "Activer une clé de souscription pour ce domaine"
@@ -183,11 +183,11 @@ fr_FR:
     ERROR_INVALID_SUBS_KEY: "Clé de souscription invalide"
     SUBS_KEY_ACTIVATED: "Activation de la clé de souscription réussie"
     HTML_DESC: |
-      Après l'activation, la souscription premium pour <b>%DOMAIN%</b> va être prolongée.
-      <br />
-      Notez que la clé de souscription ne peut être activée que pour un seul domaine.
-      <br /><br />
-      Une fois lancé, le processus d'activation ne peut pas être annulé ou abandonné.
+        Après l'activation, la souscription premium pour <b>%DOMAIN%</b> va être prolongée.
+        <br />
+        Notez que la clé de souscription ne peut être activée que pour un seul domaine.
+        <br /><br />
+        Une fois lancé, le processus d'activation ne peut pas être annulé ou abandonné.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Ajouter un alias"
     LABEL_ALIAS: "Alias"
@@ -225,8 +225,8 @@ fr_FR:
     BUTTON_UPDATE: "Modifier"
     NEW_DOMAIN_DESC: "Cette configuration de domaine vous permettra de travailler <br> avec <i>%NAME%</i> dans les adresses électroniques."
     WHITE_LIST_ALERT: |
-      Liste des utilisateurs du domaine auxquels le webmail est autorisé à accéder.
-      Utilisez un espace comme séparateur.
+        Liste des utilisateurs du domaine auxquels le webmail est autorisé à accéder.
+        Utilisez un espace comme séparateur.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Plugin"
     DESC_NOTHING_TO_CONFIGURE: "Rien à configurer"
@@ -314,13 +314,13 @@ fr_FR:
     PHP_VERSION_ERROR_DESC: "Votre version de PHP (% VERSION%) est inférieure au minimum requis 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript est nécessaire pour cette application."
     NO_SCRIPT_DESC: |
-      Le support de JavaScript n'est pas disponible dans votre navigateur.
-      Veuillez activer le support de JavaScript dans les paramètres de votre navigateur et réessayer.
+        Le support de JavaScript n'est pas disponible dans votre navigateur.
+        Veuillez activer le support de JavaScript dans les paramètres de votre navigateur et réessayer.
     NO_COOKIE_TITLE: "Le support des cookies est nécessaire pour cette application."
     NO_COOKIE_DESC: |
-      Le support des cookies n'est pas disponible dans votre navigateur.
-      Veuillez activer le support des cookies dans les paramètres de votre navigateur et réessayer.
+        Le support des cookies n'est pas disponible dans votre navigateur.
+        Veuillez activer le support des cookies dans les paramètres de votre navigateur et réessayer.
     BAD_BROWSER_TITLE: "Votre navigateur n'est pas à jour."
     BAD_BROWSER_DESC: |
-      Pour utiliser toutes les fonctionnalités de l'application,
-      téléchargez et installez l'un de ces navigateurs :
+        Pour utiliser toutes les fonctionnalités de l'application,
+        téléchargez et installez l'un de ces navigateurs :

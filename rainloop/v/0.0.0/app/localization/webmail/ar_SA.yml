@@ -149,7 +149,7 @@ ar_SA:
   READ_RECEIPT:
     SUBJECT: "إعلام بالقراءة (تم عرضها) - %SUBJECT%"
     BODY: |-
-      هذا إعلام بأن الرسالة المرسلة  قد تمت قرائتها %READ-RECEIPT%.
+        هذا إعلام بأن الرسالة المرسلة  قد تمت قرائتها %READ-RECEIPT%.
   SUGGESTIONS:
     SEARCHING_DESC: "يتم البحث..."
   CONTACTS:
@@ -356,15 +356,15 @@ ar_SA:
     BUTTON_CANCEL: "إلغاء"
     BUTTON_CLOSE: "إغلاق"
     NOTIFICATION_SENT: |
-      You haven't selected "Sent" system folder messages are put to after sending.
-      If you don't want to save sent message, please select "Do not use" option.
+        You haven't selected "Sent" system folder messages are put to after sending.
+        If you don't want to save sent message, please select "Do not use" option.
     NOTIFICATION_DRAFTS: "You haven't selected \"Drafts\" system folder messages are saved to while composing.\n"
     NOTIFICATION_SPAM: |
-      You haven't selected "Spam" system folder spamed messages are placed to.
-      If you wish to remove messages permanently, please select "Do not use" option.
+        You haven't selected "Spam" system folder spamed messages are placed to.
+        If you wish to remove messages permanently, please select "Do not use" option.
     NOTIFICATION_TRASH: |
-      You haven't selected "Trash" system folder deleted messages are placed to.
-      If you wish to remove messages permanently, please select "Do not use" option.
+        You haven't selected "Trash" system folder deleted messages are placed to.
+        If you wish to remove messages permanently, please select "Do not use" option.
     NOTIFICATION_ARCHIVE: "You haven't selected \"Archive\" system folder achived messages are placed to.\n"
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "التحقق الثنائي (TOTP)"
@@ -685,11 +685,11 @@ ar_SA:
     PHP_VERSION_ERROR_DESC: "أقل من الإصدار المطلوب 5.3.0!(%VERSION%)  PHP إصدار"
     NO_SCRIPT_TITLE: "الجافا سكريبت مطلوبة لهذا البرنامج"
     NO_SCRIPT_DESC: |-
-      إن متصفحك لايدعم الجافا سكريبت . يرجى تفعيل  الدعم أو تجريب متصفح أخر
+        إن متصفحك لايدعم الجافا سكريبت . يرجى تفعيل  الدعم أو تجريب متصفح أخر
     NO_COOKIE_TITLE: "Cookies support is required for this application."
     NO_COOKIE_DESC: |
-      Cookies support is not available in your browser.
-      Please enable Cookie support in your browser settings and retry.
+        Cookies support is not available in your browser.
+        Please enable Cookie support in your browser settings and retry.
     BAD_BROWSER_TITLE: "متصفحك بحاجة الى تحديث"
     BAD_BROWSER_DESC: |-
-      لإصتخدام جميع ميزات هذا البرنامج يرجى تنزيل أحد المتصفحات التالية الداعمة:
+        لإصتخدام جميع ميزات هذا البرنامج يرجى تنزيل أحد المتصفحات التالية الداعمة:

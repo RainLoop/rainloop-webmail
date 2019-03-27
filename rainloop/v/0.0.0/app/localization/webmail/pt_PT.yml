@@ -149,10 +149,10 @@ pt_PT:
   READ_RECEIPT:
     SUBJECT: "Recibo de leitura (apresentado) - %SUBJECT%"
     BODY: |
-      Este é um comprovativo de leitura para o e-mail que você enviou para %READ-RECEIPT%.
+        Este é um comprovativo de leitura para o e-mail que você enviou para %READ-RECEIPT%.
 
-      Nota: Este comprovativo apenas confirma que a mensagem foi apresentada no computador do destinatário.
-      Não existe nenhuma garantia de que o destinatário tenha lido ou compreendido o conteúdo da mensagem.
+        Nota: Este comprovativo apenas confirma que a mensagem foi apresentada no computador do destinatário.
+        Não existe nenhuma garantia de que o destinatário tenha lido ou compreendido o conteúdo da mensagem.
   SUGGESTIONS:
     SEARCHING_DESC: "A procurar..."
   CONTACTS:
@@ -359,15 +359,15 @@ pt_PT:
     BUTTON_CANCEL: "Cancelar"
     BUTTON_CLOSE: "Fechar"
     NOTIFICATION_SENT: |
-      Você não selecionou a pasta "Sent" de sistema, onde as mensagens enviadas são colocadas.
-      Se você não quiser salvar as mensagens enviadas, por favor selecione a opção "Do not use".
+        Você não selecionou a pasta "Sent" de sistema, onde as mensagens enviadas são colocadas.
+        Se você não quiser salvar as mensagens enviadas, por favor selecione a opção "Do not use".
     NOTIFICATION_DRAFTS: "Você não selecionou a pasta \"Drafts\" de sistema, onde as mensagens são guardadas enquanto são escritas."
     NOTIFICATION_SPAM: |
-      Você não selecionou a pasta "Spam" de sistema, onde as mensagens de spam são colocadas.
-      Se você deseja remover as mensagens definitivamente, por favor selecione a opção "Do not use".
+        Você não selecionou a pasta "Spam" de sistema, onde as mensagens de spam são colocadas.
+        Se você deseja remover as mensagens definitivamente, por favor selecione a opção "Do not use".
     NOTIFICATION_TRASH: |
-      Você não selecionou a pasta "Trash" de sistema, onde as mensagens eliminadas são colocadas.
-      Se você deseja remover as mensagens definitivamente, por favor selecione a opção "Do not use".
+        Você não selecionou a pasta "Trash" de sistema, onde as mensagens eliminadas são colocadas.
+        Se você deseja remover as mensagens definitivamente, por favor selecione a opção "Do not use".
     NOTIFICATION_ARCHIVE: "Você não selecionou a pasta \"Archive\" de sistema, onde as mensagens arquivadas são colocadas."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Verificação em 2-Etapas"
@@ -692,13 +692,13 @@ pt_PT:
     PHP_VERSION_ERROR_DESC: "A sua versão do PHP (%VERSION%) é menor do que a mínima exigida: 5.3.0!"
     NO_SCRIPT_TITLE: "É necessário JavaScript para esta aplicação."
     NO_SCRIPT_DESC: |
-      O suporte de JavaScript não está disponível no seu navegador.
-      Por favor ative o suporte de JavaScript nas definições do seu navegador e tente novamente.
+        O suporte de JavaScript não está disponível no seu navegador.
+        Por favor ative o suporte de JavaScript nas definições do seu navegador e tente novamente.
     NO_COOKIE_TITLE: "É necessário suporte de cookies para esta aplicação."
     NO_COOKIE_DESC: |
-      O suport de Cookies não está disponível no seu navegador.
-      Por favor ative o suporte de Cookies nas definições do seu navegador e tente novamente.
+        O suport de Cookies não está disponível no seu navegador.
+        Por favor ative o suporte de Cookies nas definições do seu navegador e tente novamente.
     BAD_BROWSER_TITLE: "O seu navegador está desatualizado."
     BAD_BROWSER_DESC: |
-      Para usar todas as funções da aplicação,
-      transfira e instale um destes navegadores:
+        Para usar todas as funções da aplicação,
+        transfira e instale um destes navegadores:

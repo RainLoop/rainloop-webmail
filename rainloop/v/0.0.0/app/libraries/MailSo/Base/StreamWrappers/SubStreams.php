@@ -67,7 +67,10 @@ class SubStreams
 
 		$sHashName = \MailSo\Base\Utils::Md5Rand();
 
-		self::$aStreams[$sHashName] = $aSubStreams;
+		self::$aStreams[$sHashName] = array_map(function($mItem) {
+			return \is_resource($mItem) ? $mItem :
+				\MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($mItem);
+		}, $aSubStreams);
 
 		\MailSo\Base\Loader::IncStatistic('CreateStream/SubStreams');
 
@@ -180,26 +183,6 @@ class SubStreams
 						{
 							$this->iIndex++;
 						}
-					}
-					else if (\is_string($mCurrentPart))
-					{
-						$sReadResult = \substr($mCurrentPart, 0, $iCount);
-
-						$sReturn .= $sReadResult;
-
-						$iLen = \strlen($sReadResult);
-						if ($iCount < $iLen)
-						{
-							$this->sBuffer = \substr($sReturn, $iCount);
-							$sReturn = \substr($sReturn, 0, $iCount);
-							$iCount = 0;
-						}
-						else
-						{
-							$iCount -= $iLen;
-						}
-
-						$this->iIndex++;
 					}
 				}
 			}

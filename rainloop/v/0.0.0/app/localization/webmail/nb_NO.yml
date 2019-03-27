@@ -151,14 +151,15 @@ nb_NO:
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP-kryptert melding (trykk for å dekryptere)"
     LINK_DOWNLOAD_AS_ZIP: "Last ned som zip-fil"
     LINK_SAVE_TO_OWNCLOUD: "Lage i Owncloud"
+    LINK_SAVE_TO_CLOUD: "Lagre på nett"
     LINK_SAVE_TO_DROPBOX: "Lagre i Dropbox"
   READ_RECEIPT:
     SUBJECT: "Lesebekreftelse (meldinga er lest) - %SUBJECT%"
     BODY: |
-      Dette er en lesebekreftelse på e-postmeldinga du sendte til %READ-RECEIPT%.
+        Dette er en lesebekreftelse på e-postmeldinga du sendte til %READ-RECEIPT%.
 
-      Merk: Denne bekreftelsen bekrefter bare at meldinga ble åpnet på mottakerens datamaskin,
-      og er ingen garanti for at mottakeren har lest, forstått eller er enig i innholdet.
+        Merk: Denne bekreftelsen bekrefter bare at meldinga ble åpnet på mottakerens datamaskin,
+        og er ingen garanti for at mottakeren har lest, forstått eller er enig i innholdet.
   SUGGESTIONS:
     SEARCHING_DESC: "Søker …"
   CONTACTS:
@@ -365,15 +366,15 @@ nb_NO:
     BUTTON_CANCEL: "Avbryt"
     BUTTON_CLOSE: "Lukk"
     NOTIFICATION_SENT: |
-      Du har ikke valgt «Sendt» som mappe for sendte meldinger.
-      Velg «Ikke bruk» hvis du ikke vil lagre sendte meldinger.
+        Du har ikke valgt «Sendt» som mappe for sendte meldinger.
+        Velg «Ikke bruk» hvis du ikke vil lagre sendte meldinger.
     NOTIFICATION_DRAFTS: "Du har ikke valgt «Kladd» som mappe hvor meldinger lagres mens du skriver."
     NOTIFICATION_SPAM: |
-      Du har ikke valgt «Søppelpost» som mappe for søppelpost.
-      Velg «Ikke bruk» hvis du vil slette slike meldinger for godt.
+        Du har ikke valgt «Søppelpost» som mappe for søppelpost.
+        Velg «Ikke bruk» hvis du vil slette slike meldinger for godt.
     NOTIFICATION_TRASH: |
-      Du har ikke valgt «Papirkurv» som mappe for slettede meldinger.
-      Velg «Ikke bruk» hvis du vil slette slike meldinger for godt.
+        Du har ikke valgt «Papirkurv» som mappe for slettede meldinger.
+        Velg «Ikke bruk» hvis du vil slette slike meldinger for godt.
     NOTIFICATION_ARCHIVE: "Du har ikke valgt «Arkiv» som mappe for arkiverte meldinger."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "To-stegsbekreftelse"
@@ -580,6 +581,7 @@ nb_NO:
     TITLE_PUBLIC: "Offentlig"
     DELETING_ASK: "Er du sikker?"
     GENERATE_ONLY_HTTPS: "Kun HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Lagre utkast automatisk"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Tastatursnarveier"
     TAB_MAILBOX: "Innboks"
@@ -671,7 +673,7 @@ nb_NO:
     CANT_CREATE_FOLDER: "Klarte ikke å lage mappe"
     CANT_RENAME_FOLDER: "Klarte ikke å endre navn på mappe"
     CANT_DELETE_FOLDER: "Klarte ikke å slette mappe"
-    CANT_DELETE_NON_EMPTY_FOLDER: "Klarte ikke å slette mappe med innhold"
+    CANT_DELETE_NON_EMPTY_FOLDER: "Du må slette mappeinnholdet før du kan slette mappa"
     CANT_SUBSCRIBE_FOLDER: "Klarte ikke å abonnere på mappe"
     CANT_UNSUBSCRIBE_FOLDER: "Klarte ikke å avslutte abonnement"
     CANT_SAVE_SETTINGS: "Klarte ikke å lagre innstillinger"
@@ -698,13 +700,13 @@ nb_NO:
     PHP_VERSION_ERROR_DESC: "PHP-installasjonen din (%VERSION%) er eldre enn versjon 5.3.0"
     NO_SCRIPT_TITLE: "Dette programmet krever Javascript."
     NO_SCRIPT_DESC: |
-      Nettleseren din støtter ikke Javascript.
-      Slå på Javascript-støtte i nettleserens innstillinger, og prøv på nytt.
+        Nettleseren din støtter ikke Javascript.
+        Slå på Javascript-støtte i nettleserens innstillinger, og prøv på nytt.
     NO_COOKIE_TITLE: "Dette programmet krever støtte for informasjonskapsler («cookies»)."
     NO_COOKIE_DESC: |
-      Nettleseren din støtter ikke bruk av informasjonskapsler («cookies»).
-      Slå på cookie-støtte i nettleserens innstillinger, og prøv på nytt.
+        Nettleseren din støtter ikke bruk av informasjonskapsler («cookies»).
+        Slå på cookie-støtte i nettleserens innstillinger, og prøv på nytt.
     BAD_BROWSER_TITLE: "Nettleseren din er utdatert."
     BAD_BROWSER_DESC: |
-      Hvis du vil bruke alle funksjonene i programmet,
-      må du laste ned og installere en av disse nettleserne:
+        Hvis du vil bruke alle funksjonene i programmet,
+        må du laste ned og installere en av disse nettleserne:

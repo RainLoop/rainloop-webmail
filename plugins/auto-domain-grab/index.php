@@ -12,6 +12,10 @@
 
 class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	
+	private $imap_prefix = "mail.";
+	private $smtp_prefix = "mail.";
+	
 	public function Init()
 	{
 		$this->addHook('filter.smtp-credentials', 'FilterSmtpCredentials');
@@ -19,7 +23,7 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	/**
-	 * This function detects the IMAP Host, and if it is set to "auto", replaces it with the email domain.
+	 * This function detects the IMAP Host, and if it is set to "auto", replaces it with the MX or email domain.
 	 *
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aImapCredentials
@@ -31,13 +35,22 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 			// Check for mail.$DOMAIN as entered value in RL settings
 			if (!empty($aImapCredentials['Host']) && 'auto' === $aImapCredentials['Host'])
 			{
-				$aImapCredentials['Host'] = \MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email());
+				$domain = substr(strrchr($oAccount->Email(), "@"), 1);
+				$mxhosts = array();
+				if(getmxrr($domain, $mxhosts) && sizeof($mxhosts) > 0)
+				{
+					$aImapCredentials['Host'] = $mxhosts[0];
+				}
+				else 
+				{
+					$aImapCredentials['Host'] = $this->imap_prefix.$domain;
+				}
 			}
 		}
 	}
 
 	/**
-	 * This function detects the SMTP Host, and if it is set to "auto", replaces it with the email domain.
+	 * This function detects the SMTP Host, and if it is set to "auto", replaces it with the MX or email domain.
 	 *
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aSmtpCredentials
@@ -49,7 +62,16 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 			// Check for mail.$DOMAIN as entered value in RL settings
 			if (!empty($aSmtpCredentials['Host']) && 'auto' === $aSmtpCredentials['Host'])
 			{
-				$aSmtpCredentials['Host'] = \MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email());
+				$domain = substr(strrchr($oAccount->Email(), "@"), 1);
+				$mxhosts = array();
+				if(getmxrr($domain, $mxhosts) && sizeof($mxhosts) > 0)
+				{
+					$aSmtpCredentials['Host'] = $mxhosts[0];
+				} 
+				else 
+				{
+					$aSmtpCredentials['Host'] = $this->smtp_prefix.$domain;
+				}
 			}
 		}
 	}

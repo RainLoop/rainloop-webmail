@@ -6,8 +6,14 @@ yarn upgrade xxx@1.2.3
 # transifex
 tx pull -a
 
-# dependencies checker (checking only)
+# dependencies 
 yarn outdated
+yarn upgrade-interactive --exact --latest
 
 # webpack
 webpack --color --watch
+
+#
+gpg --import x
+gpg --detach-sign --armor --openpgp -u 87DA4591 x
+for ff in `ls *.zip`; do gpg --detach-sign --armor --openpgp -u 87DA4591 $ff; done

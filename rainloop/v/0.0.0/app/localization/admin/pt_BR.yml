@@ -34,13 +34,14 @@ pt_BR:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Permitir contas adicionais"
     LABEL_ALLOW_IDENTITIES: "Permitir identidades multiplas"
     LABEL_ALLOW_TEMPLATES: "Permitir templates"
+    ALERT_DATA_ACCESS: "A pasta de dados RainLoop está acessível. Por favor configure o seu servidor web para esconder a pasta de dados do acesso externo. Leia mais aqui:"
     ALERT_WARNING: "Aviso!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Você está usando a senha administrativa padrão.
-      <br />
-      Por motivo de segurança por favor
-      <strong><a href="#/security">troque a senha</a></strong>
-      agora.
+        Você está usando a senha administrativa padrão.
+        <br />
+        Por motivo de segurança por favor
+        <strong><a href="#/security">troque a senha</a></strong>
+        agora.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Tela de entrada"
     LABEL_DEFAULT_DOMAIN: "Domínio padrão"
@@ -84,18 +85,18 @@ pt_BR:
     ALERT_NOTICE: "Aviso!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Não use este tipo de banco de dados com um grande número de usuários ativos."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      O seu sistema não suporta o uso dos contatos.
-      <br />
-      Você precisa instalar ou habilitar a extensão <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> em seu servidor.
+        O seu sistema não suporta o uso dos contatos.
+        <br />
+        Você precisa instalar ou habilitar a extensão <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> em seu servidor.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domínios"
     BUTTON_ADD_DOMAIN: "Adicionar Domínio"
     BUTTON_ADD_ALIAS: "Adicionar apelido (Alias)"
     DELETE_ARE_YOU_SURE: "Você tem certeza?"
     HTML_DOMAINS_HELPER: |
-      Lista dos domínios com acesso permitido ao webmail.
-      <br />
-      Clique no domínio para configurá-lo.
+        Lista dos domínios com acesso permitido ao webmail.
+        <br />
+        Clique no domínio para configurá-lo.
   TAB_SECURITY:
     LEGEND_SECURITY: "Segurança"
     LABEL_ALLOW_TWO_STEP: "Permitir verificação em duas etapas (Login 2-Step)"
@@ -154,8 +155,8 @@ pt_BR:
     HTML_ALERT_TOP_1: "RainLoop Webmail é licenciado sob"
     HTML_ALERT_TOP_2: "Você é <b>livre</b> para usá-lo em seus projetos <b>pessoais</b>."
     HTML_ALERT_TOP_3: |
-      Uso comercial (com recursos adicionais) do <b>RainLoop Webmail</b>
-      requer uma <a href="http://www.rainloop.net/purchase/" target="_blank">assinatura</a>.
+        Uso comercial (com recursos adicionais) do <b>RainLoop Webmail</b>
+        requer uma <a href="http://www.rainloop.net/purchase/" target="_blank">assinatura</a>.
     TYPE_PREMIUM_LIFETIME: "Lifetime"
     LABEL_SUB_EXPIRES: "A assinatura expira em"
     BUTTON_ACTIVATE: "Ative a chave de assinatura para este domínio"
@@ -183,11 +184,11 @@ pt_BR:
     ERROR_INVALID_SUBS_KEY: "Chave de assinatura inválida"
     SUBS_KEY_ACTIVATED: "Chave de assinatura ativada com sucesso"
     HTML_DESC: |
-      Após a ativação, a assinatura premium para <b>%DOMAIN%</b> será extendida.
-      <br />
-      Note que chave de assinatura é ativada apenas para um único domínio.
-      <br /><br />
-      Uma vez iniciado, o processo de ativação não poderá ser interrompido ou cancelado.
+        Após a ativação, a assinatura premium para <b>%DOMAIN%</b> será extendida.
+        <br />
+        Note que chave de assinatura é ativada apenas para um único domínio.
+        <br /><br />
+        Uma vez iniciado, o processo de ativação não poderá ser interrompido ou cancelado.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Adicionar apelido (Alias)"
     LABEL_ALIAS: "Apelido (Alias)"
@@ -225,8 +226,8 @@ pt_BR:
     BUTTON_UPDATE: "Atualizar"
     NEW_DOMAIN_DESC: "Esta configuração de domínio lhe permitirá trabalhar <br /> com endereços de e-mail do <i>%NAME%</i>."
     WHITE_LIST_ALERT: |
-      Filtrar com lista dos únicos usuários do domínio que terão acesso ao webmail.
-      Use um espaço como delimitador.
+        Filtrar com lista dos únicos usuários do domínio que terão acesso ao webmail.
+        Use um espaço como delimitador.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Plugin"
     DESC_NOTHING_TO_CONFIGURE: "Nada para configurar"
@@ -311,13 +312,13 @@ pt_BR:
     PHP_VERSION_ERROR_DESC: "Sua versão PHP (%VERSION%) é menor do que o mínimo exigido 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript é necessário para esta aplicação."
     NO_SCRIPT_DESC: |
-      O JavaScript não está disponível em seu navegador.
-      Por favor ative o suporte a JavaScript nas configurações do seu navegador e tente novamente.
+        O JavaScript não está disponível em seu navegador.
+        Por favor ative o suporte a JavaScript nas configurações do seu navegador e tente novamente.
     NO_COOKIE_TITLE: "É necessário suporte a cookies para esta aplicação."
     NO_COOKIE_DESC: |
-      Os Cookies não estão disponíveis em seu navegador.
-      Por favor ative o suporte a Cookies nas configurações do seu navegador e tente novamente.
+        Os Cookies não estão disponíveis em seu navegador.
+        Por favor ative o suporte a Cookies nas configurações do seu navegador e tente novamente.
     BAD_BROWSER_TITLE: "Seu navegador está desatualizado."
     BAD_BROWSER_DESC: |
-      Para usar todos os recursos do aplicativo,
-      baixe e instale um desses navegadores:
+        Para usar todos os recursos do aplicativo,
+        baixe e instale um desses navegadores:

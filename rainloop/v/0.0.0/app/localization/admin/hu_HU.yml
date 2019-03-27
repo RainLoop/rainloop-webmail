@@ -34,13 +34,14 @@ hu_HU:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "További fiókok engedélyezése"
     LABEL_ALLOW_IDENTITIES: "Több identitás engedélyezése"
     LABEL_ALLOW_TEMPLATES: "Sablonok engedélyezése"
+    ALERT_DATA_ACCESS: "A RainLoop adatmappája hozzáférhető. Kérlek állítsd be úgy a webszervert, hogy az adatmappát rejtse el a külső hozzáférés elől. További tudnivalók itt:"
     ALERT_WARNING: "Figyelmeztetés!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Az alapértelmezett admin jelszót használod
-      <br />
-      Biztonsági okokból kérlek
-      <strong><a href="#/security">változtasd meg</a></strong>
-      a jelszót valami másra!
+        Az alapértelmezett admin jelszót használod
+        <br />
+        Biztonsági okokból kérlek
+        <strong><a href="#/security">változtasd meg</a></strong>
+        a jelszót valami másra!
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Bejelentkező képernyő"
     LABEL_DEFAULT_DOMAIN: "Alapértelmezett domain"
@@ -84,18 +85,18 @@ hu_HU:
     ALERT_NOTICE: "Megjegyzés!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Ne használd ezt az adatbázis típust nagy számú aktív felhasználóval."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      A rendszer nem támogatja a címtárat.
-      <br />
-      Telepítened vagy engedélyezned kell egy <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> kiterjesztést a szervereden.
+        A rendszer nem támogatja a címtárat.
+        <br />
+        Telepítened vagy engedélyezned kell egy <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> kiterjesztést a szervereden.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domainek"
     BUTTON_ADD_DOMAIN: "Domain hozzáadás"
     BUTTON_ADD_ALIAS: "Álnév hozzáadás"
     DELETE_ARE_YOU_SURE: "Biztos vagy benne?"
     HTML_DOMAINS_HELPER: |
-      Hozzáféréshez engedélyezett domainek listája:
-      <br />
-      A domain beállításához kattints a névre.
+        Hozzáféréshez engedélyezett domainek listája:
+        <br />
+        A domain beállításához kattints a névre.
   TAB_SECURITY:
     LEGEND_SECURITY: "Biztonság"
     LABEL_ALLOW_TWO_STEP: "2 lépcsős hitelesítés engedélyezése"
@@ -154,7 +155,7 @@ hu_HU:
     HTML_ALERT_TOP_1: "RainLoop Webmail licence:"
     HTML_ALERT_TOP_2: "<strong>Szabadon</strong> felhasználható a <strong>személyes</strong> projektjeidhez."
     HTML_ALERT_TOP_3: |
-      A <b>RainLoop Webmail</b> kereskedelmi használatához (további funkciókkal) <a href="http://www.rainloop.net/purchase/" target="_blank">előfizetés</a> szükséges.
+        A <b>RainLoop Webmail</b> kereskedelmi használatához (további funkciókkal) <a href="http://www.rainloop.net/purchase/" target="_blank">előfizetés</a> szükséges.
     TYPE_PREMIUM_LIFETIME: "Örökös"
     LABEL_SUB_EXPIRES: "Előfizetés lejár"
     BUTTON_ACTIVATE: "Előfizetési kulcs aktiválása ehhez a domainhez"
@@ -182,11 +183,11 @@ hu_HU:
     ERROR_INVALID_SUBS_KEY: "Érvénytelen előfizetési kulcs"
     SUBS_KEY_ACTIVATED: "Előfizetési kulcs sikeresen aktiválva"
     HTML_DESC: |
-      Aktiválás után a <b>%DOMAIN%</b> prémium előfizetése meg lesz hosszabbítva.
-      <br />
-      Egy előfizetési kulcs csak egy domainhez aktiválható.
-      <br /><br />
-      Miután elindult, az aktiválási folyamat nem szakítható meg vagy vonható vissza.
+        Aktiválás után a <b>%DOMAIN%</b> prémium előfizetése meg lesz hosszabbítva.
+        <br />
+        Egy előfizetési kulcs csak egy domainhez aktiválható.
+        <br /><br />
+        Miután elindult, az aktiválási folyamat nem szakítható meg vagy vonható vissza.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Álnév hozzáadás"
     LABEL_ALIAS: "Álnév"
@@ -224,8 +225,8 @@ hu_HU:
     BUTTON_UPDATE: "Frissítés"
     NEW_DOMAIN_DESC: "Ez a domain konfiguráció lehetővé teszi <br />a <i>%NAME%</i> email címek használatát."
     WHITE_LIST_ALERT: |
-      Hozzáféréshez engedélyezett domainek listája.
-      Elválasztáshoz használd a szóközt.
+        Hozzáféréshez engedélyezett domainek listája.
+        Elválasztáshoz használd a szóközt.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Beépülő"
     DESC_NOTHING_TO_CONFIGURE: "Nincs mit beállítani"
@@ -310,13 +311,13 @@ hu_HU:
     PHP_VERSION_ERROR_DESC: "A PHP verziód (%VERSION%) kisebb mint a minimálisan szükséges 5.3.0!"
     NO_SCRIPT_TITLE: "Az alkalmazáshoz JavaScript szükséges."
     NO_SCRIPT_DESC: |
-      A JavaScript támogatás nem érhető el a böngésződben.
-      Kérlek engedélyezd böngésződben a JavaScript támogatást, majd próbáld újra.
+        A JavaScript támogatás nem érhető el a böngésződben.
+        Kérlek engedélyezd böngésződben a JavaScript támogatást, majd próbáld újra.
     NO_COOKIE_TITLE: "Az alkalmazáshoz Cookie támogatásra van szükség."
     NO_COOKIE_DESC: |
-      A Cookie támogatás nem érhető el a böngésződben.
-      Kérlek engedélyezd böngésződben a Cookie támogatást, majd próbáld újra.
+        A Cookie támogatás nem érhető el a böngésződben.
+        Kérlek engedélyezd böngésződben a Cookie támogatást, majd próbáld újra.
     BAD_BROWSER_TITLE: "A böngésződ elavult."
     BAD_BROWSER_DESC: |
-      Az alkalmazás összes funkciójának használatához
-      tölts le és telepítsd az alábbi böngészők egyikét:
+        Az alkalmazás összes funkciójának használatához
+        tölts le és telepítsd az alábbi böngészők egyikét:

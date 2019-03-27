@@ -11,7 +11,7 @@ module.exports = {
 		'commonjs': true,
 		'es6': true
 	},
-	'plugins': ['compat'],
+	// 'plugins': ['compat'],
 	'globals': {
 		'RL_COMMUNITY': true,
 		'RL_ES6': true
@@ -20,11 +20,11 @@ module.exports = {
 	// http://eslint.org/docs/rules/
 	'rules': {
 		// plugins
-		'compat/compat': 2,
+		// 'compat/compat': 2,
 
 		// errors
 		'no-cond-assign': [2, 'always'],
-		'no-console': 2,
+		'no-console': 0,
 		'no-constant-condition': 2,
 		'no-control-regex': 2,
 		'no-debugger': 2,

@@ -14,7 +14,7 @@ class LdapChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if (!\function_exists('ldap_connect'))
 		{
-			return 'The LDAP PHP exention must be installed to use this plugin';
+			return 'The LDAP PHP extension must be installed to use this plugin';
 		}
 
 		return '';
@@ -64,7 +64,7 @@ class LdapChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDefaultValue(389),
 			\RainLoop\Plugins\Property::NewInstance('user_dn_format')->SetLabel('User DN format')
-				->SetDescription('LDAP user dn format. Supported tokens: {email}, {email:user}, {email:domain}, {login}, {domain}, {domain:dc}, {imap:login}, {imap:host}, {imap:port}')
+				->SetDescription('LDAP user dn format. Supported tokens: {email}, {email:user}, {email:domain}, {login}, {domain}, {domain:dc}, {imap:login}, {imap:host}, {imap:port}, {gecos}')
 				->SetDefaultValue('uid={imap:login},ou=Users,{domain:dc}'),
 			\RainLoop\Plugins\Property::NewInstance('password_field')->SetLabel('Password field')
 				->SetDefaultValue('userPassword'),

@@ -155,10 +155,10 @@ nl_NL:
   READ_RECEIPT:
     SUBJECT: "Ontvangstbevestiging (weergegeven) - %SUBJECT%"
     BODY: |
-      Dit is een bevestiging dat uw bericht aan %READ-RECEIPT% is ontvangen.
+        Dit is een bevestiging dat uw bericht aan %READ-RECEIPT% is ontvangen.
 
-      Let op: Deze ontvangstbevestiging bevestigd slechts dat uw bericht was weergegeven op het scherm van de ontvanger.
-      Er is geen enkele garantie dat uw bericht is gelezen of begrepen.
+        Let op: Deze ontvangstbevestiging bevestigd slechts dat uw bericht was weergegeven op het scherm van de ontvanger.
+        Er is geen enkele garantie dat uw bericht is gelezen of begrepen.
   SUGGESTIONS:
     SEARCHING_DESC: "Zoeken..."
   CONTACTS:
@@ -365,15 +365,15 @@ nl_NL:
     BUTTON_CANCEL: "Annuleer"
     BUTTON_CLOSE: "Sluiten"
     NOTIFICATION_SENT: |
-      U heeft nog geen "Verzonden items" folder aangeduid waar de berichten geplaatst worden na het versturen.
-      Indien u geen verzonden berichten wilt bewaren, kies de "Niet gebruiken" optie.
+        U heeft nog geen "Verzonden items" folder aangeduid waar de berichten geplaatst worden na het versturen.
+        Indien u geen verzonden berichten wilt bewaren, kies de "Niet gebruiken" optie.
     NOTIFICATION_DRAFTS: "U heeft nog geen \"Concepten\" folder aangeduid waar de berichten bewaard worden tijdens het opstellen."
     NOTIFICATION_SPAM: |
-      U heeft nog geen "Ongewenste e-mail" folder aangeduid waar de spam berichten geplaatst worden.
-      Indien u berichten permanent wilt verwijderen, kies de "Niet gebruiken" optie.
+        U heeft nog geen "Ongewenste e-mail" folder aangeduid waar de spam berichten geplaatst worden.
+        Indien u berichten permanent wilt verwijderen, kies de "Niet gebruiken" optie.
     NOTIFICATION_TRASH: |
-      U heeft nog geen "Verwijderde items" folder aangeduid waar de verwijderde berichten geplaatst worden.
-      Indien u berichten permanent wilt verwijderen, kies de "Niet gebruiken" optie.
+        U heeft nog geen "Verwijderde items" folder aangeduid waar de verwijderde berichten geplaatst worden.
+        Indien u berichten permanent wilt verwijderen, kies de "Niet gebruiken" optie.
     NOTIFICATION_ARCHIVE: "U heeft nog geen \"Archief\" map aangeduid waar de gearchiveerde berichten geplaatst worden."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-Stap verificatie"
@@ -702,13 +702,13 @@ nl_NL:
     PHP_VERSION_ERROR_DESC: "Uw PHP versie (%VERSION%) is lager dan de minimaal vereiste 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript is benodigd voor deze applicatie"
     NO_SCRIPT_DESC: |
-      JavaScript ondersteuning is niet beschikbaar in uw browser.
-      Gelieve Javascript in te schakelen en opnieuw te proberen.
+        JavaScript ondersteuning is niet beschikbaar in uw browser.
+        Gelieve Javascript in te schakelen en opnieuw te proberen.
     NO_COOKIE_TITLE: "Cookies ondersteuning is nodig voor deze applicatie"
     NO_COOKIE_DESC: |
-      Cookies ondersteuning is niet beschikbaar in uw browser.
-      Gelieve Cookies in te schakelen en opnieuw te proberen.
+        Cookies ondersteuning is niet beschikbaar in uw browser.
+        Gelieve Cookies in te schakelen en opnieuw te proberen.
     BAD_BROWSER_TITLE: "Uw browser is verouderd"
     BAD_BROWSER_DESC: |
-      Om alle functies van deze applicatie te gebruiken,
-      download en installeer een van de volgende browsers:
+        Om alle functies van deze applicatie te gebruiken,
+        download en installeer een van de volgende browsers:

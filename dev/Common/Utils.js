@@ -255,6 +255,14 @@ const timeOutActionSecond = (function() {
 export {timeOutAction, timeOutActionSecond};
 
 /**
+ * @param {any} m
+ * @returns {any}
+ */
+export function deModule(m) {
+	return (m && m.default ? m.default : m) || '';
+}
+
+/**
  * @returns {boolean}
  */
 export function inFocus()
@@ -629,7 +637,7 @@ export function previewMessage({title, subject, date, fromCreds, toCreds, toLabe
 
 	const html = bodyClone ? bodyClone.html() : '';
 
-	doc.write(require('Html/PreviewMessage.html')
+	doc.write(deModule(require('Html/PreviewMessage.html'))
 		.replace('{{title}}', encodeHtml(title))
 		.replace('{{subject}}', encodeHtml(subject))
 		.replace('{{date}}', encodeHtml(date))
@@ -736,7 +744,6 @@ export function settingsSaveHelperSubscribeFunction(remote, settingName, type, f
  */
 export function findEmailAndLinks(html)
 {
-//	return html;
 	return Autolinker ? Autolinker.link(html, {
 		newWindow: true,
 		stripPrefix: false,
@@ -1456,6 +1463,15 @@ export function mimeContentType(fileName)
 }
 
 /**
+ * @param {string} color
+ * @returns {boolean}
+ */
+export function isTransparent(color)
+{
+	return 'rgba(0, 0, 0, 0)' === color || 'transparent' === color;
+}
+
+/**
  * @param {Object} $el
  * @returns {number}
  */
@@ -1508,14 +1524,14 @@ export function resizeAndCrop(url, value, fCallback)
 
 /**
  * @param {string} mailToUrl
- * @param {Function} PopupComposeVoreModel
+ * @param {Function} PopupComposeViewModel
  * @returns {boolean}
  */
-export function mailToHelper(mailToUrl, PopupComposeVoreModel)
+export function mailToHelper(mailToUrl, PopupComposeViewModel)
 {
 	if (mailToUrl && 'mailto:' === mailToUrl.toString().substr(0, 7).toLowerCase())
 	{
-		if (!PopupComposeVoreModel)
+		if (!PopupComposeViewModel)
 		{
 			return true;
 		}
@@ -1531,28 +1547,47 @@ export function mailToHelper(mailToUrl, PopupComposeVoreModel)
 		const
 			email = mailToUrl.replace(/\?.+$/, ''),
 			query = mailToUrl.replace(/^[^\?]*\?/, ''),
-			EmailModel = require('Model/Email').default,
-			emailObj = new EmailModel(),
-			fParseEmailLine = (line) => (line ? _.compact(_.map(decodeURIComponent(line).split(/[,]/), (item) => {
-				emailObj.clear();
-				emailObj.mailsoParse(item);
-				return '' !== emailObj.email ? emailObj : null;
-			})) : null);
+			EmailModel = require('Model/Email').default;
 
-		to = fParseEmailLine(email);
 		params = simpleQueryParser(query);
+
+		if (!isUnd(params.to))
+		{
+			to = EmailModel.parseEmailLine(decodeURIComponent(email + ',' + params.to));
+			to = _.values(to.reduce((result, value) => {
+				if (value)
+				{
+					if (result[value.email])
+					{
+						if (!result[value.email].name)
+						{
+							result[value.email] = value;
+						}
+					}
+					else
+					{
+						result[value.email] = value;
+					}
+				}
+				return result;
+			}, {}));
+		}
+		else
+		{
+			to = EmailModel.parseEmailLine(email);
+		}
 
 		if (!isUnd(params.cc))
 		{
-			cc = fParseEmailLine(decodeURIComponent(params.cc));
+			cc = EmailModel.parseEmailLine(decodeURIComponent(params.cc));
 		}
 
 		if (!isUnd(params.bcc))
 		{
-			bcc = fParseEmailLine(decodeURIComponent(params.bcc));
+			bcc = EmailModel.parseEmailLine(decodeURIComponent(params.bcc));
 		}
 
-		require('Knoin/Knoin').showScreenPopup(PopupComposeVoreModel, [
+		require('Knoin/Knoin').showScreenPopup(PopupComposeViewModel, [
 			ComposeType.Empty, null, to, cc, bcc,
 			isUnd(params.subject) ? null : pString(decodeURIComponent(params.subject)),
 			isUnd(params.body) ? null : plainToHtml(pString(decodeURIComponent(params.body)))

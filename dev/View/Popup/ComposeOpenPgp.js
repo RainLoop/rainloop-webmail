@@ -409,7 +409,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext
 		rec = rec.join(', ').split(',');
 		rec = _.compact(_.map(rec, (value) => {
 			email.clear();
-			email.mailsoParse(trim(value));
+			email.parse(trim(value));
 			return '' === email.email ? false : email.email;
 		}));
 

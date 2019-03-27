@@ -17,6 +17,9 @@ en_GB:
     BUTTON_SETTINGS: "Settings"
     BUTTON_HELP: "Help"
     BUTTON_LOGOUT: "Logout"
+  MOBILE:
+    BUTTON_MOBILE_VERSION: "Mobile version"
+    BUTTON_DESKTOP_VERSION: "Desktop version"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Search"
     TITLE_ADV: "Advanced Search"
@@ -99,6 +102,7 @@ en_GB:
     BUTTON_BACK: "Back"
     BUTTON_CLOSE: "Close"
     BUTTON_DELETE: "Delete"
+    BUTTON_UNSUBSCRIBE: "Unsubscribe from this list"
     BUTTON_ARCHIVE: "Archive"
     BUTTON_SPAM: "Spam"
     BUTTON_NOT_SPAM: "Not Spam"
@@ -140,20 +144,22 @@ en_GB:
     PRINT_LABEL_SUBJECT: "Subject"
     PRINT_LABEL_ATTACHMENTS: "Attachments"
     MESSAGE_LOADING: "Loading"
-    MESSAGE_VIEW_DESC: "Select message in list to view it here."
+    MESSAGE_VIEW_DESC: "Select any message in the list to view it here."
+    MESSAGE_VIEW_MOVE_DESC: "Click folder name in the left panel to select the destination."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Password"
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP signed message (click to verify)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP encrypted message (click to decrypt)"
     LINK_DOWNLOAD_AS_ZIP: "Download as zip"
     LINK_SAVE_TO_OWNCLOUD: "Save to ownCloud"
+    LINK_SAVE_TO_CLOUD: "Save to Cloud"
     LINK_SAVE_TO_DROPBOX: "Save to Dropbox"
   READ_RECEIPT:
     SUBJECT: "Return Receipt (displayed) - %SUBJECT%"
     BODY: |
-      This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
+        This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
 
-      Note: "This Return Receipt only acknowledges that the message was displayed on the recipient's computer."
-      There is no guarantee that the recipient has read or understood the message contents.
+        Note: "This Return Receipt only acknowledges that the message was displayed on the recipient's computer."
+        There is no guarantee that the recipient has read or understood the message contents.
   SUGGESTIONS:
     SEARCHING_DESC: "Searching..."
   CONTACTS:
@@ -170,7 +176,7 @@ en_GB:
     EMPTY_LIST: "No contacts here"
     EMPTY_SEARCH: "No contacts found"
     CLEAR_SEARCH: "Clear search"
-    CONTACT_VIEW_DESC: "Select contact in list to view it here."
+    CONTACT_VIEW_DESC: "Select contact in the list to view it here."
     LABEL_DISPLAY_NAME: "Display name"
     LABEL_EMAIL: "Email"
     LABEL_PHONE: "Phone"
@@ -360,15 +366,15 @@ en_GB:
     BUTTON_CANCEL: "Cancel"
     BUTTON_CLOSE: "Close"
     NOTIFICATION_SENT: |
-      You haven't selected "Sent" system folder messages are put to after sending.
-      If you don't want to save sent message, please select "Do not use" option.
+        You haven't selected "Sent" system folder messages are put to after sending.
+        If you don't want to save sent message, please select "Do not use" option.
     NOTIFICATION_DRAFTS: "You haven't selected \"Drafts\" system folder messages are saved to while composing."
     NOTIFICATION_SPAM: |
-      You haven't selected "Spam" system folder spamed messages are placed to.
-      If you wish to remove messages permanently, please select "Do not use" option.
+        You haven't selected "Spam" system folder spamed messages are placed to.
+        If you wish to remove messages permanently, please select "Do not use" option.
     NOTIFICATION_TRASH: |
-      You haven't selected "Trash" system folder deleted messages are placed to.
-      If you wish to remove messages permanently, please select "Do not use" option.
+        You haven't selected "Trash" system folder deleted messages are placed to.
+        If you wish to remove messages permanently, please select "Do not use" option.
     NOTIFICATION_ARCHIVE: "You haven't selected \"Archive\" system folder achived messages are placed to."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-Step Verification (TOTP)"
@@ -412,6 +418,7 @@ en_GB:
     ERROR_FILE_TYPE: "Invalid file type"
     ERROR_UNKNOWN: "An unknown file upload error occurred"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXT"
     TEXT_SWITCHER_RICH_FORMATTING: "Rich formatting"
     TEXT_SWITCHER_CONFIRM: "Text formatting and images will be lost. Are you sure you want to continue?"
   SETTINGS_LABELS:
@@ -458,6 +465,7 @@ en_GB:
     LABEL_AUTOLOGOUT: "Auto Logout"
     AUTOLOGIN_NEVER_OPTION_NAME: "Never"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minute(s)"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% hour(s)"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "General"
     LABEL_LANGUAGE: "Language"
@@ -523,6 +531,7 @@ en_GB:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Folder List"
     BUTTON_CREATE: "Create Folder"
+    BUTTON_SYSTEM: "System Folders"
     BUTTON_DELETE: "Delete"
     BUTTON_SUBSCRIBE: "Subscribe"
     BUTTON_UNSUBSCRIBE: "Unsubscribe"
@@ -573,6 +582,7 @@ en_GB:
     TITLE_PUBLIC: "Public"
     DELETING_ASK: "Are you sure?"
     GENERATE_ONLY_HTTPS: "HTTPS only"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Automatically save draft"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Keyboard shortcuts help"
     TAB_MAILBOX: "Mailbox"
@@ -691,13 +701,13 @@ en_GB:
     PHP_VERSION_ERROR_DESC: "Your PHP version (%VERSION%) is lower than the minimal required 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript is required for this application."
     NO_SCRIPT_DESC: |
-      JavaScript support is not available in your browser.
-      Please enable JavaScript support in your browser settings and retry.
+        JavaScript support is not available in your browser.
+        Please enable JavaScript support in your browser settings and retry.
     NO_COOKIE_TITLE: "Cookies support is required for this application."
     NO_COOKIE_DESC: |
-      Cookies support is not available in your browser.
-      Please enable Cookie support in your browser settings and retry.
+        Cookies support is not available in your browser.
+        Please enable Cookie support in your browser settings and retry.
     BAD_BROWSER_TITLE: "Your browser is outdated."
     BAD_BROWSER_DESC: |
-      To use all the features of the application,
-      download and install one of these browsers:
+        To use all the features of the application,
+        download and install one of these browsers:

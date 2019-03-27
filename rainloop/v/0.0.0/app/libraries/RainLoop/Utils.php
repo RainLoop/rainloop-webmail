@@ -61,7 +61,10 @@ class Utils
 			if (!\class_exists('Crypt_RSA', false))
 			{
 				include_once 'Crypt/RSA.php';
-				\defined('CRYPT_RSA_MODE') || \define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
+				if (!\defined('CRYPT_RSA_MODE') && \defined('CRYPT_RSA_MODE_INTERNAL'))
+				{
+					\define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
+				}
 			}
 
 			if (\class_exists('Crypt_RSA'))

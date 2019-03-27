@@ -27,7 +27,7 @@ cs_CZ:
     LABEL_ADV_TO: "Příjemce"
     LABEL_ADV_SUBJECT: "Předmět"
     LABEL_ADV_TEXT: "Text"
-    LABEL_ADV_HAS_ATTACHMENT: "S přílohu"
+    LABEL_ADV_HAS_ATTACHMENT: "S přílohou"
     LABEL_ADV_HAS_ATTACHMENTS: "S přílohami"
     LABEL_ADV_FLAGGED: "Označené hvězdičkou"
     LABEL_ADV_UNSEEN: "Nepřečtené"
@@ -102,13 +102,14 @@ cs_CZ:
     BUTTON_BACK: "Zpět"
     BUTTON_CLOSE: "Zavřít"
     BUTTON_DELETE: "Odstranit"
+    BUTTON_UNSUBSCRIBE: "Odhlásit se z odběru"
     BUTTON_ARCHIVE: "Archivovat"
     BUTTON_SPAM: "Je to SPAM"
     BUTTON_NOT_SPAM: "Není to SPAM"
     BUTTON_MOVE_TO: "Přesunout do"
     BUTTON_MORE: "Více"
     BUTTON_REPLY: "Odpovědět"
-    BUTTON_REPLY_ALL: "Odpovědaě všem"
+    BUTTON_REPLY_ALL: "Odpovědět všem"
     BUTTON_FORWARD: "Přeposlat"
     BUTTON_FORWARD_AS_ATTACHMENT: "Přeposlat jako přílohu"
     BUTTON_EDIT_AS_NEW: "Použit jako šablonu"
@@ -144,18 +145,20 @@ cs_CZ:
     PRINT_LABEL_ATTACHMENTS: "Přílohy"
     MESSAGE_LOADING: "Načítám"
     MESSAGE_VIEW_DESC: "Vyberte zprávu ze seznamu pro její zobrazení zde."
+    MESSAGE_VIEW_MOVE_DESC: "Vyberte cílovou složku v levém panelu."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Heslo"
     PGP_SIGNED_MESSAGE_DESC: "Zpráva podepsaná OpenPGP (klikněte pro ověření)"
     PGP_ENCRYPTED_MESSAGE_DESC: "Zpráva šifrovaná OpenPGP (klikněte pro dešifraci)"
     LINK_DOWNLOAD_AS_ZIP: "Stáhnout jako zip"
     LINK_SAVE_TO_OWNCLOUD: "Uložit do ownCloud"
+    LINK_SAVE_TO_CLOUD: "Uložit do Cloudu"
     LINK_SAVE_TO_DROPBOX: "Uložit do Dropbox"
   READ_RECEIPT:
     SUBJECT: "Potvrzení o zobrazení zprávy - %SUBJECT%"
     BODY: |
-      Toto je potrvzení o zaslání emailu na adresu %READ-RECEIPT%.
+        Toto je potrvzení o zaslání emailu na adresu %READ-RECEIPT%.
 
-      Poznámka: Toto potvrzení zajištujě, že zpráva byla zobrazena v poštovní schrnánce příjemce. Nezajišťuje, že ji příjemce čelt a rozuměl jí.
+        Poznámka: Toto potvrzení zajišťuje, že zpráva byla zobrazena v poštovní schránce příjemce. Nezajišťuje, že ji příjemce četl a rozuměl jí.
   SUGGESTIONS:
     SEARCHING_DESC: "Hledám..."
   CONTACTS:
@@ -231,10 +234,10 @@ cs_CZ:
     NO_ATTACHMENTS_HERE_DESC: "Žádné přílohy."
     ATTACHMENTS_ERROR_DESC: "Upozornění! Některé přílohy nebyly nahrány."
     ATTACHMENTS_UPLOAD_ERROR_DESC: "Některé přílohy ještě nebyly nahrány"
-    BUTTON_REQUEST_READ_RECEIPT: "Vyžádat si potvrzení o příjetí"
+    BUTTON_REQUEST_READ_RECEIPT: "Vyžádat si potvrzení o přečtení"
     BUTTON_MARK_AS_IMPORTANT: "Označit jako důležité"
     BUTTON_OPEN_PGP: "OpenPGP (jen Plain Text)"
-    BUTTON_REQUEST_DSN: "Request a delivery receipt"
+    BUTTON_REQUEST_DSN: "Vyžádat si potvrzení o přijetí"
   POPUPS_WELCOME_PAGE:
     BUTTON_CLOSE: "Zavřít"
   POPUPS_ASK:
@@ -362,42 +365,43 @@ cs_CZ:
     BUTTON_CANCEL: "Zrušit"
     BUTTON_CLOSE: "Zavřít"
     NOTIFICATION_SENT: |
-      Nevybrali jste systémovou složku "Odeslané" kam budou uložené zprávy po jejich odeslání.
-      Pokud nechcete ukládat odeslané zprávy, vyberete možnost "Nepoužívat".
+        Nevybrali jste systémovou složku "Odeslané" kam budou uložené zprávy po jejich odeslání.
+        Pokud nechcete ukládat odeslané zprávy, vyberete možnost "Nepoužívat".
     NOTIFICATION_DRAFTS: "Nevybrali jste systémovou složku pro \"Koncepty\" kam jsou ukládány zprávy během jejich psaní."
     NOTIFICATION_SPAM: |
-      Nevybrali jste systémovou složku pro "Spam" kam je ukládána nevyžádaná pošta.
-      Pokud chcete tyto zprávy odstranit natrvalo, vyberte prosím možnost "Nepoužívat".
+        Nevybrali jste systémovou složku pro "Spam" kam je ukládána nevyžádaná pošta.
+        Pokud chcete tyto zprávy odstranit natrvalo, vyberte prosím možnost "Nepoužívat".
     NOTIFICATION_TRASH: |
-      Nevybrali jste systémovou složku pro "Koš" kam jsou zprávy přesunuté pro jejich odstranění.
-      Pokud chcete zprávy odstranit natrvalo, vyberte prosím možnost "Nepoužívat".
+        Nevybrali jste systémovou složku pro "Koš" kam jsou zprávy přesunuté pro jejich odstranění.
+        Pokud chcete zprávy odstranit natrvalo, vyberte prosím možnost "Nepoužívat".
     NOTIFICATION_ARCHIVE: "Nevybrali jste systémovou složku \"Archiv\", kam se ukládají archivované zprávy."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Dvoufázové ověření"
     LABEL_ENABLE_TWO_FACTOR: "Povlit dvoufázové ověření"
     LABEL_TWO_FACTOR_USER: "Uživatel"
-    LABEL_TWO_FACTOR_STATUS: "Status"
-    LABEL_TWO_FACTOR_SECRET: "Secret"
-    LABEL_TWO_FACTOR_BACKUP_CODES: "Backup codes"
-    BUTTON_CREATE: "Create New Secret"
+    LABEL_TWO_FACTOR_STATUS: "Stav"
+    LABEL_TWO_FACTOR_SECRET: "Tajný klíč"
+    LABEL_TWO_FACTOR_BACKUP_CODES: "Záložní kódy"
+    BUTTON_CREATE: "Aktivovat dvoustupňové přihlašování"
     BUTTON_ACTIVATE: "Aktivovat"
-    BUTTON_CLEAR: "Clear"
+    BUTTON_CLEAR: "Zrušit dvoustupňové přihlašování"
     BUTTON_LOGOUT: "Odhlásit"
     BUTTON_DONE: "Hotovo"
     BUTTON_TEST: "Test"
-    LINK_TEST: "test"
-    BUTTON_SHOW_SECRET: "Show Secret"
-    BUTTON_HIDE_SECRET: "Hide Secret"
+    LINK_TEST: "Otestovat"
+    BUTTON_SHOW_SECRET: "Zobrazit tajné klíče"
+    BUTTON_HIDE_SECRET: "Skrýt tajné klíče"
     TWO_FACTOR_REQUIRE_DESC: "Váš účet vyžaduje nastavení dvoufázového ověření"
     TWO_FACTOR_SECRET_CONFIGURED_DESC: "Nastaveno"
     TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC: "Nenastaveno"
-    TWO_FACTOR_SECRET_DESC: >-
-        Import this info into your Google Authenticator client (or other TOTP client)
-        using the provided QR code below or by entering the code manually.
-    TWO_FACTOR_BACKUP_CODES_DESC: >-
-        If you can't receive codes via Google Authenticator, you can use backup codes
-        to sign in. After you’ve used a backup code to sign in, it will become inactive.
-    TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "You can't change this setting before test."
+    TWO_FACTOR_SECRET_DESC: >
+        Importujte klíč do Vašeho Google Authenticatoru (nebo jiného TOTP klienta)
+        pomocí níže uvedeného QR kódu nebo zadáním kódu ručně.
+    TWO_FACTOR_BACKUP_CODES_DESC: >
+        Pokud nemůžete získat kódy skrze Google Authenticator (nebo jiného TOTP klienta),
+        můžete použít záložní kódy k přihlášení. Poté, co použijete záložní klíč,
+        stane se nadále neaktivním.
+    TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Toto nastavení nelze změnit před otestováním."
   TITLES:
     LOADING: "Načítám"
     LOGIN: "Uživatelské jméno"
@@ -410,9 +414,10 @@ cs_CZ:
     ERROR_NO_FILE_UPLOADED: "Soubor nebyl nahrán"
     ERROR_MISSING_TEMP_FOLDER: "Chybí dočasný soubor"
     ERROR_ON_SAVING_FILE: "Nastala neznámá chyba při ukládání"
-    ERROR_FILE_TYPE: "Nesprávny typ souboru"
+    ERROR_FILE_TYPE: "Neplatný typ souboru"
     ERROR_UNKNOWN: "Nastala neznámá chyba při nahrávaní"
   EDITOR:
+    TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXT"
     TEXT_SWITCHER_RICH_FORMATTING: "Formátovaný text"
     TEXT_SWITCHER_CONFIRM: "Formátování textu a obrázky budou odstraněné. Chcete pokračovat?"
   SETTINGS_LABELS:
@@ -421,8 +426,8 @@ cs_CZ:
     LABEL_CONTACTS_NAME: "Kontakty"
     LABEL_FOLDERS_NAME: "Složky"
     LABEL_ACCOUNTS_NAME: "Účty"
-    LABEL_IDENTITY_NAME: "Identita"
-    LABEL_IDENTITIES_NAME: "Identity"
+    LABEL_IDENTITY_NAME: "Alias"
+    LABEL_IDENTITIES_NAME: "Aliasy"
     LABEL_FILTERS_NAME: "Filtry"
     LABEL_TEMPLATES_NAME: "Šablony"
     LABEL_SECURITY_NAME: "Zabezpečení"
@@ -445,10 +450,10 @@ cs_CZ:
     SUBNAME_DISCARD: "Zahodit"
     CAPABILITY_LABEL: "Capability"
     LOADING_PROCESS: "Aktualizovat seznam filtrů"
-    DELETING_ASK: "Opravdu to chcete?"
+    DELETING_ASK: "Jste si jisti?"
     CHACHES_NEED_TO_BE_SAVED_DESC: "Změny musí být uloženy na serveru."
   SETTINGS_IDENTITY:
-    LEGEND_IDENTITY: "Identita"
+    LEGEND_IDENTITY: "Aliasy"
     LABEL_DISPLAY_NAME: "Jméno"
     LABEL_REPLY_TO: "Adresa pro odpovědi"
     LABEL_SIGNATURE: "Podpis"
@@ -459,11 +464,12 @@ cs_CZ:
     LABEL_AUTOLOGOUT: "Automatické odhlášení"
     AUTOLOGIN_NEVER_OPTION_NAME: "Nikdy"
     AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minut"
+    AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% hodin"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Všeobecné"
     LABEL_LANGUAGE: "Jazyk"
-    LABEL_IDENTITY: "Identity"
-    LABEL_LAYOUT: "Layout"
+    LABEL_IDENTITY: "Uživatel"
+    LABEL_LAYOUT: "Rozložení"
     LABEL_LAYOUT_NO_SPLIT: "Nerozdělovat"
     LABEL_LAYOUT_VERTICAL_SPLIT: "Vertikální rozdělení"
     LABEL_LAYOUT_HORIZONTAL_SPLIT: "Horizontální rozdělění"
@@ -471,7 +477,7 @@ cs_CZ:
     LABEL_EDITOR_HTML: "Html"
     LABEL_EDITOR_PLAIN: "Text"
     LABEL_EDITOR_HTML_FORCED: "Html (vynucený)"
-    LABEL_EDITOR_PLAIN_FORCED: "Plain (vynucený)"
+    LABEL_EDITOR_PLAIN_FORCED: "Text (vynucený)"
     LABEL_ANIMATION: "Animace prostředí"
     LABEL_ANIMATION_FULL: "Všechny"
     LABEL_ANIMATION_NORMAL: "Normální"
@@ -494,7 +500,7 @@ cs_CZ:
     LEGEND_CONTACTS_SYNC: "Vzdálená synchronizace (CardDAV)"
     LABEL_CONTACTS_SYNC_ENABLE: "Povolit vzdálenou synchronizaci"
     LABEL_CONTACTS_SYNC_SERVER: "Server"
-    LABEL_CONTACTS_SYNC_AB_URL: "Addressbook URL"
+    LABEL_CONTACTS_SYNC_AB_URL: "URL adresáře"
     LABEL_CONTACTS_SYNC_USER: "Uživatel"
     LABEL_CONTACTS_SYNC_PASSWORD: "Heslo"
   SETTINGS_THEMES:
@@ -524,6 +530,7 @@ cs_CZ:
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Seznam složek"
     BUTTON_CREATE: "Vytvořit složku"
+    BUTTON_SYSTEM: "Systémové složky"
     BUTTON_DELETE: "Odstranit"
     BUTTON_SUBSCRIBE: "Přihlásit se"
     BUTTON_UNSUBSCRIBE: "Odhlásit se"
@@ -531,7 +538,7 @@ cs_CZ:
     CREATING_PROCESS: "Vytvářím složku"
     DELETING_PROCESS: "Odstraňuji složku"
     RENAMING_PROCESS: "Přejmenovávám složku"
-    DELETING_ASK: "Opravdu to chcete?"
+    DELETING_ASK: "Jste si jisti?"
     TO_MANY_FOLDERS_DESC_1: "Máte moc složek!"
     TO_MANY_FOLDERS_DESC_2: "Můžeme zobrazit jen část z nich, abychom zabránili problémům s výkonem."
     HELP_DELETE_FOLDER: "Smazat složku"
@@ -539,25 +546,25 @@ cs_CZ:
     HELP_CHECK_FOR_NEW_MESSAGES: "Kontrovat/nekontrolovat nové příchozí zprávy"
   SETTINGS_ACCOUNTS:
     LEGEND_ACCOUNTS: "Seznam účtů"
-    LEGEND_IDENTITIES: "Identity"
-    LEGEND_ACCOUNTS_AND_IDENTITIES: "Účty a identity"
+    LEGEND_IDENTITIES: "Aliasy"
+    LEGEND_ACCOUNTS_AND_IDENTITIES: "Účty a aliasy"
     BUTTON_ADD_ACCOUNT: "Přidat účet"
-    BUTTON_ADD_IDENTITY: "Přidat identitu"
+    BUTTON_ADD_IDENTITY: "Přidat alias"
     BUTTON_DELETE: "Odstranit"
     LOADING_PROCESS: "Aktualizace seznamu účtů"
     DELETING_ASK: "Opravdu to chcete?"
     DEFAULT_IDENTITY_LABEL: "výchozí"
   SETTINGS_IDENTITIES:
-    LEGEND_IDENTITY: "Identita"
-    LEGEND_IDENTITIES: "Další identity"
+    LEGEND_IDENTITY: "Alias"
+    LEGEND_IDENTITIES: "Další aliasy"
     LABEL_DEFAULT: "Výchozí"
     LABEL_DISPLAY_NAME: "Jméno"
     LABEL_REPLY_TO: "Adresa pro odpověď"
     LABEL_SIGNATURE: "Podpis"
     LABEL_ADD_SIGNATURE_TO_ALL: "Připojit ke všem odeslaným zprávám"
-    BUTTON_ADD_IDENTITY: "Přidat Identitu"
+    BUTTON_ADD_IDENTITY: "Přidat alias"
     BUTTON_DELETE: "Odstranit"
-    LOADING_PROCESS: "Aktualizace seznamu identit"
+    LOADING_PROCESS: "Aktualizace seznamu aliasů"
     DELETING_ASK: "Opravdu to chcete?"
   SETTINGS_CHANGE_PASSWORD:
     LEGEND_CHANGE_PASSWORD: "Změnit heslo"
@@ -574,6 +581,7 @@ cs_CZ:
     TITLE_PUBLIC: "Veřejný"
     DELETING_ASK: "Opravdu to chcete?"
     GENERATE_ONLY_HTTPS: "Pouze HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Automaticky uložit koncept"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Klávesové zkratky"
     TAB_MAILBOX: "Schránka"
@@ -596,37 +604,37 @@ cs_CZ:
     LABEL_IMPORTANT: "Označit vybrané zprávy jako důležité"
     LABEL_SEARCH: "Hledat"
     LABEL_CANCEL_SEARCH: "Zrušit hledání"
-    LABEL_FULLSCREEN_ENTER: "Fullscreen (Preview pane layout)"
-    LABEL_VIEW_MESSAGE_ENTER: "View message (No preview pane layout)"
-    LABEL_SWITCH_TO_MESSAGE: "Switch focus to selected message"
-    LABEL_SWITCH_TO_FOLDER_LIST: "Switch focus to folder list"
-    LABEL_FULLSCREEN_TOGGLE: "Toggle fullscreen mode"
-    LABEL_BLOCKQUOTES_TOGGLE: "Toggle message blockquotes"
-    LABEL_THREAD_NEXT: "Next message in thread"
-    LABEL_THREAD_PREV: "Previous message in thread"
+    LABEL_FULLSCREEN_ENTER: "Celoobrazovkové rozložení (náhled)"
+    LABEL_VIEW_MESSAGE_ENTER: "Zobrazit zprávu (bez náhledu)"
+    LABEL_SWITCH_TO_MESSAGE: "Zobrazit vybranou zprávu"
+    LABEL_SWITCH_TO_FOLDER_LIST: "Skočit do panelu adresářů"
+    LABEL_FULLSCREEN_TOGGLE: "Přepnout režim celé obrazovky"
+    LABEL_BLOCKQUOTES_TOGGLE: "Přepnout zobrazení přiložených zpráv"
+    LABEL_THREAD_NEXT: "Následující zpráva ve vlákně"
+    LABEL_THREAD_PREV: "Předchozí zpráva ve vlákně"
     LABEL_PRINT: "Tisk"
-    LABEL_EXIT_FULLSCREEN: "Exit fullscreen mode"
-    LABEL_CLOSE_MESSAGE: "Close message (No preview pane layout)"
-    LABEL_SWITCH_TO_LIST: "Switch focus back to message list"
-    LABEL_OPEN_COMPOSE_POPUP: "Open compose popup"
-    LABEL_MINIMIZE_COMPOSE_POPUP: "Minimize compose popup"
-    LABEL_OPEN_IDENTITIES_DROPDOWN: "Open identities dropdown"
-    LABEL_SAVE_MESSAGE: "Save message"
-    LABEL_SEND_MESSAGE: "Send message"
-    LABEL_CLOSE_COMPOSE: "Close compose"
+    LABEL_EXIT_FULLSCREEN: "Ukončit režim celé obrazovky"
+    LABEL_CLOSE_MESSAGE: "Zavřít zprávu (bez náhledu)"
+    LABEL_SWITCH_TO_LIST: "Vrátit se zpět do seznamu zpráv"
+    LABEL_OPEN_COMPOSE_POPUP: "Nová zpráva v okně"
+    LABEL_MINIMIZE_COMPOSE_POPUP: "Minimalizovat otevřené okno"
+    LABEL_OPEN_IDENTITIES_DROPDOWN: "Otevřít seznam aliasů"
+    LABEL_SAVE_MESSAGE: "Uložit zprávu"
+    LABEL_SEND_MESSAGE: "Odeslat zprávu"
+    LABEL_CLOSE_COMPOSE: "Zavřít okno se zprávou"
   PGP_NOTIFICATIONS:
-    NO_PUBLIC_KEYS_FOUND: "No public keys found"
-    NO_PUBLIC_KEYS_FOUND_FOR: "No public keys found for \"%EMAIL%\" email"
-    NO_PRIVATE_KEY_FOUND: "No private key found"
-    NO_PRIVATE_KEY_FOUND_FOR: "No private key found for \"%EMAIL%\" email"
-    ADD_A_PUBLICK_KEY: "Add a public key"
+    NO_PUBLIC_KEYS_FOUND: "Nenalezen žádný veřejný klíč"
+    NO_PUBLIC_KEYS_FOUND_FOR: "Žádný veřejný klíč pro \"%EMAIL%\" nenalezen"
+    NO_PRIVATE_KEY_FOUND: "Nenalezen žádný soukromý klíč"
+    NO_PRIVATE_KEY_FOUND_FOR: "Žádný soukromý klíč pro \"%EMAIL%\" nenalezen"
+    ADD_A_PUBLICK_KEY: "Přidat veřejný klíč"
     SELECT_A_PRIVATE_KEY: "Vyberte soukromý klíč"
-    UNVERIFIRED_SIGNATURE: "Unverified signature"
-    DECRYPTION_ERROR: "OpenPGP decryption error"
-    GOOD_SIGNATURE: "Good signature from %USER%"
-    PGP_ERROR: "OpenPGP error: %ERROR%"
-    SPECIFY_FROM_EMAIL: "Please specify FROM email address"
-    SPECIFY_AT_LEAST_ONE_RECIPIENT: "Please specify at least one recipient"
+    UNVERIFIRED_SIGNATURE: "Neověřený podpis"
+    DECRYPTION_ERROR: "OpenPGP chyba dešifrování"
+    GOOD_SIGNATURE: "Ověřený podpis od %USER%"
+    PGP_ERROR: "OpenPGP chyba: %ERROR%"
+    SPECIFY_FROM_EMAIL: "Zadejte emailovou adresu odesílatele"
+    SPECIFY_AT_LEAST_ONE_RECIPIENT: "Zadejte prosím alespoň jednoho příjemce"
   NOTIFICATIONS:
     INVALID_TOKEN: "Neplatný token"
     AUTH_ERROR: "Ověření selhalo"
@@ -666,8 +674,8 @@ cs_CZ:
     CANT_RENAME_FOLDER: "Složku se nepodařilo přejmenovat"
     CANT_DELETE_FOLDER: "Složku se nepodařilo odstranit"
     CANT_DELETE_NON_EMPTY_FOLDER: "Nelze odstranit neprázdnou složku"
-    CANT_SUBSCRIBE_FOLDER: "Can't subscribe folder"
-    CANT_UNSUBSCRIBE_FOLDER: "Can't unsubscribe folder"
+    CANT_SUBSCRIBE_FOLDER: "Nelze přihlásit adresář"
+    CANT_UNSUBSCRIBE_FOLDER: "Nelze odhlásit adresář"
     CANT_SAVE_SETTINGS: "Nastavení se nepodařilo uložit"
     CANT_SAVE_PLUGIN_SETTINGS: "Nastavení se nepodařilo uložit"
     DOMAIN_ALREADY_EXISTS: "Táto doména již existuje"
@@ -692,13 +700,13 @@ cs_CZ:
     PHP_VERSION_ERROR_DESC: "Vaše verze PHP (%VERSION%) je nižší než požadovaná 5.3.0!"
     NO_SCRIPT_TITLE: "Tato aplikace vyžaduje JavaScript."
     NO_SCRIPT_DESC: |
-      Váš internetový prohlížeč nepodporuje JavaScript.
-      Prosím povolte podporu JavaScriptu v nastavení vašeho internetového prohlížeče a zkuste to znovu.
+        Váš internetový prohlížeč nepodporuje JavaScript.
+        Prosím povolte podporu JavaScriptu v nastavení vašeho internetového prohlížeče a zkuste to znovu.
     NO_COOKIE_TITLE: "Tato aplikace vyžaduje podporu Cookies."
     NO_COOKIE_DESC: |
-      Váš internetový prohlížeč nepodporuje Cookies.
-      Prosím povolte podporu Cookies v nastavení vašeho internetového prohlížeče a zkuste to znovu.
+        Váš internetový prohlížeč nepodporuje Cookies.
+        Prosím povolte podporu Cookies v nastavení vašeho internetového prohlížeče a zkuste to znovu.
     BAD_BROWSER_TITLE: "Používáte zastaralý internetový prohlížeč."
     BAD_BROWSER_DESC: |
-      Abyste mohli využívat všechny funkcie této aplikace,
-      použijte některý z následujících internetových prohlížečů:
+        Abyste mohli využívat všechny funkcie této aplikace,
+        použijte některý z následujících internetových prohlížečů:

@@ -154,9 +154,9 @@ zh_CN:
   READ_RECEIPT:
     SUBJECT: "妥投回执 - %SUBJECT%"
     BODY: |
-      本回执表示您发送给 %READ-RECEIPT% 的邮件已妥投。
+        本回执表示您发送给 %READ-RECEIPT% 的邮件已妥投。
 
-      注意：本回执仅意味着邮件已妥投并已在收件人的电脑中出示过，但并不能保证收件人已阅读或已明白邮件内容。
+        注意：本回执仅意味着邮件已妥投并已在收件人的电脑中出示过，但并不能保证收件人已阅读或已明白邮件内容。
   SUGGESTIONS:
     SEARCHING_DESC: "搜索中..."
   CONTACTS:
@@ -363,15 +363,15 @@ zh_CN:
     BUTTON_CANCEL: "取消"
     BUTTON_CLOSE: "关闭"
     NOTIFICATION_SENT: |
-      您没有选择 已发邮件 文件夹来存储已发送邮件。
-      如果您不希望保存已发邮件，请选择 不使用 选项。
+        您没有选择 已发邮件 文件夹来存储已发送邮件。
+        如果您不希望保存已发邮件，请选择 不使用 选项。
     NOTIFICATION_DRAFTS: "您没有选择 草稿 文件夹来存储邮件草稿。"
     NOTIFICATION_SPAM: |
-      您没有选择 垃圾邮件 文件夹来存储垃圾邮件。
-      如果您希望永久删除邮件，请选择 不使用 选项。
+        您没有选择 垃圾邮件 文件夹来存储垃圾邮件。
+        如果您希望永久删除邮件，请选择 不使用 选项。
     NOTIFICATION_TRASH: |
-      您没有选择 已删除邮件 文件夹来存储垃圾邮件。
-      如果您希望永久删除邮件，请选择 不使用 选项。
+        您没有选择 已删除邮件 文件夹来存储垃圾邮件。
+        如果您希望永久删除邮件，请选择 不使用 选项。
     NOTIFICATION_ARCHIVE: "您没有选择“已归档邮件”文件夹来存储归档邮件。"
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "两步验证"
@@ -696,13 +696,13 @@ zh_CN:
     PHP_VERSION_ERROR_DESC: "您的PHP版本 (%VERSION%) 低于所需的 5.3.0！"
     NO_SCRIPT_TITLE: "JavaScript 需要启用！"
     NO_SCRIPT_DESC: |
-      您的浏览器不支持JavaScript。
-      请启用浏览器的JavaScript支持并重试。
+        您的浏览器不支持JavaScript。
+        请启用浏览器的JavaScript支持并重试。
     NO_COOKIE_TITLE: "Cookies 需要启用！"
     NO_COOKIE_DESC: |
-      您的浏览器不支持Cookies。
-      请启用浏览器的Cookies支持并重试。
+        您的浏览器不支持Cookies。
+        请启用浏览器的Cookies支持并重试。
     BAD_BROWSER_TITLE: "您的浏览器版本太低"
     BAD_BROWSER_DESC: |
-      如果想使用所有功能，
-      下载并安装下列其中一款浏览器：
+        如果想使用所有功能，
+        下载并安装下列其中一款浏览器：

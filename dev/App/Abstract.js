@@ -342,6 +342,8 @@ class AbstractApp extends AbstractBoot
 
 		if (!mobile)
 		{
+			$html.addClass('rl-desktop');
+
 			ssm.addState({
 				id: 'mobile',
 				query: '(max-width: 767px)',

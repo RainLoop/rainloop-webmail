@@ -34,13 +34,14 @@ nb_NO:
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Tillat bruk av flere kontoer"
     LABEL_ALLOW_IDENTITIES: "Tillat bruk av flere identiteter"
     LABEL_ALLOW_TEMPLATES: "Tillat bruk av maler"
+    ALERT_DATA_ACCESS: "RainLoop-datamappa di er offentlig tiljgengelig. Sett opp webtjeneren slik at den ikke viser datamappa. Les mer her:"
     ALERT_WARNING: "Advarsel!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Du bruker forvalgt admin-passord.
-      <br />
-      Av sikkerhetshensyn bør du
-      <strong><a href="#/security">endre</a></strong>
-      passordet umiddelbart.
+        Du bruker forvalgt admin-passord.
+        <br />
+        Av sikkerhetshensyn bør du
+        <strong><a href="#/security">endre</a></strong>
+        passordet umiddelbart.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Innloggingsskjerm"
     LABEL_DEFAULT_DOMAIN: "Standard-domene"
@@ -84,18 +85,18 @@ nb_NO:
     ALERT_NOTICE: "Varsel!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Ikke bruk denne databasetypen hvis dette systemet har mange brukere."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Dette systemet støtter ikke kontakter.
-      <br />
-      Du må installere eller slå på utvidelsen <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> på tjeneren.
+        Dette systemet støtter ikke kontakter.
+        <br />
+        Du må installere eller slå på utvidelsen <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> på tjeneren.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domener"
     BUTTON_ADD_DOMAIN: "Legg til domene"
     BUTTON_ADD_ALIAS: "Legg til alias"
     DELETE_ARE_YOU_SURE: "Er du sikker?"
     HTML_DOMAINS_HELPER: |
-      Liste over domener som programmet kan få tilgang til.
-      <br />
-      Trykk på et navn for å sette opp domenet.
+        Liste over domener som programmet kan få tilgang til.
+        <br />
+        Trykk på et navn for å sette opp domenet.
   TAB_SECURITY:
     LEGEND_SECURITY: "Sikkerhet"
     LABEL_ALLOW_TWO_STEP: "Tillat tostegsbekreftelse"
@@ -154,8 +155,8 @@ nb_NO:
     HTML_ALERT_TOP_1: "RainLoop Webmail er utgitt på betingelsene i"
     HTML_ALERT_TOP_2: "Du står <b>fritt</b> til å bruke programmet til <b>personlige</b> formål."
     HTML_ALERT_TOP_3: |
-      Hvis du vil bruke <b>RainLoop Webmail</b> kommersielt (med ekstrafunksjoner), må du kjøpe et
-      <a href=http://www.rainloop.net/purchase/ target=_blank>abonnement</a>.
+        Hvis du vil bruke <b>RainLoop Webmail</b> kommersielt (med ekstrafunksjoner), må du kjøpe et
+        <a href=http://www.rainloop.net/purchase/ target=_blank>abonnement</a>.
     TYPE_PREMIUM_LIFETIME: "Livstid"
     LABEL_SUB_EXPIRES: "Abonnement utgår"
     BUTTON_ACTIVATE: "Ta i bruk abonnementsnøkkel for dette domenet"
@@ -183,11 +184,11 @@ nb_NO:
     ERROR_INVALID_SUBS_KEY: "Ugyldig abonnementsnøkkel"
     SUBS_KEY_ACTIVATED: "Abonnementsnøkkelen er nå i bruk"
     HTML_DESC: |
-      Premium-abonnement for <b>%DOMAIN%</b> fonyes.
-      <br />
-      Nøkkelen kan bare tas i bruk for ett domene.
-      <br /><br />
-      Du kan ikke angre på å ta en nøkkel i bruk.
+        Premium-abonnement for <b>%DOMAIN%</b> fonyes.
+        <br />
+        Nøkkelen kan bare tas i bruk for ett domene.
+        <br /><br />
+        Du kan ikke angre på å ta en nøkkel i bruk.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Legg til alias"
     LABEL_ALIAS: "Alias"
@@ -225,8 +226,8 @@ nb_NO:
     BUTTON_UPDATE: "Oppdater"
     NEW_DOMAIN_DESC: "Dette domeneoppsettet lar deg jobbe <br /> med e-postadresser ved <i>%NAME%</i>."
     WHITE_LIST_ALERT: |
-      Liste over domenebrukere som programmet skal ha tilgang til.
-      Hold verdier adskilt med mellomrom.
+        Liste over domenebrukere som programmet skal ha tilgang til.
+        Hold verdier adskilt med mellomrom.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Tillegg"
     DESC_NOTHING_TO_CONFIGURE: "Ingenting å sette opp"
@@ -311,13 +312,13 @@ nb_NO:
     PHP_VERSION_ERROR_DESC: "PHP-installasjonen din (%VERSION%) er eldre enn versjon 5.3.0"
     NO_SCRIPT_TITLE: "Dette programmet krever Javascript."
     NO_SCRIPT_DESC: |
-      Nettleseren din støtter ikke Javascript.
-      Slå på Javascript-støtte i nettleserens innstillinger, og prøv på nytt.
+        Nettleseren din støtter ikke Javascript.
+        Slå på Javascript-støtte i nettleserens innstillinger, og prøv på nytt.
     NO_COOKIE_TITLE: "Dette programmet krever støtte for informasjonskapsler («cookies»)."
     NO_COOKIE_DESC: |
-      Nettleseren din støtter ikke bruk av informasjonskapsler («cookies»).
-      Slå på cookie-støtte i nettleserens innstillinger, og prøv på nytt.
+        Nettleseren din støtter ikke bruk av informasjonskapsler («cookies»).
+        Slå på cookie-støtte i nettleserens innstillinger, og prøv på nytt.
     BAD_BROWSER_TITLE: "Nettleseren din er utdatert."
     BAD_BROWSER_DESC: |
-      Hvis du vil bruke alle funksjonene i programmet,
-      må du laste ned og installere en av disse nettleserne:
+        Hvis du vil bruke alle funksjonene i programmet,
+        må du laste ned og installere en av disse nettleserne:

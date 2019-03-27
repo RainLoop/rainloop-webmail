@@ -46,7 +46,7 @@ class ChangePasswordCustomSqlPlugin extends \RainLoop\Plugins\AbstractPlugin
 			\RainLoop\Plugins\Property::NewInstance('mTable')->SetLabel('MySQL Table'),
 			\RainLoop\Plugins\Property::NewInstance('mSql')->SetLabel('SQL statement')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
-				->SetDescription('SQL statement (allowed wildcards :table, :email, :oldpass, :newpass, :domain, :username). When using MD5 OR SHA1 at tables, write it directly here as SQL functions. Fro non-SQL encryptions use another plugin or wait for new version.')
+				->SetDescription('SQL statement (allowed wildcards :table, :email, :oldpass, :newpass, :domain, :username). Use SQL functions for encryption.')
 				->SetDefaultValue('UPDATE :table SET password = md5(:newpass) WHERE domain = :domain AND username = :username and oldpass = md5(:oldpass)')
 		);
 	}

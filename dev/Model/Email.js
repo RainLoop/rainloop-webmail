@@ -1,5 +1,7 @@
 
-import {trim, pString, encodeHtml} from 'Common/Utils';
+import _ from '_';
+import addressparser from 'emailjs-addressparser';
+import {trim, encodeHtml, isNonEmptyArray} from 'Common/Utils';
 
 class EmailModel
 {
@@ -32,46 +34,6 @@ class EmailModel
 	static newInstanceFromJson(json) {
 		const email = new EmailModel();
 		return email.initByJson(json) ? email : null;
-	}
-
-	/**
-	 * @static
-	 * @param {string} line
-	 * @param {string=} delimiter = ';'
-	 * @returns {Array}
-	 */
-	static splitHelper(line, delimiter = ';') {
-		line = line.replace(/[\r\n]+/g, '; ').replace(/[\s]+/g, ' ');
-
-		let
-			index = 0,
-			len = 0,
-			at = false,
-			char = '',
-			result = '';
-
-		for (len = line.length; index < len; index++)
-		{
-			char = line.charAt(index);
-			switch (char)
-			{
-				case '@':
-					at = true;
-					break;
-				case ' ':
-					if (at)
-					{
-						at = false;
-						result += delimiter;
-					}
-					break;
-				// no default
-			}
-
-			result += char;
-		}
-
-		return result.split(delimiter);
 	}
 
 	/**
@@ -119,32 +81,6 @@ class EmailModel
 	}
 
 	/**
-	 * @param {string} str
-	 */
-	parse(str) {
-		this.clear();
-
-		str = trim(str);
-
-		const
-			regex = /(?:"([^"]+)")? ?[<]?(.*?@[^>,]+)>?,? ?/g,
-			match = regex.exec(str);
-
-		if (match)
-		{
-			this.name = match[1] || '';
-			this.email = match[2] || '';
-
-			this.clearDuplicateName();
-		}
-		else if ((/^[^@]+@[^@]+$/).test(str))
-		{
-			this.name = '';
-			this.email = str;
-		}
-	}
-
-	/**
 	 * @param {AjaxJsonEmail} oJsonEmail
 	 * @returns {boolean}
 	 */
@@ -176,8 +112,10 @@ class EmailModel
 		{
 			if (friendlyView && '' !== this.name)
 			{
-				result = wrapWithLink ? '<a href="mailto:' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
+				result = wrapWithLink ? '<a href="mailto:' + encodeHtml(this.email) + '?to=' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
 					'" target="_blank" tabindex="-1">' + encodeHtml(this.name) + '</a>' : (useEncodeHtml ? encodeHtml(this.name) : this.name);
+				// result = wrapWithLink ? '<a href="mailto:' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
+				// 	'" target="_blank" tabindex="-1">' + encodeHtml(this.name) + '</a>' : (useEncodeHtml ? encodeHtml(this.name) : this.name);
 			}
 			else
 			{
@@ -187,11 +125,17 @@ class EmailModel
 					if (wrapWithLink)
 					{
 						result = encodeHtml('"' + this.name + '" <') + '<a href="mailto:' +
-							encodeHtml('"' + this.name + '" <' + this.email + '>') +
+							encodeHtml(this.email) + '?to=' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
 							'" target="_blank" tabindex="-1">' +
 							encodeHtml(result) +
 							'</a>' +
 							encodeHtml('>');
+						// result = encodeHtml('"' + this.name + '" <') + '<a href="mailto:' +
+						// 	encodeHtml('"' + this.name + '" <' + this.email + '>') +
+						// 	'" target="_blank" tabindex="-1">' +
+						// 	encodeHtml(result) +
+						// 	'</a>' +
+						// 	encodeHtml('>');
 					}
 					else
 					{
@@ -212,165 +156,68 @@ class EmailModel
 		return result;
 	}
 
+	static splitEmailLine(line) {
+		const parsedResult = addressparser(line);
+		if (isNonEmptyArray(parsedResult))
+		{
+			const result = [];
+			let exists = false;
+			parsedResult.forEach((item) => {
+				const address = item.address ? new EmailModel(
+					item.address.replace(/^[<]+(.*)[>]+$/g, '$1'),
+					item.name || ''
+				) : null;
+
+				if (address && address.email) {
+					exists = true;
+				}
+
+				result.push(address ? address.toLine(false) : item.name);
+			});
+
+			return exists ? result : null;
+		}
+
+		return null;
+	}
+
+	static parseEmailLine(line) {
+		const parsedResult = addressparser(line);
+		if (isNonEmptyArray(parsedResult))
+		{
+			return _.compact(parsedResult.map(
+				(item) => (item.address ? new EmailModel(
+					item.address.replace(/^[<]+(.*)[>]+$/g, '$1'),
+					item.name || ''
+				) : null)
+			));
+		}
+
+		return [];
+	}
+
 	/**
-	 * @param {string} $sEmailAddress
+	 * @param {string} emailAddress
 	 * @returns {boolean}
 	 */
-	mailsoParse($sEmailAddress) {
-		$sEmailAddress = trim($sEmailAddress);
-		if ('' === $sEmailAddress)
+	parse(emailAddress) {
+		emailAddress = trim(emailAddress);
+		if ('' === emailAddress)
 		{
 			return false;
 		}
 
-		const substr = (str, start, len) => {
-			str = pString(str);
-			let	end = str.length;
-
-			if (0 > start)
-			{
-				start += end;
-			}
-
-			end = 'undefined' === typeof len ? end : (0 > len ? len + end : len + start);
-
-			return start >= str.length || 0 > start || start > end ? false : str.slice(start, end);
-		};
-
-		const substrReplace = (str, replace, start, length) => {
-			str = pString(str);
-			if (0 > start)
-			{
-				start += str.length;
-			}
-
-			length = 'undefined' !== typeof length ? length : str.length;
-			if (0 > length)
-			{
-				length = length + str.length - start;
-			}
-			return str.slice(0, start) + replace.substr(0, length) + replace.slice(length) + str.slice(start + length);
-		};
-
-		let
-			$sName = '',
-			$sEmail = '',
-			$sComment = '',
-
-			$bInName = false,
-			$bInAddress = false,
-			$bInComment = false,
-
-			$aRegs = null,
-
-			$iStartIndex = 0,
-			$iEndIndex = 0,
-			$iCurrentIndex = 0;
-
-		while ($iCurrentIndex < $sEmailAddress.length)
+		const result = addressparser(emailAddress);
+		if (isNonEmptyArray(result) && result[0])
 		{
-			switch ($sEmailAddress.substr($iCurrentIndex, 1))
-			{
-				case '"':
-					if ((!$bInName) && (!$bInAddress) && (!$bInComment))
-					{
-						$bInName = true;
-						$iStartIndex = $iCurrentIndex;
-					}
-					else if ((!$bInAddress) && (!$bInComment))
-					{
-						$iEndIndex = $iCurrentIndex;
-						$sName = substr($sEmailAddress, $iStartIndex + 1, $iEndIndex - $iStartIndex - 1);
-						$sEmailAddress = substrReplace($sEmailAddress, '', $iStartIndex, $iEndIndex - $iStartIndex + 1);
-						$iEndIndex = 0;
-						$iCurrentIndex = 0;
-						$iStartIndex = 0;
-						$bInName = false;
-					}
-					break;
-				case '<':
-					if ((!$bInName) && (!$bInAddress) && (!$bInComment))
-					{
-						if (0 < $iCurrentIndex && 0 === $sName.length)
-						{
-							$sName = substr($sEmailAddress, 0, $iCurrentIndex);
-						}
+			this.name = result[0].name || '';
+			this.email = result[0].address || '';
+			this.clearDuplicateName();
 
-						$bInAddress = true;
-						$iStartIndex = $iCurrentIndex;
-					}
-					break;
-				case '>':
-					if ($bInAddress)
-					{
-						$iEndIndex = $iCurrentIndex;
-						$sEmail = substr($sEmailAddress, $iStartIndex + 1, $iEndIndex - $iStartIndex - 1);
-						$sEmailAddress = substrReplace($sEmailAddress, '', $iStartIndex, $iEndIndex - $iStartIndex + 1);
-						$iEndIndex = 0;
-						$iCurrentIndex = 0;
-						$iStartIndex = 0;
-						$bInAddress = false;
-					}
-					break;
-				case '(':
-					if ((!$bInName) && (!$bInAddress) && (!$bInComment))
-					{
-						$bInComment = true;
-						$iStartIndex = $iCurrentIndex;
-					}
-					break;
-				case ')':
-					if ($bInComment)
-					{
-						$iEndIndex = $iCurrentIndex;
-						$sComment = substr($sEmailAddress, $iStartIndex + 1, $iEndIndex - $iStartIndex - 1);
-						$sEmailAddress = substrReplace($sEmailAddress, '', $iStartIndex, $iEndIndex - $iStartIndex + 1);
-						$iEndIndex = 0;
-						$iCurrentIndex = 0;
-						$iStartIndex = 0;
-						$bInComment = false;
-					}
-					break;
-				case '\\':
-					$iCurrentIndex += 1;
-					break;
-				// no default
-			}
-
-			$iCurrentIndex += 1;
+			return true;
 		}
 
-		if (0 === $sEmail.length)
-		{
-			$aRegs = $sEmailAddress.match(/[^@\s]+@\S+/i);
-			if ($aRegs && $aRegs[0])
-			{
-				$sEmail = $aRegs[0];
-			}
-			else
-			{
-				$sName = $sEmailAddress;
-			}
-		}
-
-		if (0 < $sEmail.length && 0 === $sName.length && 0 === $sComment.length)
-		{
-			$sName = $sEmailAddress.replace($sEmail, '');
-		}
-
-		$sEmail = trim($sEmail).replace(/^[<]+/, '').replace(/[>]+$/, '');
-		$sName = trim($sName).replace(/^["']+/, '').replace(/["']+$/, '');
-		$sComment = trim($sComment).replace(/^[(]+/, '').replace(/[)]+$/, '');
-
-		// Remove backslash
-		$sName = $sName.replace(/\\\\(.)/g, '$1');
-		$sComment = $sComment.replace(/\\\\(.)/g, '$1');
-
-		this.name = $sName;
-		this.email = $sEmail;
-
-		this.clearDuplicateName();
-		return true;
+		return false;
 	}
 }
 

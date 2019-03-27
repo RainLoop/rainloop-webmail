@@ -63,25 +63,115 @@ class OC_RainLoop_Helper
 		return $sUrl;
 	}
 
+	/**
+	 * @return boolean
+	 */
+	public static function mcryptSupported()
+	{
+		return function_exists('mcrypt_encrypt') &&
+			function_exists('mcrypt_decrypt') &&
+			defined('MCRYPT_RIJNDAEL_256') &&
+			defined('MCRYPT_MODE_ECB');
+	}
+
+	/**
+	 * @return string
+	 */
+	public static function openSslSupportedMethod()
+	{
+		$method = 'AES-256-CBC';
+		return function_exists('openssl_encrypt') &&
+			function_exists('openssl_decrypt') &&
+			function_exists('openssl_random_pseudo_bytes') &&
+			function_exists('openssl_cipher_iv_length') &&
+			function_exists('openssl_get_cipher_methods') &&
+			defined('OPENSSL_RAW_DATA') && defined('OPENSSL_ZERO_PADDING') &&
+			in_array($method, openssl_get_cipher_methods()) ? $method : '';
+	}
+
+	/**
+	 * @param string $sMethod
+	 * @param string $sPassword
+	 * @param string $sSalt
+	 *
+	 * @return string
+	 */
+	public static function encodePasswordSsl($sMethod, $sPassword, $sSalt)
+	{
+		$sData = base64_encode($sPassword);
+
+		$iv = @openssl_random_pseudo_bytes(openssl_cipher_iv_length($sMethod));
+		$r = @openssl_encrypt($sData, $sMethod, md5($sSalt), OPENSSL_RAW_DATA, $iv);
+
+		return @base64_encode(base64_encode($r).'|'.base64_encode($iv));
+	}
+
+	/**
+	 * @param string $sMethod
+	 * @param string $sPassword
+	 * @param string $sSalt
+	 *
+	 * @return string
+	 */
+	public static function decodePasswordSsl($sMethod, $sPassword, $sSalt)
+	{
+		$sLine = base64_decode(trim($sPassword));
+		$aParts = explode('|', $sLine, 2);
+
+		if (is_array($aParts) && !empty($aParts[0]) && !empty($aParts[1])) {
+
+			$sData = @base64_decode($aParts[0]);
+			$iv = @base64_decode($aParts[1]);
+
+			return @base64_decode(trim(
+				@openssl_decrypt($sData, $sMethod, md5($sSalt), OPENSSL_RAW_DATA, $iv)
+			));
+		}
+
+		return '';
+	}
+
+	/**
+	 * @param string $sPassword
+	 * @param string $sSalt
+	 *
+	 * @return string
+	 */
 	public static function encodePassword($sPassword, $sSalt)
 	{
-		if (function_exists('mcrypt_encrypt') && function_exists('mcrypt_create_iv') && function_exists('mcrypt_get_iv_size') &&
-			defined('MCRYPT_RIJNDAEL_256') && defined('MCRYPT_MODE_ECB') && defined('MCRYPT_RAND'))
+		$method = self::openSslSupportedMethod();
+		if ($method)
 		{
-			return @trim(base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($sSalt), base64_encode($sPassword),
-				MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
+			return self::encodePasswordSsl($method, $sPassword, $sSalt);
+		}
+		else if (self::mcryptSupported())
+		{
+			return @trim(base64_encode(
+				@mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($sSalt), base64_encode($sPassword), MCRYPT_MODE_ECB)
+			));
 		}
 
 		return @trim(base64_encode($sPassword));
 	}
 
+	/**
+	 * @param string $sPassword
+	 * @param string $sSalt
+	 *
+	 * @return string
+	 */
 	public static function decodePassword($sPassword, $sSalt)
 	{
-		if (function_exists('mcrypt_encrypt') && function_exists('mcrypt_create_iv') && function_exists('mcrypt_get_iv_size') &&
-			defined('MCRYPT_RIJNDAEL_256') && defined('MCRYPT_MODE_ECB') && defined('MCRYPT_RAND'))
+		$method = self::openSslSupportedMethod();
+		if ($method)
 		{
-			return @base64_decode(trim(@mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($sSalt), base64_decode(trim($sPassword)),
-				MCRYPT_MODE_ECB, mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND))));
+			return self::decodePasswordSsl($method, $sPassword, $sSalt);
+		}
+		else if (self::mcryptSupported())
+		{
+			return @base64_decode(trim(
+				@mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($sSalt), base64_decode(trim($sPassword)), MCRYPT_MODE_ECB)
+			));
 		}
 
 		return @base64_decode(trim($sPassword));
@@ -236,7 +326,7 @@ class OC_RainLoop_Helper
             'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
         );
 
-		if (0 <  strpos($filename, '.'))
+		if (0 < strpos($filename, '.'))
 		{
 			$ext = strtolower(array_pop(explode('.',$filename)));
 			if (array_key_exists($ext, $mime_types))

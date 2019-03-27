@@ -23,7 +23,7 @@ import {
 import {
 	inArray, isArray, isNonEmptyArray, trim, noop,
 	windowResize, windowResizeCallback, inFocus,
-	removeSelection, removeInFocus, mailToHelper
+	removeSelection, removeInFocus, mailToHelper, isTransparent
 } from 'Common/Utils';
 
 import Audio from 'Common/Audio';
@@ -131,6 +131,10 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		this.highlightUnselectedAttachments = ko.observable(false).extend({falseTimeout: 2000});
 
 		this.showAttachmnetControls = ko.observable(false);
+
+		this.showAttachmnetControlsState = (v) => {
+			Local.set(ClientSideKeyName.MessageAttachmnetControls, !!v);
+		};
 
 		this.allowAttachmnetControls = ko.computed(
 			() => 0 < this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions)
@@ -320,6 +324,12 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 			if (message)
 			{
 				this.showAttachmnetControls(false);
+				if (Local.get(ClientSideKeyName.MessageAttachmnetControls))
+				{
+					_.delay(() => {
+						this.showAttachmnetControls(true);
+					}, Magics.Time50ms);
+				}
 
 				if (this.viewHash !== message.hash)
 				{
@@ -438,9 +448,9 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		const
 			fFindDom = function(inputDom) {
-					const children = inputDom ? inputDom.children() : null;
-					return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
-				},
+				const children = inputDom ? inputDom.children() : null;
+				return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
+			},
 			fFindColor = function(inputDom) {
 				let color = '';
 				if (inputDom)
@@ -448,7 +458,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 					color = inputDom.css('background-color') || '';
 					if (!inputDom.is('table'))
 					{
-						color = 'rgba(0, 0, 0, 0)' === color || 'transparent' === color ? '' : color;
+						color = isTransparent(color) ? '' : color;
 					}
 				}
 
@@ -477,7 +487,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 				}
 			}
 
-			result = 'rgba(0, 0, 0, 0)' === result || 'transparent' === result ? '' : result;
+			result = isTransparent(result) ? '' : result;
 		}
 
 		return result;
@@ -529,7 +539,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	//			fParseEmailLine = function(sLine) {
 	//				return sLine ? _.compact(_.map([window.decodeURIComponent(sLine)], function(sItem) {
 	//						var oEmailModel = new EmailModel();
-	//						oEmailModel.mailsoParse(sItem);
+	//						oEmailModel.parse(sItem);
 	//						return '' !== oEmailModel.email ? oEmailModel : null;
 	//					})) : null;
 	//			}

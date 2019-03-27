@@ -389,7 +389,7 @@
 													</div>
 												</li>
 											</ul>
-											<i class="icon-cog controls-handle" data-bind="visible: allowAttachmnetControls() && !showAttachmnetControls(), click: function () { showAttachmnetControls(true) }"></i>
+											<i class="icon-cog controls-handle" data-bind="visible: allowAttachmnetControls() && !showAttachmnetControls(), click: function () { showAttachmnetControls(true); showAttachmnetControlsState(true); }"></i>
 										</div>
 
 										<div class="attachmentsControls"
@@ -413,7 +413,7 @@
 													css: {'icon-cloud-up': !saveToOwnCloudLoading(), 'icon-spinner animated': saveToOwnCloudLoading()}"></i>
 												&nbsp;&nbsp;
 												<span class="g-ui-link" data-bind="click: saveToOwnCloud">
-													<span class="i18n" data-i18n="MESSAGE/LINK_SAVE_TO_OWNCLOUD"></span>
+													<span class="i18n" data-i18n="MESSAGE/LINK_SAVE_TO_CLOUD"></span>
 												</span>
 											</span>
 
@@ -430,7 +430,7 @@
 											</span>
 
 											<button type="button" class="close" style="margin-right: 5px;"
-												data-bind="click: function () { showAttachmnetControls(false); }">×</button>
+												data-bind="click: function () { showAttachmnetControls(false); showAttachmnetControlsState(false); }">×</button>
 										</div>
 									</div>
 

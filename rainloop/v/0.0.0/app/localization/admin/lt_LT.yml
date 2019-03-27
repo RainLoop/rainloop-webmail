@@ -36,11 +36,11 @@ lt_LT:
     LABEL_ALLOW_TEMPLATES: "Leisti šablonus"
     ALERT_WARNING: "Dėmesio!"
     HTML_ALERT_WEAK_PASSWORD: |+
-      Naudojate numatytąjį administratoriaus slaptažodį.
-      <br />
-      Dėl Jūsų saugumo prašome
-      <strong><a href="#/security">pakeiskite</a></strong>
-      slaptažodį kitu.
+        Naudojate numatytąjį administratoriaus slaptažodį.
+        <br />
+        Dėl Jūsų saugumo prašome
+        <strong><a href="#/security">pakeiskite</a></strong>
+        slaptažodį kitu.
 
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Prisijungimo langas"
@@ -85,17 +85,17 @@ lt_LT:
     ALERT_NOTICE: "Pastaba!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Nenaudokite šio duomenų bazės tipo, jei turite daug aktyvių vartotojų"
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Jūsų sistema nepalaiko kontaktų sąrašo.
-      Reikia įdiegti ar įjungti <strong>PDO (SĄLite / MySQL / PostgreSQL)</strong> plėtinius jūsų serveryje.
+        Jūsų sistema nepalaiko kontaktų sąrašo.
+        Reikia įdiegti ar įjungti <strong>PDO (SĄLite / MySQL / PostgreSQL)</strong> plėtinius jūsų serveryje.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domenai"
     BUTTON_ADD_DOMAIN: "Pridėti Domeną"
     BUTTON_ADD_ALIAS: "Pridėti Alias"
     DELETE_ARE_YOU_SURE: "Ar jūs įsitikinę?"
     HTML_DOMAINS_HELPER: |
-      Leidžiamų Domenų sąrašas
-      <br/>
-      Spauskite ant pavadinimo norėdami redaguoti.
+        Leidžiamų Domenų sąrašas
+        <br/>
+        Spauskite ant pavadinimo norėdami redaguoti.
   TAB_SECURITY:
     LEGEND_SECURITY: "Sauga"
     LABEL_ALLOW_TWO_STEP: "Leisti 2-jų žingsnių patikrinimą"
@@ -154,8 +154,8 @@ lt_LT:
     HTML_ALERT_TOP_1: "RainLoop Webmail licencijuotas"
     HTML_ALERT_TOP_2: "Jūs galite <b>nemokamai</b> naudoti savo <b>asmeniniams</b> projektams."
     HTML_ALERT_TOP_3: |
-      Komerciniam <b>RainLoop Webmail</b> naudojimui (su papildomomis galimybėmis) turite įsigyti
-      <a href="http://www.rainloop.net/purchase/" target="_blank">prenumeratą</a>.
+        Komerciniam <b>RainLoop Webmail</b> naudojimui (su papildomomis galimybėmis) turite įsigyti
+        <a href="http://www.rainloop.net/purchase/" target="_blank">prenumeratą</a>.
     TYPE_PREMIUM_LIFETIME: "Visam laikui"
     LABEL_SUB_EXPIRES: "Prenumerata baigiasi"
     BUTTON_ACTIVATE: "Aktyvuoti prenumeratos raktą šiam domenui"
@@ -183,11 +183,11 @@ lt_LT:
     ERROR_INVALID_SUBS_KEY: "Neteisingas prenumeratos raktas"
     SUBS_KEY_ACTIVATED: "Prenumeratos raktas sėkmingai aktyvuotas"
     HTML_DESC: |
-      Aktyvavus premium prenumeratą, papildomos galimybės domenui <b>%DOMAIN%</b> bus įjungtos.
-      <br/>
-      Įsidėmėkite, kad prenumeratos raktas gali būti aktyvuotas tik vienam domenui.
-      <br /><br />
-      Pradėjus aktyvavimo procesą jis nebegalės būti atšauktas.
+        Aktyvavus premium prenumeratą, papildomos galimybės domenui <b>%DOMAIN%</b> bus įjungtos.
+        <br/>
+        Įsidėmėkite, kad prenumeratos raktas gali būti aktyvuotas tik vienam domenui.
+        <br /><br />
+        Pradėjus aktyvavimo procesą jis nebegalės būti atšauktas.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Pridėti Alias"
     LABEL_ALIAS: "Alias"
@@ -225,8 +225,8 @@ lt_LT:
     BUTTON_UPDATE: "Atnaujinti"
     NEW_DOMAIN_DESC: "Šie nustatymai leis jums dirbti <br/> su <i>%NAME%</i> domeno pašto adresais."
     WHITE_LIST_ALERT: |
-      Domeno vartotojų sąrašas, kuriems leista naudotis web paštu.
-      Naudokite tarpo simbolį kaip skyriklį.
+        Domeno vartotojų sąrašas, kuriems leista naudotis web paštu.
+        Naudokite tarpo simbolį kaip skyriklį.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Įskiepis"
     DESC_NOTHING_TO_CONFIGURE: "Nėra ką konfiguruoti"
@@ -311,13 +311,13 @@ lt_LT:
     PHP_VERSION_ERROR_DESC: "Jūsų PHP versija (%VERSION%) žemesnė, nei reikalaujama 5.3.0!"
     NO_SCRIPT_TITLE: "Šiai aplikacijai reikalinga JavaScript."
     NO_SCRIPT_DESC: |
-      JavaScript nepalaikoma Jūsų naršyklėje.
-      Įjunkite JavaScript palaikymą naršyklėje ir bandykite vėl.
+        JavaScript nepalaikoma Jūsų naršyklėje.
+        Įjunkite JavaScript palaikymą naršyklėje ir bandykite vėl.
     NO_COOKIE_TITLE: "Slapukų palaikymas būtinas šiai aplikacijai."
     NO_COOKIE_DESC: |
-      Slapukų palaikymas negalimas jūsų naršyklėje.
-      Įjunkite slapukų palaikymą naršyklėje ir bandykite vėl.
+        Slapukų palaikymas negalimas jūsų naršyklėje.
+        Įjunkite slapukų palaikymą naršyklėje ir bandykite vėl.
     BAD_BROWSER_TITLE: "Jūsų naršyklė pasenusi."
     BAD_BROWSER_DESC: |
-      Norint naudotis visais šios aplikacijos privalumais,
-      parsisiųskite ir įsidiekite vieną iš šių naršyklių:
+        Norint naudotis visais šios aplikacijos privalumais,
+        parsisiųskite ir įsidiekite vieną iš šių naršyklių:

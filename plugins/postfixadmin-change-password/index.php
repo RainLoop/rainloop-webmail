@@ -14,13 +14,13 @@ class PostfixadminChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		if (!extension_loaded('pdo') || !class_exists('PDO'))
 		{
-			return 'The PHP exention PDO (mysql) must be installed to use this plugin';
+			return 'The PHP extension PDO must be installed to use this plugin';
 		}
 
 		$aDrivers = \PDO::getAvailableDrivers();
-		if (!is_array($aDrivers) || !in_array('mysql', $aDrivers))
+		if (!is_array($aDrivers) || (!in_array('mysql', $aDrivers) && !in_array('pgsql', $aDrivers)))
 		{
-			return 'The PHP exention PDO (mysql) must be installed to use this plugin';
+			return 'The PHP extension PDO (mysql or pgsql) must be installed to use this plugin';
 		}
 
 		return '';
@@ -41,6 +41,7 @@ class PostfixadminChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$oProvider = new ChangePasswordPostfixAdminDriver();
 
 				$oProvider
+				  ->SetEngine($this->Config()->Get('plugin', 'engine',''))
 					->SetHost($this->Config()->Get('plugin', 'host', ''))
 					->SetPort((int) $this->Config()->Get('plugin', 'port', 3306))
 					->SetDatabase($this->Config()->Get('plugin', 'database', ''))
@@ -64,22 +65,26 @@ class PostfixadminChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function configMapping()
 	{
 		return array(
-			\RainLoop\Plugins\Property::NewInstance('host')->SetLabel('MySQL Host')
+			\RainLoop\Plugins\Property::NewInstance('engine')->SetLabel('Engine')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
+				->SetDefaultValue(array('MySQL', 'PostgreSQL'))
+				->SetDescription('Database Engine'),
+			\RainLoop\Plugins\Property::NewInstance('host')->SetLabel('Host')
 				->SetDefaultValue('127.0.0.1'),
-			\RainLoop\Plugins\Property::NewInstance('port')->SetLabel('MySQL Port')
+			\RainLoop\Plugins\Property::NewInstance('port')->SetLabel('Port')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDefaultValue(3306),
-			\RainLoop\Plugins\Property::NewInstance('database')->SetLabel('MySQL Database')
+			\RainLoop\Plugins\Property::NewInstance('database')->SetLabel('Database')
 				->SetDefaultValue('postfixadmin'),
-			\RainLoop\Plugins\Property::NewInstance('table')->SetLabel('MySQL table')
+			\RainLoop\Plugins\Property::NewInstance('table')->SetLabel('table')
 				->SetDefaultValue('mailbox'),
-			\RainLoop\Plugins\Property::NewInstance('usercol')->SetLabel('MySQL username column')
+			\RainLoop\Plugins\Property::NewInstance('usercol')->SetLabel('username column')
 				->SetDefaultValue('username'),
-			\RainLoop\Plugins\Property::NewInstance('passcol')->SetLabel('MySQL password column')
+			\RainLoop\Plugins\Property::NewInstance('passcol')->SetLabel('password column')
 				->SetDefaultValue('password'),
-			\RainLoop\Plugins\Property::NewInstance('user')->SetLabel('MySQL User')
+			\RainLoop\Plugins\Property::NewInstance('user')->SetLabel('User')
 				->SetDefaultValue('postfixadmin'),
-			\RainLoop\Plugins\Property::NewInstance('password')->SetLabel('MySQL Password')
+			\RainLoop\Plugins\Property::NewInstance('password')->SetLabel('Password')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::PASSWORD)
 				->SetDefaultValue(''),
 			\RainLoop\Plugins\Property::NewInstance('encrypt')->SetLabel('Encrypt')

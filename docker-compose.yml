@@ -1,0 +1,100 @@
+version: '2'
+services:
+  mail:
+    image: tvial/docker-mailserver:latest
+    hostname: mail
+    container_name: rl.mail
+    domainname: domain.com
+    restart: always
+    ports:
+      - 25:25
+      - 143:143
+    volumes:
+      - maildata:/var/mail
+      - mailstate:/var/mail-state
+      - ./.docker/mail/config/:/tmp/docker-mailserver/
+    environment:
+      - ENABLE_SPAMASSASSIN=0
+      - ENABLE_CLAMAV=0
+      - ENABLE_FAIL2BAN=0
+      - ENABLE_POSTGREY=0
+      - ENABLE_MANAGESIEVE=1
+      - ONE_DIR=1
+      - DMS_DEBUG=0
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+  db:
+    image: mysql:5.7
+    hostname: db
+    container_name: rl.db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: rainloop
+      MYSQL_PASSWORD: rainloop
+      MYSQL_DATABASE: rainloop
+    volumes:
+      - mysql:/var/lib/mysql
+      - tmp:/tmp
+  php:
+    build:
+      context: ./.docker/php
+    hostname: php
+    container_name: rl.php
+    expose:
+      - 9000
+    depends_on:
+      - db
+      - mail
+    volumes:
+      - ./:/var/www
+      # - ./build/local/:/var/www
+      - ./.docker/php/rainloop.ini:/usr/local/etc/php/conf.d/rainloop.ini
+      - tmp:/tmp
+  node:
+    build:
+      context: ./.docker/node
+    hostname: node
+    container_name: rl.node
+    working_dir: /var/www
+    command: sh -c 'yarn --version'
+    volumes:
+      - ./:/var/www
+      - tmp:/tmp
+  nginx:
+    image: nginx:latest
+    hostname: nginx
+    container_name: rl.nginx
+    depends_on:
+      - php
+    ports:
+      - 443:443
+      - 80:80
+    volumes:
+      - ./:/var/www
+      # - ./build/local/:/var/www
+      - ./.docker/nginx/ssl:/etc/nginx/ssl
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - tmp:/tmp
+  tx:
+    build:
+      context: ./.docker/tx
+    hostname: tx
+    container_name: rl.tx
+    working_dir: /var/www
+    command: sh -c 'tx --version'
+    volumes:
+      - ./:/var/www
+      - ./.docker/.cache/tx/root:/root
+      - tmp:/tmp
+
+volumes:
+  mysql:
+    driver: local
+  maildata:
+    driver: local
+  mailstate:
+    driver: local
+  tmp:
+    driver: local

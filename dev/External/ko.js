@@ -158,6 +158,7 @@ ko.bindingHandlers.tooltip = {
 			$el = $(element),
 			fValue = fValueAccessor(),
 			isMobile = 'on' === ($el.data('tooltip-mobile') || 'off'),
+			isI18N = 'on' === ($el.data('tooltip-i18n') || 'on'),
 			Globals = require('Common/Globals');
 
 		if (!Globals.bMobileDevice || isMobile)
@@ -187,7 +188,7 @@ ko.bindingHandlers.tooltip = {
 				element.__opentip.activate();
 			}
 
-			if ('on' === ($el.data('tooltip-i18n') || 'on'))
+			if (isI18N)
 			{
 				const Translator = require('Common/Translator');
 
@@ -225,6 +226,7 @@ ko.bindingHandlers.tooltip = {
 			$el = $(element),
 			fValue = fValueAccessor(),
 			isMobile = 'on' === ($el.data('tooltip-mobile') || 'off'),
+			isI18N = 'on' === ($el.data('tooltip-i18n') || 'on'),
 			Globals = require('Common/Globals');
 
 		if ((!Globals.bMobileDevice || isMobile) && element.__opentip)
@@ -232,9 +234,7 @@ ko.bindingHandlers.tooltip = {
 			const sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 			if (sValue)
 			{
-				element.__opentip.setContent('on' === ($el.data('tooltip-i18n') || 'on') ?
-					require('Common/Translator').i18n(sValue) : sValue);
-
+				element.__opentip.setContent(isI18N ? require('Common/Translator').i18n(sValue) : sValue);
 				element.__opentip.activate();
 			}
 			else
@@ -884,6 +884,7 @@ ko.bindingHandlers.emailsTags = {
 			fValue = fValueAccessor(),
 			fAllBindings = fAllBindingsAccessor(),
 			fAutoCompleteSource = fAllBindings.autoCompleteSource || null,
+			inputDelimiters = [',', ';', '\n'],
 			fFocusCallback = (value) => {
 				if (fValue && fValue.focused)
 				{
@@ -895,26 +896,26 @@ ko.bindingHandlers.emailsTags = {
 			parseOnBlur: true,
 			allowDragAndDrop: true,
 			focusCallback: fFocusCallback,
-			inputDelimiters: [',', ';', '\n'],
+			inputDelimiters: inputDelimiters,
 			autoCompleteSource: fAutoCompleteSource,
-			// elementHook: (el, item) => {
-			// 	if (el && item)
-			// 	{
-			// 		el.addClass('pgp');
-			// 	}
-			// },
-			parseHook: (input) => _.map(input, (inputValue) => {
-				const value = Utils.trim(inputValue);
-				if ('' !== value)
-				{
-					const email = new EmailModel();
-					email.mailsoParse(value);
-					return [email.toLine(false), email];
+			splitHook: (value) => {
+				const v = Utils.trim(value);
+				if (v && -1 < inputDelimiters.indexOf(v.substr(-1))) {
+					return EmailModel.splitEmailLine(value);
 				}
-				return [value, null];
-
-			}),
-			'change': (event) => {
+				return null;
+			},
+			parseHook: (input) => _.map(
+				_.flatten(_.map(
+					input,
+					(inputValue) => {
+						const values = EmailModel.parseEmailLine(inputValue);
+						return values.length ? values : inputValue;
+					}
+				)),
+				(item) => (_.isObject(item) ? [item.toLine(false), item] : [item, null])
+			),
+			change: (event) => {
 				$el.data('EmailsTagsValue', event.target.value);
 				fValue(event.target.value);
 			}
@@ -1208,7 +1209,7 @@ ko.observable.fn.validateEmail = function() {
 	this.hasError = ko.observable(false);
 
 	this.subscribe((value) => {
-		this.hasError('' !== value && !(/^[^@\s]+@[^@\s]+$/.test(value)));
+		this.hasError('' !== value && !((/^[^@\s]+@[^@\s]+$/).test(value)));
 	});
 
 	this.valueHasMutated();
@@ -1220,7 +1221,7 @@ ko.observable.fn.validateSimpleEmail = function() {
 	this.hasError = ko.observable(false);
 
 	this.subscribe((value) => {
-		this.hasError('' !== value && !(/^.+@.+$/.test(value)));
+		this.hasError('' !== value && !((/^.+@.+$/).test(value)));
 	});
 
 	this.valueHasMutated();

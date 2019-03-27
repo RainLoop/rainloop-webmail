@@ -1,0 +1,4 @@
+Add ability to paste multi row email addresses (from Excel for instance) to a contact in a single row, in order to create a contact group.
+
+Usage : open address book, paste your emails separated by line breaks in an email field. Emails will be collapsed with "," separator.
+Then, when you write an email, select the email group and all addresses will be added.

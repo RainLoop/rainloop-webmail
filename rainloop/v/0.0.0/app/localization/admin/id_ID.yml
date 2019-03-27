@@ -1,0 +1,324 @@
+id_ID:
+  LOGIN:
+    LABEL_LOGIN: "Login"
+    LABEL_PASSWORD: "Password"
+    BUTTON_LOGIN: "Login ke panel admin"
+  TOP_PANEL:
+    LABEL_PREMIUM: "Premium"
+    LABEL_ADMIN_PANEL: "Panel Admin"
+  TABS_LABELS:
+    LABEL_GENERAL_NAME: "Umum"
+    LABEL_LOGIN_NAME: "Login"
+    LABEL_BRANDING_NAME: "Branding"
+    LABEL_CONTACTS_NAME: "Kontak"
+    LABEL_DOMAINS_NAME: "Domain"
+    LABEL_SECURITY_NAME: "Keamanan"
+    LABEL_INTEGRATION_NAME: "Integrasi"
+    LABEL_PLUGINS_NAME: "Plugin"
+    LABEL_PACKAGES_NAME: "Paket"
+    LABEL_LICENSING_NAME: "Lisensi"
+    LABEL_ABOUT_NAME: "Tentang"
+  TAB_GENERAL:
+    LEGEND_INTERFACE: "Antarmuka"
+    LABEL_LANGUAGE: "Bahasa"
+    LABEL_LANGUAGE_ADMIN: "Bahasa (admin)"
+    LABEL_THEME: "Tema"
+    LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "Izinkan pemilihan bahasa pada laman pengaturan"
+    LABEL_ALLOW_THEMES_ON_SETTINGS: "Izinkan pemilihan tema di laman pengaturan"
+    LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Izinkan pemilihan gambar latar di laman pengaturan"
+    LABEL_NEW_FOLDER_MOVE: "Tombol \"pindahkan ke folder\" baru"
+    LABEL_SHOW_THUMBNAILS: "Tampikankan gambar kecil (lampiran)"
+    LABEL_ALLOW_GRAVATAR: "Izinkan Gravatar"
+    LEGEND_MAIN: "Utama"
+    LABEL_ATTACHMENT_SIZE_LIMIT: "Batas ukuran lampiran"
+    LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Izinkan akun tambahan"
+    LABEL_ALLOW_IDENTITIES: "Izinkan identitas jamak"
+    LABEL_ALLOW_TEMPLATES: "Izinkan penggunaan template"
+    ALERT_DATA_ACCESS: "Data foldel RainLoop bisa diakses. Silahkan atur web server anda untuk menyembunyikan folder data dari akses eksternal. Baca selengkapnya di sini:"
+    ALERT_WARNING: "Peringatan!"
+    HTML_ALERT_WEAK_PASSWORD: |
+        Anda menggunakan password admin bawaan.
+        <br />
+        Atas alasan keamanan, mohon
+        <strong><a href="#/security">mengganti</a></strong>
+        password dengan frasa yang lainnya segera.
+  TAB_LOGIN:
+    LEGEND_LOGIN_SCREEN: "Laman login"
+    LABEL_DEFAULT_DOMAIN: "Domain bawaan"
+    LABEL_DETERMINE_USER_DOMAIN: "Coba untuk memeriksa user domain"
+    LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Izinkan pemilihan bahasa di laman login"
+    LABEL_DETERMINE_USER_LANGUAGE: "Coba untuk memeriksa bahasa user"
+  TAB_BRANDING:
+    LEGEND_BRANDING: "Branding"
+    LABEL_PAGE_TITLE: "Judul laman"
+    LABEL_LOADING_DESCRIPTION: "Deskripsi loading"
+    LABEL_FAVICON_URL: "Favicon"
+    LEGEND_LOGIN: "Login"
+    LABEL_LOGIN_LOGO: "Logo"
+    LABEL_LOGIN_DESCRIPTION: "Deskripsi"
+    LABEL_LOGIN_BACKGROUND: "Gambar latar"
+    LABEL_LOGIN_CUSTOM_CSS: "Custom CSS"
+    LABEL_LOGIN_SHOW_POWERED_LINK: "Tampilkan  link \"Powered by RainLoop\""
+    LEGEND_USER: "User"
+    LABEL_USER_LOGO: "Logo"
+    LABEL_USER_LOGO_TITLE: "Judul Logo"
+    LABEL_USER_LOGO_MESSAGE: "Logo (Tampilan Pesan)"
+    LABEL_USER_CUSTOM_CSS: "Custom CSS"
+    LEGEND_WELCOME_PAGE: "Laman selamat datang"
+    LABEL_WELCOME_PAGE_TITLE: "Judul"
+    LABEL_WELCOME_PAGE_URL: "URL"
+    LABEL_WELCOME_PAGE_DISPLAY: "Tampilan"
+    OPTION_WELCOME_PAGE_DISPLAY_NONE: "Tidak ada"
+    OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Sekali"
+    OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Selalu"
+    HTML_ALERT_PREMIUM: "Fungsi ini tersedia hanya untuk pengguna <strong><a href=\"#/licensing\">Premium</a></strong>."
+  TAB_CONTACTS:
+    LEGEND_CONTACTS: "Kontak"
+    LEGEND_STORAGE: "Media simpan (PDO)"
+    LABEL_ENABLE_CONTACTS: "Izinkan kontak"
+    LABEL_ALLOW_SYNC: "Izinkan sinkronisasi kontak (dengan server CardDAV eksternal)"
+    LABEL_STORAGE_TYPE: "Tipe"
+    LABEL_STORAGE_DSN: "Dsn"
+    LABEL_STORAGE_USER: "User"
+    LABEL_STORAGE_PASSWORD: "Password"
+    BUTTON_TEST: "Ujicoba"
+    ALERT_NOTICE: "Perhatian!"
+    HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Jangan gunakan tipe database ini untuk jumlah user aktif yang besar."
+    HTML_ALERT_DOES_NOT_SUPPORTED: |
+        Sistem anda tidak mendukung kontak
+        <br />
+        Anda harus memasang atau mengaktifkan <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> extension pada server anda.
+  TAB_DOMAINS:
+    LEGEND_DOMAINS: "Domain"
+    BUTTON_ADD_DOMAIN: "Tambah domain"
+    BUTTON_ADD_ALIAS: "Tambah alias"
+    DELETE_ARE_YOU_SURE: "Anda yakin?"
+    HTML_DOMAINS_HELPER: |
+        Daftar domain webmail yang diizinkan mengakses.
+        <br />
+        Klik pada nama domain untuk mengatur domain.
+  TAB_SECURITY:
+    LEGEND_SECURITY: "Keamanan"
+    LABEL_ALLOW_TWO_STEP: "Izinkan Verifikasi 2-Langkah"
+    LABEL_FORCE_TWO_STEP: "Pasakan Verifikasi 2-Langkah"
+    LABEL_USE_IMAGE_PROXY: "Gunakan proxy lokal untuk gambar dari luar"
+    LABEL_ALLOW_OPEN_PGP: "Izinkan OpenPGP"
+    LABEL_SHOW_PHP_INFO: "Tampilkan informasi PHP"
+    LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS: "Hak Akses Panel Admin"
+    LABEL_CURRENT_PASSWORD: "Password saat ini"
+    LABEL_NEW_LOGIN: "Login baru"
+    LABEL_NEW_PASSWORD: "Password baru"
+    LABEL_REPEAT_PASSWORD: "Ulangi"
+    BUTTON_UPDATE_PASSWORD: "Perbarui Password"
+    LEGEND_SSL: "SSL"
+    LABEL_REQUIRE_VERIFICATION: "Diperlukan verifikasi sertifikat SSL dengan (IMAP/SMTP) "
+    LABEL_ALLOW_SELF_SIGNED: "Izinkan sertifikat yang dibuat sendiri"
+  TAB_INTEGRATIONS:
+    LEGEND_GOOGLE: "Google"
+    LABEL_ENABLE_GOOGLE: "Aktifkan Integrasi Google"
+    LABEL_GOOGLE_AUTH: "Otorisasi"
+    LABEL_GOOGLE_DRIVE: "Integrasi Google Drive (Tampilan compose)"
+    LABEL_GOOGLE_PREVIEW: "Intergrasi Google Viewer (Pratinjau untuk Microsoft Word, Excel dan file PowerPoint)"
+    LABEL_GOOGLE_CLIENT_ID: "ID Klien"
+    LABEL_GOOGLE_CLIENT_SECRET: "Kode Rahasia Klien"
+    LABEL_GOOGLE_API_KEY: "Kunci API"
+    HINT_GOOGLE_API_KEY: "Diperlukan untuk Google Drive File Picker"
+    LEGEND_FACEBOOK: "Facebook"
+    LABEL_ENABLE_FACEBOOK: "Aktifkan Integrasi Facebook (Otorisasi)"
+    LABEL_FACEBOOK_APP_ID: "ID App"
+    LABEL_FACEBOOK_APP_SECRET: "Kode rahasia App"
+    LEGEND_TWITTER: "Twitter"
+    LABEL_ENABLE_TWITTER: "Aktifkan Integrasi Twitter (Otorisasi)"
+    LABEL_TWITTER_CONSUMER_KEY: "Kunci Consumer"
+    LABEL_TWITTER_CONSUMER_SECRET: "Kode Rahasia Consumer"
+    LEGEND_DROPBOX: "Dropbox"
+    LABEL_ENABLE_DROPBOX: "Aktifkan Integrasi Dropbox"
+    LABEL_DROPBOX_API_KEY: "Kunci API"
+    TOP_ALERT: "Informasi lengkap di Integrasi medsos ditemukan pada"
+  TAB_PLUGINS:
+    LEGEND_PLUGINS: "Plugins"
+    LABEL_ENABLE_PLUGINS: "Aktifkan plugins"
+    ALERT_NO_PLUGINS: "Belum ada plugins yang terinstal"
+    LINK_INSTALL_NEW: "Klik di sini untuk menginstall yang baru"
+    HINT_CLICK_NAME: "Klik pada nama untuk mengatur plugins"
+  TAB_PACKAGES:
+    LEGEND_AVAILABLE_FOR_UPDATE: "Tersedia untuk Pembaruan"
+    LEGEND_AVAILABLE_FOR_INSTALLATION: "Tersedia untuk Instalasi"
+    LEGEND_INSTALLED_PACKAGES: "Paket Terinstal"
+    ALERT_CANNOT_ACCESS_REPOSITORY: "Tidak bisa menjangkau repositori saat ini"
+  TAB_LICENSING:
+    LABEL_YOUR_DOMAIN: "Domain anda"
+    LABEL_VERSION: "Versi"
+    LABEL_CHECKING: "Memeriksa"
+    TYPE_BASIC_HINT: "Domain ini belum dilisensikan untuk penggunaan komersil (dengan fitur tambahan)."
+    TYPE_BASIC_HINT_2: "Domain ini tidak bisa dilinsensikan"
+    HTML_ALERT_TOP_1: "RainLoop Webmail dilisensi di bawah"
+    HTML_ALERT_TOP_2: "Anda <b>gratis </b> jika ditujukan <b>proyek </b> pribadi."
+    HTML_ALERT_TOP_3: |
+        Tujuan penggunaan komersil (dengan fitur tambahan) <b>RainLoop Webmail</b> harus
+        <a href="http://www.rainloop.net/purchase/" target="_blank">langganan</a>.
+    TYPE_PREMIUM_LIFETIME: "Seumur hidup"
+    LABEL_SUB_EXPIRES: "Langganan berakhir"
+    BUTTON_ACTIVATE: "Aktifkan Kunci Langganan untuk domain ini"
+    BUTTON_PURCHASE: "Beli"
+    BUTTON_TRIAL: "Percobaan"
+  TAB_ABOUT:
+    LEGEND_ABOUT: "Tentang"
+    LABEL_TAG_HINT: "Klien web-based email yang simpel, modern & cepat"
+    LABEL_ALL_RIGHTS_RESERVED: "Hak Cipta"
+    HINT_READ_CHANGE_LOG: "Mohon baca log perubahan sebelum melakukan pembaruan"
+    HINT_IS_UP_TO_DATE: "RainLoop sudah terbaru"
+    HTML_NEW_VERSION: "Versi  <b>%VERSION%</b> baru tersedia"
+    LABEL_UPDATING: "Memperbarui"
+    LABEL_CHECKING: "Memeriksa pembaruan"
+    BUTTON_UPDATE: "Pembaruan"
+    BUTTON_DOWNLOAD: "Mengunduh"
+    BUTTON_CHANGELOG: "Log Perubahan"
+  POPUPS_ACTIVATE:
+    TITLE_ACTIVATE: "Akifkan kunci berlangganan?"
+    TITLE_ACTIVATION: "Mengaktivasi..."
+    LABEL_DOMAIN: "Domain"
+    LABEL_SUB_KEY: "Kunci Berlangganan"
+    BUTTON_ACTIVATE: "Aktivasi"
+    LABEL_ACTIVATED: "Sudah Diaktivasi"
+    ERROR_INVALID_SUBS_KEY: "Kunci Berlangganan tidak sah"
+    SUBS_KEY_ACTIVATED: "Kunci berlangganan berhasil diaktifkan"
+    HTML_DESC: |
+        Setelah aktivasi, langganan premium untuk <b>%DOMAIN%</b> akan diperpanjang.
+        <br />
+        Ingat bahwa kunci berlangganan hanya berlaku untuk domain tunggal.
+        <br /><br />
+        Setelah Dimulai, proses aktivasi tidak bisa dicegah dan dibatalkan.
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "Tambah Alias"
+    LABEL_ALIAS: "Alias"
+    LABEL_DOMAIN: "Domain"
+    BUTTON_CLOSE: "Tutup"
+    BUTTON_ADD: "Tambah"
+  POPUPS_DOMAIN:
+    TITLE_ADD_DOMAIN: "Tambah Domain"
+    TITLE_ADD_DOMAIN_WITH_NAME: "Tambah \"%NAME%\" Domain"
+    TITLE_EDIT_DOMAIN: "Ubah Domain \"%NAME%\""
+    LABEL_NAME: "Nama"
+    NAME_HELPER: "Mendukung Wildcard"
+    LABEL_IMAP: "IMAP"
+    LABEL_SMTP: "SMTP"
+    LABEL_SIEVE: "SIEVE"
+    LABEL_SERVER: "Server"
+    LABEL_PORT: "Port"
+    LABEL_SECURE: "Aman"
+    LABEL_WHITE_LIST: "Daftar Putih"
+    SECURE_OPTION_NONE: "Tidak satupun"
+    SECURE_OPTION_SSL: "SSL/TLS"
+    SECURE_OPTION_STARTTLS: "STARTTLS"
+    LABEL_ALLOW_SIEVE_SCRIPTS: "Izinkan script sieve"
+    LABEL_ALLOW_USER_SCRIPT: "Izinkan script user yang dikustomisasi"
+    LABEL_USE_SHORT_LOGIN: "Gunakan login singkat"
+    LABEL_USE_AUTH: "Gunakan otentikasi"
+    LABEL_USE_PHP_MAIL: "Gunakan fungsi mail() PHP"
+    BUTTON_TEST: "Ujicoba"
+    BUTTON_WHITE_LIST: "Daftar Putih"
+    BUTTON_SIEVE_CONFIGURATION: "Konfigurasi Sieve"
+    BUTTON_BACK_TO_IMAP: "Kembali ke pengaturan IMAP"
+    BUTTON_BACK: "Kembali"
+    BUTTON_CLOSE: "Tutup"
+    BUTTON_ADD: "Tambah"
+    BUTTON_UPDATE: "Perbarui"
+    NEW_DOMAIN_DESC: "Domain ini mengizinkan anda bekerja dengan alamat email <br />juga<i>%NAME%</i> "
+    WHITE_LIST_ALERT: |
+        Daftar domain webmail user yang diizinkan diakses.
+        Gunakan spasi untuk pemisahnya
+  POPUPS_PLUGIN:
+    TITLE_PLUGIN: "Plugin"
+    DESC_NOTHING_TO_CONFIGURE: "Tidak ada yang dikonfigurasi"
+    BUTTON_CLOSE: "Tutup"
+    BUTTON_SAVE: "Simpan"
+    TOOLTIP_ABOUT_TITLE: "Tentang"
+  POPUPS_ASK:
+    DESC_WANT_CLOSE_THIS_WINDOW: "Anda yakin menutup jendela ini?"
+  POPUPS_LANGUAGES:
+    TITLE_LANGUAGES: "Pilih bahasa anda"
+  HINTS:
+    BETA: "beta"
+    UNSTABLE: "Tidak stabil"
+    WARNING: "Peringatan!"
+    NOT_SUPPORTED: "tidak didukung"
+    REQUIRES_PHP_54: "Membutuhkan PHP 5.4 atau terbaru"
+  ERRORS:
+    DOMAIN_ALREADY_EXISTS: "Domain sudah ada"
+    UNKNOWN_ERROR: "Kesalahan tidak diketahui"
+  NOTIFICATIONS:
+    INVALID_TOKEN: "Token invalid"
+    AUTH_ERROR: "Otentikasi gagal"
+    ACCESS_ERROR: "Akses error"
+    CONNECTION_ERROR: "Tidak bisa terhubung ke server"
+    CAPTCHA_ERROR: "CAPTCHA salah"
+    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
+        Social ID ini tidak dipasangkan untuk akun email manapun. Login dengan kredensial
+        email dan aktifkan fitur ini pada seting akun.
+    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
+        Social ID ini tidak dipasangkan untuk akun email manapun. Login dengan kredensial
+        email dan aktifkan fitur ini pada seting akun.
+    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
+        Social ID ini tidak dipasangkan untuk akun email manapun. Login dengan kredensial
+        email dan aktifkan fitur ini pada seting akun.
+    DOMAIN_NOT_ALLOWED: "Domain tidak diizinkan"
+    ACCOUNT_NOT_ALLOWED: "Akun tidak diizinkan"
+    ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Dibutuhkan verifikasi dua langkah"
+    ACCOUNT_TWO_FACTOR_AUTH_ERROR: "Kesalahan verifikasi dua langkah"
+    COULD_NOT_SAVE_NEW_PASSWORD: "Tidak bisa menyimpan password baru"
+    CURRENT_PASSWORD_INCORRECT: "Password saat ini salah"
+    NEW_PASSWORD_SHORT: "Password terlalu pendek"
+    NEW_PASSWORD_WEAK: "Password terlalu mudah"
+    NEW_PASSWORD_FORBIDDENT: "Password mengandung karakter terlarang"
+    CONTACTS_SYNC_ERROR: "Singkronisasi kontak error"
+    CANT_GET_MESSAGE_LIST: "Tidak bisa mengambil daftar pesan"
+    CANT_GET_MESSAGE: "Tidak bisa mengambil pesan"
+    CANT_DELETE_MESSAGE: "Tidak bisa menghapus pesan"
+    CANT_MOVE_MESSAGE: "Tidak bisa memindahkan pesan"
+    CANT_SAVE_MESSAGE: "Tidak bisa menyimpan pesan"
+    CANT_SEND_MESSAGE: "Tidak bisa mengirim pesan"
+    INVALID_RECIPIENTS: "Penerima tidak sah"
+    CANT_SAVE_FILTERS: "Tidak bisa menyimpan filter"
+    CANT_GET_FILTERS: "Tidak bisa mengambil filter"
+    FILTERS_ARE_NOT_CORRECT: "Filter tidak benar"
+    CANT_CREATE_FOLDER: "Tidak bisa membuat folder"
+    CANT_RENAME_FOLDER: "Tidak bisa mengubah nama folder"
+    CANT_DELETE_FOLDER: "Tidak bisa menghapus folder"
+    CANT_DELETE_NON_EMPTY_FOLDER: "Tidak bisa menghapus direktori yang berisi"
+    CANT_SUBSCRIBE_FOLDER: "Tidak bisa mengaitkan folder"
+    CANT_UNSUBSCRIBE_FOLDER: "Tidak bisa memutuskan folder"
+    CANT_SAVE_SETTINGS: "Tidak bisa menyimpan pengaturan"
+    CANT_SAVE_PLUGIN_SETTINGS: "Tidak bisa menyimpan pengaturan"
+    DOMAIN_ALREADY_EXISTS: "Domain sudah ada"
+    CANT_INSTALL_PACKAGE: "Gagal memasang paket"
+    CANT_DELETE_PACKAGE: "Gagal menghapus paket"
+    INVALID_PLUGIN_PACKAGE: "Paket plugin tidak sah"
+    UNSUPPORTED_PLUGIN_PACKAGE: "Paket plugin tidak didukung"
+    LICENSING_SERVER_IS_UNAVAILABLE: "Server berlangganan tidak tersedia"
+    LICENSING_DOMAIN_EXPIRED: "Berlangganan untuk domain ini telah habis."
+    LICENSING_DOMAIN_BANNED: "Berlangganan untuk domain ini ditolak."
+    DEMO_SEND_MESSAGE_ERROR: "Untuk alasan keamanan, akun ini tidak diizinkan untuk mengirim pesan ke alamat e-mail eksternal!"
+    DEMO_ACCOUNT_ERROR: "Untuk alasan keamanan, akun ini tidak diizinkan melakukan aksi ini!"
+    ACCOUNT_ALREADY_EXISTS: "Akun telah ada"
+    ACCOUNT_DOES_NOT_EXIST: "Akun tidak ada"
+    MAIL_SERVER_ERROR: "Terjadi kesalahan saat mengakses mail server"
+    INVALID_INPUT_ARGUMENT: "Argumen input tidak sah"
+    UNKNOWN_ERROR: "Kesalahan tidak diketahui"
+  STATIC:
+    BACK_LINK: "Muat ulang"
+    DOMAIN_LIST_DESC: "Daftar domain yang diizinkan untuk diakses."
+    PHP_EXSTENSIONS_ERROR_DESC: "Ekstensi PHP yang diperlukan tidak tersedia dalam konfigurasi PHP anda!"
+    PHP_VERSION_ERROR_DESC: "Versi PHP anda (%VERSION%) lebih rendah dari syarat minimal 5.3.0!"
+    NO_SCRIPT_TITLE: "Javascript diperlukan oleh aplikasi ini."
+    NO_SCRIPT_DESC: |
+        Dukungan Javascript tidak tersedia pada browser anda
+        Aktifkan Javascript pada pengaturan browser kemudian coba lagi.
+    NO_COOKIE_TITLE: "Dukungan Cookie diperlukan oleh aplikasi ini."
+    NO_COOKIE_DESC: |
+        Dukungan Cookie tidak tersedia pada browser anda
+        Aktifkan Cookie pada pengaturan browser kemudian coba lagi
+    BAD_BROWSER_TITLE: "Browser anda kadaluarsa."
+    BAD_BROWSER_DESC: |
+        Untuk bisa menggunakan seluruh fitur aplikasi,
+        download dan install salah satu browser berikut.

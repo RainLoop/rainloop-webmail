@@ -88,10 +88,10 @@ da_DK:
     EMPTY_LIST: "Ingen meddelelser."
     EMPTY_SEARCH_LIST: "Ingen meddelelser passede på søgningen."
     SEARCH_RESULT_FOR: "Resultat for søgningen på \"%SEARCH%\""
-    BACK_TO_MESSAGE_LIST: "Tilbage til meddelelsesoversigt."
-    LIST_LOADING: "Indlæser..."
+    BACK_TO_MESSAGE_LIST: "Tilbage til meddelelsesoversigt"
+    LIST_LOADING: "Indlæser"
     EMPTY_SUBJECT_TEXT: "(Intet emne)"
-    PUT_MESSAGE_HERE: "Træk meddelelser her for visning i oversigten"
+    PUT_MESSAGE_HERE: "Slip meddelelse her for visning i oversigten"
     TODAY_AT: "i dag klokken %TIME%"
     YESTERDAY_AT: "i går klokken %TIME%"
     SEARCH_PLACEHOLDER: "Søg"
@@ -145,8 +145,9 @@ da_DK:
     PRINT_LABEL_ATTACHMENTS: "Vedhæftninger"
     MESSAGE_LOADING: "Indlæser"
     MESSAGE_VIEW_DESC: "Vælg meddelelse i oversigten for visning."
+    MESSAGE_VIEW_MOVE_DESC: "Vælg modtagemappe i panelet til venstre."
     PGP_PASSWORD_INPUT_PLACEHOLDER: "Adgangskode"
-    PGP_SIGNED_MESSAGE_DESC: "OpenPGP signed message (click to verify)"
+    PGP_SIGNED_MESSAGE_DESC: "OpenPGP signeret meddelelse (tryk for at verificere)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP krypteret meddelelse (tryk for at dekryptere)"
     LINK_DOWNLOAD_AS_ZIP: "Hent som zip-fil"
     LINK_SAVE_TO_OWNCLOUD: "Gem til ownCloud"
@@ -154,10 +155,10 @@ da_DK:
   READ_RECEIPT:
     SUBJECT: "Kvittering for læsning af - %SUBJECT%"
     BODY: |
-      Kvittering for læsning af %READ-RECEIPT%.
+        Kvittering for læsning af %READ-RECEIPT%.
 
-      Bemærk: "Dette bekræfter bare at meddelelsen er blevet op modtageren."
-      Der er ingen garanti for at modtager har læst meddelelsen.
+        Bemærk: "Dette bekræfter bare at meddelelsen er blevet vist på modtagerens computer."
+        Der er ingen garanti for at modtager har læst meddelelsen.
   SUGGESTIONS:
     SEARCHING_DESC: "Søger..."
   CONTACTS:
@@ -175,7 +176,7 @@ da_DK:
     EMPTY_SEARCH: "Ingen kontakter fundet"
     CLEAR_SEARCH: "Fjern søgning"
     CONTACT_VIEW_DESC: "Vælg kontakt i oversigten for visning."
-    LABEL_DISPLAY_NAME: "Kaldenavn"
+    LABEL_DISPLAY_NAME: "Visningsnavn"
     LABEL_EMAIL: "E-mail"
     LABEL_PHONE: "Telefon"
     LABEL_WEB: "Hjemmeside"
@@ -197,10 +198,10 @@ da_DK:
     ADD_MENU_URL: "URL"
     ADD_MENU_ADDRESS: "Adresse"
     ADD_MENU_BIRTHDAY: "Fødselsdag"
-    ADD_MENU_TAGS: "Mærkat"
+    ADD_MENU_TAGS: "Mærkater"
     BUTTON_SHARE_NONE: "Ingen"
     BUTTON_SHARE_ALL: "Alle"
-    BUTTON_SYNC: "Synkroniser (CardDAV)"
+    BUTTON_SYNC: "Synkronisering (CardDAV)"
   COMPOSE:
     TITLE_FROM: "Fra"
     TITLE_TO: "Til"
@@ -214,11 +215,11 @@ da_DK:
     BUTTON_DELETE: "Slet"
     BUTTON_CANCEL: "Annuller"
     BUTTON_MINIMIZE: "Minimer"
-    SAVED_TIME: "Gemt klokken "
-    SAVED_ERROR_ON_SEND: "Meddelelse blev afsendt, men ikke gemt i sendt post"
+    SAVED_TIME: "Gemt klokken %TIME%"
+    SAVED_ERROR_ON_SEND: "Meddelelse blev afsendt, men ikke gemt i mappen for sendte meddelelser"
     DISCARD_UNSAVED_DATA: "Slet ikke gemt data?"
-    ATTACH_FILES: "Vedhæft fil"
-    ATTACH_DROP_FILES_DESC: "Træk filer her"
+    ATTACH_FILES: "Vedhæft filer"
+    ATTACH_DROP_FILES_DESC: "Slip filer her"
     ATTACH_ITEM_CANCEL: "Annuller"
     DROPBOX: "Dropbox"
     GOOGLE_DRIVE: "Google Drev"
@@ -243,7 +244,7 @@ da_DK:
     BUTTON_YES: "Ja"
     BUTTON_NO: "Nej"
     DESC_WANT_CLOSE_THIS_WINDOW: "Vil du lukke vinduet?"
-    DESC_WANT_DELETE_MESSAGES: "Vil du slette denne/disse meddelelse(r)"
+    DESC_WANT_DELETE_MESSAGES: "Vil du slette denne/disse meddelelse(r)?"
   POPUPS_LANGUAGES:
     TITLE_LANGUAGES: "Vælg sprog"
   POPUPS_ADD_ACCOUNT:
@@ -288,14 +289,14 @@ da_DK:
     BUTTON_SELECT: "Vælg"
     BUTTON_CLOSE: "Luk"
   POPUPS_GENERATE_OPEN_PGP_KEYS:
-    TITLE_GENERATE_OPEN_PGP_KEYS: "Lav OpenPGP nøgler"
+    TITLE_GENERATE_OPEN_PGP_KEYS: "Generér OpenPGP nøgler"
     LABEL_EMAIL: "E-mail"
     LABEL_NAME: "Navn"
     LABEL_PASSWORD: "Adgangskode"
     LABEL_KEY_BIT_LENGTH: "Nøglelængde"
     BUTTON_GENERATE_OPEN_PGP_KEYS: "Generér"
   POPUPS_COMPOSE_OPEN_PGP:
-    TITLE_COMPOSE_OPEN_PGP: "OpenPGP Signer/Krypter"
+    TITLE_COMPOSE_OPEN_PGP: "OpenPGP signér/krypter"
     LABEL_SIGN: "Signér"
     LABEL_ENCRYPT: "Krypter"
     LABEL_PASSWORD: "Adgangskode"
@@ -303,7 +304,7 @@ da_DK:
     BUTTON_ENCRYPT: "Krypter"
     BUTTON_SIGN_AND_ENCRYPT: "Signér og krypter"
   POPUPS_MESSAGE_OPEN_PGP:
-    TITLE_MESSAGE_OPEN_PGP: "OpenPGP Dekrypter"
+    TITLE_MESSAGE_OPEN_PGP: "OpenPGP dekrypter"
     LABEL_KEY: "Privat nøgle"
     LABEL_PASSWORD: "Adgangskode"
     BUTTON_DECRYPT: "Dekrypter"
@@ -316,7 +317,7 @@ da_DK:
     TITLE_EDIT_FILTER: "Opdater filter?"
     FILTER_NAME: "Navn"
     LEGEND_CONDITIONS: "Betingelser"
-    LEGEND_ACTIONS: "Handling"
+    LEGEND_ACTIONS: "Handlinger"
     BUTTON_DONE: "Færdig"
     BUTTON_ADD_CONDITION: "Tilføj betingelse"
     SELECT_ACTION_NONE: "Ingen"
@@ -335,7 +336,7 @@ da_DK:
     SELECT_TYPE_MATCHES: "Svarer til (* og ? kan bruges)"
     SELECT_TYPE_NOT_MATCHES: "Svarer ikke til (* og ? kan bruges)"
     SELECT_TYPE_REGEXP: "Regexp"
-    SELECT_TYPE_NOT_REGEXP: "Ikke Regexp"
+    SELECT_TYPE_NOT_REGEXP: "Ikke regexp"
     SELECT_TYPE_EQUAL_TO: "Lig med"
     SELECT_TYPE_NOT_EQUAL_TO: "Ikke lige med"
     SELECT_TYPE_OVER: "Over"
@@ -364,13 +365,13 @@ da_DK:
     BUTTON_CANCEL: "Annuller"
     BUTTON_CLOSE: "Luk"
     NOTIFICATION_SENT: |
-      Du har ikke valgt en systemmappe til sendte meddelelser.
+        Du har ikke valgt en systemmappe til sendte meddelelser.
     NOTIFICATION_DRAFTS: "Du har ikke valgt en systemmappe til kladder."
     NOTIFICATION_SPAM: |
-      Du har ikke valgt en systemmappe til uønskede meddelelser.
+        Du har ikke valgt en systemmappe til uønskede meddelelser.
     NOTIFICATION_TRASH: |
-      Du har ikke valgt en systemmappe til slettede meddelelser.
-      Hvis du vil slette meddelelser permanent, vælg "Brug ikke".
+        Du har ikke valgt en systemmappe til slettede meddelelser.
+        Hvis du vil slette meddelelser permanent, vælg "Brug ikke".
     NOTIFICATION_ARCHIVE: "Du har ikke valgt en systemmappe til arkiverede meddelelser."
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-trins verifikation (TOTP)"
@@ -396,7 +397,7 @@ da_DK:
         TOTP klient) ved hjælp af  QR koden herunder eller ved at indtaste koden manuelt.
     TWO_FACTOR_BACKUP_CODES_DESC: >
         Hvis du ikke kan modtage koder ved hjælp af Google Autentificering appen (eller
-        en anden TOTP klient), kan du bruge backup kode til at logge ind med. Når
+        en anden TOTP klient), kan du bruge backup koder til at logge ind med. Når
         en backup kode er brugt en gang bliver den inaktiv.
     TWO_FACTOR_SECRET_TEST_BEFORE_DESC: "Indstillingen kan ikke ændres før den er testet."
   TITLES:
@@ -407,8 +408,8 @@ da_DK:
     COMPOSE: "Forfat"
   UPLOAD:
     ERROR_FILE_IS_TOO_BIG: "Filen er for stor"
-    ERROR_FILE_PARTIALLY_UPLOADED: "Oploadning ufuldent, ukendt fejl."
-    ERROR_NO_FILE_UPLOADED: "Ingen file oploadet"
+    ERROR_FILE_PARTIALLY_UPLOADED: "Upload ufuldent, ukendt fejl."
+    ERROR_NO_FILE_UPLOADED: "Ingen fil uploaded"
     ERROR_MISSING_TEMP_FOLDER: "Midlertidig fil findes ikke"
     ERROR_ON_SAVING_FILE: "Ukendt upload fejl"
     ERROR_FILE_TYPE: "Forkert filtype"
@@ -438,13 +439,13 @@ da_DK:
     BUTTON_SAVE: "Gem"
     BUTTON_ADD_FILTER: "Tilføj filter"
     BUTTON_DELETE: "Slet"
-    BUTTON_RAW_SCRIPT: "Brug brugerdefineret skript"
+    BUTTON_RAW_SCRIPT: "Anvend brugerdefineret script"
     SUBNAME_NONE: "Ingen"
     SUBNAME_MOVE_TO: "Flyt til \"%FOLDER%\""
     SUBNAME_FORWARD_TO: "Videresend til \"%EMAIL%\""
     SUBNAME_REJECT: "Afvis"
     SUBNAME_VACATION_MESSAGE: "Feriemeddelelse"
-    SUBNAME_DISCARD: "Kasser"
+    SUBNAME_DISCARD: "Kassér"
     CAPABILITY_LABEL: "Evner"
     LOADING_PROCESS: "Opdater oversigten over filtre"
     DELETING_ASK: "Er du sikker?"
@@ -460,7 +461,7 @@ da_DK:
     LABEL_CONFIGURE_TWO_FACTOR: "Opsæt 2-trins verifikation"
     LABEL_AUTOLOGOUT: "Automatisk log ud"
     AUTOLOGIN_NEVER_OPTION_NAME: "Aldrig"
-    AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minut(er)"
+    AUTOLOGIN_MINUTES_OPTION_NAME: "%MINUTES% minut(ter)"
     AUTOLOGIN_HOURS_OPTION_NAME: "%HOURS% time(r)"
   SETTINGS_GENERAL:
     LEGEND_GENERAL: "Generelt"
@@ -494,7 +495,7 @@ da_DK:
   SETTINGS_CONTACTS:
     LEGEND_CONTACTS: "Kontakter"
     LABEL_CONTACTS_AUTOSAVE: "Tilføj automatisk modtager til adressebog"
-    LEGEND_CONTACTS_SYNC: "Synkroniser (CardDAV)"
+    LEGEND_CONTACTS_SYNC: "Synkronisering (CardDAV)"
     LABEL_CONTACTS_SYNC_ENABLE: "Aktivér synkronisering"
     LABEL_CONTACTS_SYNC_SERVER: "Server"
     LABEL_CONTACTS_SYNC_AB_URL: "Adressebogs URL"
@@ -515,29 +516,29 @@ da_DK:
     LEGEND_GOOGLE: "Google"
     BUTTON_GOOGLE_CONNECT: "Forbind til Google"
     BUTTON_GOOGLE_DISCONNECT: "Afbryd forbindelse til Google"
-    MAIN_GOOGLE_DESC: "Ved aktivering af log ind via Google. Kan der logges ind ved hjælp af Google knappen på log ind skærmen."
+    MAIN_GOOGLE_DESC: "Ved aktivering af log ind via Google, kan der logges ind ved hjælp af Google knappen på log ind skærmen."
     LEGEND_FACEBOOK: "Facebook"
     BUTTON_FACEBOOK_CONNECT: "Forbind til Facebook"
     BUTTON_FACEBOOK_DISCONNECT: "Afbryd forbindelse til Facebook"
-    MAIN_FACEBOOK_DESC: "Ved aktivering af log ind via Facebook. Kan der logges ind ved hjælp af Facebook knappen på log ind skærmen."
+    MAIN_FACEBOOK_DESC: "Ved aktivering af log ind via Facebook, kan der logges ind ved hjælp af Facebook knappen på log ind skærmen."
     LEGEND_TWITTER: "Twitter"
     BUTTON_TWITTER_CONNECT: "Forbind til Twitter"
     BUTTON_TWITTER_DISCONNECT: "Afbryd forbindelse til Twitter"
-    MAIN_TWITTER_DESC: "Ved aktivering af log ind via Twitter. Kan der logges ind ved hjælp af Twitter knappen på log ind skærmen."
+    MAIN_TWITTER_DESC: "Ved aktivering af log ind via Twitter, kan der logges ind ved hjælp af Twitter knappen på log ind skærmen."
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Mappeoversigt"
     BUTTON_CREATE: "Opret ny mappe"
     BUTTON_SYSTEM: "Systemmapper"
     BUTTON_DELETE: "Slet"
-    BUTTON_SUBSCRIBE: "Abonnér"
+    BUTTON_SUBSCRIBE: "Tilmeld"
     BUTTON_UNSUBSCRIBE: "Afmeld"
-    LOADING_PROCESS: "Opdater mappeoversigt"
+    LOADING_PROCESS: "Opdaterer mappeoversigt"
     CREATING_PROCESS: "Opretter mappe"
     DELETING_PROCESS: "Sletter mappe"
     RENAMING_PROCESS: "Omdøber mappe"
     DELETING_ASK: "Er du sikker?"
     TO_MANY_FOLDERS_DESC_1: "For mange mapper!"
-    TO_MANY_FOLDERS_DESC_2: "Kun nogle mapper vises for at undgå problemer"
+    TO_MANY_FOLDERS_DESC_2: "Kun nogle mapper vises for at undgå problemer."
     HELP_DELETE_FOLDER: "Slet mappe"
     HELP_SHOW_HIDE_FOLDER: "Vis/skjul mappe"
     HELP_CHECK_FOR_NEW_MESSAGES: "Markér/fjern markering for nye meddelelser"
@@ -573,11 +574,12 @@ da_DK:
   SETTINGS_OPEN_PGP:
     LEGEND_OPEN_PGP: "OpenPGP"
     BUTTON_ADD_OPEN_PGP_KEY: "Importer OpenPGP nøgle"
-    BUTTON_GENERATE_OPEN_PGP_KEYS: "Lav OpenPGP nøgler"
+    BUTTON_GENERATE_OPEN_PGP_KEYS: "Generer OpenPGP nøgler"
     TITLE_PRIVATE: "Privat"
     TITLE_PUBLIC: "Offentlig"
     DELETING_ASK: "Er du sikker?"
     GENERATE_ONLY_HTTPS: "Kun HTTPS"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Gem kladde automatisk"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Hjælp til tasteturgenveje"
     TAB_MAILBOX: "Postkasse"
@@ -626,7 +628,7 @@ da_DK:
     ADD_A_PUBLICK_KEY: "Tilføj privat nøgle"
     SELECT_A_PRIVATE_KEY: "Vælg privat nøgle"
     UNVERIFIRED_SIGNATURE: "Ikke verificeret signatur"
-    DECRYPTION_ERROR: "OpenPGP dekrypterings fejl"
+    DECRYPTION_ERROR: "OpenPGP dekrypteringsfejl"
     GOOD_SIGNATURE: "Accepteret signatur for %USER\""
     PGP_ERROR: "OpenPGP fejl: %ERROR%"
     SPECIFY_FROM_EMAIL: "Udfyld afsenderadresse"
@@ -639,13 +641,13 @@ da_DK:
     CAPTCHA_ERROR: "Forkert CAPTCHA"
     SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
         Dette sociale ID er ikke knyttet til en e-mail konto endnu. Log ind ved brug
-        af e-mail og tilføj ID'et under konto indstillinger.
+        af e-mail og tilføj ID'et under kontoindstillinger.
     SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
         Dette sociale ID er ikke knyttet til en e-mail konto endnu. Log ind ved brug
-        af e-mail og tilføj ID'et under konto indstillinger.
+        af e-mail og tilføj ID'et under kontoindstillinger.
     SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
         Dette sociale ID er ikke knyttet til en e-mail konto endnu. Log ind ved brug
-        af e-mail og tilføj ID'et under konto indstillinger.
+        af e-mail og tilføj ID'et under kontoindstillinger.
     DOMAIN_NOT_ALLOWED: "Domæne ikke tilladt"
     ACCOUNT_NOT_ALLOWED: "Konto ikke tilladt"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "2-faktor verifikation påbudt."
@@ -696,13 +698,13 @@ da_DK:
     PHP_VERSION_ERROR_DESC: "PHP versionen (%VERSION%) er for gammel.  Minimum 5.3.0 er nødvendig!"
     NO_SCRIPT_TITLE: "JavaScript er nødvendigt for dette program."
     NO_SCRIPT_DESC: |
-      JavaScript er slået fra i din browser.
-      Slå JavaScript til og prøv igen.
+        JavaScript er slået fra i din browser.
+        Slå JavaScript til og prøv igen.
     NO_COOKIE_TITLE: "Cookies er nødvendige for dette program."
     NO_COOKIE_DESC: |
-      Cookies er slået fra i din browser.
-      Slå Cookies til og prøv igen.
+        Cookies er slået fra i din browser.
+        Slå Cookies til og prøv igen.
     BAD_BROWSER_TITLE: "Din browser er forældet."
     BAD_BROWSER_DESC: |
-      Enkelte funktioner fungerer ikke med denne browser.
-      For at bruge alle funktioner, hent en af følgende:
+        Enkelte funktioner fungerer ikke med denne browser.
+        For at bruge alle funktioner, hent en af følgende:

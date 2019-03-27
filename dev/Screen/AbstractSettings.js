@@ -168,9 +168,9 @@ class AbstractSettingsScreen extends AbstractScreen
 	routes() {
 		const
 			DefaultViewModel = _.find(
-					VIEW_MODELS.settings,
-					(SettingsViewModel) => SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData.IsDefault
-				),
+				VIEW_MODELS.settings,
+				(SettingsViewModel) => SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData.IsDefault
+			),
 			defaultRoute = DefaultViewModel && DefaultViewModel.__rlSettingsData ? DefaultViewModel.__rlSettingsData.Route : 'general',
 			rules = {
 				subname: /^(.*)$/,

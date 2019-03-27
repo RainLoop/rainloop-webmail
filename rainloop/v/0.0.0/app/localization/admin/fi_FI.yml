@@ -35,11 +35,11 @@ fi_FI:
     LABEL_ALLOW_TEMPLATES: "Salli mallipohjat"
     ALERT_WARNING: "Varoitus!"
     HTML_ALERT_WEAK_PASSWORD: |
-      Sinulla on käytössäsi hallintatunnuksen oletussalasana.
-      <br />
-      Tietoturvasyistä, ole ystävällinen ja
-      <strong><a href="#/security">vaihda</a></strong>
-      salasanasi nyt.
+        Sinulla on käytössäsi hallintatunnuksen oletussalasana.
+        <br />
+        Tietoturvasyistä, ole ystävällinen ja
+        <strong><a href="#/security">vaihda</a></strong>
+        salasanasi nyt.
   TAB_LOGIN:
     LEGEND_LOGIN_SCREEN: "Kirjautumissivu"
     LABEL_DEFAULT_DOMAIN: "Oletus domain"
@@ -83,18 +83,18 @@ fi_FI:
     ALERT_NOTICE: "Huomio!"
     HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "Älä käytä tätä tietokantatyyppiä suurella määrällä aktiivisia käyttäjiä."
     HTML_ALERT_DOES_NOT_SUPPORTED: |
-      Järjestelmäsi ei tue yhteystietoja.
-      <br/>
-      Asenna tai aktivoi <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> lisäosa palvelimellasi.
+        Järjestelmäsi ei tue yhteystietoja.
+        <br/>
+        Asenna tai aktivoi <strong>PDO (SQLite / MySQL / PostgreSQL)</strong> lisäosa palvelimellasi.
   TAB_DOMAINS:
     LEGEND_DOMAINS: "Domainit"
     BUTTON_ADD_DOMAIN: "Lisää domain"
     BUTTON_ADD_ALIAS: "Lisää alias"
     DELETE_ARE_YOU_SURE: "Oletko varma?"
     HTML_DOMAINS_HELPER: |
-      Lista domaineista joilla webmaililla on pääsy.
-      <br/>
-      Klikkaa nimeä konfiguroidaksesi domain.
+        Lista domaineista joilla webmaililla on pääsy.
+        <br/>
+        Klikkaa nimeä konfiguroidaksesi domain.
   TAB_SECURITY:
     LEGEND_SECURITY: "Tietoturva"
     LABEL_ALLOW_TWO_STEP: "Salli 2 vaiheinen todentaminen"
@@ -153,8 +153,8 @@ fi_FI:
     HTML_ALERT_TOP_1: "RainLoop Webmail on lisensoitu"
     HTML_ALERT_TOP_2: "Voit käyttää <b>ilmaiseksi omissa</b> projekteissasi. "
     HTML_ALERT_TOP_3: |
-      <b>RainLoop Webmail</b>in kaupallinen käyttö (lisäominaisuuksilla) vaatii
-      <a href="http://www.rainloop.net/purchase/" target="_blank">tilauksen</a>.
+        <b>RainLoop Webmail</b>in kaupallinen käyttö (lisäominaisuuksilla) vaatii
+        <a href="http://www.rainloop.net/purchase/" target="_blank">tilauksen</a>.
     TYPE_PREMIUM_LIFETIME: "Kesto"
     LABEL_SUB_EXPIRES: "Tilaus päättyy"
     BUTTON_ACTIVATE: "Aktivoi Tilaus Avain tälle verkkotunnukselle"
@@ -182,11 +182,11 @@ fi_FI:
     ERROR_INVALID_SUBS_KEY: "Väärä tilausavain"
     SUBS_KEY_ACTIVATED: "Tilausavain aktivoitu onnistuneesti"
     HTML_DESC: |
-      Aktivoinninn jälkeen tilaus <b>%DOMAIN%</b> verkkotunnukselle jatkuu.
-      <br/>
-      Huomioi että tilausavain voidaan aktivoida vain yhdelle verkkotunnukselle.
-      <br/><br/>
-      Aloituksen jälkeen aktivointia ei voi keskeyttää tai peruuttaa.
+        Aktivoinninn jälkeen tilaus <b>%DOMAIN%</b> verkkotunnukselle jatkuu.
+        <br/>
+        Huomioi että tilausavain voidaan aktivoida vain yhdelle verkkotunnukselle.
+        <br/><br/>
+        Aloituksen jälkeen aktivointia ei voi keskeyttää tai peruuttaa.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Lisää Alias"
     LABEL_ALIAS: "Alias"
@@ -224,8 +224,8 @@ fi_FI:
     BUTTON_UPDATE: "Päivitä"
     NEW_DOMAIN_DESC: "Tämän verkkotunnuksen asetukset sallivat käyttää <br/> <i>%NAME%<i/> säkhöpostiosoitteita."
     WHITE_LIST_ALERT: |
-      Lista domain käyttäjistä joihin webmaililla on oikeus.
-      Erottele välilyönnillä.
+        Lista domain käyttäjistä joihin webmaililla on oikeus.
+        Erottele välilyönnillä.
   POPUPS_PLUGIN:
     TITLE_PLUGIN: "Lisäosa"
     DESC_NOTHING_TO_CONFIGURE: "Ei mitään asetettavaa"
@@ -310,13 +310,13 @@ fi_FI:
     PHP_VERSION_ERROR_DESC: "PHP versiosi (%VERSION%) on alle vaaditun 5.3.0!"
     NO_SCRIPT_TITLE: "Javascript vaaditaan tälle sovellukselle."
     NO_SCRIPT_DESC: |
-      Selaimesi ei tue JavaScriptiä.
-      Salli JavaScript selaimessasi ja yritä uudelleen.
+        Selaimesi ei tue JavaScriptiä.
+        Salli JavaScript selaimessasi ja yritä uudelleen.
     NO_COOKIE_TITLE: "Esvästetuki vaaditaan tässä sovelluksessa."
     NO_COOKIE_DESC: |
-      Selaimesi ei tue evästeitä.
-      Salli evästeet selaimessasi ja yritä uudelleen.
+        Selaimesi ei tue evästeitä.
+        Salli evästeet selaimessasi ja yritä uudelleen.
     BAD_BROWSER_TITLE: "Selaimesi on vanhentunut."
     BAD_BROWSER_DESC: |
-      Käyttääksesi kaikki ominaisuuksia
-      lataa ja asenna jokin näistä selaimista:
+        Käyttääksesi kaikki ominaisuuksia
+        lataa ja asenna jokin näistä selaimista:

@@ -4,7 +4,6 @@ ko_KR:
     LABEL_LOGIN: "아이디"
     LABEL_PASSWORD: "비밀번호"
     LABEL_SIGN_ME: "아이디 기억"
-    LABEL_VERIFICATION_CODE: "Verification Code"
     LABEL_DONT_ASK_VERIFICATION_CODE: "2주 동안 코드를 물어보지 않기"
     BUTTON_SIGN_IN: "로그인"
     TITLE_SIGN_IN_GOOGLE: "구글 계정으로 로그인"
@@ -151,13 +150,6 @@ ko_KR:
     LINK_DOWNLOAD_AS_ZIP: "압축파일로 다운로드"
     LINK_SAVE_TO_OWNCLOUD: "ownCloud에 저장하기"
     LINK_SAVE_TO_DROPBOX: "Dropbox에 저장하기"
-  READ_RECEIPT:
-    SUBJECT: "Return Receipt (displayed) - %SUBJECT%"
-    BODY: |
-      This is a Return Receipt for the mail that you sent to %READ-RECEIPT%.
-
-      Note: This Return Receipt only acknowledges that the message was displayed on the recipient's computer.
-      There is no guarantee that the recipient has read or understood the message contents.
   SUGGESTIONS:
     SEARCHING_DESC: "검색중..."
   CONTACTS:
@@ -199,7 +191,6 @@ ko_KR:
     ADD_MENU_BIRTHDAY: "생일"
     ADD_MENU_TAGS: "태그"
     BUTTON_SHARE_NONE: "비어 있음"
-    BUTTON_SHARE_ALL: "Everyone"
     BUTTON_SYNC: "동기화 (서비스 CardDAV)"
   COMPOSE:
     TITLE_FROM: "보낸 이"
@@ -364,12 +355,12 @@ ko_KR:
     BUTTON_CANCEL: "취소"
     BUTTON_CLOSE: "닫기"
     NOTIFICATION_SENT: |-
-      보낸 편지함 폴더가 지정되지 않았습니다. 보낸 메시지를 보관하지 않고 삭제하려면 "사용하지 않음" 옵션을 선택해주세요.
+        보낸 편지함 폴더가 지정되지 않았습니다. 보낸 메시지를 보관하지 않고 삭제하려면 "사용하지 않음" 옵션을 선택해주세요.
     NOTIFICATION_DRAFTS: "임시 보관함 폴더가 지정되지 않았습니다."
     NOTIFICATION_SPAM: |-
-      스팸함 폴더가 지정되지 않았습니다. 스팸처리한 메시지를 보관하지 않고 바로 삭제하려면 "사용하지 않음" 옵션을 선택해주세요.
+        스팸함 폴더가 지정되지 않았습니다. 스팸처리한 메시지를 보관하지 않고 바로 삭제하려면 "사용하지 않음" 옵션을 선택해주세요.
     NOTIFICATION_TRASH: |-
-      휴지통 폴더가 지정되지 않았습니다. 삭제한 메시지를 휴지통에 보관하지 않고 바로 삭제하려면 "사용하지 않음" 옵션을 선택해주세요.
+        휴지통 폴더가 지정되지 않았습니다. 삭제한 메시지를 휴지통에 보관하지 않고 바로 삭제하려면 "사용하지 않음" 옵션을 선택해주세요.
     NOTIFICATION_ARCHIVE: "You haven't selected \"Archive\" system folder achived messages are placed to.\n"
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "2-Step Verification"
@@ -685,10 +676,10 @@ ko_KR:
     PHP_VERSION_ERROR_DESC: "현재 사용 중인 PHP 버전 (%VERSION%)이 너무 낮습니다. 최소 5.3.0 이상을 설치해주세요!"
     NO_SCRIPT_TITLE: "자바스크립트 필요"
     NO_SCRIPT_DESC: |-
-      사용 중인 브라우저가 자바스크립트를 지원하지 않습니다. 브라우저 설정을 확인하여 자바스크립트 사용을 활성화하고 다시 시도해주세요.
+        사용 중인 브라우저가 자바스크립트를 지원하지 않습니다. 브라우저 설정을 확인하여 자바스크립트 사용을 활성화하고 다시 시도해주세요.
     NO_COOKIE_TITLE: "이 어플리케이션을 사용하려면 쿠키 사용이 지원되야 합니다."
     NO_COOKIE_DESC: |-
-      사용 중인 브라우저가 쿠키를 지원하지 않습니다. 브라우저 설정을 확인하여 쿠키 사용을 활성화하고 다시 시도해주세요.
+        사용 중인 브라우저가 쿠키를 지원하지 않습니다. 브라우저 설정을 확인하여 쿠키 사용을 활성화하고 다시 시도해주세요.
     BAD_BROWSER_TITLE: "사용 중인 브라우저가 구버전입니다."
     BAD_BROWSER_DESC: |-
-      이 어플리케이션을 정상적으로 사용하시려면 아래의 브라우저들 중 하나를 설치해주세요:
+        이 어플리케이션을 정상적으로 사용하시려면 아래의 브라우저들 중 하나를 설치해주세요:

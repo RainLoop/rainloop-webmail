@@ -465,7 +465,7 @@ class MessageListMailBoxUserView extends AbstractViewNext
 			return false;
 		}
 
-		if (/is:unseen/.test(this.mainMessageListSearch()))
+		if ((/is:unseen/).test(this.mainMessageListSearch()))
 		{
 			return false;
 		}

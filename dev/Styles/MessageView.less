@@ -276,11 +276,11 @@ html.rl-no-preview-pane {
 				z-index: 2;
 				cursor: pointer;
 				border-radius: 5px;
-				opacity: 0.3;
+				.opacity(50);
 
 				&:hover {
 					.opacity(80);
-					border-color: #000;
+					border-color: #666;
 					background-color: #888;
 					color: #fff;
 				}
@@ -637,17 +637,40 @@ html.rl-message-fullscreen {
 		z-index: 10000 !important;
 		border: @rlLowBorderSize solid @rlMainDarkColor  !important;
 		border-radius: @rlLowBorderRadius  !important;
+	}
+}
 
-		.buttonUnFull {
+html .messageItem {
+	.buttonUp, .buttonUp {
+		display: none !important;
+	}
+	&.scroller-shadow-top .buttonUp {
+		display: inline-block !important;
+	}
+}
+
+html.rl-desktop .messageItem {
+	.buttonUp, .buttonFull {
+		display: none !important;
+	}
+	&:hover {
+		&.scroller-shadow-top .buttonUp, .buttonFull {
 			display: inline-block !important;
-		}
-
-		.buttonFull {
-			display: none  !important;
 		}
 	}
 }
 
-.nano.scroller-shadow-top .buttonUp {
-	display: inline-block !important;
+html.rl-message-fullscreen .messageItem {
+	.buttonUnFull {
+		display: inline-block !important;
+	}
+	.buttonFull {
+		display: none !important;
+	}
+	.buttonUp {
+		display: none !important;
+	}
+	&.scroller-shadow-top .buttonUp {
+		display: inline-block !important;
+	}
 }

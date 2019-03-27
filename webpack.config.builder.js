@@ -1,5 +1,5 @@
 
-var
+const
 	path = require('path'),
 	webpack = require('webpack'),
 	devPath = path.resolve(__dirname, 'dev'),
@@ -7,9 +7,34 @@ var
 	WebpackNotifierPlugin = require('webpack-notifier'),
 	loose = true;
 
+const babelLoaderOptions = function() {
+	return {
+		cacheDirectory: true,
+		presets: [
+			['@babel/preset-env', {
+				loose: loose,
+				modules: false,
+				targets: {
+					browsers: ['last 3 versions', 'ie >= 9', 'firefox esr']
+				}
+			}]
+		],
+		plugins: [
+			['@babel/plugin-transform-runtime', {
+				corejs: 2
+			}],
+			['@babel/plugin-proposal-decorators', {
+				legacy: true
+			}],
+			'@babel/plugin-proposal-class-properties'
+		]
+	};
+};
+
 process.noDeprecation = true;
 module.exports = function(publicPath, pro) {
 	return {
+		mode: 'production',
 		entry: {
 			'js/boot': path.join(__dirname, 'dev', 'boot.js'),
 			'js/app': path.join(__dirname, 'dev', 'app.js'),
@@ -21,8 +46,14 @@ module.exports = function(publicPath, pro) {
 			filename: '[name].js',
 			publicPath: publicPath || 'rainloop/v/0.0.0/static/'
 		},
+		performance: {
+			hints: false
+		},
+		optimization: {
+			concatenateModules: false,
+			minimize: false
+		},
 		plugins: [
-			// new webpack.optimize.ModuleConcatenationPlugin(),
 			new webpack.DefinePlugin({
 				'RL_COMMUNITY': !pro,
 				'process.env': {
@@ -39,8 +70,8 @@ module.exports = function(publicPath, pro) {
 			modules: [devPath, 'node_modules'],
 			extensions: ['.js'],
 			alias: {
-				'Opentip$': __dirname  + '/dev/External/Opentip.js',
-				'ko$': __dirname  + '/dev/External/ko.js'
+				'Opentip$': path.join(__dirname, 'dev', 'External', 'Opentip.js'),
+				'ko$': path.join(__dirname, 'dev', 'External', 'ko.js')
 			}
 		},
 		module: {
@@ -49,21 +80,16 @@ module.exports = function(publicPath, pro) {
 					test: /\.js$/,
 					loader: 'babel-loader',
 					include: [devPath],
-					options: {
-						cacheDirectory: true,
-						presets: [['env', {
-							loose: loose,
-							modules: false,
-							targets: {
-								browsers: ['last 3 versions', 'ie >= 9', 'firefox esr']
-							}
-						}], 'stage-0'],
-						plugins: ['transform-runtime', 'transform-decorators-legacy']
-					}
+					options: babelLoaderOptions()
 				},
 				{
-					test: /\.(html|css)$/,
+					test: /\.html$/,
 					loader: 'raw-loader',
+					include: [devPath]
+				},
+				{
+					test: /\.css/,
+					loaders: ['style-loader', 'css-loader'],
 					include: [devPath]
 				},
 				{

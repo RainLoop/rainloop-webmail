@@ -151,14 +151,15 @@ fr_FR:
     PGP_ENCRYPTED_MESSAGE_DESC: "Message chiffré par OpenPGP (cliquer pour déchiffrer)"
     LINK_DOWNLOAD_AS_ZIP: "Télécharger le zip"
     LINK_SAVE_TO_OWNCLOUD: "Enregistrer sur ownCloud"
+    LINK_SAVE_TO_CLOUD: "Enregistrer sur le cloud"
     LINK_SAVE_TO_DROPBOX: "Enregistrer sur Dropbox"
   READ_RECEIPT:
     SUBJECT: "Accusé de réception (affiché) - %SUBJECT%"
     BODY: |
-      Il s'agit d'un accusé de réception pour le courrier que vous avez envoyé à %READ-RECEIPT%.
+        Il s'agit d'un accusé de réception pour le courrier que vous avez envoyé à %READ-RECEIPT%.
 
-      Note: Cet accusé de réception reconnaît que le message a été affiché sur l'ordinateur du destinataire.
-      Il n'y a aucune garantie que le destinataire ait lu ou compris le contenu du message.
+        Note: Cet accusé de réception reconnaît que le message a été affiché sur l'ordinateur du destinataire.
+        Il n'y a aucune garantie que le destinataire ait lu ou compris le contenu du message.
   SUGGESTIONS:
     SEARCHING_DESC: "Recherche..."
   CONTACTS:
@@ -365,15 +366,15 @@ fr_FR:
     BUTTON_CANCEL: "Annuler"
     BUTTON_CLOSE: "Fermer"
     NOTIFICATION_SENT: |
-      Vous n'avez pas sélectionné de dossier "Envoyés" où copier les messages après envoi.
-      Si vous ne souhaitez pas enregistrer une copie des messages envoyés, sélectionnez l'option "Ne pas utiliser".
+        Vous n'avez pas sélectionné de dossier "Envoyés" où copier les messages après envoi.
+        Si vous ne souhaitez pas enregistrer une copie des messages envoyés, sélectionnez l'option "Ne pas utiliser".
     NOTIFICATION_DRAFTS: "Vous n'avez pas sélectionné de dossier \"Brouillons\" où enregistrer les messages en cours de rédaction."
     NOTIFICATION_SPAM: |
-      Vous n'avez pas sélectionné de dossier "Spam" où placer les indésirables.
-      Si vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option "Ne pas utiliser".
+        Vous n'avez pas sélectionné de dossier "Spam" où placer les indésirables.
+        Si vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option "Ne pas utiliser".
     NOTIFICATION_TRASH: |
-      Vous n'avez pas sélectionné de dossier "Corbeille" où placer les messages supprimés.
-      Si vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option "Ne pas utiliser".
+        Vous n'avez pas sélectionné de dossier "Corbeille" où placer les messages supprimés.
+        Si vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option "Ne pas utiliser".
     NOTIFICATION_ARCHIVE: "Vous n'avez pas sélectionné de dossier \"Archive\" où placer les messages archivés.\n"
   POPUPS_TWO_FACTOR_CFG:
     LEGEND_TWO_FACTOR_AUTH: "Authentification en deux étapes"
@@ -582,6 +583,7 @@ fr_FR:
     TITLE_PUBLIC: "Publique"
     DELETING_ASK: "Êtes-vous sûr ?"
     GENERATE_ONLY_HTTPS: "HTTPS seulement"
+    LABEL_ALLOW_DRAFT_AUTOSAVE: "Brouillon sauvegardé automatiquement"
   SHORTCUTS_HELP:
     LEGEND_SHORTCUTS_HELP: "Aide pour les raccourcis clavier"
     TAB_MAILBOX: "Boîte aux lettres"
@@ -703,13 +705,13 @@ fr_FR:
     PHP_VERSION_ERROR_DESC: "Votre version de PHP (% VERSION%) est inférieure à la minimale requise 5.3.0 !"
     NO_SCRIPT_TITLE: "JavaScript est nécessaire pour cette application."
     NO_SCRIPT_DESC: |
-      Le support de JavaScript n'est pas disponible dans votre navigateur.
-      S'il vous plaît activez le support de JavaScript dans les paramètres de votre navigateur et réessayez.
+        Le support de JavaScript n'est pas disponible dans votre navigateur.
+        S'il vous plaît activez le support de JavaScript dans les paramètres de votre navigateur et réessayez.
     NO_COOKIE_TITLE: "Le support des cookies est nécessaire pour cette application."
     NO_COOKIE_DESC: |
-      Le support des cookies n'est pas disponible dans votre navigateur.
-      S'il vous plaît activez le support des cookies dans les paramètres de votre navigateur et réessayez.
+        Le support des cookies n'est pas disponible dans votre navigateur.
+        S'il vous plaît activez le support des cookies dans les paramètres de votre navigateur et réessayez.
     BAD_BROWSER_TITLE: "Votre navigateur est obsolète."
     BAD_BROWSER_DESC: |
-      Pour utiliser toutes les fonctionnalités de l'application,
-      téléchargez et installez l'un de ces navigateurs :
+        Pour utiliser toutes les fonctionnalités de l'application,
+        téléchargez et installez l'un de ces navigateurs :

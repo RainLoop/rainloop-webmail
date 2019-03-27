@@ -71,21 +71,7 @@ if (!class_exists('Crypt_Base')) {
 
 /**#@+
  * @access private
- * @see Crypt_RC4::Crypt_RC4()
- */
-/**
- * Toggles the internal implementation
- */
-define('CRYPT_RC4_MODE_INTERNAL', CRYPT_MODE_INTERNAL);
-/**
- * Toggles the mcrypt implementation
- */
-define('CRYPT_RC4_MODE_MCRYPT', CRYPT_MODE_MCRYPT);
-/**#@-*/
-
-/**#@+
- * @access private
- * @see Crypt_RC4::_crypt()
+ * @see self::_crypt()
  */
 define('CRYPT_RC4_ENCRYPT', 0);
 define('CRYPT_RC4_DECRYPT', 1);
@@ -107,26 +93,25 @@ class Crypt_RC4 extends Crypt_Base
      * so we the block_size to 0
      *
      * @see Crypt_Base::block_size
-     * @var Integer
+     * @var int
      * @access private
      */
     var $block_size = 0;
 
     /**
-     * The default password key_size used by setPassword()
+     * Key Length (in bytes)
      *
-     * @see Crypt_Base::password_key_size
-     * @see Crypt_Base::setPassword()
-     * @var Integer
+     * @see Crypt_RC4::setKeyLength()
+     * @var int
      * @access private
      */
-    var $password_key_size = 128; // = 1024 bits
+    var $key_length = 128; // = 1024 bits
 
     /**
      * The namespace used by the cipher for its constants.
      *
      * @see Crypt_Base::const_namespace
-     * @var String
+     * @var string
      * @access private
      */
     var $const_namespace = 'RC4';
@@ -135,7 +120,7 @@ class Crypt_RC4 extends Crypt_Base
      * The mcrypt specific name of the cipher
      *
      * @see Crypt_Base::cipher_name_mcrypt
-     * @var String
+     * @var string
      * @access private
      */
     var $cipher_name_mcrypt = 'arcfour';
@@ -152,17 +137,17 @@ class Crypt_RC4 extends Crypt_Base
     /**
      * The Key
      *
-     * @see Crypt_RC4::setKey()
-     * @var String
+     * @see self::setKey()
+     * @var string
      * @access private
      */
-    var $key = "\0";
+    var $key;
 
     /**
      * The Key Stream for decryption and encryption
      *
-     * @see Crypt_RC4::setKey()
-     * @var Array
+     * @see self::setKey()
+     * @var array
      * @access private
      */
     var $stream;
@@ -176,9 +161,55 @@ class Crypt_RC4 extends Crypt_Base
      * @return Crypt_RC4
      * @access public
      */
+    function __construct()
+    {
+        parent::__construct(CRYPT_MODE_STREAM);
+    }
+
+    /**
+     * PHP4 compatible Default Constructor.
+     *
+     * @see self::__construct()
+     * @access public
+     */
     function Crypt_RC4()
     {
-        parent::Crypt_Base(CRYPT_MODE_STREAM);
+        $this->__construct();
+    }
+
+    /**
+     * Test for engine validity
+     *
+     * This is mainly just a wrapper to set things up for Crypt_Base::isValidEngine()
+     *
+     * @see Crypt_Base::Crypt_Base()
+     * @param int $engine
+     * @access public
+     * @return bool
+     */
+    function isValidEngine($engine)
+    {
+        if ($engine == CRYPT_ENGINE_OPENSSL) {
+            if (version_compare(PHP_VERSION, '5.3.7') >= 0) {
+                $this->cipher_name_openssl = 'rc4-40';
+            } else {
+                switch (strlen($this->key)) {
+                    case 5:
+                        $this->cipher_name_openssl = 'rc4-40';
+                        break;
+                    case 8:
+                        $this->cipher_name_openssl = 'rc4-64';
+                        break;
+                    case 16:
+                        $this->cipher_name_openssl = 'rc4';
+                        break;
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        return parent::isValidEngine($engine);
     }
 
     /**
@@ -196,8 +227,8 @@ class Crypt_RC4 extends Crypt_Base
      * {@link http://www.rsa.com/rsalabs/node.asp?id=2009 http://www.rsa.com/rsalabs/node.asp?id=2009}
      * {@link http://en.wikipedia.org/wiki/Related_key_attack http://en.wikipedia.org/wiki/Related_key_attack}
      *
-     * @param String $iv
-     * @see Crypt_RC4::setKey()
+     * @param string $iv
+     * @see self::setKey()
      * @access public
      */
     function setIV($iv)
@@ -205,32 +236,38 @@ class Crypt_RC4 extends Crypt_Base
     }
 
     /**
-     * Sets the key.
+     * Sets the key length
      *
-     * Keys can be between 1 and 256 bytes long.  If they are longer then 256 bytes, the first 256 bytes will
-     * be used.  If no key is explicitly set, it'll be assumed to be a single null byte.
+     * Keys can be between 1 and 256 bytes long.
      *
      * @access public
-     * @see Crypt_Base::setKey()
-     * @param String $key
+     * @param int $length
      */
-    function setKey($key)
+    function setKeyLength($length)
     {
-        parent::setKey(substr($key, 0, 256));
+        if ($length < 8) {
+            $this->key_length = 1;
+        } elseif ($length > 2048) {
+            $this->key_length = 256;
+        } else {
+            $this->key_length = $length >> 3;
+        }
+
+        parent::setKeyLength($length);
     }
 
     /**
      * Encrypts a message.
      *
      * @see Crypt_Base::decrypt()
-     * @see Crypt_RC4::_crypt()
+     * @see self::_crypt()
      * @access public
-     * @param String $plaintext
-     * @return String $ciphertext
+     * @param string $plaintext
+     * @return string $ciphertext
      */
     function encrypt($plaintext)
     {
-        if ($this->engine == CRYPT_MODE_MCRYPT) {
+        if ($this->engine != CRYPT_ENGINE_INTERNAL) {
             return parent::encrypt($plaintext);
         }
         return $this->_crypt($plaintext, CRYPT_RC4_ENCRYPT);
@@ -243,14 +280,14 @@ class Crypt_RC4 extends Crypt_Base
      * At least if the continuous buffer is disabled.
      *
      * @see Crypt_Base::encrypt()
-     * @see Crypt_RC4::_crypt()
+     * @see self::_crypt()
      * @access public
-     * @param String $ciphertext
-     * @return String $plaintext
+     * @param string $ciphertext
+     * @return string $plaintext
      */
     function decrypt($ciphertext)
     {
-        if ($this->engine == CRYPT_MODE_MCRYPT) {
+        if ($this->engine != CRYPT_ENGINE_INTERNAL) {
             return parent::decrypt($ciphertext);
         }
         return $this->_crypt($ciphertext, CRYPT_RC4_DECRYPT);
@@ -287,12 +324,12 @@ class Crypt_RC4 extends Crypt_Base
     /**
      * Encrypts or decrypts a message.
      *
-     * @see Crypt_RC4::encrypt()
-     * @see Crypt_RC4::decrypt()
+     * @see self::encrypt()
+     * @see self::decrypt()
      * @access private
-     * @param String $text
-     * @param Integer $mode
-     * @return String $text
+     * @param string $text
+     * @param int $mode
+     * @return string $text
      */
     function _crypt($text, $mode)
     {
