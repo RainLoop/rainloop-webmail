@@ -41,6 +41,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				$sAccessPassword = \trim($this->Config()->Get('plugin', 'access_password', ''));
 				$sUsersDn = \trim($this->Config()->Get('plugin', 'users_dn_format', ''));
 				$sObjectClass = \trim($this->Config()->Get('plugin', 'object_class', ''));
+				$sSearchField = \trim($this->Config()->Get('plugin', 'search_field', ''));
 				$sNameField = \trim($this->Config()->Get('plugin', 'name_field', ''));
 				$sEmailField = \trim($this->Config()->Get('plugin', 'mail_field', ''));
 
@@ -49,7 +50,7 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 					include_once __DIR__.'/LdapContactsSuggestions.php';
 
 					$oProvider = new LdapContactsSuggestions();
-					$oProvider->SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sNameField, $sEmailField);
+					$oProvider->SetConfig($sHostName, $iHostPort, $sAccessDn, $sAccessPassword, $sUsersDn, $sObjectClass, $sSearchField, $sNameField, $sEmailField);
 
 					$mResult[] = $oProvider;
 				}
@@ -80,6 +81,8 @@ class LdapContactsSuggestionsPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue('ou=People,dc=domain,dc=com'),
 			\RainLoop\Plugins\Property::NewInstance('object_class')->SetLabel('objectClass value')
 				->SetDefaultValue('inetOrgPerson'),
+			\RainLoop\Plugins\Property::NewInstance('search_field')->SetLabel('Search field')
+				->SetDefaultValue('uid'),
 			\RainLoop\Plugins\Property::NewInstance('name_field')->SetLabel('Name field')
 				->SetDefaultValue('givenname'),
 			\RainLoop\Plugins\Property::NewInstance('mail_field')->SetLabel('Mail field')
