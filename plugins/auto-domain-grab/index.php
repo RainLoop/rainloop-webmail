@@ -23,7 +23,7 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	}
 
 	/**
-	 * This function detects the IMAP Host, and if it is set to "auto", replaces it with the email domain.
+	 * This function detects the IMAP Host, and if it is set to "auto", replaces it with the MX or email domain.
 	 *
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aImapCredentials
@@ -36,13 +36,21 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 			if (!empty($aImapCredentials['Host']) && 'auto' === $aImapCredentials['Host'])
 			{
 				$domain = substr(strrchr($oAccount->Email(), "@"), 1);
-                		$aImapCredentials['Host'] = $this->imap_prefix.$domain;
+				$mxhosts = array();
+				if(getmxrr($domain, $mxhosts) && sizeof($mxhosts) > 0)
+				{
+					$aImapCredentials['Host'] = $mxhosts[0];
+				}
+				else 
+				{
+					$aImapCredentials['Host'] = $this->imap_prefix.$domain;
+				}
 			}
 		}
 	}
 
 	/**
-	 * This function detects the SMTP Host, and if it is set to "auto", replaces it with the email domain.
+	 * This function detects the SMTP Host, and if it is set to "auto", replaces it with the MX or email domain.
 	 *
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param array $aSmtpCredentials
@@ -55,7 +63,15 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 			if (!empty($aSmtpCredentials['Host']) && 'auto' === $aSmtpCredentials['Host'])
 			{
 				$domain = substr(strrchr($oAccount->Email(), "@"), 1);
-                		$aSmtpCredentials['Host'] = $this->smtp_prefix.$domain;
+				$mxhosts = array();
+				if(getmxrr($domain, $mxhosts) && sizeof($mxhosts) > 0)
+				{
+					$aSmtpCredentials['Host'] = $mxhosts[0];
+				} 
+				else 
+				{
+					$aSmtpCredentials['Host'] = $this->smtp_prefix.$domain;
+				}
 			}
 		}
 	}
