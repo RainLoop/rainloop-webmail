@@ -137,6 +137,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
 	 * @param bool $bVerifySsl = false
 	 * @param bool $bAllowSelfSigned = true
+	 * @param string $sClientCert = NULL
 	 *
 	 * @return \MailSo\Imap\ImapClient
 	 *
@@ -146,11 +147,12 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function Connect($sServerName, $iPort = 143,
 		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		$bVerifySsl = false, $bAllowSelfSigned = true)
+		$bVerifySsl = false, $bAllowSelfSigned = true,
+		$sClientCert = '')
 	{
 		$this->aTagTimeouts['*'] = \microtime(true);
 
-		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned);
+		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned, $sClientCert);
 
 		$this->parseResponseWithValidation('*', true);
 
