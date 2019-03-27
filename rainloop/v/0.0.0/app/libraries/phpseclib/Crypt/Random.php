@@ -61,17 +61,20 @@ if (!function_exists('crypt_random_string')) {
      * microoptimizations because this function has the potential of being called a huge number of times.
      * eg. for RSA key generation.
      *
-     * @param Integer $length
-     * @return String
+     * @param int $length
+     * @return string
      * @access public
      */
     function crypt_random_string($length)
     {
+        if (!$length) {
+            return '';
+        }
+
         if (CRYPT_RANDOM_IS_WINDOWS) {
-            // method 1. prior to PHP 5.3 this would call rand() on windows hence the function_exists('class_alias') call.
-            // ie. class_alias is a function that was introduced in PHP 5.3
-            if (function_exists('mcrypt_create_iv') && function_exists('class_alias')) {
-                return mcrypt_create_iv($length);
+            // method 1. prior to PHP 5.3, mcrypt_create_iv() would call rand() on windows
+            if (extension_loaded('mcrypt') && version_compare(PHP_VERSION, '5.3.0', '>=')) {
+                return @mcrypt_create_iv($length);
             }
             // method 2. openssl_random_pseudo_bytes was introduced in PHP 5.3.0 but prior to PHP 5.3.4 there was,
             // to quote <http://php.net/ChangeLog-5.php#5.3.4>, "possible blocking behavior". as of 5.3.4
@@ -86,12 +89,12 @@ if (!function_exists('crypt_random_string')) {
             // https://github.com/php/php-src/blob/7014a0eb6d1611151a286c0ff4f2238f92c120d6/win32/winutil.c#L80
             //
             // we're calling it, all the same, in the off chance that the mcrypt extension is not available
-            if (function_exists('openssl_random_pseudo_bytes') && version_compare(PHP_VERSION, '5.3.4', '>=')) {
+            if (extension_loaded('openssl') && version_compare(PHP_VERSION, '5.3.4', '>=')) {
                 return openssl_random_pseudo_bytes($length);
             }
         } else {
             // method 1. the fastest
-            if (function_exists('openssl_random_pseudo_bytes')) {
+            if (extension_loaded('openssl') && version_compare(PHP_VERSION, '5.3.0', '>=')) {
                 return openssl_random_pseudo_bytes($length);
             }
             // method 2
@@ -109,8 +112,8 @@ if (!function_exists('crypt_random_string')) {
             // surprisingly slower than method 2. maybe that's because mcrypt_create_iv does a bunch of error checking that we're
             // not doing. regardless, this'll only be called if this PHP script couldn't open /dev/urandom due to open_basedir
             // restrictions or some such
-            if (function_exists('mcrypt_create_iv')) {
-                return mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
+            if (extension_loaded('mcrypt')) {
+                return @mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
             }
         }
         // at this point we have no choice but to use a pure-PHP CSPRNG
@@ -149,13 +152,13 @@ if (!function_exists('crypt_random_string')) {
             session_start();
 
             $v = $seed = $_SESSION['seed'] = pack('H*', sha1(
-                serialize($_SERVER) .
-                serialize($_POST) .
-                serialize($_GET) .
-                serialize($_COOKIE) .
-                serialize($GLOBALS) .
-                serialize($_SESSION) .
-                serialize($_OLD_SESSION)
+                (isset($_SERVER) ? phpseclib_safe_serialize($_SERVER) : '') .
+                (isset($_POST) ? phpseclib_safe_serialize($_POST) : '') .
+                (isset($_GET) ? phpseclib_safe_serialize($_GET) : '') .
+                (isset($_COOKIE) ? phpseclib_safe_serialize($_COOKIE) : '') .
+                phpseclib_safe_serialize($GLOBALS) .
+                phpseclib_safe_serialize($_SESSION) .
+                phpseclib_safe_serialize($_OLD_SESSION)
             ));
             if (!isset($_SESSION['count'])) {
                 $_SESSION['count'] = 0;
@@ -171,9 +174,9 @@ if (!function_exists('crypt_random_string')) {
                 ini_set('session.use_cookies', $old_use_cookies);
                 session_cache_limiter($old_session_cache_limiter);
             } else {
-               if ($_OLD_SESSION !== false) {
-                   $_SESSION = $_OLD_SESSION;
-                   unset($_OLD_SESSION);
+                if ($_OLD_SESSION !== false) {
+                    $_SESSION = $_OLD_SESSION;
+                    unset($_OLD_SESSION);
                 } else {
                     unset($_SESSION);
                 }
@@ -261,6 +264,41 @@ if (!function_exists('crypt_random_string')) {
     }
 }
 
+if (!function_exists('phpseclib_safe_serialize')) {
+    /**
+     * Safely serialize variables
+     *
+     * If a class has a private __sleep() method it'll give a fatal error on PHP 5.2 and earlier.
+     * PHP 5.3 will emit a warning.
+     *
+     * @param mixed $arr
+     * @access public
+     */
+    function phpseclib_safe_serialize(&$arr)
+    {
+        if (is_object($arr)) {
+            return '';
+        }
+        if (!is_array($arr)) {
+            return serialize($arr);
+        }
+        // prevent circular array recursion
+        if (isset($arr['__phpseclib_marker'])) {
+            return '';
+        }
+        $safearr = array();
+        $arr['__phpseclib_marker'] = true;
+        foreach (array_keys($arr) as $key) {
+            // do not recurse on the '__phpseclib_marker' key itself, for smaller memory usage
+            if ($key !== '__phpseclib_marker') {
+                $safearr[$key] = phpseclib_safe_serialize($arr[$key]);
+            }
+        }
+        unset($arr['__phpseclib_marker']);
+        return serialize($safearr);
+    }
+}
+
 if (!function_exists('phpseclib_resolve_include_path')) {
     /**
      * Resolve filename against the include path.
@@ -269,7 +307,7 @@ if (!function_exists('phpseclib_resolve_include_path')) {
      * PHP 5.3.2) with fallback implementation for earlier PHP versions.
      *
      * @param string $filename
-     * @return mixed Filename (string) on success, false otherwise.
+     * @return string|false
      * @access public
      */
     function phpseclib_resolve_include_path($filename)
