@@ -83,8 +83,13 @@ module.exports = function(publicPath, pro) {
 					options: babelLoaderOptions()
 				},
 				{
-					test: /\.(html|css)$/,
+					test: /\.html$/,
 					loader: 'raw-loader',
+					include: [devPath]
+				},
+				{
+					test: /\.css/,
+					loaders: ['style-loader', 'css-loader'],
 					include: [devPath]
 				},
 				{

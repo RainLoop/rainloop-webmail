@@ -5,7 +5,7 @@ import _ from '_';
 import ko from 'ko';
 import {$body} from 'Common/Globals';
 import {EventKeyCode, Magics} from 'Common/Enums';
-import {trim, inArray, changeTheme} from 'Common/Utils';
+import {trim, deModule, inArray, changeTheme} from 'Common/Utils';
 import {reload as translatorReload} from 'Common/Translator';
 
 import * as Settings from 'Storage/Settings';
@@ -22,7 +22,7 @@ let
  * @returns {string}
  */
 function cmdError(cmd) {
-	return require('Html/Cmds/Error.html').replace('{{ cmd }}', cmd);
+	return deModule(require('Html/Cmds/Error.html')).replace('{{ cmd }}', cmd);
 }
 
 /**
@@ -37,7 +37,7 @@ function cmdClear(dom) {
  * @returns {string}
  */
 function cmdHelp(cmds) {
-	return require('Html/Cmds/Help.html').replace('{{ commands }}', cmds.join(' '));
+	return deModule(require('Html/Cmds/Help.html')).replace('{{ commands }}', cmds.join(' '));
 }
 
 /**
@@ -49,7 +49,7 @@ function cmdTheme(param, themes) {
 		changeTheme(param);
 		return '';
 	}
-	return require('Html/Cmds/ThemeEmpty.html').replace('{{ themes }}', themes.join(', '));
+	return deModule(require('Html/Cmds/ThemeEmpty.html')).replace('{{ themes }}', themes.join(', '));
 }
 
 /**
@@ -61,14 +61,14 @@ function cmdLang(param, isAdmin, langs) {
 		translatorReload(isAdmin, param);
 		return '';
 	}
-	return require('Html/Cmds/LangEmpty.html').replace('{{ langs }}', langs.join(', '));
+	return deModule(require('Html/Cmds/LangEmpty.html')).replace('{{ langs }}', langs.join(', '));
 }
 
 /**
  * @returns {string}
  */
 function cmdVersion() {
-	return require('Html/Cmds/Version.html').replace('{{ version }}',
+	return deModule(require('Html/Cmds/Version.html')).replace('{{ version }}',
 		Settings.appSettingsGet('version') + ' (' + Settings.appSettingsGet('appVersionType') + ')');
 }
 
@@ -231,7 +231,7 @@ class CmdContoller
 
 			if (h && h[0])
 			{
-				h.append($('<div></div>').html(require('Html/Cmds/Main.html').replace('{{ cmd }}', cmdLine)));
+				h.append($('<div></div>').html(deModule(require('Html/Cmds/Main.html')).replace('{{ cmd }}', cmdLine)));
 				if (result)
 				{
 					h.append($('<div></div>').html(result));

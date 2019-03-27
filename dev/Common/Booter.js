@@ -85,11 +85,12 @@ function includeLayout()
 {
 	const app = window.document.getElementById('rl-app');
 
-	require('style-loader!Styles/@Boot.css');
+	require('Styles/@Boot.css');
 
 	if (app)
 	{
-		app.innerHTML = require('Html/Layout.html').replace(/[\r\n\t]+/g, '');
+		const layout = require('Html/Layout.html');
+		app.innerHTML = ((layout && layout.default ? layout.default : layout) || '').replace(/[\r\n\t]+/g, '');
 		return true;
 	}
 

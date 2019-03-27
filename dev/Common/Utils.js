@@ -255,6 +255,14 @@ const timeOutActionSecond = (function() {
 export {timeOutAction, timeOutActionSecond};
 
 /**
+ * @param {any} m
+ * @returns {any}
+ */
+export function deModule(m) {
+	return (m && m.default ? m.default : m) || '';
+}
+
+/**
  * @returns {boolean}
  */
 export function inFocus()
@@ -629,7 +637,7 @@ export function previewMessage({title, subject, date, fromCreds, toCreds, toLabe
 
 	const html = bodyClone ? bodyClone.html() : '';
 
-	doc.write(require('Html/PreviewMessage.html')
+	doc.write(deModule(require('Html/PreviewMessage.html'))
 		.replace('{{title}}', encodeHtml(title))
 		.replace('{{subject}}', encodeHtml(subject))
 		.replace('{{date}}', encodeHtml(date))
