@@ -158,7 +158,16 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 			{
 				if (!empty($aLdapItem[$sField][0]))
 				{
-					$sName = \trim($aLdapItem[$sField][0]);
+					# The attribute is multi-valued
+					$value = $aLdapItem[$sField][0];
+				} else if ( defined($aLdapItem[$sField]) && is_string($aLdapItem[$sField]) )
+				{
+					# The attribute is mono-valued
+					$value = $aLdapItem[$sField];
+				}
+				if (!empty($value))
+				{
+					$sName = \trim($value);
 					if (!empty($sName))
 					{
 						break;
@@ -234,6 +243,9 @@ class LdapContactsSuggestions implements \RainLoop\Providers\Suggestions\ISugges
 			$aEmails = \array_map('trim', $aEmails);
 			$aNames = \array_map('trim', $aNames);
 			$aUIDs = \array_map('trim', $aUIDs);
+			$aEmails = \array_map('strtolower', $aEmails);
+			$aNames = \array_map('strtolower', $aNames);
+			$aUIDs = \array_map('strtolower', $aUIDs);
 
 			$aFields = \array_merge($aEmails, $aNames, $aUIDs);
 
