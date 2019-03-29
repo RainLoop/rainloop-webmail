@@ -595,7 +595,7 @@ function commandDecorator(canExecute = true)
  * @param {miced} $items
  * @returns {Function}
  */
-function settingsMenuKeysHendler($items)
+function settingsMenuKeysHandler($items)
 {
 	return _.throttle((event, handler) => {
 
@@ -627,5 +627,5 @@ export {
 	commandDecorator, commandDecorator as command,
 	viewDecorator, viewDecorator as view, viewDecorator as viewModel,
 	popupDecorator, popupDecorator as popup,
-	settingsMenuKeysHendler
+	settingsMenuKeysHandler
 };

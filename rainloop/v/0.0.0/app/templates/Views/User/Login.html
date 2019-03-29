@@ -30,7 +30,7 @@
 							<input type="email" class="i18n input-block-level inputEmail checkAutocomplete"
 								name="RainLoopEmail" id="RainLoopEmail"
 								style="padding-right: 35px;"
-								autocorrect="off" autocapitalize="off" spellcheck="false"
+								autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="textInput: email, hasFocus: emailFocus, disable: submitRequest" data-i18n="[placeholder]LOGIN/LABEL_EMAIL" />
 							<span class="add-on">
 								<i class="icon-mail"></i>
@@ -42,7 +42,7 @@
 							<input type="password" class="i18n input-block-level inputPassword checkAutocomplete"
 								name="RainLoopPassword" id="RainLoopPassword"
 								style="padding-right: 35px;"
-								autocorrect="off" autocapitalize="off" spellcheck="false"
+								autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-bind="textInput: password, hasFocus: passwordFocus, disable: submitRequest" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD" />
 							<span class="add-on" tabindex="-1" data-tooltip-join="left" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_SIGN_IN'">
 								<i class="icon-key" data-bind="visible: '' === password()"></i>

@@ -9,7 +9,7 @@
 				<input type="text" id="rainloop-email" name="rainloop-email"
 					value="<?php echo $_['rainloop-email']; ?>" placeholder="<?php p($l->t('Email')); ?>" />
 
-				<input type="password" id="rainloop-password" name="rainloop-password"
+				<input type="password" id="rainloop-password" name="rainloop-password" autocomplete="current-password"
 					value="<?php echo $_['rainloop-password']; ?>" placeholder="<?php p($l->t('Password')); ?>" />
 
 				<input type="button" id="rainloop-save-button" name="rainloop-save-button" value="<?php p($l->t('Save')); ?>" />

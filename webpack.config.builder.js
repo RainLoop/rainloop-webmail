@@ -2,9 +2,13 @@
 const
 	path = require('path'),
 	webpack = require('webpack'),
-	devPath = path.resolve(__dirname, 'dev'),
+
 	CopyWebpackPlugin = require('copy-webpack-plugin'),
 	WebpackNotifierPlugin = require('webpack-notifier'),
+
+	devPath = path.resolve(__dirname, 'dev'),
+	devPathJoin = path.join(__dirname, 'dev'),
+	externalPathJoin = path.join(__dirname, 'dev', 'External'),
 	loose = true;
 
 const babelLoaderOptions = function() {
@@ -32,13 +36,13 @@ const babelLoaderOptions = function() {
 };
 
 process.noDeprecation = true;
-module.exports = function(publicPath, pro) {
+module.exports = function(publicPath, pro, mode) {
 	return {
-		mode: 'production',
+		mode: mode || 'development',
 		entry: {
-			'js/boot': path.join(__dirname, 'dev', 'boot.js'),
-			'js/app': path.join(__dirname, 'dev', 'app.js'),
-			'js/admin': path.join(__dirname, 'dev', 'admin.js')
+			'js/boot': path.join(devPathJoin, 'boot.js'),
+			'js/app': path.join(devPathJoin, 'app.js'),
+			'js/admin': path.join(devPathJoin, 'admin.js')
 		},
 		output: {
 			pathinfo: true,
@@ -70,8 +74,8 @@ module.exports = function(publicPath, pro) {
 			modules: [devPath, 'node_modules'],
 			extensions: ['.js'],
 			alias: {
-				'Opentip$': path.join(__dirname, 'dev', 'External', 'Opentip.js'),
-				'ko$': path.join(__dirname, 'dev', 'External', 'ko.js')
+				'Opentip$': path.join(externalPathJoin, 'Opentip.js'),
+				'ko$': path.join(externalPathJoin, 'ko.js')
 			}
 		},
 		module: {

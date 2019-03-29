@@ -5,7 +5,7 @@ import key from 'key';
 import {leftPanelDisabled} from 'Common/Globals';
 import {KeyState} from 'Common/Enums';
 
-import {view, ViewType, settingsMenuKeysHendler} from 'Knoin/Knoin';
+import {view, ViewType, settingsMenuKeysHandler} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
 @view({
@@ -32,7 +32,7 @@ class MenuSettingsAdminView extends AbstractViewNext
 	}
 
 	onBuild(dom) {
-		key('up, down', KeyState.Settings, settingsMenuKeysHendler($('.b-admin-menu .e-item', dom)));
+		key('up, down', KeyState.Settings, settingsMenuKeysHandler($('.b-admin-menu .e-item', dom)));
 	}
 }
 

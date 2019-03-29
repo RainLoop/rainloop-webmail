@@ -207,7 +207,7 @@ cfg.paths.js = {
 			'vendors/routes/crossroads.min.js', // fixed
 			'vendors/jua/jua.min.js', // custom
 			'vendors/keymaster/keymaster.js', // custom (modified)
-			'vendors/qr.js/qr.min.js', // fixed
+			'vendors/qr.js/qr.min.js', // fixed (license)
 			'vendors/bootstrap/js/bootstrap.min.js', // fixed
 			'node_modules/underscore/underscore-min.js',
 			'node_modules/moment/min/moment.min.js',
@@ -220,7 +220,7 @@ cfg.paths.js = {
 			'node_modules/autolinker/dist/Autolinker.min.js',
 			'node_modules/opentip/lib/opentip.js',
 			'node_modules/opentip/lib/adapter-jquery.js',
-			'vendors/lightgallery/dist/js/lightgallery.min.js',
+			'vendors/lightgallery/dist/js/lightgallery.min.js',  // license
 			'vendors/lightgallery/dist/js/lg-fullscreen.min.js',
 			'vendors/lightgallery/dist/js/lg-thumbnail.min.js',
 			'vendors/lightgallery/dist/js/lg-zoom.min.js',
@@ -333,7 +333,7 @@ gulp.task('js:clean', function() {
 });
 
 gulp.task('js:webpack', function(callback) {
-	webpack(webpackCfgBuilder(cfg.paths.staticJS, !cfg.community, false), webpackCallback(callback));
+	webpack(webpackCfgBuilder(cfg.paths.staticJS, !cfg.community, 'production'), webpackCallback(callback));
 });
 
 gulp.task('js:app', ['js:webpack'], function() {

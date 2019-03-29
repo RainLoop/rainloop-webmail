@@ -12,7 +12,7 @@
 							<input type="text" class="input-block-level inputLogin checkAutocomplete"
 								name="RainLoopAdminLogin" id="RainLoopAdminLogin"
 								style="padding-right: 35px;"
-								autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_LOGIN"
+								autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_LOGIN"
 								data-bind="textInput: login, hasFocus: loginFocus, disable: submitRequest" />
 							<span class="add-on">
 								<i class="icon-user"></i>
@@ -24,7 +24,7 @@
 							<input type="password" class="input-block-level inputPassword checkAutocomplete"
 								placeholder="Password" name="RainLoopAdminPassword" id="RainLoopAdminPassword"
 								style="padding-right: 35px;"
-								autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
+								autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
 								data-bind="textInput: password, disable: submitRequest" />
 							<span class="add-on" tabindex="-1" data-tooltip-join="left" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_LOGIN'">
 								<i class="icon-key" data-bind="visible: '' === password()"></i>

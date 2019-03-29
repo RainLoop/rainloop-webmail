@@ -9,7 +9,7 @@ import {getFolderInboxName} from 'Common/Cache';
 
 import * as Settings from 'Storage/Settings';
 
-import {view, ViewType, setHash, settingsMenuKeysHendler} from 'Knoin/Knoin';
+import {view, ViewType, setHash, settingsMenuKeysHandler} from 'Knoin/Knoin';
 import {AbstractViewNext} from 'Knoin/AbstractViewNext';
 
 @view({
@@ -40,7 +40,7 @@ class MenuSettingsUserView extends AbstractViewNext
 			});
 		}
 
-		key('up, down', KeyState.Settings, settingsMenuKeysHendler($('.b-settings-menu .e-item', dom)));
+		key('up, down', KeyState.Settings, settingsMenuKeysHandler($('.b-settings-menu .e-item', dom)));
 	}
 
 	link(route) {
