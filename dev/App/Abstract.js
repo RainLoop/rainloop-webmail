@@ -20,7 +20,6 @@ import {
 import {KeyState, Magics} from 'Common/Enums';
 import {root, rootAdmin, rootUser, populateAuthSuffix} from 'Common/Links';
 import {initOnStartOrLangChange, initNotificationLanguage} from 'Common/Translator';
-import {toggle as toggleCmd} from 'Common/Cmd';
 import * as Events from 'Common/Events';
 import * as Settings from 'Storage/Settings';
 
@@ -120,13 +119,6 @@ class AbstractApp extends AbstractBoot
 		key('esc, enter', KeyState.All, () => {
 			detectDropdownVisibility();
 		});
-
-		if (Settings.appSettingsGet('allowCmdInterface'))
-		{
-			key('ctrl+shift+`', KeyState.All, () => {
-				toggleCmd();
-			});
-		}
 	}
 
 	remote() {
