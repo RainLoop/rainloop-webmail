@@ -26,8 +26,9 @@
 		{
 			echo '<p>';
 			echo '[302] The following PHP extensions are not available in your PHP configuration!';
-			echo '</p><ul>';
-
+			echo '</p>';
+			
+			echo '<ul>';
 			foreach ($aRequirements as $sKey => $bValue)
 			{
 				if (!$bValue)
@@ -35,8 +36,8 @@
 					echo '<li>'.$sKey.'</li>';
 				}
 			}
-
 			echo '</ul>';
+
 			exit(302);
 		}
 	}

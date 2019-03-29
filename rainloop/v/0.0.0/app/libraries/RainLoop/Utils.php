@@ -16,8 +16,6 @@ class Utils
 
 	static $Cookies = null;
 
-	static $RSA = null;
-
 	static $RsaKey = null;
 
 	/**
@@ -43,52 +41,6 @@ class Utils
 		}
 
 		return false;
-	}
-
-	/**
-	 * @return \Crypt_RSA|null
-	 */
-	static public function CryptRSA()
-	{
-		if (null === \RainLoop\Utils::$RSA)
-		{
-			if (!\defined('_phpseclib_'))
-			{
-				\set_include_path(\get_include_path().PATH_SEPARATOR.APP_VERSION_ROOT_PATH.'app/libraries/phpseclib');
-				define('_phpseclib_', true);
-			}
-
-			if (!\class_exists('Crypt_RSA', false))
-			{
-				include_once 'Crypt/RSA.php';
-				if (!\defined('CRYPT_RSA_MODE') && \defined('CRYPT_RSA_MODE_INTERNAL'))
-				{
-					\define('CRYPT_RSA_MODE', CRYPT_RSA_MODE_INTERNAL);
-				}
-			}
-
-			if (\class_exists('Crypt_RSA'))
-			{
-				$oRsa = new \Crypt_RSA();
-
-				$oRsa->setEncryptionMode(CRYPT_RSA_ENCRYPTION_PKCS1);
-				$oRsa->setPrivateKeyFormat(CRYPT_RSA_PRIVATE_FORMAT_PKCS1);
-				$oRsa->setPrivateKeyFormat(CRYPT_RSA_PUBLIC_FORMAT_PKCS1);
-
-				$sPrivateKey = \file_exists(APP_PRIVATE_DATA.'rsa/private') ?
-					\file_get_contents(APP_PRIVATE_DATA.'rsa/private') : '';
-
-				if (!empty($sPrivateKey))
-				{
-					$oRsa->loadKey($sPrivateKey, CRYPT_RSA_PRIVATE_FORMAT_PKCS1);
-					$oRsa->loadKey($oRsa->getPublicKey(), CRYPT_RSA_PUBLIC_FORMAT_PKCS1);
-
-					\RainLoop\Utils::$RSA = $oRsa;
-				}
-			}
-		}
-
-		return \RainLoop\Utils::$RSA;
 	}
 
 	/**

@@ -137,7 +137,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
 	 * @param bool $bVerifySsl = false
 	 * @param bool $bAllowSelfSigned = true
-	 * @param string $sClientCert = NULL
+	 * @param string $sClientCert = ''
 	 *
 	 * @return \MailSo\Imap\ImapClient
 	 *
