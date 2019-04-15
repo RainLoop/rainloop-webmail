@@ -2,7 +2,7 @@
  * Copyright © 2019 Denis Vadimov aka BloodyAltair
  */
 (function () {
-    const updateRate = window.rl.pluginSettingsGet('unsplash-bg-updater', 'mUpdateRate');
+    const updateRate = window.rl.pluginSettingsGet('unsplash-bg-updater', 'UpdateRate');
     if(updateRate < 10) {
         console.log("[Settings] Update rate is mandatory positive integer!");
         return -1;
