@@ -15,8 +15,7 @@
 
     /** @noinspection SpellCheckingInspection */
 
-class UnsplashBgUpdaterPlugin extends AbstractPlugin
-{
+class UnsplashBgUpdaterPlugin extends AbstractPlugin {
 	/**
 	 * @return void
 	 */
