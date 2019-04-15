@@ -1,0 +1,299 @@
+[{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/categories\/2",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.0.2 curl\/7.38.0 PHP\/5.6.11",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "200",
+            "message": "OK"
+        },
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Request-Method": "*",
+            "Cache-Control": "max-age=7200, public",
+            "Content-Type": "application\/json",
+            "Content-Length": "166",
+            "ETag": "W\/\"0185fc5699c64d30a2be3ea05b02adfa\"",
+            "X-Request-Id": "25e406e7-e387-4adc-bb71-ba0049671d41",
+            "X-RateLimit-Limit": "5000",
+            "X-RateLimit-Remaining": "4993",
+            "X-Runtime": "0.061804",
+            "Connection": "keep-alive",
+            "Server": "thin"
+        },
+        "body": "{\"id\":2,\"title\":\"Buildings\",\"photo_count\":4738,\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/categories\/2\",\"photos\":\"https:\/\/api.unsplash.com:80\/categories\/2\/photos\"}}"
+    }
+},{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/categories\/1",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.0.2 curl\/7.38.0 PHP\/5.6.11",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "404",
+            "message": "Not Found"
+        },
+        "headers": {
+            "Content-Type": "application\/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Request-Method": "*",
+            "Content-Length": "1209",
+            "Cache-Control": "no-cache",
+            "X-Request-Id": "97c40f1d-8aae-43df-9a21-53510c6eb36d",
+            "X-RateLimit-Limit": "5000",
+            "X-RateLimit-Remaining": "4992",
+            "X-Runtime": "0.041516",
+            "Connection": "keep-alive",
+            "Server": "thin"
+        },
+        "body": "{\"errors\":[\"Couldn't find Category with 'id'=1\"],\"trace\":[\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/relation\/finder_methods.rb:336:in `raise_record_not_found_exception!'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/relation\/finder_methods.rb:456:in `find_one'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/relation\/finder_methods.rb:435:in `find_with_ids'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/relation\/finder_methods.rb:71:in `find'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/querying.rb:3:in `find'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/core.rb:131:in `find'\",\"\/Volumes\/Sites\/unsplash\/app\/api\/unsplash_api\/v1\/categories.rb:25:in `block (3 levels) in \\u003cclass:Categories\\u003e'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/grape-0.11.0\/lib\/grape\/endpoint.rb:47:in `call'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/grape-0.11.0\/lib\/grape\/endpoint.rb:47:in `block in generate_api_method'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/grape-0.11.0\/lib\/grape\/endpoint.rb:247:in `call'\"]}"
+    }
+},{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/categories?page=1&per_page=10",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.0.2 curl\/7.38.0 PHP\/5.6.11",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "200",
+            "message": "OK"
+        },
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Request-Method": "*",
+            "Cache-Control": "max-age=7200, public",
+            "Content-Type": "application\/json",
+            "Content-Length": "1003",
+            "ETag": "W\/\"0c8318f06e3a06a6a9cf6b3855464020\"",
+            "X-Request-Id": "805a673b-0076-41a9-9695-285f5be4865a",
+            "X-RateLimit-Limit": "5000",
+            "X-RateLimit-Remaining": "4991",
+            "X-Runtime": "0.059052",
+            "Connection": "keep-alive",
+            "Server": "thin"
+        },
+        "body": "[{\"id\":2,\"title\":\"Buildings\",\"photo_count\":4738,\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/categories\/2\",\"photos\":\"https:\/\/api.unsplash.com:80\/categories\/2\/photos\"}},{\"id\":3,\"title\":\"Food \\u0026 Drink\",\"photo_count\":603,\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/categories\/3\",\"photos\":\"https:\/\/api.unsplash.com:80\/categories\/3\/photos\"}},{\"id\":4,\"title\":\"Nature\",\"photo_count\":12687,\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/categories\/4\",\"photos\":\"https:\/\/api.unsplash.com:80\/categories\/4\/photos\"}},{\"id\":8,\"title\":\"Objects\",\"photo_count\":2674,\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/categories\/8\",\"photos\":\"https:\/\/api.unsplash.com:80\/categories\/8\/photos\"}},{\"id\":6,\"title\":\"People\",\"photo_count\":4097,\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/categories\/6\",\"photos\":\"https:\/\/api.unsplash.com:80\/categories\/6\/photos\"}},{\"id\":7,\"title\":\"Technology\",\"photo_count\":470,\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/categories\/7\",\"photos\":\"https:\/\/api.unsplash.com:80\/categories\/7\/photos\"}}]"
+    }
+},{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/categories\/2\/photos?page=1&per_page=10",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.0.2 curl\/7.38.0 PHP\/5.6.11",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "200",
+            "message": "OK"
+        },
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Request-Method": "*",
+            "Link": "<https:\/\/api.unsplash.com:80\/categories\/2\/photos?page=474&per_page=10>; rel=\"last\", <https:\/\/api.unsplash.com:80\/categories\/2\/photos?page=2&per_page=10>; rel=\"next\"",
+            "X-Total": "4736",
+            "X-Per-Page": "10",
+            "Cache-Control": "max-age=7200, public",
+            "Content-Type": "application\/json",
+            "Content-Length": "8966",
+            "ETag": "W\/\"fedd302ff7857a61297201b04b726464\"",
+            "X-Request-Id": "a1a3bbbb-b1d6-4445-b206-06a5e955b632",
+            "X-RateLimit-Limit": "5000",
+            "X-RateLimit-Remaining": "4990",
+            "X-Runtime": "0.202964",
+            "Connection": "keep-alive",
+            "Server": "thin"
+        },
+        "body": "[{\"id\":\"0sCV8yDw2cQ\",\"user\":{\"id\":\"3iQrFoCMWzs\",\"username\":\"atw\",\"name\":\"Cosmic Timetraveler\",\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/users\/atw\",\"html\":\"http:\/\/lvh.me:3000\/atw\",\"photos\":\"https:\/\/api.unsplash.com:80\/users\/atw\/photos\"}},\"urls\":{\"regular\":\"https:\/\/ununsplash.imgix.net\/photo-1437021663029-4b6a28719dee?q=75\\u0026fm=jpg\\u0026w=1080\\u0026fit=max\\u0026s=9d9f5a81e741a8f3bfbaceb81c002ec5\",\"small\":\"https:\/\/ununsplash.imgix.net\/photo-1437021663029-4b6a28719dee?q=75\\u0026fm=jpg\\u0026w=400\\u0026fit=max\\u0026s=2463c7a7cb007bb40a09257d6d99e850\",\"thumb\":\"https:\/\/ununsplash.imgix.net\/photo-1437021663029-4b6a28719dee?q=75\\u0026fm=jpg\\u0026w=200\\u0026fit=max\\u0026s=35803ffcb54488d4f4dfb826e9364c07\"},\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/photos\/0sCV8yDw2cQ\",\"html\":\"http:\/\/lvh.me:3000\/photos\/0sCV8yDw2cQ\",\"download\":\"http:\/\/lvh.me:3000\/photos\/0sCV8yDw2cQ\/download\"}},{\"id\":\"B4UQfz1K770\",\"user\":{\"id\":\"_Vmy1hxBGxw\",\"username\":\"hzqazhr\",\"name\":\"Hazeeq Azhar\",\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/users\/hzqazhr\",\"html\":\"http:\/\/lvh.me:3000\/hzqazhr\",\"photos\":\"https:\/\/api.unsplash.com:80\/users\/hzqazhr\/photos\"}},\"urls\":{\"regular\":\"https:\/\/ununsplash.imgix.net\/photo-1437021239252-a1b9aa2b4721?q=75\\u0026fm=jpg\\u0026w=1080\\u0026fit=max\\u0026s=1ae269969703f40f5a5064dfbbff4803\",\"small\":\"https:\/\/ununsplash.imgix.net\/photo-1437021239252-a1b9aa2b4721?q=75\\u0026fm=jpg\\u0026w=400\\u0026fit=max\\u0026s=6290d9a556bff60f56155e4105fb1eec\",\"thumb\":\"https:\/\/ununsplash.imgix.net\/photo-1437021239252-a1b9aa2b4721?q=75\\u0026fm=jpg\\u0026w=200\\u0026fit=max\\u0026s=0c73120d9fbf52d50957b26990313b64\"},\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/photos\/B4UQfz1K770\",\"html\":\"http:\/\/lvh.me:3000\/photos\/B4UQfz1K770\",\"download\":\"http:\/\/lvh.me:3000\/photos\/B4UQfz1K770\/download\"}},{\"id\":\"5xq2E3HHuwE\",\"user\":{\"id\":\"sStLvfBCy2I\",\"username\":\"darylinho\",\"name\":\"Daryl Elliott\",\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/users\/darylinho\",\"html\":\"http:\/\/lvh.me:3000\/darylinho\",\"photos\":\"https:\/\/api.unsplash.com:80\/users\/darylinho\/photos\"}},\"urls\":{\"regular\":\"https:\/\/unsplash.imgix.net\/photo-1437016200995-35797afca033?q=75\\u0026fm=jpg\\u0026w=1080\\u0026fit=max\\u0026s=ca2f85f61353b42491479586c5225930\",\"small\":\"https:\/\/unsplash.imgix.net\/photo-1437016200995-35797afca033?q=75\\u0026fm=jpg\\u0026w=400\\u0026fit=max\\u0026s=adb98bc258416b52529433729c33c71d\",\"thumb\":\"https:\/\/unsplash.imgix.net\/photo-1437016200995-35797afca033?q=75\\u0026fm=jpg\\u0026w=200\\u0026fit=max\\u0026s=132c40fd209e369be1743c765f8dd071\"},\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/photos\/5xq2E3HHuwE\",\"html\":\"http:\/\/lvh.me:3000\/photos\/5xq2E3HHuwE\",\"download\":\"http:\/\/lvh.me:3000\/photos\/5xq2E3HHuwE\/download\"}},{\"id\":\"WxyGZY15sv4\",\"user\":{\"id\":\"sStLvfBCy2I\",\"username\":\"darylinho\",\"name\":\"Daryl Elliott\",\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/users\/darylinho\",\"html\":\"http:\/\/lvh.me:3000\/darylinho\",\"photos\":\"https:\/\/api.unsplash.com:80\/users\/darylinho\/photos\"}},\"urls\":{\"regular\":\"https:\/\/ununsplash.imgix.net\/photo-1437016104086-a861112a77b7?q=75\\u0026fm=jpg\\u0026w=1080\\u0026fit=max\\u0026s=4677bc473a039f425f7cb62ff806ea39\",\"small\":\"https:\/\/ununsplash.imgix.net\/photo-1437016104086-a861112a77b7?q=75\\u0026fm=jpg\\u0026w=400\\u0026fit=max\\u0026s=0837d04747b98cceeaa38e80c01ae117\",\"thumb\":\"https:\/\/ununsplash.imgix.net\/photo-1437016104086-a861112a77b7?q=75\\u0026fm=jpg\\u0026w=200\\u0026fit=max\\u0026s=2e840a913076f4900a34aaec4e2b6801\"},\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/photos\/WxyGZY15sv4\",\"html\":\"http:\/\/lvh.me:3000\/photos\/WxyGZY15sv4\",\"download\":\"http:\/\/lvh.me:3000\/photos\/WxyGZY15sv4\/download\"}},{\"id\":\"ezMo07i2JTc\",\"user\":{\"id\":\"w4rkKt4tbpI\",\"username\":\"txnguyen_us\",\"name\":\"Tuan Nguyen\",\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/users\/txnguyen_us\",\"html\":\"http:\/\/lvh.me:3000\/txnguyen_us\",\"photos\":\"https:\/\/api.unsplash.com:80\/users\/txnguyen_us\/photos\"}},\"urls\":{\"regular\":\"https:\/\/ununsplash.imgix.net\/photo-1437015241956-8caa15cfe22f?q=75\\u0026fm=jpg\\u0026w=1080\\u0026fit=max\\u0026s=3c69eb3e71a44bc8b3a51c15125bc6ef\",\"small\":\"https:\/\/ununsplash.imgix.net\/photo-1437015241956-8caa15cfe22f?q=75\\u0026fm=jpg\\u0026w=400\\u0026fit=max\\u0026s=939c64cc96e858252b89e0de45f5599f\",\"thumb\":\"https:\/\/ununsplash.imgix.net\/photo-1437015241956-8caa15cfe22f?q=75\\u0026fm=jpg\\u0026w=200\\u0026fit=max\\u0026s=b1ed90c945ddb83238513d8fb8759247\"},\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/photos\/ezMo07i2JTc\",\"html\":\"http:\/\/lvh.me:3000\/photos\/ezMo07i2JTc\",\"download\":\"http:\/\/lvh.me:3000\/photos\/ezMo07i2JTc\/download\"}},{\"id\":\"BsRfLdYCFrM\",\"user\":{\"id\":\"CH1mJBdfT94\",\"username\":\"xeromatic\",\"name\":\"Xeromatic\",\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/users\/xeromatic\",\"html\":\"http:\/\/lvh.me:3000\/xeromatic\",\"photos\":\"https:\/\/api.unsplash.com:80\/users\/xeromatic\/photos\"}},\"urls\":{\"regular\":\"https:\/\/unsplash.imgix.net\/photo-1437010415371-d5df50e5f8e9?q=75\\u0026fm=jpg\\u0026w=1080\\u0026fit=max\\u0026s=84676884d548b5c8476e4b500279420d\",\"small\":\"https:\/\/unsplash.imgix.net\/photo-1437010415371-d5df50e5f8e9?q=75\\u0026fm=jpg\\u0026w=400\\u0026fit=max\\u0026s=eaeb7036fbb73451546d6ba629caf9de\",\"thumb\":\"https:\/\/unsplash.imgix.net\/photo-1437010415371-d5df50e5f8e9?q=75\\u0026fm=jpg\\u0026w=200\\u0026fit=max\\u0026s=12caef9547cbebdcad971e12bc47f985\"},\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/photos\/BsRfLdYCFrM\",\"html\":\"http:\/\/lvh.me:3000\/photos\/BsRfLdYCFrM\",\"download\":\"http:\/\/lvh.me:3000\/photos\/BsRfLdYCFrM\/download\"}},{\"id\":\"LRDCtlpSRgw\",\"user\":{\"id\":\"CH1mJBdfT94\",\"username\":\"xeromatic\",\"name\":\"Xeromatic\",\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/users\/xeromatic\",\"html\":\"http:\/\/lvh.me:3000\/xeromatic\",\"photos\":\"https:\/\/api.unsplash.com:80\/users\/xeromatic\/photos\"}},\"urls\":{\"regular\":\"https:\/\/unsplash.imgix.net\/photo-1437010208207-8019cf3c345b?q=75\\u0026fm=jpg\\u0026w=1080\\u0026fit=max\\u0026s=7af4517ddc1d64e265da0c6f22cc6784\",\"small\":\"https:\/\/unsplash.imgix.net\/photo-1437010208207-8019cf3c345b?q=75\\u0026fm=jpg\\u0026w=400\\u0026fit=max\\u0026s=61b943497ec39f215b15c7b36c649087\",\"thumb\":\"https:\/\/unsplash.imgix.net\/photo-1437010208207-8019cf3c345b?q=75\\u0026fm=jpg\\u0026w=200\\u0026fit=max\\u0026s=b69e84973ed5a11f0f4376ca6db1b545\"},\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/photos\/LRDCtlpSRgw\",\"html\":\"http:\/\/lvh.me:3000\/photos\/LRDCtlpSRgw\",\"download\":\"http:\/\/lvh.me:3000\/photos\/LRDCtlpSRgw\/download\"}},{\"id\":\"n0I2CqYVcVc\",\"user\":{\"id\":\"oA_SjuWNrRE\",\"username\":\"key_pamele\",\"name\":\"Pamela Key\",\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/users\/key_pamele\",\"html\":\"http:\/\/lvh.me:3000\/key_pamele\",\"photos\":\"https:\/\/api.unsplash.com:80\/users\/key_pamele\/photos\"}},\"urls\":{\"regular\":\"https:\/\/unsplash.imgix.net\/photo-1437007210789-d530a356d136?q=75\\u0026fm=jpg\\u0026w=1080\\u0026fit=max\\u0026s=43f917a3a3f51851025f5dc645e527c2\",\"small\":\"https:\/\/unsplash.imgix.net\/photo-1437007210789-d530a356d136?q=75\\u0026fm=jpg\\u0026w=400\\u0026fit=max\\u0026s=b593eeb4db264ccbdec79c90eaa6d0f1\",\"thumb\":\"https:\/\/unsplash.imgix.net\/photo-1437007210789-d530a356d136?q=75\\u0026fm=jpg\\u0026w=200\\u0026fit=max\\u0026s=8e4406e334cfdbe0e9ed655f8fa8d5d4\"},\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/photos\/n0I2CqYVcVc\",\"html\":\"http:\/\/lvh.me:3000\/photos\/n0I2CqYVcVc\",\"download\":\"http:\/\/lvh.me:3000\/photos\/n0I2CqYVcVc\/download\"}},{\"id\":\"Wn__hhOhOFw\",\"user\":{\"id\":\"7HdpGZL_VdY\",\"username\":\"andrew_spencer\",\"name\":\"Andrew Spencer\",\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/users\/andrew_spencer\",\"html\":\"http:\/\/lvh.me:3000\/andrew_spencer\",\"photos\":\"https:\/\/api.unsplash.com:80\/users\/andrew_spencer\/photos\"}},\"urls\":{\"regular\":\"https:\/\/ununsplash.imgix.net\/photo-1437006526662-afad9439fbb8?q=75\\u0026fm=jpg\\u0026w=1080\\u0026fit=max\\u0026s=e4b53bdfddd09b491c9d7e57371f2dc0\",\"small\":\"https:\/\/ununsplash.imgix.net\/photo-1437006526662-afad9439fbb8?q=75\\u0026fm=jpg\\u0026w=400\\u0026fit=max\\u0026s=02c42dbf4b34f576eb67e775f9193eed\",\"thumb\":\"https:\/\/ununsplash.imgix.net\/photo-1437006526662-afad9439fbb8?q=75\\u0026fm=jpg\\u0026w=200\\u0026fit=max\\u0026s=54bee8f535bfd90892cb9eaaad1b8a69\"},\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/photos\/Wn__hhOhOFw\",\"html\":\"http:\/\/lvh.me:3000\/photos\/Wn__hhOhOFw\",\"download\":\"http:\/\/lvh.me:3000\/photos\/Wn__hhOhOFw\/download\"}},{\"id\":\"DQKNb-wkzhQ\",\"user\":{\"id\":\"3iQrFoCMWzs\",\"username\":\"atw\",\"name\":\"Cosmic Timetraveler\",\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/users\/atw\",\"html\":\"http:\/\/lvh.me:3000\/atw\",\"photos\":\"https:\/\/api.unsplash.com:80\/users\/atw\/photos\"}},\"urls\":{\"regular\":\"https:\/\/unsplash.imgix.net\/photo-1437001068867-35ccf181f239?q=75\\u0026fm=jpg\\u0026w=1080\\u0026fit=max\\u0026s=86353521f6e20c080a9c5853969fd855\",\"small\":\"https:\/\/unsplash.imgix.net\/photo-1437001068867-35ccf181f239?q=75\\u0026fm=jpg\\u0026w=400\\u0026fit=max\\u0026s=1fc9fbc3a386d45377a1bdc5bc0ae253\",\"thumb\":\"https:\/\/unsplash.imgix.net\/photo-1437001068867-35ccf181f239?q=75\\u0026fm=jpg\\u0026w=200\\u0026fit=max\\u0026s=e554df701d64866658d2691cc124e356\"},\"links\":{\"self\":\"https:\/\/api.unsplash.com:80\/photos\/DQKNb-wkzhQ\",\"html\":\"http:\/\/lvh.me:3000\/photos\/DQKNb-wkzhQ\",\"download\":\"http:\/\/lvh.me:3000\/photos\/DQKNb-wkzhQ\/download\"}}]"
+    }
+},{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/categories\/2\/photos?page=2000&per_page=10",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.0.2 curl\/7.38.0 PHP\/5.6.11",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "200",
+            "message": "OK"
+        },
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Request-Method": "*",
+            "Link": "<https:\/\/api.unsplash.com:80\/categories\/2\/photos?page=1&per_page=10>; rel=\"first\", <https:\/\/api.unsplash.com:80\/categories\/2\/photos?page=1999&per_page=10>; rel=\"prev\"",
+            "X-Total": "4736",
+            "X-Per-Page": "10",
+            "Cache-Control": "max-age=7200, public",
+            "Content-Type": "application\/json",
+            "Content-Length": "2",
+            "ETag": "W\/\"d751713988987e9331980363e24189ce\"",
+            "X-Request-Id": "a1e54413-11ca-4530-a913-22fe7fa26e95",
+            "X-RateLimit-Limit": "5000",
+            "X-RateLimit-Remaining": "4989",
+            "X-Runtime": "0.154442",
+            "Connection": "keep-alive",
+            "Server": "thin"
+        },
+        "body": "[]"
+    }
+},{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/curated_batches\/300",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.0.2 curl\/7.38.0 PHP\/5.6.11",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "404",
+            "message": "Not Found"
+        },
+        "headers": {
+            "Content-Type": "application\/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Request-Method": "*",
+            "Content-Length": "1224",
+            "Cache-Control": "no-cache",
+            "X-Request-Id": "1b51132f-0048-4479-885a-0d5492c3ee8b",
+            "X-RateLimit-Limit": "5000",
+            "X-RateLimit-Remaining": "4987",
+            "X-Runtime": "0.036388",
+            "Connection": "keep-alive",
+            "Server": "thin"
+        },
+        "body": "{\"errors\":[\"Couldn't find CuratedBatch with 'id'=300\"],\"trace\":[\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/relation\/finder_methods.rb:336:in `raise_record_not_found_exception!'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/relation\/finder_methods.rb:456:in `find_one'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/relation\/finder_methods.rb:435:in `find_with_ids'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/relation\/finder_methods.rb:71:in `find'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/querying.rb:3:in `find'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/activerecord-4.2.1\/lib\/active_record\/core.rb:131:in `find'\",\"\/Volumes\/Sites\/unsplash\/app\/api\/unsplash_api\/v1\/curated_batches.rb:23:in `block (3 levels) in \\u003cclass:CuratedBatches\\u003e'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/grape-0.11.0\/lib\/grape\/endpoint.rb:47:in `call'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/grape-0.11.0\/lib\/grape\/endpoint.rb:47:in `block in generate_api_method'\",\"\/Users\/charles\/.rvm\/gems\/ruby-2.1.5\/gems\/grape-0.11.0\/lib\/grape\/endpoint.rb:247:in `call'\"]}"
+    }
+},{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/categories\/\/photos?page=1&per_page=10",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.2.1 curl\/7.43.0 PHP\/7.0.6",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "400",
+            "message": "Bad Request"
+        },
+        "headers": {
+            "Server": "Cowboy",
+            "Content-Type": "application\/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Request-Method": "*",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Expose-Headers": "Link,X-Total,X-Per-Page,X-RateLimit-Limit,X-RateLimit-Remaining",
+            "Cache-Control": "no-cache",
+            "X-Ratelimit-Limit": "100",
+            "X-Ratelimit-Remaining": "99",
+            "X-Request-Id": "ffe1f7f6-2fd7-4ae6-b81a-df7850c24e49",
+            "X-Runtime": "0.237698",
+            "Strict-Transport-Security": "max-age=31536000",
+            "Via": "1.1 vegur, 1.1 varnish, 1.1 varnish",
+            "Fastly-Debug-Digest": "f5bbe825c3f7389d040bad37a538a315ae30575a54164db66877918cc5ab0f08",
+            "Content-Length": "28",
+            "Accept-Ranges": "bytes",
+            "Date": "Thu, 06 Apr 2017 08:02:39 GMT",
+            "Connection": "keep-alive",
+            "X-Served-By": "cache-iad2131-IAD, cache-lcy1148-LCY",
+            "X-Cache": "MISS, MISS",
+            "X-Cache-Hits": "0, 0",
+            "X-Timer": "S1491465759.464264,VS0,VE341",
+            "Vary": "Origin"
+        },
+        "body": "{\"errors\":[\"id is invalid\"]}"
+    }
+},{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/categories\/\/photos?page=2000&per_page=10",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.2.1 curl\/7.43.0 PHP\/7.0.6",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "400",
+            "message": "Bad Request"
+        },
+        "headers": {
+            "Server": "Cowboy",
+            "Content-Type": "application\/json",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Request-Method": "*",
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Expose-Headers": "Link,X-Total,X-Per-Page,X-RateLimit-Limit,X-RateLimit-Remaining",
+            "Cache-Control": "no-cache",
+            "X-Ratelimit-Limit": "100",
+            "X-Ratelimit-Remaining": "98",
+            "X-Request-Id": "9c4ec628-04d5-414f-be4e-88b50b243579",
+            "X-Runtime": "0.025648",
+            "Strict-Transport-Security": "max-age=31536000",
+            "Via": "1.1 vegur, 1.1 varnish, 1.1 varnish",
+            "Fastly-Debug-Digest": "751206d740b455811747cd24f6513bdc88cd4f5c1a3dda79957a7debd4b1cc6d",
+            "Content-Length": "28",
+            "Accept-Ranges": "bytes",
+            "Date": "Thu, 06 Apr 2017 08:02:40 GMT",
+            "Connection": "keep-alive",
+            "X-Served-By": "cache-iad2146-IAD, cache-lcy1145-LCY",
+            "X-Cache": "MISS, MISS",
+            "X-Cache-Hits": "0, 0",
+            "X-Timer": "S1491465761.767131,VS0,VE132",
+            "Vary": "Origin"
+        },
+        "body": "{\"errors\":[\"id is invalid\"]}"
+    }
+}]
