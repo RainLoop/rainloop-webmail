@@ -3,6 +3,8 @@
  * Copyright © 2019 Denis Vadimov aka BloodyAltair
  */
 
+    /** @noinspection PhpUndefinedClassInspection */
+
     include_once __DIR__ . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'autoload.php';
 
     use Crew\Unsplash\HttpClient;
@@ -12,7 +14,6 @@
     use RainLoop\Plugins\Property;
 
     /** @noinspection SpellCheckingInspection */
-    /** @noinspection PhpUndefinedClassInspection */
 
 class UnsplashBgUpdaterPlugin extends AbstractPlugin
 {
@@ -44,14 +45,14 @@ class UnsplashBgUpdaterPlugin extends AbstractPlugin
             try {
                 /** @noinspection PhpUndefinedClassInspection */
                 HttpClient::init ([
-                    'applicationId' => $this->Config ()->Get ('plugin', 'mAccessToken', NULL),
-                    'utmSource' => $this->Config ()->Get ('plugin', 'mAppName', NULL)
+                    'applicationId' => $this->Config ()->Get ('plugin', 'AccessToken', NULL),
+                    'utmSource' => $this->Config ()->Get ('plugin', 'AppName', NULL)
                 ]);
                 /** @noinspection PhpUndefinedClassInspection */
                 $data = Photo::random ([
-                    'query' => $this->Config ()->Get ('plugin', 'mQuery', NULL),
-                    'w' => $this->Config ()->Get ('plugin', 'mWidth', NULL),
-                    'h' => $this->Config ()->Get ('plugin', 'mHeight', NULL)
+                    'query' => $this->Config ()->Get ('plugin', 'Query', NULL),
+                    'w' => $this->Config ()->Get ('plugin', 'Width', NULL),
+                    'h' => $this->Config ()->Get ('plugin', 'Height', NULL)
                 ]);
                 /** @noinspection PhpUndefinedFieldInspection */
                 $response = [
@@ -80,12 +81,12 @@ class UnsplashBgUpdaterPlugin extends AbstractPlugin
      * @return array|bool
      */
     public function checkConfiguration() {
-        $access_token   = $this->Config()->Get('plugin', 'mAccessToken', null);
-        $app_name       = $this->Config()->Get('plugin', 'mAppName', null);
-        $width          = $this->Config()->Get('plugin', 'mWidth', -1);
-        $height         = $this->Config()->Get('plugin', 'mHeight', -1);
-        $check          = $this->Config()->Get('plugin', 'mCheck', false);
-        $update_rate    = $this->Config()->Get('plugin', 'mUpdateRate', -1);
+        $access_token   = $this->Config()->Get('plugin', 'AccessToken', null);
+        $app_name       = $this->Config()->Get('plugin', 'AppName', null);
+        $width          = $this->Config()->Get('plugin', 'Width', -1);
+        $height         = $this->Config()->Get('plugin', 'Height', -1);
+        $check          = $this->Config()->Get('plugin', 'Check', false);
+        $update_rate    = $this->Config()->Get('plugin', 'UpdateRate', -1);
 
         $return = true;
 	    if(!$access_token) {
@@ -122,32 +123,32 @@ class UnsplashBgUpdaterPlugin extends AbstractPlugin
     public function configMapping()
     {
         return [
-            Property::NewInstance('mAccessToken')->SetDescription ('You can get it by registering an application on https://unsplash.com/developers')
+            Property::NewInstance('AccessToken')->SetDescription ('You can get it by registering an application on https://unsplash.com/developers')
                 ->SetLabel('Unsplash access key')
                 ->SetType(PluginPropertyType::STRING)
                 ->SetAllowedInJs (false),
-            Property::NewInstance('mAppName')->SetDescription ('(e.g "My Awesome BG Updater") You must supply this parameter: it is Unsplash API terms requirement')
+            Property::NewInstance('AppName')->SetDescription ('(e.g "My Awesome BG Updater") You must supply this parameter: it is Unsplash API terms requirement')
                 ->SetLabel('Name of your API application')
                 ->SetType(PluginPropertyType::STRING)
                 ->SetAllowedInJs (true),
-            Property::NewInstance('mUpdateRate')->SetDescription ('Note: different types of API applications allowed to use different request rate. 
+            Property::NewInstance('UpdateRate')->SetDescription ('Note: different types of API applications allowed to use different request rate. 
                 Read API docs at https://unsplash.com/documentation#rate-limiting')
                 ->SetLabel('Background update rate (seconds)')
                 ->SetType(PluginPropertyType::INT)
                 ->SetDefaultValue (120)
                 ->SetAllowedInJs (true),
-            Property::NewInstance('mQuery')->SetLabel('Custom search query')
+            Property::NewInstance('Query')->SetLabel('Custom search query')
                 ->SetType(PluginPropertyType::STRING)
                 ->SetAllowedInJs (false),
-            Property::NewInstance('mWidth')->SetLabel('Image width')
+            Property::NewInstance('Width')->SetLabel('Image width')
                 ->SetType(PluginPropertyType::INT)
                 ->SetDefaultValue (1920)
                 ->SetAllowedInJs (true),
-            Property::NewInstance('mHeight')->SetLabel('Image height')
+            Property::NewInstance('Height')->SetLabel('Image height')
                 ->SetType(PluginPropertyType::INT)
                 ->SetDefaultValue (1080)
                 ->SetAllowedInJs (true),
-            Property::NewInstance ('mCheck')->SetLabel ('I will not forget to install the theme `Default` or any other that looks good with this plugin')
+            Property::NewInstance ('Check')->SetLabel ('I will not forget to install the theme `Default` or any other that looks good with this plugin')
                 ->SetType (PluginPropertyType::BOOL)
                 ->SetDefaultValue (false)
                 ->SetAllowedInJs (true),
