@@ -16,10 +16,8 @@
     /** @noinspection SpellCheckingInspection */
 
 class UnsplashBgUpdaterPlugin extends AbstractPlugin {
-	/**
-	 * @return void
-	 */
-	public function Init() {
+
+    public function Init() {
         $this->addJs ('js/unsplashbg.min.js');
         $this->addJs ('js/plugin.js');
         /**
@@ -28,16 +26,16 @@ class UnsplashBgUpdaterPlugin extends AbstractPlugin {
         $this->addJs ('js/unsplashbg.min.js', true);
         $this->addJs ('js/plugin.js', true);
 
-		$this->addAjaxHook('getNewImage', 'getNewImage');
-	}
+        $this->addAjaxHook('getNewImage', 'getNewImage');
+    }
 
     /**
      * Gets new image from Unsplash API
      * @return \RainLoop\Plugins\AbstractPlugin
      */
     public function getNewImage() {
-	    if(is_array($response = $this->checkConfiguration ())) {
-	        $response['success'] = false;
+        if(is_array($response = $this->checkConfiguration ())) {
+            $response['success'] = false;
         } else {
             try {
                 /** @noinspection PhpUndefinedClassInspection */
@@ -70,8 +68,8 @@ class UnsplashBgUpdaterPlugin extends AbstractPlugin {
                 ];
             }
         }
-		return $this->ajaxResponse(__FUNCTION__, $response);
-	}
+        return $this->ajaxResponse(__FUNCTION__, $response);
+    }
 
     /**
      * Checks configuration. Returned array means error
@@ -86,9 +84,9 @@ class UnsplashBgUpdaterPlugin extends AbstractPlugin {
         $update_rate    = $this->Config()->Get('plugin', 'UpdateRate', -1);
 
         $return = true;
-	    if(!$access_token) {
-	        $return = [
-	            'error' => "[Settings] Access token is mandatory!"
+        if(!$access_token) {
+            $return = [
+                'error' => "[Settings] Access token is mandatory!"
             ];
         }
         if(!$app_name) {
