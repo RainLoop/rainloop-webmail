@@ -299,6 +299,8 @@ Disabling this option is not recommended.'),
 				'time_offset' => array('0'),
 				'session_filter' => array(''),
 
+				'sentry_dsn' => array(''),
+
 				'filename' => array('log-{date:Y-m-d}.txt',
 					'Log filename.
 For security reasons, some characters are removed from filename.
