@@ -5892,6 +5892,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		if (!$this->Config()->Get('security', 'hide_x_mailer_header', false))
 		{
 			$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
+		} else {
+			$oMessage->DoesNotAddDefaultXMailer();
 		}
 
 		$oFromIdentity = $this->GetIdentityByID($oAccount, $sIdentityID);
