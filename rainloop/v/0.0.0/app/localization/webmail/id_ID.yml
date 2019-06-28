@@ -10,7 +10,7 @@ id_ID:
     TITLE_SIGN_IN_GOOGLE: "Masuk dengan akun Google"
     TITLE_SIGN_IN_FACEBOOK: "Masuk dengan akun Facebook"
     TITLE_SIGN_IN_TWITTER: "Masuk dengan akun Twitter"
-    LABEL_FORGOT_PASSWORD: "Lupa Sandi"
+    LABEL_FORGOT_PASSWORD: "Lupa sandi"
     LABEL_REGISTRATION: "Registrasi"
   TOP_TOOLBAR:
     BUTTON_ADD_ACCOUNT: "Tambah Akun"
@@ -22,7 +22,7 @@ id_ID:
     BUTTON_DESKTOP_VERSION: "Versi Desktop"
   SEARCH:
     MAIN_INPUT_PLACEHOLDER: "Cari"
-    TITLE_ADV: "Pencarian lanjutan"
+    TITLE_ADV: "Pencarian Rinci"
     LABEL_ADV_FROM: "Dari"
     LABEL_ADV_TO: "Kepada"
     LABEL_ADV_SUBJECT: "Judul"
@@ -69,7 +69,7 @@ id_ID:
     BUTTON_ARCHIVE: "Arsipkan"
     BUTTON_SPAM: "Spam"
     BUTTON_NOT_SPAM: "Bukan Spam"
-    BUTTON_EMPTY_FOLDER: "Buat Folder"
+    BUTTON_EMPTY_FOLDER: "Bersihkan Folder"
     BUTTON_MULTY_FORWARD: "Teruskan sebagai lampiran"
     BUTTON_DELETE_WITHOUT_MOVE: "Hapus permanen"
     BUTTON_MORE: "Lagi"
@@ -181,10 +181,10 @@ id_ID:
     LABEL_EMAIL: "Email"
     LABEL_PHONE: "Telepon"
     LABEL_WEB: "Web"
-    LABEL_BIRTHDAY: "Ultah"
+    LABEL_BIRTHDAY: "Tanggal lahir"
     LINK_ADD_EMAIL: "Tambah alamat email"
     LINK_ADD_PHONE: "Tambah telepon"
-    LINK_BIRTHDAY: "Ultah"
+    LINK_BIRTHDAY: "Tanggal lahir"
     PLACEHOLDER_ENTER_DISPLAY_NAME: "Isi nama tampilan"
     PLACEHOLDER_ENTER_LAST_NAME: "Isi nama belakang "
     PLACEHOLDER_ENTER_FIRST_NAME: "Isi nama depan"
@@ -198,9 +198,9 @@ id_ID:
     ADD_MENU_PHONE: "Telepon"
     ADD_MENU_URL: "URL"
     ADD_MENU_ADDRESS: "Alamat"
-    ADD_MENU_BIRTHDAY: "Ultah"
+    ADD_MENU_BIRTHDAY: "Tanggal lahir"
     ADD_MENU_TAGS: "Penanda"
-    BUTTON_SHARE_NONE: "Kosongkan"
+    BUTTON_SHARE_NONE: "Tak satupun"
     BUTTON_SHARE_ALL: "Semuanya"
     BUTTON_SYNC: "Sinkronisasi (CardDAV)"
   COMPOSE:
@@ -236,7 +236,7 @@ id_ID:
     ATTACHMENTS_ERROR_DESC: "Peringatan! belum semua lampiran terunggah."
     ATTACHMENTS_UPLOAD_ERROR_DESC: "Belum semua lampiran terunggah."
     BUTTON_REQUEST_READ_RECEIPT: "Minta pemberitahuan telah dibaca"
-    BUTTON_MARK_AS_IMPORTANT: "Tandai sebagai penting"
+    BUTTON_MARK_AS_IMPORTANT: "Tandai sebagai pesan penting"
     BUTTON_OPEN_PGP: "OpenPGP (Teks Biasa)"
     BUTTON_REQUEST_DSN: "Minta pemberitahuan berhasil kirim"
   POPUPS_WELCOME_PAGE:
@@ -245,7 +245,7 @@ id_ID:
     BUTTON_YES: "Ya"
     BUTTON_NO: "Tidak"
     DESC_WANT_CLOSE_THIS_WINDOW: "Anda yakin untuk menutup jendela ini?"
-    DESC_WANT_DELETE_MESSAGES: "Anda yakin menghapus permanen semua pesan?"
+    DESC_WANT_DELETE_MESSAGES: "Anda yakin menghapus permanen pesan ini?"
   POPUPS_LANGUAGES:
     TITLE_LANGUAGES: "Pilih bahasa"
   POPUPS_ADD_ACCOUNT:
@@ -279,7 +279,7 @@ id_ID:
     BUTTON_CANCEL: "Batal"
     BUTTON_CLOSE: "Tutup"
     DANGER_DESC_WARNING: "Peringatan!"
-    DANGER_DESC_HTML_1: "Aksi ini akan menyebabkan dibuangnya surat dari folder<strong>%FOLDER%</strong> secara menyeluruh."
+    DANGER_DESC_HTML_1: "Aksi ini akan menyebabkan dibuangnya surat dari folder <strong>%FOLDER%</strong> secara menyeluruh."
     DANGER_DESC_HTML_2: "Begitu dimulai, proses tidak dapat dibatalkan atau ditunda."
     TITLE_CLEARING_PROCESS: "Membersihkan folder..."
   POPUPS_IMPORT_OPEN_PGP_KEY:
@@ -702,10 +702,10 @@ id_ID:
     NO_SCRIPT_TITLE: "JavaScript diperlukan oleh aplikasi ini."
     NO_SCRIPT_DESC: |
         Dukungan Javascript tidak tersedia di browser anda
-        Silahkan aktifkan dukungan Javascript di pengaturan peramban anda dan coba lagi.
+        Silahkan aktifkan dukungan Javascript di pengaturan browser anda dan coba lagi.
     NO_COOKIE_TITLE: "Dukurangan Cookies diperlukan oleh aplikasi ini."
     NO_COOKIE_DESC: |
-        Dukungan cookies tidak tersedia di peramban anda.
+        Dukungan cookies tidak tersedia di browser anda.
         Silahkan aktifkan dukungan Cookies di pengaturan browser dan coba lagi.
     BAD_BROWSER_TITLE: "Browser anda kadaluarsa."
     BAD_BROWSER_DESC: |
