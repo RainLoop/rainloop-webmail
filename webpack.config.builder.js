@@ -4,7 +4,6 @@ const
 	webpack = require('webpack'),
 
 	CopyWebpackPlugin = require('copy-webpack-plugin'),
-	WebpackNotifierPlugin = require('webpack-notifier'),
 
 	devPath = path.resolve(__dirname, 'dev'),
 	devPathJoin = path.join(__dirname, 'dev'),
@@ -13,19 +12,25 @@ const
 
 const babelLoaderOptions = function() {
 	return {
+		ignore: [
+			/\/core-js/
+		],
 		cacheDirectory: true,
+		overrides: [{
+			test: './node_modules/',
+			sourceType: 'unambiguous'
+		}],
 		presets: [
 			['@babel/preset-env', {
+				useBuiltIns: 'usage',
+				corejs: {version: 3, proposals: true},
 				loose: loose,
-				modules: false,
-				targets: {
-					browsers: ['last 3 versions', 'ie >= 9', 'firefox esr']
-				}
+				modules: false
 			}]
 		],
 		plugins: [
 			['@babel/plugin-transform-runtime', {
-				corejs: 2
+				corejs: 3
 			}],
 			['@babel/plugin-proposal-decorators', {
 				legacy: true
@@ -40,6 +45,7 @@ module.exports = function(publicPath, pro, mode) {
 	return {
 		mode: mode || 'development',
 		entry: {
+			'js/polyfills': path.join(devPathJoin, 'polyfills.js'),
 			'js/boot': path.join(devPathJoin, 'boot.js'),
 			'js/app': path.join(devPathJoin, 'app.js'),
 			'js/admin': path.join(devPathJoin, 'admin.js')
@@ -60,11 +66,13 @@ module.exports = function(publicPath, pro, mode) {
 		plugins: [
 			new webpack.DefinePlugin({
 				'RL_COMMUNITY': !pro,
+				'process.env.NODE_ENV': JSON.stringify('production'),
 				'process.env': {
-					NODE_ENV: '"production"'
+					NODE_ENV: JSON.stringify('production')
 				}
 			}),
-			new WebpackNotifierPlugin(),
+			new webpack.DefinePlugin({
+			}),
 			new CopyWebpackPlugin([
 				{from: 'node_modules/openpgp/dist/openpgp.min.js', to: 'js/min/openpgp.min.js'},
 				{from: 'node_modules/openpgp/dist/openpgp.worker.min.js', to: 'js/min/openpgp.worker.min.js'}

@@ -8,9 +8,11 @@
 	<td class="package-version-parent">
 		<span class="package-version" data-bind="text: version"></span>
 	</td>
+	<!--
 	<td class="package-release-parent">
 		<span class="package-release" data-bind="text: release"></span>
 	</td>
+	-->
 	<td class="package-actions-parent">
 		<i class="icon-download e-action button-download" data-bind="visible: !loading() && canBeUpdated, click: function () { $root.installPackage($data); }"></i>
 		&nbsp;

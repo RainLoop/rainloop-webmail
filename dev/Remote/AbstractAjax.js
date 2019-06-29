@@ -201,6 +201,7 @@ class AbstractAjaxRemote
 			this.oRequests[action] = oDefAjax;
 		}
 
+		oDefAjax.catch(console.log);
 		return oDefAjax;
 	}
 

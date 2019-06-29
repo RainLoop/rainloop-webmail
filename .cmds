@@ -6,7 +6,7 @@ yarn upgrade xxx@1.2.3
 # transifex
 tx pull -a
 
-# dependencies 
+# dependencies
 yarn outdated
 yarn upgrade-interactive --exact --latest
 

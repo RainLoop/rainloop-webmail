@@ -44,7 +44,6 @@ var
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),
 	uglify = require('gulp-uglify'),
-	notify = require("gulp-notify"),
 	plumber = require('gulp-plumber'),
 	gulpif = require('gulp-if'),
 	eol = require('gulp-eol'),
@@ -98,12 +97,6 @@ function webpackError(err) {
 		gutil.log('[webpack]', err.error ? err.error.toString() : '');
 		gutil.log('[webpack]', err.message || '');
 		gutil.log('[webpack]', '---');
-
-		notifier.notify({
-			'sound': true,
-			'title': 'webpack',
-			'message': err.error ? err.error.toString() : err.message
-		});
 	}
 }
 
@@ -263,13 +256,13 @@ gulp.task('css:main', ['assets'], function() {
 	return gulp.src(src)
 		.pipe(expect.real({errorOnFailure: true}, src))
 		.pipe(lessFilter)
-		.pipe(gulpif(cfg.watch, plumber({errorHandler: notify.onError("Error: <%= error.message %>")})))
+		.pipe(gulpif(cfg.watch, plumber()))
 		.pipe(less({
 			'paths': cfg.paths.less.main.options.paths
 		}))
 		.pipe(lessFilter.restore)
 		.pipe(concat(cfg.paths.css.main.name))
-		.pipe(autoprefixer('last 3 versions', 'ie >= 9', 'Firefox ESR'))
+		.pipe(autoprefixer())
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS))
@@ -282,7 +275,7 @@ gulp.task('css:social', function() {
 	return gulp.src(src)
 		.pipe(expect.real({errorOnFailure: true}, src))
 		.pipe(concat(cfg.paths.css.social.name))
-		.pipe(autoprefixer('last 3 versions', 'ie >= 9', 'Firefox ESR'))
+		.pipe(autoprefixer())
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(cfg.paths.staticCSS));
@@ -380,7 +373,7 @@ gulp.task('js:eslint', function() {
 	return gulp.src(cfg.paths.globjs)
 		.pipe(cache('eslint'))
 		.pipe(eslint())
-		.pipe(gulpif(cfg.watch, plumber({errorHandler: notify.onError("Error: <%= error.message %>")})))
+		.pipe(gulpif(cfg.watch, plumber()))
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError());
 });
