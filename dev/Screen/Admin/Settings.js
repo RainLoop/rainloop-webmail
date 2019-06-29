@@ -1,6 +1,3 @@
-
-/* global RL_COMMUNITY */
-
 import {addSettingsViewModel} from 'Knoin/Knoin';
 import {runSettingsViewModelHooks} from 'Common/Plugins';
 

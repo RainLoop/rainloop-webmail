@@ -1,6 +1,4 @@
 
-/* global RL_COMMUNITY */
-
 import ko from 'ko';
 
 import * as Settings from 'Storage/Settings';

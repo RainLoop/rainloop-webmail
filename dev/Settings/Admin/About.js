@@ -1,6 +1,3 @@
-
-/* global RL_COMMUNITY */
-
 import ko from 'ko';
 
 import {i18n, trigger as translatorTrigger} from 'Common/Translator';

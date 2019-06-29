@@ -1,6 +1,4 @@
 
-/* global RL_COMMUNITY */
-
 import _ from '_';
 import ko from 'ko';
 

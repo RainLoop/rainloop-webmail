@@ -1,6 +1,3 @@
-
-/* global RL_COMMUNITY */
-
 import window from 'window';
 import _ from '_';
 import $ from '$';
