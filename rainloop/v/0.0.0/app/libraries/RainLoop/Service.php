@@ -47,6 +47,12 @@ class Service
 			@\header('X-Frame-Options: '.$sXFrameOptionsHeader, true);
 		}
 
+		$sXssProtectionOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_xss_protection_header', ''));
+		if (0 < \strlen($sXssProtectionOptionsHeader))
+		{
+			@\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader, true);
+		}
+
 		if ($this->oActions->Config()->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
 		{
 			@\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl(), true);
@@ -247,6 +253,10 @@ class Service
 			}
 
 			$sResult .= ']-->';
+		}
+		else
+		{
+			@\header('X-XSS-Protection: 1; mode=block');
 		}
 
 		// Output result

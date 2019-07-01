@@ -1100,6 +1100,13 @@ class HtmlUtils
 				}
 			}
 
+			$sLinkHref = \trim($oElement->getAttribute('xlink:href'));
+			if ($sLinkHref && !\preg_match('/^(http[s]?):/i', $sLinkHref) && '//' !== \substr($sLinkHref, 0, 2))
+			{
+				$oElement->setAttribute('data-x-blocked-xlink-href', $sLinkHref);
+				$oElement->removeAttribute('xlink:href');
+			}
+			
 			if (\in_array($sTagNameLower, array('a', 'form', 'area')))
 			{
 				$oElement->setAttribute('target', '_blank');

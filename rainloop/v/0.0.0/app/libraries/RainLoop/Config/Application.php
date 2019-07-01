@@ -198,7 +198,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'custom_server_signature'	=> array('RainLoop'),
 				'x_frame_options_header'	=> array(''),
-
+				'x_xss_protection_header'	=> array('1; mode=block'),
+				
 				'openpgp'					=> array(false),
 
 				'admin_login'				=> array('admin', 'Login and password for web admin panel'),
