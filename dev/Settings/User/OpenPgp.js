@@ -1,22 +1,20 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {delegateRunOnDestroy, boolToAjax} from 'Common/Utils';
-import {Magics} from 'Common/Enums';
-import {bIsHttps} from 'Common/Globals';
+import { delegateRunOnDestroy, boolToAjax } from 'Common/Utils';
+import { Magics } from 'Common/Enums';
+import { bIsHttps } from 'Common/Globals';
 
 import PgpStore from 'Stores/User/Pgp';
 import SettingsStore from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Ajax';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {showScreenPopup} from 'Knoin/Knoin';
+import { showScreenPopup } from 'Knoin/Knoin';
 
-class OpenPgpUserSettings
-{
+class OpenPgpUserSettings {
 	constructor() {
 		this.openpgpkeys = PgpStore.openpgpkeys;
 		this.openpgpkeysPublic = PgpStore.openpgpkeysPublic;
@@ -38,8 +36,7 @@ class OpenPgpUserSettings
 	}
 
 	viewOpenPgpKey(openPgpKey) {
-		if (openPgpKey)
-		{
+		if (openPgpKey) {
 			showScreenPopup(require('View/Popup/ViewOpenPgpKey'), [openPgpKey]);
 		}
 	}
@@ -49,21 +46,16 @@ class OpenPgpUserSettings
 	 * @returns {void}
 	 */
 	deleteOpenPgpKey(openPgpKeyToRemove) {
-		if (openPgpKeyToRemove && openPgpKeyToRemove.deleteAccess())
-		{
+		if (openPgpKeyToRemove && openPgpKeyToRemove.deleteAccess()) {
 			this.openPgpKeyForDeletion(null);
 
-			if (openPgpKeyToRemove && PgpStore.openpgpKeyring)
-			{
+			if (openPgpKeyToRemove && PgpStore.openpgpKeyring) {
 				const findedItem = _.find(PgpStore.openpgpkeys(), (key) => openPgpKeyToRemove === key);
-				if (findedItem)
-				{
+				if (findedItem) {
 					PgpStore.openpgpkeys.remove(findedItem);
 					delegateRunOnDestroy(findedItem);
 
-					PgpStore
-						.openpgpKeyring[findedItem.isPrivate ? 'privateKeys' : 'publicKeys']
-						.removeForId(findedItem.guid);
+					PgpStore.openpgpKeyring[findedItem.isPrivate ? 'privateKeys' : 'publicKeys'].removeForId(findedItem.guid);
 
 					PgpStore.openpgpKeyring.store();
 				}
@@ -75,13 +67,9 @@ class OpenPgpUserSettings
 
 	onBuild() {
 		_.delay(() => {
-
-			this.allowDraftAutosave.subscribe(
-				Remote.saveSettingsHelper('AllowDraftAutosave', boolToAjax)
-			);
-
+			this.allowDraftAutosave.subscribe(Remote.saveSettingsHelper('AllowDraftAutosave', boolToAjax));
 		}, Magics.Time50ms);
 	}
 }
 
-export {OpenPgpUserSettings, OpenPgpUserSettings as default};
+export { OpenPgpUserSettings, OpenPgpUserSettings as default };

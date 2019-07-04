@@ -1,6 +1,5 @@
-
 import _ from '_';
-import {isObject, isUnd} from 'Common/Utils';
+import { isObject, isUnd } from 'Common/Utils';
 import * as Plugins from 'Common/Plugins';
 
 const SUBS = {};
@@ -10,21 +9,16 @@ const SUBS = {};
  * @param {Function} func
  * @param {Object=} context
  */
-export function sub(name, func, context)
-{
-	if (isObject(name))
-	{
+export function sub(name, func, context) {
+	if (isObject(name)) {
 		context = func || null;
 		func = null;
 
 		_.each(name, (subFunc, subName) => {
 			sub(subName, subFunc, context);
 		});
-	}
-	else
-	{
-		if (isUnd(SUBS[name]))
-		{
+	} else {
+		if (isUnd(SUBS[name])) {
 			SUBS[name] = [];
 		}
 
@@ -36,15 +30,12 @@ export function sub(name, func, context)
  * @param {string} name
  * @param {Array=} args
  */
-export function pub(name, args)
-{
+export function pub(name, args) {
 	Plugins.runHook('rl-pub', [name, args]);
 
-	if (!isUnd(SUBS[name]))
-	{
+	if (!isUnd(SUBS[name])) {
 		_.each(SUBS[name], (items) => {
-			if (items[0])
-			{
+			if (items[0]) {
 				items[0].apply(items[1] || null, args || []);
 			}
 		});

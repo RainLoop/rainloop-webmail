@@ -1,19 +1,17 @@
-
 import ko from 'ko';
 import key from 'key';
 
-import {KeyState} from 'Common/Enums';
-import {selectElement} from 'Common/Utils';
+import { KeyState } from 'Common/Enums';
+import { selectElement } from 'Common/Utils';
 
-import {popup} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/ViewOpenPgpKey',
 	templateID: 'PopupsViewOpenPgpKey'
 })
-class ViewOpenPgpKeyPopupView extends AbstractViewNext
-{
+class ViewOpenPgpKeyPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -29,8 +27,7 @@ class ViewOpenPgpKeyPopupView extends AbstractViewNext
 
 	selectKey() {
 		const el = this.keyDom();
-		if (el)
-		{
+		if (el) {
 			selectElement(el);
 		}
 	}
@@ -38,8 +35,7 @@ class ViewOpenPgpKeyPopupView extends AbstractViewNext
 	onShow(openPgpKey) {
 		this.clearPopup();
 
-		if (openPgpKey)
-		{
+		if (openPgpKey) {
 			this.key(openPgpKey.armor);
 		}
 	}
@@ -52,4 +48,4 @@ class ViewOpenPgpKeyPopupView extends AbstractViewNext
 	}
 }
 
-export {ViewOpenPgpKeyPopupView, ViewOpenPgpKeyPopupView as default};
+export { ViewOpenPgpKeyPopupView, ViewOpenPgpKeyPopupView as default };

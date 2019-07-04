@@ -1,19 +1,16 @@
-
 import ko from 'ko';
 
-import {pString} from 'Common/Utils';
+import { pString } from 'Common/Utils';
 
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { AbstractModel } from 'Knoin/AbstractModel';
 
-class TemplateModel extends AbstractModel
-{
+class TemplateModel extends AbstractModel {
 	/**
 	 * @param {string} id
 	 * @param {string} name
 	 * @param {string} body
 	 */
-	constructor(id, name, body)
-	{
+	constructor(id, name, body) {
 		super('TemplateModel');
 
 		this.id = id;
@@ -29,8 +26,7 @@ class TemplateModel extends AbstractModel
 	 */
 	parse(json) {
 		let result = false;
-		if (json && 'Object/Template' === json['@Object'])
-		{
+		if (json && 'Object/Template' === json['@Object']) {
 			this.id = pString(json.ID);
 			this.name = pString(json.Name);
 			this.body = pString(json.Body);
@@ -43,4 +39,4 @@ class TemplateModel extends AbstractModel
 	}
 }
 
-export {TemplateModel, TemplateModel as default};
+export { TemplateModel, TemplateModel as default };

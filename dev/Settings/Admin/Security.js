@@ -1,22 +1,20 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {trim, boolToAjax} from 'Common/Utils';
-import {phpInfo} from 'Common/Links';
-import {StorageResultType, Magics} from 'Common/Enums';
+import { trim, boolToAjax } from 'Common/Utils';
+import { phpInfo } from 'Common/Links';
+import { StorageResultType, Magics } from 'Common/Enums';
 
-import {settingsGet} from 'Storage/Settings';
+import { settingsGet } from 'Storage/Settings';
 
 import AppAdminStore from 'Stores/Admin/App';
 import CapaAdminStore from 'Stores/Admin/Capa';
 
 import Remote from 'Remote/Admin/Ajax';
 
-import {command} from 'Knoin/Knoin';
+import { command } from 'Knoin/Knoin';
 
-class SecurityAdminSettings
-{
+class SecurityAdminSettings {
 	constructor() {
 		this.useLocalProxyForExternalImages = AppAdminStore.useLocalProxyForExternalImages;
 
@@ -28,8 +26,7 @@ class SecurityAdminSettings
 		this.capaTwoFactorAuthForce = CapaAdminStore.twoFactorAuthForce;
 
 		this.capaTwoFactorAuth.subscribe((value) => {
-			if (!value)
-			{
+			if (!value) {
 				this.capaTwoFactorAuthForce(false);
 			}
 		});
@@ -38,8 +35,7 @@ class SecurityAdminSettings
 		this.allowSelfSigned = ko.observable(!!settingsGet('AllowSelfSigned'));
 
 		this.verifySslCertificate.subscribe((value) => {
-			if (!value)
-			{
+			if (!value) {
 				this.allowSelfSigned(true);
 			}
 		});
@@ -84,15 +80,12 @@ class SecurityAdminSettings
 
 	@command((self) => '' !== trim(self.adminLogin()) && '' !== self.adminPassword())
 	saveNewAdminPasswordCommand() {
-
-		if ('' === trim(this.adminLogin()))
-		{
+		if ('' === trim(this.adminLogin())) {
 			this.adminLoginError(true);
 			return false;
 		}
 
-		if (this.adminPasswordNew() !== this.adminPasswordNew2())
-		{
+		if (this.adminPasswordNew() !== this.adminPasswordNew2()) {
 			this.adminPasswordNewError(true);
 			return false;
 		}
@@ -119,8 +112,7 @@ class SecurityAdminSettings
 	}
 
 	onNewAdminPasswordResponse(result, data) {
-		if (StorageResultType.Success === result && data && data.Result)
-		{
+		if (StorageResultType.Success === result && data && data.Result) {
 			this.adminPassword('');
 			this.adminPasswordNew('');
 			this.adminPasswordNew2('');
@@ -128,9 +120,7 @@ class SecurityAdminSettings
 			this.adminPasswordUpdateSuccess(true);
 
 			this.weakPassword(!!data.Result.Weak);
-		}
-		else
-		{
+		} else {
 			this.adminPasswordUpdateError(true);
 		}
 	}
@@ -191,4 +181,4 @@ class SecurityAdminSettings
 	}
 }
 
-export {SecurityAdminSettings, SecurityAdminSettings as default};
+export { SecurityAdminSettings, SecurityAdminSettings as default };

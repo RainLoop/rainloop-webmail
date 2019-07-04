@@ -1,12 +1,10 @@
-
 import window from 'window';
 import $ from '$';
 import ko from 'ko';
-import {settingsGet} from 'Storage/Settings';
-import {AbstractAppStore} from 'Stores/AbstractApp';
+import { settingsGet } from 'Storage/Settings';
+import { AbstractAppStore } from 'Stores/AbstractApp';
 
-class AppAdminStore extends AbstractAppStore
-{
+class AppAdminStore extends AbstractAppStore {
 	constructor() {
 		super();
 

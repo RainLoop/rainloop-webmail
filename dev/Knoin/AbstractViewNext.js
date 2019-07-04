@@ -1,18 +1,16 @@
-
 import ko from 'ko';
 
-import {delegateRun, inFocus} from 'Common/Utils';
-import {KeyState, EventKeyCode} from 'Common/Enums';
-import {$win, keyScope} from 'Common/Globals';
+import { delegateRun, inFocus } from 'Common/Utils';
+import { KeyState, EventKeyCode } from 'Common/Enums';
+import { $win, keyScope } from 'Common/Globals';
 
-export class AbstractViewNext
-{
+export class AbstractViewNext {
 	bDisabeCloseOnEsc = false;
 	sDefaultKeyScope = KeyState.None;
 	sCurrentKeyScope = KeyState.None;
 
 	viewModelVisibility = ko.observable(false);
-	modalVisibility = ko.observable(false).extend({rateLimit: 0});
+	modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
 
 	viewModelName = '';
 	viewModelNames = [];
@@ -38,15 +36,11 @@ export class AbstractViewNext
 	 */
 	registerPopupKeyDown() {
 		$win.on('keydown', (event) => {
-			if (event && this.modalVisibility && this.modalVisibility())
-			{
-				if (!this.bDisabeCloseOnEsc && EventKeyCode.Esc === event.keyCode)
-				{
+			if (event && this.modalVisibility && this.modalVisibility()) {
+				if (!this.bDisabeCloseOnEsc && EventKeyCode.Esc === event.keyCode) {
 					delegateRun(this, 'cancelCommand');
 					return false;
-				}
-				else if (EventKeyCode.Backspace === event.keyCode && !inFocus())
-				{
+				} else if (EventKeyCode.Backspace === event.keyCode && !inFocus()) {
 					return false;
 				}
 			}

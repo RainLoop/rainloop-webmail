@@ -1,22 +1,20 @@
-
-import {inbox} from 'Common/Links';
-import {getFolderInboxName} from 'Common/Cache';
-import {leftPanelDisabled} from 'Common/Globals';
+import { inbox } from 'Common/Links';
+import { getFolderInboxName } from 'Common/Cache';
+import { leftPanelDisabled } from 'Common/Globals';
 
 import * as Settings from 'Storage/Settings';
 
 import MessageStore from 'Stores/User/Message';
 
-import {view, ViewType, setHash} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { view, ViewType, setHash } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @view({
 	name: 'View/User/Settings/Pane',
 	type: ViewType.Right,
 	templateID: 'SettingsPane'
 })
-class PaneSettingsUserView extends AbstractViewNext
-{
+class PaneSettingsUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -44,8 +42,7 @@ class PaneSettingsUserView extends AbstractViewNext
 	}
 
 	onBuild(dom) {
-		if (this.mobile)
-		{
+		if (this.mobile) {
 			dom.on('click', () => {
 				leftPanelDisabled(true);
 			});
@@ -57,4 +54,4 @@ class PaneSettingsUserView extends AbstractViewNext
 	}
 }
 
-export {PaneSettingsUserView, PaneSettingsUserView as default};
+export { PaneSettingsUserView, PaneSettingsUserView as default };

@@ -1,16 +1,13 @@
-
 import _ from '_';
 import crossroads from 'crossroads';
-import {isArray, isNonEmptyArray, noop} from 'Common/Utils';
+import { isArray, isNonEmptyArray, noop } from 'Common/Utils';
 
-export class AbstractScreen
-{
+export class AbstractScreen {
 	oCross = null;
 	sScreenName;
 	aViewModels;
 
-	constructor(screenName, viewModels = [])
-	{
+	constructor(screenName, viewModels = []) {
 		this.sScreenName = screenName;
 		this.aViewModels = isArray(viewModels) ? viewModels : [];
 	}
@@ -47,19 +44,16 @@ export class AbstractScreen
 	 * @returns {void}
 	 */
 	__start() {
-		let
-			route = null,
+		let route = null,
 			fMatcher = null;
 		const routes = this.routes();
 
-		if (isNonEmptyArray(routes))
-		{
+		if (isNonEmptyArray(routes)) {
 			fMatcher = _.bind(this.onRoute || noop, this);
 			route = crossroads.create();
 
 			routes.forEach((item) => {
-				if (item && route)
-				{
+				if (item && route) {
 					route.addRoute(item[0], fMatcher).rules = item[1];
 				}
 			});

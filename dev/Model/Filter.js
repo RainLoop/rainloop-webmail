@@ -1,19 +1,17 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {FilterRulesType, FiltersAction} from 'Common/Enums';
-import {pString, inArray, isNonEmptyArray, fakeMd5, delegateRunOnDestroy, windowResizeCallback} from 'Common/Utils';
-import {i18n} from 'Common/Translator';
-import {getFolderFromCacheList} from 'Common/Cache';
+import { FilterRulesType, FiltersAction } from 'Common/Enums';
+import { pString, inArray, isNonEmptyArray, fakeMd5, delegateRunOnDestroy, windowResizeCallback } from 'Common/Utils';
+import { i18n } from 'Common/Translator';
+import { getFolderFromCacheList } from 'Common/Cache';
 
 import AccountStore from 'Stores/User/Account';
 
-import {FilterConditionModel} from 'Model/FilterCondition';
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { FilterConditionModel } from 'Model/FilterCondition';
+import { AbstractModel } from 'Knoin/AbstractModel';
 
-class FilterModel extends AbstractModel
-{
+class FilterModel extends AbstractModel {
 	constructor() {
 		super('FilterModel');
 
@@ -56,15 +54,14 @@ class FilterModel extends AbstractModel
 
 		const fGetRealFolderName = (folderFullNameRaw) => {
 			const folder = getFolderFromCacheList(folderFullNameRaw);
-			return folder ? folder.fullName.replace('.' === folder.delimiter ? /\./ : /[\\\/]+/, ' / ') : folderFullNameRaw;
+			return folder ? folder.fullName.replace('.' === folder.delimiter ? /\./ : /[\\/]+/, ' / ') : folderFullNameRaw;
 		};
 
 		this.nameSub = ko.computed(() => {
 			let result = '';
 			const actionValue = this.actionValue();
 
-			switch (this.actionType())
-			{
+			switch (this.actionType()) {
 				case FiltersAction.MoveTo:
 					result = i18n('SETTINGS_FILTERS/SUBNAME_MOVE_TO', {
 						FOLDER: fGetRealFolderName(actionValue)
@@ -93,8 +90,7 @@ class FilterModel extends AbstractModel
 		this.actionTemplate = ko.computed(() => {
 			let result = '';
 
-			switch (this.actionType())
-			{
+			switch (this.actionType()) {
 				case FiltersAction.Forward:
 					result = 'SettingsFiltersActionForward';
 					break;
@@ -121,13 +117,17 @@ class FilterModel extends AbstractModel
 
 		this.regDisposables(this.conditions.subscribe(windowResizeCallback));
 
-		this.regDisposables(this.name.subscribe((sValue) => {
-			this.name.error('' === sValue);
-		}));
+		this.regDisposables(
+			this.name.subscribe((sValue) => {
+				this.name.error('' === sValue);
+			})
+		);
 
-		this.regDisposables(this.actionValue.subscribe((sValue) => {
-			this.actionValue.error('' === sValue);
-		}));
+		this.regDisposables(
+			this.actionValue.subscribe((sValue) => {
+				this.actionValue.error('' === sValue);
+			})
+		);
 
 		this.regDisposables([this.actionNoStop, this.actionTemplate]);
 
@@ -140,42 +140,42 @@ class FilterModel extends AbstractModel
 	}
 
 	verify() {
-		if ('' === this.name())
-		{
+		if ('' === this.name()) {
 			this.name.error(true);
 			return false;
 		}
 
-		if (0 < this.conditions().length)
-		{
-			if (_.find(this.conditions(), (cond) => cond && !cond.verify()))
-			{
+		if (0 < this.conditions().length) {
+			if (_.find(this.conditions(), (cond) => cond && !cond.verify())) {
 				return false;
 			}
 		}
 
-		if ('' === this.actionValue())
-		{
-			if (-1 < inArray(this.actionType(), [
-				FiltersAction.MoveTo, FiltersAction.Forward, FiltersAction.Reject, FiltersAction.Vacation
-			]))
-			{
+		if ('' === this.actionValue()) {
+			if (
+				-1 <
+				inArray(this.actionType(), [
+					FiltersAction.MoveTo,
+					FiltersAction.Forward,
+					FiltersAction.Reject,
+					FiltersAction.Vacation
+				])
+			) {
 				this.actionValue.error(true);
 				return false;
 			}
 		}
 
-		if (FiltersAction.Forward === this.actionType() &&
-			-1 === this.actionValue().indexOf('@'))
-		{
+		if (FiltersAction.Forward === this.actionType() && -1 === this.actionValue().indexOf('@')) {
 			this.actionValue.error(true);
 			return false;
 		}
 
-		if (FiltersAction.Vacation === this.actionType() &&
-			'' !== this.actionValueFourth() && -1 === this.actionValueFourth().indexOf('@')
-		)
-		{
+		if (
+			FiltersAction.Vacation === this.actionType() &&
+			'' !== this.actionValueFourth() &&
+			-1 === this.actionValueFourth().indexOf('@')
+		) {
 			this.actionValueFourth.error(true);
 			return false;
 		}
@@ -221,8 +221,7 @@ class FilterModel extends AbstractModel
 
 	parse(json) {
 		let result = false;
-		if (json && 'Object/Filter' === json['@Object'])
-		{
+		if (json && 'Object/Filter' === json['@Object']) {
 			this.id = pString(json.ID);
 			this.name(pString(json.Name));
 			this.enabled(!!json.Enabled);
@@ -231,12 +230,15 @@ class FilterModel extends AbstractModel
 
 			this.conditions([]);
 
-			if (isNonEmptyArray(json.Conditions))
-			{
-				this.conditions(_.compact(_.map(json.Conditions, (aData) => {
-					const filterCondition = new FilterConditionModel();
-					return filterCondition && filterCondition.parse(aData) ? filterCondition : null;
-				})));
+			if (isNonEmptyArray(json.Conditions)) {
+				this.conditions(
+					_.compact(
+						_.map(json.Conditions, (aData) => {
+							const filterCondition = new FilterConditionModel();
+							return filterCondition && filterCondition.parse(aData) ? filterCondition : null;
+						})
+					)
+				);
 			}
 
 			this.actionType(pString(json.ActionType));
@@ -257,7 +259,6 @@ class FilterModel extends AbstractModel
 	}
 
 	cloneSelf() {
-
 		const filter = new FilterModel();
 
 		filter.id = this.id;
@@ -289,4 +290,4 @@ class FilterModel extends AbstractModel
 	}
 }
 
-export {FilterModel, FilterModel as default};
+export { FilterModel, FilterModel as default };

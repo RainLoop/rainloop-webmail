@@ -1,15 +1,12 @@
-
 import _ from '_';
 import ko from 'ko';
 
-class IdentityUserStore
-{
+class IdentityUserStore {
 	constructor() {
 		this.identities = ko.observableArray([]);
-		this.identities.loading = ko.observable(false).extend({throttle: 100});
+		this.identities.loading = ko.observable(false).extend({ throttle: 100 });
 
-		this.identitiesIDS = ko.computed(
-			() => _.compact(_.map(this.identities(), (item) => (item ? item.id : null))));
+		this.identitiesIDS = ko.computed(() => _.compact(_.map(this.identities(), (item) => (item ? item.id : null))));
 	}
 }
 

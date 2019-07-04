@@ -1,10 +1,8 @@
-
 import ko from 'ko';
-import {Capa} from 'Common/Enums';
+import { Capa } from 'Common/Enums';
 import * as Settings from 'Storage/Settings';
 
-class CapaAdminStore
-{
+class CapaAdminStore {
 	constructor() {
 		this.additionalAccounts = ko.observable(false);
 		this.identities = ko.observable(false);

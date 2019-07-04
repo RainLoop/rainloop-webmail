@@ -1,72 +1,74 @@
+import { pInt } from 'Common/Utils';
+import { SaveSettingsStep } from 'Common/Enums';
+import { AbstractComponent, componentExportHelper } from 'Component/Abstract';
 
-import {pInt} from 'Common/Utils';
-import {SaveSettingsStep} from 'Common/Enums';
-import {AbstractComponent, componentExportHelper} from 'Component/Abstract';
-
-class SaveTriggerComponent extends AbstractComponent
-{
+class SaveTriggerComponent extends AbstractComponent {
 	/**
 	 * @param {Object} params
 	 */
 	constructor(params) {
-
 		super();
 
 		this.element = params.element || null;
 		this.value = params.value && params.value.subscribe ? params.value : null;
 
-		if (this.element)
-		{
-			if (this.value)
-			{
+		if (this.element) {
+			if (this.value) {
 				this.element.css('display', 'inline-block');
 
-				if (params.verticalAlign)
-				{
+				if (params.verticalAlign) {
 					this.element.css('vertical-align', params.verticalAlign);
 				}
 
 				this.setState(this.value());
 
-				this.disposable.push(
-					this.value.subscribe(this.setState, this)
-				);
-			}
-			else
-			{
+				this.disposable.push(this.value.subscribe(this.setState, this));
+			} else {
 				this.element.hide();
 			}
 		}
 	}
 
 	setState(value) {
-
-		switch (pInt(value))
-		{
+		switch (pInt(value)) {
 			case SaveSettingsStep.TrueResult:
 				this.element
-					.find('.animated,.error').hide().removeClass('visible')
+					.find('.animated,.error')
+					.hide()
+					.removeClass('visible')
 					.end()
-					.find('.success').show().addClass('visible');
+					.find('.success')
+					.show()
+					.addClass('visible');
 				break;
 			case SaveSettingsStep.FalseResult:
 				this.element
-					.find('.animated,.success').hide().removeClass('visible')
+					.find('.animated,.success')
+					.hide()
+					.removeClass('visible')
 					.end()
-					.find('.error').show().addClass('visible');
+					.find('.error')
+					.show()
+					.addClass('visible');
 				break;
 			case SaveSettingsStep.Animate:
 				this.element
-					.find('.error,.success').hide().removeClass('visible')
+					.find('.error,.success')
+					.hide()
+					.removeClass('visible')
 					.end()
-					.find('.animated').show().addClass('visible');
+					.find('.animated')
+					.show()
+					.addClass('visible');
 				break;
 			case SaveSettingsStep.Idle:
 			default:
 				this.element
-					.find('.animated').hide()
+					.find('.animated')
+					.hide()
 					.end()
-					.find('.error,.success').removeClass('visible');
+					.find('.error,.success')
+					.removeClass('visible');
 				break;
 		}
 	}

@@ -1,9 +1,8 @@
-
 import window from 'window';
 import progressJs from 'progressJs';
 
-import {jassl} from 'Common/Jassl';
-import {getHash, setHash, clearHash} from 'Storage/RainLoop';
+import { jassl } from 'Common/Jassl';
+import { getHash, setHash, clearHash } from 'Storage/RainLoop';
 
 let RL_APP_DATA_STORAGE = null;
 
@@ -14,38 +13,38 @@ window.__rlah_clear = () => clearHash();
 window.__rlah_data = () => RL_APP_DATA_STORAGE;
 
 const useJsNextBundle = (function() {
-//	try {
-//
-//		(function() {
-//			eval(`
-// // let + const
-//const x = 5; let y = 4; var z = 4;
-//
-// // Arrow Function
-//const f = () => 'rainloop';
-//
-// // Default + Rest + Spread
-//const d = (test = 1, ...t) => 'rainloop';
-//d(...[1, 2, 3]);
-//
-//// Destructuring
-//let [a, b] = [1, 2];
-//({a, b} = {a: 1, b: 2});
-//
-//// Class
-//class Q1 { constructor() {} }
-//
-//// Class extends + super
-//class Q2 extends Q1 { constructor() { super() } }
-//
-//`);
-//		}());
-//
-//		return true;
-//	}
-//	catch (e) {}
+	//	try {
+	//
+	//		(function() {
+	//			eval(`
+	// // let + const
+	//const x = 5; let y = 4; var z = 4;
+	//
+	// // Arrow Function
+	//const f = () => 'rainloop';
+	//
+	// // Default + Rest + Spread
+	//const d = (test = 1, ...t) => 'rainloop';
+	//d(...[1, 2, 3]);
+	//
+	//// Destructuring
+	//let [a, b] = [1, 2];
+	//({a, b} = {a: 1, b: 2});
+	//
+	//// Class
+	//class Q1 { constructor() {} }
+	//
+	//// Class extends + super
+	//class Q2 extends Q1 { constructor() { super() } }
+	//
+	//`);
+	//		}());
+	//
+	//		return true;
+	//	}
+	//	catch (e) {}
 	return false;
-}());
+})();
 /* eslint-enable */
 
 /**
@@ -53,19 +52,20 @@ const useJsNextBundle = (function() {
  * @param {string} name
  * @returns {string}
  */
-function getComputedStyle(id, name)
-{
+function getComputedStyle(id, name) {
 	const element = window.document.getElementById(id);
-	return element && element.currentStyle ? element.currentStyle[name] :
-		(window.getComputedStyle ? window.getComputedStyle(element, null).getPropertyValue(name) : null);
+	return element && element.currentStyle
+		? element.currentStyle[name]
+		: window.getComputedStyle
+		? window.getComputedStyle(element, null).getPropertyValue(name)
+		: null;
 }
 
 /**
  * @param {string} styles
  * @returns {void}
  */
-function includeStyle(styles)
-{
+function includeStyle(styles) {
 	window.document.write(unescape('%3Csty' + 'le%3E' + styles + '"%3E%3C/' + 'sty' + 'le%3E')); // eslint-disable-line no-useless-concat
 }
 
@@ -73,22 +73,31 @@ function includeStyle(styles)
  * @param {string} src
  * @returns {void}
  */
-function includeScr(src)
-{
-	window.document.write(unescape('%3Csc' + 'ript type="text/jav' + 'ascr' + 'ipt" data-cfasync="false" sr' + 'c="' + src + '"%3E%3C/' + 'scr' + 'ipt%3E')); // eslint-disable-line no-useless-concat
+function includeScr(src) {
+	window.document.write(
+		unescape(
+			'%3Csc' +
+				'ript type="text/jav' +
+				'ascr' +
+				'ipt" data-cfasync="false" sr' +
+				'c="' +
+				src +
+				'"%3E%3C/' +
+				'scr' +
+				'ipt%3E'
+		)
+	); // eslint-disable-line no-useless-concat
 }
 
 /**
  * @returns {boolean}
  */
-function includeLayout()
-{
+function includeLayout() {
 	const app = window.document.getElementById('rl-app');
 
 	require('Styles/@Boot.css');
 
-	if (app)
-	{
+	if (app) {
 		const layout = require('Html/Layout.html');
 		app.innerHTML = ((layout && layout.default ? layout.default : layout) || '').replace(/[\r\n\t]+/g, '');
 		return true;
@@ -103,8 +112,7 @@ function includeLayout()
  * @param {boolean} mobileDevice = false
  * @returns {void}
  */
-function includeAppScr({admin = false, mobile = false, mobileDevice = false})
-{
+function includeAppScr({ admin = false, mobile = false, mobileDevice = false }) {
 	let src = './?/';
 	src += admin ? 'Admin' : '';
 	src += 'AppData@';
@@ -112,19 +120,25 @@ function includeAppScr({admin = false, mobile = false, mobileDevice = false})
 	src += mobileDevice ? '-1' : '-0';
 	src += '/';
 
-	includeScr(src + (window.__rlah ? window.__rlah() || '0' : '0') + '/' + window.Math.random().toString().substr(2) + '/');
+	includeScr(
+		src +
+			(window.__rlah ? window.__rlah() || '0' : '0') +
+			'/' +
+			window.Math.random()
+				.toString()
+				.substr(2) +
+			'/'
+	);
 }
 
 /**
  * @returns {object}
  */
-function getRainloopBootData()
-{
+function getRainloopBootData() {
 	let result = {};
 	const meta = window.document.getElementById('app-boot-data');
 
-	if (meta && meta.getAttribute)
-	{
+	if (meta && meta.getAttribute) {
 		result = JSON.parse(meta.getAttribute('content')) || {};
 	}
 
@@ -135,31 +149,25 @@ function getRainloopBootData()
  * @param {string} additionalError
  * @returns {void}
  */
-function showError(additionalError)
-{
-	const
-		oR = window.document.getElementById('rl-loading'),
+function showError(additionalError) {
+	const oR = window.document.getElementById('rl-loading'),
 		oL = window.document.getElementById('rl-loading-error'),
 		oLA = window.document.getElementById('rl-loading-error-additional');
 
-	if (oR)
-	{
+	if (oR) {
 		oR.style.display = 'none';
 	}
 
-	if (oL)
-	{
+	if (oL) {
 		oL.style.display = 'block';
 	}
 
-	if (oLA && additionalError)
-	{
+	if (oLA && additionalError) {
 		oLA.style.display = 'block';
 		oLA.innerHTML = additionalError;
 	}
 
-	if (progressJs)
-	{
+	if (progressJs) {
 		progressJs.set(100).end();
 	}
 }
@@ -168,19 +176,15 @@ function showError(additionalError)
  * @param {string} description
  * @returns {void}
  */
-function showDescriptionAndLoading(description)
-{
-	const
-		oE = window.document.getElementById('rl-loading'),
+function showDescriptionAndLoading(description) {
+	const oE = window.document.getElementById('rl-loading'),
 		oElDesc = window.document.getElementById('rl-loading-desc');
 
-	if (oElDesc && description)
-	{
+	if (oElDesc && description) {
 		oElDesc.innerHTML = description;
 	}
 
-	if (oE && oE.style)
-	{
+	if (oE && oE.style) {
 		oE.style.opacity = 0;
 		window.setTimeout(() => {
 			oE.style.opacity = 1;
@@ -193,16 +197,12 @@ function showDescriptionAndLoading(description)
  * @param {string} additionalError
  * @returns {void}
  */
-function runMainBoot(withError, additionalError)
-{
-	if (window.__APP_BOOT && !withError)
-	{
+function runMainBoot(withError, additionalError) {
+	if (window.__APP_BOOT && !withError) {
 		window.__APP_BOOT(() => {
 			showError(additionalError);
 		});
-	}
-	else
-	{
+	} else {
 		showError(additionalError);
 	}
 }
@@ -210,43 +210,47 @@ function runMainBoot(withError, additionalError)
 /**
  * @returns {void}
  */
-function runApp()
-{
+function runApp() {
 	const appData = window.__rlah_data();
 
-	if (jassl && progressJs && appData && appData.TemplatesLink && appData.LangLink &&
-		appData.StaticLibJsLink && appData.StaticAppJsLink && appData.StaticAppJsNextLink && appData.StaticEditorJsLink)
-	{
+	if (
+		jassl &&
+		progressJs &&
+		appData &&
+		appData.TemplatesLink &&
+		appData.LangLink &&
+		appData.StaticLibJsLink &&
+		appData.StaticAppJsLink &&
+		appData.StaticAppJsNextLink &&
+		appData.StaticEditorJsLink
+	) {
 		const p = progressJs;
 
-		p.setOptions({theme: 'rainloop'});
+		p.setOptions({ theme: 'rainloop' });
 		p.start().set(5);
 
-		const libs = () => jassl(appData.StaticLibJsLink).then(() => {
-			if (window.$)
-			{
-				window.$('#rl-check').remove();
+		const libs = () =>
+			jassl(appData.StaticLibJsLink).then(() => {
+				if (window.$) {
+					window.$('#rl-check').remove();
 
-				if (appData.IncludeBackground)
-				{
-					window.$('#rl-bg')
-						.attr('style', 'background-image: none !important;')
-						.backstretch(
-							appData.IncludeBackground.replace('{{USER}}', (window.__rlah ? (window.__rlah() || '0') : '0')),
-							{fade: 100, centeredX: true, centeredY: true}
-						)
-						.removeAttr('style');
+					if (appData.IncludeBackground) {
+						window
+							.$('#rl-bg')
+							.attr('style', 'background-image: none !important;')
+							.backstretch(
+								appData.IncludeBackground.replace('{{USER}}', window.__rlah ? window.__rlah() || '0' : '0'),
+								{ fade: 100, centeredX: true, centeredY: true }
+							)
+							.removeAttr('style');
+					}
 				}
-			}
-		});
+			});
 
 		libs()
 			.then(() => {
 				p.set(20);
-				return window.Promise.all([
-					jassl(appData.TemplatesLink),
-					jassl(appData.LangLink)
-				]);
+				return window.Promise.all([jassl(appData.TemplatesLink), jassl(appData.LangLink)]);
 			})
 			.then(() => {
 				p.set(30);
@@ -271,9 +275,7 @@ function runApp()
 					window.__initEditor = null;
 				}
 			});
-	}
-	else
-	{
+	} else {
 		runMainBoot(true);
 	}
 }
@@ -283,20 +285,16 @@ function runApp()
  * @returns {void}
  */
 window.__initAppData = function(data) {
-
 	RL_APP_DATA_STORAGE = data;
 
 	window.__rlah_set();
 
-	if (RL_APP_DATA_STORAGE)
-	{
-		if (RL_APP_DATA_STORAGE.NewThemeLink)
-		{
+	if (RL_APP_DATA_STORAGE) {
+		if (RL_APP_DATA_STORAGE.NewThemeLink) {
 			(window.document.getElementById('app-theme-link') || {}).href = RL_APP_DATA_STORAGE.NewThemeLink;
 		}
 
-		if (RL_APP_DATA_STORAGE.IncludeCss)
-		{
+		if (RL_APP_DATA_STORAGE.IncludeCss) {
 			includeStyle(RL_APP_DATA_STORAGE.IncludeCss);
 		}
 
@@ -310,26 +308,20 @@ window.__initAppData = function(data) {
  * @returns {void}
  */
 window.__runBoot = function() {
-
-	if (!window.navigator || !window.navigator.cookieEnabled)
-	{
+	if (!window.navigator || !window.navigator.cookieEnabled) {
 		window.document.location.replace('./?/NoCookie');
 	}
 
 	const root = window.document.documentElement;
-	if ('none' !== getComputedStyle('rl-check', 'display'))
-	{
+	if ('none' !== getComputedStyle('rl-check', 'display')) {
 		root.className += ' no-css';
 	}
 
-	if (useJsNextBundle)
-	{
+	if (useJsNextBundle) {
 		root.className += ' js-next';
 	}
 
-	if (includeLayout())
-	{
+	if (includeLayout()) {
 		includeAppScr(getRainloopBootData());
 	}
 };
-

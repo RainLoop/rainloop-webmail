@@ -1,17 +1,15 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {FolderType} from 'Common/Enums';
-import {isPosNumeric} from 'Common/Utils';
-import {i18n, trigger as translatorTrigger} from 'Common/Translator';
-import {getFolderInboxName} from 'Common/Cache';
+import { FolderType } from 'Common/Enums';
+import { isPosNumeric } from 'Common/Utils';
+import { i18n, trigger as translatorTrigger } from 'Common/Translator';
+import { getFolderInboxName } from 'Common/Cache';
 import * as Events from 'Common/Events';
 
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { AbstractModel } from 'Knoin/AbstractModel';
 
-class FolderModel extends AbstractModel
-{
+class FolderModel extends AbstractModel {
 	constructor() {
 		super('FolderModel');
 
@@ -36,7 +34,7 @@ class FolderModel extends AbstractModel
 		this.checkable = ko.observable(false);
 		this.subFolders = ko.observableArray([]);
 		this.deleteAccess = ko.observable(false);
-		this.actionBlink = ko.observable(false).extend({falseTimeout: 1000});
+		this.actionBlink = ko.observable(false).extend({ falseTimeout: 1000 });
 
 		this.nameForEdit = ko.observable('');
 
@@ -65,24 +63,26 @@ class FolderModel extends AbstractModel
 		this.isInbox = ko.computed(() => FolderType.Inbox === this.type());
 
 		this.hasSubScribedSubfolders = ko.computed(
-			() => !!_.find(this.subFolders(), (oFolder) => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder())
+			() =>
+				!!_.find(
+					this.subFolders(),
+					(oFolder) => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder()
+				)
 		);
 
 		this.canBeEdited = ko.computed(() => FolderType.User === this.type() && this.existen && this.selectable);
 
 		this.visible = ko.computed(() => {
-			const
-				isSubScribed = this.subScribed(),
+			const isSubScribed = this.subScribed(),
 				isSubFolders = this.hasSubScribedSubfolders();
 
-			return (isSubScribed || (isSubFolders && (!this.existen || !this.selectable)));
+			return isSubScribed || (isSubFolders && (!this.existen || !this.selectable));
 		});
 
 		this.isSystemFolder = ko.computed(() => FolderType.User !== this.type());
 
 		this.hidden = ko.computed(() => {
-			const
-				isSystem = this.isSystemFolder(),
+			const isSystem = this.isSystemFolder(),
 				isSubFolders = this.hasSubScribedSubfolders();
 
 			return (isSystem && !isSubFolders) || (!this.selectable && !isSubFolders);
@@ -90,48 +90,46 @@ class FolderModel extends AbstractModel
 
 		this.selectableForFolderList = ko.computed(() => !this.isSystemFolder() && this.selectable);
 
-		this.messageCountAll = ko.computed({
-			read: this.privateMessageCountAll,
-			write: (iValue) => {
-				if (isPosNumeric(iValue, true))
-				{
-					this.privateMessageCountAll(iValue);
+		this.messageCountAll = ko
+			.computed({
+				read: this.privateMessageCountAll,
+				write: (iValue) => {
+					if (isPosNumeric(iValue, true)) {
+						this.privateMessageCountAll(iValue);
+					} else {
+						this.privateMessageCountAll.valueHasMutated();
+					}
 				}
-				else
-				{
-					this.privateMessageCountAll.valueHasMutated();
-				}
-			}
-		}).extend({notify: 'always'});
+			})
+			.extend({ notify: 'always' });
 
-		this.messageCountUnread = ko.computed({
-			read: this.privateMessageCountUnread,
-			write: (value) => {
-				if (isPosNumeric(value, true))
-				{
-					this.privateMessageCountUnread(value);
+		this.messageCountUnread = ko
+			.computed({
+				read: this.privateMessageCountUnread,
+				write: (value) => {
+					if (isPosNumeric(value, true)) {
+						this.privateMessageCountUnread(value);
+					} else {
+						this.privateMessageCountUnread.valueHasMutated();
+					}
 				}
-				else
-				{
-					this.privateMessageCountUnread.valueHasMutated();
-				}
-			}
-		}).extend({notify: 'always'});
+			})
+			.extend({ notify: 'always' });
 
 		this.printableUnreadCount = ko.computed(() => {
-			const
-				count = this.messageCountAll(),
+			const count = this.messageCountAll(),
 				unread = this.messageCountUnread(),
 				type = this.type();
 
-			if (0 < count)
-			{
-				if (FolderType.Draft === type)
-				{
+			if (0 < count) {
+				if (FolderType.Draft === type) {
 					return '' + count;
-				}
-				else if (0 < unread && FolderType.Trash !== type && FolderType.Archive !== type && FolderType.SentItems !== type)
-				{
+				} else if (
+					0 < unread &&
+					FolderType.Trash !== type &&
+					FolderType.Archive !== type &&
+					FolderType.SentItems !== type
+				) {
 					return '' + unread;
 				}
 			}
@@ -144,21 +142,20 @@ class FolderModel extends AbstractModel
 			return !bSystem && 0 === this.subFolders().length && inboxFolderName !== this.fullNameRaw;
 		});
 
-		this.canBeSubScribed = ko.computed(() => !this.isSystemFolder() && this.selectable && inboxFolderName !== this.fullNameRaw);
+		this.canBeSubScribed = ko.computed(
+			() => !this.isSystemFolder() && this.selectable && inboxFolderName !== this.fullNameRaw
+		);
 
 		this.canBeChecked = this.canBeSubScribed;
 
 		this.localName = ko.computed(() => {
-
 			translatorTrigger();
 
 			let name = this.name();
 			const type = this.type();
 
-			if (this.isSystemFolder())
-			{
-				switch (type)
-				{
+			if (this.isSystemFolder()) {
+				switch (type) {
 					case FolderType.Inbox:
 						name = i18n('FOLDER_LIST/INBOX_NAME');
 						break;
@@ -185,18 +182,14 @@ class FolderModel extends AbstractModel
 		});
 
 		this.manageFolderSystemName = ko.computed(() => {
-
 			translatorTrigger();
 
 			let suffix = '';
-			const
-				type = this.type(),
+			const type = this.type(),
 				name = this.name();
 
-			if (this.isSystemFolder())
-			{
-				switch (type)
-				{
+			if (this.isSystemFolder()) {
+				switch (type) {
 					case FolderType.Inbox:
 						suffix = '(' + i18n('FOLDER_LIST/INBOX_NAME') + ')';
 						break;
@@ -219,8 +212,7 @@ class FolderModel extends AbstractModel
 				}
 			}
 
-			if ('' !== suffix && '(' + name + ')' === suffix || '(inbox)' === suffix.toLowerCase())
-			{
+			if (('' !== suffix && '(' + name + ')' === suffix) || '(inbox)' === suffix.toLowerCase()) {
 				suffix = '';
 			}
 
@@ -237,7 +229,11 @@ class FolderModel extends AbstractModel
 		this.hasUnreadMessages = ko.computed(() => 0 < this.messageCountUnread() && '' !== this.printableUnreadCount());
 
 		this.hasSubScribedUnreadMessagesSubfolders = ko.computed(
-			() => !!_.find(this.subFolders(), (folder) => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders())
+			() =>
+				!!_.find(
+					this.subFolders(),
+					(folder) => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders()
+				)
 		);
 
 		// subscribe
@@ -246,15 +242,13 @@ class FolderModel extends AbstractModel
 		});
 
 		this.edited.subscribe((value) => {
-			if (value)
-			{
+			if (value) {
 				this.nameForEdit(this.name());
 			}
 		});
 
 		this.messageCountUnread.subscribe((unread) => {
-			if (FolderType.Inbox === this.type())
-			{
+			if (FolderType.Inbox === this.type()) {
 				Events.pub('mailbox.inbox-unread-count', [unread]);
 			}
 		});
@@ -266,8 +260,11 @@ class FolderModel extends AbstractModel
 	 * @returns {string}
 	 */
 	collapsedCss() {
-		return this.hasSubScribedSubfolders() ?
-			(this.collapsed() ? 'icon-right-mini e-collapsed-sign' : 'icon-down-mini e-collapsed-sign') : 'icon-none e-collapsed-sign';
+		return this.hasSubScribedSubfolders()
+			? this.collapsed()
+				? 'icon-right-mini e-collapsed-sign'
+				: 'icon-down-mini e-collapsed-sign'
+			: 'icon-none e-collapsed-sign';
 	}
 
 	/**
@@ -278,8 +275,7 @@ class FolderModel extends AbstractModel
 		let bResult = false;
 		const sInboxFolderName = getFolderInboxName();
 
-		if (json && 'Object/Folder' === json['@Object'])
-		{
+		if (json && 'Object/Folder' === json['@Object']) {
 			this.name(json.Name);
 			this.delimiter = json.Delimiter;
 			this.fullName = json.FullName;
@@ -308,4 +304,4 @@ class FolderModel extends AbstractModel
 	}
 }
 
-export {FolderModel, FolderModel as default};
+export { FolderModel, FolderModel as default };

@@ -1,23 +1,21 @@
-
 import ko from 'ko';
 
-import {StorageResultType, Notification} from 'Common/Enums';
-import {trim} from 'Common/Utils';
-import {getNotification} from 'Common/Translator';
+import { StorageResultType, Notification } from 'Common/Enums';
+import { trim } from 'Common/Utils';
+import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Ajax';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {popup, command} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup, command } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/Account',
 	templateID: 'PopupsAccount'
 })
-class AccountPopupView extends AbstractViewNext
-{
+class AccountPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -46,45 +44,40 @@ class AccountPopupView extends AbstractViewNext
 
 	@command((self) => !self.submitRequest())
 	addAccountCommand() {
-
 		this.emailError('' === trim(this.email()));
 		this.passwordError('' === trim(this.password()));
 
-		if (this.emailError() || this.passwordError())
-		{
+		if (this.emailError() || this.passwordError()) {
 			return false;
 		}
 
 		this.submitRequest(true);
 
-		Remote.accountSetup((result, data) => {
+		Remote.accountSetup(
+			(result, data) => {
+				this.submitRequest(false);
+				if (StorageResultType.Success === result && data) {
+					if (data.Result) {
+						getApp().accountsAndIdentities();
+						this.cancelCommand();
+					} else {
+						this.submitError(
+							data.ErrorCode ? getNotification(data.ErrorCode) : getNotification(Notification.UnknownError)
+						);
 
-			this.submitRequest(false);
-			if (StorageResultType.Success === result && data)
-			{
-				if (data.Result)
-				{
-					getApp().accountsAndIdentities();
-					this.cancelCommand();
-				}
-				else
-				{
-					this.submitError(data.ErrorCode ? getNotification(data.ErrorCode) :
-						getNotification(Notification.UnknownError));
-
-					if (data.ErrorMessageAdditional)
-					{
-						this.submitErrorAdditional(data.ErrorMessageAdditional);
+						if (data.ErrorMessageAdditional) {
+							this.submitErrorAdditional(data.ErrorMessageAdditional);
+						}
 					}
+				} else {
+					this.submitError(getNotification(Notification.UnknownError));
+					this.submitErrorAdditional('');
 				}
-			}
-			else
-			{
-				this.submitError(getNotification(Notification.UnknownError));
-				this.submitErrorAdditional('');
-			}
-
-		}, this.email(), this.password(), this.isNew());
+			},
+			this.email(),
+			this.password(),
+			this.isNew()
+		);
 
 		return true;
 	}
@@ -105,8 +98,7 @@ class AccountPopupView extends AbstractViewNext
 
 	onShow(account) {
 		this.clearPopup();
-		if (account && account.canBeEdit())
-		{
+		if (account && account.canBeEdit()) {
 			this.isNew(false);
 			this.email(account.email);
 		}
@@ -117,4 +109,4 @@ class AccountPopupView extends AbstractViewNext
 	}
 }
 
-export {AccountPopupView, AccountPopupView as default};
+export { AccountPopupView, AccountPopupView as default };

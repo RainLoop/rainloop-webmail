@@ -1,6 +1,5 @@
-
-import {view, ViewType} from 'Knoin/Knoin';
-import {AbstractSystemDropDownUserView} from 'View/User/AbstractSystemDropDown';
+import { view, ViewType } from 'Knoin/Knoin';
+import { AbstractSystemDropDownUserView } from 'View/User/AbstractSystemDropDown';
 
 @view({
 	name: 'View/User/MailBox/SystemDropDown',
@@ -9,4 +8,4 @@ import {AbstractSystemDropDownUserView} from 'View/User/AbstractSystemDropDown';
 })
 class SystemDropDownMailBoxUserView extends AbstractSystemDropDownUserView {}
 
-export {SystemDropDownMailBoxUserView, SystemDropDownMailBoxUserView as default};
+export { SystemDropDownMailBoxUserView, SystemDropDownMailBoxUserView as default };

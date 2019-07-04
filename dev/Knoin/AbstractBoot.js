@@ -1,5 +1,5 @@
-
-export class AbstractBoot
-{
-	bootstart() {/* no-empty */}
+export class AbstractBoot {
+	bootstart() {
+		/* no-empty */
+	}
 }

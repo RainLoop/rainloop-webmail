@@ -1,25 +1,23 @@
-
 import ko from 'ko';
 
-import {StorageResultType, Notification} from 'Common/Enums';
-import {i18n, getNotification} from 'Common/Translator';
-import {setFolderHash} from 'Common/Cache';
+import { StorageResultType, Notification } from 'Common/Enums';
+import { i18n, getNotification } from 'Common/Translator';
+import { setFolderHash } from 'Common/Cache';
 
 import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Ajax';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {popup, command} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup, command } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/FolderClear',
 	templateID: 'PopupsFolderClear'
 })
-class FolderClearPopupView extends AbstractViewNext
-{
+class FolderClearPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -37,23 +35,20 @@ class FolderClearPopupView extends AbstractViewNext
 			return folder ? folder.localName() : '';
 		});
 
-		this.dangerDescHtml = ko.computed(
-			() => i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', {'FOLDER': this.folderNameForClear()})
+		this.dangerDescHtml = ko.computed(() =>
+			i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', { 'FOLDER': this.folderNameForClear() })
 		);
 	}
 
 	@command((self) => {
-		const
-			folder = self.selectedFolder(),
+		const folder = self.selectedFolder(),
 			isClearing = self.clearingProcess();
 
 		return !isClearing && null !== folder;
 	})
 	clearCommand() {
-
 		const folderToClear = this.selectedFolder();
-		if (folderToClear)
-		{
+		if (folderToClear) {
 			MessageStore.message(null);
 			MessageStore.messageList([]);
 
@@ -65,21 +60,14 @@ class FolderClearPopupView extends AbstractViewNext
 			setFolderHash(folderToClear.fullNameRaw, '');
 
 			Remote.folderClear((result, data) => {
-
 				this.clearingProcess(false);
-				if (StorageResultType.Success === result && data && data.Result)
-				{
+				if (StorageResultType.Success === result && data && data.Result) {
 					getApp().reloadMessageList(true);
 					this.cancelCommand();
-				}
-				else
-				{
-					if (data && data.ErrorCode)
-					{
+				} else {
+					if (data && data.ErrorCode) {
 						this.clearingError(getNotification(data.ErrorCode));
-					}
-					else
-					{
+					} else {
 						this.clearingError(getNotification(Notification.MailServerError));
 					}
 				}
@@ -94,11 +82,10 @@ class FolderClearPopupView extends AbstractViewNext
 
 	onShow(folder) {
 		this.clearPopup();
-		if (folder)
-		{
+		if (folder) {
 			this.selectedFolder(folder);
 		}
 	}
 }
 
-export {FolderClearPopupView, FolderClearPopupView as default};
+export { FolderClearPopupView, FolderClearPopupView as default };

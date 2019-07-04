@@ -1,20 +1,18 @@
-
 import ko from 'ko';
 import key from 'key';
 
-import {KeyState} from 'Common/Enums';
-import {isFunc} from 'Common/Utils';
-import {i18n} from 'Common/Translator';
+import { KeyState } from 'Common/Enums';
+import { isFunc } from 'Common/Utils';
+import { i18n } from 'Common/Translator';
 
-import {popup} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/Ask',
 	templateID: 'PopupsAsk'
 })
-class AskPopupView extends AbstractViewNext
-{
+class AskPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -48,8 +46,7 @@ class AskPopupView extends AbstractViewNext
 	yesClick() {
 		this.cancelCommand();
 
-		if (isFunc(this.fYesAction))
-		{
+		if (isFunc(this.fYesAction)) {
 			this.fYesAction.call(null);
 		}
 	}
@@ -57,8 +54,7 @@ class AskPopupView extends AbstractViewNext
 	noClick() {
 		this.cancelCommand();
 
-		if (isFunc(this.fNoAction))
-		{
+		if (isFunc(this.fNoAction)) {
 			this.fNoAction.call(null);
 		}
 	}
@@ -73,7 +69,6 @@ class AskPopupView extends AbstractViewNext
 	 * @returns {void}
 	 */
 	onShow(askDesc, fYesFunc = null, fNoFunc = null, yesButton = '', noButton = '', isFocusYesOnShow = true) {
-
 		this.clearPopup();
 
 		this.fYesAction = fYesFunc || null;
@@ -81,13 +76,11 @@ class AskPopupView extends AbstractViewNext
 
 		this.askDesc(askDesc || '');
 
-		if (yesButton)
-		{
+		if (yesButton) {
 			this.yesButton(yesButton);
 		}
 
-		if (noButton)
-		{
+		if (noButton) {
 			this.noButton(noButton);
 		}
 
@@ -95,20 +88,16 @@ class AskPopupView extends AbstractViewNext
 	}
 
 	onShowWithDelay() {
-		if (this.bFocusYesOnShow)
-		{
+		if (this.bFocusYesOnShow) {
 			this.yesFocus(true);
 		}
 	}
 
 	onBuild() {
 		key('tab, shift+tab, right, left', KeyState.PopupAsk, () => {
-			if (this.yesFocus())
-			{
+			if (this.yesFocus()) {
 				this.noFocus(true);
-			}
-			else
-			{
+			} else {
 				this.yesFocus(true);
 			}
 			return false;
@@ -121,4 +110,4 @@ class AskPopupView extends AbstractViewNext
 	}
 }
 
-export {AskPopupView, AskPopupView as default};
+export { AskPopupView, AskPopupView as default };

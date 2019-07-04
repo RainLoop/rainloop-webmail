@@ -1,4 +1,3 @@
-
 import window from 'window';
 import _ from '_';
 import ko from 'ko';
@@ -12,14 +11,11 @@ import {
 	Notification
 } from 'Common/Enums';
 
-import {
-	trim, inArray, pInt,
-	convertLangName, triggerAutocompleteInputChange
-} from 'Common/Utils';
+import { trim, inArray, pInt, convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
 
-import {$win} from 'Common/Globals';
-import {socialFacebook, socialGoogle, socialTwitter} from 'Common/Links';
-import {getNotification, getNotificationFromResponse, reload as translatorReload} from 'Common/Translator';
+import { $win } from 'Common/Globals';
+import { socialFacebook, socialGoogle, socialTwitter } from 'Common/Links';
+import { getNotification, getNotificationFromResponse, reload as translatorReload } from 'Common/Translator';
 
 import * as Plugins from 'Common/Plugins';
 
@@ -31,18 +27,17 @@ import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Ajax';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {view, command, ViewType, routeOff, showScreenPopup} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { view, command, ViewType, routeOff, showScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @view({
 	name: ['View/App/Login', 'View/User/Login'],
 	type: ViewType.Center,
 	templateID: 'Login'
 })
-class LoginUserView extends AbstractViewNext
-{
+class LoginUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -56,7 +51,7 @@ class LoginUserView extends AbstractViewNext
 
 		this.additionalCode = ko.observable('');
 		this.additionalCode.error = ko.observable(false);
-		this.additionalCode.errorAnimation = ko.observable(false).extend({falseTimeout: 500});
+		this.additionalCode.errorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
 		this.additionalCode.focused = ko.observable(false);
 		this.additionalCode.visibility = ko.observable(false);
 		this.additionalCodeSignMe = ko.observable(false);
@@ -74,13 +69,15 @@ class LoginUserView extends AbstractViewNext
 		this.emailError = ko.observable(false);
 		this.passwordError = ko.observable(false);
 
-		this.emailErrorAnimation = ko.observable(false).extend({falseTimeout: 500});
-		this.passwordErrorAnimation = ko.observable(false).extend({falseTimeout: 500});
+		this.emailErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
+		this.passwordErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
 
 		this.formHidden = ko.observable(false);
 
 		this.formError = ko.computed(
-			() => this.emailErrorAnimation() || this.passwordErrorAnimation() ||
+			() =>
+				this.emailErrorAnimation() ||
+				this.passwordErrorAnimation() ||
 				(this.additionalCode.visibility() && this.additionalCode.errorAnimation())
 		);
 
@@ -122,8 +119,7 @@ class LoginUserView extends AbstractViewNext
 		this.submitErrorAddidional = ko.observable('');
 
 		this.submitError.subscribe((value) => {
-			if ('' === value)
-			{
+			if ('' === value) {
 				this.submitErrorAddidional('');
 			}
 		});
@@ -136,9 +132,7 @@ class LoginUserView extends AbstractViewNext
 
 		this.bSendLanguage = false;
 
-		this.languageFullName = ko.computed(
-			() => convertLangName(this.language())
-		);
+		this.languageFullName = ko.computed(() => convertLangName(this.language()));
 
 		this.signMeType = ko.observable(LoginSignMeType.Unused);
 
@@ -146,9 +140,7 @@ class LoginUserView extends AbstractViewNext
 			this.signMe(LoginSignMeType.DefaultOn === iValue);
 		});
 
-		this.signMeVisibility = ko.computed(
-			() => LoginSignMeType.Unused !== this.signMeType()
-		);
+		this.signMeVisibility = ko.computed(() => LoginSignMeType.Unused !== this.signMeType());
 
 		this.facebookLoginEnabled = ko.observable(false);
 		this.googleLoginEnabled = ko.observable(false);
@@ -156,16 +148,14 @@ class LoginUserView extends AbstractViewNext
 		this.twitterLoginEnabled = ko.observable(false);
 
 		this.socialLoginEnabled = ko.computed(() => {
-			const
-				bF = this.facebookLoginEnabled(),
+			const bF = this.facebookLoginEnabled(),
 				bG = this.googleLoginEnabled(),
 				bT = this.twitterLoginEnabled();
 
 			return bF || bG || bT;
 		});
 
-		if (Settings.settingsGet('AdditionalLoginError') && !this.submitError())
-		{
+		if (Settings.settingsGet('AdditionalLoginError') && !this.submitError()) {
 			this.submitError(Settings.settingsGet('AdditionalLoginError'));
 		}
 	}
@@ -200,7 +190,6 @@ class LoginUserView extends AbstractViewNext
 
 	@command((self) => !self.submitRequest())
 	submitCommand() {
-
 		triggerAutocompleteInputChange();
 
 		this.emailError(false);
@@ -209,17 +198,17 @@ class LoginUserView extends AbstractViewNext
 		this.emailError('' === trim(this.email()));
 		this.passwordError('' === trim(this.password()));
 
-		if (this.additionalCode.visibility())
-		{
+		if (this.additionalCode.visibility()) {
 			this.additionalCode.error(false);
 			this.additionalCode.error('' === trim(this.additionalCode()));
 		}
 
-		if (this.emailError() || this.passwordError() ||
-			(this.additionalCode.visibility() && this.additionalCode.error()))
-		{
-			switch (true)
-			{
+		if (
+			this.emailError() ||
+			this.passwordError() ||
+			(this.additionalCode.visibility() && this.additionalCode.error())
+		) {
+			switch (true) {
 				case this.emailError():
 					this.emailFocus(true);
 					break;
@@ -235,24 +224,19 @@ class LoginUserView extends AbstractViewNext
 			return false;
 		}
 
-		let
-			pluginResultCode = 0,
+		let pluginResultCode = 0,
 			pluginResultMessage = '';
 
-		const
-			fSubmitResult = (iResultCode, sResultMessage) => {
-				pluginResultCode = iResultCode || 0;
-				pluginResultMessage = sResultMessage || '';
-			};
+		const fSubmitResult = (iResultCode, sResultMessage) => {
+			pluginResultCode = iResultCode || 0;
+			pluginResultMessage = sResultMessage || '';
+		};
 
 		Plugins.runHook('user-login-submit', [fSubmitResult]);
-		if (0 < pluginResultCode)
-		{
+		if (0 < pluginResultCode) {
 			this.submitError(getNotification(pluginResultCode));
 			return false;
-		}
-		else if ('' !== pluginResultMessage)
-		{
+		} else if ('' !== pluginResultMessage) {
 			this.submitError(pluginResultMessage);
 			return false;
 		}
@@ -260,79 +244,57 @@ class LoginUserView extends AbstractViewNext
 		this.submitRequest(true);
 		$win.trigger('rl.tooltips.diactivate');
 
-		const
-			fLoginRequest = (sLoginPassword) => {
+		const fLoginRequest = (sLoginPassword) => {
+			Remote.login(
+				(sResult, oData) => {
+					$win.trigger('rl.tooltips.diactivate');
+					$win.trigger('rl.tooltips.activate');
 
-				Remote.login(
-					(sResult, oData) => {
-
-						$win.trigger('rl.tooltips.diactivate');
-						$win.trigger('rl.tooltips.activate');
-
-						if (StorageResultType.Success === sResult && oData && 'Login' === oData.Action)
-						{
-							if (oData.Result)
-							{
-								if (oData.TwoFactorAuth)
-								{
-									this.additionalCode('');
-									this.additionalCode.visibility(true);
-									this.submitRequest(false);
-
-									_.delay(() => this.additionalCode.focused(true), Magics.Time100ms);
-								}
-								else if (oData.Admin)
-								{
-									getApp().redirectToAdminPanel();
-								}
-								else
-								{
-									getApp().loginAndLogoutReload(false);
-								}
-							}
-							else if (oData.ErrorCode)
-							{
+					if (StorageResultType.Success === sResult && oData && 'Login' === oData.Action) {
+						if (oData.Result) {
+							if (oData.TwoFactorAuth) {
+								this.additionalCode('');
+								this.additionalCode.visibility(true);
 								this.submitRequest(false);
-								if (-1 < inArray(oData.ErrorCode, [Notification.InvalidInputArgument]))
-								{
-									oData.ErrorCode = Notification.AuthError;
-								}
 
-								this.submitError(getNotificationFromResponse(oData));
-
-								if ('' === this.submitError())
-								{
-									this.submitError(getNotification(Notification.UnknownError));
-								}
-								else if (oData.ErrorMessageAdditional)
-								{
-									this.submitErrorAddidional(oData.ErrorMessageAdditional);
-								}
+								_.delay(() => this.additionalCode.focused(true), Magics.Time100ms);
+							} else if (oData.Admin) {
+								getApp().redirectToAdminPanel();
+							} else {
+								getApp().loginAndLogoutReload(false);
 							}
-							else
-							{
-								this.submitRequest(false);
-							}
-						}
-						else
-						{
+						} else if (oData.ErrorCode) {
 							this.submitRequest(false);
-							this.submitError(getNotification(Notification.UnknownError));
+							if (-1 < inArray(oData.ErrorCode, [Notification.InvalidInputArgument])) {
+								oData.ErrorCode = Notification.AuthError;
+							}
+
+							this.submitError(getNotificationFromResponse(oData));
+
+							if ('' === this.submitError()) {
+								this.submitError(getNotification(Notification.UnknownError));
+							} else if (oData.ErrorMessageAdditional) {
+								this.submitErrorAddidional(oData.ErrorMessageAdditional);
+							}
+						} else {
+							this.submitRequest(false);
 						}
+					} else {
+						this.submitRequest(false);
+						this.submitError(getNotification(Notification.UnknownError));
+					}
+				},
+				this.email(),
+				'',
+				sLoginPassword,
+				!!this.signMe(),
+				this.bSendLanguage ? this.language() : '',
+				this.additionalCode.visibility() ? this.additionalCode() : '',
+				this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
+			);
 
-					},
-					this.email(),
-					'',
-					sLoginPassword,
-					!!this.signMe(),
-					this.bSendLanguage ? this.language() : '',
-					this.additionalCode.visibility() ? this.additionalCode() : '',
-					this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
-				);
-
-				Local.set(ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');
-
-			};
+			Local.set(ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');
+		};
 
 		fLoginRequest(this.password());
 
@@ -348,20 +310,13 @@ class LoginUserView extends AbstractViewNext
 	}
 
 	onShowWithDelay() {
-		if ('' !== this.email() && '' !== this.password())
-		{
+		if ('' !== this.email() && '' !== this.password()) {
 			this.passwordFocus(true);
-		}
-		else if ('' === this.email())
-		{
+		} else if ('' === this.email()) {
 			this.emailFocus(true);
-		}
-		else if ('' === this.password())
-		{
+		} else if ('' === this.password()) {
 			this.passwordFocus(true);
-		}
-		else
-		{
+		} else {
 			this.emailFocus(true);
 		}
 	}
@@ -372,38 +327,36 @@ class LoginUserView extends AbstractViewNext
 	}
 
 	onBuild() {
-		const
-			signMeLocal = Local.get(ClientSideKeyName.LastSignMe),
+		const signMeLocal = Local.get(ClientSideKeyName.LastSignMe),
 			signMe = (Settings.settingsGet('SignMe') || 'unused').toLowerCase(),
 			jsHash = Settings.appSettingsGet('jsHash'),
 			fSocial = (iErrorCode) => {
 				iErrorCode = pInt(iErrorCode);
-				if (0 === iErrorCode)
-				{
+				if (0 === iErrorCode) {
 					this.submitRequest(true);
 					getApp().loginAndLogoutReload(false);
-				}
-				else
-				{
+				} else {
 					this.submitError(getNotification(iErrorCode));
 				}
 			};
 
 		this.facebookLoginEnabled(!!Settings.settingsGet('AllowFacebookSocial'));
 		this.twitterLoginEnabled(!!Settings.settingsGet('AllowTwitterSocial'));
-		this.googleLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuth'));
-		this.googleFastLoginEnabled(!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuthFast'));
+		this.googleLoginEnabled(
+			!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuth')
+		);
+		this.googleFastLoginEnabled(
+			!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuthFast')
+		);
 
-		switch (signMe)
-		{
+		switch (signMe) {
 			case LoginSignMeTypeAsString.DefaultOff:
 			case LoginSignMeTypeAsString.DefaultOn:
+				this.signMeType(
+					LoginSignMeTypeAsString.DefaultOn === signMe ? LoginSignMeType.DefaultOn : LoginSignMeType.DefaultOff
+				);
 
-				this.signMeType(LoginSignMeTypeAsString.DefaultOn === signMe ?
-					LoginSignMeType.DefaultOn : LoginSignMeType.DefaultOff);
-
-				switch (signMeLocal)
-				{
+				switch (signMeLocal) {
 					case '-1-':
 						this.signMeType(LoginSignMeType.DefaultOn);
 						break;
@@ -423,36 +376,32 @@ class LoginUserView extends AbstractViewNext
 		this.email(AppStore.devEmail);
 		this.password(AppStore.devPassword);
 
-		if (this.googleLoginEnabled() || this.googleFastLoginEnabled())
-		{
+		if (this.googleLoginEnabled() || this.googleFastLoginEnabled()) {
 			window['rl_' + jsHash + '_google_login_service'] = fSocial;
 		}
 
-		if (this.facebookLoginEnabled())
-		{
+		if (this.facebookLoginEnabled()) {
 			window['rl_' + jsHash + '_facebook_login_service'] = fSocial;
 		}
 
-		if (this.twitterLoginEnabled())
-		{
+		if (this.twitterLoginEnabled()) {
 			window['rl_' + jsHash + '_twitter_login_service'] = fSocial;
 		}
 
 		_.delay(() => {
-
 			LanguageStore.language.subscribe((value) => {
-
 				this.langRequest(true);
 
-				translatorReload(false, value).then(() => {
-					this.langRequest(false);
-					this.bSendLanguage = true;
-				}, () => {
-					this.langRequest(false);
-				});
-
+				translatorReload(false, value).then(
+					() => {
+						this.langRequest(false);
+						this.bSendLanguage = true;
+					},
+					() => {
+						this.langRequest(false);
+					}
+				);
 			});
-
 		}, Magics.Time50ms);
 
 		triggerAutocompleteInputChange(true);
@@ -463,14 +412,11 @@ class LoginUserView extends AbstractViewNext
 	}
 
 	selectLanguage() {
-		showScreenPopup(require('View/Popup/Languages'), [
-			this.language, this.languages(), LanguageStore.userLanguage()
-		]);
+		showScreenPopup(require('View/Popup/Languages'), [this.language, this.languages(), LanguageStore.userLanguage()]);
 	}
 
 	selectLanguageOnTab(bShift) {
-		if (!bShift)
-		{
+		if (!bShift) {
 			_.delay(() => {
 				this.emailFocus(true);
 			}, Magics.Time50ms);
@@ -482,4 +428,4 @@ class LoginUserView extends AbstractViewNext
 	}
 }
 
-export {LoginUserView, LoginUserView as default};
+export { LoginUserView, LoginUserView as default };

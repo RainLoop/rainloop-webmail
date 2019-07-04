@@ -1,16 +1,13 @@
-
 import ko from 'ko';
 
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { AbstractModel } from 'Knoin/AbstractModel';
 
-class IdentityModel extends AbstractModel
-{
+class IdentityModel extends AbstractModel {
 	/**
 	 * @param {string} id
 	 * @param {string} email
 	 */
-	constructor(id, email)
-	{
+	constructor(id, email) {
 		super('IdentityModel');
 
 		this.id = ko.observable(id || '');
@@ -31,12 +28,11 @@ class IdentityModel extends AbstractModel
 	 * @returns {string}
 	 */
 	formattedName() {
-		const
-			name = this.name(),
+		const name = this.name(),
 			email = this.email();
 
 		return '' !== name ? name + ' (' + email + ')' : email;
 	}
 }
 
-export {IdentityModel, IdentityModel as default};
+export { IdentityModel, IdentityModel as default };

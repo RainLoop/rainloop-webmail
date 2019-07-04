@@ -1,26 +1,24 @@
-
 import ko from 'ko';
 
-import {Notification} from 'Common/Enums';
-import {UNUSED_OPTION_VALUE} from 'Common/Consts';
-import {bMobileDevice} from 'Common/Globals';
-import {trim, defautOptionsAfterRender, folderListOptionsBuilder} from 'Common/Utils';
+import { Notification } from 'Common/Enums';
+import { UNUSED_OPTION_VALUE } from 'Common/Consts';
+import { bMobileDevice } from 'Common/Globals';
+import { trim, defautOptionsAfterRender, folderListOptionsBuilder } from 'Common/Utils';
 
 import FolderStore from 'Stores/User/Folder';
 
 import Promises from 'Promises/User/Ajax';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {popup, command} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup, command } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/FolderCreate',
 	templateID: 'PopupsFolderCreate'
 })
-class FolderCreateView extends AbstractViewNext
-{
+class FolderCreateView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -30,22 +28,19 @@ class FolderCreateView extends AbstractViewNext
 		this.selectedParentValue = ko.observable(UNUSED_OPTION_VALUE);
 
 		this.parentFolderSelectList = ko.computed(() => {
-
-			const
-				top = [],
+			const top = [],
 				list = FolderStore.folderList(),
-				fRenameCallback = (oItem) => (oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '');
+				fRenameCallback = (oItem) =>
+					oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '';
 
 			top.push(['', '']);
 
 			let fDisableCallback = null;
-			if ('' !== FolderStore.namespace)
-			{
+			if ('' !== FolderStore.namespace) {
 				fDisableCallback = (item) => FolderStore.namespace !== item.fullNameRaw.substr(0, FolderStore.namespace.length);
 			}
 
 			return folderListOptionsBuilder([], list, [], top, null, fDisableCallback, null, fRenameCallback);
-
 		});
 
 		this.defautOptionsAfterRender = defautOptionsAfterRender;
@@ -53,10 +48,8 @@ class FolderCreateView extends AbstractViewNext
 
 	@command((self) => self.simpleFolderNameValidation(self.folderName()))
 	createFolderCommand() {
-
 		let parentFolderName = this.selectedParentValue();
-		if ('' === parentFolderName && 1 < FolderStore.namespace.length)
-		{
+		if ('' === parentFolderName && 1 < FolderStore.namespace.length) {
 			parentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
 		}
 
@@ -69,7 +62,7 @@ class FolderCreateView extends AbstractViewNext
 	}
 
 	simpleFolderNameValidation(sName) {
-		return (/^[^\\\/]+$/g).test(trim(sName));
+		return /^[^\\/]+$/g.test(trim(sName));
 	}
 
 	clearPopup() {
@@ -83,11 +76,10 @@ class FolderCreateView extends AbstractViewNext
 	}
 
 	onShowWithDelay() {
-		if (!bMobileDevice)
-		{
+		if (!bMobileDevice) {
 			this.folderName.focused(true);
 		}
 	}
 }
 
-export {FolderCreateView, FolderCreateView as default};
+export { FolderCreateView, FolderCreateView as default };

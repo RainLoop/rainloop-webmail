@@ -1,12 +1,10 @@
+import { AbstractScreen } from 'Knoin/AbstractScreen';
 
-import {AbstractScreen} from 'Knoin/AbstractScreen';
+import { LoginUserView } from 'View/User/Login';
 
-import {LoginUserView} from 'View/User/Login';
+import { getApp } from 'Helper/Apps/User';
 
-import {getApp} from 'Helper/Apps/User';
-
-class LoginUserScreen extends AbstractScreen
-{
+class LoginUserScreen extends AbstractScreen {
 	constructor() {
 		super('login', [LoginUserView]);
 	}
@@ -16,4 +14,4 @@ class LoginUserScreen extends AbstractScreen
 	}
 }
 
-export {LoginUserScreen, LoginUserScreen as default};
+export { LoginUserScreen, LoginUserScreen as default };

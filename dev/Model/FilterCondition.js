@@ -1,13 +1,11 @@
-
 import ko from 'ko';
 
-import {FilterConditionField, FilterConditionType} from 'Common/Enums';
-import {pString} from 'Common/Utils';
+import { FilterConditionField, FilterConditionType } from 'Common/Enums';
+import { pString } from 'Common/Utils';
 
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { AbstractModel } from 'Knoin/AbstractModel';
 
-class FilterConditionModel extends AbstractModel
-{
+class FilterConditionModel extends AbstractModel {
 	constructor() {
 		super('FilterConditionModel');
 
@@ -20,10 +18,8 @@ class FilterConditionModel extends AbstractModel
 		this.valueSecond.error = ko.observable(false);
 
 		this.template = ko.computed(() => {
-
 			let template = '';
-			switch (this.field())
-			{
+			switch (this.field()) {
 				case FilterConditionField.Size:
 					template = 'SettingsFiltersConditionSize';
 					break;
@@ -36,7 +32,6 @@ class FilterConditionModel extends AbstractModel
 			}
 
 			return template;
-
 		}, this);
 
 		this.field.subscribe(() => {
@@ -48,14 +43,12 @@ class FilterConditionModel extends AbstractModel
 	}
 
 	verify() {
-		if ('' === this.value())
-		{
+		if ('' === this.value()) {
 			this.value.error(true);
 			return false;
 		}
 
-		if (FilterConditionField.Header === this.field() && '' === this.valueSecond())
-		{
+		if (FilterConditionField.Header === this.field() && '' === this.valueSecond()) {
 			this.valueSecond.error(true);
 			return false;
 		}
@@ -64,8 +57,7 @@ class FilterConditionModel extends AbstractModel
 	}
 
 	parse(json) {
-		if (json && json.Field && json.Type)
-		{
+		if (json && json.Field && json.Type) {
 			this.field(pString(json.Field));
 			this.type(pString(json.Type));
 			this.value(pString(json.Value));
@@ -98,4 +90,4 @@ class FilterConditionModel extends AbstractModel
 	}
 }
 
-export {FilterConditionModel, FilterConditionModel as default};
+export { FilterConditionModel, FilterConditionModel as default };

@@ -1,4 +1,3 @@
-
 import _ from '_';
 import $ from '$';
 import ko from 'ko';
@@ -6,28 +5,34 @@ import moment from 'moment';
 import classnames from 'classnames';
 import lozad from 'lozad';
 
-import {MessagePriority, SignedVerifyStatus} from 'Common/Enums';
-import {i18n} from 'Common/Translator';
-import {DATA_IMAGE_LAZY_PLACEHOLDER_PIC} from 'Common/Consts';
+import { MessagePriority, SignedVerifyStatus } from 'Common/Enums';
+import { i18n } from 'Common/Translator';
+import { DATA_IMAGE_LAZY_PLACEHOLDER_PIC } from 'Common/Consts';
 
 import {
-	pInt, inArray, isArray, isUnd, trim,
-	previewMessage, windowResize, friendlySize, isNonEmptyArray
+	pInt,
+	inArray,
+	isArray,
+	isUnd,
+	trim,
+	previewMessage,
+	windowResize,
+	friendlySize,
+	isNonEmptyArray
 } from 'Common/Utils';
 
-import {$win} from 'Common/Globals';
-import {messageViewLink, messageDownloadLink} from 'Common/Links';
+import { $win } from 'Common/Globals';
+import { messageViewLink, messageDownloadLink } from 'Common/Links';
 
 import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
 
-import {emailArrayFromJson, emailArrayToStringClear, emailArrayToString, replyHelper} from 'Helper/Message';
+import { emailArrayFromJson, emailArrayToStringClear, emailArrayToString, replyHelper } from 'Helper/Message';
 
-import {AttachmentModel, staticCombinedIconClass} from 'Model/Attachment';
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { AttachmentModel, staticCombinedIconClass } from 'Model/Attachment';
+import { AbstractModel } from 'Knoin/AbstractModel';
 
-class MessageModel extends AbstractModel
-{
+class MessageModel extends AbstractModel {
 	constructor() {
 		super('MessageModel');
 
@@ -78,7 +83,9 @@ class MessageModel extends AbstractModel
 		this.hasAttachments = ko.observable(false);
 		this.attachmentsSpecData = ko.observableArray([]);
 
-		this.attachmentIconClass = ko.computed(() => staticCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : []));
+		this.attachmentIconClass = ko.computed(() =>
+			staticCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : [])
+		);
 
 		this.body = null;
 
@@ -194,10 +201,13 @@ class MessageModel extends AbstractModel
 	 * @returns {Array}
 	 */
 	getEmails(properties) {
-		return _.compact(_.uniq(_.map(
-			_.reduce(properties, (carry, property) => carry.concat(this[property]), []),
-			(oItem) => (oItem ? oItem.email : '')
-		)));
+		return _.compact(
+			_.uniq(
+				_.map(_.reduce(properties, (carry, property) => carry.concat(this[property]), []), (oItem) =>
+					oItem ? oItem.email : ''
+				)
+			)
+		);
 	}
 
 	/**
@@ -215,15 +225,20 @@ class MessageModel extends AbstractModel
 	}
 
 	computeSenderEmail() {
-		const
-			sentFolder = FolderStore.sentFolder(),
+		const sentFolder = FolderStore.sentFolder(),
 			draftFolder = FolderStore.draftFolder();
 
-		this.senderEmailsString(this.folderFullNameRaw === sentFolder || this.folderFullNameRaw === draftFolder ?
-			this.toEmailsString() : this.fromEmailString());
+		this.senderEmailsString(
+			this.folderFullNameRaw === sentFolder || this.folderFullNameRaw === draftFolder
+				? this.toEmailsString()
+				: this.fromEmailString()
+		);
 
-		this.senderClearEmailsString(this.folderFullNameRaw === sentFolder || this.folderFullNameRaw === draftFolder ?
-			this.toClearEmailsString() : this.fromClearEmailString());
+		this.senderClearEmailsString(
+			this.folderFullNameRaw === sentFolder || this.folderFullNameRaw === draftFolder
+				? this.toClearEmailsString()
+				: this.fromClearEmailString()
+		);
 	}
 
 	/**
@@ -231,14 +246,14 @@ class MessageModel extends AbstractModel
 	 * @returns {boolean}
 	 */
 	initByJson(json) {
-		let
-			result = false,
+		let result = false,
 			priority = MessagePriority.Normal;
 
-		if (json && 'Object/Message' === json['@Object'])
-		{
+		if (json && 'Object/Message' === json['@Object']) {
 			priority = pInt(json.Priority);
-			this.priority(-1 < inArray(priority, [MessagePriority.High, MessagePriority.Low]) ? priority : MessagePriority.Normal);
+			this.priority(
+				-1 < inArray(priority, [MessagePriority.High, MessagePriority.Low]) ? priority : MessagePriority.Normal
+			);
 
 			this.folderFullNameRaw = json.Folder;
 			this.uid = json.Uid;
@@ -258,13 +273,10 @@ class MessageModel extends AbstractModel
 			this.unsubsribeLinks = isNonEmptyArray(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
 
 			this.subject(json.Subject);
-			if (isArray(json.SubjectParts))
-			{
+			if (isArray(json.SubjectParts)) {
 				this.subjectPrefix(json.SubjectParts[0]);
 				this.subjectSuffix(json.SubjectParts[1]);
-			}
-			else
-			{
+			} else {
 				this.subjectPrefix('');
 				this.subjectSuffix(this.subject());
 			}
@@ -294,15 +306,14 @@ class MessageModel extends AbstractModel
 	 * @returns {boolean}
 	 */
 	initUpdateByMessageJson(json) {
-		let
-			result = false,
+		let result = false,
 			priority = MessagePriority.Normal;
 
-		if (json && 'Object/Message' === json['@Object'])
-		{
+		if (json && 'Object/Message' === json['@Object']) {
 			priority = pInt(json.Priority);
-			this.priority(-1 < inArray(priority, [MessagePriority.High, MessagePriority.Low]) ?
-				priority : MessagePriority.Normal);
+			this.priority(
+				-1 < inArray(priority, [MessagePriority.High, MessagePriority.Low]) ? priority : MessagePriority.Normal
+			);
 
 			this.aDraftInfo = json.DraftInfo;
 
@@ -312,8 +323,7 @@ class MessageModel extends AbstractModel
 
 			this.proxy = !!json.ExternalProxy;
 
-			if (PgpStore.capaOpenPGP())
-			{
+			if (PgpStore.capaOpenPGP()) {
 				this.isPgpSigned(!!json.PgpSigned);
 				this.isPgpEncrypted(!!json.PgpEncrypted);
 			}
@@ -339,22 +349,20 @@ class MessageModel extends AbstractModel
 	 * @returns {Array}
 	 */
 	initAttachmentsFromJson(json) {
-		let
-			index = 0,
+		let index = 0,
 			len = 0,
 			attachment = null;
 		const result = [];
 
-		if (json && 'Collection/AttachmentCollection' === json['@Object'] && isNonEmptyArray(json['@Collection']))
-		{
-			for (index = 0, len = json['@Collection'].length; index < len; index++)
-			{
+		if (json && 'Collection/AttachmentCollection' === json['@Object'] && isNonEmptyArray(json['@Collection'])) {
+			for (index = 0, len = json['@Collection'].length; index < len; index++) {
 				attachment = AttachmentModel.newInstanceFromJson(json['@Collection'][index]);
-				if (attachment)
-				{
-					if ('' !== attachment.cidWithOutTags && 0 < this.foundedCIDs.length &&
-						0 <= inArray(attachment.cidWithOutTags, this.foundedCIDs))
-					{
+				if (attachment) {
+					if (
+						'' !== attachment.cidWithOutTags &&
+						0 < this.foundedCIDs.length &&
+						0 <= inArray(attachment.cidWithOutTags, this.foundedCIDs)
+					) {
 						attachment.isLinked = true;
 					}
 
@@ -377,7 +385,7 @@ class MessageModel extends AbstractModel
 	 * @returns {string}
 	 */
 	getFirstUnsubsribeLink() {
-		return this.unsubsribeLinks && 0 < this.unsubsribeLinks.length ? (this.unsubsribeLinks[0] || '') : '';
+		return this.unsubsribeLinks && 0 < this.unsubsribeLinks.length ? this.unsubsribeLinks[0] || '' : '';
 	}
 
 	/**
@@ -386,8 +394,7 @@ class MessageModel extends AbstractModel
 	 */
 	initFlagsByJson(json) {
 		let result = false;
-		if (json && 'Object/Message' === json['@Object'])
-		{
+		if (json && 'Object/Message' === json['@Object']) {
 			this.unseen(!json.IsSeen);
 			this.flagged(!!json.IsFlagged);
 			this.answered(!!json.IsAnswered);
@@ -415,8 +422,7 @@ class MessageModel extends AbstractModel
 	 */
 	fromDkimData() {
 		let result = ['none', ''];
-		if (isNonEmptyArray(this.from) && 1 === this.from.length && this.from[0] && this.from[0].dkimStatus)
-		{
+		if (isNonEmptyArray(this.from) && 1 === this.from.length && this.from[0] && this.from[0].dkimStatus) {
 			result = [this.from[0].dkimStatus, this.from[0].dkimValue || ''];
 		}
 
@@ -498,8 +504,7 @@ class MessageModel extends AbstractModel
 		let result = null;
 		const attachments = this.attachments();
 
-		if (isNonEmptyArray(attachments))
-		{
+		if (isNonEmptyArray(attachments)) {
 			cid = cid.replace(/^<+/, '').replace(/>+$/, '');
 			result = _.find(attachments, (item) => cid === item.cidWithOutTags);
 		}
@@ -515,8 +520,7 @@ class MessageModel extends AbstractModel
 		let result = null;
 		const attachments = this.attachments();
 
-		if (isNonEmptyArray(attachments))
-		{
+		if (isNonEmptyArray(attachments)) {
 			result = _.find(attachments, (item) => contentLocation === item.contentLocation);
 		}
 
@@ -571,18 +575,15 @@ class MessageModel extends AbstractModel
 	 * @returns {Array}
 	 */
 	replyEmails(excludeEmails, last = false) {
-		const
-			result = [],
+		const result = [],
 			unic = isUnd(excludeEmails) ? {} : excludeEmails;
 
 		replyHelper(this.replyTo, unic, result);
-		if (0 === result.length)
-		{
+		if (0 === result.length) {
 			replyHelper(this.from, unic, result);
 		}
 
-		if (0 === result.length && !last)
-		{
+		if (0 === result.length && !last) {
 			return this.replyEmails({}, true);
 		}
 
@@ -596,22 +597,19 @@ class MessageModel extends AbstractModel
 	 */
 	replyAllEmails(excludeEmails, last = false) {
 		let data = [];
-		const
-			toResult = [],
+		const toResult = [],
 			ccResult = [],
 			unic = isUnd(excludeEmails) ? {} : excludeEmails;
 
 		replyHelper(this.replyTo, unic, toResult);
-		if (0 === toResult.length)
-		{
+		if (0 === toResult.length) {
 			replyHelper(this.from, unic, toResult);
 		}
 
 		replyHelper(this.to, unic, toResult);
 		replyHelper(this.cc, unic, ccResult);
 
-		if (0 === toResult.length && !last)
-		{
+		if (0 === toResult.length && !last) {
 			data = this.replyAllEmails({}, true);
 			return [data[0], ccResult];
 		}
@@ -640,22 +638,26 @@ class MessageModel extends AbstractModel
 	viewPopupMessage(print = false) {
 		this.showLazyExternalImagesInBody();
 
-		const
-			timeStampInUTC = this.dateTimeStampInUTC() || 0,
+		const timeStampInUTC = this.dateTimeStampInUTC() || 0,
 			ccLine = this.ccToLine(false),
 			m = 0 < timeStampInUTC ? moment.unix(timeStampInUTC) : null;
 
-		previewMessage({
-			title: this.subject(),
-			subject: this.subject(),
-			date: m ? m.format('LLL') : '',
-			fromCreds: this.fromToLine(false),
-			toLabel: i18n('MESSAGE/LABEL_TO'),
-			toCreds: this.toToLine(false),
-			ccClass: ccLine ? '' : 'rl-preview-hide',
-			ccLabel: i18n('MESSAGE/LABEL_CC'),
-			ccCreds: ccLine
-		}, this.body, this.isHtml(), print);
+		previewMessage(
+			{
+				title: this.subject(),
+				subject: this.subject(),
+				date: m ? m.format('LLL') : '',
+				fromCreds: this.fromToLine(false),
+				toLabel: i18n('MESSAGE/LABEL_TO'),
+				toCreds: this.toToLine(false),
+				ccClass: ccLine ? '' : 'rl-preview-hide',
+				ccLabel: i18n('MESSAGE/LABEL_CC'),
+				ccCreds: ccLine
+			},
+			this.body,
+			this.isHtml(),
+			print
+		);
 	}
 
 	printMessage() {
@@ -674,8 +676,7 @@ class MessageModel extends AbstractModel
 	 * @returns {MessageModel}
 	 */
 	populateByMessageListItem(message) {
-		if (message)
-		{
+		if (message) {
 			this.folderFullNameRaw = message.folderFullNameRaw;
 			this.uid = message.uid;
 			this.hash = message.hash;
@@ -686,8 +687,7 @@ class MessageModel extends AbstractModel
 		this.subjectPrefix(this.subjectPrefix());
 		this.subjectSuffix(this.subjectSuffix());
 
-		if (message)
-		{
+		if (message) {
 			this.size(message.size());
 			this.dateTimeStampInUTC(message.dateTimeStampInUTC());
 			this.priority(message.priority());
@@ -731,8 +731,7 @@ class MessageModel extends AbstractModel
 		this.sInReplyTo = '';
 		this.sReferences = '';
 
-		if (message)
-		{
+		if (message) {
 			this.threads(message.threads());
 		}
 
@@ -742,11 +741,12 @@ class MessageModel extends AbstractModel
 	}
 
 	showLazyExternalImagesInBody() {
-		if (this.body)
-		{
+		if (this.body) {
 			$('.lazy.lazy-inited[data-original]', this.body).each(function() {
-				$(this).attr('src', $(this).attr('data-original')) // eslint-disable-line no-invalid-this
-					.removeAttr('data-original').removeAttr('data-loaded');
+				$(this)
+					.attr('src', $(this).attr('data-original')) // eslint-disable-line no-invalid-this
+					.removeAttr('data-original')
+					.removeAttr('data-loaded');
 			});
 		}
 	}
@@ -762,32 +762,27 @@ class MessageModel extends AbstractModel
 					.attr('src', element.dataset.original)
 					.removeAttr('data-loaded')
 					.removeAttr('data-original')
-					.css({opacity: 0.3})
-					.animate({opacity: 1}, 500);
+					.css({ opacity: 0.3 })
+					.animate({ opacity: 1 }, 500);
 			}
 		}).observe();
 	}
 
 	showExternalImages(lazy = false) {
-		if (this.body && this.body.data('rl-has-images'))
-		{
+		if (this.body && this.body.data('rl-has-images')) {
 			this.hasImages(false);
 			this.body.data('rl-has-images', false);
 
 			let attr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
 			$('[' + attr + ']', this.body).each(function() {
 				const $this = $(this); // eslint-disable-line no-invalid-this
-				if (lazy && $this.is('img'))
-				{
+				if (lazy && $this.is('img')) {
 					$this
 						.addClass('lazy')
 						.attr('data-original', $this.attr(attr))
 						.removeAttr('data-loaded');
-				}
-				else
-				{
-					$this.attr('src', $this.attr(attr))
-						.removeAttr('data-loaded');
+				} else {
+					$this.attr('src', $this.attr(attr)).removeAttr('data-loaded');
 				}
 			});
 
@@ -795,12 +790,11 @@ class MessageModel extends AbstractModel
 			$('[' + attr + ']', this.body).each(function() {
 				const $this = $(this); // eslint-disable-line no-invalid-this
 				let style = trim($this.attr('style'));
-				style = '' === style ? '' : (';' === style.substr(-1) ? style + ' ' : style + '; ');
+				style = '' === style ? '' : ';' === style.substr(-1) ? style + ' ' : style + '; ';
 				$this.attr('style', style + $this.attr(attr));
 			});
 
-			if (lazy)
-			{
+			if (lazy) {
 				this.lozad();
 				$win.resize();
 			}
@@ -810,27 +804,19 @@ class MessageModel extends AbstractModel
 	}
 
 	showInternalImages(lazy = false) {
-		if (this.body && !this.body.data('rl-init-internal-images'))
-		{
+		if (this.body && !this.body.data('rl-init-internal-images')) {
 			this.body.data('rl-init-internal-images', true);
 
 			const self = this;
 
 			$('[data-x-src-cid]', this.body).each(function() {
-				const
-					$this = $(this), // eslint-disable-line no-invalid-this
+				const $this = $(this), // eslint-disable-line no-invalid-this
 					attachment = self.findAttachmentByCid($this.attr('data-x-src-cid'));
 
-				if (attachment && attachment.download)
-				{
-					if (lazy && $this.is('img'))
-					{
-						$this
-							.addClass('lazy')
-							.attr('data-original', attachment.linkPreview());
-					}
-					else
-					{
+				if (attachment && attachment.download) {
+					if (lazy && $this.is('img')) {
+						$this.addClass('lazy').attr('data-original', attachment.linkPreview());
+					} else {
 						$this.attr('src', attachment.linkPreview());
 					}
 				}
@@ -839,49 +825,37 @@ class MessageModel extends AbstractModel
 			$('[data-x-src-location]', this.body).each(function() {
 				const $this = $(this); // eslint-disable-line no-invalid-this
 				let attachment = self.findAttachmentByContentLocation($this.attr('data-x-src-location'));
-				if (!attachment)
-				{
+				if (!attachment) {
 					attachment = self.findAttachmentByCid($this.attr('data-x-src-location'));
 				}
 
-				if (attachment && attachment.download)
-				{
-					if (lazy && $this.is('img'))
-					{
-						$this
-							.addClass('lazy')
-							.attr('data-original', attachment.linkPreview());
-					}
-					else
-					{
+				if (attachment && attachment.download) {
+					if (lazy && $this.is('img')) {
+						$this.addClass('lazy').attr('data-original', attachment.linkPreview());
+					} else {
 						$this.attr('src', attachment.linkPreview());
 					}
 				}
 			});
 
 			$('[data-x-style-cid]', this.body).each(function() {
-				let
-					style = '',
+				let style = '',
 					name = '';
 
-				const
-					$this = $(this), // eslint-disable-line no-invalid-this
+				const $this = $(this), // eslint-disable-line no-invalid-this
 					attachment = self.findAttachmentByCid($this.attr('data-x-style-cid'));
 
-				if (attachment && attachment.linkPreview)
-				{
+				if (attachment && attachment.linkPreview) {
 					name = $this.attr('data-x-style-cid-name');
-					if ('' !== name)
-					{
+					if ('' !== name) {
 						style = trim($this.attr('style'));
-						style = '' === style ? '' : (';' === style.substr(-1) ? style + ' ' : style + '; ');
-						$this.attr('style', style + name + ': url(\'' + attachment.linkPreview() + '\')');
+						style = '' === style ? '' : ';' === style.substr(-1) ? style + ' ' : style + '; ';
+						$this.attr('style', style + name + ": url('" + attachment.linkPreview() + "')");
 					}
 				}
 			});
 
-			if (lazy)
-			{
+			if (lazy) {
 				// $('.RL-MailMessageView .messageView .messageItem .content')[0]
 				_.delay(() => this.lozad(), 300);
 			}
@@ -891,24 +865,21 @@ class MessageModel extends AbstractModel
 	}
 
 	storeDataInDom() {
-		if (this.body)
-		{
+		if (this.body) {
 			this.body.data('rl-is-html', !!this.isHtml());
 			this.body.data('rl-has-images', !!this.hasImages());
 		}
 	}
 
 	fetchDataFromDom() {
-		if (this.body)
-		{
+		if (this.body) {
 			this.isHtml(!!this.body.data('rl-is-html'));
 			this.hasImages(!!this.body.data('rl-has-images'));
 		}
 	}
 
 	replacePlaneTextBody(plain) {
-		if (this.body)
-		{
+		if (this.body) {
 			this.body.html(plain).addClass('b-text-part plain');
 		}
 	}
@@ -917,8 +888,16 @@ class MessageModel extends AbstractModel
 	 * @returns {string}
 	 */
 	flagHash() {
-		return [this.deleted(), this.deletedMark(), this.unseen(), this.flagged(), this.answered(), this.forwarded(), this.isReadReceipt()].join(',');
+		return [
+			this.deleted(),
+			this.deletedMark(),
+			this.unseen(),
+			this.flagged(),
+			this.answered(),
+			this.forwarded(),
+			this.isReadReceipt()
+		].join(',');
 	}
 }
 
-export {MessageModel, MessageModel as default};
+export { MessageModel, MessageModel as default };

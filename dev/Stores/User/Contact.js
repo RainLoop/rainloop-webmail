@@ -1,17 +1,15 @@
-
 import ko from 'ko';
-import {Magics} from 'Common/Enums';
+import { Magics } from 'Common/Enums';
 import * as Settings from 'Storage/Settings';
 
-class ContactUserStore
-{
+class ContactUserStore {
 	constructor() {
 		this.contacts = ko.observableArray([]);
-		this.contacts.loading = ko.observable(false).extend({throttle: Magics.Time200ms});
-		this.contacts.importing = ko.observable(false).extend({throttle: Magics.Time200ms});
-		this.contacts.syncing = ko.observable(false).extend({throttle: Magics.Time200ms});
-		this.contacts.exportingVcf = ko.observable(false).extend({throttle: Magics.Time200ms});
-		this.contacts.exportingCsv = ko.observable(false).extend({throttle: Magics.Time200ms});
+		this.contacts.loading = ko.observable(false).extend({ throttle: Magics.Time200ms });
+		this.contacts.importing = ko.observable(false).extend({ throttle: Magics.Time200ms });
+		this.contacts.syncing = ko.observable(false).extend({ throttle: Magics.Time200ms });
+		this.contacts.exportingVcf = ko.observable(false).extend({ throttle: Magics.Time200ms });
+		this.contacts.exportingCsv = ko.observable(false).extend({ throttle: Magics.Time200ms });
 
 		this.allowContactsSync = ko.observable(false);
 		this.enableContactsSync = ko.observable(false);

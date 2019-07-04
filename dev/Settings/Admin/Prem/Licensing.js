@@ -1,16 +1,14 @@
-
 import ko from 'ko';
 import moment from 'moment';
 
-import {settingsGet} from 'Storage/Settings';
-import {showScreenPopup} from 'Knoin/Knoin';
+import { settingsGet } from 'Storage/Settings';
+import { showScreenPopup } from 'Knoin/Knoin';
 
 import LicenseStore from 'Stores/Admin/License';
 
-import {getApp} from 'Helper/Apps/Admin';
+import { getApp } from 'Helper/Apps/Admin';
 
-class LicensingPremAdminSettings
-{
+class LicensingPremAdminSettings {
 	constructor() {
 		this.licensing = LicenseStore.licensing;
 		this.licensingProcess = LicenseStore.licensingProcess;
@@ -23,16 +21,14 @@ class LicensingPremAdminSettings
 		this.subscriptionEnabled = ko.observable(!!settingsGet('SubscriptionEnabled'));
 
 		this.licenseTrigger.subscribe(() => {
-			if (this.subscriptionEnabled())
-			{
+			if (this.subscriptionEnabled()) {
 				getApp().reloadLicensing(true);
 			}
 		});
 	}
 
 	onBuild() {
-		if (this.subscriptionEnabled())
-		{
+		if (this.subscriptionEnabled()) {
 			getApp().reloadLicensing(false);
 		}
 	}
@@ -60,12 +56,11 @@ class LicensingPremAdminSettings
 	 * @returns {string}
 	 */
 	licenseExpiredMomentValue() {
-		const
-			time = this.licenseExpired(),
+		const time = this.licenseExpired(),
 			momentUnix = moment.unix(time);
 
-		return this.licenseIsUnlim() ? 'Never' : (time && (momentUnix.format('LL') + ' (' + momentUnix.from(moment()) + ')'));
+		return this.licenseIsUnlim() ? 'Never' : time && momentUnix.format('LL') + ' (' + momentUnix.from(moment()) + ')';
 	}
 }
 
-export {LicensingPremAdminSettings, LicensingPremAdminSettings as default};
+export { LicensingPremAdminSettings, LicensingPremAdminSettings as default };

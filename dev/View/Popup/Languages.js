@@ -1,19 +1,17 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {convertLangName} from 'Common/Utils';
+import { convertLangName } from 'Common/Utils';
 
 // import {view, ViewType} from 'Knoin/Knoin';
-import {popup} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/Languages',
 	templateID: 'PopupsLanguages'
 })
-class LanguagesPopupView extends AbstractViewNext
-{
+class LanguagesPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -64,8 +62,7 @@ class LanguagesPopupView extends AbstractViewNext
 	}
 
 	changeLanguage(lang) {
-		if (this.fLang)
-		{
+		if (this.fLang) {
 			this.fLang(lang);
 		}
 
@@ -73,4 +70,4 @@ class LanguagesPopupView extends AbstractViewNext
 	}
 }
 
-export {LanguagesPopupView, LanguagesPopupView as default};
+export { LanguagesPopupView, LanguagesPopupView as default };

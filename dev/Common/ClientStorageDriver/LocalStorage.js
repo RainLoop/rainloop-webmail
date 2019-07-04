@@ -1,11 +1,9 @@
-
 import window from 'window';
-import {isUnd} from 'Common/Utils';
-import {isStorageSupported} from 'Storage/RainLoop';
-import {CLIENT_SIDE_STORAGE_INDEX_NAME} from 'Common/Consts';
+import { isUnd } from 'Common/Utils';
+import { isStorageSupported } from 'Storage/RainLoop';
+import { CLIENT_SIDE_STORAGE_INDEX_NAME } from 'Common/Consts';
 
-class LocalStorageDriver
-{
+class LocalStorageDriver {
 	s = null;
 
 	constructor() {
@@ -18,27 +16,22 @@ class LocalStorageDriver
 	 * @returns {boolean}
 	 */
 	set(key, data) {
-		if (!this.s)
-		{
+		if (!this.s) {
 			return false;
 		}
 
 		let storageResult = null;
-		try
-		{
+		try {
 			const storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null;
 			storageResult = null === storageValue ? null : window.JSON.parse(storageValue);
-		}
-		catch (e) {} // eslint-disable-line no-empty
+		} catch (e) {} // eslint-disable-line no-empty
 
 		(storageResult || (storageResult = {}))[key] = data;
 
-		try
-		{
+		try {
 			this.s.setItem(CLIENT_SIDE_STORAGE_INDEX_NAME, window.JSON.stringify(storageResult));
 			return true;
-		}
-		catch (e) {} // eslint-disable-line no-empty
+		} catch (e) {} // eslint-disable-line no-empty
 
 		return false;
 	}
@@ -48,20 +41,16 @@ class LocalStorageDriver
 	 * @returns {*}
 	 */
 	get(key) {
-		if (!this.s)
-		{
+		if (!this.s) {
 			return null;
 		}
 
-		try
-		{
-			const
-				storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null,
+		try {
+			const storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null,
 				storageResult = null === storageValue ? null : window.JSON.parse(storageValue);
 
-			return (storageResult && !isUnd(storageResult[key])) ? storageResult[key] : null;
-		}
-		catch (e) {} // eslint-disable-line no-empty
+			return storageResult && !isUnd(storageResult[key]) ? storageResult[key] : null;
+		} catch (e) {} // eslint-disable-line no-empty
 
 		return null;
 	}
@@ -74,4 +63,4 @@ class LocalStorageDriver
 	}
 }
 
-export {LocalStorageDriver, LocalStorageDriver as default};
+export { LocalStorageDriver, LocalStorageDriver as default };

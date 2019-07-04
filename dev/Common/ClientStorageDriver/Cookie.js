@@ -1,39 +1,31 @@
-
 import window from 'window';
 import Cookies from 'js-cookie';
-import {isUnd} from 'Common/Utils';
-import {CLIENT_SIDE_STORAGE_INDEX_NAME} from 'Common/Consts';
+import { isUnd } from 'Common/Utils';
+import { CLIENT_SIDE_STORAGE_INDEX_NAME } from 'Common/Consts';
 
-class CookieDriver
-{
+class CookieDriver {
 	/**
 	 * @param {string} key
 	 * @param {*} data
 	 * @returns {boolean}
 	 */
 	set(key, data) {
-
-		let
-			result = false,
+		let result = false,
 			storageResult = null;
 
-		try
-		{
+		try {
 			storageResult = Cookies.getJSON(CLIENT_SIDE_STORAGE_INDEX_NAME);
-		}
-		catch (e) {} // eslint-disable-line no-empty
+		} catch (e) {} // eslint-disable-line no-empty
 
 		(storageResult || (storageResult = {}))[key] = data;
 
-		try
-		{
+		try {
 			Cookies.set(CLIENT_SIDE_STORAGE_INDEX_NAME, storageResult, {
 				expires: 30
 			});
 
 			result = true;
-		}
-		catch (e) {} // eslint-disable-line no-empty
+		} catch (e) {} // eslint-disable-line no-empty
 
 		return result;
 	}
@@ -43,15 +35,12 @@ class CookieDriver
 	 * @returns {*}
 	 */
 	get(key) {
-
 		let result = null;
 
-		try
-		{
+		try {
 			const storageResult = Cookies.getJSON(CLIENT_SIDE_STORAGE_INDEX_NAME);
-			result = (storageResult && !isUnd(storageResult[key])) ? storageResult[key] : null;
-		}
-		catch (e) {} // eslint-disable-line no-empty
+			result = storageResult && !isUnd(storageResult[key]) ? storageResult[key] : null;
+		} catch (e) {} // eslint-disable-line no-empty
 
 		return result;
 	}
@@ -64,4 +53,4 @@ class CookieDriver
 	}
 }
 
-export {CookieDriver, CookieDriver as default};
+export { CookieDriver, CookieDriver as default };

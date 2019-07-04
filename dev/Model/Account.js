@@ -1,19 +1,16 @@
-
 import ko from 'ko';
 
-import {change} from 'Common/Links';
+import { change } from 'Common/Links';
 
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { AbstractModel } from 'Knoin/AbstractModel';
 
-class AccountModel extends AbstractModel
-{
+class AccountModel extends AbstractModel {
 	/**
 	 * @param {string} email
 	 * @param {boolean=} canBeDelete = true
 	 * @param {number=} count = 0
 	 */
-	constructor(email, canBeDelete = true, count = 0)
-	{
+	constructor(email, canBeDelete = true, count = 0) {
 		super('AccountModel');
 
 		this.email = email;
@@ -33,4 +30,4 @@ class AccountModel extends AbstractModel
 	}
 }
 
-export {AccountModel, AccountModel as default};
+export { AccountModel, AccountModel as default };

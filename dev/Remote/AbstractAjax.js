@@ -1,19 +1,17 @@
-
 import window from 'window';
 import _ from '_';
 import $ from '$';
 
-import {TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT, DEFAULT_AJAX_TIMEOUT} from 'Common/Consts';
-import {StorageResultType, Notification} from 'Common/Enums';
-import {inArray, pInt, pString, isUnd} from 'Common/Utils';
-import {data as GlobalsData} from 'Common/Globals';
-import {ajax} from 'Common/Links';
-import {runHook} from 'Common/Plugins';
+import { TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT, DEFAULT_AJAX_TIMEOUT } from 'Common/Consts';
+import { StorageResultType, Notification } from 'Common/Enums';
+import { inArray, pInt, pString, isUnd } from 'Common/Utils';
+import { data as GlobalsData } from 'Common/Globals';
+import { ajax } from 'Common/Links';
+import { runHook } from 'Common/Plugins';
 
 import * as Settings from 'Storage/Settings';
 
-class AbstractAjaxRemote
-{
+class AbstractAjaxRemote {
 	constructor() {
 		this.oRequests = {};
 	}
@@ -27,72 +25,73 @@ class AbstractAjaxRemote
 	 * @param {*=} oRequestParameters
 	 */
 	defaultResponse(fCallback, sRequestAction, sType, oData, bCached, oRequestParameters) {
-		const
-			fCall = () => {
-				if (StorageResultType.Success !== sType && GlobalsData.bUnload)
-				{
-					sType = StorageResultType.Unload;
+		const fCall = () => {
+			if (StorageResultType.Success !== sType && GlobalsData.bUnload) {
+				sType = StorageResultType.Unload;
+			}
+
+			if (StorageResultType.Success === sType && oData && !oData.Result) {
+				if (
+					oData &&
+					-1 <
+						inArray(oData.ErrorCode, [
+							Notification.AuthError,
+							Notification.AccessError,
+							Notification.ConnectionError,
+							Notification.DomainNotAllowed,
+							Notification.AccountNotAllowed,
+							Notification.MailServerError,
+							Notification.UnknownNotification,
+							Notification.UnknownError
+						])
+				) {
+					GlobalsData.iAjaxErrorCount += 1;
 				}
 
-				if (StorageResultType.Success === sType && oData && !oData.Result)
-				{
-					if (oData && -1 < inArray(oData.ErrorCode, [
-						Notification.AuthError, Notification.AccessError,
-						Notification.ConnectionError, Notification.DomainNotAllowed, Notification.AccountNotAllowed,
-						Notification.MailServerError, Notification.UnknownNotification, Notification.UnknownError
-					]))
-					{
-						GlobalsData.iAjaxErrorCount += 1;
-					}
+				if (oData && Notification.InvalidToken === oData.ErrorCode) {
+					GlobalsData.iTokenErrorCount += 1;
+				}
 
-					if (oData && Notification.InvalidToken === oData.ErrorCode)
-					{
-						GlobalsData.iTokenErrorCount += 1;
+				if (TOKEN_ERROR_LIMIT < GlobalsData.iTokenErrorCount) {
+					if (GlobalsData.__APP__ && GlobalsData.__APP__.loginAndLogoutReload) {
+						GlobalsData.__APP__.loginAndLogoutReload(false, true);
 					}
+				}
 
-					if (TOKEN_ERROR_LIMIT < GlobalsData.iTokenErrorCount)
-					{
-						if (GlobalsData.__APP__ && GlobalsData.__APP__.loginAndLogoutReload)
-						{
+				if (oData.ClearAuth || oData.Logout || AJAX_ERROR_LIMIT < GlobalsData.iAjaxErrorCount) {
+					if (GlobalsData.__APP__ && GlobalsData.__APP__.clearClientSideToken) {
+						GlobalsData.__APP__.clearClientSideToken();
+
+						if (!oData.ClearAuth && GlobalsData.__APP__.loginAndLogoutReload) {
 							GlobalsData.__APP__.loginAndLogoutReload(false, true);
 						}
 					}
-
-					if (oData.ClearAuth || oData.Logout || AJAX_ERROR_LIMIT < GlobalsData.iAjaxErrorCount)
-					{
-						if (GlobalsData.__APP__ && GlobalsData.__APP__.clearClientSideToken)
-						{
-							GlobalsData.__APP__.clearClientSideToken();
-
-							if (!oData.ClearAuth && GlobalsData.__APP__.loginAndLogoutReload)
-							{
-								GlobalsData.__APP__.loginAndLogoutReload(false, true);
-							}
-						}
-					}
 				}
-				else if (StorageResultType.Success === sType && oData && oData.Result)
-				{
-					GlobalsData.iAjaxErrorCount = 0;
-					GlobalsData.iTokenErrorCount = 0;
-				}
+			} else if (StorageResultType.Success === sType && oData && oData.Result) {
+				GlobalsData.iAjaxErrorCount = 0;
+				GlobalsData.iTokenErrorCount = 0;
+			}
 
-				runHook('ajax-default-response', [sRequestAction, StorageResultType.Success === sType ? oData : null, sType, bCached, oRequestParameters]);
+			runHook('ajax-default-response', [
+				sRequestAction,
+				StorageResultType.Success === sType ? oData : null,
+				sType,
+				bCached,
+				oRequestParameters
+			]);
 
-				if (fCallback)
-				{
-					fCallback(
-						sType,
-						StorageResultType.Success === sType ? oData : null,
-						bCached,
-						sRequestAction,
-						oRequestParameters
-					);
-				}
-			};
+			if (fCallback) {
+				fCallback(
+					sType,
+					StorageResultType.Success === sType ? oData : null,
+					bCached,
+					sRequestAction,
+					oRequestParameters
+				);
+			}
+		};
 
-		switch (sType)
-		{
+		switch (sType) {
 			case 'success':
 				sType = StorageResultType.Success;
 				break;
@@ -104,12 +103,9 @@ class AbstractAjaxRemote
 				break;
 		}
 
-		if (StorageResultType.Error === sType)
-		{
+		if (StorageResultType.Error === sType) {
 			_.delay(fCall, 300);
-		}
-		else
-		{
+		} else {
 			fCall();
 		}
 	}
@@ -123,25 +119,20 @@ class AbstractAjaxRemote
 	 * @returns {jQuery.jqXHR}
 	 */
 	ajaxRequest(fResultCallback, params, iTimeOut = 20000, sGetAdd = '', abortActions = []) {
-		const
-			isPost = '' === sGetAdd,
+		const isPost = '' === sGetAdd,
 			headers = {},
-			start = (new window.Date()).getTime();
+			start = new window.Date().getTime();
 
-		let
-			action = '';
+		let action = '';
 
 		params = params || {};
 		action = params.Action || '';
 
-		if (action && 0 < abortActions.length)
-		{
+		if (action && 0 < abortActions.length) {
 			_.each(abortActions, (actionToAbort) => {
-				if (this.oRequests[actionToAbort])
-				{
+				if (this.oRequests[actionToAbort]) {
 					this.oRequests[actionToAbort].__aborted = true;
-					if (this.oRequests[actionToAbort].abort)
-					{
+					if (this.oRequests[actionToAbort].abort) {
 						this.oRequests[actionToAbort].abort();
 					}
 					this.oRequests[actionToAbort] = null;
@@ -149,8 +140,7 @@ class AbstractAjaxRemote
 			});
 		}
 
-		if (isPost)
-		{
+		if (isPost) {
 			params.XToken = Settings.appSettingsGet('token');
 		}
 
@@ -166,17 +156,13 @@ class AbstractAjaxRemote
 		});
 
 		oDefAjax.always((oData, sType) => {
-
 			let cached = false;
-			if (oData && oData.Time)
-			{
-				cached = pInt(oData.Time) > (new window.Date()).getTime() - start;
+			if (oData && oData.Time) {
+				cached = pInt(oData.Time) > new window.Date().getTime() - start;
 			}
 
-			if (action && this.oRequests[action])
-			{
-				if (this.oRequests[action].__aborted)
-				{
+			if (action && this.oRequests[action]) {
+				if (this.oRequests[action].__aborted) {
 					sType = 'abort';
 				}
 
@@ -186,13 +172,10 @@ class AbstractAjaxRemote
 			this.defaultResponse(fResultCallback, action, sType, oData, cached, params);
 		});
 
-		if (action && 0 < abortActions.length && -1 < inArray(action, abortActions))
-		{
-			if (this.oRequests[action])
-			{
+		if (action && 0 < abortActions.length && -1 < inArray(action, abortActions)) {
+			if (this.oRequests[action]) {
 				this.oRequests[action].__aborted = true;
-				if (this.oRequests[action].abort)
-				{
+				if (this.oRequests[action].abort) {
 					this.oRequests[action].abort();
 				}
 				this.oRequests[action] = null;
@@ -201,6 +184,7 @@ class AbstractAjaxRemote
 			this.oRequests[action] = oDefAjax;
 		}
 
+		// eslint-disable-next-line no-console
 		oDefAjax.catch(console.log);
 		return oDefAjax;
 	}
@@ -221,8 +205,13 @@ class AbstractAjaxRemote
 
 		runHook('ajax-default-request', [sAction, oParameters, sGetAdd]);
 
-		return this.ajaxRequest(fCallback, oParameters,
-			isUnd(iTimeout) ? DEFAULT_AJAX_TIMEOUT : pInt(iTimeout), sGetAdd, aAbortActions);
+		return this.ajaxRequest(
+			fCallback,
+			oParameters,
+			isUnd(iTimeout) ? DEFAULT_AJAX_TIMEOUT : pInt(iTimeout),
+			sGetAdd,
+			aAbortActions
+		);
 	}
 
 	/**
@@ -284,4 +273,4 @@ class AbstractAjaxRemote
 	}
 }
 
-export {AbstractAjaxRemote, AbstractAjaxRemote as default};
+export { AbstractAjaxRemote, AbstractAjaxRemote as default };

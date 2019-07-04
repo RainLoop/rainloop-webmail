@@ -1,17 +1,15 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {StorageResultType} from 'Common/Enums';
-import {showScreenPopup} from 'Knoin/Knoin';
+import { StorageResultType } from 'Common/Enums';
+import { showScreenPopup } from 'Knoin/Knoin';
 
 import DomainStore from 'Stores/Admin/Domain';
 import Remote from 'Remote/Admin/Ajax';
 
-import {getApp} from 'Helper/Apps/Admin';
+import { getApp } from 'Helper/Apps/Admin';
 
-class DomainsAdminSettings
-{
+class DomainsAdminSettings {
 	constructor() {
 		this.domains = DomainStore.domains;
 
@@ -43,21 +41,19 @@ class DomainsAdminSettings
 
 	onBuild(oDom) {
 		const self = this;
-		oDom
-			.on('click', '.b-admin-domains-list-table .e-item .e-action', function() { // eslint-disable-line prefer-arrow-callback
-				const domainItem = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (domainItem)
-				{
-					Remote.domain(self.onDomainLoadRequest, domainItem.name);
-				}
-			});
+		oDom.on('click', '.b-admin-domains-list-table .e-item .e-action', function() {
+			// eslint-disable-line prefer-arrow-callback
+			const domainItem = ko.dataFor(this); // eslint-disable-line no-invalid-this
+			if (domainItem) {
+				Remote.domain(self.onDomainLoadRequest, domainItem.name);
+			}
+		});
 
 		getApp().reloadDomainList();
 	}
 
 	onDomainLoadRequest(sResult, oData) {
-		if (StorageResultType.Success === sResult && oData && oData.Result)
-		{
+		if (StorageResultType.Success === sResult && oData && oData.Result) {
 			showScreenPopup(require('View/Popup/Domain'), [oData.Result]);
 		}
 	}
@@ -67,4 +63,4 @@ class DomainsAdminSettings
 	}
 }
 
-export {DomainsAdminSettings, DomainsAdminSettings as default};
+export { DomainsAdminSettings, DomainsAdminSettings as default };

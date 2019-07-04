@@ -1,4 +1,3 @@
-
 import _ from '_';
 import ko from 'ko';
 import key from 'key';
@@ -7,20 +6,19 @@ import AppStore from 'Stores/User/App';
 import AccountStore from 'Stores/User/Account';
 import MessageStore from 'Stores/User/Message';
 
-import {Capa, Magics, KeyState} from 'Common/Enums';
-import {trim, isUnd} from 'Common/Utils';
-import {settings} from 'Common/Links';
+import { Capa, Magics, KeyState } from 'Common/Enums';
+import { trim, isUnd } from 'Common/Utils';
+import { settings } from 'Common/Links';
 
 import * as Events from 'Common/Events';
 import * as Settings from 'Storage/Settings';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {showScreenPopup, setHash} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { showScreenPopup, setHash } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
-class AbstractSystemDropDownUserView extends AbstractViewNext
-{
+class AbstractSystemDropDownUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -54,8 +52,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext
 	}
 
 	accountClick(account, event) {
-		if (account && event && !isUnd(event.which) && 1 === event.which)
-		{
+		if (account && event && !isUnd(event.which) && 1 === event.which) {
 			AccountStore.accounts.loading(true);
 			_.delay(() => AccountStore.accounts.loading(false), Magics.Time1s);
 		}
@@ -68,23 +65,19 @@ class AbstractSystemDropDownUserView extends AbstractViewNext
 	}
 
 	settingsClick() {
-		if (Settings.capa(Capa.Settings))
-		{
+		if (Settings.capa(Capa.Settings)) {
 			setHash(settings());
 		}
 	}
 
-	settingsHelp()
-	{
-		if (Settings.capa(Capa.Help))
-		{
+	settingsHelp() {
+		if (Settings.capa(Capa.Help)) {
 			showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
 		}
 	}
 
 	addAccountClick() {
-		if (this.capaAdditionalAccounts())
-		{
+		if (this.capaAdditionalAccounts()) {
 			showScreenPopup(require('View/Popup/Account'));
 		}
 	}
@@ -95,8 +88,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext
 
 	onBuild() {
 		key('`', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
-			if (this.viewModelVisibility())
-			{
+			if (this.viewModelVisibility()) {
 				MessageStore.messageFullScreenMode(false);
 				this.accountMenuDropdownTrigger(true);
 			}
@@ -104,8 +96,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext
 
 		// shortcuts help
 		key('shift+/', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
-			if (this.viewModelVisibility())
-			{
+			if (this.viewModelVisibility()) {
 				showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
 				return false;
 			}
@@ -114,4 +105,4 @@ class AbstractSystemDropDownUserView extends AbstractViewNext
 	}
 }
 
-export {AbstractSystemDropDownUserView, AbstractSystemDropDownUserView as default};
+export { AbstractSystemDropDownUserView, AbstractSystemDropDownUserView as default };

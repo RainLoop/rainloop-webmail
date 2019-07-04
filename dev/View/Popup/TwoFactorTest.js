@@ -1,20 +1,18 @@
-
 import ko from 'ko';
 
-import {StorageResultType} from 'Common/Enums';
-import {bMobileDevice} from 'Common/Globals';
+import { StorageResultType } from 'Common/Enums';
+import { bMobileDevice } from 'Common/Globals';
 
 import Remote from 'Remote/User/Ajax';
 
-import {popup, command} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup, command } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/TwoFactorTest',
 	templateID: 'PopupsTwoFactorTest'
 })
-class TwoFactorTestPopupView extends AbstractViewNext
-{
+class TwoFactorTestPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -29,18 +27,14 @@ class TwoFactorTestPopupView extends AbstractViewNext
 
 	@command((self) => '' !== self.code() && !self.testing())
 	testCodeCommand() {
-
 		this.testing(true);
 		Remote.testTwoFactor((result, data) => {
-
 			this.testing(false);
 			this.code.status(StorageResultType.Success === result && data && !!data.Result);
 
-			if (this.koTestedTrigger && this.code.status())
-			{
+			if (this.koTestedTrigger && this.code.status()) {
 				this.koTestedTrigger(true);
 			}
-
 		}, this.code());
 	}
 
@@ -60,11 +54,10 @@ class TwoFactorTestPopupView extends AbstractViewNext
 	}
 
 	onShowWithDelay() {
-		if (!bMobileDevice)
-		{
+		if (!bMobileDevice) {
 			this.code.focused(true);
 		}
 	}
 }
 
-export {TwoFactorTestPopupView, TwoFactorTestPopupView as default};
+export { TwoFactorTestPopupView, TwoFactorTestPopupView as default };

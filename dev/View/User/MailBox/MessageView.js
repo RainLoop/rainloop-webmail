@@ -1,41 +1,47 @@
-
 import window from 'window';
 import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import key from 'key';
 
-import {DATA_IMAGE_USER_DOT_PIC, UNUSED_OPTION_VALUE} from 'Common/Consts';
+import { DATA_IMAGE_USER_DOT_PIC, UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {
-	Capa, ComposeType, ClientSideKeyName, KeyState,
-	FolderType, Focused, Layout, Magics, MessageSetAction
+	Capa,
+	ComposeType,
+	ClientSideKeyName,
+	KeyState,
+	FolderType,
+	Focused,
+	Layout,
+	Magics,
+	MessageSetAction
 } from 'Common/Enums';
 
-import {
-	$html,
-	leftPanelDisabled,
-	keyScopeReal,
-	useKeyboardShortcuts,
-	moveAction
-} from 'Common/Globals';
+import { $html, leftPanelDisabled, keyScopeReal, useKeyboardShortcuts, moveAction } from 'Common/Globals';
 
 import {
-	inArray, isArray, isNonEmptyArray, trim, noop,
-	windowResize, windowResizeCallback, inFocus,
-	removeSelection, removeInFocus, mailToHelper, isTransparent
+	inArray,
+	isArray,
+	isNonEmptyArray,
+	trim,
+	noop,
+	windowResize,
+	windowResizeCallback,
+	inFocus,
+	removeSelection,
+	removeInFocus,
+	mailToHelper,
+	isTransparent
 } from 'Common/Utils';
 
 import Audio from 'Common/Audio';
 import * as Events from 'Common/Events';
 
-import {i18n} from 'Common/Translator';
-import {attachmentDownload} from 'Common/Links';
+import { i18n } from 'Common/Translator';
+import { attachmentDownload } from 'Common/Links';
 
-import {
-	getUserPic,
-	storeMessageFlagsToCache
-} from 'Common/Cache';
+import { getUserPic, storeMessageFlagsToCache } from 'Common/Cache';
 
 import SocialStore from 'Stores/Social';
 import AppStore from 'Stores/User/App';
@@ -50,45 +56,36 @@ import * as Settings from 'Storage/Settings';
 import Remote from 'Remote/User/Ajax';
 import Promises from 'Promises/User/Ajax';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {view, command, ViewType, showScreenPopup, createCommand} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { view, command, ViewType, showScreenPopup, createCommand } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @view({
 	name: 'View/User/MailBox/MessageView',
 	type: ViewType.Right,
 	templateID: 'MailMessageView'
 })
-class MessageViewMailBoxUserView extends AbstractViewNext
-{
+class MessageViewMailBoxUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
 		let lastEmail = '';
 
-		const
-			createCommandReplyHelper = (type) => createCommand(
-				() => {
-					this.lastReplyAction(type);
-					this.replyOrforward(type);
-				},
-				this.canBeRepliedOrForwarded
-			);
+		const createCommandReplyHelper = (type) =>
+			createCommand(() => {
+				this.lastReplyAction(type);
+				this.replyOrforward(type);
+			}, this.canBeRepliedOrForwarded);
 
-		const
-			createCommandActionHelper = (folderType, useFolder) => createCommand(
-				() => {
-					const message = this.message();
-					if (message && this.allowMessageListActions)
-					{
-						this.message(null);
-						getApp().deleteMessagesFromFolder(
-							folderType, message.folderFullNameRaw, [message.uid], useFolder);
-					}
-				},
-				this.messageVisibility
-			);
+		const createCommandActionHelper = (folderType, useFolder) =>
+			createCommand(() => {
+				const message = this.message();
+				if (message && this.allowMessageListActions) {
+					this.message(null);
+					getApp().deleteMessagesFromFolder(folderType, message.folderFullNameRaw, [message.uid], useFolder);
+				}
+			}, this.messageVisibility);
 
 		this.oDom = null;
 		this.oHeaderDom = null;
@@ -127,8 +124,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		this.fullScreenMode = MessageStore.messageFullScreenMode;
 
-		this.messageListOfThreadsLoading = ko.observable(false).extend({rateLimit: 1});
-		this.highlightUnselectedAttachments = ko.observable(false).extend({falseTimeout: 2000});
+		this.messageListOfThreadsLoading = ko.observable(false).extend({ rateLimit: 1 });
+		this.highlightUnselectedAttachments = ko.observable(false).extend({ falseTimeout: 2000 });
 
 		this.showAttachmnetControls = ko.observable(false);
 
@@ -145,26 +142,24 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		);
 
 		this.downloadAsZipLoading = ko.observable(false);
-		this.downloadAsZipError = ko.observable(false).extend({falseTimeout: 7000});
+		this.downloadAsZipError = ko.observable(false).extend({ falseTimeout: 7000 });
 
 		this.saveToOwnCloudAllowed = ko.computed(
 			() => -1 < inArray('owncloud', this.attachmentsActions()) && this.allowAttachmnetControls()
 		);
 
 		this.saveToOwnCloudLoading = ko.observable(false);
-		this.saveToOwnCloudSuccess = ko.observable(false).extend({falseTimeout: 2000});
-		this.saveToOwnCloudError = ko.observable(false).extend({falseTimeout: 7000});
+		this.saveToOwnCloudSuccess = ko.observable(false).extend({ falseTimeout: 2000 });
+		this.saveToOwnCloudError = ko.observable(false).extend({ falseTimeout: 7000 });
 
 		this.saveToOwnCloudSuccess.subscribe((v) => {
-			if (v)
-			{
+			if (v) {
 				this.saveToOwnCloudError(false);
 			}
 		});
 
 		this.saveToOwnCloudError.subscribe((v) => {
-			if (v)
-			{
+			if (v) {
 				this.saveToOwnCloudSuccess(false);
 			}
 		});
@@ -174,29 +169,25 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		);
 
 		this.saveToDropboxLoading = ko.observable(false);
-		this.saveToDropboxSuccess = ko.observable(false).extend({falseTimeout: 2000});
-		this.saveToDropboxError = ko.observable(false).extend({falseTimeout: 7000});
+		this.saveToDropboxSuccess = ko.observable(false).extend({ falseTimeout: 2000 });
+		this.saveToDropboxError = ko.observable(false).extend({ falseTimeout: 7000 });
 
 		this.saveToDropboxSuccess.subscribe((v) => {
-			if (v)
-			{
+			if (v) {
 				this.saveToDropboxError(false);
 			}
 		});
 
 		this.saveToDropboxError.subscribe((v) => {
-			if (v)
-			{
+			if (v) {
 				this.saveToDropboxSuccess(false);
 			}
 		});
 
 		this.showAttachmnetControls.subscribe((v) => {
-			if (this.message())
-			{
+			if (this.message()) {
 				_.each(this.message().attachments(), (item) => {
-					if (item)
-					{
+					if (item) {
 						item.checked(!!v);
 					}
 				});
@@ -207,9 +198,11 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		this.lastReplyAction = ko.computed({
 			read: this.lastReplyAction_,
 			write: (value) => {
-				this.lastReplyAction_(-1 === inArray(value, [
-					ComposeType.Reply, ComposeType.ReplyAll, ComposeType.Forward
-				]) ? ComposeType.Reply : value);
+				this.lastReplyAction_(
+					-1 === inArray(value, [ComposeType.Reply, ComposeType.ReplyAll, ComposeType.Forward])
+						? ComposeType.Reply
+						: value
+				);
 			}
 		});
 
@@ -222,13 +215,12 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		this.showFullInfo = ko.observable('1' === Local.get(ClientSideKeyName.MessageHeaderFullInfo));
 
 		this.moreDropdownTrigger = ko.observable(false);
-		this.messageDomFocused = ko.observable(false).extend({rateLimit: 0});
+		this.messageDomFocused = ko.observable(false).extend({ rateLimit: 0 });
 
 		this.messageVisibility = ko.computed(() => !this.messageLoadingThrottle() && !!this.message());
 
 		this.message.subscribe((message) => {
-			if (!message)
-			{
+			if (!message) {
 				MessageStore.selectorMessageSelected(null);
 			}
 		});
@@ -284,8 +276,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		this.viewFromDkimVisibility = ko.computed(() => 'none' !== this.viewFromDkimData()[0]);
 
 		this.viewFromDkimStatusIconClass = ko.computed(() => {
-			switch (this.viewFromDkimData()[0])
-			{
+			switch (this.viewFromDkimData()[0]) {
 				case 'none':
 					return 'icon-none iconcolor-display-none';
 				case 'pass':
@@ -296,16 +287,11 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		});
 
 		this.viewFromDkimStatusTitle = ko.computed(() => {
-
 			const status = this.viewFromDkimData();
-			if (isNonEmptyArray(status))
-			{
-				if (status[0] && status[1])
-				{
+			if (isNonEmptyArray(status)) {
+				if (status[0] && status[1]) {
 					return status[1];
-				}
-				else if (status[0])
-				{
+				} else if (status[0]) {
 					return 'DKIM: ' + status[0];
 				}
 			}
@@ -318,21 +304,17 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		}, this);
 
 		this.message.subscribe((message) => {
-
 			this.messageActiveDom(null);
 
-			if (message)
-			{
+			if (message) {
 				this.showAttachmnetControls(false);
-				if (Local.get(ClientSideKeyName.MessageAttachmnetControls))
-				{
+				if (Local.get(ClientSideKeyName.MessageAttachmnetControls)) {
 					_.delay(() => {
 						this.showAttachmnetControls(true);
 					}, Magics.Time50ms);
 				}
 
-				if (this.viewHash !== message.hash)
-				{
+				if (this.viewHash !== message.hash) {
 					this.scrollMessageToTop();
 				}
 
@@ -359,37 +341,29 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 				lastEmail = message.fromAsSingleEmail();
 				getUserPic(lastEmail, (pic, email) => {
-					if (pic !== this.viewUserPic() && lastEmail === email)
-					{
+					if (pic !== this.viewUserPic() && lastEmail === email) {
 						this.viewUserPicVisible(false);
 						this.viewUserPic(DATA_IMAGE_USER_DOT_PIC);
-						if ('' !== pic)
-						{
+						if ('' !== pic) {
 							this.viewUserPicVisible(true);
 							this.viewUserPic(pic);
 						}
 					}
 				});
-			}
-			else
-			{
+			} else {
 				this.viewFolder = '';
 				this.viewUid = '';
 				this.viewHash = '';
 
 				this.scrollMessageToTop();
 			}
-
 		});
 
 		this.message.viewTrigger.subscribe(() => {
 			const message = this.message();
-			if (message)
-			{
+			if (message) {
 				this.viewIsFlagged(message.flagged());
-			}
-			else
-			{
+			} else {
 				this.viewIsFlagged(false);
 			}
 		});
@@ -429,35 +403,27 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 	@command((self) => !self.messageListAndMessageViewLoading())
 	goUpCommand() {
-		Events.pub('mailbox.message-list.selector.go-up', [
-			Layout.NoPreview === this.layout() ? !!this.message() : true
-		]);
+		Events.pub('mailbox.message-list.selector.go-up', [Layout.NoPreview === this.layout() ? !!this.message() : true]);
 	}
 
 	@command((self) => !self.messageListAndMessageViewLoading())
 	goDownCommand() {
-		Events.pub('mailbox.message-list.selector.go-down', [
-			Layout.NoPreview === this.layout() ? !!this.message() : true
-		]);
+		Events.pub('mailbox.message-list.selector.go-down', [Layout.NoPreview === this.layout() ? !!this.message() : true]);
 	}
 
 	detectDomBackgroundColor(dom) {
-		let
-			limit = 5,
+		let limit = 5,
 			result = '';
 
-		const
-			fFindDom = function(inputDom) {
+		const fFindDom = function(inputDom) {
 				const children = inputDom ? inputDom.children() : null;
-				return (children && 1 === children.length && children.is('table,div,center')) ? children : null;
+				return children && 1 === children.length && children.is('table,div,center') ? children : null;
 			},
 			fFindColor = function(inputDom) {
 				let color = '';
-				if (inputDom)
-				{
+				if (inputDom) {
 					color = inputDom.css('background-color') || '';
-					if (!inputDom.is('table'))
-					{
+					if (!inputDom.is('table')) {
 						color = isTransparent(color) ? '' : color;
 					}
 				}
@@ -465,24 +431,18 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 				return color;
 			};
 
-		if (dom && 1 === dom.length)
-		{
+		if (dom && 1 === dom.length) {
 			let aC = dom;
-			while ('' === result)
-			{
+			while ('' === result) {
 				limit -= 1;
-				if (0 >= limit)
-				{
+				if (0 >= limit) {
 					break;
 				}
 
 				aC = fFindDom(aC);
-				if (aC)
-				{
+				if (aC) {
 					result = fFindColor(aC);
-				}
-				else
-				{
+				} else {
 					break;
 				}
 			}
@@ -515,17 +475,20 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	 * @returns {void}
 	 */
 	replyOrforward(sType) {
-		if (Settings.capa(Capa.Composer))
-		{
+		if (Settings.capa(Capa.Composer)) {
 			showScreenPopup(require('View/Popup/Compose'), [sType, MessageStore.message()]);
 		}
 	}
 
 	checkHeaderHeight() {
-		if (this.oHeaderDom)
-		{
-			this.viewBodyTopValue(this.message() ? this.oHeaderDom.height() +
-				Magics.Size20px /* padding-(top/bottom): 20px */ + Magics.Size1px /* borded-bottom: 1px */ : 0);
+		if (this.oHeaderDom) {
+			this.viewBodyTopValue(
+				this.message()
+					? this.oHeaderDom.height() +
+					  Magics.Size20px /* padding-(top/bottom): 20px */ +
+							Magics.Size1px /* borded-bottom: 1px */
+					: 0
+			);
 		}
 	}
 
@@ -556,37 +519,33 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	 * @returns {boolean}
 	 */
 	attachmentPreview(attachment) {
-		if (attachment && attachment.isImage() && !attachment.isLinked && this.message() && this.message().attachments())
-		{
-			let
-				index = 0,
+		if (attachment && attachment.isImage() && !attachment.isLinked && this.message() && this.message().attachments()) {
+			let index = 0,
 				listIndex = 0;
 
-			const
-				div = $('<div>'),
-				dynamicEls = _.compact(_.map(this.message().attachments(), (item) => {
-					if (item && !item.isLinked && item.isImage())
-					{
-						if (item === attachment)
-						{
-							index = listIndex;
+			const div = $('<div>'),
+				dynamicEls = _.compact(
+					_.map(this.message().attachments(), (item) => {
+						if (item && !item.isLinked && item.isImage()) {
+							if (item === attachment) {
+								index = listIndex;
+							}
+
+							listIndex += 1;
+
+							return {
+								src: item.linkPreview(),
+								thumb: item.linkThumbnail(),
+								subHtml: item.fileName,
+								downloadUrl: item.linkPreview()
+							};
 						}
 
-						listIndex += 1;
+						return null;
+					})
+				);
 
-						return {
-							src: item.linkPreview(),
-							thumb: item.linkThumbnail(),
-							subHtml: item.fileName,
-							downloadUrl: item.linkPreview()
-						};
-					}
-
-					return null;
-				}));
-
-			if (0 < dynamicEls.length)
-			{
+			if (0 < dynamicEls.length) {
 				div.on('onBeforeOpen.lg', () => {
 					useKeyboardShortcuts(false);
 					removeInFocus(true);
@@ -616,16 +575,13 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	}
 
 	onBuild(dom) {
-
-		const
-			self = this,
+		const self = this,
 			fCheckHeaderHeight = _.bind(this.checkHeaderHeight, this);
 
 		this.oDom = dom;
 
 		this.fullScreenMode.subscribe((value) => {
-			if (value && this.message())
-			{
+			if (value && this.message()) {
 				AppStore.focusedState(Focused.MessageView);
 			}
 		});
@@ -635,11 +591,14 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		this.showFullInfo.subscribe(fCheckHeaderHeight);
 		this.message.subscribe(fCheckHeaderHeight);
 
-		Events.sub('window.resize', _.throttle(() => {
-			_.delay(fCheckHeaderHeight, 1);
-			_.delay(fCheckHeaderHeight, Magics.Time200ms);
-			_.delay(fCheckHeaderHeight, Magics.Time500ms);
-		}, Magics.Time50ms));
+		Events.sub(
+			'window.resize',
+			_.throttle(() => {
+				_.delay(fCheckHeaderHeight, 1);
+				_.delay(fCheckHeaderHeight, Magics.Time200ms);
+				_.delay(fCheckHeaderHeight, Magics.Time500ms);
+			}, Magics.Time50ms)
+		);
 
 		this.showFullInfo.subscribe((value) => {
 			windowResize();
@@ -652,37 +611,39 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		this.oHeaderDom = $('.messageItemHeader', dom);
 		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
 
-		if (this.mobile)
-		{
+		if (this.mobile) {
 			dom.on('click', () => {
 				leftPanelDisabled(true);
 			});
 		}
 
 		dom
-			.on('click', 'a', function(event) { // eslint-disable-line prefer-arrow-callback
+			.on('click', 'a', function(event) {
+				// eslint-disable-line prefer-arrow-callback
 				// setup maito protocol
-				return !(!!event && Magics.EventWhichMouseMiddle !== event.which && mailToHelper(
-					$(this).attr('href'), Settings.capa(Capa.Composer) ? require('View/Popup/Compose') : null // eslint-disable-line no-invalid-this
-				));
+				return !(
+					!!event &&
+					Magics.EventWhichMouseMiddle !== event.which &&
+					mailToHelper(
+						$(this).attr('href'),
+						Settings.capa(Capa.Composer) ? require('View/Popup/Compose') : null // eslint-disable-line no-invalid-this
+					)
+				);
 			})
 			.on('click', '.attachmentsPlace .attachmentIconParent', (event) => {
-				if (event && event.stopPropagation)
-				{
+				if (event && event.stopPropagation) {
 					event.stopPropagation();
 				}
 			})
-			.on('click', '.attachmentsPlace .showPreplay', function(event) { // eslint-disable-line prefer-arrow-callback
-				if (event && event.stopPropagation)
-				{
+			.on('click', '.attachmentsPlace .showPreplay', function(event) {
+				// eslint-disable-line prefer-arrow-callback
+				if (event && event.stopPropagation) {
 					event.stopPropagation();
 				}
 
 				const attachment = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (attachment && Audio.supported)
-				{
-					switch (true)
-					{
+				if (attachment && Audio.supported) {
+					switch (true) {
 						case Audio.supportedMp3 && attachment.isMp3():
 							Audio.playMp3(attachment.linkDownload(), attachment.fileName);
 							break;
@@ -696,27 +657,33 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 					}
 				}
 			})
-			.on('click', '.attachmentsPlace .attachmentItem .attachmentNameParent', function() { // eslint-disable-line prefer-arrow-callback
+			.on('click', '.attachmentsPlace .attachmentItem .attachmentNameParent', function() {
+				// eslint-disable-line prefer-arrow-callback
 				const attachment = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (attachment && attachment.download)
-				{
+				if (attachment && attachment.download) {
 					getApp().download(attachment.linkDownload());
 				}
 			})
-			.on('click', '.messageItemHeader .subjectParent .flagParent', function() { // eslint-disable-line prefer-arrow-callback
+			.on('click', '.messageItemHeader .subjectParent .flagParent', function() {
+				// eslint-disable-line prefer-arrow-callback
 				const message = self.message();
-				if (message)
-				{
-					getApp().messageListAction(message.folderFullNameRaw,
-						message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag, [message]);
+				if (message) {
+					getApp().messageListAction(
+						message.folderFullNameRaw,
+						message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
+						[message]
+					);
 				}
 			})
-			.on('click', '.thread-list .flagParent', function() { // eslint-disable-line prefer-arrow-callback
+			.on('click', '.thread-list .flagParent', function() {
+				// eslint-disable-line prefer-arrow-callback
 				const message = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (message && message.folder && message.uid)
-				{
-					getApp().messageListAction(message.folder,
-						message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag, [message]);
+				if (message && message.folder && message.uid) {
+					getApp().messageListAction(
+						message.folder,
+						message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
+						[message]
+					);
 				}
 
 				self.threadsDropdownTrigger(true);
@@ -725,8 +692,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 			});
 
 		AppStore.focusedState.subscribe((value) => {
-			if (Focused.MessageView !== value)
-			{
+			if (Focused.MessageView !== value) {
 				this.scrollMessageToTop();
 				this.scrollMessageToLeft();
 			}
@@ -737,7 +703,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 		});
 
 		this.oMessageScrollerDom = dom.find('.messageItem .content');
-		this.oMessageScrollerDom = this.oMessageScrollerDom && this.oMessageScrollerDom[0] ? this.oMessageScrollerDom : null;
+		this.oMessageScrollerDom =
+			this.oMessageScrollerDom && this.oMessageScrollerDom[0] ? this.oMessageScrollerDom : null;
 
 		this.initShortcuts();
 	}
@@ -746,23 +713,16 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	 * @returns {boolean}
 	 */
 	escShortcuts() {
-		if (this.viewModelVisibility() && this.message())
-		{
-			if (this.fullScreenMode())
-			{
+		if (this.viewModelVisibility() && this.message()) {
+			if (this.fullScreenMode()) {
 				this.fullScreenMode(false);
 
-				if (Layout.NoPreview !== this.layout())
-				{
+				if (Layout.NoPreview !== this.layout()) {
 					AppStore.focusedState(Focused.MessageList);
 				}
-			}
-			else if (Layout.NoPreview === this.layout())
-			{
+			} else if (Layout.NoPreview === this.layout()) {
 				this.message(null);
-			}
-			else
-			{
+			} else {
 				AppStore.focusedState(Focused.MessageList);
 			}
 
@@ -773,7 +733,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	}
 
 	initShortcuts() {
-
 		// exit fullscreen, back
 		key('esc, backspace', KeyState.MessageView, _.bind(this.escShortcuts, this));
 
@@ -785,8 +744,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		// reply
 		key('r', [KeyState.MessageList, KeyState.MessageView], () => {
-			if (MessageStore.message())
-			{
+			if (MessageStore.message()) {
 				this.replyCommand();
 				return false;
 			}
@@ -796,8 +754,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		// replaAll
 		key('a', [KeyState.MessageList, KeyState.MessageView], () => {
-			if (MessageStore.message())
-			{
+			if (MessageStore.message()) {
 				this.replyAllCommand();
 				return false;
 			}
@@ -807,8 +764,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		// forward
 		key('f', [KeyState.MessageList, KeyState.MessageView], () => {
-			if (MessageStore.message())
-			{
+			if (MessageStore.message()) {
 				this.forwardCommand();
 				return false;
 			}
@@ -818,8 +774,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		// message information
 		key('ctrl+i, command+i', [KeyState.MessageList, KeyState.MessageView], () => {
-			if (MessageStore.message())
-			{
+			if (MessageStore.message()) {
 				this.showFullInfo(!this.showFullInfo());
 			}
 			return false;
@@ -827,9 +782,10 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		// toggle message blockquotes
 		key('b', [KeyState.MessageList, KeyState.MessageView], () => {
-			if (MessageStore.message() && MessageStore.message().body)
-			{
-				MessageStore.message().body.find('.rlBlockquoteSwitcher').click();
+			if (MessageStore.message() && MessageStore.message().body) {
+				MessageStore.message()
+					.body.find('.rlBlockquoteSwitcher')
+					.click();
 				return false;
 			}
 
@@ -848,8 +804,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		// print
 		key('ctrl+p, command+p', [KeyState.MessageView, KeyState.MessageList], () => {
-			if (this.message())
-			{
+			if (this.message()) {
 				this.message().printMessage();
 			}
 
@@ -858,14 +813,10 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		// delete
 		key('delete, shift+delete', KeyState.MessageView, (event, handler) => {
-			if (event)
-			{
-				if (handler && 'shift+delete' === handler.shortcut)
-				{
+			if (event) {
+				if (handler && 'shift+delete' === handler.shortcut) {
 					this.deleteWithoutMoveCommand();
-				}
-				else
-				{
+				} else {
 					this.deleteCommand();
 				}
 
@@ -877,24 +828,23 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 		// change focused state
 		key('tab, shift+tab, left', KeyState.MessageView, (event, handler) => {
-			if (!this.fullScreenMode() && this.message() && Layout.NoPreview !== this.layout())
-			{
-				if (event && handler && 'left' === handler.shortcut)
-				{
-					if (this.oMessageScrollerDom && 0 < this.oMessageScrollerDom.scrollLeft())
-					{
+			if (!this.fullScreenMode() && this.message() && Layout.NoPreview !== this.layout()) {
+				if (event && handler && 'left' === handler.shortcut) {
+					if (this.oMessageScrollerDom && 0 < this.oMessageScrollerDom.scrollLeft()) {
 						return true;
 					}
 
 					AppStore.focusedState(Focused.MessageList);
-				}
-				else
-				{
+				} else {
 					AppStore.focusedState(Focused.MessageList);
 				}
-			}
-			else if (this.message() && Layout.NoPreview === this.layout() && event && handler && 'left' === handler.shortcut)
-			{
+			} else if (
+				this.message() &&
+				Layout.NoPreview === this.layout() &&
+				event &&
+				handler &&
+				'left' === handler.shortcut
+			) {
 				return true;
 			}
 
@@ -952,30 +902,22 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	}
 
 	composeClick() {
-		if (Settings.capa(Capa.Composer))
-		{
+		if (Settings.capa(Capa.Composer)) {
 			showScreenPopup(require('View/Popup/Compose'));
 		}
 	}
 
 	editMessage() {
-		if (Settings.capa(Capa.Composer) && MessageStore.message())
-		{
+		if (Settings.capa(Capa.Composer) && MessageStore.message()) {
 			showScreenPopup(require('View/Popup/Compose'), [ComposeType.Draft, MessageStore.message()]);
 		}
 	}
 
 	scrollMessageToTop() {
-		if (this.oMessageScrollerDom)
-		{
-			if (Magics.Size50px < this.oMessageScrollerDom.scrollTop())
-			{
-				this.oMessageScrollerDom
-					.scrollTop(Magics.Size50px)
-					.animate({'scrollTop': 0}, Magics.Time200ms);
-			}
-			else
-			{
+		if (this.oMessageScrollerDom) {
+			if (Magics.Size50px < this.oMessageScrollerDom.scrollTop()) {
+				this.oMessageScrollerDom.scrollTop(Magics.Size50px).animate({ 'scrollTop': 0 }, Magics.Time200ms);
+			} else {
 				this.oMessageScrollerDom.scrollTop(0);
 			}
 
@@ -984,8 +926,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	}
 
 	scrollMessageToLeft() {
-		if (this.oMessageScrollerDom)
-		{
+		if (this.oMessageScrollerDom) {
 			this.oMessageScrollerDom.scrollLeft(0);
 			windowResize();
 		}
@@ -998,108 +939,90 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 
 	downloadAsZip() {
 		const hashes = this.getAttachmentsHashes();
-		if (0 < hashes.length)
-		{
-			Promises.attachmentsActions('Zip', hashes, this.downloadAsZipLoading).then((result) => {
-				if (result && result.Result && result.Result.Files &&
-					result.Result.Files[0] && result.Result.Files[0].Hash)
-				{
-					getApp().download(attachmentDownload(result.Result.Files[0].Hash));
-				}
-				else
-				{
+		if (0 < hashes.length) {
+			Promises.attachmentsActions('Zip', hashes, this.downloadAsZipLoading)
+				.then((result) => {
+					if (result && result.Result && result.Result.Files && result.Result.Files[0] && result.Result.Files[0].Hash) {
+						getApp().download(attachmentDownload(result.Result.Files[0].Hash));
+					} else {
+						this.downloadAsZipError(true);
+					}
+				})
+				.catch(() => {
 					this.downloadAsZipError(true);
-				}
-			}).catch(() => {
-				this.downloadAsZipError(true);
-			});
-		}
-		else
-		{
+				});
+		} else {
 			this.highlightUnselectedAttachments(true);
 		}
 	}
 
 	saveToOwnCloud() {
-
 		const hashes = this.getAttachmentsHashes();
-		if (0 < hashes.length)
-		{
-			Promises.attachmentsActions('OwnCloud', hashes, this.saveToOwnCloudLoading).then((result) => {
-				if (result && result.Result)
-				{
-					this.saveToOwnCloudSuccess(true);
-				}
-				else
-				{
+		if (0 < hashes.length) {
+			Promises.attachmentsActions('OwnCloud', hashes, this.saveToOwnCloudLoading)
+				.then((result) => {
+					if (result && result.Result) {
+						this.saveToOwnCloudSuccess(true);
+					} else {
+						this.saveToOwnCloudError(true);
+					}
+				})
+				.catch(() => {
 					this.saveToOwnCloudError(true);
-				}
-			}).catch(() => {
-				this.saveToOwnCloudError(true);
-			});
-		}
-		else
-		{
+				});
+		} else {
 			this.highlightUnselectedAttachments(true);
 		}
 	}
 
 	saveToDropbox() {
-
-		const
-			files = [],
+		const files = [],
 			hashes = this.getAttachmentsHashes();
 
-		if (0 < hashes.length)
-		{
-			if (window.Dropbox)
-			{
-				Promises.attachmentsActions('Dropbox', hashes, this.saveToDropboxLoading).then((result) => {
-					if (result && result.Result && result.Result.Url && result.Result.ShortLife && result.Result.Files)
-					{
-						if (window.Dropbox && isArray(result.Result.Files))
-						{
-							_.each(result.Result.Files, (item) => {
-								files.push({
-									url: result.Result.Url + attachmentDownload(item.Hash, result.Result.ShortLife),
-									filename: item.FileName
+		if (0 < hashes.length) {
+			if (window.Dropbox) {
+				Promises.attachmentsActions('Dropbox', hashes, this.saveToDropboxLoading)
+					.then((result) => {
+						if (result && result.Result && result.Result.Url && result.Result.ShortLife && result.Result.Files) {
+							if (window.Dropbox && isArray(result.Result.Files)) {
+								_.each(result.Result.Files, (item) => {
+									files.push({
+										url: result.Result.Url + attachmentDownload(item.Hash, result.Result.ShortLife),
+										filename: item.FileName
+									});
 								});
-							});
 
-							window.Dropbox.save({
-								files: files,
-								progress: () => {
-									this.saveToDropboxLoading(true);
-									this.saveToDropboxError(false);
-									this.saveToDropboxSuccess(false);
-								},
-								cancel: () => {
-									this.saveToDropboxSuccess(false);
-									this.saveToDropboxError(false);
-									this.saveToDropboxLoading(false);
-								},
-								success: () => {
-									this.saveToDropboxSuccess(true);
-									this.saveToDropboxLoading(false);
-								},
-								error: () => {
-									this.saveToDropboxError(true);
-									this.saveToDropboxLoading(false);
-								}
-							});
+								window.Dropbox.save({
+									files: files,
+									progress: () => {
+										this.saveToDropboxLoading(true);
+										this.saveToDropboxError(false);
+										this.saveToDropboxSuccess(false);
+									},
+									cancel: () => {
+										this.saveToDropboxSuccess(false);
+										this.saveToDropboxError(false);
+										this.saveToDropboxLoading(false);
+									},
+									success: () => {
+										this.saveToDropboxSuccess(true);
+										this.saveToDropboxLoading(false);
+									},
+									error: () => {
+										this.saveToDropboxError(true);
+										this.saveToDropboxLoading(false);
+									}
+								});
+							} else {
+								this.saveToDropboxError(true);
+							}
 						}
-						else
-						{
-							this.saveToDropboxError(true);
-						}
-					}
-				}).catch(() => {
-					this.saveToDropboxError(true);
-				});
+					})
+					.catch(() => {
+						this.saveToDropboxError(true);
+					});
 			}
-		}
-		else
-		{
+		} else {
 			this.highlightUnselectedAttachments(true);
 		}
 	}
@@ -1109,8 +1032,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	 * @returns {void}
 	 */
 	showImages(message) {
-		if (message && message.showExternalImages)
-		{
+		if (message && message.showExternalImages) {
 			message.showExternalImages(true);
 		}
 
@@ -1130,12 +1052,15 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	 * @returns {void}
 	 */
 	readReceipt(oMessage) {
-		if (oMessage && '' !== oMessage.readReceipt())
-		{
-			Remote.sendReadReceiptMessage(noop, oMessage.folderFullNameRaw, oMessage.uid,
+		if (oMessage && '' !== oMessage.readReceipt()) {
+			Remote.sendReadReceiptMessage(
+				noop,
+				oMessage.folderFullNameRaw,
+				oMessage.uid,
 				oMessage.readReceipt(),
-				i18n('READ_RECEIPT/SUBJECT', {'SUBJECT': oMessage.subject()}),
-				i18n('READ_RECEIPT/BODY', {'READ-RECEIPT': AccountStore.email()}));
+				i18n('READ_RECEIPT/SUBJECT', { 'SUBJECT': oMessage.subject() }),
+				i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountStore.email() })
+			);
 
 			oMessage.isReadReceipt(true);
 
@@ -1148,4 +1073,4 @@ class MessageViewMailBoxUserView extends AbstractViewNext
 	}
 }
 
-export {MessageViewMailBoxUserView, MessageViewMailBoxUserView as default};
+export { MessageViewMailBoxUserView, MessageViewMailBoxUserView as default };

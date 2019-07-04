@@ -1,11 +1,9 @@
-
 import window from 'window';
 import ko from 'ko';
 import $ from '$';
 import * as Settings from 'Storage/Settings';
 
-class SocialStore
-{
+class SocialStore {
 	constructor() {
 		this.google = {};
 		this.twitter = {};
@@ -32,7 +30,8 @@ class SocialStore
 
 		this.google.require = {};
 		this.google.require.clientSettings = ko.computed(
-			() => this.google.enabled() && (this.google.capa.auth() || this.google.capa.drive()));
+			() => this.google.enabled() && (this.google.capa.auth() || this.google.capa.drive())
+		);
 
 		this.google.require.apiKeySettings = ko.computed(() => this.google.enabled() && this.google.capa.drive());
 
@@ -85,14 +84,14 @@ class SocialStore
 	}
 
 	appendDropbox() {
-		if (!window.Dropbox && this.dropbox.enabled() && this.dropbox.apiKey())
-		{
-			if (!window.document.getElementById('dropboxjs'))
-			{
+		if (!window.Dropbox && this.dropbox.enabled() && this.dropbox.apiKey()) {
+			if (!window.document.getElementById('dropboxjs')) {
 				const script = window.document.createElement('script');
 				script.type = 'text/javascript';
 				script.src = 'https://www.dropbox.com/static/api/2/dropins.js';
-				$(script).attr('id', 'dropboxjs').attr('data-app-key', this.dropbox.apiKey());
+				$(script)
+					.attr('id', 'dropboxjs')
+					.attr('data-app-key', this.dropbox.apiKey());
 
 				window.document.body.appendChild(script);
 			}

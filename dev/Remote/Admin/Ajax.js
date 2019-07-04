@@ -1,8 +1,6 @@
+import { AbstractAjaxRemote } from 'Remote/AbstractAjax';
 
-import {AbstractAjaxRemote} from 'Remote/AbstractAjax';
-
-class RemoteAdminAjax extends AbstractAjaxRemote
-{
+class RemoteAdminAjax extends AbstractAjaxRemote {
 	constructor() {
 		super();
 
@@ -92,11 +90,16 @@ class RemoteAdminAjax extends AbstractAjaxRemote
 	 * @param {Object} oPackage
 	 */
 	packageInstall(fCallback, oPackage) {
-		this.defaultRequest(fCallback, 'AdminPackageInstall', {
-			'Id': oPackage.id,
-			'Type': oPackage.type,
-			'File': oPackage.file
-		}, 60000);
+		this.defaultRequest(
+			fCallback,
+			'AdminPackageInstall',
+			{
+				'Id': oPackage.id,
+				'Type': oPackage.type,
+				'File': oPackage.file
+			},
+			60000
+		);
 	}
 
 	/**
@@ -200,11 +203,25 @@ class RemoteAdminAjax extends AbstractAjaxRemote
 		});
 	}
 
-	createOrUpdateDomain(fCallback,
-		bCreate, sName,
-		sIncHost, iIncPort, sIncSecure, bIncShortLogin,
-		bUseSieve, sSieveAllowRaw, sSieveHost, iSievePort, sSieveSecure,
-		sOutHost, iOutPort, sOutSecure, bOutShortLogin, bOutAuth, bOutPhpMail,
+	createOrUpdateDomain(
+		fCallback,
+		bCreate,
+		sName,
+		sIncHost,
+		iIncPort,
+		sIncSecure,
+		bIncShortLogin,
+		bUseSieve,
+		sSieveAllowRaw,
+		sSieveHost,
+		iSievePort,
+		sSieveSecure,
+		sOutHost,
+		iOutPort,
+		sOutSecure,
+		bOutShortLogin,
+		bOutAuth,
+		bOutPhpMail,
 		sWhiteList
 	) {
 		this.defaultRequest(fCallback, 'AdminDomainSave', {
@@ -233,10 +250,21 @@ class RemoteAdminAjax extends AbstractAjaxRemote
 		});
 	}
 
-	testConnectionForDomain(fCallback, sName,
-		sIncHost, iIncPort, sIncSecure,
-		bUseSieve, sSieveHost, iSievePort, sSieveSecure,
-		sOutHost, iOutPort, sOutSecure, bOutAuth, bOutPhpMail
+	testConnectionForDomain(
+		fCallback,
+		sName,
+		sIncHost,
+		iIncPort,
+		sIncSecure,
+		bUseSieve,
+		sSieveHost,
+		iSievePort,
+		sSieveSecure,
+		sOutHost,
+		iOutPort,
+		sOutSecure,
+		bOutAuth,
+		bOutPhpMail
 	) {
 		this.defaultRequest(fCallback, 'AdminDomainTest', {
 			'Name': sName,

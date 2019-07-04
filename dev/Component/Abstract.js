@@ -1,18 +1,15 @@
-
 import $ from '$';
 import ko from 'ko';
 
-import {isUnd} from 'Common/Utils';
-import {i18nToNodes} from 'Common/Translator';
+import { isUnd } from 'Common/Utils';
+import { i18nToNodes } from 'Common/Translator';
 
-class AbstractComponent
-{
+class AbstractComponent {
 	disposable = [];
 
 	dispose() {
 		this.disposable.forEach((funcToDispose) => {
-			if (funcToDispose && funcToDispose.dispose)
-			{
+			if (funcToDispose && funcToDispose.dispose) {
 				funcToDispose.dispose();
 			}
 		});
@@ -25,22 +22,19 @@ class AbstractComponent
  * @returns {Object}
  */
 const componentExportHelper = (ClassObject, templateID = '') => ({
-	template: templateID ? {element: templateID} : '<b></b>',
+	template: templateID ? { element: templateID } : '<b></b>',
 	viewModel: {
 		createViewModel: (params, componentInfo) => {
-
 			params = params || {};
 			params.element = null;
 
-			if (componentInfo && componentInfo.element)
-			{
+			if (componentInfo && componentInfo.element) {
 				params.component = componentInfo;
 				params.element = $(componentInfo.element);
 
 				i18nToNodes(params.element);
 
-				if (!isUnd(params.inline) && ko.unwrap(params.inline))
-				{
+				if (!isUnd(params.inline) && ko.unwrap(params.inline)) {
 					params.element.css('display', 'inline-block');
 				}
 			}
@@ -50,4 +44,4 @@ const componentExportHelper = (ClassObject, templateID = '') => ({
 	}
 });
 
-export {AbstractComponent, componentExportHelper};
+export { AbstractComponent, componentExportHelper };

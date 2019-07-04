@@ -1,15 +1,13 @@
-
 import ko from 'ko';
 
-import {Magics} from 'Common/Enums';
-import {boolToAjax} from 'Common/Utils';
+import { Magics } from 'Common/Enums';
+import { boolToAjax } from 'Common/Utils';
 
 import AppStore from 'Stores/User/App';
 import ContactStore from 'Stores/User/Contact';
 import Remote from 'Remote/User/Ajax';
 
-class ContactsUserSettings
-{
+class ContactsUserSettings {
 	constructor() {
 		this.contactsAutosave = AppStore.contactsAutosave;
 
@@ -19,12 +17,16 @@ class ContactsUserSettings
 		this.contactsSyncUser = ContactStore.contactsSyncUser;
 		this.contactsSyncPass = ContactStore.contactsSyncPass;
 
-		this.saveTrigger = ko.computed(() => [
-			this.enableContactsSync() ? '1' : '0',
-			this.contactsSyncUrl(),
-			this.contactsSyncUser(),
-			this.contactsSyncPass()
-		].join('|')).extend({throttle: Magics.Time500ms});
+		this.saveTrigger = ko
+			.computed(() =>
+				[
+					this.enableContactsSync() ? '1' : '0',
+					this.contactsSyncUrl(),
+					this.contactsSyncUser(),
+					this.contactsSyncPass()
+				].join('|')
+			)
+			.extend({ throttle: Magics.Time500ms });
 	}
 
 	onBuild() {
@@ -35,7 +37,8 @@ class ContactsUserSettings
 		});
 
 		this.saveTrigger.subscribe(() => {
-			Remote.saveContactsSyncData(null,
+			Remote.saveContactsSyncData(
+				null,
 				this.enableContactsSync(),
 				this.contactsSyncUrl(),
 				this.contactsSyncUser(),
@@ -45,4 +48,4 @@ class ContactsUserSettings
 	}
 }
 
-export {ContactsUserSettings, ContactsUserSettings as default};
+export { ContactsUserSettings, ContactsUserSettings as default };

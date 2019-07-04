@@ -1,16 +1,14 @@
-
 import ko from 'ko';
-import {Focused, KeyState} from 'Common/Enums';
+import { Focused, KeyState } from 'Common/Enums';
 
-import {keyScope, leftPanelDisabled} from 'Common/Globals';
-import {isNonEmptyArray} from 'Common/Utils';
+import { keyScope, leftPanelDisabled } from 'Common/Globals';
+import { isNonEmptyArray } from 'Common/Utils';
 
 import * as Settings from 'Storage/Settings';
 
-import {AbstractAppStore} from 'Stores/AbstractApp';
+import { AbstractAppStore } from 'Stores/AbstractApp';
 
-class AppUserStore extends AbstractAppStore
-{
+class AppUserStore extends AbstractAppStore {
 	constructor() {
 		super();
 
@@ -21,8 +19,7 @@ class AppUserStore extends AbstractAppStore
 		const isMobile = Settings.appSettingsGet('mobile');
 
 		this.focusedState.subscribe((value) => {
-			switch (value)
-			{
+			switch (value) {
 				case Focused.MessageList:
 					keyScope(KeyState.MessageList);
 					if (isMobile) {
@@ -63,7 +60,6 @@ class AppUserStore extends AbstractAppStore
 	}
 
 	populate() {
-
 		super.populate();
 
 		this.projectHash(Settings.settingsGet('ProjectHash'));

@@ -1,9 +1,8 @@
-
 import _ from '_';
 
-import {UNUSED_OPTION_VALUE} from 'Common/Consts';
-import {isArray, isNormal, pInt, isUnd, noop} from 'Common/Utils';
-import {ClientSideKeyName, ServerFolderType} from 'Common/Enums';
+import { UNUSED_OPTION_VALUE } from 'Common/Consts';
+import { isArray, isNormal, pInt, isUnd, noop } from 'Common/Utils';
+import { ClientSideKeyName, ServerFolderType } from 'Common/Enums';
 import * as Cache from 'Common/Cache';
 
 import * as Settings from 'Storage/Settings';
@@ -14,11 +13,10 @@ import FolderStore from 'Stores/User/Folder';
 
 import Remote from 'Remote/User/Ajax';
 
-import {FolderModel} from 'Model/Folder';
-import {AbstractBasicPromises} from 'Promises/AbstractBasic';
+import { FolderModel } from 'Model/Folder';
+import { AbstractBasicPromises } from 'Promises/AbstractBasic';
 
-class PromisesUserPopulator extends AbstractBasicPromises
-{
+class PromisesUserPopulator extends AbstractBasicPromises {
 	/**
 	 * @param {string} sFullNameHash
 	 * @param {Array?} expandedFolders
@@ -33,8 +31,11 @@ class PromisesUserPopulator extends AbstractBasicPromises
 	 * @returns {string}
 	 */
 	normalizeFolder(sFolderFullNameRaw) {
-		return ('' === sFolderFullNameRaw || UNUSED_OPTION_VALUE === sFolderFullNameRaw ||
-			null !== Cache.getFolderFromCacheList(sFolderFullNameRaw)) ? sFolderFullNameRaw : '';
+		return '' === sFolderFullNameRaw ||
+			UNUSED_OPTION_VALUE === sFolderFullNameRaw ||
+			null !== Cache.getFolderFromCacheList(sFolderFullNameRaw)
+			? sFolderFullNameRaw
+			: '';
 	}
 
 	/**
@@ -44,61 +45,52 @@ class PromisesUserPopulator extends AbstractBasicPromises
 	 * @returns {Array}
 	 */
 	folderResponseParseRec(sNamespace, aFolders, expandedFolders) {
-
-		const
-			bDisplaySpecSetting = FolderStore.displaySpecSetting(),
+		const bDisplaySpecSetting = FolderStore.displaySpecSetting(),
 			aList = [];
 
 		_.each(aFolders, (oFolder) => {
-			if (oFolder)
-			{
+			if (oFolder) {
 				let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
-				if (!oCacheFolder)
-				{
+				if (!oCacheFolder) {
 					oCacheFolder = FolderModel.newInstanceFromJson(oFolder);
-					if (oCacheFolder)
-					{
+					if (oCacheFolder) {
 						Cache.setFolderToCacheList(oFolder.FullNameRaw, oCacheFolder);
 						Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, oFolder.FullNameRaw, oCacheFolder);
 					}
 				}
 
-				if (oCacheFolder)
-				{
-					if (bDisplaySpecSetting)
-					{
+				if (oCacheFolder) {
+					if (bDisplaySpecSetting) {
 						oCacheFolder.checkable(!!oFolder.Checkable);
-					}
-					else
-					{
+					} else {
 						oCacheFolder.checkable(true);
 					}
 
 					oCacheFolder.collapsed(!this.isFolderExpanded(oCacheFolder.fullNameHash, expandedFolders));
 
-					if (oFolder.Extended)
-					{
-						if (oFolder.Extended.Hash)
-						{
+					if (oFolder.Extended) {
+						if (oFolder.Extended.Hash) {
 							Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);
 						}
 
-						if (isNormal(oFolder.Extended.MessageCount))
-						{
+						if (isNormal(oFolder.Extended.MessageCount)) {
 							oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
 						}
 
-						if (isNormal(oFolder.Extended.MessageUnseenCount))
-						{
+						if (isNormal(oFolder.Extended.MessageUnseenCount)) {
 							oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
 						}
 					}
 
-					if (oFolder.SubFolders && 'Collection/FolderCollection' === oFolder.SubFolders['@Object'] &&
-						oFolder.SubFolders['@Collection'] && isArray(oFolder.SubFolders['@Collection']))
-					{
+					if (
+						oFolder.SubFolders &&
+						'Collection/FolderCollection' === oFolder.SubFolders['@Object'] &&
+						oFolder.SubFolders['@Collection'] &&
+						isArray(oFolder.SubFolders['@Collection'])
+					) {
 						oCacheFolder.subFolders(
-							this.folderResponseParseRec(sNamespace, oFolder.SubFolders['@Collection'], expandedFolders));
+							this.folderResponseParseRec(sNamespace, oFolder.SubFolders['@Collection'], expandedFolders)
+						);
 					}
 
 					aList.push(oCacheFolder);
@@ -110,29 +102,39 @@ class PromisesUserPopulator extends AbstractBasicPromises
 	}
 
 	foldersList(oData) {
-		if (oData && 'Collection/FolderCollection' === oData['@Object'] &&
-			oData['@Collection'] && isArray(oData['@Collection']))
-		{
-			const
-				expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders),
+		if (
+			oData &&
+			'Collection/FolderCollection' === oData['@Object'] &&
+			oData['@Collection'] &&
+			isArray(oData['@Collection'])
+		) {
+			const expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders),
 				cnt = pInt(oData.CountRec);
 
 			let limit = pInt(Settings.appSettingsGet('folderSpecLimit'));
-			limit = 100 < limit ? 100 : (10 > limit ? 10 : limit);
+			limit = 100 < limit ? 100 : 10 > limit ? 10 : limit;
 
 			FolderStore.displaySpecSetting(0 >= cnt || limit < cnt);
 
-			FolderStore.folderList(this.folderResponseParseRec(
-				isUnd(oData.Namespace) ? '' : oData.Namespace, oData['@Collection'], expandedFolders)); // @todo optimization required
+			FolderStore.folderList(
+				this.folderResponseParseRec(
+					isUnd(oData.Namespace) ? '' : oData.Namespace,
+					oData['@Collection'],
+					expandedFolders
+				)
+			); // @todo optimization required
 		}
 	}
 
 	foldersAdditionalParameters(oData) {
-		if (oData && oData && 'Collection/FolderCollection' === oData['@Object'] &&
-			oData['@Collection'] && isArray(oData['@Collection']))
-		{
-			if (!isUnd(oData.Namespace))
-			{
+		if (
+			oData &&
+			oData &&
+			'Collection/FolderCollection' === oData['@Object'] &&
+			oData['@Collection'] &&
+			isArray(oData['@Collection'])
+		) {
+			if (!isUnd(oData.Namespace)) {
 				FolderStore.namespace = oData.Namespace;
 			}
 
@@ -142,14 +144,17 @@ class PromisesUserPopulator extends AbstractBasicPromises
 
 			let update = false;
 
-			if (oData.SystemFolders && '' === '' +
-				Settings.settingsGet('SentFolder') +
-				Settings.settingsGet('DraftFolder') +
-				Settings.settingsGet('SpamFolder') +
-				Settings.settingsGet('TrashFolder') +
-				Settings.settingsGet('ArchiveFolder') +
-				Settings.settingsGet('NullFolder'))
-			{
+			if (
+				oData.SystemFolders &&
+				'' ===
+					'' +
+						Settings.settingsGet('SentFolder') +
+						Settings.settingsGet('DraftFolder') +
+						Settings.settingsGet('SpamFolder') +
+						Settings.settingsGet('TrashFolder') +
+						Settings.settingsGet('ArchiveFolder') +
+						Settings.settingsGet('NullFolder')
+			) {
 				Settings.settingsSet('SentFolder', oData.SystemFolders[ServerFolderType.SENT] || null);
 				Settings.settingsSet('DraftFolder', oData.SystemFolders[ServerFolderType.DRAFTS] || null);
 				Settings.settingsSet('SpamFolder', oData.SystemFolders[ServerFolderType.JUNK] || null);
@@ -165,8 +170,7 @@ class PromisesUserPopulator extends AbstractBasicPromises
 			FolderStore.trashFolder(this.normalizeFolder(Settings.settingsGet('TrashFolder')));
 			FolderStore.archiveFolder(this.normalizeFolder(Settings.settingsGet('ArchiveFolder')));
 
-			if (update)
-			{
+			if (update) {
 				Remote.saveSystemFolders(noop, {
 					SentFolder: FolderStore.sentFolder(),
 					DraftFolder: FolderStore.draftFolder(),

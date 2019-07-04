@@ -1,16 +1,13 @@
-
 import ko from 'ko';
-import {isUnd, trim, pInt} from 'Common/Utils';
-import {SaveSettingsStep} from 'Common/Enums';
-import {AbstractComponent} from 'Component/Abstract';
+import { isUnd, trim, pInt } from 'Common/Utils';
+import { SaveSettingsStep } from 'Common/Enums';
+import { AbstractComponent } from 'Component/Abstract';
 
-class AbstractInput extends AbstractComponent
-{
+class AbstractInput extends AbstractComponent {
 	/**
 	 * @param {Object} params
 	 */
 	constructor(params) {
-
 		super();
 
 		this.value = params.value || '';
@@ -28,32 +25,26 @@ class AbstractInput extends AbstractComponent
 		this.classForTrigger = ko.observable('');
 
 		this.className = ko.computed(() => {
-			const
-				size = ko.unwrap(this.size),
+			const size = ko.unwrap(this.size),
 				suffixValue = this.trigger ? ' ' + trim('settings-saved-trigger-input ' + this.classForTrigger()) : '';
 			return (0 < size ? 'span' + size : '') + suffixValue;
 		});
 
-		if (!isUnd(params.width) && params.element)
-		{
+		if (!isUnd(params.width) && params.element) {
 			params.element.find('input,select,textarea').css('width', params.width);
 		}
 
 		this.disposable.push(this.className);
 
-		if (this.trigger)
-		{
+		if (this.trigger) {
 			this.setTriggerState(this.trigger());
 
-			this.disposable.push(
-				this.trigger.subscribe(this.setTriggerState, this)
-			);
+			this.disposable.push(this.trigger.subscribe(this.setTriggerState, this));
 		}
 	}
 
 	setTriggerState(value) {
-		switch (pInt(value))
-		{
+		switch (pInt(value)) {
 			case SaveSettingsStep.TrueResult:
 				this.classForTrigger('success');
 				break;
@@ -67,4 +58,4 @@ class AbstractInput extends AbstractComponent
 	}
 }
 
-export {AbstractInput, AbstractInput as default};
+export { AbstractInput, AbstractInput as default };

@@ -1,29 +1,28 @@
-
 import ko from 'ko';
-import {isArray} from 'Common/Utils';
+import { isArray } from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 
-class LanguageStore
-{
+class LanguageStore {
 	constructor() {
 		this.languages = ko.observableArray([]);
 		this.languagesAdmin = ko.observableArray([]);
 
-		this.language = ko.observable('')
-			.extend({limitedList: this.languages})
-			.extend({reversible: true});
+		this.language = ko
+			.observable('')
+			.extend({ limitedList: this.languages })
+			.extend({ reversible: true });
 
-		this.languageAdmin = ko.observable('')
-			.extend({limitedList: this.languagesAdmin})
-			.extend({reversible: true});
+		this.languageAdmin = ko
+			.observable('')
+			.extend({ limitedList: this.languagesAdmin })
+			.extend({ reversible: true });
 
 		this.userLanguage = ko.observable('');
 		this.userLanguageAdmin = ko.observable('');
 	}
 
 	populate() {
-		const
-			aLanguages = Settings.appSettingsGet('languages'),
+		const aLanguages = Settings.appSettingsGet('languages'),
 			aLanguagesAdmin = Settings.appSettingsGet('languagesAdmin');
 
 		this.languages(isArray(aLanguages) ? aLanguages : []);

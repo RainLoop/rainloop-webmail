@@ -1,17 +1,15 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {StorageResultType, Notification} from 'Common/Enums';
-import {getNotificationFromResponse, i18n} from 'Common/Translator';
+import { StorageResultType, Notification } from 'Common/Enums';
+import { getNotificationFromResponse, i18n } from 'Common/Translator';
 
 import Remote from 'Remote/User/Ajax';
 
-import {getApp} from 'Helper/Apps/User';
-import {command} from 'Knoin/Knoin';
+import { getApp } from 'Helper/Apps/User';
+import { command } from 'Knoin/Knoin';
 
-class ChangePasswordUserSettings
-{
+class ChangePasswordUserSettings {
 	constructor() {
 		this.changeProcess = ko.observable(false);
 
@@ -46,15 +44,15 @@ class ChangePasswordUserSettings
 		this.onChangePasswordResponse = _.bind(this.onChangePasswordResponse, this);
 	}
 
-	@command((self) => !self.changeProcess() && '' !== self.currentPassword() && '' !== self.newPassword() && '' !== self.newPassword2())
+	@command(
+		(self) =>
+			!self.changeProcess() && '' !== self.currentPassword() && '' !== self.newPassword() && '' !== self.newPassword2()
+	)
 	saveNewPasswordCommand() {
-		if (this.newPassword() !== this.newPassword2())
-		{
+		if (this.newPassword() !== this.newPassword2()) {
 			this.passwordMismatch(true);
 			this.errorDescription(i18n('SETTINGS_CHANGE_PASSWORD/ERROR_PASSWORD_MISMATCH'));
-		}
-		else
-		{
+		} else {
 			this.changeProcess(true);
 
 			this.passwordUpdateError(false);
@@ -83,8 +81,7 @@ class ChangePasswordUserSettings
 		this.errorDescription('');
 		this.currentPassword.error(false);
 
-		if (StorageResultType.Success === result && data && data.Result)
-		{
+		if (StorageResultType.Success === result && data && data.Result) {
 			this.currentPassword('');
 			this.newPassword('');
 			this.newPassword2('');
@@ -93,11 +90,8 @@ class ChangePasswordUserSettings
 			this.currentPassword.error(false);
 
 			getApp().setClientSideToken(data.Result);
-		}
-		else
-		{
-			if (data && Notification.CurrentPasswordIncorrect === data.ErrorCode)
-			{
+		} else {
+			if (data && Notification.CurrentPasswordIncorrect === data.ErrorCode) {
 				this.currentPassword.error(true);
 			}
 
@@ -107,4 +101,4 @@ class ChangePasswordUserSettings
 	}
 }
 
-export {ChangePasswordUserSettings, ChangePasswordUserSettings as default};
+export { ChangePasswordUserSettings, ChangePasswordUserSettings as default };

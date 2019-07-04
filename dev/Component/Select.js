@@ -1,16 +1,13 @@
+import { i18n } from 'Common/Translator';
+import { defautOptionsAfterRender } from 'Common/Utils';
+import { componentExportHelper } from 'Component/Abstract';
+import { AbstractInput } from 'Component/AbstractInput';
 
-import {i18n} from 'Common/Translator';
-import {defautOptionsAfterRender} from 'Common/Utils';
-import {componentExportHelper} from 'Component/Abstract';
-import {AbstractInput} from 'Component/AbstractInput';
-
-class SelectComponent extends AbstractInput
-{
+class SelectComponent extends AbstractInput {
 	/**
 	 * @param {Object} params
 	 */
 	constructor(params) {
-
 		super(params);
 
 		this.options = params.options || '';
@@ -19,8 +16,7 @@ class SelectComponent extends AbstractInput
 		this.optionsValue = params.optionsValue || null;
 		this.optionsCaption = params.optionsCaption || null;
 
-		if (this.optionsCaption)
-		{
+		if (this.optionsCaption) {
 			this.optionsCaption = i18n(this.optionsCaption);
 		}
 

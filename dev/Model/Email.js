@@ -1,10 +1,8 @@
-
 import _ from '_';
 import addressparser from 'emailjs-addressparser';
-import {trim, encodeHtml, isNonEmptyArray} from 'Common/Utils';
+import { trim, encodeHtml, isNonEmptyArray } from 'Common/Utils';
 
-class EmailModel
-{
+class EmailModel {
 	email = '';
 	name = '';
 	dkimStatus = '';
@@ -16,8 +14,7 @@ class EmailModel
 	 * @param {string=} dkimStatus = 'none'
 	 * @param {string=} dkimValue = ''
 	 */
-	constructor(email = '', name = '', dkimStatus = 'none', dkimValue = '')
-	{
+	constructor(email = '', name = '', dkimStatus = 'none', dkimValue = '') {
 		this.email = email;
 		this.name = name;
 		this.dkimStatus = dkimStatus;
@@ -66,8 +63,7 @@ class EmailModel
 	 * @returns {void}
 	 */
 	clearDuplicateName() {
-		if (this.name === this.email)
-		{
+		if (this.name === this.email) {
 			this.name = '';
 		}
 	}
@@ -86,8 +82,7 @@ class EmailModel
 	 */
 	initByJson(json) {
 		let result = false;
-		if (json && 'Object/Email' === json['@Object'])
-		{
+		if (json && 'Object/Email' === json['@Object']) {
 			this.name = trim(json.Name);
 			this.email = trim(json.Email);
 			this.dkimStatus = trim(json.DkimStatus || '');
@@ -108,24 +103,31 @@ class EmailModel
 	 */
 	toLine(friendlyView, wrapWithLink = false, useEncodeHtml = false) {
 		let result = '';
-		if ('' !== this.email)
-		{
-			if (friendlyView && '' !== this.name)
-			{
-				result = wrapWithLink ? '<a href="mailto:' + encodeHtml(this.email) + '?to=' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
-					'" target="_blank" tabindex="-1">' + encodeHtml(this.name) + '</a>' : (useEncodeHtml ? encodeHtml(this.name) : this.name);
+		if ('' !== this.email) {
+			if (friendlyView && '' !== this.name) {
+				result = wrapWithLink
+					? '<a href="mailto:' +
+					  encodeHtml(this.email) +
+					  '?to=' +
+					  encodeHtml('"' + this.name + '" <' + this.email + '>') +
+					  '" target="_blank" tabindex="-1">' +
+					  encodeHtml(this.name) +
+					  '</a>'
+					: useEncodeHtml
+					? encodeHtml(this.name)
+					: this.name;
 				// result = wrapWithLink ? '<a href="mailto:' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
 				// 	'" target="_blank" tabindex="-1">' + encodeHtml(this.name) + '</a>' : (useEncodeHtml ? encodeHtml(this.name) : this.name);
-			}
-			else
-			{
+			} else {
 				result = this.email;
-				if ('' !== this.name)
-				{
-					if (wrapWithLink)
-					{
-						result = encodeHtml('"' + this.name + '" <') + '<a href="mailto:' +
-							encodeHtml(this.email) + '?to=' + encodeHtml('"' + this.name + '" <' + this.email + '>') +
+				if ('' !== this.name) {
+					if (wrapWithLink) {
+						result =
+							encodeHtml('"' + this.name + '" <') +
+							'<a href="mailto:' +
+							encodeHtml(this.email) +
+							'?to=' +
+							encodeHtml('"' + this.name + '" <' + this.email + '>') +
 							'" target="_blank" tabindex="-1">' +
 							encodeHtml(result) +
 							'</a>' +
@@ -136,19 +138,19 @@ class EmailModel
 						// 	encodeHtml(result) +
 						// 	'</a>' +
 						// 	encodeHtml('>');
-					}
-					else
-					{
+					} else {
 						result = '"' + this.name + '" <' + result + '>';
-						if (useEncodeHtml)
-						{
+						if (useEncodeHtml) {
 							result = encodeHtml(result);
 						}
 					}
-				}
-				else if (wrapWithLink)
-				{
-					result = '<a href="mailto:' + encodeHtml(this.email) + '" target="_blank" tabindex="-1">' + encodeHtml(this.email) + '</a>';
+				} else if (wrapWithLink) {
+					result =
+						'<a href="mailto:' +
+						encodeHtml(this.email) +
+						'" target="_blank" tabindex="-1">' +
+						encodeHtml(this.email) +
+						'</a>';
 				}
 			}
 		}
@@ -158,15 +160,13 @@ class EmailModel
 
 	static splitEmailLine(line) {
 		const parsedResult = addressparser(line);
-		if (isNonEmptyArray(parsedResult))
-		{
+		if (isNonEmptyArray(parsedResult)) {
 			const result = [];
 			let exists = false;
 			parsedResult.forEach((item) => {
-				const address = item.address ? new EmailModel(
-					item.address.replace(/^[<]+(.*)[>]+$/g, '$1'),
-					item.name || ''
-				) : null;
+				const address = item.address
+					? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '')
+					: null;
 
 				if (address && address.email) {
 					exists = true;
@@ -183,14 +183,12 @@ class EmailModel
 
 	static parseEmailLine(line) {
 		const parsedResult = addressparser(line);
-		if (isNonEmptyArray(parsedResult))
-		{
-			return _.compact(parsedResult.map(
-				(item) => (item.address ? new EmailModel(
-					item.address.replace(/^[<]+(.*)[>]+$/g, '$1'),
-					item.name || ''
-				) : null)
-			));
+		if (isNonEmptyArray(parsedResult)) {
+			return _.compact(
+				parsedResult.map((item) =>
+					item.address ? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '') : null
+				)
+			);
 		}
 
 		return [];
@@ -202,14 +200,12 @@ class EmailModel
 	 */
 	parse(emailAddress) {
 		emailAddress = trim(emailAddress);
-		if ('' === emailAddress)
-		{
+		if ('' === emailAddress) {
 			return false;
 		}
 
 		const result = addressparser(emailAddress);
-		if (isNonEmptyArray(result) && result[0])
-		{
+		if (isNonEmptyArray(result) && result[0]) {
 			this.name = result[0].name || '';
 			this.email = result[0].address || '';
 			this.clearDuplicateName();
@@ -221,4 +217,4 @@ class EmailModel
 	}
 }
 
-export {EmailModel, EmailModel as default};
+export { EmailModel, EmailModel as default };

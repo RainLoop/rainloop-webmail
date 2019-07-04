@@ -1,22 +1,19 @@
-
 import _ from '_';
 import $ from '$';
 import ko from 'ko';
 
-import {VIEW_MODELS} from 'Common/Globals';
-import {delegateRun, windowResize, log, isUnd, pString} from 'Common/Utils';
-import {settings} from 'Common/Links';
+import { VIEW_MODELS } from 'Common/Globals';
+import { delegateRun, windowResize, log, isUnd, pString } from 'Common/Utils';
+import { settings } from 'Common/Links';
 
-import {setHash} from 'Knoin/Knoin';
-import {AbstractScreen} from 'Knoin/AbstractScreen';
+import { setHash } from 'Knoin/Knoin';
+import { AbstractScreen } from 'Knoin/AbstractScreen';
 
-class AbstractSettingsScreen extends AbstractScreen
-{
+class AbstractSettingsScreen extends AbstractScreen {
 	/**
 	 * @param {Array} viewModels
 	 */
-	constructor(viewModels)
-	{
+	constructor(viewModels) {
 		super('settings', viewModels);
 
 		this.menu = ko.observableArray([]);
@@ -31,51 +28,57 @@ class AbstractSettingsScreen extends AbstractScreen
 	 * @param {Function=} fCallback
 	 */
 	setupSettings(fCallback = null) {
-		if (fCallback)
-		{
+		if (fCallback) {
 			fCallback();
 		}
 	}
 
 	onRoute(subName) {
-		let
-			settingsScreen = null,
+		let settingsScreen = null,
 			RoutedSettingsViewModel = null,
 			viewModelPlace = null,
 			viewModelDom = null;
 
-		RoutedSettingsViewModel = _.find(VIEW_MODELS.settings,
-			(SettingsViewModel) => SettingsViewModel && SettingsViewModel.__rlSettingsData && subName === SettingsViewModel.__rlSettingsData.Route
+		RoutedSettingsViewModel = _.find(
+			VIEW_MODELS.settings,
+			(SettingsViewModel) =>
+				SettingsViewModel && SettingsViewModel.__rlSettingsData && subName === SettingsViewModel.__rlSettingsData.Route
 		);
 
-		if (RoutedSettingsViewModel)
-		{
-			if (_.find(VIEW_MODELS['settings-removed'], (DisabledSettingsViewModel) => DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel))
-			{
+		if (RoutedSettingsViewModel) {
+			if (
+				_.find(
+					VIEW_MODELS['settings-removed'],
+					(DisabledSettingsViewModel) =>
+						DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel
+				)
+			) {
 				RoutedSettingsViewModel = null;
 			}
 
-			if (RoutedSettingsViewModel && _.find(VIEW_MODELS['settings-disabled'],
-				(DisabledSettingsViewModel) => DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel))
-			{
+			if (
+				RoutedSettingsViewModel &&
+				_.find(
+					VIEW_MODELS['settings-disabled'],
+					(DisabledSettingsViewModel) =>
+						DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel
+				)
+			) {
 				RoutedSettingsViewModel = null;
 			}
 		}
 
-		if (RoutedSettingsViewModel)
-		{
-			if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm)
-			{
+		if (RoutedSettingsViewModel) {
+			if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm) {
 				settingsScreen = RoutedSettingsViewModel.__vm;
-			}
-			else
-			{
+			} else {
 				viewModelPlace = this.oViewModelPlace;
-				if (viewModelPlace && 1 === viewModelPlace.length)
-				{
+				if (viewModelPlace && 1 === viewModelPlace.length) {
 					settingsScreen = new RoutedSettingsViewModel();
 
-					viewModelDom = $('<div></div>').addClass('rl-settings-view-model').hide();
+					viewModelDom = $('<div></div>')
+						.addClass('rl-settings-view-model')
+						.hide();
 					viewModelDom.appendTo(viewModelPlace);
 
 					settingsScreen.viewModelDom = viewModelDom;
@@ -86,26 +89,26 @@ class AbstractSettingsScreen extends AbstractScreen
 					RoutedSettingsViewModel.__builded = true;
 					RoutedSettingsViewModel.__vm = settingsScreen;
 
-					const tmpl = {name: RoutedSettingsViewModel.__rlSettingsData.Template};
-					ko.applyBindingAccessorsToNode(viewModelDom[0], {
-						translatorInit: true,
-						template: () => tmpl
-					}, settingsScreen);
+					const tmpl = { name: RoutedSettingsViewModel.__rlSettingsData.Template };
+					ko.applyBindingAccessorsToNode(
+						viewModelDom[0],
+						{
+							translatorInit: true,
+							template: () => tmpl
+						},
+						settingsScreen
+					);
 
 					delegateRun(settingsScreen, 'onBuild', [viewModelDom]);
-				}
-				else
-				{
+				} else {
 					log('Cannot find sub settings view model position: SettingsSubScreen');
 				}
 			}
 
-			if (settingsScreen)
-			{
+			if (settingsScreen) {
 				_.defer(() => {
 					// hide
-					if (this.oCurrentSubScreen)
-					{
+					if (this.oCurrentSubScreen) {
 						delegateRun(this.oCurrentSubScreen, 'onHide');
 						this.oCurrentSubScreen.viewModelDom.hide();
 					}
@@ -114,15 +117,18 @@ class AbstractSettingsScreen extends AbstractScreen
 					this.oCurrentSubScreen = settingsScreen;
 
 					// show
-					if (this.oCurrentSubScreen)
-					{
+					if (this.oCurrentSubScreen) {
 						delegateRun(this.oCurrentSubScreen, 'onBeforeShow');
 						this.oCurrentSubScreen.viewModelDom.show();
 						delegateRun(this.oCurrentSubScreen, 'onShow');
 						delegateRun(this.oCurrentSubScreen, 'onShowWithDelay', [], 200);
 
 						_.each(this.menu(), (item) => {
-							item.selected(settingsScreen && settingsScreen.__rlSettingsData && item.route === settingsScreen.__rlSettingsData.Route);
+							item.selected(
+								settingsScreen &&
+									settingsScreen.__rlSettingsData &&
+									item.route === settingsScreen.__rlSettingsData.Route
+							);
 						});
 
 						$('#rl-content .b-settings .b-content .content').scrollTop(0);
@@ -132,16 +138,13 @@ class AbstractSettingsScreen extends AbstractScreen
 					windowResize();
 				});
 			}
-		}
-		else
-		{
+		} else {
 			setHash(settings(), false, true);
 		}
 	}
 
 	onHide() {
-		if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom)
-		{
+		if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom) {
 			delegateRun(this.oCurrentSubScreen, 'onHide');
 			this.oCurrentSubScreen.viewModelDom.hide();
 		}
@@ -149,15 +152,22 @@ class AbstractSettingsScreen extends AbstractScreen
 
 	onBuild() {
 		_.each(VIEW_MODELS.settings, (SettingsViewModel) => {
-			if (SettingsViewModel && SettingsViewModel.__rlSettingsData && !_.find(VIEW_MODELS['settings-removed'],
-				(RemoveSettingsViewModel) => RemoveSettingsViewModel && RemoveSettingsViewModel === SettingsViewModel))
-			{
+			if (
+				SettingsViewModel &&
+				SettingsViewModel.__rlSettingsData &&
+				!_.find(
+					VIEW_MODELS['settings-removed'],
+					(RemoveSettingsViewModel) => RemoveSettingsViewModel && RemoveSettingsViewModel === SettingsViewModel
+				)
+			) {
 				this.menu.push({
 					route: SettingsViewModel.__rlSettingsData.Route,
 					label: SettingsViewModel.__rlSettingsData.Label,
 					selected: ko.observable(false),
-					disabled: !!_.find(VIEW_MODELS['settings-disabled'],
-						(DisabledSettingsViewModel) => DisabledSettingsViewModel && DisabledSettingsViewModel === SettingsViewModel)
+					disabled: !!_.find(
+						VIEW_MODELS['settings-disabled'],
+						(DisabledSettingsViewModel) => DisabledSettingsViewModel && DisabledSettingsViewModel === SettingsViewModel
+					)
 				});
 			}
 		});
@@ -166,12 +176,13 @@ class AbstractSettingsScreen extends AbstractScreen
 	}
 
 	routes() {
-		const
-			DefaultViewModel = _.find(
+		const DefaultViewModel = _.find(
 				VIEW_MODELS.settings,
-				(SettingsViewModel) => SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData.IsDefault
+				(SettingsViewModel) =>
+					SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData.IsDefault
 			),
-			defaultRoute = DefaultViewModel && DefaultViewModel.__rlSettingsData ? DefaultViewModel.__rlSettingsData.Route : 'general',
+			defaultRoute =
+				DefaultViewModel && DefaultViewModel.__rlSettingsData ? DefaultViewModel.__rlSettingsData.Route : 'general',
 			rules = {
 				subname: /^(.*)$/,
 				normalize_: (rquest, vals) => {
@@ -180,12 +191,8 @@ class AbstractSettingsScreen extends AbstractScreen
 				}
 			};
 
-		return [
-			['{subname}/', rules],
-			['{subname}', rules],
-			['', rules]
-		];
+		return [['{subname}/', rules], ['{subname}', rules], ['', rules]];
 	}
 }
 
-export {AbstractSettingsScreen, AbstractSettingsScreen as default};
+export { AbstractSettingsScreen, AbstractSettingsScreen as default };

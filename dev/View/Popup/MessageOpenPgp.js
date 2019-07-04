@@ -1,21 +1,19 @@
-
 import _ from '_';
 import ko from 'ko';
 import key from 'key';
 import $ from '$';
 
-import {pString, log} from 'Common/Utils';
-import {KeyState, Magics} from 'Common/Enums';
+import { pString, log } from 'Common/Utils';
+import { KeyState, Magics } from 'Common/Enums';
 
-import {popup, command} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup, command } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/MessageOpenPgp',
 	templateID: 'PopupsMessageOpenPgp'
 })
-class MessageOpenPgpPopupView extends AbstractViewNext
-{
+class MessageOpenPgpPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -37,44 +35,31 @@ class MessageOpenPgpPopupView extends AbstractViewNext
 
 	@command((self) => !self.submitRequest())
 	doCommand() {
-
 		this.submitRequest(true);
 
 		_.delay(() => {
-
 			let privateKey = null;
 
-			try
-			{
-				if (this.resultCallback && this.selectedKey())
-				{
+			try {
+				if (this.resultCallback && this.selectedKey()) {
 					const privateKeys = this.selectedKey().getNativeKeys();
 					privateKey = privateKeys && privateKeys[0] ? privateKeys[0] : null;
 
-					if (privateKey)
-					{
-						try
-						{
-							if (!privateKey.decrypt(pString(this.password())))
-							{
+					if (privateKey) {
+						try {
+							if (!privateKey.decrypt(pString(this.password()))) {
 								log('Error: Private key cannot be decrypted');
 								privateKey = null;
 							}
-						}
-						catch (e)
-						{
+						} catch (e) {
 							log(e);
 							privateKey = null;
 						}
-					}
-					else
-					{
+					} else {
 						log('Error: Private key cannot be found');
 					}
 				}
-			}
-			catch (e)
-			{
+			} catch (e) {
 				log(e);
 				privateKey = null;
 			}
@@ -83,7 +68,6 @@ class MessageOpenPgpPopupView extends AbstractViewNext
 
 			this.cancelCommand();
 			this.resultCallback(privateKey);
-
 		}, Magics.Time100ms);
 	}
 
@@ -103,9 +87,7 @@ class MessageOpenPgpPopupView extends AbstractViewNext
 
 	onBuild(oDom) {
 		key('tab,shift+tab', KeyState.PopupMessageOpenPGP, () => {
-
-			switch (true)
-			{
+			switch (true) {
 				case this.password.focus():
 					this.buttonFocus(true);
 					break;
@@ -116,26 +98,27 @@ class MessageOpenPgpPopupView extends AbstractViewNext
 			}
 
 			return false;
-
 		});
 
 		const self = this;
 
-		oDom
-			.on('click', '.key-list__item', function() { // eslint-disable-line prefer-arrow-callback
+		oDom.on('click', '.key-list__item', function() {
+			// eslint-disable-line prefer-arrow-callback
 
-				oDom.find('.key-list__item .key-list__item__radio')
-					.addClass('icon-radio-unchecked')
-					.removeClass('icon-radio-checked');
+			oDom
+				.find('.key-list__item .key-list__item__radio')
+				.addClass('icon-radio-unchecked')
+				.removeClass('icon-radio-checked');
 
-				$(this).find('.key-list__item__radio') // eslint-disable-line no-invalid-this
-					.removeClass('icon-radio-unchecked')
-					.addClass('icon-radio-checked');
+			$(this)
+				.find('.key-list__item__radio') // eslint-disable-line no-invalid-this
+				.removeClass('icon-radio-unchecked')
+				.addClass('icon-radio-checked');
 
-				self.selectedKey(ko.dataFor(this)); // eslint-disable-line no-invalid-this
+			self.selectedKey(ko.dataFor(this)); // eslint-disable-line no-invalid-this
 
-				self.password.focus(true);
-			});
+			self.password.focus(true);
+		});
 	}
 
 	onHideWithDelay() {
@@ -144,7 +127,7 @@ class MessageOpenPgpPopupView extends AbstractViewNext
 
 	onShowWithDelay() {
 		this.password.focus(true);
-	//		this.buttonFocus(true);
+		//		this.buttonFocus(true);
 	}
 
 	onShow(fCallback, privateKeys) {
@@ -153,11 +136,13 @@ class MessageOpenPgpPopupView extends AbstractViewNext
 		this.resultCallback = fCallback;
 		this.privateKeys(privateKeys);
 
-		if (this.viewModelDom)
-		{
-			this.viewModelDom.find('.key-list__item').first().click();
+		if (this.viewModelDom) {
+			this.viewModelDom
+				.find('.key-list__item')
+				.first()
+				.click();
 		}
 	}
 }
 
-export {MessageOpenPgpPopupView, MessageOpenPgpPopupView as default};
+export { MessageOpenPgpPopupView, MessageOpenPgpPopupView as default };

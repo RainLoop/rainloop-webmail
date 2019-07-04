@@ -1,20 +1,16 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {MESSAGES_PER_PAGE_VALUES} from 'Common/Consts';
-import {bAnimationSupported} from 'Common/Globals';
+import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
+import { bAnimationSupported } from 'Common/Globals';
 
-import {SaveSettingsStep, Magics, EditorDefaultType, Layout} from 'Common/Enums';
+import { SaveSettingsStep, Magics, EditorDefaultType, Layout } from 'Common/Enums';
 
-import {
-	settingsSaveHelperSimpleFunction,
-	convertLangName, isArray, timeOutAction, boolToAjax
-} from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, convertLangName, isArray, timeOutAction, boolToAjax } from 'Common/Utils';
 
-import {i18n, trigger as translatorTrigger, reload as translatorReload} from 'Common/Translator';
+import { i18n, trigger as translatorTrigger, reload as translatorReload } from 'Common/Translator';
 
-import {showScreenPopup} from 'Knoin/Knoin';
+import { showScreenPopup } from 'Knoin/Knoin';
 
 import AppStore from 'Stores/User/App';
 import LanguageStore from 'Stores/Language';
@@ -25,8 +21,7 @@ import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Ajax';
 
-class GeneralUserSettings
-{
+class GeneralUserSettings {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
@@ -52,7 +47,7 @@ class GeneralUserSettings
 		this.allowLanguagesOnSettings = AppStore.allowLanguagesOnSettings;
 
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
-		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({throttle: Magics.Time100ms});
+		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: Magics.Time100ms });
 
 		this.mppTrigger = ko.observable(SaveSettingsStep.Idle);
 		this.editorDefaultTypeTrigger = ko.observable(SaveSettingsStep.Idle);
@@ -75,27 +70,26 @@ class GeneralUserSettings
 		this.editorDefaultTypes = ko.computed(() => {
 			translatorTrigger();
 			return [
-				{'id': EditorDefaultType.Html, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML')},
-				{'id': EditorDefaultType.Plain, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN')},
-				{'id': EditorDefaultType.HtmlForced, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED')},
-				{'id': EditorDefaultType.PlainForced, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED')}
+				{ 'id': EditorDefaultType.Html, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML') },
+				{ 'id': EditorDefaultType.Plain, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN') },
+				{ 'id': EditorDefaultType.HtmlForced, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED') },
+				{ 'id': EditorDefaultType.PlainForced, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED') }
 			];
 		});
 
 		this.layoutTypes = ko.computed(() => {
 			translatorTrigger();
 			return [
-				{'id': Layout.NoPreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT')},
-				{'id': Layout.SidePreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT')},
-				{'id': Layout.BottomPreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT')}
+				{ 'id': Layout.NoPreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT') },
+				{ 'id': Layout.SidePreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT') },
+				{ 'id': Layout.BottomPreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT') }
 			];
 		});
 	}
 
 	editMainIdentity() {
 		const identity = this.identityMain();
-		if (identity)
-		{
+		if (identity) {
 			showScreenPopup(require('View/Popup/Identity'), [identity]);
 		}
 	}
@@ -106,8 +100,7 @@ class GeneralUserSettings
 
 	onBuild() {
 		_.delay(() => {
-			const
-				f0 = settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this),
+			const f0 = settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this),
 				f1 = settingsSaveHelperSimpleFunction(this.mppTrigger, this),
 				f2 = settingsSaveHelperSimpleFunction(this.layoutTrigger, this),
 				fReloadLanguageHelper = (saveSettingsStep) => () => {
@@ -117,15 +110,13 @@ class GeneralUserSettings
 
 			this.language.subscribe((value) => {
 				this.languageTrigger(SaveSettingsStep.Animate);
-				translatorReload(false, value).then(
-					fReloadLanguageHelper(SaveSettingsStep.TrueResult),
-					fReloadLanguageHelper(SaveSettingsStep.FalseResult)
-				).then(() => {
-					Remote.saveSettings(null, {
-						'Language': value
+				translatorReload(false, value)
+					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
+					.then(() => {
+						Remote.saveSettings(null, {
+							'Language': value
+						});
 					});
-				});
-
 			});
 
 			this.editorDefaultType.subscribe(Remote.saveSettingsHelper('EditorDefaultType', null, f0));
@@ -135,27 +126,39 @@ class GeneralUserSettings
 			this.useCheckboxesInList.subscribe(Remote.saveSettingsHelper('UseCheckboxesInList', boolToAjax));
 
 			this.enableDesktopNotification.subscribe((value) => {
-				timeOutAction('SaveDesktopNotifications', () => {
-					Remote.saveSettings(null, {
-						'DesktopNotifications': boolToAjax(value)
-					});
-				}, Magics.Time3s);
+				timeOutAction(
+					'SaveDesktopNotifications',
+					() => {
+						Remote.saveSettings(null, {
+							'DesktopNotifications': boolToAjax(value)
+						});
+					},
+					Magics.Time3s
+				);
 			});
 
 			this.enableSoundNotification.subscribe((value) => {
-				timeOutAction('SaveSoundNotification', () => {
-					Remote.saveSettings(null, {
-						'SoundNotification': boolToAjax(value)
-					});
-				}, Magics.Time3s);
+				timeOutAction(
+					'SaveSoundNotification',
+					() => {
+						Remote.saveSettings(null, {
+							'SoundNotification': boolToAjax(value)
+						});
+					},
+					Magics.Time3s
+				);
 			});
 
 			this.replySameFolder.subscribe((value) => {
-				timeOutAction('SaveReplySameFolder', () => {
-					Remote.saveSettings(null, {
-						'ReplySameFolder': boolToAjax(value)
-					});
-				}, Magics.Time3s);
+				timeOutAction(
+					'SaveReplySameFolder',
+					() => {
+						Remote.saveSettings(null, {
+							'ReplySameFolder': boolToAjax(value)
+						});
+					},
+					Magics.Time3s
+				);
 			});
 
 			this.useThreads.subscribe((value) => {
@@ -179,10 +182,8 @@ class GeneralUserSettings
 	}
 
 	selectLanguage() {
-		showScreenPopup(require('View/Popup/Languages'), [
-			this.language, this.languages(), LanguageStore.userLanguage()
-		]);
+		showScreenPopup(require('View/Popup/Languages'), [this.language, this.languages(), LanguageStore.userLanguage()]);
 	}
 }
 
-export {GeneralUserSettings, GeneralUserSettings as default};
+export { GeneralUserSettings, GeneralUserSettings as default };

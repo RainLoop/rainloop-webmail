@@ -1,32 +1,32 @@
-
 import window from 'window';
 import ko from 'ko';
 
-import {MESSAGES_PER_PAGE, MESSAGES_PER_PAGE_VALUES} from 'Common/Consts';
-import {Layout, EditorDefaultType, Magics} from 'Common/Enums';
-import {$html} from 'Common/Globals';
-import {pInt} from 'Common/Utils';
+import { MESSAGES_PER_PAGE, MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
+import { Layout, EditorDefaultType, Magics } from 'Common/Enums';
+import { $html } from 'Common/Globals';
+import { pInt } from 'Common/Utils';
 import * as Events from 'Common/Events';
 
 import * as Settings from 'Storage/Settings';
 
-class SettingsUserStore
-{
+class SettingsUserStore {
 	constructor() {
-
 		this.iAutoLogoutTimer = 0;
 
-		this.layout = ko.observable(Layout.SidePreview)
-			.extend({limitedList: [Layout.SidePreview, Layout.BottomPreview, Layout.NoPreview]});
+		this.layout = ko
+			.observable(Layout.SidePreview)
+			.extend({ limitedList: [Layout.SidePreview, Layout.BottomPreview, Layout.NoPreview] });
 
-		this.editorDefaultType = ko.observable(EditorDefaultType.Html)
-			.extend({limitedList: [
-				EditorDefaultType.Html, EditorDefaultType.Plain,
-				EditorDefaultType.HtmlForced, EditorDefaultType.PlainForced
-			]});
+		this.editorDefaultType = ko.observable(EditorDefaultType.Html).extend({
+			limitedList: [
+				EditorDefaultType.Html,
+				EditorDefaultType.Plain,
+				EditorDefaultType.HtmlForced,
+				EditorDefaultType.PlainForced
+			]
+		});
 
-		this.messagesPerPage = ko.observable(MESSAGES_PER_PAGE)
-			.extend({limitedList: MESSAGES_PER_PAGE_VALUES});
+		this.messagesPerPage = ko.observable(MESSAGES_PER_PAGE).extend({ limitedList: MESSAGES_PER_PAGE_VALUES });
 
 		this.showImages = ko.observable(false);
 		this.useCheckboxesInList = ko.observable(true);
@@ -68,8 +68,7 @@ class SettingsUserStore
 
 		Events.sub('rl.auto-logout-refresh', () => {
 			window.clearTimeout(this.iAutoLogoutTimer);
-			if (0 < this.autoLogout() && !Settings.settingsGet('AccountSignMe'))
-			{
+			if (0 < this.autoLogout() && !Settings.settingsGet('AccountSignMe')) {
 				this.iAutoLogoutTimer = window.setTimeout(() => {
 					Events.pub('rl.auto-logout');
 				}, this.autoLogout() * Magics.Time1m);

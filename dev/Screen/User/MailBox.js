@@ -1,11 +1,10 @@
-
 import _ from '_';
 
-import {Focused, Capa, ClientSideKeyName, Magics} from 'Common/Enums';
-import {$html, leftPanelDisabled, leftPanelType, moveAction, bMobileDevice} from 'Common/Globals';
-import {pString, pInt, decodeURI, windowResizeCallback} from 'Common/Utils';
-import {getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName} from 'Common/Cache';
-import {i18n} from 'Common/Translator';
+import { Focused, Capa, ClientSideKeyName, Magics } from 'Common/Enums';
+import { $html, leftPanelDisabled, leftPanelType, moveAction, bMobileDevice } from 'Common/Globals';
+import { pString, pInt, decodeURI, windowResizeCallback } from 'Common/Utils';
+import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
+import { i18n } from 'Common/Translator';
 
 import * as Events from 'Common/Events';
 import * as Settings from 'Storage/Settings';
@@ -16,19 +15,18 @@ import SettingsStore from 'Stores/User/Settings';
 import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
 
-import {SystemDropDownMailBoxUserView} from 'View/User/MailBox/SystemDropDown';
-import {FolderListMailBoxUserView} from 'View/User/MailBox/FolderList';
-import {MessageListMailBoxUserView} from 'View/User/MailBox/MessageList';
-import {MessageViewMailBoxUserView} from 'View/User/MailBox/MessageView';
+import { SystemDropDownMailBoxUserView } from 'View/User/MailBox/SystemDropDown';
+import { FolderListMailBoxUserView } from 'View/User/MailBox/FolderList';
+import { MessageListMailBoxUserView } from 'View/User/MailBox/MessageList';
+import { MessageViewMailBoxUserView } from 'View/User/MailBox/MessageView';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {warmUpScreenPopup} from 'Knoin/Knoin';
+import { warmUpScreenPopup } from 'Knoin/Knoin';
 
-import {AbstractScreen} from 'Knoin/AbstractScreen';
+import { AbstractScreen } from 'Knoin/AbstractScreen';
 
-class MailBoxUserScreen extends AbstractScreen
-{
+class MailBoxUserScreen extends AbstractScreen {
 	constructor() {
 		super('mailbox', [
 			SystemDropDownMailBoxUserView,
@@ -45,12 +43,16 @@ class MailBoxUserScreen extends AbstractScreen
 		let foldersInboxUnreadCount = FolderStore.foldersInboxUnreadCount();
 		const email = AccountStore.email();
 
-		if (Settings.appSettingsGet('listPermanentFiltered'))
-		{
+		if (Settings.appSettingsGet('listPermanentFiltered')) {
 			foldersInboxUnreadCount = 0;
 		}
 
-		getApp().setWindowTitle(('' === email ? '' : '' + (0 < foldersInboxUnreadCount ? '(' + foldersInboxUnreadCount + ') ' : ' ') + email + ' - ') + i18n('TITLES/MAILBOX'));
+		getApp().setWindowTitle(
+			('' === email
+				? ''
+				: '' + (0 < foldersInboxUnreadCount ? '(' + foldersInboxUnreadCount + ') ' : ' ') + email + ' - ') +
+				i18n('TITLES/MAILBOX')
+		);
 	}
 
 	/**
@@ -62,17 +64,13 @@ class MailBoxUserScreen extends AbstractScreen
 		AppStore.focusedState(Focused.None);
 		AppStore.focusedState(Focused.MessageList);
 
-		if (Settings.appSettingsGet('mobile'))
-		{
+		if (Settings.appSettingsGet('mobile')) {
 			leftPanelDisabled(true);
 		}
 
-		if (!Settings.capa(Capa.Folders))
-		{
+		if (!Settings.capa(Capa.Folders)) {
 			leftPanelType(Settings.capa(Capa.Composer) || Settings.capa(Capa.Contacts) ? 'short' : 'none');
-		}
-		else
-		{
+		} else {
 			leftPanelType('');
 		}
 	}
@@ -87,10 +85,8 @@ class MailBoxUserScreen extends AbstractScreen
 		let threadUid = folderHash.replace(/^(.+)~([\d]+)$/, '$2');
 		const folder = getFolderFromCacheList(getFolderFullNameRaw(folderHash.replace(/~([\d]+)$/, '')));
 
-		if (folder)
-		{
-			if (folderHash === threadUid)
-			{
+		if (folder) {
+			if (folderHash === threadUid) {
 				threadUid = '';
 			}
 
@@ -121,8 +117,7 @@ class MailBoxUserScreen extends AbstractScreen
 
 			const email = AccountStore.email();
 			_.each(AccountStore.accounts(), (item) => {
-				if (item && email === item.email)
-				{
+				if (item && email === item.email) {
 					item.count(count);
 				}
 			});
@@ -135,8 +130,7 @@ class MailBoxUserScreen extends AbstractScreen
 	 * @returns {void}
 	 */
 	onBuild() {
-		if (!bMobileDevice && !Settings.appSettingsGet('mobile'))
-		{
+		if (!bMobileDevice && !Settings.appSettingsGet('mobile')) {
 			_.defer(() => {
 				getApp().initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize);
 			});
@@ -151,16 +145,14 @@ class MailBoxUserScreen extends AbstractScreen
 	 * @returns {Array}
 	 */
 	routes() {
-		const
-			inboxFolderName = getFolderInboxName(),
+		const inboxFolderName = getFolderInboxName(),
 			fNormS = (request, vals) => {
 				vals[0] = pString(vals[0]);
 				vals[1] = pInt(vals[1]);
 				vals[1] = 0 >= vals[1] ? 1 : vals[1];
 				vals[2] = pString(vals[2]);
 
-				if ('' === request)
-				{
+				if ('' === request) {
 					vals[0] = inboxFolderName;
 					vals[1] = 1;
 				}
@@ -171,8 +163,7 @@ class MailBoxUserScreen extends AbstractScreen
 				vals[0] = pString(vals[0]);
 				vals[1] = pString(vals[1]);
 
-				if ('' === request)
-				{
+				if ('' === request) {
 					vals[0] = inboxFolderName;
 				}
 
@@ -180,12 +171,12 @@ class MailBoxUserScreen extends AbstractScreen
 			};
 
 		return [
-			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)\/(.+)\/?$/, {'normalize_': fNormS}],
-			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)$/, {'normalize_': fNormS}],
-			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, {'normalize_': fNormD}],
-			[/^([^\/]*)$/, {'normalize_': fNormS}]
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)\/(.+)\/?$/, { 'normalize_': fNormS }],
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)$/, { 'normalize_': fNormS }],
+			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, { 'normalize_': fNormD }],
+			[/^([^/]*)$/, { 'normalize_': fNormS }]
 		];
 	}
 }
 
-export {MailBoxUserScreen, MailBoxUserScreen as default};
+export { MailBoxUserScreen, MailBoxUserScreen as default };

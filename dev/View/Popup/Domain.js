@@ -1,28 +1,26 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {StorageResultType, ServerSecure, Ports, Notification} from 'Common/Enums';
-import {IMAP_DEFAULT_PORT, SIEVE_DEFAULT_PORT, SMTP_DEFAULT_PORT} from 'Common/Consts';
-import {bMobileDevice} from 'Common/Globals';
-import {trim, pInt, pString} from 'Common/Utils';
-import {i18n} from 'Common/Translator';
+import { StorageResultType, ServerSecure, Ports, Notification } from 'Common/Enums';
+import { IMAP_DEFAULT_PORT, SIEVE_DEFAULT_PORT, SMTP_DEFAULT_PORT } from 'Common/Consts';
+import { bMobileDevice } from 'Common/Globals';
+import { trim, pInt, pString } from 'Common/Utils';
+import { i18n } from 'Common/Translator';
 
 import CapaAdminStore from 'Stores/Admin/Capa';
 
 import Remote from 'Remote/Admin/Ajax';
 
-import {getApp} from 'Helper/Apps/Admin';
+import { getApp } from 'Helper/Apps/Admin';
 
-import {popup, command} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup, command } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/Domain',
 	templateID: 'PopupsDomain'
 })
-class DomainPopupView extends AbstractViewNext
-{
+class DomainPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -42,22 +40,19 @@ class DomainPopupView extends AbstractViewNext
 		this.testingSmtpErrorDesc = ko.observable('');
 
 		this.testingImapError.subscribe((value) => {
-			if (!value)
-			{
+			if (!value) {
 				this.testingImapErrorDesc('');
 			}
 		});
 
 		this.testingSieveError.subscribe((value) => {
-			if (!value)
-			{
+			if (!value) {
 				this.testingSieveErrorDesc('');
 			}
 		});
 
 		this.testingSmtpError.subscribe((value) => {
-			if (!value)
-			{
+			if (!value) {
 				this.testingSmtpErrorDesc('');
 			}
 		});
@@ -92,49 +87,43 @@ class DomainPopupView extends AbstractViewNext
 		this.allowSieve = ko.computed(() => CapaAdminStore.filters() && CapaAdminStore.sieve());
 
 		this.headerText = ko.computed(() => {
-
-			const
-				name = this.name(),
+			const name = this.name(),
 				aliasName = this.aliasName();
 
 			let result = '';
 
-			if (this.edit())
-			{
-				result = i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', {'NAME': name});
-				if (aliasName)
-				{
+			if (this.edit()) {
+				result = i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', { 'NAME': name });
+				if (aliasName) {
 					result += ' ← ' + aliasName;
 				}
-			}
-			else
-			{
-				result = ('' === name ? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN') :
-					i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', {'NAME': name}));
+			} else {
+				result =
+					'' === name
+						? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN')
+						: i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { 'NAME': name });
 			}
 
 			return result;
-
 		});
 
 		this.domainDesc = ko.computed(() => {
 			const name = this.name();
-			return !this.edit() && name ? i18n('POPUPS_DOMAIN/NEW_DOMAIN_DESC', {'NAME': '*@' + name}) : '';
+			return !this.edit() && name ? i18n('POPUPS_DOMAIN/NEW_DOMAIN_DESC', { 'NAME': '*@' + name }) : '';
 		});
 
 		this.domainIsComputed = ko.computed(() => {
-
-			const
-				usePhpMail = this.smtpPhpMail(),
+			const usePhpMail = this.smtpPhpMail(),
 				allowSieve = this.allowSieve(),
 				useSieve = this.useSieve();
 
-			return '' !== this.name() &&
+			return (
+				'' !== this.name() &&
 				'' !== this.imapServer() &&
 				'' !== this.imapPort() &&
-				(allowSieve && useSieve ? ('' !== this.sieveServer() && '' !== this.sievePort()) : true) &&
-				(('' !== this.smtpServer() && '' !== this.smtpPort()) || usePhpMail);
-
+				(allowSieve && useSieve ? '' !== this.sieveServer() && '' !== this.sievePort() : true) &&
+				(('' !== this.smtpServer() && '' !== this.smtpPort()) || usePhpMail)
+			);
 		});
 
 		this.canBeTested = ko.computed(() => !this.testing() && this.domainIsComputed());
@@ -146,42 +135,35 @@ class DomainPopupView extends AbstractViewNext
 
 		// smart form improvements
 		this.imapServerFocus.subscribe((value) => {
-			if (value && '' !== this.name() && '' === this.imapServer())
-			{
+			if (value && '' !== this.name() && '' === this.imapServer()) {
 				this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''));
 			}
 		});
 
 		this.sieveServerFocus.subscribe((value) => {
-			if (value && '' !== this.imapServer() && '' === this.sieveServer())
-			{
+			if (value && '' !== this.imapServer() && '' === this.sieveServer()) {
 				this.sieveServer(this.imapServer());
 			}
 		});
 
 		this.smtpServerFocus.subscribe((value) => {
-			if (value && '' !== this.imapServer() && '' === this.smtpServer())
-			{
-				this.smtpServer(this.imapServer().replace(/imap/ig, 'smtp'));
+			if (value && '' !== this.imapServer() && '' === this.smtpServer()) {
+				this.smtpServer(this.imapServer().replace(/imap/gi, 'smtp'));
 			}
 		});
 
 		this.imapSecure.subscribe((value) => {
-			if (this.enableSmartPorts())
-			{
+			if (this.enableSmartPorts()) {
 				const port = pInt(this.imapPort());
-				switch (pString(value))
-				{
+				switch (pString(value)) {
 					case '0':
 					case '2':
-						if (Ports.ImapSsl === port)
-						{
+						if (Ports.ImapSsl === port) {
 							this.imapPort(pString(Ports.Imap));
 						}
 						break;
 					case '1':
-						if (Ports.Imap === port)
-						{
+						if (Ports.Imap === port) {
 							this.imapPort(pString(Ports.ImapSsl));
 						}
 						break;
@@ -191,26 +173,21 @@ class DomainPopupView extends AbstractViewNext
 		});
 
 		this.smtpSecure.subscribe((value) => {
-			if (this.enableSmartPorts())
-			{
+			if (this.enableSmartPorts()) {
 				const port = pInt(this.smtpPort());
-				switch (pString(value))
-				{
+				switch (pString(value)) {
 					case '0':
-						if (Ports.SmtpSsl === port || Ports.SmtpStartTls === port)
-						{
+						if (Ports.SmtpSsl === port || Ports.SmtpStartTls === port) {
 							this.smtpPort(pString(Ports.Smtp));
 						}
 						break;
 					case '1':
-						if (Ports.Smtp === port || Ports.SmtpStartTls === port)
-						{
+						if (Ports.Smtp === port || Ports.SmtpStartTls === port) {
 							this.smtpPort(pString(Ports.SmtpSsl));
 						}
 						break;
 					case '2':
-						if (Ports.Smtp === port || Ports.SmtpSsl === port)
-						{
+						if (Ports.Smtp === port || Ports.SmtpSsl === port) {
 							this.smtpPort(pString(Ports.SmtpStartTls));
 						}
 						break;
@@ -252,7 +229,6 @@ class DomainPopupView extends AbstractViewNext
 
 	@command((self) => self.canBeTested())
 	testConnectionCommand() {
-
 		this.page('main');
 
 		this.testingDone(false);
@@ -300,10 +276,8 @@ class DomainPopupView extends AbstractViewNext
 
 	onTestConnectionResponse(sResult, oData) {
 		this.testing(false);
-		if (StorageResultType.Success === sResult && oData.Result)
-		{
-			let
-				bImap = false,
+		if (StorageResultType.Success === sResult && oData.Result) {
+			let bImap = false,
 				bSieve = false;
 
 			this.testingDone(true);
@@ -311,40 +285,31 @@ class DomainPopupView extends AbstractViewNext
 			this.testingSieveError(true !== oData.Result.Sieve);
 			this.testingSmtpError(true !== oData.Result.Smtp);
 
-			if (this.testingImapError() && oData.Result.Imap)
-			{
+			if (this.testingImapError() && oData.Result.Imap) {
 				bImap = true;
 				this.testingImapErrorDesc('');
 				this.testingImapErrorDesc(oData.Result.Imap);
 			}
 
-			if (this.testingSieveError() && oData.Result.Sieve)
-			{
+			if (this.testingSieveError() && oData.Result.Sieve) {
 				bSieve = true;
 				this.testingSieveErrorDesc('');
 				this.testingSieveErrorDesc(oData.Result.Sieve);
 			}
 
-			if (this.testingSmtpError() && oData.Result.Smtp)
-			{
+			if (this.testingSmtpError() && oData.Result.Smtp) {
 				this.testingSmtpErrorDesc('');
 				this.testingSmtpErrorDesc(oData.Result.Smtp);
 			}
 
-			if (this.sieveSettings())
-			{
-				if (!bSieve && bImap)
-				{
+			if (this.sieveSettings()) {
+				if (!bSieve && bImap) {
 					this.sieveSettings(false);
 				}
-			}
-			else if (bSieve && !bImap)
-			{
+			} else if (bSieve && !bImap) {
 				this.sieveSettings(true);
 			}
-		}
-		else
-		{
+		} else {
 			this.testingImapError(true);
 			this.testingSieveError(true);
 			this.testingSmtpError(true);
@@ -354,20 +319,14 @@ class DomainPopupView extends AbstractViewNext
 
 	onDomainCreateOrSaveResponse(sResult, oData) {
 		this.saving(false);
-		if (StorageResultType.Success === sResult && oData)
-		{
-			if (oData.Result)
-			{
+		if (StorageResultType.Success === sResult && oData) {
+			if (oData.Result) {
 				getApp().reloadDomainList();
 				this.closeCommand();
-			}
-			else if (Notification.DomainAlreadyExists === oData.ErrorCode)
-			{
+			} else if (Notification.DomainAlreadyExists === oData.ErrorCode) {
 				this.savingError(i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));
 			}
-		}
-		else
-		{
+		} else {
 			this.savingError(i18n('ERRORS/UNKNOWN_ERROR'));
 		}
 	}
@@ -394,8 +353,7 @@ class DomainPopupView extends AbstractViewNext
 		this.clearTesting();
 
 		this.clearForm();
-		if (oDomain)
-		{
+		if (oDomain) {
 			this.enableSmartPorts(false);
 
 			this.edit(true);
@@ -424,8 +382,7 @@ class DomainPopupView extends AbstractViewNext
 	}
 
 	onShowWithDelay() {
-		if ('' === this.name() && !bMobileDevice)
-		{
+		if ('' === this.name() && !bMobileDevice) {
 			this.name.focused(true);
 		}
 	}
@@ -467,4 +424,4 @@ class DomainPopupView extends AbstractViewNext
 	}
 }
 
-export {DomainPopupView, DomainPopupView as default};
+export { DomainPopupView, DomainPopupView as default };

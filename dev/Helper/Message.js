@@ -1,6 +1,5 @@
-
-import {isNonEmptyArray, isUnd} from 'Common/Utils';
-import {EmailModel} from 'Model/Email';
+import { isNonEmptyArray, isUnd } from 'Common/Utils';
+import { EmailModel } from 'Model/Email';
 
 /**
  * @param {Array.<EmailModel>} emails
@@ -9,15 +8,12 @@ import {EmailModel} from 'Model/Email';
  * @returns {string}
  */
 export function emailArrayToString(emails, friendlyView = false, wrapWithLink = false) {
-	let
-		index = 0,
+	let index = 0,
 		len = 0;
 
 	const result = [];
-	if (isNonEmptyArray(emails))
-	{
-		for (len = emails.length; index < len; index++)
-		{
+	if (isNonEmptyArray(emails)) {
+		for (len = emails.length; index < len; index++) {
 			result.push(emails[index].toLine(friendlyView, wrapWithLink));
 		}
 	}
@@ -30,17 +26,13 @@ export function emailArrayToString(emails, friendlyView = false, wrapWithLink = 
  * @returns {string}
  */
 export function emailArrayToStringClear(emails) {
-	let
-		index = 0,
+	let index = 0,
 		len = 0;
 
 	const result = [];
-	if (isNonEmptyArray(emails))
-	{
-		for (len = emails.length; index < len; index++)
-		{
-			if (emails[index] && emails[index].email && '' !== emails[index].name)
-			{
+	if (isNonEmptyArray(emails)) {
+		for (len = emails.length; index < len; index++) {
+			if (emails[index] && emails[index].email && '' !== emails[index].name) {
 				result.push(emails[index].email);
 			}
 		}
@@ -54,19 +46,15 @@ export function emailArrayToStringClear(emails) {
  * @returns {Array.<EmailModel>}
  */
 export function emailArrayFromJson(json) {
-	let
-		index = 0,
+	let index = 0,
 		len = 0,
 		email = null;
 
 	const result = [];
-	if (isNonEmptyArray(json))
-	{
-		for (index = 0, len = json.length; index < len; index++)
-		{
+	if (isNonEmptyArray(json)) {
+		for (index = 0, len = json.length; index < len; index++) {
 			email = EmailModel.newInstanceFromJson(json[index]);
-			if (email)
-			{
+			if (email) {
 				result.push(email);
 			}
 		}
@@ -81,16 +69,12 @@ export function emailArrayFromJson(json) {
  * @param {Array} localEmails
  */
 export function replyHelper(inputEmails, unic, localEmails) {
-
-	if (inputEmails && 0 < inputEmails.length)
-	{
+	if (inputEmails && 0 < inputEmails.length) {
 		let index = 0;
 		const len = inputEmails.length;
 
-		for (; index < len; index++)
-		{
-			if (isUnd(unic[inputEmails[index].email]))
-			{
+		for (; index < len; index++) {
+			if (isUnd(unic[inputEmails[index].email])) {
 				unic[inputEmails[index].email] = true;
 				localEmails.push(inputEmails[index]);
 			}

@@ -1,8 +1,6 @@
-
 import ko from 'ko';
 
-class LicenseAdminStore
-{
+class LicenseAdminStore {
 	constructor() {
 		this.licensing = ko.observable(false);
 		this.licensingProcess = ko.observable(false);

@@ -1,9 +1,7 @@
-
 import window from 'window';
-import {isArray} from 'Common/Utils';
+import { isArray } from 'Common/Utils';
 
-export class AbstractBasicPromises
-{
+export class AbstractBasicPromises {
 	oPromisesStack = {};
 
 	func(fFunc) {
@@ -20,12 +18,10 @@ export class AbstractBasicPromises
 	}
 
 	setTrigger(trigger, value) {
-		if (trigger)
-		{
+		if (trigger) {
 			value = !!value;
 			(isArray(trigger) ? trigger : [trigger]).forEach((fTrigger) => {
-				if (fTrigger)
-				{
+				if (fTrigger) {
 					fTrigger(value);
 				}
 			});

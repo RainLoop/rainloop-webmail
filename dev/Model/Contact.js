@@ -1,15 +1,13 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {ContactPropertyType} from 'Common/Enums';
-import {trim, isNonEmptyArray, isNormal, pInt, pString} from 'Common/Utils';
-import {emptyContactPic} from 'Common/Links';
+import { ContactPropertyType } from 'Common/Enums';
+import { trim, isNonEmptyArray, isNormal, pInt, pString } from 'Common/Utils';
+import { emptyContactPic } from 'Common/Links';
 
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { AbstractModel } from 'Knoin/AbstractModel';
 
-class ContactModel extends AbstractModel
-{
+class ContactModel extends AbstractModel {
 	constructor() {
 		super('ContactModel');
 
@@ -28,25 +26,17 @@ class ContactModel extends AbstractModel
 	 * @returns {Array|null}
 	 */
 	getNameAndEmailHelper() {
-		let
-			name = '',
+		let name = '',
 			email = '';
 
-		if (isNonEmptyArray(this.properties))
-		{
+		if (isNonEmptyArray(this.properties)) {
 			_.each(this.properties, (property) => {
-				if (property)
-				{
-					if (ContactPropertyType.FirstName === property[0])
-					{
+				if (property) {
+					if (ContactPropertyType.FirstName === property[0]) {
 						name = trim(property[1] + ' ' + name);
-					}
-					else if (ContactPropertyType.LastName === property[0])
-					{
+					} else if (ContactPropertyType.LastName === property[0]) {
 						name = trim(name + ' ' + property[1]);
-					}
-					else if ('' === email && ContactPropertyType.Email === property[0])
-					{
+					} else if ('' === email && ContactPropertyType.Email === property[0]) {
 						email = property[1];
 					}
 				}
@@ -62,17 +52,14 @@ class ContactModel extends AbstractModel
 	 */
 	parse(json) {
 		let result = false;
-		if (json && 'Object/Contact' === json['@Object'])
-		{
+		if (json && 'Object/Contact' === json['@Object']) {
 			this.idContact = pInt(json.IdContact);
 			this.display = pString(json.Display);
 			this.readOnly = !!json.ReadOnly;
 
-			if (isNonEmptyArray(json.Properties))
-			{
+			if (isNonEmptyArray(json.Properties)) {
 				_.each(json.Properties, (property) => {
-					if (property && property.Type && isNormal(property.Value) && isNormal(property.TypeStr))
-					{
+					if (property && property.Type && isNormal(property.Value) && isNormal(property.TypeStr)) {
 						this.properties.push([pInt(property.Type), pString(property.Value), pString(property.TypeStr)]);
 					}
 				});
@@ -103,20 +90,16 @@ class ContactModel extends AbstractModel
 	 */
 	lineAsCss() {
 		const result = [];
-		if (this.deleted())
-		{
+		if (this.deleted()) {
 			result.push('deleted');
 		}
-		if (this.selected())
-		{
+		if (this.selected()) {
 			result.push('selected');
 		}
-		if (this.checked())
-		{
+		if (this.checked()) {
 			result.push('checked');
 		}
-		if (this.focused())
-		{
+		if (this.focused()) {
 			result.push('focused');
 		}
 
@@ -124,4 +107,4 @@ class ContactModel extends AbstractModel
 	}
 }
 
-export {ContactModel, ContactModel as default};
+export { ContactModel, ContactModel as default };

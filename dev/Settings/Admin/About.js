@@ -1,15 +1,14 @@
 import ko from 'ko';
 
-import {i18n, trigger as translatorTrigger} from 'Common/Translator';
-import {appSettingsGet, settingsGet} from 'Storage/Settings';
+import { i18n, trigger as translatorTrigger } from 'Common/Translator';
+import { appSettingsGet, settingsGet } from 'Storage/Settings';
 
 import AppStore from 'Stores/Admin/App';
 import CoreStore from 'Stores/Admin/Core';
 
-import {getApp} from 'Helper/Apps/Admin';
+import { getApp } from 'Helper/Apps/Admin';
 
-class AboutAdminSettings
-{
+class AboutAdminSettings {
 	constructor() {
 		this.version = ko.observable(appSettingsGet('version'));
 		this.access = ko.observable(!!settingsGet('CoreAccess'));
@@ -32,35 +31,25 @@ class AboutAdminSettings
 
 		this.coreRemoteVersionHtmlDesc = ko.computed(() => {
 			translatorTrigger();
-			return i18n('TAB_ABOUT/HTML_NEW_VERSION', {'VERSION': this.coreRemoteVersion()});
+			return i18n('TAB_ABOUT/HTML_NEW_VERSION', { 'VERSION': this.coreRemoteVersion() });
 		});
 
 		this.statusType = ko.computed(() => {
 			let type = '';
-			const
-				versionToCompare = this.coreVersionCompare(),
+			const versionToCompare = this.coreVersionCompare(),
 				isChecking = this.coreChecking(),
 				isUpdating = this.coreUpdating(),
 				isReal = this.coreReal();
 
-			if (isChecking)
-			{
+			if (isChecking) {
 				type = 'checking';
-			}
-			else if (isUpdating)
-			{
+			} else if (isUpdating) {
 				type = 'updating';
-			}
-			else if (isReal && 0 === versionToCompare)
-			{
+			} else if (isReal && 0 === versionToCompare) {
 				type = 'up-to-date';
-			}
-			else if (isReal && -1 === versionToCompare)
-			{
+			} else if (isReal && -1 === versionToCompare) {
 				type = 'available';
-			}
-			else if (!isReal)
-			{
+			} else if (!isReal) {
 				type = 'error';
 				this.errorDesc('Cannot access the repository at the moment.');
 			}
@@ -70,18 +59,16 @@ class AboutAdminSettings
 	}
 
 	onBuild() {
-		if (this.access() && !this.community)
-		{
+		if (this.access() && !this.community) {
 			getApp().reloadCoreData();
 		}
 	}
 
 	updateCoreData() {
-		if (!this.coreUpdating() && !this.community)
-		{
+		if (!this.coreUpdating() && !this.community) {
 			getApp().updateCoreData();
 		}
 	}
 }
 
-export {AboutAdminSettings, AboutAdminSettings as default};
+export { AboutAdminSettings, AboutAdminSettings as default };

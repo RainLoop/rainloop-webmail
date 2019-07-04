@@ -3,12 +3,12 @@ import _ from '_';
 import $ from '$';
 import key from 'key';
 import ko from 'ko';
-import {KeyState} from 'Common/Enums';
+import { KeyState } from 'Common/Enums';
 
 const $win = $(window);
 $win.__sizes = [0, 0];
 
-export {$win};
+export { $win };
 
 export const $doc = $(window.document);
 
@@ -19,9 +19,12 @@ export const $body = $('body');
 export const $div = $('<div></div>');
 
 export const $hcont = $('<div></div>');
-$hcont.attr('area', 'hidden').css({position: 'absolute', left: -5000}).appendTo($body);
+$hcont
+	.attr('area', 'hidden')
+	.css({ position: 'absolute', left: -5000 })
+	.appendTo($body);
 
-export const startMicrotime = (new window.Date()).getTime();
+export const startMicrotime = new window.Date().getTime();
 
 /**
  * @type {boolean}
@@ -31,7 +34,7 @@ export const community = RL_COMMUNITY;
 /**
  * @type {?}
  */
-export const dropdownVisibility = ko.observable(false).extend({rateLimit: 0});
+export const dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 });
 
 /**
  * @type {boolean}
@@ -41,8 +44,8 @@ export const useKeyboardShortcuts = ko.observable(true);
 /**
  * @type {string}
  */
-export const sUserAgent = 'navigator' in window && 'userAgent' in window.navigator &&
-		window.navigator.userAgent.toLowerCase() || '';
+export const sUserAgent =
+	('navigator' in window && 'userAgent' in window.navigator && window.navigator.userAgent.toLowerCase()) || '';
 
 /**
  * @type {boolean}
@@ -77,7 +80,8 @@ export const bDisableNanoScroll = bMobileDevice;
 /**
  * @type {boolean}
  */
-export const bAnimationSupported = !bMobileDevice && $html.hasClass('csstransitions') && $html.hasClass('cssanimations');
+export const bAnimationSupported =
+	!bMobileDevice && $html.hasClass('csstransitions') && $html.hasClass('cssanimations');
 
 /**
  * @type {boolean}
@@ -87,7 +91,8 @@ export const bXMLHttpRequestSupported = !!window.XMLHttpRequest;
 /**
  * @type {boolean}
  */
-export const bIsHttps = window.document && window.document.location ? 'https:' === window.document.location.protocol : false;
+export const bIsHttps =
+	window.document && window.document.location ? 'https:' === window.document.location.protocol : false;
 
 /**
  * @type {Object}
@@ -98,15 +103,15 @@ export const htmlEditorDefaultConfig = {
 	'customConfig': '',
 	'contentsCss': '',
 	'toolbarGroups': [
-		{name: 'spec'},
-		{name: 'styles'},
-		{name: 'basicstyles', groups: ['basicstyles', 'cleanup', 'bidi']},
-		{name: 'colors'},
-		bMobileDevice ? {} : {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align']},
-		{name: 'links'},
-		{name: 'insert'},
-		{name: 'document', groups: ['mode', 'document', 'doctools']},
-		{name: 'others'}
+		{ name: 'spec' },
+		{ name: 'styles' },
+		{ name: 'basicstyles', groups: ['basicstyles', 'cleanup', 'bidi'] },
+		{ name: 'colors' },
+		bMobileDevice ? {} : { name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align'] },
+		{ name: 'links' },
+		{ name: 'insert' },
+		{ name: 'document', groups: ['mode', 'document', 'doctools'] },
+		{ name: 'others' }
 	],
 
 	'removePlugins': 'liststyle',
@@ -171,17 +176,15 @@ export const htmlEditorLangsMap = {
  */
 let bAllowPdfPreview = !bMobileDevice;
 
-if (bAllowPdfPreview && window.navigator && window.navigator.mimeTypes)
-{
+if (bAllowPdfPreview && window.navigator && window.navigator.mimeTypes) {
 	bAllowPdfPreview = !!_.find(window.navigator.mimeTypes, (type) => type && 'application/pdf' === type.type);
 
-	if (!bAllowPdfPreview)
-	{
+	if (!bAllowPdfPreview) {
 		bAllowPdfPreview = 'undefined' !== typeof window.navigator.mimeTypes['application/pdf'];
 	}
 }
 
-export {bAllowPdfPreview};
+export { bAllowPdfPreview };
 
 export const VIEW_MODELS = {
 	settings: [],
@@ -222,26 +225,21 @@ export const keyScopeFake = ko.observable(KeyState.All);
 export const keyScope = ko.computed({
 	read: () => keyScopeFake(),
 	write: (value) => {
-
-		if (KeyState.Menu !== value)
-		{
-			if (KeyState.Compose === value)
-			{
+		if (KeyState.Menu !== value) {
+			if (KeyState.Compose === value) {
 				// disableKeyFilter
 				key.filter = () => useKeyboardShortcuts();
-			}
-			else
-			{
+			} else {
 				// restoreKeyFilter
 				key.filter = (event) => {
-
-					if (useKeyboardShortcuts())
-					{
-						const
-							el = event.target || event.srcElement,
+					if (useKeyboardShortcuts()) {
+						const el = event.target || event.srcElement,
 							tagName = el ? el.tagName.toUpperCase() : '';
 
-						return !('INPUT' === tagName || 'SELECT' === tagName || 'TEXTAREA' === tagName ||
+						return !(
+							'INPUT' === tagName ||
+							'SELECT' === tagName ||
+							'TEXTAREA' === tagName ||
 							(el && 'DIV' === tagName && ('editorHtmlArea' === el.className || 'true' === '' + el.contentEditable))
 						);
 					}
@@ -251,8 +249,7 @@ export const keyScope = ko.computed({
 			}
 
 			keyScopeFake(value);
-			if (dropdownVisibility())
-			{
+			if (dropdownVisibility()) {
 				value = KeyState.Menu;
 			}
 		}
@@ -262,17 +259,14 @@ export const keyScope = ko.computed({
 });
 
 keyScopeReal.subscribe((value) => {
-//	window.console.log('keyScope=' + sValue); // DEBUG
+	//	window.console.log('keyScope=' + sValue); // DEBUG
 	key.setScope(value);
 });
 
 dropdownVisibility.subscribe((value) => {
-	if (value)
-	{
+	if (value) {
 		keyScope(KeyState.Menu);
-	}
-	else if (KeyState.Menu === key.getScope())
-	{
+	} else if (KeyState.Menu === key.getScope()) {
 		keyScope(keyScopeFake());
 	}
 });

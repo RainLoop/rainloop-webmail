@@ -1,16 +1,14 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {SaveSettingsStep, Magics} from 'Common/Enums';
-import {settingsSaveHelperSimpleFunction, trim, boolToAjax} from 'Common/Utils';
+import { SaveSettingsStep, Magics } from 'Common/Enums';
+import { settingsSaveHelperSimpleFunction, trim, boolToAjax } from 'Common/Utils';
 
 import SocialStore from 'Stores/Social';
 
 import Remote from 'Remote/Admin/Ajax';
 
-class SocialAdminSettings
-{
+class SocialAdminSettings {
 	constructor() {
 		this.googleEnable = SocialStore.google.enabled;
 		this.googleEnableAuth = SocialStore.google.capa.auth;
@@ -52,8 +50,7 @@ class SocialAdminSettings
 
 	onBuild() {
 		_.delay(() => {
-			const
-				f1 = settingsSaveHelperSimpleFunction(this.facebookTrigger1, this),
+			const f1 = settingsSaveHelperSimpleFunction(this.facebookTrigger1, this),
 				f2 = settingsSaveHelperSimpleFunction(this.facebookTrigger2, this),
 				f3 = settingsSaveHelperSimpleFunction(this.twitterTrigger1, this),
 				f4 = settingsSaveHelperSimpleFunction(this.twitterTrigger2, this),
@@ -63,8 +60,7 @@ class SocialAdminSettings
 				f8 = settingsSaveHelperSimpleFunction(this.dropboxTrigger1, this);
 
 			this.facebookEnable.subscribe((value) => {
-				if (this.facebookSupported())
-				{
+				if (this.facebookSupported()) {
 					Remote.saveAdminConfig(null, {
 						'FacebookEnable': boolToAjax(value)
 					});
@@ -72,8 +68,7 @@ class SocialAdminSettings
 			});
 
 			this.facebookAppID.subscribe((value) => {
-				if (this.facebookSupported())
-				{
+				if (this.facebookSupported()) {
 					Remote.saveAdminConfig(f1, {
 						'FacebookAppID': trim(value)
 					});
@@ -81,8 +76,7 @@ class SocialAdminSettings
 			});
 
 			this.facebookAppSecret.subscribe((value) => {
-				if (this.facebookSupported())
-				{
+				if (this.facebookSupported()) {
 					Remote.saveAdminConfig(f2, {
 						'FacebookAppSecret': trim(value)
 					});
@@ -107,4 +101,4 @@ class SocialAdminSettings
 	}
 }
 
-export {SocialAdminSettings, SocialAdminSettings as default};
+export { SocialAdminSettings, SocialAdminSettings as default };

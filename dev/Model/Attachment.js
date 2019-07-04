@@ -1,14 +1,19 @@
-
 import window from 'window';
 import _ from '_';
 import ko from 'ko';
 
-import {FileType} from 'Common/Enums';
-import {bAllowPdfPreview, data as GlobalsData} from 'Common/Globals';
-import {trim, pInt, inArray, isNonEmptyArray, getFileExtension, friendlySize} from 'Common/Utils';
-import {attachmentDownload, attachmentPreview, attachmentFramed, attachmentPreviewAsPlain, attachmentThumbnailPreview} from 'Common/Links';
+import { FileType } from 'Common/Enums';
+import { bAllowPdfPreview, data as GlobalsData } from 'Common/Globals';
+import { trim, pInt, inArray, isNonEmptyArray, getFileExtension, friendlySize } from 'Common/Utils';
+import {
+	attachmentDownload,
+	attachmentPreview,
+	attachmentFramed,
+	attachmentPreviewAsPlain,
+	attachmentThumbnailPreview
+} from 'Common/Links';
 
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { AbstractModel } from 'Knoin/AbstractModel';
 
 import Audio from 'Common/Audio';
 
@@ -24,90 +29,99 @@ export const staticFileType = _.memoize((ext, mimeType) => {
 	let result = FileType.Unknown;
 	const mimeTypeParts = mimeType.split('/');
 
-	switch (true)
-	{
-		case 'image' === mimeTypeParts[0] || -1 < inArray(ext, [
-			'png', 'jpg', 'jpeg', 'gif', 'bmp'
-		]):
+	switch (true) {
+		case 'image' === mimeTypeParts[0] || -1 < inArray(ext, ['png', 'jpg', 'jpeg', 'gif', 'bmp']):
 			result = FileType.Image;
 			break;
-		case 'audio' === mimeTypeParts[0] || -1 < inArray(ext, [
-			'mp3', 'ogg', 'oga', 'wav'
-		]):
+		case 'audio' === mimeTypeParts[0] || -1 < inArray(ext, ['mp3', 'ogg', 'oga', 'wav']):
 			result = FileType.Audio;
 			break;
-		case 'video' === mimeTypeParts[0] || -1 < inArray(ext, [
-			'mkv', 'avi'
-		]):
+		case 'video' === mimeTypeParts[0] || -1 < inArray(ext, ['mkv', 'avi']):
 			result = FileType.Video;
 			break;
-		case -1 < inArray(ext, [
-			'php', 'js', 'css'
-		]):
+		case -1 < inArray(ext, ['php', 'js', 'css']):
 			result = FileType.Code;
 			break;
-		case 'eml' === ext || -1 < inArray(mimeType, [
-			'message/delivery-status', 'message/rfc822'
-		]):
+		case 'eml' === ext || -1 < inArray(mimeType, ['message/delivery-status', 'message/rfc822']):
 			result = FileType.Eml;
 			break;
-		case ('text' === mimeTypeParts[0] && 'html' !== mimeTypeParts[1]) || -1 < inArray(ext, [
-			'txt', 'log'
-		]):
+		case ('text' === mimeTypeParts[0] && 'html' !== mimeTypeParts[1]) || -1 < inArray(ext, ['txt', 'log']):
 			result = FileType.Text;
 			break;
-		case ('text/html' === mimeType) || -1 < inArray(ext, [
-			'html'
-		]):
+		case 'text/html' === mimeType || -1 < inArray(ext, ['html']):
 			result = FileType.Html;
 			break;
-		case -1 < inArray(mimeTypeParts[1], [
-			'zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2', 'x-zip', 'x-7z', 'x-rar', 'x-tar', 'x-gzip', 'x-bzip', 'x-bzip2', 'x-zip-compressed', 'x-7z-compressed', 'x-rar-compressed'
-		]) || -1 < inArray(ext, ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2']):
+		case -1 <
+			inArray(mimeTypeParts[1], [
+				'zip',
+				'7z',
+				'tar',
+				'rar',
+				'gzip',
+				'bzip',
+				'bzip2',
+				'x-zip',
+				'x-7z',
+				'x-rar',
+				'x-tar',
+				'x-gzip',
+				'x-bzip',
+				'x-bzip2',
+				'x-zip-compressed',
+				'x-7z-compressed',
+				'x-rar-compressed'
+			]) || -1 < inArray(ext, ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2']):
 			result = FileType.Archive;
 			break;
 		case -1 < inArray(mimeTypeParts[1], ['pdf', 'x-pdf']) || -1 < inArray(ext, ['pdf']):
 			result = FileType.Pdf;
 			break;
-		case -1 < inArray(mimeType, [
-			'application/pgp-signature', 'application/pgp-keys'
-		]) || -1 < inArray(ext, ['asc', 'pem', 'ppk']):
+		case -1 < inArray(mimeType, ['application/pgp-signature', 'application/pgp-keys']) ||
+			-1 < inArray(ext, ['asc', 'pem', 'ppk']):
 			result = FileType.Certificate;
 			break;
-		case -1 < inArray(mimeType, ['application/pkcs7-signature']) ||
-			-1 < inArray(ext, ['p7s']):
-
+		case -1 < inArray(mimeType, ['application/pkcs7-signature']) || -1 < inArray(ext, ['p7s']):
 			result = FileType.CertificateBin;
 			break;
-		case -1 < inArray(mimeTypeParts[1], [
-			'rtf', 'msword', 'vnd.msword', 'vnd.openxmlformats-officedocument.wordprocessingml.document',
-			'vnd.openxmlformats-officedocument.wordprocessingml.template',
-			'vnd.ms-word.document.macroEnabled.12',
-			'vnd.ms-word.template.macroEnabled.12'
-		]):
+		case -1 <
+			inArray(mimeTypeParts[1], [
+				'rtf',
+				'msword',
+				'vnd.msword',
+				'vnd.openxmlformats-officedocument.wordprocessingml.document',
+				'vnd.openxmlformats-officedocument.wordprocessingml.template',
+				'vnd.ms-word.document.macroEnabled.12',
+				'vnd.ms-word.template.macroEnabled.12'
+			]):
 			result = FileType.WordText;
 			break;
-		case -1 < inArray(mimeTypeParts[1], [
-			'excel', 'ms-excel', 'vnd.ms-excel',
-			'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-			'vnd.openxmlformats-officedocument.spreadsheetml.template',
-			'vnd.ms-excel.sheet.macroEnabled.12',
-			'vnd.ms-excel.template.macroEnabled.12',
-			'vnd.ms-excel.addin.macroEnabled.12',
-			'vnd.ms-excel.sheet.binary.macroEnabled.12'
-		]):
+		case -1 <
+			inArray(mimeTypeParts[1], [
+				'excel',
+				'ms-excel',
+				'vnd.ms-excel',
+				'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+				'vnd.openxmlformats-officedocument.spreadsheetml.template',
+				'vnd.ms-excel.sheet.macroEnabled.12',
+				'vnd.ms-excel.template.macroEnabled.12',
+				'vnd.ms-excel.addin.macroEnabled.12',
+				'vnd.ms-excel.sheet.binary.macroEnabled.12'
+			]):
 			result = FileType.Sheet;
 			break;
-		case -1 < inArray(mimeTypeParts[1], [
-			'powerpoint', 'ms-powerpoint', 'vnd.ms-powerpoint',
-			'vnd.openxmlformats-officedocument.presentationml.presentation',
-			'vnd.openxmlformats-officedocument.presentationml.template',
-			'vnd.openxmlformats-officedocument.presentationml.slideshow',
-			'vnd.ms-powerpoint.addin.macroEnabled.12',
-			'vnd.ms-powerpoint.presentation.macroEnabled.12',
-			'vnd.ms-powerpoint.template.macroEnabled.12',
-			'vnd.ms-powerpoint.slideshow.macroEnabled.12'
-		]):
+		case -1 <
+			inArray(mimeTypeParts[1], [
+				'powerpoint',
+				'ms-powerpoint',
+				'vnd.ms-powerpoint',
+				'vnd.openxmlformats-officedocument.presentationml.presentation',
+				'vnd.openxmlformats-officedocument.presentationml.template',
+				'vnd.openxmlformats-officedocument.presentationml.slideshow',
+				'vnd.ms-powerpoint.addin.macroEnabled.12',
+				'vnd.ms-powerpoint.presentation.macroEnabled.12',
+				'vnd.ms-powerpoint.template.macroEnabled.12',
+				'vnd.ms-powerpoint.slideshow.macroEnabled.12'
+			]):
 			result = FileType.Presentation;
 			break;
 		// no default
@@ -121,12 +135,10 @@ export const staticFileType = _.memoize((ext, mimeType) => {
  * @returns {string}
  */
 export const staticIconClass = _.memoize((fileType) => {
-	let
-		resultText = '',
+	let resultText = '',
 		resultClass = 'icon-file';
 
-	switch (fileType)
-	{
+	switch (fileType) {
 		case FileType.Text:
 		case FileType.Eml:
 		case FileType.WordText:
@@ -174,19 +186,15 @@ export const staticIconClass = _.memoize((fileType) => {
  * @returns {string}
  */
 export const staticCombinedIconClass = (data) => {
-	let
-		result = '',
+	let result = '',
 		types = [];
 
-	if (isNonEmptyArray(data))
-	{
+	if (isNonEmptyArray(data)) {
 		result = 'icon-attachment';
 		types = _.uniq(_.compact(_.map(data, (item) => (item ? staticFileType(getFileExtension(item[0]), item[1]) : ''))));
 
-		if (types && 1 === types.length && types[0])
-		{
-			switch (types[0])
-			{
+		if (types && 1 === types.length && types[0]) {
+			switch (types[0]) {
 				case FileType.Text:
 				case FileType.WordText:
 					result = 'icon-file-text';
@@ -225,8 +233,7 @@ export const staticCombinedIconClass = (data) => {
 	return result;
 };
 
-class AttachmentModel extends AbstractModel
-{
+class AttachmentModel extends AbstractModel {
 	constructor() {
 		super('AttachmentModel');
 
@@ -267,8 +274,7 @@ class AttachmentModel extends AbstractModel
 	 */
 	initByJson(json) {
 		let bResult = false;
-		if (json && 'Object/Attachment' === json['@Object'])
-		{
+		if (json && 'Object/Attachment' === json['@Object']) {
 			this.mimeType = trim((json.MimeType || '').toLowerCase());
 			this.fileName = trim(json.FileName);
 			this.estimatedSize = pInt(json.EstimatedSize);
@@ -335,8 +341,13 @@ class AttachmentModel extends AbstractModel
 	 * @returns {boolean}
 	 */
 	isText() {
-		return FileType.Text === this.fileType || FileType.Eml === this.fileType ||
-			FileType.Certificate === this.fileType || FileType.Html === this.fileType || FileType.Code === this.fileType;
+		return (
+			FileType.Text === this.fileType ||
+			FileType.Eml === this.fileType ||
+			FileType.Certificate === this.fileType ||
+			FileType.Html === this.fileType ||
+			FileType.Code === this.fileType
+		);
 	}
 
 	/**
@@ -350,8 +361,13 @@ class AttachmentModel extends AbstractModel
 	 * @returns {boolean}
 	 */
 	isFramed() {
-		return this.framed && (GlobalsData.__APP__ && GlobalsData.__APP__.googlePreviewSupported()) &&
-			!(this.isPdf() && bAllowPdfPreview) && !this.isText() && !this.isImage();
+		return (
+			this.framed &&
+			(GlobalsData.__APP__ && GlobalsData.__APP__.googlePreviewSupported()) &&
+			!(this.isPdf() && bAllowPdfPreview) &&
+			!this.isText() &&
+			!this.isImage()
+		);
 	}
 
 	/**
@@ -365,7 +381,11 @@ class AttachmentModel extends AbstractModel
 	 * @returns {boolean}
 	 */
 	hasPreplay() {
-		return (Audio.supportedMp3 && this.isMp3()) || (Audio.supportedOgg && this.isOgg()) || (Audio.supportedWav && this.isWav());
+		return (
+			(Audio.supportedMp3 && this.isMp3()) ||
+			(Audio.supportedOgg && this.isOgg()) ||
+			(Audio.supportedWav && this.isWav())
+		);
 	}
 
 	/**
@@ -416,8 +436,7 @@ class AttachmentModel extends AbstractModel
 	 */
 	linkPreviewMain() {
 		let result = '';
-		switch (true)
-		{
+		switch (true) {
 			case this.isImage():
 			case this.isPdf() && bAllowPdfPreview:
 				result = this.linkPreview();
@@ -439,8 +458,7 @@ class AttachmentModel extends AbstractModel
 	 */
 	generateTransferDownloadUrl() {
 		let link = this.linkDownload();
-		if ('http' !== link.substr(0, 4))
-		{
+		if ('http' !== link.substr(0, 4)) {
 			link = window.location.protocol + '//' + window.location.host + window.location.pathname + link;
 		}
 
@@ -454,8 +472,7 @@ class AttachmentModel extends AbstractModel
 	 */
 	eventDragStart(attachment, event) {
 		const localEvent = event.originalEvent || event;
-		if (attachment && localEvent && localEvent.dataTransfer && localEvent.dataTransfer.setData)
-		{
+		if (attachment && localEvent && localEvent.dataTransfer && localEvent.dataTransfer.setData) {
 			localEvent.dataTransfer.setData('DownloadURL', this.generateTransferDownloadUrl());
 		}
 
@@ -477,4 +494,4 @@ class AttachmentModel extends AbstractModel
 	}
 }
 
-export {AttachmentModel, AttachmentModel as default};
+export { AttachmentModel, AttachmentModel as default };

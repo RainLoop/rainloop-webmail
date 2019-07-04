@@ -1,10 +1,8 @@
-
 import ko from 'ko';
-import {$html, bMobileDevice} from 'Common/Globals';
+import { $html, bMobileDevice } from 'Common/Globals';
 import * as Settings from 'Storage/Settings';
 
-class AbstractAppStore
-{
+class AbstractAppStore {
 	constructor() {
 		this.allowLanguagesOnSettings = ko.observable(true);
 		this.allowLanguagesOnLogin = ko.observable(true);
@@ -35,4 +33,4 @@ class AbstractAppStore
 	}
 }
 
-export {AbstractAppStore, AbstractAppStore as default};
+export { AbstractAppStore, AbstractAppStore as default };

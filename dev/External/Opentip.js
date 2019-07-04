@@ -1,4 +1,3 @@
-
 import window from 'window';
 
 const Opentip = window.Opentip || {};
@@ -6,7 +5,6 @@ const Opentip = window.Opentip || {};
 Opentip.styles = Opentip.styles || {};
 
 Opentip.styles.rainloop = {
-
 	'extends': 'standard',
 
 	'fixed': true,
@@ -43,4 +41,4 @@ Opentip.styles.rainloopErrorTip = {
 	'className': 'rainloopErrorTip'
 };
 
-export {Opentip, Opentip as default};
+export { Opentip, Opentip as default };

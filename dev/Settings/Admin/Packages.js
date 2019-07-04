@@ -1,18 +1,16 @@
-
 import window from 'window';
 import _ from '_';
 import ko from 'ko';
 
-import {StorageResultType, Notification} from 'Common/Enums';
-import {getNotification} from 'Common/Translator';
+import { StorageResultType, Notification } from 'Common/Enums';
+import { getNotification } from 'Common/Translator';
 
 import PackageStore from 'Stores/Admin/Package';
 import Remote from 'Remote/Admin/Ajax';
 
-import {getApp} from 'Helper/Apps/Admin';
+import { getApp } from 'Helper/Apps/Admin';
 
-class PackagesAdminSettings
-{
+class PackagesAdminSettings {
 	constructor() {
 		this.packagesError = ko.observable('');
 
@@ -37,54 +35,44 @@ class PackagesAdminSettings
 
 	requestHelper(packageToRequest, install) {
 		return (result, data) => {
-
-			if (StorageResultType.Success !== result || !data || !data.Result)
-			{
-				if (data && data.ErrorCode)
-				{
+			if (StorageResultType.Success !== result || !data || !data.Result) {
+				if (data && data.ErrorCode) {
 					this.packagesError(getNotification(data.ErrorCode));
-				}
-				else
-				{
-					this.packagesError(getNotification(
-						install ? Notification.CantInstallPackage : Notification.CantDeletePackage));
+				} else {
+					this.packagesError(
+						getNotification(install ? Notification.CantInstallPackage : Notification.CantDeletePackage)
+					);
 				}
 			}
 
 			_.each(this.packages(), (item) => {
-				if (item && packageToRequest && item.loading && item.loading() && packageToRequest.file === item.file)
-				{
+				if (item && packageToRequest && item.loading && item.loading() && packageToRequest.file === item.file) {
 					packageToRequest.loading(false);
 					item.loading(false);
 				}
 			});
 
-			if (StorageResultType.Success === result && data && data.Result && data.Result.Reload)
-			{
+			if (StorageResultType.Success === result && data && data.Result && data.Result.Reload) {
 				window.location.reload();
-			}
-			else
-			{
+			} else {
 				getApp().reloadPackagesList();
 			}
 		};
 	}
 
 	deletePackage(packageToDelete) {
-		if (packageToDelete)
-		{
+		if (packageToDelete) {
 			packageToDelete.loading(true);
 			Remote.packageDelete(this.requestHelper(packageToDelete, false), packageToDelete);
 		}
 	}
 
 	installPackage(packageToInstall) {
-		if (packageToInstall)
-		{
+		if (packageToInstall) {
 			packageToInstall.loading(true);
 			Remote.packageInstall(this.requestHelper(packageToInstall, true), packageToInstall);
 		}
 	}
 }
 
-export {PackagesAdminSettings, PackagesAdminSettings as default};
+export { PackagesAdminSettings, PackagesAdminSettings as default };

@@ -1,11 +1,9 @@
-
 import window from 'window';
 
 import PromisesPopulator from 'Promises/User/Populator';
-import {AbstractAjaxPromises} from 'Promises/AbstractAjax';
+import { AbstractAjaxPromises } from 'Promises/AbstractAjax';
 
-class UserAjaxUserPromises extends AbstractAjaxPromises
-{
+class UserAjaxUserPromises extends AbstractAjaxPromises {
 	constructor() {
 		super();
 
@@ -13,11 +11,13 @@ class UserAjaxUserPromises extends AbstractAjaxPromises
 	}
 
 	foldersReload(fTrigger) {
-		return this.abort('Folders').postRequest('Folders', fTrigger).then((data) => {
-			PromisesPopulator.foldersList(data.Result);
-			PromisesPopulator.foldersAdditionalParameters(data.Result);
-			return true;
-		});
+		return this.abort('Folders')
+			.postRequest('Folders', fTrigger)
+			.then((data) => {
+				PromisesPopulator.foldersList(data.Result);
+				PromisesPopulator.foldersAdditionalParameters(data.Result);
+				return true;
+			});
 	}
 
 	foldersReloadWithTimeout(fTrigger) {

@@ -1,22 +1,21 @@
 import _ from '_';
 import ko from 'ko';
 
-import {StorageResultType, Notification} from 'Common/Enums';
-import {getNotification} from 'Common/Translator';
-import {boolToAjax} from 'Common/Utils';
+import { StorageResultType, Notification } from 'Common/Enums';
+import { getNotification } from 'Common/Translator';
+import { boolToAjax } from 'Common/Utils';
 
-import {settingsGet} from 'Storage/Settings';
-import {showScreenPopup} from 'Knoin/Knoin';
+import { settingsGet } from 'Storage/Settings';
+import { showScreenPopup } from 'Knoin/Knoin';
 
 import AppStore from 'Stores/Admin/App';
 import PluginStore from 'Stores/Admin/Plugin';
 
 import Remote from 'Remote/Admin/Ajax';
 
-import {getApp} from 'Helper/Apps/Admin';
+import { getApp } from 'Helper/Apps/Admin';
 
-class PluginsAdminSettings
-{
+class PluginsAdminSettings {
 	constructor() {
 		this.enabledPlugins = ko.observable(!!settingsGet('EnabledPlugins'));
 
@@ -41,21 +40,20 @@ class PluginsAdminSettings
 	}
 
 	onBuild(oDom) {
-
 		const self = this;
 
 		oDom
-			.on('click', '.e-item .configure-plugin-action', function() { // eslint-disable-line prefer-arrow-callback
+			.on('click', '.e-item .configure-plugin-action', function() {
+				// eslint-disable-line prefer-arrow-callback
 				const plugin = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (plugin)
-				{
+				if (plugin) {
 					self.configurePlugin(plugin);
 				}
 			})
-			.on('click', '.e-item .disabled-plugin', function() { // eslint-disable-line prefer-arrow-callback
+			.on('click', '.e-item .disabled-plugin', function() {
+				// eslint-disable-line prefer-arrow-callback
 				const plugin = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (plugin)
-				{
+				if (plugin) {
 					self.disablePlugin(plugin);
 				}
 			});
@@ -73,23 +71,17 @@ class PluginsAdminSettings
 	}
 
 	onPluginLoadRequest(result, data) {
-		if (StorageResultType.Success === result && data && data.Result)
-		{
+		if (StorageResultType.Success === result && data && data.Result) {
 			showScreenPopup(require('View/Popup/Plugin'), [data.Result]);
 		}
 	}
 
 	onPluginDisableRequest(result, data) {
-		if (StorageResultType.Success === result && data)
-		{
-			if (!data.Result && data.ErrorCode)
-			{
-				if (Notification.UnsupportedPluginPackage === data.ErrorCode && data.ErrorMessage && '' !== data.ErrorMessage)
-				{
+		if (StorageResultType.Success === result && data) {
+			if (!data.Result && data.ErrorCode) {
+				if (Notification.UnsupportedPluginPackage === data.ErrorCode && data.ErrorMessage && '' !== data.ErrorMessage) {
 					PluginStore.plugins.error(data.ErrorMessage);
-				}
-				else
-				{
+				} else {
 					PluginStore.plugins.error(getNotification(data.ErrorCode));
 				}
 			}
@@ -99,4 +91,4 @@ class PluginsAdminSettings
 	}
 }
 
-export {PluginsAdminSettings, PluginsAdminSettings as default};
+export { PluginsAdminSettings, PluginsAdminSettings as default };

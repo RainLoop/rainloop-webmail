@@ -1,17 +1,15 @@
-
 import ko from 'ko';
 
 import Promises from 'Promises/User/Ajax';
 
-import {popup} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/WelcomePage',
 	templateID: 'PopupsWelcomePage'
 })
-class WelcomePagePopupView extends AbstractViewNext
-{
+class WelcomePagePopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -44,4 +42,4 @@ class WelcomePagePopupView extends AbstractViewNext
 	}
 }
 
-export {WelcomePagePopupView, WelcomePagePopupView as default};
+export { WelcomePagePopupView, WelcomePagePopupView as default };

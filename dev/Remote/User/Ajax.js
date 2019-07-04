@@ -1,7 +1,6 @@
-
 import _ from '_';
 
-import {pString, pInt, isArray, trim, boolToAjax} from 'Common/Utils';
+import { pString, pInt, isArray, trim, boolToAjax } from 'Common/Utils';
 
 import {
 	CONTACTS_SYNC_AJAX_TIMEOUT,
@@ -19,19 +18,18 @@ import {
 	getMessageFlagsFromCache
 } from 'Common/Cache';
 
-import {subQueryPrefix} from 'Common/Links';
+import { subQueryPrefix } from 'Common/Links';
 import * as Base64 from 'Common/Base64';
 import * as Settings from 'Storage/Settings';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {AbstractAjaxRemote} from 'Remote/AbstractAjax';
+import { AbstractAjaxRemote } from 'Remote/AbstractAjax';
 
-class RemoteUserAjax extends AbstractAjaxRemote
-{
+class RemoteUserAjax extends AbstractAjaxRemote {
 	constructor() {
 		super();
 		this.oRequests = {};
@@ -41,13 +39,20 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {?Function} fCallback
 	 */
 	folders(fCallback) {
-		this.defaultRequest(fCallback, 'Folders', {
-			'SentFolder': Settings.settingsGet('SentFolder'),
-			'DraftFolder': Settings.settingsGet('DraftFolder'),
-			'SpamFolder': Settings.settingsGet('SpamFolder'),
-			'TrashFolder': Settings.settingsGet('TrashFolder'),
-			'ArchiveFolder': Settings.settingsGet('ArchiveFolder')
-		}, null, '', ['Folders']);
+		this.defaultRequest(
+			fCallback,
+			'Folders',
+			{
+				'SentFolder': Settings.settingsGet('SentFolder'),
+				'DraftFolder': Settings.settingsGet('DraftFolder'),
+				'SpamFolder': Settings.settingsGet('SpamFolder'),
+				'TrashFolder': Settings.settingsGet('TrashFolder'),
+				'ArchiveFolder': Settings.settingsGet('ArchiveFolder')
+			},
+			null,
+			'',
+			['Folders']
+		);
 	}
 
 	/**
@@ -304,40 +309,54 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {boolean=} bSilent = false
 	 */
 	messageList(fCallback, sFolderFullNameRaw, iOffset = 0, iLimit = 20, sSearch = '', sThreadUid = '', bSilent = false) {
-
 		sFolderFullNameRaw = pString(sFolderFullNameRaw);
 
-		const
-			folderHash = getFolderHash(sFolderFullNameRaw),
+		const folderHash = getFolderHash(sFolderFullNameRaw),
 			useThreads = AppStore.threadsAllowed() && SettingsStore.useThreads(),
 			inboxUidNext = getFolderInboxName() === sFolderFullNameRaw ? getFolderUidNext(sFolderFullNameRaw) : '';
 
-		if ('' !== folderHash && ('' === sSearch || -1 === sSearch.indexOf('is:')))
-		{
-			return this.defaultRequest(fCallback, 'MessageList', {},
+		if ('' !== folderHash && ('' === sSearch || -1 === sSearch.indexOf('is:'))) {
+			return this.defaultRequest(
+				fCallback,
+				'MessageList',
+				{},
 				'' === sSearch ? DEFAULT_AJAX_TIMEOUT : SEARCH_AJAX_TIMEOUT,
-				'MessageList/' + subQueryPrefix() + '/' + Base64.urlsafe_encode([
-					sFolderFullNameRaw,
-					iOffset,
-					iLimit,
-					sSearch,
-					AppStore.projectHash(),
-					folderHash,
-					inboxUidNext,
-					useThreads ? '1' : '0',
-					useThreads ? sThreadUid : ''
-				].join(String.fromCharCode(0))), bSilent ? [] : ['MessageList']);
+				'MessageList/' +
+					subQueryPrefix() +
+					'/' +
+					Base64.urlsafe_encode(
+						[
+							sFolderFullNameRaw,
+							iOffset,
+							iLimit,
+							sSearch,
+							AppStore.projectHash(),
+							folderHash,
+							inboxUidNext,
+							useThreads ? '1' : '0',
+							useThreads ? sThreadUid : ''
+						].join(String.fromCharCode(0))
+					),
+				bSilent ? [] : ['MessageList']
+			);
 		}
 
-		return this.defaultRequest(fCallback, 'MessageList', {
-			Folder: sFolderFullNameRaw,
-			Offset: iOffset,
-			Limit: iLimit,
-			Search: sSearch,
-			UidNext: inboxUidNext,
-			UseThreads: useThreads ? '1' : '0',
-			ThreadUid: useThreads ? sThreadUid : ''
-		}, '' === sSearch ? DEFAULT_AJAX_TIMEOUT : SEARCH_AJAX_TIMEOUT, '', bSilent ? [] : ['MessageList']);
+		return this.defaultRequest(
+			fCallback,
+			'MessageList',
+			{
+				Folder: sFolderFullNameRaw,
+				Offset: iOffset,
+				Limit: iLimit,
+				Search: sSearch,
+				UidNext: inboxUidNext,
+				UseThreads: useThreads ? '1' : '0',
+				ThreadUid: useThreads ? sThreadUid : ''
+			},
+			'' === sSearch ? DEFAULT_AJAX_TIMEOUT : SEARCH_AJAX_TIMEOUT,
+			'',
+			bSilent ? [] : ['MessageList']
+		);
 	}
 
 	/**
@@ -345,9 +364,14 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {Array} aDownloads
 	 */
 	messageUploadAttachments(fCallback, aDownloads) {
-		this.defaultRequest(fCallback, 'MessageUploadAttachments', {
-			'Attachments': aDownloads
-		}, 999000);
+		this.defaultRequest(
+			fCallback,
+			'MessageUploadAttachments',
+			{
+				'Attachments': aDownloads
+			},
+			999000
+		);
 	}
 
 	/**
@@ -357,19 +381,28 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @returns {boolean}
 	 */
 	message(fCallback, sFolderFullNameRaw, iUid) {
-
 		sFolderFullNameRaw = pString(sFolderFullNameRaw);
 		iUid = pInt(iUid);
 
-		if (getFolderFromCacheList(sFolderFullNameRaw) && 0 < iUid)
-		{
-			this.defaultRequest(fCallback, 'Message', {}, null,
-				'Message/' + subQueryPrefix() + '/' + Base64.urlsafe_encode([
-					sFolderFullNameRaw,
-					iUid,
-					AppStore.projectHash(),
-					AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0'
-				].join(String.fromCharCode(0))), ['Message']);
+		if (getFolderFromCacheList(sFolderFullNameRaw) && 0 < iUid) {
+			this.defaultRequest(
+				fCallback,
+				'Message',
+				{},
+				null,
+				'Message/' +
+					subQueryPrefix() +
+					'/' +
+					Base64.urlsafe_encode(
+						[
+							sFolderFullNameRaw,
+							iUid,
+							AppStore.projectHash(),
+							AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0'
+						].join(String.fromCharCode(0))
+					),
+				['Message']
+			);
 
 			return true;
 		}
@@ -382,9 +415,14 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {Array} aExternals
 	 */
 	composeUploadExternals(fCallback, aExternals) {
-		this.defaultRequest(fCallback, 'ComposeUploadExternals', {
-			'Externals': aExternals
-		}, 999000);
+		this.defaultRequest(
+			fCallback,
+			'ComposeUploadExternals',
+			{
+				'Externals': aExternals
+			},
+			999000
+		);
 	}
 
 	/**
@@ -393,10 +431,15 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {string} sAccessToken
 	 */
 	composeUploadDrive(fCallback, sUrl, sAccessToken) {
-		this.defaultRequest(fCallback, 'ComposeUploadDrive', {
-			'AccessToken': sAccessToken,
-			'Url': sUrl
-		}, 999000);
+		this.defaultRequest(
+			fCallback,
+			'ComposeUploadDrive',
+			{
+				'AccessToken': sAccessToken,
+				'Url': sUrl
+			},
+			999000
+		);
 	}
 
 	/**
@@ -405,46 +448,37 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {Array=} list = []
 	 */
 	folderInformation(fCallback, folder, list = []) {
-
 		let request = true;
 		const uids = [];
 
-		if (isArray(list) && 0 < list.length)
-		{
+		if (isArray(list) && 0 < list.length) {
 			request = false;
 			_.each(list, (messageListItem) => {
-				if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, messageListItem.uid))
-				{
+				if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, messageListItem.uid)) {
 					uids.push(messageListItem.uid);
 				}
 
-				if (0 < messageListItem.threads().length)
-				{
+				if (0 < messageListItem.threads().length) {
 					_.each(messageListItem.threads(), (uid) => {
-						if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, uid))
-						{
+						if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, uid)) {
 							uids.push(uid);
 						}
 					});
 				}
 			});
 
-			if (0 < uids.length)
-			{
+			if (0 < uids.length) {
 				request = true;
 			}
 		}
 
-		if (request)
-		{
+		if (request) {
 			this.defaultRequest(fCallback, 'FolderInformation', {
 				'Folder': folder,
 				'FlagsUids': isArray(uids) ? uids.join(',') : '',
 				'UidNext': getFolderInboxName() === folder ? getFolderUidNext(folder) : ''
 			});
-		}
-		else if (SettingsStore.useThreads())
-		{
+		} else if (SettingsStore.useThreads()) {
 			getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	}
@@ -527,27 +561,48 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {string} sReferences
 	 * @param {boolean} bMarkAsImportant
 	 */
-	saveMessage(fCallback, sIdentityID, sMessageFolder, sMessageUid, sDraftFolder,
-		sTo, sCc, sBcc, sReplyTo, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences, bMarkAsImportant) {
-
-		this.defaultRequest(fCallback, 'SaveMessage', {
-			'IdentityID': sIdentityID,
-			'MessageFolder': sMessageFolder,
-			'MessageUid': sMessageUid,
-			'DraftFolder': sDraftFolder,
-			'To': sTo,
-			'Cc': sCc,
-			'Bcc': sBcc,
-			'ReplyTo': sReplyTo,
-			'Subject': sSubject,
-			'TextIsHtml': bTextIsHtml ? '1' : '0',
-			'Text': sText,
-			'DraftInfo': aDraftInfo,
-			'InReplyTo': sInReplyTo,
-			'References': sReferences,
-			'MarkAsImportant': bMarkAsImportant ? '1' : '0',
-			'Attachments': aAttachments
-		}, SAVE_MESSAGE_AJAX_TIMEOUT);
+	saveMessage(
+		fCallback,
+		sIdentityID,
+		sMessageFolder,
+		sMessageUid,
+		sDraftFolder,
+		sTo,
+		sCc,
+		sBcc,
+		sReplyTo,
+		sSubject,
+		bTextIsHtml,
+		sText,
+		aAttachments,
+		aDraftInfo,
+		sInReplyTo,
+		sReferences,
+		bMarkAsImportant
+	) {
+		this.defaultRequest(
+			fCallback,
+			'SaveMessage',
+			{
+				'IdentityID': sIdentityID,
+				'MessageFolder': sMessageFolder,
+				'MessageUid': sMessageUid,
+				'DraftFolder': sDraftFolder,
+				'To': sTo,
+				'Cc': sCc,
+				'Bcc': sBcc,
+				'ReplyTo': sReplyTo,
+				'Subject': sSubject,
+				'TextIsHtml': bTextIsHtml ? '1' : '0',
+				'Text': sText,
+				'DraftInfo': aDraftInfo,
+				'InReplyTo': sInReplyTo,
+				'References': sReferences,
+				'MarkAsImportant': bMarkAsImportant ? '1' : '0',
+				'Attachments': aAttachments
+			},
+			SAVE_MESSAGE_AJAX_TIMEOUT
+		);
 	}
 
 	/**
@@ -589,30 +644,52 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {boolean} bRequestReadReceipt
 	 * @param {boolean} bMarkAsImportant
 	 */
-	sendMessage(fCallback, sIdentityID, sMessageFolder, sMessageUid, sSentFolder,
-		sTo, sCc, sBcc, sReplyTo, sSubject, bTextIsHtml, sText, aAttachments, aDraftInfo, sInReplyTo, sReferences,
-		bRequestDsn, bRequestReadReceipt, bMarkAsImportant) {
-
-		this.defaultRequest(fCallback, 'SendMessage', {
-			'IdentityID': sIdentityID,
-			'MessageFolder': sMessageFolder,
-			'MessageUid': sMessageUid,
-			'SentFolder': sSentFolder,
-			'To': sTo,
-			'Cc': sCc,
-			'Bcc': sBcc,
-			'ReplyTo': sReplyTo,
-			'Subject': sSubject,
-			'TextIsHtml': bTextIsHtml ? '1' : '0',
-			'Text': sText,
-			'DraftInfo': aDraftInfo,
-			'InReplyTo': sInReplyTo,
-			'References': sReferences,
-			'Dsn': bRequestDsn ? '1' : '0',
-			'ReadReceiptRequest': bRequestReadReceipt ? '1' : '0',
-			'MarkAsImportant': bMarkAsImportant ? '1' : '0',
-			'Attachments': aAttachments
-		}, SEND_MESSAGE_AJAX_TIMEOUT);
+	sendMessage(
+		fCallback,
+		sIdentityID,
+		sMessageFolder,
+		sMessageUid,
+		sSentFolder,
+		sTo,
+		sCc,
+		sBcc,
+		sReplyTo,
+		sSubject,
+		bTextIsHtml,
+		sText,
+		aAttachments,
+		aDraftInfo,
+		sInReplyTo,
+		sReferences,
+		bRequestDsn,
+		bRequestReadReceipt,
+		bMarkAsImportant
+	) {
+		this.defaultRequest(
+			fCallback,
+			'SendMessage',
+			{
+				'IdentityID': sIdentityID,
+				'MessageFolder': sMessageFolder,
+				'MessageUid': sMessageUid,
+				'SentFolder': sSentFolder,
+				'To': sTo,
+				'Cc': sCc,
+				'Bcc': sBcc,
+				'ReplyTo': sReplyTo,
+				'Subject': sSubject,
+				'TextIsHtml': bTextIsHtml ? '1' : '0',
+				'Text': sText,
+				'DraftInfo': aDraftInfo,
+				'InReplyTo': sInReplyTo,
+				'References': sReferences,
+				'Dsn': bRequestDsn ? '1' : '0',
+				'ReadReceiptRequest': bRequestReadReceipt ? '1' : '0',
+				'MarkAsImportant': bMarkAsImportant ? '1' : '0',
+				'Attachments': aAttachments
+			},
+			SEND_MESSAGE_AJAX_TIMEOUT
+		);
 	}
 
 	/**
@@ -699,13 +776,20 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {boolean=} bMarkAsRead
 	 */
 	messagesMove(fCallback, sFolder, sToFolder, aUids, sLearning, bMarkAsRead) {
-		this.defaultRequest(fCallback, 'MessageMove', {
-			'FromFolder': sFolder,
-			'ToFolder': sToFolder,
-			'Uids': aUids.join(','),
-			'MarkAsRead': bMarkAsRead ? '1' : '0',
-			'Learning': sLearning || ''
-		}, null, '', ['MessageList']);
+		this.defaultRequest(
+			fCallback,
+			'MessageMove',
+			{
+				'FromFolder': sFolder,
+				'ToFolder': sToFolder,
+				'Uids': aUids.join(','),
+				'MarkAsRead': bMarkAsRead ? '1' : '0',
+				'Learning': sLearning || ''
+			},
+			null,
+			'',
+			['MessageList']
+		);
 	}
 
 	/**
@@ -728,10 +812,17 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {Array} aUids
 	 */
 	messagesDelete(fCallback, sFolder, aUids) {
-		this.defaultRequest(fCallback, 'MessageDelete', {
-			'Folder': sFolder,
-			'Uids': aUids.join(',')
-		}, null, '', ['MessageList']);
+		this.defaultRequest(
+			fCallback,
+			'MessageDelete',
+			{
+				'Folder': sFolder,
+				'Uids': aUids.join(',')
+			},
+			null,
+			'',
+			['MessageList']
+		);
 	}
 
 	/**
@@ -755,11 +846,18 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {string} sSearch
 	 */
 	contacts(fCallback, iOffset, iLimit, sSearch) {
-		this.defaultRequest(fCallback, 'Contacts', {
-			'Offset': iOffset,
-			'Limit': iLimit,
-			'Search': sSearch
-		}, null, '', ['Contacts']);
+		this.defaultRequest(
+			fCallback,
+			'Contacts',
+			{
+				'Offset': iOffset,
+				'Limit': iLimit,
+				'Search': sSearch
+			},
+			null,
+			'',
+			['Contacts']
+		);
 	}
 
 	/**
@@ -792,10 +890,17 @@ class RemoteUserAjax extends AbstractAjaxRemote
 	 * @param {number} iPage
 	 */
 	suggestions(fCallback, sQuery, iPage) {
-		this.defaultRequest(fCallback, 'Suggestions', {
-			'Query': sQuery,
-			'Page': iPage
-		}, null, '', ['Suggestions']);
+		this.defaultRequest(
+			fCallback,
+			'Suggestions',
+			{
+				'Query': sQuery,
+				'Page': iPage
+			},
+			null,
+			'',
+			['Suggestions']
+		);
 	}
 
 	/**

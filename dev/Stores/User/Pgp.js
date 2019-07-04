@@ -1,17 +1,15 @@
-
 import ko from 'ko';
 import _ from '_';
 import $ from '$';
 
-import {i18n} from 'Common/Translator';
-import {log, isArray, isNonEmptyArray, pString, isUnd, trim} from 'Common/Utils';
+import { i18n } from 'Common/Translator';
+import { log, isArray, isNonEmptyArray, pString, isUnd, trim } from 'Common/Utils';
 
 import AccountStore from 'Stores/User/Account';
 
-import {showScreenPopup} from 'Knoin/Knoin';
+import { showScreenPopup } from 'Knoin/Knoin';
 
-class PgpUserStore
-{
+class PgpUserStore {
 	constructor() {
 		this.capaOpenPGP = ko.observable(false);
 
@@ -32,7 +30,7 @@ class PgpUserStore
 	}
 
 	findKeyByHex(keys, hash) {
-		return _.find(keys, (item) => (hash && item && (hash === item.id || -1 < item.ids.indexOf(hash))));
+		return _.find(keys, (item) => hash && item && (hash === item.id || -1 < item.ids.indexOf(hash)));
 	}
 
 	findPublicKeyByHex(hash) {
@@ -44,32 +42,59 @@ class PgpUserStore
 	}
 
 	findPublicKeysByEmail(email) {
-		return _.compact(_.flatten(_.map(this.openpgpkeysPublic(), (item) => {
-			const key = item && -1 < item.emails.indexOf(email) ? item : null;
-			return key ? key.getNativeKeys() : [null];
-		}), true));
+		return _.compact(
+			_.flatten(
+				_.map(this.openpgpkeysPublic(), (item) => {
+					const key = item && -1 < item.emails.indexOf(email) ? item : null;
+					return key ? key.getNativeKeys() : [null];
+				}),
+				true
+			)
+		);
 	}
 
 	findPublicKeysBySigningKeyIds(signingKeyIds) {
-		return _.compact(_.flatten(_.map(signingKeyIds, (id) => {
-			const key = id && id.toHex ? this.findPublicKeyByHex(id.toHex()) : null;
-			return key ? key.getNativeKeys() : [null];
-		}), true));
+		return _.compact(
+			_.flatten(
+				_.map(signingKeyIds, (id) => {
+					const key = id && id.toHex ? this.findPublicKeyByHex(id.toHex()) : null;
+					return key ? key.getNativeKeys() : [null];
+				}),
+				true
+			)
+		);
 	}
 
 	findPrivateKeysByEncryptionKeyIds(encryptionKeyIds, recipients, returnWrapKeys) {
-		let
-			result = isArray(encryptionKeyIds) ? _.compact(_.flatten(_.map(encryptionKeyIds, (id) => {
-				const key = id && id.toHex ? this.findPrivateKeyByHex(id.toHex()) : null;
-				return key ? (returnWrapKeys ? [key] : key.getNativeKeys()) : [null];
-			}), true)) : [];
+		let result = isArray(encryptionKeyIds)
+			? _.compact(
+					_.flatten(
+						_.map(encryptionKeyIds, (id) => {
+							const key = id && id.toHex ? this.findPrivateKeyByHex(id.toHex()) : null;
+							return key ? (returnWrapKeys ? [key] : key.getNativeKeys()) : [null];
+						}),
+						true
+					)
+			  )
+			: [];
 
-		if (0 === result.length && isNonEmptyArray(recipients))
-		{
-			result = _.uniq(_.compact(_.flatten(_.map(recipients, (sEmail) => {
-				const keys = sEmail ? this.findAllPrivateKeysByEmailNotNative(sEmail) : null;
-				return keys ? (returnWrapKeys ? keys : _.flatten(_.map(keys, (key) => key.getNativeKeys()), true)) : [null];
-			}), true)), (key) => key.id);
+		if (0 === result.length && isNonEmptyArray(recipients)) {
+			result = _.uniq(
+				_.compact(
+					_.flatten(
+						_.map(recipients, (sEmail) => {
+							const keys = sEmail ? this.findAllPrivateKeysByEmailNotNative(sEmail) : null;
+							return keys
+								? returnWrapKeys
+									? keys
+									: _.flatten(_.map(keys, (key) => key.getNativeKeys()), true)
+								: [null];
+						}),
+						true
+					)
+				),
+				(key) => key.id
+			);
 		}
 
 		return result;
@@ -80,7 +105,7 @@ class PgpUserStore
 	 * @returns {?}
 	 */
 	findPublicKeyByEmailNotNative(email) {
-		return _.find(this.openpgpkeysPublic(), (item) => (item && -1 < item.emails.indexOf(email))) || null;
+		return _.find(this.openpgpkeysPublic(), (item) => item && -1 < item.emails.indexOf(email)) || null;
 	}
 
 	/**
@@ -88,7 +113,7 @@ class PgpUserStore
 	 * @returns {?}
 	 */
 	findPrivateKeyByEmailNotNative(email) {
-		return _.find(this.openpgpkeysPrivate(), (item) => (item && -1 < item.emails.indexOf(email))) || null;
+		return _.find(this.openpgpkeysPrivate(), (item) => item && -1 < item.emails.indexOf(email)) || null;
 	}
 
 	/**
@@ -96,7 +121,7 @@ class PgpUserStore
 	 * @returns {?}
 	 */
 	findAllPublicKeysByEmailNotNative(email) {
-		return _.filter(this.openpgpkeysPublic(), (item) => (item && -1 < item.emails.indexOf(email))) || null;
+		return _.filter(this.openpgpkeysPublic(), (item) => item && -1 < item.emails.indexOf(email)) || null;
 	}
 
 	/**
@@ -104,7 +129,7 @@ class PgpUserStore
 	 * @returns {?}
 	 */
 	findAllPrivateKeysByEmailNotNative(email) {
-		return _.filter(this.openpgpkeysPrivate(), (item) => (item && -1 < item.emails.indexOf(email))) || null;
+		return _.filter(this.openpgpkeysPrivate(), (item) => item && -1 < item.emails.indexOf(email)) || null;
 	}
 
 	/**
@@ -113,22 +138,16 @@ class PgpUserStore
 	 * @returns {?}
 	 */
 	findPrivateKeyByEmail(email, password) {
-
 		let privateKey = null;
-		const key = _.find(this.openpgpkeysPrivate(), (item) => (item && -1 < item.emails.indexOf(email)));
+		const key = _.find(this.openpgpkeysPrivate(), (item) => item && -1 < item.emails.indexOf(email));
 
-		if (key)
-		{
-			try
-			{
+		if (key) {
+			try {
 				privateKey = key.getNativeKeys()[0] || null;
-				if (privateKey)
-				{
+				if (privateKey) {
 					privateKey.decrypt(pString(password));
 				}
-			}
-			catch (e)
-			{
+			} catch (e) {
 				privateKey = null;
 			}
 		}
@@ -145,46 +164,38 @@ class PgpUserStore
 	}
 
 	decryptMessage(message, recipients, fCallback) {
-		if (message && message.getEncryptionKeyIds)
-		{
+		if (message && message.getEncryptionKeyIds) {
 			const privateKeys = this.findPrivateKeysByEncryptionKeyIds(message.getEncryptionKeyIds(), recipients, true);
-			if (privateKeys && 0 < privateKeys.length)
-			{
-				showScreenPopup(require('View/Popup/MessageOpenPgp'), [(decryptedKey) => {
-
-					if (decryptedKey)
-					{
-						message.decrypt(decryptedKey).then((decryptedMessage) => {
-							let privateKey = null;
-							if (decryptedMessage)
-							{
-								privateKey = this.findPrivateKeyByHex(decryptedKey.primaryKey.keyid.toHex());
-								if (privateKey)
-								{
-									this.verifyMessage(decryptedMessage, (oValidKey, aSigningKeyIds) => {
-										fCallback(privateKey, decryptedMessage, oValidKey || null, aSigningKeyIds || null);
-									});
+			if (privateKeys && 0 < privateKeys.length) {
+				showScreenPopup(require('View/Popup/MessageOpenPgp'), [
+					(decryptedKey) => {
+						if (decryptedKey) {
+							message.decrypt(decryptedKey).then(
+								(decryptedMessage) => {
+									let privateKey = null;
+									if (decryptedMessage) {
+										privateKey = this.findPrivateKeyByHex(decryptedKey.primaryKey.keyid.toHex());
+										if (privateKey) {
+											this.verifyMessage(decryptedMessage, (oValidKey, aSigningKeyIds) => {
+												fCallback(privateKey, decryptedMessage, oValidKey || null, aSigningKeyIds || null);
+											});
+										} else {
+											fCallback(privateKey, decryptedMessage);
+										}
+									} else {
+										fCallback(privateKey, decryptedMessage);
+									}
+								},
+								() => {
+									fCallback(null, null);
 								}
-								else
-								{
-									fCallback(privateKey, decryptedMessage);
-								}
-							}
-							else
-							{
-								fCallback(privateKey, decryptedMessage);
-							}
-
-						}, () => {
+							);
+						} else {
 							fCallback(null, null);
-						});
-					}
-					else
-					{
-						fCallback(null, null);
-					}
-
-				}, privateKeys]);
+						}
+					},
+					privateKeys
+				]);
 
 				return false;
 			}
@@ -196,28 +207,20 @@ class PgpUserStore
 	}
 
 	verifyMessage(message, fCallback) {
-		if (message && message.getSigningKeyIds)
-		{
+		if (message && message.getSigningKeyIds) {
 			const signingKeyIds = message.getSigningKeyIds();
-			if (signingKeyIds && 0 < signingKeyIds.length)
-			{
+			if (signingKeyIds && 0 < signingKeyIds.length) {
 				const publicKeys = this.findPublicKeysBySigningKeyIds(signingKeyIds);
-				if (publicKeys && 0 < publicKeys.length)
-				{
-					try
-					{
-						const
-							result = message.verify(publicKeys),
-							valid = _.find(_.isArray(result) ? result : [], (item) => (item && item.valid && item.keyid));
+				if (publicKeys && 0 < publicKeys.length) {
+					try {
+						const result = message.verify(publicKeys),
+							valid = _.find(_.isArray(result) ? result : [], (item) => item && item.valid && item.keyid);
 
-						if (valid && valid.keyid && valid.keyid && valid.keyid.toHex)
-						{
+						if (valid && valid.keyid && valid.keyid && valid.keyid.toHex) {
 							fCallback(this.findPublicKeyByHex(valid.keyid.toHex()));
 							return true;
 						}
-					}
-					catch (e)
-					{
+					} catch (e) {
 						log(e);
 					}
 				}
@@ -232,75 +235,83 @@ class PgpUserStore
 	}
 
 	controlsHelper(dom, verControl, success, title, text) {
-		if (success)
-		{
-			dom.removeClass('error').addClass('success').attr('title', title);
-			verControl.removeClass('error').addClass('success').attr('title', title);
-		}
-		else
-		{
-			dom.removeClass('success').addClass('error').attr('title', title);
-			verControl.removeClass('success').addClass('error').attr('title', title);
+		if (success) {
+			dom
+				.removeClass('error')
+				.addClass('success')
+				.attr('title', title);
+			verControl
+				.removeClass('error')
+				.addClass('success')
+				.attr('title', title);
+		} else {
+			dom
+				.removeClass('success')
+				.addClass('error')
+				.attr('title', title);
+			verControl
+				.removeClass('success')
+				.addClass('error')
+				.attr('title', title);
 		}
 
-		if (!isUnd(text))
-		{
+		if (!isUnd(text)) {
 			dom.text(trim(text));
 		}
 	}
 
 	static domControlEncryptedClickHelper(store, dom, armoredMessage, recipients) {
-
 		return function() {
-
 			let message = null;
 			const $this = $(this); // eslint-disable-line no-invalid-this
 
-			if ($this.hasClass('success'))
-			{
+			if ($this.hasClass('success')) {
 				return false;
 			}
 
-			try
-			{
+			try {
 				message = store.openpgp.message.readArmored(armoredMessage);
-			}
-			catch (e)
-			{
+			} catch (e) {
 				log(e);
 			}
 
-			if (message && message.getText && message.verify && message.decrypt)
-			{
-				store.decryptMessage(message, recipients, (validPrivateKey, decryptedMessage, validPublicKey, signingKeyIds) => {
-					if (decryptedMessage)
-					{
-						if (validPublicKey)
-						{
-							store.controlsHelper(dom, $this, true, i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-								'USER': validPublicKey.user + ' (' + validPublicKey.id + ')'
-							}), decryptedMessage.getText());
-						}
-						else if (validPrivateKey)
-						{
-							const
-								keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
-								additional = keyIds ? _.compact(_.map(keyIds,
-									(item) => (item && item.toHex ? item.toHex() : null))).join(', ') : '';
+			if (message && message.getText && message.verify && message.decrypt) {
+				store.decryptMessage(
+					message,
+					recipients,
+					(validPrivateKey, decryptedMessage, validPublicKey, signingKeyIds) => {
+						if (decryptedMessage) {
+							if (validPublicKey) {
+								store.controlsHelper(
+									dom,
+									$this,
+									true,
+									i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+										'USER': validPublicKey.user + ' (' + validPublicKey.id + ')'
+									}),
+									decryptedMessage.getText()
+								);
+							} else if (validPrivateKey) {
+								const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
+									additional = keyIds
+										? _.compact(_.map(keyIds, (item) => (item && item.toHex ? item.toHex() : null))).join(', ')
+										: '';
 
-							store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') +
-								(additional ? ' (' + additional + ')' : ''), decryptedMessage.getText());
-						}
-						else
-						{
+								store.controlsHelper(
+									dom,
+									$this,
+									false,
+									i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : ''),
+									decryptedMessage.getText()
+								);
+							} else {
+								store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+							}
+						} else {
 							store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
 						}
 					}
-					else
-					{
-						store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-					}
-				});
+				);
 
 				return false;
 			}
@@ -311,43 +322,44 @@ class PgpUserStore
 	}
 
 	static domControlSignedClickHelper(store, dom, armoredMessage) {
-
 		return function() {
-
 			let message = null;
 			const $this = $(this); // eslint-disable-line no-invalid-this
 
-			if ($this.hasClass('success') || $this.hasClass('error'))
-			{
+			if ($this.hasClass('success') || $this.hasClass('error')) {
 				return false;
 			}
 
-			try
-			{
+			try {
 				message = store.openpgp.cleartext.readArmored(armoredMessage);
-			}
-			catch (e)
-			{
+			} catch (e) {
 				log(e);
 			}
 
-			if (message && message.getText && message.verify)
-			{
+			if (message && message.getText && message.verify) {
 				store.verifyMessage(message, (validKey, signingKeyIds) => {
-					if (validKey)
-					{
-						store.controlsHelper(dom, $this, true, i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-							'USER': validKey.user + ' (' + validKey.id + ')'
-						}), message.getText());
-					}
-					else
-					{
-						const
-							keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
-							additional = keyIds ? _.compact(_.map(keyIds, (item) => (item && item.toHex ? item.toHex() : null))).join(', ') : '';
+					if (validKey) {
+						store.controlsHelper(
+							dom,
+							$this,
+							true,
+							i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+								'USER': validKey.user + ' (' + validKey.id + ')'
+							}),
+							message.getText()
+						);
+					} else {
+						const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
+							additional = keyIds
+								? _.compact(_.map(keyIds, (item) => (item && item.toHex ? item.toHex() : null))).join(', ')
+								: '';
 
-						store.controlsHelper(dom, $this, false,
-							i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : ''));
+						store.controlsHelper(
+							dom,
+							$this,
+							false,
+							i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : '')
+						);
 					}
 				});
 
@@ -364,37 +376,30 @@ class PgpUserStore
 	 * @param {MessageModel} rainLoopMessage
 	 */
 	initMessageBodyControls(dom, rainLoopMessage) {
-		if (dom && !dom.hasClass('inited'))
-		{
+		if (dom && !dom.hasClass('inited')) {
 			dom.addClass('inited');
 
-			const
-				encrypted = dom.hasClass('encrypted'),
+			const encrypted = dom.hasClass('encrypted'),
 				signed = dom.hasClass('signed'),
 				recipients = rainLoopMessage ? rainLoopMessage.getEmails(['from', 'to', 'cc']) : [];
 
 			let verControl = null;
 
-			if (encrypted || signed)
-			{
+			if (encrypted || signed) {
 				const domText = dom.text();
 				dom.data('openpgp-original', domText);
 
-				if (encrypted)
-				{
+				if (encrypted) {
 					verControl = $('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
 						.attr('title', i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC'))
 						.on('click', PgpUserStore.domControlEncryptedClickHelper(this, dom, domText, recipients));
-				}
-				else if (signed)
-				{
+				} else if (signed) {
 					verControl = $('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
 						.attr('title', i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC'))
 						.on('click', PgpUserStore.domControlSignedClickHelper(this, dom, domText));
 				}
 
-				if (verControl)
-				{
+				if (verControl) {
 					dom.before(verControl).before('<div></div>');
 				}
 			}

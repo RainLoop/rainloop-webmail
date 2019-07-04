@@ -1,18 +1,22 @@
-
 import _ from '_';
 import ko from 'ko';
 
 import {
-	trim, pInt, boolToAjax, settingsSaveHelperSimpleFunction,
-	changeTheme, convertThemeName, convertLangName
+	trim,
+	pInt,
+	boolToAjax,
+	settingsSaveHelperSimpleFunction,
+	changeTheme,
+	convertThemeName,
+	convertLangName
 } from 'Common/Utils';
 
-import {SaveSettingsStep, Magics} from 'Common/Enums';
-import {reload as translatorReload} from 'Common/Translator';
-import {phpInfo} from 'Common/Links';
+import { SaveSettingsStep, Magics } from 'Common/Enums';
+import { reload as translatorReload } from 'Common/Translator';
+import { phpInfo } from 'Common/Links';
 
-import {settingsGet} from 'Storage/Settings';
-import {showScreenPopup} from 'Knoin/Knoin';
+import { settingsGet } from 'Storage/Settings';
+import { showScreenPopup } from 'Knoin/Knoin';
 
 import Remote from 'Remote/Admin/Ajax';
 
@@ -21,8 +25,7 @@ import LanguageStore from 'Stores/Language';
 import AppAdminStore from 'Stores/Admin/App';
 import CapaAdminStore from 'Stores/Admin/Capa';
 
-class GeneralAdminSettings
-{
+class GeneralAdminSettings {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
@@ -46,29 +49,37 @@ class GeneralAdminSettings
 
 		this.dataFolderAccess = AppAdminStore.dataFolderAccess;
 
-		this.mainAttachmentLimit = ko.observable(pInt(settingsGet('AttachmentLimit')) / (Magics.BitLength1024 * Magics.BitLength1024)).extend({posInterer: 25});
+		this.mainAttachmentLimit = ko
+			.observable(pInt(settingsGet('AttachmentLimit')) / (Magics.BitLength1024 * Magics.BitLength1024))
+			.extend({ posInterer: 25 });
 
 		this.uploadData = settingsGet('PhpUploadSizes');
-		this.uploadDataDesc = this.uploadData && (this.uploadData.upload_max_filesize || this.uploadData.post_max_size) ? [
-			this.uploadData.upload_max_filesize ? 'upload_max_filesize = ' + this.uploadData.upload_max_filesize + '; ' : '',
-			this.uploadData.post_max_size ? 'post_max_size = ' + this.uploadData.post_max_size : ''
-		].join('') : '';
+		this.uploadDataDesc =
+			this.uploadData && (this.uploadData.upload_max_filesize || this.uploadData.post_max_size)
+				? [
+						this.uploadData.upload_max_filesize
+							? 'upload_max_filesize = ' + this.uploadData.upload_max_filesize + '; '
+							: '',
+						this.uploadData.post_max_size ? 'post_max_size = ' + this.uploadData.post_max_size : ''
+				  ].join('')
+				: '';
 
-		this.themesOptions = ko.computed(() => _.map(this.themes(), (theme) => ({optValue: theme, optText: convertThemeName(theme)})));
+		this.themesOptions = ko.computed(() =>
+			_.map(this.themes(), (theme) => ({ optValue: theme, optText: convertThemeName(theme) }))
+		);
 
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
 		this.languageAdminFullName = ko.computed(() => convertLangName(this.languageAdmin()));
 
 		this.attachmentLimitTrigger = ko.observable(SaveSettingsStep.Idle);
 		this.languageTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({throttle: Magics.Time100ms});
+		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: Magics.Time100ms });
 		this.themeTrigger = ko.observable(SaveSettingsStep.Idle);
 	}
 
 	onBuild() {
 		_.delay(() => {
-			const
-				f1 = settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this),
+			const f1 = settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this),
 				f2 = settingsSaveHelperSimpleFunction(this.languageTrigger, this),
 				f3 = settingsSaveHelperSimpleFunction(this.themeTrigger, this),
 				fReloadLanguageHelper = (saveSettingsStep) => () => {
@@ -90,14 +101,13 @@ class GeneralAdminSettings
 
 			this.languageAdmin.subscribe((value) => {
 				this.languageAdminTrigger(SaveSettingsStep.Animate);
-				translatorReload(true, value).then(
-					fReloadLanguageHelper(SaveSettingsStep.TrueResult),
-					fReloadLanguageHelper(SaveSettingsStep.FalseResult)
-				).then(() => {
-					Remote.saveAdminConfig(null, {
-						'LanguageAdmin': trim(value)
+				translatorReload(true, value)
+					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
+					.then(() => {
+						Remote.saveAdminConfig(null, {
+							'LanguageAdmin': trim(value)
+						});
 					});
-				});
 			});
 
 			this.theme.subscribe((value) => {
@@ -164,14 +174,14 @@ class GeneralAdminSettings
 	}
 
 	selectLanguage() {
-		showScreenPopup(require('View/Popup/Languages'), [
-			this.language, this.languages(), LanguageStore.userLanguage()
-		]);
+		showScreenPopup(require('View/Popup/Languages'), [this.language, this.languages(), LanguageStore.userLanguage()]);
 	}
 
 	selectLanguageAdmin() {
 		showScreenPopup(require('View/Popup/Languages'), [
-			this.languageAdmin, this.languagesAdmin(), LanguageStore.userLanguageAdmin()
+			this.languageAdmin,
+			this.languagesAdmin(),
+			LanguageStore.userLanguageAdmin()
 		]);
 	}
 
@@ -183,4 +193,4 @@ class GeneralAdminSettings
 	}
 }
 
-export {GeneralAdminSettings, GeneralAdminSettings as default};
+export { GeneralAdminSettings, GeneralAdminSettings as default };

@@ -1,13 +1,12 @@
-
 import window from 'window';
 import _ from '_';
 import ko from 'ko';
 import progressJs from 'progressJs';
 
-import {root} from 'Common/Links';
-import {getNotification} from 'Common/Translator';
-import {StorageResultType, Notification} from 'Common/Enums';
-import {pInt, isNormal, isArray, inArray, isUnd} from 'Common/Utils';
+import { root } from 'Common/Links';
+import { getNotification } from 'Common/Translator';
+import { StorageResultType, Notification } from 'Common/Enums';
+import { pInt, isNormal, isArray, inArray, isUnd } from 'Common/Utils';
 
 import * as Settings from 'Storage/Settings';
 
@@ -20,14 +19,13 @@ import PackageStore from 'Stores/Admin/Package';
 import CoreStore from 'Stores/Admin/Core';
 import Remote from 'Remote/Admin/Ajax';
 
-import {SettingsAdminScreen} from 'Screen/Admin/Settings';
-import {LoginAdminScreen} from 'Screen/Admin/Login';
+import { SettingsAdminScreen } from 'Screen/Admin/Settings';
+import { LoginAdminScreen } from 'Screen/Admin/Login';
 
-import {hideLoading, routeOff, setHash, startScreens} from 'Knoin/Knoin';
-import {AbstractApp} from 'App/Abstract';
+import { hideLoading, routeOff, setHash, startScreens } from 'Knoin/Knoin';
+import { AbstractApp } from 'App/Abstract';
 
-class AdminApp extends AbstractApp
-{
+class AdminApp extends AbstractApp {
 	constructor() {
 		super(Remote);
 	}
@@ -40,14 +38,15 @@ class AdminApp extends AbstractApp
 		DomainStore.domains.loading(true);
 		Remote.domainList((result, data) => {
 			DomainStore.domains.loading(false);
-			if (StorageResultType.Success === result && data && data.Result)
-			{
-				DomainStore.domains(_.map(data.Result, ([enabled, alias], name) => ({
-					name: name,
-					disabled: ko.observable(!enabled),
-					alias: alias,
-					deleteAccess: ko.observable(false)
-				})));
+			if (StorageResultType.Success === result && data && data.Result) {
+				DomainStore.domains(
+					_.map(data.Result, ([enabled, alias], name) => ({
+						name: name,
+						disabled: ko.observable(!enabled),
+						alias: alias,
+						deleteAccess: ko.observable(false)
+					}))
+				);
 			}
 		});
 	}
@@ -56,13 +55,14 @@ class AdminApp extends AbstractApp
 		PluginStore.plugins.loading(true);
 		Remote.pluginList((result, data) => {
 			PluginStore.plugins.loading(false);
-			if (StorageResultType.Success === result && data && data.Result)
-			{
-				PluginStore.plugins(_.map(data.Result, (item) => ({
-					name: item.Name,
-					disabled: ko.observable(!item.Enabled),
-					configured: ko.observable(!!item.Configured)
-				})));
+			if (StorageResultType.Success === result && data && data.Result) {
+				PluginStore.plugins(
+					_.map(data.Result, (item) => ({
+						name: item.Name,
+						disabled: ko.observable(!item.Enabled),
+						configured: ko.observable(!!item.Configured)
+					}))
+				);
 			}
 		});
 	}
@@ -72,8 +72,7 @@ class AdminApp extends AbstractApp
 		PackageStore.packagesReal(true);
 		Remote.packagesList((result, data) => {
 			PackageStore.packages.loading(false);
-			if (StorageResultType.Success === result && data && data.Result)
-			{
+			if (StorageResultType.Success === result && data && data.Result) {
 				PackageStore.packagesReal(!!data.Result.Real);
 				PackageStore.packagesMainUpdatable(!!data.Result.MainUpdatable);
 
@@ -81,28 +80,25 @@ class AdminApp extends AbstractApp
 				const loading = {};
 
 				_.each(PackageStore.packages(), (item) => {
-					if (item && item.loading())
-					{
+					if (item && item.loading()) {
 						loading[item.file] = item;
 					}
 				});
 
-				if (isArray(data.Result.List))
-				{
-					list = _.compact(_.map(data.Result.List, (item) => {
-						if (item)
-						{
-							item.loading = ko.observable(!isUnd(loading[item.file]));
-							return 'core' === item.type && !item.canBeInstalled ? null : item;
-						}
-						return null;
-					}));
+				if (isArray(data.Result.List)) {
+					list = _.compact(
+						_.map(data.Result.List, (item) => {
+							if (item) {
+								item.loading = ko.observable(!isUnd(loading[item.file]));
+								return 'core' === item.type && !item.canBeInstalled ? null : item;
+							}
+							return null;
+						})
+					);
 				}
 
 				PackageStore.packages(list);
-			}
-			else
-			{
+			} else {
 				PackageStore.packagesReal(false);
 			}
 		});
@@ -116,13 +112,10 @@ class AdminApp extends AbstractApp
 			CoreStore.coreRemoteVersion('');
 			CoreStore.coreRemoteRelease('');
 			CoreStore.coreVersionCompare(-2);
-			if (StorageResultType.Success === result && data && data.Result)
-			{
+			if (StorageResultType.Success === result && data && data.Result) {
 				CoreStore.coreReal(true);
 				window.location.reload();
-			}
-			else
-			{
+			} else {
 				CoreStore.coreReal(false);
 			}
 		});
@@ -133,8 +126,7 @@ class AdminApp extends AbstractApp
 		CoreStore.coreReal(true);
 		Remote.coreData((result, data) => {
 			CoreStore.coreChecking(false);
-			if (StorageResultType.Success === result && data && data.Result)
-			{
+			if (StorageResultType.Success === result && data && data.Result) {
 				CoreStore.coreReal(!!data.Result.Real);
 				CoreStore.coreChannel(data.Result.Channel || 'stable');
 				CoreStore.coreType(data.Result.Type || 'stable');
@@ -145,9 +137,7 @@ class AdminApp extends AbstractApp
 				CoreStore.coreRemoteVersion(data.Result.RemoteVersion || '');
 				CoreStore.coreRemoteRelease(data.Result.RemoteRelease || '');
 				CoreStore.coreVersionCompare(pInt(data.Result.VersionCompare));
-			}
-			else
-			{
+			} else {
 				CoreStore.coreReal(false);
 				CoreStore.coreChannel('stable');
 				CoreStore.coreType('stable');
@@ -168,33 +158,25 @@ class AdminApp extends AbstractApp
 		LicenseStore.licenseError('');
 		Remote.licensing((result, data) => {
 			LicenseStore.licensingProcess(false);
-			if (StorageResultType.Success === result && data && data.Result && isNormal(data.Result.Expired))
-			{
+			if (StorageResultType.Success === result && data && data.Result && isNormal(data.Result.Expired)) {
 				LicenseStore.licenseValid(true);
 				LicenseStore.licenseExpired(pInt(data.Result.Expired));
 				LicenseStore.licenseError('');
 				LicenseStore.licensing(true);
 				AppStore.prem(true);
-			}
-			else
-			{
-				if (data && data.ErrorCode && -1 < inArray(pInt(data.ErrorCode), [
-					Notification.LicensingServerIsUnavailable,
-					Notification.LicensingExpired
-				]))
-				{
+			} else {
+				if (
+					data &&
+					data.ErrorCode &&
+					-1 < inArray(pInt(data.ErrorCode), [Notification.LicensingServerIsUnavailable, Notification.LicensingExpired])
+				) {
 					LicenseStore.licenseError(getNotification(pInt(data.ErrorCode)));
 					LicenseStore.licensing(true);
-				}
-				else
-				{
-					if (StorageResultType.Abort === result)
-					{
+				} else {
+					if (StorageResultType.Abort === result) {
 						LicenseStore.licenseError(getNotification(Notification.LicensingServerIsUnavailable));
 						LicenseStore.licensing(true);
-					}
-					else
-					{
+					} else {
 						LicenseStore.licensing(false);
 					}
 				}
@@ -203,19 +185,16 @@ class AdminApp extends AbstractApp
 	}
 
 	bootend(bootendCallback = null) {
-		if (progressJs)
-		{
+		if (progressJs) {
 			progressJs.end();
 		}
 
-		if (bootendCallback)
-		{
+		if (bootendCallback) {
 			bootendCallback();
 		}
 	}
 
 	bootstart() {
-
 		super.bootstart();
 
 		AppStore.populate();
@@ -223,8 +202,7 @@ class AdminApp extends AbstractApp
 
 		hideLoading();
 
-		if (!Settings.appSettingsGet('allowAdminPanel'))
-		{
+		if (!Settings.appSettingsGet('allowAdminPanel')) {
 			routeOff();
 			setHash(root(), true);
 			routeOff();
@@ -232,20 +210,11 @@ class AdminApp extends AbstractApp
 			_.defer(() => {
 				window.location.href = '/';
 			});
-		}
-		else
-		{
-			if (Settings.settingsGet('Auth'))
-			{
-				startScreens([
-					SettingsAdminScreen
-				]);
-			}
-			else
-			{
-				startScreens([
-					LoginAdminScreen
-				]);
+		} else {
+			if (Settings.settingsGet('Auth')) {
+				startScreens([SettingsAdminScreen]);
+			} else {
+				startScreens([LoginAdminScreen]);
 			}
 		}
 

@@ -1,19 +1,16 @@
-
 import window from 'window';
 import _ from '_';
 import $ from '$';
 import Opentip from 'Opentip';
 import Pikaday from 'pikaday';
 
-import {SaveSettingsStep, Magics} from 'Common/Enums';
+import { SaveSettingsStep, Magics } from 'Common/Enums';
 
-const
-	ko = window.ko,
+const ko = window.ko,
 	$win = $(window),
 	fDisposalTooltipHelper = (element) => {
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			if (element && element.__opentip)
-			{
+			if (element && element.__opentip) {
 				element.__opentip.deactivate();
 			}
 		});
@@ -21,8 +18,7 @@ const
 
 ko.bindingHandlers.updateWidth = {
 	init: (element, fValueAccessor) => {
-		const
-			$el = $(element),
+		const $el = $(element),
 			fValue = fValueAccessor(),
 			fInit = () => {
 				fValue($el.width());
@@ -42,21 +38,17 @@ ko.bindingHandlers.updateWidth = {
 
 ko.bindingHandlers.editor = {
 	init: (element, fValueAccessor) => {
-
 		let editor = null;
 
-		const
-			fValue = fValueAccessor(),
+		const fValue = fValueAccessor(),
 			HtmlEditor = require('Common/HtmlEditor').default,
 			fUpdateEditorValue = () => {
-				if (fValue && fValue.__editor)
-				{
+				if (fValue && fValue.__editor) {
 					fValue.__editor.setHtmlOrPlain(fValue());
 				}
 			},
 			fUpdateKoValue = () => {
-				if (fValue && fValue.__editor)
-				{
+				if (fValue && fValue.__editor) {
 					fValue(fValue.__editor.getDataWithHtmlMark());
 				}
 			},
@@ -65,8 +57,7 @@ ko.bindingHandlers.editor = {
 				fUpdateEditorValue();
 			};
 
-		if (ko.isObservable(fValue) && HtmlEditor)
-		{
+		if (ko.isObservable(fValue) && HtmlEditor) {
 			editor = new HtmlEditor(element, fUpdateKoValue, fOnReady, fUpdateKoValue);
 
 			fValue.__fetchEditorValue = fUpdateKoValue;
@@ -90,9 +81,7 @@ ko.bindingHandlers.json = {
 
 ko.bindingHandlers.scrollerShadows = {
 	init: (element) => {
-
-		const
-			limit = 8,
+		const limit = 8,
 			$el = $(element),
 			cont = $el.find('[data-scroller-shadows-content]')[0] || null,
 			fFunc = _.throttle(() => {
@@ -101,8 +90,7 @@ ko.bindingHandlers.scrollerShadows = {
 					.toggleClass('scroller-shadow-bottom', cont.scrollTop + limit < cont.scrollHeight - cont.clientHeight);
 			}, 100);
 
-		if (cont)
-		{
+		if (cont) {
 			$(cont).on('scroll resize', fFunc);
 			$win.on('resize', fFunc);
 
@@ -116,11 +104,9 @@ ko.bindingHandlers.scrollerShadows = {
 
 ko.bindingHandlers.pikaday = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext) => {
-
 		ko.bindingHandlers.textInput.init(element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext);
 
-		if (Pikaday)
-		{
+		if (Pikaday) {
 			element.__pikaday = new Pikaday({
 				field: element
 			});
@@ -153,16 +139,13 @@ ko.bindingHandlers.visibleAnimated = {
 
 ko.bindingHandlers.tooltip = {
 	init: (element, fValueAccessor) => {
-
-		const
-			$el = $(element),
+		const $el = $(element),
 			fValue = fValueAccessor(),
 			isMobile = 'on' === ($el.data('tooltip-mobile') || 'off'),
 			isI18N = 'on' === ($el.data('tooltip-i18n') || 'on'),
 			Globals = require('Common/Globals');
 
-		if (!Globals.bMobileDevice || isMobile)
-		{
+		if (!Globals.bMobileDevice || isMobile) {
 			const sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
 			element.__opentip = new Opentip(element, {
@@ -177,19 +160,15 @@ ko.bindingHandlers.tooltip = {
 				}
 			});
 
-			if ('' === sValue)
-			{
+			if ('' === sValue) {
 				element.__opentip.hide();
 				element.__opentip.deactivate();
 				element.__opentip.setContent('');
-			}
-			else
-			{
+			} else {
 				element.__opentip.activate();
 			}
 
-			if (isI18N)
-			{
+			if (isI18N) {
 				const Translator = require('Common/Translator');
 
 				element.__opentip.setContent(Translator.i18n(sValue));
@@ -199,14 +178,11 @@ ko.bindingHandlers.tooltip = {
 				});
 
 				Globals.dropdownVisibility.subscribe(() => {
-					if (element && element.__opentip)
-					{
+					if (element && element.__opentip) {
 						element.__opentip.setContent(Translator.i18n(sValue));
 					}
 				});
-			}
-			else
-			{
+			} else {
 				element.__opentip.setContent(sValue);
 			}
 
@@ -221,24 +197,18 @@ ko.bindingHandlers.tooltip = {
 		}
 	},
 	update: (element, fValueAccessor) => {
-
-		const
-			$el = $(element),
+		const $el = $(element),
 			fValue = fValueAccessor(),
 			isMobile = 'on' === ($el.data('tooltip-mobile') || 'off'),
 			isI18N = 'on' === ($el.data('tooltip-i18n') || 'on'),
 			Globals = require('Common/Globals');
 
-		if ((!Globals.bMobileDevice || isMobile) && element.__opentip)
-		{
+		if ((!Globals.bMobileDevice || isMobile) && element.__opentip) {
 			const sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
-			if (sValue)
-			{
+			if (sValue) {
 				element.__opentip.setContent(isI18N ? require('Common/Translator').i18n(sValue) : sValue);
 				element.__opentip.activate();
-			}
-			else
-			{
+			} else {
 				element.__opentip.hide();
 				element.__opentip.deactivate();
 				element.__opentip.setContent('');
@@ -249,7 +219,6 @@ ko.bindingHandlers.tooltip = {
 
 ko.bindingHandlers.tooltipErrorTip = {
 	init: function(element) {
-
 		const $el = $(element);
 
 		element.__opentip = new Opentip(element, {
@@ -262,8 +231,7 @@ ko.bindingHandlers.tooltipErrorTip = {
 		element.__opentip.deactivate();
 
 		$(window.document).on('click', () => {
-			if (element && element.__opentip)
-			{
+			if (element && element.__opentip) {
 				element.__opentip.hide();
 			}
 		});
@@ -271,32 +239,23 @@ ko.bindingHandlers.tooltipErrorTip = {
 		fDisposalTooltipHelper(element);
 	},
 	update: (element, fValueAccessor) => {
-
-		const
-			$el = $(element),
+		const $el = $(element),
 			fValue = fValueAccessor(),
 			value = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue),
 			openTips = element.__opentip;
 
-		if (openTips)
-		{
-			if ('' === value)
-			{
+		if (openTips) {
+			if ('' === value) {
 				openTips.hide();
 				openTips.deactivate();
 				openTips.setContent('');
-			}
-			else
-			{
+			} else {
 				_.delay(() => {
-					if ($el.is(':visible'))
-					{
+					if ($el.is(':visible')) {
 						openTips.setContent(value);
 						openTips.activate();
 						openTips.show();
-					}
-					else
-					{
+					} else {
 						openTips.hide();
 						openTips.deactivate();
 						openTips.setContent('');
@@ -310,8 +269,7 @@ ko.bindingHandlers.tooltipErrorTip = {
 ko.bindingHandlers.registrateBootstrapDropdown = {
 	init: (element) => {
 		const Globals = require('Common/Globals');
-		if (Globals && Globals.data.aBootstrapDropdowns)
-		{
+		if (Globals && Globals.data.aBootstrapDropdowns) {
 			Globals.data.aBootstrapDropdowns.push($(element));
 
 			$(element).click(() => {
@@ -326,11 +284,9 @@ ko.bindingHandlers.registrateBootstrapDropdown = {
 
 ko.bindingHandlers.openDropdownTrigger = {
 	update: (element, fValueAccessor) => {
-		if (ko.unwrap(fValueAccessor()))
-		{
+		if (ko.unwrap(fValueAccessor())) {
 			const $el = $(element);
-			if (!$el.hasClass('open'))
-			{
+			if (!$el.hasClass('open')) {
 				$el.find('.dropdown-toggle').dropdown('toggle');
 			}
 
@@ -344,9 +300,11 @@ ko.bindingHandlers.openDropdownTrigger = {
 
 ko.bindingHandlers.dropdownCloser = {
 	init: (element) => {
-		$(element).closest('.dropdown').on('click', '.e-item', () => {
-			$(element).dropdown('toggle');
-		});
+		$(element)
+			.closest('.dropdown')
+			.on('click', '.e-item', () => {
+				$(element).dropdown('toggle');
+			});
 	}
 };
 
@@ -362,25 +320,24 @@ ko.bindingHandlers.popover = {
 
 ko.bindingHandlers.csstext = {};
 ko.bindingHandlers.csstext.init = ko.bindingHandlers.csstext.update = (element, fValueAccessor) => {
-	if (element && element.styleSheet && 'undefined' !== typeof element.styleSheet.cssText)
-	{
+	if (element && element.styleSheet && 'undefined' !== typeof element.styleSheet.cssText) {
 		element.styleSheet.cssText = ko.unwrap(fValueAccessor());
-	}
-	else
-	{
+	} else {
 		$(element).text(ko.unwrap(fValueAccessor()));
 	}
 };
 
 ko.bindingHandlers.resizecrop = {
 	init: (element) => {
-		$(element).addClass('resizecrop').resizecrop({
-			'width': '100',
-			'height': '100',
-			'wrapperCSS': {
-				'border-radius': '10px'
-			}
-		});
+		$(element)
+			.addClass('resizecrop')
+			.resizecrop({
+				'width': '100',
+				'height': '100',
+				'wrapperCSS': {
+					'border-radius': '10px'
+				}
+			});
 	},
 	update: (element, fValueAccessor) => {
 		fValueAccessor()();
@@ -394,8 +351,7 @@ ko.bindingHandlers.resizecrop = {
 ko.bindingHandlers.onKeyDown = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keydown.koOnKeyDown', (event) => {
-			if (event)
-			{
+			if (event) {
 				return fValueAccessor().call(viewModel, event);
 			}
 
@@ -411,8 +367,7 @@ ko.bindingHandlers.onKeyDown = {
 ko.bindingHandlers.onEnter = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keypress.koOnEnter', (event) => {
-			if (event && 13 === window.parseInt(event.keyCode, 10))
-			{
+			if (event && 13 === window.parseInt(event.keyCode, 10)) {
 				$(element).trigger('change');
 				fValueAccessor().call(viewModel);
 			}
@@ -427,8 +382,7 @@ ko.bindingHandlers.onEnter = {
 ko.bindingHandlers.onSpace = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keyup.koOnSpace', (event) => {
-			if (event && 32 === window.parseInt(event.keyCode, 10))
-			{
+			if (event && 32 === window.parseInt(event.keyCode, 10)) {
 				fValueAccessor().call(viewModel, event);
 			}
 		});
@@ -442,8 +396,7 @@ ko.bindingHandlers.onSpace = {
 ko.bindingHandlers.onTab = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keydown.koOnTab', (event) => {
-			if (event && 9 === window.parseInt(event.keyCode, 10))
-			{
+			if (event && 9 === window.parseInt(event.keyCode, 10)) {
 				return fValueAccessor().call(viewModel, !!event.shiftKey);
 			}
 			return true;
@@ -458,8 +411,7 @@ ko.bindingHandlers.onTab = {
 ko.bindingHandlers.onEsc = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keyup.koOnEsc', (event) => {
-			if (event && 27 === window.parseInt(event.keyCode, 10))
-			{
+			if (event && 27 === window.parseInt(event.keyCode, 10)) {
 				$(element).trigger('change');
 				fValueAccessor().call(viewModel);
 			}
@@ -473,8 +425,7 @@ ko.bindingHandlers.onEsc = {
 
 ko.bindingHandlers.clickOnTrue = {
 	update: (element, fValueAccessor) => {
-		if (ko.unwrap(fValueAccessor()))
-		{
+		if (ko.unwrap(fValueAccessor())) {
 			$(element).click();
 		}
 	}
@@ -482,9 +433,7 @@ ko.bindingHandlers.clickOnTrue = {
 
 ko.bindingHandlers.modal = {
 	init: (element, fValueAccessor) => {
-
-		const
-			Globals = require('Common/Globals'),
+		const Globals = require('Common/Globals'),
 			Utils = require('Common/Utils');
 
 		$(element)
@@ -494,7 +443,8 @@ ko.bindingHandlers.modal = {
 				'show': ko.unwrap(fValueAccessor())
 			})
 			.on('shown.koModal', Utils.windowResizeCallback)
-			.find('.close').on('click.koModal', () => {
+			.find('.close')
+			.on('click.koModal', () => {
 				fValueAccessor()(false);
 			});
 
@@ -506,32 +456,29 @@ ko.bindingHandlers.modal = {
 		});
 	},
 	update: (element, fValueAccessor) => {
-
 		const Globals = require('Common/Globals');
 
 		$(element).modal(ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
 
-		if (Globals.$html.hasClass('rl-anim'))
-		{
+		if (Globals.$html.hasClass('rl-anim')) {
 			Globals.$html.addClass('rl-modal-animation');
 			_.delay(() => {
 				Globals.$html.removeClass('rl-modal-animation');
 			}, Magics.Time500ms);
 		}
-
 	}
 };
 
 ko.bindingHandlers.moment = {
 	init: (element, fValueAccessor) => {
 		require('Common/Momentor').momentToNode(
-			$(element).addClass('moment').data('moment-time', ko.unwrap(fValueAccessor()))
+			$(element)
+				.addClass('moment')
+				.data('moment-time', ko.unwrap(fValueAccessor()))
 		);
 	},
 	update: (element, fValueAccessor) => {
-		require('Common/Momentor').momentToNode(
-			$(element).data('moment-time', ko.unwrap(fValueAccessor()))
-		);
+		require('Common/Momentor').momentToNode($(element).data('moment-time', ko.unwrap(fValueAccessor())));
 	}
 };
 
@@ -580,19 +527,16 @@ ko.bindingHandlers.initDom = {
 
 ko.bindingHandlers.initFixedTrigger = {
 	init: (element, fValueAccessor) => {
-		const
-			values = ko.unwrap(fValueAccessor()),
+		const values = ko.unwrap(fValueAccessor()),
 			$el = $(element),
 			top = values[1] || 0;
 
 		let $container = $(values[0] || null);
 		$container = $container[0] ? $container : null;
-		if ($container)
-		{
+		if ($container) {
 			$win.resize(() => {
 				const offset = $container ? $container.offset() : null;
-				if (offset && offset.top)
-				{
+				if (offset && offset.top) {
 					$el.css('top', offset.top + top);
 				}
 			});
@@ -609,24 +553,19 @@ ko.bindingHandlers.initResizeTrigger = {
 		});
 	},
 	update: (oElement, fValueAccessor) => {
-
-		const
-			Utils = require('Common/Utils'),
+		const Utils = require('Common/Utils'),
 			Globals = require('Common/Globals'),
 			values = ko.unwrap(fValueAccessor());
 
-		let
-			value = Utils.pInt(values[1]),
+		let value = Utils.pInt(values[1]),
 			size = 0,
 			offset = $(oElement).offset().top;
 
-		if (0 < offset)
-		{
+		if (0 < offset) {
 			offset += Utils.pInt(values[2]);
 			size = Globals.$win.height() - offset;
 
-			if (value < size)
-			{
+			if (value < size) {
 				value = size;
 			}
 
@@ -640,28 +579,28 @@ ko.bindingHandlers.initResizeTrigger = {
 
 ko.bindingHandlers.appendDom = {
 	update: (element, fValueAccessor) => {
-		$(element).hide().empty().append(ko.unwrap(fValueAccessor())).show();
+		$(element)
+			.hide()
+			.empty()
+			.append(ko.unwrap(fValueAccessor()))
+			.show();
 	}
 };
 
 ko.bindingHandlers.draggable = {
 	init: (element, fValueAccessor, fAllBindingsAccessor) => {
-
-		const
-			Globals = require('Common/Globals'),
+		const Globals = require('Common/Globals'),
 			Utils = require('Common/Utils');
 
-		if (!Globals.bMobileDevice)
-		{
-			const
-				triggerZone = 100,
+		if (!Globals.bMobileDevice) {
+			const triggerZone = 100,
 				scrollSpeed = 3,
 				fAllValueFunc = fAllBindingsAccessor(),
 				droppableSelector = fAllValueFunc && fAllValueFunc.droppableSelector ? fAllValueFunc.droppableSelector : '',
 				conf = {
 					distance: 20,
 					handle: '.dragHandle',
-					cursorAt: {top: 22, left: 3},
+					cursorAt: { top: 22, left: 3 },
 					refreshPositions: true,
 					scroll: true,
 					drag: null,
@@ -669,23 +608,18 @@ ko.bindingHandlers.draggable = {
 					helper: null
 				};
 
-			if (droppableSelector)
-			{
+			if (droppableSelector) {
 				conf.drag = (event) => {
-
 					$(droppableSelector).each(function() {
-						const
-							$this = $(this), // eslint-disable-line no-invalid-this
+						const $this = $(this), // eslint-disable-line no-invalid-this
 							offset = $this.offset(),
 							bottomPos = offset.top + $this.height();
 
 						window.clearInterval($this.data('timerScroll'));
 						$this.data('timerScroll', false);
 
-						if (event.pageX >= offset.left && event.pageX <= offset.left + $this.width())
-						{
-							if (event.pageY >= bottomPos - triggerZone && event.pageY <= bottomPos)
-							{
+						if (event.pageX >= offset.left && event.pageX <= offset.left + $this.width()) {
+							if (event.pageY >= bottomPos - triggerZone && event.pageY <= bottomPos) {
 								const moveUp = () => {
 									$this.scrollTop($this.scrollTop() + scrollSpeed);
 									Utils.windowResize();
@@ -695,8 +629,7 @@ ko.bindingHandlers.draggable = {
 								moveUp();
 							}
 
-							if (event.pageY >= offset.top && event.pageY <= offset.top + triggerZone)
-							{
+							if (event.pageY >= offset.top && event.pageY <= offset.top + triggerZone) {
 								const moveDown = () => {
 									$this.scrollTop($this.scrollTop() - scrollSpeed);
 									Utils.windowResize();
@@ -720,9 +653,11 @@ ko.bindingHandlers.draggable = {
 
 			conf.helper = (event) => fValueAccessor()(event && event.target ? ko.dataFor(event.target) : null);
 
-			$(element).draggable(conf).on('mousedown.koDraggable', () => {
-				Utils.removeInFocus();
-			});
+			$(element)
+				.draggable(conf)
+				.on('mousedown.koDraggable', () => {
+					Utils.removeInFocus();
+				});
 
 			ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
 				$(element)
@@ -736,10 +671,8 @@ ko.bindingHandlers.draggable = {
 ko.bindingHandlers.droppable = {
 	init: (element, fValueAccessor, fAllBindingsAccessor) => {
 		const Globals = require('Common/Globals');
-		if (!Globals.bMobileDevice)
-		{
-			const
-				fValueFunc = fValueAccessor(),
+		if (!Globals.bMobileDevice) {
+			const fValueFunc = fValueAccessor(),
 				fAllValueFunc = fAllBindingsAccessor(),
 				fOverCallback = fAllValueFunc && fAllValueFunc.droppableOver ? fAllValueFunc.droppableOver : null,
 				fOutCallback = fAllValueFunc && fAllValueFunc.droppableOut ? fAllValueFunc.droppableOut : null,
@@ -751,21 +684,18 @@ ko.bindingHandlers.droppable = {
 					out: null
 				};
 
-			if (fValueFunc)
-			{
+			if (fValueFunc) {
 				conf.drop = (event, ui) => {
 					fValueFunc(event, ui);
 				};
 
-				if (fOverCallback)
-				{
+				if (fOverCallback) {
 					conf.over = (event, ui) => {
 						fOverCallback(event, ui);
 					};
 				}
 
-				if (fOutCallback)
-				{
+				if (fOutCallback) {
 					conf.out = (event, ui) => {
 						fOutCallback(event, ui);
 					};
@@ -783,13 +713,10 @@ ko.bindingHandlers.droppable = {
 
 ko.bindingHandlers.nano = {
 	init: (element) => {
-
-		const
-			Globals = require('Common/Globals'),
+		const Globals = require('Common/Globals'),
 			Settings = require('Storage/Settings');
 
-		if (!Globals.bDisableNanoScroll && !Settings.appSettingsGet('useNativeScrollbars'))
-		{
+		if (!Globals.bDisableNanoScroll && !Settings.appSettingsGet('useNativeScrollbars')) {
 			$(element)
 				.addClass('nano')
 				.nanoScroller({
@@ -802,61 +729,73 @@ ko.bindingHandlers.nano = {
 
 ko.bindingHandlers.saveTrigger = {
 	init: (element) => {
-
 		const $el = $(element);
 
-		$el.data('save-trigger-type', $el.is('input[type=text],input[type=email],input[type=password],select,textarea') ? 'input' : 'custom');
+		$el.data(
+			'save-trigger-type',
+			$el.is('input[type=text],input[type=email],input[type=password],select,textarea') ? 'input' : 'custom'
+		);
 
-		if ('custom' === $el.data('save-trigger-type'))
-		{
-			$el.append(
-				'&nbsp;&nbsp;<i class="icon-spinner animated"></i><i class="icon-remove error"></i><i class="icon-ok success"></i>'
-			).addClass('settings-saved-trigger');
-		}
-		else
-		{
+		if ('custom' === $el.data('save-trigger-type')) {
+			$el
+				.append(
+					'&nbsp;&nbsp;' +
+						'<i class="icon-spinner animated"></i>' +
+						'<i class="icon-remove error"></i>' +
+						'<i class="icon-ok success"></i>'
+				)
+				.addClass('settings-saved-trigger');
+		} else {
 			$el.addClass('settings-saved-trigger-input');
 		}
 	},
 	update: (element, fValueAccessor) => {
-		const
-			value = ko.unwrap(fValueAccessor()),
+		const value = ko.unwrap(fValueAccessor()),
 			$el = $(element);
 
-		if ('custom' === $el.data('save-trigger-type'))
-		{
-			switch (value.toString())
-			{
+		if ('custom' === $el.data('save-trigger-type')) {
+			switch (value.toString()) {
 				case '1':
 					$el
-						.find('.animated,.error').hide().removeClass('visible')
+						.find('.animated,.error')
+						.hide()
+						.removeClass('visible')
 						.end()
-						.find('.success').show().addClass('visible');
+						.find('.success')
+						.show()
+						.addClass('visible');
 					break;
 				case '0':
 					$el
-						.find('.animated,.success').hide().removeClass('visible')
+						.find('.animated,.success')
+						.hide()
+						.removeClass('visible')
 						.end()
-						.find('.error').show().addClass('visible');
+						.find('.error')
+						.show()
+						.addClass('visible');
 					break;
 				case '-2':
 					$el
-						.find('.error,.success').hide().removeClass('visible')
+						.find('.error,.success')
+						.hide()
+						.removeClass('visible')
 						.end()
-						.find('.animated').show().addClass('visible');
+						.find('.animated')
+						.show()
+						.addClass('visible');
 					break;
 				default:
 					$el
-						.find('.animated').hide()
+						.find('.animated')
+						.hide()
 						.end()
-						.find('.error,.success').removeClass('visible');
+						.find('.error,.success')
+						.removeClass('visible');
 					break;
 			}
-		}
-		else
-		{
-			switch (value.toString())
-			{
+		} else {
+			switch (value.toString()) {
 				case '1':
 					$el.addClass('success').removeClass('error');
 					break;
@@ -875,19 +814,15 @@ ko.bindingHandlers.saveTrigger = {
 
 ko.bindingHandlers.emailsTags = {
 	init: (element, fValueAccessor, fAllBindingsAccessor) => {
-
-		const
-			Utils = require('Common/Utils'),
+		const Utils = require('Common/Utils'),
 			EmailModel = require('Model/Email').default,
-
 			$el = $(element),
 			fValue = fValueAccessor(),
 			fAllBindings = fAllBindingsAccessor(),
 			fAutoCompleteSource = fAllBindings.autoCompleteSource || null,
 			inputDelimiters = [',', ';', '\n'],
 			fFocusCallback = (value) => {
-				if (fValue && fValue.focused)
-				{
+				if (fValue && fValue.focused) {
 					fValue.focused(!!value);
 				}
 			};
@@ -905,38 +840,34 @@ ko.bindingHandlers.emailsTags = {
 				}
 				return null;
 			},
-			parseHook: (input) => _.map(
-				_.flatten(_.map(
-					input,
-					(inputValue) => {
-						const values = EmailModel.parseEmailLine(inputValue);
-						return values.length ? values : inputValue;
-					}
-				)),
-				(item) => (_.isObject(item) ? [item.toLine(false), item] : [item, null])
-			),
+			parseHook: (input) =>
+				_.map(
+					_.flatten(
+						_.map(input, (inputValue) => {
+							const values = EmailModel.parseEmailLine(inputValue);
+							return values.length ? values : inputValue;
+						})
+					),
+					(item) => (_.isObject(item) ? [item.toLine(false), item] : [item, null])
+				),
 			change: (event) => {
 				$el.data('EmailsTagsValue', event.target.value);
 				fValue(event.target.value);
 			}
 		});
 
-		if (fValue && fValue.focused && fValue.focused.subscribe)
-		{
+		if (fValue && fValue.focused && fValue.focused.subscribe) {
 			fValue.focused.subscribe((value) => {
 				$el.inputosaurus(value ? 'focus' : 'blur');
 			});
 		}
 	},
 	update: (element, fValueAccessor) => {
-
-		const
-			$oEl = $(element),
+		const $oEl = $(element),
 			fValue = fValueAccessor(),
 			value = ko.unwrap(fValue);
 
-		if ($oEl.data('EmailsTagsValue') !== value)
-		{
+		if ($oEl.data('EmailsTagsValue') !== value) {
 			$oEl.val(value);
 			$oEl.data('EmailsTagsValue', value);
 			$oEl.inputosaurus('refresh');
@@ -946,57 +877,51 @@ ko.bindingHandlers.emailsTags = {
 
 ko.bindingHandlers.command = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext) => {
-		const
-			jqElement = $(element),
+		const jqElement = $(element),
 			command = fValueAccessor();
 
-		if (!command || !command.isCommand)
-		{
+		if (!command || !command.isCommand) {
 			throw new Error('Value should be a command');
 		}
 
-		if (!command.enabled)
-		{
+		if (!command.enabled) {
 			command.enabled = ko.observable(true);
 		}
 
-		if (!command.canExecute)
-		{
+		if (!command.canExecute) {
 			const __realCanExecute = command.__realCanExecute;
-			if (_.isFunction(__realCanExecute))
-			{
+			if (_.isFunction(__realCanExecute)) {
 				command.canExecute = ko.computed(() => command.enabled() && __realCanExecute.call(viewModel, viewModel));
-			}
-			else
-			{
+			} else {
 				command.canExecute = ko.computed(() => command.enabled() && !!__realCanExecute);
 			}
 		}
 
 		jqElement.addClass('command');
-		ko.bindingHandlers[jqElement.is('form') ? 'submit' : 'click']
-			.init(element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext);
+		ko.bindingHandlers[jqElement.is('form') ? 'submit' : 'click'].init(
+			element,
+			fValueAccessor,
+			fAllBindingsAccessor,
+			viewModel,
+			bindingContext
+		);
 	},
 	update: (element, fValueAccessor) => {
-
-		const
-			jqElement = $(element),
+		const jqElement = $(element),
 			command = fValueAccessor();
 
 		let result = command.enabled();
 
 		jqElement.toggleClass('command-not-enabled', !result);
 
-		if (result)
-		{
+		if (result) {
 			result = command.canExecute();
 			jqElement.toggleClass('command-can-not-be-execute', !result);
 		}
 
 		jqElement.toggleClass('command-disabled disable disabled', !result).toggleClass('no-disabled', !!result);
 
-		if (jqElement.is('input') || jqElement.is('button'))
-		{
+		if (jqElement.is('input') || jqElement.is('button')) {
 			jqElement.prop('disabled', !result);
 		}
 	}
@@ -1005,8 +930,7 @@ ko.bindingHandlers.command = {
 // extenders
 
 ko.extenders.trimmer = (target) => {
-	const
-		Utils = require('Common/Utils'),
+	const Utils = require('Common/Utils'),
 		result = ko.computed({
 			read: target,
 			write: (newValue) => {
@@ -1019,19 +943,16 @@ ko.extenders.trimmer = (target) => {
 };
 
 ko.extenders.posInterer = (target, defaultVal) => {
-	const
-		Utils = require('Common/Utils'),
+	const Utils = require('Common/Utils'),
 		result = ko.computed({
 			read: target,
 			write: (newValue) => {
 				let val = Utils.pInt(newValue.toString(), defaultVal);
-				if (0 >= val)
-				{
+				if (0 >= val) {
 					val = defaultVal;
 				}
 
-				if (val === target() && '' + val !== '' + newValue)
-				{
+				if (val === target() && '' + val !== '' + newValue) {
 					target(val + 1);
 				}
 
@@ -1044,44 +965,34 @@ ko.extenders.posInterer = (target, defaultVal) => {
 };
 
 ko.extenders.limitedList = (target, limitedList) => {
-	const
-		Utils = require('Common/Utils'),
-		result = ko.computed({
-			read: target,
-			write: (newValue) => {
+	const Utils = require('Common/Utils'),
+		result = ko
+			.computed({
+				read: target,
+				write: (newValue) => {
+					const currentValue = ko.unwrap(target),
+						list = ko.unwrap(limitedList);
 
-				const
-					currentValue = ko.unwrap(target),
-					list = ko.unwrap(limitedList);
-
-				if (Utils.isNonEmptyArray(list))
-				{
-					if (-1 < Utils.inArray(newValue, list))
-					{
-						target(newValue);
-					}
-					else if (-1 < Utils.inArray(currentValue, list))
-					{
-						target(currentValue + ' ');
-						target(currentValue);
-					}
-					else
-					{
-						target(list[0] + ' ');
-						target(list[0]);
+					if (Utils.isNonEmptyArray(list)) {
+						if (-1 < Utils.inArray(newValue, list)) {
+							target(newValue);
+						} else if (-1 < Utils.inArray(currentValue, list)) {
+							target(currentValue + ' ');
+							target(currentValue);
+						} else {
+							target(list[0] + ' ');
+							target(list[0]);
+						}
+					} else {
+						target('');
 					}
 				}
-				else
-				{
-					target('');
-				}
-			}
-		}).extend({notify: 'always'});
+			})
+			.extend({ notify: 'always' });
 
 	result(target());
 
-	if (!result.valueHasMutated)
-	{
+	if (!result.valueHasMutated) {
 		result.valueHasMutated = () => {
 			target.valueHasMutated();
 		};
@@ -1091,7 +1002,6 @@ ko.extenders.limitedList = (target, limitedList) => {
 };
 
 ko.extenders.reversible = (target) => {
-
 	let value = target();
 
 	target.commit = () => {
@@ -1113,20 +1023,20 @@ ko.extenders.toggleSubscribe = (target, options) => {
 };
 
 ko.extenders.toggleSubscribeProperty = (target, options) => {
-
 	const prop = options[1];
-	if (prop)
-	{
-		target.subscribe((prev) => {
-			if (prev && prev[prop])
-			{
-				prev[prop](false);
-			}
-		}, options[0], 'beforeChange');
+	if (prop) {
+		target.subscribe(
+			(prev) => {
+				if (prev && prev[prop]) {
+					prev[prop](false);
+				}
+			},
+			options[0],
+			'beforeChange'
+		);
 
 		target.subscribe((next) => {
-			if (next && next[prop])
-			{
+			if (next && next[prop]) {
 				next[prop](true);
 			}
 		}, options[0]);
@@ -1138,8 +1048,7 @@ ko.extenders.toggleSubscribeProperty = (target, options) => {
 ko.extenders.falseTimeout = (target, option) => {
 	target.iFalseTimeoutTimeout = 0;
 	target.subscribe((value) => {
-		if (value)
-		{
+		if (value) {
 			window.clearTimeout(target.iFalseTimeoutTimeout);
 			target.iFalseTimeoutTimeout = window.setTimeout(() => {
 				target(false);
@@ -1153,31 +1062,23 @@ ko.extenders.falseTimeout = (target, option) => {
 
 ko.extenders.specialThrottle = (target, option) => {
 	target.iSpecialThrottleTimeoutValue = require('Common/Utils').pInt(option);
-	if (0 < target.iSpecialThrottleTimeoutValue)
-	{
+	if (0 < target.iSpecialThrottleTimeoutValue) {
 		target.iSpecialThrottleTimeout = 0;
-		target.valueForRead = ko.observable(!!target()).extend({throttle: 10});
+		target.valueForRead = ko.observable(!!target()).extend({ throttle: 10 });
 
 		return ko.computed({
 			read: target.valueForRead,
 			write: (bValue) => {
-
-				if (bValue)
-				{
+				if (bValue) {
 					target.valueForRead(bValue);
-				}
-				else
-				{
-					if (target.valueForRead())
-					{
+				} else {
+					if (target.valueForRead()) {
 						window.clearTimeout(target.iSpecialThrottleTimeout);
 						target.iSpecialThrottleTimeout = window.setTimeout(() => {
 							target.valueForRead(false);
 							target.iSpecialThrottleTimeout = 0;
 						}, target.iSpecialThrottleTimeoutValue);
-					}
-					else
-					{
+					} else {
 						target.valueForRead(bValue);
 					}
 				}
@@ -1196,7 +1097,7 @@ ko.extenders.idleTrigger = (target) => {
 // functions
 
 ko.observable.fn.idleTrigger = function() {
-	return this.extend({'idleTrigger': true});
+	return this.extend({ 'idleTrigger': true });
 };
 
 ko.observable.fn.validateNone = function() {
@@ -1205,11 +1106,10 @@ ko.observable.fn.validateNone = function() {
 };
 
 ko.observable.fn.validateEmail = function() {
-
 	this.hasError = ko.observable(false);
 
 	this.subscribe((value) => {
-		this.hasError('' !== value && !((/^[^@\s]+@[^@\s]+$/).test(value)));
+		this.hasError('' !== value && !/^[^@\s]+@[^@\s]+$/.test(value));
 	});
 
 	this.valueHasMutated();
@@ -1217,11 +1117,10 @@ ko.observable.fn.validateEmail = function() {
 };
 
 ko.observable.fn.validateSimpleEmail = function() {
-
 	this.hasError = ko.observable(false);
 
 	this.subscribe((value) => {
-		this.hasError('' !== value && !((/^.+@.+$/).test(value)));
+		this.hasError('' !== value && !/^.+@.+$/.test(value));
 	});
 
 	this.valueHasMutated();
@@ -1229,16 +1128,14 @@ ko.observable.fn.validateSimpleEmail = function() {
 };
 
 ko.observable.fn.deleteAccessHelper = function() {
-	this.extend({falseTimeout: 3000}).extend({toggleSubscribeProperty: [this, 'deleteAccess']});
+	this.extend({ falseTimeout: 3000 }).extend({ toggleSubscribeProperty: [this, 'deleteAccess'] });
 	return this;
 };
 
 ko.observable.fn.validateFunc = function(fFunc) {
-
 	this.hasFuncError = ko.observable(false);
 
-	if (_.isFunction(fFunc))
-	{
+	if (_.isFunction(fFunc)) {
 		this.subscribe((value) => {
 			this.hasFuncError(!fFunc(value));
 		});

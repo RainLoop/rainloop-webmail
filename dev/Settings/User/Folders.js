@@ -1,13 +1,12 @@
-
 import ko from 'ko';
 
-import {ClientSideKeyName, Notification, Magics} from 'Common/Enums';
-import {trim, noop} from 'Common/Utils';
-import {getNotification, i18n} from 'Common/Translator';
+import { ClientSideKeyName, Notification, Magics } from 'Common/Enums';
+import { trim, noop } from 'Common/Utils';
+import { getNotification, i18n } from 'Common/Translator';
 
-import {removeFolderFromCacheList} from 'Common/Cache';
+import { removeFolderFromCacheList } from 'Common/Cache';
 
-import {appSettingsGet} from 'Storage/Settings';
+import { appSettingsGet } from 'Storage/Settings';
 import * as Local from 'Storage/Client';
 
 import FolderStore from 'Stores/User/Folder';
@@ -15,21 +14,19 @@ import FolderStore from 'Stores/User/Folder';
 import Promises from 'Promises/User/Ajax';
 import Remote from 'Remote/User/Ajax';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {showScreenPopup} from 'Knoin/Knoin';
+import { showScreenPopup } from 'Knoin/Knoin';
 
-class FoldersUserSettings
-{
+class FoldersUserSettings {
 	constructor() {
 		this.displaySpecSetting = FolderStore.displaySpecSetting;
 		this.folderList = FolderStore.folderList;
 
-		this.folderListHelp = ko.observable('').extend({throttle: Magics.Time100ms});
+		this.folderListHelp = ko.observable('').extend({ throttle: Magics.Time100ms });
 
 		this.loading = ko.computed(() => {
-			const
-				loading = FolderStore.foldersLoading(),
+			const loading = FolderStore.foldersLoading(),
 				creating = FolderStore.foldersCreating(),
 				deleting = FolderStore.foldersDeleting(),
 				renaming = FolderStore.foldersRenaming();
@@ -39,7 +36,7 @@ class FoldersUserSettings
 
 		this.folderForDeletion = ko.observable(null).deleteAccessHelper();
 
-		this.folderForEdit = ko.observable(null).extend({toggleSubscribeProperty: [this, 'edited']});
+		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'edited'] });
 
 		this.useImapSubscribe = !!appSettingsGet('useImapSubscribe');
 	}
@@ -47,8 +44,7 @@ class FoldersUserSettings
 	folderEditOnEnter(folder) {
 		const nameToEdit = folder ? trim(folder.nameForEdit()) : '';
 
-		if ('' !== nameToEdit && folder.name() !== nameToEdit)
-		{
+		if ('' !== nameToEdit && folder.name() !== nameToEdit) {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
 
 			getApp().foldersPromisesActionHelper(
@@ -65,8 +61,7 @@ class FoldersUserSettings
 	}
 
 	folderEditOnEsc(folder) {
-		if (folder)
-		{
+		if (folder) {
 			folder.edited(false);
 		}
 	}
@@ -100,22 +95,22 @@ class FoldersUserSettings
 	}
 
 	deleteFolder(folderToRemove) {
-		if (folderToRemove && folderToRemove.canBeDeleted() && folderToRemove.deleteAccess() &&
-			0 === folderToRemove.privateMessageCountAll())
-		{
+		if (
+			folderToRemove &&
+			folderToRemove.canBeDeleted() &&
+			folderToRemove.deleteAccess() &&
+			0 === folderToRemove.privateMessageCountAll()
+		) {
 			this.folderForDeletion(null);
 
-			if (folderToRemove)
-			{
-				const
-					fRemoveFolder = function(folder) {
-						if (folderToRemove === folder)
-						{
-							return true;
-						}
-						folder.subFolders.remove(fRemoveFolder);
-						return false;
-					};
+			if (folderToRemove) {
+				const fRemoveFolder = function(folder) {
+					if (folderToRemove === folder) {
+						return true;
+					}
+					folder.subFolders.remove(fRemoveFolder);
+					return false;
+				};
 
 				Local.set(ClientSideKeyName.FoldersLashHash, '');
 
@@ -128,9 +123,7 @@ class FoldersUserSettings
 
 				removeFolderFromCacheList(folderToRemove.fullNameRaw);
 			}
-		}
-		else if (0 < folderToRemove.privateMessageCountAll())
-		{
+		} else if (0 < folderToRemove.privateMessageCountAll()) {
 			FolderStore.folderList.error(getNotification(Notification.CantDeleteNonEmptyFolder));
 		}
 	}
@@ -158,4 +151,4 @@ class FoldersUserSettings
 	}
 }
 
-export {FoldersUserSettings, FoldersUserSettings as default};
+export { FoldersUserSettings, FoldersUserSettings as default };

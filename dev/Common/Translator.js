@@ -1,13 +1,12 @@
-
 import window from 'window';
 import _ from '_';
 import $ from '$';
 import ko from 'ko';
-import {Notification, UploadErrorCode} from 'Common/Enums';
-import {pInt, isUnd, isNull, has, microtime, inArray} from 'Common/Utils';
-import {$html, bAnimationSupported} from 'Common/Globals';
-import {reload as momentorReload} from 'Common/Momentor';
-import {langLink} from 'Common/Links';
+import { Notification, UploadErrorCode } from 'Common/Enums';
+import { pInt, isUnd, isNull, has, microtime, inArray } from 'Common/Utils';
+import { $html, bAnimationSupported } from 'Common/Globals';
+import { reload as momentorReload } from 'Common/Momentor';
+import { langLink } from 'Common/Links';
 
 let I18N_DATA = window.rainloopI18N || {};
 
@@ -91,23 +90,17 @@ export const trigger = ko.observable(false);
  * @param {string=} defaulValue
  * @returns {string}
  */
-export function i18n(key, valueList, defaulValue)
-{
-	let
-		valueName = '',
+export function i18n(key, valueList, defaulValue) {
+	let valueName = '',
 		result = I18N_DATA[key];
 
-	if (isUnd(result))
-	{
+	if (isUnd(result)) {
 		result = isUnd(defaulValue) ? key : defaulValue;
 	}
 
-	if (!isUnd(valueList) && !isNull(valueList))
-	{
-		for (valueName in valueList)
-		{
-			if (has(valueList, valueName))
-			{
+	if (!isUnd(valueList) && !isNull(valueList)) {
+		for (valueName in valueList) {
+			if (has(valueList, valueName)) {
 				result = result.replace('%' + valueName + '%', valueList[valueName]);
 			}
 		}
@@ -117,17 +110,12 @@ export function i18n(key, valueList, defaulValue)
 }
 
 const i18nToNode = (element) => {
-
-	const
-		$el = $(element),
+	const $el = $(element),
 		key = $el.data('i18n');
 
-	if (key)
-	{
-		if ('[' === key.substr(0, 1))
-		{
-			switch (key.substr(0, 6))
-			{
+	if (key) {
+		if ('[' === key.substr(0, 1)) {
+			switch (key.substr(0, 6)) {
 				case '[html]':
 					$el.html(i18n(key.substr(6)));
 					break;
@@ -139,9 +127,7 @@ const i18nToNode = (element) => {
 					break;
 				// no default
 			}
-		}
-		else
-		{
+		} else {
 			$el.text(i18n(key));
 		}
 	}
@@ -151,16 +137,13 @@ const i18nToNode = (element) => {
  * @param {Object} elements
  * @param {boolean=} animate = false
  */
-export function i18nToNodes(elements, animate = false)
-{
+export function i18nToNodes(elements, animate = false) {
 	_.defer(() => {
-
 		$('[data-i18n]', elements).each((index, item) => {
 			i18nToNode(item);
 		});
 
-		if (animate && bAnimationSupported)
-		{
+		if (animate && bAnimationSupported) {
 			$('.i18n-animation[data-i18n]', elements).letterfx({
 				'fx': 'fall fade',
 				'backwards': false,
@@ -174,8 +157,7 @@ export function i18nToNodes(elements, animate = false)
 }
 
 const reloadData = () => {
-	if (window.rainloopI18N)
-	{
+	if (window.rainloopI18N) {
 		I18N_DATA = window.rainloopI18N || {};
 
 		i18nToNodes(window.document, true);
@@ -190,8 +172,7 @@ const reloadData = () => {
 /**
  * @returns {void}
  */
-export function initNotificationLanguage()
-{
+export function initNotificationLanguage() {
 	I18N_NOTIFICATION_MAP.forEach((item) => {
 		I18N_NOTIFICATION_DATA[item[0]] = i18n(item[1]);
 	});
@@ -201,28 +182,21 @@ export function initNotificationLanguage()
  * @param {Function} startCallback
  * @param {Function=} langCallback = null
  */
-export function initOnStartOrLangChange(startCallback, langCallback = null)
-{
-	if (startCallback)
-	{
+export function initOnStartOrLangChange(startCallback, langCallback = null) {
+	if (startCallback) {
 		startCallback();
 	}
 
-	if (langCallback)
-	{
+	if (langCallback) {
 		trigger.subscribe(() => {
-			if (startCallback)
-			{
+			if (startCallback) {
 				startCallback();
 			}
-			if (langCallback)
-			{
+			if (langCallback) {
 				langCallback();
 			}
 		});
-	}
-	else if (startCallback)
-	{
+	} else if (startCallback) {
 		trigger.subscribe(startCallback);
 	}
 }
@@ -233,18 +207,18 @@ export function initOnStartOrLangChange(startCallback, langCallback = null)
  * @param {*=} defCode = null
  * @returns {string}
  */
-export function getNotification(code, message = '', defCode = null)
-{
+export function getNotification(code, message = '', defCode = null) {
 	code = window.parseInt(code, 10) || 0;
-	if (Notification.ClientViewError === code && message)
-	{
+	if (Notification.ClientViewError === code && message) {
 		return message;
 	}
 
-	defCode = defCode ? (window.parseInt(defCode, 10)) || 0 : 0;
-	return isUnd(I18N_NOTIFICATION_DATA[code]) ? (
-		defCode && isUnd(I18N_NOTIFICATION_DATA[defCode]) ? I18N_NOTIFICATION_DATA[defCode] : ''
-	) : I18N_NOTIFICATION_DATA[code];
+	defCode = defCode ? window.parseInt(defCode, 10) || 0 : 0;
+	return isUnd(I18N_NOTIFICATION_DATA[code])
+		? defCode && isUnd(I18N_NOTIFICATION_DATA[defCode])
+			? I18N_NOTIFICATION_DATA[defCode]
+			: ''
+		: I18N_NOTIFICATION_DATA[code];
 }
 
 /**
@@ -252,21 +226,19 @@ export function getNotification(code, message = '', defCode = null)
  * @param {number} defCode = Notification.UnknownNotification
  * @returns {string}
  */
-export function getNotificationFromResponse(response, defCode = Notification.UnknownNotification)
-{
-	return response && response.ErrorCode ?
-		getNotification(pInt(response.ErrorCode), response.ErrorMessage || '') : getNotification(defCode);
+export function getNotificationFromResponse(response, defCode = Notification.UnknownNotification) {
+	return response && response.ErrorCode
+		? getNotification(pInt(response.ErrorCode), response.ErrorMessage || '')
+		: getNotification(defCode);
 }
 
 /**
  * @param {*} code
  * @returns {string}
  */
-export function getUploadErrorDescByCode(code)
-{
+export function getUploadErrorDescByCode(code) {
 	let result = '';
-	switch (window.parseInt(code, 10) || 0)
-	{
+	switch (window.parseInt(code, 10) || 0) {
 		case UploadErrorCode.FileIsTooBig:
 			result = i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG');
 			break;
@@ -297,8 +269,7 @@ export function getUploadErrorDescByCode(code)
  * @param {boolean} admin
  * @param {string} language
  */
-export function reload(admin, language)
-{
+export function reload(admin, language) {
 	const start = microtime();
 
 	$html.addClass('rl-changing-language');
@@ -308,27 +279,31 @@ export function reload(admin, language)
 			url: langLink(language, admin),
 			dataType: 'script',
 			cache: true
-		}).then(() => {
-			_.delay(() => {
+		}).then(
+			() => {
+				_.delay(
+					() => {
+						reloadData();
 
-				reloadData();
+						const isRtl = -1 < inArray((language || '').toLowerCase(), ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir']);
 
-				const isRtl = -1 < inArray((language || '').toLowerCase(), ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir']);
+						$html
+							.removeClass('rl-changing-language')
+							.removeClass('rl-rtl rl-ltr')
+							// .attr('dir', isRtl ? 'rtl' : 'ltr')
+							.addClass(isRtl ? 'rl-rtl' : 'rl-ltr');
 
-				$html
-					.removeClass('rl-changing-language')
-					.removeClass('rl-rtl rl-ltr')
-					// .attr('dir', isRtl ? 'rtl' : 'ltr')
-					.addClass(isRtl ? 'rl-rtl' : 'rl-ltr');
-
-				resolve();
-
-			}, 500 < microtime() - start ? 1 : 500);
-		}, () => {
-			$html.removeClass('rl-changing-language');
-			window.rainloopI18N = null;
-			reject();
-		});
+						resolve();
+					},
+					500 < microtime() - start ? 1 : 500
+				);
+			},
+			() => {
+				$html.removeClass('rl-changing-language');
+				window.rainloopI18N = null;
+				reject();
+			}
+		);
 	});
 }
 

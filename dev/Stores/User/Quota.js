@@ -1,23 +1,18 @@
-
 import window from 'window';
 import ko from 'ko';
 
-import {Magics} from 'Common/Enums';
+import { Magics } from 'Common/Enums';
 
-class QuotaUserStore
-{
+class QuotaUserStore {
 	constructor() {
 		this.quota = ko.observable(0);
 		this.usage = ko.observable(0);
 
 		this.percentage = ko.computed(() => {
-
-			const
-				quota = this.quota(),
+			const quota = this.quota(),
 				usage = this.usage();
 
 			return 0 < quota ? window.Math.ceil((usage / quota) * 100) : 0;
-
 		});
 	}
 

@@ -1,24 +1,22 @@
-
 import ko from 'ko';
 
-import {StorageResultType, Notification} from 'Common/Enums';
-import {bMobileDevice} from 'Common/Globals';
-import {trim, fakeMd5} from 'Common/Utils';
-import {getNotification} from 'Common/Translator';
+import { StorageResultType, Notification } from 'Common/Enums';
+import { bMobileDevice } from 'Common/Globals';
+import { trim, fakeMd5 } from 'Common/Utils';
+import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Ajax';
 
-import {getApp} from 'Helper/Apps/User';
+import { getApp } from 'Helper/Apps/User';
 
-import {popup, command} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup, command } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/Identity',
 	templateID: 'PopupsIdentity'
 })
-class IdentityPopupView extends AbstractViewNext
-{
+class IdentityPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -45,15 +43,13 @@ class IdentityPopupView extends AbstractViewNext
 		this.submitError = ko.observable('');
 
 		this.bcc.subscribe((value) => {
-			if (false === this.showBcc() && 0 < value.length)
-			{
+			if (false === this.showBcc() && 0 < value.length) {
 				this.showBcc(true);
 			}
 		});
 
 		this.replyTo.subscribe((value) => {
-			if (false === this.showReplyTo() && 0 < value.length)
-			{
+			if (false === this.showReplyTo() && 0 < value.length) {
 				this.showReplyTo(true);
 			}
 		});
@@ -61,62 +57,56 @@ class IdentityPopupView extends AbstractViewNext
 
 	@command((self) => !self.submitRequest())
 	addOrEditIdentityCommand() {
-
-		if (this.signature && this.signature.__fetchEditorValue)
-		{
+		if (this.signature && this.signature.__fetchEditorValue) {
 			this.signature.__fetchEditorValue();
 		}
 
-		if (!this.email.hasError())
-		{
+		if (!this.email.hasError()) {
 			this.email.hasError('' === trim(this.email()));
 		}
 
-		if (this.email.hasError())
-		{
-			if (!this.owner())
-			{
+		if (this.email.hasError()) {
+			if (!this.owner()) {
 				this.email.focused(true);
 			}
 
 			return false;
 		}
 
-		if (this.replyTo.hasError())
-		{
+		if (this.replyTo.hasError()) {
 			this.replyTo.focused(true);
 			return false;
 		}
 
-		if (this.bcc.hasError())
-		{
+		if (this.bcc.hasError()) {
 			this.bcc.focused(true);
 			return false;
 		}
 
 		this.submitRequest(true);
 
-		Remote.identityUpdate((result, data) => {
-
-			this.submitRequest(false);
-			if (StorageResultType.Success === result && data)
-			{
-				if (data.Result)
-				{
-					getApp().accountsAndIdentities();
-					this.cancelCommand();
+		Remote.identityUpdate(
+			(result, data) => {
+				this.submitRequest(false);
+				if (StorageResultType.Success === result && data) {
+					if (data.Result) {
+						getApp().accountsAndIdentities();
+						this.cancelCommand();
+					} else if (data.ErrorCode) {
+						this.submitError(getNotification(data.ErrorCode));
+					}
+				} else {
+					this.submitError(getNotification(Notification.UnknownError));
 				}
-				else if (data.ErrorCode)
-				{
-					this.submitError(getNotification(data.ErrorCode));
-				}
-			}
-			else
-			{
-				this.submitError(getNotification(Notification.UnknownError));
-			}
-
-		}, this.id, this.email(), this.name(), this.replyTo(), this.bcc(), this.signature(), this.signatureInsertBefore());
+			},
+			this.id,
+			this.email(),
+			this.name(),
+			this.replyTo(),
+			this.bcc(),
+			this.signature(),
+			this.signatureInsertBefore()
+		);
 
 		return true;
 	}
@@ -148,11 +138,9 @@ class IdentityPopupView extends AbstractViewNext
 	 * @param {?IdentityModel} oIdentity
 	 */
 	onShow(identity) {
-
 		this.clearPopup();
 
-		if (identity)
-		{
+		if (identity) {
 			this.edit(true);
 
 			this.id = identity.id() || '';
@@ -164,16 +152,13 @@ class IdentityPopupView extends AbstractViewNext
 			this.signatureInsertBefore(identity.signatureInsertBefore());
 
 			this.owner('' === this.id);
-		}
-		else
-		{
+		} else {
 			this.id = fakeMd5();
 		}
 	}
 
 	onShowWithDelay() {
-		if (!this.owner() && !bMobileDevice)
-		{
+		if (!this.owner() && !bMobileDevice) {
 			this.email.focused(true);
 		}
 	}
@@ -183,4 +168,4 @@ class IdentityPopupView extends AbstractViewNext
 	}
 }
 
-export {IdentityPopupView, IdentityPopupView as default};
+export { IdentityPopupView, IdentityPopupView as default };

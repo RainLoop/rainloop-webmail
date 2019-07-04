@@ -1,16 +1,14 @@
-
 import ko from 'ko';
-import {isArray} from 'Common/Utils';
+import { isArray } from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 
-class ThemeStore
-{
+class ThemeStore {
 	constructor() {
 		this.themes = ko.observableArray([]);
 		this.themeBackgroundName = ko.observable('');
 		this.themeBackgroundHash = ko.observable('');
 
-		this.theme = ko.observable('').extend({limitedList: this.themes});
+		this.theme = ko.observable('').extend({ limitedList: this.themes });
 	}
 
 	populate() {

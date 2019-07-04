@@ -1,7 +1,6 @@
-
 import _ from '_';
-import {Capa, MessageSetAction} from 'Common/Enums';
-import {trim, pInt, isArray} from 'Common/Utils';
+import { Capa, MessageSetAction } from 'Common/Enums';
+import { trim, pInt, isArray } from 'Common/Utils';
 import * as Links from 'Common/Links';
 import * as Settings from 'Storage/Settings';
 
@@ -19,8 +18,7 @@ const REQUESTED_MESSAGE_CACHE = {},
 /**
  * @returns {void}
  */
-export function clear()
-{
+export function clear() {
 	FOLDERS_CACHE = {};
 	FOLDERS_NAME_CACHE = {};
 	FOLDERS_HASH_CACHE = {};
@@ -33,8 +31,7 @@ export function clear()
  * @param {Function} callback
  * @returns {string}
  */
-export function getUserPic(email, callback)
-{
+export function getUserPic(email, callback) {
 	email = trim(email);
 	callback(capaGravatar && '' !== email ? Links.avatarLink(email) : '', email);
 }
@@ -44,8 +41,7 @@ export function getUserPic(email, callback)
  * @param {string} uid
  * @returns {string}
  */
-export function getMessageKey(folderFullNameRaw, uid)
-{
+export function getMessageKey(folderFullNameRaw, uid) {
 	return `${folderFullNameRaw}#${uid}`;
 }
 
@@ -53,8 +49,7 @@ export function getMessageKey(folderFullNameRaw, uid)
  * @param {string} folder
  * @param {string} uid
  */
-export function addRequestedMessage(folder, uid)
-{
+export function addRequestedMessage(folder, uid) {
 	REQUESTED_MESSAGE_CACHE[getMessageKey(folder, uid)] = true;
 }
 
@@ -63,8 +58,7 @@ export function addRequestedMessage(folder, uid)
  * @param {string} uid
  * @returns {boolean}
  */
-export function hasRequestedMessage(folder, uid)
-{
+export function hasRequestedMessage(folder, uid) {
 	return true === REQUESTED_MESSAGE_CACHE[getMessageKey(folder, uid)];
 }
 
@@ -72,8 +66,7 @@ export function hasRequestedMessage(folder, uid)
  * @param {string} folderFullNameRaw
  * @param {string} uid
  */
-export function addNewMessageCache(folderFullNameRaw, uid)
-{
+export function addNewMessageCache(folderFullNameRaw, uid) {
 	NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)] = true;
 }
 
@@ -81,10 +74,8 @@ export function addNewMessageCache(folderFullNameRaw, uid)
  * @param {string} folderFullNameRaw
  * @param {string} uid
  */
-export function hasNewMessageAndRemoveFromCache(folderFullNameRaw, uid)
-{
-	if (NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)])
-	{
+export function hasNewMessageAndRemoveFromCache(folderFullNameRaw, uid) {
+	if (NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)]) {
 		NEW_MESSAGE_CACHE[getMessageKey(folderFullNameRaw, uid)] = null;
 		return true;
 	}
@@ -94,16 +85,14 @@ export function hasNewMessageAndRemoveFromCache(folderFullNameRaw, uid)
 /**
  * @returns {void}
  */
-export function clearNewMessageCache()
-{
+export function clearNewMessageCache() {
 	NEW_MESSAGE_CACHE = {};
 }
 
 /**
  * @returns {string}
  */
-export function getFolderInboxName()
-{
+export function getFolderInboxName() {
 	return '' === inboxFolderName ? 'INBOX' : inboxFolderName;
 }
 
@@ -111,8 +100,7 @@ export function getFolderInboxName()
  * @param {string} folderHash
  * @returns {string}
  */
-export function getFolderFullNameRaw(folderHash)
-{
+export function getFolderFullNameRaw(folderHash) {
 	return '' !== folderHash && FOLDERS_NAME_CACHE[folderHash] ? FOLDERS_NAME_CACHE[folderHash] : '';
 }
 
@@ -120,11 +108,9 @@ export function getFolderFullNameRaw(folderHash)
  * @param {string} folderHash
  * @param {string} folderFullNameRaw
  */
-export function setFolderFullNameRaw(folderHash, folderFullNameRaw)
-{
+export function setFolderFullNameRaw(folderHash, folderFullNameRaw) {
 	FOLDERS_NAME_CACHE[folderHash] = folderFullNameRaw;
-	if ('INBOX' === folderFullNameRaw || '' === inboxFolderName)
-	{
+	if ('INBOX' === folderFullNameRaw || '' === inboxFolderName) {
 		inboxFolderName = folderFullNameRaw;
 	}
 }
@@ -133,8 +119,7 @@ export function setFolderFullNameRaw(folderHash, folderFullNameRaw)
  * @param {string} folderFullNameRaw
  * @returns {string}
  */
-export function getFolderHash(folderFullNameRaw)
-{
+export function getFolderHash(folderFullNameRaw) {
 	return '' !== folderFullNameRaw && FOLDERS_HASH_CACHE[folderFullNameRaw] ? FOLDERS_HASH_CACHE[folderFullNameRaw] : '';
 }
 
@@ -142,10 +127,8 @@ export function getFolderHash(folderFullNameRaw)
  * @param {string} folderFullNameRaw
  * @param {string} folderHash
  */
-export function setFolderHash(folderFullNameRaw, folderHash)
-{
-	if ('' !== folderFullNameRaw)
-	{
+export function setFolderHash(folderFullNameRaw, folderHash) {
+	if ('' !== folderFullNameRaw) {
 		FOLDERS_HASH_CACHE[folderFullNameRaw] = folderHash;
 	}
 }
@@ -154,17 +137,17 @@ export function setFolderHash(folderFullNameRaw, folderHash)
  * @param {string} folderFullNameRaw
  * @returns {string}
  */
-export function getFolderUidNext(folderFullNameRaw)
-{
-	return '' !== folderFullNameRaw && FOLDERS_UID_NEXT_CACHE[folderFullNameRaw] ? FOLDERS_UID_NEXT_CACHE[folderFullNameRaw] : '';
+export function getFolderUidNext(folderFullNameRaw) {
+	return '' !== folderFullNameRaw && FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
+		? FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
+		: '';
 }
 
 /**
  * @param {string} folderFullNameRaw
  * @param {string} uidNext
  */
-export function setFolderUidNext(folderFullNameRaw, uidNext)
-{
+export function setFolderUidNext(folderFullNameRaw, uidNext) {
 	FOLDERS_UID_NEXT_CACHE[folderFullNameRaw] = uidNext;
 }
 
@@ -172,8 +155,7 @@ export function setFolderUidNext(folderFullNameRaw, uidNext)
  * @param {string} folderFullNameRaw
  * @returns {?FolderModel}
  */
-export function getFolderFromCacheList(folderFullNameRaw)
-{
+export function getFolderFromCacheList(folderFullNameRaw) {
 	return '' !== folderFullNameRaw && FOLDERS_CACHE[folderFullNameRaw] ? FOLDERS_CACHE[folderFullNameRaw] : null;
 }
 
@@ -181,16 +163,14 @@ export function getFolderFromCacheList(folderFullNameRaw)
  * @param {string} folderFullNameRaw
  * @param {?FolderModel} folder
  */
-export function setFolderToCacheList(folderFullNameRaw, folder)
-{
+export function setFolderToCacheList(folderFullNameRaw, folder) {
 	FOLDERS_CACHE[folderFullNameRaw] = folder;
 }
 
 /**
  * @param {string} folderFullNameRaw
  */
-export function removeFolderFromCacheList(folderFullNameRaw)
-{
+export function removeFolderFromCacheList(folderFullNameRaw) {
 	setFolderToCacheList(folderFullNameRaw, null);
 }
 
@@ -199,10 +179,10 @@ export function removeFolderFromCacheList(folderFullNameRaw)
  * @param {string} uid
  * @returns {?Array}
  */
-export function getMessageFlagsFromCache(folderFullName, uid)
-{
-	return MESSAGE_FLAGS_CACHE[folderFullName] && MESSAGE_FLAGS_CACHE[folderFullName][uid] ?
-		MESSAGE_FLAGS_CACHE[folderFullName][uid] : null;
+export function getMessageFlagsFromCache(folderFullName, uid) {
+	return MESSAGE_FLAGS_CACHE[folderFullName] && MESSAGE_FLAGS_CACHE[folderFullName][uid]
+		? MESSAGE_FLAGS_CACHE[folderFullName][uid]
+		: null;
 }
 
 /**
@@ -210,10 +190,8 @@ export function getMessageFlagsFromCache(folderFullName, uid)
  * @param {string} uid
  * @param {Array} flagsCache
  */
-export function setMessageFlagsToCache(folderFullName, uid, flagsCache)
-{
-	if (!MESSAGE_FLAGS_CACHE[folderFullName])
-	{
+export function setMessageFlagsToCache(folderFullName, uid, flagsCache) {
+	if (!MESSAGE_FLAGS_CACHE[folderFullName]) {
 		MESSAGE_FLAGS_CACHE[folderFullName] = {};
 	}
 
@@ -223,29 +201,22 @@ export function setMessageFlagsToCache(folderFullName, uid, flagsCache)
 /**
  * @param {string} folderFullName
  */
-export function clearMessageFlagsFromCacheByFolder(folderFullName)
-{
+export function clearMessageFlagsFromCacheByFolder(folderFullName) {
 	MESSAGE_FLAGS_CACHE[folderFullName] = {};
 }
 
 /**
  * @param {(MessageModel|null)} message
  */
-export function initMessageFlagsFromCache(message)
-{
-
-	if (message)
-	{
-		const
-			uid = message.uid,
+export function initMessageFlagsFromCache(message) {
+	if (message) {
+		const uid = message.uid,
 			flags = getMessageFlagsFromCache(message.folderFullNameRaw, uid);
 
-		if (flags && 0 < flags.length)
-		{
+		if (flags && 0 < flags.length) {
 			message.flagged(!!flags[1]);
 
-			if (!message.isSimpleMessage)
-			{
+			if (!message.isSimpleMessage) {
 				message.unseen(!!flags[0]);
 				message.answered(!!flags[2]);
 				message.forwarded(!!flags[3]);
@@ -254,8 +225,7 @@ export function initMessageFlagsFromCache(message)
 			}
 		}
 
-		if (0 < message.threads().length)
-		{
+		if (0 < message.threads().length) {
 			const unseenSubUid = _.find(message.threads(), (sSubUid) => {
 				if (uid !== sSubUid) {
 					const subFlags = getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
@@ -281,15 +251,16 @@ export function initMessageFlagsFromCache(message)
 /**
  * @param {(MessageModel|null)} message
  */
-export function storeMessageFlagsToCache(message)
-{
-	if (message)
-	{
-		setMessageFlagsToCache(
-			message.folderFullNameRaw, message.uid,
-			[message.unseen(), message.flagged(), message.answered(), message.forwarded(),
-				message.isReadReceipt(), message.deletedMark()]
-		);
+export function storeMessageFlagsToCache(message) {
+	if (message) {
+		setMessageFlagsToCache(message.folderFullNameRaw, message.uid, [
+			message.unseen(),
+			message.flagged(),
+			message.answered(),
+			message.forwarded(),
+			message.isReadReceipt(),
+			message.deletedMark()
+		]);
 	}
 }
 
@@ -298,10 +269,8 @@ export function storeMessageFlagsToCache(message)
  * @param {string} uid
  * @param {Array} flags
  */
-export function storeMessageFlagsToCacheByFolderAndUid(folder, uid, flags)
-{
-	if (isArray(flags) && 0 < flags.length)
-	{
+export function storeMessageFlagsToCacheByFolderAndUid(folder, uid, flags) {
+	if (isArray(flags) && 0 < flags.length) {
 		setMessageFlagsToCache(folder, uid, flags);
 	}
 }
@@ -311,21 +280,16 @@ export function storeMessageFlagsToCacheByFolderAndUid(folder, uid, flags)
  * @param {string} uid
  * @param {number} setAction
  */
-export function storeMessageFlagsToCacheBySetAction(folder, uid, setAction)
-{
-
+export function storeMessageFlagsToCacheBySetAction(folder, uid, setAction) {
 	let unread = 0;
 	const flags = getMessageFlagsFromCache(folder, uid);
 
-	if (isArray(flags) && 0 < flags.length)
-	{
-		if (flags[0])
-		{
+	if (isArray(flags) && 0 < flags.length) {
+		if (flags[0]) {
 			unread = 1;
 		}
 
-		switch (setAction)
-		{
+		switch (setAction) {
 			case MessageSetAction.SetSeen:
 				flags[0] = false;
 				break;

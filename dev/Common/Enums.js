@@ -1,4 +1,3 @@
-
 /* eslint quote-props: 0 */
 
 /**
@@ -387,7 +386,6 @@ export const SignedVerifyStatus = {
  * @enum {number}
  */
 export const ContactPropertyType = {
-
 	'Unknown': 0,
 
 	'FullName': 10,

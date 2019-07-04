@@ -1,26 +1,24 @@
-
 import _ from '_';
 import ko from 'ko';
 
-import {StorageResultType, Notification} from 'Common/Enums';
-import {bMobileDevice} from 'Common/Globals';
-import {i18n} from 'Common/Translator';
+import { StorageResultType, Notification } from 'Common/Enums';
+import { bMobileDevice } from 'Common/Globals';
+import { i18n } from 'Common/Translator';
 
 import DomainStore from 'Stores/Admin/Domain';
 
 import Remote from 'Remote/Admin/Ajax';
 
-import {getApp} from 'Helper/Apps/Admin';
+import { getApp } from 'Helper/Apps/Admin';
 
-import {popup, command} from 'Knoin/Knoin';
-import {AbstractViewNext} from 'Knoin/AbstractViewNext';
+import { popup, command } from 'Knoin/Knoin';
+import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @popup({
 	name: 'View/Popup/DomainAlias',
 	templateID: 'PopupsDomainAlias'
 })
-class DomainAliasPopupView extends AbstractViewNext
-{
+class DomainAliasPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -34,8 +32,8 @@ class DomainAliasPopupView extends AbstractViewNext
 
 		this.domains = DomainStore.domainsWithoutAliases;
 
-		this.domainsOptions = ko.computed(
-			() => _.map(this.domains(), (item) => ({optValue: item.name, optText: item.name}))
+		this.domainsOptions = ko.computed(() =>
+			_.map(this.domains(), (item) => ({ optValue: item.name, optText: item.name }))
 		);
 
 		this.canBeSaved = ko.computed(() => !this.saving() && '' !== this.name() && '' !== this.alias());
@@ -46,29 +44,19 @@ class DomainAliasPopupView extends AbstractViewNext
 	@command((self) => self.canBeSaved())
 	createCommand() {
 		this.saving(true);
-		Remote.createDomainAlias(
-			this.onDomainAliasCreateOrSaveResponse,
-			this.name(),
-			this.alias()
-		);
+		Remote.createDomainAlias(this.onDomainAliasCreateOrSaveResponse, this.name(), this.alias());
 	}
 
 	onDomainAliasCreateOrSaveResponse(result, data) {
 		this.saving(false);
-		if (StorageResultType.Success === result && data)
-		{
-			if (data.Result)
-			{
+		if (StorageResultType.Success === result && data) {
+			if (data.Result) {
 				getApp().reloadDomainList();
 				this.closeCommand();
-			}
-			else if (Notification.DomainAlreadyExists === data.ErrorCode)
-			{
+			} else if (Notification.DomainAlreadyExists === data.ErrorCode) {
 				this.savingError(i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));
 			}
-		}
-		else
-		{
+		} else {
 			this.savingError(i18n('ERRORS/UNKNOWN_ERROR'));
 		}
 	}
@@ -78,8 +66,7 @@ class DomainAliasPopupView extends AbstractViewNext
 	}
 
 	onShowWithDelay() {
-		if ('' === this.name() && !bMobileDevice)
-		{
+		if ('' === this.name() && !bMobileDevice) {
 			this.name.focused(true);
 		}
 	}
@@ -95,4 +82,4 @@ class DomainAliasPopupView extends AbstractViewNext
 	}
 }
 
-export {DomainAliasPopupView, DomainAliasPopupView as default};
+export { DomainAliasPopupView, DomainAliasPopupView as default };

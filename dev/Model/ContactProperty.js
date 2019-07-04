@@ -1,14 +1,12 @@
-
 import ko from 'ko';
 
-import {ContactPropertyType} from 'Common/Enums';
-import {pInt, pString} from 'Common/Utils';
-import {i18n} from 'Common/Translator';
+import { ContactPropertyType } from 'Common/Enums';
+import { pInt, pString } from 'Common/Utils';
+import { i18n } from 'Common/Translator';
 
-import {AbstractModel} from 'Knoin/AbstractModel';
+import { AbstractModel } from 'Knoin/AbstractModel';
 
-class ContactPropertyModel extends AbstractModel
-{
+class ContactPropertyModel extends AbstractModel {
 	/**
 	 * @param {number=} type = Enums.ContactPropertyType.Unknown
 	 * @param {string=} typeStr = ''
@@ -16,8 +14,7 @@ class ContactPropertyModel extends AbstractModel
 	 * @param {boolean=} focused = false
 	 * @param {string=} placeholder = ''
 	 */
-	constructor(type = ContactPropertyType.Unknown, typeStr = '', value = '', focused = false, placeholder = '')
-	{
+	constructor(type = ContactPropertyType.Unknown, typeStr = '', value = '', focused = false, placeholder = '') {
 		super('ContactPropertyModel');
 
 		this.type = ko.observable(pInt(type));
@@ -38,4 +35,4 @@ class ContactPropertyModel extends AbstractModel
 	}
 }
 
-export {ContactPropertyModel, ContactPropertyModel as default};
+export { ContactPropertyModel, ContactPropertyModel as default };

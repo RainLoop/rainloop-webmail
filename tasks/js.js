@@ -82,8 +82,7 @@ const jsMin = () =>
 		.pipe(gulp.dest(config.paths.staticMinJS))
 		.on('error', gutil.log);
 
-const jsLint = (cb) => cb();
-const jsLint1 = () =>
+const jsLint = () =>
 	gulp
 		.src(config.paths.globjs)
 		.pipe(cache('eslint'))
