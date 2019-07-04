@@ -98,27 +98,25 @@ class ContactsPopupView extends AbstractViewNext {
 
 		this.viewSaveTrigger = ko.observable(SaveSettingsStep.Idle);
 
-		this.viewPropertiesNames = this.viewProperties.filter(
-			(property) => -1 < inArray(property.type(), [ContactPropertyType.FirstName, ContactPropertyType.LastName])
+		this.viewPropertiesNames = ko.computed(() =>
+			_.filter(
+				this.viewProperties(),
+				(property) => -1 < inArray(property.type(), [ContactPropertyType.FirstName, ContactPropertyType.LastName])
+			)
+		);
+		this.viewPropertiesOther = ko.computed(() =>
+			_.filter(this.viewProperties(), (property) => -1 < inArray(property.type(), [ContactPropertyType.Nick]))
 		);
 
-		// this.viewPropertiesOther = this.viewProperties.filter(
-		// 	(property) => -1 < inArray(property.type(), [ContactPropertyType.Note])
-		// );
+		this.viewPropertiesEmails = ko.computed(() =>
+			_.filter(this.viewProperties(), (property) => ContactPropertyType.Email === property.type())
+		);
 
-		this.viewPropertiesOther = ko.computed(() => {
-			const list = _.filter(
-				this.viewProperties(),
-				(property) => -1 < inArray(property.type(), [ContactPropertyType.Nick])
-			);
-			return _.sortBy(list, (property) => property.type());
-		});
+		this.viewPropertiesWeb = ko.computed(() =>
+			_.filter(this.viewProperties(), (property) => ContactPropertyType.Web === property.type())
+		);
 
-		this.viewPropertiesEmails = this.viewProperties.filter((property) => ContactPropertyType.Email === property.type());
-
-		this.viewPropertiesWeb = this.viewProperties.filter((property) => ContactPropertyType.Web === property.type());
-
-		this.viewHasNonEmptyRequaredProperties = ko.computed(() => {
+		this.viewHasNonEmptyRequiredProperties = ko.computed(() => {
 			const names = this.viewPropertiesNames(),
 				emails = this.viewPropertiesEmails(),
 				fFilter = (property) => '' !== trim(property.value());
@@ -126,47 +124,37 @@ class ContactsPopupView extends AbstractViewNext {
 			return !!(_.find(names, fFilter) || _.find(emails, fFilter));
 		});
 
-		this.viewPropertiesPhones = this.viewProperties.filter((property) => ContactPropertyType.Phone === property.type());
-
-		this.viewPropertiesEmailsNonEmpty = this.viewPropertiesNames.filter((property) => '' !== trim(property.value()));
-
-		this.viewPropertiesEmailsEmptyAndOnFocused = this.viewPropertiesEmails.filter((property) => {
-			const foc = property.focused();
-			return '' === trim(property.value()) && !foc;
-		});
-
-		this.viewPropertiesPhonesEmptyAndOnFocused = this.viewPropertiesPhones.filter((property) => {
-			const foc = property.focused();
-			return '' === trim(property.value()) && !foc;
-		});
-
-		this.viewPropertiesWebEmptyAndOnFocused = this.viewPropertiesWeb.filter((property) => {
-			const foc = property.focused();
-			return '' === trim(property.value()) && !foc;
-		});
-
-		this.viewPropertiesOtherEmptyAndOnFocused = ko.computed(() =>
-			_.filter(this.viewPropertiesOther(), (property) => {
-				const foc = property.focused();
-				return '' === trim(property.value()) && !foc;
-			})
+		this.viewPropertiesPhones = ko.computed(() =>
+			_.filter(this.viewProperties(), (property) => ContactPropertyType.Phone === property.type())
 		);
 
-		this.viewPropertiesEmailsEmptyAndOnFocused.subscribe((list) => {
-			fFastClearEmptyListHelper(list);
-		});
+		this.viewPropertiesEmailsNonEmpty = ko.computed(() =>
+			_.filter(this.viewPropertiesNames(), (property) => '' !== trim(property.value()))
+		);
 
-		this.viewPropertiesPhonesEmptyAndOnFocused.subscribe((list) => {
-			fFastClearEmptyListHelper(list);
-		});
+		const propertyFocused = (property) => {
+			const focused = property.focused();
+			return '' === trim(property.value()) && !focused;
+		};
 
-		this.viewPropertiesWebEmptyAndOnFocused.subscribe((list) => {
-			fFastClearEmptyListHelper(list);
-		});
+		this.viewPropertiesEmailsEmptyAndOnFocused = ko.computed(() =>
+			_.filter(this.viewPropertiesEmails(), propertyFocused)
+		);
 
-		this.viewPropertiesOtherEmptyAndOnFocused.subscribe((list) => {
-			fFastClearEmptyListHelper(list);
-		});
+		this.viewPropertiesPhonesEmptyAndOnFocused = ko.computed(() =>
+			_.filter(this.viewPropertiesPhones(), propertyFocused)
+		);
+
+		this.viewPropertiesWebEmptyAndOnFocused = ko.computed(() => _.filter(this.viewPropertiesWeb(), propertyFocused));
+
+		this.viewPropertiesOtherEmptyAndOnFocused = ko.computed(() =>
+			_.filter(this.viewPropertiesOther(), propertyFocused)
+		);
+
+		this.viewPropertiesEmailsEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
+		this.viewPropertiesPhonesEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
+		this.viewPropertiesWebEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
+		this.viewPropertiesOtherEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
 
 		this.viewSaving = ko.observable(false);
 
@@ -304,7 +292,7 @@ class ContactsPopupView extends AbstractViewNext {
 	}
 
 	@command((self) => {
-		const bV = self.viewHasNonEmptyRequaredProperties(),
+		const bV = self.viewHasNonEmptyRequiredProperties(),
 			bReadOnly = self.viewReadOnly();
 		return !self.viewSaving() && bV && !bReadOnly;
 	})

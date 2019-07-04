@@ -3884,10 +3884,6 @@ knockout-sortable@1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/knockout-sortable/-/knockout-sortable-1.1.1.tgz#5375f02c61c30dcef4622f6e57e1bafa970d6a0e"
 
-knockout-transformations@2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/knockout-transformations/-/knockout-transformations-2.1.0.tgz#c9a9148dbe1649dc00518eccea704379aadb0097"
-
 knockout@3.4.2:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/knockout/-/knockout-3.4.2.tgz#e87958de77ad1e936f7ce645bab8b5d7c456d937"

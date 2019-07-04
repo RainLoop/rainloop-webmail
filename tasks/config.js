@@ -98,7 +98,6 @@ config.paths.js = {
 			'node_modules/underscore/underscore-min.js',
 			'node_modules/moment/min/moment.min.js',
 			'node_modules/knockout/build/output/knockout-latest.js',
-			'node_modules/knockout-transformations/dist/knockout-transformations.min.js',
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',
 			'node_modules/matchmedia-polyfill/matchMedia.js',
 			'node_modules/matchmedia-polyfill/matchMedia.addListener.js',

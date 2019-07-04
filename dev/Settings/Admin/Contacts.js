@@ -47,14 +47,16 @@ class ContactsAdminSettings {
 		this.contactsSupported = 0 < supportedTypes.length;
 
 		this.contactsTypes = ko.observableArray([]);
-		this.contactsTypesOptions = this.contactsTypes.map((value) => {
-			const disabled = -1 === inArray(value, supportedTypes);
-			return {
-				'id': value,
-				'name': getTypeName(value) + (disabled ? ' (' + i18n('HINTS/NOT_SUPPORTED') + ')' : ''),
-				'disabled': disabled
-			};
-		});
+		this.contactsTypesOptions = ko.computed(() =>
+			_.map(this.contactsTypes(), (value) => {
+				const disabled = -1 === inArray(value, supportedTypes);
+				return {
+					'id': value,
+					'name': getTypeName(value) + (disabled ? ' (' + i18n('HINTS/NOT_SUPPORTED') + ')' : ''),
+					'disabled': disabled
+				};
+			})
+		);
 
 		this.contactsTypes(types);
 		this.contactsType = ko.observable('');

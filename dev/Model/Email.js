@@ -185,7 +185,7 @@ class EmailModel {
 		const parsedResult = addressparser(line);
 		if (isNonEmptyArray(parsedResult)) {
 			return _.compact(
-				parsedResult.map((item) =>
+				_.map(parsedResult, (item) =>
 					item.address ? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '') : null
 				)
 			);

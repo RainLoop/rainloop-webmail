@@ -18,9 +18,15 @@ class PackagesAdminSettings {
 		this.packagesReal = PackageStore.packagesReal;
 		this.packagesMainUpdatable = PackageStore.packagesMainUpdatable;
 
-		this.packagesCurrent = this.packages.filter((item) => item && '' !== item.installed && !item.compare);
-		this.packagesAvailableForUpdate = this.packages.filter((item) => item && '' !== item.installed && !!item.compare);
-		this.packagesAvailableForInstallation = this.packages.filter((item) => item && '' === item.installed);
+		this.packagesCurrent = ko.computed(() =>
+			_.filter(this.packages(), (item) => item && '' !== item.installed && !item.compare)
+		);
+		this.packagesAvailableForUpdate = ko.computed(() =>
+			_.filter(this.packages(), (item) => item && '' !== item.installed && !!item.compare)
+		);
+		this.packagesAvailableForInstallation = ko.computed(() =>
+			_.filter(this.packages(), (item) => item && '' === item.installed)
+		);
 
 		this.visibility = ko.computed(() => (PackageStore.packages.loading() ? 'visible' : 'hidden'));
 	}

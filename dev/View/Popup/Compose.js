@@ -226,9 +226,9 @@ class ComposePopupView extends AbstractViewNext {
 		this.saving = ko.observable(false);
 		this.attachments = ko.observableArray([]);
 
-		this.attachmentsInProcess = this.attachments.filter((item) => item && !item.complete());
-		this.attachmentsInReady = this.attachments.filter((item) => item && item.complete());
-		this.attachmentsInError = this.attachments.filter((item) => item && '' !== item.error());
+		this.attachmentsInProcess = ko.computed(() => _.filter(this.attachments(), (item) => item && !item.complete()));
+		this.attachmentsInReady = ko.computed(() => _.filter(this.attachments(), (item) => item && item.complete()));
+		this.attachmentsInError = ko.computed(() => _.filter(this.attachments(), (item) => item && '' !== item.error()));
 
 		this.attachmentsCount = ko.computed(() => this.attachments().length);
 		this.attachmentsInErrorCount = ko.computed(() => this.attachmentsInError().length);

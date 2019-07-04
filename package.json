@@ -103,7 +103,6 @@
     "json3": "3.3.3",
     "knockout": "3.4.2",
     "knockout-sortable": "1.1.1",
-    "knockout-transformations": "2.1.0",
     "lozad": "1.9.0",
     "matchmedia-polyfill": "0.3.2",
     "moment": "2.24.0",
