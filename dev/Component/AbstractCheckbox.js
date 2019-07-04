@@ -1,32 +1,26 @@
-
 import ko from 'ko';
-import {isUnd} from 'Common/Utils';
-import {AbstractComponent} from 'Component/Abstract';
+import { isUnd } from 'Common/Utils';
+import { AbstractComponent } from 'Component/Abstract';
 
-class AbstracCheckbox extends AbstractComponent
-{
+class AbstractCheckbox extends AbstractComponent {
 	/**
 	 * @param {Object} params = {}
 	 */
 	constructor(params = {}) {
-
 		super();
 
 		this.value = params.value;
-		if (isUnd(this.value) || !this.value.subscribe)
-		{
+		if (isUnd(this.value) || !this.value.subscribe) {
 			this.value = ko.observable(isUnd(this.value) ? false : !!this.value);
 		}
 
 		this.enable = params.enable;
-		if (isUnd(this.enable) || !this.enable.subscribe)
-		{
+		if (isUnd(this.enable) || !this.enable.subscribe) {
 			this.enable = ko.observable(isUnd(this.enable) ? true : !!this.enable);
 		}
 
 		this.disable = params.disable;
-		if (isUnd(this.disable) || !this.disable.subscribe)
-		{
+		if (isUnd(this.disable) || !this.disable.subscribe) {
 			this.disable = ko.observable(isUnd(this.disable) ? false : !!this.disable);
 		}
 
@@ -41,11 +35,10 @@ class AbstracCheckbox extends AbstractComponent
 	}
 
 	click() {
-		if (!this.readOnly && this.enable() && !this.disable())
-		{
+		if (!this.readOnly && this.enable() && !this.disable()) {
 			this.value(!this.value());
 		}
 	}
 }
 
-export {AbstracCheckbox, AbstracCheckbox as default};
+export { AbstractCheckbox, AbstractCheckbox as default };

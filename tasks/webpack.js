@@ -2,7 +2,7 @@
 const webpack = require('webpack');
 const gutil = require('gulp-util');
 
-const {config} = require('./config');
+const { config } = require('./config');
 
 const webpackCfgBuilder = require('../webpack.config.builder.js');
 
@@ -34,8 +34,5 @@ const webpackCallback = (done) => (err, stats) => {
 };
 
 exports.webpack = (done) => {
-	webpack(
-		webpackCfgBuilder(config.paths.staticJS, !config.community, 'production'),
-		webpackCallback(done)
-	);
+	webpack(webpackCfgBuilder(config.paths.staticJS, !config.community, 'production'), webpackCallback(done));
 };

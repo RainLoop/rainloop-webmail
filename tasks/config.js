@@ -1,6 +1,6 @@
 /* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
 const path = require('path');
-const {argv} = require('yargs');
+const { argv } = require('yargs');
 
 const config = {
 	head: {
@@ -9,7 +9,8 @@ const config = {
 	},
 	devVersion: '0.0.0',
 	releasesPath: 'build/dist/releases',
-	community: true,
+	community: !argv.pro,
+	source: !!argv.source,
 	watch: false,
 	watchInterval: 1000,
 	googleCompile: false,
@@ -23,8 +24,6 @@ const config = {
 
 	paths: {}
 };
-
-config.community = !argv.pro;
 
 config.paths.globjs = 'dev/**/*.js';
 config.paths.static = 'rainloop/v/' + config.devVersion + '/static/';
@@ -42,10 +41,7 @@ config.paths.less = {
 		src: 'dev/Styles/@Main.less',
 		watch: ['dev/Styles/*.less'],
 		options: {
-			paths: [
-				path.join(__dirname, 'dev', 'Styles'),
-				path.join(__dirname, 'vendors', 'bootstrap', 'less')
-			]
+			paths: [path.join(__dirname, 'dev', 'Styles'), path.join(__dirname, 'vendors', 'bootstrap', 'less')]
 		}
 	}
 };
@@ -71,18 +67,13 @@ config.paths.css = {
 	},
 	social: {
 		name: 'social.css',
-		src: [
-			'vendors/fontastic/styles.css',
-			'dev/Styles/_social.css'
-		]
+		src: ['vendors/fontastic/styles.css', 'dev/Styles/_social.css']
 	}
 };
 
 config.paths.js = {
 	moment: {
-		locales: [
-			'node_modules/moment/locale/*.js'
-		]
+		locales: ['node_modules/moment/locale/*.js']
 	},
 	libs: {
 		name: 'libs.js',

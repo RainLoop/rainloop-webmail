@@ -91,7 +91,6 @@
 								<div class="sidebarParent">
 									&nbsp;
 								</div>
-								<div class="delimiter"></div>
 								<div class="wrapper">
 									<div class="checkedParent">
 										<i class="checkboxItem" data-bind="css: checked() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
@@ -183,7 +182,7 @@
 									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesNames">
 											<div class="property-line">
-												<span class="contactValueStatic" data-bind="text: value" />
+												<span class="contactValueStatic" data-bind="text: value"></span>
 												<input type="text" class="contactValueInput"
 													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}" />
@@ -192,13 +191,13 @@
 										<div data-bind="visible: 0 < viewPropertiesOther().length, foreach: viewPropertiesOther">
 											<div class="property-line">
 												<!-- ko if: !largeValue() -->
-												<span class="contactValueStatic" data-bind="text: value" />
+												<span class="contactValueStatic" data-bind="text: value"></span>
 												<input type="text" class="contactValueInput"
 													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}" />
 												<!-- /ko -->
 												<!-- ko if: largeValue -->
-												<span class="contactValueTextAreaStatic" data-bind="text: value" />
+												<span class="contactValueTextAreaStatic" data-bind="text: value"></span>
 												<textarea class="contactValueTextArea"
 													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}"></textarea>
@@ -214,7 +213,7 @@
 									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesEmails">
 											<div class="property-line">
-												<span class="contactValueStatic" data-bind="text: value" />
+												<span class="contactValueStatic" data-bind="text: value"></span>
 												<input type="text" class="contactValueInput"
 													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
@@ -230,7 +229,7 @@
 									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesPhones">
 											<div class="property-line">
-												<span class="contactValueStatic" data-bind="text: value" />
+												<span class="contactValueStatic" data-bind="text: value"></span>
 												<input type="text" class="contactValueInput"
 													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />
@@ -245,7 +244,7 @@
 									<div class="controls fix-width">
 										<div data-bind="foreach: viewPropertiesWeb">
 											<div class="property-line">
-												<span class="contactValueLargeStatic" data-bind="text: value" />
+												<span class="contactValueLargeStatic" data-bind="text: value"></span>
 												<input type="text" class="contactValueInputLarge" placeholder="http://"
 													autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 													data-bind="value: value, hasFocus: focused, valueUpdate: 'keyup'" />

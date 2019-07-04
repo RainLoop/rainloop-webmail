@@ -93,9 +93,9 @@ class ContactsPopupView extends AbstractViewNext
 			(property) => -1 < inArray(property.type(), [ContactPropertyType.FirstName, ContactPropertyType.LastName])
 		);
 
-		this.viewPropertiesOther = this.viewProperties.filter(
-			(property) => -1 < inArray(property.type(), [ContactPropertyType.Note])
-		);
+		// this.viewPropertiesOther = this.viewProperties.filter(
+		// 	(property) => -1 < inArray(property.type(), [ContactPropertyType.Note])
+		// );
 
 		this.viewPropertiesOther = ko.computed(() => {
 			const list = _.filter(this.viewProperties(),

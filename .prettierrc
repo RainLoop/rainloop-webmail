@@ -1,0 +1,26 @@
+{
+	"printWidth": 120,
+	"semi": true,
+	"singleQuote": true,
+	"useTabs": true,
+	"bracketSpacing": true,
+	"trailingComma": "none",
+	"arrowParens": "always",
+	"endOfLine": "lf",
+	"quoteProps": "preserve",
+	"overrides": [
+	  {
+		 "files": "*.js",
+		 "options": {
+			"parser": "babel"
+		 }
+	  },
+	  {
+		 "files": "*.jsx",
+		 "options": {
+			"parser": "babel"
+		 }
+	  }
+	]
+ }
+ 

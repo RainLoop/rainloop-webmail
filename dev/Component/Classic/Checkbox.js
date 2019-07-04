@@ -1,7 +1,7 @@
 
 import {componentExportHelper} from 'Component/Abstract';
-import {AbstracCheckbox} from 'Component/AbstracCheckbox';
+import {AbstractCheckbox} from 'Component/AbstractCheckbox';
 
-class ClassicCheckboxComponent extends AbstracCheckbox {}
+class ClassicCheckboxComponent extends AbstractCheckbox {}
 
 export default componentExportHelper(ClassicCheckboxComponent, 'ClassicCheckboxComponent');

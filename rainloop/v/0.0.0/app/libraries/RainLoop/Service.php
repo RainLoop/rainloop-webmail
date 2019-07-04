@@ -304,7 +304,7 @@ class Service
 
 		$aTemplateParameters = array(
 			'{{BaseAppHeadScriptLink}}' => $sSentryDsn ?
-				'<script type="text/javascript" data-cfasync="false" src="https://browser.sentry-cdn.com/5.0.8/bundle.min.js" crossorigin="anonymous"></script>' : '',
+				'<script type="text/javascript" data-cfasync="false" src="https://browser.sentry-cdn.com/5.4.3/bundle.min.js" crossorigin="anonymous"></script>' : '',
 			'{{BaseAppBodyScript}}' => $sSentryDsn ?
 				'<script type="text/javascript" data-cfasync="false">window && window.Sentry && window.Sentry.init({dsn:\''.$sSentryDsn.'\',ignoreErrors:[\'Document not active\']});</script>' : '',
 			'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',

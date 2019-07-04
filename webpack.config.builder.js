@@ -1,40 +1,46 @@
+const path = require('path');
+const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
-const
-	path = require('path'),
-	webpack = require('webpack'),
-
-	CopyWebpackPlugin = require('copy-webpack-plugin'),
-
-	devPath = path.resolve(__dirname, 'dev'),
-	devPathJoin = path.join(__dirname, 'dev'),
-	externalPathJoin = path.join(__dirname, 'dev', 'External'),
-	loose = true;
+const devPath = path.resolve(__dirname, 'dev');
+const devPathJoin = path.join(__dirname, 'dev');
+const externalPathJoin = path.join(__dirname, 'dev', 'External');
+const loose = true;
 
 const babelLoaderOptions = function() {
 	return {
-		ignore: [
-			/\/core-js/
-		],
+		ignore: [/\/core-js/],
 		cacheDirectory: true,
-		overrides: [{
-			test: './node_modules/',
-			sourceType: 'unambiguous'
-		}],
+		overrides: [
+			{
+				test: './node_modules/',
+				sourceType: 'unambiguous'
+			}
+		],
 		presets: [
-			['@babel/preset-env', {
-				useBuiltIns: 'usage',
-				corejs: {version: 3, proposals: true},
-				loose: loose,
-				modules: false
-			}]
+			[
+				'@babel/preset-env',
+				{
+					useBuiltIns: 'usage',
+					corejs: { version: 3, proposals: true },
+					loose: loose,
+					modules: false
+				}
+			]
 		],
 		plugins: [
-			['@babel/plugin-transform-runtime', {
-				corejs: 3
-			}],
-			['@babel/plugin-proposal-decorators', {
-				legacy: true
-			}],
+			[
+				'@babel/plugin-transform-runtime',
+				{
+					corejs: 3
+				}
+			],
+			[
+				'@babel/plugin-proposal-decorators',
+				{
+					legacy: true
+				}
+			],
 			'@babel/plugin-proposal-class-properties'
 		]
 	};
@@ -44,6 +50,7 @@ process.noDeprecation = true;
 module.exports = function(publicPath, pro, mode) {
 	return {
 		mode: mode || 'development',
+		devtool: 'inline-source-map',
 		entry: {
 			'js/polyfills': path.join(devPathJoin, 'polyfills.js'),
 			'js/boot': path.join(devPathJoin, 'boot.js'),
@@ -71,11 +78,10 @@ module.exports = function(publicPath, pro, mode) {
 					NODE_ENV: JSON.stringify('production')
 				}
 			}),
-			new webpack.DefinePlugin({
-			}),
+			new webpack.DefinePlugin({}),
 			new CopyWebpackPlugin([
-				{from: 'node_modules/openpgp/dist/openpgp.min.js', to: 'js/min/openpgp.min.js'},
-				{from: 'node_modules/openpgp/dist/openpgp.worker.min.js', to: 'js/min/openpgp.worker.min.js'}
+				{ from: 'node_modules/openpgp/dist/openpgp.min.js', to: 'js/min/openpgp.min.js' },
+				{ from: 'node_modules/openpgp/dist/openpgp.worker.min.js', to: 'js/min/openpgp.worker.min.js' }
 			])
 		],
 		resolve: {

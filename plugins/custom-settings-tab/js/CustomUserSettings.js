@@ -1,6 +1,11 @@
 
 (function () {
 
+	if (!window.rl)
+	{
+		return;
+	}
+
 	/**
 	 * @constructor
 	 */

@@ -10,9 +10,6 @@
 /rainloop/v/0.0.0/static/*
 /rainloop/v/0.0.0/app/localization/moment/*
 !/rainloop/v/0.0.0/app/localization/moment/.gitempty
-/tests/e2e/configuration.js
-/tests/e2e/output/*
-!/tests/e2e/output/.gitempty
 /vendors/.*
 /node_modules
 /build/local
@@ -26,6 +23,5 @@
 /dist
 /data
 .DS_Store
-/tests/fix.php
 /MULTIPLY
 /include.php

@@ -1,6 +1,11 @@
 
 $(function () {
-	
+
+	if (!window.rl)
+	{
+		return;
+	}
+
 	var
 		sAccount = window.rl.pluginSettingsGet('google-analytics', 'account'),
 		sDomain = window.rl.pluginSettingsGet('google-analytics', 'domain_name'),

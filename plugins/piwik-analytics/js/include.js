@@ -1,6 +1,11 @@
 
 $(function () {
 
+	if (!window.rl)
+	{
+		return;
+	}
+
 	var
 		sPiwikURL = '' + window.rl.pluginSettingsGet('piwik-analytics', 'piwik_url'),
 		sSiteID = '' + window.rl.pluginSettingsGet('piwik-analytics', 'site_id')

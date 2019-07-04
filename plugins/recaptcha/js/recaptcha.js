@@ -9,7 +9,7 @@
 
 		function ShowRecaptcha()
 		{
-			if (window.grecaptcha)
+			if (window.grecaptcha && window.rl)
 			{
 				if (null === nId)
 				{
