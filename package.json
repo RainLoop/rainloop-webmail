@@ -16,7 +16,7 @@
     "url": "git://github.com/RainLoop/rainloop-webmail.git"
   },
   "scripts": {
-    "watch-css": "gulp watch",
+    "watch-css": "gulp watchCss",
     "watch-js": "webpack --color --watch"
   },
   "license": "SEE LICENSE IN LICENSE",

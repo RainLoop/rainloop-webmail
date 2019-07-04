@@ -54,6 +54,8 @@ rl-compile:
 	@docker-compose run --no-deps --rm node gulp build
 rl-compile-with-source:
 	@docker-compose run --no-deps --rm node gulp build --source
+rl-watch-css:
+	@docker-compose run --no-deps --rm node npm run watch-css
 rl-watch-js:
 	@docker-compose run --no-deps --rm node npm run watch-js
 

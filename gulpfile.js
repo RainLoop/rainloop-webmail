@@ -6,6 +6,7 @@ const { assets } = require('./tasks/assets');
 const { js, jsLint } = require('./tasks/js');
 const { css, cssLint } = require('./tasks/css');
 const { vendors } = require('./tasks/vendors');
+const { watchCss } = require('./tasks/watch');
 const { rainloop } = require('./tasks/rainloop');
 const { owncloud } = require('./tasks/owncloud');
 
@@ -22,6 +23,8 @@ exports.css = css;
 exports.lint = lint;
 exports.build = build;
 exports.default = build;
+
+exports.watchCss = watchCss;
 
 exports.rainloop = gulp.series(build, rainloop);
 exports.owncloud = gulp.series(build, owncloud);
