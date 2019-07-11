@@ -90,11 +90,6 @@ class BrandingPremAdminSettings extends BrandingAdminSettings {
 					});
 				});
 
-				this.loginPowered.subscribe((value) => {
-					Remote.saveAdminConfig(null, {
-						'LoginPowered': boolToAjax(value)
-					});
-				});
 			}, Magics.Time50ms);
 		}
 	}

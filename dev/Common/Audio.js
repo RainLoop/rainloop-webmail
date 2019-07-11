@@ -44,15 +44,19 @@ class Audio {
 	}
 
 	createNewObject() {
-		const player = window.Audio ? new window.Audio() : null;
-		if (player && player.canPlayType && player.pause && player.play) {
-			player.preload = 'none';
-			player.loop = false;
-			player.autoplay = false;
-			player.muted = false;
-		}
+		try {
+			const player = window.Audio ? new window.Audio() : null;
+			if (player && player.canPlayType && player.pause && player.play) {
+				player.preload = 'none';
+				player.loop = false;
+				player.autoplay = false;
+				player.muted = false;
+			}
 
-		return player;
+			return player;
+		} catch (e) {} // eslint-disable-line no-empty
+
+		return null;
 	}
 
 	paused() {

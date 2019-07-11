@@ -25,8 +25,6 @@ class LoginAdminView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.loginPowered = !!Settings.settingsGet('LoginPowered');
-
 		this.mobile = !!Settings.appSettingsGet('mobile');
 		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
 

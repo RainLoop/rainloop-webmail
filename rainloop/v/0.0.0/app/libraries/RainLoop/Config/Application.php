@@ -169,7 +169,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'login_background'	=> array(''),
 				'login_desc'		=> array(''),
 				'login_css'			=> array(''),
-				'login_powered'		=> array(true),
 
 				'user_css'			=> array(''),
 				'user_logo'			=> array(''),

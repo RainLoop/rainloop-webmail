@@ -1511,7 +1511,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'LoadingDescriptionEsc' => 'RainLoop',
 			'FaviconUrl' => $oConfig->Get('webmail', 'favicon_url', ''),
 			'LoginDescription' => '',
-			'LoginPowered' => true,
 			'LoginLogo' => '',
 			'LoginBackground' => '',
 			'LoginCss' => '',

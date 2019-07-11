@@ -57,7 +57,6 @@ class LoginUserView extends AbstractViewNext {
 		this.additionalCodeSignMe = ko.observable(false);
 
 		this.logoImg = trim(Settings.settingsGet('LoginLogo'));
-		this.loginPowered = !!Settings.settingsGet('LoginPowered');
 		this.loginDescription = trim(Settings.settingsGet('LoginDescription'));
 
 		this.mobile = !!Settings.appSettingsGet('mobile');

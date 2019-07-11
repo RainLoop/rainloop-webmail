@@ -37,7 +37,6 @@ class BrandingAdminSettings {
 			];
 		});
 
-		this.loginPowered = ko.observable(!!settingsGet('LoginPowered'));
 		this.community = RL_COMMUNITY || AppStore.community();
 	}
 
