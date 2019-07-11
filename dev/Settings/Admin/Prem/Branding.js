@@ -1,5 +1,5 @@
 import _ from '_';
-import { settingsSaveHelperSimpleFunction, trim, boolToAjax } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, trim } from 'Common/Utils';
 import { Magics } from 'Common/Enums';
 
 import Remote from 'Remote/Admin/Ajax';
@@ -89,7 +89,6 @@ class BrandingPremAdminSettings extends BrandingAdminSettings {
 						'WelcomePageDisplay': trim(value)
 					});
 				});
-
 			}, Magics.Time50ms);
 		}
 	}

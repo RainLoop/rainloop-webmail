@@ -75,4 +75,4 @@ gpg:
 	docker run -it --rm -w=/var/www \
 		-v $(shell pwd)/.docker/.cache/.gnupg:/root/.gnupg \
 		-v $(shell pwd):/var/www \
-		ubuntu:latest bash
+		ubuntu:16.04 bash
