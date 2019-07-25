@@ -24,7 +24,7 @@ class ChangePasswordCyberPanelPlugin extends \RainLoop\Plugins\AbstractPlugin
 					->SetmUser($this->Config()->Get('plugin', 'mUser', ''))
 					->SetmPass($this->Config()->Get('plugin', 'mPass', ''))
 				;
-				break;
+			break;
 		}
 	}
 
