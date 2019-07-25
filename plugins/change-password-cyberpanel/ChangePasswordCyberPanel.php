@@ -104,9 +104,8 @@ class ChangePasswordCyberPanel implements \RainLoop\Providers\ChangePassword\Cha
 			$sEmailDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
 
 			$password_check_query = "SELECT * FROM e_users WHERE emailOwner_id = '$sEmailDomain' AND email = '$sEmail'";
-
-			    $result = mysqli_query($db, $password_check_query);
-			    $password_check = mysqli_fetch_assoc($result);
+			$result = mysqli_query($db, $password_check_query);
+			$password_check = mysqli_fetch_assoc($result);
             
 			if (password_verify($sPrevPassword, substr($password_check['password'], 7))) {
 				$hashed_password = '{CRYPT}'.password_hash($sNewPassword, PASSWORD_BCRYPT);
