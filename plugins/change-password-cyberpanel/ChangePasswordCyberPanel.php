@@ -102,28 +102,28 @@ class ChangePasswordCyberPanel implements \RainLoop\Providers\ChangePassword\Cha
 			$sEmail = $oAccount->Email();
 			$sEmailUser = \MailSo\Base\Utils::GetAccountNameFromEmail($sEmail);
 			$sEmailDomain = \MailSo\Base\Utils::GetDomainFromEmail($sEmail);
-			
+
 			$password_check_query = "SELECT * FROM e_users WHERE emailOwner_id = '$sEmailDomain' AND email = '$sEmail'";
+
+			    $result = mysqli_query($db, $password_check_query);
+			    $password_check = mysqli_fetch_assoc($result);
             
-            $result = mysqli_query($db, $password_check_query);
-            $password_check = mysqli_fetch_assoc($result);
-            
-            if (password_verify($sPrevPassword, substr($password_check['password'], 7))) {
-                $hashed_password = '{CRYPT}'.password_hash($sNewPassword, PASSWORD_BCRYPT);
-                $password_update_query = "UPDATE e_users SET password = '$hashed_password' WHERE emailOwner_id = '$sEmailDomain' AND email = '$sEmail'";
-                mysqli_query($db, $password_update_query);
-                $bResult = true;
+			if (password_verify($sPrevPassword, substr($password_check['password'], 7))) {
+				$hashed_password = '{CRYPT}'.password_hash($sNewPassword, PASSWORD_BCRYPT);
+				$password_update_query = "UPDATE e_users SET password = '$hashed_password' WHERE emailOwner_id = '$sEmailDomain' AND email = '$sEmail'";
+				mysqli_query($db, $password_update_query);
+				$bResult = true;
 				if ($this->oLogger)
 				{
 					$this->oLogger->Write('Success! Password was changed.');
 				}
-            } else {
+			} else {
 				$bResult = false;
 				if ($this->oLogger)
 				{
 					$this->oLogger->Write('Something went wrong. Either the current password is incorrect or new password does not match the criteria.');
 				}
-            }
+			}
 		}
 		catch (\Exception $oException)
 		{
