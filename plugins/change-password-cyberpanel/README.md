@@ -1,4 +1,4 @@
-RainLoop Cyberpanel Password Changing Plugin
+RainLoop CyberPanel Password Changing Plugin
 ============================================
 
 This plugin adds password changing capability to RainLoop webmail for servers running CyberPanel web panel software.
