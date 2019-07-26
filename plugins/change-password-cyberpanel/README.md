@@ -1,10 +1,10 @@
-Rainloop change password cyberpanel plugin
+RainLoop Cyberpanel Password Changing Plugin
 ============================================
 
-This plugin adds change password capability to Rainloop webmail for servers running CyberPanel web panel software.
+This plugin adds password changing capability to RainLoop webmail for servers running CyberPanel web panel software.
 
 ##### Installation is simple:
 
-1. Drop the change-password-cyberpanel folder in the plugins directory (eg. _RainLoopDir_/data/data_xxxxx/_default/plugins/*)
-2. In rainloop admin panel go to Plugins, and activate change-password-cyberpanel.
-3. Enter CyberPanel SQL user details on the plugin config screen.
+1. Place the change-password-cyberpanel folder in the plugins directory (eg. _RainLoopDir_/data/data_xxxxx/_default/plugins/*)
+2. In RainLoop administration panel, go to Plugins and activate change-password-cyberpanel.
+3. Enter CyberPanel's SQL user details on the plugin configuration screen.
