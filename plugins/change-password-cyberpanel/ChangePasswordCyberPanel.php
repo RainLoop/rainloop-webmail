@@ -114,13 +114,13 @@ class ChangePasswordCyberPanel implements \RainLoop\Providers\ChangePassword\Cha
 				$bResult = true;
 				if ($this->oLogger)
 				{
-					$this->oLogger->Write('Success! Password was changed.');
+					$this->oLogger->Write('Success! The password was changed.');
 				}
 			} else {
 				$bResult = false;
 				if ($this->oLogger)
 				{
-					$this->oLogger->Write('Something went wrong. Either the current password is incorrect or new password does not match the criteria.');
+					$this->oLogger->Write('Something went wrong. Either the current password is incorrect or the new password does not match the criteria.');
 				}
 			}
 		}
