@@ -1,20 +1,29 @@
 (function(window, $) {
   $(function() {
-  	$(window.document).on('paste', '.RL-PopupsContacts .contactValueInput', function() {
-      // trigger the process on click and paste
-      var $this = $(this);
-
+    function replaceGroup() {
+      $('li[data-inputosaurus][title*=","]').each(function (index, elem) {
+        var $elem = $(elem)
+        var title = $elem.attr('title')
+        var cut = title.indexOf('<')
+        title = title.substr(cut + 1, title.length - cut - 2)
+        $elem.parents('ul').find('.ui-autocomplete-input').val(title)
+        $('.ui-autocomplete-input').trigger('blur')
+      })
       setTimeout(function () {
-        $this.trigger('keyup');
-      });
-    }).on('keyup', '.RL-PopupsContacts .contactValueInput', function() {
-      var $this = $(this),
-  			value = $this.val(),
-        match = value && value.match(/@/ig);
+        $('li[data-inputosaurus][title*=","]').find('a').trigger('click')
+      })
+    }
 
-  		if (match && match.length > 1) {
-  			$this.val($this.val().replace(/\n| /ig, ','));
-  		}
-  	});
-  });
-}(window, $));
+  	$('body').on('click', '.ui-autocomplete a', function () {
+      replaceGroup()
+    })
+
+    $(document).on('keydown', function (e) {
+      if (e.which === 13) {
+        setTimeout(function () {
+          replaceGroup()
+        })
+      }
+    })
+  })
+}(window, $))
