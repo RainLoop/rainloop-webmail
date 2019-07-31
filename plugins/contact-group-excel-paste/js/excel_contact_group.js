@@ -3,7 +3,7 @@
     function replaceGroup() {
       $('li[data-inputosaurus][title*=","]').each(function (index, elem) {
         var $elem = $(elem)
-        var title = $(elem).attr('title')
+        var title = $elem.attr('title')
         var cut = title.indexOf('<')
         title = title.substr(cut + 1, title.length - cut - 2)
         $elem.parents('ul').find('.ui-autocomplete-input').val(title)
