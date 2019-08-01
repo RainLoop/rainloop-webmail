@@ -5084,20 +5084,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	/**
 	 * @return array
 	 */
-	public function DoJsInfo()
-	{
-		$bIsError = '1' === (string) $this->GetActionParam('IsError', '0');
-		$mData = $this->GetActionParam('Data', null);
-
-		$this->Logger()->WriteDump(is_array($mData) ? $mData : array(),
-			$bIsError ? \MailSo\Log\Enumerations\Type::ERROR : \MailSo\Log\Enumerations\Type::INFO, 'JS-INFO');
-
-		return $this->DefaultResponse(__FUNCTION__, true);
-	}
-
-	/**
-	 * @return array
-	 */
 	public function DoWelcomeClose()
 	{
 		$oAccount = $this->getAccountFromToken();
@@ -5121,36 +5107,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		return $this->DefaultResponse(__FUNCTION__,
 			APP_VERSION === (string) $this->GetActionParam('Version', ''));
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoJsError()
-	{
-		$sMessage = $this->GetActionParam('Message', '');
-		if (0 < strlen($sMessage))
-		{
-			$sFileName = $this->GetActionParam('FileName', '');
-			$sLineNo = $this->GetActionParam('LineNo', '');
-			$sLocation = $this->GetActionParam('Location', '');
-			$sHtmlCapa = $this->GetActionParam('HtmlCapa', '');
-			$sTimeOnPage = $this->GetActionParam('TimeOnPage', '');
-
-			$oHttp = $this->Http();
-
-			$this->Logger()->Write($sMessage.' ('.$sFileName.' ~ '.$sLineNo.')', \MailSo\Log\Enumerations\Type::ERROR, 'JS');
-			$this->Logger()->WriteDump(array(
-				'Location' => $sLocation,
-				'Capability' => $sHtmlCapa,
-				'TimeOnPage' => $sTimeOnPage,
-				'HTTP_USER_AGENT' => $oHttp->GetServer('HTTP_USER_AGENT', ''),
-				'HTTP_ACCEPT_ENCODING' => $oHttp->GetServer('HTTP_ACCEPT_ENCODING', ''),
-				'HTTP_ACCEPT_LANGUAGE' => $oHttp->GetServer('HTTP_ACCEPT_LANGUAGE', '')
-			));
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
 	/**

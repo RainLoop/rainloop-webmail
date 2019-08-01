@@ -55,33 +55,6 @@ class AbstractApp extends AbstractBoot {
 
 		this.iframe = $('<iframe class="internal-hiddden" />').appendTo('body');
 
-		$win.on('error', (event) => {
-			if (
-				event &&
-				event.originalEvent &&
-				event.originalEvent.message &&
-				-1 ===
-					inArray(event.originalEvent.message, ['Script error.', 'Uncaught Error: Error calling method on NPObject.'])
-			) {
-				const time = timestamp();
-				if (this.lastErrorTime >= time) {
-					return;
-				}
-
-				this.lastErrorTime = time;
-
-				Remote.jsError(
-					noop,
-					event.originalEvent.message,
-					event.originalEvent.filename,
-					event.originalEvent.lineno,
-					window.location && window.location.toString ? window.location.toString() : '',
-					$html.attr('class'),
-					microtime() - startMicrotime
-				);
-			}
-		});
-
 		$win.on('resize', () => {
 			Events.pub('window.resize');
 		});

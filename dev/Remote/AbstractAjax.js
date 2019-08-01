@@ -223,40 +223,6 @@ class AbstractAjaxRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sMessage
-	 * @param {string} sFileName
-	 * @param {number} iLineNo
-	 * @param {string} sLocation
-	 * @param {string} sHtmlCapa
-	 * @param {number} iTime
-	 */
-	jsError(fCallback, sMessage, sFileName, iLineNo, sLocation, sHtmlCapa, iTime) {
-		this.defaultRequest(fCallback, 'JsError', {
-			'Message': sMessage,
-			'FileName': sFileName,
-			'LineNo': iLineNo,
-			'Location': sLocation,
-			'HtmlCapa': sHtmlCapa,
-			'TimeOnPage': iTime
-		});
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sType
-	 * @param {Array=} mData = null
-	 * @param {boolean=} bIsError = false
-	 */
-	jsInfo(fCallback, sType, mData, bIsError = false) {
-		this.defaultRequest(fCallback, 'JsInfo', {
-			'Type': sType,
-			'Data': mData,
-			'IsError': bIsError ? '1' : '0'
-		});
-	}
-
-	/**
-	 * @param {?Function} fCallback
 	 */
 	getPublicKey(fCallback) {
 		this.defaultRequest(fCallback, 'GetPublicKey');

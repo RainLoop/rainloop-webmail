@@ -126,7 +126,7 @@ class ServiceActions
 
 		try
 		{
-			if ($this->oHttp->IsPost() && !in_array($sAction, array('JsInfo', 'JsError')) &&
+			if ($this->oHttp->IsPost() &&
 				$this->Config()->Get('security', 'csrf_protection', false) &&
 				$this->oHttp->GetPost('XToken', '') !== \RainLoop\Utils::GetCsrfToken())
 			{
