@@ -429,7 +429,7 @@ fi_FI:
     LABEL_TEMPLATES_NAME: "Mallipohjat"
     LABEL_SECURITY_NAME: "Turvallisuus"
     LABEL_SOCIAL_NAME: "Sosiaalinen"
-    LABEL_THEMES_NAME: "emat"
+    LABEL_THEMES_NAME: "Teemat"
     LABEL_CHANGE_PASSWORD_NAME: "Salasana"
     LABEL_OPEN_PGP_NAME: "OpenPGP"
     BUTTON_BACK: "Takaisin"
