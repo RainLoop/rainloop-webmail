@@ -85,7 +85,7 @@ fi_FI:
     MENU_SELECT_SEEN: "Luetut"
     MENU_SELECT_FLAGGED: "Merkityt"
     MENU_SELECT_UNFLAGGED: "Merkkaamattomat"
-    EMPTY_LIST: "Tyhjennä lista"
+    EMPTY_LIST: "Tyhjä lista"
     EMPTY_SEARCH_LIST: "Yhtään viestiä ei löytynyt ehdoillasi."
     SEARCH_RESULT_FOR: "Hakutulokset haulle \"%SEARCH%\""
     BACK_TO_MESSAGE_LIST: "Takaisin viestilistaan"
