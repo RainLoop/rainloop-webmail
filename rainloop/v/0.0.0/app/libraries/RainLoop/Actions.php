@@ -344,22 +344,6 @@ class Actions
 	/**
 	 * @return void
 	 */
-	public function BootStart()
-	{
-		if (defined('APP_INSTALLED_START') && defined('APP_INSTALLED_VERSION') &&
-			APP_INSTALLED_START && !APP_INSTALLED_VERSION)
-		{
-			try
-			{
-				$this->KeenIO('Install');
-			}
-			catch (\Exception $oException) { unset($oException); }
-		}
-	}
-
-	/**
-	 * @return void
-	 */
 	public function BootEnd()
 	{
 		try
@@ -9299,80 +9283,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$sHtml = \preg_replace('/<\/script>/i', '</x-script>', $sHtml);
 
 		return \RainLoop\Utils::ClearHtmlOutput($sHtml);
-	}
-
-	/**
-	 * @staticvar bool $bOnce
-	 * @param string $sName
-	 * @param array $aData = array()
-	 *
-	 * @return bool
-	 */
-	public function KeenIO($sName, $aData = array())
-	{
-		static $bOnce = null;
-		if (false === $bOnce)
-		{
-			return false;
-		}
-
-		if (APP_VERSION === APP_DEV_VERSION ||
-			\in_array(APP_SITE, \explode(' ', \base64_decode('bG9jYWxob3N0IHJhaW5sb29wLmRlIHJhaW5sb29wLm5ldCBkZW1vLnJhaW5sb29wLm5ldCBkZW1vLnJhaW5sb29wLmRl'))))
-		{
-			return true;
-		}
-
-		if (null === $bOnce && (!\MailSo\Base\Utils::FunctionExistsAndEnabled('curl_init') ||
-				!\MailSo\Base\Utils::FunctionExistsAndEnabled('json_encode')))
-		{
-			$bOnce = false;
-			return false;
-		}
-
-		$aOptions = array(
-			CURLOPT_URL => \base64_decode('aHR0cHM6Ly9hcGkua2Vlbi5pby8zLjAvcHJvamVjdHMvNTE2NmRmOGUzODQzMzE3Y2QzMDAwMDA2L2V2ZW50cy8=').$sName,
-			CURLOPT_HEADER => false,
-			CURLOPT_FAILONERROR => true,
-			CURLOPT_SSL_VERIFYPEER => false,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_HTTPHEADER => array(
-				'Content-Type: application/json'
-			),
-			CURLOPT_POST => true,
-			CURLOPT_POSTFIELDS => \json_encode(\array_merge($aData, array(
-				'version' => APP_VERSION,
-				'uid' => \md5(APP_SITE.APP_SALT),
-				'site' => APP_SITE,
-				'date' => array(
-					'month' => \gmdate('m.Y'),
-					'day' => \gmdate('d.m.Y')
-				)
-			))),
-			CURLOPT_TIMEOUT => 10
-		);
-
-		$sProxy = $this->Config()->Get('labs', 'curl_proxy', '');
-		if (0 < \strlen($sProxy))
-		{
-			$aOptions[CURLOPT_PROXY] = $sProxy;
-
-			$sProxyAuth = $this->Config()->Get('labs', 'curl_proxy_auth', '');
-			if (0 < \strlen($sProxyAuth))
-			{
-				$aOptions[CURLOPT_PROXYUSERPWD] = $sProxyAuth;
-			}
-		}
-
-		$oCurl = \curl_init();
-		\curl_setopt_array($oCurl, $aOptions);
-		$mResult = \curl_exec($oCurl);
-
-		if (\is_resource($oCurl))
-		{
-			\curl_close($oCurl);
-		}
-
-		return !!$mResult;
 	}
 
 	/**

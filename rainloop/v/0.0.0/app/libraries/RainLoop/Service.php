@@ -101,8 +101,6 @@ class Service
 			return $this;
 		}
 
-		$this->oActions->BootStart();
-
 		$sResult = '';
 		$bCached = false;
 

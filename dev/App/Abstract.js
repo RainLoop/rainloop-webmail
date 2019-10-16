@@ -9,7 +9,6 @@ import {
 	$win,
 	$html,
 	$doc,
-	startMicrotime,
 	leftPanelDisabled,
 	leftPanelType,
 	sUserAgent,
@@ -17,16 +16,7 @@ import {
 	bAnimationSupported
 } from 'Common/Globals';
 
-import {
-	noop,
-	isNormal,
-	pString,
-	inArray,
-	microtime,
-	timestamp,
-	detectDropdownVisibility,
-	windowResizeCallback
-} from 'Common/Utils';
+import { isNormal, pString, detectDropdownVisibility, windowResizeCallback } from 'Common/Utils';
 
 import { KeyState, Magics } from 'Common/Enums';
 import { root, rootAdmin, rootUser, populateAuthSuffix } from 'Common/Links';
@@ -45,7 +35,7 @@ class AbstractApp extends AbstractBoot {
 	/**
 	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 */
-	constructor(Remote) {
+	constructor() {
 		super();
 
 		this.googlePreviewSupportedCache = null;

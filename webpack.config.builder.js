@@ -32,7 +32,8 @@ const babelLoaderOptions = function() {
 			[
 				'@babel/plugin-transform-runtime',
 				{
-					corejs: 3
+					corejs: 3,
+					useESModules: true
 				}
 			],
 			[
