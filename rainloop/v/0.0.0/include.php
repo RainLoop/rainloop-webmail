@@ -126,13 +126,22 @@
 
 			if (false === $sSalt)
 			{
-				// random salt
-				$sSalt = '<'.'?php //'
-					.md5(microtime(true).rand(1000, 5000))
-					.md5(microtime(true).rand(5000, 9999))
-					.md5(microtime(true).rand(1000, 5000));
+				if (function_exists('random_bytes'))
+				{	// secure random salt
+					$sSalt = bin2hex(random_bytes(48));
+				}
+				elseif (function_exists('openssl_random_pseudo_bytes'))
+				{	// not-quite as secure random salt
+					$sSalt = bin2hex(openssl_random_pseudo_bytes(48));
+				}
+				else
+				{	// pseudo-random salt
+					$sSalt = md5(microtime(true).rand(1000, 5000))
+						.md5(microtime(true).rand(5000, 9999))
+						.md5(microtime(true).rand(1000, 5000));
+				}
 
-				@file_put_contents(APP_DATA_FOLDER_PATH.'SALT.php', $sSalt);
+				@file_put_contents(APP_DATA_FOLDER_PATH.'SALT.php', '<'.'?php //'.$sSalt);
 			}
 
 			define('APP_SALT', md5($sSalt.APP_PRIVATE_DATA_NAME.$sSalt));
