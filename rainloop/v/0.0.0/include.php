@@ -124,17 +124,23 @@
 				unset($sCheckName, $sCheckFilePath, $sCheckFolder, $sTest);
 			}
 
-			if (false === $sSalt)
-			{
+			if (false === $sSalt) {
 				if (function_exists('random_bytes'))
 				{	// secure random salt
-					$sSalt = bin2hex(random_bytes(48));
+					try
+					{
+						$sSalt = bin2hex(random_bytes(48));
+					}
+					catch (\Exception $oException)
+					{
+						$sSalt = false;
+					}
 				}
-				elseif (function_exists('openssl_random_pseudo_bytes'))
+				if ((false === $sSalt) && (function_exists('openssl_random_pseudo_bytes')))
 				{	// not-quite as secure random salt
 					$sSalt = bin2hex(openssl_random_pseudo_bytes(48));
 				}
-				else
+				if (false === $sSalt)
 				{	// pseudo-random salt
 					$sSalt = md5(microtime(true).rand(1000, 5000))
 						.md5(microtime(true).rand(5000, 9999))
