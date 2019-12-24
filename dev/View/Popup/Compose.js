@@ -1861,7 +1861,10 @@ class ComposePopupView extends AbstractViewNext {
 	 * @returns {Array}
 	 */
 	getAttachmentsDownloadsForUpload() {
-		return _.map(_.filter(this.attachments(), (item) => item && '' === item.tempName()), (item) => item.id);
+		return _.map(
+			_.filter(this.attachments(), (item) => item && '' === item.tempName()),
+			(item) => item.id
+		);
 	}
 
 	resizerTrigger() {

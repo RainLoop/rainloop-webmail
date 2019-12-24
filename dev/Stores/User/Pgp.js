@@ -87,7 +87,10 @@ class PgpUserStore {
 							return keys
 								? returnWrapKeys
 									? keys
-									: _.flatten(_.map(keys, (key) => key.getNativeKeys()), true)
+									: _.flatten(
+											_.map(keys, (key) => key.getNativeKeys()),
+											true
+									  )
 								: [null];
 						}),
 						true

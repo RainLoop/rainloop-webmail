@@ -363,7 +363,8 @@ class AttachmentModel extends AbstractModel {
 	isFramed() {
 		return (
 			this.framed &&
-			(GlobalsData.__APP__ && GlobalsData.__APP__.googlePreviewSupported()) &&
+			GlobalsData.__APP__ &&
+			GlobalsData.__APP__.googlePreviewSupported() &&
 			!(this.isPdf() && bAllowPdfPreview) &&
 			!this.isText() &&
 			!this.isImage()

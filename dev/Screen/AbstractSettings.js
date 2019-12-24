@@ -191,7 +191,11 @@ class AbstractSettingsScreen extends AbstractScreen {
 				}
 			};
 
-		return [['{subname}/', rules], ['{subname}', rules], ['', rules]];
+		return [
+			['{subname}/', rules],
+			['{subname}', rules],
+			['', rules]
+		];
 	}
 }
 

@@ -37,7 +37,10 @@ class FolderSystemPopupView extends AbstractViewNext {
 				[],
 				FolderStore.folderList(),
 				FolderStore.folderListSystemNames(),
-				[['', this.sChooseOnText], [UNUSED_OPTION_VALUE, this.sUnuseText]],
+				[
+					['', this.sChooseOnText],
+					[UNUSED_OPTION_VALUE, this.sUnuseText]
+				],
 				null,
 				null,
 				null,
