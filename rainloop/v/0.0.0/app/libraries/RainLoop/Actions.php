@@ -127,6 +127,11 @@ class Actions
 	private $sSpecAuthToken;
 
 	/**
+	 * @var string
+	 */
+	private $sUpdateAuthToken;
+
+	/**
 	 * @access private
 	 */
 	private function __construct()
@@ -155,6 +160,8 @@ class Actions
 		$this->oPremProvider = null;
 
 		$this->sSpecAuthToken = '';
+		$this->sUpdateAuthToken = '';
+		$this->bIsAjax = false;
 
 		$oConfig = $this->Config();
 		$this->Plugins()->RunHook('filter.application-config', array(&$oConfig));
@@ -183,11 +190,51 @@ class Actions
 	}
 
 	/**
+	 * @param string $sUpdateAuthToken
+	 *
+	 * @return \RainLoop\Application
+	 */
+	public function SetUpdateAuthToken($sUpdateAuthToken)
+	{
+		$this->sUpdateAuthToken = $sUpdateAuthToken;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $bIsAjax
+	 *
+	 * @return \RainLoop\Application
+	 */
+	public function SetIsAjax($bIsAjax)
+	{
+		$this->bIsAjax = $bIsAjax;
+
+		return $this;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function GetSpecAuthToken()
 	{
 		return $this->sSpecAuthToken;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function GetUpdateAuthToken()
+	{
+		return $this->sUpdateAuthToken;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function GetIsAjax()
+	{
+		return $this->bIsAjax;
 	}
 
 	/**
@@ -1647,7 +1694,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 			$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
-			$aResult['AllowGoogleSocialAuthFast'] = (bool) $oConfig->Get('social', 'google_enable_auth_fast', true);
+			$aResult['AllowGoogleSocialAuthGmail'] = (bool) $oConfig->Get('social', 'google_enable_auth_gmail', true);
 			$aResult['AllowGoogleSocialDrive'] = (bool) $oConfig->Get('social', 'google_enable_drive', true);
 			$aResult['AllowGoogleSocialPreview'] = (bool) $oConfig->Get('social', 'google_enable_preview', true);
 
@@ -1658,7 +1705,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', '')))))
 			{
 				$aResult['AllowGoogleSocialAuth'] = false;
-				$aResult['AllowGoogleSocialAuthFast'] = false;
+				$aResult['AllowGoogleSocialAuthGmail'] = false;
 				$aResult['AllowGoogleSocialDrive'] = false;
 				$aResult['GoogleClientID'] = '';
 				$aResult['GoogleApiKey'] = '';
@@ -1670,7 +1717,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 
 			if ($aResult['AllowGoogleSocial'] &&
-				!$aResult['AllowGoogleSocialAuth'] && !$aResult['AllowGoogleSocialAuthFast'] &&
+				!$aResult['AllowGoogleSocialAuth'] && !$aResult['AllowGoogleSocialAuthGmail'] &&
 				!$aResult['AllowGoogleSocialDrive'] && !$aResult['AllowGoogleSocialPreview'])
 			{
 				$aResult['AllowGoogleSocial'] = false;
@@ -1746,7 +1793,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 				$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
 				$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
-				$aResult['AllowGoogleSocialAuthFast'] = (bool) $oConfig->Get('social', 'google_enable_auth_fast', true);
+				$aResult['AllowGoogleSocialAuthGmail'] = (bool) $oConfig->Get('social', 'google_enable_auth_gmail', true);
 				$aResult['AllowGoogleSocialDrive'] = (bool) $oConfig->Get('social', 'google_enable_drive', true);
 				$aResult['AllowGoogleSocialPreview'] = (bool) $oConfig->Get('social', 'google_enable_preview', true);
 
@@ -1986,6 +2033,51 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aResult;
 	}
 
+	public function googleStoreTokens($oCache, $sAccessToken, $sRefreshToken)
+	{
+		$sCacheKey = 'tokens='.\md5($sRefreshToken);
+		$oCache->Set($sCacheKey, $sAccessToken);
+		$oCache->SetTimer($sCacheKey);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function googleRefreshTokenCallback($sAccessToken, $sRefreshToken)
+	{
+		$oAccount = $this->getAccountFromToken(false);
+		if ($oAccount && $this->GetIsAjax())
+		{
+			$oCache = $this->Cacher($oAccount);
+			$sCacheKey = 'tokens='.\md5($sRefreshToken);
+
+			$sCachedAccessToken = $oCache->Get($sCacheKey);
+			$iTime = $oCache->GetTimer($sCacheKey);
+
+			if ($sCachedAccessToken === '' || $iTime === 0)
+			{
+				$this->googleStoreTokens($oCache, $sAccessToken, $sRefreshToken);
+			}
+			else if (\time() - 60 * 10 * 2 > $iTime) // 20min
+			{
+				$sCachedAccessToken = $this->Social()->GoogleRefreshToken($sAccessToken, $sRefreshToken);
+				if ($sCachedAccessToken !== $sAccessToken) {
+					$this->googleStoreTokens($oCache, $sCachedAccessToken, $sRefreshToken);
+
+					$oAccount->SetPassword(\RainLoop\Model\Account::GenerateTokensPassword($sCachedAccessToken, $sRefreshToken));
+					$this->AuthToken($oAccount);
+					$this->SetUpdateAuthToken($this->GetSpecAuthToken());
+				}
+			}
+
+			if ($sCachedAccessToken) {
+				return $sCachedAccessToken;
+			}
+		}
+
+		return $sAccessToken;
+	}
+
 	/**
 	 * @return string
 	 */
@@ -2059,7 +2151,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		try
 		{
-			$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
+			$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config(), array($this, 'googleRefreshTokenCallback'));
 		}
 		catch (\RainLoop\Exceptions\ClientException $oException)
 		{
@@ -3366,7 +3458,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function getAccountUnredCountFromHash($sHash)
+	public function getAccountUnreadCountFromHash($sHash)
 	{
 		$iResult = 0;
 
@@ -3378,7 +3470,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$oMailClient = \MailSo\Mail\MailClient::NewInstance();
 				$oMailClient->SetLogger($this->Logger());
 
-				$oAccount->IncConnectAndLoginHelper($this->Plugins(),$oMailClient, $this->Config());
+				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $oMailClient, $this->Config(), array($this, 'googleRefreshTokenCallback'));
 
 				$iResult = $oMailClient->InboxUnreadCount();
 
@@ -3425,7 +3517,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					foreach ($mAccounts as $sEmail => $sHash)
 					{
 						$aCounts[] = array(\MailSo\Base\Utils::IdnToUtf8($sEmail),
-							$oAccount->Email() === $sEmail ? 0 : $this->getAccountUnredCountFromHash($sHash));
+							$oAccount->Email() === $sEmail ? 0 : $this->getAccountUnreadCountFromHash($sHash));
 					}
 				}
 			}
@@ -3775,7 +3867,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleEnableAuth', 'social', 'google_enable_auth', 'bool');
-		$this->setConfigFromParams($oConfig, 'GoogleEnableAuthFast', 'social', 'google_enable_auth_fast', 'bool');
+		$this->setConfigFromParams($oConfig, 'GoogleEnableAuthGmail', 'social', 'google_enable_auth_gmail', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleEnableDrive', 'social', 'google_enable_drive', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleEnablePreview', 'social', 'google_enable_preview', 'bool');
 		$this->setConfigFromParams($oConfig, 'GoogleClientID', 'social', 'google_client_id', 'string');
@@ -4293,7 +4385,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$iRepTime = $this->Cacher()->GetTimer($sCacheKey);
 		}
 
-		if ('' === $sRep || 0 === $iRepTime || time() - 3600 > $iRepTime)
+		if ('' === $sRep || 0 === $iRepTime || \time() - 3600 > $iRepTime)
 		{
 			$iCode = 0;
 			$sContentType = '';
@@ -4393,7 +4485,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$iRepTime = $this->Cacher()->GetTimer($sCacheKey);
 		}
 
-		if ('' === $sRep || 0 === $iRepTime || time() - 3600 > $iRepTime)
+		if ('' === $sRep || 0 === $iRepTime || \time() - 3600 > $iRepTime)
 		{
 			$iCode = 0;
 			$sContentType = '';
@@ -6172,7 +6264,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
 				$oSmtpClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'smtp_timeout', 60));
 
-				$bLoggined = $oAccount->OutConnectAndLoginHelper($this->Plugins(), $oSmtpClient, $this->Config(), $bUsePhpMail);
+				$bLoggined = $oAccount->OutConnectAndLoginHelper(
+					$this->Plugins(), $oSmtpClient, $this->Config(), array($this, 'googleRefreshTokenCallback'), $bUsePhpMail
+				);
 
 				if ($bUsePhpMail)
 				{
@@ -8315,7 +8409,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$iExpires = $this->Config()->Get('cache', 'http_expires', 3600);
 			if (0 < $iExpires)
 			{
-				$this->oHttp->ServerUseCache($this->etag($sKey), 1382478804, time() + $iExpires);
+				$this->oHttp->ServerUseCache($this->etag($sKey), 1382478804, \time() + $iExpires);
 				$bResult = true;
 			}
 		}
@@ -8964,7 +9058,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 			try
 			{
-				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
+				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config(), array($this, 'googleRefreshTokenCallback'));
 			}
 			catch (\MailSo\Net\Exceptions\ConnectionException $oException)
 			{

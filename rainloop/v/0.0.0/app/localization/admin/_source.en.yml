@@ -117,6 +117,7 @@ en:
     LEGEND_GOOGLE: "Google"
     LABEL_ENABLE_GOOGLE: "Enable Google Integration"
     LABEL_GOOGLE_AUTH: "Authorization"
+    LABEL_GOOGLE_AUTH_GMAIL: "Authorization (Gmail)"
     LABEL_GOOGLE_DRIVE: "Google Drive Integration (Compose view)"
     LABEL_GOOGLE_PREVIEW: "Google Viewer Integration (Preview for Microsoft Word, Excel and PowerPoint files)"
     LABEL_GOOGLE_CLIENT_ID: "Client ID"

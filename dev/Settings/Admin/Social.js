@@ -12,7 +12,7 @@ class SocialAdminSettings {
 	constructor() {
 		this.googleEnable = SocialStore.google.enabled;
 		this.googleEnableAuth = SocialStore.google.capa.auth;
-		this.googleEnableAuthFast = SocialStore.google.capa.authFast;
+		this.googleEnableAuthGmail = SocialStore.google.capa.authGmail;
 		this.googleEnableDrive = SocialStore.google.capa.drive;
 		this.googleEnablePreview = SocialStore.google.capa.preview;
 
@@ -89,6 +89,7 @@ class SocialAdminSettings {
 
 			this.googleEnable.subscribe(Remote.saveAdminConfigHelper('GoogleEnable', boolToAjax));
 			this.googleEnableAuth.subscribe(Remote.saveAdminConfigHelper('GoogleEnableAuth', boolToAjax));
+			this.googleEnableAuthGmail.subscribe(Remote.saveAdminConfigHelper('GoogleEnableAuthGmail', boolToAjax));
 			this.googleEnableDrive.subscribe(Remote.saveAdminConfigHelper('GoogleEnableDrive', boolToAjax));
 			this.googleEnablePreview.subscribe(Remote.saveAdminConfigHelper('GoogleEnablePreview', boolToAjax));
 			this.googleClientID.subscribe(Remote.saveAdminConfigHelper('GoogleClientID', trim, f5));

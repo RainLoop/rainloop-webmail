@@ -124,6 +124,8 @@ class ServiceActions
 			$sAction = $this->aPaths[2];
 		}
 
+		$this->oActions->SetIsAjax(true);
+
 		try
 		{
 			if ($this->oHttp->IsPost() &&
@@ -211,6 +213,12 @@ class ServiceActions
 		if (\is_array($aResponseItem))
 		{
 			$aResponseItem['Time'] = (int) ((\microtime(true) - APP_START) * 1000);
+
+			$sUpdateToken = $this->oActions->GetUpdateAuthToken();
+			if ($sUpdateToken)
+			{
+				$aResponseItem['UpdateToken'] = $sUpdateToken;
+			}
 		}
 
 		$this->Plugins()->RunHook('filter.ajax-response', array($sAction, &$aResponseItem));
@@ -498,7 +506,7 @@ class ServiceActions
 				if (\method_exists($this->oActions, $sMethodName))
 				{
 					@\header('X-Raw-Action: '.$sMethodName, true);
-					@\header('Content-Security-Policy: default-src \'self\'; script-src \'none\'; style-src \'none\'; frame-src \'none\'; child-src \'none\'', true);
+					@\header('Content-Security-Policy: script-src \'none\'; frame-src \'none\'; child-src \'none\'', true);
 
 					$sRawError = '';
 					$this->oActions->SetActionParams(array(

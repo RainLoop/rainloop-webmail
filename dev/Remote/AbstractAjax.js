@@ -161,6 +161,12 @@ class AbstractAjaxRemote {
 				cached = pInt(oData.Time) > new window.Date().getTime() - start;
 			}
 
+			if (oData && oData.UpdateToken) {
+				if (GlobalsData.__APP__ && GlobalsData.__APP__.setClientSideToken) {
+					GlobalsData.__APP__.setClientSideToken(oData.UpdateToken);
+				}
+			}
+
 			if (action && this.oRequests[action]) {
 				if (this.oRequests[action].__aborted) {
 					sType = 'abort';

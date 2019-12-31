@@ -69,6 +69,12 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 					isCached = pInt(data.Time) > microtime() - start;
 				}
 
+				if (data && data.UpdateToken) {
+					if (GlobalsData.__APP__ && GlobalsData.__APP__.setClientSideToken) {
+						GlobalsData.__APP__.setClientSideToken(data.UpdateToken);
+					}
+				}
+
 				// backward capability
 				let type = '';
 				switch (true) {

@@ -8,6 +8,7 @@ en:
     LABEL_DONT_ASK_VERIFICATION_CODE: "Don't ask for the code for 2 weeks"
     BUTTON_SIGN_IN: "Sign In"
     TITLE_SIGN_IN_GOOGLE: "Sign In using Google"
+    TITLE_SIGN_IN_GMAIL: "Sign In using Gmail"
     TITLE_SIGN_IN_FACEBOOK: "Sign In using Facebook"
     TITLE_SIGN_IN_TWITTER: "Sign In using Twitter"
     LABEL_FORGOT_PASSWORD: "Forgot password"

@@ -8,7 +8,7 @@ class SocialUserSettings {
 	constructor() {
 		this.googleEnable = SocialStore.google.enabled;
 		this.googleEnableAuth = SocialStore.google.capa.auth;
-		this.googleEnableAuthFast = SocialStore.google.capa.authFast;
+		this.googleEnableAuthGmail = SocialStore.google.capa.authGmail;
 		this.googleEnableDrive = SocialStore.google.capa.drive;
 		this.googleEnablePreview = SocialStore.google.capa.preview;
 

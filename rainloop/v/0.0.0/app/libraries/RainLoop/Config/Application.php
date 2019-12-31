@@ -341,7 +341,7 @@ Examples:
 			'social' => array(
 				'google_enable' => array(false, 'Google'),
 				'google_enable_auth' => array(false),
-				'google_enable_auth_fast' => array(false),
+				'google_enable_auth_gmail' => array(false),
 				'google_enable_drive' => array(false),
 				'google_enable_preview' => array(false),
 				'google_client_id' => array(''),

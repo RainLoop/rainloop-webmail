@@ -171,6 +171,24 @@ class Social
 	/**
 	 * @return string
 	 */
+	public function GoogleRefreshToken($sAccessToken, $sRefreshToken)
+	{
+		$oGoogle = $this->GoogleConnector();
+		if ($oGoogle)
+		{
+			$aRefreshTokenResponse = $oGoogle->getAccessToken('https://accounts.google.com/o/oauth2/token', 'refresh_token', array(
+				'refresh_token' => $sRefreshToken
+			));
+
+			return !empty($aRefreshTokenResponse['result']['access_token']) ? $aRefreshTokenResponse['result']['access_token'] : '';
+		}
+
+		return $sAccessToken;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function GooglePopupService($bGmail = false)
 	{
 		$sLoginUrl = '';
@@ -221,11 +239,11 @@ class Social
 						'response_type' => 'code'
 					);
 
-//					if ($bGmail)
-//					{
-//						$aParams['access_type'] = 'offline';
-//						$aParams['approval_prompt'] = 'force';
-//					}
+					if ($bGmail)
+					{
+						$aParams['access_type'] = 'offline';
+						// $aParams['prompt'] = 'consent';
+					}
 
 					$sLoginUrl = $oGoogle->getAuthenticationUrl('https://accounts.google.com/o/oauth2/auth', $sRedirectUrl, $aParams);
 				}
@@ -238,12 +256,17 @@ class Social
 						$bLogin = !$oAccount;
 					}
 
-					$aParams = array('code' => $this->oHttp->GetQuery('code'), 'redirect_uri' => $sRedirectUrl);
-					$aAuthorizationResponse = $oGoogle->getAccessToken('https://accounts.google.com/o/oauth2/token', 'authorization_code', $aParams);
+					$aAuthorizationCodeResponse = $oGoogle->getAccessToken('https://accounts.google.com/o/oauth2/token', 'authorization_code', array(
+						'code' => $this->oHttp->GetQuery('code'),
+						'redirect_uri' => $sRedirectUrl
+					));
 
-					if (!empty($aAuthorizationResponse['result']['access_token']))
+					$sAccessToken = !empty($aAuthorizationCodeResponse['result']['access_token']) ? $aAuthorizationCodeResponse['result']['access_token'] : '';
+					$sRefreshToken = !empty($aAuthorizationCodeResponse['result']['refresh_token']) ? $aAuthorizationCodeResponse['result']['refresh_token'] : '';
+										
+					if (!empty($sAccessToken))
 					{
-						$oGoogle->setAccessToken($aAuthorizationResponse['result']['access_token']);
+						$oGoogle->setAccessToken($sAccessToken);
 						$aUserInfoResponse = $oGoogle->fetch('https://www.googleapis.com/oauth2/v2/userinfo');
 
 						if (!empty($aUserInfoResponse['result']['id']))
@@ -257,7 +280,7 @@ class Social
 									{
 										$aUserData = array(
 											'Email' => $aUserInfoResponse['result']['email'],
-											'Password' => APP_GOOGLE_ACCESS_TOKEN_PREFIX.$aAuthorizationResponse['result']['access_token']
+											'Password' => \RainLoop\Model\Account::GenerateTokensPassword($sAccessToken, $sRefreshToken)
 										);
 									}
 								}

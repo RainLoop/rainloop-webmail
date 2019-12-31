@@ -27,6 +27,13 @@
 						<div data-bind="component: {
 							name: 'Checkbox',
 							params: {
+								value: googleEnableAuthGmail,
+								label: 'TAB_INTEGRATIONS/LABEL_GOOGLE_AUTH_GMAIL'
+							}
+						}"></div>
+						<div data-bind="component: {
+							name: 'Checkbox',
+							params: {
 								value: googleEnableDrive,
 								label: 'TAB_INTEGRATIONS/LABEL_GOOGLE_DRIVE'
 							}
@@ -90,7 +97,8 @@
 		</div>
 		<div class="legend">
 			<span data-i18n="TAB_INTEGRATIONS/LEGEND_FACEBOOK"></span>
-			<span style="color: #ccc; font-size: 14px;" data-bind="visible: !facebookSupported()">(<span data-i18n="HINTS/REQUIRES_PHP_54"></span>)</span>
+			<span style="color: #ccc; font-size: 14px;" data-bind="visible: !facebookSupported()">(<span
+					data-i18n="HINTS/REQUIRES_PHP_54"></span>)</span>
 		</div>
 		<div data-bind="if: facebookSupported">
 			<div class="control-group">

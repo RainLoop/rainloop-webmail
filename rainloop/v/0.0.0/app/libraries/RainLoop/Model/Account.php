@@ -94,6 +94,35 @@ class Account extends \RainLoop\Account // for backward compatibility
 	/**
 	 * @return string
 	 */
+	public static function GenerateTokensPassword($sAccessToken, $sRefreshToken)
+	{
+		return APP_GOOGLE_ACCESS_TOKEN_PREFIX.\json_encode(array($sAccessToken, $sRefreshToken));
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function ParseTokensPassword($sPassword)
+	{
+		$iGatLen = \strlen(APP_GOOGLE_ACCESS_TOKEN_PREFIX);
+		if ($sPassword && APP_GOOGLE_ACCESS_TOKEN_PREFIX === \substr($sPassword, 0, $iGatLen))
+		{
+			$aTokens = @\json_decode(\substr($sPassword, $iGatLen));
+			$sAccessToken = !empty($aTokens[0]) ? $aTokens[0] : '';
+			$sRefreshToken = !empty($aTokens[1]) ? $aTokens[1] : '';
+
+			if ($sAccessToken && $sRefreshToken)
+			{
+				return array($sAccessToken, $sRefreshToken);
+			}
+		}
+
+		return array('', '');
+	}
+
+	/**
+	 * @return string
+	 */
 	public function Email()
 	{
 		return $this->sEmail;
@@ -366,18 +395,18 @@ class Account extends \RainLoop\Account // for backward compatibility
 	public function GetAuthToken()
 	{
 		return \RainLoop\Utils::EncodeKeyValues(array(
-			'token',							// 0
-			$this->sEmail,						// 1
-			$this->sLogin,						// 2
-			$this->sPassword,					// 3
+			'token',										// 0
+			$this->sEmail,								// 1
+			$this->sLogin,								// 2
+			$this->sPassword,							// 3
 			\RainLoop\Utils::Fingerprint(),		// 4
-			$this->sSignMeToken,				// 5
-			$this->sParentEmail,				// 6
+			$this->sSignMeToken,						// 5
+			$this->sParentEmail,						// 6
 			\RainLoop\Utils::GetShortToken(),	// 7
-			$this->sProxyAuthUser,				// 8
-			$this->sProxyAuthPassword,			// 9
-			0,									// 10 // timelife
-			$this->sClientCert					// 11
+			$this->sProxyAuthUser,					// 8
+			$this->sProxyAuthPassword,				// 9
+			0,												// 10 // lifetime
+			$this->sClientCert						// 11
 		));
 	}
 
@@ -387,18 +416,18 @@ class Account extends \RainLoop\Account // for backward compatibility
 	public function GetAuthTokenQ()
 	{
 		return \RainLoop\Utils::EncodeKeyValuesQ(array(
-			'token',							// 0
-			$this->sEmail,						// 1
-			$this->sLogin,						// 2
-			$this->sPassword,					// 3
+			'token',										// 0
+			$this->sEmail,								// 1
+			$this->sLogin,								// 2
+			$this->sPassword,							// 3
 			\RainLoop\Utils::Fingerprint(),		// 4
-			$this->sSignMeToken,				// 5
-			$this->sParentEmail,				// 6
+			$this->sSignMeToken,						// 5
+			$this->sParentEmail,						// 6
 			\RainLoop\Utils::GetShortToken(),	// 7
-			$this->sProxyAuthUser,				// 8
-			$this->sProxyAuthPassword,			// 9
-			0,									// 10 // timelife
-			$this->sClientCert					// 11
+			$this->sProxyAuthUser,					// 8
+			$this->sProxyAuthPassword,				// 9
+			0,												// 10 // lifetime
+			$this->sClientCert						// 11
 		));
 	}
 
@@ -406,10 +435,11 @@ class Account extends \RainLoop\Account // for backward compatibility
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Mail\MailClient $oMailClient
 	 * @param \RainLoop\Application $oConfig
+	 * @param callback|null $refreshTokenCallback = null
 	 *
 	 * @return bool
 	 */
-	public function IncConnectAndLoginHelper($oPlugins, $oMailClient, $oConfig)
+	public function IncConnectAndLoginHelper($oPlugins, $oMailClient, $oConfig, $refreshTokenCallback = null)
 	{
 		$bLogin = false;
 
@@ -456,12 +486,21 @@ class Account extends \RainLoop\Account // for backward compatibility
 			}
 			else
 			{
-				$iGatLen = \strlen(APP_GOOGLE_ACCESS_TOKEN_PREFIX);
 				$sPassword = $aImapCredentials['Password'];
-				if (APP_GOOGLE_ACCESS_TOKEN_PREFIX === \substr($sPassword, 0, $iGatLen))
+				$aTokens = self::ParseTokensPassword($sPassword);
+
+				$sAccessToken = $aTokens[0];
+				$sRefreshToken = $aTokens[1];
+
+				if ($sAccessToken && $sRefreshToken)
 				{
+					if ($refreshTokenCallback && \is_callable($refreshTokenCallback))
+					{
+						$sAccessToken = \call_user_func($refreshTokenCallback, $sAccessToken, $sRefreshToken);
+					}
+
 					$oMailClient->LoginWithXOauth2(
-						\base64_encode('user='.$aImapCredentials['Login']."\1".'auth=Bearer '.\substr($sPassword, $iGatLen)."\1\1"));
+						\base64_encode('user='.$aImapCredentials['Login']."\1".'auth=Bearer '.$sAccessToken."\1\1"));
 				}
 				else
 				{
@@ -482,11 +521,12 @@ class Account extends \RainLoop\Account // for backward compatibility
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Smtp\SmtpClient|null $oSmtpClient
 	 * @param \RainLoop\Application $oConfig
+	 * @param callback|null $refreshTokenCallback = null
 	 * @param bool $bUsePhpMail = false
 	 *
 	 * @return bool
 	 */
-	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig, &$bUsePhpMail = false)
+	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig, $refreshTokenCallback = null, &$bUsePhpMail = false)
 	{
 		$bLogin = false;
 
@@ -526,12 +566,21 @@ class Account extends \RainLoop\Account // for backward compatibility
 
 		if ($aSmtpCredentials['UseAuth'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
 		{
-			$iGatLen = \strlen(APP_GOOGLE_ACCESS_TOKEN_PREFIX);
 			$sPassword = $aSmtpCredentials['Password'];
-			if (APP_GOOGLE_ACCESS_TOKEN_PREFIX === \substr($sPassword, 0, $iGatLen))
+			$aTokens = self::ParseTokensPassword($sPassword);
+
+			$sAccessToken = $aTokens[0];
+			$sRefreshToken = $aTokens[1];
+
+			if ($sAccessToken && $sRefreshToken)
 			{
+				if ($refreshTokenCallback && \is_callable($refreshTokenCallback))
+				{
+					$sAccessToken = \call_user_func($refreshTokenCallback, $sAccessToken, $sRefreshToken);
+				}
+
 				$oSmtpClient->LoginWithXOauth2(
-					\base64_encode('user='.$aSmtpCredentials['Login']."\1".'auth=Bearer '.\substr($sPassword, $iGatLen)."\1\1"));
+					\base64_encode('user='.$aSmtpCredentials['Login']."\1".'auth=Bearer '.$sAccessToken."\1\1"));
 			}
 			else
 			{

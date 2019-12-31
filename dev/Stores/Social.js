@@ -24,13 +24,14 @@ class SocialStore {
 
 		this.google.capa = {};
 		this.google.capa.auth = ko.observable(false);
-		this.google.capa.authFast = ko.observable(false);
+		this.google.capa.authGmail = ko.observable(false);
 		this.google.capa.drive = ko.observable(false);
 		this.google.capa.preview = ko.observable(false);
 
 		this.google.require = {};
 		this.google.require.clientSettings = ko.computed(
-			() => this.google.enabled() && (this.google.capa.auth() || this.google.capa.drive())
+			() =>
+				this.google.enabled() && (this.google.capa.auth() || this.google.capa.authGmail() || this.google.capa.drive())
 		);
 
 		this.google.require.apiKeySettings = ko.computed(() => this.google.enabled() && this.google.capa.drive());
@@ -66,7 +67,7 @@ class SocialStore {
 		this.google.apiKey(Settings.settingsGet('GoogleApiKey'));
 
 		this.google.capa.auth(!!Settings.settingsGet('AllowGoogleSocialAuth'));
-		this.google.capa.authFast(!!Settings.settingsGet('AllowGoogleSocialAuthFast'));
+		this.google.capa.authGmail(!!Settings.settingsGet('AllowGoogleSocialAuthGmail'));
 		this.google.capa.drive(!!Settings.settingsGet('AllowGoogleSocialDrive'));
 		this.google.capa.preview(!!Settings.settingsGet('AllowGoogleSocialPreview'));
 

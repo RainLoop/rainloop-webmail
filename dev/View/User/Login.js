@@ -143,7 +143,7 @@ class LoginUserView extends AbstractViewNext {
 
 		this.facebookLoginEnabled = ko.observable(false);
 		this.googleLoginEnabled = ko.observable(false);
-		this.googleFastLoginEnabled = ko.observable(false);
+		this.googleGmailLoginEnabled = ko.observable(false);
 		this.twitterLoginEnabled = ko.observable(false);
 
 		this.socialLoginEnabled = ko.computed(() => {
@@ -175,8 +175,8 @@ class LoginUserView extends AbstractViewNext {
 		return true;
 	}
 
-	@command((self) => !self.submitRequest() && self.googleFastLoginEnabled())
-	googleFastCommand() {
+	@command((self) => !self.submitRequest() && self.googleGmailLoginEnabled())
+	googleGmailCommand() {
 		window.open(socialGoogle(true), 'Google', this.windowOpenFeatures(550));
 		return true;
 	}
@@ -344,8 +344,8 @@ class LoginUserView extends AbstractViewNext {
 		this.googleLoginEnabled(
 			!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuth')
 		);
-		this.googleFastLoginEnabled(
-			!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuthFast')
+		this.googleGmailLoginEnabled(
+			!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuthGmail')
 		);
 
 		switch (signMe) {
@@ -375,7 +375,7 @@ class LoginUserView extends AbstractViewNext {
 		this.email(AppStore.devEmail);
 		this.password(AppStore.devPassword);
 
-		if (this.googleLoginEnabled() || this.googleFastLoginEnabled()) {
+		if (this.googleLoginEnabled() || this.googleGmailLoginEnabled()) {
 			window['rl_' + jsHash + '_google_login_service'] = fSocial;
 		}
 
