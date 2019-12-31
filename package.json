@@ -58,12 +58,12 @@
     "babel-loader": "8.0.6",
     "classnames": "2.2.6",
     "copy-webpack-plugin": "5.1.1",
-    "core-js": "3.6.0",
+    "core-js": "3.6.1",
     "css-loader": "3.4.0",
     "element-dataset": "2.2.6",
     "emailjs-addressparser": "2.0.2",
     "eslint": "6.8.0",
-    "eslint-config-prettier": "6.7.0",
+    "eslint-config-prettier": "6.9.0",
     "eslint-plugin-prettier": "3.1.2",
     "gulp": "4.0.2",
     "gulp-autoprefixer": "7.0.1",
@@ -115,9 +115,9 @@
     "raw-loader": "4.0.0",
     "rimraf": "3.0.0",
     "simplestatemanager": "4.1.1",
-    "style-loader": "1.1.1",
+    "style-loader": "1.1.2",
     "underscore": "1.9.1",
-    "webpack": "4.41.4",
+    "webpack": "4.41.5",
     "webpack-cli": "3.3.10"
   }
 }
