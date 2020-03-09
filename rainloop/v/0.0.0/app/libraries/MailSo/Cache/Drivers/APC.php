@@ -51,10 +51,8 @@ class APC implements \MailSo\Cache\DriverInterface
 	/**
 	 * @param string $sKey
 	 * @param string $sValue
-	 *
-	 * @return bool
 	 */
-	public function Set($sKey, $sValue)
+	public function Set($sKey, $sValue) : bool
 	{
 		return \apc_store($this->generateCachedKey($sKey), (string) $sValue);
 	}

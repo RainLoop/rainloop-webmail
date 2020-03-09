@@ -184,7 +184,7 @@ class Principal extends DAV\Node implements IPrincipal, DAV\IProperties, IACL {
 
     /**
      * Updates this principals properties.
-     * 
+     *
      * @param array $mutations
      * @see SabreForRainLoop\DAV\IProperties::updateProperties
      * @return bool|array

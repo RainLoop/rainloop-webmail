@@ -14,10 +14,10 @@
 			'SPL' => function_exists('spl_autoload_register')
 		);
 
-		if (version_compare(PHP_VERSION, '5.4.0', '<'))
+		if (version_compare(PHP_VERSION, '7.3.0', '<'))
 		{
 			echo '<p style="color: red">';
-			echo '[301] Your PHP version ('.PHP_VERSION.') is lower than the minimal required 5.4.0!';
+			echo '[301] Your PHP version ('.PHP_VERSION.') is lower than the minimal required 7.3.0!';
 			echo '</p>';
 			exit(301);
 		}
@@ -27,7 +27,7 @@
 			echo '<p>';
 			echo '[302] The following PHP extensions are not available in your PHP configuration!';
 			echo '</p>';
-			
+
 			echo '<ul>';
 			foreach ($aRequirements as $sKey => $bValue)
 			{

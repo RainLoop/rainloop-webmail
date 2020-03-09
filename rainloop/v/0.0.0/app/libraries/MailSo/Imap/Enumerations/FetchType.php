@@ -81,7 +81,7 @@ class FetchType
 
 	/**
 	 * @param array $aFetchItems
-	 * 
+	 *
 	 * @return array
 	 */
 	public static function ChangeFetchItemsBefourRequest(array $aFetchItems)

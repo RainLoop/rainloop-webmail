@@ -47,11 +47,6 @@ class Actions
 	private $oLoggerAuth;
 
 	/**
-	 * @var \RainLoop\Social
-	 */
-	private $oSocial;
-
-	/**
 	 * @var array of \MailSo\Cache\CacheClient
 	 */
 	private $aCachers;
@@ -142,7 +137,6 @@ class Actions
 		$this->oLogger = null;
 		$this->oPlugins = null;
 		$this->oMailClient = null;
-		$this->oSocial = null;
 		$this->oConfig = null;
 		$this->aCachers = array();
 
@@ -169,78 +163,48 @@ class Actions
 		$this->Logger()->Ping();
 	}
 
-	/**
-	 * @return \RainLoop\Actions
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @param string $sSpecAuthToken
-	 *
-	 * @return \RainLoop\Application
-	 */
-	public function SetSpecAuthToken($sSpecAuthToken)
+	public function SetSpecAuthToken(string $sSpecAuthToken) : self
 	{
 		$this->sSpecAuthToken = $sSpecAuthToken;
 
 		return $this;
 	}
 
-	/**
-	 * @param string $sUpdateAuthToken
-	 *
-	 * @return \RainLoop\Application
-	 */
-	public function SetUpdateAuthToken($sUpdateAuthToken)
+	public function SetUpdateAuthToken(string $sUpdateAuthToken) : self
 	{
 		$this->sUpdateAuthToken = $sUpdateAuthToken;
 
 		return $this;
 	}
 
-	/**
-	 * @param string $bIsAjax
-	 *
-	 * @return \RainLoop\Application
-	 */
-	public function SetIsAjax($bIsAjax)
+	public function SetIsAjax(bool $bIsAjax) : self
 	{
 		$this->bIsAjax = $bIsAjax;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetSpecAuthToken()
+	public function GetSpecAuthToken() : string
 	{
 		return $this->sSpecAuthToken;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetUpdateAuthToken()
+	public function GetUpdateAuthToken() : string
 	{
 		return $this->sUpdateAuthToken;
 	}
 
-	/**
-	 * @return boolean
-	 */
-	public function GetIsAjax()
+	public function GetIsAjax() : bool
 	{
 		return $this->bIsAjax;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetShortLifeSpecAuthToken($iLife = 60)
+	public function GetShortLifeSpecAuthToken(int $iLife = 60) : string
 	{
 		$aAccountHash = \RainLoop\Utils::DecodeKeyValues($this->getLocalAuthToken());
 		if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && \is_array($aAccountHash))
@@ -253,7 +217,7 @@ class Actions
 	}
 
 	/**
-	 * @return \RainLoop\Application
+	 * @return \RainLoop\Config\Application
 	 */
 	public function Config()
 	{
@@ -286,12 +250,9 @@ class Actions
 	}
 
 	/**
-	 * @param string $sName
-	 * @param \RainLoop\Model\Account $oAccount = null
-	 *
 	 * @return mixed
 	 */
-	private function fabrica($sName, $oAccount = null)
+	private function fabrica(string $sName, ?\RainLoop\Model\Account $oAccount = null)
 	{
 		$mResult = null;
 		$this->Plugins()
@@ -358,19 +319,13 @@ class Actions
 						$mResult = array();
 					}
 
-					if (\is_array($mResult) && \RainLoop\Utils::IsOwnCloud() && $this->Config()->Get('labs', 'owncloud_suggestions', true))
-					{
-						// \RainLoop\Providers\Suggestions\ISuggestions
-						$mResult[] = new \RainLoop\Providers\Suggestions\OwnCloudSuggestions();
-					}
-
 					break;
 				case 'change-password':
 					// \RainLoop\Providers\ChangePassword\ChangePasswordInterface
 					break;
 				case 'two-factor-auth':
 					// \RainLoop\Providers\TwoFactorAuth\TwoFactorAuthInterface
-					$mResult = new \RainLoop\Providers\TwoFactorAuth\GoogleTwoFactorAuth();
+					$mResult = new \RainLoop\Providers\TwoFactorAuth\TotpTwoFactorAuth();
 					break;
 			}
 		}
@@ -400,13 +355,10 @@ class Actions
 				$this->MailClient()->LogoutAndDisconnect();
 			}
 		}
-		catch (\Exception $oException) { unset($oException); }
+		catch (\Throwable $oException) { unset($oException); }
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ParseQueryAuthString()
+	public function ParseQueryAuthString() : string
 	{
 		$sQuery = \trim($this->Http()->GetQueryString());
 
@@ -443,15 +395,7 @@ class Actions
 		return $sQuery;
 	}
 
-	/**
-	 * @param string $sLine
-	 * @param \RainLoop\Model\Account $oAccount = null
-	 * @param bool $bUrlEncode = false
-	 * @param array $aAdditionalParams = array()
-	 *
-	 * @return string
-	 */
-	private function compileLogParams($sLine, $oAccount = null, $bUrlEncode = false, $aAdditionalParams = array())
+	private function compileLogParams(string $sLine, ?\RainLoop\Model\Account $oAccount = null, bool $bUrlEncode = false, array $aAdditionalParams = array()) : string
 	{
 		$aClear = array();
 
@@ -583,12 +527,7 @@ class Actions
 		return $sLine;
 	}
 
-	/**
-	 * @param string $sFileName
-	 *
-	 * @return string
-	 */
-	private function compileLogFileName($sFileName)
+	private function compileLogFileName(string $sFileName) : string
 	{
 		$sFileName = \trim($sFileName);
 
@@ -617,12 +556,7 @@ class Actions
 		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5(APP_START_TIME), 0);
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 * @return void
-	 */
-	public function SetAuthToken($oAccount)
+	public function SetAuthToken(?\RainLoop\Model\Account $oAccount)
 	{
 		if ($oAccount)
 		{
@@ -653,10 +587,7 @@ class Actions
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetSpecAuthTokenWithDeletion()
+	public function GetSpecAuthTokenWithDeletion() : string
 	{
 		$sResult = \RainLoop\Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY, '');
 		if (0 < strlen($sResult))
@@ -667,10 +598,7 @@ class Actions
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetSpecAuthLogoutTokenWithDeletion()
+	public function GetSpecAuthLogoutTokenWithDeletion() : string
 	{
 		$sResult = \RainLoop\Utils::GetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, '');
 		if (0 < strlen($sResult))
@@ -681,10 +609,7 @@ class Actions
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetSpecLogoutCustomMgsWithDeletion()
+	public function GetSpecLogoutCustomMgsWithDeletion() : string
 	{
 		$sResult = \RainLoop\Utils::GetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, '');
 		if (0 < strlen($sResult))
@@ -695,10 +620,7 @@ class Actions
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function SetSpecLogoutCustomMgsWithDeletion($sMessage)
+	public function SetSpecLogoutCustomMgsWithDeletion(string $sMessage) : string
 	{
 		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage, 0);
 	}
@@ -706,24 +628,18 @@ class Actions
 	/**
 	 * @return void
 	 */
-	private function setAdminAuthToken($sToken)
+	private function setAdminAuthToken(string $sToken)
 	{
 		\RainLoop\Utils::SetCookie(self::AUTH_ADMIN_TOKEN_KEY, $sToken, 0);
 	}
 
-	/**
-	 * @return string
-	 */
-	private function getLocalAuthToken()
+	private function getLocalAuthToken() : string
 	{
 		$sToken = $this->GetSpecAuthToken();
 		return !empty($sToken) && '_' === \substr($sToken, 0, 1) ? \substr($sToken, 1) : '';
 	}
 
-	/**
-	 * @return string
-	 */
-	private function getAdminAuthToken()
+	private function getAdminAuthToken() : string
 	{
 		return \RainLoop\Utils::GetCookie(self::AUTH_ADMIN_TOKEN_KEY, '');
 	}
@@ -746,12 +662,10 @@ class Actions
 	}
 
 	/**
-	 * @param bool $bThrowExceptionOnFalse = false
-	 *
 	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function GetAccount($bThrowExceptionOnFalse = false)
+	public function GetAccount(bool $bThrowExceptionOnFalse = false)
 	{
 		return $this->getAccountFromToken($bThrowExceptionOnFalse);
 	}
@@ -767,19 +681,6 @@ class Actions
 		}
 
 		return $this->oHttp;
-	}
-
-	/**
-	 * @return \RainLoop\Social
-	 */
-	public function Social()
-	{
-		if (null === $this->oSocial)
-		{
-			$this->oSocial = new \RainLoop\Social($this->Http(), $this);
-		}
-
-		return $this->oSocial;
 	}
 
 	/**
@@ -863,11 +764,9 @@ class Actions
 	}
 
 	/**
-	 * @param bool $bLocal = false
-	 *
 	 * @return \RainLoop\Providers\Storage
 	 */
-	public function StorageProvider($bLocal = false)
+	public function StorageProvider(bool $bLocal = false)
 	{
 		if ($bLocal)
 		{
@@ -896,7 +795,7 @@ class Actions
 	/**
 	 * @return \RainLoop\Providers\Settings
 	 */
-	public function SettingsProvider($bLocal = false)
+	public function SettingsProvider(bool $bLocal = false)
 	{
 		if ($bLocal)
 		{
@@ -965,12 +864,9 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount = null
-	 * @param bool $bForceEnable = false
-	 *
 	 * @return \RainLoop\Providers\AddressBook
 	 */
-	public function AddressBookProvider($oAccount = null, $bForceEnable = false)
+	public function AddressBookProvider(?\RainLoop\Model\Account $oAccount = null, bool $bForceEnable = false)
 	{
 		if (null === $this->oAddressBookProvider)
 		{
@@ -991,12 +887,9 @@ class Actions
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount = null
-	 * @param bool $bForceFile = false
-	 *
 	 * @return \MailSo\Cache\CacheClient
 	 */
-	public function Cacher($oAccount = null, $bForceFile = false)
+	public function Cacher(?\RainLoop\Model\Account $oAccount = null, bool $bForceFile = false)
 	{
 		$sKey = '';
 		if ($oAccount)
@@ -1158,7 +1051,6 @@ class Actions
 					'][APC:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off').
 					'][MB:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off').
 					'][PDO:'.$sPdo.
-					(\RainLoop\Utils::IsOwnCloud() ? '][cloud:true' : '').
 					'][Streams:'.\implode(',', \stream_get_transports()).
 				']');
 
@@ -1209,11 +1101,7 @@ class Actions
 		return $this->oLoggerAuth;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount = null
-	 * @param array $aAdditionalParams = array()
-	 */
-	public function LoggerAuthHelper($oAccount = null, $aAdditionalParams = array())
+	public function LoggerAuthHelper(?\RainLoop\Model\Account $oAccount = null, array $aAdditionalParams = array())
 	{
 		$sLine = $this->Config()->Get('logs', 'auth_logging_format', '');
 		if (!empty($sLine))
@@ -1222,10 +1110,7 @@ class Actions
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	private function getAdminToken()
+	private function getAdminToken() : string
 	{
 		$sRand = \MailSo\Base\Utils::Md5Rand();
 		if (!$this->Cacher(null, true)->Set(\RainLoop\KeyPathHelper::SessionAdminKey($sRand), \time()))
@@ -1239,12 +1124,7 @@ class Actions
 		return '' === $sRand ? '' : \RainLoop\Utils::EncodeKeyValuesQ(array('token', \md5(APP_SALT), $sRand));
 	}
 
-	/**
-	 * @param bool $bThrowExceptionOnFalse = true
-	 *
-	 * @return bool
-	 */
-	public function IsAdminLoggined($bThrowExceptionOnFalse = true)
+	public function IsAdminLoggined(bool $bThrowExceptionOnFalse = true) : bool
 	{
 		$bResult = false;
 		if ($this->Config()->Get('security', 'allow_admin_panel', true))
@@ -1267,10 +1147,7 @@ class Actions
 		return $bResult;
 	}
 
-	/**
-	 * @param string $sTo
-	 */
-	public function SetMailtoRequest($sTo)
+	public function SetMailtoRequest(string $sTo)
 	{
 		if (!empty($sTo))
 		{
@@ -1284,16 +1161,9 @@ class Actions
 	}
 
 	/**
-	 * @param string $sEmail
-	 * @param string $sLogin
-	 * @param string $sPassword
-	 * @param string $sSignMeToken = ''
-	 * @param string $sClientCert = ''
-	 * @param bool $bThrowProvideException = false
-	 *
 	 * @return \RainLoop\Model\Account|null
 	 */
-	public function LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken = '', $sClientCert = '', $bThrowProvideException = false)
+	public function LoginProvide(string $sEmail, string $sLogin, string $sPassword, string $sSignMeToken = '', string $sClientCert = '', bool $bThrowProvideException = false)
 	{
 		$oAccount = null;
 		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword))
@@ -1326,15 +1196,10 @@ class Actions
 	}
 
 	/**
-	 * @param string $sToken
-	 * @param bool $bThrowExceptionOnFalse = true
-	 * @param bool $bValidateShortToken = true
-	 * @param bool $bQ = false
-	 *
 	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function GetAccountFromCustomToken($sToken, $bThrowExceptionOnFalse = true, $bValidateShortToken = true, $bQ = false)
+	public function GetAccountFromCustomToken(string $sToken, bool $bThrowExceptionOnFalse = true, bool $bValidateShortToken = true, bool $bQ = false)
 	{
 		$oResult = false;
 		if (!empty($sToken))
@@ -1419,32 +1284,20 @@ class Actions
 	}
 
 	/**
-	 * @param bool $bThrowExceptionOnFalse = true
-	 *
 	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function getAccountFromToken($bThrowExceptionOnFalse = true)
+	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true)
 	{
 		return $this->GetAccountFromCustomToken($this->getLocalAuthToken(), $bThrowExceptionOnFalse, true, true);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsOpen()
+	public function IsOpen() : bool
 	{
 		return !$this->PremProvider();
 	}
 
-	/**
-	 * @param bool $bAdmin = false
-	 * @param bool $bMobile = false
-	 * @param bool $bMobileDevice = false
-	 *
-	 * @return array
-	 */
-	public function AppDataSystem($bAdmin = false, $bMobile = false, $bMobileDevice = false)
+	public function AppDataSystem(bool $bAdmin = false, bool $bMobile = false, bool $bMobileDevice = false) : array
 	{
 		$oConfig = $this->Config();
 
@@ -1454,16 +1307,6 @@ class Actions
 			if (!!\class_exists('ZipArchive'))
 			{
 				$aAttachmentsActions[] = 'zip';
-			}
-
-			if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('OCP\Files'))
-			{
-				$aAttachmentsActions[] = 'owncloud';
-			}
-
-			if ($oConfig->Get('social', 'dropbox_enable', false) && 0 < \strlen(\trim($oConfig->Get('social', 'dropbox_api_key', ''))))
-			{
-				$aAttachmentsActions[] = 'dropbox';
 			}
 		}
 
@@ -1506,14 +1349,7 @@ class Actions
 		) : array());
 	}
 
-	/**
-	 * @param bool $bAdmin
-	 * @param bool $bMobile = false
-	 * @param string $sAuthAccountHash = ''
-	 *
-	 * @return array
-	 */
-	public function AppData($bAdmin, $bMobile = false, $bMobileDevice = false, $sAuthAccountHash = '')
+	public function AppData(bool $bAdmin, bool $bMobile = false, bool $bMobileDevice = false, string $sAuthAccountHash = '') : array
 	{
 		if (0 < \strlen($sAuthAccountHash) && \preg_match('/[^_\-\.a-zA-Z0-9]/', $sAuthAccountHash))
 		{
@@ -1692,63 +1528,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				}
 			}
 
-			$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
-			$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
-			$aResult['AllowGoogleSocialAuthGmail'] = (bool) $oConfig->Get('social', 'google_enable_auth_gmail', true);
-			$aResult['AllowGoogleSocialDrive'] = (bool) $oConfig->Get('social', 'google_enable_drive', true);
-			$aResult['AllowGoogleSocialPreview'] = (bool) $oConfig->Get('social', 'google_enable_preview', true);
-
-			$aResult['GoogleClientID'] = \trim($oConfig->Get('social', 'google_client_id', ''));
-			$aResult['GoogleApiKey'] = \trim($oConfig->Get('social', 'google_api_key', ''));
-
-			if (!$aResult['AllowGoogleSocial'] || ($aResult['AllowGoogleSocial'] && (
-				'' === \trim($oConfig->Get('social', 'google_client_id', '')) || '' === \trim($oConfig->Get('social', 'google_client_secret', '')))))
-			{
-				$aResult['AllowGoogleSocialAuth'] = false;
-				$aResult['AllowGoogleSocialAuthGmail'] = false;
-				$aResult['AllowGoogleSocialDrive'] = false;
-				$aResult['GoogleClientID'] = '';
-				$aResult['GoogleApiKey'] = '';
-			}
-
-			if (!$aResult['AllowGoogleSocial'])
-			{
-				$aResult['AllowGoogleSocialPreview'] = false;
-			}
-
-			if ($aResult['AllowGoogleSocial'] &&
-				!$aResult['AllowGoogleSocialAuth'] && !$aResult['AllowGoogleSocialAuthGmail'] &&
-				!$aResult['AllowGoogleSocialDrive'] && !$aResult['AllowGoogleSocialPreview'])
-			{
-				$aResult['AllowGoogleSocial'] = false;
-			}
-
-			$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
-			if ($aResult['AllowFacebookSocial'] && (
-				'' === \trim($oConfig->Get('social', 'fb_app_id', '')) || '' === \trim($oConfig->Get('social', 'fb_app_secret', ''))))
-			{
-				$aResult['AllowFacebookSocial'] = false;
-			}
-
-			$aResult['AllowTwitterSocial'] = (bool) $oConfig->Get('social', 'twitter_enable', false);
-			if ($aResult['AllowTwitterSocial'] && (
-				'' === \trim($oConfig->Get('social', 'twitter_consumer_key', '')) || '' === \trim($oConfig->Get('social', 'twitter_consumer_secret', ''))))
-			{
-				$aResult['AllowTwitterSocial'] = false;
-			}
-
-			$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
-			$aResult['DropboxApiKey'] = \trim($oConfig->Get('social', 'dropbox_api_key', ''));
-
-			if (!$aResult['AllowDropboxSocial'])
-			{
-				$aResult['DropboxApiKey'] = '';
-			}
-			else if (0 === strlen($aResult['DropboxApiKey']))
-			{
-				$aResult['AllowDropboxSocial'] = false;
-			}
-
 			$aResult['Capa'] = $this->Capa(false, $bMobile, $oAccount);
 
 			if ($aResult['Auth'] && !$aResult['RequireTwoFactor'])
@@ -1791,27 +1570,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$aResult['ContactsPdoUser'] = (string) $oConfig->Get('contacts', 'pdo_user', '');
 				$aResult['ContactsPdoPassword'] = (string) APP_DUMMY;
 
-				$aResult['AllowGoogleSocial'] = (bool) $oConfig->Get('social', 'google_enable', false);
-				$aResult['AllowGoogleSocialAuth'] = (bool) $oConfig->Get('social', 'google_enable_auth', true);
-				$aResult['AllowGoogleSocialAuthGmail'] = (bool) $oConfig->Get('social', 'google_enable_auth_gmail', true);
-				$aResult['AllowGoogleSocialDrive'] = (bool) $oConfig->Get('social', 'google_enable_drive', true);
-				$aResult['AllowGoogleSocialPreview'] = (bool) $oConfig->Get('social', 'google_enable_preview', true);
-
-				$aResult['GoogleClientID'] = (string) $oConfig->Get('social', 'google_client_id', '');
-				$aResult['GoogleClientSecret'] = (string) $oConfig->Get('social', 'google_client_secret', '');
-				$aResult['GoogleApiKey'] = (string) $oConfig->Get('social', 'google_api_key', '');
-
-				$aResult['AllowFacebookSocial'] = (bool) $oConfig->Get('social', 'fb_enable', false);
-				$aResult['FacebookAppID'] = (string) $oConfig->Get('social', 'fb_app_id', '');
-				$aResult['FacebookAppSecret'] = (string) $oConfig->Get('social', 'fb_app_secret', '');
-
-				$aResult['AllowTwitterSocial'] = (bool) $oConfig->Get('social', 'twitter_enable', false);
-				$aResult['TwitterConsumerKey'] = (string) $oConfig->Get('social', 'twitter_consumer_key', '');
-				$aResult['TwitterConsumerSecret'] = (string) $oConfig->Get('social', 'twitter_consumer_secret', '');
-
-				$aResult['AllowDropboxSocial'] = (bool) $oConfig->Get('social', 'dropbox_enable', false);
-				$aResult['DropboxApiKey'] = (string) $oConfig->Get('social', 'dropbox_api_key', '');
-
 				$aResult['SubscriptionEnabled'] = (bool) \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain'], true);
 //					|| \MailSo\Base\Utils::ValidateIP($aResult['AdminDomain']);
 
@@ -1825,14 +1583,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 
 			$aResult['Capa'] = $this->Capa(true, $bMobile);
-		}
-
-		$aResult['SupportedFacebookSocial'] = (bool) \version_compare(PHP_VERSION, '5.4.0', '>=');
-		if (!$aResult['SupportedFacebookSocial'])
-		{
-			$aResult['AllowFacebookSocial'] = false;
-			$aResult['FacebookAppID'] = '';
-			$aResult['FacebookAppSecret'] = '';
 		}
 
 		$aResult['ProjectHash'] = \md5($aResult['AccountHash'].APP_VERSION.$this->Plugins()->Hash());
@@ -2012,10 +1762,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aResult;
 	}
 
-	/**
-	 * @return array
-	 */
-	private function getUserLanguagesFromHeader()
+	private function getUserLanguagesFromHeader() : array
 	{
 		$aResult = $aList = array();
 		$sAcceptLang = \strtolower($this->Http()->GetServer('HTTP_ACCEPT_LANGUAGE', 'en'));
@@ -2033,55 +1780,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aResult;
 	}
 
-	public function googleStoreTokens($oCache, $sAccessToken, $sRefreshToken)
-	{
-		$sCacheKey = 'tokens='.\md5($sRefreshToken);
-		$oCache->Set($sCacheKey, $sAccessToken);
-		$oCache->SetTimer($sCacheKey);
-	}
-
-	/**
-	 * @return string
-	 */
-	public function googleRefreshTokenCallback($sAccessToken, $sRefreshToken)
-	{
-		$oAccount = $this->getAccountFromToken(false);
-		if ($oAccount && $this->GetIsAjax())
-		{
-			$oCache = $this->Cacher($oAccount);
-			$sCacheKey = 'tokens='.\md5($sRefreshToken);
-
-			$sCachedAccessToken = $oCache->Get($sCacheKey);
-			$iTime = $oCache->GetTimer($sCacheKey);
-
-			if ($sCachedAccessToken === '' || $iTime === 0)
-			{
-				$this->googleStoreTokens($oCache, $sAccessToken, $sRefreshToken);
-			}
-			else if (\time() - 60 * 10 * 2 > $iTime) // 20min
-			{
-				$sCachedAccessToken = $this->Social()->GoogleRefreshToken($sAccessToken, $sRefreshToken);
-				if ($sCachedAccessToken !== $sAccessToken) {
-					$this->googleStoreTokens($oCache, $sCachedAccessToken, $sRefreshToken);
-
-					$oAccount->SetPassword(\RainLoop\Model\Account::GenerateTokensPassword($sCachedAccessToken, $sRefreshToken));
-					$this->AuthToken($oAccount);
-					$this->SetUpdateAuthToken($this->GetSpecAuthToken());
-				}
-			}
-
-			if ($sCachedAccessToken) {
-				return $sCachedAccessToken;
-			}
-		}
-
-		return $sAccessToken;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function detectUserLanguage($bAdmin = false)
+	public function detectUserLanguage(bool $bAdmin = false) : string
 	{
 		$sResult = '';
 		$aLangs = $this->getUserLanguagesFromHeader();
@@ -2099,11 +1798,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $sResult;
 	}
 
-	/**
-	 * @param int $iWait = 1
-	 * @param int $iDelay = 1
-	 */
-	private function requestSleep($iWait = 1, $iDelay = 1)
+	private function requestSleep(int $iWait = 1, int $iDelay = 1)
 	{
 		if (0 < $iDelay && 0 < $iWait)
 		{
@@ -2123,12 +1818,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 */
-	public function AuthToken($oAccount)
+	public function AuthToken(?\RainLoop\Model\Account $oAccount)
 	{
-		if ($oAccount instanceof \RainLoop\Model\Account)
+		if ($oAccount)
 		{
 			$this->SetAuthToken($oAccount);
 
@@ -2142,12 +1834,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param bool $bAuthLog = false
-	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function CheckMailConnection($oAccount, $bAuthLog = false)
+	public function CheckMailConnection(\RainLoop\Model\Account $oAccount, bool $bAuthLog = false)
 	{
 		try
 		{
@@ -2178,18 +1867,13 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
 		}
 	}
 
-	/**
-	 * @param string $sLogin
-	 * @param bool $bAdmin = false
-	 * @return array
-	 */
-	private function getAdditionalLogParamsByUserLogin($sLogin, $bAdmin = false)
+	private function getAdditionalLogParamsByUserLogin(string $sLogin, bool $bAdmin = false) : array
 	{
 		$sHost = $bAdmin ? $this->Http()->GetHost(false, true, true) : \MailSo\Base\Utils::GetDomainFromEmail($sLogin);
 		return array(
@@ -2204,18 +1888,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param string $sEmail
-	 * @param string $sPassword
-	 * @param string $sSignMeToken = ''
-	 * @param string $sAdditionalCode = ''
-	 * @param string $bAdditionalCodeSignMe = false
-	 * @param string $bSkipTwoFactorAuth = false
-	 *
 	 * @return \RainLoop\Model\Account
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function LoginProcess(&$sEmail, &$sPassword, $sSignMeToken = '',
-		$sAdditionalCode = '', $bAdditionalCodeSignMe = false, $bSkipTwoFactorAuth = false)
+	public function LoginProcess(string &$sEmail, string &$sPassword, string $sSignMeToken = '',
+		string $sAdditionalCode = '', bool $bAdditionalCodeSignMe = false, bool $bSkipTwoFactorAuth = false)
 	{
 		$sInputEmail = $sEmail;
 
@@ -2340,7 +2017,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$this->loginErrorDelay();
 			$this->LoggerAuthHelper($oAccount, $this->getAdditionalLogParamsByUserLogin($sInputEmail));
@@ -2404,7 +2081,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			$this->CheckMailConnection($oAccount, true);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$this->loginErrorDelay();
 
@@ -2414,22 +2091,15 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $oAccount;
 	}
 
-	/**
-	 * @param string $sEmail
-	 *
-	 * @return string
-	 */
-	private function generateSignMeToken($sEmail)
+	private function generateSignMeToken(string $sEmail) : string
 	{
 		return \MailSo\Base\Utils::Md5Rand(APP_SALT.$sEmail);
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoLogin()
+	public function DoLogin() : array
 	{
 		$sEmail = \MailSo\Base\Utils::Trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
@@ -2494,12 +2164,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 * @return array
-	 */
-	public function GetAccounts($oAccount)
+	public function GetAccounts(\RainLoop\Model\Account $oAccount) : array
 	{
 		if ($this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
@@ -2553,12 +2218,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aAccounts;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 * @return array
-	 */
-	public function GetTemplates($oAccount)
+	public function GetTemplates(?\RainLoop\Model\Account $oAccount) : array
 	{
 		$aTemplates = array();
 		if ($oAccount)
@@ -2610,12 +2270,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sID
-	 *
 	 * @return \RainLoop\Model\Identity
 	 */
-	public function GetTemplateByID($oAccount, $sID)
+	public function GetTemplateByID(\RainLoop\Model\Account $oAccount, string $sID)
 	{
 		$aTemplates = $this->GetTemplates($oAccount);
 		if (\is_array($aTemplates))
@@ -2632,12 +2289,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return isset($aTemplates[0]) ? $aTemplates[0] : null;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 * @return array
-	 */
-	public function GetIdentities($oAccount)
+	public function GetIdentities(\RainLoop\Model\Account $oAccount) : array
 	{
 		$bAllowIdentities = $this->GetCapa(false, false,
 			\RainLoop\Enumerations\Capa::IDENTITIES, $oAccount);
@@ -2720,13 +2372,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sID
-	 * @param bool $bFirstOnEmpty = false
-	 *
 	 * @return \RainLoop\Model\Identity
 	 */
-	public function GetIdentityByID($oAccount, $sID, $bFirstOnEmpty = false)
+	public function GetIdentityByID(\RainLoop\Model\Account $oAccount, string $sID, bool $bFirstOnEmpty = false)
 	{
 		$aIdentities = $this->GetIdentities($oAccount);
 
@@ -2744,22 +2392,14 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $bFirstOnEmpty && \is_array($aIdentities) && isset($aIdentities[0]) ? $aIdentities[0] : null;
 	}
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
 	 * @return \RainLoop\Model\Identity
 	 */
-	public function GetAccountIdentity($oAccount)
+	public function GetAccountIdentity(\RainLoop\Model\Account $oAccount)
 	{
 		return $this->GetIdentityByID($oAccount, '', true);
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param array $aAccounts = array()
-	 *
-	 * @return array
-	 */
-	public function SetAccounts($oAccount, $aAccounts = array())
+	public function SetAccounts(\RainLoop\Model\Account $oAccount, array $aAccounts = array()) : array
 	{
 		$sParentEmail = $oAccount->ParentEmailHelper();
 		if (!\is_array($aAccounts) || 0 >= \count($aAccounts) ||
@@ -2780,13 +2420,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param array $aIdentities = array()
-	 *
-	 * @return array
-	 */
-	public function SetIdentities($oAccount, $aIdentities = array())
+	public function SetIdentities(\RainLoop\Model\Account $oAccount, array $aIdentities = array()) : array
 	{
 		$bAllowIdentities = $this->GetCapa(false, false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount);
 
@@ -2808,13 +2442,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		);
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param array $aTemplates = array()
-	 *
-	 * @return array
-	 */
-	public function SetTemplates($oAccount, $aTemplates = array())
+	public function SetTemplates(\RainLoop\Model\Account $oAccount, array $aTemplates = array()) : array
 	{
 		$aResult = array();
 		foreach ($aTemplates as $oItem)
@@ -2830,11 +2458,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoFilters()
+	public function DoFilters() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -2859,11 +2485,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoFiltersSave()
+	public function DoFiltersSave() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -2899,11 +2523,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountSetup()
+	public function DoAccountSetup() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -2948,11 +2570,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountDelete()
+	public function DoAccountDelete() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -2989,11 +2609,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAttachmentsActions()
+	public function DoAttachmentsActions() : array
 	{
 		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ATTACHMENTS_ACTIONS))
 		{
@@ -3098,87 +2716,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						}
 					}
 					break;
-
-				case 'owncloud':
-
-					$mResult = false;
-
-					if (\RainLoop\Utils::IsOwnCloudLoggedIn() && \class_exists('OCP\Files'))
-					{
-						$sSaveFolder = $this->Config()->Get('labs', 'owncloud_save_folder', '');
-						if (empty($sSaveFolder))
-						{
-							$sSaveFolder = 'Attachments';
-						}
-
-						$oFiles = \OCP\Files::getStorage('files');
-
-						if ($oFilesProvider && $oFiles && $oFilesProvider->IsActive() &&
-							\method_exists($oFiles, 'file_put_contents'))
-						{
-							if (!$oFiles->is_dir($sSaveFolder))
-							{
-								$oFiles->mkdir($sSaveFolder);
-							}
-
-							$mResult = true;
-							foreach ($aData as $aItem)
-							{
-								$sSavedFileName = isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat';
-								$sSavedFileHash = !empty($aItem['FileHash']) ? $aItem['FileHash'] : '';
-
-								if (!empty($sSavedFileHash))
-								{
-									$fFile = $oFilesProvider->GetFile($oAccount, $sSavedFileHash, 'rb');
-									if (\is_resource($fFile))
-									{
-										$sSavedFileNameFull = \MailSo\Base\Utils::SmartFileExists($sSaveFolder.'/'.$sSavedFileName, function ($sPath) use ($oFiles) {
-											return $oFiles->file_exists($sPath);
-										});
-
-										if (!$oFiles->file_put_contents($sSavedFileNameFull, $fFile))
-										{
-											$mResult = false;
-										}
-
-										if (\is_resource($fFile))
-										{
-											@\fclose($fFile);
-										}
-									}
-								}
-							}
-						}
-					}
-
-					foreach ($aData as $aItem)
-					{
-						$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
-						if (!empty($sFileHash))
-						{
-							$oFilesProvider->Clear($oAccount, $sFileHash);
-						}
-					}
-
-					break;
-
-				case 'dropbox':
-
-					$mResult = array(
-						'ShortLife' => '_'.$this->GetShortLifeSpecAuthToken(),
-						'Url' => \preg_replace('/\?(.*)$/', '', $this->Http()->GetFullUrl()),
-						'Files' => array()
-					);
-
-					foreach ($aData as $aItem)
-					{
-						$mResult['Files'][] = array(
-							'FileName' => isset($aItem['FileName']) ? $aItem['FileName'] : 'file.dat',
-							'Hash' => \RainLoop\Utils::EncodeKeyValuesQ($aItem)
-						);
-					}
-
-					break;
 			}
 		}
 		else
@@ -3191,11 +2728,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoIdentityUpdate()
+	public function DoIdentityUpdate() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -3234,11 +2769,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoIdentityDelete()
+	public function DoIdentityDelete() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -3268,11 +2801,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoTemplateSetup()
+	public function DoTemplateSetup() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -3310,11 +2841,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoTemplateDelete()
+	public function DoTemplateDelete() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -3343,11 +2872,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoTemplateGetByID()
+	public function DoTemplateGetByID() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -3379,11 +2906,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountsAndIdentitiesSortOrder()
+	public function DoAccountsAndIdentitiesSortOrder() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -3405,11 +2930,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountsAndIdentities()
+	public function DoAccountsAndIdentities() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -3433,11 +2956,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoTemplates()
+	public function DoTemplates() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -3452,13 +2973,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param string $sHash
-	 *
-	 * @return int
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function getAccountUnreadCountFromHash($sHash)
+	public function getAccountUnreadCountFromHash(string $sHash) : int
 	{
 		$iResult = 0;
 
@@ -3476,7 +2993,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 				$oMailClient->LogoutAndDisconnect();
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->Logger()->WriteException($oException);
 			}
@@ -3486,11 +3003,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountsCounts()
+	public function DoAccountsCounts() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -3533,10 +3048,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		));
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 */
-	public function ClearSignMeData($oAccount)
+	public function ClearSignMeData(\RainLoop\Model\Account $oAccount)
 	{
 		if ($oAccount)
 		{
@@ -3549,10 +3061,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoLogout()
+	public function DoLogout() : array
 	{
 		$oAccount = $this->getAccountFromToken(false);
 		if ($oAccount)
@@ -3571,10 +3080,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAppDelayStart()
+	public function DoAppDelayStart() : array
 	{
 		$this->Plugins()->RunHook('service.app-delay-start-begin');
 
@@ -3639,11 +3145,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 		else if ($bVersionsCache)
 		{
-			$oPremProvider = $this->PremProvider();
-			if ($oPremProvider)
-			{
-				$oPremProvider->ClearOldVersion();
-			}
+//			if ($oPremProvider = $this->PremProvider()) {
+//				$oPremProvider->ClearOldVersion();
+//			}
 		}
 
 		$this->Plugins()->RunHook('service.app-delay-start-end');
@@ -3651,10 +3155,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoSystemFoldersUpdate()
+	public function DoSystemFoldersUpdate() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -3671,15 +3172,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 
-	/**
-	 * @param \RainLoop\Config\Application $oConfig
-	 * @param string $sParamName
-	 * @param string $sConfigSector
-	 * @param string $sConfigName
-	 * @param string $sType = 'string'
-	 * @param callable|null $mStringCallback = null
-	 */
-	public function setConfigFromParams(&$oConfig, $sParamName, $sConfigSector, $sConfigName, $sType = 'string', $mStringCallback = null)
+	public function setConfigFromParams(\RainLoop\Config\Application &$oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null)
 	{
 		$sValue = $this->GetActionParam($sParamName, '');
 		if ($this->HasActionParam($sParamName))
@@ -3717,12 +3210,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @param \RainLoop\Config\Application $oConfig
-	 * @param string $sParamName
-	 * @param string $sCapa
-	 */
-	private function setCapaFromParams(&$oConfig, $sParamName, $sCapa)
+	private function setCapaFromParams(\RainLoop\Config\Application &$oConfig, string $sParamName, string $sCapa)
 	{
 		switch ($sCapa)
 		{
@@ -3741,9 +3229,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			case \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE:
 				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'force_two_factor_auth', 'bool');
 				break;
-			case \RainLoop\Enumerations\Capa::GRAVATAR:
-				$this->setConfigFromParams($oConfig, $sParamName, 'labs', 'allow_gravatar', 'bool');
-				break;
 			case \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS:
 				$this->setConfigFromParams($oConfig, $sParamName, 'interface', 'show_attachment_thumbnail', 'bool');
 				break;
@@ -3759,13 +3244,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @param \RainLoop\Settings $oSettings
-	 * @param string $sConfigName
-	 * @param string $sType = 'string'
-	 * @param callable|null $mStringCallback = null
-	 */
-	private function setSettingsFromParams(&$oSettings, $sConfigName, $sType = 'string', $mStringCallback = null)
+	private function setSettingsFromParams(\RainLoop\Settings &$oSettings, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null)
 	{
 		if ($this->HasActionParam($sConfigName))
 		{
@@ -3795,10 +3274,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminSettingsUpdate()
+	public function DoAdminSettingsUpdate() : array
 	{
 //		sleep(3);
 //		return $this->DefaultResponse(__FUNCTION__, false);
@@ -3850,7 +3326,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuth', \RainLoop\Enumerations\Capa::TWO_FACTOR);
 		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuthForce', \RainLoop\Enumerations\Capa::TWO_FACTOR_FORCE);
 		$this->setCapaFromParams($oConfig, 'CapaOpenPGP', \RainLoop\Enumerations\Capa::OPEN_PGP);
-		$this->setCapaFromParams($oConfig, 'CapaGravatar', \RainLoop\Enumerations\Capa::GRAVATAR);
 		$this->setCapaFromParams($oConfig, 'CapaThemes', \RainLoop\Enumerations\Capa::THEMES);
 		$this->setCapaFromParams($oConfig, 'CapaUserBackground', \RainLoop\Enumerations\Capa::USER_BACKGROUND);
 		$this->setCapaFromParams($oConfig, 'CapaAttachmentThumbnails', \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS);
@@ -3865,26 +3340,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
-		$this->setConfigFromParams($oConfig, 'GoogleEnable', 'social', 'google_enable', 'bool');
-		$this->setConfigFromParams($oConfig, 'GoogleEnableAuth', 'social', 'google_enable_auth', 'bool');
-		$this->setConfigFromParams($oConfig, 'GoogleEnableAuthGmail', 'social', 'google_enable_auth_gmail', 'bool');
-		$this->setConfigFromParams($oConfig, 'GoogleEnableDrive', 'social', 'google_enable_drive', 'bool');
-		$this->setConfigFromParams($oConfig, 'GoogleEnablePreview', 'social', 'google_enable_preview', 'bool');
-		$this->setConfigFromParams($oConfig, 'GoogleClientID', 'social', 'google_client_id', 'string');
-		$this->setConfigFromParams($oConfig, 'GoogleClientSecret', 'social', 'google_client_secret', 'string');
-		$this->setConfigFromParams($oConfig, 'GoogleApiKey', 'social', 'google_api_key', 'string');
-
-		$this->setConfigFromParams($oConfig, 'FacebookEnable', 'social', 'fb_enable', 'bool');
-		$this->setConfigFromParams($oConfig, 'FacebookAppID', 'social', 'fb_app_id', 'string');
-		$this->setConfigFromParams($oConfig, 'FacebookAppSecret', 'social', 'fb_app_secret', 'string');
-
-		$this->setConfigFromParams($oConfig, 'TwitterEnable', 'social', 'twitter_enable', 'bool');
-		$this->setConfigFromParams($oConfig, 'TwitterConsumerKey', 'social', 'twitter_consumer_key', 'string');
-		$this->setConfigFromParams($oConfig, 'TwitterConsumerSecret', 'social', 'twitter_consumer_secret', 'string');
-
-		$this->setConfigFromParams($oConfig, 'DropboxEnable', 'social', 'dropbox_enable', 'bool');
-		$this->setConfigFromParams($oConfig, 'DropboxApiKey', 'social', 'dropbox_api_key', 'string');
-
 		$oPremProvider = $this->PremProvider();
 		if ($oPremProvider)
 		{
@@ -3895,11 +3350,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAdminLogin()
+	public function DoAdminLogin() : array
 	{
 		$sLogin = trim($this->GetActionParam('Login', ''));
 		$sPassword = $this->GetActionParam('Password', '');
@@ -3922,29 +3375,20 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $sToken ? true : false);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminLogout()
+	public function DoAdminLogout() : array
 	{
 		$this->ClearAdminAuthToken();
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminPing()
+	public function DoAdminPing() : array
 	{
 		$this->IsAdminLoggined();
 
 		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminContactsTest()
+	public function DoAdminContactsTest() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -3966,112 +3410,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminLicensing()
-	{
-		$this->IsAdminLoggined();
-
-		$bForce = '1' === (string) $this->GetActionParam('Force', '0');
-
-		$mResult = false;
-		$iErrorCode = -1;
-
-		$oPremProvider = $this->PremProvider();
-
-		if ($oPremProvider && 2 < \strlen(APP_SITE))
-		{
-			$sValue = $oPremProvider->Fetcher($bForce);
-
-			$this->requestSleep();
-
-			$iExpired = 0;
-			if ($oPremProvider->Parser($sValue, $iExpired))
-			{
-				$mResult = array(
-					'Banned' => false,
-					'Expired' => $iExpired,
-				);
-			}
-			else if ($sValue === 'NO' || \preg_match('/^EXPIRED:[\d]+$/', $sValue))
-			{
-				$iErrorCode = -1;
-			}
-			else if ($sValue === 'TOO_MANY_CONNECTIONS')
-			{
-				$iErrorCode = -1;
-			}
-			else
-			{
-				$iErrorCode = \RainLoop\Notifications::LicensingServerIsUnavailable;
-			}
-		}
-
-		if (0 < $iErrorCode && !$mResult)
-		{
-			throw new \RainLoop\Exceptions\ClientException($iErrorCode);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoAdminLicensingActivate()
-	{
-		$this->IsAdminLoggined();
-
-		$sDomain = (string) $this->GetActionParam('Domain', '');
-		$sKey = (string) $this->GetActionParam('Key', '');
-
-		$mResult = false;
-		$iErrorCode = -1;
-
-		$oPrem = $this->PremProvider();
-
-		if ($oPrem && 2 < \strlen($sDomain) && 2 < \strlen($sKey) && $sDomain === APP_SITE)
-		{
-			$iCode = 0;
-			$sValue = $oPrem->Activate($sDomain, $sKey, $iCode);
-
-			$this->requestSleep();
-
-			$aMatch = array();
-			if ('OK' === $sValue)
-			{
-				$mResult = true;
-			}
-			else if ('TOO_MANY_CONNECTIONS' === $sValue)
-			{
-				$mResult = 'Too many connections. Please try again later.';
-			}
-			else if (\preg_match('/^ERROR:(.+)$/', $sValue, $aMatch) && !empty($aMatch[1]))
-			{
-				$mResult = trim($aMatch[1]);
-
-				$this->Logger()->Write('Activation error for: '.$sKey.' ('.$sDomain.')', \MailSo\Log\Enumerations\Type::ERROR);
-				$this->Logger()->Write($mResult, \MailSo\Log\Enumerations\Type::ERROR);
-			}
-			else
-			{
-				$iErrorCode = \RainLoop\Notifications::LicensingServerIsUnavailable;
-			}
-		}
-
-		if (0 < $iErrorCode && !$mResult)
-		{
-			throw new \RainLoop\Exceptions\ClientException($iErrorCode);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoAdminPasswordUpdate()
+	public function DoAdminPasswordUpdate() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4107,10 +3446,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			($oConfig->Save() ? array('Weak' => $oConfig->ValidatePassword('12345')) : false) : false);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminDomainLoad()
+	public function DoAdminDomainLoad() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4118,10 +3454,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->DomainProvider()->Load($this->GetActionParam('Name', ''), false, false));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminDomainList()
+	public function DoAdminDomainList() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4138,10 +3471,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->DomainProvider()->GetList($iOffset, $iLimit, $sSearch, $bIncludeAliases));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminDomainDelete()
+	public function DoAdminDomainDelete() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4149,10 +3479,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->DomainProvider()->Delete((string) $this->GetActionParam('Name', '')));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminDomainDisable()
+	public function DoAdminDomainDisable() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4162,10 +3489,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminDomainSave()
+	public function DoAdminDomainSave() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4175,10 +3499,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$oDomain instanceof \RainLoop\Model\Domain ? $this->DomainProvider()->Save($oDomain) : false);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminDomainAliasSave()
+	public function DoAdminDomainAliasSave() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4188,10 +3509,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminDomainTest()
+	public function DoAdminDomainTest() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4236,7 +3554,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$sImapErrorDesc = $oException->getMessage();
 				}
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 				$sImapErrorDesc = $oException->getMessage();
@@ -4277,7 +3595,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						$sSmtpErrorDesc = $oException->getMessage();
 					}
 				}
-				catch (\Exception $oException)
+				catch (\Throwable $oException)
 				{
 					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 					$sSmtpErrorDesc = $oException->getMessage();
@@ -4311,7 +3629,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						$sSieveErrorDesc = $oException->getMessage();
 					}
 				}
-				catch (\Exception $oException)
+				catch (\Throwable $oException)
 				{
 					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 					$sSieveErrorDesc = $oException->getMessage();
@@ -4330,10 +3648,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		));
 	}
 
-	/**
-	 * @return string
-	 */
-	private function rainLoopRepo()
+	private function rainLoopRepo() : string
 	{
 		$sUrl = APP_REPOSITORY_PATH;
 		if ('' !== $sUrl)
@@ -4361,13 +3676,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return '' === $sCoreAccess || '*' === $sCoreAccess || APP_SITE === $sCoreAccess;
 	}
 
-	/**
-	 * @param string $sRepo
-	 * @param bool $bReal = false
-	 *
-	 * @return array
-	 */
-	private function getRepositoryDataByUrl($sRepo, &$bReal = false)
+	private function getRepositoryDataByUrl(string $sRepo, bool &$bReal = false) : array
 	{
 		$bReal = false;
 		$aRep = null;
@@ -4454,10 +3763,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	private function getCoreChannel()
+	private function getCoreChannel() : string
 	{
 		$sChannel = \trim(\strtolower($this->Config()->Get('labs', 'update_channel', 'stable')));
 		if (empty($sChannel) || !\in_array($sChannel, array('stable', 'beta')))
@@ -4468,7 +3774,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $sChannel;
 	}
 
-	private function getCoreData(&$bReal)
+	private function getCoreData(bool &$bReal)
 	{
 		$bReal = false;
 
@@ -4518,7 +3824,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $bReal ? $aRep : false;
 	}
 
-	private function getRepositoryData(&$bReal, &$bRainLoopUpdatable)
+	private function getRepositoryData(bool &$bReal, bool &$bRainLoopUpdatable)
 	{
 		$bRainLoopUpdatable = $this->rainLoopUpdatable();
 
@@ -4586,10 +3892,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aResult;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminPackagesList()
+	public function DoAdminPackagesList() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4604,10 +3907,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminCoreData()
+	public function DoAdminCoreData() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4660,38 +3960,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminUpdateCoreData()
-	{
-		$this->IsAdminLoggined();
-
-		$bReal = false;
-
-		$bRainLoopUpdatable = $this->rainLoopUpdatable();
-		$bRainLoopAccess = $this->rainLoopCoreAccess();
-		$oPremProvider = $this->PremProvider();
-
-		$aData = array();
-		if ($bRainLoopUpdatable && $bRainLoopAccess)
-		{
-			$aData = $this->getCoreData($bReal);
-		}
-
-		$bResult = false;
-		if ($bReal && $oPremProvider && !empty($aData['file']))
-		{
-			$bResult = $oPremProvider->UpdateCore($this, $aData['file']);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $bResult);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoAdminPackageDelete()
+	public function DoAdminPackageDelete() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4724,12 +3993,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
 	}
 
-	/**
-	 * @param string $sUrl
-	 *
-	 * @return string
-	 */
-	public function downloadRemotePackageByUrl($sUrl)
+	public function downloadRemotePackageByUrl(string $sUrl) : string
 	{
 		$bResult = false;
 		$sTmp = APP_PRIVATE_DATA.\md5(\microtime(true).$sUrl).'.zip';
@@ -4761,10 +4025,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $bResult ? $sTmp : '';
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminPackageInstall()
+	public function DoAdminPackageInstall() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4802,9 +4063,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		if ('' !== $sTmp)
 		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/pclzip/pclzip.lib.php';
-
-			$oArchive = new \PclZip($sTmp);
+			$oArchive = new \ZipArchive();
+			$oArchive->open($sTmp);
 			if ('plugin' === $sType)
 			{
 				$bResult = true;
@@ -4819,13 +4079,14 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 				if ($bResult)
 				{
-					$bResult = 0 !== $oArchive->extract(PCLZIP_OPT_PATH, APP_PLUGINS_PATH);
+					$bResult = $oArchive->extractTo(APP_PLUGINS_PATH);
 					if (!$bResult)
 					{
 						$this->Logger()->Write('Cannot extract package files: '.$oArchive->errorInfo(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 					}
 				}
 			}
+			$oArchive->close();
 
 			@\unlink($sTmp);
 		}
@@ -4834,10 +4095,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			('plugin' !== $sType ? array('Reload' => true) : true) : false);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminPluginList()
+	public function DoAdminPluginList() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4860,12 +4118,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
 
-	/**
-	 * @param string $sName
-	 * @param bool $bEnable = true
-	 * @return bool
-	 */
-	private function pluginEnable($sName, $bEnable = true)
+	private function pluginEnable(string $sName, bool $bEnable = true) : bool
 	{
 		if (0 === \strlen($sName))
 		{
@@ -4901,10 +4154,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $oConfig->Save();
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminPluginDisable()
+	public function DoAdminPluginDisable() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4931,10 +4181,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $this->pluginEnable($sName, !$bDisable));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminPluginLoad()
+	public function DoAdminPluginLoad() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -4977,10 +4224,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoAdminPluginSettingsUpdate()
+	public function DoAdminPluginSettingsUpdate() : array
 	{
 		$this->IsAdminLoggined();
 
@@ -5042,10 +4286,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoSettingsUpdate()
+	public function DoSettingsUpdate() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 		if (!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount))
@@ -5110,27 +4351,18 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoNoop()
+	public function DoNoop() : array
 	{
 		$this->initMailClientConnection();
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoPing()
+	public function DoPing() : array
 	{
 		return $this->DefaultResponse(__FUNCTION__, 'Pong');
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoChangePassword()
+	public function DoChangePassword() : array
 	{
 		$mResult = false;
 
@@ -5145,7 +4377,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$this->GetActionParam('NewPassword', '')
 				);
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->loginErrorDelay();
 				$this->Logger()->Write('Error: Can\'t change password for '.$oAccount->Email().' account.', \MailSo\Log\Enumerations\Type::NOTICE);
@@ -5157,10 +4389,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoWelcomeClose()
+	public function DoWelcomeClose() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 		if ($oAccount && !$oAccount->IsAdditionalAccount())
@@ -5176,20 +4405,13 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->FalseResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoVersion()
+	public function DoVersion() : array
 	{
 		return $this->DefaultResponse(__FUNCTION__,
 			APP_VERSION === (string) $this->GetActionParam('Version', ''));
 	}
 
-	/**
-	 * @param \MailSo\Mail\FolderCollection $oFolders
-	 * @return array
-	 */
-	private function recFoldersNames($oFolders)
+	private function recFoldersNames(\MailSo\Mail\FolderCollection $oFolders) : array
 	{
 		$aResult = array();
 		if ($oFolders)
@@ -5214,11 +4436,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	/**
 	 * @staticvar array $aCache
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 * @return array
 	 */
-	private function systemFoldersNames($oAccount)
+	private function systemFoldersNames(\RainLoop\Model\Account $oAccount) : array
 	{
 		static $aCache = null;
 		if (null === $aCache)
@@ -5247,7 +4466,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				'Draft Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
-				
+
 				'Junk E-mail' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 
 				'Spam' => \MailSo\Imap\Enumerations\FolderType::JUNK,
@@ -5256,7 +4475,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				'Junk' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 				'Bulk Mail' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 				'Bulk Mails' => \MailSo\Imap\Enumerations\FolderType::JUNK,
-				
+
 				'Deleted Items' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 
 				'Trash' => \MailSo\Imap\Enumerations\FolderType::TRASH,
@@ -5286,13 +4505,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aCache;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param \MailSo\Mail\FolderCollection $oFolders
-	 * @param array $aResult
-	 * @param bool $bListFolderTypes = true
-	 */
-	private function recFoldersTypes($oAccount, $oFolders, &$aResult, $bListFolderTypes = true)
+	private function recFoldersTypes(\RainLoop\Model\Account $oAccount, \MailSo\Mail\FolderCollection $oFolders, array &$aResult, bool $bListFolderTypes = true)
 	{
 		if ($oFolders)
 		{
@@ -5360,10 +4573,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoFolders()
+	public function DoFolders() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -5470,7 +4680,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 										$bDoItAgain = true;
 									}
 								}
-								catch (\Exception $oException)
+								catch (\Throwable $oException)
 								{
 									$this->Logger()->WriteException($oException);
 								}
@@ -5506,10 +4716,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $oFolderCollection);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoFolderCreate()
+	public function DoFolderCreate() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -5526,7 +4733,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->MailClient()->FolderCreate($sFolderNameInUtf, $sFolderParentFullNameRaw,
 				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true));
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantCreateFolder, $oException);
 		}
@@ -5534,10 +4741,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoFolderSubscribe()
+	public function DoFolderSubscribe() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -5553,7 +4757,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			$this->MailClient()->FolderSubscribe($sFolderFullNameRaw, !!$bSubscribe);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			if ($bSubscribe)
 			{
@@ -5568,10 +4772,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoFolderCheckable()
+	public function DoFolderCheckable() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -5619,11 +4820,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoFolderRename()
+	public function DoFolderRename() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -5640,7 +4839,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->MailClient()->FolderRename($sPrevFolderFullNameRaw, $sNewTopFolderNameInUtf,
 				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true));
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantRenameFolder, $oException);
 		}
@@ -5649,11 +4848,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoFolderDelete()
+	public function DoFolderDelete() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -5673,7 +4870,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantDeleteNonEmptyFolder, $oException);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantDeleteFolder, $oException);
 		}
@@ -5682,11 +4879,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoFolderClear()
+	public function DoFolderClear() : array
 	{
 		$this->initMailClientConnection();
 
@@ -5696,7 +4891,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			$this->MailClient()->FolderClear($sFolderFullNameRaw);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::MailServerError, $oException);
 		}
@@ -5705,11 +4900,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoFolderInformation()
+	public function DoFolderInformation() : array
 	{
 		$sFolder = $this->GetActionParam('Folder', '');
 		$sPrevUidNext = $this->GetActionParam('UidNext', '');
@@ -5752,7 +4945,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				}
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::MailServerError, $oException);
 		}
@@ -5766,11 +4959,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoFolderInformationMultiply()
+	public function DoFolderInformationMultiply() : array
 	{
 		$aResult = array(
 			'List' => array(),
@@ -5795,7 +4986,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 							$aResult['List'][] = $aInboxInformation;
 						}
 					}
-					catch (\Exception $oException)
+					catch (\Throwable $oException)
 					{
 						$this->Logger()->WriteException($oException);
 					}
@@ -5807,11 +4998,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoMessageList()
+	public function DoMessageList() : array
 	{
 //		\sleep(1);
 //		throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList);
@@ -5881,7 +5070,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				''
 			);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList, $oException);
 		}
@@ -5895,12 +5084,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param bool $bWithDraftInfo = true
-	 *
 	 * @return \MailSo\Mime\Message
 	 */
-	private function buildMessage($oAccount, $bWithDraftInfo = true)
+	private function buildMessage(\RainLoop\Model\Account $oAccount, bool $bWithDraftInfo = true)
 	{
 		$sIdentityID = $this->GetActionParam('IdentityID', '');
 		$sTo = $this->GetActionParam('To', '');
@@ -6073,11 +5259,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
 	 * @return void
 	 */
-	private function deleteMessageAttachmnets($oAccount)
+	private function deleteMessageAttachmnets(\RainLoop\Model\Account $oAccount)
 	{
 		$aAttachments = $this->GetActionParam('Attachments', null);
 
@@ -6094,11 +5278,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
 	 * @return \MailSo\Mime\Message
 	 */
-	private function buildReadReceiptMessage($oAccount)
+	private function buildReadReceiptMessage(\RainLoop\Model\Account $oAccount)
 	{
 		$sReadReceipt = $this->GetActionParam('ReadReceipt', '');
 		$sSubject = $this->GetActionParam('Subject', '');
@@ -6150,10 +5332,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $oMessage;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoSaveMessage()
+	public function DoSaveMessage() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -6224,18 +5403,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 *
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param \MailSo\Mime\Message $oMessage
-	 * @param resource $rMessageStream
-	 * @param bool $bDsn = false
-	 * @param bool $bAddHiddenRcpt = true
-	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 * @throws \MailSo\Net\Exceptions\ConnectionException
 	 */
-	private function smtpSendMessage($oAccount, $oMessage,
-		&$rMessageStream, &$iMessageStreamSize, $bDsn = false, $bAddHiddenRcpt = true)
+	private function smtpSendMessage(\RainLoop\Model\Account $oAccount, \MailSo\Mime\Message $oMessage,
+		resource &$rMessageStream, int &$iMessageStreamSize, bool $bDsn = false, bool $bAddHiddenRcpt = true)
 	{
 		$oRcpt = $oMessage->GetRcpt();
 		if ($oRcpt && 0 < $oRcpt->Count())
@@ -6367,7 +5539,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				if ($this->Config()->Get('labs', 'smtp_show_server_errors'))
 				{
@@ -6385,10 +5557,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoSendMessage()
+	public function DoSendMessage() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -6451,7 +5620,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 									break;
 							}
 						}
-						catch (\Exception $oException)
+						catch (\Throwable $oException)
 						{
 							$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 						}
@@ -6498,7 +5667,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 								}
 							}
 						}
-						catch (\Exception $oException)
+						catch (\Throwable $oException)
 						{
 							throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSaveMessage, $oException);
 						}
@@ -6517,7 +5686,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						{
 							$this->MailClient()->MessageDelete($sDraftFolder, array($sDraftUid), true, true);
 						}
-						catch (\Exception $oException)
+						catch (\Throwable $oException)
 						{
 							$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 						}
@@ -6531,7 +5700,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			throw $oException;
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage, $oException);
 		}
@@ -6567,7 +5736,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				}
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$this->Logger()->WriteException($oException);
 		}
@@ -6575,10 +5744,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoSendReadReceiptMessage()
+	public function DoSendReadReceiptMessage() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -6626,7 +5792,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 							{
 								$this->MailClient()->MessageSetFlag($sFolderFullName, array($sUid), true, $sReadReceiptFlag, true, true);
 							}
-							catch (\Exception $oException) {}
+							catch (\Throwable $oException) {}
 						}
 					}
 				}
@@ -6636,7 +5802,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			throw $oException;
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSendMessage, $oException);
 		}
@@ -6649,10 +5815,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoQuota()
+	public function DoQuota() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -6665,7 +5828,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			$aQuota = $this->MailClient()->Quota();
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::MailServerError, $oException);
 		}
@@ -6673,7 +5836,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $aQuota);
 	}
 
-	private function getContactsSyncData($oAccount)
+	private function getContactsSyncData(\RainLoop\Model\Account $oAccount)
 	{
 		$mResult = null;
 
@@ -6699,10 +5862,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $mResult;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoSaveContactsSyncData()
+	public function DoSaveContactsSyncData() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -6734,10 +5894,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoContactsSync()
+	public function DoContactsSync() : array
 	{
 		$bResult = false;
 		$oAccount = $this->getAccountFromToken();
@@ -6762,7 +5919,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	private function getTwoFactorInfo($oAccount, $bRemoveSecret = false)
+	private function getTwoFactorInfo(\RainLoop\Model\Account $oAccount, bool $bRemoveSecret = false)
 	{
 		$sEmail = $oAccount->ParentEmailHelper();
 
@@ -6824,13 +5981,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aResult;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sCode
-	 *
-	 * @return bool
-	 */
-	private function removeBackupCodeFromTwoFactorInfo($oAccount, $sCode)
+	private function removeBackupCodeFromTwoFactorInfo(\RainLoop\Model\Account $oAccount, string $sCode) : bool
 	{
 		if (!$oAccount || empty($sCode))
 		{
@@ -6864,10 +6015,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return false;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoGetTwoFactorInfo()
+	public function DoGetTwoFactorInfo() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -6881,10 +6029,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->getTwoFactorInfo($oAccount, true));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoCreateTwoFactorSecret()
+	public function DoCreateTwoFactorSecret() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -6921,10 +6066,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->getTwoFactorInfo($oAccount));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoShowTwoFactorSecret()
+	public function DoShowTwoFactorSecret() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -6943,10 +6085,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoEnableTwoFactor()
+	public function DoEnableTwoFactor() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -6977,10 +6116,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoTestTwoFactorInfo()
+	public function DoTestTwoFactorInfo() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -7006,10 +6142,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->TwoFactorAuthProvider()->VerifyCode($sSecret, $sCode));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoClearTwoFactorInfo()
+	public function DoClearTwoFactorInfo() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -7028,10 +6161,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->getTwoFactorInfo($oAccount, true));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoContacts()
+	public function DoContacts() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -7061,10 +6191,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoContactsDelete()
+	public function DoContactsDelete() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
@@ -7083,10 +6210,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoContactSave()
+	public function DoContactSave() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -7148,10 +6272,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoSuggestions()
+	public function DoSuggestions() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -7189,7 +6310,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					}
 				}
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->Logger()->WriteException($oException);
 			}
@@ -7226,10 +6347,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
 
-	/**
-	 * @return array
-	 */
-	private function messageSetFlag($sActionFunction, $sResponseFunction)
+	private function messageSetFlag(string $sActionFunction, string $sResponseFunction) : array
 	{
 		$this->initMailClientConnection();
 
@@ -7245,7 +6363,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			$this->MailClient()->{$sActionFunction}($sFolder, $aFilteredUids, true, $bSetAction, true);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::MailServerError, $oException);
 		}
@@ -7253,18 +6371,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse($sResponseFunction);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoMessageSetSeen()
+	public function DoMessageSetSeen() : array
 	{
 		return $this->messageSetFlag('MessageSetSeen', __FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoMessageSetSeenToAll()
+	public function DoMessageSetSeenToAll() : array
 	{
 		$this->initMailClientConnection();
 
@@ -7277,7 +6389,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->MailClient()->MessageSetSeenToAll($sFolder, $bSetAction,
 				!empty($sThreadUids) ? explode(',', $sThreadUids) : null);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::MailServerError, $oException);
 		}
@@ -7285,20 +6397,15 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoMessageSetFlagged()
+	public function DoMessageSetFlagged() : array
 	{
 		return $this->messageSetFlag('MessageSetFlagged', __FUNCTION__);
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoMessage()
+	public function DoMessage() : array
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 
@@ -7328,7 +6435,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				(int) $this->Config()->Get('labs', 'imap_body_text_limit', 0)
 			);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessage, $oException);
 		}
@@ -7347,11 +6454,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoMessageDelete()
+	public function DoMessageDelete() : array
 	{
 		$this->initMailClientConnection();
 
@@ -7368,7 +6473,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->MailClient()->MessageDelete($sFolder, $aFilteredUids, true, true,
 				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false));
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantDeleteMessage, $oException);
 		}
@@ -7379,7 +6484,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				$this->MailClient()->FolderUnSelect();
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				unset($oException);
 			}
@@ -7391,7 +6496,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			$sHash = $this->MailClient()->FolderHash($sFolder);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			unset($oException);
 		}
@@ -7400,11 +6505,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoMessageMove()
+	public function DoMessageMove() : array
 	{
 		$this->initMailClientConnection();
 
@@ -7424,7 +6527,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				$this->MailClient()->MessageSetSeen($sFromFolder, $aFilteredUids, true, true);
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				unset($oException);
 			}
@@ -7437,7 +6540,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				!!$this->Config()->Get('labs', 'use_imap_expunge_all_on_delete', false)
 			);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantMoveMessage, $oException);
 		}
@@ -7448,7 +6551,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				$this->MailClient()->FolderUnSelect();
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				unset($oException);
 			}
@@ -7460,7 +6563,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			$sHash = $this->MailClient()->FolderHash($sFromFolder);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			unset($oException);
 		}
@@ -7469,11 +6572,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoMessageCopy()
+	public function DoMessageCopy() : array
 	{
 		$this->initMailClientConnection();
 
@@ -7493,7 +6594,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 			$sHash = $this->MailClient()->FolderHash($sFromFolder);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantCopyMessage, $oException);
 		}
@@ -7502,15 +6603,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'' === $sHash ? false : array($sFromFolder, $sHash));
 	}
 
-	/**
-	 * @param string $sFileName
-	 * @param string $sContentType
-	 * @param string $sMimeIndex
-	 * @param int $iMaxLength = 250
-	 *
-	 * @return string
-	 */
-	public function MainClearFileName($sFileName, $sContentType, $sMimeIndex, $iMaxLength = 250)
+	public function MainClearFileName(string $sFileName, string $sContentType, string $sMimeIndex, int $iMaxLength = 250) : string
 	{
 		$sFileName = 0 === \strlen($sFileName) ? \preg_replace('/[^a-zA-Z0-9]/', '.', (empty($sMimeIndex) ? '' : $sMimeIndex.'.').$sContentType) : $sFileName;
 		$sClearedFileName = \MailSo\Base\Utils::StripSpaces(\preg_replace('/[\.]+/', '.', $sFileName));
@@ -7524,10 +6617,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return \MailSo\Base\Utils::ClearFileName(\MailSo\Base\Utils::Utf8Clear($sClearedFileName));
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoMessageUploadAttachments()
+	public function DoMessageUploadAttachments() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -7574,7 +6664,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				}
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::MailServerError, $oException);
 		}
@@ -7582,10 +6672,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoComposeUploadExternals()
+	public function DoComposeUploadExternals() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -7622,111 +6709,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoComposeUploadDrive()
-	{
-		$oAccount = $this->getAccountFromToken();
-
-		$mResult = false;
-
-		$sUrl = $this->GetActionParam('Url', '');
-		$sAccessToken = $this->GetActionParam('AccessToken', '');
-		$sGoogleApiKey = (string) $this->Config()->Get('social', 'google_api_key', '');
-
-		if (0 < \strlen($sUrl) && 0 < \strlen($sAccessToken) && 0 < \strlen($sGoogleApiKey))
-		{
-			$oHttp = \MailSo\Base\Http::SingletonInstance();
-
-			$mResult[$sUrl] = false;
-
-			$sTempName = \md5($sUrl);
-
-			$iCode = 0;
-			$sContentType = '';
-
-			$rFile = $this->FilesProvider()->GetFile($oAccount, $sTempName, 'wb+');
-			if ($rFile && $oHttp->SaveUrlToFile($sUrl.'&key='.$sGoogleApiKey, $rFile, '', $sContentType, $iCode, $this->Logger(), 60,
-					$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''),
-					array('Authorization: Bearer '.$sAccessToken)))
-			{
-				$mResult[$sUrl] = array($sTempName, 0);
-			}
-
-			if (\is_resource($rFile))
-			{
-				@\fclose($rFile);
-			}
-
-			if (isset($mResult[$sUrl][1]))
-			{
-				$mResult[$sUrl][1] = $rFile = $this->FilesProvider()->FileSize($oAccount, $sTempName);
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoSocialUsers()
-	{
-		$oAccount = $this->getAccountFromToken();
-
-		$oSettings = $this->SettingsProvider()->Load($oAccount);
-
-		$aData = array(
-			'Google' => '',
-			'Facebook' => '',
-			'Twitter' => ''
-		);
-
-		if ($oSettings)
-		{
-			$aData['Google'] = $oSettings->GetConf('GoogleSocialName', '');
-			$aData['Facebook'] = $oSettings->GetConf('FacebookSocialName', '');
-			$aData['Twitter'] = $oSettings->GetConf('TwitterSocialName', '');
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $aData);
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoSocialGoogleDisconnect()
-	{
-		$oAccount = $this->getAccountFromToken();
-		return $this->DefaultResponse(__FUNCTION__, $this->Social()->GoogleDisconnect($oAccount));
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoSocialTwitterDisconnect()
-	{
-		$oAccount = $this->getAccountFromToken();
-		return $this->DefaultResponse(__FUNCTION__, $this->Social()->TwitterDisconnect($oAccount));
-	}
-
-	/**
-	 * @return array
-	 */
-	public function DoSocialFacebookDisconnect()
-	{
-		$oAccount = $this->getAccountFromToken();
-		return $this->DefaultResponse(__FUNCTION__, $this->Social()->FacebookDisconnect($oAccount));
-	}
-
-	/**
-	 * @param int $iError
-	 * @param int $iClientError
-	 *
-	 * @return string
-	 */
-	private function getUploadErrorMessageByCode($iError, &$iClientError)
+	private function getUploadErrorMessageByCode(int $iError, int &$iClientError) : string
 	{
 		$sError = '';
 		$iClientError = UploadClientError::NORMAL;
@@ -7773,10 +6756,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $sError;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function Upload()
+	public function Upload() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -7822,10 +6802,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $aResponse);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DoClearUserBackground()
+	public function DoClearUserBackground() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -7850,10 +6827,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->SettingsProvider()->Save($oAccount, $oSettings) : false);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function UploadBackground()
+	public function UploadBackground() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -7950,10 +6924,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		) : false);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function UploadContacts()
+	public function UploadContacts() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -8018,14 +6989,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $mResponse);
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param resource $rFile
-	 * @param string $sFileStart
-	 *
-	 * @return int
-	 */
-	private function importContactsFromCsvFile($oAccount, $rFile, $sFileStart)
+	private function importContactsFromCsvFile(\RainLoop\Model\Account $oAccount, resource $rFile, string $sFileStart) : int
 	{
 		$iCount = 0;
 		$aHeaders = null;
@@ -8078,13 +7042,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $iCount;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param resource $rFile
-	 *
-	 * @return int
-	 */
-	private function importContactsFromVcfFile($oAccount, $rFile)
+	private function importContactsFromVcfFile(\RainLoop\Model\Account $oAccount, resource $rFile) : int
 	{
 		$iCount = 0;
 		if ($oAccount && \is_resource($rFile))
@@ -8110,11 +7068,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return bool
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function RawViewAsPlain()
+	public function RawViewAsPlain() : bool
 	{
 		$this->initMailClientConnection();
 
@@ -8135,10 +7091,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}, $sFolder, $iUid, true, $sMimeIndex);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function RawFramedView()
+	public function RawFramedView() : string
 	{
 		$oAccount = $this->getAccountFromToken(false);
 		if ($oAccount)
@@ -8181,11 +7134,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return bool
-	 *
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function Append()
+	public function Append() : bool
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -8220,14 +7171,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
-	/**
-	 * @param bool $bAdmin
-	 * @param bool $bMobile = false
-	 * @param \RainLoop\Model\Account $oAccount = null
-	 *
-	 * @return array
-	 */
-	public function Capa($bAdmin, $bMobile = false, $oAccount = null)
+	public function Capa(bool $bAdmin, bool $bMobile = false, ?\RainLoop\Model\Account $oAccount = null) : array
 	{
 		$oConfig = $this->Config();
 
@@ -8349,11 +7293,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 		}
 
-		if ($oConfig->Get('labs', 'allow_gravatar', false))
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::GRAVATAR;
-		}
-
 		if ($oConfig->Get('interface', 'show_attachment_thumbnail', true))
 		{
 			$aResult[] = \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS;
@@ -8364,44 +7303,22 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$aResult[] = \RainLoop\Enumerations\Capa::PREFETCH;
 		}
 
-		if (!\RainLoop\Utils::IsOwnCloud())
-		{
-			$aResult[] = \RainLoop\Enumerations\Capa::AUTOLOGOUT;
-		}
+		$aResult[] = \RainLoop\Enumerations\Capa::AUTOLOGOUT;
 
 		return $aResult;
 	}
 
-	/**
-	 * @param bool $bAdmin
-	 * @param bool $bMobile
-	 * @param string $sName
-	 * @param \RainLoop\Model\Account $oAccount = null
-	 *
-	 * @return bool
-	 */
-	public function GetCapa($bAdmin, $bMobile, $sName, $oAccount = null)
+	public function GetCapa(bool $bAdmin, bool $bMobile, string $sName, ?\RainLoop\Model\Account $oAccount = null) : bool
 	{
 		return \in_array($sName, $this->Capa($bAdmin, $bMobile, $oAccount));
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	public function etag($sKey)
+	public function etag(string $sKey) : string
 	{
 		return \md5('Etag:'.\md5($sKey.\md5($this->Config()->Get('cache', 'index', ''))));
 	}
 
-	/**
-	 * @param string $sKey
-	 * @param bool $bForce = false
-	 *
-	 * @return bool
-	 */
-	public function cacheByKey($sKey, $bForce = false)
+	public function cacheByKey(string $sKey, bool $bForce = false) : bool
 	{
 		$bResult = false;
 		if (!empty($sKey) && ($bForce || ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true))))
@@ -8423,12 +7340,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param string $sKey
-	 * @param bool $bForce = false
-	 *
 	 * @return void
 	 */
-	public function verifyCacheByKey($sKey, $bForce = false)
+	public function verifyCacheByKey(string $sKey, bool $bForce = false)
 	{
 		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))
 		{
@@ -8442,13 +7356,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sHash
-	 *
-	 * @return array
-	 */
-	private function getMimeFileByHash($oAccount, $sHash)
+	private function getMimeFileByHash(\RainLoop\Model\Account $oAccount, string $sHash) : array
 	{
 		$aValues = $this->getDecodedRawKeyValue($sHash);
 
@@ -8495,11 +7403,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aValues;
 	}
 
-	/**
-	 * @param \Imagine\Image\AbstractImage $oImage
-	 * @param int $iOrientation
-	 */
-	private function rotateImageByOrientation(&$oImage, $iOrientation)
+	private function rotateImageByOrientation(\Imagine\Image\AbstractImage &$oImage, int $iOrientation)
 	{
 		if (0 < $iOrientation)
 		{
@@ -8542,10 +7446,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @param \Imagine\Image\AbstractImage $oImage
-	 */
-	public function correctImageOrientation($oImage, $bDetectImageOrientation = true, $iThumbnailBoxSize = null)
+	public function correctImageOrientation(\Imagine\Image\AbstractImage $oImage, bool $bDetectImageOrientation = true, int $iThumbnailBoxSize = 0)
 	{
 		$iOrientation = 1;
 		if ($bDetectImageOrientation && \MailSo\Base\Utils::FunctionExistsAndEnabled('exif_read_data') &&
@@ -8556,7 +7457,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				is_numeric($oMetadata['ifd0.Orientation']) ? (int) $oMetadata['ifd0.Orientation'] : 1;
 		}
 
-		if ($iThumbnailBoxSize && 0 < $iThumbnailBoxSize)
+		if (0 < $iThumbnailBoxSize)
 		{
 			$oImage = $oImage->thumbnail(
 				new \Imagine\Image\Box($iThumbnailBoxSize, $iThumbnailBoxSize),
@@ -8572,13 +7473,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $oImage;
 	}
 
-	/**
-	 * @param bool $bDownload
-	 * @param bool $bThumbnail = false
-	 *
-	 * @return bool
-	 */
-	private function rawSmart($bDownload, $bThumbnail = false)
+	private function rawSmart(bool $bDownload, bool $bThumbnail = false) : bool
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedRawKeyValue($sRawKey);
@@ -8696,7 +7591,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 								$oImage->show('png');
 							}
-							catch (\Exception $oException)
+							catch (\Throwable $oException)
 							{
 								$self->Logger()->WriteExceptionShort($oException);
 							}
@@ -8720,7 +7615,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 								$oImage->show($sContentTypeOut === 'image/png' ? 'png' : 'jpg');
 							}
-							catch (\Exception $oException)
+							catch (\Throwable $oException)
 							{
 								$self->Logger()->WriteExceptionShort($oException);
 							}
@@ -8802,34 +7697,22 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}, $sFolder, $iUid, true, $sMimeIndex);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function RawDownload()
+	public function RawDownload() : bool
 	{
 		return $this->rawSmart(true);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function RawView()
+	public function RawView() : bool
 	{
 		return $this->rawSmart(false);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function RawViewThumbnail()
+	public function RawViewThumbnail() : bool
 	{
 		return $this->rawSmart(false, true);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function RawUserBackground()
+	public function RawUserBackground() : bool
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 		$this->verifyCacheByKey($sRawKey);
@@ -8862,10 +7745,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function RawPublic()
+	public function RawPublic() : bool
 	{
 		$sRawKey = (string) $this->GetActionParam('RawKey', '');
 		$this->verifyCacheByKey($sRawKey);
@@ -8901,23 +7781,13 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return false;
 	}
 
-	/**
-	 * @param string $sFileName
-	 *
-	 * @return bool
-	 */
-	public function isFileHasFramedPreview($sFileName)
+	public function isFileHasFramedPreview(string $sFileName) : bool
 	{
 		$sExt = \MailSo\Base\Utils::GetFileExtension($sFileName);
 		return \in_array($sExt, array('doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'));
 	}
 
-	/**
-	 * @param string $sFileName
-	 *
-	 * @return bool
-	 */
-	public function isFileHasThumbnail($sFileName)
+	public function isFileHasThumbnail(string $sFileName) : bool
 	{
 		static $aCache = array();
 
@@ -8951,68 +7821,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $bResult;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function RawAvatar()
-	{
-		$sData = '';
-
-		$sRawKey = (string) $this->GetActionParam('RawKey', '');
-		$sRawKey = \urldecode($sRawKey);
-
-		$this->verifyCacheByKey($sRawKey);
-
-		if (0 < \strlen($sRawKey) && \preg_match('/^[^@]+@([^@]+)$/', $sRawKey))
-		{
-			$sEmail = \MailSo\Base\Utils::IdnToAscii($sRawKey, true);
-
-			$iCode = 0;
-			$sContentType = '';
-
-			$sGravatarUrl = 'http://gravatar.com/avatar/'.\md5(strtolower($sEmail)).'.jpg?s=80&d=404';
-
-			$this->Logger()->Write('gravatar: '.$sGravatarUrl);
-
-			$sData = $this->Http()->GetUrlAsString($sGravatarUrl, null, $sContentType, $iCode, null, 5,
-				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', ''));
-
-			$sContentType = \strtolower(\trim($sContentType));
-			if (200 !== $iCode || empty($sData) || !\in_array($sContentType, array('image/jpeg', 'image/jpg', 'image/png')))
-			{
-				$this->Logger()->Write('gravatar: code: '.$iCode.', content-type: '.$sContentType);
-
-				$sData = '';
-
-				$aMatch = array();
-				if (\preg_match('/^[^@]+@([a-z0-9\-\.]+)$/', $sEmail, $aMatch) && !empty($aMatch[1]))
-				{
-					$sDomain = $aMatch[1];
-					if (\file_exists(APP_VERSION_ROOT_PATH.'app/resources/images/services/'.$sDomain.'.png'))
-					{
-						$sContentType = 'image/png';
-						$sData = \file_get_contents(APP_VERSION_ROOT_PATH.'app/resources/images/services/'.$sDomain.'.png');
-					}
-				}
-			}
-		}
-
-		if (empty($sData) || empty($sContentType))
-		{
-			$sContentType = 'image/png';
-			$sData = \file_get_contents(APP_VERSION_ROOT_PATH.'app/resources/images/empty-contact.png');
-		}
-
-		$this->cacheByKey($sRawKey);
-		\header('Content-Type: '.$sContentType);
-		echo $sData;
-		return true;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function RawContactsVcf()
+	public function RawContactsVcf() : bool
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -9027,10 +7836,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->AddressBookProvider($oAccount)->Export($oAccount->ParentEmailHelper(), 'vcf') : false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function RawContactsCsv()
+	public function RawContactsCsv() : bool
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -9064,7 +7870,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError, $oException);
 			}
@@ -9076,11 +7882,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param string $sRawKey
-	 *
 	 * @return array | false
 	 */
-	private function getDecodedRawKeyValue($sRawKey)
+	private function getDecodedRawKeyValue(string $sRawKey)
 	{
 		$bResult = false;
 		if (!empty($sRawKey))
@@ -9096,11 +7900,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param string $sRawKey
-	 * @param int | null $iLenCache
 	 * @return array | bool
 	 */
-	private function getDecodedClientRawKeyValue($sRawKey, $iLenCache = null)
+	private function getDecodedClientRawKeyValue(string $sRawKey, ?int $iLenCache = null)
 	{
 		$mResult = false;
 		if (!empty($sRawKey))
@@ -9117,10 +7919,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $mResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function StaticCache()
+	public function StaticCache() : string
 	{
 		static $sCache = null;
 		if (!$sCache)
@@ -9130,22 +7929,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $sCache;
 	}
 
-	/**
-	 * @param string $sTheme
-	 *
-	 * @return string
-	 */
-	public function ThemeLink($sTheme, $bAdmin)
+	public function ThemeLink(string $sTheme, bool $bAdmin) : string
 	{
 		return './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$this->StaticCache().'/Hash/-/';
 	}
 
-	/**
-	 * @param string $sTheme
-	 *
-	 * @return string
-	 */
-	public function ValidateTheme($sTheme, $bMobile = false)
+	public function ValidateTheme(string $sTheme, bool $bMobile = false) : string
 	{
 		if ($bMobile)
 		{
@@ -9156,15 +7945,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$sTheme : $this->Config()->Get('themes', 'default', $bMobile ? 'Mobile' : 'Default');
 	}
 
-	/**
-	 * @param string $sLanguage
-	 * @param string  $sDefault = ''
-	 * @param bool $bAdmin = false
-	 * @param bool $bAllowEmptyResult = false
-	 *
-	 * @return string
-	 */
-	public function ValidateLanguage($sLanguage, $sDefault = '', $bAdmin = false, $bAllowEmptyResult = false)
+	public function ValidateLanguage(string $sLanguage, string $sDefault = '', bool $bAdmin = false, bool $bAllowEmptyResult = false) : string
 	{
 		$sResult = '';
 		$aLang = $this->GetLanguages($bAdmin);
@@ -9217,22 +7998,15 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sType
-	 *
-	 * @return string
-	 */
-	public function ValidateContactPdoType($sType)
+	public function ValidateContactPdoType(string $sType) : string
 	{
 		return \in_array($sType, array('mysql', 'pgsql', 'sqlite')) ? $sType : 'sqlite';
 	}
 
 	/**
 	 * @staticvar array $aCache
-	 *
-	 * @return array
 	 */
-	public function GetThemes($bMobile = false, $bIncludeMobile = true)
+	public function GetThemes(bool $bMobile = false, bool $bIncludeMobile = true) : array
 	{
 		if ($bMobile)
 		{
@@ -9317,11 +8091,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	/**
 	 * @staticvar array $aCache
-	 * @param bool $bAdmin = false
-	 *
-	 * @return array
 	 */
-	public function GetLanguages($bAdmin = false)
+	public function GetLanguages(bool $bAdmin = false) : array
 	{
 		static $aCache = array();
 		$sDir = APP_VERSION_ROOT_PATH.'app/localization/'.($bAdmin ? 'admin' : 'webmail').'/';
@@ -9362,13 +8133,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aCache[$sDir];
 	}
 
-	/**
-	 * @param string $sName
-	 * @param string $sHtml
-	 *
-	 * @return string
-	 */
-	public function ProcessTemplate($sName, $sHtml)
+	public function ProcessTemplate(string $sName, string $sHtml) : string
 	{
 		$sHtml = $this->Plugins()->ProcessTemplate($sName, $sHtml);
 		$sHtml = \preg_replace('/\{\{INCLUDE\/([a-zA-Z]+)\/PLACE\}\}/', '', $sHtml);
@@ -9380,13 +8145,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param string $sActionName
 	 * @param mixed $mResult = false
-	 * @param array $aAdditionalParams = array()
-	 *
-	 * @return array
 	 */
-	private function mainDefaultResponse($sActionName, $mResult = false, $aAdditionalParams = array())
+	private function mainDefaultResponse(string $sActionName, $mResult = false, array $aAdditionalParams = array()) : array
 	{
 		$sActionName = 'Do' === \substr($sActionName, 0, 2) ? \substr($sActionName, 2) : $sActionName;
 		$sActionName = \preg_replace('/[^a-zA-Z0-9_]+/', '', $sActionName);
@@ -9407,13 +8168,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aResult;
 	}
 	/**
-	 * @param string $sActionName
 	 * @param mixed $mResult = false
-	 * @param array $aAdditionalParams = array()
-	 *
-	 * @return array
 	 */
-	public function DefaultResponse($sActionName, $mResult = false, $aAdditionalParams = array())
+	public function DefaultResponse(string $sActionName, $mResult = false, array $aAdditionalParams = array()) : array
 	{
 		$this->Plugins()->RunHook('main.default-response-data', array($sActionName, &$mResult));
 		$aResponseItem = $this->mainDefaultResponse($sActionName, $mResult, $aAdditionalParams);
@@ -9421,13 +8178,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aResponseItem;
 	}
 
-	/**
-	 * @param string $sActionName
-	 * @param array $aAdditionalParams = array()
-	 *
-	 * @return array
-	 */
-	public function TrueResponse($sActionName, $aAdditionalParams = array())
+	public function TrueResponse(string $sActionName, array $aAdditionalParams = array()) : array
 	{
 		$mResult = true;
 		$this->Plugins()->RunHook('main.default-response-data', array($sActionName, &$mResult));
@@ -9436,15 +8187,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aResponseItem;
 	}
 
-	/**
-	 * @param string $sActionName
-	 * @param int $iErrorCode = null
-	 * @param string $sErrorMessage = null
-	 * @param string $sAdditionalErrorMessage = null
-	 *
-	 * @return array
-	 */
-	public function FalseResponse($sActionName, $iErrorCode = null, $sErrorMessage = null, $sAdditionalErrorMessage = null)
+	public function FalseResponse(string $sActionName, ?int $iErrorCode = null, ?string $sErrorMessage = null, ?string $sAdditionalErrorMessage = null) : array
 	{
 		$mResult = false;
 		$this->Plugins()
@@ -9466,13 +8209,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aResponseItem;
 	}
 
-	/**
-	 * @param string $sActionName
-	 * @param \Exception $oException
-	 *
-	 * @return array
-	 */
-	public function ExceptionResponse($sActionName, $oException)
+	public function ExceptionResponse(string $sActionName, \Throwable $oException) : array
 	{
 		$iErrorCode = null;
 		$sErrorMessage = null;
@@ -9513,13 +8250,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->FalseResponse($sActionName, $iErrorCode, $sErrorMessage, $sErrorMessageAdditional);
 	}
 
-	/**
-	 * @param array $aCurrentActionParams
-	 * @param string $sMethodName = ''
-	 *
-	 * @return \RainLoop\Actions
-	 */
-	public function SetActionParams($aCurrentActionParams, $sMethodName = '')
+	public function SetActionParams(array $aCurrentActionParams, string $sMethodName = '') : self
 	{
 		$this->Plugins()->RunHook('filter.action-params', array($sMethodName, &$aCurrentActionParams));
 
@@ -9529,12 +8260,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @param string $sKey
 	 * @param mixed $mDefault = null
 	 *
 	 * @return mixed
 	 */
-	public function GetActionParam($sKey, $mDefault = null)
+	public function GetActionParam(string $sKey, $mDefault = null)
 	{
 		return \is_array($this->aCurrentActionParams) && isset($this->aCurrentActionParams[$sKey]) ?
 			$this->aCurrentActionParams[$sKey] : $mDefault;
@@ -9548,22 +8278,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->aCurrentActionParams;
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return bool
-	 */
-	public function HasActionParam($sKey)
+	public function HasActionParam(string $sKey) : bool
 	{
 		return isset($this->aCurrentActionParams[$sKey]);
 	}
 
-	/**
-	 * @param array $aKeys
-	 *
-	 * @return bool
-	 */
-	public function HasOneOfActionParams($aKeys)
+	public function HasOneOfActionParams(array $aKeys) : bool
 	{
 		foreach ($aKeys as $sKey)
 		{
@@ -9576,23 +8296,16 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return false;
 	}
 
-	/**
-	 * @param string $sUrl
-	 */
-	public function Location($sUrl)
+	public function Location(string $sUrl)
 	{
 		$this->Logger()->Write('Location: '.$sUrl);
 		@\header('Location: '.$sUrl);
 	}
 
 	/**
-	 * @param object $oData
-	 * @param string $sParent
-	 * @param array $aParameters = array()
-	 *
 	 * @return array | false
 	 */
-	private function objectData($oData, $sParent, $aParameters = array())
+	private function objectData(object $oData, string $sParent, array $aParameters = array())
 	{
 		$mResult = false;
 		if (is_object($oData))
@@ -9617,25 +8330,14 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $mResult;
 	}
 
-	/**
-	 * @param string $sFolderFullName
-	 *
-	 * @return string
-	 */
-	private function hashFolderFullName($sFolderFullName)
+	private function hashFolderFullName(string $sFolderFullName) : string
 	{
 		return \in_array(\strtolower($sFolderFullName), array('inbox', 'sent', 'send', 'drafts',
 			'spam', 'junk', 'bin', 'trash', 'archive', 'allmail', 'all')) ?
 				$sFolderFullName : \md5($sFolderFullName);
 	}
 
-	/**
-	 * @param bool $bAdmin = false
-	 * @param bool $bMobile = false
-	 *
-	 * @return array
-	 */
-	public function GetLanguageAndTheme($bAdmin = false, $bMobile = false)
+	public function GetLanguageAndTheme(bool $bAdmin = false, bool $bMobile = false) : array
 	{
 		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
 
@@ -9671,12 +8373,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return array($sLanguage, $sTheme);
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	public function StaticI18N($sKey)
+	public function StaticI18N(string $sKey) : string
 	{
 		static $sLang = null;
 		static $aLang = null;
@@ -9703,12 +8400,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return isset($aLang[$sKey]) ? $aLang[$sKey] : $sKey;
 	}
 
-	/**
-	 * @param string $sPath
-	 *
-	 * @return string
-	 */
-	public function StaticPath($sPath)
+	public function StaticPath(string $sPath) : string
 	{
 		$sKey = defined('APP_VERSION_TYPE') && 0 < strlen(APP_VERSION_TYPE) ? APP_VERSION_TYPE :
 			($this->IsOpen() ? 'community' : 'standard');
@@ -9736,12 +8428,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return !!$this->Config()->Get('labs', 'use_imap_thread', false) ? $this->Cacher($oAccount) : null;
 	}
 
-	/**
-	 * @param string $sSubject
-	 *
-	 * @return array
-	 */
-	private function explodeSubject($sSubject)
+	private function explodeSubject(string $sSubject) : array
 	{
 		$aResult = array('', '');
 		if (0 < \strlen($sSubject))
@@ -9786,12 +8473,10 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	/**
 	 * @param mixed $mResponse
-	 * @param string $sParent
-	 * @param array $aParameters = array()
 	 *
 	 * @return mixed
 	 */
-	protected function responseObject($mResponse, $sParent = '', $aParameters = array())
+	protected function responseObject($mResponse, string $sParent = '', array $aParameters = array())
 	{
 		$mResult = $mResponse;
 		if (\is_object($mResponse))
@@ -10008,7 +8693,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 									$mResult['ReadReceipt'] = '';
 								}
 							}
-							catch (\Exception $oException) { unset($oException); }
+							catch (\Throwable $oException) { unset($oException); }
 						}
 
 						if (0 < \strlen($mResult['ReadReceipt']) && '1' === $this->Cacher($oAccount)->Get(

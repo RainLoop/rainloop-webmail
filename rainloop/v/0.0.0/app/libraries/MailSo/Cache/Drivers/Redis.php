@@ -101,10 +101,8 @@ class Redis implements \MailSo\Cache\DriverInterface
 	/**
 	 * @param string $sKey
 	 * @param string $sValue
-	 *
-	 * @return bool
 	 */
-	public function Set($sKey, $sValue)
+	public function Set($sKey, $sValue) : bool
 	{
 		return $this->oRedis ? $this->oRedis->setex($this->generateCachedKey($sKey), $this->iExpire, $sValue) : false;
 	}

@@ -9,21 +9,14 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 	 */
 	private $aMap;
 
-	/**
-	 * @return void
-	 */
-	public function __construct($sPluginName, $aMap = array())
+	public function __construct(string $sPluginName, array $aMap = array())
 	{
 		$this->aMap = is_array($aMap) ? $this->convertConfigMap($aMap) : array();
 
 		parent::__construct('plugin-'.$sPluginName.'.ini', '; RainLoop Webmail plugin ('.$sPluginName.')');
 	}
 
-	/**
-	 * @param array $aMap
-	 * @return array
-	 */
-	private function convertConfigMap($aMap)
+	private function convertConfigMap(array $aMap) : array
 	{
 		if (0 < \count($aMap))
 		{
@@ -49,10 +42,7 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 		return array();
 	}
 
-	/**
-	 * @return array
-	 */
-	protected function defaultValues()
+	protected function defaultValues() : array
 	{
 		return $this->aMap;
 	}

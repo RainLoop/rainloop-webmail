@@ -101,122 +101,77 @@ class Filter
 		$this->bStop = true;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ID()
+	public function ID() : string
 	{
 		return $this->sID;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Enabled()
+	public function Enabled() : bool
 	{
 		return $this->bEnabled;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Name()
+	public function Name() : string
 	{
 		return $this->sName;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function Conditions()
+	public function Conditions() : array
 	{
 		return $this->aConditions;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ConditionsType()
+	public function ConditionsType() : string
 	{
 		return $this->sConditionsType;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ActionType()
+	public function ActionType() : string
 	{
 		return $this->sActionType;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ActionValue()
+	public function ActionValue() : string
 	{
 		return $this->sActionValue;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ActionValueSecond()
+	public function ActionValueSecond() : string
 	{
 		return $this->sActionValueSecond;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ActionValueThird()
+	public function ActionValueThird() : string
 	{
 		return $this->sActionValueThird;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ActionValueFourth()
+	public function ActionValueFourth() : string
 	{
 		return $this->sActionValueFourth;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function MarkAsRead()
+	public function MarkAsRead() : bool
 	{
 		return $this->bMarkAsRead;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Stop()
+	public function Stop() : bool
 	{
 		return $this->bStop;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Keep()
+	public function Keep() : bool
 	{
 		return $this->bKeep;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function serializeToJson()
+	public function serializeToJson() : string
 	{
 		return \json_encode($this->ToSimpleJSON());
 	}
 
-	/**
-	 * @param string $sFilterJson
-	 */
-	public function unserializeFromJson($sFilterJson)
+	public function unserializeFromJson(string $sFilterJson)
 	{
 		$aFilterJson = \json_decode(\trim($sFilterJson), true);
 		if (\is_array($aFilterJson))
@@ -227,12 +182,7 @@ class Filter
 		return false;
 	}
 
-	/**
-	 * @param array $aFilter
-	 *
-	 * @return array
-	 */
-	public function FromJSON($aFilter)
+	public function FromJSON(array $aFilter) : array
 	{
 		if (\is_array($aFilter))
 		{
@@ -265,12 +215,7 @@ class Filter
 		return false;
 	}
 
-	/**
-	 * @param bool $bAjax = false
-	 *
-	 * @return array
-	 */
-	public function ToSimpleJSON($bAjax = false)
+	public function ToSimpleJSON(bool $bAjax = false) : array
 	{
 		$aConditions = array();
 		foreach ($this->Conditions() as $oItem)

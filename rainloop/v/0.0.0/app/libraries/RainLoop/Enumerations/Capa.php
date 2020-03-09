@@ -9,7 +9,6 @@ class Capa
 	const TWO_FACTOR_FORCE = 'TWO_FACTOR_FORCE';
 	const OPEN_PGP = 'OPEN_PGP';
 	const PREFETCH = 'PREFETCH';
-	const GRAVATAR = 'GRAVATAR';
 	const THEMES = 'THEMES';
 	const USER_BACKGROUND = 'USER_BACKGROUND';
 	const SIEVE = 'SIEVE';

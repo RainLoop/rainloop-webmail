@@ -4,25 +4,17 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 {
 	\define('RAINLOOP_APP_PATH', \rtrim(\realpath(__DIR__), '\\/').'/');
 	\define('RAINLOOP_APP_LIBRARIES_PATH', RAINLOOP_APP_PATH.'libraries/');
-	\define('RAINLOOP_MB_SUPPORTED', \function_exists('mb_strtoupper'));
 
 	\define('RAINLOOP_INCLUDE_AS_API_DEF', isset($_ENV['RAINLOOP_INCLUDE_AS_API']) && $_ENV['RAINLOOP_INCLUDE_AS_API']);
 
-	if (!defined('RL_BACKWARD_CAPABILITY'))
-	{
-		\define('RL_BACKWARD_CAPABILITY', true);
-		include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/BackwardCapability/Account.php';
+	if (!\function_exists('mb_strtoupper')) {
+		exit('PHP mbstring required');
 	}
 
-	/**
-	 * @param string $sClassName
-	 *
-	 * @return mixed
-	 */
-	function rainLoopSplAutoloadNamespaces()
+	function rainLoopSplAutoloadNamespaces() : array
 	{
 		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop', 'Predis') :
-			array('RainLoop', 'Facebook', 'PHPThumb', 'Predis', 'SabreForRainLoop', 'Imagine', 'Detection');
+			array('RainLoop', 'PHPThumb', 'Predis', 'SabreForRainLoop', 'Imagine', 'Detection');
 	}
 
 	/**
@@ -45,12 +37,6 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 				if ('Detection' === $sNamespaceName)
 				{
 					$sPrefix = 'Mobile_Detect/namespaced/';
-				}
-
-				if ('SabreForRainLoop' === $sNamespaceName && !RAINLOOP_MB_SUPPORTED && !defined('RL_MB_FIXED'))
-				{
-					\define('RL_MB_FIXED', true);
-					include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/MbStringFix.php';
 				}
 
 				return include RAINLOOP_APP_LIBRARIES_PATH.$sPrefix.\strtr($sClassName, '\\', '/').'.php';

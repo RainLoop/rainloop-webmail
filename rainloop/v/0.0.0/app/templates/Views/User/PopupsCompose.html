@@ -175,18 +175,8 @@
 											<a class="btn first" data-tooltip-join="bottom"
 												style="padding-left: 10px; padding-right: 10px;"
 												data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES',
-													css: {'last': !(driveEnabled() && driveVisible()) && !(dropboxEnabled())}">
+													css: {'last': !(driveEnabled() && driveVisible())}">
 												<sup style="font-weight: bold; font-size: 100%; top: -0.3em;">+</sup><i class="icon-attachment"></i>
-											</a>
-											<a class="btn" data-tooltip-join="bottom"
-												data-bind="visible: dropboxEnabled, command: dropboxCommand, tooltip: 'COMPOSE/DROPBOX',
-													css: {'first': !addAttachmentEnabled(), 'last': !(driveEnabled() && driveVisible())}">
-												<i class="icon-dropbox"></i>
-											</a>
-											<a class="btn last" data-tooltip-join="bottom"
-												data-bind="visible: driveEnabled() && driveVisible(), command: driveCommand, tooltip: 'COMPOSE/GOOGLE_DRIVE',
-													css: {'first': !addAttachmentEnabled() && !(driveEnabled() && driveVisible())}">
-												<i class="icon-google-drive"></i>
 											</a>
 										</div>
 									</div>

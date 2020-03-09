@@ -39,10 +39,6 @@
 
 			define('APP_DUMMY', '********');
 			define('APP_DEV_VERSION', '0.0.0');
-			define('APP_GOOGLE_ACCESS_TOKEN_PREFIX', ':GAT:');
-			define('APP_WEB_SITE', 'http://www.rainloop.net/');
-			define('APP_API_PATH', 'http://api.rainloop.net/');
-			define('APP_STATUS_PATH', 'http://status.rainloop.net/');
 			define('APP_REPOSITORY_PATH', 'http://repository.rainloop.net/v1/');
 			define('APP_REPO_CORE_FILE', 'http://repository.rainloop.net/v2/core.{{channel}}.json');
 
@@ -127,10 +123,7 @@
 			if (false === $sSalt)
 			{
 				// random salt
-				$sSalt = '<'.'?php //'
-					.md5(microtime(true).rand(1000, 5000))
-					.md5(microtime(true).rand(5000, 9999))
-					.md5(microtime(true).rand(1000, 5000));
+				$sSalt = '<'.'?php //'.bin2hex(random_bytes(48));
 
 				@file_put_contents(APP_DATA_FOLDER_PATH.'SALT.php', $sSalt);
 			}
@@ -199,7 +192,7 @@
 							}
 						}
 
-//						$sClearedSiteName = preg_replace('/^(www|demo|rainloop|webmail|email|mail|imap|imap4|smtp|pop|pop3)\./i', '', trim(APP_SITE));
+//						$sClearedSiteName = preg_replace('/^(www|demo|rainloop|webmail|email|mail|imap|imap4|smtp)\./i', '', trim(APP_SITE));
 //						if (!empty($sClearedSiteName) && @file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist') &&
 //							!@file_exists(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini'))
 //						{

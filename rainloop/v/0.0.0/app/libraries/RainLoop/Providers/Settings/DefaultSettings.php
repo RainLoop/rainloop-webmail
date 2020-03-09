@@ -12,20 +12,12 @@ class DefaultSettings implements \RainLoop\Providers\Settings\ISettings
 	 */
 	private $oStorageProvider;
 
-	/**
-	 * @param \RainLoop\Providers\Storage $oStorageProvider
-	 */
 	public function __construct(\RainLoop\Providers\Storage $oStorageProvider)
 	{
 		$this->oStorageProvider = $oStorageProvider;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 * @return array
-	 */
-	public function Load($oAccount)
+	public function Load(\RainLoop\Model\Account $oAccount) : array
 	{
 		$sValue = $this->oStorageProvider->Get($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
@@ -47,13 +39,7 @@ class DefaultSettings implements \RainLoop\Providers\Settings\ISettings
 		return $aSettings;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param array $aSettings
-	 *
-	 * @return bool
-	 */
-	public function Save($oAccount, array $aSettings)
+	public function Save(\RainLoop\Model\Account $oAccount, array $aSettings) : bool
 	{
 		return $this->oStorageProvider->Put($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
@@ -63,12 +49,7 @@ class DefaultSettings implements \RainLoop\Providers\Settings\ISettings
 			\json_encode($aSettings));
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 * @return bool
-	 */
-	public function Delete($oAccount)
+	public function Delete(\RainLoop\Model\Account $oAccount) : bool
 	{
 		return $this->oStorageProvider->Clear($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,

@@ -136,7 +136,7 @@ class LinkFinder
 	public function UseDefaultWrappers($bAddTargetBlank = false)
 	{
 		$this->fLinkWrapper = function ($sLink) use ($bAddTargetBlank) {
-			
+
 			$sNameLink = $sLink;
 			if (!\preg_match('/^[a-z]{3,5}\:\/\//i', \ltrim($sLink)))
 			{

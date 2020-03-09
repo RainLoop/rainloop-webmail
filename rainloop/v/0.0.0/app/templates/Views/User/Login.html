@@ -87,24 +87,8 @@
 					</div>
 					<div class="controls clearfix" style="margin-bottom: 10px">
 						<div class="pull-right social-buttons">
-							<a href="#" tabindex="-1" class="social-button"
-								data-bind="visible: googleGmailLoginEnabled, command: googleGmailCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_GMAIL'">
-								<i class="icon-mail"></i>
-							</a>
-							<a href="#" tabindex="-1" class="social-button"
-								data-bind="visible: googleLoginEnabled, command: googleCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_GOOGLE'">
-								<i class="icon-google"></i>
-							</a>
-							<a href="#" tabindex="-1" class="social-button"
-								data-bind="visible: facebookLoginEnabled, command: facebookCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_FACEBOOK'">
-								<i class="icon-facebook-alt"></i>
-							</a>
-							<a href="#" tabindex="-1" class="social-button"
-								data-bind="visible: twitterLoginEnabled, command: twitterCommand, tooltip: 'LOGIN/TITLE_SIGN_IN_TWITTER'">
-								<i class="icon-twitter"></i>
-							</a>
 							<a href="#" tabindex="-1" class="language-button"
-								data-bind="visible: allowLanguagesOnLogin() && !socialLoginEnabled(), click: selectLanguage, tooltip: 'POPUPS_LANGUAGES/TITLE_LANGUAGES'">
+								data-bind="visible: allowLanguagesOnLogin(), click: selectLanguage, tooltip: 'POPUPS_LANGUAGES/TITLE_LANGUAGES'">
 								<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-world'"></i>
 							</a>
 						</div>
@@ -154,7 +138,7 @@
 				</span>
 			</div>
 			<div class="e-languages thm-languages plugin-mark-Login-BottomFooter"
-				data-bind="visible: allowLanguagesOnLogin() && socialLoginEnabled()">
+				data-bind="visible: allowLanguagesOnLogin()">
 				<label class="flag-selector">
 					<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-world'"></i>
 					&nbsp;&nbsp;

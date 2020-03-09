@@ -314,41 +314,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sXOAuth2Token
-	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Smtp\Exceptions\Exception
-	 */
-	public function LoginWithXOauth2($sXOAuth2Token)
-	{
-		if ($this->IsAuthSupported('XOAUTH2'))
-		{
-			try
-			{
-				$this->sendRequestWithCheck('AUTH', 235, 'XOAUTH2 '.\trim($sXOAuth2Token));
-			}
-			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-			{
-				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-						$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-					\MailSo\Log\Enumerations\Type::NOTICE, true);
-			}
-		}
-		else
-		{
-			$this->writeLogException(
-				new \MailSo\Smtp\Exceptions\LoginBadMethodException(),
-				\MailSo\Log\Enumerations\Type::NOTICE, true);
-		}
-
-		return $this;
-	}
-
-	/**
 	 * @param string $sFrom
 	 * @param string $sSizeIfSupported = ''
 	 * @param bool $bDsn = false

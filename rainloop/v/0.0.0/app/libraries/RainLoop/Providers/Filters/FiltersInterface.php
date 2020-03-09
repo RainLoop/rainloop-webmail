@@ -4,19 +4,7 @@ namespace RainLoop\Providers\Filters;
 
 interface FiltersInterface
 {
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 * @param bool $bAllowRaw = false
-	 *
-	 * @return array
-	 */
-	public function Load($oAccount, $bAllowRaw = false);
+	public function Load(\RainLoop\Model\Account $oAccount, bool $bAllowRaw = false) : array;
 
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 * @param array $aFilters
-	 *
-	 * @return bool
-	 */
-	public function Save($oAccount, $aFilters);
+	public function Save(\RainLoop\Model\Account $oAccount, array $aFilters) : bool;
 }

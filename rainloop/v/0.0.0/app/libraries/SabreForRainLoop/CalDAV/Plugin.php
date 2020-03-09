@@ -1024,7 +1024,7 @@ class Plugin extends DAV\ServerPlugin {
      * @param array $recipients
      * @param VObject\Component $vObject
      * @param string $principal Principal url
-     * @return array 
+     * @return array
      */
     protected function iMIPMessage($originator, array $recipients, VObject\Component $vObject, $principal) {
 

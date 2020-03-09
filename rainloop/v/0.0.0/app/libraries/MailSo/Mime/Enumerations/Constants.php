@@ -20,6 +20,6 @@ class Constants
 {
 	const TAB = "\t";
 	const CRLF = "\r\n";
-	
+
 	const LINE_LENGTH = 74;
 }

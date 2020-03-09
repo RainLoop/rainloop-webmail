@@ -10,10 +10,10 @@ if (!function_exists('ctype_digit'))
 			{
 				return false;
 			}
-			
+
 			return !!preg_match('/^[\d]+$/', $text);
 		}
-		
+
 		return false;
 	}
 }

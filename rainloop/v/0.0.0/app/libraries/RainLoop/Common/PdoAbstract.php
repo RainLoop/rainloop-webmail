@@ -29,37 +29,22 @@ abstract class PdoAbstract
 	 */
 	protected $sDbType;
 
-	/**
-	 * @return bool
-	 */
-	public function IsSupported()
+	public function IsSupported() : bool
 	{
 		return !!\class_exists('PDO');
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 */
-	public function SetLogger($oLogger)
+	public function SetLogger(?\MailSo\Log\Logger $oLogger)
 	{
-		$this->oLogger = $oLogger instanceof \MailSo\Log\Logger ? $oLogger : null;
+		$this->oLogger = $oLogger;
 	}
 
-	/**
-	 * @return array
-	 */
-	protected function getPdoAccessData()
+	protected function getPdoAccessData() : array
 	{
 		return array('', '', '', '');
 	}
 
-	/**
-	 * @param string $sStr1
-	 * @param string $sStr2
-	 *
-	 * @return int
-	 */
-	public function sqliteNoCaseCollationHelper($sStr1, $sStr2)
+	public function sqliteNoCaseCollationHelper(string $sStr1, string $sStr2) : int
 	{
 		$this->oLogger->WriteDump(array($sStr1, $sStr2));
 		return \strcmp(\mb_strtoupper($sStr1, 'UTF-8'), \mb_strtoupper($sStr2, 'UTF-8'));
@@ -124,7 +109,7 @@ abstract class PdoAbstract
 //				$this->oLogger->Write('PDO:'.$sPdoType.($bCaseFunc ? '/SQLITE_NOCASE_UTF8' : ''));
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw $oException;
 		}
@@ -141,13 +126,7 @@ abstract class PdoAbstract
 		return $oPdo;
 	}
 
-	/**
-	 * @param string $sTabelName = null
-	 * @param string $sColumnName = null
-	 *
-	 * @return string
-	 */
-	protected function lastInsertId($sTabelName = null, $sColumnName = null)
+	protected function lastInsertId(?string $sTabelName = null, ?string $sColumnName = null) : string
 	{
 		$mName = null;
 		if ('pgsql' === $this->sDbType &&
@@ -159,39 +138,25 @@ abstract class PdoAbstract
 		return null === $mName ? $this->getPDO()->lastInsertId() : $this->getPDO()->lastInsertId($mName);
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function beginTransaction()
+	protected function beginTransaction() : bool
 	{
 		return $this->getPDO()->beginTransaction();
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function commit()
+	protected function commit() : bool
 	{
 		return $this->getPDO()->commit();
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function rollBack()
+	protected function rollBack() : bool
 	{
 		return $this->getPDO()->rollBack();
 	}
 
 	/**
-	 * @param string $sSql
-	 * @param array $aParams
-	 * @param bool $bMultiplyParams = false
-	 * @param bool $bLogParams = false
-	 *
 	 * @return \PDOStatement|null
 	 */
-	protected function prepareAndExecute($sSql, $aParams = array(), $bMultiplyParams = false, $bLogParams = false)
+	protected function prepareAndExecute(string $sSql, array $aParams = array(), bool $bMultiplyParams = false, bool $bLogParams = false)
 	{
 		if ($this->bExplain && !$bMultiplyParams)
 		{
@@ -230,11 +195,7 @@ abstract class PdoAbstract
 		return $mResult;
 	}
 
-	/**
-	 * @param string $sSql
-	 * @param array $aParams
-	 */
-	protected function prepareAndExplain($sSql, $aParams = array())
+	protected function prepareAndExplain(string $sSql, array $aParams = array())
 	{
 		$mResult = null;
 		if (0 === strpos($sSql, 'SELECT '))
@@ -274,14 +235,7 @@ abstract class PdoAbstract
 		}
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param bool $bSkipInsert = false
-	 * @param bool $bCache = true
-	 *
-	 * @return int
-	 */
-	protected function getUserId($sEmail, $bSkipInsert = false, $bCache = true)
+	protected function getUserId(string $sEmail, bool $bSkipInsert = false, bool $bCache = true) : int
 	{
 		static $aCache = array();
 		if ($bCache && isset($aCache[$sEmail]))
@@ -332,24 +286,16 @@ abstract class PdoAbstract
 		throw new \Exception('id_user = 0');
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public function quoteValue($sValue)
+	public function quoteValue(string $sValue) : string
 	{
 		$oPdo = $this->getPDO();
 		return $oPdo ? $oPdo->quote((string) $sValue, \PDO::PARAM_STR) : '\'\'';
 	}
 
 	/**
-	 * @param string $sName
-	 * @param bool $bReturnIntValue = true
-	 *
 	 * @return int|string|bool
 	 */
-	protected function getSystemValue($sName, $bReturnIntValue = true)
+	protected function getSystemValue(string $sName, bool $bReturnIntValue = true)
 	{
 		$oPdo = $this->getPDO();
 		if ($oPdo)
@@ -383,22 +329,14 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @param string $sName
-	 *
 	 * @return int|string|bool
 	 */
-	protected function getVersion($sName)
+	protected function getVersion(string $sName)
 	{
 		return $this->getSystemValue($sName.'_version', true);
 	}
 
-	/**
-	 * @param string $sName
-	 * @param int $iVersion
-	 *
-	 * @return bool
-	 */
-	protected function setVersion($sName, $iVersion)
+	protected function setVersion(string $sName, int $iVersion) : bool
 	{
 		$bResult = false;
 		$oPdo = $this->getPDO();
@@ -426,8 +364,6 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @param bool $bWatchVersion = true
-	 *
 	 * @throws \Exception
 	 */
 	protected function initSystemTables()
@@ -506,7 +442,7 @@ rl_email text NOT NULL DEFAULT \'\'
 						}
 					}
 				}
-				catch (\Exception $oException)
+				catch (\Throwable $oException)
 				{
 					$this->writeLog($oException);
 					throw $oException;
@@ -517,13 +453,7 @@ rl_email text NOT NULL DEFAULT \'\'
 		return $bResult;
 	}
 
-	/**
-	 * @param string $sName
-	 * @param array $aData = array()
-	 *
-	 * @return bool
-	 */
-	protected function dataBaseUpgrade($sName, $aData = array())
+	protected function dataBaseUpgrade(string $sName, array $aData = array()) : bool
 	{
 		$iFromVersion = null;
 		try
@@ -547,10 +477,10 @@ rl_email text NOT NULL DEFAULT \'\'
 			}
 		}
 
+		$bResult = false;
 		if (\is_int($iFromVersion) && 0 <= $iFromVersion)
 		{
 			$oPdo = false;
-			$bResult = false;
 
 			foreach ($aData as $iVersion => $aQuery)
 			{
@@ -582,7 +512,7 @@ rl_email text NOT NULL DEFAULT \'\'
 							}
 						}
 					}
-					catch (\Exception $oException)
+					catch (\Throwable $oException)
 					{
 						$this->writeLog($oException);
 						throw $oException;

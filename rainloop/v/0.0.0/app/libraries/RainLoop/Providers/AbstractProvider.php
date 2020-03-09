@@ -8,37 +8,25 @@ abstract class AbstractProvider
 	 * @var \RainLoop\Model\Account
 	 */
 	protected $oAccount;
-	
+
 	/**
 	 * @var \MailSo\Log\Logger
 	 */
 	protected $oLogger = null;
 
-	/**
-	 * @return bool
-	 */
-	public function IsActive()
+	public function IsActive() : bool
 	{
 		return false;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 */
-	public function SetAccount($oAccount)
+	public function SetAccount(\RainLoop\Model\Account $oAccount)
 	{
 		$this->oAccount = $oAccount;
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 */
-	public function SetLogger($oLogger)
+	public function SetLogger(?\MailSo\Log\Logger $oLogger)
 	{
-		if ($oLogger instanceof \MailSo\Log\Logger)
-		{
-			$this->oLogger = $oLogger;
-		}
+		$this->oLogger = $oLogger;
 	}
 
 	/**

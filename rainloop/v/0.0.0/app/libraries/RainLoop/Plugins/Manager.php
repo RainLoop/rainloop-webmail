@@ -64,9 +64,6 @@ class Manager
 	 */
 	private $oLogger;
 
-	/**
-	 * @param \RainLoop\Actions $oActions
-	 */
 	public function __construct(\RainLoop\Actions $oActions)
 	{
 		$this->oLogger = null;
@@ -112,12 +109,7 @@ class Manager
 		}
 	}
 
-	/**
-	 * @param string $sName
-	 *
-	 * @return \RainLoop\Plugins\AbstractPlugin|null
-	 */
-	public function CreatePluginByName($sName)
+	public function CreatePluginByName(string $sName) : ?\RainLoop\Plugins\AbstractPlugin
 	{
 		$oPlugin = null;
 		if (\preg_match('/^[a-z0-9\-]+$/', $sName) &&
@@ -154,10 +146,7 @@ class Manager
 		return $oPlugin;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function InstalledPlugins()
+	public function InstalledPlugins() : array
 	{
 		$aList = array();
 
@@ -187,12 +176,7 @@ class Manager
 		return $aList;
 	}
 
-	/**
-	 * @param string $sFolderName
-	 *
-	 * @return string
-	 */
-	public function convertPluginFolderNameToClassName($sFolderName)
+	public function convertPluginFolderNameToClassName(string $sFolderName) : string
 	{
 		$aParts = \array_map('ucfirst', \array_map('strtolower',
 			\explode(' ', \preg_replace('/[^a-z0-9]+/', ' ', $sFolderName))));
@@ -200,18 +184,12 @@ class Manager
 		return \implode($aParts).'Plugin';
 	}
 
-	/**
-	 * @return \RainLoop\Actions
-	 */
-	public function Actions()
+	public function Actions() : \RainLoop\Actions
 	{
 		return $this->oActions;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Hash()
+	public function Hash() : string
 	{
 		$sResult = \md5(APP_VERSION);
 		foreach ($this->aPlugins as $oPlugin)
@@ -222,12 +200,7 @@ class Manager
 		return $sResult;
 	}
 
-	/**
-	 * @param bool $bAdminScope = false
-	 *
-	 * @return bool
-	 */
-	public function HaveJs($bAdminScope = false)
+	public function HaveJs(bool $bAdminScope = false) : bool
 	{
 		$bResult = false;
 
@@ -239,12 +212,7 @@ class Manager
 		return $bResult;
 	}
 
-	/**
-	 * @param bool $bAdminScope = false
-	 *
-	 * @return string
-	 */
-	public function CompileJs($bAdminScope = false)
+	public function CompileJs(bool $bAdminScope = false) : string
 	{
 		$aResult = array();
 		if ($this->bIsEnabled)
@@ -264,21 +232,13 @@ class Manager
 
 	/**
 	 * @todo
-	 * @param bool $bAdminScope = false
-	 *
-	 * @return string
 	 */
-	public function CompileCss($bAdminScope = false)
+	public function CompileCss(bool $bAdminScope = false) : string
 	{
 		return '';
 	}
 
-	/**
-	 * @param array $aList
-	 * @param bool $bAdminScope = false
-	 * @return string
-	 */
-	public function CompileTemplate(&$aList, $bAdminScope = false)
+	public function CompileTemplate(array &$aList, bool $bAdminScope = false) : string
 	{
 		if ($this->bIsEnabled)
 		{
@@ -294,14 +254,7 @@ class Manager
 		}
 	}
 
-	/**
-	 * @param bool $bAdmin
-	 * @param array $aAppData
-	 * @param \RainLoop\Model\Account|null $oAccount = null
-	 *
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function InitAppData($bAdmin, &$aAppData, $oAccount = null)
+	public function InitAppData(bool $bAdmin, array &$aAppData, ?\RainLoop\Model\Account $oAccount = null) : self
 	{
 		if ($this->bIsEnabled && isset($aAppData['Plugins']) && \is_array($aAppData['Plugins']))
 		{
@@ -348,12 +301,9 @@ class Manager
 	}
 
 	/**
-	 * @param string $sHookName
 	 * @param mixed $mCallbak
-	 *
-	 * @return \RainLoop\Plugins\Manager
 	 */
-	public function AddHook($sHookName, $mCallbak)
+	public function AddHook(string $sHookName, $mCallbak) : self
 	{
 		if ($this->bIsEnabled && \is_callable($mCallbak))
 		{
@@ -368,13 +318,7 @@ class Manager
 		return $this;
 	}
 
-	/**
-	 * @param string $sFile
-	 * @param bool $bAdminScope = false
-	 *
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function AddJs($sFile, $bAdminScope = false)
+	public function AddJs(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->bIsEnabled)
 		{
@@ -391,13 +335,7 @@ class Manager
 		return $this;
 	}
 
-	/**
-	 * @param string $sFile
-	 * @param bool $bAdminScope = false
-	 *
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function AddTemplate($sFile, $bAdminScope = false)
+	public function AddTemplate(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->bIsEnabled)
 		{
@@ -414,14 +352,7 @@ class Manager
 		return $this;
 	}
 
-	/**
-	 * @param string $sHookName
-	 * @param array $aArg = array()
-	 * @param bool $bLogHook = true
-	 *
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function RunHook($sHookName, $aArg = array(), $bLogHook = true)
+	public function RunHook(string $sHookName, array $aArg = array(), bool $bLogHook = true) : self
 	{
 		if ($this->bIsEnabled)
 		{
@@ -443,12 +374,9 @@ class Manager
 	}
 
 	/**
-	 * @param string $sActionName
 	 * @param mixed $mCallbak
-	 *
-	 * @return \RainLoop\Plugins\Manager
 	 */
-	public function AddAdditionalPartAction($sActionName, $mCallbak)
+	public function AddAdditionalPartAction(string $sActionName, $mCallbak) : self
 	{
 		if ($this->bIsEnabled && \is_callable($mCallbak))
 		{
@@ -464,13 +392,7 @@ class Manager
 		return $this;
 	}
 
-	/**
-	 * @param string $sActionName
-	 * @param array $aParts = array()
-	 *
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function RunAdditionalPart($sActionName, $aParts = array())
+	public function RunAdditionalPart(string $sActionName, array $aParts = array()) : self
 	{
 		$bResult = false;
 		if ($this->bIsEnabled)
@@ -492,15 +414,7 @@ class Manager
 		return $bResult;
 	}
 
-	/**
-	 * @param string $sName
-	 * @param string $sPlace
-	 * @param string $sHtml
-	 * @param bool $bPrepend = false
-	 *
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function AddProcessTemplateAction($sName, $sPlace, $sHtml, $bPrepend = false)
+	public function AddProcessTemplateAction(string $sName, string $sPlace, string $sHtml, bool $bPrepend = false) : self
 	{
 		if ($this->bIsEnabled)
 		{
@@ -528,12 +442,9 @@ class Manager
 	}
 
 	/**
-	 * @param string $sActionName
 	 * @param mixed $mCallback
-	 *
-	 * @return \RainLoop\Plugins\Manager
 	 */
-	public function AddAdditionalAjaxAction($sActionName, $mCallback)
+	public function AddAdditionalAjaxAction(string $sActionName, $mCallback) : self
 	{
 		if ($this->bIsEnabled && \is_callable($mCallback) && 0 < \strlen($sActionName))
 		{
@@ -548,22 +459,15 @@ class Manager
 		return $this;
 	}
 
-	/**
-	 * @param string $sActionName
-	 *
-	 * @return bool
-	 */
-	public function HasAdditionalAjax($sActionName)
+	public function HasAdditionalAjax(string $sActionName) : bool
 	{
 		return $this->bIsEnabled && isset($this->aAdditionalAjax[$sActionName]);
 	}
 
 	/**
-	 * @param string $sActionName
-	 *
 	 * @return mixed
 	 */
-	public function RunAdditionalAjax($sActionName)
+	public function RunAdditionalAjax(string $sActionName)
 	{
 		if ($this->bIsEnabled)
 		{
@@ -577,22 +481,16 @@ class Manager
 	}
 
 	/**
-	 * @param string $sFunctionName
 	 * @param mixed $mData
 	 *
 	 * @return mixed
 	 */
-	public function AjaxResponseHelper($sFunctionName, $mData)
+	public function AjaxResponseHelper(string $sFunctionName, $mData)
 	{
 		return $this->oActions->DefaultResponse($sFunctionName, $mData);
 	}
 
-	/**
-	 * @param string $sPluginName
-	 *
-	 * @return array
-	 */
-	public function GetUserPluginSettings($sPluginName)
+	public function GetUserPluginSettings(string $sPluginName) : array
 	{
 		$oAccount = $this->oActions->GetAccount();
 		if ($oAccount)
@@ -611,13 +509,7 @@ class Manager
 		return array();
 	}
 
-	/**
-	 * @param string $sPluginName
-	 * @param array $aSettings
-	 *
-	 * @return bool
-	 */
-	public function SaveUserPluginSettings($sPluginName, $aSettings)
+	public function SaveUserPluginSettings(string $sPluginName, array $aSettings) : bool
 	{
 		$oAccount = $this->oActions->GetAccount();
 		if ($oAccount && \is_array($aSettings))
@@ -652,13 +544,7 @@ class Manager
 		return false;
 	}
 
-	/**
-	 * @param string $sLang
-	 * @param array $sActionName
-	 *
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function ReadLang($sLang, &$aLang)
+	public function ReadLang(string $sLang, array &$aLang) : self
 	{
 		if ($this->bIsEnabled)
 		{
@@ -680,13 +566,7 @@ class Manager
 		return $this;
 	}
 
-	/**
-	 * @param string $sName
-	 * @param string $sHtml
-	 *
-	 * @return string
-	 */
-	public function ProcessTemplate($sName, $sHtml)
+	public function ProcessTemplate(string $sName, string $sHtml) : string
 	{
 		if (isset($this->aProcessTemplate[$sName]))
 		{
@@ -705,18 +585,12 @@ class Manager
 		return $sHtml;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function bIsEnabled()
+	public function bIsEnabled() : bool
 	{
 		return $this->bIsEnabled;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Count()
+	public function Count() : int
 	{
 		return $this->bIsEnabled ? \count($this->aPlugins) : 0;
 	}
@@ -724,11 +598,9 @@ class Manager
 	/**
 	 * @param \MailSo\Log\Logger $oLogger
 	 *
-	 * @return \RainLoop\Plugins\Manager
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function SetLogger($oLogger)
+	public function SetLogger($oLogger) : self
 	{
 		if (!($oLogger instanceof \MailSo\Log\Logger))
 		{
@@ -741,12 +613,9 @@ class Manager
 	}
 
 	/**
-	 * @param string $sDesc
-	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
-	 *
 	 * @return void
 	 */
-	public function WriteLog($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO)
+	public function WriteLog(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO)
 	{
 		if ($this->oLogger)
 		{
@@ -755,12 +624,9 @@ class Manager
 	}
 
 	/**
-	 * @param string $sDesc
-	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
-	 *
 	 * @return void
 	 */
-	public function WriteException($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO)
+	public function WriteException(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO)
 	{
 		if ($this->oLogger)
 		{

@@ -107,14 +107,6 @@ class HtmlUtils
 	}
 
 	/**
-	 * @return boolean
-	 */
-	private static function comparedVersion()
-	{
-		return \version_compare(PHP_VERSION, '5.3.6') >= 0;
-	}
-
-	/**
 	 * @param \DOMDocument|\DOMElement $oElem
 	 *
 	 * @return string
@@ -124,7 +116,7 @@ class HtmlUtils
 		$sResult = '';
 		if ($oElem instanceof \DOMDocument)
 		{
-			if (isset($oElem->documentElement) && self::comparedVersion())
+			if (isset($oElem->documentElement))
 			{
 				$sResult = $oElem->saveHTML($oElem->documentElement);
 			}
@@ -135,7 +127,7 @@ class HtmlUtils
 		}
 		else if ($oElem)
 		{
-			if ($oDom && self::comparedVersion())
+			if ($oDom)
 			{
 				$sResult = $oDom->saveHTML($oElem);
 			}
@@ -1106,7 +1098,7 @@ class HtmlUtils
 				$oElement->setAttribute('data-x-blocked-xlink-href', $sLinkHref);
 				$oElement->removeAttribute('xlink:href');
 			}
-			
+
 			if (\in_array($sTagNameLower, array('a', 'form', 'area')))
 			{
 				$oElement->setAttribute('target', '_blank');

@@ -9,41 +9,23 @@ class TwoFactorAuth extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $oDriver;
 
-	/**
-	 * @param \RainLoop\Providers\TwoFactorAuth\TwoFactorAuthInterface|null $oDriver = null
-	 *
-	 * @return void
-	 */
-	public function __construct($oDriver = null)
+	public function __construct(?\RainLoop\Providers\TwoFactorAuth\TwoFactorAuthInterface $oDriver = null)
 	{
 		$this->oDriver = $oDriver;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsActive()
+	public function IsActive() : bool
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\TwoFactorAuth\TwoFactorAuthInterface;
 	}
 
-	/**
-	 * @param string $sName
-	 * @param string $sSecret
-	 * @param string $sTitle = ''
-	 *
-	 * @return string
-	 */
-	public function GetQRCodeGoogleUrl($sName, $sSecret, $sTitle = '')
+	public function GetQRCodeGoogleUrl(string $sName, string $sSecret, string $sTitle = '') : string
 	{
 		$sUrl = sprintf('otpauth://%s/%s?secret=%s&issuer=%s', 'totp', urlencode($sName), $sSecret, urlencode($sTitle));
 		return 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl='.\urlencode($sUrl);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function CreateSecret()
+	public function CreateSecret() : string
 	{
 		$sResult = '';
 		if ($this->IsActive())
@@ -53,14 +35,8 @@ class TwoFactorAuth extends \RainLoop\Providers\AbstractProvider
 
 		return $sResult;
 	}
-	
-	/**
-	 * @param string $sSecret
-	 * @param string $sCode
-	 * 
-	 * @return bool
-	 */
-	public function VerifyCode($sSecret, $sCode)
+
+	public function VerifyCode(string $sSecret, string $sCode) : bool
 	{
 		$bResult = false;
 		if ($this->IsActive())

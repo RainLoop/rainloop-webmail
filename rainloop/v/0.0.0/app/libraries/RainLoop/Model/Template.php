@@ -25,13 +25,9 @@ class Template
 	private $bPopulateAlways;
 
 	/**
-	 * @param string $sId = ''
-	 * @param string $sName = ''
-	 * @param string $sBody = ''
-	 *
 	 * @return void
 	 */
-	protected function __construct($sId = '', $sName = '', $sBody = '')
+	protected function __construct(string $sId = '', string $sName = '', string $sBody = '')
 	{
 		$this->sId = $sId;
 		$this->sName = $sName;
@@ -39,57 +35,32 @@ class Template
 		$this->bPopulateAlways = false;
 	}
 
-	/**
-	 * @param string $sId = ''
-	 * @param string $sName = ''
-	 * @param string $sBody = ''
-	 *
-	 * @return \RainLoop\Model\Template
-	 */
-	public static function NewInstance($sId = '', $sName = '', $sBody = '')
+	public static function NewInstance(string $sId = '', string $sName = '', string $sBody = '') : self
 	{
-		return new self($sId, $sBody);
+		return new self($sId, $sName, $sBody);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Id()
+	public function Id() : string
 	{
 		return $this->sId;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Name()
+	public function Name() : string
 	{
 		return $this->sName;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Body()
+	public function Body() : string
 	{
 		return $this->sBody;
 	}
 
-	/**
-	 * @param bool $bPopulateAlways
-	 */
-	public function SetPopulateAlways($bPopulateAlways)
+	public function SetPopulateAlways(bool $bPopulateAlways)
 	{
-		$this->bPopulateAlways = !!$bPopulateAlways;
+		$this->bPopulateAlways = $bPopulateAlways;
 	}
 
-	/**
-	 * @param array $aData
-	 * @param bool $bAjax = false
-	 *
-	 * @return bool
-	 */
-	public function FromJSON($aData, $bAjax = false)
+	public function FromJSON(array $aData, bool $bAjax = false) : bool
 	{
 		if (isset($aData['ID'], $aData['Name'], $aData['Body']))
 		{
@@ -103,12 +74,7 @@ class Template
 		return false;
 	}
 
-	/**
-	 * @param bool $bAjax = false
-	 *
-	 * @return array
-	 */
-	public function ToSimpleJSON($bAjax = false)
+	public function ToSimpleJSON(bool $bAjax = false) : array
 	{
 		$sBody = $this->Body();
 		$bPopulated = true;
@@ -136,18 +102,12 @@ class Template
 		return $aResult;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function GenerateID()
+	public function GenerateID() : bool
 	{
 		return $this->sId = \MailSo\Base\Utils::Md5Rand();
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Validate()
+	public function Validate() : bool
 	{
 		return 0 < \strlen($this->sBody);
 	}

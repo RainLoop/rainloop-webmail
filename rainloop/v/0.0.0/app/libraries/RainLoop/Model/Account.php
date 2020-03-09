@@ -2,7 +2,7 @@
 
 namespace RainLoop\Model;
 
-class Account extends \RainLoop\Account // for backward compatibility
+class Account
 {
 	/**
 	 * @var string
@@ -49,19 +49,9 @@ class Account extends \RainLoop\Account // for backward compatibility
 	 */
 	private $sParentEmail;
 
-	/**
-	 * @param string $sEmail
-	 * @param string $sLogin
-	 * @param string $sPassword
-	 * @param \RainLoop\Model\Domain $oDomain
-	 * @param string $sSignMeToken = ''
-	 * @param string $sProxyAuthUser = ''
-	 * @param string $sProxyAuthPassword = ''
-	 *
-	 * @return void
-	 */
-	protected function __construct($sEmail, $sLogin, $sPassword, \RainLoop\Model\Domain $oDomain,
-		$sSignMeToken = '', $sProxyAuthUser = '', $sProxyAuthPassword = '', $sClientCert = '')
+	protected function __construct(string $sEmail, string $sLogin, string $sPassword,
+		\RainLoop\Model\Domain $oDomain, string $sSignMeToken = '', string $sProxyAuthUser = '',
+		string $sProxyAuthPassword = '', string $sClientCert = '')
 	{
 		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 		$this->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
@@ -74,104 +64,44 @@ class Account extends \RainLoop\Account // for backward compatibility
 		$this->sParentEmail = '';
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param string $sLogin
-	 * @param string $sPassword
-	 * @param \RainLoop\Model\Domain $oDomain
-	 * @param string $sSignMeToken = ''
-	 * @param string $sProxyAuthUser = ''
-	 * @param string $sProxyAuthPassword = ''
-	 *
-	 * @return \RainLoop\Model\Account
-	 */
-	public static function NewInstance($sEmail, $sLogin, $sPassword, \RainLoop\Model\Domain $oDomain,
-		$sSignMeToken = '', $sProxyAuthUser = '', $sProxyAuthPassword = '', $sClientCert = '')
+	public static function NewInstance(string $sEmail, string $sLogin, string $sPassword,
+		\RainLoop\Model\Domain $oDomain, string $sSignMeToken = '', string $sProxyAuthUser = '',
+		string $sProxyAuthPassword = '', string $sClientCert = '') : self
 	{
 		return new self($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, $sProxyAuthUser, $sProxyAuthPassword, $sClientCert);
 	}
 
-	/**
-	 * @return string
-	 */
-	public static function GenerateTokensPassword($sAccessToken, $sRefreshToken)
-	{
-		return APP_GOOGLE_ACCESS_TOKEN_PREFIX.\json_encode(array($sAccessToken, $sRefreshToken));
-	}
-
-	/**
-	 * @return array
-	 */
-	public static function ParseTokensPassword($sPassword)
-	{
-		$iGatLen = \strlen(APP_GOOGLE_ACCESS_TOKEN_PREFIX);
-		if ($sPassword && APP_GOOGLE_ACCESS_TOKEN_PREFIX === \substr($sPassword, 0, $iGatLen))
-		{
-			$aTokens = @\json_decode(\substr($sPassword, $iGatLen));
-			$sAccessToken = !empty($aTokens[0]) ? $aTokens[0] : '';
-			$sRefreshToken = !empty($aTokens[1]) ? $aTokens[1] : '';
-
-			if ($sAccessToken && $sRefreshToken)
-			{
-				return array($sAccessToken, $sRefreshToken);
-			}
-		}
-
-		return array('', '');
-	}
-
-	/**
-	 * @return string
-	 */
-	public function Email()
+	public function Email() : string
 	{
 		return $this->sEmail;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ParentEmail()
+	public function ParentEmail() : string
 	{
 		return $this->sParentEmail;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ProxyAuthUser()
+	public function ProxyAuthUser() : string
 	{
 		return $this->sProxyAuthUser;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ProxyAuthPassword()
+	public function ProxyAuthPassword() : string
 	{
 		return $this->sProxyAuthPassword;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ParentEmailHelper()
+	public function ParentEmailHelper() : string
 	{
 		return 0 < \strlen($this->sParentEmail) ? $this->sParentEmail : $this->sEmail;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function IsAdditionalAccount()
+	public function IsAdditionalAccount() : string
 	{
 		return 0 < \strlen($this->sParentEmail);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function IncLogin()
+	public function IncLogin() : string
 	{
 		$sLogin = $this->sLogin;
 		if ($this->oDomain->IncShortLogin())
@@ -182,18 +112,12 @@ class Account extends \RainLoop\Account // for backward compatibility
 		return $sLogin;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function IncPassword()
+	public function IncPassword() : string
 	{
 		return $this->sPassword;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function OutLogin()
+	public function OutLogin() : string
 	{
 		$sLogin = $this->sLogin;
 		if ($this->oDomain->OutShortLogin())
@@ -204,42 +128,27 @@ class Account extends \RainLoop\Account // for backward compatibility
 		return $sLogin;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Login()
+	public function Login() : string
 	{
 		return $this->IncLogin();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Password()
+	public function Password() : string
 	{
 		return $this->IncPassword();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ClientCert()
+	public function ClientCert() : string
 	{
 		return $this->sClientCert;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function SignMe()
+	public function SignMe() : bool
 	{
 		return 0 < \strlen($this->sSignMeToken);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function SignMeToken()
+	public function SignMeToken() : string
 	{
 		return $this->sSignMeToken;
 	}
@@ -252,182 +161,132 @@ class Account extends \RainLoop\Account // for backward compatibility
 		return $this->oDomain;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Hash()
+	public function Hash() : string
 	{
 		return md5(APP_SALT.$this->Email().APP_SALT.$this->DomainIncHost().
 			APP_SALT.$this->DomainIncPort().APP_SALT.$this->Password().APP_SALT.'0'.APP_SALT.$this->ParentEmail().APP_SALT);
 	}
 
 	/**
-	 * @param string $sPassword
-	 *
 	 * @return void
 	 */
-	public function SetPassword($sPassword)
+	public function SetPassword(string $sPassword)
 	{
 		$this->sPassword = $sPassword;
 	}
 
 	/**
-	 * @param string $sParentEmail
-	 *
 	 * @return void
 	 */
-	public function SetParentEmail($sParentEmail)
+	public function SetParentEmail(string $sParentEmail)
 	{
 		$this->sParentEmail = \trim(\MailSo\Base\Utils::IdnToAscii($sParentEmail, true));
 	}
 
 	/**
-	 * @param string $sProxyAuthUser
-	 *
 	 * @return void
 	 */
-	public function SetProxyAuthUser($sProxyAuthUser)
+	public function SetProxyAuthUser(string $sProxyAuthUser)
 	{
 		return $this->sProxyAuthUser = $sProxyAuthUser;
 	}
 
 	/**
-	 * @param string $sProxyAuthPassword
-	 *
 	 * @return void
 	 */
-	public function SetProxyAuthPassword($sProxyAuthPassword)
+	public function SetProxyAuthPassword(string $sProxyAuthPassword)
 	{
 		return $this->sProxyAuthPassword = $sProxyAuthPassword;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function DomainIncHost()
+	public function DomainIncHost() : string
 	{
 		return $this->Domain()->IncHost();
 	}
 
-	/**
-	 * @return int
-	 */
-	public function DomainIncPort()
+	public function DomainIncPort() : int
 	{
 		return $this->Domain()->IncPort();
 	}
 
-	/**
-	 * @return int
-	 */
-	public function DomainIncSecure()
+	public function DomainIncSecure() : int
 	{
 		return $this->Domain()->IncSecure();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function DomainOutHost()
+	public function DomainOutHost() : string
 	{
 		return $this->Domain()->OutHost();
 	}
 
-	/**
-	 * @return int
-	 */
-	public function DomainOutPort()
+	public function DomainOutPort() : int
 	{
 		return $this->Domain()->OutPort();
 	}
 
-	/**
-	 * @return int
-	 */
-	public function DomainOutSecure()
+	public function DomainOutSecure() : int
 	{
 		return $this->Domain()->OutSecure();
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function DomainOutAuth()
+	public function DomainOutAuth() : bool
 	{
 		return $this->Domain()->OutAuth();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function DomainSieveHost()
+	public function DomainSieveHost() : string
 	{
 		return $this->Domain()->SieveHost();
 	}
 
-	/**
-	 * @return int
-	 */
-	public function DomainSievePort()
+	public function DomainSievePort() : int
 	{
 		return $this->Domain()->SievePort();
 	}
 
-	/**
-	 * @return int
-	 */
-	public function DomainSieveSecure()
+	public function DomainSieveSecure() : int
 	{
 		return $this->Domain()->SieveSecure();
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function DomainSieveAllowRaw()
+	public function DomainSieveAllowRaw() : bool
 	{
 		return $this->Domain()->SieveAllowRaw();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetAuthToken()
+	public function GetAuthToken() : string
 	{
 		return \RainLoop\Utils::EncodeKeyValues(array(
-			'token',										// 0
-			$this->sEmail,								// 1
-			$this->sLogin,								// 2
-			$this->sPassword,							// 3
-			\RainLoop\Utils::Fingerprint(),		// 4
-			$this->sSignMeToken,						// 5
-			$this->sParentEmail,						// 6
-			\RainLoop\Utils::GetShortToken(),	// 7
-			$this->sProxyAuthUser,					// 8
-			$this->sProxyAuthPassword,				// 9
-			0,												// 10 // lifetime
-			$this->sClientCert						// 11
+			'token',                          // 0
+			$this->sEmail,                    // 1
+			$this->sLogin,                    // 2
+			$this->sPassword,                 // 3
+			\RainLoop\Utils::Fingerprint(),   // 4
+			$this->sSignMeToken,              // 5
+			$this->sParentEmail,              // 6
+			\RainLoop\Utils::GetShortToken(), // 7
+			$this->sProxyAuthUser,            // 8
+			$this->sProxyAuthPassword,        // 9
+			0,                                // 10 // lifetime
+			$this->sClientCert                // 11
 		));
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetAuthTokenQ()
+	public function GetAuthTokenQ() : string
 	{
 		return \RainLoop\Utils::EncodeKeyValuesQ(array(
-			'token',										// 0
-			$this->sEmail,								// 1
-			$this->sLogin,								// 2
-			$this->sPassword,							// 3
-			\RainLoop\Utils::Fingerprint(),		// 4
-			$this->sSignMeToken,						// 5
-			$this->sParentEmail,						// 6
-			\RainLoop\Utils::GetShortToken(),	// 7
-			$this->sProxyAuthUser,					// 8
-			$this->sProxyAuthPassword,				// 9
-			0,												// 10 // lifetime
-			$this->sClientCert						// 11
+			'token',                          // 0
+			$this->sEmail,                    // 1
+			$this->sLogin,                    // 2
+			$this->sPassword,                 // 3
+			\RainLoop\Utils::Fingerprint(),   // 4
+			$this->sSignMeToken,              // 5
+			$this->sParentEmail,              // 6
+			\RainLoop\Utils::GetShortToken(), // 7
+			$this->sProxyAuthUser,            // 8
+			$this->sProxyAuthPassword,        // 9
+			0,                                // 10 // lifetime
+			$this->sClientCert                // 11
 		));
 	}
 
@@ -435,11 +294,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Mail\MailClient $oMailClient
 	 * @param \RainLoop\Application $oConfig
-	 * @param callback|null $refreshTokenCallback = null
-	 *
-	 * @return bool
 	 */
-	public function IncConnectAndLoginHelper($oPlugins, $oMailClient, $oConfig, $refreshTokenCallback = null)
+	public function IncConnectAndLoginHelper($oPlugins, $oMailClient, $oConfig, ?callback $refreshTokenCallback = null) : bool
 	{
 		$bLogin = false;
 
@@ -468,7 +324,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 		{
 			$oMailClient
 				->Connect($aImapCredentials['Host'], $aImapCredentials['Port'],
-					$aImapCredentials['Secure'], $aImapCredentials['VerifySsl'], 
+					$aImapCredentials['Secure'], $aImapCredentials['VerifySsl'],
 					$aImapCredentials['AllowSelfSigned'], $aImapCredentials['ClientCert']);
 
 		}
@@ -486,27 +342,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 			}
 			else
 			{
-				$sPassword = $aImapCredentials['Password'];
-				$aTokens = self::ParseTokensPassword($sPassword);
-
-				$sAccessToken = $aTokens[0];
-				$sRefreshToken = $aTokens[1];
-
-				if ($sAccessToken && $sRefreshToken)
-				{
-					if ($refreshTokenCallback && \is_callable($refreshTokenCallback))
-					{
-						$sAccessToken = \call_user_func($refreshTokenCallback, $sAccessToken, $sRefreshToken);
-					}
-
-					$oMailClient->LoginWithXOauth2(
-						\base64_encode('user='.$aImapCredentials['Login']."\1".'auth=Bearer '.$sAccessToken."\1\1"));
-				}
-				else
-				{
-					$oMailClient->Login($aImapCredentials['Login'], $aImapCredentials['Password'], '',
-						$aImapCredentials['UseAuthPlainIfSupported'], $aImapCredentials['UseAuthCramMd5IfSupported']);
-				}
+				$oMailClient->Login($aImapCredentials['Login'], $aImapCredentials['Password'], '',
+					$aImapCredentials['UseAuthPlainIfSupported'], $aImapCredentials['UseAuthCramMd5IfSupported']);
 			}
 
 			$bLogin = true;
@@ -521,12 +358,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Smtp\SmtpClient|null $oSmtpClient
 	 * @param \RainLoop\Application $oConfig
-	 * @param callback|null $refreshTokenCallback = null
-	 * @param bool $bUsePhpMail = false
-	 *
-	 * @return bool
 	 */
-	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig, $refreshTokenCallback = null, &$bUsePhpMail = false)
+	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig, ?callback $refreshTokenCallback = null, bool &$bUsePhpMail = false) : bool
 	{
 		$bLogin = false;
 
@@ -566,27 +399,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 
 		if ($aSmtpCredentials['UseAuth'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
 		{
-			$sPassword = $aSmtpCredentials['Password'];
-			$aTokens = self::ParseTokensPassword($sPassword);
-
-			$sAccessToken = $aTokens[0];
-			$sRefreshToken = $aTokens[1];
-
-			if ($sAccessToken && $sRefreshToken)
-			{
-				if ($refreshTokenCallback && \is_callable($refreshTokenCallback))
-				{
-					$sAccessToken = \call_user_func($refreshTokenCallback, $sAccessToken, $sRefreshToken);
-				}
-
-				$oSmtpClient->LoginWithXOauth2(
-					\base64_encode('user='.$aSmtpCredentials['Login']."\1".'auth=Bearer '.$sAccessToken."\1\1"));
-			}
-			else
-			{
-				$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password'],
-					$aSmtpCredentials['UseAuthPlainIfSupported'], $aSmtpCredentials['UseAuthCramMd5IfSupported']);
-			}
+			$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password'],
+				$aSmtpCredentials['UseAuthPlainIfSupported'], $aSmtpCredentials['UseAuthCramMd5IfSupported']);
 
 			$bLogin = true;
 		}

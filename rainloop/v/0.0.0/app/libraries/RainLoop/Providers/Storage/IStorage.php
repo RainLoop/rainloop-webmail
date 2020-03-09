@@ -6,35 +6,22 @@ interface IStorage
 {
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount
-	 * @param int $iStorageType
-	 * @param string $sKey
-	 * @param string $sValue
-	 *
-	 * @return bool
+	 * @param mixed $sValue
 	 */
-	public function Put($oAccount, $iStorageType, $sKey, $sValue);
+	public function Put($oAccount, int $iStorageType, int $sKey, $sValue) : bool;
 
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount
-	 * @param int $iStorageType
-	 * @param string $sKey
 	 * @param mixed $mDefault = false
 	 *
 	 * @return mixed
 	 */
-	public function Get($oAccount, $iStorageType, $sKey, $mDefault = false);
+	public function Get($oAccount, int $iStorageType, string $sKey, $mDefault = false);
 
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount
-	 * @param int $iStorageType
-	 * @param string $sKey
-	 *
-	 * @return bool
 	 */
-	public function Clear($oAccount, $iStorageType, $sKey);
+	public function Clear($oAccount, int $iStorageType, string $sKey) : bool;
 
-	/**
-	 * @return bool
-	 */
-	public function IsLocal();
+	public function IsLocal() : bool;
 }

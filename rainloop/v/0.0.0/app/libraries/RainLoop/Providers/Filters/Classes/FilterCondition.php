@@ -37,44 +37,27 @@ class FilterCondition
 		$this->sValueSecond = '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Field()
+	public function Field() : string
 	{
 		return $this->sField;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Type()
+	public function Type() : string
 	{
 		return $this->sType;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Value()
+	public function Value() : string
 	{
 		return $this->sValue;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ValueSecond()
+	public function ValueSecond() : string
 	{
 		return $this->sValueSecond;
 	}
 
-	/**
-	 * @param array $aData
-	 *
-	 * @return array
-	 */
-	public function FromJSON($aData)
+	public function FromJSON(array $aData) : array
 	{
 		if (\is_array($aData))
 		{
@@ -93,12 +76,7 @@ class FilterCondition
 		return false;
 	}
 
-	/**
-	 * @param bool $bAjax = false
-	 *
-	 * @return array
-	 */
-	public function ToSimpleJSON($bAjax = false)
+	public function ToSimpleJSON(bool $bAjax = false) : array
 	{
 		return array(
 			'Field' => $this->Field(),
@@ -108,10 +86,7 @@ class FilterCondition
 		);
 	}
 
-	/**
-	 * @return array
-	 */
-	public static function CollectionFromJSON($aCollection)
+	public static function CollectionFromJSON($aCollection) : array
 	{
 		$aResult = array();
 		if (\is_array($aCollection) && 0 < \count($aCollection))

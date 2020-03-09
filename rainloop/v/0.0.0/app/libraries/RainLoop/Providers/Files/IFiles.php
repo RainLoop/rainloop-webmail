@@ -4,77 +4,30 @@ namespace RainLoop\Providers\Files;
 
 interface IFiles
 {
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	public function GenerateLocalFullFileName($oAccount, $sKey);
+	public function GenerateLocalFullFileName(\RainLoop\Model\Account $oAccount, string $sKey) : string;
+
+	public function PutFile(\RainLoop\Model\Account $oAccount, string $sKey, resource $rSource) : bool;
+
+	public function MoveUploadedFile(\RainLoop\Model\Account $oAccount, string $sKey, string $sSource) : bool;
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 * @param resource $rSource
-	 *
-	 * @return bool
-	 */
-	public function PutFile($oAccount, $sKey, $rSource);
-
-	/**
-	 * @param CAccount $oAccount
-	 * @param string $sKey
-	 * @param string $sSource
-	 *
-	 * @return bool
-	 */
-	public function MoveUploadedFile($oAccount, $sKey, $sSource);
-
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 * @param string $sOpenMode = 'rb'
-	 *
 	 * @return resource|bool
 	 */
-	public function GetFile($oAccount, $sKey, $sOpenMode = 'rb');
+	public function GetFile(\RainLoop\Model\Account $oAccount, string $sKey, string $sOpenMode = 'rb');
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 *
 	 * @return string|bool
 	 */
-	public function GetFileName($oAccount, $sKey);
+	public function GetFileName(\RainLoop\Model\Account $oAccount, string $sKey);
+
+	public function Clear(\RainLoop\Model\Account $oAccount, string $sKey) : bool;
 
 	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 *
-	 * @return bool
-	 */
-	public function Clear($oAccount, $sKey);
-
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 *
 	 * @return int | bool
 	 */
-	public function FileSize($oAccount, $sKey);
+	public function FileSize(\RainLoop\Model\Account $oAccount, string $sKey);
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 *
-	 * @return bool
-	 */
-	public function FileExists($oAccount, $sKey);
+	public function FileExists(\RainLoop\Model\Account $oAccount, string $sKey) : bool;
 
-	/**
-	 * @param int $iTimeToClearInHours = 24
-
-	 * @return bool
-	 */
-	public function GC($iTimeToClearInHours = 24);
+	public function GC(int $iTimeToClearInHours = 24) : bool;
 }

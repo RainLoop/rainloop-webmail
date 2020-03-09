@@ -67,7 +67,7 @@ class Callback extends \MailSo\Log\Driver
 
 		return true;
 	}
-	
+
 	/**
 	 * @return bool
 	 */

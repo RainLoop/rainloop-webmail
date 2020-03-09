@@ -11,19 +11,15 @@ class Api
 	{
 	}
 
-	/**
-	 * @return bool
-	 */
-	public static function RunResult()
+	public static function RunResult() : bool
 	{
 		return true;
 	}
 
 	/**
 	 * @staticvar bool $bOne
-	 * @return bool
 	 */
-	public static function Handle()
+	public static function Handle() : bool
 	{
 		static $bOne = null;
 		if (null === $bOne)
@@ -70,10 +66,7 @@ class Api
 		return \RainLoop\Api::Actions()->Logger();
 	}
 
-	/**
-	 * @return string
-	 */
-	public static function SetupDefaultMailSoConfig()
+	public static function SetupDefaultMailSoConfig() : string
 	{
 		if (\class_exists('MailSo\Config'))
 		{
@@ -185,23 +178,12 @@ class Api
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	public static function Version()
+	public static function Version() : string
 	{
 		return APP_VERSION;
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param string $sPassword
-	 * @param array $aAdditionalOptions = array()
-	 * @param bool $bUseTimeout = true
-	 *
-	 * @return string
-	 */
-	public static function GetUserSsoHash($sEmail, $sPassword, $aAdditionalOptions = array(), $bUseTimeout = true)
+	public static function GetUserSsoHash(string $sEmail, string $sPassword, array $aAdditionalOptions = array(), bool $bUseTimeout = true) : string
 	{
 		$sSsoHash = \MailSo\Base\Utils::Sha1Rand(\md5($sEmail).\md5($sPassword));
 
@@ -214,22 +196,12 @@ class Api
 			))) ? $sSsoHash : '';
 	}
 
-	/**
-	 * @param string $sSsoHash
-	 *
-	 * @return bool
-	 */
-	public static function ClearUserSsoHash($sSsoHash)
+	public static function ClearUserSsoHash(string $sSsoHash) : bool
 	{
 		return \RainLoop\Api::Actions()->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
 	}
 
-	/**
-	 * @param string $sEmail
-	 *
-	 * @return bool
-	 */
-	public static function ClearUserData($sEmail)
+	public static function ClearUserData(string $sEmail) : bool
 	{
 		if (0 < \strlen($sEmail))
 		{
@@ -253,10 +225,7 @@ class Api
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public static function LogoutCurrentLogginedUser()
+	public static function LogoutCurrentLogginedUser() : bool
 	{
 		\RainLoop\Utils::ClearCookie('rlsession');
 		return true;

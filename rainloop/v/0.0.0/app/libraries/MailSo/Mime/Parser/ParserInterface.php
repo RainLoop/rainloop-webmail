@@ -53,7 +53,7 @@ interface ParserInterface
 
 	/**
 	 * @param string $sBuffer
-	 * 
+	 *
 	 * @return void
 	 */
 	public function ReadBuffer($sBuffer);

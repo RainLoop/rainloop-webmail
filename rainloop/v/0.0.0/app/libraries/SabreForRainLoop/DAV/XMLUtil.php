@@ -121,7 +121,7 @@ class XMLUtil {
 
         // We don't generally care about any whitespace
         $dom->preserveWhiteSpace = false;
-        
+
         $dom->loadXML(self::convertDAVNamespace($xml),LIBXML_NOWARNING | LIBXML_NOERROR);
 
         if ($error = libxml_get_last_error()) {

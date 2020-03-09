@@ -27,3 +27,16 @@ Information about installing the product, check the [documentation page](http://
 http://www.gnu.org/licenses/agpl-3.0.html
 
 Copyright (c) 2019 Rainloop Team
+
+## Modifications
+
+This fork has modifications for:
+
+* Privacy/GDPR friendly (no: Social, Gravatar, Facebook, Google, Twitter, DropBox, OwnCloud)
+* Admin uses password_hash/password_verify
+* No POP3 and OAuth
+* PHP 7.3+ required
+* PHP mbstring extension required
+* CRLF => LF line endings
+* replaced pclZip with ZipArchive
+* no BackwardCapability

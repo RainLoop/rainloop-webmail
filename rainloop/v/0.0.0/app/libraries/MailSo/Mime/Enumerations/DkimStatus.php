@@ -46,7 +46,7 @@ class DkimStatus
 
 	/**
 	 * @param string $sStatus
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function normalizeValue($sStatus)

@@ -17,14 +17,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 			defined('APP_ADDITIONAL_CONFIGURATION_NAME') ? APP_ADDITIONAL_CONFIGURATION_NAME : '');
 	}
 
-	/**
-	 * @param string $sSection
-	 * @param string $sName
-	 * @param mixed $mDefault = null
-	 * @param bool $bUseEnvReplace = true
-	 *
-	 * @return mixed
-	 */
 	public function Load()
 	{
 		parent::Load();
@@ -52,13 +44,11 @@ class Application extends \RainLoop\Config\AbstractConfig
 	}
 
 	/**
-	 * @param string $sSection
-	 * @param string $sName
 	 * @param mixed $mDefault = null
 	 *
 	 * @return mixed
 	 */
-	public function Get($sSection, $sName, $mDefault = null)
+	public function Get(string $sSection, string $sName, $mDefault = null)
 	{
 		$mResult = parent::Get($sSection, $sName, $mDefault);
 		if ($this->aReplaceEnv && \is_string($mResult))
@@ -92,34 +82,22 @@ class Application extends \RainLoop\Config\AbstractConfig
 		return $mResult;
 	}
 
-	/**
-	 * @param string $sPassword
-	 *
-	 * @return void
-	 */
-	public function SetPassword($sPassword)
+	public function SetPassword(string $sPassword)
 	{
-		return $this->Set('security', 'admin_password', \md5(APP_SALT.$sPassword.APP_SALT));
+		$this->Set('security', 'admin_password', \password_hash($sPassword));
 	}
 
-	/**
-	 * @param string $sPassword
-	 *
-	 * @return bool
-	 */
-	public function ValidatePassword($sPassword)
+	public function ValidatePassword(string $sPassword) : bool
 	{
-		$sPassword = (string) $sPassword;
 		$sConfigPassword = (string) $this->Get('security', 'admin_password', '');
-
-		return 0 < \strlen($sPassword) &&
-			(($sPassword === $sConfigPassword && '12345' === $sConfigPassword) || \md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword);
+		if (32 == \strlen($sPassword) && \md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword) {
+			$this->SetPassword($sPassword);
+			return true;
+		}
+		return 0 < \strlen($sPassword) && \password_verify($sPassword, $sConfigPassword);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Save()
+	public function Save() : bool
 	{
 		$this->Set('version', 'current', APP_VERSION);
 		$this->Set('version', 'saved', \gmdate('r'));
@@ -127,10 +105,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 		return parent::Save();
 	}
 
-	/**
-	 * @return array
-	 */
-	protected function defaultValues()
+	protected function defaultValues() : array
 	{
 		return array(
 
@@ -198,11 +173,11 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'custom_server_signature'	=> array('RainLoop'),
 				'x_frame_options_header'	=> array(''),
 				'x_xss_protection_header'	=> array('1; mode=block'),
-				
+
 				'openpgp'					=> array(false),
 
 				'admin_login'				=> array('admin', 'Login and password for web admin panel'),
-				'admin_password'			=> array('12345'),
+				'admin_password'			=> array(\password_hash('12345')),
 				'allow_admin_panel'			=> array(true, 'Access settings'),
 				'allow_two_factor_auth'		=> array(false),
 				'force_two_factor_auth'		=> array(false),
@@ -338,28 +313,6 @@ Examples:
 				'enable'	=> array(false, 'Special option required for development purposes')
 			),
 
-			'social' => array(
-				'google_enable' => array(false, 'Google'),
-				'google_enable_auth' => array(false),
-				'google_enable_auth_gmail' => array(false),
-				'google_enable_drive' => array(false),
-				'google_enable_preview' => array(false),
-				'google_client_id' => array(''),
-				'google_client_secret' => array(''),
-				'google_api_key' => array(''),
-
-				'fb_enable' => array(false, 'Facebook'),
-				'fb_app_id' => array(''),
-				'fb_app_secret' => array(''),
-
-				'twitter_enable' => array(false, 'Twitter'),
-				'twitter_consumer_key' => array(''),
-				'twitter_consumer_secret' => array(''),
-
-				'dropbox_enable' => array(false, 'Dropbox'),
-				'dropbox_api_key' => array('')
-			),
-
 			'cache' => array(
 				'enable' => array(true,
 					'The section controls caching of the entire application.
@@ -384,7 +337,6 @@ Enables caching in the system'),
 				'ignore_folders_subscription' => array(false),
 				'check_new_password_strength' => array(true),
 				'update_channel' => array('stable'),
-				'allow_gravatar' => array(true),
 				'allow_prefetch' => array(true),
 				'allow_smart_html_links' => array(true),
 				'cache_system_data' => array(true),
@@ -436,8 +388,6 @@ Enables caching in the system'),
 				'mail_func_additional_parameters' => array(false),
 				'favicon_status' => array(true),
 				'folders_spec_limit' => array(50),
-				'owncloud_save_folder' => array('Attachments'),
-				'owncloud_suggestions' => array(true),
 				'curl_proxy' => array(''),
 				'curl_proxy_auth' => array(''),
 				'in_iframe' => array(false),

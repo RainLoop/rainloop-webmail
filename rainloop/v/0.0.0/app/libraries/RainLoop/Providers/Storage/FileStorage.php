@@ -20,12 +20,9 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	protected $oLogger;
 
 	/**
-	 * @param string $sStoragePath
-	 * @param bool $bLocal = false
-	 *
 	 * @return void
 	 */
-	public function __construct($sStoragePath, $bLocal = false)
+	public function __construct(string $sStoragePath, bool $bLocal = false)
 	{
 		$this->sDataPath = \rtrim(\trim($sStoragePath), '\\/');
 		$this->bLocal = !!$bLocal;
@@ -34,13 +31,9 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 * @param int $iStorageType
-	 * @param string $sKey
-	 * @param string $sValue
-	 *
-	 * @return bool
+	 * @param mixed $sValue
 	 */
-	public function Put($oAccount, $iStorageType, $sKey, $sValue)
+	public function Put($oAccount, int $iStorageType, string $sKey, $sValue) : bool
 	{
 		return false !== @\file_put_contents(
 			$this->generateFileName($oAccount, $iStorageType, $sKey, true), $sValue);
@@ -48,13 +41,11 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 * @param int $iStorageType
-	 * @param string $sKey
 	 * @param mixed $mDefault = false
 	 *
 	 * @return mixed
 	 */
-	public function Get($oAccount, $iStorageType, $sKey, $mDefault = false)
+	public function Get($oAccount, int $iStorageType, string $sKey, $mDefault = false)
 	{
 		$mValue = false;
 		$sFileName = $this->generateFileName($oAccount, $iStorageType, $sKey);
@@ -68,12 +59,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 * @param int $iStorageType
-	 * @param string $sKey
-	 *
-	 * @return bool
 	 */
-	public function Clear($oAccount, $iStorageType, $sKey)
+	public function Clear($oAccount, int $iStorageType, string $sKey) : bool
 	{
 		$mResult = true;
 		$sFileName = $this->generateFileName($oAccount, $iStorageType, $sKey);
@@ -87,10 +74,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string $oAccount
-	 *
-	 * @return bool
 	 */
-	public function DeleteStorage($oAccount)
+	public function DeleteStorage($oAccount) : bool
 	{
 		$sPath = $this->generateFileName($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::USER, 'xxx', false, true);
@@ -111,24 +96,15 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		return true;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsLocal()
+	public function IsLocal() : bool
 	{
 		return $this->bLocal;
 	}
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $mAccount
-	 * @param int $iStorageType
-	 * @param string $sKey
-	 * @param bool $bMkDir = false
-	 * @param bool $bForDeleteAction = false
-	 *
-	 * @return string
 	 */
-	public function generateFileName($mAccount, $iStorageType, $sKey, $bMkDir = false, $bForDeleteAction = false)
+	public function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
 	{
 		if (null === $mAccount)
 		{
@@ -196,8 +172,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	/**
 	 * @param \MailSo\Log\Logger $oLogger
 	 */
-	public function SetLogger($oLogger)
+	public function SetLogger(?\MailSo\Log\Logger $oLogger)
 	{
-		$this->oLogger = $oLogger instanceof \MailSo\Log\Logger ? $oLogger : null;
+		$this->oLogger = $oLogger;
 	}
 }

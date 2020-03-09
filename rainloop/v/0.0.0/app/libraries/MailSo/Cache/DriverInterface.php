@@ -20,10 +20,8 @@ interface DriverInterface
 	/**
 	 * @param string $sKey
 	 * @param string $sValue
-	 *
-	 * @return bool
 	 */
-	public function Set($sKey, $sValue);
+	public function Set($sKey, $sValue) : bool;
 
 	/**
 	 * @param string $sKey

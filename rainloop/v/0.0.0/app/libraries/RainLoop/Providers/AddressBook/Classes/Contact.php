@@ -66,7 +66,7 @@ class Contact
 		$this->Etag = '';
 	}
 
-	public function PopulateDisplayAndFullNameValue($bForceFullNameReplace = false)
+	public function PopulateDisplayAndFullNameValue(bool $bForceFullNameReplace = false)
 	{
 		$sFullName = '';
 		$sLastName = '';
@@ -161,19 +161,13 @@ class Contact
 		$this->PopulateDisplayAndFullNameValue();
 	}
 
-	/**
-	 * @return array
-	 */
-	public function RegenerateContactStr()
+	public function RegenerateContactStr() : array
 	{
 		$this->IdContactStr = \class_exists('SabreForRainLoop\DAV\Client') ?
 			\SabreForRainLoop\DAV\UUIDUtil::getUUID() : \MailSo\Base\Utils::Md5Rand();
 	}
 
-	/**
-	 * @return array
-	 */
-	public function GetEmails()
+	public function GetEmails() : array
 	{
 		$aResult = array();
 		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
@@ -187,18 +181,12 @@ class Contact
 		return \array_unique($aResult);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function CardDavNameUri()
+	public function CardDavNameUri() : string
 	{
 		return $this->IdContactStr.'.vcf';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ToVCard($sPreVCard = '', $oLogger = null)
+	public function ToVCard(string $sPreVCard = '', $oLogger = null) : string
 	{
 		$this->UpdateDependentValues();
 
@@ -219,7 +207,7 @@ class Contact
 			{
 				$oVCard = \SabreForRainLoop\VObject\Reader::read($sPreVCard);
 			}
-			catch (\Exception $oExc)
+			catch (\Throwable $oExc)
 			{
 				if ($oLogger)
 				{
@@ -309,10 +297,7 @@ class Contact
 		return (string) $oVCard->serialize();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ToCsv($bWithHeader = false)
+	public function ToCsv(bool $bWithHeader = false) : string
 	{
 		$aData = array();
 		if ($bWithHeader)
@@ -470,10 +455,8 @@ class Contact
 
 	/**
 	 * @param mixed $oProp
-	 * @param bool $bOldVersion
-	 * @return string
 	 */
-	private function getPropertyValueHelper($oProp, $bOldVersion)
+	private function getPropertyValueHelper($oProp, bool $bOldVersion) : string
 	{
 		$sValue = \trim($oProp);
 		if ($bOldVersion && !isset($oProp->parameters['CHARSET']))
@@ -495,10 +478,8 @@ class Contact
 
 	/**
 	 * @param mixed $oProp
-	 * @param bool $bOldVersion
-	 * @return string
 	 */
-	private function addArrayPropertyHelper(&$aProperties, $oArrayProp, $iType)
+	private function addArrayPropertyHelper(array &$aProperties, $oArrayProp, int $iType) : string
 	{
 		foreach ($oArrayProp as $oProp)
 		{
@@ -520,7 +501,7 @@ class Contact
 		}
 	}
 
-	public function PopulateByVCard($sUid, $sVCard, $sEtag = '', $oLogger = null)
+	public function PopulateByVCard(string $sUid, string $sVCard, string $sEtag = '', $oLogger = null)
 	{
 		if ("\xef\xbb\xbf" === \substr($sVCard, 0, 3))
 		{
@@ -545,7 +526,7 @@ class Contact
 		{
 			$oVCard = \SabreForRainLoop\VObject\Reader::read($sVCard);
 		}
-		catch (\Exception $oExc)
+		catch (\Throwable $oExc)
 		{
 			if ($oLogger)
 			{
@@ -559,14 +540,10 @@ class Contact
 //			$oLogger->WriteDump($sVCard);
 //		}
 
-		$bOwnCloud = false;
 		$aProperties = array();
 
 		if ($oVCard)
 		{
-			$bOwnCloud = empty($oVCard->PRODID) ? false :
-				false !== \strpos(\strtolower($oVCard->PRODID), 'owncloud');
-
 			$bOldVersion = empty($oVCard->VERSION) ? false :
 				\in_array((string) $oVCard->VERSION, array('2.1', '2.0', '1.0'));
 

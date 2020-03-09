@@ -221,7 +221,7 @@ class Header
 
 		if ($this->IsSubject())
 		{
-			if (!\MailSo\Base\Utils::IsAscii($sResult) && 
+			if (!\MailSo\Base\Utils::IsAscii($sResult) &&
 				\MailSo\Base\Utils::IsIconvSupported() &&
 				\function_exists('iconv_mime_encode'))
 			{

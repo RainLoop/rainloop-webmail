@@ -323,66 +323,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sXOAuth2Token
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function LoginWithXOauth2($sXOAuth2Token)
-	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sXOAuth2Token, true))
-		{
-			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
-				\MailSo\Log\Enumerations\Type::ERROR, true);
-		}
-
-		if (!$this->IsSupported('AUTH=XOAUTH2'))
-		{
-			$this->writeLogException(
-				new \MailSo\Imap\Exceptions\LoginBadMethodException(),
-				\MailSo\Log\Enumerations\Type::NOTICE, true);
-		}
-
-		try
-		{
-			$this->SendRequest('AUTHENTICATE', array('XOAUTH2', \trim($sXOAuth2Token)));
-			$aR = $this->parseResponseWithValidation();
-
-			if (\is_array($aR) && 0 < \count($aR) && isset($aR[\count($aR) - 1]))
-			{
-				$oR = $aR[\count($aR) - 1];
-				if (\MailSo\Imap\Enumerations\ResponseType::CONTINUATION === $oR->ResponseType)
-				{
-					if (!empty($oR->ResponseList[1]) && preg_match('/^[a-zA-Z0-9=+\/]+$/', $oR->ResponseList[1]))
-					{
-						$this->Logger()->Write(\base64_decode($oR->ResponseList[1]),
-							\MailSo\Log\Enumerations\Type::WARNING);
-					}
-
-					$this->sendRaw('');
-					$this->parseResponseWithValidation();
-				}
-			}
-		}
-		catch (\MailSo\Imap\Exceptions\NegativeResponseException $oException)
-		{
-			$this->writeLogException(
-				new \MailSo\Imap\Exceptions\LoginBadCredentialsException(
-					$oException->GetResponses(), '', 0, $oException),
-				\MailSo\Log\Enumerations\Type::NOTICE, true);
-		}
-
-		$this->bIsLoggined = true;
-		$this->aCapabilityItems = null;
-
-		return $this;
-	}
-
-	/**
 	 * @return \MailSo\Imap\ImapClient
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception

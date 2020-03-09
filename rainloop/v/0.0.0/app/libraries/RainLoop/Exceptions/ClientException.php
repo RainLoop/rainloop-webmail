@@ -9,7 +9,7 @@ namespace RainLoop\Exceptions;
 class ClientException extends Exception
 {
 	/**
-	 * @var boolen
+	 * @var bool
 	 */
 	private $bLogoutOnException;
 
@@ -18,13 +18,7 @@ class ClientException extends Exception
 	 */
 	private $sAdditionalMessage;
 
-	/**
-	 * @param int $iCode
-	 * @param \Exception $oPrevious = null
-	 * @param string $sAdditionalMessage = ''
-	 * @param boolean $bLogoutOnException = false
-	 */
-	public function __construct($iCode, $oPrevious = null, $sAdditionalMessage = '', $bLogoutOnException = false)
+	public function __construct(int $iCode, ?\Exception $oPrevious = null, string $sAdditionalMessage = '', bool $bLogoutOnException = false)
 	{
 		parent::__construct(\RainLoop\Notifications::GetNotificationsMessage($iCode, $oPrevious),
 			$iCode, $oPrevious);
@@ -34,29 +28,17 @@ class ClientException extends Exception
 		$this->setLogoutOnException($bLogoutOnException);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getAdditionalMessage()
+	public function getAdditionalMessage() : string
 	{
 		return $this->sAdditionalMessage;
 	}
 
-	/**
-	 * @return boolen
-	 */
-	public function getLogoutOnException()
+	public function getLogoutOnException() : bool
 	{
 		return $this->bLogoutOnException;
 	}
 
-	/**
-	 * @param boolean $bLogoutOnException
-	 * @param string $sAdditionalLogoutMessage = ''
-	 *
-	 * @return ClientException
-	 */
-	public function setLogoutOnException($bLogoutOnException, $sAdditionalLogoutMessage = '')
+	public function setLogoutOnException(bool $bLogoutOnException, string $sAdditionalLogoutMessage = '') : self
 	{
 		$this->bLogoutOnException = !!$bLogoutOnException;
 

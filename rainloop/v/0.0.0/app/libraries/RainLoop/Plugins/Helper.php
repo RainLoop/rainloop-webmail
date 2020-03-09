@@ -11,17 +11,10 @@ class Helper
 	{
 	}
 
-	/**
-	 * @param string $sString
-	 * @param string $sWildcardValues
-	 * @param string $sFoundedValue = ''
-	 *
-	 * @return bool
-	 */
-	static public function ValidateWildcardValues($sString, $sWildcardValues, &$sFoundedValue = '')
+	static public function ValidateWildcardValues(string $sString, string $sWildcardValues, string &$sFoundedValue) : bool
 	{
 		$sFoundedValue = '';
-		
+
 		$sString = \trim($sString);
 		if ('' === $sString)
 		{

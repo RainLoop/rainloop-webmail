@@ -76,7 +76,7 @@ class Response
 
 	/**
 	 * @param string $aList
-	 * 
+	 *
 	 * @return string
 	 */
 	private function recToLine($aList)
@@ -92,7 +92,7 @@ class Response
 
 		return \implode(' ', $aResult);
 	}
-	
+
 
 	/**
 	 * @return string

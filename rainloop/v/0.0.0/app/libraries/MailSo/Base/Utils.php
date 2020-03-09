@@ -1000,7 +1000,7 @@ END;
 	public static function GetClearDomainName($sDomain)
 	{
 		$sResultDomain = \preg_replace(
-			'/^(webmail|email|mail|www|imap4|pop3|imap|pop|demo|client|ssl|secure|test|cloud|box|m)\./i',
+			'/^(webmail|email|mail|www|imap4|imap|demo|client|ssl|secure|test|cloud|box|m)\./i',
 				'', $sDomain);
 
 		return false === \strpos($sResultDomain, '.') ? $sDomain : $sResultDomain;

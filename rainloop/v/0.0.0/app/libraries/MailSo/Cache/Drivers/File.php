@@ -65,10 +65,8 @@ class File implements \MailSo\Cache\DriverInterface
 	/**
 	 * @param string $sKey
 	 * @param string $sValue
-	 *
-	 * @return bool
 	 */
-	public function Set($sKey, $sValue)
+	public function Set($sKey, $sValue) : bool
 	{
 		$sPath = $this->generateCachedFileName($sKey, true);
 		return '' === $sPath ? false : false !== \file_put_contents($sPath, $sValue);

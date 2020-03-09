@@ -17,18 +17,13 @@ class Settings
 	/**
 	 * @return void
 	 */
-	public function __construct($bLocal = false)
+	public function __construct(bool $bLocal = false)
 	{
 		$this->aData = array();
 		$this->bLocal = !!$bLocal;
 	}
 
-	/**
-	 * @param array $aData
-	 *
-	 * @return \RainLoop\Settings
-	 */
-	public function InitData($aData)
+	public function InitData(array $aData) : self
 	{
 		if (\is_array($aData))
 		{
@@ -38,40 +33,32 @@ class Settings
 		return $this;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function DataAsArray()
+	public function DataAsArray() : array
 	{
 		return $this->aData;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsLocal()
+	public function IsLocal() : bool
 	{
 		return $this->bLocal;
 	}
 
 	/**
-	 * @param string $sName
 	 * @param mixed $mDefValue = null
 	 *
 	 * @return mixed
 	 */
-	public function GetConf($sName, $mDefValue = null)
+	public function GetConf(string $sName, $mDefValue = null)
 	{
 		return isset($this->aData[$sName]) ? $this->aData[$sName] : $mDefValue;
 	}
 
 	/**
-	 * @param string $sName
 	 * @param mixed $mValue
 	 *
 	 * @return void
 	 */
-	public function SetConf($sName, $mValue)
+	public function SetConf(string $sName, $mValue)
 	{
 		$this->aData[$sName] = $mValue;
 	}

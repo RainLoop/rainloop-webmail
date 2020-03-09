@@ -12,171 +12,93 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	private $oDriver;
 
 	/**
-	 * @param \RainLoop\Providers\AddressBook\Interface $oDriver
-	 *
 	 * @return void
 	 */
-	public function __construct($oDriver)
+	public function __construct(?\RainLoop\Providers\AddressBook\AddressBookInterface $oDriver)
 	{
-		$this->oDriver = null;
-		if ($oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface)
-		{
-			$this->oDriver = $oDriver;
-		}
+		$this->oDriver = $oDriver;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Test()
+	public function Test() : string
 	{
 		\sleep(1);
 		return $this->oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface ?
 			$this->oDriver->Test() : 'Personal address book driver is not allowed';
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsActive()
+	public function IsActive() : bool
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface &&
 			$this->oDriver->IsSupported();
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsSupported()
+	public function IsSupported() : bool
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface &&
 			$this->oDriver->IsSupported();
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsSharingAllowed()
+	public function IsSharingAllowed() : bool
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface &&
 			$this->oDriver->IsSharingAllowed();
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param string $sUrl
-	 * @param string $sUser
-	 * @param string $sPassword
-	 *
-	 * @return bool
-	 */
-	public function Sync($sEmail, $sUrl, $sUser, $sPassword)
+	public function Sync(string $sEmail, string $sUrl, string $sUser, string $sPassword) : bool
 	{
 		return $this->IsActive() ? $this->oDriver->Sync($sEmail, $sUrl, $sUser, $sPassword) : false;
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param string $sType = 'vcf'
-	 *
-	 * @return bool
-	 */
-	public function Export($sEmail, $sType = 'vcf')
+	public function Export(string $sEmail, string $sType = 'vcf') : bool
 	{
 		return $this->IsActive() ? $this->oDriver->Export($sEmail, $sType) : false;
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param \RainLoop\Providers\AddressBook\Classes\Contact $oContact
-	 *
-	 * @return bool
-	 */
-	public function ContactSave($sEmail, &$oContact)
+	public function ContactSave(string $sEmail, \RainLoop\Providers\AddressBook\Classes\Contact $oContact) : bool
 	{
 		return $this->IsActive() ? $this->oDriver->ContactSave($sEmail, $oContact) : false;
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param array $aContactIds
-	 *
-	 * @return bool
-	 */
-	public function DeleteContacts($sEmail, $aContactIds)
+	public function DeleteContacts(string $sEmail, array $aContactIds) : bool
 	{
 		return $this->IsActive() ? $this->oDriver->DeleteContacts($sEmail, $aContactIds) : false;
 	}
 
-	/**
-	 * @param string $sEmail
-	 *
-	 * @return bool
-	 */
-	public function DeleteAllContacts($sEmail)
+	public function DeleteAllContacts(string $sEmail) : bool
 	{
 		return $this->IsActive() ? $this->oDriver->DeleteAllContacts($sEmail) : false;
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param int $iOffset = 0
-	 * @param type $iLimit = 20
-	 * @param string $sSearch = ''
-	 * @param int $iResultCount = 0
-	 *
-	 * @return array
-	 */
-	public function GetContacts($sEmail, $iOffset = 0, $iLimit = 20, $sSearch = '', &$iResultCount = 0)
+	public function GetContacts(string $sEmail, int $iOffset = 0, int $iLimit = 20, string $sSearch = '', int &$iResultCount = 0) : array
 	{
 		return $this->IsActive() ? $this->oDriver->GetContacts($sEmail,
 			$iOffset, $iLimit, $sSearch, $iResultCount) : array();
 	}
 
 	/**
-	 * @param string $sEmail
 	 * @param string $mID
-	 * @param bool $bIsStrID = false
 	 *
 	 * @return \RainLoop\Providers\AddressBook\Classes\Contact|null
 	 */
-	public function GetContactByID($sEmail, $mID, $bIsStrID = false)
+	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false)
 	{
 		return $this->IsActive() ? $this->oDriver->GetContactByID($sEmail, $mID, $bIsStrID) : null;
 	}
 
 	/**
-	 * @param string $sEmail
-	 * @param string $sSearch
-	 * @param int $iLimit = 20
-	 *
-	 * @return array
-	 *
 	 * @throws \InvalidArgumentException
 	 */
-	public function GetSuggestions($sEmail, $sSearch, $iLimit = 20)
+	public function GetSuggestions(string $sEmail, string $sSearch, int $iLimit = 20) : array
 	{
 		return $this->IsActive() ? $this->oDriver->GetSuggestions($sEmail, $sSearch, $iLimit) : array();
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param array $aEmails
-	 * @param bool $bCreateAuto = true
-	 *
-	 * @return bool
-	 */
-	public function IncFrec($sEmail, $aEmails, $bCreateAuto = true)
+	public function IncFrec(string $sEmail, array $aEmails, bool $bCreateAuto = true) : bool
 	{
 		return $this->IsActive() ? $this->oDriver->IncFrec($sEmail, $aEmails, $bCreateAuto) : false;
 	}
 
-	/**
-	 * @param string $sCsvName
-	 *
-	 * @return int
-	 */
-	private function csvNameToTypeConvertor($sCsvName)
+	private function csvNameToTypeConvertor(string $sCsvName) : int
 	{
 		static $aMap = null;
 		if (null === $aMap)
@@ -256,13 +178,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 		return !empty($sCsvNameLower) && isset($aMap[$sCsvNameLower]) ? $aMap[$sCsvNameLower] : PropertyType::UNKNOWN;
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param array $aCsvData
-	 *
-	 * @return int
-	 */
-	public function ImportCsvArray($sEmail, $aCsvData)
+	public function ImportCsvArray(string $sEmail, array $aCsvData) : int
 	{
 		$iCount = 0;
 		if ($this->IsActive() && \is_array($aCsvData) && 0 < \count($aCsvData))
@@ -311,13 +227,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 		return $iCount;
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param string $sVcfData
-	 *
-	 * @return int
-	 */
-	public function ImportVcfFile($sEmail, $sVcfData)
+	public function ImportVcfFile(string $sEmail, string $sVcfData) : int
 	{
 		$iCount = 0;
 
@@ -334,7 +244,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 			{
 				$oVCardSplitter = new \SabreForRainLoop\VObject\Splitter\VCard($sVcfData);
 			}
-			catch (\Exception $oExc)
+			catch (\Throwable $oExc)
 			{
 				$this->Logger()->WriteException($oExc);
 			}

@@ -75,13 +75,8 @@ class Notifications
 
 	/**
 	 * @staticvar array $aMap
-	 *
-	 * @param int $iCode
-	 * @param \Exception|null $oPrevious
-	 *
-	 * @return string
 	 */
-	static public function GetNotificationsMessage($iCode, $oPrevious = null)
+	static public function GetNotificationsMessage(int $iCode, ?\Exception $oPrevious = null) : string
 	{
 		static $aMap = array(
 			self::InvalidToken => 'InvalidToken',

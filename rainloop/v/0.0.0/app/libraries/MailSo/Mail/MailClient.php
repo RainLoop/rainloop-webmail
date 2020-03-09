@@ -95,21 +95,6 @@ class MailClient
 	}
 
 	/**
-	 * @param string $sXOAuth2Token
-	 *
-	 * @return \MailSo\Mail\MailClient
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\LoginException
-	 */
-	public function LoginWithXOauth2($sXOAuth2Token)
-	{
-		$this->oImapClient->LoginWithXOauth2($sXOAuth2Token);
-		return $this;
-	}
-
-	/**
 	 * @return \MailSo\Mail\MailClient
 	 *
 	 * @throws \MailSo\Net\Exceptions\Exception

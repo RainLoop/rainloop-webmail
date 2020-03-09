@@ -34,18 +34,13 @@ class Settings extends \RainLoop\Providers\AbstractProvider
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 * @param \RainLoop\Settings $oSettings
-	 *
-	 * @return bool
 	 */
-	public function Save(\RainLoop\Model\Account $oAccount, \RainLoop\Settings $oSettings)
+	public function Save(\RainLoop\Model\Account $oAccount, \RainLoop\Settings $oSettings) : bool
 	{
 		return $this->oDriver->Save($oAccount, $oSettings->DataAsArray());
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsActive()
+	public function IsActive() : bool
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\Settings\ISettings;
 	}
