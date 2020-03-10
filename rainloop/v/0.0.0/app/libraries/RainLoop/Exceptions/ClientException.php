@@ -18,14 +18,14 @@ class ClientException extends Exception
 	 */
 	private $sAdditionalMessage;
 
-	public function __construct(int $iCode, ?\Exception $oPrevious = null, string $sAdditionalMessage = '', bool $bLogoutOnException = false)
+	public function __construct(int $iCode, ?\Throwable $oPrevious = null, string $sAdditionalMessage = '', bool $bLogoutOnException = false)
 	{
 		parent::__construct(\RainLoop\Notifications::GetNotificationsMessage($iCode, $oPrevious),
 			$iCode, $oPrevious);
 
 		$this->sAdditionalMessage = $sAdditionalMessage;
 
-		$this->setLogoutOnException($bLogoutOnException);
+		$this->bLogoutOnException = $bLogoutOnException;
 	}
 
 	public function getAdditionalMessage() : string
@@ -40,7 +40,7 @@ class ClientException extends Exception
 
 	public function setLogoutOnException(bool $bLogoutOnException, string $sAdditionalLogoutMessage = '') : self
 	{
-		$this->bLogoutOnException = !!$bLogoutOnException;
+		$this->bLogoutOnException = $bLogoutOnException;
 
 		$this->sAdditionalMessage = $sAdditionalLogoutMessage;
 

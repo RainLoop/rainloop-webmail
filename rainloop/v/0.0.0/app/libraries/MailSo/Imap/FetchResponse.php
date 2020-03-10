@@ -27,32 +27,21 @@ class FetchResponse
 	 */
 	private $aEnvelopeCache;
 
-	/**
-	 * @access private
-	 *
-	 * @param \MailSo\Imap\Response $oImapResponse
-	 */
-	private function __construct($oImapResponse)
+	private function __construct(Response $oImapResponse)
 	{
 		$this->oImapResponse = $oImapResponse;
 		$this->aEnvelopeCache = null;
 	}
 
-	/**
-	 * @param \MailSo\Imap\Response $oImapResponse
-	 * @return \MailSo\Imap\FetchResponse
-	 */
-	public static function NewInstance($oImapResponse)
+	public static function NewInstance(Response $oImapResponse) : self
 	{
 		return new self($oImapResponse);
 	}
 
 	/**
-	 * @param bool $bForce = false
-	 *
 	 * @return array|null
 	 */
-	public function GetEnvelope($bForce = false)
+	public function GetEnvelope(bool $bForce = false)
 	{
 		if (null === $this->aEnvelopeCache || $bForce)
 		{
@@ -62,23 +51,19 @@ class FetchResponse
 	}
 
 	/**
-	 * @param int $iIndex
 	 * @param mixed $mNullResult = null
 	 *
 	 * @return mixed
 	 */
-	public function GetFetchEnvelopeValue($iIndex, $mNullResult)
+	public function GetFetchEnvelopeValue(int $iIndex, $mNullResult)
 	{
 		return self::findEnvelopeIndex($this->GetEnvelope(), $iIndex, $mNullResult);
 	}
 
 	/**
-	 * @param int $iIndex
-	 * @param string $sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1
-	 *
 	 * @return \MailSo\Mime\EmailCollection|null
 	 */
-	public function GetFetchEnvelopeEmailCollection($iIndex, $sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1)
+	public function GetFetchEnvelopeEmailCollection(int $iIndex, string $sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1)
 	{
 		$oResult = null;
 		$aEmails = $this->GetFetchEnvelopeValue($iIndex, null);
@@ -112,11 +97,9 @@ class FetchResponse
 	}
 
 	/**
-	 * @param string $sRfc822SubMimeIndex = ''
-	 *
 	 * @return \MailSo\Imap\BodyStructure|null
 	 */
-	public function GetFetchBodyStructure($sRfc822SubMimeIndex = '')
+	public function GetFetchBodyStructure(string $sRfc822SubMimeIndex = '')
 	{
 		$oBodyStructure = null;
 		$aBodyStructureArray = $this->GetFetchValue(Enumerations\FetchType::BODYSTRUCTURE);
@@ -137,11 +120,9 @@ class FetchResponse
 	}
 
 	/**
-	 * @param string $sFetchItemName
-	 *
 	 * @return mixed
 	 */
-	public function GetFetchValue($sFetchItemName)
+	public function GetFetchValue(string $sFetchItemName)
 	{
 		$mReturn = null;
 		$bNextIsValue = false;
@@ -170,12 +151,7 @@ class FetchResponse
 		return $mReturn;
 	}
 
-	/**
-	 * @param string $sRfc822SubMimeIndex = ''
-	 *
-	 * @return string
-	 */
-	public function GetHeaderFieldsValue($sRfc822SubMimeIndex = '')
+	public function GetHeaderFieldsValue(string $sRfc822SubMimeIndex = '') : string
 	{
 		$sReturn = '';
 		$bNextIsValue = false;
@@ -227,12 +203,7 @@ class FetchResponse
 		return $bUid && $bSize;
 	}
 
-	/**
-	 * @param \MailSo\Imap\Response $oImapResponse
-	 *
-	 * @return bool
-	 */
-	public static function IsValidFetchImapResponse($oImapResponse)
+	public static function IsValidFetchImapResponse(Response $oImapResponse) : bool
 	{
 		return (
 			$oImapResponse
@@ -243,12 +214,7 @@ class FetchResponse
 		);
 	}
 
-	/**
-	 * @param \MailSo\Imap\Response $oImapResponse
-	 *
-	 * @return bool
-	 */
-	public static function IsNotEmptyFetchImapResponse($oImapResponse)
+	public static function IsNotEmptyFetchImapResponse(Response $oImapResponse) : bool
 	{
 		return (
 			$oImapResponse
@@ -259,13 +225,11 @@ class FetchResponse
 	}
 
 	/**
-	 * @param array $aEnvelope
-	 * @param int $iIndex
 	 * @param mixed $mNullResult = null
 	 *
 	 * @return mixed
 	 */
-	private static function findEnvelopeIndex($aEnvelope, $iIndex, $mNullResult)
+	private static function findEnvelopeIndex(array $aEnvelope, int $iIndex, $mNullResult)
 	{
 		return (isset($aEnvelope[$iIndex]) && 'NIL' !== $aEnvelope[$iIndex] && '' !== $aEnvelope[$iIndex])
 			? $aEnvelope[$iIndex] : $mNullResult;

@@ -108,9 +108,6 @@ abstract class NetClient
 		$this->Clear();
 	}
 
-	/**
-	 * @return void
-	 */
 	public function __destruct()
 	{
 		try
@@ -127,10 +124,7 @@ abstract class NetClient
 		catch (\Exception $oException) {}
 	}
 
-	/**
-	 * @return void
-	 */
-	public function Clear()
+	public function Clear() : void
 	{
 		$this->sResponseBuffer = '';
 
@@ -141,32 +135,20 @@ abstract class NetClient
 		$this->bSecure = false;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetConnectedHost()
+	public function GetConnectedHost() : string
 	{
 		return $this->sConnectedHost;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function GetConnectedPort()
+	public function GetConnectedPort() : int
 	{
 		return $this->iConnectedPort;
 	}
 
-	/**
-	 * @param int $iConnectTimeOut = 10
-	 * @param int $iSocketTimeOut = 10
-	 *
-	 * @return void
-	 */
-	public function SetTimeOuts($iConnectTimeOut = 10, $iSocketTimeOut = 10)
+	public function SetTimeOuts(int $iConnectTimeOut = 10, int $iSocketTimeOut = 10) : void
 	{
-		$this->iConnectTimeOut = 5 < $iConnectTimeOut ? $iConnectTimeOut : 5;
-		$this->iSocketTimeOut = 5 < $iSocketTimeOut ? $iSocketTimeOut : 5;
+		$this->iConnectTimeOut = max(5, $iConnectTimeOut);
+		$this->iSocketTimeOut = max(5, $iSocketTimeOut);
 	}
 
 	/**
@@ -198,8 +180,6 @@ abstract class NetClient
 	 * @param bool $bAllowSelfSigned = true
 	 * @param string $sClientCert = ''
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\SocketAlreadyConnectedException
 	 * @throws \MailSo\Net\Exceptions\SocketCanNotConnectToHostException
@@ -207,7 +187,7 @@ abstract class NetClient
 	public function Connect($sServerName, $iPort,
 		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
 		$bVerifySsl = false, $bAllowSelfSigned = true,
-		$sClientCert = '')
+		$sClientCert = '') : void
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sServerName, true) || !\MailSo\Base\Validator::PortInt($iPort))
 		{
@@ -340,10 +320,7 @@ abstract class NetClient
 		}
 	}
 
-	/**
-	 * @return void
-	 */
-	public function Disconnect()
+	public function Disconnect() : void
 	{
 		if (\is_resource($this->rConnect))
 		{
@@ -365,11 +342,9 @@ abstract class NetClient
 	}
 
 	/**
-	 * @retun void
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	public function LogoutAndDisconnect()
+	public function LogoutAndDisconnect() : void
 	{
 		if (\method_exists($this, 'Logout') && !$this->bUnreadBuffer && !$this->bRunningCallback)
 		{
@@ -398,11 +373,9 @@ abstract class NetClient
 	}
 
 	/**
-	 * @return void
-	 *
 	 * @throws \MailSo\Net\Exceptions\SocketConnectionDoesNotAvailableException
 	 */
-	public function IsConnectedWithException()
+	public function IsConnectedWithException() : void
 	{
 		$this->IsConnected(true);
 	}
@@ -421,12 +394,10 @@ abstract class NetClient
 	 * @param bool $bWriteToLog = true
 	 * @param string $sFakeRaw = ''
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Net\Exceptions\SocketConnectionDoesNotAvailableException
 	 * @throws \MailSo\Net\Exceptions\SocketWriteException
 	 */
-	protected function sendRaw($sRaw, $bWriteToLog = true, $sFakeRaw = '')
+	protected function sendRaw($sRaw, $bWriteToLog = true, $sFakeRaw = '') : void
 	{
 		if ($this->bUnreadBuffer)
 		{
@@ -473,12 +444,10 @@ abstract class NetClient
 	 * @param mixed $mReadLen = null
 	 * @param bool $bForceLogin = false
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Net\Exceptions\SocketConnectionDoesNotAvailableException
 	 * @throws \MailSo\Net\Exceptions\SocketReadException
 	 */
-	protected function getNextBuffer($mReadLen = null, $bForceLogin = false)
+	protected function getNextBuffer($mReadLen = null, $bForceLogin = false) : void
 	{
 		if (null === $mReadLen)
 		{
@@ -562,10 +531,8 @@ abstract class NetClient
 	/**
 	 * @param string $sDesc
 	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::INFO
-	 *
-	 * @return void
 	 */
-	protected function writeLog($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO, $bDiplayCrLf = false)
+	protected function writeLog($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO, $bDiplayCrLf = false) : void
 	{
 		if ($this->oLogger)
 		{
@@ -576,10 +543,8 @@ abstract class NetClient
 	/**
 	 * @param string $sDesc
 	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::INFO
-	 *
-	 * @return void
 	 */
-	protected function writeLogWithCrlf($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO)
+	protected function writeLogWithCrlf($sDesc, $iDescType = \MailSo\Log\Enumerations\Type::INFO) : void
 	{
 		$this->writeLog($sDesc, $iDescType, true);
 	}
@@ -588,11 +553,9 @@ abstract class NetClient
 	 * @param \Exception $oException
 	 * @param int $iDescType = \MailSo\Log\Enumerations\Type::NOTICE
 	 * @param bool $bThrowException = false
-	 *
-	 * @return void
 	 */
 	protected function writeLogException($oException,
-		$iDescType = \MailSo\Log\Enumerations\Type::NOTICE, $bThrowException = false)
+		$iDescType = \MailSo\Log\Enumerations\Type::NOTICE, $bThrowException = false) : void
 	{
 		if ($this->oLogger)
 		{
@@ -613,11 +576,9 @@ abstract class NetClient
 	/**
 	 * @param \MailSo\Log\Logger $oLogger
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function SetLogger($oLogger)
+	public function SetLogger($oLogger) : void
 	{
 		if (!($oLogger instanceof \MailSo\Log\Logger))
 		{

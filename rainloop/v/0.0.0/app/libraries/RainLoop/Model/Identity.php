@@ -39,9 +39,6 @@ class Identity
 	 */
 	private $bSignatureInsertBefore;
 
-	/**
-	 * @return void
-	 */
 	protected function __construct(string $sId = '', string $sEmail = '')
 	{
 		$this->sId = empty($sId) ? '' : $sId;

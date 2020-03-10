@@ -167,36 +167,24 @@ class Account
 			APP_SALT.$this->DomainIncPort().APP_SALT.$this->Password().APP_SALT.'0'.APP_SALT.$this->ParentEmail().APP_SALT);
 	}
 
-	/**
-	 * @return void
-	 */
-	public function SetPassword(string $sPassword)
+	public function SetPassword(string $sPassword) : void
 	{
 		$this->sPassword = $sPassword;
 	}
 
-	/**
-	 * @return void
-	 */
-	public function SetParentEmail(string $sParentEmail)
+	public function SetParentEmail(string $sParentEmail) : void
 	{
 		$this->sParentEmail = \trim(\MailSo\Base\Utils::IdnToAscii($sParentEmail, true));
 	}
 
-	/**
-	 * @return void
-	 */
-	public function SetProxyAuthUser(string $sProxyAuthUser)
+	public function SetProxyAuthUser(string $sProxyAuthUser) : void
 	{
-		return $this->sProxyAuthUser = $sProxyAuthUser;
+		$this->sProxyAuthUser = $sProxyAuthUser;
 	}
 
-	/**
-	 * @return void
-	 */
-	public function SetProxyAuthPassword(string $sProxyAuthPassword)
+	public function SetProxyAuthPassword(string $sProxyAuthPassword) : void
 	{
-		return $this->sProxyAuthPassword = $sProxyAuthPassword;
+		$this->sProxyAuthPassword = $sProxyAuthPassword;
 	}
 
 	public function DomainIncHost() : string
@@ -293,7 +281,7 @@ class Account
 	/**
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Mail\MailClient $oMailClient
-	 * @param \RainLoop\Application $oConfig
+	 * @param \RainLoop\Config\Application $oConfig
 	 */
 	public function IncConnectAndLoginHelper($oPlugins, $oMailClient, $oConfig, ?callback $refreshTokenCallback = null) : bool
 	{
@@ -357,7 +345,7 @@ class Account
 	/**
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Smtp\SmtpClient|null $oSmtpClient
-	 * @param \RainLoop\Application $oConfig
+	 * @param \RainLoop\Config\Application $oConfig
 	 */
 	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig, ?callback $refreshTokenCallback = null, bool &$bUsePhpMail = false) : bool
 	{
@@ -413,7 +401,7 @@ class Account
 	/**
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Sieve\ManageSieveClient $oSieveClient
-	 * @param \RainLoop\Application $oConfig
+	 * @param \RainLoop\Config\Application $oConfig
 	 */
 	public function SieveConnectAndLoginHelper($oPlugins, $oSieveClient, $oConfig)
 	{

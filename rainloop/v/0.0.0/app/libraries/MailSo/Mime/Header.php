@@ -66,10 +66,8 @@ class Header
 	 * @param string $sName
 	 * @param string $sValue
 	 * @param string $sEncodedValueForReparse
-	 *
-	 * @return void
 	 */
-	private function initInputData($sName, $sValue, $sEncodedValueForReparse)
+	private function initInputData($sName, $sValue, $sEncodedValueForReparse) : void
 	{
 		$this->sName = trim($sName);
 		$this->sFullValue = trim($sValue);

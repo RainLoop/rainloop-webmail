@@ -139,8 +139,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @param bool $bAllowSelfSigned = true
 	 * @param string $sClientCert = ''
 	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -148,7 +146,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function Connect($sServerName, $iPort = 143,
 		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
 		$bVerifySsl = false, $bAllowSelfSigned = true,
-		$sClientCert = '')
+		$sClientCert = '') : void
 	{
 		$this->aTagTimeouts['*'] = \microtime(true);
 
@@ -170,8 +168,6 @@ class ImapClient extends \MailSo\Net\NetClient
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
-
-		return $this;
 	}
 
 	protected function _xor($string, $string2)
@@ -788,10 +784,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @param array $aResult
 	 * @param string $sFolderName
 	 * @param bool $bIsWritable
-	 *
-	 * @return void
 	 */
-	protected function initCurrentFolderInformation($aResult, $sFolderName, $bIsWritable)
+	protected function initCurrentFolderInformation($aResult, $sFolderName, $bIsWritable) : void
 	{
 		if (\is_array($aResult))
 		{
@@ -1895,10 +1889,8 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param \MailSo\Imap\Response $oImapResponse
-	 *
-	 * @return void
 	 */
-	private function initCapabilityImapResponse($oImapResponse)
+	private function initCapabilityImapResponse($oImapResponse) : void
 	{
 		if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
 			&& \is_array($oImapResponse->ResponseList))
@@ -2566,20 +2558,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	protected function getLogName()
 	{
 		return 'IMAP';
-	}
-
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public function SetLogger($oLogger)
-	{
-		parent::SetLogger($oLogger);
-
-		return $this;
 	}
 
 	/**

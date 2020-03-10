@@ -19,10 +19,8 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 
 	/**
 	 * @param string $sClassName
-	 *
-	 * @return mixed
 	 */
-	function rainLoopSplAutoloadRegisterFunction($sClassName)
+	function rainLoopSplAutoloadRegisterFunction($sClassName) : void
 	{
 		if ($sClassName && '\\' === $sClassName[0])
 		{
@@ -39,11 +37,10 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 					$sPrefix = 'Mobile_Detect/namespaced/';
 				}
 
-				return include RAINLOOP_APP_LIBRARIES_PATH.$sPrefix.\strtr($sClassName, '\\', '/').'.php';
+				include RAINLOOP_APP_LIBRARIES_PATH.$sPrefix.\strtr($sClassName, '\\', '/').'.php';
+				break;
 			}
 		}
-
-		return false;
 	}
 
 	\spl_autoload_register('rainLoopSplAutoloadRegisterFunction', false);

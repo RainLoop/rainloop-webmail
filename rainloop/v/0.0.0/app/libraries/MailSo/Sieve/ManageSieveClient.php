@@ -105,15 +105,13 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @param bool $bVerifySsl = false
 	 * @param bool $bAllowSelfSigned = true
 	 *
-	 * @return \MailSo\Sieve\ManageSieveClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Sieve\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort,
 		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		$bVerifySsl = false, $bAllowSelfSigned = true)
+		$bVerifySsl = false, $bAllowSelfSigned = true, $sClientCert = '') : void
 	{
 		$this->iRequestTime = \microtime(true);
 
@@ -139,8 +137,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				new \MailSo\Net\Exceptions\SocketUnsuppoterdSecureConnectionException('STARTTLS is not supported'),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
-
-		return $this;
 	}
 
 	/**
@@ -478,12 +474,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	/**
 	 * @param string $mResponse
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	private function parseStartupResponse($mResponse)
+	private function parseStartupResponse($mResponse) : void
 	{
 		foreach ($mResponse as $sLine)
 		{
@@ -515,12 +509,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	/**
 	 * @param string $sRequest
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	private function sendRequest($sRequest)
+	private function sendRequest($sRequest) : void
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sRequest, true))
 		{
@@ -537,13 +529,11 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	/**
 	 * @param string $sRequest
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	private function sendRequestWithCheck($sRequest)
+	private function sendRequestWithCheck($sRequest) : void
 	{
 		$this->sendRequest($sRequest);
 		$this->validateResponse($this->parseResponse());
@@ -637,17 +627,4 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		return 'SIEVE';
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 *
-	 * @return \MailSo\Sieve\ManageSieveClient
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public function SetLogger($oLogger)
-	{
-		parent::SetLogger($oLogger);
-
-		return $this;
-	}
 }

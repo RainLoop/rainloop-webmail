@@ -220,10 +220,7 @@ class Utils
 		return \md5('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
 
-	/**
-	 * @return void
-	 */
-	static public function UpdateConnectionToken()
+	static public function UpdateConnectionToken() : void
 	{
 		$sKey = 'rltoken';
 
@@ -256,10 +253,7 @@ class Utils
 		return $sResult;
 	}
 
-	/**
-	 * @return void
-	 */
-	public static function ReadAndAddLang(string $sFileName, array &$aResultLang)
+	public static function ReadAndAddLang(string $sFileName, array &$aResultLang) : void
 	{
 		if (\file_exists($sFileName))
 		{

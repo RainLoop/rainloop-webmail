@@ -107,11 +107,6 @@ class Actions
 	private $oTwoFactorAuthProvider;
 
 	/**
-	 * @var \RainLoop\Providers\Prem
-	 */
-	private $oPremProvider;
-
-	/**
 	 * @var \RainLoop\Config\Application
 	 */
 	private $oConfig;
@@ -151,7 +146,6 @@ class Actions
 		$this->oSuggestionsProvider = null;
 		$this->oChangePasswordProvider = null;
 		$this->oTwoFactorAuthProvider = null;
-		$this->oPremProvider = null;
 
 		$this->sSpecAuthToken = '';
 		$this->sUpdateAuthToken = '';
@@ -343,10 +337,7 @@ class Actions
 		return $mResult;
 	}
 
-	/**
-	 * @return void
-	 */
-	public function BootEnd()
+	public function BootEnd() : void
 	{
 		try
 		{
@@ -547,10 +538,7 @@ class Actions
 		return $sFileName;
 	}
 
-	/**
-	 * @return void
-	 */
-	public function SetAuthLogoutToken()
+	public function SetAuthLogoutToken() : void
 	{
 		@\header('X-RainLoop-Action: Logout');
 		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5(APP_START_TIME), 0);
@@ -625,10 +613,7 @@ class Actions
 		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage, 0);
 	}
 
-	/**
-	 * @return void
-	 */
-	private function setAdminAuthToken(string $sToken)
+	private function setAdminAuthToken(string $sToken) : void
 	{
 		\RainLoop\Utils::SetCookie(self::AUTH_ADMIN_TOKEN_KEY, $sToken, 0);
 	}
@@ -644,10 +629,7 @@ class Actions
 		return \RainLoop\Utils::GetCookie(self::AUTH_ADMIN_TOKEN_KEY, '');
 	}
 
-	/**
-	 * @return void
-	 */
-	public function ClearAdminAuthToken()
+	public function ClearAdminAuthToken() : void
 	{
 		$aAdminHash = \RainLoop\Utils::DecodeKeyValuesQ($this->getAdminAuthToken());
 		if (
@@ -739,28 +721,6 @@ class Actions
 		}
 
 		return $this->oTwoFactorAuthProvider;
-	}
-
-	/**
-	 * @return \RainLoop\Providers\Prem
-	 */
-	public function PremProvider()
-	{
-		if (null === $this->oPremProvider)
-		{
-			if (\file_exists(APP_VERSION_ROOT_PATH.'app/libraries/RainLoop/Providers/Prem.php'))
-			{
-				$this->oPremProvider = new \RainLoop\Providers\Prem(
-					$this->Config(), $this->Logger(), $this->Cacher(null, true)
-				);
-			}
-			else
-			{
-				$this->oPremProvider = false;
-			}
-		}
-
-		return $this->oPremProvider;
 	}
 
 	/**
@@ -1292,11 +1252,6 @@ class Actions
 		return $this->GetAccountFromCustomToken($this->getLocalAuthToken(), $bThrowExceptionOnFalse, true, true);
 	}
 
-	public function IsOpen() : bool
-	{
-		return !$this->PremProvider();
-	}
-
 	public function AppDataSystem(bool $bAdmin = false, bool $bMobile = false, bool $bMobileDevice = false) : array
 	{
 		$oConfig = $this->Config();
@@ -1340,7 +1295,7 @@ class Actions
 			'themes' => $this->GetThemes($bMobile, false),
 			'languages' => $this->GetLanguages(false),
 			'languagesAdmin' => $this->GetLanguages(true),
-			'appVersionType' => APP_VERSION_TYPE,
+			'appVersionType' => 'community',
 			'attachmentsActions' => $aAttachmentsActions
 		), $bAdmin ? array(
 			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
@@ -1404,17 +1359,26 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'Capa' => array(),
 			'Plugins' => array(),
 			'System' => $this->AppDataSystem($bAdmin, $bMobile, $bMobileDevice)
+/*
+			'Community' => false,
+			'PremType' => true,
+			'LoginLogo' => $oConfig->Get('branding', 'login_logo', ''),
+			'LoginBackground' => $oConfig->Get('branding', 'login_background', ''),
+			'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
+			'LoginDescription' => $oConfig->Get('branding', 'login_desc', ''),
+			'UserLogo' => $oConfig->Get('branding', 'user_logo', ''),
+			'UserLogoTitle' => $oConfig->Get('branding', 'user_logo_title', ''),
+			'UserLogoMessage' => $oConfig->Get('branding', 'user_logo_message', ''),
+			'UserIframeMessage' => $oConfig->Get('branding', 'user_iframe_message', ''),
+			'UserCss' => $oConfig->Get('branding', 'user_css', ''),
+			'WelcomePageUrl' => $oConfig->Get('branding', 'welcome_page_url', ''),
+			'WelcomePageDisplay' => \strtolower($oConfig->Get('branding', 'welcome_page_display', 'none')),
+*/
 		);
 
 		if (0 < \strlen($sAuthAccountHash))
 		{
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
-		}
-
-		$oPremProvider = $this->PremProvider();
-		if ($oPremProvider)
-		{
-			$oPremProvider->PopulateAppData($aResult);
 		}
 
 		if ('' !== $aResult['LoadingDescription'] && 'RainLoop' !== $aResult['LoadingDescription'])
@@ -3143,12 +3107,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->FilesProvider()->GC(48);
 			$this->Logger()->Write('Files GC: End');
 		}
-		else if ($bVersionsCache)
-		{
-//			if ($oPremProvider = $this->PremProvider()) {
-//				$oPremProvider->ClearOldVersion();
-//			}
-		}
 
 		$this->Plugins()->RunHook('service.app-delay-start-end');
 
@@ -3340,10 +3298,25 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
-		$oPremProvider = $this->PremProvider();
-		if ($oPremProvider)
+		if ($this && $this->HasOneOfActionParams(array(
+			'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss',
+			'UserLogo', 'UserLogoTitle', 'UserLogoMessage', 'UserIframeMessage', 'UserCss',
+			'WelcomePageUrl', 'WelcomePageDisplay'
+		)))
 		{
-			$oPremProvider->PremSection($this, $oConfig);
+			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
+			$this->setConfigFromParams($oConfig, 'LoginBackground', 'branding', 'login_background', 'string');
+			$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
+			$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
+
+			$this->setConfigFromParams($oConfig, 'UserLogo', 'branding', 'user_logo', 'string');
+			$this->setConfigFromParams($oConfig, 'UserLogoTitle', 'branding', 'user_logo_title', 'string');
+			$this->setConfigFromParams($oConfig, 'UserLogoMessage', 'branding', 'user_logo_message', 'string');
+			$this->setConfigFromParams($oConfig, 'UserIframeMessage', 'branding', 'user_iframe_message', 'string');
+			$this->setConfigFromParams($oConfig, 'UserCss', 'branding', 'user_css', 'string');
+
+			$this->setConfigFromParams($oConfig, 'WelcomePageUrl', 'branding', 'welcome_page_url', 'string');
+			$this->setConfigFromParams($oConfig, 'WelcomePageDisplay', 'branding', 'welcome_page_display', 'string');
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $oConfig->Save());
@@ -5258,10 +5231,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $oMessage;
 	}
 
-	/**
-	 * @return void
-	 */
-	private function deleteMessageAttachmnets(\RainLoop\Model\Account $oAccount)
+	private function deleteMessageAttachmnets(\RainLoop\Model\Account $oAccount) : void
 	{
 		$aAttachments = $this->GetActionParam('Attachments', null);
 
@@ -7339,10 +7309,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $bResult;
 	}
 
-	/**
-	 * @return void
-	 */
-	public function verifyCacheByKey(string $sKey, bool $bForce = false)
+	public function verifyCacheByKey(string $sKey, bool $bForce = false) : void
 	{
 		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))
 		{
@@ -8402,11 +8369,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	public function StaticPath(string $sPath) : string
 	{
-		$sKey = defined('APP_VERSION_TYPE') && 0 < strlen(APP_VERSION_TYPE) ? APP_VERSION_TYPE :
-			($this->IsOpen() ? 'community' : 'standard');
-
 		$sResult = \RainLoop\Utils::WebStaticPath().$sPath;
-		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&').$sKey;
+		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&').'community';
 	}
 
 	/**

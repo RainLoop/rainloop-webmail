@@ -180,26 +180,17 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	/**
-	 * @return void
-	 */
-	public function PreInit()
+	public function PreInit() : void
 	{
 
 	}
 
-	/**
-	 * @return void
-	 */
-	public function Init()
+	public function Init() : void
 	{
 
 	}
 
-	/**
-	 * @return void
-	 */
-	public function FilterAppDataPluginSection(bool $bAdmin, bool $bAuth, array &$aConfig)
+	public function FilterAppDataPluginSection(bool $bAdmin, bool $bAuth, array &$aConfig) : void
 	{
 
 	}

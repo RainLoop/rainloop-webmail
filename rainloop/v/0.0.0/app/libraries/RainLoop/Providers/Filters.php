@@ -9,9 +9,6 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $oDriver;
 
-	/**
-	 * @return void
-	 */
 	public function __construct($oDriver)
 	{
 		$this->oDriver = $oDriver instanceof \RainLoop\Providers\Filters\FiltersInterface ? $oDriver : null;

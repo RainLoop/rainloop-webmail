@@ -260,7 +260,7 @@ class PDO extends AbstractBackend {
                         $hasError = true;
                         $result[403][$propertyName] = null;
                         unset($mutations[$propertyName]);
-                        continue;
+                        break;
                     }
 
                     $fieldName = $this->propertyMap[$propertyName];

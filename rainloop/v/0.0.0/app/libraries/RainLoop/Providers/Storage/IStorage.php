@@ -8,7 +8,7 @@ interface IStorage
 	 * @param \RainLoop\Model\Account|null $oAccount
 	 * @param mixed $sValue
 	 */
-	public function Put($oAccount, int $iStorageType, int $sKey, $sValue) : bool;
+	public function Put($oAccount, int $iStorageType, string $sKey, $sValue) : bool;
 
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount

@@ -11,8 +11,6 @@ class Settings extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param \RainLoop\Providers\Settings\ISettings $oDriver
-	 *
-	 * @return void
 	 */
 	public function __construct(\RainLoop\Providers\Settings\ISettings $oDriver)
 	{

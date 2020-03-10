@@ -711,11 +711,9 @@ class MailClient
 	 * @param int $iUnseenCount
 	 * @param string $sUidNext
 	 * @param string $sHighestModSeq
-	 *
-	 * @return void
 	 */
 	protected function initFolderValues($sFolderName, &$iCount, &$iUnseenCount,
-		&$sUidNext, &$sHighestModSeq = '')
+		&$sUidNext, &$sHighestModSeq = '') : void
 	{
 		$aTypes = array(
 			\MailSo\Imap\Enumerations\FolderResponseStatus::MESSAGES,
@@ -1850,7 +1848,7 @@ class MailClient
 		if (!\is_array($aResultUids))
 		{
 			$aResultUids = $bUseSortIfSupported ?
-				$this->oImapClient->MessageSimpleSort(array('REVERSE ARRIVAL'), $sSearchCriterias, true) :
+				$this->oImapClient->MessageSimpleSort(array('REVERSE DATE'), $sSearchCriterias, true) :
 				$this->oImapClient->MessageSimpleSearch($sSearchCriterias, true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
 			;
 

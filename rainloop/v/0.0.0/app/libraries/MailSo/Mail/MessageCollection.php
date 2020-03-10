@@ -95,10 +95,7 @@ class MessageCollection extends \MailSo\Base\Collection
 		return new self();
 	}
 
-	/**
-	 * @return \MailSo\Mail\MessageCollection
-	 */
-	public function Clear()
+	public function Clear() : void
 	{
 		parent::Clear();
 
@@ -117,7 +114,5 @@ class MessageCollection extends \MailSo\Base\Collection
 		$this->NewMessages = array();
 
 		$this->Filtered = false;
-
-		return $this;
 	}
 }

@@ -392,9 +392,8 @@ abstract class Driver
 
 	/**
 	 * @final
-	 * @return void
 	 */
-	final public function WriteEmptyLine()
+	final public function WriteEmptyLine() : void
 	{
 		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || 0 < $this->iWriteOnTimeoutOnly))
 		{

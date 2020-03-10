@@ -69,10 +69,8 @@ abstract class AbstractConfig
 
 	/**
 	 * @param mixed $mParamValue
-	 *
-	 * @return void
 	 */
-	public function Set(string $sSectionKey, string $sParamKey, $mParamValue)
+	public function Set(string $sSectionKey, string $sParamKey, $mParamValue) : void
 	{
 		if (isset($this->aData[$sSectionKey][$sParamKey][0]))
 		{

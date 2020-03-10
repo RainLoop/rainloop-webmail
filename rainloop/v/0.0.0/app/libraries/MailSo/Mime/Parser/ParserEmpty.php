@@ -18,64 +18,31 @@ namespace MailSo\Mime\Parser;
  */
 class ParserEmpty implements ParserInterface
 {
-	/**
-	 * @param \MailSo\Mime\Part $oPart
-	 *
-	 * @return void
-	 */
-	public function StartParse(\MailSo\Mime\Part &$oPart)
+	public function StartParse(\MailSo\Mime\Part $oPart) : void
 	{
 	}
 
-	/**
-	 * @param \MailSo\Mime\Part $oPart
-	 *
-	 * @return void
-	 */
-	public function EndParse(\MailSo\Mime\Part &$oPart)
+	public function EndParse(\MailSo\Mime\Part $oPart) : void
 	{
 	}
 
-	/**
-	 * @param \MailSo\Mime\Part $oPart
-	 *
-	 * @return void
-	 */
-	public function StartParseMimePart(\MailSo\Mime\Part &$oPart)
+	public function StartParseMimePart(\MailSo\Mime\Part $oPart) : void
 	{
 	}
 
-	/**
-	 * @param \MailSo\Mime\Part $oMimePart
-	 *
-	 * @return void
-	 */
-	public function EndParseMimePart(\MailSo\Mime\Part &$oPart)
+	public function EndParseMimePart(\MailSo\Mime\Part $oPart) : void
 	{
 	}
 
-	/**
-	 * @return void
-	 */
-	public function InitMimePartHeader()
+	public function InitMimePartHeader() : void
 	{
 	}
 
-	/**
-	 * @param string $sBuffer
-	 *
-	 * @return void
-	 */
-	public function ReadBuffer($sBuffer)
+	public function ReadBuffer(string $sBuffer) : void
 	{
 	}
 
-	/**
-	 * @param string $sBuffer
-	 *
-	 * @return void
-	 */
-	public function WriteBody($sBuffer)
+	public function WriteBody(string $sBuffer) : void
 	{
 	}
 }

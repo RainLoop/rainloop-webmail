@@ -238,7 +238,7 @@ class Manager
 		return '';
 	}
 
-	public function CompileTemplate(array &$aList, bool $bAdminScope = false) : string
+	public function CompileTemplate(array &$aList, bool $bAdminScope = false) : void
 	{
 		if ($this->bIsEnabled)
 		{
@@ -612,10 +612,7 @@ class Manager
 		return $this;
 	}
 
-	/**
-	 * @return void
-	 */
-	public function WriteLog(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO)
+	public function WriteLog(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO) : void
 	{
 		if ($this->oLogger)
 		{
@@ -623,10 +620,7 @@ class Manager
 		}
 	}
 
-	/**
-	 * @return void
-	 */
-	public function WriteException(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO)
+	public function WriteException(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO) : void
 	{
 		if ($this->oLogger)
 		{

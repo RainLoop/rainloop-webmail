@@ -14,13 +14,10 @@ class Settings
 	 */
 	protected $bLocal;
 
-	/**
-	 * @return void
-	 */
 	public function __construct(bool $bLocal = false)
 	{
 		$this->aData = array();
-		$this->bLocal = !!$bLocal;
+		$this->bLocal = $bLocal;
 	}
 
 	public function InitData(array $aData) : self
@@ -55,10 +52,8 @@ class Settings
 
 	/**
 	 * @param mixed $mValue
-	 *
-	 * @return void
 	 */
-	public function SetConf(string $sName, $mValue)
+	public function SetConf(string $sName, $mValue) : void
 	{
 		$this->aData[$sName] = $mValue;
 	}

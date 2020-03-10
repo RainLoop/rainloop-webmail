@@ -20,7 +20,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 	private $oPlugins;
 
 	/**
-	 * @var \RainLoop\Application
+	 * @var \RainLoop\Config\Application
 	 */
 	private $oConfig;
 
@@ -29,9 +29,6 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 	 */
 	private $bUtf8FolderName;
 
-	/**
-	 * @return void
-	 */
 	public function __construct($oPlugins, $oConfig)
 	{
 		$this->oLogger = null;

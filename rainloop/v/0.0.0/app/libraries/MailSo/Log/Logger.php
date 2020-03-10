@@ -250,10 +250,7 @@ class Logger extends \MailSo\Base\Collection
 		return !!(\MailSo\Log\Enumerations\Type::NOTICE === $iType && $this->bHideErrorNotices);
 	}
 
-	/**
-	 * @return void
-	 */
-	public function __loggerShutDown()
+	public function __loggerShutDown() : void
 	{
 		if ($this->bUsed)
 		{

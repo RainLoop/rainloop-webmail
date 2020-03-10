@@ -9,9 +9,6 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $oDriver;
 
-	/**
-	 * @return void
-	 */
 	public function __construct(\RainLoop\Providers\Storage\IStorage $oDriver)
 	{
 		$this->oDriver = $oDriver;

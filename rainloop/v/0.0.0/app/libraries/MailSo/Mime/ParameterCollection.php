@@ -53,20 +53,6 @@ class ParameterCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param array $aList
-	 *
-	 * @return \MailSo\Mime\ParameterCollection
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public function SetAsArray($aList)
-	{
-		parent::SetAsArray($aList);
-
-		return $this;
-	}
-
-	/**
 	 * @param string $sName
 	 *
 	 * @return string
@@ -131,10 +117,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		return 0 < \count($aResult) ? \implode('; ', $aResult) : '';
 	}
 
-	/**
-	 * @return void
-	 */
-	private function reParseParameters()
+	private function reParseParameters() : void
 	{
 		$aDataToReParse = $this->CloneAsArray();
 		$sCharset = \MailSo\Base\Enumerations\Charset::UTF_8;

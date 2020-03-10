@@ -44,10 +44,8 @@ class Loader
 
 	/**
 	 * @staticvar bool $bIsInited
-	 *
-	 * @return void
 	 */
-	public static function Init()
+	public static function Init() : void
 	{
 		static $bIsInited = false;
 		if (!$bIsInited)
@@ -64,10 +62,8 @@ class Loader
 	/**
 	 * @param string $sName
 	 * @param int $iIncSize = 1
-	 *
-	 * @return void
 	 */
-	public static function IncStatistic($sName, $iIncSize = 1)
+	public static function IncStatistic($sName, $iIncSize = 1) : void
 	{
 		if (self::$StoreStatistic)
 		{
@@ -79,10 +75,8 @@ class Loader
 	/**
 	 * @param string $sName
 	 * @param mixed $mValue
-	 *
-	 * @return void
 	 */
-	public static function SetStatistic($sName, $mValue)
+	public static function SetStatistic($sName, $mValue) : void
 	{
 		if (self::$StoreStatistic)
 		{

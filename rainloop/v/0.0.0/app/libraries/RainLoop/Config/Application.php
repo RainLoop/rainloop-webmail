@@ -6,9 +6,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 {
 	private $aReplaceEnv = null;
 
-	/**
-	 * @return void
-	 */
 	public function __construct()
 	{
 		parent::__construct('application.ini',
@@ -17,9 +14,9 @@ class Application extends \RainLoop\Config\AbstractConfig
 			defined('APP_ADDITIONAL_CONFIGURATION_NAME') ? APP_ADDITIONAL_CONFIGURATION_NAME : '');
 	}
 
-	public function Load()
+	public function Load() : bool
 	{
-		parent::Load();
+		$bResult = parent::Load();
 
 		$this->aReplaceEnv = null;
 		if ((isset($_ENV) && \is_array($_ENV) && 0 < \count($_ENV)) ||
@@ -41,6 +38,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 		{
 			$this->aReplaceEnv = null;
 		}
+
+		return $bResult;
 	}
 
 	/**
@@ -84,7 +83,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 	public function SetPassword(string $sPassword)
 	{
-		$this->Set('security', 'admin_password', \password_hash($sPassword));
+		$this->Set('security', 'admin_password', \password_hash($sPassword, PASSWORD_DEFAULT));
 	}
 
 	public function ValidatePassword(string $sPassword) : bool
@@ -177,7 +176,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'openpgp'					=> array(false),
 
 				'admin_login'				=> array('admin', 'Login and password for web admin panel'),
-				'admin_password'			=> array(\password_hash('12345')),
+				'admin_password'			=> array(\password_hash('12345', PASSWORD_DEFAULT)),
 				'allow_admin_panel'			=> array(true, 'Access settings'),
 				'allow_two_factor_auth'		=> array(false),
 				'force_two_factor_auth'		=> array(false),

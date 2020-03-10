@@ -11,8 +11,6 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param \RainLoop\Providers\Suggestions\ISuggestions[]|null $aDriver = null
-	 *
-	 * @return void
 	 */
 	public function __construct(?array $aDriver = null)
 	{

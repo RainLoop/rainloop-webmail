@@ -19,9 +19,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	 */
 	protected $oLogger;
 
-	/**
-	 * @return void
-	 */
 	public function __construct(string $sStoragePath, bool $bLocal = false)
 	{
 		$this->sDataPath = \rtrim(\trim($sStoragePath), '\\/');

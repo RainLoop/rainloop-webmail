@@ -157,10 +157,8 @@ class FolderCollection extends \MailSo\Base\Collection
 
 	/**
 	 * @param array $aUnsortedMailFolders
-	 *
-	 * @return void
 	 */
-	public function InitByUnsortedMailFolderArray($aUnsortedMailFolders)
+	public function InitByUnsortedMailFolderArray($aUnsortedMailFolders) : void
 	{
 		$this->Clear();
 
@@ -256,10 +254,8 @@ class FolderCollection extends \MailSo\Base\Collection
 
 	/**
 	 * @param callable $fCallback
-	 *
-	 * @return void
 	 */
-	public function SortByCallback($fCallback)
+	public function SortByCallback($fCallback) : void
 	{
 		if (\is_callable($fCallback))
 		{

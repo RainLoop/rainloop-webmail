@@ -153,15 +153,13 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @param bool $bVerifySsl = false
 	 * @param bool $bAllowSelfSigned = true
 	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
 	public function Connect($sServerName, $iPort = 25, $sEhloHost = '[127.0.0.1]',
 		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		$bVerifySsl = false, $bAllowSelfSigned = true)
+		$bVerifySsl = false, $bAllowSelfSigned = true) : void
 	{
 		$this->iRequestTime = microtime(true);
 
@@ -170,8 +168,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$this->validateResponse(220);
 
 		$this->preLoginStartTLSAndEhloProcess($sEhloHost);
-
-		return $this;
 	}
 
 	/**
@@ -556,10 +552,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param string $sEhloHost
-	 *
-	 * @return void
 	 */
-	private function preLoginStartTLSAndEhloProcess($sEhloHost)
+	private function preLoginStartTLSAndEhloProcess($sEhloHost) : void
 	{
 		if ($this->bHelo)
 		{
@@ -593,12 +587,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @param string $sAddToCommand = ''
 	 * @param bool $bSecureLog = false
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	private function sendRequest($sCommand, $sAddToCommand = '', $bSecureLog = false)
+	private function sendRequest($sCommand, $sAddToCommand = '', $bSecureLog = false) : void
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sCommand, true))
 		{
@@ -616,8 +608,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		$this->iRequestTime = \microtime(true);
 		$this->sendRaw($sRealCommand, true, $sFakeCommand);
-
-		return $this;
 	}
 
 	/**
@@ -627,13 +617,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @param bool $bSecureLog = false
 	 * @param string $sErrorPrefix = ''
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	private function sendRequestWithCheck($sCommand, $mExpectCode, $sAddToCommand = '', $bSecureLog = false, $sErrorPrefix = '')
+	private function sendRequestWithCheck($sCommand, $mExpectCode, $sAddToCommand = '', $bSecureLog = false, $sErrorPrefix = '') : void
 	{
 		$this->sendRequest($sCommand, $sAddToCommand, $bSecureLog);
 		$this->validateResponse($mExpectCode, $sErrorPrefix);
@@ -641,10 +629,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param string $sHost
-	 *
-	 * @return void
 	 */
-	private function ehloOrHelo($sHost)
+	private function ehloOrHelo($sHost) : void
 	{
 		try
 		{
@@ -661,19 +647,15 @@ class SmtpClient extends \MailSo\Net\NetClient
 				throw $oException;
 			}
 		}
-
-		return $this;
 	}
 
 	/**
 	 * @param string $sHost
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	private function ehlo($sHost)
+	private function ehlo($sHost) : void
 	{
 		$this->sendRequestWithCheck('EHLO', 250, $sHost);
 
@@ -712,12 +694,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	/**
 	 * @param string $sHost
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	private function helo($sHost)
+	private function helo($sHost) : void
 	{
 		$this->sendRequestWithCheck('HELO', 250, $sHost);
 		$this->aAuthTypes = array();
@@ -729,11 +709,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @param int|array $mExpectCode
 	 * @param string $sErrorPrefix = ''
 	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
-	private function validateResponse($mExpectCode, $sErrorPrefix = '')
+	private function validateResponse($mExpectCode, $sErrorPrefix = '') : void
 	{
 		if (!\is_array($mExpectCode))
 		{
@@ -787,17 +765,4 @@ class SmtpClient extends \MailSo\Net\NetClient
 		return 'SMTP';
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public function SetLogger($oLogger)
-	{
-		parent::SetLogger($oLogger);
-
-		return $this;
-	}
 }

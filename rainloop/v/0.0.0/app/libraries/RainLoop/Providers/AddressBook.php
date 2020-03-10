@@ -11,9 +11,6 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $oDriver;
 
-	/**
-	 * @return void
-	 */
 	public function __construct(?\RainLoop\Providers\AddressBook\AddressBookInterface $oDriver)
 	{
 		$this->oDriver = $oDriver;

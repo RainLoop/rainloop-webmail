@@ -97,20 +97,16 @@ class Message
 
 	/**
 	 * @param string $sMessageId
-	 *
-	 * @return void
 	 */
-	public function SetMessageId($sMessageId)
+	public function SetMessageId($sMessageId) : void
 	{
 		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::MESSAGE_ID] = $sMessageId;
 	}
 
 	/**
 	 * @param string $sHostName = ''
-	 *
-	 * @return void
 	 */
-	public function RegenerateMessageId($sHostName = '')
+	public function RegenerateMessageId($sHostName = '') : void
 	{
 		$this->SetMessageId($this->generateNewMessageId($sHostName));
 	}

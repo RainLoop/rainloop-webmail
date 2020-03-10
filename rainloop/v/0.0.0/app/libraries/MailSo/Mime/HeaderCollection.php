@@ -212,19 +212,6 @@ class HeaderCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param array $aList
-	 * @return \MailSo\Mime\HeaderCollection
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public function SetAsArray($aList)
-	{
-		parent::SetAsArray($aList);
-
-		return $this;
-	}
-
-	/**
 	 * @param string $sParentCharset
 	 * @return \MailSo\Mime\HeaderCollection
 	 */
@@ -249,10 +236,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	/**
-	 * @return void
-	 */
-	public function Clear()
+	public function Clear() : void
 	{
 		parent::Clear();
 

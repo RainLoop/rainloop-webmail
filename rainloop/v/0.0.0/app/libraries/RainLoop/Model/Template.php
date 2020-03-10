@@ -24,9 +24,6 @@ class Template
 	 */
 	private $bPopulateAlways;
 
-	/**
-	 * @return void
-	 */
 	protected function __construct(string $sId = '', string $sName = '', string $sBody = '')
 	{
 		$this->sId = $sId;

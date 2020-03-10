@@ -744,10 +744,8 @@ class Http
 
 	/**
 	 * @param int $iStatus
-	 *
-	 * @return void
 	 */
-	public function StatusHeader($iStatus, $sCustomStatusText = '')
+	public function StatusHeader($iStatus, $sCustomStatusText = '') : void
 	{
 		$iStatus = (int) $iStatus;
 		if (99 < $iStatus)

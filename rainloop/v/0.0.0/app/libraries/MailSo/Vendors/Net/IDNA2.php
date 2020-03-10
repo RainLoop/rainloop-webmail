@@ -3293,12 +3293,8 @@ class Net_IDNA2
      *
      * @param array   $input       UCS4 sequence
      * @param boolean $include_bit Include bitmask in output
-     *
-     * @return void
-     * @static
-     * @access private
      */
-    private static function _showHex($input, $include_bit = false)
+    private static function _showHex($input, $include_bit = false) : void
     {
         foreach ($input as $k => $v) {
             echo '[', $k, '] => ', sprintf('%X', $v);

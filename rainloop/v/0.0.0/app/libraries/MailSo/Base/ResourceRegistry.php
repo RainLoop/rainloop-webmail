@@ -31,10 +31,8 @@ class ResourceRegistry
 
 	/**
 	 * @staticvar bool $bInited
-	 *
-	 * @return void
 	 */
-	private static function regResourcesShutdownFunc()
+	private static function regResourcesShutdownFunc() : void
 	{
 		static $bInited = false;
 		if (!$bInited)
@@ -98,10 +96,8 @@ class ResourceRegistry
 
 	/**
 	 * @param resource $rResource
-	 *
-	 * @return void
 	 */
-	public static function CloseMemoryResource(&$rResource)
+	public static function CloseMemoryResource(&$rResource) : void
 	{
 		if (\is_resource($rResource))
 		{

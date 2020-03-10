@@ -33,9 +33,8 @@ abstract class Collection
 	/**
 	 * @param mixed $mItem
 	 * @param bool $bToTop = false
-	 * @return self
 	 */
-	public function Add($mItem, $bToTop = false)
+	public function Add($mItem, $bToTop = false) : self
 	{
 		if ($bToTop)
 		{
@@ -51,11 +50,9 @@ abstract class Collection
 
 	/**
 	 * @param array $aItems
-	 * @return self
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function AddArray($aItems)
+	public function AddArray($aItems) : self
 	{
 		if (!\is_array($aItems))
 		{
@@ -70,14 +67,9 @@ abstract class Collection
 		return $this;
 	}
 
-	/**
-	 * @return self
-	 */
-	public function Clear()
+	public function Clear() : void
 	{
 		$this->aItems = array();
-
-		return $this;
 	}
 
 	/**
@@ -88,10 +80,7 @@ abstract class Collection
 		return $this->aItems;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Count()
+	public function Count() : int
 	{
 		return \count($this->aItems);
 	}
@@ -144,9 +133,8 @@ abstract class Collection
 
 	/**
 	 * @param mixed $mCallback
-	 * @return void
 	 */
-	public function ForeachList($mCallback)
+	public function ForeachList($mCallback) : void
 	{
 		if (\is_callable($mCallback))
 		{
@@ -174,8 +162,6 @@ abstract class Collection
 
 	/**
 	 * @param array $aItems
-	 * @return self
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
 	public function SetAsArray($aItems)
@@ -186,7 +172,5 @@ abstract class Collection
 		}
 
 		$this->aItems = $aItems;
-
-		return $this;
 	}
 }

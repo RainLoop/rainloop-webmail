@@ -4,9 +4,6 @@ namespace RainLoop;
 
 class Api
 {
-	/**
-	 * @return void
-	 */
 	private function __construct()
 	{
 	}
@@ -27,19 +24,16 @@ class Api
 			$bOne = \class_exists('MailSo\Version');
 			if ($bOne)
 			{
-				\RainLoop\Api::SetupDefaultMailSoConfig();
+				static::SetupDefaultMailSoConfig();
 
-				$bOne = \RainLoop\Api::RunResult();
+				$bOne = static::RunResult();
 			}
 		}
 
 		return $bOne;
 	}
 
-	/**
-	 * @return \RainLoop\Actions
-	 */
-	public static function Actions()
+	public static function Actions() : Actions
 	{
 		static $oActions = null;
 		if (null === $oActions)
@@ -51,11 +45,11 @@ class Api
 	}
 
 	/**
-	 * @return \RainLoop\Application
+	 * @return \RainLoop\Config\Application
 	 */
 	public static function Config()
 	{
-		return \RainLoop\Api::Actions()->Config();
+		return static::Actions()->Config();
 	}
 
 	/**
@@ -63,49 +57,49 @@ class Api
 	 */
 	public static function Logger()
 	{
-		return \RainLoop\Api::Actions()->Logger();
+		return static::Actions()->Logger();
 	}
 
-	public static function SetupDefaultMailSoConfig() : string
+	protected static function SetupDefaultMailSoConfig() : void
 	{
 		if (\class_exists('MailSo\Config'))
 		{
-			if (\RainLoop\Api::Config()->Get('labs', 'disable_iconv_if_mbstring_supported', false) &&
+			if (static::Config()->Get('labs', 'disable_iconv_if_mbstring_supported', false) &&
 				 \MailSo\Base\Utils::IsMbStringSupported() && \MailSo\Config::$MBSTRING)
 			{
 				\MailSo\Config::$ICONV = false;
 			}
 
 			\MailSo\Config::$MessageListFastSimpleSearch =
-				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_list_fast_simple_search', true);
+				!!static::Config()->Get('labs', 'imap_message_list_fast_simple_search', true);
 
 			\MailSo\Config::$MessageListCountLimitTrigger =
-				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_count_limit_trigger', 0);
+				(int) static::Config()->Get('labs', 'imap_message_list_count_limit_trigger', 0);
 
 			\MailSo\Config::$MessageListDateFilter =
-				(int) \RainLoop\Api::Config()->Get('labs', 'imap_message_list_date_filter', 0);
+				(int) static::Config()->Get('labs', 'imap_message_list_date_filter', 0);
 
 			\MailSo\Config::$MessageListPermanentFilter =
-				\trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', ''));
+				\trim(static::Config()->Get('labs', 'imap_message_list_permanent_filter', ''));
 
 			\MailSo\Config::$MessageAllHeaders =
-				!!\RainLoop\Api::Config()->Get('labs', 'imap_message_all_headers', false);
+				!!static::Config()->Get('labs', 'imap_message_all_headers', false);
 
 			\MailSo\Config::$LargeThreadLimit =
-				(int) \RainLoop\Api::Config()->Get('labs', 'imap_large_thread_limit', 50);
+				(int) static::Config()->Get('labs', 'imap_large_thread_limit', 50);
 
 			\MailSo\Config::$ImapTimeout =
-				(int) \RainLoop\Api::Config()->Get('labs', 'imap_timeout', 300);
+				(int) static::Config()->Get('labs', 'imap_timeout', 300);
 
 			\MailSo\Config::$BoundaryPrefix = '_RainLoop_';
 
-			\MailSo\Config::$SystemLogger = \RainLoop\Api::Logger();
+			\MailSo\Config::$SystemLogger = static::Logger();
 
-			$sSslCafile = \RainLoop\Api::Config()->Get('ssl', 'cafile', '');
-			$sSslCapath = \RainLoop\Api::Config()->Get('ssl', 'capath', '');
+			$sSslCafile = static::Config()->Get('ssl', 'cafile', '');
+			$sSslCapath = static::Config()->Get('ssl', 'capath', '');
 
-			\RainLoop\Utils::$CookieDefaultPath = \RainLoop\Api::Config()->Get('labs', 'cookie_default_path', '');
-			if (\RainLoop\Api::Config()->Get('labs', 'cookie_default_secure', false))
+			\RainLoop\Utils::$CookieDefaultPath = static::Config()->Get('labs', 'cookie_default_path', '');
+			if (static::Config()->Get('labs', 'cookie_default_secure', false))
 			{
 				\RainLoop\Utils::$CookieDefaultSecure = true;
 			}
@@ -128,11 +122,11 @@ class Api
 				});
 			}
 
-			\MailSo\Config::$HtmlStrictDebug = !!\RainLoop\Api::Config()->Get('debug', 'enable', false);
+			\MailSo\Config::$HtmlStrictDebug = !!static::Config()->Get('debug', 'enable', false);
 
-			\MailSo\Config::$CheckNewMessages = !!\RainLoop\Api::Config()->Get('labs', 'check_new_messages', true);
+			\MailSo\Config::$CheckNewMessages = !!static::Config()->Get('labs', 'check_new_messages', true);
 
-			if (\RainLoop\Api::Config()->Get('labs', 'strict_html_parser', true))
+			if (static::Config()->Get('labs', 'strict_html_parser', true))
 			{
 				\MailSo\Config::$HtmlStrictAllowedAttributes = array(
 					// rainloop
@@ -178,7 +172,7 @@ class Api
 		}
 	}
 
-	public static function Version() : string
+	protected static function Version() : string
 	{
 		return APP_VERSION;
 	}
@@ -187,7 +181,7 @@ class Api
 	{
 		$sSsoHash = \MailSo\Base\Utils::Sha1Rand(\md5($sEmail).\md5($sPassword));
 
-		return \RainLoop\Api::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash),
+		return static::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash),
 			\RainLoop\Utils::EncodeKeyValuesQ(array(
 				'Email' => $sEmail,
 				'Password' => $sPassword,
@@ -198,7 +192,7 @@ class Api
 
 	public static function ClearUserSsoHash(string $sSsoHash) : bool
 	{
-		return \RainLoop\Api::Actions()->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
+		return static::Actions()->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
 	}
 
 	public static function ClearUserData(string $sEmail) : bool
@@ -207,16 +201,16 @@ class Api
 		{
 			$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail);
 
-			$oStorageProvider = \RainLoop\Api::Actions()->StorageProvider();
+			$oStorageProvider = static::Actions()->StorageProvider();
 			if ($oStorageProvider && $oStorageProvider->IsActive())
 			{
 				$oStorageProvider->DeleteStorage($sEmail);
 			}
 
-			if (\RainLoop\Api::Actions()->AddressBookProvider() &&
-				\RainLoop\Api::Actions()->AddressBookProvider()->IsActive())
+			if (static::Actions()->AddressBookProvider() &&
+				static::Actions()->AddressBookProvider()->IsActive())
 			{
-				\RainLoop\Api::Actions()->AddressBookProvider()->DeleteAllContacts($sEmail);
+				static::Actions()->AddressBookProvider()->DeleteAllContacts($sEmail);
 			}
 
 			return true;
@@ -231,10 +225,7 @@ class Api
 		return true;
 	}
 
-	/**
-	 * @return void
-	 */
-	public static function ExitOnEnd()
+	public static function ExitOnEnd() : void
 	{
 		if (!\defined('RAINLOOP_EXIT_ON_END'))
 		{

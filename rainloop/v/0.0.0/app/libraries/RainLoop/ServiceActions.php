@@ -49,7 +49,7 @@ class ServiceActions
 	}
 
 	/**
-	 * @return \RainLoop\Application
+	 * @return \RainLoop\Config\Application
 	 */
 	public function Config()
 	{

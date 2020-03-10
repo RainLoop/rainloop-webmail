@@ -76,7 +76,7 @@ class Notifications
 	/**
 	 * @staticvar array $aMap
 	 */
-	static public function GetNotificationsMessage(int $iCode, ?\Exception $oPrevious = null) : string
+	static public function GetNotificationsMessage(int $iCode, ?\Throwable $oPrevious = null) : string
 	{
 		static $aMap = array(
 			self::InvalidToken => 'InvalidToken',
@@ -138,7 +138,7 @@ class Notifications
 			self::UnknownError => 'UnknownError'
 		);
 
-		if (self::ClientViewError === $iCode && $oPrevious instanceof \Exception)
+		if (self::ClientViewError === $iCode && $oPrevious instanceof \Throwable)
 		{
 			return $oPrevious->getMessage();
 		}
