@@ -9,8 +9,8 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 
 	function rainLoopSplAutoloadNamespaces() : array
 	{
-		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop', 'Predis') :
-			array('RainLoop', 'PHPThumb', 'Predis', 'SabreForRainLoop', 'Imagine', 'Detection');
+		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop', 'Predis', 'MailSo') :
+			array('RainLoop', 'PHPThumb', 'Predis', 'SabreForRainLoop', 'Imagine', 'Detection', 'MailSo');
 	}
 
 	/**
@@ -44,36 +44,30 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 
 if (\class_exists('RainLoop\Api'))
 {
-	if (!\class_exists('MailSo\Version', false))
-	{
-		include APP_VERSION_ROOT_PATH.'app/libraries/MailSo/MailSo.php';
-	}
+	\MailSo\Base\Loader::Init();
 
 	if (!\function_exists('spyc_load_file'))
 	{
 		include APP_VERSION_ROOT_PATH.'app/libraries/spyc/Spyc.php';
 	}
 
-	if (\class_exists('MailSo\Version'))
+	if (RAINLOOP_INCLUDE_AS_API_DEF)
 	{
-		if (RAINLOOP_INCLUDE_AS_API_DEF)
+		if (!\defined('APP_API_STARTED'))
 		{
-			if (!\defined('APP_API_STARTED'))
-			{
-				\define('APP_API_STARTED', true);
-
-				\RainLoop\Api::Handle();
-			}
-		}
-		else if (!\defined('APP_STARTED'))
-		{
-			\define('APP_STARTED', true);
+			\define('APP_API_STARTED', true);
 
 			\RainLoop\Api::Handle();
-			\RainLoop\Service::Handle();
-
-			\RainLoop\Api::ExitOnEnd();
 		}
+	}
+	else if (!\defined('APP_STARTED'))
+	{
+		\define('APP_STARTED', true);
+
+		\RainLoop\Api::Handle();
+		\RainLoop\Service::Handle();
+
+		\RainLoop\Api::ExitOnEnd();
 	}
 }
 else if (\function_exists('rainLoopSplAutoloadRegisterFunction'))

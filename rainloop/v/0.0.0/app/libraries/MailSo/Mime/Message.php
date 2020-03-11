@@ -868,7 +868,7 @@ class Message
 
 		if (!isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::X_MAILER]) && $this->bAddDefaultXMailer)
 		{
-			$oIncPart->Headers->SetByName(\MailSo\Mime\Enumerations\Header::X_MAILER, \MailSo\Version::XMailer(), true);
+			$oIncPart->Headers->SetByName(\MailSo\Mime\Enumerations\Header::X_MAILER, 'MailSo/2.0.1-djmaze', true);
 		}
 
 		if (!isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::MIME_VERSION]))

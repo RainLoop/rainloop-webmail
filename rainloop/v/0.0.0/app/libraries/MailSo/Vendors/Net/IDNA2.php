@@ -27,8 +27,7 @@
 //require_once 'Net/IDNA2/Exception.php';
 //require_once 'Net/IDNA2/Exception/Nameprep.php';
 
-defined('MAILSO_LIBRARY_ROOT_PATH') || die();
-require_once MAILSO_LIBRARY_ROOT_PATH.'Vendors/Net/IDNA2CustomExceptions.php';
+require_once __DIR__ . '/IDNA2CustomExceptions.php';
 
 /**
  * Encode/decode Internationalized Domain Names.
@@ -43,7 +42,7 @@ require_once MAILSO_LIBRARY_ROOT_PATH.'Vendors/Net/IDNA2CustomExceptions.php';
  * simple strings and complete email addresses as well. That means, that you might
  * use any of the following notations:
  *
- * - www.n�rgler.com
+ * - www.nörgler.com
  * - xn--nrgler-wxa
  * - xn--brse-5qa.xn--knrz-1ra.info
  *

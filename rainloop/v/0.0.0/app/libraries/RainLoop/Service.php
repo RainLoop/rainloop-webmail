@@ -72,12 +72,7 @@ class Service
 		static $bOne = null;
 		if (null === $bOne)
 		{
-			$oService = null;
-			if (\class_exists('MailSo\Version'))
-			{
-				$oService = new self();
-			}
-
+			$oService = new self();
 			$bOne = $oService->RunResult();
 		}
 
@@ -86,11 +81,6 @@ class Service
 
 	private function localHandle() : self
 	{
-		if (!\class_exists('MailSo\Version'))
-		{
-			return $this;
-		}
-
 		$sResult = '';
 		$bCached = false;
 

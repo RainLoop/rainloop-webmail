@@ -17,16 +17,6 @@ namespace MailSo;
 class Config
 {
 	/**
-	 * @var bool
-	 */
-	public static $ICONV = true;
-
-	/**
-	 * @var bool
-	 */
-	public static $MBSTRING = true;
-
-	/**
 	 * @var array|null
 	 */
 	public static $HtmlStrictAllowedTags = null;
@@ -40,11 +30,6 @@ class Config
 	 * @var boolean
 	 */
 	public static $HtmlStrictDebug = false;
-
-	/**
-	 * @var bool
-	 */
-	public static $FixIconvByMbstring = true;
 
 	/**
 	 * @var int

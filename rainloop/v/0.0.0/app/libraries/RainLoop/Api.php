@@ -21,15 +21,9 @@ class Api
 		static $bOne = null;
 		if (null === $bOne)
 		{
-			$bOne = \class_exists('MailSo\Version');
-			if ($bOne)
-			{
-				static::SetupDefaultMailSoConfig();
-
-				$bOne = static::RunResult();
-			}
+			static::SetupDefaultMailSoConfig();
+			$bOne = static::RunResult();
 		}
-
 		return $bOne;
 	}
 
@@ -64,12 +58,6 @@ class Api
 	{
 		if (\class_exists('MailSo\Config'))
 		{
-			if (static::Config()->Get('labs', 'disable_iconv_if_mbstring_supported', false) &&
-				 \MailSo\Base\Utils::IsMbStringSupported() && \MailSo\Config::$MBSTRING)
-			{
-				\MailSo\Config::$ICONV = false;
-			}
-
 			\MailSo\Config::$MessageListFastSimpleSearch =
 				!!static::Config()->Get('labs', 'imap_message_list_fast_simple_search', true);
 
