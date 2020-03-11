@@ -3503,7 +3503,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			try
 			{
-				$oImapClient = \MailSo\Imap\ImapClient::NewInstance()->SetLogger($this->Logger());
+				$oImapClient = \MailSo\Imap\ImapClient::NewInstance();
+				$oImapClient->SetLogger($this->Logger());
 				$oImapClient->SetTimeOuts($iConnectionTimeout);
 
 				$iTime = \microtime(true);
@@ -3544,7 +3545,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				try
 				{
-					$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
+					$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance();
+					$oSmtpClient->SetLogger($this->Logger());
 					$oSmtpClient->SetTimeOuts($iConnectionTimeout);
 
 					$iTime = \microtime(true);
@@ -3578,7 +3580,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				try
 				{
-					$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance()->SetLogger($this->Logger());
+					$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance();
+					$oSieveClient->SetLogger($this->Logger());
 					$oSieveClient->SetTimeOuts($iConnectionTimeout);
 					$oSieveClient->__USE_INITIAL_AUTH_PLAIN_COMMAND = !!$this->Config()->Get('labs', 'sieve_auth_plain_initial', true);
 
@@ -5402,7 +5405,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 				$bUsePhpMail = $oAccount->Domain()->OutUsePhpMail();
 
-				$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance()->SetLogger($this->Logger());
+				$oSmtpClient = \MailSo\Smtp\SmtpClient::NewInstance();
+				$oSmtpClient->SetLogger($this->Logger());
 				$oSmtpClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'smtp_timeout', 60));
 
 				$bLoggined = $oAccount->OutConnectAndLoginHelper(
