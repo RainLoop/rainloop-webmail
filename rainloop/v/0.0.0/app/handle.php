@@ -7,10 +7,6 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 
 	\define('RAINLOOP_INCLUDE_AS_API_DEF', isset($_ENV['RAINLOOP_INCLUDE_AS_API']) && $_ENV['RAINLOOP_INCLUDE_AS_API']);
 
-	if (!\function_exists('mb_strtoupper')) {
-		exit('PHP mbstring required');
-	}
-
 	function rainLoopSplAutoloadNamespaces() : array
 	{
 		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop', 'Predis') :

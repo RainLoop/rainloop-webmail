@@ -47,10 +47,7 @@ class Utils
 		\RainLoop\Utils::$RsaKey = \is_string(\RainLoop\Utils::$RsaKey) ? \RainLoop\Utils::$RsaKey : '';
 	}
 
-	/**
-	 * @return string|false
-	 */
-	static public function EncryptStringRSA(string $sString, string $sKey = '')
+	static public function EncryptStringRSA(string $sString, string $sKey = '') : string
 	{
 		$sResult = '';
 		$sKey = \md5($sKey);
@@ -87,10 +84,7 @@ class Utils
 		return $sResult;
 	}
 
-	/**
-	 * @return string|false
-	 */
-	static public function DecryptStringRSA(string $sString, string $sKey = '')
+	static public function DecryptStringRSA(string $sString, string $sKey = '') : string
 	{
 		$sResult = '';
 		$sKey = \md5($sKey);
@@ -425,6 +419,7 @@ class Utils
 		$sAppPath = '';
 		return $sAppPath;
 	}
+
 	public static function WebVersionPath() : string
 	{
 		return self::WebPath().'rainloop/v/'.APP_VERSION.'/';

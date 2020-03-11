@@ -218,7 +218,7 @@ class Service
 			}
 
 			$sResult .= '<!--';
-			$sResult .= '[time:'.\substr(\microtime(true) - APP_START, 0, 6);
+			$sResult .= '[time:'.\substr(\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 0, 6);
 			$sResult .= '][AGPLv3';
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
 //			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];

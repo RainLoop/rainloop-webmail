@@ -170,6 +170,11 @@ class ServiceActions
 		}
 		catch (\Throwable $oException)
 		{
+			error_log($oException->getMessage());
+			if ($e = $oException->getPrevious()) {
+				error_log("\t".$e->getMessage());
+			}
+
 			$aResponseItem = $this->oActions->ExceptionResponse(
 				empty($sAction) ? 'Unknown' : $sAction, $oException);
 
@@ -193,7 +198,7 @@ class ServiceActions
 
 		if (\is_array($aResponseItem))
 		{
-			$aResponseItem['Time'] = (int) ((\microtime(true) - APP_START) * 1000);
+			$aResponseItem['Time'] = (int) ((\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
 
 			$sUpdateToken = $this->oActions->GetUpdateAuthToken();
 			if ($sUpdateToken)

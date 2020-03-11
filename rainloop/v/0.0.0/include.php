@@ -2,17 +2,15 @@
 
 	if (defined('APP_VERSION'))
 	{
-		if (!defined('APP_START'))
+		if (!defined('APP_START_TIME'))
 		{
-			define('APP_START', microtime(true));
-
 			@ini_set('register_globals', 0);
 			@ini_set('zend.ze1_compatibility_mode', 0);
 			@ini_set('magic_quotes_gpc', 0);
 			@ini_set('magic_quotes_runtime', 0);
 
 			define('APP_START_TIME', time());
-			define('APP_REQUEST_RND', md5(APP_START.rand(10000, 99999).APP_START));
+			define('APP_REQUEST_RND', function_exists('uuid_create') ? md5(uuid_create(UUID_TYPE_DEFAULT)) : bin2hex(random_bytes(16)));
 			define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
 
 			define('APP_USE_APC_CACHE', true);
@@ -123,9 +121,7 @@
 			if (false === $sSalt)
 			{
 				// random salt
-				$sSalt = '<'.'?php //'.bin2hex(random_bytes(48));
-
-				@file_put_contents(APP_DATA_FOLDER_PATH.'SALT.php', $sSalt);
+				file_put_contents(APP_DATA_FOLDER_PATH.'SALT.php', '<'.'?php //'.bin2hex(random_bytes(48)));
 			}
 
 			define('APP_SALT', md5($sSalt.APP_PRIVATE_DATA_NAME.$sSalt));
