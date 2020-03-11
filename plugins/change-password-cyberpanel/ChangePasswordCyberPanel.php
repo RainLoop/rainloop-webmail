@@ -106,7 +106,7 @@ class ChangePasswordCyberPanel implements \RainLoop\Providers\ChangePassword\Cha
 			$password_check_query = "SELECT * FROM e_users WHERE emailOwner_id = '$sEmailDomain' AND email = '$sEmail'";
 			$result = mysqli_query($db, $password_check_query);
 			$password_check = mysqli_fetch_assoc($result);
-            
+
 			if (password_verify($sPrevPassword, substr($password_check['password'], 7))) {
 				$hashed_password = mysqli_real_escape_string($db, '{CRYPT}'.password_hash($sNewPassword, PASSWORD_BCRYPT, ['cost' => 12,]));
 				$password_update_query = "UPDATE e_users SET password = '$hashed_password' WHERE emailOwner_id = '$sEmailDomain' AND email = '$sEmail'";
@@ -132,7 +132,7 @@ class ChangePasswordCyberPanel implements \RainLoop\Providers\ChangePassword\Cha
 				$this->oLogger->WriteException($oException);
 			}
 		}
-		
+
 		return $bResult;
 	}
 }

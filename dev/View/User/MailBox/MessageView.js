@@ -1,4 +1,3 @@
-import window from 'window';
 import _ from '_';
 import $ from '$';
 import ko from 'ko';
@@ -22,7 +21,6 @@ import { $html, leftPanelDisabled, keyScopeReal, useKeyboardShortcuts, moveActio
 
 import {
 	inArray,
-	isArray,
 	isNonEmptyArray,
 	trim,
 	noop,

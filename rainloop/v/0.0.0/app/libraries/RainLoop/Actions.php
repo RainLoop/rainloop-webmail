@@ -1282,7 +1282,6 @@ class Actions
 			'forgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
 			'registrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
 			'hideSubmitButton' => (bool) $oConfig->Get('login', 'hide_submit_button', true),
-			'jsHash' => \md5(\RainLoop\Utils::GetConnectionToken()),
 			'useImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
 			'useImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'allowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),

@@ -1,10 +1,10 @@
-// [qr.js](http://neocotic.com/qr.js)  
-// (c) 2015 Alasdair Mercer  
-// Licensed under the GPL Version 3 license.  
-// Based on [jsqrencode](http://code.google.com/p/jsqrencode/)  
-// (c) 2010 tz@execpc.com  
-// Licensed under the GPL Version 3 license.  
-// For all details and documentation:  
+// [qr.js](http://neocotic.com/qr.js)
+// (c) 2015 Alasdair Mercer
+// Licensed under the GPL Version 3 license.
+// Based on [jsqrencode](http://code.google.com/p/jsqrencode/)
+// (c) 2010 tz@execpc.com
+// Licensed under the GPL Version 3 license.
+// For all details and documentation:
 // <http://neocotic.com/qr.js>
 
 (function (root) {
@@ -126,7 +126,7 @@
   var N3 = 40;
   var N4 = 10;
   // Version pattern.
-  var VERSION_BLOCK = [ 
+  var VERSION_BLOCK = [
     0xc94, 0x5bc, 0xa99, 0x4d3, 0xbf6, 0x762, 0x847, 0x60d, 0x928, 0xb78, 0x45d, 0xa17, 0x532,
     0x9a6, 0x683, 0x8c9, 0x7ec, 0xec4, 0x1e1, 0xfab, 0x08e, 0xc1a, 0x33f, 0xd75, 0x250, 0x9d5,
     0x6f0, 0x8ba, 0x79f, 0xb0b, 0x42e, 0xa64, 0x541, 0xc69
@@ -185,7 +185,7 @@
     return inNode ? new Image() : root.document.createElement('img');
   }
 
-  // Force the canvas image to be downloaded in the browser.  
+  // Force the canvas image to be downloaded in the browser.
   // Optionally, a `callback` function can be specified which will be called upon completed. Since
   // this is not an asynchronous operation, this is merely convenient and helps simplify the
   // calling code.
@@ -1008,9 +1008,9 @@
     // QR functions
     // ------------
 
-    // Generate the QR code using the data provided and render it on to a `<canvas>` element.  
+    // Generate the QR code using the data provided and render it on to a `<canvas>` element.
     // If no `<canvas>` element is specified in the argument provided a new one will be created and
-    // used.  
+    // used.
     // ECC (error correction capacity) determines how many intential errors are contained in the QR
     // code.
     canvas: function(data) {
@@ -1066,9 +1066,9 @@
       return cvs;
     },
 
-    // Generate the QR code using the data provided and render it on to a `<img>` element.  
+    // Generate the QR code using the data provided and render it on to a `<img>` element.
     // If no `<img>` element is specified in the argument provided a new one will be created and
-    // used.  
+    // used.
     // ECC (error correction capacity) determines how many intential errors are contained in the QR
     // code.
     image: function(data) {
@@ -1088,14 +1088,14 @@
     },
 
     // Generate the QR code using the data provided and render it on to a `<canvas>` element and
-    // save it as an image file.  
+    // save it as an image file.
     // If no `<canvas>` element is specified in the argument provided a new one will be created and
-    // used.  
+    // used.
     // ECC (error correction capacity) determines how many intential errors are contained in the QR
-    // code.  
+    // code.
     // If called in a browser the `path` property/argument is ignored and will simply prompt the
     // user to choose a location and file name. However, if called within node.js the file will be
-    // saved to specified path.  
+    // saved to specified path.
     // A `callback` function must be provided which will be called once the saving process has
     // started. If an error occurs it will be passed as the first argument to this function,
     // otherwise this argument will be `null`.
@@ -1138,11 +1138,11 @@
     },
 
     // Generate the QR code using the data provided and render it on to a `<canvas>` element and
-    // save it as an image file.  
+    // save it as an image file.
     // If no `<canvas>` element is specified in the argument provided a new one will be created and
-    // used.  
+    // used.
     // ECC (error correction capacity) determines how many intential errors are contained in the QR
-    // code.  
+    // code.
     // If called in a browser the `path` property/argument is ignored and will simply prompt the
     // user to choose a location and file name. However, if called within node.js the file will be
     // saved to specified path.
@@ -1162,9 +1162,9 @@
     },
 
     // Generate the QR code using the data provided and render it on to a `<canvas>` element before
-    // returning its data URI.  
+    // returning its data URI.
     // If no `<canvas>` element is specified in the argument provided a new one will be created and
-    // used.  
+    // used.
     // ECC (error correction capacity) determines how many intential errors are contained in the QR
     // code.
     toDataURL: function(data) {
@@ -1176,7 +1176,7 @@
     // Utility functions
     // -----------------
 
-    // Run qr.js in *noConflict* mode, returning the `qr` variable to its previous owner.  
+    // Run qr.js in *noConflict* mode, returning the `qr` variable to its previous owner.
     // Returns a reference to `qr`.
     noConflict: function() {
       root.qr = previousQr;

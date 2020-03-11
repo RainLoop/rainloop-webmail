@@ -7,15 +7,15 @@
  *
  * Based on:
  * https://github.com/RainLoop/rainloop-webmail/blob/master/plugins/override-smtp-credentials/index.php
- * 
+ *
  */
 
 class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	
+
 	private $imap_prefix = "mail.";
 	private $smtp_prefix = "mail.";
-	
+
 	public function Init()
 	{
 		$this->addHook('filter.smtp-credentials', 'FilterSmtpCredentials');
@@ -41,7 +41,7 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 				{
 					$aImapCredentials['Host'] = $mxhosts[0];
 				}
-				else 
+				else
 				{
 					$aImapCredentials['Host'] = $this->imap_prefix.$domain;
 				}
@@ -67,8 +67,8 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 				if(getmxrr($domain, $mxhosts) && sizeof($mxhosts) > 0)
 				{
 					$aSmtpCredentials['Host'] = $mxhosts[0];
-				} 
-				else 
+				}
+				else
 				{
 					$aSmtpCredentials['Host'] = $this->smtp_prefix.$domain;
 				}

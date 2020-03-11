@@ -16,7 +16,7 @@ class AddXOriginatingIpHeaderPlugin extends \RainLoop\Plugins\AbstractPlugin
 		{
 			$sIP = $this->Manager()->Actions()->Http()->GetClientIp(
 				!!$this->Config()->Get('plugin', 'check_proxy', false));
-			
+
 			$oMessage->SetCustomHeader(
 				\MailSo\Mime\Enumerations\Header::X_ORIGINATING_IP,
 				$this->Manager()->Actions()->Http()->IsLocalhost($sIP) ? '127.0.0.1' : $sIP

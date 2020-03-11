@@ -86,11 +86,6 @@ export const bAnimationSupported =
 /**
  * @type {boolean}
  */
-export const bXMLHttpRequestSupported = !!window.XMLHttpRequest;
-
-/**
- * @type {boolean}
- */
 export const bIsHttps =
 	window.document && window.document.location ? 'https:' === window.document.location.protocol : false;
 

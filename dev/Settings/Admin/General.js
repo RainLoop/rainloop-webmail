@@ -37,7 +37,6 @@ class GeneralAdminSettings {
 
 		this.capaThemes = CapaAdminStore.themes;
 		this.capaUserBackground = CapaAdminStore.userBackground;
-		this.capaGravatar = CapaAdminStore.gravatar;
 		this.capaAdditionalAccounts = CapaAdminStore.additionalAccounts;
 		this.capaIdentities = CapaAdminStore.identities;
 		this.capaAttachmentThumbnails = CapaAdminStore.attachmentThumbnails;
@@ -132,12 +131,6 @@ class GeneralAdminSettings {
 			this.capaTemplates.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
 					'CapaTemplates': boolToAjax(value)
-				});
-			});
-
-			this.capaGravatar.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'CapaGravatar': boolToAjax(value)
 				});
 			});
 

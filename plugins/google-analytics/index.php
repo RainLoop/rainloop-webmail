@@ -12,7 +12,7 @@ class GoogleAnalyticsPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$this->addJs('js/include.js');
 		}
 	}
-	
+
 	/**
 	 * @return array
 	 */
@@ -27,7 +27,7 @@ class GoogleAnalyticsPlugin extends \RainLoop\Plugins\AbstractPlugin
 		{
 			$oAccount->SetPlaceholder('UA-XXXXXXXX-X');
 		}
-		
+
 		return array($oAccount,
 			\RainLoop\Plugins\Property::NewInstance('domain_name')->SetLabel('Domain Name')
 				->SetAllowedInJs(true)

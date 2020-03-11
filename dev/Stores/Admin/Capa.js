@@ -6,7 +6,6 @@ class CapaAdminStore {
 	constructor() {
 		this.additionalAccounts = ko.observable(false);
 		this.identities = ko.observable(false);
-		this.gravatar = ko.observable(false);
 		this.attachmentThumbnails = ko.observable(false);
 		this.sieve = ko.observable(false);
 		this.filters = ko.observable(false);
@@ -21,7 +20,6 @@ class CapaAdminStore {
 	populate() {
 		this.additionalAccounts(Settings.capa(Capa.AdditionalAccounts));
 		this.identities(Settings.capa(Capa.Identities));
-		this.gravatar(Settings.capa(Capa.Gravatar));
 		this.attachmentThumbnails(Settings.capa(Capa.AttachmentThumbnails));
 		this.sieve(Settings.capa(Capa.Sieve));
 		this.filters(Settings.capa(Capa.Filters));

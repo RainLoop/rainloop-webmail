@@ -11,7 +11,7 @@ class DirectAdminChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 	 * @var string
 	 */
 	private $iPort = 2222;
-	
+
 	/**
 	 * @var string
 	 */
@@ -21,7 +21,7 @@ class DirectAdminChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 	 * @var \MailSo\Log\Logger
 	 */
 	private $oLogger = null;
-	
+
 	/**
 	 * @param string $sHost
 	 * @param int $iPort
@@ -97,7 +97,7 @@ class DirectAdminChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 			$sHost = \str_replace('{user:host-smtp}', $oAccount->Domain()->OutHost(), $sHost);
 			$sHost = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sHost);
 			$sHost = \rtrim($this->sHost, '/\\');
-			
+
 			if (!\preg_match('/^http[s]?:\/\//i', $sHost))
 			{
 				$sHost = 'http://'.$sHost;

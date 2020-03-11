@@ -1,4 +1,3 @@
-import window from 'window';
 import _ from '_';
 import ko from 'ko';
 
@@ -11,7 +10,7 @@ import {
 	Notification
 } from 'Common/Enums';
 
-import { trim, inArray, pInt, convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
+import { trim, inArray, convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
 
 import { $win } from 'Common/Globals';
 import { getNotification, getNotificationFromResponse, reload as translatorReload } from 'Common/Translator';
@@ -289,8 +288,7 @@ class LoginUserView extends AbstractViewNext {
 
 	onBuild() {
 		const signMeLocal = Local.get(ClientSideKeyName.LastSignMe),
-			signMe = (Settings.settingsGet('SignMe') || 'unused').toLowerCase(),
-			jsHash = Settings.appSettingsGet('jsHash');
+			signMe = (Settings.settingsGet('SignMe') || 'unused').toLowerCase();
 
 		switch (signMe) {
 			case LoginSignMeTypeAsString.DefaultOff:

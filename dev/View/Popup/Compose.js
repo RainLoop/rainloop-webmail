@@ -34,13 +34,13 @@ import {
 } from 'Common/Utils';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { bXMLHttpRequestSupported, bMobileDevice } from 'Common/Globals';
 import { upload } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode } from 'Common/Translator';
 import { format as momentorFormat } from 'Common/Momentor';
 import { getMessageFlagsFromCache, setMessageFlagsToCache, setFolderHash } from 'Common/Cache';
 
 import { HtmlEditor } from 'Common/HtmlEditor';
+import { bMobileDevice } from 'Common/Globals';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';

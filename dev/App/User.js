@@ -1125,8 +1125,7 @@ class AppUser extends AbstractApp {
 
 		let contactsSyncInterval = pInt(Settings.settingsGet('ContactsSyncInterval'));
 
-		const jsHash = Settings.appSettingsGet('jsHash'),
-			startupUrl = pString(Settings.settingsGet('StartupUrl'));
+		const startupUrl = pString(Settings.settingsGet('StartupUrl'));
 
 		if (progressJs) {
 			progressJs.set(90);

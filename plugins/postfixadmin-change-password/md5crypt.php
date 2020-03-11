@@ -52,7 +52,7 @@ function md5crypt($pw, $salt = "", $magic = "")
 		{
 			$ctx .= $pw[0];
 		}
-		
+
         $i = $i >> 1;
     }
 

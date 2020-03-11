@@ -1,8 +1,6 @@
 import _ from '_';
-import { Capa, MessageSetAction } from 'Common/Enums';
+import { MessageSetAction } from 'Common/Enums';
 import { trim, pInt, isArray } from 'Common/Utils';
-import * as Links from 'Common/Links';
-import * as Settings from 'Storage/Settings';
 
 let FOLDERS_CACHE = {},
 	FOLDERS_NAME_CACHE = {},
@@ -12,8 +10,7 @@ let FOLDERS_CACHE = {},
 	NEW_MESSAGE_CACHE = {},
 	inboxFolderName = '';
 
-const REQUESTED_MESSAGE_CACHE = {},
-	capaGravatar = Settings.capa(Capa.Gravatar);
+const REQUESTED_MESSAGE_CACHE = {};
 
 /**
  * @returns {void}
@@ -33,7 +30,7 @@ export function clear() {
  */
 export function getUserPic(email, callback) {
 	email = trim(email);
-	callback(capaGravatar && '' !== email ? Links.avatarLink(email) : '', email);
+	callback('', email);
 }
 
 /**

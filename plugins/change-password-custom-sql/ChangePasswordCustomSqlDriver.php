@@ -169,9 +169,9 @@ class ChangePasswordCustomSqlDriver implements \RainLoop\Providers\ChangePasswor
 
 			$placeholders = array(
 				':email' => $sEmail,
-				':oldpass' => $sPrevPassword, 
-				':newpass' => $sNewPassword, 
-				':domain' => $sEmailDomain, 
+				':oldpass' => $sPrevPassword,
+				':newpass' => $sNewPassword,
+				':domain' => $sEmailDomain,
 				':username' => $sEmailUser
 			);
 
