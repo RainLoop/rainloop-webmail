@@ -172,7 +172,7 @@ class Api
 		}
 	}
 
-	protected static function Version() : string
+	public static function Version() : string
 	{
 		return APP_VERSION;
 	}

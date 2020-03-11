@@ -21,7 +21,6 @@ window.progressJs.onbeforeend(() => {
 	}
 });
 
-require('../vendors/modernizr/modernizr-custom.js');
 require('Common/Booter');
 
 if (window.__runBoot) {

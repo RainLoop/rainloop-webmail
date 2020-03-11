@@ -56,17 +56,13 @@ import {
 	mailBox,
 	root,
 	openPgpWorkerJs,
-	openPgpJs,
-	socialGoogle,
-	socialTwitter,
-	socialFacebook
+	openPgpJs
 } from 'Common/Links';
 
 import * as Events from 'Common/Events';
 
 import { getNotification, i18n } from 'Common/Translator';
 
-import SocialStore from 'Stores/Social';
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
 import NotificationStore from 'Stores/User/Notification';
@@ -160,8 +156,6 @@ class AppUser extends AbstractApp {
 					.removeAttr('style');
 			}, Magics.Time1s);
 		}
-
-		this.socialUsers = _.bind(this.socialUsers, this);
 	}
 
 	remote() {
@@ -854,72 +848,6 @@ class AppUser extends AbstractApp {
 		}
 	}
 
-	googleConnect() {
-		window.open(
-			socialGoogle(),
-			'Google',
-			'left=200,top=100,width=650,height=600,menubar=no,status=no,resizable=yes,scrollbars=yes'
-		);
-	}
-
-	twitterConnect() {
-		window.open(
-			socialTwitter(),
-			'Twitter',
-			'left=200,top=100,width=650,height=350,menubar=no,status=no,resizable=yes,scrollbars=yes'
-		);
-	}
-
-	facebookConnect() {
-		window.open(
-			socialFacebook(),
-			'Facebook',
-			'left=200,top=100,width=650,height=335,menubar=no,status=no,resizable=yes,scrollbars=yes'
-		);
-	}
-
-	/**
-	 * @param {boolean=} fireAllActions = false
-	 */
-	socialUsers(fireAllActions = false) {
-		if (true === fireAllActions) {
-			SocialStore.google.loading(true);
-			SocialStore.facebook.loading(true);
-			SocialStore.twitter.loading(true);
-		}
-
-		Remote.socialUsers((result, data) => {
-			if (StorageResultType.Success === result && data && data.Result) {
-				SocialStore.google.userName(data.Result.Google || '');
-				SocialStore.facebook.userName(data.Result.Facebook || '');
-				SocialStore.twitter.userName(data.Result.Twitter || '');
-			} else {
-				SocialStore.google.userName('');
-				SocialStore.facebook.userName('');
-				SocialStore.twitter.userName('');
-			}
-
-			SocialStore.google.loading(false);
-			SocialStore.facebook.loading(false);
-			SocialStore.twitter.loading(false);
-		});
-	}
-
-	googleDisconnect() {
-		SocialStore.google.loading(true);
-		Remote.googleDisconnect(this.socialUsers);
-	}
-
-	facebookDisconnect() {
-		SocialStore.facebook.loading(true);
-		Remote.facebookDisconnect(this.socialUsers);
-	}
-
-	twitterDisconnect() {
-		SocialStore.twitter.loading(true);
-		Remote.twitterDisconnect(this.socialUsers);
-	}
-
 	/**
 	 * @param {string} query
 	 * @param {Function} autocompleteCallback
@@ -1198,10 +1126,7 @@ class AppUser extends AbstractApp {
 		let contactsSyncInterval = pInt(Settings.settingsGet('ContactsSyncInterval'));
 
 		const jsHash = Settings.appSettingsGet('jsHash'),
-			startupUrl = pString(Settings.settingsGet('StartupUrl')),
-			allowGoogle = Settings.settingsGet('AllowGoogleSocial'),
-			allowFacebook = Settings.settingsGet('AllowFacebookSocial'),
-			allowTwitter = Settings.settingsGet('AllowTwitterSocial');
+			startupUrl = pString(Settings.settingsGet('StartupUrl'));
 
 		if (progressJs) {
 			progressJs.set(90);
@@ -1275,10 +1200,6 @@ class AppUser extends AbstractApp {
 							Settings.capa(Capa.Settings) ? SettingsUserScreen : null
 							// false ? AboutUserScreen : null
 						]);
-
-						if (allowGoogle || allowFacebook || allowTwitter) {
-							this.socialUsers(true);
-						}
 
 						Events.sub('interval.2m', () => this.folderInformation(getFolderInboxName()));
 						Events.sub('interval.3m', () => {
@@ -1354,27 +1275,6 @@ class AppUser extends AbstractApp {
 		} else {
 			this.bootend();
 			this.bootstartLoginScreen();
-		}
-
-		if (allowGoogle) {
-			window['rl_' + jsHash + '_google_service'] = () => {
-				SocialStore.google.loading(true);
-				this.socialUsers();
-			};
-		}
-
-		if (allowFacebook) {
-			window['rl_' + jsHash + '_facebook_service'] = () => {
-				SocialStore.facebook.loading(true);
-				this.socialUsers();
-			};
-		}
-
-		if (allowTwitter) {
-			window['rl_' + jsHash + '_twitter_service'] = () => {
-				SocialStore.twitter.loading(true);
-				this.socialUsers();
-			};
 		}
 
 		Events.sub('interval.1m', () => momentReload());

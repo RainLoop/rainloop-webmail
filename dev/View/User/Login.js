@@ -14,7 +14,6 @@ import {
 import { trim, inArray, pInt, convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
 
 import { $win } from 'Common/Globals';
-import { socialFacebook, socialGoogle, socialTwitter } from 'Common/Links';
 import { getNotification, getNotificationFromResponse, reload as translatorReload } from 'Common/Translator';
 
 import * as Plugins from 'Common/Plugins';
@@ -141,19 +140,6 @@ class LoginUserView extends AbstractViewNext {
 
 		this.signMeVisibility = ko.computed(() => LoginSignMeType.Unused !== this.signMeType());
 
-		this.facebookLoginEnabled = ko.observable(false);
-		this.googleLoginEnabled = ko.observable(false);
-		this.googleGmailLoginEnabled = ko.observable(false);
-		this.twitterLoginEnabled = ko.observable(false);
-
-		this.socialLoginEnabled = ko.computed(() => {
-			const bF = this.facebookLoginEnabled(),
-				bG = this.googleLoginEnabled(),
-				bT = this.twitterLoginEnabled();
-
-			return bF || bG || bT;
-		});
-
 		if (Settings.settingsGet('AdditionalLoginError') && !this.submitError()) {
 			this.submitError(Settings.settingsGet('AdditionalLoginError'));
 		}
@@ -161,30 +147,6 @@ class LoginUserView extends AbstractViewNext {
 
 	windowOpenFeatures(wh) {
 		return `left=200,top=100,width=${wh},height=${wh},menubar=no,status=no,resizable=yes,scrollbars=yes`;
-	}
-
-	@command((self) => !self.submitRequest() && self.facebookLoginEnabled())
-	facebookCommand() {
-		window.open(socialFacebook(), 'Facebook', this.windowOpenFeatures(500));
-		return true;
-	}
-
-	@command((self) => !self.submitRequest() && self.googleLoginEnabled())
-	googleCommand() {
-		window.open(socialGoogle(), 'Google', this.windowOpenFeatures(550));
-		return true;
-	}
-
-	@command((self) => !self.submitRequest() && self.googleGmailLoginEnabled())
-	googleGmailCommand() {
-		window.open(socialGoogle(true), 'Google', this.windowOpenFeatures(550));
-		return true;
-	}
-
-	@command((self) => !self.submitRequest() && self.twitterLoginEnabled())
-	twitterCommand() {
-		window.open(socialTwitter(), 'Twitter', this.windowOpenFeatures(500));
-		return true;
 	}
 
 	@command((self) => !self.submitRequest())
@@ -328,25 +290,7 @@ class LoginUserView extends AbstractViewNext {
 	onBuild() {
 		const signMeLocal = Local.get(ClientSideKeyName.LastSignMe),
 			signMe = (Settings.settingsGet('SignMe') || 'unused').toLowerCase(),
-			jsHash = Settings.appSettingsGet('jsHash'),
-			fSocial = (iErrorCode) => {
-				iErrorCode = pInt(iErrorCode);
-				if (0 === iErrorCode) {
-					this.submitRequest(true);
-					getApp().loginAndLogoutReload(false);
-				} else {
-					this.submitError(getNotification(iErrorCode));
-				}
-			};
-
-		this.facebookLoginEnabled(!!Settings.settingsGet('AllowFacebookSocial'));
-		this.twitterLoginEnabled(!!Settings.settingsGet('AllowTwitterSocial'));
-		this.googleLoginEnabled(
-			!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuth')
-		);
-		this.googleGmailLoginEnabled(
-			!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialAuthGmail')
-		);
+			jsHash = Settings.appSettingsGet('jsHash');
 
 		switch (signMe) {
 			case LoginSignMeTypeAsString.DefaultOff:
@@ -374,18 +318,6 @@ class LoginUserView extends AbstractViewNext {
 
 		this.email(AppStore.devEmail);
 		this.password(AppStore.devPassword);
-
-		if (this.googleLoginEnabled() || this.googleGmailLoginEnabled()) {
-			window['rl_' + jsHash + '_google_login_service'] = fSocial;
-		}
-
-		if (this.facebookLoginEnabled()) {
-			window['rl_' + jsHash + '_facebook_login_service'] = fSocial;
-		}
-
-		if (this.twitterLoginEnabled()) {
-			window['rl_' + jsHash + '_twitter_login_service'] = fSocial;
-		}
 
 		_.delay(() => {
 			LanguageStore.language.subscribe((value) => {

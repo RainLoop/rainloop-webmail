@@ -64,10 +64,6 @@ config.paths.css = {
 			'vendors/Progress.js/minified/progressjs.min.css',
 			'dev/Styles/_progressjs.css'
 		]
-	},
-	social: {
-		name: 'social.css',
-		src: ['vendors/fontastic/styles.css', 'dev/Styles/_social.css']
 	}
 };
 

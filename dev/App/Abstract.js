@@ -26,7 +26,6 @@ import * as Settings from 'Storage/Settings';
 
 import LanguageStore from 'Stores/Language';
 import ThemeStore from 'Stores/Theme';
-import SocialStore from 'Stores/Social';
 
 import { routeOff, setHash } from 'Knoin/Knoin';
 import { AbstractBoot } from 'Knoin/AbstractBoot';
@@ -38,7 +37,6 @@ class AbstractApp extends AbstractBoot {
 	constructor() {
 		super();
 
-		this.googlePreviewSupportedCache = null;
 		this.isLocalAutocomplete = true;
 		this.iframe = null;
 		this.lastErrorTime = 0;
@@ -138,18 +136,6 @@ class AbstractApp extends AbstractBoot {
 		}
 
 		return true;
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	googlePreviewSupported() {
-		if (null === this.googlePreviewSupportedCache) {
-			this.googlePreviewSupportedCache =
-				!!Settings.settingsGet('AllowGoogleSocial') && !!Settings.settingsGet('AllowGoogleSocialPreview');
-		}
-
-		return this.googlePreviewSupportedCache;
 	}
 
 	/**
@@ -345,7 +331,6 @@ class AbstractApp extends AbstractBoot {
 
 		LanguageStore.populate();
 		ThemeStore.populate();
-		SocialStore.populate();
 	}
 }
 

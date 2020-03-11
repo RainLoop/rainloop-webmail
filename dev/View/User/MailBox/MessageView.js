@@ -43,7 +43,6 @@ import { attachmentDownload } from 'Common/Links';
 
 import { getUserPic, storeMessageFlagsToCache } from 'Common/Cache';
 
-import SocialStore from 'Stores/Social';
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
 import AccountStore from 'Stores/User/Account';
@@ -144,46 +143,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.downloadAsZipLoading = ko.observable(false);
 		this.downloadAsZipError = ko.observable(false).extend({ falseTimeout: 7000 });
 
-		this.saveToOwnCloudAllowed = ko.computed(
-			() => -1 < inArray('owncloud', this.attachmentsActions()) && this.allowAttachmnetControls()
-		);
-
-		this.saveToOwnCloudLoading = ko.observable(false);
-		this.saveToOwnCloudSuccess = ko.observable(false).extend({ falseTimeout: 2000 });
-		this.saveToOwnCloudError = ko.observable(false).extend({ falseTimeout: 7000 });
-
-		this.saveToOwnCloudSuccess.subscribe((v) => {
-			if (v) {
-				this.saveToOwnCloudError(false);
-			}
-		});
-
-		this.saveToOwnCloudError.subscribe((v) => {
-			if (v) {
-				this.saveToOwnCloudSuccess(false);
-			}
-		});
-
-		this.saveToDropboxAllowed = ko.computed(
-			() => -1 < inArray('dropbox', this.attachmentsActions()) && this.allowAttachmnetControls()
-		);
-
-		this.saveToDropboxLoading = ko.observable(false);
-		this.saveToDropboxSuccess = ko.observable(false).extend({ falseTimeout: 2000 });
-		this.saveToDropboxError = ko.observable(false).extend({ falseTimeout: 7000 });
-
-		this.saveToDropboxSuccess.subscribe((v) => {
-			if (v) {
-				this.saveToDropboxError(false);
-			}
-		});
-
-		this.saveToDropboxError.subscribe((v) => {
-			if (v) {
-				this.saveToDropboxSuccess(false);
-			}
-		});
-
 		this.showAttachmnetControls.subscribe((v) => {
 			if (this.message()) {
 				_.each(this.message().attachments(), (item) => {
@@ -242,9 +201,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.archiveCommand = createCommandActionHelper(FolderType.Archive, true);
 		this.spamCommand = createCommandActionHelper(FolderType.Spam, true);
 		this.notSpamCommand = createCommandActionHelper(FolderType.NotSpam, true);
-
-		this.dropboxEnabled = SocialStore.dropbox.enabled;
-		this.dropboxApiKey = SocialStore.dropbox.apiKey;
 
 		// viewer
 
@@ -606,8 +562,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0');
 		});
 
-		SocialStore.appendDropbox();
-
 		this.oHeaderDom = $('.messageItemHeader', dom);
 		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
 
@@ -951,77 +905,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				.catch(() => {
 					this.downloadAsZipError(true);
 				});
-		} else {
-			this.highlightUnselectedAttachments(true);
-		}
-	}
-
-	saveToOwnCloud() {
-		const hashes = this.getAttachmentsHashes();
-		if (0 < hashes.length) {
-			Promises.attachmentsActions('OwnCloud', hashes, this.saveToOwnCloudLoading)
-				.then((result) => {
-					if (result && result.Result) {
-						this.saveToOwnCloudSuccess(true);
-					} else {
-						this.saveToOwnCloudError(true);
-					}
-				})
-				.catch(() => {
-					this.saveToOwnCloudError(true);
-				});
-		} else {
-			this.highlightUnselectedAttachments(true);
-		}
-	}
-
-	saveToDropbox() {
-		const files = [],
-			hashes = this.getAttachmentsHashes();
-
-		if (0 < hashes.length) {
-			if (window.Dropbox) {
-				Promises.attachmentsActions('Dropbox', hashes, this.saveToDropboxLoading)
-					.then((result) => {
-						if (result && result.Result && result.Result.Url && result.Result.ShortLife && result.Result.Files) {
-							if (window.Dropbox && isArray(result.Result.Files)) {
-								_.each(result.Result.Files, (item) => {
-									files.push({
-										url: result.Result.Url + attachmentDownload(item.Hash, result.Result.ShortLife),
-										filename: item.FileName
-									});
-								});
-
-								window.Dropbox.save({
-									files: files,
-									progress: () => {
-										this.saveToDropboxLoading(true);
-										this.saveToDropboxError(false);
-										this.saveToDropboxSuccess(false);
-									},
-									cancel: () => {
-										this.saveToDropboxSuccess(false);
-										this.saveToDropboxError(false);
-										this.saveToDropboxLoading(false);
-									},
-									success: () => {
-										this.saveToDropboxSuccess(true);
-										this.saveToDropboxLoading(false);
-									},
-									error: () => {
-										this.saveToDropboxError(true);
-										this.saveToDropboxLoading(false);
-									}
-								});
-							} else {
-								this.saveToDropboxError(true);
-							}
-						}
-					})
-					.catch(() => {
-						this.saveToDropboxError(true);
-					});
-			}
 		} else {
 			this.highlightUnselectedAttachments(true);
 		}

@@ -49,7 +49,6 @@ import AccountStore from 'Stores/User/Account';
 import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
 import MessageStore from 'Stores/User/Message';
-import SocialStore from 'Stores/Social';
 
 import Remote from 'Remote/User/Ajax';
 
@@ -329,21 +328,6 @@ class ComposePopupView extends AbstractViewNext {
 		this.showBcc.subscribe(this.resizerTrigger);
 		this.showReplyTo.subscribe(this.resizerTrigger);
 
-		this.dropboxEnabled = SocialStore.dropbox.enabled;
-		this.dropboxApiKey = SocialStore.dropbox.apiKey;
-
-		this.driveEnabled = ko.observable(
-			bXMLHttpRequestSupported &&
-				!!Settings.settingsGet('AllowGoogleSocial') &&
-				!!Settings.settingsGet('AllowGoogleSocialDrive') &&
-				!!Settings.settingsGet('GoogleClientID') &&
-				!!Settings.settingsGet('GoogleApiKey')
-		);
-
-		this.driveVisible = ko.observable(false);
-
-		this.driveCallback = _.bind(this.driveCallback, this);
-
 		this.onMessageUploadAttachments = _.bind(this.onMessageUploadAttachments, this);
 
 		this.bDisabeCloseOnEsc = true;
@@ -528,28 +512,6 @@ class ComposePopupView extends AbstractViewNext {
 				showScreenPopup(require('View/Popup/Contacts'), [true, this.sLastFocusedField]);
 			}, Magics.Time200ms);
 		}
-	}
-
-	@command((self) => self.dropboxEnabled())
-	dropboxCommand() {
-		if (window.Dropbox) {
-			window.Dropbox.choose({
-				success: (files) => {
-					if (files && files[0] && files[0].link) {
-						this.addDropboxAttachment(files[0]);
-					}
-				},
-				linkType: 'direct',
-				multiselect: false
-			});
-		}
-		return true;
-	}
-
-	@command((self) => self.driveEnabled())
-	driveCommand() {
-		this.driveOpenPopup();
-		return true;
 	}
 
 	autosaveFunction() {
@@ -1289,152 +1251,11 @@ class ComposePopupView extends AbstractViewNext {
 		Events.sub('window.resize.real', this.resizerTrigger);
 		Events.sub('window.resize.real', _.debounce(this.resizerTrigger, Magics.Time50ms));
 
-		SocialStore.appendDropbox();
-
-		if (this.driveEnabled()) {
-			$.getScript('https://apis.google.com/js/api.js', () => {
-				if (window.gapi) {
-					this.driveVisible(true);
-				}
-			});
-		}
-
 		window.setInterval(() => {
 			if (this.modalVisibility() && this.oEditor) {
 				this.oEditor.resize();
 			}
 		}, Magics.Time5s);
-	}
-
-	driveCallback(accessToken, data) {
-		if (
-			data &&
-			window.XMLHttpRequest &&
-			window.google &&
-			data[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED &&
-			data[window.google.picker.Response.DOCUMENTS] &&
-			data[window.google.picker.Response.DOCUMENTS][0] &&
-			data[window.google.picker.Response.DOCUMENTS][0].id
-		) {
-			const request = new window.XMLHttpRequest();
-			request.open(
-				'GET',
-				'https://www.googleapis.com/drive/v2/files/' + data[window.google.picker.Response.DOCUMENTS][0].id
-			);
-			request.setRequestHeader('Authorization', 'Bearer ' + accessToken);
-			request.addEventListener('load', () => {
-				if (request && request.responseText) {
-					const response = window.JSON.parse(request.responseText),
-						fExport = (item, mimeType, ext) => {
-							if (item && item.exportLinks) {
-								if (item.exportLinks[mimeType]) {
-									response.downloadUrl = item.exportLinks[mimeType];
-									response.title = item.title + '.' + ext;
-									response.mimeType = mimeType;
-								} else if (item.exportLinks['application/pdf']) {
-									response.downloadUrl = item.exportLinks['application/pdf'];
-									response.title = item.title + '.pdf';
-									response.mimeType = 'application/pdf';
-								}
-							}
-						};
-
-					if (response && !response.downloadUrl && response.mimeType && response.exportLinks) {
-						switch (response.mimeType.toString().toLowerCase()) {
-							case 'application/vnd.google-apps.document':
-								fExport(response, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'docx');
-								break;
-							case 'application/vnd.google-apps.spreadsheet':
-								fExport(response, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'xlsx');
-								break;
-							case 'application/vnd.google-apps.drawing':
-								fExport(response, 'image/png', 'png');
-								break;
-							case 'application/vnd.google-apps.presentation':
-								fExport(response, 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'pptx');
-								break;
-							default:
-								fExport(response, 'application/pdf', 'pdf');
-								break;
-						}
-					}
-
-					if (response && response.downloadUrl) {
-						this.addDriveAttachment(response, accessToken);
-					}
-				}
-			});
-
-			request.send();
-		}
-	}
-
-	driveCreatePiker(authToken) {
-		if (window.gapi && authToken && authToken.access_token) {
-			window.gapi.load('picker', {
-				callback: () => {
-					if (window.google && window.google.picker) {
-						const drivePicker = new window.google.picker.PickerBuilder()
-							// .addView(window.google.picker.ViewId.FOLDERS)
-							.addView(window.google.picker.ViewId.DOCS)
-							.setAppId(Settings.settingsGet('GoogleClientID'))
-							.setOAuthToken(authToken.access_token)
-							.setCallback(_.bind(this.driveCallback, this, authToken.access_token))
-							.enableFeature(window.google.picker.Feature.NAV_HIDDEN)
-							// .setOrigin(window.location.protocol + '//' + window.location.host)
-							.build();
-
-						drivePicker.setVisible(true);
-					}
-				}
-			});
-		}
-	}
-
-	driveOpenPopup() {
-		if (window.gapi) {
-			window.gapi.load('auth', {
-				callback: () => {
-					const authToken = window.gapi.auth.getToken(),
-						fResult = (authResult) => {
-							if (authResult && !authResult.error) {
-								const token = window.gapi.auth.getToken();
-								if (token) {
-									this.driveCreatePiker(token);
-								}
-
-								return true;
-							}
-
-							return false;
-						};
-
-					if (!authToken) {
-						window.gapi.auth.authorize(
-							{
-								'client_id': Settings.settingsGet('GoogleClientID'),
-								'scope': 'https://www.googleapis.com/auth/drive.readonly',
-								'immediate': true
-							},
-							(authResult) => {
-								if (!fResult(authResult)) {
-									window.gapi.auth.authorize(
-										{
-											'client_id': Settings.settingsGet('GoogleClientID'),
-											'scope': 'https://www.googleapis.com/auth/drive.readonly',
-											'immediate': false
-										},
-										fResult
-									);
-								}
-							}
-						);
-					} else {
-						this.driveCreatePiker(authToken);
-					}
-				}
-			});
-		}
 	}
 
 	/**
@@ -1641,83 +1462,6 @@ class ComposePopupView extends AbstractViewNext {
 		this.attachmentsPlace(true);
 
 		return attachment;
-	}
-
-	/**
-	 * @param {Object} dropboxFile
-	 * @returns {boolean}
-	 */
-	addDropboxAttachment(dropboxFile) {
-		const attachmentSizeLimit = pInt(Settings.settingsGet('AttachmentLimit')),
-			mSize = dropboxFile.bytes,
-			attachment = this.addAttachmentHelper(dropboxFile.link, dropboxFile.name, mSize);
-
-		if (0 < mSize && 0 < attachmentSizeLimit && attachmentSizeLimit < mSize) {
-			attachment.uploading(false).complete(true);
-			attachment.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
-			return false;
-		}
-
-		Remote.composeUploadExternals(
-			(statusResult, data) => {
-				let result = false;
-				attachment.uploading(false).complete(true);
-
-				if (StorageResultType.Success === statusResult && data && data.Result) {
-					if (data.Result[attachment.id]) {
-						result = true;
-						attachment.tempName(data.Result[attachment.id]);
-					}
-				}
-
-				if (!result) {
-					attachment.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
-				}
-			},
-			[dropboxFile.link]
-		);
-
-		return true;
-	}
-
-	/**
-	 * @param {Object} driveFile
-	 * @param {string} accessToken
-	 * @returns {boolean}
-	 */
-	addDriveAttachment(driveFile, accessToken) {
-		const attachmentSizeLimit = pInt(Settings.settingsGet('AttachmentLimit')),
-			size = driveFile.fileSize ? pInt(driveFile.fileSize) : 0,
-			attachment = this.addAttachmentHelper(driveFile.downloadUrl, driveFile.title, size);
-
-		if (0 < size && 0 < attachmentSizeLimit && attachmentSizeLimit < size) {
-			attachment.uploading(false).complete(true);
-			attachment.error(i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG'));
-			return false;
-		}
-
-		Remote.composeUploadDrive(
-			(statusResult, data) => {
-				let result = false;
-				attachment.uploading(false).complete(true);
-
-				if (StorageResultType.Success === statusResult && data && data.Result) {
-					if (data.Result[attachment.id]) {
-						result = true;
-						attachment.tempName(data.Result[attachment.id][0]);
-						attachment.size(pInt(data.Result[attachment.id][1]));
-					}
-				}
-
-				if (!result) {
-					attachment.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
-				}
-			},
-			driveFile.downloadUrl,
-			accessToken
-		);
-
-		return true;
 	}
 
 	/**

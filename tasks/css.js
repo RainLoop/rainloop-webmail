@@ -41,19 +41,6 @@ const cssMainBuild = () => {
 		.pipe(livereload());
 };
 
-const cssSocialBuild = () => {
-	const autoprefixer = require('gulp-autoprefixer'),
-		src = config.paths.css.social.src;
-	return gulp
-		.src(src)
-		.pipe(expect.real({ errorOnFailure: true }, src))
-		.pipe(concat(config.paths.css.social.name))
-		.pipe(autoprefixer())
-		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(config.paths.staticCSS));
-};
-
 const cssMainMin = () => {
 	const cleanCss = require('gulp-clean-css');
 	return gulp
@@ -64,18 +51,8 @@ const cssMainMin = () => {
 		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
-const cssSocialMin = () => {
-	const cleanCss = require('gulp-clean-css');
-	return gulp
-		.src(config.paths.staticCSS + config.paths.css.social.name)
-		.pipe(cleanCss())
-		.pipe(rename({ suffix: '.min' }))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(config.paths.staticCSS));
-};
-
-const cssBuild = gulp.parallel(cssMainBuild, cssSocialBuild);
-const cssMin = gulp.parallel(cssMainMin, cssSocialMin);
+const cssBuild = gulp.parallel(cssMainBuild);
+const cssMin = gulp.parallel(cssMainMin);
 
 const cssLint = (done) => done();
 

@@ -8,7 +8,6 @@ const { css, cssLint } = require('./tasks/css');
 const { vendors } = require('./tasks/vendors');
 const { watchCss } = require('./tasks/watch');
 const { rainloop } = require('./tasks/rainloop');
-const { owncloud } = require('./tasks/owncloud');
 
 const clean = gulp.series(cleanStatic);
 
@@ -27,5 +26,4 @@ exports.default = build;
 exports.watchCss = watchCss;
 
 exports.rainloop = gulp.series(build, rainloop);
-exports.owncloud = gulp.series(build, owncloud);
-exports.all = gulp.series(exports.rainloop, exports.owncloud);
+exports.all = gulp.series(exports.rainloop);

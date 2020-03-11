@@ -8,7 +8,6 @@ import { DomainsAdminSettings } from 'Settings/Admin/Domains';
 import { LoginAdminSettings } from 'Settings/Admin/Login';
 import { ContactsAdminSettings } from 'Settings/Admin/Contacts';
 import { SecurityAdminSettings } from 'Settings/Admin/Security';
-import { SocialAdminSettings } from 'Settings/Admin/Social';
 import { PluginsAdminSettings } from 'Settings/Admin/Plugins';
 import { PackagesAdminSettings } from 'Settings/Admin/Packages';
 import { AboutAdminSettings } from 'Settings/Admin/About';
@@ -56,13 +55,6 @@ class SettingsAdminScreen extends AbstractSettingsScreen {
 		addSettingsViewModel(ContactsAdminSettings, 'AdminSettingsContacts', 'TABS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 
 		addSettingsViewModel(SecurityAdminSettings, 'AdminSettingsSecurity', 'TABS_LABELS/LABEL_SECURITY_NAME', 'security');
-
-		addSettingsViewModel(
-			SocialAdminSettings,
-			'AdminSettingsSocial',
-			'TABS_LABELS/LABEL_INTEGRATION_NAME',
-			'integrations'
-		);
 
 		addSettingsViewModel(PluginsAdminSettings, 'AdminSettingsPlugins', 'TABS_LABELS/LABEL_PLUGINS_NAME', 'plugins');
 

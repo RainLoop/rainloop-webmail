@@ -16,7 +16,6 @@ import { ContactsUserSettings } from 'Settings/User/Contacts';
 import { AccountsUserSettings } from 'Settings/User/Accounts';
 import { FiltersUserSettings } from 'Settings/User/Filters';
 import { SecurityUserSettings } from 'Settings/User/Security';
-import { SocialUserSettings } from 'Settings/User/Social';
 import { ChangePasswordUserSettings } from 'Settings/User/ChangePassword';
 import { TemplatesUserSettings } from 'Settings/User/Templates';
 import { FoldersUserSettings } from 'Settings/User/Folders';
@@ -78,15 +77,6 @@ class SettingsUserScreen extends AbstractSettingsScreen {
 
 		if (Settings.capa(Capa.AutoLogout) || Settings.capa(Capa.TwoFactor)) {
 			addSettingsViewModel(SecurityUserSettings, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
-		}
-
-		if (
-			AccountStore.isRootAccount() &&
-			((Settings.settingsGet('AllowGoogleSocial') && Settings.settingsGet('AllowGoogleSocialAuth')) ||
-				Settings.settingsGet('AllowFacebookSocial') ||
-				Settings.settingsGet('AllowTwitterSocial'))
-		) {
-			addSettingsViewModel(SocialUserSettings, 'SettingsSocial', 'SETTINGS_LABELS/LABEL_SOCIAL_NAME', 'social');
 		}
 
 		if (Settings.settingsGet('ChangePasswordIsAllowed')) {

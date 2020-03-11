@@ -909,55 +909,6 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	clearUserBackground(fCallback) {
 		this.defaultRequest(fCallback, 'ClearUserBackground');
 	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	facebookUser(fCallback) {
-		this.defaultRequest(fCallback, 'SocialFacebookUserInformation');
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	facebookDisconnect(fCallback) {
-		this.defaultRequest(fCallback, 'SocialFacebookDisconnect');
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	twitterUser(fCallback) {
-		this.defaultRequest(fCallback, 'SocialTwitterUserInformation');
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	twitterDisconnect(fCallback) {
-		this.defaultRequest(fCallback, 'SocialTwitterDisconnect');
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	googleUser(fCallback) {
-		this.defaultRequest(fCallback, 'SocialGoogleUserInformation');
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	googleDisconnect(fCallback) {
-		this.defaultRequest(fCallback, 'SocialGoogleDisconnect');
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	socialUsers(fCallback) {
-		this.defaultRequest(fCallback, 'SocialUsers');
-	}
 }
 
 export default new RemoteUserAjax();

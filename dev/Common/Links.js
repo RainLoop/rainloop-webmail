@@ -256,35 +256,6 @@ export function exportContactsCsv() {
 }
 
 /**
- * @param {boolean} xauth = false
- * @returns {string}
- */
-export function socialGoogle(xauth = false) {
-	return (
-		SERVER_PREFIX +
-		'SocialGoogle' +
-		('' !== AUTH_PREFIX ? '/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/' : '') +
-		(xauth ? '&xauth=1' : '')
-	);
-}
-
-/**
- * @returns {string}
- */
-export function socialTwitter() {
-	return SERVER_PREFIX + 'SocialTwitter' + ('' !== AUTH_PREFIX ? '/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/' : '');
-}
-
-/**
- * @returns {string}
- */
-export function socialFacebook() {
-	return (
-		SERVER_PREFIX + 'SocialFacebook' + ('' !== AUTH_PREFIX ? '/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/' : '')
-	);
-}
-
-/**
  * @param {string} path
  * @returns {string}
  */
