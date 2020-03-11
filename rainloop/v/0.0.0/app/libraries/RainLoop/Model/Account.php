@@ -283,7 +283,7 @@ class Account
 	 * @param \MailSo\Mail\MailClient $oMailClient
 	 * @param \RainLoop\Config\Application $oConfig
 	 */
-	public function IncConnectAndLoginHelper($oPlugins, $oMailClient, $oConfig, ?callback $refreshTokenCallback = null) : bool
+	public function IncConnectAndLoginHelper($oPlugins, $oMailClient, $oConfig, ?callable $refreshTokenCallback = null) : bool
 	{
 		$bLogin = false;
 
@@ -347,7 +347,7 @@ class Account
 	 * @param \MailSo\Smtp\SmtpClient|null $oSmtpClient
 	 * @param \RainLoop\Config\Application $oConfig
 	 */
-	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig, ?callback $refreshTokenCallback = null, bool &$bUsePhpMail = false) : bool
+	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig, ?callable $refreshTokenCallback = null, bool &$bUsePhpMail = false) : bool
 	{
 		$bLogin = false;
 
