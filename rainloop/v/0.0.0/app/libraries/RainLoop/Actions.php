@@ -544,7 +544,7 @@ class Actions
 		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5(APP_START_TIME), 0);
 	}
 
-	public function SetAuthToken(?\RainLoop\Model\Account $oAccount)
+	public function SetAuthToken(?\RainLoop\Model\Account $oAccount) : void
 	{
 		if ($oAccount)
 		{
@@ -1061,7 +1061,7 @@ class Actions
 		return $this->oLoggerAuth;
 	}
 
-	public function LoggerAuthHelper(?\RainLoop\Model\Account $oAccount = null, array $aAdditionalParams = array())
+	public function LoggerAuthHelper(?\RainLoop\Model\Account $oAccount = null, array $aAdditionalParams = array()) : void
 	{
 		$sLine = $this->Config()->Get('logs', 'auth_logging_format', '');
 		if (!empty($sLine))
@@ -1107,7 +1107,7 @@ class Actions
 		return $bResult;
 	}
 
-	public function SetMailtoRequest(string $sTo)
+	public function SetMailtoRequest(string $sTo) : void
 	{
 		if (!empty($sTo))
 		{
@@ -1761,7 +1761,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $sResult;
 	}
 
-	private function requestSleep(int $iWait = 1, int $iDelay = 1)
+	private function requestSleep(int $iWait = 1, int $iDelay = 1) : void
 	{
 		if (0 < $iDelay && 0 < $iWait)
 		{
@@ -1772,7 +1772,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	private function loginErrorDelay()
+	private function loginErrorDelay() : void
 	{
 		$iDelay = (int) $this->Config()->Get('labs', 'login_fault_delay', 0);
 		if (0 < $iDelay)
@@ -1781,7 +1781,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	public function AuthToken(?\RainLoop\Model\Account $oAccount)
+	public function AuthToken(?\RainLoop\Model\Account $oAccount) : void
 	{
 		if ($oAccount)
 		{
@@ -1799,11 +1799,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function CheckMailConnection(\RainLoop\Model\Account $oAccount, bool $bAuthLog = false)
+	public function CheckMailConnection(\RainLoop\Model\Account $oAccount, bool $bAuthLog = false) : void
 	{
 		try
 		{
-			$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config(), array($this, 'googleRefreshTokenCallback'));
+			$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
 		}
 		catch (\RainLoop\Exceptions\ClientException $oException)
 		{
@@ -2362,7 +2362,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->GetIdentityByID($oAccount, '', true);
 	}
 
-	public function SetAccounts(\RainLoop\Model\Account $oAccount, array $aAccounts = array()) : array
+	public function SetAccounts(\RainLoop\Model\Account $oAccount, array $aAccounts = array()) : void
 	{
 		$sParentEmail = $oAccount->ParentEmailHelper();
 		if (!\is_array($aAccounts) || 0 >= \count($aAccounts) ||
@@ -2950,7 +2950,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$oMailClient = \MailSo\Mail\MailClient::NewInstance();
 				$oMailClient->SetLogger($this->Logger());
 
-				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $oMailClient, $this->Config(), array($this, 'googleRefreshTokenCallback'));
+				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $oMailClient, $this->Config());
 
 				$iResult = $oMailClient->InboxUnreadCount();
 
@@ -3011,7 +3011,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		));
 	}
 
-	public function ClearSignMeData(\RainLoop\Model\Account $oAccount)
+	public function ClearSignMeData(\RainLoop\Model\Account $oAccount) : void
 	{
 		if ($oAccount)
 		{
@@ -3129,7 +3129,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 
-	public function setConfigFromParams(\RainLoop\Config\Application &$oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null)
+	public function setConfigFromParams(\RainLoop\Config\Application &$oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null) : void
 	{
 		$sValue = $this->GetActionParam($sParamName, '');
 		if ($this->HasActionParam($sParamName))
@@ -3167,7 +3167,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	private function setCapaFromParams(\RainLoop\Config\Application &$oConfig, string $sParamName, string $sCapa)
+	private function setCapaFromParams(\RainLoop\Config\Application &$oConfig, string $sParamName, string $sCapa) : void
 	{
 		switch ($sCapa)
 		{
@@ -3201,7 +3201,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	private function setSettingsFromParams(\RainLoop\Settings &$oSettings, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null)
+	private function setSettingsFromParams(\RainLoop\Settings &$oSettings, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null) : void
 	{
 		if ($this->HasActionParam($sConfigName))
 		{
@@ -3631,16 +3631,16 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $sUrl;
 	}
 
-	private function rainLoopUpdatable()
+	private function rainLoopUpdatable() : bool
 	{
-		return @file_exists(APP_INDEX_ROOT_PATH.'index.php') &&
-			@is_writable(APP_INDEX_ROOT_PATH.'index.php') &&
-			@is_writable(APP_INDEX_ROOT_PATH.'rainloop/') &&
+		return file_exists(APP_INDEX_ROOT_PATH.'index.php') &&
+			is_writable(APP_INDEX_ROOT_PATH.'index.php') &&
+			is_writable(APP_INDEX_ROOT_PATH.'rainloop/') &&
 			APP_VERSION !== APP_DEV_VERSION
 		;
 	}
 
-	private function rainLoopCoreAccess()
+	private function rainLoopCoreAccess() : bool
 	{
 		$sCoreAccess = \strtolower(\preg_replace('/[\s,;]+/', ' ',
 			$this->Config()->Get('security', 'core_install_access_domain', '')));
@@ -3746,7 +3746,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $sChannel;
 	}
 
-	private function getCoreData(bool &$bReal)
+	private function getCoreData(bool &$bReal) : ?array
 	{
 		$bReal = false;
 
@@ -3793,10 +3793,10 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$bReal = \is_array($aRep) && 0 < \count($aRep) && isset($aRep['id']) && 'rainloop' === $aRep['id'];
 		}
 
-		return $bReal ? $aRep : false;
+		return $bReal ? $aRep : null;
 	}
 
-	private function getRepositoryData(bool &$bReal, bool &$bRainLoopUpdatable)
+	private function getRepositoryData(bool &$bReal, bool &$bRainLoopUpdatable) : array
 	{
 		$bRainLoopUpdatable = $this->rainLoopUpdatable();
 
@@ -4477,7 +4477,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aCache;
 	}
 
-	private function recFoldersTypes(\RainLoop\Model\Account $oAccount, \MailSo\Mail\FolderCollection $oFolders, array &$aResult, bool $bListFolderTypes = true)
+	private function recFoldersTypes(\RainLoop\Model\Account $oAccount, \MailSo\Mail\FolderCollection $oFolders, array &$aResult, bool $bListFolderTypes = true) : void
 	{
 		if ($oFolders)
 		{
@@ -5406,7 +5406,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$oSmtpClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'smtp_timeout', 60));
 
 				$bLoggined = $oAccount->OutConnectAndLoginHelper(
-					$this->Plugins(), $oSmtpClient, $this->Config(), array($this, 'googleRefreshTokenCallback'), $bUsePhpMail
+					$this->Plugins(), $oSmtpClient, $this->Config(), null, $bUsePhpMail
 				);
 
 				if ($bUsePhpMail)
@@ -5805,7 +5805,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $aQuota);
 	}
 
-	private function getContactsSyncData(\RainLoop\Model\Account $oAccount)
+	private function getContactsSyncData(\RainLoop\Model\Account $oAccount) : ?array
 	{
 		$mResult = null;
 
@@ -5888,7 +5888,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	private function getTwoFactorInfo(\RainLoop\Model\Account $oAccount, bool $bRemoveSecret = false)
+	private function getTwoFactorInfo(\RainLoop\Model\Account $oAccount, bool $bRemoveSecret = false) : array
 	{
 		$sEmail = $oAccount->ParentEmailHelper();
 
@@ -6382,7 +6382,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$iUid = 0;
 
 		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 4);
-		if (is_array($aValues) && 4 === count($aValues))
+		if (\is_array($aValues) && 4 === count($aValues))
 		{
 			$sFolder = (string) $aValues[0];
 			$iUid = (int) $aValues[1];
@@ -7369,7 +7369,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aValues;
 	}
 
-	private function rotateImageByOrientation(\Imagine\Image\AbstractImage &$oImage, int $iOrientation)
+	private function rotateImageByOrientation(\Imagine\Image\AbstractImage &$oImage, int $iOrientation) : void
 	{
 		if (0 < $iOrientation)
 		{
@@ -7412,6 +7412,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
+	/**
+	 * @return \Imagine\Image\AbstractImage
+	 */
 	public function correctImageOrientation(\Imagine\Image\AbstractImage $oImage, bool $bDetectImageOrientation = true, int $iThumbnailBoxSize = 0)
 	{
 		$iOrientation = 1;
@@ -7830,7 +7833,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 			try
 			{
-				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config(), array($this, 'googleRefreshTokenCallback'));
+				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
 			}
 			catch (\MailSo\Net\Exceptions\ConnectionException $oException)
 			{
@@ -7847,12 +7850,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $oAccount;
 	}
 
-	/**
-	 * @return array | false
-	 */
-	private function getDecodedRawKeyValue(string $sRawKey)
+	private function getDecodedRawKeyValue(string $sRawKey) : array
 	{
-		$bResult = false;
+		$bResult = array();
 		if (!empty($sRawKey))
 		{
 			$aValues = \RainLoop\Utils::DecodeKeyValuesQ($sRawKey);
@@ -7865,12 +7865,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $bResult;
 	}
 
-	/**
-	 * @return array | bool
-	 */
-	private function getDecodedClientRawKeyValue(string $sRawKey, ?int $iLenCache = null)
+	private function getDecodedClientRawKeyValue(string $sRawKey, ?int $iLenCache = null) : ?array
 	{
-		$mResult = false;
+		$mResult = null;
 		if (!empty($sRawKey))
 		{
 			$sRawKey = \MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey);
@@ -8262,18 +8259,15 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return false;
 	}
 
-	public function Location(string $sUrl)
+	public function Location(string $sUrl) : void
 	{
 		$this->Logger()->Write('Location: '.$sUrl);
-		@\header('Location: '.$sUrl);
+		\header('Location: '.$sUrl);
 	}
 
-	/**
-	 * @return array | false
-	 */
-	private function objectData(object $oData, string $sParent, array $aParameters = array())
+	private function objectData(object $oData, string $sParent, array $aParameters = array()) : array
 	{
-		$mResult = false;
+		$mResult = array();
 		if (is_object($oData))
 		{
 			$aNames = explode('\\', get_class($oData));
