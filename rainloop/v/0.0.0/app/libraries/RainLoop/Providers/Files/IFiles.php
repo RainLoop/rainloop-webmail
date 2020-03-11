@@ -6,7 +6,7 @@ interface IFiles
 {
 	public function GenerateLocalFullFileName(\RainLoop\Model\Account $oAccount, string $sKey) : string;
 
-	public function PutFile(\RainLoop\Model\Account $oAccount, string $sKey, resource $rSource) : bool;
+	public function PutFile(\RainLoop\Model\Account $oAccount, string $sKey, /*resource*/ $rSource) : bool;
 
 	public function MoveUploadedFile(\RainLoop\Model\Account $oAccount, string $sKey, string $sSource) : bool;
 

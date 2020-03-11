@@ -25,7 +25,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		return $this->generateFullFileName($oAccount, $sKey, true);
 	}
 
-	public function PutFile(\RainLoop\Model\Account $oAccount, string $sKey, resource $rSource) : bool
+	public function PutFile(\RainLoop\Model\Account $oAccount, string $sKey, /*resource*/ $rSource) : bool
 	{
 		$bResult = false;
 		if ($rSource)

@@ -5376,7 +5376,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 * @throws \MailSo\Net\Exceptions\ConnectionException
 	 */
 	private function smtpSendMessage(\RainLoop\Model\Account $oAccount, \MailSo\Mime\Message $oMessage,
-		resource &$rMessageStream, int &$iMessageStreamSize, bool $bDsn = false, bool $bAddHiddenRcpt = true)
+		/*resource*/ &$rMessageStream, int &$iMessageStreamSize, bool $bDsn = false, bool $bAddHiddenRcpt = true)
 	{
 		$oRcpt = $oMessage->GetRcpt();
 		if ($oRcpt && 0 < $oRcpt->Count())
@@ -6958,7 +6958,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $mResponse);
 	}
 
-	private function importContactsFromCsvFile(\RainLoop\Model\Account $oAccount, resource $rFile, string $sFileStart) : int
+	private function importContactsFromCsvFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile, string $sFileStart) : int
 	{
 		$iCount = 0;
 		$aHeaders = null;
@@ -7011,7 +7011,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $iCount;
 	}
 
-	private function importContactsFromVcfFile(\RainLoop\Model\Account $oAccount, resource $rFile) : int
+	private function importContactsFromVcfFile(\RainLoop\Model\Account $oAccount, /*resource*/ $rFile) : int
 	{
 		$iCount = 0;
 		if ($oAccount && \is_resource($rFile))

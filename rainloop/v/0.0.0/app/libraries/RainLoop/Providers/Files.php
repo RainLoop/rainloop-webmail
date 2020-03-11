@@ -14,7 +14,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 		$this->oDriver = $oDriver;
 	}
 
-	public function PutFile(\RainLoop\Model\Account $oAccount, string $sKey, resource $rSource) : bool
+	public function PutFile(\RainLoop\Model\Account $oAccount, string $sKey, /*resource*/ $rSource) : bool
 	{
 		return $this->oDriver->PutFile($oAccount, $sKey, $rSource);
 	}

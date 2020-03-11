@@ -140,8 +140,8 @@ class HeaderCollection extends \MailSo\Base\Collection
 		$aResult = $this->FilterList(function ($oHeader) use ($sHeaderName) {
 			return $oHeader && \strtolower($oHeader->Name()) !== \strtolower($sHeaderName);
 		});
-
-		return $this->SetAsArray($aResult);
+		$this->SetAsArray($aResult);
+		return $this;
 	}
 
 	/**
