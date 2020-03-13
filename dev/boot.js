@@ -1,9 +1,3 @@
-import elementDatasetPolyfill from 'element-dataset';
-elementDatasetPolyfill();
-
-require('json3');
-require('intersection-observer');
-
 import window from 'window';
 import { progressJs } from '../vendors/Progress.js/src/progress.js';
 

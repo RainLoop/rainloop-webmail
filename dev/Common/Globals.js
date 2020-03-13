@@ -65,17 +65,7 @@ export const bSafari = !bChrome && -1 < sUserAgent.indexOf('safari');
 /**
  * @type {boolean}
  */
-export const bMobileDevice =
-	(/android/i).test(sUserAgent) ||
-	(/iphone/i).test(sUserAgent) ||
-	(/ipod/i).test(sUserAgent) ||
-	(/ipad/i).test(sUserAgent) ||
-	(/blackberry/i).test(sUserAgent);
-
-/**
- * @type {boolean}
- */
-export const bDisableNanoScroll = bMobileDevice;
+export const bMobileDevice = (/android|iphone|ipod|ipad|blackberry|mobile/i).test(sUserAgent);
 
 /**
  * @type {boolean}

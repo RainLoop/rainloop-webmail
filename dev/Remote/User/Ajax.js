@@ -723,18 +723,6 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} prevPassword
-	 * @param {string} newPassword
-	 */
-	changePassword(fCallback, prevPassword, newPassword) {
-		this.defaultRequest(fCallback, 'ChangePassword', {
-			'PrevPassword': prevPassword,
-			'NewPassword': newPassword
-		});
-	}
-
-	/**
-	 * @param {?Function} fCallback
 	 * @param {string} sFolderFullNameRaw
 	 */
 	folderClear(fCallback, sFolderFullNameRaw) {

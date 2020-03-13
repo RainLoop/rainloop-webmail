@@ -132,10 +132,6 @@ class ServiceActions
 						case 'DoAccountAdd':
 							$this->Logger()->AddSecret($this->oActions->GetActionParam('Password', ''));
 							break;
-						case 'DoChangePassword':
-							$this->Logger()->AddSecret($this->oActions->GetActionParam('PrevPassword', ''));
-							$this->Logger()->AddSecret($this->oActions->GetActionParam('NewPassword', ''));
-							break;
 					}
 
 					$this->Logger()->Write(\MailSo\Base\Utils::Php2js($aPost, $this->Logger()),

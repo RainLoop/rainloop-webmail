@@ -16,7 +16,6 @@ import { ContactsUserSettings } from 'Settings/User/Contacts';
 import { AccountsUserSettings } from 'Settings/User/Accounts';
 import { FiltersUserSettings } from 'Settings/User/Filters';
 import { SecurityUserSettings } from 'Settings/User/Security';
-import { ChangePasswordUserSettings } from 'Settings/User/ChangePassword';
 import { TemplatesUserSettings } from 'Settings/User/Templates';
 import { FoldersUserSettings } from 'Settings/User/Folders';
 import { ThemesUserSettings } from 'Settings/User/Themes';
@@ -77,15 +76,6 @@ class SettingsUserScreen extends AbstractSettingsScreen {
 
 		if (Settings.capa(Capa.AutoLogout) || Settings.capa(Capa.TwoFactor)) {
 			addSettingsViewModel(SecurityUserSettings, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
-		}
-
-		if (Settings.settingsGet('ChangePasswordIsAllowed')) {
-			addSettingsViewModel(
-				ChangePasswordUserSettings,
-				'SettingsChangePassword',
-				'SETTINGS_LABELS/LABEL_CHANGE_PASSWORD_NAME',
-				'change-password'
-			);
 		}
 
 		if (Settings.capa(Capa.Templates)) {

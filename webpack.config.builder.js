@@ -21,21 +21,15 @@ const babelLoaderOptions = function() {
 			[
 				'@babel/preset-env',
 				{
-					useBuiltIns: 'usage',
-					corejs: { version: 3, proposals: true },
+					targets: {"chrome": "60"},
+//					useBuiltIns: 'usage',
+//					corejs: { version: 3, proposals: true },
 					loose: loose,
 					modules: false
 				}
 			]
 		],
 		plugins: [
-			[
-				'@babel/plugin-transform-runtime',
-				{
-					corejs: 3,
-					useESModules: true
-				}
-			],
 			[
 				'@babel/plugin-proposal-decorators',
 				{
@@ -50,10 +44,10 @@ const babelLoaderOptions = function() {
 process.noDeprecation = true;
 module.exports = function(publicPath, pro, mode) {
 	return {
+//		mode: 'production',
 		mode: mode || 'development',
 		devtool: 'inline-source-map',
 		entry: {
-			'js/polyfills': path.join(devPathJoin, 'polyfills.js'),
 			'js/boot': path.join(devPathJoin, 'boot.js'),
 			'js/app': path.join(devPathJoin, 'app.js'),
 			'js/admin': path.join(devPathJoin, 'admin.js')
@@ -72,6 +66,7 @@ module.exports = function(publicPath, pro, mode) {
 			minimize: false
 		},
 		plugins: [
+//			new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 			new webpack.DefinePlugin({
 				'RL_COMMUNITY': !pro,
 				'process.env.NODE_ENV': JSON.stringify('production'),

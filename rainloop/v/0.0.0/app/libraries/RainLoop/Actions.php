@@ -97,11 +97,6 @@ class Actions
 	private $oSuggestionsProvider;
 
 	/**
-	 * @var \RainLoop\Providers\ChangePassword
-	 */
-	private $oChangePasswordProvider;
-
-	/**
 	 * @var \RainLoop\Providers\TwoFactorAuth
 	 */
 	private $oTwoFactorAuthProvider;
@@ -144,7 +139,6 @@ class Actions
 		$this->oDomainProvider = null;
 		$this->oAddressBookProvider = null;
 		$this->oSuggestionsProvider = null;
-		$this->oChangePasswordProvider = null;
 		$this->oTwoFactorAuthProvider = null;
 
 		$this->sSpecAuthToken = '';
@@ -313,9 +307,6 @@ class Actions
 						$mResult = array();
 					}
 
-					break;
-				case 'change-password':
-					// \RainLoop\Providers\ChangePassword\ChangePasswordInterface
 					break;
 				case 'two-factor-auth':
 					// \RainLoop\Providers\TwoFactorAuth\TwoFactorAuthInterface
@@ -691,21 +682,6 @@ class Actions
 		}
 
 		return $this->oFiltersProvider;
-	}
-
-	/**
-	 * @return \RainLoop\Providers\ChangePassword
-	 */
-	public function ChangePasswordProvider()
-	{
-		if (null === $this->oChangePasswordProvider)
-		{
-			$this->oChangePasswordProvider = new \RainLoop\Providers\ChangePassword(
-				$this, $this->fabrica('change-password'), !!$this->Config()->Get('labs', 'check_new_password_strength', true)
-			);
-		}
-
-		return $this->oChangePasswordProvider;
 	}
 
 	/**
@@ -1289,7 +1265,6 @@ class Actions
 			'folderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
 			'faviconStatus' => (bool) $oConfig->Get('labs', 'favicon_status', true),
 			'allowCmdInterface' => (bool) $oConfig->Get('labs', 'allow_cmd', false),
-			'useNativeScrollbars' => (bool) $oConfig->Get('interface', 'use_native_scrollbars', false),
 			'listPermanentFiltered' => '' !== \trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
 			'themes' => $this->GetThemes($bMobile, false),
 			'languages' => $this->GetLanguages(false),
@@ -1350,7 +1325,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
 			'SieveAllowFileintoInbox' => (bool) $oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false),
 			'ContactsIsAllowed' => false,
-			'ChangePasswordIsAllowed' => false,
 			'RequireTwoFactor' => false,
 			'Community' => true,
 			'PremType' => false,
@@ -1402,7 +1376,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$aResult['OutLogin'] = $oAccount->OutLogin();
 				$aResult['AccountHash'] = $oAccount->Hash();
 				$aResult['AccountSignMe'] = $oAccount->SignMe();
-				$aResult['ChangePasswordIsAllowed'] = $this->ChangePasswordProvider()->PasswordChangePossibility($oAccount);
 				$aResult['ContactsIsAllowed'] = $oAddressBookProvider->IsActive();
 				$aResult['ContactsSyncIsAllowed'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);
 				$aResult['ContactsSyncInterval'] = (int) $oConfig->Get('contacts', 'sync_interval', 20);
@@ -4335,33 +4308,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	public function DoPing() : array
 	{
 		return $this->DefaultResponse(__FUNCTION__, 'Pong');
-	}
-
-	public function DoChangePassword() : array
-	{
-		$mResult = false;
-
-		$oAccount = $this->getAccountFromToken();
-		if ($oAccount)
-		{
-			try
-			{
-				$mResult = $this->ChangePasswordProvider()->ChangePassword(
-					$oAccount,
-					$this->GetActionParam('PrevPassword', ''),
-					$this->GetActionParam('NewPassword', '')
-				);
-			}
-			catch (\Throwable $oException)
-			{
-				$this->loginErrorDelay();
-				$this->Logger()->Write('Error: Can\'t change password for '.$oAccount->Email().' account.', \MailSo\Log\Enumerations\Type::NOTICE);
-
-				throw $oException;
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $mResult);
 	}
 
 	public function DoWelcomeClose() : array
