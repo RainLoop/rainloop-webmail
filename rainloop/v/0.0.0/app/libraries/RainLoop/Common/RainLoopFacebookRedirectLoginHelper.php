@@ -2,7 +2,7 @@
 
 namespace RainLoop\Common;
 
-class RainLoopFacebookRedirectLoginHelper extends \Facebook\FacebookRedirectLoginHelper
+class RainLoopFacebookRedirectLoginHelper extends \Facebook\Helpers\FacebookRedirectLoginHelper
 {
 	/**
 	 * @var string
@@ -34,10 +34,7 @@ class RainLoopFacebookRedirectLoginHelper extends \Facebook\FacebookRedirectLogi
 		$this->rlStorageProvaider = null;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetRLAppId()
+	public function GetRLAppId() : string
 	{
 		return $this->rlAppId;
 	}
@@ -75,7 +72,6 @@ class RainLoopFacebookRedirectLoginHelper extends \Facebook\FacebookRedirectLogi
 	 * Developers should subclass and override this method if they want to store
 	 *   this state in a different location.
 	 *
-	 * @param string $state
 	 *
 	 * @throws FacebookSDKException
 	 */
@@ -96,11 +92,10 @@ class RainLoopFacebookRedirectLoginHelper extends \Facebook\FacebookRedirectLogi
 	 *   null if no object exists.  Developers should subclass and override this
 	 *   method if they want to load the state from a different location.
 	 *
-	 * @return string|null
 	 *
 	 * @throws FacebookSDKException
 	 */
-	protected function loadState()
+	protected function loadState() : ?string
 	{
 		if ($this->rlStorageProvaider)
 		{
