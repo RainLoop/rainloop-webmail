@@ -32,11 +32,15 @@ Copyright (c) 2019 Rainloop Team
 
 This fork has modifications for:
 
-* Privacy/GDPR friendly (no: Social, Gravatar, Facebook, Google, Twitter, DropBox, OwnCloud)
+* Privacy/GDPR friendly (no: Social, Gravatar, Facebook, Google, Twitter, DropBox, OwnCloud, X-Mailer)
 * Admin uses password_hash/password_verify
 * No POP3 and OAuth
+* No ChangePassword
+* No BackwardCapability (class \RainLoop\Account)
 * PHP 7.3+ required
 * PHP mbstring extension required
+* PHP replaced pclZip with ZipArchive
 * CRLF => LF line endings
-* replaced pclZip with ZipArchive
-* no BackwardCapability
+* Use gulp-terser instead of gulp-uglify
+* ES2015 (without polyfills)
+* No JS nanoscroll
