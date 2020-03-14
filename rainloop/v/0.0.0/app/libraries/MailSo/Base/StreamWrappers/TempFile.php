@@ -42,12 +42,10 @@ class TempFile
 	}
 
 	/**
-	 * @param string $sHash
-	 * @param string $sFileName
 	 *
 	 * @return resource|bool
 	 */
-	public static function CreateStream($sHash, &$sFileName = '')
+	public static function CreateStream(string $sHash, string &$sFileName = '')
 	{
 		self::Reg();
 
@@ -55,12 +53,7 @@ class TempFile
 		return fopen($sFileName, 'r+b');
 	}
 
-	/**
-	 * @param string $sPath
-	 *
-	 * @return bool
-	 */
-	public function stream_open($sPath)
+	public function stream_open(string $sPath) : bool
 	{
 		$bResult = false;
 		$aPath = parse_url($sPath);
@@ -91,73 +84,42 @@ class TempFile
 		return $bResult;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_close()
+	public function stream_close() : bool
 	{
 		return true;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_flush()
+	public function stream_flush() : bool
 	{
 		return fflush($this->rSream);
 	}
 
-	/**
-	 * @param int $iLen
-	 *
-	 * @return string
-	 */
-	public function stream_read($iLen)
+	public function stream_read(int $iLen) : string
 	{
 		return fread($this->rSream, $iLen);
 	}
 
-	/**
-	 * @param string $sInputString
-	 *
-	 * @return int
-	 */
-	public function stream_write($sInputString)
+	public function stream_write(string $sInputString) : int
 	{
 		return fwrite($this->rSream, $sInputString);
 	}
 
-	/**
-	 * @return int
-	 */
-	public function stream_tell()
+	public function stream_tell() : int
 	{
 		return ftell($this->rSream);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_eof()
+	public function stream_eof() : bool
 	{
 		return feof($this->rSream);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function stream_stat()
+	public function stream_stat() : array
 	{
 		return fstat($this->rSream);
 	}
 
-	/**
-	 * @param int $iOffset
-	 * @param int $iWhence = SEEK_SET
-	 *
-	 * @return int
-	 */
-	public function stream_seek($iOffset, $iWhence = SEEK_SET)
+	public function stream_seek(int $iOffset, int $iWhence = SEEK_SET) : int
 	{
 		return fseek($this->rSream, $iOffset, $iWhence);
 	}

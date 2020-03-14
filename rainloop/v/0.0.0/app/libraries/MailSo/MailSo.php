@@ -17,7 +17,6 @@ if (!\defined('MAILSO_LIBRARY_ROOT_PATH'))
 		? 'phar://mailso.phar/' : \rtrim(\realpath(__DIR__), '\\/').'/');
 
 	/**
-	 * @param string $sClassName
 	 *
 	 * @return mixed
 	 */

@@ -85,35 +85,22 @@ abstract class AbstractPlugin
 		return $this->oPluginManager;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Path()
+	public function Path() : string
 	{
 		return $this->sPath;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Name()
+	public function Name() : string
 	{
 		return $this->sName;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Version()
+	public function Version() : string
 	{
 		return $this->sVersion;
 	}
 
-	/**
-	 * @param bool | null $bLangs = null
-	 * @return bool
-	 */
-	public function UseLangs($bLangs = null)
+	public function UseLangs(bool $bLangs = null) : bool
 	{
 		if (null !== $bLangs)
 		{
@@ -123,35 +110,25 @@ abstract class AbstractPlugin
 		return $this->bLangs;
 	}
 
-	/**
-	 * @return array
-	 */
-	protected function configMapping()
+	protected function configMapping() : array
 	{
 		return array();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Hash()
+	public function Hash() : string
 	{
 		return \md5($this->sName.'@'.$this->sVersion);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Supported()
+	public function Supported() : string
 	{
 		return '';
 	}
 
 	/**
 	 * @final
-	 * @return array
 	 */
-	final public function ConfigMap()
+	final public function ConfigMap() : array
 	{
 		if (null === $this->aConfigMap)
 		{
@@ -166,11 +143,10 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sPath
 	 *
 	 * @return self
 	 */
-	public function SetPath($sPath)
+	public function SetPath(string $sPath)
 	{
 		$this->sPath = $sPath;
 
@@ -178,11 +154,10 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sName
 	 *
 	 * @return self
 	 */
-	public function SetName($sName)
+	public function SetName(string $sName)
 	{
 		$this->sName = $sName;
 
@@ -190,11 +165,10 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sVersion
 	 *
 	 * @return self
 	 */
-	public function SetVersion($sVersion)
+	public function SetVersion(string $sVersion)
 	{
 		if (0 < \strlen($sVersion))
 		{
@@ -228,41 +202,26 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	/**
-	 * @return void
-	 */
-	public function PreInit()
+	public function PreInit() : void
+	{
+
+	}
+
+	public function Init() : void
+	{
+
+	}
+
+	public function FilterAppDataPluginSection(bool $bAdmin, bool $bAuth, array &$aConfig) : void
 	{
 
 	}
 
 	/**
-	 * @return void
-	 */
-	public function Init()
-	{
-
-	}
-
-	/**
-	 * @param bool $bAdmin
-	 * @param bool $bAuth
-	 * @param array $aConfig
-	 *
-	 * @return void
-	 */
-	public function FilterAppDataPluginSection($bAdmin, $bAuth, &$aConfig)
-	{
-
-	}
-
-	/**
-	 * @param string $sHookName
-	 * @param string $sFunctionName
 	 *
 	 * @return self
 	 */
-	protected function addHook($sHookName, $sFunctionName)
+	protected function addHook(string $sHookName, string $sFunctionName)
 	{
 		if ($this->oPluginManager)
 		{
@@ -273,12 +232,10 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sFile
-	 * @param bool $bAdminScope = false
 	 *
 	 * @return self
 	 */
-	protected function addJs($sFile, $bAdminScope = false)
+	protected function addJs(string $sFile, bool $bAdminScope = false)
 	{
 		if ($this->oPluginManager)
 		{
@@ -289,12 +246,10 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sFile
-	 * @param bool $bAdminScope = false
 	 *
 	 * @return self
 	 */
-	protected function addTemplate($sFile, $bAdminScope = false)
+	protected function addTemplate(string $sFile, bool $bAdminScope = false)
 	{
 		if ($this->oPluginManager)
 		{
@@ -305,12 +260,10 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sFile
-	 * @param bool $bAdminScope = false
 	 *
 	 * @return self
 	 */
-	protected function replaceTemplate($sFile, $bAdminScope = false)
+	protected function replaceTemplate(string $sFile, bool $bAdminScope = false)
 	{
 		if ($this->oPluginManager)
 		{
@@ -321,12 +274,10 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sActionName
-	 * @param string $sFunctionName
 	 *
 	 * @return self
 	 */
-	protected function addPartHook($sActionName, $sFunctionName)
+	protected function addPartHook(string $sActionName, string $sFunctionName)
 	{
 		if ($this->oPluginManager)
 		{
@@ -337,12 +288,10 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sActionName
-	 * @param string $sFunctionName
 	 *
 	 * @return self
 	 */
-	protected function addAjaxHook($sActionName, $sFunctionName)
+	protected function addAjaxHook(string $sActionName, string $sFunctionName)
 	{
 		if ($this->oPluginManager)
 		{
@@ -353,14 +302,10 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sName
-	 * @param string $sPlace
-	 * @param string $sHtml
-	 * @param bool $bPrepend = false
 	 *
 	 * @return self
 	 */
-	protected function addTemplateHook($sName, $sPlace, $sLocalTemplateName, $bPrepend = false)
+	protected function addTemplateHook(string $sName, string $sPlace, string $sLocalTemplateName, bool $bPrepend = false)
 	{
 		if ($this->oPluginManager)
 		{
@@ -372,14 +317,10 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sName
-	 * @param string $sPlace
-	 * @param string $sHtml
-	 * @param bool $bPrepend = false
 	 *
 	 * @return self
 	 */
-	protected function ajaxResponse($sFunctionName, $aData)
+	protected function ajaxResponse(string $sFunctionName, array $aData)
 	{
 		if ($this->oPluginManager)
 		{
@@ -391,12 +332,11 @@ abstract class AbstractPlugin
 	}
 
 	/**
-	 * @param string $sKey
 	 * @param mixed $mDefault = null
 	 *
 	 * @return mixed
 	 */
-	public function ajaxParam($sKey, $mDefault = null)
+	public function ajaxParam(string $sKey, $mDefault = null)
 	{
 		if ($this->oPluginManager)
 		{
@@ -406,10 +346,7 @@ abstract class AbstractPlugin
 		return '';
 	}
 
-	/**
-	 * @return array
-	 */
-	public function getUserSettings()
+	public function getUserSettings() : array
 	{
 		if ($this->oPluginManager)
 		{
@@ -419,12 +356,7 @@ abstract class AbstractPlugin
 		return array();
 	}
 
-	/**
-	 * @param array $aSettings
-	 *
-	 * @return bool
-	 */
-	public function saveUserSettings($aSettings)
+	public function saveUserSettings(array $aSettings) : bool
 	{
 		if ($this->oPluginManager && \is_array($aSettings))
 		{

@@ -50,35 +50,25 @@ class Pop3Client extends \MailSo\Net\NetClient
 		$this->sLastMessage = '';
 	}
 
-	/**
-	 * @return \MailSo\Pop3\Pop3Client
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
 	/**
-	 * @param string $sServerName
-	 * @param int $iPort = 110
-	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
-	 * @param bool $bVerifySsl = false
-	 * @param bool $bAllowSelfSigned = null
-	 *
-	 * @return \MailSo\Pop3\Pop3Client
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Pop3\Exceptions\ResponseException
 	 */
-	public function Connect($sServerName, $iPort = 110,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		$bVerifySsl = false, $bAllowSelfSigned = null)
+	public function Connect(string $sServerName, int $iPort = 110,
+		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		bool $bVerifySsl = false, bool $bAllowSelfSigned = null,
+		string $sClientCert = '') : object
 	{
 		$this->iRequestTime = microtime(true);
 
 		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned);
-		
+
 		$this->validateResponse();
 
 		if (\MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS(
@@ -100,16 +90,11 @@ class Pop3Client extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sLogin = ''
-	 * @param string $sPassword = ''
-	 *
-	 * @return \MailSo\Pop3\Pop3Client
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Pop3\Exceptions\ResponseException
 	 */
-	public function Login($sLogin, $sPassword)
+	public function Login(string $sLogin, string $sPassword) : self
 	{
 		if ($this->bIsLoggined)
 		{
@@ -140,33 +125,26 @@ class Pop3Client extends \MailSo\Net\NetClient
 		return $this;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsLoggined()
+	public function IsLoggined() : bool
 	{
 		return $this->IsConnected() && $this->bIsLoggined;
 	}
 
 	/**
-	 * @return \MailSo\Pop3\Pop3Client
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Pop3\Exceptions\Exception
 	 */
-	public function Noop()
+	public function Noop() : self
 	{
 		$this->sendRequestWithCheck('NOOP');
 		return $this;
 	}
 
 	/**
-	 * @return array [MessagesCount, Size]
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Pop3\Exceptions\Exception
 	 */
-	public function Status()
+	public function Status() : array
 	{
 		$this->sendRequestWithCheck('STAT');
 
@@ -177,12 +155,10 @@ class Pop3Client extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Pop3\Pop3Client
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Pop3\Exceptions\Exception
 	 */
-	public function Capa()
+	public function Capa() : self
 	{
 		if (null === $this->aCapa)
 		{
@@ -199,12 +175,10 @@ class Pop3Client extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Pop3\Pop3Client
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Pop3\Exceptions\Exception
 	 */
-	public function Logout()
+	public function Logout() : self
 	{
 		if ($this->bIsLoggined)
 		{
@@ -216,15 +190,10 @@ class Pop3Client extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sCommand
-	 * @param string $sAddToCommand = ''
-	 *
-	 * @return \MailSo\Pop3\Pop3Client
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	protected function sendRequest($sCommand, $sAddToCommand = '')
+	protected function sendRequest(string $sCommand, string $sAddToCommand = '') : self
 	{
 		if (0 === strlen(trim($sCommand)))
 		{
@@ -250,13 +219,7 @@ class Pop3Client extends \MailSo\Net\NetClient
 		return $this;
 	}
 
-	/**
-	 * @param string $sCommand
-	 * @param string $sAddToCommand
-	 *
-	 * @return string
-	 */
-	private function secureRequestParams($sCommand, $sAddToCommand)
+	private function secureRequestParams(string $sCommand, string $sAddToCommand) : string
 	{
 		$sResult = null;
 		if (0 < strlen($sAddToCommand))
@@ -273,28 +236,21 @@ class Pop3Client extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sCommand
-	 * @param string $sAddToCommand = ''
-	 *
-	 * @return \MailSo\Pop3\Pop3Client
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Pop3\Exceptions\Exception
 	 */
-	private function sendRequestWithCheck($sCommand, $sAddToCommand = '')
+	private function sendRequestWithCheck(string $sCommand, string $sAddToCommand = '') : self
 	{
 		$this->sendRequest($sCommand, $sAddToCommand);
 		return $this->validateResponse();
 	}
 
 	/**
-	 * @return string
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Pop3\Exceptions\ResponseException
 	 */
-	private function validateResponse()
+	private function validateResponse() : string
 	{
 		$this->getNextBuffer();
 
@@ -321,11 +277,9 @@ class Pop3Client extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return string
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	private function readMultilineResponse()
+	private function readMultilineResponse() : string
 	{
 		$this->iRequestTime = microtime(true);
 
@@ -350,24 +304,9 @@ class Pop3Client extends \MailSo\Net\NetClient
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function getLogName()
+	protected function getLogName() : string
 	{
 		return 'POP3';
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 * @return \MailSo\Pop3\Pop3Client
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public function SetLogger($oLogger)
-	{
-		parent::SetLogger($oLogger);
-
-		return $this;
-	}
 }

@@ -39,12 +39,6 @@ class Identity
 	 */
 	private $bSignatureInsertBefore;
 
-	/**
-	 * @param string $sId = ''
-	 * @param string $sEmail = ''
-	 *
-	 * @return void
-	 */
 	protected function __construct($sId = '', $sEmail = '')
 	{
 		$this->sId = empty($sId) ? '' : $sId;
@@ -74,83 +68,53 @@ class Identity
 		return new self('', $oAccount->Email());
 	}
 
-	/**
-	 * @param bool $bFillOnEmpty = false
-	 *
-	 * @return string
-	 */
-	public function Id($bFillOnEmpty = false)
+	public function Id(bool $bFillOnEmpty = false) : string
 	{
 		return $bFillOnEmpty ? ('' === $this->sId ? '---' : $this->sId) : $this->sId;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Email()
+	public function Email() : string
 	{
 		return $this->sEmail;
 	}
 
 	/**
-	 * @param string $sEmail
 	 *
 	 * @return \RainLoop\Model\Identity
 	 */
-	public function SetEmail($sEmail)
+	public function SetEmail(string $sEmail)
 	{
 		$this->sEmail = $sEmail;
 
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Name()
+	public function Name() : string
 	{
 		return $this->sName;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ReplyTo()
+	public function ReplyTo() : string
 	{
 		return $this->sReplyTo;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Bcc()
+	public function Bcc() : string
 	{
 		return $this->sBcc;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Signature()
+	public function Signature() : string
 	{
 		return $this->sSignature;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function SignatureInsertBefore()
+	public function SignatureInsertBefore() : bool
 	{
 		return $this->bSignatureInsertBefore;
 	}
 
-	/**
-	 * @param array $aData
-	 * @param bool $bAjax = false
-	 *
-	 * @return bool
-	 */
-	public function FromJSON($aData, $bAjax = false)
+	public function FromJSON(array $aData, bool $bAjax = false) : bool
 	{
 		if (!empty($aData['Email']))
 		{
@@ -169,12 +133,7 @@ class Identity
 		return false;
 	}
 
-	/**
-	 * @param bool $bAjax = false
-	 *
-	 * @return array
-	 */
-	public function ToSimpleJSON($bAjax = false)
+	public function ToSimpleJSON(bool $bAjax = false) : array
 	{
 		return array(
 			'Id' => $this->Id(),
@@ -187,18 +146,12 @@ class Identity
 		);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Validate()
+	public function Validate() : bool
 	{
 		return !empty($this->sEmail);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsAccountIdentities()
+	public function IsAccountIdentities() : bool
 	{
 		return '' === $this->Id();
 	}

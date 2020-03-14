@@ -26,7 +26,6 @@ class APC implements \MailSo\Cache\DriverInterface
 	/**
 	 * @access private
 	 *
-	 * @param string $sKeyPrefix = ''
 	 */
 	private function __construct($sKeyPrefix = '')
 	{
@@ -39,53 +38,31 @@ class APC implements \MailSo\Cache\DriverInterface
 	}
 
 	/**
-	 * @param string $sKeyPrefix = ''
 	 *
 	 * @return \MailSo\Cache\Drivers\APC
 	 */
-	public static function NewInstance($sKeyPrefix = '')
+	public static function NewInstance(string $sKeyPrefix = '')
 	{
 		return new self($sKeyPrefix);
 	}
 
-	/**
-	 * @param string $sKey
-	 * @param string $sValue
-	 *
-	 * @return bool
-	 */
-	public function Set($sKey, $sValue)
+	public function Set(string $sKey, string $sValue) : bool
 	{
 		return \apc_store($this->generateCachedKey($sKey), (string) $sValue);
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	public function Get($sKey)
+	public function Get(string $sKey) : string
 	{
 		$sValue = \apc_fetch($this->generateCachedKey($sKey));
 		return \is_string($sValue) ? $sValue : '';
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return void
-	 */
-	public function Delete($sKey)
+	public function Delete(string $sKey) : void
 	{
 		\apc_delete($this->generateCachedKey($sKey));
 	}
 
-	/**
-	 * @param int $iTimeToClearInHours = 24
-	 *
-	 * @return bool
-	 */
-	public function GC($iTimeToClearInHours = 24)
+	public function GC(int $iTimeToClearInHours = 24) : bool
 	{
 		if (0 === $iTimeToClearInHours)
 		{
@@ -95,12 +72,7 @@ class APC implements \MailSo\Cache\DriverInterface
 		return false;
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	private function generateCachedKey($sKey)
+	private function generateCachedKey(string $sKey) : string
 	{
 		return $this->sKeyPrefix.\sha1($sKey);
 	}

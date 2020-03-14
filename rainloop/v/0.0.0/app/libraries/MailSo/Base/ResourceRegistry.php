@@ -32,9 +32,8 @@ class ResourceRegistry
 	/**
 	 * @staticvar bool $bInited
 	 *
-	 * @return void
 	 */
-	private static function regResourcesShutdownFunc()
+	private static function regResourcesShutdownFunc() : void
 	{
 		static $bInited = false;
 		if (!$bInited)
@@ -60,11 +59,10 @@ class ResourceRegistry
 	}
 
 	/**
-	 * @param int $iMemoryMaxInMb = 5
 	 *
 	 * @return resource | bool
 	 */
-	public static function CreateMemoryResource($iMemoryMaxInMb = 5)
+	public static function CreateMemoryResource(int $iMemoryMaxInMb = 5)
 	{
 		self::regResourcesShutdownFunc();
 
@@ -80,11 +78,10 @@ class ResourceRegistry
 	}
 
 	/**
-	 * @param string $sString
 	 *
 	 * @return resource | bool
 	 */
-	public static function CreateMemoryResourceFromString($sString)
+	public static function CreateMemoryResourceFromString(string $sString)
 	{
 		$oResult = self::CreateMemoryResource();
 		if (\is_resource($oResult))
@@ -99,9 +96,8 @@ class ResourceRegistry
 	/**
 	 * @param resource $rResource
 	 *
-	 * @return void
 	 */
-	public static function CloseMemoryResource(&$rResource)
+	public static function CloseMemoryResource(&$rResource) : void
 	{
 		if (\is_resource($rResource))
 		{

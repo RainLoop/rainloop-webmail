@@ -65,51 +65,33 @@ class Property
 		$this->Frec = 0;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsName()
+	public function IsName() : bool
 	{
 		return \in_array($this->Type, array(PropertyType::FULLNAME, PropertyType::FIRST_NAME,
 			PropertyType::LAST_NAME, PropertyType::MIDDLE_NAME, PropertyType::NICK_NAME));
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsEmail()
+	public function IsEmail() : bool
 	{
 		return PropertyType::EMAIl === $this->Type;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsPhone()
+	public function IsPhone() : bool
 	{
 		return PropertyType::PHONE === $this->Type;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsWeb()
+	public function IsWeb() : bool
 	{
 		return PropertyType::WEB_PAGE === $this->Type;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsValueForLower()
+	public function IsValueForLower() : bool
 	{
 		return $this->IsEmail() || $this->IsName() || $this->IsWeb();
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function TypesAsArray()
+	public function TypesAsArray() : bool
 	{
 		$aResult = array();
 		if (!empty($this->TypeStr))
@@ -121,10 +103,7 @@ class Property
 		return $aResult;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function TypesUpperAsArray()
+	public function TypesUpperAsArray() : array
 	{
 		return \array_map('strtoupper', $this->TypesAsArray());
 	}

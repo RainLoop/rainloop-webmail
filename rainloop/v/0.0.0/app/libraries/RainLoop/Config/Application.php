@@ -6,9 +6,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 {
 	private $aReplaceEnv = null;
 
-	/**
-	 * @return void
-	 */
 	public function __construct()
 	{
 		parent::__construct('application.ini',
@@ -17,17 +14,9 @@ class Application extends \RainLoop\Config\AbstractConfig
 			defined('APP_ADDITIONAL_CONFIGURATION_NAME') ? APP_ADDITIONAL_CONFIGURATION_NAME : '');
 	}
 
-	/**
-	 * @param string $sSection
-	 * @param string $sName
-	 * @param mixed $mDefault = null
-	 * @param bool $bUseEnvReplace = true
-	 *
-	 * @return mixed
-	 */
-	public function Load()
+	public function Load() : bool
 	{
-		parent::Load();
+		$bResult = parent::Load();
 
 		$this->aReplaceEnv = null;
 		if ((isset($_ENV) && \is_array($_ENV) && 0 < \count($_ENV)) ||
@@ -49,16 +38,16 @@ class Application extends \RainLoop\Config\AbstractConfig
 		{
 			$this->aReplaceEnv = null;
 		}
+
+		return $bResult;
 	}
 
 	/**
-	 * @param string $sSection
-	 * @param string $sName
 	 * @param mixed $mDefault = null
 	 *
 	 * @return mixed
 	 */
-	public function Get($sSection, $sName, $mDefault = null)
+	public function Get(string $sSection, string $sName, $mDefault = null)
 	{
 		$mResult = parent::Get($sSection, $sName, $mDefault);
 		if ($this->aReplaceEnv && \is_string($mResult))
@@ -92,22 +81,12 @@ class Application extends \RainLoop\Config\AbstractConfig
 		return $mResult;
 	}
 
-	/**
-	 * @param string $sPassword
-	 *
-	 * @return void
-	 */
-	public function SetPassword($sPassword)
+	public function SetPassword(string $sPassword) : void
 	{
-		return $this->Set('security', 'admin_password', \md5(APP_SALT.$sPassword.APP_SALT));
+		$this->Set('security', 'admin_password', \md5(APP_SALT.$sPassword.APP_SALT));
 	}
 
-	/**
-	 * @param string $sPassword
-	 *
-	 * @return bool
-	 */
-	public function ValidatePassword($sPassword)
+	public function ValidatePassword(string $sPassword) : bool
 	{
 		$sPassword = (string) $sPassword;
 		$sConfigPassword = (string) $this->Get('security', 'admin_password', '');
@@ -116,10 +95,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 			(($sPassword === $sConfigPassword && '12345' === $sConfigPassword) || \md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Save()
+	public function Save() : bool
 	{
 		$this->Set('version', 'current', APP_VERSION);
 		$this->Set('version', 'saved', \gmdate('r'));
@@ -127,10 +103,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 		return parent::Save();
 	}
 
-	/**
-	 * @return array
-	 */
-	protected function defaultValues()
+	protected function defaultValues() : array
 	{
 		return array(
 
@@ -198,7 +171,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'custom_server_signature'	=> array('RainLoop'),
 				'x_frame_options_header'	=> array(''),
 				'x_xss_protection_header'	=> array('1; mode=block'),
-				
+
 				'openpgp'					=> array(false),
 
 				'admin_login'				=> array('admin', 'Login and password for web admin panel'),

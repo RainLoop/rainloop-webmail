@@ -34,7 +34,6 @@ class FacebookRainLoopPersistentDataHandler implements \Facebook\PersistentData\
 	/**
      * Get a value from a persistent data store.
      *
-     * @param string $key
      *
      * @return mixed
      */
@@ -55,7 +54,6 @@ class FacebookRainLoopPersistentDataHandler implements \Facebook\PersistentData\
     /**
      * Set a value in the persistent data store.
      *
-     * @param string $key
      * @param mixed  $value
      */
     public function set($key, $value)
@@ -70,11 +68,7 @@ class FacebookRainLoopPersistentDataHandler implements \Facebook\PersistentData\
 		}
 	}
 
-	/**
-	 * @param string $key
-	 * @return string
-	 */
-	private function generateSessionVariableName($key)
+	private function generateSessionVariableName($key) : string
 	{
 		return implode('/', array('Fackebook', \md5($this->rlUserHash), 'Storage', $key));
 	}

@@ -93,11 +93,10 @@ class LinkFinder
 	}
 
 	/**
-	 * @param string $sText
 	 *
 	 * @return \MailSo\Base\LinkFinder
 	 */
-	public function Text($sText)
+	public function Text(string $sText)
 	{
 		$this->sText = $sText;
 
@@ -129,11 +128,10 @@ class LinkFinder
 	}
 
 	/**
-	 * @param bool $bAddTargetBlank = false
 	 *
 	 * @return \MailSo\Base\LinkFinder
 	 */
-	public function UseDefaultWrappers($bAddTargetBlank = false)
+	public function UseDefaultWrappers(bool $bAddTargetBlank = false)
 	{
 		$this->fLinkWrapper = function ($sLink) use ($bAddTargetBlank) {
 			
@@ -153,12 +151,7 @@ class LinkFinder
 		return $this;
 	}
 
-	/**
-	 * @param bool $bUseHtmlSpecialChars = true
-	 *
-	 * @return string
-	 */
-	public function CompileText($bUseHtmlSpecialChars = true)
+	public function CompileText(bool $bUseHtmlSpecialChars = true) : string
 	{
 		$sText = \substr($this->sText, 0, $this->iOptimizationLimit);
 		$sSubText = \substr($this->sText, $this->iOptimizationLimit);
@@ -203,12 +196,10 @@ class LinkFinder
 	}
 
 	/**
-	 * @param string $sText
 	 * @param mixed $fWrapper
 	 *
-	 * @return string
 	 */
-	private function findLinks($sText, $fWrapper)
+	private function findLinks(string $sText, $fWrapper) : string
 	{
 		$sPattern = '/([\W]|^)((?:https?:\/\/)|(?:svn:\/\/)|(?:git:\/\/)|(?:s?ftps?:\/\/)|(?:www\.))'.
 			'((\S+?)(\\/)?)((?:&gt;)?|[^\w\=\\/;\(\)\[\]]*?)(?=<|\s|$)/imu';
@@ -258,12 +249,10 @@ class LinkFinder
 	}
 
 	/**
-	 * @param string $sText
 	 * @param mixed $fWrapper
 	 *
-	 * @return string
 	 */
-	private function findMails($sText, $fWrapper)
+	private function findMails(string $sText, $fWrapper) : string
 	{
 		$sPattern = '/([\w\.!#\$%\-+.]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)+)/';
 

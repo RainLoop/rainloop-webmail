@@ -14,12 +14,7 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 		include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/BackwardCapability/Account.php';
 	}
 
-	/**
-	 * @param string $sClassName
-	 *
-	 * @return mixed
-	 */
-	function rainLoopSplAutoloadNamespaces()
+	function rainLoopSplAutoloadNamespaces() : array
 	{
 		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop', 'Predis') :
 			array('RainLoop', 'Facebook', 'PHPThumb', 'Predis', 'SabreForRainLoop', 'Imagine', 'Detection');
@@ -27,10 +22,8 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 
 	/**
 	 * @param string $sClassName
-	 *
-	 * @return mixed
 	 */
-	function rainLoopSplAutoloadRegisterFunction($sClassName)
+	function rainLoopSplAutoloadRegisterFunction($sClassName) : void
 	{
 		if ($sClassName && '\\' === $sClassName[0])
 		{
@@ -53,11 +46,10 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 					include_once RAINLOOP_APP_LIBRARIES_PATH.'RainLoop/Common/MbStringFix.php';
 				}
 
-				return include RAINLOOP_APP_LIBRARIES_PATH.$sPrefix.\strtr($sClassName, '\\', '/').'.php';
+				include RAINLOOP_APP_LIBRARIES_PATH.$sPrefix.\strtr($sClassName, '\\', '/').'.php';
+				break;
 			}
 		}
-
-		return false;
 	}
 
 	\spl_autoload_register('rainLoopSplAutoloadRegisterFunction', false);

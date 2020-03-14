@@ -19,11 +19,6 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $bAdmin;
 
-	/**
-	 * @param \RainLoop\Providers\Domain\DomainInterface $oDriver
-	 *
-	 * @return void
-	 */
 	public function __construct(\RainLoop\Providers\Domain\DomainInterface $oDriver,
 		\RainLoop\Plugins\Manager $oPlugins)
 	{
@@ -32,23 +27,12 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 		$this->bAdmin = $this->oDriver instanceof \RainLoop\Providers\Domain\DomainAdminInterface;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsAdmin()
+	public function IsAdmin() : bool
 	{
 		return $this->bAdmin;
 	}
 
-	/**
-	 * @param string $sName
-	 * @param bool $bFindWithWildCard = false
-	 * @param bool $bCheckDisabled = true
-	 * @param bool $bCheckAliases = true
-	 *
-	 * @return \RainLoop\Model\Domain|null
-	 */
-	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true, $bCheckAliases = true)
+	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true) : ?\RainLoop\Model\Domain
 	{
 		$oDomain = $this->oDriver->Load($sName, $bFindWithWildCard, $bCheckDisabled, $bCheckAliases);
 		if ($oDomain instanceof \RainLoop\Model\Domain)
@@ -59,23 +43,12 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 		return $oDomain;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Domain $oDomain
-	 *
-	 * @return bool
-	 */
-	public function Save(\RainLoop\Model\Domain $oDomain)
+	public function Save(\RainLoop\Model\Domain $oDomain) : bool
 	{
 		return $this->bAdmin ? $this->oDriver->Save($oDomain) : false;
 	}
 
-	/**
-	 * @param string $sName
-	 * @param string $sAlias
-	 *
-	 * @return bool
-	 */
-	public function SaveAlias($sName, $sAlias)
+	public function SaveAlias(string $sName, string $sAlias) : bool
 	{
 		if ($this->Load($sName, false, false))
 		{
@@ -85,36 +58,17 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 		return $this->bAdmin ? $this->oDriver->SaveAlias($sName, $sAlias) : false;
 	}
 
-	/**
-	 * @param string $sName
-	 *
-	 * @return bool
-	 */
-	public function Delete($sName)
+	public function Delete(string $sName) : bool
 	{
 		return $this->bAdmin ? $this->oDriver->Delete($sName) : false;
 	}
 
-	/**
-	 * @param string $sName
-	 * @param bool $bDisabled
-	 *
-	 * @return bool
-	 */
-	public function Disable($sName, $bDisabled)
+	public function Disable(string $sName, bool $bDisabled) : bool
 	{
 		return $this->bAdmin ? $this->oDriver->Disable($sName, $bDisabled) : false;
 	}
 
-	/**
-	 * @param int $iOffset = 0
-	 * @param int $iLimit = 20
-	 * @param string $sSearch = ''
-	 * @param bool $bIncludeAliases = true
-	 *
-	 * @return array
-	 */
-	public function GetList($iOffset = 0, $iLimit = 20, $sSearch = '', $bIncludeAliases = true)
+	public function GetList(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', bool $bIncludeAliases = true) : array
 	{
 		$sSearch = \trim($sSearch);
 
@@ -131,23 +85,12 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 		return $this->bAdmin ? $this->oDriver->GetList($iOffset, $iLimit, $sSearch, $bIncludeAliases) : array();
 	}
 
-	/**
-	 * @param string $sSearch = ''
-	 *
-	 * @return int
-	 */
-	public function Count($sSearch = '')
+	public function Count(string $sSearch = '') : int
 	{
 		return $this->oDriver->Count($sSearch);
 	}
 
-	/**
-	 * @param \RainLoop\Actions $oActions
-	 * @param string $sNameForTest = ''
-	 *
-	 * @return \RainLoop\Model\Domain | null
-	 */
-	public function LoadOrCreateNewFromAction(\RainLoop\Actions $oActions, $sNameForTest = '')
+	public function LoadOrCreateNewFromAction(\RainLoop\Actions $oActions, string $sNameForTest = '') : ?\RainLoop\Model\Domain
 	{
 		$oDomain = null;
 
@@ -214,13 +157,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 		return $oDomain;
 	}
 
-	/**
-	 * @param \RainLoop\Actions $oActions
-	 * @param string $sNameForTest = ''
-	 *
-	 * @return \RainLoop\Model\Domain | null
-	 */
-	public function CreateNewAliasFromAction(\RainLoop\Actions $oActions, $sNameForTest = '')
+	public function CreateNewAliasFromAction(\RainLoop\Actions $oActions, string $sNameForTest = '') : ?\RainLoop\Model\Domain
 	{
 		$oDomain = null;
 
@@ -287,10 +224,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 		return $oDomain;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsActive()
+	public function IsActive() : bool
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\Domain\DomainInterface;
 	}

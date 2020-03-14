@@ -70,8 +70,6 @@ class FolderInformation
 	/**
 	 * @access private
 	 *
-	 * @param string $sFolderName
-	 * @param bool $bIsWritable
 	 */
 	private function __construct($sFolderName, $bIsWritable)
 	{
@@ -88,22 +86,15 @@ class FolderInformation
 	}
 
 	/**
-	 * @param string $sFolderName
-	 * @param bool $bIsWritable
 	 *
 	 * @return \MailSo\Imap\FolderInformation
 	 */
-	public static function NewInstance($sFolderName, $bIsWritable)
+	public static function NewInstance(string $sFolderName, bool $bIsWritable)
 	{
 		return new self($sFolderName, $bIsWritable);
 	}
 
-	/**
-	 * @param string $sFlag
-	 *
-	 * @return bool
-	 */
-	public function IsFlagSupported($sFlag)
+	public function IsFlagSupported(string $sFlag) : bool
 	{
 		return \in_array('\\*', $this->PermanentFlags) ||
 			\in_array($sFlag, $this->PermanentFlags) ||

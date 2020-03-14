@@ -17,32 +17,12 @@ namespace MailSo\Cache;
  */
 interface DriverInterface
 {
-	/**
-	 * @param string $sKey
-	 * @param string $sValue
-	 *
-	 * @return bool
-	 */
-	public function Set($sKey, $sValue);
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	public function Get($sKey);
+	public function Set(string $sKey, string $sValue) : bool;
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return void
-	 */
-	public function Delete($sKey);
+	public function Get(string $sKey) : string;
 
-	/**
-	 * @param int $iTimeToClearInHours = 24
-	 *
-	 * @return bool
-	 */
-	public function GC($iTimeToClearInHours = 24);
+	public function Delete(string $sKey) : void;
+
+	public function GC(int $iTimeToClearInHours = 24) : bool;
 }

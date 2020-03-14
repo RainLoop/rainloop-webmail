@@ -11,12 +11,9 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sQuery
-	 * @param int $iLimit = 20
 	 *
-	 * @return array
 	 */
-	public function Process($oAccount, $sQuery, $iLimit = 20)
+	public function Process($oAccount, string $sQuery, int $iLimit = 20) : array
 	{
 		$iInputLimit = $iLimit;
 		$aResult = array();

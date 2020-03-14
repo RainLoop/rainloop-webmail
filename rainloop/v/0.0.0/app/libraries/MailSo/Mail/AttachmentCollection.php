@@ -33,10 +33,7 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		return new self();
 	}
 
-	/**
-	 * @return int
-	 */
-	public function InlineCount()
+	public function InlineCount() : int
 	{
 		$aList = $this->FilterList(function ($oAttachment) {
 			return $oAttachment && $oAttachment->IsInline();
@@ -45,10 +42,7 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		return \is_array($aList) ? \count($aList) : 0;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function NonInlineCount()
+	public function NonInlineCount() : int
 	{
 		$aList = $this->FilterList(function ($oAttachment) {
 			return $oAttachment && !$oAttachment->IsInline();
@@ -57,10 +51,7 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		return \is_array($aList) ? \count($aList) : 0;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function SpecData()
+	public function SpecData() : array
 	{
 		return $this->MapList(function ($oAttachment) {
 			if ($oAttachment)

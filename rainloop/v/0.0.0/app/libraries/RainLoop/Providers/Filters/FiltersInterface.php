@@ -6,17 +6,13 @@ interface FiltersInterface
 {
 	/**
 	 * @param \RainLoop\Account $oAccount
-	 * @param bool $bAllowRaw = false
 	 *
-	 * @return array
 	 */
-	public function Load($oAccount, $bAllowRaw = false);
+	public function Load($oAccount, bool $bAllowRaw = false) : array;
 
 	/**
 	 * @param \RainLoop\Account $oAccount
-	 * @param array $aFilters
 	 *
-	 * @return bool
 	 */
-	public function Save($oAccount, $aFilters);
+	public function Save($oAccount, array $aFilters) : bool;
 }

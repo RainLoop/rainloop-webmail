@@ -51,21 +51,19 @@ class Property
 	}
 	
 	/**
-	 * @param string $sName
 	 * 
 	 * @return \RainLoop\Plugins\Property
 	 */
-	public static function NewInstance($sName)
+	public static function NewInstance(string $sName)
 	{
 		return new self($sName);
 	}
 	
 	/**
-	 * @param int $iType
 	 * 
 	 * @return \RainLoop\Plugins\Property
 	 */
-	public function SetType($iType)
+	public function SetType(int $iType)
 	{
 		$this->iType = (int) $iType;
 		
@@ -85,11 +83,10 @@ class Property
 	}
 
 	/**
-	 * @param string $sPlaceholder
 	 *
 	 * @return \RainLoop\Plugins\Property
 	 */
-	public function SetPlaceholder($sPlaceholder)
+	public function SetPlaceholder(string $sPlaceholder)
 	{
 		$this->sPlaceholder = $sPlaceholder;
 
@@ -97,11 +94,10 @@ class Property
 	}
 	
 	/**
-	 * @param string $sLabel
 	 * 
 	 * @return \RainLoop\Plugins\Property
 	 */
-	public function SetLabel($sLabel)
+	public function SetLabel(string $sLabel)
 	{
 		$this->sLabel = $sLabel;
 		
@@ -109,11 +105,10 @@ class Property
 	}
 
 	/**
-	 * @param string $sDesc
 	 *
 	 * @return \RainLoop\Plugins\Property
 	 */
-	public function SetDescription($sDesc)
+	public function SetDescription(string $sDesc)
 	{
 		$this->sDesc = $sDesc;
 
@@ -121,52 +116,36 @@ class Property
 	}
 
 	/**
-	 * @param bool $bValue = true
 	 * @return \RainLoop\Plugins\Property
 	 */
-	public function SetAllowedInJs($bValue = true)
+	public function SetAllowedInJs(bool $bValue = true)
 	{
 		$this->bAllowedInJs = !!$bValue;
 
 		return $this;
 	}
-	
-	/**
-	 * @return string
-	 */
-	public function Name()
+
+	public function Name() : string
 	{
 		return $this->sName;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function AllowedInJs()
+	public function AllowedInJs() : bool
 	{
 		return $this->bAllowedInJs;
 	}
-	
-	/**
-	 * @return string
-	 */
-	public function Description()
+
+	public function Description() : string
 	{
 		return $this->sDesc;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Label()
+	public function Label() : string
 	{
 		return $this->sLabel;
 	}
-	
-	/**
-	 * @return int
-	 */
-	public function Type()
+
+	public function Type() : int
 	{
 		return $this->iType;
 	}
@@ -179,18 +158,12 @@ class Property
 		return $this->mDefaultValue;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Placeholder()
+	public function Placeholder() : string
 	{
 		return $this->sPlaceholder;
 	}
-	
-	/**
-	 * @return array
-	 */
-	public function ToArray()
+
+	public function ToArray() : array
 	{
 		return array(
 			 '',

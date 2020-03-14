@@ -254,140 +254,91 @@ class Message
 		return new self();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Plain()
+	public function Plain() : string
 	{
 		return $this->sPlain;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Html()
+	public function Html() : string
 	{
 		return $this->sHtml;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function PgpSignature()
+	public function PgpSignature() : string
 	{
 		return $this->sPgpSignature;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function PgpSigned()
+	public function PgpSigned() : bool
 	{
 		return $this->bPgpSigned;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function PgpEncrypted()
+	public function PgpEncrypted() : bool
 	{
 		return $this->bPgpEncrypted;
 	}
 
 	/**
-	 * @param string $sHtml
 	 *
 	 * @retun void
 	 */
-	public function SetHtml($sHtml)
+	public function SetHtml(string $sHtml)
 	{
 		$this->sHtml = $sHtml;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Folder()
+	public function Folder() : string
 	{
 		return $this->sFolder;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Uid()
+	public function Uid() : int
 	{
 		return $this->iUid;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function MessageId()
+	public function MessageId() : string
 	{
 		return $this->sMessageId;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Subject()
+	public function Subject() : string
 	{
 		return $this->sSubject;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ContentType()
+	public function ContentType() : string
 	{
 		return $this->sContentType;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Size()
+	public function Size() : int
 	{
 		return $this->iSize;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function InternalTimeStampInUTC()
+	public function InternalTimeStampInUTC() : int
 	{
 		return $this->iInternalTimeStampInUTC;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function HeaderTimeStampInUTC()
+	public function HeaderTimeStampInUTC() : int
 	{
 		return $this->iHeaderTimeStampInUTC;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function HeaderDate()
+	public function HeaderDate() : string
 	{
 		return $this->sHeaderDate;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function Flags()
+	public function Flags() : array
 	{
 		return $this->aFlags;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function FlagsLowerCase()
+	public function FlagsLowerCase() : array
 	{
 		return $this->aFlagsLowerCase;
 	}
@@ -400,18 +351,12 @@ class Message
 		return $this->oFrom;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Sensitivity()
+	public function Sensitivity() : int
 	{
 		return $this->iSensitivity;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Priority()
+	public function Priority() : int
 	{
 		return $this->iPriority;
 	}
@@ -472,106 +417,74 @@ class Message
 		return $this->oAttachments;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function InReplyTo()
+	public function InReplyTo() : string
 	{
 		return $this->sInReplyTo;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function References()
+	public function References() : string
 	{
 		return $this->sReferences;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function DeliveryReceipt()
+	public function DeliveryReceipt() : string
 	{
 		return $this->sDeliveryReceipt;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ReadReceipt()
+	public function ReadReceipt() : string
 	{
 		return $this->sReadReceipt;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function UnsubsribeLinks()
+	public function UnsubsribeLinks() : array
 	{
 		return $this->aUnsubsribeLinks;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ReadingConfirmation()
+	public function ReadingConfirmation() : string
 	{
 		return $this->ReadReceipt();
 	}
 
-	/**
-	 * @return array | null
-	 */
-	public function DraftInfo()
+	public function DraftInfo() : array
 	{
 		return $this->aDraftInfo;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function Threads()
+	public function Threads() : array
 	{
 		return $this->aThreads;
 	}
 
-	/**
-	 * @param array $aThreads
-	 */
-	public function SetThreads($aThreads)
+	public function SetThreads(array $aThreads)
 	{
 		$this->aThreads = \is_array($aThreads) ? $aThreads : array();
 	}
 
-	/**
-	 * @return boole
-	 */
-	public function TextPartIsTrimmed()
+	public function TextPartIsTrimmed() : bool
 	{
 		return $this->bTextPartIsTrimmed;
 	}
 
 	/**
-	 * @param string $sFolder
 	 * @param \MailSo\Imap\FetchResponse $oFetchResponse
 	 * @param \MailSo\Imap\BodyStructure $oBodyStructure = null
 	 *
 	 * @return \MailSo\Mail\Message
 	 */
-	public static function NewFetchResponseInstance($sFolder, $oFetchResponse, $oBodyStructure = null)
+	public static function NewFetchResponseInstance(string $sFolder, $oFetchResponse, $oBodyStructure = null)
 	{
 		return self::NewInstance()->InitByFetchResponse($sFolder, $oFetchResponse, $oBodyStructure);
 	}
 
 	/**
-	 * @param string $sFolder
 	 * @param \MailSo\Imap\FetchResponse $oFetchResponse
 	 * @param \MailSo\Imap\BodyStructure $oBodyStructure = null
 	 *
 	 * @return \MailSo\Mail\Message
 	 */
-	public function InitByFetchResponse($sFolder, $oFetchResponse, $oBodyStructure = null)
+	public function InitByFetchResponse(string $sFolder, $oFetchResponse, $oBodyStructure = null)
 	{
 		if (!$oBodyStructure)
 		{

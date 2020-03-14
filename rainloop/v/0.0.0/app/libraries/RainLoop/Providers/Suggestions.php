@@ -11,10 +11,8 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param \RainLoop\Providers\Suggestions\ISuggestions[]|null $aDriver = null
-	 *
-	 * @return void
 	 */
-	public function __construct($aDriver = null)
+	public function __construct(?array $aDriver = null)
 	{
 		if (\is_array($aDriver))
 		{
@@ -26,14 +24,7 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 		$this->aDrivers = \is_array($aDriver) && 0 < \count($aDriver) ? $aDriver : null;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sQuery
-	 * @param int $iLimit = 20
-	 *
-	 * @return array
-	 */
-	public function Process($oAccount, $sQuery, $iLimit = 20)
+	public function Process(\RainLoop\Model\Account $oAccount, string $sQuery, int $iLimit = 20) : array
 	{
 		$aSuggestions = array();
 		if ($oAccount instanceof \RainLoop\Model\Account &&
@@ -63,10 +54,7 @@ class Suggestions extends \RainLoop\Providers\AbstractProvider
 		return $aResult;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsActive()
+	public function IsActive() : bool
 	{
 		return \is_array($this->aDrivers) && 0 < \count($this->aDrivers);
 	}

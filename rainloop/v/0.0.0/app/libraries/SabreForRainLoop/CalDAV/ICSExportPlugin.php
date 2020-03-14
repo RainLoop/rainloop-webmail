@@ -120,7 +120,7 @@ class ICSExportPlugin extends DAV\ServerPlugin {
                     // VTIMEZONE is special, because we need to filter out the duplicates
                     case 'VTIMEZONE' :
                         // Naively just checking tzid.
-                        if (in_array((string)$child->TZID, $collectedTimezones)) continue;
+                        if (in_array((string)$child->TZID, $collectedTimezones)) break;
 
                         $timezones[] = $child;
                         $collectedTimezones[] = $child->TZID;

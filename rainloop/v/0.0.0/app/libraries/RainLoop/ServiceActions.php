@@ -28,7 +28,6 @@ class ServiceActions
 	 * @param \MailSo\Base\Http $oHttp
 	 * @param \RainLoop\Actions $oActions
 	 *
-	 * @return void
 	 */
 	public function __construct($oHttp, $oActions)
 	{
@@ -55,7 +54,7 @@ class ServiceActions
 	}
 
 	/**
-	 * @return \RainLoop\Application
+	 * @return \RainLoop\Config\Application
 	 */
 	public function Config()
 	{
@@ -86,32 +85,19 @@ class ServiceActions
 		return $this->oActions->SettingsProvider();
 	}
 
-	/**
-	 * @param array $aPaths
-	 *
-	 * @return \RainLoop\ServiceActions
-	 */
-	public function SetPaths($aPaths)
+	public function SetPaths(array $aPaths) : self
 	{
 		$this->aPaths = \is_array($aPaths) ? $aPaths : array();
 		return $this;
 	}
 
-	/**
-	 * @param string $sQuery
-	 *
-	 * @return \RainLoop\ServiceActions
-	 */
-	public function SetQuery($sQuery)
+	public function SetQuery(string $sQuery) : self
 	{
 		$this->sQuery = $sQuery;
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceAjax()
+	public function ServiceAjax() : string
 	{
 		@\ob_start();
 
@@ -187,7 +173,7 @@ class ServiceActions
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$aResponseItem = $this->oActions->ExceptionResponse(
 				empty($sAction) ? 'Unknown' : $sAction, $oException);
@@ -212,7 +198,7 @@ class ServiceActions
 
 		if (\is_array($aResponseItem))
 		{
-			$aResponseItem['Time'] = (int) ((\microtime(true) - APP_START) * 1000);
+			$aResponseItem['Time'] = (int) ((\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
 
 			$sUpdateToken = $this->oActions->GetUpdateAuthToken();
 			if ($sUpdateToken)
@@ -249,10 +235,7 @@ class ServiceActions
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceOwnCloudAuth()
+	public function ServiceOwnCloudAuth() : string
 	{
 		$this->oHttp->ServerNoCache();
 
@@ -293,10 +276,7 @@ class ServiceActions
 		return '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceAppend()
+	public function ServiceAppend() : string
 	{
 		@\ob_start();
 		$bResponse = false;
@@ -310,7 +290,7 @@ class ServiceActions
 				$bResponse = \call_user_func(array($this->oActions, 'Append'));
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$bResponse = false;
 		}
@@ -334,13 +314,7 @@ class ServiceActions
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sAction
-	 * @param int $iSizeLimit = 0
-	 *
-	 * @return string
-	 */
-	private function privateUpload($sAction, $iSizeLimit = 0)
+	private function privateUpload(string $sAction, int $iSizeLimit = 0) : string
 	{
 		$oConfig = $this->Config();
 
@@ -396,7 +370,7 @@ class ServiceActions
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$aResponseItem = $this->oActions->ExceptionResponse($sAction, $oException);
 		}
@@ -424,34 +398,22 @@ class ServiceActions
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceUpload()
+	public function ServiceUpload() : string
 	{
 		return $this->privateUpload('Upload');
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceUploadContacts()
+	public function ServiceUploadContacts() : string
 	{
 		return $this->privateUpload('UploadContacts', 5);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceUploadBackground()
+	public function ServiceUploadBackground() : string
 	{
 		return $this->privateUpload('UploadBackground', 1);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceProxyExternal()
+	public function ServiceProxyExternal() : string
 	{
 		$bResult = false;
 		$sData = empty($this->aPaths[1]) ? '' : $this->aPaths[1];
@@ -487,10 +449,7 @@ class ServiceActions
 		return '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceRaw()
+	public function ServiceRaw() : string
 	{
 		$sResult = '';
 		$sRawError = '';
@@ -543,7 +502,7 @@ class ServiceActions
 					break;
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$sRawError = 'Exception as result';
 		}
@@ -562,10 +521,7 @@ class ServiceActions
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceLang()
+	public function ServiceLang() : string
 	{
 //		sleep(2);
 		$sResult = '';
@@ -609,10 +565,7 @@ class ServiceActions
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceTemplates()
+	public function ServiceTemplates() : string
 	{
 		$sResult = '';
 		@\header('Content-Type: application/javascript; charset=utf-8');
@@ -649,10 +602,7 @@ class ServiceActions
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServicePlugins()
+	public function ServicePlugins() : string
 	{
 		$sResult = '';
 		$bAdmin = !empty($this->aPaths[2]) && 'Admin' === $this->aPaths[2];
@@ -689,10 +639,7 @@ class ServiceActions
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceCss()
+	public function ServiceCss() : string
 	{
 		$sResult = '';
 
@@ -779,7 +726,7 @@ class ServiceActions
 						}
 					}
 				}
-				catch (\Exception $oException)
+				catch (\Throwable $oException)
 				{
 					$this->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR, 'LESS');
 				}
@@ -794,87 +741,57 @@ class ServiceActions
 		return $bJson ? \MailSo\Base\Utils::Php2js(array($sTheme, $sResult), $this->Logger()) : $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceSocialGoogle()
+	public function ServiceSocialGoogle() : string
 	{
 		$bXAuth = '1' === (string) $this->oHttp->GetQuery('xauth', '0');
 		return $this->oActions->Social()->GooglePopupService($bXAuth);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceSocialFacebook()
+	public function ServiceSocialFacebook() : string
 	{
 		return $this->oActions->Social()->FacebookPopupService();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceSocialTwitter()
+	public function ServiceSocialTwitter() : string
 	{
 		return $this->oActions->Social()->TwitterPopupService();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceAppData($sAdd = '')
+	public function ServiceAppData(string $sAdd = '') : string
 	{
 		return $this->localAppData(false, $sAdd);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceAdminAppData($sAdd = '')
+	public function ServiceAdminAppData(string $sAdd = '') : string
 	{
 		return $this->localAppData(true, $sAdd);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceMobileVersion()
+	public function ServiceMobileVersion() : string
 	{
 		\RainLoop\Utils::SetCookie(\RainLoop\Actions::RL_MOBILE_TYPE, 'mobile');
 		$this->oActions->Location('./');
 		return '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceDesktopVersion()
+	public function ServiceDesktopVersion() : string
 	{
 		\RainLoop\Utils::SetCookie(\RainLoop\Actions::RL_MOBILE_TYPE, 'desktop');
 		$this->oActions->Location('./');
 		return '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceNoScript()
+	public function ServiceNoScript() : string
 	{
 		return $this->localError($this->oActions->StaticI18N('STATIC/NO_SCRIPT_TITLE'), $this->oActions->StaticI18N('STATIC/NO_SCRIPT_DESC'));
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceNoCookie()
+	public function ServiceNoCookie() : string
 	{
 		return $this->localError($this->oActions->StaticI18N('STATIC/NO_COOKIE_TITLE'), $this->oActions->StaticI18N('STATIC/NO_COOKIE_DESC'));
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceBadBrowser()
+	public function ServiceBadBrowser() : string
 	{
 		$sTitle = $this->oActions->StaticI18N('STATIC/BAD_BROWSER_TITLE');
 		$sDesc = \nl2br($this->oActions->StaticI18N('STATIC/BAD_BROWSER_DESC'));
@@ -888,10 +805,7 @@ class ServiceActions
 		));
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceMailto()
+	public function ServiceMailto() : string
 	{
 		$this->oHttp->ServerNoCache();
 
@@ -909,10 +823,7 @@ class ServiceActions
 		return '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServicePing()
+	public function ServicePing() : string
 	{
 		$this->oHttp->ServerNoCache();
 
@@ -921,10 +832,7 @@ class ServiceActions
 		return 'Pong';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceInfo()
+	public function ServiceInfo() : string
 	{
 		$this->oHttp->ServerNoCache();
 
@@ -935,10 +843,7 @@ class ServiceActions
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceSso()
+	public function ServiceSso() : string
 	{
 		$this->oHttp->ServerNoCache();
 
@@ -1001,7 +906,7 @@ class ServiceActions
 
 						$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
 					}
-					catch (\Exception $oException)
+					catch (\Throwable $oException)
 					{
 						$this->oActions->Logger()->WriteException($oException);
 					}
@@ -1018,10 +923,7 @@ class ServiceActions
 		return '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceRemoteAutoLogin()
+	public function ServiceRemoteAutoLogin() : string
 	{
 		$oException = null;
 		$oAccount = null;
@@ -1038,7 +940,7 @@ class ServiceActions
 				$this->oActions->AuthToken($oAccount);
 				$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->oActions->Logger()->WriteException($oException);
 			}
@@ -1053,10 +955,7 @@ class ServiceActions
 		return '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceExternalLogin()
+	public function ServiceExternalLogin() : string
 	{
 		$this->oHttp->ServerNoCache();
 
@@ -1075,7 +974,7 @@ class ServiceActions
 				$this->oActions->AuthToken($oAccount);
 				$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->oActions->Logger()->WriteException($oException);
 			}
@@ -1121,10 +1020,7 @@ class ServiceActions
 		return '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceExternalSso()
+	public function ServiceExternalSso() : string
 	{
 		$this->oHttp->ServerNoCache();
 
@@ -1192,10 +1088,7 @@ class ServiceActions
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServiceChange()
+	public function ServiceChange() : string
 	{
 		$this->changeAction();
 		$this->oActions->Location('./');
@@ -1203,12 +1096,9 @@ class ServiceActions
 	}
 
 	/**
-	 * @param string $sTitle
-	 * @param string $sDesc
-	 *
 	 * @return mixed
 	 */
-	public function ErrorTemplates($sTitle, $sDesc, $bShowBackLink = true)
+	public function ErrorTemplates(string $sTitle, string $sDesc, bool $bShowBackLink = true)
 	{
 		return strtr(file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Error.html'), array(
 			'{{BaseWebStaticPath}}' => \RainLoop\Utils::WebStaticPath(),
@@ -1221,25 +1111,13 @@ class ServiceActions
 		));
 	}
 
-	/**
-	 * @param string $sTitle
-	 * @param string $sDesc
-	 *
-	 * @return string
-	 */
-	private function localError($sTitle, $sDesc)
+	private function localError(string $sTitle, string $sDesc) : string
 	{
 		@header('Content-Type: text/html; charset=utf-8');
 		return $this->ErrorTemplates($sTitle, \nl2br($sDesc));
 	}
 
-	/**
-	 * @param bool $bAdmin = true
-	 * @param string $sAdd = ''
-	 *
-	 * @return string
-	 */
-	private function localAppData($bAdmin = false, $sAdd = '')
+	private function localAppData(bool $bAdmin = false, string $sAdd = '') : string
 	{
 		@\header('Content-Type: application/javascript; charset=utf-8');
 		$this->oHttp->ServerNoCache();
@@ -1266,7 +1144,7 @@ class ServiceActions
 
 						$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
 					}
-					catch (\Exception $oException)
+					catch (\Throwable $oException)
 					{
 						$oException = null;
 						$this->oActions->ClearSignMeData($oAccount);
@@ -1286,13 +1164,7 @@ class ServiceActions
 		return $sResult;
 	}
 
-	/**
-	 * @param bool $bAdmin = false
-	 * @param bool $bJsOutput = true
-	 *
-	 * @return string
-	 */
-	public function compileTemplates($bAdmin = false, $bJsOutput = true)
+	public function compileTemplates(bool $bAdmin = false, bool $bJsOutput = true) : string
 	{
 		$aTemplates = array();
 
@@ -1315,12 +1187,7 @@ class ServiceActions
 		return $bJsOutput ? 'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml), $this->Logger()).';' : $sHtml;
 	}
 
-	/**
-	 * @param string $sLanguage
-	 *
-	 * @return string
-	 */
-	private function convertLanguageNameToMomentLanguageName($sLanguage)
+	private function convertLanguageNameToMomentLanguageName(string $sLanguage) : string
 	{
 		$aHelper = array('en_gb' => 'en-gb', 'fr_ca' => 'fr-ca', 'pt_br' => 'pt-br',
 			'uk_ua' => 'ua', 'zh_cn' => 'zh-cn', 'zh_tw' => 'zh-tw', 'fa_ir' => 'fa');
@@ -1328,14 +1195,7 @@ class ServiceActions
 		return isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : \substr($sLanguage, 0, 2);
 	}
 
-	/**
-	 * @param string $sLanguage
-	 * @param bool $bAdmin = false
-	 * @param bool $bWrapByScriptTag = true
-	 *
-	 * @return string
-	 */
-	private function compileLanguage($sLanguage, $bAdmin = false, $bWrapByScriptTag = true)
+	private function compileLanguage(string $sLanguage, bool $bAdmin = false, bool $bWrapByScriptTag = true) : string
 	{
 		$aResultLang = array();
 
@@ -1381,13 +1241,7 @@ class ServiceActions
 		;
 	}
 
-	/**
-	 * @param array $aAppData
-	 * @param bool $bWrapByScriptTag = true
-	 *
-	 * @return string
-	 */
-	private function compileAppData($aAppData, $bWrapByScriptTag = true)
+	private function compileAppData(array $aAppData, bool $bWrapByScriptTag = true) : string
 	{
 		return
 			($bWrapByScriptTag ? '<script type="text/javascript" data-cfasync="false">' : '').

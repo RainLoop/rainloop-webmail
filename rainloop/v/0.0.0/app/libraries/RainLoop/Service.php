@@ -19,9 +19,6 @@ class Service
 	 */
 	private $oServiceActions;
 
-	/**
-	 * @return void
-	 */
 	private function __construct()
 	{
 		$this->oHttp = \MailSo\Base\Http::SingletonInstance();
@@ -62,19 +59,15 @@ class Service
 		$this->localHandle();
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function RunResult()
+	public function RunResult() : bool
 	{
 		return true;
 	}
 
 	/**
 	 * @staticvar bool $bOne
-	 * @return bool
 	 */
-	public static function Handle()
+	public static function Handle() : bool
 	{
 		static $bOne = null;
 		if (null === $bOne)
@@ -91,10 +84,7 @@ class Service
 		return $bOne;
 	}
 
-	/**
-	 * @return \RainLoop\Service
-	 */
-	private function localHandle()
+	private function localHandle() : self
 	{
 		if (!\class_exists('MailSo\Version'))
 		{
@@ -228,7 +218,7 @@ class Service
 			}
 
 			$sResult .= '<!--';
-			$sResult .= '[time:'.\substr(\microtime(true) - APP_START, 0, 6);
+			$sResult .= '[time:'.\substr(\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 0, 6);
 
 //			$sResult .= '][version:'.APP_VERSION;
 			if ($this->oActions->IsOpen())
@@ -265,24 +255,12 @@ class Service
 		return $this;
 	}
 
-	/**
-	 * @param string $sPath
-	 *
-	 * @return string
-	 */
-	private function staticPath($sPath)
+	private function staticPath(string $sPath) : string
 	{
 		return $this->oActions->StaticPath($sPath);
 	}
 
-	/**
-	 * @param bool $bAdmin = false
-	 * @param bool $bMobile = false
-	 * @param bool $bMobileDevice = false
-	 *
-	 * @return array
-	 */
-	private function indexTemplateParameters($bAdmin = false, $bMobile = false, $bMobileDevice = false)
+	private function indexTemplateParameters(bool $bAdmin = false, bool $bMobile = false, bool $bMobileDevice = false) : array
 	{
 		$sLanguage = 'en';
 		$sTheme = 'Default';

@@ -14,11 +14,6 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 	 */
 	private $sDataPath;
 
-	/**
-	 * @param string $sStoragePath
-	 *
-	 * @return void
-	 */
 	public function __construct($sStoragePath)
 	{
 		$this->aResources = array();
@@ -27,23 +22,19 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 *
-	 * @return string
 	 */
-	public function GenerateLocalFullFileName($oAccount, $sKey)
+	public function GenerateLocalFullFileName($oAccount, string $sKey) : string
 	{
 		return $this->generateFullFileName($oAccount, $sKey, true);
 	}
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 * @param resource $rSource
 	 *
-	 * @return bool
 	 */
-	public function PutFile($oAccount, $sKey, $rSource)
+	public function PutFile($oAccount, string $sKey, $rSource) : bool
 	{
 		$bResult = false;
 		if ($rSource)
@@ -60,12 +51,9 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 * @param string $sSource
 	 *
-	 * @return bool
 	 */
-	public function MoveUploadedFile($oAccount, $sKey, $sSource)
+	public function MoveUploadedFile($oAccount, string $sKey, string $sSource) : bool
 	{
 		return @\move_uploaded_file($sSource,
 			$this->generateFullFileName($oAccount, $sKey, true));
@@ -73,12 +61,10 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 * @param string $sOpenMode = 'rb'
 	 *
 	 * @return resource|bool
 	 */
-	public function GetFile($oAccount, $sKey, $sOpenMode = 'rb')
+	public function GetFile($oAccount, string $sKey, string $sOpenMode = 'rb')
 	{
 		$mResult = false;
 		$bCreate = !!\preg_match('/[wac]/', $sOpenMode);
@@ -99,11 +85,9 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 *
-	 * @return string|bool
 	 */
-	public function GetFileName($oAccount, $sKey)
+	public function GetFileName($oAccount, string $sKey) : string
 	{
 		$mResult = false;
 		$sFileName = $this->generateFullFileName($oAccount, $sKey);
@@ -117,11 +101,9 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 *
-	 * @return bool
 	 */
-	public function Clear($oAccount, $sKey)
+	public function Clear($oAccount, string $sKey) : bool
 	{
 		$mResult = true;
 		$sFileName = $this->generateFullFileName($oAccount, $sKey);
@@ -140,11 +122,9 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 *
-	 * @return int|bool
 	 */
-	public function FileSize($oAccount, $sKey)
+	public function FileSize($oAccount, string $sKey) : int
 	{
 		$mResult = false;
 		$sFileName = $this->generateFullFileName($oAccount, $sKey);
@@ -158,21 +138,14 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 *
-	 * @return bool
 	 */
-	public function FileExists($oAccount, $sKey)
+	public function FileExists($oAccount, string $sKey) : bool
 	{
 		return @\file_exists($this->generateFullFileName($oAccount, $sKey));
 	}
 
-	/**
-	 * @param int $iTimeToClearInHours = 24
-	 *
-	 * @return bool
-	 */
-	public function GC($iTimeToClearInHours = 24)
+	public function GC(int $iTimeToClearInHours = 24) : bool
 	{
 		if (0 < $iTimeToClearInHours)
 		{
@@ -183,10 +156,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function CloseAllOpenedFiles()
+	public function CloseAllOpenedFiles() : bool
 	{
 		if (\is_array($this->aResources) && 0 < \count($this->aResources))
 		{
@@ -204,12 +174,9 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 * @param bool $bMkDir = false
 	 *
-	 * @return string
 	 */
-	private function generateFullFileName($oAccount, $sKey, $bMkDir = false)
+	private function generateFullFileName($oAccount, string $sKey, bool $bMkDir = false) : string
 	{
 		$sEmail = $sSubEmail = '';
 		if ($oAccount instanceof \RainLoop\Model\Account)

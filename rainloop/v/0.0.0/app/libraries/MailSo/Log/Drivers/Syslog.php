@@ -51,12 +51,7 @@ class Syslog extends \MailSo\Log\Driver
 		return new self();
 	}
 
-	/**
-	 * @param string|array $mDesc
-	 *
-	 * @return bool
-	 */
-	protected function writeImplementation($mDesc)
+	protected function writeImplementation($mDesc) : bool
 	{
 		if (null === $this->iLogLevel)
 		{
@@ -71,10 +66,7 @@ class Syslog extends \MailSo\Log\Driver
 		return \syslog($this->iLogLevel, $mDesc);
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function clearImplementation()
+	protected function clearImplementation() : bool
 	{
 		return true;
 	}

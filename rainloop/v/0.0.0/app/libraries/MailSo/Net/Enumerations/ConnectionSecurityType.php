@@ -23,13 +23,7 @@ class ConnectionSecurityType
 	const STARTTLS = 2;
 	const AUTO_DETECT = 9;
 
-	/**
-	 * @param int $iPort
-	 * @param int $iSecurityType
-	 *
-	 * @return bool
-	 */
-	public static function UseSSL($iPort, $iSecurityType)
+	public static function UseSSL(int $iPort, int $iSecurityType) : bool
 	{
 		$iPort = (int) $iPort;
 		$iResult = (int) $iSecurityType;
@@ -53,14 +47,7 @@ class ConnectionSecurityType
 		return self::SSL === $iResult;
 	}
 
-	/**
-	 * @param bool $bSupported
-	 * @param int $iSecurityType
-	 * @param bool $bHasSupportedAuth = true
-	 *
-	 * @return bool
-	 */
-	public static function UseStartTLS($bSupported, $iSecurityType, $bHasSupportedAuth = true)
+	public static function UseStartTLS(bool $bSupported, int $iSecurityType, bool $bHasSupportedAuth = true) : bool
 	{
 		return ($bSupported &&
 			(self::STARTTLS === $iSecurityType || 

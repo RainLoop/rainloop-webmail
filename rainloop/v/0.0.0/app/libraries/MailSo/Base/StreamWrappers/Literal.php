@@ -45,11 +45,10 @@ class Literal
 
 	/**
 	 * @param resource $rStream
-	 * @param int $iLiteralLen
 	 *
 	 * @return resource|bool
 	 */
-	public static function CreateStream($rStream, $iLiteralLen)
+	public static function CreateStream($rStream, int $iLiteralLen)
 	{
 		if (!in_array(self::STREAM_NAME, stream_get_wrappers()))
 		{
@@ -65,12 +64,7 @@ class Literal
 		return fopen(self::STREAM_NAME.'://'.$sHashName, 'rb');
 	}
 
-	/**
-	 * @param string $sPath
-	 *
-	 * @return bool
-	 */
-	public function stream_open($sPath)
+	public function stream_open(string $sPath) : bool
 	{
 		$this->iPos = 0;
 		$this->iSize = 0;
@@ -98,12 +92,7 @@ class Literal
 		return $bResult;
 	}
 
-	/**
-	 * @param int $iCount
-	 *
-	 * @return string
-	 */
-	public function stream_read($iCount)
+	public function stream_read(int $iCount) : string
 	{
 		$sResult = false;
 		if ($this->iSize < $this->iPos + $iCount)
@@ -138,34 +127,22 @@ class Literal
 		return $sResult;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function stream_write()
+	public function stream_write() : int
 	{
 		return 0;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function stream_tell()
+	public function stream_tell() : int
 	{
 		return $this->iPos;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_eof()
+	public function stream_eof() : bool
 	{
 		return $this->iPos >= $this->iSize;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function stream_stat()
+	public function stream_stat() : array
 	{
 		return array(
 			'dev' => 2,
@@ -184,10 +161,7 @@ class Literal
 		);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_seek()
+	public function stream_seek() : bool
 	{
 		return false;
 	}

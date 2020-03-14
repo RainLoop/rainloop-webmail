@@ -26,12 +26,7 @@ class DkimStatus
 	const TEMP_ERROR = 'temperror';
 	const PREM_ERROR = 'permerror';
 
-	/**
-	 * @param string $sStatus
-	 *
-	 * @return bool
-	 */
-	public static function verifyValue($sStatus)
+	public static function verifyValue(string $sStatus) : bool
 	{
 		return \in_array($sStatus, array(
 			self::NONE,
@@ -44,12 +39,7 @@ class DkimStatus
 		));
 	}
 
-	/**
-	 * @param string $sStatus
-	 * 
-	 * @return string
-	 */
-	public static function normalizeValue($sStatus)
+	public static function normalizeValue(string $sStatus) : string
 	{
 		$sStatus = \strtolower(\trim($sStatus));
 		return self::verifyValue($sStatus) ? $sStatus : self::NONE;

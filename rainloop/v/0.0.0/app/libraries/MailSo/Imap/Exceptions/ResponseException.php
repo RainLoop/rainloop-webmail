@@ -24,9 +24,6 @@ class ResponseException extends \MailSo\Imap\Exceptions\Exception
 	private $aResponses;
 
 	/**
-	 * @param array $aResponses = array
-	 * @param string $sMessage = ''
-	 * @param int $iCode = 0
 	 * @param \Exception $oPrevious = null
 	 */
 	public function __construct($aResponses = array(), $sMessage = '', $iCode = 0, $oPrevious = null)
@@ -39,10 +36,7 @@ class ResponseException extends \MailSo\Imap\Exceptions\Exception
 		}
 	}
 
-	/**
-	 * @return array
-	 */
-	public function GetResponses()
+	public function GetResponses() : array
 	{
 		return $this->aResponses;
 	}

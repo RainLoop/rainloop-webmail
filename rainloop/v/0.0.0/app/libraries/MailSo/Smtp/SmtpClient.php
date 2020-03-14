@@ -87,42 +87,27 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$this->bData = false;
 	}
 
-	/**
-	 * @return \MailSo\Smtp\SmtpClient
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsSupported($sCapa)
+	public function IsSupported(string $sCapa) : bool
 	{
 		return in_array(strtoupper($sCapa), $this->aCapa);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsAuthSupported($sAuth)
+	public function IsAuthSupported(string $sAuth) : bool
 	{
 		return in_array(strtoupper($sAuth), $this->aAuthTypes);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function HasSupportedAuth()
+	public function HasSupportedAuth() : bool
 	{
 		return $this->IsAuthSupported('PLAIN') || $this->IsAuthSupported('LOGIN');
 	}
 
-	/**
-	 * @return string
-	 */
-	public static function EhloHelper()
+	public static function EhloHelper() : string
 	{
 		$sEhloHost = empty($_SERVER['SERVER_NAME']) ? '' : \trim($_SERVER['SERVER_NAME']);
 		if (empty($sEhloHost))
@@ -146,22 +131,13 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sServerName
-	 * @param int $iPort = 25
-	 * @param string $sEhloHost = '[127.0.0.1]'
-	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
-	 * @param bool $bVerifySsl = false
-	 * @param bool $bAllowSelfSigned = true
-	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
-	public function Connect($sServerName, $iPort = 25, $sEhloHost = '[127.0.0.1]',
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		$bVerifySsl = false, $bAllowSelfSigned = true)
+	public function Connect(string $sServerName, int $iPort = 25, string $sEhloHost = '[127.0.0.1]',
+		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		bool $bVerifySsl = false, bool $bAllowSelfSigned = true) : object
 	{
 		$this->iRequestTime = microtime(true);
 
@@ -175,18 +151,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sLogin
-	 * @param string $sPassword
-	 * @param boolean $bUseAuthPlainIfSupported = true
-	 * @param boolean $bUseAuthCramMd5IfSupported = true
-	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Login($sLogin, $sPassword, $bUseAuthPlainIfSupported = true, $bUseAuthCramMd5IfSupported = true)
+	public function Login(string $sLogin, string $sPassword, bool $bUseAuthPlainIfSupported = true, bool $bUseAuthCramMd5IfSupported = true) : self
 	{
 		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
 
@@ -314,15 +283,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sXOAuth2Token
-	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function LoginWithXOauth2($sXOAuth2Token)
+	public function LoginWithXOauth2(string $sXOAuth2Token) : self
 	{
 		if ($this->IsAuthSupported('XOAUTH2'))
 		{
@@ -349,16 +314,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sFrom
-	 * @param string $sSizeIfSupported = ''
-	 * @param bool $bDsn = false
-	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function MailFrom($sFrom, $sSizeIfSupported = '', $bDsn = false)
+	public function MailFrom(string $sFrom, string $sSizeIfSupported = '', bool $bDsn = false) : self
 	{
 		$sFrom = \MailSo\Base\Utils::IdnToAscii(
 			\MailSo\Base\Utils::Trim($sFrom), true);
@@ -386,15 +345,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sTo
-	 * @param bool $bDsn = false
-	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Rcpt($sTo, $bDsn = false)
+	public function Rcpt(string $sTo, bool $bDsn = false) : self
 	{
 		if (!$this->bMail)
 		{
@@ -424,27 +378,19 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sTo
-	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function MailTo($sTo)
+	public function MailTo(string $sTo) : self
 	{
 		return $this->Rcpt($sTo);
 	}
 
 	/**
-	 * @param string $sData
-	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Data($sData)
+	public function Data(string $sData) : self
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sData, true))
 		{
@@ -462,13 +408,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 	/**
 	 * @param resource $rDataStream
 	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function DataWithStream($rDataStream)
+	public function DataWithStream($rDataStream) : self
 	{
 		if (!\is_resource($rDataStream))
 		{
@@ -523,12 +467,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Rset()
+	public function Rset() : self
 	{
 		$this->sendRequestWithCheck('RSET', array(250, 220));
 
@@ -540,12 +482,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Vrfy($sUser)
+	public function Vrfy(string $sUser) : self
 	{
 		$sUser = \MailSo\Base\Utils::IdnToAscii(
 			\MailSo\Base\Utils::Trim($sUser));
@@ -556,12 +496,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Noop()
+	public function Noop() : self
 	{
 		$this->sendRequestWithCheck('NOOP', 250);
 
@@ -569,12 +507,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	public function Logout()
+	public function Logout() : self
 	{
 		if ($this->IsConnected())
 		{
@@ -589,12 +525,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		return $this;
 	}
 
-	/**
-	 * @param string $sEhloHost
-	 *
-	 * @return void
-	 */
-	private function preLoginStartTLSAndEhloProcess($sEhloHost)
+	private function preLoginStartTLSAndEhloProcess(string $sEhloHost) : void
 	{
 		if ($this->bHelo)
 		{
@@ -624,16 +555,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sCommand
-	 * @param string $sAddToCommand = ''
-	 * @param bool $bSecureLog = false
-	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	private function sendRequest($sCommand, $sAddToCommand = '', $bSecureLog = false)
+	private function sendRequest(string $sCommand, string $sAddToCommand = '', bool $bSecureLog = false) : void
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sCommand, true))
 		{
@@ -651,35 +576,20 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		$this->iRequestTime = \microtime(true);
 		$this->sendRaw($sRealCommand, true, $sFakeCommand);
-
-		return $this;
 	}
 
 	/**
-	 * @param string $sCommand
-	 * @param int|array $mExpectCode
-	 * @param string $sAddToCommand = ''
-	 * @param bool $bSecureLog = false
-	 * @param string $sErrorPrefix = ''
-	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	private function sendRequestWithCheck($sCommand, $mExpectCode, $sAddToCommand = '', $bSecureLog = false, $sErrorPrefix = '')
+	private function sendRequestWithCheck(string $sCommand, $mExpectCode, string $sAddToCommand = '', bool $bSecureLog = false, string $sErrorPrefix = '') : void
 	{
 		$this->sendRequest($sCommand, $sAddToCommand, $bSecureLog);
 		$this->validateResponse($mExpectCode, $sErrorPrefix);
 	}
 
-	/**
-	 * @param string $sHost
-	 *
-	 * @return void
-	 */
-	private function ehloOrHelo($sHost)
+	private function ehloOrHelo(string $sHost) : void
 	{
 		try
 		{
@@ -696,15 +606,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 				throw $oException;
 			}
 		}
-
-		return $this;
 	}
 
 	/**
-	 * @param string $sHost
-	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
@@ -745,14 +649,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sHost
-	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	private function helo($sHost)
+	private function helo(string $sHost) : void
 	{
 		$this->sendRequestWithCheck('HELO', 250, $sHost);
 		$this->aAuthTypes = array();
@@ -761,14 +661,9 @@ class SmtpClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param int|array $mExpectCode
-	 * @param string $sErrorPrefix = ''
-	 *
-	 * @return void
-	 *
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
-	private function validateResponse($mExpectCode, $sErrorPrefix = '')
+	private function validateResponse($mExpectCode, string $sErrorPrefix = '') : void
 	{
 		if (!\is_array($mExpectCode))
 		{
@@ -814,25 +709,8 @@ class SmtpClient extends \MailSo\Net\NetClient
 			\MailSo\Log\Enumerations\Type::TIME);
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function getLogName()
+	protected function getLogName() : string
 	{
 		return 'SMTP';
-	}
-
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 *
-	 * @return \MailSo\Smtp\SmtpClient
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public function SetLogger($oLogger)
-	{
-		parent::SetLogger($oLogger);
-
-		return $this;
 	}
 }

@@ -34,11 +34,10 @@ class PartCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param string $sBoundary
 	 *
 	 * @return resorce
 	 */
-	public function ToStream($sBoundary)
+	public function ToStream(string $sBoundary)
 	{
 		$rResult = null;
 		if (0 < \strlen($sBoundary))

@@ -54,11 +54,10 @@ class SubStreams
 	private $iPos;
 
 	/**
-	 * @param array $aSubStreams
 	 *
 	 * @return resource|bool
 	 */
-	public static function CreateStream($aSubStreams)
+	public static function CreateStream(array $aSubStreams)
 	{
 		if (!\in_array(self::STREAM_NAME, \stream_get_wrappers()))
 		{
@@ -91,12 +90,7 @@ class SubStreams
 		return $nNull;
 	}
 
-	/**
-	 * @param string $sPath
-	 *
-	 * @return bool
-	 */
-	public function stream_open($sPath)
+	public function stream_open(string $sPath) : bool
 	{
 		$this->aSubStreams = array();
 
@@ -125,12 +119,7 @@ class SubStreams
 		return $bResult;
 	}
 
-	/**
-	 * @param int $iCount
-	 *
-	 * @return string
-	 */
-	public function stream_read($iCount)
+	public function stream_read(int $iCount) : string
 	{
 		$sReturn = '';
 		$mCurrentPart = null;
@@ -194,34 +183,22 @@ class SubStreams
 		return false;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function stream_write()
+	public function stream_write() : int
 	{
 		return 0;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function stream_tell()
+	public function stream_tell() : int
 	{
 		return $this->iPos;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_eof()
+	public function stream_eof() : bool
 	{
 		return $this->bIsEnd;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function stream_stat()
+	public function stream_stat() : array
 	{
 		return array(
 			'dev' => 2,
@@ -240,10 +217,7 @@ class SubStreams
 		);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_seek()
+	public function stream_seek() : bool
 	{
 		return false;
 	}

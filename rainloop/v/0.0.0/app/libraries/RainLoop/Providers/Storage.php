@@ -9,9 +9,6 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $oDriver;
 
-	/**
-	 * @return void
-	 */
 	public function __construct(\RainLoop\Providers\Storage\IStorage $oDriver)
 	{
 		$this->oDriver = $oDriver;
@@ -19,11 +16,8 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $mAccount
-	 * @param int $iStorageType
-	 *
-	 * @return bool
 	 */
-	private function verifyAccount($mAccount, $iStorageType)
+	private function verifyAccount($mAccount, int $iStorageType) : bool
 	{
 		if (\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY !== $iStorageType &&
 			!($mAccount instanceof \RainLoop\Model\Account || \is_string($mAccount)))
@@ -36,13 +30,9 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 * @param int $iStorageType
-	 * @param string $sKey
-	 * @param string $sValue
-	 *
-	 * @return bool
+	 * @param mixed $sValue
 	 */
-	public function Put($oAccount, $iStorageType, $sKey, $sValue)
+	public function Put($oAccount, int $iStorageType, string $sKey, $sValue) : bool
 	{
 		if (!$this->verifyAccount($oAccount, $iStorageType))
 		{
@@ -54,13 +44,11 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 * @param int $iStorageType
-	 * @param string $sKey
 	 * @param mixed $mDefault = false
 	 *
 	 * @return mixed
 	 */
-	public function Get($oAccount, $iStorageType, $sKey, $mDefault = false)
+	public function Get($oAccount, int $iStorageType, string $sKey, $mDefault = false)
 	{
 		if (!$this->verifyAccount($oAccount, $iStorageType))
 		{
@@ -72,12 +60,8 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 * @param int $iStorageType
-	 * @param string $sKey
-	 *
-	 * @return bool
 	 */
-	public function Clear($oAccount, $iStorageType, $sKey)
+	public function Clear($oAccount, int $iStorageType, string $sKey) : bool
 	{
 		if (!$this->verifyAccount($oAccount, $iStorageType))
 		{
@@ -89,26 +73,18 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 
 	/**
 	 * @param \RainLoop\Model\Account|string $oAccount
-	 *
-	 * @return bool
 	 */
-	public function DeleteStorage($oAccount)
+	public function DeleteStorage($oAccount) : bool
 	{
 		return $this->oDriver->DeleteStorage($oAccount);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsActive()
+	public function IsActive() : bool
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\Storage\IStorage;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsLocal()
+	public function IsLocal() : bool
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\Storage\IStorage &&
 			$this->oDriver->IsLocal();

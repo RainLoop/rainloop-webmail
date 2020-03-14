@@ -30,8 +30,6 @@ class Parameter
 	/**
 	 * @access private
 	 *
-	 * @param string $sName
-	 * @param string $sValue
 	 */
 	private function __construct($sName, $sValue)
 	{
@@ -40,23 +38,19 @@ class Parameter
 	}
 
 	/**
-	 * @param string $sName
-	 * @param string $sValue = ''
 	 *
 	 * @return \MailSo\Mime\Parameter
 	 */
-	public static function NewInstance($sName, $sValue = '')
+	public static function NewInstance(string $sName, string $sValue = '')
 	{
 		return new self($sName, $sValue);
 	}
 
 	/**
-	 * @param string $sName
-	 * @param string $sValue = ''
 	 *
 	 * @return \MailSo\Mime\Parameter
 	 */
-	public static function CreateFromParameterLine($sRawParam)
+	public static function CreateFromParameterLine(string $sRawParam)
 	{
 		$oParameter = self::NewInstance('');
 		return $oParameter->Parse($sRawParam);
@@ -73,29 +67,21 @@ class Parameter
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Name()
+	public function Name() : string
 	{
 		return $this->sName;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Value()
+	public function Value() : string
 	{
 		return $this->sValue;
 	}
 
 	/**
-	 * @param string $sRawParam
-	 * @param string $sSeparator = '='
 	 *
 	 * @return \MailSo\Mime\Parameter
 	 */
-	public function Parse($sRawParam, $sSeparator = '=')
+	public function Parse(string $sRawParam, string $sSeparator = '=')
 	{
 		$this->Reset();
 
@@ -110,12 +96,7 @@ class Parameter
 		return $this;
 	}
 
-	/**
-	 * @param bool $bConvertSpecialsName = false
-	 *
-	 * @return string
-	 */
-	public function ToString($bConvertSpecialsName = false)
+	public function ToString(bool $bConvertSpecialsName = false) : string
 	{
 		$sResult = '';
 		if (0 < strlen($this->sName))

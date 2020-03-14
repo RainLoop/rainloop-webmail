@@ -51,8 +51,6 @@ class Folder
 	 * @access private
 	 *
 	 * @param \MailSo\Imap\Folder $oImapFolder
-	 * @param bool $bSubscribed = true
-	 * @param bool $bExisten = true
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
@@ -84,116 +82,84 @@ class Folder
 
 	/**
 	 * @param \MailSo\Imap\Folder $oImapFolder
-	 * @param bool $bSubscribed = true
-	 * @param bool $bExisten = true
 	 *
 	 * @return \MailSo\Mail\Folder
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewInstance($oImapFolder, $bSubscribed = true, $bExisten = true)
+	public static function NewInstance($oImapFolder, bool $bSubscribed = true, bool $bExisten = true)
 	{
 		return new self($oImapFolder, $bSubscribed, $bExisten);
 	}
 
 	/**
-	 * @param string $sFullNameRaw
-	 * @param string $sDelimiter
 	 *
 	 * @return \MailSo\Mail\Folder
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewNonExistenInstance($sFullNameRaw, $sDelimiter)
+	public static function NewNonExistenInstance(string $sFullNameRaw, string $sDelimiter)
 	{
 		return self::NewInstance(
 			\MailSo\Imap\Folder::NewInstance($sFullNameRaw, $sDelimiter, array('\NoSelect')), true, false);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Name()
+	public function Name() : string
 	{
 		return \MailSo\Base\Utils::ConvertEncoding($this->NameRaw(),
 			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP,
 			\MailSo\Base\Enumerations\Charset::UTF_8);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function FullName()
+	public function FullName() : string
 	{
 		return \MailSo\Base\Utils::ConvertEncoding($this->FullNameRaw(),
 			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP,
 			\MailSo\Base\Enumerations\Charset::UTF_8);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function NameRaw()
+	public function NameRaw() : string
 	{
 		return $this->oImapFolder->NameRaw();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function FullNameRaw()
+	public function FullNameRaw() : string
 	{
 		return $this->oImapFolder->FullNameRaw();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ParentFullName()
+	public function ParentFullName() : string
 	{
 		return \MailSo\Base\Utils::ConvertEncoding($this->sParentFullNameRaw,
 			\MailSo\Base\Enumerations\Charset::UTF_7_IMAP,
 			\MailSo\Base\Enumerations\Charset::UTF_8);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ParentFullNameRaw()
+	public function ParentFullNameRaw() : string
 	{
 		return $this->sParentFullNameRaw;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Delimiter()
+	public function Delimiter() : string
 	{
 		return $this->oImapFolder->Delimiter();
 	}
 
-	/**
-	 * @return array
-	 */
-	public function Flags()
+	public function Flags() : array
 	{
 		return $this->oImapFolder->Flags();
 	}
 
-	/**
-	 * @return array
-	 */
-	public function FlagsLowerCase()
+	public function FlagsLowerCase() : array
 	{
 		return $this->oImapFolder->FlagsLowerCase();
 	}
 
 	/**
-	 * @param bool $bCreateIfNull = false
 	 * @return \MailSo\Mail\FolderCollection
 	 */
-	public function SubFolders($bCreateIfNull = false)
+	public function SubFolders(bool $bCreateIfNull = false)
 	{
 		if ($bCreateIfNull && !$this->oSubFolders)
 		{
@@ -203,18 +169,12 @@ class Folder
 		return $this->oSubFolders;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function HasSubFolders()
+	public function HasSubFolders() : bool
 	{
 		return $this->oSubFolders && 0 < $this->oSubFolders->Count();
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function HasVisibleSubFolders()
+	public function HasVisibleSubFolders() : bool
 	{
 		$sList = array();
 		if ($this->oSubFolders)
@@ -227,26 +187,17 @@ class Folder
 		return 0 < \count($sList);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsSubscribed()
+	public function IsSubscribed() : bool
 	{
 		return $this->bSubscribed;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsExists()
+	public function IsExists() : bool
 	{
 		return $this->bExisten;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsSelectable()
+	public function IsSelectable() : bool
 	{
 		return $this->IsExists() && $this->oImapFolder->IsSelectable();
 	}
@@ -259,18 +210,12 @@ class Folder
 		return $this->oImapFolder->GetExtended('STATUS');
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsInbox()
+	public function IsInbox() : bool
 	{
 		return $this->oImapFolder->IsInbox();
 	}
 
-	/**
-	 * @return int
-	 */
-	public function GetFolderListType()
+	public function GetFolderListType() : int
 	{
 		$aFlags = $this->oImapFolder->FlagsLowerCase();
 		$iListType = \MailSo\Imap\Enumerations\FolderType::USER;

@@ -43,7 +43,7 @@ require_once MAILSO_LIBRARY_ROOT_PATH.'Vendors/Net/IDNA2CustomExceptions.php';
  * simple strings and complete email addresses as well. That means, that you might
  * use any of the following notations:
  *
- * - www.n�rgler.com
+ * - www.nörgler.com
  * - xn--nrgler-wxa
  * - xn--brse-5qa.xn--knrz-1ra.info
  *
@@ -2228,7 +2228,6 @@ class Net_IDNA2
     /**
      * Constructor
      *
-     * @param array $options Options to initialise the object with
      *
      * @access public
      * @see    setParams()
@@ -2263,12 +2262,10 @@ class Net_IDNA2
      *             by silently ignoring errors and returning the original input instead]
      *
      * @param mixed  $option Parameter to set (string: single parameter; array of Parameter => Value pairs)
-     * @param string $value  Value to use (if parameter 1 is a string)
      *
-     * @return boolean       true on success, false otherwise
      * @access public
      */
-    public function setParams($option, $value = false)
+    public function setParams($option, $value = false) : bool
     {
         if (!is_array($option)) {
             $option = array($option => $value);
@@ -2317,11 +2314,8 @@ class Net_IDNA2
     /**
      * Encode a given UTF-8 domain name.
      *
-     * @param string $decoded           Domain name (UTF-8 or UCS-4)
-     * @param string $one_time_encoding Desired input encoding, see {@link set_parameter}
      *                                  If not given will use default-encoding
      *
-     * @return string Encoded Domain name (ACE string)
      * @return mixed  processed string
      * @throws Exception
      * @access public
@@ -2407,10 +2401,7 @@ class Net_IDNA2
     /**
      * Decode a given ACE domain name.
      *
-     * @param string $input             Domain name (ACE string)
-     * @param string $one_time_encoding Desired output encoding, see {@link set_parameter}
      *
-     * @return string                   Decoded Domain name (UTF-8 or UCS-4)
      * @throws Exception
      * @access public
      */
@@ -2497,12 +2488,10 @@ class Net_IDNA2
      *
      * Inspired by code from comments of php.net-documentation for parse_url()
      *
-     * @param array $parts_arr parts (strings) as returned by parse_url()
      *
-     * @return string
      * @access private
      */
-    private function _unparse_url($parts_arr)
+    private function _unparse_url($parts_arr) : string
     {
         if (!empty($parts_arr['scheme'])) {
             $ret_url = $parts_arr['scheme'];
@@ -2531,13 +2520,11 @@ class Net_IDNA2
     /**
      * The actual encoding algorithm.
      *
-     * @param string $decoded Decoded string which should be encoded
      *
-     * @return string         Encoded string
      * @throws Exception
      * @access private
      */
-    private function _encode($decoded)
+    private function _encode($decoded) : string
     {
         // We cannot encode a domain name containing the Punycode prefix
         $extract = self::_byteLength($this->_punycode_prefix);
@@ -2662,13 +2649,11 @@ class Net_IDNA2
     /**
      * The actual decoding algorithm.
      *
-     * @param string $encoded Encoded string which should be decoded
      *
-     * @return string         Decoded string
      * @throws Exception
      * @access private
      */
-    private function _decode($encoded)
+    private function _decode($encoded) : string
     {
         // We do need to find the Punycode prefix
         if (!preg_match('!^' . preg_quote($this->_punycode_prefix, '!') . '!', $encoded)) {
@@ -2739,14 +2724,10 @@ class Net_IDNA2
     /**
      * Adapt the bias according to the current code point and position.
      *
-     * @param int     $delta    ...
-     * @param int     $npoints  ...
-     * @param boolean $is_first ...
      *
-     * @return int
      * @access private
      */
-    private function _adapt($delta, $npoints, $is_first)
+    private function _adapt($delta, $npoints, $is_first) : int
     {
         $delta = (int) ($is_first ? ($delta / $this->_damp) : ($delta / 2));
         $delta += (int) ($delta / $npoints);
@@ -2761,7 +2742,6 @@ class Net_IDNA2
     /**
      * Encoding a certain digit.
      *
-     * @param int $d One digit to encode
      *
      * @return char  Encoded digit
      * @access private
@@ -2776,10 +2756,9 @@ class Net_IDNA2
      *
      * @param char $cp One digit (character) to decode
      *
-     * @return int     Decoded digit
      * @access private
      */
-    private function _decodeDigit($cp)
+    private function _decodeDigit($cp) : int
     {
         $cp = ord($cp);
         return ($cp - 48 < 10)? $cp - 22 : (($cp - 65 < 26)? $cp - 65 : (($cp - 97 < 26)? $cp - 97 : $this->_base));
@@ -2788,13 +2767,11 @@ class Net_IDNA2
     /**
      * Do Nameprep according to RFC3491 and RFC3454.
      *
-     * @param array $input Unicode Characters
      *
-     * @return string      Unicode Characters, Nameprep'd
      * @throws Exception
      * @access private
      */
-    private function _nameprep($input)
+    private function _nameprep($input) : string
     {
         $output = array();
 
@@ -2886,13 +2863,11 @@ class Net_IDNA2
      * Decomposes a Hangul syllable
      * (see http://www.unicode.org/unicode/reports/tr15/#Hangul).
      *
-     * @param integer $char 32bit UCS4 code point
      *
-     * @return array        Either Hangul Syllable decomposed or original 32bit
      *                      value as one value array
      * @access private
      */
-    private function _hangulDecompose($char)
+    private function _hangulDecompose($char) : array
     {
         $sindex = $char - $this->_sbase;
 
@@ -2916,12 +2891,10 @@ class Net_IDNA2
      * Ccomposes a Hangul syllable
      * (see http://www.unicode.org/unicode/reports/tr15/#Hangul).
      *
-     * @param array $input Decomposed UCS4 sequence
      *
-     * @return array       UCS4 sequence with syllables composed
      * @access private
      */
-    private function _hangulCompose($input)
+    private function _hangulCompose($input) : array
     {
         $inp_len = count($input);
 
@@ -2981,12 +2954,10 @@ class Net_IDNA2
     /**
      * Returns the combining class of a certain wide char.
      *
-     * @param integer $char Wide char to check (32bit integer)
      *
-     * @return integer      Combining class if found, else 0
      * @access private
      */
-    private function _getCombiningClass($char)
+    private function _getCombiningClass($char) : int
     {
         return isset(self::$_np_norm_combcls[$char])? self::$_np_norm_combcls[$char] : 0;
     }
@@ -2994,12 +2965,10 @@ class Net_IDNA2
     /**
      * Apllies the cannonical ordering of a decomposed UCS4 sequence.
      *
-     * @param array $input Decomposed UCS4 sequence
      *
-     * @return array       Ordered USC4 sequence
      * @access private
      */
-    private function _applyCannonicalOrdering($input)
+    private function _applyCannonicalOrdering($input) : array
     {
         $swap = true;
         $size = count($input);
@@ -3038,12 +3007,10 @@ class Net_IDNA2
     /**
      * Do composition of a sequence of starter and non-starter.
      *
-     * @param array $input UCS4 Decomposed sequence
      *
-     * @return array       Ordered USC4 sequence
      * @access private
      */
-    private function _combine($input)
+    private function _combine($input) : array
     {
         $inp_len = count($input);
 
@@ -3102,13 +3069,11 @@ class Net_IDNA2
      *
      * Each x represents a bit that can be used to store character data.
      *
-     * @param string $input utf8-encoded string
      *
-     * @return array        ucs4-encoded array
      * @throws Exception
      * @access private
      */
-    private function _utf8_to_ucs4($input)
+    private function _utf8_to_ucs4($input) : array
     {
         $output = array();
         $out_len = 0;
@@ -3179,13 +3144,11 @@ class Net_IDNA2
     /**
      * Convert UCS-4 array into UTF-8 string
      *
-     * @param array $input ucs4-encoded array
      *
-     * @return string      utf8-encoded string
      * @throws Exception
      * @access private
      */
-    private function _ucs4_to_utf8($input)
+    private function _ucs4_to_utf8($input) : string
     {
         $output = '';
 
@@ -3236,13 +3199,11 @@ class Net_IDNA2
     /**
      * Convert UCS-4 array into UCS-4 string
      *
-     * @param array $input ucs4-encoded array
      *
-     * @return string      ucs4-encoded string
      * @throws Exception
      * @access private
      */
-    private function _ucs4_to_ucs4_string($input)
+    private function _ucs4_to_ucs4_string($input) : string
     {
         $output = '';
         // Take array values and split output to 4 bytes per value
@@ -3256,13 +3217,11 @@ class Net_IDNA2
     /**
      * Convert UCS-4 string into UCS-4 array
      *
-     * @param string $input ucs4-encoded string
      *
-     * @return array        ucs4-encoded array
      * @throws InvalidArgumentException
      * @access private
      */
-    private function _ucs4_string_to_ucs4($input)
+    private function _ucs4_string_to_ucs4($input) : array
     {
         $output = array();
 
@@ -3291,14 +3250,11 @@ class Net_IDNA2
     /**
      * Echo hex representation of UCS4 sequence.
      *
-     * @param array   $input       UCS4 sequence
-     * @param boolean $include_bit Include bitmask in output
      *
-     * @return void
      * @static
      * @access private
      */
-    private static function _showHex($input, $include_bit = false)
+    private static function _showHex($input, $include_bit = false) : void
     {
         foreach ($input as $k => $v) {
             echo '[', $k, '] => ', sprintf('%X', $v);
@@ -3315,13 +3271,11 @@ class Net_IDNA2
      * Gives you a bit representation of given Byte (8 bits), Word (16 bits) or DWord (32 bits)
      * Output width is automagically determined
      *
-     * @param int $octet ...
      *
-     * @return string    Bitmask-representation
      * @static
      * @access private
      */
-    private static function _showBitmask($octet)
+    private static function _showBitmask($octet) : string
     {
         if ($octet >= (1 << 16)) {
             $w = 31;
@@ -3344,13 +3298,11 @@ class Net_IDNA2
      * Gets the length of a string in bytes even if mbstring function
      * overloading is turned on
      *
-     * @param string $string the string for which to get the length.
      *
-     * @return integer the length of the string in bytes.
      *
      * @see Net_IDNA2::$_mb_string_overload
      */
-    private static function _byteLength($string)
+    private static function _byteLength($string) : int
     {
         if (self::$_mb_string_overload) {
             return mb_strlen($string, '8bit');
@@ -3364,7 +3316,6 @@ class Net_IDNA2
     /**
      * Attempts to return a concrete IDNA instance for either php4 or php5.
      *
-     * @param array $params Set of paramaters
      *
      * @return Net_IDNA2
      * @access public
@@ -3381,7 +3332,6 @@ class Net_IDNA2
      * only creating a new instance if no IDNA instance with the same
      * parameters currently exists.
      *
-     * @param array $params Set of paramaters
      *
      * @return object Net_IDNA2
      * @access public

@@ -53,12 +53,7 @@ class Callback extends \MailSo\Log\Driver
 		return new self($fWriteCallback, $fClearCallback);
 	}
 
-	/**
-	 * @param string|array $mDesc
-	 *
-	 * @return bool
-	 */
-	protected function writeImplementation($mDesc)
+	protected function writeImplementation($mDesc) : bool
 	{
 		if ($this->fWriteCallback)
 		{
@@ -67,11 +62,8 @@ class Callback extends \MailSo\Log\Driver
 
 		return true;
 	}
-	
-	/**
-	 * @return bool
-	 */
-	protected function clearImplementation()
+
+	protected function clearImplementation() : bool
 	{
 		if ($this->fClearCallback)
 		{

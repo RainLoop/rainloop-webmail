@@ -3,21 +3,19 @@
 	if (defined('APP_VERSION'))
 	{
 		$aRequirements = array(
-			'cURL' => function_exists('curl_init'),
-			'iconv' => function_exists('iconv'),
+			'cURL' => extension_loaded('curl'),
+			'iconv' => extension_loaded('iconv'),
+			'Zlib' => extension_loaded('zlib'),
+			// enabled by default:
 			'json' => function_exists('json_decode'),
-			'DateTime' => class_exists('DateTime') && class_exists('DateTimeZone'),
 			'libxml' => function_exists('libxml_use_internal_errors'),
-			'dom' => class_exists('DOMDocument'),
-			'Zlib' => function_exists('gzopen') || function_exists('gzopen64'),
-			'PCRE' => function_exists('preg_replace'),
-			'SPL' => function_exists('spl_autoload_register')
+			'dom' => class_exists('DOMDocument')
 		);
 
-		if (version_compare(PHP_VERSION, '5.4.0', '<'))
+		if (version_compare(PHP_VERSION, '7.3.0', '<'))
 		{
 			echo '<p style="color: red">';
-			echo '[301] Your PHP version ('.PHP_VERSION.') is lower than the minimal required 5.4.0!';
+			echo '[301] Your PHP version ('.PHP_VERSION.') is lower than the minimal required 7.3.0!';
 			echo '</p>';
 			exit(301);
 		}
@@ -27,7 +25,7 @@
 			echo '<p>';
 			echo '[302] The following PHP extensions are not available in your PHP configuration!';
 			echo '</p>';
-			
+
 			echo '<ul>';
 			foreach ($aRequirements as $sKey => $bValue)
 			{

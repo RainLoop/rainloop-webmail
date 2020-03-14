@@ -19,42 +19,25 @@ class ChangePassword extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $bCheckWeak;
 
-	/**
-	 * @param \RainLoop\Actions $oActions
-	 * @param \RainLoop\Providers\ChangePassword\ChangePasswordInterface|null $oDriver = null
-	 * @param bool $bCheckWeak = true
-	 *
-	 * @return void
-	 */
-	public function __construct($oActions, $oDriver = null, $bCheckWeak = true)
+	public function __construct(\RainLoop\Actions $oActions, ?\RainLoop\Providers\ChangePassword\ChangePasswordInterface $oDriver = null, bool $bCheckWeak = true)
 	{
 		$this->oActions = $oActions;
 		$this->oDriver = $oDriver;
-		$this->bCheckWeak = !!$bCheckWeak;
+		$this->bCheckWeak = $bCheckWeak;
 	}
 
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 *
-	 * @return bool
-	 */
-	public function PasswordChangePossibility($oAccount)
+	public function PasswordChangePossibility(\RainLoop\Model\Account $oAccount) : bool
 	{
 		return $this->IsActive() &&
-			$oAccount instanceof \RainLoop\Account &&
+			$oAccount instanceof \RainLoop\Model\Account &&
 			$this->oDriver && $this->oDriver->PasswordChangePossibility($oAccount)
 		;
 	}
 
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 * @param string $sPrevPassword
-	 * @param string $sNewPassword
-	 */
-	public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword)
+	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword)
 	{
 		$mResult = false;
-		
+
 		if ($this->oDriver instanceof \RainLoop\Providers\ChangePassword\ChangePasswordInterface &&
 			$this->PasswordChangePossibility($oAccount))
 		{
@@ -92,10 +75,7 @@ class ChangePassword extends \RainLoop\Providers\AbstractProvider
 		return $mResult;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsActive()
+	public function IsActive() : bool
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\ChangePassword\ChangePasswordInterface;
 	}

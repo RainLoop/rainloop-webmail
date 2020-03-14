@@ -15,10 +15,8 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	protected $oCacher;
 
 	/**
-	 * @param string $sDomainPath
 	 * @param \MailSo\Cache\CacheClient $oCacher = null
 	 *
-	 * @return void
 	 */
 	public function __construct($sDomainPath, $oCacher = null)
 	{
@@ -26,13 +24,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$this->oCacher = $oCacher;
 	}
 
-	/**
-	 * @param string $sName
-	 * @param bool $bBack = false
-	 *
-	 * @return string
-	 */
-	public function codeFileName($sName, $bBack = false)
+	public function codeFileName(string $sName, bool $bBack = false) : string
 	{
 		if ($bBack && 'default' === $sName)
 		{
@@ -55,18 +47,12 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		return $bBack ? \str_replace('_wildcard_', '*', $sName) : \str_replace('*', '_wildcard_', $sName);
 	}
 
-	/**
-	 * @return string
-	 */
-	private function wildcardDomainsCacheKey()
+	private function wildcardDomainsCacheKey() : string
 	{
 		return '/WildCard/DomainCache/'.\md5(APP_VERSION.APP_PRIVATE_DATA_NAME).'/';
 	}
 
-	/**
-	 * @return string
-	 */
-	private function getWildcardDomainsLine()
+	private function getWildcardDomainsLine() : string
 	{
 		if ($this->oCacher)
 		{
@@ -105,14 +91,10 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	}
 
 	/**
-	 * @param string $sName
-	 * @param bool $bFindWithWildCard = false
-	 * @param bool $bCheckDisabled = true
-	 * @param bool $bCheckAliases = true
 	 *
 	 * @return \RainLoop\Model\Domain|null
 	 */
-	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true, $bCheckAliases = true)
+	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true)
 	{
 		$mResult = null;
 
@@ -205,9 +187,8 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	/**
 	 * @param \RainLoop\Model\Domain $oDomain
 	 *
-	 * @return bool
 	 */
-	public function Save(\RainLoop\Model\Domain $oDomain)
+	public function Save(\RainLoop\Model\Domain $oDomain) : bool
 	{
 		$sRealFileName = $this->codeFileName($oDomain->Name());
 
@@ -220,13 +201,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		return \is_int($mResult) && 0 < $mResult;
 	}
 
-	/**
-	 * @param string $sName
-	 * @param string $sAlias
-	 *
-	 * @return bool
-	 */
-	public function SaveAlias($sName, $sAlias)
+	public function SaveAlias(string $sName, string $sAlias) : bool
 	{
 		$sRealFileName = $this->codeFileName($sName);
 
@@ -239,13 +214,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		return \is_int($mResult) && 0 < $mResult;
 	}
 
-	/**
-	 * @param string $sName
-	 * @param bool $bDisable
-	 *
-	 * @return bool
-	 */
-	public function Disable($sName, $bDisable)
+	public function Disable(string $sName, bool $bDisable) : bool
 	{
 		$sName = \MailSo\Base\Utils::IdnToAscii($sName, true);
 
@@ -277,12 +246,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		return false !== \file_put_contents($this->sDomainPath.'/disabled', \trim(\implode(',', $aResult), ', '));
 	}
 
-	/**
-	 * @param string $sName
-	 *
-	 * @return bool
-	 */
-	public function Delete($sName)
+	public function Delete(string $sName) : bool
 	{
 		$bResult = true;
 		$sRealFileName = $this->codeFileName($sName);
@@ -312,15 +276,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		return $bResult;
 	}
 
-	/**
-	 * @param int $iOffset = 0
-	 * @param int $iLimit = 20
-	 * @param int $sSearch = ''
-	 * @param bool $bIncludeAliases = true
-	 *
-	 * @return array
-	 */
-	public function GetList($iOffset = 0, $iLimit = 20, $sSearch = '', $bIncludeAliases = true)
+	public function GetList(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', bool $bIncludeAliases = true) : array
 	{
 		$aResult = array();
 		$aWildCards = array();
@@ -397,13 +353,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		return $aReturn;
 	}
 
-	/**
-	 * @param string $sSearch = ''
-	 * @param bool $bIncludeAliases = true
-	 *
-	 * @return int
-	 */
-	public function Count($sSearch = '', $bIncludeAliases = true)
+	public function Count(string $sSearch = '', bool $bIncludeAliases = true) : int
 	{
 		return \count($this->GetList(0, 999, $sSearch, $bIncludeAliases));
 	}

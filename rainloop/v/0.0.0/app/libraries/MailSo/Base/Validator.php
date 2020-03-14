@@ -17,13 +17,8 @@ namespace MailSo\Base;
  */
 class Validator
 {
-	/**
-	 * @param string $sEmail
-	 * @param array $aAllowedInternalDomains = array('localhost')
-	 *
-	 * @return bool
-	 */
-	public static function EmailString($sEmail, $aAllowedInternalDomains = array('localhost'))
+
+	public static function EmailString(string $sEmail, array $aAllowedInternalDomains = array('localhost')) : bool
 	{
 		$bResult = false;
 		if (\MailSo\Base\Validator::NotEmptyString($sEmail, true))
@@ -41,59 +36,31 @@ class Validator
 		return $bResult;
 	}
 
-	/**
-	 * @param string $sEmail
-	 *
-	 * @return bool
-	 */
-	public static function SimpleEmailString($sEmail)
+	public static function SimpleEmailString(string $sEmail) : bool
 	{
 		return \MailSo\Base\Validator::NotEmptyString($sEmail, true) &&
 			!!\preg_match('/^[a-zA-Z0-9][a-zA-Z0-9\.\+\-_]*@[a-zA-Z0-9][a-zA-Z0-9\.\+\-_]*$/', $sEmail);
 	}
 
-	/**
-	 * @param string $sString
-	 * @param bool $bTrim = false
-	 *
-	 * @return bool
-	 */
-	public static function NotEmptyString($sString, $bTrim = false)
+	public static function NotEmptyString(string $sString, bool $bTrim = false) : bool
 	{
 		return \is_string($sString) &&
 			(0 < \strlen($bTrim ? \trim($sString) : $sString));
 	}
 
-	/**
-	 * @param array $aList
-	 *
-	 * @return bool
-	 */
-	public static function NotEmptyArray($aList)
+	public static function NotEmptyArray(array $aList) : bool
 	{
 		return \is_array($aList) && 0 < \count($aList);
 	}
 
-	/**
-	 * @param int $iNumber
-	 * @param int $iMin = null
-	 * @param int $iMax = null
-	 *
-	 * @return bool
-	 */
-	public static function RangeInt($iNumber, $iMin = null, $iMax = null)
+	public static function RangeInt(int $iNumber, int $iMin = null, int $iMax = null) : bool
 	{
 		return \is_int($iNumber) &&
 		   (null !== $iMin && $iNumber >= $iMin || null === $iMin) &&
 		   (null !== $iMax && $iNumber <= $iMax || null === $iMax);
 	}
 
-	/**
-	 * @param int $iPort
-	 *
-	 * @return bool
-	 */
-	public static function PortInt($iPort)
+	public static function PortInt(int $iPort) : bool
 	{
 		return \MailSo\Base\Validator::RangeInt($iPort, 0, 65535);
 	}

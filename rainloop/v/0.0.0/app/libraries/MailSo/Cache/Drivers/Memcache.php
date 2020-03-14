@@ -43,12 +43,6 @@ class Memcache implements \MailSo\Cache\DriverInterface
 	 */
 	private $sKeyPrefix;
 
-	/**
-	 * @param string $sHost = '127.0.0.1'
-	 * @param int $iPost = 11211
-	 * @param int $iExpire = 43200
-	 * @param string $sKeyPrefix = ''
-	 */
 	private function __construct($sHost = '127.0.0.1', $iPost = 11211, $iExpire = 43200, $sKeyPrefix = '')
 	{
 		$this->sHost = $sHost;
@@ -70,46 +64,26 @@ class Memcache implements \MailSo\Cache\DriverInterface
 	}
 
 	/**
-	 * @param string $sHost = '127.0.0.1'
-	 * @param int $iPost = 11211
-	 * @param int $iExpire = 43200
-	 * @param string $sKeyPrefix = ''
 	 *
 	 * @return \MailSo\Cache\Drivers\APC
 	 */
-	public static function NewInstance($sHost = '127.0.0.1', $iPost = 11211, $iExpire = 43200, $sKeyPrefix = '')
+	public static function NewInstance(string $sHost = '127.0.0.1', int $iPost = 11211, int $iExpire = 43200, string $sKeyPrefix = '')
 	{
 		return new self($sHost, $iPost, $iExpire, $sKeyPrefix);
 	}
 
-	/**
-	 * @param string $sKey
-	 * @param string $sValue
-	 *
-	 * @return bool
-	 */
-	public function Set($sKey, $sValue)
+	public function Set(string $sKey, string $sValue) : bool
 	{
 		return $this->oMem ? $this->oMem->set($this->generateCachedKey($sKey), $sValue, 0, $this->iExpire) : false;
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	public function Get($sKey)
+	public function Get(string $sKey) : string
 	{
 		$sValue = $this->oMem ? $this->oMem->get($this->generateCachedKey($sKey)) : '';
 		return \is_string($sValue) ? $sValue : '';
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return void
-	 */
-	public function Delete($sKey)
+	public function Delete(string $sKey) : void
 	{
 		if ($this->oMem)
 		{
@@ -117,12 +91,7 @@ class Memcache implements \MailSo\Cache\DriverInterface
 		}
 	}
 
-	/**
-	 * @param int $iTimeToClearInHours = 24
-	 *
-	 * @return bool
-	 */
-	public function GC($iTimeToClearInHours = 24)
+	public function GC(int $iTimeToClearInHours = 24) : bool
 	{
 		if (0 === $iTimeToClearInHours && $this->oMem)
 		{
@@ -132,12 +101,7 @@ class Memcache implements \MailSo\Cache\DriverInterface
 		return false;
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	private function generateCachedKey($sKey)
+	private function generateCachedKey(string $sKey) : string
 	{
 		return $this->sKeyPrefix.\sha1($sKey);
 	}

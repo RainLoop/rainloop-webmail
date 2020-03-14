@@ -29,13 +29,6 @@ abstract class AbstractConfig
 	 */
 	private $sFileHeader;
 
-	/**
-	 * @param string $sFileName
-	 * @param string $sFileHeader = ''
-	 * @param string $sAdditionalFileName = ''
-	 *
-	 * @return void
-	 */
 	public function __construct($sFileName, $sFileHeader = '', $sAdditionalFileName = '')
 	{
 		$this->sFile = \APP_PRIVATE_DATA.'configs/'.\trim($sFileName);
@@ -52,27 +45,19 @@ abstract class AbstractConfig
 			\MailSo\Base\Utils::FunctionExistsAndEnabled(array('apc_fetch', 'apc_store'));
 	}
 
-	/**
-	 * @return array
-	 */
 	protected abstract function defaultValues();
 
-	/**
-	 * @return bool
-	 */
-	public function IsInited()
+	public function IsInited() : bool
 	{
 		return \is_array($this->aData) && 0 < \count($this->aData);
 	}
 
 	/**
-	 * @param string $sSection
-	 * @param string $sName
 	 * @param mixed $mDefault = null
 	 *
 	 * @return mixed
 	 */
-	public function Get($sSection, $sName, $mDefault = null)
+	public function Get(string $sSection, string $sName, $mDefault = null)
 	{
 		$mResult = $mDefault;
 		if (isset($this->aData[$sSection][$sName][0]))
@@ -83,13 +68,10 @@ abstract class AbstractConfig
 	}
 
 	/**
-	 * @param string $sSectionKey
-	 * @param string $sParamKey
 	 * @param mixed $mParamValue
 	 *
-	 * @return void
 	 */
-	public function Set($sSectionKey, $sParamKey, $mParamValue)
+	public function Set(string $sSectionKey, string $sParamKey, $mParamValue) : void
 	{
 		if (isset($this->aData[$sSectionKey][$sParamKey][0]))
 		{
@@ -117,18 +99,12 @@ abstract class AbstractConfig
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	private function cacheKey()
+	private function cacheKey() : string
 	{
 		return 'config:'.\sha1($this->sFile).':'.\sha1($this->sAdditionalFile).':';
 	}
 
-	/**
-	 * @return bool
-	 */
-	private function loadDataFromCache()
+	private function loadDataFromCache() : bool
 	{
 		if ($this->bUseApcCache)
 		{
@@ -158,10 +134,7 @@ abstract class AbstractConfig
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	private function storeDataToCache()
+	private function storeDataToCache() : bool
 	{
 		if ($this->bUseApcCache)
 		{
@@ -185,10 +158,7 @@ abstract class AbstractConfig
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	private function clearCache()
+	private function clearCache() : bool
 	{
 		if ($this->bUseApcCache)
 		{
@@ -203,18 +173,12 @@ abstract class AbstractConfig
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsFileExists()
+	public function IsFileExists() : bool
 	{
 		return \file_exists($this->sFile);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Load()
+	public function Load() : bool
 	{
 		if (\file_exists($this->sFile) && \is_readable($this->sFile))
 		{
@@ -268,10 +232,7 @@ abstract class AbstractConfig
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Save()
+	public function Save() : bool
 	{
 		if (\file_exists($this->sFile) && !\is_writable($this->sFile))
 		{

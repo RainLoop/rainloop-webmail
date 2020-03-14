@@ -114,18 +114,12 @@ class NamespaceResult
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetPersonalNamespace()
+	public function GetPersonalNamespace() : string
 	{
 		return $this->sPersonal;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetPersonalNamespaceDelimiter()
+	public function GetPersonalNamespaceDelimiter() : string
 	{
 		return $this->sPersonalDelimiter;
 	}

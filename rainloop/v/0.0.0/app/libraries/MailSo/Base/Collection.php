@@ -32,10 +32,9 @@ abstract class Collection
 
 	/**
 	 * @param mixed $mItem
-	 * @param bool $bToTop = false
 	 * @return self
 	 */
-	public function Add($mItem, $bToTop = false)
+	public function Add($mItem, bool $bToTop = false)
 	{
 		if ($bToTop)
 		{
@@ -50,12 +49,11 @@ abstract class Collection
 	}
 
 	/**
-	 * @param array $aItems
 	 * @return self
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function AddArray($aItems)
+	public function AddArray(array $aItems)
 	{
 		if (!\is_array($aItems))
 		{
@@ -80,26 +78,17 @@ abstract class Collection
 		return $this;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function CloneAsArray()
+	public function CloneAsArray() : array
 	{
 		return $this->aItems;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Count()
+	public function Count() : int
 	{
 		return \count($this->aItems);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function &GetAsArray()
+	public function &GetAsArray() : array
 	{
 		return $this->aItems;
 	}
@@ -123,9 +112,8 @@ abstract class Collection
 
 	/**
 	 * @param mixed $mCallback
-	 * @return array
 	 */
-	public function FilterList($mCallback)
+	public function FilterList($mCallback) : array
 	{
 		$aResult = array();
 		if (\is_callable($mCallback))
@@ -144,9 +132,8 @@ abstract class Collection
 
 	/**
 	 * @param mixed $mCallback
-	 * @return void
 	 */
-	public function ForeachList($mCallback)
+	public function ForeachList($mCallback) : void
 	{
 		if (\is_callable($mCallback))
 		{
@@ -161,7 +148,7 @@ abstract class Collection
 	 * @return mixed | null
 	 * @return mixed
 	 */
-	public function &GetByIndex($iIndex)
+	public function &GetByIndex(int $iIndex)
 	{
 		$mResult = null;
 		if (\key_exists($iIndex, $this->aItems))
@@ -173,12 +160,11 @@ abstract class Collection
 	}
 
 	/**
-	 * @param array $aItems
 	 * @return self
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function SetAsArray($aItems)
+	public function SetAsArray(array $aItems)
 	{
 		if (!\is_array($aItems))
 		{

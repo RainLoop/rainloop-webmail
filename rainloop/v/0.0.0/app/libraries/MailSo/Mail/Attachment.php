@@ -52,36 +52,22 @@ class Attachment
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Folder()
+	public function Folder() : string
 	{
 		return $this->sFolder;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Uid()
+	public function Uid() : int
 	{
 		return $this->iUid;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function MimeIndex()
+	public function MimeIndex() : string
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->PartID() : '';
 	}
 
-	/**
-	 * @param bool $bCalculateOnEmpty = false
-	 *
-	 * @return string
-	 */
-	public function FileName($bCalculateOnEmpty = false)
+	public function FileName(bool $bCalculateOnEmpty = false) : string
 	{
 		$sFileName = '';
 		if ($this->oBodyStructure)
@@ -108,98 +94,62 @@ class Attachment
 		return $sFileName;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function MimeType()
+	public function MimeType() : string
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->ContentType() : '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ContentTransferEncoding()
+	public function ContentTransferEncoding() : string
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->MailEncodingName() : '';
 	}
 
-	/**
-	 * @return int
-	 */
-	public function EncodedSize()
+	public function EncodedSize() : int
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->Size() : 0;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function EstimatedSize()
+	public function EstimatedSize() : int
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->EstimatedSize() : 0;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Cid()
+	public function Cid() : string
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->ContentID() : '';
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ContentLocation()
+	public function ContentLocation() : string
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->ContentLocation() : '';
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsInline()
+	public function IsInline() : bool
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->IsInline() : false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsImage()
+	public function IsImage() : bool
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->IsImage() : false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsArchive()
+	public function IsArchive() : bool
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->IsArchive() : false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsPdf()
+	public function IsPdf() : bool
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->IsPdf() : false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsDoc()
+	public function IsDoc() : bool
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->IsDoc() : false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsPgpSignature()
+	public function IsPgpSignature() : bool
 	{
 		return $this->oBodyStructure ? $this->oBodyStructure->IsPgpSignature() : false;
 	}
@@ -213,23 +163,19 @@ class Attachment
 	}
 
 	/**
-	 * @param string $sFolder
-	 * @param int $iUid
 	 * @param \MailSo\Imap\BodyStructure $oBodyStructure
 	 * @return \MailSo\Mail\Attachment
 	 */
-	public static function NewBodyStructureInstance($sFolder, $iUid, $oBodyStructure)
+	public static function NewBodyStructureInstance(string $sFolder, int $iUid, $oBodyStructure)
 	{
 		return self::NewInstance()->InitByBodyStructure($sFolder, $iUid, $oBodyStructure);
 	}
 
 	/**
-	 * @param string $sFolder
-	 * @param int $iUid
 	 * @param \MailSo\Imap\BodyStructure $oBodyStructure
 	 * @return \MailSo\Mail\Attachment
 	 */
-	public function InitByBodyStructure($sFolder, $iUid, $oBodyStructure)
+	public function InitByBodyStructure(string $sFolder, int $iUid, $oBodyStructure)
 	{
 		$this->sFolder = $sFolder;
 		$this->iUid = $iUid;

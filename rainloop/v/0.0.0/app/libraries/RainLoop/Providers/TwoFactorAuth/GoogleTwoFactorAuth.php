@@ -6,13 +6,8 @@ class GoogleTwoFactorAuth
 	extends \RainLoop\Providers\TwoFactorAuth\AbstractTwoFactorAuth
 	implements \RainLoop\Providers\TwoFactorAuth\TwoFactorAuthInterface
 {
-	/**
-	 * @param string $sSecret
-	 * @param string $sCode
-	 *
-	 * @return bool
-	 */
-	public function VerifyCode($sSecret, $sCode)
+
+	public function VerifyCode(string $sSecret, string $sCode) : bool
 	{
 		include_once APP_VERSION_ROOT_PATH.'app/libraries/PHPGangsta/GoogleAuthenticator.php';
 
@@ -20,10 +15,7 @@ class GoogleTwoFactorAuth
 		return $oGoogleAuthenticator->verifyCode($sSecret, $sCode, 8);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function CreateSecret()
+	public function CreateSecret() : string
 	{
 		include_once APP_VERSION_ROOT_PATH.'app/libraries/PHPGangsta/GoogleAuthenticator.php';
 

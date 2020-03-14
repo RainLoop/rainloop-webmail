@@ -21,11 +21,7 @@ class Hooks
 	 */
 	static $aCallbacks = array();
 
-	/**
-	 * @param string $sName
-	 * @param array $aArg
-	 */
-	static public function Run($sName, $aArg = array())
+	static public function Run(string $sName, array $aArg = array())
 	{
 		if (isset(\MailSo\Hooks::$aCallbacks[$sName]))
 		{
@@ -37,10 +33,9 @@ class Hooks
 	}
 
 	/**
-	 * @param string $sName
 	 * @param mixed $mCallback
 	 */
-	static public function Add($sName, $mCallback)
+	static public function Add(string $sName, $mCallback)
 	{
 		if (\is_callable($mCallback))
 		{

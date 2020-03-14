@@ -7,22 +7,18 @@ interface ISettings
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 *
-	 * @return array
 	 */
-	public function Load($oAccount);
-
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param array $aSettings
-	 *
-	 * @return bool
-	 */
-	public function Save($oAccount, array $aSettings);
+	public function Load($oAccount) : array;
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
 	 *
-	 * @return bool
 	 */
-	public function Delete($oAccount);
+	public function Save($oAccount, array $aSettings) : bool;
+
+	/**
+	 * @param \RainLoop\Model\Account $oAccount
+	 *
+	 */
+	public function Delete($oAccount) : bool;
 }

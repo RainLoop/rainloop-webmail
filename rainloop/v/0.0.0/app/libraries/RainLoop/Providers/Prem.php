@@ -4,9 +4,7 @@ namespace RainLoop\Providers;
 
 class Prem
 {
-	/**
-	 * @return void
-	 */
+
 	public function __construct($oConfig, $oLogger, $oCacher)
 	{
 		$this->oConfig = $oConfig;
@@ -14,10 +12,7 @@ class Prem
 		$this->oCacher = $oCacher;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function Type()
+	public function Type() : bool
 	{
 		static $bResult = null;
 		if (null === $bResult)
@@ -28,21 +23,12 @@ class Prem
 		return $bResult;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsActive()
+	public function IsActive() : bool
 	{
 		return true;
 	}
 
-	/**
-	 * @param string $sInput
-	 * @param int $iExpired = 0
-	 *
-	 * @return bool
-	 */
-	public function Parser($sInput, &$iExpired = 0)
+	public function Parser(string $sInput, int &$iExpired = 0) : bool
 	{
 		$aMatch = array();
 		if (\preg_match('/^EXPIRED:([\d]+)$/', $sInput, $aMatch))
@@ -54,10 +40,7 @@ class Prem
 		return false;
 	}
 
-	/**
-	 * @param array $aAppData
-	 */
-	public function PopulateAppData(&$aAppData)
+	public function PopulateAppData(array &$aAppData)
 	{
 		if (\is_array($aAppData))
 		{
@@ -106,10 +89,7 @@ class Prem
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Activate($sDomain, $sKey, &$iCode)
+	public function Activate(string $sDomain, string $sKey, int &$iCode) : string
 	{
 		$iCode = 0;
 		$sContentType = '';
@@ -130,10 +110,7 @@ class Prem
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Fetcher($sForce = false, $bLongCache = false, $iFastCacheTimeInMin = 10, $iLongCacheTimeInDays = 3)
+	public function Fetcher(bool $bForce = false, bool $bLongCache = false, int $iFastCacheTimeInMin = 10, int $iLongCacheTimeInDays = 3) : string
 	{
 		$sDomain = \trim(APP_SITE);
 
@@ -281,7 +258,7 @@ class Prem
 		}
 	}
 
-	public function UpdateCore($oActions, $sFile)
+	public function UpdateCore($oActions, string $sFile)
 	{
 		$bResult = false;
 
@@ -289,20 +266,19 @@ class Prem
 		$sTmp = $oActions->downloadRemotePackageByUrl($sFile);
 		if (!empty($sTmp))
 		{
-			include_once APP_VERSION_ROOT_PATH.'app/libraries/pclzip/pclzip.lib.php';
-
-			$oArchive = new \PclZip($sTmp);
+			$oArchive = new \ZipArchive();
+			$oArchive->open($sTmp);
 			$sTmpFolder = APP_PRIVATE_DATA.\md5($sTmp);
 
 			\mkdir($sTmpFolder);
 			if (\is_dir($sTmpFolder))
 			{
-				$bResult = 0 !== $oArchive->extract(PCLZIP_OPT_PATH, $sTmpFolder);
+				$bResult = $oArchive->extractTo($sTmpFolder);
 				if (!$bResult)
 				{
 					if ($this->oLogger)
 					{
-						$this->oLogger->Write('Cannot extract package files: '.$oArchive->errorInfo(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+						$this->oLogger->Write('Cannot extract package files: '.$oArchive->getStatusString(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 					}
 				}
 
@@ -381,6 +357,7 @@ class Prem
 					$this->oLogger->Write('Cannot create tmp folder: '.$sTmpFolder, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 				}
 			}
+			$oArchive->close();
 
 			@\unlink($sTmp);
 		}

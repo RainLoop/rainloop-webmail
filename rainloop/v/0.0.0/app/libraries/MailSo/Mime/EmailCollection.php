@@ -20,7 +20,6 @@ class EmailCollection extends \MailSo\Base\Collection
 	/**
 	 * @access protected
 	 *
-	 * @param string $sEmailAddresses = ''
 	 */
 	protected function __construct($sEmailAddresses = '')
 	{
@@ -34,29 +33,24 @@ class EmailCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param string $sEmailAddresses = ''
 	 *
 	 * @return \MailSo\Mime\EmailCollection
 	 */
-	public static function NewInstance($sEmailAddresses = '')
+	public static function NewInstance(string $sEmailAddresses = '')
 	{
 		return new self($sEmailAddresses);
 	}
 
 	/**
-	 * @param string $sEmailAddresses
 	 *
 	 * @return \MailSo\Mime\EmailCollection
 	 */
-	public static function Parse($sEmailAddresses)
+	public static function Parse(string $sEmailAddresses)
 	{
 		return self::NewInstance($sEmailAddresses);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function ToArray()
+	public function ToArray() : array
 	{
 		$aReturn = $aEmails = array();
 		$aEmails =& $this->GetAsArray();
@@ -108,13 +102,7 @@ class EmailCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	/**
-	 * @param bool $bConvertSpecialsName = false
-	 * @param bool $bIdn = false
-	 *
-	 * @return string
-	 */
-	public function ToString($bConvertSpecialsName = false, $bIdn = false)
+	public function ToString(bool $bConvertSpecialsName = false, bool $bIdn = false) : string
 	{
 		$aReturn = $aEmails = array();
 		$aEmails =& $this->GetAsArray();
@@ -127,11 +115,10 @@ class EmailCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param string $sRawEmails
 	 *
 	 * @return \MailSo\Mime\EmailCollection
 	 */
-	private function parseEmailAddresses($sRawEmails)
+	private function parseEmailAddresses(string $sRawEmails)
 	{
 		$this->Clear();
 

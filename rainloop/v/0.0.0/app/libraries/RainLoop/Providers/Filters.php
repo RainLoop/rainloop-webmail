@@ -9,21 +9,12 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $oDriver;
 
-	/**
-	 * @return void
-	 */
 	public function __construct($oDriver)
 	{
 		$this->oDriver = $oDriver instanceof \RainLoop\Providers\Filters\FiltersInterface ? $oDriver : null;
 	}
 
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 * @param bool $bAllowRaw = false
-	 *
-	 * @return array
-	 */
-	public function Load($oAccount, $bAllowRaw = false)
+	public function Load(\RainLoop\Model\Account $oAccount, bool $bAllowRaw = false) : array
 	{
 		try
 		{
@@ -33,7 +24,7 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetFilters, $oException);
 		}
@@ -41,15 +32,7 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 		return false;
 	}
 
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 * @param array $aFilters
-	 * @param string $sRaw = ''
-	 * @param bool $bRawIsActive = false
-	 *
-	 * @return bool
-	 */
-	public function Save($oAccount, $aFilters, $sRaw = '', $bRawIsActive = false)
+	public function Save(\RainLoop\Model\Account $oAccount, array $aFilters, string $sRaw = '', bool $bRawIsActive = false) : bool
 	{
 		try
 		{
@@ -66,7 +49,7 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 				\RainLoop\Notifications::ClientViewError, $oException,
 					\implode("\r\n", $oException->GetResponses()));
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSaveFilters, $oException);
 		}
@@ -74,10 +57,7 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsActive()
+	public function IsActive() : bool
 	{
 		return $this->oDriver instanceof \RainLoop\Providers\Filters\FiltersInterface;
 	}

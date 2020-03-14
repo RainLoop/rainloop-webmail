@@ -74,12 +74,7 @@ class Response
 		return new self();
 	}
 
-	/**
-	 * @param string $aList
-	 * 
-	 * @return string
-	 */
-	private function recToLine($aList)
+	private function recToLine(array $aList) : string
 	{
 		$aResult = array();
 		if (\is_array($aList))
@@ -92,12 +87,8 @@ class Response
 
 		return \implode(' ', $aResult);
 	}
-	
 
-	/**
-	 * @return string
-	 */
-	public function ToLine()
+	public function ToLine() : string
 	{
 		return $this->recToLine($this->ResponseList);
 	}

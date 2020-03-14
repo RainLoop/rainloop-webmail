@@ -20,7 +20,6 @@ class ParameterCollection extends \MailSo\Base\Collection
 	/**
 	 * @access protected
 	 *
-	 * @param string $sRawParams = ''
 	 */
 	protected function __construct($sRawParams = '')
 	{
@@ -33,11 +32,10 @@ class ParameterCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param string $sRawParams = ''
 	 *
 	 * @return \MailSo\Mime\ParameterCollection
 	 */
-	public static function NewInstance($sRawParams = '')
+	public static function NewInstance(string $sRawParams = '')
 	{
 		return new self($sRawParams);
 	}
@@ -45,7 +43,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 	/**
 	 * @return \MailSo\Mime\Parameter|null
 	 */
-	public function &GetByIndex($iIndex)
+	public function &GetByIndex(int $iIndex)
 	{
 		$mResult = null;
 		$mResult =& parent::GetByIndex($iIndex);
@@ -53,25 +51,19 @@ class ParameterCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param array $aList
 	 *
 	 * @return \MailSo\Mime\ParameterCollection
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function SetAsArray($aList)
+	public function SetAsArray(array $aList)
 	{
 		parent::SetAsArray($aList);
 
 		return $this;
 	}
 
-	/**
-	 * @param string $sName
-	 *
-	 * @return string
-	 */
-	public function ParameterValueByName($sName)
+	public function ParameterValueByName(string $sName) : string
 	{
 		$sResult = '';
 		$sName = \trim($sName);
@@ -90,11 +82,10 @@ class ParameterCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param string $sRawParams
 	 *
 	 * @return \MailSo\Mime\ParameterCollection
 	 */
-	public function Parse($sRawParams)
+	public function Parse(string $sRawParams)
 	{
 		$this->Clear();
 
@@ -110,12 +101,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	/**
-	 * @param bool $bConvertSpecialsName = false
-	 *
-	 * @return string
-	 */
-	public function ToString($bConvertSpecialsName = false)
+	public function ToString(bool $bConvertSpecialsName = false) : string
 	{
 		$aResult = array();
 		$aParams =& $this->GetAsArray();
@@ -131,10 +117,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		return 0 < \count($aResult) ? \implode('; ', $aResult) : '';
 	}
 
-	/**
-	 * @return void
-	 */
-	private function reParseParameters()
+	private function reParseParameters() : void
 	{
 		$aDataToReParse = $this->CloneAsArray();
 		$sCharset = \MailSo\Base\Enumerations\Charset::UTF_8;

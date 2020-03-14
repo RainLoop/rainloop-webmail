@@ -5,52 +5,23 @@ namespace RainLoop\Providers\Domain;
 interface DomainAdminInterface extends DomainInterface
 {
 
-	/**
-	 * @param string $sName
-	 * @param bool $bDisable
-	 *
-	 * @return bool
-	 */
-	public function Disable($sName, $bDisable);
+	public function Disable(string $sName, bool $bDisable) : bool;
 
 	/**
-	 * @param string $sName
-	 * @param bool $bFindWithWildCard = false
-	 * @param bool $bCheckDisabled = true
 	 *
 	 * @return \RainLoop\Model\Domain|null
 	 */
-	public function Load($sName, $bFindWithWildCard = false, $bCheckDisabled = true);
+	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true);
 
 	/**
 	 * @param \RainLoop\Model\Domain $oDomain
 	 *
-	 * @return bool
 	 */
-	public function Save(\RainLoop\Model\Domain $oDomain);
+	public function Save(\RainLoop\Model\Domain $oDomain) : bool;
 
-	/**
-	 * @param string $sName
-	 *
-	 * @return bool
-	 */
-	public function Delete($sName);
+	public function Delete(string $sName) : bool;
 
-	/**
-	 * @param int $iOffset = 0
-	 * @param int $iLimit = 20
-	 * @param int $sSearch = ''
-	 * @param bool $bIncludeAliases = true
-	 *
-	 * @return array
-	 */
-	public function GetList($iOffset = 0, $iLimit = 20, $sSearch = '', $bIncludeAliases = true);
+	public function GetList(int $iOffset = 0, int $iLimit = 20, string $sSearch = '', bool $bIncludeAliases = true) : array;
 
-	/**
-	 * @param string $sSearch = ''
-	 * @param bool $bIncludeAliases = true
-	 *
-	 * @return int
-	 */
-	public function Count($sSearch = '', $bIncludeAliases = true);
+	public function Count(string $sSearch = '', bool $bIncludeAliases = true) : int;
 }

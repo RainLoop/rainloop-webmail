@@ -26,12 +26,7 @@ class HtmlUtils
 	{
 	}
 
-	/**
-	 * @param \DOMElement $oElement
-	 *
-	 * @return array
-	 */
-	public static function GetElementAttributesAsArray($oElement)
+	public static function GetElementAttributesAsArray(?\DOMElement $oElement) : array
 	{
 		$aResult = array();
 		if ($oElement)
@@ -52,12 +47,7 @@ class HtmlUtils
 		return $aResult;
 	}
 
-	/**
-	 * @param string $sText
-	 *
-	 * @return \DOMDocument|bool
-	 */
-	public static function GetDomFromText($sText)
+	public static function GetDomFromText(string $sText) : \DOMDocument
 	{
 		$bState = true;
 		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))
@@ -92,10 +82,7 @@ class HtmlUtils
 		return $oDom;
 	}
 
-	/**
-	 * @return \DOMDocument
-	 */
-	private static function createDOMDocument()
+	private static function createDOMDocument() : \DOMDocument
 	{
 		$oDoc = new \DOMDocument('1.0', 'UTF-8');
 		$oDoc->encoding = 'UTF-8';
@@ -106,20 +93,12 @@ class HtmlUtils
 		return $oDoc;
 	}
 
-	/**
-	 * @return boolean
-	 */
-	private static function comparedVersion()
+	private static function comparedVersion() : bool
 	{
 		return \version_compare(PHP_VERSION, '5.3.6') >= 0;
 	}
 
-	/**
-	 * @param \DOMDocument|\DOMElement $oElem
-	 *
-	 * @return string
-	 */
-	private static function domToString($oElem, $oDom = null)
+	private static function domToString(\DOMNode $oElem, ?\DOMDocument $oDom = null) : string
 	{
 		$sResult = '';
 		if ($oElem instanceof \DOMDocument)
@@ -150,13 +129,7 @@ class HtmlUtils
 		return \trim($sResult);
 	}
 
-	/**
-	 * @param \DOMDocument $oDom
-	 * @param bool $bWrapByFakeHtmlAndBodyDiv = true
-	 *
-	 * @return string
-	 */
-	public static function GetTextFromDom_($oDom, $bWrapByFakeHtmlAndBodyDiv = true)
+	public static function GetTextFromDom_(\DOMDocument $oDom, bool $bWrapByFakeHtmlAndBodyDiv = true) : string
 	{
 		$sResult = '';
 
@@ -209,13 +182,7 @@ class HtmlUtils
 		return $sResult;
 	}
 
-	/**
-	 * @param \DOMDocument $oDom
-	 * @param bool $bWrapByFakeHtmlAndBodyDiv = true
-	 *
-	 * @return string
-	 */
-	public static function GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv = true)
+	public static function GetTextFromDom(\DOMDocument $oDom, bool $bWrapByFakeHtmlAndBodyDiv = true)
 	{
 		$sResult = '';
 
@@ -259,14 +226,7 @@ class HtmlUtils
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sHtml
-	 * @param string $sHtmlAttrs = ''
-	 * @param string $sBodyAttrs = ''
-	 *
-	 * @return string
-	 */
-	public static function ClearBodyAndHtmlTag($sHtml, &$sHtmlAttrs = '', &$sBodyAttrs = '')
+	public static function ClearBodyAndHtmlTag(string $sHtml, string &$sHtmlAttrs = '', string &$sBodyAttrs = '') : string
 	{
 		$aMatch = array();
 		if (\preg_match('/<html([^>]+)>/im', $sHtml, $aMatch) && !empty($aMatch[1]))
@@ -299,13 +259,7 @@ class HtmlUtils
 		return $sHtml;
 	}
 
-	/**
-	 * @param string $sHtml
-	 * @param bool $bClearEmpty = true
-	 *
-	 * @return string
-	 */
-	public static function FixSchemas($sHtml, $bClearEmpty = true)
+	public static function FixSchemas(string $sHtml, bool $bClearEmpty = true) : string
 	{
 		if ($bClearEmpty)
 		{
@@ -318,12 +272,7 @@ class HtmlUtils
 		return $sHtml;
 	}
 
-	/**
-	 * @param string $sHtml
-	 *
-	 * @return string
-	 */
-	public static function ClearFastTags($sHtml)
+	public static function ClearFastTags(string $sHtml) : string
 	{
 		return \preg_replace(array(
 			'/<p[^>]*><\/p>/i',
@@ -362,9 +311,8 @@ class HtmlUtils
 
 	/**
 	 * @param mixed $oDom
-	 * @param bool $bClearStyleAndHead = true
 	 */
-	public static function ClearTags(&$oDom, $bClearStyleAndHead = true)
+	public static function ClearTags(&$oDom, bool $bClearStyleAndHead = true)
 	{
 		$aRemoveTags = array(
 			'svg', 'link', 'base', 'meta', 'title', 'x-script', 'script', 'bgsound', 'keygen', 'source',
@@ -410,8 +358,8 @@ class HtmlUtils
 /*
 //	public static function ClearStyleUrlValueParserHelper($oUrlValue, $oRule, $oRuleSet,
 //		$oElem = null,
-//		&$bHasExternals = false, &$aFoundCIDs = array(),
-//		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
+//		&$bHasExternals = false, array &$aFoundCIDs = array(),
+//		$aContentLocationUrls = array(), array &$aFoundedContentLocationUrls = array(),
 //		$bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null
 //	)
 //	{
@@ -504,9 +452,9 @@ class HtmlUtils
 //		}
 //	}
 //
-//	public static function ClearStyleSmart($sStyle, $oElement = null,
-//		&$bHasExternals = false, &$aFoundCIDs = array(),
-//		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
+//	public static function ClearStyleSmart(string $sStyle, $oElement = null,
+//		&$bHasExternals = false, array &$aFoundCIDs = array(),
+//		$aContentLocationUrls = array(), array &$aFoundedContentLocationUrls = array(),
 //		$bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null,
 //		$sSelectorPrefix = '')
 //	{
@@ -631,20 +579,10 @@ class HtmlUtils
 */
 
 	/**
-	 *
-	 * @param string $sStyle
-	 * @param \DOMElement $oElement
-	 * @param bool $bHasExternals
-	 * @param array $aFoundCIDs
-	 * @param array $aContentLocationUrls
-	 * @param array $aFoundedContentLocationUrls
-	 * @param bool $bDoNotReplaceExternalUrl = false
 	 * @param callback|null $fAdditionalExternalFilter = null
-	 *
-	 * @return string
 	 */
-	public static function ClearStyle($sStyle, $oElement, &$bHasExternals, &$aFoundCIDs,
-		$aContentLocationUrls, &$aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null)
+	public static function ClearStyle(string $sStyle, \DOMElement $oElement, &$bHasExternals, &$aFoundCIDs,
+		$aContentLocationUrls, &$aFoundedContentLocationUrls, bool $bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null)
 	{
 		$sStyle = \trim($sStyle);
 		$aOutStyles = array();
@@ -862,15 +800,7 @@ class HtmlUtils
 		unset($aNodes);
 	}
 
-	/**
-	 * @param string $sHtml
-	 * @param bool $bDoNotReplaceExternalUrl = false
-	 * @param bool $bFindLinksInHtml = false
-	 * @param bool $bWrapByFakeHtmlAndBodyDiv = true
-	 *
-	 * @return string
-	 */
-	public static function ClearHtmlSimple($sHtml, $bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false, $bWrapByFakeHtmlAndBodyDiv = true)
+	public static function ClearHtmlSimple(string $sHtml, bool $bDoNotReplaceExternalUrl = false, bool $bFindLinksInHtml = false, bool $bWrapByFakeHtmlAndBodyDiv = true) : string
 	{
 		$bHasExternals = false;
 		$aFoundCIDs = array();
@@ -887,19 +817,8 @@ class HtmlUtils
 	}
 
 	/**
-	 * @param string $sHtml
-	 * @param bool $bHasExternals = false
-	 * @param array $aFoundCIDs = array()
-	 * @param array $aContentLocationUrls = array()
-	 * @param array $aFoundedContentLocationUrls = array()
-	 * @param bool $bDoNotReplaceExternalUrl = false
-	 * @param bool $bFindLinksInHtml = false
 	 * @param callback|null $fAdditionalExternalFilter = null
 	 * @param callback|null $fAdditionalDomReader = null
-	 * @param bool $bTryToDetectHiddenImages = false
-	 * @param bool $bWrapByFakeHtmlAndBodyDiv = true
-	 *
-	 * @return string
 	 */
 	public static function ClearHtml($sHtml, &$bHasExternals = false, &$aFoundCIDs = array(),
 		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
@@ -1106,7 +1025,7 @@ class HtmlUtils
 				$oElement->setAttribute('data-x-blocked-xlink-href', $sLinkHref);
 				$oElement->removeAttribute('xlink:href');
 			}
-			
+
 			if (\in_array($sTagNameLower, array('a', 'form', 'area')))
 			{
 				$oElement->setAttribute('target', '_blank');
@@ -1272,15 +1191,7 @@ class HtmlUtils
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sHtml
-	 * @param array $aFoundCids = array()
-	 * @param array|null $mFoundDataURL = null
-	 * @param array $aFoundedContentLocationUrls = array()
-	 *
-	 * @return string
-	 */
-	public static function BuildHtml($sHtml, &$aFoundCids = array(), &$mFoundDataURL = null, &$aFoundedContentLocationUrls = array())
+	public static function BuildHtml(string $sHtml, array &$aFoundCids = array(), &$mFoundDataURL = null, array &$aFoundedContentLocationUrls = array()) : string
 	{
 		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
 
@@ -1415,13 +1326,7 @@ class HtmlUtils
 			'<body>'.$sResult.'</body></html>';
 	}
 
-	/**
-	 * @param string $sText
-	 * @param bool $bLinksWithTargetBlank = true
-	 *
-	 * @return string
-	 */
-	public static function ConvertPlainToHtml($sText, $bLinksWithTargetBlank = true)
+	public static function ConvertPlainToHtml(string $sText, bool $bLinksWithTargetBlank = true) : string
 	{
 		$sText = \trim($sText);
 		if (0 === \strlen($sText))
@@ -1503,12 +1408,7 @@ class HtmlUtils
 		return $sText;
 	}
 
-	/**
-	 * @param string $sText
-	 *
-	 * @return string
-	 */
-	public static function ConvertHtmlToPlain($sText)
+	public static function ConvertHtmlToPlain(string $sText) : string
 	{
 		$sText = \trim(\stripslashes($sText));
 		$sText = \MailSo\Base\Utils::StripSpaces($sText);

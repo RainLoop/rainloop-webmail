@@ -26,26 +26,17 @@ final class Version
 	 */
 	const MIME_X_MAILER = 'MailSo';
 
-	/**
-	 * @return string
-	 */
-	public static function AppVersion()
+	public static function AppVersion() : string
 	{
 		return \MailSo\Version::APP_VERSION;
 	}
 
-	/**
-	 * @return string
-	 */
-	public static function XMailer()
+	public static function XMailer() : string
 	{
 		return \MailSo\Version::MIME_X_MAILER.'/'.\MailSo\Version::APP_VERSION;
 	}
 
-	/**
-	 * @return string
-	 */
-	public static function Signature()
+	public static function Signature() : string
 	{
 		$sSignature = '';
 		if (\defined('MAILSO_LIBRARY_USE_PHAR'))

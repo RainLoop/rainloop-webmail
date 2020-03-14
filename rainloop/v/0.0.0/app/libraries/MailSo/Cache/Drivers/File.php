@@ -31,8 +31,6 @@ class File implements \MailSo\Cache\DriverInterface
 	/**
 	 * @access private
 	 *
-	 * @param string $sCacheFolder
-	 * @param string $sKeyPrefix = ''
 	 */
 	private function __construct($sCacheFolder, $sKeyPrefix = '')
 	{
@@ -52,34 +50,21 @@ class File implements \MailSo\Cache\DriverInterface
 	}
 
 	/**
-	 * @param string $sCacheFolder
-	 * @param string $sKeyPrefix = ''
 	 *
 	 * @return \MailSo\Cache\Drivers\File
 	 */
-	public static function NewInstance($sCacheFolder, $sKeyPrefix = '')
+	public static function NewInstance(string $sCacheFolder, string $sKeyPrefix = '')
 	{
 		return new self($sCacheFolder, $sKeyPrefix);
 	}
 
-	/**
-	 * @param string $sKey
-	 * @param string $sValue
-	 *
-	 * @return bool
-	 */
-	public function Set($sKey, $sValue)
+	public function Set(string $sKey, string $sValue) : bool
 	{
 		$sPath = $this->generateCachedFileName($sKey, true);
 		return '' === $sPath ? false : false !== \file_put_contents($sPath, $sValue);
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	public function Get($sKey)
+	public function Get(string $sKey) : string
 	{
 		$sValue = '';
 		$sPath = $this->generateCachedFileName($sKey);
@@ -91,12 +76,7 @@ class File implements \MailSo\Cache\DriverInterface
 		return \is_string($sValue) ? $sValue : '';
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return void
-	 */
-	public function Delete($sKey)
+	public function Delete(string $sKey) : void
 	{
 		$sPath = $this->generateCachedFileName($sKey);
 		if ('' !== $sPath && \file_exists($sPath))
@@ -105,12 +85,7 @@ class File implements \MailSo\Cache\DriverInterface
 		}
 	}
 
-	/**
-	 * @param int $iTimeToClearInHours = 24
-	 *
-	 * @return bool
-	 */
-	public function GC($iTimeToClearInHours = 24)
+	public function GC(int $iTimeToClearInHours = 24) : bool
 	{
 		if (0 < $iTimeToClearInHours)
 		{
@@ -121,13 +96,7 @@ class File implements \MailSo\Cache\DriverInterface
 		return false;
 	}
 
-	/**
-	 * @param string $sKey
-	 * @param bool $bMkDir = false
-	 *
-	 * @return string
-	 */
-	private function generateCachedFileName($sKey, $bMkDir = false)
+	private function generateCachedFileName(string $sKey, bool $bMkDir = false) : string
 	{
 		$sFilePath = '';
 		if (3 < \strlen($sKey))

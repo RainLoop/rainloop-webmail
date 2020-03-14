@@ -45,7 +45,7 @@ class VCard extends VObject\Document {
         'DATE'             => 'SabreForRainLoop\\VObject\\Property\\VCard\\Date',
         'DATE-TIME'        => 'SabreForRainLoop\\VObject\\Property\\VCard\\DateTime',
         'DATE-AND-OR-TIME' => 'SabreForRainLoop\\VObject\\Property\\VCard\\DateAndOrTime', // vCard only
-        'FLOAT'            => 'SabreForRainLoop\\VObject\\Property\\Float',
+        'FLOAT'            => 'SabreForRainLoop\\VObject\\Property\\FloatValue',
         'INTEGER'          => 'SabreForRainLoop\\VObject\\Property\\Integer',
         'LANGUAGE-TAG'     => 'SabreForRainLoop\\VObject\\Property\\VCard\\LanguageTag',
         'TIMESTAMP'        => 'SabreForRainLoop\\VObject\\Property\\VCard\\TimeStamp',

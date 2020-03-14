@@ -50,9 +50,6 @@ class Folder
 	/**
 	 * @access private
 	 *
-	 * @param string $sFullNameRaw
-	 * @param string $sDelimiter
-	 * @param array $aFlags
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
@@ -104,89 +101,63 @@ class Folder
 	}
 
 	/**
-	 * @param string $sFullNameRaw
-	 * @param string $sDelimiter = '.'
-	 * @param array $aFlags = array()
 	 *
 	 * @return \MailSo\Imap\Folder
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewInstance($sFullNameRaw, $sDelimiter = '.', $aFlags = array())
+	public static function NewInstance(string $sFullNameRaw, string $sDelimiter = '.', array $aFlags = array())
 	{
 		return new self($sFullNameRaw, $sDelimiter, $aFlags);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function NameRaw()
+	public function NameRaw() : string
 	{
 		return $this->sNameRaw;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function FullNameRaw()
+	public function FullNameRaw() : string
 	{
 		return $this->sFullNameRaw;
 	}
 
-	/**
-	 * @return string | null
-	 */
-	public function Delimiter()
+	public function Delimiter() : string
 	{
 		return $this->sDelimiter;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function Flags()
+	public function Flags() : array
 	{
 		return $this->aFlags;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function FlagsLowerCase()
+	public function FlagsLowerCase() : array
 	{
 		return $this->aFlagsLowerCase;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsSelectable()
+	public function IsSelectable() : bool
 	{
 		return !\in_array('\noselect', $this->aFlagsLowerCase);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsInbox()
+	public function IsInbox() : bool
 	{
 		return 'INBOX' === \strtoupper($this->sFullNameRaw) || \in_array('\inbox', $this->aFlagsLowerCase);
 	}
 
 	/**
-	 * @param string $sName
 	 * @param mixed $mData
 	 */
-	public function SetExtended($sName, $mData)
+	public function SetExtended(string $sName, $mData)
 	{
 		$this->aExtended[$sName] = $mData;
 	}
 
 	/**
-	 * @param string $sName
 	 * @return mixed
 	 */
-	public function GetExtended($sName)
+	public function GetExtended(string $sName)
 	{
 		return isset($this->aExtended[$sName]) ? $this->aExtended[$sName] : null;
 	}

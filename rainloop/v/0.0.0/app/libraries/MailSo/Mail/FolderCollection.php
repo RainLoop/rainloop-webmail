@@ -65,11 +65,10 @@ class FolderCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param string $sFullNameRaw
 	 *
 	 * @return \MailSo\Mail\Folder|null
 	 */
-	public function GetByFullNameRaw($sFullNameRaw)
+	public function GetByFullNameRaw(string $sFullNameRaw)
 	{
 		$mResult = null;
 		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
@@ -96,10 +95,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		return $mResult;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function CountRec()
+	public function CountRec() : int
 	{
 		$iResult = $this->Count();
 		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
@@ -114,18 +110,12 @@ class FolderCollection extends \MailSo\Base\Collection
 		return $iResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetNamespace()
+	public function GetNamespace() : string
 	{
 		return $this->Namespace;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function FindDelimiter()
+	public function FindDelimiter() : string
 	{
 		$sDelimiter = '/';
 
@@ -144,23 +134,17 @@ class FolderCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @param string $sNamespace
 	 *
 	 * @return \MailSo\Mail\FolderCollection
 	 */
-	public function SetNamespace($sNamespace)
+	public function SetNamespace(string $sNamespace)
 	{
 		$this->Namespace = $sNamespace;
 
 		return $this;
 	}
 
-	/**
-	 * @param array $aUnsortedMailFolders
-	 *
-	 * @return void
-	 */
-	public function InitByUnsortedMailFolderArray($aUnsortedMailFolders)
+	public function InitByUnsortedMailFolderArray(array $aUnsortedMailFolders) : void
 	{
 		$this->Clear();
 
@@ -223,9 +207,8 @@ class FolderCollection extends \MailSo\Base\Collection
 	/**
 	 * @param \MailSo\Mail\Folder $oMailFolder
 	 *
-	 * @return bool
 	 */
-	public function AddWithPositionSearch($oMailFolder)
+	public function AddWithPositionSearch($oMailFolder) : bool
 	{
 		$oItemFolder = null;
 		$bIsAdded = false;
@@ -257,9 +240,8 @@ class FolderCollection extends \MailSo\Base\Collection
 	/**
 	 * @param callable $fCallback
 	 *
-	 * @return void
 	 */
-	public function SortByCallback($fCallback)
+	public function SortByCallback($fCallback) : void
 	{
 		if (\is_callable($fCallback))
 		{

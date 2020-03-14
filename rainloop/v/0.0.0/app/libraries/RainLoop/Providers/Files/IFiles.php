@@ -6,75 +6,53 @@ interface IFiles
 {
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 *
-	 * @return string
 	 */
-	public function GenerateLocalFullFileName($oAccount, $sKey);
+	public function GenerateLocalFullFileName($oAccount, string $sKey) : string;
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 * @param resource $rSource
 	 *
-	 * @return bool
 	 */
-	public function PutFile($oAccount, $sKey, $rSource);
+	public function PutFile($oAccount, string $sKey, $rSource) : bool;
 
 	/**
 	 * @param CAccount $oAccount
-	 * @param string $sKey
-	 * @param string $sSource
 	 *
-	 * @return bool
 	 */
-	public function MoveUploadedFile($oAccount, $sKey, $sSource);
+	public function MoveUploadedFile($oAccount, string $sKey, string $sSource) : bool;
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
-	 * @param string $sOpenMode = 'rb'
 	 *
 	 * @return resource|bool
 	 */
-	public function GetFile($oAccount, $sKey, $sOpenMode = 'rb');
+	public function GetFile($oAccount, string $sKey, string $sOpenMode = 'rb');
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 *
-	 * @return string|bool
 	 */
-	public function GetFileName($oAccount, $sKey);
+	public function GetFileName($oAccount, string $sKey) : string;
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 *
-	 * @return bool
 	 */
-	public function Clear($oAccount, $sKey);
+	public function Clear($oAccount, string $sKey) : bool;
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 *
-	 * @return int | bool
 	 */
-	public function FileSize($oAccount, $sKey);
+	public function FileSize($oAccount, string $sKey) : int;
 
 	/**
 	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sKey
 	 *
-	 * @return bool
 	 */
-	public function FileExists($oAccount, $sKey);
+	public function FileExists($oAccount, string $sKey) : bool;
 
-	/**
-	 * @param int $iTimeToClearInHours = 24
-
-	 * @return bool
-	 */
-	public function GC($iTimeToClearInHours = 24);
+	public function GC(int $iTimeToClearInHours = 24) : bool;
 }

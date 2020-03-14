@@ -25,10 +25,7 @@ class Social
 		$this->oActions = $oActions;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function GoogleDisconnect($oAccount)
+	public function GoogleDisconnect($oAccount) : bool
 	{
 		$oGoogle = $this->GoogleConnector();
 		if ($oAccount && $oGoogle)
@@ -57,10 +54,7 @@ class Social
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function FacebookDisconnect($oAccount)
+	public function FacebookDisconnect($oAccount) : bool
 	{
 		$oFacebook = $this->FacebookConnector($oAccount ? $oAccount : null);
 		if ($oAccount && $oFacebook)
@@ -90,10 +84,7 @@ class Social
 		return false;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function TwitterDisconnect($oAccount)
+	public function TwitterDisconnect($oAccount) : bool
 	{
 		$oTwitter = $this->TwitterConnector();
 		if ($oAccount && $oTwitter)
@@ -122,10 +113,7 @@ class Social
 		return false;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function popupServiceResult($sTypeStr, $sLoginUrl, $bLogin, $iErrorCode)
+	public function popupServiceResult(string $sTypeStr, string $sLoginUrl, bool $bLogin, int $iErrorCode) : string
 	{
 		$sResult = '';
 		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
@@ -168,10 +156,7 @@ class Social
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GoogleRefreshToken($sAccessToken, $sRefreshToken)
+	public function GoogleRefreshToken(string $sAccessToken, string $sRefreshToken) : string
 	{
 		$oGoogle = $this->GoogleConnector();
 		if ($oGoogle)
@@ -186,10 +171,7 @@ class Social
 		return $sAccessToken;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GooglePopupService($bGmail = false)
+	public function GooglePopupService(bool $bGmail = false) : string
 	{
 		$sLoginUrl = '';
 		$oAccount = null;
@@ -347,10 +329,7 @@ class Social
 		return $this->popupServiceResult('google', $sLoginUrl, $bLogin, $iErrorCode);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function FacebookPopupService()
+	public function FacebookPopupService() : string
 	{
 		$sLoginUrl = '';
 		$sSocialName = '';
@@ -452,10 +431,7 @@ class Social
 		return $this->popupServiceResult('facebook', $sLoginUrl, $bLogin, $iErrorCode);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function TwitterPopupService()
+	public function TwitterPopupService() : string
 	{
 		$sLoginUrl = '';
 
@@ -702,11 +678,10 @@ class Social
 
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount = null
-	 * @param string $sRedirectUrl = ''
 	 *
 	 * @return \RainLoop\Common\RainLoopFacebookRedirectLoginHelper|null
 	 */
-	public function FacebookConnector($oAccount = null, &$sRedirectUrl = '')
+	public function FacebookConnector($oAccount = null, string &$sRedirectUrl = '')
 	{
 		$oFacebook = false;
 		$oConfig = $this->oActions->Config();
@@ -751,38 +726,26 @@ class Social
 		return false === $oFacebook ? null : $oFacebook;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GoogleUserLoginStorageKey($oGoogle, $sGoogleUserId)
+	public function GoogleUserLoginStorageKey($oGoogle, string $sGoogleUserId) : string
 	{
 		return \implode('_', array('google', \md5($oGoogle->getClientId()), $sGoogleUserId, APP_SALT));
 	}
 
-	/**
-	 * @return string
-	 */
-	public function FacebookUserLoginStorageKey($oFacebook, $sFacebookUserId)
+	public function FacebookUserLoginStorageKey($oFacebook, string $sFacebookUserId) : string
 	{
 		return \implode('_', array('facebookNew', \md5($oFacebook->getApp()->getId()), $sFacebookUserId, APP_SALT));
 	}
 
-	/**
-	 * @return string
-	 */
-	public function TwitterUserLoginStorageKey($oTwitter, $sTwitterUserId)
+	public function TwitterUserLoginStorageKey($oTwitter, string $sTwitterUserId) : string
 	{
 		return \implode('_', array('twitter_2', \md5($oTwitter->config['consumer_secret']), $sTwitterUserId, APP_SALT));
 	}
 
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount
-	 * @param string $sEmail
-	 * @param string $sPassword
 	 *
-	 * @return int
 	 */
-	private function loginProcess(&$oAccount, $sEmail, $sPassword)
+	private function loginProcess(&$oAccount, string $sEmail, string $sPassword) : int
 	{
 		$iErrorCode = \RainLoop\Notifications::UnknownError;
 

@@ -4,140 +4,68 @@ namespace RainLoop;
 
 class KeyPathHelper
 {
-	/**
-	 * @param string $sHash
-	 *
-	 * @return string
-	 */
-	static public function PublicFile($sHash)
+
+	static public function PublicFile(string $sHash) : string
 	{
 		return '/Public/Files/'.sha1($sHash).'/Data/';
 	}
 
-	/**
-	 * @param string $sSsoHash
-	 *
-	 * @return string
-	 */
-	static public function SsoCacherKey($sSsoHash)
+	static public function SsoCacherKey(string $sSsoHash) : string
 	{
 		return '/Sso/Data/'.$sSsoHash.'/Login/';
 	}
 
-	/**
-	 * @param string $sHash
-	 *
-	 * @return string
-	 */
-	static public function RsaCacherKey($sHash)
+	static public function RsaCacherKey(string $sHash) : string
 	{
 		return '/Rsa/Data/'.$sHash.'/';
 	}
 
-	/**
-	 * @param string $sDomain
-	 *
-	 * @return string
-	 */
-	static public function LicensingDomainKeyValue($sDomain)
+	static public function LicensingDomainKeyValue(string $sDomain) : string
 	{
 		return '/Licensing/DomainKey/Value/'.$sDomain;
 	}
 
-	/**
-	 * @param string $sDomain
-	 *
-	 * @return string
-	 */
-	static public function LicensingDomainKeyOtherValue($sDomain)
+	static public function LicensingDomainKeyOtherValue(string $sDomain) : string
 	{
 		return '/Licensing/DomainKeyOther/Value/'.$sDomain;
 	}
 
-	/**
-	 * @param string $sRepo
-	 * @param string $sRepoFile
-	 *
-	 * @return string
-	 */
-	static public function RepositoryCacheFile($sRepo, $sRepoFile)
+	static public function RepositoryCacheFile(string $sRepo, string $sRepoFile) : string
 	{
 		return '/RepositoryCache/Repo/'.$sRepo.'/File/'.$sRepoFile;
 	}
 
-	/**
-	 * @param string $sRepo
-	 *
-	 * @return string
-	 */
-	static public function RepositoryCacheCore($sRepo)
+	static public function RepositoryCacheCore(string $sRepo) : string
 	{
 		return '/RepositoryCache/CoreRepo/'.$sRepo;
 	}
 
-	/**
-	 * @param string $sEmail
-	 * @param string $sFolderFullName
-	 * @param string $sUid
-	 *
-	 * @return string
-	 */
-	static public function ReadReceiptCache($sEmail, $sFolderFullName, $sUid)
+	static public function ReadReceiptCache(string $sEmail, string $sFolderFullName, string $sUid) : string
 	{
 		return '/ReadReceipt/'.$sEmail.'/'.$sFolderFullName.'/'.$sUid;
 	}
 
-	/**
-	 * @param string $sLanguage
-	 * @param bool $bAdmim
-	 * @param string $sPluginsHash
-	 *
-	 * @return string
-	 */
-	static public function LangCache($sLanguage, $bAdmim, $sPluginsHash)
+	static public function LangCache(string $sLanguage, bool $bAdmim, string $sPluginsHash) : string
 	{
 		return '/LangCache/'.$sPluginsHash.'/'.$sLanguage.'/'.($bAdmim ? 'Admin' : 'App').'/'.APP_VERSION.'/';
 	}
 
-	/**
-	 * @param bool $bAdmin
-	 * @param string $sPluginsHash
-	 *
-	 * @return string
-	 */
-	static public function TemplatesCache($bAdmin, $sPluginsHash)
+	static public function TemplatesCache(bool $bAdmin, string $sPluginsHash) : string
 	{
 		return '/TemplatesCache/'.$sPluginsHash.'/'.($bAdmin ? 'Admin' : 'App').'/'.APP_VERSION.'/';
 	}
 
-	/**
-	 * @param string $sPluginsHash
-	 *
-	 * @return string
-	 */
-	static public function PluginsJsCache($sPluginsHash)
+	static public function PluginsJsCache(string $sPluginsHash) : string
 	{
 		return '/PluginsJsCache/'.$sPluginsHash.'/'.APP_VERSION.'/';
 	}
 
-	/**
-	 * @param string $sTheme
-	 * @param string $sHash
-	 * @param string $sPublickHash
-	 *
-	 * @return string
-	 */
-	static public function CssCache($sTheme, $sHash)
+	static public function CssCache(string $sTheme, string $sHash) : string
 	{
 		return '/CssCache/'.$sHash.'/'.$sTheme.'/'.APP_VERSION.'/';
 	}
 
-	/**
-	 * @param string $sRand
-	 *
-	 * @return string
-	 */
-	static public function SessionAdminKey($sRand)
+	static public function SessionAdminKey(string $sRand) : string
 	{
 		return '/Session/AdminKey/'.\md5($sRand).'/';
 	}

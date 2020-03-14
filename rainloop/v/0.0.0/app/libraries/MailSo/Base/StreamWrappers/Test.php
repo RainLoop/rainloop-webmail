@@ -34,11 +34,10 @@ class Test
 	private $rReadSream;
 
 	/**
-	 * @param string $sRawResponse
 	 *
 	 * @return resource|bool
 	 */
-	public static function CreateStream($sRawResponse)
+	public static function CreateStream(string $sRawResponse)
 	{
 		if (!in_array(self::STREAM_NAME, stream_get_wrappers()))
 		{
@@ -58,12 +57,7 @@ class Test
 		return fopen(self::STREAM_NAME.'://'.$sHashName, 'r+b');
 	}
 
-	/**
-	 * @param string $sPath
-	 *
-	 * @return bool
-	 */
-	public function stream_open($sPath)
+	public function stream_open(string $sPath) : bool
 	{
 		$bResult = false;
 		$aPath = parse_url($sPath);
@@ -84,54 +78,32 @@ class Test
 		return $bResult;
 	}
 
-	/**
-	 * @param int $iCount
-	 *
-	 * @return string
-	 */
-	public function stream_read($iCount)
+	public function stream_read(int $iCount) : string
 	{
 		return fread($this->rReadSream, $iCount);
 	}
 
-	/**
-	 * @param string $sInputString
-	 *
-	 * @return int
-	 */
-	public function stream_write($sInputString)
+	public function stream_write(string $sInputString) : int
 	{
 		return strlen($sInputString);
 	}
 
-	/**
-	 * @return int
-	 */
-	public function stream_tell()
+	public function stream_tell() : int
 	{
 		return ftell($this->rReadSream);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_eof()
+	public function stream_eof() : bool
 	{
 		return feof($this->rReadSream);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function stream_stat()
+	public function stream_stat() : array
 	{
 		return fstat($this->rReadSream);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_seek()
+	public function stream_seek() : bool
 	{
 		return false;
 	}
