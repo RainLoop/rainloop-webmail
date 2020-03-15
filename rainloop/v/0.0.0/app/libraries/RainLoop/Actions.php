@@ -9260,7 +9260,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				while (($sFile = \readdir($rDirH)) !== false)
 				{
-					if ('.' !== $sFile{0} && \is_dir($sDir.'/'.$sFile) && \file_exists($sDir.'/'.$sFile.'/styles.less'))
+					if ('.' !== $sFile[0] && \is_dir($sDir.'/'.$sFile) && \file_exists($sDir.'/'.$sFile.'/styles.less'))
 					{
 						if ('Default' === $sFile)
 						{
@@ -9288,7 +9288,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				while (($sFile = \readdir($rDirH)) !== false)
 				{
-					if ('.' !== $sFile{0} && \is_dir($sDir.'/'.$sFile) && \file_exists($sDir.'/'.$sFile.'/styles.less'))
+					if ('.' !== $sFile[0] && \is_dir($sDir.'/'.$sFile) && \file_exists($sDir.'/'.$sFile.'/styles.less'))
 					{
 						$sList[] = $sFile.'@custom';
 					}
@@ -9341,7 +9341,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				while (($sFile = \readdir($rDirH)) !== false)
 				{
-					if ('.' !== $sFile{0} && \is_file($sDir.'/'.$sFile) && '.yml' === \substr($sFile, -4))
+					if ('.' !== $sFile[0] && \is_file($sDir.'/'.$sFile) && '.yml' === \substr($sFile, -4))
 					{
 						$sLang = \substr($sFile, 0, -4);
 						if (0 < \strlen($sLang) && 'always' !== $sLang && '_source.en' !== $sLang)
