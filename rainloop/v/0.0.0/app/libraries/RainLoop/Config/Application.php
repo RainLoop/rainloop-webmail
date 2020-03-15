@@ -99,6 +99,10 @@ class Application extends \RainLoop\Config\AbstractConfig
 	 */
 	public function SetPassword($sPassword)
 	{
+		if (function_exists('password_hash'))
+		{
+			return $this->Set('security', 'admin_password', password_hash($sPassword, PASSWORD_DEFAULT));
+		}
 		return $this->Set('security', 'admin_password', \md5(APP_SALT.$sPassword.APP_SALT));
 	}
 
@@ -112,8 +116,22 @@ class Application extends \RainLoop\Config\AbstractConfig
 		$sPassword = (string) $sPassword;
 		$sConfigPassword = (string) $this->Get('security', 'admin_password', '');
 
-		return 0 < \strlen($sPassword) &&
-			(($sPassword === $sConfigPassword && '12345' === $sConfigPassword) || \md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword);
+		if (0 < strlen($sConfigPassword))
+		{
+			if (($sPassword === $sConfigPassword) && ('12345' === $sConfigPassword))  // password has not been set
+			{
+				return true;
+			}
+			if (32 == strlen($sConfigPassword))  // legacy md5 hash
+			{
+				return (\md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword);
+			}
+			if (function_exists('password_verify'))  // secure hash
+			{
+				return password_verify($sPassword, $sConfigPassword);
+			}
+		}
+		return false;
 	}
 
 	/**
