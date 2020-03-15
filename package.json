@@ -107,7 +107,7 @@
     "moment": "2.24.0",
     "node-fs": "0.1.7",
     "normalize.css": "8.0.1",
-    "openpgp": "2.6.2",
+    "openpgp": "4.3.0",
     "opentip": "2.4.3",
     "pikaday": "1.8.0",
     "prettier": "1.19.1",
