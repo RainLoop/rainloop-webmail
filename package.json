@@ -47,14 +47,14 @@
   ],
   "readmeFilename": "README.md",
   "devDependencies": {
-    "@babel/core": "7.8.4",
+    "@babel/core": "7.8.7",
     "@babel/plugin-proposal-class-properties": "7.8.3",
     "@babel/plugin-proposal-decorators": "7.8.3",
     "@babel/plugin-transform-runtime": "7.8.3",
-    "@babel/preset-env": "7.8.4",
-    "@babel/runtime-corejs3": "7.8.4",
-    "autolinker": "3.11.1",
-    "babel-eslint": "10.0.3",
+    "@babel/preset-env": "7.8.7",
+    "@babel/runtime-corejs3": "7.8.7",
+    "autolinker": "3.13.0",
+    "babel-eslint": "10.1.0",
     "babel-loader": "8.0.6",
     "classnames": "2.2.6",
     "copy-webpack-plugin": "5.1.1",
@@ -69,7 +69,7 @@
     "gulp-autoprefixer": "7.0.1",
     "gulp-cached": "1.1.1",
     "gulp-chmod": "3.0.0",
-    "gulp-clean-css": "4.2.0",
+    "gulp-clean-css": "4.3.0",
     "gulp-concat-util": "0.5.5",
     "gulp-eol": "0.2.0",
     "gulp-eslint": "6.0.0",
@@ -113,11 +113,11 @@
     "prettier": "1.19.1",
     "raf": "3.4.1",
     "raw-loader": "4.0.0",
-    "rimraf": "3.0.1",
+    "rimraf": "3.0.2",
     "simplestatemanager": "4.1.1",
     "style-loader": "1.1.3",
     "underscore": "1.9.2",
-    "webpack": "4.41.5",
-    "webpack-cli": "3.3.10"
+    "webpack": "4.42.0",
+    "webpack-cli": "3.3.11"
   }
 }
