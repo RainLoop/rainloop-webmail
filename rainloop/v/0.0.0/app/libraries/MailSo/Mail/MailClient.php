@@ -1865,7 +1865,7 @@ class MailClient
 		if (!\is_array($aResultUids))
 		{
 			$aResultUids = $bUseSortIfSupported ?
-				$this->oImapClient->MessageSimpleSort(array('REVERSE ARRIVAL'), $sSearchCriterias, true) :
+				$this->oImapClient->MessageSimpleSort(array('REVERSE DATE'), $sSearchCriterias, true) :
 				$this->oImapClient->MessageSimpleSearch($sSearchCriterias, true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
 			;
 
