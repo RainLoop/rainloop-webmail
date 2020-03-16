@@ -98,11 +98,11 @@ class Domain
 	 */
 	private $sAliasName;
 
-	private function __construct($sName,
-		$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-		$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
-		$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail = false,
-		$sWhiteList = '')
+	private function __construct(string $sName,
+		string $sIncHost, int $iIncPort, int $iIncSecure, bool $bIncShortLogin,
+		bool $bUseSieve, string $sSieveHost, int $iSievePort, int $iSieveSecure,
+		string $sOutHost, int $iOutPort, int $iOutSecure, bool $bOutShortLogin, bool $bOutAuth, bool $bOutUsePhpMail = false,
+		string $sWhiteList = '')
 	{
 		$this->sName = $sName;
 		$this->sIncHost = $sIncHost;
@@ -128,15 +128,11 @@ class Domain
 		$this->sAliasName = '';
 	}
 
-	/**
-	 *
-	 * @return \RainLoop\Model\Domain
-	 */
 	public static function NewInstance(string $sName,
 		string $sIncHost, int $iIncPort, int $iIncSecure, bool $bIncShortLogin,
 		bool $bUseSieve, string $sSieveHost, int $iSievePort, int $iSieveSecure,
 		string $sOutHost, int $iOutPort, int $iOutSecure, bool $bOutShortLogin, bool $bOutAuth, bool $bOutUsePhpMail,
-		string $sWhiteList = '')
+		string $sWhiteList = '') : self
 	{
 		return new self($sName,
 			$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
@@ -145,11 +141,7 @@ class Domain
 			$sWhiteList);
 	}
 
-	/**
-	 *
-	 * @return \RainLoop\Model\Domain|null
-	 */
-	public static function NewInstanceFromDomainConfigArray(string $sName, array $aDomain)
+	public static function NewInstanceFromDomainConfigArray(string $sName, array $aDomain) : ?self
 	{
 		$oDomain = null;
 
@@ -160,8 +152,8 @@ class Domain
 			$iIncSecure = self::StrConnectionSecurityTypeToCons(
 				!empty($aDomain['imap_secure']) ? $aDomain['imap_secure'] : '');
 
-			$bUseSieve = isset($aDomain['sieve_use']) ? (bool) $aDomain['sieve_use'] : false;
-			$bSieveAllowRaw = isset($aDomain['sieve_allow_raw']) ? (bool) $aDomain['sieve_allow_raw'] : false;
+			$bUseSieve = !empty($aDomain['sieve_use']);
+			$bSieveAllowRaw = !empty($aDomain['sieve_allow_raw']);
 
 			$sSieveHost = empty($aDomain['sieve_host']) ? '' : (string) $aDomain['sieve_host'];
 			$iSievePort = empty($aDomain['sieve_port']) ? 4190 : (int) $aDomain['sieve_port'];
@@ -173,12 +165,12 @@ class Domain
 			$iOutSecure = self::StrConnectionSecurityTypeToCons(
 				!empty($aDomain['smtp_secure']) ? $aDomain['smtp_secure'] : '');
 
-			$bOutAuth = isset($aDomain['smtp_auth']) ? (bool) $aDomain['smtp_auth'] : true;
-			$bOutUsePhpMail = isset($aDomain['smtp_php_mail']) ? (bool) $aDomain['smtp_php_mail'] : false;
-			$sWhiteList = (string) (isset($aDomain['white_list']) ? $aDomain['white_list'] : '');
+			$bOutAuth = !empty($aDomain['smtp_auth']);
+			$bOutUsePhpMail = !empty($aDomain['smtp_php_mail']);
+			$sWhiteList = (string) ($aDomain['white_list'] ?? '');
 
-			$bIncShortLogin = isset($aDomain['imap_short_login']) ? (bool) $aDomain['imap_short_login'] : false;
-			$bOutShortLogin = isset($aDomain['smtp_short_login']) ? (bool) $aDomain['smtp_short_login'] : false;
+			$bIncShortLogin = !empty($aDomain['imap_short_login']);
+			$bOutShortLogin = !empty($aDomain['smtp_short_login']);
 
 			$oDomain = self::NewInstance($sName,
 				$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
@@ -274,15 +266,11 @@ class Domain
 		return $sType;
 	}
 
-	/**
-	 *
-	 * @return \RainLoop\Model\Domain
-	 */
 	public function UpdateInstance(
-		$sIncHost, int $iIncPort, int $iIncSecure, bool $bIncShortLogin,
+		string $sIncHost, int $iIncPort, int $iIncSecure, bool $bIncShortLogin,
 		bool $bUseSieve, string $sSieveHost, int $iSievePort, int $iSieveSecure,
 		string $sOutHost, int $iOutPort, int $iOutSecure, bool $bOutShortLogin, bool $bOutAuth, bool $bOutUsePhpMail,
-		string $sWhiteList = '')
+		string $sWhiteList = '') : self
 	{
 		$this->sIncHost = \MailSo\Base\Utils::IdnToAscii($sIncHost);
 		$this->iIncPort = $iIncPort;
@@ -358,7 +346,7 @@ class Domain
 
 	public function SetSieveAllowRaw(bool $bSieveAllowRaw)
 	{
-		$this->bSieveAllowRaw = !!$bSieveAllowRaw;
+		$this->bSieveAllowRaw = $bSieveAllowRaw;
 	}
 
 	public function OutHost() : string
@@ -401,10 +389,7 @@ class Domain
 		return $this->sAliasName;
 	}
 
-	/**
-	 * @return self
-	 */
-	public function SetAliasName(string $sAliasName)
+	public function SetAliasName(string $sAliasName) : self
 	{
 		$this->sAliasName = $sAliasName;
 

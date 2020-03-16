@@ -92,7 +92,7 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 
 			unset($aSearchResult, $aHashes);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			if ($this->oLogger)
 			{
@@ -103,11 +103,8 @@ class OwnCloudSuggestions implements \RainLoop\Providers\Suggestions\ISuggestion
 		return $aResult;
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 */
-	public function SetLogger($oLogger)
+	public function SetLogger(?\MailSo\Log\Logger $oLogger)
 	{
-		$this->oLogger = $oLogger instanceof \MailSo\Log\Logger ? $oLogger : null;
+		$this->oLogger = $oLogger;
 	}
 }

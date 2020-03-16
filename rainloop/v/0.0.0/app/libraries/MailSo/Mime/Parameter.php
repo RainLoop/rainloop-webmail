@@ -27,39 +27,24 @@ class Parameter
 	 */
 	private $sValue;
 
-	/**
-	 * @access private
-	 *
-	 */
 	private function __construct($sName, $sValue)
 	{
 		$this->sName = $sName;
 		$this->sValue = $sValue;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\Parameter
-	 */
-	public static function NewInstance(string $sName, string $sValue = '')
+	public static function NewInstance(string $sName, string $sValue = '') : self
 	{
 		return new self($sName, $sValue);
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\Parameter
-	 */
-	public static function CreateFromParameterLine(string $sRawParam)
+	public static function CreateFromParameterLine(string $sRawParam) : self
 	{
 		$oParameter = self::NewInstance('');
 		return $oParameter->Parse($sRawParam);
 	}
 
-	/**
-	 * @return \MailSo\Mime\Parameter
-	 */
-	public function Reset()
+	public function Reset() : self
 	{
 		$this->sName = '';
 		$this->sValue = '';
@@ -77,11 +62,7 @@ class Parameter
 		return $this->sValue;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\Parameter
-	 */
-	public function Parse(string $sRawParam, string $sSeparator = '=')
+	public function Parse(string $sRawParam, string $sSeparator = '=') : self
 	{
 		$this->Reset();
 

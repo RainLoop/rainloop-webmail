@@ -138,25 +138,13 @@ class ChangePasswordVpopmailDriver implements \RainLoop\Providers\ChangePassword
 		return $this;
 	}
 
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 *
-	 * @return bool
-	 */
-	public function PasswordChangePossibility($oAccount)
+	public function PasswordChangePossibility(\RainLoop\Model\Account $oAccount) : bool
 	{
 		return 0 === \count($this->aDomains) || ($oAccount && \in_array(\strtolower(
 			\MailSo\Base\Utils::GetDomainFromEmail($oAccount->Email)), $this->aDomains));
 	}
 
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 * @param string $sPrevPassword
-	 * @param string $sNewPassword
-	 *
-	 * @return bool
-	 */
-	public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword)
+	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
 	{
 		if ($this->oLogger)
 		{

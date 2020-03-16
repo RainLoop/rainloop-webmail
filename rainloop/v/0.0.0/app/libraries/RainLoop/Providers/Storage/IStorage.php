@@ -6,7 +6,6 @@ interface IStorage
 {
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount
-	 *
 	 */
 	public function Put($oAccount, int $iStorageType, string $sKey, string $sValue) : bool;
 
@@ -20,7 +19,6 @@ interface IStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount
-	 *
 	 */
 	public function Clear($oAccount, int $iStorageType, string $sKey) : bool;
 

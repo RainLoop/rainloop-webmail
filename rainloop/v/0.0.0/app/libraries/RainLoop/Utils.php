@@ -373,7 +373,7 @@ class Utils
 		return isset(\RainLoop\Utils::$Cookies[$sName]) ? \RainLoop\Utils::$Cookies[$sName] : $mDefault;
 	}
 
-	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0, string $sPath = null, string $sDomain = null, bool $bSecure = null, bool $bHttpOnly = true)
+	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0, ?string $sPath = null, ?string $sDomain = null, ?bool $bSecure = null, bool $bHttpOnly = true)
 	{
 		if (null === \RainLoop\Utils::$Cookies)
 		{

@@ -57,10 +57,7 @@ abstract class AbstractPlugin
 		$this->bLangs = false;
 	}
 
-	/**
-	 * @return \RainLoop\Config\Plugin
-	 */
-	public function Config()
+	public function Config() : \RainLoop\Config\Plugin
 	{
 		if (!$this->bPluginConfigLoaded && $this->oPluginConfig)
 		{
@@ -77,10 +74,7 @@ abstract class AbstractPlugin
 		return $this->oPluginConfig;
 	}
 
-	/**
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function Manager()
+	public function Manager() : \RainLoop\Plugins\Manager
 	{
 		return $this->oPluginManager;
 	}
@@ -100,11 +94,11 @@ abstract class AbstractPlugin
 		return $this->sVersion;
 	}
 
-	public function UseLangs(bool $bLangs = null) : bool
+	public function UseLangs(?bool $bLangs = null) : bool
 	{
 		if (null !== $bLangs)
 		{
-			$this->bLangs = (bool) $bLangs;
+			$this->bLangs = $bLangs;
 		}
 
 		return $this->bLangs;
@@ -125,9 +119,6 @@ abstract class AbstractPlugin
 		return '';
 	}
 
-	/**
-	 * @final
-	 */
 	final public function ConfigMap() : array
 	{
 		if (null === $this->aConfigMap)
@@ -142,33 +133,21 @@ abstract class AbstractPlugin
 		return $this->aConfigMap;
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	public function SetPath(string $sPath)
+	public function SetPath(string $sPath) : self
 	{
 		$this->sPath = $sPath;
 
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	public function SetName(string $sName)
+	public function SetName(string $sName) : self
 	{
 		$this->sName = $sName;
 
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	public function SetVersion(string $sVersion)
+	public function SetVersion(string $sVersion) : self
 	{
 		if (0 < \strlen($sVersion))
 		{
@@ -178,24 +157,14 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	/**
-	 * @param \RainLoop\Plugins\Manager $oPluginManager
-	 *
-	 * @return self
-	 */
-	public function SetPluginManager(\RainLoop\Plugins\Manager $oPluginManager)
+	public function SetPluginManager(\RainLoop\Plugins\Manager $oPluginManager) : self
 	{
 		$this->oPluginManager = $oPluginManager;
 
 		return $this;
 	}
 
-	/**
-	 * @param \RainLoop\Config\Plugin $oPluginConfig
-	 *
-	 * @return self
-	 */
-	public function SetPluginConfig(\RainLoop\Config\Plugin $oPluginConfig)
+	public function SetPluginConfig(\RainLoop\Config\Plugin $oPluginConfig) : self
 	{
 		$this->oPluginConfig = $oPluginConfig;
 
@@ -217,11 +186,7 @@ abstract class AbstractPlugin
 
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	protected function addHook(string $sHookName, string $sFunctionName)
+	protected function addHook(string $sHookName, string $sFunctionName) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -231,11 +196,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	protected function addJs(string $sFile, bool $bAdminScope = false)
+	protected function addJs(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -245,11 +206,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	protected function addTemplate(string $sFile, bool $bAdminScope = false)
+	protected function addTemplate(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -259,11 +216,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	protected function replaceTemplate(string $sFile, bool $bAdminScope = false)
+	protected function replaceTemplate(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -273,11 +226,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	protected function addPartHook(string $sActionName, string $sFunctionName)
+	protected function addPartHook(string $sActionName, string $sFunctionName) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -287,11 +236,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	protected function addAjaxHook(string $sActionName, string $sFunctionName)
+	protected function addAjaxHook(string $sActionName, string $sFunctionName) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -301,11 +246,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	protected function addTemplateHook(string $sName, string $sPlace, string $sLocalTemplateName, bool $bPrepend = false)
+	protected function addTemplateHook(string $sName, string $sPlace, string $sLocalTemplateName, bool $bPrepend = false) : self
 	{
 		if ($this->oPluginManager)
 		{
@@ -316,11 +257,7 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return self
-	 */
-	protected function ajaxResponse(string $sFunctionName, array $aData)
+	protected function ajaxResponse(string $sFunctionName, array $aData) : self
 	{
 		if ($this->oPluginManager)
 		{

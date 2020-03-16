@@ -28,7 +28,7 @@ class PdoAddressBook
 	 */
 	private $sPassword;
 
-	public function __construct($sDsn, $sUser = '', $sPassword = '', $sDsnType = 'mysql')
+	public function __construct(string $sDsn, string $sUser = '', string $sPassword = '', string $sDsnType = 'mysql')
 	{
 		$this->sDsn = $sDsn;
 		$this->sUser = $sUser;
@@ -56,12 +56,12 @@ class PdoAddressBook
 		));
 	}
 
-	private function updateContactEtagAndTime(int $iUserID, $mID, string $sEtag, int $iChanged)
+	private function updateContactEtagAndTime(int $iUserID, int $iID, string $sEtag, int $iChanged)
 	{
 		return !!$this->prepareAndExecute('UPDATE rainloop_ab_contacts SET changed = :changed, etag = :etag '.
 			'WHERE id_user = :id_user AND id_contact = :id_contact', array(
 				':id_user' => array($iUserID, \PDO::PARAM_INT),
-				':id_contact' => array($mID, \PDO::PARAM_INT),
+				':id_contact' => array($iID, \PDO::PARAM_INT),
 				':changed' => array($iChanged, \PDO::PARAM_INT),
 				':etag' => array($sEtag, \PDO::PARAM_STR)
 			)
@@ -120,7 +120,7 @@ class PdoAddressBook
 
 //			$this->oLogger->WriteDump($aResponse);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$this->oLogger->WriteException($oException);
 		}
@@ -206,7 +206,7 @@ class PdoAddressBook
 //				$this->oLogger->WriteDump($oResponse, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
 //			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$this->oLogger->WriteException($oException);
 		}
@@ -214,11 +214,7 @@ class PdoAddressBook
 		return $oResponse;
 	}
 
-	/**
-	 * @param \SabreForRainLoop\DAV\Client $oClient
-	 *
-	 */
-	private function detectionPropFind($oClient, string $sPath) : bool
+	private function detectionPropFind(\SabreForRainLoop\DAV\Client $oClient, string $sPath) : bool
 	{
 		$aResponse = null;
 
@@ -235,7 +231,7 @@ class PdoAddressBook
 
 //			$this->oLogger->WriteDump($aResponse);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$this->oLogger->WriteException($oException);
 		}
@@ -243,11 +239,7 @@ class PdoAddressBook
 		return $aResponse;
 	}
 
-	/**
-	 * @param \SabreForRainLoop\DAV\Client $oClient
-	 *
-	 */
-	private function getContactsPaths(&$oClient, string $sUser, string $sPassword, string $sProxy = '') : array
+	private function getContactsPaths(\SabreForRainLoop\DAV\Client $oClient, string $sUser, string $sPassword, string $sProxy = '') : array
 	{
 		$aContactsPaths = array();
 
@@ -433,11 +425,7 @@ class PdoAddressBook
 		return $aContactsPaths;
 	}
 
-	/**
-	 * @param \SabreForRainLoop\DAV\Client $oClient
-	 *
-	 */
-	private function checkContactsPath(&$oClient, string $sPath) : bool
+	private function checkContactsPath(\SabreForRainLoop\DAV\Client $oClient, string $sPath) : bool
 	{
 		if (!$oClient)
 		{
@@ -455,7 +443,7 @@ class PdoAddressBook
 
 //			$this->oLogger->WriteDump($aResponse);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$this->oLogger->WriteException($oException);
 		}
@@ -487,7 +475,7 @@ class PdoAddressBook
 		return $bGood;
 	}
 
-	public function getDavClientFromUrl(string $sUrl, string $sUser, string $sPassword, string $sProxy = '')
+	public function getDavClientFromUrl(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : \SabreForRainLoop\DAV\Client
 	{
 		if (!\preg_match('/^http[s]?:\/\//i', $sUrl))
 		{
@@ -539,11 +527,11 @@ class PdoAddressBook
 		return $oClient;
 	}
 
-	public function getDavClient($sUrl, $sUser, $sPassword, $sProxy = '')
+	public function getDavClient(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : ?\SabreForRainLoop\DAV\Client
 	{
 		if (!\class_exists('SabreForRainLoop\DAV\Client'))
 		{
-			return false;
+			return null;
 		}
 
 		$aMatch = array();
@@ -560,7 +548,7 @@ class PdoAddressBook
 		$oClient = $this->getDavClientFromUrl($sUrl, $sUser, $sPassword, $sProxy);
 		if (!$oClient)
 		{
-			return false;
+			return null;
 		}
 
 		$bGood = false;
@@ -823,11 +811,7 @@ class PdoAddressBook
 		return true;
 	}
 
-	/**
-	 * @param \RainLoop\Providers\AddressBook\Classes\Contact $oContact
-	 *
-	 */
-	public function ContactSave(string $sEmail, &$oContact, bool $bSyncDb = true) : bool
+	public function ContactSave(string $sEmail, \RainLoop\Providers\AddressBook\Classes\Contact $oContact, bool $bSyncDb = true) : bool
 	{
 		if ($bSyncDb)
 		{
@@ -932,7 +916,7 @@ class PdoAddressBook
 				}
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			throw $oException;
 		}
@@ -1183,10 +1167,9 @@ class PdoAddressBook
 	}
 
 	/**
-	 *
-	 * @return \RainLoop\Providers\AddressBook\Classes\Contact|null
+	 * @param mixed $mID
 	 */
-	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false)
+	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?\RainLoop\Providers\AddressBook\Classes\Contact
 	{
 		$mID = \trim($mID);
 
@@ -1284,8 +1267,6 @@ class PdoAddressBook
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \InvalidArgumentException
 	 */
 	public function GetSuggestions(string $sEmail, string $sSearch, int $iLimit = 20) : array
@@ -1492,7 +1473,7 @@ class PdoAddressBook
 			{
 				$oResult = \MailSo\Mime\Email::Parse(\trim($mItem));
 			}
-			catch (\Exception $oException) { unset($oException); }
+			catch (\Throwable $oException) { unset($oException); }
 			return $oResult;
 		}, $aEmails);
 
@@ -1655,7 +1636,7 @@ class PdoAddressBook
 				$sResult = 'Unknown database error';
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$sResult = $oException->getMessage();
 			if (!empty($sResult) && !\MailSo\Base\Utils::IsAscii($sResult) && !\MailSo\Base\Utils::IsUtf8($sResult))

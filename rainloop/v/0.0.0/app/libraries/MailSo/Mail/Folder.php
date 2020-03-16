@@ -48,58 +48,40 @@ class Folder
 	private $oSubFolders;
 
 	/**
-	 * @access private
-	 *
-	 * @param \MailSo\Imap\Folder $oImapFolder
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	private function __construct($oImapFolder, $bSubscribed = true, $bExisten = true)
+	private function __construct(\MailSo\Imap\Folder $oImapFolder, bool $bSubscribed = true, bool $bExisten = true)
 	{
-		if ($oImapFolder instanceof \MailSo\Imap\Folder)
+		$this->oImapFolder = $oImapFolder;
+		$this->oSubFolders = null;
+
+		$aNames = \explode($this->oImapFolder->Delimiter(), $this->oImapFolder->FullNameRaw());
+		$this->iNestingLevel = \count($aNames);
+
+		$this->sParentFullNameRaw = '';
+		if (1 < $this->iNestingLevel)
 		{
-			$this->oImapFolder = $oImapFolder;
-			$this->oSubFolders = null;
-
-			$aNames = \explode($this->oImapFolder->Delimiter(), $this->oImapFolder->FullNameRaw());
-			$this->iNestingLevel = \count($aNames);
-
-			$this->sParentFullNameRaw = '';
-			if (1 < $this->iNestingLevel)
-			{
-				\array_pop($aNames);
-				$this->sParentFullNameRaw = \implode($this->oImapFolder->Delimiter(), $aNames);
-			}
-
-			$this->bSubscribed = $bSubscribed;
-			$this->bExisten = $bExisten;
+			\array_pop($aNames);
+			$this->sParentFullNameRaw = \implode($this->oImapFolder->Delimiter(), $aNames);
 		}
-		else
-		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
-		}
+
+		$this->bSubscribed = $bSubscribed;
+		$this->bExisten = $bExisten;
 	}
 
 	/**
-	 * @param \MailSo\Imap\Folder $oImapFolder
-	 *
-	 * @return \MailSo\Mail\Folder
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewInstance($oImapFolder, bool $bSubscribed = true, bool $bExisten = true)
+	public static function NewInstance(\MailSo\Imap\Folder $oImapFolder, bool $bSubscribed = true, bool $bExisten = true) : self
 	{
 		return new self($oImapFolder, $bSubscribed, $bExisten);
 	}
 
 	/**
-	 *
-	 * @return \MailSo\Mail\Folder
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewNonExistenInstance(string $sFullNameRaw, string $sDelimiter)
+	public static function NewNonExistenInstance(string $sFullNameRaw, string $sDelimiter) : self
 	{
 		return self::NewInstance(
 			\MailSo\Imap\Folder::NewInstance($sFullNameRaw, $sDelimiter, array('\NoSelect')), true, false);
@@ -156,10 +138,7 @@ class Folder
 		return $this->oImapFolder->FlagsLowerCase();
 	}
 
-	/**
-	 * @return \MailSo\Mail\FolderCollection
-	 */
-	public function SubFolders(bool $bCreateIfNull = false)
+	public function SubFolders(bool $bCreateIfNull = false) : \MailSo\Mail\FolderCollection
 	{
 		if ($bCreateIfNull && !$this->oSubFolders)
 		{

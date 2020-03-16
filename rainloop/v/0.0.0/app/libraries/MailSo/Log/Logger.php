@@ -42,10 +42,6 @@ class Logger extends \MailSo\Base\Collection
 	 */
 	private $bHideErrorNotices;
 
-	/**
-	 * @access protected
-	 *
-	 */
 	protected function __construct($bRegPhpErrorHandler = true)
 	{
 		parent::__construct();
@@ -64,21 +60,15 @@ class Logger extends \MailSo\Base\Collection
 		\register_shutdown_function(array(&$this, '__loggerShutDown'));
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Logger
-	 */
-	public static function NewInstance(bool $bRegPhpErrorHandler = false)
+	public static function NewInstance(bool $bRegPhpErrorHandler = false) : self
 	{
 		return new self($bRegPhpErrorHandler);
 	}
 
 	/**
 	 * @staticvar \MailSo\Log\Logger $oInstance;
-	 *
-	 * @return \MailSo\Log\Logger
 	 */
-	public static function SingletonInstance()
+	public static function SingletonInstance() : self
 	{
 		static $oInstance = null;
 		if (null === $oInstance)
@@ -97,7 +87,7 @@ class Logger extends \MailSo\Base\Collection
 
 	public static function IsSystemEnabled() : bool
 	{
-		return !!(\MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger);
+		return !!(\MailSo\Config::$SystemLogger instanceof Logger);
 	}
 
 	/**
@@ -105,7 +95,7 @@ class Logger extends \MailSo\Base\Collection
 	 */
 	public static function SystemLog($mData, int $iType = \MailSo\Log\Enumerations\Type::INFO)
 	{
-		if (\MailSo\Config::$SystemLogger instanceof \MailSo\Log\Logger)
+		if (\MailSo\Config::$SystemLogger instanceof Logger)
 		{
 			\MailSo\Config::$SystemLogger->WriteMixed($mData, $iType);
 		}
@@ -113,7 +103,6 @@ class Logger extends \MailSo\Base\Collection
 
 	/**
 	 * @staticvar string $sCache;
-	 *
 	 */
 	public static function Guid() : string
 	{
@@ -145,21 +134,13 @@ class Logger extends \MailSo\Base\Collection
 		}
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Logger
-	 */
-	public function SetShowSecter(bool $bShow)
+	public function SetShowSecter(bool $bShow) : self
 	{
 		$this->bShowSecter = !!$bShow;
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Logger
-	 */
-	public function HideErrorNotices(bool $bValue)
+	public function HideErrorNotices(bool $bValue) : self
 	{
 		$this->bHideErrorNotices = !!$bValue;
 		return $this;
@@ -170,22 +151,14 @@ class Logger extends \MailSo\Base\Collection
 		return $this->bShowSecter;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Logger
-	 */
-	public function AddForbiddenType(int $iType)
+	public function AddForbiddenType(int $iType) : self
 	{
 		$this->aForbiddenTypes[$iType] = true;
 
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Logger
-	 */
-	public function RemoveForbiddenType(int $iType)
+	public function RemoveForbiddenType(int $iType) : self
 	{
 		$this->aForbiddenTypes[$iType] = false;
 		return $this;
@@ -244,8 +217,8 @@ class Logger extends \MailSo\Base\Collection
 		return (bool) $iResult;
 	}
 
-	public function Write($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO,
-		$sName = '', $bSearchSecretWords = true, $bDiplayCrLf = false)
+	public function Write(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO,
+		string $sName = '', bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
 	{
 		if (isset($this->aForbiddenTypes[$iType]) && true === $this->aForbiddenTypes[$iType])
 		{
@@ -274,7 +247,6 @@ class Logger extends \MailSo\Base\Collection
 
 	/**
 	 * @param mixed $oValue
-	 *
 	 */
 	public function WriteDump($oValue, int $iType = \MailSo\Log\Enumerations\Type::INFO, string $sName = '',
 		bool $bSearchSecretWords = false, bool $bDiplayCrLf = false) : bool
@@ -282,14 +254,10 @@ class Logger extends \MailSo\Base\Collection
 		return $this->Write(\print_r($oValue, true), $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);
 	}
 
-	/**
-	 * @param \Exception $oException
-	 *
-	 */
-	public function WriteException($oException, int $iType = \MailSo\Log\Enumerations\Type::NOTICE, string $sName = '',
+	public function WriteException(\Throwable $oException, int $iType = \MailSo\Log\Enumerations\Type::NOTICE, string $sName = '',
 		bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
 	{
-		if ($oException instanceof \Exception)
+		if ($oException instanceof \Throwable)
 		{
 			if (isset($oException->__LOGINNED__))
 			{
@@ -304,14 +272,10 @@ class Logger extends \MailSo\Base\Collection
 		return false;
 	}
 
-	/**
-	 * @param \Exception $oException
-	 *
-	 */
-	public function WriteExceptionShort($oException, int $iType = \MailSo\Log\Enumerations\Type::NOTICE, string $sName = '',
+	public function WriteExceptionShort(\Throwable $oException, int $iType = \MailSo\Log\Enumerations\Type::NOTICE, string $sName = '',
 		bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
 	{
-		if ($oException instanceof \Exception)
+		if ($oException instanceof \Throwable)
 		{
 			if (isset($oException->__LOGINNED__))
 			{
@@ -328,7 +292,6 @@ class Logger extends \MailSo\Base\Collection
 
 	/**
 	 * @param mixed $mData
-	 *
 	 */
 	public function WriteMixed($mData, int $iType = null, string $sName = '',
 		bool $bSearchSecretWords = true, bool $bDiplayCrLf = false) : bool
@@ -336,7 +299,7 @@ class Logger extends \MailSo\Base\Collection
 		$iType = null === $iType ? \MailSo\Log\Enumerations\Type::INFO : $iType;
 		if (\is_array($mData) || \is_object($mData))
 		{
-			if ($mData instanceof \Exception)
+			if ($mData instanceof \Throwable)
 			{
 				$iType = null === $iType ? \MailSo\Log\Enumerations\Type::NOTICE : $iType;
 				return $this->WriteException($mData, $iType, $sName, $bSearchSecretWords, $bDiplayCrLf);

@@ -15,7 +15,7 @@ namespace MailSo\Base;
  * @category MailSo
  * @package Base
  */
-class ResourceRegistry
+abstract class ResourceRegistry
 {
 	/**
 	 * @var array
@@ -23,15 +23,7 @@ class ResourceRegistry
 	public static $Resources = array();
 
 	/**
-	 * @access private
-	 */
-	private function __construct()
-	{
-	}
-
-	/**
 	 * @staticvar bool $bInited
-	 *
 	 */
 	private static function regResourcesShutdownFunc() : void
 	{
@@ -40,26 +32,25 @@ class ResourceRegistry
 		{
 			$bInited = true;
 			\register_shutdown_function(function () {
-				if (\is_array(\MailSo\Base\ResourceRegistry::$Resources))
+				if (\is_array(static::$Resources))
 				{
-					foreach (\array_keys(\MailSo\Base\ResourceRegistry::$Resources) as $sKey)
+					foreach (\array_keys(static::$Resources) as $sKey)
 					{
-						if (\is_resource(\MailSo\Base\ResourceRegistry::$Resources[$sKey]))
+						if (\is_resource(static::$Resources[$sKey]))
 						{
 							\MailSo\Base\Loader::IncStatistic('CloseMemoryResource');
-							\fclose(\MailSo\Base\ResourceRegistry::$Resources[$sKey]);
+							\fclose(static::$Resources[$sKey]);
 						}
-						\MailSo\Base\ResourceRegistry::$Resources[$sKey] = null;
+						static::$Resources[$sKey] = null;
 					}
 				}
 
-				\MailSo\Base\ResourceRegistry::$Resources = array();
+				static::$Resources = array();
 			});
 		}
 	}
 
 	/**
-	 *
 	 * @return resource | bool
 	 */
 	public static function CreateMemoryResource(int $iMemoryMaxInMb = 5)
@@ -70,7 +61,7 @@ class ResourceRegistry
 		if (\is_resource($oResult))
 		{
 			\MailSo\Base\Loader::IncStatistic('CreateMemoryResource');
-			\MailSo\Base\ResourceRegistry::$Resources[(string) $oResult] = $oResult;
+			static::$Resources[(string) $oResult] = $oResult;
 			return $oResult;
 		}
 
@@ -78,7 +69,6 @@ class ResourceRegistry
 	}
 
 	/**
-	 *
 	 * @return resource | bool
 	 */
 	public static function CreateMemoryResourceFromString(string $sString)
@@ -95,18 +85,17 @@ class ResourceRegistry
 
 	/**
 	 * @param resource $rResource
-	 *
 	 */
 	public static function CloseMemoryResource(&$rResource) : void
 	{
 		if (\is_resource($rResource))
 		{
 			$sKey = (string) $rResource;
-			if (isset(\MailSo\Base\ResourceRegistry::$Resources[$sKey]))
+			if (isset(static::$Resources[$sKey]))
 			{
-				\fclose(\MailSo\Base\ResourceRegistry::$Resources[$sKey]);
-				\MailSo\Base\ResourceRegistry::$Resources[$sKey] = null;
-				unset(\MailSo\Base\ResourceRegistry::$Resources[$sKey]);
+				\fclose(static::$Resources[$sKey]);
+				static::$Resources[$sKey] = null;
+				unset(static::$Resources[$sKey]);
 				\MailSo\Base\Loader::IncStatistic('CloseMemoryResource');
 			}
 

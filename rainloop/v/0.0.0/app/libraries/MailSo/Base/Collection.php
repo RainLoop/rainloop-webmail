@@ -22,9 +22,6 @@ abstract class Collection
 	 */
 	protected $aItems;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		$this->aItems = array();

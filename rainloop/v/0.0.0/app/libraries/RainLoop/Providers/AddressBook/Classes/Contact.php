@@ -207,7 +207,7 @@ class Contact
 			{
 				$oVCard = \SabreForRainLoop\VObject\Reader::read($sPreVCard);
 			}
-			catch (\Exception $oExc)
+			catch (\Throwable $oExc)
 			{
 				if ($oLogger)
 				{
@@ -526,7 +526,7 @@ class Contact
 		{
 			$oVCard = \SabreForRainLoop\VObject\Reader::read($sVCard);
 		}
-		catch (\Exception $oExc)
+		catch (\Throwable $oExc)
 		{
 			if ($oLogger)
 			{

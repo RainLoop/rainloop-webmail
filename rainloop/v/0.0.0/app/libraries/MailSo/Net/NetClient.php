@@ -82,9 +82,6 @@ abstract class NetClient
 	 */
 	public $__AUTOLOGOUT__;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		$this->rConnect = null;
@@ -121,7 +118,7 @@ abstract class NetClient
 				$this->Disconnect();
 			}
 		}
-		catch (\Exception $oException) {}
+		catch (\Throwable $oException) {}
 	}
 
 	public function Clear() : void
@@ -147,8 +144,8 @@ abstract class NetClient
 
 	public function SetTimeOuts(int $iConnectTimeOut = 10, int $iSocketTimeOut = 10) : void
 	{
-		$this->iConnectTimeOut = 5 < $iConnectTimeOut ? $iConnectTimeOut : 5;
-		$this->iSocketTimeOut = 5 < $iSocketTimeOut ? $iSocketTimeOut : 5;
+		$this->iConnectTimeOut = max(5, $iConnectTimeOut);
+		$this->iSocketTimeOut = max(5, $iSocketTimeOut);
 	}
 
 	/**
@@ -246,7 +243,7 @@ abstract class NetClient
 			$this->rConnect = \stream_socket_client($this->sConnectedHost.':'.$this->iConnectedPort,
 				$iErrorNo, $sErrorStr, $this->iConnectTimeOut, STREAM_CLIENT_CONNECT, $rStreamContext);
 		}
-		catch (\Exception $oExc)
+		catch (\Throwable $oExc)
 		{
 			$sErrorStr = $oExc->getMessage();
 			$iErrorNo = $oExc->getCode();
@@ -329,11 +326,9 @@ abstract class NetClient
 	}
 
 	/**
-	 * @retun void
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	public function LogoutAndDisconnect()
+	public function LogoutAndDisconnect() : void
 	{
 		if (\method_exists($this, 'Logout') && !$this->bUnreadBuffer && !$this->bRunningCallback)
 		{
@@ -536,9 +531,6 @@ abstract class NetClient
 		}
 	}
 
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
 	public function SetLogger(\MailSo\Log\Logger $oLogger) : object
 	{
 		$this->oLogger = $oLogger;

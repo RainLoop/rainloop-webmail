@@ -54,7 +54,6 @@ class SubStreams
 	private $iPos;
 
 	/**
-	 *
 	 * @return resource|bool
 	 */
 	public static function CreateStream(array $aSubStreams)

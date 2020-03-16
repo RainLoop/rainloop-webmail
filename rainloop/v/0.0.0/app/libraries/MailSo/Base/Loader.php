@@ -44,7 +44,6 @@ class Loader
 
 	/**
 	 * @staticvar bool $bIsInited
-	 *
 	 */
 	public static function Init() : void
 	{
@@ -71,7 +70,6 @@ class Loader
 
 	/**
 	 * @param mixed $mValue
-	 *
 	 */
 	public static function SetStatistic(string $sName, $mValue) : void
 	{
@@ -82,7 +80,6 @@ class Loader
 	}
 
 	/**
-	 *
 	 * @return mixed
 	 */
 	public static function GetStatistic(string $sName)

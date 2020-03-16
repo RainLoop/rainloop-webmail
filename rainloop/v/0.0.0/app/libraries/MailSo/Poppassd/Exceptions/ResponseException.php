@@ -41,10 +41,7 @@ class ResponseException extends \MailSo\Poppassd\Exceptions\Exception
 		return $this->aResponses;
 	}
 
-	/**
-	 * @return \MailSo\Poppassd\Response | null
-	 */
-	public function GetLastResponse()
+	public function GetLastResponse() : ?\MailSo\Poppassd\Response
 	{
 		return 0 < \count($this->aResponses) ? $this->aResponses[count($this->aResponses) - 1] : null;
 	}

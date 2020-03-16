@@ -27,9 +27,6 @@ class PoppassdClient extends \MailSo\Net\NetClient
 	 */
 	private $iRequestTime;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		$this->bIsLoggined = false;

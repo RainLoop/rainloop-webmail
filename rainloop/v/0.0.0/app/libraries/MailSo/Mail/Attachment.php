@@ -32,18 +32,12 @@ class Attachment
 	 */
 	private $oBodyStructure;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->Clear();
 	}
 
-	/**
-	 * @return \MailSo\Mail\Attachment
-	 */
-	public function Clear()
+	public function Clear() : self
 	{
 		$this->sFolder = '';
 		$this->iUid = 0;
@@ -154,28 +148,17 @@ class Attachment
 		return $this->oBodyStructure ? $this->oBodyStructure->IsPgpSignature() : false;
 	}
 
-	/**
-	 * @return \MailSo\Mail\Attachment
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @param \MailSo\Imap\BodyStructure $oBodyStructure
-	 * @return \MailSo\Mail\Attachment
-	 */
-	public static function NewBodyStructureInstance(string $sFolder, int $iUid, $oBodyStructure)
+	public static function NewBodyStructureInstance(string $sFolder, int $iUid, \MailSo\Imap\BodyStructure $oBodyStructure) : self
 	{
 		return self::NewInstance()->InitByBodyStructure($sFolder, $iUid, $oBodyStructure);
 	}
 
-	/**
-	 * @param \MailSo\Imap\BodyStructure $oBodyStructure
-	 * @return \MailSo\Mail\Attachment
-	 */
-	public function InitByBodyStructure(string $sFolder, int $iUid, $oBodyStructure)
+	public function InitByBodyStructure(string $sFolder, int $iUid, \MailSo\Imap\BodyStructure $oBodyStructure) : self
 	{
 		$this->sFolder = $sFolder;
 		$this->iUid = $iUid;

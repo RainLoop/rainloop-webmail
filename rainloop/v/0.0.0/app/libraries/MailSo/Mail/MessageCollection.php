@@ -77,9 +77,6 @@ class MessageCollection extends \MailSo\Base\Collection
 	 */
 	public $Filtered;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
@@ -87,18 +84,12 @@ class MessageCollection extends \MailSo\Base\Collection
 		$this->Clear();
 	}
 
-	/**
-	 * @return \MailSo\Mail\MessageCollection
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @return \MailSo\Mail\MessageCollection
-	 */
-	public function Clear()
+	public function Clear() : self
 	{
 		parent::Clear();
 

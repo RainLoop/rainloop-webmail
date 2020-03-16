@@ -69,27 +69,18 @@ class Part
 	 */
 	private $iParseBuffer;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->iParseBuffer = \MailSo\Mime\Part::DEFAUL_BUFFER;
 		$this->Reset();
 	}
 
-	/**
-	 * @return \MailSo\Mime\Part
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @return \MailSo\Mime\Part
-	 */
-	public function Reset()
+	public function Reset() : self
 	{
 		\MailSo\Base\ResourceRegistry::CloseMemoryResource($this->Body);
 		$this->Body = null;
@@ -113,30 +104,21 @@ class Part
 		return (0 < \strlen($this->sCharset)) ? $this->sParentCharset : self::$DefaultCharset;
 	}
 
-	/**
-	 * @return \MailSo\Mime\Part
-	 */
-	public function SetParentCharset(string $sParentCharset)
+	public function SetParentCharset(string $sParentCharset) : self
 	{
 		$this->sParentCharset = $sParentCharset;
 
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Mime\Part
-	 */
-	public function SetBoundary(string $sBoundary)
+	public function SetBoundary(string $sBoundary) : self
 	{
 		$this->sBoundary = $sBoundary;
 
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Mime\Part
-	 */
-	public function SetParseBuffer(int $iParseBuffer)
+	public function SetParseBuffer(int $iParseBuffer) : self
 	{
 		$this->iParseBuffer = $iParseBuffer;
 
@@ -221,10 +203,7 @@ class Part
 		return $sResult;
 	}
 
-	/**
-	 * @return \MailSo\Mime\Part
-	 */
-	public function ParseFromFile(string $sFileName)
+	public function ParseFromFile(string $sFileName) : self
 	{
 		$rStreamHandle = (@file_exists($sFileName)) ? @fopen($sFileName, 'rb') : false;
 		if (is_resource($rStreamHandle))
@@ -240,10 +219,7 @@ class Part
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Mime\Part
-	 */
-	public function ParseFromString(string $sRawMessage)
+	public function ParseFromString(string $sRawMessage) : self
 	{
 		$rStreamHandle = (0 < strlen($sRawMessage)) ?
 			\MailSo\Base\ResourceRegistry::CreateMemoryResource() : false;
@@ -264,9 +240,8 @@ class Part
 
 	/**
 	 * @param resource $rStreamHandle
-	 * @return \MailSo\Mime\Part
 	 */
-	public function ParseFromStream($rStreamHandle)
+	public function ParseFromStream($rStreamHandle) : self
 	{
 		$this->Reset();
 
@@ -326,10 +301,9 @@ class Part
 
 	/**
 	 * @param resource $rStreamHandle
-	 * @return \MailSo\Mime\Part
 	 */
 	public function ParseFromStreamRecursion($rStreamHandle, &$oCallbackClass, int &$iOffset,
-		string &$sPrevBuffer, string &$sBuffer, array &$aBoundaryStack, bool &$bIsOef, bool $bNotFirstRead = false)
+		string &$sPrevBuffer, string &$sBuffer, array &$aBoundaryStack, bool &$bIsOef, bool $bNotFirstRead = false) : self
 	{
 		$oCallbackClass->StartParseMimePart($this);
 
@@ -575,7 +549,7 @@ class Part
 	}
 
 	/**
-	 * @return resorce
+	 * @return resource
 	 */
 	public function Rewind()
 	{
@@ -590,7 +564,7 @@ class Part
 	}
 
 	/**
-	 * @return resorce
+	 * @return resource
 	 */
 	public function ToStream()
 	{

@@ -34,7 +34,6 @@ class Test
 	private $rReadSream;
 
 	/**
-	 *
 	 * @return resource|bool
 	 */
 	public static function CreateStream(string $sRawResponse)

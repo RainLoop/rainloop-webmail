@@ -13,11 +13,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 	public function __construct(?\RainLoop\Providers\AddressBook\AddressBookInterface $oDriver)
 	{
-		$this->oDriver = null;
-		if ($oDriver instanceof \RainLoop\Providers\AddressBook\AddressBookInterface)
-		{
-			$this->oDriver = $oDriver;
-		}
+		$this->oDriver = $oDriver;
 	}
 
 	public function Test() : string
@@ -76,9 +72,6 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 			$iOffset, $iLimit, $sSearch, $iResultCount) : array();
 	}
 
-	/**
-	 * @param string $mID
-	 */
 	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?\RainLoop\Providers\AddressBook\Classes\Contact
 	{
 		return $this->IsActive() ? $this->oDriver->GetContactByID($sEmail, $mID, $bIsStrID) : null;

@@ -18,29 +18,13 @@ namespace MailSo\Mime\Parser;
  */
 interface ParserInterface
 {
-	/**
-	 * @param \MailSo\Mime\Part $oPart
-	 *
-	 */
-	public function StartParse(\MailSo\Mime\Part &$oPart) : void;
+	public function StartParse(\MailSo\Mime\Part $oPart) : void;
 
-	/**
-	 * @param \MailSo\Mime\Part $oPart
-	 *
-	 */
-	public function EndParse(\MailSo\Mime\Part &$oPart) : void;
+	public function EndParse(\MailSo\Mime\Part $oPart) : void;
 
-	/**
-	 * @param \MailSo\Mime\Part $oPart
-	 *
-	 */
-	public function StartParseMimePart(\MailSo\Mime\Part &$oPart) : void;
+	public function StartParseMimePart(\MailSo\Mime\Part $oPart) : void;
 
-	/**
-	 * @param \MailSo\Mime\Part $oMimePart
-	 *
-	 */
-	public function EndParseMimePart(\MailSo\Mime\Part &$oPart) : void;
+	public function EndParseMimePart(\MailSo\Mime\Part $oPart) : void;
 
 	public function InitMimePartHeader() : void;
 

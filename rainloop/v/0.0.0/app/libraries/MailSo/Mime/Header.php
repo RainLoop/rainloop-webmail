@@ -47,10 +47,6 @@ class Header
 	 */
 	private $sParentCharset;
 
-	/**
-	 * @access private
-	 *
-	 */
 	private function __construct($sName, $sValue, $sEncodedValueForReparse, $sParentCharset = '')
 	{
 		$this->sParentCharset = $sParentCharset;
@@ -90,20 +86,12 @@ class Header
 		}
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\Header
-	 */
-	public static function NewInstance(string $sName, string $sValue = '', string $sEncodedValueForReparse = '', string $sParentCharset = '')
+	public static function NewInstance(string $sName, string $sValue = '', string $sEncodedValueForReparse = '', string $sParentCharset = '') : \MailSo\Mime\Header
 	{
 		return new self($sName, $sValue, $sEncodedValueForReparse, $sParentCharset);
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\Header | false
-	 */
-	public static function NewInstanceFromEncodedString(string $sEncodedLines, string $sIncomingCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1)
+	public static function NewInstanceFromEncodedString(string $sEncodedLines, string $sIncomingCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1) : \MailSo\Mime\Header
 	{
 		if (empty($sIncomingCharset))
 		{
@@ -144,10 +132,7 @@ class Header
 		return $this->sFullValue;
 	}
 
-	/**
-	 * @return \MailSo\Mime\Header
-	 */
-	public function SetParentCharset(string $sParentCharset)
+	public function SetParentCharset(string $sParentCharset) : \MailSo\Mime\Header
 	{
 		if ($this->sParentCharset !== $sParentCharset && $this->IsReparsed() && 0 < \strlen($this->sEncodedValueForReparse))
 		{
@@ -163,10 +148,7 @@ class Header
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Mime\ParameterCollection | null
-	 */
-	public function Parameters()
+	public function Parameters() : ?\MailSo\Mime\ParameterCollection
 	{
 		return $this->oParameters;
 	}
@@ -184,7 +166,7 @@ class Header
 
 		if ($this->IsSubject())
 		{
-			if (!\MailSo\Base\Utils::IsAscii($sResult) && 
+			if (!\MailSo\Base\Utils::IsAscii($sResult) &&
 				\MailSo\Base\Utils::IsIconvSupported() &&
 				\function_exists('iconv_mime_encode'))
 			{

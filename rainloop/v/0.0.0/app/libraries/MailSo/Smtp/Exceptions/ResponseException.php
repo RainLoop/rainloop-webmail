@@ -41,10 +41,7 @@ class ResponseException extends \MailSo\Smtp\Exceptions\Exception
 		return $this->aResponses;
 	}
 
-	/**
-	 * @return \MailSo\Smtp\Response | null
-	 */
-	public function GetLastResponse()
+	public function GetLastResponse() : ?\MailSo\Smtp\Response
 	{
 		return 0 < count($this->aResponses) ? $this->aResponses[count($this->aResponses) - 1] : null;
 	}

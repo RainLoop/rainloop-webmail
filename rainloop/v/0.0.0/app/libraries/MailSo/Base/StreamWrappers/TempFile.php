@@ -42,7 +42,6 @@ class TempFile
 	}
 
 	/**
-	 *
 	 * @return resource|bool
 	 */
 	public static function CreateStream(string $sHash, string &$sFileName = '')

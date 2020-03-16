@@ -50,7 +50,7 @@ class ConnectionSecurityType
 	public static function UseStartTLS(bool $bSupported, int $iSecurityType, bool $bHasSupportedAuth = true) : bool
 	{
 		return ($bSupported &&
-			(self::STARTTLS === $iSecurityType || 
+			(self::STARTTLS === $iSecurityType ||
 				(self::AUTO_DETECT === $iSecurityType && (!$bHasSupportedAuth || \MailSo\Config::$PreferStartTlsIfAutoDetect))) &&
 			\defined('STREAM_CRYPTO_METHOD_TLS_CLIENT') && \MailSo\Base\Utils::FunctionExistsAndEnabled('stream_socket_enable_crypto'));
 	}

@@ -27,22 +27,13 @@ class FetchResponse
 	 */
 	private $aEnvelopeCache;
 
-	/**
-	 * @access private
-	 *
-	 * @param \MailSo\Imap\Response $oImapResponse
-	 */
-	private function __construct($oImapResponse)
+	private function __construct(Response $oImapResponse)
 	{
 		$this->oImapResponse = $oImapResponse;
 		$this->aEnvelopeCache = null;
 	}
 
-	/**
-	 * @param \MailSo\Imap\Response $oImapResponse
-	 * @return \MailSo\Imap\FetchResponse
-	 */
-	public static function NewInstance($oImapResponse)
+	public static function NewInstance(Response $oImapResponse) : self
 	{
 		return new self($oImapResponse);
 	}
@@ -66,11 +57,7 @@ class FetchResponse
 		return self::findEnvelopeIndex($this->GetEnvelope(), $iIndex, $mNullResult);
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\EmailCollection|null
-	 */
-	public function GetFetchEnvelopeEmailCollection(int $iIndex, string $sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1)
+	public function GetFetchEnvelopeEmailCollection(int $iIndex, string $sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1) : ?\MailSo\Mime\EmailCollection
 	{
 		$oResult = null;
 		$aEmails = $this->GetFetchEnvelopeValue($iIndex, null);
@@ -103,11 +90,7 @@ class FetchResponse
 		return $oResult;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Imap\BodyStructure|null
-	 */
-	public function GetFetchBodyStructure(string $sRfc822SubMimeIndex = '')
+	public function GetFetchBodyStructure(string $sRfc822SubMimeIndex = '') : ?BodyStructure
 	{
 		$oBodyStructure = null;
 		$aBodyStructureArray = $this->GetFetchValue(Enumerations\FetchType::BODYSTRUCTURE);
@@ -128,7 +111,6 @@ class FetchResponse
 	}
 
 	/**
-	 *
 	 * @return mixed
 	 */
 	public function GetFetchValue(string $sFetchItemName)
@@ -198,11 +180,11 @@ class FetchResponse
 		{
 			foreach ($aList as $mItem)
 			{
-				if (\MailSo\Imap\Enumerations\FetchType::UID === $mItem)
+				if (Enumerations\FetchType::UID === $mItem)
 				{
 					$bUid = true;
 				}
-				else if (\MailSo\Imap\Enumerations\FetchType::RFC822_SIZE === $mItem)
+				else if (Enumerations\FetchType::RFC822_SIZE === $mItem)
 				{
 					$bSize = true;
 				}
@@ -212,26 +194,18 @@ class FetchResponse
 		return $bUid && $bSize;
 	}
 
-	/**
-	 * @param \MailSo\Imap\Response $oImapResponse
-	 *
-	 */
-	public static function IsValidFetchImapResponse($oImapResponse) : bool
+	public static function IsValidFetchImapResponse(Response $oImapResponse) : bool
 	{
 		return (
 			$oImapResponse
 			&& true !== $oImapResponse->IsStatusResponse
-			&& \MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
+			&& Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
 			&& 3 < count($oImapResponse->ResponseList) && 'FETCH' === $oImapResponse->ResponseList[2]
 			&& is_array($oImapResponse->ResponseList[3])
 		);
 	}
 
-	/**
-	 * @param \MailSo\Imap\Response $oImapResponse
-	 *
-	 */
-	public static function IsNotEmptyFetchImapResponse($oImapResponse) : bool
+	public static function IsNotEmptyFetchImapResponse(Response $oImapResponse) : bool
 	{
 		return (
 			$oImapResponse

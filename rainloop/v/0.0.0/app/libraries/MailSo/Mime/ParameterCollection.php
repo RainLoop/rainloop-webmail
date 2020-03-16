@@ -17,10 +17,6 @@ namespace MailSo\Mime;
  */
 class ParameterCollection extends \MailSo\Base\Collection
 {
-	/**
-	 * @access protected
-	 *
-	 */
 	protected function __construct($sRawParams = '')
 	{
 		parent::__construct();
@@ -31,19 +27,12 @@ class ParameterCollection extends \MailSo\Base\Collection
 		}
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\ParameterCollection
-	 */
-	public static function NewInstance(string $sRawParams = '')
+	public static function NewInstance(string $sRawParams = '') : self
 	{
 		return new self($sRawParams);
 	}
 
-	/**
-	 * @return \MailSo\Mime\Parameter|null
-	 */
-	public function &GetByIndex(int $iIndex)
+	public function &GetByIndex(int $iIndex) : ?\MailSo\Mime\Parameter
 	{
 		$mResult = null;
 		$mResult =& parent::GetByIndex($iIndex);
@@ -51,12 +40,9 @@ class ParameterCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 *
-	 * @return \MailSo\Mime\ParameterCollection
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function SetAsArray(array $aList)
+	public function SetAsArray(array $aList) : self
 	{
 		parent::SetAsArray($aList);
 
@@ -81,11 +67,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		return $sResult;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\ParameterCollection
-	 */
-	public function Parse(string $sRawParams)
+	public function Parse(string $sRawParams) : self
 	{
 		$this->Clear();
 

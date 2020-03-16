@@ -17,18 +17,12 @@ namespace MailSo\Mime;
  */
 class AttachmentCollection extends \MailSo\Base\Collection
 {
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
 	}
 
-	/**
-	 * @return \MailSo\Mime\AttachmentCollection
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : \MailSo\Mime\AttachmentCollection
 	{
 		return new self();
 	}

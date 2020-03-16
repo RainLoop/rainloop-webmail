@@ -92,13 +92,9 @@ class BodyStructure
 	 */
 	private $aSubParts;
 
-	/**
-	 * @access private
-	 *
-	 */
-	private function __construct($sContentType, $sCharset, $aBodyParams, $sContentID,
-		$sDescription, $sMailEncodingName, $sDisposition, $aDispositionParams, $sFileName,
-		$sLanguage, $sLocation, $iSize, $iTextLineCount, $sPartID, $aSubParts)
+	private function __construct(string $sContentType, string $sCharset, array $aBodyParams, string $sContentID,
+		string $sDescription, string $sMailEncodingName, string $sDisposition, array $aDispositionParams, string $sFileName,
+		string $sLanguage, string $sLocation, int $iSize, int $iTextLineCount, string $sPartID, array $aSubParts)
 	{
 		$this->sContentType = $sContentType;
 		$this->sCharset = $sCharset;
@@ -271,7 +267,7 @@ class BodyStructure
 		return $bResult;
 	}
 
-	public function SearchPlainParts() : ?array
+	public function SearchPlainParts() : array
 	{
 		$aReturn = array();
 		$aParts = $this->SearchByContentType('text/plain');
@@ -285,7 +281,7 @@ class BodyStructure
 		return $aReturn;
 	}
 
-	public function SearchHtmlParts() : ?array
+	public function SearchHtmlParts() : array
 	{
 		$aReturn = array();
 		$aParts = $this->SearchByContentType('text/html');
@@ -301,10 +297,7 @@ class BodyStructure
 		return $aReturn;
 	}
 
-	/**
-	 * @return \MailSo\Imap\BodyStructure|null
-	 */
-	public function SearchInlineEncryptedPart()
+	public function SearchInlineEncryptedPart() : ?self
 	{
 		if ('multipart/encrypted' === \strtolower($this->ContentType()))
 		{
@@ -321,18 +314,14 @@ class BodyStructure
 		return null;
 	}
 
-	public function SearchHtmlOrPlainParts() : ?array
+	public function SearchHtmlOrPlainParts() : array
 	{
-		$mResult = $this->SearchHtmlParts();
-		if (null === $mResult || (\is_array($mResult) && 0 === count($mResult)))
-		{
-			$mResult = $this->SearchPlainParts();
-		}
+		$mResult = $this->SearchHtmlParts() ?: $this->SearchPlainParts();
 
-		if (null === $mResult || (\is_array($mResult) && 0 === count($mResult)))
+		if (!$mResult)
 		{
 			$oPart = $this->SearchInlineEncryptedPart();
-			if ($oPart instanceof \MailSo\Imap\BodyStructure)
+			if ($oPart instanceof self)
 			{
 				$mResult = array($oPart);
 			}
@@ -344,20 +333,7 @@ class BodyStructure
 	public function SearchCharset() : string
 	{
 		$sResult = '';
-		$mParts = array();
-
-		$mHtmlParts = $this->SearchHtmlParts();
-		$mPlainParts = $this->SearchPlainParts();
-
-		if (\is_array($mHtmlParts) && 0 < \count($mHtmlParts))
-		{
-			$mParts = \array_merge($mParts, $mHtmlParts);
-		}
-
-		if (\is_array($mPlainParts) && 0 < \count($mPlainParts))
-		{
-			$mParts = \array_merge($mParts, $mPlainParts);
-		}
+		$mParts = \array_merge($this->SearchHtmlParts(), $this->SearchPlainParts());
 
 		foreach ($mParts as $oPart)
 		{
@@ -425,11 +401,7 @@ class BodyStructure
 		});
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Imap\BodyStructure
-	 */
-	public function GetPartByMimeIndex(string $sMimeIndex)
+	public function GetPartByMimeIndex(string $sMimeIndex) : self
 	{
 		$oPart = null;
 		if (0 < \strlen($sMimeIndex))
@@ -521,11 +493,7 @@ class BodyStructure
 		return $sResult;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Imap\BodyStructure
-	 */
-	public static function NewInstance(array $aBodyStructure, string $sPartID = '')
+	public static function NewInstance(array $aBodyStructure, string $sPartID = '') : self
 	{
 		if (!\is_array($aBodyStructure) || 2 > \count($aBodyStructure))
 		{
@@ -831,11 +799,7 @@ class BodyStructure
 		}
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Imap\BodyStructure|null
-	 */
-	public static function NewInstanceFromRfc822SubPart(array $aBodyStructure, string $sSubPartID)
+	public static function NewInstanceFromRfc822SubPart(array $aBodyStructure, string $sSubPartID) : ?self
 	{
 		$oBody = null;
 		$aBodySubStructure = self::findPartByIndexInArray($aBodyStructure, $sSubPartID);

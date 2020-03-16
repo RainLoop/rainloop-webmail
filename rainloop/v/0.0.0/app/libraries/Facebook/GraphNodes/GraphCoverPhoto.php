@@ -39,7 +39,7 @@ class GraphCoverPhoto extends GraphNode
     {
         return $this->getField('id');
     }
-    
+
     /**
      * Returns the source of cover if it exists
      *

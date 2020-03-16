@@ -15,21 +15,12 @@ namespace MailSo\Base;
  * @category MailSo
  * @package Base
  */
-class DateTimeHelper
+abstract class DateTimeHelper
 {
 	/**
-	 * @access private
-	 */
-	private function __construct()
-	{
-	}
-
-	/**
 	 * @staticvar \DateTimeZone $oDateTimeZone
-	 *
-	 * @return \DateTimeZone
 	 */
-	public static function GetUtcTimeZoneObject()
+	public static function GetUtcTimeZoneObject() : \DateTimeZone
 	{
 		static $oDateTimeZone = null;
 		if (null === $oDateTimeZone)
@@ -42,8 +33,6 @@ class DateTimeHelper
 	/**
 	 * Parse date string formated as "Thu, 10 Jun 2010 08:58:33 -0700 (PDT)"
 	 * RFC2822
-	 *
-	 *
 	 */
 	public static function ParseRFC2822DateString(string $sDateTime) : int
 	{
@@ -61,8 +50,6 @@ class DateTimeHelper
 	/**
 	 * Parse date string formated as "10-Jan-2012 01:58:17 -0800"
 	 * IMAP INTERNALDATE Format
-	 *
-	 *
 	 */
 	public static function ParseInternalDateString(string $sDateTime) : int
 	{
@@ -83,8 +70,6 @@ class DateTimeHelper
 
 	/**
 	 * Parse date string formated as "2011-06-14 23:59:59 +0400"
-	 *
-	 *
 	 */
 	public static function ParseDateStringType1(string $sDateTime) : int
 	{
@@ -100,8 +85,6 @@ class DateTimeHelper
 
 	/**
 	 * Parse date string formated as "2015-05-08T14:32:18.483-07:00"
-	 *
-	 *
 	 */
 	public static function TryToParseSpecEtagFormat(string $sDateTime) : int
 	{

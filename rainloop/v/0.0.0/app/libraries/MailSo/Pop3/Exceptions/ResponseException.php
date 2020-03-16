@@ -41,10 +41,7 @@ class ResponseException extends \MailSo\Pop3\Exceptions\Exception
 		return $this->aResponses;
 	}
 
-	/**
-	 * @return \MailSo\Pop3\Response | null
-	 */
-	public function GetLastResponse()
+	public function GetLastResponse() : ?\MailSo\Pop3\Response
 	{
 		return 0 < count($this->aResponses) ? $this->aResponses[count($this->aResponses) - 1] : null;
 	}

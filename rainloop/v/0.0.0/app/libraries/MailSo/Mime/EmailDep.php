@@ -44,9 +44,6 @@ class EmailDep
 	private $sDkimValue;
 
 	/**
-	 * @access private
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
 	private function __construct($sEmail, $sDisplayName = '', $sRemark = '')
@@ -67,22 +64,17 @@ class EmailDep
 	}
 
 	/**
-	 *
-	 * @return \MailSo\Mime\Email
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewInstance(string $sEmail, string $sDisplayName = '', string $sRemark = '')
+	public static function NewInstance(string $sEmail, string $sDisplayName = '', string $sRemark = '') : \MailSo\Mime\Email
 	{
 		return new self($sEmail, $sDisplayName, $sRemark);
 	}
 
 	/**
-	 * @return \MailSo\Mime\Email
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function Parse(string $sEmailAddress)
+	public static function Parse(string $sEmailAddress) : \MailSo\Mime\Email
 	{
 		$sEmailAddress = \MailSo\Base\Utils::Trim($sEmailAddress);
 		if (!\MailSo\Base\Validator::NotEmptyString($sEmailAddress, true))
@@ -244,7 +236,7 @@ class EmailDep
 		return \MailSo\Base\Utils::GetDomainFromEmail($this->GetEmail($bIdn));
 	}
 
-	public function SetDkimStatusAndValue(string $sDkimStatus, string $sDkimValue = '')
+	public function SetDkimStatusAndValue(string $sDkimStatus, string $sDkimValue = '') : void
 	{
 		$this->sDkimStatus = \MailSo\Mime\Enumerations\DkimStatus::normalizeValue($sDkimStatus);
 		$this->sDkimValue = $sDkimValue;

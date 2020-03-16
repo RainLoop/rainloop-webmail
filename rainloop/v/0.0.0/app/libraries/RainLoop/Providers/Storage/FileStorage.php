@@ -19,7 +19,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	 */
 	protected $oLogger;
 
-	public function __construct($sStoragePath, $bLocal = false)
+	public function __construct(string $sStoragePath, bool $bLocal = false)
 	{
 		$this->sDataPath = \rtrim(\trim($sStoragePath), '\\/');
 		$this->bLocal = !!$bLocal;
@@ -28,7 +28,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 *
 	 */
 	public function Put($oAccount, int $iStorageType, string $sKey, string $sValue) : bool
 	{
@@ -56,7 +55,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 *
 	 */
 	public function Clear($oAccount, int $iStorageType, string $sKey) : bool
 	{
@@ -72,7 +70,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string $oAccount
-	 *
 	 */
 	public function DeleteStorage($oAccount) : bool
 	{
@@ -102,7 +99,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $mAccount
-	 *
 	 */
 	public function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
 	{
@@ -169,11 +165,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		return $sFilePath;
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 */
-	public function SetLogger($oLogger)
+	public function SetLogger(?\MailSo\Log\Logger $oLogger)
 	{
-		$this->oLogger = $oLogger instanceof \MailSo\Log\Logger ? $oLogger : null;
+		$this->oLogger = $oLogger;
 	}
 }

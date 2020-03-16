@@ -28,11 +28,7 @@ class File implements \MailSo\Cache\DriverInterface
 	 */
 	private $sKeyPrefix;
 
-	/**
-	 * @access private
-	 *
-	 */
-	private function __construct($sCacheFolder, $sKeyPrefix = '')
+	private function __construct(string $sCacheFolder, string $sKeyPrefix = '')
 	{
 		$this->sCacheFolder = $sCacheFolder;
 		$this->sCacheFolder = rtrim(trim($this->sCacheFolder), '\\/').'/';
@@ -49,11 +45,7 @@ class File implements \MailSo\Cache\DriverInterface
 		}
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Cache\Drivers\File
-	 */
-	public static function NewInstance(string $sCacheFolder, string $sKeyPrefix = '')
+	public static function NewInstance(string $sCacheFolder, string $sKeyPrefix = '') : self
 	{
 		return new self($sCacheFolder, $sKeyPrefix);
 	}

@@ -27,9 +27,6 @@ class MailClient
 	 */
 	private $oImapClient;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->oLogger = null;
@@ -43,10 +40,7 @@ class MailClient
 		return new self();
 	}
 
-	/**
-	 * @return \MailSo\Imap\ImapClient
-	 */
-	public function ImapClient()
+	public function ImapClient() : \MailSo\Imap\ImapClient
 	{
 		return $this->oImapClient;
 	}
@@ -276,20 +270,18 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSetSeen($sFolderName, $aIndexRange, $bIndexIsUid, $bSetAction = true) : void
+	public function MessageSetSeen(string $sFolderName, array $aIndexRange, bool $bIndexIsUid, bool $bSetAction = true) : void
 	{
 		$this->MessageSetFlag($sFolderName, $aIndexRange, $bIndexIsUid,
 			\MailSo\Imap\Enumerations\MessageFlag::SEEN, $bSetAction, true);
 	}
 
 	/**
-	 * @return \MailSo\Mail\Message|false
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Message($sFolderName, $iIndex, $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null, int $iBodyTextLimit = 0)
+	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null, int $iBodyTextLimit = 0) : void
 	{
 		if (!\MailSo\Base\Validator::RangeInt($iIndex, 1))
 		{
@@ -310,13 +302,9 @@ class MailClient
 			$oBodyStructure = $aFetchResponse[0]->GetFetchBodyStructure();
 			if ($oBodyStructure)
 			{
-				$aTextParts = $oBodyStructure->SearchHtmlOrPlainParts();
-				if (is_array($aTextParts) && 0 < \count($aTextParts))
+				foreach ($oBodyStructure->SearchHtmlOrPlainParts() as $oPart)
 				{
-					foreach ($aTextParts as $oPart)
-					{
-						$aBodyPeekMimeIndexes[] = array($oPart->PartID(), $oPart->Size());
-					}
+					$aBodyPeekMimeIndexes[] = array($oPart->PartID(), $oPart->Size());
 				}
 
 				$aSignatureParts = $oBodyStructure->SearchByContentType('application/pgp-signature');
@@ -372,8 +360,6 @@ class MailClient
 			$oMessage = \MailSo\Mail\Message::NewFetchResponseInstance(
 				$sFolderName, $aFetchResponse[0], $oBodyStructure);
 		}
-
-		return $oMessage;
 	}
 
 	/**
@@ -1558,13 +1544,11 @@ class MailClient
 	}
 
 	/**
-	 * @return \MailSo\Mail\MessageCollection
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageListSimple(string $sFolderName, array $aUids)
+	public function MessageListSimple(string $sFolderName, array $aUids) : \MailSo\Mail\MessageCollection
 	{
 		if (0 === \strlen($sFolderName) || !\MailSo\Base\Validator::NotEmptyArray($aUids))
 		{
@@ -1635,7 +1619,7 @@ class MailClient
 		if (!\is_array($aResultUids))
 		{
 			$aResultUids = $bUseSortIfSupported ?
-				$this->oImapClient->MessageSimpleSort(array('REVERSE ARRIVAL'), $sSearchCriterias, true) :
+				$this->oImapClient->MessageSimpleSort(array('REVERSE DATE'), $sSearchCriterias, true) :
 				$this->oImapClient->MessageSimpleSearch($sSearchCriterias, true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
 			;
 
@@ -2054,10 +2038,7 @@ class MailClient
 		return $aMailFoldersHelper;
 	}
 
-	/**
-	 * @return \MailSo\Mail\FolderCollection|false
-	 */
-	public function Folders(string $sParent = '', string $sListPattern = '*', bool $bUseListSubscribeStatus = true, int $iOptimizationLimit = 0)
+	public function Folders(string $sParent = '', string $sListPattern = '*', bool $bUseListSubscribeStatus = true, int $iOptimizationLimit = 0) : \MailSo\Mail\FolderCollection
 	{
 		$oFolderCollection = false;
 
@@ -2068,7 +2049,7 @@ class MailClient
 			{
 				$aSubscribedFolders = $this->oImapClient->FolderSubscribeList($sParent, $sListPattern);
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				unset($oException);
 			}

@@ -4,21 +4,9 @@ namespace RainLoop\Providers\Settings;
 
 interface ISettings
 {
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 */
-	public function Load($oAccount) : array;
+	public function Load(\RainLoop\Model\Account $oAccount) : array;
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 */
-	public function Save($oAccount, array $aSettings) : bool;
+	public function Save(\RainLoop\Model\Account $oAccount, array $aSettings) : bool;
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 */
-	public function Delete($oAccount) : bool;
+	public function Delete(\RainLoop\Model\Account $oAccount) : bool;
 }

@@ -164,9 +164,7 @@ class Cli {
                         }
                         break;
                     case 'pretty' :
-                        if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-                            $this->pretty = true;
-                        }
+                        $this->pretty = true;
                         break;
                     case 'forgiving' :
                         $this->forgiving = true;
@@ -292,10 +290,7 @@ class Cli {
         $this->log("                vcard30, vcard40, icalendar20, jcal, jcard, json, mimedir.");
         $this->log($this->colorize('green', '  --inputformat ') . "If the input format cannot be guessed from the extension, it");
         $this->log("                must be specified here.");
-        // Only PHP 5.4 and up
-        if (version_compare(PHP_VERSION, '5.4.0') >= 0) {
-            $this->log($this->colorize('green', '  --pretty      ') . "json pretty-print.");
-        }
+        $this->log($this->colorize('green', '  --pretty      ') . "json pretty-print.");
         $this->log('');
         $this->log('Commands:', 'yellow');
         $this->log($this->colorize('green', '  validate') . ' source_file              Validates a file for correctness.');

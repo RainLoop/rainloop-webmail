@@ -41,10 +41,7 @@ class ResponseException extends \MailSo\Sieve\Exceptions\Exception
 		return $this->aResponses;
 	}
 
-	/**
-	 * @return \MailSo\Sieve\Response | null
-	 */
-	public function GetLastResponse()
+	public function GetLastResponse() : ?\MailSo\Sieve\Response
 	{
 		return 0 < count($this->aResponses) ? $this->aResponses[count($this->aResponses) - 1] : null;
 	}

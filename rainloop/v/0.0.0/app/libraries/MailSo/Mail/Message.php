@@ -187,18 +187,12 @@ class Message
 	 */
 	private $bPgpEncrypted;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->Clear();
 	}
 
-	/**
-	 * @return \MailSo\Mail\Message
-	 */
-	public function Clear()
+	public function Clear() : \MailSo\Mail\Message
 	{
 		$this->sFolder = '';
 		$this->iUid = 0;
@@ -246,10 +240,7 @@ class Message
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Mail\Message
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : \MailSo\Mail\Message
 	{
 		return new self();
 	}
@@ -279,11 +270,7 @@ class Message
 		return $this->bPgpEncrypted;
 	}
 
-	/**
-	 *
-	 * @retun void
-	 */
-	public function SetHtml(string $sHtml)
+	public function SetHtml(string $sHtml) : void
 	{
 		$this->sHtml = $sHtml;
 	}
@@ -343,10 +330,7 @@ class Message
 		return $this->aFlagsLowerCase;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function From()
+	public function From() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oFrom;
 	}
@@ -361,58 +345,37 @@ class Message
 		return $this->iPriority;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function Sender()
+	public function Sender() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oSender;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function ReplyTo()
+	public function ReplyTo() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oReplyTo;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function DeliveredTo()
+	public function DeliveredTo() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oDeliveredTo;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function To()
+	public function To() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oTo;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function Cc()
+	public function Cc() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oCc;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function Bcc()
+	public function Bcc() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oBcc;
 	}
 
-	/**
-	 * @return \MailSo\Mail\AttachmentCollection
-	 */
-	public function Attachments()
+	public function Attachments() : \MailSo\Mail\AttachmentCollection
 	{
 		return $this->oAttachments;
 	}
@@ -447,7 +410,7 @@ class Message
 		return $this->ReadReceipt();
 	}
 
-	public function DraftInfo() : array
+	public function DraftInfo() : ?array
 	{
 		return $this->aDraftInfo;
 	}
@@ -467,24 +430,12 @@ class Message
 		return $this->bTextPartIsTrimmed;
 	}
 
-	/**
-	 * @param \MailSo\Imap\FetchResponse $oFetchResponse
-	 * @param \MailSo\Imap\BodyStructure $oBodyStructure = null
-	 *
-	 * @return \MailSo\Mail\Message
-	 */
-	public static function NewFetchResponseInstance(string $sFolder, $oFetchResponse, $oBodyStructure = null)
+	public static function NewFetchResponseInstance(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : \MailSo\Mail\Message
 	{
 		return self::NewInstance()->InitByFetchResponse($sFolder, $oFetchResponse, $oBodyStructure);
 	}
 
-	/**
-	 * @param \MailSo\Imap\FetchResponse $oFetchResponse
-	 * @param \MailSo\Imap\BodyStructure $oBodyStructure = null
-	 *
-	 * @return \MailSo\Mail\Message
-	 */
-	public function InitByFetchResponse(string $sFolder, $oFetchResponse, $oBodyStructure = null)
+	public function InitByFetchResponse(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : \MailSo\Mail\Message
 	{
 		if (!$oBodyStructure)
 		{
@@ -688,7 +639,7 @@ class Message
 		}
 
 		$aTextParts = $oBodyStructure ? $oBodyStructure->SearchHtmlOrPlainParts() : null;
-		if (\is_array($aTextParts) && 0 < \count($aTextParts))
+		if ($aTextParts)
 		{
 			if (0 === \strlen($sCharset))
 			{

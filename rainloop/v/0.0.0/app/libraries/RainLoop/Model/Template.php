@@ -24,7 +24,7 @@ class Template
 	 */
 	private $bPopulateAlways;
 
-	protected function __construct($sId = '', $sName = '', $sBody = '')
+	protected function __construct(string $sId = '', string $sName = '', string $sBody = '')
 	{
 		$this->sId = $sId;
 		$this->sName = $sName;
@@ -32,13 +32,9 @@ class Template
 		$this->bPopulateAlways = false;
 	}
 
-	/**
-	 *
-	 * @return \RainLoop\Model\Template
-	 */
-	public static function NewInstance(string $sId = '', string $sName = '', string $sBody = '')
+	public static function NewInstance(string $sId = '', string $sName = '', string $sBody = '') : self
 	{
-		return new self($sId, $sBody);
+		return new self($sId, $sName, $sBody);
 	}
 
 	public function Id() : string
@@ -58,7 +54,7 @@ class Template
 
 	public function SetPopulateAlways(bool $bPopulateAlways)
 	{
-		$this->bPopulateAlways = !!$bPopulateAlways;
+		$this->bPopulateAlways = $bPopulateAlways;
 	}
 
 	public function FromJSON(array $aData, bool $bAjax = false) : bool

@@ -43,7 +43,7 @@ class Redis implements \MailSo\Cache\DriverInterface
 	 */
 	private $sKeyPrefix;
 
-	private function __construct($sHost = '127.0.0.1', $iPost = 6379, $iExpire = 43200, $sKeyPrefix = '')
+	private function __construct(string $sHost = '127.0.0.1', int $iPost = 6379, int $iExpire = 43200, string $sKeyPrefix = '')
 	{
 		$this->sHost = $sHost;
 		$this->iPost = $iPost;
@@ -65,7 +65,7 @@ class Redis implements \MailSo\Cache\DriverInterface
 				$this->oRedis = null;
 			}
 		}
-		catch (\Exception $oExc)
+		catch (\Throwable $oExc)
 		{
 			$this->oRedis = null;
 			unset($oExc);
@@ -79,11 +79,7 @@ class Redis implements \MailSo\Cache\DriverInterface
 		}
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Cache\Drivers\APC
-	 */
-	public static function NewInstance(string $sHost = '127.0.0.1', int $iPost = 6379, int $iExpire = 43200, string $sKeyPrefix = '')
+	public static function NewInstance(string $sHost = '127.0.0.1', int $iPost = 6379, int $iExpire = 43200, string $sKeyPrefix = '') : self
 	{
 		return new self($sHost, $iPost, $iExpire, $sKeyPrefix);
 	}

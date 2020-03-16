@@ -49,12 +49,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 	 */
 	private $sParentEmail;
 
-	/**
-	 * @param \RainLoop\Model\Domain $oDomain
-	 *
-	 */
-	protected function __construct($sEmail, $sLogin, $sPassword, \RainLoop\Model\Domain $oDomain,
-		$sSignMeToken = '', $sProxyAuthUser = '', $sProxyAuthPassword = '', $sClientCert = '')
+	protected function __construct(string $sEmail, string $sLogin, string $sPassword, \RainLoop\Model\Domain $oDomain,
+		string $sSignMeToken = '', string $sProxyAuthUser = '', string $sProxyAuthPassword = '', string $sClientCert = '')
 	{
 		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 		$this->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
@@ -67,13 +63,8 @@ class Account extends \RainLoop\Account // for backward compatibility
 		$this->sParentEmail = '';
 	}
 
-	/**
-	 * @param \RainLoop\Model\Domain $oDomain
-	 *
-	 * @return \RainLoop\Model\Account
-	 */
 	public static function NewInstance(string $sEmail, string $sLogin, string $sPassword, \RainLoop\Model\Domain $oDomain,
-		string $sSignMeToken = '', string $sProxyAuthUser = '', string $sProxyAuthPassword = '', string $sClientCert = '')
+		string $sSignMeToken = '', string $sProxyAuthUser = '', string $sProxyAuthPassword = '', string $sClientCert = '') : self
 	{
 		return new self($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, $sProxyAuthUser, $sProxyAuthPassword, $sClientCert);
 	}
@@ -183,10 +174,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 		return $this->sSignMeToken;
 	}
 
-	/**
-	 * @return \RainLoop\Model\Domain
-	 */
-	public function Domain()
+	public function Domain() : \RainLoop\Model\Domain
 	{
 		return $this->oDomain;
 	}
@@ -311,7 +299,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 	/**
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Mail\MailClient $oMailClient
-	 * @param \RainLoop\Application $oConfig
+	 * @param \RainLoop\Config\Application $oConfig
 	 * @param callable|null $refreshTokenCallback = null
 	 *
 	 */
@@ -396,7 +384,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 	/**
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Smtp\SmtpClient|null $oSmtpClient
-	 * @param \RainLoop\Application $oConfig
+	 * @param \RainLoop\Config\Application $oConfig
 	 * @param callable|null $refreshTokenCallback = null
 	 *
 	 */
@@ -430,8 +418,9 @@ class Account extends \RainLoop\Account // for backward compatibility
 
 		if ($aSmtpCredentials['UseConnect'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
 		{
-			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'], $aSmtpCredentials['Ehlo'],
-				$aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl'], $aSmtpCredentials['AllowSelfSigned']
+			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
+				$aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl'], $aSmtpCredentials['AllowSelfSigned'],
+				'', $aSmtpCredentials['Ehlo']
 			);
 		}
 
@@ -473,7 +462,7 @@ class Account extends \RainLoop\Account // for backward compatibility
 	/**
 	 * @param \RainLoop\Plugins\Manager $oPlugins
 	 * @param \MailSo\Sieve\ManageSieveClient $oSieveClient
-	 * @param \RainLoop\Application $oConfig
+	 * @param \RainLoop\Config\Application $oConfig
 	 */
 	public function SieveConnectAndLoginHelper($oPlugins, $oSieveClient, $oConfig)
 	{

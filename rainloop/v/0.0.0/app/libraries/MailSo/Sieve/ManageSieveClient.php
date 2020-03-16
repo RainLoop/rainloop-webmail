@@ -37,9 +37,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public $__USE_INITIAL_AUTH_PLAIN_COMMAND;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
@@ -214,7 +211,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
@@ -243,7 +239,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
@@ -269,8 +264,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
@@ -346,7 +339,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
@@ -368,8 +360,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
@@ -410,8 +400,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
@@ -445,8 +433,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
@@ -465,8 +451,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException

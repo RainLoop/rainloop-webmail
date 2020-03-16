@@ -7,16 +7,8 @@ interface DomainAdminInterface extends DomainInterface
 
 	public function Disable(string $sName, bool $bDisable) : bool;
 
-	/**
-	 *
-	 * @return \RainLoop\Model\Domain|null
-	 */
-	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true);
+	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true) : ?\RainLoop\Model\Domain;
 
-	/**
-	 * @param \RainLoop\Model\Domain $oDomain
-	 *
-	 */
 	public function Save(\RainLoop\Model\Domain $oDomain) : bool;
 
 	public function Delete(string $sName) : bool;

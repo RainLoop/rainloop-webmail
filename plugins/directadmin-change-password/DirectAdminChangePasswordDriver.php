@@ -11,7 +11,7 @@ class DirectAdminChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 	 * @var string
 	 */
 	private $iPort = 2222;
-	
+
 	/**
 	 * @var string
 	 */
@@ -21,7 +21,7 @@ class DirectAdminChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 	 * @var \MailSo\Log\Logger
 	 */
 	private $oLogger = null;
-	
+
 	/**
 	 * @param string $sHost
 	 * @param int $iPort
@@ -62,25 +62,13 @@ class DirectAdminChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 		return $this;
 	}
 
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 *
-	 * @return bool
-	 */
-	public function PasswordChangePossibility($oAccount)
+	public function PasswordChangePossibility(\RainLoop\Model\Account $oAccount) : bool
 	{
 		return $oAccount && $oAccount->Email() &&
 			\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->sAllowedEmails);
 	}
 
-	/**
-	 * @param \RainLoop\Account $oAccount
-	 * @param string $sPrevPassword
-	 * @param string $sNewPassword
-	 *
-	 * @return bool
-	 */
-	public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword)
+	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
 	{
 		if ($this->oLogger)
 		{
@@ -97,7 +85,7 @@ class DirectAdminChangePasswordDriver implements \RainLoop\Providers\ChangePassw
 			$sHost = \str_replace('{user:host-smtp}', $oAccount->Domain()->OutHost(), $sHost);
 			$sHost = \str_replace('{user:domain}', \MailSo\Base\Utils::GetDomainFromEmail($sEmail), $sHost);
 			$sHost = \rtrim($this->sHost, '/\\');
-			
+
 			if (!\preg_match('/^http[s]?:\/\//i', $sHost))
 			{
 				$sHost = 'http://'.$sHost;

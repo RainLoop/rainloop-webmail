@@ -87,9 +87,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public $__FORCE_SELECT_ON_EXAMINE__;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
@@ -440,7 +437,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 
-		if (false === $oReturn)
+		if (!$oReturn)
 		{
 			$this->writeLogException(
 				new \MailSo\Imap\Exceptions\ResponseException(),
@@ -549,8 +546,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -667,8 +662,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
@@ -715,8 +708,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
@@ -726,8 +717,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
@@ -737,8 +726,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
@@ -885,8 +872,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -944,7 +929,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 
 	/**
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
@@ -995,8 +979,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -1060,8 +1042,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -1166,8 +1146,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -1178,8 +1156,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -1189,10 +1165,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this->simpleESearchOrESortHelper(true, $sSearchCriterias, $aSearchReturn, $bReturnUid, $sLimit, '', $aSortTypes);
 	}
 
-	/**
-	 * @return \MailSo\Imap\Response
-	 */
-	private function findLastResponse(array $aResult)
+	private function findLastResponse(array $aResult) : \MailSo\Imap\Response
 	{
 		$oResult = null;
 		if (\is_array($aResult) && 0 < \count($aResult))
@@ -1208,8 +1181,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -1332,8 +1303,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
@@ -1540,17 +1509,12 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Imap\FolderInformation
-	 */
-	public function FolderCurrentInformation()
+	public function FolderCurrentInformation() : \MailSo\Imap\FolderInformation
 	{
 		return $this->oCurrentFolderInfo;
 	}
 
 	/**
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
@@ -1634,7 +1598,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param mixed $aResult
-	 *
 	 *
 	 * @throws \MailSo\Imap\Exceptions\ResponseNotFoundException
 	 * @throws \MailSo\Imap\Exceptions\InvalidResponseException
@@ -1729,11 +1692,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this->validateResponse($this->parseResponse($sEndTag, $bFindCapa));
 	}
 
-	/**
-	 * @param \MailSo\Imap\Response $oImapResponse
-	 *
-	 */
-	private function initCapabilityImapResponse($oImapResponse) : void
+	private function initCapabilityImapResponse(\MailSo\Imap\Response $oImapResponse) : void
 	{
 		if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
 			&& \is_array($oImapResponse->ResponseList))
@@ -1759,7 +1718,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
 	private function partialParseResponseBranch(&$oImapResponse, int $iStackIndex = -1,
@@ -2237,7 +2195,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	/**
 	 * @param resource $rImapStream
-	 *
 	 */
 	private function partialResponseLiteralCallbackCallable(string $sParent, string $sLiteralAtomUpperCase, $rImapStream, int $iLiteralLen) : bool
 	{
@@ -2278,7 +2235,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				\call_user_func($this->aFetchCallbacks[$sFetchKey],
 					$sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->writeLog('Callback Exception', \MailSo\Log\Enumerations\Type::NOTICE);
 				$this->writeLogException($oException);

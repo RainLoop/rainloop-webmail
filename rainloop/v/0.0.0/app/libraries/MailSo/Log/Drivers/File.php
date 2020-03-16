@@ -23,11 +23,7 @@ class File extends \MailSo\Log\Driver
 	 */
 	private $sLoggerFileName;
 
-	/**
-	 * @access protected
-	 *
-	 */
-	protected function __construct($sLoggerFileName, $sNewLine = "\r\n")
+	protected function __construct(string $sLoggerFileName, string $sNewLine = "\r\n")
 	{
 		parent::__construct();
 
@@ -40,11 +36,7 @@ class File extends \MailSo\Log\Driver
 		$this->sLoggerFileName = $sLoggerFileName;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Drivers\File
-	 */
-	public static function NewInstance(string $sLoggerFileName, string $sNewLine = "\r\n")
+	public static function NewInstance(string $sLoggerFileName, string $sNewLine = "\r\n") : \MailSo\Log\Drivers\File
 	{
 		return new self($sLoggerFileName, $sNewLine);
 	}

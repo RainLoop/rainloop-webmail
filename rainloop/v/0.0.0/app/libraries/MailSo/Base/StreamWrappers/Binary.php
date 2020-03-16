@@ -134,7 +134,6 @@ class Binary
 
 	/**
 	 * @param resource $rStream
-	 *
 	 */
 	public static function IsStreamRemembed($rStream) : bool
 	{

@@ -20,7 +20,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 	private $oPlugins;
 
 	/**
-	 * @var \RainLoop\Application
+	 * @var \RainLoop\Config\Application
 	 */
 	private $oConfig;
 
@@ -39,11 +39,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		$this->bUtf8FolderName = !!$this->oConfig->Get('labs', 'sieve_utf8_folder_name', true);
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 */
-	public function Load($oAccount, bool $bAllowRaw = false) : array
+	public function Load(\RainLoop\Model\Account $oAccount, bool $bAllowRaw = false) : array
 	{
 		$sRaw = '';
 
@@ -53,7 +49,8 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		$aModules = array();
 		$aFilters = array();
 
-		$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance()->SetLogger($this->oLogger);
+		$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance();
+		$oSieveClient->SetLogger($this->oLogger);
 		$oSieveClient->SetTimeOuts(10, (int) $this->oConfig->Get('labs', 'sieve_timeout', 10));
 
 		if ($oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig))
@@ -102,13 +99,10 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		);
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 */
-	public function Save($oAccount, array $aFilters, string $sRaw = '', bool $bRawIsActive = false) : bool
+	public function Save(\RainLoop\Model\Account $oAccount, array $aFilters, string $sRaw = '', bool $bRawIsActive = false) : bool
 	{
-		$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance()->SetLogger($this->oLogger);
+		$oSieveClient = \MailSo\Sieve\ManageSieveClient::NewInstance();
+		$oSieveClient->SetLogger($this->oLogger);
 		$oSieveClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'sieve_timeout', 10));
 
 		if ($oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig))
@@ -150,11 +144,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		return false;
 	}
 
-	/**
-	 * @param \RainLoop\Providers\Filters\Classes\FilterCondition $oCondition
-	 *
-	 */
-	private function conditionToSieveScript($oCondition, array &$aCapa) : string
+	private function conditionToSieveScript(\RainLoop\Providers\Filters\Classes\FilterCondition $oCondition, array &$aCapa) : string
 	{
 		$sResult = '';
 		$sTypeWord = '';
@@ -252,11 +242,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		return $sResult;
 	}
 
-	/**
-	 * @param \RainLoop\Providers\Filters\Classes\Filter $oFilter
-	 *
-	 */
-	private function filterToSieveScript($oFilter, array &$aCapa) : string
+	private function filterToSieveScript(\RainLoop\Providers\Filters\Classes\Filter $oFilter, array &$aCapa) : string
 	{
 		$sNL = \RainLoop\Providers\Filters\SieveStorage::NEW_LINE;
 		$sTab = '    ';
@@ -527,11 +513,8 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		return \str_replace(array('\\', '"'), array('\\\\', '\\"'), \trim($sValue));
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 */
-	public function SetLogger($oLogger)
+	public function SetLogger(?\MailSo\Log\Logger $oLogger)
 	{
-		$this->oLogger = $oLogger instanceof \MailSo\Log\Logger ? $oLogger : null;
+		$this->oLogger = $oLogger;
 	}
 }

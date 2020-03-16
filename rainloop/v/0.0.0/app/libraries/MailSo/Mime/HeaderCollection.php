@@ -25,10 +25,6 @@ class HeaderCollection extends \MailSo\Base\Collection
 	 */
 	protected $sParentCharset;
 
-	/**
-	 * @access protected
-	 *
-	 */
 	protected function __construct($sRawHeaders = '', $bStoreRawHeaders = true)
 	{
 		parent::__construct();
@@ -42,41 +38,28 @@ class HeaderCollection extends \MailSo\Base\Collection
 		}
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\HeaderCollection
-	 */
-	public static function NewInstance(string $sRawHeaders = '', bool $bStoreRawHeaders = true)
+	public static function NewInstance(string $sRawHeaders = '', bool $bStoreRawHeaders = true) : \MailSo\Mime\HeaderCollection
 	{
 		return new self($sRawHeaders, $bStoreRawHeaders);
 	}
 
 	/**
-	 *
-	 * @return \MailSo\Mime\HeaderCollection
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function AddByName(string $sName, string $sValue, bool $bToTop = false)
+	public function AddByName(string $sName, string $sValue, bool $bToTop = false) : \MailSo\Mime\HeaderCollection
 	{
 		return $this->Add(Header::NewInstance($sName, $sValue), $bToTop);
 	}
 
 	/**
-	 *
-	 * @return \MailSo\Mime\HeaderCollection
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function SetByName(string $sName, string $sValue, bool $bToTop = false)
+	public function SetByName(string $sName, string $sValue, bool $bToTop = false) : \MailSo\Mime\HeaderCollection
 	{
 		return $this->RemoveByName($sName)->Add(Header::NewInstance($sName, $sValue), $bToTop);
 	}
 
-	/**
-	 * @return \MailSo\Mime\Header | null
-	 */
-	public function &GetByIndex(int $iIndex)
+	public function &GetByIndex(int $iIndex) : ?\MailSo\Mime\Header
 	{
 		$mResult = null;
 		$mResult =& parent::GetByIndex($iIndex);
@@ -108,11 +91,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $aResult;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\HeaderCollection
-	 */
-	public function RemoveByName(string $sHeaderName)
+	public function RemoveByName(string $sHeaderName) : \MailSo\Mime\HeaderCollection
 	{
 		$aResult = $this->FilterList(function ($oHeader) use ($sHeaderName) {
 			return $oHeader && \strtolower($oHeader->Name()) !== \strtolower($sHeaderName);
@@ -121,11 +100,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $this->SetAsArray($aResult);
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\EmailCollection|null
-	 */
-	public function GetAsEmailCollection(string $sHeaderName, bool $bCharsetAutoDetect = false)
+	public function GetAsEmailCollection(string $sHeaderName, bool $bCharsetAutoDetect = false) : ?\MailSo\Mime\EmailCollection
 	{
 		$oResult = null;
 		$sValue = $this->ValueByName($sHeaderName, $bCharsetAutoDetect);
@@ -137,10 +112,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $oResult && 0 < $oResult->Count() ? $oResult : null;
 	}
 
-	/**
-	 * @return \MailSo\Mime\ParameterCollection|null
-	 */
-	public function ParametersByName(string $sHeaderName)
+	public function ParametersByName(string $sHeaderName) : ?\MailSo\Mime\ParameterCollection
 	{
 		$oParameters = $oHeader = null;
 		$oHeader =& $this->GetByName($sHeaderName);
@@ -158,10 +130,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return (null !== $oParameters) ? $oParameters->ParameterValueByName($sParamName) : '';
 	}
 
-	/**
-	 * @return \MailSo\Mime\Header | false
-	 */
-	public function &GetByName(string $sHeaderName)
+	public function &GetByName(string $sHeaderName) : \MailSo\Mime\Header
 	{
 		$oResult = $oHeader = null;
 
@@ -180,21 +149,17 @@ class HeaderCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 * @return \MailSo\Mime\HeaderCollection
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function SetAsArray(array $aList)
+	public function SetAsArray(array $aList) : \MailSo\Mime\HeaderCollection
 	{
 		parent::SetAsArray($aList);
 
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Mime\HeaderCollection
-	 */
-	public function SetParentCharset(string $sParentCharset)
+	public function SetParentCharset(string $sParentCharset) : \MailSo\Mime\HeaderCollection
 	{
 		if (0 < \strlen($sParentCharset))
 		{
@@ -222,11 +187,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		$this->sRawHeaders = '';
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\HeaderCollection
-	 */
-	public function Parse(string $sRawHeaders, bool $bStoreRawHeaders = false, string $sParentCharset = '')
+	public function Parse(string $sRawHeaders, bool $bStoreRawHeaders = false, string $sParentCharset = '') : \MailSo\Mime\HeaderCollection
 	{
 		$this->Clear();
 

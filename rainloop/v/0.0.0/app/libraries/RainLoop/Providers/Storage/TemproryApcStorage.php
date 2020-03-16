@@ -6,7 +6,6 @@ class TemproryApcStorage extends \RainLoop\Providers\Storage\FileStorage
 {
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 *
 	 */
 	public function Put($oAccount, int $iStorageType, string $sKey, string $sValue) : bool
 	{
@@ -33,7 +32,6 @@ class TemproryApcStorage extends \RainLoop\Providers\Storage\FileStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 *
 	 */
 	public function Clear($oAccount, int $iStorageType, string $sKey) : bool
 	{
@@ -44,7 +42,6 @@ class TemproryApcStorage extends \RainLoop\Providers\Storage\FileStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string $oAccount
-	 *
 	 */
 	public function DeleteStorage($oAccount) : bool
 	{
@@ -53,7 +50,6 @@ class TemproryApcStorage extends \RainLoop\Providers\Storage\FileStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $mAccount
-	 *
 	 */
 	public function generateFileName($mAccount, int $iStorageType, string $sKey, bool $bMkDir = false, bool $bForDeleteAction = false) : string
 	{

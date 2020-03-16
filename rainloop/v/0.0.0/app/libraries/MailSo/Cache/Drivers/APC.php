@@ -23,11 +23,7 @@ class APC implements \MailSo\Cache\DriverInterface
 	 */
 	private $sKeyPrefix;
 
-	/**
-	 * @access private
-	 *
-	 */
-	private function __construct($sKeyPrefix = '')
+	private function __construct(string $sKeyPrefix = '')
 	{
 		$this->sKeyPrefix = $sKeyPrefix;
 		if (!empty($this->sKeyPrefix))
@@ -37,11 +33,7 @@ class APC implements \MailSo\Cache\DriverInterface
 		}
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Cache\Drivers\APC
-	 */
-	public static function NewInstance(string $sKeyPrefix = '')
+	public static function NewInstance(string $sKeyPrefix = '') : self
 	{
 		return new self($sKeyPrefix);
 	}

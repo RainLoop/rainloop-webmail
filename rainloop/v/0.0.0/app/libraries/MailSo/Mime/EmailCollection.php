@@ -17,10 +17,6 @@ namespace MailSo\Mime;
  */
 class EmailCollection extends \MailSo\Base\Collection
 {
-	/**
-	 * @access protected
-	 *
-	 */
 	protected function __construct($sEmailAddresses = '')
 	{
 		parent::__construct();
@@ -32,20 +28,12 @@ class EmailCollection extends \MailSo\Base\Collection
 		}
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public static function NewInstance(string $sEmailAddresses = '')
+	public static function NewInstance(string $sEmailAddresses = '') : self
 	{
 		return new self($sEmailAddresses);
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public static function Parse(string $sEmailAddresses)
+	public static function Parse(string $sEmailAddresses) : self
 	{
 		return self::NewInstance($sEmailAddresses);
 	}
@@ -62,12 +50,7 @@ class EmailCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
-	/**
-	 * @param \MailSo\Mime\EmailCollection $oEmails
-	 *
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function MergeWithOtherCollection(\MailSo\Mime\EmailCollection $oEmails)
+	public function MergeWithOtherCollection(EmailCollection $oEmails) : self
 	{
 		$aEmails =& $oEmails->GetAsArray();
 		foreach ($aEmails as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
@@ -78,10 +61,7 @@ class EmailCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function Unique()
+	public function Unique() : self
 	{
 		$aCache = array();
 		$aReturn = array();
@@ -114,11 +94,7 @@ class EmailCollection extends \MailSo\Base\Collection
 		return \implode(', ', $aReturn);
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	private function parseEmailAddresses(string $sRawEmails)
+	private function parseEmailAddresses(string $sRawEmails) : self
 	{
 		$this->Clear();
 

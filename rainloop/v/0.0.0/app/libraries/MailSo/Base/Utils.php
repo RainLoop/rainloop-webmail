@@ -15,7 +15,7 @@ namespace MailSo\Base;
  * @category MailSo
  * @package Base
  */
-class Utils
+abstract class Utils
 {
 	/**
 	 * @var string
@@ -114,20 +114,13 @@ END;
 		'.949' => 'euc-kr',
 	);
 
-	/**
-	 * @access private
-	 */
-	private function __construct()
-	{
-	}
-
 	public static function DetectSystemCharset() : string
 	{
 		$sResult = '';
 		$sLocale = @\setlocale(LC_ALL, '');
 		$sLocaleLower = \strtolower(\trim($sLocale));
 
-		foreach (\MailSo\Base\Utils::$aLocaleMapping as $sKey => $sValue)
+		foreach (static::$aLocaleMapping as $sKey => $sValue)
 		{
 			if (false !== \strpos($sLocaleLower, $sKey) ||
 				false !== \strpos($sLocaleLower, '.'.$sValue))
@@ -143,12 +136,12 @@ END;
 	public static function ConvertSystemString(string $sSrt) : string
 	{
 		$sSrt = \trim($sSrt);
-		if (!empty($sSrt) && !\MailSo\Base\Utils::IsUtf8($sSrt))
+		if (!empty($sSrt) && !static::IsUtf8($sSrt))
 		{
-			$sCharset = \MailSo\Base\Utils::DetectSystemCharset();
+			$sCharset = static::DetectSystemCharset();
 			if (!empty($sCharset))
 			{
-				$sSrt = \MailSo\Base\Utils::ConvertEncoding(
+				$sSrt = static::ConvertEncoding(
 					$sSrt, $sCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
 			}
 			else
@@ -211,10 +204,10 @@ END;
 
 	public static function NormalizeCharsetByValue(string $sCharset, string $sValue) : string
 	{
-		$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset);
+		$sCharset = static::NormalizeCharset($sCharset);
 
 		if (\MailSo\Base\Enumerations\Charset::UTF_8 !== $sCharset &&
-			\MailSo\Base\Utils::IsUtf8($sValue) &&
+			static::IsUtf8($sValue) &&
 			false === \strpos($sCharset, \MailSo\Base\Enumerations\Charset::ISO_2022_JP)
 		)
 		{
@@ -226,7 +219,6 @@ END;
 
 	/**
 	 * @param function $fFileExistsCallback = null
-	 *
 	 */
 	public static function SmartFileExists(string $sFilePath, $fFileExistsCallback = null) : string
 	{
@@ -275,13 +267,13 @@ END;
 	public static function IsMbStringSupported() : bool
 	{
 		return \MailSo\Config::$MBSTRING &&
-			\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding');
+			static::FunctionExistsAndEnabled('mb_convert_encoding');
 	}
 
 	public static function IsIconvSupported() : bool
 	{
 		return \MailSo\Config::$ICONV &&
-			\MailSo\Base\Utils::FunctionExistsAndEnabled('iconv');
+			static::FunctionExistsAndEnabled('iconv');
 	}
 
 	public static function IsIconvIgnoreSupported() : bool
@@ -293,7 +285,7 @@ END;
 		}
 
 		$bCache = false;
-		if (\MailSo\Base\Utils::IsIconvSupported())
+		if (static::IsIconvSupported())
 		{
 			if (false !== @\iconv('', '//IGNORE', ''))
 			{
@@ -313,7 +305,7 @@ END;
 		}
 
 		$bCache = false;
-		if (\MailSo\Base\Utils::IsIconvSupported())
+		if (static::IsIconvSupported())
 		{
 			if (false !== @\iconv('', '//TRANSLIT', ''))
 			{
@@ -326,19 +318,19 @@ END;
 
 	public static function ValidateCharsetName(string $sCharset) : bool
 	{
-		$sCharset = \strtolower(\MailSo\Base\Utils::NormalizeCharset($sCharset));
+		$sCharset = \strtolower(static::NormalizeCharset($sCharset));
 		return 0 < \strlen($sCharset) && (\in_array($sCharset, array(\MailSo\Base\Enumerations\Charset::UTF_7_IMAP)) ||
-			\in_array($sCharset, \MailSo\Base\Utils::$SuppostedCharsets));
+			\in_array($sCharset, static::$SuppostedCharsets));
 	}
 
 	public static function IconvConvertEncoding(string $sInputString, string $sInputFromEncoding, string $sInputToEncoding) : string
 	{
 		$sIconvOptions = '';
-		if (\MailSo\Base\Utils::IsIconvIgnoreSupported())
+		if (static::IsIconvIgnoreSupported())
 		{
 			$sIconvOptions .= '//IGNORE';
 		}
-//		if (\MailSo\Base\Utils::IsIconvTranslitSupported())
+//		if (static::IsIconvTranslitSupported())
 //		{
 //			$sIconvOptions .= '//TRANSLIT';
 //		}
@@ -356,9 +348,9 @@ END;
 				), \MailSo\Log\Enumerations\Type::NOTICE);
 			}
 
-			if (\MailSo\Config::$FixIconvByMbstring && \MailSo\Base\Utils::IsMbStringSupported())
+			if (\MailSo\Config::$FixIconvByMbstring && static::IsMbStringSupported())
 			{
-				$mResult = \MailSo\Base\Utils::MbConvertEncoding($sInputString, $sInputFromEncoding, $sInputToEncoding);
+				$mResult = static::MbConvertEncoding($sInputString, $sInputFromEncoding, $sInputToEncoding);
 			}
 		}
 		return $mResult;
@@ -383,8 +375,8 @@ END;
 	{
 		$sResult = $sInputString;
 
-		$sFromEncoding = \MailSo\Base\Utils::NormalizeCharset($sInputFromEncoding);
-		$sToEncoding = \MailSo\Base\Utils::NormalizeCharset($sInputToEncoding);
+		$sFromEncoding = static::NormalizeCharset($sInputFromEncoding);
+		$sToEncoding = static::NormalizeCharset($sInputToEncoding);
 
 		if ('' === \trim($sResult) || ($sFromEncoding === $sToEncoding && \MailSo\Base\Enumerations\Charset::UTF_8 !== $sFromEncoding))
 		{
@@ -415,7 +407,7 @@ END;
 			case ($sFromEncoding === \MailSo\Base\Enumerations\Charset::UTF_7_IMAP &&
 					$sToEncoding === \MailSo\Base\Enumerations\Charset::UTF_8):
 
-				$sResult = \MailSo\Base\Utils::Utf7ModifiedToUtf8($sResult);
+				$sResult = static::Utf7ModifiedToUtf8($sResult);
 				if (false === $sResult)
 				{
 					$sResult = $sInputString;
@@ -425,7 +417,7 @@ END;
 			case ($sFromEncoding === \MailSo\Base\Enumerations\Charset::UTF_8 &&
 					$sToEncoding === \MailSo\Base\Enumerations\Charset::UTF_7_IMAP):
 
-				$sResult = \MailSo\Base\Utils::Utf8ToUtf7Modified($sResult);
+				$sResult = static::Utf8ToUtf7Modified($sResult);
 				if (false === $sResult)
 				{
 					$sResult = $sInputString;
@@ -434,29 +426,29 @@ END;
 
 			case ($sFromEncoding === \MailSo\Base\Enumerations\Charset::UTF_7_IMAP):
 
-				$sResult = \MailSo\Base\Utils::ConvertEncoding(
-					\MailSo\Base\Utils::ModifiedToPlainUtf7($sResult),
+				$sResult = static::ConvertEncoding(
+					static::ModifiedToPlainUtf7($sResult),
 					\MailSo\Base\Enumerations\Charset::UTF_7,
 					$sToEncoding
 				);
 				break;
 
-			case (\in_array(\strtolower($sFromEncoding), \MailSo\Base\Utils::$SuppostedCharsets)):
+			case (\in_array(\strtolower($sFromEncoding), static::$SuppostedCharsets)):
 
-				if (\MailSo\Base\Utils::IsIconvSupported())
+				if (static::IsIconvSupported())
 				{
-					$sResult = \MailSo\Base\Utils::IconvConvertEncoding($sResult, $sFromEncoding, $sToEncoding);
+					$sResult = static::IconvConvertEncoding($sResult, $sFromEncoding, $sToEncoding);
 				}
-				else if (\MailSo\Base\Utils::IsMbStringSupported())
+				else if (static::IsMbStringSupported())
 				{
-					$sResult = \MailSo\Base\Utils::MbConvertEncoding($sResult, $sFromEncoding, $sToEncoding);
+					$sResult = static::MbConvertEncoding($sResult, $sFromEncoding, $sToEncoding);
 				}
 
 				$sResult = (false !== $sResult) ? $sResult : $sInputString;
 				break;
 		}
 
-		if ($bUnknown && \MailSo\Base\Utils::IsMbStringSupported())
+		if ($bUnknown && static::IsMbStringSupported())
 		{
 			$sResult = @\mb_convert_encoding($sResult, $sToEncoding);
 		}
@@ -476,12 +468,12 @@ END;
 
 	public static function StrToLowerIfAscii(string $sValue) : string
 	{
-		return \MailSo\Base\Utils::IsAscii($sValue) ? \strtolower($sValue) : $sValue;
+		return static::IsAscii($sValue) ? \strtolower($sValue) : $sValue;
 	}
 
 	public static function StrToUpperIfAscii(string $sValue) : string
 	{
-		return \MailSo\Base\Utils::IsAscii($sValue) ? \strtoupper($sValue) : $sValue;
+		return static::IsAscii($sValue) ? \strtoupper($sValue) : $sValue;
 	}
 
 	public static function StrMailDomainToLowerIfAscii(string $sValue) : string
@@ -489,7 +481,7 @@ END;
 		$aParts = \explode('@', $sValue, 2);
 		if (!empty($aParts[1]))
 		{
-			$aParts[1] = \MailSo\Base\Utils::IsAscii($aParts[1]) ? \strtolower($aParts[1]) : $aParts[1];
+			$aParts[1] = static::IsAscii($aParts[1]) ? \strtolower($aParts[1]) : $aParts[1];
 		}
 
 		return \implode('@', $aParts);
@@ -497,7 +489,7 @@ END;
 
 	public static function StripSpaces(string $sValue) : string
 	{
-		return \MailSo\Base\Utils::Trim(
+		return static::Trim(
 			\preg_replace('/[\s]+/u', ' ', $sValue));
 	}
 
@@ -529,7 +521,7 @@ END;
 				break;
 			case 'b':
 			case 'base64':
-				$sResult = \MailSo\Base\Utils::Base64Decode($sResult);
+				$sResult = static::Base64Decode($sResult);
 				break;
 		}
 		return $sResult;
@@ -545,9 +537,9 @@ END;
 		$sValue = $sEncodedValue;
 		if (0 < \strlen($sIncomingCharset))
 		{
-			$sIncomingCharset = \MailSo\Base\Utils::NormalizeCharsetByValue($sIncomingCharset, $sValue);
+			$sIncomingCharset = static::NormalizeCharsetByValue($sIncomingCharset, $sValue);
 
-			$sValue = \MailSo\Base\Utils::ConvertEncoding($sValue, $sIncomingCharset,
+			$sValue = static::ConvertEncoding($sValue, $sIncomingCharset,
 				\MailSo\Base\Enumerations\Charset::UTF_8);
 		}
 
@@ -598,7 +590,7 @@ END;
 						break;
 					case 'B':
 						$sHeaderValuePart = $aTempArr[1];
-						$aTempArr[1] = \MailSo\Base\Utils::Base64Decode(\substr(
+						$aTempArr[1] = static::Base64Decode(\substr(
 							$sHeaderValuePart, $iPos + 3, \strlen($sHeaderValuePart) - $iPos - 5));
 						break;
 				}
@@ -607,7 +599,7 @@ END;
 			if (0 < \strlen($aTempArr[0]))
 			{
 				$sCharset = 0 === \strlen($sForcedIncomingCharset) ? $aTempArr[0] : $sForcedIncomingCharset;
-				$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset, true);
+				$sCharset = static::NormalizeCharset($sCharset, true);
 
 				if ('' === $sMainCharset)
 				{
@@ -636,18 +628,18 @@ END;
 			}
 			else
 			{
-				$aParts[$iIndex][2] = \MailSo\Base\Utils::NormalizeCharsetByValue($aParts[$iIndex][2], $aParts[$iIndex][1]);
+				$aParts[$iIndex][2] = static::NormalizeCharsetByValue($aParts[$iIndex][2], $aParts[$iIndex][1]);
 
 				$sValue = \str_replace($aParts[$iIndex][0],
-					\MailSo\Base\Utils::ConvertEncoding($aParts[$iIndex][1], $aParts[$iIndex][2], \MailSo\Base\Enumerations\Charset::UTF_8),
+					static::ConvertEncoding($aParts[$iIndex][1], $aParts[$iIndex][2], \MailSo\Base\Enumerations\Charset::UTF_8),
 					$sValue);
 			}
 		}
 
 		if ($bOneCharset && 0 < \strlen($sMainCharset))
 		{
-			$sMainCharset = \MailSo\Base\Utils::NormalizeCharsetByValue($sMainCharset, $sValue);
-			$sValue = \MailSo\Base\Utils::ConvertEncoding($sValue, $sMainCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
+			$sMainCharset = static::NormalizeCharsetByValue($sMainCharset, $sValue);
+			$sValue = static::ConvertEncoding($sValue, $sMainCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
 		}
 
 		return $sValue;
@@ -708,7 +700,7 @@ END;
 	public static function EncodeUnencodedValue(string $sEncodeType, string $sValue) : string
 	{
 		$sValue = \trim($sValue);
-		if (0 < \strlen($sValue) && !\MailSo\Base\Utils::IsAscii($sValue))
+		if (0 < \strlen($sValue) && !static::IsAscii($sValue))
 		{
 			switch (\strtoupper($sEncodeType))
 			{
@@ -736,7 +728,7 @@ END;
 	public static function EncodeHeaderValue(string $sEncodeType, string $sEncodeCharset, string $sValue) : string
 	{
 		$sValue = \trim($sValue);
-		if (0 < \strlen($sValue) && !\MailSo\Base\Utils::IsAscii($sValue))
+		if (0 < \strlen($sValue) && !static::IsAscii($sValue))
 		{
 			switch (\strtoupper($sEncodeType))
 			{
@@ -794,7 +786,7 @@ END;
 		$sAttrName = \trim($sAttrName);
 		$sValue = \trim($sValue);
 
-		if (0 < \strlen($sValue) && !\MailSo\Base\Utils::IsAscii($sValue))
+		if (0 < \strlen($sValue) && !static::IsAscii($sValue))
 		{
 			if (!empty($_SERVER['HTTP_USER_AGENT']) && 0 < \strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE'))
 			{
@@ -802,7 +794,7 @@ END;
 			}
 			else
 			{
-				$sValue = \MailSo\Base\Utils::AttributeRfc2231Encode($sAttrName, $sValue);
+				$sValue = static::AttributeRfc2231Encode($sAttrName, $sValue);
 			}
 		}
 		else
@@ -1028,7 +1020,7 @@ END;
 
 		);
 
-		$sExt = \MailSo\Base\Utils::GetFileExtension($sFileName);
+		$sExt = static::GetFileExtension($sFileName);
 		if (0 < \strlen($sExt) && isset($aMimeTypes[$sExt]))
 		{
 			$sResult = $aMimeTypes[$sExt];
@@ -1080,7 +1072,7 @@ END;
 
 			if ('' === $sResult)
 			{
-				switch (\strtolower(\MailSo\Base\Utils::GetFileExtension($sFileName)))
+				switch (\strtolower(static::GetFileExtension($sFileName)))
 				{
 					case 'zip':
 					case '7z':
@@ -1118,7 +1110,7 @@ END;
 			$sSafeMode = \strtolower(\trim(@\ini_get('safe_mode')));
 			$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode || 'true' === $sSafeMode;
 
-			$bValidateAction = !$bSafeMode && \MailSo\Base\Utils::FunctionExistsAndEnabled('set_time_limit');
+			$bValidateAction = !$bSafeMode && static::FunctionExistsAndEnabled('set_time_limit');
 		}
 
 		if ($bValidateAction && $iTimeToReset < $iTime - $iResetTimer)
@@ -1155,11 +1147,11 @@ END;
 			{
 				if (\is_string($mItem))
 				{
-					$aInput[$mKey] = \MailSo\Base\Utils::Utf8Clear($mItem);
+					$aInput[$mKey] = static::Utf8Clear($mItem);
 				}
 				else if (\is_array($mItem))
 				{
-					\MailSo\Base\Utils::ClearArrayUtf8Values($mItem);
+					static::ClearArrayUtf8Values($mItem);
 					$aInput[$mKey] = $mItem;
 				}
 			}
@@ -1168,10 +1160,8 @@ END;
 
 	/**
 	 * @param mixed $mInput
-	 * @param \MailSo\Log\Logger|null $oLogger = null
-	 *
 	 */
-	public static function Php2js($mInput, $oLogger = null) : string
+	public static function Php2js($mInput, ?\MailSo\Log\Logger $oLogger = null) : string
 	{
 		static $iOpt = null;
 		if (null === $iOpt)
@@ -1195,8 +1185,8 @@ END;
 			if ($oLogger)
 			{
 				$oLogger->Write('json_encode: '.\trim(
-						(\MailSo\Base\Utils::FunctionExistsAndEnabled('json_last_error') ? ' [Error Code: '.\json_last_error().']' : '').
-						(\MailSo\Base\Utils::FunctionExistsAndEnabled('json_last_error_msg') ? ' [Error Message: '.\json_last_error_msg().']' : '')
+						(static::FunctionExistsAndEnabled('json_last_error') ? ' [Error Code: '.\json_last_error().']' : '').
+						(static::FunctionExistsAndEnabled('json_last_error_msg') ? ' [Error Message: '.\json_last_error_msg().']' : '')
 					), \MailSo\Log\Enumerations\Type::WARNING, 'JSON'
 				);
 			}
@@ -1209,7 +1199,7 @@ END;
 					$oLogger->Write('Trying to clear Utf8 before json_encode', \MailSo\Log\Enumerations\Type::INFO, 'JSON');
 				}
 
-				\MailSo\Base\Utils::ClearArrayUtf8Values($mInput);
+				static::ClearArrayUtf8Values($mInput);
 				$sResult = @\json_encode($mInput, $iOpt);
 			}
 		}
@@ -1219,14 +1209,14 @@ END;
 
 	public static function ClearFileName(string $sFileName) : string
 	{
-		return \MailSo\Base\Utils::Trim(\MailSo\Base\Utils::ClearNullBite(
-			\MailSo\Base\Utils::StripSpaces(
+		return static::Trim(static::ClearNullBite(
+			static::StripSpaces(
 				\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sFileName))));
 	}
 
 	public static function ClearXss(string $sValue) : string
 	{
-		return \MailSo\Base\Utils::Trim(\MailSo\Base\Utils::ClearNullBite(
+		return static::Trim(static::ClearNullBite(
 			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sValue)));
 	}
 
@@ -1285,7 +1275,7 @@ END;
 					$sPathDir = $sSource.'/'.$sRead;
 					if (\is_dir($sPathDir))
 					{
-						\MailSo\Base\Utils::CopyDir($sPathDir, $sDestination.'/'.$sRead);
+						static::CopyDir($sPathDir, $sDestination.'/'.$sRead);
 						continue;
 					}
 
@@ -1314,7 +1304,7 @@ END;
 					{
 						if (@\is_dir($sTempPath.'/'.$sFile))
 						{
-							if (!\MailSo\Base\Utils::RecTimeDirRemove($sTempPath.'/'.$sFile, $iTime2Kill, $iNow))
+							if (!static::RecTimeDirRemove($sTempPath.'/'.$sFile, $iTime2Kill, $iNow))
 							{
 								$bRemoveAllDirs = false;
 							}
@@ -1331,7 +1321,7 @@ END;
 
 			if ($iFileCount > 0)
 			{
-				if (\MailSo\Base\Utils::TimeFilesRemove($sTempPath, $iTime2Kill, $iNow))
+				if (static::TimeFilesRemove($sTempPath, $iTime2Kill, $iNow))
 				{
 					return @\rmdir($sTempPath);
 				}
@@ -1406,7 +1396,7 @@ END;
 			return $sUtfString;
 		}
 
-		$sUtfString = \preg_replace(\MailSo\Base\Utils::$sValidUtf8Regexp, '$1', $sUtfString);
+		$sUtfString = \preg_replace(static::$sValidUtf8Regexp, '$1', $sUtfString);
 
 		$sUtfString = \preg_replace(
 			'/\xE0[\x80-\x9F][\x80-\xBF]'.
@@ -1416,14 +1406,14 @@ END;
 		$sUtfString = \preg_replace('/\xEF\xBF\xBD/', '?', $sUtfString);
 
 		$sNewUtfString = false;
-		if (false === $sNewUtfString && \MailSo\Base\Utils::IsMbStringSupported())
+		if (false === $sNewUtfString && static::IsMbStringSupported())
 		{
-			$sNewUtfString = \MailSo\Base\Utils::MbConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
+			$sNewUtfString = static::MbConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
 		}
 
-		if (false === $sNewUtfString && \MailSo\Base\Utils::IsIconvSupported())
+		if (false === $sNewUtfString && static::IsIconvSupported())
 		{
-			$sNewUtfString = \MailSo\Base\Utils::IconvConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
+			$sNewUtfString = static::IconvConvertEncoding($sUtfString, 'UTF-8', 'UTF-8');
 		}
 
 		if (false !== $sNewUtfString)
@@ -1480,7 +1470,7 @@ END;
 	public static function UrlSafeBase64Decode(string $sValue) : string
 	{
 		$sValue = \rtrim(\strtr($sValue, '-_.', '+/='), '=');
-		return \MailSo\Base\Utils::Base64Decode(\str_pad($sValue, \strlen($sValue) + (\strlen($sValue) % 4), '=', STR_PAD_RIGHT));
+		return static::Base64Decode(\str_pad($sValue, \strlen($sValue) + (\strlen($sValue) % 4), '=', STR_PAD_RIGHT));
 	}
 
 	public static function ParseFetchSequence(string $sSequence) : array
@@ -1559,9 +1549,7 @@ END;
 	}
 
 	/**
-	 *
 	 * @param resource $fResource
-	 *
 	 */
 	public static function FpassthruWithTimeLimitReset($fResource, int $iBufferLen = 8192) : bool
 	{
@@ -1574,7 +1562,7 @@ END;
 				if (false !== $sBuffer)
 				{
 					echo $sBuffer;
-					\MailSo\Base\Utils::ResetTimeLimit();
+					static::ResetTimeLimit();
 					continue;
 				}
 
@@ -1589,7 +1577,6 @@ END;
 
 	/**
 	 * @param resource $rRead
-	 *
 	 */
 	public static function MultipleStreamWriter($rRead, array $aWrite, int $iBufferLen = 8192, bool $bResetTimeLimit = true, bool $bFixCrLf = false, bool $bRewindOnComplete = false) : int
 	{
@@ -1630,7 +1617,7 @@ END;
 
 				if ($bResetTimeLimit)
 				{
-					\MailSo\Base\Utils::ResetTimeLimit();
+					static::ResetTimeLimit();
 				}
 			}
 		}
@@ -1938,7 +1925,7 @@ END;
 		{
 			foreach ($mFunctionNameOrNames as $sFunctionName)
 			{
-				if (!\MailSo\Base\Utils::FunctionExistsAndEnabled($sFunctionName))
+				if (!static::FunctionExistsAndEnabled($sFunctionName))
 				{
 					return false;
 				}
@@ -1999,13 +1986,13 @@ END;
 
 		if (!$bIsMagicQuotesOn)
 		{
-			return $bClearNullBite && \is_string($mValue) ? \MailSo\Base\Utils::ClearNullBite($mValue) : $mValue;
+			return $bClearNullBite && \is_string($mValue) ? static::ClearNullBite($mValue) : $mValue;
 		}
 
 		$sType = \gettype($mValue);
 		if ('string' === $sType)
 		{
-			return \stripslashes($bClearNullBite ? \MailSo\Base\Utils::ClearNullBite($mValue) : $mValue);
+			return \stripslashes($bClearNullBite ? static::ClearNullBite($mValue) : $mValue);
 		}
 		else if ('array' === $sType)
 		{
@@ -2013,7 +2000,7 @@ END;
 			$mValueKeys = \array_keys($mValue);
 			foreach ($mValueKeys as $sKey)
 			{
-				$aReturnValue[$sKey] = \MailSo\Base\Utils::StripSlashesValue($mValue[$sKey], $bClearNullBite);
+				$aReturnValue[$sKey] = static::StripSlashesValue($mValue[$sKey], $bClearNullBite);
 			}
 
 			return $aReturnValue;
@@ -2025,13 +2012,13 @@ END;
 	public static function CharsetDetect(string $sStr) : string
 	{
 		$mResult = '';
-		if (!\MailSo\Base\Utils::IsAscii($sStr))
+		if (!static::IsAscii($sStr))
 		{
-			$mResult = \MailSo\Base\Utils::IsMbStringSupported() &&
-				\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_detect_encoding') ?
+			$mResult = static::IsMbStringSupported() &&
+				static::FunctionExistsAndEnabled('mb_detect_encoding') ?
 				@\mb_detect_encoding($sStr, 'auto', true) : false;
 
-			if (false === $mResult && \MailSo\Base\Utils::IsIconvSupported())
+			if (false === $mResult && static::IsIconvSupported())
 			{
 				$mResult = \md5(@\iconv('utf-8', 'utf-8//IGNORE', $sStr)) === \md5($sStr) ? 'utf-8' : '';
 			}
@@ -2091,10 +2078,7 @@ END;
 		return !empty($sIp) && $sIp === @\filter_var($sIp, FILTER_VALIDATE_IP);
 	}
 
-	/**
-	 * @return \Net_IDNA2
-	 */
-	private static function idn()
+	private static function idn() : \Net
 	{
 		static $oIdn = null;
 		if (null === $oIdn)
@@ -2115,22 +2099,22 @@ END;
 			{
 				$sStr = self::idn()->decode($sStr);
 			}
-			catch (\Exception $oException) {}
+			catch (\Throwable $oException) {}
 		}
 
-		return $bLowerIfAscii ? \MailSo\Base\Utils::StrMailDomainToLowerIfAscii($sStr) : $sStr;
+		return $bLowerIfAscii ? static::StrMailDomainToLowerIfAscii($sStr) : $sStr;
 	}
 
 	public static function IdnToAscii(string $sStr, bool $bLowerIfAscii = false) : string
 	{
-		$sStr = $bLowerIfAscii ? \MailSo\Base\Utils::StrMailDomainToLowerIfAscii($sStr) : $sStr;
+		$sStr = $bLowerIfAscii ? static::StrMailDomainToLowerIfAscii($sStr) : $sStr;
 
 		$sUser = '';
 		$sDomain = $sStr;
 		if (false !== \strpos($sStr, '@'))
 		{
-			$sUser = \MailSo\Base\Utils::GetAccountNameFromEmail($sStr);
-			$sDomain = \MailSo\Base\Utils::GetDomainFromEmail($sStr);
+			$sUser = static::GetAccountNameFromEmail($sStr);
+			$sDomain = static::GetDomainFromEmail($sStr);
 		}
 
 		if (0 < \strlen($sDomain) && \preg_match('/[^\x20-\x7E]/', $sDomain))
@@ -2139,7 +2123,7 @@ END;
 			{
 				$sDomain = self::idn()->encode($sDomain);
 			}
-			catch (\Exception $oException) {}
+			catch (\Throwable $oException) {}
 		}
 
 		return ('' === $sUser ? '' : $sUser.'@').$sDomain;

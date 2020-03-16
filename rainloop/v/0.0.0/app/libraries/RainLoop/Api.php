@@ -45,18 +45,12 @@ class Api
 		return $oActions;
 	}
 
-	/**
-	 * @return \RainLoop\Config\Application
-	 */
-	public static function Config()
+	public static function Config() : \RainLoop\Config\Application
 	{
 		return static::Actions()->Config();
 	}
 
-	/**
-	 * @return \MailSo\Log\Logger
-	 */
-	public static function Logger()
+	public static function Logger() : \MailSo\Log\Logger
 	{
 		return static::Actions()->Logger();
 	}

@@ -27,19 +27,13 @@ class CacheClient
 	 */
 	private $sCacheIndex;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->oDriver = null;
 		$this->sCacheIndex = '';
 	}
 
-	/**
-	 * @return \MailSo\Cache\CacheClient
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
@@ -98,11 +92,7 @@ class CacheClient
 		return $iTimer;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Cache\CacheClient
-	 */
-	public function Delete(string $sKey)
+	public function Delete(string $sKey) : self
 	{
 		if ($this->oDriver)
 		{
@@ -112,12 +102,7 @@ class CacheClient
 		return $this;
 	}
 
-	/**
-	 * @param \MailSo\Cache\DriverInterface $oDriver
-	 *
-	 * @return \MailSo\Cache\CacheClient
-	 */
-	public function SetDriver(\MailSo\Cache\DriverInterface $oDriver)
+	public function SetDriver(DriverInterface $oDriver) : self
 	{
 		$this->oDriver = $oDriver;
 
@@ -131,14 +116,10 @@ class CacheClient
 
 	public function IsInited() : bool
 	{
-		return $this->oDriver instanceof \MailSo\Cache\DriverInterface;
+		return $this->oDriver instanceof DriverInterface;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Cache\CacheClient
-	 */
-	public function SetCacheIndex(string $sCacheIndex)
+	public function SetCacheIndex(string $sCacheIndex) : self
 	{
 		$this->sCacheIndex = 0 < \strlen($sCacheIndex) ? "\x0".$sCacheIndex : '';
 

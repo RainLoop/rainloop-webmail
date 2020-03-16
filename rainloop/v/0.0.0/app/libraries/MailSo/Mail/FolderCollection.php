@@ -42,9 +42,6 @@ class FolderCollection extends \MailSo\Base\Collection
 	 */
 	public $SystemFolders;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
@@ -56,19 +53,12 @@ class FolderCollection extends \MailSo\Base\Collection
 		$this->Optimized = false;
 	}
 
-	/**
-	 * @return \MailSo\Mail\FolderCollection
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mail\Folder|null
-	 */
-	public function GetByFullNameRaw(string $sFullNameRaw)
+	public function GetByFullNameRaw(string $sFullNameRaw) : ?\MailSo\Mail\Folder
 	{
 		$mResult = null;
 		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
@@ -133,11 +123,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		return $sDelimiter;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Mail\FolderCollection
-	 */
-	public function SetNamespace(string $sNamespace)
+	public function SetNamespace(string $sNamespace) : \MailSo\Mail\FolderCollection
 	{
 		$this->Namespace = $sNamespace;
 
@@ -179,7 +165,7 @@ class FolderCollection extends \MailSo\Base\Collection
 							$aAddedFolders[$sNonExistenFolderFullNameRaw] =
 								Folder::NewNonExistenInstance($sNonExistenFolderFullNameRaw, $sDelimiter);
 						}
-						catch (\Exception $oExc)
+						catch (\Throwable $oExc)
 						{
 							unset($oExc);
 						}
@@ -204,11 +190,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		unset($aSortedByLenImapFolders);
 	}
 
-	/**
-	 * @param \MailSo\Mail\Folder $oMailFolder
-	 *
-	 */
-	public function AddWithPositionSearch($oMailFolder) : bool
+	public function AddWithPositionSearch(\MailSo\Mail\Folder $oMailFolder) : bool
 	{
 		$oItemFolder = null;
 		$bIsAdded = false;
@@ -239,7 +221,6 @@ class FolderCollection extends \MailSo\Base\Collection
 
 	/**
 	 * @param callable $fCallback
-	 *
 	 */
 	public function SortByCallback($fCallback) : void
 	{

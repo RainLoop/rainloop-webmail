@@ -18,25 +18,13 @@ class ChangePasswordExampleDriver implements \RainLoop\Providers\ChangePassword\
 		return $this;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 *
-	 * @return bool
-	 */
-	public function PasswordChangePossibility($oAccount)
+	public function PasswordChangePossibility(\RainLoop\Model\Account $oAccount) : bool
 	{
 		return $oAccount && $oAccount->Email() &&
 			\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->sAllowedEmails);
 	}
 
-	/**
-	 * @param \RainLoop\Model\Account $oAccount
-	 * @param string $sPrevPassword
-	 * @param string $sNewPassword
-	 *
-	 * @return bool
-	 */
-	public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword)
+	public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
 	{
 		$bResult = false;
 

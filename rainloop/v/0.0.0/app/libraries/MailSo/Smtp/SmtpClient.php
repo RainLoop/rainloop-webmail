@@ -67,9 +67,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public $__USE_SINGLE_LINE_AUTH_PLAIN_COMMAND = false;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
@@ -135,9 +132,10 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\ResponseException
 	 */
-	public function Connect(string $sServerName, int $iPort = 25, string $sEhloHost = '[127.0.0.1]',
+	public function Connect(string $sServerName, int $iPort = 25,
 		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		bool $bVerifySsl = false, bool $bAllowSelfSigned = true) : object
+		bool $bVerifySsl = false, bool $bAllowSelfSigned = true,
+		string $sClientCert = '', string $sEhloHost = '[127.0.0.1]') : object
 	{
 		$this->iRequestTime = microtime(true);
 
@@ -595,13 +593,13 @@ class SmtpClient extends \MailSo\Net\NetClient
 		{
 			$this->ehlo($sHost);
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			try
 			{
 				$this->helo($sHost);
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				throw $oException;
 			}
@@ -612,7 +610,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	private function ehlo($sHost)
+	private function ehlo($sHost) : void
 	{
 		$this->sendRequestWithCheck('EHLO', 250, $sHost);
 

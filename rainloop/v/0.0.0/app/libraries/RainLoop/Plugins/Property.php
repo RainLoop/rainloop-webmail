@@ -8,7 +8,7 @@ class Property
 	 * @var string
 	 */
 	private $sName;
-	
+
 	/**
 	 * @var string
 	 */
@@ -18,7 +18,7 @@ class Property
 	 * @var string
 	 */
 	private $sDesc;
-	
+
 	/**
 	 * @var int
 	 */
@@ -28,7 +28,7 @@ class Property
 	 * @var bool
 	 */
 	private $bAllowedInJs;
-	
+
 	/**
 	 * @var mixed
 	 */
@@ -38,8 +38,8 @@ class Property
 	 * @var string
 	 */
 	private $sPlaceholder;
-	
-	private function __construct($sName)
+
+	private function __construct(string $sName)
 	{
 		$this->sName = $sName;
 		$this->iType = \RainLoop\Enumerations\PluginPropertyType::STRING;
@@ -49,76 +49,51 @@ class Property
 		$this->bAllowedInJs = false;
 		$this->sPlaceholder = '';
 	}
-	
-	/**
-	 * 
-	 * @return \RainLoop\Plugins\Property
-	 */
-	public static function NewInstance(string $sName)
+
+	public static function NewInstance(string $sName) : self
 	{
 		return new self($sName);
 	}
-	
-	/**
-	 * 
-	 * @return \RainLoop\Plugins\Property
-	 */
-	public function SetType(int $iType)
+
+	public function SetType(int $iType) : self
 	{
 		$this->iType = (int) $iType;
-		
-		return $this;
-	}
-	
-	/**
-	 * @param mixed $mDefaultValue
-	 * 
-	 * @return \RainLoop\Plugins\Property
-	 */
-	public function SetDefaultValue($mDefaultValue)
-	{
-		$this->mDefaultValue = $mDefaultValue;
-		
+
 		return $this;
 	}
 
 	/**
-	 *
-	 * @return \RainLoop\Plugins\Property
+	 * @param mixed $mDefaultValue
 	 */
-	public function SetPlaceholder(string $sPlaceholder)
+	public function SetDefaultValue($mDefaultValue) : self
+	{
+		$this->mDefaultValue = $mDefaultValue;
+
+		return $this;
+	}
+
+	public function SetPlaceholder(string $sPlaceholder) : self
 	{
 		$this->sPlaceholder = $sPlaceholder;
 
 		return $this;
 	}
-	
-	/**
-	 * 
-	 * @return \RainLoop\Plugins\Property
-	 */
-	public function SetLabel(string $sLabel)
+
+	public function SetLabel(string $sLabel) : self
 	{
 		$this->sLabel = $sLabel;
-		
+
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return \RainLoop\Plugins\Property
-	 */
-	public function SetDescription(string $sDesc)
+	public function SetDescription(string $sDesc) : self
 	{
 		$this->sDesc = $sDesc;
 
 		return $this;
 	}
 
-	/**
-	 * @return \RainLoop\Plugins\Property
-	 */
-	public function SetAllowedInJs(bool $bValue = true)
+	public function SetAllowedInJs(bool $bValue = true) : self
 	{
 		$this->bAllowedInJs = !!$bValue;
 
@@ -149,7 +124,7 @@ class Property
 	{
 		return $this->iType;
 	}
-	
+
 	/**
 	 * @return mixed
 	 */

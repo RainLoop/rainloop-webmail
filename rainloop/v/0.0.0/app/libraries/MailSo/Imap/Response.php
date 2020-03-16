@@ -52,9 +52,6 @@ class Response
 	 */
 	public $Tag;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->ResponseList = array();
@@ -66,10 +63,7 @@ class Response
 		$this->Tag = '';
 	}
 
-	/**
-	 * @return \MailSo\Imap\Response
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}

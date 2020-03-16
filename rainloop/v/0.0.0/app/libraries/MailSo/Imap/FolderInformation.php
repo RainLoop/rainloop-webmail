@@ -67,11 +67,7 @@ class FolderInformation
 	 */
 	public $HighestModSeq;
 
-	/**
-	 * @access private
-	 *
-	 */
-	private function __construct($sFolderName, $bIsWritable)
+	private function __construct(string $sFolderName, bool $bIsWritable)
 	{
 		$this->FolderName = $sFolderName;
 		$this->IsWritable = $bIsWritable;
@@ -85,11 +81,7 @@ class FolderInformation
 		$this->HighestModSeq = null;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Imap\FolderInformation
-	 */
-	public static function NewInstance(string $sFolderName, bool $bIsWritable)
+	public static function NewInstance(string $sFolderName, bool $bIsWritable) : self
 	{
 		return new self($sFolderName, $bIsWritable);
 	}

@@ -15,16 +15,9 @@ namespace MailSo\Base;
  * @category MailSo
  * @package Base
  */
-class HtmlUtils
+abstract class HtmlUtils
 {
 	static $KOS = '@@_KOS_@@';
-
-	/**
-	 * @access private
-	 */
-	private function __construct()
-	{
-	}
 
 	public static function GetElementAttributesAsArray(?\DOMElement $oElement) : array
 	{
@@ -93,17 +86,12 @@ class HtmlUtils
 		return $oDoc;
 	}
 
-	private static function comparedVersion() : bool
-	{
-		return \version_compare(PHP_VERSION, '5.3.6') >= 0;
-	}
-
 	private static function domToString(\DOMNode $oElem, ?\DOMDocument $oDom = null) : string
 	{
 		$sResult = '';
 		if ($oElem instanceof \DOMDocument)
 		{
-			if (isset($oElem->documentElement) && self::comparedVersion())
+			if (isset($oElem->documentElement))
 			{
 				$sResult = $oElem->saveHTML($oElem->documentElement);
 			}
@@ -114,7 +102,7 @@ class HtmlUtils
 		}
 		else if ($oElem)
 		{
-			if ($oDom && self::comparedVersion())
+			if ($oDom)
 			{
 				$sResult = $oDom->saveHTML($oElem);
 			}
@@ -483,7 +471,7 @@ class HtmlUtils
 //			$oCssParser = new \Sabberworm\CSS\Parser($sStyle, $oSettings);
 //			$oCss = $oCssParser->parse();
 //		}
-//		catch (\Exception $oEception)
+//		catch (\Throwable $oEception)
 //		{
 //			unset($oEception);
 //			$mResult = false;
@@ -567,7 +555,7 @@ class HtmlUtils
 //			{
 //				$mResult = $oCss->render(\Sabberworm\CSS\OutputFormat::createCompact());
 //			}
-//			catch (\Exception $oEception)
+//			catch (\Throwable $oEception)
 //			{
 //				unset($oEception);
 //				$mResult = false;
@@ -581,8 +569,8 @@ class HtmlUtils
 	/**
 	 * @param callback|null $fAdditionalExternalFilter = null
 	 */
-	public static function ClearStyle(string $sStyle, \DOMElement $oElement, &$bHasExternals, &$aFoundCIDs,
-		$aContentLocationUrls, &$aFoundedContentLocationUrls, bool $bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null)
+	public static function ClearStyle(string $sStyle, \DOMElement $oElement, bool &$bHasExternals, array &$aFoundCIDs,
+		array $aContentLocationUrls, array &$aFoundedContentLocationUrls, bool $bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null)
 	{
 		$sStyle = \trim($sStyle);
 		$aOutStyles = array();
@@ -708,10 +696,7 @@ class HtmlUtils
 		return \implode(';', $aOutStyles);
 	}
 
-	/**
-	 * @param \DOMDocument $oDom
-	 */
-	public static function FindLinksInDOM(&$oDom)
+	public static function FindLinksInDOM(\DOMDocument $oDom)
 	{
 		$aNodes = $oDom->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
@@ -820,11 +805,11 @@ class HtmlUtils
 	 * @param callback|null $fAdditionalExternalFilter = null
 	 * @param callback|null $fAdditionalDomReader = null
 	 */
-	public static function ClearHtml($sHtml, &$bHasExternals = false, &$aFoundCIDs = array(),
-		$aContentLocationUrls = array(), &$aFoundedContentLocationUrls = array(),
-		$bDoNotReplaceExternalUrl = false, $bFindLinksInHtml = false,
+	public static function ClearHtml(string $sHtml, bool &$bHasExternals = false, array &$aFoundCIDs = array(),
+		array $aContentLocationUrls = array(), array &$aFoundedContentLocationUrls = array(),
+		bool $bDoNotReplaceExternalUrl = false, bool $bFindLinksInHtml = false,
 		$fAdditionalExternalFilter = null, $fAdditionalDomReader = false,
-		$bTryToDetectHiddenImages = false, $bWrapByFakeHtmlAndBodyDiv = true)
+		bool $bTryToDetectHiddenImages = false, bool $bWrapByFakeHtmlAndBodyDiv = true)
 	{
 		$sResult = '';
 

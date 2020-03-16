@@ -23,11 +23,7 @@ class ParserMemory extends ParserEmpty implements ParserInterface
 	 */
 	protected $oCurrentMime = null;
 
-	/**
-	 * @param \MailSo\Mime\Part $oMimePart
-	 *
-	 */
-	public function StartParseMimePart(\MailSo\Mime\Part &$oPart) : void
+	public function StartParseMimePart(\MailSo\Mime\Part $oPart) : void
 	{
 		$this->oCurrentMime = $oPart;
 	}

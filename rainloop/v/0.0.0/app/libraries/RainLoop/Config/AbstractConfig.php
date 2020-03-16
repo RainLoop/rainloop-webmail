@@ -29,7 +29,7 @@ abstract class AbstractConfig
 	 */
 	private $sFileHeader;
 
-	public function __construct($sFileName, $sFileHeader = '', $sAdditionalFileName = '')
+	public function __construct(string $sFileName, string $sFileHeader = '', string $sAdditionalFileName = '')
 	{
 		$this->sFile = \APP_PRIVATE_DATA.'configs/'.\trim($sFileName);
 
@@ -45,7 +45,7 @@ abstract class AbstractConfig
 			\MailSo\Base\Utils::FunctionExistsAndEnabled(array('apc_fetch', 'apc_store'));
 	}
 
-	protected abstract function defaultValues();
+	protected abstract function defaultValues() : array;
 
 	public function IsInited() : bool
 	{
@@ -69,7 +69,6 @@ abstract class AbstractConfig
 
 	/**
 	 * @param mixed $mParamValue
-	 *
 	 */
 	public function Set(string $sSectionKey, string $sParamKey, $mParamValue) : void
 	{

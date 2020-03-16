@@ -28,7 +28,7 @@
 //require_once 'Net/IDNA2/Exception/Nameprep.php';
 
 defined('MAILSO_LIBRARY_ROOT_PATH') || die();
-require_once MAILSO_LIBRARY_ROOT_PATH.'Vendors/Net/IDNA2CustomExceptions.php';
+require_once __DIR__ . '/IDNA2CustomExceptions.php';
 
 /**
  * Encode/decode Internationalized Domain Names.
@@ -66,9 +66,7 @@ class Net_IDNA2
      * These Unicode codepoints are
      * mapped to nothing, See RFC3454 for details
      *
-     * @static
      * @var array
-     * @access private
      */
     private static $_np_map_nothing = array(
         0xAD,
@@ -103,9 +101,7 @@ class Net_IDNA2
     /**
      * Prohibited codepints
      *
-     * @static
      * @var array
-     * @access private
      */
     private static $_general_prohibited = array(
         0,
@@ -176,9 +172,8 @@ class Net_IDNA2
 
     /**
      * Codepints prohibited by Nameprep
-     * @static
+     *
      * @var array
-     * @access private
      */
     private static $_np_prohibit = array(
         0xA0,
@@ -270,9 +265,7 @@ class Net_IDNA2
     /**
      * Codepoint ranges prohibited by nameprep
      *
-     * @static
      * @var array
-     * @access private
      */
     private static $_np_prohibit_ranges = array(
         array(0x80,     0x9F    ),
@@ -290,9 +283,7 @@ class Net_IDNA2
     /**
      * Replacement mappings (casemapping, replacement sequences, ...)
      *
-     * @static
      * @var array
-     * @access private
      */
     private static $_np_replacemaps = array(
         0x41    => array(0x61),
@@ -1703,9 +1694,7 @@ class Net_IDNA2
      * Normalization Combining Classes; Code Points not listed
      * got Combining Class 0.
      *
-     * @static
      * @var array
-     * @access private
      */
     private static $_np_norm_combcls = array(
         0x334   => 1,
@@ -2055,103 +2044,85 @@ class Net_IDNA2
     // {{{ properties
     /**
      * @var string
-     * @access private
      */
     private $_punycode_prefix = 'xn--';
 
     /**
-     * @access private
      */
     private $_invalid_ucs = 0x80000000;
 
     /**
-     * @access private
      */
     private $_max_ucs = 0x10FFFF;
 
     /**
      * @var int
-     * @access private
      */
     private $_base = 36;
 
     /**
      * @var int
-     * @access private
      */
     private $_tmin = 1;
 
     /**
      * @var int
-     * @access private
      */
     private $_tmax = 26;
 
     /**
      * @var int
-     * @access private
      */
     private $_skew = 38;
 
     /**
      * @var int
-     * @access private
      */
     private $_damp = 700;
 
     /**
      * @var int
-     * @access private
      */
     private $_initial_bias = 72;
 
     /**
      * @var int
-     * @access private
      */
     private $_initial_n = 0x80;
 
     /**
      * @var int
-     * @access private
      */
     private $_slast;
 
     /**
-     * @access private
      */
     private $_sbase = 0xAC00;
 
     /**
-     * @access private
      */
     private $_lbase = 0x1100;
 
     /**
-     * @access private
      */
     private $_vbase = 0x1161;
 
     /**
-     * @access private
      */
     private $_tbase = 0x11a7;
 
     /**
      * @var int
-     * @access private
      */
     private $_lcount = 19;
 
     /**
      * @var int
-     * @access private
      */
     private $_vcount = 21;
 
     /**
      * @var int
-     * @access private
      */
     private $_tcount = 28;
 
@@ -2159,7 +2130,6 @@ class Net_IDNA2
      * vcount * tcount
      *
      * @var int
-     * @access private
      */
     private $_ncount = 588;
 
@@ -2167,7 +2137,6 @@ class Net_IDNA2
      * lcount * tcount * vcount
      *
      * @var int
-     * @access private
      */
     private $_scount = 11172;
 
@@ -2177,7 +2146,6 @@ class Net_IDNA2
      * See {@link setParams()} for how to select these
      *
      * @var bool
-     * @access private
      */
     private $_api_encoding = 'utf8';
 
@@ -2185,7 +2153,6 @@ class Net_IDNA2
      * Overlong UTF-8 encodings are forbidden
      *
      * @var bool
-     * @access private
      */
     private $_allow_overlong = false;
 
@@ -2193,7 +2160,6 @@ class Net_IDNA2
      * Behave strict or not
      *
      * @var bool
-     * @access private
      */
     private $_strict_mode = false;
 
@@ -2207,7 +2173,6 @@ class Net_IDNA2
      * please switch to 2008 first before encoding.
      *
      * @var bool
-     * @access private
      */
     private $_version = '2003';
 
@@ -2228,8 +2193,6 @@ class Net_IDNA2
     /**
      * Constructor
      *
-     *
-     * @access public
      * @see    setParams()
      */
     public function __construct($options = null)
@@ -2263,7 +2226,6 @@ class Net_IDNA2
      *
      * @param mixed  $option Parameter to set (string: single parameter; array of Parameter => Value pairs)
      *
-     * @access public
      */
     public function setParams($option, $value = false) : bool
     {
@@ -2318,7 +2280,6 @@ class Net_IDNA2
      *
      * @return mixed  processed string
      * @throws Exception
-     * @access public
      */
     public function encode($decoded, $one_time_encoding = false)
     {
@@ -2401,9 +2362,7 @@ class Net_IDNA2
     /**
      * Decode a given ACE domain name.
      *
-     *
      * @throws Exception
-     * @access public
      */
     public function decode($input, $one_time_encoding = false)
     {
@@ -2487,9 +2446,6 @@ class Net_IDNA2
      * Opposite function to parse_url()
      *
      * Inspired by code from comments of php.net-documentation for parse_url()
-     *
-     *
-     * @access private
      */
     private function _unparse_url($parts_arr) : string
     {
@@ -2520,9 +2476,7 @@ class Net_IDNA2
     /**
      * The actual encoding algorithm.
      *
-     *
      * @throws Exception
-     * @access private
      */
     private function _encode($decoded) : string
     {
@@ -2649,9 +2603,7 @@ class Net_IDNA2
     /**
      * The actual decoding algorithm.
      *
-     *
      * @throws Exception
-     * @access private
      */
     private function _decode($encoded) : string
     {
@@ -2723,9 +2675,6 @@ class Net_IDNA2
 
     /**
      * Adapt the bias according to the current code point and position.
-     *
-     *
-     * @access private
      */
     private function _adapt($delta, $npoints, $is_first) : int
     {
@@ -2742,9 +2691,7 @@ class Net_IDNA2
     /**
      * Encoding a certain digit.
      *
-     *
      * @return char  Encoded digit
-     * @access private
      */
     private function _encodeDigit($d)
     {
@@ -2755,8 +2702,6 @@ class Net_IDNA2
      * Decode a certain digit.
      *
      * @param char $cp One digit (character) to decode
-     *
-     * @access private
      */
     private function _decodeDigit($cp) : int
     {
@@ -2767,9 +2712,7 @@ class Net_IDNA2
     /**
      * Do Nameprep according to RFC3491 and RFC3454.
      *
-     *
      * @throws Exception
-     * @access private
      */
     private function _nameprep($input) : string
     {
@@ -2863,9 +2806,7 @@ class Net_IDNA2
      * Decomposes a Hangul syllable
      * (see http://www.unicode.org/unicode/reports/tr15/#Hangul).
      *
-     *
      *                      value as one value array
-     * @access private
      */
     private function _hangulDecompose($char) : array
     {
@@ -2890,9 +2831,6 @@ class Net_IDNA2
     /**
      * Ccomposes a Hangul syllable
      * (see http://www.unicode.org/unicode/reports/tr15/#Hangul).
-     *
-     *
-     * @access private
      */
     private function _hangulCompose($input) : array
     {
@@ -2953,9 +2891,6 @@ class Net_IDNA2
 
     /**
      * Returns the combining class of a certain wide char.
-     *
-     *
-     * @access private
      */
     private function _getCombiningClass($char) : int
     {
@@ -2964,9 +2899,6 @@ class Net_IDNA2
 
     /**
      * Apllies the cannonical ordering of a decomposed UCS4 sequence.
-     *
-     *
-     * @access private
      */
     private function _applyCannonicalOrdering($input) : array
     {
@@ -3006,9 +2938,6 @@ class Net_IDNA2
 
     /**
      * Do composition of a sequence of starter and non-starter.
-     *
-     *
-     * @access private
      */
     private function _combine($input) : array
     {
@@ -3069,9 +2998,7 @@ class Net_IDNA2
      *
      * Each x represents a bit that can be used to store character data.
      *
-     *
      * @throws Exception
-     * @access private
      */
     private function _utf8_to_ucs4($input) : array
     {
@@ -3144,9 +3071,7 @@ class Net_IDNA2
     /**
      * Convert UCS-4 array into UTF-8 string
      *
-     *
      * @throws Exception
-     * @access private
      */
     private function _ucs4_to_utf8($input) : string
     {
@@ -3199,9 +3124,7 @@ class Net_IDNA2
     /**
      * Convert UCS-4 array into UCS-4 string
      *
-     *
      * @throws Exception
-     * @access private
      */
     private function _ucs4_to_ucs4_string($input) : string
     {
@@ -3217,9 +3140,7 @@ class Net_IDNA2
     /**
      * Convert UCS-4 string into UCS-4 array
      *
-     *
      * @throws InvalidArgumentException
-     * @access private
      */
     private function _ucs4_string_to_ucs4($input) : array
     {
@@ -3249,10 +3170,6 @@ class Net_IDNA2
 
     /**
      * Echo hex representation of UCS4 sequence.
-     *
-     *
-     * @static
-     * @access private
      */
     private static function _showHex($input, $include_bit = false) : void
     {
@@ -3270,10 +3187,6 @@ class Net_IDNA2
     /**
      * Gives you a bit representation of given Byte (8 bits), Word (16 bits) or DWord (32 bits)
      * Output width is automagically determined
-     *
-     *
-     * @static
-     * @access private
      */
     private static function _showBitmask($octet) : string
     {
@@ -3298,8 +3211,6 @@ class Net_IDNA2
      * Gets the length of a string in bytes even if mbstring function
      * overloading is turned on
      *
-     *
-     *
      * @see Net_IDNA2::$_mb_string_overload
      */
     private static function _byteLength($string) : int
@@ -3316,9 +3227,7 @@ class Net_IDNA2
     /**
      * Attempts to return a concrete IDNA instance for either php4 or php5.
      *
-     *
      * @return Net_IDNA2
-     * @access public
      */
     function getInstance($params = array())
     {
@@ -3332,9 +3241,7 @@ class Net_IDNA2
      * only creating a new instance if no IDNA instance with the same
      * parameters currently exists.
      *
-     *
      * @return object Net_IDNA2
-     * @access public
      */
     function singleton($params = array())
     {

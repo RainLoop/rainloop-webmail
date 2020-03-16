@@ -48,12 +48,9 @@ class Folder
 	private $aExtended;
 
 	/**
-	 * @access private
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	private function __construct($sFullNameRaw, $sDelimiter, array $aFlags)
+	private function __construct(string $sFullNameRaw, string $sDelimiter, array $aFlags)
 	{
 		$this->sNameRaw = '';
 		$this->sFullNameRaw = '';
@@ -101,12 +98,9 @@ class Folder
 	}
 
 	/**
-	 *
-	 * @return \MailSo\Imap\Folder
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewInstance(string $sFullNameRaw, string $sDelimiter = '.', array $aFlags = array())
+	public static function NewInstance(string $sFullNameRaw, string $sDelimiter = '.', array $aFlags = array()) : self
 	{
 		return new self($sFullNameRaw, $sDelimiter, $aFlags);
 	}

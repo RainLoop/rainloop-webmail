@@ -69,7 +69,7 @@ class Plugin extends DAV\ServerPlugin {
     public function unknownMethod($method, $uri) {
 
         switch($method) {
-            
+
             case 'PATCH':
                 return $this->httpPatch($uri);
 
@@ -83,7 +83,7 @@ class Plugin extends DAV\ServerPlugin {
      *
      * This method is passed a uri. It should only return HTTP methods that are
      * available for the specified uri.
-     * 
+     *
      * We claim to support PATCH method (partial update) if and only if
      *     - the node exist
      *     - the node implements our partial update interface
@@ -92,14 +92,14 @@ class Plugin extends DAV\ServerPlugin {
      * @return array
      */
     public function getHTTPMethods($uri) {
-        
+
         $tree = $this->server->tree;
-        
-        if ($tree->nodeExists($uri) && 
+
+        if ($tree->nodeExists($uri) &&
             $tree->getNodeForPath($uri) instanceof IFile) {
             return array('PATCH');
          }
-         
+
          return array();
 
     }
@@ -118,7 +118,7 @@ class Plugin extends DAV\ServerPlugin {
     /**
      * Patch an uri
      *
-     * The WebDAV patch request can be used to modify only a part of an 
+     * The WebDAV patch request can be used to modify only a part of an
      * existing resource. If the resource does not exist yet and the first
      * offset is not 0, the request fails
      *
@@ -138,11 +138,11 @@ class Plugin extends DAV\ServerPlugin {
         if (!$range) {
             throw new DAV\Exception\BadRequest('No valid "X-Update-Range" found in the headers');
         }
-        
+
         $contentType = strtolower(
             $this->server->httpRequest->getHeader('Content-Type')
         );
-        
+
         if ($contentType != 'application/x-sabredav-partialupdate') {
             throw new DAV\Exception\UnsupportedMediaType('Unknown Content-Type header "' . $contentType . '"');
         }
@@ -177,7 +177,7 @@ class Plugin extends DAV\ServerPlugin {
         return false;
 
     }
-    
+
    /**
      * Returns the HTTP custom range update header
      *

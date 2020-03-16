@@ -38,9 +38,6 @@ class Email
 	private $sDkimValue;
 
 	/**
-	 * @access private
-	 *
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
 	private function __construct($sEmail, $sDisplayName = '')
@@ -60,22 +57,17 @@ class Email
 	}
 
 	/**
-	 *
-	 * @return \MailSo\Mime\Email
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewInstance(string $sEmail, string $sDisplayName = '')
+	public static function NewInstance(string $sEmail, string $sDisplayName = '') : self
 	{
 		return new self($sEmail, $sDisplayName);
 	}
 
 	/**
-	 * @return \MailSo\Mime\Email
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function Parse(string $sEmailAddress)
+	public static function Parse(string $sEmailAddress) : self
 	{
 		$sEmailAddress = \MailSo\Base\Utils::Trim($sEmailAddress);
 		if (!\MailSo\Base\Validator::NotEmptyString($sEmailAddress, true))

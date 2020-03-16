@@ -57,9 +57,6 @@ class Attachment
 	 */
 	private $sContentLocation;
 
-	/**
-	 * @access private
-	 */
 	private function __construct($rResource, $sFileName, $iFileSize, $bIsInline, $bIsLinked, $sCID,
 		$aCustomContentTypeParams = array(), $sContentLocation = '')
 	{
@@ -75,11 +72,9 @@ class Attachment
 
 	/**
 	 * @param resource $rResource
-	 *
-	 * @return \MailSo\Mime\Attachment
 	 */
 	public static function NewInstance($rResource, string $sFileName = '', int $iFileSize = 0, bool $bIsInline = false,
-		bool $bIsLinked = false, string $sCID = '', array $aCustomContentTypeParams = array(), string $sContentLocation = '')
+		bool $bIsLinked = false, string $sCID = '', array $aCustomContentTypeParams = array(), string $sContentLocation = '') : self
 	{
 		return new self($rResource, $sFileName, $iFileSize, $bIsInline, $bIsLinked, $sCID, $aCustomContentTypeParams, $sContentLocation);
 	}

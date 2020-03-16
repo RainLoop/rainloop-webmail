@@ -43,7 +43,7 @@ class Memcache implements \MailSo\Cache\DriverInterface
 	 */
 	private $sKeyPrefix;
 
-	private function __construct($sHost = '127.0.0.1', $iPost = 11211, $iExpire = 43200, $sKeyPrefix = '')
+	private function __construct(string $sHost = '127.0.0.1', int $iPost = 11211, int $iExpire = 43200, string $sKeyPrefix = '')
 	{
 		$this->sHost = $sHost;
 		$this->iPost = $iPost;
@@ -63,11 +63,7 @@ class Memcache implements \MailSo\Cache\DriverInterface
 		}
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Cache\Drivers\APC
-	 */
-	public static function NewInstance(string $sHost = '127.0.0.1', int $iPost = 11211, int $iExpire = 43200, string $sKeyPrefix = '')
+	public static function NewInstance(string $sHost = '127.0.0.1', int $iPost = 11211, int $iExpire = 43200, string $sKeyPrefix = '') : self
 	{
 		return new self($sHost, $iPost, $iExpire, $sKeyPrefix);
 	}

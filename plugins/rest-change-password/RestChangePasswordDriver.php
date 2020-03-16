@@ -94,25 +94,13 @@ class RestChangePasswordDriver implements \RainLoop\Providers\ChangePassword\Cha
         return $this;
     }
 
-    /**
-     * @param \RainLoop\Account $oAccount
-     *
-     * @return bool
-     */
-    public function PasswordChangePossibility($oAccount)
+    public function PasswordChangePossibility(\RainLoop\Model\Account $oAccount) : bool
     {
         return $oAccount && $oAccount->Email() &&
             \RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $this->sAllowedEmails);
     }
 
-    /**
-     * @param \RainLoop\Account $oAccount
-     * @param string $sPrevPassword
-     * @param string $sNewPassword
-     *
-     * @return bool
-     */
-    public function ChangePassword(\RainLoop\Account $oAccount, $sPrevPassword, $sNewPassword)
+    public function ChangePassword(\RainLoop\Model\Account $oAccount, string $sPrevPassword, string $sNewPassword) : bool
     {
         if ($this->oLogger)
         {

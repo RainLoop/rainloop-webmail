@@ -9,7 +9,7 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 	 */
 	private $aMap;
 
-	public function __construct($sPluginName, $aMap = array())
+	public function __construct(string $sPluginName, array $aMap = array())
 	{
 		$this->aMap = is_array($aMap) ? $this->convertConfigMap($aMap) : array();
 

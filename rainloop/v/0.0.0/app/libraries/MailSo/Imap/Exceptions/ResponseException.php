@@ -41,10 +41,7 @@ class ResponseException extends \MailSo\Imap\Exceptions\Exception
 		return $this->aResponses;
 	}
 
-	/**
-	 * @return \MailSo\Imap\Response|null
-	 */
-	public function GetLastResponse()
+	public function GetLastResponse() : ?\MailSo\Imap\Response
 	{
 		return 0 < count($this->aResponses) ? $this->aResponses[count($this->aResponses) - 1] : null;
 	}

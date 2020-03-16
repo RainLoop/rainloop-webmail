@@ -22,28 +22,20 @@ class Http
 	 */
 	private $bIsMagicQuotesOn;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->bIsMagicQuotesOn = (bool) @\ini_get('magic_quotes_gpc');
 	}
 
-	/**
-	 * @return \MailSo\Base\Http
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
 	/**
 	 * @staticvar \MailSo\Base\Http $oInstance;
-	 *
-	 * @return \MailSo\Base\Http
 	 */
-	public static function SingletonInstance()
+	public static function SingletonInstance() : self
 	{
 		static $oInstance = null;
 		if (null === $oInstance)
@@ -283,12 +275,8 @@ class Http
 		return $sIp;
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger = null
-	 *
-	 */
 	public function SendPostRequest(string $sUrl, array $aPost = array(), string $sCustomUserAgent = 'MailSo Http User Agent (v1)', int &$iCode = 0,
-		$oLogger = null, int $iTimeout = 20, string $sProxy = '', string $sProxyAuth = '') : string
+		?\MailSo\Log\Logger $oLogger = null, int $iTimeout = 20, string $sProxy = '', string $sProxyAuth = '') : string
 	{
 		$aOptions = array(
 			CURLOPT_URL => $sUrl,
@@ -345,11 +333,7 @@ class Http
 		return $mResult;
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger = null
-	 *
-	 */
-	static public function DetectAndHackFollowLocationUrl(string $sUrl, array &$aOptions, $oLogger = null) : string
+	static public function DetectAndHackFollowLocationUrl(string $sUrl, array &$aOptions, ?\MailSo\Log\Logger $oLogger = null) : string
 	{
 		$sSafeMode = \strtolower(\trim(@\ini_get('safe_mode')));
 		$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode;
@@ -434,11 +418,9 @@ class Http
 
 	/**
 	 * @param resource $rFile
-	 * @param \MailSo\Log\Logger $oLogger = null
-	 *
 	 */
 	public function SaveUrlToFile(string $sUrl, $rFile, string $sCustomUserAgent = 'MailSo Http User Agent (v1)', string &$sContentType = '', int &$iCode = 0,
-		$oLogger = null, int $iTimeout = 10, string $sProxy = '', string $sProxyAuth = '', array $aHttpHeaders = array(), bool $bFollowLocation = true) : bool
+		?\MailSo\Log\Logger $oLogger = null, int $iTimeout = 10, string $sProxy = '', string $sProxyAuth = '', array $aHttpHeaders = array(), bool $bFollowLocation = true) : bool
 	{
 		if (null === $sCustomUserAgent)
 		{
@@ -501,7 +483,7 @@ class Http
 //			}
 		}
 
-		\MailSo\Base\Http::DetectAndHackFollowLocationUrl($sUrl, $aOptions, $oLogger);
+		static::DetectAndHackFollowLocationUrl($sUrl, $aOptions, $oLogger);
 
 		$oCurl = \curl_init();
 		\curl_setopt_array($oCurl, $aOptions);
@@ -528,12 +510,8 @@ class Http
 		return $bResult;
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger = null
-	 *
-	 */
 	public function GetUrlAsString(string $sUrl, string $sCustomUserAgent = 'MailSo Http User Agent (v1)', string &$sContentType = '', int &$iCode = 0,
-		$oLogger = null, int $iTimeout = 10, string $sProxy = '', string $sProxyAuth = '', array $aHttpHeaders = array(), bool $bFollowLocation = true) : string
+		?\MailSo\Log\Logger $oLogger = null, int $iTimeout = 10, string $sProxy = '', string $sProxyAuth = '', array $aHttpHeaders = array(), bool $bFollowLocation = true) : string
 	{
 		$rMemFile = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 		if ($this->SaveUrlToFile($sUrl, $rMemFile, $sCustomUserAgent, $sContentType, $iCode, $oLogger, $iTimeout, $sProxy, $sProxyAuth, $aHttpHeaders, $bFollowLocation) && \is_resource($rMemFile))

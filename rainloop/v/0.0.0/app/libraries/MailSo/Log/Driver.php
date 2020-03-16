@@ -82,9 +82,6 @@ abstract class Driver
 	 */
 	private $aCache;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		$this->sDatePattern = 'H:i:s';
@@ -119,59 +116,37 @@ abstract class Driver
 		);
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Driver
-	 */
-	public function SetTimeOffset(string $sTimeOffset)
+	public function SetTimeOffset(string $sTimeOffset) : self
 	{
 		$this->sTimeOffset = (string) $sTimeOffset;
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Log\Driver
-	 */
-	public function DisableGuidPrefix()
+	public function DisableGuidPrefix() : self
 	{
 		$this->bGuidPrefix = false;
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Log\Driver
-	 */
-	public function DisableTimePrefix()
+	public function DisableTimePrefix() : self
 	{
 		$this->bTimePrefix = false;
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Driver
-	 */
-	public function WriteOnErrorOnly(bool $bValue)
+	public function WriteOnErrorOnly(bool $bValue) : self
 	{
 		$this->bWriteOnErrorOnly = !!$bValue;
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Driver
-	 */
-	public function WriteOnPhpErrorOnly(bool $bValue)
+	public function WriteOnPhpErrorOnly(bool $bValue) : self
 	{
 		$this->bWriteOnPhpErrorOnly = !!$bValue;
 		return $this;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Driver
-	 */
-	public function WriteOnTimeoutOnly(int $iTimeout)
+	public function WriteOnTimeoutOnly(int $iTimeout) : self
 	{
 		$this->iWriteOnTimeoutOnly = (int) $iTimeout;
 		if (0 > $this->iWriteOnTimeoutOnly)
@@ -182,10 +157,7 @@ abstract class Driver
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Log\Driver
-	 */
-	public function DisableTypedPrefix()
+	public function DisableTypedPrefix() : self
 	{
 		$this->bTypedPrefix = false;
 		return $this;
@@ -248,10 +220,6 @@ abstract class Driver
 		return $this->writeImplementation($mDesc);
 	}
 
-	/**
-	 * @final
-	 *
-	 */
 	final public function Write($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '', $bDiplayCrLf = false)
 	{
 		$bResult = true;
@@ -297,9 +265,9 @@ abstract class Driver
 				$bResult = $this->localWriteImplementation($this->aCache, $bDiplayCrLf);
 				$this->aCache = array();
 			}
-			else if (0 < $this->iWriteOnTimeoutOnly && \time() - APP_START_TIME > $this->iWriteOnTimeoutOnly)
+			else if (0 < $this->iWriteOnTimeoutOnly && \time() - $_SERVER['REQUEST_TIME_FLOAT'] > $this->iWriteOnTimeoutOnly)
 			{
-				$sFlush = '--- FlushLogCache: WriteOnTimeoutOnly ['.(\time() - APP_START_TIME).'sec]';
+				$sFlush = '--- FlushLogCache: WriteOnTimeoutOnly ['.(\time() - $_SERVER['REQUEST_TIME_FLOAT']).'sec]';
 				if (isset($this->aCache[0]) && empty($this->aCache[0]))
 				{
 					$this->aCache[0] = $sFlush;
@@ -336,17 +304,11 @@ abstract class Driver
 		return $this->sNewLine;
 	}
 
-	/**
-	 * @final
-	 */
 	final public function Clear() : bool
 	{
 		return $this->clearImplementation();
 	}
 
-	/**
-	 * @final
-	 */
 	final public function WriteEmptyLine() : void
 	{
 		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || 0 < $this->iWriteOnTimeoutOnly))

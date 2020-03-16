@@ -37,9 +37,6 @@ class Pop3Client extends \MailSo\Net\NetClient
 	 */
 	private $sLastMessage;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();

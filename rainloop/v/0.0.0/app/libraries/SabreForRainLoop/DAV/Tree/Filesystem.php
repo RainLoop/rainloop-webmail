@@ -48,7 +48,7 @@ class Filesystem extends DAV\Tree {
     public function getNodeForPath($path) {
 
         $realPath = $this->getRealPath($path);
-        if (!file_exists($realPath)) { 
+        if (!file_exists($realPath)) {
             throw new DAV\Exception\NotFound('File at location ' . $realPath . ' not found');
         }
         if (is_dir($realPath)) {

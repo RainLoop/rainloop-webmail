@@ -245,7 +245,7 @@ class Social
 
 					$sAccessToken = !empty($aAuthorizationCodeResponse['result']['access_token']) ? $aAuthorizationCodeResponse['result']['access_token'] : '';
 					$sRefreshToken = !empty($aAuthorizationCodeResponse['result']['refresh_token']) ? $aAuthorizationCodeResponse['result']['refresh_token'] : '';
-										
+
 					if (!empty($sAccessToken))
 					{
 						$oGoogle->setAccessToken($sAccessToken);
@@ -321,7 +321,7 @@ class Social
 				}
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 		}
@@ -422,7 +422,7 @@ class Social
 					}
 				}
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 			}
@@ -597,7 +597,7 @@ class Social
 				}
 			}
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 		}
@@ -605,10 +605,7 @@ class Social
 		return $this->popupServiceResult('twitter', $sLoginUrl, $bLogin, $iErrorCode);
 	}
 
-	/**
-	 * @return \OAuth2\Client|null
-	 */
-	public function GoogleConnector()
+	public function GoogleConnector() : ?\OAuth2\Client
 	{
 		$oGoogle = false;
 		$oConfig = $this->oActions->Config();
@@ -639,7 +636,7 @@ class Social
 					}
 				}
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 			}
@@ -648,10 +645,7 @@ class Social
 		return false === $oGoogle ? null : $oGoogle;
 	}
 
-	/**
-	 * @return \tmhOAuth|null
-	 */
-	public function TwitterConnector()
+	public function TwitterConnector() : ?\tmhOAuth
 	{
 		$oTwitter = false;
 		$oConfig = $this->oActions->Config();
@@ -679,17 +673,15 @@ class Social
 	/**
 	 * @param \RainLoop\Model\Account|null $oAccount = null
 	 *
-	 * @return \RainLoop\Common\RainLoopFacebookRedirectLoginHelper|null
 	 */
-	public function FacebookConnector($oAccount = null, string &$sRedirectUrl = '')
+	public function FacebookConnector($oAccount = null, string &$sRedirectUrl = '') : ?\RainLoop\Common\RainLoopFacebookRedirectLoginHelper
 	{
 		$oFacebook = false;
 		$oConfig = $this->oActions->Config();
 		$sAppID = \trim($oConfig->Get('social', 'fb_app_id', ''));
 		$sAppSecret = \trim($oConfig->Get('social', 'fb_app_secret', ''));
 
-		if (\version_compare(PHP_VERSION, '5.4.0', '>=') &&
-			$oConfig->Get('social', 'fb_enable', false) && '' !== $sAppID &&
+		if ($oConfig->Get('social', 'fb_enable', false) && '' !== $sAppID &&
 			'' !== \trim($oConfig->Get('social', 'fb_app_secret', '')) &&
 			\class_exists('Facebook\Facebook')
 		)
@@ -717,7 +709,7 @@ class Social
 					)
 				));
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->oActions->Logger()->WriteException($oException, \MailSo\Log\Enumerations\Type::ERROR);
 			}
@@ -767,7 +759,7 @@ class Social
 		{
 			$iErrorCode = $oException->getCode();
 		}
-		catch (\Exception $oException)
+		catch (\Throwable $oException)
 		{
 			unset($oException);
 			$iErrorCode = \RainLoop\Notifications::UnknownError;

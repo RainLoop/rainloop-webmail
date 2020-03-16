@@ -23,11 +23,7 @@ class Inline extends \MailSo\Log\Driver
 	 */
 	private $bHtmlEncodeSpecialChars;
 
-	/**
-	 * @access protected
-	 *
-	 */
-	protected function __construct($sNewLine = "\r\n", $bHtmlEncodeSpecialChars = false)
+	protected function __construct(string $sNewLine = "\r\n", bool $bHtmlEncodeSpecialChars = false)
 	{
 		parent::__construct();
 
@@ -35,11 +31,7 @@ class Inline extends \MailSo\Log\Driver
 		$this->bHtmlEncodeSpecialChars = $bHtmlEncodeSpecialChars;
 	}
 
-	/**
-	 *
-	 * @return \MailSo\Log\Drivers\Inline
-	 */
-	public static function NewInstance(string $sNewLine = "\r\n", bool $bHtmlEncodeSpecialChars = false)
+	public static function NewInstance(string $sNewLine = "\r\n", bool $bHtmlEncodeSpecialChars = false) : self
 	{
 		return new self($sNewLine, $bHtmlEncodeSpecialChars);
 	}

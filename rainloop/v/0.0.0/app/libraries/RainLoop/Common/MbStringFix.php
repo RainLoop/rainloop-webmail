@@ -367,7 +367,7 @@ kYkiO3M6NDoi8JCQoSI7czo0OiLwkJGKIjtzOjQ6IvCQkKIiO3M6NDoi8JCRiyI7czo0OiLwkJCj
 IjtzOjQ6IvCQkYwiO3M6NDoi8JCQpCI7czo0OiLwkJGNIjtzOjQ6IvCQkKUiO3M6NDoi8JCRjiI7
 czo0OiLwkJCmIjtzOjQ6IvCQkY8iO3M6NDoi8JCQpyI7fQ=='));
 		$map = $upper;
-		
+
 		static $ulen_mask = array("\xC0" => 2, "\xD0" => 2, "\xE0" => 3, "\xF0" => 4);
 
 		$i = 0;

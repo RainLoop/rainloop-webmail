@@ -83,16 +83,17 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 	public function SetPassword(string $sPassword) : void
 	{
-		$this->Set('security', 'admin_password', \md5(APP_SALT.$sPassword.APP_SALT));
+		$this->Set('security', 'admin_password', \password_hash($sPassword, PASSWORD_DEFAULT));
 	}
 
 	public function ValidatePassword(string $sPassword) : bool
 	{
-		$sPassword = (string) $sPassword;
 		$sConfigPassword = (string) $this->Get('security', 'admin_password', '');
-
-		return 0 < \strlen($sPassword) &&
-			(($sPassword === $sConfigPassword && '12345' === $sConfigPassword) || \md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword);
+		if (32 == \strlen($sPassword) && \md5(APP_SALT.$sPassword.APP_SALT) === $sConfigPassword) {
+			$this->SetPassword($sPassword);
+			return true;
+		}
+		return 0 < \strlen($sPassword) && \password_verify($sPassword, $sConfigPassword);
 	}
 
 	public function Save() : bool
@@ -175,7 +176,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'openpgp'					=> array(false),
 
 				'admin_login'				=> array('admin', 'Login and password for web admin panel'),
-				'admin_password'			=> array('12345'),
+				'admin_password'			=> array(\password_hash('12345', PASSWORD_DEFAULT)),
 				'allow_admin_panel'			=> array(true, 'Access settings'),
 				'allow_two_factor_auth'		=> array(false),
 				'force_two_factor_auth'		=> array(false),

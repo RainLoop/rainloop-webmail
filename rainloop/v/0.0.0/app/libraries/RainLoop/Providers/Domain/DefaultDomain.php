@@ -14,11 +14,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 	 */
 	protected $oCacher;
 
-	/**
-	 * @param \MailSo\Cache\CacheClient $oCacher = null
-	 *
-	 */
-	public function __construct($sDomainPath, $oCacher = null)
+	public function __construct(string $sDomainPath, ?\MailSo\Cache\CacheClient $oCacher = null)
 	{
 		$this->sDomainPath = \rtrim(\trim($sDomainPath), '\\/');
 		$this->oCacher = $oCacher;
@@ -90,11 +86,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		return $sResult;
 	}
 
-	/**
-	 *
-	 * @return \RainLoop\Model\Domain|null
-	 */
-	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true)
+	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true) : ?\RainLoop\Model\Domain
 	{
 		$mResult = null;
 
@@ -184,10 +176,6 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		return $mResult;
 	}
 
-	/**
-	 * @param \RainLoop\Model\Domain $oDomain
-	 *
-	 */
 	public function Save(\RainLoop\Model\Domain $oDomain) : bool
 	{
 		$sRealFileName = $this->codeFileName($oDomain->Name());
