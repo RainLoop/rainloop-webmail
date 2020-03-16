@@ -580,7 +580,7 @@ END;
 			{
 				$iPos = \strpos($aTempArr[1], '?', 2);
 				$aTempArr[0] = \substr($aTempArr[1], 2, $iPos - 2);
-				$sEncType = \strtoupper($aTempArr[1]{$iPos + 1});
+				$sEncType = \strtoupper($aTempArr[1][$iPos + 1]);
 				switch ($sEncType)
 				{
 					case 'Q':
@@ -1693,13 +1693,13 @@ END;
 
 		for ($iIndex = 0; $iLen > 0; $iIndex++, $iLen--)
 		{
-			$sChar = $sStr{$iIndex};
+			$sChar = $sStr[$iIndex];
 			if ($sChar == '&')
 			{
 				$iIndex++;
 				$iLen--;
 
-				$sChar = isset($sStr{$iIndex}) ? $sStr{$iIndex} : null;
+				$sChar = isset($sStr[$iIndex]) ? $sStr[$iIndex] : null;
 				if ($sChar === null)
 				{
 					break;
@@ -1715,7 +1715,7 @@ END;
 				$iK = 10;
 				for (; $iLen > 0; $iIndex++, $iLen--)
 				{
-					$sChar = $sStr{$iIndex};
+					$sChar = $sStr[$iIndex];
 
 					$iB = $aArray[\ord($sChar)];
 					if ((\ord($sChar) & 0x80) || $iB == -1)
@@ -1759,7 +1759,7 @@ END;
 
 				if (($iCh || $iK < 6) ||
 					(!$iLen || $sChar != '-') ||
-					($iLen > 2 && '&' === $sStr{$iIndex+1} && '-' !==  $sStr{$iIndex+2}))
+					($iLen > 2 && '&' === $sStr[$iIndex+1] && '-' !==  $sStr[$iIndex+2]))
 				{
 					return $bError;
 				}
@@ -1792,7 +1792,7 @@ END;
 
 		while ($sLen)
 		{
-			$iC = \ord($sStr{$iIndex});
+			$iC = \ord($sStr[$iIndex]);
 			if ($iC < 0x80)
 			{
 				$iCh = $iC;
@@ -1842,7 +1842,7 @@ END;
 
 			for ($iJ = 0; $iJ < $iN; $iJ++)
 			{
-				$iO = \ord($sStr{$iIndex+$iJ});
+				$iO = \ord($sStr[$iIndex+$iJ]);
 				if (($iO & 0xc0) != 0x80)
 				{
 					return $bError;
