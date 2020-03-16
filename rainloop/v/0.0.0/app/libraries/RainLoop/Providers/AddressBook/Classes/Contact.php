@@ -54,7 +54,7 @@ class Contact
 		$this->Clear();
 	}
 
-	public function Clear()
+	public function Clear() : void
 	{
 		$this->IdContact = '';
 		$this->IdContactStr = '';
@@ -66,7 +66,7 @@ class Contact
 		$this->Etag = '';
 	}
 
-	public function PopulateDisplayAndFullNameValue(bool $bForceFullNameReplace = false)
+	public function PopulateDisplayAndFullNameValue(bool $bForceFullNameReplace = false) : void
 	{
 		$sFullName = '';
 		$sLastName = '';
@@ -151,7 +151,7 @@ class Contact
 		}
 	}
 
-	public function UpdateDependentValues()
+	public function UpdateDependentValues() : void
 	{
 		if (empty($this->IdContactStr))
 		{
@@ -161,7 +161,7 @@ class Contact
 		$this->PopulateDisplayAndFullNameValue();
 	}
 
-	public function RegenerateContactStr() : array
+	public function RegenerateContactStr() : void
 	{
 		$this->IdContactStr = \class_exists('SabreForRainLoop\DAV\Client') ?
 			\SabreForRainLoop\DAV\UUIDUtil::getUUID() : \MailSo\Base\Utils::Md5Rand();
