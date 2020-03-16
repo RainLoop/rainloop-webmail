@@ -7357,10 +7357,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$rResource = $this->FilesProvider()->GetFile($oAccount, $sFileHashIn);
 			if (\is_resource($rResource))
 			{
-				$sFileNameOut = \MailSo\Base\Utils::ConvertEncoding(
-					$sFileNameOut, \MailSo\Base\Enumerations\Charset::UTF_8,
-						\MailSo\Base\Enumerations\Charset::CP858);
-
 				\header('Content-Type: '.$sContentTypeOut);
 				\header('Content-Disposition: attachment; '.
 					\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
