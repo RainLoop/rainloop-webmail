@@ -281,7 +281,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null, int $iBodyTextLimit = 0) : void
+	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null, int $iBodyTextLimit = 0) : ?\MailSo\Mail\Message
 	{
 		if (!\MailSo\Base\Validator::RangeInt($iIndex, 1))
 		{
@@ -291,7 +291,7 @@ class MailClient
 		$this->oImapClient->FolderSelect($sFolderName);
 
 		$oBodyStructure = null;
-		$oMessage = false;
+		$oMessage = null;
 
 		$aBodyPeekMimeIndexes = array();
 		$aSignatureMimeIndexes = array();
@@ -360,6 +360,8 @@ class MailClient
 			$oMessage = \MailSo\Mail\Message::NewFetchResponseInstance(
 				$sFolderName, $aFetchResponse[0], $oBodyStructure);
 		}
+
+		return $oMessage;
 	}
 
 	/**
