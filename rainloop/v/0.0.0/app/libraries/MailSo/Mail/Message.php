@@ -345,37 +345,37 @@ class Message
 		return $this->iPriority;
 	}
 
-	public function Sender() : \MailSo\Mime\EmailCollection
+	public function Sender() : ?\MailSo\Mime\EmailCollection
 	{
 		return $this->oSender;
 	}
 
-	public function ReplyTo() : \MailSo\Mime\EmailCollection
+	public function ReplyTo() : ?\MailSo\Mime\EmailCollection
 	{
 		return $this->oReplyTo;
 	}
 
-	public function DeliveredTo() : \MailSo\Mime\EmailCollection
+	public function DeliveredTo() : ?\MailSo\Mime\EmailCollection
 	{
 		return $this->oDeliveredTo;
 	}
 
-	public function To() : \MailSo\Mime\EmailCollection
+	public function To() : ?\MailSo\Mime\EmailCollection
 	{
 		return $this->oTo;
 	}
 
-	public function Cc() : \MailSo\Mime\EmailCollection
+	public function Cc() : ?\MailSo\Mime\EmailCollection
 	{
 		return $this->oCc;
 	}
 
-	public function Bcc() : \MailSo\Mime\EmailCollection
+	public function Bcc() : ?\MailSo\Mime\EmailCollection
 	{
 		return $this->oBcc;
 	}
 
-	public function Attachments() : \MailSo\Mail\AttachmentCollection
+	public function Attachments() : ?\MailSo\Mail\AttachmentCollection
 	{
 		return $this->oAttachments;
 	}

@@ -130,7 +130,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return (null !== $oParameters) ? $oParameters->ParameterValueByName($sParamName) : '';
 	}
 
-	public function &GetByName(string $sHeaderName) : \MailSo\Mime\Header
+	public function &GetByName(string $sHeaderName) : ?\MailSo\Mime\Header
 	{
 		$oResult = $oHeader = null;
 
@@ -266,7 +266,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	public function DkimStatuses() : int
+	public function DkimStatuses() : array
 	{
 		$aResult = array();
 
@@ -342,7 +342,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $aResult;
 	}
 
-	public function PopulateEmailColectionByDkim($oEmails) : int
+	public function PopulateEmailColectionByDkim($oEmails) : void
 	{
 		if ($oEmails && $oEmails instanceof \MailSo\Mime\EmailCollection)
 		{

@@ -874,9 +874,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Quota() : array
+	public function Quota() : ?array
 	{
-		$aReturn = false;
+		$aReturn = null;
 		if ($this->IsSupported('QUOTA'))
 		{
 			$this->SendRequest('GETQUOTAROOT "INBOX"');
@@ -1663,10 +1663,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
+	 * @return array|string
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
 	private function partialParseResponseBranch(&$oImapResponse, int $iStackIndex = -1,
-		bool $bTreatAsAtom = false, string $sParentToken = '', string $sOpenBracket = '') : array
+		bool $bTreatAsAtom = false, string $sParentToken = '', string $sOpenBracket = '')
 	{
 		$mNull = null;
 

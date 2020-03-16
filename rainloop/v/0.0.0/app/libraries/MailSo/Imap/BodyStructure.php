@@ -92,9 +92,9 @@ class BodyStructure
 	 */
 	private $aSubParts;
 
-	private function __construct(string $sContentType, string $sCharset, array $aBodyParams, string $sContentID,
-		string $sDescription, string $sMailEncodingName, string $sDisposition, array $aDispositionParams, string $sFileName,
-		string $sLanguage, string $sLocation, int $iSize, int $iTextLineCount, string $sPartID, array $aSubParts)
+	private function __construct(string $sContentType, ?string $sCharset, array $aBodyParams, ?string $sContentID,
+		?string $sDescription, ?string $sMailEncodingName, ?string $sDisposition, ?array $aDispositionParams, string $sFileName,
+		?string $sLanguage, ?string $sLocation, int $iSize, int $iTextLineCount, string $sPartID, ?array $aSubParts)
 	{
 		$this->sContentType = $sContentType;
 		$this->sCharset = $sCharset;
