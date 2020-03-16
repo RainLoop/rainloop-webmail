@@ -368,16 +368,16 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		return $sScriptName === $this->GetActiveScriptName();
 	}
 
-	private function parseLine(string $sLine) : array
+	private function parseLine(string $sLine) : ?array
 	{
 		if (false === $sLine || null === $sLine || \in_array(\substr($sLine, 0, 2), array('OK', 'NO')))
 		{
-			return false;
+			return null;
 		}
 
 		$iStart = -1;
 		$iIndex = 0;
-		$aResult = false;
+		$aResult = array();
 
 		for ($iPos = 0; $iPos < \strlen($sLine); $iPos++)
 		{
@@ -389,14 +389,13 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 				}
 				else
 				{
-					$aResult = \is_array($aResult) ? $aResult : array();
 					$aResult[$iIndex++] = \substr($sLine, $iStart + 1, $iPos - $iStart - 1);
 					$iStart = -1;
 				}
 			}
 		}
 
-		return \is_array($aResult) && isset($aResult[0]) ? $aResult : false;
+		return isset($aResult[0]) ? $aResult : null;
 	}
 
 	/**
