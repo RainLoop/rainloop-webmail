@@ -106,7 +106,7 @@ class Crypt
 		return self::long2str($aV, true);
 	}
 
-	private static function long2str(array $aV, array $aW) : string
+	private static function long2str(array $aV, bool $aW) : string
 	{
 		$iLen = \count($aV);
 		$iN = ($iLen - 1) << 2;

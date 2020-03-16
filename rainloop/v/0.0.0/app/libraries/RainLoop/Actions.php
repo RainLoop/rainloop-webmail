@@ -655,7 +655,7 @@ class Actions
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function GetAccount(bool $bThrowExceptionOnFalse = false) : \RainLoop\Model\Account
+	public function GetAccount(bool $bThrowExceptionOnFalse = false) : ?\RainLoop\Model\Account
 	{
 		return $this->getAccountFromToken($bThrowExceptionOnFalse);
 	}
@@ -1148,9 +1148,9 @@ class Actions
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function GetAccountFromCustomToken(string $sToken, bool $bThrowExceptionOnFalse = true, bool $bValidateShortToken = true, bool $bQ = false) : \RainLoop\Model\Account
+	public function GetAccountFromCustomToken(string $sToken, bool $bThrowExceptionOnFalse = true, bool $bValidateShortToken = true, bool $bQ = false) : ?\RainLoop\Model\Account
 	{
-		$oResult = false;
+		$oResult = null;
 		if (!empty($sToken))
 		{
 			$aAccountHash = $bQ ? \RainLoop\Utils::DecodeKeyValuesQ($sToken) : \RainLoop\Utils::DecodeKeyValues($sToken);
@@ -1193,9 +1193,9 @@ class Actions
 		return $oResult;
 	}
 
-	public function GetAccountFromSignMeToken() : \RainLoop\Model\Account
+	public function GetAccountFromSignMeToken() : ?\RainLoop\Model\Account
 	{
-		$oAccount = false;
+		$oAccount = null;
 
 		$sSignMeToken = \RainLoop\Utils::GetCookie(\RainLoop\Actions::AUTH_SIGN_ME_TOKEN_KEY, '');
 		if (!empty($sSignMeToken))
@@ -1232,7 +1232,7 @@ class Actions
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true) : \RainLoop\Model\Account
+	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true) : ?\RainLoop\Model\Account
 	{
 		return $this->GetAccountFromCustomToken($this->getLocalAuthToken(), $bThrowExceptionOnFalse, true, true);
 	}
@@ -1382,7 +1382,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		if (!$bAdmin)
 		{
 			$oAccount = $this->getAccountFromToken(false);
-			if ($oAccount instanceof \RainLoop\Model\Account)
+			if ($oAccount)
 			{
 				$aResult['IncludeCss'] = $aResult['UserCss'];
 

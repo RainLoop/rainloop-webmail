@@ -138,7 +138,7 @@ class Folder
 		return $this->oImapFolder->FlagsLowerCase();
 	}
 
-	public function SubFolders(bool $bCreateIfNull = false) : \MailSo\Mail\FolderCollection
+	public function SubFolders(bool $bCreateIfNull = false) : ?\MailSo\Mail\FolderCollection
 	{
 		if ($bCreateIfNull && !$this->oSubFolders)
 		{

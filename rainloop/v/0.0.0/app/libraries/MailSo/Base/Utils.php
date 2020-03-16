@@ -1389,11 +1389,11 @@ END;
 		return '';
 	}
 
-	public static function Utf8Clear(string $sUtfString, string $sReplaceOn = '') : string
+	public static function Utf8Clear(?string $sUtfString, string $sReplaceOn = '') : string
 	{
-		if ('' === $sUtfString)
+		if (!strlen($sUtfString))
 		{
-			return $sUtfString;
+			return '';
 		}
 
 		$sUtfString = \preg_replace(static::$sValidUtf8Regexp, '$1', $sUtfString);

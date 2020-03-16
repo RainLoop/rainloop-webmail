@@ -714,7 +714,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderInformation(string $sFolderName, string $sPrevUidNext = '', array $aUids = array()) : string
+	public function FolderInformation(string $sFolderName, string $sPrevUidNext = '', array $aUids = array()) : array
 	{
 		$aFlags = array();
 
@@ -1890,7 +1890,7 @@ class MailClient
 		return $oMessageCollection;
 	}
 
-	public function Quota() : array
+	public function Quota() : ?array
 	{
 		return $this->oImapClient->Quota();
 	}

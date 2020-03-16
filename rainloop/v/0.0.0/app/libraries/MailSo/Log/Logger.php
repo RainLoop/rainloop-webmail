@@ -125,7 +125,7 @@ class Logger extends \MailSo\Base\Collection
 		return 0 < $this->Count();
 	}
 
-	public function AddSecret(string $sWord) : bool
+	public function AddSecret(string $sWord) : void
 	{
 		if (\is_string($sWord) && 0 < \strlen(\trim($sWord)))
 		{
