@@ -28,9 +28,8 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 
 	/**
 	 * @param \RainLoop\Model\Account|string|null $oAccount
-	 * @param mixed $sValue
 	 */
-	public function Put($oAccount, int $iStorageType, string $sKey, $sValue) : bool
+	public function Put($oAccount, int $iStorageType, string $sKey, string $sValue) : bool
 	{
 		return false !== @\file_put_contents(
 			$this->generateFileName($oAccount, $iStorageType, $sKey, true), $sValue);
@@ -166,9 +165,6 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		return $sFilePath;
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 */
 	public function SetLogger(?\MailSo\Log\Logger $oLogger)
 	{
 		$this->oLogger = $oLogger;

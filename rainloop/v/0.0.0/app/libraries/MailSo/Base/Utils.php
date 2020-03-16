@@ -114,10 +114,7 @@ END;
 		'.949' => 'euc-kr',
 	);
 
-	/**
-	 * @return string
-	 */
-	public static function DetectSystemCharset()
+	public static function DetectSystemCharset() : string
 	{
 		$sResult = '';
 		$sLocale = @\setlocale(LC_ALL, '');
@@ -136,10 +133,7 @@ END;
 		return $sResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public static function ConvertSystemString($sSrt)
+	public static function ConvertSystemString(string $sSrt) : string
 	{
 		$sSrt = \trim($sSrt);
 		if (!empty($sSrt) && !static::IsUtf8($sSrt))
@@ -159,13 +153,7 @@ END;
 		return $sSrt;
 	}
 
-	/**
-	 * @param string $sEncoding
-	 * @param bool $bAsciAsUtf8 = false
-	 *
-	 * @return string
-	 */
-	public static function NormalizeCharset($sEncoding, $bAsciAsUtf8 = false)
+	public static function NormalizeCharset(string $sEncoding, bool $bAsciAsUtf8 = false) : string
 	{
 		$sEncoding = \strtolower($sEncoding);
 
@@ -214,13 +202,7 @@ END;
 		return $sEncoding;
 	}
 
-	/**
-	 * @param string $sCharset
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function NormalizeCharsetByValue($sCharset, $sValue)
+	public static function NormalizeCharsetByValue(string $sCharset, string $sValue) : string
 	{
 		$sCharset = static::NormalizeCharset($sCharset);
 
@@ -236,12 +218,9 @@ END;
 	}
 
 	/**
-	 * @param string $sFilePath
 	 * @param function $fFileExistsCallback = null
-	 *
-	 * @return string
 	 */
-	public static function SmartFileExists($sFilePath, $fFileExistsCallback = null)
+	public static function SmartFileExists(string $sFilePath, $fFileExistsCallback = null) : string
 	{
 		$sFilePath = \str_replace('\\', '/', \trim($sFilePath));
 		if (!$fFileExistsCallback)
@@ -285,26 +264,14 @@ END;
 		return $sFilePath;
 	}
 
-	/**
-	 * @param string $sCharset
-	 *
-	 * @return bool
-	 */
-	public static function ValidateCharsetName($sCharset)
+	public static function ValidateCharsetName(string $sCharset) : bool
 	{
 		$sCharset = \strtolower(static::NormalizeCharset($sCharset));
 		return 0 < \strlen($sCharset) && (\in_array($sCharset, array(\MailSo\Base\Enumerations\Charset::UTF_7_IMAP)) ||
 			\in_array($sCharset, static::$SuppostedCharsets));
 	}
 
-	/**
-	 * @param string $sInputString
-	 * @param string $sInputFromEncoding
-	 * @param string $sInputToEncoding
-	 *
-	 * @return string|bool
-	 */
-	public static function MbConvertEncoding($sInputString, $sInputFromEncoding, $sInputToEncoding)
+	public static function MbConvertEncoding(string $sInputString, string $sInputFromEncoding, string $sInputToEncoding) : string
 	{
 		static $sMbstringSubCh = null;
 		if (null === $sMbstringSubCh)
@@ -319,14 +286,7 @@ END;
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sInputString
-	 * @param string $sInputFromEncoding
-	 * @param string $sInputToEncoding
-	 *
-	 * @return string
-	 */
-	public static function ConvertEncoding($sInputString, $sInputFromEncoding, $sInputToEncoding)
+	public static function ConvertEncoding(string $sInputString, string $sInputFromEncoding, string $sInputToEncoding) : string
 	{
 		$sResult = $sInputString;
 
@@ -403,12 +363,7 @@ END;
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return bool
-	 */
-	public static function IsAscii($sValue)
+	public static function IsAscii(string $sValue) : bool
 	{
 		if ('' === \trim($sValue))
 		{
@@ -418,32 +373,17 @@ END;
 		return !\preg_match('/[^\x09\x10\x13\x0A\x0D\x20-\x7E]/', $sValue);
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function StrToLowerIfAscii($sValue)
+	public static function StrToLowerIfAscii(string $sValue) : string
 	{
 		return static::IsAscii($sValue) ? \strtolower($sValue) : $sValue;
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function StrToUpperIfAscii($sValue)
+	public static function StrToUpperIfAscii(string $sValue) : string
 	{
 		return static::IsAscii($sValue) ? \strtoupper($sValue) : $sValue;
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function StrMailDomainToLowerIfAscii($sValue)
+	public static function StrMailDomainToLowerIfAscii(string $sValue) : string
 	{
 		$aParts = \explode('@', $sValue, 2);
 		if (!empty($aParts[1]))
@@ -454,35 +394,19 @@ END;
 		return \implode('@', $aParts);
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function StripSpaces($sValue)
+	public static function StripSpaces(string $sValue) : string
 	{
 		return static::Trim(
 			\preg_replace('/[\s]+/u', ' ', $sValue));
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return bool
-	 */
-	public static function IsUtf8($sValue)
+	public static function IsUtf8(string $sValue) : bool
 	{
 		return (bool) (\function_exists('mb_check_encoding') ?
 			\mb_check_encoding($sValue, 'UTF-8') : \preg_match('//u', $sValue));
 	}
 
-	/**
-	 * @param int $iSize
-	 * @param int $iRound
-	 *
-	 * @return string
-	 */
-	public static function FormatFileSize($iSize, $iRound = 0)
+	public static function FormatFileSize(int $iSize, int $iRound = 0) : string
 	{
 		$aSizes = array('B', 'KB', 'MB');
 		for ($iIndex = 0; $iSize > 1024 && isset($aSizes[$iIndex + 1]); $iIndex++)
@@ -492,13 +416,7 @@ END;
 		return \round($iSize, $iRound).$aSizes[$iIndex];
 	}
 
-	/**
-	 * @param string $sEncodedValue
-	 * @param string $sEncodeingType
-	 *
-	 * @return string
-	 */
-	public static function DecodeEncodingValue($sEncodedValue, $sEncodeingType)
+	public static function DecodeEncodingValue(string $sEncodedValue, string $sEncodeingType) : string
 	{
 		$sResult = $sEncodedValue;
 		switch (\strtolower($sEncodeingType))
@@ -516,24 +434,12 @@ END;
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sInputValue
-	 *
-	 * @return string
-	 */
-	public static function DecodeFlowedFormat($sInputValue)
+	public static function DecodeFlowedFormat(string $sInputValue) : string
 	{
 		return \preg_replace('/ ([\r]?[\n])/m', ' ', $sInputValue);
 	}
 
-	/**
-	 * @param string $sEncodedValue
-	 * @param string $sIncomingCharset = ''
-	 * @param string $sForcedIncomingCharset = ''
-	 *
-	 * @return string
-	 */
-	public static function DecodeHeaderValue($sEncodedValue, $sIncomingCharset = '', $sForcedIncomingCharset = '')
+	public static function DecodeHeaderValue(string $sEncodedValue, string $sIncomingCharset = '', string $sForcedIncomingCharset = '') : string
 	{
 		$sValue = $sEncodedValue;
 		if (0 < \strlen($sIncomingCharset))
@@ -646,13 +552,7 @@ END;
 		return $sValue;
 	}
 
-	/**
-	 * @param string $sIncHeaders
-	 * @param string $aHeadersToRemove = array()
-	 *
-	 * @return string
-	 */
-	public static function RemoveHeaderFromHeaders($sIncHeaders, $aHeadersToRemove = array())
+	public static function RemoveHeaderFromHeaders(string $sIncHeaders, array $aHeadersToRemove = array()) : string
 	{
 		$sResultHeaders = $sIncHeaders;
 
@@ -704,13 +604,7 @@ END;
 		return $sResultHeaders;
 	}
 
-	/**
-	 * @param string $sEncodeType
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function EncodeUnencodedValue($sEncodeType, $sValue)
+	public static function EncodeUnencodedValue(string $sEncodeType, string $sValue) : string
 	{
 		$sValue = \trim($sValue);
 		if (0 < \strlen($sValue) && !static::IsAscii($sValue))
@@ -736,13 +630,9 @@ END;
 	/**
 	 * @unused
 	 *
-	 * @param string $sEncodeType
-	 * @param string $sEncodeCharset
-	 * @param string $sValue
 	 *
-	 * @return string
 	 */
-	public static function EncodeHeaderValue($sEncodeType, $sEncodeCharset, $sValue)
+	public static function EncodeHeaderValue(string $sEncodeType, string $sEncodeCharset, string $sValue) : string
 	{
 		$sValue = \trim($sValue);
 		if (0 < \strlen($sValue) && !static::IsAscii($sValue))
@@ -764,16 +654,7 @@ END;
 		return \trim($sValue);
 	}
 
-	/**
-	 * @param string $sAttrName
-	 * @param string $sValue = 'utf-8'
-	 * @param string $sCharset = ''
-	 * @param string $sLang = ''
-	 * @param int $iLen = 78
-	 *
-	 * @return string|bool
-	 */
-	public static function AttributeRfc2231Encode($sAttrName, $sValue, $sCharset = 'utf-8', $sLang = '', $iLen = 1000)
+	public static function AttributeRfc2231Encode(string $sAttrName, string $sValue, string $sCharset = 'utf-8', string $sLang = '', int $iLen = 1000) : string
 	{
 		$sValue = \strtoupper($sCharset).'\''.$sLang.'\''.
 			\preg_replace_callback('/[\x00-\x20*\'%()<>@,;:\\\\"\/[\]?=\x80-\xFF]/', function ($match) {
@@ -806,13 +687,8 @@ END;
 			return $sAttrName.'*='.$sValue;
 		}
 	}
-	/**
-	 * @param string $sAttrName
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function EncodeHeaderUtf8AttributeValue($sAttrName, $sValue)
+
+	public static function EncodeHeaderUtf8AttributeValue(string $sAttrName, string $sValue) : string
 	{
 		$sAttrName = \trim($sAttrName);
 		$sValue = \trim($sValue);
@@ -836,12 +712,7 @@ END;
 		return \trim($sValue);
 	}
 
-	/**
-	 * @param string $sEmail
-	 *
-	 * @return string
-	 */
-	public static function GetAccountNameFromEmail($sEmail)
+	public static function GetAccountNameFromEmail(string $sEmail) : string
 	{
 		$sResult = '';
 		if (0 < \strlen($sEmail))
@@ -853,12 +724,7 @@ END;
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sEmail
-	 *
-	 * @return string
-	 */
-	public static function GetDomainFromEmail($sEmail)
+	public static function GetDomainFromEmail(string $sEmail) : string
 	{
 		$sResult = '';
 		if (0 < \strlen($sEmail))
@@ -873,12 +739,7 @@ END;
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sDomain
-	 *
-	 * @return string
-	 */
-	public static function GetClearDomainName($sDomain)
+	public static function GetClearDomainName(string $sDomain) : string
 	{
 		$sResultDomain = \preg_replace(
 			'/^(webmail|email|mail|www|imap4|imap|demo|client|ssl|secure|test|cloud|box|m)\./i',
@@ -887,23 +748,13 @@ END;
 		return false === \strpos($sResultDomain, '.') ? $sDomain : $sResultDomain;
 	}
 
-	/**
-	 * @param string $sFileName
-	 *
-	 * @return string
-	 */
-	public static function GetFileExtension($sFileName)
+	public static function GetFileExtension(string $sFileName) : string
 	{
 		$iLast = \strrpos($sFileName, '.');
 		return false === $iLast ? '' : \strtolower(\substr($sFileName, $iLast + 1));
 	}
 
-	/**
-	 * @param string $sFileName
-	 *
-	 * @return string
-	 */
-	public static function MimeContentType($sFileName)
+	public static function MimeContentType(string $sFileName) : string
 	{
 		$sResult = 'application/octet-stream';
 		$sFileName = \trim(\strtolower($sFileName));
@@ -1085,13 +936,7 @@ END;
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sContentType
-	 * @param string $sFileName
-	 *
-	 * @return string
-	 */
-	public static function ContentTypeType($sContentType, $sFileName)
+	public static function ContentTypeType(string $sContentType, string $sFileName) : string
 	{
 		$sResult = '';
 		$sContentType = \strtolower($sContentType);
@@ -1151,12 +996,9 @@ END;
 	/**
 	 * @staticvar bool $bValidateAction
 	 *
-	 * @param int $iTimeToReset = 15
-	 * @param int $iTimeToAdd = 120
 	 *
-	 * @return bool
 	 */
-	public static function ResetTimeLimit($iTimeToReset = 15, $iTimeToAdd = 120)
+	public static function ResetTimeLimit(int $iTimeToReset = 15, int $iTimeToAdd = 120) : bool
 	{
 		$iTime = \time();
 		if ($iTime < \MailSo\Base\Loader::$InitTime + 5)
@@ -1193,12 +1035,7 @@ END;
 		return false;
 	}
 
-	/**
-	 * @param string $sText
-	 *
-	 * @return string
-	 */
-	public static function InlineRebuildStringToJsString($sText)
+	public static function InlineRebuildStringToJsString(string $sText) : string
 	{
 		static $aJsonReplaces = array(
 			array('\\', "\n", "\t", "\r", '\b', "\f", '"'),
@@ -1209,10 +1046,7 @@ END;
 			\str_replace($aJsonReplaces[0], $aJsonReplaces[1], $sText));
 	}
 
-	/**
-	 * @param array $aInput
-	 */
-	public static function ClearArrayUtf8Values(&$aInput)
+	public static function ClearArrayUtf8Values(array &$aInput)
 	{
 		if (\is_array($aInput))
 		{
@@ -1233,11 +1067,8 @@ END;
 
 	/**
 	 * @param mixed $mInput
-	 * @param \MailSo\Log\Logger|null $oLogger = null
-	 *
-	 * @return string
 	 */
-	public static function Php2js($mInput, $oLogger = null)
+	public static function Php2js($mInput, ?\MailSo\Log\Logger $oLogger = null) : string
 	{
 		static $iOpt = null;
 		if (null === $iOpt)
@@ -1283,46 +1114,26 @@ END;
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sFileName
-	 *
-	 * @return string
-	 */
-	public static function ClearFileName($sFileName)
+	public static function ClearFileName(string $sFileName) : string
 	{
 		return static::Trim(static::ClearNullBite(
 			static::StripSpaces(
 				\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sFileName))));
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function ClearXss($sValue)
+	public static function ClearXss(string $sValue) : string
 	{
 		return static::Trim(static::ClearNullBite(
 			\str_replace(array('"', '/', '\\', '*', '?', '<', '>', '|', ':'), ' ', $sValue)));
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function Trim($sValue)
+	public static function Trim(string $sValue) : string
 	{
 		return \trim(\preg_replace('/^[\x00-\x1F]+/u', '',
 			\preg_replace('/[\x00-\x1F]+$/u', '', \trim($sValue))));
 	}
 
-	/**
-	 * @param string $sDir
-	 *
-	 * @return bool
-	 */
-	public static function RecRmDir($sDir)
+	public static function RecRmDir(string $sDir) : bool
 	{
 		if (@\is_dir($sDir))
 		{
@@ -1349,11 +1160,7 @@ END;
 		return false;
 	}
 
-	/**
-	 * @param string $sSource
-	 * @param string $sDestination
-	 */
-	public static function CopyDir($sSource, $sDestination)
+	public static function CopyDir(string $sSource, string $sDestination)
 	{
 		if (\is_dir($sSource))
 		{
@@ -1387,14 +1194,7 @@ END;
 		}
 	}
 
-	/**
-	 * @param string $sTempPath
-	 * @param int $iTime2Kill
-	 * @param int $iNow
-	 *
-	 * @return bool
-	 */
-	public static function RecTimeDirRemove($sTempPath, $iTime2Kill, $iNow)
+	public static function RecTimeDirRemove(string $sTempPath, int $iTime2Kill, int $iNow) : bool
 	{
 		$iFileCount = 0;
 
@@ -1444,12 +1244,7 @@ END;
 		return true;
 	}
 
-	/**
-	 * @param string $sTempPath
-	 * @param int $iTime2Kill
-	 * @param int $iNow
-	 */
-	public static function TimeFilesRemove($sTempPath, $iTime2Kill, $iNow)
+	public static function TimeFilesRemove(string $sTempPath, int $iTime2Kill, int $iNow)
 	{
 		$bResult = true;
 
@@ -1481,13 +1276,7 @@ END;
 		return $bResult;
 	}
 
-	/**
-	 * @param string $sUtfString
-	 * @param int $iLength
-	 *
-	 * @return string
-	 */
-	public static function Utf8Truncate($sUtfString, $iLength)
+	public static function Utf8Truncate(string $sUtfString, int $iLength) : string
 	{
 		if (\strlen($sUtfString) <= $iLength)
 		{
@@ -1507,13 +1296,7 @@ END;
 		return '';
 	}
 
-	/**
-	 * @param string $sUtfString
-	 * @param string $sReplaceOn = ''
-	 *
-	 * @return string
-	 */
-	public static function Utf8Clear($sUtfString, $sReplaceOn = '')
+	public static function Utf8Clear(string $sUtfString, string $sReplaceOn = '') : string
 	{
 		if ('' === $sUtfString)
 		{
@@ -1539,12 +1322,7 @@ END;
 		return $sUtfString;
 	}
 
-	/**
-	 * @param string $sUtfString
-	 *
-	 * @return bool
-	 */
-	public static function IsRTL($sUtfString)
+	public static function IsRTL(string $sUtfString) : bool
 	{
 		// \x{0591}-\x{05F4} - Hebrew
 		// \x{0600}-\x{068F} - Arabic
@@ -1554,12 +1332,7 @@ END;
 		return 0 < (int) preg_match('/[\x{0591}-\x{05F4}\x{0600}-\x{068F}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{103A0}-\x{103DF}]/u', $sUtfString);
 	}
 
-	/**
-	 * @param string $sString
-	 *
-	 * @return string
-	 */
-	public static function Base64Decode($sString)
+	public static function Base64Decode(string $sString) : string
 	{
 		$sResultString = \base64_decode($sString, true);
 		if (false === $sResultString)
@@ -1587,33 +1360,18 @@ END;
 		return $sResultString;
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function UrlSafeBase64Encode($sValue)
+	public static function UrlSafeBase64Encode(string $sValue) : string
 	{
 		return \rtrim(\strtr(\base64_encode($sValue), '+/', '-_'), '=');
 	}
 
-	/**
-	 * @param string $sValue
-	 *
-	 * @return string
-	 */
-	public static function UrlSafeBase64Decode($sValue)
+	public static function UrlSafeBase64Decode(string $sValue) : string
 	{
 		$sValue = \rtrim(\strtr($sValue, '-_.', '+/='), '=');
 		return static::Base64Decode(\str_pad($sValue, \strlen($sValue) + (\strlen($sValue) % 4), '=', STR_PAD_RIGHT));
 	}
 
-	/**
-	 * @param string $sSequence
-	 *
-	 * @return array
-	 */
-	public static function ParseFetchSequence($sSequence)
+	public static function ParseFetchSequence(string $sSequence) : array
 	{
 		$aResult = array();
 		$sSequence = \trim($sSequence);
@@ -1641,12 +1399,8 @@ END;
 
 		return $aResult;
 	}
-	/**
-	 * @param array $aSequence
-	 *
-	 * @return string
-	 */
-	public static function PrepearFetchSequence($aSequence)
+
+	public static function PrepearFetchSequence(array $aSequence) : string
 	{
 		$aResult = array();
 		if (\is_array($aSequence) && 0 < \count($aSequence))
@@ -1693,13 +1447,9 @@ END;
 	}
 
 	/**
-	 *
 	 * @param resource $fResource
-	 * @param int $iBufferLen = 8192
-	 *
-	 * @return bool
 	 */
-	public static function FpassthruWithTimeLimitReset($fResource, $iBufferLen = 8192)
+	public static function FpassthruWithTimeLimitReset($fResource, int $iBufferLen = 8192) : bool
 	{
 		$bResult = false;
 		if (\is_resource($fResource))
@@ -1725,15 +1475,8 @@ END;
 
 	/**
 	 * @param resource $rRead
-	 * @param array $aWrite
-	 * @param int $iBufferLen = 8192
-	 * @param bool $bResetTimeLimit = true
-	 * @param bool $bFixCrLf = false
-	 * @param bool $bRewindOnComplete = false
-	 *
-	 * @return int|bool
 	 */
-	public static function MultipleStreamWriter($rRead, $aWrite, $iBufferLen = 8192, $bResetTimeLimit = true, $bFixCrLf = false, $bRewindOnComplete = false)
+	public static function MultipleStreamWriter($rRead, array $aWrite, int $iBufferLen = 8192, bool $bResetTimeLimit = true, bool $bFixCrLf = false, bool $bRewindOnComplete = false) : int
 	{
 		$mResult = false;
 		if ($rRead && \is_array($aWrite) && 0 < \count($aWrite))
@@ -1791,12 +1534,7 @@ END;
 		return $mResult;
 	}
 
-	/**
-	 * @param string $sUtfModifiedString
-	 *
-	 * @return string
-	 */
-	public static function ModifiedToPlainUtf7($sUtfModifiedString)
+	public static function ModifiedToPlainUtf7(string $sUtfModifiedString) : string
 	{
 		$sUtf = '';
 		$bBase = false;
@@ -1840,12 +1578,7 @@ END;
 		return $sUtf;
 	}
 
-	/**
-	 * @param string $sStr
-	 *
-	 * @return string|bool
-	 */
-	public static function Utf7ModifiedToUtf8($sStr)
+	public static function Utf7ModifiedToUtf8(string $sStr) : string
 	{
 		$aArray = array(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,
 			-1,-1,-1,-1,-1,-1,-1,-1,-1,62, 63,-1,-1,-1,52,53,54,55,56,57,58,59,60,61,-1,-1,-1,-1,-1,-1,-1,0,1,2,3,4,5,6,7,8,9,
@@ -1942,12 +1675,7 @@ END;
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sStr
-	 *
-	 * @return string|bool
-	 */
-	public static function Utf8ToUtf7Modified($sStr)
+	public static function Utf8ToUtf7Modified(string $sStr) : string
 	{
 		$sArray = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S',
 			'T','U','V','W','X','Y','Z', 'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o',
@@ -2087,12 +1815,7 @@ END;
 		return $sReturn;
 	}
 
-	/**
-	 * @param string|array $mFunctionNameOrNames
-	 *
-	 * @return bool
-	 */
-	public static function FunctionExistsAndEnabled($mFunctionNameOrNames)
+	public static function FunctionExistsAndEnabled($mFunctionNameOrNames) : bool
 	{
 		static $aCache = null;
 
@@ -2141,23 +1864,17 @@ END;
 		return !\in_array($mFunctionNameOrNames, $aCache);
 	}
 
-	/**
-	 * @param string $mValue
-	 *
-	 * @return string
-	 */
-	public static function ClearNullBite($mValue)
+	public static function ClearNullBite($mValue) : string
 	{
 		return \str_replace('%00', '', $mValue);
 	}
 
 	/**
 	 * @param mixed $mValue
-	 * @param bool $bClearNullBite = false
 	 *
 	 * @return mixed
 	 */
-	public static function StripSlashesValue($mValue, $bClearNullBite = false)
+	public static function StripSlashesValue($mValue, bool $bClearNullBite = false)
 	{
 		static $bIsMagicQuotesOn = null;
 		if (null === $bIsMagicQuotesOn)
@@ -2190,12 +1907,7 @@ END;
 		return $mValue;
 	}
 
-	/**
-	 * @param string $sStr
-	 *
-	 * @return string
-	 */
-	public static function CharsetDetect($sStr)
+	public static function CharsetDetect(string $sStr) : string
 	{
 		$mResult = '';
 		if (!static::IsAscii($sStr))
@@ -2206,35 +1918,19 @@ END;
 		return \is_string($mResult) && 0 < \strlen($mResult) ? $mResult : '';
 	}
 
-	/**
-	 * @param string $sAdditionalSalt = ''
-	 *
-     * @return string
-     */
-    public static function Md5Rand($sAdditionalSalt = '')
+    public static function Md5Rand(string $sAdditionalSalt = '') : string
     {
 		return \md5(\microtime(true).\rand(10000, 99999).
 			\md5($sAdditionalSalt).\rand(10000, 99999).\microtime(true));
 	}
 
-	/**
-	 * @param string $sAdditionalSalt = ''
-	 *
-     * @return string
-     */
-    public static function Sha1Rand($sAdditionalSalt = '')
+    public static function Sha1Rand(string $sAdditionalSalt = '') : string
     {
 		return \sha1(\microtime(true).\rand(10000, 99999).
 			\sha1($sAdditionalSalt).\rand(10000, 99999).\microtime(true));
 	}
 
-	/**
-	 * @param string $sData
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	public static function Hmac($sData, $sKey)
+	public static function Hmac(string $sData, string $sKey) : string
 	{
 		if (\function_exists('hash_hmac'))
 		{
@@ -2254,13 +1950,7 @@ END;
 		return \md5(($sKey ^ $sOpad).\pack('H*', \md5(($sKey ^ $sIpad).$sData)));
 	}
 
-	/**
-	 * @param string $sDomain
-	 * @param bool $bSimple = false
-	 *
-	 * @return bool
-	 */
-	public static function ValidateDomain($sDomain, $bSimple = false)
+	public static function ValidateDomain(string $sDomain, bool $bSimple = false) : bool
 	{
 		$aMatch = array();
 		if ($bSimple)
@@ -2274,20 +1964,12 @@ END;
 		));
 	}
 
-	/**
-	 * @param string $sIp
-	 *
-	 * @return bool
-	 */
-	public static function ValidateIP($sIp)
+	public static function ValidateIP(string $sIp) : bool
 	{
 		return !empty($sIp) && $sIp === @\filter_var($sIp, FILTER_VALIDATE_IP);
 	}
 
-	/**
-	 * @return \Net_IDNA2
-	 */
-	private static function idn()
+	private static function idn() : \Net
 	{
 		static $oIdn = null;
 		if (null === $oIdn)
@@ -2300,13 +1982,7 @@ END;
 		return $oIdn;
 	}
 
-	/**
-	 * @param string $sStr
-	 * @param bool $bLowerIfAscii = false
-	 *
-	 * @return string
-	 */
-	public static function IdnToUtf8($sStr, $bLowerIfAscii = false)
+	public static function IdnToUtf8(string $sStr, bool $bLowerIfAscii = false) : string
 	{
 		if (0 < \strlen($sStr) && \preg_match('/(^|\.|@)xn--/i', $sStr))
 		{
@@ -2314,19 +1990,13 @@ END;
 			{
 				$sStr = self::idn()->decode($sStr);
 			}
-			catch (\Exception $oException) {}
+			catch (\Throwable $oException) {}
 		}
 
 		return $bLowerIfAscii ? static::StrMailDomainToLowerIfAscii($sStr) : $sStr;
 	}
 
-	/**
-	 * @param string $sStr
-	 * @param bool $bLowerIfAscii = false
-	 *
-	 * @return string
-	 */
-	public static function IdnToAscii($sStr, $bLowerIfAscii = false)
+	public static function IdnToAscii(string $sStr, bool $bLowerIfAscii = false) : string
 	{
 		$sStr = $bLowerIfAscii ? static::StrMailDomainToLowerIfAscii($sStr) : $sStr;
 
@@ -2344,19 +2014,13 @@ END;
 			{
 				$sDomain = self::idn()->encode($sDomain);
 			}
-			catch (\Exception $oException) {}
+			catch (\Throwable $oException) {}
 		}
 
 		return ('' === $sUser ? '' : $sUser.'@').$sDomain;
 	}
 
-	/**
-	 * @param string $sHash
-	 * @param string $sSalt
-	 *
-	 * @return int
-	 */
-	public static function HashToId($sHash, $sSalt = '')
+	public static function HashToId(string $sHash, string $sSalt = '') : int
 	{
 		$sData = $sHash ? @\MailSo\Base\Crypt::XxteaDecrypt(\hex2bin($sHash), \md5($sSalt)) : null;
 
@@ -2369,25 +2033,14 @@ END;
 		return null;
 	}
 
-	/**
-	 * @param int $iID
-	 * @param string $sSalt
-	 *
-	 * @return string
-	 */
-	public static function IdToHash($iID, $sSalt = '')
+	public static function IdToHash(int $iID, string $sSalt = '') : string
 	{
 		return is_int($iID) ?
 			\bin2hex(\MailSo\Base\Crypt::XxteaEncrypt('id:'.$iID, \md5($sSalt))) : null
 		;
 	}
 
-	/**
-	 * @param string $sPassword
-	 *
-	 * @return bool
-	 */
-	public static function PasswordWeaknessCheck($sPassword)
+	public static function PasswordWeaknessCheck(string $sPassword) : bool
 	{
 		$sPassword = \trim($sPassword);
 		if (6 > \strlen($sPassword))

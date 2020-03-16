@@ -32,50 +32,32 @@ class ServiceActions
 		$this->sQuery = '';
 	}
 
-	/**
-	 * @return \MailSo\Log\Logger
-	 */
-	public function Logger()
+	public function Logger() : \MailSo\Log\Logger
 	{
 		return $this->oActions->Logger();
 	}
 
-	/**
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function Plugins()
+	public function Plugins() : \RainLoop\Plugins\Manager
 	{
 		return $this->oActions->Plugins();
 	}
 
-	/**
-	 * @return \RainLoop\Config\Application
-	 */
-	public function Config()
+	public function Config() : \RainLoop\Config\Application
 	{
 		return $this->oActions->Config();
 	}
 
-	/**
-	 * @return \MailSo\Cache\CacheClient
-	 */
-	public function Cacher()
+	public function Cacher() : \MailSo\Cache\CacheClient
 	{
 		return $this->oActions->Cacher();
 	}
 
-	/**
-	 * @return \RainLoop\Providers\Storage
-	 */
-	public function StorageProvider()
+	public function StorageProvider() : \RainLoop\Providers\Storage
 	{
 		return $this->oActions->StorageProvider();
 	}
 
-	/**
-	 * @return \RainLoop\Providers\Settings
-	 */
-	public function SettingsProvider()
+	public function SettingsProvider() : \RainLoop\Providers\Settings
 	{
 		return $this->oActions->SettingsProvider();
 	}

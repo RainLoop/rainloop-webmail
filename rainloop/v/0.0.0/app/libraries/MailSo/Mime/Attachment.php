@@ -57,9 +57,6 @@ class Attachment
 	 */
 	private $sContentLocation;
 
-	/**
-	 * @access private
-	 */
 	private function __construct($rResource, $sFileName, $iFileSize, $bIsInline, $bIsLinked, $sCID,
 		$aCustomContentTypeParams = array(), $sContentLocation = '')
 	{
@@ -75,18 +72,9 @@ class Attachment
 
 	/**
 	 * @param resource $rResource
-	 * @param string $sFileName = ''
-	 * @param int $iFileSize = 0
-	 * @param bool $bIsInline = false
-	 * @param bool $bIsLinked = false
-	 * @param string $sCID = ''
-	 * @param array $aCustomContentTypeParams = array()
-	 * @param string $sContentLocation = ''
-	 *
-	 * @return \MailSo\Mime\Attachment
 	 */
-	public static function NewInstance($rResource, $sFileName = '', $iFileSize = 0, $bIsInline = false,
-		$bIsLinked = false, $sCID = '', $aCustomContentTypeParams = array(), $sContentLocation = '')
+	public static function NewInstance($rResource, string $sFileName = '', int $iFileSize = 0, bool $bIsInline = false,
+		bool $bIsLinked = false, string $sCID = '', array $aCustomContentTypeParams = array(), string $sContentLocation = '') : self
 	{
 		return new self($rResource, $sFileName, $iFileSize, $bIsInline, $bIsLinked, $sCID, $aCustomContentTypeParams, $sContentLocation);
 	}
@@ -99,98 +87,62 @@ class Attachment
 		return $this->rResource;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ContentType()
+	public function ContentType() : string
 	{
 		return \MailSo\Base\Utils::MimeContentType($this->sFileName);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function CustomContentTypeParams()
+	public function CustomContentTypeParams() : array
 	{
 		return $this->aCustomContentTypeParams;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function CID()
+	public function CID() : string
 	{
 		return $this->sCID;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ContentLocation()
+	public function ContentLocation() : string
 	{
 		return $this->sContentLocation;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function FileName()
+	public function FileName() : string
 	{
 		return $this->sFileName;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function FileSize()
+	public function FileSize() : int
 	{
 		return $this->iFileSize;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsInline()
+	public function IsInline() : bool
 	{
 		return $this->bIsInline;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsImage()
+	public function IsImage() : bool
 	{
 		return 'image' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsArchive()
+	public function IsArchive() : bool
 	{
 		return 'archive' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsPdf()
+	public function IsPdf() : bool
 	{
 		return 'pdf' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsDoc()
+	public function IsDoc() : bool
 	{
 		return 'doc' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsLinked()
+	public function IsLinked() : bool
 	{
 		return $this->bIsLinked && 0 < \strlen($this->sCID);
 	}

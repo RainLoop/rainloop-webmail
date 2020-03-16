@@ -22,9 +22,6 @@ abstract class Collection
 	 */
 	protected $aItems;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		$this->aItems = array();
@@ -32,9 +29,8 @@ abstract class Collection
 
 	/**
 	 * @param mixed $mItem
-	 * @param bool $bToTop = false
 	 */
-	public function Add($mItem, $bToTop = false) : self
+	public function Add($mItem, bool $bToTop = false) : self
 	{
 		if ($bToTop)
 		{
@@ -49,10 +45,9 @@ abstract class Collection
 	}
 
 	/**
-	 * @param array $aItems
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function AddArray($aItems) : self
+	public function AddArray(array $aItems) : self
 	{
 		if (!\is_array($aItems))
 		{
@@ -72,10 +67,7 @@ abstract class Collection
 		$this->aItems = array();
 	}
 
-	/**
-	 * @return array
-	 */
-	public function CloneAsArray()
+	public function CloneAsArray() : array
 	{
 		return $this->aItems;
 	}
@@ -85,10 +77,7 @@ abstract class Collection
 		return \count($this->aItems);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function &GetAsArray()
+	public function &GetAsArray() : array
 	{
 		return $this->aItems;
 	}
@@ -112,9 +101,8 @@ abstract class Collection
 
 	/**
 	 * @param mixed $mCallback
-	 * @return array
 	 */
-	public function FilterList($mCallback)
+	public function FilterList($mCallback) : array
 	{
 		$aResult = array();
 		if (\is_callable($mCallback))
@@ -149,7 +137,7 @@ abstract class Collection
 	 * @return mixed | null
 	 * @return mixed
 	 */
-	public function &GetByIndex($iIndex)
+	public function &GetByIndex(int $iIndex)
 	{
 		$mResult = null;
 		if (\key_exists($iIndex, $this->aItems))
@@ -161,10 +149,9 @@ abstract class Collection
 	}
 
 	/**
-	 * @param array $aItems
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function SetAsArray($aItems)
+	public function SetAsArray(array $aItems)
 	{
 		if (!\is_array($aItems))
 		{

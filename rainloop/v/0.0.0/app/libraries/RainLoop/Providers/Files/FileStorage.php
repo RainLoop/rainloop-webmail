@@ -68,10 +68,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		return $mResult;
 	}
 
-	/**
-	 * @return string|bool
-	 */
-	public function GetFileName(\RainLoop\Model\Account $oAccount, string $sKey)
+	public function GetFileName(\RainLoop\Model\Account $oAccount, string $sKey) : string
 	{
 		$mResult = false;
 		$sFileName = $this->generateFullFileName($oAccount, $sKey);
@@ -100,10 +97,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		return $mResult;
 	}
 
-	/**
-	 * @return int|bool
-	 */
-	public function FileSize(\RainLoop\Model\Account $oAccount, string $sKey)
+	public function FileSize(\RainLoop\Model\Account $oAccount, string $sKey) : int
 	{
 		$mResult = false;
 		$sFileName = $this->generateFullFileName($oAccount, $sKey);

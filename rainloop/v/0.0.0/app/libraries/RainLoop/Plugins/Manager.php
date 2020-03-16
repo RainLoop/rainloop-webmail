@@ -595,18 +595,8 @@ class Manager
 		return $this->bIsEnabled ? \count($this->aPlugins) : 0;
 	}
 
-	/**
-	 * @param \MailSo\Log\Logger $oLogger
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public function SetLogger($oLogger) : self
+	public function SetLogger(\MailSo\Log\Logger $oLogger) : self
 	{
-		if (!($oLogger instanceof \MailSo\Log\Logger))
-		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
-		}
-
 		$this->oLogger = $oLogger;
 
 		return $this;

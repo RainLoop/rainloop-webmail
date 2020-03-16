@@ -138,7 +138,7 @@ class Notifications
 			self::UnknownError => 'UnknownError'
 		);
 
-		if (self::ClientViewError === $iCode && $oPrevious instanceof \Throwable)
+		if (self::ClientViewError === $iCode && $oPrevious)
 		{
 			return $oPrevious->getMessage();
 		}

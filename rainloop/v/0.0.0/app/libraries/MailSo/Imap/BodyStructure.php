@@ -92,28 +92,9 @@ class BodyStructure
 	 */
 	private $aSubParts;
 
-	/**
-	 * @access private
-	 *
-	 * @param string $sContentType
-	 * @param string $sCharset
-	 * @param array $aBodyParams
-	 * @param string $sContentID
-	 * @param string $sDescription
-	 * @param string $sMailEncodingName
-	 * @param string $sDisposition
-	 * @param array $aDispositionParams
-	 * @param string $sFileName
-	 * @param string $sLanguage
-	 * @param string $sLocation
-	 * @param int $iSize
-	 * @param int $iTextLineCount
-	 * @param string $sPartID
-	 * @param array $aSubParts
-	 */
-	private function __construct($sContentType, $sCharset, $aBodyParams, $sContentID,
-		$sDescription, $sMailEncodingName, $sDisposition, $aDispositionParams, $sFileName,
-		$sLanguage, $sLocation, $iSize, $iTextLineCount, $sPartID, $aSubParts)
+	private function __construct(string $sContentType, string $sCharset, array $aBodyParams, string $sContentID,
+		string $sDescription, string $sMailEncodingName, string $sDisposition, array $aDispositionParams, string $sFileName,
+		string $sLanguage, string $sLocation, int $iSize, int $iTextLineCount, string $sPartID, array $aSubParts)
 	{
 		$this->sContentType = $sContentType;
 		$this->sCharset = $sCharset;
@@ -241,35 +222,23 @@ class BodyStructure
 		return 'archive' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsPdf()
+	public function IsPdf() : bool
 	{
 		return 'pdf' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsDoc()
+	public function IsDoc() : bool
 	{
 		return 'doc' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsPgpSignature()
+	public function IsPgpSignature() : bool
 	{
 		return \in_array(\strtolower($this->ContentType()),
 			array('application/pgp-signature', 'application/pkcs7-signature'));
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsAttachBodyPart()
+	public function IsAttachBodyPart() : bool
 	{
 		$bResult = (
 			(null !== $this->sDisposition && 'attachment' === \strtolower($this->sDisposition))
@@ -285,10 +254,7 @@ class BodyStructure
 		return $bResult;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsFlowedFormat()
+	public function IsFlowedFormat() : bool
 	{
 		$bResult = !empty($this->aBodyParams['format']) &&
 			'flowed' === \strtolower(\trim($this->aBodyParams['format']));
@@ -301,10 +267,7 @@ class BodyStructure
 		return $bResult;
 	}
 
-	/**
-	 * @return array|null
-	 */
-	public function SearchPlainParts()
+	public function SearchPlainParts() : array
 	{
 		$aReturn = array();
 		$aParts = $this->SearchByContentType('text/plain');
@@ -318,10 +281,7 @@ class BodyStructure
 		return $aReturn;
 	}
 
-	/**
-	 * @return array|null
-	 */
-	public function SearchHtmlParts()
+	public function SearchHtmlParts() : array
 	{
 		$aReturn = array();
 		$aParts = $this->SearchByContentType('text/html');
@@ -337,10 +297,7 @@ class BodyStructure
 		return $aReturn;
 	}
 
-	/**
-	 * @return \MailSo\Imap\BodyStructure|null
-	 */
-	public function SearchInlineEncryptedPart()
+	public function SearchInlineEncryptedPart() : ?self
 	{
 		if ('multipart/encrypted' === \strtolower($this->ContentType()))
 		{
@@ -357,21 +314,13 @@ class BodyStructure
 		return null;
 	}
 
-	/**
-	 * @return array|null
-	 */
-	public function SearchHtmlOrPlainParts()
+	public function SearchHtmlOrPlainParts() : array
 	{
-		$mResult = $this->SearchHtmlParts();
-		if (null === $mResult || (\is_array($mResult) && 0 === count($mResult)))
-		{
-			$mResult = $this->SearchPlainParts();
-		}
-
-		if (null === $mResult || (\is_array($mResult) && 0 === count($mResult)))
+		$mResult = $this->SearchHtmlParts() ?: $this->SearchPlainParts();
+		if (!$mResult)
 		{
 			$oPart = $this->SearchInlineEncryptedPart();
-			if ($oPart instanceof \MailSo\Imap\BodyStructure)
+			if ($oPart instanceof self)
 			{
 				$mResult = array($oPart);
 			}
@@ -380,26 +329,10 @@ class BodyStructure
 		return $mResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function SearchCharset()
+	public function SearchCharset() : string
 	{
 		$sResult = '';
-		$mParts = array();
-
-		$mHtmlParts = $this->SearchHtmlParts();
-		$mPlainParts = $this->SearchPlainParts();
-
-		if (\is_array($mHtmlParts) && 0 < \count($mHtmlParts))
-		{
-			$mParts = \array_merge($mParts, $mHtmlParts);
-		}
-
-		if (\is_array($mPlainParts) && 0 < \count($mPlainParts))
-		{
-			$mParts = \array_merge($mParts, $mPlainParts);
-		}
+		$mParts = \array_merge($this->SearchHtmlParts(), $this->SearchPlainParts());
 
 		foreach ($mParts as $oPart)
 		{
@@ -432,9 +365,8 @@ class BodyStructure
 	/**
 	 * @param mixed $fCallback
 	 *
-	 * @return array
 	 */
-	public function SearchByCallback($fCallback)
+	public function SearchByCallback($fCallback) : array
 	{
 		$aReturn = array();
 		if (\call_user_func($fCallback, $this))
@@ -453,22 +385,14 @@ class BodyStructure
 		return $aReturn;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function SearchAttachmentsParts()
+	public function SearchAttachmentsParts() : array
 	{
 		return $this->SearchByCallback(function ($oItem) {
 			return $oItem->IsAttachBodyPart();
 		});
 	}
 
-	/**
-	 * @param string $sContentType
-	 *
-	 * @return array
-	 */
-	public function SearchByContentType($sContentType)
+	public function SearchByContentType(string $sContentType) : array
 	{
 		$sContentType = \strtolower($sContentType);
 		return $this->SearchByCallback(function ($oItem) use ($sContentType) {
@@ -476,12 +400,7 @@ class BodyStructure
 		});
 	}
 
-	/**
-	 * @param string $sMimeIndex
-	 *
-	 * @return \MailSo\Imap\BodyStructure
-	 */
-	public function GetPartByMimeIndex($sMimeIndex)
+	public function GetPartByMimeIndex(string $sMimeIndex) : self
 	{
 		$oPart = null;
 		if (0 < \strlen($sMimeIndex))
@@ -507,14 +426,7 @@ class BodyStructure
 		return $oPart;
 	}
 
-	/**
-	 * @param array $aParams
-	 * @param string $sParamName
-	 * @param string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8
-	 *
-	 * @return string
-	 */
-	private static function decodeAttrParamenter($aParams, $sParamName, $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8)
+	private static function decodeAttrParamenter(array $aParams, string $sParamName, string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8) : string
 	{
 		$sResult = '';
 		if (isset($aParams[$sParamName]))
@@ -580,13 +492,7 @@ class BodyStructure
 		return $sResult;
 	}
 
-	/**
-	 * @param array $aBodyStructure
-	 * @param string $sPartID = ''
-	 *
-	 * @return \MailSo\Imap\BodyStructure
-	 */
-	public static function NewInstance(array $aBodyStructure, $sPartID = '')
+	public static function NewInstance(array $aBodyStructure, string $sPartID = '') : self
 	{
 		if (!\is_array($aBodyStructure) || 2 > \count($aBodyStructure))
 		{
@@ -892,13 +798,7 @@ class BodyStructure
 		}
 	}
 
-	/**
-	 * @param array $aBodyStructure
-	 * @param string $sSubPartID
-	 *
-	 * @return \MailSo\Imap\BodyStructure|null
-	 */
-	public static function NewInstanceFromRfc822SubPart(array $aBodyStructure, $sSubPartID)
+	public static function NewInstanceFromRfc822SubPart(array $aBodyStructure, string $sSubPartID) : ?self
 	{
 		$oBody = null;
 		$aBodySubStructure = self::findPartByIndexInArray($aBodyStructure, $sSubPartID);
@@ -910,13 +810,7 @@ class BodyStructure
 		return $oBody;
 	}
 
-	/**
-	 * @param array $aList
-	 * @param string $sPartID
-	 *
-	 * @return array|null
-	 */
-	private static function findPartByIndexInArray(array $aList, $sPartID)
+	private static function findPartByIndexInArray(array $aList, string $sPartID) : ?array
 	{
 		$bFind = false;
 		$aPath = \explode('.', ''.$sPartID);
@@ -939,11 +833,9 @@ class BodyStructure
 	 * Returns dict with key="charset" and value="US-ASCII" for array ("CHARSET" "US-ASCII").
 	 * Keys are lowercased (StringDictionary itself does this), values are not altered.
 	 *
-	 * @param array $aList
 	 *
-	 * @return array
 	 */
-	private static function getKeyValueListFromArrayList(array $aList)
+	private static function getKeyValueListFromArrayList(array $aList) : array
 	{
 		$aDict = null;
 		if (0 === \count($aList) % 2)

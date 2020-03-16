@@ -53,9 +53,6 @@ class LinkFinder
 	 */
 	private $iOptimizationLimit;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->iHtmlSpecialCharsFlags = (\defined('ENT_QUOTES') && \defined('ENT_SUBSTITUTE') && \defined('ENT_HTML401'))
@@ -71,18 +68,12 @@ class LinkFinder
 		$this->Clear();
 	}
 
-	/**
-	 * @return \MailSo\Base\LinkFinder
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @return \MailSo\Base\LinkFinder
-	 */
-	public function Clear()
+	public function Clear() : self
 	{
 		$this->aPrepearPlainStringUrls = array();
 		$this->fLinkWrapper = null;
@@ -92,12 +83,7 @@ class LinkFinder
 		return $this;
 	}
 
-	/**
-	 * @param string $sText
-	 *
-	 * @return \MailSo\Base\LinkFinder
-	 */
-	public function Text($sText)
+	public function Text(string $sText) : self
 	{
 		$this->sText = $sText;
 
@@ -106,10 +92,8 @@ class LinkFinder
 
 	/**
 	 * @param mixed $fLinkWrapper
-	 *
-	 * @return \MailSo\Base\LinkFinder
 	 */
-	public function LinkWrapper($fLinkWrapper)
+	public function LinkWrapper($fLinkWrapper) : self
 	{
 		$this->fLinkWrapper = $fLinkWrapper;
 
@@ -118,22 +102,15 @@ class LinkFinder
 
 	/**
 	 * @param mixed $fMailWrapper
-	 *
-	 * @return \MailSo\Base\LinkFinder
 	 */
-	public function MailWrapper($fMailWrapper)
+	public function MailWrapper($fMailWrapper) : self
 	{
 		$this->fMailWrapper = $fMailWrapper;
 
 		return $this;
 	}
 
-	/**
-	 * @param bool $bAddTargetBlank = false
-	 *
-	 * @return \MailSo\Base\LinkFinder
-	 */
-	public function UseDefaultWrappers($bAddTargetBlank = false)
+	public function UseDefaultWrappers(bool $bAddTargetBlank = false) : self
 	{
 		$this->fLinkWrapper = function ($sLink) use ($bAddTargetBlank) {
 
@@ -153,12 +130,7 @@ class LinkFinder
 		return $this;
 	}
 
-	/**
-	 * @param bool $bUseHtmlSpecialChars = true
-	 *
-	 * @return string
-	 */
-	public function CompileText($bUseHtmlSpecialChars = true)
+	public function CompileText(bool $bUseHtmlSpecialChars = true) : string
 	{
 		$sText = \substr($this->sText, 0, $this->iOptimizationLimit);
 		$sSubText = \substr($this->sText, $this->iOptimizationLimit);
@@ -189,8 +161,8 @@ class LinkFinder
 		if (0 < \count($this->aPrepearPlainStringUrls))
 		{
 			$aPrepearPlainStringUrls = $this->aPrepearPlainStringUrls;
-			$sResult = \preg_replace_callback('/'.\preg_quote(\MailSo\Base\LinkFinder::OPEN_LINK, '/').
-				'([\d]+)'.\preg_quote(\MailSo\Base\LinkFinder::CLOSE_LINK, '/').'/',
+			$sResult = \preg_replace_callback('/'.\preg_quote(static::OPEN_LINK, '/').
+				'([\d]+)'.\preg_quote(static::CLOSE_LINK, '/').'/',
 					function ($aMatches) use ($aPrepearPlainStringUrls) {
 						$iIndex = (int) $aMatches[1];
 						return isset($aPrepearPlainStringUrls[$iIndex]) ? $aPrepearPlainStringUrls[$iIndex] : '';
@@ -203,12 +175,9 @@ class LinkFinder
 	}
 
 	/**
-	 * @param string $sText
 	 * @param mixed $fWrapper
-	 *
-	 * @return string
 	 */
-	private function findLinks($sText, $fWrapper)
+	private function findLinks(string $sText, $fWrapper) : string
 	{
 		$sPattern = '/([\W]|^)((?:https?:\/\/)|(?:svn:\/\/)|(?:git:\/\/)|(?:s?ftps?:\/\/)|(?:www\.))'.
 			'((\S+?)(\\/)?)((?:&gt;)?|[^\w\=\\/;\(\)\[\]]*?)(?=<|\s|$)/imu';
@@ -236,9 +205,9 @@ class LinkFinder
 				{
 					$aPrepearPlainStringUrls[] = \stripslashes($sLinkWithWrap);
 					return $aMatch[1].
-						\MailSo\Base\LinkFinder::OPEN_LINK.
+						static::OPEN_LINK.
 						(\count($aPrepearPlainStringUrls) - 1).
-						\MailSo\Base\LinkFinder::CLOSE_LINK.
+						static::CLOSE_LINK.
 						$aMatch[6];
 				}
 
@@ -258,12 +227,9 @@ class LinkFinder
 	}
 
 	/**
-	 * @param string $sText
 	 * @param mixed $fWrapper
-	 *
-	 * @return string
 	 */
-	private function findMails($sText, $fWrapper)
+	private function findMails(string $sText, $fWrapper) : string
 	{
 		$sPattern = '/([\w\.!#\$%\-+.]+@[A-Za-z0-9\-]+(\.[A-Za-z0-9\-]+)+)/';
 
@@ -276,9 +242,9 @@ class LinkFinder
 				if (\is_string($sMailWithWrap) && 0 < \strlen($sMailWithWrap))
 				{
 					$aPrepearPlainStringUrls[] = \stripslashes($sMailWithWrap);
-					return \MailSo\Base\LinkFinder::OPEN_LINK.
+					return static::OPEN_LINK.
 						(\count($aPrepearPlainStringUrls) - 1).
-						\MailSo\Base\LinkFinder::CLOSE_LINK;
+						static::CLOSE_LINK;
 				}
 
 				return $aMatch[1];

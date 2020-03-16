@@ -57,10 +57,7 @@ abstract class AbstractPlugin
 		$this->bLangs = false;
 	}
 
-	/**
-	 * @return \RainLoop\Config\Plugin
-	 */
-	public function Config()
+	public function Config() : \RainLoop\Config\Plugin
 	{
 		if (!$this->bPluginConfigLoaded && $this->oPluginConfig)
 		{
@@ -77,10 +74,7 @@ abstract class AbstractPlugin
 		return $this->oPluginConfig;
 	}
 
-	/**
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function Manager()
+	public function Manager() : \RainLoop\Plugins\Manager
 	{
 		return $this->oPluginManager;
 	}
@@ -125,9 +119,6 @@ abstract class AbstractPlugin
 		return '';
 	}
 
-	/**
-	 * @final
-	 */
 	final public function ConfigMap() : array
 	{
 		if (null === $this->aConfigMap)

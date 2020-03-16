@@ -141,13 +141,7 @@ class Domain
 			$sWhiteList);
 	}
 
-	/**
-	 * @param string $sName
-	 * @param array $aDomain
-	 *
-	 * @return \RainLoop\Model\Domain|null
-	 */
-	public static function NewInstanceFromDomainConfigArray(string $sName, $aDomain)
+	public static function NewInstanceFromDomainConfigArray(string $sName, array $aDomain) : ?\RainLoop\Model\Domain
 	{
 		$oDomain = null;
 

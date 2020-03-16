@@ -52,9 +52,6 @@ class Response
 	 */
 	public $Tag;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->ResponseList = array();
@@ -66,20 +63,12 @@ class Response
 		$this->Tag = '';
 	}
 
-	/**
-	 * @return \MailSo\Imap\Response
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @param string $aList
-	 *
-	 * @return string
-	 */
-	private function recToLine($aList)
+	private function recToLine(array $aList) : string
 	{
 		$aResult = array();
 		if (\is_array($aList))
@@ -93,11 +82,7 @@ class Response
 		return \implode(' ', $aResult);
 	}
 
-
-	/**
-	 * @return string
-	 */
-	public function ToLine()
+	public function ToLine() : string
 	{
 		return $this->recToLine($this->ResponseList);
 	}

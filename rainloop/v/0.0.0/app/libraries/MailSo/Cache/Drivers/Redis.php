@@ -65,7 +65,7 @@ class Redis implements \MailSo\Cache\DriverInterface
 				$this->oRedis = null;
 			}
 		}
-		catch (\Exception $oExc)
+		catch (\Throwable $oExc)
 		{
 			$this->oRedis = null;
 			unset($oExc);

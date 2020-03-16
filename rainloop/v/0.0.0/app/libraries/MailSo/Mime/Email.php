@@ -38,11 +38,6 @@ class Email
 	private $sDkimValue;
 
 	/**
-	 * @access private
-	 *
-	 * @param string $sEmail
-	 * @param string $sDisplayName = ''
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
 	private function __construct($sEmail, $sDisplayName = '')
@@ -62,25 +57,17 @@ class Email
 	}
 
 	/**
-	 * @param string $sEmail
-	 * @param string $sDisplayName = ''
-	 *
-	 * @return \MailSo\Mime\Email
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function NewInstance($sEmail, $sDisplayName = '')
+	public static function NewInstance(string $sEmail, string $sDisplayName = '') : self
 	{
 		return new self($sEmail, $sDisplayName);
 	}
 
 	/**
-	 * @param string $sEmailAddress
-	 * @return \MailSo\Mime\Email
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public static function Parse($sEmailAddress)
+	public static function Parse(string $sEmailAddress) : self
 	{
 		$sEmailAddress = \MailSo\Base\Utils::Trim($sEmailAddress);
 		if (!\MailSo\Base\Validator::NotEmptyString($sEmailAddress, true))
@@ -207,88 +194,50 @@ class Email
 		return Email::NewInstance($sEmail, $sName);
 	}
 
-	/**
-	 * @param bool $bIdn = false
-	 *
-	 * @return string
-	 */
-	public function GetEmail($bIdn = false)
+	public function GetEmail(bool $bIdn = false) : string
 	{
 		return $bIdn ? \MailSo\Base\Utils::IdnToUtf8($this->sEmail) : $this->sEmail;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetDisplayName()
+	public function GetDisplayName() : string
 	{
 		return $this->sDisplayName;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetDkimStatus()
+	public function GetDkimStatus() : string
 	{
 		return $this->sDkimStatus;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetDkimValue()
+	public function GetDkimValue() : string
 	{
 		return $this->sDkimValue;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetAccountName()
+	public function GetAccountName() : string
 	{
 		return \MailSo\Base\Utils::GetAccountNameFromEmail($this->GetEmail(false));
 	}
 
-	/**
-	 * @param bool $bIdn = false
-	 *
-	 * @return string
-	 */
-	public function GetDomain($bIdn = false)
+	public function GetDomain(bool $bIdn = false) : string
 	{
 		return \MailSo\Base\Utils::GetDomainFromEmail($this->GetEmail($bIdn));
 	}
 
-	/**
-	 * @param string $sDkimStatus
-	 * @param string $sDkimValue = ''
-	 */
-	public function SetDkimStatusAndValue($sDkimStatus, $sDkimValue = '')
+	public function SetDkimStatusAndValue(string $sDkimStatus, string $sDkimValue = '')
 	{
 		$this->sDkimStatus = \MailSo\Mime\Enumerations\DkimStatus::normalizeValue($sDkimStatus);
 		$this->sDkimValue = $sDkimValue;
 	}
 
-	/**
-	 * @param bool $bIdn = false
-	 * @param bool $bDkim = true
-	 *
-	 * @return array
-	 */
-	public function ToArray($bIdn = false, $bDkim = true)
+	public function ToArray(bool $bIdn = false, bool $bDkim = true) : array
 	{
 		return $bDkim ?
 			array($this->sDisplayName, $this->GetEmail($bIdn), $this->sDkimStatus, $this->sDkimValue) :
 			array($this->sDisplayName, $this->GetEmail($bIdn));
 	}
 
-	/**
-	 * @param bool $bConvertSpecialsName = false
-	 * @param bool $bIdn = false
-	 *
-	 * @return string
-	 */
-	public function ToString($bConvertSpecialsName = false, $bIdn = false)
+	public function ToString(bool $bConvertSpecialsName = false, bool $bIdn = false) : string
 	{
 		$sReturn = '';
 

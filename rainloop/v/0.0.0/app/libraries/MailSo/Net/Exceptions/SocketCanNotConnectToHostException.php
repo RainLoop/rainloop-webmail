@@ -29,10 +29,6 @@ class SocketCanNotConnectToHostException extends \MailSo\Net\Exceptions\Connecti
 	private $iSocketCode;
 
 	/**
-	 * @param string $sSocketMessage = ''
-	 * @param int $iSocketCode = 0
-	 * @param string $sMessage = ''
-	 * @param int $iCode = 0
 	 * @param \Exception $oPrevious = null
 	 */
 	public function __construct($sSocketMessage = '', $iSocketCode = 0, $sMessage = '', $iCode = 0, $oPrevious = null)
@@ -43,18 +39,12 @@ class SocketCanNotConnectToHostException extends \MailSo\Net\Exceptions\Connecti
 		$this->iSocketCode = $iSocketCode;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getSocketMessage()
+	public function getSocketMessage() : string
 	{
 		return $this->sSocketMessage;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function getSocketCode()
+	public function getSocketCode() : int
 	{
 		return $this->iSocketCode;
 	}

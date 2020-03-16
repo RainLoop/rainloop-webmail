@@ -30,20 +30,15 @@ class Http
 		$this->bIsMagicQuotesOn = (bool) @\ini_get('magic_quotes_gpc');
 	}
 
-	/**
-	 * @return \MailSo\Base\Http
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
 	/**
 	 * @staticvar \MailSo\Base\Http $oInstance;
-	 *
-	 * @return \MailSo\Base\Http
 	 */
-	public static function SingletonInstance()
+	public static function SingletonInstance() : self
 	{
 		static $oInstance = null;
 		if (null === $oInstance)
@@ -54,185 +49,124 @@ class Http
 		return $oInstance;
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return bool
-	 */
-	public function HasQuery($sKey)
+	public function HasQuery(string $sKey) : bool
 	{
 		return isset($_GET[$sKey]);
 	}
 
 	/**
-	 * @param string $sKey
 	 * @param mixed $mDefault = null
-	 * @param bool $bClearPercZeroZero = true
 	 *
 	 * @return mixed
 	 */
-	public function GetQuery($sKey, $mDefault = null, $bClearPercZeroZero = true)
+	public function GetQuery(string $sKey, $mDefault = null, bool $bClearPercZeroZero = true)
 	{
 		return isset($_GET[$sKey]) ? \MailSo\Base\Utils::StripSlashesValue($_GET[$sKey], $bClearPercZeroZero) : $mDefault;
 	}
 
-	/**
-	 * @return array|null
-	 */
-	public function GetQueryAsArray()
+	public function GetQueryAsArray() : ?array
 	{
 		return isset($_GET) && \is_array($_GET) ? \MailSo\Base\Utils::StripSlashesValue($_GET, true) : null;
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return bool
-	 */
-	public function HasPost($sKey)
+	public function HasPost(string $sKey) : bool
 	{
 		return isset($_POST[$sKey]);
 	}
 
 	/**
-	 * @param string $sKey
 	 * @param mixed $mDefault = null
-	 * @param bool $bClearPercZeroZero = false
 	 *
 	 * @return mixed
 	 */
-	public function GetPost($sKey, $mDefault = null, $bClearPercZeroZero = false)
+	public function GetPost(string $sKey, $mDefault = null, bool $bClearPercZeroZero = false)
 	{
 		return isset($_POST[$sKey]) ? \MailSo\Base\Utils::StripSlashesValue($_POST[$sKey], $bClearPercZeroZero) : $mDefault;
 	}
 
-	/**
-	 * @return array|null
-	 */
-	public function GetPostAsArray()
+	public function GetPostAsArray() : ?array
 	{
 		return isset($_POST) && \is_array($_POST) ? \MailSo\Base\Utils::StripSlashesValue($_POST, false) : null;
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return bool
-	 */
-	public function HasRequest($sKey)
+	public function HasRequest(string $sKey) : bool
 	{
 		return isset($_REQUEST[$sKey]);
 	}
 
 	/**
-	 * @param string $sKey
 	 * @param mixed $mDefault = null
 	 *
 	 * @return mixed
 	 */
-	public function GetRequest($sKey, $mDefault = null)
+	public function GetRequest(string $sKey, $mDefault = null)
 	{
 		return isset($_REQUEST[$sKey]) ? \MailSo\Base\Utils::StripSlashesValue($_REQUEST[$sKey]) : $mDefault;
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return bool
-	 */
-	public function HasServer($sKey)
+	public function HasServer(string $sKey) : bool
 	{
 		return isset($_SERVER[$sKey]);
 	}
 
 	/**
-	 * @param string $sKey
 	 * @param mixed $mDefault = null
 	 *
 	 * @return mixed
 	 */
-	public function GetServer($sKey, $mDefault = null)
+	public function GetServer(string $sKey, $mDefault = null)
 	{
 		return isset($_SERVER[$sKey]) ? $_SERVER[$sKey] : $mDefault;
 	}
 
-	/**
-	 * @param string $sKey
-	 *
-	 * @return bool
-	 */
-	public function HasEnv($sKey)
+	public function HasEnv(string $sKey) : bool
 	{
 		return isset($_ENV[$sKey]);
 	}
 
 	/**
-	 * @param string $sKey
 	 * @param mixed $mDefault = null
 	 *
 	 * @return mixed
 	 */
-	public function GetEnv($sKey, $mDefault = null)
+	public function GetEnv(string $sKey, $mDefault = null)
 	{
 		return isset($_ENV[$sKey]) ? $_ENV[$sKey] : $mDefault;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ServerProtocol()
+	public function ServerProtocol() : string
 	{
 		return $this->GetServer('SERVER_PROTOCOL', 'HTTP/1.0');
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetMethod()
+	public function GetMethod() : string
 	{
 		return $this->GetServer('REQUEST_METHOD', '');
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsPost()
+	public function IsPost() : bool
 	{
 		return ('POST' === $this->GetMethod());
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsGet()
+	public function IsGet() : bool
 	{
 		return ('GET' === $this->GetMethod());
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetQueryString()
+	public function GetQueryString() : string
 	{
 		return $this->GetServer('QUERY_STRING', '');
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function CheckLocalhost($sServer)
+	public function CheckLocalhost(string $sServer) : bool
 	{
 		return \in_array(\strtolower(\trim($sServer)), array(
 			'localhost', '127.0.0.1', '::1', '::1/128', '0:0:0:0:0:0:0:1'
 		));
 	}
 
-	/**
-	 * @param string $sValueToCheck = ''
-	 *
-	 * @return bool
-	 */
-	public function IsLocalhost($sValueToCheck = '')
+	public function IsLocalhost(string $sValueToCheck = '') : bool
 	{
 		if (empty($sValueToCheck))
 		{
@@ -242,10 +176,7 @@ class Http
 		return $this->CheckLocalhost($sValueToCheck);
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetRawBody()
+	public function GetRawBody() : string
 	{
 		static $sRawBody = null;
 		if (null === $sRawBody)
@@ -256,12 +187,7 @@ class Http
 		return $sRawBody;
 	}
 
-	/**
-	 * @param string $sHeader
-	 *
-	 * @return string
-	 */
-	public function GetHeader($sHeader)
+	public function GetHeader(string $sHeader) : string
 	{
 		$sServerKey = 'HTTP_'.\strtoupper(\str_replace('-', '_', $sHeader));
 		$sResultHeader = $this->GetServer($sServerKey, '');
@@ -279,22 +205,12 @@ class Http
 		return $sResultHeader;
 	}
 
-	/**
-	 * @param bool $bCheckProxy = true
-	 *
-	 * @return string
-	 */
-	public function GetScheme($bCheckProxy = true)
+	public function GetScheme(bool $bCheckProxy = true) : string
 	{
 		return $this->IsSecure($bCheckProxy) ? 'https' : 'http';
 	}
 
-	/**
-	 * @param bool $bCheckProxy = true
-	 *
-	 * @return bool
-	 */
-	public function IsSecure($bCheckProxy = true)
+	public function IsSecure(bool $bCheckProxy = true) : bool
 	{
 		$sHttps = \strtolower($this->GetServer('HTTPS', ''));
 		if ('on' === $sHttps || ('' === $sHttps && '443' === (string) $this->GetServer('SERVER_PORT', '')))
@@ -313,14 +229,7 @@ class Http
 		return false;
 	}
 
-	/**
-	 * @param bool $bWithRemoteUserData = false
-	 * @param bool $bWithoutWWW = true
-	 * @param bool $bWithoutPort = false
-	 *
-	 * @return string
-	 */
-	public function GetHost($bWithRemoteUserData = false, $bWithoutWWW = true, $bWithoutPort = false)
+	public function GetHost(bool $bWithRemoteUserData = false, bool $bWithoutWWW = true, bool $bWithoutPort = false) : string
 	{
 		$sHost = $this->GetServer('HTTP_HOST', '');
 		if (0 === \strlen($sHost))
@@ -350,12 +259,7 @@ class Http
 		return $sHost;
 	}
 
-	/**
-	 * @param bool $bCheckProxy = false
-	 *
-	 * @return string
-	 */
-	public function GetClientIp($bCheckProxy = false)
+	public function GetClientIp(bool $bCheckProxy = false) : string
 	{
 		$sIp = '';
 		if ($bCheckProxy && null !== $this->GetServer('HTTP_CLIENT_IP', null))
@@ -374,20 +278,8 @@ class Http
 		return $sIp;
 	}
 
-	/**
-	 * @param string $sUrl
-	 * @param array $aPost = array()
-	 * @param string $sCustomUserAgent = 'MailSo Http User Agent (v1)'
-	 * @param int $iCode = 0
-	 * @param \MailSo\Log\Logger $oLogger = null
-	 * @param int $iTimeout = 20
-	 * @param string $sProxy = ''
-	 * @param string $sProxyAuth = ''
-	 *
-	 * @return string|bool
-	 */
-	public function SendPostRequest($sUrl, $aPost = array(), $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$iCode = 0,
-		$oLogger = null, $iTimeout = 20, $sProxy = '', $sProxyAuth = '')
+	public function SendPostRequest(string $sUrl, array $aPost = array(), string $sCustomUserAgent = 'MailSo Http User Agent (v1)', int &$iCode = 0,
+		?\MailSo\Log\Logger $oLogger = null, int $iTimeout = 20, string $sProxy = '', string $sProxyAuth = '') : string
 	{
 		$aOptions = array(
 			CURLOPT_URL => $sUrl,
@@ -444,14 +336,7 @@ class Http
 		return $mResult;
 	}
 
-	/**
-	 * @param string $sUrl
-	 * @param array $aOptions
-	 * @param \MailSo\Log\Logger $oLogger = null
-	 *
-	 * @return string
-	 */
-	static public function DetectAndHackFollowLocationUrl($sUrl, &$aOptions, $oLogger = null)
+	static public function DetectAndHackFollowLocationUrl(string $sUrl, array &$aOptions, ?\MailSo\Log\Logger $oLogger = null) : string
 	{
 		$sSafeMode = \strtolower(\trim(@\ini_get('safe_mode')));
 		$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode;
@@ -535,22 +420,10 @@ class Http
 	}
 
 	/**
-	 * @param string $sUrl
 	 * @param resource $rFile
-	 * @param string $sCustomUserAgent = 'MailSo Http User Agent (v1)'
-	 * @param string $sContentType = ''
-	 * @param int $iCode = 0
-	 * @param \MailSo\Log\Logger $oLogger = null
-	 * @param int $iTimeout = 10
-	 * @param string $sProxy = ''
-	 * @param string $sProxyAuth = ''
-	 * @param array $aHttpHeaders = array()
-	 * @param bool $bFollowLocation = true
-	 *
-	 * @return bool
 	 */
-	public function SaveUrlToFile($sUrl, $rFile, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0,
-		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $aHttpHeaders = array(), $bFollowLocation = true)
+	public function SaveUrlToFile(string $sUrl, $rFile, string $sCustomUserAgent = 'MailSo Http User Agent (v1)', string &$sContentType = '', int &$iCode = 0,
+		?\MailSo\Log\Logger $oLogger = null, int $iTimeout = 10, string $sProxy = '', string $sProxyAuth = '', array $aHttpHeaders = array(), bool $bFollowLocation = true) : bool
 	{
 		if (null === $sCustomUserAgent)
 		{
@@ -613,7 +486,7 @@ class Http
 //			}
 		}
 
-		\MailSo\Base\Http::DetectAndHackFollowLocationUrl($sUrl, $aOptions, $oLogger);
+		static::DetectAndHackFollowLocationUrl($sUrl, $aOptions, $oLogger);
 
 		$oCurl = \curl_init();
 		\curl_setopt_array($oCurl, $aOptions);
@@ -640,22 +513,8 @@ class Http
 		return $bResult;
 	}
 
-	/**
-	 * @param string $sUrl
-	 * @param string $sCustomUserAgent = 'MailSo Http User Agent (v1)'
-	 * @param string $sContentType = ''
-	 * @param int $iCode = 0
-	 * @param \MailSo\Log\Logger $oLogger = null
-	 * @param int $iTimeout = 10
-	 * @param string $sProxy = ''
-	 * @param string $sProxyAuth = ''
-	 * @param array $aHttpHeaders = array()
-	 * @param bool $bFollowLocation = true
-	 *
-	 * @return string|bool
-	 */
-	public function GetUrlAsString($sUrl, $sCustomUserAgent = 'MailSo Http User Agent (v1)', &$sContentType = '', &$iCode = 0,
-		$oLogger = null, $iTimeout = 10, $sProxy = '', $sProxyAuth = '', $aHttpHeaders = array(), $bFollowLocation = true)
+	public function GetUrlAsString(string $sUrl, string $sCustomUserAgent = 'MailSo Http User Agent (v1)', string &$sContentType = '', int &$iCode = 0,
+		?\MailSo\Log\Logger $oLogger = null, int $iTimeout = 10, string $sProxy = '', string $sProxyAuth = '', array $aHttpHeaders = array(), bool $bFollowLocation = true) : string
 	{
 		$rMemFile = \MailSo\Base\ResourceRegistry::CreateMemoryResource();
 		if ($this->SaveUrlToFile($sUrl, $rMemFile, $sCustomUserAgent, $sContentType, $iCode, $oLogger, $iTimeout, $sProxy, $sProxyAuth, $aHttpHeaders, $bFollowLocation) && \is_resource($rMemFile))
@@ -667,14 +526,7 @@ class Http
 		return false;
 	}
 
-	/**
-	 * @param int $iExpireTime
-	 * @param bool $bSetCacheHeader = true
-	 * @param string $sEtag = ''
-	 *
-	 * @return bool
-	 */
-	public function ServerNotModifiedCache($iExpireTime, $bSetCacheHeader = true, $sEtag = '')
+	public function ServerNotModifiedCache(int $iExpireTime, bool $bSetCacheHeader = true, string $sEtag = '') : bool
 	{
 		$bResult = false;
 		if (0 < $iExpireTime)
@@ -725,11 +577,8 @@ class Http
 
 	/**
 	 * @staticvar boolean $bCache
-	 * @param string $sEtag
-	 * @param int $iLastModified
-	 * @param int $iExpires
 	 */
-	public function ServerUseCache($sEtag, $iLastModified, $iExpires)
+	public function ServerUseCache(string $sEtag, int $iLastModified, int $iExpires)
 	{
 		static $bCache = false;
 		if (false === $bCache)
@@ -742,10 +591,7 @@ class Http
 		}
 	}
 
-	/**
-	 * @param int $iStatus
-	 */
-	public function StatusHeader($iStatus, $sCustomStatusText = '') : void
+	public function StatusHeader(int $iStatus, string $sCustomStatusText = '') : void
 	{
 		$iStatus = (int) $iStatus;
 		if (99 < $iStatus)
@@ -771,27 +617,18 @@ class Http
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetPath()
+	public function GetPath() : string
 	{
 		$sUrl = \ltrim(\substr($this->GetServer('SCRIPT_NAME', ''), 0, \strrpos($this->GetServer('SCRIPT_NAME', ''), '/')), '/');
 		return '' === $sUrl ? '/' : '/'.$sUrl.'/';
 	}
 
-	/**
-	 * @return string
-	 */
 	public function GetUrl()
 	{
 		return $this->GetServer('REQUEST_URI', '');
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetFullUrl()
+	public function GetFullUrl() : string
 	{
 		return $this->GetScheme().'://'.$this->GetHost(true, false).$this->GetPath();
 	}

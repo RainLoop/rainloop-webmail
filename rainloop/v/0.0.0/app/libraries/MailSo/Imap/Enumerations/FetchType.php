@@ -40,12 +40,7 @@ class FetchType
 	const GMAIL_THRID = 'X-GM-THRID';
 	const GMAIL_LABELS = 'X-GM-LABELS';
 
-	/**
-	 * @param array $aReturn
-	 *
-	 * @param string|array $mType
-	 */
-	private static function addHelper(&$aReturn, $mType)
+	private static function addHelper(array &$aReturn, $mType)
 	{
 		if (\is_string($mType))
 		{
@@ -58,13 +53,7 @@ class FetchType
 		}
 	}
 
-	/**
-	 * @param array $aHeaders
-	 * @param bool $bPeek = true
-	 *
-	 * @return string
-	 */
-	public static function BuildBodyCustomHeaderRequest(array $aHeaders, $bPeek = true)
+	public static function BuildBodyCustomHeaderRequest(array $aHeaders, bool $bPeek = true) : string
 	{
 		$sResult = '';
 		if (0 < \count($aHeaders))
@@ -79,12 +68,7 @@ class FetchType
 		return $sResult;
 	}
 
-	/**
-	 * @param array $aFetchItems
-	 *
-	 * @return array
-	 */
-	public static function ChangeFetchItemsBefourRequest(array $aFetchItems)
+	public static function ChangeFetchItemsBefourRequest(array $aFetchItems) : array
 	{
 		$aReturn = array();
 		self::addHelper($aReturn, self::UID);

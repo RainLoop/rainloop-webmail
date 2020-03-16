@@ -6,7 +6,7 @@ use
     SabreForRainLoop\VObject\Property;
 
 /**
- * Number property
+ * Float property
  *
  * This object represents FLOAT values. These can be 1 or more floating-point
  * numbers.
@@ -15,7 +15,7 @@ use
  * @author Evert Pot (http://evertpot.com/)
  * @license http://code.google.com/p/sabredav/wiki/License Modified BSD License
  */
-class Number extends Property {
+class FloatValue extends Property {
 
     /**
      * In case this is a multi-value property. This string will be used as a

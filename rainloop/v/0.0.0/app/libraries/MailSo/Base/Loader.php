@@ -59,11 +59,7 @@ class Loader
 		}
 	}
 
-	/**
-	 * @param string $sName
-	 * @param int $iIncSize = 1
-	 */
-	public static function IncStatistic($sName, $iIncSize = 1) : void
+	public static function IncStatistic(string $sName, int $iIncSize = 1) : void
 	{
 		if (self::$StoreStatistic)
 		{
@@ -73,10 +69,9 @@ class Loader
 	}
 
 	/**
-	 * @param string $sName
 	 * @param mixed $mValue
 	 */
-	public static function SetStatistic($sName, $mValue) : void
+	public static function SetStatistic(string $sName, $mValue) : void
 	{
 		if (self::$StoreStatistic)
 		{
@@ -85,19 +80,14 @@ class Loader
 	}
 
 	/**
-	 * @param string $sName
-	 *
 	 * @return mixed
 	 */
-	public static function GetStatistic($sName)
+	public static function GetStatistic(string $sName)
 	{
 		return self::$StoreStatistic && isset(self::$aSetStatistic[$sName]) ? self::$aSetStatistic[$sName] : null;
 	}
 
-	/**
-	 * @return array|null
-	 */
-	public static function Statistic()
+	public static function Statistic() : ?array
 	{
 		$aResult = null;
 		if (self::$StoreStatistic)

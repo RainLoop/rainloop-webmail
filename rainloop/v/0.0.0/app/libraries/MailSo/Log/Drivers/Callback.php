@@ -29,8 +29,6 @@ class Callback extends \MailSo\Log\Driver
 	private $fClearCallback;
 
 	/**
-	 * @access protected
-	 *
 	 * @param mixed $fWriteCallback
 	 * @param mixed $fClearCallback
 	 */
@@ -45,20 +43,13 @@ class Callback extends \MailSo\Log\Driver
 	/**
 	 * @param mixed $fWriteCallback
 	 * @param mixed $fClearCallback = null
-	 *
-	 * @return \MailSo\Log\Drivers\Callback
 	 */
-	public static function NewInstance($fWriteCallback, $fClearCallback = null)
+	public static function NewInstance($fWriteCallback, $fClearCallback = null) : \MailSo\Log\Drivers\Callback
 	{
 		return new self($fWriteCallback, $fClearCallback);
 	}
 
-	/**
-	 * @param string|array $mDesc
-	 *
-	 * @return bool
-	 */
-	protected function writeImplementation($mDesc)
+	protected function writeImplementation($mDesc) : bool
 	{
 		if ($this->fWriteCallback)
 		{
@@ -68,10 +59,7 @@ class Callback extends \MailSo\Log\Driver
 		return true;
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function clearImplementation()
+	protected function clearImplementation() : bool
 	{
 		if ($this->fClearCallback)
 		{

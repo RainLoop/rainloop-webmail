@@ -17,11 +17,6 @@ namespace MailSo\Mime;
  */
 class ParameterCollection extends \MailSo\Base\Collection
 {
-	/**
-	 * @access protected
-	 *
-	 * @param string $sRawParams = ''
-	 */
 	protected function __construct($sRawParams = '')
 	{
 		parent::__construct();
@@ -32,32 +27,19 @@ class ParameterCollection extends \MailSo\Base\Collection
 		}
 	}
 
-	/**
-	 * @param string $sRawParams = ''
-	 *
-	 * @return \MailSo\Mime\ParameterCollection
-	 */
-	public static function NewInstance($sRawParams = '')
+	public static function NewInstance(string $sRawParams = '') : self
 	{
 		return new self($sRawParams);
 	}
 
-	/**
-	 * @return \MailSo\Mime\Parameter|null
-	 */
-	public function &GetByIndex($iIndex)
+	public function &GetByIndex(int $iIndex) : ?\MailSo\Mime\Parameter
 	{
 		$mResult = null;
 		$mResult =& parent::GetByIndex($iIndex);
 		return $mResult;
 	}
 
-	/**
-	 * @param string $sName
-	 *
-	 * @return string
-	 */
-	public function ParameterValueByName($sName)
+	public function ParameterValueByName(string $sName) : string
 	{
 		$sResult = '';
 		$sName = \trim($sName);
@@ -75,12 +57,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		return $sResult;
 	}
 
-	/**
-	 * @param string $sRawParams
-	 *
-	 * @return \MailSo\Mime\ParameterCollection
-	 */
-	public function Parse($sRawParams)
+	public function Parse(string $sRawParams) : self
 	{
 		$this->Clear();
 
@@ -96,12 +73,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	/**
-	 * @param bool $bConvertSpecialsName = false
-	 *
-	 * @return string
-	 */
-	public function ToString($bConvertSpecialsName = false)
+	public function ToString(bool $bConvertSpecialsName = false) : string
 	{
 		$aResult = array();
 		$aParams =& $this->GetAsArray();

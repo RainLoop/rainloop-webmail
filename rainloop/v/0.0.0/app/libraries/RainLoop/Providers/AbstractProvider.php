@@ -29,10 +29,7 @@ abstract class AbstractProvider
 		$this->oLogger = $oLogger;
 	}
 
-	/**
-	 * @return \MailSo\Log\Logger|null
-	 */
-	public function Logger()
+	public function Logger() : ?\MailSo\Log\Logger
 	{
 		return $this->oLogger;
 	}

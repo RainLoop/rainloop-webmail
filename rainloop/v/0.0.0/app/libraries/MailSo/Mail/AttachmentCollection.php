@@ -17,26 +17,17 @@ namespace MailSo\Mail;
  */
 class AttachmentCollection extends \MailSo\Base\Collection
 {
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
 	}
 
-	/**
-	 * @return \MailSo\Mail\AttachmentCollection
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : \MailSo\Mail\AttachmentCollection
 	{
 		return new self();
 	}
 
-	/**
-	 * @return int
-	 */
-	public function InlineCount()
+	public function InlineCount() : int
 	{
 		$aList = $this->FilterList(function ($oAttachment) {
 			return $oAttachment && $oAttachment->IsInline();
@@ -45,10 +36,7 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		return \is_array($aList) ? \count($aList) : 0;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function NonInlineCount()
+	public function NonInlineCount() : int
 	{
 		$aList = $this->FilterList(function ($oAttachment) {
 			return $oAttachment && !$oAttachment->IsInline();
@@ -57,10 +45,7 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		return \is_array($aList) ? \count($aList) : 0;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function SpecData()
+	public function SpecData() : array
 	{
 		return $this->MapList(function ($oAttachment) {
 			if ($oAttachment)

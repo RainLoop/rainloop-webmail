@@ -17,28 +17,20 @@ namespace MailSo\Mime;
  */
 class PartCollection extends \MailSo\Base\Collection
 {
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
 	}
 
-	/**
-	 * @return \MailSo\Mime\PartCollection
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
 	/**
-	 * @param string $sBoundary
-	 *
-	 * @return resorce
+	 * @return resource
 	 */
-	public function ToStream($sBoundary)
+	public function ToStream(string $sBoundary)
 	{
 		$rResult = null;
 		if (0 < \strlen($sBoundary))

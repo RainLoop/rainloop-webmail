@@ -25,38 +25,26 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		parent::__construct();
 	}
 
-	/**
-	 * @return \MailSo\Mime\AttachmentCollection
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : \MailSo\Mime\AttachmentCollection
 	{
 		return new self();
 	}
 
-	/**
-	 * @return array
-	 */
-	public function LinkedAttachments()
+	public function LinkedAttachments() : array
 	{
 		return $this->FilterList(function ($oItem) {
 			return $oItem && $oItem->IsLinked();
 		});
 	}
 
-	/**
-	 * @return array
-	 */
-	public function UnlinkedAttachments()
+	public function UnlinkedAttachments() : array
 	{
 		return $this->FilterList(function ($oItem) {
 			return $oItem && !$oItem->IsLinked();
 		});
 	}
 
-	/**
-	 * @return int
-	 */
-	public function SizeOfAttachments()
+	public function SizeOfAttachments() : int
 	{
 		$iResult = 0;
 		$this->ForeachList(function ($oItem) use (&$iResult) {

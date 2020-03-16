@@ -153,10 +153,7 @@ class Account
 		return $this->sSignMeToken;
 	}
 
-	/**
-	 * @return \RainLoop\Model\Domain
-	 */
-	public function Domain()
+	public function Domain() : \RainLoop\Model\Domain
 	{
 		return $this->oDomain;
 	}
@@ -377,8 +374,9 @@ class Account
 
 		if ($aSmtpCredentials['UseConnect'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
 		{
-			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'], $aSmtpCredentials['Ehlo'],
-				$aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl'], $aSmtpCredentials['AllowSelfSigned']
+			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
+				$aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl'], $aSmtpCredentials['AllowSelfSigned'],
+				'', $aSmtpCredentials['Ehlo']
 			);
 		}
 

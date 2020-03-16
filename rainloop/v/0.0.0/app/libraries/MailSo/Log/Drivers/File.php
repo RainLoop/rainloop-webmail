@@ -23,12 +23,6 @@ class File extends \MailSo\Log\Driver
 	 */
 	private $sLoggerFileName;
 
-	/**
-	 * @access protected
-	 *
-	 * @param string $sLoggerFileName
-	 * @param string $sNewLine = "\r\n"
-	 */
 	protected function __construct($sLoggerFileName, $sNewLine = "\r\n")
 	{
 		parent::__construct();
@@ -37,49 +31,27 @@ class File extends \MailSo\Log\Driver
 		$this->sNewLine = $sNewLine;
 	}
 
-	/**
-	 * @param string $sLoggerFileName
-	 */
-	public function SetLoggerFileName($sLoggerFileName)
+	public function SetLoggerFileName(string $sLoggerFileName)
 	{
 		$this->sLoggerFileName = $sLoggerFileName;
 	}
 
-	/**
-	 * @param string $sLoggerFileName
-	 * @param string $sNewLine = "\r\n"
-	 *
-	 * @return \MailSo\Log\Drivers\File
-	 */
-	public static function NewInstance($sLoggerFileName, $sNewLine = "\r\n")
+	public static function NewInstance(string $sLoggerFileName, string $sNewLine = "\r\n") : \MailSo\Log\Drivers\File
 	{
 		return new self($sLoggerFileName, $sNewLine);
 	}
 
-	/**
-	 * @param string|array $mDesc
-	 *
-	 * @return bool
-	 */
-	protected function writeImplementation($mDesc)
+	protected function writeImplementation($mDesc) : bool
 	{
 		return $this->writeToLogFile($mDesc);
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function clearImplementation()
+	protected function clearImplementation() : bool
 	{
 		return \unlink($this->sLoggerFileName);
 	}
 
-	/**
-	 * @param string|array $mDesc
-	 *
-	 * @return bool
-	 */
-	private function writeToLogFile($mDesc)
+	private function writeToLogFile($mDesc) : bool
 	{
 		if (\is_array($mDesc))
 		{

@@ -38,10 +38,7 @@ class FetchResponse
 		return new self($oImapResponse);
 	}
 
-	/**
-	 * @return array|null
-	 */
-	public function GetEnvelope(bool $bForce = false)
+	public function GetEnvelope(bool $bForce = false) : ?array
 	{
 		if (null === $this->aEnvelopeCache || $bForce)
 		{
@@ -60,10 +57,7 @@ class FetchResponse
 		return self::findEnvelopeIndex($this->GetEnvelope(), $iIndex, $mNullResult);
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection|null
-	 */
-	public function GetFetchEnvelopeEmailCollection(int $iIndex, string $sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1)
+	public function GetFetchEnvelopeEmailCollection(int $iIndex, string $sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1) : ?\MailSo\Mime\EmailCollection
 	{
 		$oResult = null;
 		$aEmails = $this->GetFetchEnvelopeValue($iIndex, null);
@@ -96,10 +90,7 @@ class FetchResponse
 		return $oResult;
 	}
 
-	/**
-	 * @return \MailSo\Imap\BodyStructure|null
-	 */
-	public function GetFetchBodyStructure(string $sRfc822SubMimeIndex = '')
+	public function GetFetchBodyStructure(string $sRfc822SubMimeIndex = '') : ?BodyStructure
 	{
 		$oBodyStructure = null;
 		$aBodyStructureArray = $this->GetFetchValue(Enumerations\FetchType::BODYSTRUCTURE);
@@ -181,7 +172,7 @@ class FetchResponse
 		return $sReturn;
 	}
 
-	private static function findFetchUidAndSize($aList)
+	private static function findFetchUidAndSize(array $aList)
 	{
 		$bUid = false;
 		$bSize = false;
@@ -189,11 +180,11 @@ class FetchResponse
 		{
 			foreach ($aList as $mItem)
 			{
-				if (\MailSo\Imap\Enumerations\FetchType::UID === $mItem)
+				if (Enumerations\FetchType::UID === $mItem)
 				{
 					$bUid = true;
 				}
-				else if (\MailSo\Imap\Enumerations\FetchType::RFC822_SIZE === $mItem)
+				else if (Enumerations\FetchType::RFC822_SIZE === $mItem)
 				{
 					$bSize = true;
 				}
@@ -208,7 +199,7 @@ class FetchResponse
 		return (
 			$oImapResponse
 			&& true !== $oImapResponse->IsStatusResponse
-			&& \MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
+			&& Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
 			&& 3 < count($oImapResponse->ResponseList) && 'FETCH' === $oImapResponse->ResponseList[2]
 			&& is_array($oImapResponse->ResponseList[3])
 		);

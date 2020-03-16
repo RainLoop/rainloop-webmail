@@ -17,14 +17,8 @@ namespace MailSo\Base;
  */
 class Crypt
 {
-	/**
-	 *
-	 * @param string $sString
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	public static function XxteaEncrypt($sString, $sKey)
+
+	public static function XxteaEncrypt(string $sString, string $sKey) : string
 	{
 		if (0 === \strlen($sString))
 		{
@@ -67,13 +61,7 @@ class Crypt
 		return self::long2str($aV, false);
 	}
 
-	/**
-	 * @param string $sEncriptedString
-	 * @param string $sKey
-	 *
-	 * @return string
-	 */
-	public static function XxteaDecrypt($sEncriptedString, $sKey)
+	public static function XxteaDecrypt(string $sEncriptedString, string $sKey) : string
 	{
 		if (0 === \strlen($sEncriptedString))
 		{
@@ -118,13 +106,7 @@ class Crypt
 		return self::long2str($aV, true);
 	}
 
-	/**
-	 * @param array $aV
-	 * @param array $aW
-	 *
-	 * @return string
-	 */
-	private static function long2str($aV, $aW)
+	private static function long2str(array $aV, array $aW) : string
 	{
 		$iLen = \count($aV);
 		$iN = ($iLen - 1) << 2;
@@ -152,13 +134,7 @@ class Crypt
 		}
 	}
 
-	/**
-	 * @param string $sS
-	 * @param string $sW
-	 *
-	 * @return array
-	 */
-	private static function str2long($sS, $sW)
+	private static function str2long(string $sS, string $sW) : array
 	{
 		$aV = \unpack('V*', $sS . \str_repeat("\0", (4 - \strlen($sS) % 4) & 3));
 		$aV = \array_values($aV);
@@ -169,12 +145,7 @@ class Crypt
 		return $aV;
 	}
 
-	/**
-	 * @param int $iN
-	 *
-	 * @return int
-	 */
-	private static function int32($iN)
+	private static function int32(int $iN) : int
 	{
 		while ($iN >= 2147483648)
 		{

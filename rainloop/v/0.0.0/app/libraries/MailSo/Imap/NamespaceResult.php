@@ -47,9 +47,6 @@ class NamespaceResult
 	 */
 	private $sSharedDelimiter;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->sPersonal = '';
@@ -60,20 +57,12 @@ class NamespaceResult
 		$this->sSharedDelimiter = '';
 	}
 
-	/**
-	 * @return \MailSo\Imap\NamespaceResult
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @param \MailSo\Imap\Response $oImapResponse
-	 *
-	 * @return \MailSo\Imap\NamespaceResult
-	 */
-	public function InitByImapResponse($oImapResponse)
+	public function InitByImapResponse(\MailSo\Imap\Response $oImapResponse) : self
 	{
 		if ($oImapResponse && $oImapResponse instanceof \MailSo\Imap\Response)
 		{
@@ -114,18 +103,12 @@ class NamespaceResult
 		return $this;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetPersonalNamespace()
+	public function GetPersonalNamespace() : string
 	{
 		return $this->sPersonal;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetPersonalNamespaceDelimiter()
+	public function GetPersonalNamespaceDelimiter() : string
 	{
 		return $this->sPersonalDelimiter;
 	}

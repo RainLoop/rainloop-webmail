@@ -32,10 +32,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 		return $this->oDriver->GetFile($oAccount, $sKey, $sOpenMode);
 	}
 
-	/**
-	 * @return string | bool
-	 */
-	public function GetFileName(\RainLoop\Model\Account $oAccount, string $sKey)
+	public function GetFileName(\RainLoop\Model\Account $oAccount, string $sKey) : string
 	{
 		return $this->oDriver->GetFileName($oAccount, $sKey);
 	}
@@ -45,10 +42,7 @@ class Files extends \RainLoop\Providers\AbstractProvider
 		return $this->oDriver->Clear($oAccount, $sKey);
 	}
 
-	/**
-	 * @return int|bool
-	 */
-	public function FileSize(\RainLoop\Model\Account $oAccount, string $sKey)
+	public function FileSize(\RainLoop\Model\Account $oAccount, string $sKey) : int
 	{
 		return $this->oDriver->FileSize($oAccount, $sKey);
 	}

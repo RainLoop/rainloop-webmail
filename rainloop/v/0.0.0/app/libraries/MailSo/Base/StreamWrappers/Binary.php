@@ -68,13 +68,7 @@ class Binary
 	 */
 	private $sReadEndBuffer;
 
-	/**
-	 * @param string $sContentTransferEncoding
-	 * @param bool $bDecode = true
-	 *
-	 * @return string
-	 */
-	public static function GetInlineDecodeOrEncodeFunctionName($sContentTransferEncoding, $bDecode = true)
+	public static function GetInlineDecodeOrEncodeFunctionName(string $sContentTransferEncoding, bool $bDecode = true) : string
 	{
 		$sFunctionName = '';
 		switch (strtolower($sContentTransferEncoding))
@@ -92,25 +86,13 @@ class Binary
 		return $sFunctionName;
 	}
 
-	/**
-	 * @param string $sBodyString
-	 * @param string $sEndBuffer
-	 *
-	 * @return string
-	 */
-	public static function InlineNullDecode($sBodyString, &$sEndBuffer)
+	public static function InlineNullDecode(string $sBodyString, string &$sEndBuffer) : string
 	{
 		$sEndBuffer = '';
 		return $sBodyString;
 	}
 
-	/**
-	 * @param string $sBaseString
-	 * @param string $sEndBuffer
-	 *
-	 * @return string
-	 */
-	public static function InlineBase64Decode($sBaseString, &$sEndBuffer)
+	public static function InlineBase64Decode(string $sBaseString, string &$sEndBuffer) : string
 	{
 		$sEndBuffer = '';
 		$sBaseString = str_replace(array("\r", "\n", "\t"), '', $sBaseString);
@@ -124,13 +106,7 @@ class Binary
 		return \MailSo\Base\Utils::Base64Decode($sBaseString);
 	}
 
-	/**
-	 * @param string $sQuotedPrintableString
-	 * @param string $sEndBuffer
-	 *
-	 * @return string
-	 */
-	public static function InlineQuotedPrintableDecode($sQuotedPrintableString, &$sEndBuffer)
+	public static function InlineQuotedPrintableDecode(string $sQuotedPrintableString, string &$sEndBuffer) : string
 	{
 		$sEndBuffer = '';
 		$sQuotedPrintableLen = strlen($sQuotedPrintableString);
@@ -143,13 +119,7 @@ class Binary
 		return quoted_printable_decode($sQuotedPrintableString);
 	}
 
-	/**
-	 * @param string $sEncodedString
-	 * @param string $sEndBuffer
-	 *
-	 * @return string
-	 */
-	public static function InlineConvertDecode($sEncodedString, &$sEndBuffer, $sFromEncoding, $sToEncoding)
+	public static function InlineConvertDecode(string $sEncodedString, string &$sEndBuffer, string $sFromEncoding, string $sToEncoding) : string
 	{
 		$sEndBuffer = '';
 		$sQuotedPrintableLen = strlen($sEncodedString);
@@ -164,10 +134,8 @@ class Binary
 
 	/**
 	 * @param resource $rStream
-	 *
-	 * @return bool
 	 */
-	public static function IsStreamRemembed($rStream)
+	public static function IsStreamRemembed($rStream) : bool
 	{
 		foreach (self::$aRememberStreams as $rRem)
 		{
@@ -193,14 +161,11 @@ class Binary
 
 	/**
 	 * @param resource $rStream
-	 * @param string $sUtilsDecodeOrEncodeFunctionName = null
-	 * @param string $sFromEncoding = null
-	 * @param string $sToEncoding = null
 	 *
 	 * @return resource|bool
 	 */
 	public static function CreateStream($rStream,
-		$sUtilsDecodeOrEncodeFunctionName = null, $sFromEncoding = null, $sToEncoding = null)
+		string $sUtilsDecodeOrEncodeFunctionName = null, string $sFromEncoding = null, string $sToEncoding = null)
 	{
 		if (!in_array(self::STREAM_NAME, stream_get_wrappers()))
 		{
@@ -242,12 +207,7 @@ class Binary
 		return \fopen(self::STREAM_NAME.'://'.$sHashName, 'rb');
 	}
 
-	/**
-	 * @param string $sPath
-	 *
-	 * @return bool
-	 */
-	public function stream_open($sPath)
+	public function stream_open(string $sPath) : bool
 	{
 		$this->iPos = 0;
 		$this->sBuffer = '';
@@ -281,12 +241,7 @@ class Binary
 		return $bResult;
 	}
 
-	/**
-	 * @param int $iCount
-	 *
-	 * @return string
-	 */
-	public function stream_read($iCount)
+	public function stream_read(int $iCount) : string
 	{
 		$sReturn = '';
 		$sFunctionName = $this->sFunctionName;
@@ -354,35 +309,22 @@ class Binary
 		return false;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function stream_write()
+	public function stream_write() : int
 	{
 		return 0;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function stream_tell()
+	public function stream_tell() : int
 	{
 		return $this->iPos;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_eof()
+	public function stream_eof() : bool
 	{
 		return 0 === strlen($this->sBuffer) && feof($this->rStream);
 	}
 
-	/**
-	 *
-	 * @return array
-	 */
-	public function stream_stat()
+	public function stream_stat() : array
 	{
 		return array(
 			'dev' => 2,
@@ -401,10 +343,7 @@ class Binary
 		);
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function stream_seek()
+	public function stream_seek() : bool
 	{
 		return false;
 	}

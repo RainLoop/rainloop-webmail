@@ -20,9 +20,6 @@ class Syslog extends \MailSo\Log\Driver
 {
 	private $iLogLevel;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
@@ -43,20 +40,12 @@ class Syslog extends \MailSo\Log\Driver
 		}
 	}
 
-	/**
-	 * @return \MailSo\Log\Drivers\Syslog
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : \MailSo\Log\Drivers\Syslog
 	{
 		return new self();
 	}
 
-	/**
-	 * @param string|array $mDesc
-	 *
-	 * @return bool
-	 */
-	protected function writeImplementation($mDesc)
+	protected function writeImplementation($mDesc) : bool
 	{
 		if (null === $this->iLogLevel)
 		{
@@ -71,10 +60,7 @@ class Syslog extends \MailSo\Log\Driver
 		return \syslog($this->iLogLevel, $mDesc);
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function clearImplementation()
+	protected function clearImplementation() : bool
 	{
 		return true;
 	}

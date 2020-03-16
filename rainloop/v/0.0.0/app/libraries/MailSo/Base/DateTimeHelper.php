@@ -15,21 +15,12 @@ namespace MailSo\Base;
  * @category MailSo
  * @package Base
  */
-class DateTimeHelper
+abstract class DateTimeHelper
 {
 	/**
-	 * @access private
-	 */
-	private function __construct()
-	{
-	}
-
-	/**
 	 * @staticvar \DateTimeZone $oDateTimeZone
-	 *
-	 * @return \DateTimeZone
 	 */
-	public static function GetUtcTimeZoneObject()
+	public static function GetUtcTimeZoneObject() : \DateTimeZone
 	{
 		static $oDateTimeZone = null;
 		if (null === $oDateTimeZone)
@@ -42,12 +33,8 @@ class DateTimeHelper
 	/**
 	 * Parse date string formated as "Thu, 10 Jun 2010 08:58:33 -0700 (PDT)"
 	 * RFC2822
-	 *
-	 * @param string $sDateTime
-	 *
-	 * @return int
 	 */
-	public static function ParseRFC2822DateString($sDateTime)
+	public static function ParseRFC2822DateString(string $sDateTime) : int
 	{
 		$sDateTime = \trim($sDateTime);
 		if (empty($sDateTime))
@@ -63,12 +50,8 @@ class DateTimeHelper
 	/**
 	 * Parse date string formated as "10-Jan-2012 01:58:17 -0800"
 	 * IMAP INTERNALDATE Format
-	 *
-	 * @param string $sDateTime
-	 *
-	 * @return int
 	 */
-	public static function ParseInternalDateString($sDateTime)
+	public static function ParseInternalDateString(string $sDateTime) : int
 	{
 		$sDateTime = \trim($sDateTime);
 		if (empty($sDateTime))
@@ -87,12 +70,8 @@ class DateTimeHelper
 
 	/**
 	 * Parse date string formated as "2011-06-14 23:59:59 +0400"
-	 *
-	 * @param string $sDateTime
-	 *
-	 * @return int
 	 */
-	public static function ParseDateStringType1($sDateTime)
+	public static function ParseDateStringType1(string $sDateTime) : int
 	{
 		$sDateTime = \trim($sDateTime);
 		if (empty($sDateTime))
@@ -106,12 +85,8 @@ class DateTimeHelper
 
 	/**
 	 * Parse date string formated as "2015-05-08T14:32:18.483-07:00"
-	 *
-	 * @param string $sDateTime
-	 *
-	 * @return int
 	 */
-	public static function TryToParseSpecEtagFormat($sDateTime)
+	public static function TryToParseSpecEtagFormat(string $sDateTime) : int
 	{
 		$sDateTime = \trim(\preg_replace('/ \([a-zA-Z0-9]+\)$/', '', \trim($sDateTime)));
 		$sDateTime = \trim(\preg_replace('/(:[\d]{2})\.[\d]{3}/', '$1', \trim($sDateTime)));
@@ -121,12 +96,7 @@ class DateTimeHelper
 		return \MailSo\Base\DateTimeHelper::ParseDateStringType1($sDateTime);
 	}
 
-	/**
-	 * @param string $sTime
-	 *
-	 * @return int
-	 */
-	public static function TimeToSec($sTime)
+	public static function TimeToSec(string $sTime) : int
 	{
 		$iMod = 1;
 		$sTime = \trim($sTime);

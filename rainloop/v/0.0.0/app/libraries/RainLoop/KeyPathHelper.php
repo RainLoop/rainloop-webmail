@@ -4,6 +4,7 @@ namespace RainLoop;
 
 class KeyPathHelper
 {
+
 	static public function PublicFile(string $sHash) : string
 	{
 		return '/Public/Files/'.sha1($sHash).'/Data/';

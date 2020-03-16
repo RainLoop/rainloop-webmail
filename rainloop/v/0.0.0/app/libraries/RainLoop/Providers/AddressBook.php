@@ -72,12 +72,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 			$iOffset, $iLimit, $sSearch, $iResultCount) : array();
 	}
 
-	/**
-	 * @param string $mID
-	 *
-	 * @return \RainLoop\Providers\AddressBook\Classes\Contact|null
-	 */
-	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false)
+	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?\RainLoop\Providers\AddressBook\Classes\Contact
 	{
 		return $this->IsActive() ? $this->oDriver->GetContactByID($sEmail, $mID, $bIsStrID) : null;
 	}

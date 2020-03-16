@@ -86,7 +86,7 @@ class FilterCondition
 		);
 	}
 
-	public static function CollectionFromJSON($aCollection) : array
+	public static function CollectionFromJSON(array $aCollection) : array
 	{
 		$aResult = array();
 		if (\is_array($aCollection) && 0 < \count($aCollection))

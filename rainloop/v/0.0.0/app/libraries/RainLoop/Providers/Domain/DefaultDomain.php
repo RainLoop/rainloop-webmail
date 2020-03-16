@@ -86,10 +86,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		return $sResult;
 	}
 
-	/**
-	 * @return \RainLoop\Model\Domain|null
-	 */
-	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true)
+	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true) : ?\RainLoop\Model\Domain
 	{
 		$mResult = null;
 

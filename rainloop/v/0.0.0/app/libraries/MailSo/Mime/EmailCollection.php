@@ -17,11 +17,6 @@ namespace MailSo\Mime;
  */
 class EmailCollection extends \MailSo\Base\Collection
 {
-	/**
-	 * @access protected
-	 *
-	 * @param string $sEmailAddresses = ''
-	 */
 	protected function __construct($sEmailAddresses = '')
 	{
 		parent::__construct();
@@ -33,30 +28,17 @@ class EmailCollection extends \MailSo\Base\Collection
 		}
 	}
 
-	/**
-	 * @param string $sEmailAddresses = ''
-	 *
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public static function NewInstance($sEmailAddresses = '')
+	public static function NewInstance(string $sEmailAddresses = '') : self
 	{
 		return new self($sEmailAddresses);
 	}
 
-	/**
-	 * @param string $sEmailAddresses
-	 *
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public static function Parse($sEmailAddresses)
+	public static function Parse(string $sEmailAddresses) : self
 	{
 		return self::NewInstance($sEmailAddresses);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function ToArray()
+	public function ToArray() : array
 	{
 		$aReturn = $aEmails = array();
 		$aEmails =& $this->GetAsArray();
@@ -68,12 +50,7 @@ class EmailCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
-	/**
-	 * @param \MailSo\Mime\EmailCollection $oEmails
-	 *
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function MergeWithOtherCollection(\MailSo\Mime\EmailCollection $oEmails)
+	public function MergeWithOtherCollection(EmailCollection $oEmails) : self
 	{
 		$aEmails =& $oEmails->GetAsArray();
 		foreach ($aEmails as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
@@ -84,10 +61,7 @@ class EmailCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function Unique()
+	public function Unique() : self
 	{
 		$aCache = array();
 		$aReturn = array();
@@ -108,13 +82,7 @@ class EmailCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
-	/**
-	 * @param bool $bConvertSpecialsName = false
-	 * @param bool $bIdn = false
-	 *
-	 * @return string
-	 */
-	public function ToString($bConvertSpecialsName = false, $bIdn = false)
+	public function ToString(bool $bConvertSpecialsName = false, bool $bIdn = false) : string
 	{
 		$aReturn = $aEmails = array();
 		$aEmails =& $this->GetAsArray();
@@ -126,12 +94,7 @@ class EmailCollection extends \MailSo\Base\Collection
 		return \implode(', ', $aReturn);
 	}
 
-	/**
-	 * @param string $sRawEmails
-	 *
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	private function parseEmailAddresses($sRawEmails)
+	private function parseEmailAddresses(string $sRawEmails) : self
 	{
 		$this->Clear();
 

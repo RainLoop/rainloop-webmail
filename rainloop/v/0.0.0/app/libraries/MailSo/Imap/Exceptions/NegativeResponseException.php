@@ -18,10 +18,8 @@ namespace MailSo\Imap\Exceptions;
  */
 class NegativeResponseException extends \MailSo\Imap\Exceptions\ResponseException
 {
-	/**
-	 * @return string
-	 */
-	public function getAlertFromStatus()
+
+	public function getAlertFromStatus() : string
 	{
 		$sResult = '';
 

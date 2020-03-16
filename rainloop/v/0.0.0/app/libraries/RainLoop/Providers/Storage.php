@@ -32,7 +32,7 @@ class Storage extends \RainLoop\Providers\AbstractProvider
 	 * @param \RainLoop\Model\Account|string|null $oAccount
 	 * @param mixed $sValue
 	 */
-	public function Put($oAccount, int $iStorageType, string $sKey, $sValue) : bool
+	public function Put($oAccount, int $iStorageType, string $sKey, string $sValue) : bool
 	{
 		if (!$this->verifyAccount($oAccount, $iStorageType))
 		{

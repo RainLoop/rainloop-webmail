@@ -15,19 +15,12 @@ namespace MailSo\Base;
  * @category MailSo
  * @package Base
  */
-class ResourceRegistry
+abstract class ResourceRegistry
 {
 	/**
 	 * @var array
 	 */
 	public static $Resources = array();
-
-	/**
-	 * @access private
-	 */
-	private function __construct()
-	{
-	}
 
 	/**
 	 * @staticvar bool $bInited
@@ -39,30 +32,28 @@ class ResourceRegistry
 		{
 			$bInited = true;
 			\register_shutdown_function(function () {
-				if (\is_array(\MailSo\Base\ResourceRegistry::$Resources))
+				if (\is_array(static::$Resources))
 				{
-					foreach (\array_keys(\MailSo\Base\ResourceRegistry::$Resources) as $sKey)
+					foreach (\array_keys(static::$Resources) as $sKey)
 					{
-						if (\is_resource(\MailSo\Base\ResourceRegistry::$Resources[$sKey]))
+						if (\is_resource(static::$Resources[$sKey]))
 						{
 							\MailSo\Base\Loader::IncStatistic('CloseMemoryResource');
-							\fclose(\MailSo\Base\ResourceRegistry::$Resources[$sKey]);
+							\fclose(static::$Resources[$sKey]);
 						}
-						\MailSo\Base\ResourceRegistry::$Resources[$sKey] = null;
+						static::$Resources[$sKey] = null;
 					}
 				}
 
-				\MailSo\Base\ResourceRegistry::$Resources = array();
+				static::$Resources = array();
 			});
 		}
 	}
 
 	/**
-	 * @param int $iMemoryMaxInMb = 5
-	 *
 	 * @return resource | bool
 	 */
-	public static function CreateMemoryResource($iMemoryMaxInMb = 5)
+	public static function CreateMemoryResource(int $iMemoryMaxInMb = 5)
 	{
 		self::regResourcesShutdownFunc();
 
@@ -70,7 +61,7 @@ class ResourceRegistry
 		if (\is_resource($oResult))
 		{
 			\MailSo\Base\Loader::IncStatistic('CreateMemoryResource');
-			\MailSo\Base\ResourceRegistry::$Resources[(string) $oResult] = $oResult;
+			static::$Resources[(string) $oResult] = $oResult;
 			return $oResult;
 		}
 
@@ -78,11 +69,9 @@ class ResourceRegistry
 	}
 
 	/**
-	 * @param string $sString
-	 *
 	 * @return resource | bool
 	 */
-	public static function CreateMemoryResourceFromString($sString)
+	public static function CreateMemoryResourceFromString(string $sString)
 	{
 		$oResult = self::CreateMemoryResource();
 		if (\is_resource($oResult))
@@ -102,11 +91,11 @@ class ResourceRegistry
 		if (\is_resource($rResource))
 		{
 			$sKey = (string) $rResource;
-			if (isset(\MailSo\Base\ResourceRegistry::$Resources[$sKey]))
+			if (isset(static::$Resources[$sKey]))
 			{
-				\fclose(\MailSo\Base\ResourceRegistry::$Resources[$sKey]);
-				\MailSo\Base\ResourceRegistry::$Resources[$sKey] = null;
-				unset(\MailSo\Base\ResourceRegistry::$Resources[$sKey]);
+				\fclose(static::$Resources[$sKey]);
+				static::$Resources[$sKey] = null;
+				unset(static::$Resources[$sKey]);
 				\MailSo\Base\Loader::IncStatistic('CloseMemoryResource');
 			}
 

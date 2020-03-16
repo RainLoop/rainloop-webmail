@@ -37,9 +37,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public $__USE_INITIAL_AUTH_PLAIN_COMMAND;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
@@ -52,66 +49,39 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		$this->__USE_INITIAL_AUTH_PLAIN_COMMAND = true;
 	}
 
-	/**
-	 * @return \MailSo\Sieve\ManageSieveClient
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @param string $sCapa
-	 *
-	 * @return bool
-	 */
-	public function IsSupported($sCapa)
+	public function IsSupported(string $sCapa) : bool
 	{
 		return isset($this->aCapa[\strtoupper($sCapa)]);
 	}
 
-	/**
-	 * @param string $sModule
-	 *
-	 * @return bool
-	 */
-	public function IsModuleSupported($sModule)
+	public function IsModuleSupported(string $sModule) : bool
 	{
 		return $this->IsSupported('SIEVE') && \in_array(\strtolower(\trim($sModule)), $this->aModules);
 	}
 
-	/**
-	 * @return array
-	 */
-	public function Modules()
+	public function Modules() : array
 	{
 		return $this->aModules;
 	}
 
-	/**
-	 * @param string $sAuth
-	 *
-	 * @return bool
-	 */
-	public function IsAuthSupported($sAuth)
+	public function IsAuthSupported(string $sAuth) : bool
 	{
 		return $this->IsSupported('SASL') && \in_array(\strtoupper($sAuth), $this->aAuth);
 	}
 
 	/**
-	 * @param string $sServerName
-	 * @param int $iPort
-	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
-	 * @param bool $bVerifySsl = false
-	 * @param bool $bAllowSelfSigned = true
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Sieve\Exceptions\ResponseException
 	 */
-	public function Connect($sServerName, $iPort,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		$bVerifySsl = false, $bAllowSelfSigned = true, $sClientCert = '') : void
+	public function Connect(string $sServerName, int $iPort,
+		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		bool $bVerifySsl = false, bool $bAllowSelfSigned = true, string $sClientCert = '') : void
 	{
 		$this->iRequestTime = \microtime(true);
 
@@ -140,17 +110,11 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sLogin
-	 * @param string $sPassword
-	 * @param string $sLoginAuthKey = ''
-	 *
-	 * @return \MailSo\Sieve\ManageSieveClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Sieve\Exceptions\LoginException
 	 */
-	public function Login($sLogin, $sPassword, $sLoginAuthKey = '')
+	public function Login(string $sLogin, string $sPassword, string $sLoginAuthKey = '') : self
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sLogin, true) ||
 			!\MailSo\Base\Validator::NotEmptyString($sPassword, true))
@@ -229,12 +193,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Sieve\ManageSieveClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function Logout()
+	public function Logout() : self
 	{
 		if ($this->bIsLoggined)
 		{
@@ -246,12 +208,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function ListScripts()
+	public function ListScripts() : array
 	{
 		$this->sendRequest('LISTSCRIPTS');
 		$mResponse = $this->parseResponse();
@@ -276,12 +236,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return array
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function Capability()
+	public function Capability() : array
 	{
 		$this->sendRequest('CAPABILITY');
 		$mResponse = $this->parseResponse();
@@ -292,12 +250,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Sieve\ManageSieveClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function Noop()
+	public function Noop() : self
 	{
 		$this->sendRequestWithCheck('NOOP');
 
@@ -305,14 +261,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sScriptName
-	 *
-	 * @return string
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function GetScript($sScriptName)
+	public function GetScript(string $sScriptName) : string
 	{
 		$this->sendRequest('GETSCRIPT "'.$sScriptName.'"');
 		$mResponse = $this->parseResponse();
@@ -338,15 +290,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sScriptName
-	 * @param string $sScriptSource
-	 *
-	 * @return \MailSo\Sieve\ManageSieveClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function PutScript($sScriptName, $sScriptSource)
+	public function PutScript(string $sScriptName, string $sScriptSource) : self
 	{
 		$this->sendRequest('PUTSCRIPT "'.$sScriptName.'" {'.\strlen($sScriptSource).'+}');
 		$this->sendRequestWithCheck($sScriptSource);
@@ -355,14 +302,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sScriptSource
-	 *
-	 * @return \MailSo\Sieve\ManageSieveClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function CheckScript($sScriptSource)
+	public function CheckScript(string $sScriptSource) : self
 	{
 		$this->sendRequest('CHECKSCRIPT {'.\strlen($sScriptSource).'+}');
 		$this->sendRequestWithCheck($sScriptSource);
@@ -371,14 +314,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sScriptName
-	 *
-	 * @return \MailSo\Sieve\ManageSieveClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function SetActiveScript($sScriptName)
+	public function SetActiveScript(string $sScriptName) : self
 	{
 		$this->sendRequestWithCheck('SETACTIVE "'.$sScriptName.'"');
 
@@ -386,14 +325,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sScriptName
-	 *
-	 * @return \MailSo\Sieve\ManageSieveClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function DeleteScript($sScriptName)
+	public function DeleteScript(string $sScriptName) : self
 	{
 		$this->sendRequestWithCheck('DELETESCRIPT "'.$sScriptName.'"');
 
@@ -401,12 +336,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return string
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function GetActiveScriptName()
+	public function GetActiveScriptName() : string
 	{
 		$aList = $this->ListScripts();
 		if (\is_array($aList) && 0 < \count($aList))
@@ -424,23 +357,15 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sScriptName
-	 *
-	 * @return bool
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	public function IsActiveScript($sScriptName)
+	public function IsActiveScript(string $sScriptName) : bool
 	{
 		return $sScriptName === $this->GetActiveScriptName();
 	}
 
-	/**
-	 * @param string $sLine
-	 * @return array|false
-	 */
-	private function parseLine($sLine)
+	private function parseLine(string $sLine) : array
 	{
 		if (false === $sLine || null === $sLine || \in_array(\substr($sLine, 0, 2), array('OK', 'NO')))
 		{
@@ -472,8 +397,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $mResponse
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
@@ -507,12 +430,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sRequest
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	private function sendRequest($sRequest) : void
+	private function sendRequest(string $sRequest) : void
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sRequest, true))
 		{
@@ -527,24 +448,16 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sRequest
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	private function sendRequestWithCheck($sRequest) : void
+	private function sendRequestWithCheck(string $sRequest) : void
 	{
 		$this->sendRequest($sRequest);
 		$this->validateResponse($this->parseResponse());
 	}
 
-	/**
-	 * @param string $sLine
-	 *
-	 * @return string
-	 */
-	private function convertEndOfLine($sLine)
+	private function convertEndOfLine(string $sLine) : string
 	{
 		$sLine = \trim($sLine);
 		if ('}' === \substr($sLine, -1))
@@ -570,10 +483,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		return $sLine;
 	}
 
-	/**
-	 * @return array|bool
-	 */
-	private function parseResponse()
+	private function parseResponse() : array
 	{
 		$this->iRequestTime = \microtime(true);
 
@@ -608,7 +518,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	/**
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
-	private function validateResponse($aResponse)
+	private function validateResponse(array $aResponse)
 	{
 		if (!\is_array($aResponse) || 0 === \count($aResponse) ||
 			'OK' !== \substr($aResponse[\count($aResponse) - 1], 0, 2))
@@ -619,10 +529,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		}
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function getLogName()
+	protected function getLogName() : string
 	{
 		return 'SIEVE';
 	}

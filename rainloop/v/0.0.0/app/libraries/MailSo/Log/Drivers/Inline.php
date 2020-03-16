@@ -23,12 +23,6 @@ class Inline extends \MailSo\Log\Driver
 	 */
 	private $bHtmlEncodeSpecialChars;
 
-	/**
-	 * @access protected
-	 *
-	 * @param string $sNewLine = "\r\n"
-	 * @param bool $bHtmlEncodeSpecialChars = false
-	 */
 	protected function __construct($sNewLine = "\r\n", $bHtmlEncodeSpecialChars = false)
 	{
 		parent::__construct();
@@ -37,23 +31,12 @@ class Inline extends \MailSo\Log\Driver
 		$this->bHtmlEncodeSpecialChars = $bHtmlEncodeSpecialChars;
 	}
 
-	/**
-	 * @param string $sNewLine = "\r\n"
-	 * @param bool $bHtmlEncodeSpecialChars = false
-	 *
-	 * @return \MailSo\Log\Drivers\Inline
-	 */
-	public static function NewInstance($sNewLine = "\r\n", $bHtmlEncodeSpecialChars = false)
+	public static function NewInstance(string $sNewLine = "\r\n", bool $bHtmlEncodeSpecialChars = false) : \MailSo\Log\Drivers\Inline
 	{
 		return new self($sNewLine, $bHtmlEncodeSpecialChars);
 	}
 
-	/**
-	 * @param string $mDesc
-	 *
-	 * @return bool
-	 */
-	protected function writeImplementation($mDesc)
+	protected function writeImplementation($mDesc) : bool
 	{
 		if (\is_array($mDesc))
 		{
@@ -74,10 +57,7 @@ class Inline extends \MailSo\Log\Driver
 		return true;
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function clearImplementation()
+	protected function clearImplementation() : bool
 	{
 		if (\defined('PHP_SAPI') && 'cli' === PHP_SAPI && \MailSo\Base\Utils::FunctionExistsAndEnabled('system'))
 		{

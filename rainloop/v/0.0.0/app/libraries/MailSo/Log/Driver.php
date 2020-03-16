@@ -82,9 +82,6 @@ abstract class Driver
 	 */
 	private $aCache;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		$this->sDatePattern = 'H:i:s';
@@ -119,63 +116,37 @@ abstract class Driver
 		);
 	}
 
-	/**
-	 * @param string $sTimeOffset
-	 *
-	 * @return \MailSo\Log\Driver
-	 */
-	public function SetTimeOffset($sTimeOffset)
+	public function SetTimeOffset(string $sTimeOffset) : self
 	{
 		$this->sTimeOffset = (string) $sTimeOffset;
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Log\Driver
-	 */
-	public function DisableGuidPrefix()
+	public function DisableGuidPrefix() : self
 	{
 		$this->bGuidPrefix = false;
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Log\Driver
-	 */
-	public function DisableTimePrefix()
+	public function DisableTimePrefix() : self
 	{
 		$this->bTimePrefix = false;
 		return $this;
 	}
 
-	/**
-	 * @param bool $bValue
-	 *
-	 * @return \MailSo\Log\Driver
-	 */
-	public function WriteOnErrorOnly($bValue)
+	public function WriteOnErrorOnly(bool $bValue) : self
 	{
 		$this->bWriteOnErrorOnly = !!$bValue;
 		return $this;
 	}
 
-	/**
-	 * @param bool $bValue
-	 *
-	 * @return \MailSo\Log\Driver
-	 */
-	public function WriteOnPhpErrorOnly($bValue)
+	public function WriteOnPhpErrorOnly(bool $bValue) : self
 	{
 		$this->bWriteOnPhpErrorOnly = !!$bValue;
 		return $this;
 	}
 
-	/**
-	 * @param int $iTimeout
-	 *
-	 * @return \MailSo\Log\Driver
-	 */
-	public function WriteOnTimeoutOnly($iTimeout)
+	public function WriteOnTimeoutOnly(int $iTimeout) : self
 	{
 		$this->iWriteOnTimeoutOnly = (int) $iTimeout;
 		if (0 > $this->iWriteOnTimeoutOnly)
@@ -186,39 +157,21 @@ abstract class Driver
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Log\Driver
-	 */
-	public function DisableTypedPrefix()
+	public function DisableTypedPrefix() : self
 	{
 		$this->bTypedPrefix = false;
 		return $this;
 	}
 
-	/**
-	 * @param string|array $mDesc
-	 * @return bool
-	 */
-	abstract protected function writeImplementation($mDesc);
+	abstract protected function writeImplementation($mDesc) : bool;
 
-	/**
-	 * @return bool
-	 */
-	protected function writeEmptyLineImplementation()
+	protected function writeEmptyLineImplementation() : bool
 	{
 		return $this->writeImplementation('');
 	}
 
-	/**
-	 * @param string $sTimePrefix
-	 * @param string $sDesc
-	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
-	 * @param array $sName = ''
-	 *
-	 * @return string
-	 */
-	protected function loggerLineImplementation($sTimePrefix, $sDesc,
-		$iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '')
+	protected function loggerLineImplementation(string $sTimePrefix, string $sDesc,
+		int $iType = \MailSo\Log\Enumerations\Type::INFO, string $sName = '') : string
 	{
 		return \ltrim(
 			($this->bTimePrefix ? '['.$sTimePrefix.']' : '').
@@ -227,43 +180,25 @@ abstract class Driver
 		).$sDesc;
 	}
 
-	/**
-	 * @return bool
-	 */
-	protected function clearImplementation()
+	protected function clearImplementation() : bool
 	{
 		return true;
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function getTimeWithMicroSec()
+	protected function getTimeWithMicroSec() : string
 	{
 		$aMicroTimeItems = \explode(' ', \microtime());
 		return \MailSo\Log\Logger::DateHelper($this->sDatePattern, $this->sTimeOffset, $aMicroTimeItems[1]).'.'.
 			\str_pad((int) ($aMicroTimeItems[0] * 1000), 3, '0', STR_PAD_LEFT);
 	}
 
-	/**
-	 * @param int $iType
-	 * @param string $sName = ''
-	 *
-	 * @return string
-	 */
-	protected function getTypedPrefix($iType, $sName = '')
+	protected function getTypedPrefix(int $iType, string $sName = '') : string
 	{
 		$sName = 0 < \strlen($sName) ? $sName : $this->sName;
 		return isset($this->aPrefixes[$iType]) ? $sName.$this->aPrefixes[$iType].': ' : '';
 	}
 
-	/**
-	 * @param string|array $mDesc
-	 * @param bool $bDiplayCrLf = false
-	 *
-	 * @return string
-	 */
-	protected function localWriteImplementation($mDesc, $bDiplayCrLf = false)
+	protected function localWriteImplementation($mDesc, bool $bDiplayCrLf = false) : string
 	{
 		if ($bDiplayCrLf)
 		{
@@ -285,15 +220,6 @@ abstract class Driver
 		return $this->writeImplementation($mDesc);
 	}
 
-	/**
-	 * @final
-	 * @param string $sDesc
-	 * @param int $iType = \MailSo\Log\Enumerations\Type::INFO
-	 * @param string $sName = ''
-	 * @param bool $bDiplayCrLf = false
-	 *
-	 * @return bool
-	 */
 	final public function Write($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '', $bDiplayCrLf = false)
 	{
 		$bResult = true;
@@ -339,9 +265,9 @@ abstract class Driver
 				$bResult = $this->localWriteImplementation($this->aCache, $bDiplayCrLf);
 				$this->aCache = array();
 			}
-			else if (0 < $this->iWriteOnTimeoutOnly && \time() - APP_START_TIME > $this->iWriteOnTimeoutOnly)
+			else if (0 < $this->iWriteOnTimeoutOnly && \time() - $_SERVER['REQUEST_TIME_FLOAT'] > $this->iWriteOnTimeoutOnly)
 			{
-				$sFlush = '--- FlushLogCache: WriteOnTimeoutOnly ['.(\time() - APP_START_TIME).'sec]';
+				$sFlush = '--- FlushLogCache: WriteOnTimeoutOnly ['.(\time() - $_SERVER['REQUEST_TIME_FLOAT']).'sec]';
 				if (isset($this->aCache[0]) && empty($this->aCache[0]))
 				{
 					$this->aCache[0] = $sFlush;
@@ -373,26 +299,16 @@ abstract class Driver
 		return $bResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetNewLine()
+	public function GetNewLine() : string
 	{
 		return $this->sNewLine;
 	}
 
-	/**
-	 * @final
-	 * @return bool
-	 */
-	final public function Clear()
+	final public function Clear() : bool
 	{
 		return $this->clearImplementation();
 	}
 
-	/**
-	 * @final
-	 */
 	final public function WriteEmptyLine() : void
 	{
 		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || 0 < $this->iWriteOnTimeoutOnly))

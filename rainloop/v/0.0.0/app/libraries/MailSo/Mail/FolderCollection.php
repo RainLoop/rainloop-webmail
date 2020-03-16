@@ -42,9 +42,6 @@ class FolderCollection extends \MailSo\Base\Collection
 	 */
 	public $SystemFolders;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
@@ -56,20 +53,12 @@ class FolderCollection extends \MailSo\Base\Collection
 		$this->Optimized = false;
 	}
 
-	/**
-	 * @return \MailSo\Mail\FolderCollection
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @param string $sFullNameRaw
-	 *
-	 * @return \MailSo\Mail\Folder|null
-	 */
-	public function GetByFullNameRaw($sFullNameRaw)
+	public function GetByFullNameRaw(string $sFullNameRaw) : ?\MailSo\Mail\Folder
 	{
 		$mResult = null;
 		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
@@ -96,10 +85,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		return $mResult;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function CountRec()
+	public function CountRec() : int
 	{
 		$iResult = $this->Count();
 		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
@@ -114,18 +100,12 @@ class FolderCollection extends \MailSo\Base\Collection
 		return $iResult;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetNamespace()
+	public function GetNamespace() : string
 	{
 		return $this->Namespace;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function FindDelimiter()
+	public function FindDelimiter() : string
 	{
 		$sDelimiter = '/';
 
@@ -143,22 +123,14 @@ class FolderCollection extends \MailSo\Base\Collection
 		return $sDelimiter;
 	}
 
-	/**
-	 * @param string $sNamespace
-	 *
-	 * @return \MailSo\Mail\FolderCollection
-	 */
-	public function SetNamespace($sNamespace)
+	public function SetNamespace(string $sNamespace) : \MailSo\Mail\FolderCollection
 	{
 		$this->Namespace = $sNamespace;
 
 		return $this;
 	}
 
-	/**
-	 * @param array $aUnsortedMailFolders
-	 */
-	public function InitByUnsortedMailFolderArray($aUnsortedMailFolders) : void
+	public function InitByUnsortedMailFolderArray(array $aUnsortedMailFolders) : void
 	{
 		$this->Clear();
 
@@ -193,7 +165,7 @@ class FolderCollection extends \MailSo\Base\Collection
 							$aAddedFolders[$sNonExistenFolderFullNameRaw] =
 								Folder::NewNonExistenInstance($sNonExistenFolderFullNameRaw, $sDelimiter);
 						}
-						catch (\Exception $oExc)
+						catch (\Throwable $oExc)
 						{
 							unset($oExc);
 						}
@@ -218,12 +190,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		unset($aSortedByLenImapFolders);
 	}
 
-	/**
-	 * @param \MailSo\Mail\Folder $oMailFolder
-	 *
-	 * @return bool
-	 */
-	public function AddWithPositionSearch($oMailFolder)
+	public function AddWithPositionSearch(\MailSo\Mail\Folder $oMailFolder) : bool
 	{
 		$oItemFolder = null;
 		$bIsAdded = false;

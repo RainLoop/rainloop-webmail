@@ -4,6 +4,7 @@ namespace RainLoop\Providers\TwoFactorAuth;
 
 abstract class AbstractTwoFactorAuth
 {
+
 	public function Label() : string
 	{
 		return 'Two Factor Authenticator Code';

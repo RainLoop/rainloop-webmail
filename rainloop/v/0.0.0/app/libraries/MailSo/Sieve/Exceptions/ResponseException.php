@@ -24,9 +24,6 @@ class ResponseException extends \MailSo\Sieve\Exceptions\Exception
 	private $aResponses;
 
 	/**
-	 * @param array $aResponses = array
-	 * @param string $sMessage = ''
-	 * @param int $iCode = 0
 	 * @param \Exception $oPrevious = null
 	 */
 	public function __construct($aResponses = array(), $sMessage = '', $iCode = 0, $oPrevious = null)
@@ -39,18 +36,12 @@ class ResponseException extends \MailSo\Sieve\Exceptions\Exception
 		}
 	}
 
-	/**
-	 * @return array
-	 */
-	public function GetResponses()
+	public function GetResponses() : array
 	{
 		return $this->aResponses;
 	}
 
-	/**
-	 * @return \MailSo\Sieve\Response | null
-	 */
-	public function GetLastResponse()
+	public function GetLastResponse() : ?\MailSo\Sieve\Response
 	{
 		return 0 < count($this->aResponses) ? $this->aResponses[count($this->aResponses) - 1] : null;
 	}

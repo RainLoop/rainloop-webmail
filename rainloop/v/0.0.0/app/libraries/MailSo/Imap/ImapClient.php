@@ -87,9 +87,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public $__FORCE_SELECT_ON_EXAMINE__;
 
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
@@ -115,38 +112,25 @@ class ImapClient extends \MailSo\Net\NetClient
 		@\ini_set('xdebug.max_nesting_level', 500);
 	}
 
-	/**
-	 * @return \MailSo\Imap\ImapClient
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function GetLogginedUser()
+	public function GetLogginedUser() : string
 	{
 		return $this->sLogginedUser;
 	}
 
 	/**
-	 * @param string $sServerName
-	 * @param int $iPort = 143
-	 * @param int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT
-	 * @param bool $bVerifySsl = false
-	 * @param bool $bAllowSelfSigned = true
-	 * @param string $sClientCert = ''
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Connect($sServerName, $iPort = 143,
-		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		$bVerifySsl = false, $bAllowSelfSigned = true,
-		$sClientCert = '') : void
+	public function Connect(string $sServerName, int $iPort = 143,
+		int $iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
+		bool $bVerifySsl = false, bool $bAllowSelfSigned = true,
+		string $sClientCert = '') : void
 	{
 		$this->aTagTimeouts['*'] = \microtime(true);
 
@@ -181,20 +165,12 @@ class ImapClient extends \MailSo\Net\NetClient
     }
 
 	/**
-	 * @param string $sLogin
-	 * @param string $sPassword
-	 * @param string $sProxyAuthUser = ''
-	 * @param bool $bUseAuthPlainIfSupported = true
-	 * @param bool $bUseAuthCramMd5IfSupported = true
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Login($sLogin, $sPassword, $sProxyAuthUser = '',
-		$bUseAuthPlainIfSupported = true, $bUseAuthCramMd5IfSupported = true)
+	public function Login(string $sLogin, string $sPassword, string $sProxyAuthUser = '',
+		bool $bUseAuthPlainIfSupported = true, bool $bUseAuthCramMd5IfSupported = true) : self
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sLogin, true) ||
 			!\MailSo\Base\Validator::NotEmptyString($sPassword, true))
@@ -319,11 +295,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	public function Logout()
+	public function Logout() : self
 	{
 		if ($this->bIsLoggined)
 		{
@@ -334,52 +308,38 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Imap\ImapClient
-	 */
-	public function ForceCloseConnection()
+	public function ForceCloseConnection() : self
 	{
 		$this->Disconnect();
 
 		return $this;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsLoggined()
+	public function IsLoggined() : bool
 	{
 		return $this->IsConnected() && $this->bIsLoggined;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function IsSelected()
+	public function IsSelected() : bool
 	{
 		return $this->IsLoggined() && $this->bIsSelected;
 	}
 
 	/**
-	 * @return array|null
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Capability()
+	public function Capability() : ?array
 	{
 		$this->SendRequestWithCheck('CAPABILITY', array(), true);
 		return $this->aCapabilityItems;
 	}
 
 	/**
-	 * @param string $sExtentionName
-	 * @return bool
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function IsSupported($sExtentionName)
+	public function IsSupported(string $sExtentionName) : bool
 	{
 		$bResult = \MailSo\Base\Validator::NotEmptyString($sExtentionName, true);
 		if ($bResult && null === $this->aCapabilityItems)
@@ -392,19 +352,17 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Imap\NamespaceResult|null
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function GetNamespace()
+	public function GetNamespace() : ?\MailSo\Imap\NamespaceResult
 	{
 		if (!$this->IsSupported('NAMESPACE'))
 		{
 			return null;
 		}
 
-		$oReturn = false;
+		$oReturn = null;
 
 		$this->SendRequest('NAMESPACE');
 		$aResult = $this->parseResponseWithValidation();
@@ -421,7 +379,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 
-		if (false === $oReturn)
+		if (!$oReturn)
 		{
 			$this->writeLogException(
 				new \MailSo\Imap\Exceptions\ResponseException(),
@@ -432,99 +390,71 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Noop()
+	public function Noop() : self
 	{
 		return $this->SendRequestWithCheck('NOOP');
 	}
 
 	/**
-	 * @param string $sFolderName
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderCreate($sFolderName)
+	public function FolderCreate(string $sFolderName) : self
 	{
 		return $this->SendRequestWithCheck('CREATE',
 			array($this->EscapeString($sFolderName)));
 	}
 
 	/**
-	 * @param string $sFolderName
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderDelete($sFolderName)
+	public function FolderDelete(string $sFolderName) : self
 	{
 		return $this->SendRequestWithCheck('DELETE',
 			array($this->EscapeString($sFolderName)));
 	}
 
 	/**
-	 * @param string $sFolderName
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderSubscribe($sFolderName)
+	public function FolderSubscribe(string $sFolderName) : self
 	{
 		return $this->SendRequestWithCheck('SUBSCRIBE',
 			array($this->EscapeString($sFolderName)));
 	}
 
 	/**
-	 * @param string $sFolderName
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderUnSubscribe($sFolderName)
+	public function FolderUnSubscribe(string $sFolderName) : self
 	{
 		return $this->SendRequestWithCheck('UNSUBSCRIBE',
 			array($this->EscapeString($sFolderName)));
 	}
 
 	/**
-	 * @param string $sOldFolderName
-	 * @param string $sNewFolderName
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderRename($sOldFolderName, $sNewFolderName)
+	public function FolderRename(string $sOldFolderName, string $sNewFolderName) : self
 	{
 		return $this->SendRequestWithCheck('RENAME', array(
 			$this->EscapeString($sOldFolderName),
 			$this->EscapeString($sNewFolderName)));
 	}
 
-	/**
-	 * @param array $aResult
-	 *
-	 * @return array
-	 */
-	protected function getStatusFolderInformation($aResult)
+	protected function getStatusFolderInformation(array $aResult) : array
 	{
 		$aReturn = array();
 
@@ -558,16 +488,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sFolderName
-	 * @param array $aStatusItems
-	 *
-	 * @return array|bool
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderStatus($sFolderName, array $aStatusItems)
+	public function FolderStatus(string $sFolderName, array $aStatusItems) : array
 	{
 		$aResult = false;
 		if (\count($aStatusItems) > 0)
@@ -582,14 +507,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $aResult;
 	}
 
-	/**
-	 * @param array $aResult
-	 * @param string $sStatus
-	 * @param bool $bUseListStatus = false
-	 *
-	 * @return array
-	 */
-	private function getFoldersFromResult(array $aResult, $sStatus, $bUseListStatus = false)
+	private function getFoldersFromResult(array $aResult, string $sStatus, bool $bUseListStatus = false) : array
 	{
 		$aReturn = array();
 
@@ -686,17 +604,10 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param bool $bIsSubscribeList
-	 * @param string $sParentFolderName = ''
-	 * @param string $sListPattern = '*'
-	 * @param bool $bUseListStatus = false
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	private function specificFolderList($bIsSubscribeList, $sParentFolderName = '', $sListPattern = '*', $bUseListStatus = false)
+	private function specificFolderList(bool $bIsSubscribeList, string $sParentFolderName = '', string $sListPattern = '*', bool $bUseListStatus = false) : array
 	{
 		$sCmd = 'LSUB';
 		if (!$bIsSubscribeList)
@@ -739,53 +650,33 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sParentFolderName = ''
-	 * @param string $sListPattern = '*'
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderList($sParentFolderName = '', $sListPattern = '*')
+	public function FolderList(string $sParentFolderName = '', string $sListPattern = '*') : array
 	{
 		return $this->specificFolderList(false, $sParentFolderName, $sListPattern);
 	}
 
 	/**
-	 * @param string $sParentFolderName = ''
-	 * @param string $sListPattern = '*'
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderSubscribeList($sParentFolderName = '', $sListPattern = '*')
+	public function FolderSubscribeList(string $sParentFolderName = '', string $sListPattern = '*') : array
 	{
 		return $this->specificFolderList(true, $sParentFolderName, $sListPattern);
 	}
 
 	/**
-	 * @param string $sParentFolderName = ''
-	 * @param string $sListPattern = '*'
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderStatusList($sParentFolderName = '', $sListPattern = '*')
+	public function FolderStatusList(string $sParentFolderName = '', string $sListPattern = '*') : array
 	{
 		return $this->specificFolderList(false, $sParentFolderName, $sListPattern, true);
 	}
 
-	/**
-	 * @param array $aResult
-	 * @param string $sFolderName
-	 * @param bool $bIsWritable
-	 */
-	protected function initCurrentFolderInformation($aResult, $sFolderName, $bIsWritable) : void
+	protected function initCurrentFolderInformation(array $aResult, string $sFolderName, bool $bIsWritable) : void
 	{
 		if (\is_array($aResult))
 		{
@@ -855,17 +746,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sFolderName
-	 * @param bool $bIsWritable
-	 * @param bool $bReSelectSameFolders
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	protected function selectOrExamineFolder($sFolderName, $bIsWritable, $bReSelectSameFolders)
+	protected function selectOrExamineFolder(string $sFolderName, bool $bIsWritable, bool $bReSelectSameFolders) : self
 	{
 		if (!$bReSelectSameFolders)
 		{
@@ -894,42 +779,30 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sFolderName
-	 * @param bool $bReSelectSameFolders = false
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderSelect($sFolderName, $bReSelectSameFolders = false)
+	public function FolderSelect(string $sFolderName, bool $bReSelectSameFolders = false) : self
 	{
 		return $this->selectOrExamineFolder($sFolderName, true, $bReSelectSameFolders);
 	}
 
 	/**
-	 * @param string $sFolderName
-	 * @param bool $bReSelectSameFolders = false
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderExamine($sFolderName, $bReSelectSameFolders = false)
+	public function FolderExamine(string $sFolderName, bool $bReSelectSameFolders = false) : self
 	{
 		return $this->selectOrExamineFolder($sFolderName, $this->__FORCE_SELECT_ON_EXAMINE__, $bReSelectSameFolders);
 	}
 
 	/**
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function FolderUnSelect()
+	public function FolderUnSelect() : self
 	{
 		if ($this->IsSelected() && $this->IsSupported('UNSELECT'))
 		{
@@ -941,17 +814,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param array $aInputFetchItems
-	 * @param string $sIndexRange
-	 * @param bool $bIndexIsUid
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Fetch(array $aInputFetchItems, $sIndexRange, $bIndexIsUid)
+	public function Fetch(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : array
 	{
 		$sIndexRange = (string) $sIndexRange;
 		if (!\MailSo\Base\Validator::NotEmptyString($sIndexRange, true))
@@ -1004,12 +871,10 @@ class ImapClient extends \MailSo\Net\NetClient
 
 
 	/**
-	 * @return array|false
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Quota()
+	public function Quota() : array
 	{
 		$aReturn = false;
 		if ($this->IsSupported('QUOTA'))
@@ -1056,17 +921,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param array $aSortTypes
-	 * @param string $sSearchCriterias
-	 * @param bool $bReturnUid
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSimpleSort($aSortTypes, $sSearchCriterias = 'ALL', $bReturnUid = true)
+	public function MessageSimpleSort(array $aSortTypes, string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
 		$sSearchCriterias = !\MailSo\Base\Validator::NotEmptyString($sSearchCriterias, true) || '*' === $sSearchCriterias
@@ -1125,21 +984,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param bool $bSort = false
-	 * @param string $sSearchCriterias = 'ALL'
-	 * @param array $aSearchOrSortReturn = null
-	 * @param bool $bReturnUid = true
-	 * @param string $sLimit = ''
-	 * @param string $sCharset = ''
-	 * @param array $aSortTypes = null
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	private function simpleESearchOrESortHelper($bSort = false, $sSearchCriterias = 'ALL', $aSearchOrSortReturn = null, $bReturnUid = true, $sLimit = '', $sCharset = '', $aSortTypes = null)
+	private function simpleESearchOrESortHelper(bool $bSort = false, string $sSearchCriterias = 'ALL', array $aSearchOrSortReturn = null, bool $bReturnUid = true, string $sLimit = '', string $sCharset = '', array $aSortTypes = null) : array
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
 		$sSearchCriterias = 0 === \strlen($sSearchCriterias) || '*' === $sSearchCriterias
@@ -1239,46 +1088,26 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sSearchCriterias = 'ALL'
-	 * @param array $aSearchReturn = null
-	 * @param bool $bReturnUid = true
-	 * @param string $sLimit = ''
-	 * @param string $sCharset = ''
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSimpleESearch($sSearchCriterias = 'ALL', $aSearchReturn = null, $bReturnUid = true, $sLimit = '', $sCharset = '')
+	public function MessageSimpleESearch(string $sSearchCriterias = 'ALL', array $aSearchReturn = null, bool $bReturnUid = true, string $sLimit = '', string $sCharset = '') : array
 	{
 		return $this->simpleESearchOrESortHelper(false, $sSearchCriterias, $aSearchReturn, $bReturnUid, $sLimit, $sCharset);
 	}
 
 	/**
-	 * @param array $aSortTypes
-	 * @param string $sSearchCriterias = 'ALL'
-	 * @param array $aSearchReturn = null
-	 * @param bool $bReturnUid = true
-	 * @param string $sLimit = ''
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSimpleESort($aSortTypes, $sSearchCriterias = 'ALL', $aSearchReturn = null, $bReturnUid = true, $sLimit = '')
+	public function MessageSimpleESort(array $aSortTypes, string $sSearchCriterias = 'ALL', array $aSearchReturn = null, bool $bReturnUid = true, string $sLimit = '') : array
 	{
 		return $this->simpleESearchOrESortHelper(true, $sSearchCriterias, $aSearchReturn, $bReturnUid, $sLimit, '', $aSortTypes);
 	}
 
-	/**
-	 * @param array $aResult
-	 * @return \MailSo\Imap\Response
-	 */
-	private function findLastResponse($aResult)
+	private function findLastResponse(array $aResult) : \MailSo\Imap\Response
 	{
 		$oResult = null;
 		if (\is_array($aResult) && 0 < \count($aResult))
@@ -1294,17 +1123,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sSearchCriterias
-	 * @param bool $bReturnUid = true
-	 * @param string $sCharset = ''
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSimpleSearch($sSearchCriterias = 'ALL', $bReturnUid = true, $sCharset = '')
+	public function MessageSimpleSearch(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = '') : array
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
 		$sSearchCriterias = 0 === \strlen($sSearchCriterias) || '*' === $sSearchCriterias
@@ -1383,7 +1206,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 *
 	 * @return mixed
 	 */
-	private function validateThreadItem($aValue)
+	private function validateThreadItem(array $aValue)
 	{
 		$mResult = false;
 		if (\is_numeric($aValue))
@@ -1422,17 +1245,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sSearchCriterias = 'ALL'
-	 * @param bool $bReturnUid = true
-	 * @param string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8
-	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageSimpleThread($sSearchCriterias = 'ALL', $bReturnUid = true, $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8)
+	public function MessageSimpleThread(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8) : array
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
 		$sSearchCriterias = !\MailSo\Base\Validator::NotEmptyString($sSearchCriterias, true) || '*' === $sSearchCriterias
@@ -1502,17 +1319,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sToFolder
-	 * @param string $sIndexRange
-	 * @param bool $bIndexIsUid
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageCopy($sToFolder, $sIndexRange, $bIndexIsUid)
+	public function MessageCopy(string $sToFolder, string $sIndexRange, bool $bIndexIsUid) : self
 	{
 		if (0 === \strlen($sIndexRange))
 		{
@@ -1527,17 +1338,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sToFolder
-	 * @param string $sIndexRange
-	 * @param bool $bIndexIsUid
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageMove($sToFolder, $sIndexRange, $bIndexIsUid)
+	public function MessageMove(string $sToFolder, string $sIndexRange, bool $bIndexIsUid) : self
 	{
 		if (0 === \strlen($sIndexRange))
 		{
@@ -1559,16 +1364,10 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sUidRangeIfSupported = ''
-	 * @param bool $bForceUidExpunge = false
-	 * @param bool $bExpungeAll = false
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageExpunge($sUidRangeIfSupported = '', $bForceUidExpunge = false, $bExpungeAll = false)
+	public function MessageExpunge(string $sUidRangeIfSupported = '', bool $bForceUidExpunge = false, bool $bExpungeAll = false) : self
 	{
 		$sUidRangeIfSupported = \trim($sUidRangeIfSupported);
 
@@ -1585,18 +1384,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sIndexRange
-	 * @param bool $bIndexIsUid
-	 * @param array $aInputStoreItems
-	 * @param string $sStoreAction
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageStoreFlag($sIndexRange, $bIndexIsUid, $aInputStoreItems, $sStoreAction)
+	public function MessageStoreFlag(string $sIndexRange, bool $bIndexIsUid, array $aInputStoreItems, string $sStoreAction) : self
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sIndexRange, true) ||
 			!\MailSo\Base\Validator::NotEmptyString($sStoreAction, true) ||
@@ -1610,25 +1402,18 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sFolderName
 	 * @param resource $rMessageAppendStream
-	 * @param int $iStreamSize
-	 * @param array	$aAppendFlags = null
-	 * @param int $iUid = null
-	 * @param int $sDateTime = 0
-	 *
-	 * @return \MailSo\Imap\ImapClient
 	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageAppendStream($sFolderName, $rMessageAppendStream, $iStreamSize, $aAppendFlags = null, &$iUid = null, $sDateTime = 0)
+	public function MessageAppendStream(string $sFolderName, $rMessageAppendStream, int $iStreamSize, array $aAppendFlags = null, int &$iUid = null, int $iDateTime = 0) : self
 	{
 		$aData = array($this->EscapeString($sFolderName), $aAppendFlags);
-		if (0 < $sDateTime)
+		if (0 < $iDateTime)
 		{
-			$aData[] = $this->EscapeString(\gmdate('d-M-Y H:i:s', $sDateTime).' +0000');
+			$aData[] = $this->EscapeString(\gmdate('d-M-Y H:i:s', $iDateTime).' +0000');
 		}
 
 		$aData[] = '{'.$iStreamSize.'}';
@@ -1666,25 +1451,16 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Imap\FolderInformation
-	 */
-	public function FolderCurrentInformation()
+	public function FolderCurrentInformation() : \MailSo\Imap\FolderInformation
 	{
 		return $this->oCurrentFolderInfo;
 	}
 
 	/**
-	 * @param string $sCommand
-	 * @param array $aParams = array()
-	 * @param bool $bBreakOnLiteral = false
-	 *
-	 * @return string
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	public function SendRequest($sCommand, $aParams = array(), $bBreakOnLiteral = false)
+	public function SendRequest(string $sCommand, array $aParams = array(), bool $bBreakOnLiteral = false) : string
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sCommand, true) || !\is_array($aParams))
 		{
@@ -1727,13 +1503,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return '';
 	}
 
-	/**
-	 * @param string $sCommand
-	 * @param array $aParams
-	 *
-	 * @return array|null
-	 */
-	private function secureRequestParams($sCommand, $aParams)
+	private function secureRequestParams(string $sCommand, array $aParams) : ?array
 	{
 		$aResult = null;
 		switch ($sCommand)
@@ -1751,17 +1521,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sCommand
-	 * @param array $aParams = array()
-	 * @param bool $bFindCapa = false
-	 *
-	 * @return \MailSo\Imap\ImapClient
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function SendRequestWithCheck($sCommand, $aParams = array(), $bFindCapa = false)
+	public function SendRequestWithCheck(string $sCommand, array $aParams = array(), bool $bFindCapa = false) : self
 	{
 		$this->SendRequest($sCommand, $aParams);
 		$this->parseResponseWithValidation(null, $bFindCapa);
@@ -1769,10 +1533,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function GetLastResponse()
+	public function GetLastResponse() : array
 	{
 		return $this->aLastResponse;
 	}
@@ -1780,13 +1541,11 @@ class ImapClient extends \MailSo\Net\NetClient
 	/**
 	 * @param mixed $aResult
 	 *
-	 * @return array
-	 *
 	 * @throws \MailSo\Imap\Exceptions\ResponseNotFoundException
 	 * @throws \MailSo\Imap\Exceptions\InvalidResponseException
 	 * @throws \MailSo\Imap\Exceptions\NegativeResponseException
 	 */
-	private function validateResponse($aResult)
+	private function validateResponse(array $aResult) : array
 	{
 		if (!\is_array($aResult) || 0 === $iCnt = \count($aResult))
 		{
@@ -1815,13 +1574,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $aResult;
 	}
 
-	/**
-	 * @param string $sEndTag = null
-	 * @param bool $bFindCapa = false
-	 *
-	 * @return array|bool
-	 */
-	protected function parseResponse($sEndTag = null, $bFindCapa = false)
+	protected function parseResponse(string $sEndTag = null, bool $bFindCapa = false) : array
 	{
 		if (\is_resource($this->rConnect))
 		{
@@ -1876,13 +1629,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this->aLastResponse;
 	}
 
-	/**
-	 * @param string $sEndTag = null
-	 * @param bool $bFindCapa = false
-	 *
-	 * @return array
-	 */
-	private function parseResponseWithValidation($sEndTag = null, $bFindCapa = false)
+	private function parseResponseWithValidation(string $sEndTag = null, bool $bFindCapa = false) : array
 	{
 		return $this->validateResponse($this->parseResponse($sEndTag, $bFindCapa));
 	}
@@ -1916,12 +1663,10 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @return array|string
-	 *
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	private function partialParseResponseBranch(&$oImapResponse, $iStackIndex = -1,
-		$bTreatAsAtom = false, $sParentToken = '', $sOpenBracket = '')
+	private function partialParseResponseBranch(&$oImapResponse, int $iStackIndex = -1,
+		bool $bTreatAsAtom = false, string $sParentToken = '', string $sOpenBracket = '') : array
 	{
 		$mNull = null;
 
@@ -2394,14 +2139,9 @@ class ImapClient extends \MailSo\Net\NetClient
 	}
 
 	/**
-	 * @param string $sParent
-	 * @param string $sLiteralAtomUpperCase
 	 * @param resource $rImapStream
-	 * @param int $iLiteralLen
-	 *
-	 * @return bool
 	 */
-	private function partialResponseLiteralCallbackCallable($sParent, $sLiteralAtomUpperCase, $rImapStream, $iLiteralLen)
+	private function partialResponseLiteralCallbackCallable(string $sParent, string $sLiteralAtomUpperCase, $rImapStream, int $iLiteralLen) : bool
 	{
 		$sLiteralAtomUpperCasePeek = '';
 		if (0 === \strpos($sLiteralAtomUpperCase, 'BODY'))
@@ -2440,7 +2180,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				\call_user_func($this->aFetchCallbacks[$sFetchKey],
 					$sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
 			}
-			catch (\Exception $oException)
+			catch (\Throwable $oException)
 			{
 				$this->writeLog('Callback Exception', \MailSo\Log\Enumerations\Type::NOTICE);
 				$this->writeLogException($oException);
@@ -2500,12 +2240,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $bResult;
 	}
 
-	/**
-	 * @param array $aParams = null
-	 *
-	 * @return string
-	 */
-	private function prepearParamLine($aParams = array())
+	private function prepearParamLine(array $aParams = array()) : string
 	{
 		$sReturn = '';
 		if (\is_array($aParams) && 0 < \count($aParams))
@@ -2525,48 +2260,31 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $sReturn;
 	}
 
-	/**
-	 * @return string
-	 */
-	private function getNewTag()
+	private function getNewTag() : string
 	{
 		$this->iTagCount++;
 		return $this->getCurrentTag();
 	}
 
-	/**
-	 * @return string
-	 */
-	private function getCurrentTag()
+	private function getCurrentTag() : string
 	{
 		return self::TAG_PREFIX.$this->iTagCount;
 	}
 
-	/**
-	 * @param string $sStringForEscape
-	 *
-	 * @return string
-	 */
-	public function EscapeString($sStringForEscape)
+	public function EscapeString(string $sStringForEscape) : string
 	{
 		return '"'.\str_replace(array('\\', '"'), array('\\\\', '\\"'), $sStringForEscape).'"';
 	}
 
-	/**
-	 * @return string
-	 */
-	protected function getLogName()
+	protected function getLogName() : string
 	{
 		return 'IMAP';
 	}
 
 	/**
 	 * @param resource $rConnect
-	 * @param array $aCapabilityItems = array()
-	 *
-	 * @return \MailSo\Imap\ImapClient
 	 */
-	public function TestSetValues($rConnect, $aCapabilityItems = array())
+	public function TestSetValues($rConnect, array $aCapabilityItems = array()) : self
 	{
 		$this->rConnect = $rConnect;
 		$this->aCapabilityItems = $aCapabilityItems;
@@ -2574,13 +2292,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $this;
 	}
 
-	/**
-	 * @param string $sEndTag = null
-	 * @param string $bFindCapa = false
-	 *
-	 * @return array
-	 */
-	public function TestParseResponseWithValidationProxy($sEndTag = null, $bFindCapa = false)
+	public function TestParseResponseWithValidationProxy(string $sEndTag = null, bool $bFindCapa = false) : array
 	{
 		return $this->parseResponseWithValidation($sEndTag, $bFindCapa);
 	}

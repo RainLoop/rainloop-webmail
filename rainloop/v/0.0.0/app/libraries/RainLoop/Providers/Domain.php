@@ -32,10 +32,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 		return $this->bAdmin;
 	}
 
-	/**
-	 * @return \RainLoop\Model\Domain|null
-	 */
-	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true)
+	public function Load(string $sName, bool $bFindWithWildCard = false, bool $bCheckDisabled = true, bool $bCheckAliases = true) : ?\RainLoop\Model\Domain
 	{
 		$oDomain = $this->oDriver->Load($sName, $bFindWithWildCard, $bCheckDisabled, $bCheckAliases);
 		if ($oDomain instanceof \RainLoop\Model\Domain)
@@ -93,10 +90,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 		return $this->oDriver->Count($sSearch);
 	}
 
-	/**
-	 * @return \RainLoop\Model\Domain | null
-	 */
-	public function LoadOrCreateNewFromAction(\RainLoop\Actions $oActions, string $sNameForTest = '')
+	public function LoadOrCreateNewFromAction(\RainLoop\Actions $oActions, string $sNameForTest = '') : ?\RainLoop\Model\Domain
 	{
 		$oDomain = null;
 
@@ -163,10 +157,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 		return $oDomain;
 	}
 
-	/**
-	 * @return \RainLoop\Model\Domain | null
-	 */
-	public function CreateNewAliasFromAction(\RainLoop\Actions $oActions, string $sNameForTest = '')
+	public function CreateNewAliasFromAction(\RainLoop\Actions $oActions, string $sNameForTest = '') : ?\RainLoop\Model\Domain
 	{
 		$oDomain = null;
 

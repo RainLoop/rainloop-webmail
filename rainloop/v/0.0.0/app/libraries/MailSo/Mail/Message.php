@@ -187,18 +187,12 @@ class Message
 	 */
 	private $bPgpEncrypted;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->Clear();
 	}
 
-	/**
-	 * @return \MailSo\Mail\Message
-	 */
-	public function Clear()
+	public function Clear() : \MailSo\Mail\Message
 	{
 		$this->sFolder = '';
 		$this->iUid = 0;
@@ -246,332 +240,202 @@ class Message
 		return $this;
 	}
 
-	/**
-	 * @return \MailSo\Mail\Message
-	 */
-	public static function NewInstance()
+	public static function NewInstance() : \MailSo\Mail\Message
 	{
 		return new self();
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Plain()
+	public function Plain() : string
 	{
 		return $this->sPlain;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Html()
+	public function Html() : string
 	{
 		return $this->sHtml;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function PgpSignature()
+	public function PgpSignature() : string
 	{
 		return $this->sPgpSignature;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function PgpSigned()
+	public function PgpSigned() : bool
 	{
 		return $this->bPgpSigned;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function PgpEncrypted()
+	public function PgpEncrypted() : bool
 	{
 		return $this->bPgpEncrypted;
 	}
 
-	/**
-	 * @param string $sHtml
-	 *
-	 * @retun void
-	 */
-	public function SetHtml($sHtml)
+	public function SetHtml(string $sHtml) : void
 	{
 		$this->sHtml = $sHtml;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Folder()
+	public function Folder() : string
 	{
 		return $this->sFolder;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Uid()
+	public function Uid() : int
 	{
 		return $this->iUid;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function MessageId()
+	public function MessageId() : string
 	{
 		return $this->sMessageId;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function Subject()
+	public function Subject() : string
 	{
 		return $this->sSubject;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ContentType()
+	public function ContentType() : string
 	{
 		return $this->sContentType;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Size()
+	public function Size() : int
 	{
 		return $this->iSize;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function InternalTimeStampInUTC()
+	public function InternalTimeStampInUTC() : int
 	{
 		return $this->iInternalTimeStampInUTC;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function HeaderTimeStampInUTC()
+	public function HeaderTimeStampInUTC() : int
 	{
 		return $this->iHeaderTimeStampInUTC;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function HeaderDate()
+	public function HeaderDate() : string
 	{
 		return $this->sHeaderDate;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function Flags()
+	public function Flags() : array
 	{
 		return $this->aFlags;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function FlagsLowerCase()
+	public function FlagsLowerCase() : array
 	{
 		return $this->aFlagsLowerCase;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function From()
+	public function From() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oFrom;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Sensitivity()
+	public function Sensitivity() : int
 	{
 		return $this->iSensitivity;
 	}
 
-	/**
-	 * @return int
-	 */
-	public function Priority()
+	public function Priority() : int
 	{
 		return $this->iPriority;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function Sender()
+	public function Sender() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oSender;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function ReplyTo()
+	public function ReplyTo() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oReplyTo;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function DeliveredTo()
+	public function DeliveredTo() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oDeliveredTo;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function To()
+	public function To() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oTo;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function Cc()
+	public function Cc() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oCc;
 	}
 
-	/**
-	 * @return \MailSo\Mime\EmailCollection
-	 */
-	public function Bcc()
+	public function Bcc() : \MailSo\Mime\EmailCollection
 	{
 		return $this->oBcc;
 	}
 
-	/**
-	 * @return \MailSo\Mail\AttachmentCollection
-	 */
-	public function Attachments()
+	public function Attachments() : \MailSo\Mail\AttachmentCollection
 	{
 		return $this->oAttachments;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function InReplyTo()
+	public function InReplyTo() : string
 	{
 		return $this->sInReplyTo;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function References()
+	public function References() : string
 	{
 		return $this->sReferences;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function DeliveryReceipt()
+	public function DeliveryReceipt() : string
 	{
 		return $this->sDeliveryReceipt;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ReadReceipt()
+	public function ReadReceipt() : string
 	{
 		return $this->sReadReceipt;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function UnsubsribeLinks()
+	public function UnsubsribeLinks() : array
 	{
 		return $this->aUnsubsribeLinks;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function ReadingConfirmation()
+	public function ReadingConfirmation() : string
 	{
 		return $this->ReadReceipt();
 	}
 
-	/**
-	 * @return array | null
-	 */
-	public function DraftInfo()
+	public function DraftInfo() : ?array
 	{
 		return $this->aDraftInfo;
 	}
 
-	/**
-	 * @return array
-	 */
-	public function Threads()
+	public function Threads() : array
 	{
 		return $this->aThreads;
 	}
 
-	/**
-	 * @param array $aThreads
-	 */
-	public function SetThreads($aThreads)
+	public function SetThreads(array $aThreads)
 	{
 		$this->aThreads = \is_array($aThreads) ? $aThreads : array();
 	}
 
-	/**
-	 * @return boole
-	 */
-	public function TextPartIsTrimmed()
+	public function TextPartIsTrimmed() : bool
 	{
 		return $this->bTextPartIsTrimmed;
 	}
 
-	/**
-	 * @param string $sFolder
-	 * @param \MailSo\Imap\FetchResponse $oFetchResponse
-	 * @param \MailSo\Imap\BodyStructure $oBodyStructure = null
-	 *
-	 * @return \MailSo\Mail\Message
-	 */
-	public static function NewFetchResponseInstance($sFolder, $oFetchResponse, $oBodyStructure = null)
+	public static function NewFetchResponseInstance(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : \MailSo\Mail\Message
 	{
 		return self::NewInstance()->InitByFetchResponse($sFolder, $oFetchResponse, $oBodyStructure);
 	}
 
-	/**
-	 * @param string $sFolder
-	 * @param \MailSo\Imap\FetchResponse $oFetchResponse
-	 * @param \MailSo\Imap\BodyStructure $oBodyStructure = null
-	 *
-	 * @return \MailSo\Mail\Message
-	 */
-	public function InitByFetchResponse($sFolder, $oFetchResponse, $oBodyStructure = null)
+	public function InitByFetchResponse(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : \MailSo\Mail\Message
 	{
 		if (!$oBodyStructure)
 		{
@@ -775,7 +639,7 @@ class Message
 		}
 
 		$aTextParts = $oBodyStructure ? $oBodyStructure->SearchHtmlOrPlainParts() : null;
-		if (\is_array($aTextParts) && 0 < \count($aTextParts))
+		if ($aTextParts)
 		{
 			if (0 === \strlen($sCharset))
 			{

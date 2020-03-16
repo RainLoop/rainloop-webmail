@@ -51,11 +51,10 @@ abstract class PdoAbstract
 	}
 
 	/**
-	 * @return \PDO
 	 *
 	 * @throws \Exception
 	 */
-	protected function getPDO()
+	protected function getPDO() : \PDO
 	{
 		if ($this->oPDO)
 		{
@@ -153,10 +152,7 @@ abstract class PdoAbstract
 		return $this->getPDO()->rollBack();
 	}
 
-	/**
-	 * @return \PDOStatement|null
-	 */
-	protected function prepareAndExecute(string $sSql, array $aParams = array(), bool $bMultiplyParams = false, bool $bLogParams = false)
+	protected function prepareAndExecute(string $sSql, array $aParams = array(), bool $bMultiplyParams = false, bool $bLogParams = false) : ?\PDOStatement
 	{
 		if ($this->bExplain && !$bMultiplyParams)
 		{
@@ -292,10 +288,7 @@ abstract class PdoAbstract
 		return $oPdo ? $oPdo->quote((string) $sValue, \PDO::PARAM_STR) : '\'\'';
 	}
 
-	/**
-	 * @return int|string|bool
-	 */
-	protected function getSystemValue(string $sName, bool $bReturnIntValue = true)
+	protected function getSystemValue(string $sName, bool $bReturnIntValue = true) : int
 	{
 		$oPdo = $this->getPDO();
 		if ($oPdo)
@@ -328,10 +321,7 @@ abstract class PdoAbstract
 		return false;
 	}
 
-	/**
-	 * @return int|string|bool
-	 */
-	protected function getVersion(string $sName)
+	protected function getVersion(string $sName) : int
 	{
 		return $this->getSystemValue($sName.'_version', true);
 	}

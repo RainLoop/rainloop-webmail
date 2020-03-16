@@ -2,14 +2,13 @@
 
 	if (defined('APP_VERSION'))
 	{
-		if (!defined('APP_START_TIME'))
+		if (!defined('APP_REQUEST_RND'))
 		{
 			@ini_set('register_globals', 0);
 			@ini_set('zend.ze1_compatibility_mode', 0);
 			@ini_set('magic_quotes_gpc', 0);
 			@ini_set('magic_quotes_runtime', 0);
 
-			define('APP_START_TIME', time());
 			define('APP_REQUEST_RND', function_exists('uuid_create') ? md5(uuid_create(UUID_TYPE_DEFAULT)) : bin2hex(random_bytes(16)));
 			define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
 

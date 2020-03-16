@@ -204,10 +204,7 @@ class Actions
 		return '';
 	}
 
-	/**
-	 * @return \RainLoop\Config\Application
-	 */
-	public function Config()
+	public function Config() : \RainLoop\Config\Application
 	{
 		if (null === $this->oConfig)
 		{
@@ -532,37 +529,34 @@ class Actions
 	public function SetAuthLogoutToken() : void
 	{
 		@\header('X-RainLoop-Action: Logout');
-		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5(APP_START_TIME), 0);
+		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5($_SERVER['REQUEST_TIME_FLOAT']), 0);
 	}
 
-	public function SetAuthToken(?\RainLoop\Model\Account $oAccount) : void
+	public function SetAuthToken(\RainLoop\Model\Account $oAccount) : void
 	{
-		if ($oAccount)
+		$sSpecAuthToken = '_'.$oAccount->GetAuthTokenQ();
+
+		$this->SetSpecAuthToken($sSpecAuthToken);
+		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken, 0);
+
+		if ($oAccount->SignMe() && 0 < \strlen($oAccount->SignMeToken()))
 		{
-			$sSpecAuthToken = '_'.$oAccount->GetAuthTokenQ();
+			\RainLoop\Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
+				\RainLoop\Utils::EncodeKeyValuesQ(array(
+					'e' => $oAccount->Email(),
+					't' => $oAccount->SignMeToken()
+				)),
+				\time() + 60 * 60 * 24 * 30);
 
-			$this->SetSpecAuthToken($sSpecAuthToken);
-			\RainLoop\Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken, 0);
-
-			if ($oAccount->SignMe() && 0 < \strlen($oAccount->SignMeToken()))
-			{
-				\RainLoop\Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
-					\RainLoop\Utils::EncodeKeyValuesQ(array(
-						'e' => $oAccount->Email(),
-						't' => $oAccount->SignMeToken()
-					)),
-					\time() + 60 * 60 * 24 * 30);
-
-				$this->StorageProvider()->Put($oAccount,
-					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
-					'sign_me',
-					\RainLoop\Utils::EncodeKeyValuesQ(array(
-						'Time' => \time(),
-						'AuthToken' => $oAccount->GetAuthTokenQ(),
-						'SignMetToken' => $oAccount->SignMeToken()
-					))
-				);
-			}
+			$this->StorageProvider()->Put($oAccount,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+				'sign_me',
+				\RainLoop\Utils::EncodeKeyValuesQ(array(
+					'Time' => \time(),
+					'AuthToken' => $oAccount->GetAuthTokenQ(),
+					'SignMetToken' => $oAccount->SignMeToken()
+				))
+			);
 		}
 	}
 
@@ -635,18 +629,14 @@ class Actions
 	}
 
 	/**
-	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function GetAccount(bool $bThrowExceptionOnFalse = false)
+	public function GetAccount(bool $bThrowExceptionOnFalse = false) : \RainLoop\Model\Account
 	{
 		return $this->getAccountFromToken($bThrowExceptionOnFalse);
 	}
 
-	/**
-	 * @return \MailSo\Base\Http
-	 */
-	public function Http()
+	public function Http() : \MailSo\Base\Http
 	{
 		if (null === $this->oHttp)
 		{
@@ -656,10 +646,7 @@ class Actions
 		return $this->oHttp;
 	}
 
-	/**
-	 * @return \MailSo\Mail\MailClient
-	 */
-	public function MailClient()
+	public function MailClient() : \MailSo\Mail\MailClient
 	{
 		if (null === $this->oMailClient)
 		{
@@ -670,10 +657,7 @@ class Actions
 		return $this->oMailClient;
 	}
 
-	/**
-	 * @return \RainLoop\Providers\Filters
-	 */
-	public function FiltersProvider()
+	public function FiltersProvider() : \RainLoop\Providers\Filters
 	{
 		if (null === $this->oFiltersProvider)
 		{
@@ -684,10 +668,7 @@ class Actions
 		return $this->oFiltersProvider;
 	}
 
-	/**
-	 * @return \RainLoop\Providers\TwoFactorAuth
-	 */
-	public function TwoFactorAuthProvider()
+	public function TwoFactorAuthProvider() : \RainLoop\Providers\TwoFactorAuth
 	{
 		if (null === $this->oTwoFactorAuthProvider)
 		{
@@ -699,10 +680,7 @@ class Actions
 		return $this->oTwoFactorAuthProvider;
 	}
 
-	/**
-	 * @return \RainLoop\Providers\Storage
-	 */
-	public function StorageProvider(bool $bLocal = false)
+	public function StorageProvider(bool $bLocal = false) : \RainLoop\Providers\Storage
 	{
 		if ($bLocal)
 		{
@@ -728,10 +706,7 @@ class Actions
 		return null;
 	}
 
-	/**
-	 * @return \RainLoop\Providers\Settings
-	 */
-	public function SettingsProvider(bool $bLocal = false)
+	public function SettingsProvider(bool $bLocal = false) : \RainLoop\Providers\Settings
 	{
 		if ($bLocal)
 		{
@@ -757,10 +732,7 @@ class Actions
 		return null;
 	}
 
-	/**
-	 * @return \RainLoop\Providers\Files
-	 */
-	public function FilesProvider()
+	public function FilesProvider() : \RainLoop\Providers\Files
 	{
 		if (null === $this->oFilesProvider)
 		{
@@ -771,10 +743,7 @@ class Actions
 		return $this->oFilesProvider;
 	}
 
-	/**
-	 * @return \RainLoop\Providers\Domain
-	 */
-	public function DomainProvider()
+	public function DomainProvider() : \RainLoop\Providers\Domain
 	{
 		if (null === $this->oDomainProvider)
 		{
@@ -785,10 +754,7 @@ class Actions
 		return $this->oDomainProvider;
 	}
 
-	/**
-	 * @return \RainLoop\Providers\Suggestions
-	 */
-	public function SuggestionsProvider()
+	public function SuggestionsProvider() : \RainLoop\Providers\Suggestions
 	{
 		if (null === $this->oSuggestionsProvider)
 		{
@@ -799,10 +765,7 @@ class Actions
 		return $this->oSuggestionsProvider;
 	}
 
-	/**
-	 * @return \RainLoop\Providers\AddressBook
-	 */
-	public function AddressBookProvider(?\RainLoop\Model\Account $oAccount = null, bool $bForceEnable = false)
+	public function AddressBookProvider(?\RainLoop\Model\Account $oAccount = null, bool $bForceEnable = false) : \RainLoop\Providers\AddressBook
 	{
 		if (null === $this->oAddressBookProvider)
 		{
@@ -822,10 +785,7 @@ class Actions
 		return $this->oAddressBookProvider;
 	}
 
-	/**
-	 * @return \MailSo\Cache\CacheClient
-	 */
-	public function Cacher(?\RainLoop\Model\Account $oAccount = null, bool $bForceFile = false)
+	public function Cacher(?\RainLoop\Model\Account $oAccount = null, bool $bForceFile = false) : \MailSo\Cache\CacheClient
 	{
 		$sKey = '';
 		if ($oAccount)
@@ -892,10 +852,7 @@ class Actions
 		return $this->aCachers[$sIndexKey];
 	}
 
-	/**
-	 * @return \RainLoop\Plugins\Manager
-	 */
-	public function Plugins()
+	public function Plugins() : \RainLoop\Plugins\Manager
 	{
 		if (null === $this->oPlugins)
 		{
@@ -906,10 +863,7 @@ class Actions
 		return $this->oPlugins;
 	}
 
-	/**
-	 * @return \MailSo\Log\Logger
-	 */
-	public function Logger()
+	public function Logger() : \MailSo\Log\Logger
 	{
 		if (null === $this->oLogger)
 		{
@@ -999,10 +953,7 @@ class Actions
 		return $this->oLogger;
 	}
 
-	/**
-	 * @return \MailSo\Log\Logger
-	 */
-	public function LoggerAuth()
+	public function LoggerAuth() : \MailSo\Log\Logger
 	{
 		if (null === $this->oLoggerAuth)
 		{
@@ -1096,10 +1047,7 @@ class Actions
 		}
 	}
 
-	/**
-	 * @return \RainLoop\Model\Account|null
-	 */
-	public function LoginProvide(string $sEmail, string $sLogin, string $sPassword, string $sSignMeToken = '', string $sClientCert = '', bool $bThrowProvideException = false)
+	public function LoginProvide(string $sEmail, string $sLogin, string $sPassword, string $sSignMeToken = '', string $sClientCert = '', bool $bThrowProvideException = false) : ?\RainLoop\Model\Account
 	{
 		$oAccount = null;
 		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword))
@@ -1132,10 +1080,9 @@ class Actions
 	}
 
 	/**
-	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function GetAccountFromCustomToken(string $sToken, bool $bThrowExceptionOnFalse = true, bool $bValidateShortToken = true, bool $bQ = false)
+	public function GetAccountFromCustomToken(string $sToken, bool $bThrowExceptionOnFalse = true, bool $bValidateShortToken = true, bool $bQ = false) : \RainLoop\Model\Account
 	{
 		$oResult = false;
 		if (!empty($sToken))
@@ -1180,10 +1127,7 @@ class Actions
 		return $oResult;
 	}
 
-	/**
-	 * @return \RainLoop\Model\Account|bool
-	 */
-	public function GetAccountFromSignMeToken()
+	public function GetAccountFromSignMeToken() : \RainLoop\Model\Account
 	{
 		$oAccount = false;
 
@@ -1220,10 +1164,9 @@ class Actions
 	}
 
 	/**
-	 * @return \RainLoop\Model\Account|bool
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true)
+	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true) : \RainLoop\Model\Account
 	{
 		return $this->GetAccountFromCustomToken($this->getLocalAuthToken(), $bThrowExceptionOnFalse, true, true);
 	}
@@ -1738,7 +1681,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		if (0 < $iDelay && 0 < $iWait)
 		{
-			if ($iWait > \time() - APP_START_TIME)
+			if ($iWait > \time() - $_SERVER['REQUEST_TIME_FLOAT'])
 			{
 				\sleep($iDelay);
 			}
@@ -1754,18 +1697,15 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	public function AuthToken(?\RainLoop\Model\Account $oAccount) : void
+	public function AuthToken(\RainLoop\Model\Account $oAccount) : void
 	{
-		if ($oAccount)
-		{
-			$this->SetAuthToken($oAccount);
+		$this->SetAuthToken($oAccount);
 
-			$aAccounts = $this->GetAccounts($oAccount);
-			if (\is_array($aAccounts) && isset($aAccounts[$oAccount->Email()]))
-			{
-				$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
-				$this->SetAccounts($oAccount, $aAccounts);
-			}
+		$aAccounts = $this->GetAccounts($oAccount);
+		if (\is_array($aAccounts) && isset($aAccounts[$oAccount->Email()]))
+		{
+			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
+			$this->SetAccounts($oAccount, $aAccounts);
 		}
 	}
 
@@ -1824,11 +1764,10 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	}
 
 	/**
-	 * @return \RainLoop\Model\Account
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	public function LoginProcess(string &$sEmail, string &$sPassword, string $sSignMeToken = '',
-		string $sAdditionalCode = '', bool $bAdditionalCodeSignMe = false, bool $bSkipTwoFactorAuth = false)
+		string $sAdditionalCode = '', bool $bAdditionalCodeSignMe = false, bool $bSkipTwoFactorAuth = false) : \RainLoop\Model\Account
 	{
 		$sInputEmail = $sEmail;
 
@@ -2205,10 +2144,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aTemplates;
 	}
 
-	/**
-	 * @return \RainLoop\Model\Identity
-	 */
-	public function GetTemplateByID(\RainLoop\Model\Account $oAccount, string $sID)
+	public function GetTemplateByID(\RainLoop\Model\Account $oAccount, string $sID) : ?\RainLoop\Model\Identity
 	{
 		$aTemplates = $this->GetTemplates($oAccount);
 		if (\is_array($aTemplates))
@@ -2307,10 +2243,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aIdentities;
 	}
 
-	/**
-	 * @return \RainLoop\Model\Identity
-	 */
-	public function GetIdentityByID(\RainLoop\Model\Account $oAccount, string $sID, bool $bFirstOnEmpty = false)
+	public function GetIdentityByID(\RainLoop\Model\Account $oAccount, string $sID, bool $bFirstOnEmpty = false) : ?\RainLoop\Model\Identity
 	{
 		$aIdentities = $this->GetIdentities($oAccount);
 
@@ -2327,10 +2260,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		return $bFirstOnEmpty && \is_array($aIdentities) && isset($aIdentities[0]) ? $aIdentities[0] : null;
 	}
-	/**
-	 * @return \RainLoop\Model\Identity
-	 */
-	public function GetAccountIdentity(\RainLoop\Model\Account $oAccount)
+
+	public function GetAccountIdentity(\RainLoop\Model\Account $oAccount) : ?\RainLoop\Model\Identity
 	{
 		return $this->GetIdentityByID($oAccount, '', true);
 	}
@@ -3102,7 +3033,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 
-	public function setConfigFromParams(\RainLoop\Config\Application &$oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null) : void
+	public function setConfigFromParams(\RainLoop\Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null) : void
 	{
 		$sValue = $this->GetActionParam($sParamName, '');
 		if ($this->HasActionParam($sParamName))
@@ -3140,7 +3071,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	private function setCapaFromParams(\RainLoop\Config\Application &$oConfig, string $sParamName, string $sCapa) : void
+	private function setCapaFromParams(\RainLoop\Config\Application $oConfig, string $sParamName, string $sCapa) : void
 	{
 		switch ($sCapa)
 		{
@@ -3174,7 +3105,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	private function setSettingsFromParams(\RainLoop\Settings &$oSettings, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null) : void
+	private function setSettingsFromParams(\RainLoop\Settings $oSettings, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null) : void
 	{
 		if ($this->HasActionParam($sConfigName))
 		{
@@ -3523,10 +3454,10 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$oSmtpClient->SetTimeOuts($iConnectionTimeout);
 
 					$iTime = \microtime(true);
-					$oSmtpClient->Connect($oDomain->OutHost(), $oDomain->OutPort(),
-						\MailSo\Smtp\SmtpClient::EhloHelper(), $oDomain->OutSecure(),
+					$oSmtpClient->Connect($oDomain->OutHost(), $oDomain->OutPort(), $oDomain->OutSecure(),
 						!!$this->Config()->Get('ssl', 'verify_certificate', false),
-						!!$this->Config()->Get('ssl', 'allow_self_signed', true)
+						!!$this->Config()->Get('ssl', 'allow_self_signed', true),
+						'', \MailSo\Smtp\SmtpClient::EhloHelper()
 					);
 
 					$iSmtpTime = \microtime(true) - $iTime;
@@ -4030,7 +3961,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$bResult = $oArchive->extractTo(APP_PLUGINS_PATH);
 					if (!$bResult)
 					{
-						$this->Logger()->Write('Cannot extract package files: '.$oArchive->errorInfo(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
+						$this->Logger()->Write('Cannot extract package files: '.$oArchive->getStatusString(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 					}
 				}
 			}
@@ -5004,10 +4935,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->DefaultResponse(__FUNCTION__, $oMessageList);
 	}
 
-	/**
-	 * @return \MailSo\Mime\Message
-	 */
-	private function buildMessage(\RainLoop\Model\Account $oAccount, bool $bWithDraftInfo = true)
+	private function buildMessage(\RainLoop\Model\Account $oAccount, bool $bWithDraftInfo = true) : \MailSo\Mime\Message
 	{
 		$sIdentityID = $this->GetActionParam('IdentityID', '');
 		$sTo = $this->GetActionParam('To', '');
@@ -5195,10 +5123,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @return \MailSo\Mime\Message
-	 */
-	private function buildReadReceiptMessage(\RainLoop\Model\Account $oAccount)
+	private function buildReadReceiptMessage(\RainLoop\Model\Account $oAccount) : \MailSo\Mime\Message
 	{
 		$sReadReceipt = $this->GetActionParam('ReadReceipt', '');
 		$sSubject = $this->GetActionParam('Subject', '');
@@ -7362,10 +7287,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	/**
-	 * @return \Imagine\Image\AbstractImage
-	 */
-	public function correctImageOrientation(\Imagine\Image\AbstractImage $oImage, bool $bDetectImageOrientation = true, int $iThumbnailBoxSize = 0)
+	public function correctImageOrientation(\Imagine\Image\AbstractImage $oImage, bool $bDetectImageOrientation = true, int $iThumbnailBoxSize = 0) : \Imagine\Image\AbstractImage
 	{
 		$iOrientation = 1;
 		if ($bDetectImageOrientation && \MailSo\Base\Utils::FunctionExistsAndEnabled('exif_read_data') &&
@@ -7770,10 +7692,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->AddressBookProvider($oAccount)->Export($oAccount->ParentEmailHelper(), 'csv') : false;
 	}
 
-	/**
-	 * @return \RainLoop\Model\Account|bool
-	 */
-	private function initMailClientConnection()
+	private function initMailClientConnection() : ?\RainLoop\Model\Account
 	{
 		$oAccount = null;
 
