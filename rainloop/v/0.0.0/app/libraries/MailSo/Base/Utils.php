@@ -722,8 +722,6 @@ END;
 
 	/**
 	 * @unused
-	 *
-	 *
 	 */
 	public static function EncodeHeaderValue(string $sEncodeType, string $sEncodeCharset, string $sValue) : string
 	{
@@ -1088,8 +1086,6 @@ END;
 
 	/**
 	 * @staticvar bool $bValidateAction
-	 *
-	 *
 	 */
 	public static function ResetTimeLimit(int $iTimeToReset = 15, int $iTimeToAdd = 120) : bool
 	{
@@ -1969,44 +1965,6 @@ END;
 	public static function ClearNullBite($mValue) : string
 	{
 		return \str_replace('%00', '', $mValue);
-	}
-
-	/**
-	 * @param mixed $mValue
-	 *
-	 * @return mixed
-	 */
-	public static function StripSlashesValue($mValue, bool $bClearNullBite = false)
-	{
-		static $bIsMagicQuotesOn = null;
-		if (null === $bIsMagicQuotesOn)
-		{
-			$bIsMagicQuotesOn = (bool) @\ini_get('magic_quotes_gpc');
-		}
-
-		if (!$bIsMagicQuotesOn)
-		{
-			return $bClearNullBite && \is_string($mValue) ? static::ClearNullBite($mValue) : $mValue;
-		}
-
-		$sType = \gettype($mValue);
-		if ('string' === $sType)
-		{
-			return \stripslashes($bClearNullBite ? static::ClearNullBite($mValue) : $mValue);
-		}
-		else if ('array' === $sType)
-		{
-			$aReturnValue = array();
-			$mValueKeys = \array_keys($mValue);
-			foreach ($mValueKeys as $sKey)
-			{
-				$aReturnValue[$sKey] = static::StripSlashesValue($mValue[$sKey], $bClearNullBite);
-			}
-
-			return $aReturnValue;
-		}
-
-		return $mValue;
 	}
 
 	public static function CharsetDetect(string $sStr) : string
