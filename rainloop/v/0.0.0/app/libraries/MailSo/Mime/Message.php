@@ -402,14 +402,14 @@ class Message
 					\MailSo\Mime\Enumerations\Parameter::FILENAME, $sFileName));
 		}
 
-		$oAttachmentPart->Headers->Add(
+		$oAttachmentPart->Headers->append(
 			Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
 				$oAttachment->ContentType().';'.
 				(($oContentTypeParameters) ? ' '.$oContentTypeParameters->ToString() : '')
 			)
 		);
 
-		$oAttachmentPart->Headers->Add(
+		$oAttachmentPart->Headers->append(
 			Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION,
 				($oAttachment->IsInline() ? 'inline' : 'attachment').';'.
 				(($oContentDispositionParameters) ? ' '.$oContentDispositionParameters->ToString() : '')
@@ -418,14 +418,14 @@ class Message
 
 		if (0 < strlen($sCID))
 		{
-			$oAttachmentPart->Headers->Add(
+			$oAttachmentPart->Headers->append(
 				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_ID, $sCID)
 			);
 		}
 
 		if (0 < strlen($sContentLocation))
 		{
-			$oAttachmentPart->Headers->Add(
+			$oAttachmentPart->Headers->append(
 				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_LOCATION, $sContentLocation)
 			);
 		}
@@ -434,7 +434,7 @@ class Message
 
 		if ('message/rfc822' !== strtolower($oAttachment->ContentType()))
 		{
-			$oAttachmentPart->Headers->Add(
+			$oAttachmentPart->Headers->append(
 				Header::NewInstance(
 					\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING,
 					\MailSo\Base\Enumerations\Encoding::BASE64_LOWER
@@ -466,7 +466,7 @@ class Message
 		{
 			$oAlternativePart = Part::NewInstance();
 			$oParameters = ParameterCollection::NewInstance();
-			$oParameters->Add(
+			$oParameters->append(
 				Parameter::NewInstance(
 					\MailSo\Mime\Enumerations\Parameter::CHARSET,
 					\MailSo\Base\Enumerations\Charset::UTF_8)
@@ -476,11 +476,11 @@ class Message
 			{
 				foreach ($aAlternativeData[3] as $sName => $sValue)
 				{
-					$oParameters->Add(Parameter::NewInstance($sName, $sValue));
+					$oParameters->append(Parameter::NewInstance($sName, $sValue));
 				}
 			}
 
-			$oAlternativePart->Headers->Add(
+			$oAlternativePart->Headers->append(
 				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
 					$aAlternativeData[0].'; '.$oParameters->ToString())
 			);
@@ -501,7 +501,7 @@ class Message
 
 			if (isset($aAlternativeData[2]) && 0 < strlen($aAlternativeData[2]))
 			{
-				$oAlternativePart->Headers->Add(
+				$oAlternativePart->Headers->append(
 					Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING,
 						$aAlternativeData[2]
 					)
@@ -538,7 +538,7 @@ class Message
 		{
 			$oResultPart = Part::NewInstance();
 
-			$oResultPart->Headers->Add(
+			$oResultPart->Headers->append(
 				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
 					\MailSo\Mime\Enumerations\MimeType::MULTIPART_ALTERNATIVE.'; '.
 					ParameterCollection::NewInstance()->Add(
@@ -554,7 +554,7 @@ class Message
 				$oAlternativePart = $this->createNewMessageAlternativePartBody($aAlternativeData);
 				if ($oAlternativePart)
 				{
-					$oResultPart->SubParts->Add($oAlternativePart);
+					$oResultPart->SubParts->append($oAlternativePart);
 				}
 
 				unset($oAlternativePart);
@@ -580,7 +580,7 @@ class Message
 			}
 			else
 			{
-				$aAttachments = $this->oAttachmentCollection->CloneAsArray();
+				$aAttachments = $this->oAttachmentCollection->getArrayCopy();
 				if (\is_array($aAttachments) && 1 === count($aAttachments) && isset($aAttachments[0]))
 				{
 					$this->oAttachmentCollection->Clear();
@@ -605,7 +605,7 @@ class Message
 		{
 			$oResultPart = Part::NewInstance();
 
-			$oResultPart->Headers->Add(
+			$oResultPart->Headers->append(
 				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
 					\MailSo\Mime\Enumerations\MimeType::MULTIPART_RELATED.'; '.
 					ParameterCollection::NewInstance()->Add(
@@ -616,11 +616,11 @@ class Message
 				)
 			);
 
-			$oResultPart->SubParts->Add($oIncPart);
+			$oResultPart->SubParts->append($oIncPart);
 
 			foreach ($aAttachments as $oAttachment)
 			{
-				$oResultPart->SubParts->Add($this->createNewMessageAttachmentBody($oAttachment));
+				$oResultPart->SubParts->append($this->createNewMessageAttachmentBody($oAttachment));
 			}
 		}
 		else
@@ -649,11 +649,11 @@ class Message
 				)->ToString()
 			);
 
-			$oResultPart->SubParts->Add($oIncPart);
+			$oResultPart->SubParts->append($oIncPart);
 
 			foreach ($aAttachments as $oAttachment)
 			{
-				$oResultPart->SubParts->Add($this->createNewMessageAttachmentBody($oAttachment));
+				$oResultPart->SubParts->append($this->createNewMessageAttachmentBody($oAttachment));
 			}
 		}
 		else

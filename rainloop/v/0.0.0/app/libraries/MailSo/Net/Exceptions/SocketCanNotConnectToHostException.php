@@ -28,10 +28,7 @@ class SocketCanNotConnectToHostException extends \MailSo\Net\Exceptions\Connecti
 	 */
 	private $iSocketCode;
 
-	/**
-	 * @param \Exception $oPrevious = null
-	 */
-	public function __construct($sSocketMessage = '', $iSocketCode = 0, $sMessage = '', $iCode = 0, $oPrevious = null)
+	public function __construct(string $sSocketMessage = '', int $iSocketCode = 0, string $sMessage = '', int $iCode = 0, ?\Throwable $oPrevious = null)
 	{
 		parent::__construct($sMessage, $iCode, $oPrevious);
 

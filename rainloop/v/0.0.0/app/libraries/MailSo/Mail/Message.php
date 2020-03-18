@@ -742,7 +742,7 @@ class Message
 				$this->oAttachments = AttachmentCollection::NewInstance();
 				foreach ($aAttachmentsParts as /* @var $oAttachmentItem \MailSo\Imap\BodyStructure */ $oAttachmentItem)
 				{
-					$this->oAttachments->Add(
+					$this->oAttachments->append(
 						\MailSo\Mail\Attachment::NewBodyStructureInstance($this->sFolder, $this->iUid, $oAttachmentItem)
 					);
 				}

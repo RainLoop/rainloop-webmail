@@ -376,7 +376,7 @@ class BodyStructure
 
 		if (\is_array($this->aSubParts) && 0 < \count($this->aSubParts))
 		{
-			foreach ($this->aSubParts as /* @var $oSubPart \MailSo\Imap\BodyStructure */ &$oSubPart)
+			foreach ($this->aSubParts as /* @var $oSubPart \MailSo\Imap\BodyStructure */ $oSubPart)
 			{
 				$aReturn = \array_merge($aReturn, $oSubPart->SearchByCallback($fCallback));
 			}
@@ -412,7 +412,7 @@ class BodyStructure
 
 			if (null === $oPart && is_array($this->aSubParts) && 0 < count($this->aSubParts))
 			{
-				foreach ($this->aSubParts as /* @var $oSubPart \MailSo\Imap\BodyStructure */ &$oSubPart)
+				foreach ($this->aSubParts as /* @var $oSubPart \MailSo\Imap\BodyStructure */ $oSubPart)
 				{
 					$oPart = $oSubPart->GetPartByMimeIndex($sMimeIndex);
 					if (null !== $oPart)
@@ -741,7 +741,7 @@ class BodyStructure
 					$aDispositionParams = self::getKeyValueListFromArrayList($aDispParamList);
 					if (\is_array($aDispositionParams))
 					{
-						$sFileName = self::decodeAttrParamenter($aDispositionParams, 'filename', $sCharset);
+						$sFileName = self::decodeAttrParamenter($aDispositionParams, 'filename', $sCharset ?: '');
 					}
 				}
 			}

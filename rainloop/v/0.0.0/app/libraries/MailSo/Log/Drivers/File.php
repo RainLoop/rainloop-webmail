@@ -23,7 +23,7 @@ class File extends \MailSo\Log\Driver
 	 */
 	private $sLoggerFileName;
 
-	protected function __construct($sLoggerFileName, $sNewLine = "\r\n")
+	protected function __construct(string $sLoggerFileName, string $sNewLine = "\r\n")
 	{
 		parent::__construct();
 

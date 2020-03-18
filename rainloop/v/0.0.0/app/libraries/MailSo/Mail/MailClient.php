@@ -1502,7 +1502,7 @@ class MailClient
 			{
 				$aFetchIndexArray = array();
 				$oFetchResponseItem = null;
-				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ &$oFetchResponseItem)
+				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem)
 				{
 					$aFetchIndexArray[($bIndexAsUid)
 						? $oFetchResponseItem->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID)
@@ -1515,7 +1515,7 @@ class MailClient
 				{
 					if (isset($aFetchIndexArray[$iFUid]))
 					{
-						$oMessageCollection->Add(
+						$oMessageCollection->append(
 							Message::NewFetchResponseInstance(
 								$oMessageCollection->FolderName, $aFetchIndexArray[$iFUid]));
 					}
@@ -1532,28 +1532,6 @@ class MailClient
 		return $this->oImapClient->IsSupported('THREAD=REFS') ||
 			$this->oImapClient->IsSupported('THREAD=REFERENCES') ||
 			$this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT');
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 * @throws \MailSo\Net\Exceptions\Exception
-	 * @throws \MailSo\Imap\Exceptions\Exception
-	 */
-	public function MessageListSimple(string $sFolderName, array $aUids) : \MailSo\Mail\MessageCollection
-	{
-		if (0 === \strlen($sFolderName) || !\MailSo\Base\Validator::NotEmptyArray($aUids))
-		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
-		}
-
-		$this->oImapClient->FolderExamine($sFolderName);
-
-		$oMessageCollection = \MailSo\Mail\MessageCollection::NewInstance();
-		$oMessageCollection->FolderName = $sFolderName;
-
-		$this->MessageListByRequestIndexOrUids($oMessageCollection, $aUids, true, true);
-
-		return $oMessageCollection->GetAsArray();
 	}
 
 	/**

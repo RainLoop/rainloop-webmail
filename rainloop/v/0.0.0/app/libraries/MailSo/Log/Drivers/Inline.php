@@ -23,7 +23,7 @@ class Inline extends \MailSo\Log\Driver
 	 */
 	private $bHtmlEncodeSpecialChars;
 
-	protected function __construct($sNewLine = "\r\n", $bHtmlEncodeSpecialChars = false)
+	protected function __construct(string $sNewLine = "\r\n", bool $bHtmlEncodeSpecialChars = false)
 	{
 		parent::__construct();
 

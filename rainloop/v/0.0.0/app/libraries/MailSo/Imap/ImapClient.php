@@ -562,7 +562,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					$sFolderNameRaw = $oImapResponse->ResponseList[2];
 
 					$oCurrentFolder = null;
-					foreach ($aReturn as &$oFolder)
+					foreach ($aReturn as $oFolder)
 					{
 						if ($oFolder && $sFolderNameRaw === $oFolder->FullNameRaw())
 						{

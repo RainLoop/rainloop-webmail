@@ -17,7 +17,7 @@ namespace MailSo\Mime;
  */
 class ParameterCollection extends \MailSo\Base\Collection
 {
-	protected function __construct($sRawParams = '')
+	protected function __construct(string $sRawParams = '')
 	{
 		parent::__construct();
 
@@ -32,29 +32,19 @@ class ParameterCollection extends \MailSo\Base\Collection
 		return new self($sRawParams);
 	}
 
-	public function &GetByIndex(int $iIndex) : ?\MailSo\Mime\Parameter
-	{
-		$mResult = null;
-		$mResult =& parent::GetByIndex($iIndex);
-		return $mResult;
-	}
-
 	public function ParameterValueByName(string $sName) : string
 	{
-		$sResult = '';
-		$sName = \trim($sName);
+		$sName = \strtolower(\trim($sName));
 
-		$aParams =& $this->GetAsArray();
-		foreach ($aParams as /* @var $oParam \MailSo\Mime\ParameterCollection */ $oParam)
+		foreach ($this as /* @var $oParam \MailSo\Mime\ParameterCollection */ $oParam)
 		{
-			if (\strtolower($sName) === \strtolower($oParam->Name()))
+			if ($sName === \strtolower($oParam->Name()))
 			{
-				$sResult = $oParam->Value();
-				break;
+				return $oParam->Value();
 			}
 		}
 
-		return $sResult;
+		return '';
 	}
 
 	public function Parse(string $sRawParams) : self
@@ -65,7 +55,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 
 		foreach ($aDataToParse as $sParam)
 		{
-			$this->Add(Parameter::CreateFromParameterLine($sParam));
+			$this->append(Parameter::CreateFromParameterLine($sParam));
 		}
 
 		$this->reParseParameters();
@@ -76,8 +66,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 	public function ToString(bool $bConvertSpecialsName = false) : string
 	{
 		$aResult = array();
-		$aParams =& $this->GetAsArray();
-		foreach ($aParams as /* @var $oParam \MailSo\Mime\Parameter */ $oParam)
+		foreach ($this as /* @var $oParam \MailSo\Mime\Parameter */ $oParam)
 		{
 			$sLine = $oParam->ToString($bConvertSpecialsName);
 			if (0 < \strlen($sLine))
@@ -91,7 +80,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 
 	private function reParseParameters() : void
 	{
-		$aDataToReParse = $this->CloneAsArray();
+		$aDataToReParse = $this->getArrayCopy();
 		$sCharset = \MailSo\Base\Enumerations\Charset::UTF_8;
 
 		$this->Clear();
@@ -146,7 +135,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 			}
 			else
 			{
-				$this->Add($oParam);
+				$this->append($oParam);
 			}
 		}
 
@@ -162,7 +151,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 					$sCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
 			}
 
-			$this->Add(Parameter::NewInstance($sName, $sResult));
+			$this->append(Parameter::NewInstance($sName, $sResult));
 		}
 	}
 }

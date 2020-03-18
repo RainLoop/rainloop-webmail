@@ -76,7 +76,7 @@ class Contact
 
 		$oFullNameProperty = null;
 
-		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
+		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ $oProperty)
 		{
 			if ($oProperty)
 			{
@@ -170,7 +170,7 @@ class Contact
 	public function GetEmails() : array
 	{
 		$aResult = array();
-		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
+		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ $oProperty)
 		{
 			if ($oProperty && $oProperty->IsEmail())
 			{
@@ -233,7 +233,7 @@ class Contact
 		unset($oVCard->FN, $oVCard->EMAIL, $oVCard->TEL, $oVCard->URL, $oVCard->NICKNAME);
 
 		$sUid = $sFirstName = $sLastName = $sMiddleName = $sSuffix = $sPrefix = '';
-		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
+		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ $oProperty)
 		{
 			if ($oProperty)
 			{
@@ -353,7 +353,7 @@ class Contact
 
 		$this->UpdateDependentValues();
 
-		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ &$oProperty)
+		foreach ($this->Properties as /* @var $oProperty \RainLoop\Providers\AddressBook\Classes\Property */ $oProperty)
 		{
 			$iIndex = -1;
 			if ($oProperty)

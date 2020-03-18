@@ -17,7 +17,7 @@ namespace MailSo\Mime;
  */
 class EmailCollection extends \MailSo\Base\Collection
 {
-	protected function __construct($sEmailAddresses = '')
+	protected function __construct(string $sEmailAddresses = '')
 	{
 		parent::__construct();
 
@@ -40,9 +40,8 @@ class EmailCollection extends \MailSo\Base\Collection
 
 	public function ToArray() : array
 	{
-		$aReturn = $aEmails = array();
-		$aEmails =& $this->GetAsArray();
-		foreach ($aEmails as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+		$aReturn = array();
+		foreach ($this as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
 		{
 			$aReturn[] = $oEmail->ToArray();
 		}
@@ -52,10 +51,9 @@ class EmailCollection extends \MailSo\Base\Collection
 
 	public function MergeWithOtherCollection(EmailCollection $oEmails) : self
 	{
-		$aEmails =& $oEmails->GetAsArray();
-		foreach ($aEmails as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+		foreach ($oEmails as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
 		{
-			$this->Add($oEmail);
+			$this->append($oEmail);
 		}
 
 		return $this;
@@ -63,30 +61,26 @@ class EmailCollection extends \MailSo\Base\Collection
 
 	public function Unique() : self
 	{
-		$aCache = array();
 		$aReturn = array();
 
-		$aEmails =& $this->GetAsArray();
-		foreach ($aEmails as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+		foreach ($this as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
 		{
 			$sEmail = $oEmail->GetEmail();
-			if (!isset($aCache[$sEmail]))
+			if (!isset($aReturn[$sEmail]))
 			{
-				$aCache[$sEmail] = true;
-				$aReturn[] = $oEmail;
+				$aReturn[$sEmail] = $oEmail;
 			}
 		}
 
-		$this->SetAsArray($aReturn);
+		$this->exchangeArray(array_values($aReturn));
 
 		return $this;
 	}
 
 	public function ToString(bool $bConvertSpecialsName = false, bool $bIdn = false) : string
 	{
-		$aReturn = $aEmails = array();
-		$aEmails =& $this->GetAsArray();
-		foreach ($aEmails as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+		$aReturn = array();
+		foreach ($this as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
 		{
 			$aReturn[] = $oEmail->ToString($bConvertSpecialsName, $bIdn);
 		}
@@ -174,7 +168,7 @@ class EmailCollection extends \MailSo\Base\Collection
 
 						try
 						{
-							$this->Add(
+							$this->append(
 								\MailSo\Mime\Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iEmailEndPos - $iEmailStartPos))
 							);
 
@@ -194,7 +188,7 @@ class EmailCollection extends \MailSo\Base\Collection
 		{
 			try
 			{
-				$this->Add(
+				$this->append(
 					\MailSo\Mime\Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iCurrentPos - $iEmailStartPos))
 				);
 			}

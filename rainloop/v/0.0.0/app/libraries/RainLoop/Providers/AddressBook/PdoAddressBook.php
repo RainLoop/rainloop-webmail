@@ -1152,7 +1152,7 @@ class PdoAddressBook
 
 						unset($aFetch);
 
-						foreach ($aContacts as &$oItem)
+						foreach ($aContacts as $oItem)
 						{
 							$oItem->UpdateDependentValues();
 						}

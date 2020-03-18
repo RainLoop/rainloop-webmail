@@ -79,7 +79,7 @@ class FetchResponse
 
 					if (0 < strlen($sLocalPart) && 0 < strlen($sDomainPart))
 					{
-						$oResult->Add(
+						$oResult->append(
 							\MailSo\Mime\Email::NewInstance($sLocalPart.'@'.$sDomainPart, $sDisplayName)
 						);
 					}
@@ -172,7 +172,7 @@ class FetchResponse
 		return $sReturn;
 	}
 
-	private static function findFetchUidAndSize(array $aList)
+	private static function findFetchUidAndSize(array $aList) : bool
 	{
 		$bUid = false;
 		$bSize = false;

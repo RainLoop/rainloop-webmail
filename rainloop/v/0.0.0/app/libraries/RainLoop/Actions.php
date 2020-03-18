@@ -146,7 +146,7 @@ class Actions
 		$this->bIsAjax = false;
 
 		$oConfig = $this->Config();
-		$this->Plugins()->RunHook('filter.application-config', array(&$oConfig));
+		$this->Plugins()->RunHook('filter.application-config', array($oConfig));
 
 		$this->Logger()->Ping();
 	}
@@ -907,7 +907,7 @@ class Actions
 					$oDriver = \MailSo\Log\Drivers\File::NewInstance($sLogFileFullPath);
 				}
 
-				$this->oLogger->Add($oDriver
+				$this->oLogger->append($oDriver
 					->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', false))
 					->WriteOnPhpErrorOnly($this->Config()->Get('logs', 'write_on_php_error_only', false))
 					->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 0))
@@ -981,7 +981,7 @@ class Actions
 				$oDriver->DisableGuidPrefix();
 				$oDriver->DisableTypedPrefix();
 
-				$this->oLoggerAuth->Add($oDriver);
+				$this->oLoggerAuth->append($oDriver);
 			}
 		}
 
@@ -1058,7 +1058,7 @@ class Actions
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin))
 				{
 					$oAccount = \RainLoop\Model\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, '', '', $sClientCert);
-					$this->Plugins()->RunHook('filter.acount', array(&$oAccount));
+					$this->Plugins()->RunHook('filter.acount', array($oAccount));
 
 					if ($bThrowProvideException && !($oAccount instanceof \RainLoop\Model\Account))
 					{
@@ -1885,7 +1885,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 			}
 
-			$this->Plugins()->RunHook('event.login-post-login-provide', array(&$oAccount));
+			$this->Plugins()->RunHook('event.login-post-login-provide', array($oAccount));
 
 			if (!($oAccount instanceof \RainLoop\Model\Account))
 			{
@@ -4268,9 +4268,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$aResult = array();
 		if ($oFolders)
 		{
-			$aFolders =& $oFolders->GetAsArray();
-
-			foreach ($aFolders as $oFolder)
+			foreach ($oFolders as $oFolder)
 			{
 				$aResult[] = $oFolder->FullNameRaw()."|".
 					implode("|", $oFolder->Flags()).($oFolder->IsSubscribed() ? '1' : '0');
@@ -4359,67 +4357,63 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	private function recFoldersTypes(\RainLoop\Model\Account $oAccount, \MailSo\Mail\FolderCollection $oFolders, array &$aResult, bool $bListFolderTypes = true) : void
 	{
-		if ($oFolders)
+		if ($oFolders && $oFolders->Count())
 		{
-			$aFolders =& $oFolders->GetAsArray();
-			if (\is_array($aFolders) && 0 < \count($aFolders))
+			if ($bListFolderTypes)
 			{
-				if ($bListFolderTypes)
+				foreach ($oFolders as $oFolder)
 				{
-					foreach ($aFolders as $oFolder)
+					$iFolderListType = $oFolder->GetFolderListType();
+					if (!isset($aResult[$iFolderListType]) && \in_array($iFolderListType, array(
+						\MailSo\Imap\Enumerations\FolderType::SENT,
+						\MailSo\Imap\Enumerations\FolderType::DRAFTS,
+						\MailSo\Imap\Enumerations\FolderType::JUNK,
+						\MailSo\Imap\Enumerations\FolderType::TRASH,
+						\MailSo\Imap\Enumerations\FolderType::ALL
+					)))
 					{
-						$iFolderListType = $oFolder->GetFolderListType();
-						if (!isset($aResult[$iFolderListType]) && \in_array($iFolderListType, array(
-							\MailSo\Imap\Enumerations\FolderType::SENT,
-							\MailSo\Imap\Enumerations\FolderType::DRAFTS,
-							\MailSo\Imap\Enumerations\FolderType::JUNK,
-							\MailSo\Imap\Enumerations\FolderType::TRASH,
-							\MailSo\Imap\Enumerations\FolderType::ALL
-						)))
-						{
-							$aResult[$iFolderListType] = $oFolder->FullNameRaw();
-						}
-					}
-
-					foreach ($aFolders as $oFolder)
-					{
-						$oSub = $oFolder->SubFolders();
-						if ($oSub && 0 < $oSub->Count())
-						{
-							$this->recFoldersTypes($oAccount, $oSub, $aResult, true);
-						}
+						$aResult[$iFolderListType] = $oFolder->FullNameRaw();
 					}
 				}
 
-				$aMap = $this->systemFoldersNames($oAccount);
-				foreach ($aFolders as $oFolder)
-				{
-					$sName = $oFolder->Name();
-					$sFullName = $oFolder->FullName();
-
-					if (isset($aMap[$sName]) || isset($aMap[$sFullName]))
-					{
-						$iFolderType = isset($aMap[$sName]) ? $aMap[$sName] : $aMap[$sFullName];
-						if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
-							\MailSo\Imap\Enumerations\FolderType::SENT,
-							\MailSo\Imap\Enumerations\FolderType::DRAFTS,
-							\MailSo\Imap\Enumerations\FolderType::JUNK,
-							\MailSo\Imap\Enumerations\FolderType::TRASH,
-							\MailSo\Imap\Enumerations\FolderType::ALL
-						)))
-						{
-							$aResult[$iFolderType] = $oFolder->FullNameRaw();
-						}
-					}
-				}
-
-				foreach ($aFolders as $oFolder)
+				foreach ($oFolders as $oFolder)
 				{
 					$oSub = $oFolder->SubFolders();
 					if ($oSub && 0 < $oSub->Count())
 					{
-						$this->recFoldersTypes($oAccount, $oSub, $aResult, false);
+						$this->recFoldersTypes($oAccount, $oSub, $aResult, true);
 					}
+				}
+			}
+
+			$aMap = $this->systemFoldersNames($oAccount);
+			foreach ($oFolders as $oFolder)
+			{
+				$sName = $oFolder->Name();
+				$sFullName = $oFolder->FullName();
+
+				if (isset($aMap[$sName]) || isset($aMap[$sFullName]))
+				{
+					$iFolderType = isset($aMap[$sName]) ? $aMap[$sName] : $aMap[$sFullName];
+					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
+						\MailSo\Imap\Enumerations\FolderType::SENT,
+						\MailSo\Imap\Enumerations\FolderType::DRAFTS,
+						\MailSo\Imap\Enumerations\FolderType::JUNK,
+						\MailSo\Imap\Enumerations\FolderType::TRASH,
+						\MailSo\Imap\Enumerations\FolderType::ALL
+					)))
+					{
+						$aResult[$iFolderType] = $oFolder->FullNameRaw();
+					}
+				}
+			}
+
+			foreach ($oFolders as $oFolder)
+			{
+				$oSub = $oFolder->SubFolders();
+				if ($oSub && 0 < $oSub->Count())
+				{
+					$this->recFoldersTypes($oAccount, $oSub, $aResult, false);
 				}
 			}
 		}
@@ -4430,7 +4424,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oAccount = $this->initMailClientConnection();
 
 		$oFolderCollection = null;
-		$this->Plugins()->RunHook('filter.folders-before', array($oAccount, &$oFolderCollection));
+		$this->Plugins()->RunHook('filter.folders-before', array($oAccount, $oFolderCollection));
 
 		$bUseFolders = $this->GetCapa(false, false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount);
 
@@ -4443,7 +4437,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			);
 		}
 
-		$this->Plugins()->RunHook('filter.folders-post', array($oAccount, &$oFolderCollection));
+		$this->Plugins()->RunHook('filter.folders-post', array($oAccount, $oFolderCollection));
 
 		if ($oFolderCollection instanceof \MailSo\Mail\FolderCollection)
 		{
@@ -4563,7 +4557,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 		}
 
-		$this->Plugins()->RunHook('filter.folders-complete', array($oAccount, &$oFolderCollection));
+		$this->Plugins()->RunHook('filter.folders-complete', array($oAccount, $oFolderCollection));
 
 		return $this->DefaultResponse(__FUNCTION__, $oFolderCollection);
 	}
@@ -5038,12 +5032,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			\MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundedCids, $mFoundDataURL, $aFoundedContentLocationUrls) : $sText;
 
 		$this->Plugins()->RunHook($bTextIsHtml ? 'filter.message-html' : 'filter.message-plain',
-			array($oAccount, &$oMessage, &$sTextToAdd));
+			array($oAccount, $oMessage, &$sTextToAdd));
 
 		if ($bTextIsHtml && 0 < \strlen($sTextToAdd))
 		{
 			$sTextConverted = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sTextToAdd);
-			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, &$oMessage, &$sTextConverted));
+			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sTextConverted));
 			$oMessage->AddText($sTextConverted, false);
 		}
 
@@ -5063,7 +5057,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				{
 					$iFileSize = $this->FilesProvider()->FileSize($oAccount, $sTempName);
 
-					$oMessage->Attachments()->Add(
+					$oMessage->Attachments()->append(
 						\MailSo\Mime\Attachment::NewInstance($rResource, $sFileName, $iFileSize, $bIsInline,
 							\in_array(trim(trim($sCID), '<>'), $aFoundedCids),
 							$sCID, array(), $sContentLocation
@@ -5093,7 +5087,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						unset($sRaw);
 						unset($aMatch);
 
-						$oMessage->Attachments()->Add(
+						$oMessage->Attachments()->append(
 							\MailSo\Mime\Attachment::NewInstance($rResource, $sFileName, $iFileSize, true, true, $sCID)
 						);
 					}
@@ -5101,8 +5095,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 		}
 
-		$this->Plugins()->RunHook('filter.build-message', array(&$oMessage));
-		$this->Plugins()->RunHook('filter.build-message[2]', array(&$oMessage, $oAccount));
+		$this->Plugins()->RunHook('filter.build-message', array($oMessage));
+		$this->Plugins()->RunHook('filter.build-message[2]', array($oMessage, $oAccount));
 
 		return $oMessage;
 	}
@@ -5166,11 +5160,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$oMessage->SetTo($oToEmails);
 		}
 
-		$this->Plugins()->RunHook('filter.read-receipt-message-plain', array($oAccount, &$oMessage, &$sText));
+		$this->Plugins()->RunHook('filter.read-receipt-message-plain', array($oAccount, $oMessage, &$sText));
 
 		$oMessage->AddText($sText, false);
 
-		$this->Plugins()->RunHook('filter.build-read-receipt-message', array(&$oMessage, $oAccount));
+		$this->Plugins()->RunHook('filter.build-read-receipt-message', array($oMessage, $oAccount));
 
 		return $oMessage;
 	}
@@ -5196,8 +5190,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oMessage = $this->buildMessage($oAccount, true);
 
 		$this->Plugins()
-			->RunHook('filter.save-message', array(&$oMessage))
-			->RunHook('filter.save-message[2]', array(&$oMessage, $oAccount))
+			->RunHook('filter.save-message', array($oMessage))
+			->RunHook('filter.save-message[2]', array($oMessage, $oAccount))
 		;
 
 		$mResult = false;
@@ -5258,7 +5252,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->Plugins()->RunHook('filter.smtp-message-stream',
 				array($oAccount, &$rMessageStream, &$iMessageStreamSize));
 
-			$this->Plugins()->RunHook('filter.message-rcpt', array($oAccount, &$oRcpt));
+			$this->Plugins()->RunHook('filter.message-rcpt', array($oAccount, $oRcpt));
 
 			try
 			{
@@ -5341,8 +5335,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						$oSmtpClient->MailFrom($sFrom, '', $bDsn);
 					}
 
-					$aRcpt =& $oRcpt->GetAsArray();
-					foreach ($aRcpt as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+					foreach ($oRcpt as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
 					{
 						$oSmtpClient->Rcpt($oEmail->GetEmail(), $bDsn);
 					}
@@ -5421,8 +5414,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oMessage = $this->buildMessage($oAccount, false);
 
 		$this->Plugins()
-			->RunHook('filter.send-message', array(&$oMessage))
-			->RunHook('filter.send-message[2]', array(&$oMessage, $oAccount))
+			->RunHook('filter.send-message', array($oMessage))
+			->RunHook('filter.send-message[2]', array($oMessage, $oAccount))
 		;
 
 		$mResult = false;
@@ -5562,8 +5555,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$oToCollection = $oMessage->GetTo();
 				if ($oToCollection)
 				{
-					$aTo =& $oToCollection->GetAsArray();
-					foreach ($aTo as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+					foreach ($oToCollection as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
 					{
 						$aArrayToFrec[$oEmail->GetEmail(true)] = $oEmail->ToString(false, true);
 					}
@@ -5599,7 +5591,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$oMessage = $this->buildReadReceiptMessage($oAccount);
 
-		$this->Plugins()->RunHook('filter.send-read-receipt-message', array(&$oMessage, $oAccount));
+		$this->Plugins()->RunHook('filter.send-read-receipt-message', array($oMessage, $oAccount));
 
 		$mResult = false;
 		try
@@ -6287,8 +6279,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		if ($oMessage instanceof \MailSo\Mail\Message)
 		{
 			$this->Plugins()
-				->RunHook('filter.result-message', array(&$oMessage))
-				->RunHook('filter.result-message[2]', array(&$oMessage, $oAccount))
+				->RunHook('filter.result-message', array($oMessage))
+				->RunHook('filter.result-message[2]', array($oMessage, $oAccount))
 			;
 
 			$this->cacheByKey($sRawKey);
@@ -7244,7 +7236,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $aValues;
 	}
 
-	private function rotateImageByOrientation(\Imagine\Image\AbstractImage &$oImage, int $iOrientation) : void
+	private function rotateImageByOrientation(\Imagine\Image\AbstractImage $oImage, int $iOrientation) : void
 	{
 		if (0 < $iOrientation)
 		{
@@ -8144,7 +8136,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				$mResult['@Object'] = 'Collection/'.$mResult['@Object'];
 				$mResult['@Count'] = $oData->Count();
-				$mResult['@Collection'] = $this->responseObject($oData->GetAsArray(), $sParent, $aParameters);
+				$mResult['@Collection'] = $this->responseObject($oData->getArrayCopy(), $sParent, $aParameters);
 			}
 			else
 			{
@@ -8298,55 +8290,24 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	 *
 	 * @return mixed
 	 */
+	protected $oAccount = null;
+	protected $aCheckableFolder = null;
 	protected function responseObject($mResponse, string $sParent = '', array $aParameters = array())
 	{
-		$mResult = $mResponse;
 		if (\is_object($mResponse))
 		{
 			$bHook = true;
-			$self = $this;
 			$sClassName = \get_class($mResponse);
-			$bHasSimpleJsonFunc = \method_exists($mResponse, 'ToSimpleJSON');
-			$bThumb = $this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS);
-
-			$oAccountCache = null;
-			$fGetAccount = function () use ($self, &$oAccountCache) {
-				if (null === $oAccountCache)
-				{
-					$oAccount = $self->getAccountFromToken(false);
-					$oAccountCache = $oAccount;
-				}
-
-				return $oAccountCache;
-			};
-
-			$aCheckableFoldersCache = null;
-			$fGetCheckableFolder = function () use ($self, &$aCheckableFoldersCache) {
-				if (null === $aCheckableFoldersCache)
-				{
-					$oAccount = $self->getAccountFromToken(false);
-
-					$oSettingsLocal = $self->SettingsProvider(true)->Load($oAccount);
-					$sCheckable = $oSettingsLocal->GetConf('CheckableFolder', '[]');
-					$aCheckable = @\json_decode($sCheckable);
-					if (!\is_array($aCheckable))
-					{
-						$aCheckable = array();
-					}
-
-					$aCheckableFoldersCache = $aCheckable;
-				}
-
-				return $aCheckableFoldersCache;
-			};
-
-			if ($bHasSimpleJsonFunc)
+			if (\method_exists($mResponse, 'ToSimpleJSON'))
 			{
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), $mResponse->ToSimpleJSON(true));
 			}
 			else if ('MailSo\Mail\Message' === $sClassName)
 			{
-				$oAccount = \call_user_func($fGetAccount);
+				if (null === $this->oAccount) {
+					$this->oAccount = $this->getAccountFromToken(false);
+				}
+				$oAccount = $this->oAccount;
 
 				$iDateTimeStampInUTC = $mResponse->InternalTimeStampInUTC();
 				if (0 === $iDateTimeStampInUTC || !!$this->Config()->Get('labs', 'date_from_headers', false))
@@ -8430,8 +8391,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 					if ($oAttachments && 0 < $oAttachments->Count())
 					{
-						$aList =& $oAttachments->GetAsArray();
-						foreach ($aList as /* @var \MailSo\Mail\Attachment */ $oAttachment)
+						foreach ($oAttachments as /* @var \MailSo\Mail\Attachment */ $oAttachment)
 						{
 							if ($oAttachment)
 							{
@@ -8573,7 +8533,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 			else if ('MailSo\Mail\Attachment' === $sClassName)
 			{
-				$oAccount = $this->getAccountFromToken(false);
+				if (null === $this->oAccount) {
+					$this->oAccount = $this->getAccountFromToken(false);
+				}
 
 				$mFoundedCIDs = isset($aParameters['FoundedCIDs']) && \is_array($aParameters['FoundedCIDs']) &&
 					0 < \count($aParameters['FoundedCIDs']) ?
@@ -8604,7 +8566,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					'CID' => $mResponse->Cid(),
 					'ContentLocation' => $mResponse->ContentLocation(),
 					'IsInline' => $mResponse->IsInline(),
-					'IsThumbnail' => $bThumb,
+					'IsThumbnail' => $this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS),
 					'IsLinked' => ($mFoundedCIDs && \in_array(\trim(\trim($mResponse->Cid()), '<>'), $mFoundedCIDs)) ||
 						($mFoundedContentLocationUrls && \in_array(\trim($mResponse->ContentLocation()), $mFoundedContentLocationUrls))
 				));
@@ -8618,7 +8580,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 				$mResult['Download'] = \RainLoop\Utils::EncodeKeyValuesQ(array(
 					'V' => APP_VERSION,
-					'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
+					'Account' => $this->oAccount ? \md5($this->oAccount->Hash()) : '',
 					'Folder' => $mResult['Folder'],
 					'Uid' => $mResult['Uid'],
 					'MimeIndex' => $mResult['MimeIndex'],
@@ -8644,10 +8606,17 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 //					);
 //				}
 
-				$aCheckableFolder = \call_user_func($fGetCheckableFolder);
-				if (!\is_array($aCheckableFolder))
+				if (null === $this->aCheckableFolder)
 				{
-					$aCheckableFolder = array();
+					if (null === $this->oAccount) {
+						$this->oAccount = $this->getAccountFromToken(false);
+					}
+					$aCheckable = @\json_decode(
+						$this->SettingsProvider(true)
+						->Load($this->oAccount)
+						->GetConf('CheckableFolder', '[]')
+					);
+					$this->aCheckableFolder = \is_array($aCheckable) ? $aCheckable : array();
 				}
 
 				$mResult = \array_merge($this->objectData($mResponse, $sParent, $aParameters), array(
@@ -8661,7 +8630,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					'IsExists' => $mResponse->IsExists(),
 					'IsSelectable' => $mResponse->IsSelectable(),
 					'Flags' => $mResponse->FlagsLowerCase(),
-					'Checkable' => \in_array($mResponse->FullNameRaw(), $aCheckableFolder),
+					'Checkable' => \in_array($mResponse->FullNameRaw(), $this->aCheckableFolder),
 					'Extended' => $aExtended,
 					'SubFolders' => $this->responseObject($mResponse->SubFolders(), $sParent, $aParameters)
 				));
@@ -8701,20 +8670,28 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						$mResponse->SystemFolders : array()
 				));
 			}
+			else if ('MailSo\Mime\EmailCollection' === $sClassName)
+			{
+				$mResult = array();
+				if (100 < \count($mResponse)) {
+					$mResponse = $mResponse->Slice(0, 100);
+				}
+				foreach ($mResponse as $iKey => $oItem) {
+					$mResult[$iKey] = $this->responseObject($oItem, $sParent, $aParameters);
+				}
+				$bHook = false;
+			}
 			else if ($mResponse instanceof \MailSo\Base\Collection)
 			{
-				$aList =& $mResponse->GetAsArray();
-				if (100 < \count($aList) && $mResponse instanceof \MailSo\Mime\EmailCollection)
-				{
-					$aList = \array_slice($aList, 0, 100);
+				$mResult = array();
+				foreach ($mResponse as $iKey => $oItem) {
+					$mResult[$iKey] = $this->responseObject($oItem, $sParent, $aParameters);
 				}
-
-				$mResult = $this->responseObject($aList, $sParent, $aParameters);
 				$bHook = false;
 			}
 			else
 			{
-				$mResult = '["'.\get_class($mResponse).'"]';
+				$mResult = '["'.$sClassName.'"]';
 				$bHook = false;
 			}
 
@@ -8730,6 +8707,10 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$mResponse[$iKey] = $this->responseObject($oItem, $sParent, $aParameters);
 			}
 
+			$mResult = $mResponse;
+		}
+		else
+		{
 			$mResult = $mResponse;
 		}
 

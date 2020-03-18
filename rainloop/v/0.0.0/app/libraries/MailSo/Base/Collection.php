@@ -15,48 +15,33 @@ namespace MailSo\Base;
  * @category MailSo
  * @package Base
  */
-abstract class Collection
+abstract class Collection extends \ArrayObject /*implements \ArrayAccess, \Traversable, \Countable, \Ds\Collection */
 {
-	/**
-	 * @var array
-	 */
-	protected $aItems;
-
-	protected function __construct()
-	{
-		$this->aItems = array();
-	}
-
 	/**
 	 * @param mixed $mItem
 	 */
+	public function append($mItem, bool $bToTop = false) : void
+	{
+		if ($bToTop) {
+			$array = $this->getArrayCopy();
+			array_unshift($array, $mItem);
+			$this->exchangeArray($array);
+		} else {
+			parent::append($mItem);
+		}
+	}
+
 	public function Add($mItem, bool $bToTop = false) : self
 	{
-		if ($bToTop)
-		{
-			\array_unshift($this->aItems, $mItem);
-		}
-		else
-		{
-			\array_push($this->aItems, $mItem);
-		}
-
+		$this->append($mItem, $bToTop);
 		return $this;
 	}
 
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
 	public function AddArray(array $aItems) : self
 	{
-		if (!\is_array($aItems))
-		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
-		}
-
 		foreach ($aItems as $mItem)
 		{
-			$this->Add($mItem);
+			$this->append($mItem);
 		}
 
 		return $this;
@@ -64,52 +49,38 @@ abstract class Collection
 
 	public function Clear() : void
 	{
-		$this->aItems = array();
+		$this->exchangeArray([]);
 	}
 
-	public function CloneAsArray() : array
+	public function Slice(int $offset, int $length = null, bool $preserve_keys = false)
 	{
-		return $this->aItems;
+		return new static(
+			array_slice($this->getArrayCopy(), $offset, $length, $preserve_keys)
+		);
 	}
 
-	public function Count() : int
-	{
-		return \count($this->aItems);
-	}
-
-	public function &GetAsArray() : array
-	{
-		return $this->aItems;
-	}
-
-	/**
-	 * @param mixed $mCallback
-	 */
-	public function MapList($mCallback)
+	public function MapList(callable $cCallback) : array
 	{
 		$aResult = array();
-		if (\is_callable($mCallback))
+		if (\is_callable($cCallback))
 		{
-			foreach ($this->aItems as $oItem)
+			foreach ($this as $oItem)
 			{
-				$aResult[] = \call_user_func($mCallback, $oItem);
+				$aResult[] = \call_user_func($cCallback, $oItem);
 			}
 		}
 
 		return $aResult;
 	}
 
-	/**
-	 * @param mixed $mCallback
-	 */
-	public function FilterList($mCallback) : array
+	public function FilterList(callable $cCallback) : array
 	{
 		$aResult = array();
-		if (\is_callable($mCallback))
+		if (\is_callable($cCallback))
 		{
-			foreach ($this->aItems as $oItem)
+			foreach ($this as $oItem)
 			{
-				if (\call_user_func($mCallback, $oItem))
+				if (\call_user_func($cCallback, $oItem))
 				{
 					$aResult[] = $oItem;
 				}
@@ -119,45 +90,14 @@ abstract class Collection
 		return $aResult;
 	}
 
-	/**
-	 * @param mixed $mCallback
-	 */
-	public function ForeachList($mCallback) : void
+	public function ForeachList(callable $cCallback) : void
 	{
-		if (\is_callable($mCallback))
+		if (\is_callable($cCallback))
 		{
-			foreach ($this->aItems as $oItem)
+			foreach ($this as $oItem)
 			{
-				\call_user_func($mCallback, $oItem);
+				\call_user_func($cCallback, $oItem);
 			}
 		}
-	}
-
-	/**
-	 * @return mixed | null
-	 * @return mixed
-	 */
-	public function &GetByIndex(int $iIndex)
-	{
-		$mResult = null;
-		if (\key_exists($iIndex, $this->aItems))
-		{
-			$mResult = $this->aItems[$iIndex];
-		}
-
-		return $mResult;
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public function SetAsArray(array $aItems)
-	{
-		if (!\is_array($aItems))
-		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
-		}
-
-		$this->aItems = $aItems;
 	}
 }

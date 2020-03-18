@@ -40,7 +40,7 @@ class Email
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	private function __construct($sEmail, $sDisplayName = '')
+	private function __construct(string $sEmail, string $sDisplayName = '')
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sEmail, true))
 		{

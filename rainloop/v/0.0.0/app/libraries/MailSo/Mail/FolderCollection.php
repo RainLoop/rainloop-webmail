@@ -61,7 +61,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	public function GetByFullNameRaw(string $sFullNameRaw) : ?\MailSo\Mail\Folder
 	{
 		$mResult = null;
-		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
+		foreach ($this as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
 		{
 			if ($oFolder->FullNameRaw() === $sFullNameRaw)
 			{
@@ -88,7 +88,7 @@ class FolderCollection extends \MailSo\Base\Collection
 	public function CountRec() : int
 	{
 		$iResult = $this->Count();
-		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
+		foreach ($this as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
 		{
 			if ($oFolder)
 			{
@@ -110,9 +110,9 @@ class FolderCollection extends \MailSo\Base\Collection
 		$sDelimiter = '/';
 
 		$oFolder = $this->GetByFullNameRaw('INBOX');
-		if (!$oFolder)
+		if (!$oFolder && isset($this[0]))
 		{
-			$oFolder = $this->GetByIndex(0);
+			$oFolder = $this[0];
 		}
 
 		if ($oFolder)
@@ -123,7 +123,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		return $sDelimiter;
 	}
 
-	public function SetNamespace(string $sNamespace) : \MailSo\Mail\FolderCollection
+	public function SetNamespace(string $sNamespace) : self
 	{
 		$this->Namespace = $sNamespace;
 
@@ -135,7 +135,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		$this->Clear();
 
 		$aSortedByLenImapFolders = array();
-		foreach ($aUnsortedMailFolders as /* @var $oMailFolder \MailSo\Mail\Folder */ &$oMailFolder)
+		foreach ($aUnsortedMailFolders as /* @var $oMailFolder \MailSo\Mail\Folder */ $oMailFolder)
 		{
 			$aSortedByLenImapFolders[$oMailFolder->FullNameRaw()] =& $oMailFolder;
 			unset($oMailFolder);
@@ -181,7 +181,7 @@ class FolderCollection extends \MailSo\Base\Collection
 			return \strnatcmp($oFolderA->FullNameRaw(), $oFolderB->FullNameRaw());
 		});
 
-		foreach ($aSortedByLenImapFolders as /* @var $oMailFolder \MailSo\Mail\Folder */ &$oMailFolder)
+		foreach ($aSortedByLenImapFolders as /* @var $oMailFolder \MailSo\Mail\Folder */ $oMailFolder)
 		{
 			$this->AddWithPositionSearch($oMailFolder);
 			unset($oMailFolder);
@@ -194,9 +194,8 @@ class FolderCollection extends \MailSo\Base\Collection
 	{
 		$oItemFolder = null;
 		$bIsAdded = false;
-		$aList =& $this->GetAsArray();
 
-		foreach ($aList as /* @var $oItemFolder \MailSo\Mail\Folder */ $oItemFolder)
+		foreach ($this as /* @var $oItemFolder \MailSo\Mail\Folder */ $oItemFolder)
 		{
 			if ($oMailFolder instanceof \MailSo\Mail\Folder &&
 				0 === \strpos($oMailFolder->FullNameRaw(), $oItemFolder->FullNameRaw().$oItemFolder->Delimiter()))
@@ -213,24 +212,21 @@ class FolderCollection extends \MailSo\Base\Collection
 		if (!$bIsAdded && $oMailFolder instanceof \MailSo\Mail\Folder)
 		{
 			$bIsAdded = true;
-			$this->Add($oMailFolder);
+			$this->append($oMailFolder);
 		}
 
 		return $bIsAdded;
 	}
 
-	/**
-	 * @param callable $fCallback
-	 */
-	public function SortByCallback($fCallback) : void
+	public function SortByCallback(callable $fCallback) : void
 	{
 		if (\is_callable($fCallback))
 		{
-			$aList =& $this->GetAsArray();
+			$aList = $this->getArrayCopy();
 
 			\usort($aList, $fCallback);
 
-			foreach ($aList as &$oItemFolder)
+			foreach ($aList as $oItemFolder)
 			{
 				if ($oItemFolder->HasSubFolders())
 				{

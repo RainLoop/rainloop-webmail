@@ -50,9 +50,9 @@ abstract class HtmlUtils
 
 		$sHtmlAttrs = $sBodyAttrs = '';
 
-		$sText = \MailSo\Base\HtmlUtils::FixSchemas($sText);
-		$sText = \MailSo\Base\HtmlUtils::ClearFastTags($sText);
-		$sText = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
+		$sText = static::FixSchemas($sText);
+		$sText = static::ClearFastTags($sText);
+		$sText = static::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
 
 		$oDom = self::createDOMDocument();
 		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
@@ -117,60 +117,7 @@ abstract class HtmlUtils
 		return \trim($sResult);
 	}
 
-	public static function GetTextFromDom_(\DOMDocument $oDom, bool $bWrapByFakeHtmlAndBodyDiv = true) : string
-	{
-		$sResult = '';
-
-		$aHtmlAttrs = $aBodylAttrs = array();
-		if ($bWrapByFakeHtmlAndBodyDiv)
-		{
-			$oHtml = $oDom->getElementsByTagName('html')->item(0);
-			$oBody = $oDom->getElementsByTagName('body')->item(0);
-
-			$aHtmlAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oHtml);
-			$aBodylAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oBody);
-		}
-
-		$oDiv = $oDom->getElementsByTagName('div')->item(0);
-		if ($oDiv && $oDiv->hasAttribute('data-wrp') && 'rainloop' === $oDiv->getAttribute('data-wrp'))
-		{
-			$oDiv->removeAttribute('data-wrp');
-			if ($bWrapByFakeHtmlAndBodyDiv)
-			{
-				$oWrap = $oDom->createElement('div');
-
-				$oWrap->setAttribute('data-x-div-type', 'html');
-				foreach ($aHtmlAttrs as $sKey => $sValue)
-				{
-					$oWrap->setAttribute($sKey, $sValue);
-				}
-
-				$oDiv->setAttribute('data-x-div-type', 'body');
-				foreach ($aBodylAttrs as $sKey => $sValue)
-				{
-					$oDiv->setAttribute($sKey, $sValue);
-				}
-
-				$oWrap->appendChild($oDiv);
-				$sResult = self::domToString($oWrap, $oDom);
-			}
-			else
-			{
-				$sResult = self::domToString($oDiv, $oDom);
-			}
-		}
-		else
-		{
-			$sResult = self::domToString($oDom);
-		}
-
-		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
-		$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
-
-		return $sResult;
-	}
-
-	public static function GetTextFromDom(\DOMDocument $oDom, bool $bWrapByFakeHtmlAndBodyDiv = true)
+	public static function GetTextFromDom(\DOMDocument $oDom, bool $bWrapByFakeHtmlAndBodyDiv = true) : string
 	{
 		$sResult = '';
 
@@ -184,8 +131,8 @@ abstract class HtmlUtils
 
 		if ($bWrapByFakeHtmlAndBodyDiv)
 		{
-			$aHtmlAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oHtml);
-			$aBodylAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oBody);
+			$aHtmlAttrs = static::GetElementAttributesAsArray($oHtml);
+			$aBodylAttrs = static::GetElementAttributesAsArray($oBody);
 
 			$oWrapHtml = $oDom->createElement('div');
 			$oWrapHtml->setAttribute('data-x-div-type', 'html');
@@ -208,7 +155,7 @@ abstract class HtmlUtils
 			$sResult = \str_replace('___xxx___', $sResult, $sWrp);
 		}
 
-		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
+		$sResult = \str_replace(static::$KOS, ':', $sResult);
 		$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
 
 		return $sResult;
@@ -269,10 +216,7 @@ abstract class HtmlUtils
 		), '', $sHtml);
 	}
 
-	/**
-	 * @param mixed $oDom
-	 */
-	public static function ClearComments(&$oDom)
+	public static function ClearComments(\DOMDocument $oDom) : void
 	{
 		$aRemove = array();
 
@@ -297,10 +241,7 @@ abstract class HtmlUtils
 		}
 	}
 
-	/**
-	 * @param mixed $oDom
-	 */
-	public static function ClearTags(&$oDom, bool $bClearStyleAndHead = true)
+	public static function ClearTags(\DOMDocument $oDom, bool $bClearStyleAndHead = true) : void
 	{
 		$aRemoveTags = array(
 			'svg', 'link', 'base', 'meta', 'title', 'x-script', 'script', 'bgsound', 'keygen', 'source',
@@ -342,229 +283,6 @@ abstract class HtmlUtils
 			}
 		}
 	}
-
-/*
-//	public static function ClearStyleUrlValueParserHelper($oUrlValue, $oRule, $oRuleSet,
-//		$oElem = null,
-//		&$bHasExternals = false, array &$aFoundCIDs = array(),
-//		$aContentLocationUrls = array(), array &$aFoundedContentLocationUrls = array(),
-//		$bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null
-//	)
-//	{
-//		if ($oUrlValue instanceof \Sabberworm\CSS\Value\URL)
-//		{
-//			$oNewRule = new \Sabberworm\CSS\Rule\Rule('x-rl-orig-'.$oRule->getRule());
-//			$oNewRule->setValue((string) $oRule->getValue());
-//			$oNewRule->setIsImportant($oRule->getIsImportant());
-//
-//			$oRuleSet->addRule($oNewRule);
-//
-//			$oUrl = $oUrlValue->getURL();
-//			$sUrl = $oUrl ? $oUrl->getString() : '';
-//
-//			if ('cid:' === \strtolower(\substr($sUrl, 0, 4)))
-//			{
-//				$aFoundCIDs[] = \substr($sUrl, 4);
-//
-//				$oRule->setRule('x-rl-mod-'.$oRule->getRule());
-//
-//				if ($oElem)
-//				{
-//					$oElem->setAttribute('data-x-style-mod', '1');
-//				}
-//			}
-//			else
-//			{
-//				if (\preg_match('/http[s]?:\/\//i', $sUrl) || '//' === \substr($sUrl, 0, 2))
-//				{
-//					$oRule->setRule('x-rl-mod-'.$oRule->getRule());
-//
-//					if (\in_array($sUrl, $aContentLocationUrls))
-//					{
-//						$aFoundedContentLocationUrls[] = $sUrl;
-//					}
-//					else
-//					{
-//						$bHasExternals = true;
-//						if (!$bDoNotReplaceExternalUrl)
-//						{
-//							if ($fAdditionalExternalFilter)
-//							{
-//								$sAdditionalResult = \call_user_func($fAdditionalExternalFilter, $sUrl);
-//								if (0 < \strlen($sAdditionalResult) && $oUrl)
-//								{
-//									$oUrl->setString($sAdditionalResult);
-//								}
-//							}
-//						}
-//					}
-//
-//					if ($oElem)
-//					{
-//						$oElem->setAttribute('data-x-style-mod', '1');
-//					}
-//				}
-//				else if ('data:image/' !== \strtolower(\substr(\trim($sUrl), 0, 11)))
-//				{
-//					$oRuleSet->removeRule($oRule);
-//				}
-//			}
-//		}
-//		else if ($oRule instanceof \Sabberworm\CSS\Rule\Rule)
-//		{
-//			if ('x-rl-' !== \substr($oRule->getRule(), 0, 5))
-//			{
-//				$oValue = $oRule->getValue();
-//				if ($oValue instanceof \Sabberworm\CSS\Value\URL)
-//				{
-//					\MailSo\Base\HtmlUtils::ClearStyleUrlValueParserHelper($oValue, $oRule, $oRuleSet, $oElem,
-//						$bHasExternals, $aFoundCIDs,
-//						$aContentLocationUrls, $aFoundedContentLocationUrls,
-//						$bDoNotReplaceExternalUrl, $fAdditionalExternalFilter);
-//				}
-//				else if ($oValue instanceof \Sabberworm\CSS\Value\RuleValueList)
-//				{
-//					$aComps = $oValue->getListComponents();
-//					foreach ($aComps as $oValue)
-//					{
-//						if ($oValue instanceof \Sabberworm\CSS\Value\URL)
-//						{
-//							\MailSo\Base\HtmlUtils::ClearStyleUrlValueParserHelper($oValue, $oRule, $oRuleSet, $oElem,
-//								$bHasExternals, $aFoundCIDs,
-//								$aContentLocationUrls, $aFoundedContentLocationUrls,
-//								$bDoNotReplaceExternalUrl, $fAdditionalExternalFilter);
-//						}
-//					}
-//				}
-//			}
-//		}
-//	}
-//
-//	public static function ClearStyleSmart(string $sStyle, $oElement = null,
-//		&$bHasExternals = false, array &$aFoundCIDs = array(),
-//		$aContentLocationUrls = array(), array &$aFoundedContentLocationUrls = array(),
-//		$bDoNotReplaceExternalUrl = false, $fAdditionalExternalFilter = null,
-//		$sSelectorPrefix = '')
-//	{
-//		$mResult = false;
-//		$oCss = null;
-//
-//		if (!\class_exists('Sabberworm\CSS\Parser'))
-//		{
-//			return $mResult;
-//		}
-//
-//		$sStyle = \trim($sStyle);
-//		if (empty($sStyle))
-//		{
-//			return '';
-//		}
-//
-//		$sStyle = \trim(\preg_replace('/[\r\n\t\s]+/', ' ', $sStyle));
-//
-//		try
-//		{
-//			$oSettings = \Sabberworm\CSS\Settings::create();
-//			$oSettings->beStrict();
-//			$oSettings->withMultibyteSupport(false);
-//
-//			$oCssParser = new \Sabberworm\CSS\Parser($sStyle, $oSettings);
-//			$oCss = $oCssParser->parse();
-//		}
-//		catch (\Throwable $oEception)
-//		{
-//			unset($oEception);
-//			$mResult = false;
-//		}
-//
-//		if ($oCss)
-//		{
-//			foreach ($oCss->getAllDeclarationBlocks() as $oBlock)
-//			{
-//				foreach($oBlock->getSelectors() as $oSelector)
-//				{
-//					$sS = ' '.\trim($oSelector->getSelector()).' ';
-//					$sS = \preg_replace('/ body([\.# ])/i', ' [data-x-div-type="body"]$1', $sS);
-//					$sS = \preg_replace('/ html([\.# ])/i', ' [data-x-div-type="html"]$1', $sS);
-//
-//					if (0 < \strlen($sSelectorPrefix))
-//					{
-//						$sS = \trim($sSelectorPrefix.' '.\trim($sS));
-//					}
-//
-//					$oSelector->setSelector(\trim($sS));
-//				}
-//			}
-//
-//			$aRulesToRemove = array(
-//				'pointer-events', 'content', 'behavior', 'cursor',
-//			);
-//
-//			foreach($oCss->getAllRuleSets() as $oRuleSet)
-//			{
-//				foreach ($aRulesToRemove as $sRuleToRemove)
-//				{
-//					$oRuleSet->removeRule($sRuleToRemove);
-//				}
-//
-//				// position: fixed -> position: fixed -> absolute
-//				$aRules = $oRuleSet->getRules('position');
-//				if (\is_array($aRules))
-//				{
-//					foreach ($aRules as $oRule)
-//					{
-//						$mValue = $oRule->getValue();
-//						if (\is_string($mValue) && 'fixed' === \trim(\strtolower($mValue)))
-//						{
-//							$oRule->setValue('absolute');
-//						}
-//					}
-//				}
-//			}
-//
-//			foreach($oCss->getAllDeclarationBlocks() as $oRuleSet)
-//			{
-//				if ($oRuleSet instanceof \Sabberworm\CSS\RuleSet\RuleSet)
-//				{
-//					if ($oRuleSet instanceof \Sabberworm\CSS\RuleSet\DeclarationBlock)
-//					{
-//						$oRuleSet->expandBackgroundShorthand();
-//						$oRuleSet->expandListStyleShorthand();
-//					}
-//
-//					$aRules = $oRuleSet->getRules();
-//					if (\is_array($aRules) && 0 < \count($aRules))
-//					{
-//						foreach ($aRules as $oRule)
-//						{
-//							if ($oRule instanceof \Sabberworm\CSS\Rule\Rule)
-//							{
-//								\MailSo\Base\HtmlUtils::ClearStyleUrlValueParserHelper(null, $oRule, $oRuleSet,
-//									$oElement,
-//									$bHasExternals, $aFoundCIDs,
-//									$aContentLocationUrls, $aFoundedContentLocationUrls,
-//									$bDoNotReplaceExternalUrl, $fAdditionalExternalFilter
-//								);
-//							}
-//						}
-//					}
-//				}
-//			}
-//
-//			try
-//			{
-//				$mResult = $oCss->render(\Sabberworm\CSS\OutputFormat::createCompact());
-//			}
-//			catch (\Throwable $oEception)
-//			{
-//				unset($oEception);
-//				$mResult = false;
-//			}
-//		}
-//
-//		return $mResult;
-//	}
-*/
 
 	/**
 	 * @param callback|null $fAdditionalExternalFilter = null
@@ -696,7 +414,7 @@ abstract class HtmlUtils
 		return \implode(';', $aOutStyles);
 	}
 
-	public static function FindLinksInDOM(\DOMDocument $oDom)
+	public static function FindLinksInDOM(\DOMDocument $oDom) : void
 	{
 		$aNodes = $oDom->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
@@ -734,7 +452,7 @@ abstract class HtmlUtils
 							->CompileText()
 						;
 
-						$oSubDom = \MailSo\Base\HtmlUtils::GetDomFromText($sText);
+						$oSubDom = static::GetDomFromText($sText);
 						if ($oSubDom)
 						{
 							$oBodyNodes = $oSubDom->getElementsByTagName('body');
@@ -752,7 +470,7 @@ abstract class HtmlUtils
 												'a' === \strtolower($oSubItem->tagName))
 											{
 												$oLink = $oDom->createElement('a',
-													\str_replace(':', \MailSo\Base\HtmlUtils::$KOS, \htmlspecialchars($oSubItem->nodeValue)));
+													\str_replace(':', static::$KOS, \htmlspecialchars($oSubItem->nodeValue)));
 
 												$sHref = $oSubItem->getAttribute('href');
 												if ($sHref)
@@ -795,7 +513,7 @@ abstract class HtmlUtils
 		$fAdditionalDomReader = null;
 		$bTryToDetectHiddenImages = false;
 
-		return \MailSo\Base\HtmlUtils::ClearHtml($sHtml, $bHasExternals, $aFoundCIDs,
+		return static::ClearHtml($sHtml, $bHasExternals, $aFoundCIDs,
 			$aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $bFindLinksInHtml,
 			$fAdditionalExternalFilter, $fAdditionalDomReader, $bTryToDetectHiddenImages,
 			$bWrapByFakeHtmlAndBodyDiv);
@@ -833,7 +551,7 @@ abstract class HtmlUtils
 		$bHasExternals = false;
 
 		// Dom Part
-		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
+		$oDom = static::GetDomFromText($sHtml);
 		unset($sHtml);
 
 		if (!$oDom)
@@ -854,11 +572,11 @@ abstract class HtmlUtils
 
 		if ($bFindLinksInHtml)
 		{
-			\MailSo\Base\HtmlUtils::FindLinksInDOM($oDom);
+			static::FindLinksInDOM($oDom);
 		}
 
-		\MailSo\Base\HtmlUtils::ClearComments($oDom);
-		\MailSo\Base\HtmlUtils::ClearTags($oDom);
+		static::ClearComments($oDom);
+		static::ClearTags($oDom);
 
 		$sLinkColor = '';
 		$aNodes = $oDom->getElementsByTagName('*');
@@ -1151,7 +869,7 @@ abstract class HtmlUtils
 			if ($oElement->hasAttribute('style') && !$oElement->hasAttribute('data-x-skip-style'))
 			{
 				$oElement->setAttribute('style',
-					\MailSo\Base\HtmlUtils::ClearStyle($oElement->getAttribute('style'), $oElement, $bHasExternals,
+					static::ClearStyle($oElement->getAttribute('style'), $oElement, $bHasExternals,
 						$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $fAdditionalExternalFilter));
 			}
 
@@ -1170,7 +888,7 @@ abstract class HtmlUtils
 			}
 		}
 
-		$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv);
+		$sResult = static::GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv);
 		unset($oDom);
 
 		return $sResult;
@@ -1178,9 +896,9 @@ abstract class HtmlUtils
 
 	public static function BuildHtml(string $sHtml, array &$aFoundCids = array(), &$mFoundDataURL = null, array &$aFoundedContentLocationUrls = array()) : string
 	{
-		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
+		$oDom = static::GetDomFromText($sHtml);
 
-		\MailSo\Base\HtmlUtils::ClearTags($oDom);
+		static::ClearTags($oDom);
 		unset($sHtml);
 
 		$aNodes = $oDom->getElementsByTagName('*');
@@ -1304,7 +1022,7 @@ abstract class HtmlUtils
 			}
 		}
 
-		$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom, false);
+		$sResult = static::GetTextFromDom($oDom, false);
 		unset($oDom);
 
 		return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>'.

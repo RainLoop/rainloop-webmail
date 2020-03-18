@@ -42,7 +42,7 @@ class Logger extends \MailSo\Base\Collection
 	 */
 	private $bHideErrorNotices;
 
-	protected function __construct($bRegPhpErrorHandler = true)
+	protected function __construct(bool $bRegPhpErrorHandler = true)
 	{
 		parent::__construct();
 
@@ -208,10 +208,9 @@ class Logger extends \MailSo\Base\Collection
 	{
 		$iResult = 1;
 
-		$aLoggers =& $this->GetAsArray();
-		foreach ($aLoggers as /* @var $oLogger \MailSo\Log\Driver */ &$oLogger)
+		foreach ($this as /* @var $oLogger \MailSo\Log\Driver */ $oLogger)
 		{
-			$iResult &= $oLogger->WriteEmptyLine();
+			$iResult = $oLogger->WriteEmptyLine();
 		}
 
 		return (bool) $iResult;
@@ -236,10 +235,9 @@ class Logger extends \MailSo\Base\Collection
 			$sDesc = \str_replace($this->aSecretWords, '*******', $sDesc);
 		}
 
-		$aLoggers =& $this->GetAsArray();
-		foreach ($aLoggers as /* @var $oLogger \MailSo\Log\Driver */ $oLogger)
+		foreach ($this as /* @var $oLogger \MailSo\Log\Driver */ $oLogger)
 		{
-			$iResult &= $oLogger->Write($sDesc, $iType, $sName, $bDiplayCrLf);
+			$iResult = $oLogger->Write($sDesc, $iType, $sName, $bDiplayCrLf);
 		}
 
 		return (bool) $iResult;
