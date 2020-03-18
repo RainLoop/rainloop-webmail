@@ -188,7 +188,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 			try
 			{
-				$this->sendRequestWithCheck(\base64_encode($sLogin.' '.\MailSo\Base\Utils::Hmac($sTicket, $sPassword)), 235, '', true);
+				$this->sendRequestWithCheck(\base64_encode($sLogin.' '.\hash_hmac('md5', $sTicket, $sPassword)), 235, '', true);
 			}
 			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
 			{

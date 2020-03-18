@@ -349,7 +349,7 @@ class Actions
 
 		$sQuery = \trim(\trim($sQuery), ' /');
 
-		$aSubQuery = $this->Http()->GetQuery('q', null);
+		$aSubQuery = $this->Http()->GetQuery('q');
 		if (\is_array($aSubQuery))
 		{
 			$aSubQuery = \array_map(function ($sS) {

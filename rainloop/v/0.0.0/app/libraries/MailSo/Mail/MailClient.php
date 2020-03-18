@@ -228,7 +228,7 @@ class MailClient
 				: \MailSo\Imap\Enumerations\StoreAction::REMOVE_FLAGS_SILENT
 			;
 
-			$this->oImapClient->MessageStoreFlag(\MailSo\Base\Utils::PrepearFetchSequence($aIndexRange),
+			$this->oImapClient->MessageStoreFlag(\MailSo\Base\Utils::PrepareFetchSequence($aIndexRange),
 				$bIndexIsUid, array($sMessageFlag), $sStoreAction);
 		}
 	}
@@ -460,7 +460,7 @@ class MailClient
 
 		$this->oImapClient->FolderSelect($sFolder);
 
-		$sIndexRange = \MailSo\Base\Utils::PrepearFetchSequence($aIndexRange);
+		$sIndexRange = \MailSo\Base\Utils::PrepareFetchSequence($aIndexRange);
 
 		$this->oImapClient->MessageStoreFlag($sIndexRange, $bIndexIsUid,
 			array(\MailSo\Imap\Enumerations\MessageFlag::DELETED),
@@ -493,12 +493,12 @@ class MailClient
 		if ($bUseMoveSupported && $this->oImapClient->IsSupported('MOVE'))
 		{
 			$this->oImapClient->MessageMove($sToFolder,
-				\MailSo\Base\Utils::PrepearFetchSequence($aIndexRange), $bIndexIsUid);
+				\MailSo\Base\Utils::PrepareFetchSequence($aIndexRange), $bIndexIsUid);
 		}
 		else
 		{
 			$this->oImapClient->MessageCopy($sToFolder,
-				\MailSo\Base\Utils::PrepearFetchSequence($aIndexRange), $bIndexIsUid);
+				\MailSo\Base\Utils::PrepareFetchSequence($aIndexRange), $bIndexIsUid);
 
 			$this->MessageDelete($sFromFolder, $aIndexRange, $bIndexIsUid, true, $bExpungeAll);
 		}
@@ -521,7 +521,7 @@ class MailClient
 
 		$this->oImapClient->FolderSelect($sFromFolder);
 		$this->oImapClient->MessageCopy($sToFolder,
-			\MailSo\Base\Utils::PrepearFetchSequence($aIndexRange), $bIndexIsUid);
+			\MailSo\Base\Utils::PrepareFetchSequence($aIndexRange), $bIndexIsUid);
 
 		return $this;
 	}
@@ -728,7 +728,7 @@ class MailClient
 				\MailSo\Imap\Enumerations\FetchType::INDEX,
 				\MailSo\Imap\Enumerations\FetchType::UID,
 				\MailSo\Imap\Enumerations\FetchType::FLAGS
-			), \MailSo\Base\Utils::PrepearFetchSequence($aUids), true);
+			), \MailSo\Base\Utils::PrepareFetchSequence($aUids), true);
 
 			if (\is_array($aFetchResponse) && 0 < \count($aFetchResponse))
 			{
@@ -1496,7 +1496,7 @@ class MailClient
 				$bSimple ?
 					$this->getEnvelopeOrHeadersRequestStringForSimpleList() :
 					$this->getEnvelopeOrHeadersRequestString()
-			), \MailSo\Base\Utils::PrepearFetchSequence($aRequestIndexOrUids), $bIndexAsUid);
+			), \MailSo\Base\Utils::PrepareFetchSequence($aRequestIndexOrUids), $bIndexAsUid);
 
 			if (\is_array($aFetchResponse) && 0 < \count($aFetchResponse))
 			{

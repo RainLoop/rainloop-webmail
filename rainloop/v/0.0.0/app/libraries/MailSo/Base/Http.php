@@ -59,14 +59,14 @@ class Http
 	 *
 	 * @return mixed
 	 */
-	public function GetQuery(string $sKey, $mDefault = null, bool $bClearPercZeroZero = true)
+	public function GetQuery(string $sKey, $mDefault = null)
 	{
-		return isset($_GET[$sKey]) ? \MailSo\Base\Utils::StripSlashesValue($_GET[$sKey], $bClearPercZeroZero) : $mDefault;
+		return isset($_GET[$sKey]) ? $_GET[$sKey] : $mDefault;
 	}
 
 	public function GetQueryAsArray() : ?array
 	{
-		return isset($_GET) && \is_array($_GET) ? \MailSo\Base\Utils::StripSlashesValue($_GET, true) : null;
+		return isset($_GET) && \is_array($_GET) ? $_GET : null;
 	}
 
 	public function HasPost(string $sKey) : bool
@@ -79,14 +79,14 @@ class Http
 	 *
 	 * @return mixed
 	 */
-	public function GetPost(string $sKey, $mDefault = null, bool $bClearPercZeroZero = false)
+	public function GetPost(string $sKey, $mDefault = null)
 	{
-		return isset($_POST[$sKey]) ? \MailSo\Base\Utils::StripSlashesValue($_POST[$sKey], $bClearPercZeroZero) : $mDefault;
+		return isset($_POST[$sKey]) ? $_POST[$sKey] : $mDefault;
 	}
 
 	public function GetPostAsArray() : ?array
 	{
-		return isset($_POST) && \is_array($_POST) ? \MailSo\Base\Utils::StripSlashesValue($_POST, false) : null;
+		return isset($_POST) && \is_array($_POST) ? $_POST : null;
 	}
 
 	public function HasRequest(string $sKey) : bool
@@ -101,7 +101,7 @@ class Http
 	 */
 	public function GetRequest(string $sKey, $mDefault = null)
 	{
-		return isset($_REQUEST[$sKey]) ? \MailSo\Base\Utils::StripSlashesValue($_REQUEST[$sKey]) : $mDefault;
+		return isset($_REQUEST[$sKey]) ? $_REQUEST[$sKey] : $mDefault;
 	}
 
 	public function HasServer(string $sKey) : bool

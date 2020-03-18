@@ -81,7 +81,7 @@ class ServiceActions
 		$aResponseItem = null;
 		$oException = null;
 
-		$sAction = $this->oHttp->GetPost('Action', null);
+		$sAction = $this->oHttp->GetPost('Action');
 		if (empty($sAction) && $this->oHttp->IsGet() && !empty($this->aPaths[2]))
 		{
 			$sAction = $this->aPaths[2];

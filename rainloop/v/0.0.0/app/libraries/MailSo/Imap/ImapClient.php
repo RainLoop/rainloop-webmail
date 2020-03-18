@@ -210,7 +210,7 @@ class ImapClient extends \MailSo\Net\NetClient
 						$sTicket = @\base64_decode($oContinuationResponse->ResponseList[1]);
 						$this->oLogger->Write('ticket: '.$sTicket);
 
-						$sToken = \base64_encode($sLogin.' '.\MailSo\Base\Utils::Hmac($sTicket, $sPassword));
+						$sToken = \base64_encode($sLogin.' '.\hash_hmac('md5', $sTicket, $sPassword));
 
 						if ($this->oLogger)
 						{
