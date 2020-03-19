@@ -21,7 +21,7 @@ class Validator
 	public static function EmailString(string $sEmail, array $aAllowedInternalDomains = array('localhost')) : bool
 	{
 		$bResult = false;
-		if (\MailSo\Base\Validator::NotEmptyString($sEmail, true))
+		if (static::NotEmptyString($sEmail, true))
 		{
 			$bResult = false !== \filter_var($sEmail, FILTER_VALIDATE_EMAIL);
 			if (!$bResult)
@@ -38,7 +38,7 @@ class Validator
 
 	public static function SimpleEmailString(string $sEmail) : bool
 	{
-		return \MailSo\Base\Validator::NotEmptyString($sEmail, true) &&
+		return static::NotEmptyString($sEmail, true) &&
 			!!\preg_match('/^[a-zA-Z0-9][a-zA-Z0-9\.\+\-_]*@[a-zA-Z0-9][a-zA-Z0-9\.\+\-_]*$/', $sEmail);
 	}
 
@@ -62,6 +62,6 @@ class Validator
 
 	public static function PortInt(int $iPort) : bool
 	{
-		return \MailSo\Base\Validator::RangeInt($iPort, 0, 65535);
+		return static::RangeInt($iPort, 0, 65535);
 	}
 }

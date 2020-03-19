@@ -175,7 +175,7 @@ abstract class Driver
 	{
 		return \ltrim(
 			($this->bTimePrefix ? '['.$sTimePrefix.']' : '').
-			($this->bGuidPrefix ? '['.\MailSo\Log\Logger::Guid().']' : '').
+			($this->bGuidPrefix ? '['.Logger::Guid().']' : '').
 			($this->bTypedPrefix ? ' '.$this->getTypedPrefix($iType, $sName) : '')
 		).$sDesc;
 	}
@@ -188,7 +188,7 @@ abstract class Driver
 	protected function getTimeWithMicroSec() : string
 	{
 		$aMicroTimeItems = \explode(' ', \microtime());
-		return \MailSo\Log\Logger::DateHelper($this->sDatePattern, $this->sTimeOffset, $aMicroTimeItems[1]).'.'.
+		return Logger::DateHelper($this->sDatePattern, $this->sTimeOffset, $aMicroTimeItems[1]).'.'.
 			\str_pad((int) ($aMicroTimeItems[0] * 1000), 3, '0', STR_PAD_LEFT);
 	}
 
