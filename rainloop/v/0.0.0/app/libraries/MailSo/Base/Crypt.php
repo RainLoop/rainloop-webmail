@@ -18,11 +18,34 @@ namespace MailSo\Base;
 class Crypt
 {
 
-	public static function XxteaEncrypt(string $sString, string $sKey) : string
+	public static function Encrypt(string $sString, string $sKey, string $sCipher = '') : string
 	{
-		if (0 === \strlen($sString))
-		{
+		if (0 === \strlen($sString)) {
 			return '';
+		}
+		if ($sCipher && \is_callable('openssl_encrypt')) {
+			$iv = str_pad('', openssl_cipher_iv_length($sCipher), sha1($sKey));
+			return openssl_encrypt($sString, $sCipher, $sKey, OPENSSL_RAW_DATA, $iv);
+		}
+		return static::XxteaEncrypt($sString, $sKey);
+	}
+
+	public static function Decrypt(string $sString, string $sKey, string $sCipher = '') : string
+	{
+		if (0 === \strlen($sString)) {
+			return '';
+		}
+		if ($sCipher && \is_callable('openssl_encrypt')) {
+			$iv = str_pad('', openssl_cipher_iv_length($sCipher), sha1($sKey));
+			return openssl_decrypt($sString, $sCipher, $sKey, OPENSSL_RAW_DATA, $iv);
+		}
+		return static::XxteaDecrypt($sString, $sKey);
+	}
+
+	private static function XxteaEncrypt(string $sString, string $sKey) : string
+	{
+		if (\is_callable('xxtea_encrypt')) {
+			return xxtea_encrypt($sString, $sKey);
 		}
 
 		$aV = self::str2long($sString, true);
@@ -61,14 +84,13 @@ class Crypt
 		return self::long2str($aV, false);
 	}
 
-	public static function XxteaDecrypt(string $sEncriptedString, string $sKey) : string
+	private static function XxteaDecrypt(string $sEncryptedString, string $sKey) : string
 	{
-		if (0 === \strlen($sEncriptedString))
-		{
-			return '';
+		if (\is_callable('xxtea_decrypt')) {
+			return xxtea_decrypt($sString, $sKey);
 		}
 
-		$aV = self::str2long($sEncriptedString, false);
+		$aV = self::str2long($sEncryptedString, false);
 		$aK = self::str2long($sKey, false);
 
 		if (\count($aK) < 4)
@@ -128,10 +150,7 @@ class Crypt
 		{
 			return \substr(\join('', $aS), 0, $iN);
 		}
-		else
-		{
-			return \join('', $aS);
-		}
+		return \join('', $aS);
 	}
 
 	private static function str2long(string $sS, string $sW) : array
@@ -147,14 +166,6 @@ class Crypt
 
 	private static function int32(int $iN) : int
 	{
-		while ($iN >= 2147483648)
-		{
-			$iN -= 4294967296;
-		}
-		while ($iN <= -2147483649)
-		{
-			$iN += 4294967296;
-		}
-		return (int) $iN;
+		return ($n & 0xffffffff);
 	}
 }

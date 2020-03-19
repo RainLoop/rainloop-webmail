@@ -1925,7 +1925,7 @@ END;
 
 	public static function HashToId(string $sHash, string $sSalt = '') : int
 	{
-		$sData = $sHash ? @\MailSo\Base\Crypt::XxteaDecrypt(\hex2bin($sHash), \md5($sSalt)) : null;
+		$sData = $sHash ? @\MailSo\Base\Crypt::Decrypt(\hex2bin($sHash), \md5($sSalt)) : null;
 
 		$aMatch = array();
 		if ($sData && preg_match('/^id:(\d+)$/', $sData, $aMatch) && isset($aMatch[1]))
@@ -1938,8 +1938,6 @@ END;
 
 	public static function IdToHash(int $iID, string $sSalt = '') : string
 	{
-		return is_int($iID) ?
-			\bin2hex(\MailSo\Base\Crypt::XxteaEncrypt('id:'.$iID, \md5($sSalt))) : null
-		;
+		return \bin2hex(\MailSo\Base\Crypt::Encrypt('id:'.$iID, \md5($sSalt)));
 	}
 }
