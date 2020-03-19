@@ -23,10 +23,7 @@ class ResponseException extends \MailSo\Pop3\Exceptions\Exception
 	 */
 	private $aResponses;
 
-	/**
-	 * @param \Exception $oPrevious = null
-	 */
-	public function __construct($aResponses = array(), $sMessage = '', $iCode = 0, $oPrevious = null)
+	public function __construct(array $aResponses = array(), string $sMessage = '', int $iCode = 0, ?\Throwable $oPrevious = null)
 	{
 		parent::__construct($sMessage, $iCode, $oPrevious);
 

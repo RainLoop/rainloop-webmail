@@ -27,7 +27,7 @@ class Parameter
 	 */
 	private $sValue;
 
-	private function __construct($sName, $sValue)
+	private function __construct(string $sName, string $sValue)
 	{
 		$this->sName = $sName;
 		$this->sValue = $sValue;

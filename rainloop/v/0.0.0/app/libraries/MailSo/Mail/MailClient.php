@@ -1513,7 +1513,7 @@ class MailClient
 			{
 				$aFetchIndexArray = array();
 				$oFetchResponseItem = null;
-				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ &$oFetchResponseItem)
+				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem)
 				{
 					$aFetchIndexArray[($bIndexAsUid)
 						? $oFetchResponseItem->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID)

@@ -135,7 +135,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		$this->Clear();
 
 		$aSortedByLenImapFolders = array();
-		foreach ($aUnsortedMailFolders as /* @var $oMailFolder \MailSo\Mail\Folder */ &$oMailFolder)
+		foreach ($aUnsortedMailFolders as /* @var $oMailFolder \MailSo\Mail\Folder */ $oMailFolder)
 		{
 			$aSortedByLenImapFolders[$oMailFolder->FullNameRaw()] =& $oMailFolder;
 			unset($oMailFolder);
@@ -181,7 +181,7 @@ class FolderCollection extends \MailSo\Base\Collection
 			return \strnatcmp($oFolderA->FullNameRaw(), $oFolderB->FullNameRaw());
 		});
 
-		foreach ($aSortedByLenImapFolders as /* @var $oMailFolder \MailSo\Mail\Folder */ &$oMailFolder)
+		foreach ($aSortedByLenImapFolders as /* @var $oMailFolder \MailSo\Mail\Folder */ $oMailFolder)
 		{
 			$this->AddWithPositionSearch($oMailFolder);
 			unset($oMailFolder);
@@ -230,7 +230,7 @@ class FolderCollection extends \MailSo\Base\Collection
 
 			\usort($aList, $fCallback);
 
-			foreach ($aList as &$oItemFolder)
+			foreach ($aList as $oItemFolder)
 			{
 				if ($oItemFolder->HasSubFolders())
 				{

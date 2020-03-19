@@ -36,15 +36,15 @@ class Utils
 
 	static public function RsaPrivateKey() : string
 	{
-		if (!empty(\RainLoop\Utils::$RsaKey))
+		if (!empty(static::$RsaKey))
 		{
-			return \RainLoop\Utils::$RsaKey;
+			return static::$RsaKey;
 		}
 
-		\RainLoop\Utils::$RsaKey = \file_exists(APP_PRIVATE_DATA.'rsa/private') ?
+		static::$RsaKey = \file_exists(APP_PRIVATE_DATA.'rsa/private') ?
 			\file_get_contents(APP_PRIVATE_DATA.'rsa/private') : '';
 
-		\RainLoop\Utils::$RsaKey = \is_string(\RainLoop\Utils::$RsaKey) ? \RainLoop\Utils::$RsaKey : '';
+		static::$RsaKey = \is_string(static::$RsaKey) ? static::$RsaKey : '';
 	}
 
 	static public function EncryptStringRSA(string $sString, string $sKey = '') : string
@@ -52,7 +52,7 @@ class Utils
 		$sResult = '';
 		$sKey = \md5($sKey);
 
-		$sPrivateKey = \RainLoop\Utils::RsaPrivateKey();
+		$sPrivateKey = static::RsaPrivateKey();
 		if (!empty($sPrivateKey))
 		{
 			$oPrivKey  = \openssl_pkey_get_private($sPrivateKey);
@@ -89,7 +89,7 @@ class Utils
 		$sResult = '';
 		$sKey = \md5($sKey);
 
-		$sPrivateKey = \RainLoop\Utils::RsaPrivateKey();
+		$sPrivateKey = static::RsaPrivateKey();
 		if (!empty($sPrivateKey) && !empty($sString))
 		{
 			$oPrivKey  = \openssl_pkey_get_private($sPrivateKey);
@@ -130,36 +130,36 @@ class Utils
 	{
 //		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_pkey_get_private'))
 //		{
-//			return \RainLoop\Utils::EncryptStringRSA($sString,
-//				$sKey.'Q'.\RainLoop\Utils::GetShortToken());
+//			return static::EncryptStringRSA($sString,
+//				$sKey.'Q'.static::GetShortToken());
 //		}
 
 		return \MailSo\Base\Crypt::XxteaEncrypt($sString,
-			$sKey.'Q'.\RainLoop\Utils::GetShortToken());
+			$sKey.'Q'.static::GetShortToken());
 	}
 
 	static public function DecryptStringQ(string $sEncriptedString, string $sKey) : string
 	{
 //		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_pkey_get_private'))
 //		{
-//			return \RainLoop\Utils::DecryptStringRSA($sEncriptedString,
-//				$sKey.'Q'.\RainLoop\Utils::GetShortToken());
+//			return static::DecryptStringRSA($sEncriptedString,
+//				$sKey.'Q'.static::GetShortToken());
 //		}
 
 		return \MailSo\Base\Crypt::XxteaDecrypt($sEncriptedString,
-			$sKey.'Q'.\RainLoop\Utils::GetShortToken());
+			$sKey.'Q'.static::GetShortToken());
 	}
 
 	static public function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			\RainLoop\Utils::EncryptString(@\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
+			static::EncryptString(@\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
 	}
 
 	static public function DecodeKeyValues(string $sEncodedValues, string $sCustomKey = '') : array
 	{
 		$aResult = @\unserialize(
-			\RainLoop\Utils::DecryptString(
+			static::DecryptString(
 				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey)));
 
 		return \is_array($aResult) ? $aResult : array();
@@ -168,14 +168,14 @@ class Utils
 	static public function EncodeKeyValuesQ(array $aValues, string $sCustomKey = '') : string
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			\RainLoop\Utils::EncryptStringQ(
+			static::EncryptStringQ(
 				@\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
 	}
 
 	static public function DecodeKeyValuesQ(string $sEncodedValues, string $sCustomKey = '') : array
 	{
 		$aResult = @\unserialize(
-			\RainLoop\Utils::DecryptStringQ(
+			static::DecryptStringQ(
 				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey)));
 
 		return \is_array($aResult) ? $aResult : array();
@@ -185,11 +185,11 @@ class Utils
 	{
 		$sKey = 'rltoken';
 
-		$sToken = \RainLoop\Utils::GetCookie($sKey, null);
+		$sToken = static::GetCookie($sKey, null);
 		if (null === $sToken)
 		{
 			$sToken = \MailSo\Base\Utils::Md5Rand(APP_SALT);
-			\RainLoop\Utils::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30);
+			static::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30);
 		}
 
 		return \md5('Connection'.APP_SALT.$sToken.'Token'.APP_SALT);
@@ -204,11 +204,11 @@ class Utils
 	{
 		$sKey = 'rlsession';
 
-		$sToken = \RainLoop\Utils::GetCookie($sKey, null);
+		$sToken = static::GetCookie($sKey, null);
 		if (null === $sToken)
 		{
 			$sToken = \MailSo\Base\Utils::Md5Rand(APP_SALT);
-			\RainLoop\Utils::SetCookie($sKey, $sToken, 0);
+			static::SetCookie($sKey, $sToken, 0);
 		}
 
 		return \md5('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
@@ -218,10 +218,10 @@ class Utils
 	{
 		$sKey = 'rltoken';
 
-		$sToken = \RainLoop\Utils::GetCookie($sKey, '');
+		$sToken = static::GetCookie($sKey, '');
 		if (!empty($sToken))
 		{
-			\RainLoop\Utils::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30);
+			static::SetCookie($sKey, $sToken, \time() + 60 * 60 * 24 * 30);
 		}
 	}
 
@@ -271,7 +271,7 @@ class Utils
 			}
 			else
 			{
-				$aLang = \RainLoop\Utils::CustomParseIniFile($sFileName, true);
+				$aLang = static::CustomParseIniFile($sFileName, true);
 			}
 
 			if (\is_array($aLang))
@@ -349,7 +349,7 @@ class Utils
 	{
 		if (\file_exists($sDirName))
 		{
-			$aFileList = \RainLoop\Utils::FolderFiles($sDirName, '.html');
+			$aFileList = static::FolderFiles($sDirName, '.html');
 
 			foreach ($aFileList as $sName)
 			{
@@ -365,47 +365,47 @@ class Utils
 	 */
 	public static function GetCookie(string $sName, $mDefault = null)
 	{
-		if (null === \RainLoop\Utils::$Cookies)
+		if (null === static::$Cookies)
 		{
-			\RainLoop\Utils::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
+			static::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
 		}
 
-		return isset(\RainLoop\Utils::$Cookies[$sName]) ? \RainLoop\Utils::$Cookies[$sName] : $mDefault;
+		return isset(static::$Cookies[$sName]) ? static::$Cookies[$sName] : $mDefault;
 	}
 
 	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0, ?string $sPath = null, ?string $sDomain = null, ?bool $bSecure = null, bool $bHttpOnly = true)
 	{
-		if (null === \RainLoop\Utils::$Cookies)
+		if (null === static::$Cookies)
 		{
-			\RainLoop\Utils::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
+			static::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
 		}
 
 		if (null === $sPath)
 		{
-			$sPath = \RainLoop\Utils::$CookieDefaultPath;
+			$sPath = static::$CookieDefaultPath;
 			$sPath = $sPath && 0 < \strlen($sPath) ? $sPath : null;
 		}
 
 		if (null === $bSecure)
 		{
-			$bSecure = \RainLoop\Utils::$CookieDefaultSecure;
+			$bSecure = static::$CookieDefaultSecure;
 		}
 
-		\RainLoop\Utils::$Cookies[$sName] = $sValue;
+		static::$Cookies[$sName] = $sValue;
 		@\setcookie($sName, $sValue, $iExpire, $sPath, $sDomain, $bSecure, $bHttpOnly);
 	}
 
 	public static function ClearCookie(string $sName)
 	{
-		if (null === \RainLoop\Utils::$Cookies)
+		if (null === static::$Cookies)
 		{
-			\RainLoop\Utils::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
+			static::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
 		}
 
-		$sPath = \RainLoop\Utils::$CookieDefaultPath;
+		$sPath = static::$CookieDefaultPath;
 		$sPath = $sPath && 0 < \strlen($sPath) ? $sPath : null;
 
-		unset(\RainLoop\Utils::$Cookies[$sName]);
+		unset(static::$Cookies[$sName]);
 		@\setcookie($sName, '', \time() - 3600 * 24 * 30, $sPath);
 	}
 
@@ -428,7 +428,7 @@ class Utils
 	public static function WebPath() : string
 	{
 		$sAppPath = '';
-		if (\RainLoop\Utils::IsOwnCloud())
+		if (static::IsOwnCloud())
 		{
 			if (\class_exists('OC_App'))
 			{
@@ -519,7 +519,7 @@ class Utils
 
 		if ($sFromBaseInput != '0123456789')
 		{
-			$sBase10 = \RainLoop\Utils::CustomBaseConvert($sNumberInput, $sFromBaseInput, '0123456789');
+			$sBase10 = static::CustomBaseConvert($sNumberInput, $sFromBaseInput, '0123456789');
 		}
 		else
 		{

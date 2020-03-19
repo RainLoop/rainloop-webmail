@@ -47,7 +47,7 @@ class Header
 	 */
 	private $sParentCharset;
 
-	private function __construct($sName, $sValue, $sEncodedValueForReparse, $sParentCharset = '')
+	private function __construct(string $sName, string $sValue, string $sEncodedValueForReparse, string $sParentCharset = '')
 	{
 		$this->sParentCharset = $sParentCharset;
 

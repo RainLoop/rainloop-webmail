@@ -42,7 +42,7 @@ class Logger extends \MailSo\Base\Collection
 	 */
 	private $bHideErrorNotices;
 
-	protected function __construct($bRegPhpErrorHandler = true)
+	protected function __construct(bool $bRegPhpErrorHandler = true)
 	{
 		parent::__construct();
 
@@ -209,7 +209,7 @@ class Logger extends \MailSo\Base\Collection
 		$iResult = 1;
 
 		$aLoggers =& $this->GetAsArray();
-		foreach ($aLoggers as /* @var $oLogger \MailSo\Log\Driver */ &$oLogger)
+		foreach ($aLoggers as /* @var $oLogger \MailSo\Log\Driver */ $oLogger)
 		{
 			$iResult &= $oLogger->WriteEmptyLine();
 		}

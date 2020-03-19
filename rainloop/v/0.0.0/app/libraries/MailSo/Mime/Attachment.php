@@ -57,8 +57,8 @@ class Attachment
 	 */
 	private $sContentLocation;
 
-	private function __construct($rResource, $sFileName, $iFileSize, $bIsInline, $bIsLinked, $sCID,
-		$aCustomContentTypeParams = array(), $sContentLocation = '')
+	private function __construct($rResource, string $sFileName, int $iFileSize, bool $bIsInline, bool $bIsLinked, string $sCID,
+		array $aCustomContentTypeParams = array(), string $sContentLocation = '')
 	{
 		$this->rResource = $rResource;
 		$this->sFileName = $sFileName;

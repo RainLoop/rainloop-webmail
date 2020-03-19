@@ -38,7 +38,7 @@ class PartCollection extends \MailSo\Base\Collection
 			$aResult = array();
 
 			$aParts =& $this->GetAsArray();
-			foreach ($aParts as /* @var $oPart \MailSo\Mime\Part */ &$oPart)
+			foreach ($aParts as /* @var $oPart \MailSo\Mime\Part */ $oPart)
 			{
 				if (0 < count($aResult))
 				{

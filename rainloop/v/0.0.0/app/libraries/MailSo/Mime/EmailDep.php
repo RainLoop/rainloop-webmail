@@ -46,7 +46,7 @@ class EmailDep
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	private function __construct($sEmail, $sDisplayName = '', $sRemark = '')
+	private function __construct(string $sEmail, string $sDisplayName = '', string $sRemark = '')
 	{
 		if (!\MailSo\Base\Validator::NotEmptyString($sEmail, true))
 		{

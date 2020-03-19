@@ -262,7 +262,7 @@ class Part
 			$sPrevBuffer, $sBuffer, $aBoundaryStack, $bIsOef);
 
 		$sFirstNotNullCharset = null;
-		foreach ($this->LineParts as /* @var $oMimePart \MailSo\Mime\Part */ &$oMimePart)
+		foreach ($this->LineParts as /* @var $oMimePart \MailSo\Mime\Part */ $oMimePart)
 		{
 			$sCharset = $oMimePart->HeaderCharset();
 			if (0 < strlen($sCharset))
@@ -275,7 +275,7 @@ class Part
 		$sForceCharset = self::$ForceCharset;
 		if (0 < strlen($sForceCharset))
 		{
-			foreach ($this->LineParts as /* @var $oMimePart \MailSo\Mime\Part */ &$oMimePart)
+			foreach ($this->LineParts as /* @var $oMimePart \MailSo\Mime\Part */ $oMimePart)
 			{
 				$oMimePart->SetParentCharset($sForceCharset);
 				$oMimePart->Headers->SetParentCharset($sForceCharset);
@@ -286,7 +286,7 @@ class Part
 			$sFirstNotNullCharset = (null !== $sFirstNotNullCharset)
 				? $sFirstNotNullCharset : self::$DefaultCharset;
 
-			foreach ($this->LineParts as /* @var $oMimePart \MailSo\Mime\Part */ &$oMimePart)
+			foreach ($this->LineParts as /* @var $oMimePart \MailSo\Mime\Part */ $oMimePart)
 			{
 				$sHeaderCharset = $oMimePart->HeaderCharset();
 				$oMimePart->SetParentCharset((0 < strlen($sHeaderCharset)) ? $sHeaderCharset : $sFirstNotNullCharset);
@@ -302,7 +302,7 @@ class Part
 	/**
 	 * @param resource $rStreamHandle
 	 */
-	public function ParseFromStreamRecursion($rStreamHandle, &$oCallbackClass, int &$iOffset,
+	public function ParseFromStreamRecursion($rStreamHandle, $oCallbackClass, int &$iOffset,
 		string &$sPrevBuffer, string &$sBuffer, array &$aBoundaryStack, bool &$bIsOef, bool $bNotFirstRead = false) : self
 	{
 		$oCallbackClass->StartParseMimePart($this);

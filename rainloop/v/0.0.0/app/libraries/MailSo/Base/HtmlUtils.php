@@ -50,9 +50,9 @@ abstract class HtmlUtils
 
 		$sHtmlAttrs = $sBodyAttrs = '';
 
-		$sText = \MailSo\Base\HtmlUtils::FixSchemas($sText);
-		$sText = \MailSo\Base\HtmlUtils::ClearFastTags($sText);
-		$sText = \MailSo\Base\HtmlUtils::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
+		$sText = static::FixSchemas($sText);
+		$sText = static::ClearFastTags($sText);
+		$sText = static::ClearBodyAndHtmlTag($sText, $sHtmlAttrs, $sBodyAttrs);
 
 		$oDom = self::createDOMDocument();
 		@$oDom->loadHTML('<'.'?xml version="1.0" encoding="utf-8"?'.'>'.
@@ -127,8 +127,8 @@ abstract class HtmlUtils
 			$oHtml = $oDom->getElementsByTagName('html')->item(0);
 			$oBody = $oDom->getElementsByTagName('body')->item(0);
 
-			$aHtmlAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oHtml);
-			$aBodylAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oBody);
+			$aHtmlAttrs = static::GetElementAttributesAsArray($oHtml);
+			$aBodylAttrs = static::GetElementAttributesAsArray($oBody);
 		}
 
 		$oDiv = $oDom->getElementsByTagName('div')->item(0);
@@ -164,13 +164,13 @@ abstract class HtmlUtils
 			$sResult = self::domToString($oDom);
 		}
 
-		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
+		$sResult = \str_replace(static::$KOS, ':', $sResult);
 		$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
 
 		return $sResult;
 	}
 
-	public static function GetTextFromDom(\DOMDocument $oDom, bool $bWrapByFakeHtmlAndBodyDiv = true)
+	public static function GetTextFromDom(\DOMDocument $oDom, bool $bWrapByFakeHtmlAndBodyDiv = true) : string
 	{
 		$sResult = '';
 
@@ -184,8 +184,8 @@ abstract class HtmlUtils
 
 		if ($bWrapByFakeHtmlAndBodyDiv)
 		{
-			$aHtmlAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oHtml);
-			$aBodylAttrs = \MailSo\Base\HtmlUtils::GetElementAttributesAsArray($oBody);
+			$aHtmlAttrs = static::GetElementAttributesAsArray($oHtml);
+			$aBodylAttrs = static::GetElementAttributesAsArray($oBody);
 
 			$oWrapHtml = $oDom->createElement('div');
 			$oWrapHtml->setAttribute('data-x-div-type', 'html');
@@ -208,7 +208,7 @@ abstract class HtmlUtils
 			$sResult = \str_replace('___xxx___', $sResult, $sWrp);
 		}
 
-		$sResult = \str_replace(\MailSo\Base\HtmlUtils::$KOS, ':', $sResult);
+		$sResult = \str_replace(static::$KOS, ':', $sResult);
 		$sResult = \MailSo\Base\Utils::StripSpaces($sResult);
 
 		return $sResult;
@@ -269,10 +269,7 @@ abstract class HtmlUtils
 		), '', $sHtml);
 	}
 
-	/**
-	 * @param mixed $oDom
-	 */
-	public static function ClearComments(&$oDom)
+	public static function ClearComments(\DOMDocument $oDom) : void
 	{
 		$aRemove = array();
 
@@ -297,10 +294,7 @@ abstract class HtmlUtils
 		}
 	}
 
-	/**
-	 * @param mixed $oDom
-	 */
-	public static function ClearTags(&$oDom, bool $bClearStyleAndHead = true)
+	public static function ClearTags(\DOMDocument $oDom, bool $bClearStyleAndHead = true) : void
 	{
 		$aRemoveTags = array(
 			'svg', 'link', 'base', 'meta', 'title', 'x-script', 'script', 'bgsound', 'keygen', 'source',
@@ -417,7 +411,7 @@ abstract class HtmlUtils
 //				$oValue = $oRule->getValue();
 //				if ($oValue instanceof \Sabberworm\CSS\Value\URL)
 //				{
-//					\MailSo\Base\HtmlUtils::ClearStyleUrlValueParserHelper($oValue, $oRule, $oRuleSet, $oElem,
+//					static::ClearStyleUrlValueParserHelper($oValue, $oRule, $oRuleSet, $oElem,
 //						$bHasExternals, $aFoundCIDs,
 //						$aContentLocationUrls, $aFoundedContentLocationUrls,
 //						$bDoNotReplaceExternalUrl, $fAdditionalExternalFilter);
@@ -429,7 +423,7 @@ abstract class HtmlUtils
 //					{
 //						if ($oValue instanceof \Sabberworm\CSS\Value\URL)
 //						{
-//							\MailSo\Base\HtmlUtils::ClearStyleUrlValueParserHelper($oValue, $oRule, $oRuleSet, $oElem,
+//							static::ClearStyleUrlValueParserHelper($oValue, $oRule, $oRuleSet, $oElem,
 //								$bHasExternals, $aFoundCIDs,
 //								$aContentLocationUrls, $aFoundedContentLocationUrls,
 //								$bDoNotReplaceExternalUrl, $fAdditionalExternalFilter);
@@ -539,7 +533,7 @@ abstract class HtmlUtils
 //						{
 //							if ($oRule instanceof \Sabberworm\CSS\Rule\Rule)
 //							{
-//								\MailSo\Base\HtmlUtils::ClearStyleUrlValueParserHelper(null, $oRule, $oRuleSet,
+//								static::ClearStyleUrlValueParserHelper(null, $oRule, $oRuleSet,
 //									$oElement,
 //									$bHasExternals, $aFoundCIDs,
 //									$aContentLocationUrls, $aFoundedContentLocationUrls,
@@ -696,7 +690,7 @@ abstract class HtmlUtils
 		return \implode(';', $aOutStyles);
 	}
 
-	public static function FindLinksInDOM(\DOMDocument $oDom)
+	public static function FindLinksInDOM(\DOMDocument $oDom) : void
 	{
 		$aNodes = $oDom->getElementsByTagName('*');
 		foreach ($aNodes as /* @var $oElement \DOMElement */ $oElement)
@@ -734,7 +728,7 @@ abstract class HtmlUtils
 							->CompileText()
 						;
 
-						$oSubDom = \MailSo\Base\HtmlUtils::GetDomFromText($sText);
+						$oSubDom = static::GetDomFromText($sText);
 						if ($oSubDom)
 						{
 							$oBodyNodes = $oSubDom->getElementsByTagName('body');
@@ -752,7 +746,7 @@ abstract class HtmlUtils
 												'a' === \strtolower($oSubItem->tagName))
 											{
 												$oLink = $oDom->createElement('a',
-													\str_replace(':', \MailSo\Base\HtmlUtils::$KOS, \htmlspecialchars($oSubItem->nodeValue)));
+													\str_replace(':', static::$KOS, \htmlspecialchars($oSubItem->nodeValue)));
 
 												$sHref = $oSubItem->getAttribute('href');
 												if ($sHref)
@@ -795,7 +789,7 @@ abstract class HtmlUtils
 		$fAdditionalDomReader = null;
 		$bTryToDetectHiddenImages = false;
 
-		return \MailSo\Base\HtmlUtils::ClearHtml($sHtml, $bHasExternals, $aFoundCIDs,
+		return static::ClearHtml($sHtml, $bHasExternals, $aFoundCIDs,
 			$aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $bFindLinksInHtml,
 			$fAdditionalExternalFilter, $fAdditionalDomReader, $bTryToDetectHiddenImages,
 			$bWrapByFakeHtmlAndBodyDiv);
@@ -833,7 +827,7 @@ abstract class HtmlUtils
 		$bHasExternals = false;
 
 		// Dom Part
-		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
+		$oDom = static::GetDomFromText($sHtml);
 		unset($sHtml);
 
 		if (!$oDom)
@@ -854,11 +848,11 @@ abstract class HtmlUtils
 
 		if ($bFindLinksInHtml)
 		{
-			\MailSo\Base\HtmlUtils::FindLinksInDOM($oDom);
+			static::FindLinksInDOM($oDom);
 		}
 
-		\MailSo\Base\HtmlUtils::ClearComments($oDom);
-		\MailSo\Base\HtmlUtils::ClearTags($oDom);
+		static::ClearComments($oDom);
+		static::ClearTags($oDom);
 
 		$sLinkColor = '';
 		$aNodes = $oDom->getElementsByTagName('*');
@@ -1151,7 +1145,7 @@ abstract class HtmlUtils
 			if ($oElement->hasAttribute('style') && !$oElement->hasAttribute('data-x-skip-style'))
 			{
 				$oElement->setAttribute('style',
-					\MailSo\Base\HtmlUtils::ClearStyle($oElement->getAttribute('style'), $oElement, $bHasExternals,
+					static::ClearStyle($oElement->getAttribute('style'), $oElement, $bHasExternals,
 						$aFoundCIDs, $aContentLocationUrls, $aFoundedContentLocationUrls, $bDoNotReplaceExternalUrl, $fAdditionalExternalFilter));
 			}
 
@@ -1170,7 +1164,7 @@ abstract class HtmlUtils
 			}
 		}
 
-		$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv);
+		$sResult = static::GetTextFromDom($oDom, $bWrapByFakeHtmlAndBodyDiv);
 		unset($oDom);
 
 		return $sResult;
@@ -1178,9 +1172,9 @@ abstract class HtmlUtils
 
 	public static function BuildHtml(string $sHtml, array &$aFoundCids = array(), &$mFoundDataURL = null, array &$aFoundedContentLocationUrls = array()) : string
 	{
-		$oDom = \MailSo\Base\HtmlUtils::GetDomFromText($sHtml);
+		$oDom = static::GetDomFromText($sHtml);
 
-		\MailSo\Base\HtmlUtils::ClearTags($oDom);
+		static::ClearTags($oDom);
 		unset($sHtml);
 
 		$aNodes = $oDom->getElementsByTagName('*');
@@ -1304,7 +1298,7 @@ abstract class HtmlUtils
 			}
 		}
 
-		$sResult = \MailSo\Base\HtmlUtils::GetTextFromDom($oDom, false);
+		$sResult = static::GetTextFromDom($oDom, false);
 		unset($oDom);
 
 		return '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /></head>'.

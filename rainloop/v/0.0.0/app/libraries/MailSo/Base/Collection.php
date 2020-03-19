@@ -47,26 +47,6 @@ abstract class Collection
 
 	/**
 	 * @return self
-	 *
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public function AddArray(array $aItems)
-	{
-		if (!\is_array($aItems))
-		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
-		}
-
-		foreach ($aItems as $mItem)
-		{
-			$this->Add($mItem);
-		}
-
-		return $this;
-	}
-
-	/**
-	 * @return self
 	 */
 	public function Clear()
 	{

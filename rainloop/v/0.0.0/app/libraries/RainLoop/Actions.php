@@ -161,7 +161,7 @@ class Actions
 		$this->bIsAjax = false;
 
 		$oConfig = $this->Config();
-		$this->Plugins()->RunHook('filter.application-config', array(&$oConfig));
+		$this->Plugins()->RunHook('filter.application-config', array($oConfig));
 
 		$this->Logger()->Ping();
 	}
@@ -1124,7 +1124,7 @@ class Actions
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin))
 				{
 					$oAccount = \RainLoop\Model\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, '', '', $sClientCert);
-					$this->Plugins()->RunHook('filter.acount', array(&$oAccount));
+					$this->Plugins()->RunHook('filter.acount', array($oAccount));
 
 					if ($bThrowProvideException && !($oAccount instanceof \RainLoop\Model\Account))
 					{
@@ -2083,7 +2083,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 			}
 
-			$this->Plugins()->RunHook('event.login-post-login-provide', array(&$oAccount));
+			$this->Plugins()->RunHook('event.login-post-login-provide', array($oAccount));
 
 			if (!($oAccount instanceof \RainLoop\Model\Account))
 			{
@@ -4880,7 +4880,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oAccount = $this->initMailClientConnection();
 
 		$oFolderCollection = null;
-		$this->Plugins()->RunHook('filter.folders-before', array($oAccount, &$oFolderCollection));
+		$this->Plugins()->RunHook('filter.folders-before', array($oAccount, $oFolderCollection));
 
 		$bUseFolders = $this->GetCapa(false, false, \RainLoop\Enumerations\Capa::FOLDERS, $oAccount);
 
@@ -4893,7 +4893,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			);
 		}
 
-		$this->Plugins()->RunHook('filter.folders-post', array($oAccount, &$oFolderCollection));
+		$this->Plugins()->RunHook('filter.folders-post', array($oAccount, $oFolderCollection));
 
 		if ($oFolderCollection instanceof \MailSo\Mail\FolderCollection)
 		{
@@ -5013,7 +5013,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 		}
 
-		$this->Plugins()->RunHook('filter.folders-complete', array($oAccount, &$oFolderCollection));
+		$this->Plugins()->RunHook('filter.folders-complete', array($oAccount, $oFolderCollection));
 
 		return $this->DefaultResponse(__FUNCTION__, $oFolderCollection);
 	}
@@ -5488,12 +5488,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			\MailSo\Base\HtmlUtils::BuildHtml($sText, $aFoundedCids, $mFoundDataURL, $aFoundedContentLocationUrls) : $sText;
 
 		$this->Plugins()->RunHook($bTextIsHtml ? 'filter.message-html' : 'filter.message-plain',
-			array($oAccount, &$oMessage, &$sTextToAdd));
+			array($oAccount, $oMessage, &$sTextToAdd));
 
 		if ($bTextIsHtml && 0 < \strlen($sTextToAdd))
 		{
 			$sTextConverted = \MailSo\Base\HtmlUtils::ConvertHtmlToPlain($sTextToAdd);
-			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, &$oMessage, &$sTextConverted));
+			$this->Plugins()->RunHook('filter.message-plain', array($oAccount, $oMessage, &$sTextConverted));
 			$oMessage->AddText($sTextConverted, false);
 		}
 
@@ -5551,8 +5551,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 		}
 
-		$this->Plugins()->RunHook('filter.build-message', array(&$oMessage));
-		$this->Plugins()->RunHook('filter.build-message[2]', array(&$oMessage, $oAccount));
+		$this->Plugins()->RunHook('filter.build-message', array($oMessage));
+		$this->Plugins()->RunHook('filter.build-message[2]', array($oMessage, $oAccount));
 
 		return $oMessage;
 	}
@@ -5616,11 +5616,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$oMessage->SetTo($oToEmails);
 		}
 
-		$this->Plugins()->RunHook('filter.read-receipt-message-plain', array($oAccount, &$oMessage, &$sText));
+		$this->Plugins()->RunHook('filter.read-receipt-message-plain', array($oAccount, $oMessage, &$sText));
 
 		$oMessage->AddText($sText, false);
 
-		$this->Plugins()->RunHook('filter.build-read-receipt-message', array(&$oMessage, $oAccount));
+		$this->Plugins()->RunHook('filter.build-read-receipt-message', array($oMessage, $oAccount));
 
 		return $oMessage;
 	}
@@ -5646,8 +5646,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oMessage = $this->buildMessage($oAccount, true);
 
 		$this->Plugins()
-			->RunHook('filter.save-message', array(&$oMessage))
-			->RunHook('filter.save-message[2]', array(&$oMessage, $oAccount))
+			->RunHook('filter.save-message', array($oMessage))
+			->RunHook('filter.save-message[2]', array($oMessage, $oAccount))
 		;
 
 		$mResult = false;
@@ -5710,7 +5710,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->Plugins()->RunHook('filter.smtp-message-stream',
 				array($oAccount, &$rMessageStream, &$iMessageStreamSize));
 
-			$this->Plugins()->RunHook('filter.message-rcpt', array($oAccount, &$oRcpt));
+			$this->Plugins()->RunHook('filter.message-rcpt', array($oAccount, $oRcpt));
 
 			try
 			{
@@ -5873,8 +5873,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oMessage = $this->buildMessage($oAccount, false);
 
 		$this->Plugins()
-			->RunHook('filter.send-message', array(&$oMessage))
-			->RunHook('filter.send-message[2]', array(&$oMessage, $oAccount))
+			->RunHook('filter.send-message', array($oMessage))
+			->RunHook('filter.send-message[2]', array($oMessage, $oAccount))
 		;
 
 		$mResult = false;
@@ -6051,7 +6051,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$oMessage = $this->buildReadReceiptMessage($oAccount);
 
-		$this->Plugins()->RunHook('filter.send-read-receipt-message', array(&$oMessage, $oAccount));
+		$this->Plugins()->RunHook('filter.send-read-receipt-message', array($oMessage, $oAccount));
 
 		$mResult = false;
 		try
@@ -6739,8 +6739,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		if ($oMessage instanceof \MailSo\Mail\Message)
 		{
 			$this->Plugins()
-				->RunHook('filter.result-message', array(&$oMessage))
-				->RunHook('filter.result-message[2]', array(&$oMessage, $oAccount))
+				->RunHook('filter.result-message', array($oMessage))
+				->RunHook('filter.result-message[2]', array($oMessage, $oAccount))
 			;
 
 			$this->cacheByKey($sRawKey);
@@ -8921,7 +8921,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$bThumb = $this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ATTACHMENT_THUMBNAILS);
 
 			$oAccountCache = null;
-			$fGetAccount = function () use ($self, &$oAccountCache) {
+			$fGetAccount = function () use ($self, $oAccountCache) {
 				if (null === $oAccountCache)
 				{
 					$oAccount = $self->getAccountFromToken(false);

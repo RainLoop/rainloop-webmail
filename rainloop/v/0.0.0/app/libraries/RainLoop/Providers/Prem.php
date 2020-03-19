@@ -65,7 +65,7 @@ class Prem
 		}
 	}
 
-	public function PremSection(&$oActions, &$oConfig)
+	public function PremSection($oActions, $oConfig)
 	{
 		if ($oActions && $oActions->HasOneOfActionParams(array(
 			'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss',

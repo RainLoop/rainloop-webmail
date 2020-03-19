@@ -17,7 +17,7 @@ namespace MailSo\Mime;
  */
 class EmailCollection extends \MailSo\Base\Collection
 {
-	protected function __construct($sEmailAddresses = '')
+	protected function __construct(string $sEmailAddresses = '')
 	{
 		parent::__construct();
 

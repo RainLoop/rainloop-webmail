@@ -18,10 +18,7 @@ namespace MailSo\Base\Exceptions;
  */
 class Exception extends \Exception
 {
-	/**
-	 * @param \Exception|null $oPrevious
-	 */
-	public function __construct($sMessage = '', $iCode = 0, $oPrevious = null)
+	public function __construct(string $sMessage = '', int $iCode = 0, ?\Throwable $oPrevious = null)
 	{
 		$sMessage = 0 === strlen($sMessage) ? str_replace('\\', '-', get_class($this)).' ('.
 			basename($this->getFile()).' ~ '.$this->getLine().')' : $sMessage;

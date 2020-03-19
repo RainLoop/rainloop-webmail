@@ -25,7 +25,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 	 */
 	protected $sParentCharset;
 
-	protected function __construct($sRawHeaders = '', $bStoreRawHeaders = true)
+	protected function __construct(string $sRawHeaders = '', bool $bStoreRawHeaders = true)
 	{
 		parent::__construct();
 
@@ -80,7 +80,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 		$sHeaderNameLower = \strtolower($sHeaderName);
 		$aHeaders =& $this->GetAsArray();
-		foreach ($aHeaders as /* @var $oHeader \MailSo\Mime\Header */ &$oHeader)
+		foreach ($aHeaders as /* @var $oHeader \MailSo\Mime\Header */ $oHeader)
 		{
 			if ($sHeaderNameLower === \strtolower($oHeader->Name()))
 			{
@@ -136,7 +136,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 		$sHeaderNameLower = \strtolower($sHeaderName);
 		$aHeaders =& $this->GetAsArray();
-		foreach ($aHeaders as /* @var $oHeader \MailSo\Mime\Header */ &$oHeader)
+		foreach ($aHeaders as /* @var $oHeader \MailSo\Mime\Header */ $oHeader)
 		{
 			if ($sHeaderNameLower === \strtolower($oHeader->Name()))
 			{
@@ -168,7 +168,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 				$oHeader = null;
 				$aHeaders =& $this->GetAsArray();
 
-				foreach ($aHeaders as /* @var $oHeader \MailSo\Mime\Header */ &$oHeader)
+				foreach ($aHeaders as /* @var $oHeader \MailSo\Mime\Header */ $oHeader)
 				{
 					$oHeader->SetParentCharset($sParentCharset);
 				}
@@ -382,7 +382,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 	{
 		$aResult = array();
 		$aHeaders =& $this->GetAsArray();
-		foreach ($aHeaders as /* @var $oHeader \MailSo\Mime\Header */ &$oHeader)
+		foreach ($aHeaders as /* @var $oHeader \MailSo\Mime\Header */ $oHeader)
 		{
 			$aResult[] = $oHeader->EncodedValue();
 		}

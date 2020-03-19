@@ -17,7 +17,7 @@ namespace MailSo\Mime;
  */
 class ParameterCollection extends \MailSo\Base\Collection
 {
-	protected function __construct($sRawParams = '')
+	protected function __construct(string $sRawParams = '')
 	{
 		parent::__construct();
 
