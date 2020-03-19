@@ -25,6 +25,10 @@ class Crypt
 			return '';
 		}
 
+		if (\is_callable('xxtea_encrypt')) {
+			return xxtea_encrypt($sString, $sKey);
+		}
+
 		$aV = self::str2long($sString, true);
 		$aK = self::str2long($sKey, false);
 		if (\count($aK) < 4)
@@ -66,6 +70,10 @@ class Crypt
 		if (0 === \strlen($sEncriptedString))
 		{
 			return '';
+		}
+
+		if (\is_callable('xxtea_decrypt')) {
+			return xxtea_decrypt($sString, $sKey);
 		}
 
 		$aV = self::str2long($sEncriptedString, false);
