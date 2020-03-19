@@ -135,23 +135,17 @@ class Service
 			}
 		}
 
-		$bMobile = false;
-		$bMobileDevice = false;
-
-		if ($this->oActions->Config()->Get('labs', 'allow_mobile_version', false))
+		if ($bIndex)
 		{
-			$bUseMobileVersionForTablets = $this->oActions->Config()->Get('labs', 'use_mobile_version_for_tablets', false);
-
-			$oMobileDetect = new \Detection\MobileDetect();
-			$bMobileDevice = $oMobileDetect->isMobile() &&
-				($bUseMobileVersionForTablets ? true : !$oMobileDetect->isTablet());
-
-			if ($bIndex)
-			{
+			$bMobile = false;
+			$bMobileDevice = false;
+			if ($this->oActions->Config()->Get('labs', 'allow_mobile_version', false)) {
+				$bUseMobileVersionForTablets = $this->oActions->Config()->Get('labs', 'use_mobile_version_for_tablets', false);
+				$bMobileDevice = \RainLoop\UserAgent::isMobile() &&
+					($bUseMobileVersionForTablets ? true : !\RainLoop\UserAgent::isTablet());
 				$sMobileType = (string) \RainLoop\Utils::GetCookie(\RainLoop\Actions::RL_MOBILE_TYPE, '');
 				switch ($sMobileType) {
 					default:
-						$sMobileType = '';
 						$bMobile = $bMobileDevice;
 						break;
 					case 'mobile':
@@ -162,10 +156,7 @@ class Service
 						break;
 				}
 			}
-		}
 
-		if ($bIndex)
-		{
 			@\header('Content-Security-Policy:');
 			@\header_remove('Content-Security-Policy');
 

@@ -10,7 +10,7 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 	function rainLoopSplAutoloadNamespaces() : array
 	{
 		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop', 'Predis', 'MailSo') :
-			array('RainLoop', 'PHPThumb', 'Predis', 'SabreForRainLoop', 'Imagine', 'Detection', 'MailSo');
+			array('RainLoop', 'PHPThumb', 'Predis', 'SabreForRainLoop', 'Imagine', 'MailSo');
 	}
 
 	/**
@@ -27,12 +27,6 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 		{
 			if (0 === \strpos($sClassName, $sNamespaceName.'\\'))
 			{
-				$sPrefix = '';
-				if ('Detection' === $sNamespaceName)
-				{
-					$sPrefix = 'Mobile_Detect/namespaced/';
-				}
-
 				include RAINLOOP_APP_LIBRARIES_PATH.$sPrefix.\strtr($sClassName, '\\', '/').'.php';
 				break;
 			}
