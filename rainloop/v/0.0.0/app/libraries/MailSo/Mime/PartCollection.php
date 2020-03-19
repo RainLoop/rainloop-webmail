@@ -27,6 +27,11 @@ class PartCollection extends \MailSo\Base\Collection
 		return new self();
 	}
 
+	public function append(Part $oPart, bool $bToTop = false) : void
+	{
+		parent::append($oPart, $bToTop);
+	}
+
 	/**
 	 * @return resource
 	 */
@@ -37,12 +42,12 @@ class PartCollection extends \MailSo\Base\Collection
 		{
 			$aResult = array();
 
-			foreach ($this as /* @var $oPart \MailSo\Mime\Part */ $oPart)
+			foreach ($this as $oPart)
 			{
 				if (0 < count($aResult))
 				{
-					$aResult[] = \MailSo\Mime\Enumerations\Constants::CRLF.
-						'--'.$sBoundary.\MailSo\Mime\Enumerations\Constants::CRLF;
+					$aResult[] = Enumerations\Constants::CRLF.
+						'--'.$sBoundary.Enumerations\Constants::CRLF;
 				}
 
 				$aResult[] = $oPart->ToStream();

@@ -27,33 +27,41 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		return new self();
 	}
 
+	public function append(Attachment $oFolder, bool $bToTop = false) : void
+	{
+		parent::append($oFolder, $bToTop);
+	}
+
 	public function InlineCount() : int
 	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsInline();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
+		$iCount = 0;
+		foreach ($this as $oAttachment) {
+			if ($oAttachment && $oAttachment->IsInline()) {
+				++$iCount;
+			}
+		}
+		return $iCount;
 	}
 
 	public function NonInlineCount() : int
 	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && !$oAttachment->IsInline();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
+		$iCount = 0;
+		foreach ($this as $oAttachment) {
+			if ($oAttachment && !$oAttachment->IsInline()) {
+				++$iCount;
+			}
+		}
+		return $iCount;
 	}
 
 	public function SpecData() : array
 	{
-		return $this->MapList(function ($oAttachment) {
-			if ($oAttachment)
-			{
-				return array($oAttachment->FileName(true), $oAttachment->MimeType());
-			}
-
-			return null;
-		});
+		$aResult = array();
+		foreach ($this as $oAttachment) {
+			$aResult[] = $oAttachment
+				? array($oAttachment->FileName(true), $oAttachment->MimeType())
+				: null;
+		}
+		return $aResult;
 	}
 }

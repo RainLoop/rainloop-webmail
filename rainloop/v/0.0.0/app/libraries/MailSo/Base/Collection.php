@@ -15,7 +15,7 @@ namespace MailSo\Base;
  * @category MailSo
  * @package Base
  */
-abstract class Collection extends \ArrayObject /*implements \ArrayAccess, \Traversable, \Countable, \Ds\Collection */
+abstract class Collection extends \ArrayObject
 {
 	/**
 	 * @param mixed $mItem
@@ -37,16 +37,6 @@ abstract class Collection extends \ArrayObject /*implements \ArrayAccess, \Trave
 		return $this;
 	}
 
-	public function AddArray(array $aItems) : self
-	{
-		foreach ($aItems as $mItem)
-		{
-			$this->append($mItem);
-		}
-
-		return $this;
-	}
-
 	public function Clear() : void
 	{
 		$this->exchangeArray([]);
@@ -59,45 +49,11 @@ abstract class Collection extends \ArrayObject /*implements \ArrayAccess, \Trave
 		);
 	}
 
-	public function MapList(callable $cCallback) : array
+	public function Crop(int $length = null, int $offset = 0, bool $preserve_keys = false)
 	{
-		$aResult = array();
-		if (\is_callable($cCallback))
-		{
-			foreach ($this as $oItem)
-			{
-				$aResult[] = \call_user_func($cCallback, $oItem);
-			}
-		}
-
-		return $aResult;
-	}
-
-	public function FilterList(callable $cCallback) : array
-	{
-		$aResult = array();
-		if (\is_callable($cCallback))
-		{
-			foreach ($this as $oItem)
-			{
-				if (\call_user_func($cCallback, $oItem))
-				{
-					$aResult[] = $oItem;
-				}
-			}
-		}
-
-		return $aResult;
-	}
-
-	public function ForeachList(callable $cCallback) : void
-	{
-		if (\is_callable($cCallback))
-		{
-			foreach ($this as $oItem)
-			{
-				\call_user_func($cCallback, $oItem);
-			}
-		}
+		$this->exchangeArray(
+			array_slice($this->getArrayCopy(), $offset, $length, $preserve_keys)
+		);
+		return $this;
 	}
 }

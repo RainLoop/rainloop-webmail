@@ -89,6 +89,11 @@ class MessageCollection extends \MailSo\Base\Collection
 		return new self();
 	}
 
+	public function append(Message $oMessage, bool $bToTop = false) : void
+	{
+		parent::append($oMessage, $bToTop);
+	}
+
 	public function Clear() : void
 	{
 		parent::Clear();

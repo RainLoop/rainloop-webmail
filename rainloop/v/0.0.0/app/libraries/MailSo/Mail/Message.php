@@ -491,7 +491,9 @@ class Message
 			$this->oCc = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::CC, $bCharsetAutoDetect);
 			$this->oBcc = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::BCC, $bCharsetAutoDetect);
 
-			$oHeaders->PopulateEmailColectionByDkim($this->oFrom);
+			if ($this->oFrom) {
+				$oHeaders->PopulateEmailColectionByDkim($this->oFrom);
+			}
 
 			$this->oSender = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::SENDER, $bCharsetAutoDetect);
 			$this->oReplyTo = $oHeaders->GetAsEmailCollection(\MailSo\Mime\Enumerations\Header::REPLY_TO, $bCharsetAutoDetect);
@@ -582,32 +584,28 @@ class Message
 			}
 
 			$sDraftInfo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO);
-			if (0 < \strlen($sDraftInfo))
-			{
+			if (0 < \strlen($sDraftInfo)) {
 				$sType = '';
 				$sFolder = '';
 				$sUid = '';
 
-				\MailSo\Mime\ParameterCollection::NewInstance($sDraftInfo)
-					->ForeachList(function ($oParameter) use (&$sType, &$sFolder, &$sUid) {
+				$oParameters = \MailSo\Mime\ParameterCollection::NewInstance($sDraftInfo);
+				foreach ($oParameters as $oParameter) {
+					switch (\strtolower($oParameter->Name()))
+					{
+						case 'type':
+							$sType = $oParameter->Value();
+							break;
+						case 'uid':
+							$sUid = $oParameter->Value();
+							break;
+						case 'folder':
+							$sFolder = \base64_decode($oParameter->Value());
+							break;
+					}
+				}
 
-						switch (\strtolower($oParameter->Name()))
-						{
-							case 'type':
-								$sType = $oParameter->Value();
-								break;
-							case 'uid':
-								$sUid = $oParameter->Value();
-								break;
-							case 'folder':
-								$sFolder = \base64_decode($oParameter->Value());
-								break;
-						}
-					})
-				;
-
-				if (0 < \strlen($sType) && 0 < \strlen($sFolder) && 0 < \strlen($sUid))
-				{
+				if (0 < \strlen($sType) && 0 < \strlen($sFolder) && 0 < \strlen($sUid)) {
 					$this->aDraftInfo = array($sType, $sUid, $sFolder);
 				}
 			}

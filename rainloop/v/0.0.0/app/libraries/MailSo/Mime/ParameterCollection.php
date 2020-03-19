@@ -32,11 +32,16 @@ class ParameterCollection extends \MailSo\Base\Collection
 		return new self($sRawParams);
 	}
 
+	public function append(Parameter $oHeader, bool $bToTop = false) : void
+	{
+		parent::append($oHeader, $bToTop);
+	}
+
 	public function ParameterValueByName(string $sName) : string
 	{
 		$sName = \strtolower(\trim($sName));
 
-		foreach ($this as /* @var $oParam \MailSo\Mime\ParameterCollection */ $oParam)
+		foreach ($this as $oParam)
 		{
 			if ($sName === \strtolower($oParam->Name()))
 			{
@@ -66,7 +71,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 	public function ToString(bool $bConvertSpecialsName = false) : string
 	{
 		$aResult = array();
-		foreach ($this as /* @var $oParam \MailSo\Mime\Parameter */ $oParam)
+		foreach ($this as $oParam)
 		{
 			$sLine = $oParam->ToString($bConvertSpecialsName);
 			if (0 < \strlen($sLine))
@@ -86,7 +91,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		$this->Clear();
 
 		$aPreParams = array();
-		foreach ($aDataToReParse as /* @var $oParam \MailSo\Mime\Parameter */ $oParam)
+		foreach ($aDataToReParse as $oParam)
 		{
 			$aMatch = array();
 			$sParamName = $oParam->Name();

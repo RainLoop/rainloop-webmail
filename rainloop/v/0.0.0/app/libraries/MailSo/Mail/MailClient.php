@@ -1842,8 +1842,7 @@ class MailClient
 
 		if ($bUseThreadSortIfSupported && 0 === $iThreadUid && \is_array($mAllThreads) && 0 < \count($mAllThreads))
 		{
-			$oMessageCollection->ForeachList(function (/* @var $oMessage \MailSo\Mail\Message */ $oMessage) use ($mAllThreads) {
-
+			foreach ($oMessageCollection as $oMessage) {
 				$iUid = $oMessage->Uid();
 				if (isset($mAllThreads[$iUid]) && \is_array($mAllThreads[$iUid]) && 0 < \count($mAllThreads[$iUid]))
 				{
@@ -1853,7 +1852,7 @@ class MailClient
 					$oMessage->SetThreads(\array_map('trim', $aSubThreads));
 					unset($aSubThreads);
 				}
-			});
+			}
 		}
 
 		return $oMessageCollection;

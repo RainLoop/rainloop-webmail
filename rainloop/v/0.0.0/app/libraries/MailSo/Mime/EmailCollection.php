@@ -33,6 +33,11 @@ class EmailCollection extends \MailSo\Base\Collection
 		return new self($sEmailAddresses);
 	}
 
+	public function append(Email $oEmail, bool $bToTop = false) : void
+	{
+		parent::append($oEmail, $bToTop);
+	}
+
 	public static function Parse(string $sEmailAddresses) : self
 	{
 		return self::NewInstance($sEmailAddresses);
@@ -41,7 +46,7 @@ class EmailCollection extends \MailSo\Base\Collection
 	public function ToArray() : array
 	{
 		$aReturn = array();
-		foreach ($this as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+		foreach ($this as $oEmail)
 		{
 			$aReturn[] = $oEmail->ToArray();
 		}
@@ -51,7 +56,7 @@ class EmailCollection extends \MailSo\Base\Collection
 
 	public function MergeWithOtherCollection(EmailCollection $oEmails) : self
 	{
-		foreach ($oEmails as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+		foreach ($oEmails as $oEmail)
 		{
 			$this->append($oEmail);
 		}
@@ -63,7 +68,7 @@ class EmailCollection extends \MailSo\Base\Collection
 	{
 		$aReturn = array();
 
-		foreach ($this as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+		foreach ($this as $oEmail)
 		{
 			$sEmail = $oEmail->GetEmail();
 			if (!isset($aReturn[$sEmail]))
@@ -80,7 +85,7 @@ class EmailCollection extends \MailSo\Base\Collection
 	public function ToString(bool $bConvertSpecialsName = false, bool $bIdn = false) : string
 	{
 		$aReturn = array();
-		foreach ($this as /* @var $oEmail \MailSo\Mime\Email */ $oEmail)
+		foreach ($this as $oEmail)
 		{
 			$aReturn[] = $oEmail->ToString($bConvertSpecialsName, $bIdn);
 		}
@@ -169,7 +174,7 @@ class EmailCollection extends \MailSo\Base\Collection
 						try
 						{
 							$this->append(
-								\MailSo\Mime\Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iEmailEndPos - $iEmailStartPos))
+								Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iEmailEndPos - $iEmailStartPos))
 							);
 
 							$iEmailStartPos = $iCurrentPos + 1;
@@ -189,7 +194,7 @@ class EmailCollection extends \MailSo\Base\Collection
 			try
 			{
 				$this->append(
-					\MailSo\Mime\Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iCurrentPos - $iEmailStartPos))
+					Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iCurrentPos - $iEmailStartPos))
 				);
 			}
 			catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException) {}

@@ -155,15 +155,14 @@ class Folder
 
 	public function HasVisibleSubFolders() : bool
 	{
-		$sList = array();
-		if ($this->oSubFolders)
-		{
-			$sList = $this->oSubFolders->FilterList(function (\MailSo\Mail\Folder $oFolder) {
-				return $oFolder->IsSubscribed();
-			});
+		if ($this->oSubFolders) {
+			foreach ($this->oSubFolders as $oFolder) {
+				if ($oFolder->IsSubscribed()) {
+					return true;
+				}
+			}
 		}
-
-		return 0 < \count($sList);
+		return false;
 	}
 
 	public function IsSubscribed() : bool

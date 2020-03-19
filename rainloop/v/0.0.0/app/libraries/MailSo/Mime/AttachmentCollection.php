@@ -17,43 +17,49 @@ namespace MailSo\Mime;
  */
 class AttachmentCollection extends \MailSo\Base\Collection
 {
-	/**
-	 * @access protected
-	 */
 	protected function __construct()
 	{
 		parent::__construct();
 	}
 
-	public static function NewInstance() : \MailSo\Mime\AttachmentCollection
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
+	public function append(Attachment $oFolder, bool $bToTop = false) : void
+	{
+		parent::append($oFolder, $bToTop);
+	}
+
 	public function LinkedAttachments() : array
 	{
-		return $this->FilterList(function ($oItem) {
-			return $oItem && $oItem->IsLinked();
-		});
+		$aResult = array();
+		foreach ($this as $oAttachment) {
+			if ($oAttachment->IsLinked()) {
+				$aResult[] = $oAttachment;
+			}
+		}
+		return $aResult;
 	}
 
 	public function UnlinkedAttachments() : array
 	{
-		return $this->FilterList(function ($oItem) {
-			return $oItem && !$oItem->IsLinked();
-		});
+		$aResult = array();
+		foreach ($this as $oAttachment) {
+			if (!$oAttachment->IsLinked()) {
+				$aResult[] = $oAttachment;
+			}
+		}
+		return $aResult;
 	}
 
 	public function SizeOfAttachments() : int
 	{
 		$iResult = 0;
-		$this->ForeachList(function ($oItem) use (&$iResult) {
-			if ($oItem)
-			{
-				$iResult += $oItem->FileSize();
-			}
-		});
-
+		foreach ($this as $oAttachment) {
+			$iResult += $oAttachment->FileSize();
+		}
 		return $iResult;
 	}
 }
