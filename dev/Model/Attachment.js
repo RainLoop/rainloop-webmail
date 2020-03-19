@@ -3,7 +3,7 @@ import _ from '_';
 import ko from 'ko';
 
 import { FileType } from 'Common/Enums';
-import { bAllowPdfPreview, data as GlobalsData } from 'Common/Globals';
+import { bAllowPdfPreview } from 'Common/Globals';
 import { trim, pInt, inArray, isNonEmptyArray, getFileExtension, friendlySize } from 'Common/Utils';
 import {
 	attachmentDownload,
@@ -360,22 +360,8 @@ class AttachmentModel extends AbstractModel {
 	/**
 	 * @returns {boolean}
 	 */
-	isFramed() {
-		return (
-			this.framed &&
-			GlobalsData.__APP__ &&
-			GlobalsData.__APP__.googlePreviewSupported() &&
-			!(this.isPdf() && bAllowPdfPreview) &&
-			!this.isText() &&
-			!this.isImage()
-		);
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
 	hasPreview() {
-		return this.isImage() || (this.isPdf() && bAllowPdfPreview) || this.isText() || this.isFramed();
+		return this.isImage() || (this.isPdf() && bAllowPdfPreview) || this.isText();
 	}
 
 	/**
@@ -444,9 +430,6 @@ class AttachmentModel extends AbstractModel {
 				break;
 			case this.isText():
 				result = this.linkPreviewAsPlain();
-				break;
-			case this.isFramed():
-				result = this.linkFramed();
 				break;
 			// no default
 		}
