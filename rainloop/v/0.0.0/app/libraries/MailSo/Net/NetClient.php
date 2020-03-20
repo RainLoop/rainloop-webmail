@@ -171,7 +171,7 @@ abstract class NetClient
 		bool $bVerifySsl = false, bool $bAllowSelfSigned = true,
 		string $sClientCert = '') : void
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sServerName, true) || !\MailSo\Base\Validator::PortInt($iPort))
+		if (!strlen(\trim($sServerName)) || !\MailSo\Base\Validator::PortInt($iPort))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),

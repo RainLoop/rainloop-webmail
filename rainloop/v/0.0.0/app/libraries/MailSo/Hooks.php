@@ -21,11 +21,11 @@ class Hooks
 	 */
 	static $aCallbacks = array();
 
-	static public function Run(string $sName, array $aArg = array())
+	static public function Run(string $sName, array $aArg = array()) : void
 	{
-		if (isset(\MailSo\Hooks::$aCallbacks[$sName]))
+		if (isset(static::$aCallbacks[$sName]))
 		{
-			foreach (\MailSo\Hooks::$aCallbacks[$sName] as $mCallback)
+			foreach (static::$aCallbacks[$sName] as $mCallback)
 			{
 				\call_user_func_array($mCallback, $aArg);
 			}
@@ -35,16 +35,16 @@ class Hooks
 	/**
 	 * @param mixed $mCallback
 	 */
-	static public function Add(string $sName, $mCallback)
+	static public function Add(string $sName, $mCallback) : void
 	{
 		if (\is_callable($mCallback))
 		{
-			if (!isset(\MailSo\Hooks::$aCallbacks[$sName]))
+			if (!isset(static::$aCallbacks[$sName]))
 			{
-				\MailSo\Hooks::$aCallbacks[$sName] = array();
+				static::$aCallbacks[$sName] = array();
 			}
 
-			\MailSo\Hooks::$aCallbacks[$sName][] = $mCallback;
+			static::$aCallbacks[$sName][] = $mCallback;
 		}
 	}
 }

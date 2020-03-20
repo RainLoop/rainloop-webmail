@@ -357,7 +357,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public function Data(string $sData) : self
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sData, true))
+		if (!strlen(\trim($sData)))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
@@ -525,7 +525,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	private function sendRequest(string $sCommand, string $sAddToCommand = '', bool $bSecureLog = false) : void
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sCommand, true))
+		if (!strlen(\trim($sCommand)))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),

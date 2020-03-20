@@ -87,7 +87,7 @@ class Crypt
 	private static function XxteaDecrypt(string $sEncryptedString, string $sKey) : string
 	{
 		if (\is_callable('xxtea_decrypt')) {
-			return xxtea_decrypt($sString, $sKey);
+			return xxtea_decrypt($sEncryptedString, $sKey);
 		}
 
 		$aV = self::str2long($sEncryptedString, false);
@@ -166,6 +166,6 @@ class Crypt
 
 	private static function int32(int $iN) : int
 	{
-		return ($n & 0xffffffff);
+		return $iN & 0xffffffff;
 	}
 }

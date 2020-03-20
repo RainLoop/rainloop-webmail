@@ -116,8 +116,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public function Login(string $sLogin, string $sPassword, string $sLoginAuthKey = '') : self
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sLogin, true) ||
-			!\MailSo\Base\Validator::NotEmptyString($sPassword, true))
+		if (!strlen(\trim($sLogin)) || !strlen(\trim($sPassword)))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),
@@ -434,7 +433,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	private function sendRequest(string $sRequest) : void
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sRequest, true))
+		if (!strlen(\trim($sRequest)))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),

@@ -1053,14 +1053,14 @@ class Actions
 		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword))
 		{
 			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
-			if ($oDomain instanceof \RainLoop\Model\Domain)
+			if ($oDomain)
 			{
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin))
 				{
 					$oAccount = \RainLoop\Model\Account::NewInstance($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, '', '', $sClientCert);
 					$this->Plugins()->RunHook('filter.acount', array($oAccount));
 
-					if ($bThrowProvideException && !($oAccount instanceof \RainLoop\Model\Account))
+					if ($bThrowProvideException && !$oAccount)
 					{
 						throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 					}
@@ -1098,7 +1098,7 @@ class Actions
 				$oAccount = $this->LoginProvide($aAccountHash[1], $aAccountHash[2], $aAccountHash[3],
 					empty($aAccountHash[5]) ? '' : $aAccountHash[5], empty($aAccountHash[11]) ? '' : $aAccountHash[11], $bThrowExceptionOnFalse);
 
-				if ($oAccount instanceof \RainLoop\Model\Account)
+				if ($oAccount)
 				{
 					if (!empty($aAccountHash[8]) && !empty($aAccountHash[9])) // init proxy user/password
 					{
@@ -1119,7 +1119,7 @@ class Actions
 			}
 		}
 
-		if ($bThrowExceptionOnFalse && !($oResult instanceof \RainLoop\Model\Account))
+		if ($bThrowExceptionOnFalse && !$oResult)
 		{
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 		}
@@ -1207,7 +1207,6 @@ class Actions
 			'materialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
 			'folderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
 			'faviconStatus' => (bool) $oConfig->Get('labs', 'favicon_status', true),
-			'allowCmdInterface' => (bool) $oConfig->Get('labs', 'allow_cmd', false),
 			'listPermanentFiltered' => '' !== \trim(\RainLoop\Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
 			'themes' => $this->GetThemes($bMobile, false),
 			'languages' => $this->GetLanguages(false),
@@ -1388,8 +1387,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 			else
 			{
-				$oAccount = null;
-
 				$aResult['IncludeBackground'] = $aResult['LoginBackground'];
 				$aResult['IncludeCss'] = $aResult['LoginCss'];
 
@@ -1496,7 +1493,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$aResult['UserBackgroundName'] = '';
 		$aResult['UserBackgroundHash'] = '';
 
-		if (!$bAdmin && $oAccount instanceof \RainLoop\Model\Account)
+		if (!$bAdmin && $oAccount)
 		{
 			$aResult['ParentEmail'] = $oAccount->ParentEmail();
 
@@ -1799,7 +1796,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$sLine = \trim(\implode('.', $aDomainParts), '. ');
 
 					$oDomain = $oDomainProvider->Load($sLine, false);
-					if ($oDomain && $oDomain instanceof \RainLoop\Model\Domain)
+					if ($oDomain)
 					{
 						$bAdded = true;
 						$this->Logger()->Write('Check "'.$sLine.'": OK ('.$sEmail.' > '.$sEmail.'@'.$sLine.')',
@@ -1821,7 +1818,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				{
 					$sLine = $sUserHost;
 					$oDomain = $oDomainProvider->Load($sLine, true);
-					if ($oDomain && $oDomain instanceof \RainLoop\Model\Domain)
+					if ($oDomain && $oDomain)
 					{
 						$bAdded = true;
 						$this->Logger()->Write('Check "'.$sLine.'" with wildcard: OK ('.$sEmail.' > '.$sEmail.'@'.$sLine.')',
@@ -1880,17 +1877,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		{
 			$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken, $sClientCert, true);
 
-			if (!($oAccount instanceof \RainLoop\Model\Account))
+			if (!$oAccount)
 			{
 				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
 			}
 
 			$this->Plugins()->RunHook('event.login-post-login-provide', array($oAccount));
-
-			if (!($oAccount instanceof \RainLoop\Model\Account))
-			{
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::AuthError);
-			}
 		}
 		catch (\Throwable $oException)
 		{
@@ -3372,7 +3364,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oDomain = $this->DomainProvider()->LoadOrCreateNewFromAction($this);
 
 		return $this->DefaultResponse(__FUNCTION__,
-			$oDomain instanceof \RainLoop\Model\Domain ? $this->DomainProvider()->Save($oDomain) : false);
+			$oDomain ? $this->DomainProvider()->Save($oDomain) : false);
 	}
 
 	public function DoAdminDomainAliasSave() : array
@@ -4043,7 +4035,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		if (!$bDisable)
 		{
 			$oPlugin = $this->Plugins()->CreatePluginByName($sName);
-			if ($oPlugin && ($oPlugin instanceof \RainLoop\Plugins\AbstractPlugin))
+			if ($oPlugin)
 			{
 				$sValue = $oPlugin->Supported();
 				if (0 < \strlen($sValue))
@@ -4921,7 +4913,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessageList, $oException);
 		}
 
-		if ($oMessageList instanceof \MailSo\Mail\MessageCollection)
+		if ($oMessageList)
 		{
 			$this->cacheByKey($sRawKey);
 		}
@@ -6276,7 +6268,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetMessage, $oException);
 		}
 
-		if ($oMessage instanceof \MailSo\Mail\Message)
+		if ($oMessage)
 		{
 			$this->Plugins()
 				->RunHook('filter.result-message', array($oMessage))
@@ -8168,7 +8160,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 			$sLanguage = $this->Config()->Get('webmail', 'language', 'en');
 
-			if ($oAccount instanceof \RainLoop\Model\Account)
+			if ($oAccount)
 			{
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 				if ($oSettings instanceof \RainLoop\Settings)

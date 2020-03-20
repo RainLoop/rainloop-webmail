@@ -172,8 +172,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function Login(string $sLogin, string $sPassword, string $sProxyAuthUser = '',
 		bool $bUseAuthPlainIfSupported = true, bool $bUseAuthCramMd5IfSupported = true) : self
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sLogin, true) ||
-			!\MailSo\Base\Validator::NotEmptyString($sPassword, true))
+		if (!strlen(\trim($sLogin)) || !strlen(\trim($sPassword)))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),
@@ -341,7 +340,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function IsSupported(string $sExtentionName) : bool
 	{
-		$bResult = \MailSo\Base\Validator::NotEmptyString($sExtentionName, true);
+		$bResult = strlen(\trim($sExtentionName));
 		if ($bResult && null === $this->aCapabilityItems)
 		{
 			$this->aCapabilityItems = $this->Capability();
@@ -762,7 +761,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 		}
 
-		if (!\MailSo\Base\Validator::NotEmptyString($sFolderName, true))
+		if (!strlen(\trim($sFolderName)))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
@@ -821,7 +820,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function Fetch(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : array
 	{
 		$sIndexRange = (string) $sIndexRange;
-		if (!\MailSo\Base\Validator::NotEmptyString($sIndexRange, true))
+		if (!strlen(\trim($sIndexRange)))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),
@@ -928,7 +927,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function MessageSimpleSort(array $aSortTypes, string $sSearchCriterias = 'ALL', bool $bReturnUid = true) : array
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-		$sSearchCriterias = !\MailSo\Base\Validator::NotEmptyString($sSearchCriterias, true) || '*' === $sSearchCriterias
+		$sSearchCriterias = !strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
 			? 'ALL' : $sSearchCriterias;
 
 		if (!\is_array($aSortTypes) || 0 === \count($aSortTypes))
@@ -1252,7 +1251,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function MessageSimpleThread(string $sSearchCriterias = 'ALL', bool $bReturnUid = true, string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8) : array
 	{
 		$sCommandPrefix = ($bReturnUid) ? 'UID ' : '';
-		$sSearchCriterias = !\MailSo\Base\Validator::NotEmptyString($sSearchCriterias, true) || '*' === $sSearchCriterias
+		$sSearchCriterias = !strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
 			? 'ALL' : $sSearchCriterias;
 
 		$sThreadType = '';
@@ -1390,8 +1389,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function MessageStoreFlag(string $sIndexRange, bool $bIndexIsUid, array $aInputStoreItems, string $sStoreAction) : self
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sIndexRange, true) ||
-			!\MailSo\Base\Validator::NotEmptyString($sStoreAction, true) ||
+		if (!strlen(\trim($sIndexRange)) ||
+			!strlen(\trim($sStoreAction)) ||
 			0 === \count($aInputStoreItems))
 		{
 			return false;
@@ -1462,7 +1461,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function SendRequest(string $sCommand, array $aParams = array(), bool $bBreakOnLiteral = false) : string
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sCommand, true) || !\is_array($aParams))
+		$sCommand = \trim($sCommand);
+		if (!\strlen($sCommand))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),
@@ -1473,14 +1473,11 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$sTag = $this->getNewTag();
 
-		$sCommand = \trim($sCommand);
-		$sRealCommand = $sTag.' '.$sCommand.$this->prepearParamLine($aParams);
+		$sRealCommand = $sTag.' '.$sCommand.$this->prepareParamLine($aParams);
 
 		$sFakeCommand = '';
-		$aFakeParams = $this->secureRequestParams($sCommand, $aParams);
-		if (null !== $aFakeParams)
-		{
-			$sFakeCommand = $sTag.' '.$sCommand.$this->prepearParamLine($aFakeParams);
+		if ($aFakeParams = $this->secureRequestParams($sCommand, $aParams)) {
+			$sFakeCommand = $sTag.' '.$sCommand.$this->prepareParamLine($aFakeParams);
 		}
 
 		$this->aTagTimeouts[$sTag] = \microtime(true);
@@ -1505,19 +1502,11 @@ class ImapClient extends \MailSo\Net\NetClient
 
 	private function secureRequestParams(string $sCommand, array $aParams) : ?array
 	{
-		$aResult = null;
-		switch ($sCommand)
-		{
-			case 'LOGIN':
-				$aResult = $aParams;
-				if (\is_array($aResult) && 2 === count($aResult))
-				{
-					$aResult[1] = '"********"';
-				}
-				break;
+		if ('LOGIN' === $sCommand && isset($aParams[1])) {
+			$aParams[1] = '"********"';
+			return $aParams;
 		}
-
-		return $aResult;
+		return null;
 	}
 
 	/**
@@ -2241,7 +2230,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $bResult;
 	}
 
-	private function prepearParamLine(array $aParams = array()) : string
+	private function prepareParamLine(array $aParams = array()) : string
 	{
 		$sReturn = '';
 		if (\is_array($aParams) && 0 < \count($aParams))
@@ -2250,7 +2239,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			{
 				if (\is_array($mParamItem) && 0 < \count($mParamItem))
 				{
-					$sReturn .= ' ('.\trim($this->prepearParamLine($mParamItem)).')';
+					$sReturn .= ' ('.\trim($this->prepareParamLine($mParamItem)).')';
 				}
 				else if (\is_string($mParamItem))
 				{

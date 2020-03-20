@@ -42,7 +42,7 @@ class Email
 	 */
 	private function __construct(string $sEmail, string $sDisplayName = '')
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sEmail, true))
+		if (!strlen(\trim($sEmail)))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
@@ -70,7 +70,7 @@ class Email
 	public static function Parse(string $sEmailAddress) : self
 	{
 		$sEmailAddress = \MailSo\Base\Utils::Trim($sEmailAddress);
-		if (!\MailSo\Base\Validator::NotEmptyString($sEmailAddress, true))
+		if (!strlen(\trim($sEmailAddress)))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}

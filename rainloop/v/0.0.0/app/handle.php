@@ -27,7 +27,7 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 		{
 			if (0 === \strpos($sClassName, $sNamespaceName.'\\'))
 			{
-				include RAINLOOP_APP_LIBRARIES_PATH.$sPrefix.\strtr($sClassName, '\\', '/').'.php';
+				include RAINLOOP_APP_LIBRARIES_PATH.\strtr($sClassName, '\\', '/').'.php';
 				break;
 			}
 		}

@@ -270,7 +270,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null, int $iBodyTextLimit = 0) : ?\MailSo\Mail\Message
+	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null, int $iBodyTextLimit = 0) : ?Message
 	{
 		if (!\MailSo\Base\Validator::RangeInt($iIndex, 1))
 		{
@@ -346,7 +346,7 @@ class MailClient
 		$aFetchResponse = $this->oImapClient->Fetch($aFetchItems, $iIndex, $bIndexIsUid);
 		if (0 < \count($aFetchResponse))
 		{
-			$oMessage = \MailSo\Mail\Message::NewFetchResponseInstance(
+			$oMessage = Message::NewFetchResponseInstance(
 				$sFolderName, $aFetchResponse[0], $oBodyStructure);
 		}
 
@@ -1482,7 +1482,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageListByRequestIndexOrUids(\MailSo\Mail\MessageCollection $oMessageCollection, array $aRequestIndexOrUids, bool $bIndexAsUid, bool $bSimple = false)
+	public function MessageListByRequestIndexOrUids(MessageCollection $oMessageCollection, array $aRequestIndexOrUids, bool $bIndexAsUid, bool $bSimple = false)
 	{
 		if (\is_array($aRequestIndexOrUids) && 0 < \count($aRequestIndexOrUids))
 		{
@@ -1617,7 +1617,7 @@ class MailClient
 	public function MessageList(string $sFolderName, int $iOffset = 0, int $iLimit = 10,
 		string $sSearch = '', string $sPrevUidNext = '', ?\MailSo\Cache\CacheClient $oCacher = null,
 		bool $bUseSortIfSupported = false, bool $bUseThreadSortIfSupported = false,
-		string $sThreadUid = '', string $sFilter = '')
+		string $sThreadUid = '', string $sFilter = '') : MessageCollection
 	{
 		$sFilter = \trim($sFilter);
 		$sSearch = \trim($sSearch);
@@ -1905,7 +1905,7 @@ class MailClient
 
 			$iCountLimit = $iForeachLimit;
 
-			foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder \MailSo\Mail\Folder */ $oFolder)
+			foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder Folder */ $oFolder)
 			{
 				// mandatory folders
 				if ($oFolder && \in_array(\str_replace(' ', '', \strtolower($oFolder->NameRaw())), $aFilteredNames))
@@ -1915,7 +1915,7 @@ class MailClient
 				}
 			}
 
-			foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder \MailSo\Mail\Folder */ $oFolder)
+			foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder Folder */ $oFolder)
 			{
 				// subscribed folders
 				if ($oFolder && $oFolder->IsSubscribed())
@@ -1943,7 +1943,7 @@ class MailClient
 			if ($iOptimizationLimit >= \count($aNewMailFoldersHelper))
 			{
 				// name filter
-				foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder \MailSo\Mail\Folder */ $oFolder)
+				foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder Folder */ $oFolder)
 				{
 					if ($oFolder && !\preg_match('/[{}\[\]]/', $oFolder->NameRaw()))
 					{
@@ -1971,7 +1971,7 @@ class MailClient
 			if ($iOptimizationLimit >= \count($aNewMailFoldersHelper))
 			{
 				// other
-				foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder \MailSo\Mail\Folder */ $oFolder)
+				foreach ($aMailFoldersHelper as $iIndex => /* @var $oImapFolder Folder */ $oFolder)
 				{
 					if ($oFolder)
 					{
@@ -2006,7 +2006,7 @@ class MailClient
 		return $aMailFoldersHelper;
 	}
 
-	public function Folders(string $sParent = '', string $sListPattern = '*', bool $bUseListSubscribeStatus = true, int $iOptimizationLimit = 0) : \MailSo\Mail\FolderCollection
+	public function Folders(string $sParent = '', string $sListPattern = '*', bool $bUseListSubscribeStatus = true, int $iOptimizationLimit = 0) : FolderCollection
 	{
 		$oFolderCollection = false;
 
@@ -2101,8 +2101,7 @@ class MailClient
 	 */
 	public function FolderCreate(string $sFolderNameInUtf8, string $sFolderParentFullNameRaw = '', bool $bSubscribeOnCreation = true, string $sDelimiter = '') : self
 	{
-		if (!\MailSo\Base\Validator::NotEmptyString($sFolderNameInUtf8, true) ||
-			!\is_string($sFolderParentFullNameRaw))
+		if (!strlen(\trim($sFolderNameInUtf8)))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}

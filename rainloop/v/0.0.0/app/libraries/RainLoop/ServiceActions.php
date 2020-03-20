@@ -884,28 +884,6 @@ class ServiceActions
 		$oAccount = null;
 		$bLogout = true;
 
-		if ($this->oActions->Config()->Get('labs', 'allow_external_login', false))
-		{
-			$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
-			$sPassword = $this->oHttp->GetRequest('Password', '');
-
-			try
-			{
-				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
-				$this->oActions->AuthToken($oAccount);
-				$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
-			}
-			catch (\Throwable $oException)
-			{
-				$this->oActions->Logger()->WriteException($oException);
-			}
-
-			if ($bLogout)
-			{
-				$this->oActions->SetAuthLogoutToken();
-			}
-		}
-
 		switch (\strtolower($this->oHttp->GetRequest('Output', 'Redirect')))
 		{
 			case 'json':
@@ -939,46 +917,6 @@ class ServiceActions
 		}
 
 		return '';
-	}
-
-	public function ServiceExternalSso() : string
-	{
-		$this->oHttp->ServerNoCache();
-
-		$sResult = '';
-		$bLogout = true;
-		$sKey = $this->oActions->Config()->Get('labs', 'external_sso_key', '');
-		if ($this->oActions->Config()->Get('labs', 'allow_external_sso', false) &&
-			!empty($sKey) && $sKey === \trim($this->oHttp->GetRequest('SsoKey', '')))
-		{
-			$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
-			$sPassword = $this->oHttp->GetRequest('Password', '');
-
-			$sResult = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword);
-			$bLogout = 0 === \strlen($sResult);
-
-			switch (\strtolower($this->oHttp->GetRequest('Output', 'Plain')))
-			{
-				case 'plain':
-					@\header('Content-Type: text/plain');
-					break;
-
-				case 'json':
-					@\header('Content-Type: application/json; charset=utf-8');
-					$sResult = \MailSo\Base\Utils::Php2js(array(
-						'Action' => 'ExternalSso',
-						'Result' => $sResult
-					), $this->Logger());
-					break;
-			}
-		}
-
-		if ($bLogout)
-		{
-			$this->oActions->SetAuthLogoutToken();
-		}
-
-		return $sResult;
 	}
 
 	private function changeAction()
