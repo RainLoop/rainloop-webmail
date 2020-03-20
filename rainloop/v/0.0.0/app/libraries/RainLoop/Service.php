@@ -212,7 +212,7 @@ class Service
 
 			$sResult .= ']-->';
 		}
-		else
+		else if (!headers_sent())
 		{
 			\header('X-XSS-Protection: 1; mode=block');
 		}
