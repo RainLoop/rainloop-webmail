@@ -205,7 +205,7 @@ class Part
 
 	public function ParseFromFile(string $sFileName) : self
 	{
-		$rStreamHandle = (@file_exists($sFileName)) ? @fopen($sFileName, 'rb') : false;
+		$rStreamHandle = (file_exists($sFileName)) ? fopen($sFileName, 'rb') : false;
 		if (is_resource($rStreamHandle))
 		{
 			$this->ParseFromStream($rStreamHandle);
@@ -324,7 +324,7 @@ class Part
 			{
 				if (!$bNotFirstRead)
 				{
-					$sBuffer = @fread($rStreamHandle, $this->iParseBuffer);
+					$sBuffer = fread($rStreamHandle, $this->iParseBuffer);
 					if (false === $sBuffer)
 					{
 						break;

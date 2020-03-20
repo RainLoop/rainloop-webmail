@@ -27,7 +27,7 @@ class Utils
 		$sKeyFile = APP_VERSION_ROOT_PATH.'app/resources/RainLoop.asc';
 		if (\file_exists($sKeyFile) && \file_exists($sFileName) && !empty($sSignature))
 		{
-			$sKeyFile = @\file_get_contents($sKeyFile);
+			$sKeyFile = \file_get_contents($sKeyFile);
 			return !empty($sKeyFile); // TODO
 		}
 
@@ -73,7 +73,7 @@ class Utils
 				}
 
 				$aString[] = $sKey;
-				$sResult = @\serialize($aString);
+				$sResult = \serialize($aString);
 
 				\openssl_free_key($oPubKey);
 			}
@@ -94,7 +94,7 @@ class Utils
 		{
 			$oPrivKey  = \openssl_pkey_get_private($sPrivateKey);
 
-			$aString = @\unserialize($sString);
+			$aString = \unserialize($sString);
 			if (\is_array($aString))
 			{
 				if ($sKey === \array_pop($aString))
@@ -153,12 +153,12 @@ class Utils
 	static public function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
-			static::EncryptString(@\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
+			static::EncryptString(\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
 	}
 
 	static public function DecodeKeyValues(string $sEncodedValues, string $sCustomKey = '') : array
 	{
-		$aResult = @\unserialize(
+		$aResult = \unserialize(
 			static::DecryptString(
 				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey)));
 
@@ -169,12 +169,12 @@ class Utils
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
 			static::EncryptStringQ(
-				@\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
+				\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
 	}
 
 	static public function DecodeKeyValuesQ(string $sEncodedValues, string $sCustomKey = '') : array
 	{
-		$aResult = @\unserialize(
+		$aResult = \unserialize(
 			static::DecryptStringQ(
 				\MailSo\Base\Utils::UrlSafeBase64Decode($sEncodedValues), \md5(APP_SALT.$sCustomKey)));
 
@@ -233,7 +233,7 @@ class Utils
 	public static function PathMD5(string $sPath) : string
 	{
 		$sResult = '';
-		if (@\is_dir($sPath))
+		if (\is_dir($sPath))
 		{
 			$oDirIterator = new \RecursiveDirectoryIterator($sPath);
 			$oIterator = new \RecursiveIteratorIterator($oDirIterator, \RecursiveIteratorIterator::SELF_FIRST);
@@ -297,11 +297,11 @@ class Utils
 	public static function FolderFiles(string $sDir, string $sType = '') : array
 	{
 		$aResult = array();
-		if (@\is_dir($sDir))
+		if (\is_dir($sDir))
 		{
-			if (false !== ($rDirHandle = @\opendir($sDir)))
+			if (false !== ($rDirHandle = \opendir($sDir)))
 			{
-				while (false !== ($sFile = @\readdir($rDirHandle)))
+				while (false !== ($sFile = \readdir($rDirHandle)))
 				{
 					if (empty($sType) || $sType === \substr($sFile, -\strlen($sType)))
 					{
@@ -312,7 +312,7 @@ class Utils
 					}
 				}
 
-				@\closedir($rDirHandle);
+				\closedir($rDirHandle);
 			}
 		}
 
@@ -392,7 +392,7 @@ class Utils
 		}
 
 		static::$Cookies[$sName] = $sValue;
-		@\setcookie($sName, $sValue, $iExpire, $sPath, $sDomain, $bSecure, $bHttpOnly);
+		\setcookie($sName, $sValue, $iExpire, $sPath, $sDomain, $bSecure, $bHttpOnly);
 	}
 
 	public static function ClearCookie(string $sName)
@@ -406,7 +406,7 @@ class Utils
 		$sPath = $sPath && 0 < \strlen($sPath) ? $sPath : null;
 
 		unset(static::$Cookies[$sName]);
-		@\setcookie($sName, '', \time() - 3600 * 24 * 30, $sPath);
+		\setcookie($sName, '', \time() - 3600 * 24 * 30, $sPath);
 	}
 
 	public static function UrlEncode(string $sV, bool $bEncode = false) : string
@@ -455,11 +455,11 @@ class Utils
 	{
 //		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('parse_ini_file'))
 //		{
-//			return @\parse_ini_file($sFileName, !!$bProcessSections);
+//			return \parse_ini_file($sFileName, !!$bProcessSections);
 //		}
 
-		$sData = @\file_get_contents($sFileName);
-		return \is_string($sData) ? @\parse_ini_string($sData, !!$bProcessSections) : null;
+		$sData = \file_get_contents($sFileName);
+		return \is_string($sData) ? \parse_ini_string($sData, !!$bProcessSections) : null;
 	}
 
 	public static function CustomBaseConvert(string $sNumberInput, string $sFromBaseInput = '0123456789', string $sToBaseInput = '0123456789')

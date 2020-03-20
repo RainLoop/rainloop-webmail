@@ -131,7 +131,7 @@ class Property
 			// lower value for searching
 			if ($this->IsValueForLower() && \MailSo\Base\Utils::FunctionExistsAndEnabled('mb_strtolower'))
 			{
-				$this->ValueLower = (string) @\mb_strtolower($this->Value, 'UTF-8');
+				$this->ValueLower = (string) \mb_strtolower($this->Value, 'UTF-8');
 			}
 
 			// phone value for searching

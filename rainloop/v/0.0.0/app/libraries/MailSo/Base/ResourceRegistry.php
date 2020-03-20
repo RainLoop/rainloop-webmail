@@ -57,7 +57,7 @@ abstract class ResourceRegistry
 	{
 		self::regResourcesShutdownFunc();
 
-		$oResult = @\fopen('php://temp/maxmemory:'.($iMemoryMaxInMb * 1024 * 1024), 'r+b');
+		$oResult = \fopen('php://temp/maxmemory:'.($iMemoryMaxInMb * 1024 * 1024), 'r+b');
 		if (\is_resource($oResult))
 		{
 			\MailSo\Base\Loader::IncStatistic('CreateMemoryResource');

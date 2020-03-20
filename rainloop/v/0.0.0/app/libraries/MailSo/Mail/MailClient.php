@@ -558,7 +558,7 @@ class MailClient
 
 	public function MessageAppendFile(string $sMessageFileName, string $sFolderToSave, array $aAppendFlags = null, int &$iUid = null) : self
 	{
-		if (!@\is_file($sMessageFileName) || !@\is_readable($sMessageFileName))
+		if (!\is_file($sMessageFileName) || !\is_readable($sMessageFileName))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
@@ -570,7 +570,7 @@ class MailClient
 
 		if (\is_resource($rMessageStream))
 		{
-			@fclose($rMessageStream);
+			fclose($rMessageStream);
 		}
 
 		return $this;
@@ -1324,7 +1324,7 @@ class MailClient
 			$sSerializedUids = $oCacher->Get($sSerializedHashKey);
 			if (!empty($sSerializedUids))
 			{
-				$aSerializedUids = @\json_decode($sSerializedUids, true);
+				$aSerializedUids = \json_decode($sSerializedUids, true);
 				if (isset($aSerializedUids['ThreadsUids']) && \is_array($aSerializedUids['ThreadsUids']))
 				{
 					if ($this->oLogger)
@@ -1465,7 +1465,7 @@ class MailClient
 
 		if ($oCacher && $oCacher->IsInited() && !empty($sSerializedHashKey))
 		{
-			$oCacher->Set($sSerializedHashKey, @\json_encode(array(
+			$oCacher->Set($sSerializedHashKey, \json_encode(array(
 				'ThreadsUids' => $aResult
 			)));
 
@@ -1568,7 +1568,7 @@ class MailClient
 			$sSerialized = $oCacher->Get($sSerializedHash);
 			if (!empty($sSerialized))
 			{
-				$aSerialized = @\json_decode($sSerialized, true);
+				$aSerialized = \json_decode($sSerialized, true);
 				if (\is_array($aSerialized) && isset($aSerialized['FolderHash'], $aSerialized['Uids']) &&
 					$sFolderHash === $aSerialized['FolderHash'] &&
 					\is_array($aSerialized['Uids'])
@@ -1594,7 +1594,7 @@ class MailClient
 
 			if (!$bUidsFromCacher && $bUseCacheAfterSearch && \is_array($aResultUids) && $oCacher && $oCacher->IsInited() && 0 < \strlen($sSerializedHash))
 			{
-				$oCacher->Set($sSerializedHash, @\json_encode(array(
+				$oCacher->Set($sSerializedHash, \json_encode(array(
 					'FolderHash' => $sFolderHash,
 					'Uids' => $aResultUids
 				)));

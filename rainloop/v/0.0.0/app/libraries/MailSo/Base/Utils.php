@@ -117,7 +117,7 @@ END;
 	public static function DetectSystemCharset() : string
 	{
 		$sResult = '';
-		$sLocale = @\setlocale(LC_ALL, '');
+		$sLocale = \setlocale(LC_ALL, '');
 		$sLocaleLower = \strtolower(\trim($sLocale));
 
 		foreach (static::$aLocaleMapping as $sKey => $sValue)
@@ -464,7 +464,7 @@ END;
 			{
 				if (isset($aMatch[0][$iIndex]))
 				{
-					$iPos = @\strpos($aMatch[0][$iIndex], '*');
+					$iPos = \strpos($aMatch[0][$iIndex], '*');
 					if (false !== $iPos)
 					{
 						$aMatch[0][$iIndex][0] = \substr($aMatch[0][$iIndex][0], 0, $iPos);
@@ -985,7 +985,7 @@ END;
 		{
 			$iResetTimer = 0;
 
-			$sSafeMode = \strtolower(\trim(@\ini_get('safe_mode')));
+			$sSafeMode = \strtolower(\trim(\ini_get('safe_mode')));
 			$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode || 'true' === $sSafeMode;
 
 			$bValidateAction = !$bSafeMode && static::FunctionExistsAndEnabled('set_time_limit');
@@ -994,7 +994,7 @@ END;
 		if ($bValidateAction && $iTimeToReset < $iTime - $iResetTimer)
 		{
 			$iResetTimer = $iTime;
-			if (!@\set_time_limit($iTimeToAdd))
+			if (!\set_time_limit($iTimeToAdd))
 			{
 				$bValidateAction = false;
 				return false;
@@ -1041,13 +1041,7 @@ END;
 	 */
 	public static function Php2js($mInput, ?\MailSo\Log\Logger $oLogger = null) : string
 	{
-		static $iOpt = null;
-		if (null === $iOpt)
-		{
-			$iOpt = \defined('JSON_UNESCAPED_UNICODE') ? JSON_UNESCAPED_UNICODE : 0;
-		}
-
-		$sResult = @\json_encode($mInput, $iOpt);
+		$sResult = \json_encode($mInput, JSON_UNESCAPED_UNICODE);
 		if (!\is_string($sResult) || '' === $sResult)
 		{
 			if (!$oLogger && \MailSo\Log\Logger::IsSystemEnabled())
@@ -1078,7 +1072,7 @@ END;
 				}
 
 				static::ClearArrayUtf8Values($mInput);
-				$sResult = @\json_encode($mInput, $iOpt);
+				$sResult = \json_encode($mInput, JSON_UNESCAPED_UNICODE);
 			}
 		}
 
@@ -1106,7 +1100,7 @@ END;
 
 	public static function RecRmDir(string $sDir) : bool
 	{
-		if (@\is_dir($sDir))
+		if (\is_dir($sDir))
 		{
 			$aObjects = \scandir($sDir);
 			foreach ($aObjects as $sObject)
@@ -1120,12 +1114,12 @@ END;
 					}
 					else
 					{
-						@\unlink($sDir.'/'.$sObject);
+						\unlink($sDir.'/'.$sObject);
 					}
 				}
 			}
 
-			return @\rmdir($sDir);
+			return \rmdir($sDir);
 		}
 
 		return false;
@@ -1170,17 +1164,17 @@ END;
 		$iFileCount = 0;
 
 		$sTempPath = rtrim($sTempPath, '\\/');
-		if (@\is_dir($sTempPath))
+		if (\is_dir($sTempPath))
 		{
-			$rDirH = @\opendir($sTempPath);
+			$rDirH = \opendir($sTempPath);
 			if ($rDirH)
 			{
 				$bRemoveAllDirs = true;
-				while (($sFile = @\readdir($rDirH)) !== false)
+				while (($sFile = \readdir($rDirH)) !== false)
 				{
 					if ('.' !== $sFile && '..' !== $sFile)
 					{
-						if (@\is_dir($sTempPath.'/'.$sFile))
+						if (\is_dir($sTempPath.'/'.$sFile))
 						{
 							if (!static::RecTimeDirRemove($sTempPath.'/'.$sFile, $iTime2Kill, $iNow))
 							{
@@ -1194,19 +1188,19 @@ END;
 					}
 				}
 
-				@\closedir($rDirH);
+				\closedir($rDirH);
 			}
 
 			if ($iFileCount > 0)
 			{
 				if (static::TimeFilesRemove($sTempPath, $iTime2Kill, $iNow))
 				{
-					return @\rmdir($sTempPath);
+					return \rmdir($sTempPath);
 				}
 			}
 			else
 			{
-				return $bRemoveAllDirs ? @\rmdir($sTempPath) : false;
+				return $bRemoveAllDirs ? \rmdir($sTempPath) : false;
 			}
 
 			return false;
@@ -1220,18 +1214,18 @@ END;
 		$bResult = true;
 
 		$sTempPath = rtrim($sTempPath, '\\/');
-		if (@\is_dir($sTempPath))
+		if (\is_dir($sTempPath))
 		{
-			$rDirH = @\opendir($sTempPath);
+			$rDirH = \opendir($sTempPath);
 			if ($rDirH)
 			{
-				while (($sFile = @\readdir($rDirH)) !== false)
+				while (($sFile = \readdir($rDirH)) !== false)
 				{
 					if ($sFile !== '.' && $sFile !== '..')
 					{
 						if ($iNow - \filemtime($sTempPath.'/'.$sFile) > $iTime2Kill)
 						{
-							@\unlink($sTempPath.'/'.$sFile);
+							\unlink($sTempPath.'/'.$sFile);
 						}
 						else
 						{
@@ -1240,7 +1234,7 @@ END;
 					}
 				}
 
-				@\closedir($rDirH);
+				\closedir($rDirH);
 			}
 		}
 
@@ -1417,7 +1411,7 @@ END;
 		{
 			while (!\feof($fResource))
 			{
-				$sBuffer = @\fread($fResource, $iBufferLen);
+				$sBuffer = \fread($fResource, $iBufferLen);
 				if (false !== $sBuffer)
 				{
 					echo $sBuffer;
@@ -1487,7 +1481,7 @@ END;
 			{
 				if (\is_resource($rWriteStream))
 				{
-					@\rewind($rWriteStream);
+					\rewind($rWriteStream);
 				}
 			}
 		}
@@ -1800,7 +1794,7 @@ END;
 
 		if (null === $aCache)
 		{
-			$sDisableFunctions = @\ini_get('disable_functions');
+			$sDisableFunctions = \ini_get('disable_functions');
 			$sDisableFunctions = \is_string($sDisableFunctions) && 0 < \strlen($sDisableFunctions) ? $sDisableFunctions : '';
 
 			$aCache = \explode(',', $sDisableFunctions);
@@ -1808,7 +1802,7 @@ END;
 
 			if (\extension_loaded('suhosin'))
 			{
-				 $sSuhosin = @\ini_get('suhosin.executor.func.blacklist');
+				 $sSuhosin = \ini_get('suhosin.executor.func.blacklist');
 				 $sSuhosin = \is_string($sSuhosin) && 0 < \strlen($sSuhosin) ? $sSuhosin : '';
 
 				 $aSuhosinCache = \explode(',', $sSuhosin);
@@ -1869,7 +1863,7 @@ END;
 
 	public static function ValidateIP(string $sIp) : bool
 	{
-		return !empty($sIp) && $sIp === @\filter_var($sIp, FILTER_VALIDATE_IP);
+		return !empty($sIp) && $sIp === \filter_var($sIp, FILTER_VALIDATE_IP);
 	}
 
 	private static function idn() : \Net

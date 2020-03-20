@@ -109,7 +109,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$this->__FORCE_SELECT_ON_EXAMINE__ = false;
 
-		@\ini_set('xdebug.max_nesting_level', 500);
+		\ini_set('xdebug.max_nesting_level', 500);
 	}
 
 	public static function NewInstance() : self
@@ -2187,9 +2187,9 @@ class ImapClient extends \MailSo\Net\NetClient
 
 				if (!$bFeof)
 				{
-					while (!@\feof($rImapLiteralStream))
+					while (!\feof($rImapLiteralStream))
 					{
-						$sBuf = @\fread($rImapLiteralStream, 1024 * 1024);
+						$sBuf = \fread($rImapLiteralStream, 1024 * 1024);
 						if (false === $sBuf || 0 === \strlen($sBuf) ||  null === $sBuf)
 						{
 							break;
@@ -2199,15 +2199,15 @@ class ImapClient extends \MailSo\Net\NetClient
 						$iNotReadLiteralLen += \strlen($sBuf);
 					}
 
-					if (\is_resource($rImapLiteralStream) && !@\feof($rImapLiteralStream))
+					if (\is_resource($rImapLiteralStream) && !\feof($rImapLiteralStream))
 					{
-						@\stream_get_contents($rImapLiteralStream);
+						\stream_get_contents($rImapLiteralStream);
 					}
 				}
 
 				if (\is_resource($rImapLiteralStream))
 				{
-					@\fclose($rImapLiteralStream);
+					\fclose($rImapLiteralStream);
 				}
 
 				if ($iNotReadLiteralLen > 0)

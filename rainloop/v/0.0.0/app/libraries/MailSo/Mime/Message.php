@@ -377,7 +377,7 @@ class Message
 
 		return '<'.
 			\MailSo\Base\Utils::Md5Rand($sHostName.
-				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? @\getmypid() : '')).'@'.$sHostName.'>';
+				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : '')).'@'.$sHostName.'>';
 	}
 
 	private function createNewMessageAttachmentBody(\MailSo\Mime\Attachment $oAttachment) : \MailSo\Mime\Part

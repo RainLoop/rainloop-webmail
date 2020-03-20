@@ -147,7 +147,7 @@ class SubStreams
 					{
 						if (!\feof($mCurrentPart))
 						{
-							$sReadResult = @\fread($mCurrentPart, 8192);
+							$sReadResult = \fread($mCurrentPart, 8192);
 							if (false === $sReadResult)
 							{
 								return false;

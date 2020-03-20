@@ -97,7 +97,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 
 		if (\file_exists($this->sDomainPath.'/disabled'))
 		{
-			$sDisabled = @\file_get_contents($this->sDomainPath.'/disabled');
+			$sDisabled = \file_get_contents($this->sDomainPath.'/disabled');
 		}
 
 		if (\file_exists($this->sDomainPath.'/'.$sRealFileName.'.ini') &&
@@ -183,7 +183,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$sFile = '';
 		if (\file_exists($this->sDomainPath.'/disabled'))
 		{
-			$sFile = @\file_get_contents($this->sDomainPath.'/disabled');
+			$sFile = \file_get_contents($this->sDomainPath.'/disabled');
 		}
 
 		$aResult = array();
@@ -245,7 +245,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$aAliases = array();
 
 //		$aList = \glob($this->sDomainPath.'/*.{ini,alias}', GLOB_BRACE);
-		$aList = @\array_diff(\scandir($this->sDomainPath), array('.', '..'));
+		$aList = \array_diff(\scandir($this->sDomainPath), array('.', '..'));
 		if (\is_array($aList))
 		{
 			foreach ($aList as $sFile)
@@ -291,7 +291,7 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 		$aDisabledNames = array();
 		if (0 < \count($aResult) && \file_exists($this->sDomainPath.'/disabled'))
 		{
-			$sDisabled = @\file_get_contents($this->sDomainPath.'/disabled');
+			$sDisabled = \file_get_contents($this->sDomainPath.'/disabled');
 			if (false !== $sDisabled && 0 < strlen($sDisabled))
 			{
 				$aDisabledNames = \explode(',', $sDisabled);

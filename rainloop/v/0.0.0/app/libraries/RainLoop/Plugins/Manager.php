@@ -150,7 +150,7 @@ class Manager
 	{
 		$aList = array();
 
-		$aGlob = @\glob(APP_PLUGINS_PATH.'*', GLOB_ONLYDIR|GLOB_NOSORT);
+		$aGlob = \glob(APP_PLUGINS_PATH.'*', GLOB_ONLYDIR|GLOB_NOSORT);
 		if (\is_array($aGlob))
 		{
 			foreach ($aGlob as $sPathName)

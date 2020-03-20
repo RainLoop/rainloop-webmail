@@ -64,7 +64,7 @@ abstract class HtmlUtils
 
 		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_clear_errors'))
 		{
-			@\libxml_clear_errors();
+			\libxml_clear_errors();
 		}
 
 		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('libxml_use_internal_errors'))

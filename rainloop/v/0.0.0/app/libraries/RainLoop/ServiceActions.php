@@ -76,7 +76,7 @@ class ServiceActions
 
 	public function ServiceAjax() : string
 	{
-		@\ob_start();
+		\ob_start();
 
 		$aResponseItem = null;
 		$oException = null;
@@ -187,11 +187,11 @@ class ServiceActions
 
 		$this->Plugins()->RunHook('filter.ajax-response', array($sAction, &$aResponseItem));
 
-		@\header('Content-Type: application/json; charset=utf-8');
+		\header('Content-Type: application/json; charset=utf-8');
 
 		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());
 
-		$sObResult = @\ob_get_clean();
+		$sObResult = \ob_get_clean();
 
 		if ($this->Logger()->IsEnabled())
 		{
@@ -215,7 +215,7 @@ class ServiceActions
 
 	public function ServiceAppend() : string
 	{
-		@\ob_start();
+		\ob_start();
 		$bResponse = false;
 		$oException = null;
 		try
@@ -232,10 +232,10 @@ class ServiceActions
 			$bResponse = false;
 		}
 
-		@\header('Content-Type: text/plain; charset=utf-8');
+		\header('Content-Type: text/plain; charset=utf-8');
 		$sResult = true === $bResponse ? '1' : '0';
 
-		$sObResult = @\ob_get_clean();
+		$sObResult = \ob_get_clean();
 		if (0 < \strlen($sObResult))
 		{
 			$this->Logger()->Write($sObResult, \MailSo\Log\Enumerations\Type::ERROR, 'OB-DATA');
@@ -255,7 +255,7 @@ class ServiceActions
 	{
 		$oConfig = $this->Config();
 
-		@\ob_start();
+		\ob_start();
 		$aResponseItem = null;
 		try
 		{
@@ -314,17 +314,17 @@ class ServiceActions
 
 		if ('iframe' === $this->oHttp->GetPost('jua-post-type', ''))
 		{
-			@\header('Content-Type: text/html; charset=utf-8');
+			\header('Content-Type: text/html; charset=utf-8');
 		}
 		else
 		{
-			@\header('Content-Type: application/json; charset=utf-8');
+			\header('Content-Type: application/json; charset=utf-8');
 		}
 
 		$this->Plugins()->RunHook('filter.upload-response', array(&$aResponseItem));
 		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());
 
-		$sObResult = @\ob_get_clean();
+		$sObResult = \ob_get_clean();
 		if (0 < \strlen($sObResult))
 		{
 			$this->Logger()->Write($sObResult, \MailSo\Log\Enumerations\Type::ERROR, 'OB-DATA');
@@ -401,8 +401,8 @@ class ServiceActions
 				$sMethodName = 'Raw'.$sAction;
 				if (\method_exists($this->oActions, $sMethodName))
 				{
-					@\header('X-Raw-Action: '.$sMethodName, true);
-					@\header('Content-Security-Policy: script-src \'none\'; frame-src \'none\'; child-src \'none\'', true);
+					\header('X-Raw-Action: '.$sMethodName, true);
+					\header('Content-Security-Policy: script-src \'none\'; frame-src \'none\'; child-src \'none\'', true);
 
 					$sRawError = '';
 					$this->oActions->SetActionParams(array(
@@ -462,7 +462,7 @@ class ServiceActions
 	{
 //		sleep(2);
 		$sResult = '';
-		@\header('Content-Type: application/javascript; charset=utf-8');
+		\header('Content-Type: application/javascript; charset=utf-8');
 
 		if (!empty($this->aPaths[3]))
 		{
@@ -505,7 +505,7 @@ class ServiceActions
 	public function ServiceTemplates() : string
 	{
 		$sResult = '';
-		@\header('Content-Type: application/javascript; charset=utf-8');
+		\header('Content-Type: application/javascript; charset=utf-8');
 
 		$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
 		if ($bCacheEnabled)
@@ -544,7 +544,7 @@ class ServiceActions
 		$sResult = '';
 		$bAdmin = !empty($this->aPaths[2]) && 'Admin' === $this->aPaths[2];
 
-		@\header('Content-Type: application/javascript; charset=utf-8');
+		\header('Content-Type: application/javascript; charset=utf-8');
 
 		$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
 		if ($bCacheEnabled)
@@ -585,11 +585,11 @@ class ServiceActions
 
 		if ($bJson)
 		{
-			@\header('Content-Type: application/json; charset=utf-8');
+			\header('Content-Type: application/json; charset=utf-8');
 		}
 		else
 		{
-			@\header('Content-Type: text/css; charset=utf-8');
+			\header('Content-Type: text/css; charset=utf-8');
 		}
 
 		$sTheme = '';
@@ -717,7 +717,7 @@ class ServiceActions
 		$sTitle = $this->oActions->StaticI18N('STATIC/BAD_BROWSER_TITLE');
 		$sDesc = \nl2br($this->oActions->StaticI18N('STATIC/BAD_BROWSER_DESC'));
 
-		@\header('Content-Type: text/html; charset=utf-8');
+		\header('Content-Type: text/html; charset=utf-8');
 		return \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/BadBrowser.html'), array(
 			'{{BaseWebStaticPath}}' => \RainLoop\Utils::WebStaticPath(),
 			'{{ErrorTitle}}' => $sTitle,
@@ -748,7 +748,7 @@ class ServiceActions
 	{
 		$this->oHttp->ServerNoCache();
 
-		@\header('Content-Type: text/plain; charset=utf-8');
+		\header('Content-Type: text/plain; charset=utf-8');
 		$this->oActions->Logger()->Write('Pong', \MailSo\Log\Enumerations\Type::INFO, 'PING');
 		return 'Pong';
 	}
@@ -759,7 +759,7 @@ class ServiceActions
 
 		if ($this->oActions->IsAdminLoggined(false))
 		{
-			@\header('Content-Type: text/html; charset=utf-8');
+			\header('Content-Type: text/html; charset=utf-8');
 			\phpinfo();
 		}
 	}
@@ -888,7 +888,7 @@ class ServiceActions
 		{
 			case 'json':
 
-				@\header('Content-Type: application/json; charset=utf-8');
+				\header('Content-Type: application/json; charset=utf-8');
 
 				$aResult = array(
 					'Action' => 'ExternalLogin',
@@ -972,13 +972,13 @@ class ServiceActions
 
 	private function localError(string $sTitle, string $sDesc) : string
 	{
-		@header('Content-Type: text/html; charset=utf-8');
+		header('Content-Type: text/html; charset=utf-8');
 		return $this->ErrorTemplates($sTitle, \nl2br($sDesc));
 	}
 
 	private function localAppData(bool $bAdmin = false, string $sAdd = '') : string
 	{
-		@\header('Content-Type: application/javascript; charset=utf-8');
+		\header('Content-Type: application/javascript; charset=utf-8');
 		$this->oHttp->ServerNoCache();
 
 		$sAuthAccountHash = '';

@@ -184,7 +184,7 @@ abstract class PdoAbstract
 
 			if ($bLogParams && $aLogs)
 			{
-				$this->writeLog('Params: '.@\json_encode($aLogs, \defined('JSON_UNESCAPED_UNICODE') ? JSON_UNESCAPED_UNICODE : 0));
+				$this->writeLog('Params: '.\json_encode($aLogs, JSON_UNESCAPED_UNICODE));
 			}
 		}
 

@@ -1869,7 +1869,7 @@ SQLITEINITIAL;
 
 		return '%'.\str_replace(array($sEscapeSign, '_', '%'),
 			array($sEscapeSign.$sEscapeSign, $sEscapeSign.'_', $sEscapeSign.'%'),
-				(string) @\mb_strtolower($sSearch, 'UTF-8')).'%';
+				(string) \mb_strtolower($sSearch, 'UTF-8')).'%';
 	}
 
 	private function specialConvertSearchValueCustomPhone(string $sSearch) : string

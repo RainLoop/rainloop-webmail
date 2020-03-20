@@ -17,19 +17,6 @@ namespace MailSo\Base;
  */
 class Http
 {
-	/**
-	 * @var bool
-	 */
-	private $bIsMagicQuotesOn;
-
-	/**
-	 * @access private
-	 */
-	private function __construct()
-	{
-		$this->bIsMagicQuotesOn = (bool) @\ini_get('magic_quotes_gpc');
-	}
-
 	public static function NewInstance() : self
 	{
 		return new self();
@@ -181,7 +168,7 @@ class Http
 		static $sRawBody = null;
 		if (null === $sRawBody)
 		{
-			$sBody = @\file_get_contents('php://input');
+			$sBody = \file_get_contents('php://input');
 			$sRawBody = (false !== $sBody) ? $sBody : '';
 		}
 		return $sRawBody;
@@ -338,7 +325,7 @@ class Http
 
 	static public function DetectAndHackFollowLocationUrl(string $sUrl, array &$aOptions, ?\MailSo\Log\Logger $oLogger = null) : string
 	{
-		$sSafeMode = \strtolower(\trim(@\ini_get('safe_mode')));
+		$sSafeMode = \strtolower(\trim(\ini_get('safe_mode')));
 		$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode;
 
 		$sNewUrl = null;
@@ -537,10 +524,10 @@ class Http
 			{
 				if ($bSetCacheHeader)
 				{
-					@\header('Cache-Control: public', true);
-					@\header('Pragma: public', true);
-					@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iUtcTimeStamp - $iExpireTime).' UTC', true);
-					@\header('Expires: '.\gmdate('D, j M Y H:i:s', $iUtcTimeStamp + $iExpireTime).' UTC', true);
+					\header('Cache-Control: public', true);
+					\header('Pragma: public', true);
+					\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iUtcTimeStamp - $iExpireTime).' UTC', true);
+					\header('Expires: '.\gmdate('D, j M Y H:i:s', $iUtcTimeStamp + $iExpireTime).' UTC', true);
 
 					if (0 < strlen($sEtag))
 					{
@@ -567,11 +554,11 @@ class Http
 		if (false === $bCache)
 		{
 			$bCache = true;
-			@\header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-			@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s').' GMT');
-			@\header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
-			@\header('Cache-Control: post-check=0, pre-check=0', false);
-			@\header('Pragma: no-cache');
+			\header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+			\header('Last-Modified: '.\gmdate('D, d M Y H:i:s').' GMT');
+			\header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+			\header('Cache-Control: post-check=0, pre-check=0', false);
+			\header('Pragma: no-cache');
 		}
 	}
 
@@ -584,10 +571,10 @@ class Http
 		if (false === $bCache)
 		{
 			$bCache = true;
-			@\header('Cache-Control: private', true);
-			@\header('ETag: '.$sEtag, true);
-			@\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iLastModified).' UTC', true);
-			@\header('Expires: '.\gmdate('D, j M Y H:i:s', $iExpires).' UTC', true);
+			\header('Cache-Control: private', true);
+			\header('ETag: '.$sEtag, true);
+			\header('Last-Modified: '.\gmdate('D, d M Y H:i:s', $iLastModified).' UTC', true);
+			\header('Expires: '.\gmdate('D, j M Y H:i:s', $iExpires).' UTC', true);
 		}
 	}
 

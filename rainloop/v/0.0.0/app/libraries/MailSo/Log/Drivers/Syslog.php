@@ -31,7 +31,7 @@ class Syslog extends \MailSo\Log\Driver
 			\openlog('rainloop', LOG_ODELAY, LOG_USER);
 
 			\register_shutdown_function(function () {
-				@\closelog();
+				\closelog();
 			});
 		}
 		else

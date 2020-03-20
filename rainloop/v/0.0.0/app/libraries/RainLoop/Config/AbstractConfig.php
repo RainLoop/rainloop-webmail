@@ -107,10 +107,10 @@ abstract class AbstractConfig
 	{
 		if ($this->bUseApcCache)
 		{
-			$iMTime = @\filemtime($this->sFile);
+			$iMTime = \filemtime($this->sFile);
 			$iMTime = \is_int($iMTime) && 0 < $iMTime ? $iMTime : 0;
 
-			$iATime = $this->sAdditionalFile ? @\filemtime($this->sAdditionalFile) : 0;
+			$iATime = $this->sAdditionalFile ? \filemtime($this->sAdditionalFile) : 0;
 			$iATime = \is_int($iATime) && 0 < $iATime ? $iATime : 0;
 
 			if (0 < $iMTime)
@@ -137,10 +137,10 @@ abstract class AbstractConfig
 	{
 		if ($this->bUseApcCache)
 		{
-			$iMTime = @\filemtime($this->sFile);
+			$iMTime = \filemtime($this->sFile);
 			$iMTime = \is_int($iMTime) && 0 < $iMTime ? $iMTime : 0;
 
-			$iATime = $this->sAdditionalFile ? @\filemtime($this->sAdditionalFile) : 0;
+			$iATime = $this->sAdditionalFile ? \filemtime($this->sAdditionalFile) : 0;
 			$iATime = \is_int($iATime) && 0 < $iATime ? $iATime : 0;
 
 			if (0 < $iMTime)

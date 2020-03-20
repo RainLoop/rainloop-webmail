@@ -4,10 +4,8 @@
 	{
 		if (!defined('APP_REQUEST_RND'))
 		{
-			@ini_set('register_globals', 0);
-			@ini_set('zend.ze1_compatibility_mode', 0);
-			@ini_set('magic_quotes_gpc', 0);
-			@ini_set('magic_quotes_runtime', 0);
+			ini_set('register_globals', 0);
+			ini_set('zend.ze1_compatibility_mode', 0);
 
 			define('APP_REQUEST_RND', function_exists('uuid_create') ? md5(uuid_create(UUID_TYPE_DEFAULT)) : bin2hex(random_bytes(16)));
 			define('APP_VERSION_ROOT_PATH', APP_INDEX_ROOT_PATH.'rainloop/v/'.APP_VERSION.'/');
@@ -30,7 +28,7 @@
 
 			define('APP_DEFAULT_PRIVATE_DATA_NAME', '_default_');
 
-			$sPrivateDataFolderInternalName = @file_exists(APP_INDEX_ROOT_PATH.'MULTIPLY') ? APP_SITE : '';
+			$sPrivateDataFolderInternalName = file_exists(APP_INDEX_ROOT_PATH.'MULTIPLY') ? APP_SITE : '';
 			define('APP_PRIVATE_DATA_NAME', 0 === strlen($sPrivateDataFolderInternalName) ? APP_DEFAULT_PRIVATE_DATA_NAME : $sPrivateDataFolderInternalName);
 			define('APP_MULTIPLY', 0 < strlen($sPrivateDataFolderInternalName) && APP_DEFAULT_PRIVATE_DATA_NAME !== APP_PRIVATE_DATA_NAME);
 
@@ -57,9 +55,9 @@
 
 			define('APP_DATA_FOLDER_PATH_UNIX', str_replace('\\', '/', APP_DATA_FOLDER_PATH));
 
-			$sSalt = @file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php');
-			$sData = file_exists(APP_DATA_FOLDER_PATH.'DATA.php') ? @file_get_contents(APP_DATA_FOLDER_PATH.'DATA.php') : '';
-			$sInstalled = @file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED');
+			$sSalt = file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php');
+			$sData = file_exists(APP_DATA_FOLDER_PATH.'DATA.php') ? file_get_contents(APP_DATA_FOLDER_PATH.'DATA.php') : '';
+			$sInstalled = file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED');
 
 			// installation checking data folder
 			if (APP_VERSION !== $sInstalled)
@@ -70,40 +68,40 @@
 				$sCheckFolder = APP_DATA_FOLDER_PATH.$sCheckName;
 				$sCheckFilePath = APP_DATA_FOLDER_PATH.$sCheckName.'/'.$sCheckName.'.file';
 
-				@unlink($sCheckFilePath);
-				@rmdir($sCheckFolder);
+				unlink($sCheckFilePath);
+				rmdir($sCheckFolder);
 
-				if (!@is_dir(APP_DATA_FOLDER_PATH))
+				if (!is_dir(APP_DATA_FOLDER_PATH))
 				{
-					@mkdir(APP_DATA_FOLDER_PATH, 0755);
+					mkdir(APP_DATA_FOLDER_PATH, 0755);
 				}
 				else
 				{
-					@chmod(APP_DATA_FOLDER_PATH, 0755);
+					chmod(APP_DATA_FOLDER_PATH, 0755);
 				}
 
 				$sTest = '';
 				switch (true)
 				{
-					case !@is_dir(APP_DATA_FOLDER_PATH):
+					case !is_dir(APP_DATA_FOLDER_PATH):
 						$sTest = 'is_dir';
 						break;
-					case !@is_readable(APP_DATA_FOLDER_PATH):
+					case !is_readable(APP_DATA_FOLDER_PATH):
 						$sTest = 'is_readable';
 						break;
-					case !@is_writable(APP_DATA_FOLDER_PATH):
+					case !is_writable(APP_DATA_FOLDER_PATH):
 						$sTest = 'is_writable';
 						break;
-					case !@mkdir($sCheckFolder, 0755):
+					case !mkdir($sCheckFolder, 0755):
 						$sTest = 'mkdir';
 						break;
-					case false === @file_put_contents($sCheckFilePath, time()):
+					case false === file_put_contents($sCheckFilePath, time()):
 						$sTest = 'file_put_contents';
 						break;
-					case !@unlink($sCheckFilePath):
+					case !unlink($sCheckFilePath):
 						$sTest = 'unlink';
 						break;
-					case !@rmdir($sCheckFolder):
+					case !rmdir($sCheckFolder):
 						$sTest = 'rmdir';
 						break;
 				}
@@ -128,59 +126,59 @@
 
 			define('APP_PLUGINS_PATH', APP_PRIVATE_DATA.'plugins/');
 
-			if (APP_VERSION !== $sInstalled || (APP_MULTIPLY && !@is_dir(APP_PRIVATE_DATA)))
+			if (APP_VERSION !== $sInstalled || (APP_MULTIPLY && !is_dir(APP_PRIVATE_DATA)))
 			{
 				define('APP_INSTALLED_START', true);
 				define('APP_INSTALLED_VERSION', $sInstalled);
 
-				@file_put_contents(APP_DATA_FOLDER_PATH.'INSTALLED', APP_VERSION);
-				@file_put_contents(APP_DATA_FOLDER_PATH.'VERSION', APP_VERSION);
-				@file_put_contents(APP_DATA_FOLDER_PATH.'index.html', 'Forbidden');
-				@file_put_contents(APP_DATA_FOLDER_PATH.'index.php', 'Forbidden');
+				file_put_contents(APP_DATA_FOLDER_PATH.'INSTALLED', APP_VERSION);
+				file_put_contents(APP_DATA_FOLDER_PATH.'VERSION', APP_VERSION);
+				file_put_contents(APP_DATA_FOLDER_PATH.'index.html', 'Forbidden');
+				file_put_contents(APP_DATA_FOLDER_PATH.'index.php', 'Forbidden');
 
-				if (!@file_exists(APP_DATA_FOLDER_PATH.'.htaccess') && @file_exists(APP_VERSION_ROOT_PATH.'app/.htaccess'))
+				if (!file_exists(APP_DATA_FOLDER_PATH.'.htaccess') && file_exists(APP_VERSION_ROOT_PATH.'app/.htaccess'))
 				{
-					@file_put_contents(APP_DATA_FOLDER_PATH.'.htaccess', @file_get_contents(APP_VERSION_ROOT_PATH.'app/.htaccess'));
+					file_put_contents(APP_DATA_FOLDER_PATH.'.htaccess', file_get_contents(APP_VERSION_ROOT_PATH.'app/.htaccess'));
 				}
 
-				if (!@is_dir(APP_PRIVATE_DATA))
+				if (!is_dir(APP_PRIVATE_DATA))
 				{
-					@mkdir(APP_PRIVATE_DATA, 0755, true);
+					mkdir(APP_PRIVATE_DATA, 0755, true);
 				}
 
 				foreach (array('logs', 'cache', 'configs', 'plugins', 'storage') as $sName)
 				{
-					if (!@is_dir(APP_PRIVATE_DATA.$sName))
+					if (!is_dir(APP_PRIVATE_DATA.$sName))
 					{
-						@mkdir(APP_PRIVATE_DATA.$sName, 0755, true);
+						mkdir(APP_PRIVATE_DATA.$sName, 0755, true);
 					}
 				}
 
-				if (!@file_exists(APP_PRIVATE_DATA.'domains/disabled'))
+				if (!file_exists(APP_PRIVATE_DATA.'domains/disabled'))
 				{
-					if (!@is_dir(APP_PRIVATE_DATA.'domains'))
+					if (!is_dir(APP_PRIVATE_DATA.'domains'))
 					{
-						@mkdir(APP_PRIVATE_DATA.'domains', 0755);
+						mkdir(APP_PRIVATE_DATA.'domains', 0755);
 					}
 
-					if (@is_dir(APP_PRIVATE_DATA.'domains'))
+					if (is_dir(APP_PRIVATE_DATA.'domains'))
 					{
 						$sFile = $sNewFile = $sNewFileName = '';
-						$aFiles = @glob(APP_VERSION_ROOT_PATH.'app/domains/*');
+						$aFiles = glob(APP_VERSION_ROOT_PATH.'app/domains/*');
 
 						if (is_array($aFiles) && 0 < \count($aFiles))
 						{
 							foreach ($aFiles as $sFile)
 							{
-								if (@is_file($sFile))
+								if (is_file($sFile))
 								{
 									$sNewFileName = basename($sFile);
 									if ('default.ini.dist' !== $sNewFileName)
 									{
 										$sNewFile = APP_PRIVATE_DATA.'domains/'.$sNewFileName;
-										if (!@file_exists($sNewFile))
+										if (!file_exists($sNewFile))
 										{
-											@copy($sFile, $sNewFile);
+											copy($sFile, $sNewFile);
 										}
 									}
 								}
@@ -188,13 +186,13 @@
 						}
 
 //						$sClearedSiteName = preg_replace('/^(www|demo|rainloop|webmail|email|mail|imap|imap4|smtp)\./i', '', trim(APP_SITE));
-//						if (!empty($sClearedSiteName) && @file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist') &&
-//							!@file_exists(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini'))
+//						if (!empty($sClearedSiteName) && file_exists(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist') &&
+//							!file_exists(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini'))
 //						{
-//							$sConfigTemplate = @file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist');
+//							$sConfigTemplate = file_get_contents(APP_VERSION_ROOT_PATH.'app/domains/default.ini.dist');
 //							if (!empty($sConfigTemplate))
 //							{
-//								@file_put_contents(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini', strtr($sConfigTemplate, array(
+//								file_put_contents(APP_PRIVATE_DATA.'domains/'.$sClearedSiteName.'.ini', strtr($sConfigTemplate, array(
 //									'IMAP_HOST' => 'localhost' !== $sClearedSiteName? 'imap.'.$sClearedSiteName : $sClearedSiteName,
 //									'IMAP_PORT' => '993',
 //									'SMTP_HOST' => 'localhost' !== $sClearedSiteName? 'smtp.'.$sClearedSiteName : $sClearedSiteName,

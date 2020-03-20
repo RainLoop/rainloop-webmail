@@ -106,7 +106,7 @@ class Literal
 			$iRead = $iCount;
 			while (0 < $iRead)
 			{
-				$sAddRead = @fread($this->rStream, $iRead);
+				$sAddRead = fread($this->rStream, $iRead);
 				if (false === $sAddRead)
 				{
 					$sReadResult = false;

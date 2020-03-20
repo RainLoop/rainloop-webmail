@@ -149,7 +149,7 @@ class LinkFinder
 		$sResult = '';
 		if ($bUseHtmlSpecialChars)
 		{
-			$sResult = @\htmlentities($sText.$sSubText, $this->iHtmlSpecialCharsFlags, 'UTF-8');
+			$sResult = \htmlentities($sText.$sSubText, $this->iHtmlSpecialCharsFlags, 'UTF-8');
 		}
 		else
 		{

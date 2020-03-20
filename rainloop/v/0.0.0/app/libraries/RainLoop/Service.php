@@ -35,24 +35,24 @@ class Service
 		$sServer = \trim($this->oActions->Config()->Get('security', 'custom_server_signature', ''));
 		if (0 < \strlen($sServer))
 		{
-			@\header('Server: '.$sServer, true);
+			\header('Server: '.$sServer, true);
 		}
 
 		$sXFrameOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_frame_options_header', ''));
 		if (0 < \strlen($sXFrameOptionsHeader))
 		{
-			@\header('X-Frame-Options: '.$sXFrameOptionsHeader, true);
+			\header('X-Frame-Options: '.$sXFrameOptionsHeader, true);
 		}
 
 		$sXssProtectionOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_xss_protection_header', ''));
 		if (0 < \strlen($sXssProtectionOptionsHeader))
 		{
-			@\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader, true);
+			\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader, true);
 		}
 
 		if ($this->oActions->Config()->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
 		{
-			@\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl(), true);
+			\header('Location: https://'.$this->oHttp->GetHost(false, false).$this->oHttp->GetUrl(), true);
 			exit(0);
 		}
 
@@ -157,13 +157,13 @@ class Service
 				}
 			}
 
-			@\header('Content-Security-Policy:');
-			@\header_remove('Content-Security-Policy');
+			\header('Content-Security-Policy:');
+			\header_remove('Content-Security-Policy');
 
-			@header('Content-Type: text/html; charset=utf-8');
+			header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
 
-			if (!@\is_dir(APP_DATA_FOLDER_PATH) || !@\is_writable(APP_DATA_FOLDER_PATH))
+			if (!\is_dir(APP_DATA_FOLDER_PATH) || !\is_writable(APP_DATA_FOLDER_PATH))
 			{
 				echo $this->oServiceActions->ErrorTemplates(
 					'Permission denied!',
@@ -214,7 +214,7 @@ class Service
 		}
 		else
 		{
-			@\header('X-XSS-Protection: 1; mode=block');
+			\header('X-XSS-Protection: 1; mode=block');
 		}
 
 		// Output result

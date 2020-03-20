@@ -213,7 +213,7 @@ abstract class NetClient
 		$this->writeLog('Start connection to "'.$this->sConnectedHost.':'.$this->iConnectedPort.'"',
 			\MailSo\Log\Enumerations\Type::NOTE);
 
-//		$this->rConnect = @\fsockopen($this->sConnectedHost, $this->iConnectedPort,
+//		$this->rConnect = \fsockopen($this->sConnectedHost, $this->iConnectedPort,
 //			$iErrorNo, $sErrorStr, $this->iConnectTimeOut);
 
 		$bVerifySsl = !!$bVerifySsl;
@@ -270,7 +270,7 @@ abstract class NetClient
 		{
 			if (\MailSo\Base\Utils::FunctionExistsAndEnabled('stream_set_timeout'))
 			{
-				@\stream_set_timeout($this->rConnect, $this->iSocketTimeOut);
+				\stream_set_timeout($this->rConnect, $this->iSocketTimeOut);
 			}
 		}
 	}
@@ -284,11 +284,11 @@ abstract class NetClient
 			switch (true)
 			{
 				case defined('STREAM_CRYPTO_METHOD_ANY_CLIENT') &&
-					@\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_ANY_CLIENT):
+					\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_ANY_CLIENT):
 				case defined('STREAM_CRYPTO_METHOD_TLS_CLIENT') &&
-					@\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT):
+					\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLS_CLIENT):
 				case defined('STREAM_CRYPTO_METHOD_SSLv23_CLIENT') &&
-					@\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_SSLv23_CLIENT):
+					\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_SSLv23_CLIENT):
 					$bError = false;
 					break;
 			}
@@ -389,7 +389,7 @@ abstract class NetClient
 			$sFakeRaw .= "\r\n";
 		}
 
-		$mResult = @\fwrite($this->rConnect, $sRaw);
+		$mResult = \fwrite($this->rConnect, $sRaw);
 		if (false === $mResult)
 		{
 			$this->IsConnected(true);
@@ -420,7 +420,7 @@ abstract class NetClient
 	{
 		if (null === $mReadLen)
 		{
-			$this->sResponseBuffer = @\fgets($this->rConnect);
+			$this->sResponseBuffer = \fgets($this->rConnect);
 		}
 		else
 		{
@@ -428,7 +428,7 @@ abstract class NetClient
 			$iRead = $mReadLen;
 			while (0 < $iRead)
 			{
-				$sAddRead = @\fread($this->rConnect, $iRead);
+				$sAddRead = \fread($this->rConnect, $iRead);
 				if (false === $sAddRead)
 				{
 					$this->sResponseBuffer = false;
@@ -445,7 +445,7 @@ abstract class NetClient
 			$this->IsConnected(true);
 			$this->bUnreadBuffer = true;
 
-			$aSocketStatus = @\stream_get_meta_data($this->rConnect);
+			$aSocketStatus = \stream_get_meta_data($this->rConnect);
 			if (isset($aSocketStatus['timed_out']) && $aSocketStatus['timed_out'])
 			{
 				$this->writeLogException(

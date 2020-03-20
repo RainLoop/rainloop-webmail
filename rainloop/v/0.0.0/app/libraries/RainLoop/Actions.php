@@ -528,7 +528,7 @@ class Actions
 
 	public function SetAuthLogoutToken() : void
 	{
-		@\header('X-RainLoop-Action: Logout');
+		\header('X-RainLoop-Action: Logout');
 		\RainLoop\Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5($_SERVER['REQUEST_TIME_FLOAT']), 0);
 	}
 
@@ -899,9 +899,9 @@ class Actions
 					$sLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName($sLogFileName);
 					$sLogFileDir = \dirname($sLogFileFullPath);
 
-					if (!@is_dir($sLogFileDir))
+					if (!is_dir($sLogFileDir))
 					{
-						@mkdir($sLogFileDir, 0755, true);
+						mkdir($sLogFileDir, 0755, true);
 					}
 
 					$oDriver = \MailSo\Log\Drivers\File::NewInstance($sLogFileFullPath);
@@ -937,7 +937,7 @@ class Actions
 				$sPdo = empty($sPdo) ? '~' : $sPdo;
 
 				$this->oLogger->Write('['.
-					'Suhosin:'.(\extension_loaded('suhosin') || @\ini_get('suhosin.get.max_value_length') ? 'on' : 'off').
+					'Suhosin:'.(\extension_loaded('suhosin') || \ini_get('suhosin.get.max_value_length') ? 'on' : 'off').
 					'][APC:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off').
 					'][MB:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off').
 					'][PDO:'.$sPdo.
@@ -966,9 +966,9 @@ class Actions
 
 				$sLogFileDir = \dirname($sAuthLogFileFullPath);
 
-				if (!@is_dir($sLogFileDir))
+				if (!is_dir($sLogFileDir))
 				{
-					@mkdir($sLogFileDir, 0755, true);
+					mkdir($sLogFileDir, 0755, true);
 				}
 
 				$this->oLoggerAuth->AddForbiddenType(\MailSo\Log\Enumerations\Type::MEMORY);
@@ -1298,7 +1298,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		if ('' !== $aResult['LoadingDescription'] && 'RainLoop' !== $aResult['LoadingDescription'])
 		{
-			$aResult['LoadingDescriptionEsc'] = @\htmlspecialchars($aResult['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8');
+			$aResult['LoadingDescriptionEsc'] = \htmlspecialchars($aResult['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8');
 		}
 
 		$oSettings = null;
@@ -2043,7 +2043,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$aAccounts = array();
 			if ('' !== $sAccounts && '{' === \substr($sAccounts, 0, 1))
 			{
-				$aAccounts = @\json_decode($sAccounts, true);
+				$aAccounts = \json_decode($sAccounts, true);
 			}
 
 			if (\is_array($aAccounts) && 0 < \count($aAccounts))
@@ -2060,7 +2060,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						'accounts_identities_order'
 					);
 
-					$aOrder = empty($sOrder) ? array() : @\json_decode($sOrder, true);
+					$aOrder = empty($sOrder) ? array() : \json_decode($sOrder, true);
 					if (isset($aOrder['Accounts']) && \is_array($aOrder['Accounts']) &&
 						1 < \count($aOrder['Accounts']))
 					{
@@ -2099,7 +2099,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 			if ('' !== $sData && '[' === \substr($sData, 0, 1))
 			{
-				$aData = @\json_decode($sData, true);
+				$aData = \json_decode($sData, true);
 			}
 
 			if (\is_array($aData) && 0 < \count($aData))
@@ -2123,7 +2123,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					'templates_order'
 				);
 
-				$aOrder = empty($sOrder) ? array() : @\json_decode($sOrder, true);
+				$aOrder = empty($sOrder) ? array() : \json_decode($sOrder, true);
 				if (\is_array($aOrder) && 1 < \count($aOrder))
 				{
 					\usort($aTemplates, function ($a, $b) use ($aOrder) {
@@ -2170,7 +2170,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 			if ('' !== $sData && '[' === \substr($sData, 0, 1))
 			{
-				$aSubIdentities = @\json_decode($sData, true);
+				$aSubIdentities = \json_decode($sData, true);
 			}
 
 			$bHasAccountIdentity = false;
@@ -2212,7 +2212,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					'accounts_identities_order'
 				);
 
-				$aOrder = empty($sOrder) ? array() : @\json_decode($sOrder, true);
+				$aOrder = empty($sOrder) ? array() : \json_decode($sOrder, true);
 				if (isset($aOrder['Identities']) && \is_array($aOrder['Identities']) &&
 					1 < \count($aOrder['Identities']))
 				{
@@ -2274,7 +2274,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->StorageProvider()->Put($oAccount,
 				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 				'accounts',
-				@\json_encode($aAccounts)
+				\json_encode($aAccounts)
 			);
 		}
 	}
@@ -2297,7 +2297,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->StorageProvider(true)->Put($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'identities',
-			@\json_encode($aResult)
+			\json_encode($aResult)
 		);
 	}
 
@@ -2312,7 +2312,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $this->StorageProvider(true)->Put($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			'templates',
-			@\json_encode($aResult)
+			\json_encode($aResult)
 		);
 	}
 
@@ -3576,7 +3576,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 			if (false !== $sRep)
 			{
-				$aRep = @\json_decode($sRep);
+				$aRep = \json_decode($sRep);
 				$bReal = \is_array($aRep) && 0 < \count($aRep);
 
 				if ($bReal)
@@ -3592,7 +3592,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 		else if ('' !== $sRep)
 		{
-			$aRep = @\json_decode($sRep, false, 10);
+			$aRep = \json_decode($sRep, false, 10);
 			$bReal = \is_array($aRep) && 0 < \count($aRep);
 		}
 
@@ -3672,7 +3672,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 			if (false !== $sRep)
 			{
-				$aRep = @\json_decode($sRep, true, 10);
+				$aRep = \json_decode($sRep, true, 10);
 				$bReal = \is_array($aRep) && 0 < \count($aRep) && isset($aRep['id']) && 'rainloop' === $aRep['id'];
 
 				if ($bReal)
@@ -3688,7 +3688,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 		else if ('' !== $sRep)
 		{
-			$aRep = @\json_decode($sRep, true, 10);
+			$aRep = \json_decode($sRep, true, 10);
 			$bReal = \is_array($aRep) && 0 < \count($aRep) && isset($aRep['id']) && 'rainloop' === $aRep['id'];
 		}
 
@@ -3868,13 +3868,13 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$bResult = false;
 		$sTmp = APP_PRIVATE_DATA.\md5(\microtime(true).$sUrl).'.zip';
-		$pDest = @\fopen($sTmp, 'w+b');
+		$pDest = \fopen($sTmp, 'w+b');
 		if ($pDest)
 		{
 			$iCode = 0;
 			$sContentType = '';
 
-			@\set_time_limit(120);
+			\set_time_limit(120);
 
 			$oHttp = \MailSo\Base\Http::SingletonInstance();
 			$bResult = $oHttp->SaveUrlToFile($sUrl, $pDest, $sTmp, $sContentType, $iCode, $this->Logger(), 60,
@@ -3886,7 +3886,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$this->Logger()->Write($sUrl.' -> '.$sTmp, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 			}
 
-			@\fclose($pDest);
+			\fclose($pDest);
 		}
 		else
 		{
@@ -3959,7 +3959,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 			$oArchive->close();
 
-			@\unlink($sTmp);
+			\unlink($sTmp);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult ?
@@ -4625,7 +4625,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 		$sCheckableFolder = $oSettingsLocal->GetConf('CheckableFolder', '[]');
-		$aCheckableFolder = @\json_decode($sCheckableFolder);
+		$aCheckableFolder = \json_decode($sCheckableFolder);
 
 		if (!\is_array($aCheckableFolder))
 		{
@@ -4651,7 +4651,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$aCheckableFolder = \array_unique($aCheckableFolder);
 
-		$oSettingsLocal->SetConf('CheckableFolder', @\json_encode($aCheckableFolder));
+		$oSettingsLocal->SetConf('CheckableFolder', \json_encode($aCheckableFolder));
 
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
@@ -5277,7 +5277,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						$aToCollection = $oMessage->GetTo();
 						if ($aToCollection && $oFrom)
 						{
-							$sRawBody = @\stream_get_contents($rMessageStream);
+							$sRawBody = \stream_get_contents($rMessageStream);
 							if (!empty($sRawBody))
 							{
 								$sMailTo = \trim($aToCollection->ToString(true));
@@ -5492,7 +5492,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 								if (\is_resource($rAppendMessageStream))
 								{
-									@fclose($rAppendMessageStream);
+									fclose($rAppendMessageStream);
 								}
 							}
 						}
@@ -5504,7 +5504,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 					if (\is_resource($rMessageStream))
 					{
-						@\fclose($rMessageStream);
+						\fclose($rMessageStream);
 					}
 
 					$this->deleteMessageAttachmnets($oAccount);
@@ -5601,7 +5601,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 					if (\is_resource($rMessageStream))
 					{
-						@\fclose($rMessageStream);
+						\fclose($rMessageStream);
 					}
 
 					$mResult = true;
@@ -6529,7 +6529,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 				if (\is_resource($rFile))
 				{
-					@\fclose($rFile);
+					\fclose($rFile);
 				}
 			}
 		}
@@ -6683,9 +6683,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				else
 				{
 					$rData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-					if (@\is_resource($rData))
+					if (\is_resource($rData))
 					{
-						$sData = @\stream_get_contents($rData);
+						$sData = \stream_get_contents($rData);
 						if (!empty($sData) && 0 < \strlen($sData))
 						{
 							$sName = $aFile['name'];
@@ -6719,9 +6719,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						unset($sData);
 					}
 
-					if (@\is_resource($rData))
+					if (\is_resource($rData))
 					{
-						@\fclose($rData);
+						\fclose($rData);
 					}
 
 					unset($rData);
@@ -6770,11 +6770,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 			else
 			{
-				@\ini_set('auto_detect_line_endings', true);
+				\ini_set('auto_detect_line_endings', true);
 				$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
 				if ($mData)
 				{
-					$sFileStart = @\fread($mData, 20);
+					$sFileStart = \fread($mData, 20);
 					\rewind($mData);
 
 					if (false !== $sFileStart)
@@ -6793,13 +6793,13 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 				if (\is_resource($mData))
 				{
-					@\fclose($mData);
+					\fclose($mData);
 				}
 
 				unset($mData);
 				$this->FilesProvider()->Clear($oAccount, $sSavedName);
 
-				@\ini_set('auto_detect_line_endings', false);
+				\ini_set('auto_detect_line_endings', false);
 			}
 		}
 
@@ -6830,7 +6830,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				$sDelimiter = ((int) \strpos($sFileStart, ',') > (int) \strpos($sFileStart, ';')) ? ',' : ';';
 
-				@\setlocale(LC_CTYPE, 'en_US.UTF-8');
+				\setlocale(LC_CTYPE, 'en_US.UTF-8');
 				while (false !== ($mRow = \fgetcsv($rFile, 5000, $sDelimiter, '"')))
 				{
 					if (null === $aHeaders)
@@ -6946,7 +6946,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						$sUrl = $this->Http()->GetFullUrl().'?/Raw/&q[]=/'.\implode('/', $aParams).'/&q[]=/'.$sLast;
 						$sFullUrl = 'https://docs.google.com/viewer?embedded=true&url='.\urlencode($sUrl);
 
-						@\header('Content-Type: text/html; charset=utf-8');
+						\header('Content-Type: text/html; charset=utf-8');
 						echo '<html style="height: 100%; width: 100%; margin: 0; padding: 0"><head></head>'.
 							'<body style="height: 100%; width: 100%; margin: 0; padding: 0">'.
 							'<iframe style="height: 100%; width: 100%; margin: 0; padding: 0; border: 0" src="'.$sFullUrl.'"></iframe>'.
@@ -7206,14 +7206,14 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					$sHash = \MailSo\Base\Utils::Md5Rand($sFileNameIn.'~'.$sContentTypeIn);
 					$rTempResource = $oFileProvider->GetFile($oAccount, $sHash, 'wb+');
 
-					if (@\is_resource($rTempResource))
+					if (\is_resource($rTempResource))
 					{
 						if (false !== \MailSo\Base\Utils::MultipleStreamWriter($rResource, array($rTempResource)))
 						{
 							$sResultHash = $sHash;
 						}
 
-						@\fclose($rTempResource);
+						\fclose($rTempResource);
 					}
 				}
 
@@ -7555,7 +7555,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				$this->cacheByKey($sRawKey);
 
-				@\header('Content-Type: '.$aData['ContentType']);
+				\header('Content-Type: '.$aData['ContentType']);
 				echo \base64_decode($aData['Raw']);
 				unset($aData);
 
@@ -7591,7 +7591,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				$this->cacheByKey($sRawKey);
 
-				@\header('Content-Type: '.$sContentType);
+				\header('Content-Type: '.$sContentType);
 				echo \preg_replace('/^data:[^:]+:/', '', $sData);
 				unset($sData);
 
@@ -7839,7 +7839,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$bDefault = false;
 		$sList = array();
 		$sDir = APP_VERSION_ROOT_PATH.'themes';
-		if (@\is_dir($sDir))
+		if (\is_dir($sDir))
 		{
 			$rDirH = \opendir($sDir);
 			if ($rDirH)
@@ -7862,12 +7862,12 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						}
 					}
 				}
-				@closedir($rDirH);
+				closedir($rDirH);
 			}
 		}
 
 		$sDir = APP_INDEX_ROOT_PATH.'themes'; // custom user themes
-		if (@\is_dir($sDir))
+		if (\is_dir($sDir))
 		{
 			$rDirH = \opendir($sDir);
 			if ($rDirH)
@@ -7880,7 +7880,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					}
 				}
 
-				@\closedir($rDirH);
+				\closedir($rDirH);
 			}
 		}
 
@@ -7917,7 +7917,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$aTop = array();
 		$aList = array();
 
-		if (@\is_dir($sDir))
+		if (\is_dir($sDir))
 		{
 			$rDirH = \opendir($sDir);
 			if ($rDirH)
@@ -7934,7 +7934,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					}
 				}
 
-				@\closedir($rDirH);
+				\closedir($rDirH);
 			}
 		}
 
@@ -8603,7 +8603,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					if (null === $this->oAccount) {
 						$this->oAccount = $this->getAccountFromToken(false);
 					}
-					$aCheckable = @\json_decode(
+					$aCheckable = \json_decode(
 						$this->SettingsProvider(true)
 						->Load($this->oAccount)
 						->GetConf('CheckableFolder', '[]')

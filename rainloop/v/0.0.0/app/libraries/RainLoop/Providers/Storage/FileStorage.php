@@ -31,7 +31,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 	 */
 	public function Put($oAccount, int $iStorageType, string $sKey, string $sValue) : bool
 	{
-		return false !== @\file_put_contents(
+		return false !== \file_put_contents(
 			$this->generateFileName($oAccount, $iStorageType, $sKey, true), $sValue);
 	}
 
@@ -62,7 +62,7 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 		$sFileName = $this->generateFileName($oAccount, $iStorageType, $sKey);
 		if (\file_exists($sFileName))
 		{
-			$mResult = @\unlink($sFileName);
+			$mResult = \unlink($sFileName);
 		}
 
 		return $mResult;
@@ -154,9 +154,9 @@ class FileStorage implements \RainLoop\Providers\Storage\IStorage
 				($bForDeleteAction ? '' : $sKeyPath);
 		}
 
-		if ($bMkDir && !$bForDeleteAction && !empty($sFilePath) && !@\is_dir(\dirname($sFilePath)))
+		if ($bMkDir && !$bForDeleteAction && !empty($sFilePath) && !\is_dir(\dirname($sFilePath)))
 		{
-			if (!@\mkdir(\dirname($sFilePath), 0755, true))
+			if (!\mkdir(\dirname($sFilePath), 0755, true))
 			{
 				throw new \RainLoop\Exceptions\Exception('Can\'t make storage directory "'.$sFilePath.'"');
 			}

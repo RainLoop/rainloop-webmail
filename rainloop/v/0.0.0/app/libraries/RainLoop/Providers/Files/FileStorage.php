@@ -30,11 +30,11 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		$bResult = false;
 		if ($rSource)
 		{
-			$rOpenOutput = @\fopen($this->generateFullFileName($oAccount, $sKey, true), 'w+b');
+			$rOpenOutput = \fopen($this->generateFullFileName($oAccount, $sKey, true), 'w+b');
 			if ($rOpenOutput)
 			{
 				$bResult = (false !== \MailSo\Base\Utils::MultipleStreamWriter($rSource, array($rOpenOutput)));
-				@\fclose($rOpenOutput);
+				\fclose($rOpenOutput);
 			}
 		}
 		return $bResult;
@@ -42,7 +42,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	public function MoveUploadedFile(\RainLoop\Model\Account $oAccount, string $sKey, string $sSource) : bool
 	{
-		return @\move_uploaded_file($sSource,
+		return \move_uploaded_file($sSource,
 			$this->generateFullFileName($oAccount, $sKey, true));
 	}
 
@@ -57,7 +57,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		$sFileName = $this->generateFullFileName($oAccount, $sKey, $bCreate);
 		if ($bCreate || \file_exists($sFileName))
 		{
-			$mResult = @\fopen($sFileName, $sOpenMode);
+			$mResult = \fopen($sFileName, $sOpenMode);
 
 			if (\is_resource($mResult))
 			{
@@ -88,10 +88,10 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 		{
 			if (isset($this->aResources[$sFileName]) && \is_resource($this->aResources[$sFileName]))
 			{
-				@\fclose($this->aResources[$sFileName]);
+				\fclose($this->aResources[$sFileName]);
 			}
 
-			$mResult = @\unlink($sFileName);
+			$mResult = \unlink($sFileName);
 		}
 
 		return $mResult;
@@ -111,7 +111,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 
 	public function FileExists(\RainLoop\Model\Account $oAccount, string $sKey) : bool
 	{
-		return @\file_exists($this->generateFullFileName($oAccount, $sKey));
+		return \file_exists($this->generateFullFileName($oAccount, $sKey));
 	}
 
 	public function GC(int $iTimeToClearInHours = 24) : bool
@@ -133,7 +133,7 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 			{
 				if (!empty($sFileName) && \is_resource($rFile))
 				{
-					@\fclose($rFile);
+					\fclose($rFile);
 				}
 			}
 		}
@@ -166,9 +166,9 @@ class FileStorage implements \RainLoop\Providers\Files\IFiles
 			(0 < \strlen($sSubEmail) ? $sSubEmail.'/' : '').
 			$sKeyPath;
 
-		if ($bMkDir && !empty($sFilePath) && !@\is_dir(\dirname($sFilePath)))
+		if ($bMkDir && !empty($sFilePath) && !\is_dir(\dirname($sFilePath)))
 		{
-			if (!@\mkdir(\dirname($sFilePath), 0755, true))
+			if (!\mkdir(\dirname($sFilePath), 0755, true))
 			{
 				throw new \RainLoop\Exceptions\Exception('Can\'t make storage directory "'.$sFilePath.'"');
 			}
