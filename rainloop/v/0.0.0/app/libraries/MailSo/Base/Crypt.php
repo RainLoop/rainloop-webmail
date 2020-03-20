@@ -73,7 +73,7 @@ class Crypt
 		}
 
 		if (\is_callable('xxtea_decrypt')) {
-			return xxtea_decrypt($sString, $sKey);
+			return xxtea_decrypt($sEncriptedString, $sKey);
 		}
 
 		$aV = self::str2long($sEncriptedString, false);
