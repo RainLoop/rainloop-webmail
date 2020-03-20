@@ -5,7 +5,7 @@ const concat = require('gulp-concat-util'),
 	header = require('gulp-header'),
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),
-	uglify = require('gulp-uglify'),
+	terser = require('gulp-terser'),
 	plumber = require('gulp-plumber'),
 	gulpif = require('gulp-if'),
 	eol = require('gulp-eol'),
@@ -65,10 +65,8 @@ const jsMin = () =>
 		.pipe(replace(/"rainloop\/v\/([^/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(
-			uglify({
-				mangle: true,
-				compress: true,
-				ie8: false
+			terser({
+				output: {comments: false}
 			})
 		)
 		.pipe(eol('\n', true))
