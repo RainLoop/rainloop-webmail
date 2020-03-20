@@ -33,17 +33,22 @@ export default (App) => {
 
 	window.rl = rl;
 
+	const start = () => {
+		window.setTimeout(() => {
+			$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
+
+			App.bootstart();
+		}, Enums.Magics.Time10ms);
+	};
+
 	window.__APP_BOOT = (fErrorCallback) => {
 		domReady(() => {
 			window.setTimeout(() => {
-				if (window.rainloopTEMPLATES && window.rainloopTEMPLATES[0]) {
+				if (window.document.getElementById('rainloop-templates-id')) {
+					start();
+				} else if (window.rainloopTEMPLATES && window.rainloopTEMPLATES[0]) {
 					window.document.getElementById('rl-templates').innerHTML = window.rainloopTEMPLATES[0];
-
-					window.setTimeout(() => {
-						$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
-
-						App.bootstart();
-					}, Enums.Magics.Time10ms);
+					start();
 				} else {
 					fErrorCallback();
 				}

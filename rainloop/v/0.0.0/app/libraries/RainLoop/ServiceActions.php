@@ -1302,7 +1302,7 @@ class ServiceActions
 
 		$this->oActions->Plugins()->CompileTemplate($aTemplates, $bAdmin);
 
-		$sHtml = '';
+		$sHtml = '<script id="rainloop-templates-id"></script>';
 		foreach ($aTemplates as $sName => $sFile)
 		{
 			$sName = \preg_replace('/[^a-zA-Z0-9]/', '', $sName);

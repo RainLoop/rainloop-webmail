@@ -111,11 +111,11 @@ class EmailDep
 
 		while ($iCurrentIndex < \strlen($sEmailAddress))
 		{
-			switch ($sEmailAddress{$iCurrentIndex})
+			switch ($sEmailAddress[$iCurrentIndex])
 			{
 //				case '\'':
 				case '"':
-//					$sQuoteChar = $sEmailAddress{$iCurrentIndex};
+//					$sQuoteChar = $sEmailAddress[$iCurrentIndex];
 					if ((!$bInName) && (!$bInAddress) && (!$bInComment))
 					{
 						$bInName = true;

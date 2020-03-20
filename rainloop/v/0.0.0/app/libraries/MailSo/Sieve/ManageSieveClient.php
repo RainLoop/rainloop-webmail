@@ -325,7 +325,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		$sScript = '';
 		if (\is_array($mResponse) && 0 < \count($mResponse))
 		{
-			if ('{' === $mResponse[0]{0})
+			if ('{' === $mResponse[0][0])
 			{
 				\array_shift($mResponse);
 			}

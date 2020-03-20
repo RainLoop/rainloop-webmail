@@ -78,7 +78,7 @@
 		<div class="control-group">
 			<label class="control-label" data-i18n="TAB_SECURITY/LABEL_CURRENT_PASSWORD"></label>
 			<div class="controls">
-				<input type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				<input type="password" autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 					data-bind="textInput: adminPassword" />
 			</div>
 		</div>
@@ -86,21 +86,21 @@
 		<div class="control-group" data-bind="css: {'error': adminLoginError}">
 			<label class="control-label" data-i18n="TAB_SECURITY/LABEL_NEW_LOGIN"></label>
 			<div class="controls">
-				<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				<input type="text" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
 					data-bind="textInput: adminLogin" />
 			</div>
 		</div>
 		<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
 			<label class="control-label" data-i18n="TAB_SECURITY/LABEL_NEW_PASSWORD"></label>
 			<div class="controls">
-				<input type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				<input type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 					data-bind="textInput: adminPasswordNew" />
 			</div>
 		</div>
 		<div class="control-group" data-bind="css: {'error': adminPasswordNewError}">
 			<label class="control-label" data-i18n="TAB_SECURITY/LABEL_REPEAT_PASSWORD"></label>
 			<div class="controls">
-				<input type="password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+				<input type="password" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 					data-bind="textInput: adminPasswordNew2" />
 			</div>
 		</div>
