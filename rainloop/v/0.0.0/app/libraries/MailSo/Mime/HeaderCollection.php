@@ -39,8 +39,9 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return new self($sRawHeaders, $bStoreRawHeaders);
 	}
 
-	public function append(Header $oHeader, bool $bToTop = false) : void
+	public function append($oHeader, bool $bToTop = false) : void
 	{
+		assert($oHeader instanceof Header);
 		parent::append($oHeader, $bToTop);
 	}
 

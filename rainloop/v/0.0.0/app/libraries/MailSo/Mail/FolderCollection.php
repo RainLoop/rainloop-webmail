@@ -58,8 +58,9 @@ class FolderCollection extends \MailSo\Base\Collection
 		return new self();
 	}
 
-	public function append(Folder $oFolder, bool $bToTop = false) : void
+	public function append($oFolder, bool $bToTop = false) : void
 	{
+		assert($oFolder instanceof Folder);
 		parent::append($oFolder, $bToTop);
 	}
 

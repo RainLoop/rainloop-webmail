@@ -32,9 +32,10 @@ class ParameterCollection extends \MailSo\Base\Collection
 		return new self($sRawParams);
 	}
 
-	public function append(Parameter $oHeader, bool $bToTop = false) : void
+	public function append($oParameter, bool $bToTop = false) : void
 	{
-		parent::append($oHeader, $bToTop);
+		assert($oParameter instanceof Parameter);
+		parent::append($oParameter, $bToTop);
 	}
 
 	public function ParameterValueByName(string $sName) : string

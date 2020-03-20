@@ -27,9 +27,10 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		return new self();
 	}
 
-	public function append(Attachment $oFolder, bool $bToTop = false) : void
+	public function append($oAttachment, bool $bToTop = false) : void
 	{
-		parent::append($oFolder, $bToTop);
+		assert($oAttachment instanceof Attachment);
+		parent::append($oAttachment, $bToTop);
 	}
 
 	public function LinkedAttachments() : array

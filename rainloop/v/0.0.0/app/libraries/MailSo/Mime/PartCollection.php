@@ -27,8 +27,9 @@ class PartCollection extends \MailSo\Base\Collection
 		return new self();
 	}
 
-	public function append(Part $oPart, bool $bToTop = false) : void
+	public function append($oPart, bool $bToTop = false) : void
 	{
+		assert($oPart instanceof Part);
 		parent::append($oPart, $bToTop);
 	}
 

@@ -89,8 +89,9 @@ class MessageCollection extends \MailSo\Base\Collection
 		return new self();
 	}
 
-	public function append(Message $oMessage, bool $bToTop = false) : void
+	public function append($oMessage, bool $bToTop = false) : void
 	{
+		assert($oMessage instanceof Message);
 		parent::append($oMessage, $bToTop);
 	}
 

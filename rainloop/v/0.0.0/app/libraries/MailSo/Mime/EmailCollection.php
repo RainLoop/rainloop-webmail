@@ -33,8 +33,9 @@ class EmailCollection extends \MailSo\Base\Collection
 		return new self($sEmailAddresses);
 	}
 
-	public function append(Email $oEmail, bool $bToTop = false) : void
+	public function append($oEmail, bool $bToTop = false) : void
 	{
+		assert($oEmail instanceof Email);
 		parent::append($oEmail, $bToTop);
 	}
 
