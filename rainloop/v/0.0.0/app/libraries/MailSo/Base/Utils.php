@@ -146,7 +146,7 @@ END;
 			}
 			else
 			{
-				$sSrt = @\utf8_encode($sSrt);
+				$sSrt = \utf8_encode($sSrt);
 			}
 		}
 

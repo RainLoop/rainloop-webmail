@@ -174,7 +174,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$sContinuationResponse = !empty($this->aResults[0]) ? \trim($this->aResults[0]) : '';
 			if ($sContinuationResponse && '334 ' === \substr($sContinuationResponse, 0, 4) && 0 < \strlen(\substr($sContinuationResponse, 4)))
 			{
-				$sTicket = @\base64_decode(\substr($sContinuationResponse, 4));
+				$sTicket = \base64_decode(\substr($sContinuationResponse, 4));
 				$this->writeLogWithCrlf('ticket: '.$sTicket);
 			}
 
