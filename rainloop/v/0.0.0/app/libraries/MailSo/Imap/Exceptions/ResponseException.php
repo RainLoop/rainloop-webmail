@@ -23,19 +23,19 @@ class ResponseException extends \MailSo\Imap\Exceptions\Exception
 	 */
 	private $oResponses;
 
-	public function __construct(?ResponseCollection $oResponses = null, string $sMessage = '', int $iCode = 0, ?\Throwable $oPrevious = null)
+	public function __construct(?\MailSo\Imap\ResponseCollection $oResponses = null, string $sMessage = '', int $iCode = 0, ?\Throwable $oPrevious = null)
 	{
 		parent::__construct($sMessage, $iCode, $oPrevious);
 
 		$this->oResponses = $oResponses;
 	}
 
-	public function GetResponses() : ?ResponseCollection
+	public function GetResponses() : ?\MailSo\Imap\ResponseCollection
 	{
 		return $this->oResponses;
 	}
 
-	public function GetLastResponse() : ?Response
+	public function GetLastResponse() : ?\MailSo\Imap\Response
 	{
 		if ($this->oResponses && \count($this->oResponses)) {
 			return $this->oResponses[count($this->oResponses) - 1];

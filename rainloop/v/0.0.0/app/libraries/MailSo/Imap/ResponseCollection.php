@@ -54,6 +54,33 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $this;
 	}
 
+	public function getCapabilityResult() : ?array
+	{
+		foreach ($this as $oResponse) {
+			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
+				&& \is_array($oResponse->ResponseList))
+			{
+				$aList = null;
+				if (isset($oResponse->ResponseList[1]) && \is_string($oResponse->ResponseList[1]) &&
+					'CAPABILITY' === \strtoupper($oResponse->ResponseList[1]))
+				{
+					$aList = \array_slice($oResponse->ResponseList, 2);
+				}
+				else if ($oResponse->OptionalResponse && \is_array($oResponse->OptionalResponse) &&
+					1 < \count($oResponse->OptionalResponse) && \is_string($oResponse->OptionalResponse[0]) &&
+					'CAPABILITY' === \strtoupper($oResponse->OptionalResponse[0]))
+				{
+					$aList = \array_slice($oResponse->OptionalResponse, 1);
+				}
+
+				if (\is_array($aList) && 0 < \count($aList)) {
+					return \array_map('strtoupper', $aList);
+				}
+			}
+		}
+		return null;
+	}
+
 	public function getFetchResult() : array
 	{
 		$aReturn = array();
@@ -174,7 +201,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 	public function getMessageSimpleSortResult(string $sStatus, bool $bReturnUid) : array
 	{
 		$aReturn = array();
-		foreach ($oResult as $oResponse) {
+		foreach ($this as $oResponse) {
 			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && $sStatus === $oResponse->ResponseList[2]) ? 1 : 0;
 			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& ($sStatus === $oResponse->StatusOrIndex || $iOffset)
@@ -193,7 +220,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 	public function getMessageSimpleThreadResult($sStatus, $bReturnUid) : array
 	{
 		$aReturn = array();
-		foreach ($aResult as $oResponse) {
+		foreach ($this as $oResponse) {
 			$iOffset = ($bReturnUid && 'UID' === $oResponse->StatusOrIndex && !empty($oResponse->ResponseList[2]) && $sStatus === $oResponse->ResponseList[2]) ? 1 : 0;
 			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType
 				&& ($sStatus === $oResponse->StatusOrIndex || $iOffset)

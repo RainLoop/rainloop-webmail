@@ -89,8 +89,6 @@ class ImapClient extends \MailSo\Net\NetClient
 		$this->iTagCount = 0;
 		$this->aCapabilityItems = null;
 		$this->oCurrentFolderInfo = null;
-		$this->aFetchCallbacks = null;
-		$this->iResponseBufParsedPos = 0;
 
 		$this->oLastResponse = new ResponseCollection();
 		$this->bNeedNext = true;
@@ -130,7 +128,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		parent::Connect($sServerName, $iPort, $iSecurityType, $bVerifySsl, $bAllowSelfSigned, $sClientCert);
 
-		$this->getResponse('*', true);
+		$this->aCapabilityItems = $this->getResponse('*')->getCapabilityResult();
 
 		if (\MailSo\Net\Enumerations\ConnectionSecurityType::UseStartTLS(
 			$this->IsSupported('STARTTLS'), $this->iSecurityType))
@@ -272,7 +270,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if ($this->bIsLoggined)
 		{
 			$this->bIsLoggined = false;
-			$this->SendRequestGetResponse('LOGOUT', array());
+			$this->SendRequestGetResponse('LOGOUT');
 		}
 
 		return $this;
@@ -294,7 +292,8 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function Capability() : ?array
 	{
-		$this->SendRequestGetResponse('CAPABILITY', array(), true);
+		$this->aCapabilityItems = $this->SendRequestGetResponse('CAPABILITY')
+			->getCapabilityResult();
 		return $this->aCapabilityItems;
 	}
 
@@ -509,7 +508,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
 
-		$this->oCurrentFolderInfo = $this->SendRequestGetResponse(($bIsWritable) ? 'SELECT' : 'EXAMINE',
+		$this->oCurrentFolderInfo = $this->SendRequestGetResponse($bIsWritable ? 'SELECT' : 'EXAMINE',
 			array($this->EscapeString($sFolderName)))
 			->getCurrentFolderInformation($sFolderName, $bIsWritable);
 
@@ -560,7 +559,6 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public function Fetch(array $aInputFetchItems, string $sIndexRange, bool $bIndexIsUid) : array
 	{
-		$sIndexRange = (string) $sIndexRange;
 		if (!strlen(\trim($sIndexRange)))
 		{
 			$this->writeLogException(
@@ -568,24 +566,22 @@ class ImapClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		$aFetchItems = Enumerations\FetchType::ChangeFetchItemsBefourRequest($aInputFetchItems);
-		foreach ($aFetchItems as $sName => $mItem)
-		{
-			if (0 < \strlen($sName) && '' !== $mItem)
+		$this->aFetchCallbacks = array();
+		try {
+			$aFetchItems = Enumerations\FetchType::ChangeFetchItemsBefourRequest($aInputFetchItems);
+			foreach ($aFetchItems as $sName => $mItem)
 			{
-				if (null === $this->aFetchCallbacks)
+				if (0 < \strlen($sName) && '' !== $mItem)
 				{
-					$this->aFetchCallbacks = array();
+					$this->aFetchCallbacks[$sName] = $mItem;
 				}
-
-				$this->aFetchCallbacks[$sName] = $mItem;
 			}
+
+			$oResult = $this->SendRequestGetResponse(($bIndexIsUid ? 'UID ' : '').'FETCH',
+				array($sIndexRange, \array_keys($aFetchItems)));
+		} finally {
+			$this->aFetchCallbacks = array();
 		}
-
-		$oResult = $this->SendRequestGetResponse(($bIndexIsUid ? 'UID ' : '').'FETCH',
-			array($sIndexRange, \array_keys($aFetchItems)));
-
-		$this->aFetchCallbacks = null;
 
 		return $oResult->getFetchResult();
 	}
@@ -1011,63 +1007,14 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function SendRequestGetResponse(string $sCommand, array $aParams = array(), bool $bFindCapa = false) : ResponseCollection
+	public function SendRequestGetResponse(string $sCommand, array $aParams = array()) : ResponseCollection
 	{
 		$this->SendRequest($sCommand, $aParams);
-		return $this->getResponse(null, $bFindCapa);
+		return $this->getResponse();
 	}
 
 	public function GetLastResponse() : ResponseCollection
 	{
-		return $this->oLastResponse;
-	}
-
-	protected function parseResponse(string $sEndTag = null, bool $bFindCapa = false) : ?ResponseCollection
-	{
-		$oResponseCollection = new ResponseCollection();
-
-		if (\is_resource($this->rConnect))
-		{
-			$oImapResponse = null;
-			$sEndTag = (null === $sEndTag) ? $this->getCurrentTag() : $sEndTag;
-
-			while (true)
-			{
-				$oImapResponse = Response::NewInstance();
-
-				$this->partialParseResponseBranch($oImapResponse);
-
-				if (Enumerations\ResponseType::UNKNOWN === $oImapResponse->ResponseType)
-				{
-					return null;
-				}
-
-				if ($bFindCapa)
-				{
-					$this->initCapabilityImapResponse($oImapResponse);
-				}
-
-				$oResponseCollection->append($oImapResponse);
-				if ($sEndTag === $oImapResponse->Tag || Enumerations\ResponseType::CONTINUATION === $oImapResponse->ResponseType)
-				{
-					if (isset($this->aTagTimeouts[$sEndTag]))
-					{
-						$this->writeLog((\microtime(true) - $this->aTagTimeouts[$sEndTag]).' ('.$sEndTag.')',
-							\MailSo\Log\Enumerations\Type::TIME);
-
-						unset($this->aTagTimeouts[$sEndTag]);
-					}
-
-					break;
-				}
-
-				unset($oImapResponse);
-			}
-		}
-
-		$this->iResponseBufParsedPos = 0;
-		$this->oLastResponse = $oResponseCollection;
-
 		return $this->oLastResponse;
 	}
 
@@ -1076,14 +1023,43 @@ class ImapClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Imap\Exceptions\InvalidResponseException
 	 * @throws \MailSo\Imap\Exceptions\NegativeResponseException
 	 */
-	private function getResponse(string $sEndTag = null, bool $bFindCapa = false) : ResponseCollection
+	private function getResponse(string $sEndTag = null) : ResponseCollection
 	{
-		$oResult = $this->parseResponse($sEndTag, $bFindCapa);
 		try {
-			if (!$oResult) {
-				throw new Exceptions\ResponseNotFoundException();
+			$oResult = new ResponseCollection();
+
+			if (\is_resource($this->rConnect)) {
+				$sEndTag = (null === $sEndTag) ? $this->getCurrentTag() : $sEndTag;
+
+				while (true) {
+					$oResponse = Response::NewInstance();
+
+					$this->partialParseResponseBranch($oResponse);
+
+					if (Enumerations\ResponseType::UNKNOWN === $oResponse->ResponseType) {
+						throw new Exceptions\ResponseNotFoundException();
+					}
+
+					$oResult->append($oResponse);
+					if ($sEndTag === $oResponse->Tag || Enumerations\ResponseType::CONTINUATION === $oResponse->ResponseType) {
+						if (isset($this->aTagTimeouts[$sEndTag])) {
+							$this->writeLog((\microtime(true) - $this->aTagTimeouts[$sEndTag]).' ('.$sEndTag.')',
+								\MailSo\Log\Enumerations\Type::TIME);
+
+							unset($this->aTagTimeouts[$sEndTag]);
+						}
+
+						break;
+					}
+
+					unset($oResponse);
+				}
 			}
+
+			$this->oLastResponse = $oResult;
+
 			$oResult->validate();
+
 		} catch (\Throwable $e) {
 			$this->writeLogException($e, \MailSo\Log\Enumerations\Type::WARNING);
 			throw $e;
@@ -1092,49 +1068,25 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $oResult;
 	}
 
-	private function initCapabilityImapResponse(Response $oImapResponse) : void
-	{
-		if (Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType
-			&& \is_array($oImapResponse->ResponseList))
-		{
-			$aList = null;
-			if (isset($oImapResponse->ResponseList[1]) && \is_string($oImapResponse->ResponseList[1]) &&
-				'CAPABILITY' === \strtoupper($oImapResponse->ResponseList[1]))
-			{
-				$aList = \array_slice($oImapResponse->ResponseList, 2);
-			}
-			else if ($oImapResponse->OptionalResponse && \is_array($oImapResponse->OptionalResponse) &&
-				1 < \count($oImapResponse->OptionalResponse) && \is_string($oImapResponse->OptionalResponse[0]) &&
-				'CAPABILITY' === \strtoupper($oImapResponse->OptionalResponse[0]))
-			{
-				$aList = \array_slice($oImapResponse->OptionalResponse, 1);
-			}
-
-			if (\is_array($aList) && 0 < \count($aList))
-			{
-				$this->aCapabilityItems = \array_map('strtoupper', $aList);
-			}
-		}
-	}
-
 	/**
 	 * @return array|string
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 */
-	private function partialParseResponseBranch(?Response $oImapResponse, int $iStackIndex = -1,
+	private function partialParseResponseBranch(?Response $oImapResponse,
 		bool $bTreatAsAtom = false, string $sParentToken = '', string $sOpenBracket = '')
 	{
-		++$iStackIndex;
+		if ($oImapResponse) {
+			$this->iResponseBufParsedPos = 0;
+			$this->bNeedNext = true;
+		}
+
 		$iPos = $this->iResponseBufParsedPos;
 
 		$sPreviousAtomUpperCase = null;
-		$bIsEndOfList = false;
-		$bIsClosingBracketSquare = false;
+		$sClosingBracket = ')';
 		$iLiteralLen = 0;
 		$iBufferEndIndex = 0;
 		$iDebugCount = 0;
-
-		$rImapLiteralStream = null;
 
 		$bIsGotoDefault = false;
 		$bIsGotoLiteral = false;
@@ -1147,12 +1099,12 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$sAtomBuilder = $bTreatAsAtom ? '' : null;
 		$aList = array();
-		if (null !== $oImapResponse)
+		if ($oImapResponse)
 		{
 			$aList =& $oImapResponse->ResponseList;
 		}
 
-		while (!$bIsEndOfList)
+		while (true)
 		{
 			if (100000 === ++$iDebugCount)
 			{
@@ -1179,7 +1131,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				$bIsGotoLiteralEnd = true;
 
 				if ($this->partialResponseLiteralCallbackCallable(
-					$sParentToken, null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), $this->rConnect, $iLiteralLen))
+					$sParentToken, null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), $iLiteralLen))
 				{
 					if (!$bTreatAsAtom)
 					{
@@ -1238,7 +1190,6 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 			else if ($bIsGotoLiteralEnd)
 			{
-				$rImapLiteralStream = null;
 				$sPreviousAtomUpperCase = null;
 				$this->bNeedNext = true;
 				$bIsGotoLiteralEnd = false;
@@ -1249,12 +1200,13 @@ class ImapClient extends \MailSo\Net\NetClient
 			{
 				if ($bTreatAsAtom)
 				{
-					$sAtomBlock = $this->partialParseResponseBranch(null, $iStackIndex, true,
-						null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), $sOpenBracket);
+					$sAtomBlock = $this->partialParseResponseBranch(null, true,
+						null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase),
+						$sOpenBracket);
 
 					$sAtomBuilder .= $sAtomBlock;
 					$iPos = $this->iResponseBufParsedPos;
-					$sAtomBuilder .= ($bIsClosingBracketSquare) ? ']' : ')';
+					$sAtomBuilder .= $sClosingBracket;
 				}
 
 				$sPreviousAtomUpperCase = null;
@@ -1264,13 +1216,14 @@ class ImapClient extends \MailSo\Net\NetClient
 			}
 			else if ($bIsGotoNotAtomBracket)
 			{
-				$aSubItems = $this->partialParseResponseBranch(null, $iStackIndex, false,
-					null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), $sOpenBracket);
+				$aSubItems = $this->partialParseResponseBranch(null, false,
+					null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase),
+					$sOpenBracket);
 
 				$aList[] = $aSubItems;
 				$iPos = $this->iResponseBufParsedPos;
 				$sPreviousAtomUpperCase = null;
-				if (null !== $oImapResponse && $oImapResponse->IsStatusResponse)
+				if ($oImapResponse && $oImapResponse->IsStatusResponse)
 				{
 					$oImapResponse->OptionalResponse = $aSubItems;
 
@@ -1285,7 +1238,6 @@ class ImapClient extends \MailSo\Net\NetClient
 			else
 			{
 				$iBufferEndIndex = \strlen($this->sResponseBuffer) - 3;
-				$this->bResponseBufferChanged = false;
 
 				if ($iPos > $iBufferEndIndex)
 				{
@@ -1298,15 +1250,10 @@ class ImapClient extends \MailSo\Net\NetClient
 			switch (true)
 			{
 				case ']' === $sChar:
-					++$iPos;
-					$sPreviousAtomUpperCase = null;
-					$bIsEndOfList = true;
-					break;
 				case ')' === $sChar:
 					++$iPos;
 					$sPreviousAtomUpperCase = null;
-					$bIsEndOfList = true;
-					break;
+					break 2;
 				case ' ' === $sChar:
 					if ($bTreatAsAtom)
 					{
@@ -1315,30 +1262,19 @@ class ImapClient extends \MailSo\Net\NetClient
 					++$iPos;
 					break;
 				case '[' === $sChar:
-					$bIsClosingBracketSquare = true;
 				case '(' === $sChar:
-					if ('(' === $sChar)
-					{
-						$bIsClosingBracketSquare = false;
-					}
-
+					$sOpenBracket = $sChar;
+					$sClosingBracket = '[' === $sChar ? ']' : ')';
 					if ($bTreatAsAtom)
 					{
-						$sAtomBuilder .= $bIsClosingBracketSquare ? '[' : '(';
-					}
-					++$iPos;
-
-					$this->iResponseBufParsedPos = $iPos;
-					if ($bTreatAsAtom)
-					{
+						$sAtomBuilder .= $sChar;
 						$bIsGotoAtomBracket = true;
-						$sOpenBracket = $bIsClosingBracketSquare ? '[' : '(';
 					}
 					else
 					{
 						$bIsGotoNotAtomBracket = true;
-						$sOpenBracket = $bIsClosingBracketSquare ? '[' : '(';
 					}
+					$this->iResponseBufParsedPos = ++$iPos;
 					break;
 				case '{' === $sChar:
 					$bIsLiteralParsed = false;
@@ -1417,7 +1353,6 @@ class ImapClient extends \MailSo\Net\NetClient
 						}
 						else
 						{
-//							$iSkipClosingPos = 0;
 							$bIsQuotedParsed = true;
 							if ($bTreatAsAtom)
 							{
@@ -1451,7 +1386,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				default:
 					$iCharBlockStartPos = $iPos;
 
-					if (null !== $oImapResponse && $oImapResponse->IsStatusResponse)
+					if ($oImapResponse && $oImapResponse->IsStatusResponse)
 					{
 						$iPos = $iBufferEndIndex;
 
@@ -1478,8 +1413,9 @@ class ImapClient extends \MailSo\Net\NetClient
 								++$iPos;
 								$this->iResponseBufParsedPos = $iPos;
 
-								$sListBlock = $this->partialParseResponseBranch(null, $iStackIndex, true,
-									null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase), '[');
+								$sListBlock = $this->partialParseResponseBranch(null, true,
+									null === $sPreviousAtomUpperCase ? '' : \strtoupper($sPreviousAtomUpperCase),
+									'[');
 
 								if (null !== $sListBlock)
 								{
@@ -1520,7 +1456,7 @@ class ImapClient extends \MailSo\Net\NetClient
 							}
 						}
 
-						if (null !== $oImapResponse)
+						if ($oImapResponse)
 						{
 //							if (1 === \count($aList))
 							if (!$bCountOneInited && 1 === \count($aList))
@@ -1577,11 +1513,6 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$this->iResponseBufParsedPos = $iPos;
-		if (null !== $oImapResponse)
-		{
-			$this->bNeedNext = true;
-			$this->iResponseBufParsedPos = 0;
-		}
 
 		if (100000 < $iDebugCount)
 		{
@@ -1591,11 +1522,12 @@ class ImapClient extends \MailSo\Net\NetClient
 		return $bTreatAsAtom ? $sAtomBuilder : $aList;
 	}
 
-	/**
-	 * @param resource $rImapStream
-	 */
-	private function partialResponseLiteralCallbackCallable(string $sParent, string $sLiteralAtomUpperCase, $rImapStream, int $iLiteralLen) : bool
+	private function partialResponseLiteralCallbackCallable(string $sParent, string $sLiteralAtomUpperCase, int $iLiteralLen) : bool
 	{
+		if (!$this->aFetchCallbacks) {
+			return false;
+		}
+
 		$sLiteralAtomUpperCasePeek = '';
 		if (0 === \strpos($sLiteralAtomUpperCase, 'BODY'))
 		{
@@ -1603,94 +1535,86 @@ class ImapClient extends \MailSo\Net\NetClient
 		}
 
 		$sFetchKey = '';
-		if (\is_array($this->aFetchCallbacks))
+		if (0 < \strlen($sLiteralAtomUpperCasePeek) && isset($this->aFetchCallbacks[$sLiteralAtomUpperCasePeek]))
 		{
-			if (0 < \strlen($sLiteralAtomUpperCasePeek) && isset($this->aFetchCallbacks[$sLiteralAtomUpperCasePeek]))
-			{
-				$sFetchKey = $sLiteralAtomUpperCasePeek;
-			}
-			else if (0 < \strlen($sLiteralAtomUpperCase) && isset($this->aFetchCallbacks[$sLiteralAtomUpperCase]))
-			{
-				$sFetchKey = $sLiteralAtomUpperCase;
-			}
+			$sFetchKey = $sLiteralAtomUpperCasePeek;
+		}
+		else if (0 < \strlen($sLiteralAtomUpperCase) && isset($this->aFetchCallbacks[$sLiteralAtomUpperCase]))
+		{
+			$sFetchKey = $sLiteralAtomUpperCase;
 		}
 
-		$bResult = false;
-		if (0 < \strlen($sFetchKey) && '' !== $this->aFetchCallbacks[$sFetchKey] &&
-			\is_callable($this->aFetchCallbacks[$sFetchKey]))
+		if (empty($this->aFetchCallbacks[$sFetchKey]) || !\is_callable($this->aFetchCallbacks[$sFetchKey])) {
+			return false;
+		}
+
+		$rImapLiteralStream =
+			\MailSo\Base\StreamWrappers\Literal::CreateStream($this->rConnect, $iLiteralLen);
+
+		$this->writeLog('Start Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
+			' - try to read '.$iLiteralLen.' bytes.', \MailSo\Log\Enumerations\Type::NOTE);
+
+		$this->bRunningCallback = true;
+
+		try
 		{
-			$rImapLiteralStream =
-				\MailSo\Base\StreamWrappers\Literal::CreateStream($rImapStream, $iLiteralLen);
+			\call_user_func($this->aFetchCallbacks[$sFetchKey],
+				$sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
+		}
+		catch (\Throwable $oException)
+		{
+			$this->writeLog('Callback Exception', \MailSo\Log\Enumerations\Type::NOTICE);
+			$this->writeLogException($oException);
+		}
 
-			$bResult = true;
-			$this->writeLog('Start Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
-				' - try to read '.$iLiteralLen.' bytes.', \MailSo\Log\Enumerations\Type::NOTE);
+		if ($rImapLiteralStream)
+		{
+			$iNotReadLiteralLen = 0;
 
-			$this->bRunningCallback = true;
+			$bFeof = \feof($rImapLiteralStream);
+			$this->writeLog('End Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
+				' - feof = '.($bFeof ? 'good' : 'BAD'), $bFeof ?
+					\MailSo\Log\Enumerations\Type::NOTE : \MailSo\Log\Enumerations\Type::WARNING);
 
-			try
+			if (!$bFeof)
 			{
-				\call_user_func($this->aFetchCallbacks[$sFetchKey],
-					$sParent, $sLiteralAtomUpperCase, $rImapLiteralStream);
-			}
-			catch (\Throwable $oException)
-			{
-				$this->writeLog('Callback Exception', \MailSo\Log\Enumerations\Type::NOTICE);
-				$this->writeLogException($oException);
-			}
-
-			if (\is_resource($rImapLiteralStream))
-			{
-				$iNotReadLiteralLen = 0;
-
-				$bFeof = \feof($rImapLiteralStream);
-				$this->writeLog('End Callback for '.$sParent.' / '.$sLiteralAtomUpperCase.
-					' - feof = '.($bFeof ? 'good' : 'BAD'), $bFeof ?
-						\MailSo\Log\Enumerations\Type::NOTE : \MailSo\Log\Enumerations\Type::WARNING);
-
-				if (!$bFeof)
+				while (!\feof($rImapLiteralStream))
 				{
-					while (!\feof($rImapLiteralStream))
+					$sBuf = \fread($rImapLiteralStream, 1024 * 1024);
+					if (false === $sBuf || 0 === \strlen($sBuf) ||  null === $sBuf)
 					{
-						$sBuf = \fread($rImapLiteralStream, 1024 * 1024);
-						if (false === $sBuf || 0 === \strlen($sBuf) ||  null === $sBuf)
-						{
-							break;
-						}
-
-						\MailSo\Base\Utils::ResetTimeLimit();
-						$iNotReadLiteralLen += \strlen($sBuf);
+						break;
 					}
 
-					if (\is_resource($rImapLiteralStream) && !\feof($rImapLiteralStream))
-					{
-						\stream_get_contents($rImapLiteralStream);
-					}
+					\MailSo\Base\Utils::ResetTimeLimit();
+					$iNotReadLiteralLen += \strlen($sBuf);
 				}
 
-				if (\is_resource($rImapLiteralStream))
+				if (!\feof($rImapLiteralStream))
 				{
-					\fclose($rImapLiteralStream);
-				}
-
-				if ($iNotReadLiteralLen > 0)
-				{
-					$this->writeLog('Not read literal size is '.$iNotReadLiteralLen.' bytes.',
-						\MailSo\Log\Enumerations\Type::WARNING);
+					\stream_get_contents($rImapLiteralStream);
 				}
 			}
-			else
+
+			\fclose($rImapLiteralStream);
+
+			if ($iNotReadLiteralLen > 0)
 			{
-				$this->writeLog('Literal stream is not resource after callback.',
+				$this->writeLog('Not read literal size is '.$iNotReadLiteralLen.' bytes.',
 					\MailSo\Log\Enumerations\Type::WARNING);
 			}
-
-			\MailSo\Base\Loader::IncStatistic('NetRead', $iLiteralLen);
-
-			$this->bRunningCallback = false;
+		}
+		else
+		{
+			$this->writeLog('Literal stream is not resource after callback.',
+				\MailSo\Log\Enumerations\Type::WARNING);
 		}
 
-		return $bResult;
+		\MailSo\Base\Loader::IncStatistic('NetRead', $iLiteralLen);
+
+		$this->bRunningCallback = false;
+
+		return true;
 	}
 
 	private function prepareParamLine(array $aParams = array()) : string
