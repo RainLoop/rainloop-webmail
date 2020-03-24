@@ -335,14 +335,11 @@ class Http
 
 	static public function DetectAndHackFollowLocationUrl(string $sUrl, array &$aOptions, ?\MailSo\Log\Logger $oLogger = null) : string
 	{
-		$sSafeMode = \strtolower(\trim(@\ini_get('safe_mode')));
-		$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode;
-
 		$sNewUrl = null;
 		$sUrl = isset($aOptions[CURLOPT_URL]) ? $aOptions[CURLOPT_URL] : $sUrl;
 
 		if (isset($aOptions[CURLOPT_FOLLOWLOCATION]) && $aOptions[CURLOPT_FOLLOWLOCATION] && 0 < \strlen($sUrl) &&
-			($bSafeMode || \ini_get('open_basedir') !== ''))
+			\ini_get('open_basedir') !== '')
 		{
 			$aOptions[CURLOPT_FOLLOWLOCATION] = false;
 

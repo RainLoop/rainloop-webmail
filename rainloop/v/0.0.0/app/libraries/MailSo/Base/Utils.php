@@ -1103,10 +1103,7 @@ END;
 		{
 			$iResetTimer = 0;
 
-			$sSafeMode = \strtolower(\trim(@\ini_get('safe_mode')));
-			$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode || 'true' === $sSafeMode;
-
-			$bValidateAction = !$bSafeMode && static::FunctionExistsAndEnabled('set_time_limit');
+			$bValidateAction = static::FunctionExistsAndEnabled('set_time_limit');
 		}
 
 		if ($bValidateAction && $iTimeToReset < $iTime - $iResetTimer)

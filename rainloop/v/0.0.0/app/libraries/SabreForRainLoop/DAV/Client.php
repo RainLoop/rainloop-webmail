@@ -471,10 +471,8 @@ class Client {
 
 	    // TODO rainloop
         $curl = curl_init($url);
-		$sSafeMode = strtolower(trim(@ini_get('safe_mode')));
-		$bSafeMode = 'on' === $sSafeMode || '1' === $sSafeMode;
 
-		if (!$bSafeMode && ini_get('open_basedir') === '')
+		if (ini_get('open_basedir') === '')
 		{
 			curl_setopt_array($curl, $settings);
 			$data = curl_exec($curl);
