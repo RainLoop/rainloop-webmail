@@ -17,15 +17,6 @@ namespace MailSo\Base;
  */
 class Http
 {
-	/**
-	 * @var bool
-	 */
-	private $bIsMagicQuotesOn;
-
-	private function __construct()
-	{
-		$this->bIsMagicQuotesOn = (bool) @\ini_get('magic_quotes_gpc');
-	}
 
 	public static function NewInstance() : self
 	{
@@ -466,7 +457,7 @@ class Http
 			}
 		}
 
-		if (\is_array($aHttpHeaders) && 0 < \count($aHttpHeaders))
+		if (0 < \count($aHttpHeaders))
 		{
 			$aOptions[CURLOPT_HTTPHEADER] = $aHttpHeaders;
 		}

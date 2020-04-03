@@ -22,27 +22,31 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		parent::__construct();
 	}
 
-	public static function NewInstance() : \MailSo\Mail\AttachmentCollection
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
 
 	public function InlineCount() : int
 	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && $oAttachment->IsInline();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
+		$iCount = 0;
+		foreach ($this->aItems as $oAttachment) {
+			if ($oAttachment && $oAttachment->IsInline()) {
+				++$iCount;
+			}
+		}
+		return $iCount;
 	}
 
 	public function NonInlineCount() : int
 	{
-		$aList = $this->FilterList(function ($oAttachment) {
-			return $oAttachment && !$oAttachment->IsInline();
-		});
-
-		return \is_array($aList) ? \count($aList) : 0;
+		$iCount = 0;
+		foreach ($this->aItems as $oAttachment) {
+			if ($oAttachment && !$oAttachment->IsInline()) {
+				++$iCount;
+			}
+		}
+		return $iCount;
 	}
 
 	public function SpecData() : array

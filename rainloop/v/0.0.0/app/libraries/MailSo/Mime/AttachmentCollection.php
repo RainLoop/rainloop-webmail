@@ -22,7 +22,7 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		parent::__construct();
 	}
 
-	public static function NewInstance() : \MailSo\Mime\AttachmentCollection
+	public static function NewInstance() : self
 	{
 		return new self();
 	}

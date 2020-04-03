@@ -92,22 +92,18 @@ class FetchResponse
 
 	public function GetFetchBodyStructure(string $sRfc822SubMimeIndex = '') : ?BodyStructure
 	{
-		$oBodyStructure = null;
 		$aBodyStructureArray = $this->GetFetchValue(Enumerations\FetchType::BODYSTRUCTURE);
 
 		if (is_array($aBodyStructureArray))
 		{
 			if (0 < strlen($sRfc822SubMimeIndex))
 			{
-				$oBodyStructure = BodyStructure::NewInstanceFromRfc822SubPart($aBodyStructureArray, $sRfc822SubMimeIndex);
+				return BodyStructure::NewInstanceFromRfc822SubPart($aBodyStructureArray, $sRfc822SubMimeIndex);
 			}
-			else
-			{
-				$oBodyStructure = BodyStructure::NewInstance($aBodyStructureArray);
-			}
+			return BodyStructure::NewInstance($aBodyStructureArray);
 		}
 
-		return $oBodyStructure;
+		return null;
 	}
 
 	/**
@@ -144,7 +140,6 @@ class FetchResponse
 
 	public function GetHeaderFieldsValue(string $sRfc822SubMimeIndex = '') : string
 	{
-		$sReturn = '';
 		$bNextIsValue = false;
 
 		$sRfc822SubMimeIndex = 0 < \strlen($sRfc822SubMimeIndex) ? ''.$sRfc822SubMimeIndex.'.' : '';
@@ -155,8 +150,7 @@ class FetchResponse
 			{
 				if ($bNextIsValue)
 				{
-					$sReturn = (string) $mItem;
-					break;
+					return (string) $mItem;
 				}
 
 				if (\is_string($mItem) && (
@@ -169,28 +163,24 @@ class FetchResponse
 			}
 		}
 
-		return $sReturn;
+		return '';
 	}
 
 	private static function findFetchUidAndSize(array $aList)
 	{
 		$bUid = false;
 		$bSize = false;
-		if (is_array($aList))
+		foreach ($aList as $mItem)
 		{
-			foreach ($aList as $mItem)
+			if (Enumerations\FetchType::UID === $mItem)
 			{
-				if (Enumerations\FetchType::UID === $mItem)
-				{
-					$bUid = true;
-				}
-				else if (Enumerations\FetchType::RFC822_SIZE === $mItem)
-				{
-					$bSize = true;
-				}
+				$bUid = true;
+			}
+			else if (Enumerations\FetchType::RFC822_SIZE === $mItem)
+			{
+				$bSize = true;
 			}
 		}
-
 		return $bUid && $bSize;
 	}
 

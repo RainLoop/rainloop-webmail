@@ -175,7 +175,7 @@ class EmailCollection extends \MailSo\Base\Collection
 						try
 						{
 							$this->Add(
-								\MailSo\Mime\Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iEmailEndPos - $iEmailStartPos))
+								Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iEmailEndPos - $iEmailStartPos))
 							);
 
 							$iEmailStartPos = $iCurrentPos + 1;
@@ -195,7 +195,7 @@ class EmailCollection extends \MailSo\Base\Collection
 			try
 			{
 				$this->Add(
-					\MailSo\Mime\Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iCurrentPos - $iEmailStartPos))
+					Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iCurrentPos - $iEmailStartPos))
 				);
 			}
 			catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException) {}

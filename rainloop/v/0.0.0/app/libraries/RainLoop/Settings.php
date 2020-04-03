@@ -22,11 +22,7 @@ class Settings
 
 	public function InitData(array $aData) : self
 	{
-		if (\is_array($aData))
-		{
-			$this->aData = $aData;
-		}
-
+		$this->aData = $aData;
 		return $this;
 	}
 

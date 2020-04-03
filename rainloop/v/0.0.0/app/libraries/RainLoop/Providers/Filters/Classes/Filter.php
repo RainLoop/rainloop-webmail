@@ -184,35 +184,30 @@ class Filter
 
 	public function FromJSON(array $aFilter) : array
 	{
-		if (\is_array($aFilter))
-		{
-			$this->sID = isset($aFilter['ID']) ? $aFilter['ID'] : '';
-			$this->sName = isset($aFilter['Name']) ? $aFilter['Name'] : '';
+		$this->sID = isset($aFilter['ID']) ? $aFilter['ID'] : '';
+		$this->sName = isset($aFilter['Name']) ? $aFilter['Name'] : '';
 
-			$this->bEnabled = isset($aFilter['Enabled']) ? '1' === (string) $aFilter['Enabled'] : true;
+		$this->bEnabled = isset($aFilter['Enabled']) ? '1' === (string) $aFilter['Enabled'] : true;
 
-			$this->sConditionsType = isset($aFilter['ConditionsType']) ? $aFilter['ConditionsType'] :
-				\RainLoop\Providers\Filters\Enumerations\ConditionsType::ANY;
+		$this->sConditionsType = isset($aFilter['ConditionsType']) ? $aFilter['ConditionsType'] :
+			\RainLoop\Providers\Filters\Enumerations\ConditionsType::ANY;
 
-			$this->sActionType = isset($aFilter['ActionType']) ? $aFilter['ActionType'] :
-				\RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO;
+		$this->sActionType = isset($aFilter['ActionType']) ? $aFilter['ActionType'] :
+			\RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO;
 
-			$this->sActionValue = isset($aFilter['ActionValue']) ? $aFilter['ActionValue'] : '';
-			$this->sActionValueSecond = isset($aFilter['ActionValueSecond']) ? $aFilter['ActionValueSecond'] : '';
-			$this->sActionValueThird = isset($aFilter['ActionValueThird']) ? $aFilter['ActionValueThird'] : '';
-			$this->sActionValueFourth = isset($aFilter['ActionValueFourth']) ? $aFilter['ActionValueFourth'] : '';
+		$this->sActionValue = isset($aFilter['ActionValue']) ? $aFilter['ActionValue'] : '';
+		$this->sActionValueSecond = isset($aFilter['ActionValueSecond']) ? $aFilter['ActionValueSecond'] : '';
+		$this->sActionValueThird = isset($aFilter['ActionValueThird']) ? $aFilter['ActionValueThird'] : '';
+		$this->sActionValueFourth = isset($aFilter['ActionValueFourth']) ? $aFilter['ActionValueFourth'] : '';
 
-			$this->bKeep = isset($aFilter['Keep']) ? '1' === (string) $aFilter['Keep'] : true;
-			$this->bStop = isset($aFilter['Stop']) ? '1' === (string) $aFilter['Stop'] : true;
-			$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? '1' === (string) $aFilter['MarkAsRead'] : false;
+		$this->bKeep = isset($aFilter['Keep']) ? '1' === (string) $aFilter['Keep'] : true;
+		$this->bStop = isset($aFilter['Stop']) ? '1' === (string) $aFilter['Stop'] : true;
+		$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? '1' === (string) $aFilter['MarkAsRead'] : false;
 
-			$this->aConditions = \RainLoop\Providers\Filters\Classes\FilterCondition::CollectionFromJSON(
-				isset($aFilter['Conditions']) ? $aFilter['Conditions'] : array());
+		$this->aConditions = \RainLoop\Providers\Filters\Classes\FilterCondition::CollectionFromJSON(
+			isset($aFilter['Conditions']) ? $aFilter['Conditions'] : array());
 
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 
 	public function ToSimpleJSON(bool $bAjax = false) : array

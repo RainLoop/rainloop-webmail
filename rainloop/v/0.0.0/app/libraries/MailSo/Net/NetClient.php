@@ -413,21 +413,19 @@ abstract class NetClient
 	}
 
 	/**
-	 * @param mixed $mReadLen = null
-	 *
 	 * @throws \MailSo\Net\Exceptions\SocketConnectionDoesNotAvailableException
 	 * @throws \MailSo\Net\Exceptions\SocketReadException
 	 */
-	protected function getNextBuffer($mReadLen = null, bool $bForceLogin = false) : void
+	protected function getNextBuffer(?int $iReadLen = null, bool $bForceLogin = false) : void
 	{
-		if (null === $mReadLen)
+		if (null === $iReadLen)
 		{
 			$this->sResponseBuffer = @\fgets($this->rConnect);
 		}
 		else
 		{
 			$this->sResponseBuffer = '';
-			$iRead = $mReadLen;
+			$iRead = $iReadLen;
 			while (0 < $iRead)
 			{
 				$sAddRead = @\fread($this->rConnect, $iRead);
@@ -467,7 +465,7 @@ abstract class NetClient
 		else
 		{
 			$iReadedLen = \strlen($this->sResponseBuffer);
-			if (null === $mReadLen || $bForceLogin)
+			if (null === $iReadLen || $bForceLogin)
 			{
 				$iLimit = 5000; // 5KB
 				if ($iLimit < $iReadedLen)
@@ -483,7 +481,7 @@ abstract class NetClient
 			}
 			else
 			{
-				$this->writeLog('Received '.$iReadedLen.'/'.$mReadLen.' bytes.',
+				$this->writeLog('Received '.$iReadedLen.'/'.$iReadLen.' bytes.',
 					\MailSo\Log\Enumerations\Type::INFO);
 			}
 

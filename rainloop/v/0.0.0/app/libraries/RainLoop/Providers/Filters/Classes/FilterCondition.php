@@ -59,21 +59,16 @@ class FilterCondition
 
 	public function FromJSON(array $aData) : array
 	{
-		if (\is_array($aData))
-		{
-			$this->sField = isset($aData['Field']) ? $aData['Field'] :
-				\RainLoop\Providers\Filters\Enumerations\ConditionField::FROM;
+		$this->sField = isset($aData['Field']) ? $aData['Field'] :
+			\RainLoop\Providers\Filters\Enumerations\ConditionField::FROM;
 
-			$this->sType = isset($aData['Type']) ? $aData['Type'] :
-				\RainLoop\Providers\Filters\Enumerations\ConditionType::EQUAL_TO;
+		$this->sType = isset($aData['Type']) ? $aData['Type'] :
+			\RainLoop\Providers\Filters\Enumerations\ConditionType::EQUAL_TO;
 
-			$this->sValue = isset($aData['Value']) ? (string) $aData['Value'] : '';
-			$this->sValueSecond = isset($aData['ValueSecond']) ? (string) $aData['ValueSecond'] : '';
+		$this->sValue = isset($aData['Value']) ? (string) $aData['Value'] : '';
+		$this->sValueSecond = isset($aData['ValueSecond']) ? (string) $aData['ValueSecond'] : '';
 
-			return true;
-		}
-
-		return false;
+		return true;
 	}
 
 	public function ToSimpleJSON(bool $bAjax = false) : array
@@ -89,21 +84,17 @@ class FilterCondition
 	public static function CollectionFromJSON(array $aCollection) : array
 	{
 		$aResult = array();
-		if (\is_array($aCollection) && 0 < \count($aCollection))
+		foreach ($aCollection as $aItem)
 		{
-			foreach ($aCollection as $aItem)
+			if (\is_array($aItem) && 0 < \count($aItem))
 			{
-				if (\is_array($aItem) && 0 < \count($aItem))
+				$oItem = new \RainLoop\Providers\Filters\Classes\FilterCondition();
+				if ($oItem->FromJSON($aItem))
 				{
-					$oItem = new \RainLoop\Providers\Filters\Classes\FilterCondition();
-					if ($oItem->FromJSON($aItem))
-					{
-						$aResult[] = $oItem;
-					}
+					$aResult[] = $oItem;
 				}
 			}
 		}
-
 		return $aResult;
 	}
 }

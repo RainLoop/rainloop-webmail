@@ -124,10 +124,6 @@ abstract class AbstractPlugin
 		if (null === $this->aConfigMap)
 		{
 			$this->aConfigMap = $this->configMapping();
-			if (!is_array($this->aConfigMap))
-			{
-				$this->aConfigMap = array();
-			}
 		}
 
 		return $this->aConfigMap;
@@ -295,7 +291,7 @@ abstract class AbstractPlugin
 
 	public function saveUserSettings(array $aSettings) : bool
 	{
-		if ($this->oPluginManager && \is_array($aSettings))
+		if ($this->oPluginManager)
 		{
 			return $this->oPluginManager->SaveUserPluginSettings($this->Name(), $aSettings);
 		}

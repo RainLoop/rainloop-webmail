@@ -58,7 +58,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 			$aModules = $oSieveClient->Modules();
 			$aList = $oSieveClient->ListScripts();
 
-			if (\is_array($aList) && 0 < \count($aList))
+			if (0 < \count($aList))
 			{
 				if (isset($aList[self::SIEVE_FILE_NAME]))
 				{
@@ -252,52 +252,49 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 
 		// Conditions
 		$aConditions = $oFilter->Conditions();
-		if (\is_array($aConditions))
+		if (1 < \count($aConditions))
 		{
-			if (1 < \count($aConditions))
+			if (\RainLoop\Providers\Filters\Enumerations\ConditionsType::ANY ===
+				$oFilter->ConditionsType())
 			{
-				if (\RainLoop\Providers\Filters\Enumerations\ConditionsType::ANY ===
-					$oFilter->ConditionsType())
+				$aResult[] = 'if anyof(';
+
+				$bTrim = false;
+				foreach ($aConditions as $oCond)
 				{
-					$aResult[] = 'if anyof(';
-
-					$bTrim = false;
-					foreach ($aConditions as $oCond)
+					$bTrim = true;
+					$sCons = $this->conditionToSieveScript($oCond, $aCapa);
+					if (!empty($sCons))
 					{
-						$bTrim = true;
-						$sCons = $this->conditionToSieveScript($oCond, $aCapa);
-						if (!empty($sCons))
-						{
-							$aResult[] = $sTab.$sCons.',';
-						}
+						$aResult[] = $sTab.$sCons.',';
 					}
-					if ($bTrim)
-					{
-						$aResult[\count($aResult) - 1] = \rtrim($aResult[\count($aResult) - 1], ',');
-					}
-
-					$aResult[] = ')';
 				}
-				else
+				if ($bTrim)
 				{
-					$aResult[] = 'if allof(';
-					foreach ($aConditions as $oCond)
-					{
-						$aResult[] = $sTab.$this->conditionToSieveScript($oCond, $aCapa).',';
-					}
-
 					$aResult[\count($aResult) - 1] = \rtrim($aResult[\count($aResult) - 1], ',');
-					$aResult[] = ')';
 				}
-			}
-			else if (1 === \count($aConditions))
-			{
-				$aResult[] = 'if '.$this->conditionToSieveScript($aConditions[0], $aCapa).'';
+
+				$aResult[] = ')';
 			}
 			else
 			{
-				$bAll = true;
+				$aResult[] = 'if allof(';
+				foreach ($aConditions as $oCond)
+				{
+					$aResult[] = $sTab.$this->conditionToSieveScript($oCond, $aCapa).',';
+				}
+
+				$aResult[\count($aResult) - 1] = \rtrim($aResult[\count($aResult) - 1], ',');
+				$aResult[] = ')';
 			}
+		}
+		else if (1 === \count($aConditions))
+		{
+			$aResult[] = 'if '.$this->conditionToSieveScript($aConditions[0], $aCapa).'';
+		}
+		else
+		{
+			$bAll = true;
 		}
 
 		// actions

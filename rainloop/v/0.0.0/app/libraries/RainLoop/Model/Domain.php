@@ -145,7 +145,7 @@ class Domain
 	{
 		$oDomain = null;
 
-		if (0 < \strlen($sName) && \is_array($aDomain) && 0 < \strlen($aDomain['imap_host']) && 0 < \strlen($aDomain['imap_port']))
+		if (0 < \strlen($sName) && 0 < \strlen($aDomain['imap_host']) && 0 < \strlen($aDomain['imap_port']))
 		{
 			$sIncHost = (string) $aDomain['imap_host'];
 			$iIncPort = (int) $aDomain['imap_port'];

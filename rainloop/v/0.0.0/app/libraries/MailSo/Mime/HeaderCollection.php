@@ -18,19 +18,16 @@ namespace MailSo\Mime;
 class HeaderCollection extends \MailSo\Base\Collection
 {
 
-	protected $sRawHeaders;
+	protected $sRawHeaders = '';
 
 	/**
-	 * @var strign
+	 * @var string
 	 */
-	protected $sParentCharset;
+	protected $sParentCharset = '';
 
 	protected function __construct(string $sRawHeaders = '', bool $bStoreRawHeaders = true)
 	{
 		parent::__construct();
-
-		$this->sRawHeaders = '';
-		$this->sParentCharset = '';
 
 		if (0 < \strlen($sRawHeaders))
 		{
@@ -38,7 +35,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		}
 	}
 
-	public static function NewInstance(string $sRawHeaders = '', bool $bStoreRawHeaders = true) : \MailSo\Mime\HeaderCollection
+	public static function NewInstance(string $sRawHeaders = '', bool $bStoreRawHeaders = true) : self
 	{
 		return new self($sRawHeaders, $bStoreRawHeaders);
 	}
@@ -46,7 +43,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function AddByName(string $sName, string $sValue, bool $bToTop = false) : \MailSo\Mime\HeaderCollection
+	public function AddByName(string $sName, string $sValue, bool $bToTop = false) : self
 	{
 		return $this->Add(Header::NewInstance($sName, $sValue), $bToTop);
 	}
@@ -54,12 +51,12 @@ class HeaderCollection extends \MailSo\Base\Collection
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function SetByName(string $sName, string $sValue, bool $bToTop = false) : \MailSo\Mime\HeaderCollection
+	public function SetByName(string $sName, string $sValue, bool $bToTop = false) : self
 	{
 		return $this->RemoveByName($sName)->Add(Header::NewInstance($sName, $sValue), $bToTop);
 	}
 
-	public function &GetByIndex(int $iIndex) : ?\MailSo\Mime\Header
+	public function &GetByIndex(int $iIndex) : ?Header
 	{
 		$mResult = null;
 		$mResult =& parent::GetByIndex($iIndex);
@@ -91,7 +88,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $aResult;
 	}
 
-	public function RemoveByName(string $sHeaderName) : \MailSo\Mime\HeaderCollection
+	public function RemoveByName(string $sHeaderName) : self
 	{
 		$aResult = $this->FilterList(function ($oHeader) use ($sHeaderName) {
 			return $oHeader && \strtolower($oHeader->Name()) !== \strtolower($sHeaderName);
@@ -100,19 +97,19 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $this->SetAsArray($aResult);
 	}
 
-	public function GetAsEmailCollection(string $sHeaderName, bool $bCharsetAutoDetect = false) : ?\MailSo\Mime\EmailCollection
+	public function GetAsEmailCollection(string $sHeaderName, bool $bCharsetAutoDetect = false) : ?EmailCollection
 	{
 		$oResult = null;
 		$sValue = $this->ValueByName($sHeaderName, $bCharsetAutoDetect);
 		if (0 < \strlen($sValue))
 		{
-			$oResult = \MailSo\Mime\EmailCollection::NewInstance($sValue);
+			$oResult = EmailCollection::NewInstance($sValue);
 		}
 
 		return $oResult && 0 < $oResult->Count() ? $oResult : null;
 	}
 
-	public function ParametersByName(string $sHeaderName) : ?\MailSo\Mime\ParameterCollection
+	public function ParametersByName(string $sHeaderName) : ?ParameterCollection
 	{
 		$oParameters = $oHeader = null;
 		$oHeader =& $this->GetByName($sHeaderName);
@@ -130,7 +127,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return (null !== $oParameters) ? $oParameters->ParameterValueByName($sParamName) : '';
 	}
 
-	public function &GetByName(string $sHeaderName) : ?\MailSo\Mime\Header
+	public function &GetByName(string $sHeaderName) : ?Header
 	{
 		$oResult = $oHeader = null;
 
@@ -149,17 +146,16 @@ class HeaderCollection extends \MailSo\Base\Collection
 	}
 
 	/**
-	 *
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function SetAsArray(array $aList) : \MailSo\Mime\HeaderCollection
+	public function SetAsArray(array $aList) : self
 	{
 		parent::SetAsArray($aList);
 
 		return $this;
 	}
 
-	public function SetParentCharset(string $sParentCharset) : \MailSo\Mime\HeaderCollection
+	public function SetParentCharset(string $sParentCharset) : self
 	{
 		if (0 < \strlen($sParentCharset))
 		{
@@ -187,7 +183,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		$this->sRawHeaders = '';
 	}
 
-	public function Parse(string $sRawHeaders, bool $bStoreRawHeaders = false, string $sParentCharset = '') : \MailSo\Mime\HeaderCollection
+	public function Parse(string $sRawHeaders, bool $bStoreRawHeaders = false, string $sParentCharset = '') : self
 	{
 		$this->Clear();
 
@@ -281,8 +277,8 @@ class HeaderCollection extends \MailSo\Base\Collection
 	{
 		$aResult = array();
 
-		$aHeaders = $this->ValuesByName(\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS);
-		if (\is_array($aHeaders) && 0 < \count($aHeaders))
+		$aHeaders = $this->ValuesByName(Enumerations\Header::AUTHENTICATION_RESULTS);
+		if (0 < \count($aHeaders))
 		{
 			foreach ($aHeaders as $sHeaderValue)
 			{
@@ -320,32 +316,29 @@ class HeaderCollection extends \MailSo\Base\Collection
 		else
 		{
 			// X-DKIM-Authentication-Results: signer="hostinger.com" status="pass"
-			$aHeaders = $this->ValuesByName(\MailSo\Mime\Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS);
-			if (\is_array($aHeaders) && 0 < \count($aHeaders))
+			$aHeaders = $this->ValuesByName(Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS);
+			foreach ($aHeaders as $sHeaderValue)
 			{
-				foreach ($aHeaders as $sHeaderValue)
+				$sStatus = '';
+				$sHeader = '';
+
+				$aMatch = array();
+
+				$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
+
+				if (\preg_match('/status[\s]?=[\s]?"([a-zA-Z0-9]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
 				{
-					$sStatus = '';
-					$sHeader = '';
+					$sStatus = $aMatch[1];
+				}
 
-					$aMatch = array();
+				if (\preg_match('/signer[\s]?=[\s]?"([^";]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
+				{
+					$sHeader = \trim($aMatch[1]);
+				}
 
-					$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
-
-					if (\preg_match('/status[\s]?=[\s]?"([a-zA-Z0-9]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
-					{
-						$sStatus = $aMatch[1];
-					}
-
-					if (\preg_match('/signer[\s]?=[\s]?"([^";]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
-					{
-						$sHeader = \trim($aMatch[1]);
-					}
-
-					if (!empty($sStatus) && !empty($sHeader))
-					{
-						$aResult[] = array($sStatus, $sHeader, $sHeaderValue);
-					}
+				if (!empty($sStatus) && !empty($sHeader))
+				{
+					$aResult[] = array($sStatus, $sHeader, $sHeaderValue);
 				}
 			}
 		}
@@ -353,29 +346,23 @@ class HeaderCollection extends \MailSo\Base\Collection
 		return $aResult;
 	}
 
-	public function PopulateEmailColectionByDkim($oEmails) : void
+	public function PopulateEmailColectionByDkim(EmailCollection $oEmails) : void
 	{
-		if ($oEmails && $oEmails instanceof \MailSo\Mime\EmailCollection)
-		{
-			$aDkimStatuses = $this->DkimStatuses();
-			if (\is_array($aDkimStatuses) && 0 < \count($aDkimStatuses))
+		$aDkimStatuses = $this->DkimStatuses();
+		$oEmails->ForeachList(function (/* @var $oItem \MailSo\Mime\Email */ $oItem) use ($aDkimStatuses) {
+			if ($oItem && $oItem instanceof Email)
 			{
-				$oEmails->ForeachList(function (/* @var $oItem \MailSo\Mime\Email */ $oItem) use ($aDkimStatuses) {
-					if ($oItem && $oItem instanceof \MailSo\Mime\Email)
+				$sEmail = $oItem->GetEmail();
+				foreach ($aDkimStatuses as $aDkimData)
+				{
+					if (isset($aDkimData[0], $aDkimData[1]) &&
+						$aDkimData[1] === \strstr($sEmail, $aDkimData[1]))
 					{
-						$sEmail = $oItem->GetEmail();
-						foreach ($aDkimStatuses as $aDkimData)
-						{
-							if (isset($aDkimData[0], $aDkimData[1]) &&
-								$aDkimData[1] === \strstr($sEmail, $aDkimData[1]))
-							{
-								$oItem->SetDkimStatusAndValue($aDkimData[0], empty($aDkimData[2]) ? '' : $aDkimData[2]);
-							}
-						}
+						$oItem->SetDkimStatusAndValue($aDkimData[0], empty($aDkimData[2]) ? '' : $aDkimData[2]);
 					}
-				});
+				}
 			}
-		}
+		});
 	}
 
 	public function ToEncodedString() : string
@@ -387,6 +374,6 @@ class HeaderCollection extends \MailSo\Base\Collection
 			$aResult[] = $oHeader->EncodedValue();
 		}
 
-		return \implode(\MailSo\Mime\Enumerations\Constants::CRLF, $aResult);
+		return \implode(Enumerations\Constants::CRLF, $aResult);
 	}
 }
