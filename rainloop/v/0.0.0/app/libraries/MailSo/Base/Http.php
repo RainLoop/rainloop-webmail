@@ -456,7 +456,7 @@ class Http
 			}
 		}
 
-		if (\is_array($aHttpHeaders) && 0 < \count($aHttpHeaders))
+		if (0 < \count($aHttpHeaders))
 		{
 			$aOptions[CURLOPT_HTTPHEADER] = $aHttpHeaders;
 		}

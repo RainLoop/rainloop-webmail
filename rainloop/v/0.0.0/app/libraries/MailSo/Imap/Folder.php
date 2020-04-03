@@ -45,28 +45,20 @@ class Folder
 	/**
 	 * @var array
 	 */
-	private $aExtended;
+	private $aExtended = array();
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
 	private function __construct(string $sFullNameRaw, string $sDelimiter, array $aFlags)
 	{
-		$this->sNameRaw = '';
-		$this->sFullNameRaw = '';
-		$this->sDelimiter = '';
-		$this->aFlags = array();
-		$this->aExtended = array();
-
 		$sDelimiter = 'NIL' === \strtoupper($sDelimiter) ? '' : $sDelimiter;
 		if (empty($sDelimiter))
 		{
 			$sDelimiter = '.'; // default delimiter
 		}
 
-		if (!\is_array($aFlags) ||
-			!\is_string($sDelimiter) || 1 < \strlen($sDelimiter) ||
-			!\is_string($sFullNameRaw) || 0 === \strlen($sFullNameRaw))
+		if (1 < \strlen($sDelimiter) || 0 === \strlen($sFullNameRaw))
 		{
 			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
 		}
@@ -143,7 +135,7 @@ class Folder
 	/**
 	 * @param mixed $mData
 	 */
-	public function SetExtended(string $sName, $mData)
+	public function SetExtended(string $sName, $mData) : void
 	{
 		$this->aExtended[$sName] = $mData;
 	}

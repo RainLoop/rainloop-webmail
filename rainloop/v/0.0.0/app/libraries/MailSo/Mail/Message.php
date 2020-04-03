@@ -422,7 +422,7 @@ class Message
 
 	public function SetThreads(array $aThreads)
 	{
-		$this->aThreads = \is_array($aThreads) ? $aThreads : array();
+		$this->aThreads = $aThreads;
 	}
 
 	public function TextPartIsTrimmed() : bool

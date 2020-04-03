@@ -289,7 +289,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 
 		$sCmd = 'FROM:<'.$sFrom.'>';
 
-		$sSizeIfSupported = (string) $sSizeIfSupported;
 		if (0 < \strlen($sSizeIfSupported) && \is_numeric($sSizeIfSupported) && $this->IsSupported('SIZE'))
 		{
 			$sCmd .= ' SIZE='.$sSizeIfSupported;
@@ -577,7 +576,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	private function ehlo($sHost) : void
+	private function ehlo(string $sHost) : void
 	{
 		$this->sendRequestWithCheck('EHLO', 250, $sHost);
 
@@ -588,7 +587,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			{
 				$sLine = \trim($aMatch[1]);
 				$aLine = \preg_split('/[ =]/', $sLine, 2);
-				if (\is_array($aLine) && 0 < \count($aLine) && !empty($aLine[0]))
+				if (!empty($aLine[0]))
 				{
 					$sCapa = \strtoupper($aLine[0]);
 					if (('AUTH' === $sCapa || 'SIZE' === $sCapa) && !empty($aLine[1]))
@@ -646,7 +645,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			$this->getNextBuffer();
 			$aParts = \preg_split('/([\s\-]+)/', $this->sResponseBuffer, 2, PREG_SPLIT_DELIM_CAPTURE);
 
-			if (\is_array($aParts) && 3 === \count($aParts) && \is_numeric($aParts[0]))
+			if (3 === \count($aParts) && \is_numeric($aParts[0]))
 			{
 				if ('-' !== \substr($aParts[1], 0, 1) && !\in_array((int) $aParts[0], $mExpectCode))
 				{

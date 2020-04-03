@@ -1,7 +1,7 @@
 <?php
 /**
    * Spyc -- A Simple PHP YAML Class
-   * @version 0.5.1
+   * @version 0.6.2
    * @author Vlad Andersen <vlad.andersen@gmail.com>
    * @author Chris Wanstrath <chris@ozmm.org>
    * @link https://github.com/mustangostang/spyc/
@@ -10,38 +10,7 @@
    * @package Spyc
    */
 
-if (!function_exists('spyc_load')) {
-  /**
-   * Parses YAML to array.
-   * @param string $string YAML string.
-   * @return array
-   */
-  function spyc_load ($string) {
-    return Spyc::YAMLLoadString($string);
-  }
-}
-
-if (!function_exists('spyc_load_file')) {
-  /**
-   * Parses YAML to array.
-   * @param string $file Path to YAML file.
-   * @return array
-   */
-  function spyc_load_file ($file) {
-    return Spyc::YAMLLoad($file);
-  }
-}
-
-if (!function_exists('spyc_dump')) {
-  /**
-   * Dumps array to YAML.
-   * @param array $data Array.
-   * @return string
-   */
-  function spyc_dump ($data) {
-    return Spyc::YAMLDump($data, false, false, true);
-  }
-}
+if (!class_exists('Spyc')) {
 
 /**
    * The Simple PHP YAML Class.
@@ -59,10 +28,6 @@ if (!function_exists('spyc_dump')) {
    * <code>
    *   $array = Spyc::YAMLLoad($file);
    * </code>
-   * or:
-   * <code>
-   *   $array = spyc_load_file($file);
-   * </code>
    * @package Spyc
    */
 class Spyc {
@@ -72,28 +37,24 @@ class Spyc {
   const REMPTY = "\0\0\0\0\0";
 
   /**
-   * Setting this to true will force YAMLDump to enclose any string value in
-   * quotes.  False by default.
-   *
-   * @var bool
-   */
-  public $setting_dump_force_quotes = false;
-
-  /**
    * Setting this to true will forse YAMLLoad to use syck_load function when
    * possible. False by default.
    * @var bool
    */
   public $setting_use_syck_is_possible = false;
 
+  /**
+   * Setting this to true will forse YAMLLoad to use syck_load function when
+   * possible. False by default.
+   * @var bool
+   */
+  public $setting_empty_hash_as_object = false;
 
 
   /**#@+
   * @access private
   * @var mixed
   */
-  private $_dumpIndent;
-  private $_dumpWordWrap;
   private $_containsGroupAnchor = false;
   private $_containsGroupAlias = false;
   private $path;
@@ -107,19 +68,13 @@ class Spyc {
    */
   private $delayedPath = array();
 
-  /**#@+
-  * @access public
-  * @var mixed
-  */
-  public $_nodeId;
-
 /**
  * Load a valid YAML string to Spyc.
  * @param string $input
  * @return array
  */
   public function load ($input) {
-    return $this->__loadString($input);
+    return $this->_loadString($input);
   }
 
  /**
@@ -128,7 +83,7 @@ class Spyc {
  * @return array
  */
   public function loadFile ($file) {
-    return $this->__load($file);
+    return $this->_load($file);
   }
 
   /**
@@ -145,10 +100,16 @@ class Spyc {
      * @access public
      * @return array
      * @param string $input Path of YAML file or string containing YAML
+     * @param array set options
      */
-  public static function YAMLLoad($input) {
+  public static function YAMLLoad($input, $options = []) {
     $Spyc = new Spyc;
-    return $Spyc->__load($input);
+    foreach ($options as $key => $value) {
+        if (property_exists($Spyc, $key)) {
+            $Spyc->$key = $value;
+        }
+    }
+    return $Spyc->_load($input);
   }
 
   /**
@@ -169,247 +130,16 @@ class Spyc {
      * @access public
      * @return array
      * @param string $input String containing YAML
+     * @param array set options
      */
-  public static function YAMLLoadString($input) {
+  public static function YAMLLoadString($input, $options = []) {
     $Spyc = new Spyc;
-    return $Spyc->__loadString($input);
-  }
-
-  /**
-     * Dump YAML from PHP array statically
-     *
-     * The dump method, when supplied with an array, will do its best
-     * to convert the array into friendly YAML.  Pretty simple.  Feel free to
-     * save the returned string as nothing.yaml and pass it around.
-     *
-     * Oh, and you can decide how big the indent is and what the wordwrap
-     * for folding is.  Pretty cool -- just pass in 'false' for either if
-     * you want to use the default.
-     *
-     * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
-     * you can turn off wordwrap by passing in 0.
-     *
-     * @access public
-     * @return string
-     * @param array $array PHP array
-     * @param int $indent Pass in false to use the default, which is 2
-     * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-     * @param int $no_opening_dashes Do not start YAML file with "---\n"
-     */
-  public static function YAMLDump($array, $indent = false, $wordwrap = false, $no_opening_dashes = false) {
-    $spyc = new Spyc;
-    return $spyc->dump($array, $indent, $wordwrap, $no_opening_dashes);
-  }
-
-
-  /**
-     * Dump PHP array to YAML
-     *
-     * The dump method, when supplied with an array, will do its best
-     * to convert the array into friendly YAML.  Pretty simple.  Feel free to
-     * save the returned string as tasteful.yaml and pass it around.
-     *
-     * Oh, and you can decide how big the indent is and what the wordwrap
-     * for folding is.  Pretty cool -- just pass in 'false' for either if
-     * you want to use the default.
-     *
-     * Indent's default is 2 spaces, wordwrap's default is 40 characters.  And
-     * you can turn off wordwrap by passing in 0.
-     *
-     * @access public
-     * @return string
-     * @param array $array PHP array
-     * @param int $indent Pass in false to use the default, which is 2
-     * @param int $wordwrap Pass in 0 for no wordwrap, false for default (40)
-     */
-  public function dump($array,$indent = false,$wordwrap = false, $no_opening_dashes = false) {
-    // Dumps to some very clean YAML.  We'll have to add some more features
-    // and options soon.  And better support for folding.
-
-    // New features and options.
-    if ($indent === false or !is_numeric($indent)) {
-      $this->_dumpIndent = 2;
-    } else {
-      $this->_dumpIndent = $indent;
+    foreach ($options as $key => $value) {
+        if (property_exists($Spyc, $key)) {
+            $Spyc->$key = $value;
+        }
     }
-
-    if ($wordwrap === false or !is_numeric($wordwrap)) {
-      $this->_dumpWordWrap = 40;
-    } else {
-      $this->_dumpWordWrap = $wordwrap;
-    }
-
-    // New YAML document
-    $string = "";
-    if (!$no_opening_dashes) $string = "---\n";
-
-    // Start at the base of the array and move through it.
-    if ($array) {
-      $array = (array)$array;
-      $previous_key = -1;
-      foreach ($array as $key => $value) {
-        if (!isset($first_key)) $first_key = $key;
-        $string .= $this->_yamlize($key,$value,0,$previous_key, $first_key, $array);
-        $previous_key = $key;
-      }
-    }
-    return $string;
-  }
-
-  /**
-     * Attempts to convert a key / value array item to YAML
-     * @access private
-     * @return string
-     * @param $key The name of the key
-     * @param $value The value of the item
-     * @param $indent The indent of the current node
-     */
-  private function _yamlize($key,$value,$indent, $previous_key = -1, $first_key = 0, $source_array = null) {
-    if (is_array($value)) {
-      if (empty ($value))
-        return $this->_dumpNode($key, array(), $indent, $previous_key, $first_key, $source_array);
-      // It has children.  What to do?
-      // Make it the right kind of item
-      $string = $this->_dumpNode($key, self::REMPTY, $indent, $previous_key, $first_key, $source_array);
-      // Add the indent
-      $indent += $this->_dumpIndent;
-      // Yamlize the array
-      $string .= $this->_yamlizeArray($value,$indent);
-    } elseif (!is_array($value)) {
-      // It doesn't have children.  Yip.
-      $string = $this->_dumpNode($key, $value, $indent, $previous_key, $first_key, $source_array);
-    }
-    return $string;
-  }
-
-  /**
-     * Attempts to convert an array to YAML
-     * @access private
-     * @return string
-     * @param $array The array you want to convert
-     * @param $indent The indent of the current level
-     */
-  private function _yamlizeArray($array,$indent) {
-    if (is_array($array)) {
-      $string = '';
-      $previous_key = -1;
-      foreach ($array as $key => $value) {
-        if (!isset($first_key)) $first_key = $key;
-        $string .= $this->_yamlize($key, $value, $indent, $previous_key, $first_key, $array);
-        $previous_key = $key;
-      }
-      return $string;
-    } else {
-      return false;
-    }
-  }
-
-  /**
-     * Returns YAML from a key and a value
-     * @access private
-     * @return string
-     * @param $key The name of the key
-     * @param $value The value of the item
-     * @param $indent The indent of the current node
-     */
-  private function _dumpNode($key, $value, $indent, $previous_key = -1, $first_key = 0, $source_array = null) {
-    // do some folding here, for blocks
-    if (is_string ($value) && ((strpos($value,"\n") !== false || strpos($value,": ") !== false || strpos($value,"- ") !== false ||
-      strpos($value,"*") !== false || strpos($value,"#") !== false || strpos($value,"<") !== false || strpos($value,">") !== false || strpos ($value, '%') !== false || strpos ($value, '  ') !== false ||
-      strpos($value,"[") !== false || strpos($value,"]") !== false || strpos($value,"{") !== false || strpos($value,"}") !== false) || strpos($value,"&") !== false || strpos($value, "'") !== false || strpos($value, "!") === 0 ||
-      substr ($value, -1, 1) == ':')
-    ) {
-      $value = $this->_doLiteralBlock($value,$indent);
-    } else {
-      $value  = $this->_doFolding($value,$indent);
-    }
-
-    if ($value === array()) $value = '[ ]';
-    if ($value === "") $value = '""';
-    if (self::isTranslationWord($value)) {
-      $value = $this->_doLiteralBlock($value, $indent);
-    }
-    if (trim ($value) != $value)
-       $value = $this->_doLiteralBlock($value,$indent);
-
-    if (is_bool($value)) {
-       $value = $value ? "true" : "false";
-    }
-
-    if ($value === null) $value = 'null';
-    if ($value === "'" . self::REMPTY . "'") $value = null;
-
-    $spaces = str_repeat(' ',$indent);
-
-    //if (is_int($key) && $key - 1 == $previous_key && $first_key===0) {
-    if (is_array ($source_array) && array_keys($source_array) === range(0, count($source_array) - 1)) {
-      // It's a sequence
-      $string = $spaces.'- '.$value."\n";
-    } else {
-      // if ($first_key===0)  throw new Exception('Keys are all screwy.  The first one was zero, now it\'s "'. $key .'"');
-      // It's mapped
-      if (strpos($key, ":") !== false || strpos($key, "#") !== false) { $key = '"' . $key . '"'; }
-      $string = rtrim ($spaces.$key.': '.$value)."\n";
-    }
-    return $string;
-  }
-
-  /**
-     * Creates a literal block for dumping
-     * @access private
-     * @return string
-     * @param $value
-     * @param $indent int The value of the indent
-     */
-  private function _doLiteralBlock($value,$indent) {
-    if ($value === "\n") return '\n';
-    if (strpos($value, "\n") === false && strpos($value, "'") === false) {
-      return sprintf ("'%s'", $value);
-    }
-    if (strpos($value, "\n") === false && strpos($value, '"') === false) {
-      return sprintf ('"%s"', $value);
-    }
-    $exploded = explode("\n",$value);
-    $newValue = '|';
-    if (isset($exploded[0]) && ($exploded[0] == "|" || $exploded[0] == "|-" || $exploded[0] == ">")) {
-        $newValue = $exploded[0];
-        unset($exploded[0]);
-    }
-    $indent += $this->_dumpIndent;
-    $spaces   = str_repeat(' ',$indent);
-    foreach ($exploded as $line) {
-      $line = trim($line);
-      if (strpos($line, '"') === 0 && strrpos($line, '"') == (strlen($line)-1) || strpos($line, "'") === 0 && strrpos($line, "'") == (strlen($line)-1)) {
-        $line = substr($line, 1, -1);
-      }
-      $newValue .= "\n" . $spaces . ($line);
-    }
-    return $newValue;
-  }
-
-  /**
-     * Folds a string of text, if necessary
-     * @access private
-     * @return string
-     * @param $value The string you wish to fold
-     */
-  private function _doFolding($value,$indent) {
-    // Don't do anything if wordwrap is set to 0
-
-    if ($this->_dumpWordWrap !== 0 && is_string ($value) && strlen($value) > $this->_dumpWordWrap) {
-      $indent += $this->_dumpIndent;
-      $indent = str_repeat(' ',$indent);
-      $wrapped = wordwrap($value,$this->_dumpWordWrap,"\n$indent");
-      $value   = ">\n".$indent.$wrapped;
-    } else {
-      if ($this->setting_dump_force_quotes && is_string ($value) && $value !== self::REMPTY)
-        $value = '"' . $value . '"';
-      if (is_numeric($value) && is_string($value))
-        $value = '"' . $value . '"';
-    }
-
-
-    return $value;
+    return $Spyc->_loadString($input);
   }
 
   private function isTrueWord($value) {
@@ -468,12 +198,12 @@ class Spyc {
 
 // LOADING FUNCTIONS
 
-  private function __load($input) {
+  private function _load($input) {
     $Source = $this->loadFromSource($input);
     return $this->loadWithSource($Source);
   }
 
-  private function __loadString($input) {
+  private function _loadString($input) {
     $Source = $this->loadFromString($input);
     return $this->loadWithSource($Source);
   }
@@ -571,18 +301,19 @@ class Spyc {
       $line = $this->stripGroup ($line, $group);
     }
 
-    if ($this->startsMappedSequence($line))
+    if ($this->startsMappedSequence($line)) {
       return $this->returnMappedSequence($line);
+    }
 
-    if ($this->startsMappedValue($line))
+    if ($this->startsMappedValue($line)) {
       return $this->returnMappedValue($line);
+    }
 
     if ($this->isArrayElement($line))
-     return $this->returnArrayElement($line);
+      return $this->returnArrayElement($line);
 
     if ($this->isPlainArray($line))
      return $this->returnPlainArray($line);
-
 
     return $this->returnKeyValuePair($line);
 
@@ -596,6 +327,11 @@ class Spyc {
      */
   private function _toType($value) {
     if ($value === '') return "";
+
+    if ($this->setting_empty_hash_as_object && $value === '{}') {
+      return new stdClass();
+    }
+
     $first_character = $value[0];
     $last_character = substr($value, -1, 1);
 
@@ -609,7 +345,9 @@ class Spyc {
 
     if ($is_quoted) {
       $value = str_replace('\n', "\n", $value);
-      return strtr(substr ($value, 1, -1), array ('\\"' => '"', '\'\'' => '\'', '\\\'' => '\''));
+      if ($first_character == "'")
+        return strtr(substr ($value, 1, -1), array ('\'\'' => '\'', '\\\''=> '\''));
+      return strtr(substr ($value, 1, -1), array ('\\"' => '"', '\\\''=> '\''));
     }
 
     if (strpos($value, ' #') !== false && !$is_quoted)
@@ -662,12 +400,12 @@ class Spyc {
 
     if ( is_numeric($value) && preg_match ('/^(-|)[1-9]+[0-9]*$/', $value) ){
       $intvalue = (int)$value;
-      if ($intvalue != PHP_INT_MAX)
+      if ($intvalue != PHP_INT_MAX && $intvalue != ~PHP_INT_MAX)
         $value = $intvalue;
       return $value;
     }
 
-    if (is_numeric($value) && preg_match('/^0[xX][0-9a-fA-F]+$/', $value)) {
+    if ( is_string($value) && preg_match('/^0[xX][0-9a-fA-F]+$/', $value)) {
       // Hexadecimal value.
       return hexdec($value);
     }
@@ -1096,6 +834,7 @@ class Spyc {
       }
       // Set the type of the value.  Int, string, etc
       $value = $this->_toType($value);
+
       if ($key === '0') $key = '__!YAMLZero';
       $array[$key] = $value;
     } else {
@@ -1142,14 +881,4 @@ class Spyc {
     return $line;
   }
 }
-
-// Enable use of Spyc from command line
-// The syntax is the following: php Spyc.php spyc.yaml
-
-do {
-  if (PHP_SAPI != 'cli') break;
-  if (empty ($_SERVER['argc']) || $_SERVER['argc'] < 2) break;
-  if (empty ($_SERVER['PHP_SELF']) || FALSE === strpos ($_SERVER['PHP_SELF'], 'Spyc.php') ) break;
-  $file = $argv[1];
-  echo json_encode (spyc_load_file ($file));
-} while (0);
+}

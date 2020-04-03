@@ -512,7 +512,7 @@ class Manager
 	public function SaveUserPluginSettings(string $sPluginName, array $aSettings) : bool
 	{
 		$oAccount = $this->oActions->GetAccount();
-		if ($oAccount && \is_array($aSettings))
+		if ($oAccount)
 		{
 			$oSettings = $this->oActions->SettingsProvider()->Load($oAccount);
 			if ($oSettings)

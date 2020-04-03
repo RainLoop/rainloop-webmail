@@ -217,7 +217,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return $aReturn;
 	}
 
-	public function getMessageSimpleThreadResult($sStatus, $bReturnUid) : array
+	public function getMessageSimpleThreadResult(string $sStatus, bool $bReturnUid) : array
 	{
 		$aReturn = array();
 		foreach ($this as $oResponse) {

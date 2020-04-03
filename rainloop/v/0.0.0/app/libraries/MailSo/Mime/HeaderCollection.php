@@ -226,7 +226,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		$aResult = array();
 
 		$aHeaders = $this->ValuesByName(Enumerations\Header::AUTHENTICATION_RESULTS);
-		if (\is_array($aHeaders) && 0 < \count($aHeaders))
+		if (0 < \count($aHeaders))
 		{
 			foreach ($aHeaders as $sHeaderValue)
 			{
@@ -265,31 +265,28 @@ class HeaderCollection extends \MailSo\Base\Collection
 		{
 			// X-DKIM-Authentication-Results: signer="hostinger.com" status="pass"
 			$aHeaders = $this->ValuesByName(Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS);
-			if (\is_array($aHeaders) && 0 < \count($aHeaders))
+			foreach ($aHeaders as $sHeaderValue)
 			{
-				foreach ($aHeaders as $sHeaderValue)
+				$sStatus = '';
+				$sHeader = '';
+
+				$aMatch = array();
+
+				$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
+
+				if (\preg_match('/status[\s]?=[\s]?"([a-zA-Z0-9]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
 				{
-					$sStatus = '';
-					$sHeader = '';
+					$sStatus = $aMatch[1];
+				}
 
-					$aMatch = array();
+				if (\preg_match('/signer[\s]?=[\s]?"([^";]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
+				{
+					$sHeader = \trim($aMatch[1]);
+				}
 
-					$sHeaderValue = \preg_replace('/[\r\n\t\s]+/', ' ', $sHeaderValue);
-
-					if (\preg_match('/status[\s]?=[\s]?"([a-zA-Z0-9]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
-					{
-						$sStatus = $aMatch[1];
-					}
-
-					if (\preg_match('/signer[\s]?=[\s]?"([^";]+)"/i', $sHeaderValue, $aMatch) && !empty($aMatch[1]))
-					{
-						$sHeader = \trim($aMatch[1]);
-					}
-
-					if (!empty($sStatus) && !empty($sHeader))
-					{
-						$aResult[] = array($sStatus, $sHeader, $sHeaderValue);
-					}
+				if (!empty($sStatus) && !empty($sHeader))
+				{
+					$aResult[] = array($sStatus, $sHeader, $sHeaderValue);
 				}
 			}
 		}
@@ -300,15 +297,13 @@ class HeaderCollection extends \MailSo\Base\Collection
 	public function PopulateEmailColectionByDkim(EmailCollection $oEmails) : void
 	{
 		$aDkimStatuses = $this->DkimStatuses();
-		if (\is_array($aDkimStatuses) && 0 < \count($aDkimStatuses)) {
-			foreach ($oEmails as $oEmail) {
-				$sEmail = $oEmail->GetEmail();
-				foreach ($aDkimStatuses as $aDkimData) {
-					if (isset($aDkimData[0], $aDkimData[1]) &&
-						$aDkimData[1] === \strstr($sEmail, $aDkimData[1]))
-					{
-						$oEmail->SetDkimStatusAndValue($aDkimData[0], empty($aDkimData[2]) ? '' : $aDkimData[2]);
-					}
+		foreach ($oEmails as $oEmail) {
+			$sEmail = $oEmail->GetEmail();
+			foreach ($aDkimStatuses as $aDkimData) {
+				if (isset($aDkimData[0], $aDkimData[1]) &&
+					$aDkimData[1] === \strstr($sEmail, $aDkimData[1]))
+				{
+					$oEmail->SetDkimStatusAndValue($aDkimData[0], empty($aDkimData[2]) ? '' : $aDkimData[2]);
 				}
 			}
 		}

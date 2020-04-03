@@ -32,9 +32,6 @@ class Attachment
 	 */
 	private $oBodyStructure;
 
-	/**
-	 * @access private
-	 */
 	private function __construct()
 	{
 		$this->Clear();

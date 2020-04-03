@@ -195,7 +195,7 @@ class Actions
 	public function GetShortLifeSpecAuthToken(int $iLife = 60) : string
 	{
 		$aAccountHash = \RainLoop\Utils::DecodeKeyValues($this->getLocalAuthToken());
-		if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && \is_array($aAccountHash))
+		if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0])
 		{
 			$aAccountHash[10] = \time() + $iLife;
 			return \RainLoop\Utils::EncodeKeyValues($aAccountHash);
@@ -487,20 +487,14 @@ class Actions
 			$aClear['/\{labs:([^}]*)\}/'] = 'labs';
 		}
 
-		if (\is_array($aAdditionalParams) && 0 < \count($aAdditionalParams))
+		foreach ($aAdditionalParams as $sKey => $sValue)
 		{
-			foreach ($aAdditionalParams as $sKey => $sValue)
-			{
-				$sLine = \str_replace($sKey, $sValue, $sLine);
-			}
+			$sLine = \str_replace($sKey, $sValue, $sLine);
 		}
 
-		if (0 < \count($aClear))
+		foreach ($aClear as $sKey => $sValue)
 		{
-			foreach ($aClear as $sKey => $sValue)
-			{
-				$sLine = \preg_replace($sKey, $sValue, $sLine);
-			}
+			$sLine = \preg_replace($sKey, $sValue, $sLine);
 		}
 
 		return $sLine;
@@ -1135,7 +1129,7 @@ class Actions
 		if (!empty($sSignMeToken))
 		{
 			$aTokenData = \RainLoop\Utils::DecodeKeyValuesQ($sSignMeToken);
-			if (\is_array($aTokenData) && !empty($aTokenData['e']) && !empty($aTokenData['t']))
+			if (!empty($aTokenData['e']) && !empty($aTokenData['t']))
 			{
 				$sTokenSettings = $this->StorageProvider()->Get($aTokenData['e'],
 					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
@@ -1145,8 +1139,7 @@ class Actions
 				if (!empty($sTokenSettings))
 				{
 					$aSignMeData = \RainLoop\Utils::DecodeKeyValuesQ($sTokenSettings);
-					if (\is_array($aSignMeData) &&
-						!empty($aSignMeData['AuthToken']) &&
+					if (!empty($aSignMeData['AuthToken']) &&
 						!empty($aSignMeData['SignMetToken']) &&
 						$aSignMeData['SignMetToken'] === $aTokenData['t'])
 					{
@@ -1347,7 +1340,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 						\RainLoop\Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
 
 						$mMailToData = \RainLoop\Utils::DecodeKeyValuesQ($sToken);
-						if (\is_array($mMailToData) && !empty($mMailToData['MailTo']) &&
+						if (!empty($mMailToData['MailTo']) &&
 							'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To']))
 						{
 							$aResult['MailToEmail'] = $mMailToData['To'];
@@ -1699,7 +1692,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$this->SetAuthToken($oAccount);
 
 		$aAccounts = $this->GetAccounts($oAccount);
-		if (\is_array($aAccounts) && isset($aAccounts[$oAccount->Email()]))
+		if (isset($aAccounts[$oAccount->Email()]))
 		{
 			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
 			$this->SetAccounts($oAccount, $aAccounts);
@@ -2139,14 +2132,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	public function GetTemplateByID(\RainLoop\Model\Account $oAccount, string $sID) : ?\RainLoop\Model\Identity
 	{
 		$aTemplates = $this->GetTemplates($oAccount);
-		if (\is_array($aTemplates))
+		foreach ($aTemplates as $oIdentity)
 		{
-			foreach ($aTemplates as $oIdentity)
+			if ($oIdentity && $sID === $oIdentity->Id())
 			{
-				if ($oIdentity && $sID === $oIdentity->Id())
-				{
-					return $oIdentity;
-				}
+				return $oIdentity;
 			}
 		}
 
@@ -2239,18 +2229,15 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	{
 		$aIdentities = $this->GetIdentities($oAccount);
 
-		if (\is_array($aIdentities))
+		foreach ($aIdentities as $oIdentity)
 		{
-			foreach ($aIdentities as $oIdentity)
+			if ($oIdentity && $sID === $oIdentity->Id())
 			{
-				if ($oIdentity && $sID === $oIdentity->Id())
-				{
-					return $oIdentity;
-				}
+				return $oIdentity;
 			}
 		}
 
-		return $bFirstOnEmpty && \is_array($aIdentities) && isset($aIdentities[0]) ? $aIdentities[0] : null;
+		return $bFirstOnEmpty && isset($aIdentities[0]) ? $aIdentities[0] : null;
 	}
 
 	public function GetAccountIdentity(\RainLoop\Model\Account $oAccount) : ?\RainLoop\Model\Identity
@@ -2261,7 +2248,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	public function SetAccounts(\RainLoop\Model\Account $oAccount, array $aAccounts = array()) : void
 	{
 		$sParentEmail = $oAccount->ParentEmailHelper();
-		if (!\is_array($aAccounts) || 0 >= \count($aAccounts) ||
+		if (!$aAccounts ||
 			(1 === \count($aAccounts) && !empty($aAccounts[$sParentEmail])))
 		{
 			$this->StorageProvider()->Clear($oAccount,
@@ -2363,7 +2350,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$aFilters = array();
 		foreach ($aIncFilters as $aFilter)
 		{
-			if ($aFilter)
+			if (is_array($aFilter))
 			{
 				$oFilter = new \RainLoop\Providers\Filters\Classes\Filter();
 				if ($oFilter->FromJSON($aFilter))
@@ -2396,10 +2383,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$sParentEmail = $oAccount->ParentEmailHelper();
 
 		$aAccounts = $this->GetAccounts($oAccount);
-		if (!\is_array($aAccounts))
-		{
-			$aAccounts = array();
-		}
 
 		$sEmail = \trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
@@ -2446,7 +2429,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$aAccounts = $this->GetAccounts($oAccount);
 
-		if (0 < \strlen($sEmailToDelete) && $sEmailToDelete !== $sParentEmail && \is_array($aAccounts) && isset($aAccounts[$sEmailToDelete]))
+		if (0 < \strlen($sEmailToDelete) && $sEmailToDelete !== $sParentEmail && isset($aAccounts[$sEmailToDelete]))
 		{
 			unset($aAccounts[$sEmailToDelete]);
 
@@ -2492,7 +2475,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			foreach ($aHashes as $sZipHash)
 			{
 				$aResult = $this->getMimeFileByHash($oAccount, $sZipHash);
-				if (\is_array($aResult) && !empty($aResult['FileHash']))
+				if (!empty($aResult['FileHash']))
 				{
 					$aData[] = $aResult;
 				}
@@ -2874,25 +2857,22 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		if ($this->GetCapa(false, false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			$iLimit = 7;
-			$mAccounts = $this->GetAccounts($oAccount);
-			if (\is_array($mAccounts) && 0 < \count($mAccounts))
+			$aAccounts = $this->GetAccounts($oAccount);
+			if ($aAccounts)
 			{
-				if ($iLimit > \count($mAccounts))
+				if ($iLimit > \count($aAccounts))
 				{
-					$mAccounts = \array_slice($mAccounts, 0, $iLimit);
+					$aAccounts = \array_slice($aAccounts, 0, $iLimit);
 				}
 				else
 				{
 					$bComplete = false;
 				}
 
-				if (0 < \count($mAccounts))
+				foreach ($aAccounts as $sEmail => $sHash)
 				{
-					foreach ($mAccounts as $sEmail => $sHash)
-					{
-						$aCounts[] = array(\MailSo\Base\Utils::IdnToUtf8($sEmail),
-							$oAccount->Email() === $sEmail ? 0 : $this->getAccountUnreadCountFromHash($sHash));
-					}
+					$aCounts[] = array(\MailSo\Base\Utils::IdnToUtf8($sEmail),
+						$oAccount->Email() === $sEmail ? 0 : $this->getAccountUnreadCountFromHash($sHash));
 				}
 			}
 		}
@@ -3702,53 +3682,46 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$aResult = $this->getRepositoryDataByUrl($this->rainLoopRepo(), $bReal);
 
 		$aSub = array();
-		if (\is_array($aResult))
+		foreach ($aResult as $aItem)
 		{
-			foreach ($aResult as $aItem)
+			if ('plugin' === $aItem['type'])
 			{
-				if ('plugin' === $aItem['type'])
-				{
-					$aSub[] = $aItem;
-				}
+				$aSub[] = $aItem;
 			}
-
-			$aResult = $aSub;
-			unset($aSub);
 		}
+		$aResult = $aSub;
+		unset($aSub);
 
 		$aInstalled = $this->Plugins()->InstalledPlugins();
-		if (\is_array($aInstalled))
+		foreach ($aResult as &$aItem)
 		{
-			foreach ($aResult as &$aItem)
+			if ('plugin' === $aItem['type'])
 			{
-				if ('plugin' === $aItem['type'])
+				foreach ($aInstalled as &$aSubItem)
 				{
-					foreach ($aInstalled as &$aSubItem)
+					if (\is_array($aSubItem) && isset($aSubItem[0]) && $aSubItem[0] === $aItem['id'])
 					{
-						if (\is_array($aSubItem) && isset($aSubItem[0]) && $aSubItem[0] === $aItem['id'])
-						{
-							$aSubItem[2] = true;
-							$aItem['installed'] = $aSubItem[1];
-						}
+						$aSubItem[2] = true;
+						$aItem['installed'] = $aSubItem[1];
 					}
 				}
 			}
+		}
 
-			foreach ($aInstalled as $aSubItemSec)
+		foreach ($aInstalled as $aSubItemSec)
+		{
+			if ($aSubItemSec && !isset($aSubItemSec[2]))
 			{
-				if ($aSubItemSec && !isset($aSubItemSec[2]))
-				{
-					\array_push($aResult, array(
-						'type' => 'plugin',
-						'id' => $aSubItemSec[0],
-						'name' => $aSubItemSec[0],
-						'installed' => $aSubItemSec[1],
-						'version' => '',
-						'file' => '',
-						'release' => '',
-						'desc' => ''
-					));
-				}
+				\array_push($aResult, array(
+					'type' => 'plugin',
+					'id' => $aSubItemSec[0],
+					'name' => $aSubItemSec[0],
+					'installed' => $aSubItemSec[1],
+					'version' => '',
+					'file' => '',
+					'release' => '',
+					'desc' => ''
+				));
 			}
 		}
 
@@ -4072,7 +4045,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 				$aMap = $oPlugin->ConfigMap();
 				$oConfig = $oPlugin->Config();
-				if (is_array($aMap) && 0 < count($aMap))
+				if (is_array($aMap))
 				{
 					foreach ($aMap as $oItem)
 					{
@@ -4109,7 +4082,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			{
 				$oConfig = $oPlugin->Config();
 				$aMap = $oPlugin->ConfigMap();
-				if (is_array($aMap) && 0 < count($aMap))
+				if (is_array($aMap))
 				{
 					foreach ($aMap as $oItem)
 					{
@@ -4767,7 +4740,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$sFolder, $sPrevUidNext, $aFlagsFilteredUids
 			);
 
-			if (\is_array($aInboxInformation) && isset($aInboxInformation['Flags']) && \is_array($aInboxInformation['Flags']))
+			if (isset($aInboxInformation['Flags']) && \is_array($aInboxInformation['Flags']))
 			{
 				foreach ($aInboxInformation['Flags'] as $iUid => $aFlags)
 				{
@@ -4788,10 +4761,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::MailServerError, $oException);
 		}
 
-		if (\is_array($aInboxInformation))
-		{
-			$aInboxInformation['Version'] = APP_VERSION;
-		}
+		$aInboxInformation['Version'] = APP_VERSION;
 
 		return $this->DefaultResponse(__FUNCTION__, $aInboxInformation);
 	}
@@ -4819,7 +4789,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					try
 					{
 						$aInboxInformation = $this->MailClient()->FolderInformation($sFolder, '', array());
-						if (\is_array($aInboxInformation) && isset($aInboxInformation['Folder']))
+						if (isset($aInboxInformation['Folder']))
 						{
 							$aResult['List'][] = $aInboxInformation;
 						}
@@ -4854,7 +4824,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$sRawKey = $this->GetActionParam('RawKey', '');
 		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 9);
 
-		if (\is_array($aValues) && 7 < \count($aValues))
+		if ($aValues && 7 < \count($aValues))
 		{
 			$sFolder =(string) $aValues[0];
 			$iOffset = (int) $aValues[1];
@@ -5675,14 +5645,14 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		if (!empty($sData))
 		{
-			$mData = \RainLoop\Utils::DecodeKeyValues($sData);
-			if (\is_array($mData))
+			$aData = \RainLoop\Utils::DecodeKeyValues($sData);
+			if ($aData)
 			{
 				$mResult = array(
-					'Enable' => isset($mData['Enable']) ? !!$mData['Enable'] : false,
-					'Url' => isset($mData['Url']) ? \trim($mData['Url']) : '',
-					'User' => isset($mData['User']) ? \trim($mData['User']) : '',
-					'Password' => isset($mData['Password']) ? $mData['Password'] : ''
+					'Enable' => isset($aData['Enable']) ? !!$aData['Enable'] : false,
+					'Url' => isset($aData['Url']) ? \trim($aData['Url']) : '',
+					'User' => isset($aData['User']) ? \trim($aData['User']) : '',
+					'Password' => isset($aData['Password']) ? $aData['Password'] : ''
 				);
 			}
 		}
@@ -5731,7 +5701,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
 		{
 			$mData = $this->getContactsSyncData($oAccount);
-			if (\is_array($mData) && isset($mData['Enable'], $mData['User'], $mData['Password'], $mData['Url']) && $mData['Enable'])
+			if (isset($mData['Enable'], $mData['User'], $mData['Password'], $mData['Url']) && $mData['Enable'])
 			{
 				$bResult = $oAddressBookProvider->Sync(
 					$oAccount->ParentEmailHelper(),
@@ -5777,7 +5747,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			}
 		}
 
-		if (\is_array($mData) && !empty($aResult['User']) &&
+		if (!empty($aResult['User']) &&
 			!empty($mData['User']) && !empty($mData['Secret']) &&
 			!empty($mData['BackupCodes']) && $sEmail === $mData['User'])
 		{
@@ -5905,10 +5875,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 
 		$aResult = $this->getTwoFactorInfo($oAccount);
-		if (\is_array($aResult))
-		{
-			unset($aResult['BackupCodes']);
-		}
+		unset($aResult['BackupCodes']);
 
 		return $this->DefaultResponse(__FUNCTION__, $aResult);
 	}
@@ -6241,7 +6208,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$iUid = 0;
 
 		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 4);
-		if (\is_array($aValues) && 4 === count($aValues))
+		if ($aValues && 4 === count($aValues))
 		{
 			$sFolder = (string) $aValues[0];
 			$iUid = (int) $aValues[1];
@@ -6460,8 +6427,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$mResult = array();
 				foreach ($aAttachments as $sAttachment)
 				{
-					$aValues = \RainLoop\Utils::DecodeKeyValuesQ($sAttachment);
-					if (\is_array($aValues))
+					if ($aValues = \RainLoop\Utils::DecodeKeyValuesQ($sAttachment))
 					{
 						$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
 						$iUid = (int) isset($aValues['Uid']) ? $aValues['Uid'] : 0;
@@ -6859,7 +6825,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					}
 				}
 
-				if (\is_array($aData) && 0 < \count($aData))
+				if (0 < \count($aData))
 				{
 					$this->Logger()->Write('Import contacts from csv');
 					$iCount = $oAddressBookProvider->ImportCsvArray($oAccount->ParentEmailHelper(), $aData);
@@ -7701,34 +7667,23 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	private function getDecodedRawKeyValue(string $sRawKey) : array
 	{
-		$bResult = array();
-		if (!empty($sRawKey))
-		{
-			$aValues = \RainLoop\Utils::DecodeKeyValuesQ($sRawKey);
-			if (is_array($aValues))
-			{
-				$bResult = $aValues;
-			}
-		}
-
-		return $bResult;
+		return empty($sRawKey) ? array() : \RainLoop\Utils::DecodeKeyValuesQ($sRawKey);
 	}
 
 	private function getDecodedClientRawKeyValue(string $sRawKey, ?int $iLenCache = null) : ?array
 	{
-		$mResult = null;
 		if (!empty($sRawKey))
 		{
 			$sRawKey = \MailSo\Base\Utils::UrlSafeBase64Decode($sRawKey);
 			$aValues = explode("\x0", $sRawKey);
 
-			if (is_array($aValues) && (null === $iLenCache || $iLenCache  === count($aValues)))
+			if (null === $iLenCache || $iLenCache  === count($aValues))
 			{
-				$mResult = $aValues;
+				return $aValues;
 			}
 		}
 
-		return $mResult;
+		return null;
 	}
 
 	public function StaticCache() : string
@@ -7762,49 +7717,46 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$sResult = '';
 		$aLang = $this->GetLanguages($bAdmin);
 
-		if (\is_array($aLang))
+		$aHelper = array('en' => 'en_us', 'ar' => 'ar_sa', 'cs' => 'cs_cz', 'no' => 'nb_no', 'ua' => 'uk_ua',
+			'cn' => 'zh_cn', 'zh' => 'zh_cn', 'tw' => 'zh_tw', 'fa' => 'fa_ir');
+
+		$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : $sLanguage;
+		$sDefault = isset($aHelper[$sDefault]) ? $aHelper[$sDefault] : $sDefault;
+
+		$sLanguage = \strtolower(\str_replace('-', '_', $sLanguage));
+		if (2 === strlen($sLanguage))
 		{
-			$aHelper = array('en' => 'en_us', 'ar' => 'ar_sa', 'cs' => 'cs_cz', 'no' => 'nb_no', 'ua' => 'uk_ua',
-				'cn' => 'zh_cn', 'zh' => 'zh_cn', 'tw' => 'zh_tw', 'fa' => 'fa_ir');
+			$sLanguage = $sLanguage.'_'.$sLanguage;
+		}
 
-			$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : $sLanguage;
-			$sDefault = isset($aHelper[$sDefault]) ? $aHelper[$sDefault] : $sDefault;
+		$sDefault = \strtolower(\str_replace('-', '_', $sDefault));
+		if (2 === strlen($sDefault))
+		{
+			$sDefault = $sDefault.'_'.$sDefault;
+		}
 
-			$sLanguage = \strtolower(\str_replace('-', '_', $sLanguage));
-			if (2 === strlen($sLanguage))
-			{
-				$sLanguage = $sLanguage.'_'.$sLanguage;
-			}
+		$sLanguage = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
+			return \strtoupper($aData[0]);
+		}, $sLanguage);
 
-			$sDefault = \strtolower(\str_replace('-', '_', $sDefault));
-			if (2 === strlen($sDefault))
-			{
-				$sDefault = $sDefault.'_'.$sDefault;
-			}
+		$sDefault = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
+			return \strtoupper($aData[0]);
+		}, $sDefault);
 
-			$sLanguage = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
-				return \strtoupper($aData[0]);
-			}, $sLanguage);
+		if (\in_array($sLanguage, $aLang))
+		{
+			$sResult = $sLanguage;
+		}
 
-			$sDefault = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
-				return \strtoupper($aData[0]);
-			}, $sDefault);
+		if (empty($sResult) && !empty($sDefault) && \in_array($sDefault, $aLang))
+		{
+			$sResult = $sDefault;
+		}
 
-			if (\in_array($sLanguage, $aLang))
-			{
-				$sResult = $sLanguage;
-			}
-
-			if (empty($sResult) && !empty($sDefault) && \in_array($sDefault, $aLang))
-			{
-				$sResult = $sDefault;
-			}
-
-			if (empty($sResult) && !$bAllowEmptyResult)
-			{
-				$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en_US');
-				$sResult = \in_array($sResult, $aLang) ? $sResult : 'en_US';
-			}
+		if (empty($sResult) && !$bAllowEmptyResult)
+		{
+			$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en_US');
+			$sResult = \in_array($sResult, $aLang) ? $sResult : 'en_US';
 		}
 
 		return $sResult;
@@ -7969,12 +7921,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'Result' => $this->responseObject($mResult, $sActionName)
 		);
 
-		if (\is_array($aAdditionalParams))
+		foreach ($aAdditionalParams as $sKey => $mValue)
 		{
-			foreach ($aAdditionalParams as $sKey => $mValue)
-			{
-				$aResult[$sKey] = $mValue;
-			}
+			$aResult[$sKey] = $mValue;
 		}
 
 		return $aResult;

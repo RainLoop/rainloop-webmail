@@ -220,7 +220,7 @@ abstract class Driver
 		return $this->writeImplementation($mDesc);
 	}
 
-	final public function Write($sDesc, $iType = \MailSo\Log\Enumerations\Type::INFO, $sName = '', $bDiplayCrLf = false)
+	final public function Write(string $sDesc, int $iType = \MailSo\Log\Enumerations\Type::INFO, string $sName = '', bool $bDiplayCrLf = false)
 	{
 		$bResult = true;
 		if (!$this->bFlushCache && ($this->bWriteOnErrorOnly || $this->bWriteOnPhpErrorOnly || 0 < $this->iWriteOnTimeoutOnly))

@@ -556,7 +556,7 @@ END;
 	{
 		$sResultHeaders = $sIncHeaders;
 
-		if (\is_array($aHeadersToRemove) && 0 < \count($aHeadersToRemove))
+		if ($aHeadersToRemove)
 		{
 			$aHeadersToRemove = \array_map('strtolower', $aHeadersToRemove);
 
@@ -1016,19 +1016,16 @@ END;
 
 	public static function ClearArrayUtf8Values(array &$aInput)
 	{
-		if (\is_array($aInput))
+		foreach ($aInput as $mKey => $mItem)
 		{
-			foreach ($aInput as $mKey => $mItem)
+			if (\is_string($mItem))
 			{
-				if (\is_string($mItem))
-				{
-					$aInput[$mKey] = static::Utf8Clear($mItem);
-				}
-				else if (\is_array($mItem))
-				{
-					static::ClearArrayUtf8Values($mItem);
-					$aInput[$mKey] = $mItem;
-				}
+				$aInput[$mKey] = static::Utf8Clear($mItem);
+			}
+			else if (\is_array($mItem))
+			{
+				static::ClearArrayUtf8Values($mItem);
+				$aInput[$mKey] = $mItem;
 			}
 		}
 	}
@@ -1044,11 +1041,6 @@ END;
 			if (!$oLogger && \MailSo\Log\Logger::IsSystemEnabled())
 			{
 				$oLogger = \MailSo\Config::$SystemLogger;
-			}
-
-			if (!($oLogger instanceof \MailSo\Log\Logger))
-			{
-				$oLogger = null;
 			}
 
 			if ($oLogger)
@@ -1355,7 +1347,7 @@ END;
 	public static function PrepareFetchSequence(array $aSequence) : string
 	{
 		$aResult = array();
-		if (\is_array($aSequence) && 0 < \count($aSequence))
+		if (0 < \count($aSequence))
 		{
 			$iStart = null;
 			$iPrev = null;
@@ -1431,7 +1423,7 @@ END;
 	public static function MultipleStreamWriter($rRead, array $aWrite, int $iBufferLen = 8192, bool $bResetTimeLimit = true, bool $bFixCrLf = false, bool $bRewindOnComplete = false) : int
 	{
 		$mResult = false;
-		if ($rRead && \is_array($aWrite) && 0 < \count($aWrite))
+		if ($rRead && 0 < \count($aWrite))
 		{
 			$mResult = 0;
 			while (!\feof($rRead))
@@ -1792,18 +1784,16 @@ END;
 		if (null === $aCache)
 		{
 			$sDisableFunctions = \ini_get('disable_functions');
-			$sDisableFunctions = \is_string($sDisableFunctions) && 0 < \strlen($sDisableFunctions) ? $sDisableFunctions : '';
+			$sDisableFunctions = \is_string($sDisableFunctions) ? $sDisableFunctions : '';
 
 			$aCache = \explode(',', $sDisableFunctions);
-			$aCache = \is_array($aCache) && 0 < \count($aCache) ? $aCache : array();
 
 			if (\extension_loaded('suhosin'))
 			{
 				 $sSuhosin = \ini_get('suhosin.executor.func.blacklist');
-				 $sSuhosin = \is_string($sSuhosin) && 0 < \strlen($sSuhosin) ? $sSuhosin : '';
+				 $sSuhosin = \is_string($sSuhosin) ? $sSuhosin : '';
 
 				 $aSuhosinCache = \explode(',', $sSuhosin);
-				 $aSuhosinCache = \is_array($aSuhosinCache) && 0 < \count($aSuhosinCache) ? $aSuhosinCache : array();
 
 				 if (0 < \count($aSuhosinCache))
 				 {

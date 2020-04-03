@@ -246,33 +246,30 @@ class DefaultDomain implements \RainLoop\Providers\Domain\DomainAdminInterface
 
 //		$aList = \glob($this->sDomainPath.'/*.{ini,alias}', GLOB_BRACE);
 		$aList = \array_diff(\scandir($this->sDomainPath), array('.', '..'));
-		if (\is_array($aList))
+		foreach ($aList as $sFile)
 		{
-			foreach ($aList as $sFile)
+			$sName = $sFile;
+			if ('.ini' === \substr($sName, -4) || '.alias' === \substr($sName, -6))
 			{
-				$sName = $sFile;
-				if ('.ini' === \substr($sName, -4) || '.alias' === \substr($sName, -6))
+				$bAlias = '.alias' === \substr($sName, -6);
+
+				$sName = \preg_replace('/\.(ini|alias)$/', '', $sName);
+				$sName = $this->codeFileName($sName, true);
+
+				if ($bAlias)
 				{
-					$bAlias = '.alias' === \substr($sName, -6);
-
-					$sName = \preg_replace('/\.(ini|alias)$/', '', $sName);
-					$sName = $this->codeFileName($sName, true);
-
-					if ($bAlias)
+					if ($bIncludeAliases)
 					{
-						if ($bIncludeAliases)
-						{
-							$aAliases[] = $sName;
-						}
+						$aAliases[] = $sName;
 					}
-					else if (false !== \strpos($sName, '*'))
-					{
-						$aWildCards[] = $sName;
-					}
-					else
-					{
-						$aResult[] = $sName;
-					}
+				}
+				else if (false !== \strpos($sName, '*'))
+				{
+					$aWildCards[] = $sName;
+				}
+				else
+				{
+					$aResult[] = $sName;
 				}
 			}
 		}

@@ -64,7 +64,7 @@ class ServiceActions
 
 	public function SetPaths(array $aPaths) : self
 	{
-		$this->aPaths = \is_array($aPaths) ? $aPaths : array();
+		$this->aPaths = $aPaths;
 		return $this;
 	}
 
@@ -104,7 +104,7 @@ class ServiceActions
 				$this->Logger()->Write('Action: '.$sMethodName, \MailSo\Log\Enumerations\Type::NOTE, 'AJAX');
 
 				$aPost = $this->oHttp->GetPostAsArray();
-				if (\is_array($aPost) && 0 < \count($aPost))
+				if ($aPost)
 				{
 					$this->oActions->SetActionParams($aPost, $sMethodName);
 					switch ($sMethodName)

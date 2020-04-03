@@ -28,7 +28,7 @@ class Message
 	private $aAlternativeParts;
 
 	/**
-	 * @var \MailSo\Mime\AttachmentCollection
+	 * @var AttachmentCollection
 	 */
 	private $oAttachmentCollection;
 
@@ -73,16 +73,16 @@ class Message
 	public function MessageId() : string
 	{
 		$sResult = '';
-		if (!empty($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::MESSAGE_ID]))
+		if (!empty($this->aHeadersValue[Enumerations\Header::MESSAGE_ID]))
 		{
-			$sResult = $this->aHeadersValue[\MailSo\Mime\Enumerations\Header::MESSAGE_ID];
+			$sResult = $this->aHeadersValue[Enumerations\Header::MESSAGE_ID];
 		}
 		return $sResult;
 	}
 
 	public function SetMessageId(string $sMessageId) : void
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::MESSAGE_ID] = $sMessageId;
+		$this->aHeadersValue[Enumerations\Header::MESSAGE_ID] = $sMessageId;
 	}
 
 	public function RegenerateMessageId(string $sHostName = '') : void
@@ -90,76 +90,76 @@ class Message
 		$this->SetMessageId($this->generateNewMessageId($sHostName));
 	}
 
-	public function Attachments() : \MailSo\Mime\AttachmentCollection
+	public function Attachments() : AttachmentCollection
 	{
 		return $this->oAttachmentCollection;
 	}
 
 	public function GetSubject() : string
 	{
-		return isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::SUBJECT]) ?
-			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::SUBJECT] : '';
+		return isset($this->aHeadersValue[Enumerations\Header::SUBJECT]) ?
+			$this->aHeadersValue[Enumerations\Header::SUBJECT] : '';
 	}
 
-	public function GetFrom() : ?\MailSo\Mime\Email
+	public function GetFrom() : ?Email
 	{
 		$oResult = null;
 
-		if (isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::FROM_]) &&
-			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::FROM_] instanceof \MailSo\Mime\Email)
+		if (isset($this->aHeadersValue[Enumerations\Header::FROM_]) &&
+			$this->aHeadersValue[Enumerations\Header::FROM_] instanceof Email)
 		{
-			$oResult = $this->aHeadersValue[\MailSo\Mime\Enumerations\Header::FROM_];
+			$oResult = $this->aHeadersValue[Enumerations\Header::FROM_];
 		}
 
 		return $oResult;
 	}
 
-	public function GetTo() : \MailSo\Mime\EmailCollection
+	public function GetTo() : EmailCollection
 	{
-		$oResult = \MailSo\Mime\EmailCollection::NewInstance();
+		$oResult = EmailCollection::NewInstance();
 
-		if (isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::TO_]) &&
-			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::TO_] instanceof \MailSo\Mime\EmailCollection)
+		if (isset($this->aHeadersValue[Enumerations\Header::TO_]) &&
+			$this->aHeadersValue[Enumerations\Header::TO_] instanceof EmailCollection)
 		{
-			$oResult->MergeWithOtherCollection($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::TO_]);
+			$oResult->MergeWithOtherCollection($this->aHeadersValue[Enumerations\Header::TO_]);
 		}
 
 		return $oResult->Unique();
 	}
 
-	public function GetBcc() : ?\MailSo\Mime\EmailCollection
+	public function GetBcc() : ?EmailCollection
 	{
 		$oResult = null;
 
-		if (isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::BCC]) &&
-			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::BCC] instanceof \MailSo\Mime\EmailCollection)
+		if (isset($this->aHeadersValue[Enumerations\Header::BCC]) &&
+			$this->aHeadersValue[Enumerations\Header::BCC] instanceof EmailCollection)
 		{
-			$oResult = $this->aHeadersValue[\MailSo\Mime\Enumerations\Header::BCC];
+			$oResult = $this->aHeadersValue[Enumerations\Header::BCC];
 		}
 
 		return $oResult ? $oResult->Unique() : null;
 	}
 
-	public function GetRcpt() : \MailSo\Mime\EmailCollection
+	public function GetRcpt() : EmailCollection
 	{
-		$oResult = \MailSo\Mime\EmailCollection::NewInstance();
+		$oResult = EmailCollection::NewInstance();
 
-		if (isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::TO_]) &&
-			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::TO_] instanceof \MailSo\Mime\EmailCollection)
+		if (isset($this->aHeadersValue[Enumerations\Header::TO_]) &&
+			$this->aHeadersValue[Enumerations\Header::TO_] instanceof EmailCollection)
 		{
-			$oResult->MergeWithOtherCollection($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::TO_]);
+			$oResult->MergeWithOtherCollection($this->aHeadersValue[Enumerations\Header::TO_]);
 		}
 
-		if (isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::CC]) &&
-			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::CC] instanceof \MailSo\Mime\EmailCollection)
+		if (isset($this->aHeadersValue[Enumerations\Header::CC]) &&
+			$this->aHeadersValue[Enumerations\Header::CC] instanceof EmailCollection)
 		{
-			$oResult->MergeWithOtherCollection($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::CC]);
+			$oResult->MergeWithOtherCollection($this->aHeadersValue[Enumerations\Header::CC]);
 		}
 
-		if (isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::BCC]) &&
-			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::BCC] instanceof \MailSo\Mime\EmailCollection)
+		if (isset($this->aHeadersValue[Enumerations\Header::BCC]) &&
+			$this->aHeadersValue[Enumerations\Header::BCC] instanceof EmailCollection)
 		{
-			$oResult->MergeWithOtherCollection($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::BCC]);
+			$oResult->MergeWithOtherCollection($this->aHeadersValue[Enumerations\Header::BCC]);
 		}
 
 		return $oResult->Unique();
@@ -178,21 +178,21 @@ class Message
 
 	public function SetSubject(string $sSubject) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::SUBJECT] = $sSubject;
+		$this->aHeadersValue[Enumerations\Header::SUBJECT] = $sSubject;
 
 		return $this;
 	}
 
 	public function SetInReplyTo(string $sInReplyTo) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::IN_REPLY_TO] = $sInReplyTo;
+		$this->aHeadersValue[Enumerations\Header::IN_REPLY_TO] = $sInReplyTo;
 
 		return $this;
 	}
 
 	public function SetReferences(string $sReferences) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::REFERENCES] =
+		$this->aHeadersValue[Enumerations\Header::REFERENCES] =
 			\MailSo\Base\Utils::StripSpaces($sReferences);
 
 		return $this;
@@ -200,8 +200,8 @@ class Message
 
 	public function SetReadReceipt(string $sEmail) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::DISPOSITION_NOTIFICATION_TO] = $sEmail;
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO] = $sEmail;
+		$this->aHeadersValue[Enumerations\Header::DISPOSITION_NOTIFICATION_TO] = $sEmail;
+		$this->aHeadersValue[Enumerations\Header::X_CONFIRM_READING_TO] = $sEmail;
 
 		return $this;
 	}
@@ -216,20 +216,20 @@ class Message
 		$sResult = '';
 		switch ($iValue)
 		{
-			case \MailSo\Mime\Enumerations\MessagePriority::HIGH:
-				$sResult = \MailSo\Mime\Enumerations\MessagePriority::HIGH.' (Highest)';
+			case Enumerations\MessagePriority::HIGH:
+				$sResult = Enumerations\MessagePriority::HIGH.' (Highest)';
 				break;
-			case \MailSo\Mime\Enumerations\MessagePriority::NORMAL:
-				$sResult = \MailSo\Mime\Enumerations\MessagePriority::NORMAL.' (Normal)';
+			case Enumerations\MessagePriority::NORMAL:
+				$sResult = Enumerations\MessagePriority::NORMAL.' (Normal)';
 				break;
-			case \MailSo\Mime\Enumerations\MessagePriority::LOW:
-				$sResult = \MailSo\Mime\Enumerations\MessagePriority::LOW.' (Lowest)';
+			case Enumerations\MessagePriority::LOW:
+				$sResult = Enumerations\MessagePriority::LOW.' (Lowest)';
 				break;
 		}
 
 		if (0 < \strlen($sResult))
 		{
-			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::X_PRIORITY] = $sResult;
+			$this->aHeadersValue[Enumerations\Header::X_PRIORITY] = $sResult;
 		}
 
 		return $this;
@@ -240,20 +240,20 @@ class Message
 		$sResult = '';
 		switch ($iValue)
 		{
-			case \MailSo\Mime\Enumerations\Sensitivity::CONFIDENTIAL:
+			case Enumerations\Sensitivity::CONFIDENTIAL:
 				$sResult = 'Company-Confidential';
 				break;
-			case \MailSo\Mime\Enumerations\Sensitivity::PERSONAL:
+			case Enumerations\Sensitivity::PERSONAL:
 				$sResult = 'Personal';
 				break;
-			case \MailSo\Mime\Enumerations\Sensitivity::PRIVATE_:
+			case Enumerations\Sensitivity::PRIVATE_:
 				$sResult = 'Private';
 				break;
 		}
 
 		if (0 < \strlen($sResult))
 		{
-			$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::SENSITIVITY] = $sResult;
+			$this->aHeadersValue[Enumerations\Header::SENSITIVITY] = $sResult;
 		}
 
 		return $this;
@@ -261,66 +261,66 @@ class Message
 
 	public function SetXMailer(string $sXMailer) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::X_MAILER] = $sXMailer;
+		$this->aHeadersValue[Enumerations\Header::X_MAILER] = $sXMailer;
 
 		return $this;
 	}
 
-	public function SetFrom(\MailSo\Mime\Email $oEmail) : self
+	public function SetFrom(Email $oEmail) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::FROM_] = $oEmail;
+		$this->aHeadersValue[Enumerations\Header::FROM_] = $oEmail;
 
 		return $this;
 	}
 
-	public function SetTo(\MailSo\Mime\EmailCollection $oEmails) : self
+	public function SetTo(EmailCollection $oEmails) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::TO_] = $oEmails;
+		$this->aHeadersValue[Enumerations\Header::TO_] = $oEmails;
 
 		return $this;
 	}
 
 	public function SetDate(int $iDateTime) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::DATE] = gmdate('r', $iDateTime);
+		$this->aHeadersValue[Enumerations\Header::DATE] = gmdate('r', $iDateTime);
 
 		return $this;
 	}
 
-	public function SetReplyTo(\MailSo\Mime\EmailCollection $oEmails) : self
+	public function SetReplyTo(EmailCollection $oEmails) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::REPLY_TO] = $oEmails;
+		$this->aHeadersValue[Enumerations\Header::REPLY_TO] = $oEmails;
 
 		return $this;
 	}
 
-	public function SetCc(\MailSo\Mime\EmailCollection $oEmails) : self
+	public function SetCc(EmailCollection $oEmails) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::CC] = $oEmails;
+		$this->aHeadersValue[Enumerations\Header::CC] = $oEmails;
 
 		return $this;
 	}
 
-	public function SetBcc(\MailSo\Mime\EmailCollection $oEmails) : self
+	public function SetBcc(EmailCollection $oEmails) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::BCC] = $oEmails;
+		$this->aHeadersValue[Enumerations\Header::BCC] = $oEmails;
 
 		return $this;
 	}
 
-	public function SetSender(\MailSo\Mime\EmailCollection $oEmails) : self
+	public function SetSender(EmailCollection $oEmails) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::SENDER] = $oEmails;
+		$this->aHeadersValue[Enumerations\Header::SENDER] = $oEmails;
 
 		return $this;
 	}
 
 	public function SetDraftInfo(string $sType, string $sUid, string $sFolder) : self
 	{
-		$this->aHeadersValue[\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO] = \MailSo\Mime\ParameterCollection::NewInstance()
-			->Add(\MailSo\Mime\Parameter::NewInstance('type', $sType))
-			->Add(\MailSo\Mime\Parameter::NewInstance('uid', $sUid))
-			->Add(\MailSo\Mime\Parameter::NewInstance('folder', base64_encode($sFolder)))
+		$this->aHeadersValue[Enumerations\Header::X_DRAFT_INFO] = ParameterCollection::NewInstance()
+			->Add(Parameter::NewInstance('type', $sType))
+			->Add(Parameter::NewInstance('uid', $sUid))
+			->Add(Parameter::NewInstance('folder', base64_encode($sFolder)))
 		;
 
 		return $this;
@@ -329,14 +329,14 @@ class Message
 	public function AddPlain(string $sPlain) : self
 	{
 		return $this->AddAlternative(
-			\MailSo\Mime\Enumerations\MimeType::TEXT_PLAIN, trim($sPlain),
+			Enumerations\MimeType::TEXT_PLAIN, trim($sPlain),
 			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_LOWER);
 	}
 
 	public function AddHtml(string $sHtml) : self
 	{
 		return $this->AddAlternative(
-			\MailSo\Mime\Enumerations\MimeType::TEXT_HTML, trim($sHtml),
+			Enumerations\MimeType::TEXT_HTML, trim($sHtml),
 			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_LOWER);
 	}
 
@@ -380,7 +380,7 @@ class Message
 				(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : '')).'@'.$sHostName.'>';
 	}
 
-	private function createNewMessageAttachmentBody(\MailSo\Mime\Attachment $oAttachment) : \MailSo\Mime\Part
+	private function createNewMessageAttachmentBody(Attachment $oAttachment) : Part
 	{
 		$oAttachmentPart = Part::NewInstance();
 
@@ -395,22 +395,22 @@ class Message
 		{
 			$oContentTypeParameters =
 				ParameterCollection::NewInstance()->Add(Parameter::NewInstance(
-					\MailSo\Mime\Enumerations\Parameter::NAME, $sFileName));
+					Enumerations\Parameter::NAME, $sFileName));
 
 			$oContentDispositionParameters =
 				ParameterCollection::NewInstance()->Add(Parameter::NewInstance(
-					\MailSo\Mime\Enumerations\Parameter::FILENAME, $sFileName));
+					Enumerations\Parameter::FILENAME, $sFileName));
 		}
 
 		$oAttachmentPart->Headers->append(
-			Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+			Header::NewInstance(Enumerations\Header::CONTENT_TYPE,
 				$oAttachment->ContentType().';'.
 				(($oContentTypeParameters) ? ' '.$oContentTypeParameters->ToString() : '')
 			)
 		);
 
 		$oAttachmentPart->Headers->append(
-			Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION,
+			Header::NewInstance(Enumerations\Header::CONTENT_DISPOSITION,
 				($oAttachment->IsInline() ? 'inline' : 'attachment').';'.
 				(($oContentDispositionParameters) ? ' '.$oContentDispositionParameters->ToString() : '')
 			)
@@ -419,14 +419,14 @@ class Message
 		if (0 < strlen($sCID))
 		{
 			$oAttachmentPart->Headers->append(
-				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_ID, $sCID)
+				Header::NewInstance(Enumerations\Header::CONTENT_ID, $sCID)
 			);
 		}
 
 		if (0 < strlen($sContentLocation))
 		{
 			$oAttachmentPart->Headers->append(
-				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_LOCATION, $sContentLocation)
+				Header::NewInstance(Enumerations\Header::CONTENT_LOCATION, $sContentLocation)
 			);
 		}
 
@@ -436,7 +436,7 @@ class Message
 		{
 			$oAttachmentPart->Headers->append(
 				Header::NewInstance(
-					\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING,
+					Enumerations\Header::CONTENT_TRANSFER_ENCODING,
 					\MailSo\Base\Enumerations\Encoding::BASE64_LOWER
 				)
 			);
@@ -458,17 +458,17 @@ class Message
 		return $oAttachmentPart;
 	}
 
-	private function createNewMessageAlternativePartBody(array $aAlternativeData) : \MailSo\Mime\Part
+	private function createNewMessageAlternativePartBody(array $aAlternativeData) : ?Part
 	{
 		$oAlternativePart = null;
 
-		if (is_array($aAlternativeData) && isset($aAlternativeData[0]))
+		if (isset($aAlternativeData[0]))
 		{
 			$oAlternativePart = Part::NewInstance();
 			$oParameters = ParameterCollection::NewInstance();
 			$oParameters->append(
 				Parameter::NewInstance(
-					\MailSo\Mime\Enumerations\Parameter::CHARSET,
+					Enumerations\Parameter::CHARSET,
 					\MailSo\Base\Enumerations\Charset::UTF_8)
 			);
 
@@ -481,7 +481,7 @@ class Message
 			}
 
 			$oAlternativePart->Headers->append(
-				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
+				Header::NewInstance(Enumerations\Header::CONTENT_TYPE,
 					$aAlternativeData[0].'; '.$oParameters->ToString())
 			);
 
@@ -502,7 +502,7 @@ class Message
 			if (isset($aAlternativeData[2]) && 0 < strlen($aAlternativeData[2]))
 			{
 				$oAlternativePart->Headers->append(
-					Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING,
+					Header::NewInstance(Enumerations\Header::CONTENT_TRANSFER_ENCODING,
 						$aAlternativeData[2]
 					)
 				);
@@ -531,7 +531,7 @@ class Message
 		return $oAlternativePart;
 	}
 
-	private function createNewMessageSimpleOrAlternativeBody() : \MailSo\Mime\Part
+	private function createNewMessageSimpleOrAlternativeBody() : Part
 	{
 		$oResultPart = null;
 		if (1 < count($this->aAlternativeParts))
@@ -539,11 +539,11 @@ class Message
 			$oResultPart = Part::NewInstance();
 
 			$oResultPart->Headers->append(
-				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-					\MailSo\Mime\Enumerations\MimeType::MULTIPART_ALTERNATIVE.'; '.
+				Header::NewInstance(Enumerations\Header::CONTENT_TYPE,
+					Enumerations\MimeType::MULTIPART_ALTERNATIVE.'; '.
 					ParameterCollection::NewInstance()->Add(
 						Parameter::NewInstance(
-							\MailSo\Mime\Enumerations\Parameter::BOUNDARY,
+							Enumerations\Parameter::BOUNDARY,
 							$this->generateNewBoundary())
 					)->ToString()
 				)
@@ -575,13 +575,13 @@ class Message
 			if ($this->bAddEmptyTextPart)
 			{
 				$oResultPart = $this->createNewMessageAlternativePartBody(array(
-					\MailSo\Mime\Enumerations\MimeType::TEXT_PLAIN, null
+					Enumerations\MimeType::TEXT_PLAIN, null
 				));
 			}
 			else
 			{
 				$aAttachments = $this->oAttachmentCollection->getArrayCopy();
-				if (\is_array($aAttachments) && 1 === count($aAttachments) && isset($aAttachments[0]))
+				if (1 === count($aAttachments) && isset($aAttachments[0]))
 				{
 					$this->oAttachmentCollection->Clear();
 
@@ -596,7 +596,7 @@ class Message
 		return $oResultPart;
 	}
 
-	private function createNewMessageRelatedBody(\MailSo\Mime\Part $oIncPart) : \MailSo\Mime\Part
+	private function createNewMessageRelatedBody(Part $oIncPart) : Part
 	{
 		$oResultPart = null;
 
@@ -606,11 +606,11 @@ class Message
 			$oResultPart = Part::NewInstance();
 
 			$oResultPart->Headers->append(
-				Header::NewInstance(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-					\MailSo\Mime\Enumerations\MimeType::MULTIPART_RELATED.'; '.
+				Header::NewInstance(Enumerations\Header::CONTENT_TYPE,
+					Enumerations\MimeType::MULTIPART_RELATED.'; '.
 					ParameterCollection::NewInstance()->Add(
 						Parameter::NewInstance(
-							\MailSo\Mime\Enumerations\Parameter::BOUNDARY,
+							Enumerations\Parameter::BOUNDARY,
 							$this->generateNewBoundary())
 					)->ToString()
 				)
@@ -631,7 +631,7 @@ class Message
 		return $oResultPart;
 	}
 
-	private function createNewMessageMixedBody(\MailSo\Mime\Part $oIncPart) : \MailSo\Mime\Part
+	private function createNewMessageMixedBody(Part $oIncPart) : Part
 	{
 		$oResultPart = null;
 
@@ -640,11 +640,11 @@ class Message
 		{
 			$oResultPart = Part::NewInstance();
 
-			$oResultPart->Headers->AddByName(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-				\MailSo\Mime\Enumerations\MimeType::MULTIPART_MIXED.'; '.
+			$oResultPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
+				Enumerations\MimeType::MULTIPART_MIXED.'; '.
 				ParameterCollection::NewInstance()->Add(
 					Parameter::NewInstance(
-						\MailSo\Mime\Enumerations\Parameter::BOUNDARY,
+						Enumerations\Parameter::BOUNDARY,
 						$this->generateNewBoundary())
 				)->ToString()
 			);
@@ -664,40 +664,40 @@ class Message
 		return $oResultPart;
 	}
 
-	private function setDefaultHeaders(\MailSo\Mime\Part $oIncPart, bool $bWithoutBcc = false) : \MailSo\Mime\Part
+	private function setDefaultHeaders(Part $oIncPart, bool $bWithoutBcc = false) : Part
 	{
-		if (!isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::DATE]))
+		if (!isset($this->aHeadersValue[Enumerations\Header::DATE]))
 		{
-			$oIncPart->Headers->SetByName(\MailSo\Mime\Enumerations\Header::DATE, \gmdate('r'), true);
+			$oIncPart->Headers->SetByName(Enumerations\Header::DATE, \gmdate('r'), true);
 		}
 
-		if (!isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::MESSAGE_ID]))
+		if (!isset($this->aHeadersValue[Enumerations\Header::MESSAGE_ID]))
 		{
-			$oIncPart->Headers->SetByName(\MailSo\Mime\Enumerations\Header::MESSAGE_ID, $this->generateNewMessageId(), true);
+			$oIncPart->Headers->SetByName(Enumerations\Header::MESSAGE_ID, $this->generateNewMessageId(), true);
 		}
 
-		if (!isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::X_MAILER]) && $this->bAddDefaultXMailer)
+		if (!isset($this->aHeadersValue[Enumerations\Header::X_MAILER]) && $this->bAddDefaultXMailer)
 		{
-			$oIncPart->Headers->SetByName(\MailSo\Mime\Enumerations\Header::X_MAILER, 'MailSo/2.0.1-djmaze', true);
+			$oIncPart->Headers->SetByName(Enumerations\Header::X_MAILER, 'MailSo/2.0.1-djmaze', true);
 		}
 
-		if (!isset($this->aHeadersValue[\MailSo\Mime\Enumerations\Header::MIME_VERSION]))
+		if (!isset($this->aHeadersValue[Enumerations\Header::MIME_VERSION]))
 		{
-			$oIncPart->Headers->SetByName(\MailSo\Mime\Enumerations\Header::MIME_VERSION, '1.0', true);
+			$oIncPart->Headers->SetByName(Enumerations\Header::MIME_VERSION, '1.0', true);
 		}
 
 		foreach ($this->aHeadersValue as $sName => $mValue)
 		{
 			if (\is_object($mValue))
 			{
-				if ($mValue instanceof \MailSo\Mime\EmailCollection || $mValue instanceof \MailSo\Mime\Email ||
-					$mValue instanceof \MailSo\Mime\ParameterCollection)
+				if ($mValue instanceof EmailCollection || $mValue instanceof Email ||
+					$mValue instanceof ParameterCollection)
 				{
 					$mValue = $mValue->ToString();
 				}
 			}
 
-			if (!($bWithoutBcc && \strtolower(\MailSo\Mime\Enumerations\Header::BCC) === \strtolower($sName)))
+			if (!($bWithoutBcc && \strtolower(Enumerations\Header::BCC) === \strtolower($sName)))
 			{
 				$oIncPart->Headers->SetByName($sName, (string) $mValue);
 			}
@@ -706,7 +706,7 @@ class Message
 		return $oIncPart;
 	}
 
-	public function ToPart(bool $bWithoutBcc = false) : \MailSo\Mime\Part
+	public function ToPart(bool $bWithoutBcc = false) : Part
 	{
 		$oPart = $this->createNewMessageSimpleOrAlternativeBody();
 		$oPart = $this->createNewMessageRelatedBody($oPart);

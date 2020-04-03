@@ -251,10 +251,10 @@ class Utils
 	{
 		if (\file_exists($sFileName))
 		{
-			$isYml = '.yml' === substr($sFileName, -4);
-			if ($isYml)
+			if ('.yml' === substr($sFileName, -4))
 			{
-				$aLang = \spyc_load(\str_replace(array(': >-', ': |-', ': |+'), array(': >', ': |', ': |'), \file_get_contents($sFileName)));
+//-				$aLang = \yaml_parse(\str_replace(array(': >-', ': |-', ': |+'), array(': >', ': |', ': |'), \file_get_contents($sFileName)));
+				$aLang = \yaml_parse_file($sFileName);
 				if (\is_array($aLang))
 				{
 					\reset($aLang);
@@ -434,21 +434,16 @@ class Utils
 	{
 		$aResult = array();
 
-		if (is_array($aSuggestions))
+		foreach ($aSuggestions as $aItem)
 		{
-			$aCache = array();
-			foreach ($aSuggestions as $aItem)
+			$sLine = \implode('~~', $aItem);
+			if (!isset($aResult[$sLine]))
 			{
-				$sLine = \implode('~~', $aItem);
-				if (!isset($aCache[$sLine]))
-				{
-					$aCache[$sLine] = true;
-					$aResult[] = $aItem;
-				}
+				$aResult[$sLine] = $aItem;
 			}
 		}
 
-		return $aResult;
+		return array_values($aResult);
 	}
 
 	public static function CustomParseIniFile(string $sFileName, bool $bProcessSections = false) : array
@@ -458,8 +453,7 @@ class Utils
 //			return \parse_ini_file($sFileName, !!$bProcessSections);
 //		}
 
-		$sData = \file_get_contents($sFileName);
-		return \is_string($sData) ? \parse_ini_string($sData, !!$bProcessSections) : null;
+		return @\parse_ini_string(\file_get_contents($sFileName), $bProcessSections) ?: array();
 	}
 
 	public static function CustomBaseConvert(string $sNumberInput, string $sFromBaseInput = '0123456789', string $sToBaseInput = '0123456789')

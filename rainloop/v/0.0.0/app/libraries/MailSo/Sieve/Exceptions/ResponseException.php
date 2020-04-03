@@ -27,10 +27,7 @@ class ResponseException extends \MailSo\Sieve\Exceptions\Exception
 	{
 		parent::__construct($sMessage, $iCode, $oPrevious);
 
-		if (is_array($aResponses))
-		{
-			$this->aResponses = $aResponses;
-		}
+		$this->aResponses = $aResponses;
 	}
 
 	public function GetResponses() : array
@@ -40,6 +37,7 @@ class ResponseException extends \MailSo\Sieve\Exceptions\Exception
 
 	public function GetLastResponse() : ?\MailSo\Sieve\Response
 	{
-		return 0 < count($this->aResponses) ? $this->aResponses[count($this->aResponses) - 1] : null;
+		$iCnt = count($this->aResponses);
+		return $iCnt ? $this->aResponses[$iCnt - 1] : null;
 	}
 }

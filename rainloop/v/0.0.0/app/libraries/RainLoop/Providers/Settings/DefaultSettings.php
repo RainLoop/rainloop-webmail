@@ -26,17 +26,16 @@ class DefaultSettings implements \RainLoop\Providers\Settings\ISettings
 				\RainLoop\Providers\Settings\DefaultSettings::FILE_NAME
 		);
 
-		$aSettings = array();
 		if (\is_string($sValue))
 		{
 			$aData = \json_decode($sValue, true);
 			if (\is_array($aData))
 			{
-				$aSettings = $aData;
+				return $aData;
 			}
 		}
 
-		return $aSettings;
+		return array();
 	}
 
 	public function Save(\RainLoop\Model\Account $oAccount, array $aSettings) : bool

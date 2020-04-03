@@ -38,7 +38,6 @@ class PartCollection extends \MailSo\Base\Collection
 	 */
 	public function ToStream(string $sBoundary)
 	{
-		$rResult = null;
 		if (0 < \strlen($sBoundary))
 		{
 			$aResult = array();
@@ -57,6 +56,6 @@ class PartCollection extends \MailSo\Base\Collection
 			return \MailSo\Base\StreamWrappers\SubStreams::CreateStream($aResult);
 		}
 
-		return $rResult;
+		return null;
 	}
 }

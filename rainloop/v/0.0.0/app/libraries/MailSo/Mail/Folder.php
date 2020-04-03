@@ -198,41 +198,38 @@ class Folder
 		$aFlags = $this->oImapFolder->FlagsLowerCase();
 		$iListType = \MailSo\Imap\Enumerations\FolderType::USER;
 
-		if (\is_array($aFlags))
+		switch (true)
 		{
-			switch (true)
-			{
-				case \in_array('\inbox', $aFlags) || 'INBOX' === \strtoupper($this->FullNameRaw()):
-					$iListType = \MailSo\Imap\Enumerations\FolderType::INBOX;
-					break;
-				case \in_array('\sent', $aFlags):
-				case \in_array('\sentmail', $aFlags):
-					$iListType = \MailSo\Imap\Enumerations\FolderType::SENT;
-					break;
-				case \in_array('\drafts', $aFlags):
-					$iListType = \MailSo\Imap\Enumerations\FolderType::DRAFTS;
-					break;
-				case \in_array('\junk', $aFlags):
-				case \in_array('\spam', $aFlags):
-					$iListType = \MailSo\Imap\Enumerations\FolderType::JUNK;
-					break;
-				case \in_array('\trash', $aFlags):
-				case \in_array('\bin', $aFlags):
-					$iListType = \MailSo\Imap\Enumerations\FolderType::TRASH;
-					break;
-				case \in_array('\important', $aFlags):
-					$iListType = \MailSo\Imap\Enumerations\FolderType::IMPORTANT;
-					break;
-				case \in_array('\flagged', $aFlags):
-				case \in_array('\starred', $aFlags):
-					$iListType = \MailSo\Imap\Enumerations\FolderType::FLAGGED;
-					break;
-				case \in_array('\all', $aFlags):
-				case \in_array('\allmail', $aFlags):
-				case \in_array('\archive', $aFlags):
-					$iListType = \MailSo\Imap\Enumerations\FolderType::ALL;
-					break;
-			}
+			case \in_array('\inbox', $aFlags) || 'INBOX' === \strtoupper($this->FullNameRaw()):
+				$iListType = \MailSo\Imap\Enumerations\FolderType::INBOX;
+				break;
+			case \in_array('\sent', $aFlags):
+			case \in_array('\sentmail', $aFlags):
+				$iListType = \MailSo\Imap\Enumerations\FolderType::SENT;
+				break;
+			case \in_array('\drafts', $aFlags):
+				$iListType = \MailSo\Imap\Enumerations\FolderType::DRAFTS;
+				break;
+			case \in_array('\junk', $aFlags):
+			case \in_array('\spam', $aFlags):
+				$iListType = \MailSo\Imap\Enumerations\FolderType::JUNK;
+				break;
+			case \in_array('\trash', $aFlags):
+			case \in_array('\bin', $aFlags):
+				$iListType = \MailSo\Imap\Enumerations\FolderType::TRASH;
+				break;
+			case \in_array('\important', $aFlags):
+				$iListType = \MailSo\Imap\Enumerations\FolderType::IMPORTANT;
+				break;
+			case \in_array('\flagged', $aFlags):
+			case \in_array('\starred', $aFlags):
+				$iListType = \MailSo\Imap\Enumerations\FolderType::FLAGGED;
+				break;
+			case \in_array('\all', $aFlags):
+			case \in_array('\allmail', $aFlags):
+			case \in_array('\archive', $aFlags):
+				$iListType = \MailSo\Imap\Enumerations\FolderType::ALL;
+				break;
 		}
 
 		return $iListType;

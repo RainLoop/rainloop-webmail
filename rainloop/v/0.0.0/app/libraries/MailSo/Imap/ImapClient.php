@@ -611,13 +611,13 @@ class ImapClient extends \MailSo\Net\NetClient
 		$sSearchCriterias = !strlen(\trim($sSearchCriterias)) || '*' === $sSearchCriterias
 			? 'ALL' : $sSearchCriterias;
 
-		if (!\is_array($aSortTypes) || 0 === \count($aSortTypes))
+		if (!$aSortTypes)
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
-		else if (!$this->IsSupported('SORT'))
+		if (!$this->IsSupported('SORT'))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),
@@ -647,7 +647,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			? 'ALL' : $sSearchCriterias;
 
 		$sCmd = $bSort ? 'SORT': 'SEARCH';
-		if ($bSort && (!\is_array($aSortTypes) || 0 === \count($aSortTypes) || !$this->IsSupported('SORT')))
+		if ($bSort && (!$aSortTypes || !$this->IsSupported('SORT')))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException(),
@@ -661,7 +661,7 @@ class ImapClient extends \MailSo\Net\NetClient
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
-		if (!\is_array($aSearchOrSortReturn) || 0 === \count($aSearchOrSortReturn))
+		if (!$aSearchOrSortReturn)
 		{
 			$aSearchOrSortReturn = array('ALL');
 		}
@@ -1620,18 +1620,15 @@ class ImapClient extends \MailSo\Net\NetClient
 	private function prepareParamLine(array $aParams = array()) : string
 	{
 		$sReturn = '';
-		if (\is_array($aParams) && 0 < \count($aParams))
+		foreach ($aParams as $mParamItem)
 		{
-			foreach ($aParams as $mParamItem)
+			if (\is_array($mParamItem) && 0 < \count($mParamItem))
 			{
-				if (\is_array($mParamItem) && 0 < \count($mParamItem))
-				{
-					$sReturn .= ' ('.\trim($this->prepareParamLine($mParamItem)).')';
-				}
-				else if (\is_string($mParamItem))
-				{
-					$sReturn .= ' '.$mParamItem;
-				}
+				$sReturn .= ' ('.\trim($this->prepareParamLine($mParamItem)).')';
+			}
+			else if (\is_string($mParamItem))
+			{
+				$sReturn .= ' '.$mParamItem;
 			}
 		}
 		return $sReturn;

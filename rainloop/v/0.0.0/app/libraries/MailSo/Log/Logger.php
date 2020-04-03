@@ -127,7 +127,7 @@ class Logger extends \MailSo\Base\Collection
 
 	public function AddSecret(string $sWord) : void
 	{
-		if (\is_string($sWord) && 0 < \strlen(\trim($sWord)))
+		if (0 < \strlen(\trim($sWord)))
 		{
 			$this->aSecretWords[] = $sWord;
 			$this->aSecretWords = \array_unique($this->aSecretWords);
@@ -185,21 +185,17 @@ class Logger extends \MailSo\Base\Collection
 
 	public function __loggerShutDown() : void
 	{
-		if ($this->bUsed)
+		if ($this->bUsed && $aStatistic = \MailSo\Base\Loader::Statistic())
 		{
-			$aStatistic = \MailSo\Base\Loader::Statistic();
-			if (\is_array($aStatistic))
+			if (isset($aStatistic['php']['memory_get_peak_usage']))
 			{
-				if (isset($aStatistic['php']['memory_get_peak_usage']))
-				{
-					$this->Write('Memory peak usage: '.$aStatistic['php']['memory_get_peak_usage'],
-						\MailSo\Log\Enumerations\Type::MEMORY);
-				}
+				$this->Write('Memory peak usage: '.$aStatistic['php']['memory_get_peak_usage'],
+					\MailSo\Log\Enumerations\Type::MEMORY);
+			}
 
-				if (isset($aStatistic['time']))
-				{
-					$this->Write('Time delta: '.$aStatistic['time'], \MailSo\Log\Enumerations\Type::TIME_DELTA);
-				}
+			if (isset($aStatistic['time']))
+			{
+				$this->Write('Time delta: '.$aStatistic['time'], \MailSo\Log\Enumerations\Type::TIME_DELTA);
 			}
 		}
 	}

@@ -36,10 +36,6 @@ class FetchType
 	const UID = 'UID';
 	const INDEX = 'INDEX';
 
-	const GMAIL_MSGID = 'X-GM-MSGID';
-	const GMAIL_THRID = 'X-GM-THRID';
-	const GMAIL_LABELS = 'X-GM-LABELS';
-
 	private static function addHelper(array &$aReturn, $mType)
 	{
 		if (\is_string($mType))
@@ -47,7 +43,7 @@ class FetchType
 			$aReturn[$mType] = '';
 		}
 		else if (\is_array($mType) && 2 === count($mType) && \is_string($mType[0]) &&
-			is_callable($mType[1]))
+			\is_callable($mType[1]))
 		{
 			$aReturn[$mType[0]] = $mType[1];
 		}

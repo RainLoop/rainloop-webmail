@@ -275,12 +275,7 @@ class Account
 		));
 	}
 
-	/**
-	 * @param \RainLoop\Plugins\Manager $oPlugins
-	 * @param \MailSo\Mail\MailClient $oMailClient
-	 * @param \RainLoop\Config\Application $oConfig
-	 */
-	public function IncConnectAndLoginHelper($oPlugins, $oMailClient, $oConfig, ?callable $refreshTokenCallback = null) : bool
+	public function IncConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Mail\MailClient $oMailClient, \RainLoop\Config\Application $oConfig, ?callable $refreshTokenCallback = null) : bool
 	{
 		$bLogin = false;
 
@@ -339,12 +334,7 @@ class Account
 		return $bLogin;
 	}
 
-	/**
-	 * @param \RainLoop\Plugins\Manager $oPlugins
-	 * @param \MailSo\Smtp\SmtpClient|null $oSmtpClient
-	 * @param \RainLoop\Config\Application $oConfig
-	 */
-	public function OutConnectAndLoginHelper($oPlugins, $oSmtpClient, $oConfig, ?callable $refreshTokenCallback = null, bool &$bUsePhpMail = false) : bool
+	public function OutConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Smtp\SmtpClient $oSmtpClient, \RainLoop\Config\Application $oConfig, ?callable $refreshTokenCallback = null, bool &$bUsePhpMail = false) : bool
 	{
 		$bLogin = false;
 
@@ -396,12 +386,7 @@ class Account
 		return $bLogin;
 	}
 
-	/**
-	 * @param \RainLoop\Plugins\Manager $oPlugins
-	 * @param \MailSo\Sieve\ManageSieveClient $oSieveClient
-	 * @param \RainLoop\Config\Application $oConfig
-	 */
-	public function SieveConnectAndLoginHelper($oPlugins, $oSieveClient, $oConfig)
+	public function SieveConnectAndLoginHelper(\RainLoop\Plugins\Manager $oPlugins, \MailSo\Sieve\ManageSieveClient $oSieveClient, \RainLoop\Config\Application $oConfig)
 	{
 		$bLogin = false;
 

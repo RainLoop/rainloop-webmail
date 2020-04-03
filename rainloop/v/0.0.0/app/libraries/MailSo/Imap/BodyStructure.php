@@ -94,7 +94,7 @@ class BodyStructure
 
 	private function __construct(string $sContentType, ?string $sCharset, array $aBodyParams, ?string $sContentID,
 		?string $sDescription, ?string $sMailEncodingName, ?string $sDisposition, ?array $aDispositionParams, string $sFileName,
-		?string $sLanguage, ?string $sLocation, int $iSize, int $iTextLineCount, string $sPartID, ?array $aSubParts)
+		?string $sLanguage, ?string $sLocation, int $iSize, int $iTextLineCount, string $sPartID, array $aSubParts)
 	{
 		$this->sContentType = $sContentType;
 		$this->sCharset = $sCharset;
@@ -113,50 +113,32 @@ class BodyStructure
 		$this->aSubParts = $aSubParts;
 	}
 
-	/**
-	 * return string
-	 */
-	public function MailEncodingName()
+	public function MailEncodingName() : ?string
 	{
 		return $this->sMailEncodingName;
 	}
 
-	/**
-	 * return string
-	 */
-	public function PartID()
+	public function PartID() : string
 	{
 		return (string) $this->sPartID;
 	}
 
-	/**
-	 * return string
-	 */
-	public function FileName()
+	public function FileName() : string
 	{
 		return $this->sFileName;
 	}
 
-	/**
-	 * return string
-	 */
-	public function ContentType()
+	public function ContentType() : string
 	{
 		return $this->sContentType;
 	}
 
-	/**
-	 * return int
-	 */
-	public function Size()
+	public function Size() : int
 	{
-		return (int) $this->iSize;
+		return $this->iSize;
 	}
 
-	/**
-	 * return int
-	 */
-	public function EstimatedSize()
+	public function EstimatedSize() : int
 	{
 		$fCoefficient = 1;
 		switch (\strtolower($this->MailEncodingName()))
@@ -172,52 +154,33 @@ class BodyStructure
 		return (int) ($this->Size() * $fCoefficient);
 	}
 
-	/**
-	 * return string
-	 */
-	public function Charset()
+	public function Charset() : ?string
 	{
 		return $this->sCharset;
 	}
 
-
-	/**
-	 * return string
-	 */
-	public function ContentID()
+	public function ContentID() : string
 	{
 		return (null === $this->sContentID) ? '' : $this->sContentID;
 	}
 
-	/**
-	 * return string
-	 */
-	public function ContentLocation()
+	public function ContentLocation() : string
 	{
 		return (null === $this->sLocation) ? '' : $this->sLocation;
 	}
 
-	/**
-	 * return bool
-	 */
-	public function IsInline()
+	public function IsInline() : bool
 	{
 		return (null === $this->sDisposition) ?
 			(0 < \strlen($this->ContentID())) : ('inline' === strtolower($this->sDisposition));
 	}
 
-	/**
-	 * return bool
-	 */
-	public function IsImage()
+	public function IsImage() : bool
 	{
 		return 'image' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
 	}
 
-	/**
-	 * return bool
-	 */
-	public function IsArchive()
+	public function IsArchive() : bool
 	{
 		return 'archive' === \MailSo\Base\Utils::ContentTypeType($this->ContentType(), $this->FileName());
 	}
@@ -305,7 +268,7 @@ class BodyStructure
 				return $oItem->IsInline();
 			});
 
-			if (is_array($aSearchParts) && 1 === \count($aSearchParts) && isset($aSearchParts[0]))
+			if (1 === \count($aSearchParts) && isset($aSearchParts[0]))
 			{
 				return $aSearchParts[0];
 			}
@@ -364,7 +327,6 @@ class BodyStructure
 
 	/**
 	 * @param mixed $fCallback
-	 *
 	 */
 	public function SearchByCallback($fCallback) : array
 	{
@@ -374,12 +336,9 @@ class BodyStructure
 			$aReturn[] = $this;
 		}
 
-		if (\is_array($this->aSubParts) && 0 < \count($this->aSubParts))
+		foreach ($this->aSubParts as /* @var $oSubPart \MailSo\Imap\BodyStructure */ $oSubPart)
 		{
-			foreach ($this->aSubParts as /* @var $oSubPart \MailSo\Imap\BodyStructure */ $oSubPart)
-			{
-				$aReturn = \array_merge($aReturn, $oSubPart->SearchByCallback($fCallback));
-			}
+			$aReturn = \array_merge($aReturn, $oSubPart->SearchByCallback($fCallback));
 		}
 
 		return $aReturn;
@@ -410,7 +369,7 @@ class BodyStructure
 				$oPart = $this;
 			}
 
-			if (null === $oPart && is_array($this->aSubParts) && 0 < count($this->aSubParts))
+			if (null === $oPart)
 			{
 				foreach ($this->aSubParts as /* @var $oSubPart \MailSo\Imap\BodyStructure */ $oSubPart)
 				{
@@ -426,7 +385,7 @@ class BodyStructure
 		return $oPart;
 	}
 
-	private static function decodeAttrParamenter(array $aParams, string $sParamName, string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8) : string
+	private static function decodeAttrParameter(array $aParams, string $sParamName, string $sCharset = \MailSo\Base\Enumerations\Charset::UTF_8) : string
 	{
 		$sResult = '';
 		if (isset($aParams[$sParamName]))
@@ -436,7 +395,7 @@ class BodyStructure
 		else if (isset($aParams[$sParamName.'*']))
 		{
 			$aValueParts = \explode("''", $aParams[$sParamName.'*'], 2);
-			if (\is_array($aValueParts) && 2 === \count($aValueParts))
+			if (2 === \count($aValueParts))
 			{
 				$sCharset = isset($aValueParts[0]) ? $aValueParts[0] : \MailSo\Base\Enumerations\Charset::UTF_8;
 
@@ -463,7 +422,7 @@ class BodyStructure
 					if ($sCharsetIndex < $iIndex && false !== \strpos($sValue, "''"))
 					{
 						$aValueParts = \explode("''", $sValue, 2);
-						if (\is_array($aValueParts) && 2 === \count($aValueParts) && 0 < \strlen($aValueParts[0]))
+						if (2 === \count($aValueParts) && 0 < \strlen($aValueParts[0]))
 						{
 							$sCharsetIndex = $iIndex;
 							$sCharset = $aValueParts[0];
@@ -492,322 +451,308 @@ class BodyStructure
 		return $sResult;
 	}
 
-	public static function NewInstance(array $aBodyStructure, string $sPartID = '') : self
+	public static function NewInstance(array $aBodyStructure, string $sPartID = '') : ?self
 	{
-		if (!\is_array($aBodyStructure) || 2 > \count($aBodyStructure))
+		if (2 > \count($aBodyStructure))
 		{
 			return null;
 		}
-		else
+
+		$sBodyMainType = null;
+		if (\is_string($aBodyStructure[0]) && 'NIL' !== $aBodyStructure[0])
 		{
-			$sBodyMainType = null;
-			if (\is_string($aBodyStructure[0]) && 'NIL' !== $aBodyStructure[0])
+			$sBodyMainType = $aBodyStructure[0];
+		}
+
+		$sBodySubType = null;
+		$sContentType = '';
+		$aSubParts = array();
+		$aBodyParams = array();
+		$sName = null;
+		$sCharset = null;
+		$sContentID = null;
+		$sDescription = null;
+		$sMailEncodingName = null;
+		$iSize = 0;
+		$iTextLineCount = 0; // valid for rfc822/message and text parts
+		$iExtraItemPos = 0;  // list index of items which have no well-established position (such as 0, 1, 5, etc).
+
+		if (null === $sBodyMainType)
+		{
+			// Process multipart body structure
+			if (!\is_array($aBodyStructure[0]))
 			{
-				$sBodyMainType = $aBodyStructure[0];
+				return null;
 			}
 
-			$sBodySubType = null;
-			$sContentType = '';
-			$aSubParts = null;
-			$aBodyParams = array();
-			$sName = null;
-			$sCharset = null;
-			$sContentID = null;
-			$sDescription = null;
-			$sMailEncodingName = null;
-			$iSize = 0;
-			$iTextLineCount = 0; // valid for rfc822/message and text parts
-			$iExtraItemPos = 0;  // list index of items which have no well-established position (such as 0, 1, 5, etc).
-
-			if (null === $sBodyMainType)
+			$sBodyMainType = 'multipart';
+			$sSubPartIDPrefix = '';
+			if (0 === \strlen($sPartID) || '.' === $sPartID[\strlen($sPartID) - 1])
 			{
-				// Process multipart body structure
-				if (!\is_array($aBodyStructure[0]))
+				// This multi-part is root part of message.
+				$sSubPartIDPrefix = $sPartID;
+				$sPartID .= 'TEXT';
+			}
+			else if (0 < \strlen($sPartID))
+			{
+				// This multi-part is a part of another multi-part.
+				$sSubPartIDPrefix = $sPartID.'.';
+			}
+
+			$iIndex = 1;
+
+			while ($iExtraItemPos < \count($aBodyStructure) && \is_array($aBodyStructure[$iExtraItemPos]))
+			{
+				$oPart = self::NewInstance($aBodyStructure[$iExtraItemPos], $sSubPartIDPrefix.$iIndex);
+				if (null === $oPart)
 				{
 					return null;
 				}
-				else
+
+				// For multipart, we have no charset info in the part itself. Thus,
+				// obtain charset from nested parts.
+				if ($sCharset == null)
 				{
-					$sBodyMainType = 'multipart';
-					$sSubPartIDPrefix = '';
-					if (0 === \strlen($sPartID) || '.' === $sPartID[\strlen($sPartID) - 1])
-					{
-						// This multi-part is root part of message.
-						$sSubPartIDPrefix = $sPartID;
-						$sPartID .= 'TEXT';
-					}
-					else if (0 < \strlen($sPartID))
-					{
-						// This multi-part is a part of another multi-part.
-						$sSubPartIDPrefix = $sPartID.'.';
-					}
-
-					$aSubParts = array();
-					$iIndex = 1;
-
-					while ($iExtraItemPos < \count($aBodyStructure) && \is_array($aBodyStructure[$iExtraItemPos]))
-					{
-						$oPart = self::NewInstance($aBodyStructure[$iExtraItemPos], $sSubPartIDPrefix.$iIndex);
-						if (null === $oPart)
-						{
-							return null;
-						}
-						else
-						{
-							// For multipart, we have no charset info in the part itself. Thus,
-							// obtain charset from nested parts.
-							if ($sCharset == null)
-							{
-								$sCharset = $oPart->Charset();
-							}
-
-							$aSubParts[] = $oPart;
-							$iExtraItemPos++;
-							$iIndex++;
-						}
-					}
+					$sCharset = $oPart->Charset();
 				}
 
-				if ($iExtraItemPos < \count($aBodyStructure))
-				{
-					if (!\is_string($aBodyStructure[$iExtraItemPos]) || 'NIL' === $aBodyStructure[$iExtraItemPos])
-					{
-						return null;
-					}
+				$aSubParts[] = $oPart;
+				++$iExtraItemPos;
+				++$iIndex;
+			}
 
-					$sBodySubType = \strtolower($aBodyStructure[$iExtraItemPos]);
-					$iExtraItemPos++;
+			if ($iExtraItemPos < \count($aBodyStructure))
+			{
+				if (!\is_string($aBodyStructure[$iExtraItemPos]) || 'NIL' === $aBodyStructure[$iExtraItemPos])
+				{
+					return null;
 				}
 
-				if ($iExtraItemPos < \count($aBodyStructure))
+				$sBodySubType = \strtolower($aBodyStructure[$iExtraItemPos]);
+				++$iExtraItemPos;
+			}
+
+			if ($iExtraItemPos < \count($aBodyStructure))
+			{
+				$sBodyParamList = $aBodyStructure[$iExtraItemPos];
+				if (\is_array($sBodyParamList))
 				{
-					$sBodyParamList = $aBodyStructure[$iExtraItemPos];
-					if (\is_array($sBodyParamList))
-					{
-						$aBodyParams = self::getKeyValueListFromArrayList($sBodyParamList);
-					}
+					$aBodyParams = self::getKeyValueListFromArrayList($sBodyParamList);
+				}
+			}
+
+			++$iExtraItemPos;
+		}
+		else
+		{
+			// Process simple (singlepart) body structure
+			if (7 > \count($aBodyStructure))
+			{
+				return null;
+			}
+
+			$sBodyMainType = \strtolower($sBodyMainType);
+			if (!\is_string($aBodyStructure[1]) || 'NIL' === $aBodyStructure[1])
+			{
+				return null;
+			}
+
+			$sBodySubType = \strtolower($aBodyStructure[1]);
+
+			$aBodyParamList = $aBodyStructure[2];
+			if (\is_array($aBodyParamList))
+			{
+				$aBodyParams = self::getKeyValueListFromArrayList($aBodyParamList);
+				if (isset($aBodyParams['charset']))
+				{
+					$sCharset = $aBodyParams['charset'];
 				}
 
-				$iExtraItemPos++;
+				$sName = self::decodeAttrParameter($aBodyParams, 'name', $sContentType);
+			}
+
+			if (null !== $aBodyStructure[3] && 'NIL' !== $aBodyStructure[3])
+			{
+				if (!\is_string($aBodyStructure[3]))
+				{
+					return null;
+				}
+
+				$sContentID = $aBodyStructure[3];
+			}
+
+			if (null !== $aBodyStructure[4] && 'NIL' !== $aBodyStructure[4])
+			{
+				if (!\is_string($aBodyStructure[4]))
+				{
+					return null;
+				}
+
+				$sDescription = $aBodyStructure[4];
+			}
+
+			if (null !== $aBodyStructure[5] && 'NIL' !== $aBodyStructure[5])
+			{
+				if (!\is_string($aBodyStructure[5]))
+				{
+					return null;
+				}
+				$sMailEncodingName = $aBodyStructure[5];
+			}
+
+			if (\is_numeric($aBodyStructure[6]))
+			{
+				$iSize = (int) $aBodyStructure[6];
 			}
 			else
 			{
-				// Process simple (singlepart) body structure
-				if (7 > \count($aBodyStructure))
-				{
-					return null;
-				}
+				$iSize = -1;
+			}
 
-				$sBodyMainType = \strtolower($sBodyMainType);
-				if (!\is_string($aBodyStructure[1]) || 'NIL' === $aBodyStructure[1])
-				{
-					return null;
-				}
+			if (0 === \strlen($sPartID) || '.' === $sPartID[\strlen($sPartID) - 1])
+			{
+				// This is the only sub-part of the message (otherwise, it would be
+				// one of sub-parts of a multi-part, and partID would already be fully set up).
+				$sPartID .= '1';
+			}
 
-				$sBodySubType = \strtolower($aBodyStructure[1]);
-
-				$aBodyParamList = $aBodyStructure[2];
-				if (\is_array($aBodyParamList))
+			$iExtraItemPos = 7;
+			if ('text' === $sBodyMainType)
+			{
+				if ($iExtraItemPos < \count($aBodyStructure))
 				{
-					$aBodyParams = self::getKeyValueListFromArrayList($aBodyParamList);
-					if (isset($aBodyParams['charset']))
+					if (\is_numeric($aBodyStructure[$iExtraItemPos]))
 					{
-						$sCharset = $aBodyParams['charset'];
+						$iTextLineCount = (int) $aBodyStructure[$iExtraItemPos];
 					}
-
-					if (\is_array($aBodyParams))
+					else
 					{
-						$sName = self::decodeAttrParamenter($aBodyParams, 'name', $sContentType);
+						$iTextLineCount = -1;
 					}
-				}
-
-				if (null !== $aBodyStructure[3] && 'NIL' !== $aBodyStructure[3])
-				{
-					if (!\is_string($aBodyStructure[3]))
-					{
-						return null;
-					}
-
-					$sContentID = $aBodyStructure[3];
-				}
-
-				if (null !== $aBodyStructure[4] && 'NIL' !== $aBodyStructure[4])
-				{
-					if (!\is_string($aBodyStructure[4]))
-					{
-						return null;
-					}
-
-					$sDescription = $aBodyStructure[4];
-				}
-
-				if (null !== $aBodyStructure[5] && 'NIL' !== $aBodyStructure[5])
-				{
-					if (!\is_string($aBodyStructure[5]))
-					{
-						return null;
-					}
-					$sMailEncodingName = $aBodyStructure[5];
-				}
-
-				if (\is_numeric($aBodyStructure[6]))
-				{
-					$iSize = (int) $aBodyStructure[6];
 				}
 				else
 				{
-					$iSize = -1;
+					$iTextLineCount = -1;
 				}
 
-				if (0 === \strlen($sPartID) || '.' === $sPartID[\strlen($sPartID) - 1])
+				++$iExtraItemPos;
+			}
+			else if ('message' === $sBodyMainType && 'rfc822' === $sBodySubType)
+			{
+				if ($iExtraItemPos + 2 < \count($aBodyStructure))
 				{
-					// This is the only sub-part of the message (otherwise, it would be
-					// one of sub-parts of a multi-part, and partID would already be fully set up).
-					$sPartID .= '1';
-				}
-
-				$iExtraItemPos = 7;
-				if ('text' === $sBodyMainType)
-				{
-					if ($iExtraItemPos < \count($aBodyStructure))
+					if (\is_numeric($aBodyStructure[$iExtraItemPos + 2]))
 					{
-						if (\is_numeric($aBodyStructure[$iExtraItemPos]))
-						{
-							$iTextLineCount = (int) $aBodyStructure[$iExtraItemPos];
-						}
-						else
-						{
-							$iTextLineCount = -1;
-						}
+						$iTextLineCount = (int) $aBodyStructure[$iExtraItemPos + 2];
 					}
 					else
 					{
 						$iTextLineCount = -1;
 					}
-
-					$iExtraItemPos++;
 				}
-				else if ('message' === $sBodyMainType && 'rfc822' === $sBodySubType)
+				else
 				{
-					if ($iExtraItemPos + 2 < \count($aBodyStructure))
-					{
-						if (\is_numeric($aBodyStructure[$iExtraItemPos + 2]))
-						{
-							$iTextLineCount = (int) $aBodyStructure[$iExtraItemPos + 2];
-						}
-						else
-						{
-							$iTextLineCount = -1;
-						}
-					}
-					else
-					{
-						$iTextLineCount = -1;
-					}
-
-					$iExtraItemPos += 3;
+					$iTextLineCount = -1;
 				}
 
-				$iExtraItemPos++;	// skip MD5 digest of the body because most mail servers leave it NIL anyway
+				$iExtraItemPos += 3;
 			}
 
-			$sContentType = $sBodyMainType.'/'.$sBodySubType;
-
-			$sDisposition = null;
-			$aDispositionParams = null;
-			$sFileName = null;
-
-			if ($iExtraItemPos < \count($aBodyStructure))
-			{
-				$aDispList = $aBodyStructure[$iExtraItemPos];
-				if (\is_array($aDispList) && 1 < \count($aDispList))
-				{
-					if (null !== $aDispList[0])
-					{
-						if (\is_string($aDispList[0]) && 'NIL' !== $aDispList[0])
-						{
-							$sDisposition = $aDispList[0];
-						}
-						else
-						{
-							return null;
-						}
-					}
-				}
-
-				$aDispParamList = $aDispList[1];
-				if (\is_array($aDispParamList))
-				{
-					$aDispositionParams = self::getKeyValueListFromArrayList($aDispParamList);
-					if (\is_array($aDispositionParams))
-					{
-						$sFileName = self::decodeAttrParamenter($aDispositionParams, 'filename', $sCharset ?: '');
-					}
-				}
-			}
-
-			$iExtraItemPos++;
-
-			$sLanguage = null;
-			if ($iExtraItemPos < count($aBodyStructure))
-			{
-				if (null !== $aBodyStructure[$iExtraItemPos] && 'NIL' !== $aBodyStructure[$iExtraItemPos])
-				{
-					if (\is_array($aBodyStructure[$iExtraItemPos]))
-					{
-						$sLanguage = \implode(',', $aBodyStructure[$iExtraItemPos]);
-					}
-					else if (\is_string($aBodyStructure[$iExtraItemPos]))
-					{
-						$sLanguage = $aBodyStructure[$iExtraItemPos];
-					}
-				}
-				$iExtraItemPos++;
-			}
-
-			$sLocation = null;
-			if ($iExtraItemPos < \count($aBodyStructure))
-			{
-				if (null !== $aBodyStructure[$iExtraItemPos] && 'NIL' !== $aBodyStructure[$iExtraItemPos])
-				{
-					if (\is_string($aBodyStructure[$iExtraItemPos]))
-					{
-						$sLocation = $aBodyStructure[$iExtraItemPos];
-					}
-				}
-				$iExtraItemPos++;
-			}
-
-			return new self(
-				$sContentType,
-				$sCharset,
-				$aBodyParams,
-				$sContentID,
-				$sDescription,
-				$sMailEncodingName,
-				$sDisposition,
-				$aDispositionParams,
-				\MailSo\Base\Utils::Utf8Clear((null === $sFileName || 0 === \strlen($sFileName)) ? $sName : $sFileName),
-				$sLanguage,
-				$sLocation,
-				$iSize,
-				$iTextLineCount,
-				$sPartID,
-				$aSubParts
-			);
+			++$iExtraItemPos; // skip MD5 digest of the body because most mail servers leave it NIL anyway
 		}
+
+		$sContentType = $sBodyMainType.'/'.$sBodySubType;
+
+		$sDisposition = null;
+		$aDispositionParams = null;
+		$sFileName = null;
+
+		if ($iExtraItemPos < \count($aBodyStructure))
+		{
+			$aDispList = $aBodyStructure[$iExtraItemPos];
+			if (\is_array($aDispList) && 1 < \count($aDispList))
+			{
+				if (null !== $aDispList[0])
+				{
+					if (\is_string($aDispList[0]) && 'NIL' !== $aDispList[0])
+					{
+						$sDisposition = $aDispList[0];
+					}
+					else
+					{
+						return null;
+					}
+				}
+			}
+
+			$aDispParamList = $aDispList[1];
+			if (\is_array($aDispParamList))
+			{
+				$aDispositionParams = self::getKeyValueListFromArrayList($aDispParamList);
+				$sFileName = self::decodeAttrParameter($aDispositionParams, 'filename', $sCharset ?: '');
+			}
+		}
+
+		++$iExtraItemPos;
+
+		$sLanguage = null;
+		if ($iExtraItemPos < count($aBodyStructure))
+		{
+			if (null !== $aBodyStructure[$iExtraItemPos] && 'NIL' !== $aBodyStructure[$iExtraItemPos])
+			{
+				if (\is_array($aBodyStructure[$iExtraItemPos]))
+				{
+					$sLanguage = \implode(',', $aBodyStructure[$iExtraItemPos]);
+				}
+				else if (\is_string($aBodyStructure[$iExtraItemPos]))
+				{
+					$sLanguage = $aBodyStructure[$iExtraItemPos];
+				}
+			}
+			++$iExtraItemPos;
+		}
+
+		$sLocation = null;
+		if ($iExtraItemPos < \count($aBodyStructure))
+		{
+			if (null !== $aBodyStructure[$iExtraItemPos] && 'NIL' !== $aBodyStructure[$iExtraItemPos])
+			{
+				if (\is_string($aBodyStructure[$iExtraItemPos]))
+				{
+					$sLocation = $aBodyStructure[$iExtraItemPos];
+				}
+			}
+			++$iExtraItemPos;
+		}
+
+		return new self(
+			$sContentType,
+			$sCharset,
+			$aBodyParams,
+			$sContentID,
+			$sDescription,
+			$sMailEncodingName,
+			$sDisposition,
+			$aDispositionParams,
+			\MailSo\Base\Utils::Utf8Clear($sFileName ?: $sName),
+			$sLanguage,
+			$sLocation,
+			$iSize,
+			$iTextLineCount,
+			$sPartID,
+			$aSubParts
+		);
 	}
 
 	public static function NewInstanceFromRfc822SubPart(array $aBodyStructure, string $sSubPartID) : ?self
 	{
-		$oBody = null;
 		$aBodySubStructure = self::findPartByIndexInArray($aBodyStructure, $sSubPartID);
 		if ($aBodySubStructure && \is_array($aBodySubStructure) && isset($aBodySubStructure[8]))
 		{
-			$oBody = self::NewInstance($aBodySubStructure[8], $sSubPartID);
+			return self::NewInstance($aBodySubStructure[8], $sSubPartID);
 		}
 
-		return $oBody;
+		return null;
 	}
 
 	private static function findPartByIndexInArray(array $aList, string $sPartID) : ?array
@@ -832,15 +777,12 @@ class BodyStructure
 	/**
 	 * Returns dict with key="charset" and value="US-ASCII" for array ("CHARSET" "US-ASCII").
 	 * Keys are lowercased (StringDictionary itself does this), values are not altered.
-	 *
-	 *
 	 */
 	private static function getKeyValueListFromArrayList(array $aList) : array
 	{
-		$aDict = null;
+		$aDict = array();
 		if (0 === \count($aList) % 2)
 		{
-			$aDict = array();
 			for ($iIndex = 0, $iLen = \count($aList); $iIndex < $iLen; $iIndex += 2)
 			{
 				if (\is_string($aList[$iIndex]) && isset($aList[$iIndex + 1]) && \is_string($aList[$iIndex + 1]))

@@ -63,7 +63,7 @@ class CacheClient
 		return '1' === $this->Get($sKey.'/LOCK');
 	}
 
-	public function Get($sKey, $bClearAfterGet = false)
+	public function Get(string $sKey, bool $bClearAfterGet = false)
 	{
 		$sValue = '';
 
