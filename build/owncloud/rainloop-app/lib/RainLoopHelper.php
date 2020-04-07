@@ -191,7 +191,7 @@ class OC_RainLoop_Helper
 			$sEmail = $sUser;
 			$sPassword = $aParams['password'];
 
-			return OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-autologin-password',
+			return \OC::$server->getConfig()->setUserValue($sUser, 'rainloop', 'rainloop-autologin-password',
 				self::encodePassword($sPassword, md5($sEmail)));
 		}
 
@@ -200,7 +200,7 @@ class OC_RainLoop_Helper
 
 	public static function logout()
 	{
-		OCP\Config::setUserValue(
+		\OC::$server->getConfig()->setUserValue(
 			OCP\User::getUser(), 'rainloop', 'rainloop-autologin-password', '');
 
 		$sApiPath = __DIR__.'/../app/index.php';
@@ -231,10 +231,10 @@ class OC_RainLoop_Helper
 
 			OCP\Util::writeLog('rainloop', 'rainloop|login: Setting new RainLoop password for '.$sEmail, OCP\Util::DEBUG);
 
-			OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-autologin-password',
+			\OC::$server->getConfig()->setUserValue($sUser, 'rainloop', 'rainloop-autologin-password',
 				self::encodePassword($sPassword, md5($sEmail)));
 
-			OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password',
+			\OC::$server->getConfig()->setUserValue($sUser, 'rainloop', 'rainloop-password',
 				self::encodePassword($sPassword, md5($sEmail)));
 
 			return true;

@@ -18,10 +18,10 @@ $bAutologin = false;
 
 if (isset($_POST['appname']) &&	'rainloop' === $_POST['appname'])
 {
-	OCP\Config::setAppValue('rainloop', 'rainloop-autologin', isset($_POST['rainloop-autologin']) ?
+	\OC::$server->getConfig()->setAppValue('rainloop', 'rainloop-autologin', isset($_POST['rainloop-autologin']) ?
 		'1' === $_POST['rainloop-autologin'] : false);
 
-	$bAutologin = OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false);
+	$bAutologin = \OC::$server->getConfig()->getAppValue('rainloop', 'rainloop-autologin', false);
 }
 else
 {

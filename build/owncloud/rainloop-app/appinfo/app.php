@@ -13,7 +13,7 @@ OC::$CLASSPATH['OC_RainLoop_Helper'] = OC_App::getAppPath('rainloop') . '/lib/Ra
 OCP\App::registerAdmin('rainloop', 'admin');
 OCP\App::registerPersonal('rainloop', 'personal');
 
-if (OCP\Config::getAppValue('rainloop', 'rainloop-autologin', false))
+if (\OC::$server->getConfig()->getAppValue('rainloop', 'rainloop-autologin', false))
 {
 	OCP\Util::connectHook('OC_User', 'post_login', 'OC_RainLoop_Helper', 'login');
 	OCP\Util::connectHook('OC_User', 'post_setPassword', 'OC_RainLoop_Helper', 'changePassword');
