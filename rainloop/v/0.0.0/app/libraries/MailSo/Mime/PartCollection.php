@@ -17,11 +17,6 @@ namespace MailSo\Mime;
  */
 class PartCollection extends \MailSo\Base\Collection
 {
-	protected function __construct()
-	{
-		parent::__construct();
-	}
-
 	public static function NewInstance() : self
 	{
 		return new self();
