@@ -118,7 +118,7 @@
     "underscore": "1.9.2",
   },
   "dependencies": {
-    "gulp-terser": "^1.2.0"
+    "gulp-terser": "^1.2.0",
     "webpack": "4.42.0",
     "webpack-cli": "3.3.11"
   }
