@@ -109,9 +109,8 @@ class IspConfigChangePasswordDriver implements \RainLoop\Providers\ChangePasswor
 					if (\is_array($aFetchResult) && isset($aFetchResult[0]['password'], $aFetchResult[0]['mailuser_id']))
 					{
 						$sDbPassword = \stripslashes($aFetchResult[0]['password']);
-						$sDbSalt = '$1$'.\substr($sDbPassword, 3, 8).'$';
-
-						if (\crypt(\stripslashes($sPrevPassword), $sDbSalt) === $sDbPassword)
+						
+						if (password_verify($sPrevPassword,$sDbPassword))
 						{
 							$oStmt = $oPdo->prepare('UPDATE mail_user SET password = ? WHERE mailuser_id = ?');
 							$bResult = (bool) $oStmt->execute(
