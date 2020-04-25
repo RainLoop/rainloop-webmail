@@ -743,7 +743,7 @@ class MessageModel extends AbstractModel {
 
 	showLazyExternalImagesInBody() {
 		if (this.body) {
-			$('.lazy.lazy-inited[data-original]', this.body).each(function() {
+			$('.lazy[data-original]', this.body).each(function() {
 				$(this)
 					.attr('src', $(this).attr('data-original')) // eslint-disable-line no-invalid-this
 					.removeAttr('data-original')
