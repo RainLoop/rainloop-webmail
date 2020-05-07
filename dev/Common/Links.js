@@ -226,13 +226,6 @@ export function userBackground(hash) {
 }
 
 /**
- * @returns {string}
- */
-export function phpInfo() {
-	return SERVER_PREFIX + '/Info';
-}
-
-/**
  * @param {string} lang
  * @param {boolean} isAdmin
  * @returns {string}

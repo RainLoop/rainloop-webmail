@@ -2,7 +2,6 @@ import _ from '_';
 import ko from 'ko';
 
 import { trim, boolToAjax } from 'Common/Utils';
-import { phpInfo } from 'Common/Links';
 import { StorageResultType, Magics } from 'Common/Enums';
 
 import { settingsGet } from 'Storage/Settings';
@@ -171,13 +170,6 @@ class SecurityAdminSettings {
 		this.isTwoFactorDropperShown(false);
 		this.twoFactorDropperUser('');
 		this.twoFactorDropperUser.focused(false);
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	phpInfoLink() {
-		return phpInfo();
 	}
 }
 

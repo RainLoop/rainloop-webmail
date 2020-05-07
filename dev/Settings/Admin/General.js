@@ -13,7 +13,6 @@ import {
 
 import { SaveSettingsStep, Magics } from 'Common/Enums';
 import { reload as translatorReload } from 'Common/Translator';
-import { phpInfo } from 'Common/Links';
 
 import { settingsGet } from 'Storage/Settings';
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -176,13 +175,6 @@ class GeneralAdminSettings {
 			this.languagesAdmin(),
 			LanguageStore.userLanguageAdmin()
 		]);
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	phpInfoLink() {
-		return phpInfo();
 	}
 }
 

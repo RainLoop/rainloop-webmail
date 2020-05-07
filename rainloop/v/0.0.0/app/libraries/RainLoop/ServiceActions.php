@@ -753,17 +753,6 @@ class ServiceActions
 		return 'Pong';
 	}
 
-	public function ServiceInfo() : string
-	{
-		$this->oHttp->ServerNoCache();
-
-		if ($this->oActions->IsAdminLoggined(false))
-		{
-			\header('Content-Type: text/html; charset=utf-8');
-			\phpinfo();
-		}
-	}
-
 	public function ServiceSso() : string
 	{
 		$this->oHttp->ServerNoCache();
