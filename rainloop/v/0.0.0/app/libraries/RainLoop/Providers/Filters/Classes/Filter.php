@@ -182,7 +182,7 @@ class Filter
 		return false;
 	}
 
-	public function FromJSON(array $aFilter) : array
+	public function FromJSON(array $aFilter) : bool
 	{
 		$this->sID = isset($aFilter['ID']) ? $aFilter['ID'] : '';
 		$this->sName = isset($aFilter['Name']) ? $aFilter['Name'] : '';

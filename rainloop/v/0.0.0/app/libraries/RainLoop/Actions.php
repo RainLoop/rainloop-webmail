@@ -2472,7 +2472,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		}
 	}
 
-	public function SetIdentities(\RainLoop\Model\Account $oAccount, array $aIdentities = array()) : array
+	public function SetIdentities(\RainLoop\Model\Account $oAccount, array $aIdentities = array()) : bool
 	{
 		$bAllowIdentities = $this->GetCapa(false, false, \RainLoop\Enumerations\Capa::IDENTITIES, $oAccount);
 
