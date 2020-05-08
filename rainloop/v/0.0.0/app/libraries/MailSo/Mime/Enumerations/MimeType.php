@@ -16,7 +16,7 @@ namespace MailSo\Mime\Enumerations;
  * @package Mime
  * @subpackage Enumerations
  */
-class MimeType
+abstract class MimeType
 {
 	const TEXT_PLAIN = 'text/plain';
 	const TEXT_HTML = 'text/html';

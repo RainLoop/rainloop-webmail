@@ -16,7 +16,7 @@ namespace MailSo\Mime\Enumerations;
  * @package Mime
  * @subpackage Enumerations
  */
-class Sensitivity
+abstract class Sensitivity
 {
 	const NOTHING = 0;
 	const CONFIDENTIAL = 1;

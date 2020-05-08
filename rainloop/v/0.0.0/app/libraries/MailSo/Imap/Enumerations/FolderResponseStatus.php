@@ -16,7 +16,7 @@ namespace MailSo\Imap\Enumerations;
  * @package Imap
  * @subpackage Enumerations
  */
-class FolderResponseStatus
+abstract class FolderResponseStatus
 {
 	const MESSAGES = 'MESSAGES';
 	const RECENT = 'RECENT';

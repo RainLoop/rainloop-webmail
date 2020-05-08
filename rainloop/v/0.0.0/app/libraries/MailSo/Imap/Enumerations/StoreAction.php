@@ -16,7 +16,7 @@ namespace MailSo\Imap\Enumerations;
  * @package Imap
  * @subpackage Enumerations
  */
-class StoreAction
+abstract class StoreAction
 {
 	const SET_FLAGS = 'FLAGS';
 	const SET_FLAGS_SILENT = 'FLAGS.SILENT';

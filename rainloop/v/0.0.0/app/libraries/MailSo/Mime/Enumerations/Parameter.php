@@ -16,7 +16,7 @@ namespace MailSo\Mime\Enumerations;
  * @package Mime
  * @subpackage Enumerations
  */
-class Parameter
+abstract class Parameter
 {
 	const CHARSET = 'charset';
 	const NAME = 'name';

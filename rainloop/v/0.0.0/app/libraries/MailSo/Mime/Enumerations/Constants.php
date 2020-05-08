@@ -16,7 +16,7 @@ namespace MailSo\Mime\Enumerations;
  * @package Mime
  * @subpackage Enumerations
  */
-class Constants
+abstract class Constants
 {
 	const TAB = "\t";
 	const CRLF = "\r\n";
