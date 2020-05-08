@@ -57,7 +57,7 @@ class FilterCondition
 		return $this->sValueSecond;
 	}
 
-	public function FromJSON(array $aData) : array
+	public function FromJSON(array $aData) : bool
 	{
 		$this->sField = isset($aData['Field']) ? $aData['Field'] :
 			\RainLoop\Providers\Filters\Enumerations\ConditionField::FROM;
