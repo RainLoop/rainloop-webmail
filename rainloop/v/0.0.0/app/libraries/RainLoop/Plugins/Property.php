@@ -39,7 +39,7 @@ class Property
 	 */
 	private $sPlaceholder;
 
-	private function __construct(string $sName)
+	function __construct(string $sName)
 	{
 		$this->sName = $sName;
 		$this->iType = \RainLoop\Enumerations\PluginPropertyType::STRING;

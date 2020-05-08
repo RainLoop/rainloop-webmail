@@ -50,7 +50,7 @@ class Folder
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	private function __construct(string $sFullNameRaw, string $sDelimiter, array $aFlags)
+	function __construct(string $sFullNameRaw, string $sDelimiter = '.', array $aFlags = array())
 	{
 		$sDelimiter = 'NIL' === \strtoupper($sDelimiter) ? '' : $sDelimiter;
 		if (empty($sDelimiter))
@@ -60,7 +60,7 @@ class Folder
 
 		if (1 < \strlen($sDelimiter) || 0 === \strlen($sFullNameRaw))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->sFullNameRaw = $sFullNameRaw;
@@ -82,19 +82,11 @@ class Folder
 			$aNames = \explode($this->sDelimiter, $this->sFullNameRaw);
 			if (false !== \array_search('', $aNames))
 			{
-				throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+				throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 			}
 
 			$this->sNameRaw = \end($aNames);
 		}
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public static function NewInstance(string $sFullNameRaw, string $sDelimiter = '.', array $aFlags = array()) : self
-	{
-		return new self($sFullNameRaw, $sDelimiter, $aFlags);
 	}
 
 	public function NameRaw() : string

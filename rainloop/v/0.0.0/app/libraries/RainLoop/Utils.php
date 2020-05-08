@@ -18,7 +18,7 @@ class Utils
 
 	static $RsaKey = null;
 
-	private function __construct()
+	function __construct()
 	{
 	}
 

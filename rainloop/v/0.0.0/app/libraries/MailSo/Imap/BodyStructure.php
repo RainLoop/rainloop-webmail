@@ -92,7 +92,7 @@ class BodyStructure
 	 */
 	private $aSubParts;
 
-	private function __construct(string $sContentType, ?string $sCharset, array $aBodyParams, ?string $sContentID,
+	function __construct(string $sContentType, ?string $sCharset, array $aBodyParams, ?string $sContentID,
 		?string $sDescription, ?string $sMailEncodingName, ?string $sDisposition, ?array $aDispositionParams, string $sFileName,
 		?string $sLanguage, ?string $sLocation, int $iSize, int $iTextLineCount, string $sPartID, array $aSubParts)
 	{
@@ -300,29 +300,26 @@ class BodyStructure
 		foreach ($mParts as $oPart)
 		{
 			$sResult = $oPart ? $oPart->Charset() : '';
-			if (!empty($sResult))
+			if ($sResult)
 			{
 				break;
 			}
 		}
 
-		if (0 === strlen($sResult))
+		if (!$sResult)
 		{
 			$aParts = $this->SearchAttachmentsParts();
 			foreach ($aParts as $oPart)
 			{
-				if (0 === \strlen($sResult))
-				{
-					$sResult = $oPart ? $oPart->Charset() : '';
-				}
-				else
+				$sResult = $oPart ? $oPart->Charset() : '';
+				if ($sResult)
 				{
 					break;
 				}
 			}
 		}
 
-		return $sResult;
+		return $sResult ?: '';
 	}
 
 	/**

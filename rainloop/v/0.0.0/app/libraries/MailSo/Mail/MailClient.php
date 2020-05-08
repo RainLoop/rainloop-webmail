@@ -27,17 +27,12 @@ class MailClient
 	 */
 	private $oImapClient;
 
-	private function __construct()
+	function __construct()
 	{
 		$this->oLogger = null;
 
-		$this->oImapClient = \MailSo\Imap\ImapClient::NewInstance();
+		$this->oImapClient = new \MailSo\Imap\ImapClient;
 		$this->oImapClient->SetTimeOuts(10, \MailSo\Config::$ImapTimeout);
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function ImapClient() : \MailSo\Imap\ImapClient
@@ -274,7 +269,7 @@ class MailClient
 	{
 		if (!\MailSo\Base\Validator::RangeInt($iIndex, 1))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderSelect($sFolderName);
@@ -364,7 +359,7 @@ class MailClient
 	{
 		if (!is_callable($mCallback))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderSelect($sFolderName);
@@ -390,7 +385,7 @@ class MailClient
 
 			if (0 < \strlen($sMime))
 			{
-				$oHeaders = \MailSo\Mime\HeaderCollection::NewInstance()->Parse($sMime);
+				$oHeaders = new \MailSo\Mime\HeaderCollection($sMime);
 
 				if (0 < \strlen($sMimeIndex))
 				{
@@ -455,7 +450,7 @@ class MailClient
 	{
 		if (0 === \strlen($sFolder) || 0 === \count($aIndexRange))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderSelect($sFolder);
@@ -484,7 +479,7 @@ class MailClient
 	{
 		if (!$sFromFolder || !$sToFolder || 0 === \count($aIndexRange))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderSelect($sFromFolder);
@@ -514,7 +509,7 @@ class MailClient
 	{
 		if (!$sFromFolder || !$sToFolder || 0 === \count($aIndexRange))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderSelect($sFromFolder);
@@ -545,7 +540,7 @@ class MailClient
 	{
 		if (!\is_resource($rMessageStream) || 0 === \strlen($sFolderToSave))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oImapClient->MessageAppendStream(
@@ -558,7 +553,7 @@ class MailClient
 	{
 		if (!\is_file($sMessageFileName) || !\is_readable($sMessageFileName))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$iMessageStreamSize = \filesize($sMessageFileName);
@@ -650,7 +645,7 @@ class MailClient
 					$sUid = $oFetchResponse->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID);
 					$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
 
-					$oHeaders = \MailSo\Mime\HeaderCollection::NewInstance()->Parse($sHeaders);
+					$oHeaders = new \MailSo\Mime\HeaderCollection($sHeaders);
 
 					$sContentTypeCharset = $oHeaders->ParameterValue(
 						\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
@@ -1563,14 +1558,14 @@ class MailClient
 		if (!\MailSo\Base\Validator::RangeInt($iOffset, 0) ||
 			!\MailSo\Base\Validator::RangeInt($iLimit, 0, 999))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$bUseFilter = '' !== $sFilter;
 
 		$this->oImapClient->FolderSelect($sFolderName);
 
-		$oMessageCollection = MessageCollection::NewInstance();
+		$oMessageCollection = new MessageCollection;
 		$oMessageCollection->FolderName = $sFolderName;
 		$oMessageCollection->Offset = $iOffset;
 		$oMessageCollection->Limit = $iLimit;
@@ -1596,7 +1591,7 @@ class MailClient
 
 		if (!empty($sThreadUid) && !$bUseThreadSortIfSupported)
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		if (!$oCacher || !($oCacher instanceof \MailSo\Cache\CacheClient))
@@ -1805,7 +1800,7 @@ class MailClient
 	{
 		if (0 === \strlen($sMessageId))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderExamine($sFolderName);
@@ -1974,7 +1969,7 @@ class MailClient
 
 			foreach ($aFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder)
 			{
-				$aMailFoldersHelper[] = Folder::NewInstance($oImapFolder,
+				$aMailFoldersHelper[] = new Folder($oImapFolder,
 					(null === $aImapSubscribedFoldersHelper || \in_array($oImapFolder->FullNameRaw(), $aImapSubscribedFoldersHelper)) ||
 					$oImapFolder->IsInbox()
 				);
@@ -1985,7 +1980,7 @@ class MailClient
 
 			if ($aMailFoldersHelper)
 			{
-				$oFolderCollection = FolderCollection::NewInstance();
+				$oFolderCollection = new FolderCollection;
 				$oFolderCollection->InitByUnsortedMailFolderArray($aMailFoldersHelper);
 
 				$oFolderCollection->Optimized = $iCount !== \count($aMailFoldersHelper);
@@ -2027,7 +2022,7 @@ class MailClient
 	{
 		if (!strlen(\trim($sFolderNameInUtf8)))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$sFolderNameInUtf8 = \trim($sFolderNameInUtf8);
@@ -2097,7 +2092,7 @@ class MailClient
 	{
 		if (0 === \strlen($sPrevFolderFullNameRaw) || 0 === \strlen($sNextFolderNameInUtf))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$aFolders = $this->oImapClient->FolderList('', $sPrevFolderFullNameRaw);
@@ -2161,7 +2156,7 @@ class MailClient
 	{
 		if (0 === \strlen($sFolderFullNameRaw) || 'INBOX' === $sFolderFullNameRaw)
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oImapClient->FolderExamine($sFolderFullNameRaw);
@@ -2169,7 +2164,7 @@ class MailClient
 		$aIndexOrUids = $this->oImapClient->MessageSimpleSearch('ALL');
 		if (0 < \count($aIndexOrUids))
 		{
-			throw new \MailSo\Mail\Exceptions\NonEmptyFolder();
+			throw new \MailSo\Mail\Exceptions\NonEmptyFolder;
 		}
 
 		$this->oImapClient->FolderExamine('INBOX');
@@ -2212,7 +2207,7 @@ class MailClient
 	{
 		if (0 === \strlen($sFolderFullNameRaw))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oImapClient->{($bSubscribe) ? 'FolderSubscribe' : 'FolderUnSubscribe'}($sFolderFullNameRaw);
@@ -2227,7 +2222,7 @@ class MailClient
 	{
 		if (!($oLogger instanceof \MailSo\Log\Logger))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oLogger = $oLogger;

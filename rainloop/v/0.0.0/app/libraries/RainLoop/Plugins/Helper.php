@@ -4,7 +4,7 @@ namespace RainLoop\Plugins;
 
 class Helper
 {
-	private function __construct()
+	function __construct()
 	{
 	}
 

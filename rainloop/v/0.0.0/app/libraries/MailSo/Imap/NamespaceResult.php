@@ -47,7 +47,7 @@ class NamespaceResult
 	 */
 	private $sSharedDelimiter;
 
-	private function __construct()
+	function __construct()
 	{
 		$this->sPersonal = '';
 		$this->sPersonalDelimiter = '';
@@ -55,11 +55,6 @@ class NamespaceResult
 		$this->sOtherUserDelimiter = '';
 		$this->sShared = '';
 		$this->sSharedDelimiter = '';
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function InitByImapResponse(\MailSo\Imap\Response $oImapResponse) : self

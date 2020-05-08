@@ -27,15 +27,10 @@ class CacheClient
 	 */
 	private $sCacheIndex;
 
-	private function __construct()
+	function __construct()
 	{
 		$this->oDriver = null;
 		$this->sCacheIndex = '';
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function Set(string $sKey, string $sValue) : bool

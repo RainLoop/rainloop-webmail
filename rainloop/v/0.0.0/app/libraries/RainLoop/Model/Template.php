@@ -24,17 +24,12 @@ class Template
 	 */
 	private $bPopulateAlways;
 
-	protected function __construct(string $sId = '', string $sName = '', string $sBody = '')
+	function __construct(string $sId = '', string $sName = '', string $sBody = '')
 	{
 		$this->sId = $sId;
 		$this->sName = $sName;
 		$this->sBody = $sBody;
 		$this->bPopulateAlways = false;
-	}
-
-	public static function NewInstance(string $sId = '', string $sName = '', string $sBody = '') : self
-	{
-		return new self($sId, $sName, $sBody);
 	}
 
 	public function Id() : string

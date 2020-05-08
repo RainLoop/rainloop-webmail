@@ -77,16 +77,11 @@ class MessageCollection extends \MailSo\Base\Collection
 	 */
 	public $Filtered;
 
-	protected function __construct()
+	function __construct()
 	{
 		parent::__construct();
 
 		$this->Clear();
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function append($oMessage, bool $bToTop = false) : void

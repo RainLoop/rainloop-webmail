@@ -17,11 +17,6 @@ namespace MailSo\Mime;
  */
 class PartCollection extends \MailSo\Base\Collection
 {
-	public static function NewInstance() : self
-	{
-		return new self();
-	}
-
 	public function append($oPart, bool $bToTop = false) : void
 	{
 		assert($oPart instanceof Part);

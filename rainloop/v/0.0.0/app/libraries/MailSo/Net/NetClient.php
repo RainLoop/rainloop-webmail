@@ -82,7 +82,7 @@ abstract class NetClient
 	 */
 	public $__AUTOLOGOUT__;
 
-	protected function __construct()
+	function __construct()
 	{
 		$this->rConnect = null;
 		$this->bUnreadBuffer = false;
@@ -174,14 +174,14 @@ abstract class NetClient
 		if (!strlen(\trim($sServerName)) || !\MailSo\Base\Validator::PortInt($iPort))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
 		if ($this->IsConnected())
 		{
 			$this->writeLogException(
-				new Exceptions\SocketAlreadyConnectedException(),
+				new Exceptions\SocketAlreadyConnectedException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -342,7 +342,7 @@ abstract class NetClient
 		if (!$bResult && $bThrowExceptionOnFalse)
 		{
 			$this->writeLogException(
-				new Exceptions\SocketConnectionDoesNotAvailableException(),
+				new Exceptions\SocketConnectionDoesNotAvailableException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -372,7 +372,7 @@ abstract class NetClient
 		if ($this->bUnreadBuffer)
 		{
 			$this->writeLogException(
-				new Exceptions\SocketUnreadBufferException(),
+				new Exceptions\SocketUnreadBufferException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -395,7 +395,7 @@ abstract class NetClient
 			$this->IsConnected(true);
 
 			$this->writeLogException(
-				new Exceptions\SocketWriteException(),
+				new Exceptions\SocketWriteException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 		else
@@ -447,7 +447,7 @@ abstract class NetClient
 			if (isset($aSocketStatus['timed_out']) && $aSocketStatus['timed_out'])
 			{
 				$this->writeLogException(
-					new Exceptions\SocketReadTimeoutException(),
+					new Exceptions\SocketReadTimeoutException,
 						\MailSo\Log\Enumerations\Type::ERROR, true);
 			}
 			else
@@ -456,7 +456,7 @@ abstract class NetClient
 					\print_r($aSocketStatus, true), \MailSo\Log\Enumerations\Type::ERROR);
 
 				$this->writeLogException(
-					new Exceptions\SocketReadException(),
+					new Exceptions\SocketReadException,
 						\MailSo\Log\Enumerations\Type::ERROR, true);
 			}
 		}

@@ -82,7 +82,7 @@ abstract class Driver
 	 */
 	private $aCache;
 
-	protected function __construct()
+	function __construct()
 	{
 		$this->sDatePattern = 'H:i:s';
 		$this->sName = 'INFO';

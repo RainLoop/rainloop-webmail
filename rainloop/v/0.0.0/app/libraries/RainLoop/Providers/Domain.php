@@ -2,10 +2,10 @@
 
 namespace RainLoop\Providers;
 
-class Domain extends \RainLoop\Providers\AbstractProvider
+class Domain extends AbstractProvider
 {
 	/**
-	 * @var \RainLoop\Providers\Domain\DomainInterface
+	 * @var Domain\DomainInterface
 	 */
 	private $oDriver;
 
@@ -19,12 +19,12 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $bAdmin;
 
-	public function __construct(\RainLoop\Providers\Domain\DomainInterface $oDriver,
+	public function __construct(Domain\DomainInterface $oDriver,
 		\RainLoop\Plugins\Manager $oPlugins)
 	{
 		$this->oDriver = $oDriver;
 		$this->oPlugins = $oPlugins;
-		$this->bAdmin = $this->oDriver instanceof \RainLoop\Providers\Domain\DomainAdminInterface;
+		$this->bAdmin = $this->oDriver instanceof Domain\DomainAdminInterface;
 	}
 
 	public function IsAdmin() : bool
@@ -140,7 +140,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 				}
 				else
 				{
-					$oDomain = \RainLoop\Model\Domain::NewInstance(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
+					$oDomain = new \RainLoop\Model\Domain(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
 						$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 						$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
@@ -207,7 +207,7 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 				}
 				else
 				{
-					$oDomain = \RainLoop\Model\Domain::NewInstance(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
+					$oDomain = new \RainLoop\Model\Domain(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
 						$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 						$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
@@ -226,6 +226,6 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 
 	public function IsActive() : bool
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Domain\DomainInterface;
+		return $this->oDriver instanceof Domain\DomainInterface;
 	}
 }

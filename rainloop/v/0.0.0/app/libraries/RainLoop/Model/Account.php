@@ -49,7 +49,7 @@ class Account
 	 */
 	private $sParentEmail;
 
-	protected function __construct(string $sEmail, string $sLogin, string $sPassword,
+	function __construct(string $sEmail, string $sLogin, string $sPassword,
 		\RainLoop\Model\Domain $oDomain, string $sSignMeToken = '', string $sProxyAuthUser = '',
 		string $sProxyAuthPassword = '', string $sClientCert = '')
 	{
@@ -62,13 +62,6 @@ class Account
 		$this->sProxyAuthPassword = $sProxyAuthPassword;
 		$this->sClientCert = $sClientCert;
 		$this->sParentEmail = '';
-	}
-
-	public static function NewInstance(string $sEmail, string $sLogin, string $sPassword,
-		\RainLoop\Model\Domain $oDomain, string $sSignMeToken = '', string $sProxyAuthUser = '',
-		string $sProxyAuthPassword = '', string $sClientCert = '') : self
-	{
-		return new self($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, $sProxyAuthUser, $sProxyAuthPassword, $sClientCert);
 	}
 
 	public function Email() : string

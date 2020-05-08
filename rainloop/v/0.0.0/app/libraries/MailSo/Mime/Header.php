@@ -47,7 +47,7 @@ class Header
 	 */
 	private $sParentCharset;
 
-	private function __construct(string $sName, string $sValue, string $sEncodedValueForReparse, string $sParentCharset = '')
+	function __construct(string $sName, string $sValue = '', string $sEncodedValueForReparse = '', string $sParentCharset = '')
 	{
 		$this->sParentCharset = $sParentCharset;
 
@@ -72,8 +72,7 @@ class Header
 			if (2 === \count($aRawExplode))
 			{
 				$this->sValue = $aRawExplode[0];
-				$this->oParameters =
-					\MailSo\Mime\ParameterCollection::NewInstance($aRawExplode[1]);
+				$this->oParameters = new ParameterCollection($aRawExplode[1]);
 			}
 			else
 			{
@@ -86,12 +85,7 @@ class Header
 		}
 	}
 
-	public static function NewInstance(string $sName, string $sValue = '', string $sEncodedValueForReparse = '', string $sParentCharset = '') : \MailSo\Mime\Header
-	{
-		return new self($sName, $sValue, $sEncodedValueForReparse, $sParentCharset);
-	}
-
-	public static function NewInstanceFromEncodedString(string $sEncodedLines, string $sIncomingCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1) : \MailSo\Mime\Header
+	public static function NewInstanceFromEncodedString(string $sEncodedLines, string $sIncomingCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1) : Header
 	{
 		if (empty($sIncomingCharset))
 		{
@@ -101,7 +95,7 @@ class Header
 		$aParts = \explode(':', \str_replace("\r", '', $sEncodedLines), 2);
 		if (isset($aParts[0]) && isset($aParts[1]) && 0 < \strlen($aParts[0]) && 0 < \strlen($aParts[1]))
 		{
-			return self::NewInstance(
+			return new self(
 				\trim($aParts[0]),
 				\trim(\MailSo\Base\Utils::DecodeHeaderValue(\trim($aParts[1]), $sIncomingCharset)),
 				\trim($aParts[1]),
@@ -132,7 +126,7 @@ class Header
 		return $this->sFullValue;
 	}
 
-	public function SetParentCharset(string $sParentCharset) : \MailSo\Mime\Header
+	public function SetParentCharset(string $sParentCharset) : Header
 	{
 		if ($this->sParentCharset !== $sParentCharset && $this->IsReparsed() && 0 < \strlen($this->sEncodedValueForReparse))
 		{
@@ -148,7 +142,7 @@ class Header
 		return $this;
 	}
 
-	public function Parameters() : ?\MailSo\Mime\ParameterCollection
+	public function Parameters() : ?ParameterCollection
 	{
 		return $this->oParameters;
 	}
@@ -156,7 +150,7 @@ class Header
 	private function wordWrapHelper(string $sValue, string $sGlue = "\r\n ") : string
 	{
 		return \trim(substr(wordwrap($this->NameWithDelimitrom().$sValue,
-			\MailSo\Mime\Enumerations\Constants::LINE_LENGTH, $sGlue
+			Enumerations\Constants::LINE_LENGTH, $sGlue
 		), \strlen($this->NameWithDelimitrom())));
 	}
 
@@ -174,8 +168,8 @@ class Header
 					'scheme' => \MailSo\Base\Enumerations\Encoding::BASE64_SHORT,
 					'input-charset' => \MailSo\Base\Enumerations\Charset::UTF_8,
 					'output-charset' => \MailSo\Base\Enumerations\Charset::UTF_8,
-					'line-length' => \MailSo\Mime\Enumerations\Constants::LINE_LENGTH,
-					'line-break-chars' => \MailSo\Mime\Enumerations\Constants::CRLF
+					'line-length' => Enumerations\Constants::LINE_LENGTH,
+					'line-break-chars' => Enumerations\Constants::CRLF
 				);
 
 				return \iconv_mime_encode($this->Name(), $sResult, $aPreferences);
@@ -187,7 +181,7 @@ class Header
 		}
 		else if ($this->IsEmail())
 		{
-			$oEmailCollection = \MailSo\Mime\EmailCollection::NewInstance($this->sFullValue);
+			$oEmailCollection = new EmailCollection($this->sFullValue);
 			if ($oEmailCollection && 0 < $oEmailCollection->Count())
 			{
 				$sResult = $oEmailCollection->ToString(true, false);
@@ -199,27 +193,27 @@ class Header
 
 	public function IsSubject() : bool
 	{
-		return \strtolower(\MailSo\Mime\Enumerations\Header::SUBJECT) === \strtolower($this->Name());
+		return \strtolower(Enumerations\Header::SUBJECT) === \strtolower($this->Name());
 	}
 
 	public function IsParameterized() : bool
 	{
 		return \in_array(\strtolower($this->sName), array(
-			\strtolower(\MailSo\Mime\Enumerations\Header::CONTENT_TYPE),
-			\strtolower(\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION)
+			\strtolower(Enumerations\Header::CONTENT_TYPE),
+			\strtolower(Enumerations\Header::CONTENT_DISPOSITION)
 		));
 	}
 
 	public function IsEmail() : bool
 	{
 		return \in_array(\strtolower($this->sName), array(
-			\strtolower(\MailSo\Mime\Enumerations\Header::FROM_),
-			\strtolower(\MailSo\Mime\Enumerations\Header::TO_),
-			\strtolower(\MailSo\Mime\Enumerations\Header::CC),
-			\strtolower(\MailSo\Mime\Enumerations\Header::BCC),
-			\strtolower(\MailSo\Mime\Enumerations\Header::REPLY_TO),
-			\strtolower(\MailSo\Mime\Enumerations\Header::RETURN_PATH),
-			\strtolower(\MailSo\Mime\Enumerations\Header::SENDER)
+			\strtolower(Enumerations\Header::FROM_),
+			\strtolower(Enumerations\Header::TO_),
+			\strtolower(Enumerations\Header::CC),
+			\strtolower(Enumerations\Header::BCC),
+			\strtolower(Enumerations\Header::REPLY_TO),
+			\strtolower(Enumerations\Header::RETURN_PATH),
+			\strtolower(Enumerations\Header::SENDER)
 		));
 	}
 

@@ -23,7 +23,7 @@ class APC implements \MailSo\Cache\DriverInterface
 	 */
 	private $sKeyPrefix;
 
-	private function __construct(string $sKeyPrefix = '')
+	function __construct(string $sKeyPrefix = '')
 	{
 		$this->sKeyPrefix = $sKeyPrefix;
 		if (!empty($this->sKeyPrefix))
@@ -31,11 +31,6 @@ class APC implements \MailSo\Cache\DriverInterface
 			$this->sKeyPrefix =
 				\preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($this->sKeyPrefix), '\\/')).'/';
 		}
-	}
-
-	public static function NewInstance(string $sKeyPrefix = '') : self
-	{
-		return new self($sKeyPrefix);
 	}
 
 	public function Set(string $sKey, string $sValue) : bool

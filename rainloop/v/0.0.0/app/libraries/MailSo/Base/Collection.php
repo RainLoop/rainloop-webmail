@@ -17,6 +17,14 @@ namespace MailSo\Base;
  */
 abstract class Collection extends \ArrayObject
 {
+	function __construct($input = array(), int $flags = 0, string $iterator_class = "ArrayIterator")
+	{
+		parent::__construct();
+		foreach ($input as $item) {
+			$this->append($item);
+		}
+	}
+
 	/**
 	 * @param mixed $mItem
 	 */

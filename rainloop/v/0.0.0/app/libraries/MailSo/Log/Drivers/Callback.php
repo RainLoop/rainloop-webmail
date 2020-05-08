@@ -32,21 +32,12 @@ class Callback extends \MailSo\Log\Driver
 	 * @param mixed $fWriteCallback
 	 * @param mixed $fClearCallback
 	 */
-	protected function __construct($fWriteCallback, $fClearCallback)
+	function __construct($fWriteCallback, $fClearCallback)
 	{
 		parent::__construct();
 
 		$this->fWriteCallback = \is_callable($fWriteCallback) ? $fWriteCallback : null;
 		$this->fClearCallback = \is_callable($fClearCallback) ? $fClearCallback : null;
-	}
-
-	/**
-	 * @param mixed $fWriteCallback
-	 * @param mixed $fClearCallback = null
-	 */
-	public static function NewInstance($fWriteCallback, $fClearCallback = null) : \MailSo\Log\Drivers\Callback
-	{
-		return new self($fWriteCallback, $fClearCallback);
 	}
 
 	protected function writeImplementation($mDesc) : bool

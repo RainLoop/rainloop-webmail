@@ -1083,8 +1083,7 @@ END;
 
 	public static function Trim(string $sValue) : string
 	{
-		return \trim(\preg_replace('/^[\x00-\x1F]+/u', '',
-			\preg_replace('/[\x00-\x1F]+$/u', '', \trim($sValue))));
+		return \trim(\preg_replace('/^[\x00-\x1F]+|[\x00-\x1F]+$/Du', '', \trim($sValue)));
 	}
 
 	public static function RecRmDir(string $sDir) : bool
@@ -1859,7 +1858,7 @@ END;
 		if (null === $oIdn)
 		{
 			include_once dirname(__DIR__).'/Vendors/Net/IDNA2.php';
-			$oIdn = new \Net_IDNA2();
+			$oIdn = new \Net_IDNA2;
 			$oIdn->setParams('utf8', true);
 		}
 

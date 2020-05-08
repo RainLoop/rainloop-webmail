@@ -25,18 +25,12 @@ class HeaderCollection extends \MailSo\Base\Collection
 	 */
 	protected $sParentCharset = '';
 
-	protected function __construct(string $sRawHeaders = '', bool $bStoreRawHeaders = true)
+	function __construct(string $sRawHeaders = '', bool $bStoreRawHeaders = true, string $sParentCharset = '')
 	{
 		parent::__construct();
-
-		if (0 < \strlen($sRawHeaders)) {
-			$this->Parse($sRawHeaders, $bStoreRawHeaders);
+		if (\strlen($sRawHeaders)) {
+			$this->Parse($sRawHeaders, $bStoreRawHeaders, $sParentCharset);
 		}
-	}
-
-	public static function NewInstance(string $sRawHeaders = '', bool $bStoreRawHeaders = true) : self
-	{
-		return new self($sRawHeaders, $bStoreRawHeaders);
 	}
 
 	public function append($oHeader, bool $bToTop = false) : void
@@ -47,13 +41,13 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 	public function AddByName(string $sName, string $sValue, bool $bToTop = false) : self
 	{
-		$this->append(Header::NewInstance($sName, $sValue), $bToTop);
+		$this->append(new Header($sName, $sValue), $bToTop);
 		return $this;
 	}
 
 	public function SetByName(string $sName, string $sValue, bool $bToTop = false) : self
 	{
-		return $this->RemoveByName($sName)->Add(Header::NewInstance($sName, $sValue), $bToTop);
+		return $this->RemoveByName($sName)->Add(new Header($sName, $sValue), $bToTop);
 	}
 
 	public function ValueByName(string $sHeaderName, bool $bCharsetAutoDetect = false) : string
@@ -88,7 +82,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 		$oResult = null;
 		$sValue = $this->ValueByName($sHeaderName, $bCharsetAutoDetect);
 		if (0 < \strlen($sValue)) {
-			$oResult = EmailCollection::NewInstance($sValue);
+			$oResult = new EmailCollection($sValue);
 		}
 		return $oResult && 0 < $oResult->Count() ? $oResult : null;
 	}
@@ -118,20 +112,18 @@ class HeaderCollection extends \MailSo\Base\Collection
 
 	public function SetParentCharset(string $sParentCharset) : self
 	{
-		if (0 < \strlen($sParentCharset)){
-			if ($this->sParentCharset !== $sParentCharset) {
-				foreach ($this as $oHeader) {
-					$oHeader->SetParentCharset($sParentCharset);
-				}
-				$this->sParentCharset = $sParentCharset;
+		if (\strlen($sParentCharset) && $this->sParentCharset !== $sParentCharset) {
+			foreach ($this as $oHeader) {
+				$oHeader->SetParentCharset($sParentCharset);
 			}
+			$this->sParentCharset = $sParentCharset;
 		}
 		return $this;
 	}
 
 	public function Clear() : void
 	{
-		$this->exchangeArray(array());
+		parent::Clear();
 		$this->sRawHeaders = '';
 	}
 
@@ -143,7 +135,7 @@ class HeaderCollection extends \MailSo\Base\Collection
 			$this->sRawHeaders = $sRawHeaders;
 		}
 
-		if (0 === \strlen($this->sParentCharset)) {
+		if (\strlen($this->sParentCharset)) {
 			$this->sParentCharset = $sParentCharset;
 		}
 

@@ -43,13 +43,13 @@ class Memcache implements \MailSo\Cache\DriverInterface
 	 */
 	private $sKeyPrefix;
 
-	private function __construct(string $sHost = '127.0.0.1', int $iPost = 11211, int $iExpire = 43200, string $sKeyPrefix = '')
+	function __construct(string $sHost = '127.0.0.1', int $iPost = 11211, int $iExpire = 43200, string $sKeyPrefix = '')
 	{
 		$this->sHost = $sHost;
 		$this->iPost = $iPost;
 		$this->iExpire = 0 < $iExpire ? $iExpire : 43200;
 
-		$this->oMem = new \Memcache();
+		$this->oMem = new \Memcache;
 		if (!$this->oMem->connect($this->sHost, $this->iPost))
 		{
 			$this->oMem = null;
@@ -61,11 +61,6 @@ class Memcache implements \MailSo\Cache\DriverInterface
 			$this->sKeyPrefix =
 				\preg_replace('/[^a-zA-Z0-9_]/', '_', rtrim(trim($this->sKeyPrefix), '\\/')).'/';
 		}
-	}
-
-	public static function NewInstance(string $sHost = '127.0.0.1', int $iPost = 11211, int $iExpire = 43200, string $sKeyPrefix = '') : self
-	{
-		return new self($sHost, $iPost, $iExpire, $sKeyPrefix);
 	}
 
 	public function Set(string $sKey, string $sValue) : bool

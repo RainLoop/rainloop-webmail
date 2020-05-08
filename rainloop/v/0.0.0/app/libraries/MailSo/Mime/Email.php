@@ -40,11 +40,11 @@ class Email
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	private function __construct(string $sEmail, string $sDisplayName = '')
+	function __construct(string $sEmail, string $sDisplayName = '')
 	{
 		if (!strlen(\trim($sEmail)))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->sEmail = \MailSo\Base\Utils::IdnToAscii(
@@ -52,16 +52,8 @@ class Email
 
 		$this->sDisplayName = \MailSo\Base\Utils::Trim($sDisplayName);
 
-		$this->sDkimStatus = \MailSo\Mime\Enumerations\DkimStatus::NONE;
+		$this->sDkimStatus = Enumerations\DkimStatus::NONE;
 		$this->sDkimValue = '';
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public static function NewInstance(string $sEmail, string $sDisplayName = '') : self
-	{
-		return new self($sEmail, $sDisplayName);
 	}
 
 	/**
@@ -72,7 +64,7 @@ class Email
 		$sEmailAddress = \MailSo\Base\Utils::Trim($sEmailAddress);
 		if (!strlen(\trim($sEmailAddress)))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$sName = '';
@@ -191,7 +183,7 @@ class Email
 		$sName = \preg_replace('/\\\\(.)/s', '$1', $sName);
 		$sComment = \preg_replace('/\\\\(.)/s', '$1', $sComment);
 
-		return Email::NewInstance($sEmail, $sName);
+		return new self($sEmail, $sName);
 	}
 
 	public function GetEmail(bool $bIdn = false) : string
@@ -226,7 +218,7 @@ class Email
 
 	public function SetDkimStatusAndValue(string $sDkimStatus, string $sDkimValue = '')
 	{
-		$this->sDkimStatus = \MailSo\Mime\Enumerations\DkimStatus::normalizeValue($sDkimStatus);
+		$this->sDkimStatus = Enumerations\DkimStatus::normalizeValue($sDkimStatus);
 		$this->sDkimValue = $sDkimValue;
 	}
 

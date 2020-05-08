@@ -53,7 +53,7 @@ class LinkFinder
 	 */
 	private $iOptimizationLimit;
 
-	private function __construct()
+	function __construct()
 	{
 		$this->iHtmlSpecialCharsFlags = (\defined('ENT_QUOTES') && \defined('ENT_SUBSTITUTE') && \defined('ENT_HTML401'))
 			? ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML401 : ENT_QUOTES;
@@ -66,11 +66,6 @@ class LinkFinder
 		$this->iOptimizationLimit = 300000;
 
 		$this->Clear();
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function Clear() : self

@@ -82,7 +82,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	 */
 	public $__FORCE_SELECT_ON_EXAMINE__;
 
-	protected function __construct()
+	function __construct()
 	{
 		parent::__construct();
 
@@ -90,7 +90,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$this->aCapabilityItems = null;
 		$this->oCurrentFolderInfo = null;
 
-		$this->oLastResponse = new ResponseCollection();
+		$this->oLastResponse = new ResponseCollection;
 		$this->bNeedNext = true;
 
 		$this->aTagTimeouts = array();
@@ -102,11 +102,6 @@ class ImapClient extends \MailSo\Net\NetClient
 		$this->__FORCE_SELECT_ON_EXAMINE__ = false;
 
 		\ini_set('xdebug.max_nesting_level', 500);
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function GetLogginedUser() : string
@@ -157,7 +152,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (!strlen(\trim($sLogin)) || !strlen(\trim($sPassword)))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -193,14 +188,14 @@ class ImapClient extends \MailSo\Net\NetClient
 					else
 					{
 						$this->writeLogException(
-							new Exceptions\LoginException(),
+							new Exceptions\LoginException,
 							\MailSo\Log\Enumerations\Type::NOTICE, true);
 					}
 				}
 				else
 				{
 					$this->writeLogException(
-						new Exceptions\LoginException(),
+						new Exceptions\LoginException,
 						\MailSo\Log\Enumerations\Type::NOTICE, true);
 				}
 			}
@@ -239,7 +234,7 @@ class ImapClient extends \MailSo\Net\NetClient
 //			else
 //			{
 //				$this->writeLogException(
-//					new Exceptions\LoginBadMethodException(),
+//					new Exceptions\LoginBadMethodException,
 //					\MailSo\Log\Enumerations\Type::NOTICE, true);
 //			}
 
@@ -505,7 +500,7 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		if (!strlen(\trim($sFolderName)))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$this->oCurrentFolderInfo = $this->SendRequestGetResponse($bIsWritable ? 'SELECT' : 'EXAMINE',
@@ -562,7 +557,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (!strlen(\trim($sIndexRange)))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -614,13 +609,13 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (!$aSortTypes)
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 		if (!$this->IsSupported('SORT'))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -650,14 +645,14 @@ class ImapClient extends \MailSo\Net\NetClient
 		if ($bSort && (!$aSortTypes || !$this->IsSupported('SORT')))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
 		if (!$this->IsSupported($bSort ? 'ESORT' : 'ESEARCH'))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -821,7 +816,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (0 === \strlen($sIndexRange))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -841,7 +836,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (0 === \strlen($sIndexRange))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -958,7 +953,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		if (!\strlen($sCommand))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -1026,18 +1021,18 @@ class ImapClient extends \MailSo\Net\NetClient
 	private function getResponse(string $sEndTag = null) : ResponseCollection
 	{
 		try {
-			$oResult = new ResponseCollection();
+			$oResult = new ResponseCollection;
 
 			if (\is_resource($this->rConnect)) {
 				$sEndTag = (null === $sEndTag) ? $this->getCurrentTag() : $sEndTag;
 
 				while (true) {
-					$oResponse = Response::NewInstance();
+					$oResponse = new Response;
 
 					$this->partialParseResponseBranch($oResponse);
 
 					if (Enumerations\ResponseType::UNKNOWN === $oResponse->ResponseType) {
-						throw new Exceptions\ResponseNotFoundException();
+						throw new Exceptions\ResponseNotFoundException;
 					}
 
 					$oResult->append($oResponse);

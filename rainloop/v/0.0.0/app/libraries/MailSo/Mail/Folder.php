@@ -50,7 +50,7 @@ class Folder
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	private function __construct(\MailSo\Imap\Folder $oImapFolder, bool $bSubscribed = true, bool $bExisten = true)
+	function __construct(\MailSo\Imap\Folder $oImapFolder, bool $bSubscribed = true, bool $bExisten = true)
 	{
 		$this->oImapFolder = $oImapFolder;
 		$this->oSubFolders = null;
@@ -71,20 +71,12 @@ class Folder
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
-	 */
-	public static function NewInstance(\MailSo\Imap\Folder $oImapFolder, bool $bSubscribed = true, bool $bExisten = true) : self
-	{
-		return new self($oImapFolder, $bSubscribed, $bExisten);
-	}
-
-	/**
-	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
 	public static function NewNonExistenInstance(string $sFullNameRaw, string $sDelimiter) : self
 	{
-		return self::NewInstance(
-			\MailSo\Imap\Folder::NewInstance($sFullNameRaw, $sDelimiter, array('\NoSelect')), true, false);
+		return new self(
+			new \MailSo\Imap\Folder($sFullNameRaw, $sDelimiter, array('\NoSelect')), true, false);
 	}
 
 	public function Name() : string
@@ -142,7 +134,7 @@ class Folder
 	{
 		if ($bCreateIfNull && !$this->oSubFolders)
 		{
-			$this->oSubFolders = FolderCollection::NewInstance();
+			$this->oSubFolders = new FolderCollection;
 		}
 
 		return $this->oSubFolders;

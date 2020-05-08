@@ -32,7 +32,7 @@ class Attachment
 	 */
 	private $oBodyStructure;
 
-	private function __construct()
+	function __construct()
 	{
 		$this->Clear();
 	}
@@ -148,14 +148,9 @@ class Attachment
 		return $this->oBodyStructure ? $this->oBodyStructure->IsPgpSignature() : false;
 	}
 
-	public static function NewInstance() : self
-	{
-		return new self();
-	}
-
 	public static function NewBodyStructureInstance(string $sFolder, int $iUid, \MailSo\Imap\BodyStructure $oBodyStructure) : self
 	{
-		return self::NewInstance()->InitByBodyStructure($sFolder, $iUid, $oBodyStructure);
+		return (new self)->InitByBodyStructure($sFolder, $iUid, $oBodyStructure);
 	}
 
 	public function InitByBodyStructure(string $sFolder, int $iUid, \MailSo\Imap\BodyStructure $oBodyStructure) : self

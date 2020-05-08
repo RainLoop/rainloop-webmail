@@ -42,7 +42,7 @@ class Logger extends \MailSo\Base\Collection
 	 */
 	private $bHideErrorNotices;
 
-	protected function __construct(bool $bRegPhpErrorHandler = true)
+	function __construct(bool $bRegPhpErrorHandler = true)
 	{
 		parent::__construct();
 
@@ -60,11 +60,6 @@ class Logger extends \MailSo\Base\Collection
 		\register_shutdown_function(array(&$this, '__loggerShutDown'));
 	}
 
-	public static function NewInstance(bool $bRegPhpErrorHandler = false) : self
-	{
-		return new self($bRegPhpErrorHandler);
-	}
-
 	/**
 	 * @staticvar \MailSo\Log\Logger $oInstance;
 	 */
@@ -73,7 +68,7 @@ class Logger extends \MailSo\Base\Collection
 		static $oInstance = null;
 		if (null === $oInstance)
 		{
-			$oInstance = self::NewInstance();
+			$oInstance = new self;
 		}
 
 		return $oInstance;

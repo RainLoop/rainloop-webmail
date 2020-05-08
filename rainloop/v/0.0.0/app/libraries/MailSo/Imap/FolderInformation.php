@@ -67,7 +67,7 @@ class FolderInformation
 	 */
 	public $HighestModSeq;
 
-	private function __construct(string $sFolderName, bool $bIsWritable)
+	function __construct(string $sFolderName, bool $bIsWritable)
 	{
 		$this->FolderName = $sFolderName;
 		$this->IsWritable = $bIsWritable;
@@ -79,11 +79,6 @@ class FolderInformation
 		$this->Unread = null;
 		$this->Uidnext = null;
 		$this->HighestModSeq = null;
-	}
-
-	public static function NewInstance(string $sFolderName, bool $bIsWritable) : self
-	{
-		return new self($sFolderName, $bIsWritable);
 	}
 
 	public function IsFlagSupported(string $sFlag) : bool

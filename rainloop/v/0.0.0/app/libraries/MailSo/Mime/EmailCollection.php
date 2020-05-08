@@ -17,31 +17,20 @@ namespace MailSo\Mime;
  */
 class EmailCollection extends \MailSo\Base\Collection
 {
-	protected function __construct(string $sEmailAddresses = '')
+	function __construct($mEmailAddresses = '')
 	{
-		parent::__construct();
-
-		$sEmailAddresses = \MailSo\Base\Utils::Trim($sEmailAddresses);
-		if (0 < \strlen($sEmailAddresses))
-		{
-			$this->parseEmailAddresses($sEmailAddresses);
+		if (\is_string($mEmailAddresses)) {
+			parent::__construct();
+			$this->parseEmailAddresses($mEmailAddresses);
+		} else {
+			parent::__construct($mEmailAddresses);
 		}
-	}
-
-	public static function NewInstance(string $sEmailAddresses = '') : self
-	{
-		return new self($sEmailAddresses);
 	}
 
 	public function append($oEmail, bool $bToTop = false) : void
 	{
 		assert($oEmail instanceof Email);
 		parent::append($oEmail, $bToTop);
-	}
-
-	public static function Parse(string $sEmailAddresses) : self
-	{
-		return self::NewInstance($sEmailAddresses);
 	}
 
 	public function ToArray() : array
@@ -78,9 +67,7 @@ class EmailCollection extends \MailSo\Base\Collection
 			}
 		}
 
-		$this->exchangeArray(array_values($aReturn));
-
-		return $this;
+		return new static($aReturn);
 	}
 
 	public function ToString(bool $bConvertSpecialsName = false, bool $bIdn = false) : string
@@ -94,15 +81,15 @@ class EmailCollection extends \MailSo\Base\Collection
 		return \implode(', ', $aReturn);
 	}
 
-	private function parseEmailAddresses(string $sRawEmails) : self
+	private function parseEmailAddresses(string $sRawEmails) : void
 	{
-		$this->Clear();
+//		$sRawEmails = \MailSo\Base\Utils::Trim($sRawEmails);
+		$sRawEmails = \trim($sRawEmails);
 
-		$sWorkingRecipients = \trim($sRawEmails);
-
-		if (0 === \strlen($sWorkingRecipients))
+		$sWorkingRecipientsLen = \strlen($sRawEmails);
+		if (!$sWorkingRecipientsLen)
 		{
-			return $this;
+			return;
 		}
 
 		$iEmailStartPos = 0;
@@ -115,20 +102,18 @@ class EmailCollection extends \MailSo\Base\Collection
 
 		$iCurrentPos = 0;
 
-		$sWorkingRecipientsLen = \strlen($sWorkingRecipients);
-
 		while ($iCurrentPos < $sWorkingRecipientsLen)
 		{
-			switch ($sWorkingRecipients[$iCurrentPos])
+			switch ($sRawEmails[$iCurrentPos])
 			{
 				case '\'':
 				case '"':
 					if (!$bIsInQuotes)
 					{
-						$sChQuote = $sWorkingRecipients[$iCurrentPos];
+						$sChQuote = $sRawEmails[$iCurrentPos];
 						$bIsInQuotes = true;
 					}
-					else if ($sChQuote == $sWorkingRecipients[$iCurrentPos])
+					else if ($sChQuote == $sRawEmails[$iCurrentPos])
 					{
 						$bIsInQuotes = false;
 					}
@@ -175,7 +160,7 @@ class EmailCollection extends \MailSo\Base\Collection
 						try
 						{
 							$this->append(
-								Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iEmailEndPos - $iEmailStartPos))
+								Email::Parse(\substr($sRawEmails, $iEmailStartPos, $iEmailEndPos - $iEmailStartPos))
 							);
 
 							$iEmailStartPos = $iCurrentPos + 1;
@@ -187,7 +172,7 @@ class EmailCollection extends \MailSo\Base\Collection
 					break;
 			}
 
-			$iCurrentPos++;
+			++$iCurrentPos;
 		}
 
 		if ($iEmailStartPos < $iCurrentPos)
@@ -195,12 +180,10 @@ class EmailCollection extends \MailSo\Base\Collection
 			try
 			{
 				$this->append(
-					Email::Parse(\substr($sWorkingRecipients, $iEmailStartPos, $iCurrentPos - $iEmailStartPos))
+					Email::Parse(\substr($sRawEmails, $iEmailStartPos, $iCurrentPos - $iEmailStartPos))
 				);
 			}
 			catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException) {}
 		}
-
-		return $this;
 	}
 }

@@ -123,7 +123,7 @@ class Message
 	private $sHtml;
 
 	/**
-	 * @var \MailSo\Mail\AttachmentCollection
+	 * @var AttachmentCollection
 	 */
 	private $oAttachments;
 
@@ -187,12 +187,12 @@ class Message
 	 */
 	private $bPgpEncrypted;
 
-	private function __construct()
+	function __construct()
 	{
 		$this->Clear();
 	}
 
-	public function Clear() : \MailSo\Mail\Message
+	public function Clear() : self
 	{
 		$this->sFolder = '';
 		$this->iUid = 0;
@@ -238,11 +238,6 @@ class Message
 		$this->bPgpEncrypted = false;
 
 		return $this;
-	}
-
-	public static function NewInstance() : \MailSo\Mail\Message
-	{
-		return new self();
 	}
 
 	public function Plain() : string
@@ -375,7 +370,7 @@ class Message
 		return $this->oBcc;
 	}
 
-	public function Attachments() : ?\MailSo\Mail\AttachmentCollection
+	public function Attachments() : ?AttachmentCollection
 	{
 		return $this->oAttachments;
 	}
@@ -430,12 +425,12 @@ class Message
 		return $this->bTextPartIsTrimmed;
 	}
 
-	public static function NewFetchResponseInstance(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : \MailSo\Mail\Message
+	public static function NewFetchResponseInstance(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : self
 	{
-		return self::NewInstance()->InitByFetchResponse($sFolder, $oFetchResponse, $oBodyStructure);
+		return (new self)->InitByFetchResponse($sFolder, $oFetchResponse, $oBodyStructure);
 	}
 
-	public function InitByFetchResponse(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : \MailSo\Mail\Message
+	public function InitByFetchResponse(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : self
 	{
 		if (!$oBodyStructure)
 		{
@@ -460,9 +455,9 @@ class Message
 		$sCharset = \MailSo\Base\Utils::NormalizeCharset($sCharset);
 
 		$sHeaders = $oFetchResponse->GetHeaderFieldsValue();
-		if (0 < \strlen($sHeaders))
+		if (\strlen($sHeaders))
 		{
-			$oHeaders = \MailSo\Mime\HeaderCollection::NewInstance()->Parse($sHeaders, false, $sCharset);
+			$oHeaders = new \MailSo\Mime\HeaderCollection($sHeaders, false, $sCharset);
 
 			$sContentTypeCharset = $oHeaders->ParameterValue(
 				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
@@ -589,7 +584,7 @@ class Message
 				$sFolder = '';
 				$sUid = '';
 
-				$oParameters = \MailSo\Mime\ParameterCollection::NewInstance($sDraftInfo);
+				$oParameters = new \MailSo\Mime\ParameterCollection($sDraftInfo);
 				foreach ($oParameters as $oParameter) {
 					switch (\strtolower($oParameter->Name()))
 					{
@@ -737,11 +732,11 @@ class Message
 			$aAttachmentsParts = $oBodyStructure->SearchAttachmentsParts();
 			if ($aAttachmentsParts && 0 < count($aAttachmentsParts))
 			{
-				$this->oAttachments = AttachmentCollection::NewInstance();
+				$this->oAttachments = new AttachmentCollection;
 				foreach ($aAttachmentsParts as /* @var $oAttachmentItem \MailSo\Imap\BodyStructure */ $oAttachmentItem)
 				{
 					$this->oAttachments->append(
-						\MailSo\Mail\Attachment::NewBodyStructureInstance($this->sFolder, $this->iUid, $oAttachmentItem)
+						Attachment::NewBodyStructureInstance($this->sFolder, $this->iUid, $oAttachmentItem)
 					);
 				}
 			}

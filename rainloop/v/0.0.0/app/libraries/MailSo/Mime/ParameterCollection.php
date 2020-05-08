@@ -17,7 +17,7 @@ namespace MailSo\Mime;
  */
 class ParameterCollection extends \MailSo\Base\Collection
 {
-	protected function __construct(string $sRawParams = '')
+	function __construct(string $sRawParams = '')
 	{
 		parent::__construct();
 
@@ -25,11 +25,6 @@ class ParameterCollection extends \MailSo\Base\Collection
 		{
 			$this->Parse($sRawParams);
 		}
-	}
-
-	public static function NewInstance(string $sRawParams = '') : self
-	{
-		return new self($sRawParams);
 	}
 
 	public function append($oParameter, bool $bToTop = false) : void
@@ -157,7 +152,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 					$sCharset, \MailSo\Base\Enumerations\Charset::UTF_8);
 			}
 
-			$this->append(Parameter::NewInstance($sName, $sResult));
+			$this->append(new Parameter($sName, $sResult));
 		}
 	}
 }

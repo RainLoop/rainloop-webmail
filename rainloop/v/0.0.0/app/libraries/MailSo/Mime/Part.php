@@ -35,7 +35,7 @@ class Part
 	public static $ForceCharset = '';
 
 	/**
-	 * @var \MailSo\Mime\HeaderCollection
+	 * @var HeaderCollection
 	 */
 	public $Headers;
 
@@ -45,7 +45,7 @@ class Part
 	public $Body;
 
 	/**
-	 * @var \MailSo\Mime\PartCollection
+	 * @var PartCollection
 	 */
 	public $SubParts;
 
@@ -69,15 +69,10 @@ class Part
 	 */
 	private $iParseBuffer;
 
-	private function __construct()
+	function __construct()
 	{
-		$this->iParseBuffer = \MailSo\Mime\Part::DEFAUL_BUFFER;
+		$this->iParseBuffer = self::DEFAUL_BUFFER;
 		$this->Reset();
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function Reset() : self
@@ -85,8 +80,8 @@ class Part
 		\MailSo\Base\ResourceRegistry::CloseMemoryResource($this->Body);
 		$this->Body = null;
 
-		$this->Headers = HeaderCollection::NewInstance();
-		$this->SubParts = PartCollection::NewInstance();
+		$this->Headers = new HeaderCollection;
+		$this->SubParts = new PartCollection;
 		$this->LineParts = array();
 		$this->sBoundary = '';
 		$this->sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1;
@@ -128,41 +123,41 @@ class Part
 	public function HeaderCharset() : string
 	{
 		return ($this->Headers) ? trim(strtolower($this->Headers->ParameterValue(
-			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-			\MailSo\Mime\Enumerations\Parameter::CHARSET))) : '';
+			Enumerations\Header::CONTENT_TYPE,
+			Enumerations\Parameter::CHARSET))) : '';
 	}
 
 	public function HeaderBoundary() : string
 	{
 		return ($this->Headers) ? trim($this->Headers->ParameterValue(
-			\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-			\MailSo\Mime\Enumerations\Parameter::BOUNDARY)) : '';
+			Enumerations\Header::CONTENT_TYPE,
+			Enumerations\Parameter::BOUNDARY)) : '';
 	}
 
 	public function ContentType() : string
 	{
 		return ($this->Headers) ?
 			trim(strtolower($this->Headers->ValueByName(
-				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE))) : '';
+				Enumerations\Header::CONTENT_TYPE))) : '';
 	}
 
 	public function ContentTransferEncoding() : string
 	{
 		return ($this->Headers) ?
 			trim(strtolower($this->Headers->ValueByName(
-				\MailSo\Mime\Enumerations\Header::CONTENT_TRANSFER_ENCODING))) : '';
+				Enumerations\Header::CONTENT_TRANSFER_ENCODING))) : '';
 	}
 
 	public function ContentID() : string
 	{
 		return ($this->Headers) ? trim($this->Headers->ValueByName(
-			\MailSo\Mime\Enumerations\Header::CONTENT_ID)) : '';
+			Enumerations\Header::CONTENT_ID)) : '';
 	}
 
 	public function ContentLocation() : string
 	{
 		return ($this->Headers) ? trim($this->Headers->ValueByName(
-			\MailSo\Mime\Enumerations\Header::CONTENT_LOCATION)) : '';
+			Enumerations\Header::CONTENT_LOCATION)) : '';
 	}
 
 	public function IsFlowedFormat() : bool
@@ -171,8 +166,8 @@ class Part
 		if ($this->Headers)
 		{
 			$bResult = 'flowed' === \trim(\strtolower($this->Headers->ParameterValue(
-				\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-				\MailSo\Mime\Enumerations\Parameter::FORMAT)));
+				Enumerations\Header::CONTENT_TYPE,
+				Enumerations\Parameter::FORMAT)));
 
 			if ($bResult && \in_array(\strtolower($this->MailEncodingName()), array('base64', 'quoted-printable')))
 			{
@@ -189,14 +184,14 @@ class Part
 		if ($this->Headers)
 		{
 			$sResult = trim($this->Headers->ParameterValue(
-				\MailSo\Mime\Enumerations\Header::CONTENT_DISPOSITION,
-				\MailSo\Mime\Enumerations\Parameter::FILENAME));
+				Enumerations\Header::CONTENT_DISPOSITION,
+				Enumerations\Parameter::FILENAME));
 
 			if (0 === strlen($sResult))
 			{
 				$sResult = trim($this->Headers->ParameterValue(
-					\MailSo\Mime\Enumerations\Header::CONTENT_TYPE,
-					\MailSo\Mime\Enumerations\Parameter::NAME));
+					Enumerations\Header::CONTENT_TYPE,
+					Enumerations\Parameter::NAME));
 			}
 		}
 
@@ -245,7 +240,7 @@ class Part
 	{
 		$this->Reset();
 
-		$oParserClass = new \MailSo\Mime\Parser\ParserMemory();
+		$oParserClass = new Parser\ParserMemory;
 
 		$oMimePart = null;
 		$bIsOef = false;
@@ -262,7 +257,7 @@ class Part
 			$sPrevBuffer, $sBuffer, $aBoundaryStack, $bIsOef);
 
 		$sFirstNotNullCharset = null;
-		foreach ($this->LineParts as /* @var $oMimePart \MailSo\Mime\Part */ $oMimePart)
+		foreach ($this->LineParts as /* @var $oMimePart Part */ $oMimePart)
 		{
 			$sCharset = $oMimePart->HeaderCharset();
 			if (0 < strlen($sCharset))
@@ -275,7 +270,7 @@ class Part
 		$sForceCharset = self::$ForceCharset;
 		if (0 < strlen($sForceCharset))
 		{
-			foreach ($this->LineParts as /* @var $oMimePart \MailSo\Mime\Part */ $oMimePart)
+			foreach ($this->LineParts as /* @var $oMimePart Part */ $oMimePart)
 			{
 				$oMimePart->SetParentCharset($sForceCharset);
 				$oMimePart->Headers->SetParentCharset($sForceCharset);
@@ -286,7 +281,7 @@ class Part
 			$sFirstNotNullCharset = (null !== $sFirstNotNullCharset)
 				? $sFirstNotNullCharset : self::$DefaultCharset;
 
-			foreach ($this->LineParts as /* @var $oMimePart \MailSo\Mime\Part */ $oMimePart)
+			foreach ($this->LineParts as /* @var $oMimePart Part */ $oMimePart)
 			{
 				$sHeaderCharset = $oMimePart->HeaderCharset();
 				$oMimePart->SetParentCharset((0 < strlen($sHeaderCharset)) ? $sHeaderCharset : $sFirstNotNullCharset);
@@ -489,7 +484,7 @@ class Part
 					{
 						$iOffset = $iPos + $sBoundaryLen;
 
-						$oSubPart = self::NewInstance();
+						$oSubPart = new self;
 
 						$oSubPart
 							->SetParseBuffer($this->iParseBuffer)
@@ -573,12 +568,12 @@ class Part
 		$aSubStreams = array(
 
 			$this->Headers->ToEncodedString().
-				\MailSo\Mime\Enumerations\Constants::CRLF.
-				\MailSo\Mime\Enumerations\Constants::CRLF,
+				Enumerations\Constants::CRLF.
+				Enumerations\Constants::CRLF,
 
 			null === $this->Body ? '' : $this->Body,
 
-			\MailSo\Mime\Enumerations\Constants::CRLF
+			Enumerations\Constants::CRLF
 		);
 
 		if (0 < $this->SubParts->Count())
@@ -586,7 +581,7 @@ class Part
 			$sBoundary = $this->HeaderBoundary();
 			if (0 < strlen($sBoundary))
 			{
-				$aSubStreams[] = '--'.$sBoundary.\MailSo\Mime\Enumerations\Constants::CRLF;
+				$aSubStreams[] = '--'.$sBoundary.Enumerations\Constants::CRLF;
 
 				$rSubPartsStream = $this->SubParts->ToStream($sBoundary);
 				if (is_resource($rSubPartsStream))
@@ -594,8 +589,8 @@ class Part
 					$aSubStreams[] = $rSubPartsStream;
 				}
 
-				$aSubStreams[] = \MailSo\Mime\Enumerations\Constants::CRLF.
-					'--'.$sBoundary.'--'.\MailSo\Mime\Enumerations\Constants::CRLF;
+				$aSubStreams[] = Enumerations\Constants::CRLF.
+					'--'.$sBoundary.'--'.Enumerations\Constants::CRLF;
 			}
 		}
 

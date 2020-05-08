@@ -67,7 +67,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	public $__USE_SINGLE_LINE_AUTH_PLAIN_COMMAND = false;
 
-	protected function __construct()
+	function __construct()
 	{
 		parent::__construct();
 
@@ -82,11 +82,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 		$this->bRcpt = false;
 		$this->bMail = false;
 		$this->bData = false;
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function IsSupported(string $sCapa) : bool
@@ -181,7 +176,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			if (empty($sTicket))
 			{
 				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\NegativeResponseException(),
+					new \MailSo\Smtp\Exceptions\NegativeResponseException,
 					\MailSo\Log\Enumerations\Type::NOTICE, true
 				);
 			}
@@ -271,7 +266,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		else
 		{
 			$this->writeLogException(
-				new \MailSo\Smtp\Exceptions\LoginBadMethodException(),
+				new \MailSo\Smtp\Exceptions\LoginBadMethodException,
 				\MailSo\Log\Enumerations\Type::NOTICE, true);
 		}
 
@@ -358,7 +353,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	{
 		if (!strlen(\trim($sData)))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		$rDataStream = \MailSo\Base\ResourceRegistry::CreateMemoryResourceFromString($sData);
@@ -380,7 +375,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	{
 		if (!\is_resource($rDataStream))
 		{
-			throw new \MailSo\Base\Exceptions\InvalidArgumentException();
+			throw new \MailSo\Base\Exceptions\InvalidArgumentException;
 		}
 
 		if (!$this->bRcpt)
@@ -527,7 +522,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		if (!strlen(\trim($sCommand)))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 

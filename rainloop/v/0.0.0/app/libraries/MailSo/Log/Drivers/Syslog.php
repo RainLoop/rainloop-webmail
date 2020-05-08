@@ -20,7 +20,7 @@ class Syslog extends \MailSo\Log\Driver
 {
 	private $iLogLevel;
 
-	protected function __construct()
+	function __construct()
 	{
 		parent::__construct();
 
@@ -38,11 +38,6 @@ class Syslog extends \MailSo\Log\Driver
 		{
 			$this->iLogLevel = null;
 		}
-	}
-
-	public static function NewInstance() : \MailSo\Log\Drivers\Syslog
-	{
-		return new self();
 	}
 
 	protected function writeImplementation($mDesc) : bool

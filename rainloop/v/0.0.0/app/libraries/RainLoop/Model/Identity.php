@@ -39,7 +39,7 @@ class Identity
 	 */
 	private $bSignatureInsertBefore;
 
-	protected function __construct(string $sId = '', string $sEmail = '')
+	function __construct(string $sId = '', string $sEmail = '')
 	{
 		$this->sId = empty($sId) ? '' : $sId;
 		$this->sEmail = empty($sEmail) ? '' : $sEmail;
@@ -48,16 +48,6 @@ class Identity
 		$this->sBcc = '';
 		$this->sSignature = '';
 		$this->bSignatureInsertBefore = false;
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
-	}
-
-	public static function NewInstanceFromAccount(\RainLoop\Model\Account $oAccount) : self
-	{
-		return new self('', $oAccount->Email());
 	}
 
 	public function Id(bool $bFillOnEmpty = false) : string

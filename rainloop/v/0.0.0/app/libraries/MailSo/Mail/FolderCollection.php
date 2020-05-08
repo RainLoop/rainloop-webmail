@@ -42,20 +42,15 @@ class FolderCollection extends \MailSo\Base\Collection
 	 */
 	public $SystemFolders;
 
-	protected function __construct()
+	function __construct($input = array())
 	{
-		parent::__construct();
+		parent::__construct($input);
 
 		$this->Namespace = '';
 		$this->FoldersHash = '';
 		$this->SystemFolders = array();
 		$this->IsThreadsSupported = false;
 		$this->Optimized = false;
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function append($oFolder, bool $bToTop = false) : void

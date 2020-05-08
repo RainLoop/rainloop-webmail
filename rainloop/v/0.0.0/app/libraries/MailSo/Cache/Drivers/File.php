@@ -28,7 +28,7 @@ class File implements \MailSo\Cache\DriverInterface
 	 */
 	private $sKeyPrefix;
 
-	private function __construct(string $sCacheFolder, string $sKeyPrefix = '')
+	function __construct(string $sCacheFolder, string $sKeyPrefix = '')
 	{
 		$this->sCacheFolder = $sCacheFolder;
 		$this->sCacheFolder = rtrim(trim($this->sCacheFolder), '\\/').'/';
@@ -43,11 +43,6 @@ class File implements \MailSo\Cache\DriverInterface
 				\substr($this->sKeyPrefix, 0, 2).'/'.\substr($this->sKeyPrefix, 2, 2).'/'.
 				$this->sKeyPrefix.'/';
 		}
-	}
-
-	public static function NewInstance(string $sCacheFolder, string $sKeyPrefix = '') : self
-	{
-		return new self($sCacheFolder, $sKeyPrefix);
 	}
 
 	public function Set(string $sKey, string $sValue) : bool

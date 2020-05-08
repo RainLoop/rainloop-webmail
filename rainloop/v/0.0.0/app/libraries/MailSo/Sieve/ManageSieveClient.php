@@ -37,7 +37,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public $__USE_INITIAL_AUTH_PLAIN_COMMAND;
 
-	protected function __construct()
+	function __construct()
 	{
 		parent::__construct();
 
@@ -47,11 +47,6 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		$this->aModules = array();
 
 		$this->__USE_INITIAL_AUTH_PLAIN_COMMAND = true;
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function IsSupported(string $sCapa) : bool
@@ -119,7 +114,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		if (!strlen(\trim($sLogin)) || !strlen(\trim($sPassword)))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -175,14 +170,14 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 			if (!$bAuth)
 			{
 				$this->writeLogException(
-					new \MailSo\Sieve\Exceptions\LoginBadMethodException(),
+					new \MailSo\Sieve\Exceptions\LoginBadMethodException,
 					\MailSo\Log\Enumerations\Type::ERROR, true);
 			}
 		}
 		else
 		{
 			$this->writeLogException(
-				new \MailSo\Sieve\Exceptions\LoginException(),
+				new \MailSo\Sieve\Exceptions\LoginException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 
@@ -430,7 +425,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		if (!strlen(\trim($sRequest)))
 		{
 			$this->writeLogException(
-				new \MailSo\Base\Exceptions\InvalidArgumentException(),
+				new \MailSo\Base\Exceptions\InvalidArgumentException,
 				\MailSo\Log\Enumerations\Type::ERROR, true);
 		}
 

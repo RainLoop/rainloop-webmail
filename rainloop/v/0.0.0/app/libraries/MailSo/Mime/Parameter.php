@@ -27,20 +27,15 @@ class Parameter
 	 */
 	private $sValue;
 
-	private function __construct(string $sName, string $sValue)
+	function __construct(string $sName, string $sValue)
 	{
 		$this->sName = $sName;
 		$this->sValue = $sValue;
 	}
 
-	public static function NewInstance(string $sName, string $sValue = '') : self
-	{
-		return new self($sName, $sValue);
-	}
-
 	public static function CreateFromParameterLine(string $sRawParam) : self
 	{
-		$oParameter = self::NewInstance('');
+		$oParameter = new self('', '');
 		return $oParameter->Parse($sRawParam);
 	}
 
@@ -84,8 +79,8 @@ class Parameter
 		{
 			$sResult = $this->sName.'=';
 			if ($bConvertSpecialsName && in_array(strtolower($this->sName), array(
-				strtolower(\MailSo\Mime\Enumerations\Parameter::NAME),
-				strtolower(\MailSo\Mime\Enumerations\Parameter::FILENAME)
+				strtolower(Enumerations\Parameter::NAME),
+				strtolower(Enumerations\Parameter::FILENAME)
 			)))
 			{
 				$sResult .= '"'.\MailSo\Base\Utils::EncodeUnencodedValue(

@@ -17,11 +17,6 @@ namespace MailSo\Base;
  */
 class Http
 {
-	public static function NewInstance() : self
-	{
-		return new self();
-	}
-
 	/**
 	 * @staticvar \MailSo\Base\Http $oInstance;
 	 */
@@ -30,7 +25,7 @@ class Http
 		static $oInstance = null;
 		if (null === $oInstance)
 		{
-			$oInstance = self::NewInstance();
+			$oInstance = new self;
 		}
 
 		return $oInstance;

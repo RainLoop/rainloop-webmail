@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Settings;
 
-class DefaultSettings implements \RainLoop\Providers\Settings\ISettings
+class DefaultSettings implements ISettings
 {
 	const FILE_NAME = 'settings';
 	const FILE_NAME_LOCAL = 'settings_local';
@@ -22,8 +22,8 @@ class DefaultSettings implements \RainLoop\Providers\Settings\ISettings
 		$sValue = $this->oStorageProvider->Get($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			$this->oStorageProvider->IsLocal() ?
-				\RainLoop\Providers\Settings\DefaultSettings::FILE_NAME_LOCAL :
-				\RainLoop\Providers\Settings\DefaultSettings::FILE_NAME
+				self::FILE_NAME_LOCAL :
+				self::FILE_NAME
 		);
 
 		if (\is_string($sValue))
@@ -43,8 +43,8 @@ class DefaultSettings implements \RainLoop\Providers\Settings\ISettings
 		return $this->oStorageProvider->Put($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			$this->oStorageProvider->IsLocal() ?
-				\RainLoop\Providers\Settings\DefaultSettings::FILE_NAME_LOCAL :
-				\RainLoop\Providers\Settings\DefaultSettings::FILE_NAME,
+				self::FILE_NAME_LOCAL :
+				self::FILE_NAME,
 			\json_encode($aSettings));
 	}
 
@@ -53,7 +53,7 @@ class DefaultSettings implements \RainLoop\Providers\Settings\ISettings
 		return $this->oStorageProvider->Clear($oAccount,
 			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 			$this->oStorageProvider->IsLocal() ?
-				\RainLoop\Providers\Settings\DefaultSettings::FILE_NAME_LOCAL :
-				\RainLoop\Providers\Settings\DefaultSettings::FILE_NAME);
+				self::FILE_NAME_LOCAL :
+				self::FILE_NAME);
 	}
 }

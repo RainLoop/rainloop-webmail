@@ -52,7 +52,7 @@ class Response
 	 */
 	public $Tag;
 
-	private function __construct()
+	function __construct()
 	{
 		$this->ResponseList = array();
 		$this->OptionalResponse = null;
@@ -61,11 +61,6 @@ class Response
 		$this->IsStatusResponse = false;
 		$this->ResponseType = \MailSo\Imap\Enumerations\ResponseType::UNKNOWN;
 		$this->Tag = '';
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	private function recToLine(array $aList) : string

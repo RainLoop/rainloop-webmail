@@ -42,18 +42,13 @@ class Message
 	 */
 	private $bAddDefaultXMailer;
 
-	private function __construct()
+	function __construct()
 	{
 		$this->aHeadersValue = array();
 		$this->aAlternativeParts = array();
-		$this->oAttachmentCollection = AttachmentCollection::NewInstance();
+		$this->oAttachmentCollection = new AttachmentCollection;
 		$this->bAddEmptyTextPart = true;
 		$this->bAddDefaultXMailer = true;
-	}
-
-	public static function NewInstance() : self
-	{
-		return new self();
 	}
 
 	public function DoesNotCreateEmptyTextPart() : self
@@ -103,64 +98,66 @@ class Message
 
 	public function GetFrom() : ?Email
 	{
-		$oResult = null;
-
 		if (isset($this->aHeadersValue[Enumerations\Header::FROM_]) &&
 			$this->aHeadersValue[Enumerations\Header::FROM_] instanceof Email)
 		{
-			$oResult = $this->aHeadersValue[Enumerations\Header::FROM_];
+			return $this->aHeadersValue[Enumerations\Header::FROM_];
 		}
 
-		return $oResult;
+		return null;
 	}
 
 	public function GetTo() : EmailCollection
 	{
-		$oResult = EmailCollection::NewInstance();
-
 		if (isset($this->aHeadersValue[Enumerations\Header::TO_]) &&
 			$this->aHeadersValue[Enumerations\Header::TO_] instanceof EmailCollection)
 		{
-			$oResult->MergeWithOtherCollection($this->aHeadersValue[Enumerations\Header::TO_]);
+			return $this->aHeadersValue[Enumerations\Header::TO_]->Unique();
 		}
 
-		return $oResult->Unique();
+		return new EmailCollection;
 	}
 
 	public function GetBcc() : ?EmailCollection
 	{
-		$oResult = null;
-
 		if (isset($this->aHeadersValue[Enumerations\Header::BCC]) &&
 			$this->aHeadersValue[Enumerations\Header::BCC] instanceof EmailCollection)
 		{
-			$oResult = $this->aHeadersValue[Enumerations\Header::BCC];
+			return $this->aHeadersValue[Enumerations\Header::BCC]->Unique();
 		}
 
-		return $oResult ? $oResult->Unique() : null;
+		return null;
 	}
 
 	public function GetRcpt() : EmailCollection
 	{
-		$oResult = EmailCollection::NewInstance();
+		$oResult = new EmailCollection;
 
-		if (isset($this->aHeadersValue[Enumerations\Header::TO_]) &&
-			$this->aHeadersValue[Enumerations\Header::TO_] instanceof EmailCollection)
-		{
-			$oResult->MergeWithOtherCollection($this->aHeadersValue[Enumerations\Header::TO_]);
+		$headers = array(Enumerations\Header::TO_, Enumerations\Header::CC, Enumerations\Header::BCC);
+		foreach ($headers as $header) {
+			if (isset($this->aHeadersValue[$header]) && $this->aHeadersValue[$header] instanceof EmailCollection) {
+				foreach ($this->aHeadersValue[$header] as $oEmail) {
+					$oResult->append($oEmail);
+				}
+			}
 		}
 
-		if (isset($this->aHeadersValue[Enumerations\Header::CC]) &&
-			$this->aHeadersValue[Enumerations\Header::CC] instanceof EmailCollection)
-		{
-			$oResult->MergeWithOtherCollection($this->aHeadersValue[Enumerations\Header::CC]);
+/*
+		$aReturn = array();
+		$headers = array(Enumerations\Header::TO_, Enumerations\Header::CC, Enumerations\Header::BCC);
+		foreach ($headers as $header) {
+			if (isset($this->aHeadersValue[$header]) && $this->aHeadersValue[$header] instanceof EmailCollection) {
+				foreach ($this->aHeadersValue[$header] as $oEmail) {
+					$oResult->append($oEmail);
+					$sEmail = $oEmail->GetEmail();
+					if (!isset($aReturn[$sEmail])) {
+						$aReturn[$sEmail] = $oEmail;
+					}
+				}
+			}
 		}
-
-		if (isset($this->aHeadersValue[Enumerations\Header::BCC]) &&
-			$this->aHeadersValue[Enumerations\Header::BCC] instanceof EmailCollection)
-		{
-			$oResult->MergeWithOtherCollection($this->aHeadersValue[Enumerations\Header::BCC]);
-		}
+		return new EmailCollection($aReturn);
+*/
 
 		return $oResult->Unique();
 	}
@@ -317,10 +314,10 @@ class Message
 
 	public function SetDraftInfo(string $sType, string $sUid, string $sFolder) : self
 	{
-		$this->aHeadersValue[Enumerations\Header::X_DRAFT_INFO] = ParameterCollection::NewInstance()
-			->Add(Parameter::NewInstance('type', $sType))
-			->Add(Parameter::NewInstance('uid', $sUid))
-			->Add(Parameter::NewInstance('folder', base64_encode($sFolder)))
+		$this->aHeadersValue[Enumerations\Header::X_DRAFT_INFO] = (new ParameterCollection)
+			->Add(new Parameter('type', $sType))
+			->Add(new Parameter('uid', $sUid))
+			->Add(new Parameter('folder', base64_encode($sFolder)))
 		;
 
 		return $this;
@@ -382,7 +379,7 @@ class Message
 
 	private function createNewMessageAttachmentBody(Attachment $oAttachment) : Part
 	{
-		$oAttachmentPart = Part::NewInstance();
+		$oAttachmentPart = new Part;
 
 		$sFileName = $oAttachment->FileName();
 		$sCID = $oAttachment->CID();
@@ -394,23 +391,23 @@ class Message
 		if (0 < strlen(trim($sFileName)))
 		{
 			$oContentTypeParameters =
-				ParameterCollection::NewInstance()->Add(Parameter::NewInstance(
+				(new ParameterCollection)->Add(new Parameter(
 					Enumerations\Parameter::NAME, $sFileName));
 
 			$oContentDispositionParameters =
-				ParameterCollection::NewInstance()->Add(Parameter::NewInstance(
+				(new ParameterCollection)->Add(new Parameter(
 					Enumerations\Parameter::FILENAME, $sFileName));
 		}
 
 		$oAttachmentPart->Headers->append(
-			Header::NewInstance(Enumerations\Header::CONTENT_TYPE,
+			new Header(Enumerations\Header::CONTENT_TYPE,
 				$oAttachment->ContentType().';'.
 				(($oContentTypeParameters) ? ' '.$oContentTypeParameters->ToString() : '')
 			)
 		);
 
 		$oAttachmentPart->Headers->append(
-			Header::NewInstance(Enumerations\Header::CONTENT_DISPOSITION,
+			new Header(Enumerations\Header::CONTENT_DISPOSITION,
 				($oAttachment->IsInline() ? 'inline' : 'attachment').';'.
 				(($oContentDispositionParameters) ? ' '.$oContentDispositionParameters->ToString() : '')
 			)
@@ -419,14 +416,14 @@ class Message
 		if (0 < strlen($sCID))
 		{
 			$oAttachmentPart->Headers->append(
-				Header::NewInstance(Enumerations\Header::CONTENT_ID, $sCID)
+				new Header(Enumerations\Header::CONTENT_ID, $sCID)
 			);
 		}
 
 		if (0 < strlen($sContentLocation))
 		{
 			$oAttachmentPart->Headers->append(
-				Header::NewInstance(Enumerations\Header::CONTENT_LOCATION, $sContentLocation)
+				new Header(Enumerations\Header::CONTENT_LOCATION, $sContentLocation)
 			);
 		}
 
@@ -435,7 +432,7 @@ class Message
 		if ('message/rfc822' !== strtolower($oAttachment->ContentType()))
 		{
 			$oAttachmentPart->Headers->append(
-				Header::NewInstance(
+				new Header(
 					Enumerations\Header::CONTENT_TRANSFER_ENCODING,
 					\MailSo\Base\Enumerations\Encoding::BASE64_LOWER
 				)
@@ -464,10 +461,10 @@ class Message
 
 		if (isset($aAlternativeData[0]))
 		{
-			$oAlternativePart = Part::NewInstance();
-			$oParameters = ParameterCollection::NewInstance();
+			$oAlternativePart = new Part;
+			$oParameters = new ParameterCollection;
 			$oParameters->append(
-				Parameter::NewInstance(
+				new Parameter(
 					Enumerations\Parameter::CHARSET,
 					\MailSo\Base\Enumerations\Charset::UTF_8)
 			);
@@ -476,12 +473,12 @@ class Message
 			{
 				foreach ($aAlternativeData[3] as $sName => $sValue)
 				{
-					$oParameters->append(Parameter::NewInstance($sName, $sValue));
+					$oParameters->append(new Parameter($sName, $sValue));
 				}
 			}
 
 			$oAlternativePart->Headers->append(
-				Header::NewInstance(Enumerations\Header::CONTENT_TYPE,
+				new Header(Enumerations\Header::CONTENT_TYPE,
 					$aAlternativeData[0].'; '.$oParameters->ToString())
 			);
 
@@ -502,7 +499,7 @@ class Message
 			if (isset($aAlternativeData[2]) && 0 < strlen($aAlternativeData[2]))
 			{
 				$oAlternativePart->Headers->append(
-					Header::NewInstance(Enumerations\Header::CONTENT_TRANSFER_ENCODING,
+					new Header(Enumerations\Header::CONTENT_TRANSFER_ENCODING,
 						$aAlternativeData[2]
 					)
 				);
@@ -536,13 +533,13 @@ class Message
 		$oResultPart = null;
 		if (1 < count($this->aAlternativeParts))
 		{
-			$oResultPart = Part::NewInstance();
+			$oResultPart = new Part;
 
 			$oResultPart->Headers->append(
-				Header::NewInstance(Enumerations\Header::CONTENT_TYPE,
+				new Header(Enumerations\Header::CONTENT_TYPE,
 					Enumerations\MimeType::MULTIPART_ALTERNATIVE.'; '.
-					ParameterCollection::NewInstance()->Add(
-						Parameter::NewInstance(
+					(new ParameterCollection)->Add(
+						new Parameter(
 							Enumerations\Parameter::BOUNDARY,
 							$this->generateNewBoundary())
 					)->ToString()
@@ -603,13 +600,13 @@ class Message
 		$aAttachments = $this->oAttachmentCollection->LinkedAttachments();
 		if (0 < count($aAttachments))
 		{
-			$oResultPart = Part::NewInstance();
+			$oResultPart = new Part;
 
 			$oResultPart->Headers->append(
-				Header::NewInstance(Enumerations\Header::CONTENT_TYPE,
+				new Header(Enumerations\Header::CONTENT_TYPE,
 					Enumerations\MimeType::MULTIPART_RELATED.'; '.
-					ParameterCollection::NewInstance()->Add(
-						Parameter::NewInstance(
+					(new ParameterCollection)->Add(
+						new Parameter(
 							Enumerations\Parameter::BOUNDARY,
 							$this->generateNewBoundary())
 					)->ToString()
@@ -638,12 +635,12 @@ class Message
 		$aAttachments = $this->oAttachmentCollection->UnlinkedAttachments();
 		if (0 < count($aAttachments))
 		{
-			$oResultPart = Part::NewInstance();
+			$oResultPart = new Part;
 
 			$oResultPart->Headers->AddByName(Enumerations\Header::CONTENT_TYPE,
 				Enumerations\MimeType::MULTIPART_MIXED.'; '.
-				ParameterCollection::NewInstance()->Add(
-					Parameter::NewInstance(
+				(new ParameterCollection)->Add(
+					new Parameter(
 						Enumerations\Parameter::BOUNDARY,
 						$this->generateNewBoundary())
 				)->ToString()

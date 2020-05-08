@@ -98,7 +98,7 @@ class Domain
 	 */
 	private $sAliasName;
 
-	private function __construct(string $sName,
+	function __construct(string $sName,
 		string $sIncHost, int $iIncPort, int $iIncSecure, bool $bIncShortLogin,
 		bool $bUseSieve, string $sSieveHost, int $iSievePort, int $iSieveSecure,
 		string $sOutHost, int $iOutPort, int $iOutSecure, bool $bOutShortLogin,
@@ -126,19 +126,6 @@ class Domain
 
 		$this->sWhiteList = \trim($sWhiteList);
 		$this->sAliasName = '';
-	}
-
-	public static function NewInstance(string $sName,
-		string $sIncHost, int $iIncPort, int $iIncSecure, bool $bIncShortLogin,
-		bool $bUseSieve, string $sSieveHost, int $iSievePort, int $iSieveSecure,
-		string $sOutHost, int $iOutPort, int $iOutSecure, bool $bOutShortLogin,
-		bool $bOutAuth, bool $bOutUsePhpMail, string $sWhiteList = '') : self
-	{
-		return new self($sName,
-			$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
-			$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
-			$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
-			$sWhiteList);
 	}
 
 	public static function NewInstanceFromDomainConfigArray(string $sName, array $aDomain) : ?\RainLoop\Model\Domain
@@ -172,7 +159,7 @@ class Domain
 			$bIncShortLogin = !empty($aDomain['imap_short_login']);
 			$bOutShortLogin = !empty($aDomain['smtp_short_login']);
 
-			$oDomain = self::NewInstance($sName,
+			$oDomain = new self($sName,
 				$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 				$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 				$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,

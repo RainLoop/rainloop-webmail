@@ -18,11 +18,6 @@ namespace MailSo\Imap;
  */
 class ResponseCollection extends \MailSo\Base\Collection
 {
-	public static function NewInstance() : self
-	{
-		return new self();
-	}
-
 	public function append($oResponse, bool $bToTop = false) : void
 	{
 		assert($oResponse instanceof Response);
@@ -39,7 +34,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 	{
 		$oItem = $this->getLast();
 		if (!$oItem) {
-			throw new Exceptions\ResponseNotFoundException();
+			throw new Exceptions\ResponseNotFoundException;
 		}
 
 		if ($oItem->ResponseType !== Enumerations\ResponseType::CONTINUATION) {
@@ -87,7 +82,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 		foreach ($this as $oResponse) {
 			if (FetchResponse::IsValidFetchImapResponse($oResponse)) {
 				if (FetchResponse::IsNotEmptyFetchImapResponse($oResponse)) {
-					$aReturn[] = FetchResponse::NewInstance($oResponse);
+					$aReturn[] = new FetchResponse($oResponse);
 				} else if ($this->oLogger) {
 					$this->oLogger->Write('Skipped Imap Response! ['.$oResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
 				}
@@ -109,7 +104,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 			{
 				try
 				{
-					$oFolder = Folder::NewInstance($oResponse->ResponseList[4],
+					$oFolder = new Folder($oResponse->ResponseList[4],
 						$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
 
 					if ($oFolder->IsInbox()) {
@@ -132,7 +127,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 		}
 
 		if (!$bInbox && !empty($sDelimiter)) {
-			$aReturn[] = Folder::NewInstance('INBOX', $sDelimiter);
+			$aReturn[] = new Folder('INBOX', $sDelimiter);
 		}
 
 		if ($bUseListStatus) {
@@ -241,7 +236,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 
 	public function getCurrentFolderInformation(string $sFolderName, bool $bIsWritable) : FolderInformation
 	{
-		$oResult = FolderInformation::NewInstance($sFolderName, $bIsWritable);
+		$oResult = new FolderInformation($sFolderName, $bIsWritable);
 		foreach ($this as $oResponse) {
 			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType) {
 				if (\count($oResponse->ResponseList) > 2 &&
@@ -306,12 +301,12 @@ class ResponseCollection extends \MailSo\Base\Collection
 			if (Enumerations\ResponseType::UNTAGGED === $oResponse->ResponseType &&
 				'NAMESPACE' === $oResponse->StatusOrIndex)
 			{
-				$oReturn = NamespaceResult::NewInstance();
+				$oReturn = new NamespaceResult;
 				$oReturn->InitByImapResponse($oResponse);
 				return $oReturn;
 			}
 		}
-		throw new Exceptions\ResponseException();
+		throw new Exceptions\ResponseException;
 	}
 
 	public function getQuotaResult() : array

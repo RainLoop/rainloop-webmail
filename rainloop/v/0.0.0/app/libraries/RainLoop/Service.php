@@ -19,12 +19,12 @@ class Service
 	 */
 	private $oServiceActions;
 
-	private function __construct()
+	function __construct()
 	{
 		$this->oHttp = \MailSo\Base\Http::SingletonInstance();
-		$this->oActions = \RainLoop\Api::Actions();
+		$this->oActions = Api::Actions();
 
-		$this->oServiceActions = new \RainLoop\ServiceActions($this->oHttp, $this->oActions);
+		$this->oServiceActions = new ServiceActions($this->oHttp, $this->oActions);
 
 		if ($this->oActions->Config()->Get('debug', 'enable', false))
 		{
@@ -72,8 +72,7 @@ class Service
 		static $bOne = null;
 		if (null === $bOne)
 		{
-			$oService = new self();
-			$bOne = $oService->RunResult();
+			$bOne = (new self)->RunResult();
 		}
 
 		return $bOne;
@@ -141,9 +140,9 @@ class Service
 			$bMobileDevice = false;
 			if ($this->oActions->Config()->Get('labs', 'allow_mobile_version', false)) {
 				$bUseMobileVersionForTablets = $this->oActions->Config()->Get('labs', 'use_mobile_version_for_tablets', false);
-				$bMobileDevice = \RainLoop\UserAgent::isMobile() &&
-					($bUseMobileVersionForTablets ? true : !\RainLoop\UserAgent::isTablet());
-				$sMobileType = (string) \RainLoop\Utils::GetCookie(\RainLoop\Actions::RL_MOBILE_TYPE, '');
+				$bMobileDevice = UserAgent::isMobile() &&
+					($bUseMobileVersionForTablets ? true : !UserAgent::isTablet());
+				$sMobileType = (string) Utils::GetCookie(Actions::RL_MOBILE_TYPE, '');
 				switch ($sMobileType) {
 					default:
 						$bMobile = $bMobileDevice;
@@ -187,7 +186,7 @@ class Service
 //				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
-				$sResult = \RainLoop\Utils::ClearHtmlOutput($sResult);
+				$sResult = Utils::ClearHtmlOutput($sResult);
 				if (0 < \strlen($sCacheFileName))
 				{
 					$this->oActions->Cacher()->Set($sCacheFileName, $sResult);
@@ -203,7 +202,7 @@ class Service
 			$sResult .= '][AGPLv3';
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
 //			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
-//			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
+//			$sResult .= '][session:'.\md5(Utils::GetShortToken());
 
 			if ($bMobile)
 			{
@@ -278,7 +277,7 @@ class Service
 				$bAdmin ? '1' : '0',
 				\md5($this->oActions->Config()->Get('cache', 'index', '')),
 				$this->oActions->Plugins()->Hash(),
-				\RainLoop\Utils::WebVersionPath(),
+				Utils::WebVersionPath(),
 				APP_VERSION,
 			)).
 			\implode('~', $aTemplateParameters)

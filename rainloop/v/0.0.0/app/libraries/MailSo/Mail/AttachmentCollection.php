@@ -17,11 +17,6 @@ namespace MailSo\Mail;
  */
 class AttachmentCollection extends \MailSo\Base\Collection
 {
-	public static function NewInstance() : self
-	{
-		return new self();
-	}
-
 	public function append($oAttachment, bool $bToTop = false) : void
 	{
 		assert($oAttachment instanceof Attachment);

@@ -57,8 +57,11 @@ class Attachment
 	 */
 	private $sContentLocation;
 
-	private function __construct($rResource, string $sFileName, int $iFileSize, bool $bIsInline, bool $bIsLinked, string $sCID,
-		array $aCustomContentTypeParams = array(), string $sContentLocation = '')
+	/**
+	 * @param resource $rResource
+	 */
+	function __construct($rResource, string $sFileName, int $iFileSize, bool $bIsInline,
+		bool $bIsLinked, string $sCID, array $aCustomContentTypeParams = [], string $sContentLocation = '')
 	{
 		$this->rResource = $rResource;
 		$this->sFileName = $sFileName;
@@ -68,15 +71,6 @@ class Attachment
 		$this->sCID = $sCID;
 		$this->aCustomContentTypeParams = $aCustomContentTypeParams;
 		$this->sContentLocation = $sContentLocation;
-	}
-
-	/**
-	 * @param resource $rResource
-	 */
-	public static function NewInstance($rResource, string $sFileName = '', int $iFileSize = 0, bool $bIsInline = false,
-		bool $bIsLinked = false, string $sCID = '', array $aCustomContentTypeParams = array(), string $sContentLocation = '') : self
-	{
-		return new self($rResource, $sFileName, $iFileSize, $bIsInline, $bIsLinked, $sCID, $aCustomContentTypeParams, $sContentLocation);
 	}
 
 	/**

@@ -27,15 +27,10 @@ class FetchResponse
 	 */
 	private $aEnvelopeCache;
 
-	private function __construct(Response $oImapResponse)
+	function __construct(Response $oImapResponse)
 	{
 		$this->oImapResponse = $oImapResponse;
 		$this->aEnvelopeCache = null;
-	}
-
-	public static function NewInstance(Response $oImapResponse) : self
-	{
-		return new self($oImapResponse);
 	}
 
 	public function GetEnvelope(bool $bForce = false) : ?array
@@ -61,7 +56,7 @@ class FetchResponse
 		$aEmails = $this->GetFetchEnvelopeValue($iIndex);
 		if (is_array($aEmails) && 0 < count($aEmails))
 		{
-			$oResult = \MailSo\Mime\EmailCollection::NewInstance();
+			$oResult = new \MailSo\Mime\EmailCollection;
 			foreach ($aEmails as $aEmailItem)
 			{
 				if (is_array($aEmailItem) && 4 === count($aEmailItem))
@@ -78,7 +73,7 @@ class FetchResponse
 					if (0 < strlen($sLocalPart) && 0 < strlen($sDomainPart))
 					{
 						$oResult->append(
-							\MailSo\Mime\Email::NewInstance($sLocalPart.'@'.$sDomainPart, $sDisplayName)
+							new \MailSo\Mime\Email($sLocalPart.'@'.$sDomainPart, $sDisplayName)
 						);
 					}
 				}

@@ -446,7 +446,7 @@ abstract class HtmlUtils
 				{
 					if ($oTextNode && 0 < \strlen($oTextNode->wholeText)/* && \preg_match('/http[s]?:\/\//i', $oTextNode->wholeText)*/)
 					{
-						$sText = \MailSo\Base\LinkFinder::NewInstance()
+						$sText = (new \MailSo\Base\LinkFinder)
 							->Text($oTextNode->wholeText)
 							->UseDefaultWrappers(true)
 							->CompileText()
@@ -1037,7 +1037,7 @@ abstract class HtmlUtils
 			return '';
 		}
 
-		$sText = \MailSo\Base\LinkFinder::NewInstance()
+		$sText = (new \MailSo\Base\LinkFinder)
 			->Text($sText)
 			->UseDefaultWrappers($bLinksWithTargetBlank)
 			->CompileText()
