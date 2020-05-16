@@ -73,7 +73,7 @@ de_DE:
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Kontakte"
     LEGEND_STORAGE: "Speicher (PDO)"
-    LABEL_ENABLE_CONTACTS: "Kontakte akivieren"
+    LABEL_ENABLE_CONTACTS: "Kontakte aktivieren"
     LABEL_ALLOW_SYNC: "Kontakte-Synchronisierung erlauben (mit externem CardDAV-Server)"
     LABEL_STORAGE_TYPE: "Typ"
     LABEL_STORAGE_DSN: "DSN"
