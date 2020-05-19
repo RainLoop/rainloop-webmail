@@ -89,7 +89,7 @@ class PostfixadminChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDefaultValue(''),
 			\RainLoop\Plugins\Property::NewInstance('encrypt')->SetLabel('Encrypt')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::SELECTION)
-				->SetDefaultValue(array('md5crypt', 'md5', 'system', 'cleartext', 'mysql_encrypt', 'SHA256-CRYPT', 'SHA512-CRYPT'))
+				->SetDefaultValue(array('md5crypt', 'md5', 'system', 'cleartext', 'argon2i', 'mysql_encrypt', 'SHA256-CRYPT', 'SHA512-CRYPT'))
 				->SetDescription('In what way do you want the passwords to be crypted ?'),
 			\RainLoop\Plugins\Property::NewInstance('allowed_emails')->SetLabel('Allowed emails')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
