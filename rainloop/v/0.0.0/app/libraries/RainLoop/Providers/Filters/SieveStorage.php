@@ -349,11 +349,17 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		switch ($oFilter->ActionType())
 		{
 			case \RainLoop\Providers\Filters\Enumerations\ActionType::NONE:
-				$aResult[] = $sTab.'stop;';
+                if ($oFilter->Stop())
+                {
+                    $aResult[] = $sTab.'stop;';
+                }
 				break;
 			case \RainLoop\Providers\Filters\Enumerations\ActionType::DISCARD:
 				$aResult[] = $sTab.'discard;';
-				$aResult[] = $sTab.'stop;';
+                if ($oFilter->Stop())
+                {
+                    $aResult[] = $sTab.'stop;';
+                }
 				break;
 			case \RainLoop\Providers\Filters\Enumerations\ActionType::VACATION:
 				$sValue = \trim($oFilter->ActionValue());
@@ -412,7 +418,10 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					$aCapa['reject'] = true;
 
 					$aResult[] = $sTab.'reject "'.$this->quote($sValue).'";';
-					$aResult[] = $sTab.'stop;';
+                    if ($oFilter->Stop())
+                    {
+                        $aResult[] = $sTab.'stop;';
+                    }
 				}
 				else
 				{
@@ -430,7 +439,10 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					}
 
 					$aResult[] = $sTab.'redirect "'.$this->quote($sValue).'";';
-					$aResult[] = $sTab.'stop;';
+                    if ($oFilter->Stop())
+                    {
+                        $aResult[] = $sTab.'stop;';
+                    }
 				}
 				else
 				{
@@ -451,7 +463,10 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 
 					$aCapa['fileinto'] = true;
 					$aResult[] = $sTab.'fileinto "'.$this->quote($sFolderName).'";';
-					$aResult[] = $sTab.'stop;';
+                    if ($oFilter->Stop())
+                    {
+                        $aResult[] = $sTab.'stop;';
+                    }
 				}
 				else
 				{
