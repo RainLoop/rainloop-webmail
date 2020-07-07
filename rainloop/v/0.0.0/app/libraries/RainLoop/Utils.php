@@ -253,7 +253,6 @@ class Utils
 		{
 			if ('.yml' === substr($sFileName, -4))
 			{
-//-				$aLang = \yaml_parse(\str_replace(array(': >-', ': |-', ': |+'), array(': >', ': |', ': |'), \file_get_contents($sFileName)));
 				$aLang = \yaml_parse_file($sFileName);
 				if (\is_array($aLang))
 				{

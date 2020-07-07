@@ -41,12 +41,12 @@ if (\class_exists('RainLoop\Api'))
 	\MailSo\Base\Loader::Init();
 
 	if (!\function_exists('yaml_parse')) {
-		include RAINLOOP_APP_LIBRARIES_PATH.'spyc/Spyc.php';
 		function yaml_parse(string $input) {
-			return \Spyc::YAMLLoadString($input);
+			require_once RAINLOOP_APP_LIBRARIES_PATH.'spyc/Spyc.php';
+			return \Spyc::YAMLLoadString(\str_replace(array(': >-', ': |-', ': |+'), array(': >', ': |', ': |'), $input));
 		}
 		function yaml_parse_file(string $filename) {
-			return \Spyc::YAMLLoad($filename);
+			return yaml_parse(\file_get_contents($filename));
 		}
 	}
 
