@@ -24,15 +24,9 @@ class Syslog extends \MailSo\Log\Driver
 	{
 		parent::__construct();
 
-		$this->iLogLevel = \defined('LOG_INFO') ? LOG_INFO : 6;
-
 		if (\function_exists('openlog') && \function_exists('closelog') && \defined('LOG_ODELAY') && \defined('LOG_USER'))
 		{
-			\openlog('rainloop', LOG_ODELAY, LOG_USER);
-
-			\register_shutdown_function(function () {
-				@\closelog();
-			});
+			$this->iLogLevel = \defined('LOG_INFO') ? LOG_INFO : 6;
 		}
 		else
 		{
@@ -57,7 +51,10 @@ class Syslog extends \MailSo\Log\Driver
 			$mDesc = \implode($this->sNewLine, $mDesc);
 		}
 
-		return \syslog($this->iLogLevel, $mDesc);
+		\openlog('rainloop', LOG_ODELAY, LOG_USER);
+		$result = \syslog($this->iLogLevel, $mDesc);
+		\closelog();
+		return $result;
 	}
 
 	protected function clearImplementation() : bool
