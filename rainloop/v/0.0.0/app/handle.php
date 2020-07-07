@@ -62,9 +62,14 @@ if (\class_exists('RainLoop\Api'))
 		include APP_VERSION_ROOT_PATH.'app/libraries/MailSo/MailSo.php';
 	}
 
-	if (!\function_exists('spyc_load_file'))
-	{
-		include APP_VERSION_ROOT_PATH.'app/libraries/spyc/Spyc.php';
+	if (!\function_exists('yaml_parse')) {
+		function yaml_parse(string $input) {
+			require_once RAINLOOP_APP_LIBRARIES_PATH.'spyc/Spyc.php';
+			return \Spyc::YAMLLoadString(\str_replace(array(': >-', ': |-', ': |+'), array(': >', ': |', ': |'), $input));
+		}
+		function yaml_parse_file(string $filename) {
+			return yaml_parse(\file_get_contents($filename));
+		}
 	}
 
 	if (\class_exists('MailSo\Version'))
