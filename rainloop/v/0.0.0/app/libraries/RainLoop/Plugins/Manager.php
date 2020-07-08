@@ -392,7 +392,7 @@ class Manager
 		return $this;
 	}
 
-	public function RunAdditionalPart(string $sActionName, array $aParts = array()) : self
+	public function RunAdditionalPart(string $sActionName, array $aParts = array()) : bool
 	{
 		$bResult = false;
 		if ($this->bIsEnabled)

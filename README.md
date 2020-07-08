@@ -27,3 +27,21 @@ Information about installing the product, check the [documentation page](http://
 http://www.gnu.org/licenses/agpl-3.0.html
 
 Copyright (c) 2019 Rainloop Team
+
+## Modifications
+
+This fork has modifications for:
+
+* Admin uses password_hash/password_verify
+* No POP3 and OAuth
+* No ChangePassword
+* No BackwardCapability (class \RainLoop\Account)
+* PHP 7.3+ required
+* PHP mbstring extension required
+* PHP replaced pclZip with ZipArchive
+* PHP yaml extension else use the old Spyc
+* CRLF => LF line endings
+* Use gulp-terser instead of gulp-uglify
+* ES2015 (without polyfills)
+* No JS nanoscroll
+* Auth failed attempts written to syslog
