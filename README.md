@@ -40,7 +40,9 @@ This fork has modifications for:
 * PHP 7.3+ required
 * PHP mbstring extension required
 * PHP replaced pclZip with ZipArchive
+* PHP yaml extension else use the old Spyc
 * CRLF => LF line endings
 * Use gulp-terser instead of gulp-uglify
 * ES2015 (without polyfills)
 * No JS nanoscroll
+* Auth failed attempts written to syslog
