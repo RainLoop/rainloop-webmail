@@ -14,6 +14,7 @@
  * @created October 3,2012
  *
  * @modified by RainLoop Team
+ * @modified by DJMaze
  */
 
 
@@ -184,7 +185,7 @@
 							$menuItems = menu.element.find('li');
 
 							// activate single item to allow selection upon pressing 'Enter'
-							if($menuItems.size() === 1){
+							if($menuItems.length === 1){
 								menu[menu.activate ? 'activate' : 'focus']($.Event('click'), $menuItems);
 							}
 						}
@@ -236,12 +237,12 @@
 				values = hook;
 			} else if(delimiterFound !== false){
 				values = val.split(delimiterFound);
-			} else if(!ev || ev.which === $.ui.keyCode.ENTER && !$('.ui-menu-item .ui-state-focus').size() && !$('#ui-active-menuitem').size()){
+			} else if(!ev || ev.which === $.ui.keyCode.ENTER && !$('.ui-menu-item .ui-state-focus').length && !$('#ui-active-menuitem').length){
 				values.push(val);
 				ev && ev.preventDefault();
 
 			// prevent autoComplete menu click from causing a false 'blur'
-			} else if(ev.type === 'blur' && !$('#ui-active-menuitem').size()){
+			} else if(ev.type === 'blur' && !$('#ui-active-menuitem').length){
 				values.push(val);
 			}
 
@@ -324,7 +325,7 @@
 			// IE goes back in history if the event isn't stopped
 			ev.stopPropagation();
 
-			if((!$(ev.currentTarget).val() || (('selectionStart' in ev.currentTarget) && ev.currentTarget.selectionStart === 0 && ev.currentTarget.selectionEnd === 0)) && lastTag.size()){
+			if((!$(ev.currentTarget).val() || (('selectionStart' in ev.currentTarget) && ev.currentTarget.selectionStart === 0 && ev.currentTarget.selectionEnd === 0)) && lastTag.length){
 				ev.preventDefault();
 				lastTag.find('a').focus();
 			}
