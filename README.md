@@ -44,5 +44,5 @@ This fork has modifications for:
 * CRLF => LF line endings
 * Use gulp-terser instead of gulp-uglify
 * ES2015 (without polyfills)
-* No JS nanoscroll
+* No JS nanoscroll, jquery-scrollstop, jquery-mousewheel, matchmedia-polyfill
 * Auth failed attempts written to syslog
