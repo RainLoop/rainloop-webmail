@@ -3214,6 +3214,13 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 		{
 			$this->loginErrorDelay();
 			$this->LoggerAuthHelper(null, $this->getAdditionalLogParamsByUserLogin($sLogin, true));
+			if ($this->Config()->Get('logs', 'auth_logging', false)
+			 && $this->Config()->Get('security', 'allow_admin_panel', true)
+			 && \openlog('rainloop', 0, \LOG_AUTHPRIV))
+			{
+				\syslog(\LOG_ERR, $this->compileLogParams('Admin Auth failed: ip={request:ip} user='.$sLogin, $oAccount, false, $aAdditionalParams));
+				\closelog();
+			}
 			throw new Exceptions\ClientException(Notifications::AuthError);
 		}
 
