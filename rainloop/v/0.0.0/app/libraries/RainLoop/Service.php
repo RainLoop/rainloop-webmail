@@ -138,7 +138,8 @@ class Service
 		{
 			$bMobile = false;
 			$bMobileDevice = false;
-			if ($this->oActions->Config()->Get('labs', 'allow_mobile_version', false)) {
+			if ($this->oActions->Config()->Get('labs', 'allow_mobile_version', false))
+			{
 				$bUseMobileVersionForTablets = $this->oActions->Config()->Get('labs', 'use_mobile_version_for_tablets', false);
 				$bMobileDevice = UserAgent::isMobile() &&
 					($bUseMobileVersionForTablets ? true : !UserAgent::isTablet());

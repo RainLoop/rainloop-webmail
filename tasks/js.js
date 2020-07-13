@@ -64,9 +64,11 @@ const jsMin = () =>
 		.pipe(gulpif(config.source, sourcemaps.init({ loadMaps: true })))
 		.pipe(replace(/"rainloop\/v\/([^/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
 		.pipe(rename({ suffix: '.min' }))
-		.pipe(terser({
-			output: {comments: false}
-		}))
+		.pipe(
+			terser({
+				output: {comments: false}
+			})
+		)
 		.pipe(eol('\n', true))
 		.pipe(gulpif(config.source, sourcemaps.write('./')))
 		.pipe(

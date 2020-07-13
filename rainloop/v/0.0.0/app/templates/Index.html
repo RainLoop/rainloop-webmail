@@ -1,28 +1,33 @@
 <!DOCTYPE html>
 <html class="no-js rl-booted-trigger rl-started-trigger glass" dir="{{BaseDir}}">
-	<head>
-		<noscript>
-			<meta http-equiv="refresh" content="0; URL=./?/NoScript" />
-		</noscript>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="{{BaseViewport}}">
-		<meta name="apple-mobile-web-app-capable" content="yes" />
-		<meta name="google" content="notranslate" />
-		<meta name="robots" content="noindex,nofollow,noodp" />
-		<meta name="AppBootData" content='{{RainloopBootData}}' id="app-boot-data" />
-		{{BaseContentSecurityPolicy}}
-		<title></title>
-		{{BaseAppHeadScriptLink}}
-		{{BaseAppFaviconPngLinkTag}}
-		{{BaseAppFaviconTouchLinkTag}}
-		<link type="text/css" rel="stylesheet" href="{{BaseAppMainCssLink}}" />
-		<link type="text/css" rel="stylesheet" href="{{BaseAppThemeCssLink}}" id="app-theme-link" />
-		<link rel="manifest" href="{{BaseAppManifestLink}}" />
-	</head>
-	<body>
-		<div id="rl-app"></div>
-		<div id="rl-check"></div>
-		{{BaseAppBodyScript}}
-		<script type="text/javascript" data-cfasync="false" src="{{BaseAppBootScriptLink}}"></script>
-	</body>
+
+<head>
+	<noscript>
+		<meta http-equiv="refresh" content="0; URL=./?/NoScript" />
+	</noscript>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="{{BaseViewport}}">
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="google" content="notranslate" />
+	<meta name="robots" content="noindex,nofollow,noodp" />
+	<meta name="AppBootData" content='{{RainloopBootData}}' id="app-boot-data" />
+	<script type="text/javascript" data-cfasync="false" src="{{BaseAppPolyfillsScriptLink}}"></script>
+	{{BaseContentSecurityPolicy}}
+	<title></title>
+	{{BaseAppHeadScriptLink}}
+	{{BaseAppFaviconPngLinkTag}}
+	{{BaseAppFaviconTouchLinkTag}}
+	<link type="text/css" rel="stylesheet" href="{{BaseAppMainCssLink}}" />
+	<link type="text/css" rel="stylesheet" href="{{BaseAppThemeCssLink}}" id="app-theme-link" />
+	<link rel="manifest" href="{{BaseAppManifestLink}}" />
+</head>
+
+<body>
+	<div id="rl-app"></div>
+	<div id="rl-check"></div>
+	{{BaseTemplates}}
+	{{BaseAppBodyScript}}
+	<script type="text/javascript" data-cfasync="false" src="{{BaseAppBootScriptLink}}"></script>
+</body>
+
 </html>
