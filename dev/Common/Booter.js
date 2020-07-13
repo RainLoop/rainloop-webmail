@@ -66,7 +66,17 @@ function getComputedStyle(id, name) {
  * @returns {void}
  */
 function includeStyle(styles) {
-	window.document.write(unescape('%3Csty' + 'le%3E' + styles + '"%3E%3C/' + 'sty' + 'le%3E')); // eslint-disable-line no-useless-concat
+	const style = window.document.createElement('style');
+	style.type = 'text/css';
+	style.text = styles;
+
+	if (style.styleSheet) {
+		style.styleSheet.cssText = styles;
+	} else {
+		style.appendChild(window.document.createTextNode(styles));
+	}
+
+	window.document.getElementsByTagName('head')[0].appendChild(style);
 }
 
 /**
@@ -74,19 +84,11 @@ function includeStyle(styles) {
  * @returns {void}
  */
 function includeScr(src) {
-	window.document.write(
-		unescape(
-			'%3Csc' +
-				'ript type="text/jav' +
-				'ascr' +
-				'ipt" data-cfasync="false" sr' +
-				'c="' +
-				src +
-				'"%3E%3C/' +
-				'scr' +
-				'ipt%3E'
-		)
-	); // eslint-disable-line no-useless-concat
+	const script = window.document.createElement('script');
+	script.type = 'text/javascript';
+	script.src = src;
+
+	window.document.getElementsByTagName('head')[0].appendChild(script);
 }
 
 /**
@@ -217,7 +219,6 @@ function runApp() {
 		jassl &&
 		progressJs &&
 		appData &&
-		appData.TemplatesLink &&
 		appData.LangLink &&
 		appData.StaticLibJsLink &&
 		appData.StaticAppJsLink &&
@@ -250,7 +251,7 @@ function runApp() {
 		libs()
 			.then(() => {
 				p.set(20);
-				return window.Promise.all([jassl(appData.TemplatesLink), jassl(appData.LangLink)]);
+				return jassl(appData.LangLink);
 			})
 			.then(() => {
 				p.set(30);

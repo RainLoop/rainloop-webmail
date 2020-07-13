@@ -11,7 +11,7 @@
 	<ocsid>165254</ocsid>
 	<dependencies>
 		<php min-version="5.4" />
-		<owncloud min-version="6" max-version="9.2" />
+		<owncloud min-version="6" max-version="11" />
 		<nextcloud min-version="8" max-version="11" />
 	</dependencies>
 	<category>tools</category>

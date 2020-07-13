@@ -1314,7 +1314,7 @@ class Actions
 
 /*
 required by Index.html and rl.js:
-NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBackground PluginsLink AuthAccountHash
+NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground PluginsLink AuthAccountHash
 */
 
 		$aResult = array(
@@ -1756,7 +1756,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'Admin' : 'App').'/'.
 			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']).'/'.$sStaticCache.'/';
 
-		$aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
+		// $aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
 
 		$bAppJsDebug = !!$this->Config()->Get('labs', 'use_app_debug_js', false);
 

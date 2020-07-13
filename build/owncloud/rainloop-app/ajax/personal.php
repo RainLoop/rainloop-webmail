@@ -21,18 +21,18 @@ if (isset($_POST['appname'], $_POST['rainloop-password'], $_POST['rainloop-email
 
 	$sPostEmail = $_POST['rainloop-email'];
 
-	OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-email', $sPostEmail);
+	\OC::$server->getConfig()->setUserValue($sUser, 'rainloop', 'rainloop-email', $sPostEmail);
 
 	$sPass = $_POST['rainloop-password'];
 	if ('******' !== $sPass && '' !== $sPass)
 	{
 		include_once OC_App::getAppPath('rainloop').'/lib/RainLoopHelper.php';
 
-		OCP\Config::setUserValue($sUser, 'rainloop', 'rainloop-password',
+		\OC::$server->getConfig()->setUserValue($sUser, 'rainloop', 'rainloop-password',
 			OC_RainLoop_Helper::encodePassword($sPass, md5($sPostEmail)));
 	}
 
-	$sEmail = OCP\Config::getUserValue($sUser, 'rainloop', 'rainloop-email', '');
+	$sEmail = \OC::$server->getConfig()->getUserValue($sUser, 'rainloop', 'rainloop-email', '');
 }
 else
 {

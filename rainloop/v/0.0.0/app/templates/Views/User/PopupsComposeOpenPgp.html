@@ -85,7 +85,7 @@
 					<div class="span6">
 						<div data-bind="visible: sign()">
 							<input type="password" class="inputPassword input-block-level i18n"
-								autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-i18n="[placeholder]POPUPS_COMPOSE_OPEN_PGP/LABEL_PASSWORD"
 								data-bind="textInput: password, hasfocus: password.focus, onEnter: doCommand" />
 							<div class="form-inline" data-bind="visible: 0 < privateKeysOptions().length">
