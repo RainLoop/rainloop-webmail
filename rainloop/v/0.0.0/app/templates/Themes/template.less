@@ -23,10 +23,10 @@
           box-shadow: @shadow !important;
 }
 .thm-body-background-image(@value) when (isstring(@value)) {
-	background-image: url("@{base}@{value}") !important;
+	background-image: url("@{base}@{value}");
 }
 .thm-body-background-image(@value) when not (isstring(@value)) {
-	background-image: @value !important;
+	background-image: @value;
 }
 .thm-rgba-background-color(@simple, @rgba) when (@rgba = false) {
 	background-color: @simple !important;

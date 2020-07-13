@@ -234,16 +234,13 @@ function runApp() {
 			jassl(appData.StaticLibJsLink).then(() => {
 				if (window.$) {
 					window.$('#rl-check').remove();
-
-					if (appData.IncludeBackground) {
-						window
-							.$('#rl-bg')
-							.attr('style', 'background-image: none !important;')
-							.backstretch(
-								appData.IncludeBackground.replace('{{USER}}', window.__rlah ? window.__rlah() || '0' : '0'),
-								{ fade: 100, centeredX: true, centeredY: true }
-							)
-							.removeAttr('style');
+				}
+				if (appData.IncludeBackground) {
+					const img = appData.IncludeBackground.replace('{{USER}}', window.__rlah ? window.__rlah() || '0' : '0'),
+						b = window.document.body;
+					if (img) {
+						b.classList.add('UserBackground');
+						b.style.backgroundImage = "url("+img+")";
 					}
 				}
 			});

@@ -1,5 +1,5 @@
+import window from 'window';
 import _ from '_';
-import $ from '$';
 import ko from 'ko';
 
 import Jua from 'Jua';
@@ -48,20 +48,13 @@ class ThemesUserSettings {
 		});
 
 		this.background.hash.subscribe((value) => {
-			const $bg = $('#rl-bg');
+			const b = window.document.body;
 			if (!value) {
-				if ($bg.data('backstretch')) {
-					$bg.backstretch('destroy').attr('style', '');
-				}
+				b.classList.remove('UserBackground');
+				b.removeAttribute('style');
 			} else {
-				$bg
-					.attr('style', 'background-image: none !important;')
-					.backstretch(userBackground(value), {
-						fade: Magics.Time1s,
-						centeredX: true,
-						centeredY: true
-					})
-					.removeAttr('style');
+				b.classList.add('UserBackground');
+				b.style.backgroundImage = "url("+userBackground(value)+")";
 			}
 		});
 	}

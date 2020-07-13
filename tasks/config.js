@@ -74,7 +74,6 @@ config.paths.js = {
 		name: 'libs.js',
 		src: [
 			'node_modules/jquery/dist/jquery.min.js',
-			'node_modules/jquery-backstretch/jquery.backstretch.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js', // custom
 			'vendors/jquery-wakeup/jquery.wakeup.js', // no-npm
 			'vendors/jquery-letterfx/jquery-letterfx.min.js', // no-npm

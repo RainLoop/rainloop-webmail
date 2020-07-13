@@ -34,7 +34,7 @@ import {
 	Magics
 } from 'Common/Enums';
 
-import { $html, leftPanelWidth, leftPanelDisabled, bAnimationSupported, bMobileDevice } from 'Common/Globals';
+import { $html, leftPanelWidth, leftPanelDisabled, bMobileDevice } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { runHook } from 'Common/Plugins';
@@ -146,14 +146,12 @@ class AppUser extends AbstractApp {
 
 		if (Settings.settingsGet('UserBackgroundHash')) {
 			_.delay(() => {
-				$('#rl-bg')
-					.attr('style', 'background-image: none !important;')
-					.backstretch(userBackground(Settings.settingsGet('UserBackgroundHash')), {
-						fade: bAnimationSupported ? Magics.Time1s : 0,
-						centeredX: true,
-						centeredY: true
-					})
-					.removeAttr('style');
+				const img = userBackground(Settings.settingsGet('UserBackgroundHash')),
+					b = window.document.body;
+				if (img) {
+					b.classList.add('UserBackground');
+					b.style.backgroundImage = "url("+img+")";
+				}
 			}, Magics.Time1s);
 		}
 	}
