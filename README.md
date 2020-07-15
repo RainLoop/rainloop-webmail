@@ -30,19 +30,27 @@ Copyright (c) 2019 Rainloop Team
 
 ## Modifications
 
-This fork has modifications for:
+This fork has the following changes:
 
 * Privacy/GDPR friendly (no: Social, Gravatar, Facebook, Google, Twitter, DropBox, OwnCloud, X-Mailer)
 * Admin uses password_hash/password_verify
-* No POP3 and OAuth
-* No ChangePassword
-* No BackwardCapability (class \RainLoop\Account)
+* Auth failed attempts written to syslog
+* ES2015 (removed polyfills and Modernizr)
 * PHP 7.3+ required
 * PHP mbstring extension required
 * PHP replaced pclZip with ZipArchive
 * PHP yaml extension else use the old Spyc
+* Removed BackwardCapability (class \RainLoop\Account)
+* Removed ChangePassword (plugins won't work)
+* Removed JS nanoscroll, jquery-scrollstop, jquery-mousewheel, matchmedia-polyfill
+* Removed OAuth support
+* Removed POP3 support
+* Removed background video support
+* Removed Sentry (Application Monitoring and Error Tracking Software)
+* Replaced gulp-uglify with gulp-terser
 * CRLF => LF line endings
-* Use gulp-terser instead of gulp-uglify
-* ES2015 (without polyfills)
-* No JS nanoscroll, jquery-scrollstop, jquery-mousewheel, matchmedia-polyfill
-* Auth failed attempts written to syslog
+
+### PHP73 branch
+
+There's a branch with only the PHP 7.3 changes at
+https://github.com/the-djmaze/rainloop-webmail/tree/php73

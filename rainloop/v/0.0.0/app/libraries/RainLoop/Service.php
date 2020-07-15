@@ -246,13 +246,8 @@ class Service
 		$sAppleTouchLink = $sFaviconUrl ? '' : $this->staticPath('apple-touch-icon.png');
 
 		$sContentSecurityPolicy = $this->oActions->Config()->Get('security', 'content_security_policy', '');
-		$sSentryDsn = false; // $this->oActions->Config()->Get('logs', 'sentry_dsn', '');
 
 		$aTemplateParameters = array(
-			'{{BaseAppHeadScriptLink}}' => $sSentryDsn ?
-				'<script type="text/javascript" data-cfasync="false" src="https://browser.sentry-cdn.com/5.4.3/bundle.min.js" crossorigin="anonymous"></script>' : '',
-			'{{BaseAppBodyScript}}' => $sSentryDsn ?
-				'<script type="text/javascript" data-cfasync="false">window && window.Sentry && window.Sentry.init({dsn:\''.$sSentryDsn.'\',ignoreErrors:[\'Document not active\']});</script>' : '',
 			'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
 			'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
 			'{{BaseAppMainCssLink}}' => $this->staticPath('css/app'.($bAppCssDebug ? '' : '.min').'.css'),
