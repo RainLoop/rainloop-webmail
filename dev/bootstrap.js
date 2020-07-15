@@ -44,9 +44,7 @@ export default (App) => {
 	window.__APP_BOOT = (fErrorCallback) => {
 		domReady(() => {
 			window.setTimeout(() => {
-				if (window.document.getElementById('rainloop-templates-id')) {
-					start();
-				} else if (window.rainloopTEMPLATES && window.rainloopTEMPLATES[0]) {
+				if (window.rainloopTEMPLATES && window.rainloopTEMPLATES[0]) {
 					window.document.getElementById('rl-templates').innerHTML = window.rainloopTEMPLATES[0];
 					start();
 				} else {
