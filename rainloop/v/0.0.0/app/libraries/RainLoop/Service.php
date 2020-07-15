@@ -246,7 +246,7 @@ class Service
 		$sAppleTouchLink = $sFaviconUrl ? '' : $this->staticPath('apple-touch-icon.png');
 
 		$sContentSecurityPolicy = $this->oActions->Config()->Get('security', 'content_security_policy', '');
-		$sSentryDsn = $this->oActions->Config()->Get('logs', 'sentry_dsn', '');
+		$sSentryDsn = false; // $this->oActions->Config()->Get('logs', 'sentry_dsn', '');
 
 		$aTemplateParameters = array(
 			'{{BaseAppHeadScriptLink}}' => $sSentryDsn ?
