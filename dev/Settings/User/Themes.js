@@ -48,12 +48,12 @@ class ThemesUserSettings {
 		});
 
 		this.background.hash.subscribe((value) => {
-			const b = window.document.body;
+			const b = window.document.body, cl = window.document.documentElement.classList;
 			if (!value) {
-				b.classList.remove('UserBackground');
+				cl.remove('UserBackground');
 				b.removeAttribute('style');
 			} else {
-				b.classList.add('UserBackground');
+				cl.add('UserBackground');
 				b.style.backgroundImage = "url("+userBackground(value)+")";
 			}
 		});

@@ -1449,10 +1449,10 @@ export function domReady(fn) {
 
 export const windowResize = _.debounce((timeout) => {
 	if (isUnd(timeout) || isNull(timeout)) {
-		$win.resize();
+		$win.trigger('resize');
 	} else {
 		window.setTimeout(() => {
-			$win.resize();
+			$win.trigger('resize');
 		}, timeout);
 	}
 }, 50);

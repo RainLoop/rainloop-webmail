@@ -6,7 +6,7 @@ import crossroads from 'crossroads';
 
 import { Magics } from 'Common/Enums';
 import { runHook } from 'Common/Plugins';
-import { $html, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
+import { $htmlCL, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
 
 import { isArray, isUnd, pString, log, isFunc, createCommandLegacy, delegateRun, isNonEmptyArray } from 'Common/Utils';
 
@@ -432,8 +432,11 @@ export function startScreens(screensClasses) {
 	hasher.changed.add(cross.parse, cross);
 	hasher.init();
 
-	_.delay(() => $html.removeClass('rl-started-trigger').addClass('rl-started'), 100);
-	_.delay(() => $html.addClass('rl-started-delay'), 200);
+	_.delay(() => {
+		$htmlCL.remove('rl-started-trigger');
+		$htmlCL.add('rl-started');
+	}, 100);
+	_.delay(() => $htmlCL.add('rl-started-delay'), 200);
 }
 
 /**

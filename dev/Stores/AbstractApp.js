@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { $html, bMobileDevice } from 'Common/Globals';
+import { $htmlCL, bMobileDevice } from 'Common/Globals';
 import * as Settings from 'Storage/Settings';
 
 class AbstractAppStore {
@@ -12,7 +12,8 @@ class AbstractAppStore {
 
 		this.interfaceAnimation.subscribe((value) => {
 			const anim = bMobileDevice || !value;
-			$html.toggleClass('rl-anim', !anim).toggleClass('no-rl-anim', anim);
+			$htmlCL.toggle('rl-anim', !anim);
+			$htmlCL.toggle('no-rl-anim', anim);
 		});
 
 		this.interfaceAnimation.valueHasMutated();

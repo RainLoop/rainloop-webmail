@@ -10,9 +10,8 @@ $win.__sizes = [0, 0];
 
 export { $win };
 
-export const $doc = $(window.document);
-
 export const $html = $('html');
+export const $htmlCL = window.document.documentElement.classList;
 
 export const $body = $('body');
 
@@ -71,7 +70,7 @@ export const bMobileDevice = (/android|iphone|ipod|ipad|blackberry|mobile/i).tes
  * @type {boolean}
  */
 export const bAnimationSupported =
-	!bMobileDevice && $html.hasClass('csstransitions') && $html.hasClass('cssanimations');
+	!bMobileDevice && $htmlCL.contains('csstransitions') && $htmlCL.contains('cssanimations');
 
 /**
  * @type {boolean}
@@ -200,7 +199,7 @@ export const popupVisibilityNames = ko.observableArray([]);
 export const popupVisibility = ko.computed(() => 0 < popupVisibilityNames().length);
 
 popupVisibility.subscribe((bValue) => {
-	$html.toggleClass('rl-modal', bValue);
+	$htmlCL.toggle('rl-modal', bValue);
 });
 
 // keys

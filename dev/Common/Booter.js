@@ -66,17 +66,11 @@ function getComputedStyle(id, name) {
  * @returns {void}
  */
 function includeStyle(styles) {
-	const style = window.document.createElement('style');
+	const doc = window.document, style = doc.createElement('style');
 	style.type = 'text/css';
-	style.text = styles;
-
-	if (style.styleSheet) {
-		style.styleSheet.cssText = styles;
-	} else {
-		style.appendChild(window.document.createTextNode(styles));
-	}
-
-	window.document.getElementsByTagName('head')[0].appendChild(style);
+	style.textContent = styles;
+//	style.appendChild(doc.createTextNode(styles));
+	doc.head.appendChild(style);
 }
 
 /**
@@ -84,11 +78,10 @@ function includeStyle(styles) {
  * @returns {void}
  */
 function includeScr(src) {
-	const script = window.document.createElement('script');
+	const doc = window.document, script = doc.createElement('script');
 	script.type = 'text/javascript';
 	script.src = src;
-
-	window.document.getElementsByTagName('head')[0].appendChild(script);
+	doc.head.appendChild(script);
 }
 
 /**
@@ -219,6 +212,7 @@ function runApp() {
 		jassl &&
 		progressJs &&
 		appData &&
+		appData.TemplatesLink &&
 		appData.LangLink &&
 		appData.StaticLibJsLink &&
 		appData.StaticAppJsLink &&
@@ -232,15 +226,12 @@ function runApp() {
 
 		const libs = () =>
 			jassl(appData.StaticLibJsLink).then(() => {
-				if (window.$) {
-					window.$('#rl-check').remove();
-				}
+				window.document.getElementById('rl-check').remove();
 				if (appData.IncludeBackground) {
-					const img = appData.IncludeBackground.replace('{{USER}}', window.__rlah ? window.__rlah() || '0' : '0'),
-						b = window.document.body;
+					const img = appData.IncludeBackground.replace('{{USER}}', window.__rlah ? window.__rlah() || '0' : '0');
 					if (img) {
-						b.classList.add('UserBackground');
-						b.style.backgroundImage = "url("+img+")";
+						window.document.documentElement.classList.add('UserBackground');
+						window.document.body.style.backgroundImage = "url("+img+")";
 					}
 				}
 			});
@@ -248,7 +239,7 @@ function runApp() {
 		libs()
 			.then(() => {
 				p.set(20);
-				return jassl(appData.LangLink);
+				return window.Promise.all([jassl(appData.TemplatesLink), jassl(appData.LangLink)]);
 			})
 			.then(() => {
 				p.set(30);

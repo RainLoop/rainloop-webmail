@@ -4,7 +4,7 @@ import $ from '$';
 import ko from 'ko';
 import { Notification, UploadErrorCode } from 'Common/Enums';
 import { pInt, isUnd, isNull, has, microtime, inArray } from 'Common/Utils';
-import { $html, bAnimationSupported } from 'Common/Globals';
+import { $html, $htmlCL, bAnimationSupported } from 'Common/Globals';
 import { reload as momentorReload } from 'Common/Momentor';
 import { langLink } from 'Common/Links';
 
@@ -272,7 +272,7 @@ export function getUploadErrorDescByCode(code) {
 export function reload(admin, language) {
 	const start = microtime();
 
-	$html.addClass('rl-changing-language');
+	$htmlCL.add('rl-changing-language');
 
 	return new window.Promise((resolve, reject) => {
 		$.ajax({
@@ -287,11 +287,9 @@ export function reload(admin, language) {
 
 						const isRtl = -1 < inArray((language || '').toLowerCase(), ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir']);
 
-						$html
-							.removeClass('rl-changing-language')
-							.removeClass('rl-rtl rl-ltr')
-							// .attr('dir', isRtl ? 'rtl' : 'ltr')
-							.addClass(isRtl ? 'rl-rtl' : 'rl-ltr');
+						$htmlCL.remove('rl-changing-language', 'rl-rtl', 'rl-ltr');
+							// $html.attr('dir', isRtl ? 'rtl' : 'ltr')
+						$htmlCL.add(isRtl ? 'rl-rtl' : 'rl-ltr');
 
 						resolve();
 					},
@@ -299,7 +297,7 @@ export function reload(admin, language) {
 				);
 			},
 			() => {
-				$html.removeClass('rl-changing-language');
+				$htmlCL.remove('rl-changing-language');
 				window.rainloopI18N = null;
 				reject();
 			}
@@ -308,4 +306,4 @@ export function reload(admin, language) {
 }
 
 // init section
-$html.addClass('rl-' + ($html.attr('dir') || 'ltr'));
+$htmlCL.add('rl-' + ($html.attr('dir') || 'ltr'));

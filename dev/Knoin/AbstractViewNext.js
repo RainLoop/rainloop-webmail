@@ -1,8 +1,9 @@
 import ko from 'ko';
+import window from 'window';
 
 import { delegateRun, inFocus } from 'Common/Utils';
 import { KeyState, EventKeyCode } from 'Common/Enums';
-import { $win, keyScope } from 'Common/Globals';
+import { keyScope } from 'Common/Globals';
 
 export class AbstractViewNext {
 	bDisabeCloseOnEsc = false;
@@ -35,7 +36,7 @@ export class AbstractViewNext {
 	 * @returns {void}
 	 */
 	registerPopupKeyDown() {
-		$win.on('keydown', (event) => {
+		window.addEventListener('keydown', (event) => {
 			if (event && this.modalVisibility && this.modalVisibility()) {
 				if (!this.bDisabeCloseOnEsc && EventKeyCode.Esc === event.keyCode) {
 					delegateRun(this, 'cancelCommand');

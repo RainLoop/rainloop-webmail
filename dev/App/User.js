@@ -34,7 +34,7 @@ import {
 	Magics
 } from 'Common/Enums';
 
-import { $html, leftPanelWidth, leftPanelDisabled, bMobileDevice } from 'Common/Globals';
+import { $htmlCL, leftPanelWidth, leftPanelDisabled, bMobileDevice } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { runHook } from 'Common/Plugins';
@@ -146,11 +146,10 @@ class AppUser extends AbstractApp {
 
 		if (Settings.settingsGet('UserBackgroundHash')) {
 			_.delay(() => {
-				const img = userBackground(Settings.settingsGet('UserBackgroundHash')),
-					b = window.document.body;
+				const img = userBackground(Settings.settingsGet('UserBackgroundHash'));
 				if (img) {
-					b.classList.add('UserBackground');
-					b.style.backgroundImage = "url("+img+")";
+					$htmlCL.add('UserBackground');
+					window.document.body.style.backgroundImage = "url("+img+")";
 				}
 			}, Magics.Time1s);
 		}
@@ -904,25 +903,25 @@ class AppUser extends AbstractApp {
 					$(event.target)
 						.find('.ui-resizable-handle')
 						.on('mousedown', () => {
-							$html.addClass('rl-resizer');
+							$htmlCL.add('rl-resizer');
 						})
 						.on('mouseup', () => {
-							$html.removeClass('rl-resizer');
+							$htmlCL.remove('rl-resizer');
 						});
 				}
 			},
 			fResizeStartFunction = () => {
-				$html.addClass('rl-resizer');
+				$htmlCL.add('rl-resizer');
 			},
 			fResizeResizeFunction = _.debounce(
 				() => {
-					$html.addClass('rl-resizer');
+					$htmlCL.add('rl-resizer');
 				},
 				500,
 				true
 			),
 			fResizeStopFunction = (oEvent, oObject) => {
-				$html.removeClass('rl-resizer');
+				$htmlCL.remove('rl-resizer');
 				if (oObject && oObject.size && oObject.size.height) {
 					Local.set(sClientSideKeyName, oObject.size.height);
 
@@ -950,7 +949,7 @@ class AppUser extends AbstractApp {
 					if (bottom) {
 						bottom.removeAttr('style');
 					}
-				} else if ($html.hasClass('rl-bottom-preview-pane')) {
+				} else if ($htmlCL.contains('rl-bottom-preview-pane')) {
 					top = $('.b-message-list-wrapper');
 					bottom = $('.b-message-view-wrapper');
 
@@ -980,7 +979,7 @@ class AppUser extends AbstractApp {
 				if (iWidth) {
 					leftPanelWidth(iWidth);
 
-					$html.removeClass('rl-resizer');
+					$htmlCL.remove('rl-resizer');
 
 					lLeft.css({
 						width: '' + iWidth + 'px'
@@ -1006,25 +1005,25 @@ class AppUser extends AbstractApp {
 					$(event.target)
 						.find('.ui-resizable-handle')
 						.on('mousedown', () => {
-							$html.addClass('rl-resizer');
+							$htmlCL.add('rl-resizer');
 						})
 						.on('mouseup', () => {
-							$html.removeClass('rl-resizer');
+							$htmlCL.remove('rl-resizer');
 						});
 				}
 			},
 			fResizeResizeFunction = _.debounce(
 				() => {
-					$html.addClass('rl-resizer');
+					$htmlCL.add('rl-resizer');
 				},
 				500,
 				true
 			),
 			fResizeStartFunction = () => {
-				$html.addClass('rl-resizer');
+				$htmlCL.add('rl-resizer');
 			},
 			fResizeStopFunction = (event, obj) => {
-				$html.removeClass('rl-resizer');
+				$htmlCL.remove('rl-resizer');
 				if (obj && obj.size && obj.size.width) {
 					Local.set(sClientSideKeyName, obj.size.width);
 
@@ -1086,7 +1085,8 @@ class AppUser extends AbstractApp {
 	}
 
 	bootstartLoginScreen() {
-		$html.removeClass('rl-user-auth').addClass('rl-user-no-auth');
+		$htmlCL.remove('rl-user-auth');
+		$htmlCL.add('rl-user-no-auth');
 
 		const customLoginLink = pString(Settings.appSettingsGet('customLoginLink'));
 		if (!customLoginLink) {
@@ -1135,7 +1135,7 @@ class AppUser extends AbstractApp {
 
 		this.setWindowTitle('');
 		if (Settings.settingsGet('Auth')) {
-			$html.addClass('rl-user-auth');
+			$htmlCL.add('rl-user-auth');
 
 			if (
 				Settings.capa(Capa.TwoFactor) &&

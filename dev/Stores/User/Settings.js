@@ -3,7 +3,7 @@ import ko from 'ko';
 
 import { MESSAGES_PER_PAGE, MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType, Magics } from 'Common/Enums';
-import { $html } from 'Common/Globals';
+import { $htmlCL } from 'Common/Globals';
 import { pInt } from 'Common/Utils';
 import * as Events from 'Common/Events';
 
@@ -46,9 +46,9 @@ class SettingsUserStore {
 
 	subscribers() {
 		this.layout.subscribe((value) => {
-			$html.toggleClass('rl-no-preview-pane', Layout.NoPreview === value);
-			$html.toggleClass('rl-side-preview-pane', Layout.SidePreview === value);
-			$html.toggleClass('rl-bottom-preview-pane', Layout.BottomPreview === value);
+			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
+			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
+			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
 			Events.pub('layout', [value]);
 		});
 	}

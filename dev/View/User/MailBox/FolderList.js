@@ -5,7 +5,7 @@ import key from 'key';
 
 import { trim, isNormal, isArray, windowResize } from 'Common/Utils';
 import { Capa, Focused, Layout, KeyState, EventKeyCode, Magics } from 'Common/Enums';
-import { $html, leftPanelDisabled, moveAction } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
 
@@ -242,7 +242,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	messagesDrop(toFolder, ui) {
 		if (toFolder && ui && ui.helper) {
 			const fromFolderFullNameRaw = ui.helper.data('rl-folder'),
-				copy = $html.hasClass('rl-ctrl-key-pressed'),
+				copy = $htmlCL.contains('rl-ctrl-key-pressed'),
 				uids = ui.helper.data('rl-uids');
 
 			if (isNormal(fromFolderFullNameRaw) && '' !== fromFolderFullNameRaw && isArray(uids)) {

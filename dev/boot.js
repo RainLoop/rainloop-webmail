@@ -4,12 +4,12 @@ import { progressJs } from '../vendors/Progress.js/src/progress.js';
 window.progressJs = window.progressJs || progressJs();
 
 window.progressJs.onbeforeend(() => {
-	const _$ = window.$;
-	if (_$) {
+	const div = window.document.querySelector('.progressjs-container');
+	if (div) {
 		try {
-			_$('.progressjs-container').hide();
+			div.hidden = true;
 			window.setTimeout(() => {
-				_$('.progressjs-container').remove();
+				div.remove();
 			}, 200); // eslint-disable-line no-magic-numbers
 		} catch (e) {} // eslint-disable-line no-empty
 	}

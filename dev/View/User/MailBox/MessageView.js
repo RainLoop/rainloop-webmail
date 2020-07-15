@@ -17,7 +17,7 @@ import {
 	MessageSetAction
 } from 'Common/Enums';
 
-import { $html, leftPanelDisabled, keyScopeReal, useKeyboardShortcuts, moveAction } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled, keyScopeReal, useKeyboardShortcuts, moveAction } from 'Common/Globals';
 
 import {
 	inArray,
@@ -323,7 +323,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		});
 
 		this.fullScreenMode.subscribe((value) => {
-			$html.toggleClass('rl-message-fullscreen', value);
+			$htmlCL.toggle('rl-message-fullscreen', value);
 			windowResize();
 		});
 

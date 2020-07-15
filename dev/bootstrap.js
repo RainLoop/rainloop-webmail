@@ -1,6 +1,6 @@
 import window from 'window';
 import { killCtrlACtrlS, detectDropdownVisibility, createCommandLegacy, domReady } from 'Common/Utils';
-import { $win, $html, data as GlobalsData, bMobileDevice } from 'Common/Globals';
+import { $html, $htmlCL, data as GlobalsData, bMobileDevice } from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
 import { i18n } from 'Common/Translator';
@@ -9,11 +9,13 @@ import { EmailModel } from 'Model/Email';
 export default (App) => {
 	GlobalsData.__APP__ = App;
 
-	$win.on('keydown', killCtrlACtrlS).on('unload', () => {
+	window.addEventListener('keydown', killCtrlACtrlS);
+	window.addEventListener('unload', () => {
 		GlobalsData.bUnload = true;
 	});
 
-	$html.addClass(bMobileDevice ? 'mobile' : 'no-mobile').on('click.dropdown.data-api', detectDropdownVisibility);
+	$htmlCL.add(bMobileDevice ? 'mobile' : 'no-mobile');
+	$html.on('click.dropdown.data-api', detectDropdownVisibility);
 
 	const rl = window.rl || {};
 
@@ -35,7 +37,8 @@ export default (App) => {
 
 	const start = () => {
 		window.setTimeout(() => {
-			$html.removeClass('no-js rl-booted-trigger').addClass('rl-booted');
+			$htmlCL.remove('no-js', 'rl-booted-trigger');
+			$htmlCL.add('rl-booted');
 
 			App.bootstart();
 		}, Enums.Magics.Time10ms);

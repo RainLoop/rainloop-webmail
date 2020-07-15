@@ -797,7 +797,7 @@ class MessageModel extends AbstractModel {
 
 			if (lazy) {
 				this.lozad();
-				$win.resize();
+				$win.trigger('resize');
 			}
 
 			windowResize(500);

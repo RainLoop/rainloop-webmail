@@ -7,7 +7,6 @@ import Pikaday from 'pikaday';
 import { SaveSettingsStep, Magics } from 'Common/Enums';
 
 const ko = window.ko,
-	$win = $(window),
 	fDisposalTooltipHelper = (element) => {
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
 			if (element && element.__opentip) {
@@ -27,11 +26,11 @@ ko.bindingHandlers.updateWidth = {
 				}, Magics.Time500ms);
 			};
 
-		$win.on('resize', fInit);
+		window.addEventListener('resize', fInit);
 		fInit();
 
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			$win.off('resize', fInit);
+			window.removeEventListener('resize', fInit);
 		});
 	}
 };
@@ -92,11 +91,11 @@ ko.bindingHandlers.scrollerShadows = {
 
 		if (cont) {
 			$(cont).on('scroll resize', fFunc);
-			$win.on('resize', fFunc);
+			window.addEventListener('resize', fFunc);
 
 			ko.utils.domNodeDisposal.addDisposeCallback(cont, () => {
 				$(cont).off();
-				$win.off('resize', fFunc);
+				window.removeEventListener('resize', fFunc);
 			});
 		}
 	}
@@ -186,12 +185,12 @@ ko.bindingHandlers.tooltip = {
 				element.__opentip.setContent(sValue);
 			}
 
-			$win.on('rl.tooltips.diactivate', () => {
+			window.addEventListener('rl.tooltips.diactivate', () => {
 				element.__opentip.hide();
 				element.__opentip.deactivate();
 			});
 
-			$win.on('rl.tooltips.activate', () => {
+			window.addEventListener('rl.tooltips.activate', () => {
 				element.__opentip.activate();
 			});
 		}
@@ -460,10 +459,10 @@ ko.bindingHandlers.modal = {
 
 		$(element).modal(ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
 
-		if (Globals.$html.hasClass('rl-anim')) {
-			Globals.$html.addClass('rl-modal-animation');
+		if (Globals.$htmlCL.contains('rl-anim')) {
+			Globals.$htmlCL.add('rl-modal-animation');
 			_.delay(() => {
-				Globals.$html.removeClass('rl-modal-animation');
+				Globals.$htmlCL.remove('rl-modal-animation');
 			}, Magics.Time500ms);
 		}
 	}
@@ -534,7 +533,7 @@ ko.bindingHandlers.initFixedTrigger = {
 		let $container = $(values[0] || null);
 		$container = $container[0] ? $container : null;
 		if ($container) {
-			$win.resize(() => {
+			window.addEventListener('resize', () => {
 				const offset = $container ? $container.offset() : null;
 				if (offset && offset.top) {
 					$el.css('top', offset.top + top);
