@@ -51,7 +51,7 @@ config.paths.css = {
 		name: 'app.css',
 		src: [
 			'node_modules/normalize.css/normalize.css',
-			'vendors/jquery-ui/css/smoothness/jquery-ui-1.10.3.custom.css',
+			'vendors/jquery-ui/css/smoothness/jquery-ui-1.12.1.custom.css',
 			'vendors/fontastic/styles.css',
 			'vendors/jquery-nanoscroller/nanoscroller.css',
 			'vendors/jquery-letterfx/jquery-letterfx.min.css',
@@ -83,7 +83,7 @@ config.paths.js = {
 			'node_modules/jquery-mousewheel/jquery.mousewheel.js',
 			'node_modules/jquery-scrollstop/jquery.scrollstop.js',
 			'node_modules/jquery-backstretch/jquery.backstretch.min.js',
-			'vendors/jquery-ui/js/jquery-ui-1.10.3.custom.min.js', // custom
+			'vendors/jquery-ui/js/jquery-ui-1.12.1.custom.min.js', // custom
 			'vendors/jquery-nanoscroller/jquery.nanoscroller.js', // custom (modified)
 			'vendors/jquery-wakeup/jquery.wakeup.js', // no-npm
 			'vendors/jquery-letterfx/jquery-letterfx.min.js', // no-npm
