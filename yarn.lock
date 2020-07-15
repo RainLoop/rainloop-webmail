@@ -2436,12 +2436,6 @@ electron-to-chromium@^1.3.363:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.376.tgz#7cb7b5205564a06c8f8ecfbe832cbd47a1224bb1"
   integrity sha512-cv/PYVz5szeMz192ngilmezyPNFkUjuynuL2vNdiqIrio440nfTDdc0JJU0TS2KHLSVCs9gBbt4CFqM+HcBnjw==
 
-element-dataset@2.2.6:
-  version "2.2.6"
-  resolved "https://registry.yarnpkg.com/element-dataset/-/element-dataset-2.2.6.tgz#a4e46dbb3ee991e8c7d5366ec654f87670c2ef80"
-  dependencies:
-    babel-runtime "^6.23.0"
-
 elliptic@^6.0.0:
   version "6.4.1"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.4.1.tgz#c2d0b7776911b86722c632c3c06c60f2f819939a"
@@ -3523,31 +3517,6 @@ gulp-stripbom@1.0.5:
     plugin-error "^1.0.1"
     strip-bom "^1.0.0"
     through2 "^0.5.1"
-
-gulp-through@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/gulp-through/-/gulp-through-0.4.0.tgz#6463b29f678c788540b63aa6a1bad5bd8552ae6d"
-  dependencies:
-    bluebird "^3.0.6"
-    chalk "^1.1.1"
-    gulp-util "^3.0.7"
-    through2 "^2.0.0"
-    xtend "^4.0.1"
-
-gulp-uglify@3.0.2:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/gulp-uglify/-/gulp-uglify-3.0.2.tgz#5f5b2e8337f879ca9dec971feb1b82a5a87850b0"
-  dependencies:
-    array-each "^1.0.1"
-    extend-shallow "^3.0.2"
-    gulplog "^1.0.0"
-    has-gulplog "^0.1.0"
-    isobject "^3.0.1"
-    make-error-cause "^1.1.1"
-    safe-buffer "^5.1.2"
-    through2 "^2.0.0"
-    uglify-js "^3.0.5"
-    vinyl-sourcemaps-apply "^0.2.0"
 
 gulp-util@3.0.8, gulp-util@^3.0.6, gulp-util@^3.0.7:
   version "3.0.8"
