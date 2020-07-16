@@ -53,6 +53,19 @@ html.rl-mobile {
 	min-width: 60px;
 }
 
+html:not(.rl-left-panel-disabled) #rl-left.resizable {
+	resize: horizontal;
+	overflow: hidden;
+	min-width: 155px;
+	max-width: 350px;
+}
+.b-message-list-wrapper.resizable {
+	resize: vertical;
+	overflow: hidden;
+	min-height: 200px;
+	max-height: 500px;
+}
+
 #rl-right {
 	.g-ui-absolute-reset;
 
@@ -271,21 +284,6 @@ html.rl-left-panel-none {
 	}
 }
 
-.ui-resizable-helper-w {
-	border-right: 5px solid #777;
-	border-right-color: rgba(255,255,255,0.7);
-}
-
-.ui-resizable-helper-h {
-	border-bottom: 5px solid #ccc;
-	border-bottom-color: rgba(0,0,0,0.3);
-}
-
-.ui-resizable-handle:hover {
-	background: #aaa;
-	background: rgba(255,255,255,0.5);
-}
-
 html.rl-no-preview-pane {
 
 	#rl-sub-left {
@@ -299,10 +297,6 @@ html.rl-no-preview-pane {
 
 	#rl-sub-right {
 		left: 0 !important;
-	}
-
-	#rl-right .ui-resizable-handle {
-		display: none !important;
 	}
 }
 

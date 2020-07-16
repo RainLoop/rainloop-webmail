@@ -1,5 +1,4 @@
 import window from 'window';
-import $ from '$';
 import _ from '_';
 import ko from 'ko';
 import key from 'key';
@@ -10,7 +9,6 @@ import {
 	$htmlCL,
 	leftPanelDisabled,
 	leftPanelType,
-	sUserAgent,
 	bMobileDevice,
 	bAnimationSupported
 } from 'Common/Globals';
@@ -37,10 +35,7 @@ class AbstractApp extends AbstractBoot {
 		super();
 
 		this.isLocalAutocomplete = true;
-		this.iframe = null;
 		this.lastErrorTime = 0;
-
-		this.iframe = $('<iframe class="internal-hiddden" />').appendTo('body');
 
 		window.addEventListener('resize', () => {
 			Events.pub('window.resize');
@@ -71,21 +66,23 @@ class AbstractApp extends AbstractBoot {
 		//			}
 		//		});
 
-		const $doc = $(window.document);
-		$doc
-			.on('keydown', (event) => {
-				if (event && event.ctrlKey) {
-					$htmlCL.add('rl-ctrl-key-pressed');
-				}
-			})
-			.on('keyup', (event) => {
-				if (event && !event.ctrlKey) {
-					$htmlCL.remove('rl-ctrl-key-pressed');
-				}
-			})
-			.on('mousemove keypress click', _.debounce(() => {
-				Events.pub('rl.auto-logout-refresh');
-			}, Magics.Time5s));
+		const $doc = window.document;
+		$doc.addEventListener('keydown', (event) => {
+			if (event && event.ctrlKey) {
+				$htmlCL.add('rl-ctrl-key-pressed');
+			}
+		});
+		$doc.addEventListener('keyup', (event) => {
+			if (event && !event.ctrlKey) {
+				$htmlCL.remove('rl-ctrl-key-pressed');
+			}
+		});
+		const fn = _.debounce(() => {
+			Events.pub('rl.auto-logout-refresh');
+		}, Magics.Time5s);
+		$doc.addEventListener('mousemove', fn);
+		$doc.addEventListener('keypress', fn);
+		$doc.addEventListener('click', fn);
 
 		key('esc, enter', KeyState.All, () => {
 			detectDropdownVisibility();
@@ -109,28 +106,16 @@ class AbstractApp extends AbstractBoot {
 	 * @returns {boolean}
 	 */
 	download(link) {
-		if (sUserAgent && (-1 < sUserAgent.indexOf('chrome') || -1 < sUserAgent.indexOf('chrome'))) {
-			const oLink = window.document.createElement('a');
-			oLink.href = link;
-
-			if (window.document && window.document.createEvent) {
-				const oE = window.document.createEvent.MouseEvents;
-				if (oE && oE.initEvent && oLink.dispatchEvent) {
-					oE.initEvent('click', true, true);
-					oLink.dispatchEvent(oE);
-					return true;
-				}
-			}
-		}
-
 		if (bMobileDevice) {
 			window.open(link, '_self');
 			window.focus();
 		} else {
-			this.iframe.attr('src', link);
-			// window.document.location.href = link;
+			const oLink = window.document.createElement('a');
+			oLink.href = link;
+			window.document.body.appendChild(oLink).click();
+			oLink.remove();
+//			window.open(link, '_self');
 		}
-
 		return true;
 	}
 
@@ -143,7 +128,6 @@ class AbstractApp extends AbstractBoot {
 			title += (title ? ' - ' : '') + Settings.settingsGet('Title');
 		}
 
-		window.document.title = title + ' ...';
 		window.document.title = title;
 	}
 

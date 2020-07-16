@@ -1,6 +1,5 @@
 import window from 'window';
 import _ from '_';
-import $ from '$';
 import progressJs from 'progressJs';
 
 import {
@@ -18,7 +17,6 @@ import {
 	pString,
 	delegateRunOnDestroy,
 	mailToHelper,
-	windowResize,
 	jassl
 } from 'Common/Utils';
 
@@ -34,7 +32,7 @@ import {
 	Magics
 } from 'Common/Enums';
 
-import { $htmlCL, leftPanelWidth, leftPanelDisabled, bMobileDevice } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled, bMobileDevice } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { runHook } from 'Common/Plugins';
@@ -124,21 +122,23 @@ class AppUser extends AbstractApp {
 			Magics.Time5m
 		);
 
-		$.wakeUp(
-			() => {
+		// wakeUp
+		const interval = Magics.Time60m;
+		var lastTime = (new Date()).getTime();
+		setInterval(() => {
+			const currentTime = (new Date()).getTime();
+			if (currentTime > (lastTime + interval + 1000)) {
 				if (checkTimestamp()) {
 					this.reload();
 				}
-
 				Remote.jsVersion((sResult, oData) => {
 					if (StorageResultType.Success === sResult && oData && !oData.Result) {
 						this.reload();
 					}
 				}, Settings.appSettingsGet('version'));
-			},
-			{},
-			Magics.Time60m
-		);
+			}
+			lastTime = currentTime;
+		}, interval);
 
 		if (checkTimestamp()) {
 			this.reload();
@@ -881,84 +881,49 @@ class AppUser extends AbstractApp {
 		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
 	}
 
-	initHorizontalLayoutResizer(sClientSideKeyName) {
+	initHorizontalLayoutResizer() {
 		let top = null,
-			bottom = null;
+			bottom = null,
+			observer = null;
 
-		const minHeight = 200,
-			maxHeight = 500,
-			fSetHeight = (height) => {
-				if (height) {
-					if (top) {
-						top.attr('style', 'height:' + height + 'px');
-					}
-
-					if (bottom) {
-						bottom.attr('style', 'top:' + (55 /* top toolbar */ + height) + 'px');
-					}
-				}
-			},
-			fResizeCreateFunction = (event) => {
-				if (event && event.target) {
-					$(event.target)
-						.find('.ui-resizable-handle')
-						.on('mousedown', () => {
-							$htmlCL.add('rl-resizer');
-						})
-						.on('mouseup', () => {
-							$htmlCL.remove('rl-resizer');
-						});
-				}
-			},
-			fResizeStartFunction = () => {
-				$htmlCL.add('rl-resizer');
-			},
-			fResizeResizeFunction = _.debounce(
-				() => {
-					$htmlCL.add('rl-resizer');
-				},
-				500,
-				true
-			),
-			fResizeStopFunction = (oEvent, oObject) => {
-				$htmlCL.remove('rl-resizer');
-				if (oObject && oObject.size && oObject.size.height) {
-					Local.set(sClientSideKeyName, oObject.size.height);
-
-					fSetHeight(oObject.size.height);
-
-					windowResize();
-				}
-			},
-			oOptions = {
-				helper: 'ui-resizable-helper-h',
-				minHeight: minHeight,
-				maxHeight: maxHeight,
-				handles: 's',
-				create: fResizeCreateFunction,
-				resize: fResizeResizeFunction,
-				start: fResizeStartFunction,
-				stop: fResizeStopFunction
-			},
+		const
 			fDisable = (bDisable) => {
 				if (bDisable) {
-					if (top && top.hasClass('ui-resizable')) {
-						top.resizable('destroy').removeAttr('style');
-					}
-
-					if (bottom) {
-						bottom.removeAttr('style');
+					if (observer) {
+						observer.disconnect();
+						top.removeAttribute('style');
+						top.classList.remove('resizable');
+						bottom.removeAttribute('style');
 					}
 				} else if ($htmlCL.contains('rl-bottom-preview-pane')) {
-					top = $('.b-message-list-wrapper');
-					bottom = $('.b-message-view-wrapper');
-
-					if (!top.hasClass('ui-resizable')) {
-						top.resizable(oOptions);
+					top = window.document.querySelector('.b-message-list-wrapper');
+					bottom = window.document.querySelector('.b-message-view-wrapper');
+					if (top && bottom) {
+						top.classList.add('resizable');
+						if (window.ResizeObserver) {
+							if (!observer) {
+								observer = new window.ResizeObserver(entries => {
+									entries.forEach(entry => {
+										if (entry.target === top) {
+											bottom.style.top = (56 + entry.borderBoxSize.blockSize) + 'px';
+										}
+									});
+								});
+							}
+							observer.observe(top);
+						} else {
+							if (!observer) {
+								observer = new window.MutationObserver(mutations => {
+									mutations.forEach(mutation => {
+										if (mutation.target === top && 'style' == mutation.attributeName) {
+											bottom.style.top = (56 + top.offsetHeight) + 'px';
+										}
+									});
+								});
+							}
+							observer.observe(top, { attributes: true });
+						}
 					}
-
-					const iHeight = pInt(Local.get(sClientSideKeyName)) || 300;
-					fSetHeight(iHeight > minHeight ? iHeight : minHeight);
 				}
 			};
 
@@ -969,93 +934,51 @@ class AppUser extends AbstractApp {
 		});
 	}
 
-	initVerticalLayoutResizer(sClientSideKeyName) {
-		const disabledWidth = 60,
-			minWidth = 155,
-			lLeft = $('#rl-left'),
-			right = $('#rl-right'),
-			mLeftWidth = Local.get(sClientSideKeyName) || null,
-			fSetWidth = (iWidth) => {
-				if (iWidth) {
-					leftPanelWidth(iWidth);
+	initVerticalLayoutResizer() {
+		let rlLeft = null,
+			rlRight = null,
+			observer = null;
 
-					$htmlCL.remove('rl-resizer');
-
-					lLeft.css({
-						width: '' + iWidth + 'px'
-					});
-
-					right.css({
-						left: '' + iWidth + 'px'
-					});
-				}
-			},
+		const
 			fDisable = (bDisable) => {
 				if (bDisable) {
-					lLeft.resizable('disable');
-					fSetWidth(disabledWidth);
+					if (observer) {
+						observer.disconnect();
+					}
+					rlLeft.classList.remove('resizable');
+					rlLeft.removeAttribute('style');
+					rlRight.removeAttribute('style');
 				} else {
-					lLeft.resizable('enable');
-					const width = pInt(Local.get(sClientSideKeyName)) || minWidth;
-					fSetWidth(width > minWidth ? width : minWidth);
-				}
-			},
-			fResizeCreateFunction = (event) => {
-				if (event && event.target) {
-					$(event.target)
-						.find('.ui-resizable-handle')
-						.on('mousedown', () => {
-							$htmlCL.add('rl-resizer');
-						})
-						.on('mouseup', () => {
-							$htmlCL.remove('rl-resizer');
-						});
-				}
-			},
-			fResizeResizeFunction = _.debounce(
-				() => {
-					$htmlCL.add('rl-resizer');
-				},
-				500,
-				true
-			),
-			fResizeStartFunction = () => {
-				$htmlCL.add('rl-resizer');
-			},
-			fResizeStopFunction = (event, obj) => {
-				$htmlCL.remove('rl-resizer');
-				if (obj && obj.size && obj.size.width) {
-					Local.set(sClientSideKeyName, obj.size.width);
-
-					leftPanelWidth(obj.size.width);
-
-					right.css({
-						left: '' + obj.size.width + 'px'
-					});
-
-					lLeft.css({
-						position: '',
-						top: '',
-						left: '',
-						height: ''
-					});
+					rlLeft = window.document.getElementById('rl-left');
+					rlRight = window.document.getElementById('rl-right');
+					if (rlLeft && rlRight) {
+						rlLeft.classList.add('resizable');
+						rlLeft.removeAttribute('style');
+						rlRight.removeAttribute('style');
+						if (window.ResizeObserver) {
+							let observer = new window.ResizeObserver(entries => {
+								entries.forEach(entry => {
+									if (entry.target === rlLeft) {
+										rlRight.style.left = entry.borderBoxSize.inlineSize + 'px';
+									}
+								});
+							});
+							observer.observe(rlLeft);
+						} else {
+							let observer = new window.MutationObserver(mutations => {
+								mutations.forEach(mutation => {
+									if (mutation.target === rlLeft && 'style' == mutation.attributeName) {
+										rlRight.style.left = rlLeft.offsetWidth + 'px';
+									}
+								});
+							});
+							observer.observe(rlLeft, { attributes: true });
+						}
+					}
 				}
 			};
 
-		if (null !== mLeftWidth) {
-			fSetWidth(mLeftWidth > minWidth ? mLeftWidth : minWidth);
-		}
-
-		lLeft.resizable({
-			helper: 'ui-resizable-helper-w',
-			minWidth: minWidth,
-			maxWidth: Magics.Size350px,
-			handles: 'e',
-			create: fResizeCreateFunction,
-			resize: fResizeResizeFunction,
-			start: fResizeStartFunction,
-			stop: fResizeStopFunction
-		});
+		fDisable(false);
 
 		Events.sub('left-panel.off', () => {
 			fDisable(true);
