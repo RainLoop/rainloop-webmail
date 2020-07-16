@@ -1,6 +1,6 @@
 /*! jQuery UI - v1.12.1 - 2016-09-14
 * http://jqueryui.com
-* Includes: widget.js, position.js, widgets/autocomplete.js, widgets/draggable.js, widgets/droppable.js, widgets/menu.js, widgets/mouse.js, widgets/resizable.js, widgets/selectable.js, widgets/sortable.js
+* Includes: widget.js, position.js, data.js, keycode.js, scroll-parent.js, widgets/autocomplete.js, widgets/draggable.js, widgets/droppable.js, widgets/menu.js, widgets/mouse.js, widgets/resizable.js, widgets/selectable.js, widgets/sortable.js
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
 (function( factory ) {
@@ -1251,6 +1251,76 @@ $.ui.position = {
 };
 
 } )();
+
+
+/*!
+ * jQuery UI :data 1.12.1
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: :data Selector
+//>>group: Core
+//>>description: Selects elements which have data stored under the specified key.
+//>>docs: http://api.jqueryui.com/data-selector/
+
+
+var data = $.extend( $.expr[ ":" ], {
+	data: $.expr.createPseudo ?
+		$.expr.createPseudo( function( dataName ) {
+			return function( elem ) {
+				return !!$.data( elem, dataName );
+			};
+		} ) :
+
+		// Support: jQuery <1.8
+		function( elem, i, match ) {
+			return !!$.data( elem, match[ 3 ] );
+		}
+} );
+
+
+/*!
+ * jQuery UI Scroll Parent 1.12.1
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+
+//>>label: scrollParent
+//>>group: Core
+//>>description: Get the closest ancestor element that is scrollable.
+//>>docs: http://api.jqueryui.com/scrollParent/
+
+
+
+$.fn.scrollParent = function( includeHidden ) {
+	var position = this.css( "position" ),
+		excludeStaticParent = position === "absolute",
+		overflowRegex = includeHidden ? /(auto|scroll|hidden)/ : /(auto|scroll)/,
+		scrollParent = this.parents().filter( function() {
+			var parent = $( this );
+			if ( excludeStaticParent && parent.css( "position" ) === "static" ) {
+				return false;
+			}
+			return overflowRegex.test( parent.css( "overflow" ) + parent.css( "overflow-y" ) +
+				parent.css( "overflow-x" ) );
+		} ).eq( 0 );
+
+	return position === "fixed" || !scrollParent.length ?
+		$( this[ 0 ].ownerDocument || document ) :
+		scrollParent;
+};
+
+
+$.ui.safeActiveElement = function( document ) {
+	return document.activeElement || document.body;
+};
 
 
 /*!
@@ -2811,17 +2881,6 @@ $.ui.plugin = {
 };
 
 
-
-$.ui.safeBlur = function( element ) {
-
-	// Support: IE9 - 10 only
-	// If the <body> is blurred, IE will switch windows, see #9420
-	if ( element && element.nodeName.toLowerCase() !== "body" ) {
-		$( element ).trigger( "blur" );
-	}
-};
-
-
 /*!
  * jQuery UI Draggable 1.12.1
  * http://jqueryui.com
@@ -2919,8 +2978,6 @@ $.widget( "ui.draggable", $.ui.mouse, {
 			return false;
 		}
 
-		this._blurActiveElement( event );
-
 		this._blockFrames( o.iframeFix === true ? "iframe" : o.iframeFix );
 
 		return true;
@@ -2945,21 +3002,6 @@ $.widget( "ui.draggable", $.ui.mouse, {
 			this.iframeBlocks.remove();
 			delete this.iframeBlocks;
 		}
-	},
-
-	_blurActiveElement: function( event ) {
-		var activeElement = $.ui.safeActiveElement( this.document[ 0 ] ),
-			target = $( event.target );
-
-		// Don't blur if the event occurred on an element that is within
-		// the currently focused element
-		// See #10527, #12472
-		if ( target.closest( activeElement ).length ) {
-			return;
-		}
-
-		// Blur any element that currently has focus, see #4261
-		$.ui.safeBlur( activeElement );
 	},
 
 	_mouseStart: function( event ) {
@@ -5123,14 +5165,6 @@ $.ui.plugin.add( "resizable", "ghost", {
 
 		that._addClass( that.ghost, "ui-resizable-ghost" );
 
-		// DEPRECATED
-		// TODO: remove after 1.12
-		if ( $.uiBackCompat !== false && typeof that.options.ghost === "string" ) {
-
-			// Ghost option
-			that.ghost.addClass( this.options.ghost );
-		}
-
 		that.ghost.appendTo( that.helper );
 
 	},
@@ -5670,43 +5704,6 @@ $.ui.ddmanager = {
 		}
 	}
 };
-
-// DEPRECATED
-// TODO: switch return back to widget declaration at top of file when this is removed
-if ( $.uiBackCompat !== false ) {
-
-	// Backcompat for activeClass and hoverClass options
-	$.widget( "ui.droppable", $.ui.droppable, {
-		options: {
-			hoverClass: false,
-			activeClass: false
-		},
-		_addActiveClass: function() {
-			this._super();
-			if ( this.options.activeClass ) {
-				this.element.addClass( this.options.activeClass );
-			}
-		},
-		_removeActiveClass: function() {
-			this._super();
-			if ( this.options.activeClass ) {
-				this.element.removeClass( this.options.activeClass );
-			}
-		},
-		_addHoverClass: function() {
-			this._super();
-			if ( this.options.hoverClass ) {
-				this.element.addClass( this.options.hoverClass );
-			}
-		},
-		_removeHoverClass: function() {
-			this._super();
-			if ( this.options.hoverClass ) {
-				this.element.removeClass( this.options.hoverClass );
-			}
-		}
-	} );
-}
 
 
 /*!
