@@ -53,17 +53,66 @@ html.rl-mobile {
 	min-width: 60px;
 }
 
+/*
+.resizable::after {
+    pointer-events: none;
+    position: absolute;
+    height: 22px;
+    width: 20px;
+    text-align: center;
+    bottom: 0;
+    right: 0;
+    background-color: #aaa;
+}
+.resizable::-webkit-resizer {
+    background: #aaa;
+	background: rgba(255,255,255,0.5);
+}
+*/
+
+.resizable > .resizer {
+	background: #aaa;
+	background: rgba(255,255,255,0.5);
+	display: none;
+	opacity: 0;
+	position: absolute;
+	z-index: 102;
+}
+.resizable > .resizer:hover {
+	opacity: 1;
+}
+
 html:not(.rl-left-panel-disabled) #rl-left.resizable {
 	resize: horizontal;
 	overflow: hidden;
 	min-width: 155px;
 	max-width: 350px;
 }
+#rl-left > .resizer {
+	cursor: ew-resize;
+	height: 100%;
+	right: 0;
+	top: 0;
+	width: 5px;
+}
+
 .b-message-list-wrapper.resizable {
 	resize: vertical;
 	overflow: hidden;
 	min-height: 200px;
 	max-height: 500px;
+}
+.b-message-list-wrapper > .resizer {
+	cursor: ns-resize;
+	height: 5px;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+}
+
+html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
+.b-message-list-wrapper > .resizer {
+	display: block;
 }
 
 #rl-right {
@@ -300,7 +349,7 @@ html.rl-no-preview-pane {
 	}
 }
 
-html.rl-side-preview-pane #rl-right .ui-resizable-handle {
+html.rl-side-preview-pane #rl-right .resizer {
 	display: none !important;
 }
 

@@ -95,6 +95,36 @@ import { hideLoading, routeOff, routeOn, setHash, startScreens, showScreenPopup 
 
 import { AbstractApp } from 'App/Abstract';
 
+if (!window.ResizeObserver) {
+	window.ResizeObserver = class {
+		constructor(callback) {
+			this.observer = new window.MutationObserver(mutations => {
+				let entries = [];
+				mutations.forEach(mutation => {
+					if ('style' == mutation.attributeName) {
+						entries.push({
+							contentRect: {
+								width: mutation.target.offsetWidth,
+								height: mutation.target.offsetHeight
+							},
+							target: mutation.target
+						});
+					}
+				});
+				callback(entries);
+			});
+		}
+
+		disconnect() {
+			this.observer.disconnect();
+		}
+
+		observe(target) {
+			this.observer.observe(target, { attributes: true });
+		}
+	};
+}
+
 class AppUser extends AbstractApp {
 	constructor() {
 		super(Remote);
@@ -881,112 +911,102 @@ class AppUser extends AbstractApp {
 		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
 	}
 
-	initHorizontalLayoutResizer() {
-		let top = null,
-			bottom = null,
-			observer = null;
-
-		const
-			fDisable = (bDisable) => {
-				if (bDisable) {
-					if (observer) {
-						observer.disconnect();
-						top.removeAttribute('style');
-						top.classList.remove('resizable');
-						bottom.removeAttribute('style');
-					}
-				} else if ($htmlCL.contains('rl-bottom-preview-pane')) {
-					top = window.document.querySelector('.b-message-list-wrapper');
-					bottom = window.document.querySelector('.b-message-view-wrapper');
-					if (top && bottom) {
-						top.classList.add('resizable');
-						if (window.ResizeObserver) {
-							if (!observer) {
-								observer = new window.ResizeObserver(entries => {
-									entries.forEach(entry => {
-										if (entry.target === top) {
-											bottom.style.top = (56 + entry.borderBoxSize.blockSize) + 'px';
-										}
-									});
-								});
+	setLayoutResizer(source, target, bDisable) {
+		if (bDisable) {
+			source.observer && source.observer.disconnect();
+			source.classList.remove('resizable');
+		} else {
+			source.classList.add('resizable');
+			if (!source.querySelector('.resizer')) {
+				const resizer = window.document.createElement('div'),
+					css = window.getComputedStyle(source, null),
+					cssint = s => parseFloat(css.getPropertyValue(s).replace('px', ''));
+				resizer.className = 'resizer';
+				source.appendChild(resizer);
+				resizer.addEventListener('mousedown', {
+					source: source,
+					handleEvent: function(e) {
+						if ('mousedown' == e.type) {
+							e.preventDefault();
+							if ('horizontal' == css.getPropertyValue('resize')) {
+								this.mode = 'width';
+								this.pos = e.pageX;
+							} else {
+								this.mode = 'height';
+								this.pos = e.pageY;
 							}
-							observer.observe(top);
-						} else {
-							if (!observer) {
-								observer = new window.MutationObserver(mutations => {
-									mutations.forEach(mutation => {
-										if (mutation.target === top && 'style' == mutation.attributeName) {
-											bottom.style.top = (56 + top.offsetHeight) + 'px';
-										}
-									});
-								});
+							this.min = cssint('min-'+this.mode);
+							this.max = cssint('max-'+this.mode);
+							this.org = cssint(this.mode);
+							window.addEventListener('mousemove', this);
+							window.addEventListener('mouseup', this);
+						} else if ('mousemove' == e.type) {
+							const length = this.org + (('width' == this.mode ? e.pageX : e.pageY) - this.pos);
+							if (length >= this.min && length <= this.max ) {
+								this.source.style[this.mode] = length + 'px';
 							}
-							observer.observe(top, { attributes: true });
+						} else if ('mouseup' == e.type) {
+							window.removeEventListener('mousemove', this);
+							window.removeEventListener('mouseup', this);
 						}
 					}
+				});
+				if ('horizontal' == css.getPropertyValue('resize')) {
+					source.observer = new window.ResizeObserver(entries => {
+						entries.forEach(entry => {
+//							target.style.left = entry.borderBoxSize.blockSize + 'px';
+//							target.style.left = source.offsetWidth + 'px';
+							target.style.left = entry.contentRect.width + 'px';
+						});
+					});
+				} else {
+					source.observer = new window.ResizeObserver(entries => {
+						entries.forEach(entry => {
+//							target.style.top = entry.borderBoxSize.inlineSize + 'px';
+//							target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
+							target.style.top = (4 + source.offsetTop + entry.contentRect.height) + 'px';
+						});
+					});
 				}
-			};
+			}
+			source.observer.observe(source, { box: 'border-box' });
+		}
+		source.removeAttribute('style');
+		target.removeAttribute('style');
+	}
 
-		fDisable(false);
+	initHorizontalLayoutResizer() {
+		let top = window.document.querySelector('.b-message-list-wrapper'),
+			bottom = window.document.querySelector('.b-message-view-wrapper');
 
-		Events.sub('layout', (layout) => {
-			fDisable(Layout.BottomPreview !== layout);
-		});
+		if (top && bottom) {
+			const
+				fDisable = (bDisable) => {
+					this.setLayoutResizer(top, bottom, bDisable || !$htmlCL.contains('rl-bottom-preview-pane'));
+				};
+
+			fDisable(false);
+
+			Events.sub('layout', layout => fDisable(Layout.BottomPreview !== layout));
+		}
 	}
 
 	initVerticalLayoutResizer() {
-		let rlLeft = null,
-			rlRight = null,
-			observer = null;
+		let left = window.document.getElementById('rl-left'),
+			right = window.document.getElementById('rl-right');
 
-		const
-			fDisable = (bDisable) => {
-				if (bDisable) {
-					if (observer) {
-						observer.disconnect();
-					}
-					rlLeft.classList.remove('resizable');
-					rlLeft.removeAttribute('style');
-					rlRight.removeAttribute('style');
-				} else {
-					rlLeft = window.document.getElementById('rl-left');
-					rlRight = window.document.getElementById('rl-right');
-					if (rlLeft && rlRight) {
-						rlLeft.classList.add('resizable');
-						rlLeft.removeAttribute('style');
-						rlRight.removeAttribute('style');
-						if (window.ResizeObserver) {
-							let observer = new window.ResizeObserver(entries => {
-								entries.forEach(entry => {
-									if (entry.target === rlLeft) {
-										rlRight.style.left = entry.borderBoxSize.inlineSize + 'px';
-									}
-								});
-							});
-							observer.observe(rlLeft);
-						} else {
-							let observer = new window.MutationObserver(mutations => {
-								mutations.forEach(mutation => {
-									if (mutation.target === rlLeft && 'style' == mutation.attributeName) {
-										rlRight.style.left = rlLeft.offsetWidth + 'px';
-									}
-								});
-							});
-							observer.observe(rlLeft, { attributes: true });
-						}
-					}
-				}
-			};
+		if (left && right) {
+			const
+				fDisable = bDisable => {
+					this.setLayoutResizer(left, right, bDisable);
+				};
 
-		fDisable(false);
-
-		Events.sub('left-panel.off', () => {
-			fDisable(true);
-		});
-
-		Events.sub('left-panel.on', () => {
 			fDisable(false);
-		});
+
+			Events.sub('left-panel.off', () => fDisable(true));
+
+			Events.sub('left-panel.on', () => fDisable(false));
+		}
 	}
 
 	logout() {
