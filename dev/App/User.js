@@ -911,30 +911,21 @@ class AppUser extends AbstractApp {
 		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);
 	}
 
-	setLayoutResizer(source, target, bDisable) {
-		if (bDisable) {
-			source.observer && source.observer.disconnect();
-			source.classList.remove('resizable');
-		} else {
+	setLayoutResizer(source, target, sClientSideKeyName, mode) {
+		if (mode) {
 			source.classList.add('resizable');
 			if (!source.querySelector('.resizer')) {
 				const resizer = window.document.createElement('div'),
-					css = window.getComputedStyle(source, null),
-					cssint = s => parseFloat(css.getPropertyValue(s).replace('px', ''));
+					cssint = s => parseFloat(window.getComputedStyle(source, null).getPropertyValue(s).replace('px', ''));
 				resizer.className = 'resizer';
 				source.appendChild(resizer);
 				resizer.addEventListener('mousedown', {
 					source: source,
+					mode: mode,
 					handleEvent: function(e) {
 						if ('mousedown' == e.type) {
 							e.preventDefault();
-							if ('horizontal' == css.getPropertyValue('resize')) {
-								this.mode = 'width';
-								this.pos = e.pageX;
-							} else {
-								this.mode = 'height';
-								this.pos = e.pageY;
-							}
+							this.pos = ('width' == this.mode) ? e.pageX : e.pageY;
 							this.min = cssint('min-'+this.mode);
 							this.max = cssint('max-'+this.mode);
 							this.org = cssint(this.mode);
@@ -951,27 +942,41 @@ class AppUser extends AbstractApp {
 						}
 					}
 				});
-				if ('horizontal' == css.getPropertyValue('resize')) {
+				if ('width' == mode) {
 					source.observer = new window.ResizeObserver(() => {
 						target.style.left = source.offsetWidth + 'px';
+						Local.set(sClientSideKeyName, source.offsetWidth);
 					});
 				} else {
 					source.observer = new window.ResizeObserver(() => {
 						target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
+						Local.set(sClientSideKeyName, source.offsetHeight);
 					});
 				}
 			}
 			source.observer.observe(source, { box: 'border-box' });
+			const length = Local.get(sClientSideKeyName);
+			if (length) {
+				if ('width' == mode) {
+					source.style.width = length + 'px';
+				} else {
+					source.style.height = length + 'px';
+				}
+			}
+		} else {
+			source.observer && source.observer.disconnect();
+			source.classList.remove('resizable');
+			target.removeAttribute('style');
+			source.removeAttribute('style');
 		}
-		target.removeAttribute('style');
-		source.removeAttribute('style');
 	}
 
-	initHorizontalLayoutResizer() {
+	initHorizontalLayoutResizer(sClientSideKeyName) {
 		const top = window.document.querySelector('.b-message-list-wrapper'),
 			bottom = window.document.querySelector('.b-message-view-wrapper'),
 			fDisable = bDisable => {
-				this.setLayoutResizer(top, bottom, bDisable || !$htmlCL.contains('rl-bottom-preview-pane'));
+				this.setLayoutResizer(top, bottom, sClientSideKeyName,
+					(bDisable || !$htmlCL.contains('rl-bottom-preview-pane')) ? null : 'height');
 			};
 		if (top && bottom) {
 			fDisable(false);
@@ -979,11 +984,11 @@ class AppUser extends AbstractApp {
 		}
 	}
 
-	initVerticalLayoutResizer() {
+	initVerticalLayoutResizer(sClientSideKeyName) {
 		const left = window.document.getElementById('rl-left'),
 			right = window.document.getElementById('rl-right'),
 			fDisable = bDisable => {
-				this.setLayoutResizer(left, right, bDisable);
+				this.setLayoutResizer(left, right, sClientSideKeyName, bDisable ? null : 'width');
 			};
 		if (left && right) {
 			fDisable(false);
