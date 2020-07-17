@@ -952,59 +952,42 @@ class AppUser extends AbstractApp {
 					}
 				});
 				if ('horizontal' == css.getPropertyValue('resize')) {
-					source.observer = new window.ResizeObserver(entries => {
-						entries.forEach(entry => {
-//							target.style.left = entry.borderBoxSize.blockSize + 'px';
-//							target.style.left = source.offsetWidth + 'px';
-							target.style.left = entry.contentRect.width + 'px';
-						});
+					source.observer = new window.ResizeObserver(() => {
+						target.style.left = source.offsetWidth + 'px';
 					});
 				} else {
-					source.observer = new window.ResizeObserver(entries => {
-						entries.forEach(entry => {
-//							target.style.top = entry.borderBoxSize.inlineSize + 'px';
-//							target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
-							target.style.top = (4 + source.offsetTop + entry.contentRect.height) + 'px';
-						});
+					source.observer = new window.ResizeObserver(() => {
+						target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
 					});
 				}
 			}
 			source.observer.observe(source, { box: 'border-box' });
 		}
-		source.removeAttribute('style');
 		target.removeAttribute('style');
+		source.removeAttribute('style');
 	}
 
 	initHorizontalLayoutResizer() {
-		let top = window.document.querySelector('.b-message-list-wrapper'),
-			bottom = window.document.querySelector('.b-message-view-wrapper');
-
+		const top = window.document.querySelector('.b-message-list-wrapper'),
+			bottom = window.document.querySelector('.b-message-view-wrapper'),
+			fDisable = bDisable => {
+				this.setLayoutResizer(top, bottom, bDisable || !$htmlCL.contains('rl-bottom-preview-pane'));
+			};
 		if (top && bottom) {
-			const
-				fDisable = (bDisable) => {
-					this.setLayoutResizer(top, bottom, bDisable || !$htmlCL.contains('rl-bottom-preview-pane'));
-				};
-
 			fDisable(false);
-
 			Events.sub('layout', layout => fDisable(Layout.BottomPreview !== layout));
 		}
 	}
 
 	initVerticalLayoutResizer() {
-		let left = window.document.getElementById('rl-left'),
-			right = window.document.getElementById('rl-right');
-
+		const left = window.document.getElementById('rl-left'),
+			right = window.document.getElementById('rl-right'),
+			fDisable = bDisable => {
+				this.setLayoutResizer(left, right, bDisable);
+			};
 		if (left && right) {
-			const
-				fDisable = bDisable => {
-					this.setLayoutResizer(left, right, bDisable);
-				};
-
 			fDisable(false);
-
 			Events.sub('left-panel.off', () => fDisable(true));
-
 			Events.sub('left-panel.on', () => fDisable(false));
 		}
 	}
