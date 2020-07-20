@@ -50,7 +50,7 @@ class Selector {
 	) {
 		this.list = koList;
 
-		this.listChecked = ko.computed(() => _.filter(this.list(), (item) => item.checked())).extend({ rateLimit: 0 });
+		this.listChecked = ko.computed(() => this.list().filter(item => item.checked())).extend({ rateLimit: 0 });
 		this.isListChecked = ko.computed(() => 0 < this.listChecked().length);
 
 		this.focusedItem = koFocusedItem || ko.observable(null);

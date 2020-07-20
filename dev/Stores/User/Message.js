@@ -142,7 +142,7 @@ class MessageUserStore {
 		this.isMessageSelected = ko.computed(() => null !== this.message());
 
 		this.messageListChecked = ko
-			.computed(() => _.filter(this.messageList(), (item) => item.checked()))
+			.computed(() => this.messageList().filter(item => item.checked()))
 			.extend({ rateLimit: 0 });
 
 		this.hasCheckedMessages = ko.computed(() => 0 < this.messageListChecked().length).extend({ rateLimit: 0 });
@@ -307,7 +307,7 @@ class MessageUserStore {
 			currentFolderFullNameRaw = FolderStore.currentFolderFullNameRaw(),
 			messages =
 				currentFolderFullNameRaw === fromFolderFullNameRaw
-					? _.filter(messageList, (item) => item && uidForRemove.includes(pInt(item.uid)))
+					? messageList.filter(item => item && uidForRemove.includes(pInt(item.uid)))
 					: [];
 
 		_.each(messages, (item) => {

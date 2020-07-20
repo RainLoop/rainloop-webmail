@@ -98,21 +98,20 @@ class ContactsPopupView extends AbstractViewNext {
 		this.viewSaveTrigger = ko.observable(SaveSettingsStep.Idle);
 
 		this.viewPropertiesNames = ko.computed(() =>
-			_.filter(
-				this.viewProperties(),
-				(property) => [ContactPropertyType.FirstName, ContactPropertyType.LastName].includes(property.type())
+			this.viewProperties().filter(
+				property => [ContactPropertyType.FirstName, ContactPropertyType.LastName].includes(property.type())
 			)
 		);
 		this.viewPropertiesOther = ko.computed(() =>
-			_.filter(this.viewProperties(), (property) => [ContactPropertyType.Nick].includes(property.type()))
+			this.viewProperties().filter(property => [ContactPropertyType.Nick].includes(property.type()))
 		);
 
 		this.viewPropertiesEmails = ko.computed(() =>
-			_.filter(this.viewProperties(), (property) => ContactPropertyType.Email === property.type())
+			this.viewProperties().filter(property => ContactPropertyType.Email === property.type())
 		);
 
 		this.viewPropertiesWeb = ko.computed(() =>
-			_.filter(this.viewProperties(), (property) => ContactPropertyType.Web === property.type())
+			this.viewProperties().filter(property => ContactPropertyType.Web === property.type())
 		);
 
 		this.viewHasNonEmptyRequiredProperties = ko.computed(() => {
@@ -124,11 +123,11 @@ class ContactsPopupView extends AbstractViewNext {
 		});
 
 		this.viewPropertiesPhones = ko.computed(() =>
-			_.filter(this.viewProperties(), (property) => ContactPropertyType.Phone === property.type())
+			this.viewProperties().filter(property => ContactPropertyType.Phone === property.type())
 		);
 
 		this.viewPropertiesEmailsNonEmpty = ko.computed(() =>
-			_.filter(this.viewPropertiesNames(), (property) => '' !== trim(property.value()))
+			this.viewPropertiesNames().filter(property => '' !== trim(property.value()))
 		);
 
 		const propertyFocused = (property) => {
@@ -137,17 +136,17 @@ class ContactsPopupView extends AbstractViewNext {
 		};
 
 		this.viewPropertiesEmailsEmptyAndOnFocused = ko.computed(() =>
-			_.filter(this.viewPropertiesEmails(), propertyFocused)
+			this.viewPropertiesEmails().filter(propertyFocused)
 		);
 
 		this.viewPropertiesPhonesEmptyAndOnFocused = ko.computed(() =>
-			_.filter(this.viewPropertiesPhones(), propertyFocused)
+			this.viewPropertiesPhones().filter(propertyFocused)
 		);
 
-		this.viewPropertiesWebEmptyAndOnFocused = ko.computed(() => _.filter(this.viewPropertiesWeb(), propertyFocused));
+		this.viewPropertiesWebEmptyAndOnFocused = ko.computed(() => this.viewPropertiesWeb().filter(propertyFocused));
 
 		this.viewPropertiesOtherEmptyAndOnFocused = ko.computed(() =>
-			_.filter(this.viewPropertiesOther(), propertyFocused)
+			this.viewPropertiesOther().filter(propertyFocused)
 		);
 
 		this.viewPropertiesEmailsEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
@@ -166,7 +165,7 @@ class ContactsPopupView extends AbstractViewNext {
 		this.contacts.subscribe(windowResizeCallback);
 		this.viewProperties.subscribe(windowResizeCallback);
 
-		this.contactsChecked = ko.computed(() => _.filter(this.contacts(), (item) => item.checked()));
+		this.contactsChecked = ko.computed(() => this.contacts().filter(item => item.checked()));
 
 		this.contactsCheckedOrSelected = ko.computed(() => {
 			const checked = this.contactsChecked(),

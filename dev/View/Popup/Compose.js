@@ -75,7 +75,7 @@ class ComposePopupView extends AbstractViewNext {
 				const identityEmail = identity[name]();
 				let list = trim(context[name]()).split(/[,]/);
 
-				list = _.filter(list, (email) => {
+				list = list.filter(email => {
 					email = trim(email);
 					return email && trim(identityEmail) !== email;
 				});
@@ -225,9 +225,9 @@ class ComposePopupView extends AbstractViewNext {
 		this.saving = ko.observable(false);
 		this.attachments = ko.observableArray([]);
 
-		this.attachmentsInProcess = ko.computed(() => _.filter(this.attachments(), (item) => item && !item.complete()));
-		this.attachmentsInReady = ko.computed(() => _.filter(this.attachments(), (item) => item && item.complete()));
-		this.attachmentsInError = ko.computed(() => _.filter(this.attachments(), (item) => item && '' !== item.error()));
+		this.attachmentsInProcess = ko.computed(() => this.attachments().filter(item => item && !item.complete()));
+		this.attachmentsInReady = ko.computed(() => this.attachments().filter(item => item && item.complete()));
+		this.attachmentsInError = ko.computed(() => this.attachments().filter(item => item && '' !== item.error()));
 
 		this.attachmentsCount = ko.computed(() => this.attachments().length);
 		this.attachmentsInErrorCount = ko.computed(() => this.attachmentsInError().length);
@@ -1606,7 +1606,7 @@ class ComposePopupView extends AbstractViewNext {
 	 */
 	getAttachmentsDownloadsForUpload() {
 		return _.map(
-			_.filter(this.attachments(), (item) => item && '' === item.tempName()),
+			this.attachments().filter(item => item && '' === item.tempName()),
 			(item) => item.id
 		);
 	}

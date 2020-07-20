@@ -673,7 +673,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		const checked = this.messageListCheckedOrSelected();
 		if (0 < checked.length) {
 			if (isUnd(bFlag)) {
-				const flagged = _.filter(checked, (message) => message.flagged());
+				const flagged = checked.filter(message => message.flagged());
 				this.setAction(
 					checked[0].folderFullNameRaw,
 					checked.length === flagged.length ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
@@ -693,7 +693,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		const checked = this.messageListCheckedOrSelected();
 		if (0 < checked.length) {
 			if (isUnd(seen)) {
-				const unseen = _.filter(checked, (message) => message.unseen());
+				const unseen = checked.filter(message => message.unseen());
 				this.setAction(
 					checked[0].folderFullNameRaw,
 					0 < unseen.length ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,

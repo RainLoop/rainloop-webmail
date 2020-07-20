@@ -18,8 +18,8 @@ class PgpUserStore {
 		this.openpgpkeys = ko.observableArray([]);
 		this.openpgpKeyring = null;
 
-		this.openpgpkeysPublic = ko.computed(() => _.filter(this.openpgpkeys(), (item) => !!(item && !item.isPrivate)));
-		this.openpgpkeysPrivate = ko.computed(() => _.filter(this.openpgpkeys(), (item) => !!(item && item.isPrivate)));
+		this.openpgpkeysPublic = ko.computed(() => this.openpgpkeys().filter(item => !!(item && !item.isPrivate)));
+		this.openpgpkeysPrivate = ko.computed(() => this.openpgpkeys().filter(item => !!(item && item.isPrivate)));
 	}
 
 	/**
@@ -124,7 +124,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findAllPublicKeysByEmailNotNative(email) {
-		return _.filter(this.openpgpkeysPublic(), (item) => item && -1 < item.emails.indexOf(email)) || null;
+		return this.openpgpkeysPublic().filter(item => item && -1 < item.emails.indexOf(email)) || null;
 	}
 
 	/**
@@ -132,7 +132,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findAllPrivateKeysByEmailNotNative(email) {
-		return _.filter(this.openpgpkeysPrivate(), (item) => item && -1 < item.emails.indexOf(email)) || null;
+		return this.openpgpkeysPrivate().filter(item => item && -1 < item.emails.indexOf(email)) || null;
 	}
 
 	/**
