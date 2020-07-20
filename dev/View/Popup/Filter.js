@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { FiltersAction, FilterConditionField, FilterConditionType } from 'Common/Enums';
@@ -44,7 +43,7 @@ class FilterPopupView extends AbstractViewNext {
 		this.typeOptions = ko.observableArray([]);
 		this.typeOptionsSize = ko.observableArray([]);
 
-		initOnStartOrLangChange(_.bind(this.populateOptions, this));
+		initOnStartOrLangChange(this.populateOptions.bind(this));
 
 		this.modules.subscribe(this.populateOptions, this);
 	}

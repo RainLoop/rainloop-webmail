@@ -222,7 +222,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 		this.canBeMoved = this.hasCheckedOrSelectedLines;
 
-		this.quotaTooltip = _.bind(this.quotaTooltip, this);
+		this.quotaTooltip = this.quotaTooltip.bind(this);
 
 		this.selector = new Selector(
 			this.messageList,

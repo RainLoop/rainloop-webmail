@@ -19,7 +19,7 @@ class PluginPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.onPluginSettingsUpdateResponse = _.bind(this.onPluginSettingsUpdateResponse, this);
+		this.onPluginSettingsUpdateResponse = this.onPluginSettingsUpdateResponse.bind(this);
 
 		this.saveError = ko.observable('');
 
@@ -43,7 +43,7 @@ class PluginPopupView extends AbstractViewNext {
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = KeyState.All;
 
-		this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Magics.Time200ms);
+		this.tryToClosePopup = _.debounce(this.tryToClosePopup.bind(this), Magics.Time200ms);
 	}
 
 	@command((self) => self.hasConfiguration())

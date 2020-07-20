@@ -97,7 +97,7 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.sLastFocusedField = 'to';
 
-		this.resizerTrigger = _.bind(this.resizerTrigger, this);
+		this.resizerTrigger = this.resizerTrigger.bind(this);
 
 		this.allowContacts = !!AppStore.contactsIsAllowed();
 		this.allowFolders = !!Settings.capa(Capa.Folders);
@@ -307,8 +307,8 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.canBeSentOrSaved = ko.computed(() => !this.sending() && !this.saving());
 
-		this.sendMessageResponse = _.bind(this.sendMessageResponse, this);
-		this.saveMessageResponse = _.bind(this.saveMessageResponse, this);
+		this.sendMessageResponse = this.sendMessageResponse.bind(this);
+		this.saveMessageResponse = this.saveMessageResponse.bind(this);
 
 		Events.sub('interval.2m', () => {
 			if (
@@ -328,15 +328,15 @@ class ComposePopupView extends AbstractViewNext {
 		this.showBcc.subscribe(this.resizerTrigger);
 		this.showReplyTo.subscribe(this.resizerTrigger);
 
-		this.onMessageUploadAttachments = _.bind(this.onMessageUploadAttachments, this);
+		this.onMessageUploadAttachments = this.onMessageUploadAttachments.bind(this);
 
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = KeyState.Compose;
 
-		this.tryToClosePopup = _.debounce(_.bind(this.tryToClosePopup, this), Magics.Time200ms);
+		this.tryToClosePopup = _.debounce(this.tryToClosePopup.bind(this), Magics.Time200ms);
 
-		this.emailsSource = _.bind(this.emailsSource, this);
-		this.autosaveFunction = _.bind(this.autosaveFunction, this);
+		this.emailsSource = this.emailsSource.bind(this);
+		this.autosaveFunction = this.autosaveFunction.bind(this);
 
 		this.iTimer = 0;
 	}

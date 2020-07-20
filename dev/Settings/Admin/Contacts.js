@@ -100,7 +100,7 @@ class ContactsAdminSettings {
 
 		this.contactsType(settingsGet('ContactsPdoType'));
 
-		this.onTestContactsResponse = _.bind(this.onTestContactsResponse, this);
+		this.onTestContactsResponse = this.onTestContactsResponse.bind(this);
 	}
 
 	@command((self) => '' !== self.pdoDsn() && '' !== self.pdoUser())

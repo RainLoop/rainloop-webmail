@@ -16,12 +16,11 @@ const isFunc = _.isFunction;
 const isUnd = _.isUndefined;
 const isNull = _.isNull;
 const has = _.has;
-const bind = _.bind;
 const noop = () => {}; // eslint-disable-line no-empty-function
 const noopTrue = () => true;
 const noopFalse = () => false;
 
-export { trim, isArray, isObject, isFunc, isUnd, isNull, has, bind, noop, noopTrue, noopFalse, jassl };
+export { trim, isArray, isObject, isFunc, isUnd, isNull, has, noop, noopTrue, noopFalse, jassl };
 
 /**
  * @param {Function} func

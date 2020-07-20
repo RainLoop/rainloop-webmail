@@ -338,7 +338,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			this.toggleFullScreen();
 		});
 
-		this.attachmentPreview = _.bind(this.attachmentPreview, this);
+		this.attachmentPreview = this.attachmentPreview.bind(this);
 	}
 
 	@command()
@@ -529,7 +529,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	onBuild(dom) {
 		const self = this,
-			fCheckHeaderHeight = _.bind(this.checkHeaderHeight, this);
+			fCheckHeaderHeight = this.checkHeaderHeight.bind(this);
 
 		this.oDom = dom;
 
@@ -685,7 +685,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	initShortcuts() {
 		// exit fullscreen, back
-		key('esc, backspace', KeyState.MessageView, _.bind(this.escShortcuts, this));
+		key('esc, backspace', KeyState.MessageView, this.escShortcuts.bind(this));
 
 		// fullscreen
 		key('enter', KeyState.MessageView, () => {

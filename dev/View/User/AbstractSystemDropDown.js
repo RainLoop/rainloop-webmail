@@ -41,7 +41,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 		this.accountMenuDropdownTrigger = ko.observable(false);
 		this.capaAdditionalAccounts = ko.observable(Settings.capa(Capa.AdditionalAccounts));
 
-		this.addAccountClick = _.bind(this.addAccountClick, this);
+		this.addAccountClick = this.addAccountClick.bind(this);
 
 		Events.sub('audio.stop', () => AppStore.currentAudio(''));
 		Events.sub('audio.start', (name) => AppStore.currentAudio(name));

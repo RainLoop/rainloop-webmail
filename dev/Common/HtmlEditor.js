@@ -35,7 +35,7 @@ class HtmlEditor {
 		this.element = element;
 		this.$element = $(element);
 
-		this.resize = _.throttle(_.bind(this.resizeEditor, this), 100);
+		this.resize = _.throttle(this.resizeEditor.bind(this), 100);
 
 		this.init();
 	}

@@ -24,7 +24,7 @@ class AbstractRadio extends AbstractComponent {
 			this.values(_.map(params.values, (label, value) => ({ label: label, value: value })));
 		}
 
-		this.click = _.bind(this.click, this);
+		this.click = this.click.bind(this);
 	}
 
 	click(value) {

@@ -1,4 +1,3 @@
-import _ from '_';
 import crossroads from 'crossroads';
 import { isArray, isNonEmptyArray, noop } from 'Common/Utils';
 
@@ -49,7 +48,7 @@ export class AbstractScreen {
 		const routes = this.routes();
 
 		if (isNonEmptyArray(routes)) {
-			fMatcher = _.bind(this.onRoute || noop, this);
+			fMatcher = (this.onRoute || noop).bind(this);
 			route = crossroads.create();
 
 			routes.forEach((item) => {

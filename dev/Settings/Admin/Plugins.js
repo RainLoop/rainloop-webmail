@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
@@ -26,8 +25,8 @@ class PluginsAdminSettings {
 
 		this.visibility = ko.computed(() => (PluginStore.plugins.loading() ? 'visible' : 'hidden'));
 
-		this.onPluginLoadRequest = _.bind(this.onPluginLoadRequest, this);
-		this.onPluginDisableRequest = _.bind(this.onPluginDisableRequest, this);
+		this.onPluginLoadRequest = this.onPluginLoadRequest.bind(this);
+		this.onPluginDisableRequest = this.onPluginDisableRequest.bind(this);
 	}
 
 	disablePlugin(plugin) {

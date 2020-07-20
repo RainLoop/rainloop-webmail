@@ -100,7 +100,7 @@ class MessageUserStore {
 		this.computers();
 		this.subscribers();
 
-		this.onMessageResponse = _.bind(this.onMessageResponse, this);
+		this.onMessageResponse = this.onMessageResponse.bind(this);
 
 		this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, Magics.Time30s);
 	}

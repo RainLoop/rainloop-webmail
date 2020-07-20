@@ -38,7 +38,7 @@ class DomainAliasPopupView extends AbstractViewNext {
 
 		this.canBeSaved = ko.computed(() => !this.saving() && '' !== this.name() && '' !== this.alias());
 
-		this.onDomainAliasCreateOrSaveResponse = _.bind(this.onDomainAliasCreateOrSaveResponse, this);
+		this.onDomainAliasCreateOrSaveResponse = this.onDomainAliasCreateOrSaveResponse.bind(this);
 	}
 
 	@command((self) => self.canBeSaved())

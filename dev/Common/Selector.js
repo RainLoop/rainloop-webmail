@@ -56,7 +56,7 @@ class Selector {
 		this.focusedItem = koFocusedItem || ko.observable(null);
 		this.selectedItem = koSelectedItem || ko.observable(null);
 
-		this.itemSelectedThrottle = _.debounce(_.bind(this.itemSelected, this), 300);
+		this.itemSelectedThrottle = _.debounce(this.itemSelected.bind(this), 300);
 
 		this.listChecked.subscribe((items) => {
 			if (0 < items.length) {

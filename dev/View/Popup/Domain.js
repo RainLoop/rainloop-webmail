@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { StorageResultType, ServerSecure, Ports, Notification } from 'Common/Enums';
@@ -201,7 +200,7 @@ class DomainPopupView extends AbstractViewNext {
 	createOrAddCommand() {
 		this.saving(true);
 		Remote.createOrUpdateDomain(
-			_.bind(this.onDomainCreateOrSaveResponse, this),
+			this.onDomainCreateOrSaveResponse.bind(this),
 			!this.edit(),
 			this.name(),
 
@@ -238,7 +237,7 @@ class DomainPopupView extends AbstractViewNext {
 		this.testing(true);
 
 		Remote.testConnectionForDomain(
-			_.bind(this.onTestConnectionResponse, this),
+			this.onTestConnectionResponse.bind(this),
 			this.name(),
 
 			this.imapServer(),

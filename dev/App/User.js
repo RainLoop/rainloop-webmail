@@ -131,7 +131,7 @@ class AppUser extends AbstractApp {
 		this.moveCache = {};
 
 		this.quotaDebounce = _.debounce(this.quota, Magics.Time30s);
-		this.moveOrDeleteResponseHelper = _.bind(this.moveOrDeleteResponseHelper, this);
+		this.moveOrDeleteResponseHelper = this.moveOrDeleteResponseHelper.bind(this);
 
 		this.messagesMoveTrigger = _.debounce(this.messagesMoveTrigger, 500);
 

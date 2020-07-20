@@ -205,7 +205,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 		this.viewHash = ko.computed(() => '' + _.map(this.viewProperties(), (oItem) => oItem.value()).join(''));
 
-		// this.saveCommandDebounce = _.debounce(_.bind(this.saveCommand, this), 1000);
+		// this.saveCommandDebounce = _.debounce(this.saveCommand.bind(this), 1000);
 
 		this.viewHash.subscribe(() => {
 			if (this.watchHash() && !this.viewReadOnly() && !this.watchDirty()) {
@@ -482,7 +482,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 	deleteSelectedContacts() {
 		if (0 < this.contactsCheckedOrSelected().length) {
-			Remote.contactsDelete(_.bind(this.deleteResponse, this), this.contactsCheckedOrSelectedUids());
+			Remote.contactsDelete(this.deleteResponse.bind(this), this.contactsCheckedOrSelectedUids());
 
 			this.removeCheckedOrSelectedContactsFromList();
 		}

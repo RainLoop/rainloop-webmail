@@ -13,8 +13,8 @@ class CheckboxMaterialDesignComponent extends AbstractCheckbox {
 		this.animationBox = ko.observable(false).extend({ falseTimeout: 200 });
 		this.animationCheckmark = ko.observable(false).extend({ falseTimeout: 200 });
 
-		this.animationBoxSetTrue = _.bind(this.animationBoxSetTrue, this);
-		this.animationCheckmarkSetTrue = _.bind(this.animationCheckmarkSetTrue, this);
+		this.animationBoxSetTrue = this.animationBoxSetTrue.bind(this);
+		this.animationCheckmarkSetTrue = this.animationCheckmarkSetTrue.bind(this);
 
 		this.disposable.push(
 			this.value.subscribe((value) => {

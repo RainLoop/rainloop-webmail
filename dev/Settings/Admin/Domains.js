@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { StorageResultType } from 'Common/Enums';
@@ -17,8 +16,8 @@ class DomainsAdminSettings {
 
 		this.domainForDeletion = ko.observable(null).deleteAccessHelper();
 
-		this.onDomainListChangeRequest = _.bind(this.onDomainListChangeRequest, this);
-		this.onDomainLoadRequest = _.bind(this.onDomainLoadRequest, this);
+		this.onDomainListChangeRequest = this.onDomainListChangeRequest.bind(this);
+		this.onDomainLoadRequest = this.onDomainLoadRequest.bind(this);
 	}
 
 	createDomain() {

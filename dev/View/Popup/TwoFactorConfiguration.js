@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import ko from 'ko';
 import qr from 'qr';
 
@@ -87,8 +86,8 @@ class TwoFactorConfigurationPopupView extends AbstractViewNext {
 
 		this.twoFactorAllowedEnable = ko.computed(() => this.viewEnable() || this.twoFactorTested());
 
-		this.onResult = _.bind(this.onResult, this);
-		this.onShowSecretResult = _.bind(this.onShowSecretResult, this);
+		this.onResult = this.onResult.bind(this);
+		this.onShowSecretResult = this.onShowSecretResult.bind(this);
 	}
 
 	showSecret() {

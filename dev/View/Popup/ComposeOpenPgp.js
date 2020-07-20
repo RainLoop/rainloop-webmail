@@ -106,7 +106,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 			}
 		};
 
-		this.deletePublickKey = _.bind(this.deletePublickKey, this);
+		this.deletePublickKey = this.deletePublickKey.bind(this);
 	}
 
 	@command((self) => !self.submitRequest() && (self.sign() || self.encrypt()))
