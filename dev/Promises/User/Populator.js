@@ -23,7 +23,7 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 	 * @returns {boolean}
 	 */
 	isFolderExpanded(sFullNameHash, expandedFolders) {
-		return expandedFolders && isArray(expandedFolders) && -1 !== _.indexOf(expandedFolders, sFullNameHash);
+		return expandedFolders && isArray(expandedFolders) && expandedFolders.includes(sFullNameHash);
 	}
 
 	/**

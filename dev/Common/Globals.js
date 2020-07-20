@@ -49,17 +49,17 @@ export const sUserAgent =
 /**
  * @type {boolean}
  */
-export const bIE = -1 < sUserAgent.indexOf('msie');
+export const bIE = sUserAgent.includes('msie');
 
 /**
  * @type {boolean}
  */
-export const bChrome = -1 < sUserAgent.indexOf('chrome');
+export const bChrome = sUserAgent.includes('chrome');
 
 /**
  * @type {boolean}
  */
-export const bSafari = !bChrome && -1 < sUserAgent.indexOf('safari');
+export const bSafari = !bChrome && sUserAgent.includes('safari');
 
 /**
  * @type {boolean}

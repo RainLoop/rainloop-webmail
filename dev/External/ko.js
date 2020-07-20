@@ -818,7 +818,7 @@ ko.bindingHandlers.emailsTags = {
 			autoCompleteSource: fAutoCompleteSource,
 			splitHook: (value) => {
 				const v = Utils.trim(value);
-				if (v && -1 < inputDelimiters.indexOf(v.substr(-1))) {
+				if (v && inputDelimiters.includes(v.substr(-1))) {
 					return EmailModel.splitEmailLine(value);
 				}
 				return null;

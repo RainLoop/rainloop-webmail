@@ -315,7 +315,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 			useThreads = AppStore.threadsAllowed() && SettingsStore.useThreads(),
 			inboxUidNext = getFolderInboxName() === sFolderFullNameRaw ? getFolderUidNext(sFolderFullNameRaw) : '';
 
-		if ('' !== folderHash && ('' === sSearch || -1 === sSearch.indexOf('is:'))) {
+		if ('' !== folderHash && ('' === sSearch || !sSearch.includes('is:'))) {
 			return this.defaultRequest(
 				fCallback,
 				'MessageList',

@@ -30,7 +30,7 @@ class PgpUserStore {
 	}
 
 	findKeyByHex(keys, hash) {
-		return _.find(keys, (item) => hash && item && (hash === item.id || -1 < item.ids.indexOf(hash)));
+		return _.find(keys, (item) => hash && item && (hash === item.id || item.ids.includes(hash)));
 	}
 
 	findPublicKeyByHex(hash) {
@@ -45,7 +45,7 @@ class PgpUserStore {
 		return _.compact(
 			_.flatten(
 				_.map(this.openpgpkeysPublic(), (item) => {
-					const key = item && -1 < item.emails.indexOf(email) ? item : null;
+					const key = item && item.emails.includes(email) ? item : null;
 					return key ? key.getNativeKeys() : [null];
 				}),
 				true
@@ -108,7 +108,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findPublicKeyByEmailNotNative(email) {
-		return _.find(this.openpgpkeysPublic(), (item) => item && -1 < item.emails.indexOf(email)) || null;
+		return _.find(this.openpgpkeysPublic(), (item) => item && item.emails.includes(email)) || null;
 	}
 
 	/**
@@ -116,7 +116,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findPrivateKeyByEmailNotNative(email) {
-		return _.find(this.openpgpkeysPrivate(), (item) => item && -1 < item.emails.indexOf(email)) || null;
+		return _.find(this.openpgpkeysPrivate(), (item) => item && item.emails.includes(email)) || null;
 	}
 
 	/**
@@ -124,7 +124,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findAllPublicKeysByEmailNotNative(email) {
-		return this.openpgpkeysPublic().filter(item => item && -1 < item.emails.indexOf(email)) || null;
+		return this.openpgpkeysPublic().filter(item => item && item.emails.includes(email)) || null;
 	}
 
 	/**
@@ -132,7 +132,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findAllPrivateKeysByEmailNotNative(email) {
-		return this.openpgpkeysPrivate().filter(item => item && -1 < item.emails.indexOf(email)) || null;
+		return this.openpgpkeysPrivate().filter(item => item && item.emails.includes(email)) || null;
 	}
 
 	/**
@@ -142,7 +142,7 @@ class PgpUserStore {
 	 */
 	findPrivateKeyByEmail(email, password) {
 		let privateKey = null;
-		const key = _.find(this.openpgpkeysPrivate(), (item) => item && -1 < item.emails.indexOf(email));
+		const key = _.find(this.openpgpkeysPrivate(), (item) => item && item.emails.includes(email));
 
 		if (key) {
 			try {

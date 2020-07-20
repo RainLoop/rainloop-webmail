@@ -739,7 +739,7 @@ class ComposePopupView extends AbstractViewNext {
 		if ('' !== fromLine) {
 			signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
 
-			if (-1 === fromLine.indexOf(' ') && 0 < fromLine.indexOf('@')) {
+			if (!fromLine.includes(' ') && 0 < fromLine.indexOf('@')) {
 				fromLine = fromLine.replace(/@[\S]+/, '');
 			}
 
@@ -752,14 +752,14 @@ class ComposePopupView extends AbstractViewNext {
 		signature = signature.replace(/{{FROM}}/g, '');
 		signature = signature.replace(/{{FROM-FULL}}/g, '');
 
-		if (-1 < signature.indexOf('{{DATE}}')) {
+		if (signature.includes('{{DATE}}')) {
 			signature = signature.replace(/{{DATE}}/g, momentorFormat(0, 'llll'));
 		}
 
-		if (-1 < signature.indexOf('{{TIME}}')) {
+		if (signature.includes('{{TIME}}')) {
 			signature = signature.replace(/{{TIME}}/g, momentorFormat(0, 'LT'));
 		}
-		if (-1 < signature.indexOf('{{MOMENT:')) {
+		if (signature.includes('{{MOMENT:')) {
 			try {
 				let match = null;
 				while (null !== (match = momentRegx.exec(signature))) {

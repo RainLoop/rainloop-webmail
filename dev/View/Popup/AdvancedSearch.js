@@ -73,7 +73,7 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 	}
 
 	buildSearchStringValue(value) {
-		if (-1 < value.indexOf(' ')) {
+		if (value.includes(' ')) {
 			value = '"' + value + '"';
 		}
 		return value;

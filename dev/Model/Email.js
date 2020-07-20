@@ -73,7 +73,7 @@ class EmailModel {
 	 * @returns {boolean}
 	 */
 	search(query) {
-		return -1 < (this.name + ' ' + this.email).toLowerCase().indexOf(query.toLowerCase());
+		return (this.name + ' ' + this.email).toLowerCase().includes(query.toLowerCase());
 	}
 
 	/**
