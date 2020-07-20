@@ -53,7 +53,6 @@ config.paths.css = {
 			'node_modules/normalize.css/normalize.css',
 			'vendors/jquery-ui/css/smoothness/jquery-ui-1.12.1.custom.css',
 			'vendors/fontastic/styles.css',
-			'vendors/jquery-letterfx/jquery-letterfx.min.css',
 			'vendors/inputosaurus/inputosaurus.css',
 			'vendors/flags/flags-fixed.css',
 			'node_modules/opentip/css/opentip.css',
@@ -75,7 +74,6 @@ config.paths.js = {
 		src: [
 			'node_modules/jquery/dist/jquery.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.12.1.custom.min.js', // custom
-			'vendors/jquery-letterfx/jquery-letterfx.min.js', // no-npm
 			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
 			'vendors/routes/signals.min.js', // fixed
 			'vendors/routes/hasher.min.js', // fixed
