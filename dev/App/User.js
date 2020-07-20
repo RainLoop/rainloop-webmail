@@ -6,7 +6,6 @@ import {
 	noop,
 	trim,
 	log,
-	has,
 	isArray,
 	isUnd,
 	isNormal,
@@ -703,7 +702,7 @@ class AppUser extends AbstractApp {
 
 								if (data.Result.Flags) {
 									for (uid in data.Result.Flags) {
-										if (has(data.Result.Flags, uid)) {
+										if (Object.prototype.hasOwnProperty.call(data.Result.Flags, uid)) {
 											check = true;
 											const flags = data.Result.Flags[uid];
 											storeMessageFlagsToCacheByFolderAndUid(folderFromCache.fullNameRaw, uid.toString(), [
