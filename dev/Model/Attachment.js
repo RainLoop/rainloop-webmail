@@ -4,7 +4,7 @@ import ko from 'ko';
 
 import { FileType } from 'Common/Enums';
 import { bAllowPdfPreview } from 'Common/Globals';
-import { trim, pInt, inArray, isNonEmptyArray, getFileExtension, friendlySize } from 'Common/Utils';
+import { trim, pInt, isNonEmptyArray, getFileExtension, friendlySize } from 'Common/Utils';
 import {
 	attachmentDownload,
 	attachmentPreview,
@@ -30,29 +30,28 @@ export const staticFileType = _.memoize((ext, mimeType) => {
 	const mimeTypeParts = mimeType.split('/');
 
 	switch (true) {
-		case 'image' === mimeTypeParts[0] || -1 < inArray(ext, ['png', 'jpg', 'jpeg', 'gif', 'bmp']):
+		case 'image' === mimeTypeParts[0] || ['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(ext):
 			result = FileType.Image;
 			break;
-		case 'audio' === mimeTypeParts[0] || -1 < inArray(ext, ['mp3', 'ogg', 'oga', 'wav']):
+		case 'audio' === mimeTypeParts[0] || ['mp3', 'ogg', 'oga', 'wav'].includes(ext):
 			result = FileType.Audio;
 			break;
-		case 'video' === mimeTypeParts[0] || -1 < inArray(ext, ['mkv', 'avi']):
+		case 'video' === mimeTypeParts[0] || ['mkv', 'avi'].includes(ext):
 			result = FileType.Video;
 			break;
-		case -1 < inArray(ext, ['php', 'js', 'css']):
+		case ['php', 'js', 'css'].includes(ext):
 			result = FileType.Code;
 			break;
-		case 'eml' === ext || -1 < inArray(mimeType, ['message/delivery-status', 'message/rfc822']):
+		case 'eml' === ext || ['message/delivery-status', 'message/rfc822'].includes(mimeType):
 			result = FileType.Eml;
 			break;
-		case ('text' === mimeTypeParts[0] && 'html' !== mimeTypeParts[1]) || -1 < inArray(ext, ['txt', 'log']):
+		case ('text' === mimeTypeParts[0] && 'html' !== mimeTypeParts[1]) || ['txt', 'log'].includes(ext):
 			result = FileType.Text;
 			break;
-		case 'text/html' === mimeType || -1 < inArray(ext, ['html']):
+		case 'text/html' === mimeType || ['html'].includes(ext):
 			result = FileType.Html;
 			break;
-		case -1 <
-			inArray(mimeTypeParts[1], [
+		case [
 				'zip',
 				'7z',
 				'tar',
@@ -70,21 +69,20 @@ export const staticFileType = _.memoize((ext, mimeType) => {
 				'x-zip-compressed',
 				'x-7z-compressed',
 				'x-rar-compressed'
-			]) || -1 < inArray(ext, ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2']):
+			].includes(mimeTypeParts[1]) || ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2'].includes(ext):
 			result = FileType.Archive;
 			break;
-		case -1 < inArray(mimeTypeParts[1], ['pdf', 'x-pdf']) || -1 < inArray(ext, ['pdf']):
+		case ['pdf', 'x-pdf'].includes(mimeTypeParts[1]) || ['pdf'].includes(ext):
 			result = FileType.Pdf;
 			break;
-		case -1 < inArray(mimeType, ['application/pgp-signature', 'application/pgp-keys']) ||
-			-1 < inArray(ext, ['asc', 'pem', 'ppk']):
+		case ['application/pgp-signature', 'application/pgp-keys'].includes(mimeType) ||
+			['asc', 'pem', 'ppk'].includes(ext):
 			result = FileType.Certificate;
 			break;
-		case -1 < inArray(mimeType, ['application/pkcs7-signature']) || -1 < inArray(ext, ['p7s']):
+		case ['application/pkcs7-signature'].includes(mimeType) || ['p7s'].includes(ext):
 			result = FileType.CertificateBin;
 			break;
-		case -1 <
-			inArray(mimeTypeParts[1], [
+		case [
 				'rtf',
 				'msword',
 				'vnd.msword',
@@ -92,11 +90,10 @@ export const staticFileType = _.memoize((ext, mimeType) => {
 				'vnd.openxmlformats-officedocument.wordprocessingml.template',
 				'vnd.ms-word.document.macroEnabled.12',
 				'vnd.ms-word.template.macroEnabled.12'
-			]):
+			].includes(mimeTypeParts[1]):
 			result = FileType.WordText;
 			break;
-		case -1 <
-			inArray(mimeTypeParts[1], [
+		case [
 				'excel',
 				'ms-excel',
 				'vnd.ms-excel',
@@ -106,11 +103,10 @@ export const staticFileType = _.memoize((ext, mimeType) => {
 				'vnd.ms-excel.template.macroEnabled.12',
 				'vnd.ms-excel.addin.macroEnabled.12',
 				'vnd.ms-excel.sheet.binary.macroEnabled.12'
-			]):
+			].includes(mimeTypeParts[1]):
 			result = FileType.Sheet;
 			break;
-		case -1 <
-			inArray(mimeTypeParts[1], [
+		case [
 				'powerpoint',
 				'ms-powerpoint',
 				'vnd.ms-powerpoint',
@@ -121,7 +117,7 @@ export const staticFileType = _.memoize((ext, mimeType) => {
 				'vnd.ms-powerpoint.presentation.macroEnabled.12',
 				'vnd.ms-powerpoint.template.macroEnabled.12',
 				'vnd.ms-powerpoint.slideshow.macroEnabled.12'
-			]):
+			].includes(mimeTypeParts[1]):
 			result = FileType.Presentation;
 			break;
 		// no default

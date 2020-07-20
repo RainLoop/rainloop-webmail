@@ -3,7 +3,7 @@ import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import { Notification, UploadErrorCode } from 'Common/Enums';
-import { pInt, isUnd, isNull, has, microtime, inArray } from 'Common/Utils';
+import { pInt, isUnd, isNull, has, microtime } from 'Common/Utils';
 import { $html, $htmlCL } from 'Common/Globals';
 import { reload as momentorReload } from 'Common/Momentor';
 import { langLink } from 'Common/Links';
@@ -274,7 +274,7 @@ export function reload(admin, language) {
 					() => {
 						reloadData();
 
-						const isRtl = -1 < inArray((language || '').toLowerCase(), ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir']);
+						const isRtl = ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir'].includes((language || '').toLowerCase());
 
 						$htmlCL.remove('rl-changing-language', 'rl-rtl', 'rl-ltr');
 							// $html.attr('dir', isRtl ? 'rtl' : 'ltr')

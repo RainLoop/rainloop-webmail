@@ -6,7 +6,7 @@ import progressJs from 'progressJs';
 import { root } from 'Common/Links';
 import { getNotification } from 'Common/Translator';
 import { StorageResultType, Notification } from 'Common/Enums';
-import { pInt, isNormal, isArray, inArray, isUnd } from 'Common/Utils';
+import { pInt, isNormal, isArray, isUnd } from 'Common/Utils';
 
 import * as Settings from 'Storage/Settings';
 
@@ -168,7 +168,7 @@ class AdminApp extends AbstractApp {
 				if (
 					data &&
 					data.ErrorCode &&
-					-1 < inArray(pInt(data.ErrorCode), [Notification.LicensingServerIsUnavailable, Notification.LicensingExpired])
+					[Notification.LicensingServerIsUnavailable, Notification.LicensingExpired].includes(pInt(data.ErrorCode))
 				) {
 					LicenseStore.licenseError(getNotification(pInt(data.ErrorCode)));
 					LicenseStore.licensing(true);

@@ -1,5 +1,5 @@
 import window from 'window';
-import { isUnd, isNormal, isArray, inArray } from 'Common/Utils';
+import { isUnd, isNormal, isArray } from 'Common/Utils';
 
 let SETTINGS = window.__rlah_data() || null;
 SETTINGS = isNormal(SETTINGS) ? SETTINGS : {};
@@ -37,5 +37,5 @@ export function appSettingsGet(name) {
  */
 export function capa(name) {
 	const values = settingsGet('Capa');
-	return isArray(values) && isNormal(name) && -1 < inArray(name, values);
+	return isArray(values) && isNormal(name) && values.includes(name);
 }

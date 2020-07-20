@@ -58,7 +58,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			() =>
 				FolderStore.currentFolder() &&
 				FolderStore.currentFolder().isInbox() &&
-				-1 < trim(MessageStore.messageListSearch()).indexOf('is:flagged')
+				trim(MessageStore.messageListSearch()).includes('is:flagged')
 		);
 	}
 

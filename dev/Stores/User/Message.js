@@ -9,7 +9,6 @@ import {
 	trim,
 	isNormal,
 	isArray,
-	inArray,
 	pInt,
 	pString,
 	plainToHtml,
@@ -308,7 +307,7 @@ class MessageUserStore {
 			currentFolderFullNameRaw = FolderStore.currentFolderFullNameRaw(),
 			messages =
 				currentFolderFullNameRaw === fromFolderFullNameRaw
-					? _.filter(messageList, (item) => item && -1 < inArray(pInt(item.uid), uidForRemove))
+					? _.filter(messageList, (item) => item && uidForRemove.includes(pInt(item.uid)))
 					: [];
 
 		_.each(messages, (item) => {
@@ -499,7 +498,7 @@ class MessageUserStore {
 			message.folderFullNameRaw === data.Result.Folder
 		) {
 			const threads = message.threads();
-			if (message.uid !== data.Result.Uid && 1 < threads.length && -1 < inArray(data.Result.Uid, threads)) {
+			if (message.uid !== data.Result.Uid && 1 < threads.length && threads.includes(data.Result.Uid)) {
 				message = MessageModel.newInstanceFromJson(data.Result);
 				if (message) {
 					message.threads(threads);

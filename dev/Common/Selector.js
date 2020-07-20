@@ -3,7 +3,7 @@ import _ from '_';
 import key from 'key';
 import ko from 'ko';
 import { EventKeyCode } from 'Common/Enums';
-import { isArray, inArray, noop, noopTrue } from 'Common/Utils';
+import { isArray, noop, noopTrue } from 'Common/Utils';
 
 class Selector {
 	list;
@@ -159,7 +159,7 @@ class Selector {
 						mFocused = null;
 					}
 
-					if (0 < len && -1 < inArray(uid, aCheckedCache)) {
+					if (0 < len && aCheckedCache.includes(uid)) {
 						isChecked = true;
 						item.checked(true);
 						len -= 1;
@@ -181,7 +181,7 @@ class Selector {
 						if (null !== isNextFocused) {
 							getNext = false;
 							isNextFocused = _.find(aCache, (sUid) => {
-								if (getNext && -1 < inArray(sUid, uids)) {
+								if (getNext && uids.includes(sUid)) {
 									return sUid;
 								} else if (isNextFocused === sUid) {
 									getNext = true;

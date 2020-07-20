@@ -1,7 +1,7 @@
 import _ from '_';
 import ko from 'ko';
 
-import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender, inArray, trim, boolToAjax } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender, trim, boolToAjax } from 'Common/Utils';
 
 import { SaveSettingsStep, StorageResultType, Magics } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
@@ -49,7 +49,7 @@ class ContactsAdminSettings {
 		this.contactsTypes = ko.observableArray([]);
 		this.contactsTypesOptions = ko.computed(() =>
 			_.map(this.contactsTypes(), (value) => {
-				const disabled = -1 === inArray(value, supportedTypes);
+				const disabled = supportedTypes.includes(value);
 				return {
 					'id': value,
 					'name': getTypeName(value) + (disabled ? ' (' + i18n('HINTS/NOT_SUPPORTED') + ')' : ''),
@@ -66,7 +66,7 @@ class ContactsAdminSettings {
 				read: this.contactsType,
 				write: (value) => {
 					if (value !== this.contactsType()) {
-						if (-1 < inArray(value, supportedTypes)) {
+						if (supportedTypes.includes(value)) {
 							this.contactsType(value);
 						} else if (0 < supportedTypes.length) {
 							this.contactsType('');

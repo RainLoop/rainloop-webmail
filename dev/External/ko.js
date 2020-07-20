@@ -948,18 +948,17 @@ ko.extenders.posInterer = (target, defaultVal) => {
 };
 
 ko.extenders.limitedList = (target, limitedList) => {
-	const Utils = require('Common/Utils'),
-		result = ko
+	const result = ko
 			.computed({
 				read: target,
 				write: (newValue) => {
 					const currentValue = ko.unwrap(target),
 						list = ko.unwrap(limitedList);
 
-					if (Utils.isNonEmptyArray(list)) {
-						if (-1 < Utils.inArray(newValue, list)) {
+					if (Array.isArray(list) && 0 < list.length) {
+						if (list.includes(newValue)) {
 							target(newValue);
-						} else if (-1 < Utils.inArray(currentValue, list)) {
+						} else if (list.includes(currentValue, list)) {
 							target(currentValue + ' ');
 							target(currentValue);
 						} else {

@@ -19,7 +19,6 @@ import {
 import {
 	delegateRunOnDestroy,
 	computedPagenatorHelper,
-	inArray,
 	trim,
 	windowResizeCallback,
 	isNonEmptyArray,
@@ -101,11 +100,11 @@ class ContactsPopupView extends AbstractViewNext {
 		this.viewPropertiesNames = ko.computed(() =>
 			_.filter(
 				this.viewProperties(),
-				(property) => -1 < inArray(property.type(), [ContactPropertyType.FirstName, ContactPropertyType.LastName])
+				(property) => [ContactPropertyType.FirstName, ContactPropertyType.LastName].includes(property.type())
 			)
 		);
 		this.viewPropertiesOther = ko.computed(() =>
-			_.filter(this.viewProperties(), (property) => -1 < inArray(property.type(), [ContactPropertyType.Nick]))
+			_.filter(this.viewProperties(), (property) => [ContactPropertyType.Nick].includes(property.type()))
 		);
 
 		this.viewPropertiesEmails = ko.computed(() =>

@@ -4,7 +4,7 @@ import $ from '$';
 
 import { TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT, DEFAULT_AJAX_TIMEOUT } from 'Common/Consts';
 import { StorageResultType, Notification } from 'Common/Enums';
-import { inArray, pInt, pString, isUnd } from 'Common/Utils';
+import { pInt, pString, isUnd } from 'Common/Utils';
 import { data as GlobalsData } from 'Common/Globals';
 import { ajax } from 'Common/Links';
 import { runHook } from 'Common/Plugins';
@@ -32,9 +32,7 @@ class AbstractAjaxRemote {
 
 			if (StorageResultType.Success === sType && oData && !oData.Result) {
 				if (
-					oData &&
-					-1 <
-						inArray(oData.ErrorCode, [
+					oData && [
 							Notification.AuthError,
 							Notification.AccessError,
 							Notification.ConnectionError,
@@ -43,7 +41,7 @@ class AbstractAjaxRemote {
 							Notification.MailServerError,
 							Notification.UnknownNotification,
 							Notification.UnknownError
-						])
+						].includes(oData.ErrorCode)
 				) {
 					GlobalsData.iAjaxErrorCount += 1;
 				}
@@ -178,7 +176,7 @@ class AbstractAjaxRemote {
 			this.defaultResponse(fResultCallback, action, sType, oData, cached, params);
 		});
 
-		if (action && 0 < abortActions.length && -1 < inArray(action, abortActions)) {
+		if (action && 0 < abortActions.length && abortActions.includes(action)) {
 			if (this.oRequests[action]) {
 				this.oRequests[action].__aborted = true;
 				if (this.oRequests[action].abort) {

@@ -11,7 +11,6 @@ import { DATA_IMAGE_LAZY_PLACEHOLDER_PIC } from 'Common/Consts';
 
 import {
 	pInt,
-	inArray,
 	isArray,
 	isUnd,
 	trim,
@@ -253,7 +252,7 @@ class MessageModel extends AbstractModel {
 		if (json && 'Object/Message' === json['@Object']) {
 			priority = pInt(json.Priority);
 			this.priority(
-				-1 < inArray(priority, [MessagePriority.High, MessagePriority.Low]) ? priority : MessagePriority.Normal
+				[MessagePriority.High, MessagePriority.Low].includes(priority) ? priority : MessagePriority.Normal
 			);
 
 			this.folderFullNameRaw = json.Folder;
@@ -313,7 +312,7 @@ class MessageModel extends AbstractModel {
 		if (json && 'Object/Message' === json['@Object']) {
 			priority = pInt(json.Priority);
 			this.priority(
-				-1 < inArray(priority, [MessagePriority.High, MessagePriority.Low]) ? priority : MessagePriority.Normal
+				[MessagePriority.High, MessagePriority.Low].includes(priority) ? priority : MessagePriority.Normal
 			);
 
 			this.aDraftInfo = json.DraftInfo;
@@ -362,7 +361,7 @@ class MessageModel extends AbstractModel {
 					if (
 						'' !== attachment.cidWithOutTags &&
 						0 < this.foundedCIDs.length &&
-						0 <= inArray(attachment.cidWithOutTags, this.foundedCIDs)
+						this.foundedCIDs.includes(attachment.cidWithOutTags)
 					) {
 						attachment.isLinked = true;
 					}

@@ -8,7 +8,6 @@ import {
 	log,
 	has,
 	isArray,
-	inArray,
 	isUnd,
 	isNormal,
 	isPosNumeric,
@@ -342,7 +341,7 @@ class AppUser extends AbstractApp {
 			} else {
 				setFolderHash(FolderStore.currentFolderFullNameRaw(), '');
 
-				if (oData && -1 < inArray(oData.ErrorCode, [Notification.CantMoveMessage, Notification.CantCopyMessage])) {
+				if (oData && [Notification.CantMoveMessage, Notification.CantCopyMessage].includes(oData.ErrorCode)) {
 					window.alert(getNotification(oData.ErrorCode));
 				}
 			}

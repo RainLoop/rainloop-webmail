@@ -22,7 +22,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import { bMobileDevice, popupVisibility, leftPanelDisabled, moveAction } from 'Common/Globals';
 
-import { noop, noopFalse, computedPagenatorHelper, draggablePlace, friendlySize, inArray, isUnd } from 'Common/Utils';
+import { noop, noopFalse, computedPagenatorHelper, draggablePlace, friendlySize, isUnd } from 'Common/Utils';
 
 import { mailBox, append } from 'Common/Links';
 import { Selector } from 'Common/Selector';
@@ -653,7 +653,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		const checked = this.messageListCheckedOrSelected();
 		if (currentMessage) {
 			const checkedUids = _.map(checked, (message) => message.uid);
-			if (0 < checkedUids.length && -1 < inArray(currentMessage.uid, checkedUids)) {
+			if (0 < checkedUids.length && checkedUids.includes(currentMessage.uid)) {
 				this.setAction(
 					currentMessage.folderFullNameRaw,
 					currentMessage.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,

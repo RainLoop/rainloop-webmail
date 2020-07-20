@@ -10,7 +10,7 @@ import {
 	Notification
 } from 'Common/Enums';
 
-import { trim, inArray, convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
+import { trim, convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
 
 import { $win } from 'Common/Globals';
 import { getNotification, getNotificationFromResponse, reload as translatorReload } from 'Common/Translator';
@@ -225,7 +225,7 @@ class LoginUserView extends AbstractViewNext {
 							}
 						} else if (oData.ErrorCode) {
 							this.submitRequest(false);
-							if (-1 < inArray(oData.ErrorCode, [Notification.InvalidInputArgument])) {
+							if ([Notification.InvalidInputArgument].includes(oData.ErrorCode)) {
 								oData.ErrorCode = Notification.AuthError;
 							}
 

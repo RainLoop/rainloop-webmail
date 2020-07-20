@@ -20,7 +20,6 @@ import {
 import { $htmlCL, leftPanelDisabled, keyScopeReal, useKeyboardShortcuts, moveAction } from 'Common/Globals';
 
 import {
-	inArray,
 	isNonEmptyArray,
 	trim,
 	noop,
@@ -135,7 +134,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		);
 
 		this.downloadAsZipAllowed = ko.computed(
-			() => -1 < inArray('zip', this.attachmentsActions()) && this.allowAttachmnetControls()
+			() => this.attachmentsActions().includes('zip') && this.allowAttachmnetControls()
 		);
 
 		this.downloadAsZipLoading = ko.observable(false);
@@ -156,7 +155,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			read: this.lastReplyAction_,
 			write: (value) => {
 				this.lastReplyAction_(
-					-1 === inArray(value, [ComposeType.Reply, ComposeType.ReplyAll, ComposeType.Forward])
+					[ComposeType.Reply, ComposeType.ReplyAll, ComposeType.Forward].includes(value)
 						? ComposeType.Reply
 						: value
 				);

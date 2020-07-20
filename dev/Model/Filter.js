@@ -2,7 +2,7 @@ import _ from '_';
 import ko from 'ko';
 
 import { FilterRulesType, FiltersAction } from 'Common/Enums';
-import { pString, inArray, isNonEmptyArray, fakeMd5, delegateRunOnDestroy, windowResizeCallback } from 'Common/Utils';
+import { pString, isNonEmptyArray, fakeMd5, delegateRunOnDestroy, windowResizeCallback } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 import { getFolderFromCacheList } from 'Common/Cache';
 
@@ -152,21 +152,19 @@ class FilterModel extends AbstractModel {
 		}
 
 		if ('' === this.actionValue()) {
-			if (
-				-1 <
-				inArray(this.actionType(), [
+			if ([
 					FiltersAction.MoveTo,
 					FiltersAction.Forward,
 					FiltersAction.Reject,
 					FiltersAction.Vacation
-				])
+				].includes(this.actionType())
 			) {
 				this.actionValue.error(true);
 				return false;
 			}
 		}
 
-		if (FiltersAction.Forward === this.actionType() && -1 === this.actionValue().indexOf('@')) {
+		if (FiltersAction.Forward === this.actionType() && !this.actionValue().includes('@')) {
 			this.actionValue.error(true);
 			return false;
 		}
@@ -174,7 +172,7 @@ class FilterModel extends AbstractModel {
 		if (
 			FiltersAction.Vacation === this.actionType() &&
 			'' !== this.actionValueFourth() &&
-			-1 === this.actionValueFourth().indexOf('@')
+			!this.actionValueFourth().includes('@')
 		) {
 			this.actionValueFourth.error(true);
 			return false;

@@ -2,7 +2,7 @@ import window from 'window';
 import $ from '$';
 
 import { ajax } from 'Common/Links';
-import { microtime, isUnd, isNormal, pString, pInt, inArray } from 'Common/Utils';
+import { microtime, isUnd, isNormal, pString, pInt } from 'Common/Utils';
 import { DEFAULT_AJAX_TIMEOUT, TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT } from 'Common/Consts';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { data as GlobalsData } from 'Common/Globals';
@@ -128,9 +128,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 				this.setTrigger(fTrigger, false);
 
 				if (errorData) {
-					if (
-						-1 <
-						inArray(errorData.ErrorCode, [
+					if ([
 							Notification.AuthError,
 							Notification.AccessError,
 							Notification.ConnectionError,
@@ -139,7 +137,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 							Notification.MailServerError,
 							Notification.UnknownNotification,
 							Notification.UnknownError
-						])
+						].includes(errorData.ErrorCode)
 					) {
 						GlobalsData.iAjaxErrorCount += 1;
 					}

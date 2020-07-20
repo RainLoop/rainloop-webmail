@@ -3,7 +3,7 @@ import $ from '$';
 import ko from 'ko';
 import key from 'key';
 
-import { inArray, pString, log, isUnd, trim, defautOptionsAfterRender } from 'Common/Utils';
+import { pString, log, isUnd, trim, defautOptionsAfterRender } from 'Common/Utils';
 
 import { Magics, KeyState } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
@@ -64,7 +64,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 
 		this.publicKeysOptions = ko.computed(() => {
 			const opts = _.map(PgpStore.openpgpkeysPublic(), (oKey, index) => {
-				if (-1 < inArray(oKey, this.encryptKeysView())) {
+				if (this.encryptKeysView().includes(oKey)) {
 					return null;
 				}
 				return _.map(oKey.users, (user) => ({

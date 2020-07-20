@@ -10,8 +10,7 @@ import { Mime } from 'Common/Mime';
 import { jassl } from 'Common/Jassl';
 
 const trim = $.trim;
-const inArray = $.inArray;
-const isArray = _.isArray;
+const isArray = Array.isArray;
 const isObject = _.isObject;
 const isFunc = _.isFunction;
 const isUnd = _.isUndefined;
@@ -22,7 +21,7 @@ const noop = () => {}; // eslint-disable-line no-empty-function
 const noopTrue = () => true;
 const noopFalse = () => false;
 
-export { trim, inArray, isArray, isObject, isFunc, isUnd, isNull, has, bind, noop, noopTrue, noopFalse, jassl };
+export { trim, isArray, isObject, isFunc, isUnd, isNull, has, bind, noop, noopTrue, noopFalse, jassl };
 
 /**
  * @param {Function} func
@@ -935,7 +934,7 @@ export function folderListOptionsBuilder(
 				seporator: false,
 				disabled:
 					!oItem.selectable ||
-					-1 < inArray(oItem.fullNameRaw, aDisabled) ||
+					aDisabled.includes(oItem.fullNameRaw) ||
 					(fDisableCallback ? fDisableCallback(oItem) : false)
 			});
 		}
@@ -971,7 +970,7 @@ export function folderListOptionsBuilder(
 						seporator: false,
 						disabled:
 							!oItem.selectable ||
-							-1 < inArray(oItem.fullNameRaw, aDisabled) ||
+							aDisabled.includes(oItem.fullNameRaw) ||
 							(fDisableCallback ? fDisableCallback(oItem) : false)
 					});
 				}
