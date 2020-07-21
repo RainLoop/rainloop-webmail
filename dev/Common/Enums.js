@@ -545,4 +545,6 @@ export const Notification = {
 
 	'UnknownNotification': 999,
 	'UnknownError': 999
+
+	,getKeyByValue: function(v) { return Object.keys(this).find(key => this[key] === v); }
 };

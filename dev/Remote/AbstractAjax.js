@@ -1,6 +1,4 @@
 import window from 'window';
-import _ from '_';
-import $ from '$';
 
 import { TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT, DEFAULT_AJAX_TIMEOUT } from 'Common/Consts';
 import { StorageResultType, Notification } from 'Common/Enums';
@@ -14,6 +12,20 @@ import * as Settings from 'Storage/Settings';
 class AbstractAjaxRemote {
 	constructor() {
 		this.oRequests = {};
+	}
+
+	abort(sAction, bClearOnly) {
+		if (this.oRequests[sAction]) {
+			if (!bClearOnly && this.oRequests[sAction].abort) {
+//				this.oRequests[sAction].__aborted = true;
+				this.oRequests[sAction].abort();
+			}
+
+			this.oRequests[sAction] = null;
+			delete this.oRequests[sAction];
+		}
+
+		return this;
 	}
 
 	/**
@@ -31,6 +43,10 @@ class AbstractAjaxRemote {
 			}
 
 			if (StorageResultType.Success === sType && oData && !oData.Result) {
+				const err = oData ? oData.ErrorCode : null;
+if (err) {
+	window.console.log('AbstractAjaxRemote ' + sRequestAction + ' request failed:', err, Notification.getKeyByValue(err));
+}
 				if (
 					oData && [
 							Notification.AuthError,
@@ -41,13 +57,13 @@ class AbstractAjaxRemote {
 							Notification.MailServerError,
 							Notification.UnknownNotification,
 							Notification.UnknownError
-						].includes(oData.ErrorCode)
+						].includes(err)
 				) {
-					GlobalsData.iAjaxErrorCount += 1;
+					++GlobalsData.iAjaxErrorCount;
 				}
 
-				if (oData && Notification.InvalidToken === oData.ErrorCode) {
-					GlobalsData.iTokenErrorCount += 1;
+				if (oData && Notification.InvalidToken === err) {
+					++GlobalsData.iTokenErrorCount;
 				}
 
 				if (TOKEN_ERROR_LIMIT < GlobalsData.iTokenErrorCount) {
@@ -102,7 +118,7 @@ class AbstractAjaxRemote {
 		}
 
 		if (StorageResultType.Error === sType) {
-			_.delay(fCall, 300);
+			setTimeout(fCall, 300);
 		} else {
 			fCall();
 		}
@@ -117,80 +133,76 @@ class AbstractAjaxRemote {
 	 * @returns {jQuery.jqXHR}
 	 */
 	ajaxRequest(fResultCallback, params, iTimeOut = 20000, sGetAdd = '', abortActions = []) {
-		const isPost = '' === sGetAdd,
-			headers = {},
-			start = new window.Date().getTime();
-
-		let action = '';
-
 		params = params || {};
-		action = params.Action || '';
+		const isPost = '' === sGetAdd,
+			start = new window.Date().getTime(),
+			action = params.Action || '';
 
-		if (action && 0 < abortActions.length) {
-			_.each(abortActions, (actionToAbort) => {
-				if (this.oRequests[actionToAbort]) {
-					this.oRequests[actionToAbort].__aborted = true;
-					if (this.oRequests[actionToAbort].abort) {
-						this.oRequests[actionToAbort].abort();
-					}
-					this.oRequests[actionToAbort] = null;
-				}
-			});
+		if (action && abortActions) {
+			abortActions.forEach(actionToAbort => this.abort(actionToAbort));
 		}
 
+		let init = {
+			mode: 'same-origin',
+			cache: 'no-cache',
+			redirect: 'error',
+			referrerPolicy: 'no-referrer',
+			credentials: 'same-origin'
+		};
 		if (isPost) {
+			init.method = 'POST';
+			init.headers = {
+//				'Content-Type': 'application/json'
+				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+			};
 			params.XToken = Settings.appSettingsGet('token');
+//			init.body = JSON.stringify(params);
+			const formData = new window.FormData();
+			Object.keys(params).forEach(key => {
+				formData.append(key, params[key])
+			});
+			init.body = (new URLSearchParams(formData)).toString();
 		}
 
-		const oDefAjax = $.ajax({
-			type: isPost ? 'POST' : 'GET',
-			url: ajax(sGetAdd),
-			async: true,
-			dataType: 'json',
-			data: isPost ? params : {},
-			headers: headers,
-			timeout: iTimeOut,
-			global: true
-		});
-
-		oDefAjax.always((oData, sType) => {
-			let cached = false;
-			if (oData && oData.Time) {
-				cached = pInt(oData.Time) > new window.Date().getTime() - start;
-			}
-
-			if (oData && oData.UpdateToken) {
-				if (GlobalsData.__APP__ && GlobalsData.__APP__.setClientSideToken) {
-					GlobalsData.__APP__.setClientSideToken(oData.UpdateToken);
-				}
-			}
-
-			if (action && this.oRequests[action]) {
-				if (this.oRequests[action].__aborted) {
-					sType = 'abort';
-				}
-
-				this.oRequests[action] = null;
-			}
-
-			this.defaultResponse(fResultCallback, action, sType, oData, cached, params);
-		});
-
-		if (action && 0 < abortActions.length && abortActions.includes(action)) {
-			if (this.oRequests[action]) {
-				this.oRequests[action].__aborted = true;
-				if (this.oRequests[action].abort) {
-					this.oRequests[action].abort();
-				}
-				this.oRequests[action] = null;
-			}
-
-			this.oRequests[action] = oDefAjax;
+		if (window.AbortController) {
+			this.abort(action);
+			const controller = new window.AbortController();
+			setTimeout(() => controller.abort(), iTimeOut);
+			init.signal = controller.signal;
+			this.oRequests[action] = controller;
 		}
 
-		// eslint-disable-next-line no-console
-		oDefAjax.catch(console.log);
-		return oDefAjax;
+		window.fetch(ajax(sGetAdd), init)
+			.then(response => response.json())
+			.then(oData => {
+				let cached = false;
+				if (oData && oData.Time) {
+					cached = pInt(oData.Time) > new window.Date().getTime() - start;
+				}
+
+				if (oData && oData.UpdateToken) {
+					if (GlobalsData.__APP__ && GlobalsData.__APP__.setClientSideToken) {
+						GlobalsData.__APP__.setClientSideToken(oData.UpdateToken);
+					}
+				}
+
+				let sType = 'success';
+				if (action && this.oRequests[action]) {
+					if (this.oRequests[action].__aborted) {
+						sType = 'abort';
+					}
+
+					this.oRequests[action] = null;
+				}
+
+				this.defaultResponse(fResultCallback, action, sType, oData, cached, params);
+			}).catch(err => {
+window.console.log('AbstractAjaxRemote ' + action + ' request failed:', err, Notification.getKeyByValue(err));
+				if (err.name == 'AbortError') { // handle abort()
+					return Promise.reject(Notification.AjaxAbort);
+				}
+				return Promise.reject(err);
+			});
 	}
 
 	/**

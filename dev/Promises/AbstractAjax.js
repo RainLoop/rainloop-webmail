@@ -1,12 +1,11 @@
 import window from 'window';
-import $ from '$';
 
 import { ajax } from 'Common/Links';
-import { microtime, isUnd, isNormal, pString, pInt } from 'Common/Utils';
+import { isUnd, isNormal, pString } from 'Common/Utils';
 import { DEFAULT_AJAX_TIMEOUT, TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT } from 'Common/Consts';
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { data as GlobalsData } from 'Common/Globals';
-import * as Plugins from 'Common/Plugins';
+import { runHook } from 'Common/Plugins';
 import * as Settings from 'Storage/Settings';
 
 import { AbstractBasicPromises } from 'Promises/AbstractBasic';
@@ -27,7 +26,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 	abort(sAction, bClearOnly) {
 		if (this.oRequests[sAction]) {
 			if (!bClearOnly && this.oRequests[sAction].abort) {
-				this.oRequests[sAction].__aborted__ = true;
+//				this.oRequests[sAction].__aborted__ = true;
 				this.oRequests[sAction].abort();
 			}
 
@@ -39,44 +38,62 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 	}
 
 	ajaxRequest(action, isPost, timeOut, params, additionalGetString, fTrigger) {
-		return new window.Promise((resolve, reject) => {
-			const start = microtime();
 
-			timeOut = isNormal(timeOut) ? timeOut : DEFAULT_AJAX_TIMEOUT;
-			additionalGetString = isUnd(additionalGetString) ? '' : pString(additionalGetString);
+		additionalGetString = isUnd(additionalGetString) ? '' : pString(additionalGetString);
 
-			if (isPost) {
-				params.XToken = Settings.appSettingsGet('token');
-			}
+		let init = {
+			mode: 'same-origin',
+			cache: 'no-cache',
+			redirect: 'error',
+			referrerPolicy: 'no-referrer',
+			credentials: 'same-origin'
+		};
+		if (isPost) {
+			init.method = 'POST';
+			init.headers = {
+//				'Content-Type': 'application/json'
+				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+			};
+			params.XToken = Settings.appSettingsGet('token');
+//			init.body = JSON.stringify(params);
+			const formData = new window.FormData();
+			Object.keys(params).forEach(key => {
+				formData.append(key, params[key])
+			});
+			init.body = (new URLSearchParams(formData)).toString();
+		}
 
-			Plugins.runHook('ajax-default-request', [action, params, additionalGetString]);
+		runHook('ajax-default-request', [action, params, additionalGetString]);
 
-			this.setTrigger(fTrigger, true);
+		this.setTrigger(fTrigger, true);
 
-			const oH = $.ajax({
-				type: isPost ? 'POST' : 'GET',
-				url: ajax(additionalGetString),
-				async: true,
-				dataType: 'json',
-				data: isPost ? params || {} : {},
-				timeout: timeOut,
-				global: true
-			}).always((data, textStatus) => {
-				let isCached = false,
-					errorData = null;
+		if (window.AbortController) {
+			this.abort(action);
+			const controller = new window.AbortController();
+			setTimeout(() => controller.abort(), isNormal(timeOut) ? timeOut : DEFAULT_AJAX_TIMEOUT);
+			init.signal = controller.signal;
+			this.oRequests[action] = controller;
+		}
 
+		return window.fetch(ajax(additionalGetString), init)
+			.then(response => response.json())
+			.then(data => {
+				this.abort(action, true);
+
+				if (!data) {
+					return Promise.reject(Notification.AjaxParse);
+				}
+
+				if (data.UpdateToken && GlobalsData.__APP__ && GlobalsData.__APP__.setClientSideToken) {
+					GlobalsData.__APP__.setClientSideToken(data.UpdateToken);
+				}
+
+/*
+				let isCached = false, type = '';
 				if (data && data.Time) {
 					isCached = pInt(data.Time) > microtime() - start;
 				}
-
-				if (data && data.UpdateToken) {
-					if (GlobalsData.__APP__ && GlobalsData.__APP__.setClientSideToken) {
-						GlobalsData.__APP__.setClientSideToken(data.UpdateToken);
-					}
-				}
-
 				// backward capability
-				let type = '';
 				switch (true) {
 					case 'success' === textStatus && data && data.Result && action === data.Action:
 						type = StorageResultType.Success;
@@ -88,46 +105,17 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 						type = StorageResultType.Error;
 						break;
 				}
-
-				Plugins.runHook('ajax-default-response', [
+				runHook('ajax-default-response', [
 					action,
 					StorageResultType.Success === type ? data : null,
 					type,
 					isCached,
 					params
 				]);
-
-				if ('success' === textStatus) {
-					if (data && data.Result && action === data.Action) {
-						data.__cached__ = isCached;
-						resolve(data);
-					} else if (data && data.Action) {
-						errorData = data;
-						reject(data.ErrorCode ? data.ErrorCode : Notification.AjaxFalse);
-					} else {
-						errorData = data;
-						reject(Notification.AjaxParse);
-					}
-				} else if ('timeout' === textStatus) {
-					errorData = data;
-					reject(Notification.AjaxTimeout);
-				} else if ('abort' === textStatus) {
-					if (!data || !data.__aborted__) {
-						reject(Notification.AjaxAbort);
-					}
-				} else {
-					errorData = data;
-					reject(Notification.AjaxParse);
-				}
-
-				if (this.oRequests[action]) {
-					this.oRequests[action] = null;
-					delete this.oRequests[action];
-				}
-
+*/
 				this.setTrigger(fTrigger, false);
 
-				if (errorData) {
+				if (!data.Result || action !== data.Action) {
 					if ([
 							Notification.AuthError,
 							Notification.AccessError,
@@ -137,13 +125,13 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 							Notification.MailServerError,
 							Notification.UnknownNotification,
 							Notification.UnknownError
-						].includes(errorData.ErrorCode)
+						].includes(data.ErrorCode)
 					) {
-						GlobalsData.iAjaxErrorCount += 1;
+						++GlobalsData.iAjaxErrorCount;
 					}
 
-					if (Notification.InvalidToken === errorData.ErrorCode) {
-						GlobalsData.iTokenErrorCount += 1;
+					if (Notification.InvalidToken === data.ErrorCode) {
+						++GlobalsData.iTokenErrorCount;
 					}
 
 					if (TOKEN_ERROR_LIMIT < GlobalsData.iTokenErrorCount) {
@@ -152,27 +140,27 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 						}
 					}
 
-					if (errorData.ClearAuth || errorData.Logout || AJAX_ERROR_LIMIT < GlobalsData.iAjaxErrorCount) {
+					if (data.ClearAuth || data.Logout || AJAX_ERROR_LIMIT < GlobalsData.iAjaxErrorCount) {
 						if (GlobalsData.__APP__ && GlobalsData.__APP__.clearClientSideToken) {
 							GlobalsData.__APP__.clearClientSideToken();
 						}
 
-						if (GlobalsData.__APP__ && !errorData.ClearAuth && GlobalsData.__APP__.loginAndLogoutReload) {
+						if (GlobalsData.__APP__ && !data.ClearAuth && GlobalsData.__APP__.loginAndLogoutReload) {
 							GlobalsData.__APP__.loginAndLogoutReload(false, true);
 						}
 					}
+
+					return Promise.reject(data.ErrorCode ? data.ErrorCode : Notification.AjaxFalse);
 				}
+
+				return data;
+			}).catch(err => {
+window.console.log('AbstractAjaxPromises ' + action + ' request failed:', err, Notification.getKeyByValue(err));
+				if (err.name == 'AbortError') { // handle abort()
+					return Promise.reject(Notification.AjaxAbort);
+				}
+				return Promise.reject(err);
 			});
-
-			if (oH) {
-				if (this.oRequests[action]) {
-					this.oRequests[action] = null;
-					delete this.oRequests[action];
-				}
-
-				this.oRequests[action] = oH;
-			}
-		});
 	}
 
 	getRequest(sAction, fTrigger, sAdditionalGetString, iTimeOut) {
