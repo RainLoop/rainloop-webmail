@@ -1,5 +1,3 @@
-import window from 'window';
-import $ from '$';
 import ko from 'ko';
 import { settingsGet } from 'Storage/Settings';
 import { AbstractAppStore } from 'Stores/AbstractApp';
@@ -25,10 +23,11 @@ class AppAdminStore extends AbstractAppStore {
 
 		this.weakPassword(!!settingsGet('WeakPassword'));
 		this.useLocalProxyForExternalImages(!!settingsGet('UseLocalProxyForExternalImages'));
-
+/*
 		if (settingsGet('Auth')) {
-			$.get('./data/VERSION?' + window.Math.random()).then(() => this.dataFolderAccess(true));
+			window.fetch('./data/VERSION?' + window.Math.random()).then(() => this.dataFolderAccess(true));
 		}
+*/
 	}
 }
 
