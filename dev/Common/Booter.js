@@ -192,6 +192,10 @@ function runApp() {
 				return window.Promise.all([jassl(appData.TemplatesLink), jassl(appData.LangLink)]);
 			})
 			.then(() => {
+				p.set(30);
+				return jassl(appData.StaticAppJsLink);
+			})
+			.then(() => {
 				p.set(50);
 				return appData.PluginsLink ? jassl(appData.PluginsLink) : window.Promise.resolve();
 			})
