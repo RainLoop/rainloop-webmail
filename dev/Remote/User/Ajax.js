@@ -1,5 +1,3 @@
-import _ from '_';
-
 import { pString, pInt, isArray, trim, boolToAjax } from 'Common/Utils';
 
 import {
@@ -247,7 +245,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 		this.defaultRequest(fCallback, 'FiltersSave', {
 			'Raw': raw,
 			'RawIsActive': boolToAjax(isRawIsActive),
-			'Filters': _.map(filters, (item) => item.toJson())
+			'Filters': filters.map(item => item.toJson())
 		});
 	}
 

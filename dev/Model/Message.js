@@ -202,8 +202,7 @@ class MessageModel extends AbstractModel {
 	getEmails(properties) {
 		return _.compact(
 			_.uniq(
-				_.map(
-					_.reduce(properties, (carry, property) => carry.concat(this[property]), []),
+				_.reduce(properties, (carry, property) => carry.concat(this[property]), []).map(
 					(oItem) => (oItem ? oItem.email : '')
 				)
 			)
@@ -628,7 +627,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	attachmentsToStringLine() {
-		const attachLines = _.map(this.attachments(), (item) => item.fileName + ' (' + item.friendlySize + ')');
+		const attachLines = this.attachments().map(item => item.fileName + ' (' + item.friendlySize + ')');
 		return attachLines && 0 < attachLines.length ? attachLines.join(', ') : '';
 	}
 

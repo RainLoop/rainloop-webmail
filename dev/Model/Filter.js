@@ -190,7 +190,7 @@ class FilterModel extends AbstractModel {
 			Enabled: this.enabled() ? '1' : '0',
 			Name: this.name(),
 			ConditionsType: this.conditionsType(),
-			Conditions: _.map(this.conditions(), (item) => item.toJson()),
+			Conditions: this.conditions().map(item => item.toJson()),
 
 			ActionValue: this.actionValue(),
 			ActionValueSecond: this.actionValueSecond(),
@@ -231,7 +231,7 @@ class FilterModel extends AbstractModel {
 			if (isNonEmptyArray(json.Conditions)) {
 				this.conditions(
 					_.compact(
-						_.map(json.Conditions, (aData) => {
+						json.Conditions.map(aData => {
 							const filterCondition = new FilterConditionModel();
 							return filterCondition && filterCondition.parse(aData) ? filterCondition : null;
 						})
@@ -282,7 +282,7 @@ class FilterModel extends AbstractModel {
 		filter.actionKeep(this.actionKeep());
 		filter.actionNoStop(this.actionNoStop());
 
-		filter.conditions(_.map(this.conditions(), (item) => item.cloneSelf()));
+		filter.conditions(this.conditions().map(item => item.cloneSelf()));
 
 		return filter;
 	}

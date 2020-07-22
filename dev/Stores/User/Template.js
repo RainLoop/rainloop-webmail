@@ -16,7 +16,7 @@ class TemplateUserStore {
 
 	subscribers() {
 		this.templates.subscribe((list) => {
-			this.templatesNames(_.compact(_.map(list, (item) => (item ? item.name : null))));
+			this.templatesNames(_.compact(list.map(item => (item ? item.name : null))));
 		});
 
 		// this.templatesNames.subscribe((aList) => {

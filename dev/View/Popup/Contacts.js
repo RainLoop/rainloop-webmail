@@ -175,7 +175,7 @@ class ContactsPopupView extends AbstractViewNext {
 		});
 
 		this.contactsCheckedOrSelectedUids = ko.computed(() =>
-			_.map(this.contactsCheckedOrSelected(), (contact) => contact.idContact)
+			this.contactsCheckedOrSelected().map(contact => contact.idContact)
 		);
 
 		this.selector = new Selector(
@@ -202,7 +202,7 @@ class ContactsPopupView extends AbstractViewNext {
 		this.watchDirty = ko.observable(false);
 		this.watchHash = ko.observable(false);
 
-		this.viewHash = ko.computed(() => '' + _.map(this.viewProperties(), (oItem) => oItem.value()).join(''));
+		this.viewHash = ko.computed(() => '' + this.viewProperties().map(oItem => oItem.value()).join(''));
 
 		// this.saveCommandDebounce = _.debounce(this.saveCommand.bind(this), 1000);
 
@@ -240,7 +240,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 		const aC = this.contactsCheckedOrSelected();
 		if (isNonEmptyArray(aC)) {
-			aE = _.map(aC, (oItem) => {
+			aE = aC.map(oItem => {
 				if (oItem) {
 					const data = oItem.getNameAndEmailHelper(),
 						email = data ? new EmailModel(data[0], data[1]) : null;
@@ -591,7 +591,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 				if (StorageResultType.Success === result && data && data.Result && data.Result.List) {
 					if (isNonEmptyArray(data.Result.List)) {
-						list = _.map(data.Result.List, (item) => {
+						list = data.Result.List.map(item => {
 							const contact = new ContactModel();
 							return contact.parse(item) ? contact : null;
 						});

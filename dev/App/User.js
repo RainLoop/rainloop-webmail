@@ -520,7 +520,7 @@ class AppUser extends AbstractApp {
 									.getKeyId()
 									.toHex()
 									.toLowerCase(),
-								_.uniq(_.compact(_.map(oItem.getKeyIds(), (item) => (item && item.toHex ? item.toHex() : null)))),
+								_.uniq(_.compact(oItem.getKeyIds().map(item => (item && item.toHex ? item.toHex() : null)))),
 								aUsers,
 								aEmails,
 								oItem.isPrivate(),
@@ -590,9 +590,8 @@ class AppUser extends AbstractApp {
 					delegateRunOnDestroy(AccountStore.accounts());
 
 					AccountStore.accounts(
-						_.map(
-							oData.Result.Accounts,
-							(sValue) => new AccountModel(sValue, sValue !== parentEmail, counts[sValue] || 0)
+						oData.Result.Accounts.map(
+							sValue => new AccountModel(sValue, sValue !== parentEmail, counts[sValue] || 0)
 						)
 					);
 				}
@@ -606,7 +605,7 @@ class AppUser extends AbstractApp {
 					delegateRunOnDestroy(IdentityStore.identities());
 
 					IdentityStore.identities(
-						_.map(oData.Result.Identities, (identityData) => {
+						oData.Result.Identities.map(identityData => {
 							const id = pString(identityData.Id),
 								email = pString(identityData.Email),
 								identity = new IdentityModel(id, email);
@@ -636,7 +635,7 @@ class AppUser extends AbstractApp {
 
 				TemplateStore.templates(
 					_.compact(
-						_.map(data.Result.Templates, (templateData) => {
+						data.Result.Templates.map(templateData => {
 							const template = new TemplateModel();
 							return template.parse(templateData) ? template : null;
 						})
@@ -820,7 +819,7 @@ class AppUser extends AbstractApp {
 			messages = MessageStore.messageListChecked();
 		}
 
-		rootUids = _.uniq(_.compact(_.map(messages, (oMessage) => (oMessage && oMessage.uid ? oMessage.uid : null))));
+		rootUids = _.uniq(_.compact(messages.map(oMessage => (oMessage && oMessage.uid ? oMessage.uid : null))));
 
 		if ('' !== sFolderFullNameRaw && 0 < rootUids.length) {
 			switch (iSetAction) {
@@ -881,7 +880,7 @@ class AppUser extends AbstractApp {
 		Remote.suggestions((result, data) => {
 			if (StorageResultType.Success === result && data && isArray(data.Result)) {
 				autocompleteCallback(
-					_.compact(_.map(data.Result, (item) => (item && item[0] ? new EmailModel(item[0], item[1]) : null)))
+					_.compact(data.Result.map(item => (item && item[0] ? new EmailModel(item[0], item[1]) : null)))
 				);
 			} else if (StorageResultType.Abort !== result) {
 				autocompleteCallback([]);

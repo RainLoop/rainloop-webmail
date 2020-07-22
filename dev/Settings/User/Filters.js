@@ -114,7 +114,7 @@ class FiltersUserSettings {
 
 					this.filters(
 						_.compact(
-							_.map(data.Result.Filters, (aItem) => {
+							data.Result.Filters.map(aItem => {
 								const filter = new FilterModel();
 								return filter && filter.parse(aItem) ? filter : null;
 							})

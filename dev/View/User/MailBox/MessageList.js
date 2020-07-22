@@ -651,7 +651,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	flagMessages(currentMessage) {
 		const checked = this.messageListCheckedOrSelected();
 		if (currentMessage) {
-			const checkedUids = _.map(checked, (message) => message.uid);
+			const checkedUids = checked.map(message => message.uid);
 			if (0 < checkedUids.length && checkedUids.includes(currentMessage.uid)) {
 				this.setAction(
 					currentMessage.folderFullNameRaw,

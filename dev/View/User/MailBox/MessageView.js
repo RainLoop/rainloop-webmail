@@ -453,7 +453,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	//			aTo = [],
 	//			EmailModel = require('Model/Email').default,
 	//			fParseEmailLine = function(sLine) {
-	//				return sLine ? _.compact(_.map([window.decodeURIComponent(sLine)], function(sItem) {
+	//				return sLine ? _.compact([window.decodeURIComponent(sLine)].map(sItem => {
 	//						var oEmailModel = new EmailModel();
 	//						oEmailModel.parse(sItem);
 	//						return '' !== oEmailModel.email ? oEmailModel : null;
@@ -478,7 +478,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 			const div = $('<div>'),
 				dynamicEls = _.compact(
-					_.map(this.message().attachments(), (item) => {
+					this.message().attachments().map(item => {
 						if (item && !item.isLinked && item.isImage()) {
 							if (item === attachment) {
 								index = listIndex;
@@ -885,7 +885,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	getAttachmentsHashes() {
 		const atts = this.message() ? this.message().attachments() : [];
-		return _.compact(_.map(atts, (item) => (item && !item.isLinked && item.checked() ? item.download : '')));
+		return _.compact(atts.map(item => (item && !item.isLinked && item.checked() ? item.download : '')));
 	}
 
 	downloadAsZip() {

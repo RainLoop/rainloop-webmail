@@ -257,7 +257,7 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.identities = IdentityStore.identities;
 		this.identitiesOptions = ko.computed(() =>
-			_.map(IdentityStore.identities(), (item) => ({
+			IdentityStore.identities().map(item => ({
 				'item': item,
 				'optValue': item.id(),
 				'optText': item.formattedName()
@@ -541,7 +541,7 @@ class ComposePopupView extends AbstractViewNext {
 
 	emailsSource(oData, fResponse) {
 		getApp().getAutocomplete(oData.term, (aData) => {
-			fResponse(_.map(aData, (oEmailItem) => oEmailItem.toLine(false)));
+			fResponse(aData.map(oEmailItem => oEmailItem.toLine(false)));
 		});
 	}
 
@@ -859,7 +859,7 @@ class ComposePopupView extends AbstractViewNext {
 	addEmailsTo(fKoValue, emails) {
 		if (isNonEmptyArray(emails)) {
 			const value = trim(fKoValue()),
-				values = _.uniq(_.compact(_.map(emails, (item) => (item ? item.toLine(false) : null))));
+				values = _.uniq(_.compact(emails.map(item => (item ? item.toLine(false) : null))));
 
 			fKoValue(value + ('' === value ? '' : ', ') + trim(values.join(', ')));
 		}
@@ -873,7 +873,7 @@ class ComposePopupView extends AbstractViewNext {
 	 */
 	emailArrayToStringLineHelper(aList, bFriendly) {
 		bFriendly = !!bFriendly;
-		return _.map(aList, (item) => item.toLine(bFriendly)).join(', ');
+		return aList.map(item => item.toLine(bFriendly)).join(', ');
 	}
 
 	/**
@@ -1605,9 +1605,8 @@ class ComposePopupView extends AbstractViewNext {
 	 * @returns {Array}
 	 */
 	getAttachmentsDownloadsForUpload() {
-		return _.map(
-			this.attachments().filter(item => item && '' === item.tempName()),
-			(item) => item.id
+		return this.attachments().filter(item => item && '' === item.tempName()).map(
+			item => item.id
 		);
 	}
 

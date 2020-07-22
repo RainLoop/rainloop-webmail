@@ -824,14 +824,13 @@ ko.bindingHandlers.emailsTags = {
 				return null;
 			},
 			parseHook: (input) =>
-				_.map(
-					_.flatten(
-						_.map(input, (inputValue) => {
-							const values = EmailModel.parseEmailLine(inputValue);
-							return values.length ? values : inputValue;
-						})
-					),
-					(item) => (_.isObject(item) ? [item.toLine(false), item] : [item, null])
+				_.flatten(
+					input.map(inputValue => {
+						const values = EmailModel.parseEmailLine(inputValue);
+						return values.length ? values : inputValue;
+					})
+				).map(
+					item => (_.isObject(item) ? [item.toLine(false), item] : [item, null])
 				),
 			change: (event) => {
 				$el.data('EmailsTagsValue', event.target.value);

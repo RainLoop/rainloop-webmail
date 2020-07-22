@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import ko from 'ko';
 
 import Jua from 'Jua';
@@ -63,7 +62,7 @@ class ThemesUserSettings {
 		const currentTheme = this.theme();
 
 		this.themesObjects(
-			_.map(this.themes(), (theme) => ({
+			this.themes().map(theme => ({
 				name: theme,
 				nameDisplay: convertThemeName(theme),
 				selected: ko.observable(theme === currentTheme),

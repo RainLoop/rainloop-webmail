@@ -40,7 +40,7 @@ class AdminApp extends AbstractApp {
 			DomainStore.domains.loading(false);
 			if (StorageResultType.Success === result && data && data.Result) {
 				DomainStore.domains(
-					_.map(data.Result, ([enabled, alias], name) => ({
+					Object.entries(data.Result).map(([enabled, alias], name) => ({
 						name: name,
 						disabled: ko.observable(!enabled),
 						alias: alias,
@@ -57,7 +57,7 @@ class AdminApp extends AbstractApp {
 			PluginStore.plugins.loading(false);
 			if (StorageResultType.Success === result && data && data.Result) {
 				PluginStore.plugins(
-					_.map(data.Result, (item) => ({
+					data.Result.map(item => ({
 						name: item.Name,
 						disabled: ko.observable(!item.Enabled),
 						configured: ko.observable(!!item.Configured)
@@ -87,7 +87,7 @@ class AdminApp extends AbstractApp {
 
 				if (isArray(data.Result.List)) {
 					list = _.compact(
-						_.map(data.Result.List, (item) => {
+						data.Result.List.map(item => {
 							if (item) {
 								item.loading = ko.observable(!isUnd(loading[item.file]));
 								return 'core' === item.type && !item.canBeInstalled ? null : item;

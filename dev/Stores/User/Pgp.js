@@ -44,7 +44,7 @@ class PgpUserStore {
 	findPublicKeysByEmail(email) {
 		return _.compact(
 			_.flatten(
-				_.map(this.openpgpkeysPublic(), (item) => {
+				this.openpgpkeysPublic().map(item => {
 					const key = item && item.emails.includes(email) ? item : null;
 					return key ? key.getNativeKeys() : [null];
 				}),
@@ -56,7 +56,7 @@ class PgpUserStore {
 	findPublicKeysBySigningKeyIds(signingKeyIds) {
 		return _.compact(
 			_.flatten(
-				_.map(signingKeyIds, (id) => {
+				signingKeyIds.map(id => {
 					const key = id && id.toHex ? this.findPublicKeyByHex(id.toHex()) : null;
 					return key ? key.getNativeKeys() : [null];
 				}),
@@ -69,7 +69,7 @@ class PgpUserStore {
 		let result = isArray(encryptionKeyIds)
 			? _.compact(
 					_.flatten(
-						_.map(encryptionKeyIds, (id) => {
+						encryptionKeyIds.map(id => {
 							const key = id && id.toHex ? this.findPrivateKeyByHex(id.toHex()) : null;
 							return key ? (returnWrapKeys ? [key] : key.getNativeKeys()) : [null];
 						}),
@@ -82,13 +82,13 @@ class PgpUserStore {
 			result = _.uniq(
 				_.compact(
 					_.flatten(
-						_.map(recipients, (sEmail) => {
+						recipients.map(sEmail => {
 							const keys = sEmail ? this.findAllPrivateKeysByEmailNotNative(sEmail) : null;
 							return keys
 								? returnWrapKeys
 									? keys
 									: _.flatten(
-											_.map(keys, (key) => key.getNativeKeys()),
+											keys.map(key => key.getNativeKeys()),
 											true
 									  )
 								: [null];
@@ -297,7 +297,7 @@ class PgpUserStore {
 							} else if (validPrivateKey) {
 								const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
 									additional = keyIds
-										? _.compact(_.map(keyIds, (item) => (item && item.toHex ? item.toHex() : null))).join(', ')
+										? _.compact(keyIds.map(item => (item && item.toHex ? item.toHex() : null))).join(', ')
 										: '';
 
 								store.controlsHelper(
@@ -354,7 +354,7 @@ class PgpUserStore {
 					} else {
 						const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
 							additional = keyIds
-								? _.compact(_.map(keyIds, (item) => (item && item.toHex ? item.toHex() : null))).join(', ')
+								? _.compact(keyIds.map(item => (item && item.toHex ? item.toHex() : null))).join(', ')
 								: '';
 
 						store.controlsHelper(

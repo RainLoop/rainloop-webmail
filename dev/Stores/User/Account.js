@@ -17,7 +17,7 @@ class AccountUserStore {
 	}
 
 	computers() {
-		this.accountsEmails = ko.computed(() => _.compact(_.map(this.accounts(), (item) => (item ? item.email : null))));
+		this.accountsEmails = ko.computed(() => _.compact(this.accounts().map(item => (item ? item.email : null))));
 
 		this.accountsUnreadCount = ko.computed(() => 0);
 		// this.accountsUnreadCount = ko.computed(() => {

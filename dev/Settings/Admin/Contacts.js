@@ -48,7 +48,7 @@ class ContactsAdminSettings {
 
 		this.contactsTypes = ko.observableArray([]);
 		this.contactsTypesOptions = ko.computed(() =>
-			_.map(this.contactsTypes(), (value) => {
+			this.contactsTypes().map(value => {
 				const disabled = supportedTypes.includes(value);
 				return {
 					'id': value,

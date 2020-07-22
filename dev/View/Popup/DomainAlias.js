@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
@@ -33,7 +32,7 @@ class DomainAliasPopupView extends AbstractViewNext {
 		this.domains = DomainStore.domainsWithoutAliases;
 
 		this.domainsOptions = ko.computed(() =>
-			_.map(this.domains(), (item) => ({ optValue: item.name, optText: item.name }))
+			this.domains().map(item => ({ optValue: item.name, optText: item.name }))
 		);
 
 		this.canBeSaved = ko.computed(() => !this.saving() && '' !== this.name() && '' !== this.alias());

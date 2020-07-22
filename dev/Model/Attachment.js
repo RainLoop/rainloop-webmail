@@ -187,7 +187,7 @@ export const staticCombinedIconClass = (data) => {
 
 	if (isNonEmptyArray(data)) {
 		result = 'icon-attachment';
-		types = _.uniq(_.compact(_.map(data, (item) => (item ? staticFileType(getFileExtension(item[0]), item[1]) : ''))));
+		types = _.uniq(_.compact(data.map(item => (item ? staticFileType(getFileExtension(item[0]), item[1]) : ''))));
 
 		if (types && 1 === types.length && types[0]) {
 			switch (types[0]) {

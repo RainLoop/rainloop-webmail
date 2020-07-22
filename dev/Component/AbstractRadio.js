@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 import { isUnd } from 'Common/Utils';
 import { AbstractComponent } from 'Component/Abstract';
@@ -21,7 +20,7 @@ class AbstractRadio extends AbstractComponent {
 		this.readOnly = isUnd(params.readOnly) ? false : !!params.readOnly;
 
 		if (params.values) {
-			this.values(_.map(params.values, (label, value) => ({ label: label, value: value })));
+			this.values(Object.entries(params.values).map((label, value) => ({ label: label, value: value })));
 		}
 
 		this.click = this.click.bind(this);

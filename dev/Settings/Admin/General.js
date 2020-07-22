@@ -63,7 +63,7 @@ class GeneralAdminSettings {
 				: '';
 
 		this.themesOptions = ko.computed(() =>
-			_.map(this.themes(), (theme) => ({ optValue: theme, optText: convertThemeName(theme) }))
+			this.themes().map(theme => ({ optValue: theme, optText: convertThemeName(theme) }))
 		);
 
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));

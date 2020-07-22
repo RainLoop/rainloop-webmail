@@ -294,7 +294,7 @@ class MessageUserStore {
 	 * @param {boolean=} copy = false
 	 */
 	removeMessagesFromList(fromFolderFullNameRaw, uidForRemove, toFolderFullNameRaw = '', copy = false) {
-		uidForRemove = _.map(uidForRemove, (mValue) => pInt(mValue));
+		uidForRemove = uidForRemove.map(mValue => pInt(mValue));
 
 		let unseenCount = 0,
 			messageList = this.messageList(),
@@ -709,7 +709,7 @@ class MessageUserStore {
 	 * @returns {string}
 	 */
 	calculateMessageListHash(list) {
-		return _.map(list, (message) => '' + message.hash + '_' + message.threadsLen() + '_' + message.flagHash()).join(
+		return list.map(message => '' + message.hash + '_' + message.threadsLen() + '_' + message.flagHash()).join(
 			'|'
 		);
 	}

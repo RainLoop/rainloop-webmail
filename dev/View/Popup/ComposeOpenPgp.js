@@ -44,14 +44,14 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		this.signKey = ko.observable(null);
 		this.encryptKeys = ko.observableArray([]);
 
-		this.encryptKeysView = ko.computed(() => _.compact(_.map(this.encryptKeys(), (oKey) => (oKey ? oKey.key : null))));
+		this.encryptKeysView = ko.computed(() => _.compact(this.encryptKeys().map(oKey => (oKey ? oKey.key : null))));
 
 		this.privateKeysOptions = ko.computed(() => {
-			const opts = _.map(PgpStore.openpgpkeysPrivate(), (oKey, iIndex) => {
+			const opts = PgpStore.openpgpkeysPrivate().map((oKey, iIndex) => {
 				if (this.signKey() && this.signKey().key.id === oKey.id) {
 					return null;
 				}
-				return _.map(oKey.users, (user) => ({
+				return oKey.users.map(user => ({
 					'id': oKey.guid,
 					'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
 					'key': oKey,
@@ -63,11 +63,11 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		});
 
 		this.publicKeysOptions = ko.computed(() => {
-			const opts = _.map(PgpStore.openpgpkeysPublic(), (oKey, index) => {
+			const opts = PgpStore.openpgpkeysPublic().map((oKey, index) => {
 				if (this.encryptKeysView().includes(oKey)) {
 					return null;
 				}
-				return _.map(oKey.users, (user) => ({
+				return oKey.users.map(user => ({
 					'id': oKey.guid,
 					'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
 					'key': oKey,
@@ -356,7 +356,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 
 		rec = rec.join(', ').split(',');
 		rec = _.compact(
-			_.map(rec, (value) => {
+			rec.map(value => {
 				email.clear();
 				email.parse(trim(value));
 				return '' === email.email ? false : email.email;
@@ -386,10 +386,10 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 				_.uniq(
 					_.compact(
 						_.flatten(
-							_.map(rec, (recEmail) => {
+							rec.map(recEmail => {
 								const keys = PgpStore.findAllPublicKeysByEmailNotNative(recEmail);
 								return keys
-									? _.map(keys, (publicKey) => ({
+									? keys.map(publicKey => ({
 											'empty': !publicKey,
 											'selected': ko.observable(!!publicKey),
 											'removable': ko.observable(

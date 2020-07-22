@@ -95,7 +95,7 @@ class FolderUserStore {
 		});
 
 		this.folderListSystem = ko.computed(() =>
-			_.compact(_.map(this.folderListSystemNames(), (name) => getFolderFromCacheList(name)))
+			_.compact(this.folderListSystemNames().map(name => getFolderFromCacheList(name)))
 		);
 
 		this.folderMenuForMove = ko.computed(() =>
