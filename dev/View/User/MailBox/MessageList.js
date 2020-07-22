@@ -952,7 +952,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 				Remote.message(
 					(result, data) => {
 						const next = !!(StorageResultType.Success === result && data && data.Result);
-						_.delay(() => {
+						setTimeout(() => {
 							this.bPrefetch = false;
 							if (next) {
 								this.prefetchNextTick();
