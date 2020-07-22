@@ -12,41 +12,6 @@ window.__rlah_set = () => setHash();
 window.__rlah_clear = () => clearHash();
 window.__rlah_data = () => RL_APP_DATA_STORAGE;
 
-const useJsNextBundle = (function() {
-	//	try {
-	//
-	//		(function() {
-	//			eval(`
-	// // let + const
-	//const x = 5; let y = 4; var z = 4;
-	//
-	// // Arrow Function
-	//const f = () => 'rainloop';
-	//
-	// // Default + Rest + Spread
-	//const d = (test = 1, ...t) => 'rainloop';
-	//d(...[1, 2, 3]);
-	//
-	//// Destructuring
-	//let [a, b] = [1, 2];
-	//({a, b} = {a: 1, b: 2});
-	//
-	//// Class
-	//class Q1 { constructor() {} }
-	//
-	//// Class extends + super
-	//class Q2 extends Q1 { constructor() { super() } }
-	//
-	//`);
-	//		}());
-	//
-	//		return true;
-	//	}
-	//	catch (e) {}
-	return false;
-})();
-/* eslint-enable */
-
 /**
  * @param {string} styles
  * @returns {void}
@@ -202,7 +167,6 @@ function runApp() {
 		appData.LangLink &&
 		appData.StaticLibJsLink &&
 		appData.StaticAppJsLink &&
-		appData.StaticAppJsNextLink &&
 		appData.StaticEditorJsLink
 	) {
 		const p = progressJs;
@@ -226,10 +190,6 @@ function runApp() {
 			.then(() => {
 				p.set(20);
 				return window.Promise.all([jassl(appData.TemplatesLink), jassl(appData.LangLink)]);
-			})
-			.then(() => {
-				p.set(30);
-				return jassl(useJsNextBundle ? appData.StaticAppJsNextLink : appData.StaticAppJsLink);
 			})
 			.then(() => {
 				p.set(50);
@@ -285,12 +245,6 @@ window.__initAppData = function(data) {
 window.__runBoot = function() {
 	if (!window.navigator || !window.navigator.cookieEnabled) {
 		window.document.location.replace('./?/NoCookie');
-	}
-
-	const root = window.document.documentElement;
-
-	if (useJsNextBundle) {
-		root.className += ' js-next';
 	}
 
 	if (includeLayout()) {
