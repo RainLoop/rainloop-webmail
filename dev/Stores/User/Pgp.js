@@ -30,7 +30,7 @@ class PgpUserStore {
 	}
 
 	findKeyByHex(keys, hash) {
-		return _.find(keys, (item) => hash && item && (hash === item.id || item.ids.includes(hash)));
+		return keys.find(item => hash && item && (hash === item.id || item.ids.includes(hash)));
 	}
 
 	findPublicKeyByHex(hash) {
@@ -108,7 +108,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findPublicKeyByEmailNotNative(email) {
-		return _.find(this.openpgpkeysPublic(), (item) => item && item.emails.includes(email)) || null;
+		return this.openpgpkeysPublic().find(item => item && item.emails.includes(email)) || null;
 	}
 
 	/**
@@ -116,7 +116,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findPrivateKeyByEmailNotNative(email) {
-		return _.find(this.openpgpkeysPrivate(), (item) => item && item.emails.includes(email)) || null;
+		return this.openpgpkeysPrivate().find(item => item && item.emails.includes(email)) || null;
 	}
 
 	/**
@@ -142,7 +142,7 @@ class PgpUserStore {
 	 */
 	findPrivateKeyByEmail(email, password) {
 		let privateKey = null;
-		const key = _.find(this.openpgpkeysPrivate(), (item) => item && item.emails.includes(email));
+		const key = this.openpgpkeysPrivate().find(item => item && item.emails.includes(email));
 
 		if (key) {
 			try {
@@ -217,7 +217,7 @@ class PgpUserStore {
 				if (publicKeys && 0 < publicKeys.length) {
 					try {
 						const result = message.verify(publicKeys),
-							valid = _.find(_.isArray(result) ? result : [], (item) => item && item.valid && item.keyid);
+							valid = (_.isArray(result) ? result : []).find(item => item && item.valid && item.keyid);
 
 						if (valid && valid.keyid && valid.keyid && valid.keyid.toHex) {
 							fCallback(this.findPublicKeyByHex(valid.keyid.toHex()));

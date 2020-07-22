@@ -180,7 +180,7 @@ class Selector {
 					} else if (0 < aItems.length) {
 						if (null !== isNextFocused) {
 							getNext = false;
-							isNextFocused = _.find(aCache, (sUid) => {
+							isNextFocused = aCache.find(sUid => {
 								if (getNext && uids.includes(sUid)) {
 									return sUid;
 								} else if (isNextFocused === sUid) {
@@ -190,7 +190,7 @@ class Selector {
 							});
 
 							if (isNextFocused) {
-								temp = _.find(aItems, (oItem) => isNextFocused === this.getItemUid(oItem));
+								temp = aItems.find(oItem => isNextFocused === this.getItemUid(oItem));
 							}
 						}
 

@@ -56,7 +56,7 @@ class GeneralUserSettings {
 
 		this.identityMain = ko.computed(() => {
 			const list = this.identities();
-			return isArray(list) ? _.find(list, (item) => item && '' === item.id()) : null;
+			return isArray(list) ? list.find(item => item && '' === item.id()) : null;
 		});
 
 		this.identityMainDesc = ko.computed(() => {

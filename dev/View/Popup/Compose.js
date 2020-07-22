@@ -1263,12 +1263,12 @@ class ComposePopupView extends AbstractViewNext {
 	 * @returns {?Object}
 	 */
 	getAttachmentById(id) {
-		return _.find(this.attachments(), (item) => item && id === item.id);
+		return this.attachments().find(item => item && id === item.id);
 	}
 
 	cancelAttachmentHelper(id, oJua) {
 		return () => {
-			const attachment = _.find(this.attachments(), (item) => item && item.id === id);
+			const attachment = this.attachments().find(item => item && item.id === id);
 			if (attachment) {
 				this.attachments.remove(attachment);
 				delegateRunOnDestroy(attachment);
@@ -1516,7 +1516,7 @@ class ComposePopupView extends AbstractViewNext {
 	}
 
 	removeLinkedAttachments() {
-		const arrachment = _.find(this.attachments(), (item) => item && item.isLinked);
+		const arrachment = this.attachments().find(item => item && item.isLinked);
 		if (arrachment) {
 			this.attachments.remove(arrachment);
 			delegateRunOnDestroy(arrachment);

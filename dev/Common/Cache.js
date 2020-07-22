@@ -1,4 +1,3 @@
-import _ from '_';
 import { MessageSetAction } from 'Common/Enums';
 import { trim, pInt, isArray } from 'Common/Utils';
 
@@ -223,7 +222,7 @@ export function initMessageFlagsFromCache(message) {
 		}
 
 		if (0 < message.threads().length) {
-			const unseenSubUid = _.find(message.threads(), (sSubUid) => {
+			const unseenSubUid = message.threads().find(sSubUid => {
 				if (uid !== sSubUid) {
 					const subFlags = getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
 					return subFlags && 0 < subFlags.length && !!subFlags[0];
@@ -231,7 +230,7 @@ export function initMessageFlagsFromCache(message) {
 				return false;
 			});
 
-			const flaggedSubUid = _.find(message.threads(), (sSubUid) => {
+			const flaggedSubUid = message.threads().find(sSubUid => {
 				if (uid !== sSubUid) {
 					const subFlags = getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
 					return subFlags && 0 < subFlags.length && !!subFlags[1];

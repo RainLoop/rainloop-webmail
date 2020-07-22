@@ -1,10 +1,8 @@
-import _ from '_';
 import { CookieDriver } from 'Common/ClientStorageDriver/Cookie';
 import { LocalStorageDriver } from 'Common/ClientStorageDriver/LocalStorage';
 
-const SupportedStorageDriver = _.find(
-	[LocalStorageDriver, CookieDriver],
-	(StorageDriver) => StorageDriver && StorageDriver.supported()
+const SupportedStorageDriver = [LocalStorageDriver, CookieDriver].find(
+	StorageDriver => StorageDriver && StorageDriver.supported()
 );
 
 const driver = SupportedStorageDriver ? new SupportedStorageDriver() : null;

@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import $ from '$';
 import key from 'key';
 import ko from 'ko';
@@ -152,15 +151,7 @@ export const htmlEditorLangsMap = {
 /**
  * @type {boolean}
  */
-let bAllowPdfPreview = !bMobileDevice;
-
-if (bAllowPdfPreview && window.navigator && window.navigator.mimeTypes) {
-	bAllowPdfPreview = !!_.find(window.navigator.mimeTypes, (type) => type && 'application/pdf' === type.type);
-
-	if (!bAllowPdfPreview) {
-		bAllowPdfPreview = 'undefined' !== typeof window.navigator.mimeTypes['application/pdf'];
-	}
-}
+let bAllowPdfPreview = !bMobileDevice && undefined !== window.navigator.mimeTypes['application/pdf'];
 
 export { bAllowPdfPreview };
 

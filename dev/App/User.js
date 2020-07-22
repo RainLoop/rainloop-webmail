@@ -552,9 +552,9 @@ class AppUser extends AbstractApp {
 		// 			aAcounts = AccountStore.accounts()
 		// 		;
 		//
-		// 		_.each(oData.Result['Counts'], (oItem) => {
+		// 		oData.Result['Counts'].find(oItem => {
 		//
-		// 			var oAccount = _.find(aAcounts, (oAccount) => {
+		// 			var oAccount = aAcounts.find(oAccount => {
 		// 				return oAccount && oItem[0] === oAccount.email && sEmail !== oAccount.email;
 		// 			});
 		//

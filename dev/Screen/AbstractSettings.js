@@ -39,17 +39,15 @@ class AbstractSettingsScreen extends AbstractScreen {
 			viewModelPlace = null,
 			viewModelDom = null;
 
-		RoutedSettingsViewModel = _.find(
-			VIEW_MODELS.settings,
-			(SettingsViewModel) =>
+		RoutedSettingsViewModel = VIEW_MODELS.settings.find(
+			SettingsViewModel =>
 				SettingsViewModel && SettingsViewModel.__rlSettingsData && subName === SettingsViewModel.__rlSettingsData.Route
 		);
 
 		if (RoutedSettingsViewModel) {
 			if (
-				_.find(
-					VIEW_MODELS['settings-removed'],
-					(DisabledSettingsViewModel) =>
+				VIEW_MODELS['settings-removed'].find(
+					DisabledSettingsViewModel =>
 						DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel
 				)
 			) {
@@ -58,9 +56,8 @@ class AbstractSettingsScreen extends AbstractScreen {
 
 			if (
 				RoutedSettingsViewModel &&
-				_.find(
-					VIEW_MODELS['settings-disabled'],
-					(DisabledSettingsViewModel) =>
+				VIEW_MODELS['settings-disabled'].find(
+					DisabledSettingsViewModel =>
 						DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel
 				)
 			) {
@@ -155,18 +152,16 @@ class AbstractSettingsScreen extends AbstractScreen {
 			if (
 				SettingsViewModel &&
 				SettingsViewModel.__rlSettingsData &&
-				!_.find(
-					VIEW_MODELS['settings-removed'],
-					(RemoveSettingsViewModel) => RemoveSettingsViewModel && RemoveSettingsViewModel === SettingsViewModel
+				!VIEW_MODELS['settings-removed'].find(
+					RemoveSettingsViewModel => RemoveSettingsViewModel && RemoveSettingsViewModel === SettingsViewModel
 				)
 			) {
 				this.menu.push({
 					route: SettingsViewModel.__rlSettingsData.Route,
 					label: SettingsViewModel.__rlSettingsData.Label,
 					selected: ko.observable(false),
-					disabled: !!_.find(
-						VIEW_MODELS['settings-disabled'],
-						(DisabledSettingsViewModel) => DisabledSettingsViewModel && DisabledSettingsViewModel === SettingsViewModel
+					disabled: !!VIEW_MODELS['settings-disabled'].find(
+						DisabledSettingsViewModel => DisabledSettingsViewModel && DisabledSettingsViewModel === SettingsViewModel
 					)
 				});
 			}
@@ -176,9 +171,8 @@ class AbstractSettingsScreen extends AbstractScreen {
 	}
 
 	routes() {
-		const DefaultViewModel = _.find(
-				VIEW_MODELS.settings,
-				(SettingsViewModel) =>
+		const DefaultViewModel = VIEW_MODELS.settings.find(
+				SettingsViewModel =>
 					SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData.IsDefault
 			),
 			defaultRoute =

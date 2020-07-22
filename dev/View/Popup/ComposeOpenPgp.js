@@ -244,7 +244,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 	@command()
 	selectCommand() {
 		const keyId = this.selectedPrivateKey(),
-			option = keyId ? _.find(this.privateKeysOptions(), (item) => item && keyId === item.id) : null;
+			option = keyId ? this.privateKeysOptions().find(item => item && keyId === item.id) : null;
 
 		if (option) {
 			this.signKey({
@@ -261,7 +261,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 	addCommand() {
 		const keyId = this.selectedPublicKey(),
 			keys = this.encryptKeys(),
-			option = keyId ? _.find(this.publicKeysOptions(), (item) => item && keyId === item.id) : null;
+			option = keyId ? this.publicKeysOptions().find(item => item && keyId === item.id) : null;
 
 		if (option) {
 			keys.push({

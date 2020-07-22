@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { FolderType } from 'Common/Enums';
@@ -64,9 +63,8 @@ class FolderModel extends AbstractModel {
 
 		this.hasSubScribedSubfolders = ko.computed(
 			() =>
-				!!_.find(
-					this.subFolders(),
-					(oFolder) => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder()
+				!!this.subFolders().find(
+					oFolder => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder()
 				)
 		);
 
@@ -230,9 +228,8 @@ class FolderModel extends AbstractModel {
 
 		this.hasSubScribedUnreadMessagesSubfolders = ko.computed(
 			() =>
-				!!_.find(
-					this.subFolders(),
-					(folder) => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders()
+				!!this.subFolders().find(
+					folder => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders()
 				)
 		);
 

@@ -380,9 +380,9 @@ class MessageUserStore {
 			if (
 				messageList &&
 				0 < messageList.length &&
-				!!_.find(messageList, (item) => !!(item && item.deleted() && item.uid === this.messageListThreadUid()))
+				!!messageList.find(item => !!(item && item.deleted() && item.uid === this.messageListThreadUid()))
 			) {
-				const message = _.find(messageList, (item) => item && !item.deleted());
+				const message = messageList.find(item => item && !item.deleted());
 				if (message && this.messageListThreadUid() !== pString(message.uid)) {
 					this.messageListThreadUid(pString(message.uid));
 
@@ -633,9 +633,8 @@ class MessageUserStore {
 							this.selectorMessageFocused(null);
 						}
 					} else if (!selectedMessage && message) {
-						selectedMessage = _.find(
-							this.messageList(),
-							(subMessage) =>
+						selectedMessage = this.messageList().find(
+							subMessage =>
 								subMessage &&
 								subMessage.folderFullNameRaw === message.folderFullNameRaw &&
 								subMessage.uid === message.uid

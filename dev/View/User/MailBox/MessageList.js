@@ -255,9 +255,8 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		});
 
 		Events.sub('mailbox.message.show', (sFolder, sUid) => {
-			const message = _.find(
-				this.messageList(),
-				(item) => item && sFolder === item.folderFullNameRaw && sUid === item.uid
+			const message = this.messageList().find(
+				item => item && sFolder === item.folderFullNameRaw && sUid === item.uid
 			);
 
 			if ('INBOX' === sFolder) {
@@ -411,7 +410,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 				temp = null,
 				current = null;
 
-			_.find(this.messageListPagenator(), (item) => {
+			this.messageListPagenator().find(item => {
 				if (item) {
 					if (current) {
 						next = item;
@@ -942,9 +941,8 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	prefetchNextTick() {
 		if (ifvisible && !this.bPrefetch && !ifvisible.now() && this.viewModelVisibility()) {
-			const message = _.find(
-				this.messageList(),
-				(item) => item && !hasRequestedMessage(item.folderFullNameRaw, item.uid)
+			const message = this.messageList().find(
+				item => item && !hasRequestedMessage(item.folderFullNameRaw, item.uid)
 			);
 			if (message) {
 				this.bPrefetch = true;

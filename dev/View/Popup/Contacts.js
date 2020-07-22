@@ -119,7 +119,7 @@ class ContactsPopupView extends AbstractViewNext {
 				emails = this.viewPropertiesEmails(),
 				fFilter = (property) => '' !== trim(property.value());
 
-			return !!(_.find(names, fFilter) || _.find(emails, fFilter));
+			return !!(names.find(fFilter) || emails.find(fFilter));
 		});
 
 		this.viewPropertiesPhones = ko.computed(() =>
@@ -381,7 +381,7 @@ class ContactsPopupView extends AbstractViewNext {
 	}
 
 	addNewOrFocusProperty(type, typeStr) {
-		const item = _.find(this.viewProperties(), (prop) => type === prop.type());
+		const item = this.viewProperties().find(prop => type === prop.type());
 		if (item) {
 			item.focused(true);
 		} else {

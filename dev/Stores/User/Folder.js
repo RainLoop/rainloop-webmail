@@ -47,7 +47,7 @@ class FolderUserStore {
 		);
 
 		this.foldersListWithSingleInboxRootFolder = ko.computed(
-			() => !_.find(this.folderList(), (folder) => folder && !folder.isSystemFolder() && folder.visible())
+			() => !this.folderList().find(folder => folder && !folder.isSystemFolder() && folder.visible())
 		);
 
 		this.currentFolderFullNameRaw = ko.computed(() => (this.currentFolder() ? this.currentFolder().fullNameRaw : ''));
@@ -193,7 +193,7 @@ class FolderUserStore {
 			return 0;
 		});
 
-		_.find(timeouts, (aItem) => {
+		timeouts.find(aItem => {
 			const folder = getFolderFromCacheList(aItem[1]);
 			if (folder) {
 				folder.interval = utc;

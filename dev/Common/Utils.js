@@ -1018,7 +1018,7 @@ export function selectElement(element) {
 }
 
 export const detectDropdownVisibility = _.debounce(() => {
-	dropdownVisibility(!!_.find(GlobalsData.aBootstrapDropdowns, (item) => item.hasClass('open')));
+	dropdownVisibility(!!GlobalsData.aBootstrapDropdowns.find(item => item.hasClass('open')));
 }, 50);
 
 /**

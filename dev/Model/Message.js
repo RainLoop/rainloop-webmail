@@ -493,7 +493,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {boolean}
 	 */
 	hasVisibleAttachments() {
-		return !!_.find(this.attachments(), (item) => !item.isLinked);
+		return !!this.attachments().find(item => !item.isLinked);
 	}
 
 	/**
@@ -506,7 +506,7 @@ class MessageModel extends AbstractModel {
 
 		if (isNonEmptyArray(attachments)) {
 			cid = cid.replace(/^<+/, '').replace(/>+$/, '');
-			result = _.find(attachments, (item) => cid === item.cidWithOutTags);
+			result = attachments.find(item => cid === item.cidWithOutTags);
 		}
 
 		return result || null;
@@ -521,7 +521,7 @@ class MessageModel extends AbstractModel {
 		const attachments = this.attachments();
 
 		if (isNonEmptyArray(attachments)) {
-			result = _.find(attachments, (item) => contentLocation === item.contentLocation);
+			result = attachments.find(item => contentLocation === item.contentLocation);
 		}
 
 		return result || null;
