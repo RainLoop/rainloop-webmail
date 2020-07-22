@@ -1,4 +1,3 @@
-import _ from '_';
 import { isObject, isUnd } from 'Common/Utils';
 import * as Plugins from 'Common/Plugins';
 
@@ -14,7 +13,7 @@ export function sub(name, func, context) {
 		context = func || null;
 		func = null;
 
-		_.each(name, (subFunc, subName) => {
+		Object.entries(name).forEach(([subFunc, subName]) => {
 			sub(subName, subFunc, context);
 		});
 	} else {
@@ -34,7 +33,7 @@ export function pub(name, args) {
 	Plugins.runHook('rl-pub', [name, args]);
 
 	if (!isUnd(SUBS[name])) {
-		_.each(SUBS[name], (items) => {
+		SUBS[name].forEach(items => {
 			if (items[0]) {
 				items[0].apply(items[1] || null, args || []);
 			}

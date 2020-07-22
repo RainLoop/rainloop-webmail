@@ -79,7 +79,7 @@ class AdminApp extends AbstractApp {
 				let list = [];
 				const loading = {};
 
-				_.each(PackageStore.packages(), (item) => {
+				PackageStore.packages().forEach(item => {
 					if (item && item.loading()) {
 						loading[item.file] = item;
 					}

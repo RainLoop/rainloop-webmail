@@ -131,7 +131,7 @@ export function hideScreenPopup(ViewModelClassToHide) {
  * @param {mixed=} params = null
  */
 export function vmRunHook(hookName, ViewModelClass, params = null) {
-	_.each(ViewModelClass.__names, (name) => {
+	ViewModelClass.__names.forEach(name => {
 		runHook(hookName, [name, ViewModelClass.__vm, params]);
 	});
 }
@@ -309,7 +309,7 @@ export function screenOnRoute(screenName, subPart) {
 				vmScreen.__builded = true;
 
 				if (isNonEmptyArray(vmScreen.viewModels())) {
-					_.each(vmScreen.viewModels(), (ViewModelClass) => {
+					vmScreen.viewModels().forEach(ViewModelClass => {
 						buildViewModel(ViewModelClass, vmScreen);
 					});
 				}
@@ -328,7 +328,7 @@ export function screenOnRoute(screenName, subPart) {
 					}
 
 					if (isNonEmptyArray(currentScreen.viewModels())) {
-						_.each(currentScreen.viewModels(), (ViewModelClass) => {
+						currentScreen.viewModels().forEach(ViewModelClass => {
 							if (
 								ViewModelClass.__vm &&
 								ViewModelClass.__dom &&
@@ -361,7 +361,7 @@ export function screenOnRoute(screenName, subPart) {
 					runHook('screen-on-show', [currentScreen.screenName(), currentScreen]);
 
 					if (isNonEmptyArray(currentScreen.viewModels())) {
-						_.each(currentScreen.viewModels(), (ViewModelClass) => {
+						currentScreen.viewModels().forEach(ViewModelClass => {
 							if (
 								ViewModelClass.__vm &&
 								ViewModelClass.__dom &&
@@ -399,7 +399,7 @@ export function screenOnRoute(screenName, subPart) {
  * @returns {void}
  */
 export function startScreens(screensClasses) {
-	_.each(screensClasses, (CScreen) => {
+	screensClasses.forEach(CScreen => {
 		if (CScreen) {
 			const vmScreen = new CScreen(),
 				screenName = vmScreen ? vmScreen.screenName() : '';
@@ -414,7 +414,7 @@ export function startScreens(screensClasses) {
 		}
 	});
 
-	_.each(SCREENS, (vmScreen) => {
+	Object.values(SCREENS).forEach(vmScreen => {
 		if (vmScreen && !vmScreen.__started && vmScreen.__start) {
 			vmScreen.__started = true;
 			vmScreen.__start();

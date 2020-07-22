@@ -146,7 +146,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			read: () => 0 < MessageStore.messageListChecked().length,
 			write: (value) => {
 				value = !!value;
-				_.each(MessageStore.messageList(), (message) => {
+				MessageStore.messageList().forEach(message => {
 					message.checked(value);
 				});
 			}
@@ -551,7 +551,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 					case MessageSetAction.SetSeen:
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
 						if (folder) {
-							_.each(MessageStore.messageList(), (message) => {
+							MessageStore.messageList().forEach(message => {
 								if (message.unseen()) {
 									cnt += 1;
 								}
@@ -577,7 +577,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 					case MessageSetAction.UnsetSeen:
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
 						if (folder) {
-							_.each(MessageStore.messageList(), (message) => {
+							MessageStore.messageList().forEach(message => {
 								if (!message.unseen()) {
 									cnt += 1;
 								}

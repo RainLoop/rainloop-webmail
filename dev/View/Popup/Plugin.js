@@ -51,7 +51,7 @@ class PluginPopupView extends AbstractViewNext {
 		const list = {};
 		list.Name = this.name();
 
-		_.each(this.configures(), (oItem) => {
+		this.configures().forEach(oItem => {
 			let value = oItem.value();
 			if (false === value || true === value) {
 				value = value ? '1' : '0';

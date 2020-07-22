@@ -75,7 +75,7 @@ class Selector {
 		this.selectedItem.subscribe((item) => {
 			if (item) {
 				if (this.isListChecked()) {
-					_.each(this.listChecked(), (subItem) => {
+					this.listChecked().forEach(subItem => {
 						subItem.checked(false);
 					});
 				}
@@ -110,7 +110,7 @@ class Selector {
 		this.list.subscribe(
 			(items) => {
 				if (isArray(items)) {
-					_.each(items, (item) => {
+					items.forEach(item => {
 						if (item) {
 							const uid = this.getItemUid(item);
 
@@ -150,7 +150,7 @@ class Selector {
 			if (isArray(aItems)) {
 				len = aCheckedCache.length;
 
-				_.each(aItems, (item) => {
+				aItems.forEach(item => {
 					const uid = this.getItemUid(item);
 					uids.push(uid);
 
@@ -416,7 +416,7 @@ class Selector {
 					EventKeyCode.Insert === iEventKeyCode ||
 					EventKeyCode.Space === iEventKeyCode
 				) {
-					_.each(list, (item) => {
+					list.forEach(item => {
 						if (!isStop) {
 							switch (iEventKeyCode) {
 								case EventKeyCode.Up:

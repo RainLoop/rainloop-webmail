@@ -163,7 +163,7 @@ class FolderUserStore {
 			timeouts = [],
 			inboxFolderName = getFolderInboxName(),
 			fSearchFunction = (list) => {
-				_.each(list, (folder) => {
+				list.forEach(folder => {
 					if (
 						folder &&
 						inboxFolderName !== folder.fullNameRaw &&

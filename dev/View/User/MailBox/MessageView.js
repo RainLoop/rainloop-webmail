@@ -142,7 +142,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 		this.showAttachmnetControls.subscribe((v) => {
 			if (this.message()) {
-				_.each(this.message().attachments(), (item) => {
+				this.message().attachments().forEach(item => {
 					if (item) {
 						item.checked(!!v);
 					}

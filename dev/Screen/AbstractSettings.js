@@ -120,7 +120,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 						delegateRun(this.oCurrentSubScreen, 'onShow');
 						delegateRun(this.oCurrentSubScreen, 'onShowWithDelay', [], 200);
 
-						_.each(this.menu(), (item) => {
+						this.menu().forEach(item => {
 							item.selected(
 								settingsScreen &&
 									settingsScreen.__rlSettingsData &&
@@ -148,7 +148,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 	}
 
 	onBuild() {
-		_.each(VIEW_MODELS.settings, (SettingsViewModel) => {
+		VIEW_MODELS.settings.forEach(SettingsViewModel => {
 			if (
 				SettingsViewModel &&
 				SettingsViewModel.__rlSettingsData &&

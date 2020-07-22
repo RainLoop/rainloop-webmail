@@ -1,4 +1,3 @@
-import _ from '_';
 import { isFunc, isArray, isUnd } from 'Common/Utils';
 import { data as GlobalsData } from 'Common/Globals';
 import * as Settings from 'Storage/Settings';
@@ -27,7 +26,7 @@ export function addHook(name, callback) {
  */
 export function runHook(name, args = []) {
 	if (isArray(SIMPLE_HOOKS[name])) {
-		_.each(SIMPLE_HOOKS[name], (callback) => {
+		SIMPLE_HOOKS[name].forEach(callback => {
 			callback(...args);
 		});
 	}
@@ -78,7 +77,7 @@ export function addSettingsViewModelForAdmin(SettingsViewModelClass, template, l
  */
 export function runSettingsViewModelHooks(admin) {
 	const Knoin = require('Knoin/Knoin');
-	_.each(admin ? ADMIN_VIEW_MODELS_HOOKS : USER_VIEW_MODELS_HOOKS, (view) => {
+	(admin ? ADMIN_VIEW_MODELS_HOOKS : USER_VIEW_MODELS_HOOKS).forEach(view => {
 		Knoin.addSettingsViewModel(view[0], view[1], view[2], view[3]);
 	});
 }

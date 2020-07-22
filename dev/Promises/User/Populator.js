@@ -1,5 +1,3 @@
-import _ from '_';
-
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { isArray, isNormal, pInt, isUnd, noop } from 'Common/Utils';
 import { ClientSideKeyName, ServerFolderType } from 'Common/Enums';
@@ -48,7 +46,7 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 		const bDisplaySpecSetting = FolderStore.displaySpecSetting(),
 			aList = [];
 
-		_.each(aFolders, (oFolder) => {
+		aFolders.forEach(oFolder => {
 			if (oFolder) {
 				let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
 				if (!oCacheFolder) {

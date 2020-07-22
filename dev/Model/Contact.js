@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { ContactPropertyType } from 'Common/Enums';
@@ -30,7 +29,7 @@ class ContactModel extends AbstractModel {
 			email = '';
 
 		if (isNonEmptyArray(this.properties)) {
-			_.each(this.properties, (property) => {
+			this.properties.forEach(property => {
 				if (property) {
 					if (ContactPropertyType.FirstName === property[0]) {
 						name = trim(property[1] + ' ' + name);
@@ -58,7 +57,7 @@ class ContactModel extends AbstractModel {
 			this.readOnly = !!json.ReadOnly;
 
 			if (isNonEmptyArray(json.Properties)) {
-				_.each(json.Properties, (property) => {
+				json.Properties.forEach(property => {
 					if (property && property.Type && isNormal(property.Value) && isNormal(property.TypeStr)) {
 						this.properties.push([pInt(property.Type), pString(property.Value), pString(property.TypeStr)]);
 					}

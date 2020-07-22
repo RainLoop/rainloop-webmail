@@ -22,7 +22,7 @@ class AccountUserStore {
 		this.accountsUnreadCount = ko.computed(() => 0);
 		// this.accountsUnreadCount = ko.computed(() => {
 		// 	let result = 0;
-		// 	_.each(this.accounts(), (item) => {
+		// 	this.accounts().forEach(item => {
 		// 		if (item)
 		// 		{
 		// 			result += item.count();

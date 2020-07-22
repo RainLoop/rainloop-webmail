@@ -42,7 +42,7 @@ class LanguagesPopupView extends AbstractViewNext {
 
 	setLanguageSelection() {
 		const currentLang = this.fLang ? ko.unwrap(this.fLang) : '';
-		_.each(this.languages(), (item) => {
+		this.languages().forEach(item => {
 			item.selected(item.key === currentLang);
 		});
 	}

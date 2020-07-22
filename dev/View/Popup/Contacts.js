@@ -301,7 +301,7 @@ class ContactsPopupView extends AbstractViewNext {
 		const requestUid = fakeMd5(),
 			properties = [];
 
-		_.each(this.viewProperties(), (oItem) => {
+		this.viewProperties().forEach(oItem => {
 			if (oItem.type() && oItem.type() !== ContactPropertyType.FullName && '' !== trim(oItem.value())) {
 				properties.push([oItem.type(), oItem.value(), oItem.typeStr()]);
 			}
@@ -456,7 +456,7 @@ class ContactsPopupView extends AbstractViewNext {
 			count = this.contacts().length;
 
 		if (0 < contacts.length) {
-			_.each(contacts, (contact) => {
+			contacts.forEach(contact => {
 				if (currentContact && currentContact.idContact === contact.idContact) {
 					currentContact = null;
 					this.currentContact(null);
@@ -471,7 +471,7 @@ class ContactsPopupView extends AbstractViewNext {
 			}
 
 			_.delay(() => {
-				_.each(contacts, (contact) => {
+				contacts.forEach(contact => {
 					koContacts.remove(contact);
 					delegateRunOnDestroy(contact);
 				});
@@ -523,7 +523,7 @@ class ContactsPopupView extends AbstractViewNext {
 		if (contact) {
 			id = contact.idContact;
 			if (isNonEmptyArray(contact.properties)) {
-				_.each(contact.properties, (property) => {
+				contact.properties.forEach(property => {
 					if (property && property[0]) {
 						if (ContactPropertyType.LastName === property[0]) {
 							lastName = property[1];

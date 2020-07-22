@@ -453,13 +453,13 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 
 		if (isArray(list) && 0 < list.length) {
 			request = false;
-			_.each(list, (messageListItem) => {
+			list.forEach(messageListItem => {
 				if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, messageListItem.uid)) {
 					uids.push(messageListItem.uid);
 				}
 
 				if (0 < messageListItem.threads().length) {
-					_.each(messageListItem.threads(), (uid) => {
+					messageListItem.threads().forEach(uid => {
 						if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, uid)) {
 							uids.push(uid);
 						}

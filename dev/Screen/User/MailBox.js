@@ -116,7 +116,7 @@ class MailBoxUserScreen extends AbstractScreen {
 			FolderStore.foldersInboxUnreadCount(count);
 
 			const email = AccountStore.email();
-			_.each(AccountStore.accounts(), (item) => {
+			AccountStore.accounts().forEach(item => {
 				if (item && email === item.email) {
 					item.count(count);
 				}

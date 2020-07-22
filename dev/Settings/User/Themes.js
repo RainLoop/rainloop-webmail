@@ -36,7 +36,7 @@ class ThemesUserSettings {
 		this.oThemeAjaxRequest = null;
 
 		this.theme.subscribe((value) => {
-			_.each(this.themesObjects(), (theme) => {
+			this.themesObjects().forEach(theme => {
 				theme.selected(value === theme.name);
 			});
 

@@ -157,7 +157,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 			} else if (this.encryptKeys()) {
 				aPublicKeys = [];
 
-				_.each(this.encryptKeys(), (oKey) => {
+				this.encryptKeys().forEach(oKey => {
 					if (oKey && oKey.key) {
 						aPublicKeys = aPublicKeys.concat(_.compact(_.flatten(oKey.key.getNativeKeys())));
 					} else if (oKey && oKey.email) {
@@ -279,7 +279,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 
 	@command()
 	updateCommand() {
-		_.each(this.encryptKeys(), (oKey) => {
+		this.encryptKeys().forEach(oKey => {
 			oKey.removable(!this.sign() || !this.signKey() || this.signKey().key.id !== oKey.key.id);
 		});
 	}

@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { trim } from 'Common/Utils';
@@ -56,7 +55,7 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 
 	parseSearchStringValue(search) {
 		const parts = (search || '').split(/[\s]+/g);
-		_.each(parts, (part) => {
+		parts.forEach(part => {
 			switch (part) {
 				case 'has:attachment':
 					this.hasAttachment(true);

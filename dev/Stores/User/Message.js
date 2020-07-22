@@ -163,7 +163,7 @@ class MessageUserStore {
 
 		this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(() => {
 			let result = [];
-			_.each(this.messageListCheckedOrSelected(), (message) => {
+			this.messageListCheckedOrSelected().forEach(message => {
 				if (message) {
 					result.push(message.uid);
 					if (1 < message.threadsLen()) {
@@ -184,7 +184,7 @@ class MessageUserStore {
 
 		this.messageList.subscribe(
 			_.debounce((list) => {
-				_.each(list, (item) => {
+				list.forEach(item => {
 					if (item && item.newForAnimation()) {
 						item.newForAnimation(false);
 					}
@@ -248,7 +248,7 @@ class MessageUserStore {
 	initUidNextAndNewMessages(folder, uidNext, newMessages) {
 		if (getFolderInboxName() === folder && isNormal(uidNext) && '' !== uidNext) {
 			if (isArray(newMessages) && 0 < newMessages.length) {
-				_.each(newMessages, (item) => {
+				newMessages.forEach(item => {
 					addNewMessageCache(folder, item.Uid);
 				});
 
@@ -265,7 +265,7 @@ class MessageUserStore {
 						{ 'Folder': '', 'Uid': '' }
 					);
 				} else {
-					_.each(newMessages, (item) => {
+					newMessages.forEach(item => {
 						NotificationStore.displayDesktopNotification(
 							notificationMailIcon(),
 							MessageHelper.emailArrayToString(MessageHelper.emailArrayFromJson(item.From), false),
@@ -310,7 +310,7 @@ class MessageUserStore {
 					? messageList.filter(item => item && uidForRemove.includes(pInt(item.uid)))
 					: [];
 
-		_.each(messages, (item) => {
+		messages.forEach(item => {
 			if (item && item.unseen()) {
 				unseenCount += 1;
 			}
@@ -343,13 +343,13 @@ class MessageUserStore {
 
 		if (0 < messages.length) {
 			if (copy) {
-				_.each(messages, (item) => {
+				messages.forEach(item => {
 					item.checked(false);
 				});
 			} else {
 				this.messageListIsNotCompleted(true);
 
-				_.each(messages, (item) => {
+				messages.forEach(item => {
 					if (currentMessage && currentMessage.hash === item.hash) {
 						currentMessage = null;
 						this.message(null);
@@ -359,7 +359,7 @@ class MessageUserStore {
 				});
 
 				_.delay(() => {
-					_.each(messages, (item) => {
+					messages.forEach(item => {
 						this.messageList.remove(item);
 					});
 				}, Magics.Time350ms);
@@ -756,7 +756,7 @@ class MessageUserStore {
 				clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
 			}
 
-			_.each(data.Result['@Collection'], (jsonMessage) => {
+			data.Result['@Collection'].forEach(jsonMessage => {
 				if (jsonMessage && 'Object/Message' === jsonMessage['@Object']) {
 					const message = MessageModel.newInstanceFromJson(jsonMessage);
 					if (message) {

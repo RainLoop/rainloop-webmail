@@ -196,7 +196,7 @@ class AppUser extends AbstractApp {
 	}
 
 	reloadFlagsCurrentMessageListAndMessageFromCache() {
-		_.each(MessageStore.messageList(), (message) => {
+		MessageStore.messageList().forEach(message => {
 			initMessageFlagsFromCache(message);
 		});
 		initMessageFlagsFromCache(MessageStore.message());
@@ -293,7 +293,7 @@ class AppUser extends AbstractApp {
 		const sTrashFolder = FolderStore.trashFolder(),
 			sSpamFolder = FolderStore.spamFolder();
 
-		_.each(this.moveCache, (item) => {
+		this.moveCache.forEach(item => {
 			const isSpam = sSpamFolder === item.To,
 				isTrash = sTrashFolder === item.To,
 				isHam = !isSpam && sSpamFolder === item.From && getFolderInboxName() === item.To;
@@ -486,7 +486,7 @@ class AppUser extends AbstractApp {
 				openpgpKeyring = PgpStore.openpgpKeyring,
 				openpgpKeys = openpgpKeyring ? openpgpKeyring.getAllKeys() : [];
 
-			_.each(openpgpKeys, (oItem, iIndex) => {
+			openpgpKeys.forEach((oItem, iIndex) => {
 				if (oItem && oItem.primaryKey) {
 					const aEmails = [],
 						aUsers = [],
@@ -499,7 +499,7 @@ class AppUser extends AbstractApp {
 								: '';
 
 					if (oItem.users) {
-						_.each(oItem.users, (item) => {
+						oItem.users.forEach(item => {
 							if (item.userId) {
 								email.clear();
 								email.parse(item.userId.userid);
@@ -583,7 +583,7 @@ class AppUser extends AbstractApp {
 				parentEmail = '' === parentEmail ? sAccountEmail : parentEmail;
 
 				if (isArray(oData.Result.Accounts)) {
-					_.each(AccountStore.accounts(), (oAccount) => {
+					AccountStore.accounts().forEach(oAccount => {
 						counts[oAccount.email] = oAccount.count();
 					});
 
@@ -754,7 +754,7 @@ class AppUser extends AbstractApp {
 				if (StorageResultType.Success === sResult) {
 					if (oData && oData.Result && oData.Result.List && isNonEmptyArray(oData.Result.List)) {
 						const utc = momentNowUnix();
-						_.each(oData.Result.List, (item) => {
+						oData.Result.List.forEach(item => {
 							const hash = getFolderHash(item.Folder),
 								folder = getFolderFromCacheList(item.Folder);
 							let unreadCountChange = false;
@@ -825,7 +825,7 @@ class AppUser extends AbstractApp {
 		if ('' !== sFolderFullNameRaw && 0 < rootUids.length) {
 			switch (iSetAction) {
 				case MessageSetAction.SetSeen:
-					_.each(rootUids, (sSubUid) => {
+					rootUids.forEach(sSubUid => {
 						alreadyUnread += storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
@@ -838,7 +838,7 @@ class AppUser extends AbstractApp {
 					break;
 
 				case MessageSetAction.UnsetSeen:
-					_.each(rootUids, (sSubUid) => {
+					rootUids.forEach(sSubUid => {
 						alreadyUnread += storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
@@ -851,7 +851,7 @@ class AppUser extends AbstractApp {
 					break;
 
 				case MessageSetAction.SetFlag:
-					_.each(rootUids, (sSubUid) => {
+					rootUids.forEach(sSubUid => {
 						storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
@@ -859,7 +859,7 @@ class AppUser extends AbstractApp {
 					break;
 
 				case MessageSetAction.UnsetFlag:
-					_.each(rootUids, (sSubUid) => {
+					rootUids.forEach(sSubUid => {
 						storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 

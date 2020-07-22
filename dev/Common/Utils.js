@@ -302,7 +302,7 @@ export function replySubjectAdd(prefix, subject) {
 		prefixIsRe = !fwd;
 
 	if ('' !== subject) {
-		_.each(subject.split(':'), (part) => {
+		subject.split(':').forEach(part => {
 			const trimmedPart = trim(part);
 			if (!drop && (/^(RE|FWD)$/i.test(trimmedPart) || /^(RE|FWD)[[(][\d]+[\])]$/i.test(trimmedPart))) {
 				if (!re) {
@@ -1072,7 +1072,7 @@ export function disposeOne(propOrValue, value) {
 export function disposeObject(object) {
 	if (object) {
 		if (isArray(object.disposables)) {
-			_.each(object.disposables, disposeOne);
+			object.disposables.forEach(disposeOne);
 		}
 
 		ko.utils.objectForEach(object, disposeOne);
@@ -1086,7 +1086,7 @@ export function disposeObject(object) {
 export function delegateRunOnDestroy(objectOrObjects) {
 	if (objectOrObjects) {
 		if (isArray(objectOrObjects)) {
-			_.each(objectOrObjects, (item) => {
+			objectOrObjects.forEach(item => {
 				delegateRunOnDestroy(item);
 			});
 		} else if (objectOrObjects && objectOrObjects.onDestroy) {

@@ -588,7 +588,7 @@ class ComposePopupView extends AbstractViewNext {
 				}
 			};
 
-		_.each(identities, (item, index) => {
+		identities.forEach((item, index) => {
 			identitiesCache[item.email()] = [item, index];
 		});
 
@@ -600,13 +600,13 @@ class ComposePopupView extends AbstractViewNext {
 				case ComposeType.ReplyAll:
 				case ComposeType.Forward:
 				case ComposeType.ForwardAsAttachment:
-					_.each(_.union(message.to, message.cc, message.bcc), fEachHelper);
+					_.union(message.to, message.cc, message.bcc).forEach(fEachHelper);
 					if (!resultIdentity) {
-						_.each(message.deliveredTo, fEachHelper);
+						message.deliveredTo.forEach(fEachHelper);
 					}
 					break;
 				case ComposeType.Draft:
-					_.each(_.union(message.from, message.replyTo), fEachHelper);
+					_.union(message.from, message.replyTo).forEach(fEachHelper);
 					break;
 				// no default
 			}
@@ -775,7 +775,7 @@ class ComposePopupView extends AbstractViewNext {
 				}
 
 				if (moments && 0 < moments.length) {
-					_.each(moments, (data) => {
+					moments.forEach(data => {
 						signature = signature.replace(data[0], momentorFormat(0, data[1]));
 					});
 				}
@@ -1112,7 +1112,7 @@ class ComposePopupView extends AbstractViewNext {
 				this.setFocusInPopup();
 			});
 		} else if (isNonEmptyArray(oMessageOrArray)) {
-			_.each(oMessageOrArray, (item) => {
+			oMessageOrArray.forEach(item => {
 				this.addMessageAsAttachment(item);
 			});
 
@@ -1151,7 +1151,7 @@ class ComposePopupView extends AbstractViewNext {
 	onMessageUploadAttachments(sResult, oData) {
 		if (StorageResultType.Success === sResult && oData && oData.Result) {
 			if (!this.viewModelVisibility()) {
-				_.each(oData.Result, (id, tempName) => {
+				oData.Result.forEach((id, tempName) => {
 					const attachment = this.getAttachmentById(id);
 					if (attachment) {
 						attachment.tempName(tempName);
@@ -1411,7 +1411,7 @@ class ComposePopupView extends AbstractViewNext {
 	 */
 	prepearAttachmentsForSendOrSave() {
 		const result = {};
-		_.each(this.attachmentsInReady(), (item) => {
+		this.attachmentsInReady().forEach(item => {
 			if (item && '' !== item.tempName() && item.enabled()) {
 				result[item.tempName()] = [item.fileName(), item.isInline ? '1' : '0', item.CID, item.contentLocation];
 			}
@@ -1474,7 +1474,7 @@ class ComposePopupView extends AbstractViewNext {
 				this.addMessageAsAttachment(message);
 			} else {
 				const attachments = message.attachments();
-				_.each(isNonEmptyArray(attachments) ? attachments : [], (item) => {
+				(isNonEmptyArray(attachments) ? attachments : []).forEach(item => {
 					let add = false;
 					switch (type) {
 						case ComposeType.Reply:
@@ -1524,7 +1524,7 @@ class ComposePopupView extends AbstractViewNext {
 	}
 
 	setMessageAttachmentFailedDownloadText() {
-		_.each(this.attachments(), (attachment) => {
+		this.attachments().forEach(attachment => {
 			if (attachment && attachment.fromMessage) {
 				attachment
 					.waiting(false)

@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
@@ -51,7 +50,7 @@ class PackagesAdminSettings {
 				}
 			}
 
-			_.each(this.packages(), (item) => {
+			this.packages().forEach(item => {
 				if (item && packageToRequest && item.loading && item.loading() && packageToRequest.file === item.file) {
 					packageToRequest.loading(false);
 					item.loading(false);
