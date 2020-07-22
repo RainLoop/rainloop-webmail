@@ -69,12 +69,6 @@ export const bMobileDevice = (/android|iphone|ipod|ipad|blackberry|mobile/i).tes
 /**
  * @type {boolean}
  */
-export const bAnimationSupported =
-	!bMobileDevice && $htmlCL.contains('csstransitions') && $htmlCL.contains('cssanimations');
-
-/**
- * @type {boolean}
- */
 export const bIsHttps =
 	window.document && window.document.location ? 'https:' === window.document.location.protocol : false;
 

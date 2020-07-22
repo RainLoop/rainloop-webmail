@@ -2,7 +2,6 @@ import _ from '_';
 import ko from 'ko';
 
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
-import { bAnimationSupported } from 'Common/Globals';
 
 import { SaveSettingsStep, Magics, EditorDefaultType, Layout } from 'Common/Enums';
 
@@ -52,8 +51,6 @@ class GeneralUserSettings {
 		this.mppTrigger = ko.observable(SaveSettingsStep.Idle);
 		this.editorDefaultTypeTrigger = ko.observable(SaveSettingsStep.Idle);
 		this.layoutTrigger = ko.observable(SaveSettingsStep.Idle);
-
-		this.isAnimationSupported = bAnimationSupported;
 
 		this.identities = IdentityStore.identities;
 

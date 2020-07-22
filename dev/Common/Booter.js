@@ -48,20 +48,6 @@ const useJsNextBundle = (function() {
 /* eslint-enable */
 
 /**
- * @param {string} id
- * @param {string} name
- * @returns {string}
- */
-function getComputedStyle(id, name) {
-	const element = window.document.getElementById(id);
-	return element && element.currentStyle
-		? element.currentStyle[name]
-		: window.getComputedStyle
-		? window.getComputedStyle(element, null).getPropertyValue(name)
-		: null;
-}
-
-/**
  * @param {string} styles
  * @returns {void}
  */
@@ -302,9 +288,6 @@ window.__runBoot = function() {
 	}
 
 	const root = window.document.documentElement;
-	if ('none' !== getComputedStyle('rl-check', 'display')) {
-		root.className += ' no-css';
-	}
 
 	if (useJsNextBundle) {
 		root.className += ' js-next';

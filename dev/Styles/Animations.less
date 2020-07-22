@@ -30,7 +30,7 @@
   100% {transform: translateX(0)}
 }
 
-html.csstransitions.rl-started-trigger.no-mobile .b-login-content .loginFormWrapper {
+html.rl-started-trigger.no-mobile .b-login-content .loginFormWrapper {
 	/*transform: scale(1.1);*/
 	transform: translateY(-20px);
 	opacity: 0.5;
@@ -44,7 +44,7 @@ html.csstransitions.rl-started-trigger.no-mobile .b-login-content .loginFormWrap
 	.transition(opacity 0.5s linear);
 }
 
-html.csstransitions.rl-started-delay {
+html.rl-started-delay {
 
 	#rl-left {
 		.transition(width 0.3s ease-out);
@@ -64,7 +64,7 @@ html.csstransitions.rl-started-delay {
 }
 
 html {
-	&.rgba.cssanimations.backgroundsize .e-strip-animation {
+	&.rgba.backgroundsize .e-strip-animation {
 		background-size: 60px 60px;
 		.rl-strip-animation(0, 0.1);
 		animation: animate-stripes 2s linear infinite;
@@ -82,7 +82,7 @@ html.rl-anim {
 		}
 	}
 
-	&.cssanimations.csstransitions.no-mobile .b-login-content .errorAnimated {
+	&.no-mobile .b-login-content .errorAnimated {
 		animation: login-form-shake 400ms ease-in-out;
 	}
 
@@ -91,35 +91,35 @@ html.rl-anim {
 		font-weight: bold;
 	}
 
-	&.cssanimations.csstransitions.no-mobile .b-login-content .afterLoginHide {
+	&.no-mobile .b-login-content .afterLoginHide {
 		opacity: 0;
 	}
 
-	&.csstransitions.no-mobile .btn-group.dropdown.colored-toggle.open .animate-this-icon-on-open {
+	&.no-mobile .btn-group.dropdown.colored-toggle.open .animate-this-icon-on-open {
 		animation: bounce-me .5s linear;
 	}
 
-	&.csstransitions.no-mobile .b-login-content .loginFormWrapper {
+	&.no-mobile .b-login-content .loginFormWrapper {
 		.transition(all 0.3s ease-out);
 	}
 
-	&.csstransitions .button-delete-transitions {
+	& .button-delete-transitions {
 		.transition(all 0.2s linear);
 	}
 
-	&.cssanimations .b-folders .e-item .anim-action-class {
+	& .b-folders .e-item .anim-action-class {
 		animation: highlight-folder-row 0.5s linear;
 	}
 
-	&.csstransitions .b-folders .btn.buttonContacts {
+	& .b-folders .btn.buttonContacts {
 		.transition(margin 0.3s linear);
 	}
 
-	&.csstransitions .b-folders .b-content.opacity-on-panel-disabled {
+	& .b-folders .b-content.opacity-on-panel-disabled {
 		.transition(opacity 0.3s linear);
 	}
 
-	&.csstransitions .messageList {
+	& .messageList {
 		.messageListItem {
 			.transition(max-height 400ms ease);
 		}
@@ -128,23 +128,23 @@ html.rl-anim {
 		}
 	}
 
-	&.csstransitions .b-list-content {
+	& .b-list-content {
 		.e-contact-item {
 			.transition(max-height 400ms ease);
 		}
 	}
 
-	&.csstransitions .modal.b-domain-content {
+	& .modal.b-domain-content {
 		.modal-body {
 			.transition(left 500ms ease);
 		}
 	}
 
-	&.csstransitions.rl-modal.rl-modal-animation .popups {
+	&.rl-modal.rl-modal-animation .popups {
 		overflow: hidden;
 	}
 
-	&.csstransitions .modal.fade {
+	& .modal.fade {
 
 		.transition(all 200ms ease-out);
 		/*transform: scale(0.95);*/
@@ -155,7 +155,7 @@ html.rl-anim {
 		}
 	}
 
-	&.cssanimations .b-compose.loading .b-header-toolbar {
+	& .b-compose.loading .b-header-toolbar {
 		background-size: 60px 60px;
 		.rl-strip-animation(255, 0.2);
 		animation: animate-stripes 2s linear infinite;

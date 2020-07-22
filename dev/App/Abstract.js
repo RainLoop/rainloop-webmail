@@ -9,8 +9,7 @@ import {
 	$htmlCL,
 	leftPanelDisabled,
 	leftPanelType,
-	bMobileDevice,
-	bAnimationSupported
+	bMobileDevice
 } from 'Common/Globals';
 
 import { isNormal, pString, detectDropdownVisibility, windowResizeCallback } from 'Common/Utils';
@@ -222,7 +221,7 @@ class AbstractApp extends AbstractBoot {
 		ko.components.register('x-script', require('Component/Script').default);
 		// ko.components.register('svg-icon', require('Component/SvgIcon').default);
 
-		if (Settings.appSettingsGet('materialDesign') && bAnimationSupported) {
+		if (Settings.appSettingsGet('materialDesign') && !bMobileDevice) {
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox').default);
 			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
 		} else {

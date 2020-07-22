@@ -49,6 +49,7 @@ This fork has the following changes:
 * Removed Sentry (Application Monitoring and Error Tracking Software)
 * Replaced gulp-uglify with gulp-terser
 * CRLF => LF line endings
+* Ongoing removal of jQuery and Underscore.js dependencies (things are native these days)
 
 ### PHP73 branch
 
