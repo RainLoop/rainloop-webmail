@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { trim, boolToAjax } from 'Common/Utils';
@@ -105,7 +104,7 @@ class SecurityAdminSettings {
 		this.twoFactorDropperUser('');
 		this.isTwoFactorDropperShown(true);
 
-		_.delay(() => {
+		setTimeout(() => {
 			this.twoFactorDropperUser.focused(true);
 		}, Magics.Time50ms);
 	}

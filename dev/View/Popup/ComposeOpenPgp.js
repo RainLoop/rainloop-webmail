@@ -178,7 +178,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		}
 
 		if (result && this.resultCallback) {
-			_.delay(() => {
+			setTimeout(() => {
 				let pgpPromise = null;
 
 				try {

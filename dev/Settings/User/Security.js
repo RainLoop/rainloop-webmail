@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { pInt, settingsSaveHelperSimpleFunction } from 'Common/Utils';
@@ -42,7 +41,7 @@ class SecurityUserSettings {
 
 	onBuild() {
 		if (this.capaAutoLogout) {
-			_.delay(() => {
+			setTimeout(() => {
 				const f0 = settingsSaveHelperSimpleFunction(this.autoLogout.trigger, this);
 
 				this.autoLogout.subscribe(Remote.saveSettingsHelper('AutoLogout', pInt, f0));

@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import {
@@ -76,13 +75,13 @@ class GeneralAdminSettings {
 	}
 
 	onBuild() {
-		_.delay(() => {
+		setTimeout(() => {
 			const f1 = settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this),
 				f2 = settingsSaveHelperSimpleFunction(this.languageTrigger, this),
 				f3 = settingsSaveHelperSimpleFunction(this.themeTrigger, this),
 				fReloadLanguageHelper = (saveSettingsStep) => () => {
 					this.languageAdminTrigger(saveSettingsStep);
-					_.delay(() => this.languageAdminTrigger(SaveSettingsStep.Idle), Magics.Time1s);
+					setTimeout(() => this.languageAdminTrigger(SaveSettingsStep.Idle), Magics.Time1s);
 				};
 
 			this.mainAttachmentLimit.subscribe((value) => {

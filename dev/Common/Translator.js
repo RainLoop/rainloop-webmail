@@ -270,7 +270,7 @@ export function reload(admin, language) {
 			cache: true
 		}).then(
 			() => {
-				_.delay(
+				setTimeout(
 					() => {
 						reloadData();
 

@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender, trim, boolToAjax } from 'Common/Utils';
@@ -144,7 +143,7 @@ class ContactsAdminSettings {
 	}
 
 	onBuild() {
-		_.delay(() => {
+		setTimeout(() => {
 			const f1 = settingsSaveHelperSimpleFunction(this.pdoDsnTrigger, this),
 				f3 = settingsSaveHelperSimpleFunction(this.pdoUserTrigger, this),
 				f4 = settingsSaveHelperSimpleFunction(this.pdoPasswordTrigger, this),

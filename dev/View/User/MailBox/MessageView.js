@@ -262,7 +262,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			if (message) {
 				this.showAttachmnetControls(false);
 				if (Local.get(ClientSideKeyName.MessageAttachmnetControls)) {
-					_.delay(() => {
+					setTimeout(() => {
 						this.showAttachmnetControls(true);
 					}, Magics.Time50ms);
 				}
@@ -547,9 +547,9 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		Events.sub(
 			'window.resize',
 			_.throttle(() => {
-				_.delay(fCheckHeaderHeight, 1);
-				_.delay(fCheckHeaderHeight, Magics.Time200ms);
-				_.delay(fCheckHeaderHeight, Magics.Time500ms);
+				setTimeout(fCheckHeaderHeight, 1);
+				setTimeout(fCheckHeaderHeight, Magics.Time200ms);
+				setTimeout(fCheckHeaderHeight, Magics.Time500ms);
 			}, Magics.Time50ms)
 		);
 

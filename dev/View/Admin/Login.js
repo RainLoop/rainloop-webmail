@@ -1,5 +1,4 @@
 import ko from 'ko';
-import _ from '_';
 
 import { trim, triggerAutocompleteInputChange } from 'Common/Utils';
 
@@ -103,7 +102,7 @@ class LoginAdminView extends AbstractViewNext {
 	onShow() {
 		routeOff();
 
-		_.delay(() => {
+		setTimeout(() => {
 			this.loginFocus(true);
 		}, Magics.Time100ms);
 	}

@@ -276,7 +276,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 			this.sLastComposeFocusedField = '';
 
-			_.delay(() => {
+			setTimeout(() => {
 				showScreenPopup(require('View/Popup/Compose'), [ComposeType.Empty, null, toEmails, ccEmails, bccEmails]);
 			}, Magics.Time200ms);
 		}
@@ -327,14 +327,14 @@ class ContactsPopupView extends AbstractViewNext {
 					res = true;
 				}
 
-				_.delay(() => {
+				setTimeout(() => {
 					this.viewSaveTrigger(res ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult);
 				}, Magics.Time350ms);
 
 				if (res) {
 					this.watchDirty(false);
 
-					_.delay(() => {
+					setTimeout(() => {
 						this.viewSaveTrigger(SaveSettingsStep.Idle);
 					}, Magics.Time1s);
 				}
@@ -470,7 +470,7 @@ class ContactsPopupView extends AbstractViewNext {
 				this.bDropPageAfterDelete = true;
 			}
 
-			_.delay(() => {
+			setTimeout(() => {
 				contacts.forEach(contact => {
 					koContacts.remove(contact);
 					delegateRunOnDestroy(contact);
@@ -495,7 +495,7 @@ class ContactsPopupView extends AbstractViewNext {
 		if (Magics.Time500ms < (StorageResultType.Success === sResult && oData && oData.Time ? pInt(oData.Time) : 0)) {
 			this.reloadContactList(this.bDropPageAfterDelete);
 		} else {
-			_.delay(() => {
+			setTimeout(() => {
 				this.reloadContactList(this.bDropPageAfterDelete);
 			}, Magics.Time500ms);
 		}

@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 import { componentExportHelper } from 'Component/Abstract';
 import { AbstractCheckbox } from 'Component/AbstractCheckbox';
@@ -34,10 +33,10 @@ class CheckboxMaterialDesignComponent extends AbstractCheckbox {
 	triggerAnimation(box) {
 		if (box) {
 			this.animationBoxSetTrue();
-			_.delay(this.animationCheckmarkSetTrue, 200);
+			setTimeout(this.animationCheckmarkSetTrue, 200);
 		} else {
 			this.animationCheckmarkSetTrue();
-			_.delay(this.animationBoxSetTrue, 200);
+			setTimeout(this.animationBoxSetTrue, 200);
 		}
 	}
 }

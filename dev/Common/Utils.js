@@ -380,7 +380,7 @@ export function delegateRun(object, methodName, params, delay = 0) {
 		if (0 >= delay) {
 			object[methodName](...params);
 		} else {
-			_.delay(() => {
+			setTimeout(() => {
 				object[methodName](...params);
 			}, delay);
 		}
@@ -597,7 +597,7 @@ export function settingsSaveHelperFunction(fCallback, koTrigger, context = null,
 		if (fCallback) {
 			fCallback.call(context, type, data, cached, requestAction, requestParameters);
 		}
-		_.delay(() => {
+		setTimeout(() => {
 			koTrigger.call(context, SaveSettingsStep.Idle);
 		}, timer);
 	};
@@ -1029,7 +1029,7 @@ export function triggerAutocompleteInputChange(delay = false) {
 	};
 
 	if (delay) {
-		_.delay(fFunc, 100);
+		setTimeout(fFunc, 100);
 	} else {
 		fFunc();
 	}

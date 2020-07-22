@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { delegateRunOnDestroy, boolToAjax } from 'Common/Utils';
@@ -66,7 +65,7 @@ class OpenPgpUserSettings {
 	}
 
 	onBuild() {
-		_.delay(() => {
+		setTimeout(() => {
 			this.allowDraftAutosave.subscribe(Remote.saveSettingsHelper('AllowDraftAutosave', boolToAjax));
 		}, Magics.Time50ms);
 	}

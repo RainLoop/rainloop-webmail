@@ -508,7 +508,7 @@ class ComposePopupView extends AbstractViewNext {
 	contactsCommand() {
 		if (this.allowContacts) {
 			this.skipCommand();
-			_.delay(() => {
+			setTimeout(() => {
 				showScreenPopup(require('View/Popup/Contacts'), [true, this.sLastFocusedField]);
 			}, Magics.Time200ms);
 		}
@@ -706,7 +706,7 @@ class ComposePopupView extends AbstractViewNext {
 	editor(fOnInit) {
 		if (fOnInit) {
 			if (!this.oEditor && this.composeEditorArea()) {
-				// _.delay(() => {
+				// setTimeout(() => {
 				this.oEditor = new HtmlEditor(
 					this.composeEditorArea(),
 					null,
@@ -1169,7 +1169,7 @@ class ComposePopupView extends AbstractViewNext {
 
 	setFocusInPopup() {
 		if (!bMobileDevice) {
-			_.delay(() => {
+			setTimeout(() => {
 				if ('' === this.to()) {
 					this.to.focused(true);
 				} else if (this.oEditor) {

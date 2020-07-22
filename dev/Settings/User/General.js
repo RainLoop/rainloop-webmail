@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
@@ -96,13 +95,13 @@ class GeneralUserSettings {
 	}
 
 	onBuild() {
-		_.delay(() => {
+		setTimeout(() => {
 			const f0 = settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this),
 				f1 = settingsSaveHelperSimpleFunction(this.mppTrigger, this),
 				f2 = settingsSaveHelperSimpleFunction(this.layoutTrigger, this),
 				fReloadLanguageHelper = (saveSettingsStep) => () => {
 					this.languageTrigger(saveSettingsStep);
-					_.delay(() => this.languageTrigger(SaveSettingsStep.Idle), Magics.Time1s);
+					setTimeout(() => this.languageTrigger(SaveSettingsStep.Idle), Magics.Time1s);
 				};
 
 			this.language.subscribe((value) => {

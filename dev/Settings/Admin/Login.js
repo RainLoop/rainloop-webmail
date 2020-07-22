@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { settingsSaveHelperSimpleFunction, boolToAjax, trim } from 'Common/Utils';
@@ -20,7 +19,7 @@ class LoginAdminSettings {
 	}
 
 	onBuild() {
-		_.delay(() => {
+		setTimeout(() => {
 			const f1 = settingsSaveHelperSimpleFunction(this.defaultDomain.trigger, this);
 
 			this.determineUserLanguage.subscribe((value) => {

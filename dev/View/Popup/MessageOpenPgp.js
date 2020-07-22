@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 import key from 'key';
 import $ from '$';
@@ -37,7 +36,7 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 	doCommand() {
 		this.submitRequest(true);
 
-		_.delay(() => {
+		setTimeout(() => {
 			let privateKey = null;
 
 			try {

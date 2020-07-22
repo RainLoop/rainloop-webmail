@@ -109,8 +109,8 @@ class MailBoxUserScreen extends AbstractScreen {
 		MessageStore.messageList.subscribe(windowResizeCallback);
 		MessageStore.message.subscribe(windowResizeCallback);
 
-		_.delay(() => SettingsStore.layout.valueHasMutated(), Magics.Time50ms);
-		_.delay(() => warmUpScreenPopup(require('View/Popup/Compose')), Magics.Time500ms);
+		setTimeout(() => SettingsStore.layout.valueHasMutated(), Magics.Time50ms);
+		setTimeout(() => warmUpScreenPopup(require('View/Popup/Compose')), Magics.Time500ms);
 
 		Events.sub('mailbox.inbox-unread-count', (count) => {
 			FolderStore.foldersInboxUnreadCount(count);

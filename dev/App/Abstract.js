@@ -131,7 +131,7 @@ class AbstractApp extends AbstractBoot {
 	}
 
 	redirectToAdminPanel() {
-		_.delay(() => {
+		setTimeout(() => {
 			window.location.href = rootAdmin();
 		}, Magics.Time100ms);
 	}
@@ -174,7 +174,7 @@ class AbstractApp extends AbstractBoot {
 		customLogoutLink = customLogoutLink || (admin ? rootAdmin() : rootUser());
 
 		if (logout && window.location.href !== customLogoutLink) {
-			_.delay(() => {
+			setTimeout(() => {
 				if (inIframe && window.parent) {
 					window.parent.location.href = customLogoutLink;
 				} else {
@@ -188,7 +188,7 @@ class AbstractApp extends AbstractBoot {
 			setHash(root(), true);
 			routeOff();
 
-			_.delay(() => {
+			setTimeout(() => {
 				if (inIframe && window.parent) {
 					window.parent.location.reload();
 				} else {
@@ -233,7 +233,7 @@ class AbstractApp extends AbstractBoot {
 
 		initOnStartOrLangChange(initNotificationLanguage);
 
-		_.delay(windowResizeCallback, Magics.Time1s);
+		setTimeout(windowResizeCallback, Magics.Time1s);
 
 		Events.sub('ssm.mobile-enter', () => {
 			leftPanelDisabled(true);

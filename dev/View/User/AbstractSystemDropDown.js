@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 import key from 'key';
 
@@ -54,7 +53,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 	accountClick(account, event) {
 		if (account && event && !isUnd(event.which) && 1 === event.which) {
 			AccountStore.accounts.loading(true);
-			_.delay(() => AccountStore.accounts.loading(false), Magics.Time1s);
+			setTimeout(() => AccountStore.accounts.loading(false), Magics.Time1s);
 		}
 
 		return true;

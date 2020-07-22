@@ -21,7 +21,7 @@ ko.bindingHandlers.updateWidth = {
 			fValue = fValueAccessor(),
 			fInit = () => {
 				fValue($el.width());
-				window.setTimeout(() => {
+				setTimeout(() => {
 					fValue($el.width());
 				}, Magics.Time500ms);
 			};
@@ -127,7 +127,7 @@ ko.bindingHandlers.visibleAnimated = {
 		const $el = $(element);
 		if (ko.unwrap(fValueAccessor())) {
 			$el.addClass('rl-animated-hidden').show();
-			_.delay(() => {
+			setTimeout(() => {
 				$el.removeClass('rl-animated-hidden');
 			}, 10);
 		} else {
@@ -249,7 +249,7 @@ ko.bindingHandlers.tooltipErrorTip = {
 				openTips.deactivate();
 				openTips.setContent('');
 			} else {
-				_.delay(() => {
+				setTimeout(() => {
 					if ($el.is(':visible')) {
 						openTips.setContent(value);
 						openTips.activate();
@@ -461,7 +461,7 @@ ko.bindingHandlers.modal = {
 
 		if (Globals.$htmlCL.contains('rl-anim')) {
 			Globals.$htmlCL.add('rl-modal-animation');
-			_.delay(() => {
+			setTimeout(() => {
 				Globals.$htmlCL.remove('rl-modal-animation');
 			}, Magics.Time500ms);
 		}
@@ -1031,7 +1031,7 @@ ko.extenders.falseTimeout = (target, option) => {
 	target.subscribe((value) => {
 		if (value) {
 			window.clearTimeout(target.iFalseTimeoutTimeout);
-			target.iFalseTimeoutTimeout = window.setTimeout(() => {
+			target.iFalseTimeoutTimeout = setTimeout(() => {
 				target(false);
 				target.iFalseTimeoutTimeout = 0;
 			}, require('Common/Utils').pInt(option));
@@ -1055,7 +1055,7 @@ ko.extenders.specialThrottle = (target, option) => {
 				} else {
 					if (target.valueForRead()) {
 						window.clearTimeout(target.iSpecialThrottleTimeout);
-						target.iSpecialThrottleTimeout = window.setTimeout(() => {
+						target.iSpecialThrottleTimeout = setTimeout(() => {
 							target.valueForRead(false);
 							target.iSpecialThrottleTimeout = 0;
 						}, target.iSpecialThrottleTimeoutValue);

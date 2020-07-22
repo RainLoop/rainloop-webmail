@@ -1,4 +1,3 @@
-import _ from '_';
 import { settingsSaveHelperSimpleFunction, trim } from 'Common/Utils';
 import { Magics } from 'Common/Enums';
 
@@ -11,7 +10,7 @@ class BrandingPremAdminSettings extends BrandingAdminSettings {
 		super.onBuild(dom);
 
 		if (this.capa && this.capa() && !this.community) {
-			_.delay(() => {
+			setTimeout(() => {
 				const f1 = settingsSaveHelperSimpleFunction(this.loginLogo.trigger, this),
 					f2 = settingsSaveHelperSimpleFunction(this.loginDescription.trigger, this),
 					f3 = settingsSaveHelperSimpleFunction(this.loginCss.trigger, this),

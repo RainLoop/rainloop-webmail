@@ -239,7 +239,7 @@ class MessageUserStore {
 				});
 
 				if (0 < count) {
-					_.delay(() => messagesDom.find('.rl-cache-purge').remove(), Magics.Time350ms);
+					setTimeout(() => messagesDom.find('.rl-cache-purge').remove(), Magics.Time350ms);
 				}
 			}
 		}
@@ -358,7 +358,7 @@ class MessageUserStore {
 					item.deleted(true);
 				});
 
-				_.delay(() => {
+				setTimeout(() => {
 					messages.forEach(item => {
 						this.messageList.remove(item);
 					});

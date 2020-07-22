@@ -856,7 +856,7 @@ class MessageModel extends AbstractModel {
 
 			if (lazy) {
 				// $('.RL-MailMessageView .messageView .messageItem .content')[0]
-				_.delay(() => this.lozad(), 300);
+				setTimeout(() => this.lozad(), 300);
 			}
 
 			windowResize(500);

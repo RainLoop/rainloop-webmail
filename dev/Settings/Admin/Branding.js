@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { Magics } from 'Common/Enums';
@@ -41,7 +40,7 @@ class BrandingAdminSettings {
 	}
 
 	onBuild() {
-		_.delay(() => {
+		setTimeout(() => {
 			const f1 = settingsSaveHelperSimpleFunction(this.title.trigger, this),
 				f2 = settingsSaveHelperSimpleFunction(this.loadingDesc.trigger, this),
 				f3 = settingsSaveHelperSimpleFunction(this.faviconUrl.trigger, this);

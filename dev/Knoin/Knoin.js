@@ -202,7 +202,7 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 						popupVisibilityNames.remove(vm.viewModelName);
 						vm.viewModelDom.css('z-index', 2000);
 
-						_.delay(() => vm.viewModelDom.hide(), 300);
+						setTimeout(() => vm.viewModelDom.hide(), 300);
 					}
 				});
 			}
@@ -432,11 +432,11 @@ export function startScreens(screensClasses) {
 	hasher.changed.add(cross.parse, cross);
 	hasher.init();
 
-	_.delay(() => {
+	setTimeout(() => {
 		$htmlCL.remove('rl-started-trigger');
 		$htmlCL.add('rl-started');
 	}, 100);
-	_.delay(() => $htmlCL.add('rl-started-delay'), 200);
+	setTimeout(() => $htmlCL.add('rl-started-delay'), 200);
 }
 
 /**

@@ -222,7 +222,7 @@ class Selector {
 
 						this.scrollToFocused();
 
-						_.delay(() => this.scrollToFocused(), 100);
+						setTimeout(this.scrollToFocused, 100);
 					}
 
 					this.iSelectNextHelper = 0;

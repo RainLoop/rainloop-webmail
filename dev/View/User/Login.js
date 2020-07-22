@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import {
@@ -217,7 +216,7 @@ class LoginUserView extends AbstractViewNext {
 								this.additionalCode.visibility(true);
 								this.submitRequest(false);
 
-								_.delay(() => this.additionalCode.focused(true), Magics.Time100ms);
+								setTimeout(() => this.additionalCode.focused(true), Magics.Time100ms);
 							} else if (oData.Admin) {
 								getApp().redirectToAdminPanel();
 							} else {
@@ -317,7 +316,7 @@ class LoginUserView extends AbstractViewNext {
 		this.email(AppStore.devEmail);
 		this.password(AppStore.devPassword);
 
-		_.delay(() => {
+		setTimeout(() => {
 			LanguageStore.language.subscribe((value) => {
 				this.langRequest(true);
 
@@ -346,7 +345,7 @@ class LoginUserView extends AbstractViewNext {
 
 	selectLanguageOnTab(bShift) {
 		if (!bShift) {
-			_.delay(() => {
+			setTimeout(() => {
 				this.emailFocus(true);
 			}, Magics.Time50ms);
 

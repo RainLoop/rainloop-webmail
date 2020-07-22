@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { Magics } from 'Common/Enums';
@@ -53,7 +52,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 		this.submitRequest(true);
 		this.submitError('');
 
-		_.delay(() => {
+		setTimeout(() => {
 			try {
 				PgpStore.openpgp
 					.generateKey({

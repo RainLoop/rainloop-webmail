@@ -173,7 +173,7 @@ class AppUser extends AbstractApp {
 		}
 
 		if (Settings.settingsGet('UserBackgroundHash')) {
-			_.delay(() => {
+			setTimeout(() => {
 				const img = userBackground(Settings.settingsGet('UserBackgroundHash'));
 				if (img) {
 					$htmlCL.add('UserBackground');
@@ -455,7 +455,7 @@ class AppUser extends AbstractApp {
 				.then((value) => !!value)
 				.then(callback)
 				.catch(() => {
-					_.delay(() => {
+					setTimeout(() => {
 						if (callback) {
 							callback(false); // eslint-disable-line callback-return
 						}
@@ -597,7 +597,7 @@ class AppUser extends AbstractApp {
 				}
 
 				if (isUnd(bBoot) ? false : !!bBoot) {
-					_.delay(() => this.accountsCounts(), 1000 * 5);
+					setTimeout(() => this.accountsCounts(), 1000 * 5);
 					Events.sub('interval.10m-after5m', () => this.accountsCounts());
 				}
 
@@ -797,7 +797,7 @@ class AppUser extends AbstractApp {
 						});
 
 						if (boot) {
-							_.delay(() => this.folderInformationMultiply(true), 2000);
+							setTimeout(() => this.folderInformationMultiply(true), 2000);
 						}
 					}
 				}
@@ -1141,22 +1141,22 @@ class AppUser extends AbstractApp {
 						contactsSyncInterval = 5 <= contactsSyncInterval ? contactsSyncInterval : 20;
 						contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
 
-						_.delay(() => this.contactsSync(), Magics.Time10s);
-						_.delay(() => this.folderInformationMultiply(true), Magics.Time2s);
+						setTimeout(() => this.contactsSync(), Magics.Time10s);
+						setTimeout(() => this.folderInformationMultiply(true), Magics.Time2s);
 
 						window.setInterval(() => this.contactsSync(), contactsSyncInterval * 60000 + 5000);
 
 						this.accountsAndIdentities(true);
 
-						_.delay(() => {
+						setTimeout(() => {
 							const sF = FolderStore.currentFolderFullNameRaw();
 							if (getFolderInboxName() !== sF) {
 								this.folderInformation(sF);
 							}
 						}, 1000);
 
-						_.delay(() => this.quota(), 5000);
-						_.delay(() => Remote.appDelayStart(noop), 35000);
+						setTimeout(() => this.quota(), 5000);
+						setTimeout(() => Remote.appDelayStart(noop), 35000);
 
 						Events.sub('rl.auto-logout', () => this.logout());
 
@@ -1164,7 +1164,7 @@ class AppUser extends AbstractApp {
 						Events.pub('rl.bootstart-user-screens');
 
 						if (Settings.settingsGet('WelcomePageUrl')) {
-							_.delay(() => this.bootstartWelcomePopup(Settings.settingsGet('WelcomePageUrl')), 1000);
+							setTimeout(() => this.bootstartWelcomePopup(Settings.settingsGet('WelcomePageUrl')), 1000);
 						}
 
 						if (
@@ -1172,7 +1172,7 @@ class AppUser extends AbstractApp {
 							window.navigator.registerProtocolHandler &&
 							Settings.capa(Capa.Composer)
 						) {
-							_.delay(() => {
+							setTimeout(() => {
 								try {
 									window.navigator.registerProtocolHandler(
 										'mailto',
