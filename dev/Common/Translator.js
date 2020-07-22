@@ -3,7 +3,7 @@ import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import { Notification, UploadErrorCode } from 'Common/Enums';
-import { pInt, isUnd, isNull, microtime } from 'Common/Utils';
+import { pInt, isUnd, microtime } from 'Common/Utils';
 import { $html, $htmlCL } from 'Common/Globals';
 import { reload as momentorReload } from 'Common/Momentor';
 import { langLink } from 'Common/Links';
@@ -98,7 +98,7 @@ export function i18n(key, valueList, defaulValue) {
 		result = isUnd(defaulValue) ? key : defaulValue;
 	}
 
-	if (!isUnd(valueList) && !isNull(valueList)) {
+	if (!isUnd(valueList) && null !== valueList) {
 		for (valueName in valueList) {
 			if (Object.prototype.hasOwnProperty.call(valueList, valueName)) {
 				result = result.replace('%' + valueName + '%', valueList[valueName]);

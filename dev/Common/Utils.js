@@ -14,12 +14,11 @@ const isArray = Array.isArray;
 const isObject = _.isObject;
 const isFunc = _.isFunction;
 const isUnd = _.isUndefined;
-const isNull = _.isNull;
 const noop = () => {}; // eslint-disable-line no-empty-function
 const noopTrue = () => true;
 const noopFalse = () => false;
 
-export { trim, isArray, isObject, isFunc, isUnd, isNull, noop, noopTrue, noopFalse, jassl };
+export { trim, isArray, isObject, isFunc, isUnd, noop, noopTrue, noopFalse, jassl };
 
 /**
  * @param {Function} func
@@ -35,7 +34,7 @@ export function silentTryCatch(func) {
  * @returns {boolean}
  */
 export function isNormal(value) {
-	return !isUnd(value) && !isNull(value);
+	return !isUnd(value) && null !== value;
 }
 
 /**
@@ -1445,7 +1444,7 @@ export function domReady(fn) {
 }
 
 export const windowResize = _.debounce((timeout) => {
-	if (isUnd(timeout) || isNull(timeout)) {
+	if (isUnd(timeout) || null === timeout) {
 		$win.trigger('resize');
 	} else {
 		window.setTimeout(() => {
