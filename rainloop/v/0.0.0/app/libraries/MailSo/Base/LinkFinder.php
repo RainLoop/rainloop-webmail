@@ -112,7 +112,7 @@ class LinkFinder
 			$sNameLink = $sLink;
 			if (!\preg_match('/^[a-z]{3,5}\:\/\//i', \ltrim($sLink)))
 			{
-				$sLink = 'http://'.\ltrim($sLink);
+				$sLink = 'https://'.\ltrim($sLink);
 			}
 
 			return '<a '.($bAddTargetBlank ? 'target="_blank" ': '').'href="'.$sLink.'">'.$sNameLink.'</a>';

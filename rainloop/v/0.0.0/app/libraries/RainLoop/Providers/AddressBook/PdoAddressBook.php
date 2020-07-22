@@ -482,15 +482,7 @@ class PdoAddressBook
 			$sUrl = \preg_replace('/^fruux\.com/i', 'dav.fruux.com', $sUrl);
 			$sUrl = \preg_replace('/^icloud\.com/i', 'contacts.icloud.com', $sUrl);
 			$sUrl = \preg_replace('/^gmail\.com/i', 'google.com', $sUrl);
-
-			if (\preg_match('/^(google\.|dav\.fruux\.com|contacts\.icloud\.com)/i', $sUrl))
-			{
-				$sUrl = 'https://'.$sUrl;
-			}
-			else
-			{
-				$sUrl = 'http://'.$sUrl;
-			}
+			$sUrl = 'https://'.$sUrl;
 		}
 
 		$aUrl = \parse_url($sUrl);
