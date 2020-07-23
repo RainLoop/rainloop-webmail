@@ -52,10 +52,11 @@ This fork has the following changes:
 * Ongoing removal of jQuery and Underscore.js dependencies (things are native these days)
 
 ### slim jQuery and Underscore.js
-js: 1.14.0 = 7960367 / native = 5127981 bytes
-js/min: 1.14.0 = 1766594 / native = 1405850 bytes
+js: 1.14.0 = 7960367 / native = 5131640 bytes
 
-360.744 bytes is nut much, but it already feels faster.
+js/min: 1.14.0 = 1766594 / native = 1405919 bytes
+
+360.675 bytes is not much, but it feels faster.
 
 ### PHP73 branch
 
