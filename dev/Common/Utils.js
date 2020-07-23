@@ -1161,15 +1161,17 @@ export function changeTheme(value, themeTrigger = noop) {
 
 		themeTrigger(SaveSettingsStep.Animate);
 
-		if (__themeAjax && __themeAjax.abort) {
+		if (__themeAjax) {
 			__themeAjax.abort();
 		}
-
-		__themeAjax = $.ajax({
-			url: url,
-			dataType: 'json'
-		})
-			.then((data) => {
+		let init = {};
+		if (window.AbortController) {
+			__themeAjax = new window.AbortController();
+			init.signal = __themeAjax.signal;
+		}
+		window.fetch(url, init)
+			.then(response => response.json())
+			.then(data => {
 				if (data && isArray(data) && 2 === data.length) {
 					if (themeLink && themeLink[0] && (!themeStyle || !themeStyle[0])) {
 						themeStyle = $('<style id="app-theme-style"></style>');

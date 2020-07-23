@@ -263,13 +263,23 @@ export function reload(admin, language) {
 
 	$htmlCL.add('rl-changing-language');
 
-	return new window.Promise((resolve, reject) => {
-		$.ajax({
-			url: langLink(language, admin),
-			dataType: 'script',
-			cache: true
-		}).then(
-			() => {
+	return new Promise((resolve, reject) => {
+		return window.fetch(langLink(language, admin), {cache: 'reload'})
+			.then(response => {
+					if (response.ok) {
+						const type = response.headers.get('Content-Type');
+						if (type.includes('application/javascript')) {
+							return response.text();
+						}
+					}
+					reject(new Error('Invalid response'))
+				}, error => {
+					reject(new Error(error.message))
+				})
+			.then(data => {
+				var doc = window.document, script = doc.createElement('script');
+				script.text = data;
+				doc.head.appendChild(script).parentNode.removeChild(script);
 				setTimeout(
 					() => {
 						reloadData();
@@ -277,20 +287,14 @@ export function reload(admin, language) {
 						const isRtl = ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir'].includes((language || '').toLowerCase());
 
 						$htmlCL.remove('rl-changing-language', 'rl-rtl', 'rl-ltr');
-							// $html.attr('dir', isRtl ? 'rtl' : 'ltr')
+						// $html.attr('dir', isRtl ? 'rtl' : 'ltr')
 						$htmlCL.add(isRtl ? 'rl-rtl' : 'rl-ltr');
 
 						resolve();
 					},
 					500 < microtime() - start ? 1 : 500
 				);
-			},
-			() => {
-				$htmlCL.remove('rl-changing-language');
-				window.rainloopI18N = null;
-				reject();
-			}
-		);
+			});
 	});
 }
 
