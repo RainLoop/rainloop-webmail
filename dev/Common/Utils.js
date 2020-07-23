@@ -11,12 +11,24 @@ import { jassl } from 'Common/Jassl';
 
 const trim = $.trim;
 const isArray = Array.isArray;
-const isObject = _.isObject;
-const isFunc = _.isFunction;
-const isUnd = _.isUndefined;
+const isObject = v => typeof v === 'object';
+const isFunc = v => typeof v === 'function';
+const isUnd = v => undefined === v;
 const noop = () => {}; // eslint-disable-line no-empty-function
 const noopTrue = () => true;
 const noopFalse = () => false;
+
+var htmlspecialchars = ((de,se,gt,lt,sq,dq,bt) => {
+	return (str, quote_style = 3, double_encode = true) => {
+		str = (''+str)
+			.replace(double_encode?de:se,'&amp;')
+			.replace(gt,'&lt;')
+			.replace(lt,'&gt;')
+			.replace(bt,'&#x60;');
+		if (quote_style & 1) { str = str.replace(sq,'&#x27;'); }
+		return (quote_style & 2) ? str.replace(dq,'&quot;') : str;
+	};
+})(/&/g,/&(?![\w#]+;)/gi,/</g,/>/g,/'/g,/"/g,/`/g);
 
 export { trim, isArray, isObject, isFunc, isUnd, noop, noopTrue, noopFalse, jassl };
 
@@ -167,7 +179,7 @@ export function fakeMd5(len = 32) {
  * @returns {string}
  */
 export function encodeHtml(text) {
-	return isNormal(text) ? _.escape(text.toString()) : '';
+	return isNormal(text) ? htmlspecialchars(text.toString()) : '';
 }
 
 /**
@@ -449,7 +461,7 @@ export function createCommandLegacy(context, fExecute, fCanExecute = true) {
  * @param {string} theme
  * @returns {string}
  */
-export const convertThemeName = _.memoize((theme) => {
+export const convertThemeName = theme => {
 	if ('@custom' === theme.substr(-7)) {
 		theme = trim(theme.substring(0, theme.length - 7));
 	}
@@ -458,9 +470,9 @@ export const convertThemeName = _.memoize((theme) => {
 		theme
 			.replace(/[^a-zA-Z0-9]+/g, ' ')
 			.replace(/([A-Z])/g, ' $1')
-			.replace(/[\s]+/g, ' ')
+			.replace(/\s+/g, ' ')
 	);
-});
+};
 
 /**
  * @param {string} name
@@ -713,7 +725,7 @@ export function htmlToPlain(html) {
 						.replace(/[\n]/gm, '<br />')
 						.replace(/[\r]/gm, '')
 				: '',
-		fixAttibuteValue = (...args) => (args && 1 < args.length ? '' + args[1] + _.escape(args[2]) : ''),
+		fixAttibuteValue = (...args) => (args && 1 < args.length ? '' + args[1] + htmlspecialchars(args[2]) : ''),
 		convertLinks = (...args) => (args && 1 < args.length ? trim(args[1]) : '');
 
 	text = html
@@ -1384,7 +1396,7 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 
 		if (!isUnd(params.to)) {
 			to = EmailModel.parseEmailLine(decodeURIComponent(email + ',' + params.to));
-			to = _.values(
+			to = Object.values(
 				to.reduce((result, value) => {
 					if (value) {
 						if (result[value.email]) {

@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import ko from 'ko';
 
 import { FileType } from 'Common/Enums';
@@ -22,159 +21,123 @@ import Audio from 'Common/Audio';
  * @param {string} sMimeType
  * @returns {string}
  */
-export const staticFileType = _.memoize((ext, mimeType) => {
-	ext = trim(ext).toLowerCase();
-	mimeType = trim(mimeType).toLowerCase();
+export const staticFileType = (() => {
+	let cache = {};
+	return (ext, mimeType) => {
+		ext = trim(ext).toLowerCase();
+		mimeType = trim(mimeType).toLowerCase();
 
-	let result = FileType.Unknown;
-	const mimeTypeParts = mimeType.split('/');
+		let key = ext + mimeType;
+		if (cache[key]) {
+			return cache[key];
+		}
 
-	switch (true) {
-		case 'image' === mimeTypeParts[0] || ['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(ext):
-			result = FileType.Image;
-			break;
-		case 'audio' === mimeTypeParts[0] || ['mp3', 'ogg', 'oga', 'wav'].includes(ext):
-			result = FileType.Audio;
-			break;
-		case 'video' === mimeTypeParts[0] || ['mkv', 'avi'].includes(ext):
-			result = FileType.Video;
-			break;
-		case ['php', 'js', 'css'].includes(ext):
-			result = FileType.Code;
-			break;
-		case 'eml' === ext || ['message/delivery-status', 'message/rfc822'].includes(mimeType):
-			result = FileType.Eml;
-			break;
-		case ('text' === mimeTypeParts[0] && 'html' !== mimeTypeParts[1]) || ['txt', 'log'].includes(ext):
-			result = FileType.Text;
-			break;
-		case 'text/html' === mimeType || ['html'].includes(ext):
-			result = FileType.Html;
-			break;
-		case [
-				'zip',
-				'7z',
-				'tar',
-				'rar',
-				'gzip',
-				'bzip',
-				'bzip2',
-				'x-zip',
-				'x-7z',
-				'x-rar',
-				'x-tar',
-				'x-gzip',
-				'x-bzip',
-				'x-bzip2',
-				'x-zip-compressed',
-				'x-7z-compressed',
-				'x-rar-compressed'
-			].includes(mimeTypeParts[1]) || ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2'].includes(ext):
-			result = FileType.Archive;
-			break;
-		case ['pdf', 'x-pdf'].includes(mimeTypeParts[1]) || ['pdf'].includes(ext):
-			result = FileType.Pdf;
-			break;
-		case ['application/pgp-signature', 'application/pgp-keys'].includes(mimeType) ||
-			['asc', 'pem', 'ppk'].includes(ext):
-			result = FileType.Certificate;
-			break;
-		case ['application/pkcs7-signature'].includes(mimeType) || ['p7s'].includes(ext):
-			result = FileType.CertificateBin;
-			break;
-		case [
-				'rtf',
-				'msword',
-				'vnd.msword',
-				'vnd.openxmlformats-officedocument.wordprocessingml.document',
-				'vnd.openxmlformats-officedocument.wordprocessingml.template',
-				'vnd.ms-word.document.macroEnabled.12',
-				'vnd.ms-word.template.macroEnabled.12'
-			].includes(mimeTypeParts[1]):
-			result = FileType.WordText;
-			break;
-		case [
-				'excel',
-				'ms-excel',
-				'vnd.ms-excel',
-				'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-				'vnd.openxmlformats-officedocument.spreadsheetml.template',
-				'vnd.ms-excel.sheet.macroEnabled.12',
-				'vnd.ms-excel.template.macroEnabled.12',
-				'vnd.ms-excel.addin.macroEnabled.12',
-				'vnd.ms-excel.sheet.binary.macroEnabled.12'
-			].includes(mimeTypeParts[1]):
-			result = FileType.Sheet;
-			break;
-		case [
-				'powerpoint',
-				'ms-powerpoint',
-				'vnd.ms-powerpoint',
-				'vnd.openxmlformats-officedocument.presentationml.presentation',
-				'vnd.openxmlformats-officedocument.presentationml.template',
-				'vnd.openxmlformats-officedocument.presentationml.slideshow',
-				'vnd.ms-powerpoint.addin.macroEnabled.12',
-				'vnd.ms-powerpoint.presentation.macroEnabled.12',
-				'vnd.ms-powerpoint.template.macroEnabled.12',
-				'vnd.ms-powerpoint.slideshow.macroEnabled.12'
-			].includes(mimeTypeParts[1]):
-			result = FileType.Presentation;
-			break;
-		// no default
-	}
+		let result = FileType.Unknown;
+		const mimeTypeParts = mimeType.split('/');
 
-	return result;
-});
+		switch (true) {
+			case 'image' === mimeTypeParts[0] || ['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(ext):
+				result = FileType.Image;
+				break;
+			case 'audio' === mimeTypeParts[0] || ['mp3', 'ogg', 'oga', 'wav'].includes(ext):
+				result = FileType.Audio;
+				break;
+			case 'video' === mimeTypeParts[0] || ['mkv', 'avi'].includes(ext):
+				result = FileType.Video;
+				break;
+			case ['php', 'js', 'css'].includes(ext):
+				result = FileType.Code;
+				break;
+			case 'eml' === ext || ['message/delivery-status', 'message/rfc822'].includes(mimeType):
+				result = FileType.Eml;
+				break;
+			case ('text' === mimeTypeParts[0] && 'html' !== mimeTypeParts[1]) || ['txt', 'log'].includes(ext):
+				result = FileType.Text;
+				break;
+			case 'text/html' === mimeType || ['html'].includes(ext):
+				result = FileType.Html;
+				break;
+			case [
+					'zip',
+					'7z',
+					'tar',
+					'rar',
+					'gzip',
+					'bzip',
+					'bzip2',
+					'x-zip',
+					'x-7z',
+					'x-rar',
+					'x-tar',
+					'x-gzip',
+					'x-bzip',
+					'x-bzip2',
+					'x-zip-compressed',
+					'x-7z-compressed',
+					'x-rar-compressed'
+				].includes(mimeTypeParts[1]) || ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2'].includes(ext):
+				result = FileType.Archive;
+				break;
+			case ['pdf', 'x-pdf'].includes(mimeTypeParts[1]) || ['pdf'].includes(ext):
+				result = FileType.Pdf;
+				break;
+			case ['application/pgp-signature', 'application/pgp-keys'].includes(mimeType) ||
+				['asc', 'pem', 'ppk'].includes(ext):
+				result = FileType.Certificate;
+				break;
+			case ['application/pkcs7-signature'].includes(mimeType) || ['p7s'].includes(ext):
+				result = FileType.CertificateBin;
+				break;
+			case [
+					'rtf',
+					'msword',
+					'vnd.msword',
+					'vnd.openxmlformats-officedocument.wordprocessingml.document',
+					'vnd.openxmlformats-officedocument.wordprocessingml.template',
+					'vnd.ms-word.document.macroEnabled.12',
+					'vnd.ms-word.template.macroEnabled.12'
+				].includes(mimeTypeParts[1]):
+				result = FileType.WordText;
+				break;
+			case [
+					'excel',
+					'ms-excel',
+					'vnd.ms-excel',
+					'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+					'vnd.openxmlformats-officedocument.spreadsheetml.template',
+					'vnd.ms-excel.sheet.macroEnabled.12',
+					'vnd.ms-excel.template.macroEnabled.12',
+					'vnd.ms-excel.addin.macroEnabled.12',
+					'vnd.ms-excel.sheet.binary.macroEnabled.12'
+				].includes(mimeTypeParts[1]):
+				result = FileType.Sheet;
+				break;
+			case [
+					'powerpoint',
+					'ms-powerpoint',
+					'vnd.ms-powerpoint',
+					'vnd.openxmlformats-officedocument.presentationml.presentation',
+					'vnd.openxmlformats-officedocument.presentationml.template',
+					'vnd.openxmlformats-officedocument.presentationml.slideshow',
+					'vnd.ms-powerpoint.addin.macroEnabled.12',
+					'vnd.ms-powerpoint.presentation.macroEnabled.12',
+					'vnd.ms-powerpoint.template.macroEnabled.12',
+					'vnd.ms-powerpoint.slideshow.macroEnabled.12'
+				].includes(mimeTypeParts[1]):
+				result = FileType.Presentation;
+				break;
+			// no default
+		}
+
+		return cache[key] = result;
+	};
+})();
 
 /**
  * @param {string} sFileType
  * @returns {string}
  */
-export const staticIconClass = _.memoize((fileType) => {
-	let resultText = '',
-		resultClass = 'icon-file';
-
-	switch (fileType) {
-		case FileType.Text:
-		case FileType.Eml:
-		case FileType.WordText:
-			resultClass = 'icon-file-text';
-			break;
-		case FileType.Html:
-		case FileType.Code:
-			resultClass = 'icon-file-code';
-			break;
-		case FileType.Image:
-			resultClass = 'icon-file-image';
-			break;
-		case FileType.Audio:
-			resultClass = 'icon-file-music';
-			break;
-		case FileType.Video:
-			resultClass = 'icon-file-movie';
-			break;
-		case FileType.Archive:
-			resultClass = 'icon-file-zip';
-			break;
-		case FileType.Certificate:
-		case FileType.CertificateBin:
-			resultClass = 'icon-file-certificate';
-			break;
-		case FileType.Sheet:
-			resultClass = 'icon-file-excel';
-			break;
-		case FileType.Presentation:
-			resultClass = 'icon-file-chart-graph';
-			break;
-		case FileType.Pdf:
-			resultText = 'pdf';
-			resultClass = 'icon-none';
-			break;
-		// no default
-	}
-
-	return [resultClass, resultText];
-});
+export const staticIconClass = fileType => FileType.getIconClass(fileType);
 
 /**
  * @static
@@ -187,7 +150,8 @@ export const staticCombinedIconClass = (data) => {
 
 	if (isNonEmptyArray(data)) {
 		result = 'icon-attachment';
-		types = _.uniq(_.compact(data.map(item => (item ? staticFileType(getFileExtension(item[0]), item[1]) : ''))));
+		types = data.map(item => item ? staticFileType(getFileExtension(item[0]), item[1]) : '')
+			.filter((value, index, self) => !!value && self.indexOf(value) == index);
 
 		if (types && 1 === types.length && types[0]) {
 			switch (types[0]) {

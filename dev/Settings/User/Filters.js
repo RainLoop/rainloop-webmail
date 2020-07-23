@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { windowResizeCallback, isArray, trim, delegateRunOnDestroy } from 'Common/Utils';
@@ -113,12 +112,10 @@ class FiltersUserSettings {
 					this.serverError(false);
 
 					this.filters(
-						_.compact(
-							data.Result.Filters.map(aItem => {
-								const filter = new FilterModel();
-								return filter && filter.parse(aItem) ? filter : null;
-							})
-						)
+						data.Result.Filters.map(aItem => {
+							const filter = new FilterModel();
+							return filter && filter.parse(aItem) ? filter : null;
+						}).filter(value => !!value)
 					);
 
 					this.modules(data.Result.Modules ? data.Result.Modules : {});

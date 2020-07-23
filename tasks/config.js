@@ -72,7 +72,8 @@ config.paths.js = {
 	libs: {
 		name: 'libs.js',
 		src: [
-			'node_modules/jquery/dist/jquery.min.js',
+			'dev/polyfill.js',
+			'node_modules/jquery/dist/jquery.slim.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.12.1.custom.min.js', // custom
 			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
 			'vendors/routes/signals.min.js', // fixed
@@ -82,7 +83,7 @@ config.paths.js = {
 			'vendors/keymaster/keymaster.js', // custom (modified)
 			'vendors/qr.js/qr.min.js', // fixed (license)
 			'vendors/bootstrap/js/bootstrap.min.js', // fixed
-			'node_modules/underscore/underscore-min.js',
+			'vendors/underscore/underscore-min.custom.js',
 			'node_modules/moment/min/moment.min.js',
 			'node_modules/knockout/build/output/knockout-latest.js',
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',

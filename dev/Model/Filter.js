@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 
 import { FilterRulesType, FiltersAction } from 'Common/Enums';
@@ -230,12 +229,10 @@ class FilterModel extends AbstractModel {
 
 			if (isNonEmptyArray(json.Conditions)) {
 				this.conditions(
-					_.compact(
-						json.Conditions.map(aData => {
-							const filterCondition = new FilterConditionModel();
-							return filterCondition && filterCondition.parse(aData) ? filterCondition : null;
-						})
-					)
+					json.Conditions.map(aData => {
+						const filterCondition = new FilterConditionModel();
+						return filterCondition && filterCondition.parse(aData) ? filterCondition : null;
+					}).filter(value => !!value)
 				);
 			}
 

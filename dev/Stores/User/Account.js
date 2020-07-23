@@ -1,5 +1,4 @@
 import ko from 'ko';
-import _ from '_';
 import { Magics } from 'Common/Enums';
 import * as Settings from 'Storage/Settings';
 
@@ -17,7 +16,9 @@ class AccountUserStore {
 	}
 
 	computers() {
-		this.accountsEmails = ko.computed(() => _.compact(this.accounts().map(item => (item ? item.email : null))));
+		this.accountsEmails = ko.computed(
+			() => this.accounts().map(item => (item ? item.email : null)).filter(value => !!value)
+		);
 
 		this.accountsUnreadCount = ko.computed(() => 0);
 		// this.accountsUnreadCount = ko.computed(() => {

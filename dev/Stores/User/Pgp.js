@@ -42,62 +42,36 @@ class PgpUserStore {
 	}
 
 	findPublicKeysByEmail(email) {
-		return _.compact(
-			_.flatten(
-				this.openpgpkeysPublic().map(item => {
-					const key = item && item.emails.includes(email) ? item : null;
-					return key ? key.getNativeKeys() : [null];
-				}),
-				true
-			)
-		);
+		return this.openpgpkeysPublic().map(item => {
+			const key = item && item.emails.includes(email) ? item : null;
+			return key ? key.getNativeKeys() : [null];
+		}).flat().filter(value => !!value);
 	}
 
 	findPublicKeysBySigningKeyIds(signingKeyIds) {
-		return _.compact(
-			_.flatten(
-				signingKeyIds.map(id => {
-					const key = id && id.toHex ? this.findPublicKeyByHex(id.toHex()) : null;
-					return key ? key.getNativeKeys() : [null];
-				}),
-				true
-			)
-		);
+		return signingKeyIds.map(id => {
+			const key = id && id.toHex ? this.findPublicKeyByHex(id.toHex()) : null;
+			return key ? key.getNativeKeys() : [null];
+		}).flat().filter(value => !!value);
 	}
 
 	findPrivateKeysByEncryptionKeyIds(encryptionKeyIds, recipients, returnWrapKeys) {
 		let result = isArray(encryptionKeyIds)
-			? _.compact(
-					_.flatten(
-						encryptionKeyIds.map(id => {
-							const key = id && id.toHex ? this.findPrivateKeyByHex(id.toHex()) : null;
-							return key ? (returnWrapKeys ? [key] : key.getNativeKeys()) : [null];
-						}),
-						true
-					)
-			  )
+			? encryptionKeyIds.map(id => {
+					const key = id && id.toHex ? this.findPrivateKeyByHex(id.toHex()) : null;
+					return key ? (returnWrapKeys ? [key] : key.getNativeKeys()) : [null];
+				}).flat().filter(value => !!value)
 			: [];
 
 		if (0 === result.length && isNonEmptyArray(recipients)) {
-			result = _.uniq(
-				_.compact(
-					_.flatten(
-						recipients.map(sEmail => {
-							const keys = sEmail ? this.findAllPrivateKeysByEmailNotNative(sEmail) : null;
-							return keys
-								? returnWrapKeys
-									? keys
-									: _.flatten(
-											keys.map(key => key.getNativeKeys()),
-											true
-									  )
-								: [null];
-						}),
-						true
-					)
-				),
-				(key) => key.id
-			);
+			result = recipients.map(sEmail => {
+				const keys = sEmail ? this.findAllPrivateKeysByEmailNotNative(sEmail) : null;
+				return keys
+					? returnWrapKeys
+						? keys
+						: keys.map(key => key.getNativeKeys()).flat()
+					: [null];
+			}).flat().filter((key, index, self) => key => !!key.id && self.indexOf(key) == index);
 		}
 
 		return result;
@@ -297,7 +271,7 @@ class PgpUserStore {
 							} else if (validPrivateKey) {
 								const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
 									additional = keyIds
-										? _.compact(keyIds.map(item => (item && item.toHex ? item.toHex() : null))).join(', ')
+										? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(value => !!value).join(', ')
 										: '';
 
 								store.controlsHelper(
@@ -354,7 +328,7 @@ class PgpUserStore {
 					} else {
 						const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
 							additional = keyIds
-								? _.compact(keyIds.map(item => (item && item.toHex ? item.toHex() : null))).join(', ')
+								? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(value => !!value).join(', ')
 								: '';
 
 						store.controlsHelper(

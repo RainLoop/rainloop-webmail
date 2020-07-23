@@ -86,15 +86,13 @@ class AdminApp extends AbstractApp {
 				});
 
 				if (isArray(data.Result.List)) {
-					list = _.compact(
-						data.Result.List.map(item => {
-							if (item) {
-								item.loading = ko.observable(!isUnd(loading[item.file]));
-								return 'core' === item.type && !item.canBeInstalled ? null : item;
-							}
-							return null;
-						})
-					);
+					list = data.Result.List.map(item => {
+						if (item) {
+							item.loading = ko.observable(!isUnd(loading[item.file]));
+							return 'core' === item.type && !item.canBeInstalled ? null : item;
+						}
+						return null;
+					}).filter(value => !!value);
 				}
 
 				PackageStore.packages(list);

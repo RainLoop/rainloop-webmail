@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import key from 'key';
@@ -171,7 +170,9 @@ class ContactsPopupView extends AbstractViewNext {
 			const checked = this.contactsChecked(),
 				selected = this.currentContact();
 
-			return _.union(checked, selected ? [selected] : []);
+			return selected
+				? checked.concat([selected]).filter((value, index, self) => self.indexOf(value) == index)
+				: checked;
 		});
 
 		this.contactsCheckedOrSelectedUids = ko.computed(() =>
@@ -253,7 +254,7 @@ class ContactsPopupView extends AbstractViewNext {
 				return null;
 			});
 
-			aE = _.compact(aE);
+			aE = aE.filter(value => !!value);
 		}
 
 		if (isNonEmptyArray(aE)) {
@@ -596,7 +597,7 @@ class ContactsPopupView extends AbstractViewNext {
 							return contact.parse(item) ? contact : null;
 						});
 
-						list = _.compact(list);
+						list = list.filter(value => !!value);
 
 						count = pInt(data.Result.Count);
 						count = 0 < count ? count : 0;

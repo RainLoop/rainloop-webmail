@@ -321,7 +321,8 @@ class AppUser extends AbstractApp {
 			};
 		}
 
-		this.moveCache[hash].Uid = _.union(this.moveCache[hash].Uid, uidsForMove);
+		this.moveCache[hash].Uid = this.moveCache[hash].Uid.concat(uidsForMove)
+			.filter((value, index, self) => self.indexOf(value) == index);
 		this.messagesMoveTrigger();
 	}
 
@@ -520,7 +521,9 @@ class AppUser extends AbstractApp {
 									.getKeyId()
 									.toHex()
 									.toLowerCase(),
-								_.uniq(_.compact(oItem.getKeyIds().map(item => (item && item.toHex ? item.toHex() : null)))),
+								oItem.getKeyIds()
+									.map(item => (item && item.toHex ? item.toHex() : null))
+									.filter((value, index, self) => !!value && self.indexOf(value) == index),
 								aUsers,
 								aEmails,
 								oItem.isPrivate(),
@@ -634,12 +637,10 @@ class AppUser extends AbstractApp {
 				delegateRunOnDestroy(TemplateStore.templates());
 
 				TemplateStore.templates(
-					_.compact(
-						data.Result.Templates.map(templateData => {
-							const template = new TemplateModel();
-							return template.parse(templateData) ? template : null;
-						})
-					)
+					data.Result.Templates.map(templateData => {
+						const template = new TemplateModel();
+						return template.parse(templateData) ? template : null;
+					}).filter(value => !!value)
 				);
 			}
 		});
@@ -819,7 +820,8 @@ class AppUser extends AbstractApp {
 			messages = MessageStore.messageListChecked();
 		}
 
-		rootUids = _.uniq(_.compact(messages.map(oMessage => (oMessage && oMessage.uid ? oMessage.uid : null))));
+		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
+			.filter((value, index, self) => !!value && self.indexOf(value) == index);
 
 		if ('' !== sFolderFullNameRaw && 0 < rootUids.length) {
 			switch (iSetAction) {
@@ -880,7 +882,7 @@ class AppUser extends AbstractApp {
 		Remote.suggestions((result, data) => {
 			if (StorageResultType.Success === result && data && isArray(data.Result)) {
 				autocompleteCallback(
-					_.compact(data.Result.map(item => (item && item[0] ? new EmailModel(item[0], item[1]) : null)))
+					data.Result.map(item => (item && item[0] ? new EmailModel(item[0], item[1]) : null)).filter(value => !!value)
 				);
 			} else if (StorageResultType.Abort !== result) {
 				autocompleteCallback([]);
@@ -899,10 +901,10 @@ class AppUser extends AbstractApp {
 		}
 
 		if (bExpanded) {
-			aExpandedList.push(sFullNameHash);
-			aExpandedList = _.uniq(aExpandedList);
+			if (!aExpandedList.includes(sFullNameHash))
+				aExpandedList.push(sFullNameHash);
 		} else {
-			aExpandedList = _.without(aExpandedList, sFullNameHash);
+			aExpandedList = aExpandedList.filter(value => value !== sFullNameHash);
 		}
 
 		Local.set(ClientSideKeyName.ExpandedFolders, aExpandedList);

@@ -1,4 +1,3 @@
-import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import key from 'key';
@@ -44,7 +43,9 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		this.signKey = ko.observable(null);
 		this.encryptKeys = ko.observableArray([]);
 
-		this.encryptKeysView = ko.computed(() => _.compact(this.encryptKeys().map(oKey => (oKey ? oKey.key : null))));
+		this.encryptKeysView = ko.computed(
+			() => this.encryptKeys().map(oKey => (oKey ? oKey.key : null)).filter(value => !!value)
+		);
 
 		this.privateKeysOptions = ko.computed(() => {
 			const opts = PgpStore.openpgpkeysPrivate().map((oKey, iIndex) => {
@@ -59,7 +60,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 				}));
 			});
 
-			return _.compact(_.flatten(opts, true));
+			return opts.flat().filter(value => !!value);
 		});
 
 		this.publicKeysOptions = ko.computed(() => {
@@ -74,7 +75,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 					'class': index % 2 ? 'odd' : 'even'
 				}));
 			});
-			return _.compact(_.flatten(opts, true));
+			return opts.flat().filter(value => !!value);
 		});
 
 		this.submitRequest = ko.observable(false);
@@ -159,7 +160,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 
 				this.encryptKeys().forEach(oKey => {
 					if (oKey && oKey.key) {
-						aPublicKeys = aPublicKeys.concat(_.compact(_.flatten(oKey.key.getNativeKeys())));
+						aPublicKeys = aPublicKeys.concat(oKey.key.getNativeKeys().flat(Infinity).filter(value => !!value));
 					} else if (oKey && oKey.email) {
 						this.notification(
 							i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
@@ -355,13 +356,11 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		}
 
 		rec = rec.join(', ').split(',');
-		rec = _.compact(
-			rec.map(value => {
+		rec = rec.map(value => {
 				email.clear();
 				email.parse(trim(value));
 				return '' === email.email ? false : email.email;
-			})
-		);
+			}).filter(value => !!value);
 
 		if (identity && identity.email()) {
 			emailLine = identity.email();
@@ -383,28 +382,22 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 
 		if (rec && 0 < rec.length) {
 			this.encryptKeys(
-				_.uniq(
-					_.compact(
-						_.flatten(
-							rec.map(recEmail => {
-								const keys = PgpStore.findAllPublicKeysByEmailNotNative(recEmail);
-								return keys
-									? keys.map(publicKey => ({
-											'empty': !publicKey,
-											'selected': ko.observable(!!publicKey),
-											'removable': ko.observable(
-												!this.sign() || !this.signKey() || this.signKey().key.id !== publicKey.id
-											),
-											'users': publicKey ? publicKey.users || [recEmail] : [recEmail],
-											'hash': publicKey ? publicKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() : '',
-											'key': publicKey
-									  }))
-									: [];
-							}),
-							true
-						)
-					),
-					(encryptKey) => encryptKey.hash
+				rec.map(recEmail => {
+					const keys = PgpStore.findAllPublicKeysByEmailNotNative(recEmail);
+					return keys
+						? keys.map(publicKey => ({
+								'empty': !publicKey,
+								'selected': ko.observable(!!publicKey),
+								'removable': ko.observable(
+									!this.sign() || !this.signKey() || this.signKey().key.id !== publicKey.id
+								),
+								'users': publicKey ? publicKey.users || [recEmail] : [recEmail],
+								'hash': publicKey ? publicKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() : '',
+								'key': publicKey
+						  }))
+						: [];
+				}).flat().filter(
+					(encryptKey, index, self) => encryptKey => !!encryptKey.hash && self.indexOf(encryptKey) == index
 				)
 			);
 

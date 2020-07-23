@@ -18,7 +18,49 @@ export const FileType = {
 	'Presentation': 'presentation',
 	'Certificate': 'certificate',
 	'CertificateBin': 'certificate-bin',
-	'Archive': 'archive'
+	'Archive': 'archive',
+
+	getIconClass: function(type) {
+		let result = ['icon-file', ''];
+		switch (type) {
+			case this.Text:
+			case this.Eml:
+			case this.WordText:
+				result[0] += '-text';
+				break;
+			case this.Html:
+			case this.Code:
+				result[0] += '-code';
+				break;
+			case this.Image:
+				result[0] += '-image';
+				break;
+			case this.Audio:
+				result[0] += '-music';
+				break;
+			case this.Video:
+				result[0] += '-movie';
+				break;
+			case this.Archive:
+				result[0] += '-zip';
+				break;
+			case this.Certificate:
+			case this.CertificateBin:
+				result[0] += '-certificate';
+				break;
+			case this.Sheet:
+				result[0] += '-excel';
+				break;
+			case this.Presentation:
+				result[0] += '-chart-graph';
+				break;
+			case this.Pdf:
+				result['icon-none', 'pdf'];
+				break;
+			// no default
+		}
+		return result;
+	}
 };
 
 /**

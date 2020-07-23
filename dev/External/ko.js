@@ -13,7 +13,8 @@ const ko = window.ko,
 				element.__opentip.deactivate();
 			}
 		});
-	};
+	},
+	isFunction = v => typeof v === 'function';
 
 ko.bindingHandlers.updateWidth = {
 	init: (element, fValueAccessor) => {
@@ -145,7 +146,7 @@ ko.bindingHandlers.tooltip = {
 			Globals = require('Common/Globals');
 
 		if (!Globals.bMobileDevice || isMobile) {
-			const sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
+			const sValue = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
 			element.__opentip = new Opentip(element, {
 				'style': 'rainloopTip',
@@ -203,7 +204,7 @@ ko.bindingHandlers.tooltip = {
 			Globals = require('Common/Globals');
 
 		if ((!Globals.bMobileDevice || isMobile) && element.__opentip) {
-			const sValue = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue);
+			const sValue = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 			if (sValue) {
 				element.__opentip.setContent(isI18N ? require('Common/Translator').i18n(sValue) : sValue);
 				element.__opentip.activate();
@@ -240,7 +241,7 @@ ko.bindingHandlers.tooltipErrorTip = {
 	update: (element, fValueAccessor) => {
 		const $el = $(element),
 			fValue = fValueAccessor(),
-			value = !ko.isObservable(fValue) && _.isFunction(fValue) ? fValue() : ko.unwrap(fValue),
+			value = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue),
 			openTips = element.__opentip;
 
 		if (openTips) {
@@ -797,8 +798,7 @@ ko.bindingHandlers.saveTrigger = {
 
 ko.bindingHandlers.emailsTags = {
 	init: (element, fValueAccessor, fAllBindingsAccessor) => {
-		const Utils = require('Common/Utils'),
-			EmailModel = require('Model/Email').default,
+		const EmailModel = require('Model/Email').default,
 			$el = $(element),
 			fValue = fValueAccessor(),
 			fAllBindings = fAllBindingsAccessor(),
@@ -817,20 +817,18 @@ ko.bindingHandlers.emailsTags = {
 			inputDelimiters: inputDelimiters,
 			autoCompleteSource: fAutoCompleteSource,
 			splitHook: (value) => {
-				const v = Utils.trim(value);
+				const v = value.trim();
 				if (v && inputDelimiters.includes(v.substr(-1))) {
 					return EmailModel.splitEmailLine(value);
 				}
 				return null;
 			},
 			parseHook: (input) =>
-				_.flatten(
-					input.map(inputValue => {
-						const values = EmailModel.parseEmailLine(inputValue);
-						return values.length ? values : inputValue;
-					})
-				).map(
-					item => (_.isObject(item) ? [item.toLine(false), item] : [item, null])
+				input.map(inputValue => {
+					const values = EmailModel.parseEmailLine(inputValue);
+					return values.length ? values : inputValue;
+				}).flat(Infinity).map(
+					item => (item.toLine ? [item.toLine(false), item] : [item, null])
 				),
 			change: (event) => {
 				$el.data('EmailsTagsValue', event.target.value);
@@ -872,7 +870,7 @@ ko.bindingHandlers.command = {
 
 		if (!command.canExecute) {
 			const __realCanExecute = command.__realCanExecute;
-			if (_.isFunction(__realCanExecute)) {
+			if (isFunction(__realCanExecute)) {
 				command.canExecute = ko.computed(() => command.enabled() && __realCanExecute.call(viewModel, viewModel));
 			} else {
 				command.canExecute = ko.computed(() => command.enabled() && !!__realCanExecute);
@@ -912,11 +910,10 @@ ko.bindingHandlers.command = {
 // extenders
 
 ko.extenders.trimmer = (target) => {
-	const Utils = require('Common/Utils'),
-		result = ko.computed({
+	const result = ko.computed({
 			read: target,
 			write: (newValue) => {
-				target(Utils.trim(newValue.toString()));
+				target(newValue.toString().trim());
 			}
 		});
 
@@ -1116,7 +1113,7 @@ ko.observable.fn.deleteAccessHelper = function() {
 ko.observable.fn.validateFunc = function(fFunc) {
 	this.hasFuncError = ko.observable(false);
 
-	if (_.isFunction(fFunc)) {
+	if (isFunction(fFunc)) {
 		this.subscribe((value) => {
 			this.hasFuncError(!fFunc(value));
 		});

@@ -1,4 +1,3 @@
-import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import moment from 'moment';
@@ -200,13 +199,9 @@ class MessageModel extends AbstractModel {
 	 * @returns {Array}
 	 */
 	getEmails(properties) {
-		return _.compact(
-			_.uniq(
-				_.reduce(properties, (carry, property) => carry.concat(this[property]), []).map(
-					(oItem) => (oItem ? oItem.email : '')
-				)
-			)
-		);
+		return properties.reduce((carry, property) => carry.concat(this[property]), []).map(
+			oItem => oItem ? oItem.email : ''
+		).filter((value, index, self) => !!value && self.indexOf(value) == index);
 	}
 
 	/**

@@ -1,5 +1,4 @@
 import ko from 'ko';
-import _ from '_';
 
 import { settingsGet } from 'Storage/Settings';
 
@@ -95,7 +94,7 @@ class FolderUserStore {
 		});
 
 		this.folderListSystem = ko.computed(() =>
-			_.compact(this.folderListSystemNames().map(name => getFolderFromCacheList(name)))
+			this.folderListSystemNames().map(name => getFolderFromCacheList(name)).filter(value => !!value)
 		);
 
 		this.folderMenuForMove = ko.computed(() =>
@@ -203,7 +202,7 @@ class FolderUserStore {
 			return limit <= result.length;
 		});
 
-		return _.uniq(result);
+		return result.filter((value, index, self) => self.indexOf(value) == index);
 	}
 }
 

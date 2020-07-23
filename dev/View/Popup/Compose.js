@@ -600,13 +600,13 @@ class ComposePopupView extends AbstractViewNext {
 				case ComposeType.ReplyAll:
 				case ComposeType.Forward:
 				case ComposeType.ForwardAsAttachment:
-					_.union(message.to, message.cc, message.bcc).forEach(fEachHelper);
+					message.to.concat(message.cc, message.bcc).forEach(fEachHelper);
 					if (!resultIdentity) {
 						message.deliveredTo.forEach(fEachHelper);
 					}
 					break;
 				case ComposeType.Draft:
-					_.union(message.from, message.replyTo).forEach(fEachHelper);
+					message.from.concat(message.replyTo).forEach(fEachHelper);
 					break;
 				// no default
 			}
@@ -859,7 +859,8 @@ class ComposePopupView extends AbstractViewNext {
 	addEmailsTo(fKoValue, emails) {
 		if (isNonEmptyArray(emails)) {
 			const value = trim(fKoValue()),
-				values = _.uniq(_.compact(emails.map(item => (item ? item.toLine(false) : null))));
+				values = emails.map(item => item ? item.toLine(false) : null)
+					.filter((value, index, self) => !!value && self.indexOf(value) == index);
 
 			fKoValue(value + ('' === value ? '' : ', ') + trim(values.join(', ')));
 		}

@@ -453,11 +453,11 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	//			aTo = [],
 	//			EmailModel = require('Model/Email').default,
 	//			fParseEmailLine = function(sLine) {
-	//				return sLine ? _.compact([window.decodeURIComponent(sLine)].map(sItem => {
+	//				return sLine ? [window.decodeURIComponent(sLine)].map(sItem => {
 	//						var oEmailModel = new EmailModel();
 	//						oEmailModel.parse(sItem);
 	//						return '' !== oEmailModel.email ? oEmailModel : null;
-	//					})) : null;
+	//					}).filter(value => !!value) : null;
 	//			}
 	//		;
 	//
@@ -477,26 +477,24 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				listIndex = 0;
 
 			const div = $('<div>'),
-				dynamicEls = _.compact(
-					this.message().attachments().map(item => {
-						if (item && !item.isLinked && item.isImage()) {
-							if (item === attachment) {
-								index = listIndex;
-							}
-
-							listIndex += 1;
-
-							return {
-								src: item.linkPreview(),
-								thumb: item.linkThumbnail(),
-								subHtml: item.fileName,
-								downloadUrl: item.linkPreview()
-							};
+				dynamicEls = this.message().attachments().map(item => {
+					if (item && !item.isLinked && item.isImage()) {
+						if (item === attachment) {
+							index = listIndex;
 						}
 
-						return null;
-					})
-				);
+						listIndex += 1;
+
+						return {
+							src: item.linkPreview(),
+							thumb: item.linkThumbnail(),
+							subHtml: item.fileName,
+							downloadUrl: item.linkPreview()
+						};
+					}
+
+					return null;
+				}).filter(value => !!value);
 
 			if (0 < dynamicEls.length) {
 				div.on('onBeforeOpen.lg', () => {
@@ -885,7 +883,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	getAttachmentsHashes() {
 		const atts = this.message() ? this.message().attachments() : [];
-		return _.compact(atts.map(item => (item && !item.isLinked && item.checked() ? item.download : '')));
+		return atts.map(item => (item && !item.isLinked && item.checked() ? item.download : '')).filter(value => !!value);
 	}
 
 	downloadAsZip() {

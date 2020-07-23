@@ -51,6 +51,12 @@ This fork has the following changes:
 * CRLF => LF line endings
 * Ongoing removal of jQuery and Underscore.js dependencies (things are native these days)
 
+### slim jQuery and Underscore.js
+js: 1.14.0 = 7960367 / native = 5127981 bytes
+js/min: 1.14.0 = 1766594 / native = 1405850 bytes
+
+360.744 bytes is nut much, but it already feels faster.
+
 ### PHP73 branch
 
 There's a branch with only the PHP 7.3 changes at

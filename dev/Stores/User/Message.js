@@ -153,7 +153,9 @@ class MessageUserStore {
 				focusedMessage = this.selectorMessageFocused();
 
 			if (checked.length) {
-				return _.union(checked, selectedMessage ? [selectedMessage] : []);
+				return selectedMessage
+					? checked.concat([selectedMessage]).filter((value, index, self) => self.indexOf(value) == index)
+					: checked;
 			} else if (selectedMessage) {
 				return [selectedMessage];
 			}
@@ -167,7 +169,7 @@ class MessageUserStore {
 				if (message) {
 					result.push(message.uid);
 					if (1 < message.threadsLen()) {
-						result = _.union(result, message.threads());
+						result = result.concat(message.threads()).filter((value, index, self) => self.indexOf(value) == index);
 					}
 				}
 			});

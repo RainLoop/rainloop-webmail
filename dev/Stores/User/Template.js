@@ -1,5 +1,4 @@
 import ko from 'ko';
-import _ from '_';
 
 // import Remote from 'Remote/User/Ajax';
 
@@ -16,7 +15,7 @@ class TemplateUserStore {
 
 	subscribers() {
 		this.templates.subscribe((list) => {
-			this.templatesNames(_.compact(list.map(item => (item ? item.name : null))));
+			this.templatesNames(list.map(item => (item ? item.name : null)).filter(value => !!value));
 		});
 
 		// this.templatesNames.subscribe((aList) => {

@@ -1,4 +1,3 @@
-import _ from '_';
 import addressparser from 'emailjs-addressparser';
 import { trim, encodeHtml, isNonEmptyArray } from 'Common/Utils';
 
@@ -184,11 +183,9 @@ class EmailModel {
 	static parseEmailLine(line) {
 		const parsedResult = addressparser(line);
 		if (isNonEmptyArray(parsedResult)) {
-			return _.compact(
-				parsedResult.map(item =>
-					item.address ? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '') : null
-				)
-			);
+			return parsedResult.map(item =>
+				item.address ? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '') : null
+			).filter(value => !!value);
 		}
 
 		return [];
