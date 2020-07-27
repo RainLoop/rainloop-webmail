@@ -70,17 +70,6 @@
 
 		Globals.iDefLimit = 20;
 
-		Globals.bIsAjaxUploaderSupported = (function () {
-
-			var
-				window = __webpack_require__(1),
-				oInput = window.document.createElement('input')
-			;
-
-			oInput.type = 'file';
-			return !!('XMLHttpRequest' in window && 'multiple' in oInput && 'FormData' in window && (new window.XMLHttpRequest()).upload && true);
-		}());
-
 		module.exports = Globals;
 
 	}());
@@ -997,7 +986,7 @@
 				});
 			}
 
-			Driver = (self.isAjaxUploaderSupported() && !Utils.getValue(self.oOptions, 'disableAjaxUpload', false) ?
+			Driver = (!Utils.getValue(self.oOptions, 'disableAjaxUpload', false) ?
 				__webpack_require__(5) : __webpack_require__(6));
 
 			self.oDriver = new Driver(self, self.oOptions);
@@ -1205,7 +1194,6 @@
 			Utils.setValue(self, 'on', self.on);
 			Utils.setValue(self, 'cancel', self.cancel);
 			Utils.setValue(self, 'isDragAndDropSupported', self.isDragAndDropSupported);
-			Utils.setValue(self, 'isAjaxUploaderSupported', self.isAjaxUploaderSupported);
 			Utils.setValue(self, 'setDragAndDropEnabledStatus', self.setDragAndDropEnabledStatus);
 		}
 
@@ -1275,14 +1263,6 @@
 		Jua.prototype.cancel = function (sUid)
 		{
 			this.oDriver.cancel(sUid);
-		};
-
-		/**
-		 * @return {boolean}
-		 */
-		Jua.prototype.isAjaxUploaderSupported = function ()
-		{
-			return Globals.bIsAjaxUploaderSupported;
 		};
 
 		/**

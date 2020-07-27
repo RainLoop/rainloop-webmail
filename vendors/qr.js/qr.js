@@ -7,7 +7,7 @@
 // For all details and documentation:
 // <http://neocotic.com/qr.js>
 
-(function (root) {
+(root => {
 
   'use strict';
 
@@ -201,22 +201,6 @@
   function normalizeData(data) {
     if (typeof data === 'string') data = { value: data };
     return data || {};
-  }
-
-  // Override the `qr` API methods that require HTML5 canvas support to throw a relevant error.
-  function overrideAPI(qr) {
-    var methods = [ 'canvas', 'image', 'save', 'saveSync', 'toDataURL' ];
-    var i;
-
-    function overrideMethod(name) {
-      qr[name] = function () {
-        throw new Error(name + ' requires HTML5 canvas element support');
-      };
-    }
-
-    for (i = 0; i < methods.length; i++) {
-      overrideMethod(methods[i]);
-    }
   }
 
   // Asynchronously write the data of the rendered canvas to a given file path.
@@ -1188,30 +1172,6 @@
   // Support
   // -------
 
-  // Export `qr` for node.js and CommonJS.
-  if (typeof exports !== 'undefined') {
-    inNode = true;
-
-    if (typeof module !== 'undefined' && module.exports) {
-      exports = module.exports = qr;
-    }
-    exports.qr = qr;
-
-    // Import required node.js modules.
-    Canvas = require('canvas');
-    Image = Canvas.Image;
-    fs = require('fs');
-  } else if (typeof define === 'function' && define.amd) {
-    define(function () {
-      return qr;
-    });
-  } else {
-    // In non-HTML5 browser so strip base functionality.
-    if (!root.HTMLCanvasElement) {
-      overrideAPI(qr);
-    }
-
-    root.qr = qr;
-  }
+  root.qr = qr;
 
 })(this);

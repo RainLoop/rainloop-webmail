@@ -670,27 +670,31 @@
 
 		_attachEvents : function() {
 
-			var widget = this;
+			var widget = this, els = this.elements;
+			if (els) {
+				els.input.on('keyup.inputosaurus', {widget : widget}, this._inputKeypress);
+				els.input.on('keydown.inputosaurus', {widget : widget}, this._inputKeypress);
+				els.input.on('change.inputosaurus', {widget : widget}, this._inputKeypress);
+				els.input.on('focus.inputosaurus', {widget : widget}, this._inputFocus);
 
-			this.elements.input.on('keyup.inputosaurus', {widget : widget}, this._inputKeypress);
-			this.elements.input.on('keydown.inputosaurus', {widget : widget}, this._inputKeypress);
-			this.elements.input.on('change.inputosaurus', {widget : widget}, this._inputKeypress);
-			this.elements.input.on('focus.inputosaurus', {widget : widget}, this._inputFocus);
+				this.options.parseOnBlur && els.input.on('blur.inputosaurus', {widget : widget}, this.parseInput);
 
-			this.options.parseOnBlur && this.elements.input.on('blur.inputosaurus', {widget : widget}, this.parseInput);
-
-			this.elements.ul.on('click.inputosaurus', {widget : widget}, this._focus);
-			this.elements.ul.on('click.inputosaurus', 'a', {widget : widget}, this._removeTag);
-			this.elements.ul.on('dblclick.inputosaurus', 'li', {widget : widget}, this._editTag);
-			this.elements.ul.on('doubletap.inputosaurus', 'li', {widget : widget}, this._editTag);
-			this.elements.ul.on('focus.inputosaurus', 'a', {widget : widget}, this._tagFocus);
-			this.elements.ul.on('blur.inputosaurus', 'a', {widget : widget}, this._tagFocus);
-			this.elements.ul.on('keydown.inputosaurus', 'a', {widget : widget}, this._tagKeypress);
+				els.ul.on('click.inputosaurus', {widget : widget}, this._focus);
+				els.ul.on('click.inputosaurus', 'a', {widget : widget}, this._removeTag);
+				els.ul.on('dblclick.inputosaurus', 'li', {widget : widget}, this._editTag);
+				els.ul.on('doubletap.inputosaurus', 'li', {widget : widget}, this._editTag);
+				els.ul.on('focus.inputosaurus', 'a', {widget : widget}, this._tagFocus);
+				els.ul.on('blur.inputosaurus', 'a', {widget : widget}, this._tagFocus);
+				els.ul.on('keydown.inputosaurus', 'a', {widget : widget}, this._tagKeypress);
+			}
 		},
 
 		_destroy: function() {
-			this.elements.input.unbind('.inputosaurus');
-			this.elements.ul.replaceWith(this.element);
+			var els = this.elements;
+			if (els) {
+				els.input.unbind('.inputosaurus');
+				els.ul.replaceWith(this.element);
+			}
 		}
 	};
 

@@ -3,17 +3,7 @@
 * Includes: widget.js, position.js, data.js, keycode.js, scroll-parent.js, widgets/autocomplete.js, widgets/draggable.js, widgets/droppable.js, widgets/menu.js, widgets/mouse.js, widgets/selectable.js, widgets/sortable.js
 * Copyright jQuery Foundation and other contributors; Licensed MIT */
 
-(function( factory ) {
-	if ( typeof define === "function" && define.amd ) {
-
-		// AMD. Register as an anonymous module.
-		define([ "jquery" ], factory );
-	} else {
-
-		// Browser globals
-		factory( jQuery );
-	}
-}(function( $ ) {
+(( $ ) => {
 
 $.ui = $.ui || {};
 
@@ -70,16 +60,14 @@ $.cleanData = ( function( orig ) {
 	return function( elems ) {
 		var events, elem, i;
 		for ( i = 0; ( elem = elems[ i ] ) != null; i++ ) {
-			try {
-
+//			try {
 				// Only trigger remove when necessary to save time
 				events = $._data( elem, "events" );
 				if ( events && events.remove ) {
 					$( elem ).triggerHandler( "remove" );
 				}
-
 			// Http://bugs.jquery.com/ticket/8235
-			} catch ( e ) {}
+//			} catch ( e ) {}
 		}
 		orig( elems );
 	};
@@ -378,11 +366,11 @@ $.Widget.prototype = {
 		return {};
 	},
 
-	_getCreateEventData: $.noop,
+	_getCreateEventData: ()=>{},
 
-	_create: $.noop,
+	_create: ()=>{},
 
-	_init: $.noop,
+	_init: ()=>{},
 
 	destroy: function() {
 		var that = this;
@@ -405,7 +393,7 @@ $.Widget.prototype = {
 		this.bindings.off( this.eventNamespace );
 	},
 
-	_destroy: $.noop,
+	_destroy: ()=>{},
 
 	widget: function() {
 		return this.element;
@@ -791,7 +779,7 @@ var cachedScrollbarWidth,
 	abs = Math.abs,
 	rhorizontal = /left|center|right/,
 	rvertical = /top|center|bottom/,
-	roffset = /[\+\-]\d+(\.[\d]+)?%?/,
+	roffset = /[+-]\d+(\.[\d]+)?%?/,
 	rposition = /^\w+/,
 	rpercent = /%$/,
 	_position = $.fn.position;
@@ -1268,7 +1256,7 @@ $.ui.position = {
 //>>docs: http://api.jqueryui.com/data-selector/
 
 
-var data = $.extend( $.expr[ ":" ], {
+$.extend( $.expr[ ":" ], {
 	data: $.expr.createPseudo ?
 		$.expr.createPseudo( function( dataName ) {
 			return function( elem ) {
@@ -1958,7 +1946,7 @@ $.widget( "ui.menu", {
 	},
 
 	_filterMenuItems: function( character ) {
-		var escapedCharacter = character.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" ),
+		var escapedCharacter = character.replace( /[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&" ),
 			regex = new RegExp( "^" + escapedCharacter, "i" );
 
 		return this.activeMenu
@@ -2595,7 +2583,7 @@ $.widget( "ui.autocomplete", {
 
 $.extend( $.ui.autocomplete, {
 	escapeRegex: function( value ) {
-		return value.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" );
+		return value.replace( /[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&" );
 	},
 	filter: function( array, term ) {
 		var matcher = new RegExp( $.ui.autocomplete.escapeRegex( term ), "i" );
@@ -3812,17 +3800,12 @@ $.widget( "ui.droppable", {
 	}
 } );
 
-var intersect = $.ui.intersect = ( function() {
-	function isOverAxis( x, reference, size ) {
-		return ( x >= reference ) && ( x < ( reference + size ) );
-	}
 
-	return function( draggable, droppable, toleranceMode, event ) {
-
-		if ( !droppable.offset ) {
-			return false;
-		}
-
+function isOverAxis( x, reference, size ) {
+	return ( x >= reference ) && ( x < ( reference + size ) );
+}
+var intersect = function( draggable, droppable, mode, event ) {
+	if ( droppable.offset ) {
 		var x1 = ( draggable.positionAbs ||
 				draggable.position.absolute ).left + draggable.margins.left,
 			y1 = ( draggable.positionAbs ||
@@ -3834,32 +3817,27 @@ var intersect = $.ui.intersect = ( function() {
 			r = l + droppable.proportions().width,
 			b = t + droppable.proportions().height;
 
-		switch ( toleranceMode ) {
-		case "fit":
-			return ( l <= x1 && x2 <= r && t <= y1 && y2 <= b );
-		case "intersect":
-			return ( l < x1 + ( draggable.helperProportions.width / 2 ) && // Right Half
-				x2 - ( draggable.helperProportions.width / 2 ) < r && // Left Half
-				t < y1 + ( draggable.helperProportions.height / 2 ) && // Bottom Half
-				y2 - ( draggable.helperProportions.height / 2 ) < b ); // Top Half
-		case "pointer":
-			return isOverAxis( event.pageY, t, droppable.proportions().height ) &&
-				isOverAxis( event.pageX, l, droppable.proportions().width );
-		case "touch":
-			return (
-				( y1 >= t && y1 <= b ) || // Top edge touching
-				( y2 >= t && y2 <= b ) || // Bottom edge touching
-				( y1 < t && y2 > b ) // Surrounded vertically
+		return "fit" == mode
+			? ( l <= x1 && x2 <= r && t <= y1 && y2 <= b )
+		 : "intersect" == mode
+			? ( l < x1 + ( draggable.helperProportions.width / 2 ) &&
+				x2 - ( draggable.helperProportions.width / 2 ) < r &&
+				t < y1 + ( draggable.helperProportions.height / 2 ) &&
+				y2 - ( draggable.helperProportions.height / 2 ) < b )
+		 : "pointer" == mode
+			? isOverAxis( event.pageY, t, droppable.proportions().height ) &&
+				isOverAxis( event.pageX, l, droppable.proportions().width )
+		 : "touch" == mode
+			? (
+				( y1 >= t && y1 <= b ) || ( y2 >= t && y2 <= b ) || ( y1 < t && y2 > b )
 			) && (
-				( x1 >= l && x1 <= r ) || // Left edge touching
-				( x2 >= l && x2 <= r ) || // Right edge touching
-				( x1 < l && x2 > r ) // Surrounded horizontally
-			);
-		default:
-			return false;
-		}
-	};
-} )();
+				( x1 >= l && x1 <= r ) || ( x2 >= l && x2 <= r ) || ( x1 < l && x2 > r )
+			)
+		 : false;
+	}
+	return false;
+};
+
 
 /*
 	This manager tracks offsets of draggables and droppables
@@ -4870,7 +4848,7 @@ $.widget( "ui.sortable", $.ui.mouse, {
 
 		$( items ).each( function() {
 			var res = ( $( o.item || this ).attr( o.attribute || "id" ) || "" )
-				.match( o.expression || ( /(.+)[\-=_](.+)/ ) );
+				.match( o.expression || ( /(.+)[-=_](.+)/ ) );
 			if ( res ) {
 				str.push(
 					( o.key || res[ 1 ] + "[]" ) +
@@ -5845,8 +5823,4 @@ $.widget( "ui.sortable", $.ui.mouse, {
 
 } );
 
-
-
-
-
-}));
+})(jQuery);

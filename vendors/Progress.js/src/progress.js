@@ -6,18 +6,7 @@
  * Copyright (C) 2013 usabli.ca - Afshin Mehrabani (@afshinmeh)
  */
 
-(function (root, factory) {
-  if (typeof exports === 'object') {
-    // CommonJS
-    factory(exports);
-  } else if (typeof define === 'function' && define.amd) {
-    // AMD. Register as an anonymous module.
-    define(['exports'], factory);
-  } else {
-    // Browser globals
-    factory(root);
-  }
-} (this, function (exports) {
+(exports => {
   //Default config/variables
   var VERSION = '0.1.0';
 
@@ -42,7 +31,7 @@
 
     this._options = {
       //progress bar theme
-      theme: 'blue',
+      theme: 'rainloop',
       //overlay mode makes an overlay layer in the target element
       overlayMode: false,
       //to consider CSS3 transitions in events
@@ -163,8 +152,6 @@
    * @param {Number} percent
    */
   function _setPercentFor(targetElement, percent) {
-    var self = this;
-
     //prevent overflow!
     if (percent >= 100)
       percent = 100;
@@ -173,15 +160,10 @@
       //setTimeout for better CSS3 animation applying in some cases
       setTimeout(function() {
 
-        //call the onprogress callback
-        if (typeof self._onProgressCallback != 'undefined') {
-          self._onProgressCallback.call(self, targetElement, percent);
-        }
-
         var percentElement = _getPercentElement(targetElement);
         percentElement.style.width = parseInt(percent) + '%';
 
-        var percentElement  = percentElement.querySelector(".progressjs-percent");
+        percentElement  = percentElement.querySelector(".progressjs-percent");
         var existingPercent = parseInt(percentElement.innerHTML.replace('%', ''));
 
         //start increase/decrease the percent element with animation
@@ -201,7 +183,7 @@
             } else if (distance < 20) {
               intervalIn = 20;
             } else {
-              intervanIn = 1;
+              intervalIn = 1;
             }
 
             if ((existingPercent - currentPercent) != 0) {
@@ -229,47 +211,6 @@
   function _getPercentElement(targetElement) {
     var progressjsId = parseInt(targetElement.getAttribute('data-progressjs'));
     return document.querySelector('.progressjs-container > .progressjs-progress[data-progressjs="' + progressjsId + '"] > .progressjs-inner');
-  }
-
-  /**
-   * Auto increase the progress bar every X milliseconds
-   *
-   * @api private
-   * @method _autoIncrease
-   * @param {Number} size
-   * @param {Number} millisecond
-   */
-  function _autoIncrease(size, millisecond) {
-    var self = this;
-
-    var progressjsId = parseInt(this._targetElement[0].getAttribute('data-progressjs'));
-
-    if (typeof window._progressjsIntervals[progressjsId] != 'undefined') {
-      clearInterval(window._progressjsIntervals[progressjsId]);
-    }
-    window._progressjsIntervals[progressjsId] = setInterval(function() {
-      _increasePercent.call(self, size);
-    }, millisecond);
-  }
-
-  /**
-   * Increase the size of progress bar
-   *
-   * @api private
-   * @method _increasePercent
-   * @param {Number} size
-   */
-  function _increasePercent(size) {
-    for (var i = 0, elmsLength = this._targetElement.length; i < elmsLength; i++) {
-      var currentElement = this._targetElement[i];
-      if (currentElement.hasAttribute('data-progressjs')) {
-        var percentElement  = _getPercentElement(currentElement);
-        var existingPercent = parseInt(percentElement.style.width.replace('%', ''));
-        if (existingPercent) {
-          _setPercentFor.call(this, currentElement, existingPercent + (size || 1));
-        }
-      }
-    }
   }
 
   /**
@@ -389,27 +330,12 @@
     return elementPosition;
   }
 
-  /**
-   * Overwrites obj1's values with obj2's and adds obj2's if non existent in obj1
-   * via: http://stackoverflow.com/questions/171251/how-can-i-merge-properties-of-two-javascript-objects-dynamically
-   *
-   * @param obj1
-   * @param obj2
-   * @returns obj3 a new object based on obj1 and obj2
-   */
-  function _mergeOptions(obj1, obj2) {
-    var obj3 = {};
-    for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
-    for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
-    return obj3;
-  }
-
   var progressJs = function (targetElm) {
     if (typeof (targetElm) === 'object') {
       //Ok, create a new instance
       return new ProgressJs(targetElm);
-
-    } else if (typeof (targetElm) === 'string') {
+    }
+    if (typeof (targetElm) === 'string') {
       //select the target element with query selector
       var targetElement = document.querySelectorAll(targetElm);
 
@@ -418,9 +344,8 @@
       } else {
         throw new Error('There is no element with given selector.');
       }
-    } else {
-      return new ProgressJs(document.body);
     }
+    return new ProgressJs(document.body);
   };
 
   /**
@@ -430,9 +355,9 @@
    * @returns transition name
    */
   function whichTransitionEvent() {
-    var t;
-    var el = document.createElement('fakeelement');
-    var transitions = {
+    var t,
+    el = document.createElement('fakeelement'),
+    transitions = {
       'transition': 'transitionend',
       'OTransition': 'oTransitionEnd',
       'MozTransition': 'transitionend',
@@ -456,31 +381,12 @@
 
   //Prototype
   progressJs.fn = ProgressJs.prototype = {
-    clone: function () {
-      return new ProgressJs(this);
-    },
-    setOption: function(option, value) {
-      this._options[option] = value;
-      return this;
-    },
-    setOptions: function(options) {
-      this._options = _mergeOptions(this._options, options);
-      return this;
-    },
     start: function() {
       _startProgress.call(this);
       return this;
     },
     set: function(percent) {
       _setPercent.call(this, percent);
-      return this;
-    },
-    increase: function(size) {
-      _increasePercent.call(this, size);
-      return this;
-    },
-    autoIncrease: function(size, millisecond) {
-      _autoIncrease.call(this, size, millisecond);
       return this;
     },
     end: function() {
@@ -494,25 +400,9 @@
         throw new Error('Provided callback for onbeforeend was not a function');
       }
       return this;
-    },
-    onbeforestart: function(providedCallback) {
-      if (typeof (providedCallback) === 'function') {
-        this._onBeforeStartCallback = providedCallback;
-      } else {
-        throw new Error('Provided callback for onbeforestart was not a function');
-      }
-      return this;
-    },
-    onprogress: function(providedCallback) {
-      if (typeof (providedCallback) === 'function') {
-        this._onProgressCallback = providedCallback;
-      } else {
-        throw new Error('Provided callback for onprogress was not a function');
-      }
-      return this;
     }
   };
 
   exports.progressJs = progressJs;
   return progressJs;
-}));
+})(this);

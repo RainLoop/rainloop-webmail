@@ -51,12 +51,30 @@ This fork has the following changes:
 * CRLF => LF line endings
 * Ongoing removal of jQuery and Underscore.js dependencies (things are native these days)
 
-### slim jQuery and Underscore.js
-js: 1.14.0 = 7960367 / native = 5131640 bytes
+### jQuery.slim and Underscore.js
 
-js/min: 1.14.0 = 1766594 / native = 1405919 bytes
+This fork has no support for Internet Explorer.
+Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyfill for array.flat().
 
-360.675 bytes is not much, but it feels faster.
+|js/*       	|1.14.0   	|native   	| div     	|
+|-----------	|--------:	|--------:	|--------:	|
+|admin.js    	|2.130.942	|1.359.501	|	|
+|app.js      	|4.184.455	|3.127.807	|	|
+|boot.js     	|  671.522	|  120.319	|	|
+|libs.js     	|  647.614	|  511.296	|	|
+|polyfills.js	|  325.834	|        0	|	|
+|TOTAL js   	|7.960.367	|5.119.409	|	|
+
+|js/min/*   	|1.14.0   	|native   	| div     	|
+|-----------	|--------:	|--------:	|--------:	|
+|admin.js    	|  252.147	|  177.094	|	|
+|app.js      	|  511.202	|  409.778	|	|
+|boot.js     	|   66.007	|   14.697	|	|
+|libs.js     	|  572.545	|  468.224	|	|
+|polyfills.js	|   32.452	|        0	|	|
+|TOTAL js/min	|1.434.353	|1.069.793	|364.560	|
+
+364.560 bytes is not much, but it feels faster.
 
 ### PHP73 branch
 

@@ -171,7 +171,6 @@ function runApp() {
 	) {
 		const p = progressJs;
 
-		p.setOptions({ theme: 'rainloop' });
 		p.start().set(5);
 
 		const libs = () =>
