@@ -293,7 +293,7 @@ class AppUser extends AbstractApp {
 		const sTrashFolder = FolderStore.trashFolder(),
 			sSpamFolder = FolderStore.spamFolder();
 
-		this.moveCache.forEach(item => {
+		Object.values(this.moveCache).forEach(item => {
 			const isSpam = sSpamFolder === item.To,
 				isTrash = sTrashFolder === item.To,
 				isHam = !isSpam && sSpamFolder === item.From && getFolderInboxName() === item.To;
