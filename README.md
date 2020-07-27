@@ -61,7 +61,7 @@ Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyf
 |admin.js    	|2.130.942	|1.359.501	|	|
 |app.js      	|4.184.455	|3.127.807	|	|
 |boot.js     	|  671.522	|  120.319	|	|
-|libs.js     	|  647.614	|  511.296	|	|
+|libs.js     	|  647.614	|  508.324	|	|
 |polyfills.js	|  325.834	|        0	|	|
 |TOTAL js   	|7.960.367	|5.119.409	|	|
 
@@ -70,11 +70,11 @@ Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyf
 |admin.js    	|  252.147	|  177.094	|	|
 |app.js      	|  511.202	|  409.778	|	|
 |boot.js     	|   66.007	|   14.697	|	|
-|libs.js     	|  572.545	|  468.224	|	|
+|libs.js     	|  572.545	|  465.247	|	|
 |polyfills.js	|   32.452	|        0	|	|
-|TOTAL js/min	|1.434.353	|1.069.793	|364.560	|
+|TOTAL js/min	|1.434.353	|1.066.816	|367.537	|
 
-364.560 bytes is not much, but it feels faster.
+367.537 bytes is not much, but it feels faster.
 
 ### PHP73 branch
 
