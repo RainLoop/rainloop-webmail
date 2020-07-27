@@ -49,18 +49,19 @@ This fork has the following changes:
 * Removed Sentry (Application Monitoring and Error Tracking Software)
 * Replaced gulp-uglify with gulp-terser
 * CRLF => LF line endings
-* Ongoing removal of jQuery and Underscore.js dependencies (things are native these days)
+* Ongoing removal of old JavaScript code (things are native these days)
 
-### jQuery.slim and Underscore.js
+### Removal of old JavaScript
 
-This fork has no support for Internet Explorer.
+This fork uses jQuery.slim and downsized versions of Underscore.js, Jua.js, etc. etc., and has no support for Internet Explorer.
+
 Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyfill for array.flat().
 
 |js/*       	|1.14.0   	|native   	| div     	|
 |-----------	|--------:	|--------:	|--------:	|
 |admin.js    	|2.130.942	|1.359.501	|	|
 |app.js      	|4.184.455	|3.127.807	|	|
-|boot.js     	|  671.522	|  120.319	|	|
+|boot.js     	|  671.522	|  117.510	|	|
 |libs.js     	|  647.614	|  508.324	|	|
 |polyfills.js	|  325.834	|        0	|	|
 |TOTAL js   	|7.960.367	|5.119.409	|	|
@@ -69,12 +70,12 @@ Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyf
 |-----------	|--------:	|--------:	|--------:	|
 |admin.js    	|  252.147	|  177.094	|	|
 |app.js      	|  511.202	|  409.778	|	|
-|boot.js     	|   66.007	|   14.697	|	|
+|boot.js     	|   66.007	|   14.229	|	|
 |libs.js     	|  572.545	|  465.247	|	|
 |polyfills.js	|   32.452	|        0	|	|
-|TOTAL js/min	|1.434.353	|1.066.816	|367.537	|
+|TOTAL js/min	|1.434.353	|1.066.348	|368.005	|
 
-367.537 bytes is not much, but it feels faster.
+368.005 bytes is not much, but it feels faster.
 
 ### PHP73 branch
 

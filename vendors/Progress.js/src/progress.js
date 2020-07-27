@@ -46,18 +46,11 @@
    * @method _createContainer
    */
   function _startProgress() {
-
-    //call onBeforeStart callback
-    if (typeof this._onBeforeStartCallback != 'undefined') {
-      this._onBeforeStartCallback.call(this);
-    }
-
     //create the container for progress bar
     _createContainer.call(this);
 
-    for (var i = 0, elmsLength = this._targetElement.length; i < elmsLength; i++) {
-      _setProgress.call(this, this._targetElement[i]);
-    }
+    var p = this;
+    p._targetElement.forEach(item => _setProgress.call(p, item));
   }
 
   /**
@@ -83,11 +76,7 @@
 
 
     //set the position percent elements, it depends on targetElement tag
-    if (targetElement.tagName.toLowerCase() === 'body') {
-      progressElementContainer.style.position = 'fixed';
-    } else {
-      progressElementContainer.style.position = 'absolute';
-    }
+    progressElementContainer.style.position = targetElement.tagName.toLowerCase() === 'body' ? 'fixed' : 'absolute';
 
     progressElementContainer.setAttribute("data-progressjs", window._progressjsId);
     var progressElement = document.createElement("div");
@@ -138,9 +127,8 @@
    * @param {Number} percent
    */
   function _setPercent(percent) {
-    for (var i = 0, elmsLength = this._targetElement.length; i < elmsLength; i++) {
-      _setPercentFor.call(this, this._targetElement[i], percent);
-    }
+    var p = this;
+    p._targetElement.forEach(item => _setPercentFor.call(p, item, percent));
   }
 
   /**
@@ -158,7 +146,7 @@
 
     if (targetElement.hasAttribute("data-progressjs")) {
       //setTimeout for better CSS3 animation applying in some cases
-      setTimeout(function() {
+      setTimeout(() => {
 
         var percentElement = _getPercentElement(targetElement);
         percentElement.style.width = parseInt(percent) + '%';
@@ -167,7 +155,7 @@
         var existingPercent = parseInt(percentElement.innerHTML.replace('%', ''));
 
         //start increase/decrease the percent element with animation
-        (function(percentElement, existingPercent, currentPercent) {
+        ((percentElement, existingPercent, currentPercent) => {
 
           var increasement = true;
           if (existingPercent > currentPercent) {
@@ -189,7 +177,7 @@
             if ((existingPercent - currentPercent) != 0) {
               //set the percent
               percentElement.innerHTML = (increasement ? (++existingPercent) : (--existingPercent)) + '%';
-              setTimeout(function() { changePercentTimer(percentElement, existingPercent, currentPercent); }, intervalIn);
+              setTimeout(() => changePercentTimer(percentElement, existingPercent, currentPercent), intervalIn);
             }
           }
 
@@ -225,7 +213,7 @@
     if (typeof this._onBeforeEndCallback != 'undefined') {
       if (this._options.considerTransition === true) {
         //we can safety assume that all layers would be the same, so `this._targetElement[0]` is the same as `this._targetElement[1]`
-        _getPercentElement(this._targetElement[0]).addEventListener(whichTransitionEvent(), this._onBeforeEndCallback, false);
+        _getPercentElement(this._targetElement[0]).addEventListener('transitionend', this._onBeforeEndCallback, false);
       } else {
         this._onBeforeEndCallback.call(this);
       }
@@ -233,8 +221,8 @@
 
     var progressjsId = parseInt(this._targetElement[0].getAttribute('data-progressjs'));
 
-    for (var i = 0, elmsLength = this._targetElement.length; i < elmsLength; i++) {
-      var currentElement = this._targetElement[i];
+    var p = this;
+    p._targetElement.forEach(currentElement => {
       var percentElement = _getPercentElement(currentElement);
 
       if (!percentElement)
@@ -244,17 +232,17 @@
 
       var timeoutSec = 1;
       if (existingPercent < 100) {
-        _setPercentFor.call(this, currentElement, 100);
+        _setPercentFor.call(p, currentElement, 100);
         timeoutSec = 500;
       }
 
       //I believe I should handle this situation with eventListener and `transitionend` event but I'm not sure
       //about compatibility with IEs. Should be fixed in further versions.
-      (function(percentElement, currentElement) {
-        setTimeout(function() {
+      ((percentElement, currentElement) => {
+        setTimeout(() => {
           percentElement.parentNode.className += " progressjs-end";
 
-          setTimeout(function() {
+          setTimeout(() => {
             //remove the percent element from page
             percentElement.parentNode.parentNode.removeChild(percentElement.parentNode);
             //and remove the attribute
@@ -262,7 +250,7 @@
           }, 1000);
         }, timeoutSec);
       })(percentElement, currentElement);
-    }
+	});
 
     //clean the setInterval for autoIncrease function
     if (window._progressjsIntervals[progressjsId]) {
@@ -300,7 +288,7 @@
    * @returns Element's position info
    */
   function _getOffset(element) {
-    var elementPosition = {};
+    var elementPosition = {}, _x = 0, _y = 0;
 
     if (element.tagName.toLowerCase() === 'body') {
       //set width
@@ -315,8 +303,6 @@
     }
 
     //calculate element top and left
-    var _x = 0;
-    var _y = 0;
     while (element && !isNaN(element.offsetLeft) && !isNaN(element.offsetTop)) {
       _x += element.offsetLeft;
       _y += element.offsetTop;
@@ -341,35 +327,11 @@
 
       if (targetElement) {
         return new ProgressJs(targetElement);
-      } else {
-        throw new Error('There is no element with given selector.');
       }
+      throw new Error('There is no element with given selector.');
     }
     return new ProgressJs(document.body);
   };
-
-  /**
-   * Get correct transition callback
-   * Thanks @webinista: http://stackoverflow.com/a/9090128/375966
-   *
-   * @returns transition name
-   */
-  function whichTransitionEvent() {
-    var t,
-    el = document.createElement('fakeelement'),
-    transitions = {
-      'transition': 'transitionend',
-      'OTransition': 'oTransitionEnd',
-      'MozTransition': 'transitionend',
-      'WebkitTransition': 'webkitTransitionEnd'
-    }
-
-    for (t in transitions) {
-      if (el.style[t] !== undefined) {
-        return transitions[t];
-      }
-    }
-  }
 
   /**
    * Current ProgressJs version
