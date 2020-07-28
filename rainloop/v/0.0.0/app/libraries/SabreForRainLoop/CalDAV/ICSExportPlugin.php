@@ -121,9 +121,9 @@ class ICSExportPlugin extends DAV\ServerPlugin {
                     case 'VTIMEZONE' :
                         // Naively just checking tzid.
                         if (!in_array((string)$child->TZID, $collectedTimezones)) {
-							$timezones[] = $child;
-							$collectedTimezones[] = $child->TZID;
-						}
+                            $timezones[] = $child;
+                            $collectedTimezones[] = $child->TZID;
+                        }
                         break;
 
                 }

@@ -44,9 +44,6 @@ class AbstractAjaxRemote {
 
 			if (StorageResultType.Success === sType && oData && !oData.Result) {
 				const err = oData ? oData.ErrorCode : null;
-if (err) {
-	window.console.log('AbstractAjaxRemote ' + sRequestAction + ' request failed:', err, Notification.getKeyByValue(err));
-}
 				if (
 					oData && [
 							Notification.AuthError,
@@ -199,7 +196,6 @@ if (err) {
 
 				this.defaultResponse(fResultCallback, action, sType, oData, cached, params);
 			}).catch(err => {
-window.console.log('AbstractAjaxRemote ' + action + ' request failed:', err, Notification.getKeyByValue(err));
 				if (err.name == 'AbortError') { // handle abort()
 					return Promise.reject(Notification.AjaxAbort);
 				}

@@ -18,10 +18,6 @@ class Utils
 
 	static $RsaKey = null;
 
-	function __construct()
-	{
-	}
-
 	static public function PgpVerifyFile(string $sFileName, string $sSignature) : bool
 	{
 		$sKeyFile = APP_VERSION_ROOT_PATH.'app/resources/RainLoop.asc';
