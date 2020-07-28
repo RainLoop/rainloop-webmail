@@ -167,7 +167,9 @@ if (err) {
 		if (window.AbortController) {
 			this.abort(action);
 			const controller = new window.AbortController();
-			setTimeout(() => controller.abort(), iTimeOut);
+			if (iTimeOut) {
+				setTimeout(() => controller.abort(), iTimeOut);
+			}
 			init.signal = controller.signal;
 			this.oRequests[action] = controller;
 		}
