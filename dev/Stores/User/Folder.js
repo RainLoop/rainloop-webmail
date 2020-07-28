@@ -72,7 +72,7 @@ class FolderUserStore {
 				trashFolder = this.trashFolder(),
 				archiveFolder = this.archiveFolder();
 
-			if (isArray(folders) && 0 < folders.length) {
+			if (isArray(folders) && folders.length) {
 				if ('' !== sentFolder && UNUSED_OPTION_VALUE !== sentFolder) {
 					list.push(sentFolder);
 				}
@@ -174,7 +174,7 @@ class FolderUserStore {
 						timeouts.push([folder.interval, folder.fullNameRaw]);
 					}
 
-					if (folder && 0 < folder.subFolders().length) {
+					if (folder && folder.subFolders().length) {
 						fSearchFunction(folder.subFolders());
 					}
 				});

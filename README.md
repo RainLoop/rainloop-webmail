@@ -62,22 +62,22 @@ Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyf
 |js/*       	|1.14.0   	|native   	|
 |-----------	|--------:	|--------:	|
 |admin.js    	|2.130.942	|1.359.501	|
-|app.js      	|4.184.455	|3.127.807	|
+|app.js      	|4.184.455	|3.121.743	|
 |boot.js     	|  671.522	|  109.651	|
 |libs.js     	|  647.614	|  508.324	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL js   	|7.960.367	|5.105.283	|
+|TOTAL js   	|7.960.367	|5.097.142	|
 
 |js/min/*   	|1.14.0   	|native   	|
 |-----------	|--------:	|--------:	|
 |admin.js    	|  252.147	|  177.094	|
-|app.js      	|  511.202	|  409.778	|
+|app.js      	|  511.202	|  409.173	|
 |boot.js     	|   66.007	|   13.380	|
 |libs.js     	|  572.545	|  465.247	|
 |polyfills.js	|   32.452	|        0	|
-|TOTAL js/min	|1.434.353	|1.065.499	|
+|TOTAL js/min	|1.434.353	|1.064.753	|
 
-368.854 bytes is not much, but it feels faster.
+369.600 bytes is not much, but it feels faster.
 
 ### PHP73 branch
 

@@ -59,7 +59,7 @@ class Selector {
 		this.itemSelectedThrottle = _.debounce(this.itemSelected.bind(this), 300);
 
 		this.listChecked.subscribe((items) => {
-			if (0 < items.length) {
+			if (items.length) {
 				if (null === this.selectedItem()) {
 					if (this.selectedItem.valueHasMutated) {
 						this.selectedItem.valueHasMutated();
@@ -177,7 +177,7 @@ class Selector {
 				if (!isChecked && !isSelected && this.autoSelect()) {
 					if (this.focusedItem()) {
 						this.selectedItem(this.focusedItem());
-					} else if (0 < aItems.length) {
+					} else if (aItems.length) {
 						if (null !== isNextFocused) {
 							getNext = false;
 							isNextFocused = aCache.find(sUid => {
@@ -201,7 +201,7 @@ class Selector {
 
 				if (
 					(0 !== this.iSelectNextHelper || 0 !== this.iFocusedNextHelper) &&
-					0 < aItems.length &&
+					aItems.length &&
 					!this.focusedItem()
 				) {
 					temp = null;

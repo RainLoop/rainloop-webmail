@@ -152,7 +152,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		}
 
 		if (result && this.encrypt()) {
-			if (0 === this.encryptKeys().length) {
+			if (!this.encryptKeys().length) {
 				this.notification(i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND'));
 				result = false;
 			} else if (this.encryptKeys()) {
@@ -172,7 +172,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 					}
 				});
 
-				if (result && (0 === aPublicKeys.length || this.encryptKeys().length !== aPublicKeys.length)) {
+				if (result && (!aPublicKeys.length || this.encryptKeys().length !== aPublicKeys.length)) {
 					result = false;
 				}
 			}
@@ -183,21 +183,23 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 				let pgpPromise = null;
 
 				try {
-					if (privateKey && 0 === aPublicKeys.length) {
+					if (aPublicKeys.length) {
+						if (privateKey) {
+							pgpPromise = PgpStore.openpgp.encrypt({
+								data: this.text(),
+								publicKeys: aPublicKeys,
+								privateKeys: [privateKey]
+							});
+						} else {
+							pgpPromise = PgpStore.openpgp.encrypt({
+								data: this.text(),
+								publicKeys: aPublicKeys
+							});
+						}
+					} else if (privateKey) {
 						pgpPromise = PgpStore.openpgp.sign({
 							data: this.text(),
 							privateKeys: [privateKey]
-						});
-					} else if (privateKey && 0 < aPublicKeys.length) {
-						pgpPromise = PgpStore.openpgp.encrypt({
-							data: this.text(),
-							publicKeys: aPublicKeys,
-							privateKeys: [privateKey]
-						});
-					} else if (!privateKey && 0 < aPublicKeys.length) {
-						pgpPromise = PgpStore.openpgp.encrypt({
-							data: this.text(),
-							publicKeys: aPublicKeys
 						});
 					}
 				} catch (e) {
@@ -380,7 +382,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 			this.sign(true);
 		}
 
-		if (rec && 0 < rec.length) {
+		if (rec.length) {
 			this.encryptKeys(
 				rec.map(recEmail => {
 					const keys = PgpStore.findAllPublicKeysByEmailNotNative(recEmail);
@@ -401,7 +403,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 				)
 			);
 
-			if (0 < this.encryptKeys().length) {
+			if (this.encryptKeys().length) {
 				this.encrypt(true);
 			}
 		}

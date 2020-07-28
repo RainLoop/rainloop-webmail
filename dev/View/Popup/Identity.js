@@ -43,13 +43,13 @@ class IdentityPopupView extends AbstractViewNext {
 		this.submitError = ko.observable('');
 
 		this.bcc.subscribe((value) => {
-			if (false === this.showBcc() && 0 < value.length) {
+			if (false === this.showBcc() && value.length) {
 				this.showBcc(true);
 			}
 		});
 
 		this.replyTo.subscribe((value) => {
-			if (false === this.showReplyTo() && 0 < value.length) {
+			if (false === this.showReplyTo() && value.length) {
 				this.showReplyTo(true);
 			}
 		});

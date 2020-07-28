@@ -137,7 +137,7 @@ class FolderModel extends AbstractModel {
 
 		this.canBeDeleted = ko.computed(() => {
 			const bSystem = this.isSystemFolder();
-			return !bSystem && 0 === this.subFolders().length && inboxFolderName !== this.fullNameRaw;
+			return !bSystem && !this.subFolders().length && inboxFolderName !== this.fullNameRaw;
 		});
 
 		this.canBeSubScribed = ko.computed(

@@ -130,7 +130,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		};
 
 		this.allowAttachmnetControls = ko.computed(
-			() => 0 < this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions)
+			() => this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions)
 		);
 
 		this.downloadAsZipAllowed = ko.computed(
@@ -496,7 +496,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 					return null;
 				}).filter(value => !!value);
 
-			if (0 < dynamicEls.length) {
+			if (dynamicEls.length) {
 				div.on('onBeforeOpen.lg', () => {
 					useKeyboardShortcuts(false);
 					removeInFocus(true);
@@ -888,7 +888,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	downloadAsZip() {
 		const hashes = this.getAttachmentsHashes();
-		if (0 < hashes.length) {
+		if (hashes.length) {
 			Promises.attachmentsActions('Zip', hashes, this.downloadAsZipLoading)
 				.then((result) => {
 					if (result && result.Result && result.Result.Files && result.Result.Files[0] && result.Result.Files[0].Hash) {

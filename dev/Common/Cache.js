@@ -209,7 +209,7 @@ export function initMessageFlagsFromCache(message) {
 		const uid = message.uid,
 			flags = getMessageFlagsFromCache(message.folderFullNameRaw, uid);
 
-		if (flags && 0 < flags.length) {
+		if (flags && flags.length) {
 			message.flagged(!!flags[1]);
 
 			if (!message.isSimpleMessage) {
@@ -221,11 +221,11 @@ export function initMessageFlagsFromCache(message) {
 			}
 		}
 
-		if (0 < message.threads().length) {
+		if (message.threads().length) {
 			const unseenSubUid = message.threads().find(sSubUid => {
 				if (uid !== sSubUid) {
 					const subFlags = getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
-					return subFlags && 0 < subFlags.length && !!subFlags[0];
+					return subFlags && subFlags.length && !!subFlags[0];
 				}
 				return false;
 			});
@@ -233,7 +233,7 @@ export function initMessageFlagsFromCache(message) {
 			const flaggedSubUid = message.threads().find(sSubUid => {
 				if (uid !== sSubUid) {
 					const subFlags = getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
-					return subFlags && 0 < subFlags.length && !!subFlags[1];
+					return subFlags && subFlags.length && !!subFlags[1];
 				}
 				return false;
 			});
@@ -266,7 +266,7 @@ export function storeMessageFlagsToCache(message) {
  * @param {Array} flags
  */
 export function storeMessageFlagsToCacheByFolderAndUid(folder, uid, flags) {
-	if (isArray(flags) && 0 < flags.length) {
+	if (isArray(flags) && flags.length) {
 		setMessageFlagsToCache(folder, uid, flags);
 	}
 }
@@ -280,7 +280,7 @@ export function storeMessageFlagsToCacheBySetAction(folder, uid, setAction) {
 	let unread = 0;
 	const flags = getMessageFlagsFromCache(folder, uid);
 
-	if (isArray(flags) && 0 < flags.length) {
+	if (isArray(flags) && flags.length) {
 		if (flags[0]) {
 			unread = 1;
 		}

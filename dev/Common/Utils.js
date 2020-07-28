@@ -101,7 +101,7 @@ export function boolToAjax(value) {
  * @returns {boolean}
  */
 export function isNonEmptyArray(values) {
-	return isArray(values) && 0 < values.length;
+	return isArray(values) && values.length;
 }
 
 /**
@@ -141,17 +141,13 @@ export function encodeURI(url) {
  * @returns {Object}
  */
 export function simpleQueryParser(queryString) {
-	let index = 0,
-		len = 0,
-		temp = null;
-
 	const queries = queryString.split('&'),
 		params = {};
 
-	for (len = queries.length; index < len; index++) {
-		temp = queries[index].split('=');
+	queries.forEach(temp => {
+		temp = temp.split('=');
 		params[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
-	}
+	});
 
 	return params;
 }
@@ -707,7 +703,7 @@ export function htmlToPlain(html) {
 	const convertDivs = (...args) => {
 		if (args && 1 < args.length) {
 			let divText = trim(args[1]);
-			if (0 < divText.length) {
+			if (divText.length) {
 				divText = divText.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gim, convertDivs);
 				divText = '\n' + trim(divText) + '\n';
 			}
@@ -805,15 +801,12 @@ export function plainToHtml(plain, findEmailAndLinksInText = false) {
 		bDo = true,
 		bStart = true,
 		aNextText = [],
-		sLine = '',
-		iIndex = 0,
 		aText = plain.split('\n');
 
 	do {
 		bDo = false;
 		aNextText = [];
-		for (iIndex = 0; iIndex < aText.length; iIndex++) {
-			sLine = aText[iIndex];
+		aText.forEach(sLine => {
 			bStart = '>' === sLine.substr(0, 1);
 			if (bStart && !bIn) {
 				bDo = true;
@@ -833,7 +826,7 @@ export function plainToHtml(plain, findEmailAndLinksInText = false) {
 			} else {
 				aNextText.push(sLine);
 			}
-		}
+		});
 
 		if (bIn) {
 			bIn = false;
@@ -888,10 +881,7 @@ export function folderListOptionsBuilder(
 	let /**
 		 * @type {?FolderModel}
 		 */
-		oItem = null,
 		bSep = false,
-		iIndex = 0,
-		iLen = 0,
 		aResult = [];
 
 	const sDeepPrefix = '\u00A0\u00A0\u00A0';
@@ -911,21 +901,20 @@ export function folderListOptionsBuilder(
 		aHeaderLines = [];
 	}
 
-	for (iIndex = 0, iLen = aHeaderLines.length; iIndex < iLen; iIndex++) {
+	aHeaderLines.forEach(line => {
 		aResult.push({
-			id: aHeaderLines[iIndex][0],
-			name: aHeaderLines[iIndex][1],
+			id: line[0],
+			name: line[1],
 			system: false,
 			seporator: false,
 			disabled: false
 		});
-	}
+	});
 
 	bSep = true;
-	for (iIndex = 0, iLen = aSystem.length; iIndex < iLen; iIndex++) {
-		oItem = aSystem[iIndex];
+	aSystem.forEach(oItem => {
 		if (fVisibleCallback ? fVisibleCallback(oItem) : true) {
-			if (bSep && 0 < aResult.length) {
+			if (bSep && aResult.length) {
 				aResult.push({
 					id: '---',
 					name: '---',
@@ -947,11 +936,10 @@ export function folderListOptionsBuilder(
 					(fDisableCallback ? fDisableCallback(oItem) : false)
 			});
 		}
-	}
+	});
 
 	bSep = true;
-	for (iIndex = 0, iLen = aList.length; iIndex < iLen; iIndex++) {
-		oItem = aList[iIndex];
+	aList.forEach(oItem => {
 		// if (oItem.subScribed() || !oItem.existen || bBuildUnvisible)
 		if (
 			(oItem.subScribed() || !oItem.existen || bBuildUnvisible) &&
@@ -959,7 +947,7 @@ export function folderListOptionsBuilder(
 		) {
 			if (fVisibleCallback ? fVisibleCallback(oItem) : true) {
 				if (FolderType.User === oItem.type() || !bSystem || oItem.hasSubScribedSubfolders()) {
-					if (bSep && 0 < aResult.length) {
+					if (bSep && aResult.length) {
 						aResult.push({
 							id: '---',
 							name: '---',
@@ -986,7 +974,7 @@ export function folderListOptionsBuilder(
 			}
 		}
 
-		if (oItem.subScribed() && 0 < oItem.subFolders().length) {
+		if (oItem.subScribed() && oItem.subFolders().length) {
 			aResult = aResult.concat(
 				folderListOptionsBuilder(
 					[],
@@ -1002,7 +990,7 @@ export function folderListOptionsBuilder(
 				)
 			);
 		}
-	}
+	});
 
 	return aResult;
 }
@@ -1304,7 +1292,7 @@ export function mimeContentType(fileName) {
 	}
 
 	ext = getFileExtension(fileName);
-	if (ext && 0 < ext.length && !isUnd(Mime[ext])) {
+	if (ext && ext.length && !isUnd(Mime[ext])) {
 		result = Mime[ext];
 	}
 

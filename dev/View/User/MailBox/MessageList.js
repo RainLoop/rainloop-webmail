@@ -163,9 +163,8 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		});
 
 		this.isIncompleteChecked = ko.computed(() => {
-			const m = MessageStore.messageList().length,
-				c = MessageStore.messageListChecked().length;
-			return 0 < m && 0 < c && m > c;
+			const c = MessageStore.messageListChecked().length;
+			return c && MessageStore.messageList().length > c;
 		});
 
 		this.hasMessages = ko.computed(() => 0 < this.messageList().length);
@@ -209,13 +208,11 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		);
 
 		this.mobileCheckedStateShow = ko.computed(() => {
-			const checked = 0 < this.messageListChecked().length;
-			return this.mobile ? checked : true;
+			return this.mobile ? 0 < this.messageListChecked().length : true;
 		});
 
 		this.mobileCheckedStateHide = ko.computed(() => {
-			const checked = 0 < this.messageListChecked().length;
-			return this.mobile ? !checked : true;
+			return this.mobile ? !this.messageListChecked().length : true;
 		});
 
 		this.messageListFocused = ko.computed(() => Focused.MessageList === AppStore.focusedState());
@@ -399,7 +396,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	goToUpUpOrDownDown(up) {
-		if (0 < this.messageListChecked().length) {
+		if (this.messageListChecked().length) {
 			return false;
 		}
 
@@ -652,7 +649,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		const checked = this.messageListCheckedOrSelected();
 		if (currentMessage) {
 			const checkedUids = checked.map(message => message.uid);
-			if (0 < checkedUids.length && checkedUids.includes(currentMessage.uid)) {
+			if (checkedUids.includes(currentMessage.uid)) {
 				this.setAction(
 					currentMessage.folderFullNameRaw,
 					currentMessage.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
@@ -670,7 +667,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	flagMessagesFast(bFlag) {
 		const checked = this.messageListCheckedOrSelected();
-		if (0 < checked.length) {
+		if (checked.length) {
 			if (isUnd(bFlag)) {
 				const flagged = checked.filter(message => message.flagged());
 				this.setAction(
@@ -690,12 +687,12 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	seenMessagesFast(seen) {
 		const checked = this.messageListCheckedOrSelected();
-		if (0 < checked.length) {
+		if (checked.length) {
 			if (isUnd(seen)) {
 				const unseen = checked.filter(message => message.unseen());
 				this.setAction(
 					checked[0].folderFullNameRaw,
-					0 < unseen.length ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,
+					unseen.length ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,
 					checked
 				);
 			} else {
@@ -734,7 +731,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			'' === this.messageListSearchDesc() &&
 			'' === this.messageListError() &&
 			'' === this.messageListEndThreadUid() &&
-			0 < this.messageList().length &&
+			this.messageList().length &&
 			(this.isSpamFolder() || this.isTrashFolder())
 		);
 	}
@@ -811,7 +808,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			// delete
 			key('delete, shift+delete, shift+3', KeyState.MessageList, (event, handler) => {
 				if (event) {
-					if (0 < MessageStore.messageListCheckedOrSelected().length) {
+					if (MessageStore.messageListCheckedOrSelected().length) {
 						if (handler && 'shift+delete' === handler.shortcut) {
 							this.deleteWithoutMoveCommand();
 						} else {

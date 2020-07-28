@@ -58,7 +58,7 @@ class ContactsPopupView extends AbstractViewNext {
 		super();
 
 		const fFastClearEmptyListHelper = (list) => {
-			if (list && 0 < list.length) {
+			if (list && list.length) {
 				this.viewProperties.removeAll(list);
 				delegateRunOnDestroy(list);
 			}
@@ -456,7 +456,7 @@ class ContactsPopupView extends AbstractViewNext {
 		let currentContact = this.currentContact(),
 			count = this.contacts().length;
 
-		if (0 < contacts.length) {
+		if (contacts.length) {
 			contacts.forEach(contact => {
 				if (currentContact && currentContact.idContact === contact.idContact) {
 					currentContact = null;
@@ -481,7 +481,7 @@ class ContactsPopupView extends AbstractViewNext {
 	}
 
 	deleteSelectedContacts() {
-		if (0 < this.contactsCheckedOrSelected().length) {
+		if (this.contactsCheckedOrSelected().length) {
 			Remote.contactsDelete(this.deleteResponse.bind(this), this.contactsCheckedOrSelectedUids());
 
 			this.removeCheckedOrSelectedContactsFromList();

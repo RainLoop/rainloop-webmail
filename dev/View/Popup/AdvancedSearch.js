@@ -111,11 +111,11 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 			isPart.push('flagged');
 		}
 
-		if (0 < hasPart.length) {
+		if (hasPart.length) {
 			result.push('has:' + hasPart.join(','));
 		}
 
-		if (0 < isPart.length) {
+		if (isPart.length) {
 			result.push('is:' + isPart.join(','));
 		}
 

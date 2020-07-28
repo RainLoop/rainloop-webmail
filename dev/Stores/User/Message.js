@@ -249,7 +249,7 @@ class MessageUserStore {
 
 	initUidNextAndNewMessages(folder, uidNext, newMessages) {
 		if (getFolderInboxName() === folder && isNormal(uidNext) && '' !== uidNext) {
-			if (isArray(newMessages) && 0 < newMessages.length) {
+			if (isArray(newMessages) && newMessages.length) {
 				newMessages.forEach(item => {
 					addNewMessageCache(folder, item.Uid);
 				});
@@ -343,7 +343,7 @@ class MessageUserStore {
 			toFolder.actionBlink(true);
 		}
 
-		if (0 < messages.length) {
+		if (messages.length) {
 			if (copy) {
 				messages.forEach(item => {
 					item.checked(false);
@@ -381,7 +381,7 @@ class MessageUserStore {
 
 			if (
 				messageList &&
-				0 < messageList.length &&
+				messageList.length &&
 				!!messageList.find(item => !!(item && item.deleted() && item.uid === this.messageListThreadUid()))
 			) {
 				const message = messageList.find(item => item && !item.deleted());
@@ -436,15 +436,10 @@ class MessageUserStore {
 	initBlockquoteSwitcher(messageTextBody) {
 		if (messageTextBody) {
 			const $oList = $('blockquote:not(.rl-bq-switcher)', messageTextBody).filter(function() {
-				return (
-					0 ===
-					$(this)
-						.parent()
-						.closest('blockquote', messageTextBody).length
-				); // eslint-disable-line no-invalid-this
+				return !$(this).parent().closest('blockquote', messageTextBody).length;
 			});
 
-			if ($oList && 0 < $oList.length) {
+			if ($oList && $oList.length) {
 				$oList.each(function() {
 					const $this = $(this); // eslint-disable-line no-invalid-this
 

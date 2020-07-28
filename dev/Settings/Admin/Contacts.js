@@ -67,7 +67,7 @@ class ContactsAdminSettings {
 					if (value !== this.contactsType()) {
 						if (supportedTypes.includes(value)) {
 							this.contactsType(value);
-						} else if (0 < supportedTypes.length) {
+						} else if (supportedTypes.length) {
 							this.contactsType('');
 						}
 					} else {

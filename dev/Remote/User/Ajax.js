@@ -449,14 +449,14 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 		let request = true;
 		const uids = [];
 
-		if (isArray(list) && 0 < list.length) {
+		if (isArray(list) && list.length) {
 			request = false;
 			list.forEach(messageListItem => {
 				if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, messageListItem.uid)) {
 					uids.push(messageListItem.uid);
 				}
 
-				if (0 < messageListItem.threads().length) {
+				if (messageListItem.threads().length) {
 					messageListItem.threads().forEach(uid => {
 						if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, uid)) {
 							uids.push(uid);
@@ -465,7 +465,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 				}
 			});
 
-			if (0 < uids.length) {
+			if (uids.length) {
 				request = true;
 			}
 		}

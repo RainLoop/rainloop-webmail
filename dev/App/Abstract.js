@@ -122,7 +122,7 @@ class AbstractApp extends AbstractBoot {
 	 * @param {string} title
 	 */
 	setWindowTitle(title) {
-		title = isNormal(title) && 0 < title.length ? '' + title : '';
+		title = isNormal(title) && title.length ? '' + title : '';
 		if (Settings.settingsGet('Title')) {
 			title += (title ? ' - ' : '') + Settings.settingsGet('Title');
 		}

@@ -346,7 +346,7 @@ class AppUser extends AbstractApp {
 				}
 			}
 
-			this.reloadMessageList(0 === MessageStore.messageList().length);
+			this.reloadMessageList(!MessageStore.messageList().length);
 			this.quotaDebounce();
 		}
 	}
@@ -427,7 +427,7 @@ class AppUser extends AbstractApp {
 	 * @param {boolean=} bCopy = false
 	 */
 	moveMessagesToFolder(sFromFolderFullNameRaw, aUidForMove, sToFolderFullNameRaw, bCopy) {
-		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && isArray(aUidForMove) && 0 < aUidForMove.length) {
+		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && isArray(aUidForMove) && aUidForMove.length) {
 			const oFromFolder = getFolderFromCacheList(sFromFolderFullNameRaw),
 				oToFolder = getFolderFromCacheList(sToFolderFullNameRaw);
 
@@ -823,7 +823,7 @@ class AppUser extends AbstractApp {
 		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
 			.filter((value, index, self) => !!value && self.indexOf(value) == index);
 
-		if ('' !== sFolderFullNameRaw && 0 < rootUids.length) {
+		if ('' !== sFolderFullNameRaw && rootUids.length) {
 			switch (iSetAction) {
 				case MessageSetAction.SetSeen:
 					rootUids.forEach(sSubUid => {
@@ -1001,7 +1001,7 @@ class AppUser extends AbstractApp {
 			this.loginAndLogoutReload(
 				false,
 				true,
-				Settings.settingsGet('ParentEmail') && 0 < Settings.settingsGet('ParentEmail').length
+				0 < (Settings.settingsGet('ParentEmail')||{length:0}).length
 			);
 		});
 	}

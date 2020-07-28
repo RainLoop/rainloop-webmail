@@ -23,7 +23,7 @@ class TemplateUserStore {
 		// 	{
 		// 		this.templatesNames.skipFirst = false;
 		// 	}
-		// 	else if (aList && 1 < aList.length)
+		// 	else if (aList && aList.length)
 		// 	{
 		// 		Remote.templatesSortOrder(null, aList);
 		// 	}

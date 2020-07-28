@@ -202,19 +202,19 @@ class ComposePopupView extends AbstractViewNext {
 		this.showReplyTo = ko.observable(false);
 
 		this.cc.subscribe((value) => {
-			if (false === this.showCc() && 0 < value.length) {
+			if (false === this.showCc() && value.length) {
 				this.showCc(true);
 			}
 		});
 
 		this.bcc.subscribe((value) => {
-			if (false === this.showBcc() && 0 < value.length) {
+			if (false === this.showBcc() && value.length) {
 				this.showBcc(true);
 			}
 		});
 
 		this.replyTo.subscribe((value) => {
-			if (false === this.showReplyTo() && 0 < value.length) {
+			if (false === this.showReplyTo() && value.length) {
 				this.showReplyTo(true);
 			}
 		});
@@ -286,13 +286,13 @@ class ComposePopupView extends AbstractViewNext {
 		});
 
 		this.to.subscribe((value) => {
-			if (this.emptyToError() && 0 < value.length) {
+			if (this.emptyToError() && value.length) {
 				this.emptyToError(false);
 			}
 		});
 
 		this.attachmentsInProcess.subscribe((value) => {
-			if (this.attachmentsInProcessError() && isArray(value) && 0 === value.length) {
+			if (this.attachmentsInProcessError() && isArray(value) && value.length) {
 				this.attachmentsInProcessError(false);
 			}
 		});
@@ -352,10 +352,10 @@ class ComposePopupView extends AbstractViewNext {
 		this.attachmentsInErrorError(false);
 		this.emptyToError(false);
 
-		if (0 < this.attachmentsInProcess().length) {
+		if (this.attachmentsInProcess().length) {
 			this.attachmentsInProcessError(true);
 			this.attachmentsPlace(true);
-		} else if (0 < this.attachmentsInError().length) {
+		} else if (this.attachmentsInError().length) {
 			this.attachmentsInErrorError(true);
 			this.attachmentsPlace(true);
 		}
@@ -370,7 +370,7 @@ class ComposePopupView extends AbstractViewNext {
 					isArray(this.aDraftInfo) &&
 					3 === this.aDraftInfo.length &&
 					isNormal(this.aDraftInfo[2]) &&
-					0 < this.aDraftInfo[2].length
+					this.aDraftInfo[2].length
 				) {
 					sSentFolder = this.aDraftInfo[2];
 				}
@@ -774,7 +774,7 @@ class ComposePopupView extends AbstractViewNext {
 					}
 				}
 
-				if (moments && 0 < moments.length) {
+				if (moments) {
 					moments.forEach(data => {
 						signature = signature.replace(data[0], momentorFormat(0, data[1]));
 					});
@@ -1055,7 +1055,7 @@ class ComposePopupView extends AbstractViewNext {
 						i18n('COMPOSE/FORWARD_MESSAGE_TOP_TO') +
 						': ' +
 						sTo +
-						(0 < sCc.length ? '<br />' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
+						(sCc.length ? '<br />' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
 						'<br />' +
 						i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') +
 						': ' +
@@ -1379,7 +1379,7 @@ class ComposePopupView extends AbstractViewNext {
 						}
 
 						if (attachment) {
-							if ('' !== error && 0 < error.length) {
+							if ('' !== error && error.length) {
 								attachment
 									.waiting(false)
 									.uploading(false)
@@ -1542,15 +1542,15 @@ class ComposePopupView extends AbstractViewNext {
 	 */
 	isEmptyForm(includeAttachmentInProgress = true) {
 		const withoutAttachment = includeAttachmentInProgress
-			? 0 === this.attachments().length
-			: 0 === this.attachmentsInReady().length;
+			? !this.attachments().length
+			: !this.attachmentsInReady().length;
 
 		return (
-			0 === this.to().length &&
-			0 === this.cc().length &&
-			0 === this.bcc().length &&
-			0 === this.replyTo().length &&
-			0 === this.subject().length &&
+			!this.to().length &&
+			!this.cc().length &&
+			!this.bcc().length &&
+			!this.replyTo().length &&
+			!this.subject().length &&
 			withoutAttachment &&
 			(!this.oEditor || '' === this.oEditor.getData())
 		);

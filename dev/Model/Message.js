@@ -354,7 +354,6 @@ class MessageModel extends AbstractModel {
 				if (attachment) {
 					if (
 						'' !== attachment.cidWithOutTags &&
-						0 < this.foundedCIDs.length &&
 						this.foundedCIDs.includes(attachment.cidWithOutTags)
 					) {
 						attachment.isLinked = true;
@@ -372,14 +371,14 @@ class MessageModel extends AbstractModel {
 	 * @returns {boolean}
 	 */
 	hasUnsubsribeLinks() {
-		return this.unsubsribeLinks && 0 < this.unsubsribeLinks.length;
+		return this.unsubsribeLinks && this.unsubsribeLinks.length;
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	getFirstUnsubsribeLink() {
-		return this.unsubsribeLinks && 0 < this.unsubsribeLinks.length ? this.unsubsribeLinks[0] || '' : '';
+		return this.unsubsribeLinks && this.unsubsribeLinks.length ? this.unsubsribeLinks[0] || '' : '';
 	}
 
 	/**
@@ -573,11 +572,11 @@ class MessageModel extends AbstractModel {
 			unic = isUnd(excludeEmails) ? {} : excludeEmails;
 
 		replyHelper(this.replyTo, unic, result);
-		if (0 === result.length) {
+		if (!result.length) {
 			replyHelper(this.from, unic, result);
 		}
 
-		if (0 === result.length && !last) {
+		if (!result.length && !last) {
 			return this.replyEmails({}, true);
 		}
 
@@ -596,14 +595,14 @@ class MessageModel extends AbstractModel {
 			unic = isUnd(excludeEmails) ? {} : excludeEmails;
 
 		replyHelper(this.replyTo, unic, toResult);
-		if (0 === toResult.length) {
+		if (!toResult.length) {
 			replyHelper(this.from, unic, toResult);
 		}
 
 		replyHelper(this.to, unic, toResult);
 		replyHelper(this.cc, unic, ccResult);
 
-		if (0 === toResult.length && !last) {
+		if (!toResult.length && !last) {
 			data = this.replyAllEmails({}, true);
 			return [data[0], ccResult];
 		}
@@ -623,7 +622,7 @@ class MessageModel extends AbstractModel {
 	 */
 	attachmentsToStringLine() {
 		const attachLines = this.attachments().map(item => item.fileName + ' (' + item.friendlySize + ')');
-		return attachLines && 0 < attachLines.length ? attachLines.join(', ') : '';
+		return attachLines && attachLines.length ? attachLines.join(', ') : '';
 	}
 
 	/**

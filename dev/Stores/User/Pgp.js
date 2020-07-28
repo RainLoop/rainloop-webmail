@@ -63,7 +63,7 @@ class PgpUserStore {
 				}).flat().filter(value => !!value)
 			: [];
 
-		if (0 === result.length && isNonEmptyArray(recipients)) {
+		if (!result.length && isNonEmptyArray(recipients)) {
 			result = recipients.map(sEmail => {
 				const keys = sEmail ? this.findAllPrivateKeysByEmailNotNative(sEmail) : null;
 				return keys
@@ -143,7 +143,7 @@ class PgpUserStore {
 	decryptMessage(message, recipients, fCallback) {
 		if (message && message.getEncryptionKeyIds) {
 			const privateKeys = this.findPrivateKeysByEncryptionKeyIds(message.getEncryptionKeyIds(), recipients, true);
-			if (privateKeys && 0 < privateKeys.length) {
+			if (privateKeys && privateKeys.length) {
 				showScreenPopup(require('View/Popup/MessageOpenPgp'), [
 					(decryptedKey) => {
 						if (decryptedKey) {
@@ -186,9 +186,9 @@ class PgpUserStore {
 	verifyMessage(message, fCallback) {
 		if (message && message.getSigningKeyIds) {
 			const signingKeyIds = message.getSigningKeyIds();
-			if (signingKeyIds && 0 < signingKeyIds.length) {
+			if (signingKeyIds && signingKeyIds.length) {
 				const publicKeys = this.findPublicKeysBySigningKeyIds(signingKeyIds);
-				if (publicKeys && 0 < publicKeys.length) {
+				if (publicKeys && publicKeys.length) {
 					try {
 						const result = message.verify(publicKeys),
 							valid = (_.isArray(result) ? result : []).find(item => item && item.valid && item.keyid);

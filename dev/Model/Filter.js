@@ -144,7 +144,7 @@ class FilterModel extends AbstractModel {
 			return false;
 		}
 
-		if (0 < this.conditions().length) {
+		if (this.conditions().length) {
 			if (this.conditions().find(cond => cond && !cond.verify())) {
 				return false;
 			}
