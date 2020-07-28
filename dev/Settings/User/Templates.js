@@ -16,7 +16,7 @@ class TemplatesUserSettings {
 		this.processText = ko.computed(() =>
 			TemplateStore.templates.loading() ? i18n('SETTINGS_TEMPLETS/LOADING_PROCESS') : ''
 		);
-		this.visibility = ko.computed(() => ('' === this.processText() ? 'hidden' : 'visible'));
+		this.visibility = ko.computed(() => this.processText() ? 'visible' : 'hidden');
 
 		this.templateForDeletion = ko.observable(null).deleteAccessHelper();
 	}

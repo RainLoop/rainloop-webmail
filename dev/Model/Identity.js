@@ -21,7 +21,7 @@ class IdentityModel extends AbstractModel {
 		this.signatureInsertBefore = ko.observable(false);
 
 		this.deleteAccess = ko.observable(false);
-		this.canBeDeleted = ko.computed(() => '' !== this.id());
+		this.canBeDeleted = ko.computed(() => !!this.id());
 	}
 
 	/**
@@ -31,7 +31,7 @@ class IdentityModel extends AbstractModel {
 		const name = this.name(),
 			email = this.email();
 
-		return '' !== name ? name + ' (' + email + ')' : email;
+		return name ? name + ' (' + email + ')' : email;
 	}
 }
 

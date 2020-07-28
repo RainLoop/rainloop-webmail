@@ -76,9 +76,9 @@ class SecurityAdminSettings {
 		this.onNewAdminPasswordResponse = this.onNewAdminPasswordResponse.bind(this);
 	}
 
-	@command((self) => '' !== trim(self.adminLogin()) && '' !== self.adminPassword())
+	@command((self) => trim(self.adminLogin()) && self.adminPassword())
 	saveNewAdminPasswordCommand() {
-		if ('' === trim(this.adminLogin())) {
+		if (!trim(this.adminLogin())) {
 			this.adminLoginError(true);
 			return false;
 		}

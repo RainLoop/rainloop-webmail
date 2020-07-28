@@ -35,7 +35,7 @@ class DomainAliasPopupView extends AbstractViewNext {
 			this.domains().map(item => ({ optValue: item.name, optText: item.name }))
 		);
 
-		this.canBeSaved = ko.computed(() => !this.saving() && '' !== this.name() && '' !== this.alias());
+		this.canBeSaved = ko.computed(() => !this.saving() && this.name() && this.alias());
 
 		this.onDomainAliasCreateOrSaveResponse = this.onDomainAliasCreateOrSaveResponse.bind(this);
 	}
@@ -65,7 +65,7 @@ class DomainAliasPopupView extends AbstractViewNext {
 	}
 
 	onShowWithDelay() {
-		if ('' === this.name() && !bMobileDevice) {
+		if (!this.name() && !bMobileDevice) {
 			this.name.focused(true);
 		}
 	}

@@ -39,13 +39,13 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 		const userId = {},
 			openpgpKeyring = PgpStore.openpgpKeyring;
 
-		this.email.error('' === trim(this.email()));
+		this.email.error(!trim(this.email()));
 		if (!openpgpKeyring || this.email.error()) {
 			return false;
 		}
 
 		userId.email = this.email();
-		if ('' !== this.name()) {
+		if (this.name()) {
 			userId.name = this.name();
 		}
 

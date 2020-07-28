@@ -49,8 +49,8 @@ class TemplatePopupView extends AbstractViewNext {
 	addTemplateCommand() {
 		this.populateBodyFromEditor();
 
-		this.name.error('' === trim(this.name()));
-		this.body.error('' === trim(this.body()) || ':HTML:' === trim(this.body()));
+		this.name.error(!trim(this.name()));
+		this.body.error(!trim(this.body()) || ':HTML:' === trim(this.body()));
 
 		if (this.name.error() || this.body.error()) {
 			return false;

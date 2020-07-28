@@ -42,7 +42,7 @@ class FolderUserStore {
 
 	computers() {
 		this.draftFolderNotEnabled = ko.computed(
-			() => '' === this.draftFolder() || UNUSED_OPTION_VALUE === this.draftFolder()
+			() => !this.draftFolder() || UNUSED_OPTION_VALUE === this.draftFolder()
 		);
 
 		this.foldersListWithSingleInboxRootFolder = ko.computed(
@@ -73,19 +73,19 @@ class FolderUserStore {
 				archiveFolder = this.archiveFolder();
 
 			if (isArray(folders) && folders.length) {
-				if ('' !== sentFolder && UNUSED_OPTION_VALUE !== sentFolder) {
+				if (sentFolder && UNUSED_OPTION_VALUE !== sentFolder) {
 					list.push(sentFolder);
 				}
-				if ('' !== draftFolder && UNUSED_OPTION_VALUE !== draftFolder) {
+				if (draftFolder && UNUSED_OPTION_VALUE !== draftFolder) {
 					list.push(draftFolder);
 				}
-				if ('' !== spamFolder && UNUSED_OPTION_VALUE !== spamFolder) {
+				if (spamFolder && UNUSED_OPTION_VALUE !== spamFolder) {
 					list.push(spamFolder);
 				}
-				if ('' !== trashFolder && UNUSED_OPTION_VALUE !== trashFolder) {
+				if (trashFolder && UNUSED_OPTION_VALUE !== trashFolder) {
 					list.push(trashFolder);
 				}
-				if ('' !== archiveFolder && UNUSED_OPTION_VALUE !== archiveFolder) {
+				if (archiveFolder && UNUSED_OPTION_VALUE !== archiveFolder) {
 					list.push(archiveFolder);
 				}
 			}

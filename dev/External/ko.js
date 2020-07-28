@@ -160,12 +160,12 @@ ko.bindingHandlers.tooltip = {
 				}
 			});
 
-			if ('' === sValue) {
+			if (sValue) {
+				element.__opentip.activate();
+			} else {
 				element.__opentip.hide();
 				element.__opentip.deactivate();
 				element.__opentip.setContent('');
-			} else {
-				element.__opentip.activate();
 			}
 
 			if (isI18N) {
@@ -245,11 +245,7 @@ ko.bindingHandlers.tooltipErrorTip = {
 			openTips = element.__opentip;
 
 		if (openTips) {
-			if ('' === value) {
-				openTips.hide();
-				openTips.deactivate();
-				openTips.setContent('');
-			} else {
+			if (value) {
 				setTimeout(() => {
 					if ($el.is(':visible')) {
 						openTips.setContent(value);
@@ -261,6 +257,10 @@ ko.bindingHandlers.tooltipErrorTip = {
 						openTips.setContent('');
 					}
 				}, Magics.Time100ms);
+			} else {
+				openTips.hide();
+				openTips.deactivate();
+				openTips.setContent('');
 			}
 		}
 	}
@@ -1087,7 +1087,7 @@ ko.observable.fn.validateEmail = function() {
 	this.hasError = ko.observable(false);
 
 	this.subscribe((value) => {
-		this.hasError('' !== value && !/^[^@\s]+@[^@\s]+$/.test(value));
+		this.hasError(value && !/^[^@\s]+@[^@\s]+$/.test(value));
 	});
 
 	this.valueHasMutated();
@@ -1098,7 +1098,7 @@ ko.observable.fn.validateSimpleEmail = function() {
 	this.hasError = ko.observable(false);
 
 	this.subscribe((value) => {
-		this.hasError('' !== value && !/^.+@.+$/.test(value));
+		this.hasError(value && !/^.+@.+$/.test(value));
 	});
 
 	this.valueHasMutated();

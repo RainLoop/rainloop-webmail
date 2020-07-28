@@ -190,7 +190,7 @@
 			sFileName = sFileName.substr(1);
 		}
 
-		if ('' === sType && 0 === iSize)
+		if (!sType && 0 === iSize)
 		{
 			return null; // Folder
 		}

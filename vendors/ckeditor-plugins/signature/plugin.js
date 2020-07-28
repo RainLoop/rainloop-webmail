@@ -1,5 +1,5 @@
 
-(function(CKEDITOR, $, undefined) {
+(function(CKEDITOR, $) {
 
 	'use strict';
 
@@ -13,10 +13,10 @@
 				return $.trim(editor.__textUtils.htmlToPlain(html));
 			};
 
-		isEmptyText = '' === $.trim(text);
+		isEmptyText = !$.trim(text);
 		if (!isEmptyText && isHtml)
 		{
-			isEmptyText = '' === clearHtmlLine(text);
+			isEmptyText = !clearHtmlLine(text);
 		}
 
 		if (editor.__previos_signature && !isEmptyText)

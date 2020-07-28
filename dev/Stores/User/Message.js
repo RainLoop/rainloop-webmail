@@ -248,7 +248,7 @@ class MessageUserStore {
 	}
 
 	initUidNextAndNewMessages(folder, uidNext, newMessages) {
-		if (getFolderInboxName() === folder && isNormal(uidNext) && '' !== uidNext) {
+		if (getFolderInboxName() === folder && isNormal(uidNext) && uidNext) {
 			if (isArray(newMessages) && newMessages.length) {
 				newMessages.forEach(item => {
 					addNewMessageCache(folder, item.Uid);
@@ -305,7 +305,7 @@ class MessageUserStore {
 		const trashFolder = FolderStore.trashFolder(),
 			spamFolder = FolderStore.spamFolder(),
 			fromFolder = getFolderFromCacheList(fromFolderFullNameRaw),
-			toFolder = '' === toFolderFullNameRaw ? null : getFolderFromCacheList(toFolderFullNameRaw || ''),
+			toFolder = toFolderFullNameRaw ? getFolderFromCacheList(toFolderFullNameRaw) : null,
 			currentFolderFullNameRaw = FolderStore.currentFolderFullNameRaw(),
 			messages =
 				currentFolderFullNameRaw === fromFolderFullNameRaw
@@ -368,15 +368,15 @@ class MessageUserStore {
 			}
 		}
 
-		if ('' !== fromFolderFullNameRaw) {
+		if (fromFolderFullNameRaw) {
 			setFolderHash(fromFolderFullNameRaw, '');
 		}
 
-		if ('' !== toFolderFullNameRaw) {
+		if (toFolderFullNameRaw) {
 			setFolderHash(toFolderFullNameRaw, '');
 		}
 
-		if ('' !== this.messageListThreadUid()) {
+		if (this.messageListThreadUid()) {
 			messageList = this.messageList();
 
 			if (
@@ -448,7 +448,7 @@ class MessageUserStore {
 						h = getRealHeight($this);
 					}
 
-					if ('' !== trim($this.text()) && (0 === h || 100 < h)) {
+					if (trim($this.text()) && (0 === h || 100 < h)) {
 						$this.addClass('rl-bq-switcher hidden-bq');
 						$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
 							.insertBefore($this)
@@ -525,10 +525,10 @@ class MessageUserStore {
 					const textBody = messagesDom.find('#' + id);
 					if (!textBody || !textBody[0]) {
 						let isHtml = false;
-						if (isNormal(data.Result.Html) && '' !== data.Result.Html) {
+						if (isNormal(data.Result.Html) && data.Result.Html) {
 							isHtml = true;
 							resultHtml = data.Result.Html.toString();
-						} else if (isNormal(data.Result.Plain) && '' !== data.Result.Plain) {
+						} else if (isNormal(data.Result.Plain) && data.Result.Plain) {
 							isHtml = false;
 							resultHtml = plainToHtml(data.Result.Plain.toString(), false);
 

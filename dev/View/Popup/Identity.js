@@ -62,7 +62,7 @@ class IdentityPopupView extends AbstractViewNext {
 		}
 
 		if (!this.email.hasError()) {
-			this.email.hasError('' === trim(this.email()));
+			this.email.hasError(!trim(this.email()));
 		}
 
 		if (this.email.hasError()) {
@@ -151,7 +151,7 @@ class IdentityPopupView extends AbstractViewNext {
 			this.signature(identity.signature());
 			this.signatureInsertBefore(identity.signatureInsertBefore());
 
-			this.owner('' === this.id);
+			this.owner(!this.id);
 		} else {
 			this.id = fakeMd5();
 		}

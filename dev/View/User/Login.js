@@ -115,7 +115,7 @@ class LoginUserView extends AbstractViewNext {
 		this.submitErrorAddidional = ko.observable('');
 
 		this.submitError.subscribe((value) => {
-			if ('' === value) {
+			if (!value) {
 				this.submitErrorAddidional('');
 			}
 		});
@@ -154,12 +154,12 @@ class LoginUserView extends AbstractViewNext {
 		this.emailError(false);
 		this.passwordError(false);
 
-		this.emailError('' === trim(this.email()));
-		this.passwordError('' === trim(this.password()));
+		this.emailError(!trim(this.email()));
+		this.passwordError(!trim(this.password()));
 
 		if (this.additionalCode.visibility()) {
 			this.additionalCode.error(false);
-			this.additionalCode.error('' === trim(this.additionalCode()));
+			this.additionalCode.error(!trim(this.additionalCode()));
 		}
 
 		if (
@@ -195,7 +195,7 @@ class LoginUserView extends AbstractViewNext {
 		if (0 < pluginResultCode) {
 			this.submitError(getNotification(pluginResultCode));
 			return false;
-		} else if ('' !== pluginResultMessage) {
+		} else if (pluginResultMessage) {
 			this.submitError(pluginResultMessage);
 			return false;
 		}
@@ -230,7 +230,7 @@ class LoginUserView extends AbstractViewNext {
 
 							this.submitError(getNotificationFromResponse(oData));
 
-							if ('' === this.submitError()) {
+							if (!this.submitError()) {
 								this.submitError(getNotification(Notification.UnknownError));
 							} else if (oData.ErrorMessageAdditional) {
 								this.submitErrorAddidional(oData.ErrorMessageAdditional);
@@ -269,11 +269,11 @@ class LoginUserView extends AbstractViewNext {
 	}
 
 	onShowWithDelay() {
-		if ('' !== this.email() && '' !== this.password()) {
+		if (this.email() && this.password()) {
 			this.passwordFocus(true);
-		} else if ('' === this.email()) {
+		} else if (!this.email()) {
 			this.emailFocus(true);
-		} else if ('' === this.password()) {
+		} else if (!this.password()) {
 			this.passwordFocus(true);
 		} else {
 			this.emailFocus(true);

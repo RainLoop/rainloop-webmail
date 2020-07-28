@@ -227,12 +227,12 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.attachmentsInProcess = ko.computed(() => this.attachments().filter(item => item && !item.complete()));
 		this.attachmentsInReady = ko.computed(() => this.attachments().filter(item => item && item.complete()));
-		this.attachmentsInError = ko.computed(() => this.attachments().filter(item => item && '' !== item.error()));
+		this.attachmentsInError = ko.computed(() => this.attachments().filter(item => item && item.error()));
 
 		this.attachmentsCount = ko.computed(() => this.attachments().length);
 		this.attachmentsInErrorCount = ko.computed(() => this.attachmentsInError().length);
 		this.attachmentsInProcessCount = ko.computed(() => this.attachmentsInProcess().length);
-		this.isDraftFolderMessage = ko.computed(() => '' !== this.draftFolder() && '' !== this.draftUid());
+		this.isDraftFolderMessage = ko.computed(() => this.draftFolder() && this.draftUid());
 
 		this.attachmentsPlace = ko.observable(false);
 
@@ -360,7 +360,7 @@ class ComposePopupView extends AbstractViewNext {
 			this.attachmentsPlace(true);
 		}
 
-		if ('' === sTo && '' === sCc && '' === sBcc) {
+		if (!sTo && !sCc && !sBcc) {
 			this.emptyToError(true);
 		}
 
@@ -380,7 +380,7 @@ class ComposePopupView extends AbstractViewNext {
 				sSentFolder = UNUSED_OPTION_VALUE;
 			}
 
-			if ('' === sSentFolder) {
+			if (!sSentFolder) {
 				showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Sent]);
 			} else {
 				this.sendError(false);
@@ -564,7 +564,7 @@ class ComposePopupView extends AbstractViewNext {
 
 	reloadDraftFolder() {
 		const draftFolder = FolderStore.draftFolder();
-		if ('' !== draftFolder && UNUSED_OPTION_VALUE !== draftFolder) {
+		if (draftFolder && UNUSED_OPTION_VALUE !== draftFolder) {
 			setFolderHash(draftFolder, '');
 			if (FolderStore.currentFolderFullNameRaw() === draftFolder) {
 				getApp().reloadMessageList(true);
@@ -736,7 +736,7 @@ class ComposePopupView extends AbstractViewNext {
 		signature = signature.replace(/[\r]/g, '');
 
 		fromLine = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
-		if ('' !== fromLine) {
+		if (fromLine) {
 			signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
 
 			if (!fromLine.includes(' ') && 0 < fromLine.indexOf('@')) {
@@ -793,7 +793,7 @@ class ComposePopupView extends AbstractViewNext {
 				let isHtml = false,
 					signature = identity.signature();
 
-				if ('' !== signature) {
+				if (signature) {
 					if (':HTML:' === signature.substr(0, 6)) {
 						isHtml = true;
 						signature = signature.substr(6);
@@ -837,7 +837,7 @@ class ComposePopupView extends AbstractViewNext {
 				this.addEmailsTo(this.cc, aCcEmails);
 				this.addEmailsTo(this.bcc, aBccEmails);
 
-				if (isNormal(sCustomSubject) && '' !== sCustomSubject && '' === this.subject()) {
+				if (isNormal(sCustomSubject) && sCustomSubject && !this.subject()) {
 					this.subject(sCustomSubject);
 				}
 			}
@@ -862,7 +862,7 @@ class ComposePopupView extends AbstractViewNext {
 				values = emails.map(item => item ? item.toLine(false) : null)
 					.filter((value, index, self) => !!value && self.indexOf(value) == index);
 
-			fKoValue(value + ('' === value ? '' : ', ') + trim(values.join(', ')));
+			fKoValue(value + (value ? ', ' :  '') + trim(values.join(', ')));
 		}
 	}
 
@@ -939,7 +939,7 @@ class ComposePopupView extends AbstractViewNext {
 			this.bcc(this.emailArrayToStringLineHelper(aBccEmails));
 		}
 
-		if ('' !== lineComposeType && message) {
+		if (lineComposeType && message) {
 			sDate = momentorFormat(message.dateTimeStampInUTC(), 'FULL');
 			sSubject = message.subject();
 			aDraftInfo = message.aDraftInfo;
@@ -1171,7 +1171,7 @@ class ComposePopupView extends AbstractViewNext {
 	setFocusInPopup() {
 		if (!bMobileDevice) {
 			setTimeout(() => {
-				if ('' === this.to()) {
+				if (!this.to()) {
 					this.to.focused(true);
 				} else if (this.oEditor) {
 					if (!this.to.focused()) {
@@ -1379,7 +1379,7 @@ class ComposePopupView extends AbstractViewNext {
 						}
 
 						if (attachment) {
-							if ('' !== error && error.length) {
+							if (error && error.length) {
 								attachment
 									.waiting(false)
 									.uploading(false)
@@ -1413,7 +1413,7 @@ class ComposePopupView extends AbstractViewNext {
 	prepearAttachmentsForSendOrSave() {
 		const result = {};
 		this.attachmentsInReady().forEach(item => {
-			if (item && '' !== item.tempName() && item.enabled()) {
+			if (item && item.tempName() && item.enabled()) {
 				result[item.tempName()] = [item.fileName(), item.isInline ? '1' : '0', item.CID, item.contentLocation];
 			}
 		});
@@ -1552,7 +1552,7 @@ class ComposePopupView extends AbstractViewNext {
 			!this.replyTo().length &&
 			!this.subject().length &&
 			withoutAttachment &&
-			(!this.oEditor || '' === this.oEditor.getData())
+			(!this.oEditor || !this.oEditor.getData())
 		);
 	}
 
@@ -1606,7 +1606,7 @@ class ComposePopupView extends AbstractViewNext {
 	 * @returns {Array}
 	 */
 	getAttachmentsDownloadsForUpload() {
-		return this.attachments().filter(item => item && '' === item.tempName()).map(
+		return this.attachments().filter(item => item && !item.tempName()).map(
 			item => item.id
 		);
 	}

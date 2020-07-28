@@ -46,8 +46,7 @@ class ComposeAttachmentModel extends AbstractModel {
 		});
 
 		this.title = ko.computed(() => {
-			const error = this.error();
-			return '' !== error ? error : this.fileName();
+			return this.error() || this.fileName();
 		});
 
 		this.friendlySize = ko.computed(() => {

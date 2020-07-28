@@ -68,7 +68,7 @@ export function isPosNumeric(value, includeZero = true) {
  * @returns {number}
  */
 export function pInt(value, defaultValur = 0) {
-	const result = isNormal(value) && '' !== value ? window.parseInt(value, 10) : defaultValur;
+	const result = isNormal(value) && value ? window.parseInt(value, 10) : defaultValur;
 	return window.isNaN(result) ? defaultValur : result;
 }
 
@@ -309,7 +309,7 @@ export function replySubjectAdd(prefix, subject) {
 	const parts = [],
 		prefixIsRe = !fwd;
 
-	if ('' !== subject) {
+	if (subject) {
 		subject.split(':').forEach(part => {
 			const trimmedPart = trim(part);
 			if (!drop && (/^(RE|FWD)$/i.test(trimmedPart) || /^(RE|FWD)[[(][\d]+[\])]$/i.test(trimmedPart))) {
@@ -814,7 +814,7 @@ export function plainToHtml(plain, findEmailAndLinksInText = false) {
 				aNextText.push('~~~blockquote~~~');
 				aNextText.push(sLine.substr(1));
 			} else if (!bStart && bIn) {
-				if ('' !== sLine) {
+				if (sLine) {
 					bIn = false;
 					aNextText.push('~~~/blockquote~~~');
 					aNextText.push(sLine);
@@ -1191,9 +1191,9 @@ export function computedPagenatorHelper(koCurrentPage, koPageCount) {
 			fAdd = (index, push = true, customName = '') => {
 				const data = {
 					current: index === currentPage,
-					name: '' === customName ? index.toString() : customName.toString(),
-					custom: '' !== customName,
-					title: '' === customName ? '' : index.toString(),
+					name: customName ? customName.toString() : index.toString(),
+					custom: !!customName,
+					title: customName ? index.toString() : '',
 					value: index.toString()
 				};
 

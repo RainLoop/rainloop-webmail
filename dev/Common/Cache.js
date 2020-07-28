@@ -89,7 +89,7 @@ export function clearNewMessageCache() {
  * @returns {string}
  */
 export function getFolderInboxName() {
-	return '' === inboxFolderName ? 'INBOX' : inboxFolderName;
+	return inboxFolderName || 'INBOX';
 }
 
 /**
@@ -97,7 +97,7 @@ export function getFolderInboxName() {
  * @returns {string}
  */
 export function getFolderFullNameRaw(folderHash) {
-	return '' !== folderHash && FOLDERS_NAME_CACHE[folderHash] ? FOLDERS_NAME_CACHE[folderHash] : '';
+	return folderHash && FOLDERS_NAME_CACHE[folderHash] ? FOLDERS_NAME_CACHE[folderHash] : '';
 }
 
 /**
@@ -106,7 +106,7 @@ export function getFolderFullNameRaw(folderHash) {
  */
 export function setFolderFullNameRaw(folderHash, folderFullNameRaw) {
 	FOLDERS_NAME_CACHE[folderHash] = folderFullNameRaw;
-	if ('INBOX' === folderFullNameRaw || '' === inboxFolderName) {
+	if (!inboxFolderName || 'INBOX' === folderFullNameRaw) {
 		inboxFolderName = folderFullNameRaw;
 	}
 }
@@ -116,7 +116,7 @@ export function setFolderFullNameRaw(folderHash, folderFullNameRaw) {
  * @returns {string}
  */
 export function getFolderHash(folderFullNameRaw) {
-	return '' !== folderFullNameRaw && FOLDERS_HASH_CACHE[folderFullNameRaw] ? FOLDERS_HASH_CACHE[folderFullNameRaw] : '';
+	return folderFullNameRaw && FOLDERS_HASH_CACHE[folderFullNameRaw] ? FOLDERS_HASH_CACHE[folderFullNameRaw] : '';
 }
 
 /**
@@ -124,7 +124,7 @@ export function getFolderHash(folderFullNameRaw) {
  * @param {string} folderHash
  */
 export function setFolderHash(folderFullNameRaw, folderHash) {
-	if ('' !== folderFullNameRaw) {
+	if (folderFullNameRaw) {
 		FOLDERS_HASH_CACHE[folderFullNameRaw] = folderHash;
 	}
 }
@@ -134,7 +134,7 @@ export function setFolderHash(folderFullNameRaw, folderHash) {
  * @returns {string}
  */
 export function getFolderUidNext(folderFullNameRaw) {
-	return '' !== folderFullNameRaw && FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
+	return folderFullNameRaw && FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
 		? FOLDERS_UID_NEXT_CACHE[folderFullNameRaw]
 		: '';
 }
@@ -152,7 +152,7 @@ export function setFolderUidNext(folderFullNameRaw, uidNext) {
  * @returns {?FolderModel}
  */
 export function getFolderFromCacheList(folderFullNameRaw) {
-	return '' !== folderFullNameRaw && FOLDERS_CACHE[folderFullNameRaw] ? FOLDERS_CACHE[folderFullNameRaw] : null;
+	return folderFullNameRaw && FOLDERS_CACHE[folderFullNameRaw] ? FOLDERS_CACHE[folderFullNameRaw] : null;
 }
 
 /**

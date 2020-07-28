@@ -95,7 +95,7 @@ export function routeOn() {
  * @returns {?Object}
  */
 export function screen(screenName) {
-	return '' !== screenName && !isUnd(SCREENS[screenName]) ? SCREENS[screenName] : null;
+	return screenName && !isUnd(SCREENS[screenName]) ? SCREENS[screenName] : null;
 }
 
 /**
@@ -288,11 +288,11 @@ export function screenOnRoute(screenName, subPart) {
 		isSameScreen = false,
 		cross = null;
 
-	if ('' === pString(screenName)) {
+	if (!pString(screenName)) {
 		screenName = defaultScreenName;
 	}
 
-	if ('' !== screenName) {
+	if (screenName) {
 		vmScreen = screen(screenName);
 		if (!vmScreen) {
 			vmScreen = screen(defaultScreenName);
@@ -404,8 +404,8 @@ export function startScreens(screensClasses) {
 			const vmScreen = new CScreen(),
 				screenName = vmScreen ? vmScreen.screenName() : '';
 
-			if (vmScreen && '' !== screenName) {
-				if ('' === defaultScreenName) {
+			if (vmScreen && screenName) {
+				if (!defaultScreenName) {
 					defaultScreenName = screenName;
 				}
 

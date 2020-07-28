@@ -65,8 +65,8 @@ class LoginAdminView extends AbstractViewNext {
 		this.loginError(false);
 		this.passwordError(false);
 
-		this.loginError('' === trim(this.login()));
-		this.passwordError('' === trim(this.password()));
+		this.loginError(!trim(this.login()));
+		this.passwordError(!trim(this.password()));
 
 		if (this.loginError() || this.passwordError()) {
 			return false;

@@ -19,9 +19,9 @@ class Audio {
 
 		this.supported = !bMobileDevice && !bSafari && !!this.player && !!this.player.play;
 		if (this.supported && this.player && this.player.canPlayType) {
-			this.supportedMp3 = '' !== this.player.canPlayType('audio/mpeg;').replace(/no/, '');
-			this.supportedWav = '' !== this.player.canPlayType('audio/wav; codecs="1"').replace(/no/, '');
-			this.supportedOgg = '' !== this.player.canPlayType('audio/ogg; codecs="vorbis"').replace(/no/, '');
+			this.supportedMp3 = !!this.player.canPlayType('audio/mpeg;').replace(/no/, '');
+			this.supportedWav = !!this.player.canPlayType('audio/wav; codecs="1"').replace(/no/, '');
+			this.supportedOgg = !!this.player.canPlayType('audio/ogg; codecs="vorbis"').replace(/no/, '');
 			this.supportedNotification = this.supported && this.supportedMp3;
 		}
 
@@ -81,7 +81,7 @@ class Audio {
 			name = trim(name.substr(0, name.length - 4));
 		}
 
-		return '' === name ? 'audio' : name;
+		return name || 'audio';
 	}
 
 	playMp3(url, name) {

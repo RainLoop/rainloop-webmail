@@ -61,7 +61,7 @@ class FiltersUserSettings {
 	@command((self) => self.haveChanges())
 	saveChangesCommand() {
 		if (!this.filters.saving()) {
-			if (this.filterRaw.active() && '' === trim(this.filterRaw())) {
+			if (this.filterRaw.active() && !trim(this.filterRaw())) {
 				this.filterRaw.error(true);
 				return false;
 			}

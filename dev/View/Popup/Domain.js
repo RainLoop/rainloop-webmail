@@ -97,10 +97,9 @@ class DomainPopupView extends AbstractViewNext {
 					result += ' ← ' + aliasName;
 				}
 			} else {
-				result =
-					'' === name
-						? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN')
-						: i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { 'NAME': name });
+				result = name
+						? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { 'NAME': name })
+						: i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN');
 			}
 
 			return result;
@@ -117,11 +116,11 @@ class DomainPopupView extends AbstractViewNext {
 				useSieve = this.useSieve();
 
 			return (
-				'' !== this.name() &&
-				'' !== this.imapServer() &&
-				'' !== this.imapPort() &&
-				(allowSieve && useSieve ? '' !== this.sieveServer() && '' !== this.sievePort() : true) &&
-				(('' !== this.smtpServer() && '' !== this.smtpPort()) || usePhpMail)
+				this.name() &&
+				this.imapServer() &&
+				this.imapPort() &&
+				(allowSieve && useSieve ? this.sieveServer() && this.sievePort() : true) &&
+				((this.smtpServer() && this.smtpPort()) || usePhpMail)
 			);
 		});
 
@@ -134,19 +133,19 @@ class DomainPopupView extends AbstractViewNext {
 
 		// smart form improvements
 		this.imapServerFocus.subscribe((value) => {
-			if (value && '' !== this.name() && '' === this.imapServer()) {
+			if (value && this.name() && !this.imapServer()) {
 				this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''));
 			}
 		});
 
 		this.sieveServerFocus.subscribe((value) => {
-			if (value && '' !== this.imapServer() && '' === this.sieveServer()) {
+			if (value && this.imapServer() && !this.sieveServer()) {
 				this.sieveServer(this.imapServer());
 			}
 		});
 
 		this.smtpServerFocus.subscribe((value) => {
-			if (value && '' !== this.imapServer() && '' === this.smtpServer()) {
+			if (value && this.imapServer() && !this.smtpServer()) {
 				this.smtpServer(this.imapServer().replace(/imap/gi, 'smtp'));
 			}
 		});
@@ -381,7 +380,7 @@ class DomainPopupView extends AbstractViewNext {
 	}
 
 	onShowWithDelay() {
-		if ('' === this.name() && !bMobileDevice) {
+		if (!this.name() && !bMobileDevice) {
 			this.name.focused(true);
 		}
 	}

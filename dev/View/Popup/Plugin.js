@@ -28,7 +28,7 @@ class PluginPopupView extends AbstractViewNext {
 
 		this.configures = ko.observableArray([]);
 
-		this.hasReadme = ko.computed(() => '' !== this.readme());
+		this.hasReadme = ko.computed(() => !!this.readme());
 		this.hasConfiguration = ko.computed(() => 0 < this.configures().length);
 
 		this.readmePopoverConf = {

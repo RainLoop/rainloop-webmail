@@ -24,7 +24,7 @@ export function emailArrayToStringClear(emails) {
 	const result = [];
 	if (isNonEmptyArray(emails)) {
 		emails.forEach(email => {
-			if (email && email.email && '' !== email.name) {
+			if (email && email.email && email.name) {
 				result.push(email.email);
 			}
 		});

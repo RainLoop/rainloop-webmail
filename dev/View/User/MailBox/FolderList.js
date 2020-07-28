@@ -245,7 +245,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				copy = $htmlCL.contains('rl-ctrl-key-pressed'),
 				uids = ui.helper.data('rl-uids');
 
-			if (isNormal(fromFolderFullNameRaw) && '' !== fromFolderFullNameRaw && isArray(uids)) {
+			if (fromFolderFullNameRaw && isNormal(fromFolderFullNameRaw) && isArray(uids)) {
 				getApp().moveMessagesToFolder(fromFolderFullNameRaw, uids, toFolder.fullNameRaw, copy);
 			}
 		}

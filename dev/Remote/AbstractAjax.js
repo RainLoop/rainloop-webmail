@@ -134,7 +134,7 @@ if (err) {
 	 */
 	ajaxRequest(fResultCallback, params, iTimeOut = 20000, sGetAdd = '', abortActions = []) {
 		params = params || {};
-		const isPost = '' === sGetAdd,
+		const isPost = !sGetAdd,
 			start = new window.Date().getTime(),
 			action = params.Action || '';
 

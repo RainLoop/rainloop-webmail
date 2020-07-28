@@ -35,14 +35,14 @@ class ContactModel extends AbstractModel {
 						name = trim(property[1] + ' ' + name);
 					} else if (ContactPropertyType.LastName === property[0]) {
 						name = trim(name + ' ' + property[1]);
-					} else if ('' === email && ContactPropertyType.Email === property[0]) {
+					} else if (!email && ContactPropertyType.Email === property[0]) {
 						email = property[1];
 					}
 				}
 			});
 		}
 
-		return '' === email ? null : [email, name];
+		return email ? [email, name] : null;
 	}
 
 	/**

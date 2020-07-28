@@ -313,12 +313,12 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 			useThreads = AppStore.threadsAllowed() && SettingsStore.useThreads(),
 			inboxUidNext = getFolderInboxName() === sFolderFullNameRaw ? getFolderUidNext(sFolderFullNameRaw) : '';
 
-		if ('' !== folderHash && ('' === sSearch || !sSearch.includes('is:'))) {
+		if (folderHash && (!sSearch || !sSearch.includes('is:'))) {
 			return this.defaultRequest(
 				fCallback,
 				'MessageList',
 				{},
-				'' === sSearch ? DEFAULT_AJAX_TIMEOUT : SEARCH_AJAX_TIMEOUT,
+				sSearch ? SEARCH_AJAX_TIMEOUT : DEFAULT_AJAX_TIMEOUT,
 				'MessageList/' +
 					subQueryPrefix() +
 					'/' +
@@ -351,7 +351,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 				UseThreads: useThreads ? '1' : '0',
 				ThreadUid: useThreads ? sThreadUid : ''
 			},
-			'' === sSearch ? DEFAULT_AJAX_TIMEOUT : SEARCH_AJAX_TIMEOUT,
+			sSearch ? SEARCH_AJAX_TIMEOUT : DEFAULT_AJAX_TIMEOUT,
 			'',
 			bSilent ? [] : ['MessageList']
 		);

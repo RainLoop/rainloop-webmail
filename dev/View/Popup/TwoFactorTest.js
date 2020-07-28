@@ -25,7 +25,7 @@ class TwoFactorTestPopupView extends AbstractViewNext {
 		this.testing = ko.observable(false);
 	}
 
-	@command((self) => '' !== self.code() && !self.testing())
+	@command((self) => self.code() && !self.testing())
 	testCodeCommand() {
 		this.testing(true);
 		Remote.testTwoFactor((result, data) => {

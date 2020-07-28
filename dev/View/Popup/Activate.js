@@ -47,7 +47,7 @@ class ActivatePopupView extends AbstractViewNext {
 	}
 
 	@command(
-		(self) => !self.activateProcess() && '' !== self.domain() && '' !== self.key() && !self.activationSuccessed()
+		(self) => !self.activateProcess() && self.domain() && self.key() && !self.activationSuccessed()
 	)
 	activateCommand() {
 		this.activateProcess(true);
@@ -110,7 +110,7 @@ class ActivatePopupView extends AbstractViewNext {
 	validateSubscriptionKey() {
 		const value = this.key();
 		return (
-			'' === value ||
+			!value ||
 			RAINLOOP_TRIAL_KEY === value ||
 			!!/^RL[\d]+-[A-Z0-9-]+Z$/.test(trim(value).replace(/[^A-Z0-9-]/gi, ''))
 		);

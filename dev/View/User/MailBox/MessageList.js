@@ -135,7 +135,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 		this.messageListSearchDesc = ko.computed(() => {
 			const value = MessageStore.messageListEndSearch();
-			return '' === value ? '' : i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { 'SEARCH': value });
+			return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { 'SEARCH': value }) : '';
 		});
 
 		this.messageListPagenator = ko.computed(
@@ -172,25 +172,25 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		this.hasCheckedOrSelectedLines = ko.computed(() => 0 < this.messageListCheckedOrSelected().length);
 
 		this.isSpamFolder = ko.computed(
-			() => FolderStore.spamFolder() === this.messageListEndFolder() && '' !== FolderStore.spamFolder()
+			() => FolderStore.spamFolder() === this.messageListEndFolder() && FolderStore.spamFolder()
 		);
 
 		this.isSpamDisabled = ko.computed(() => UNUSED_OPTION_VALUE === FolderStore.spamFolder());
 
 		this.isTrashFolder = ko.computed(
-			() => FolderStore.trashFolder() === this.messageListEndFolder() && '' !== FolderStore.trashFolder()
+			() => FolderStore.trashFolder() === this.messageListEndFolder() && FolderStore.trashFolder()
 		);
 
 		this.isDraftFolder = ko.computed(
-			() => FolderStore.draftFolder() === this.messageListEndFolder() && '' !== FolderStore.draftFolder()
+			() => FolderStore.draftFolder() === this.messageListEndFolder() && FolderStore.draftFolder()
 		);
 
 		this.isSentFolder = ko.computed(
-			() => FolderStore.sentFolder() === this.messageListEndFolder() && '' !== FolderStore.sentFolder()
+			() => FolderStore.sentFolder() === this.messageListEndFolder() && FolderStore.sentFolder()
 		);
 
 		this.isArchiveFolder = ko.computed(
-			() => FolderStore.archiveFolder() === this.messageListEndFolder() && '' !== FolderStore.archiveFolder()
+			() => FolderStore.archiveFolder() === this.messageListEndFolder() && FolderStore.archiveFolder()
 		);
 
 		this.isArchiveDisabled = ko.computed(() => UNUSED_OPTION_VALUE === FolderStore.archiveFolder());
@@ -538,7 +538,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	 * @returns {void}
 	 */
 	setActionForAll(sFolderFullNameRaw, iSetAction, sThreadUid = '') {
-		if ('' !== sFolderFullNameRaw) {
+		if (sFolderFullNameRaw) {
 			let cnt = 0;
 			const uids = [];
 
@@ -728,9 +728,9 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	clearListIsVisible() {
 		return (
-			'' === this.messageListSearchDesc() &&
-			'' === this.messageListError() &&
-			'' === this.messageListEndThreadUid() &&
+			!this.messageListSearchDesc() &&
+			!this.messageListError() &&
+			!this.messageListEndThreadUid() &&
 			this.messageList().length &&
 			(this.isSpamFolder() || this.isTrashFolder())
 		);
@@ -910,10 +910,10 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 		// cancel search
 		key('esc', KeyState.MessageList, () => {
-			if ('' !== this.messageListSearchDesc()) {
+			if (this.messageListSearchDesc()) {
 				this.cancelSearch();
 				return false;
-			} else if ('' !== this.messageListEndThreadUid()) {
+			} else if (this.messageListEndThreadUid()) {
 				this.cancelThreadUid();
 				return false;
 			}

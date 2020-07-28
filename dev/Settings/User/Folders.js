@@ -44,7 +44,7 @@ class FoldersUserSettings {
 	folderEditOnEnter(folder) {
 		const nameToEdit = folder ? trim(folder.nameForEdit()) : '';
 
-		if ('' !== nameToEdit && folder.name() !== nameToEdit) {
+		if (nameToEdit && folder.name() !== nameToEdit) {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
 
 			getApp().foldersPromisesActionHelper(

@@ -361,7 +361,7 @@ class AttachmentModel extends AbstractModel {
 	 */
 	linkThumbnailPreviewStyle() {
 		const link = this.linkThumbnail();
-		return '' === link ? '' : 'background:url(' + link + ')';
+		return link ? 'background:url(' + link + ')' : '';
 	}
 
 	/**

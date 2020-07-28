@@ -102,7 +102,7 @@ class ContactsAdminSettings {
 		this.onTestContactsResponse = this.onTestContactsResponse.bind(this);
 	}
 
-	@command((self) => '' !== self.pdoDsn() && '' !== self.pdoUser())
+	@command((self) => self.pdoDsn() && self.pdoUser())
 	testContactsCommand() {
 		this.testContactsSuccess(false);
 		this.testContactsError(false);

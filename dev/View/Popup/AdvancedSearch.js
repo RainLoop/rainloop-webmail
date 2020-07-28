@@ -46,7 +46,7 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 	@command()
 	searchCommand() {
 		const search = this.buildSearchString();
-		if ('' !== search) {
+		if (search) {
 			MessageStore.mainMessageListSearch(search);
 		}
 
@@ -87,15 +87,15 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 			isPart = [],
 			hasPart = [];
 
-		if (from_ && '' !== from_) {
+		if (from_) {
 			result.push('from:' + this.buildSearchStringValue(from_));
 		}
 
-		if (to && '' !== to) {
+		if (to) {
 			result.push('to:' + this.buildSearchStringValue(to));
 		}
 
-		if (subject && '' !== subject) {
+		if (subject) {
 			result.push('subject:' + this.buildSearchStringValue(subject));
 		}
 
@@ -123,7 +123,7 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 			result.push('date:' + searchSubtractFormatDateHelper(this.selectedDateValue()) + '/');
 		}
 
-		if (text && '' !== text) {
+		if (text) {
 			result.push('text:' + this.buildSearchStringValue(text));
 		}
 

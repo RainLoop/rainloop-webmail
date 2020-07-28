@@ -39,7 +39,7 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 			keyTrimmed = keyTrimmed.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
 		}
 
-		this.key.error('' === keyTrimmed);
+		this.key.error(!keyTrimmed);
 		this.key.errorMessage('');
 
 		if (!openpgpKeyring || this.key.error()) {

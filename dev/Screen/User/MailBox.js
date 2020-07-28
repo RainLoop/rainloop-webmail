@@ -48,10 +48,10 @@ class MailBoxUserScreen extends AbstractScreen {
 		}
 
 		getApp().setWindowTitle(
-			('' === email
-				? ''
-				: '' + (0 < foldersInboxUnreadCount ? '(' + foldersInboxUnreadCount + ') ' : ' ') + email + ' - ') +
-				i18n('TITLES/MAILBOX')
+			(email
+				? '' + (0 < foldersInboxUnreadCount ? '(' + foldersInboxUnreadCount + ') ' : ' ') + email + ' - '
+				: ''
+			) + i18n('TITLES/MAILBOX')
 		);
 	}
 
@@ -152,7 +152,7 @@ class MailBoxUserScreen extends AbstractScreen {
 				vals[1] = 0 >= vals[1] ? 1 : vals[1];
 				vals[2] = pString(vals[2]);
 
-				if ('' === request) {
+				if (!request) {
 					vals[0] = inboxFolderName;
 					vals[1] = 1;
 				}
@@ -163,7 +163,7 @@ class MailBoxUserScreen extends AbstractScreen {
 				vals[0] = pString(vals[0]);
 				vals[1] = pString(vals[1]);
 
-				if ('' === request) {
+				if (!request) {
 					vals[0] = inboxFolderName;
 				}
 

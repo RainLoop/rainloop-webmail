@@ -29,7 +29,7 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 	 * @returns {string}
 	 */
 	normalizeFolder(sFolderFullNameRaw) {
-		return '' === sFolderFullNameRaw ||
+		return !sFolderFullNameRaw ||
 			UNUSED_OPTION_VALUE === sFolderFullNameRaw ||
 			null !== Cache.getFolderFromCacheList(sFolderFullNameRaw)
 			? sFolderFullNameRaw
@@ -144,14 +144,13 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 
 			if (
 				oData.SystemFolders &&
-				'' ===
-					'' +
+					!('' +
 						Settings.settingsGet('SentFolder') +
 						Settings.settingsGet('DraftFolder') +
 						Settings.settingsGet('SpamFolder') +
 						Settings.settingsGet('TrashFolder') +
 						Settings.settingsGet('ArchiveFolder') +
-						Settings.settingsGet('NullFolder')
+						Settings.settingsGet('NullFolder'))
 			) {
 				Settings.settingsSet('SentFolder', oData.SystemFolders[ServerFolderType.SENT] || null);
 				Settings.settingsSet('DraftFolder', oData.SystemFolders[ServerFolderType.DRAFTS] || null);

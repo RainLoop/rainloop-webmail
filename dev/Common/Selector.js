@@ -561,7 +561,7 @@ class Selector {
 
 		const uid = this.getItemUid(item);
 		if (event && event.shiftKey) {
-			if ('' !== uid && '' !== this.sLastUid && uid !== this.sLastUid) {
+			if (uid && this.sLastUid && uid !== this.sLastUid) {
 				list = this.list();
 				checked = item.checked();
 
@@ -585,7 +585,7 @@ class Selector {
 			}
 		}
 
-		this.sLastUid = '' === uid ? '' : uid;
+		this.sLastUid = uid || '';
 	}
 
 	/**
@@ -598,7 +598,7 @@ class Selector {
 			if (event) {
 				if (event.shiftKey && !(event.ctrlKey || event.metaKey) && !event.altKey) {
 					click = false;
-					if ('' === this.sLastUid) {
+					if (!this.sLastUid) {
 						this.sLastUid = this.getItemUid(item);
 					}
 

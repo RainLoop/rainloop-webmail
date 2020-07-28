@@ -345,15 +345,15 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 
 		this.resultCallback = fCallback;
 
-		if ('' !== sTo) {
+		if (sTo) {
 			rec.push(sTo);
 		}
 
-		if ('' !== sCc) {
+		if (sCc) {
 			rec.push(sCc);
 		}
 
-		if ('' !== sBcc) {
+		if (sBcc) {
 			rec.push(sBcc);
 		}
 
@@ -361,7 +361,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		rec = rec.map(value => {
 				email.clear();
 				email.parse(trim(value));
-				return '' === email.email ? false : email.email;
+				return email.email || false;
 			}).filter(value => !!value);
 
 		if (identity && identity.email()) {

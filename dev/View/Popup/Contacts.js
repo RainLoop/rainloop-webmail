@@ -116,7 +116,7 @@ class ContactsPopupView extends AbstractViewNext {
 		this.viewHasNonEmptyRequiredProperties = ko.computed(() => {
 			const names = this.viewPropertiesNames(),
 				emails = this.viewPropertiesEmails(),
-				fFilter = (property) => '' !== trim(property.value());
+				fFilter = (property) => !!trim(property.value());
 
 			return !!(names.find(fFilter) || emails.find(fFilter));
 		});
@@ -126,12 +126,12 @@ class ContactsPopupView extends AbstractViewNext {
 		);
 
 		this.viewPropertiesEmailsNonEmpty = ko.computed(() =>
-			this.viewPropertiesNames().filter(property => '' !== trim(property.value()))
+			this.viewPropertiesNames().filter(property => !!trim(property.value()))
 		);
 
 		const propertyFocused = (property) => {
 			const focused = property.focused();
-			return '' === trim(property.value()) && !focused;
+			return !trim(property.value()) && !focused;
 		};
 
 		this.viewPropertiesEmailsEmptyAndOnFocused = ko.computed(() =>
@@ -303,7 +303,7 @@ class ContactsPopupView extends AbstractViewNext {
 			properties = [];
 
 		this.viewProperties().forEach(oItem => {
-			if (oItem.type() && oItem.type() !== ContactPropertyType.FullName && '' !== trim(oItem.value())) {
+			if (oItem.type() && oItem.type() !== ContactPropertyType.FullName && trim(oItem.value())) {
 				properties.push([oItem.type(), oItem.value(), oItem.typeStr()]);
 			}
 		});
@@ -320,7 +320,7 @@ class ContactsPopupView extends AbstractViewNext {
 					oData.Result.RequestUid === requestUid &&
 					0 < pInt(oData.Result.ResultID)
 				) {
-					if ('' === this.viewID()) {
+					if (!this.viewID()) {
 						this.viewID(pInt(oData.Result.ResultID));
 					}
 
@@ -610,7 +610,7 @@ class ContactsPopupView extends AbstractViewNext {
 				this.contacts(list);
 
 				this.contacts.loading(false);
-				this.viewClearSearch('' !== this.search());
+				this.viewClearSearch(!!this.search());
 			},
 			offset,
 			CONTACTS_PER_PAGE,

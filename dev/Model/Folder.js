@@ -210,7 +210,7 @@ class FolderModel extends AbstractModel {
 				}
 			}
 
-			if (('' !== suffix && '(' + name + ')' === suffix) || '(inbox)' === suffix.toLowerCase()) {
+			if ((suffix && '(' + name + ')' === suffix) || '(inbox)' === suffix.toLowerCase()) {
 				suffix = '';
 			}
 
@@ -224,7 +224,7 @@ class FolderModel extends AbstractModel {
 			}
 		});
 
-		this.hasUnreadMessages = ko.computed(() => 0 < this.messageCountUnread() && '' !== this.printableUnreadCount());
+		this.hasUnreadMessages = ko.computed(() => 0 < this.messageCountUnread() && this.printableUnreadCount());
 
 		this.hasSubScribedUnreadMessagesSubfolders = ko.computed(
 			() =>

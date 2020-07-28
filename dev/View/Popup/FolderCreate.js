@@ -36,7 +36,7 @@ class FolderCreateView extends AbstractViewNext {
 			top.push(['', '']);
 
 			let fDisableCallback = null;
-			if ('' !== FolderStore.namespace) {
+			if (FolderStore.namespace) {
 				fDisableCallback = (item) => FolderStore.namespace !== item.fullNameRaw.substr(0, FolderStore.namespace.length);
 			}
 
@@ -49,7 +49,7 @@ class FolderCreateView extends AbstractViewNext {
 	@command((self) => self.simpleFolderNameValidation(self.folderName()))
 	createFolderCommand() {
 		let parentFolderName = this.selectedParentValue();
-		if ('' === parentFolderName && 1 < FolderStore.namespace.length) {
+		if (!parentFolderName && 1 < FolderStore.namespace.length) {
 			parentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
 		}
 

@@ -371,7 +371,7 @@ export function mailBox(folder, page = 1, search = '', threadUid = '') {
 
 	let result = HASH_PREFIX + 'mailbox/';
 
-	if ('' !== folder) {
+	if (folder) {
 		const resultThreadUid = pInt(threadUid);
 		result += window.encodeURI(folder) + (0 < resultThreadUid ? '~' + resultThreadUid : '');
 	}
@@ -381,7 +381,7 @@ export function mailBox(folder, page = 1, search = '', threadUid = '') {
 		result += '/p' + page;
 	}
 
-	if ('' !== search) {
+	if (search) {
 		result = result.replace(/[/]+$/, '');
 		result += '/' + window.encodeURI(search);
 	}

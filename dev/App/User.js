@@ -581,9 +581,7 @@ class AppUser extends AbstractApp {
 			if (StorageResultType.Success === sResult && oData.Result) {
 				const counts = {},
 					sAccountEmail = AccountStore.email();
-				let parentEmail = Settings.settingsGet('ParentEmail');
-
-				parentEmail = '' === parentEmail ? sAccountEmail : parentEmail;
+				let parentEmail = Settings.settingsGet('ParentEmail') || sAccountEmail;
 
 				if (isArray(oData.Result.Accounts)) {
 					AccountStore.accounts().forEach(oAccount => {
@@ -667,7 +665,7 @@ class AppUser extends AbstractApp {
 	 * @param {Array=} list = []
 	 */
 	folderInformation(folder, list) {
-		if ('' !== trim(folder)) {
+		if (trim(folder)) {
 			Remote.folderInformation(
 				(result, data) => {
 					if (StorageResultType.Success === result) {
@@ -727,7 +725,7 @@ class AppUser extends AbstractApp {
 								);
 
 								const hash = getFolderHash(data.Result.Folder);
-								if (data.Result.Hash !== hash || '' === hash || unreadCountChange) {
+								if (!hash || unreadCountChange || data.Result.Hash !== hash) {
 									if (folderFromCache.fullNameRaw === FolderStore.currentFolderFullNameRaw()) {
 										this.reloadMessageList();
 									} else if (getFolderInboxName() === folderFromCache.fullNameRaw) {
@@ -782,7 +780,7 @@ class AppUser extends AbstractApp {
 									clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
 								}
 
-								if (item.Hash !== hash || '' === hash) {
+								if (!hash || item.Hash !== hash) {
 									if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw()) {
 										this.reloadMessageList();
 									}
@@ -823,7 +821,7 @@ class AppUser extends AbstractApp {
 		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
 			.filter((value, index, self) => !!value && self.indexOf(value) == index);
 
-		if ('' !== sFolderFullNameRaw && rootUids.length) {
+		if (sFolderFullNameRaw && rootUids.length) {
 			switch (iSetAction) {
 				case MessageSetAction.SetSeen:
 					rootUids.forEach(sSubUid => {
@@ -1083,7 +1081,7 @@ class AppUser extends AbstractApp {
 					this.bootend();
 
 					if (value) {
-						if ('' !== startupUrl) {
+						if (startupUrl) {
 							routeOff();
 							setHash(root(startupUrl), true);
 							routeOn();

@@ -43,12 +43,12 @@ class FilterConditionModel extends AbstractModel {
 	}
 
 	verify() {
-		if ('' === this.value()) {
+		if (!this.value()) {
 			this.value.error(true);
 			return false;
 		}
 
-		if (FilterConditionField.Header === this.field() && '' === this.valueSecond()) {
+		if (FilterConditionField.Header === this.field() && !this.valueSecond()) {
 			this.valueSecond.error(true);
 			return false;
 		}

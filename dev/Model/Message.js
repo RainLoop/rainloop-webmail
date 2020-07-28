@@ -353,7 +353,7 @@ class MessageModel extends AbstractModel {
 				attachment = AttachmentModel.newInstanceFromJson(json['@Collection'][index]);
 				if (attachment) {
 					if (
-						'' !== attachment.cidWithOutTags &&
+						attachment.cidWithOutTags &&
 						this.foundedCIDs.includes(attachment.cidWithOutTags)
 					) {
 						attachment.isLinked = true;
@@ -475,7 +475,7 @@ class MessageModel extends AbstractModel {
 			'important': this.isImportant(),
 			'withAttachments': this.hasAttachments(),
 			'new': this.newForAnimation(),
-			'emptySubject': '' === this.subject(),
+			'emptySubject': !this.subject(),
 			// 'hasChildrenMessage': 1 < this.threadsLen(),
 			'hasUnseenSubMessage': this.hasUnseenSubMessage(),
 			'hasFlaggedSubMessage': this.hasFlaggedSubMessage()
@@ -783,7 +783,7 @@ class MessageModel extends AbstractModel {
 			$('[' + attr + ']', this.body).each(function() {
 				const $this = $(this); // eslint-disable-line no-invalid-this
 				let style = trim($this.attr('style'));
-				style = '' === style ? '' : ';' === style.substr(-1) ? style + ' ' : style + '; ';
+				style = style ? (';' === style.substr(-1) ? style + ' ' : style + '; ') : '';
 				$this.attr('style', style + $this.attr(attr));
 			});
 
@@ -840,9 +840,9 @@ class MessageModel extends AbstractModel {
 
 				if (attachment && attachment.linkPreview) {
 					name = $this.attr('data-x-style-cid-name');
-					if ('' !== name) {
+					if (name) {
 						style = trim($this.attr('style'));
-						style = '' === style ? '' : ';' === style.substr(-1) ? style + ' ' : style + '; ';
+						style = style ? (';' === style.substr(-1) ? style + ' ' : style + '; ') : '';
 						$this.attr('style', style + name + ": url('" + attachment.linkPreview() + "')");
 					}
 				}

@@ -118,13 +118,13 @@ class FilterModel extends AbstractModel {
 
 		this.regDisposables(
 			this.name.subscribe((sValue) => {
-				this.name.error('' === sValue);
+				this.name.error(!sValue);
 			})
 		);
 
 		this.regDisposables(
 			this.actionValue.subscribe((sValue) => {
-				this.actionValue.error('' === sValue);
+				this.actionValue.error(!sValue);
 			})
 		);
 
@@ -139,7 +139,7 @@ class FilterModel extends AbstractModel {
 	}
 
 	verify() {
-		if ('' === this.name()) {
+		if (!this.name()) {
 			this.name.error(true);
 			return false;
 		}
@@ -150,7 +150,7 @@ class FilterModel extends AbstractModel {
 			}
 		}
 
-		if ('' === this.actionValue()) {
+		if (!this.actionValue()) {
 			if ([
 					FiltersAction.MoveTo,
 					FiltersAction.Forward,
@@ -170,7 +170,7 @@ class FilterModel extends AbstractModel {
 
 		if (
 			FiltersAction.Vacation === this.actionType() &&
-			'' !== this.actionValueFourth() &&
+			this.actionValueFourth() &&
 			!this.actionValueFourth().includes('@')
 		) {
 			this.actionValueFourth.error(true);

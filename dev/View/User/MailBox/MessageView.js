@@ -297,7 +297,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 					if (pic !== this.viewUserPic() && lastEmail === email) {
 						this.viewUserPicVisible(false);
 						this.viewUserPic(DATA_IMAGE_USER_DOT_PIC);
-						if ('' !== pic) {
+						if (pic) {
 							this.viewUserPicVisible(true);
 							this.viewUserPic(pic);
 						}
@@ -386,7 +386,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 		if (dom && 1 === dom.length) {
 			let aC = dom;
-			while ('' === result) {
+			while (!result) {
 				limit -= 1;
 				if (0 >= limit) {
 					break;
@@ -456,7 +456,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	//				return sLine ? [window.decodeURIComponent(sLine)].map(sItem => {
 	//						var oEmailModel = new EmailModel();
 	//						oEmailModel.parse(sItem);
-	//						return '' !== oEmailModel.email ? oEmailModel : null;
+	//						return oEmailModel.email ? oEmailModel : null;
 	//					}).filter(value => !!value) : null;
 	//			}
 	//		;
@@ -930,7 +930,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	 * @returns {void}
 	 */
 	readReceipt(oMessage) {
-		if (oMessage && '' !== oMessage.readReceipt()) {
+		if (oMessage && oMessage.readReceipt()) {
 			Remote.sendReadReceiptMessage(
 				noop,
 				oMessage.folderFullNameRaw,

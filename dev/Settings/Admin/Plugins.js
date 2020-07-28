@@ -78,7 +78,7 @@ class PluginsAdminSettings {
 	onPluginDisableRequest(result, data) {
 		if (StorageResultType.Success === result && data) {
 			if (!data.Result && data.ErrorCode) {
-				if (Notification.UnsupportedPluginPackage === data.ErrorCode && data.ErrorMessage && '' !== data.ErrorMessage) {
+				if (Notification.UnsupportedPluginPackage === data.ErrorCode && data.ErrorMessage && data.ErrorMessage) {
 					PluginStore.plugins.error(data.ErrorMessage);
 				} else {
 					PluginStore.plugins.error(getNotification(data.ErrorCode));

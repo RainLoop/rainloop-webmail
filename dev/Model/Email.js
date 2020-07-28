@@ -47,7 +47,7 @@ class EmailModel {
 	 * @returns {boolean}
 	 */
 	validate() {
-		return '' !== this.name || '' !== this.email;
+		return this.name || this.email;
 	}
 
 	/**
@@ -87,7 +87,7 @@ class EmailModel {
 			this.dkimStatus = trim(json.DkimStatus || '');
 			this.dkimValue = trim(json.DkimValue || '');
 
-			result = '' !== this.email;
+			result = !!this.email;
 			this.clearDuplicateName();
 		}
 
@@ -102,8 +102,8 @@ class EmailModel {
 	 */
 	toLine(friendlyView, wrapWithLink = false, useEncodeHtml = false) {
 		let result = '';
-		if ('' !== this.email) {
-			if (friendlyView && '' !== this.name) {
+		if (this.email) {
+			if (friendlyView && this.name) {
 				result = wrapWithLink
 					? '<a href="mailto:' +
 					  encodeHtml(this.email) +
@@ -119,7 +119,7 @@ class EmailModel {
 				// 	'" target="_blank" tabindex="-1">' + encodeHtml(this.name) + '</a>' : (useEncodeHtml ? encodeHtml(this.name) : this.name);
 			} else {
 				result = this.email;
-				if ('' !== this.name) {
+				if (this.name) {
 					if (wrapWithLink) {
 						result =
 							encodeHtml('"' + this.name + '" <') +
@@ -197,7 +197,7 @@ class EmailModel {
 	 */
 	parse(emailAddress) {
 		emailAddress = trim(emailAddress);
-		if ('' === emailAddress) {
+		if (!emailAddress) {
 			return false;
 		}
 

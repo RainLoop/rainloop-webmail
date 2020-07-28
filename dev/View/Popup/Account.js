@@ -44,8 +44,8 @@ class AccountPopupView extends AbstractViewNext {
 
 	@command((self) => !self.submitRequest())
 	addAccountCommand() {
-		this.emailError('' === trim(this.email()));
-		this.passwordError('' === trim(this.password()));
+		this.emailError(!trim(this.email()));
+		this.passwordError(!trim(this.password()));
 
 		if (this.emailError() || this.passwordError()) {
 			return false;

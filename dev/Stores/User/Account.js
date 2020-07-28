@@ -42,7 +42,7 @@ class AccountUserStore {
 	 * @returns {boolean}
 	 */
 	isRootAccount() {
-		return '' === this.parentEmail();
+		return !this.parentEmail();
 	}
 }
 

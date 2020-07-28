@@ -120,7 +120,7 @@ class SettingsUserScreen extends AbstractSettingsScreen {
 
 	setSettingsTitle() {
 		const sEmail = AccountStore.email();
-		getApp().setWindowTitle(('' === sEmail ? '' : sEmail + ' - ') + this.sSettingsTitle);
+		getApp().setWindowTitle((sEmail ? sEmail + ' - ' :  '') + this.sSettingsTitle);
 	}
 }
 
