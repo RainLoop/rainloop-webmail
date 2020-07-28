@@ -8,7 +8,10 @@
 
 (exports => {
   //Default config/variables
-  var VERSION = '0.1.0';
+  const VERSION = '0.1.0',
+    win = window,
+    doc = document,
+    defined = v => undefined !== v;
 
   /**
    * ProgressJs main class
@@ -17,17 +20,13 @@
    */
   function ProgressJs(obj) {
 
-    if (typeof obj.length != 'undefined') {
-      this._targetElement = obj;
-    } else {
-      this._targetElement = [obj];
-    }
+    this._targetElement = defined(obj.length) ? obj : [obj];
 
-    if (typeof window._progressjsId === 'undefined')
-      window._progressjsId = 1;
+    if (!defined(win._progressjsId))
+      win._progressjsId = 1;
 
-    if (typeof window._progressjsIntervals === 'undefined')
-      window._progressjsIntervals = {};
+    if (!defined(win._progressjsIntervals))
+      win._progressjsIntervals = {};
 
     this._options = {
       //progress bar theme
@@ -37,20 +36,6 @@
       //to consider CSS3 transitions in events
       considerTransition: true
     };
-  }
-
-  /**
-   * Start progress for specific element(s)
-   *
-   * @api private
-   * @method _createContainer
-   */
-  function _startProgress() {
-    //create the container for progress bar
-    _createContainer.call(this);
-
-    var p = this;
-    p._targetElement.forEach(item => _setProgress.call(p, item));
   }
 
   /**
@@ -69,21 +54,21 @@
     //get target element position
     var targetElementOffset = _getOffset.call(this, targetElement);
 
-    targetElement.setAttribute("data-progressjs", window._progressjsId);
+    targetElement.setAttribute("data-progressjs", win._progressjsId);
 
-    var progressElementContainer = document.createElement('div');
+    var progressElementContainer = doc.createElement('div');
     progressElementContainer.className = 'progressjs-progress progressjs-theme-' + this._options.theme;
 
 
     //set the position percent elements, it depends on targetElement tag
     progressElementContainer.style.position = targetElement.tagName.toLowerCase() === 'body' ? 'fixed' : 'absolute';
 
-    progressElementContainer.setAttribute("data-progressjs", window._progressjsId);
-    var progressElement = document.createElement("div");
+    progressElementContainer.setAttribute("data-progressjs", win._progressjsId);
+    var progressElement = doc.createElement("div");
     progressElement.className = "progressjs-inner";
 
     //create an element for current percent of progress bar
-    var progressPercentElement = document.createElement('div');
+    var progressPercentElement = doc.createElement('div');
     progressPercentElement.className = "progressjs-percent";
     progressPercentElement.innerHTML = "1%";
 
@@ -110,25 +95,13 @@
     progressElementContainer.appendChild(progressElement);
 
     //append the element to container
-    var container = document.querySelector('.progressjs-container');
+    var container = doc.querySelector('.progressjs-container');
     container.appendChild(progressElementContainer);
 
     _setPercentFor(targetElement, 1);
 
     //and increase the progressId
-    ++window._progressjsId;
-  }
-
-  /**
-   * Set percent for all elements
-   *
-   * @api private
-   * @method _setPercent
-   * @param {Number} percent
-   */
-  function _setPercent(percent) {
-    var p = this;
-    p._targetElement.forEach(item => _setPercentFor.call(p, item, percent));
+    ++win._progressjsId;
   }
 
   /**
@@ -198,84 +171,7 @@
    */
   function _getPercentElement(targetElement) {
     var progressjsId = parseInt(targetElement.getAttribute('data-progressjs'));
-    return document.querySelector('.progressjs-container > .progressjs-progress[data-progressjs="' + progressjsId + '"] > .progressjs-inner');
-  }
-
-  /**
-   * Close and remove progress bar
-   *
-   * @api private
-   * @method _end
-   */
-  function _end() {
-
-    //call onBeforeEnd callback
-    if (typeof this._onBeforeEndCallback != 'undefined') {
-      if (this._options.considerTransition === true) {
-        //we can safety assume that all layers would be the same, so `this._targetElement[0]` is the same as `this._targetElement[1]`
-        _getPercentElement(this._targetElement[0]).addEventListener('transitionend', this._onBeforeEndCallback, false);
-      } else {
-        this._onBeforeEndCallback.call(this);
-      }
-    }
-
-    var progressjsId = parseInt(this._targetElement[0].getAttribute('data-progressjs'));
-
-    var p = this;
-    p._targetElement.forEach(currentElement => {
-      var percentElement = _getPercentElement(currentElement);
-
-      if (!percentElement)
-        return;
-
-      var existingPercent = parseInt(percentElement.style.width.replace('%', ''));
-
-      var timeoutSec = 1;
-      if (existingPercent < 100) {
-        _setPercentFor.call(p, currentElement, 100);
-        timeoutSec = 500;
-      }
-
-      //I believe I should handle this situation with eventListener and `transitionend` event but I'm not sure
-      //about compatibility with IEs. Should be fixed in further versions.
-      ((percentElement, currentElement) => {
-        setTimeout(() => {
-          percentElement.parentNode.className += " progressjs-end";
-
-          setTimeout(() => {
-            //remove the percent element from page
-            percentElement.parentNode.parentNode.removeChild(percentElement.parentNode);
-            //and remove the attribute
-            currentElement.removeAttribute("data-progressjs");
-          }, 1000);
-        }, timeoutSec);
-      })(percentElement, currentElement);
-	});
-
-    //clean the setInterval for autoIncrease function
-    if (window._progressjsIntervals[progressjsId]) {
-      //`delete` keyword has some problems in IE
-      try {
-        clearInterval(window._progressjsIntervals[progressjsId]);
-        window._progressjsIntervals[progressjsId] = null;
-        delete window._progressjsIntervals[progressjsId];
-      } catch(ex) { }
-    }
-  }
-
-  /**
-   * Create the progress bar container
-   *
-   * @api private
-   * @method _createContainer
-   */
-  function _createContainer() {
-    //first check if we have an container already, we don't need to create it again
-    if (!document.querySelector(".progressjs-container")) {
-      var containerElement = document.createElement("div");
-      containerElement.className = "progressjs-container";
-      document.body.appendChild(containerElement);
-    }
+    return doc.querySelector('.progressjs-container > .progressjs-progress[data-progressjs="' + progressjsId + '"] > .progressjs-inner');
   }
 
   /**
@@ -323,14 +219,14 @@
     }
     if (typeof (targetElm) === 'string') {
       //select the target element with query selector
-      var targetElement = document.querySelectorAll(targetElm);
+      var targetElement = doc.querySelectorAll(targetElm);
 
       if (targetElement) {
         return new ProgressJs(targetElement);
       }
       throw new Error('There is no element with given selector.');
     }
-    return new ProgressJs(document.body);
+    return new ProgressJs(doc.body);
   };
 
   /**
@@ -344,23 +240,80 @@
   //Prototype
   progressJs.fn = ProgressJs.prototype = {
     start: function() {
-      _startProgress.call(this);
-      return this;
+      //first check if we have an container already, we don't need to create it again
+      if (!doc.querySelector(".progressjs-container")) {
+        //create the container for progress bar
+        var containerElement = doc.createElement("div");
+        containerElement.className = "progressjs-container";
+        doc.body.appendChild(containerElement);
+      }
+      var p = this;
+      p._targetElement.forEach(item => _setProgress.call(p, item));
+      return p;
     },
     set: function(percent) {
-      _setPercent.call(this, percent);
-      return this;
+      var p = this;
+      p._targetElement.forEach(item => _setPercentFor.call(p, item, percent));
+      return p;
     },
     end: function() {
-      _end.call(this);
-      return this;
+      var p = this;
+      //call onBeforeEnd callback
+      if (defined(p._onBeforeEndCallback)) {
+        if (p._options.considerTransition === true) {
+          //we can safety assume that all layers would be the same, so `p._targetElement[0]` is the same as `p._targetElement[1]`
+          _getPercentElement(p._targetElement[0])
+            .addEventListener('transitionend', p._onBeforeEndCallback, false);
+        } else {
+          p._onBeforeEndCallback.call(p);
+        }
+      }
+
+      var progressjsId = parseInt(p._targetElement[0].getAttribute('data-progressjs'));
+
+      p._targetElement.forEach(currentElement => {
+        var percentElement = _getPercentElement(currentElement);
+
+        if (!percentElement)
+          return;
+
+        var existingPercent = parseInt(percentElement.style.width.replace('%', ''));
+
+        var timeoutSec = 1;
+        if (existingPercent < 100) {
+          _setPercentFor.call(p, currentElement, 100);
+          timeoutSec = 500;
+        }
+
+        //I believe I should handle this situation with eventListener and `transitionend` event but I'm not sure
+        //about compatibility with IEs. Should be fixed in further versions.
+        ((percentElement, currentElement) => {
+          setTimeout(() => {
+            percentElement.parentNode.className += " progressjs-end";
+
+            setTimeout(() => {
+              //remove the percent element from page
+              percentElement.parentNode.parentNode.removeChild(percentElement.parentNode);
+              //and remove the attribute
+              currentElement.removeAttribute("data-progressjs");
+            }, 1000);
+          }, timeoutSec);
+        })(percentElement, currentElement);
+      });
+
+      //clean the setInterval for autoIncrease function
+      if (win._progressjsIntervals[progressjsId]) {
+        //`delete` keyword has some problems in IE
+        try {
+          clearInterval(win._progressjsIntervals[progressjsId]);
+          win._progressjsIntervals[progressjsId] = null;
+          delete win._progressjsIntervals[progressjsId];
+        } catch(ex) { }
+      }
+      return p;
     },
     onbeforeend: function(providedCallback) {
-      if (typeof (providedCallback) === 'function') {
-        this._onBeforeEndCallback = providedCallback;
-      } else {
-        throw new Error('Provided callback for onbeforeend was not a function');
-      }
+      this._onBeforeEndCallback = providedCallback;
       return this;
     }
   };

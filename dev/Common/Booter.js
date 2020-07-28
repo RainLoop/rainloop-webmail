@@ -13,92 +13,11 @@ window.__rlah_clear = () => clearHash();
 window.__rlah_data = () => RL_APP_DATA_STORAGE;
 
 /**
- * @param {string} styles
  * @returns {void}
  */
-function includeStyle(styles) {
-	const doc = window.document, style = doc.createElement('style');
-	style.type = 'text/css';
-	style.textContent = styles;
-//	style.appendChild(doc.createTextNode(styles));
-	doc.head.appendChild(style);
-}
-
-/**
- * @param {string} src
- * @returns {void}
- */
-function includeScr(src) {
-	const doc = window.document, script = doc.createElement('script');
-	script.type = 'text/javascript';
-	script.src = src;
-	doc.head.appendChild(script);
-}
-
-/**
- * @returns {boolean}
- */
-function includeLayout() {
-	const app = window.document.getElementById('rl-app');
-
-	require('Styles/@Boot.css');
-
-	if (app) {
-		const layout = require('Html/Layout.html');
-		app.innerHTML = ((layout && layout.default ? layout.default : layout) || '').replace(/[\r\n\t]+/g, '');
-		return true;
-	}
-
-	return false;
-}
-
-/**
- * @param {boolean} admin = false
- * @param {boolean} mobile = false
- * @param {boolean} mobileDevice = false
- * @returns {void}
- */
-function includeAppScr({ admin = false, mobile = false, mobileDevice = false }) {
-	let src = './?/';
-	src += admin ? 'Admin' : '';
-	src += 'AppData@';
-	src += mobile ? 'mobile' : 'no-mobile';
-	src += mobileDevice ? '-1' : '-0';
-	src += '/';
-
-	includeScr(
-		src +
-			(window.__rlah ? window.__rlah() || '0' : '0') +
-			'/' +
-			window.Math.random()
-				.toString()
-				.substr(2) +
-			'/'
-	);
-}
-
-/**
- * @returns {object}
- */
-function getRainloopBootData() {
-	let result = {};
-	const meta = window.document.getElementById('app-boot-data');
-
-	if (meta && meta.getAttribute) {
-		result = JSON.parse(meta.getAttribute('content')) || {};
-	}
-
-	return result;
-}
-
-/**
- * @param {string} additionalError
- * @returns {void}
- */
-function showError(additionalError) {
+function showError() {
 	const oR = window.document.getElementById('rl-loading'),
-		oL = window.document.getElementById('rl-loading-error'),
-		oLA = window.document.getElementById('rl-loading-error-additional');
+		oL = window.document.getElementById('rl-loading-error');
 
 	if (oR) {
 		oR.style.display = 'none';
@@ -108,60 +27,69 @@ function showError(additionalError) {
 		oL.style.display = 'block';
 	}
 
-	if (oLA && additionalError) {
-		oLA.style.display = 'block';
-		oLA.innerHTML = additionalError;
-	}
-
 	if (progressJs) {
 		progressJs.set(100).end();
 	}
 }
 
 /**
- * @param {string} description
- * @returns {void}
- */
-function showDescriptionAndLoading(description) {
-	const oE = window.document.getElementById('rl-loading'),
-		oElDesc = window.document.getElementById('rl-loading-desc');
-
-	if (oElDesc && description) {
-		oElDesc.innerHTML = description;
-	}
-
-	if (oE && oE.style) {
-		oE.style.opacity = 0;
-		window.setTimeout(() => {
-			oE.style.opacity = 1;
-		}, 300);
-	}
-}
-
-/**
  * @param {boolean} withError
- * @param {string} additionalError
  * @returns {void}
  */
-function runMainBoot(withError, additionalError) {
+function runMainBoot(withError) {
 	if (window.__APP_BOOT && !withError) {
 		window.__APP_BOOT(() => {
-			showError(additionalError);
+			showError();
 		});
 	} else {
-		showError(additionalError);
+		showError();
 	}
 }
 
 /**
+ * @param {mixed} data
  * @returns {void}
  */
-function runApp() {
-	const appData = window.__rlah_data();
+window.__initAppData = data => {
+	RL_APP_DATA_STORAGE = data;
+
+	window.__rlah_set();
+
+	const doc = window.document;
+
+	if (RL_APP_DATA_STORAGE) {
+		const css = RL_APP_DATA_STORAGE.IncludeCss,
+			theme = RL_APP_DATA_STORAGE.NewThemeLink,
+			description= RL_APP_DATA_STORAGE.LoadingDescriptionEsc || '',
+			oE = doc.getElementById('rl-loading'),
+			oElDesc = doc.getElementById('rl-loading-desc');
+
+		if (theme) {
+			(doc.getElementById('app-theme-link') || {}).href = theme;
+		}
+
+		if (css) {
+			const style = doc.createElement('style');
+			style.type = 'text/css';
+			style.textContent = css;
+//			style.appendChild(doc.createTextNode(styles));
+			doc.head.appendChild(style);
+		}
+
+		if (oElDesc && description) {
+			oElDesc.innerHTML = description;
+		}
+		if (oE && oE.style) {
+			oE.style.opacity = 0;
+			window.setTimeout(() => oE.style.opacity = 1, 300);
+		}
+	}
+
+	const appData = window.__rlah_data(), p = progressJs;
 
 	if (
 		jassl &&
-		progressJs &&
+		p &&
 		appData &&
 		appData.TemplatesLink &&
 		appData.LangLink &&
@@ -169,18 +97,16 @@ function runApp() {
 		appData.StaticAppJsLink &&
 		appData.StaticEditorJsLink
 	) {
-		const p = progressJs;
-
 		p.start().set(5);
 
 		const libs = () =>
 			jassl(appData.StaticLibJsLink).then(() => {
-				window.document.getElementById('rl-check').remove();
+				doc.getElementById('rl-check').remove();
 				if (appData.IncludeBackground) {
 					const img = appData.IncludeBackground.replace('{{USER}}', window.__rlah ? window.__rlah() || '0' : '0');
 					if (img) {
-						window.document.documentElement.classList.add('UserBackground');
-						window.document.body.style.backgroundImage = "url("+img+")";
+						doc.documentElement.classList.add('UserBackground');
+						doc.body.style.backgroundImage = "url("+img+")";
 					}
 				}
 			});
@@ -216,41 +142,40 @@ function runApp() {
 	} else {
 		runMainBoot(true);
 	}
-}
-
-/**
- * @param {mixed} data
- * @returns {void}
- */
-window.__initAppData = function(data) {
-	RL_APP_DATA_STORAGE = data;
-
-	window.__rlah_set();
-
-	if (RL_APP_DATA_STORAGE) {
-		if (RL_APP_DATA_STORAGE.NewThemeLink) {
-			(window.document.getElementById('app-theme-link') || {}).href = RL_APP_DATA_STORAGE.NewThemeLink;
-		}
-
-		if (RL_APP_DATA_STORAGE.IncludeCss) {
-			includeStyle(RL_APP_DATA_STORAGE.IncludeCss);
-		}
-
-		showDescriptionAndLoading(RL_APP_DATA_STORAGE.LoadingDescriptionEsc || '');
-	}
-
-	runApp();
 };
 
 /**
  * @returns {void}
  */
-window.__runBoot = function() {
+window.__runBoot = () => {
+	const doc = window.document,
+		app = doc.getElementById('rl-app');
+
 	if (!window.navigator || !window.navigator.cookieEnabled) {
-		window.document.location.replace('./?/NoCookie');
+		doc.location.replace('./?/NoCookie');
 	}
 
-	if (includeLayout()) {
-		includeAppScr(getRainloopBootData());
+	require('Styles/@Boot.css');
+
+	if (app) {
+		const layout = require('Html/Layout.html'),
+			meta = doc.getElementById('app-boot-data'),
+			options = meta ? JSON.parse(meta.getAttribute('content')) || {} : {},
+			script = doc.createElement('script');
+
+		app.innerHTML = ((layout && layout.default ? layout.default : layout) || '').replace(/[\r\n\t]+/g, '');
+
+		script.type = 'text/javascript';
+		script.src = './?/'
+			+ (options.admin ? 'Admin' : '')
+			+ 'AppData@'
+			+ (options.mobile ? 'mobile' : 'no-mobile')
+			+ (options.mobileDevice ? '-1' : '-0')
+			+ '/'
+			+ (window.__rlah ? window.__rlah() || '0' : '0')
+			+ '/'
+			+ window.Math.random().toString().substr(2)
+			+ '/';
+		doc.head.appendChild(script);
 	}
 };
