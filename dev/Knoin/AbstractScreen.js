@@ -1,5 +1,5 @@
 import crossroads from 'crossroads';
-import { isArray, isNonEmptyArray, noop } from 'Common/Utils';
+import { isNonEmptyArray } from 'Common/Utils';
 
 export class AbstractScreen {
 	oCross = null;
@@ -8,7 +8,7 @@ export class AbstractScreen {
 
 	constructor(screenName, viewModels = []) {
 		this.sScreenName = screenName;
-		this.aViewModels = isArray(viewModels) ? viewModels : [];
+		this.aViewModels = Array.isArray(viewModels) ? viewModels : [];
 	}
 
 	/**
@@ -48,7 +48,7 @@ export class AbstractScreen {
 		const routes = this.routes();
 
 		if (isNonEmptyArray(routes)) {
-			fMatcher = (this.onRoute || noop).bind(this);
+			fMatcher = (this.onRoute || (()=>{})).bind(this);
 			route = crossroads.create();
 
 			routes.forEach((item) => {

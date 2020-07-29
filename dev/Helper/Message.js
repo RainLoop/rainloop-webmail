@@ -1,4 +1,4 @@
-import { isNonEmptyArray, isUnd } from 'Common/Utils';
+import { isNonEmptyArray } from 'Common/Utils';
 import { EmailModel } from 'Model/Email';
 
 /**
@@ -59,7 +59,7 @@ export function emailArrayFromJson(json) {
 export function replyHelper(inputEmails, unic, localEmails) {
 	if (inputEmails) {
 		inputEmails.forEach(email => {
-			if (isUnd(unic[email.email])) {
+			if (undefined === unic[email.email]) {
 				unic[email.email] = true;
 				localEmails.push(email);
 			}

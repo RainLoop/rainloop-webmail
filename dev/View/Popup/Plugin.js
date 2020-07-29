@@ -1,4 +1,3 @@
-import _ from '_';
 import ko from 'ko';
 import key from 'key';
 
@@ -43,7 +42,12 @@ class PluginPopupView extends AbstractViewNext {
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = KeyState.All;
 
-		this.tryToClosePopup = _.debounce(this.tryToClosePopup.bind(this), Magics.Time200ms);
+		var d, fn = this.tryToClosePopup.bind(this);
+		this.tryToClosePopup = ()=>{
+			// debounce
+			d && clearTimeout(d);
+			d = setTimeout(fn, Magics.Time200ms);
+		};
 	}
 
 	@command((self) => self.hasConfiguration())

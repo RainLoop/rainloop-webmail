@@ -10,8 +10,6 @@ import { DATA_IMAGE_LAZY_PLACEHOLDER_PIC } from 'Common/Consts';
 
 import {
 	pInt,
-	isArray,
-	isUnd,
 	trim,
 	previewMessage,
 	windowResize,
@@ -267,7 +265,7 @@ class MessageModel extends AbstractModel {
 			this.unsubsribeLinks = isNonEmptyArray(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
 
 			this.subject(json.Subject);
-			if (isArray(json.SubjectParts)) {
+			if (Array.isArray(json.SubjectParts)) {
 				this.subjectPrefix(json.SubjectParts[0]);
 				this.subjectSuffix(json.SubjectParts[1]);
 			} else {
@@ -277,14 +275,14 @@ class MessageModel extends AbstractModel {
 
 			this.dateTimeStampInUTC(pInt(json.DateTimeStampInUTC));
 			this.hasAttachments(!!json.HasAttachments);
-			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
+			this.attachmentsSpecData(Array.isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
 
 			this.fromEmailString(emailArrayToString(this.from, true));
 			this.fromClearEmailString(emailArrayToStringClear(this.from));
 			this.toEmailsString(emailArrayToString(this.to, true));
 			this.toClearEmailsString(emailArrayToStringClear(this.to));
 
-			this.threads(isArray(json.Threads) ? json.Threads : []);
+			this.threads(Array.isArray(json.Threads) ? json.Threads : []);
 
 			this.initFlagsByJson(json);
 			this.computeSenderEmail();
@@ -323,9 +321,9 @@ class MessageModel extends AbstractModel {
 			}
 
 			this.hasAttachments(!!json.HasAttachments);
-			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
+			this.attachmentsSpecData(Array.isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
 
-			this.foundedCIDs = isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];
+			this.foundedCIDs = Array.isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];
 			this.attachments(this.initAttachmentsFromJson(json.Attachments));
 
 			this.readReceipt(json.ReadReceipt || '');
@@ -545,7 +543,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	fromAsSingleEmail() {
-		return isArray(this.from) && this.from[0] ? this.from[0].email : '';
+		return Array.isArray(this.from) && this.from[0] ? this.from[0].email : '';
 	}
 
 	/**
@@ -569,7 +567,7 @@ class MessageModel extends AbstractModel {
 	 */
 	replyEmails(excludeEmails, last = false) {
 		const result = [],
-			unic = isUnd(excludeEmails) ? {} : excludeEmails;
+			unic = undefined === excludeEmails ? {} : excludeEmails;
 
 		replyHelper(this.replyTo, unic, result);
 		if (!result.length) {
@@ -592,7 +590,7 @@ class MessageModel extends AbstractModel {
 		let data = [];
 		const toResult = [],
 			ccResult = [],
-			unic = isUnd(excludeEmails) ? {} : excludeEmails;
+			unic = undefined === excludeEmails ? {} : excludeEmails;
 
 		replyHelper(this.replyTo, unic, toResult);
 		if (!toResult.length) {

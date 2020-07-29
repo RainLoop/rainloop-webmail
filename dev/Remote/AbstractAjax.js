@@ -2,7 +2,7 @@ import window from 'window';
 
 import { TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT, DEFAULT_AJAX_TIMEOUT } from 'Common/Consts';
 import { StorageResultType, Notification } from 'Common/Enums';
-import { pInt, pString, isUnd } from 'Common/Utils';
+import { pInt, pString } from 'Common/Utils';
 import { data as GlobalsData } from 'Common/Globals';
 import { ajax } from 'Common/Links';
 import { runHook } from 'Common/Plugins';
@@ -132,7 +132,7 @@ class AbstractAjaxRemote {
 	ajaxRequest(fResultCallback, params, iTimeOut = 20000, sGetAdd = '', abortActions = []) {
 		params = params || {};
 		const isPost = !sGetAdd,
-			start = new window.Date().getTime(),
+			start = new Date().getTime(),
 			action = params.Action || '';
 
 		if (action && abortActions) {
@@ -222,7 +222,7 @@ class AbstractAjaxRemote {
 		return this.ajaxRequest(
 			fCallback,
 			oParameters,
-			isUnd(iTimeout) ? DEFAULT_AJAX_TIMEOUT : pInt(iTimeout),
+			undefined === iTimeout ? DEFAULT_AJAX_TIMEOUT : pInt(iTimeout),
 			sGetAdd,
 			aAbortActions
 		);

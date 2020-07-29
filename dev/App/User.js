@@ -1,22 +1,18 @@
 import window from 'window';
-import _ from '_';
 import progressJs from 'progressJs';
 
 import {
-	noop,
-	trim,
 	log,
-	isArray,
-	isUnd,
 	isNormal,
 	isPosNumeric,
 	isNonEmptyArray,
 	pInt,
 	pString,
 	delegateRunOnDestroy,
-	mailToHelper,
-	jassl
+	mailToHelper
 } from 'Common/Utils';
+
+import { jassl } from 'Common/Jassl';
 
 import {
 	Layout,
@@ -129,10 +125,14 @@ class AppUser extends AbstractApp {
 
 		this.moveCache = {};
 
-		this.quotaDebounce = _.debounce(this.quota, Magics.Time30s);
-		this.moveOrDeleteResponseHelper = this.moveOrDeleteResponseHelper.bind(this);
+		let qd, o = this;
+		this.quotaDebounce = ()=>{
+			// debounce
+			qd && clearTimeout(qd);
+			qd = setTimeout(o.quota, Magics.Time30s);
+		};
 
-		this.messagesMoveTrigger = _.debounce(this.messagesMoveTrigger, 500);
+		this.moveOrDeleteResponseHelper = this.moveOrDeleteResponseHelper.bind(this);
 
 		window.setInterval(() => Events.pub('interval.30s'), Magics.Time30s);
 		window.setInterval(() => Events.pub('interval.1m'), Magics.Time1m);
@@ -258,7 +258,7 @@ class AppUser extends AbstractApp {
 	}
 
 	recacheInboxMessageList() {
-		Remote.messageList(noop, getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', '', true);
+		Remote.messageList(()=>{}, getFolderInboxName(), 0, SettingsStore.messagesPerPage(), '', '', true);
 	}
 
 	/**
@@ -290,25 +290,30 @@ class AppUser extends AbstractApp {
 	}
 
 	messagesMoveTrigger() {
-		const sTrashFolder = FolderStore.trashFolder(),
-			sSpamFolder = FolderStore.spamFolder();
+		// debounce
+		const o = this;
+		o.mt && clearTimeout(o.mt);
+		o.mt = setTimeout(()=>{
+			const sTrashFolder = FolderStore.trashFolder(),
+				sSpamFolder = FolderStore.spamFolder();
 
-		Object.values(this.moveCache).forEach(item => {
-			const isSpam = sSpamFolder === item.To,
-				isTrash = sTrashFolder === item.To,
-				isHam = !isSpam && sSpamFolder === item.From && getFolderInboxName() === item.To;
+			Object.values(o.moveCache).forEach(item => {
+				const isSpam = sSpamFolder === item.To,
+					isTrash = sTrashFolder === item.To,
+					isHam = !isSpam && sSpamFolder === item.From && getFolderInboxName() === item.To;
 
-			Remote.messagesMove(
-				this.moveOrDeleteResponseHelper,
-				item.From,
-				item.To,
-				item.Uid,
-				isSpam ? 'SPAM' : isHam ? 'HAM' : '',
-				isSpam || isTrash
-			);
-		});
+				Remote.messagesMove(
+					o.moveOrDeleteResponseHelper,
+					item.From,
+					item.To,
+					item.Uid,
+					isSpam ? 'SPAM' : isHam ? 'HAM' : '',
+					isSpam || isTrash
+				);
+			});
 
-		this.moveCache = {};
+			o.moveCache = {};
+		}, 500);
 	}
 
 	messagesMoveHelper(fromFolderFullNameRaw, toFolderFullNameRaw, uidsForMove) {
@@ -336,7 +341,7 @@ class AppUser extends AbstractApp {
 
 	moveOrDeleteResponseHelper(sResult, oData) {
 		if (StorageResultType.Success === sResult && FolderStore.currentFolder()) {
-			if (oData && isArray(oData.Result) && 2 === oData.Result.length) {
+			if (oData && Array.isArray(oData.Result) && 2 === oData.Result.length) {
 				setFolderHash(oData.Result[0], oData.Result[1]);
 			} else {
 				setFolderHash(FolderStore.currentFolderFullNameRaw(), '');
@@ -389,7 +394,7 @@ class AppUser extends AbstractApp {
 			// no default
 		}
 
-		bUseFolder = isUnd(bUseFolder) ? true : !!bUseFolder;
+		bUseFolder = undefined === bUseFolder ? true : !!bUseFolder;
 		if (bUseFolder) {
 			if (
 				(FolderType.Spam === iDeleteType && UNUSED_OPTION_VALUE === FolderStore.spamFolder()) ||
@@ -427,12 +432,12 @@ class AppUser extends AbstractApp {
 	 * @param {boolean=} bCopy = false
 	 */
 	moveMessagesToFolder(sFromFolderFullNameRaw, aUidForMove, sToFolderFullNameRaw, bCopy) {
-		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && isArray(aUidForMove) && aUidForMove.length) {
+		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && Array.isArray(aUidForMove) && aUidForMove.length) {
 			const oFromFolder = getFolderFromCacheList(sFromFolderFullNameRaw),
 				oToFolder = getFolderFromCacheList(sToFolderFullNameRaw);
 
 			if (oFromFolder && oToFolder) {
-				if (isUnd(bCopy) ? false : !!bCopy) {
+				if (undefined === bCopy ? false : !!bCopy) {
 					this.messagesCopyHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
 				} else {
 					this.messagesMoveHelper(oFromFolder.fullNameRaw, oToFolder.fullNameRaw, aUidForMove);
@@ -583,7 +588,7 @@ class AppUser extends AbstractApp {
 					sAccountEmail = AccountStore.email();
 				let parentEmail = Settings.settingsGet('ParentEmail') || sAccountEmail;
 
-				if (isArray(oData.Result.Accounts)) {
+				if (Array.isArray(oData.Result.Accounts)) {
 					AccountStore.accounts().forEach(oAccount => {
 						counts[oAccount.email] = oAccount.count();
 					});
@@ -597,12 +602,12 @@ class AppUser extends AbstractApp {
 					);
 				}
 
-				if (isUnd(bBoot) ? false : !!bBoot) {
+				if (undefined === bBoot ? false : !!bBoot) {
 					setTimeout(() => this.accountsCounts(), 1000 * 5);
 					Events.sub('interval.10m-after5m', () => this.accountsCounts());
 				}
 
-				if (isArray(oData.Result.Identities)) {
+				if (Array.isArray(oData.Result.Identities)) {
 					delegateRunOnDestroy(IdentityStore.identities());
 
 					IdentityStore.identities(
@@ -631,7 +636,7 @@ class AppUser extends AbstractApp {
 		Remote.templates((result, data) => {
 			TemplateStore.templates.loading(false);
 
-			if (StorageResultType.Success === result && data.Result && isArray(data.Result.Templates)) {
+			if (StorageResultType.Success === result && data.Result && Array.isArray(data.Result.Templates)) {
 				delegateRunOnDestroy(TemplateStore.templates());
 
 				TemplateStore.templates(
@@ -650,7 +655,7 @@ class AppUser extends AbstractApp {
 				StorageResultType.Success === result &&
 				data &&
 				data.Result &&
-				isArray(data.Result) &&
+				Array.isArray(data.Result) &&
 				1 < data.Result.length &&
 				isPosNumeric(data.Result[0], true) &&
 				isPosNumeric(data.Result[1], true)
@@ -665,7 +670,7 @@ class AppUser extends AbstractApp {
 	 * @param {Array=} list = []
 	 */
 	folderInformation(folder, list) {
-		if (trim(folder)) {
+		if (folder && folder.trim()) {
 			Remote.folderInformation(
 				(result, data) => {
 					if (StorageResultType.Success === result) {
@@ -814,7 +819,7 @@ class AppUser extends AbstractApp {
 			alreadyUnread = 0,
 			rootUids = [];
 
-		if (isUnd(messages) || !messages) {
+		if (undefined === messages || !messages) {
 			messages = MessageStore.messageListChecked();
 		}
 
@@ -833,7 +838,7 @@ class AppUser extends AbstractApp {
 						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread);
 					}
 
-					Remote.messageSetSeen(noop, sFolderFullNameRaw, rootUids, true);
+					Remote.messageSetSeen(()=>{}, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetSeen:
@@ -846,7 +851,7 @@ class AppUser extends AbstractApp {
 						folder.messageCountUnread(folder.messageCountUnread() - alreadyUnread + rootUids.length);
 					}
 
-					Remote.messageSetSeen(noop, sFolderFullNameRaw, rootUids, false);
+					Remote.messageSetSeen(()=>{}, sFolderFullNameRaw, rootUids, false);
 					break;
 
 				case MessageSetAction.SetFlag:
@@ -854,7 +859,7 @@ class AppUser extends AbstractApp {
 						storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
-					Remote.messageSetFlagged(noop, sFolderFullNameRaw, rootUids, true);
+					Remote.messageSetFlagged(()=>{}, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetFlag:
@@ -862,7 +867,7 @@ class AppUser extends AbstractApp {
 						storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
 					});
 
-					Remote.messageSetFlagged(noop, sFolderFullNameRaw, rootUids, false);
+					Remote.messageSetFlagged(()=>{}, sFolderFullNameRaw, rootUids, false);
 					break;
 				// no default
 			}
@@ -878,7 +883,7 @@ class AppUser extends AbstractApp {
 	 */
 	getAutocomplete(query, autocompleteCallback) {
 		Remote.suggestions((result, data) => {
-			if (StorageResultType.Success === result && data && isArray(data.Result)) {
+			if (StorageResultType.Success === result && data && Array.isArray(data.Result)) {
 				autocompleteCallback(
 					data.Result.map(item => (item && item[0] ? new EmailModel(item[0], item[1]) : null)).filter(value => !!value)
 				);
@@ -894,7 +899,7 @@ class AppUser extends AbstractApp {
 	 */
 	setExpandedFolder(sFullNameHash, bExpanded) {
 		let aExpandedList = Local.get(ClientSideKeyName.ExpandedFolders);
-		if (!isArray(aExpandedList)) {
+		if (!Array.isArray(aExpandedList)) {
 			aExpandedList = [];
 		}
 
@@ -1027,9 +1032,9 @@ class AppUser extends AbstractApp {
 			setHash(root(), true);
 			routeOff();
 
-			_.defer(() => {
-				window.location.href = customLoginLink;
-			});
+			setTimeout(() =>
+				window.location.href = customLoginLink
+			, 1);
 		}
 	}
 
@@ -1087,7 +1092,7 @@ class AppUser extends AbstractApp {
 							routeOn();
 						}
 
-						if (jassl && window.crypto && window.crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
+						if (window.crypto && window.crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
 							const openpgpCallback = (openpgp) => {
 								PgpStore.openpgp = openpgp;
 
@@ -1156,7 +1161,7 @@ class AppUser extends AbstractApp {
 						}, 1000);
 
 						setTimeout(() => this.quota(), 5000);
-						setTimeout(() => Remote.appDelayStart(noop), 35000);
+						setTimeout(() => Remote.appDelayStart(()=>{}), 35000);
 
 						Events.sub('rl.auto-logout', () => this.logout());
 
@@ -1188,7 +1193,8 @@ class AppUser extends AbstractApp {
 						}
 
 						if (!bMobileDevice) {
-							_.defer(() => this.initVerticalLayoutResizer(ClientSideKeyName.FolderListSize));
+							const o = this;
+							setTimeout(() => o.initVerticalLayoutResizer(ClientSideKeyName.FolderListSize), 1);
 						}
 					} else {
 						this.logout();

@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { isUnd, trim, pInt } from 'Common/Utils';
+import { trim, pInt } from 'Common/Utils';
 import { SaveSettingsStep } from 'Common/Enums';
 import { AbstractComponent } from 'Component/Abstract';
 
@@ -14,13 +14,13 @@ class AbstractInput extends AbstractComponent {
 		this.size = params.size || 0;
 		this.label = params.label || '';
 		this.preLabel = params.preLabel || '';
-		this.enable = isUnd(params.enable) ? true : params.enable;
+		this.enable = undefined === params.enable ? true : params.enable;
 		this.trigger = params.trigger && params.trigger.subscribe ? params.trigger : null;
 		this.placeholder = params.placeholder || '';
 
-		this.labeled = !isUnd(params.label);
-		this.preLabeled = !isUnd(params.preLabel);
-		this.triggered = !isUnd(params.trigger) && !!this.trigger;
+		this.labeled = undefined !== params.label;
+		this.preLabeled = undefined !== params.preLabel;
+		this.triggered = undefined !== params.trigger && !!this.trigger;
 
 		this.classForTrigger = ko.observable('');
 
@@ -30,7 +30,7 @@ class AbstractInput extends AbstractComponent {
 			return (0 < size ? 'span' + size : '') + suffixValue;
 		});
 
-		if (!isUnd(params.width) && params.element) {
+		if (undefined !== params.width && params.element) {
 			params.element.find('input,select,textarea').css('width', params.width);
 		}
 

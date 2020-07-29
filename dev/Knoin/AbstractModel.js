@@ -1,4 +1,9 @@
-import { isArray, disposeObject } from 'Common/Utils';
+
+function disposeOne(disposable) {
+	if (disposable && 'function' === typeof disposable.dispose) {
+		disposable.dispose();
+	}
+}
 
 export class AbstractModel {
 	sModelName = '';
@@ -12,7 +17,7 @@ export class AbstractModel {
 	}
 
 	regDisposables(value) {
-		if (isArray(value)) {
+		if (Array.isArray(value)) {
 			value.forEach((item) => {
 				this.disposables.push(item);
 			});
@@ -22,6 +27,9 @@ export class AbstractModel {
 	}
 
 	onDestroy() {
-		disposeObject(this);
+		if (Array.isArray(this.disposables)) {
+			this.disposables.forEach(disposeOne);
+		}
+		Object.values(this).forEach(disposeOne);
 	}
 }

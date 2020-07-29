@@ -2,7 +2,7 @@ import window from 'window';
 import ko from 'ko';
 
 import { FileType } from 'Common/Enums';
-import { bAllowPdfPreview } from 'Common/Globals';
+import { bMobileDevice } from 'Common/Globals';
 import { trim, pInt, isNonEmptyArray, getFileExtension, friendlySize } from 'Common/Utils';
 import {
 	attachmentDownload,
@@ -15,6 +15,8 @@ import {
 import { AbstractModel } from 'Knoin/AbstractModel';
 
 import Audio from 'Common/Audio';
+
+const bAllowPdfPreview = !bMobileDevice && undefined !== window.navigator.mimeTypes['application/pdf'];
 
 /**
  * @param {string} sExt

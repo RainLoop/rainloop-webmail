@@ -1,4 +1,3 @@
-import { isFunc, isArray, isUnd } from 'Common/Utils';
 import { data as GlobalsData } from 'Common/Globals';
 import * as Settings from 'Storage/Settings';
 
@@ -11,8 +10,8 @@ const SIMPLE_HOOKS = {},
  * @param {Function} callback
  */
 export function addHook(name, callback) {
-	if (isFunc(callback)) {
-		if (!isArray(SIMPLE_HOOKS[name])) {
+	if (typeof callback === 'function') {
+		if (!Array.isArray(SIMPLE_HOOKS[name])) {
 			SIMPLE_HOOKS[name] = [];
 		}
 
@@ -25,7 +24,7 @@ export function addHook(name, callback) {
  * @param {Array=} args = []
  */
 export function runHook(name, args = []) {
-	if (isArray(SIMPLE_HOOKS[name])) {
+	if (Array.isArray(SIMPLE_HOOKS[name])) {
 		SIMPLE_HOOKS[name].forEach(callback => {
 			callback(...args);
 		});
@@ -89,6 +88,6 @@ export function runSettingsViewModelHooks(admin) {
  */
 export function settingsGet(pluginSection, name) {
 	let plugins = Settings.settingsGet('Plugins');
-	plugins = plugins && !isUnd(plugins[pluginSection]) ? plugins[pluginSection] : null;
-	return plugins ? (isUnd(plugins[name]) ? null : plugins[name]) : null;
+	plugins = plugins && undefined !== plugins[pluginSection] ? plugins[pluginSection] : null;
+	return plugins ? (undefined === plugins[name] ? null : plugins[name]) : null;
 }

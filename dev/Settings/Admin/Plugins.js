@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
-import { boolToAjax } from 'Common/Utils';
 
 import { settingsGet } from 'Storage/Settings';
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -59,7 +58,7 @@ class PluginsAdminSettings {
 
 		this.enabledPlugins.subscribe((value) => {
 			Remote.saveAdminConfig(null, {
-				'EnabledPlugins': boolToAjax(value)
+				'EnabledPlugins': value ? '1' : '0'
 			});
 		});
 	}

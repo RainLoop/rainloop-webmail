@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { settingsSaveHelperSimpleFunction, boolToAjax, trim } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, trim } from 'Common/Utils';
 import { settingsGet } from 'Storage/Settings';
 
 import AppStore from 'Stores/Admin/App';
@@ -24,19 +24,19 @@ class LoginAdminSettings {
 
 			this.determineUserLanguage.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'DetermineUserLanguage': boolToAjax(value)
+					'DetermineUserLanguage': value ? '1' : '0'
 				});
 			});
 
 			this.determineUserDomain.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'DetermineUserDomain': boolToAjax(value)
+					'DetermineUserDomain': value ? '1' : '0'
 				});
 			});
 
 			this.allowLanguagesOnLogin.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'AllowLanguagesOnLogin': boolToAjax(value)
+					'AllowLanguagesOnLogin': value ? '1' : '0'
 				});
 			});
 

@@ -51,25 +51,25 @@ const __get = (key) => {
 const __set = (key, value) => {
 	if (SESS_STORAGE) {
 		SESS_STORAGE.setItem(key, value);
-	} else if (WIN_STORAGE && window.JSON) {
+	} else if (WIN_STORAGE) {
 		let data =
 			WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString().substr(0, 1)
-				? window.JSON.parse(WIN_STORAGE.name.toString())
+				? JSON.parse(WIN_STORAGE.name.toString())
 				: null;
 		data = data || {};
 		data[key] = value;
 
-		WIN_STORAGE.name = window.JSON.stringify(data);
+		WIN_STORAGE.name = JSON.stringify(data);
 	}
 };
 
-const timestamp = () => window.Math.round(new window.Date().getTime() / 1000);
+const timestamp = () => Math.round(new Date().getTime() / 1000);
 
 const setTimestamp = () => __set(TIME_KEY, timestamp());
 
 const getTimestamp = () => {
 	const time = __get(TIME_KEY, 0);
-	return time ? window.parseInt(time, 10) || 0 : 0;
+	return time ? parseInt(time, 10) || 0 : 0;
 };
 
 /**
@@ -111,4 +111,4 @@ export function checkTimestamp() {
 }
 
 // init section
-window.setInterval(setTimestamp, 1000 * 60); // 1m
+setInterval(setTimestamp, 1000 * 60); // 1m

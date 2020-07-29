@@ -1,9 +1,8 @@
-import _ from '_';
 import $ from '$';
 import ko from 'ko';
 
 import { VIEW_MODELS } from 'Common/Globals';
-import { delegateRun, windowResize, log, isUnd, pString } from 'Common/Utils';
+import { delegateRun, windowResize, log, pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
 
 import { setHash } from 'Knoin/Knoin';
@@ -103,24 +102,25 @@ class AbstractSettingsScreen extends AbstractScreen {
 			}
 
 			if (settingsScreen) {
-				_.defer(() => {
+				const o = this;
+				setTimeout(() => {
 					// hide
-					if (this.oCurrentSubScreen) {
-						delegateRun(this.oCurrentSubScreen, 'onHide');
-						this.oCurrentSubScreen.viewModelDom.hide();
+					if (o.oCurrentSubScreen) {
+						delegateRun(o.oCurrentSubScreen, 'onHide');
+						o.oCurrentSubScreen.viewModelDom.hide();
 					}
 					// --
 
-					this.oCurrentSubScreen = settingsScreen;
+					o.oCurrentSubScreen = settingsScreen;
 
 					// show
-					if (this.oCurrentSubScreen) {
-						delegateRun(this.oCurrentSubScreen, 'onBeforeShow');
-						this.oCurrentSubScreen.viewModelDom.show();
-						delegateRun(this.oCurrentSubScreen, 'onShow');
-						delegateRun(this.oCurrentSubScreen, 'onShowWithDelay', [], 200);
+					if (o.oCurrentSubScreen) {
+						delegateRun(o.oCurrentSubScreen, 'onBeforeShow');
+						o.oCurrentSubScreen.viewModelDom.show();
+						delegateRun(o.oCurrentSubScreen, 'onShow');
+						delegateRun(o.oCurrentSubScreen, 'onShowWithDelay', [], 200);
 
-						this.menu().forEach(item => {
+						o.menu().forEach(item => {
 							item.selected(
 								settingsScreen &&
 									settingsScreen.__rlSettingsData &&
@@ -133,7 +133,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 					// --
 
 					windowResize();
-				});
+				}, 1);
 			}
 		} else {
 			setHash(settings(), false, true);
@@ -180,7 +180,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 			rules = {
 				subname: /^(.*)$/,
 				normalize_: (rquest, vals) => {
-					vals.subname = isUnd(vals.subname) ? defaultRoute : pString(vals.subname);
+					vals.subname = undefined === vals.subname ? defaultRoute : pString(vals.subname);
 					return [vals.subname];
 				}
 			};

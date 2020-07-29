@@ -22,8 +22,6 @@ $hcont
 	.css({ position: 'absolute', left: -5000 })
 	.appendTo($body);
 
-export const startMicrotime = new window.Date().getTime();
-
 /**
  * @type {boolean}
  */
@@ -48,28 +46,12 @@ export const sUserAgent =
 /**
  * @type {boolean}
  */
-export const bIE = sUserAgent.includes('msie');
-
-/**
- * @type {boolean}
- */
-export const bChrome = sUserAgent.includes('chrome');
-
-/**
- * @type {boolean}
- */
-export const bSafari = !bChrome && sUserAgent.includes('safari');
+export const bSafari = !sUserAgent.includes('chrome') && sUserAgent.includes('safari');
 
 /**
  * @type {boolean}
  */
 export const bMobileDevice = (/android|iphone|ipod|ipad|blackberry|mobile/i).test(sUserAgent);
-
-/**
- * @type {boolean}
- */
-export const bIsHttps =
-	window.document && window.document.location ? 'https:' === window.document.location.protocol : false;
 
 /**
  * @type {Object}
@@ -148,12 +130,6 @@ export const htmlEditorLangsMap = {
 	'zh_tw': 'zh'
 };
 
-/**
- * @type {boolean}
- */
-let bAllowPdfPreview = !bMobileDevice && undefined !== window.navigator.mimeTypes['application/pdf'];
-
-export { bAllowPdfPreview };
 
 export const VIEW_MODELS = {
 	settings: [],

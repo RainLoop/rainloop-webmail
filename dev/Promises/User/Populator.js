@@ -1,5 +1,5 @@
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { isArray, isNormal, pInt, isUnd, noop } from 'Common/Utils';
+import { isNormal, pInt } from 'Common/Utils';
 import { ClientSideKeyName, ServerFolderType } from 'Common/Enums';
 import * as Cache from 'Common/Cache';
 
@@ -21,7 +21,7 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 	 * @returns {boolean}
 	 */
 	isFolderExpanded(sFullNameHash, expandedFolders) {
-		return expandedFolders && isArray(expandedFolders) && expandedFolders.includes(sFullNameHash);
+		return expandedFolders && Array.isArray(expandedFolders) && expandedFolders.includes(sFullNameHash);
 	}
 
 	/**
@@ -84,7 +84,7 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 						oFolder.SubFolders &&
 						'Collection/FolderCollection' === oFolder.SubFolders['@Object'] &&
 						oFolder.SubFolders['@Collection'] &&
-						isArray(oFolder.SubFolders['@Collection'])
+						Array.isArray(oFolder.SubFolders['@Collection'])
 					) {
 						oCacheFolder.subFolders(
 							this.folderResponseParseRec(sNamespace, oFolder.SubFolders['@Collection'], expandedFolders)
@@ -104,7 +104,7 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 			oData &&
 			'Collection/FolderCollection' === oData['@Object'] &&
 			oData['@Collection'] &&
-			isArray(oData['@Collection'])
+			Array.isArray(oData['@Collection'])
 		) {
 			const expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders),
 				cnt = pInt(oData.CountRec);
@@ -116,7 +116,7 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 
 			FolderStore.folderList(
 				this.folderResponseParseRec(
-					isUnd(oData.Namespace) ? '' : oData.Namespace,
+					undefined === oData.Namespace ? '' : oData.Namespace,
 					oData['@Collection'],
 					expandedFolders
 				)
@@ -130,9 +130,9 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 			oData &&
 			'Collection/FolderCollection' === oData['@Object'] &&
 			oData['@Collection'] &&
-			isArray(oData['@Collection'])
+			Array.isArray(oData['@Collection'])
 		) {
-			if (!isUnd(oData.Namespace)) {
+			if (undefined !== oData.Namespace) {
 				FolderStore.namespace = oData.Namespace;
 			}
 
@@ -168,7 +168,7 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 			FolderStore.archiveFolder(this.normalizeFolder(Settings.settingsGet('ArchiveFolder')));
 
 			if (update) {
-				Remote.saveSystemFolders(noop, {
+				Remote.saveSystemFolders(()=>{}, {
 					SentFolder: FolderStore.sentFolder(),
 					DraftFolder: FolderStore.draftFolder(),
 					SpamFolder: FolderStore.spamFolder(),

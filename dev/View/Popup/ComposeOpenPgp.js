@@ -2,7 +2,7 @@ import $ from '$';
 import ko from 'ko';
 import key from 'key';
 
-import { pString, log, isUnd, trim, defautOptionsAfterRender } from 'Common/Utils';
+import { pString, log, trim, defautOptionsAfterRender } from 'Common/Utils';
 
 import { Magics, KeyState } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
@@ -102,7 +102,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		this.addOptionClass = (domOption, item) => {
 			this.defautOptionsAfterRender(domOption, item);
 
-			if (item && !isUnd(item.class) && domOption) {
+			if (item && undefined !== item.class && domOption) {
 				$(domOption).addClass(item.class);
 			}
 		};

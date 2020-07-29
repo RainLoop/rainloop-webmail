@@ -1,5 +1,5 @@
 import { MessageSetAction } from 'Common/Enums';
-import { trim, pInt, isArray } from 'Common/Utils';
+import { trim, pInt } from 'Common/Utils';
 
 let FOLDERS_CACHE = {},
 	FOLDERS_NAME_CACHE = {},
@@ -266,7 +266,7 @@ export function storeMessageFlagsToCache(message) {
  * @param {Array} flags
  */
 export function storeMessageFlagsToCacheByFolderAndUid(folder, uid, flags) {
-	if (isArray(flags) && flags.length) {
+	if (Array.isArray(flags) && flags.length) {
 		setMessageFlagsToCache(folder, uid, flags);
 	}
 }
@@ -280,7 +280,7 @@ export function storeMessageFlagsToCacheBySetAction(folder, uid, setAction) {
 	let unread = 0;
 	const flags = getMessageFlagsFromCache(folder, uid);
 
-	if (isArray(flags) && flags.length) {
+	if (Array.isArray(flags) && flags.length) {
 		if (flags[0]) {
 			unread = 1;
 		}

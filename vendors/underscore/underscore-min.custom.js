@@ -1,6 +1,0 @@
-//     Underscore.js 1.9.2
-//     https://underscorejs.org
-//     (c) 2009-2018 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
-//     Underscore may be freely distributed under the MIT license.
-
-(()=>{var e=function(){};("object"==typeof self&&self.self===self&&self||{})._=e;e.defer=(()=>{var e=(e,t,...l)=>setTimeout(()=>e.apply(null,l),t),t=function(...l){for(var n=1,r=[l[0],1];n<l.length;)r.push(l[n++]);return function(e,t,l,n,r){if(!(n instanceof t))return e.apply(l,r);var u=e.prototype,a="object"!=typeof u?{}:Object.create(u),o=e.apply(a,r);return"object"==typeof o?o:a}(e,t,this,this,r)};return t})(),e.throttle=function(e,t,l){l||(l={});var n,r,u,a,o=0,i=function(){o=!1===l.leading?0:Date.now(),n=null,a=e.apply(r,u),n||(r=u=null)},c=(...u)=>{var c=Date.now();o||!1!==l.leading||(o=c);var p=t-(c-o);return r=this,p<=0||p>t?(n&&(clearTimeout(n),n=null),o=c,a=e.apply(r,u),n||(r=u=null)):n||!1===l.trailing||(n=setTimeout(i,p)),a};return c.cancel=(()=>{clearTimeout(n),o=0,n=r=u=null}),c},e.debounce=function(e,t,l){var n,r,u=(t,l)=>{n=null,l&&(r=e.apply(t,l))},a=function(...a){if(n&&clearTimeout(n),l){var o=!n;n=setTimeout(u,t),o&&(r=e.apply(this,a))}else{var i=this;n=setTimeout(()=>u.apply(null,[i,a]),t)}return r};return a.cancel=(()=>{clearTimeout(n),n=null}),a}})();

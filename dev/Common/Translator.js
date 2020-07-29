@@ -1,9 +1,8 @@
 import window from 'window';
-import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import { Notification, UploadErrorCode } from 'Common/Enums';
-import { pInt, isUnd, microtime } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
 import { $html, $htmlCL } from 'Common/Globals';
 import { reload as momentorReload } from 'Common/Momentor';
 import { langLink } from 'Common/Links';
@@ -94,11 +93,11 @@ export function i18n(key, valueList, defaulValue) {
 	let valueName = '',
 		result = I18N_DATA[key];
 
-	if (isUnd(result)) {
-		result = isUnd(defaulValue) ? key : defaulValue;
+	if (undefined === result) {
+		result = undefined === defaulValue ? key : defaulValue;
 	}
 
-	if (!isUnd(valueList) && null !== valueList) {
+	if (undefined !== valueList && null !== valueList) {
 		for (valueName in valueList) {
 			if (Object.prototype.hasOwnProperty.call(valueList, valueName)) {
 				result = result.replace('%' + valueName + '%', valueList[valueName]);
@@ -138,11 +137,11 @@ const i18nToNode = (element) => {
  * @param {boolean=} animate = false
  */
 export function i18nToNodes(elements) {
-	_.defer(() => {
+	setTimeout(() =>
 		$('[data-i18n]', elements).each((index, item) => {
 			i18nToNode(item);
-		});
-	});
+		})
+	, 1);
 }
 
 const reloadData = () => {
@@ -203,8 +202,8 @@ export function getNotification(code, message = '', defCode = null) {
 	}
 
 	defCode = defCode ? window.parseInt(defCode, 10) || 0 : 0;
-	return isUnd(I18N_NOTIFICATION_DATA[code])
-		? defCode && isUnd(I18N_NOTIFICATION_DATA[defCode])
+	return undefined === I18N_NOTIFICATION_DATA[code]
+		? defCode && undefined === I18N_NOTIFICATION_DATA[defCode]
 			? I18N_NOTIFICATION_DATA[defCode]
 			: ''
 		: I18N_NOTIFICATION_DATA[code];
@@ -259,7 +258,7 @@ export function getUploadErrorDescByCode(code) {
  * @param {string} language
  */
 export function reload(admin, language) {
-	const start = microtime();
+	const start = new Date().getTime();
 
 	$htmlCL.add('rl-changing-language');
 
@@ -292,7 +291,7 @@ export function reload(admin, language) {
 
 						resolve();
 					},
-					500 < microtime() - start ? 1 : 500
+					500 < (new Date().getTime()) - start ? 1 : 500
 				);
 			});
 	});

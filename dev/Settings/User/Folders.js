@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { ClientSideKeyName, Notification, Magics } from 'Common/Enums';
-import { trim, noop } from 'Common/Utils';
+import { trim } from 'Common/Utils';
 import { getNotification, i18n } from 'Common/Translator';
 
 import { removeFolderFromCacheList } from 'Common/Cache';
@@ -130,23 +130,23 @@ class FoldersUserSettings {
 
 	subscribeFolder(folder) {
 		Local.set(ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(noop, folder.fullNameRaw, true);
+		Remote.folderSetSubscribe(()=>{}, folder.fullNameRaw, true);
 		folder.subScribed(true);
 	}
 
 	unSubscribeFolder(folder) {
 		Local.set(ClientSideKeyName.FoldersLashHash, '');
-		Remote.folderSetSubscribe(noop, folder.fullNameRaw, false);
+		Remote.folderSetSubscribe(()=>{}, folder.fullNameRaw, false);
 		folder.subScribed(false);
 	}
 
 	checkableTrueFolder(folder) {
-		Remote.folderSetCheckable(noop, folder.fullNameRaw, true);
+		Remote.folderSetCheckable(()=>{}, folder.fullNameRaw, true);
 		folder.checkable(true);
 	}
 
 	checkableFalseFolder(folder) {
-		Remote.folderSetCheckable(noop, folder.fullNameRaw, false);
+		Remote.folderSetCheckable(()=>{}, folder.fullNameRaw, false);
 		folder.checkable(false);
 	}
 }

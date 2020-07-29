@@ -8,10 +8,6 @@ import window from 'window';
  * @returns {Promise}
  */
 export function jassl(src, async = false) {
-	if (!window.Promise || !window.Promise.all) {
-		throw new Error('Promises are not available your environment.');
-	}
-
 	if (!src) {
 		throw new Error('src should not be empty.');
 	}
@@ -27,7 +23,7 @@ export function jassl(src, async = false) {
 			reject(new Error(src));
 		};
 
-		element.async = true === async;
+		element.async = !!async;
 		element.src = src;
 
 		window.document.body.appendChild(element);

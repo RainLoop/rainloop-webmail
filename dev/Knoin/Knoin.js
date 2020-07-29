@@ -1,4 +1,3 @@
-import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import hasher from 'hasher';
@@ -8,7 +7,7 @@ import { Magics } from 'Common/Enums';
 import { runHook } from 'Common/Plugins';
 import { $htmlCL, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
 
-import { isArray, isUnd, pString, log, isFunc, createCommandLegacy, delegateRun, isNonEmptyArray } from 'Common/Utils';
+import { pString, log, createCommandLegacy, delegateRun, isNonEmptyArray } from 'Common/Utils';
 
 let currentScreen = null,
 	defaultScreenName = '';
@@ -95,7 +94,7 @@ export function routeOn() {
  * @returns {?Object}
  */
 export function screen(screenName) {
-	return screenName && !isUnd(SCREENS[screenName]) ? SCREENS[screenName] : null;
+	return screenName && undefined !== SCREENS[screenName] ? SCREENS[screenName] : null;
 }
 
 /**
@@ -317,7 +316,7 @@ export function screenOnRoute(screenName, subPart) {
 				delegateRun(vmScreen, 'onBuild');
 			}
 
-			_.defer(() => {
+			setTimeout(() => {
 				// hide screen
 				if (currentScreen && !isSameScreen) {
 					delegateRun(currentScreen, 'onHide');
@@ -389,7 +388,7 @@ export function screenOnRoute(screenName, subPart) {
 				if (cross) {
 					cross.parse(subPart);
 				}
-			});
+			}, 1);
 		}
 	}
 }
@@ -470,7 +469,7 @@ function viewDecorator({ name, type, templateID }) {
 	return (target) => {
 		if (target) {
 			if (name) {
-				if (isArray(name)) {
+				if (Array.isArray(name)) {
 					target.__names = name;
 				} else {
 					target.__names = [name];
@@ -509,7 +508,7 @@ function commandDecorator(canExecute = true) {
 		}
 
 		const value = descriptor.value || descriptor.initializer(),
-			normCanExecute = isFunc(canExecute) ? canExecute : () => !!canExecute;
+			normCanExecute = typeof canExecute === 'function' ? canExecute : () => !!canExecute;
 
 		descriptor.value = function(...args) {
 			if (normCanExecute.call(this, this)) {
@@ -531,23 +530,30 @@ function commandDecorator(canExecute = true) {
  * @returns {Function}
  */
 function settingsMenuKeysHandler($items) {
-	return _.throttle((event, handler) => {
-		const up = handler && 'up' === handler.shortcut;
+	// throttle
+	var t;
+	return (event, handler)=>{
+		if (!t) {
+			t = setTimeout(()=>{
+				const up = handler && 'up' === handler.shortcut;
 
-		if (event && $items.length) {
-			let index = $items.index($items.filter('.selected'));
-			if (up && 0 < index) {
-				index -= 1;
-			} else if (!up && index < $items.length - 1) {
-				index += 1;
-			}
+				if (event && $items.length) {
+					let index = $items.index($items.filter('.selected'));
+					if (up && 0 < index) {
+						index -= 1;
+					} else if (!up && index < $items.length - 1) {
+						index += 1;
+					}
 
-			const resultHash = $items.eq(index).attr('href');
-			if (resultHash) {
-				setHash(resultHash, false, true);
-			}
+					const resultHash = $items.eq(index).attr('href');
+					if (resultHash) {
+						setHash(resultHash, false, true);
+					}
+				}
+				t = 0;
+			}, Magics.Time200ms);
 		}
-	}, Magics.Time200ms);
+	};
 }
 
 export {

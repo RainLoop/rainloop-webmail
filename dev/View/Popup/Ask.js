@@ -2,7 +2,6 @@ import ko from 'ko';
 import key from 'key';
 
 import { KeyState } from 'Common/Enums';
-import { isFunc } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 
 import { popup } from 'Knoin/Knoin';
@@ -46,7 +45,7 @@ class AskPopupView extends AbstractViewNext {
 	yesClick() {
 		this.cancelCommand();
 
-		if (isFunc(this.fYesAction)) {
+		if (typeof this.fYesAction === 'function') {
 			this.fYesAction.call(null);
 		}
 	}
@@ -54,7 +53,7 @@ class AskPopupView extends AbstractViewNext {
 	noClick() {
 		this.cancelCommand();
 
-		if (isFunc(this.fNoAction)) {
+		if (typeof this.fNoAction === 'function') {
 			this.fNoAction.call(null);
 		}
 	}

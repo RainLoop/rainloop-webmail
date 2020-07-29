@@ -1,7 +1,7 @@
 import window from 'window';
 
 import { ajax } from 'Common/Links';
-import { isUnd, isNormal, pString } from 'Common/Utils';
+import { isNormal, pString } from 'Common/Utils';
 import { DEFAULT_AJAX_TIMEOUT, TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT } from 'Common/Consts';
 import { Notification } from 'Common/Enums';
 import { data as GlobalsData } from 'Common/Globals';
@@ -39,7 +39,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 
 	ajaxRequest(action, isPost, timeOut, params, additionalGetString, fTrigger) {
 
-		additionalGetString = isUnd(additionalGetString) ? '' : pString(additionalGetString);
+		additionalGetString = undefined === additionalGetString ? '' : pString(additionalGetString);
 
 		let init = {
 			mode: 'same-origin',
@@ -155,7 +155,6 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 
 				return data;
 			}).catch(err => {
-window.console.log('AbstractAjaxPromises ' + action + ' request failed:', err, Notification.getKeyByValue(err));
 				if (err.name == 'AbortError') { // handle abort()
 					return Promise.reject(Notification.AjaxAbort);
 				}
@@ -164,7 +163,7 @@ window.console.log('AbstractAjaxPromises ' + action + ' request failed:', err, N
 	}
 
 	getRequest(sAction, fTrigger, sAdditionalGetString, iTimeOut) {
-		sAdditionalGetString = isUnd(sAdditionalGetString) ? '' : pString(sAdditionalGetString);
+		sAdditionalGetString = undefined === sAdditionalGetString ? '' : pString(sAdditionalGetString);
 		sAdditionalGetString = sAction + '/' + sAdditionalGetString;
 
 		return this.ajaxRequest(sAction, false, iTimeOut, null, sAdditionalGetString, fTrigger);

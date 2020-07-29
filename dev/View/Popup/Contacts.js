@@ -22,8 +22,7 @@ import {
 	windowResizeCallback,
 	isNonEmptyArray,
 	fakeMd5,
-	pInt,
-	isUnd
+	pInt
 } from 'Common/Utils';
 
 import { CONTACTS_PER_PAGE } from 'Common/Consts';
@@ -649,8 +648,8 @@ class ContactsPopupView extends AbstractViewNext {
 	}
 
 	onShow(bBackToCompose, sLastComposeFocusedField) {
-		this.bBackToCompose = isUnd(bBackToCompose) ? false : !!bBackToCompose;
-		this.sLastComposeFocusedField = isUnd(sLastComposeFocusedField) ? '' : sLastComposeFocusedField;
+		this.bBackToCompose = undefined === bBackToCompose ? false : !!bBackToCompose;
+		this.sLastComposeFocusedField = undefined === sLastComposeFocusedField ? '' : sLastComposeFocusedField;
 
 		routeOff();
 		this.reloadContactList(true);

@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender, trim, boolToAjax } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender, trim } from 'Common/Utils';
 
 import { SaveSettingsStep, StorageResultType, Magics } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
@@ -151,13 +151,13 @@ class ContactsAdminSettings {
 
 			this.enableContacts.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'ContactsEnable': boolToAjax(value)
+					'ContactsEnable': value ? '1' : '0'
 				});
 			});
 
 			this.contactsSync.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'ContactsSync': boolToAjax(value)
+					'ContactsSync': value ? '1' : '0'
 				});
 			});
 

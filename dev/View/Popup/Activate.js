@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
-import { trim, isUnd } from 'Common/Utils';
+import { trim } from 'Common/Utils';
 import { RAINLOOP_TRIAL_KEY } from 'Common/Consts';
 import { i18n, getNotification } from 'Common/Translator';
 
@@ -89,7 +89,7 @@ class ActivatePopupView extends AbstractViewNext {
 	onShow(isTrial) {
 		this.domain(Settings.settingsGet('AdminDomain'));
 		if (!this.activateProcess()) {
-			isTrial = isUnd(isTrial) ? false : !!isTrial;
+			isTrial = undefined === isTrial ? false : !!isTrial;
 
 			this.key(isTrial ? RAINLOOP_TRIAL_KEY : '');
 			this.activateText('');

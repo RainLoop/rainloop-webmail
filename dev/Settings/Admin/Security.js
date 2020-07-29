@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { trim, boolToAjax } from 'Common/Utils';
+import { trim } from 'Common/Utils';
 import { StorageResultType, Magics } from 'Common/Enums';
 
 import { settingsGet } from 'Storage/Settings';
@@ -126,37 +126,37 @@ class SecurityAdminSettings {
 	onBuild() {
 		this.capaOpenPGP.subscribe((value) => {
 			Remote.saveAdminConfig(null, {
-				'CapaOpenPGP': boolToAjax(value)
+				'CapaOpenPGP': value ? '1' : '0'
 			});
 		});
 
 		this.capaTwoFactorAuth.subscribe((value) => {
 			Remote.saveAdminConfig(null, {
-				'CapaTwoFactorAuth': boolToAjax(value)
+				'CapaTwoFactorAuth': value ? '1' : '0'
 			});
 		});
 
 		this.capaTwoFactorAuthForce.subscribe((value) => {
 			Remote.saveAdminConfig(null, {
-				'CapaTwoFactorAuthForce': boolToAjax(value)
+				'CapaTwoFactorAuthForce': value ? '1' : '0'
 			});
 		});
 
 		this.useLocalProxyForExternalImages.subscribe((value) => {
 			Remote.saveAdminConfig(null, {
-				'UseLocalProxyForExternalImages': boolToAjax(value)
+				'UseLocalProxyForExternalImages': value ? '1' : '0'
 			});
 		});
 
 		this.verifySslCertificate.subscribe((value) => {
 			Remote.saveAdminConfig(null, {
-				'VerifySslCertificate': boolToAjax(value)
+				'VerifySslCertificate': value ? '1' : '0'
 			});
 		});
 
 		this.allowSelfSigned.subscribe((value) => {
 			Remote.saveAdminConfig(null, {
-				'AllowSelfSigned': boolToAjax(value)
+				'AllowSelfSigned': value ? '1' : '0'
 			});
 		});
 	}

@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import key from 'key';
@@ -22,7 +21,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import { bMobileDevice, popupVisibility, leftPanelDisabled, moveAction } from 'Common/Globals';
 
-import { noop, noopFalse, computedPagenatorHelper, draggablePlace, friendlySize, isUnd } from 'Common/Utils';
+import { computedPagenatorHelper, draggablePlace, friendlySize } from 'Common/Utils';
 
 import { mailBox, append } from 'Common/Links';
 import { Selector } from 'Common/Selector';
@@ -401,7 +400,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		}
 
 		window.clearTimeout(this.iGoToUpUpOrDownDownTimeout);
-		this.iGoToUpUpOrDownDownTimeout = window.setTimeout(() => {
+		this.iGoToUpUpOrDownDownTimeout = setTimeout(() => {
 			let prev = null,
 				next = null,
 				temp = null,
@@ -516,7 +515,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		el.data('rl-folder', FolderStore.currentFolderFullNameRaw());
 
 		updateUidsInfo();
-		_.defer(updateUidsInfo);
+		setTimeout(updateUidsInfo,1);
 
 		return el;
 	}
@@ -569,7 +568,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 							clearMessageFlagsFromCacheByFolder(sFolderFullNameRaw);
 						}
 
-						Remote.messageSetSeenToAll(noop, sFolderFullNameRaw, true, sThreadUid ? uids : null);
+						Remote.messageSetSeenToAll(()=>{}, sFolderFullNameRaw, true, sThreadUid ? uids : null);
 						break;
 					case MessageSetAction.UnsetSeen:
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
@@ -595,7 +594,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 							clearMessageFlagsFromCacheByFolder(sFolderFullNameRaw);
 						}
 
-						Remote.messageSetSeenToAll(noop, sFolderFullNameRaw, false, sThreadUid ? uids : null);
+						Remote.messageSetSeenToAll(()=>{}, sFolderFullNameRaw, false, sThreadUid ? uids : null);
 						break;
 					// no default
 				}
@@ -668,7 +667,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	flagMessagesFast(bFlag) {
 		const checked = this.messageListCheckedOrSelected();
 		if (checked.length) {
-			if (isUnd(bFlag)) {
+			if (undefined === bFlag) {
 				const flagged = checked.filter(message => message.flagged());
 				this.setAction(
 					checked[0].folderFullNameRaw,
@@ -688,7 +687,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	seenMessagesFast(seen) {
 		const checked = this.messageListCheckedOrSelected();
 		if (checked.length) {
-			if (isUnd(seen)) {
+			if (undefined === seen) {
 				const unseen = checked.filter(message => message.unseen());
 				this.setAction(
 					checked[0].folderFullNameRaw,
@@ -932,8 +931,8 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			return false;
 		});
 
-		key('ctrl+left, command+left', KeyState.MessageView, noopFalse);
-		key('ctrl+right, command+right', KeyState.MessageView, noopFalse);
+		key('ctrl+left, command+left', KeyState.MessageView, ()=>false);
+		key('ctrl+right, command+right', KeyState.MessageView, ()=>false);
 	}
 
 	prefetchNextTick() {

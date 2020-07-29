@@ -1,9 +1,7 @@
 import $ from '$';
-import _ from '_';
 import key from 'key';
 import ko from 'ko';
 import { EventKeyCode } from 'Common/Enums';
-import { isArray, noop, noopTrue } from 'Common/Utils';
 
 class Selector {
 	list;
@@ -56,7 +54,12 @@ class Selector {
 		this.focusedItem = koFocusedItem || ko.observable(null);
 		this.selectedItem = koSelectedItem || ko.observable(null);
 
-		this.itemSelectedThrottle = _.debounce(this.itemSelected.bind(this), 300);
+		var d, o = this;
+		this.itemSelectedThrottle = (item)=>{
+			// debounce
+			d && clearTimeout(d);
+			d = setTimeout(()=>o.itemSelected(item), 300);
+		};
 
 		this.listChecked.subscribe((items) => {
 			if (items.length) {
@@ -109,7 +112,7 @@ class Selector {
 
 		this.list.subscribe(
 			(items) => {
-				if (isArray(items)) {
+				if (Array.isArray(items)) {
 					items.forEach(item => {
 						if (item) {
 							const uid = this.getItemUid(item);
@@ -147,7 +150,7 @@ class Selector {
 			this.focusedItem(null);
 			this.selectedItem(null);
 
-			if (isArray(aItems)) {
+			if (Array.isArray(aItems)) {
 				len = aCheckedCache.length;
 
 				aItems.forEach(item => {
@@ -240,10 +243,10 @@ class Selector {
 	itemSelected(item) {
 		if (this.isListChecked()) {
 			if (!item) {
-				(this.oCallbacks.onItemSelect || noop)(item || null);
+				(this.oCallbacks.onItemSelect || (()=>{}))(item || null);
 			}
 		} else if (item) {
-			(this.oCallbacks.onItemSelect || noop)(item);
+			(this.oCallbacks.onItemSelect || (()=>{}))(item);
 		}
 	}
 
@@ -351,14 +354,14 @@ class Selector {
 	 * @returns {boolean}
 	 */
 	autoSelect() {
-		return !!(this.oCallbacks.onAutoSelect || noopTrue)();
+		return !!(this.oCallbacks.onAutoSelect || (()=>true))();
 	}
 
 	/**
 	 * @param {boolean} up
 	 */
 	doUpUpOrDownDown(up) {
-		(this.oCallbacks.onUpUpOrDownDown || noopTrue)(!!up);
+		(this.oCallbacks.onUpUpOrDownDown || (()=>true))(!!up);
 	}
 
 	/**

@@ -1,4 +1,4 @@
-import { pString, pInt, isArray, trim, boolToAjax } from 'Common/Utils';
+import { pString, pInt, trim } from 'Common/Utils';
 
 import {
 	CONTACTS_SYNC_AJAX_TIMEOUT,
@@ -244,7 +244,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	filtersSave(fCallback, filters, raw, isRawIsActive) {
 		this.defaultRequest(fCallback, 'FiltersSave', {
 			'Raw': raw,
-			'RawIsActive': boolToAjax(isRawIsActive),
+			'RawIsActive': isRawIsActive ? '1' : '0',
 			'Filters': filters.map(item => item.toJson())
 		});
 	}
@@ -449,7 +449,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 		let request = true;
 		const uids = [];
 
-		if (isArray(list) && list.length) {
+		if (Array.isArray(list) && list.length) {
 			request = false;
 			list.forEach(messageListItem => {
 				if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, messageListItem.uid)) {
@@ -473,7 +473,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 		if (request) {
 			this.defaultRequest(fCallback, 'FolderInformation', {
 				'Folder': folder,
-				'FlagsUids': isArray(uids) ? uids.join(',') : '',
+				'FlagsUids': Array.isArray(uids) ? uids.join(',') : '',
 				'UidNext': getFolderInboxName() === folder ? getFolderUidNext(folder) : ''
 			});
 		} else if (SettingsStore.useThreads()) {

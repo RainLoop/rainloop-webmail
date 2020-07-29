@@ -83,7 +83,6 @@ config.paths.js = {
 			'vendors/keymaster/keymaster.js', // custom (modified)
 			'vendors/qr.js/qr.min.js', // fixed (license)
 			'vendors/bootstrap/js/bootstrap.min.js', // fixed
-			'vendors/underscore/underscore-min.custom.js',
 			'node_modules/moment/min/moment.min.js',
 			'node_modules/knockout/build/output/knockout-latest.js',
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',

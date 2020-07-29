@@ -1,5 +1,5 @@
 import window from 'window';
-import { killCtrlACtrlS, detectDropdownVisibility, createCommandLegacy, domReady } from 'Common/Utils';
+import { detectDropdownVisibility, createCommandLegacy, domReady } from 'Common/Utils';
 import { $html, $htmlCL, data as GlobalsData, bMobileDevice } from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
@@ -9,7 +9,32 @@ import { EmailModel } from 'Model/Email';
 export default (App) => {
 	GlobalsData.__APP__ = App;
 
-	window.addEventListener('keydown', killCtrlACtrlS);
+	window.addEventListener('keydown', event => {
+		event = event || window.event;
+		if (event && event.ctrlKey && !event.shiftKey && !event.altKey) {
+			const key = event.keyCode || event.which;
+			if (key === Enums.EventKeyCode.S) {
+				event.preventDefault();
+				return;
+			} else if (key === Enums.EventKeyCode.A) {
+				const sender = event.target || event.srcElement;
+				if (
+					sender &&
+					('true' === '' + sender.contentEditable || (sender.tagName && sender.tagName.match(/INPUT|TEXTAREA/i)))
+				) {
+					return;
+				}
+
+				if (window.getSelection) {
+					window.getSelection().removeAllRanges();
+				} else if (window.document.selection && window.document.selection.clear) {
+					window.document.selection.clear();
+				}
+
+				event.preventDefault();
+			}
+		}
+	});
 	window.addEventListener('unload', () => {
 		GlobalsData.bUnload = true;
 	});

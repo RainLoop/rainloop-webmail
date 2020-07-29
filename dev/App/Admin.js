@@ -1,12 +1,11 @@
 import window from 'window';
-import _ from '_';
 import ko from 'ko';
 import progressJs from 'progressJs';
 
 import { root } from 'Common/Links';
 import { getNotification } from 'Common/Translator';
 import { StorageResultType, Notification } from 'Common/Enums';
-import { pInt, isNormal, isArray, isUnd } from 'Common/Utils';
+import { pInt, isNormal } from 'Common/Utils';
 
 import * as Settings from 'Storage/Settings';
 
@@ -85,10 +84,10 @@ class AdminApp extends AbstractApp {
 					}
 				});
 
-				if (isArray(data.Result.List)) {
+				if (Array.isArray(data.Result.List)) {
 					list = data.Result.List.map(item => {
 						if (item) {
-							item.loading = ko.observable(!isUnd(loading[item.file]));
+							item.loading = ko.observable(loading[item.file] !== undefined);
 							return 'core' === item.type && !item.canBeInstalled ? null : item;
 						}
 						return null;
@@ -205,9 +204,9 @@ class AdminApp extends AbstractApp {
 			setHash(root(), true);
 			routeOff();
 
-			_.defer(() => {
-				window.location.href = '/';
-			});
+			setTimeout(() =>
+				window.location.href = '/'
+			, 1);
 		} else {
 			if (Settings.settingsGet('Auth')) {
 				startScreens([SettingsAdminScreen]);

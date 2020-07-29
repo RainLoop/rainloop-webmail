@@ -1,4 +1,3 @@
-import _ from '_';
 import $ from '$';
 import ko from 'ko';
 import key from 'key';
@@ -22,7 +21,6 @@ import { $htmlCL, leftPanelDisabled, keyScopeReal, useKeyboardShortcuts, moveAct
 import {
 	isNonEmptyArray,
 	trim,
-	noop,
 	windowResize,
 	windowResizeCallback,
 	inFocus,
@@ -542,13 +540,20 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.showFullInfo.subscribe(fCheckHeaderHeight);
 		this.message.subscribe(fCheckHeaderHeight);
 
+		var t;
 		Events.sub(
 			'window.resize',
-			_.throttle(() => {
-				setTimeout(fCheckHeaderHeight, 1);
-				setTimeout(fCheckHeaderHeight, Magics.Time200ms);
-				setTimeout(fCheckHeaderHeight, Magics.Time500ms);
-			}, Magics.Time50ms)
+			()=>{
+				// throttle
+				if (!t) {
+					t = setTimeout(()=>{
+						setTimeout(fCheckHeaderHeight, 1);
+						setTimeout(fCheckHeaderHeight, Magics.Time200ms);
+						setTimeout(fCheckHeaderHeight, Magics.Time500ms);
+						t = 0;
+					}, Magics.Time50ms);
+				}
+			}
 		);
 
 		this.showFullInfo.subscribe((value) => {
@@ -932,7 +937,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	readReceipt(oMessage) {
 		if (oMessage && oMessage.readReceipt()) {
 			Remote.sendReadReceiptMessage(
-				noop,
+				()=>{},
 				oMessage.folderFullNameRaw,
 				oMessage.uid,
 				oMessage.readReceipt(),

@@ -1,8 +1,8 @@
-import _ from '_';
+import window from 'window';
 
 import { Focused, Capa, ClientSideKeyName, Magics } from 'Common/Enums';
 import { $html, leftPanelDisabled, leftPanelType, moveAction, bMobileDevice } from 'Common/Globals';
-import { pString, pInt, decodeURI, windowResizeCallback } from 'Common/Utils';
+import { pString, pInt, windowResizeCallback } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
 
@@ -131,9 +131,9 @@ class MailBoxUserScreen extends AbstractScreen {
 	 */
 	onBuild() {
 		if (!bMobileDevice && !Settings.appSettingsGet('mobile')) {
-			_.defer(() => {
-				getApp().initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize);
-			});
+			setTimeout(() =>
+				getApp().initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize)
+			, 1);
 		}
 
 		$html.on('click', '#rl-right', () => {
@@ -157,7 +157,7 @@ class MailBoxUserScreen extends AbstractScreen {
 					vals[1] = 1;
 				}
 
-				return [decodeURI(vals[0]), vals[1], decodeURI(vals[2])];
+				return [window.decodeURI(vals[0]), vals[1], window.decodeURI(vals[2])];
 			},
 			fNormD = (request, vals) => {
 				vals[0] = pString(vals[0]);
@@ -167,7 +167,7 @@ class MailBoxUserScreen extends AbstractScreen {
 					vals[0] = inboxFolderName;
 				}
 
-				return [decodeURI(vals[0]), 1, decodeURI(vals[1])];
+				return [window.decodeURI(vals[0]), 1, window.decodeURI(vals[1])];
 			};
 
 		return [

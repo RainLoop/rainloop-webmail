@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import ko from 'ko';
 
 import { Capa, StorageResultType } from 'Common/Enums';
@@ -69,7 +68,7 @@ class AccountsUserSettings {
 						setHash(root(), true);
 						routeOff();
 
-						_.defer(() => window.location.reload());
+						setTimeout(() => window.location.reload(), 1);
 					} else {
 						getApp().accountsAndIdentities();
 					}

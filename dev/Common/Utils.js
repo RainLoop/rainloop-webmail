@@ -1,22 +1,15 @@
 import window from 'window';
 import $ from '$';
-import _ from '_';
 import ko from 'ko';
 import Autolinker from 'Autolinker';
 
 import { $win, $div, $hcont, dropdownVisibility, data as GlobalsData } from 'Common/Globals';
-import { ComposeType, EventKeyCode, SaveSettingsStep, FolderType } from 'Common/Enums';
+import { ComposeType, SaveSettingsStep, FolderType } from 'Common/Enums';
 import { Mime } from 'Common/Mime';
-import { jassl } from 'Common/Jassl';
 
 const trim = $.trim;
 const isArray = Array.isArray;
-const isObject = v => typeof v === 'object';
-const isFunc = v => typeof v === 'function';
-const isUnd = v => undefined === v;
-const noop = () => {}; // eslint-disable-line no-empty-function
-const noopTrue = () => true;
-const noopFalse = () => false;
+const decodeURIComponent = component => window.decodeURIComponent(component);
 
 var htmlspecialchars = ((de,se,gt,lt,sq,dq,bt) => {
 	return (str, quote_style = 3, double_encode = true) => {
@@ -30,23 +23,14 @@ var htmlspecialchars = ((de,se,gt,lt,sq,dq,bt) => {
 	};
 })(/&/g,/&(?![\w#]+;)/gi,/</g,/>/g,/'/g,/"/g,/`/g);
 
-export { trim, isArray, isObject, isFunc, isUnd, noop, noopTrue, noopFalse, jassl };
-
-/**
- * @param {Function} func
- */
-export function silentTryCatch(func) {
-	try {
-		func();
-	} catch (e) {} // eslint-disable-line no-empty
-}
+export { trim };
 
 /**
  * @param {*} value
  * @returns {boolean}
  */
 export function isNormal(value) {
-	return !isUnd(value) && null !== value;
+	return undefined !== value && null !== value;
 }
 
 /**
@@ -81,59 +65,11 @@ export function pString(value) {
 }
 
 /**
- * @param {*} value
- * @returns {boolean}
- */
-export function pBool(value) {
-	return !!value;
-}
-
-/**
- * @param {*} value
- * @returns {string}
- */
-export function boolToAjax(value) {
-	return value ? '1' : '0';
-}
-
-/**
  * @param {*} values
  * @returns {boolean}
  */
 export function isNonEmptyArray(values) {
 	return isArray(values) && values.length;
-}
-
-/**
- * @param {string} component
- * @returns {string}
- */
-export function encodeURIComponent(component) {
-	return window.encodeURIComponent(component);
-}
-
-/**
- * @param {string} component
- * @returns {string}
- */
-export function decodeURIComponent(component) {
-	return window.decodeURIComponent(component);
-}
-
-/**
- * @param {string} url
- * @returns {string}
- */
-export function decodeURI(url) {
-	return window.decodeURI(url);
-}
-
-/**
- * @param {string} url
- * @returns {string}
- */
-export function encodeURI(url) {
-	return window.encodeURI(url);
 }
 
 /**
@@ -210,28 +146,16 @@ export function splitPlainText(text, len = 100) {
 	return prefix + result;
 }
 
-const timeOutAction = (function() {
+const timeOutAction = (() => {
 	const timeOuts = {};
 	return (action, fFunction, timeOut) => {
-		timeOuts[action] = isUnd(timeOuts[action]) ? 0 : timeOuts[action];
+		timeOuts[action] = undefined === timeOuts[action] ? 0 : timeOuts[action];
 		window.clearTimeout(timeOuts[action]);
 		timeOuts[action] = window.setTimeout(fFunction, timeOut);
 	};
 })();
 
-const timeOutActionSecond = (function() {
-	const timeOuts = {};
-	return (action, fFunction, timeOut) => {
-		if (!timeOuts[action]) {
-			timeOuts[action] = window.setTimeout(() => {
-				fFunction();
-				timeOuts[action] = 0;
-			}, timeOut);
-		}
-	};
-})();
-
-export { timeOutAction, timeOutActionSecond };
+export { timeOutAction };
 
 /**
  * @param {any} m
@@ -247,7 +171,7 @@ export function deModule(m) {
 export function inFocus() {
 	try {
 		if (window.document.activeElement) {
-			if (isUnd(window.document.activeElement.__inFocusCache)) {
+			if (undefined === window.document.activeElement.__inFocusCache) {
 				window.document.activeElement.__inFocusCache = $(window.document.activeElement).is(
 					'input,textarea,iframe,.cke_editable'
 				);
@@ -396,36 +320,6 @@ export function delegateRun(object, methodName, params, delay = 0) {
 }
 
 /**
- * @param {?} event
- */
-export function killCtrlACtrlS(event) {
-	event = event || window.event;
-	if (event && event.ctrlKey && !event.shiftKey && !event.altKey) {
-		const key = event.keyCode || event.which;
-		if (key === EventKeyCode.S) {
-			event.preventDefault();
-			return;
-		} else if (key === EventKeyCode.A) {
-			const sender = event.target || event.srcElement;
-			if (
-				sender &&
-				('true' === '' + sender.contentEditable || (sender.tagName && sender.tagName.match(/INPUT|TEXTAREA/i)))
-			) {
-				return;
-			}
-
-			if (window.getSelection) {
-				window.getSelection().removeAllRanges();
-			} else if (window.document.selection && window.document.selection.clear) {
-				window.document.selection.clear();
-			}
-
-			event.preventDefault();
-		}
-	}
-}
-
-/**
  * @param {(Object|null|undefined)} context
  * @param {Function} fExecute
  * @param {(Function|boolean|null)=} fCanExecute = true
@@ -440,11 +334,11 @@ export function createCommandLegacy(context, fExecute, fCanExecute = true) {
 		return false;
 	};
 
-	fResult = fExecute ? fNonEmpty : noop;
+	fResult = fExecute ? fNonEmpty : ()=>{};
 	fResult.enabled = ko.observable(true);
 	fResult.isCommand = true;
 
-	if (isFunc(fCanExecute)) {
+	if (typeof fCanExecute === 'function') {
 		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && fCanExecute.call(context));
 	} else {
 		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && !!fCanExecute);
@@ -469,28 +363,6 @@ export const convertThemeName = theme => {
 			.replace(/\s+/g, ' ')
 	);
 };
-
-/**
- * @param {string} name
- * @returns {string}
- */
-export function quoteName(name) {
-	return name.replace(/["]/g, '\\"');
-}
-
-/**
- * @returns {number}
- */
-export function microtime() {
-	return new window.Date().getTime();
-}
-
-/**
- * @returns {number}
- */
-export function timestamp() {
-	return window.Math.round(microtime() / 1000);
-}
 
 /**
  *
@@ -525,7 +397,7 @@ export function draggablePlace() {
  * @returns {void}
  */
 export function defautOptionsAfterRender(domItem, item) {
-	if (item && !isUnd(item.disabled) && domItem) {
+	if (item && undefined !== item.disabled && domItem) {
 		$(domItem)
 			.toggleClass('disabled', item.disabled)
 			.prop('disabled', item.disabled);
@@ -886,7 +758,7 @@ export function folderListOptionsBuilder(
 
 	const sDeepPrefix = '\u00A0\u00A0\u00A0';
 
-	bBuildUnvisible = isUnd(bBuildUnvisible) ? false : !!bBuildUnvisible;
+	bBuildUnvisible = undefined === bBuildUnvisible ? false : !!bBuildUnvisible;
 	bSystem = !isNormal(bSystem) ? 0 < aSystem.length : bSystem;
 	iUnDeep = !isNormal(iUnDeep) ? 0 : iUnDeep;
 	fDisableCallback = isNormal(fDisableCallback) ? fDisableCallback : null;
@@ -1016,9 +888,14 @@ export function selectElement(element) {
 	}
 }
 
-export const detectDropdownVisibility = _.debounce(() => {
-	dropdownVisibility(!!GlobalsData.aBootstrapDropdowns.find(item => item.hasClass('open')));
-}, 50);
+var dv;
+export const detectDropdownVisibility = ()=>{
+	// leading debounce
+	dv && clearTimeout(dv);
+	dv = setTimeout(()=>
+		dropdownVisibility(!!GlobalsData.aBootstrapDropdowns.find(item => item.hasClass('open')))
+	, 50);
+};
 
 /**
  * @param {boolean=} delay = false
@@ -1056,30 +933,6 @@ export function getConfigurationFromScriptTag(configuration) {
 }
 
 /**
- * @param {mixed} mPropOrValue
- * @param {mixed} value
- */
-export function disposeOne(propOrValue, value) {
-	const disposable = value || propOrValue;
-	if (disposable && 'function' === typeof disposable.dispose) {
-		disposable.dispose();
-	}
-}
-
-/**
- * @param {Object} object
- */
-export function disposeObject(object) {
-	if (object) {
-		if (isArray(object.disposables)) {
-			object.disposables.forEach(disposeOne);
-		}
-
-		ko.utils.objectForEach(object, disposeOne);
-	}
-}
-
-/**
  * @param {Object|Array} objectOrObjects
  * @returns {void}
  */
@@ -1102,7 +955,7 @@ export function delegateRunOnDestroy(objectOrObjects) {
  */
 export function appendStyles($styleTag, css) {
 	if ($styleTag && $styleTag[0]) {
-		if ($styleTag[0].styleSheet && !isUnd($styleTag[0].styleSheet.cssText)) {
+		if ($styleTag[0].styleSheet && undefined !== $styleTag[0].styleSheet.cssText) {
 			$styleTag[0].styleSheet.cssText = css;
 		} else {
 			$styleTag.text(css);
@@ -1122,7 +975,7 @@ let __themeTimer = 0,
  * @param {function=} themeTrigger = noop
  * @returns {void}
  */
-export function changeTheme(value, themeTrigger = noop) {
+export function changeTheme(value, themeTrigger = ()=>{}) {
 	const themeLink = $('#app-theme-link'),
 		clearTimer = () => {
 			__themeTimer = window.setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
@@ -1292,7 +1145,7 @@ export function mimeContentType(fileName) {
 	}
 
 	ext = getFileExtension(fileName);
-	if (ext && ext.length && !isUnd(Mime[ext])) {
+	if (ext && ext.length && undefined !== Mime[ext]) {
 		result = Mime[ext];
 	}
 
@@ -1384,7 +1237,7 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 
 		params = simpleQueryParser(query);
 
-		if (!isUnd(params.to)) {
+		if (undefined !== params.to) {
 			to = EmailModel.parseEmailLine(decodeURIComponent(email + ',' + params.to));
 			to = Object.values(
 				to.reduce((result, value) => {
@@ -1404,11 +1257,11 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 			to = EmailModel.parseEmailLine(email);
 		}
 
-		if (!isUnd(params.cc)) {
+		if (undefined !== params.cc) {
 			cc = EmailModel.parseEmailLine(decodeURIComponent(params.cc));
 		}
 
-		if (!isUnd(params.bcc)) {
+		if (undefined !== params.bcc) {
 			bcc = EmailModel.parseEmailLine(decodeURIComponent(params.bcc));
 		}
 
@@ -1418,8 +1271,8 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 			to,
 			cc,
 			bcc,
-			isUnd(params.subject) ? null : pString(decodeURIComponent(params.subject)),
-			isUnd(params.body) ? null : plainToHtml(pString(decodeURIComponent(params.body)))
+			undefined === params.subject ? null : pString(decodeURIComponent(params.subject)),
+			undefined === params.body ? null : plainToHtml(pString(decodeURIComponent(params.body)))
 		]);
 
 		return true;
@@ -1445,15 +1298,15 @@ export function domReady(fn) {
 	//	}
 }
 
-export const windowResize = _.debounce((timeout) => {
-	if (isUnd(timeout) || null === timeout) {
+var wr;
+export const windowResize = timeout => {
+	wr && clearTimeout(wr);
+	if (undefined === timeout || null === timeout) {
 		$win.trigger('resize');
 	} else {
-		window.setTimeout(() => {
-			$win.trigger('resize');
-		}, timeout);
+		wr = setTimeout(()=>$win.trigger('resize'), timeout);
 	}
-}, 50);
+};
 
 /**
  * @returns {void}

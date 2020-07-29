@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { isUnd, pInt, friendlySize, mimeContentType, getFileExtension } from 'Common/Utils';
+import { pInt, friendlySize, mimeContentType, getFileExtension } from 'Common/Utils';
 
 import { staticIconClass, staticFileType } from 'Model/Attachment';
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -75,8 +75,8 @@ class ComposeAttachmentModel extends AbstractModel {
 		let bResult = false;
 		if (json) {
 			this.fileName(json.Name);
-			this.size(isUnd(json.Size) ? 0 : pInt(json.Size));
-			this.tempName(isUnd(json.TempName) ? '' : json.TempName);
+			this.size(undefined === json.Size ? 0 : pInt(json.Size));
+			this.tempName(undefined === json.TempName ? '' : json.TempName);
 			this.isInline = false;
 
 			bResult = true;

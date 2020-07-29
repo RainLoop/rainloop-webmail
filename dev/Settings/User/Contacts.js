@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { Magics } from 'Common/Enums';
-import { boolToAjax } from 'Common/Utils';
 
 import AppStore from 'Stores/User/App';
 import ContactStore from 'Stores/User/Contact';
@@ -32,7 +31,7 @@ class ContactsUserSettings {
 	onBuild() {
 		this.contactsAutosave.subscribe((value) => {
 			Remote.saveSettings(null, {
-				'ContactsAutosave': boolToAjax(value)
+				'ContactsAutosave': value ? '1' : '0'
 			});
 		});
 

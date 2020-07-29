@@ -3,7 +3,6 @@ import ko from 'ko';
 import {
 	trim,
 	pInt,
-	boolToAjax,
 	settingsSaveHelperSimpleFunction,
 	changeTheme,
 	convertThemeName,
@@ -116,49 +115,49 @@ class GeneralAdminSettings {
 
 			this.capaAdditionalAccounts.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'CapaAdditionalAccounts': boolToAjax(value)
+					'CapaAdditionalAccounts': value ? '1' : '0'
 				});
 			});
 
 			this.capaIdentities.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'CapaIdentities': boolToAjax(value)
+					'CapaIdentities': value ? '1' : '0'
 				});
 			});
 
 			this.capaTemplates.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'CapaTemplates': boolToAjax(value)
+					'CapaTemplates': value ? '1' : '0'
 				});
 			});
 
 			this.capaAttachmentThumbnails.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'CapaAttachmentThumbnails': boolToAjax(value)
+					'CapaAttachmentThumbnails': value ? '1' : '0'
 				});
 			});
 
 			this.capaThemes.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'CapaThemes': boolToAjax(value)
+					'CapaThemes': value ? '1' : '0'
 				});
 			});
 
 			this.capaUserBackground.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'CapaUserBackground': boolToAjax(value)
+					'CapaUserBackground': value ? '1' : '0'
 				});
 			});
 
 			this.allowLanguagesOnSettings.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'AllowLanguagesOnSettings': boolToAjax(value)
+					'AllowLanguagesOnSettings': value ? '1' : '0'
 				});
 			});
 
 			this.newMoveToFolder.subscribe((value) => {
 				Remote.saveAdminConfig(null, {
-					'NewMoveToFolder': boolToAjax(value)
+					'NewMoveToFolder': value ? '1' : '0'
 				});
 			});
 		}, Magics.Time50ms);

@@ -1,5 +1,5 @@
 import window from 'window';
-import { pString, pInt, isUnd, isNormal, trim, encodeURIComponent } from 'Common/Utils';
+import { pString, pInt, isNormal, trim } from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 
 const ROOT = './',
@@ -58,7 +58,7 @@ export function rootUser() {
  * @returns {string}
  */
 export function attachmentRaw(type, download, customSpecSuffix) {
-	customSpecSuffix = isUnd(customSpecSuffix) ? AUTH_PREFIX : customSpecSuffix;
+	customSpecSuffix = undefined === customSpecSuffix ? AUTH_PREFIX : customSpecSuffix;
 	return (
 		SERVER_PREFIX +
 		'/Raw/' +
@@ -160,7 +160,7 @@ export function append() {
  * @returns {string}
  */
 export function change(email) {
-	return serverRequest('Change') + encodeURIComponent(email) + '/';
+	return serverRequest('Change') + window.encodeURIComponent(email) + '/';
 }
 
 /**
@@ -204,7 +204,7 @@ export function messageDownloadLink(requestHash) {
  * @returns {string}
  */
 export function avatarLink(email) {
-	return SERVER_PREFIX + '/Raw/0/Avatar/' + encodeURIComponent(email) + '/';
+	return SERVER_PREFIX + '/Raw/0/Avatar/' + window.encodeURIComponent(email) + '/';
 }
 
 /**

@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import $ from '$';
 import { htmlEditorDefaultConfig, htmlEditorLangsMap } from 'Common/Globals';
 import { EventKeyCode, Magics } from 'Common/Enums';
@@ -35,7 +34,16 @@ class HtmlEditor {
 		this.element = element;
 		this.$element = $(element);
 
-		this.resize = _.throttle(this.resizeEditor.bind(this), 100);
+		// throttle
+		var t, o = this;
+		this.resize = ()=>{
+			if (!t) {
+				t = setTimeout(()=>{
+					o.resizeEditor();
+					t = 0;
+				}, 100);
+			}
+		};
 
 		this.init();
 	}

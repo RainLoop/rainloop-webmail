@@ -1,6 +1,5 @@
 import window from 'window';
 import Cookies from 'js-cookie';
-import { isUnd } from 'Common/Utils';
 import { CLIENT_SIDE_STORAGE_INDEX_NAME } from 'Common/Consts';
 
 class CookieDriver {
@@ -39,7 +38,7 @@ class CookieDriver {
 
 		try {
 			const storageResult = Cookies.getJSON(CLIENT_SIDE_STORAGE_INDEX_NAME);
-			result = storageResult && !isUnd(storageResult[key]) ? storageResult[key] : null;
+			result = storageResult && undefined !== storageResult[key] ? storageResult[key] : null;
 		} catch (e) {} // eslint-disable-line no-empty
 
 		return result;

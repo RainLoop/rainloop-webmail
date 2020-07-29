@@ -4,7 +4,7 @@ import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 
 import { SaveSettingsStep, Magics, EditorDefaultType, Layout } from 'Common/Enums';
 
-import { settingsSaveHelperSimpleFunction, convertLangName, isArray, timeOutAction, boolToAjax } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, convertLangName, timeOutAction } from 'Common/Utils';
 
 import { i18n, trigger as translatorTrigger, reload as translatorReload } from 'Common/Translator';
 
@@ -55,7 +55,7 @@ class GeneralUserSettings {
 
 		this.identityMain = ko.computed(() => {
 			const list = this.identities();
-			return isArray(list) ? list.find(item => item && !item.id()) : null;
+			return Array.isArray(list) ? list.find(item => item && !item.id()) : null;
 		});
 
 		this.identityMainDesc = ko.computed(() => {
@@ -117,16 +117,16 @@ class GeneralUserSettings {
 
 			this.editorDefaultType.subscribe(Remote.saveSettingsHelper('EditorDefaultType', null, f0));
 			this.messagesPerPage.subscribe(Remote.saveSettingsHelper('MPP', null, f1));
-			this.showImages.subscribe(Remote.saveSettingsHelper('ShowImages', boolToAjax));
+			this.showImages.subscribe(Remote.saveSettingsHelper('ShowImages', v=>v?'1':'0'));
 
-			this.useCheckboxesInList.subscribe(Remote.saveSettingsHelper('UseCheckboxesInList', boolToAjax));
+			this.useCheckboxesInList.subscribe(Remote.saveSettingsHelper('UseCheckboxesInList', v=>v?'1':'0'));
 
 			this.enableDesktopNotification.subscribe((value) => {
 				timeOutAction(
 					'SaveDesktopNotifications',
 					() => {
 						Remote.saveSettings(null, {
-							'DesktopNotifications': boolToAjax(value)
+							'DesktopNotifications': value ? '1' : '0'
 						});
 					},
 					Magics.Time3s
@@ -138,7 +138,7 @@ class GeneralUserSettings {
 					'SaveSoundNotification',
 					() => {
 						Remote.saveSettings(null, {
-							'SoundNotification': boolToAjax(value)
+							'SoundNotification': value ? '1' : '0'
 						});
 					},
 					Magics.Time3s
@@ -150,7 +150,7 @@ class GeneralUserSettings {
 					'SaveReplySameFolder',
 					() => {
 						Remote.saveSettings(null, {
-							'ReplySameFolder': boolToAjax(value)
+							'ReplySameFolder': value ? '1' : '0'
 						});
 					},
 					Magics.Time3s
@@ -160,7 +160,7 @@ class GeneralUserSettings {
 			this.useThreads.subscribe((value) => {
 				MessageStore.messageList([]);
 				Remote.saveSettings(null, {
-					'UseThreads': boolToAjax(value)
+					'UseThreads': value ? '1' : '0'
 				});
 			});
 

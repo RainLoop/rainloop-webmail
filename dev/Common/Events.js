@@ -1,4 +1,3 @@
-import { isObject, isUnd } from 'Common/Utils';
 import * as Plugins from 'Common/Plugins';
 
 const SUBS = {};
@@ -9,7 +8,7 @@ const SUBS = {};
  * @param {Object=} context
  */
 export function sub(name, func, context) {
-	if (isObject(name)) {
+	if (typeof name === 'object') {
 		context = func || null;
 		func = null;
 
@@ -17,7 +16,7 @@ export function sub(name, func, context) {
 			sub(subName, subFunc, context);
 		});
 	} else {
-		if (isUnd(SUBS[name])) {
+		if (undefined === SUBS[name]) {
 			SUBS[name] = [];
 		}
 
@@ -32,7 +31,7 @@ export function sub(name, func, context) {
 export function pub(name, args) {
 	Plugins.runHook('rl-pub', [name, args]);
 
-	if (!isUnd(SUBS[name])) {
+	if (undefined !== SUBS[name]) {
 		SUBS[name].forEach(items => {
 			if (items[0]) {
 				items[0].apply(items[1] || null, args || []);

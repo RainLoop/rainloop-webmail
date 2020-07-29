@@ -1,5 +1,4 @@
 import ko from 'ko';
-import { isArray } from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 
 class ThemeStore {
@@ -14,7 +13,7 @@ class ThemeStore {
 	populate() {
 		const themes = Settings.appSettingsGet('themes');
 
-		this.themes(isArray(themes) ? themes : []);
+		this.themes(Array.isArray(themes) ? themes : []);
 		this.theme(Settings.settingsGet('Theme'));
 		this.themeBackgroundName(Settings.settingsGet('UserBackgroundName'));
 		this.themeBackgroundHash(Settings.settingsGet('UserBackgroundHash'));

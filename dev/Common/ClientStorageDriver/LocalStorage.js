@@ -1,5 +1,4 @@
 import window from 'window';
-import { isUnd } from 'Common/Utils';
 import { isStorageSupported } from 'Storage/RainLoop';
 import { CLIENT_SIDE_STORAGE_INDEX_NAME } from 'Common/Consts';
 
@@ -49,7 +48,7 @@ class LocalStorageDriver {
 			const storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null,
 				storageResult = null === storageValue ? null : window.JSON.parse(storageValue);
 
-			return storageResult && !isUnd(storageResult[key]) ? storageResult[key] : null;
+			return storageResult && undefined !== storageResult[key] ? storageResult[key] : null;
 		} catch (e) {} // eslint-disable-line no-empty
 
 		return null;

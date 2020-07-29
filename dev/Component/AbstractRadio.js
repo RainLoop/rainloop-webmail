@@ -1,5 +1,4 @@
 import ko from 'ko';
-import { isUnd } from 'Common/Utils';
 import { AbstractComponent } from 'Component/Abstract';
 
 class AbstractRadio extends AbstractComponent {
@@ -12,12 +11,12 @@ class AbstractRadio extends AbstractComponent {
 		this.values = ko.observableArray([]);
 
 		this.value = params.value;
-		if (isUnd(this.value) || !this.value.subscribe) {
+		if (undefined === this.value || !this.value.subscribe) {
 			this.value = ko.observable('');
 		}
 
-		this.inline = isUnd(params.inline) ? false : params.inline;
-		this.readOnly = isUnd(params.readOnly) ? false : !!params.readOnly;
+		this.inline = undefined === params.inline ? false : params.inline;
+		this.readOnly = undefined === params.readOnly ? false : !!params.readOnly;
 
 		if (params.values) {
 			this.values(Object.entries(params.values).map((label, value) => ({ label: label, value: value })));

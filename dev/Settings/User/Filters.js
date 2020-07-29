@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { windowResizeCallback, isArray, trim, delegateRunOnDestroy } from 'Common/Utils';
+import { windowResizeCallback, trim, delegateRunOnDestroy } from 'Common/Utils';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
@@ -107,7 +107,7 @@ class FiltersUserSettings {
 				this.filters.loading(false);
 				this.serverError(false);
 
-				if (StorageResultType.Success === result && data && data.Result && isArray(data.Result.Filters)) {
+				if (StorageResultType.Success === result && data && data.Result && Array.isArray(data.Result.Filters)) {
 					this.inited(true);
 					this.serverError(false);
 
@@ -121,7 +121,7 @@ class FiltersUserSettings {
 					this.modules(data.Result.Modules ? data.Result.Modules : {});
 
 					this.filterRaw(data.Result.Raw || '');
-					this.filterRaw.capa(isArray(data.Result.Capa) ? data.Result.Capa.join(' ') : '');
+					this.filterRaw.capa(Array.isArray(data.Result.Capa) ? data.Result.Capa.join(' ') : '');
 					this.filterRaw.active(!!data.Result.RawIsActive);
 					this.filterRaw.allow(!!data.Result.RawIsAllow);
 				} else {

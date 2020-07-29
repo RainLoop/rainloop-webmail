@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import $ from '$';
 import Opentip from 'Opentip';
 import Pikaday from 'pikaday';
@@ -81,14 +80,21 @@ ko.bindingHandlers.json = {
 
 ko.bindingHandlers.scrollerShadows = {
 	init: (element) => {
+		var t;
 		const limit = 8,
 			$el = $(element),
 			cont = $el.find('[data-scroller-shadows-content]')[0] || null,
-			fFunc = _.throttle(() => {
-				$el
-					.toggleClass('scroller-shadow-top', limit < cont.scrollTop)
-					.toggleClass('scroller-shadow-bottom', cont.scrollTop + limit < cont.scrollHeight - cont.clientHeight);
-			}, 100);
+			// throttle
+			fFunc = ()=>{
+				if (!t) {
+					t = setTimeout(()=>{
+						$el
+							.toggleClass('scroller-shadow-top', limit < cont.scrollTop)
+							.toggleClass('scroller-shadow-bottom', cont.scrollTop + limit < cont.scrollHeight - cont.clientHeight);
+						t = 0;
+					}, 100);
+				}
+			};
 
 		if (cont) {
 			$(cont).on('scroll resize', fFunc);

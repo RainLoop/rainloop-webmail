@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import ko from 'ko';
 import key from 'key';
 import ssm from 'ssm';
@@ -40,19 +39,26 @@ class AbstractApp extends AbstractBoot {
 			Events.pub('window.resize');
 		});
 
+		var t;
 		Events.sub(
 			'window.resize',
-			_.throttle(() => {
-				const iH = $win.height(),
-					iW = $win.height();
+			()=>{
+				// throttle
+				if (!t) {
+					t = setTimeout(()=>{
+						const iH = $win.height(),
+							iW = $win.height();
 
-				if ($win.__sizes[0] !== iH || $win.__sizes[1] !== iW) {
-					$win.__sizes[0] = iH;
-					$win.__sizes[1] = iW;
+						if ($win.__sizes[0] !== iH || $win.__sizes[1] !== iW) {
+							$win.__sizes[0] = iH;
+							$win.__sizes[1] = iW;
 
-					Events.pub('window.resize.real');
+							Events.pub('window.resize.real');
+						}
+						t = 0;
+					}, Magics.Time50ms);
 				}
-			}, Magics.Time50ms)
+			}
 		);
 
 		// DEBUG
@@ -76,9 +82,14 @@ class AbstractApp extends AbstractBoot {
 				$htmlCL.remove('rl-ctrl-key-pressed');
 			}
 		});
-		const fn = _.debounce(() => {
-			Events.pub('rl.auto-logout-refresh');
-		}, Magics.Time5s);
+
+		var d;
+		const fn = ()=>{
+			// debounce
+			d && clearTimeout(d);
+			d = setTimeout(()=>Events.pub('rl.auto-logout-refresh'), Magics.Time5s);
+		}
+
 		$doc.addEventListener('mousemove', fn);
 		$doc.addEventListener('keypress', fn);
 		$doc.addEventListener('click', fn);

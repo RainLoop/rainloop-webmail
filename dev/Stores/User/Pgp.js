@@ -1,9 +1,8 @@
 import ko from 'ko';
-import _ from '_';
 import $ from '$';
 
 import { i18n } from 'Common/Translator';
-import { log, isArray, isNonEmptyArray, pString, isUnd, trim } from 'Common/Utils';
+import { log, isNonEmptyArray, pString, trim } from 'Common/Utils';
 
 import AccountStore from 'Stores/User/Account';
 
@@ -56,7 +55,7 @@ class PgpUserStore {
 	}
 
 	findPrivateKeysByEncryptionKeyIds(encryptionKeyIds, recipients, returnWrapKeys) {
-		let result = isArray(encryptionKeyIds)
+		let result = Array.isArray(encryptionKeyIds)
 			? encryptionKeyIds.map(id => {
 					const key = id && id.toHex ? this.findPrivateKeyByHex(id.toHex()) : null;
 					return key ? (returnWrapKeys ? [key] : key.getNativeKeys()) : [null];
@@ -191,7 +190,7 @@ class PgpUserStore {
 				if (publicKeys && publicKeys.length) {
 					try {
 						const result = message.verify(publicKeys),
-							valid = (_.isArray(result) ? result : []).find(item => item && item.valid && item.keyid);
+							valid = (Array.isArray(result) ? result : []).find(item => item && item.valid && item.keyid);
 
 						if (valid && valid.keyid && valid.keyid && valid.keyid.toHex) {
 							fCallback(this.findPublicKeyByHex(valid.keyid.toHex()));
@@ -232,7 +231,7 @@ class PgpUserStore {
 				.attr('title', title);
 		}
 
-		if (!isUnd(text)) {
+		if (undefined !== text) {
 			dom.text(trim(text));
 		}
 	}

@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import ko from 'ko';
 import $ from '$';
 
@@ -8,7 +7,6 @@ import { Magics, Layout, Focused, MessageSetAction, StorageResultType, Notificat
 import {
 	trim,
 	isNormal,
-	isArray,
 	pInt,
 	pString,
 	plainToHtml,
@@ -102,7 +100,16 @@ class MessageUserStore {
 
 		this.onMessageResponse = this.onMessageResponse.bind(this);
 
-		this.purgeMessageBodyCacheThrottle = _.throttle(this.purgeMessageBodyCache, Magics.Time30s);
+		// throttle
+		var t, o = this;
+		this.purgeMessageBodyCacheThrottle = ()=>{
+			if (!t) {
+				t = setTimeout(()=>{
+					o.purgeMessageBodyCache();
+					t = 0;
+				}, Magics.Time30s);
+			}
+		};
 	}
 
 	computers() {
@@ -184,14 +191,17 @@ class MessageUserStore {
 			this.messageListCompleteLoadingThrottleForAnimation(value);
 		});
 
+		var d;
 		this.messageList.subscribe(
-			_.debounce((list) => {
-				list.forEach(item => {
+			(list)=>{
+				// debounce
+				d && clearTimeout(d);
+				d = setTimeout(()=>list.forEach(item => {
 					if (item && item.newForAnimation()) {
 						item.newForAnimation(false);
 					}
-				});
-			}, Magics.Time500ms)
+				}), Magics.Time500ms);
+			}
 		);
 
 		this.message.subscribe((message) => {
@@ -249,7 +259,7 @@ class MessageUserStore {
 
 	initUidNextAndNewMessages(folder, uidNext, newMessages) {
 		if (getFolderInboxName() === folder && isNormal(uidNext) && uidNext) {
-			if (isArray(newMessages) && newMessages.length) {
+			if (Array.isArray(newMessages) && newMessages.length) {
 				newMessages.forEach(item => {
 					addNewMessageCache(folder, item.Uid);
 				});
@@ -717,7 +727,7 @@ class MessageUserStore {
 			data.Result &&
 			'Collection/MessageCollection' === data.Result['@Object'] &&
 			data.Result['@Collection'] &&
-			isArray(data.Result['@Collection'])
+			Array.isArray(data.Result['@Collection'])
 		) {
 			let newCount = 0,
 				unreadCountChange = false;

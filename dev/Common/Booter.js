@@ -88,7 +88,6 @@ window.__initAppData = data => {
 	const appData = window.__rlah_data(), p = progressJs;
 
 	if (
-		jassl &&
 		p &&
 		appData &&
 		appData.TemplatesLink &&

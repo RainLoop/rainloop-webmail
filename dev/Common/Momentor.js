@@ -1,5 +1,4 @@
 import window from 'window';
-import _ from '_';
 import $ from '$';
 import moment from 'moment';
 import { i18n } from 'Common/Translator';
@@ -7,21 +6,22 @@ import { i18n } from 'Common/Translator';
 let _moment = null;
 let _momentNow = 0;
 
-const updateMomentNow = _.debounce(
-	() => {
+var d, du;
+const updateMomentNow = ()=>{
+	// leading debounce
+	if (!d) {
+		d = setTimeout(()=>d=0, 500);
 		_moment = moment();
-	},
-	500,
-	true
-);
+	}
+};
 
-const updateMomentNowUnix = _.debounce(
-	() => {
+const updateMomentNowUnix = ()=>{
+	// leading debounce
+	if (!du) {
+		du = setTimeout(()=>du=0, 500);
 		_momentNow = moment().unix();
-	},
-	500,
-	true
-);
+	}
+};
 
 /**
  * @returns {moment}
@@ -147,9 +147,9 @@ export function momentToNode(element) {
  * @returns {void}
  */
 export function reload() {
-	_.defer(() => {
+	setTimeout(() =>
 		$('.moment', window.document).each((index, item) => {
 			momentToNode(item);
-		});
-	});
+		})
+	, 1);
 }

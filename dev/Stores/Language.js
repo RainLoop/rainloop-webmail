@@ -1,5 +1,4 @@
 import ko from 'ko';
-import { isArray } from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 
 class LanguageStore {
@@ -25,8 +24,8 @@ class LanguageStore {
 		const aLanguages = Settings.appSettingsGet('languages'),
 			aLanguagesAdmin = Settings.appSettingsGet('languagesAdmin');
 
-		this.languages(isArray(aLanguages) ? aLanguages : []);
-		this.languagesAdmin(isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
+		this.languages(Array.isArray(aLanguages) ? aLanguages : []);
+		this.languagesAdmin(Array.isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
 
 		this.language(Settings.settingsGet('Language'));
 		this.languageAdmin(Settings.settingsGet('LanguageAdmin'));

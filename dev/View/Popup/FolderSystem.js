@@ -1,9 +1,8 @@
-import _ from '_';
 import ko from 'ko';
 
 import { SetSystemFoldersNotification, Magics } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { folderListOptionsBuilder, noop, defautOptionsAfterRender } from 'Common/Utils';
+import { folderListOptionsBuilder, defautOptionsAfterRender } from 'Common/Utils';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import FolderStore from 'Stores/User/Folder';
@@ -56,6 +55,7 @@ class FolderSystemPopupView extends AbstractViewNext {
 		this.trashFolder = FolderStore.trashFolder;
 		this.archiveFolder = FolderStore.archiveFolder;
 
+		var d;
 		const fSetSystemFolders = () => {
 				Settings.settingsSet('SentFolder', FolderStore.sentFolder());
 				Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
@@ -63,17 +63,21 @@ class FolderSystemPopupView extends AbstractViewNext {
 				Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
 				Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
 			},
-			fSaveSystemFolders = _.debounce(() => {
-				fSetSystemFolders();
-				Remote.saveSystemFolders(noop, {
-					SentFolder: FolderStore.sentFolder(),
-					DraftFolder: FolderStore.draftFolder(),
-					SpamFolder: FolderStore.spamFolder(),
-					TrashFolder: FolderStore.trashFolder(),
-					ArchiveFolder: FolderStore.archiveFolder(),
-					NullFolder: 'NullFolder'
-				});
-			}, Magics.Time1s),
+			fSaveSystemFolders = ()=>{
+				// debounce
+				d && clearTimeout(d);
+				d = setTimeout(()=>{
+					fSetSystemFolders();
+					Remote.saveSystemFolders(()=>{}, {
+						SentFolder: FolderStore.sentFolder(),
+						DraftFolder: FolderStore.draftFolder(),
+						SpamFolder: FolderStore.spamFolder(),
+						TrashFolder: FolderStore.trashFolder(),
+						ArchiveFolder: FolderStore.archiveFolder(),
+						NullFolder: 'NullFolder'
+					});
+				}, Magics.Time1s);
+			},
 			fCallback = () => {
 				fSetSystemFolders();
 				fSaveSystemFolders();

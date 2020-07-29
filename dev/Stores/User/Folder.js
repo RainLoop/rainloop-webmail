@@ -4,7 +4,7 @@ import { settingsGet } from 'Storage/Settings';
 
 import { FolderType } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { isArray, folderListOptionsBuilder } from 'Common/Utils';
+import { folderListOptionsBuilder } from 'Common/Utils';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 
 import { momentNowUnix } from 'Common/Momentor';
@@ -72,7 +72,7 @@ class FolderUserStore {
 				trashFolder = this.trashFolder(),
 				archiveFolder = this.archiveFolder();
 
-			if (isArray(folders) && folders.length) {
+			if (Array.isArray(folders) && folders.length) {
 				if (sentFolder && UNUSED_OPTION_VALUE !== sentFolder) {
 					list.push(sentFolder);
 				}

@@ -50,6 +50,7 @@ This fork has the following changes:
 * Removed Sentry (Application Monitoring and Error Tracking Software)
 * Replaced gulp-uglify with gulp-terser
 * CRLF => LF line endings
+* Converted underscore.js to native code
 * Ongoing removal of old JavaScript code (things are native these days)
 
 ### Removal of old JavaScript
@@ -62,23 +63,23 @@ Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyf
 
 |js/*       	|1.14.0   	|native   	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|1.355.195	|
-|app.js      	|4.184.455	|3.116.673	|
-|boot.js     	|  671.522	|  109.651	|
-|libs.js     	|  647.614	|  508.324	|
+|admin.js    	|2.130.942	|1.329.869	|
+|app.js      	|4.184.455	|3.092.391	|
+|boot.js     	|  671.522	|  108.460	|
+|libs.js     	|  647.614	|  507.015	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL js   	|7.960.367	|5.089.843	|
+|TOTAL js   	|7.960.367	|5.037.853	|
 
 |js/min/*       	|1.14.0   	|native   	|
 |---------------	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  176.512	|
-|app.min.js      	|  511.202	|  408.169	|
-|boot.min.js     	|   66.007	|   13.380	|
-|libs.min.js     	|  572.545	|  465.247	|
+|admin.min.js    	|  252.147	|  173.226	|
+|app.min.js      	|  511.202	|  405.035	|
+|boot.min.js     	|   66.007	|   13.240	|
+|libs.min.js     	|  572.545	|  464.161	|
 |polyfills.min.js	|   32.452	|        0	|
-|TOTAL js/min   	|1.434.353	|1.063.308	|
+|TOTAL js/min   	|1.434.353	|1.055.662	|
 
-370.665 bytes is not much, but it feels faster.
+378.691 bytes is not much, but it feels faster.
 
 ### PHP73 branch
 
