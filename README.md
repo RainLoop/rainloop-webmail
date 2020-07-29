@@ -35,6 +35,7 @@ This fork has the following changes:
 * Privacy/GDPR friendly (no: Social, Gravatar, Facebook, Google, Twitter, DropBox, OwnCloud, X-Mailer)
 * Admin uses password_hash/password_verify
 * Auth failed attempts written to syslog
+* Added Fail2ban instructions
 * ES2015 (removed polyfills and Modernizr)
 * PHP 7.3+ required
 * PHP mbstring extension required
