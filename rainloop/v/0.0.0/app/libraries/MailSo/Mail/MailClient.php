@@ -189,7 +189,7 @@ class MailClient
 		{
 			if (!$bSkipUnsupportedFlag)
 			{
-				throw new \MailSo\Mail\Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
+				throw new Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
 			}
 		}
 
@@ -229,7 +229,7 @@ class MailClient
 		{
 			if (!$bSkipUnsupportedFlag)
 			{
-				throw new \MailSo\Mail\Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
+				throw new Exceptions\RuntimeException('Message flag "'.$sMessageFlag.'" is not supported.');
 			}
 		}
 		else
@@ -281,7 +281,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null, int $iBodyTextLimit = 0) : ?\MailSo\Mail\Message
+	public function Message(string $sFolderName, int $iIndex, bool $bIndexIsUid = true, ?\MailSo\Cache\CacheClient $oCacher = null, int $iBodyTextLimit = 0) : ?Message
 	{
 		if (!\MailSo\Base\Validator::RangeInt($iIndex, 1))
 		{
@@ -357,7 +357,7 @@ class MailClient
 		$aFetchResponse = $this->oImapClient->Fetch($aFetchItems, $iIndex, $bIndexIsUid);
 		if (0 < \count($aFetchResponse))
 		{
-			$oMessage = \MailSo\Mail\Message::NewFetchResponseInstance(
+			$oMessage = Message::NewFetchResponseInstance(
 				$sFolderName, $aFetchResponse[0], $oBodyStructure);
 		}
 
@@ -1482,7 +1482,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageListByRequestIndexOrUids(\MailSo\Mail\MessageCollection $oMessageCollection, array $aRequestIndexOrUids, bool $bIndexAsUid, bool $bSimple = false)
+	public function MessageListByRequestIndexOrUids(MessageCollection $oMessageCollection, array $aRequestIndexOrUids, bool $bIndexAsUid, bool $bSimple = false)
 	{
 		if (0 < \count($aRequestIndexOrUids))
 		{
@@ -1539,7 +1539,7 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function MessageListSimple(string $sFolderName, array $aUids) : \MailSo\Mail\MessageCollection
+	public function MessageListSimple(string $sFolderName, array $aUids) : MessageCollection
 	{
 		if (0 === \strlen($sFolderName) || !\MailSo\Base\Validator::NotEmptyArray($aUids))
 		{
@@ -1548,7 +1548,7 @@ class MailClient
 
 		$this->oImapClient->FolderExamine($sFolderName);
 
-		$oMessageCollection = \MailSo\Mail\MessageCollection::NewInstance();
+		$oMessageCollection = MessageCollection::NewInstance();
 		$oMessageCollection->FolderName = $sFolderName;
 
 		$this->MessageListByRequestIndexOrUids($oMessageCollection, $aUids, true, true);
@@ -2028,7 +2028,7 @@ class MailClient
 		return $aMailFoldersHelper;
 	}
 
-	public function Folders(string $sParent = '', string $sListPattern = '*', bool $bUseListSubscribeStatus = true, int $iOptimizationLimit = 0) : ?\MailSo\Mail\FolderCollection
+	public function Folders(string $sParent = '', string $sListPattern = '*', bool $bUseListSubscribeStatus = true, int $iOptimizationLimit = 0) : ?FolderCollection
 	{
 		$oFolderCollection = null;
 
@@ -2127,7 +2127,7 @@ class MailClient
 			if (!$aFolders)
 			{
 				// TODO
-				throw new \MailSo\Mail\Exceptions\RuntimeException(
+				throw new Exceptions\RuntimeException(
 					0 === \strlen(trim($sFolderParentFullNameRaw))
 						? 'Cannot get folder delimiter'
 						: 'Cannot create folder in non-existen parent folder');
@@ -2147,7 +2147,7 @@ class MailClient
 		if (0 < \strlen($sDelimiter) && false !== \strpos($sFullNameRawToCreate, $sDelimiter))
 		{
 			// TODO
-			throw new \MailSo\Mail\Exceptions\RuntimeException(
+			throw new Exceptions\RuntimeException(
 				'New folder name contains delimiter');
 		}
 
@@ -2193,7 +2193,7 @@ class MailClient
 		if (!$aFolders)
 		{
 			// TODO
-			throw new \MailSo\Mail\Exceptions\RuntimeException('Cannot rename non-existen folder');
+			throw new Exceptions\RuntimeException('Cannot rename non-existen folder');
 		}
 
 		$sDelimiter = $aFolders[0]->Delimiter();
@@ -2218,7 +2218,7 @@ class MailClient
             if (0 < \strlen($sDelimiter) && false !== \strpos($sNewFolderFullNameRaw, $sDelimiter))
             {
                 // TODO
-                throw new \MailSo\Mail\Exceptions\RuntimeException('New folder name contains delimiter');
+                throw new Exceptions\RuntimeException('New folder name contains delimiter');
             }
 
             $sFolderParentFullNameRaw = false === $iLast ? '' : \substr($sPrevFolderFullNameRaw, 0, $iLast + 1);
@@ -2258,7 +2258,7 @@ class MailClient
 		$aIndexOrUids = $this->oImapClient->MessageSimpleSearch('ALL');
 		if (0 < \count($aIndexOrUids))
 		{
-			throw new \MailSo\Mail\Exceptions\NonEmptyFolder();
+			throw new Exceptions\NonEmptyFolder();
 		}
 
 		$this->oImapClient->FolderExamine('INBOX');

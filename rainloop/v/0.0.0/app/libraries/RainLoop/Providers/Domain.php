@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers;
 
-class Domain extends \RainLoop\Providers\AbstractProvider
+class Domain extends AbstractProvider
 {
 	/**
 	 * @var \RainLoop\Providers\Domain\DomainInterface
@@ -19,12 +19,12 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $bAdmin;
 
-	public function __construct(\RainLoop\Providers\Domain\DomainInterface $oDriver,
+	public function __construct(Domain\DomainInterface $oDriver,
 		\RainLoop\Plugins\Manager $oPlugins)
 	{
 		$this->oDriver = $oDriver;
 		$this->oPlugins = $oPlugins;
-		$this->bAdmin = $this->oDriver instanceof \RainLoop\Providers\Domain\DomainAdminInterface;
+		$this->bAdmin = $this->oDriver instanceof Domain\DomainAdminInterface;
 	}
 
 	public function IsAdmin() : bool
@@ -226,6 +226,6 @@ class Domain extends \RainLoop\Providers\AbstractProvider
 
 	public function IsActive() : bool
 	{
-		return $this->oDriver instanceof \RainLoop\Providers\Domain\DomainInterface;
+		return $this->oDriver instanceof Domain\DomainInterface;
 	}
 }

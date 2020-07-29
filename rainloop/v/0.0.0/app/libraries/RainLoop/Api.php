@@ -39,13 +39,13 @@ class Api
 		static $oActions = null;
 		if (null === $oActions)
 		{
-			$oActions = \RainLoop\Actions::NewInstance();
+			$oActions = Actions::NewInstance();
 		}
 
 		return $oActions;
 	}
 
-	public static function Config() : \RainLoop\Config\Application
+	public static function Config() : Config\Application
 	{
 		return static::Actions()->Config();
 	}
@@ -93,10 +93,10 @@ class Api
 			$sSslCafile = static::Config()->Get('ssl', 'cafile', '');
 			$sSslCapath = static::Config()->Get('ssl', 'capath', '');
 
-			\RainLoop\Utils::$CookieDefaultPath = static::Config()->Get('labs', 'cookie_default_path', '');
+			Utils::$CookieDefaultPath = static::Config()->Get('labs', 'cookie_default_path', '');
 			if (static::Config()->Get('labs', 'cookie_default_secure', false))
 			{
-				\RainLoop\Utils::$CookieDefaultSecure = true;
+				Utils::$CookieDefaultSecure = true;
 			}
 
 			if (!empty($sSslCafile) || !empty($sSslCapath))
@@ -176,8 +176,8 @@ class Api
 	{
 		$sSsoHash = \MailSo\Base\Utils::Sha1Rand(\md5($sEmail).\md5($sPassword));
 
-		return static::Actions()->Cacher()->Set(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash),
-			\RainLoop\Utils::EncodeKeyValuesQ(array(
+		return static::Actions()->Cacher()->Set(KeyPathHelper::SsoCacherKey($sSsoHash),
+			Utils::EncodeKeyValuesQ(array(
 				'Email' => $sEmail,
 				'Password' => $sPassword,
 				'AdditionalOptions' => $aAdditionalOptions,
@@ -187,7 +187,7 @@ class Api
 
 	public static function ClearUserSsoHash(string $sSsoHash) : bool
 	{
-		return static::Actions()->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
+		return static::Actions()->Cacher()->Delete(KeyPathHelper::SsoCacherKey($sSsoHash));
 	}
 
 	public static function ClearUserData(string $sEmail) : bool
@@ -216,7 +216,7 @@ class Api
 
 	public static function LogoutCurrentLogginedUser() : bool
 	{
-		\RainLoop\Utils::ClearCookie('rlsession');
+		Utils::ClearCookie('rlsession');
 		return true;
 	}
 

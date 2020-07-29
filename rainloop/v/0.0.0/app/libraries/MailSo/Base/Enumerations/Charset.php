@@ -16,7 +16,7 @@ namespace MailSo\Base\Enumerations;
  * @package Base
  * @subpackage Enumerations
  */
-class Charset
+abstract class Charset
 {
 	const UTF_8 = 'utf-8';
 	const UTF_7 = 'utf-7';

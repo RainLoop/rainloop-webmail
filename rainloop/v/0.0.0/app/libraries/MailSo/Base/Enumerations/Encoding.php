@@ -16,7 +16,7 @@ namespace MailSo\Base\Enumerations;
  * @package Base
  * @subpackage Enumerations
  */
-class Encoding
+abstract class Encoding
 {
 	const QUOTED_PRINTABLE = 'Quoted-Printable';
 	const QUOTED_PRINTABLE_LOWER = 'quoted-printable';

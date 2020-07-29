@@ -16,7 +16,7 @@ namespace MailSo\Net\Enumerations;
  * @package Net
  * @subpackage Enumerations
  */
-class ConnectionSecurityType
+abstract class ConnectionSecurityType
 {
 	const NONE = 0;
 	const SSL = 1;

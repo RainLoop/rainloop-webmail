@@ -16,7 +16,7 @@ namespace MailSo\Imap\Enumerations;
  * @package Imap
  * @subpackage Enumerations
  */
-class ResponseType
+abstract class ResponseType
 {
 	const UNKNOWN = 0;
 	const TAGGED = 1;

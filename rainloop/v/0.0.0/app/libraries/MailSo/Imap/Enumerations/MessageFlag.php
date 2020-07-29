@@ -16,7 +16,7 @@ namespace MailSo\Imap\Enumerations;
  * @package Imap
  * @subpackage Enumerations
  */
-class MessageFlag
+abstract class MessageFlag
 {
 	const RECENT = '\Recent';
 	const SEEN = '\Seen';

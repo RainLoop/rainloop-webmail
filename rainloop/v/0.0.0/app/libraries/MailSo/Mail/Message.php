@@ -192,7 +192,7 @@ class Message
 		$this->Clear();
 	}
 
-	public function Clear() : \MailSo\Mail\Message
+	public function Clear() : self
 	{
 		$this->sFolder = '';
 		$this->iUid = 0;
@@ -240,7 +240,7 @@ class Message
 		return $this;
 	}
 
-	public static function NewInstance() : \MailSo\Mail\Message
+	public static function NewInstance() : self
 	{
 		return new self();
 	}
@@ -375,7 +375,7 @@ class Message
 		return $this->oBcc;
 	}
 
-	public function Attachments() : ?\MailSo\Mail\AttachmentCollection
+	public function Attachments() : ?AttachmentCollection
 	{
 		return $this->oAttachments;
 	}
@@ -430,12 +430,12 @@ class Message
 		return $this->bTextPartIsTrimmed;
 	}
 
-	public static function NewFetchResponseInstance(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : \MailSo\Mail\Message
+	public static function NewFetchResponseInstance(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : self
 	{
 		return self::NewInstance()->InitByFetchResponse($sFolder, $oFetchResponse, $oBodyStructure);
 	}
 
-	public function InitByFetchResponse(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : \MailSo\Mail\Message
+	public function InitByFetchResponse(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : self
 	{
 		if (!$oBodyStructure)
 		{
@@ -743,7 +743,7 @@ class Message
 				foreach ($aAttachmentsParts as /* @var $oAttachmentItem \MailSo\Imap\BodyStructure */ $oAttachmentItem)
 				{
 					$this->oAttachments->Add(
-						\MailSo\Mail\Attachment::NewBodyStructureInstance($this->sFolder, $this->iUid, $oAttachmentItem)
+						Attachment::NewBodyStructureInstance($this->sFolder, $this->iUid, $oAttachmentItem)
 					);
 				}
 			}

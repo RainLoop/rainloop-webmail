@@ -84,8 +84,8 @@ class Parameter
 		{
 			$sResult = $this->sName.'=';
 			if ($bConvertSpecialsName && in_array(strtolower($this->sName), array(
-				strtolower(\MailSo\Mime\Enumerations\Parameter::NAME),
-				strtolower(\MailSo\Mime\Enumerations\Parameter::FILENAME)
+				strtolower(Enumerations\Parameter::NAME),
+				strtolower(Enumerations\Parameter::FILENAME)
 			)))
 			{
 				$sResult .= '"'.\MailSo\Base\Utils::EncodeUnencodedValue(

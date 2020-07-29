@@ -16,7 +16,7 @@ namespace MailSo\Mime\Enumerations;
  * @package Mime
  * @subpackage Enumerations
  */
-class Header
+abstract class Header
 {
 	const DATE = 'Date';
 	const RECEIVED = 'Received';

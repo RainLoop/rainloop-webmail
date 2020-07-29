@@ -204,7 +204,7 @@ class Filter
 		$this->bStop = isset($aFilter['Stop']) ? '1' === (string) $aFilter['Stop'] : true;
 		$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? '1' === (string) $aFilter['MarkAsRead'] : false;
 
-		$this->aConditions = \RainLoop\Providers\Filters\Classes\FilterCondition::CollectionFromJSON(
+		$this->aConditions = FilterCondition::CollectionFromJSON(
 			isset($aFilter['Conditions']) ? $aFilter['Conditions'] : array());
 
 		return true;

@@ -16,7 +16,7 @@ namespace MailSo\Imap\Enumerations;
  * @package Imap
  * @subpackage Enumerations
  */
-class FolderType
+abstract class FolderType
 {
 	const USER = 0;
 	const INBOX = 1;

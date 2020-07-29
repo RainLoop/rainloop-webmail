@@ -58,7 +58,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		return new self();
 	}
 
-	public function GetByFullNameRaw(string $sFullNameRaw) : ?\MailSo\Mail\Folder
+	public function GetByFullNameRaw(string $sFullNameRaw) : ?Folder
 	{
 		$mResult = null;
 		foreach ($this->aItems as /* @var $oFolder \MailSo\Mail\Folder */ $oFolder)
@@ -123,7 +123,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		return $sDelimiter;
 	}
 
-	public function SetNamespace(string $sNamespace) : \MailSo\Mail\FolderCollection
+	public function SetNamespace(string $sNamespace) : self
 	{
 		$this->Namespace = $sNamespace;
 
@@ -190,7 +190,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		unset($aSortedByLenImapFolders);
 	}
 
-	public function AddWithPositionSearch(\MailSo\Mail\Folder $oMailFolder) : bool
+	public function AddWithPositionSearch(Folder $oMailFolder) : bool
 	{
 		$oItemFolder = null;
 		$bIsAdded = false;
@@ -198,7 +198,7 @@ class FolderCollection extends \MailSo\Base\Collection
 
 		foreach ($aList as /* @var $oItemFolder \MailSo\Mail\Folder */ $oItemFolder)
 		{
-			if ($oMailFolder instanceof \MailSo\Mail\Folder &&
+			if ($oMailFolder instanceof Folder &&
 				0 === \strpos($oMailFolder->FullNameRaw(), $oItemFolder->FullNameRaw().$oItemFolder->Delimiter()))
 			{
 				if ($oItemFolder->SubFolders(true)->AddWithPositionSearch($oMailFolder))
@@ -210,7 +210,7 @@ class FolderCollection extends \MailSo\Base\Collection
 			}
 		}
 
-		if (!$bIsAdded && $oMailFolder instanceof \MailSo\Mail\Folder)
+		if (!$bIsAdded && $oMailFolder instanceof Folder)
 		{
 			$bIsAdded = true;
 			$this->Add($oMailFolder);

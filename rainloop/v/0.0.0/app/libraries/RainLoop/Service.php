@@ -22,9 +22,9 @@ class Service
 	private function __construct()
 	{
 		$this->oHttp = \MailSo\Base\Http::SingletonInstance();
-		$this->oActions = \RainLoop\Api::Actions();
+		$this->oActions = Api::Actions();
 
-		$this->oServiceActions = new \RainLoop\ServiceActions($this->oHttp, $this->oActions);
+		$this->oServiceActions = new ServiceActions($this->oHttp, $this->oActions);
 
 		if ($this->oActions->Config()->Get('debug', 'enable', false))
 		{
@@ -158,7 +158,7 @@ class Service
 
 			if ($bIndex)
 			{
-				$sMobileType = (string) \RainLoop\Utils::GetCookie(\RainLoop\Actions::RL_MOBILE_TYPE, '');
+				$sMobileType = (string) Utils::GetCookie(Actions::RL_MOBILE_TYPE, '');
 				switch ($sMobileType) {
 					default:
 						$sMobileType = '';
@@ -206,7 +206,7 @@ class Service
 //				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
-				$sResult = \RainLoop\Utils::ClearHtmlOutput($sResult);
+				$sResult = Utils::ClearHtmlOutput($sResult);
 				if (0 < \strlen($sCacheFileName))
 				{
 					$this->oActions->Cacher()->Set($sCacheFileName, $sResult);
@@ -228,14 +228,14 @@ class Service
 
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
 //			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
-//			$sResult .= '][session:'.\md5(\RainLoop\Utils::GetShortToken());
+//			$sResult .= '][session:'.\md5(Utils::GetShortToken());
 
 			if ($bMobile)
 			{
 				$sResult .= '][mobile:true';
 			}
 
-			if (\RainLoop\Utils::IsOwnCloud())
+			if (Utils::IsOwnCloud())
 			{
 				$sResult .= '][cloud:true';
 			}
@@ -309,7 +309,7 @@ class Service
 				$bAdmin ? '1' : '0',
 				\md5($this->oActions->Config()->Get('cache', 'index', '')),
 				$this->oActions->Plugins()->Hash(),
-				\RainLoop\Utils::WebVersionPath(),
+				Utils::WebVersionPath(),
 				APP_VERSION,
 			)).
 			\implode('~', $aTemplateParameters)

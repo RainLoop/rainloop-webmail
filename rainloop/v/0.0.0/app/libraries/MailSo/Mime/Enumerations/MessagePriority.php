@@ -16,7 +16,7 @@ namespace MailSo\Mime\Enumerations;
  * @package Mime
  * @subpackage Enumerations
  */
-class MessagePriority
+abstract class MessagePriority
 {
 	const LOW = 5;
 	const NORMAL = 3;

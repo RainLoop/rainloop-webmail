@@ -16,7 +16,7 @@ namespace MailSo\Imap\Enumerations;
  * @package Imap
  * @subpackage Enumerations
  */
-class ResponseStatus
+abstract class ResponseStatus
 {
 	const OK = 'OK';
 	const NO = 'NO';

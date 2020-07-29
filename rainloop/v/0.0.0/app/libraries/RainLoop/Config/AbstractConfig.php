@@ -187,7 +187,7 @@ abstract class AbstractConfig
 			}
 
 			$aData = \RainLoop\Utils::CustomParseIniFile($this->sFile, true);
-			if (\is_array($aData) && 0 < \count($aData))
+			if (0 < \count($aData))
 			{
 				foreach ($aData as $sSectionKey => $aSectionValue)
 				{

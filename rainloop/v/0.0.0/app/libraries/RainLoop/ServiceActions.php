@@ -24,7 +24,7 @@ class ServiceActions
 	 */
 	protected $sQuery;
 
-	public function __construct(\MailSo\Base\Http $oHttp, \RainLoop\Actions $oActions)
+	public function __construct(\MailSo\Base\Http $oHttp, Actions $oActions)
 	{
 		$this->oHttp = $oHttp;
 		$this->oActions = $oActions;
@@ -37,12 +37,12 @@ class ServiceActions
 		return $this->oActions->Logger();
 	}
 
-	public function Plugins() : \RainLoop\Plugins\Manager
+	public function Plugins() : Plugins\Manager
 	{
 		return $this->oActions->Plugins();
 	}
 
-	public function Config() : \RainLoop\Config\Application
+	public function Config() : Config\Application
 	{
 		return $this->oActions->Config();
 	}
@@ -52,12 +52,12 @@ class ServiceActions
 		return $this->oActions->Cacher();
 	}
 
-	public function StorageProvider() : \RainLoop\Providers\Storage
+	public function StorageProvider() : Providers\Storage
 	{
 		return $this->oActions->StorageProvider();
 	}
 
-	public function SettingsProvider() : \RainLoop\Providers\Settings
+	public function SettingsProvider() : Providers\Settings
 	{
 		return $this->oActions->SettingsProvider();
 	}
@@ -93,9 +93,9 @@ class ServiceActions
 		{
 			if ($this->oHttp->IsPost() &&
 				$this->Config()->Get('security', 'csrf_protection', false) &&
-				$this->oHttp->GetPost('XToken', '') !== \RainLoop\Utils::GetCsrfToken())
+				$this->oHttp->GetPost('XToken', '') !== Utils::GetCsrfToken())
 			{
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::InvalidToken);
+				throw new Exceptions\ClientException(Notifications::InvalidToken);
 			}
 			else if (!empty($sAction))
 			{
@@ -147,7 +147,7 @@ class ServiceActions
 
 			if (!\is_array($aResponseItem))
 			{
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
+				throw new Exceptions\ClientException(Notifications::UnknownError);
 			}
 		}
 		catch (\Throwable $oException)
@@ -155,7 +155,7 @@ class ServiceActions
 			$aResponseItem = $this->oActions->ExceptionResponse(
 				empty($sAction) ? 'Unknown' : $sAction, $oException);
 
-			if (\is_array($aResponseItem) && $oException instanceof \RainLoop\Exceptions\ClientException)
+			if (\is_array($aResponseItem) && $oException instanceof Exceptions\ClientException)
 			{
 				if ('Folders' === $sAction)
 				{
@@ -216,7 +216,7 @@ class ServiceActions
 	{
 		$this->oHttp->ServerNoCache();
 
-		if (!\RainLoop\Utils::IsOwnCloud() ||
+		if (!Utils::IsOwnCloud() ||
 			!isset($_ENV['___rainloop_owncloud_email']) ||
 			!isset($_ENV['___rainloop_owncloud_password']) ||
 			empty($_ENV['___rainloop_owncloud_email'])
@@ -237,7 +237,7 @@ class ServiceActions
 			$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 			$this->oActions->AuthToken($oAccount);
 
-			$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
+			$bLogout = !($oAccount instanceof Model\Account);
 		}
 		catch (\Throwable $oException)
 		{
@@ -301,7 +301,7 @@ class ServiceActions
 		{
 			$aFile = null;
 			$sInputName = 'uploader';
-			$iError = \RainLoop\Enumerations\UploadError::UNKNOWN;
+			$iError = Enumerations\UploadError::UNKNOWN;
 			$iSizeLimit = (0 < $iSizeLimit ? $iSizeLimit : ((int) $oConfig->Get('webmail', 'attachment_size_limit', 0))) * 1024 * 1024;
 
 			$iError = UPLOAD_ERR_OK;
@@ -312,7 +312,7 @@ class ServiceActions
 
 				if (UPLOAD_ERR_OK === $iError && 0 < $iSizeLimit && $iSizeLimit < (int) $_FILES[$sInputName]['size'])
 				{
-					$iError = \RainLoop\Enumerations\UploadError::CONFIG_SIZE;
+					$iError = Enumerations\UploadError::CONFIG_SIZE;
 				}
 
 				if (UPLOAD_ERR_OK === $iError)
@@ -326,7 +326,7 @@ class ServiceActions
 			}
 			else
 			{
-				$iError = \RainLoop\Enumerations\UploadError::EMPTY_FILES_DATA;
+				$iError = Enumerations\UploadError::EMPTY_FILES_DATA;
 			}
 
 			if (\method_exists($this->oActions, $sAction) &&
@@ -344,7 +344,7 @@ class ServiceActions
 
 			if (!is_array($aResponseItem))
 			{
-				throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::UnknownError);
+				throw new Exceptions\ClientException(Notifications::UnknownError);
 			}
 		}
 		catch (\Throwable $oException)
@@ -398,8 +398,8 @@ class ServiceActions
 		{
 			$this->oActions->verifyCacheByKey($sData);
 
-			$aData = \RainLoop\Utils::DecodeKeyValuesQ($sData);
-			if (\is_array($aData) && !empty($aData['Token']) && !empty($aData['Url']) && $aData['Token'] === \RainLoop\Utils::GetConnectionToken())
+			$aData = Utils::DecodeKeyValuesQ($sData);
+			if (\is_array($aData) && !empty($aData['Token']) && !empty($aData['Url']) && $aData['Token'] === Utils::GetConnectionToken())
 			{
 				$iCode = 404;
 				$sContentType = '';
@@ -469,12 +469,12 @@ class ServiceActions
 				$sRawError = 'Empty action';
 			}
 		}
-		catch (\RainLoop\Exceptions\ClientException $oException)
+		catch (Exceptions\ClientException $oException)
 		{
 			$sRawError = 'Exception as result';
 			switch ($oException->getCode())
 			{
-				case \RainLoop\Notifications::AuthError:
+				case Notifications::AuthError:
 					$sRawError = 'Authentication failed';
 					break;
 			}
@@ -518,7 +518,7 @@ class ServiceActions
 			$sCacheFileName = '';
 			if ($bCacheEnabled)
 			{
-				$sCacheFileName = \RainLoop\KeyPathHelper::LangCache(
+				$sCacheFileName = KeyPathHelper::LangCache(
 					$sLanguage, $bAdmim, $this->oActions->Plugins()->Hash());
 
 				$sResult = $this->Cacher()->Get($sCacheFileName);
@@ -558,7 +558,7 @@ class ServiceActions
 		$sCacheFileName = '';
 		if ($bCacheEnabled)
 		{
-			$sCacheFileName = \RainLoop\KeyPathHelper::TemplatesCache($bAdmin, $this->oActions->Plugins()->Hash());
+			$sCacheFileName = KeyPathHelper::TemplatesCache($bAdmin, $this->oActions->Plugins()->Hash());
 			$sResult = $this->Cacher()->Get($sCacheFileName);
 		}
 
@@ -595,7 +595,7 @@ class ServiceActions
 		$sCacheFileName = '';
 		if ($bCacheEnabled)
 		{
-			$sCacheFileName = \RainLoop\KeyPathHelper::PluginsJsCache($this->oActions->Plugins()->Hash());
+			$sCacheFileName = KeyPathHelper::PluginsJsCache($this->oActions->Plugins()->Hash());
 			$sResult = $this->Cacher()->Get($sCacheFileName);
 		}
 
@@ -653,7 +653,7 @@ class ServiceActions
 			$sCacheFileName = '';
 			if ($bCacheEnabled)
 			{
-				$sCacheFileName = \RainLoop\KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash());
+				$sCacheFileName = KeyPathHelper::CssCache($sTheme, $this->oActions->Plugins()->Hash());
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
@@ -678,7 +678,7 @@ class ServiceActions
 					if (\file_exists($sThemeFile) && \file_exists($sThemeTemplateFile) && \file_exists($sThemeValuesFile))
 					{
 						$aResult[] = '@base: "'.
-							($bCustomTheme ? \RainLoop\Utils::WebPath() : \RainLoop\Utils::WebVersionPath()).
+							($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath()).
 							'themes/'.$sRealTheme.'/";';
 
 						$aResult[] = \file_get_contents($sThemeValuesFile);
@@ -746,14 +746,14 @@ class ServiceActions
 
 	public function ServiceMobileVersion() : string
 	{
-		\RainLoop\Utils::SetCookie(\RainLoop\Actions::RL_MOBILE_TYPE, 'mobile');
+		Utils::SetCookie(Actions::RL_MOBILE_TYPE, 'mobile');
 		$this->oActions->Location('./');
 		return '';
 	}
 
 	public function ServiceDesktopVersion() : string
 	{
-		\RainLoop\Utils::SetCookie(\RainLoop\Actions::RL_MOBILE_TYPE, 'desktop');
+		Utils::SetCookie(Actions::RL_MOBILE_TYPE, 'desktop');
 		$this->oActions->Location('./');
 		return '';
 	}
@@ -775,7 +775,7 @@ class ServiceActions
 
 		@\header('Content-Type: text/html; charset=utf-8');
 		return \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/BadBrowser.html'), array(
-			'{{BaseWebStaticPath}}' => \RainLoop\Utils::WebStaticPath(),
+			'{{BaseWebStaticPath}}' => Utils::WebStaticPath(),
 			'{{ErrorTitle}}' => $sTitle,
 			'{{ErrorHeader}}' => $sTitle,
 			'{{ErrorDesc}}' => $sDesc
@@ -833,11 +833,11 @@ class ServiceActions
 		{
 			$mData = null;
 
-			$sSsoSubData = $this->Cacher()->Get(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
+			$sSsoSubData = $this->Cacher()->Get(KeyPathHelper::SsoCacherKey($sSsoHash));
 			if (!empty($sSsoSubData))
 			{
-				$mData = \RainLoop\Utils::DecodeKeyValuesQ($sSsoSubData);
-				$this->Cacher()->Delete(\RainLoop\KeyPathHelper::SsoCacherKey($sSsoHash));
+				$mData = Utils::DecodeKeyValuesQ($sSsoSubData);
+				$this->Cacher()->Delete(KeyPathHelper::SsoCacherKey($sSsoHash));
 
 				if (\is_array($mData) && !empty($mData['Email']) && isset($mData['Password'], $mData['Time']) &&
 					(0 === $mData['Time'] || \time() - 10 < $mData['Time']))
@@ -852,7 +852,7 @@ class ServiceActions
 					{
 						$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 
-						if ($oAccount instanceof \RainLoop\Model\Account && $aAdditionalOptions)
+						if ($oAccount instanceof Model\Account && $aAdditionalOptions)
 						{
 							$bNeedToSettings = false;
 
@@ -881,7 +881,7 @@ class ServiceActions
 
 						$this->oActions->AuthToken($oAccount);
 
-						$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
+						$bLogout = !($oAccount instanceof Model\Account);
 					}
 					catch (\Throwable $oException)
 					{
@@ -915,7 +915,7 @@ class ServiceActions
 			{
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 				$this->oActions->AuthToken($oAccount);
-				$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
+				$bLogout = !($oAccount instanceof Model\Account);
 			}
 			catch (\Throwable $oException)
 			{
@@ -949,7 +949,7 @@ class ServiceActions
 			{
 				$oAccount = $this->oActions->LoginProcess($sEmail, $sPassword);
 				$this->oActions->AuthToken($oAccount);
-				$bLogout = !($oAccount instanceof \RainLoop\Model\Account);
+				$bLogout = !($oAccount instanceof Model\Account);
 			}
 			catch (\Throwable $oException)
 			{
@@ -970,19 +970,19 @@ class ServiceActions
 
 				$aResult = array(
 					'Action' => 'ExternalLogin',
-					'Result' => $oAccount instanceof \RainLoop\Model\Account ? true : false,
+					'Result' => $oAccount instanceof Model\Account ? true : false,
 					'ErrorCode' => 0
 				);
 
 				if (!$aResult['Result'])
 				{
-					if ($oException instanceof \RainLoop\Exceptions\ClientException)
+					if ($oException instanceof Exceptions\ClientException)
 					{
 						$aResult['ErrorCode'] = $oException->getCode();
 					}
 					else
 					{
-						$aResult['ErrorCode'] = \RainLoop\Notifications::AuthError;
+						$aResult['ErrorCode'] = Notifications::AuthError;
 					}
 				}
 
@@ -1010,7 +1010,7 @@ class ServiceActions
 			$sEmail = \trim($this->oHttp->GetRequest('Email', ''));
 			$sPassword = $this->oHttp->GetRequest('Password', '');
 
-			$sResult = \RainLoop\Api::GetUserSsoHash($sEmail, $sPassword);
+			$sResult = Api::GetUserSsoHash($sEmail, $sPassword);
 			$bLogout = 0 === \strlen($sResult);
 
 			switch (\strtolower($this->oHttp->GetRequest('Output', 'Plain')))
@@ -1043,7 +1043,7 @@ class ServiceActions
 
 		$oAccount = $this->oActions->GetAccount();
 
-		if ($oAccount && $this->oActions->GetCapa(false, false, \RainLoop\Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
+		if ($oAccount && $this->oActions->GetCapa(false, false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			$oAccountToLogin = null;
 			$sEmail = empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]));
@@ -1078,7 +1078,7 @@ class ServiceActions
 	public function ErrorTemplates(string $sTitle, string $sDesc, bool $bShowBackLink = true)
 	{
 		return strtr(file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Error.html'), array(
-			'{{BaseWebStaticPath}}' => \RainLoop\Utils::WebStaticPath(),
+			'{{BaseWebStaticPath}}' => Utils::WebStaticPath(),
 			'{{ErrorTitle}}' => $sTitle,
 			'{{ErrorHeader}}' => $sTitle,
 			'{{ErrorDesc}}' => $sDesc,
@@ -1145,9 +1145,9 @@ class ServiceActions
 	{
 		$aTemplates = array();
 
-		\RainLoop\Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/Components', 'Component');
-		\RainLoop\Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'User'));
-		\RainLoop\Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/Common');
+		Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/Components', 'Component');
+		Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/'.($bAdmin ? 'Admin' : 'User'));
+		Utils::CompileTemplates($aTemplates, APP_VERSION_ROOT_PATH.'app/templates/Views/Common');
 
 		$this->oActions->Plugins()->CompileTemplate($aTemplates, $bAdmin);
 
@@ -1186,10 +1186,10 @@ class ServiceActions
 			$sMoment = \preg_replace('/\/\/[^\n]+\n/', '', $sMoment);
 		}
 
-		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/langs.yml', $aResultLang);
-		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
+		Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/langs.yml', $aResultLang);
+		Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
 			($bAdmin ? 'admin' : 'webmail').'/_source.en.yml', $aResultLang);
-		\RainLoop\Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
+		Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
 			($bAdmin ? 'admin' : 'webmail').'/'.$sLanguage.'.yml', $aResultLang);
 
 		$this->Plugins()->ReadLang($sLanguage, $aResultLang);

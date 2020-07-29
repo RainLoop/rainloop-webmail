@@ -507,10 +507,7 @@ abstract class NetClient
 		$this->writeLog($sDesc, $iDescType, true);
 	}
 
-	/**
-	 * @param \Exception $oException
-	 */
-	protected function writeLogException($oException,
+	protected function writeLogException(\Throwable $oException,
 		int $iDescType = \MailSo\Log\Enumerations\Type::NOTICE, bool $bThrowException = false) : void
 	{
 		if ($this->oLogger)

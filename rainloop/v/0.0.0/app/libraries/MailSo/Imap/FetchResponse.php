@@ -48,11 +48,9 @@ class FetchResponse
 	}
 
 	/**
-	 * @param mixed $mNullResult = null
-	 *
 	 * @return mixed
 	 */
-	public function GetFetchEnvelopeValue(int $iIndex, $mNullResult)
+	public function GetFetchEnvelopeValue(int $iIndex, ?string $mNullResult = null)
 	{
 		return self::findEnvelopeIndex($this->GetEnvelope(), $iIndex, $mNullResult);
 	}
@@ -60,7 +58,7 @@ class FetchResponse
 	public function GetFetchEnvelopeEmailCollection(int $iIndex, string $sParentCharset = \MailSo\Base\Enumerations\Charset::ISO_8859_1) : ?\MailSo\Mime\EmailCollection
 	{
 		$oResult = null;
-		$aEmails = $this->GetFetchEnvelopeValue($iIndex, null);
+		$aEmails = $this->GetFetchEnvelopeValue($iIndex);
 		if (is_array($aEmails) && 0 < count($aEmails))
 		{
 			$oResult = \MailSo\Mime\EmailCollection::NewInstance();
@@ -166,7 +164,7 @@ class FetchResponse
 		return '';
 	}
 
-	private static function findFetchUidAndSize(array $aList)
+	private static function findFetchUidAndSize(array $aList) : bool
 	{
 		$bUid = false;
 		$bSize = false;
@@ -206,11 +204,9 @@ class FetchResponse
 	}
 
 	/**
-	 * @param mixed $mNullResult = null
-	 *
 	 * @return mixed
 	 */
-	private static function findEnvelopeIndex(array $aEnvelope, int $iIndex, $mNullResult)
+	private static function findEnvelopeIndex(array $aEnvelope, int $iIndex, ?string $mNullResult)
 	{
 		return (isset($aEnvelope[$iIndex]) && 'NIL' !== $aEnvelope[$iIndex] && '' !== $aEnvelope[$iIndex])
 			? $aEnvelope[$iIndex] : $mNullResult;

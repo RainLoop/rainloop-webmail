@@ -16,7 +16,7 @@ namespace MailSo\Log\Enumerations;
  * @package Log
  * @subpackage Enumerations
  */
-class Type
+abstract class Type
 {
 	const INFO = 0;
 	const NOTICE = 1;

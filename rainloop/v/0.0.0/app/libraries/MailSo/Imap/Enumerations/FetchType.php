@@ -16,7 +16,7 @@ namespace MailSo\Imap\Enumerations;
  * @package Imap
  * @subpackage Enumerations
  */
-class FetchType
+abstract class FetchType
 {
 	const ALL = 'ALL';
 	const FAST = 'FAST';

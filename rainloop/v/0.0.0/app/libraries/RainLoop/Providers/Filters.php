@@ -9,9 +9,9 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 	 */
 	private $oDriver;
 
-	public function __construct($oDriver)
+	public function __construct(\RainLoop\Providers\Filters\FiltersInterface $oDriver)
 	{
-		$this->oDriver = $oDriver instanceof \RainLoop\Providers\Filters\FiltersInterface ? $oDriver : null;
+		$this->oDriver = $oDriver;
 	}
 
 	public function Load(\RainLoop\Model\Account $oAccount, bool $bAllowRaw = false) : array

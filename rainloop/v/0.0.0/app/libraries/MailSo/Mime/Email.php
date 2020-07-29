@@ -52,7 +52,7 @@ class Email
 
 		$this->sDisplayName = \MailSo\Base\Utils::Trim($sDisplayName);
 
-		$this->sDkimStatus = \MailSo\Mime\Enumerations\DkimStatus::NONE;
+		$this->sDkimStatus = Enumerations\DkimStatus::NONE;
 		$this->sDkimValue = '';
 	}
 
@@ -226,7 +226,7 @@ class Email
 
 	public function SetDkimStatusAndValue(string $sDkimStatus, string $sDkimValue = '')
 	{
-		$this->sDkimStatus = \MailSo\Mime\Enumerations\DkimStatus::normalizeValue($sDkimStatus);
+		$this->sDkimStatus = Enumerations\DkimStatus::normalizeValue($sDkimStatus);
 		$this->sDkimValue = $sDkimValue;
 	}
 

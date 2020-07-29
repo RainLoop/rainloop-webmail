@@ -71,12 +71,9 @@ class Response
 	private function recToLine(array $aList) : string
 	{
 		$aResult = array();
-		if (\is_array($aList))
+		foreach ($aList as $mItem)
 		{
-			foreach ($aList as $mItem)
-			{
-				$aResult[] = \is_array($mItem) ? '('.$this->recToLine($mItem).')' : (string) $mItem;
-			}
+			$aResult[] = \is_array($mItem) ? '('.$this->recToLine($mItem).')' : (string) $mItem;
 		}
 
 		return \implode(' ', $aResult);

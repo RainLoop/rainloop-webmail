@@ -138,7 +138,7 @@ class Folder
 		return $this->oImapFolder->FlagsLowerCase();
 	}
 
-	public function SubFolders(bool $bCreateIfNull = false) : ?\MailSo\Mail\FolderCollection
+	public function SubFolders(bool $bCreateIfNull = false) : ?FolderCollection
 	{
 		if ($bCreateIfNull && !$this->oSubFolders)
 		{
@@ -158,7 +158,7 @@ class Folder
 		$sList = array();
 		if ($this->oSubFolders)
 		{
-			$sList = $this->oSubFolders->FilterList(function (\MailSo\Mail\Folder $oFolder) {
+			$sList = $this->oSubFolders->FilterList(function (Folder $oFolder) {
 				return $oFolder->IsSubscribed();
 			});
 		}

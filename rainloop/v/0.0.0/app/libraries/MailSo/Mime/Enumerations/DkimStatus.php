@@ -16,7 +16,7 @@ namespace MailSo\Mime\Enumerations;
  * @package Mime
  * @subpackage Enumerations
  */
-class DkimStatus
+abstract class DkimStatus
 {
 	const NONE = 'none';
 	const PASS = 'pass';

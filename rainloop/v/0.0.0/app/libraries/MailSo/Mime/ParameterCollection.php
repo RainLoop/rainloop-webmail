@@ -32,7 +32,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		return new self($sRawParams);
 	}
 
-	public function &GetByIndex(int $iIndex) : ?\MailSo\Mime\Parameter
+	public function &GetByIndex(int $iIndex) : ?Parameter
 	{
 		$mResult = null;
 		$mResult =& parent::GetByIndex($iIndex);
@@ -55,7 +55,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		$sName = \trim($sName);
 
 		$aParams =& $this->GetAsArray();
-		foreach ($aParams as /* @var $oParam \MailSo\Mime\ParameterCollection */ $oParam)
+		foreach ($aParams as /* @var $oParam ParameterCollection */ $oParam)
 		{
 			if (\strtolower($sName) === \strtolower($oParam->Name()))
 			{
@@ -87,7 +87,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 	{
 		$aResult = array();
 		$aParams =& $this->GetAsArray();
-		foreach ($aParams as /* @var $oParam \MailSo\Mime\Parameter */ $oParam)
+		foreach ($aParams as /* @var $oParam Parameter */ $oParam)
 		{
 			$sLine = $oParam->ToString($bConvertSpecialsName);
 			if (0 < \strlen($sLine))
@@ -107,7 +107,7 @@ class ParameterCollection extends \MailSo\Base\Collection
 		$this->Clear();
 
 		$aPreParams = array();
-		foreach ($aDataToReParse as /* @var $oParam \MailSo\Mime\Parameter */ $oParam)
+		foreach ($aDataToReParse as /* @var $oParam Parameter */ $oParam)
 		{
 			$aMatch = array();
 			$sParamName = $oParam->Name();
