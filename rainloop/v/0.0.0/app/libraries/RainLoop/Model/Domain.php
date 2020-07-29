@@ -128,7 +128,7 @@ class Domain
 		$this->sAliasName = '';
 	}
 
-	public static function NewInstanceFromDomainConfigArray(string $sName, array $aDomain) : ?\RainLoop\Model\Domain
+	public static function NewInstanceFromDomainConfigArray(string $sName, array $aDomain) : ?self
 	{
 		$oDomain = null;
 

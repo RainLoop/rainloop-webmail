@@ -49,9 +49,8 @@ class Account
 	 */
 	private $sParentEmail;
 
-	function __construct(string $sEmail, string $sLogin, string $sPassword,
-		\RainLoop\Model\Domain $oDomain, string $sSignMeToken = '', string $sProxyAuthUser = '',
-		string $sProxyAuthPassword = '', string $sClientCert = '')
+	function __construct(string $sEmail, string $sLogin, string $sPassword, Domain $oDomain,
+		string $sSignMeToken = '', string $sProxyAuthUser = '', string $sProxyAuthPassword = '', string $sClientCert = '')
 	{
 		$this->sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
 		$this->sLogin = \MailSo\Base\Utils::IdnToAscii($sLogin);
@@ -146,7 +145,7 @@ class Account
 		return $this->sSignMeToken;
 	}
 
-	public function Domain() : \RainLoop\Model\Domain
+	public function Domain() : Domain
 	{
 		return $this->oDomain;
 	}
