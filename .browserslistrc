@@ -1,4 +1,4 @@
-last 3 version
-> 1%
-ie >= 11
-firefox esr
+last 1 version
+> 30%
+not IE 11
+not IE_Mob 11

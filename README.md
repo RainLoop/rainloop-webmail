@@ -63,23 +63,29 @@ Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyf
 
 |js/*       	|1.14.0   	|native   	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|1.329.869	|
-|app.js      	|4.184.455	|3.092.391	|
-|boot.js     	|  671.522	|  108.460	|
+|admin.js    	|2.130.942	|1.222.392	|
+|app.js      	|4.184.455	|2.984.765	|
+|boot.js     	|  671.522	|   94.230	|
 |libs.js     	|  647.614	|  507.015	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL js   	|7.960.367	|5.037.853	|
+|TOTAL js   	|7.960.367	|4.808.402	|
 
 |js/min/*       	|1.14.0   	|native   	|
 |---------------	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  173.226	|
-|app.min.js      	|  511.202	|  405.035	|
-|boot.min.js     	|   66.007	|   13.240	|
+|admin.min.js    	|  252.147	|  157.533	|
+|app.min.js      	|  511.202	|  389.339	|
+|boot.min.js     	|   66.007	|   11.575	|
 |libs.min.js     	|  572.545	|  464.161	|
 |polyfills.min.js	|   32.452	|        0	|
-|TOTAL js/min   	|1.434.353	|1.055.662	|
+|TOTAL js/min   	|1.434.353	|1.022.608	|
 
-378.691 bytes is not much, but it feels faster.
+411.745 bytes is not much, but it feels faster.
+
+|css/*       	|1.14.0   	|native   	|
+|--------------	|--------:	|--------:	|
+|app.css    	|  340.334	|  292.608	|
+|app.min.css	|  274.791	|  231.864	|
+
 
 ### PHP73 branch
 
