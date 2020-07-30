@@ -26,15 +26,7 @@ class SettingsAdminScreen extends AbstractSettingsScreen {
 	 * @param {Function=} fCallback = null
 	 */
 	setupSettings(fCallback = null) {
-		let branding = null,
-			licensing = null;
-
-		if (RL_COMMUNITY) {
-			branding = require('Settings/Admin/Branding').default;
-		} else {
-			branding = require('Settings/Admin/Prem/Branding').default;
-			licensing = require('Settings/Admin/Prem/Licensing').default;
-		}
+		let branding = require('Settings/Admin/Branding').default;
 
 		addSettingsViewModel(
 			GeneralAdminSettings,
@@ -48,9 +40,7 @@ class SettingsAdminScreen extends AbstractSettingsScreen {
 
 		addSettingsViewModel(LoginAdminSettings, 'AdminSettingsLogin', 'TABS_LABELS/LABEL_LOGIN_NAME', 'login');
 
-		if (branding) {
-			addSettingsViewModel(branding, 'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
-		}
+		addSettingsViewModel(branding, 'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
 
 		addSettingsViewModel(ContactsAdminSettings, 'AdminSettingsContacts', 'TABS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 
@@ -59,10 +49,6 @@ class SettingsAdminScreen extends AbstractSettingsScreen {
 		addSettingsViewModel(PluginsAdminSettings, 'AdminSettingsPlugins', 'TABS_LABELS/LABEL_PLUGINS_NAME', 'plugins');
 
 		addSettingsViewModel(PackagesAdminSettings, 'AdminSettingsPackages', 'TABS_LABELS/LABEL_PACKAGES_NAME', 'packages');
-
-		if (licensing) {
-			addSettingsViewModel(licensing, 'AdminSettingsLicensing', 'TABS_LABELS/LABEL_LICENSING_NAME', 'licensing');
-		}
 
 		addSettingsViewModel(AboutAdminSettings, 'AdminSettingsAbout', 'TABS_LABELS/LABEL_ABOUT_NAME', 'about');
 
