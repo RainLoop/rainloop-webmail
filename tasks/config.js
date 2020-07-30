@@ -58,7 +58,6 @@ config.paths.css = {
 			'node_modules/opentip/css/opentip.css',
 			'vendors/lightgallery/dist/css/lightgallery.min.css',
 			'vendors/lightgallery/dist/css/lg-transitions.min.css',
-			'vendors/Progress.js/minified/progressjs.min.css',
 			'dev/Styles/_progressjs.css'
 		]
 	}
