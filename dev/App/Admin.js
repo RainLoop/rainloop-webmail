@@ -39,7 +39,7 @@ class AdminApp extends AbstractApp {
 			DomainStore.domains.loading(false);
 			if (StorageResultType.Success === result && data && data.Result) {
 				DomainStore.domains(
-					Object.entries(data.Result).map(([enabled, alias], name) => ({
+					Object.entries(data.Result).map(([name, [enabled, alias]]) => ({
 						name: name,
 						disabled: ko.observable(!enabled),
 						alias: alias,
