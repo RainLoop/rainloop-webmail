@@ -1,7 +1,6 @@
 import window from 'window';
 import $ from '$';
 import Opentip from 'Opentip';
-import Pikaday from 'pikaday';
 
 import { SaveSettingsStep, Magics } from 'Common/Enums';
 
@@ -103,18 +102,6 @@ ko.bindingHandlers.scrollerShadows = {
 			ko.utils.domNodeDisposal.addDisposeCallback(cont, () => {
 				$(cont).off();
 				window.removeEventListener('resize', fFunc);
-			});
-		}
-	}
-};
-
-ko.bindingHandlers.pikaday = {
-	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext) => {
-		ko.bindingHandlers.textInput.init(element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext);
-
-		if (Pikaday) {
-			element.__pikaday = new Pikaday({
-				field: element
 			});
 		}
 	}

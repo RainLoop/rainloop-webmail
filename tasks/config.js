@@ -56,7 +56,6 @@ config.paths.css = {
 			'vendors/inputosaurus/inputosaurus.css',
 			'vendors/flags/flags-fixed.css',
 			'node_modules/opentip/css/opentip.css',
-			'node_modules/pikaday/css/pikaday.css',
 			'vendors/lightgallery/dist/css/lightgallery.min.css',
 			'vendors/lightgallery/dist/css/lg-transitions.min.css',
 			'vendors/Progress.js/minified/progressjs.min.css',
