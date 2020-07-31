@@ -215,7 +215,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 		foreach ($aResponse as $sLine)
 		{
 			$aTokens = $this->parseLine($sLine);
-			if (false === $aTokens)
+			if (!$aTokens)
 			{
 				continue;
 			}

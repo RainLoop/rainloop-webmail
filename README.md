@@ -36,50 +36,59 @@ This fork has the following changes:
 * Admin uses password_hash/password_verify
 * Auth failed attempts written to syslog
 * Added Fail2ban instructions
-* ES2015 (removed polyfills and Modernizr)
+* ES2015
 * PHP 7.3+ required
 * PHP mbstring extension required
 * PHP replaced pclZip with ZipArchive
 * PHP yaml extension else use the old Spyc
 * Removed BackwardCapability (class \RainLoop\Account)
 * Removed ChangePassword (plugins won't work)
-* Removed JS nanoscroll, jquery-scrollstop, jquery-mousewheel, matchmedia-polyfill
 * Removed OAuth support
 * Removed POP3 support
 * Removed background video support
 * Removed Sentry (Application Monitoring and Error Tracking Software)
 * Replaced gulp-uglify with gulp-terser
 * CRLF => LF line endings
-* Converted underscore.js to native code
 * Ongoing removal of old JavaScript code (things are native these days)
 
 ### Removal of old JavaScript
 
-This fork uses jQuery.slim, downsized/simplified versions of scripts and has no support for Internet Explorer.
+This fork uses downsized/simplified versions of scripts and has no support for Internet Explorer.
 
 The result is faster and smaller download code (good for mobile networks).
 
 Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyfill for array.flat().
 
-|js/*       	|1.14.0   	|native   	|
-|-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|1.222.392	|
-|app.js      	|4.184.455	|2.984.765	|
-|boot.js     	|  671.522	|   94.230	|
-|libs.js     	|  647.614	|  507.015	|
-|polyfills.js	|  325.834	|        0	|
-|TOTAL js   	|7.960.367	|4.808.402	|
+* Replaced jQuery with jQuery.slim
+* Removed pikaday
+* Removed underscore
+* Removed polyfills
+* Removed Modernizr
+* Removed nanoscroll
+* Removed jquery-scrollstop
+* Removed jquery-mousewheel
+* Removed matchmedia-polyfill
 
-|js/min/*       	|1.14.0   	|native   	|
-|---------------	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  157.533	|
-|app.min.js      	|  511.202	|  389.339	|
-|boot.min.js     	|   66.007	|   11.575	|
-|libs.min.js     	|  572.545	|  464.161	|
-|polyfills.min.js	|   32.452	|        0	|
-|TOTAL js/min   	|1.434.353	|1.022.608	|
+|js/*       	|1.14.0 	|native 	|gzip 1.14	|gzip   	|
+|-----------	|--------:	|--------:	|--------:	|--------:	|
+|admin.js    	|2.130.942	|1.221.247	|  485.481	|  299.073	|
+|app.js      	|4.184.455	|2.984.765	|  932.725	|  697.869	|
+|boot.js     	|  671.522	|   94.230	|  169.502	|   28.386	|
+|libs.js     	|  647.614	|  507.015	|  194.728	|  153.918	|
+|polyfills.js	|  325.834	|        0	|   71.825	|        0	|
+|TOTAL js   	|7.960.367	|4.807.257	|1.854.261	|1.179.246	|
 
-411.745 bytes is not much, but it feels faster.
+|js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|
+|---------------	|--------:	|--------:	|--------:	|--------:	|
+|admin.min.js    	|  252.147	|  157.523	| 73.657	| 45.136	|
+|app.min.js      	|  511.202	|  389.339	|140.462	|102.945	|
+|boot.min.js     	|   66.007	|   11.575	| 22.567	|  4.461	|
+|libs.min.js     	|  572.545	|  464.161	|176.720	|143.916	|
+|polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|
+|TOTAL js/min   	|1.434.353	|1.022.598	|424.718	|296.458	|
+
+411.755 bytes (128.260 gzip) is not much, but it feels faster.
+
 
 |css/*       	|1.14.0   	|native   	|
 |--------------	|--------:	|--------:	|

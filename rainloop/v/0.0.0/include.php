@@ -28,7 +28,7 @@
 
 			define('APP_DEFAULT_PRIVATE_DATA_NAME', '_default_');
 
-			$sPrivateDataFolderInternalName = file_exists(APP_INDEX_ROOT_PATH.'MULTIPLY') ? APP_SITE : '';
+			$sPrivateDataFolderInternalName = is_file(APP_INDEX_ROOT_PATH.'MULTIPLY') ? APP_SITE : '';
 			define('APP_PRIVATE_DATA_NAME', 0 === strlen($sPrivateDataFolderInternalName) ? APP_DEFAULT_PRIVATE_DATA_NAME : $sPrivateDataFolderInternalName);
 			define('APP_MULTIPLY', 0 < strlen($sPrivateDataFolderInternalName) && APP_DEFAULT_PRIVATE_DATA_NAME !== APP_PRIVATE_DATA_NAME);
 
@@ -40,7 +40,7 @@
 			$sCustomDataPath = '';
 			$sCustomConfiguration = '';
 
-			if (file_exists(APP_INDEX_ROOT_PATH.'include.php'))
+			if (is_file(APP_INDEX_ROOT_PATH.'include.php'))
 			{
 				include_once APP_INDEX_ROOT_PATH.'include.php';
 			}
@@ -55,9 +55,9 @@
 
 			define('APP_DATA_FOLDER_PATH_UNIX', str_replace('\\', '/', APP_DATA_FOLDER_PATH));
 
-			$sSalt = file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php');
-			$sData = file_exists(APP_DATA_FOLDER_PATH.'DATA.php') ? file_get_contents(APP_DATA_FOLDER_PATH.'DATA.php') : '';
-			$sInstalled = file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED');
+			$sSalt = is_file(APP_DATA_FOLDER_PATH.'SALT.php') ? file_get_contents(APP_DATA_FOLDER_PATH.'SALT.php') : '';
+			$sData = is_file(APP_DATA_FOLDER_PATH.'DATA.php') ? file_get_contents(APP_DATA_FOLDER_PATH.'DATA.php') : '';
+			$sInstalled = is_file(APP_DATA_FOLDER_PATH.'INSTALLED') ? file_get_contents(APP_DATA_FOLDER_PATH.'INSTALLED') : '';
 
 			// installation checking data folder
 			if (APP_VERSION !== $sInstalled)
@@ -68,8 +68,8 @@
 				$sCheckFolder = APP_DATA_FOLDER_PATH.$sCheckName;
 				$sCheckFilePath = APP_DATA_FOLDER_PATH.$sCheckName.'/'.$sCheckName.'.file';
 
-				unlink($sCheckFilePath);
-				rmdir($sCheckFolder);
+				is_file($sCheckFilePath) && unlink($sCheckFilePath);
+				is_dir($sCheckFolder) && rmdir($sCheckFolder);
 
 				if (!is_dir(APP_DATA_FOLDER_PATH))
 				{
@@ -136,9 +136,9 @@
 				file_put_contents(APP_DATA_FOLDER_PATH.'index.html', 'Forbidden');
 				file_put_contents(APP_DATA_FOLDER_PATH.'index.php', 'Forbidden');
 
-				if (!file_exists(APP_DATA_FOLDER_PATH.'.htaccess') && file_exists(APP_VERSION_ROOT_PATH.'app/.htaccess'))
+				if (!is_file(APP_DATA_FOLDER_PATH.'.htaccess') && is_file(APP_VERSION_ROOT_PATH.'app/.htaccess'))
 				{
-					file_put_contents(APP_DATA_FOLDER_PATH.'.htaccess', file_get_contents(APP_VERSION_ROOT_PATH.'app/.htaccess'));
+					copy(APP_VERSION_ROOT_PATH.'app/.htaccess', APP_DATA_FOLDER_PATH.'.htaccess');
 				}
 
 				if (!is_dir(APP_PRIVATE_DATA))

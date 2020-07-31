@@ -150,8 +150,10 @@ class UserAgent
 	public static function getHeader() : string
 	{
 		static $agent;
-		if (null === $agent && isset($_SERVER['HTTP_USER_AGENT'])) {
-			$agent = strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 500));
+		if (null === $agent) {
+			$agent = isset($_SERVER['HTTP_USER_AGENT'])
+				? strtolower(substr($_SERVER['HTTP_USER_AGENT'], 0, 500))
+				: '';
 		}
 		return $agent;
 	}

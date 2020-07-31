@@ -635,7 +635,7 @@ class ServiceActions
 					$sThemeValuesFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/values.less';
 					$sThemeTemplateFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/template.less';
 
-					if (\file_exists($sThemeFile) && \file_exists($sThemeTemplateFile) && \file_exists($sThemeValuesFile))
+					if (\is_file($sThemeFile) && \is_file($sThemeTemplateFile) && \is_file($sThemeValuesFile))
 					{
 						$aResult[] = '@base: "'.
 							($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath()).
@@ -645,7 +645,7 @@ class ServiceActions
 						$aResult[] = \file_get_contents($sThemeFile);
 						$aResult[] = \file_get_contents($sThemeTemplateFile);
 
-						if (\file_exists($sThemeExtFile))
+						if (\is_file($sThemeExtFile))
 						{
 							$aResult[] = \file_get_contents($sThemeExtFile);
 						}
@@ -1037,7 +1037,7 @@ class ServiceActions
 		$sMomentFileName = APP_VERSION_ROOT_PATH.'app/localization/moment/'.
 			$this->convertLanguageNameToMomentLanguageName($sLanguage).'.js';
 
-		if (\file_exists($sMomentFileName))
+		if (\is_file($sMomentFileName))
 		{
 			$sMoment = \file_get_contents($sMomentFileName);
 			$sMoment = \preg_replace('/\/\/[^\n]+\n/', '', $sMoment);
