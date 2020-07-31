@@ -40,17 +40,6 @@ export function momentNowUnix() {
 }
 
 /**
- * @param {number} date
- * @returns {string}
- */
-export function searchSubtractFormatDateHelper(date) {
-	return momentNow()
-		.clone()
-		.subtract(date, 'days')
-		.format('YYYY.MM.DD');
-}
-
-/**
  * @param {Object} m
  * @returns {string}
  */
