@@ -38,17 +38,17 @@ class Service
 			\header('Server: '.$sServer, true);
 		}
 
-		$sXFrameOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_frame_options_header', ''));
-		if (0 < \strlen($sXFrameOptionsHeader))
-		{
-			\header('X-Frame-Options: '.$sXFrameOptionsHeader, true);
-		}
+		\header('Referrer-Policy: no-referrer');
+		\header('X-Content-Type-Options: nosniff');
 
-		$sXssProtectionOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_xss_protection_header', ''));
-		if (0 < \strlen($sXssProtectionOptionsHeader))
-		{
-			\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader, true);
-		}
+		$sContentSecurityPolicy = \trim($this->oActions->Config()->Get('security', 'content_security_policy', '')) ?: APP_DEFAULT_CSP;
+		\header('Content-Security-Policy: '.$sContentSecurityPolicy, true);
+
+		$sXFrameOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_frame_options_header', '')) ?: 'DENY';
+		\header('X-Frame-Options: '.$sXFrameOptionsHeader, true);
+
+		$sXssProtectionOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_xss_protection_header', '')) ?: '1; mode=block';
+		\header('X-XSS-Protection: '.$sXssProtectionOptionsHeader, true);
 
 		if ($this->oActions->Config()->Get('labs', 'force_https', false) && !$this->oHttp->IsSecure())
 		{
@@ -157,9 +157,6 @@ class Service
 				}
 			}
 
-			\header('Content-Security-Policy:');
-			\header_remove('Content-Security-Policy');
-
 			header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
 
@@ -245,17 +242,17 @@ class Service
 		$sFaviconPngLink = $sFaviconUrl ? $sFaviconUrl : $this->staticPath('apple-touch-icon.png');
 		$sAppleTouchLink = $sFaviconUrl ? '' : $this->staticPath('apple-touch-icon.png');
 
-		$sContentSecurityPolicy = $this->oActions->Config()->Get('security', 'content_security_policy', '');
-
 		$aTemplateParameters = array(
+			'{{BaseAppHeadScriptLink}}' => '',
+			'{{BaseAppBodyScript}}' => '',
 			'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
 			'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
 			'{{BaseAppMainCssLink}}' => $this->staticPath('css/app'.($bAppCssDebug ? '' : '.min').'.css'),
 			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($sTheme, $bAdmin),
+			'{{BaseAppPolyfillsScriptLink}}' => '',
 			'{{BaseAppBootScriptLink}}' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'boot'.($bAppJsDebug ? '' : '.min').'.js'),
 			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
-			'{{BaseContentSecurityPolicy}}' => $sContentSecurityPolicy ?
-				'<meta http-equiv="Content-Security-Policy" content="'.$sContentSecurityPolicy.'" />' : '',
+			'{{BaseContentSecurityPolicy}}' => '',
 			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
 			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json')
 		);

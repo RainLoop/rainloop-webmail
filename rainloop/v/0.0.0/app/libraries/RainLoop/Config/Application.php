@@ -169,7 +169,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 					'Enable CSRF protection (http://en.wikipedia.org/wiki/Cross-site_request_forgery)'),
 
 				'custom_server_signature'	=> array('RainLoop'),
-				'x_frame_options_header'	=> array(''),
+				'x_frame_options_header'	=> array('DENY'),
 				'x_xss_protection_header'	=> array('1; mode=block'),
 
 				'openpgp'					=> array(false),
@@ -182,7 +182,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'hide_x_mailer_header'		=> array(true),
 				'admin_panel_host'			=> array(''),
 				'admin_panel_key'			=> array('admin'),
-				'content_security_policy'	=> array(''),
+				'content_security_policy'	=> array(APP_DEFAULT_CSP),
 				'core_install_access_domain' => array('')
 			),
 
