@@ -2,11 +2,9 @@ import $ from '$';
 import ko from 'ko';
 import moment from 'moment';
 import classnames from 'classnames';
-import lozad from 'lozad';
 
 import { MessagePriority, SignedVerifyStatus } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
-import { DATA_IMAGE_LAZY_PLACEHOLDER_PIC } from 'Common/Consts';
 
 import {
 	pInt,
@@ -17,7 +15,6 @@ import {
 	isNonEmptyArray
 } from 'Common/Utils';
 
-import { $win } from 'Common/Globals';
 import { messageViewLink, messageDownloadLink } from 'Common/Links';
 
 import FolderStore from 'Stores/User/Folder';
@@ -627,8 +624,6 @@ class MessageModel extends AbstractModel {
 	 * @param {boolean=} print = false
 	 */
 	viewPopupMessage(print = false) {
-		this.showLazyExternalImagesInBody();
-
 		const timeStampInUTC = this.dateTimeStampInUTC() || 0,
 			ccLine = this.ccToLine(false),
 			m = 0 < timeStampInUTC ? moment.unix(timeStampInUTC) : null;
@@ -731,34 +726,6 @@ class MessageModel extends AbstractModel {
 		return this;
 	}
 
-	showLazyExternalImagesInBody() {
-		if (this.body) {
-			$('.lazy.lazy-inited[data-original]', this.body).each(function() {
-				$(this)
-					.attr('src', $(this).attr('data-original')) // eslint-disable-line no-invalid-this
-					.removeAttr('data-original')
-					.removeAttr('data-loaded');
-			});
-		}
-	}
-
-	lozad() {
-		lozad('img.lazy:not(.lazy-inited)', {
-			threshold: 0.4,
-			load: (element) => {
-				// console.log('lazy', element.dataset.original);
-				element.src = DATA_IMAGE_LAZY_PLACEHOLDER_PIC;
-				$(element)
-					.addClass('lazy-inited')
-					.attr('src', element.dataset.original)
-					.removeAttr('data-loaded')
-					.removeAttr('data-original')
-					.css({ opacity: 0.3 })
-					.animate({ opacity: 1 }, 500);
-			}
-		}).observe();
-	}
-
 	showExternalImages(lazy = false) {
 		if (this.body && this.body.data('rl-has-images')) {
 			this.hasImages(false);
@@ -768,13 +735,9 @@ class MessageModel extends AbstractModel {
 			$('[' + attr + ']', this.body).each(function() {
 				const $this = $(this); // eslint-disable-line no-invalid-this
 				if (lazy && $this.is('img')) {
-					$this
-						.addClass('lazy')
-						.attr('data-original', $this.attr(attr))
-						.removeAttr('data-loaded');
-				} else {
-					$this.attr('src', $this.attr(attr)).removeAttr('data-loaded');
+					$this.attr('loading', 'lazy');
 				}
+				$this.attr('src', $this.attr(attr)).removeAttr('data-loaded');
 			});
 
 			attr = this.proxy ? 'data-x-additional-style-url' : 'data-x-style-url';
@@ -784,11 +747,6 @@ class MessageModel extends AbstractModel {
 				style = style ? (';' === style.substr(-1) ? style + ' ' : style + '; ') : '';
 				$this.attr('style', style + $this.attr(attr));
 			});
-
-			if (lazy) {
-				this.lozad();
-				$win.trigger('resize');
-			}
 
 			windowResize(500);
 		}
@@ -805,11 +763,7 @@ class MessageModel extends AbstractModel {
 					attachment = self.findAttachmentByCid($this.attr('data-x-src-cid'));
 
 				if (attachment && attachment.download) {
-					if (lazy && $this.is('img')) {
-						$this.addClass('lazy').attr('data-original', attachment.linkPreview());
-					} else {
-						$this.attr('src', attachment.linkPreview());
-					}
+					$this.attr('src', attachment.linkPreview());
 				}
 			});
 
@@ -822,10 +776,9 @@ class MessageModel extends AbstractModel {
 
 				if (attachment && attachment.download) {
 					if (lazy && $this.is('img')) {
-						$this.addClass('lazy').attr('data-original', attachment.linkPreview());
-					} else {
-						$this.attr('src', attachment.linkPreview());
+						$this.attr('loading', 'lazy');
 					}
+					$this.attr('src', attachment.linkPreview());
 				}
 			});
 
@@ -845,11 +798,6 @@ class MessageModel extends AbstractModel {
 					}
 				}
 			});
-
-			if (lazy) {
-				// $('.RL-MailMessageView .messageView .messageItem .content')[0]
-				setTimeout(() => this.lozad(), 300);
-			}
 
 			windowResize(500);
 		}
