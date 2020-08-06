@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { ContactPropertyType } from 'Common/Enums';
-import { trim, isNonEmptyArray, isNormal, pInt, pString } from 'Common/Utils';
+import { isNonEmptyArray, isNormal, pInt, pString } from 'Common/Utils';
 import { emptyContactPic } from 'Common/Links';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -32,9 +32,9 @@ class ContactModel extends AbstractModel {
 			this.properties.forEach(property => {
 				if (property) {
 					if (ContactPropertyType.FirstName === property[0]) {
-						name = trim(property[1] + ' ' + name);
+						name = (property[1] + ' ' + name).trim();
 					} else if (ContactPropertyType.LastName === property[0]) {
-						name = trim(name + ' ' + property[1]);
+						name = (name + ' ' + property[1]).trim();
 					} else if (!email && ContactPropertyType.Email === property[0]) {
 						email = property[1];
 					}

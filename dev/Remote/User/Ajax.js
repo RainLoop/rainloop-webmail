@@ -1,4 +1,4 @@
-import { pString, pInt, trim } from 'Common/Utils';
+import { pString, pInt } from 'Common/Utils';
 
 import {
 	CONTACTS_SYNC_AJAX_TIMEOUT,
@@ -855,7 +855,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	contactSave(fCallback, sRequestUid, sUid, aProperties) {
 		this.defaultRequest(fCallback, 'ContactSave', {
 			'RequestUid': sRequestUid,
-			'Uid': trim(sUid),
+			'Uid': sUid.trim(),
 			'Properties': aProperties
 		});
 	}

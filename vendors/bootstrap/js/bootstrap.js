@@ -292,8 +292,8 @@
     this.$indicators = this.$element.find('.carousel-indicators')
     this.options = options
     this.options.pause == 'hover' && this.$element
-      .on('mouseenter', $.proxy(this.pause, this))
-      .on('mouseleave', $.proxy(this.cycle, this))
+      .on('mouseenter', this.pause.bind(this))
+      .on('mouseleave', this.cycle.bind(this))
   }
 
   Carousel.prototype = {
@@ -303,7 +303,7 @@
       if (this.interval) clearInterval(this.interval);
       this.options.interval
         && !this.paused
-        && (this.interval = setInterval($.proxy(this.next, this), this.options.interval))
+        && (this.interval = setInterval(this.next.bind(this), this.options.interval))
       return this
     }
 
@@ -831,7 +831,7 @@
   var Modal = function (element, options) {
     this.options = options
     this.$element = $(element)
-      .on('click.dismiss.modal', '[data-dismiss="modal"]', $.proxy(this.hide, this))
+      .on('click.dismiss.modal', '[data-dismiss="modal"]', this.hide.bind(this))
     this.options.remote && this.$element.find('.modal-body').load(this.options.remote)
   }
 
@@ -966,8 +966,8 @@
 
           this.$backdrop.click(
             this.options.backdrop == 'static' ?
-              $.proxy(this.$element[0].focus, this.$element[0])
-            : $.proxy(this.hide, this)
+              this.$element[0].focus.bind(this.$element[0])
+            : this.hide.bind(this)
           )
 
           if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
@@ -1101,12 +1101,12 @@
       for (i = triggers.length; i--;) {
         trigger = triggers[i]
         if (trigger == 'click') {
-          this.$element.on('click.' + this.type, this.options.selector, $.proxy(this.toggle, this))
+          this.$element.on('click.' + this.type, this.options.selector, this.toggle.bind(this))
         } else if (trigger != 'manual') {
           eventIn = trigger == 'hover' ? 'mouseenter' : 'focus'
           eventOut = trigger == 'hover' ? 'mouseleave' : 'blur'
-          this.$element.on(eventIn + '.' + this.type, this.options.selector, $.proxy(this.enter, this))
-          this.$element.on(eventOut + '.' + this.type, this.options.selector, $.proxy(this.leave, this))
+          this.$element.on(eventIn + '.' + this.type, this.options.selector, this.enter.bind(this))
+          this.$element.on(eventOut + '.' + this.type, this.options.selector, this.leave.bind(this))
         }
       }
 
@@ -1551,7 +1551,7 @@
   * ========================== */
 
   function ScrollSpy(element, options) {
-    var process = $.proxy(this.process, this)
+    var process = this.process.bind(this)
       , $element = $(element).is('body') ? $(window) : $(element)
       , href
     this.options = $.extend({}, $.fn.scrollspy.defaults, options)
@@ -1915,7 +1915,7 @@
         return this.shown ? this.hide() : this
       }
 
-      items = $.isFunction(this.source) ? this.source(this.query, $.proxy(this.process, this)) : this.source
+      items = $.isFunction(this.source) ? this.source(this.query, this.process.bind(this)) : this.source
 
       return items ? this.process(items) : this
     }
@@ -2000,19 +2000,19 @@
 
   , listen: function () {
       this.$element
-        .on('focus',    $.proxy(this.focus, this))
-        .on('blur',     $.proxy(this.blur, this))
-        .on('keypress', $.proxy(this.keypress, this))
-        .on('keyup',    $.proxy(this.keyup, this))
+        .on('focus',    this.focus.bind(this))
+        .on('blur',     this.blur.bind(this))
+        .on('keypress', this.keypress.bind(this))
+        .on('keyup',    this.keyup.bind(this))
 
       if (this.eventSupported('keydown')) {
-        this.$element.on('keydown', $.proxy(this.keydown, this))
+        this.$element.on('keydown', this.keydown.bind(this))
       }
 
       this.$menu
-        .on('click', $.proxy(this.click, this))
-        .on('mouseenter', 'li', $.proxy(this.mouseenter, this))
-        .on('mouseleave', 'li', $.proxy(this.mouseleave, this))
+        .on('click', this.click.bind(this))
+        .on('mouseenter', 'li', this.mouseenter.bind(this))
+        .on('mouseleave', 'li', this.mouseleave.bind(this))
     }
 
   , eventSupported: function(eventName) {
@@ -2192,8 +2192,8 @@
   var Affix = function (element, options) {
     this.options = $.extend({}, $.fn.affix.defaults, options)
     this.$window = $(window)
-      .on('scroll.affix.data-api', $.proxy(this.checkPosition, this))
-      .on('click.affix.data-api',  $.proxy(function () { setTimeout($.proxy(this.checkPosition, this), 1) }, this))
+      .on('scroll.affix.data-api', this.checkPosition.bind(this))
+      .on('click.affix.data-api',  (function () { setTimeout(this.checkPosition.bind(this), 1) }).bind(this))
     this.$element = $(element)
     this.checkPosition()
   }

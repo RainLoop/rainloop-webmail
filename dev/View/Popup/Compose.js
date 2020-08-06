@@ -16,7 +16,6 @@ import {
 } from 'Common/Enums';
 
 import {
-	trim,
 	isNormal,
 	delegateRun,
 	isNonEmptyArray,
@@ -68,11 +67,11 @@ class ComposePopupView extends AbstractViewNext {
 		const fEmailOutInHelper = (context, identity, name, isIn) => {
 			if (identity && context && identity[name]() && (isIn ? true : context[name]())) {
 				const identityEmail = identity[name]();
-				let list = trim(context[name]()).split(/[,]/);
+				let list = context[name]().trim().split(/[,]/);
 
 				list = list.filter(email => {
-					email = trim(email);
-					return email && trim(identityEmail) !== email;
+					email = email.trim();
+					return email && identityEmail.trim() !== email;
 				});
 
 				if (isIn) {
@@ -343,9 +342,9 @@ class ComposePopupView extends AbstractViewNext {
 
 	@command((self) => self.canBeSentOrSaved())
 	sendCommand() {
-		const sTo = trim(this.to()),
-			sCc = trim(this.cc()),
-			sBcc = trim(this.bcc());
+		const sTo = this.to().trim(),
+			sCc = this.cc().trim(),
+			sBcc = this.bcc().trim();
 		let sSentFolder = FolderStore.sentFolder();
 
 		this.attachmentsInProcessError(false);
@@ -638,7 +637,7 @@ class ComposePopupView extends AbstractViewNext {
 		if (this.modalVisibility() && !result) {
 			if (data && Notification.CantSaveMessage === data.ErrorCode) {
 				this.sendSuccessButSaveError(true);
-				this.savedErrorDesc(trim(i18n('COMPOSE/SAVED_ERROR_ON_SEND')));
+				this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
 			} else {
 				message = getNotification(
 					data && data.ErrorCode ? data.ErrorCode : Notification.CantSendMessage,
@@ -858,11 +857,11 @@ class ComposePopupView extends AbstractViewNext {
 	 */
 	addEmailsTo(fKoValue, emails) {
 		if (isNonEmptyArray(emails)) {
-			const value = trim(fKoValue()),
+			const value = fKoValue().trim(),
 				values = emails.map(item => item ? item.toLine(false) : null)
 					.filter((value, index, self) => !!value && self.indexOf(value) == index);
 
-			fKoValue(value + (value ? ', ' :  '') + trim(values.join(', ')));
+			fKoValue(value + (value ? ', ' :  '') + values.join(', ').trim());
 		}
 	}
 
@@ -962,7 +961,7 @@ class ComposePopupView extends AbstractViewNext {
 					this.prepearMessageAttachments(message, lineComposeType);
 					this.aDraftInfo = ['reply', message.uid, message.folderFullNameRaw];
 					this.sInReplyTo = message.sMessageId;
-					this.sReferences = trim(this.sInReplyTo + ' ' + message.sReferences);
+					this.sReferences = (this.sInReplyTo + ' ' + message.sReferences).trim();
 					break;
 
 				case ComposeType.ReplyAll:
@@ -973,7 +972,7 @@ class ComposePopupView extends AbstractViewNext {
 					this.prepearMessageAttachments(message, lineComposeType);
 					this.aDraftInfo = ['reply', message.uid, message.folderFullNameRaw];
 					this.sInReplyTo = message.sMessageId;
-					this.sReferences = trim(this.sInReplyTo + ' ' + message.references());
+					this.sReferences = (this.sInReplyTo + ' ' + message.references()).trim();
 					break;
 
 				case ComposeType.Forward:
@@ -981,7 +980,7 @@ class ComposePopupView extends AbstractViewNext {
 					this.prepearMessageAttachments(message, lineComposeType);
 					this.aDraftInfo = ['forward', message.uid, message.folderFullNameRaw];
 					this.sInReplyTo = message.sMessageId;
-					this.sReferences = trim(this.sInReplyTo + ' ' + message.sReferences);
+					this.sReferences = (this.sInReplyTo + ' ' + message.sReferences).trim();
 					break;
 
 				case ComposeType.ForwardAsAttachment:
@@ -989,7 +988,7 @@ class ComposePopupView extends AbstractViewNext {
 					this.prepearMessageAttachments(message, lineComposeType);
 					this.aDraftInfo = ['forward', message.uid, message.folderFullNameRaw];
 					this.sInReplyTo = message.sMessageId;
-					this.sReferences = trim(this.sInReplyTo + ' ' + message.sReferences);
+					this.sReferences = (this.sInReplyTo + ' ' + message.sReferences).trim();
 					break;
 
 				case ComposeType.Draft:
@@ -1036,7 +1035,7 @@ class ComposePopupView extends AbstractViewNext {
 						'EMAIL': sFrom
 					});
 
-					sText = '<br /><br />' + sReplyTitle + ':' + '<br /><br />' + '<blockquote>' + trim(sText) + '</blockquote>';
+					sText = '<br /><br />' + sReplyTitle + ':' + '<br /><br />' + '<blockquote>' + sText.trim() + '</blockquote>';
 
 					break;
 
@@ -1065,7 +1064,7 @@ class ComposePopupView extends AbstractViewNext {
 						': ' +
 						encodeHtml(sSubject) +
 						'<br /><br />' +
-						trim(sText) +
+						sText.trim() +
 						'<br /><br />';
 					break;
 

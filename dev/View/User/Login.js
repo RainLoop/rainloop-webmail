@@ -9,7 +9,7 @@ import {
 	Notification
 } from 'Common/Enums';
 
-import { trim, convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
+import { convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
 
 import { $win } from 'Common/Globals';
 import { getNotification, getNotificationFromResponse, reload as translatorReload } from 'Common/Translator';
@@ -53,8 +53,8 @@ class LoginUserView extends AbstractViewNext {
 		this.additionalCode.visibility = ko.observable(false);
 		this.additionalCodeSignMe = ko.observable(false);
 
-		this.logoImg = trim(Settings.settingsGet('LoginLogo'));
-		this.loginDescription = trim(Settings.settingsGet('LoginDescription'));
+		this.logoImg = (Settings.settingsGet('LoginLogo')||'').trim();
+		this.loginDescription = (Settings.settingsGet('LoginDescription')||'').trim();
 
 		this.mobile = !!Settings.appSettingsGet('mobile');
 		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
@@ -154,12 +154,12 @@ class LoginUserView extends AbstractViewNext {
 		this.emailError(false);
 		this.passwordError(false);
 
-		this.emailError(!trim(this.email()));
-		this.passwordError(!trim(this.password()));
+		this.emailError(!this.email().trim());
+		this.passwordError(!this.password().trim());
 
 		if (this.additionalCode.visibility()) {
 			this.additionalCode.error(false);
-			this.additionalCode.error(!trim(this.additionalCode()));
+			this.additionalCode.error(!this.additionalCode().trim());
 		}
 
 		if (

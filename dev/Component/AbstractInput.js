@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { trim, pInt } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
 import { SaveSettingsStep } from 'Common/Enums';
 import { AbstractComponent } from 'Component/Abstract';
 
@@ -26,7 +26,7 @@ class AbstractInput extends AbstractComponent {
 
 		this.className = ko.computed(() => {
 			const size = ko.unwrap(this.size),
-				suffixValue = this.trigger ? ' ' + trim('settings-saved-trigger-input ' + this.classForTrigger()) : '';
+				suffixValue = this.trigger ? ' ' + ('settings-saved-trigger-input ' + this.classForTrigger()).trim() : '';
 			return (0 < size ? 'span' + size : '') + suffixValue;
 		});
 

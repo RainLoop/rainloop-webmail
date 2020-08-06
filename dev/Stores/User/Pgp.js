@@ -2,7 +2,7 @@ import ko from 'ko';
 import $ from '$';
 
 import { i18n } from 'Common/Translator';
-import { log, isNonEmptyArray, pString, trim } from 'Common/Utils';
+import { log, isNonEmptyArray, pString } from 'Common/Utils';
 
 import AccountStore from 'Stores/User/Account';
 
@@ -232,7 +232,7 @@ class PgpUserStore {
 		}
 
 		if (undefined !== text) {
-			dom.text(trim(text));
+			dom.text(text.trim());
 		}
 	}
 

@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Magics } from 'Common/Enums';
-import { trim, log, delegateRun, pInt } from 'Common/Utils';
+import { log, delegateRun, pInt } from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
 
@@ -39,7 +39,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 		const userId = {},
 			openpgpKeyring = PgpStore.openpgpKeyring;
 
-		this.email.error(!trim(this.email()));
+		this.email.error(!this.email().trim());
 		if (!openpgpKeyring || this.email.error()) {
 			return false;
 		}
@@ -58,7 +58,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 					.generateKey({
 						userIds: [userId],
 						numBits: pInt(this.keyBitLength()),
-						passphrase: trim(this.password())
+						passphrase: this.password().trim()
 					})
 					.then((keyPair) => {
 						this.submitRequest(false);

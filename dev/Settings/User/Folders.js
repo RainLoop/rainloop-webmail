@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { ClientSideKeyName, Notification, Magics } from 'Common/Enums';
-import { trim } from 'Common/Utils';
 import { getNotification, i18n } from 'Common/Translator';
 
 import { removeFolderFromCacheList } from 'Common/Cache';
@@ -42,7 +41,7 @@ class FoldersUserSettings {
 	}
 
 	folderEditOnEnter(folder) {
-		const nameToEdit = folder ? trim(folder.nameForEdit()) : '';
+		const nameToEdit = folder ? folder.nameForEdit().trim() : '';
 
 		if (nameToEdit && folder.name() !== nameToEdit) {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');

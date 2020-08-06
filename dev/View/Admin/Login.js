@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { trim, triggerAutocompleteInputChange } from 'Common/Utils';
+import { triggerAutocompleteInputChange } from 'Common/Utils';
 
 import { StorageResultType, Notification, Magics } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
@@ -65,8 +65,8 @@ class LoginAdminView extends AbstractViewNext {
 		this.loginError(false);
 		this.passwordError(false);
 
-		this.loginError(!trim(this.login()));
-		this.passwordError(!trim(this.password()));
+		this.loginError(!this.login().trim());
+		this.passwordError(!this.password().trim());
 
 		if (this.loginError() || this.passwordError()) {
 			return false;

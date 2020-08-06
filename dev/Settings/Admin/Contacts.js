@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender, trim } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender } from 'Common/Utils';
 
 import { SaveSettingsStep, StorageResultType, Magics } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
@@ -163,25 +163,25 @@ class ContactsAdminSettings {
 
 			this.contactsType.subscribe((value) => {
 				Remote.saveAdminConfig(f5, {
-					'ContactsPdoType': trim(value)
+					'ContactsPdoType': value.trim()
 				});
 			});
 
 			this.pdoDsn.subscribe((value) => {
 				Remote.saveAdminConfig(f1, {
-					'ContactsPdoDsn': trim(value)
+					'ContactsPdoDsn': value.trim()
 				});
 			});
 
 			this.pdoUser.subscribe((value) => {
 				Remote.saveAdminConfig(f3, {
-					'ContactsPdoUser': trim(value)
+					'ContactsPdoUser': value.trim()
 				});
 			});
 
 			this.pdoPassword.subscribe((value) => {
 				Remote.saveAdminConfig(f4, {
-					'ContactsPdoPassword': trim(value)
+					'ContactsPdoPassword': value.trim()
 				});
 			});
 

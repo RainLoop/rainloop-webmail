@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
-import { trim } from 'Common/Utils';
 import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Ajax';
@@ -44,8 +43,8 @@ class AccountPopupView extends AbstractViewNext {
 
 	@command((self) => !self.submitRequest())
 	addAccountCommand() {
-		this.emailError(!trim(this.email()));
-		this.passwordError(!trim(this.password()));
+		this.emailError(!this.email().trim());
+		this.passwordError(!this.password().trim());
 
 		if (this.emailError() || this.passwordError()) {
 			return false;

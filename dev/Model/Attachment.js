@@ -3,7 +3,7 @@ import ko from 'ko';
 
 import { FileType } from 'Common/Enums';
 import { bMobileDevice } from 'Common/Globals';
-import { trim, pInt, isNonEmptyArray, getFileExtension, friendlySize } from 'Common/Utils';
+import { pInt, isNonEmptyArray, getFileExtension, friendlySize } from 'Common/Utils';
 import {
 	attachmentDownload,
 	attachmentPreview,
@@ -26,8 +26,8 @@ const bAllowPdfPreview = !bMobileDevice && undefined !== window.navigator.mimeTy
 export const staticFileType = (() => {
 	let cache = {};
 	return (ext, mimeType) => {
-		ext = trim(ext).toLowerCase();
-		mimeType = trim(mimeType).toLowerCase();
+		ext = ext.toLowerCase().trim();
+		mimeType = mimeType.toLowerCase().trim();
 
 		let key = ext + mimeType;
 		if (cache[key]) {
@@ -237,8 +237,8 @@ class AttachmentModel extends AbstractModel {
 	initByJson(json) {
 		let bResult = false;
 		if (json && 'Object/Attachment' === json['@Object']) {
-			this.mimeType = trim((json.MimeType || '').toLowerCase());
-			this.fileName = trim(json.FileName);
+			this.mimeType = ((json.MimeType || '').toLowerCase()).trim();
+			this.fileName = json.FileName.trim();
 			this.estimatedSize = pInt(json.EstimatedSize);
 			this.isInline = !!json.IsInline;
 			this.isLinked = !!json.IsLinked;

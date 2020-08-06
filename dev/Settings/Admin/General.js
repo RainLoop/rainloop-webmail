@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import {
-	trim,
 	pInt,
 	settingsSaveHelperSimpleFunction,
 	changeTheme,
@@ -91,7 +90,7 @@ class GeneralAdminSettings {
 
 			this.language.subscribe((value) => {
 				Remote.saveAdminConfig(f2, {
-					'Language': trim(value)
+					'Language': value.trim()
 				});
 			});
 
@@ -101,7 +100,7 @@ class GeneralAdminSettings {
 					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
 					.then(() => {
 						Remote.saveAdminConfig(null, {
-							'LanguageAdmin': trim(value)
+							'LanguageAdmin': value.trim()
 						});
 					});
 			});
@@ -109,7 +108,7 @@ class GeneralAdminSettings {
 			this.theme.subscribe((value) => {
 				changeTheme(value, this.themeTrigger);
 				Remote.saveAdminConfig(f3, {
-					'Theme': trim(value)
+					'Theme': value.trim()
 				});
 			});
 

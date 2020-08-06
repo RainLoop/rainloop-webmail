@@ -1,5 +1,5 @@
 import window from 'window';
-import { pString, pInt, isNormal, trim } from 'Common/Utils';
+import { pString, pInt, isNormal } from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 
 const ROOT = './',
@@ -306,7 +306,7 @@ export function openPgpWorkerPath() {
 export function themePreviewLink(theme) {
 	let prefix = VERSION_PREFIX;
 	if ('@custom' === theme.substr(-7)) {
-		theme = trim(theme.substring(0, theme.length - 7));
+		theme = theme.substring(0, theme.length - 7).trim();
 		prefix = WEB_PREFIX;
 	}
 

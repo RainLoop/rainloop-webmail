@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { settingsSaveHelperSimpleFunction, trim } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 import { settingsGet } from 'Storage/Settings';
 
 import AppStore from 'Stores/Admin/App';
@@ -42,7 +42,7 @@ class LoginAdminSettings {
 
 			this.defaultDomain.subscribe((value) => {
 				Remote.saveAdminConfig(f1, {
-					'LoginDefaultDomain': trim(value)
+					'LoginDefaultDomain': value.trim()
 				});
 			});
 		}, 50);

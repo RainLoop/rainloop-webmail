@@ -2,7 +2,6 @@ import window from 'window';
 import { bMobileDevice, bSafari } from 'Common/Globals';
 import * as Links from 'Common/Links';
 import * as Events from 'Common/Events';
-import { trim } from 'Common/Utils';
 
 class Audio {
 	notificator = null;
@@ -76,9 +75,9 @@ class Audio {
 	}
 
 	clearName(name = '', ext = '') {
-		name = trim(name);
+		name = name.trim();
 		if (ext && '.' + ext === name.toLowerCase().substr((ext.length + 1) * -1)) {
-			name = trim(name.substr(0, name.length - 4));
+			name = name.substr(0, name.length - 4).trim();
 		}
 
 		return name || 'audio';

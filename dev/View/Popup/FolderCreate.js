@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Notification } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { bMobileDevice } from 'Common/Globals';
-import { trim, defautOptionsAfterRender, folderListOptionsBuilder } from 'Common/Utils';
+import { defautOptionsAfterRender, folderListOptionsBuilder } from 'Common/Utils';
 
 import FolderStore from 'Stores/User/Folder';
 
@@ -62,7 +62,7 @@ class FolderCreateView extends AbstractViewNext {
 	}
 
 	simpleFolderNameValidation(sName) {
-		return /^[^\\/]+$/g.test(trim(sName));
+		return /^[^\\/]+$/g.test(sName.trim());
 	}
 
 	clearPopup() {

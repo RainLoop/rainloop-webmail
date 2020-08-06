@@ -1,5 +1,5 @@
 import addressparser from 'emailjs-addressparser';
-import { trim, encodeHtml, isNonEmptyArray } from 'Common/Utils';
+import { encodeHtml, isNonEmptyArray } from 'Common/Utils';
 
 class EmailModel {
 	email = '';
@@ -82,10 +82,10 @@ class EmailModel {
 	initByJson(json) {
 		let result = false;
 		if (json && 'Object/Email' === json['@Object']) {
-			this.name = trim(json.Name);
-			this.email = trim(json.Email);
-			this.dkimStatus = trim(json.DkimStatus || '');
-			this.dkimValue = trim(json.DkimValue || '');
+			this.name = json.Name.trim();
+			this.email = json.Email.trim();
+			this.dkimStatus = (json.DkimStatus || '').trim();
+			this.dkimValue = (json.DkimValue || '').trim();
 
 			result = !!this.email;
 			this.clearDuplicateName();
@@ -196,7 +196,7 @@ class EmailModel {
 	 * @returns {boolean}
 	 */
 	parse(emailAddress) {
-		emailAddress = trim(emailAddress);
+		emailAddress = emailAddress.trim();
 		if (!emailAddress) {
 			return false;
 		}

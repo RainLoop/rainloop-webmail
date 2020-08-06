@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { trim } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import MessageStore from 'Stores/User/Message';
@@ -79,10 +78,10 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 
 	buildSearchString() {
 		const result = [],
-			from_ = trim(this.from()),
-			to = trim(this.to()),
-			subject = trim(this.subject()),
-			text = trim(this.text()),
+			from_ = this.from().trim(),
+			to = this.to().trim(),
+			subject = this.subject().trim(),
+			text = this.text().trim(),
 			isPart = [],
 			hasPart = [];
 
@@ -128,7 +127,7 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 			result.push('text:' + this.buildSearchStringValue(text));
 		}
 
-		return trim(result.join(' '));
+		return result.join(' ').trim();
 	}
 
 	clearPopup() {

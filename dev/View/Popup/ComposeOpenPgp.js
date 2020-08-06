@@ -2,7 +2,7 @@ import $ from '$';
 import ko from 'ko';
 import key from 'key';
 
-import { pString, log, trim, defautOptionsAfterRender } from 'Common/Utils';
+import { pString, log, defautOptionsAfterRender } from 'Common/Utils';
 
 import { Magics, KeyState } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
@@ -360,7 +360,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		rec = rec.join(', ').split(',');
 		rec = rec.map(value => {
 				email.clear();
-				email.parse(trim(value));
+				email.parse(value.trim());
 				return email.email || false;
 			}).filter(value => !!value);
 

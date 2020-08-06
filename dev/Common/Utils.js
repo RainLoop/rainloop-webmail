@@ -7,7 +7,6 @@ import { $win, $div, $hcont, dropdownVisibility, data as GlobalsData } from 'Com
 import { ComposeType, SaveSettingsStep, FolderType } from 'Common/Enums';
 import { Mime } from 'Common/Mime';
 
-const trim = $.trim;
 const isArray = Array.isArray;
 const decodeURIComponent = component => window.decodeURIComponent(component);
 
@@ -22,8 +21,6 @@ var htmlspecialchars = ((de,se,gt,lt,sq,dq,bt) => {
 		return (quote_style & 2) ? str.replace(dq,'&quot;') : str;
 	};
 })(/&/g,/&(?![\w#]+;)/gi,/</g,/>/g,/'/g,/"/g,/`/g);
-
-export { trim };
 
 /**
  * @param {*} value
@@ -223,8 +220,8 @@ export function removeSelection() {
  * @returns {string}
  */
 export function replySubjectAdd(prefix, subject) {
-	prefix = trim(prefix.toUpperCase());
-	subject = trim(subject.replace(/[\s]+/g, ' '));
+	prefix = prefix.toUpperCase().trim();
+	subject = subject.replace(/[\s]+/g, ' ').trim();
 
 	let drop = false,
 		re = 'RE' === prefix,
@@ -235,7 +232,7 @@ export function replySubjectAdd(prefix, subject) {
 
 	if (subject) {
 		subject.split(':').forEach(part => {
-			const trimmedPart = trim(part);
+			const trimmedPart = part.trim();
 			if (!drop && (/^(RE|FWD)$/i.test(trimmedPart) || /^(RE|FWD)[[(][\d]+[\])]$/i.test(trimmedPart))) {
 				if (!re) {
 					re = !!/^RE/i.test(trimmedPart);
@@ -257,7 +254,7 @@ export function replySubjectAdd(prefix, subject) {
 		fwd = false;
 	}
 
-	return trim((prefixIsRe ? 'Re: ' : 'Fwd: ') + (re ? 'Re: ' : '') + (fwd ? 'Fwd: ' : '') + trim(parts.join(':')));
+	return ((prefixIsRe ? 'Re: ' : 'Fwd: ') + (re ? 'Re: ' : '') + (fwd ? 'Fwd: ' : '') + parts.join(':').trim()).trim();
 }
 
 /**
@@ -353,15 +350,14 @@ export function createCommandLegacy(context, fExecute, fCanExecute = true) {
  */
 export const convertThemeName = theme => {
 	if ('@custom' === theme.substr(-7)) {
-		theme = trim(theme.substring(0, theme.length - 7));
+		theme = theme.substring(0, theme.length - 7).trim();
 	}
 
-	return trim(
-		theme
+	return theme
 			.replace(/[^a-zA-Z0-9]+/g, ' ')
 			.replace(/([A-Z])/g, ' $1')
 			.replace(/\s+/g, ' ')
-	);
+			.trim();
 };
 
 /**
@@ -513,7 +509,7 @@ export function settingsSaveHelperSubscribeFunction(remote, settingName, type, f
 					value = pInt(value);
 					break;
 				case 'trim':
-					value = trim(value);
+					value = value.trim();
 					break;
 				default:
 					value = pString(value);
@@ -566,18 +562,18 @@ export function htmlToPlain(html) {
 		text = '';
 
 	const convertBlockquote = (blockquoteText) => {
-		blockquoteText = '> ' + trim(blockquoteText).replace(/\n/gm, '\n> ');
+		blockquoteText = '> ' + blockquoteText.trim().replace(/\n/gm, '\n> ');
 		return blockquoteText.replace(/(^|\n)([> ]+)/gm, (...args) =>
-			args && 2 < args.length ? args[1] + trim(args[2].replace(/[\s]/g, '')) + ' ' : ''
+			args && 2 < args.length ? args[1] + args[2].replace(/[\s]/g, '').trim() + ' ' : ''
 		);
 	};
 
 	const convertDivs = (...args) => {
 		if (args && 1 < args.length) {
-			let divText = trim(args[1]);
+			let divText = args[1].trim();
 			if (divText.length) {
 				divText = divText.replace(/<div[^>]*>([\s\S\r\n]*)<\/div>/gim, convertDivs);
-				divText = '\n' + trim(divText) + '\n';
+				divText = '\n' + divText.trim() + '\n';
 			}
 
 			return divText;
@@ -594,7 +590,7 @@ export function htmlToPlain(html) {
 						.replace(/[\r]/gm, '')
 				: '',
 		fixAttibuteValue = (...args) => (args && 1 < args.length ? '' + args[1] + htmlspecialchars(args[2]) : ''),
-		convertLinks = (...args) => (args && 1 < args.length ? trim(args[1]) : '');
+		convertLinks = (...args) => (args && 1 < args.length ? args[1].trim() : '');
 
 	text = html
 		.replace(/<p[^>]*><\/p>/gi, '')
@@ -1124,7 +1120,7 @@ export function computedPagenatorHelper(koCurrentPage, koPageCount) {
  * @returns {string}
  */
 export function getFileExtension(fileName) {
-	fileName = trim(fileName).toLowerCase();
+	fileName = fileName.toLowerCase().trim();
 
 	const result = fileName.split('.').pop();
 	return result === fileName ? '' : result;
@@ -1138,7 +1134,7 @@ export function mimeContentType(fileName) {
 	let ext = '',
 		result = 'application/octet-stream';
 
-	fileName = trim(fileName).toLowerCase();
+	fileName = fileName.toLowerCase().trim();
 
 	if ('winmail.dat' === fileName) {
 		return 'application/ms-tnef';

@@ -1,5 +1,5 @@
 import { MessageSetAction } from 'Common/Enums';
-import { trim, pInt } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
 
 let FOLDERS_CACHE = {},
 	FOLDERS_NAME_CACHE = {},
@@ -28,8 +28,7 @@ export function clear() {
  * @returns {string}
  */
 export function getUserPic(email, callback) {
-	email = trim(email);
-	callback('', email);
+	callback('', email.trim());
 }
 
 /**

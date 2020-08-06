@@ -6,7 +6,6 @@ import AccountStore from 'Stores/User/Account';
 import MessageStore from 'Stores/User/Message';
 
 import { Capa, Magics, KeyState } from 'Common/Enums';
-import { trim } from 'Common/Utils';
 import { settings } from 'Common/Links';
 
 import * as Events from 'Common/Events';
@@ -21,8 +20,8 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.logoImg = trim(Settings.settingsGet('UserLogo'));
-		this.logoTitle = trim(Settings.settingsGet('UserLogoTitle'));
+		this.logoImg = (Settings.settingsGet('UserLogo')||'').trim();
+		this.logoTitle = (Settings.settingsGet('UserLogoTitle')||'').trim();
 
 		this.mobile = !!Settings.appSettingsGet('mobile');
 		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');

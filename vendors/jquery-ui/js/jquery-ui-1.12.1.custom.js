@@ -1956,7 +1956,7 @@ $.widget( "ui.menu", {
 				.filter( ".ui-menu-item" )
 					.filter( function() {
 						return regex.test(
-							$.trim( $( this ).children( ".ui-menu-item-wrapper" ).text() ) );
+							$( this ).children( ".ui-menu-item-wrapper" ).text().trim() );
 					} );
 	}
 } );
@@ -2221,7 +2221,7 @@ $.widget( "ui.autocomplete", {
 
 				// Announce the value in the liveRegion
 				label = ui.item.attr( "aria-label" ) || item.value;
-				if ( label && $.trim( label ).length ) {
+				if ( label && label.trim().length ) {
 					this.liveRegion.children().hide();
 					$( "<div>" ).text( label ).appendTo( this.liveRegion );
 				}
@@ -2405,7 +2405,7 @@ $.widget( "ui.autocomplete", {
 	_response: function() {
 		var index = ++this.requestIndex;
 
-		return $.proxy( function( content ) {
+		return function( content ) {
 			if ( index === this.requestIndex ) {
 				this.__response( content );
 			}
@@ -2414,7 +2414,7 @@ $.widget( "ui.autocomplete", {
 			if ( !this.pending ) {
 				this._removeClass( "ui-autocomplete-loading" );
 			}
-		}, this );
+		}.bind( this );
 	},
 
 	__response: function( content ) {

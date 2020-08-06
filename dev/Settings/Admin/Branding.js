@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Magics } from 'Common/Enums';
-import { settingsSaveHelperSimpleFunction, trim } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Ajax';
@@ -47,19 +47,19 @@ class BrandingAdminSettings {
 
 			this.title.subscribe((value) => {
 				Remote.saveAdminConfig(f1, {
-					'Title': trim(value)
+					'Title': value.trim()
 				});
 			});
 
 			this.loadingDesc.subscribe((value) => {
 				Remote.saveAdminConfig(f2, {
-					'LoadingDescription': trim(value)
+					'LoadingDescription': value.trim()
 				});
 			});
 
 			this.faviconUrl.subscribe((value) => {
 				Remote.saveAdminConfig(f3, {
-					'FaviconUrl': trim(value)
+					'FaviconUrl': value.trim()
 				});
 			});
 		}, Magics.Time50ms);

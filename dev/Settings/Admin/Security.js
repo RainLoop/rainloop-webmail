@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { trim } from 'Common/Utils';
 import { StorageResultType, Magics } from 'Common/Enums';
 
 import { settingsGet } from 'Storage/Settings';
@@ -76,9 +75,9 @@ class SecurityAdminSettings {
 		this.onNewAdminPasswordResponse = this.onNewAdminPasswordResponse.bind(this);
 	}
 
-	@command((self) => trim(self.adminLogin()) && self.adminPassword())
+	@command((self) => self.adminLogin().trim() && self.adminPassword())
 	saveNewAdminPasswordCommand() {
-		if (!trim(this.adminLogin())) {
+		if (!this.adminLogin().trim()) {
 			this.adminLoginError(true);
 			return false;
 		}

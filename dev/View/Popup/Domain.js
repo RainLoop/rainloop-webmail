@@ -3,7 +3,7 @@ import ko from 'ko';
 import { StorageResultType, ServerSecure, Ports, Notification } from 'Common/Enums';
 import { IMAP_DEFAULT_PORT, SIEVE_DEFAULT_PORT, SMTP_DEFAULT_PORT } from 'Common/Consts';
 import { bMobileDevice } from 'Common/Globals';
-import { trim, pInt, pString } from 'Common/Utils';
+import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 
 import CapaAdminStore from 'Stores/Admin/Capa';
@@ -356,24 +356,24 @@ class DomainPopupView extends AbstractViewNext {
 
 			this.edit(true);
 
-			this.name(trim(oDomain.Name));
-			this.imapServer(trim(oDomain.IncHost));
+			this.name(oDomain.Name.trim());
+			this.imapServer(oDomain.IncHost.trim());
 			this.imapPort('' + pInt(oDomain.IncPort));
-			this.imapSecure(trim(oDomain.IncSecure));
+			this.imapSecure(oDomain.IncSecure.trim());
 			this.imapShortLogin(!!oDomain.IncShortLogin);
 			this.useSieve(!!oDomain.UseSieve);
 			this.sieveAllowRaw(!!oDomain.SieveAllowRaw);
-			this.sieveServer(trim(oDomain.SieveHost));
+			this.sieveServer(oDomain.SieveHost.trim());
 			this.sievePort('' + pInt(oDomain.SievePort));
-			this.sieveSecure(trim(oDomain.SieveSecure));
-			this.smtpServer(trim(oDomain.OutHost));
+			this.sieveSecure(oDomain.SieveSecure.trim());
+			this.smtpServer(oDomain.OutHost.trim());
 			this.smtpPort('' + pInt(oDomain.OutPort));
-			this.smtpSecure(trim(oDomain.OutSecure));
+			this.smtpSecure(oDomain.OutSecure.trim());
 			this.smtpShortLogin(!!oDomain.OutShortLogin);
 			this.smtpAuth(!!oDomain.OutAuth);
 			this.smtpPhpMail(!!oDomain.OutUsePhpMail);
-			this.whiteList(trim(oDomain.WhiteList));
-			this.aliasName(trim(oDomain.AliasName));
+			this.whiteList(oDomain.WhiteList.trim());
+			this.aliasName(oDomain.AliasName.trim());
 
 			this.enableSmartPorts(true);
 		}

@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { windowResizeCallback, trim, delegateRunOnDestroy } from 'Common/Utils';
+import { windowResizeCallback, delegateRunOnDestroy } from 'Common/Utils';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
@@ -61,7 +61,7 @@ class FiltersUserSettings {
 	@command((self) => self.haveChanges())
 	saveChangesCommand() {
 		if (!this.filters.saving()) {
-			if (this.filterRaw.active() && !trim(this.filterRaw())) {
+			if (this.filterRaw.active() && !this.filterRaw().trim()) {
 				this.filterRaw.error(true);
 				return false;
 			}

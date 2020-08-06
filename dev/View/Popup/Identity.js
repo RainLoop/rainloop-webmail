@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
 import { bMobileDevice } from 'Common/Globals';
-import { trim, fakeMd5 } from 'Common/Utils';
+import { fakeMd5 } from 'Common/Utils';
 import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Ajax';
@@ -62,7 +62,7 @@ class IdentityPopupView extends AbstractViewNext {
 		}
 
 		if (!this.email.hasError()) {
-			this.email.hasError(!trim(this.email()));
+			this.email.hasError(!this.email().trim());
 		}
 
 		if (this.email.hasError()) {

@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
-import { trim } from 'Common/Utils';
 import { RAINLOOP_TRIAL_KEY } from 'Common/Consts';
 import { i18n, getNotification } from 'Common/Translator';
 
@@ -112,7 +111,7 @@ class ActivatePopupView extends AbstractViewNext {
 		return (
 			!value ||
 			RAINLOOP_TRIAL_KEY === value ||
-			!!/^RL[\d]+-[A-Z0-9-]+Z$/.test(trim(value).replace(/[^A-Z0-9-]/gi, ''))
+			!!/^RL[\d]+-[A-Z0-9-]+Z$/.test(value.trim().replace(/[^A-Z0-9-]/gi, ''))
 		);
 	}
 }

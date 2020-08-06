@@ -3,7 +3,7 @@ import $ from '$';
 import ko from 'ko';
 import key from 'key';
 
-import { trim, isNormal, windowResize } from 'Common/Utils';
+import { isNormal, windowResize } from 'Common/Utils';
 import { Capa, Focused, Layout, KeyState, EventKeyCode, Magics } from 'Common/Enums';
 import { $htmlCL, leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
@@ -58,7 +58,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			() =>
 				FolderStore.currentFolder() &&
 				FolderStore.currentFolder().isInbox() &&
-				trim(MessageStore.messageListSearch()).includes('is:flagged')
+				MessageStore.messageListSearch().trim().includes('is:flagged')
 		);
 	}
 

@@ -20,7 +20,6 @@ import { $htmlCL, leftPanelDisabled, keyScopeReal, useKeyboardShortcuts, moveAct
 
 import {
 	isNonEmptyArray,
-	trim,
 	windowResize,
 	windowResizeCallback,
 	inFocus,
@@ -95,8 +94,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.allowMessageActions = !!Settings.capa(Capa.MessageActions);
 		this.allowMessageListActions = !!Settings.capa(Capa.MessageListActions);
 
-		this.logoImg = trim(Settings.settingsGet('UserLogoMessage'));
-		this.logoIframe = trim(Settings.settingsGet('UserIframeMessage'));
+		this.logoImg = (Settings.settingsGet('UserLogoMessage')||'').trim();
+		this.logoIframe = (Settings.settingsGet('UserIframeMessage')||'').trim();
 
 		this.mobile = !!Settings.appSettingsGet('mobile');
 

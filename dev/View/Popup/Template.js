@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
-import { trim, isNormal } from 'Common/Utils';
+import { isNormal } from 'Common/Utils';
 import { getNotification } from 'Common/Translator';
 import { HtmlEditor } from 'Common/HtmlEditor';
 
@@ -49,8 +49,8 @@ class TemplatePopupView extends AbstractViewNext {
 	addTemplateCommand() {
 		this.populateBodyFromEditor();
 
-		this.name.error(!trim(this.name()));
-		this.body.error(!trim(this.body()) || ':HTML:' === trim(this.body()));
+		this.name.error(!this.name().trim());
+		this.body.error(!this.body().trim() || ':HTML:' === this.body().trim());
 
 		if (this.name.error() || this.body.error()) {
 			return false;

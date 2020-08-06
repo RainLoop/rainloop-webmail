@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { trim, delegateRun, log } from 'Common/Utils';
+import { delegateRun, log } from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
 
@@ -33,7 +33,7 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 		const reg = /[-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[-]{3,6}[\s\S]+?[-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[-]{3,6}/gi,
 			openpgpKeyring = PgpStore.openpgpKeyring;
 
-		let keyTrimmed = trim(this.key());
+		let keyTrimmed = this.key().trim();
 
 		if (/[\n]/.test(keyTrimmed)) {
 			keyTrimmed = keyTrimmed.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');

@@ -8,7 +8,6 @@ import { i18n } from 'Common/Translator';
 
 import {
 	pInt,
-	trim,
 	previewMessage,
 	windowResize,
 	friendlySize,
@@ -743,7 +742,7 @@ class MessageModel extends AbstractModel {
 			attr = this.proxy ? 'data-x-additional-style-url' : 'data-x-style-url';
 			$('[' + attr + ']', this.body).each(function() {
 				const $this = $(this); // eslint-disable-line no-invalid-this
-				let style = trim($this.attr('style'));
+				let style = $this.attr('style').trim();
 				style = style ? (';' === style.substr(-1) ? style + ' ' : style + '; ') : '';
 				$this.attr('style', style + $this.attr(attr));
 			});
@@ -792,7 +791,7 @@ class MessageModel extends AbstractModel {
 				if (attachment && attachment.linkPreview) {
 					name = $this.attr('data-x-style-cid-name');
 					if (name) {
-						style = trim($this.attr('style'));
+						style = $this.attr('style').trim();
 						style = style ? (';' === style.substr(-1) ? style + ' ' : style + '; ') : '';
 						$this.attr('style', style + name + ": url('" + attachment.linkPreview() + "')");
 					}

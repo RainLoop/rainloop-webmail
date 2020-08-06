@@ -5,7 +5,6 @@ import $ from '$';
 import { Magics, Layout, Focused, MessageSetAction, StorageResultType, Notification } from 'Common/Enums';
 
 import {
-	trim,
 	isNormal,
 	pInt,
 	pString,
@@ -135,7 +134,7 @@ class MessageUserStore {
 			read: this.messageListSearch,
 			write: (value) => {
 				setHash(
-					mailBox(FolderStore.currentFolderFullNameHash(), 1, trim(value.toString()), this.messageListThreadUid())
+					mailBox(FolderStore.currentFolderFullNameHash(), 1, value.toString().trim(), this.messageListThreadUid())
 				);
 			}
 		});
@@ -458,7 +457,7 @@ class MessageUserStore {
 						h = getRealHeight($this);
 					}
 
-					if (trim($this.text()) && (0 === h || 100 < h)) {
+					if ($this.text().trim() && (0 === h || 100 < h)) {
 						$this.addClass('rl-bq-switcher hidden-bq');
 						$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
 							.insertBefore($this)
