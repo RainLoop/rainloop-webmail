@@ -656,9 +656,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			this.messageDomFocused(KeyState.MessageView === value && !inFocus());
 		});
 
-		this.oMessageScrollerDom = dom.find('.messageItem .content');
-		this.oMessageScrollerDom =
-			this.oMessageScrollerDom && this.oMessageScrollerDom[0] ? this.oMessageScrollerDom : null;
+		const node = dom.find('.messageItem');
+		this.oMessageScrollerDom = node && node[0] ? node[0] : null;
 
 		this.initShortcuts();
 	}
@@ -784,7 +783,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		key('tab, shift+tab, left', KeyState.MessageView, (event, handler) => {
 			if (!this.fullScreenMode() && this.message() && Layout.NoPreview !== this.layout()) {
 				if (event && handler && 'left' === handler.shortcut) {
-					if (this.oMessageScrollerDom && 0 < this.oMessageScrollerDom.scrollLeft()) {
+					if (this.oMessageScrollerDom && 0 < this.oMessageScrollerDom.scrollLeft) {
 						return true;
 					}
 
@@ -869,10 +868,10 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	scrollMessageToTop() {
 		if (this.oMessageScrollerDom) {
-			if (Magics.Size50px < this.oMessageScrollerDom.scrollTop()) {
-				this.oMessageScrollerDom.scrollTop(Magics.Size50px).animate({ 'scrollTop': 0 }, Magics.Time200ms);
+			if (Magics.Size50px < this.oMessageScrollerDom.scrollTop) {
+				this.oMessageScrollerDom.scrollTop = Magics.Size50px;
 			} else {
-				this.oMessageScrollerDom.scrollTop(0);
+				this.oMessageScrollerDom.scrollTop = 0;
 			}
 
 			windowResize();
@@ -881,7 +880,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	scrollMessageToLeft() {
 		if (this.oMessageScrollerDom) {
-			this.oMessageScrollerDom.scrollLeft(0);
+			this.oMessageScrollerDom.scrollLeft = 0;
 			windowResize();
 		}
 	}

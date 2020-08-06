@@ -271,7 +271,7 @@ class Selector {
 
 	init(contentVisible, contentScrollable, keyScope = 'all') {
 		this.oContentVisible = contentVisible;
-		this.oContentScrollable = contentScrollable;
+		this.oContentScrollable = contentScrollable ? contentScrollable[0] : null;
 
 		if (this.oContentVisible && this.oContentScrollable) {
 			$(this.oContentVisible)
@@ -519,14 +519,15 @@ class Selector {
 			focusedHeight = $focused.outerHeight();
 
 		if (list && list[0] && list[0].focused()) {
-			this.oContentScrollable.scrollTop(0);
+			this.oContentScrollable.scrollTop = 0;
 			return true;
 		} else if (pos && (0 > pos.top || pos.top + focusedHeight > visibleHeight)) {
-			this.oContentScrollable.scrollTop(
+			let top = this.oContentScrollable.scrollTop + pos.top;
+			this.oContentScrollable.scrollTop =
 				0 > pos.top
-					? this.oContentScrollable.scrollTop() + pos.top - offset
-					: this.oContentScrollable.scrollTop() + pos.top - visibleHeight + focusedHeight + offset
-			);
+					? top - offset
+					: top - visibleHeight + focusedHeight + offset
+			;
 
 			return true;
 		}
@@ -535,19 +536,14 @@ class Selector {
 	}
 
 	/**
-	 * @param {boolean=} fast = false
 	 * @returns {boolean}
 	 */
-	scrollToTop(fast = false) {
+	scrollToTop() {
 		if (!this.oContentVisible || !this.oContentScrollable) {
 			return false;
 		}
 
-		if (fast || 50 > this.oContentScrollable.scrollTop()) {
-			this.oContentScrollable.scrollTop(0);
-		} else {
-			this.oContentScrollable.stop().animate({ scrollTop: 0 }, 200);
-		}
+		this.oContentScrollable.scrollTop = 0;
 
 		return true;
 	}

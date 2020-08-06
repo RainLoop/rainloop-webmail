@@ -64,7 +64,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 
 	onBuild(dom) {
 		this.oContentVisible = $('.b-content', dom);
-		this.oContentScrollable = $('.content', this.oContentVisible);
+		this.oContentScrollable = this.oContentVisible ? this.oContentVisible[0] : null;
 
 		const self = this,
 			isMobile = Settings.appSettingsGet('mobile'),
@@ -220,12 +220,11 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			focusedHeight = focused.outerHeight();
 
 		if (pos && (0 > pos.top || pos.top + focusedHeight > visibleHeight)) {
+			let top = this.oContentScrollable.scrollTop + pos.top;
 			if (0 > pos.top) {
-				this.oContentScrollable.scrollTop(this.oContentScrollable.scrollTop() + pos.top - offset);
+				this.oContentScrollable.scrollTop = top - offset;
 			} else {
-				this.oContentScrollable.scrollTop(
-					this.oContentScrollable.scrollTop() + pos.top - visibleHeight + focusedHeight + offset
-				);
+				this.oContentScrollable.scrollTop = top - visibleHeight + focusedHeight + offset;
 			}
 
 			return true;

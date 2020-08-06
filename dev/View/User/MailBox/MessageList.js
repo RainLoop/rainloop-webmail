@@ -739,9 +739,8 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		const self = this;
 
 		this.oContentVisible = $('.b-content', dom);
-		this.oContentScrollable = $('.content', this.oContentVisible);
 
-		this.selector.init(this.oContentVisible, this.oContentScrollable, KeyState.MessageList);
+		this.selector.init(this.oContentVisible, this.oContentVisible, KeyState.MessageList);
 
 		if (this.mobile) {
 			dom.on('click', () => {

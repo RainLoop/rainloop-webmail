@@ -619,9 +619,8 @@ class ContactsPopupView extends AbstractViewNext {
 
 	onBuild(dom) {
 		this.oContentVisible = $('.b-list-content', dom);
-		this.oContentScrollable = $('.content', this.oContentVisible);
 
-		this.selector.init(this.oContentVisible, this.oContentScrollable, KeyState.ContactList);
+		this.selector.init(this.oContentVisible, this.oContentVisible, KeyState.ContactList);
 
 		key('delete', KeyState.ContactList, () => {
 			this.deleteCommand();

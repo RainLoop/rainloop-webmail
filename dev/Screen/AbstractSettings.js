@@ -128,7 +128,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 							);
 						});
 
-						$('#rl-content .b-settings .b-content .content').scrollTop(0);
+						$('#rl-content .b-settings .b-content')[0].scrollTop = 0;
 					}
 					// --
 
