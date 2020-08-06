@@ -121,7 +121,6 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 		if (-1 < this.selectedDateValue()) {
 			let d = new Date(), pad2 = v => 10 > v ? '0' + v : v;
 			d.setDate(d.getDate() - this.selectedDateValue());
-//			d.format('Y.m.d');
 			result.push('date:' + d.getFullYear()+'.'+pad2(d.getMonth()+1)+'.'+pad2(d.getDate()) + '/');
 		}
 
