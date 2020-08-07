@@ -54,7 +54,6 @@ $.extend( $.ui, {
 
 
 var widgetUuid = 0;
-var widgetSlice = Array.prototype.slice;
 
 $.cleanData = ( function( orig ) {
 	return function( elems ) {
@@ -203,8 +202,7 @@ $.widget = function( name, base, prototype ) {
 	return constructor;
 };
 
-$.widget.extend = function( target ) {
-	var input = widgetSlice.call( arguments, 1 );
+$.widget.extend = ( target, ...input ) => {
 	var inputIndex = 0;
 	var inputLength = input.length;
 	var key;
@@ -235,9 +233,8 @@ $.widget.extend = function( target ) {
 
 $.widget.bridge = function( name, object ) {
 	var fullName = object.prototype.widgetFullName || name;
-	$.fn[ name ] = function( options ) {
+	$.fn[ name ] = function( options, ...args ) {
 		var isMethodCall = typeof options === "string";
-		var args = widgetSlice.call( arguments, 1 );
 		var returnValue = this;
 
 		if ( isMethodCall ) {
