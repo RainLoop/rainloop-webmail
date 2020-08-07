@@ -5,10 +5,15 @@
 	w.moment = {
 		defineLocale: (name, config)=>{
 			locale = config;
-			for (let i = 0; i < 12; ++i) Date.shortMonths[i] = config.monthsShort(i+1, 'MMM');
+			const m = config.monthsShort;
+			if (Array.isArray(m)) {
+				Date.shortMonths = m;
+			} else for (let i = 0; i < 12; ++i) {
+				Date.shortMonths[i] = config.monthsShort({month:()=>i}, '-MMM-');
+			}
 			Date.longMonths = config.months,
 			Date.longDays = config.weekdays;
-			Date.shortDays = config.weekdaysMin; // config.weekdaysShort
+			Date.shortDays = config.weekdaysMin;
 		}
 	};
 
