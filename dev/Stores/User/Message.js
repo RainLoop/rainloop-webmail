@@ -10,8 +10,7 @@ import {
 	pString,
 	plainToHtml,
 	windowResize,
-	findEmailAndLinks,
-	getRealHeight
+	findEmailAndLinks
 } from 'Common/Utils';
 
 import {
@@ -29,7 +28,7 @@ import {
 } from 'Common/Cache';
 
 import { MESSAGE_BODY_CACHE_LIMIT } from 'Common/Consts';
-import { data as GlobalsData, $div } from 'Common/Globals';
+import { data as GlobalsData } from 'Common/Globals';
 import { mailBox, notificationMailIcon } from 'Common/Links';
 import { i18n, getNotification } from 'Common/Translator';
 import { momentNowUnix } from 'Common/Momentor';
@@ -49,6 +48,23 @@ import NotificationStore from 'Stores/User/Notification';
 import { getApp } from 'Helper/Apps/User';
 
 import Remote from 'Remote/User/Ajax';
+
+const
+	$div = $('<div></div>'),
+	$hcont = $('<div></div>'),
+	getRealHeight = $el => {
+		$el
+			.clone()
+			.show()
+			.appendTo($hcont);
+		const result = $hcont.height();
+		$hcont.empty();
+		return result;
+	};
+$hcont
+	.attr('area', 'hidden')
+	.css({ position: 'absolute', left: -5000 })
+	.appendTo($('body'));
 
 class MessageUserStore {
 	constructor() {
@@ -452,10 +468,7 @@ class MessageUserStore {
 				$oList.each(function() {
 					const $this = $(this); // eslint-disable-line no-invalid-this
 
-					let h = $this.height();
-					if (0 === h) {
-						h = getRealHeight($this);
-					}
+					let h = $this.height() || getRealHeight($this);
 
 					if ($this.text().trim() && (0 === h || 100 < h)) {
 						$this.addClass('rl-bq-switcher hidden-bq');

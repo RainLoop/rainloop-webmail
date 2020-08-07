@@ -1,5 +1,4 @@
 import window from 'window';
-import progressJs from 'progressJs';
 
 import {
 	log,
@@ -1039,8 +1038,8 @@ class AppUser extends AbstractApp {
 	}
 
 	bootend() {
-		if (progressJs) {
-			progressJs.set(100).end();
+		if (window.progressJs) {
+			window.progressJs.set(100).end();
 		}
 		hideLoading();
 	}
@@ -1058,8 +1057,8 @@ class AppUser extends AbstractApp {
 
 		const startupUrl = pString(Settings.settingsGet('StartupUrl'));
 
-		if (progressJs) {
-			progressJs.set(90);
+		if (window.progressJs) {
+			window.progressJs.set(90);
 		}
 
 		leftPanelDisabled.subscribe((value) => {

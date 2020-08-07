@@ -115,17 +115,11 @@ module.exports = function(publicPath, pro, mode) {
 		},
 		externals: {
 			'window': 'window',
-			'progressJs': 'window.progressJs',
-			'moment': 'window.moment',
-			'ifvisible': 'window.ifvisible',
 			'crossroads': 'window.crossroads',
 			'hasher': 'window.hasher',
 			'Jua': 'window.Jua',
-			'Autolinker': 'window.Autolinker',
 			'ssm': 'window.ssm',
 			'key': 'window.key',
-			'_': 'window._',
-			'qr': 'window.qr',
 			'$': 'window.jQuery'
 		}
 	};

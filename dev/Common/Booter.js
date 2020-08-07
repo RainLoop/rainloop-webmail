@@ -1,5 +1,4 @@
 import window from 'window';
-import progressJs from 'progressJs';
 
 import { jassl } from 'Common/Jassl';
 import { getHash, setHash, clearHash } from 'Storage/RainLoop';
@@ -27,8 +26,8 @@ function showError() {
 		oL.style.display = 'block';
 	}
 
-	if (progressJs) {
-		progressJs.set(100).end();
+	if (window.progressJs) {
+		window.progressJs.set(100).end();
 	}
 }
 
@@ -85,7 +84,7 @@ window.__initAppData = data => {
 		}
 	}
 
-	const appData = window.__rlah_data(), p = progressJs;
+	const appData = window.__rlah_data(), p = window.progressJs;
 
 	if (
 		p &&

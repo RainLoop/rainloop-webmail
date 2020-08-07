@@ -3,7 +3,6 @@ import $ from '$';
 import ko from 'ko';
 import key from 'key';
 import Jua from 'Jua';
-import ifvisible from 'ifvisible';
 
 import {
 	Capa,
@@ -50,7 +49,9 @@ import { getApp } from 'Helper/Apps/User';
 import { view, command, ViewType, showScreenPopup, setHash } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
-const canBeMovedHelper = (self) => self.canBeMoved();
+const
+	canBeMovedHelper = (self) => self.canBeMoved(),
+	ifvisible = window.ifvisible;
 
 @view({
 	name: 'View/User/MailBox/MessageList',

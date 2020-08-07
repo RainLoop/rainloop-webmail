@@ -1,14 +1,15 @@
 import window from 'window';
 import $ from '$';
 import ko from 'ko';
-import Autolinker from 'Autolinker';
 
-import { $win, $div, $hcont, dropdownVisibility, data as GlobalsData } from 'Common/Globals';
+import { $win, dropdownVisibility, data as GlobalsData } from 'Common/Globals';
 import { ComposeType, SaveSettingsStep, FolderType } from 'Common/Enums';
 import { Mime } from 'Common/Mime';
 
-const isArray = Array.isArray;
-const decodeURIComponent = component => window.decodeURIComponent(component);
+const
+	$div = $('<div></div>'),
+	isArray = Array.isArray,
+	decodeURIComponent = component => window.decodeURIComponent(component);
 
 var htmlspecialchars = ((de,se,gt,lt,sq,dq,bt) => {
 	return (str, quote_style = 3, double_encode = true) => {
@@ -533,8 +534,8 @@ export function settingsSaveHelperSubscribeFunction(remote, settingName, type, f
  * @returns {string}
  */
 export function findEmailAndLinks(html) {
-	return Autolinker
-		? Autolinker.link(html, {
+	return window.Autolinker
+		? window.Autolinker.link(html, {
 				newWindow: true,
 				stripPrefix: false,
 				urls: true,
@@ -1154,20 +1155,6 @@ export function mimeContentType(fileName) {
  */
 export function isTransparent(color) {
 	return 'rgba(0, 0, 0, 0)' === color || 'transparent' === color;
-}
-
-/**
- * @param {Object} $el
- * @returns {number}
- */
-export function getRealHeight($el) {
-	$el
-		.clone()
-		.show()
-		.appendTo($hcont);
-	const result = $hcont.height();
-	$hcont.empty();
-	return result;
 }
 
 /**

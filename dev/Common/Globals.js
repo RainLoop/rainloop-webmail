@@ -12,16 +12,6 @@ export { $win };
 export const $html = $('html');
 export const $htmlCL = window.document.documentElement.classList;
 
-export const $body = $('body');
-
-export const $div = $('<div></div>');
-
-export const $hcont = $('<div></div>');
-$hcont
-	.attr('area', 'hidden')
-	.css({ position: 'absolute', left: -5000 })
-	.appendTo($body);
-
 /**
  * @type {boolean}
  */
@@ -40,13 +30,8 @@ export const useKeyboardShortcuts = ko.observable(true);
 /**
  * @type {string}
  */
-export const sUserAgent =
+const sUserAgent =
 	('navigator' in window && 'userAgent' in window.navigator && window.navigator.userAgent.toLowerCase()) || '';
-
-/**
- * @type {boolean}
- */
-export const bSafari = !sUserAgent.includes('chrome') && sUserAgent.includes('safari');
 
 /**
  * @type {boolean}

@@ -1,5 +1,4 @@
 import window from 'window';
-import { bMobileDevice, bSafari } from 'Common/Globals';
 import * as Links from 'Common/Links';
 import * as Events from 'Common/Events';
 
@@ -16,7 +15,8 @@ class Audio {
 	constructor() {
 		this.player = this.createNewObject();
 
-		this.supported = !bMobileDevice && !bSafari && !!this.player && !!this.player.play;
+		// Safari can't play without user interaction
+		this.supported = !!this.player && !!this.player.play;
 		if (this.supported && this.player && this.player.canPlayType) {
 			this.supportedMp3 = !!this.player.canPlayType('audio/mpeg;').replace(/no/, '');
 			this.supportedWav = !!this.player.canPlayType('audio/wav; codecs="1"').replace(/no/, '');
