@@ -3,39 +3,24 @@ import $ from '$';
 import { i18n } from 'Common/Translator';
 
 let _moment = null;
-let _momentNow = 0;
-
-var d, du;
-const updateMomentNow = ()=>{
-	// leading debounce
-	if (!d) {
-		d = setTimeout(()=>d=0, 500);
-		_moment = new Date();
-	}
-};
-
-const updateMomentNowUnix = ()=>{
-	// leading debounce
-	if (!du) {
-		du = setTimeout(()=>du=0, 500);
-		_momentNow = new Date().getTime();
-	}
-};
+let d;
 
 /**
  * @returns {moment}
  */
-export function momentNow() {
-	updateMomentNow();
-	return _moment || new Date();
+function momentNow() {
+	if (!d) {
+		d = setTimeout(()=>d=0, 500);
+		_moment = new Date();
+	}
+	return _moment;
 }
 
 /**
  * @returns {number}
  */
 export function momentNowUnix() {
-	updateMomentNowUnix();
-	return _momentNow || 0;
+	return momentNow().getTime() / 1000;
 }
 
 /**
@@ -46,7 +31,7 @@ function formatCustomShortDate(m) {
 	const now = momentNow();
 	if (m && now) {
 		switch (true) {
-			case 4 >= (now.getTime() - m.getTime()) / 3600:
+			case 4 >= (now.getTime() - m.getTime()) / 3600000:
 				return m.fromNow();
 			case now.format('L') === m.format('L'):
 				return i18n('MESSAGE_LIST/TODAY_AT', {

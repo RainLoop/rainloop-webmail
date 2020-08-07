@@ -745,14 +745,13 @@ class MessageUserStore {
 				unreadCountChange = false;
 
 			const list = [],
-				utc = momentNowUnix(),
 				iCount = pInt(data.Result.MessageResultCount),
 				iOffset = pInt(data.Result.Offset);
 
 			const folder = getFolderFromCacheList(isNormal(data.Result.Folder) ? data.Result.Folder : '');
 
 			if (folder && !cached) {
-				folder.interval = utc;
+				folder.interval = momentNowUnix();
 
 				setFolderHash(data.Result.Folder, data.Result.FolderHash);
 
