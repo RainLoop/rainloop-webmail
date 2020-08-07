@@ -1,63 +1,4 @@
-/* ===================================================
- * bootstrap-transition.js v2.3.2
- * http://getbootstrap.com/2.3.2/javascript.html#transitions
- * ===================================================
- * Copyright 2013 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ========================================================== */
-
-
-!function ($) {
-
-  "use strict"; // jshint ;_;
-
-
-  /* CSS TRANSITION SUPPORT (http://www.modernizr.com/)
-   * ======================================================= */
-
-  $(function () {
-
-    $.support.transition = (function () {
-
-      var transitionEnd = (function () {
-
-        var el = document.createElement('bootstrap')
-          , transEndEventNames = {
-               'WebkitTransition' : 'webkitTransitionEnd'
-            ,  'MozTransition'    : 'transitionend'
-            ,  'OTransition'      : 'oTransitionEnd otransitionend'
-            ,  'transition'       : 'transitionend'
-            }
-          , name
-
-        for (name in transEndEventNames){
-          if (el.style[name] !== undefined) {
-            return transEndEventNames[name]
-          }
-        }
-
-      }())
-
-      return transitionEnd && {
-        end: transitionEnd
-      }
-
-    })()
-
-  })
-
-}(window.jQuery);/* ==========================================================
+/* ==========================================================
  * bootstrap-alert.js v2.3.2
  * http://getbootstrap.com/2.3.2/javascript.html#alerts
  * ==========================================================
@@ -118,8 +59,8 @@
         .remove()
     }
 
-    $.support.transition && $parent.hasClass('fade') ?
-      $parent.on($.support.transition.end, removeElement) :
+    $parent.hasClass('fade') ?
+      $parent.on('transitionend', removeElement) :
       removeElement()
   }
 
@@ -334,8 +275,8 @@
 
   , pause: function (e) {
       if (!e) this.paused = true
-      if (this.$element.find('.next, .prev').length && $.support.transition.end) {
-        this.$element.trigger($.support.transition.end)
+      if (this.$element.find('.next, .prev').length) {
+        this.$element.trigger('transitionend')
         this.cycle(true)
       }
       clearInterval(this.interval)
@@ -383,14 +324,14 @@
         })
       }
 
-      if ($.support.transition && this.$element.hasClass('slide')) {
+      if (this.$element.hasClass('slide')) {
         this.$element.trigger(e)
         if (e.isDefaultPrevented()) return
         $next.addClass(type)
         $next[0].offsetWidth // force reflow
         $active.addClass(direction)
         $next.addClass(direction)
-        this.$element.one($.support.transition.end, function () {
+        this.$element.one('transitionend', function () {
           $next.removeClass([type, direction].join(' ')).addClass('active')
           $active.removeClass(['active', direction].join(' '))
           that.sliding = false
@@ -534,7 +475,7 @@
 
       this.$element[dimension](0)
       this.transition('addClass', $.Event('show'), 'shown')
-      $.support.transition && this.$element[dimension](this.$element[0][scroll])
+      this.$element[dimension](this.$element[0][scroll])
     }
 
   , hide: function () {
@@ -575,8 +516,8 @@
 
       this.$element[method]('in')
 
-      $.support.transition && this.$element.hasClass('collapse') ?
-        this.$element.one($.support.transition.end, complete) :
+      this.$element.hasClass('collapse') ?
+        this.$element.one('transitionend', complete) :
         complete()
     }
 
@@ -832,7 +773,7 @@
     this.options = options
     this.$element = $(element)
       .on('click.dismiss.modal', '[data-dismiss="modal"]', this.hide.bind(this))
-    this.options.remote && this.$element.find('.modal-body').load(this.options.remote)
+    this.options.remote && this.$element.find('.modal-body').on('load', this.options.remote)
   }
 
   Modal.prototype = {
@@ -856,7 +797,7 @@
         this.escape()
 
         this.backdrop(function () {
-          var transition = $.support.transition && that.$element.hasClass('fade')
+          var transition = that.$element.hasClass('fade')
 
           if (!that.$element.parent().length) {
             that.$element.appendTo(document.body) //don't move modals dom position
@@ -875,7 +816,7 @@
           that.enforceFocus()
 
           transition ?
-            that.$element.one($.support.transition.end, function () { that.$element.focus().trigger('shown') }) :
+            that.$element.one('transitionend', function () { that.$element.focus().trigger('shown') }) :
             that.$element.focus().trigger('shown')
 
         })
@@ -902,7 +843,7 @@
           .removeClass('in')
           .attr('aria-hidden', true)
 
-        $.support.transition && this.$element.hasClass('fade') ?
+        this.$element.hasClass('fade') ?
           this.hideWithTransition() :
           this.hideModal()
       }
@@ -930,11 +871,11 @@
     , hideWithTransition: function () {
         var that = this
           , timeout = setTimeout(function () {
-              that.$element.off($.support.transition.end)
+              that.$element.off('transitionend')
               that.hideModal()
             }, 500)
 
-        this.$element.one($.support.transition.end, function () {
+        this.$element.one('transitionend', function () {
           clearTimeout(timeout)
           that.hideModal()
         })
@@ -959,7 +900,7 @@
           , animate = this.$element.hasClass('fade') ? 'fade' : ''
 
         if (this.isShown && this.options.backdrop) {
-          var doAnimate = $.support.transition && animate
+          var doAnimate = animate
 
           this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
             .appendTo(document.body)
@@ -977,14 +918,14 @@
           if (!callback) return
 
           doAnimate ?
-            this.$backdrop.one($.support.transition.end, callback) :
+            this.$backdrop.one('transitionend', callback) :
             callback()
 
         } else if (!this.isShown && this.$backdrop) {
           this.$backdrop.removeClass('in')
 
-          $.support.transition && this.$element.hasClass('fade')?
-            this.$backdrop.one($.support.transition.end, callback) :
+          this.$element.hasClass('fade')?
+            this.$backdrop.one('transitionend', callback) :
             callback()
 
         } else if (callback) {
@@ -1281,16 +1222,16 @@
 
       function removeWithAnimation() {
         var timeout = setTimeout(function () {
-          $tip.off($.support.transition.end).detach()
+          $tip.off('transitionend').detach()
         }, 500)
 
-        $tip.one($.support.transition.end, function () {
+        $tip.one('transitionend', function () {
           clearTimeout(timeout)
           $tip.detach()
         })
       }
 
-      $.support.transition && this.$tip.hasClass('fade') ?
+      this.$tip.hasClass('fade') ?
         removeWithAnimation() :
         $tip.detach()
 
@@ -1758,7 +1699,6 @@
   , activate: function ( element, container, callback) {
       var $active = container.find('> .active')
         , transition = callback
-            && $.support.transition
             && $active.hasClass('fade')
 
       function next() {
@@ -1784,7 +1724,7 @@
       }
 
       transition ?
-        $active.one($.support.transition.end, next) :
+        $active.one('transitionend', next) :
         next()
 
       $active.removeClass('in')
@@ -2049,7 +1989,7 @@
     }
 
   , keydown: function (e) {
-      this.suppressKeyPressRepeat = ~$.inArray(e.keyCode, [40,38,9,13,27])
+      this.suppressKeyPressRepeat = ~[40,38,9,13,27].indexOf(e.keyCode)
       this.move(e)
     }
 

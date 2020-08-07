@@ -371,7 +371,7 @@
 	Utils.getStringOrCallFunction = function (mStringOrFunction, aFunctionParams)
 	{
 		return $.isFunction(mStringOrFunction) ?
-			mStringOrFunction.apply(null, $.isArray(aFunctionParams) ? aFunctionParams : []).toString() :
+			mStringOrFunction.apply(null, Array.isArray(aFunctionParams) ? aFunctionParams : []).toString() :
 			mStringOrFunction.toString();
 	};
 
@@ -472,7 +472,7 @@
 
 						try
 						{
-							oResult = $.parseJSON(oXhr.responseText);
+							oResult = JSON.parse(oXhr.responseText);
 							bResult = true;
 						}
 						catch (oException)
@@ -858,10 +858,10 @@
 					}
 
 					$(oDragAndDropElement)
-						.bind('dragenter', fHandleDragEnter)
-						.bind('dragover', fHandleDragOver)
-						.bind('dragleave', fHandleDragLeave)
-						.bind('drop', fHandleDrop)
+						.on('dragenter', fHandleDragEnter)
+						.on('dragover', fHandleDragOver)
+						.on('dragleave', fHandleDragLeave)
+						.on('drop', fHandleDrop)
 					;
 				}
 

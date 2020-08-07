@@ -451,7 +451,7 @@
 		_setChosen : function(valArr) {
 			var self = this;
 
-			if(!$.isArray(valArr)){
+			if(!Array.isArray(valArr)){
 				return false;
 			}
 
@@ -692,7 +692,7 @@
 		_destroy: function() {
 			var els = this.elements;
 			if (els) {
-				els.input.unbind('.inputosaurus');
+				els.input.off('.inputosaurus');
 				els.ul.replaceWith(this.element);
 			}
 		}
