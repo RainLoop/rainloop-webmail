@@ -1,6 +1,5 @@
 import window from 'window';
 import $ from '$';
-import moment from 'moment';
 import { i18n } from 'Common/Translator';
 
 let _moment = null;
@@ -11,7 +10,7 @@ const updateMomentNow = ()=>{
 	// leading debounce
 	if (!d) {
 		d = setTimeout(()=>d=0, 500);
-		_moment = moment();
+		_moment = new Date();
 	}
 };
 
@@ -19,7 +18,7 @@ const updateMomentNowUnix = ()=>{
 	// leading debounce
 	if (!du) {
 		du = setTimeout(()=>du=0, 500);
-		_momentNow = moment().unix();
+		_momentNow = new Date().getTime();
 	}
 };
 
@@ -28,7 +27,7 @@ const updateMomentNowUnix = ()=>{
  */
 export function momentNow() {
 	updateMomentNow();
-	return _moment || moment();
+	return _moment || new Date();
 }
 
 /**
@@ -47,21 +46,19 @@ function formatCustomShortDate(m) {
 	const now = momentNow();
 	if (m && now) {
 		switch (true) {
-			case 4 >= now.diff(m, 'hours'):
+			case 4 >= (now.getTime() - m.getTime()) / 3600:
 				return m.fromNow();
 			case now.format('L') === m.format('L'):
 				return i18n('MESSAGE_LIST/TODAY_AT', {
 					TIME: m.format('LT')
 				});
-			case now
-				.clone()
-				.subtract(1, 'days')
+			case new Date(now.getTime() - 86400000) // subtract 1 day
 				.format('L') === m.format('L'):
 				return i18n('MESSAGE_LIST/YESTERDAY_AT', {
 					TIME: m.format('LT')
 				});
-			case now.year() === m.year():
-				return m.format('D MMM.');
+			case now.getFullYear() === m.getFullYear():
+				return m.format('d M.');
 			// no default
 		}
 	}
@@ -83,9 +80,9 @@ export function format(timeStampInUTC, formatStr) {
 	timeStampInUTC = 0 < timeStampInUTC ? timeStampInUTC : 0 === timeStampInUTC ? now : 0;
 	timeStampInUTC = now < timeStampInUTC ? now : timeStampInUTC;
 
-	m = 0 < timeStampInUTC ? moment.unix(timeStampInUTC) : null;
+	m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null;
 
-	if (m && 1970 === m.year()) {
+	if (m && 1970 === m.getFullYear()) {
 		m = null;
 	}
 

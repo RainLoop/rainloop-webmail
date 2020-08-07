@@ -1,6 +1,5 @@
 import $ from '$';
 import ko from 'ko';
-import moment from 'moment';
 import classnames from 'classnames';
 
 import { MessagePriority, SignedVerifyStatus } from 'Common/Enums';
@@ -625,7 +624,7 @@ class MessageModel extends AbstractModel {
 	viewPopupMessage(print = false) {
 		const timeStampInUTC = this.dateTimeStampInUTC() || 0,
 			ccLine = this.ccToLine(false),
-			m = 0 < timeStampInUTC ? moment.unix(timeStampInUTC) : null;
+			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null;
 
 		previewMessage(
 			{

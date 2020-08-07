@@ -68,26 +68,27 @@ Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyf
 * Removed jquery-scrollstop
 * Removed jquery-mousewheel
 * Removed matchmedia-polyfill
+* Removed momentjs (localization still used)
 
 |js/*       	|1.14.0 	|native 	|gzip 1.14	|gzip   	|
 |-----------	|--------:	|--------:	|--------:	|--------:	|
-|admin.js    	|2.130.942	|1.216.846	|  485.481	|  298.402	|
-|app.js      	|4.184.455	|2.962.814	|  932.725	|  691.920	|
-|boot.js     	|  671.522	|   94.230	|  169.502	|   28.385	|
-|libs.js     	|  647.614	|  505.981	|  194.728	|  153.718	|
+|admin.js    	|2.130.942	|1.216.173	|  485.481	|  298.376	|
+|app.js      	|4.184.455	|2.961.284	|  932.725	|  691.792	|
+|boot.js     	|  671.522	|   94.230	|  169.502	|   28.382	|
+|libs.js     	|  647.614	|  458.564	|  194.728	|  139.408	|
 |polyfills.js	|  325.834	|        0	|   71.825	|        0	|
-|TOTAL js   	|7.960.367	|4.779.871	|1.854.261	|1.172.425	|
+|TOTAL js   	|7.960.367	|4.730.251	|1.854.261	|1.157.958	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  156.875	| 73.657	| 44.814	|
-|app.min.js      	|  511.202	|  384.939	|140.462	|101.744	|
-|boot.min.js     	|   66.007	|   11.575	| 22.567	|  4.463	|
-|libs.min.js     	|  572.545	|  463.408	|176.720	|143.754	|
+|admin.min.js    	|  252.147	|  156.868	| 73.657	| 44.788	|
+|app.min.js      	|  511.202	|  384.861	|140.462	|101.677	|
+|boot.min.js     	|   66.007	|   11.575	| 22.567	|  4.460	|
+|libs.min.js     	|  572.545	|  413.893	|176.720	|129.076	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|
-|TOTAL js/min   	|1.434.353	|1.016.797	|424.718	|294.775	|
+|TOTAL js/min   	|1.434.353	|  967.197	|424.718	|280.001	|
 
-417.556 bytes (129.943 gzip) is not much, but it feels faster.
+467.156 bytes (144.717 gzip) is not much, but it feels faster.
 
 
 |css/*       	|1.14.0   	|native   	|
