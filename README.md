@@ -16,9 +16,11 @@
   <br>
 </div>
 
-For more information about the product, check [rainloop.net](http://www.rainloop.net/).
+For more information about the product, check [rainloop.net](https://www.rainloop.net/).
 
-Information about installing the product, check the [documentation page](http://www.rainloop.net/docs/installation/).
+Information about installing the product, check the [wiki page](https://github.com/the-djmaze/rainloop-webmail/wiki/Installation-instructions).
+
+And don't forget to read the [official documentation](https://www.rainloop.net/docs/).
 
 ## License
 
