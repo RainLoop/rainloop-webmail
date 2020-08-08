@@ -44,10 +44,10 @@ const Base64 = {
 
 			output =
 				output +
-				BASE_64_CHR.charAt(enc1) +
-				BASE_64_CHR.charAt(enc2) +
-				BASE_64_CHR.charAt(enc3) +
-				BASE_64_CHR.charAt(enc4);
+				BASE_64_CHR[enc1] +
+				BASE_64_CHR[enc2] +
+				BASE_64_CHR[enc3] +
+				BASE_64_CHR[enc4];
 		}
 
 		return output;
@@ -68,10 +68,10 @@ const Base64 = {
 		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
 
 		while (i < input.length) {
-			enc1 = BASE_64_CHR.indexOf(input.charAt(i++));
-			enc2 = BASE_64_CHR.indexOf(input.charAt(i++));
-			enc3 = BASE_64_CHR.indexOf(input.charAt(i++));
-			enc4 = BASE_64_CHR.indexOf(input.charAt(i++));
+			enc1 = BASE_64_CHR.indexOf(input[i++]);
+			enc2 = BASE_64_CHR.indexOf(input[i++]);
+			enc3 = BASE_64_CHR.indexOf(input[i++]);
+			enc4 = BASE_64_CHR.indexOf(input[i++]);
 
 			chr1 = (enc1 << 2) | (enc2 >> 4);
 			chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);

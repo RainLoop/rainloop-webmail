@@ -13,7 +13,8 @@ export function jassl(src, async = false) {
 	}
 
 	return new window.Promise((resolve, reject) => {
-		const element = window.document.createElement('script');
+		const doc = window.document,
+			element = doc.createElement('script');
 
 		element.onload = () => {
 			resolve(src);
@@ -26,7 +27,7 @@ export function jassl(src, async = false) {
 		element.async = !!async;
 		element.src = src;
 
-		window.document.body.appendChild(element);
+		doc.body.appendChild(element);
 	}) /* .then((s) => {
 
 		const found = s && rainloopCaches ? s.match(/rainloop\/v\/([^\/]+)\/static\//) : null;

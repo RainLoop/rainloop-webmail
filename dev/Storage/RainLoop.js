@@ -37,9 +37,9 @@ const __get = (key) => {
 	let result = null;
 	if (SESS_STORAGE) {
 		result = SESS_STORAGE.getItem(key) || null;
-	} else if (WIN_STORAGE && window.JSON) {
+	} else if (WIN_STORAGE) {
 		const data =
-			WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString().substr(0, 1)
+			WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString()[0]
 				? window.JSON.parse(WIN_STORAGE.name.toString())
 				: null;
 		result = data ? data[key] || null : null;
@@ -53,7 +53,7 @@ const __set = (key, value) => {
 		SESS_STORAGE.setItem(key, value);
 	} else if (WIN_STORAGE) {
 		let data =
-			WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString().substr(0, 1)
+			WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString()[0]
 				? JSON.parse(WIN_STORAGE.name.toString())
 				: null;
 		data = data || {};
@@ -102,7 +102,7 @@ export function clearHash() {
  * @returns {boolean}
  */
 export function checkTimestamp() {
-	if (timestamp() > getTimestamp() + 1000 * 60 * 60) {
+	if (timestamp() > getTimestamp() + 3600000) {
 		// 60m
 		clearHash();
 		return true;
@@ -111,4 +111,4 @@ export function checkTimestamp() {
 }
 
 // init section
-setInterval(setTimestamp, 1000 * 60); // 1m
+setInterval(setTimestamp, 60000); // 1m

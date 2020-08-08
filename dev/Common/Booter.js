@@ -6,7 +6,6 @@ import { getHash, setHash, clearHash } from 'Storage/RainLoop';
 let RL_APP_DATA_STORAGE = null;
 
 /* eslint-disable camelcase,spaced-comment  */
-window.__rlah = () => getHash();
 window.__rlah_set = () => setHash();
 window.__rlah_clear = () => clearHash();
 window.__rlah_data = () => RL_APP_DATA_STORAGE;
@@ -45,6 +44,16 @@ function runMainBoot(withError) {
 	}
 }
 
+const doc = window.document;
+
+function writeCSS(css) {
+	const style = doc.createElement('style');
+	style.type = 'text/css';
+	style.textContent = css;
+//	style.appendChild(doc.createTextNode(styles));
+	doc.head.appendChild(style);
+}
+
 /**
  * @param {mixed} data
  * @returns {void}
@@ -53,8 +62,6 @@ window.__initAppData = data => {
 	RL_APP_DATA_STORAGE = data;
 
 	window.__rlah_set();
-
-	const doc = window.document;
 
 	if (RL_APP_DATA_STORAGE) {
 		const css = RL_APP_DATA_STORAGE.IncludeCss,
@@ -67,13 +74,7 @@ window.__initAppData = data => {
 			(doc.getElementById('app-theme-link') || {}).href = theme;
 		}
 
-		if (css) {
-			const style = doc.createElement('style');
-			style.type = 'text/css';
-			style.textContent = css;
-//			style.appendChild(doc.createTextNode(styles));
-			doc.head.appendChild(style);
-		}
+		css && writeCSS(css);
 
 		if (oElDesc && description) {
 			oElDesc.innerHTML = description;
@@ -97,11 +98,12 @@ window.__initAppData = data => {
 	) {
 		p.start().set(5);
 
-		const libs = () =>
-			jassl(appData.StaticLibJsLink).then(() => {
+		const loadScript = jassl,
+		libs = () =>
+			loadScript(appData.StaticLibJsLink).then(() => {
 				doc.getElementById('rl-check').remove();
 				if (appData.IncludeBackground) {
-					const img = appData.IncludeBackground.replace('{{USER}}', window.__rlah ? window.__rlah() || '0' : '0');
+					const img = appData.IncludeBackground.replace('{{USER}}', getHash() || '0');
 					if (img) {
 						doc.documentElement.classList.add('UserBackground');
 						doc.body.style.backgroundImage = "url("+img+")";
@@ -112,15 +114,15 @@ window.__initAppData = data => {
 		libs()
 			.then(() => {
 				p.set(20);
-				return window.Promise.all([jassl(appData.TemplatesLink), jassl(appData.LangLink)]);
+				return window.Promise.all([loadScript(appData.TemplatesLink), loadScript(appData.LangLink)]);
 			})
 			.then(() => {
 				p.set(30);
-				return jassl(appData.StaticAppJsLink);
+				return loadScript(appData.StaticAppJsLink);
 			})
 			.then(() => {
 				p.set(50);
-				return appData.PluginsLink ? jassl(appData.PluginsLink) : window.Promise.resolve();
+				return appData.PluginsLink ? loadScript(appData.PluginsLink) : window.Promise.resolve();
 			})
 			.then(() => {
 				p.set(70);
@@ -130,7 +132,7 @@ window.__initAppData = data => {
 				runMainBoot(true);
 				throw e;
 			})
-			.then(() => jassl(appData.StaticEditorJsLink))
+			.then(() => loadScript(appData.StaticEditorJsLink))
 			.then(() => {
 				if (window.CKEDITOR && window.__initEditor) {
 					window.__initEditor();
@@ -153,7 +155,8 @@ window.__runBoot = () => {
 		doc.location.replace('./?/NoCookie');
 	}
 
-	require('Styles/@Boot.css');
+	// require('Styles/@Boot.css');
+	writeCSS('#rl-content{display:none;}.internal-hiddden{display:none !important;}');
 
 	if (app) {
 		const layout = require('Html/Layout.html'),
@@ -170,7 +173,7 @@ window.__runBoot = () => {
 			+ (options.mobile ? 'mobile' : 'no-mobile')
 			+ (options.mobileDevice ? '-1' : '-0')
 			+ '/'
-			+ (window.__rlah ? window.__rlah() || '0' : '0')
+			+ (getHash() || '0')
 			+ '/'
 			+ window.Math.random().toString().substr(2)
 			+ '/';
