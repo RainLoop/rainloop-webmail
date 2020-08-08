@@ -303,11 +303,13 @@ ko.bindingHandlers.dropdownCloser = {
 
 ko.bindingHandlers.popover = {
 	init: function(element, fValueAccessor) {
+		window.console.log('TODO: $(element).popover removed', element, fValueAccessor);
+/*
 		$(element).popover(ko.unwrap(fValueAccessor()));
-
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
 			$(element).popover('destroy');
 		});
+*/
 	}
 };
 
