@@ -104,6 +104,10 @@ class ResponseCollection extends \MailSo\Base\Collection
 			{
 				try
 				{
+					if (!\is_string($oResponse->ResponseList[4])) {
+						\error_log('ResponseCollection::getFoldersResult: invalid string ' . \var_export($oResponse->ResponseList[4], true));
+						continue;
+					}
 					$oFolder = new Folder($oResponse->ResponseList[4],
 						$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
 
@@ -120,7 +124,13 @@ class ResponseCollection extends \MailSo\Base\Collection
 				catch (\MailSo\Base\Exceptions\InvalidArgumentException $oException)
 				{
 					// TODO: writeLogException not accessible
-					error_log('ResponseCollection::getFoldersResult: '.$oException->getMessage());
+					\error_log('ResponseCollection::getFoldersResult: '.$oException->getMessage());
+//					$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
+				}
+				catch (\Throwable $oException)
+				{
+					// TODO: writeLogException not accessible
+					\error_log('ResponseCollection::getFoldersResult: '.$oException->getMessage());
 //					$this->writeLogException($oException, \MailSo\Log\Enumerations\Type::WARNING, false);
 				}
 			}
