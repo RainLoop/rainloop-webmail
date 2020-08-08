@@ -4,6 +4,16 @@
 	{
 		if (!defined('APP_REQUEST_RND'))
 		{
+			if (function_exists('sys_getloadavg')) {
+				$load = sys_getloadavg();
+				if ($load[0] > 95) {
+					header('HTTP/1.1 503 Service Unavailable');
+					header('Retry-After: 120');
+					exit('Mailserver too busy. Please try again later.');
+				}
+				unset($load);
+			}
+
 			ini_set('register_globals', 0);
 			ini_set('zend.ze1_compatibility_mode', 0);
 
@@ -15,10 +25,7 @@
 			// "img-src https:" is allowed due to remote images in e-mails
 			define('APP_DEFAULT_CSP', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'");
 
-			if (function_exists('date_default_timezone_set'))
-			{
-				date_default_timezone_set('UTC');
-			}
+			date_default_timezone_set('UTC');
 
 			$sSite = strtolower(trim(empty($_SERVER['HTTP_HOST']) ? (empty($_SERVER['SERVER_NAME']) ? '' : $_SERVER['SERVER_NAME']) : $_SERVER['HTTP_HOST']));
 			$sSite = 'www.' === substr($sSite, 0, 4) ? substr($sSite, 4) : $sSite;
