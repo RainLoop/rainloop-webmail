@@ -96,7 +96,7 @@ window.__initAppData = data => {
 		appData.StaticAppJsLink &&
 		appData.StaticEditorJsLink
 	) {
-		p.start().set(5);
+		p.set(5);
 
 		const loadScript = jassl,
 		libs = () =>

@@ -1,22 +1,47 @@
-import window from 'window';
-import { progressJs } from '../vendors/Progress.js/src/progress.js';
+/* eslint-env browser */
 
-window.progressJs = window.progressJs || progressJs();
+(win => {
 
-window.progressJs.onbeforeend(() => {
-	const div = window.document.querySelector('.progressjs-container');
-	if (div) {
-		try {
-			div.hidden = true;
-			window.setTimeout(() => {
-				div.remove();
-			}, 200); // eslint-disable-line no-magic-numbers
-		} catch (e) {} // eslint-disable-line no-empty
+const
+	doc = win.document,
+	setPercentWidth = (percent) => {
+		setTimeout(() => progress.style.width = parseInt(Math.min(percent, 100)) + '%', 50);
+	};
+
+let container = doc.createElement('div'),
+	progress = container.appendChild(doc.createElement("div"));
+
+container.className = 'progressjs-progress progressjs-theme-rainloop';
+progress.className = "progressjs-inner";
+progress.appendChild(doc.createElement('div')).className = "progressjs-percent";
+
+setPercentWidth(1);
+doc.body.appendChild(container);
+
+win.progressJs = new class {
+	set(percent) {
+		setPercentWidth(percent);
+		return this;
 	}
-});
+
+	end() {
+		if (progress) {
+			progress.addEventListener('transitionend', () => {
+				if (container) {
+					container.hidden = true;
+					setTimeout(() => {container.remove();container=null;}, 200);
+				}
+			}, false);
+			setPercentWidth(100);
+		}
+		return this;
+	}
+};
 
 require('Common/Booter');
 
-if (window.__runBoot) {
-	window.__runBoot();
+if (win.__runBoot) {
+	win.__runBoot();
 }
+
+})(window);

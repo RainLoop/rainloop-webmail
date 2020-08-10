@@ -62,6 +62,7 @@ The result is faster and smaller download code (good for mobile networks).
 Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyfill for array.flat().
 
 * Replaced jQuery with jQuery.slim
+* Replaced ProgressJS with simple native dropin
 * Removed pikaday
 * Removed underscore
 * Removed polyfills
@@ -74,23 +75,23 @@ Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyf
 
 |js/*       	|1.14.0 	|native 	|gzip 1.14	|gzip   	|
 |-----------	|--------:	|--------:	|--------:	|--------:	|
-|admin.js    	|2.130.942	|1.210.357	|  485.481	|  297.385	|
-|app.js      	|4.184.455	|2.954.400	|  932.725	|  690.873	|
-|boot.js     	|  671.522	|   64.041	|  169.502	|   20.006	|
+|admin.js    	|2.130.942	|1.210.342	|  485.481	|  297.204	|
+|app.js      	|4.184.455	|2.954.385	|  932.725	|  690.805	|
+|boot.js     	|  671.522	|   52.263	|  169.502	|   17.146	|
 |libs.js     	|  647.614	|  437.187	|  194.728	|  133.728	|
 |polyfills.js	|  325.834	|        0	|   71.825	|        0	|
-|TOTAL js   	|7.960.367	|4.665.985	|1.854.261	|1.141.992	|
+|TOTAL js   	|7.960.367	|4.665.985	|1.854.261	|1.138.883	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  156.115	| 73.657	| 44.592	|
-|app.min.js      	|  511.202	|  384.048	|140.462	|101.496	|
-|boot.min.js     	|   66.007	|    7.642	| 22.567	|  2.930	|
+|admin.min.js    	|  252.147	|  156.114	| 73.657	| 44.592	|
+|app.min.js      	|  511.202	|  384.047	|140.462	|101.496	|
+|boot.min.js     	|   66.007	|    6.187	| 22.567	|  2.515	|
 |libs.min.js     	|  572.545	|  392.436	|176.720	|123.484	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|
-|TOTAL js/min   	|1.434.353	|  940.241	|424.718	|272.502	|
+|TOTAL js/min   	|1.434.353	|  938.784	|424.718	|272.087	|
 
-494.112 bytes (152.216 gzip) is not much, but it feels faster.
+495.569 bytes (152.631 gzip) is not much, but it feels faster.
 
 
 |css/*       	|1.14.0   	|native   	|
