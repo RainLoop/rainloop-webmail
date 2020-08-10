@@ -1,9 +1,10 @@
-import window from 'window';
+/* eslint-env browser */
 
-import { jassl } from 'Common/Jassl';
 import { getHash, setHash, clearHash } from 'Storage/RainLoop';
 
 let RL_APP_DATA_STORAGE = null;
+
+const doc = window.document;
 
 /* eslint-disable camelcase,spaced-comment  */
 window.__rlah_set = () => setHash();
@@ -14,8 +15,8 @@ window.__rlah_data = () => RL_APP_DATA_STORAGE;
  * @returns {void}
  */
 function showError() {
-	const oR = window.document.getElementById('rl-loading'),
-		oL = window.document.getElementById('rl-loading-error');
+	const oR = doc.getElementById('rl-loading'),
+		oL = doc.getElementById('rl-loading-error');
 
 	if (oR) {
 		oR.style.display = 'none';
@@ -36,15 +37,11 @@ function showError() {
  */
 function runMainBoot(withError) {
 	if (window.__APP_BOOT && !withError) {
-		window.__APP_BOOT(() => {
-			showError();
-		});
+		window.__APP_BOOT(() => showError());
 	} else {
 		showError();
 	}
 }
-
-const doc = window.document;
 
 function writeCSS(css) {
 	const style = doc.createElement('style');
@@ -52,6 +49,21 @@ function writeCSS(css) {
 	style.textContent = css;
 //	style.appendChild(doc.createTextNode(styles));
 	doc.head.appendChild(style);
+}
+
+function loadScript(src) {
+	if (!src) {
+		throw new Error('src should not be empty.');
+	}
+	return new window.Promise((resolve, reject) => {
+		const script = doc.createElement('script');
+		script.onload = () => resolve();
+		script.onerror = () => reject(new Error(src));
+		script.src = src;
+//		script.type = 'text/javascript';
+		doc.head.appendChild(script);
+//		doc.body.appendChild(element);
+	});
 }
 
 /**
@@ -98,8 +110,7 @@ window.__initAppData = data => {
 	) {
 		p.set(5);
 
-		const loadScript = jassl,
-		libs = () =>
+		const libs = () =>
 			loadScript(appData.StaticLibJsLink).then(() => {
 				doc.getElementById('rl-check').remove();
 				if (appData.IncludeBackground) {
@@ -148,8 +159,7 @@ window.__initAppData = data => {
  * @returns {void}
  */
 window.__runBoot = () => {
-	const doc = window.document,
-		app = doc.getElementById('rl-app');
+	const app = doc.getElementById('rl-app');
 
 	if (!window.navigator || !window.navigator.cookieEnabled) {
 		doc.location.replace('./?/NoCookie');
@@ -161,13 +171,11 @@ window.__runBoot = () => {
 	if (app) {
 		const layout = require('Html/Layout.html'),
 			meta = doc.getElementById('app-boot-data'),
-			options = meta ? JSON.parse(meta.getAttribute('content')) || {} : {},
-			script = doc.createElement('script');
+			options = meta ? JSON.parse(meta.getAttribute('content')) || {} : {};
 
 		app.innerHTML = ((layout && layout.default ? layout.default : layout) || '').replace(/[\r\n\t]+/g, '');
 
-		script.type = 'text/javascript';
-		script.src = './?/'
+		loadScript('./?/'
 			+ (options.admin ? 'Admin' : '')
 			+ 'AppData@'
 			+ (options.mobile ? 'mobile' : 'no-mobile')
@@ -176,7 +184,6 @@ window.__runBoot = () => {
 			+ (getHash() || '0')
 			+ '/'
 			+ window.Math.random().toString().substr(2)
-			+ '/';
-		doc.head.appendChild(script);
+			+ '/').then(() => {});
 	}
 };

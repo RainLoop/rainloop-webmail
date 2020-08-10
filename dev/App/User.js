@@ -11,8 +11,6 @@ import {
 	mailToHelper
 } from 'Common/Utils';
 
-import { jassl } from 'Common/Jassl';
-
 import {
 	Layout,
 	Capa,
@@ -87,6 +85,8 @@ import { SettingsUserScreen } from 'Screen/User/Settings';
 import { hideLoading, routeOff, routeOn, setHash, startScreens, showScreenPopup } from 'Knoin/Knoin';
 
 import { AbstractApp } from 'App/Abstract';
+
+const doc = window.document;
 
 if (!window.ResizeObserver) {
 	window.ResizeObserver = class {
@@ -176,7 +176,7 @@ class AppUser extends AbstractApp {
 				const img = userBackground(Settings.settingsGet('UserBackgroundHash'));
 				if (img) {
 					$htmlCL.add('UserBackground');
-					window.document.body.style.backgroundImage = "url("+img+")";
+					doc.body.style.backgroundImage = "url("+img+")";
 				}
 			}, Magics.Time1s);
 		}
@@ -916,7 +916,7 @@ class AppUser extends AbstractApp {
 		if (mode) {
 			source.classList.add('resizable');
 			if (!source.querySelector('.resizer')) {
-				const resizer = window.document.createElement('div'),
+				const resizer = doc.createElement('div'),
 					cssint = s => parseFloat(window.getComputedStyle(source, null).getPropertyValue(s).replace('px', ''));
 				resizer.className = 'resizer';
 				source.appendChild(resizer);
@@ -973,8 +973,8 @@ class AppUser extends AbstractApp {
 	}
 
 	initHorizontalLayoutResizer(sClientSideKeyName) {
-		const top = window.document.querySelector('.b-message-list-wrapper'),
-			bottom = window.document.querySelector('.b-message-view-wrapper'),
+		const top = doc.querySelector('.b-message-list-wrapper'),
+			bottom = doc.querySelector('.b-message-view-wrapper'),
 			fDisable = bDisable => {
 				this.setLayoutResizer(top, bottom, sClientSideKeyName,
 					(bDisable || !$htmlCL.contains('rl-bottom-preview-pane')) ? null : 'height');
@@ -986,8 +986,8 @@ class AppUser extends AbstractApp {
 	}
 
 	initVerticalLayoutResizer(sClientSideKeyName) {
-		const left = window.document.getElementById('rl-left'),
-			right = window.document.getElementById('rl-right'),
+		const left = doc.getElementById('rl-left'),
+			right = doc.getElementById('rl-right'),
 			fDisable = bDisable => {
 				this.setLayoutResizer(left, right, sClientSideKeyName, bDisable ? null : 'width');
 			};
@@ -1114,7 +1114,13 @@ class AppUser extends AbstractApp {
 							if (window.openpgp) {
 								openpgpCallback(window.openpgp);
 							} else {
-								jassl(openPgpJs()).then(() => {
+								new window.Promise((resolve, reject) => {
+									const script = doc.createElement('script');
+									script.onload = () => resolve();
+									script.onerror = () => reject(new Error(script.src));
+									script.src = openPgpJs();
+									doc.head.appendChild(script);
+								}).then(() => {
 									if (window.openpgp) {
 										openpgpCallback(window.openpgp);
 									}

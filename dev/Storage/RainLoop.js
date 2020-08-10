@@ -1,4 +1,4 @@
-import window from 'window';
+/* eslint-env browser */
 
 const STORAGE_KEY = '__rlA';
 const TIME_KEY = '__rlT';
