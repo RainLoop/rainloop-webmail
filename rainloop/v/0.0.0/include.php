@@ -221,6 +221,11 @@
 			unset($sSalt, $sData, $sInstalled, $sPrivateDataFolderInternalName);
 		}
 
+		// See https://github.com/kjdev/php-ext-brotli
+		if (!ini_get('zlib.output_compression', 0) && !ini_get('brotli.output_compression', 0)) {
+			ob_start('ob_gzhandler');
+		}
+
 		include APP_VERSION_ROOT_PATH.'app/handle.php';
 
 		if (defined('RAINLOOP_EXIT_ON_END') && RAINLOOP_EXIT_ON_END)
