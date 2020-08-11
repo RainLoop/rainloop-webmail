@@ -553,8 +553,8 @@ $.Widget.prototype = {
 
 	_untrackClassesElement: function( event ) {
 		var that = this;
-		$.each( that.classesElementLookup, function( key, value ) {
-			if ( value.includes(event.target) ) {
+		$.each( that.classesElementLookup, (key, value) => {
+			if ( $.inArray( event.target, value ) !== -1 ) {
 				that.classesElementLookup[ key ] = $( value.not( event.target ).get() );
 			}
 		} );
