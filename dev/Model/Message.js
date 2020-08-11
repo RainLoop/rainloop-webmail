@@ -1,5 +1,4 @@
 import ko from 'ko';
-import classnames from 'classnames';
 
 import { MessagePriority, SignedVerifyStatus } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
@@ -456,7 +455,8 @@ class MessageModel extends AbstractModel {
 	 * @return string
 	 */
 	lineAsCss() {
-		return classnames({
+		let classes = [];
+		Object.entries({
 			'deleted': this.deleted(),
 			'deleted-mark': this.deletedMark(),
 			'selected': this.selected(),
@@ -473,7 +473,8 @@ class MessageModel extends AbstractModel {
 			// 'hasChildrenMessage': 1 < this.threadsLen(),
 			'hasUnseenSubMessage': this.hasUnseenSubMessage(),
 			'hasFlaggedSubMessage': this.hasFlaggedSubMessage()
-		});
+		}).forEach(([key, value]) => value && classes.push(key));
+		return classes.join(' ');
 	}
 
 	/**
