@@ -1,5 +1,3 @@
-import window from 'window';
-
 export class AbstractBasicPromises {
 	oPromisesStack = {};
 
@@ -9,11 +7,11 @@ export class AbstractBasicPromises {
 	}
 
 	fastResolve(mData) {
-		return window.Promise.resolve(mData);
+		return Promise.resolve(mData);
 	}
 
 	fastReject(mData) {
-		return window.Promise.reject(mData);
+		return Promise.reject(mData);
 	}
 
 	setTrigger(trigger, value) {

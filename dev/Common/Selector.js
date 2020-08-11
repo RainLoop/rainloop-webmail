@@ -1,5 +1,3 @@
-import $ from '$';
-import key from 'key';
 import ko from 'ko';
 import { EventKeyCode } from 'Common/Enums';
 
@@ -274,7 +272,7 @@ class Selector {
 		this.oContentScrollable = contentScrollable ? contentScrollable[0] : null;
 
 		if (this.oContentVisible && this.oContentScrollable) {
-			$(this.oContentVisible)
+			jQuery(this.oContentVisible)
 				.on('selectstart', (event) => {
 					if (event && event.preventDefault) {
 						event.preventDefault();
@@ -513,7 +511,7 @@ class Selector {
 
 		const offset = 20,
 			list = this.list(),
-			$focused = $(this.sItemFocusedSelector, this.oContentScrollable),
+			$focused = jQuery(this.sItemFocusedSelector, this.oContentScrollable),
 			pos = $focused.position(),
 			visibleHeight = this.oContentVisible.height(),
 			focusedHeight = $focused.outerHeight();

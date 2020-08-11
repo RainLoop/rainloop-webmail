@@ -1,8 +1,4 @@
-import window from 'window';
-import $ from '$';
 import ko from 'ko';
-import key from 'key';
-import Jua from 'Jua';
 
 import {
 	SaveSettingsStep,
@@ -80,7 +76,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 		this.contactsPage = ko.observable(1);
 		this.contactsPageCount = ko.computed(() => {
-			const iPage = window.Math.ceil(this.contactsCount() / CONTACTS_PER_PAGE);
+			const iPage = Math.ceil(this.contactsCount() / CONTACTS_PER_PAGE);
 			return 0 >= iPage ? 1 : iPage;
 		});
 
@@ -349,7 +345,7 @@ class ContactsPopupView extends AbstractViewNext {
 	syncCommand() {
 		getApp().contactsSync((result, data) => {
 			if (StorageResultType.Success !== result || !data || !data.Result) {
-				window.alert(getNotification(data && data.ErrorCode ? data.ErrorCode : Notification.ContactsSyncError));
+				alert(getNotification(data && data.ErrorCode ? data.ErrorCode : Notification.ContactsSyncError));
 			}
 
 			this.reloadContactList(true);
@@ -441,7 +437,7 @@ class ContactsPopupView extends AbstractViewNext {
 					this.contacts.importing(false);
 					this.reloadContactList();
 					if (!id || !result || !data || !data.Result) {
-						window.alert(i18n('CONTACTS/ERROR_IMPORT_FILE'));
+						alert(i18n('CONTACTS/ERROR_IMPORT_FILE'));
 					}
 				});
 			}
@@ -618,7 +614,7 @@ class ContactsPopupView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		this.oContentVisible = $('.b-list-content', dom);
+		this.oContentVisible = jQuery('.b-list-content', dom);
 
 		this.selector.init(this.oContentVisible, this.oContentVisible, KeyState.ContactList);
 

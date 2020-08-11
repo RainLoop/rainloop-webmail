@@ -176,13 +176,7 @@
             // Using different namespace for click because click event should not unbind if selector is same object('this')
             _this.$items.on('click.lgcustom', function(event) {
 
-                // For IE8
-                try {
-                    event.preventDefault();
-                    event.preventDefault();
-                } catch (er) {
-                    event.returnValue = false;
-                }
+                event.preventDefault();
 
                 _this.$el.trigger('onBeforeOpen.lg');
 

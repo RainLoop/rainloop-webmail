@@ -1,8 +1,7 @@
 import ko from 'ko';
-import $ from '$';
 
 import { i18n } from 'Common/Translator';
-import { log, isNonEmptyArray, pString } from 'Common/Utils';
+import { isNonEmptyArray, pString } from 'Common/Utils';
 
 import AccountStore from 'Stores/User/Account';
 
@@ -197,7 +196,7 @@ class PgpUserStore {
 							return true;
 						}
 					} catch (e) {
-						log(e);
+						console.log(e);
 					}
 				}
 
@@ -239,7 +238,7 @@ class PgpUserStore {
 	static domControlEncryptedClickHelper(store, dom, armoredMessage, recipients) {
 		return function() {
 			let message = null;
-			const $this = $(this); // eslint-disable-line no-invalid-this
+			const $this = jQuery(this); // eslint-disable-line no-invalid-this
 
 			if ($this.hasClass('success')) {
 				return false;
@@ -248,7 +247,7 @@ class PgpUserStore {
 			try {
 				message = store.openpgp.message.readArmored(armoredMessage);
 			} catch (e) {
-				log(e);
+				console.log(e);
 			}
 
 			if (message && message.getText && message.verify && message.decrypt) {
@@ -300,7 +299,7 @@ class PgpUserStore {
 	static domControlSignedClickHelper(store, dom, armoredMessage) {
 		return function() {
 			let message = null;
-			const $this = $(this); // eslint-disable-line no-invalid-this
+			const $this = jQuery(this); // eslint-disable-line no-invalid-this
 
 			if ($this.hasClass('success') || $this.hasClass('error')) {
 				return false;
@@ -309,7 +308,7 @@ class PgpUserStore {
 			try {
 				message = store.openpgp.cleartext.readArmored(armoredMessage);
 			} catch (e) {
-				log(e);
+				console.log(e);
 			}
 
 			if (message && message.getText && message.verify) {
@@ -366,11 +365,11 @@ class PgpUserStore {
 				dom.data('openpgp-original', domText);
 
 				if (encrypted) {
-					verControl = $('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
+					verControl = jQuery('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
 						.attr('title', i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC'))
 						.on('click', PgpUserStore.domControlEncryptedClickHelper(this, dom, domText, recipients));
 				} else if (signed) {
-					verControl = $('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
+					verControl = jQuery('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
 						.attr('title', i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC'))
 						.on('click', PgpUserStore.domControlSignedClickHelper(this, dom, domText));
 				}

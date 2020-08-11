@@ -1,4 +1,3 @@
-import window from 'window';
 import ko from 'ko';
 
 import { Magics } from 'Common/Enums';
@@ -12,7 +11,7 @@ class QuotaUserStore {
 			const quota = this.quota(),
 				usage = this.usage();
 
-			return 0 < quota ? window.Math.ceil((usage / quota) * 100) : 0;
+			return 0 < quota ? Math.ceil((usage / quota) * 100) : 0;
 		});
 	}
 

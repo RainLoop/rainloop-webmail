@@ -1,4 +1,3 @@
-import window from 'window';
 import ko from 'ko';
 
 import { Capa, StorageResultType } from 'Common/Enums';
@@ -137,18 +136,18 @@ class TwoFactorConfigurationPopupView extends AbstractViewNext {
 
 	onHide() {
 		if (this.lock()) {
-			window.location.reload();
+			location.reload();
 		}
 	}
 
 	getQr() {
 		return (
 			'otpauth://totp/' +
-			window.encodeURIComponent(this.viewUser()) +
+			encodeURIComponent(this.viewUser()) +
 			'?secret=' +
-			window.encodeURIComponent(this.viewSecret()) +
+			encodeURIComponent(this.viewSecret()) +
 			'&issuer=' +
-			window.encodeURIComponent('')
+			encodeURIComponent('')
 		);
 	}
 
@@ -166,7 +165,7 @@ class TwoFactorConfigurationPopupView extends AbstractViewNext {
 			this.viewBackupCodes(pString(oData.Result.BackupCodes).replace(/[\s]+/g, '  '));
 
 			this.viewUrlTitle(pString(oData.Result.UrlTitle));
-			this.viewUrl(window.qr.toDataURL({ level: 'M', size: 8, value: this.getQr() }));
+			this.viewUrl(qr.toDataURL({ level: 'M', size: 8, value: this.getQr() }));
 		} else {
 			this.viewUser('');
 			this.viewEnable_(false);
@@ -186,7 +185,7 @@ class TwoFactorConfigurationPopupView extends AbstractViewNext {
 		if (StorageResultType.Success === result && data && data.Result) {
 			this.viewSecret(pString(data.Result.Secret));
 			this.viewUrlTitle(pString(data.Result.UrlTitle));
-			this.viewUrl(window.qr.toDataURL({ level: 'M', size: 6, value: this.getQr() }));
+			this.viewUrl(qr.toDataURL({ level: 'M', size: 6, value: this.getQr() }));
 		} else {
 			this.viewSecret('');
 			this.viewUrlTitle('');

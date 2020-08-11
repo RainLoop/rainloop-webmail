@@ -1,4 +1,3 @@
-import window from 'window';
 import { isStorageSupported } from 'Storage/RainLoop';
 import { CLIENT_SIDE_STORAGE_INDEX_NAME } from 'Common/Consts';
 
@@ -22,13 +21,13 @@ class LocalStorageDriver {
 		let storageResult = null;
 		try {
 			const storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null;
-			storageResult = null === storageValue ? null : window.JSON.parse(storageValue);
+			storageResult = null === storageValue ? null : JSON.parse(storageValue);
 		} catch (e) {} // eslint-disable-line no-empty
 
 		(storageResult || (storageResult = {}))[key] = data;
 
 		try {
-			this.s.setItem(CLIENT_SIDE_STORAGE_INDEX_NAME, window.JSON.stringify(storageResult));
+			this.s.setItem(CLIENT_SIDE_STORAGE_INDEX_NAME, JSON.stringify(storageResult));
 			return true;
 		} catch (e) {} // eslint-disable-line no-empty
 
@@ -46,7 +45,7 @@ class LocalStorageDriver {
 
 		try {
 			const storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null,
-				storageResult = null === storageValue ? null : window.JSON.parse(storageValue);
+				storageResult = null === storageValue ? null : JSON.parse(storageValue);
 
 			return storageResult && undefined !== storageResult[key] ? storageResult[key] : null;
 		} catch (e) {} // eslint-disable-line no-empty

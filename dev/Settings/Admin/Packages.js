@@ -1,4 +1,3 @@
-import window from 'window';
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
@@ -58,7 +57,7 @@ class PackagesAdminSettings {
 			});
 
 			if (StorageResultType.Success === result && data && data.Result && data.Result.Reload) {
-				window.location.reload();
+				location.reload();
 			} else {
 				getApp().reloadPackagesList();
 			}

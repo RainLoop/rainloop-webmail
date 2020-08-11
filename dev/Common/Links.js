@@ -1,4 +1,3 @@
-import window from 'window';
 import { pString, pInt, isNormal } from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 
@@ -160,7 +159,7 @@ export function append() {
  * @returns {string}
  */
 export function change(email) {
-	return serverRequest('Change') + window.encodeURIComponent(email) + '/';
+	return serverRequest('Change') + encodeURIComponent(email) + '/';
 }
 
 /**
@@ -204,7 +203,7 @@ export function messageDownloadLink(requestHash) {
  * @returns {string}
  */
 export function avatarLink(email) {
-	return SERVER_PREFIX + '/Raw/0/Avatar/' + window.encodeURIComponent(email) + '/';
+	return SERVER_PREFIX + '/Raw/0/Avatar/' + encodeURIComponent(email) + '/';
 }
 
 /**
@@ -231,7 +230,7 @@ export function userBackground(hash) {
  * @returns {string}
  */
 export function langLink(lang, isAdmin) {
-	return SERVER_PREFIX + '/Lang/0/' + (isAdmin ? 'Admin' : 'App') + '/' + window.encodeURI(lang) + '/' + VERSION + '/';
+	return SERVER_PREFIX + '/Lang/0/' + (isAdmin ? 'Admin' : 'App') + '/' + encodeURI(lang) + '/' + VERSION + '/';
 }
 
 /**
@@ -310,7 +309,7 @@ export function themePreviewLink(theme) {
 		prefix = WEB_PREFIX;
 	}
 
-	return prefix + 'themes/' + window.encodeURI(theme) + '/images/preview.png';
+	return prefix + 'themes/' + encodeURI(theme) + '/images/preview.png';
 }
 
 /**
@@ -373,7 +372,7 @@ export function mailBox(folder, page = 1, search = '', threadUid = '') {
 
 	if (folder) {
 		const resultThreadUid = pInt(threadUid);
-		result += window.encodeURI(folder) + (0 < resultThreadUid ? '~' + resultThreadUid : '');
+		result += encodeURI(folder) + (0 < resultThreadUid ? '~' + resultThreadUid : '');
 	}
 
 	if (1 < page) {
@@ -383,7 +382,7 @@ export function mailBox(folder, page = 1, search = '', threadUid = '') {
 
 	if (search) {
 		result = result.replace(/[/]+$/, '');
-		result += '/' + window.encodeURI(search);
+		result += '/' + encodeURI(search);
 	}
 
 	return result;

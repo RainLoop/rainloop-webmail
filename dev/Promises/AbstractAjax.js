@@ -1,5 +1,3 @@
-import window from 'window';
-
 import { ajax } from 'Common/Links';
 import { isNormal, pString } from 'Common/Utils';
 import { DEFAULT_AJAX_TIMEOUT, TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT } from 'Common/Consts';
@@ -56,7 +54,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 			};
 			params.XToken = Settings.appSettingsGet('token');
 //			init.body = JSON.stringify(params);
-			const formData = new window.FormData();
+			const formData = new FormData();
 			Object.keys(params).forEach(key => {
 				formData.append(key, params[key])
 			});
@@ -69,13 +67,13 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 
 		if (window.AbortController) {
 			this.abort(action);
-			const controller = new window.AbortController();
+			const controller = new AbortController();
 			setTimeout(() => controller.abort(), isNormal(timeOut) ? timeOut : DEFAULT_AJAX_TIMEOUT);
 			init.signal = controller.signal;
 			this.oRequests[action] = controller;
 		}
 
-		return window.fetch(ajax(additionalGetString), init)
+		return fetch(ajax(additionalGetString), init)
 			.then(response => response.json())
 			.then(data => {
 				this.abort(action, true);

@@ -1,5 +1,4 @@
-import window from 'window';
-import { detectDropdownVisibility, createCommandLegacy, domReady } from 'Common/Utils';
+import { detectDropdownVisibility } from 'Common/Utils';
 import { $html, $htmlCL, data as GlobalsData, bMobileDevice } from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
@@ -9,7 +8,7 @@ import { EmailModel } from 'Model/Email';
 export default (App) => {
 	GlobalsData.__APP__ = App;
 
-	window.addEventListener('keydown', event => {
+	addEventListener('keydown', event => {
 		event = event || window.event;
 		if (event && event.ctrlKey && !event.shiftKey && !event.altKey) {
 			const key = event.keyCode || event.which;
@@ -25,17 +24,13 @@ export default (App) => {
 					return;
 				}
 
-				if (window.getSelection) {
-					window.getSelection().removeAllRanges();
-				} else if (window.document.selection && window.document.selection.clear) {
-					window.document.selection.clear();
-				}
+				getSelection().removeAllRanges();
 
 				event.preventDefault();
 			}
 		}
 	});
-	window.addEventListener('unload', () => {
+	addEventListener('unload', () => {
 		GlobalsData.bUnload = true;
 	});
 
@@ -45,7 +40,6 @@ export default (App) => {
 	const rl = window.rl || {};
 
 	rl.i18n = i18n;
-	rl.createCommand = createCommandLegacy;
 
 	rl.addSettingsViewModel = Plugins.addSettingsViewModel;
 	rl.addSettingsViewModelForAdmin = Plugins.addSettingsViewModelForAdmin;
@@ -61,7 +55,7 @@ export default (App) => {
 	window.rl = rl;
 
 	const start = () => {
-		window.setTimeout(() => {
+		setTimeout(() => {
 			$htmlCL.remove('no-js', 'rl-booted-trigger');
 			$htmlCL.add('rl-booted');
 
@@ -69,11 +63,11 @@ export default (App) => {
 		}, Enums.Magics.Time10ms);
 	};
 
-	window.__APP_BOOT = (fErrorCallback) => {
-		domReady(() => {
-			window.setTimeout(() => {
-				if (window.rainloopTEMPLATES && window.rainloopTEMPLATES[0]) {
-					window.document.getElementById('rl-templates').innerHTML = window.rainloopTEMPLATES[0];
+	window.__APP_BOOT = fErrorCallback => {
+		jQuery(() => {
+			setTimeout(() => {
+				if (window.rainloopTEMPLATES && rainloopTEMPLATES[0]) {
+					document.getElementById('rl-templates').innerHTML = rainloopTEMPLATES[0];
 					start();
 				} else {
 					fErrorCallback();

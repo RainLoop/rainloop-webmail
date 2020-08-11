@@ -1,5 +1,3 @@
-import window from 'window';
-import $ from '$';
 import ko from 'ko';
 import { Notification, UploadErrorCode } from 'Common/Enums';
 import { pInt } from 'Common/Utils';
@@ -109,7 +107,7 @@ export function i18n(key, valueList, defaulValue) {
 }
 
 const i18nToNode = (element) => {
-	const $el = $(element),
+	const $el = jQuery(element),
 		key = $el.data('i18n');
 
 	if (key) {
@@ -138,7 +136,7 @@ const i18nToNode = (element) => {
  */
 export function i18nToNodes(elements) {
 	setTimeout(() =>
-		$('[data-i18n]', elements).each((index, item) => {
+		jQuery('[data-i18n]', elements).each((index, item) => {
 			i18nToNode(item);
 		})
 	, 1);
@@ -148,7 +146,7 @@ const reloadData = () => {
 	if (window.rainloopI18N) {
 		I18N_DATA = window.rainloopI18N || {};
 
-		i18nToNodes(window.document);
+		i18nToNodes(document);
 
 		momentorReload();
 		trigger(!trigger());
@@ -196,12 +194,12 @@ export function initOnStartOrLangChange(startCallback, langCallback = null) {
  * @returns {string}
  */
 export function getNotification(code, message = '', defCode = null) {
-	code = window.parseInt(code, 10) || 0;
+	code = parseInt(code, 10) || 0;
 	if (Notification.ClientViewError === code && message) {
 		return message;
 	}
 
-	defCode = defCode ? window.parseInt(defCode, 10) || 0 : 0;
+	defCode = defCode ? parseInt(defCode, 10) || 0 : 0;
 	return undefined === I18N_NOTIFICATION_DATA[code]
 		? defCode && undefined === I18N_NOTIFICATION_DATA[defCode]
 			? I18N_NOTIFICATION_DATA[defCode]
@@ -226,7 +224,7 @@ export function getNotificationFromResponse(response, defCode = Notification.Unk
  */
 export function getUploadErrorDescByCode(code) {
 	let result = '';
-	switch (window.parseInt(code, 10) || 0) {
+	switch (parseInt(code, 10) || 0) {
 		case UploadErrorCode.FileIsTooBig:
 			result = i18n('UPLOAD/ERROR_FILE_IS_TOO_BIG');
 			break;
@@ -263,7 +261,7 @@ export function reload(admin, language) {
 	$htmlCL.add('rl-changing-language');
 
 	return new Promise((resolve, reject) => {
-		return window.fetch(langLink(language, admin), {cache: 'reload'})
+		return fetch(langLink(language, admin), {cache: 'reload'})
 			.then(response => {
 					if (response.ok) {
 						const type = response.headers.get('Content-Type');
@@ -276,9 +274,9 @@ export function reload(admin, language) {
 					reject(new Error(error.message))
 				})
 			.then(data => {
-				var doc = window.document, script = doc.createElement('script');
+				var script = document.createElement('script');
 				script.text = data;
-				doc.head.appendChild(script).parentNode.removeChild(script);
+				document.head.appendChild(script).parentNode.removeChild(script);
 				setTimeout(
 					() => {
 						reloadData();

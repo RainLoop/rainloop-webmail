@@ -1,5 +1,3 @@
-import window from 'window';
-
 import { Focused, Capa, ClientSideKeyName, Magics } from 'Common/Enums';
 import { $html, leftPanelDisabled, leftPanelType, moveAction, bMobileDevice } from 'Common/Globals';
 import { pString, pInt, windowResizeCallback } from 'Common/Utils';
@@ -157,7 +155,7 @@ class MailBoxUserScreen extends AbstractScreen {
 					vals[1] = 1;
 				}
 
-				return [window.decodeURI(vals[0]), vals[1], window.decodeURI(vals[2])];
+				return [decodeURI(vals[0]), vals[1], decodeURI(vals[2])];
 			},
 			fNormD = (request, vals) => {
 				vals[0] = pString(vals[0]);
@@ -167,7 +165,7 @@ class MailBoxUserScreen extends AbstractScreen {
 					vals[0] = inboxFolderName;
 				}
 
-				return [window.decodeURI(vals[0]), 1, window.decodeURI(vals[1])];
+				return [decodeURI(vals[0]), 1, decodeURI(vals[1])];
 			};
 
 		return [

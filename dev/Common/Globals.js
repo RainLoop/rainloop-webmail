@@ -1,16 +1,13 @@
-import window from 'window';
-import $ from '$';
-import key from 'key';
 import ko from 'ko';
 import { KeyState } from 'Common/Enums';
 
-const $win = $(window);
+const $win = jQuery(window);
 $win.__sizes = [0, 0];
 
 export { $win };
 
-export const $html = $('html');
-export const $htmlCL = window.document.documentElement.classList;
+export const $html = jQuery('html');
+export const $htmlCL = document.documentElement.classList;
 
 /**
  * @type {boolean}
@@ -31,7 +28,7 @@ export const useKeyboardShortcuts = ko.observable(true);
  * @type {string}
  */
 const sUserAgent =
-	('navigator' in window && 'userAgent' in window.navigator && window.navigator.userAgent.toLowerCase()) || '';
+	('navigator' in window && 'userAgent' in navigator && navigator.userAgent.toLowerCase()) || '';
 
 /**
  * @type {boolean}
@@ -189,7 +186,7 @@ export const keyScope = ko.computed({
 });
 
 keyScopeReal.subscribe((value) => {
-	//	window.console.log('keyScope=' + sValue); // DEBUG
+	//	console.log('keyScope=' + sValue); // DEBUG
 	key.setScope(value);
 });
 

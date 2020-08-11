@@ -1,10 +1,10 @@
-import window from 'window';
-import $ from '$';
 import Opentip from 'Opentip';
 
 import { SaveSettingsStep, Magics } from 'Common/Enums';
 
-const ko = window.ko,
+const
+	$ = jQuery,
+	ko = window.ko,
 	fDisposalTooltipHelper = (element) => {
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
 			if (element && element.__opentip) {
@@ -13,26 +13,6 @@ const ko = window.ko,
 		});
 	},
 	isFunction = v => typeof v === 'function';
-
-ko.bindingHandlers.updateWidth = {
-	init: (element, fValueAccessor) => {
-		const $el = $(element),
-			fValue = fValueAccessor(),
-			fInit = () => {
-				fValue($el.width());
-				setTimeout(() => {
-					fValue($el.width());
-				}, Magics.Time500ms);
-			};
-
-		window.addEventListener('resize', fInit);
-		fInit();
-
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			window.removeEventListener('resize', fInit);
-		});
-	}
-};
 
 ko.bindingHandlers.editor = {
 	init: (element, fValueAccessor) => {
@@ -70,10 +50,10 @@ ko.bindingHandlers.editor = {
 
 ko.bindingHandlers.json = {
 	init: (element, fValueAccessor) => {
-		$(element).text(window.JSON.stringify(ko.unwrap(fValueAccessor())));
+		$(element).text(JSON.stringify(ko.unwrap(fValueAccessor())));
 	},
 	update: (element, fValueAccessor) => {
-		$(element).text(window.JSON.stringify(ko.unwrap(fValueAccessor())));
+		$(element).text(JSON.stringify(ko.unwrap(fValueAccessor())));
 	}
 };
 
@@ -97,11 +77,11 @@ ko.bindingHandlers.scrollerShadows = {
 
 		if (cont) {
 			$(cont).on('scroll resize', fFunc);
-			window.addEventListener('resize', fFunc);
+			addEventListener('resize', fFunc);
 
 			ko.utils.domNodeDisposal.addDisposeCallback(cont, () => {
 				$(cont).off();
-				window.removeEventListener('resize', fFunc);
+				removeEventListener('resize', fFunc);
 			});
 		}
 	}
@@ -179,12 +159,12 @@ ko.bindingHandlers.tooltip = {
 				element.__opentip.setContent(sValue);
 			}
 
-			window.addEventListener('rl.tooltips.diactivate', () => {
+			addEventListener('rl.tooltips.diactivate', () => {
 				element.__opentip.hide();
 				element.__opentip.deactivate();
 			});
 
-			window.addEventListener('rl.tooltips.activate', () => {
+			addEventListener('rl.tooltips.activate', () => {
 				element.__opentip.activate();
 			});
 		}
@@ -223,7 +203,7 @@ ko.bindingHandlers.tooltipErrorTip = {
 
 		element.__opentip.deactivate();
 
-		$(window.document).on('click', () => {
+		$(document).on('click', () => {
 			if (element && element.__opentip) {
 				element.__opentip.hide();
 			}
@@ -303,43 +283,13 @@ ko.bindingHandlers.dropdownCloser = {
 
 ko.bindingHandlers.popover = {
 	init: function(element, fValueAccessor) {
-		window.console.log('TODO: $(element).popover removed', element, fValueAccessor);
+		console.log('TODO: $(element).popover removed', element, fValueAccessor);
 /*
 		$(element).popover(ko.unwrap(fValueAccessor()));
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
 			$(element).popover('destroy');
 		});
 */
-	}
-};
-
-ko.bindingHandlers.csstext = {};
-ko.bindingHandlers.csstext.init = ko.bindingHandlers.csstext.update = (element, fValueAccessor) => {
-	if (element && element.styleSheet && 'undefined' !== typeof element.styleSheet.cssText) {
-		element.styleSheet.cssText = ko.unwrap(fValueAccessor());
-	} else {
-		$(element).text(ko.unwrap(fValueAccessor()));
-	}
-};
-
-ko.bindingHandlers.resizecrop = {
-	init: (element) => {
-		$(element)
-			.addClass('resizecrop')
-			.resizecrop({
-				'width': '100',
-				'height': '100',
-				'wrapperCSS': {
-					'border-radius': '10px'
-				}
-			});
-	},
-	update: (element, fValueAccessor) => {
-		fValueAccessor()();
-		$(element).resizecrop({
-			'width': '100',
-			'height': '100'
-		});
 	}
 };
 
@@ -362,7 +312,7 @@ ko.bindingHandlers.onKeyDown = {
 ko.bindingHandlers.onEnter = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keypress.koOnEnter', (event) => {
-			if (event && 13 === window.parseInt(event.keyCode, 10)) {
+			if (event && 13 === parseInt(event.keyCode, 10)) {
 				$(element).trigger('change');
 				fValueAccessor().call(viewModel);
 			}
@@ -377,7 +327,7 @@ ko.bindingHandlers.onEnter = {
 ko.bindingHandlers.onSpace = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keyup.koOnSpace', (event) => {
-			if (event && 32 === window.parseInt(event.keyCode, 10)) {
+			if (event && 32 === parseInt(event.keyCode, 10)) {
 				fValueAccessor().call(viewModel, event);
 			}
 		});
@@ -391,7 +341,7 @@ ko.bindingHandlers.onSpace = {
 ko.bindingHandlers.onTab = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keydown.koOnTab', (event) => {
-			if (event && 9 === window.parseInt(event.keyCode, 10)) {
+			if (event && 9 === parseInt(event.keyCode, 10)) {
 				return fValueAccessor().call(viewModel, !!event.shiftKey);
 			}
 			return true;
@@ -406,7 +356,7 @@ ko.bindingHandlers.onTab = {
 ko.bindingHandlers.onEsc = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keyup.koOnEsc', (event) => {
-			if (event && 27 === window.parseInt(event.keyCode, 10)) {
+			if (event && 27 === parseInt(event.keyCode, 10)) {
 				$(element).trigger('change');
 				fValueAccessor().call(viewModel);
 			}
@@ -529,7 +479,7 @@ ko.bindingHandlers.initFixedTrigger = {
 		let $container = $(values[0] || null);
 		$container = $container[0] ? $container : null;
 		if ($container) {
-			window.addEventListener('resize', () => {
+			addEventListener('resize', () => {
 				const offset = $container ? $container.offset() : null;
 				if (offset && offset.top) {
 					$el.css('top', offset.top + top);
@@ -610,7 +560,7 @@ ko.bindingHandlers.draggable = {
 							offset = $this.offset(),
 							bottomPos = offset.top + $this.height();
 
-						window.clearInterval($this.data('timerScroll'));
+						clearInterval($this.data('timerScroll'));
 						$this.data('timerScroll', false);
 
 						if (event.pageX >= offset.left && event.pageX <= offset.left + $this.width()) {
@@ -620,7 +570,7 @@ ko.bindingHandlers.draggable = {
 									Utils.windowResize();
 								};
 
-								$this.data('timerScroll', window.setInterval(moveUp, 10));
+								$this.data('timerScroll', setInterval(moveUp, 10));
 								moveUp();
 							}
 
@@ -630,7 +580,7 @@ ko.bindingHandlers.draggable = {
 									Utils.windowResize();
 								};
 
-								$this.data('timerScroll', window.setInterval(moveDown, 10));
+								$this.data('timerScroll', setInterval(moveDown, 10));
 								moveDown();
 							}
 						}
@@ -640,7 +590,7 @@ ko.bindingHandlers.draggable = {
 				conf.stop = () => {
 					$(droppableSelector).each(function() {
 						const $this = $(this); // eslint-disable-line no-invalid-this
-						window.clearInterval($this.data('timerScroll'));
+						clearInterval($this.data('timerScroll'));
 						$this.data('timerScroll', false);
 					});
 				};
@@ -1022,7 +972,7 @@ ko.extenders.falseTimeout = (target, option) => {
 	target.iFalseTimeoutTimeout = 0;
 	target.subscribe((value) => {
 		if (value) {
-			window.clearTimeout(target.iFalseTimeoutTimeout);
+			clearTimeout(target.iFalseTimeoutTimeout);
 			target.iFalseTimeoutTimeout = setTimeout(() => {
 				target(false);
 				target.iFalseTimeoutTimeout = 0;
@@ -1046,7 +996,7 @@ ko.extenders.specialThrottle = (target, option) => {
 					target.valueForRead(bValue);
 				} else {
 					if (target.valueForRead()) {
-						window.clearTimeout(target.iSpecialThrottleTimeout);
+						clearTimeout(target.iSpecialThrottleTimeout);
 						target.iSpecialThrottleTimeout = setTimeout(() => {
 							target.valueForRead(false);
 							target.iSpecialThrottleTimeout = 0;

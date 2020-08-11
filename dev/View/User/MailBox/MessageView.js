@@ -1,6 +1,4 @@
-import $ from '$';
 import ko from 'ko';
-import key from 'key';
 
 import { DATA_IMAGE_USER_DOT_PIC, UNUSED_OPTION_VALUE } from 'Common/Consts';
 
@@ -450,7 +448,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	//			aTo = [],
 	//			EmailModel = require('Model/Email').default,
 	//			fParseEmailLine = function(sLine) {
-	//				return sLine ? [window.decodeURIComponent(sLine)].map(sItem => {
+	//				return sLine ? [decodeURIComponent(sLine)].map(sItem => {
 	//						var oEmailModel = new EmailModel();
 	//						oEmailModel.parse(sItem);
 	//						return oEmailModel.email ? oEmailModel : null;
@@ -473,7 +471,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			let index = 0,
 				listIndex = 0;
 
-			const div = $('<div>'),
+			const div = jQuery('<div>'),
 				dynamicEls = this.message().attachments().map(item => {
 					if (item && !item.isLinked && item.isImage()) {
 						if (item === attachment) {
@@ -561,7 +559,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0');
 		});
 
-		this.oHeaderDom = $('.messageItemHeader', dom);
+		this.oHeaderDom = jQuery('.messageItemHeader', dom);
 		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
 
 		if (this.mobile) {
@@ -578,7 +576,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 					!!event &&
 					Magics.EventWhichMouseMiddle !== event.which &&
 					mailToHelper(
-						$(this).attr('href'),
+						jQuery(this).attr('href'),
 						Settings.capa(Capa.Composer) ? require('View/Popup/Compose') : null // eslint-disable-line no-invalid-this
 					)
 				);

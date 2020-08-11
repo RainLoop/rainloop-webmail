@@ -1,4 +1,3 @@
-import $ from '$';
 import { AbstractComponent, componentExportHelper } from 'Component/Abstract';
 
 class ScriptComponent extends AbstractComponent {
@@ -21,7 +20,7 @@ class ScriptComponent extends AbstractComponent {
 			if (script) {
 				params.element.text('');
 				params.element.replaceWith(
-					$(script).text(
+					jQuery(script).text(
 						params.component.templateNodes[0] && params.component.templateNodes[0].nodeValue
 							? params.component.templateNodes[0].nodeValue
 							: ''

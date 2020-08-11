@@ -1,5 +1,3 @@
-import window from 'window';
-import $ from '$';
 import ko from 'ko';
 
 import { $win, dropdownVisibility, data as GlobalsData } from 'Common/Globals';
@@ -7,9 +5,9 @@ import { ComposeType, SaveSettingsStep, FolderType } from 'Common/Enums';
 import { Mime } from 'Common/Mime';
 
 const
+	$ = jQuery,
 	$div = $('<div></div>'),
-	isArray = Array.isArray,
-	decodeURIComponent = component => window.decodeURIComponent(component);
+	isArray = Array.isArray;
 
 var htmlspecialchars = ((de,se,gt,lt,sq,dq,bt) => {
 	return (str, quote_style = 3, double_encode = true) => {
@@ -50,8 +48,8 @@ export function isPosNumeric(value, includeZero = true) {
  * @returns {number}
  */
 export function pInt(value, defaultValur = 0) {
-	const result = isNormal(value) && value ? window.parseInt(value, 10) : defaultValur;
-	return window.isNaN(result) ? defaultValur : result;
+	const result = isNormal(value) && value ? parseInt(value, 10) : defaultValur;
+	return isNaN(result) ? defaultValur : result;
 }
 
 /**
@@ -98,7 +96,7 @@ export function fakeMd5(len = 32) {
 
 	let result = '';
 	while (result.length < len) {
-		result += line.substr(window.Math.round(window.Math.random() * lineLen), 1);
+		result += line.substr(Math.round(Math.random() * lineLen), 1);
 	}
 
 	return result;
@@ -148,8 +146,8 @@ const timeOutAction = (() => {
 	const timeOuts = {};
 	return (action, fFunction, timeOut) => {
 		timeOuts[action] = undefined === timeOuts[action] ? 0 : timeOuts[action];
-		window.clearTimeout(timeOuts[action]);
-		timeOuts[action] = window.setTimeout(fFunction, timeOut);
+		clearTimeout(timeOuts[action]);
+		timeOuts[action] = setTimeout(fFunction, timeOut);
 	};
 })();
 
@@ -168,14 +166,14 @@ export function deModule(m) {
  */
 export function inFocus() {
 	try {
-		if (window.document.activeElement) {
-			if (undefined === window.document.activeElement.__inFocusCache) {
-				window.document.activeElement.__inFocusCache = $(window.document.activeElement).is(
+		if (document.activeElement) {
+			if (undefined === document.activeElement.__inFocusCache) {
+				document.activeElement.__inFocusCache = $(document.activeElement).is(
 					'input,textarea,iframe,.cke_editable'
 				);
 			}
 
-			return !!window.document.activeElement.__inFocusCache;
+			return !!document.activeElement.__inFocusCache;
 		}
 	} catch (e) {} // eslint-disable-line no-empty
 
@@ -187,13 +185,11 @@ export function inFocus() {
  * @returns {void}
  */
 export function removeInFocus(force) {
-	if (window.document && window.document.activeElement && window.document.activeElement.blur) {
+	if (document.activeElement && document.activeElement.blur) {
 		try {
-			const activeEl = $(window.document.activeElement);
-			if (activeEl && activeEl.is('input,textarea')) {
-				window.document.activeElement.blur();
-			} else if (force) {
-				window.document.activeElement.blur();
+			const activeEl = $(document.activeElement);
+			if (force || (activeEl && activeEl.is('input,textarea'))) {
+				document.activeElement.blur();
 			}
 		} catch (e) {} // eslint-disable-line no-empty
 	}
@@ -204,14 +200,7 @@ export function removeInFocus(force) {
  */
 export function removeSelection() {
 	try {
-		if (window && window.getSelection) {
-			const sel = window.getSelection();
-			if (sel && sel.removeAllRanges) {
-				sel.removeAllRanges();
-			}
-		} else if (window.document && window.document.selection && window.document.selection.empty) {
-			window.document.selection.empty();
-		}
+		getSelection().removeAllRanges();
 	} catch (e) {} // eslint-disable-line no-empty
 }
 
@@ -264,7 +253,7 @@ export function replySubjectAdd(prefix, subject) {
  * @returns {number}
  */
 export function roundNumber(num, dec) {
-	return window.Math.round(num * window.Math.pow(10, dec)) / window.Math.pow(10, dec);
+	return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
 }
 
 /**
@@ -285,15 +274,6 @@ export function friendlySize(sizeInBytes) {
 	}
 
 	return sizeInBytes + 'B';
-}
-
-/**
- * @param {string} desc
- */
-export function log(desc) {
-	if (window.console && window.console.log) {
-		window.console.log(desc);
-	}
 }
 
 /**
@@ -429,7 +409,7 @@ export function previewMessage(
 	isHtml,
 	print
 ) {
-	const win = window.open(''),
+	const win = open(''),
 		doc = win.document,
 		bodyClone = body.clone(),
 		bodyClass = isHtml ? 'html' : 'plain';
@@ -456,7 +436,7 @@ export function previewMessage(
 	doc.close();
 
 	if (print) {
-		window.setTimeout(() => win.print(), 100);
+		setTimeout(() => win.print(), 100);
 	}
 }
 
@@ -830,7 +810,7 @@ export function folderListOptionsBuilder(
 					aResult.push({
 						id: oItem.fullNameRaw,
 						name:
-							new window.Array(oItem.deep + 1 - iUnDeep).join(sDeepPrefix) +
+							new Array(oItem.deep + 1 - iUnDeep).join(sDeepPrefix) +
 							(fRenameCallback ? fRenameCallback(oItem) : oItem.name()),
 						system: false,
 						seporator: false,
@@ -869,20 +849,11 @@ export function folderListOptionsBuilder(
  * @returns {void}
  */
 export function selectElement(element) {
-	let sel = null,
-		range = null;
-
-	if (window.getSelection) {
-		sel = window.getSelection();
-		sel.removeAllRanges();
-		range = window.document.createRange();
-		range.selectNodeContents(element);
-		sel.addRange(range);
-	} else if (window.document.selection) {
-		range = window.document.body.createTextRange();
-		range.moveToElementText(element);
-		range.select();
-	}
+	let sel = getSelection(),
+		range = document.createRange();
+	sel.removeAllRanges();
+	range.selectNodeContents(element);
+	sel.addRange(range);
 }
 
 var dv;
@@ -975,7 +946,7 @@ let __themeTimer = 0,
 export function changeTheme(value, themeTrigger = ()=>{}) {
 	const themeLink = $('#app-theme-link'),
 		clearTimer = () => {
-			__themeTimer = window.setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
+			__themeTimer = setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
 			__themeAjax = null;
 		};
 
@@ -995,7 +966,7 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 			url += 'Json/';
 		}
 
-		window.clearTimeout(__themeTimer);
+		clearTimeout(__themeTimer);
 
 		themeTrigger(SaveSettingsStep.Animate);
 
@@ -1004,10 +975,10 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 		}
 		let init = {};
 		if (window.AbortController) {
-			__themeAjax = new window.AbortController();
+			__themeAjax = new AbortController();
 			init.signal = __themeAjax.signal;
 		}
-		window.fetch(url, init)
+		fetch(url, init)
 			.then(response => response.json())
 			.then(data => {
 				if (data && isArray(data) && 2 === data.length) {
@@ -1163,11 +1134,11 @@ export function isTransparent(color) {
  * @param {Function} fCallback
  */
 export function resizeAndCrop(url, value, fCallback) {
-	const img = new window.Image();
+	const img = new Image();
 	img.onload = function() {
 		let diff = [0, 0];
 
-		const canvas = window.document.createElement('canvas'),
+		const canvas = document.createElement('canvas'),
 			ctx = canvas.getContext('2d');
 
 		canvas.width = value;
@@ -1264,23 +1235,6 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 	return false;
 }
 
-/**
- * @param {Function} fn
- * @returns {void}
- */
-export function domReady(fn) {
-	$(() => fn());
-	//
-	//	if ('loading' !== window.document.readyState)
-	//	{
-	//		fn();
-	//	}
-	//	else
-	//	{
-	//		window.document.addEventListener('DOMContentLoaded', fn);
-	//	}
-}
-
 var wr;
 export const windowResize = timeout => {
 	wr && clearTimeout(wr);
@@ -1298,12 +1252,12 @@ export function windowResizeCallback() {
 	windowResize();
 }
 
-let substr = window.String.substr;
+let substr = String.substr;
 if ('b' !== 'ab'.substr(-1)) {
 	substr = (str, start, length) => {
 		start = 0 > start ? str.length + start : start;
 		return str.substr(start, length);
 	};
 
-	window.String.substr = substr;
+	String.substr = substr;
 }

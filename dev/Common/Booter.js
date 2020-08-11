@@ -1,10 +1,8 @@
-/* eslint-env browser */
-
 import { getHash, setHash, clearHash } from 'Storage/RainLoop';
 
 let RL_APP_DATA_STORAGE = null;
 
-const doc = window.document;
+const doc = document;
 
 /* eslint-disable camelcase,spaced-comment  */
 window.__rlah_set = () => setHash();
@@ -27,7 +25,7 @@ function showError() {
 	}
 
 	if (window.progressJs) {
-		window.progressJs.set(100).end();
+		progressJs.set(100).end();
 	}
 }
 
@@ -55,7 +53,7 @@ function loadScript(src) {
 	if (!src) {
 		throw new Error('src should not be empty.');
 	}
-	return new window.Promise((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		const script = doc.createElement('script');
 		script.onload = () => resolve();
 		script.onerror = () => reject(new Error(src));
@@ -93,11 +91,11 @@ window.__initAppData = data => {
 		}
 		if (oE && oE.style) {
 			oE.style.opacity = 0;
-			window.setTimeout(() => oE.style.opacity = 1, 300);
+			setTimeout(() => oE.style.opacity = 1, 300);
 		}
 	}
 
-	const appData = window.__rlah_data(), p = window.progressJs;
+	const appData = window.__rlah_data(), p = progressJs;
 
 	if (
 		p &&
@@ -125,7 +123,7 @@ window.__initAppData = data => {
 		libs()
 			.then(() => {
 				p.set(20);
-				return window.Promise.all([loadScript(appData.TemplatesLink), loadScript(appData.LangLink)]);
+				return Promise.all([loadScript(appData.TemplatesLink), loadScript(appData.LangLink)]);
 			})
 			.then(() => {
 				p.set(30);
@@ -133,7 +131,7 @@ window.__initAppData = data => {
 			})
 			.then(() => {
 				p.set(50);
-				return appData.PluginsLink ? loadScript(appData.PluginsLink) : window.Promise.resolve();
+				return appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve();
 			})
 			.then(() => {
 				p.set(70);
@@ -161,7 +159,7 @@ window.__initAppData = data => {
 window.__runBoot = () => {
 	const app = doc.getElementById('rl-app');
 
-	if (!window.navigator || !window.navigator.cookieEnabled) {
+	if (!navigator || !navigator.cookieEnabled) {
 		doc.location.replace('./?/NoCookie');
 	}
 
@@ -183,7 +181,7 @@ window.__runBoot = () => {
 			+ '/'
 			+ (getHash() || '0')
 			+ '/'
-			+ window.Math.random().toString().substr(2)
+			+ Math.random().toString().substr(2)
 			+ '/').then(() => {});
 	}
 };

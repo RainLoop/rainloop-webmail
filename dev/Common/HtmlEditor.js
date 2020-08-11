@@ -1,5 +1,3 @@
-import window from 'window';
-import $ from '$';
 import { htmlEditorDefaultConfig, htmlEditorLangsMap } from 'Common/Globals';
 import { EventKeyCode, Magics } from 'Common/Enums';
 import * as Settings from 'Storage/Settings';
@@ -32,7 +30,7 @@ class HtmlEditor {
 		this.onModeChange = onModeChange;
 
 		this.element = element;
-		this.$element = $(element);
+		this.$element = jQuery(element);
 
 		// throttle
 		var t, o = this;
@@ -56,8 +54,8 @@ class HtmlEditor {
 
 	blurTrigger() {
 		if (this.onBlur) {
-			window.clearTimeout(this.blurTimer);
-			this.blurTimer = window.setTimeout(() => {
+			clearTimeout(this.blurTimer);
+			this.blurTimer = setTimeout(() => {
 				this.runOnBlur();
 			}, Magics.Time200ms);
 		}
@@ -65,7 +63,7 @@ class HtmlEditor {
 
 	focusTrigger() {
 		if (this.onBlur) {
-			window.clearTimeout(this.blurTimer);
+			clearTimeout(this.blurTimer);
 		}
 	}
 
@@ -275,10 +273,10 @@ class HtmlEditor {
 					this.editor.on('drop', (event) => {
 						if (0 < event.data.dataTransfer.getFilesCount()) {
 							const file = event.data.dataTransfer.getFile(0);
-							if (file && window.FileReader && event.data.dataTransfer.id && file.type && file.type.match(/^image/i)) {
+							if (file && event.data.dataTransfer.id && file.type && file.type.match(/^image/i)) {
 								const id = event.data.dataTransfer.id,
 									imageId = `[img=${id}]`,
-									reader = new window.FileReader();
+									reader = new FileReader();
 
 								reader.onloadend = () => {
 									if (reader.result) {

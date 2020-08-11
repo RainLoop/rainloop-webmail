@@ -1,7 +1,4 @@
-import $ from '$';
 import ko from 'ko';
-import key from 'key';
-import Jua from 'Jua';
 
 import {
 	Capa,
@@ -943,7 +940,7 @@ class ComposePopupView extends AbstractViewNext {
 			sSubject = message.subject();
 			aDraftInfo = message.aDraftInfo;
 
-			const clonedText = $(message.body).clone();
+			const clonedText = jQuery(message.body).clone();
 			if (clonedText) {
 				clearBqSwitcher(clonedText);
 

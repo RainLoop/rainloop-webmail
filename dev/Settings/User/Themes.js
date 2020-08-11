@@ -1,7 +1,4 @@
-import window from 'window';
 import ko from 'ko';
-
-import Jua from 'Jua';
 
 import { SaveSettingsStep, UploadErrorCode, Capa, Magics } from 'Common/Enums';
 import { changeTheme, convertThemeName } from 'Common/Utils';
@@ -47,7 +44,7 @@ class ThemesUserSettings {
 		});
 
 		this.background.hash.subscribe((value) => {
-			const b = window.document.body, cl = window.document.documentElement.classList;
+			const b = document.body, cl = document.documentElement.classList;
 			if (!value) {
 				cl.remove('UserBackground');
 				b.removeAttribute('style');

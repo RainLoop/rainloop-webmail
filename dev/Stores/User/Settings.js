@@ -1,4 +1,3 @@
-import window from 'window';
 import ko from 'ko';
 
 import { MESSAGES_PER_PAGE, MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
@@ -67,9 +66,9 @@ class SettingsUserStore {
 		this.replySameFolder(!!Settings.settingsGet('ReplySameFolder'));
 
 		Events.sub('rl.auto-logout-refresh', () => {
-			window.clearTimeout(this.iAutoLogoutTimer);
+			clearTimeout(this.iAutoLogoutTimer);
 			if (0 < this.autoLogout() && !Settings.settingsGet('AccountSignMe')) {
-				this.iAutoLogoutTimer = window.setTimeout(() => {
+				this.iAutoLogoutTimer = setTimeout(() => {
 					Events.pub('rl.auto-logout');
 				}, this.autoLogout() * Magics.Time1m);
 			}

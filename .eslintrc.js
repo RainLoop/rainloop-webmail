@@ -9,19 +9,45 @@ module.exports = {
 	},
 	env: {
 		node: true,
-		commonjs: true,
+		browser: true,
 		es6: true
 	},
 	globals: {
+		// RainLoop
 		'RL_COMMUNITY': true,
-		'RL_ES6': true
+		'RL_ES6': true,
+		'__rlah_set': "readonly",
+		'__rlah_clear': "readonly",
+		'__rlah_data': "readonly",
+		'rainloopI18N': "readonly",
+		'rainloopTEMPLATES': "readonly",
+		'rl': "readonly",
+//		'__APP_BOOT': "readonly",
+		// deb/boot.js
+		'progressJs': "readonly",
+		// others
+		'jQuery': "readonly",
+		'openpgp': "readonly",
+		// node_modules/knockout but dev/External/ko.js is used
+//		'ko': "readonly",
+		// node_modules/simplestatemanager
+		'ssm': "readonly",
+		// vendors/routes/
+		'hasher': "readonly",
+		'signals': "readonly",
+		'Crossroads': "readonly",
+		// vendors/keymaster
+		'key': "readonly",
+		// vendors/jua
+		'Jua': "readonly",
+		// vendors/qr.js
+		'qr': "readonly"
 	},
 	// http://eslint.org/docs/rules/
 	rules: {
 		// plugins
 //		'prettier/prettier': 'error',
 		'no-mixed-spaces-and-tabs': 'off',
-		'no-console': 'error',
 		'max-len': [
 			'error',
 			120,

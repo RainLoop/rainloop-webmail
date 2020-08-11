@@ -1,6 +1,3 @@
-import $ from '$';
-import key from 'key';
-
 import { KeyState } from 'Common/Enums';
 import { leftPanelDisabled } from 'Common/Globals';
 import { settings, inbox } from 'Common/Links';
@@ -37,7 +34,7 @@ class MenuSettingsUserView extends AbstractViewNext {
 			});
 		}
 
-		key('up, down', KeyState.Settings, settingsMenuKeysHandler($('.b-settings-menu .e-item', dom)));
+		key('up, down', KeyState.Settings, settingsMenuKeysHandler(jQuery('.b-settings-menu .e-item', dom)));
 	}
 
 	link(route) {

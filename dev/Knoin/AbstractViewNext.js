@@ -1,5 +1,4 @@
 import ko from 'ko';
-import window from 'window';
 
 import { delegateRun, inFocus } from 'Common/Utils';
 import { KeyState, EventKeyCode } from 'Common/Enums';
@@ -36,7 +35,7 @@ export class AbstractViewNext {
 	 * @returns {void}
 	 */
 	registerPopupKeyDown() {
-		window.addEventListener('keydown', (event) => {
+		addEventListener('keydown', (event) => {
 			if (event && this.modalVisibility && this.modalVisibility()) {
 				if (!this.bDisabeCloseOnEsc && EventKeyCode.Esc === event.keyCode) {
 					delegateRun(this, 'cancelCommand');

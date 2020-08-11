@@ -1,4 +1,3 @@
-import $ from '$';
 import ko from 'ko';
 import classnames from 'classnames';
 
@@ -22,6 +21,8 @@ import { emailArrayFromJson, emailArrayToStringClear, emailArrayToString, replyH
 
 import { AttachmentModel, staticCombinedIconClass } from 'Model/Attachment';
 import { AbstractModel } from 'Knoin/AbstractModel';
+
+const $ = jQuery;
 
 class MessageModel extends AbstractModel {
 	constructor() {

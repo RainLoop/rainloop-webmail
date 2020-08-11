@@ -25,7 +25,7 @@ class AppAdminStore extends AbstractAppStore {
 		this.useLocalProxyForExternalImages(!!settingsGet('UseLocalProxyForExternalImages'));
 /*
 		if (settingsGet('Auth')) {
-			window.fetch('./data/VERSION?' + window.Math.random()).then(() => this.dataFolderAccess(true));
+			fetch('./data/VERSION?' + Math.random()).then(() => this.dataFolderAccess(true));
 		}
 */
 	}

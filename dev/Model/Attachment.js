@@ -1,4 +1,3 @@
-import window from 'window';
 import ko from 'ko';
 
 import { FileType } from 'Common/Enums';
@@ -16,7 +15,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import Audio from 'Common/Audio';
 
-const bAllowPdfPreview = !bMobileDevice && undefined !== window.navigator.mimeTypes['application/pdf'];
+const bAllowPdfPreview = !bMobileDevice && undefined !== navigator.mimeTypes['application/pdf'];
 
 /**
  * @param {string} sExt
@@ -405,7 +404,7 @@ class AttachmentModel extends AbstractModel {
 	generateTransferDownloadUrl() {
 		let link = this.linkDownload();
 		if ('http' !== link.substr(0, 4)) {
-			link = window.location.protocol + '//' + window.location.host + window.location.pathname + link;
+			link = location.protocol + '//' + location.host + location.pathname + link;
 		}
 
 		return this.mimeType + ':' + this.fileName + ':' + link;

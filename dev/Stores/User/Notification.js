@@ -1,4 +1,3 @@
-import window from 'window';
 import ko from 'ko';
 
 import { DesktopNotification, Magics } from 'Common/Enums';
@@ -136,7 +135,7 @@ class NotificationUserStore {
 
 				if (nessageData) {
 					notification.onclick = () => {
-						window.focus();
+						focus();
 
 						if (nessageData.Folder && nessageData.Uid) {
 							Events.pub('mailbox.message.show', [nessageData.Folder, nessageData.Uid]);
@@ -144,7 +143,7 @@ class NotificationUserStore {
 					};
 				}
 
-				window.setTimeout(
+				setTimeout(
 					(function(localNotifications) {
 						return () => {
 							if (localNotifications.cancel) {
@@ -169,7 +168,7 @@ class NotificationUserStore {
 	 * @returns {*|null}
 	 */
 	notificationClass() {
-		return window.Notification && window.Notification.requestPermission ? window.Notification : null;
+		return window.Notification && Notification.requestPermission ? Notification : null;
 	}
 }
 

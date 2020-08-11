@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Magics } from 'Common/Enums';
-import { log, delegateRun, pInt } from 'Common/Utils';
+import { delegateRun, pInt } from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
 
@@ -87,7 +87,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 	}
 
 	showError(e) {
-		log(e);
+		console.log(e);
 		if (e && e.message) {
 			this.submitError(e.message);
 		}

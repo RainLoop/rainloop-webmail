@@ -1,5 +1,3 @@
-import window from 'window';
-
 import PromisesPopulator from 'Promises/User/Populator';
 import { AbstractAjaxPromises } from 'Promises/AbstractAjax';
 
@@ -23,8 +21,8 @@ class UserAjaxUserPromises extends AbstractAjaxPromises {
 	foldersReloadWithTimeout(fTrigger) {
 		this.setTrigger(fTrigger, true);
 
-		window.clearTimeout(this.foldersTimeout);
-		this.foldersTimeout = window.setTimeout(() => {
+		clearTimeout(this.foldersTimeout);
+		this.foldersTimeout = setTimeout(() => {
 			this.foldersReload(fTrigger);
 		}, 500);
 	}

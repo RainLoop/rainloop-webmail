@@ -1,6 +1,3 @@
-import $ from '$';
-import key from 'key';
-
 import { leftPanelDisabled } from 'Common/Globals';
 import { KeyState } from 'Common/Enums';
 
@@ -29,7 +26,7 @@ class MenuSettingsAdminView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		key('up, down', KeyState.Settings, settingsMenuKeysHandler($('.b-admin-menu .e-item', dom)));
+		key('up, down', KeyState.Settings, settingsMenuKeysHandler(jQuery('.b-admin-menu .e-item', dom)));
 	}
 }
 

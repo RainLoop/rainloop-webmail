@@ -1,5 +1,3 @@
-import key from 'key';
-
 import { KeyState, Magics } from 'Common/Enums';
 
 import { popup } from 'Knoin/Knoin';

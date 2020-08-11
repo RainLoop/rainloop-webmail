@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { delegateRun, log } from 'Common/Utils';
+import { delegateRun } from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
 
@@ -64,7 +64,7 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 					if (err) {
 						this.key.error(true);
 						this.key.errorMessage(err && err[0] ? '' + err[0] : '');
-						log(err);
+						console.log(err);
 					}
 				}
 

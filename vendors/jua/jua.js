@@ -3,376 +3,301 @@
 	'use strict';
 
 	var
-		Globals = {},
-		Utils = {},
+		iDefLimit = 20,
 		$ = jQuery;
 
-	Globals.iDefLimit = 20;
+	const
+		defined = v => undefined !== v;
 
-	/**
-	 * @param {*} mValue
-	 * @return {boolean}
-	 */
-	Utils.isUndefined = function (mValue)
-	{
-		return 'undefined' === typeof mValue;
-	};
-
-	/**
-	 * @param {Object} mObjectFirst
-	 * @param {Object=} mObjectSecond
-	 * @return {Object}
-	 */
-	Utils.extend = function (mObjectFirst, mObjectSecond)
-	{
-		if (mObjectSecond)
+	var Utils = {
+		/**
+		 * @param {*} oParent
+		 * @param {*} oDescendant
+		 *
+		 * @return {boolean}
+		 */
+		contains : (oParent, oDescendant) =>
 		{
-			for (var sProp in mObjectSecond)
+			if (oParent && oDescendant)
 			{
-				if (mObjectSecond.hasOwnProperty(sProp))
+				if (oParent === oDescendant)
 				{
-					mObjectFirst[sProp] = mObjectSecond[sProp];
+					return true;
 				}
-			}
-		}
-
-		return mObjectFirst;
-	};
-
-	/**
-	 * @param {*} oParent
-	 * @param {*} oDescendant
-	 *
-	 * @return {boolean}
-	 */
-	Utils.contains = function (oParent, oDescendant)
-	{
-		var bResult = false;
-		if (oParent && oDescendant)
-		{
-			if (oParent === oDescendant)
-			{
-				bResult = true;
-			}
-			else if (oParent.contains)
-			{
-				bResult = oParent.contains(oDescendant);
-			}
-			else
-			{
+				if (oParent.contains)
+				{
+					return oParent.contains(oDescendant);
+				}
 				/*jshint bitwise: false*/
-				bResult = oDescendant.compareDocumentPosition ?
+				return oDescendant.compareDocumentPosition ?
 					!!(oDescendant.compareDocumentPosition(oParent) & 8) : false;
 				/*jshint bitwise: true*/
 			}
-		}
 
-		return bResult;
-	};
+			return false;
+		},
 
-	Utils.mainClearTimeout = function(iTimer)
-	{
-		if (0 < iTimer)
+		mainClearTimeout : iTimer =>
 		{
-			clearTimeout(iTimer);
-		}
-
-		iTimer = 0;
-	};
-
-	/**
-	 * @param {Event} oEvent
-	 * @return {?Event}
-	 */
-	Utils.getEvent = function(oEvent)
-	{
-		oEvent = (oEvent && (oEvent.originalEvent ?
-			oEvent.originalEvent : oEvent)) || window.event;
-
-		return oEvent.dataTransfer ? oEvent : null;
-	};
-
-	/**
-	 * @param {Object} oValues
-	 * @param {string} sKey
-	 * @param {?} mDefault
-	 * @return {?}
-	 */
-	Utils.getValue = function (oValues, sKey, mDefault)
-	{
-		return (!oValues || !sKey || Utils.isUndefined(oValues[sKey])) ? mDefault : oValues[sKey];
-	};
-
-	/**
-	 * @param {Object} oOwner
-	 * @param {string} sPublicName
-	 * @param {*} mObject
-	 */
-	Utils.setValue = function(oOwner, sPublicName, mObject)
-	{
-		oOwner[sPublicName] = mObject;
-	};
-
-	/**
-	 * @param {*} aData
-	 * @return {boolean}
-	 */
-	Utils.isNonEmptyArray = function (aData)
-	{
-		return aData && aData.length && 0 < aData.length ? true : false;
-	};
-
-	/**
-	 * @param {*} mValue
-	 * @return {number}
-	 */
-	Utils.pInt = function (mValue)
-	{
-		return parseInt(mValue || 0, 10);
-	};
-
-	/**
-	 * @param {Function} fFunction
-	 * @param {Object=} oScope
-	 * @return {Function}
-	 */
-	Utils.scopeBind = function (fFunction, oScope)
-	{
-		return function () {
-			return fFunction.apply(Utils.isUndefined(oScope) ? null : oScope,
-				Array.prototype.slice.call(arguments));
-		};
-	};
-
-	/**
-	 * @param {number=} iLen
-	 * @return {string}
-	 */
-	Utils.fakeMd5 = function (iLen)
-	{
-		var
-			sResult = '',
-			sLine = '0123456789abcdefghijklmnopqrstuvwxyz'
-		;
-
-		iLen = Utils.isUndefined(iLen) ? 32 : Utils.pInt(iLen);
-
-		while (sResult.length < iLen)
-		{
-			sResult += sLine.substr(window.Math.round(window.Math.random() * sLine.length), 1);
-		}
-
-		return sResult;
-	};
-
-	/**
-	 * @return {string}
-	 */
-	Utils.getNewUid = function ()
-	{
-		return 'jua-uid-' + Utils.fakeMd5(16) + '-' + (new window.Date()).getTime().toString();
-	};
-
-	/**
-	 * @param {*} oFile
-	 * @return {Object}
-	 */
-	Utils.getDataFromFile = function (oFile)
-	{
-		var
-			sFileName = Utils.isUndefined(oFile.fileName) ? (Utils.isUndefined(oFile.name) ? null : oFile.name) : oFile.fileName,
-			iSize = Utils.isUndefined(oFile.fileSize) ? (Utils.isUndefined(oFile.size) ? null : oFile.size) : oFile.fileSize,
-			sType = Utils.isUndefined(oFile.type) ? null : oFile.type
-		;
-
-		if (sFileName.charAt(0) === '/')
-		{
-			sFileName = sFileName.substr(1);
-		}
-
-		if (!sType && 0 === iSize)
-		{
-			return null; // Folder
-		}
-
-		return {
-			'FileName': sFileName,
-			'Size': iSize,
-			'Type': sType,
-			'Folder': '',
-			'File' : oFile
-		};
-	};
-
-	/**
-	 * @param {*} aItems
-	 * @param {Function} fFileCallback
-	 * @param {number=} iLimit = 20
-	 * @param {Function=} fLimitCallback
-	 */
-	Utils.getDataFromFiles = function (aItems, fFileCallback, iLimit, fLimitCallback)
-	{
-		var
-			iInputLimit = 0,
-			iLen = 0,
-			iIndex = 0,
-			oItem = null,
-			oFile = null,
-			bUseLimit = false,
-			bCallLimit = false
-		;
-
-		iLimit = Utils.isUndefined(iLimit) ? Globals.iDefLimit : Utils.pInt(iLimit);
-		iInputLimit = iLimit;
-		bUseLimit = 0 < iLimit;
-
-		aItems = aItems && 0 < aItems.length ? aItems : null;
-		if (aItems)
-		{
-			for (iIndex = 0, iLen = aItems.length; iIndex < iLen; iIndex++)
+			if (0 < iTimer)
 			{
-				oItem = aItems[iIndex];
-				if (oItem)
-				{
-					if (!bUseLimit || 0 <= --iLimit)
-					{
-						oFile = Utils.getDataFromFile(oItem);
-						if (oFile)
-						{
-							fFileCallback(oFile);
-						}
-					}
-					else if (bUseLimit && !bCallLimit)
-					{
-						if (0 > iLimit && fLimitCallback)
-						{
-							bCallLimit = true;
-							fLimitCallback(iInputLimit);
-						}
-					}
-				}
+				clearTimeout(iTimer);
 			}
-		}
-	};
 
-	/**
-	 * @param {*} oInput
-	 * @param {Function} fFileCallback
-	 * @param {number=} iLimit = 20
-	 * @param {Function=} fLimitCallback
-	 */
-	Utils.getDataFromInput = function (oInput, fFileCallback, iLimit, fLimitCallback)
-	{
-		var aFiles = oInput && oInput.files && 0 < oInput.files.length ? oInput.files : null;
-		if (aFiles)
-		{
-			Utils.getDataFromFiles(aFiles, fFileCallback, iLimit, fLimitCallback);
-		}
-		else
-		{
-			fFileCallback({
-				'FileName': oInput.value.split('\\').pop().split('/').pop(),
-				'Size': null,
-				'Type': null,
-				'Folder': '',
-				'File' : null
-			});
-		}
-	};
+			iTimer = 0;
+		},
 
-	Utils.eventContainsFiles = function (oEvent)
-	{
-		var bResult = false;
-		if (oEvent && oEvent.dataTransfer && oEvent.dataTransfer.types && oEvent.dataTransfer.types.length)
+		/**
+		 * @param {Event} oEvent
+		 * @return {?Event}
+		 */
+		getEvent : oEvent =>
+		{
+			oEvent = (oEvent && (oEvent.originalEvent ?
+				oEvent.originalEvent : oEvent)) || window.event;
+
+			return oEvent.dataTransfer ? oEvent : null;
+		},
+
+		/**
+		 * @param {Object} oValues
+		 * @param {string} sKey
+		 * @param {?} mDefault
+		 * @return {?}
+		 */
+		getValue : (oValues, sKey, mDefault) => (!oValues || !sKey || !defined(oValues[sKey])) ? mDefault : oValues[sKey],
+
+		/**
+		 * @param {Function} fFunction
+		 * @param {Object=} oScope
+		 * @return {Function}
+		 */
+		scopeBind : (fFunction, oScope) => (...args) => {
+			return fFunction.apply(defined(oScope) ? oScope : null,
+				Array.prototype.slice.call(args));
+		},
+
+		/**
+		 * @param {number=} iLen
+		 * @return {string}
+		 */
+		fakeMd5 : iLen =>
 		{
 			var
-				iIindex = 0,
-				iLen = oEvent.dataTransfer.types.length
+				sResult = '',
+				sLine = '0123456789abcdefghijklmnopqrstuvwxyz'
 			;
 
-			for (; iIindex < iLen; iIindex++)
+			iLen = defined(iLen) ? parseInt(iLen || 0, 10) : 32;
+
+			while (sResult.length < iLen)
 			{
-				if (oEvent.dataTransfer.types[iIindex].toLowerCase() === 'files')
+				sResult += sLine.substr(Math.round(Math.random() * sLine.length), 1);
+			}
+
+			return sResult;
+		},
+
+		/**
+		 * @return {string}
+		 */
+		getNewUid : () => 'jua-uid-' + Utils.fakeMd5(16) + '-' + (new Date()).getTime().toString(),
+
+		/**
+		 * @param {*} oFile
+		 * @return {Object}
+		 */
+		getDataFromFile : oFile =>
+		{
+			var
+				sFileName = defined(oFile.fileName) ? oFile.fileName : (defined(oFile.name) ? oFile.name : null),
+				iSize = defined(oFile.fileSize) ? oFile.fileSize : (defined(oFile.size) ? oFile.size : null),
+				sType = defined(oFile.type) ? oFile.type : null
+			;
+
+			if (sFileName.charAt(0) === '/')
+			{
+				sFileName = sFileName.substr(1);
+			}
+
+			if (!sType && 0 === iSize)
+			{
+				return null; // Folder
+			}
+
+			return {
+				'FileName': sFileName,
+				'Size': iSize,
+				'Type': sType,
+				'Folder': '',
+				'File' : oFile
+			};
+		},
+
+		/**
+		 * @param {*} aItems
+		 * @param {Function} fFileCallback
+		 * @param {number=} iLimit = 20
+		 * @param {Function=} fLimitCallback
+		 */
+		getDataFromFiles : (aItems, fFileCallback, iLimit, fLimitCallback) =>
+		{
+			var
+				iInputLimit = 0,
+				iLen = 0,
+				iIndex = 0,
+				oItem = null,
+				oFile = null,
+				bUseLimit = false,
+				bCallLimit = false
+			;
+
+			iLimit = defined(iLimit) ? parseInt(iLimit || 0, 10) : iDefLimit;
+			iInputLimit = iLimit;
+			bUseLimit = 0 < iLimit;
+
+			aItems = aItems && 0 < aItems.length ? aItems : null;
+			if (aItems)
+			{
+				for (iIndex = 0, iLen = aItems.length; iIndex < iLen; iIndex++)
 				{
-					bResult = true;
-					break;
+					oItem = aItems[iIndex];
+					if (oItem)
+					{
+						if (!bUseLimit || 0 <= --iLimit)
+						{
+							oFile = Utils.getDataFromFile(oItem);
+							if (oFile)
+							{
+								fFileCallback(oFile);
+							}
+						}
+						else if (bUseLimit && !bCallLimit)
+						{
+							if (0 > iLimit && fLimitCallback)
+							{
+								bCallLimit = true;
+								fLimitCallback(iInputLimit);
+							}
+						}
+					}
 				}
 			}
-		}
+		},
 
-		return bResult;
-	};
-
-	/**
-	 * @param {Event} oEvent
-	 * @param {Function} fFileCallback
-	 * @param {number=} iLimit = 20
-	 * @param {Function=} fLimitCallback
-	 */
-	Utils.getDataFromDragEvent = function (oEvent, fFileCallback, iLimit, fLimitCallback)
-	{
-		var aFiles = null;
-
-		oEvent = Utils.getEvent(oEvent);
-		if (oEvent && Utils.eventContainsFiles(oEvent))
+		/**
+		 * @param {*} oInput
+		 * @param {Function} fFileCallback
+		 * @param {number=} iLimit = 20
+		 * @param {Function=} fLimitCallback
+		 */
+		getDataFromInput : (oInput, fFileCallback, iLimit, fLimitCallback) =>
 		{
-			aFiles = (Utils.getValue(oEvent, 'files', null) || (oEvent.dataTransfer ?
-				Utils.getValue(oEvent.dataTransfer, 'files', null) : null));
-
-			if (aFiles && 0 < aFiles.length)
+			var aFiles = oInput && oInput.files && 0 < oInput.files.length ? oInput.files : null;
+			if (aFiles)
 			{
 				Utils.getDataFromFiles(aFiles, fFileCallback, iLimit, fLimitCallback);
 			}
-		}
-	};
+			else
+			{
+				fFileCallback({
+					'FileName': oInput.value.split('\\').pop().split('/').pop(),
+					'Size': null,
+					'Type': null,
+					'Folder': '',
+					'File' : null
+				});
+			}
+		},
 
-	Utils.createNextLabel = function ()
-	{
-		return $('<label style="' +
-	'position: absolute; background-color:#fff; right: 0px; top: 0px; left: 0px; bottom: 0px; margin: 0px; padding: 0px; cursor: pointer;' +
-		'"></label>').css({
-			'opacity': 0
-		});
-	};
-
-	Utils.createNextInput = function ()
-	{
-		return $('<input type="file" tabindex="-1" hidefocus="hidefocus" style="position: absolute; left: -9999px;" />');
-	};
-
-	/**
-	 * @param {string=} sName
-	 * @param {boolean=} bMultiple = true
-	 * @return {?Object}
-	 */
-	Utils.getNewInput = function (sName, bMultiple)
-	{
-		sName = Utils.isUndefined(sName) ? '' : sName.toString();
-
-		var oLocal = Utils.createNextInput();
-		if (0 < sName.length)
+		eventContainsFiles : oEvent =>
 		{
-			oLocal.attr('name', sName);
-		}
+			var bResult = false;
+			if (oEvent && oEvent.dataTransfer && oEvent.dataTransfer.types && oEvent.dataTransfer.types.length)
+			{
+				var
+					iIindex = 0,
+					iLen = oEvent.dataTransfer.types.length
+				;
 
-		if (Utils.isUndefined(bMultiple) ? true : bMultiple)
+				for (; iIindex < iLen; iIindex++)
+				{
+					if (oEvent.dataTransfer.types[iIindex].toLowerCase() === 'files')
+					{
+						bResult = true;
+						break;
+					}
+				}
+			}
+
+			return bResult;
+		},
+
+		/**
+		 * @param {Event} oEvent
+		 * @param {Function} fFileCallback
+		 * @param {number=} iLimit = 20
+		 * @param {Function=} fLimitCallback
+		 */
+		getDataFromDragEvent : (oEvent, fFileCallback, iLimit, fLimitCallback) =>
 		{
-			oLocal.prop('multiple', true);
-		}
+			var aFiles = null;
 
-		return oLocal;
-	};
+			oEvent = Utils.getEvent(oEvent);
+			if (oEvent && Utils.eventContainsFiles(oEvent))
+			{
+				aFiles = (Utils.getValue(oEvent, 'files', null) || (oEvent.dataTransfer ?
+					Utils.getValue(oEvent.dataTransfer, 'files', null) : null));
 
-	/**
-	 * @param {?} mStringOrFunction
-	 * @param {Array=} aFunctionParams
-	 * @return {string}
-	 */
-	Utils.getStringOrCallFunction = function (mStringOrFunction, aFunctionParams)
-	{
-		return $.isFunction(mStringOrFunction) ?
-			mStringOrFunction.apply(null, Array.isArray(aFunctionParams) ? aFunctionParams : []).toString() :
-			mStringOrFunction.toString();
+				if (aFiles && 0 < aFiles.length)
+				{
+					Utils.getDataFromFiles(aFiles, fFileCallback, iLimit, fLimitCallback);
+				}
+			}
+		},
+
+		createNextLabel : () =>
+		{
+			return $('<label style="' +
+		'position: absolute; background-color:#fff; right: 0px; top: 0px; left: 0px; bottom: 0px; margin: 0px; padding: 0px; cursor: pointer;' +
+			'"></label>').css({
+				'opacity': 0
+			});
+		},
+
+		createNextInput : () => $('<input type="file" tabindex="-1" hidefocus="hidefocus" style="position: absolute; left: -9999px;" />'),
+
+		/**
+		 * @param {string=} sName
+		 * @param {boolean=} bMultiple = true
+		 * @return {?Object}
+		 */
+		getNewInput : (sName, bMultiple) =>
+		{
+			sName = defined(sName) ? sName.toString() : '';
+
+			var oLocal = Utils.createNextInput();
+			if (0 < sName.length)
+			{
+				oLocal.attr('name', sName);
+			}
+
+			if (defined(bMultiple) ? bMultiple : true)
+			{
+				oLocal.prop('multiple', true);
+			}
+
+			return oLocal;
+		},
+
+		/**
+		 * @param {?} mStringOrFunction
+		 * @param {Array=} aFunctionParams
+		 * @return {string}
+		 */
+		getStringOrCallFunction : (mStringOrFunction, aFunctionParams) => $.isFunction(mStringOrFunction) ?
+				mStringOrFunction.apply(null, Array.isArray(aFunctionParams) ? aFunctionParams : []).toString() :
+				mStringOrFunction.toString()
 	};
 
 
@@ -453,7 +378,7 @@
 			if (fProgressFunction && oXhr.upload)
 			{
 				oXhr.upload.onprogress = function (oEvent) {
-					if (oEvent && oEvent.lengthComputable && !Utils.isUndefined(oEvent.loaded) && !Utils.isUndefined(oEvent.total))
+					if (oEvent && oEvent.lengthComputable && defined(oEvent.loaded) && defined(oEvent.total))
 					{
 						fProgressFunction(sUid, oEvent.loaded, oEvent.total);
 					}
@@ -483,7 +408,7 @@
 						fCompleteFunction(sUid, bResult, oResult);
 					}
 
-					if (!Utils.isUndefined(self.oXhrs[sUid]))
+					if (defined(self.oXhrs[sUid]))
 					{
 						self.oXhrs[sUid] = null;
 					}
@@ -557,7 +482,7 @@
 								oLabel.remove();
 							}, 10);
 						},
-						Utils.getValue(self.oOptions, 'multipleSizeLimit', Globals.iDefLimit),
+						Utils.getValue(self.oOptions, 'multipleSizeLimit', iDefLimit),
 						self.oJua.getEvent('onLimitReached')
 					);
 				})
@@ -624,7 +549,7 @@
 	 */
 	function Jua(oOptions)
 	{
-		oOptions = Utils.isUndefined(oOptions) ? {} : oOptions;
+		oOptions = defined(oOptions) ? oOptions : {};
 
 		var
 			self = this,
@@ -649,7 +574,7 @@
 			'onLimitReached': null
 		};
 
-		self.oOptions = Utils.extend({
+		self.oOptions = {
 			'action': '',
 			'name': '',
 			'hidden': {},
@@ -661,9 +586,10 @@
 			'disableMultiple': false,
 			'disableDocumentDropPrevent': false,
 			'multipleSizeLimit': 50
-		}, oOptions);
+		};
+		Object.entries(oOptions).forEach(([key, value])=>self.oOptions[key]=value);
 
-		self.oQueue = queue(Utils.pInt(Utils.getValue(self.oOptions, 'queueSize', 10)));
+		self.oQueue = queue(parseInt(Utils.getValue(self.oOptions, 'queueSize', 10) || 0, 10));
 		if (self.runEvent('onCompleteAll'))
 		{
 			self.oQueue.await(function () {
@@ -694,7 +620,7 @@
 		{
 			(function (self) {
 				var
-					$doc = $(window.document),
+					$doc = $(document),
 					oBigDropZone = $(Utils.getValue(self.oOptions, 'dragAndDropBodyElement', false) || $doc),
 					oDragAndDropElement = Utils.getValue(self.oOptions, 'dragAndDropElement', false),
 					fHandleDragOver = function (oEvent) {
@@ -736,7 +662,7 @@
 											Utils.mainClearTimeout(self.iDocTimer);
 										}
 									},
-									Utils.getValue(self.oOptions, 'multipleSizeLimit', Globals.iDefLimit),
+									Utils.getValue(self.oOptions, 'multipleSizeLimit', iDefLimit),
 									self.getEvent('onLimitReached')
 								);
 							}
@@ -763,7 +689,7 @@
 							oEvent = Utils.getEvent(oEvent);
 							if (oEvent)
 							{
-								var oRelatedTarget = window.document['elementFromPoint'] ? window.document['elementFromPoint'](oEvent['clientX'], oEvent['clientY']) : null;
+								var oRelatedTarget = document['elementFromPoint'] ? document['elementFromPoint'](oEvent['clientX'], oEvent['clientY']) : null;
 								if (oRelatedTarget && Utils.contains(this, oRelatedTarget))
 								{
 									return;
@@ -871,11 +797,6 @@
 		{
 			self.bEnableDnD = false;
 		}
-
-		Utils.setValue(self, 'on', self.on);
-		Utils.setValue(self, 'cancel', self.cancel);
-		Utils.setValue(self, 'isDragAndDropSupported', self.isDragAndDropSupported);
-		Utils.setValue(self, 'setDragAndDropEnabledStatus', self.setDragAndDropEnabledStatus);
 	}
 
 	/**

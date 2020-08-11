@@ -1,18 +1,15 @@
-import $ from '$';
 import ko from 'ko';
-import hasher from 'hasher';
-import crossroads from 'crossroads';
 
 import { Magics } from 'Common/Enums';
 import { runHook } from 'Common/Plugins';
 import { $htmlCL, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
 
-import { pString, log, createCommandLegacy, delegateRun, isNonEmptyArray } from 'Common/Utils';
+import { pString, createCommandLegacy, delegateRun, isNonEmptyArray } from 'Common/Utils';
 
 let currentScreen = null,
 	defaultScreenName = '';
 
-const SCREENS = {};
+const SCREENS = {}, $ = jQuery;
 
 export const ViewType = {
 	Popup: 'Popups',
@@ -224,7 +221,7 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 
 			vmRunHook('view-model-post-build', ViewModelClass, vmDom);
 		} else {
-			log('Cannot find view model position: ' + position);
+			console.log('Cannot find view model position: ' + position);
 		}
 	}
 
@@ -424,7 +421,7 @@ export function startScreens(screensClasses) {
 		}
 	});
 
-	const cross = crossroads.create();
+	const cross = new Crossroads();
 	cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);
 
 	hasher.initialized.add(cross.parse, cross);

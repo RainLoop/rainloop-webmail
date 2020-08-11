@@ -1,5 +1,4 @@
 import ko from 'ko';
-import key from 'key';
 
 import AppStore from 'Stores/User/App';
 import AccountStore from 'Stores/User/Account';

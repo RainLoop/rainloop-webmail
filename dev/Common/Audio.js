@@ -1,4 +1,3 @@
-import window from 'window';
 import * as Links from 'Common/Links';
 import * as Events from 'Common/Events';
 
@@ -44,7 +43,7 @@ class Audio {
 
 	createNewObject() {
 		try {
-			const player = window.Audio ? new window.Audio() : null;
+			const player = window.Audio ? new Audio() : null;
 			if (player && player.canPlayType && player.pause && player.play) {
 				player.preload = 'none';
 				player.loop = false;

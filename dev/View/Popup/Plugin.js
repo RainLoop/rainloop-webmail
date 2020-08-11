@@ -1,5 +1,4 @@
 import ko from 'ko';
-import key from 'key';
 
 import { KeyState, Magics, StorageResultType, Notification } from 'Common/Enums';
 import { isNonEmptyArray, delegateRun } from 'Common/Utils';

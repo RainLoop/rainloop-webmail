@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { isNonEmptyArray, log } from 'Common/Utils';
+import { isNonEmptyArray } from 'Common/Utils';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -45,7 +45,7 @@ class OpenPgpKeyModel extends AbstractModel {
 				return key;
 			}
 		} catch (e) {
-			log(e);
+			console.log(e);
 		}
 
 		return null;

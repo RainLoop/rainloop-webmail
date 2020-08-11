@@ -1,8 +1,6 @@
 import ko from 'ko';
-import key from 'key';
-import $ from '$';
 
-import { pString, log } from 'Common/Utils';
+import { pString } from 'Common/Utils';
 import { KeyState, Magics } from 'Common/Enums';
 
 import { popup, command } from 'Knoin/Knoin';
@@ -47,19 +45,19 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 					if (privateKey) {
 						try {
 							if (!privateKey.decrypt(pString(this.password()))) {
-								log('Error: Private key cannot be decrypted');
+								console.log('Error: Private key cannot be decrypted');
 								privateKey = null;
 							}
 						} catch (e) {
-							log(e);
+							console.log(e);
 							privateKey = null;
 						}
 					} else {
-						log('Error: Private key cannot be found');
+						console.log('Error: Private key cannot be found');
 					}
 				}
 			} catch (e) {
-				log(e);
+				console.log(e);
 				privateKey = null;
 			}
 
@@ -109,7 +107,7 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 				.addClass('icon-radio-unchecked')
 				.removeClass('icon-radio-checked');
 
-			$(this)
+			jQuery(this)
 				.find('.key-list__item__radio') // eslint-disable-line no-invalid-this
 				.removeClass('icon-radio-unchecked')
 				.addClass('icon-radio-checked');

@@ -1,6 +1,4 @@
-import window from 'window';
 import ko from 'ko';
-import $ from '$';
 
 import { Magics, Layout, Focused, MessageSetAction, StorageResultType, Notification } from 'Common/Enums';
 
@@ -50,6 +48,7 @@ import { getApp } from 'Helper/Apps/User';
 import Remote from 'Remote/User/Ajax';
 
 const
+	$ = jQuery,
 	$div = $('<div></div>'),
 	$hcont = $('<div></div>'),
 	getRealHeight = $el => {
@@ -142,7 +141,7 @@ class MessageUserStore {
 		);
 
 		this.messageListPageCount = ko.computed(() => {
-			const page = window.Math.ceil(this.messageListCount() / SettingsStore.messagesPerPage());
+			const page = Math.ceil(this.messageListCount() / SettingsStore.messagesPerPage());
 			return 0 >= page ? 1 : page;
 		});
 
@@ -798,7 +797,7 @@ class MessageUserStore {
 
 			this.messageListCount(iCount);
 			this.messageListSearch(isNormal(data.Result.Search) ? data.Result.Search : '');
-			this.messageListPage(window.Math.ceil(iOffset / SettingsStore.messagesPerPage() + 1));
+			this.messageListPage(Math.ceil(iOffset / SettingsStore.messagesPerPage() + 1));
 			this.messageListThreadUid(isNormal(data.Result.ThreadUid) ? pString(data.Result.ThreadUid) : '');
 
 			this.messageListEndFolder(isNormal(data.Result.Folder) ? data.Result.Folder : '');

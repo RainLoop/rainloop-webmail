@@ -1,4 +1,3 @@
-import window from 'window';
 import { isNormal } from 'Common/Utils';
 
 let SETTINGS = window.__rlah_data() || null;

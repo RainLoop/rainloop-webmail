@@ -1,5 +1,3 @@
-import window from 'window';
-
 import { TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT, DEFAULT_AJAX_TIMEOUT } from 'Common/Consts';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
@@ -154,7 +152,7 @@ class AbstractAjaxRemote {
 			};
 			params.XToken = Settings.appSettingsGet('token');
 //			init.body = JSON.stringify(params);
-			const formData = new window.FormData();
+			const formData = new FormData();
 			Object.keys(params).forEach(key => {
 				formData.append(key, params[key])
 			});
@@ -163,7 +161,7 @@ class AbstractAjaxRemote {
 
 		if (window.AbortController) {
 			this.abort(action);
-			const controller = new window.AbortController();
+			const controller = new AbortController();
 			if (iTimeOut) {
 				setTimeout(() => controller.abort(), iTimeOut);
 			}
@@ -171,12 +169,12 @@ class AbstractAjaxRemote {
 			this.oRequests[action] = controller;
 		}
 
-		window.fetch(ajax(sGetAdd), init)
+		fetch(ajax(sGetAdd), init)
 			.then(response => response.json())
 			.then(oData => {
 				let cached = false;
 				if (oData && oData.Time) {
-					cached = pInt(oData.Time) > new window.Date().getTime() - start;
+					cached = pInt(oData.Time) > new Date().getTime() - start;
 				}
 
 				if (oData && oData.UpdateToken) {

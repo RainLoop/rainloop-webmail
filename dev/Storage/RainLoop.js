@@ -1,5 +1,3 @@
-/* eslint-env browser */
-
 const STORAGE_KEY = '__rlA';
 const TIME_KEY = '__rlT';
 
@@ -16,7 +14,7 @@ export function isStorageSupported(storageName) {
 
 	if (storageIsAvailable) {
 		const s = window[storageName],
-			key = 'testLocalStorage_' + window.Math.random();
+			key = 'testLocalStorage_' + Math.random();
 
 		try {
 			s.setItem(key, key);
@@ -40,7 +38,7 @@ const __get = (key) => {
 	} else if (WIN_STORAGE) {
 		const data =
 			WIN_STORAGE.name && '{' === WIN_STORAGE.name.toString()[0]
-				? window.JSON.parse(WIN_STORAGE.name.toString())
+				? JSON.parse(WIN_STORAGE.name.toString())
 				: null;
 		result = data ? data[key] || null : null;
 	}

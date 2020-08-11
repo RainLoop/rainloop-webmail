@@ -1,8 +1,4 @@
-import window from 'window';
-import $ from '$';
 import ko from 'ko';
-import key from 'key';
-import Jua from 'Jua';
 
 import {
 	Capa,
@@ -400,7 +396,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			return false;
 		}
 
-		window.clearTimeout(this.iGoToUpUpOrDownDownTimeout);
+		clearTimeout(this.iGoToUpUpOrDownDownTimeout);
 		this.iGoToUpUpOrDownDownTimeout = setTimeout(() => {
 			let prev = null,
 				next = null,
@@ -739,7 +735,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	onBuild(dom) {
 		const self = this;
 
-		this.oContentVisible = $('.b-content', dom);
+		this.oContentVisible = jQuery('.b-content', dom);
 
 		this.selector.init(this.oContentVisible, this.oContentVisible, KeyState.MessageList);
 

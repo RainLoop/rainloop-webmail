@@ -114,13 +114,6 @@ module.exports = function(publicPath, pro, mode) {
 			]
 		},
 		externals: {
-			'window': 'window',
-			'crossroads': 'window.crossroads',
-			'hasher': 'window.hasher',
-			'Jua': 'window.Jua',
-			'ssm': 'window.ssm',
-			'key': 'window.key',
-			'$': 'window.jQuery'
 		}
 	};
 };

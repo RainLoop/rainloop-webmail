@@ -1,8 +1,6 @@
-import $ from '$';
 import ko from 'ko';
-import key from 'key';
 
-import { pString, log, defautOptionsAfterRender } from 'Common/Utils';
+import { pString, defautOptionsAfterRender } from 'Common/Utils';
 
 import { Magics, KeyState } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
@@ -103,7 +101,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 			this.defautOptionsAfterRender(domOption, item);
 
 			if (item && undefined !== item.class && domOption) {
-				$(domOption).addClass(item.class);
+				jQuery(domOption).addClass(item.class);
 			}
 		};
 
@@ -203,7 +201,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 						});
 					}
 				} catch (e) {
-					log(e);
+					console.log(e);
 
 					this.notification(
 						i18n('PGP_NOTIFICATIONS/PGP_ERROR', {

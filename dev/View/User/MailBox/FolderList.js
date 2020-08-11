@@ -1,7 +1,4 @@
-import window from 'window';
-import $ from '$';
 import ko from 'ko';
-import key from 'key';
 
 import { isNormal, windowResize } from 'Common/Utils';
 import { Capa, Focused, Layout, KeyState, EventKeyCode, Magics } from 'Common/Enums';
@@ -20,6 +17,8 @@ import { getApp } from 'Helper/Apps/User';
 
 import { view, ViewType, showScreenPopup, setHash } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+
+const $ = jQuery;
 
 @view({
 	name: 'View/User/MailBox/FolderList',
@@ -194,9 +193,9 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	}
 
 	messagesDropOver(folder) {
-		window.clearTimeout(this.iDropOverTimer);
+		clearTimeout(this.iDropOverTimer);
 		if (folder && folder.collapsed()) {
-			this.iDropOverTimer = window.setTimeout(() => {
+			this.iDropOverTimer = setTimeout(() => {
 				folder.collapsed(false);
 				getApp().setExpandedFolder(folder.fullNameHash, true);
 				windowResize();
@@ -205,7 +204,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	}
 
 	messagesDropOut() {
-		window.clearTimeout(this.iDropOverTimer);
+		clearTimeout(this.iDropOverTimer);
 	}
 
 	scrollToFocused() {

@@ -1,5 +1,3 @@
-import window from 'window';
-
 const Opentip = window.Opentip || {};
 
 Opentip.styles = Opentip.styles || {};

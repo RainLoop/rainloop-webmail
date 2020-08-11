@@ -1,7 +1,4 @@
-import window from 'window';
-
 import {
-	log,
 	isNormal,
 	isPosNumeric,
 	isNonEmptyArray,
@@ -86,12 +83,12 @@ import { hideLoading, routeOff, routeOn, setHash, startScreens, showScreenPopup 
 
 import { AbstractApp } from 'App/Abstract';
 
-const doc = window.document;
+const doc = document;
 
 if (!window.ResizeObserver) {
 	window.ResizeObserver = class {
 		constructor(callback) {
-			this.observer = new window.MutationObserver(mutations => {
+			this.observer = new MutationObserver(mutations => {
 				let entries = [];
 				mutations.forEach(mutation => {
 					if ('style' == mutation.attributeName) {
@@ -133,19 +130,19 @@ class AppUser extends AbstractApp {
 
 		this.moveOrDeleteResponseHelper = this.moveOrDeleteResponseHelper.bind(this);
 
-		window.setInterval(() => Events.pub('interval.30s'), Magics.Time30s);
-		window.setInterval(() => Events.pub('interval.1m'), Magics.Time1m);
-		window.setInterval(() => Events.pub('interval.2m'), Magics.Time2m);
-		window.setInterval(() => Events.pub('interval.3m'), Magics.Time3m);
-		window.setInterval(() => Events.pub('interval.5m'), Magics.Time5m);
-		window.setInterval(() => Events.pub('interval.10m'), Magics.Time10m);
-		window.setInterval(() => Events.pub('interval.15m'), Magics.Time15m);
-		window.setInterval(() => Events.pub('interval.20m'), Magics.Time20m);
+		setInterval(() => Events.pub('interval.30s'), Magics.Time30s);
+		setInterval(() => Events.pub('interval.1m'), Magics.Time1m);
+		setInterval(() => Events.pub('interval.2m'), Magics.Time2m);
+		setInterval(() => Events.pub('interval.3m'), Magics.Time3m);
+		setInterval(() => Events.pub('interval.5m'), Magics.Time5m);
+		setInterval(() => Events.pub('interval.10m'), Magics.Time10m);
+		setInterval(() => Events.pub('interval.15m'), Magics.Time15m);
+		setInterval(() => Events.pub('interval.20m'), Magics.Time20m);
 
-		window.setTimeout(() => window.setInterval(() => Events.pub('interval.2m-after5m'), Magics.Time2m), Magics.Time5m);
-		window.setTimeout(() => window.setInterval(() => Events.pub('interval.5m-after5m'), Magics.Time5m), Magics.Time5m);
-		window.setTimeout(
-			() => window.setInterval(() => Events.pub('interval.10m-after5m'), Magics.Time10m),
+		setTimeout(() => setInterval(() => Events.pub('interval.2m-after5m'), Magics.Time2m), Magics.Time5m);
+		setTimeout(() => setInterval(() => Events.pub('interval.5m-after5m'), Magics.Time5m), Magics.Time5m);
+		setTimeout(
+			() => setInterval(() => Events.pub('interval.10m-after5m'), Magics.Time10m),
 			Magics.Time5m
 		);
 
@@ -187,10 +184,10 @@ class AppUser extends AbstractApp {
 	}
 
 	reload() {
-		if (window.parent && !!Settings.appSettingsGet('inIframe')) {
-			window.parent.location.reload();
+		if (parent && !!Settings.appSettingsGet('inIframe')) {
+			parent.location.reload();
 		} else {
-			window.location.reload();
+			location.reload();
 		}
 	}
 
@@ -346,7 +343,7 @@ class AppUser extends AbstractApp {
 				setFolderHash(FolderStore.currentFolderFullNameRaw(), '');
 
 				if (oData && [Notification.CantMoveMessage, Notification.CantCopyMessage].includes(oData.ErrorCode)) {
-					window.alert(getNotification(oData.ErrorCode));
+					alert(getNotification(oData.ErrorCode));
 				}
 			}
 
@@ -917,7 +914,7 @@ class AppUser extends AbstractApp {
 			source.classList.add('resizable');
 			if (!source.querySelector('.resizer')) {
 				const resizer = doc.createElement('div'),
-					cssint = s => parseFloat(window.getComputedStyle(source, null).getPropertyValue(s).replace('px', ''));
+					cssint = s => parseFloat(getComputedStyle(source, null).getPropertyValue(s).replace('px', ''));
 				resizer.className = 'resizer';
 				source.appendChild(resizer);
 				resizer.addEventListener('mousedown', {
@@ -930,26 +927,26 @@ class AppUser extends AbstractApp {
 							this.min = cssint('min-'+this.mode);
 							this.max = cssint('max-'+this.mode);
 							this.org = cssint(this.mode);
-							window.addEventListener('mousemove', this);
-							window.addEventListener('mouseup', this);
+							addEventListener('mousemove', this);
+							addEventListener('mouseup', this);
 						} else if ('mousemove' == e.type) {
 							const length = this.org + (('width' == this.mode ? e.pageX : e.pageY) - this.pos);
 							if (length >= this.min && length <= this.max ) {
 								this.source.style[this.mode] = length + 'px';
 							}
 						} else if ('mouseup' == e.type) {
-							window.removeEventListener('mousemove', this);
-							window.removeEventListener('mouseup', this);
+							removeEventListener('mousemove', this);
+							removeEventListener('mouseup', this);
 						}
 					}
 				});
 				if ('width' == mode) {
-					source.observer = new window.ResizeObserver(() => {
+					source.observer = new ResizeObserver(() => {
 						target.style.left = source.offsetWidth + 'px';
 						Local.set(sClientSideKeyName, source.offsetWidth);
 					});
 				} else {
-					source.observer = new window.ResizeObserver(() => {
+					source.observer = new ResizeObserver(() => {
 						target.style.top = (4 + source.offsetTop + source.offsetHeight) + 'px';
 						Local.set(sClientSideKeyName, source.offsetHeight);
 					});
@@ -1032,14 +1029,14 @@ class AppUser extends AbstractApp {
 			routeOff();
 
 			setTimeout(() =>
-				window.location.href = customLoginLink
+				location.href = customLoginLink
 			, 1);
 		}
 	}
 
 	bootend() {
 		if (window.progressJs) {
-			window.progressJs.set(100).end();
+			progressJs.set(100).end();
 		}
 		hideLoading();
 	}
@@ -1058,7 +1055,7 @@ class AppUser extends AbstractApp {
 		const startupUrl = pString(Settings.settingsGet('StartupUrl'));
 
 		if (window.progressJs) {
-			window.progressJs.set(90);
+			progressJs.set(90);
 		}
 
 		leftPanelDisabled.subscribe((value) => {
@@ -1091,15 +1088,18 @@ class AppUser extends AbstractApp {
 							routeOn();
 						}
 
-						if (window.crypto && window.crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
-							const openpgpCallback = (openpgp) => {
+						if (window.crypto && crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
+							const openpgpCallback = () => {
+								if (!window.openpgp) {
+									return false;
+								}
 								PgpStore.openpgp = openpgp;
 
 								if (window.Worker) {
 									try {
 										PgpStore.openpgp.initWorker({ path: openPgpWorkerJs() });
 									} catch (e) {
-										log(e);
+										console.log(e);
 									}
 								}
 
@@ -1109,22 +1109,16 @@ class AppUser extends AbstractApp {
 								Events.pub('openpgp.init');
 
 								this.reloadOpenPgpKeys();
+
+								return true;
 							};
 
-							if (window.openpgp) {
-								openpgpCallback(window.openpgp);
-							} else {
-								new window.Promise((resolve, reject) => {
-									const script = doc.createElement('script');
-									script.onload = () => resolve();
-									script.onerror = () => reject(new Error(script.src));
-									script.src = openPgpJs();
-									doc.head.appendChild(script);
-								}).then(() => {
-									if (window.openpgp) {
-										openpgpCallback(window.openpgp);
-									}
-								});
+							if (!openpgpCallback()) {
+								const script = doc.createElement('script');
+								script.onload = openpgpCallback;
+								script.onerror = () => console.error(script.src);
+								script.src = openPgpJs();
+								doc.head.appendChild(script);
 							}
 						} else {
 							PgpStore.capaOpenPGP(false);
@@ -1154,7 +1148,7 @@ class AppUser extends AbstractApp {
 						setTimeout(() => this.contactsSync(), Magics.Time10s);
 						setTimeout(() => this.folderInformationMultiply(true), Magics.Time2s);
 
-						window.setInterval(() => this.contactsSync(), contactsSyncInterval * 60000 + 5000);
+						setInterval(() => this.contactsSync(), contactsSyncInterval * 60000 + 5000);
 
 						this.accountsAndIdentities(true);
 
@@ -1179,14 +1173,14 @@ class AppUser extends AbstractApp {
 
 						if (
 							!!Settings.settingsGet('AccountSignMe') &&
-							window.navigator.registerProtocolHandler &&
+							navigator.registerProtocolHandler &&
 							Settings.capa(Capa.Composer)
 						) {
 							setTimeout(() => {
 								try {
-									window.navigator.registerProtocolHandler(
+									navigator.registerProtocolHandler(
 										'mailto',
-										window.location.protocol + '//' + window.location.host + window.location.pathname + '?mailto&to=%s',
+										location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
 										'' + (Settings.settingsGet('Title') || 'RainLoop')
 									);
 								} catch (e) {} // eslint-disable-line no-empty

@@ -30,9 +30,7 @@
       ';': 186, '\'': 222,
       '[': 219, ']': 221, '\\': 220
     },
-    code = function(x){
-      return _MAP[x] || x.toUpperCase().charCodeAt(0);
-    },
+    code = x => _MAP[x] || x.toUpperCase().charCodeAt(0),
     _downKeys = [];
 
   for(k=1;k<20;k++) _MAP['f'+k] = 111+k;
@@ -43,94 +41,14 @@
       17:'ctrlKey',
       91:'metaKey'
   };
-  function updateModifierKey(event) {
-      for(k in _mods) _mods[k] = event[modifierMap[k]];
-  }
-
-  // handle keydown event
-  function dispatch(event) {
-    var key, handler, k, i, modifiersMatch, scope;
-    key = event.keyCode;
-
-    if (!_downKeys.includes(key)) {
-        _downKeys.push(key);
-    }
-
-    // if a modifier key, set the key.<modifierkeyname> property to true and return
-    if(key == 93 || key == 224) key = 91; // right command on webkit, command on Gecko
-    if(key in _mods) {
-      _mods[key] = true;
-      // 'assignKey' from inside this closure is exported to window.key
-      for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = true;
-      return;
-    }
-    updateModifierKey(event);
-
-    // see if we need to ignore the keypress (filter() can can be overridden)
-    // by default ignore key presses if a select, textarea, or input is focused
-    if(!assignKey.filter.call(this, event)) return;
-
-    // abort if no potentially matching shortcuts found
-    if (!(key in _handlers)) return;
-
-    scope = getScope();
-
-    // for each potential shortcut
-    for (i = 0; i < _handlers[key].length; i++) {
-      handler = _handlers[key][i];
-
-      // see if it's in the current scope
-      if(handler.scope == scope || handler.scope == 'all'){
-        // check if modifiers match if any
-        modifiersMatch = handler.mods.length > 0;
-        for(k in _mods)
-          if((!_mods[k] && handler.mods.includes(+k)) ||
-            (_mods[k] && !handler.mods.includes(+k))) modifiersMatch = false;
-        // call the handler and stop the event if neccessary
-        if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
-          if(handler.method(event, handler)===false){
-            if(event.preventDefault) event.preventDefault();
-              else event.returnValue = false;
-            if(event.stopPropagation) event.stopPropagation();
-            if(event.cancelBubble) event.cancelBubble = true;
-          }
-        }
-      }
-    }
-  }
-
-  // unset modifier keys on keyup
-  function clearModifier(event){
-    var key = event.keyCode, k,
-        i = _downKeys.indexOf(key);
-
-    // remove key from _downKeys
-    if (i >= 0) {
-        _downKeys.splice(i, 1);
-    }
-
-    if(key == 93 || key == 224) key = 91;
-    if(key in _mods) {
-      _mods[key] = false;
-      for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = false;
-    }
-  }
-
-  function resetModifiers() {
-    for(let k in _mods) _mods[k] = false;
-    for(let k in _MODIFIERS) assignKey[k] = false;
-  }
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
-    var keys, mods, bScopeIsArray = false;
-    keys = getKeys(key);
+    var keys = getKeys(key), mods;
     if (method === undefined) {
       method = scope;
       scope = 'all';
     }
-
-    bScopeIsArray = !!(typeof scope !== 'string' && scope.length && typeof scope[0] === 'string');
 
     // for each shortcut
     for (var i = 0; i < keys.length; i++) {
@@ -147,20 +65,14 @@
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
 
-      if (bScopeIsArray) {
-         for (var j = 0; j < scope.length; j++) {
-            _handlers[key].push({ shortcut: keys[i], scope: scope[j], method: method, key: keys[i], mods: mods });
-         }
+      if (typeof scope !== 'string' && scope.length && typeof scope[0] === 'string') {
+         scope.forEach(item => {
+            _handlers[key].push({ shortcut: keys[i], scope: item, method: method, key: keys[i], mods: mods });
+         });
       } else {
         _handlers[key].push({ shortcut: keys[i], scope: scope, method: method, key: keys[i], mods: mods });
       }
     }
-  }
-
-  function filter(event){
-    var tagName = (event.target || event.srcElement).tagName;
-    // ignore keypressed in any elements that support keyboard data input
-    return !(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA');
   }
 
   // initialize key.<modifier> to false
@@ -172,9 +84,8 @@
     getScope = () => _scope || 'all',
     // abstract key logic for assign and unassign
     getKeys = key => {
-      var keys;
       key = key.replace(/\s/g, '');
-      keys = key.split(',');
+      var keys = key.split(',');
       if ((keys[keys.length - 1]) == '') {
         keys[keys.length - 2] += ',';
       }
@@ -183,24 +94,88 @@
     // abstract mods logic for assign and unassign
     getMods = key => {
       var mods = key.slice(0, key.length - 1);
-      for (var mi = 0; mi < mods.length; mi++)
-      mods[mi] = _MODIFIERS[mods[mi]];
+      mods.forEach((mod, mi) => mods[mi] = _MODIFIERS[mod]);
       return mods;
     };
 
   // set the handlers globally on document
-  document.addEventListener('keydown', function(event) { dispatch(event) }); // Passing _scope to a callback to ensure it remains the same by execution. Fixes #48
-  document.addEventListener('keyup', clearModifier);
+  document.addEventListener('keydown', event => {
+    var key = event.keyCode, k, modifiersMatch, scope;
+
+    if (!_downKeys.includes(key)) {
+        _downKeys.push(key);
+    }
+
+    // if a modifier key, set the key.<modifierkeyname> property to true and return
+    if(key == 93 || key == 224) key = 91; // right command on webkit, command on Gecko
+    if(key in _mods) {
+      _mods[key] = true;
+      // 'assignKey' from inside this closure is exported to window.key
+      for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = true;
+      return;
+    }
+    for(k in _mods) _mods[k] = event[modifierMap[k]];
+
+    // see if we need to ignore the keypress (filter() can can be overridden)
+    // by default ignore key presses if a select, textarea, or input is focused
+    if(!assignKey.filter.call(this, event)) return;
+
+    // abort if no potentially matching shortcuts found
+    if (!(key in _handlers)) return;
+
+    scope = getScope();
+
+    // for each potential shortcut
+    _handlers[key].forEach(handler => {
+      // see if it's in the current scope
+      if(handler.scope == scope || handler.scope == 'all'){
+        // check if modifiers match if any
+        modifiersMatch = handler.mods.length > 0;
+        for(k in _mods)
+          if((!_mods[k] && handler.mods.includes(+k)) ||
+            (_mods[k] && !handler.mods.includes(+k))) modifiersMatch = false;
+        // call the handler and stop the event if neccessary
+        if((handler.mods.length == 0 && !_mods[16] && !_mods[18] && !_mods[17] && !_mods[91]) || modifiersMatch){
+          if(handler.method(event, handler)===false){
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }
+      }
+    });
+  });
+
+  // unset modifier keys on keyup
+  document.addEventListener('keyup', event => {
+    var key = event.keyCode, k,
+        i = _downKeys.indexOf(key);
+
+    // remove key from _downKeys
+    if (i >= 0) {
+        _downKeys.splice(i, 1);
+    }
+
+    if(key == 93 || key == 224) key = 91;
+    if(key in _mods) {
+      _mods[key] = false;
+      for(k in _MODIFIERS) if(_MODIFIERS[k] == key) assignKey[k] = false;
+    }
+  });
 
   // reset modifiers to false whenever the window is (re)focused.
-  window.addEventListener('focus', resetModifiers);
+  window.addEventListener('focus', () => {
+    for(let k in _mods) _mods[k] = false;
+    for(let k in _MODIFIERS) assignKey[k] = false;
+  });
 
   // set window.key and window.key.set/get, and the default filter
   global.key = assignKey;
   global.key.setScope = setScope;
   global.key.getScope = getScope;
-  global.key.filter = filter;
-
-  if(typeof module !== 'undefined') module.exports = key;
+  global.key.filter = event => {
+    var tagName = event.target.tagName;
+    // ignore keypressed in any elements that support keyboard data input
+    return !(tagName == 'INPUT' || tagName == 'SELECT' || tagName == 'TEXTAREA');
+  };
 
 })(this);

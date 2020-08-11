@@ -1,5 +1,4 @@
 import ko from 'ko';
-import key from 'key';
 
 import { KeyState } from 'Common/Enums';
 import { selectElement } from 'Common/Utils';

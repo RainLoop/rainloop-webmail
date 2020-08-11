@@ -1,4 +1,3 @@
-import $ from '$';
 import ko from 'ko';
 
 import { i18nToNodes } from 'Common/Translator';
@@ -29,7 +28,7 @@ const componentExportHelper = (ClassObject, templateID = '') => ({
 
 			if (componentInfo && componentInfo.element) {
 				params.component = componentInfo;
-				params.element = $(componentInfo.element);
+				params.element = jQuery(componentInfo.element);
 
 				i18nToNodes(params.element);
 

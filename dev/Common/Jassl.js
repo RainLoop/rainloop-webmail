@@ -1,4 +1,3 @@
-import window from 'window';
 
 // let rainloopCaches = window.caches && window.caches.open ? window.caches : null;
 
@@ -12,9 +11,8 @@ export function jassl(src, async = false) {
 		throw new Error('src should not be empty.');
 	}
 
-	return new window.Promise((resolve, reject) => {
-		const doc = window.document,
-			element = doc.createElement('script');
+	return new Promise((resolve, reject) => {
+		const element = document.createElement('script');
 
 		element.onload = () => {
 			resolve(src);
@@ -27,7 +25,7 @@ export function jassl(src, async = false) {
 		element.async = !!async;
 		element.src = src;
 
-		doc.body.appendChild(element);
+		document.body.appendChild(element);
 	}) /* .then((s) => {
 
 		const found = s && rainloopCaches ? s.match(/rainloop\/v\/([^\/]+)\/static\//) : null;

@@ -1,6 +1,3 @@
-import crossroads from 'crossroads';
-import { isNonEmptyArray } from 'Common/Utils';
-
 export class AbstractScreen {
 	oCross = null;
 	sScreenName;
@@ -47,9 +44,9 @@ export class AbstractScreen {
 			fMatcher = null;
 		const routes = this.routes();
 
-		if (isNonEmptyArray(routes)) {
+		if (Array.isArray(routes) && routes.length) {
 			fMatcher = (this.onRoute || (()=>{})).bind(this);
-			route = crossroads.create();
+			route = new Crossroads();
 
 			routes.forEach((item) => {
 				if (item && route) {

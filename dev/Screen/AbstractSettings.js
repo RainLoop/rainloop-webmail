@@ -1,8 +1,7 @@
-import $ from '$';
 import ko from 'ko';
 
 import { VIEW_MODELS } from 'Common/Globals';
-import { delegateRun, windowResize, log, pString } from 'Common/Utils';
+import { delegateRun, windowResize, pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
 
 import { setHash } from 'Knoin/Knoin';
@@ -72,7 +71,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 				if (viewModelPlace && 1 === viewModelPlace.length) {
 					settingsScreen = new RoutedSettingsViewModel();
 
-					viewModelDom = $('<div></div>')
+					viewModelDom = jQuery('<div></div>')
 						.addClass('rl-settings-view-model')
 						.hide();
 					viewModelDom.appendTo(viewModelPlace);
@@ -97,7 +96,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 
 					delegateRun(settingsScreen, 'onBuild', [viewModelDom]);
 				} else {
-					log('Cannot find sub settings view model position: SettingsSubScreen');
+					console.log('Cannot find sub settings view model position: SettingsSubScreen');
 				}
 			}
 
@@ -128,7 +127,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 							);
 						});
 
-						$('#rl-content .b-settings .b-content')[0].scrollTop = 0;
+						jQuery('#rl-content .b-settings .b-content')[0].scrollTop = 0;
 					}
 					// --
 
@@ -167,7 +166,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 			}
 		});
 
-		this.oViewModelPlace = $('#rl-content #rl-settings-subscreen');
+		this.oViewModelPlace = jQuery('#rl-content #rl-settings-subscreen');
 	}
 
 	routes() {

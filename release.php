@@ -20,6 +20,11 @@ if ($return_var) {
 	exit("gulp failed with error code {$return_var}\n");
 }
 
+if ($gzip = trim(`which gzip`)) {
+//	passthru("{$gzip} -k --best -r ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/*'), $return_var);
+//	passthru("{$gzip} -k --best -r ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/css/*'), $return_var);
+}
+
 // Temporary rename folder to speed up PharData
 if (!rename('rainloop/v/0.0.0', "rainloop/v/{$package->version}")){
 	exit('Failed to temporary rename rainloop/v/0.0.0');
@@ -66,6 +71,9 @@ $index = str_replace('0.0.0', $package->version, $index);
 $index = str_replace('source', 'community', $index);
 $zip->addFromString('index.php', $index);
 $tar->addFromString('index.php', $index);
+
+$zip->addFile('README.md');
+$tar->addFile('README.md');
 
 $zip->close();
 

@@ -1,5 +1,3 @@
-import window from 'window';
-import $ from '$';
 import { i18n } from 'Common/Translator';
 
 let _moment = null;
@@ -98,7 +96,7 @@ export function format(timeStampInUTC, formatStr) {
 export function momentToNode(element) {
 	let key = '',
 		time = 0;
-	const $el = $(element);
+	const $el = jQuery(element);
 
 	time = $el.data('moment-time');
 	if (time) {
@@ -119,7 +117,7 @@ export function momentToNode(element) {
  */
 export function reload() {
 	setTimeout(() =>
-		$('.moment', window.document).each((index, item) => {
+		jQuery('.moment', document).each((index, item) => {
 			momentToNode(item);
 		})
 	, 1);

@@ -1,4 +1,3 @@
-import window from 'window';
 import Cookies from 'js-cookie';
 import { CLIENT_SIDE_STORAGE_INDEX_NAME } from 'Common/Consts';
 
@@ -48,7 +47,7 @@ class CookieDriver {
 	 * @returns {boolean}
 	 */
 	static supported() {
-		return !!(window.navigator && window.navigator.cookieEnabled);
+		return !!(navigator && navigator.cookieEnabled);
 	}
 }
 

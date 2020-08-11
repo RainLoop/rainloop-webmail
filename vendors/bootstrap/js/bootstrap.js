@@ -1,6 +1,8 @@
 /* ============================================================
  * bootstrap-dropdown.js v2.3.2
- * http://getbootstrap.com/2.3.2/javascript.html#dropdowns
+ * bootstrap-modal.js v2.3.2
+ * bootstrap-tab.js v2.3.2
+ * http://getbootstrap.com/2.3.2/javascript.html
  * ============================================================
  * Copyright 2013 Twitter, Inc.
  *
@@ -17,28 +19,25 @@
  * limitations under the License.
  * ============================================================ */
 
-
-!function ($) {
+($ => {
 
   "use strict"; // jshint ;_;
 
+  const doc = document;
 
  /* DROPDOWN CLASS DEFINITION
   * ========================= */
 
-  var toggle = '[data-toggle=dropdown]'
-    , Dropdown = function (element) {
-        var $el = $(element).on('click.dropdown.data-api', this.toggle)
-        $('html').on('click.dropdown.data-api', function () {
-          $el.parent().removeClass('open')
-        })
-      }
+  var toggle = '[data-toggle=dropdown]';
 
-  Dropdown.prototype = {
+  class Dropdown {
 
-    constructor: Dropdown
+    constructor (element) {
+      var $el = $(element).on('click.dropdown.data-api', this.toggle)
+      $('html').on('click.dropdown.data-api', () => $el.parent().removeClass('open'))
+    }
 
-  , toggle: function (e) {
+    toggle () {
       var $this = $(this)
         , $parent
         , isActive
@@ -52,7 +51,7 @@
       clearMenus()
 
       if (!isActive) {
-        if ('ontouchstart' in document.documentElement) {
+        if ('ontouchstart' in doc.documentElement) {
           // if mobile we we use a backdrop because click events don't delegate
           $('<div class="dropdown-backdrop"/>').insertBefore($(this)).on('click', clearMenus)
         }
@@ -64,10 +63,9 @@
       return false
     }
 
-  , keydown: function (e) {
+    keydown (e) {
       var $this
         , $items
-        , $active
         , $parent
         , isActive
         , index
@@ -134,8 +132,6 @@
   /* DROPDOWN PLUGIN DEFINITION
    * ========================== */
 
-  var old = $.fn.dropdown
-
   $.fn.dropdown = function (option) {
     return this.each(function () {
       var $this = $(this)
@@ -145,217 +141,181 @@
     })
   }
 
-  $.fn.dropdown.Constructor = Dropdown
-
-
   /* APPLY TO STANDARD DROPDOWN ELEMENTS
    * =================================== */
 
-  $(document)
+  $(doc)
     .on('click.dropdown.data-api', clearMenus)
-    .on('click.dropdown.data-api', '.dropdown form', function (e) { e.stopPropagation() })
+    .on('click.dropdown.data-api', '.dropdown form', e => e.stopPropagation())
     .on('click.dropdown.data-api'  , toggle, Dropdown.prototype.toggle)
     .on('keydown.dropdown.data-api', toggle + ', [role=menu]' , Dropdown.prototype.keydown)
-
-}(window.jQuery);
-/* =========================================================
- * bootstrap-modal.js v2.3.2
- * http://getbootstrap.com/2.3.2/javascript.html#modals
- * =========================================================
- * Copyright 2013 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ========================================================= */
-
-
-!function ($) {
-
-  "use strict"; // jshint ;_;
 
 
  /* MODAL CLASS DEFINITION
   * ====================== */
 
-  var Modal = function (element, options) {
-    this.options = options
-    this.$element = $(element)
-      .on('click.dismiss.modal', '[data-dismiss="modal"]', this.hide.bind(this))
-    this.options.remote && this.$element.find('.modal-body').on('load', this.options.remote)
-  }
+  class Modal {
 
-  Modal.prototype = {
+    constructor (element, options) {
+      this.options = options
+      this.$element = $(element)
+        .on('click.dismiss.modal', '[data-dismiss="modal"]', this.hide.bind(this))
+      this.options.remote && this.$element.find('.modal-body').on('load', this.options.remote)
+    }
 
-      constructor: Modal
+    toggle () {
+      return this[!this.isShown ? 'show' : 'hide']()
+    }
 
-    , toggle: function () {
-        return this[!this.isShown ? 'show' : 'hide']()
-      }
+    show () {
+      var that = this
+        , e = $.Event('show')
 
-    , show: function () {
-        var that = this
-          , e = $.Event('show')
+      this.$element.trigger(e)
 
-        this.$element.trigger(e)
+      if (this.isShown || e.isDefaultPrevented()) return
 
-        if (this.isShown || e.isDefaultPrevented()) return
+      this.isShown = true
 
-        this.isShown = true
+      this.escape()
 
-        this.escape()
+      this.backdrop(() => {
+        var transition = that.$element.hasClass('fade')
 
-        this.backdrop(function () {
-          var transition = that.$element.hasClass('fade')
-
-          if (!that.$element.parent().length) {
-            that.$element.appendTo(document.body) //don't move modals dom position
-          }
-
-          that.$element.show()
-
-          if (transition) {
-            that.$element[0].offsetWidth // force reflow
-          }
-
-          that.$element
-            .addClass('in')
-            .attr('aria-hidden', false)
-
-          that.enforceFocus()
-
-          transition ?
-            that.$element.one('transitionend', function () { that.$element.focus().trigger('shown') }) :
-            that.$element.focus().trigger('shown')
-
-        })
-      }
-
-    , hide: function (e) {
-        e && e.preventDefault()
-
-        var that = this
-
-        e = $.Event('hide')
-
-        this.$element.trigger(e)
-
-        if (!this.isShown || e.isDefaultPrevented()) return
-
-        this.isShown = false
-
-        this.escape()
-
-        $(document).off('focusin.modal')
-
-        this.$element
-          .removeClass('in')
-          .attr('aria-hidden', true)
-
-        this.$element.hasClass('fade') ?
-          this.hideWithTransition() :
-          this.hideModal()
-      }
-
-    , enforceFocus: function () {
-        var that = this
-        $(document).on('focusin.modal', function (e) {
-          if (that.$element[0] !== e.target && !that.$element.has(e.target).length) {
-            that.$element.focus()
-          }
-        })
-      }
-
-    , escape: function () {
-        var that = this
-        if (this.isShown && this.options.keyboard) {
-          this.$element.on('keyup.dismiss.modal', function ( e ) {
-            e.which == 27 && that.hide()
-          })
-        } else if (!this.isShown) {
-          this.$element.off('keyup.dismiss.modal')
+        if (!that.$element.parent().length) {
+          that.$element.appendTo(doc.body) //don't move modals dom position
         }
-      }
 
-    , hideWithTransition: function () {
-        var that = this
-          , timeout = setTimeout(function () {
-              that.$element.off('transitionend')
-              that.hideModal()
-            }, 500)
+        that.$element.show()
 
-        this.$element.one('transitionend', function () {
-          clearTimeout(timeout)
-          that.hideModal()
+        if (transition) {
+          that.$element[0].offsetWidth // force reflow
+        }
+
+        that.$element
+          .addClass('in')
+          .attr('aria-hidden', false)
+
+        that.enforceFocus()
+
+        transition ?
+          that.$element.one('transitionend', function () { that.$element.focus().trigger('shown') }) :
+          that.$element.focus().trigger('shown')
+
+      })
+    }
+
+    hide (e) {
+      e && e.preventDefault()
+
+      e = $.Event('hide')
+
+      this.$element.trigger(e)
+
+      if (!this.isShown || e.isDefaultPrevented()) return
+
+      this.isShown = false
+
+      this.escape()
+
+      $(doc).off('focusin.modal')
+
+      this.$element
+        .removeClass('in')
+        .attr('aria-hidden', true)
+
+      this.$element.hasClass('fade') ?
+        this.hideWithTransition() :
+        this.hideModal()
+    }
+
+    enforceFocus () {
+      var that = this
+      $(doc).on('focusin.modal', function (e) {
+        if (that.$element[0] !== e.target && !that.$element.has(e.target).length) {
+          that.$element.focus()
+        }
+      })
+    }
+
+    escape () {
+      var that = this
+      if (this.isShown && this.options.keyboard) {
+        this.$element.on('keyup.dismiss.modal', function ( e ) {
+          e.which == 27 && that.hide()
         })
+      } else if (!this.isShown) {
+        this.$element.off('keyup.dismiss.modal')
       }
+    }
 
-    , hideModal: function () {
-        var that = this
-        this.$element.hide()
-        this.backdrop(function () {
-          that.removeBackdrop()
-          that.$element.trigger('hidden')
-        })
-      }
+    hideWithTransition () {
+      var that = this
+        , timeout = setTimeout(function () {
+            that.$element.off('transitionend')
+            that.hideModal()
+          }, 500)
 
-    , removeBackdrop: function () {
-        this.$backdrop && this.$backdrop.remove()
-        this.$backdrop = null
-      }
+      this.$element.one('transitionend', function () {
+        clearTimeout(timeout)
+        that.hideModal()
+      })
+    }
 
-    , backdrop: function (callback) {
-        var that = this
-          , animate = this.$element.hasClass('fade') ? 'fade' : ''
+    hideModal () {
+      var that = this
+      this.$element.hide()
+      this.backdrop(function () {
+        that.removeBackdrop()
+        that.$element.trigger('hidden')
+      })
+    }
 
-        if (this.isShown && this.options.backdrop) {
-          var doAnimate = animate
+    removeBackdrop () {
+      this.$backdrop && this.$backdrop.remove()
+      this.$backdrop = null
+    }
 
-          this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
-            .appendTo(document.body)
+    backdrop (callback) {
+      var animate = this.$element.hasClass('fade') ? 'fade' : ''
 
-          this.$backdrop.click(
-            this.options.backdrop == 'static' ?
-              this.$element[0].focus.bind(this.$element[0])
-            : this.hide.bind(this)
-          )
+      if (this.isShown && this.options.backdrop) {
 
-          if (doAnimate) this.$backdrop[0].offsetWidth // force reflow
+        this.$backdrop = $('<div class="modal-backdrop ' + animate + '" />')
+          .appendTo(doc.body)
 
-          this.$backdrop.addClass('in')
+        this.$backdrop.click(
+          this.options.backdrop == 'static' ?
+            this.$element[0].focus.bind(this.$element[0])
+          : this.hide.bind(this)
+        )
 
-          if (!callback) return
+        if (animate) this.$backdrop[0].offsetWidth // force reflow
 
-          doAnimate ?
-            this.$backdrop.one('transitionend', callback) :
-            callback()
+        this.$backdrop.addClass('in')
 
-        } else if (!this.isShown && this.$backdrop) {
-          this.$backdrop.removeClass('in')
+        if (!callback) return
 
-          this.$element.hasClass('fade')?
-            this.$backdrop.one('transitionend', callback) :
-            callback()
-
-        } else if (callback) {
+        animate ?
+          this.$backdrop.one('transitionend', callback) :
           callback()
-        }
+
+      } else if (!this.isShown && this.$backdrop) {
+        this.$backdrop.removeClass('in')
+
+        this.$element.hasClass('fade')?
+          this.$backdrop.one('transitionend', callback) :
+          callback()
+
+      } else if (callback) {
+        callback()
       }
+    }
   }
 
 
  /* MODAL PLUGIN DEFINITION
   * ======================= */
-
-  var old = $.fn.modal
 
   $.fn.modal = function (option) {
     return this.each(function () {
@@ -374,13 +334,10 @@
     , show: true
   }
 
-  $.fn.modal.Constructor = Modal
-
-
  /* MODAL DATA-API
   * ============== */
 
-  $(document).on('click.modal.data-api', '[data-toggle="modal"]', function (e) {
+  $(doc).on('click.modal.data-api', '[data-toggle="modal"]', function (e) {
     var $this = $(this)
       , href = $this.attr('href')
       , $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) //strip for ie7
@@ -395,85 +352,14 @@
       })
   })
 
-}(window.jQuery);
-/* ========================================================
- * bootstrap-tab.js v2.3.2
- * http://getbootstrap.com/2.3.2/javascript.html#tabs
- * ========================================================
- * Copyright 2013 Twitter, Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ======================================================== */
-
-
-!function ($) {
-
-  "use strict"; // jshint ;_;
-
-
  /* TAB CLASS DEFINITION
   * ==================== */
 
-  var Tab = function (element) {
-    this.element = $(element)
-  }
-
-  Tab.prototype = {
-
-    constructor: Tab
-
-  , show: function () {
-      var $this = this.element
-        , $ul = $this.closest('ul:not(.dropdown-menu)')
-        , selector = $this.attr('data-target')
-        , previous
-        , $target
-        , e
-
-      if (!selector) {
-        selector = $this.attr('href')
-        selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
-      }
-
-      if ( $this.parent('li').hasClass('active') ) return
-
-      previous = $ul.find('.active:last a')[0]
-
-      e = $.Event('show', {
-        relatedTarget: previous
-      })
-
-      $this.trigger(e)
-
-      if (e.isDefaultPrevented()) return
-
-      $target = $(selector)
-
-      this.activate($this.parent('li'), $ul)
-      this.activate($target, $target.parent(), function () {
-        $this.trigger({
-          type: 'shown'
-        , relatedTarget: previous
-        })
-      })
-    }
-
-  , activate: function ( element, container, callback) {
+  var activate = ( element, container, callback) => {
       var $active = container.find('> .active')
         , transition = callback
             && $active.hasClass('fade')
-
-      function next() {
+      , next = () => {
         $active
           .removeClass('active')
           .find('> .dropdown-menu > .active')
@@ -501,13 +387,53 @@
 
       $active.removeClass('in')
     }
+
+  class Tab {
+
+    constructor (element) {
+      this.element = $(element)
+    }
+
+    show () {
+      var $this = this.element
+        , $ul = $this.closest('ul:not(.dropdown-menu)')
+        , selector = $this.attr('data-target')
+        , previous
+        , $target
+        , e
+
+      if (!selector) {
+        selector = $this.attr('href')
+        selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') //strip for ie7
+      }
+
+      if ( $this.parent('li').hasClass('active') ) return
+
+      previous = $ul.find('.active:last a')[0]
+
+      e = $.Event('show', {
+        relatedTarget: previous
+      })
+
+      $this.trigger(e)
+
+      if (e.isDefaultPrevented()) return
+
+      $target = $(selector)
+
+      activate($this.parent('li'), $ul)
+      activate($target, $target.parent(), () => {
+        $this.trigger({
+          type: 'shown'
+        , relatedTarget: previous
+        })
+      })
+    }
   }
 
 
  /* TAB PLUGIN DEFINITION
   * ===================== */
-
-  var old = $.fn.tab
 
   $.fn.tab = function ( option ) {
     return this.each(function () {
@@ -518,15 +444,12 @@
     })
   }
 
-  $.fn.tab.Constructor = Tab
-
-
  /* TAB DATA-API
   * ============ */
 
-  $(document).on('click.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
+  $(doc).on('click.tab.data-api', '[data-toggle="tab"], [data-toggle="pill"]', function (e) {
     e.preventDefault()
     $(this).tab('show')
   })
 
-}(window.jQuery);
+})(window.jQuery);

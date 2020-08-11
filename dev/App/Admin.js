@@ -1,4 +1,3 @@
-import window from 'window';
 import ko from 'ko';
 
 import { root } from 'Common/Links';
@@ -110,7 +109,7 @@ class AdminApp extends AbstractApp {
 			CoreStore.coreVersionCompare(-2);
 			if (StorageResultType.Success === result && data && data.Result) {
 				CoreStore.coreReal(true);
-				window.location.reload();
+				location.reload();
 			} else {
 				CoreStore.coreReal(false);
 			}
@@ -182,7 +181,7 @@ class AdminApp extends AbstractApp {
 
 	bootend(bootendCallback = null) {
 		if (window.progressJs) {
-			window.progressJs.end();
+			progressJs.end();
 		}
 
 		if (bootendCallback) {
@@ -204,7 +203,7 @@ class AdminApp extends AbstractApp {
 			routeOff();
 
 			setTimeout(() =>
-				window.location.href = '/'
+				location.href = '/'
 			, 1);
 		} else {
 			if (Settings.settingsGet('Auth')) {
