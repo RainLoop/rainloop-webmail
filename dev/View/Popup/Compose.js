@@ -1401,7 +1401,7 @@ class ComposePopupView extends AbstractViewNext {
 						}
 					});
 
-				this.addAttachmentEnabled(true).dragAndDropEnabled(oJua.isDragAndDropSupported());
+				this.addAttachmentEnabled(true).dragAndDropEnabled(true);
 			} else {
 				this.addAttachmentEnabled(false).dragAndDropEnabled(false);
 			}

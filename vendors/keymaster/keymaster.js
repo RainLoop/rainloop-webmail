@@ -44,7 +44,11 @@
 
   // parse and assign shortcut
   function assignKey(key, scope, method){
-    var keys = getKeys(key), mods;
+    key = key.replace(/\s/g, '');
+    var keys = key.split(','), mods;
+    if ((keys[keys.length - 1]) == '') {
+      keys[keys.length - 2] += ',';
+    }
     if (method === undefined) {
       method = scope;
       scope = 'all';
@@ -56,12 +60,12 @@
       mods = [];
       key = keys[i].split('+');
       if (key.length > 1){
-        mods = getMods(key);
+        mods = key.slice(0, key.length - 1);
+        mods.forEach((mod, mi) => mods[mi] = _MODIFIERS[mod]);
         key = [key[key.length-1]];
       }
       // convert to keycode and...
-      key = key[0];
-      key = code(key);
+      key = code(key[0]);
       // ...store handler
       if (!(key in _handlers)) _handlers[key] = [];
 
@@ -78,25 +82,7 @@
   // initialize key.<modifier> to false
   for(k in _MODIFIERS) assignKey[k] = false;
 
-  // set current scope (default 'all')
-  const
-    setScope = scope => { _scope = scope || 'all' },
-    getScope = () => _scope || 'all',
-    // abstract key logic for assign and unassign
-    getKeys = key => {
-      key = key.replace(/\s/g, '');
-      var keys = key.split(',');
-      if ((keys[keys.length - 1]) == '') {
-        keys[keys.length - 2] += ',';
-      }
-      return keys;
-    },
-    // abstract mods logic for assign and unassign
-    getMods = key => {
-      var mods = key.slice(0, key.length - 1);
-      mods.forEach((mod, mi) => mods[mi] = _MODIFIERS[mod]);
-      return mods;
-    };
+  const getScope = () => _scope || 'all';
 
   // set the handlers globally on document
   document.addEventListener('keydown', event => {
@@ -170,7 +156,7 @@
 
   // set window.key and window.key.set/get, and the default filter
   global.key = assignKey;
-  global.key.setScope = setScope;
+  global.key.setScope = scope => { _scope = scope || 'all' };
   global.key.getScope = getScope;
   global.key.filter = event => {
     var tagName = event.target.tagName;

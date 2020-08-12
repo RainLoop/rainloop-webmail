@@ -18,7 +18,7 @@
  */
 
 
-(function($) {
+($ => {
 
 	var inputosaurustext = {
 
@@ -39,21 +39,11 @@
 			// the value tags are created on the fly when an inputDelimiter is detected
 			inputDelimiters : [',', ';'],
 
-			// this separator is used to rejoin all input items back to the value of the original <input>
-			outputDelimiter : ',',
-
-			allowDuplicates : false,
-
 			allowDragAndDrop : true,
 
 			focusCallback : null,
 
 			parseOnBlur : false,
-
-			// optional wrapper for widget
-			wrapperElement : null,
-
-			width : null,
 
 			// simply passing an autoComplete source (array, string or function) will instantiate autocomplete functionality
 			autoCompleteSource : '',
@@ -65,17 +55,14 @@
 			// the array of tag names is passed and expected to be returned as an array after manipulation
 			parseHook : null,
 
-			elementHook : null,
-
-			// define a placeholder to display when the input is empty
-			placeholder: null
+			splitHook : null
 		},
 
 		_create: function() {
 			var widget = this,
 				els = {},
 				o = widget.options,
-				placeholder =  o.placeholder || this.element.attr('placeholder') || null;
+				placeholder =  this.element.attr('placeholder') || null;
 
 			this._chosenValues = [];
 
@@ -85,7 +72,7 @@
 			if (this.options.allowDragAndDrop)
 			{
 				els.ul.droppable({
-					'drop': function(event, ui) {
+					'drop': (event, ui) => {
 
 						ui.draggable.addClass('inputosaurus-dropped');
 						els.input.val(ui.draggable.data('inputosaurus-value'));
@@ -106,9 +93,9 @@
 			els.origInputCont = $('<li class="inputosaurus-input-hidden inputosaurus-required"></li>');
 			els.lastEdit = '';
 
-			els.input.on('focus', function () {
+			els.input.on('focus', () => {
 				widget._focusTrigger(true);
-			}).on('blur', function () {
+			}).on('blur', () => {
 				widget._focusTrigger(false);
 			});
 
@@ -116,20 +103,14 @@
 			if (placeholder) {
 				o.placeholder = placeholder;
 				els.input.attr('placeholder', o.placeholder);
-				if (o.width) {
-					els.input.css('min-width', o.width - 50);
-				}
 			}
 
-			o.wrapperElement && o.wrapperElement.append(els.ul);
-			this.element.replaceWith(o.wrapperElement || els.ul);
+			this.element.replaceWith(els.ul);
 			els.origInputCont.append(this.element).hide();
 
 			els.inputCont.append(els.input);
 			els.ul.append(els.inputCont);
 			els.ul.append(els.origInputCont);
-
-			o.width && els.ul.css('width', o.width);
 
 			this.elements = els;
 
@@ -148,13 +129,10 @@
 
 		_focusTrigger : function (bValue) {
 			var widget = this;
-			window.clearTimeout(this._focusTriggerTimer);
-			this._focusTriggerTimer = window.setTimeout(function () {
+			clearTimeout(this._focusTriggerTimer);
+			this._focusTriggerTimer = setTimeout(() => {
 				widget.elements.ul[!bValue ? 'removeClass' : 'addClass']('inputosaurus-focused');
-				if (widget.options.focusCallback)
-				{
-					widget.options.focusCallback(bValue);
-				}
+				widget.options.focusCallback(bValue);
 			}, 10);
 		},
 
@@ -169,7 +147,7 @@
 					source : this.options.autoCompleteSource,
 					minLength : 1,
 					autoFocus : true,
-					select : function(ev, ui){
+					select : (ev, ui) => {
 						ev.preventDefault();
 						widget.elements.input.val(ui.item.value);
 						widget.parseInput();
@@ -190,9 +168,7 @@
 							}
 						}
 					},
-					focus: function () {
-						return false;
-					}
+					focus: () => false
 				});
 			}
 		},
@@ -210,12 +186,6 @@
 			}
 		},
 
-		/*_closeAutoCompleteMenu : function() {
-			if(this.options.autoCompleteSource){
-				this.elements.input.autocomplete('close');
-			}
-		},*/
-
 		parseInput : function(ev) {
 			var widget = (ev && ev.data.widget) || this,
 				val,
@@ -226,11 +196,7 @@
 			val = widget.elements.input.val();
 
 			if (val) {
-				if ($.isFunction(widget.options.splitHook)) {
-					hook = widget.options.splitHook(val);
-				} else {
-					delimiterFound = widget._containsDelimiter(val);
-				}
+				hook = widget.options.splitHook(val);
 			}
 
 			if (hook) {
@@ -246,15 +212,13 @@
 				values.push(val);
 			}
 
-			$.isFunction(widget.options.parseHook) && (values = widget.options.parseHook(values));
+			values = widget.options.parseHook(values);
 
 			if(values.length){
 				widget._setChosen(values);
 				widget.elements.input.val('');
 				widget._resizeInput();
 			}
-
-			widget._resetPlaceholder();
 		},
 
 		_inputFocus : function(ev) {
@@ -284,7 +248,7 @@
 
 			// reposition autoComplete menu as <ul> grows and shrinks vertically
 			if(widget.options.autoCompleteSource){
-				setTimeout(function(){widget._autoCompleteMenuPosition.call(widget);}, 200);
+				setTimeout(()=>widget._autoCompleteMenuPosition.call(widget), 200);
 			}
 		},
 
@@ -297,24 +261,12 @@
 			var widget = (ev && ev.data.widget) || this;
 			inputosaurustext.fakeSpan.text(widget.elements.input.val());
 
-//			window.setTimeout(function  () {
+//			setTimeout(function  () {
 				var txtWidth = 25 + inputosaurustext.fakeSpan.width();
 				txtWidth = txtWidth > 50 ? txtWidth : 50;
 				txtWidth = txtWidth < 500 ? txtWidth : 500;
 				widget.elements.input.width(txtWidth);
 //			}, 1);
-		},
-
-		// resets placeholder on representative input
-		_resetPlaceholder: function () {
-			var placeholder = this.options.placeholder,
-				input = this.elements.input,
-				width = this.options.width || 'inherit';
-			if (placeholder && this.element.val().length === 0) {
-				input.attr('placeholder', placeholder).css('min-width', width - 50)
-			}else {
-				input.attr('placeholder', '').css('min-width', 'inherit')
-			}
 		},
 
 		// if our input contains no value and backspace has been pressed, select the last tag
@@ -349,7 +301,7 @@
 				next = false
 			;
 
-			$.each(widget._chosenValues, function(i,v) {
+			$.each(widget._chosenValues, (i,v) => {
 				if (v.key === tagKey)
 				{
 					tagName = v.value;
@@ -369,15 +321,13 @@
 			$li.after(widget.elements.inputCont);
 
 			widget.elements.input.val(tagName);
-			window.setTimeout(function () {
-				widget.elements.input.select();
-			}, 100);
+			setTimeout(() => widget.elements.input.select(), 100);
 
 			widget._removeTag(ev);
 			widget._resizeInput(ev);
 		},
 
-		_tagKeypress : function(ev) {
+		_tagKeypress : ev => {
 			var widget = ev.data.widget;
 			switch(ev.which){
 
@@ -439,7 +389,7 @@
 
 			var found = false;
 
-			$.each(this.options.inputDelimiters, function(k,v) {
+			$.each(this.options.inputDelimiters, (k,v) => {
 				if(tagStr.indexOf(v) !== -1){
 					found = v;
 				}
@@ -455,7 +405,7 @@
 				return false;
 			}
 
-			$.each(valArr, function(k,a) {
+			$.each(valArr, (k,a) => {
 				var v = '', exists = false,
 					lastIndex = -1,
 					obj = {
@@ -466,7 +416,7 @@
 
 				v = $.trim(a[0]);
 
-				$.each(self._chosenValues, function(kk, vv) {
+				$.each(self._chosenValues, (kk, vv) => {
 					if (vv.value === self.elements.lastEdit)
 					{
 						lastIndex = kk;
@@ -475,7 +425,7 @@
 					vv.value === v && (exists = true);
 				});
 
-				if(v !== '' && a && a[1] && (!exists || self.options.allowDuplicates)){
+				if(v !== '' && a && a[1] && !exists){
 
 					obj.key = 'mi_' + Math.random().toString( 16 ).slice( 2, 10 );
 					obj.value = v;
@@ -505,11 +455,10 @@
 		},
 
 		_buildValue : function() {
-			var widget = this,
-				value = '';
+			var value = '';
 
-			$.each(this._chosenValues, function(k,v) {
-				value += value.length ? widget.options.outputDelimiter + v.value : v.value;
+			$.each(this._chosenValues, (k,v) => {
+				value += value.length ? ',' + v.value : v.value;
 			});
 
 			return value;
@@ -542,13 +491,9 @@
 					$li.draggable({
 						'revert': 'invalid',
 						'revertDuration': 200,
-						'start': function(event, ui) {
-							ui.helper.__widget = widget;
-						}
+						'start': (event, ui) => ui.helper.__widget = widget
 					});
 				}
-
-				$.isFunction(this.options.elementHook) && (this.options.elementHook($li, obj));
 
 				return $li;
 			}
@@ -559,7 +504,7 @@
 
 			this.elements.ul.find('li:not(.inputosaurus-required)').remove();
 
-			$.each(this._chosenValues, function(k, v) {
+			$.each(this._chosenValues, (k, v) => {
 				var el = self._createTag(v.value, v.key, v.obj);
 				if (el) {
 					self.elements.ul.find('li.inputosaurus-input').before(el);
@@ -573,7 +518,7 @@
 				widget = (ev && ev.data.widget) || this;
 
 
-			$.each(widget._chosenValues, function(k,v) {
+			$.each(widget._chosenValues, (k,v) => {
 				if(key === v.key){
 					indexFound = k;
 				}
@@ -584,9 +529,7 @@
 			widget._setValue(widget._buildValue());
 
 			$(ev.currentTarget).closest('li').remove();
-			window.setTimeout(function () {
-				widget.elements.input.focus();
-			}, 100);
+			setTimeout(() => widget.elements.input.focus(), 100);
 		},
 
 		_removeDraggedTag : function ($li) {
@@ -596,7 +539,7 @@
 				indexFound = false
 			;
 
-			$.each(widget._chosenValues, function(k,v) {
+			$.each(widget._chosenValues, (k,v) => {
 				if (key === v.key) {
 
 					indexFound = k;
@@ -634,12 +577,10 @@
 			}
 		},
 
-		_tagFocus : function(ev) {
-			$(ev.currentTarget).parent()[ev.type === 'focusout' ? 'removeClass' : 'addClass']('inputosaurus-selected');
-		},
+		_tagFocus : ev => $(ev.currentTarget).parent()[ev.type === 'focusout' ? 'removeClass' : 'addClass']('inputosaurus-selected'),
 
 		refresh : function() {
-			var delim = this.options.outputDelimiter,
+			var delim = ',',
 				val = this.element.val(),
 				values = [];
 
@@ -659,7 +600,7 @@
 			if (values.length) {
 				this._chosenValues = [];
 
-				$.isFunction(this.options.parseHook) && (values = this.options.parseHook(values));
+				values = this.options.parseHook(values);
 
 				this._setChosen(values);
 				this._renderTags();

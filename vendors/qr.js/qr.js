@@ -20,10 +20,6 @@
     16, 18, 20, 22, 24, 26, 28, 20, 22, 24, 24, 26, 28, 28, 22, 24, 24,
     26, 26, 28, 28, 24, 24, 26, 26, 26, 28, 28, 24, 26, 26, 26, 28, 28
   ];
-  // Default MIME type.
-  var DEFAULT_MIME = 'image/png';
-  // MIME used to initiate a browser download prompt when `qr.save` is called.
-  var DOWNLOAD_MIME = 'image/octet-stream';
   // There are four elements per version. The first two indicate the number of blocks, then the
   // data width, and finally the ECC width.
   var ECC_BLOCKS = [
@@ -131,8 +127,6 @@
     0x9a6, 0x683, 0x8c9, 0x7ec, 0xec4, 0x1e1, 0xfab, 0x08e, 0xc1a, 0x33f, 0xd75, 0x250, 0x9d5,
     0x6f0, 0x8ba, 0x79f, 0xb0b, 0x42e, 0xa64, 0x541, 0xc69
   ];
-  // Mode for node.js file system file writes.
-  var WRITE_MODE = parseInt('0666', 8);
 
   // Private variables
   // -----------------
@@ -153,16 +147,10 @@
   var frameBuffer = [];
   // Fixed part of the image.
   var frameMask = [];
-  // File system within the node.js environment.
-  var fs;
-  // Constructor for `img` elements in the node.js environment.
-  var Image;
   // Indicates whether or not this script is running in node.js.
   var inNode = false;
   // Generator polynomial.
   var polynomial = [];
-  // Save the previous value of the `qr` variable.
-  var previousQr = root.qr;
   // Data input buffer.
   var stringBuffer = [];
   // Version for the data.
@@ -173,92 +161,14 @@
   // Private functions
   // -----------------
 
-  // Create a new canvas  using `document.createElement` unless script is running in node.js, in
-  // which case the `canvas` module is used.
-  function createCanvas() {
-    return inNode ? new Canvas() : root.document.createElement('canvas');
-  }
-
-  // Create a new image using `document.createElement` unless script is running in node.js, in
-  // which case the `canvas` module is used.
-  function createImage() {
-    return inNode ? new Image() : root.document.createElement('img');
-  }
-
-  // Force the canvas image to be downloaded in the browser.
-  // Optionally, a `callback` function can be specified which will be called upon completed. Since
-  // this is not an asynchronous operation, this is merely convenient and helps simplify the
-  // calling code.
-  function download(cvs, data, callback) {
-    var mime = data.mime || DEFAULT_MIME;
-
-    root.location.href = cvs.toDataURL(mime).replace(mime, DOWNLOAD_MIME);
-
-    if (typeof callback === 'function') callback();
-  }
-
   // Normalize the `data` that is provided to the main API.
-  function normalizeData(data) {
+  const normalizeData = data => {
     if (typeof data === 'string') data = { value: data };
     return data || {};
-  }
-
-  // Asynchronously write the data of the rendered canvas to a given file path.
-  function writeFile(cvs, data, callback) {
-    if (typeof data.path !== 'string') {
-      return callback(new TypeError('Invalid path type: ' + typeof data.path));
-    }
-
-    var fd, buff;
-
-    // Write the buffer to the open file stream once both prerequisites are met.
-    function writeBuffer() {
-      fs.write(fd, buff, 0, buff.length, 0, function (error) {
-        fs.close(fd);
-
-        callback(error);
-      });
-    }
-
-    // Create a buffer of the canvas' data.
-    cvs.toBuffer(function (error, _buff) {
-      if (error) return callback(error);
-
-      buff = _buff;
-      if (fd) {
-        writeBuffer();
-      }
-    });
-
-    // Open a stream for the file to be written.
-    fs.open(data.path, 'w', WRITE_MODE, function (error, _fd) {
-      if (error) return callback(error);
-
-      fd = _fd;
-      if (buff) {
-        writeBuffer();
-      }
-    });
-  }
-
-  // Write the data of the rendered canvas to a given file path.
-  function writeFileSync(cvs, data) {
-    if (typeof data.path !== 'string') {
-      throw new TypeError('Invalid path type: ' + typeof data.path);
-    }
-
-    var buff = cvs.toBuffer();
-    var fd = fs.openSync(data.path, 'w', WRITE_MODE);
-
-    try {
-      fs.writeSync(fd, buff, 0, buff.length, 0);
-    } finally {
-      fs.closeSync(fd);
-    }
-  }
+  },
 
   // Set bit to indicate cell in frame is immutable (symmetric around diagonal).
-  function setMask(x, y) {
+  setMask = (x, y) => {
     var bit;
 
     if (x > y) {
@@ -274,11 +184,11 @@
     bit  += x;
 
     frameMask[bit] = 1;
-  }
+  },
 
   // Enter alignment pattern. Foreground colour to frame, background to mask. Frame will be merged
   // with mask later.
-  function addAlignment(x, y) {
+  addAlignment = (x, y) => {
     var i;
 
     frameBuffer[x + width * y] = 1;
@@ -296,21 +206,21 @@
       setMask(x - i, y - 1);
       setMask(x + i, y + 1);
     }
-  }
+  },
 
   // Exponentiation mod N.
-  function modN(x) {
+  modN = x => {
     while (x >= 255) {
       x -= 255;
       x  = (x >> 8) + (x & 255);
     }
 
     return x;
-  }
+  },
 
   // Calculate and append `ecc` data to the `data` block. If block is in the string buffer the
   // indices to buffers are used.
-  function appendData(data, dataLength, ecc, eccLength) {
+  appendData = (data, dataLength, ecc, eccLength) => {
     var bit, i, j;
 
     for (i = 0; i < eccLength; i++) {
@@ -334,10 +244,10 @@
       stringBuffer[ecc + eccLength - 1] = bit === 255 ? 0 :
           GALOIS_EXPONENT[modN(bit + polynomial[0])];
     }
-  }
+  },
 
   // Check mask since symmetricals use half.
-  function isMasked(x, y) {
+  isMasked = (x, y) => {
     var bit;
 
     if (x > y) {
@@ -352,10 +262,10 @@
     bit  += x;
 
     return frameMask[bit] === 1;
-  }
+  },
 
   // Apply the selected mask out of the 8 options.
-  function applyMask(mask) {
+  applyMask = mask => {
     var x, y, r3x, r3y;
 
     switch (mask) {
@@ -463,11 +373,11 @@
 
         break;
     }
-  }
+  },
 
   // Using the table for the length of each run, calculate the amount of bad image. Long runs or
   // those that look like finders are called twice; once for X and Y.
-  function getBadRuns(length) {
+  getBadRuns = length => {
     var badRuns = 0;
     var i;
 
@@ -492,10 +402,10 @@
     }
 
     return badRuns;
-  }
+  },
 
   // Calculate how bad the masked image is (e.g. blocks, imbalance, runs, or finders).
-  function checkBadness() {
+  checkBadness = () => {
     var b, b1, bad, big, bw, count, h, x, y;
     bad = bw = count = 0;
 
@@ -566,10 +476,10 @@
     }
 
     return bad;
-  }
+  },
 
   // Generate the encoded QR image for the string provided.
-  function generateFrame(str) {
+  generateFrame = str => {
     var i, j, k, m, t, v, x, y;
 
     // Find the smallest version that fits the string.
@@ -975,13 +885,13 @@
 
     // Finally, return the image data.
     return frameBuffer;
-  }
+  };
 
   // qr.js setup
   // -----------
 
   // Build the publicly exposed API.
-  var qr = {
+  root.qr = {
 
     // Constants
     // ---------
@@ -992,12 +902,13 @@
     // QR functions
     // ------------
 
-    // Generate the QR code using the data provided and render it on to a `<canvas>` element.
+    // Generate the QR code using the data provided and render it on to a `<canvas>` element before
+    // returning its data URI.
     // If no `<canvas>` element is specified in the argument provided a new one will be created and
     // used.
     // ECC (error correction capacity) determines how many intential errors are contained in the QR
     // code.
-    canvas: function(data) {
+    toDataURL: data => {
       data = normalizeData(data);
 
       // Module size of the generated QR code (i.e. 1-10).
@@ -1006,7 +917,7 @@
       size *= 25;
 
       // `<canvas>` element used to render the QR code.
-      var cvs = data.canvas || createCanvas();
+      var cvs = inNode ? new Canvas() : document.createElement('canvas');
       // Retreive the 2D context of the canvas.
       var c2d = cvs.getContext('2d');
       // Ensure the canvas has the correct dimensions.
@@ -1047,131 +958,9 @@
         }
       }
 
-      return cvs;
-    },
-
-    // Generate the QR code using the data provided and render it on to a `<img>` element.
-    // If no `<img>` element is specified in the argument provided a new one will be created and
-    // used.
-    // ECC (error correction capacity) determines how many intential errors are contained in the QR
-    // code.
-    image: function(data) {
-      data = normalizeData(data);
-
-      // `<canvas>` element only which the QR code is rendered.
-      var cvs = this.canvas(data);
-      // `<img>` element used to display the QR code.
-      var img = data.image || createImage();
-
-      // Apply the QR code to `img`.
-      img.src    = cvs.toDataURL(data.mime || DEFAULT_MIME);
-      img.height = cvs.height;
-      img.width  = cvs.width;
-
-      return img;
-    },
-
-    // Generate the QR code using the data provided and render it on to a `<canvas>` element and
-    // save it as an image file.
-    // If no `<canvas>` element is specified in the argument provided a new one will be created and
-    // used.
-    // ECC (error correction capacity) determines how many intential errors are contained in the QR
-    // code.
-    // If called in a browser the `path` property/argument is ignored and will simply prompt the
-    // user to choose a location and file name. However, if called within node.js the file will be
-    // saved to specified path.
-    // A `callback` function must be provided which will be called once the saving process has
-    // started. If an error occurs it will be passed as the first argument to this function,
-    // otherwise this argument will be `null`.
-    save: function(data, path, callback) {
-      data = normalizeData(data);
-
-      switch (typeof path) {
-        case 'function':
-          callback = path;
-          path = null;
-          break;
-        case 'string':
-          data.path = path;
-          break;
-      }
-
-      // Callback function is required.
-      if (typeof callback !== 'function') {
-        throw new TypeError('Invalid callback type: ' + typeof callback);
-      }
-
-      var completed = false;
-      // `<canvas>` element only which the QR code is rendered.
-      var cvs = this.canvas(data);
-
-      // Simple function to try and ensure that the `callback` function is only called once.
-      function done(error) {
-        if (!completed) {
-          completed = true;
-
-          callback(error);
-        }
-      }
-
-      if (inNode) {
-        writeFile(cvs, data, done);
-      } else {
-        download(cvs, data, done);
-      }
-    },
-
-    // Generate the QR code using the data provided and render it on to a `<canvas>` element and
-    // save it as an image file.
-    // If no `<canvas>` element is specified in the argument provided a new one will be created and
-    // used.
-    // ECC (error correction capacity) determines how many intential errors are contained in the QR
-    // code.
-    // If called in a browser the `path` property/argument is ignored and will simply prompt the
-    // user to choose a location and file name. However, if called within node.js the file will be
-    // saved to specified path.
-    saveSync: function(data, path) {
-      data = normalizeData(data);
-
-      if (typeof path === 'string') data.path = path;
-
-      // `<canvas>` element only which the QR code is rendered.
-      var cvs = this.canvas(data);
-
-      if (inNode) {
-        writeFileSync(cvs, data);
-      } else {
-        download(cvs, data);
-      }
-    },
-
-    // Generate the QR code using the data provided and render it on to a `<canvas>` element before
-    // returning its data URI.
-    // If no `<canvas>` element is specified in the argument provided a new one will be created and
-    // used.
-    // ECC (error correction capacity) determines how many intential errors are contained in the QR
-    // code.
-    toDataURL: function(data) {
-      data = normalizeData(data);
-
-      return this.canvas(data).toDataURL(data.mime || DEFAULT_MIME);
-    },
-
-    // Utility functions
-    // -----------------
-
-    // Run qr.js in *noConflict* mode, returning the `qr` variable to its previous owner.
-    // Returns a reference to `qr`.
-    noConflict: function() {
-      root.qr = previousQr;
-      return this;
+      return cvs.toDataURL('image/png');
     }
 
   };
-
-  // Support
-  // -------
-
-  root.qr = qr;
 
 })(this);

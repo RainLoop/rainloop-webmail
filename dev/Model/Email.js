@@ -1,4 +1,4 @@
-import { encodeHtml, isNonEmptyArray } from 'Common/Utils';
+import { encodeHtml } from 'Common/Utils';
 
 'use strict';
 
@@ -64,12 +64,10 @@ function _handleAddress(tokens) {
 		comment: [],
 		group: [],
 		text: []
-
-		// Filter out <addresses>, (comments) and regular text
 	};
-	for (var i = 0, len = tokens.length; i < len; i++) {
-		var token = tokens[i];
 
+	// Filter out <addresses>, (comments) and regular text
+	tokens.forEach(token => {
 		if (token.type === 'operator') {
 			switch (token.value) {
 				case '<':
@@ -85,12 +83,10 @@ function _handleAddress(tokens) {
 				default:
 					state = 'text';
 			}
-		} else {
-			if (token.value) {
-				data[state].push(token.value);
-			}
+		} else if (token.value) {
+			data[state].push(token.value);
 		}
-	}
+	});
 
 	// If there is no text but a comment, replace the two
 	if (!data.text.length && data.comment.length) {
@@ -108,25 +104,25 @@ function _handleAddress(tokens) {
 	} else {
 		// If no address was found, try to detect one from regular text
 		if (!data.address.length && data.text.length) {
-			for (var _i = data.text.length - 1; _i >= 0; _i--) {
-				if (data.text[_i].match(/^[^@\s]+@[^@\s]+$/)) {
-					data.address = data.text.splice(_i, 1);
+			var i = data.text.length;
+			while (i--) {
+				if (data.text[i].match(/^[^@\s]+@[^@\s]+$/)) {
+					data.address = data.text.splice(i, 1);
 					break;
 				}
 			}
 
-			var _regexHandler = function _regexHandler(address) {
-				if (!data.address.length) {
-					data.address = [address.trim()];
-					return ' ';
-				}
-				return address;
-			};
-
 			// still no address
 			if (!data.address.length) {
-				for (var _i2 = data.text.length - 1; _i2 >= 0; _i2--) {
-					data.text[_i2] = data.text[_i2].replace(/\s*\b[^@\s]+@[^@\s]+\b\s*/, _regexHandler).trim();
+				i = data.text.length;
+				while (i--) {
+					data.text[i] = data.text[i].replace(/\s*\b[^@\s]+@[^@\s]+\b\s*/, address => {
+						if (!data.address.length) {
+							data.address = [address.trim()];
+							return '';
+						}
+						return address.trim();
+					});
 					if (data.address.length) {
 						break;
 					}
@@ -202,8 +198,8 @@ class Tokenizer
 	}
 
 	tokenize() {
-		var list = [], i = this.str.length;
-		while (i--) this.checkChar(this.str[i]);
+		var list = [];
+		[...this.str].forEach(c => this.checkChar(c));
 
 		this.list.forEach(node => {
 			node.value = (node.value || '').toString().trim();
@@ -420,7 +416,7 @@ class EmailModel {
 
 	static splitEmailLine(line) {
 		const parsedResult = addressparser(line);
-		if (isNonEmptyArray(parsedResult)) {
+		if (parsedResult.length) {
 			const result = [];
 			let exists = false;
 			parsedResult.forEach((item) => {
@@ -443,7 +439,7 @@ class EmailModel {
 
 	static parseEmailLine(line) {
 		const parsedResult = addressparser(line);
-		if (isNonEmptyArray(parsedResult)) {
+		if (parsedResult.length) {
 			return parsedResult.map(item =>
 				item.address ? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '') : null
 			).filter(value => !!value);
@@ -463,7 +459,7 @@ class EmailModel {
 		}
 
 		const result = addressparser(emailAddress);
-		if (isNonEmptyArray(result) && result[0]) {
+		if (result.length) {
 			this.name = result[0].name || '';
 			this.email = result[0].address || '';
 			this.clearDuplicateName();

@@ -7,19 +7,15 @@ import { Mime } from 'Common/Mime';
 const
 	$ = jQuery,
 	$div = $('<div></div>'),
-	isArray = Array.isArray;
-
-var htmlspecialchars = ((de,se,gt,lt,sq,dq,bt) => {
-	return (str, quote_style = 3, double_encode = true) => {
-		str = (''+str)
-			.replace(double_encode?de:se,'&amp;')
-			.replace(gt,'&lt;')
-			.replace(lt,'&gt;')
-			.replace(bt,'&#x60;');
-		if (quote_style & 1) { str = str.replace(sq,'&#x27;'); }
-		return (quote_style & 2) ? str.replace(dq,'&quot;') : str;
-	};
-})(/&/g,/&(?![\w#]+;)/gi,/</g,/>/g,/'/g,/"/g,/`/g);
+	isArray = Array.isArray,
+	htmlmap = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#x27;'
+	},
+	htmlspecialchars = str => (''+str).replace(/[&<>"']/g, m => htmlmap[m]);
 
 /**
  * @param {*} value
@@ -89,15 +85,13 @@ export function simpleQueryParser(queryString) {
  * @returns {string}
  */
 export function fakeMd5(len = 32) {
-	const line = '0123456789abcdefghijklmnopqrstuvwxyz',
-		lineLen = line.length;
+	const line = '0123456789abcdefghijklmnopqrstuvwxyz';
 
 	len = pInt(len);
 
 	let result = '';
-	while (result.length < len) {
-		result += line.substr(Math.round(Math.random() * lineLen), 1);
-	}
+	while (len--)
+		result += line.substr(Math.round(Math.random() * 36), 1);
 
 	return result;
 }

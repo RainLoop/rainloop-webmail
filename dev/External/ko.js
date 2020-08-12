@@ -747,35 +747,33 @@ ko.bindingHandlers.emailsTags = {
 			$el = $(element),
 			fValue = fValueAccessor(),
 			fAllBindings = fAllBindingsAccessor(),
-			fAutoCompleteSource = fAllBindings.autoCompleteSource || null,
-			inputDelimiters = [',', ';', '\n'],
-			fFocusCallback = (value) => {
-				if (fValue && fValue.focused) {
-					fValue.focused(!!value);
-				}
-			};
+			inputDelimiters = [',', ';', '\n'];
 
 		$el.inputosaurus({
 			parseOnBlur: true,
 			allowDragAndDrop: true,
-			focusCallback: fFocusCallback,
+			focusCallback: value => {
+				if (fValue && fValue.focused) {
+					fValue.focused(!!value);
+				}
+			},
 			inputDelimiters: inputDelimiters,
-			autoCompleteSource: fAutoCompleteSource,
-			splitHook: (value) => {
+			autoCompleteSource: fAllBindings.autoCompleteSource || null,
+			splitHook: value => {
 				const v = value.trim();
 				if (v && inputDelimiters.includes(v.substr(-1))) {
 					return EmailModel.splitEmailLine(value);
 				}
 				return null;
 			},
-			parseHook: (input) =>
+			parseHook: input =>
 				input.map(inputValue => {
 					const values = EmailModel.parseEmailLine(inputValue);
 					return values.length ? values : inputValue;
 				}).flat(Infinity).map(
 					item => (item.toLine ? [item.toLine(false), item] : [item, null])
 				),
-			change: (event) => {
+			change: event => {
 				$el.data('EmailsTagsValue', event.target.value);
 				fValue(event.target.value);
 			}
