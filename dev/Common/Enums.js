@@ -460,7 +460,6 @@ export const ContactPropertyType = {
  */
 export const Magics = {
 	'EventWhichMouseMiddle': 3,
-	'ifvisibleIdle10s': 10,
 
 	'BitLength2048': 2048,
 	'BitLength1024': 1024,

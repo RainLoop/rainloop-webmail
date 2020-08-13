@@ -89,7 +89,7 @@ config.paths.js = {
 			'vendors/lightgallery/dist/js/lg-thumbnail.min.js',
 			'vendors/lightgallery/dist/js/lg-zoom.min.js',
 			'vendors/lightgallery/dist/js/lg-autoplay.min.js',
-			'node_modules/ifvisible.js/src/ifvisible.min.js'
+			'dev/External/ifvisible.js'
 		]
 	},
 	app: {

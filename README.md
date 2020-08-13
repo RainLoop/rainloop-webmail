@@ -74,26 +74,27 @@ Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyf
 * Removed momentjs (localization still used)
 * Removed opentip (use CSS)
 * Replaced Autolinker with simple https/email detection
+* Replaced ifvisible.js with simple drop-in replacement
 
 |js/*       	|1.14.0 	|native 	|gzip 1.14	|gzip   	|
 |-----------	|--------:	|--------:	|--------:	|--------:	|
-|admin.js    	|2.130.942	|1.119.218	|  485.481	|  271.178	|
-|app.js      	|4.184.455	|2.829.958	|  932.725	|  659.546	|
+|admin.js    	|2.130.942	|1.119.128	|  485.481	|  271.258	|
+|app.js      	|4.184.455	|2.829.541	|  932.725	|  659.696	|
 |boot.js     	|  671.522	|   44.029	|  169.502	|   15.460	|
-|libs.js     	|  647.614	|  318.711	|  194.728	|   99.162	|
+|libs.js     	|  647.614	|  316.107	|  194.728	|   98.214	|
 |polyfills.js	|  325.834	|        0	|   71.825	|        0	|
-|TOTAL js   	|7.960.367	|4.311.916	|1.854.261	|1.045.346	|
+|TOTAL js   	|7.960.367	|4.308.805	|1.854.261	|1.044.628	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  151.652	| 73.657	| 43.325	|
-|app.min.js      	|  511.202	|  377.227	|140.462	| 99.095	|
+|admin.min.js    	|  252.147	|  151.632	| 73.657	| 43.313	|
+|app.min.js      	|  511.202	|  377.163	|140.462	| 99.062	|
 |boot.min.js     	|   66.007	|    5.589	| 22.567	|  2.333	|
-|libs.min.js     	|  572.545	|  303.360	|176.720	| 93.728	|
+|libs.min.js     	|  572.545	|  300.211	|176.720	| 92.698	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|
-|TOTAL js/min   	|1.434.353	|  837.828	|424.718	|238.481	|
+|TOTAL js/min   	|1.434.353	|  834.595	|424.718	|237.406	|
 
-596.525 bytes (186.237 gzip) is not much, but it feels faster.
+599.758 bytes (187.312 gzip) is not much, but it feels faster.
 
 
 |css/*       	|1.14.0   	|native   	|
