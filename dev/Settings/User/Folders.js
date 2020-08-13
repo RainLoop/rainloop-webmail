@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { ClientSideKeyName, Notification, Magics } from 'Common/Enums';
+import { ClientSideKeyName, Notification } from 'Common/Enums';
 import { getNotification, i18n } from 'Common/Translator';
 
 import { removeFolderFromCacheList } from 'Common/Cache';
@@ -22,7 +22,7 @@ class FoldersUserSettings {
 		this.displaySpecSetting = FolderStore.displaySpecSetting;
 		this.folderList = FolderStore.folderList;
 
-		this.folderListHelp = ko.observable('').extend({ throttle: Magics.Time100ms });
+		this.folderListHelp = ko.observable('').extend({ throttle: 100 });
 
 		this.loading = ko.computed(() => {
 			const loading = FolderStore.foldersLoading(),

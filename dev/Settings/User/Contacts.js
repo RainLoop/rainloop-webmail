@@ -1,7 +1,5 @@
 import ko from 'ko';
 
-import { Magics } from 'Common/Enums';
-
 import AppStore from 'Stores/User/App';
 import ContactStore from 'Stores/User/Contact';
 import Remote from 'Remote/User/Ajax';
@@ -25,7 +23,7 @@ class ContactsUserSettings {
 					this.contactsSyncPass()
 				].join('|')
 			)
-			.extend({ throttle: Magics.Time500ms });
+			.extend({ throttle: 500 });
 	}
 
 	onBuild() {

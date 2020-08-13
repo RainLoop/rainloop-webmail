@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender } from 'Common/Utils';
 
-import { SaveSettingsStep, StorageResultType, Magics } from 'Common/Enums';
+import { SaveSettingsStep, StorageResultType } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 import { settingsGet } from 'Storage/Settings';
 import Remote from 'Remote/Admin/Ajax';
@@ -186,7 +186,7 @@ class ContactsAdminSettings {
 			});
 
 			this.contactsType(settingsGet('ContactsPdoType'));
-		}, Magics.Time50ms);
+		}, 50);
 	}
 }
 

@@ -1,5 +1,4 @@
 import ko from 'ko';
-import { Magics } from 'Common/Enums';
 import * as Settings from 'Storage/Settings';
 
 class AccountUserStore {
@@ -10,7 +9,7 @@ class AccountUserStore {
 		this.signature = ko.observable('');
 
 		this.accounts = ko.observableArray([]);
-		this.accounts.loading = ko.observable(false).extend({ throttle: Magics.Time100ms });
+		this.accounts.loading = ko.observable(false).extend({ throttle: 100 });
 
 		this.computers();
 	}

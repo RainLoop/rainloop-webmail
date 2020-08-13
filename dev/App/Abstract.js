@@ -10,7 +10,7 @@ import {
 
 import { isNormal, pString, detectDropdownVisibility, windowResizeCallback } from 'Common/Utils';
 
-import { KeyState, Magics } from 'Common/Enums';
+import { KeyState } from 'Common/Enums';
 import { root, rootAdmin, rootUser, populateAuthSuffix } from 'Common/Links';
 import { initOnStartOrLangChange, initNotificationLanguage } from 'Common/Translator';
 import * as Events from 'Common/Events';
@@ -32,9 +32,7 @@ class AbstractApp extends AbstractBoot {
 		this.isLocalAutocomplete = true;
 		this.lastErrorTime = 0;
 
-		addEventListener('resize', () => {
-			Events.pub('window.resize');
-		});
+		addEventListener('resize', () => Events.pub('window.resize'));
 
 		var t;
 		Events.sub(
@@ -53,7 +51,7 @@ class AbstractApp extends AbstractBoot {
 							Events.pub('window.resize.real');
 						}
 						t = 0;
-					}, Magics.Time50ms);
+					}, 50);
 				}
 			}
 		);
@@ -84,7 +82,7 @@ class AbstractApp extends AbstractBoot {
 		const fn = ()=>{
 			// debounce
 			d && clearTimeout(d);
-			d = setTimeout(()=>Events.pub('rl.auto-logout-refresh'), Magics.Time5s);
+			d = setTimeout(()=>Events.pub('rl.auto-logout-refresh'), 5000);
 		}
 
 		$doc.addEventListener('mousemove', fn);
@@ -141,7 +139,7 @@ class AbstractApp extends AbstractBoot {
 	redirectToAdminPanel() {
 		setTimeout(() => {
 			location.href = rootAdmin();
-		}, Magics.Time100ms);
+		}, 100);
 	}
 
 	clearClientSideToken() {
@@ -190,7 +188,7 @@ class AbstractApp extends AbstractBoot {
 				}
 
 				$win.trigger('rl.tooltips.diactivate');
-			}, Magics.Time100ms);
+			}, 100);
 		} else {
 			routeOff();
 			setHash(root(), true);
@@ -204,7 +202,7 @@ class AbstractApp extends AbstractBoot {
 				}
 
 				$win.trigger('rl.tooltips.diactivate');
-			}, Magics.Time100ms);
+			}, 100);
 		}
 	}
 
@@ -239,15 +237,11 @@ class AbstractApp extends AbstractBoot {
 
 		initOnStartOrLangChange(initNotificationLanguage);
 
-		setTimeout(windowResizeCallback, Magics.Time1s);
+		setTimeout(windowResizeCallback, 1000);
 
-		Events.sub('ssm.mobile-enter', () => {
-			leftPanelDisabled(true);
-		});
+		Events.sub('ssm.mobile-enter', () => leftPanelDisabled(true));
 
-		Events.sub('ssm.mobile-leave', () => {
-			leftPanelDisabled(false);
-		});
+		Events.sub('ssm.mobile-leave', () => leftPanelDisabled(false));
 
 		if (!mobile) {
 			$htmlCL.add('rl-desktop');
@@ -268,34 +262,22 @@ class AbstractApp extends AbstractBoot {
 			ssm.addState({
 				id: 'tablet',
 				query: '(min-width: 768px) and (max-width: 999px)',
-				onEnter: () => {
-					$htmlCL.add('ssm-state-tablet');
-				},
-				onLeave: () => {
-					$htmlCL.remove('ssm-state-tablet');
-				}
+				onEnter: () => $htmlCL.add('ssm-state-tablet'),
+				onLeave: () => $htmlCL.remove('ssm-state-tablet')
 			});
 
 			ssm.addState({
 				id: 'desktop',
 				query: '(min-width: 1000px) and (max-width: 1400px)',
-				onEnter: () => {
-					$htmlCL.add('ssm-state-desktop');
-				},
-				onLeave: () => {
-					$htmlCL.remove('ssm-state-desktop');
-				}
+				onEnter: () => $htmlCL.add('ssm-state-desktop'),
+				onLeave: () => $htmlCL.remove('ssm-state-desktop')
 			});
 
 			ssm.addState({
 				id: 'desktop-large',
 				query: '(min-width: 1401px)',
-				onEnter: () => {
-					$htmlCL.add('ssm-state-desktop-large');
-				},
-				onLeave: () => {
-					$htmlCL.remove('ssm-state-desktop-large');
-				}
+				onEnter: () => $htmlCL.add('ssm-state-desktop-large'),
+				onLeave: () => $htmlCL.remove('ssm-state-desktop-large')
 			});
 		} else {
 			$htmlCL.add('ssm-state-mobile', 'rl-mobile');

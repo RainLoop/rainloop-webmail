@@ -1,4 +1,4 @@
-import { SaveSettingsStep, Magics } from 'Common/Enums';
+import { SaveSettingsStep } from 'Common/Enums';
 
 const
 	$ = jQuery,
@@ -152,7 +152,7 @@ ko.bindingHandlers.tooltipErrorTip = {
 			value = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
 		if (value) {
-			setTimeout(() => element.setAttribute('data-rainloopErrorTip', value), Magics.Time100ms);
+			setTimeout(() => element.setAttribute('data-rainloopErrorTip', value), 100);
 		} else {
 			element.removeAttribute('data-rainloopErrorTip');
 		}
@@ -329,7 +329,7 @@ ko.bindingHandlers.modal = {
 			Globals.$htmlCL.add('rl-modal-animation');
 			setTimeout(() => {
 				Globals.$htmlCL.remove('rl-modal-animation');
-			}, Magics.Time500ms);
+			}, 500);
 		}
 	}
 };

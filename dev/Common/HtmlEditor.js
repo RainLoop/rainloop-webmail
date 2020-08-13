@@ -1,5 +1,5 @@
 import { htmlEditorDefaultConfig, htmlEditorLangsMap } from 'Common/Globals';
-import { EventKeyCode, Magics } from 'Common/Enums';
+import { EventKeyCode } from 'Common/Enums';
 import * as Settings from 'Storage/Settings';
 
 class HtmlEditor {
@@ -57,7 +57,7 @@ class HtmlEditor {
 			clearTimeout(this.blurTimer);
 			this.blurTimer = setTimeout(() => {
 				this.runOnBlur();
-			}, Magics.Time200ms);
+			}, 200);
 		}
 	}
 

@@ -1,4 +1,4 @@
-import { Focused, Capa, ClientSideKeyName, Magics } from 'Common/Enums';
+import { Focused, Capa, ClientSideKeyName } from 'Common/Enums';
 import { $html, leftPanelDisabled, leftPanelType, moveAction, bMobileDevice } from 'Common/Globals';
 import { pString, pInt, windowResizeCallback } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
@@ -107,8 +107,8 @@ class MailBoxUserScreen extends AbstractScreen {
 		MessageStore.messageList.subscribe(windowResizeCallback);
 		MessageStore.message.subscribe(windowResizeCallback);
 
-		setTimeout(() => SettingsStore.layout.valueHasMutated(), Magics.Time50ms);
-		setTimeout(() => warmUpScreenPopup(require('View/Popup/Compose')), Magics.Time500ms);
+		setTimeout(() => SettingsStore.layout.valueHasMutated(), 50);
+		setTimeout(() => warmUpScreenPopup(require('View/Popup/Compose')), 500);
 
 		Events.sub('mailbox.inbox-unread-count', (count) => {
 			FolderStore.foldersInboxUnreadCount(count);

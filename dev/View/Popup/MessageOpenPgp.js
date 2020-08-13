@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { pString } from 'Common/Utils';
-import { KeyState, Magics } from 'Common/Enums';
+import { KeyState } from 'Common/Enums';
 
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
@@ -65,7 +65,7 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 
 			this.cancelCommand();
 			this.resultCallback(privateKey);
-		}, Magics.Time100ms);
+		}, 100);
 	}
 
 	clearPopup() {

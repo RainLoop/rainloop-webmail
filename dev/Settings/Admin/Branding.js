@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { Magics } from 'Common/Enums';
 import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
@@ -62,7 +61,7 @@ class BrandingAdminSettings {
 					'FaviconUrl': value.trim()
 				});
 			});
-		}, Magics.Time50ms);
+		}, 50);
 	}
 }
 

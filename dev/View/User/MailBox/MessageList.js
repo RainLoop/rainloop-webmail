@@ -6,7 +6,6 @@ import {
 	Focused,
 	ComposeType,
 	FolderType,
-	Magics,
 	MessageSetAction,
 	KeyState,
 	StorageResultType
@@ -434,7 +433,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 				this.selector.unselect();
 				this.gotoPage(up ? prev : next);
 			}
-		}, Magics.Time350ms);
+		}, 350);
 
 		return true;
 	}
@@ -775,11 +774,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		this.initShortcuts();
 
 		if (!bMobileDevice && ifvisible && Settings.capa(Capa.Prefetch)) {
-			ifvisible.setIdleDuration(Magics.ifvisibleIdle10s);
-
-			ifvisible.idle(() => {
-				this.prefetchNextTick();
-			});
+			ifvisible.idle(this.prefetchNextTick.bind(this));
 		}
 	}
 
@@ -949,7 +944,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 							if (next) {
 								this.prefetchNextTick();
 							}
-						}, Magics.Time1s);
+						}, 1000);
 					},
 					message.folderFullNameRaw,
 					message.uid

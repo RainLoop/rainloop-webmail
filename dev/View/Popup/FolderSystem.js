@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { SetSystemFoldersNotification, Magics } from 'Common/Enums';
+import { SetSystemFoldersNotification } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { folderListOptionsBuilder, defautOptionsAfterRender } from 'Common/Utils';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
@@ -76,7 +76,7 @@ class FolderSystemPopupView extends AbstractViewNext {
 						ArchiveFolder: FolderStore.archiveFolder(),
 						NullFolder: 'NullFolder'
 					});
-				}, Magics.Time1s);
+				}, 1000);
 			},
 			fCallback = () => {
 				fSetSystemFolders();

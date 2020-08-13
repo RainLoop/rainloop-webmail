@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { triggerAutocompleteInputChange } from 'Common/Utils';
 
-import { StorageResultType, Notification, Magics } from 'Common/Enums';
+import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 import { $win } from 'Common/Globals';
 
@@ -104,7 +104,7 @@ class LoginAdminView extends AbstractViewNext {
 
 		setTimeout(() => {
 			this.loginFocus(true);
-		}, Magics.Time100ms);
+		}, 100);
 	}
 
 	onHide() {

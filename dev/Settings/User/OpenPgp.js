@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { delegateRunOnDestroy } from 'Common/Utils';
-import { Magics } from 'Common/Enums';
 
 import PgpStore from 'Stores/User/Pgp';
 import SettingsStore from 'Stores/User/Settings';
@@ -64,7 +63,7 @@ class OpenPgpUserSettings {
 	onBuild() {
 		setTimeout(() => {
 			this.allowDraftAutosave.subscribe(Remote.saveSettingsHelper('AllowDraftAutosave', v=>v?'1':'0'));
-		}, Magics.Time50ms);
+		}, 50);
 	}
 }
 

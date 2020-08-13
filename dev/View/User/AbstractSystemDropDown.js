@@ -4,7 +4,7 @@ import AppStore from 'Stores/User/App';
 import AccountStore from 'Stores/User/Account';
 import MessageStore from 'Stores/User/Message';
 
-import { Capa, Magics, KeyState } from 'Common/Enums';
+import { Capa, KeyState } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
 import * as Events from 'Common/Events';
@@ -51,7 +51,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 	accountClick(account, event) {
 		if (account && event && undefined !== event.which && 1 === event.which) {
 			AccountStore.accounts.loading(true);
-			setTimeout(() => AccountStore.accounts.loading(false), Magics.Time1s);
+			setTimeout(() => AccountStore.accounts.loading(false), 1000);
 		}
 
 		return true;

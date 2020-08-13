@@ -10,7 +10,6 @@ import {
 	FolderType,
 	Focused,
 	Layout,
-	Magics,
 	MessageSetAction
 } from 'Common/Enums';
 
@@ -259,7 +258,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				if (Local.get(ClientSideKeyName.MessageAttachmnetControls)) {
 					setTimeout(() => {
 						this.showAttachmnetControls(true);
-					}, Magics.Time50ms);
+					}, 50);
 				}
 
 				if (this.viewHash !== message.hash) {
@@ -433,8 +432,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			this.viewBodyTopValue(
 				this.message()
 					? this.oHeaderDom.height() +
-					  Magics.Size20px /* padding-(top/bottom): 20px */ +
-							Magics.Size1px /* borded-bottom: 1px */
+					  20 /* padding-(top/bottom): 20px */ +
+					   1 /* borded-bottom: 1px */
 					: 0
 			);
 		}
@@ -545,17 +544,17 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				if (!t) {
 					t = setTimeout(()=>{
 						setTimeout(fCheckHeaderHeight, 1);
-						setTimeout(fCheckHeaderHeight, Magics.Time200ms);
-						setTimeout(fCheckHeaderHeight, Magics.Time500ms);
+						setTimeout(fCheckHeaderHeight, 200);
+						setTimeout(fCheckHeaderHeight, 500);
 						t = 0;
-					}, Magics.Time50ms);
+					}, 50);
 				}
 			}
 		);
 
 		this.showFullInfo.subscribe((value) => {
 			windowResize();
-			windowResize(Magics.Time200ms);
+			windowResize(200);
 			Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0');
 		});
 
@@ -574,7 +573,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				// setup maito protocol
 				return !(
 					!!event &&
-					Magics.EventWhichMouseMiddle !== event.which &&
+					3 !== event.which &&
 					mailToHelper(
 						jQuery(this).attr('href'),
 						Settings.capa(Capa.Composer) ? require('View/Popup/Compose') : null // eslint-disable-line no-invalid-this
@@ -865,8 +864,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	scrollMessageToTop() {
 		if (this.oMessageScrollerDom) {
-			if (Magics.Size50px < this.oMessageScrollerDom.scrollTop) {
-				this.oMessageScrollerDom.scrollTop = Magics.Size50px;
+			if (50 < this.oMessageScrollerDom.scrollTop) {
+				this.oMessageScrollerDom.scrollTop = 50;
 			} else {
 				this.oMessageScrollerDom.scrollTop = 0;
 			}

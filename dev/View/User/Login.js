@@ -5,7 +5,6 @@ import {
 	LoginSignMeTypeAsString,
 	ClientSideKeyName,
 	StorageResultType,
-	Magics,
 	Notification
 } from 'Common/Enums';
 
@@ -216,7 +215,7 @@ class LoginUserView extends AbstractViewNext {
 								this.additionalCode.visibility(true);
 								this.submitRequest(false);
 
-								setTimeout(() => this.additionalCode.focused(true), Magics.Time100ms);
+								setTimeout(() => this.additionalCode.focused(true), 100);
 							} else if (oData.Admin) {
 								getApp().redirectToAdminPanel();
 							} else {
@@ -330,7 +329,7 @@ class LoginUserView extends AbstractViewNext {
 					}
 				);
 			});
-		}, Magics.Time50ms);
+		}, 50);
 
 		triggerAutocompleteInputChange(true);
 	}
@@ -347,7 +346,7 @@ class LoginUserView extends AbstractViewNext {
 		if (!bShift) {
 			setTimeout(() => {
 				this.emailFocus(true);
-			}, Magics.Time50ms);
+			}, 50);
 
 			return false;
 		}

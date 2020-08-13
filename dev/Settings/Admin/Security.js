@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { StorageResultType, Magics } from 'Common/Enums';
+import { StorageResultType } from 'Common/Enums';
 
 import { settingsGet } from 'Storage/Settings';
 
@@ -105,7 +105,7 @@ class SecurityAdminSettings {
 
 		setTimeout(() => {
 			this.twoFactorDropperUser.focused(true);
-		}, Magics.Time50ms);
+		}, 50);
 	}
 
 	onNewAdminPasswordResponse(result, data) {

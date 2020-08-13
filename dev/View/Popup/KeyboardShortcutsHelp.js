@@ -1,4 +1,4 @@
-import { KeyState, Magics } from 'Common/Enums';
+import { KeyState } from 'Common/Enums';
 
 import { popup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
@@ -44,7 +44,7 @@ class KeyboardShortcutsHelpPopupView extends AbstractViewNext {
 						}
 
 						return true;
-					}, Magics.Time100ms);
+					}, 100);
 				}
 			}
 		);

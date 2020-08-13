@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 
-import { SaveSettingsStep, Magics, EditorDefaultType, Layout } from 'Common/Enums';
+import { SaveSettingsStep, EditorDefaultType, Layout } from 'Common/Enums';
 
 import { settingsSaveHelperSimpleFunction, convertLangName, timeOutAction } from 'Common/Utils';
 
@@ -45,7 +45,7 @@ class GeneralUserSettings {
 		this.allowLanguagesOnSettings = AppStore.allowLanguagesOnSettings;
 
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
-		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: Magics.Time100ms });
+		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
 
 		this.mppTrigger = ko.observable(SaveSettingsStep.Idle);
 		this.editorDefaultTypeTrigger = ko.observable(SaveSettingsStep.Idle);
@@ -101,7 +101,7 @@ class GeneralUserSettings {
 				f2 = settingsSaveHelperSimpleFunction(this.layoutTrigger, this),
 				fReloadLanguageHelper = (saveSettingsStep) => () => {
 					this.languageTrigger(saveSettingsStep);
-					setTimeout(() => this.languageTrigger(SaveSettingsStep.Idle), Magics.Time1s);
+					setTimeout(() => this.languageTrigger(SaveSettingsStep.Idle), 1000);
 				};
 
 			this.language.subscribe((value) => {
@@ -129,7 +129,7 @@ class GeneralUserSettings {
 							'DesktopNotifications': value ? '1' : '0'
 						});
 					},
-					Magics.Time3s
+					3000
 				);
 			});
 
@@ -141,7 +141,7 @@ class GeneralUserSettings {
 							'SoundNotification': value ? '1' : '0'
 						});
 					},
-					Magics.Time3s
+					3000
 				);
 			});
 
@@ -153,7 +153,7 @@ class GeneralUserSettings {
 							'ReplySameFolder': value ? '1' : '0'
 						});
 					},
-					Magics.Time3s
+					3000
 				);
 			});
 
@@ -170,7 +170,7 @@ class GeneralUserSettings {
 					'Layout': value
 				});
 			});
-		}, Magics.Time50ms);
+		}, 50);
 	}
 
 	onShow() {

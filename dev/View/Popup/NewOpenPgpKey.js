@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { Magics } from 'Common/Enums';
 import { delegateRun, pInt } from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
@@ -24,7 +23,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 
 		this.name = ko.observable('');
 		this.password = ko.observable('');
-		this.keyBitLength = ko.observable(Magics.BitLength2048);
+		this.keyBitLength = ko.observable(2048);
 
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');
@@ -81,7 +80,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 				this.submitRequest(false);
 				this.showError(e);
 			}
-		}, Magics.Time100ms);
+		}, 100);
 
 		return true;
 	}
@@ -99,7 +98,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 
 		this.email('');
 		this.email.error(false);
-		this.keyBitLength(Magics.BitLength2048);
+		this.keyBitLength(2048);
 
 		this.submitError('');
 	}

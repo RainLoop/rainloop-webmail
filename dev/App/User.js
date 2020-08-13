@@ -16,8 +16,7 @@ import {
 	FolderType,
 	SetSystemFoldersNotification,
 	MessageSetAction,
-	ClientSideKeyName,
-	Magics
+	ClientSideKeyName
 } from 'Common/Enums';
 
 import { $htmlCL, leftPanelDisabled, bMobileDevice } from 'Common/Globals';
@@ -125,29 +124,26 @@ class AppUser extends AbstractApp {
 		this.quotaDebounce = ()=>{
 			// debounce
 			qd && clearTimeout(qd);
-			qd = setTimeout(o.quota, Magics.Time30s);
+			qd = setTimeout(o.quota, 30000);
 		};
 
 		this.moveOrDeleteResponseHelper = this.moveOrDeleteResponseHelper.bind(this);
 
-		setInterval(() => Events.pub('interval.30s'), Magics.Time30s);
-		setInterval(() => Events.pub('interval.1m'), Magics.Time1m);
-		setInterval(() => Events.pub('interval.2m'), Magics.Time2m);
-		setInterval(() => Events.pub('interval.3m'), Magics.Time3m);
-		setInterval(() => Events.pub('interval.5m'), Magics.Time5m);
-		setInterval(() => Events.pub('interval.10m'), Magics.Time10m);
-		setInterval(() => Events.pub('interval.15m'), Magics.Time15m);
-		setInterval(() => Events.pub('interval.20m'), Magics.Time20m);
+		setInterval(() => Events.pub('interval.30s'), 30000);
+		setInterval(() => Events.pub('interval.1m'), 60000);
+		setInterval(() => Events.pub('interval.2m'), 120000);
+		setInterval(() => Events.pub('interval.3m'), 180000);
+		setInterval(() => Events.pub('interval.5m'), 300000);
+		setInterval(() => Events.pub('interval.10m'), 600000);
+		setInterval(() => Events.pub('interval.15m'), 900000);
+		setInterval(() => Events.pub('interval.20m'), 1200000);
 
-		setTimeout(() => setInterval(() => Events.pub('interval.2m-after5m'), Magics.Time2m), Magics.Time5m);
-		setTimeout(() => setInterval(() => Events.pub('interval.5m-after5m'), Magics.Time5m), Magics.Time5m);
-		setTimeout(
-			() => setInterval(() => Events.pub('interval.10m-after5m'), Magics.Time10m),
-			Magics.Time5m
-		);
+		setTimeout(() => setInterval(() => Events.pub('interval.2m-after5m'), 120000), 300000);
+		setTimeout(() => setInterval(() => Events.pub('interval.5m-after5m'), 300000), 300000);
+		setTimeout(() => setInterval(() => Events.pub('interval.10m-after5m'), 600000), 300000);
 
 		// wakeUp
-		const interval = Magics.Time60m;
+		const interval = 3600000; // 60m
 		var lastTime = (new Date()).getTime();
 		setInterval(() => {
 			const currentTime = (new Date()).getTime();
@@ -175,7 +171,7 @@ class AppUser extends AbstractApp {
 					$htmlCL.add('UserBackground');
 					doc.body.style.backgroundImage = "url("+img+")";
 				}
-			}, Magics.Time1s);
+			}, 1000);
 		}
 	}
 
@@ -1145,8 +1141,8 @@ class AppUser extends AbstractApp {
 						contactsSyncInterval = 5 <= contactsSyncInterval ? contactsSyncInterval : 20;
 						contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
 
-						setTimeout(() => this.contactsSync(), Magics.Time10s);
-						setTimeout(() => this.folderInformationMultiply(true), Magics.Time2s);
+						setTimeout(() => this.contactsSync(), 10000);
+						setTimeout(() => this.folderInformationMultiply(true), 2000);
 
 						setInterval(() => this.contactsSync(), contactsSyncInterval * 60000 + 5000);
 

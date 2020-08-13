@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { KeyState, Magics, StorageResultType, Notification } from 'Common/Enums';
+import { KeyState, StorageResultType, Notification } from 'Common/Enums';
 import { isNonEmptyArray, delegateRun } from 'Common/Utils';
 import { getNotification, i18n } from 'Common/Translator';
 
@@ -45,7 +45,7 @@ class PluginPopupView extends AbstractViewNext {
 		this.tryToClosePopup = ()=>{
 			// debounce
 			d && clearTimeout(d);
-			d = setTimeout(fn, Magics.Time200ms);
+			d = setTimeout(fn, 200);
 		};
 	}
 

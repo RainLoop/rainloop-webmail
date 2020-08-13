@@ -60,7 +60,7 @@ export default (App) => {
 			$htmlCL.add('rl-booted');
 
 			App.bootstart();
-		}, Enums.Magics.Time10ms);
+		}, 10);
 	};
 
 	window.__APP_BOOT = fErrorCallback => {
@@ -74,7 +74,7 @@ export default (App) => {
 				}
 
 				window.__APP_BOOT = null;
-			}, Enums.Magics.Time10ms);
+			}, 10);
 		});
 	};
 };

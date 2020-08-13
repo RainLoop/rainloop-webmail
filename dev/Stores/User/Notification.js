@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { DesktopNotification, Magics } from 'Common/Enums';
+import { DesktopNotification } from 'Common/Enums';
 import * as Events from 'Common/Events';
 import Audio from 'Common/Audio';
 
@@ -153,7 +153,7 @@ class NotificationUserStore {
 							}
 						};
 					})(notification),
-					Magics.Time7s
+					7000
 				);
 			}
 		}

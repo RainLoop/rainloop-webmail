@@ -5,7 +5,6 @@ import {
 	ContactPropertyType,
 	ComposeType,
 	Capa,
-	Magics,
 	StorageResultType,
 	Notification,
 	KeyState
@@ -274,7 +273,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 			setTimeout(() => {
 				showScreenPopup(require('View/Popup/Compose'), [ComposeType.Empty, null, toEmails, ccEmails, bccEmails]);
-			}, Magics.Time200ms);
+			}, 200);
 		}
 
 		return true;
@@ -325,14 +324,14 @@ class ContactsPopupView extends AbstractViewNext {
 
 				setTimeout(() => {
 					this.viewSaveTrigger(res ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult);
-				}, Magics.Time350ms);
+				}, 350);
 
 				if (res) {
 					this.watchDirty(false);
 
 					setTimeout(() => {
 						this.viewSaveTrigger(SaveSettingsStep.Idle);
-					}, Magics.Time1s);
+					}, 1000);
 				}
 			},
 			requestUid,
@@ -471,7 +470,7 @@ class ContactsPopupView extends AbstractViewNext {
 					koContacts.remove(contact);
 					delegateRunOnDestroy(contact);
 				});
-			}, Magics.Time500ms);
+			}, 500);
 		}
 	}
 
@@ -488,12 +487,12 @@ class ContactsPopupView extends AbstractViewNext {
 	 * @param {AjaxJsonDefaultResponse} oData
 	 */
 	deleteResponse(sResult, oData) {
-		if (Magics.Time500ms < (StorageResultType.Success === sResult && oData && oData.Time ? pInt(oData.Time) : 0)) {
+		if (500 < (StorageResultType.Success === sResult && oData && oData.Time ? pInt(oData.Time) : 0)) {
 			this.reloadContactList(this.bDropPageAfterDelete);
 		} else {
 			setTimeout(() => {
 				this.reloadContactList(this.bDropPageAfterDelete);
-			}, Magics.Time500ms);
+			}, 500);
 		}
 	}
 

@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { Magics, Layout, Focused, MessageSetAction, StorageResultType, Notification } from 'Common/Enums';
+import { Layout, Focused, MessageSetAction, StorageResultType, Notification } from 'Common/Enums';
 
 import {
 	isNormal,
@@ -102,7 +102,7 @@ class MessageUserStore {
 
 		this.messageCurrentLoading = ko.observable(false);
 
-		this.messageLoadingThrottle = ko.observable(false).extend({ throttle: Magics.Time50ms });
+		this.messageLoadingThrottle = ko.observable(false).extend({ throttle: 50 });
 
 		this.messageFullScreenMode = ko.observable(false);
 
@@ -121,7 +121,7 @@ class MessageUserStore {
 				t = setTimeout(()=>{
 					o.purgeMessageBodyCache();
 					t = 0;
-				}, Magics.Time30s);
+				}, 30000);
 			}
 		};
 	}
@@ -214,7 +214,7 @@ class MessageUserStore {
 					if (item && item.newForAnimation()) {
 						item.newForAnimation(false);
 					}
-				}), Magics.Time500ms);
+				}), 500);
 			}
 		);
 
@@ -265,7 +265,7 @@ class MessageUserStore {
 				});
 
 				if (0 < count) {
-					setTimeout(() => messagesDom.find('.rl-cache-purge').remove(), Magics.Time350ms);
+					setTimeout(() => messagesDom.find('.rl-cache-purge').remove(), 350);
 				}
 			}
 		}
@@ -388,7 +388,7 @@ class MessageUserStore {
 					messages.forEach(item => {
 						this.messageList.remove(item);
 					});
-				}, Magics.Time350ms);
+				}, 350);
 			}
 		}
 

@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { isNormal, windowResize } from 'Common/Utils';
-import { Capa, Focused, Layout, KeyState, EventKeyCode, Magics } from 'Common/Enums';
+import { Capa, Focused, Layout, KeyState, EventKeyCode } from 'Common/Enums';
 import { $htmlCL, leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
@@ -199,7 +199,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				folder.collapsed(false);
 				getApp().setExpandedFolder(folder.fullNameHash, true);
 				windowResize();
-			}, Magics.Time500ms);
+			}, 500);
 		}
 	}
 

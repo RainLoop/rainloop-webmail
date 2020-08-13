@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { SaveSettingsStep, UploadErrorCode, Capa, Magics } from 'Common/Enums';
+import { SaveSettingsStep, UploadErrorCode, Capa } from 'Common/Enums';
 import { changeTheme, convertThemeName } from 'Common/Utils';
 import { userBackground, themePreviewLink, uploadBackground } from 'Common/Links';
 import { i18n } from 'Common/Translator';
@@ -26,7 +26,7 @@ class ThemesUserSettings {
 
 		this.capaUserBackground = ko.observable(capa(Capa.UserBackground));
 
-		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: Magics.Time100ms });
+		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
 
 		this.iTimer = 0;
 		this.oThemeAjaxRequest = null;

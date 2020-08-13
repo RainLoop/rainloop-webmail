@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { MESSAGES_PER_PAGE, MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
-import { Layout, EditorDefaultType, Magics } from 'Common/Enums';
+import { Layout, EditorDefaultType } from 'Common/Enums';
 import { $htmlCL } from 'Common/Globals';
 import { pInt } from 'Common/Utils';
 import * as Events from 'Common/Events';
@@ -33,7 +33,7 @@ class SettingsUserStore {
 		this.useThreads = ko.observable(false);
 		this.replySameFolder = ko.observable(false);
 
-		this.autoLogout = ko.observable(Magics.Time30mInMin);
+		this.autoLogout = ko.observable(30);
 
 		this.computers();
 		this.subscribers();
@@ -70,7 +70,7 @@ class SettingsUserStore {
 			if (0 < this.autoLogout() && !Settings.settingsGet('AccountSignMe')) {
 				this.iAutoLogoutTimer = setTimeout(() => {
 					Events.pub('rl.auto-logout');
-				}, this.autoLogout() * Magics.Time1m);
+				}, this.autoLogout() * 60000);
 			}
 		});
 

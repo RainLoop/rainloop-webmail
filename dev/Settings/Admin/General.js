@@ -8,7 +8,7 @@ import {
 	convertLangName
 } from 'Common/Utils';
 
-import { SaveSettingsStep, Magics } from 'Common/Enums';
+import { SaveSettingsStep } from 'Common/Enums';
 import { reload as translatorReload } from 'Common/Translator';
 
 import { settingsGet } from 'Storage/Settings';
@@ -45,7 +45,7 @@ class GeneralAdminSettings {
 		this.dataFolderAccess = AppAdminStore.dataFolderAccess;
 
 		this.mainAttachmentLimit = ko
-			.observable(pInt(settingsGet('AttachmentLimit')) / (Magics.BitLength1024 * Magics.BitLength1024))
+			.observable(pInt(settingsGet('AttachmentLimit')) / (1024 * 1024))
 			.extend({ posInterer: 25 });
 
 		this.uploadData = settingsGet('PhpUploadSizes');
@@ -68,7 +68,7 @@ class GeneralAdminSettings {
 
 		this.attachmentLimitTrigger = ko.observable(SaveSettingsStep.Idle);
 		this.languageTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: Magics.Time100ms });
+		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
 		this.themeTrigger = ko.observable(SaveSettingsStep.Idle);
 	}
 
@@ -79,7 +79,7 @@ class GeneralAdminSettings {
 				f3 = settingsSaveHelperSimpleFunction(this.themeTrigger, this),
 				fReloadLanguageHelper = (saveSettingsStep) => () => {
 					this.languageAdminTrigger(saveSettingsStep);
-					setTimeout(() => this.languageAdminTrigger(SaveSettingsStep.Idle), Magics.Time1s);
+					setTimeout(() => this.languageAdminTrigger(SaveSettingsStep.Idle), 1000);
 				};
 
 			this.mainAttachmentLimit.subscribe((value) => {
@@ -159,7 +159,7 @@ class GeneralAdminSettings {
 					'NewMoveToFolder': value ? '1' : '0'
 				});
 			});
-		}, Magics.Time50ms);
+		}, 50);
 	}
 
 	selectLanguage() {

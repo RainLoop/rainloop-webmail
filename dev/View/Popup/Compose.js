@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import {
 	Capa,
-	Magics,
 	KeyState,
 	ComposeType,
 	StorageResultType,
@@ -328,7 +327,7 @@ class ComposePopupView extends AbstractViewNext {
 		var d, fn = this.tryToClosePopup.bind(this);
 		this.tryToClosePopup = ()=>{
 			d && clearTimeout(d);
-			d = setTimeout(fn, Magics.Time200ms);
+			d = setTimeout(fn, 200);
 		};
 
 		this.emailsSource = this.emailsSource.bind(this);
@@ -506,7 +505,7 @@ class ComposePopupView extends AbstractViewNext {
 			this.skipCommand();
 			setTimeout(() => {
 				showScreenPopup(require('View/Popup/Contacts'), [true, this.sLastFocusedField]);
-			}, Magics.Time200ms);
+			}, 200);
 		}
 	}
 
@@ -528,7 +527,7 @@ class ComposePopupView extends AbstractViewNext {
 
 	autosaveStart() {
 		clearTimeout(this.iTimer);
-		this.iTimer = setTimeout(this.autosaveFunction, Magics.Time1m);
+		this.iTimer = setTimeout(this.autosaveFunction, 60000);
 	}
 
 	autosaveStop() {
@@ -1174,7 +1173,7 @@ class ComposePopupView extends AbstractViewNext {
 						this.oEditor.focus();
 					}
 				}
-			}, Magics.Time100ms);
+			}, 100);
 		}
 	}
 
@@ -1250,14 +1249,14 @@ class ComposePopupView extends AbstractViewNext {
 		Events.sub('window.resize.real', ()=>{
 			// debounce
 			d && clearTimeout(d);
-			d = setTimeout(o.resizerTrigger, Magics.Time50ms);
+			d = setTimeout(o.resizerTrigger, 50);
 		});
 
 		setInterval(() => {
 			if (this.modalVisibility() && this.oEditor) {
 				this.oEditor.resize();
 			}
-		}, Magics.Time5s);
+		}, 5000);
 	}
 
 	/**

@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { pString, defautOptionsAfterRender } from 'Common/Utils';
 
-import { Magics, KeyState } from 'Common/Enums';
+import { KeyState } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
 import PgpStore from 'Stores/User/Pgp';
@@ -234,7 +234,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 				}
 
 				this.submitRequest(false);
-			}, Magics.Time20ms);
+			}, 20);
 		} else {
 			this.submitRequest(false);
 		}

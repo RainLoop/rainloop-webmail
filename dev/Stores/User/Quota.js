@@ -1,7 +1,5 @@
 import ko from 'ko';
 
-import { Magics } from 'Common/Enums';
-
 class QuotaUserStore {
 	constructor() {
 		this.quota = ko.observable(0);
@@ -20,8 +18,8 @@ class QuotaUserStore {
 	 * @param {number} usage
 	 */
 	populateData(quota, usage) {
-		this.quota(quota * Magics.BitLength1024);
-		this.usage(usage * Magics.BitLength1024);
+		this.quota(quota * 1024);
+		this.usage(usage * 1024);
 	}
 }
 

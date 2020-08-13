@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { Magics } from 'Common/Enums';
 import { runHook } from 'Common/Plugins';
 import { $htmlCL, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
 
@@ -548,7 +547,7 @@ function settingsMenuKeysHandler($items) {
 					}
 				}
 				t = 0;
-			}, Magics.Time200ms);
+			}, 200);
 		}
 	};
 }
