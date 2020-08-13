@@ -84,7 +84,6 @@ config.paths.js = {
 			'node_modules/knockout/build/output/knockout-latest.js',
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',
 			'node_modules/simplestatemanager/dist/ssm.min.js',
-			'node_modules/autolinker/dist/Autolinker.min.js',
 			'vendors/lightgallery/dist/js/lightgallery.min.js', // license
 			'vendors/lightgallery/dist/js/lg-fullscreen.min.js',
 			'vendors/lightgallery/dist/js/lg-thumbnail.min.js',

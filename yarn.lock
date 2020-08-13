@@ -1396,13 +1396,6 @@ atob@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
 
-autolinker@3.13.0:
-  version "3.13.0"
-  resolved "https://registry.yarnpkg.com/autolinker/-/autolinker-3.13.0.tgz#7a51244bb11bf75de89a48047919e93071e78f43"
-  integrity sha512-qlM0Su9lYYJ7lAth6xxB0rRdpS4FGmRboaghmM45Ud6ygGZa/TK/cbRAX6afvusJ79vyciy18QSKrWTM6cJHiw==
-  dependencies:
-    tslib "^1.9.3"
-
 autoprefixer@^9.6.1:
   version "9.6.5"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-9.6.5.tgz#98f4afe7e93cccf323287515d426019619775e5e"
