@@ -1,17 +1,9 @@
-import Opentip from 'Opentip';
-
 import { SaveSettingsStep, Magics } from 'Common/Enums';
 
 const
 	$ = jQuery,
 	ko = window.ko,
-	fDisposalTooltipHelper = (element) => {
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			if (element && element.__opentip) {
-				element.__opentip.deactivate();
-			}
-		});
-	},
+	Translator = () => require('Common/Translator'),
 	isFunction = v => typeof v === 'function';
 
 ko.bindingHandlers.editor = {
@@ -112,79 +104,35 @@ ko.bindingHandlers.visibleAnimated = {
 
 ko.bindingHandlers.tooltip = {
 	init: (element, fValueAccessor) => {
-		const $el = $(element),
-			fValue = fValueAccessor(),
-			isMobile = 'on' === ($el.data('tooltip-mobile') || 'off'),
-			isI18N = 'on' === ($el.data('tooltip-i18n') || 'on'),
+		const fValue = fValueAccessor(),
 			Globals = require('Common/Globals');
 
-		if (!Globals.bMobileDevice || isMobile) {
+		if (!Globals.bMobileDevice || 'on' === element.dataset.tooltipMobile) {
 			const sValue = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
-			element.__opentip = new Opentip(element, {
-				'style': 'rainloopTip',
-				'element': element,
-				'tipJoint': $el.data('tooltip-join') || 'bottom'
-			});
-
-			Globals.dropdownVisibility.subscribe((v) => {
-				if (v) {
-					element.__opentip.hide();
-				}
-			});
-
-			if (sValue) {
-				element.__opentip.activate();
+			if ('off' === element.dataset.tooltipI18n) {
+				element.title = sValue;
 			} else {
-				element.__opentip.hide();
-				element.__opentip.deactivate();
-				element.__opentip.setContent('');
+				element.title = Translator().i18n(sValue);
+				Translator().trigger.subscribe(() =>
+					element.title = Translator().i18n(sValue)
+				);
+				Globals.dropdownVisibility.subscribe(() =>
+					element.title = Translator().i18n(sValue)
+				);
 			}
-
-			if (isI18N) {
-				const Translator = require('Common/Translator');
-
-				element.__opentip.setContent(Translator.i18n(sValue));
-
-				Translator.trigger.subscribe(() => {
-					element.__opentip.setContent(Translator.i18n(sValue));
-				});
-
-				Globals.dropdownVisibility.subscribe(() => {
-					if (element && element.__opentip) {
-						element.__opentip.setContent(Translator.i18n(sValue));
-					}
-				});
-			} else {
-				element.__opentip.setContent(sValue);
-			}
-
-			addEventListener('rl.tooltips.diactivate', () => {
-				element.__opentip.hide();
-				element.__opentip.deactivate();
-			});
-
-			addEventListener('rl.tooltips.activate', () => {
-				element.__opentip.activate();
-			});
 		}
 	},
 	update: (element, fValueAccessor) => {
-		const $el = $(element),
-			fValue = fValueAccessor(),
-			isMobile = 'on' === ($el.data('tooltip-mobile') || 'off'),
-			isI18N = 'on' === ($el.data('tooltip-i18n') || 'on'),
+		const fValue = fValueAccessor(),
 			Globals = require('Common/Globals');
 
-		if ((!Globals.bMobileDevice || isMobile) && element.__opentip) {
+		if (!Globals.bMobileDevice || 'on' === element.dataset.tooltipMobile) {
 			const sValue = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 			if (sValue) {
-				element.__opentip.setContent(isI18N ? require('Common/Translator').i18n(sValue) : sValue);
-				element.__opentip.activate();
+				element.title = 'off' === element.dataset.tooltipI18n ? sValue : Translator().i18n(sValue);
 			} else {
-				element.__opentip.hide();
-				element.__opentip.deactivate();
-				element.__opentip.setContent('');
+				element.title = '';
 			}
 		}
 	}
@@ -192,49 +140,21 @@ ko.bindingHandlers.tooltip = {
 
 ko.bindingHandlers.tooltipErrorTip = {
 	init: function(element) {
-		const $el = $(element);
-
-		element.__opentip = new Opentip(element, {
-			style: 'rainloopErrorTip',
-			hideOn: 'mouseout click',
-			element: element,
-			tipJoint: $el.data('tooltip-join') || 'top'
-		});
-
-		element.__opentip.deactivate();
-
 		$(document).on('click', () => {
-			if (element && element.__opentip) {
-				element.__opentip.hide();
-			}
+			element.removeAttribute('data-rainloopErrorTip')
 		});
-
-		fDisposalTooltipHelper(element);
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			element.removeAttribute('data-rainloopErrorTip')
+		});
 	},
 	update: (element, fValueAccessor) => {
-		const $el = $(element),
-			fValue = fValueAccessor(),
-			value = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue),
-			openTips = element.__opentip;
+		const fValue = fValueAccessor(),
+			value = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
-		if (openTips) {
-			if (value) {
-				setTimeout(() => {
-					if ($el.is(':visible')) {
-						openTips.setContent(value);
-						openTips.activate();
-						openTips.show();
-					} else {
-						openTips.hide();
-						openTips.deactivate();
-						openTips.setContent('');
-					}
-				}, Magics.Time100ms);
-			} else {
-				openTips.hide();
-				openTips.deactivate();
-				openTips.setContent('');
-			}
+		if (value) {
+			setTimeout(() => element.setAttribute('data-rainloopErrorTip', value), Magics.Time100ms);
+		} else {
+			element.removeAttribute('data-rainloopErrorTip');
 		}
 	}
 };

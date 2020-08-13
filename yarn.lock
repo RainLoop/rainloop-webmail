@@ -5107,16 +5107,6 @@ openpgp@2.6.2:
     node-fetch "^1.3.3"
     node-localstorage "~1.3.0"
 
-opentip@2.4.3:
-  version "2.4.3"
-  resolved "https://registry.yarnpkg.com/opentip/-/opentip-2.4.3.tgz#2a3b500c2738f8069c33462ed48b5afe9ce804e6"
-  dependencies:
-    bean "0.x"
-    bonzo "1.x"
-    domready "0.x"
-    qwery "3.x"
-    reqwest "0.x"
-
 optionator@^0.8.2:
   version "0.8.2"
   resolved "https://registry.yarnpkg.com/optionator/-/optionator-0.8.2.tgz#364c5e409d3f4d6301d6c0b4c05bba50180aeb64"

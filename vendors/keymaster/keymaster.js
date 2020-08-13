@@ -149,7 +149,7 @@
   });
 
   // reset modifiers to false whenever the window is (re)focused.
-  window.addEventListener('focus', () => {
+  addEventListener('focus', () => {
     for(let k in _mods) _mods[k] = false;
     for(let k in _MODIFIERS) assignKey[k] = false;
   });

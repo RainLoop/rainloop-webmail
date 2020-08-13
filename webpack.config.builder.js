@@ -84,7 +84,6 @@ module.exports = function(publicPath, pro, mode) {
 			modules: [devPath, 'node_modules'],
 			extensions: ['.js'],
 			alias: {
-				'Opentip$': path.join(externalPathJoin, 'Opentip.js'),
 				'ko$': path.join(externalPathJoin, 'ko.js')
 			}
 		},

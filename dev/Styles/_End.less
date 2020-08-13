@@ -23,42 +23,54 @@
 	opacity: 0;
 }
 
-.opentip-container {
-
+[data-rainloopTip],
+[data-rainloopErrorTip] {
+	position: relative;
+}
+[data-rainloopTip]::before,
+[data-rainloopErrorTip]::before {
+	background: #fff;
+	border-radius: 3px;
+	border: 1px solid #999;
+	content : attr(data-rainloopTip);
+	font-size: 13px;
+	left: 100%;
+	opacity : 0;
+	padding: 0.25em;
+	position : absolute;
+	text-align: left;
+	top: 100%;
+	transition: opacity 0.2s ease-in-out;
+	white-space: nowrap;
 	z-index: 2001 !important;
-	.ot-content {
-		font-size: 13px;
+}
+@media only screen and (max-width: 600px) {
+	[data-rainloopTip]::before,
+	[data-rainloopErrorTip]::before {
+		min-width: 60vw;
+		white-space: normal;
 	}
-
-	&.style-rainloopErrorTip .ot-content {
-		color: red;
-	}
-
-	&.ot-show-effect-none, &.ot-hide-effect-none {
-		transition: none !important;
-	}
-
-	&.ot-show-effect-fade {
-
-		transition: none;
-
-		&.ot-hidden {
-			opacity: 0;
-		}
-
-		&.ot-going-to-show {
-			opacity: 0;
-			transition: opacity 0.2s ease-in-out;
-		}
-		&.ot-showing {
-			opacity: 1;
-			transition: opacity 0.2s ease-in-out;
-		}
-		&.ot-visible {
-			opacity: 1;
-			transition: none;
-		}
-	}
+}
+[data-rainloopErrorTip]::before {
+	color: red;
+	content : attr(data-rainloopErrorTip);
+	opacity : 1;
+}
+[data-tooltip]:hover::before {
+	opacity : 1;
+}
+[data-rainloopTip]::after,
+[data-rainloopErrorTip]::after {
+	border-color: transparent transparent #999 transparent;
+	border-style: solid;
+	border-width: 5px;
+	content: "";
+	margin: -5px;
+	max-width: 80vw;
+	position: absolute;
+	top: 100%;
+	transform: rotate(-45deg);
+	z-index: 2002;
 }
 
 svg-icon {

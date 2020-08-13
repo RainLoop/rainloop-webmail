@@ -93,7 +93,6 @@
     "node-fs": "0.1.7",
     "normalize.css": "8.0.1",
     "openpgp": "2.6.2",
-    "opentip": "2.4.3",
     "prettier": "1.19.1",
     "raw-loader": "4.0.0",
     "rimraf": "3.0.2",

@@ -90,17 +90,18 @@
 
       $items = $('[role=menu] li:not(.divider):visible a', $parent)
 
-      if (!$items.length) return
+      if ($items.length) {
 
-      index = $items.index($items.filter(':focus'))
+        index = $items.index($items.filter(':focus'))
 
-      if (e.keyCode == 38 && index > 0) index--                                        // up
-      if (e.keyCode == 40 && index < $items.length - 1) index++                        // down
-      if (!~index) index = 0
+        if (e.keyCode == 38 && index > 0) index--                                        // up
+        if (e.keyCode == 40 && index < $items.length - 1) index++                        // down
+        if (!~index) index = 0
 
-      $items
-        .eq(index)
-        .focus()
+        $items
+          .eq(index)
+          .focus()
+	  }
     }
 
   }
@@ -199,7 +200,7 @@
         that.enforceFocus()
 
         transition ?
-          that.$element.one('transitionend', function () { that.$element.focus().trigger('shown') }) :
+          that.$element.one('transitionend', () => that.$element.focus().trigger('shown')) :
           that.$element.focus().trigger('shown')
 
       })
@@ -231,7 +232,7 @@
 
     enforceFocus () {
       var that = this
-      $(doc).on('focusin.modal', function (e) {
+      $(doc).on('focusin.modal', e => {
         if (that.$element[0] !== e.target && !that.$element.has(e.target).length) {
           that.$element.focus()
         }
@@ -241,9 +242,7 @@
     escape () {
       var that = this
       if (this.isShown && this.options.keyboard) {
-        this.$element.on('keyup.dismiss.modal', function ( e ) {
-          e.which == 27 && that.hide()
-        })
+        this.$element.on('keyup.dismiss.modal', e => e.which == 27 && that.hide())
       } else if (!this.isShown) {
         this.$element.off('keyup.dismiss.modal')
       }
@@ -251,12 +250,12 @@
 
     hideWithTransition () {
       var that = this
-        , timeout = setTimeout(function () {
+        , timeout = setTimeout(() => {
             that.$element.off('transitionend')
             that.hideModal()
           }, 500)
 
-      this.$element.one('transitionend', function () {
+      this.$element.one('transitionend', () => {
         clearTimeout(timeout)
         that.hideModal()
       })
@@ -265,7 +264,7 @@
     hideModal () {
       var that = this
       this.$element.hide()
-      this.backdrop(function () {
+      this.backdrop(() => {
         that.removeBackdrop()
         that.$element.trigger('hidden')
       })
@@ -347,9 +346,7 @@
 
     $target
       .modal(option)
-      .one('hide', function () {
-        $this.focus()
-      })
+      .one('hide', () => $this.focus())
   })
 
  /* TAB CLASS DEFINITION
@@ -452,4 +449,4 @@
     $(this).tab('show')
   })
 
-})(window.jQuery);
+})(jQuery);

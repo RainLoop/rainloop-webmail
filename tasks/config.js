@@ -55,7 +55,6 @@ config.paths.css = {
 			'vendors/fontastic/styles.css',
 			'vendors/inputosaurus/inputosaurus.css',
 			'vendors/flags/flags-fixed.css',
-			'node_modules/opentip/css/opentip.css',
 			'vendors/lightgallery/dist/css/lightgallery.min.css',
 			'vendors/lightgallery/dist/css/lg-transitions.min.css',
 			'dev/Styles/_progressjs.css'
@@ -86,8 +85,6 @@ config.paths.js = {
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',
 			'node_modules/simplestatemanager/dist/ssm.min.js',
 			'node_modules/autolinker/dist/Autolinker.min.js',
-			'node_modules/opentip/lib/opentip.js',
-			'node_modules/opentip/lib/adapter-jquery.js',
 			'vendors/lightgallery/dist/js/lightgallery.min.js', // license
 			'vendors/lightgallery/dist/js/lg-fullscreen.min.js',
 			'vendors/lightgallery/dist/js/lg-thumbnail.min.js',

@@ -20,13 +20,10 @@
 
 ($ => {
 
-	var inputosaurustext = {
+	const fakeSpan = $('<span class="inputosaurus-fake-span"></span>');
 
-		version: "0.1.6",
-
-		fakeSpan: $('<span class="inputosaurus-fake-span"></span>'),
-
-		eventprefix: "inputosaurus",
+	$('body').append(fakeSpan);
+	$.widget("ui.inputosaurus", {
 
 		options: {
 
@@ -259,10 +256,10 @@
 		// the input dynamically resizes based on the length of its value
 		_resizeInput : function(ev) {
 			var widget = (ev && ev.data.widget) || this;
-			inputosaurustext.fakeSpan.text(widget.elements.input.val());
+			fakeSpan.text(widget.elements.input.val());
 
 //			setTimeout(function  () {
-				var txtWidth = 25 + inputosaurustext.fakeSpan.width();
+				var txtWidth = 25 + fakeSpan.width();
 				txtWidth = txtWidth > 50 ? txtWidth : 50;
 				txtWidth = txtWidth < 500 ? txtWidth : 500;
 				widget.elements.input.width(txtWidth);
@@ -637,10 +634,7 @@
 				els.ul.replaceWith(this.element);
 			}
 		}
-	};
-
-	$('body').append(inputosaurustext.fakeSpan);
-	$.widget("ui.inputosaurus", inputosaurustext);
+	});
 
 })(jQuery);
 
