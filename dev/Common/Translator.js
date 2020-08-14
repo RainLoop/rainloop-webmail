@@ -2,7 +2,6 @@ import ko from 'ko';
 import { Notification, UploadErrorCode } from 'Common/Enums';
 import { pInt } from 'Common/Utils';
 import { $html, $htmlCL } from 'Common/Globals';
-import { reload as momentorReload } from 'Common/Momentor';
 import { langLink } from 'Common/Links';
 
 let I18N_DATA = window.rainloopI18N || {};
@@ -148,7 +147,7 @@ const reloadData = () => {
 
 		i18nToNodes(document);
 
-		momentorReload();
+		dispatchEvent(new CustomEvent('reload-time'));
 		trigger(!trigger());
 	}
 

@@ -23,7 +23,6 @@ import { $htmlCL, leftPanelDisabled, bMobileDevice } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { runHook } from 'Common/Plugins';
-import { reload as momentReload } from 'Common/Momentor';
 
 import {
 	initMessageFlagsFromCache,
@@ -1141,7 +1140,7 @@ class AppUser extends AbstractApp {
 			this.bootstartLoginScreen();
 		}
 
-		setInterval(momentReload, 60000);
+		setInterval(() => dispatchEvent(new CustomEvent('reload-time')), 60000);
 
 		runHook('rl-start-screens');
 	}

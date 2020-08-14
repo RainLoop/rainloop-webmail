@@ -1,35 +1,26 @@
 import { i18n } from 'Common/Translator';
 
-let d,
-	_moment = null,
-	momentNow = () => {
-		if (!d) {
-			d = setTimeout(()=>d=0, 500);
-			_moment = new Date();
-		}
-		return _moment;
-	};
-
 export function format(timeStampInUTC, formatStr) {
-	const now = Date.now() / 1000;
+	const now = Date.now(),
+		time = 0 < timeStampInUTC ? Math.min(now, timeStampInUTC * 1000) : (0 === timeStampInUTC ? now : 0);
 
-	timeStampInUTC = 0 < timeStampInUTC ? Math.min(now, timeStampInUTC) : (0 === timeStampInUTC ? now : 0);
-
-	if (31536000 < timeStampInUTC) {
-		const m = new Date(timeStampInUTC * 1000);
+	if (31536000000 < time) {
+		const m = new Date(time);
 		switch (formatStr) {
 			case 'FROMNOW':
 				return m.fromNow();
-			case 'SHORT':
-				if (4 >= (now - timeStampInUTC) / 3600)
+			case 'SHORT': {
+				if (4 >= (now - time) / 3600000)
 					return m.fromNow();
-				if (momentNow().format('Ymd') === m.format('Ymd'))
+				const ymd = m.format('Ymd'), date = new Date;
+				if (date.format('Ymd') === ymd)
 					return i18n('MESSAGE_LIST/TODAY_AT', {TIME: m.format('LT')});
-				if (new Date((now - 86400) * 1000).format('Ymd') === m.format('Ymd'))
+				if (new Date(now - 86400000).format('Ymd') === ymd)
 					return i18n('MESSAGE_LIST/YESTERDAY_AT', {TIME: m.format('LT')});
-				if (momentNow().getFullYear() === m.getFullYear())
+				if (date.getFullYear() === m.getFullYear())
 					return m.format('d M.');
 				return m.format('LL');
+			}
 			case 'FULL':
 				return m.format('LLL');
 			default:
@@ -63,11 +54,7 @@ export function timeToNode(element, time) {
 	}
 }
 
-/**
- * @returns {void}
- */
-export function reload() {
-	setTimeout(() =>
+addEventListener('reload-time', () => setTimeout(() =>
 		document.querySelectorAll('[data-bind*="moment:"]').forEach(element => timeToNode(element))
-	, 1);
-}
+	, 1)
+);
