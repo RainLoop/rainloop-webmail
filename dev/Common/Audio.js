@@ -1,5 +1,4 @@
 import * as Links from 'Common/Links';
-import * as Events from 'Common/Events';
 
 class Audio {
 	notificator = null;
@@ -37,7 +36,7 @@ class Audio {
 			this.player.addEventListener('ended', stopFn);
 			this.player.addEventListener('error', stopFn);
 
-			Events.sub('audio.api.stop', stopFn);
+			addEventListener('audio.api.stop', stopFn);
 		}
 	}
 
@@ -66,7 +65,7 @@ class Audio {
 			this.player.pause();
 		}
 
-		Events.pub('audio.stop');
+		dispatchEvent(new CustomEvent('audio.stop'));
 	}
 
 	pause() {
@@ -87,7 +86,7 @@ class Audio {
 			this.player.src = url;
 			this.player.play();
 
-			Events.pub('audio.start', [this.clearName(name, 'mp3'), 'mp3']);
+			dispatchEvent(new CustomEvent('audio.start', {detail:this.clearName(name, 'mp3')}));
 		}
 	}
 
@@ -99,7 +98,7 @@ class Audio {
 			name = this.clearName(name, 'oga');
 			name = this.clearName(name, 'ogg');
 
-			Events.pub('audio.start', [name, 'ogg']);
+			dispatchEvent(new CustomEvent('audio.start', {detail:name}));
 		}
 	}
 
@@ -108,7 +107,7 @@ class Audio {
 			this.player.src = url;
 			this.player.play();
 
-			Events.pub('audio.start', [this.clearName(name, 'wav'), 'wav']);
+			dispatchEvent(new CustomEvent('audio.start', {detail:this.clearName(name, 'wav')}));
 		}
 	}
 

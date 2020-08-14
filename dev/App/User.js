@@ -23,7 +23,7 @@ import { $htmlCL, leftPanelDisabled, bMobileDevice } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { runHook } from 'Common/Plugins';
-import { momentNowUnix, reload as momentReload } from 'Common/Momentor';
+import { reload as momentReload } from 'Common/Momentor';
 
 import {
 	initMessageFlagsFromCache,
@@ -43,8 +43,6 @@ import {
 	openPgpWorkerJs,
 	openPgpJs
 } from 'Common/Links';
-
-import * as Events from 'Common/Events';
 
 import { getNotification, i18n } from 'Common/Translator';
 
@@ -85,22 +83,19 @@ import { AbstractApp } from 'App/Abstract';
 const doc = document;
 
 if (!window.ResizeObserver) {
+	let rot;
 	window.ResizeObserver = class {
 		constructor(callback) {
 			this.observer = new MutationObserver(mutations => {
-				let entries = [];
-				mutations.forEach(mutation => {
-					if ('style' == mutation.attributeName) {
-						entries.push({
-							contentRect: {
-								width: mutation.target.offsetWidth,
-								height: mutation.target.offsetHeight
-							},
-							target: mutation.target
-						});
+				let i = mutations.length;
+				while (i--) {
+					if ('style' == mutations[i].attributeName) {
+						// debounce
+						clearTimeout(rot);
+						rot = setTimeout(callback, 250);
+						break;
 					}
-				});
-				callback(entries);
+				}
 			});
 		}
 
@@ -123,24 +118,11 @@ class AppUser extends AbstractApp {
 		let qd, o = this;
 		this.quotaDebounce = ()=>{
 			// debounce
-			qd && clearTimeout(qd);
+			clearTimeout(qd);
 			qd = setTimeout(o.quota, 30000);
 		};
 
 		this.moveOrDeleteResponseHelper = this.moveOrDeleteResponseHelper.bind(this);
-
-		setInterval(() => Events.pub('interval.30s'), 30000);
-		setInterval(() => Events.pub('interval.1m'), 60000);
-		setInterval(() => Events.pub('interval.2m'), 120000);
-		setInterval(() => Events.pub('interval.3m'), 180000);
-		setInterval(() => Events.pub('interval.5m'), 300000);
-		setInterval(() => Events.pub('interval.10m'), 600000);
-		setInterval(() => Events.pub('interval.15m'), 900000);
-		setInterval(() => Events.pub('interval.20m'), 1200000);
-
-		setTimeout(() => setInterval(() => Events.pub('interval.2m-after5m'), 120000), 300000);
-		setTimeout(() => setInterval(() => Events.pub('interval.5m-after5m'), 300000), 300000);
-		setTimeout(() => setInterval(() => Events.pub('interval.10m-after5m'), 600000), 300000);
 
 		// wakeUp
 		const interval = 3600000; // 60m
@@ -284,7 +266,7 @@ class AppUser extends AbstractApp {
 	messagesMoveTrigger() {
 		// debounce
 		const o = this;
-		o.mt && clearTimeout(o.mt);
+		clearTimeout(o.mt);
 		o.mt = setTimeout(()=>{
 			const sTrashFolder = FolderStore.trashFolder(),
 				sSpamFolder = FolderStore.spamFolder();
@@ -537,37 +519,7 @@ class AppUser extends AbstractApp {
 		}
 	}
 
-	accountsCounts() {
-		return false;
-		// AccountStore.accounts.loading(true);
-		//
-		// Remote.accountsCounts((sResult, oData) => {
-		//
-		// 	AccountStore.accounts.loading(false);
-		//
-		// 	if (StorageResultType.Success === sResult && oData.Result && oData.Result['Counts'])
-		// 	{
-		// 		var
-		// 			sEmail = AccountStore.email(),
-		// 			aAcounts = AccountStore.accounts()
-		// 		;
-		//
-		// 		oData.Result['Counts'].find(oItem => {
-		//
-		// 			var oAccount = aAcounts.find(oAccount => {
-		// 				return oAccount && oItem[0] === oAccount.email && sEmail !== oAccount.email;
-		// 			});
-		//
-		// 			if (oAccount)
-		// 			{
-		// 				oAccount.count(pInt(oItem[1]));
-		// 			}
-		// 		});
-		// 	}
-		// });
-	}
-
-	accountsAndIdentities(bBoot) {
+	accountsAndIdentities() {
 		AccountStore.accounts.loading(true);
 		IdentityStore.identities.loading(true);
 
@@ -592,11 +544,6 @@ class AppUser extends AbstractApp {
 							sValue => new AccountModel(sValue, sValue !== parentEmail, counts[sValue] || 0)
 						)
 					);
-				}
-
-				if (undefined === bBoot ? false : !!bBoot) {
-					setTimeout(() => this.accountsCounts(), 1000 * 5);
-					Events.sub('interval.10m-after5m', () => this.accountsCounts());
 				}
 
 				if (Array.isArray(oData.Result.Identities)) {
@@ -673,7 +620,7 @@ class AppUser extends AbstractApp {
 
 							const folderFromCache = getFolderFromCacheList(data.Result.Folder);
 							if (folderFromCache) {
-								folderFromCache.interval = momentNowUnix();
+								folderFromCache.interval = Date.now() / 1000;
 
 								if (data.Result.Hash) {
 									setFolderHash(data.Result.Folder, data.Result.Hash);
@@ -748,7 +695,7 @@ class AppUser extends AbstractApp {
 			Remote.folderInformationMultiply((sResult, oData) => {
 				if (StorageResultType.Success === sResult) {
 					if (oData && oData.Result && oData.Result.List && isNonEmptyArray(oData.Result.List)) {
-						const utc = momentNowUnix();
+						const utc = Date.now() / 1000;
 						oData.Result.List.forEach(item => {
 							const hash = getFolderHash(item.Folder),
 								folder = getFolderFromCacheList(item.Folder);
@@ -974,7 +921,7 @@ class AppUser extends AbstractApp {
 			};
 		if (top && bottom) {
 			fDisable(false);
-			Events.sub('layout', layout => fDisable(Layout.BottomPreview !== layout));
+			addEventListener('rl-layout', e => fDisable(Layout.BottomPreview !== e.detail));
 		}
 	}
 
@@ -986,8 +933,7 @@ class AppUser extends AbstractApp {
 			};
 		if (left && right) {
 			fDisable(false);
-			Events.sub('left-panel.off', () => fDisable(true));
-			Events.sub('left-panel.on', () => fDisable(false));
+			leftPanelDisabled.subscribe(value => fDisable(value));
 		}
 	}
 
@@ -1018,7 +964,6 @@ class AppUser extends AbstractApp {
 			startScreens([LoginUserScreen]);
 
 			runHook('rl-start-login-screens');
-			Events.pub('rl.bootstart-login-screens');
 		} else {
 			routeOff();
 			setHash(root(), true);
@@ -1053,10 +998,6 @@ class AppUser extends AbstractApp {
 		if (window.progressJs) {
 			progressJs.set(90);
 		}
-
-		leftPanelDisabled.subscribe((value) => {
-			Events.pub('left-panel.' + (value ? 'off' : 'on'));
-		});
 
 		this.setWindowTitle('');
 		if (Settings.settingsGet('Auth')) {
@@ -1102,8 +1043,6 @@ class AppUser extends AbstractApp {
 								PgpStore.openpgpKeyring = new openpgp.Keyring();
 								PgpStore.capaOpenPGP(true);
 
-								Events.pub('openpgp.init');
-
 								this.reloadOpenPgpKeys();
 
 								return true;
@@ -1126,25 +1065,25 @@ class AppUser extends AbstractApp {
 							// false ? AboutUserScreen : null
 						]);
 
-						Events.sub('interval.2m', () => this.folderInformation(getFolderInboxName()));
-						Events.sub('interval.3m', () => {
+						setInterval(() => this.folderInformation(getFolderInboxName()), 120000);
+						setInterval(() => {
 							const sF = FolderStore.currentFolderFullNameRaw();
 							if (getFolderInboxName() !== sF) {
 								this.folderInformation(sF);
 							}
-						});
+						}, 180000);
 
-						Events.sub('interval.2m-after5m', () => this.folderInformationMultiply());
-						Events.sub('interval.15m', () => this.quota());
-						Events.sub('interval.20m', () => this.foldersReload());
+						setTimeout(() => setInterval(this.folderInformationMultiply, 120000), 300000);
+						setInterval(this.quota, 900000);
+						setInterval(this.foldersReload, 1200000);
 
 						contactsSyncInterval = 5 <= contactsSyncInterval ? contactsSyncInterval : 20;
 						contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
 
-						setTimeout(() => this.contactsSync(), 10000);
+						setTimeout(this.contactsSync, 10000);
 						setTimeout(() => this.folderInformationMultiply(true), 2000);
 
-						setInterval(() => this.contactsSync(), contactsSyncInterval * 60000 + 5000);
+						setInterval(this.contactsSync, contactsSyncInterval * 60000 + 5000);
 
 						this.accountsAndIdentities(true);
 
@@ -1155,13 +1094,12 @@ class AppUser extends AbstractApp {
 							}
 						}, 1000);
 
-						setTimeout(() => this.quota(), 5000);
+						setTimeout(this.quota, 5000);
 						setTimeout(() => Remote.appDelayStart(()=>{}), 35000);
 
-						Events.sub('rl.auto-logout', () => this.logout());
+						addEventListener('rl.auto-logout', () => this.logout());
 
 						runHook('rl-start-user-screens');
-						Events.pub('rl.bootstart-user-screens');
 
 						if (Settings.settingsGet('WelcomePageUrl')) {
 							setTimeout(() => this.bootstartWelcomePopup(Settings.settingsGet('WelcomePageUrl')), 1000);
@@ -1203,10 +1141,9 @@ class AppUser extends AbstractApp {
 			this.bootstartLoginScreen();
 		}
 
-		Events.sub('interval.1m', () => momentReload());
+		setInterval(momentReload, 60000);
 
 		runHook('rl-start-screens');
-		Events.pub('rl.bootstart-end');
 	}
 }
 

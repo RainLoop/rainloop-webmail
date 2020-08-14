@@ -2844,49 +2844,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $iResult;
 	}
 
-	/**
-	 * @throws \MailSo\Base\Exceptions\Exception
-	 */
-	public function DoAccountsCounts() : array
-	{
-		$oAccount = $this->getAccountFromToken();
-
-		$bComplete = true;
-		$aCounts = array();
-
-		if ($this->GetCapa(false, false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
-		{
-			$iLimit = 7;
-			$aAccounts = $this->GetAccounts($oAccount);
-			if ($aAccounts)
-			{
-				if ($iLimit > \count($aAccounts))
-				{
-					$aAccounts = \array_slice($aAccounts, 0, $iLimit);
-				}
-				else
-				{
-					$bComplete = false;
-				}
-
-				foreach ($aAccounts as $sEmail => $sHash)
-				{
-					$aCounts[] = array(\MailSo\Base\Utils::IdnToUtf8($sEmail),
-						$oAccount->Email() === $sEmail ? 0 : $this->getAccountUnreadCountFromHash($sHash));
-				}
-			}
-		}
-		else
-		{
-			$aCounts[] = array(\MailSo\Base\Utils::IdnToUtf8($oAccount->Email()), 0);
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, array(
-			'Complete' => $bComplete,
-			'Counts' => $aCounts
-		));
-	}
-
 	public function ClearSignMeData(Model\Account $oAccount) : void
 	{
 		if ($oAccount)

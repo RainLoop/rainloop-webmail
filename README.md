@@ -59,7 +59,7 @@ This fork uses downsized/simplified versions of scripts and has no support for I
 
 The result is faster and smaller download code (good for mobile networks).
 
-Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyfill for array.flat().
+Things might work in Edge 16-18, Firefox 50-62 and Chrome 54-68 due to one polyfill for array.flat().
 
 * Replaced jQuery with jQuery.slim
 * Replaced ProgressJS with simple native dropin
@@ -75,32 +75,33 @@ Things might work in Edge 15-18, Firefox 47-62 and Chrome 54-68 due to one polyf
 * Removed opentip (use CSS)
 * Replaced Autolinker with simple https/email detection
 * Replaced ifvisible.js with simple drop-in replacement
+* Replaced momentToNode with proper HTML5 <time>
 
-|js/*       	|1.14.0 	|native 	|gzip 1.14	|gzip   	|
-|-----------	|--------:	|--------:	|--------:	|--------:	|
-|admin.js    	|2.130.942	|1.119.128	|  485.481	|  271.258	|
-|app.js      	|4.184.455	|2.829.541	|  932.725	|  659.696	|
-|boot.js     	|  671.522	|   44.029	|  169.502	|   15.460	|
-|libs.js     	|  647.614	|  316.107	|  194.728	|   98.214	|
-|polyfills.js	|  325.834	|        0	|   71.825	|        0	|
-|TOTAL js   	|7.960.367	|4.308.805	|1.854.261	|1.044.628	|
+|js/*       	|1.14.0 	|native 	|
+|-----------	|--------:	|--------:	|
+|admin.js    	|2.130.942	|1.090.923	|
+|app.js      	|4.184.455	|2.775.561	|
+|boot.js     	|  671.522	|   44.029	|
+|libs.js     	|  647.614	|  316.107	|
+|polyfills.js	|  325.834	|        0	|
+|TOTAL      	|7.960.367	|4.226.620	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  151.632	| 73.657	| 43.313	|
-|app.min.js      	|  511.202	|  377.163	|140.462	| 99.062	|
-|boot.min.js     	|   66.007	|    5.589	| 22.567	|  2.333	|
-|libs.min.js     	|  572.545	|  300.211	|176.720	| 92.698	|
+|admin.min.js    	|  252.147	|  148.293	| 73.657	| 42.376	|
+|app.min.js      	|  511.202	|  371.757	|140.462	| 97.432	|
+|boot.min.js     	|   66.007	|    5.589	| 22.567	|  2.332	|
+|libs.min.js     	|  572.545	|  300.211	|176.720	| 92.699	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|
-|TOTAL js/min   	|1.434.353	|  834.595	|424.718	|237.406	|
+|TOTAL          	|1.434.353	|  825.850	|424.718	|234.839	|
 
-599.758 bytes (187.312 gzip) is not much, but it feels faster.
+604.051 bytes (188.978 gzip) is not much, but it feels faster.
 
 
 |css/*       	|1.14.0   	|native   	|
 |--------------	|--------:	|--------:	|
-|app.css    	|  340.334	|  267.507	|
-|app.min.css	|  274.791	|  212.244	|
+|app.css    	|  340.334	|  266.796	|
+|app.min.css	|  274.791	|  211.638	|
 
 
 ### PHP73 branch

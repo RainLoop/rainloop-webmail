@@ -65,7 +65,7 @@ class FolderSystemPopupView extends AbstractViewNext {
 			},
 			fSaveSystemFolders = ()=>{
 				// debounce
-				d && clearTimeout(d);
+				clearTimeout(d);
 				d = setTimeout(()=>{
 					fSetSystemFolders();
 					Remote.saveSystemFolders(()=>{}, {

@@ -247,7 +247,7 @@
 											</span>
 										</span>
 										<span data-bind="visible: 0 < viewTimeStamp()">
-											(<span class="date" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>)
+											(<time class="date" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></time>)
 										</span>
 									</div>
 									<div class="informationShortWrp">
@@ -296,17 +296,17 @@
 									<tr data-bind="visible: 0 < viewTimeStamp()">
 										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_DATE"></span></td>
 										<td>
-											<span class="date uiLabelValue" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></span>
+											<time class="date uiLabelValue" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></time>
 											&nbsp;
-											(<span class="date uiLabelValue" data-moment-format="FROMNOW" data-bind="moment: viewTimeStamp"></span>)
+											(<time class="date uiLabelValue" data-moment-format="FROMNOW" data-bind="moment: viewTimeStamp"></time>)
 										</td>
 									</tr>
 								</table>
 							</div>
 						</div>
 					</div>
-					<div class="messageItem fixIndex" data-bind="css: viewLineAsCss(), nano: true, scrollerShadows: true, attr: {'style': 'top:' + viewBodyTopValue() + 'px' }">
-						<div class="content g-scrollbox" tabindex="0" data-scroller-shadows-content data-bind="hasfocus: messageDomFocused, css: { 'focused': messageDomFocused },
+					<div class="messageItem fixIndex" data-bind="css: viewLineAsCss(), attr: {'style': 'top:' + viewBodyTopValue() + 'px' }">
+						<div class="content g-scrollbox" tabindex="0" data-bind="hasfocus: messageDomFocused, css: { 'focused': messageDomFocused },
 							style: {'background-color': messageLoadingThrottle() ? '' : bodyBackgroundColor()}">
 
 							<div class="content-wrapper">

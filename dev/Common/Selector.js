@@ -55,7 +55,7 @@ class Selector {
 		var d, o = this;
 		this.itemSelectedThrottle = (item)=>{
 			// debounce
-			d && clearTimeout(d);
+			clearTimeout(d);
 			d = setTimeout(()=>o.itemSelected(item), 300);
 		};
 

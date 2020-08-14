@@ -845,7 +845,7 @@ export function selectElement(element) {
 var dv;
 export const detectDropdownVisibility = ()=>{
 	// leading debounce
-	dv && clearTimeout(dv);
+	clearTimeout(dv);
 	dv = setTimeout(()=>
 		dropdownVisibility(!!GlobalsData.aBootstrapDropdowns.find(item => item.hasClass('open')))
 	, 50);
@@ -1223,7 +1223,7 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 
 var wr;
 export const windowResize = timeout => {
-	wr && clearTimeout(wr);
+	clearTimeout(wr);
 	if (undefined === timeout || null === timeout) {
 		$win.trigger('resize');
 	} else {

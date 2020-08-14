@@ -12,16 +12,8 @@ ko.bindingHandlers.editor = {
 
 		const fValue = fValueAccessor(),
 			HtmlEditor = require('Common/HtmlEditor').default,
-			fUpdateEditorValue = () => {
-				if (fValue && fValue.__editor) {
-					fValue.__editor.setHtmlOrPlain(fValue());
-				}
-			},
-			fUpdateKoValue = () => {
-				if (fValue && fValue.__editor) {
-					fValue(fValue.__editor.getDataWithHtmlMark());
-				}
-			},
+			fUpdateEditorValue = () => fValue && fValue.__editor && fValue.__editor.setHtmlOrPlain(fValue()),
+			fUpdateKoValue = () => fValue && fValue.__editor && fValue(fValue.__editor.getDataWithHtmlMark()),
 			fOnReady = () => {
 				fValue.__editor = editor;
 				fUpdateEditorValue();
@@ -40,66 +32,9 @@ ko.bindingHandlers.editor = {
 	}
 };
 
-ko.bindingHandlers.json = {
-	init: (element, fValueAccessor) => {
-		$(element).text(JSON.stringify(ko.unwrap(fValueAccessor())));
-	},
-	update: (element, fValueAccessor) => {
-		$(element).text(JSON.stringify(ko.unwrap(fValueAccessor())));
-	}
-};
-
-ko.bindingHandlers.scrollerShadows = {
-	init: (element) => {
-		var t;
-		const limit = 8,
-			$el = $(element),
-			cont = $el.find('[data-scroller-shadows-content]')[0] || null,
-			// throttle
-			fFunc = ()=>{
-				if (!t) {
-					t = setTimeout(()=>{
-						$el
-							.toggleClass('scroller-shadow-top', limit < cont.scrollTop)
-							.toggleClass('scroller-shadow-bottom', cont.scrollTop + limit < cont.scrollHeight - cont.clientHeight);
-						t = 0;
-					}, 100);
-				}
-			};
-
-		if (cont) {
-			$(cont).on('scroll resize', fFunc);
-			addEventListener('resize', fFunc);
-
-			ko.utils.domNodeDisposal.addDisposeCallback(cont, () => {
-				$(cont).off();
-				removeEventListener('resize', fFunc);
-			});
-		}
-	}
-};
-
 ko.bindingHandlers.visibleAnimated = {
-	init: (element, fValueAccessor) => {
-		const $el = $(element);
-		$el.addClass('rl-animated-inited');
-		if (ko.unwrap(fValueAccessor())) {
-			$el.show();
-		} else {
-			$el.hide();
-		}
-	},
-	update: (element, fValueAccessor) => {
-		const $el = $(element);
-		if (ko.unwrap(fValueAccessor())) {
-			$el.addClass('rl-animated-hidden').show();
-			setTimeout(() => {
-				$el.removeClass('rl-animated-hidden');
-			}, 10);
-		} else {
-			$el.hide().removeClass('rl-animated-hidden');
-		}
-	}
+	init: (element, fValueAccessor) => element.hidden = !ko.unwrap(fValueAccessor()),
+	update: (element, fValueAccessor) => element.hidden = !ko.unwrap(fValueAccessor())
 };
 
 ko.bindingHandlers.tooltip = {
@@ -139,13 +74,9 @@ ko.bindingHandlers.tooltip = {
 };
 
 ko.bindingHandlers.tooltipErrorTip = {
-	init: function(element) {
-		$(document).on('click', () => {
-			element.removeAttribute('data-rainloopErrorTip')
-		});
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			element.removeAttribute('data-rainloopErrorTip')
-		});
+	init: element => {
+		document.addEventListener('click', () => element.removeAttribute('data-rainloopErrorTip'));
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeAttribute('data-rainloopErrorTip'));
 	},
 	update: (element, fValueAccessor) => {
 		const fValue = fValueAccessor(),
@@ -164,13 +95,7 @@ ko.bindingHandlers.registrateBootstrapDropdown = {
 		const Globals = require('Common/Globals');
 		if (Globals && Globals.data.aBootstrapDropdowns) {
 			Globals.data.aBootstrapDropdowns.push($(element));
-
-			$(element).click(() => {
-				require('Common/Utils').detectDropdownVisibility();
-			});
-
-			// ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			// });
+			element.addEventListener('click', () => require('Common/Utils').detectDropdownVisibility());
 		}
 	}
 };
@@ -178,12 +103,12 @@ ko.bindingHandlers.registrateBootstrapDropdown = {
 ko.bindingHandlers.openDropdownTrigger = {
 	update: (element, fValueAccessor) => {
 		if (ko.unwrap(fValueAccessor())) {
-			const $el = $(element);
+			const $el = $(element), t = $el.find('.dropdown-toggle');
 			if (!$el.hasClass('open')) {
-				$el.find('.dropdown-toggle').dropdown('toggle');
+				t.dropdown('toggle');
 			}
 
-			$el.find('.dropdown-toggle').focus();
+			t.focus();
 
 			require('Common/Utils').detectDropdownVisibility();
 			fValueAccessor()(false);
@@ -192,17 +117,15 @@ ko.bindingHandlers.openDropdownTrigger = {
 };
 
 ko.bindingHandlers.dropdownCloser = {
-	init: (element) => {
-		$(element)
-			.closest('.dropdown')
-			.on('click', '.e-item', () => {
-				$(element).dropdown('toggle');
-			});
-	}
+	init: element => $(element)
+		.closest('.dropdown')
+		.on('click', '.e-item', () => {
+			$(element).dropdown('toggle');
+		})
 };
 
 ko.bindingHandlers.popover = {
-	init: function(element, fValueAccessor) {
+	init: (element, fValueAccessor) => {
 		console.log('TODO: $(element).popover removed', element, fValueAccessor);
 /*
 		$(element).popover(ko.unwrap(fValueAccessor()));
@@ -210,22 +133,6 @@ ko.bindingHandlers.popover = {
 			$(element).popover('destroy');
 		});
 */
-	}
-};
-
-ko.bindingHandlers.onKeyDown = {
-	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
-		$(element).on('keydown.koOnKeyDown', (event) => {
-			if (event) {
-				return fValueAccessor().call(viewModel, event);
-			}
-
-			return true;
-		});
-
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			$(element).off('keydown.koOnKeyDown');
-		});
 	}
 };
 
@@ -258,21 +165,6 @@ ko.bindingHandlers.onSpace = {
 	}
 };
 
-ko.bindingHandlers.onTab = {
-	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
-		$(element).on('keydown.koOnTab', (event) => {
-			if (event && 9 === parseInt(event.keyCode, 10)) {
-				return fValueAccessor().call(viewModel, !!event.shiftKey);
-			}
-			return true;
-		});
-
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			$(element).off('keydown.koOnTab');
-		});
-	}
-};
-
 ko.bindingHandlers.onEsc = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		$(element).on('keyup.koOnEsc', (event) => {
@@ -285,14 +177,6 @@ ko.bindingHandlers.onEsc = {
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
 			$(element).off('keyup.koOnEsc');
 		});
-	}
-};
-
-ko.bindingHandlers.clickOnTrue = {
-	update: (element, fValueAccessor) => {
-		if (ko.unwrap(fValueAccessor())) {
-			$(element).click();
-		}
 	}
 };
 
@@ -327,117 +211,52 @@ ko.bindingHandlers.modal = {
 
 		if (Globals.$htmlCL.contains('rl-anim')) {
 			Globals.$htmlCL.add('rl-modal-animation');
-			setTimeout(() => {
-				Globals.$htmlCL.remove('rl-modal-animation');
-			}, 500);
+			setTimeout(() => Globals.$htmlCL.remove('rl-modal-animation'), 500);
 		}
 	}
 };
 
+let ttn = (element, fValueAccessor) => require('Common/Momentor').timeToNode(element, ko.unwrap(fValueAccessor()));
 ko.bindingHandlers.moment = {
-	init: (element, fValueAccessor) => {
-		require('Common/Momentor').momentToNode(
-			$(element)
-				.addClass('moment')
-				.data('moment-time', ko.unwrap(fValueAccessor()))
-		);
-	},
-	update: (element, fValueAccessor) => {
-		require('Common/Momentor').momentToNode($(element).data('moment-time', ko.unwrap(fValueAccessor())));
-	}
+	init: ttn,
+	update: ttn
 };
 
 ko.bindingHandlers.i18nInit = {
-	init: (element) => {
-		require('Common/Translator').i18nToNodes(element);
-	}
-};
-
-ko.bindingHandlers.translatorInit = {
-	init: (element) => {
-		require('Common/Translator').i18nToNodes(element);
-	}
+	init: element => Translator().i18nToNodes(element)
 };
 
 ko.bindingHandlers.i18nUpdate = {
 	update: (element, fValueAccessor) => {
 		ko.unwrap(fValueAccessor());
-		require('Common/Translator').i18nToNodes(element);
+		Translator().i18nToNodes(element);
 	}
 };
 
 ko.bindingHandlers.link = {
-	update: function(element, fValueAccessor) {
-		$(element).attr('href', ko.unwrap(fValueAccessor()));
-	}
+	update: (element, fValueAccessor) => element.setAttribute('href', ko.unwrap(fValueAccessor()))
 };
 
 ko.bindingHandlers.title = {
-	update: function(element, fValueAccessor) {
-		$(element).attr('title', ko.unwrap(fValueAccessor()));
-	}
-};
-
-ko.bindingHandlers.textF = {
-	init: function(element, fValueAccessor) {
-		$(element).text(ko.unwrap(fValueAccessor()));
-	}
+	update: (element, fValueAccessor) => element.setAttribute('title', ko.unwrap(fValueAccessor()))
 };
 
 ko.bindingHandlers.initDom = {
-	init: function(element, fValueAccessor) {
-		fValueAccessor()(element);
-	}
-};
-
-ko.bindingHandlers.initFixedTrigger = {
-	init: (element, fValueAccessor) => {
-		const values = ko.unwrap(fValueAccessor()),
-			$el = $(element),
-			top = values[1] || 0;
-
-		let $container = $(values[0] || null);
-		$container = $container[0] ? $container : null;
-		if ($container) {
-			addEventListener('resize', () => {
-				const offset = $container ? $container.offset() : null;
-				if (offset && offset.top) {
-					$el.css('top', offset.top + top);
-				}
-			});
-		}
-	}
+	init: (element, fValueAccessor) => fValueAccessor()(element)
 };
 
 ko.bindingHandlers.initResizeTrigger = {
-	init: (element, fValueAccessor) => {
+	init: (element, fValueAccessor) =>
+		element.style.height = element.style.minHeight = ko.unwrap(fValueAccessor())[1] + 'px',
+	update: (element, fValueAccessor) => {
 		const values = ko.unwrap(fValueAccessor());
-		$(element).css({
-			'height': values[1],
-			'min-height': values[1]
-		});
-	},
-	update: (oElement, fValueAccessor) => {
-		const Utils = require('Common/Utils'),
-			Globals = require('Common/Globals'),
-			values = ko.unwrap(fValueAccessor());
-
-		let value = Utils.pInt(values[1]),
-			size = 0,
-			offset = $(oElement).offset().top;
-
+		let offset = element.getBoundingClientRect().top + pageYOffset;
 		if (0 < offset) {
-			offset += Utils.pInt(values[2]);
-			size = Globals.$win.height() - offset;
-
-			if (value < size) {
-				value = size;
-			}
-
-			$(oElement).css({
-				'height': value,
-				'min-height': value
-			});
+			offset += parseInt(values[2], 10) || 0;
+			element.style.height = element.style.minHeight = Math.max(
+				parseInt(values[1], 10) || 0,
+				window.innerHeight - offset
+			) + 'px';
 		}
 	}
 };
@@ -720,8 +539,7 @@ ko.bindingHandlers.emailsTags = {
 
 ko.bindingHandlers.command = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext) => {
-		const jqElement = $(element),
-			command = fValueAccessor();
+		const command = fValueAccessor();
 
 		if (!command || !command.isCommand) {
 			throw new Error('Value should be a command');
@@ -740,8 +558,8 @@ ko.bindingHandlers.command = {
 			}
 		}
 
-		jqElement.addClass('command');
-		ko.bindingHandlers[jqElement.is('form') ? 'submit' : 'click'].init(
+		element.classList.add('command');
+		ko.bindingHandlers[element.tagName.match(/FORM/i) ? 'submit' : 'click'].init(
 			element,
 			fValueAccessor,
 			fAllBindingsAccessor,
@@ -750,39 +568,28 @@ ko.bindingHandlers.command = {
 		);
 	},
 	update: (element, fValueAccessor) => {
-		const jqElement = $(element),
+		const cl = element.classList,
 			command = fValueAccessor();
 
 		let result = command.enabled();
 
-		jqElement.toggleClass('command-not-enabled', !result);
+		cl.toggle('command-not-enabled', !result);
 
 		if (result) {
 			result = command.canExecute();
-			jqElement.toggleClass('command-can-not-be-execute', !result);
+			cl.toggle('command-can-not-be-execute', !result);
 		}
 
-		jqElement.toggleClass('command-disabled disable disabled', !result).toggleClass('no-disabled', !!result);
+		['command-disabled','disable','disabled'].forEach(s=>cl.toggle(s, !result));
+		cl.toggle('no-disabled', !!result);
 
-		if (jqElement.is('input') || jqElement.is('button')) {
-			jqElement.prop('disabled', !result);
+		if (element.tagName.match(/INPUT|TEXTAREA|BUTTON/i)) {
+			element.disabled = !result;
 		}
 	}
 };
 
 // extenders
-
-ko.extenders.trimmer = (target) => {
-	const result = ko.computed({
-			read: target,
-			write: (newValue) => {
-				target(newValue.toString().trim());
-			}
-		});
-
-	result(target());
-	return result;
-};
 
 ko.extenders.posInterer = (target, defaultVal) => {
 	const Utils = require('Common/Utils'),
@@ -834,9 +641,7 @@ ko.extenders.limitedList = (target, limitedList) => {
 	result(target());
 
 	if (!result.valueHasMutated) {
-		result.valueHasMutated = () => {
-			target.valueHasMutated();
-		};
+		result.valueHasMutated = () => target.valueHasMutated();
 	}
 
 	return result;
@@ -845,13 +650,9 @@ ko.extenders.limitedList = (target, limitedList) => {
 ko.extenders.reversible = (target) => {
 	let value = target();
 
-	target.commit = () => {
-		value = target();
-	};
+	target.commit = () => value = target();
 
-	target.reverse = () => {
-		target(value);
-	};
+	target.reverse = () => target(value);
 
 	target.commitedValue = () => value;
 	return target;
@@ -867,20 +668,12 @@ ko.extenders.toggleSubscribeProperty = (target, options) => {
 	const prop = options[1];
 	if (prop) {
 		target.subscribe(
-			(prev) => {
-				if (prev && prev[prop]) {
-					prev[prop](false);
-				}
-			},
+			prev => prev && prev[prop] && prev[prop](false),
 			options[0],
 			'beforeChange'
 		);
 
-		target.subscribe((next) => {
-			if (next && next[prop]) {
-				next[prop](true);
-			}
-		}, options[0]);
+		target.subscribe(next => next && next[prop] && next[prop](true), options[0]);
 	}
 
 	return target;
@@ -888,13 +681,13 @@ ko.extenders.toggleSubscribeProperty = (target, options) => {
 
 ko.extenders.falseTimeout = (target, option) => {
 	target.iFalseTimeoutTimeout = 0;
-	target.subscribe((value) => {
+	target.subscribe(value => {
 		if (value) {
 			clearTimeout(target.iFalseTimeoutTimeout);
 			target.iFalseTimeoutTimeout = setTimeout(() => {
 				target(false);
 				target.iFalseTimeoutTimeout = 0;
-			}, require('Common/Utils').pInt(option));
+			}, parseInt(option, 10) || 0);
 		}
 	});
 
@@ -949,9 +742,7 @@ ko.observable.fn.validateNone = function() {
 ko.observable.fn.validateEmail = function() {
 	this.hasError = ko.observable(false);
 
-	this.subscribe((value) => {
-		this.hasError(value && !/^[^@\s]+@[^@\s]+$/.test(value));
-	});
+	this.subscribe(value => this.hasError(value && !/^[^@\s]+@[^@\s]+$/.test(value)));
 
 	this.valueHasMutated();
 	return this;
@@ -960,9 +751,7 @@ ko.observable.fn.validateEmail = function() {
 ko.observable.fn.validateSimpleEmail = function() {
 	this.hasError = ko.observable(false);
 
-	this.subscribe((value) => {
-		this.hasError(value && !/^.+@.+$/.test(value));
-	});
+	this.subscribe(value => this.hasError(value && !/^.+@.+$/.test(value)));
 
 	this.valueHasMutated();
 	return this;
@@ -977,9 +766,7 @@ ko.observable.fn.validateFunc = function(fFunc) {
 	this.hasFuncError = ko.observable(false);
 
 	if (isFunction(fFunc)) {
-		this.subscribe((value) => {
-			this.hasFuncError(!fFunc(value));
-		});
+		this.subscribe(value => this.hasFuncError(!fFunc(value)));
 
 		this.valueHasMutated();
 	}

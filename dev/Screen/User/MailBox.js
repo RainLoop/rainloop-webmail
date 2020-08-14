@@ -4,7 +4,6 @@ import { pString, pInt, windowResizeCallback } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
 
-import * as Events from 'Common/Events';
 import * as Settings from 'Storage/Settings';
 
 import AppStore from 'Stores/User/App';
@@ -110,13 +109,13 @@ class MailBoxUserScreen extends AbstractScreen {
 		setTimeout(() => SettingsStore.layout.valueHasMutated(), 50);
 		setTimeout(() => warmUpScreenPopup(require('View/Popup/Compose')), 500);
 
-		Events.sub('mailbox.inbox-unread-count', (count) => {
-			FolderStore.foldersInboxUnreadCount(count);
+		addEventListener('mailbox.inbox-unread-count', e => {
+			FolderStore.foldersInboxUnreadCount(e.detail);
 
 			const email = AccountStore.email();
 			AccountStore.accounts().forEach(item => {
 				if (item && email === item.email) {
-					item.count(count);
+					item.count(e.detail);
 				}
 			});
 

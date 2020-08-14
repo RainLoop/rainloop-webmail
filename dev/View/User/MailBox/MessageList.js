@@ -19,7 +19,6 @@ import { computedPagenatorHelper, draggablePlace, friendlySize } from 'Common/Ut
 
 import { mailBox, append } from 'Common/Links';
 import { Selector } from 'Common/Selector';
-import * as Events from 'Common/Events';
 
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
@@ -238,15 +237,17 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			this.goToUpUpOrDownDown(v);
 		});
 
-		Events.sub('mailbox.message-list.selector.go-down', (select) => {
-			this.selector.goDown(select);
+		addEventListener('mailbox.message-list.selector.go-down', e => {
+			this.selector.goDown(e.detail);
 		});
 
-		Events.sub('mailbox.message-list.selector.go-up', (select) => {
-			this.selector.goUp(select);
+		addEventListener('mailbox.message-list.selector.go-up', e => {
+			this.selector.goUp(e.detail);
 		});
 
-		Events.sub('mailbox.message.show', (sFolder, sUid) => {
+		addEventListener('mailbox.message.show', e => {
+			const sFolder = e.detail.Folder, sUid = e.detail.Uid;
+
 			const message = this.messageList().find(
 				item => item && sFolder === item.folderFullNameRaw && sUid === item.uid
 			);
@@ -781,7 +782,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	initShortcuts() {
 		key('enter', KeyState.MessageList, () => {
 			if (this.message() && this.useAutoSelect()) {
-				Events.pub('mailbox.message-view.toggle-full-screen');
+				dispatchEvent(new CustomEvent('mailbox.message-view.toggle-full-screen'));
 				return false;
 			}
 

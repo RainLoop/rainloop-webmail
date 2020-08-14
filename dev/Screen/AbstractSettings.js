@@ -88,7 +88,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 					ko.applyBindingAccessorsToNode(
 						viewModelDom[0],
 						{
-							translatorInit: true,
+							i18nInit: true,
 							template: () => tmpl
 						},
 						settingsScreen

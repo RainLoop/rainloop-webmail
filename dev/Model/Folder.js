@@ -4,7 +4,6 @@ import { FolderType } from 'Common/Enums';
 import { isPosNumeric } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 import { getFolderInboxName } from 'Common/Cache';
-import * as Events from 'Common/Events';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -234,19 +233,13 @@ class FolderModel extends AbstractModel {
 		);
 
 		// subscribe
-		this.name.subscribe((value) => {
-			this.nameForEdit(value);
-		});
+		this.name.subscribe(value => this.nameForEdit(value));
 
-		this.edited.subscribe((value) => {
-			if (value) {
-				this.nameForEdit(this.name());
-			}
-		});
+		this.edited.subscribe(value => value && this.nameForEdit(this.name()));
 
 		this.messageCountUnread.subscribe((unread) => {
 			if (FolderType.Inbox === this.type()) {
-				Events.pub('mailbox.inbox-unread-count', [unread]);
+				dispatchEvent(new CustomEvent('mailbox.inbox-unread-count', {detail:unread}));
 			}
 		});
 

@@ -73,11 +73,13 @@ html {
 
 html.rl-anim {
 
-	.rl-animated-inited {
-		opacity: 1;
-		.transition(opacity 0.5s linear);
-
-		&.rl-animated-hidden {
+	.b-login-content {
+		.alertError {
+			display: block;
+			opacity: 1;
+			.transition(opacity 0.5s linear);
+		}
+		.alertError[hidden] {
 			opacity: 0;
 		}
 	}

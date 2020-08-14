@@ -230,13 +230,6 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 */
-	accountsCounts(fCallback) {
-		this.defaultRequest(fCallback, 'AccountsCounts');
-	}
-
-	/**
-	 * @param {?Function} fCallback
 	 * @param {Array} filters
 	 * @param {string} raw
 	 * @param {boolean} isRawIsActive

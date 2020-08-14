@@ -13,7 +13,6 @@ import { isNormal, pString, detectDropdownVisibility, windowResizeCallback } fro
 import { KeyState } from 'Common/Enums';
 import { root, rootAdmin, rootUser, populateAuthSuffix } from 'Common/Links';
 import { initOnStartOrLangChange, initNotificationLanguage } from 'Common/Translator';
-import * as Events from 'Common/Events';
 import * as Settings from 'Storage/Settings';
 
 import LanguageStore from 'Stores/Language';
@@ -32,11 +31,9 @@ class AbstractApp extends AbstractBoot {
 		this.isLocalAutocomplete = true;
 		this.lastErrorTime = 0;
 
-		addEventListener('resize', () => Events.pub('window.resize'));
-
 		var t;
-		Events.sub(
-			'window.resize',
+		addEventListener(
+			'resize',
 			()=>{
 				// throttle
 				if (!t) {
@@ -47,24 +44,13 @@ class AbstractApp extends AbstractBoot {
 						if ($win.__sizes[0] !== iH || $win.__sizes[1] !== iW) {
 							$win.__sizes[0] = iH;
 							$win.__sizes[1] = iW;
-
-							Events.pub('window.resize.real');
+							dispatchEvent(new CustomEvent('resize.real'));
 						}
 						t = 0;
 					}, 50);
 				}
 			}
 		);
-
-		// DEBUG
-		//		Events.sub({
-		//			'window.resize': function() {
-		//				console.log('window.resize');
-		//			},
-		//			'window.resize.real': function() {
-		//				console.log('window.resize.real');
-		//			}
-		//		});
 
 		const $doc = document;
 		$doc.addEventListener('keydown', (event) => {
@@ -81,8 +67,8 @@ class AbstractApp extends AbstractBoot {
 		var d;
 		const fn = ()=>{
 			// debounce
-			d && clearTimeout(d);
-			d = setTimeout(()=>Events.pub('rl.auto-logout-refresh'), 5000);
+			clearTimeout(d);
+			d = setTimeout(()=>dispatchEvent(new CustomEvent('rl.auto-logout-refresh')), 5000);
 		}
 
 		$doc.addEventListener('mousemove', fn);
@@ -211,8 +197,6 @@ class AbstractApp extends AbstractBoot {
 	}
 
 	bootstart() {
-		Events.pub('rl.bootstart');
-
 		const mobile = Settings.appSettingsGet('mobile');
 
 		ko.components.register('SaveTrigger', require('Component/SaveTrigger').default);
@@ -239,10 +223,6 @@ class AbstractApp extends AbstractBoot {
 
 		setTimeout(windowResizeCallback, 1000);
 
-		Events.sub('ssm.mobile-enter', () => leftPanelDisabled(true));
-
-		Events.sub('ssm.mobile-leave', () => leftPanelDisabled(false));
-
 		if (!mobile) {
 			$htmlCL.add('rl-desktop');
 
@@ -251,11 +231,11 @@ class AbstractApp extends AbstractBoot {
 				query: '(max-width: 767px)',
 				onEnter: () => {
 					$htmlCL.add('ssm-state-mobile');
-					Events.pub('ssm.mobile-enter');
+					leftPanelDisabled(true);
 				},
 				onLeave: () => {
 					$htmlCL.remove('ssm-state-mobile');
-					Events.pub('ssm.mobile-leave');
+					leftPanelDisabled(false);
 				}
 			});
 
@@ -281,7 +261,7 @@ class AbstractApp extends AbstractBoot {
 			});
 		} else {
 			$htmlCL.add('ssm-state-mobile', 'rl-mobile');
-			Events.pub('ssm.mobile-enter');
+			leftPanelDisabled(true);
 		}
 
 		leftPanelDisabled.subscribe((bValue) => {

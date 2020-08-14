@@ -168,7 +168,7 @@
 	Date.prototype.fromNow = function() {
 		let format,
 			seconds = ((new Date()).getTime() - this.getTime()) / 1000,
-			str = locale.relativeTime[0 < seconds ? 'future' : 'past'];
+			str = locale.relativeTime[0 < seconds ? 'past' : 'future'];
 		seconds = Math.abs(seconds);
 		if (60 > seconds) {
 			format = 's';

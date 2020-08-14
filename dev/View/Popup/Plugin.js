@@ -44,7 +44,7 @@ class PluginPopupView extends AbstractViewNext {
 		var d, fn = this.tryToClosePopup.bind(this);
 		this.tryToClosePopup = ()=>{
 			// debounce
-			d && clearTimeout(d);
+			clearTimeout(d);
 			d = setTimeout(fn, 200);
 		};
 	}

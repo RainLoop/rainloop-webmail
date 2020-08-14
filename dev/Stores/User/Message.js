@@ -29,7 +29,6 @@ import { MESSAGE_BODY_CACHE_LIMIT } from 'Common/Consts';
 import { data as GlobalsData } from 'Common/Globals';
 import { mailBox, notificationMailIcon } from 'Common/Links';
 import { i18n, getNotification } from 'Common/Translator';
-import { momentNowUnix } from 'Common/Momentor';
 
 import * as MessageHelper from 'Helper/Message';
 import { MessageModel } from 'Model/Message';
@@ -209,7 +208,7 @@ class MessageUserStore {
 		this.messageList.subscribe(
 			(list)=>{
 				// debounce
-				d && clearTimeout(d);
+				clearTimeout(d);
 				d = setTimeout(()=>list.forEach(item => {
 					if (item && item.newForAnimation()) {
 						item.newForAnimation(false);
@@ -750,7 +749,7 @@ class MessageUserStore {
 			const folder = getFolderFromCacheList(isNormal(data.Result.Folder) ? data.Result.Folder : '');
 
 			if (folder && !cached) {
-				folder.interval = momentNowUnix();
+				folder.interval = Date.now() / 1000;
 
 				setFolderHash(data.Result.Folder, data.Result.FolderHash);
 

@@ -43,7 +43,6 @@ import MessageStore from 'Stores/User/Message';
 import Remote from 'Remote/User/Ajax';
 
 import * as Settings from 'Storage/Settings';
-import * as Events from 'Common/Events';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 
@@ -164,7 +163,9 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.savedTime = ko.observable(0);
 		this.savedTimeText = ko.computed(() =>
-			0 < this.savedTime() ? i18n('COMPOSE/SAVED_TIME', { 'TIME': momentorFormat(this.savedTime() - 1, 'LT') }) : ''
+			this.savedTime()
+				? i18n('COMPOSE/SAVED_TIME', { 'TIME': this.savedTime().format('LT') })
+				: ''
 		);
 
 		this.emptyToError = ko.observable(false);
@@ -300,7 +301,7 @@ class ComposePopupView extends AbstractViewNext {
 		this.sendMessageResponse = this.sendMessageResponse.bind(this);
 		this.saveMessageResponse = this.saveMessageResponse.bind(this);
 
-		Events.sub('interval.2m', () => {
+		setInterval(() => {
 			if (
 				this.modalVisibility() &&
 				!FolderStore.draftFolderNotEnabled() &&
@@ -312,7 +313,7 @@ class ComposePopupView extends AbstractViewNext {
 			) {
 				this.saveCommand();
 			}
-		});
+		}, 120000);
 
 		this.showCc.subscribe(this.resizerTrigger);
 		this.showBcc.subscribe(this.resizerTrigger);
@@ -326,7 +327,7 @@ class ComposePopupView extends AbstractViewNext {
 		// debounce
 		var d, fn = this.tryToClosePopup.bind(this);
 		this.tryToClosePopup = ()=>{
-			d && clearTimeout(d);
+			clearTimeout(d);
 			d = setTimeout(fn, 200);
 		};
 
@@ -667,7 +668,7 @@ class ComposePopupView extends AbstractViewNext {
 				this.draftFolder(oData.Result.NewFolder);
 				this.draftUid(oData.Result.NewUid);
 
-				this.savedTime(Math.round(new Date().getTime() / 1000));
+				this.savedTime(new Date);
 
 				if (this.bFromDraft) {
 					setFolderHash(this.draftFolder(), '');
@@ -722,15 +723,9 @@ class ComposePopupView extends AbstractViewNext {
 	}
 
 	converSignature(signature) {
-		let limit = 10,
-			fromLine = '';
-
-		const moments = [],
-			momentRegx = /{{MOMENT:([^}]+)}}/g;
-
 		signature = signature.replace(/[\r]/g, '');
 
-		fromLine = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
+		let fromLine = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
 		if (fromLine) {
 			signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
 
@@ -748,36 +743,14 @@ class ComposePopupView extends AbstractViewNext {
 		signature = signature.replace(/{{FROM-FULL}}/g, '');
 
 		if (signature.includes('{{DATE}}')) {
-			signature = signature.replace(/{{DATE}}/g, momentorFormat(0, 'llll'));
+			signature = signature.replace(/{{DATE}}/g, new Date().format('LLLL'));
 		}
 
 		if (signature.includes('{{TIME}}')) {
-			signature = signature.replace(/{{TIME}}/g, momentorFormat(0, 'LT'));
+			signature = signature.replace(/{{TIME}}/g, new Date().format('LT'));
 		}
-		if (signature.includes('{{MOMENT:')) {
-			try {
-				let match = null;
-				while (null !== (match = momentRegx.exec(signature))) {
-					// eslint-disable-line no-cond-assign
-					if (match && match[0] && match[1]) {
-						moments.push([match[0], match[1]]);
-					}
 
-					limit -= 1;
-					if (0 === limit) {
-						break;
-					}
-				}
-
-				if (moments) {
-					moments.forEach(data => {
-						signature = signature.replace(data[0], momentorFormat(0, data[1]));
-					});
-				}
-
-				signature = signature.replace(/{{MOMENT:[^}]+}}/g, '');
-			} catch (e) {} // eslint-disable-line no-empty
-		}
+		signature = signature.replace(/{{MOMENT:[^}]+}}/g, '');
 
 		return signature;
 	}
@@ -1244,11 +1217,10 @@ class ComposePopupView extends AbstractViewNext {
 			return false;
 		});
 
-		Events.sub('window.resize.real', this.resizerTrigger);
 		var d, o = this;
-		Events.sub('window.resize.real', ()=>{
+		addEventListener('resize.real', ()=>{
 			// debounce
-			d && clearTimeout(d);
+			clearTimeout(d);
 			d = setTimeout(o.resizerTrigger, 50);
 		});
 

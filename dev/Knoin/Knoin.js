@@ -207,7 +207,7 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 			ko.applyBindingAccessorsToNode(
 				vmDom[0],
 				{
-					translatorInit: true,
+					i18nInit: true,
 					template: () => ({ name: vm.viewModelTemplateID })
 				},
 				vm

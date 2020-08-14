@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { DesktopNotification } from 'Common/Enums';
-import * as Events from 'Common/Events';
 import Audio from 'Common/Audio';
 
 import * as Settings from 'Storage/Settings';
@@ -118,7 +117,7 @@ class NotificationUserStore {
 		}
 	}
 
-	displayDesktopNotification(imageSrc, title, text, nessageData) {
+	displayDesktopNotification(imageSrc, title, text, messageData) {
 		if (this.enableDesktopNotification()) {
 			const NotificationClass = this.notificationClass(),
 				notification = NotificationClass
@@ -133,12 +132,12 @@ class NotificationUserStore {
 					notification.show();
 				}
 
-				if (nessageData) {
+				if (messageData) {
 					notification.onclick = () => {
 						focus();
 
-						if (nessageData.Folder && nessageData.Uid) {
-							Events.pub('mailbox.message.show', [nessageData.Folder, nessageData.Uid]);
+						if (messageData.Folder && messageData.Uid) {
+							dispatchEvent(new CustomEvent('mailbox.message.show', {detail:messageData}));
 						}
 					};
 				}

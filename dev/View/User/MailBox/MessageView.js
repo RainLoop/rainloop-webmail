@@ -27,7 +27,6 @@ import {
 } from 'Common/Utils';
 
 import Audio from 'Common/Audio';
-import * as Events from 'Common/Events';
 
 import { i18n } from 'Common/Translator';
 import { attachmentDownload } from 'Common/Links';
@@ -328,7 +327,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			() => MessageStore.messageListCompleteLoadingThrottle() || MessageStore.messageLoadingThrottle()
 		);
 
-		Events.sub('mailbox.message-view.toggle-full-screen', () => {
+		addEventListener('mailbox.message-view.toggle-full-screen', () => {
 			this.toggleFullScreen();
 		});
 
@@ -350,12 +349,16 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	@command((self) => !self.messageListAndMessageViewLoading())
 	goUpCommand() {
-		Events.pub('mailbox.message-list.selector.go-up', [Layout.NoPreview === this.layout() ? !!this.message() : true]);
+		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-up',
+			{detail:Layout.NoPreview === this.layout() ? !!this.message() : true}
+		));
 	}
 
 	@command((self) => !self.messageListAndMessageViewLoading())
 	goDownCommand() {
-		Events.pub('mailbox.message-list.selector.go-down', [Layout.NoPreview === this.layout() ? !!this.message() : true]);
+		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-up',
+			{detail:Layout.NoPreview === this.layout() ? !!this.message() : true}
+		));
 	}
 
 	detectDomBackgroundColor(dom) {
@@ -537,8 +540,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.message.subscribe(fCheckHeaderHeight);
 
 		var t;
-		Events.sub(
-			'window.resize',
+		addEventListener(
+			'resize',
 			()=>{
 				// throttle
 				if (!t) {

@@ -71,8 +71,8 @@
 			<div class="b-list-toolbar">
 				<input type="text" class="i18n span3 e-search" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]CONTACTS/SEARCH_INPUT_PLACEHOLDER" data-bind="value: search" />
 			</div>
-			<div class="b-list-content g-ui-user-select-none" data-bind="nano: true, scrollerShadows: true, css: {'hideContactListCheckbox': !useCheckboxesInList()}">
-				<div class="content g-scrollbox" data-scroller-shadows-content>
+			<div class="b-list-content g-ui-user-select-none" data-bind="css: {'hideContactListCheckbox': !useCheckboxesInList()}">
+				<div class="content g-scrollbox">
 					<div class="content-wrapper">
 						<div class="listClear" data-bind="visible: viewClearSearch() && '' !== search()">
 							<span class="g-ui-link i18n" data-i18n="CONTACTS/CLEAR_SEARCH" data-bind="command: clearCommand"></span>
@@ -167,8 +167,8 @@
 					</button>
 				</div>
 			</div>
-			<div class="b-view-content" data-bind="nano: true, scrollerShadows: true, css: {'read-only': viewReadOnly}">
-				<div class="content g-scrollbox" data-scroller-shadows-content>
+			<div class="b-view-content" data-bind="css: {'read-only': viewReadOnly}">
+				<div class="content g-scrollbox">
 					<div class="content-wrapper">
 						<div class="b-contact-view-desc" data-bind="visible: emptySelection">
 							<span class="i18n" data-i18n="CONTACTS/CONTACT_VIEW_DESC"></span>

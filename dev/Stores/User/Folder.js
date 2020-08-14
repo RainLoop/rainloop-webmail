@@ -7,8 +7,6 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { folderListOptionsBuilder } from 'Common/Utils';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 
-import { momentNowUnix } from 'Common/Momentor';
-
 class FolderUserStore {
 	constructor() {
 		this.displaySpecSetting = ko.observable(true);
@@ -157,7 +155,7 @@ class FolderUserStore {
 	getNextFolderNames() {
 		const result = [],
 			limit = 5,
-			utc = momentNowUnix(),
+			utc = Date.now() / 1000,
 			timeout = utc - 60 * 5,
 			timeouts = [],
 			inboxFolderName = getFolderInboxName(),
@@ -182,15 +180,7 @@ class FolderUserStore {
 
 		fSearchFunction(this.folderList());
 
-		timeouts.sort((a, b) => {
-			if (a[0] < b[0]) {
-				return -1;
-			} else if (a[0] > b[0]) {
-				return 1;
-			}
-
-			return 0;
-		});
+		timeouts.sort((a, b) => (a[0] < b[0]) ? -1 : (a[0] > b[0] ? 1 : 0));
 
 		timeouts.find(aItem => {
 			const folder = getFolderFromCacheList(aItem[1]);

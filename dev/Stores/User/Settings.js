@@ -4,7 +4,6 @@ import { MESSAGES_PER_PAGE, MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType } from 'Common/Enums';
 import { $htmlCL } from 'Common/Globals';
 import { pInt } from 'Common/Utils';
-import * as Events from 'Common/Events';
 
 import * as Settings from 'Storage/Settings';
 
@@ -48,7 +47,7 @@ class SettingsUserStore {
 			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
 			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
 			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
-			Events.pub('layout', [value]);
+			dispatchEvent(new CustomEvent('rl-layout', {detail:value}));
 		});
 	}
 
@@ -65,16 +64,16 @@ class SettingsUserStore {
 		this.useThreads(!!Settings.settingsGet('UseThreads'));
 		this.replySameFolder(!!Settings.settingsGet('ReplySameFolder'));
 
-		Events.sub('rl.auto-logout-refresh', () => {
+		const refresh = () => {
 			clearTimeout(this.iAutoLogoutTimer);
 			if (0 < this.autoLogout() && !Settings.settingsGet('AccountSignMe')) {
-				this.iAutoLogoutTimer = setTimeout(() => {
-					Events.pub('rl.auto-logout');
-				}, this.autoLogout() * 60000);
+				this.iAutoLogoutTimer = setTimeout(() =>
+					dispatchEvent(new CustomEvent('rl.auto-logout'))
+				, this.autoLogout() * 60000);
 			}
-		});
-
-		Events.pub('rl.auto-logout-refresh');
+		};
+		addEventListener('rl.auto-logout-refresh', refresh);
+		refresh();
 	}
 }
 

@@ -1,114 +1,65 @@
 import { i18n } from 'Common/Translator';
 
-let _moment = null;
-let d;
-
-/**
- * @returns {moment}
- */
-function momentNow() {
-	if (!d) {
-		d = setTimeout(()=>d=0, 500);
-		_moment = new Date();
-	}
-	return _moment;
-}
-
-/**
- * @returns {number}
- */
-export function momentNowUnix() {
-	return momentNow().getTime() / 1000;
-}
-
-/**
- * @param {Object} m
- * @returns {string}
- */
-function formatCustomShortDate(m) {
-	const now = momentNow();
-	if (m && now) {
-		switch (true) {
-			case 4 >= (now.getTime() - m.getTime()) / 3600000:
-				return m.fromNow();
-			case now.format('L') === m.format('L'):
-				return i18n('MESSAGE_LIST/TODAY_AT', {
-					TIME: m.format('LT')
-				});
-			case new Date(now.getTime() - 86400000) // subtract 1 day
-				.format('L') === m.format('L'):
-				return i18n('MESSAGE_LIST/YESTERDAY_AT', {
-					TIME: m.format('LT')
-				});
-			case now.getFullYear() === m.getFullYear():
-				return m.format('d M.');
-			// no default
+let d,
+	_moment = null,
+	momentNow = () => {
+		if (!d) {
+			d = setTimeout(()=>d=0, 500);
+			_moment = new Date();
 		}
-	}
+		return _moment;
+	};
 
-	return m ? m.format('LL') : '';
-}
-
-/**
- * @param {number} timeStampInUTC
- * @param {string} formatStr
- * @returns {string}
- */
 export function format(timeStampInUTC, formatStr) {
-	let m = null,
-		result = '';
+	const now = Date.now() / 1000;
 
-	const now = momentNowUnix();
+	timeStampInUTC = 0 < timeStampInUTC ? Math.min(now, timeStampInUTC) : (0 === timeStampInUTC ? now : 0);
 
-	timeStampInUTC = 0 < timeStampInUTC ? timeStampInUTC : 0 === timeStampInUTC ? now : 0;
-	timeStampInUTC = now < timeStampInUTC ? now : timeStampInUTC;
-
-	m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null;
-
-	if (m && 1970 === m.getFullYear()) {
-		m = null;
-	}
-
-	if (m) {
+	if (31536000 < timeStampInUTC) {
+		const m = new Date(timeStampInUTC * 1000);
 		switch (formatStr) {
 			case 'FROMNOW':
-				result = m.fromNow();
-				break;
+				return m.fromNow();
 			case 'SHORT':
-				result = formatCustomShortDate(m);
-				break;
+				if (4 >= (now - timeStampInUTC) / 3600)
+					return m.fromNow();
+				if (momentNow().format('Ymd') === m.format('Ymd'))
+					return i18n('MESSAGE_LIST/TODAY_AT', {TIME: m.format('LT')});
+				if (new Date((now - 86400) * 1000).format('Ymd') === m.format('Ymd'))
+					return i18n('MESSAGE_LIST/YESTERDAY_AT', {TIME: m.format('LT')});
+				if (momentNow().getFullYear() === m.getFullYear())
+					return m.format('d M.');
+				return m.format('LL');
 			case 'FULL':
-				result = m.format('LLL');
-				break;
+				return m.format('LLL');
 			default:
-				result = m.format(formatStr);
-				break;
+				return m.format(formatStr);
 		}
 	}
 
-	return result;
+	return '';
 }
 
-/**
- * @param {Object} element
- * @returns {void}
- */
-export function momentToNode(element) {
-	let key = '',
-		time = 0;
-	const $el = jQuery(element);
+export function timeToNode(element, time) {
+	try {
+		time = time || (Date.parse(element.dateTime) / 1000);
+		if (time) {
+			let key, m = new Date(time * 1000);
+			element.dateTime = m.format('Y-m-d\\TH:i:s');
 
-	time = $el.data('moment-time');
-	if (time) {
-		key = $el.data('moment-format');
-		if (key) {
-			$el.text(format(time, key));
-		}
+			key = element.dataset.momentFormat;
+			if (key) {
+				element.textContent = format(time, key);
+			}
 
-		key = $el.data('moment-format-title');
-		if (key) {
-			$el.attr('title', format(time, key));
+			key = element.dataset.momentFormatTitle;
+			if (key) {
+				element.title = format(time, key);
+			}
 		}
+	} catch (e) {
+		// prevent knockout crashes
+		console.error(e);
 	}
 }
 
@@ -117,8 +68,6 @@ export function momentToNode(element) {
  */
 export function reload() {
 	setTimeout(() =>
-		jQuery('.moment', document).each((index, item) => {
-			momentToNode(item);
-		})
+		document.querySelectorAll('[data-bind*="moment:"]').forEach(element => timeToNode(element))
 	, 1);
 }

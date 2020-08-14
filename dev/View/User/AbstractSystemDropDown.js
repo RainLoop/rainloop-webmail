@@ -7,7 +7,6 @@ import MessageStore from 'Stores/User/Message';
 import { Capa, KeyState } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
-import * as Events from 'Common/Events';
 import * as Settings from 'Storage/Settings';
 
 import { getApp } from 'Helper/Apps/User';
@@ -40,12 +39,12 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 
 		this.addAccountClick = this.addAccountClick.bind(this);
 
-		Events.sub('audio.stop', () => AppStore.currentAudio(''));
-		Events.sub('audio.start', (name) => AppStore.currentAudio(name));
+		addEventListener('audio.stop', () => AppStore.currentAudio(''));
+		addEventListener('audio.start', e => AppStore.currentAudio(e.detail));
 	}
 
 	stopPlay() {
-		Events.pub('audio.api.stop');
+		dispatchEvent(new CustomEvent('audio.api.stop'));
 	}
 
 	accountClick(account, event) {
