@@ -207,14 +207,11 @@ class AbstractApp extends AbstractBoot {
 		ko.components.register('Date', require('Component/Date').default);
 
 		ko.components.register('x-script', require('Component/Script').default);
-		// ko.components.register('svg-icon', require('Component/SvgIcon').default);
 
 		if (Settings.appSettingsGet('materialDesign') && !bMobileDevice) {
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox').default);
 			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
 		} else {
-			// ko.components.register('Checkbox', require('Component/Classic/Checkbox').default);
-			// ko.components.register('CheckboxSimple', require('Component/Classic/Checkbox').default);
 			ko.components.register('Checkbox', require('Component/Checkbox').default);
 			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
 		}

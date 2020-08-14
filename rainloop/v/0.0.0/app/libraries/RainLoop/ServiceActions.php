@@ -1012,8 +1012,8 @@ class ServiceActions
 		foreach ($aTemplates as $sName => $sFile)
 		{
 			$sName = \preg_replace('/[^a-zA-Z0-9]/', '', $sName);
-			$sHtml .= '<script id="'.$sName.'" type="text/html" data-cfasync="false">'.
-				$this->oActions->ProcessTemplate($sName, \file_get_contents($sFile)).'</script>';
+			$sHtml .= '<template id="'.$sName.'">'.
+				$this->oActions->ProcessTemplate($sName, \file_get_contents($sFile)).'</template>';
 		}
 
 		unset($aTemplates);
