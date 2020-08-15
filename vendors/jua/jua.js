@@ -31,20 +31,15 @@
 				Array.from(aItems).forEach(oItem => {
 					if (oItem)
 					{
-						if (!bUseLimit) {
-							if (0 <= --iLimit)
-							{
-								oFile = Utils.getDataFromFile(oItem);
-								oFile && fFileCallback(oFile);
-							}
-						}
-						else if (!bCallLimit)
+						if (!bUseLimit || 0 <= --iLimit)
 						{
-							if (0 > iLimit && fLimitCallback)
-							{
-								bCallLimit = true;
-								fLimitCallback(iInputLimit);
-							}
+							oFile = Utils.getDataFromFile(oItem);
+							oFile && fFileCallback(oFile);
+						}
+						else if (bUseLimit && !bCallLimit && 0 > iLimit && fLimitCallback)
+						{
+							bCallLimit = true;
+							fLimitCallback(iInputLimit);
 						}
 					}
 				});
@@ -436,13 +431,11 @@
 						}
 					})
 					.on('change', function () {
-						Utils.getDataFromInput(this, function (oFile) {
+						Utils.getDataFromInput(this, oFile => {
 								self.oJua.addNewFile(oFile);
 								self.generateNewInput(oClickElement);
 
-								setTimeout(function () {
-									oLabel.remove();
-								}, 10);
+								setTimeout(() => oLabel.remove(), 10);
 							},
 							Utils.getValue(self.oOptions, 'multipleSizeLimit', iDefLimit),
 							self.oJua.getEvent('onLimitReached')
