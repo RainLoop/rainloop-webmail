@@ -2,7 +2,9 @@
 
 // Name this file as "include.php" to enable it.
 
-//\header('Strict-Transport-Security: max-age=31536000');
+//header('Strict-Transport-Security: max-age=31536000');
+
+//define('USE_GZIP', true); // to use gzip encoded output
 
 /**
  * @return string
