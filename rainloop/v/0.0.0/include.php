@@ -222,7 +222,7 @@
 		}
 
 		// See https://github.com/kjdev/php-ext-brotli
-		if (defined('USE_GZIP') && !ini_get('zlib.output_compression', 0) && !ini_get('brotli.output_compression', 0)) {
+		if (defined('USE_GZIP') && !ini_get('zlib.output_compression') && !ini_get('brotli.output_compression')) {
 			ob_start('ob_gzhandler');
 		}
 
