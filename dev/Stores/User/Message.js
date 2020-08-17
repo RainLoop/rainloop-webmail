@@ -3,7 +3,6 @@ import ko from 'ko';
 import { Layout, Focused, MessageSetAction, StorageResultType, Notification } from 'Common/Enums';
 
 import {
-	isNormal,
 	pInt,
 	pString,
 	plainToHtml,
@@ -271,7 +270,7 @@ class MessageUserStore {
 	}
 
 	initUidNextAndNewMessages(folder, uidNext, newMessages) {
-		if (getFolderInboxName() === folder && isNormal(uidNext) && uidNext) {
+		if (getFolderInboxName() === folder && uidNext) {
 			if (Array.isArray(newMessages) && newMessages.length) {
 				newMessages.forEach(item => {
 					addNewMessageCache(folder, item.Uid);
@@ -545,10 +544,10 @@ class MessageUserStore {
 					const textBody = messagesDom.find('#' + id);
 					if (!textBody || !textBody[0]) {
 						let isHtml = false;
-						if (isNormal(data.Result.Html) && data.Result.Html) {
+						if (data.Result.Html) {
 							isHtml = true;
 							resultHtml = data.Result.Html.toString();
-						} else if (isNormal(data.Result.Plain) && data.Result.Plain) {
+						} else if (data.Result.Plain) {
 							isHtml = false;
 							resultHtml = plainToHtml(data.Result.Plain.toString(), false);
 
@@ -746,18 +745,18 @@ class MessageUserStore {
 				iCount = pInt(data.Result.MessageResultCount),
 				iOffset = pInt(data.Result.Offset);
 
-			const folder = getFolderFromCacheList(isNormal(data.Result.Folder) ? data.Result.Folder : '');
+			const folder = getFolderFromCacheList(null != data.Result.Folder ? data.Result.Folder : '');
 
 			if (folder && !cached) {
 				folder.interval = Date.now() / 1000;
 
 				setFolderHash(data.Result.Folder, data.Result.FolderHash);
 
-				if (isNormal(data.Result.MessageCount)) {
+				if (null != data.Result.MessageCount) {
 					folder.messageCountAll(data.Result.MessageCount);
 				}
 
-				if (isNormal(data.Result.MessageUnseenCount)) {
+				if (null != data.Result.MessageUnseenCount) {
 					if (pInt(folder.messageCountUnread()) !== pInt(data.Result.MessageUnseenCount)) {
 						unreadCountChange = true;
 					}
@@ -795,11 +794,11 @@ class MessageUserStore {
 			});
 
 			this.messageListCount(iCount);
-			this.messageListSearch(isNormal(data.Result.Search) ? data.Result.Search : '');
+			this.messageListSearch(null != data.Result.Search ? data.Result.Search : '');
 			this.messageListPage(Math.ceil(iOffset / SettingsStore.messagesPerPage() + 1));
-			this.messageListThreadUid(isNormal(data.Result.ThreadUid) ? pString(data.Result.ThreadUid) : '');
+			this.messageListThreadUid(null != data.Result.ThreadUid ? pString(data.Result.ThreadUid) : '');
 
-			this.messageListEndFolder(isNormal(data.Result.Folder) ? data.Result.Folder : '');
+			this.messageListEndFolder(null != data.Result.Folder ? data.Result.Folder : '');
 			this.messageListEndSearch(this.messageListSearch());
 			this.messageListEndThreadUid(this.messageListThreadUid());
 			this.messageListEndPage(this.messageListPage());

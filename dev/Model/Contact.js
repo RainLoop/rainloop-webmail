@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { ContactPropertyType } from 'Common/Enums';
-import { isNonEmptyArray, isNormal, pInt, pString } from 'Common/Utils';
+import { isNonEmptyArray, pInt, pString } from 'Common/Utils';
 import { emptyContactPic } from 'Common/Links';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -58,7 +58,7 @@ class ContactModel extends AbstractModel {
 
 			if (isNonEmptyArray(json.Properties)) {
 				json.Properties.forEach(property => {
-					if (property && property.Type && isNormal(property.Value) && isNormal(property.TypeStr)) {
+					if (property && property.Type && null != property.Value && null != property.TypeStr) {
 						this.properties.push([pInt(property.Type), pString(property.Value), pString(property.TypeStr)]);
 					}
 				});

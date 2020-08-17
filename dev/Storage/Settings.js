@@ -1,10 +1,8 @@
-import { isNormal } from 'Common/Utils';
-
 let SETTINGS = window.__rlah_data() || null;
-SETTINGS = isNormal(SETTINGS) ? SETTINGS : {};
+SETTINGS = null != SETTINGS ? SETTINGS : {};
 
 let APP_SETTINGS = SETTINGS.System || null;
-APP_SETTINGS = isNormal(APP_SETTINGS) ? APP_SETTINGS : {};
+APP_SETTINGS = null != APP_SETTINGS ? APP_SETTINGS : {};
 
 /**
  * @param {string} name
@@ -36,5 +34,5 @@ export function appSettingsGet(name) {
  */
 export function capa(name) {
 	const values = settingsGet('Capa');
-	return Array.isArray(values) && isNormal(name) && values.includes(name);
+	return Array.isArray(values) && null != name && values.includes(name);
 }

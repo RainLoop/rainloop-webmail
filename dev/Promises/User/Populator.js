@@ -1,5 +1,5 @@
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { isNormal, pInt } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
 import { ClientSideKeyName, ServerFolderType } from 'Common/Enums';
 import * as Cache from 'Common/Cache';
 
@@ -71,11 +71,11 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 							Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);
 						}
 
-						if (isNormal(oFolder.Extended.MessageCount)) {
+						if (null != oFolder.Extended.MessageCount) {
 							oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
 						}
 
-						if (isNormal(oFolder.Extended.MessageUnseenCount)) {
+						if (null != oFolder.Extended.MessageUnseenCount) {
 							oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
 						}
 					}

@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { isNormal, windowResize } from 'Common/Utils';
+import { windowResize } from 'Common/Utils';
 import { Capa, Focused, Layout, KeyState, EventKeyCode } from 'Common/Enums';
 import { $htmlCL, leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
@@ -243,7 +243,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				copy = $htmlCL.contains('rl-ctrl-key-pressed'),
 				uids = ui.helper.data('rl-uids');
 
-			if (fromFolderFullNameRaw && isNormal(fromFolderFullNameRaw) && Array.isArray(uids)) {
+			if (fromFolderFullNameRaw && Array.isArray(uids)) {
 				getApp().moveMessagesToFolder(fromFolderFullNameRaw, uids, toFolder.fullNameRaw, copy);
 			}
 		}

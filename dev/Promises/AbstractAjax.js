@@ -1,5 +1,5 @@
 import { ajax } from 'Common/Links';
-import { isNormal, pString } from 'Common/Utils';
+import { pInt, pString } from 'Common/Utils';
 import { DEFAULT_AJAX_TIMEOUT, TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT } from 'Common/Consts';
 import { Notification } from 'Common/Enums';
 import { data as GlobalsData } from 'Common/Globals';
@@ -75,7 +75,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 		if (window.AbortController) {
 			this.abort(action);
 			const controller = new AbortController();
-			setTimeout(() => controller.abort(), isNormal(timeOut) ? timeOut : DEFAULT_AJAX_TIMEOUT);
+			setTimeout(() => controller.abort(), pInt(timeOut, DEFAULT_AJAX_TIMEOUT));
 			init.signal = controller.signal;
 			this.oRequests[action] = controller;
 		}

@@ -1,4 +1,4 @@
-import { pString, pInt, isNormal } from 'Common/Utils';
+import { pString, pInt } from 'Common/Utils';
 import * as Settings from 'Storage/Settings';
 
 const ROOT = './',
@@ -365,7 +365,7 @@ export function admin(screenName) {
  * @returns {string}
  */
 export function mailBox(folder, page = 1, search = '', threadUid = '') {
-	page = isNormal(page) ? pInt(page) : 1;
+	page = pInt(page, 1);
 	search = pString(search);
 
 	let result = HASH_PREFIX + 'mailbox/';

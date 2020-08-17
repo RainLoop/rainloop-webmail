@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
-import { isNormal } from 'Common/Utils';
 import { getNotification } from 'Common/Translator';
 import { HtmlEditor } from 'Common/HtmlEditor';
 
@@ -142,7 +141,7 @@ class TemplatePopupView extends AbstractViewNext {
 						data &&
 						data.Result &&
 						'Object/Template' === data.Result['@Object'] &&
-						isNormal(data.Result.Body)
+						null != data.Result.Body
 					) {
 						template.body = data.Result.Body;
 						template.populated = true;

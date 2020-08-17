@@ -12,7 +12,6 @@ import {
 } from 'Common/Enums';
 
 import {
-	isNormal,
 	delegateRun,
 	isNonEmptyArray,
 	clearBqSwitcher,
@@ -387,7 +386,7 @@ class ComposePopupView extends AbstractViewNext {
 				if (
 					Array.isArray(this.aDraftInfo) &&
 					3 === this.aDraftInfo.length &&
-					isNormal(this.aDraftInfo[2]) &&
+					null != this.aDraftInfo[2] &&
 					this.aDraftInfo[2].length
 				) {
 					sSentFolder = this.aDraftInfo[2];
@@ -795,7 +794,7 @@ class ComposePopupView extends AbstractViewNext {
 				this.addEmailsTo(this.cc, aCcEmails);
 				this.addEmailsTo(this.bcc, aBccEmails);
 
-				if (isNormal(sCustomSubject) && sCustomSubject && !this.subject()) {
+				if (sCustomSubject && !this.subject()) {
 					this.subject(sCustomSubject);
 				}
 			}
@@ -863,7 +862,7 @@ class ComposePopupView extends AbstractViewNext {
 			lineComposeType = sType || ComposeType.Empty;
 
 		oMessageOrArray = oMessageOrArray || null;
-		if (oMessageOrArray && isNormal(oMessageOrArray)) {
+		if (oMessageOrArray) {
 			message =
 				Array.isArray(oMessageOrArray) && 1 === oMessageOrArray.length
 					? oMessageOrArray[0]
@@ -1050,9 +1049,9 @@ class ComposePopupView extends AbstractViewNext {
 				this.setFocusInPopup();
 			});
 		} else if (ComposeType.Empty === lineComposeType) {
-			this.subject(isNormal(sCustomSubject) ? '' + sCustomSubject : '');
+			this.subject(null != sCustomSubject ? '' + sCustomSubject : '');
 
-			sText = isNormal(sCustomPlainText) ? '' + sCustomPlainText : '';
+			sText = null != sCustomPlainText ? '' + sCustomPlainText : '';
 
 			this.editor((editor) => {
 				editor.setHtml(sText, false);
@@ -1291,7 +1290,7 @@ class ComposePopupView extends AbstractViewNext {
 						this.dragAndDropOver(false);
 
 						const fileName = undefined === oData.FileName ? '' : oData.FileName.toString(),
-							size = isNormal(oData.Size) ? pInt(oData.Size) : null,
+							size = pInt(oData.Size, null),
 							attachment = new ComposeAttachmentModel(sId, fileName, size);
 
 						attachment.cancel = this.cancelAttachmentHelper(sId, oJua);

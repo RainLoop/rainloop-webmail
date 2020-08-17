@@ -8,7 +8,7 @@ import {
 	bMobileDevice
 } from 'Common/Globals';
 
-import { isNormal, pString, detectDropdownVisibility, windowResizeCallback } from 'Common/Utils';
+import { pString, detectDropdownVisibility, windowResizeCallback } from 'Common/Utils';
 
 import { KeyState } from 'Common/Enums';
 import { root, rootAdmin, rootUser, populateAuthSuffix } from 'Common/Links';
@@ -114,7 +114,7 @@ class AbstractApp extends AbstractBoot {
 	 * @param {string} title
 	 */
 	setWindowTitle(title) {
-		title = isNormal(title) && title.length ? '' + title : '';
+		title = pString(title);
 		if (Settings.settingsGet('Title')) {
 			title += (title ? ' - ' : '') + Settings.settingsGet('Title');
 		}
