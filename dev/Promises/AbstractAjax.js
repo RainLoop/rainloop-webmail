@@ -54,10 +54,17 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 			};
 			params.XToken = Settings.appSettingsGet('token');
 //			init.body = JSON.stringify(params);
-			const formData = new FormData();
-			Object.keys(params).forEach(key => {
-				formData.append(key, params[key])
-			});
+			const formData = new FormData(),
+			buildFormData = (formData, data, parentKey) => {
+				if (data && typeof data === 'object' && !(data instanceof Date || data instanceof File)) {
+					Object.keys(data).forEach(key =>
+						buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key)
+					);
+				} else {
+					formData.set(parentKey, data == null ? '' : data);
+				}
+			};
+			buildFormData(formData, params);
 			init.body = (new URLSearchParams(formData)).toString();
 		}
 

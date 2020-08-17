@@ -14,8 +14,8 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 	 */
 	adminLogin(fCallback, sLogin, sPassword) {
 		this.defaultRequest(fCallback, 'AdminLogin', {
-			'Login': sLogin,
-			'Password': sPassword
+			Login: sLogin,
+			Password: sPassword
 		});
 	}
 
@@ -53,7 +53,7 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 	 */
 	domainList(fCallback, bIncludeAliases = true) {
 		this.defaultRequest(fCallback, 'AdminDomainList', {
-			'IncludeAliases': bIncludeAliases ? '1' : '0'
+			IncludeAliases: bIncludeAliases ? 1 : 0
 		});
 	}
 
@@ -94,9 +94,9 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 			fCallback,
 			'AdminPackageInstall',
 			{
-				'Id': oPackage.id,
-				'Type': oPackage.type,
-				'File': oPackage.file
+				Id: oPackage.id,
+				Type: oPackage.type,
+				File: oPackage.file
 			},
 			60000
 		);
@@ -108,7 +108,7 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 	 */
 	packageDelete(fCallback, oPackage) {
 		this.defaultRequest(fCallback, 'AdminPackageDelete', {
-			'Id': oPackage.id
+			Id: oPackage.id
 		});
 	}
 
@@ -118,7 +118,7 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 	 */
 	domain(fCallback, sName) {
 		this.defaultRequest(fCallback, 'AdminDomainLoad', {
-			'Name': sName
+			Name: sName
 		});
 	}
 
@@ -128,7 +128,7 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 	 */
 	plugin(fCallback, sName) {
 		this.defaultRequest(fCallback, 'AdminPluginLoad', {
-			'Name': sName
+			Name: sName
 		});
 	}
 
@@ -138,7 +138,7 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 	 */
 	domainDelete(fCallback, sName) {
 		this.defaultRequest(fCallback, 'AdminDomainDelete', {
-			'Name': sName
+			Name: sName
 		});
 	}
 
@@ -150,7 +150,7 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 	domainDisable(fCallback, sName, bDisabled) {
 		return this.defaultRequest(fCallback, 'AdminDomainDisable', {
 			Name: sName,
-			Disabled: bDisabled ? '1' : '0'
+			Disabled: bDisabled ? 1 : 0
 		});
 	}
 
@@ -168,7 +168,7 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 	 */
 	licensing(fCallback, bForce) {
 		return this.defaultRequest(fCallback, 'AdminLicensing', {
-			Force: bForce ? '1' : '0'
+			Force: bForce ? 1 : 0
 		});
 	}
 
@@ -192,7 +192,7 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 	pluginDisable(fCallback, sName, bDisabled) {
 		return this.defaultRequest(fCallback, 'AdminPluginDisable', {
 			Name: sName,
-			Disabled: bDisabled ? '1' : '0'
+			Disabled: bDisabled ? 1 : 0
 		});
 	}
 
@@ -225,28 +225,28 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 		sWhiteList
 	) {
 		this.defaultRequest(fCallback, 'AdminDomainSave', {
-			'Create': bCreate ? '1' : '0',
-			'Name': sName,
+			Create: bCreate ? 1 : 0,
+			Name: sName,
 
-			'IncHost': sIncHost,
-			'IncPort': iIncPort,
-			'IncSecure': sIncSecure,
-			'IncShortLogin': bIncShortLogin ? '1' : '0',
+			IncHost: sIncHost,
+			IncPort: iIncPort,
+			IncSecure: sIncSecure,
+			IncShortLogin: bIncShortLogin ? 1 : 0,
 
-			'UseSieve': bUseSieve ? '1' : '0',
-			'SieveAllowRaw': sSieveAllowRaw ? '1' : '0',
-			'SieveHost': sSieveHost,
-			'SievePort': iSievePort,
-			'SieveSecure': sSieveSecure,
+			UseSieve: bUseSieve ? 1 : 0,
+			SieveAllowRaw: sSieveAllowRaw ? 1 : 0,
+			SieveHost: sSieveHost,
+			SievePort: iSievePort,
+			SieveSecure: sSieveSecure,
 
-			'OutHost': sOutHost,
-			'OutPort': iOutPort,
-			'OutSecure': sOutSecure,
-			'OutShortLogin': bOutShortLogin ? '1' : '0',
-			'OutAuth': bOutAuth ? '1' : '0',
-			'OutUsePhpMail': bOutPhpMail ? '1' : '0',
+			OutHost: sOutHost,
+			OutPort: iOutPort,
+			OutSecure: sOutSecure,
+			OutShortLogin: bOutShortLogin ? 1 : 0,
+			OutAuth: bOutAuth ? 1 : 0,
+			OutUsePhpMail: bOutPhpMail ? 1 : 0,
 
-			'WhiteList': sWhiteList
+			WhiteList: sWhiteList
 		});
 	}
 
@@ -267,19 +267,19 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 		bOutPhpMail
 	) {
 		this.defaultRequest(fCallback, 'AdminDomainTest', {
-			'Name': sName,
-			'IncHost': sIncHost,
-			'IncPort': iIncPort,
-			'IncSecure': sIncSecure,
-			'UseSieve': bUseSieve ? '1' : '0',
-			'SieveHost': sSieveHost,
-			'SievePort': iSievePort,
-			'SieveSecure': sSieveSecure,
-			'OutHost': sOutHost,
-			'OutPort': iOutPort,
-			'OutSecure': sOutSecure,
-			'OutAuth': bOutAuth ? '1' : '0',
-			'OutUsePhpMail': bOutPhpMail ? '1' : '0'
+			Name: sName,
+			IncHost: sIncHost,
+			IncPort: iIncPort,
+			IncSecure: sIncSecure,
+			UseSieve: bUseSieve ? 1 : 0,
+			SieveHost: sSieveHost,
+			SievePort: iSievePort,
+			SieveSecure: sSieveSecure,
+			OutHost: sOutHost,
+			OutPort: iOutPort,
+			OutSecure: sOutSecure,
+			OutAuth: bOutAuth ? 1 : 0,
+			OutUsePhpMail: bOutPhpMail ? 1 : 0
 		});
 	}
 

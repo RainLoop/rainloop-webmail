@@ -5107,7 +5107,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		$sMessageFolder = $this->GetActionParam('MessageFolder', '');
 		$sMessageUid = $this->GetActionParam('MessageUid', '');
 
-		$sDraftFolder = $this->GetActionParam('DraftFolder', '');
+		$sDraftFolder = $this->GetActionParam('SaveFolder', '');
 		if (0 === strlen($sDraftFolder))
 		{
 			throw new Exceptions\ClientException(Notifications::UnknownError);
@@ -5333,7 +5333,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		$sDraftFolder = $this->GetActionParam('MessageFolder', '');
 		$sDraftUid = $this->GetActionParam('MessageUid', '');
-		$sSentFolder = $this->GetActionParam('SentFolder', '');
+		$sSentFolder = $this->GetActionParam('SaveFolder', '');
 		$aDraftInfo = $this->GetActionParam('DraftInfo', null);
 		$bDsn = '1' === (string) $this->GetActionParam('Dsn', '0');
 

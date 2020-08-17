@@ -22,9 +22,7 @@ class UserAjaxUserPromises extends AbstractAjaxPromises {
 		this.setTrigger(fTrigger, true);
 
 		clearTimeout(this.foldersTimeout);
-		this.foldersTimeout = setTimeout(() => {
-			this.foldersReload(fTrigger);
-		}, 500);
+		this.foldersTimeout = setTimeout(() => this.foldersReload(fTrigger), 500);
 	}
 
 	folderDelete(sFolderFullNameRaw, fTrigger) {

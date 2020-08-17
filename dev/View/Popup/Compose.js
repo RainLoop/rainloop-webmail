@@ -337,11 +337,33 @@ class ComposePopupView extends AbstractViewNext {
 		this.iTimer = 0;
 	}
 
+	getMessageRequestParams(sSaveFolder)
+	{
+		return {
+			IdentityID: this.currentIdentity() ? this.currentIdentity().id() : '',
+			MessageFolder: this.draftFolder(),
+			MessageUid: this.draftUid(),
+			SaveFolder: sSaveFolder,
+			To: this.to(),
+			Cc: this.cc(),
+			Bcc: this.bcc(),
+			ReplyTo: this.replyTo(),
+			Subject: this.subject(),
+			TextIsHtml: this.oEditor && this.oEditor.isHtml() ? 1 : 0,
+			Text: this.oEditor ? this.oEditor.getData(true) : '',
+			DraftInfo: this.aDraftInfo,
+			InReplyTo: this.sInReplyTo,
+			References: this.sReferences,
+			MarkAsImportant: this.markAsImportant() ? 1 : 0,
+			Attachments: this.prepearAttachmentsForSendOrSave(),
+			// Only used at send, not at save:
+			Dsn: this.requestDsn() ? 1 : 0,
+			ReadReceiptRequest: this.requestReadReceipt() ? 1 : 0
+		};
+	}
+
 	@command((self) => self.canBeSentOrSaved())
 	sendCommand() {
-		const sTo = this.to().trim(),
-			sCc = this.cc().trim(),
-			sBcc = this.bcc().trim();
 		let sSentFolder = FolderStore.sentFolder();
 
 		this.attachmentsInProcessError(false);
@@ -356,7 +378,7 @@ class ComposePopupView extends AbstractViewNext {
 			this.attachmentsPlace(true);
 		}
 
-		if (!sTo && !sCc && !sBcc) {
+		if (!this.to().trim() && !this.cc().trim() && !this.bcc().trim()) {
 			this.emptyToError(true);
 		}
 
@@ -404,24 +426,7 @@ class ComposePopupView extends AbstractViewNext {
 
 				Remote.sendMessage(
 					this.sendMessageResponse,
-					this.currentIdentity() ? this.currentIdentity().id() : '',
-					this.draftFolder(),
-					this.draftUid(),
-					sSentFolder,
-					sTo,
-					this.cc(),
-					this.bcc(),
-					this.replyTo(),
-					this.subject(),
-					this.oEditor ? this.oEditor.isHtml() : false,
-					this.oEditor ? this.oEditor.getData(true) : '',
-					this.prepearAttachmentsForSendOrSave(),
-					this.aDraftInfo,
-					this.sInReplyTo,
-					this.sReferences,
-					this.requestDsn(),
-					this.requestReadReceipt(),
-					this.markAsImportant()
+					this.getMessageRequestParams(sSentFolder)
 				);
 			}
 		}
@@ -445,22 +450,7 @@ class ComposePopupView extends AbstractViewNext {
 
 			Remote.saveMessage(
 				this.saveMessageResponse,
-				this.currentIdentity() ? this.currentIdentity().id() : '',
-				this.draftFolder(),
-				this.draftUid(),
-				FolderStore.draftFolder(),
-				this.to(),
-				this.cc(),
-				this.bcc(),
-				this.replyTo(),
-				this.subject(),
-				this.oEditor ? this.oEditor.isHtml() : false,
-				this.oEditor ? this.oEditor.getData(true) : '',
-				this.prepearAttachmentsForSendOrSave(),
-				this.aDraftInfo,
-				this.sInReplyTo,
-				this.sReferences,
-				this.markAsImportant()
+				this.getMessageRequestParams(FolderStore.draftFolder())
 			);
 		}
 

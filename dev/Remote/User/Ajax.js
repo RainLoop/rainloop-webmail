@@ -41,11 +41,11 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 			fCallback,
 			'Folders',
 			{
-				'SentFolder': Settings.settingsGet('SentFolder'),
-				'DraftFolder': Settings.settingsGet('DraftFolder'),
-				'SpamFolder': Settings.settingsGet('SpamFolder'),
-				'TrashFolder': Settings.settingsGet('TrashFolder'),
-				'ArchiveFolder': Settings.settingsGet('ArchiveFolder')
+				SentFolder: Settings.settingsGet('SentFolder'),
+				DraftFolder: Settings.settingsGet('DraftFolder'),
+				SpamFolder: Settings.settingsGet('SpamFolder'),
+				TrashFolder: Settings.settingsGet('TrashFolder'),
+				ArchiveFolder: Settings.settingsGet('ArchiveFolder')
 			},
 			null,
 			'',
@@ -65,13 +65,13 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	login(fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode, bAdditionalCodeSignMe) {
 		this.defaultRequest(fCallback, 'Login', {
-			'Email': sEmail,
-			'Login': sLogin,
-			'Password': sPassword,
-			'Language': sLanguage || '',
-			'AdditionalCode': sAdditionalCode || '',
-			'AdditionalCodeSignMe': bAdditionalCodeSignMe ? '1' : '0',
-			'SignMe': bSignMe ? '1' : '0'
+			Email: sEmail,
+			Login: sLogin,
+			Password: sPassword,
+			Language: sLanguage || '',
+			AdditionalCode: sAdditionalCode || '',
+			AdditionalCodeSignMe: bAdditionalCodeSignMe ? 1 : 0,
+			SignMe: bSignMe ? 1 : 0
 		});
 	}
 
@@ -109,7 +109,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	testTwoFactor(fCallback, sCode) {
 		this.defaultRequest(fCallback, 'TestTwoFactorInfo', {
-			'Code': sCode
+			Code: sCode
 		});
 	}
 
@@ -119,7 +119,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	enableTwoFactor(fCallback, bEnable) {
 		this.defaultRequest(fCallback, 'EnableTwoFactor', {
-			'Enable': bEnable ? '1' : '0'
+			Enable: bEnable ? 1 : 0
 		});
 	}
 
@@ -146,10 +146,10 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	saveContactsSyncData(fCallback, bEnable, sUrl, sUser, sPassword) {
 		this.defaultRequest(fCallback, 'SaveContactsSyncData', {
-			'Enable': bEnable ? '1' : '0',
-			'Url': sUrl,
-			'User': sUser,
-			'Password': sPassword
+			Enable: bEnable ? 1 : 0,
+			Url: sUrl,
+			User: sUser,
+			Password: sPassword
 		});
 	}
 
@@ -161,9 +161,9 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	accountSetup(fCallback, sEmail, sPassword, bNew = true) {
 		this.defaultRequest(fCallback, 'AccountSetup', {
-			'Email': sEmail,
-			'Password': sPassword,
-			'New': bNew ? '1' : '0'
+			Email: sEmail,
+			Password: sPassword,
+			New: bNew ? 1 : 0
 		});
 	}
 
@@ -173,7 +173,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	accountDelete(fCallback, sEmailToDelete) {
 		this.defaultRequest(fCallback, 'AccountDelete', {
-			'EmailToDelete': sEmailToDelete
+			EmailToDelete: sEmailToDelete
 		});
 	}
 
@@ -184,8 +184,8 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	accountsAndIdentitiesSortOrder(fCallback, aAccounts, aIdentities) {
 		this.defaultRequest(fCallback, 'AccountsAndIdentitiesSortOrder', {
-			'Accounts': aAccounts,
-			'Identities': aIdentities
+			Accounts: aAccounts,
+			Identities: aIdentities
 		});
 	}
 
@@ -201,13 +201,13 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	identityUpdate(fCallback, sId, sEmail, sName, sReplyTo, sBcc, sSignature, bSignatureInsertBefore) {
 		this.defaultRequest(fCallback, 'IdentityUpdate', {
-			'Id': sId,
-			'Email': sEmail,
-			'Name': sName,
-			'ReplyTo': sReplyTo,
-			'Bcc': sBcc,
-			'Signature': sSignature,
-			'SignatureInsertBefore': bSignatureInsertBefore ? '1' : '0'
+			Id: sId,
+			Email: sEmail,
+			Name: sName,
+			ReplyTo: sReplyTo,
+			Bcc: sBcc,
+			Signature: sSignature,
+			SignatureInsertBefore: bSignatureInsertBefore ? 1 : 0
 		});
 	}
 
@@ -217,7 +217,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	identityDelete(fCallback, sIdToDelete) {
 		this.defaultRequest(fCallback, 'IdentityDelete', {
-			'IdToDelete': sIdToDelete
+			IdToDelete: sIdToDelete
 		});
 	}
 
@@ -236,9 +236,9 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	filtersSave(fCallback, filters, raw, isRawIsActive) {
 		this.defaultRequest(fCallback, 'FiltersSave', {
-			'Raw': raw,
-			'RawIsActive': isRawIsActive ? '1' : '0',
-			'Filters': filters.map(item => item.toJson())
+			Raw: raw,
+			RawIsActive: isRawIsActive ? 1 : 0,
+			Filters: filters.map(item => item.toJson())
 		});
 	}
 
@@ -262,7 +262,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	templateGetById(fCallback, sID) {
 		this.defaultRequest(fCallback, 'TemplateGetByID', {
-			'ID': sID
+			ID: sID
 		});
 	}
 
@@ -272,7 +272,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	templateDelete(fCallback, sID) {
 		this.defaultRequest(fCallback, 'TemplateDelete', {
-			'IdToDelete': sID
+			IdToDelete: sID
 		});
 	}
 
@@ -284,9 +284,9 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	templateSetup(fCallback, sID, sName, sBody) {
 		this.defaultRequest(fCallback, 'TemplateSetup', {
-			'ID': sID,
-			'Name': sName,
-			'Body': sBody
+			ID: sID,
+			Name: sName,
+			Body: sBody
 		});
 	}
 
@@ -324,7 +324,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 							AppStore.projectHash(),
 							folderHash,
 							inboxUidNext,
-							useThreads ? '1' : '0',
+							useThreads ? 1 : 0,
 							useThreads ? sThreadUid : ''
 						].join(String.fromCharCode(0))
 					),
@@ -341,7 +341,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 				Limit: iLimit,
 				Search: sSearch,
 				UidNext: inboxUidNext,
-				UseThreads: useThreads ? '1' : '0',
+				UseThreads: useThreads ? 1 : 0,
 				ThreadUid: useThreads ? sThreadUid : ''
 			},
 			sSearch ? SEARCH_AJAX_TIMEOUT : DEFAULT_AJAX_TIMEOUT,
@@ -359,7 +359,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 			fCallback,
 			'MessageUploadAttachments',
 			{
-				'Attachments': aDownloads
+				Attachments: aDownloads
 			},
 			999000
 		);
@@ -389,7 +389,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 							sFolderFullNameRaw,
 							iUid,
 							AppStore.projectHash(),
-							AppStore.threadsAllowed() && SettingsStore.useThreads() ? '1' : '0'
+							AppStore.threadsAllowed() && SettingsStore.useThreads() ? 1 : 0
 						].join(String.fromCharCode(0))
 					),
 				['Message']
@@ -410,7 +410,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 			fCallback,
 			'ComposeUploadExternals',
 			{
-				'Externals': aExternals
+				Externals: aExternals
 			},
 			999000
 		);
@@ -426,8 +426,8 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 			fCallback,
 			'ComposeUploadDrive',
 			{
-				'AccessToken': sAccessToken,
-				'Url': sUrl
+				AccessToken: sAccessToken,
+				Url: sUrl
 			},
 			999000
 		);
@@ -465,9 +465,9 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 
 		if (request) {
 			this.defaultRequest(fCallback, 'FolderInformation', {
-				'Folder': folder,
-				'FlagsUids': Array.isArray(uids) ? uids.join(',') : '',
-				'UidNext': getFolderInboxName() === folder ? getFolderUidNext(folder) : ''
+				Folder: folder,
+				FlagsUids: Array.isArray(uids) ? uids.join(',') : '',
+				UidNext: getFolderInboxName() === folder ? getFolderUidNext(folder) : ''
 			});
 		} else if (SettingsStore.useThreads()) {
 			getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
@@ -480,7 +480,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	folderInformationMultiply(fCallback, aFolders) {
 		this.defaultRequest(fCallback, 'FolderInformationMultiply', {
-			'Folders': aFolders
+			Folders: aFolders
 		});
 	}
 
@@ -499,9 +499,9 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	messageSetFlagged(fCallback, sFolderFullNameRaw, aUids, bSetFlagged) {
 		this.defaultRequest(fCallback, 'MessageSetFlagged', {
-			'Folder': sFolderFullNameRaw,
-			'Uids': aUids.join(','),
-			'SetAction': bSetFlagged ? '1' : '0'
+			Folder: sFolderFullNameRaw,
+			Uids: aUids.join(','),
+			SetAction: bSetFlagged ? 1 : 0
 		});
 	}
 
@@ -513,9 +513,9 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	messageSetSeen(fCallback, sFolderFullNameRaw, aUids, bSetSeen) {
 		this.defaultRequest(fCallback, 'MessageSetSeen', {
-			'Folder': sFolderFullNameRaw,
-			'Uids': aUids.join(','),
-			'SetAction': bSetSeen ? '1' : '0'
+			Folder: sFolderFullNameRaw,
+			Uids: aUids.join(','),
+			SetAction: bSetSeen ? 1 : 0
 		});
 	}
 
@@ -527,73 +527,18 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	messageSetSeenToAll(fCallback, sFolderFullNameRaw, bSetSeen, aThreadUids = null) {
 		this.defaultRequest(fCallback, 'MessageSetSeenToAll', {
-			'Folder': sFolderFullNameRaw,
-			'SetAction': bSetSeen ? '1' : '0',
-			'ThreadUids': aThreadUids ? aThreadUids.join(',') : ''
+			Folder: sFolderFullNameRaw,
+			SetAction: bSetSeen ? 1 : 0,
+			ThreadUids: aThreadUids ? aThreadUids.join(',') : ''
 		});
 	}
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sIdentityID
-	 * @param {string} sMessageFolder
-	 * @param {string} sMessageUid
-	 * @param {string} sDraftFolder
-	 * @param {string} sTo
-	 * @param {string} sCc
-	 * @param {string} sBcc
-	 * @param {string} sReplyTo
-	 * @param {string} sSubject
-	 * @param {boolean} bTextIsHtml
-	 * @param {string} sText
-	 * @param {Array} aAttachments
-	 * @param {(Array|null)} aDraftInfo
-	 * @param {string} sInReplyTo
-	 * @param {string} sReferences
-	 * @param {boolean} bMarkAsImportant
+	 * @param {Object} oData
 	 */
-	saveMessage(
-		fCallback,
-		sIdentityID,
-		sMessageFolder,
-		sMessageUid,
-		sDraftFolder,
-		sTo,
-		sCc,
-		sBcc,
-		sReplyTo,
-		sSubject,
-		bTextIsHtml,
-		sText,
-		aAttachments,
-		aDraftInfo,
-		sInReplyTo,
-		sReferences,
-		bMarkAsImportant
-	) {
-		this.defaultRequest(
-			fCallback,
-			'SaveMessage',
-			{
-				'IdentityID': sIdentityID,
-				'MessageFolder': sMessageFolder,
-				'MessageUid': sMessageUid,
-				'DraftFolder': sDraftFolder,
-				'To': sTo,
-				'Cc': sCc,
-				'Bcc': sBcc,
-				'ReplyTo': sReplyTo,
-				'Subject': sSubject,
-				'TextIsHtml': bTextIsHtml ? '1' : '0',
-				'Text': sText,
-				'DraftInfo': aDraftInfo,
-				'InReplyTo': sInReplyTo,
-				'References': sReferences,
-				'MarkAsImportant': bMarkAsImportant ? '1' : '0',
-				'Attachments': aAttachments
-			},
-			SAVE_MESSAGE_AJAX_TIMEOUT
-		);
+	saveMessage(fCallback, oData) {
+		this.defaultRequest(fCallback, 'SaveMessage', oData, SAVE_MESSAGE_AJAX_TIMEOUT);
 	}
 
 	/**
@@ -606,81 +551,20 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	sendReadReceiptMessage(fCallback, sMessageFolder, sMessageUid, sReadReceipt, sSubject, sText) {
 		this.defaultRequest(fCallback, 'SendReadReceiptMessage', {
-			'MessageFolder': sMessageFolder,
-			'MessageUid': sMessageUid,
-			'ReadReceipt': sReadReceipt,
-			'Subject': sSubject,
-			'Text': sText
+			MessageFolder: sMessageFolder,
+			MessageUid: sMessageUid,
+			ReadReceipt: sReadReceipt,
+			Subject: sSubject,
+			Text: sText
 		});
 	}
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {string} sIdentityID
-	 * @param {string} sMessageFolder
-	 * @param {string} sMessageUid
-	 * @param {string} sSentFolder
-	 * @param {string} sTo
-	 * @param {string} sCc
-	 * @param {string} sBcc
-	 * @param {string} sReplyTo
-	 * @param {string} sSubject
-	 * @param {boolean} bTextIsHtml
-	 * @param {string} sText
-	 * @param {Array} aAttachments
-	 * @param {(Array|null)} aDraftInfo
-	 * @param {string} sInReplyTo
-	 * @param {string} sReferences
-	 * @param {boolean} bRequestDsn
-	 * @param {boolean} bRequestReadReceipt
-	 * @param {boolean} bMarkAsImportant
+	 * @param {Object} oData
 	 */
-	sendMessage(
-		fCallback,
-		sIdentityID,
-		sMessageFolder,
-		sMessageUid,
-		sSentFolder,
-		sTo,
-		sCc,
-		sBcc,
-		sReplyTo,
-		sSubject,
-		bTextIsHtml,
-		sText,
-		aAttachments,
-		aDraftInfo,
-		sInReplyTo,
-		sReferences,
-		bRequestDsn,
-		bRequestReadReceipt,
-		bMarkAsImportant
-	) {
-		this.defaultRequest(
-			fCallback,
-			'SendMessage',
-			{
-				'IdentityID': sIdentityID,
-				'MessageFolder': sMessageFolder,
-				'MessageUid': sMessageUid,
-				'SentFolder': sSentFolder,
-				'To': sTo,
-				'Cc': sCc,
-				'Bcc': sBcc,
-				'ReplyTo': sReplyTo,
-				'Subject': sSubject,
-				'TextIsHtml': bTextIsHtml ? '1' : '0',
-				'Text': sText,
-				'DraftInfo': aDraftInfo,
-				'InReplyTo': sInReplyTo,
-				'References': sReferences,
-				'Dsn': bRequestDsn ? '1' : '0',
-				'ReadReceiptRequest': bRequestReadReceipt ? '1' : '0',
-				'MarkAsImportant': bMarkAsImportant ? '1' : '0',
-				'Attachments': aAttachments
-			},
-			SEND_MESSAGE_AJAX_TIMEOUT
-		);
+	sendMessage(fCallback, oData) {
+		this.defaultRequest(fCallback, 'SendMessage', oData, SEND_MESSAGE_AJAX_TIMEOUT);
 	}
 
 	/**
@@ -718,7 +602,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	folderClear(fCallback, sFolderFullNameRaw) {
 		this.defaultRequest(fCallback, 'FolderClear', {
-			'Folder': sFolderFullNameRaw
+			Folder: sFolderFullNameRaw
 		});
 	}
 
@@ -729,8 +613,8 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	folderSetSubscribe(fCallback, sFolderFullNameRaw, bSubscribe) {
 		this.defaultRequest(fCallback, 'FolderSubscribe', {
-			'Folder': sFolderFullNameRaw,
-			'Subscribe': bSubscribe ? '1' : '0'
+			Folder: sFolderFullNameRaw,
+			Subscribe: bSubscribe ? 1 : 0
 		});
 	}
 
@@ -741,8 +625,8 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	folderSetCheckable(fCallback, sFolderFullNameRaw, bCheckable) {
 		this.defaultRequest(fCallback, 'FolderCheckable', {
-			'Folder': sFolderFullNameRaw,
-			'Checkable': bCheckable ? '1' : '0'
+			Folder: sFolderFullNameRaw,
+			Checkable: bCheckable ? 1 : 0
 		});
 	}
 
@@ -759,11 +643,11 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 			fCallback,
 			'MessageMove',
 			{
-				'FromFolder': sFolder,
-				'ToFolder': sToFolder,
-				'Uids': aUids.join(','),
-				'MarkAsRead': bMarkAsRead ? '1' : '0',
-				'Learning': sLearning || ''
+				FromFolder: sFolder,
+				ToFolder: sToFolder,
+				Uids: aUids.join(','),
+				MarkAsRead: bMarkAsRead ? 1 : 0,
+				Learning: sLearning || ''
 			},
 			null,
 			'',
@@ -779,9 +663,9 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	messagesCopy(fCallback, sFolder, sToFolder, aUids) {
 		this.defaultRequest(fCallback, 'MessageCopy', {
-			'FromFolder': sFolder,
-			'ToFolder': sToFolder,
-			'Uids': aUids.join(',')
+			FromFolder: sFolder,
+			ToFolder: sToFolder,
+			Uids: aUids.join(',')
 		});
 	}
 
@@ -795,8 +679,8 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 			fCallback,
 			'MessageDelete',
 			{
-				'Folder': sFolder,
-				'Uids': aUids.join(',')
+				Folder: sFolder,
+				Uids: aUids.join(',')
 			},
 			null,
 			'',
@@ -829,9 +713,9 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 			fCallback,
 			'Contacts',
 			{
-				'Offset': iOffset,
-				'Limit': iLimit,
-				'Search': sSearch
+				Offset: iOffset,
+				Limit: iLimit,
+				Search: sSearch
 			},
 			null,
 			'',
@@ -847,9 +731,9 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	contactSave(fCallback, sRequestUid, sUid, aProperties) {
 		this.defaultRequest(fCallback, 'ContactSave', {
-			'RequestUid': sRequestUid,
-			'Uid': sUid.trim(),
-			'Properties': aProperties
+			RequestUid: sRequestUid,
+			Uid: sUid.trim(),
+			Properties: aProperties
 		});
 	}
 
@@ -859,7 +743,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 */
 	contactsDelete(fCallback, aUids) {
 		this.defaultRequest(fCallback, 'ContactsDelete', {
-			'Uids': aUids.join(',')
+			Uids: aUids.join(',')
 		});
 	}
 
@@ -873,8 +757,8 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 			fCallback,
 			'Suggestions',
 			{
-				'Query': sQuery,
-				'Page': iPage
+				Query: sQuery,
+				Page: iPage
 			},
 			null,
 			'',

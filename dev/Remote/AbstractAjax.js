@@ -155,11 +155,11 @@ class AbstractAjaxRemote {
 			const formData = new FormData(),
 			buildFormData = (formData, data, parentKey) => {
 				if (data && typeof data === 'object' && !(data instanceof Date || data instanceof File)) {
-					Object.entries(data).forEach(([key,value]) => {
-						buildFormData(formData, value, parentKey ? `${parentKey}[${key}]` : key);
-					});
+					Object.keys(data).forEach(key =>
+						buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key)
+					);
 				} else {
-					formData.append(parentKey, data == null ? '' : data);
+					formData.set(parentKey, data == null ? '' : data);
 				}
 			};
 			buildFormData(formData, params);
