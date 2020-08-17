@@ -255,7 +255,7 @@ export function getUploadErrorDescByCode(code) {
  * @param {string} language
  */
 export function reload(admin, language) {
-	const start = new Date().getTime();
+	const start = Date.now();
 
 	$htmlCL.add('rl-changing-language');
 
@@ -288,7 +288,7 @@ export function reload(admin, language) {
 
 						resolve();
 					},
-					500 < (new Date().getTime()) - start ? 1 : 500
+					500 < Date.now() - start ? 1 : 500
 				);
 			});
 	});

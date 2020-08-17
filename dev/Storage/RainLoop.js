@@ -61,7 +61,7 @@ const __set = (key, value) => {
 	}
 };
 
-const timestamp = () => Math.round(new Date().getTime() / 1000);
+const timestamp = () => Math.round(Date.now() / 1000);
 
 const setTimestamp = () => __set(TIME_KEY, timestamp());
 

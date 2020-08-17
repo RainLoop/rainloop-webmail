@@ -130,7 +130,7 @@ class AbstractAjaxRemote {
 	ajaxRequest(fResultCallback, params, iTimeOut = 20000, sGetAdd = '', abortActions = []) {
 		params = params || {};
 		const isPost = !sGetAdd,
-			start = new Date().getTime(),
+			start = Date.now(),
 			action = params.Action || '';
 
 		if (action && abortActions) {
@@ -181,7 +181,7 @@ class AbstractAjaxRemote {
 			.then(oData => {
 				let cached = false;
 				if (oData && oData.Time) {
-					cached = pInt(oData.Time) > new Date().getTime() - start;
+					cached = pInt(oData.Time) > Date.now() - start;
 				}
 
 				if (oData && oData.UpdateToken) {
