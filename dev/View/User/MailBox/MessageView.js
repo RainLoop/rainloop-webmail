@@ -539,20 +539,13 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.showFullInfo.subscribe(fCheckHeaderHeight);
 		this.message.subscribe(fCheckHeaderHeight);
 
-		var t;
 		addEventListener(
 			'resize',
-			()=>{
-				// throttle
-				if (!t) {
-					t = setTimeout(()=>{
-						setTimeout(fCheckHeaderHeight, 1);
-						setTimeout(fCheckHeaderHeight, 200);
-						setTimeout(fCheckHeaderHeight, 500);
-						t = 0;
-					}, 50);
-				}
-			}
+			(()=>{
+				setTimeout(fCheckHeaderHeight, 1);
+				setTimeout(fCheckHeaderHeight, 200);
+				setTimeout(fCheckHeaderHeight, 500);
+			}).throttle(50)
 		);
 
 		this.showFullInfo.subscribe((value) => {

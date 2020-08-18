@@ -59,7 +59,7 @@ This fork uses downsized/simplified versions of scripts and has no support for I
 
 The result is faster and smaller download code (good for mobile networks).
 
-Things might work in Edge 16-18, Firefox 50-62 and Chrome 54-68 due to one polyfill for array.flat().
+Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill for array.flat().
 
 * Replaced jQuery with jQuery.slim
 * Replaced ProgressJS with simple native dropin
@@ -79,23 +79,23 @@ Things might work in Edge 16-18, Firefox 50-62 and Chrome 54-68 due to one polyf
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|1.089.940	|
-|app.js      	|4.184.455	|2.774.461	|
-|boot.js     	|  671.522	|   44.029	|
-|libs.js     	|  647.614	|  316.107	|
+|admin.js    	|2.130.942	|1.082.985	|
+|app.js      	|4.184.455	|2.751.154	|
+|boot.js     	|  671.522	|   43.995	|
+|libs.js     	|  647.614	|  316.876	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|4.224.537	|
+|TOTAL      	|7.960.367	|4.195.010	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  148.234	| 73.657	| 42.376	|
-|app.min.js      	|  511.202	|  371.731	|140.462	| 97.432	|
-|boot.min.js     	|   66.007	|    5.589	| 22.567	|  2.332	|
-|libs.min.js     	|  572.545	|  300.211	|176.720	| 92.699	|
+|admin.min.js    	|  252.147	|  147.526	| 73.657	| 42.213	|
+|app.min.js      	|  511.202	|  369.396	|140.462	| 97.130	|
+|boot.min.js     	|   66.007	|    5.579	| 22.567	|  2.328	|
+|libs.min.js     	|  572.545	|  300.520	|176.720	| 92.825	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|
-|TOTAL          	|1.434.353	|  825.765	|424.718	|234.839	|
+|TOTAL          	|1.434.353	|  823.015	|424.718	|234.496	|
 
-608.588 bytes (189.879 gzip) is not much, but it feels faster.
+611.338 bytes (190.222 gzip) is not much, but it feels faster.
 
 
 |css/*       	|1.14.0   	|native   	|

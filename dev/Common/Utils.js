@@ -124,17 +124,6 @@ export function splitPlainText(text, len = 100) {
 	return prefix + result;
 }
 
-const timeOutAction = (() => {
-	const timeOuts = {};
-	return (action, fFunction, timeOut) => {
-		timeOuts[action] = undefined === timeOuts[action] ? 0 : timeOuts[action];
-		clearTimeout(timeOuts[action]);
-		timeOuts[action] = setTimeout(fFunction, timeOut);
-	};
-})();
-
-export { timeOutAction };
-
 /**
  * @param {any} m
  * @returns {any}
@@ -256,27 +245,6 @@ export function friendlySize(sizeInBytes) {
 	}
 
 	return sizeInBytes + 'B';
-}
-
-/**
- * @param {?} object
- * @param {string} methodName
- * @param {Array=} params
- * @param {number=} delay = 0
- */
-export function delegateRun(object, methodName, params, delay = 0) {
-	if (object && object[methodName]) {
-		delay = pInt(delay);
-		params = isArray(params) ? params : [];
-
-		if (0 >= delay) {
-			object[methodName](...params);
-		} else {
-			setTimeout(() => {
-				object[methodName](...params);
-			}, delay);
-		}
-	}
 }
 
 /**
@@ -830,14 +798,9 @@ export function selectElement(element) {
 	sel.addRange(range);
 }
 
-var dv;
-export const detectDropdownVisibility = ()=>{
-	// leading debounce
-	clearTimeout(dv);
-	dv = setTimeout(()=>
-		dropdownVisibility(!!GlobalsData.aBootstrapDropdowns.find(item => item.hasClass('open')))
-	, 50);
-};
+export const detectDropdownVisibility = (()=>
+	dropdownVisibility(!!GlobalsData.aBootstrapDropdowns.find(item => item.hasClass('open')))
+).debounce(50);
 
 /**
  * @param {boolean=} delay = false
@@ -881,11 +844,9 @@ export function getConfigurationFromScriptTag(configuration) {
 export function delegateRunOnDestroy(objectOrObjects) {
 	if (objectOrObjects) {
 		if (isArray(objectOrObjects)) {
-			objectOrObjects.forEach(item => {
-				delegateRunOnDestroy(item);
-			});
-		} else if (objectOrObjects && objectOrObjects.onDestroy) {
-			objectOrObjects.onDestroy();
+			objectOrObjects.forEach(item => delegateRunOnDestroy(item));
+		} else {
+			objectOrObjects.onDestroy && objectOrObjects.onDestroy();
 		}
 	}
 }
@@ -1199,8 +1160,8 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 			to,
 			cc,
 			bcc,
-			undefined === params.subject ? null : pString(decodeURIComponent(params.subject)),
-			undefined === params.body ? null : plainToHtml(pString(decodeURIComponent(params.body)))
+			null == params.subject ? null : pString(decodeURIComponent(params.subject)),
+			null == params.body ? null : plainToHtml(pString(decodeURIComponent(params.body)))
 		]);
 
 		return true;
@@ -1212,7 +1173,7 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 var wr;
 export const windowResize = timeout => {
 	clearTimeout(wr);
-	if (undefined === timeout || null === timeout) {
+	if (null == timeout) {
 		$win.trigger('resize');
 	} else {
 		wr = setTimeout(()=>$win.trigger('resize'), timeout);

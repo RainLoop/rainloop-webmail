@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { FiltersAction, FilterConditionField, FilterConditionType } from 'Common/Enums';
 import { bMobileDevice } from 'Common/Globals';
-import { defautOptionsAfterRender, delegateRun } from 'Common/Utils';
+import { defautOptionsAfterRender } from 'Common/Utils';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
 import FilterStore from 'Stores/User/Filter';
@@ -59,13 +59,9 @@ class FilterPopupView extends AbstractViewNext {
 				return false;
 			}
 
-			if (this.fTrueCallback) {
-				this.fTrueCallback(this.filter());
-			}
+			this.fTrueCallback && this.fTrueCallback(this.filter());
 
-			if (this.modalVisibility()) {
-				delegateRun(this, 'closeCommand');
-			}
+			this.modalVisibility() && this.closeCommand && this.closeCommand();
 		}
 
 		return true;

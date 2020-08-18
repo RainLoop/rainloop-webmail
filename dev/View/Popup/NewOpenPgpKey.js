@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { delegateRun, pInt } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
 
@@ -69,7 +69,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 							openpgpKeyring.store();
 
 							getApp().reloadOpenPgpKeys();
-							delegateRun(this, 'cancelCommand');
+							this.cancelCommand && this.cancelCommand();
 						}
 					})
 					.catch((e) => {

@@ -4,7 +4,7 @@ import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 
 import { SaveSettingsStep, EditorDefaultType, Layout } from 'Common/Enums';
 
-import { settingsSaveHelperSimpleFunction, convertLangName, timeOutAction } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, convertLangName } from 'Common/Utils';
 
 import { i18n, trigger as translatorTrigger, reload as translatorReload } from 'Common/Translator';
 
@@ -121,46 +121,28 @@ class GeneralUserSettings {
 
 			this.useCheckboxesInList.subscribe(Remote.saveSettingsHelper('UseCheckboxesInList', v=>v?'1':'0'));
 
-			this.enableDesktopNotification.subscribe((value) => {
-				timeOutAction(
-					'SaveDesktopNotifications',
-					() => {
-						Remote.saveSettings(null, {
-							'DesktopNotifications': value ? '1' : '0'
-						});
-					},
-					3000
-				);
-			});
+			this.enableDesktopNotification.subscribe((value =>
+				Remote.saveSettings(null, {
+					'DesktopNotifications': value ? 1 : 0
+				})
+			).debounce(3000));
 
-			this.enableSoundNotification.subscribe((value) => {
-				timeOutAction(
-					'SaveSoundNotification',
-					() => {
-						Remote.saveSettings(null, {
-							'SoundNotification': value ? '1' : '0'
-						});
-					},
-					3000
-				);
-			});
+			this.enableSoundNotification.subscribe((value =>
+				Remote.saveSettings(null, {
+					'SoundNotification': value ? 1 : 0
+				})
+			).debounce(3000));
 
-			this.replySameFolder.subscribe((value) => {
-				timeOutAction(
-					'SaveReplySameFolder',
-					() => {
-						Remote.saveSettings(null, {
-							'ReplySameFolder': value ? '1' : '0'
-						});
-					},
-					3000
-				);
-			});
+			this.replySameFolder.subscribe((value =>
+				Remote.saveSettings(null, {
+					'ReplySameFolder': value ? 1 : 0
+				})
+			).debounce(3000));
 
 			this.useThreads.subscribe((value) => {
 				MessageStore.messageList([]);
 				Remote.saveSettings(null, {
-					'UseThreads': value ? '1' : '0'
+					'UseThreads': value ? 1 : 0
 				});
 			});
 

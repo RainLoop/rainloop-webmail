@@ -37,7 +37,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 
 	ajaxRequest(action, isPost, timeOut, params, additionalGetString, fTrigger) {
 
-		additionalGetString = undefined === additionalGetString ? '' : pString(additionalGetString);
+		additionalGetString = pString(additionalGetString);
 
 		let init = {
 			mode: 'same-origin',
@@ -65,7 +65,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 				}
 			};
 			buildFormData(formData, params);
-			init.body = (new URLSearchParams(formData)).toString();
+			init.body = new URLSearchParams(formData);
 		}
 
 		runHook('ajax-default-request', [action, params, additionalGetString]);

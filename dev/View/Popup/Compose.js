@@ -12,7 +12,6 @@ import {
 } from 'Common/Enums';
 
 import {
-	delegateRun,
 	isNonEmptyArray,
 	clearBqSwitcher,
 	replySubjectAdd,
@@ -85,7 +84,7 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.sLastFocusedField = 'to';
 
-		this.resizerTrigger = this.resizerTrigger.bind(this);
+		this.resizerTrigger = this.resizerTrigger.debounce(50).bind(this);
 
 		this.allowContacts = !!AppStore.contactsIsAllowed();
 		this.allowFolders = !!Settings.capa(Capa.Folders);
@@ -148,17 +147,9 @@ class ComposePopupView extends AbstractViewNext {
 			}
 		});
 
-		this.savedError.subscribe((value) => {
-			if (!value) {
-				this.savedErrorDesc('');
-			}
-		});
+		this.savedError.subscribe(value => !value && this.savedErrorDesc(''));
 
-		this.sendSuccessButSaveError.subscribe((value) => {
-			if (!value) {
-				this.savedErrorDesc('');
-			}
-		});
+		this.sendSuccessButSaveError.subscribe(value => !value && this.savedErrorDesc(''));
 
 		this.savedTime = ko.observable(0);
 		this.savedTimeText = ko.computed(() =>
@@ -297,9 +288,6 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.canBeSentOrSaved = ko.computed(() => !this.sending() && !this.saving());
 
-		this.sendMessageResponse = this.sendMessageResponse.bind(this);
-		this.saveMessageResponse = this.saveMessageResponse.bind(this);
-
 		setInterval(() => {
 			if (
 				this.modalVisibility() &&
@@ -318,20 +306,10 @@ class ComposePopupView extends AbstractViewNext {
 		this.showBcc.subscribe(this.resizerTrigger);
 		this.showReplyTo.subscribe(this.resizerTrigger);
 
-		this.onMessageUploadAttachments = this.onMessageUploadAttachments.bind(this);
-
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = KeyState.Compose;
 
-		// debounce
-		var d, fn = this.tryToClosePopup.bind(this);
-		this.tryToClosePopup = ()=>{
-			clearTimeout(d);
-			d = setTimeout(fn, 200);
-		};
-
-		this.emailsSource = this.emailsSource.bind(this);
-		this.autosaveFunction = this.autosaveFunction.bind(this);
+		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
 
 		this.iTimer = 0;
 	}
@@ -424,7 +402,7 @@ class ComposePopupView extends AbstractViewNext {
 				setFolderHash(sSentFolder, '');
 
 				Remote.sendMessage(
-					this.sendMessageResponse,
+					this.sendMessageResponse.bind(this),
 					this.getMessageRequestParams(sSentFolder)
 				);
 			}
@@ -448,7 +426,7 @@ class ComposePopupView extends AbstractViewNext {
 			setFolderHash(FolderStore.draftFolder(), '');
 
 			Remote.saveMessage(
-				this.saveMessageResponse,
+				this.saveMessageResponse.bind(this),
 				this.getMessageRequestParams(FolderStore.draftFolder())
 			);
 		}
@@ -517,7 +495,7 @@ class ComposePopupView extends AbstractViewNext {
 
 	autosaveStart() {
 		clearTimeout(this.iTimer);
-		this.iTimer = setTimeout(this.autosaveFunction, 60000);
+		this.iTimer = setTimeout(()=>this.autosaveFunction(), 60000);
 	}
 
 	autosaveStop() {
@@ -525,9 +503,7 @@ class ComposePopupView extends AbstractViewNext {
 	}
 
 	emailsSource(oData, fResponse) {
-		getApp().getAutocomplete(oData.term, (aData) => {
-			fResponse(aData.map(oEmailItem => oEmailItem.toLine(false)));
-		});
+		getApp().getAutocomplete(oData.term, aData => fResponse(aData.map(oEmailItem => oEmailItem.toLine(false))));
 	}
 
 	openOpenPgpPopup() {
@@ -615,9 +591,7 @@ class ComposePopupView extends AbstractViewNext {
 
 		if (StorageResultType.Success === statusResult && data && data.Result) {
 			result = true;
-			if (this.modalVisibility()) {
-				delegateRun(this, 'closeCommand');
-			}
+			this.modalVisibility() && this.closeCommand && this.closeCommand();
 		}
 
 		if (this.modalVisibility() && !result) {
@@ -1096,7 +1070,7 @@ class ComposePopupView extends AbstractViewNext {
 
 		const downloads = this.getAttachmentsDownloadsForUpload();
 		if (isNonEmptyArray(downloads)) {
-			Remote.messageUploadAttachments(this.onMessageUploadAttachments, downloads);
+			Remote.messageUploadAttachments(()=>this.onMessageUploadAttachments(), downloads);
 		}
 
 		if (identity) {
@@ -1147,13 +1121,13 @@ class ComposePopupView extends AbstractViewNext {
 		const PopupsAskViewModel = require('View/Popup/Ask');
 		if (!isPopupVisible(PopupsAskViewModel) && this.modalVisibility()) {
 			if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid())) {
-				delegateRun(this, 'closeCommand');
+				this.closeCommand && this.closeCommand();
 			} else {
 				showScreenPopup(PopupsAskViewModel, [
 					i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
 					() => {
 						if (this.modalVisibility()) {
-							delegateRun(this, 'closeCommand');
+							this.closeCommand && this.closeCommand();
 						}
 					}
 				]);
@@ -1206,12 +1180,7 @@ class ComposePopupView extends AbstractViewNext {
 			return false;
 		});
 
-		var d, o = this;
-		addEventListener('resize.real', ()=>{
-			// debounce
-			clearTimeout(d);
-			d = setTimeout(o.resizerTrigger, 50);
-		});
+		addEventListener('resize.real', this.resizerTrigger);
 
 		setInterval(() => {
 			if (this.modalVisibility() && this.oEditor) {

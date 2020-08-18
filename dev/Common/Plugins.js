@@ -88,6 +88,6 @@ export function runSettingsViewModelHooks(admin) {
  */
 export function settingsGet(pluginSection, name) {
 	let plugins = Settings.settingsGet('Plugins');
-	plugins = plugins && undefined !== plugins[pluginSection] ? plugins[pluginSection] : null;
-	return plugins ? (undefined === plugins[name] ? null : plugins[name]) : null;
+	plugins = plugins && null != plugins[pluginSection] ? plugins[pluginSection] : null;
+	return plugins ? (null == plugins[name] ? null : plugins[name]) : null;
 }

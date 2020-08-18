@@ -32,16 +32,7 @@ class HtmlEditor {
 		this.element = element;
 		this.$element = jQuery(element);
 
-		// throttle
-		var t, o = this;
-		this.resize = ()=>{
-			if (!t) {
-				t = setTimeout(()=>{
-					o.resizeEditor();
-					t = 0;
-				}, 100);
-			}
-		};
+		this.resize = this.resizeEditor.throttle(100);
 
 		this.init();
 	}

@@ -52,12 +52,7 @@ class Selector {
 		this.focusedItem = koFocusedItem || ko.observable(null);
 		this.selectedItem = koSelectedItem || ko.observable(null);
 
-		var d, o = this;
-		this.itemSelectedThrottle = (item)=>{
-			// debounce
-			clearTimeout(d);
-			d = setTimeout(()=>o.itemSelected(item), 300);
-		};
+		this.itemSelectedThrottle = (item=>this.itemSelected(item)).debounce(300);
 
 		this.listChecked.subscribe((items) => {
 			if (items.length) {

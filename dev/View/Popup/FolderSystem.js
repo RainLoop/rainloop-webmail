@@ -55,7 +55,6 @@ class FolderSystemPopupView extends AbstractViewNext {
 		this.trashFolder = FolderStore.trashFolder;
 		this.archiveFolder = FolderStore.archiveFolder;
 
-		var d;
 		const fSetSystemFolders = () => {
 				Settings.settingsSet('SentFolder', FolderStore.sentFolder());
 				Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
@@ -63,21 +62,17 @@ class FolderSystemPopupView extends AbstractViewNext {
 				Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
 				Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
 			},
-			fSaveSystemFolders = ()=>{
-				// debounce
-				clearTimeout(d);
-				d = setTimeout(()=>{
-					fSetSystemFolders();
-					Remote.saveSystemFolders(()=>{}, {
-						SentFolder: FolderStore.sentFolder(),
-						DraftFolder: FolderStore.draftFolder(),
-						SpamFolder: FolderStore.spamFolder(),
-						TrashFolder: FolderStore.trashFolder(),
-						ArchiveFolder: FolderStore.archiveFolder(),
-						NullFolder: 'NullFolder'
-					});
-				}, 1000);
-			},
+			fSaveSystemFolders = (()=>{
+				fSetSystemFolders();
+				Remote.saveSystemFolders(()=>{}, {
+					SentFolder: FolderStore.sentFolder(),
+					DraftFolder: FolderStore.draftFolder(),
+					SpamFolder: FolderStore.spamFolder(),
+					TrashFolder: FolderStore.trashFolder(),
+					ArchiveFolder: FolderStore.archiveFolder(),
+					NullFolder: 'NullFolder'
+				});
+			}).debounce(1000),
 			fCallback = () => {
 				fSetSystemFolders();
 				fSaveSystemFolders();

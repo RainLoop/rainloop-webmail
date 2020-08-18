@@ -1,5 +1,4 @@
 import ko from 'ko';
-import { delegateRun } from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
 
@@ -83,7 +82,7 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 			return false;
 		}
 
-		delegateRun(this, 'cancelCommand');
+		this.cancelCommand && this.cancelCommand();
 		return true;
 	}
 

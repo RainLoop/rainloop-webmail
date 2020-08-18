@@ -9,7 +9,7 @@ APP_SETTINGS = null != APP_SETTINGS ? APP_SETTINGS : {};
  * @returns {*}
  */
 export function settingsGet(name) {
-	return undefined === SETTINGS[name] ? null : SETTINGS[name];
+	return null == SETTINGS[name] ? null : SETTINGS[name];
 }
 
 /**
@@ -25,7 +25,7 @@ export function settingsSet(name, value) {
  * @returns {*}
  */
 export function appSettingsGet(name) {
-	return undefined === APP_SETTINGS[name] ? null : APP_SETTINGS[name];
+	return null == APP_SETTINGS[name] ? null : APP_SETTINGS[name];
 }
 
 /**

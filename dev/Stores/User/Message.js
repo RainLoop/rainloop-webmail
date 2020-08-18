@@ -112,16 +112,7 @@ class MessageUserStore {
 
 		this.onMessageResponse = this.onMessageResponse.bind(this);
 
-		// throttle
-		var t, o = this;
-		this.purgeMessageBodyCacheThrottle = ()=>{
-			if (!t) {
-				t = setTimeout(()=>{
-					o.purgeMessageBodyCache();
-					t = 0;
-				}, 30000);
-			}
-		};
+		this.purgeMessageBodyCacheThrottle = this.purgeMessageBodyCache.throttle(30000);
 	}
 
 	computers() {
@@ -203,20 +194,15 @@ class MessageUserStore {
 			this.messageListCompleteLoadingThrottleForAnimation(value);
 		});
 
-		var d;
 		this.messageList.subscribe(
-			(list)=>{
-				// debounce
-				clearTimeout(d);
-				d = setTimeout(()=>list.forEach(item => {
-					if (item && item.newForAnimation()) {
-						item.newForAnimation(false);
-					}
-				}), 500);
-			}
+			(list=> {
+				list.forEach(item =>
+					item && item.newForAnimation() && item.newForAnimation(false)
+				)
+			}).debounce(500)
 		);
 
-		this.message.subscribe((message) => {
+		this.message.subscribe(message => {
 			if (message) {
 				if (Layout.NoPreview === SettingsStore.layout()) {
 					AppStore.focusedState(Focused.MessageView);
@@ -229,9 +215,7 @@ class MessageUserStore {
 			}
 		});
 
-		this.messageLoading.subscribe((value) => {
-			this.messageLoadingThrottle(value);
-		});
+		this.messageLoading.subscribe(value => this.messageLoadingThrottle(value));
 
 		this.messagesBodiesDom.subscribe((dom) => {
 			if (dom && !(dom instanceof $)) {
@@ -239,7 +223,7 @@ class MessageUserStore {
 			}
 		});
 
-		this.messageListEndFolder.subscribe((folder) => {
+		this.messageListEndFolder.subscribe(folder => {
 			const message = this.message();
 			if (message && folder && folder !== message.folderFullNameRaw) {
 				this.message(null);
@@ -745,7 +729,7 @@ class MessageUserStore {
 				iCount = pInt(data.Result.MessageResultCount),
 				iOffset = pInt(data.Result.Offset);
 
-			const folder = getFolderFromCacheList(null != data.Result.Folder ? data.Result.Folder : '');
+			const folder = getFolderFromCacheList(data.Result.Folder);
 
 			if (folder && !cached) {
 				folder.interval = Date.now() / 1000;

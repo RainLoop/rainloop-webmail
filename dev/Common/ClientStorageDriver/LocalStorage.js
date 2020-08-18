@@ -47,7 +47,7 @@ class LocalStorageDriver {
 			const storageValue = this.s.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null,
 				storageResult = null === storageValue ? null : JSON.parse(storageValue);
 
-			return storageResult && undefined !== storageResult[key] ? storageResult[key] : null;
+			return storageResult && null != storageResult[key] ? storageResult[key] : null;
 		} catch (e) {} // eslint-disable-line no-empty
 
 		return null;

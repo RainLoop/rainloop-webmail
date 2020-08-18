@@ -31,25 +31,18 @@ class AbstractApp extends AbstractBoot {
 		this.isLocalAutocomplete = true;
 		this.lastErrorTime = 0;
 
-		var t;
 		addEventListener(
 			'resize',
-			()=>{
-				// throttle
-				if (!t) {
-					t = setTimeout(()=>{
-						const iH = $win.height(),
-							iW = $win.height();
+			(()=>{
+				const iH = $win.height(),
+					iW = $win.height();
 
-						if ($win.__sizes[0] !== iH || $win.__sizes[1] !== iW) {
-							$win.__sizes[0] = iH;
-							$win.__sizes[1] = iW;
-							dispatchEvent(new CustomEvent('resize.real'));
-						}
-						t = 0;
-					}, 50);
+				if ($win.__sizes[0] !== iH || $win.__sizes[1] !== iW) {
+					$win.__sizes[0] = iH;
+					$win.__sizes[1] = iW;
+					dispatchEvent(new CustomEvent('resize.real'));
 				}
-			}
+			}).throttle(50)
 		);
 
 		const $doc = document;
@@ -64,12 +57,7 @@ class AbstractApp extends AbstractBoot {
 			}
 		});
 
-		var d;
-		const fn = ()=>{
-			// debounce
-			clearTimeout(d);
-			d = setTimeout(()=>dispatchEvent(new CustomEvent('rl.auto-logout-refresh')), 5000);
-		}
+		const fn = (()=>dispatchEvent(new CustomEvent('rl.auto-logout-refresh'))).debounce(5000);
 
 		$doc.addEventListener('mousemove', fn);
 		$doc.addEventListener('keypress', fn);

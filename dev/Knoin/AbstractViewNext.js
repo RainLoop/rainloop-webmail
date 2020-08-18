@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { delegateRun, inFocus } from 'Common/Utils';
+import { inFocus } from 'Common/Utils';
 import { KeyState, EventKeyCode } from 'Common/Enums';
 import { keyScope } from 'Common/Globals';
 
@@ -38,7 +38,7 @@ export class AbstractViewNext {
 		addEventListener('keydown', (event) => {
 			if (event && this.modalVisibility && this.modalVisibility()) {
 				if (!this.bDisabeCloseOnEsc && EventKeyCode.Esc === event.keyCode) {
-					delegateRun(this, 'cancelCommand');
+					this.cancelCommand && this.cancelCommand();
 					return false;
 				} else if (EventKeyCode.Backspace === event.keyCode && !inFocus()) {
 					return false;

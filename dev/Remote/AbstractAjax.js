@@ -163,7 +163,7 @@ class AbstractAjaxRemote {
 				}
 			};
 			buildFormData(formData, params);
-			init.body = (new URLSearchParams(formData)).toString();
+			init.body = new URLSearchParams(formData);
 		}
 
 		if (window.AbortController) {

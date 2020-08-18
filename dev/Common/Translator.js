@@ -94,7 +94,7 @@ export function i18n(key, valueList, defaulValue) {
 		result = undefined === defaulValue ? key : defaulValue;
 	}
 
-	if (undefined !== valueList && null !== valueList) {
+	if (null != valueList) {
 		for (valueName in valueList) {
 			if (Object.prototype.hasOwnProperty.call(valueList, valueName)) {
 				result = result.replace('%' + valueName + '%', valueList[valueName]);

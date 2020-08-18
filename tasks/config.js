@@ -81,6 +81,7 @@ config.paths.js = {
 			'vendors/qr.js/qr.min.js', // fixed (license)
 			'vendors/bootstrap/js/bootstrap.min.js', // fixed
 			'dev/prototype-date.js',
+			'dev/prototype-function.js',
 			'node_modules/knockout/build/output/knockout-latest.js',
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',
 			'node_modules/simplestatemanager/dist/ssm.min.js',

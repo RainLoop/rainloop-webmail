@@ -3,7 +3,7 @@ import ko from 'ko';
 import { runHook } from 'Common/Plugins';
 import { $htmlCL, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
 
-import { pString, createCommandLegacy, delegateRun, isNonEmptyArray } from 'Common/Utils';
+import { pString, createCommandLegacy, isNonEmptyArray } from 'Common/Utils';
 
 let currentScreen = null,
 	defaultScreenName = '';
@@ -90,7 +90,7 @@ export function routeOn() {
  * @returns {?Object}
  */
 export function screen(screenName) {
-	return screenName && undefined !== SCREENS[screenName] ? SCREENS[screenName] : null;
+	return screenName && null != SCREENS[screenName] ? SCREENS[screenName] : null;
 }
 
 /**
@@ -181,10 +181,10 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 							vm.onShowTrigger(!vm.onShowTrigger());
 						}
 
-						delegateRun(vm, 'onShowWithDelay', [], 500);
+						vm.onShowWithDelay && setTimeout(()=>vm.onShowWithDelay, 500);
 					} else {
-						delegateRun(vm, 'onHide');
-						delegateRun(vm, 'onHideWithDelay', [], 500);
+						vm.onHide && vm.onHide();
+						vm.onHideWithDelay && setTimeout(()=>vm.onHideWithDelay, 500);
 
 						if (vm.onHideTrigger) {
 							vm.onHideTrigger(!vm.onHideTrigger());
@@ -213,7 +213,7 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 				vm
 			);
 
-			delegateRun(vm, 'onBuild', [vmDom]);
+			vm.onBuild && vm.onBuild(vmDom);
 			if (vm && ViewType.Popup === position) {
 				vm.registerPopupKeyDown();
 			}
@@ -238,11 +238,13 @@ export function showScreenPopup(ViewModelClassToShow, params = []) {
 		buildViewModel(ModalView);
 
 		if (ModalView.__vm && ModalView.__dom) {
-			delegateRun(ModalView.__vm, 'onBeforeShow', params || []);
+			params = params || [];
+
+			ModalView.__vm.onBeforeShow && ModalView.__vm.onBeforeShow(...params);
 
 			ModalView.__vm.modalVisibility(true);
 
-			delegateRun(ModalView.__vm, 'onShow', params || []);
+			ModalView.__vm.onShow && ModalView.__vm.onShow(...params);
 
 			vmRunHook('view-model-on-show', ModalView, params || []);
 		}
@@ -259,7 +261,7 @@ export function warmUpScreenPopup(ViewModelClassToShow) {
 		buildViewModel(ModalView);
 
 		if (ModalView.__vm && ModalView.__dom) {
-			delegateRun(ModalView.__vm, 'onWarmUp');
+			ModalView.__vm.onWarmUp && ModalView.__vm.onWarmUp();
 		}
 	}
 }
@@ -309,14 +311,14 @@ export function screenOnRoute(screenName, subPart) {
 					});
 				}
 
-				delegateRun(vmScreen, 'onBuild');
+				vmScreen.onBuild && vmScreen.onBuild();
 			}
 
 			setTimeout(() => {
 				// hide screen
 				if (currentScreen && !isSameScreen) {
-					delegateRun(currentScreen, 'onHide');
-					delegateRun(currentScreen, 'onHideWithDelay', [], 500);
+					currentScreen.onHide && currentScreen.onHide();
+					currentScreen.onHideWithDelay && setTimeout(()=>currentScreen.onHideWithDelay(), 500);
 
 					if (currentScreen.onHideTrigger) {
 						currentScreen.onHideTrigger(!currentScreen.onHideTrigger());
@@ -332,8 +334,8 @@ export function screenOnRoute(screenName, subPart) {
 								ViewModelClass.__dom.hide();
 								ViewModelClass.__vm.viewModelVisibility(false);
 
-								delegateRun(ViewModelClass.__vm, 'onHide');
-								delegateRun(ViewModelClass.__vm, 'onHideWithDelay', [], 500);
+								ViewModelClass.__vm.onHide && ViewModelClass.__vm.onHide();
+								ViewModelClass.__vm.onHideWithDelay && setTimeout(()=>ViewModelClass.__vm.onHideWithDelay(), 500);
 
 								if (ViewModelClass.__vm.onHideTrigger) {
 									ViewModelClass.__vm.onHideTrigger(!ViewModelClass.__vm.onHideTrigger());
@@ -348,7 +350,7 @@ export function screenOnRoute(screenName, subPart) {
 
 				// show screen
 				if (currentScreen && !isSameScreen) {
-					delegateRun(currentScreen, 'onShow');
+					currentScreen.onShow && currentScreen.onShow();
 					if (currentScreen.onShowTrigger) {
 						currentScreen.onShowTrigger(!currentScreen.onShowTrigger());
 					}
@@ -362,17 +364,18 @@ export function screenOnRoute(screenName, subPart) {
 								ViewModelClass.__dom &&
 								ViewType.Popup !== ViewModelClass.__vm.viewModelPosition
 							) {
-								delegateRun(ViewModelClass.__vm, 'onBeforeShow');
+								ViewModelClass.__vm.onBeforeShow && ViewModelClass.__vm.onBeforeShow();
 
 								ViewModelClass.__dom.show();
 								ViewModelClass.__vm.viewModelVisibility(true);
 
-								delegateRun(ViewModelClass.__vm, 'onShow');
+								ViewModelClass.__vm.onShow && ViewModelClass.__vm.onShow();
 								if (ViewModelClass.__vm.onShowTrigger) {
 									ViewModelClass.__vm.onShowTrigger(!ViewModelClass.__vm.onShowTrigger());
 								}
 
-								delegateRun(ViewModelClass.__vm, 'onShowWithDelay', [], 200);
+								ViewModelClass.__vm.onShowWithDelay && setTimeout(()=>ViewModelClass.__vm.onShowWithDelay, 200);
+
 								vmRunHook('view-model-on-show', ViewModelClass);
 							}
 						});
@@ -415,7 +418,7 @@ export function startScreens(screensClasses) {
 			vmScreen.__start();
 
 			runHook('screen-pre-start', [vmScreen.screenName(), vmScreen]);
-			delegateRun(vmScreen, 'onStart');
+			vmScreen.onStart && vmScreen.onStart();
 			runHook('screen-post-start', [vmScreen.screenName(), vmScreen]);
 		}
 	});
@@ -526,30 +529,23 @@ function commandDecorator(canExecute = true) {
  * @returns {Function}
  */
 function settingsMenuKeysHandler($items) {
-	// throttle
-	var t;
-	return (event, handler)=>{
-		if (!t) {
-			t = setTimeout(()=>{
-				const up = handler && 'up' === handler.shortcut;
+	return ((event, handler)=>{
+		const up = handler && 'up' === handler.shortcut;
 
-				if (event && $items.length) {
-					let index = $items.index($items.filter('.selected'));
-					if (up && 0 < index) {
-						index -= 1;
-					} else if (!up && index < $items.length - 1) {
-						index += 1;
-					}
+		if (event && $items.length) {
+			let index = $items.index($items.filter('.selected'));
+			if (up && 0 < index) {
+				index -= 1;
+			} else if (!up && index < $items.length - 1) {
+				index += 1;
+			}
 
-					const resultHash = $items.eq(index).attr('href');
-					if (resultHash) {
-						setHash(resultHash, false, true);
-					}
-				}
-				t = 0;
-			}, 200);
+			const resultHash = $items.eq(index).attr('href');
+			if (resultHash) {
+				setHash(resultHash, false, true);
+			}
 		}
-	};
+	}).throttle(200);
 }
 
 export {

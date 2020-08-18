@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { KeyState, StorageResultType, Notification } from 'Common/Enums';
-import { isNonEmptyArray, delegateRun } from 'Common/Utils';
 import { getNotification, i18n } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Ajax';
@@ -41,12 +40,7 @@ class PluginPopupView extends AbstractViewNext {
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = KeyState.All;
 
-		var d, fn = this.tryToClosePopup.bind(this);
-		this.tryToClosePopup = ()=>{
-			// debounce
-			clearTimeout(d);
-			d = setTimeout(fn, 200);
-		};
+		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
 	}
 
 	@command((self) => self.hasConfiguration())
@@ -89,7 +83,7 @@ class PluginPopupView extends AbstractViewNext {
 			this.readme(oPlugin.Readme);
 
 			const config = oPlugin.Config;
-			if (isNonEmptyArray(config)) {
+			if (Array.isArray(config) && config.length) {
 				this.configures(
 					config.map(item => ({
 						'value': ko.observable(item[0]),
@@ -110,11 +104,7 @@ class PluginPopupView extends AbstractViewNext {
 		if (!isPopupVisible(PopupsAskViewModel)) {
 			showScreenPopup(PopupsAskViewModel, [
 				i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
-				() => {
-					if (this.modalVisibility()) {
-						delegateRun(this, 'cancelCommand');
-					}
-				}
+				() => this.modalVisibility() && this.cancelCommand && this.cancelCommand()
 			]);
 		}
 	}

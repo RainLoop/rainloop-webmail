@@ -14,39 +14,29 @@ class KeyboardShortcutsHelpPopupView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		var t;
 		key(
 			'tab, shift+tab, left, right',
 			KeyState.PopupKeyboardShortcutsHelp,
-			(event, handler)=>{
-				// throttle
-				if (!t) {
-					t = setTimeout(()=>{
-						t = 0;
-						if (event && handler) {
-							const $tabs = dom.find('.nav.nav-tabs > li'),
-								isNext = handler && ('tab' === handler.shortcut || 'right' === handler.shortcut);
+			((event, handler)=>{
+				if (event && handler) {
+					const $tabs = dom.find('.nav.nav-tabs > li'),
+						isNext = handler && ('tab' === handler.shortcut || 'right' === handler.shortcut);
 
-							let index = $tabs.index($tabs.filter('.active'));
-							if (!isNext && 0 < index) {
-								index -= 1;
-							} else if (isNext && index < $tabs.length - 1) {
-								index += 1;
-							} else {
-								index = isNext ? 0 : $tabs.length - 1;
-							}
+					let index = $tabs.index($tabs.filter('.active'));
+					if (!isNext && 0 < index) {
+						index -= 1;
+					} else if (isNext && index < $tabs.length - 1) {
+						index += 1;
+					} else {
+						index = isNext ? 0 : $tabs.length - 1;
+					}
 
-							$tabs
-								.eq(index)
-								.find('a[data-toggle="tab"]')
-								.tab('show');
-							return false;
-						}
-
-						return true;
-					}, 100);
+					$tabs
+						.eq(index)
+						.find('a[data-toggle="tab"]')
+						.tab('show');
 				}
-			}
+			}).throttle(100)
 		);
 	}
 }

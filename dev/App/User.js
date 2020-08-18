@@ -81,16 +81,14 @@ import { AbstractApp } from 'App/Abstract';
 const doc = document;
 
 if (!window.ResizeObserver) {
-	let rot;
 	window.ResizeObserver = class {
 		constructor(callback) {
+			callback = callback.debounce(250);
 			this.observer = new MutationObserver(mutations => {
 				let i = mutations.length;
 				while (i--) {
 					if ('style' == mutations[i].attributeName) {
-						// debounce
-						clearTimeout(rot);
-						rot = setTimeout(callback, 250);
+						callback();
 						break;
 					}
 				}
@@ -113,14 +111,10 @@ class AppUser extends AbstractApp {
 
 		this.moveCache = {};
 
-		let qd, o = this;
-		this.quotaDebounce = ()=>{
-			// debounce
-			clearTimeout(qd);
-			qd = setTimeout(o.quota, 30000);
-		};
-
+		this.quotaDebounce = this.quota.debounce(30000);
 		this.moveOrDeleteResponseHelper = this.moveOrDeleteResponseHelper.bind(this);
+
+		this.messagesMoveTrigger = this.messagesMoveTrigger.debounce(500);
 
 		// wakeUp
 		const interval = 3600000; // 60m
@@ -262,30 +256,25 @@ class AppUser extends AbstractApp {
 	}
 
 	messagesMoveTrigger() {
-		// debounce
-		const o = this;
-		clearTimeout(o.mt);
-		o.mt = setTimeout(()=>{
-			const sTrashFolder = FolderStore.trashFolder(),
-				sSpamFolder = FolderStore.spamFolder();
+		const sTrashFolder = FolderStore.trashFolder(),
+			sSpamFolder = FolderStore.spamFolder();
 
-			Object.values(o.moveCache).forEach(item => {
-				const isSpam = sSpamFolder === item.To,
-					isTrash = sTrashFolder === item.To,
-					isHam = !isSpam && sSpamFolder === item.From && getFolderInboxName() === item.To;
+		Object.values(this.moveCache).forEach(item => {
+			const isSpam = sSpamFolder === item.To,
+				isTrash = sTrashFolder === item.To,
+				isHam = !isSpam && sSpamFolder === item.From && getFolderInboxName() === item.To;
 
-				Remote.messagesMove(
-					o.moveOrDeleteResponseHelper,
-					item.From,
-					item.To,
-					item.Uid,
-					isSpam ? 'SPAM' : isHam ? 'HAM' : '',
-					isSpam || isTrash
-				);
-			});
+			Remote.messagesMove(
+				this.moveOrDeleteResponseHelper,
+				item.From,
+				item.To,
+				item.Uid,
+				isSpam ? 'SPAM' : isHam ? 'HAM' : '',
+				isSpam || isTrash
+			);
+		});
 
-			o.moveCache = {};
-		}, 500);
+		this.moveCache = {};
 	}
 
 	messagesMoveHelper(fromFolderFullNameRaw, toFolderFullNameRaw, uidsForMove) {

@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { VIEW_MODELS } from 'Common/Globals';
-import { delegateRun, windowResize, pString } from 'Common/Utils';
+import { windowResize, pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
 
 import { setHash } from 'Knoin/Knoin';
@@ -94,7 +94,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 						settingsScreen
 					);
 
-					delegateRun(settingsScreen, 'onBuild', [viewModelDom]);
+					settingsScreen.onBuild && settingsScreen.onBuild(viewModelDom);
 				} else {
 					console.log('Cannot find sub settings view model position: SettingsSubScreen');
 				}
@@ -105,7 +105,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 				setTimeout(() => {
 					// hide
 					if (o.oCurrentSubScreen) {
-						delegateRun(o.oCurrentSubScreen, 'onHide');
+						o.oCurrentSubScreen.onHide && o.oCurrentSubScreen.onHide();
 						o.oCurrentSubScreen.viewModelDom.hide();
 					}
 					// --
@@ -114,10 +114,10 @@ class AbstractSettingsScreen extends AbstractScreen {
 
 					// show
 					if (o.oCurrentSubScreen) {
-						delegateRun(o.oCurrentSubScreen, 'onBeforeShow');
+						o.oCurrentSubScreen.onBeforeShow && o.oCurrentSubScreen.onBeforeShow();
 						o.oCurrentSubScreen.viewModelDom.show();
-						delegateRun(o.oCurrentSubScreen, 'onShow');
-						delegateRun(o.oCurrentSubScreen, 'onShowWithDelay', [], 200);
+						o.oCurrentSubScreen.onShow && o.oCurrentSubScreen.onShow();
+						o.oCurrentSubScreen.onShowWithDelay && setTimeout(() => o.oCurrentSubScreen.onShowWithDelay(), 200);
 
 						o.menu().forEach(item => {
 							item.selected(
@@ -141,7 +141,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 
 	onHide() {
 		if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom) {
-			delegateRun(this.oCurrentSubScreen, 'onHide');
+			this.oCurrentSubScreen.onHide && this.oCurrentSubScreen.onHide();
 			this.oCurrentSubScreen.viewModelDom.hide();
 		}
 	}
