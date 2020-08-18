@@ -6,7 +6,7 @@ import progressJs from 'progressJs';
 import { root } from 'Common/Links';
 import { getNotification } from 'Common/Translator';
 import { StorageResultType, Notification } from 'Common/Enums';
-import { pInt, isNormal, isArray, inArray, isUnd } from 'Common/Utils';
+import { pInt, isArray, inArray, isUnd } from 'Common/Utils';
 
 import * as Settings from 'Storage/Settings';
 
@@ -158,7 +158,7 @@ class AdminApp extends AbstractApp {
 		LicenseStore.licenseError('');
 		Remote.licensing((result, data) => {
 			LicenseStore.licensingProcess(false);
-			if (StorageResultType.Success === result && data && data.Result && isNormal(data.Result.Expired)) {
+			if (StorageResultType.Success === result && data && data.Result && null != data.Result.Expired) {
 				LicenseStore.licenseValid(true);
 				LicenseStore.licenseExpired(pInt(data.Result.Expired));
 				LicenseStore.licenseError('');

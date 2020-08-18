@@ -34,34 +34,22 @@ export function silentTryCatch(func) {
 }
 
 /**
- * @param {*} value
- * @returns {boolean}
- */
-export function isNormal(value) {
-	return !isUnd(value) && !isNull(value);
-}
-
-/**
  * @param {(string|number)} value
  * @param {boolean=} includeZero = true
  * @returns {boolean}
  */
 export function isPosNumeric(value, includeZero = true) {
-	return !isNormal(value)
-		? false
-		: includeZero
-		? /^[0-9]*$/.test(value.toString())
-		: /^[1-9]+[0-9]*$/.test(value.toString());
+	return null != value && (includeZero ? /^[0-9]*$/ : /^[1-9]+[0-9]*$/).test(value.toString());
 }
 
 /**
  * @param {*} value
- * @param {number=} defaultValur = 0
+ * @param {number=} defaultValue = 0
  * @returns {number}
  */
-export function pInt(value, defaultValur = 0) {
-	const result = isNormal(value) && '' !== value ? window.parseInt(value, 10) : defaultValur;
-	return window.isNaN(result) ? defaultValur : result;
+export function pInt(value, defaultValue = 0) {
+	value = window.parseInt(value, 10);
+	return isNaN(value) || !isFinite(value) ? defaultValue : value;
 }
 
 /**
@@ -69,7 +57,7 @@ export function pInt(value, defaultValur = 0) {
  * @returns {string}
  */
 export function pString(value) {
-	return isNormal(value) ? '' + value : '';
+	return null != value ? '' + value : '';
 }
 
 /**
@@ -171,7 +159,7 @@ export function fakeMd5(len = 32) {
  * @returns {string}
  */
 export function encodeHtml(text) {
-	return isNormal(text) ? _.escape(text.toString()) : '';
+	return null != text ? _.escape(text.toString()) : '';
 }
 
 /**
@@ -889,11 +877,11 @@ export function folderListOptionsBuilder(
 	const sDeepPrefix = '\u00A0\u00A0\u00A0';
 
 	bBuildUnvisible = isUnd(bBuildUnvisible) ? false : !!bBuildUnvisible;
-	bSystem = !isNormal(bSystem) ? 0 < aSystem.length : bSystem;
-	iUnDeep = !isNormal(iUnDeep) ? 0 : iUnDeep;
-	fDisableCallback = isNormal(fDisableCallback) ? fDisableCallback : null;
-	fVisibleCallback = isNormal(fVisibleCallback) ? fVisibleCallback : null;
-	fRenameCallback = isNormal(fRenameCallback) ? fRenameCallback : null;
+	bSystem = null == bSystem ? 0 < aSystem.length : bSystem;
+	iUnDeep = null == iUnDeep ? 0 : iUnDeep;
+	fDisableCallback = null != fDisableCallback) ? fDisableCallback : null;
+	fVisibleCallback = null != fVisibleCallback) ? fVisibleCallback : null;
+	fRenameCallback = null != fRenameCallback) ? fRenameCallback : null;
 
 	if (!isArray(aDisabled)) {
 		aDisabled = [];

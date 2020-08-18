@@ -2,7 +2,7 @@ import window from 'window';
 import $ from '$';
 
 import { ajax } from 'Common/Links';
-import { microtime, isUnd, isNormal, pString, pInt, inArray } from 'Common/Utils';
+import { microtime, isUnd, pString, pInt, inArray } from 'Common/Utils';
 import { DEFAULT_AJAX_TIMEOUT, TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT } from 'Common/Consts';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { data as GlobalsData } from 'Common/Globals';
@@ -42,8 +42,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 		return new window.Promise((resolve, reject) => {
 			const start = microtime();
 
-			timeOut = isNormal(timeOut) ? timeOut : DEFAULT_AJAX_TIMEOUT;
-			additionalGetString = isUnd(additionalGetString) ? '' : pString(additionalGetString);
+			additionalGetString = pString(additionalGetString);
 
 			if (isPost) {
 				params.XToken = Settings.appSettingsGet('token');
@@ -59,7 +58,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 				async: true,
 				dataType: 'json',
 				data: isPost ? params || {} : {},
-				timeout: timeOut,
+				timeout: pInt(timeOut, DEFAULT_AJAX_TIMEOUT),
 				global: true
 			}).always((data, textStatus) => {
 				let isCached = false,

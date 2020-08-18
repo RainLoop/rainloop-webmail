@@ -11,7 +11,6 @@ import {
 	isArray,
 	inArray,
 	isUnd,
-	isNormal,
 	isPosNumeric,
 	isNonEmptyArray,
 	pInt,
@@ -665,11 +664,11 @@ class AppUser extends AbstractApp {
 									setFolderHash(data.Result.Folder, data.Result.Hash);
 								}
 
-								if (isNormal(data.Result.MessageCount)) {
+								if (null != data.Result.MessageCount) {
 									folderFromCache.messageCountAll(data.Result.MessageCount);
 								}
 
-								if (isNormal(data.Result.MessageUnseenCount)) {
+								if (null != data.Result.MessageUnseenCount) {
 									if (pInt(folderFromCache.messageCountUnread()) !== pInt(data.Result.MessageUnseenCount)) {
 										unreadCountChange = true;
 									}
@@ -747,11 +746,11 @@ class AppUser extends AbstractApp {
 									setFolderHash(item.Folder, item.Hash);
 								}
 
-								if (isNormal(item.MessageCount)) {
+								if (null != item.MessageCount) {
 									folder.messageCountAll(item.MessageCount);
 								}
 
-								if (isNormal(item.MessageUnseenCount)) {
+								if (null != item.MessageUnseenCount) {
 									if (pInt(folder.messageCountUnread()) !== pInt(item.MessageUnseenCount)) {
 										unreadCountChange = true;
 									}

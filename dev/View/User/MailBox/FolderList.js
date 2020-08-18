@@ -3,7 +3,7 @@ import $ from '$';
 import ko from 'ko';
 import key from 'key';
 
-import { trim, isNormal, isArray, windowResize } from 'Common/Utils';
+import { trim, isArray, windowResize } from 'Common/Utils';
 import { Capa, Focused, Layout, KeyState, EventKeyCode, Magics } from 'Common/Enums';
 import { $html, leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
@@ -245,7 +245,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				copy = $html.hasClass('rl-ctrl-key-pressed'),
 				uids = ui.helper.data('rl-uids');
 
-			if (isNormal(fromFolderFullNameRaw) && '' !== fromFolderFullNameRaw && isArray(uids)) {
+			if (null != fromFolderFullNameRaw && '' !== fromFolderFullNameRaw && isArray(uids)) {
 				getApp().moveMessagesToFolder(fromFolderFullNameRaw, uids, toFolder.fullNameRaw, copy);
 			}
 		}
