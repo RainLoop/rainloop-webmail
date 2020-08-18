@@ -523,10 +523,6 @@ export const Notification = {
 	InvalidPluginPackage: 703,
 	UnsupportedPluginPackage: 704,
 
-	LicensingServerIsUnavailable: 710,
-	LicensingExpired: 711,
-	LicensingBanned: 712,
-
 	DemoSendMessageError: 750,
 	DemoAccountError: 751,
 

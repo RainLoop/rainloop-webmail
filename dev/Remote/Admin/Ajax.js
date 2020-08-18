@@ -164,28 +164,6 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {boolean} bForce
-	 */
-	licensing(fCallback, bForce) {
-		return this.defaultRequest(fCallback, 'AdminLicensing', {
-			Force: bForce ? 1 : 0
-		});
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sDomain
-	 * @param {string} sKey
-	 */
-	licensingActivate(fCallback, sDomain, sKey) {
-		return this.defaultRequest(fCallback, 'AdminLicensingActivate', {
-			Domain: sDomain,
-			Key: sKey
-		});
-	}
-
-	/**
-	 * @param {?Function} fCallback
 	 * @param {string} sName
 	 * @param {boolean} bDisabled
 	 */
