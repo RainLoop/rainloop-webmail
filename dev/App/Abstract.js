@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import {
-	$win,
 	$htmlCL,
 	leftPanelDisabled,
 	leftPanelType,
@@ -146,8 +145,6 @@ class AbstractApp extends AbstractBoot {
 				} else {
 					location.href = customLogoutLink;
 				}
-
-				$win.trigger('rl.tooltips.diactivate');
 			}, 100);
 		} else {
 			routeOff();
@@ -160,8 +157,6 @@ class AbstractApp extends AbstractBoot {
 				} else {
 					location.reload();
 				}
-
-				$win.trigger('rl.tooltips.diactivate');
 			}, 100);
 		}
 	}

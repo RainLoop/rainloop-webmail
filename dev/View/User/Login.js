@@ -10,7 +10,6 @@ import {
 
 import { convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
 
-import { $win } from 'Common/Globals';
 import { getNotification, getNotificationFromResponse, reload as translatorReload } from 'Common/Translator';
 
 import * as Plugins from 'Common/Plugins';
@@ -200,14 +199,10 @@ class LoginUserView extends AbstractViewNext {
 		}
 
 		this.submitRequest(true);
-		$win.trigger('rl.tooltips.diactivate');
 
 		const fLoginRequest = (sLoginPassword) => {
 			Remote.login(
 				(sResult, oData) => {
-					$win.trigger('rl.tooltips.diactivate');
-					$win.trigger('rl.tooltips.activate');
-
 					if (StorageResultType.Success === sResult && oData && 'Login' === oData.Action) {
 						if (oData.Result) {
 							if (oData.TwoFactorAuth) {
