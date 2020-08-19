@@ -17,7 +17,6 @@ import {
 } from 'Common/Cache';
 
 import { subQueryPrefix } from 'Common/Links';
-import * as Base64 from 'Common/Base64';
 import * as Settings from 'Storage/Settings';
 
 import AppStore from 'Stores/User/App';
@@ -26,6 +25,14 @@ import SettingsStore from 'Stores/User/Settings';
 import { getApp } from 'Helper/Apps/User';
 
 import { AbstractAjaxRemote } from 'Remote/AbstractAjax';
+
+//const toUTF8 = window.TextEncoder
+//		? text => String.fromCharCode(...new TextEncoder().encode(text))
+//		: text => unescape(encodeURIComponent(text)),
+const urlsafeArray = array => btoa(unescape(encodeURIComponent(array.join(0x00).replace(/\r\n/g, '\n'))))
+		.replace('+', '-')
+		.replace('/', '_')
+		.replace('=', '');
 
 class RemoteUserAjax extends AbstractAjaxRemote {
 	constructor() {
@@ -315,19 +322,17 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 				'MessageList/' +
 					subQueryPrefix() +
 					'/' +
-					Base64.urlsafe_encode(
-						[
-							sFolderFullNameRaw,
-							iOffset,
-							iLimit,
-							sSearch,
-							AppStore.projectHash(),
-							folderHash,
-							inboxUidNext,
-							useThreads ? 1 : 0,
-							useThreads ? sThreadUid : ''
-						].join(String.fromCharCode(0))
-					),
+					urlsafeArray([
+						sFolderFullNameRaw,
+						iOffset,
+						iLimit,
+						sSearch,
+						AppStore.projectHash(),
+						folderHash,
+						inboxUidNext,
+						useThreads ? 1 : 0,
+						useThreads ? sThreadUid : ''
+					]),
 				bSilent ? [] : ['MessageList']
 			);
 		}
@@ -384,14 +389,12 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 				'Message/' +
 					subQueryPrefix() +
 					'/' +
-					Base64.urlsafe_encode(
-						[
-							sFolderFullNameRaw,
-							iUid,
-							AppStore.projectHash(),
-							AppStore.threadsAllowed() && SettingsStore.useThreads() ? 1 : 0
-						].join(String.fromCharCode(0))
-					),
+					urlsafeArray([
+						sFolderFullNameRaw,
+						iUid,
+						AppStore.projectHash(),
+						AppStore.threadsAllowed() && SettingsStore.useThreads() ? 1 : 0
+					]),
 				['Message']
 			);
 
