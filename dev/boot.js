@@ -80,7 +80,6 @@ function writeCSS(css) {
 	const style = doc.createElement('style');
 	style.type = 'text/css';
 	style.textContent = css;
-//	style.appendChild(doc.createTextNode(styles));
 	doc.head.appendChild(style);
 }
 

@@ -5,6 +5,7 @@ import { ComposeType, SaveSettingsStep, FolderType } from 'Common/Enums';
 import { Mime } from 'Common/Mime';
 
 const
+	doc = document,
 	$ = jQuery,
 	$div = $('<div></div>'),
 	isArray = Array.isArray,
@@ -137,14 +138,14 @@ export function deModule(m) {
  */
 export function inFocus() {
 	try {
-		if (document.activeElement) {
-			if (undefined === document.activeElement.__inFocusCache) {
-				document.activeElement.__inFocusCache = $(document.activeElement).is(
+		if (doc.activeElement) {
+			if (undefined === doc.activeElement.__inFocusCache) {
+				doc.activeElement.__inFocusCache = $(doc.activeElement).is(
 					'input,textarea,iframe,.cke_editable'
 				);
 			}
 
-			return !!document.activeElement.__inFocusCache;
+			return !!doc.activeElement.__inFocusCache;
 		}
 	} catch (e) {} // eslint-disable-line no-empty
 
@@ -156,11 +157,11 @@ export function inFocus() {
  * @returns {void}
  */
 export function removeInFocus(force) {
-	if (document.activeElement && document.activeElement.blur) {
+	if (doc.activeElement && doc.activeElement.blur) {
 		try {
-			const activeEl = $(document.activeElement);
+			const activeEl = $(doc.activeElement);
 			if (force || (activeEl && activeEl.is('input,textarea'))) {
-				document.activeElement.blur();
+				doc.activeElement.blur();
 			}
 		} catch (e) {} // eslint-disable-line no-empty
 	}
@@ -325,9 +326,7 @@ export function draggablePlace() {
  */
 export function defautOptionsAfterRender(domItem, item) {
 	if (item && undefined !== item.disabled && domItem) {
-		$(domItem)
-			.toggleClass('disabled', item.disabled)
-			.prop('disabled', item.disabled);
+		domItem.classList.toggle('disabled', domItem.disabled = item.disabled);
 	}
 }
 
@@ -792,7 +791,7 @@ export function folderListOptionsBuilder(
  */
 export function selectElement(element) {
 	let sel = getSelection(),
-		range = document.createRange();
+		range = doc.createRange();
 	sel.removeAllRanges();
 	range.selectNodeContents(element);
 	sel.addRange(range);
@@ -806,9 +805,7 @@ export const detectDropdownVisibility = (()=>
  * @param {boolean=} delay = false
  */
 export function triggerAutocompleteInputChange(delay = false) {
-	const fFunc = () => {
-		$('.checkAutocomplete').trigger('change');
-	};
+	const fFunc = () => $('.checkAutocomplete').trigger('change');
 
 	if (delay) {
 		setTimeout(fFunc, 100);
@@ -851,25 +848,6 @@ export function delegateRunOnDestroy(objectOrObjects) {
 	}
 }
 
-/**
- * @param {object} $styleTag
- * @param {string} css
- * @returns {boolean}
- */
-export function appendStyles($styleTag, css) {
-	if ($styleTag && $styleTag[0]) {
-		if ($styleTag[0].styleSheet && undefined !== $styleTag[0].styleSheet.cssText) {
-			$styleTag[0].styleSheet.cssText = css;
-		} else {
-			$styleTag.text(css);
-		}
-
-		return true;
-	}
-
-	return false;
-}
-
 let __themeTimer = 0,
 	__themeAjax = null;
 
@@ -879,23 +857,20 @@ let __themeTimer = 0,
  * @returns {void}
  */
 export function changeTheme(value, themeTrigger = ()=>{}) {
-	const themeLink = $('#app-theme-link'),
+	const themeLink = doc.getElementById('app-theme-link'),
 		clearTimer = () => {
 			__themeTimer = setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
 			__themeAjax = null;
 		};
 
-	let themeStyle = $('#app-theme-style'),
-		url = themeLink.attr('href');
-
-	if (!url) {
-		url = themeStyle.attr('data-href');
-	}
+	let themeStyle = doc.getElementById('app-theme-style'),
+		url = (themeLink && themeLink.href) || (themeStyle && themeStyle.dataset.href);
 
 	if (url) {
-		url = url.toString().replace(/\/-\/[^/]+\/-\//, '/-/' + value + '/-/');
-		url = url.replace(/\/Css\/[^/]+\/User\//, '/Css/0/User/');
-		url = url.replace(/\/Hash\/[^/]+\//, '/Hash/-/');
+		url = url.toString()
+			.replace(/\/-\/[^/]+\/-\//, '/-/' + value + '/-/')
+			.replace(/\/Css\/[^/]+\/User\//, '/Css/0/User/')
+			.replace(/\/Hash\/[^/]+\//, '/Hash/-/');
 
 		if ('Json/' !== url.substring(url.length - 5, url.length)) {
 			url += 'Json/';
@@ -917,16 +892,17 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 			.then(response => response.json())
 			.then(data => {
 				if (data && isArray(data) && 2 === data.length) {
-					if (themeLink && themeLink[0] && (!themeStyle || !themeStyle[0])) {
-						themeStyle = $('<style id="app-theme-style"></style>');
+					if (themeLink && !themeStyle) {
+						themeStyle = doc.createElement('style');
+						themeStyle.id = 'app-theme-style';
 						themeLink.after(themeStyle);
 						themeLink.remove();
 					}
 
-					if (themeStyle && themeStyle[0]) {
-						if (appendStyles(themeStyle, data[1])) {
-							themeStyle.attr('data-href', url).attr('data-theme', data[0]);
-						}
+					if (themeStyle) {
+						themeStyle.textContent = data[1];
+						themeStyle.dataset.href = url;
+						themeStyle.dataset.theme = data[0];
 					}
 
 					themeTrigger(SaveSettingsStep.TrueResult);
@@ -1073,7 +1049,7 @@ export function resizeAndCrop(url, value, fCallback) {
 	img.onload = function() {
 		let diff = [0, 0];
 
-		const canvas = document.createElement('canvas'),
+		const canvas = doc.createElement('canvas'),
 			ctx = canvas.getContext('2d');
 
 		canvas.width = value;
@@ -1168,14 +1144,4 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 	}
 
 	return false;
-}
-
-let substr = String.substr;
-if ('b' !== 'ab'.substr(-1)) {
-	substr = (str, start, length) => {
-		start = 0 > start ? str.length + start : start;
-		return str.substr(start, length);
-	};
-
-	String.substr = substr;
 }
