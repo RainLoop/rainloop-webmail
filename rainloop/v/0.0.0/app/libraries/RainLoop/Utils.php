@@ -387,7 +387,14 @@ class Utils
 		}
 
 		static::$Cookies[$sName] = $sValue;
-		\setcookie($sName, $sValue, $iExpire, $sPath, $sDomain, $bSecure, $bHttpOnly);
+		\setcookie($sName, $sValue, array(
+			'expires' => $iExpire,
+			'path' => $sPath,
+			'domain' => $sDomain,
+			'secure' => $bSecure,
+			'httponly' => $bHttpOnly,
+			'samesite' => 'Strict'
+		));
 	}
 
 	public static function ClearCookie(string $sName)
