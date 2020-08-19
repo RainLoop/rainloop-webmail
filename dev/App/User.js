@@ -80,31 +80,6 @@ import { AbstractApp } from 'App/Abstract';
 
 const doc = document;
 
-if (!window.ResizeObserver) {
-	window.ResizeObserver = class {
-		constructor(callback) {
-			callback = callback.debounce(250);
-			this.observer = new MutationObserver(mutations => {
-				let i = mutations.length;
-				while (i--) {
-					if ('style' == mutations[i].attributeName) {
-						callback();
-						break;
-					}
-				}
-			});
-		}
-
-		disconnect() {
-			this.observer.disconnect();
-		}
-
-		observe(target) {
-			this.observer.observe(target, { attributes: true });
-		}
-	};
-}
-
 class AppUser extends AbstractApp {
 	constructor() {
 		super(Remote);

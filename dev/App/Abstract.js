@@ -31,20 +31,6 @@ class AbstractApp extends AbstractBoot {
 		this.isLocalAutocomplete = true;
 		this.lastErrorTime = 0;
 
-		addEventListener(
-			'resize',
-			(()=>{
-				const iH = $win.height(),
-					iW = $win.height();
-
-				if ($win.__sizes[0] !== iH || $win.__sizes[1] !== iW) {
-					$win.__sizes[0] = iH;
-					$win.__sizes[1] = iW;
-					dispatchEvent(new CustomEvent('resize.real'));
-				}
-			}).throttle(50)
-		);
-
 		const $doc = document;
 		$doc.addEventListener('keydown', (event) => {
 			if (event && event.ctrlKey) {

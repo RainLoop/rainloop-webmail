@@ -84,8 +84,6 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.sLastFocusedField = 'to';
 
-		this.resizerTrigger = this.resizerTrigger.debounce(50).bind(this);
-
 		this.allowContacts = !!AppStore.contactsIsAllowed();
 		this.allowFolders = !!Settings.capa(Capa.Folders);
 
@@ -141,11 +139,7 @@ class ComposePopupView extends AbstractViewNext {
 		this.sendErrorDesc = ko.observable('');
 		this.savedErrorDesc = ko.observable('');
 
-		this.sendError.subscribe((value) => {
-			if (!value) {
-				this.sendErrorDesc('');
-			}
-		});
+		this.sendError.subscribe(value => !value && this.sendErrorDesc(''));
 
 		this.savedError.subscribe(value => !value && this.savedErrorDesc(''));
 
@@ -217,9 +211,6 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.attachmentsPlace = ko.observable(false);
 
-		this.attachments.subscribe(this.resizerTrigger);
-		this.attachmentsPlace.subscribe(this.resizerTrigger);
-
 		this.attachmentsInErrorCount.subscribe((value) => {
 			if (0 === value) {
 				this.attachmentsInErrorError(false);
@@ -278,14 +269,6 @@ class ComposePopupView extends AbstractViewNext {
 			}
 		});
 
-		this.resizer = ko.observable(false).extend({ throttle: 50 });
-
-		this.resizer.subscribe(() => {
-			if (this.oEditor) {
-				this.oEditor.resize();
-			}
-		});
-
 		this.canBeSentOrSaved = ko.computed(() => !this.sending() && !this.saving());
 
 		setInterval(() => {
@@ -302,16 +285,14 @@ class ComposePopupView extends AbstractViewNext {
 			}
 		}, 120000);
 
-		this.showCc.subscribe(this.resizerTrigger);
-		this.showBcc.subscribe(this.resizerTrigger);
-		this.showReplyTo.subscribe(this.resizerTrigger);
-
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = KeyState.Compose;
 
 		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
 
 		this.iTimer = 0;
+
+		this.resizeObserver = new ResizeObserver(this.resizerTrigger.throttle(50).bind(this));
 	}
 
 	getMessageRequestParams(sSaveFolder)
@@ -660,6 +641,8 @@ class ComposePopupView extends AbstractViewNext {
 		this.to.focused(false);
 
 		routeOn();
+
+		this.resizeObserver.disconnect();
 	}
 
 	editor(fOnInit) {
@@ -671,7 +654,6 @@ class ComposePopupView extends AbstractViewNext {
 					null,
 					() => {
 						fOnInit(this.oEditor);
-						this.resizerTrigger();
 					},
 					(bHtml) => {
 						this.isHtml(!!bHtml);
@@ -680,7 +662,6 @@ class ComposePopupView extends AbstractViewNext {
 				// }, 1000);
 			} else if (this.oEditor) {
 				fOnInit(this.oEditor);
-				this.resizerTrigger();
 			}
 		}
 	}
@@ -1077,7 +1058,12 @@ class ComposePopupView extends AbstractViewNext {
 			this.currentIdentity(identity);
 		}
 
-		this.resizerTrigger();
+		let el = document.querySelector('.b-compose');
+		this.resizeObserver.compose = el;
+		this.resizeObserver.popups = el.parentNode; // el.closest('.popups');
+		this.resizeObserver.els = [el.querySelector('.textAreaParent'), el.querySelector('.attachmentAreaParent')];
+		this.resizeObserver.observe(el);
+		this.resizeObserver.observe(el.querySelector('.b-header'));
 	}
 
 	onMessageUploadAttachments(sResult, oData) {
@@ -1111,10 +1097,6 @@ class ComposePopupView extends AbstractViewNext {
 				}
 			}, 100);
 		}
-	}
-
-	onShowWithDelay() {
-		this.resizerTrigger();
 	}
 
 	tryToClosePopup() {
@@ -1179,14 +1161,6 @@ class ComposePopupView extends AbstractViewNext {
 			}
 			return false;
 		});
-
-		addEventListener('resize.real', this.resizerTrigger);
-
-		setInterval(() => {
-			if (this.modalVisibility() && this.oEditor) {
-				this.oEditor.resize();
-			}
-		}, 5000);
 	}
 
 	/**
@@ -1542,7 +1516,17 @@ class ComposePopupView extends AbstractViewNext {
 	}
 
 	resizerTrigger() {
-		this.resizer(!this.resizer());
+		let top = 0;
+		this.resizeObserver.els.forEach(element => top = Math.max(top, element.getBoundingClientRect().top));
+		if (0 < top) {
+			top = this.resizeObserver.popups.clientHeight - this.resizeObserver.compose.offsetTop - 50 - top;
+			this.resizeObserver.els.forEach(element =>
+				element.style.height = Math.max(top, Math.max(200,parseInt(element.style.minHeight,10))) + 'px'
+			);
+			if (this.oEditor) {
+				this.oEditor.resize();
+			}
+		}
 	}
 }
 

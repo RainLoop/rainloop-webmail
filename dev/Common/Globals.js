@@ -2,7 +2,6 @@ import ko from 'ko';
 import { KeyState } from 'Common/Enums';
 
 const $win = jQuery(window);
-$win.__sizes = [0, 0];
 
 export { $win };
 

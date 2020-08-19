@@ -245,22 +245,6 @@ ko.bindingHandlers.initDom = {
 	init: (element, fValueAccessor) => fValueAccessor()(element)
 };
 
-ko.bindingHandlers.initResizeTrigger = {
-	init: (element, fValueAccessor) =>
-		element.style.height = element.style.minHeight = ko.unwrap(fValueAccessor())[1] + 'px',
-	update: (element, fValueAccessor) => {
-		const values = ko.unwrap(fValueAccessor());
-		let offset = element.getBoundingClientRect().top + pageYOffset;
-		if (0 < offset) {
-			offset += parseInt(values[2], 10) || 0;
-			element.style.height = element.style.minHeight = Math.max(
-				parseInt(values[1], 10) || 0,
-				window.innerHeight - offset
-			) + 'px';
-		}
-	}
-};
-
 ko.bindingHandlers.appendDom = {
 	update: (element, fValueAccessor) => {
 		$(element)

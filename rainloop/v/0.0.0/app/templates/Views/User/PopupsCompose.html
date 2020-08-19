@@ -185,7 +185,7 @@
 					</div>
 				</div>
 
-				<div class="attachmentAreaParent b-content" style="height: 200px; min-height: 200px" data-bind="visible: attachmentsPlace, initResizeTrigger: [resizer(), 200, 57]">
+				<div class="attachmentAreaParent b-content" data-bind="visible: attachmentsPlace">
 					<div class="content g-scrollbox">
 						<div class="content-wrapper">
 							<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
@@ -199,8 +199,7 @@
 					</div>
 				</div>
 
-				<div class="textAreaParent" style="height: 200px; min-height: 200px"
-					data-bind="visible: !attachmentsPlace(), initDom: composeEditorArea, initResizeTrigger: [resizer(), 200, 40]"></div>
+				<div class="textAreaParent" data-bind="visible: !attachmentsPlace(), initDom: composeEditorArea"></div>
 			</div>
 		</div>
 	</div>

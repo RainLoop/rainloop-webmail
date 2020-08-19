@@ -14,3 +14,19 @@ Array.prototype.flat || Object.defineProperty(Array.prototype, 'flat', {
 	},
 	writable: true
 });
+
+if (!window.ResizeObserver) {
+	window.ResizeObserver = class {
+		constructor(callback) {
+			this.observer = new MutationObserver(callback.debounce(250));
+		}
+
+		disconnect() {
+			this.observer.disconnect();
+		}
+
+		observe(target) {
+			this.observer.observe(target, { attributes: true, subtree: true, attributeFilter: ['style'] });
+		}
+	};
+}
