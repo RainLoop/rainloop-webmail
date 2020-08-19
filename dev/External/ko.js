@@ -243,16 +243,6 @@ ko.bindingHandlers.initDom = {
 	init: (element, fValueAccessor) => fValueAccessor()(element)
 };
 
-ko.bindingHandlers.appendDom = {
-	update: (element, fValueAccessor) => {
-		$(element)
-			.hide()
-			.empty()
-			.append(ko.unwrap(fValueAccessor()))
-			.show();
-	}
-};
-
 ko.bindingHandlers.draggable = {
 	init: (element, fValueAccessor, fAllBindingsAccessor) => {
 		const Globals = require('Common/Globals'),
@@ -685,16 +675,14 @@ ko.extenders.specialThrottle = (target, option) => {
 			write: (bValue) => {
 				if (bValue) {
 					target.valueForRead(bValue);
+				} else if (target.valueForRead()) {
+					clearTimeout(target.iSpecialThrottleTimeout);
+					target.iSpecialThrottleTimeout = setTimeout(() => {
+						target.valueForRead(false);
+						target.iSpecialThrottleTimeout = 0;
+					}, target.iSpecialThrottleTimeoutValue);
 				} else {
-					if (target.valueForRead()) {
-						clearTimeout(target.iSpecialThrottleTimeout);
-						target.iSpecialThrottleTimeout = setTimeout(() => {
-							target.valueForRead(false);
-							target.iSpecialThrottleTimeout = 0;
-						}, target.iSpecialThrottleTimeoutValue);
-					} else {
-						target.valueForRead(bValue);
-					}
+					target.valueForRead(bValue);
 				}
 			}
 		});
@@ -712,11 +700,6 @@ ko.extenders.idleTrigger = (target) => {
 
 ko.observable.fn.idleTrigger = function() {
 	return this.extend({ 'idleTrigger': true });
-};
-
-ko.observable.fn.validateNone = function() {
-	this.hasError = ko.observable(false);
-	return this;
 };
 
 ko.observable.fn.validateEmail = function() {
@@ -739,18 +722,6 @@ ko.observable.fn.validateSimpleEmail = function() {
 
 ko.observable.fn.deleteAccessHelper = function() {
 	this.extend({ falseTimeout: 3000 }).extend({ toggleSubscribeProperty: [this, 'deleteAccess'] });
-	return this;
-};
-
-ko.observable.fn.validateFunc = function(fFunc) {
-	this.hasFuncError = ko.observable(false);
-
-	if (isFunction(fFunc)) {
-		this.subscribe(value => this.hasFuncError(!fFunc(value)));
-
-		this.valueHasMutated();
-	}
-
 	return this;
 };
 
