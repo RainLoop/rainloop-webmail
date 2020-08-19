@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { windowResize } from 'Common/Utils';
 import { Capa, Focused, Layout, KeyState, EventKeyCode } from 'Common/Enums';
 import { $htmlCL, leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
@@ -198,7 +197,6 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			this.iDropOverTimer = setTimeout(() => {
 				folder.collapsed(false);
 				getApp().setExpandedFolder(folder.fullNameHash, true);
-				windowResize();
 			}, 500);
 		}
 	}

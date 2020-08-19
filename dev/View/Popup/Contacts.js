@@ -14,7 +14,6 @@ import {
 	delegateRunOnDestroy,
 	computedPagenatorHelper,
 	trim,
-	windowResizeCallback,
 	isNonEmptyArray,
 	fakeMd5,
 	pInt
@@ -154,9 +153,6 @@ class ContactsPopupView extends AbstractViewNext {
 		this.search.subscribe(() => {
 			this.reloadContactList();
 		});
-
-		this.contacts.subscribe(windowResizeCallback);
-		this.viewProperties.subscribe(windowResizeCallback);
 
 		this.contactsChecked = ko.computed(() => this.contacts().filter(item => item.checked()));
 

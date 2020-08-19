@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { $win, dropdownVisibility, data as GlobalsData } from 'Common/Globals';
+import { dropdownVisibility, data as GlobalsData } from 'Common/Globals';
 import { ComposeType, SaveSettingsStep, FolderType } from 'Common/Enums';
 import { Mime } from 'Common/Mime';
 
@@ -1168,23 +1168,6 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 	}
 
 	return false;
-}
-
-var wr;
-export const windowResize = timeout => {
-	clearTimeout(wr);
-	if (null == timeout) {
-		$win.trigger('resize');
-	} else {
-		wr = setTimeout(()=>$win.trigger('resize'), timeout);
-	}
-};
-
-/**
- * @returns {void}
- */
-export function windowResizeCallback() {
-	windowResize();
 }
 
 let substr = String.substr;

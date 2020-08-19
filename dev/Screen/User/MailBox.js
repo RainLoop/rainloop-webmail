@@ -1,6 +1,6 @@
 import { Focused, Capa, ClientSideKeyName } from 'Common/Enums';
 import { $html, leftPanelDisabled, leftPanelType, moveAction, bMobileDevice } from 'Common/Globals';
-import { pString, pInt, windowResizeCallback } from 'Common/Utils';
+import { pString, pInt } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
 
@@ -101,11 +101,6 @@ class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onStart() {
-		FolderStore.folderList.subscribe(windowResizeCallback);
-
-		MessageStore.messageList.subscribe(windowResizeCallback);
-		MessageStore.message.subscribe(windowResizeCallback);
-
 		setTimeout(() => SettingsStore.layout.valueHasMutated(), 50);
 		setTimeout(() => warmUpScreenPopup(require('View/Popup/Compose')), 500);
 

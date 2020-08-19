@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { VIEW_MODELS } from 'Common/Globals';
-import { windowResize, pString } from 'Common/Utils';
+import { pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
 
 import { setHash } from 'Knoin/Knoin';
@@ -130,8 +130,6 @@ class AbstractSettingsScreen extends AbstractScreen {
 						jQuery('#rl-content .b-settings .b-content')[0].scrollTop = 0;
 					}
 					// --
-
-					windowResize();
 				}, 1);
 			}
 		} else {

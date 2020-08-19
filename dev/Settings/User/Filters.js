@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { windowResizeCallback, delegateRunOnDestroy } from 'Common/Utils';
+import { delegateRunOnDestroy } from 'Common/Utils';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
@@ -22,8 +22,6 @@ class FiltersUserSettings {
 		this.haveChanges = ko.observable(false);
 
 		this.saveErrorText = ko.observable('');
-
-		this.filters.subscribe(windowResizeCallback);
 
 		this.serverError.subscribe((value) => {
 			if (!value) {

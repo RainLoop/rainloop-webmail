@@ -1,10 +1,6 @@
 import ko from 'ko';
 import { KeyState } from 'Common/Enums';
 
-const $win = jQuery(window);
-
-export { $win };
-
 export const $html = jQuery('html');
 export const $htmlCL = document.documentElement.classList;
 

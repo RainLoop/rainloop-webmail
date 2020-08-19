@@ -6,7 +6,6 @@ import {
 	pInt,
 	pString,
 	plainToHtml,
-	windowResize,
 	findEmailAndLinks
 } from 'Common/Utils';
 
@@ -457,7 +456,6 @@ class MessageUserStore {
 							.insertBefore($this)
 							.on('click.rlBlockquoteSwitcher', () => {
 								$this.toggleClass('hidden-bq');
-								windowResize();
 							})
 							.after('<br />')
 							.before('<br />');
@@ -646,8 +644,6 @@ class MessageUserStore {
 						}
 					}
 				}
-
-				windowResize();
 			}
 		}
 	}

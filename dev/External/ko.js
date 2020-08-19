@@ -182,8 +182,7 @@ ko.bindingHandlers.onEsc = {
 
 ko.bindingHandlers.modal = {
 	init: (element, fValueAccessor) => {
-		const Globals = require('Common/Globals'),
-			Utils = require('Common/Utils');
+		const Globals = require('Common/Globals');
 
 		$(element)
 			.toggleClass('fade', !Globals.bMobileDevice)
@@ -191,7 +190,6 @@ ko.bindingHandlers.modal = {
 				'keyboard': false,
 				'show': ko.unwrap(fValueAccessor())
 			})
-			.on('shown.koModal', Utils.windowResizeCallback)
 			.find('.close')
 			.on('click.koModal', () => {
 				fValueAccessor()(false);
@@ -290,7 +288,6 @@ ko.bindingHandlers.draggable = {
 							if (event.pageY >= bottomPos - triggerZone && event.pageY <= bottomPos) {
 								const moveUp = () => {
 									$this.scrollTop($this.scrollTop() + scrollSpeed);
-									Utils.windowResize();
 								};
 
 								$this.data('timerScroll', setInterval(moveUp, 10));
@@ -300,7 +297,6 @@ ko.bindingHandlers.draggable = {
 							if (event.pageY >= offset.top && event.pageY <= offset.top + triggerZone) {
 								const moveDown = () => {
 									$this.scrollTop($this.scrollTop() - scrollSpeed);
-									Utils.windowResize();
 								};
 
 								$this.data('timerScroll', setInterval(moveDown, 10));

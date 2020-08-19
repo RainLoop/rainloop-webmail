@@ -6,7 +6,6 @@ import { i18n } from 'Common/Translator';
 import {
 	pInt,
 	previewMessage,
-	windowResize,
 	friendlySize,
 	isNonEmptyArray
 } from 'Common/Utils';
@@ -747,8 +746,6 @@ class MessageModel extends AbstractModel {
 				style = style ? (';' === style.substr(-1) ? style + ' ' : style + '; ') : '';
 				$this.attr('style', style + $this.attr(attr));
 			});
-
-			windowResize(500);
 		}
 	}
 
@@ -798,8 +795,6 @@ class MessageModel extends AbstractModel {
 					}
 				}
 			});
-
-			windowResize(500);
 		}
 	}
 

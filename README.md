@@ -76,24 +76,25 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Replaced Autolinker with simple https/email detection
 * Replaced ifvisible.js with simple drop-in replacement
 * Replaced momentToNode with proper HTML5 <time>
+* Replaced resize listeners with ResizeObserver
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|1.064.762	|
-|app.js      	|4.184.455	|2.741.688	|
+|admin.js    	|2.130.942	|1.061.841	|
+|app.js      	|4.184.455	|2.732.920	|
 |boot.js     	|  671.522	|   43.995	|
 |libs.js     	|  647.614	|  317.218	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|4.167.663	|
+|TOTAL      	|7.960.367	|4.155.974	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  145.240	| 73.657	| 41.520	|
-|app.min.js      	|  511.202	|  368.020	|140.462	| 96.834	|
+|admin.min.js    	|  252.147	|  144.802	| 73.657	| 41.416	|
+|app.min.js      	|  511.202	|  366.677	|140.462	| 96.593	|
 |boot.min.js     	|   66.007	|    5.579	| 22.567	|  2.328	|
 |libs.min.js     	|  572.545	|  300.771	|176.720	| 92.928	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|
-|TOTAL          	|1.434.353	|  819.610	|424.718	|233.610	|
+|TOTAL          	|1.434.353	|  817.829	|424.718	|233.265	|
 
 614.743 bytes (191.108 gzip) is not much, but it feels faster.
 

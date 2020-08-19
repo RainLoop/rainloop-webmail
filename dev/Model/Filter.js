@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { FilterRulesType, FiltersAction } from 'Common/Enums';
-import { pString, isNonEmptyArray, fakeMd5, delegateRunOnDestroy, windowResizeCallback } from 'Common/Utils';
+import { pString, isNonEmptyArray, fakeMd5, delegateRunOnDestroy } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 import { getFolderFromCacheList } from 'Common/Cache';
 
@@ -113,8 +113,6 @@ class FilterModel extends AbstractModel {
 
 			return result;
 		});
-
-		this.regDisposables(this.conditions.subscribe(windowResizeCallback));
 
 		this.regDisposables(
 			this.name.subscribe((sValue) => {

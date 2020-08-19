@@ -7,7 +7,7 @@ import {
 	bMobileDevice
 } from 'Common/Globals';
 
-import { pString, detectDropdownVisibility, windowResizeCallback } from 'Common/Utils';
+import { pString, detectDropdownVisibility } from 'Common/Utils';
 
 import { KeyState } from 'Common/Enums';
 import { root, rootAdmin, rootUser, populateAuthSuffix } from 'Common/Links';
@@ -186,8 +186,6 @@ class AbstractApp extends AbstractBoot {
 		}
 
 		initOnStartOrLangChange(initNotificationLanguage);
-
-		setTimeout(windowResizeCallback, 1000);
 
 		if (!mobile) {
 			$htmlCL.add('rl-desktop');

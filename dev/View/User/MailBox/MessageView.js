@@ -17,8 +17,6 @@ import { $htmlCL, leftPanelDisabled, keyScopeReal, useKeyboardShortcuts, moveAct
 
 import {
 	isNonEmptyArray,
-	windowResize,
-	windowResizeCallback,
 	inFocus,
 	removeSelection,
 	removeInFocus,
@@ -316,10 +314,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 		this.fullScreenMode.subscribe((value) => {
 			$htmlCL.toggle('rl-message-fullscreen', value);
-			windowResize();
 		});
-
-		this.messageLoadingThrottle.subscribe(windowResizeCallback);
 
 		this.messageFocused = ko.computed(() => Focused.MessageView === AppStore.focusedState());
 
@@ -405,19 +400,16 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	fullScreen() {
 		this.fullScreenMode(true);
-		windowResize();
 	}
 
 	unFullScreen() {
 		this.fullScreenMode(false);
-		windowResize();
 	}
 
 	toggleFullScreen() {
 		removeSelection();
 
 		this.fullScreenMode(!this.fullScreenMode());
-		windowResize();
 	}
 
 	/**
@@ -431,15 +423,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	}
 
 	checkHeaderHeight() {
-		if (this.oHeaderDom) {
-			this.viewBodyTopValue(
-				this.message()
-					? this.oHeaderDom.height() +
-					  20 /* padding-(top/bottom): 20px */ +
-					   1 /* borded-bottom: 1px */
-					: 0
-			);
-		}
+		this.oHeaderDom && this.viewBodyTopValue(this.message() ? this.oHeaderDom.offsetHeight : 0);
 	}
 
 	//  displayMailToPopup(sMailToUrl) {
@@ -523,8 +507,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		const self = this,
-			fCheckHeaderHeight = this.checkHeaderHeight.bind(this);
+		const self = this;
 
 		this.oDom = dom;
 
@@ -534,28 +517,19 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			}
 		});
 
-		this.showAttachmnetControls.subscribe(fCheckHeaderHeight);
-		this.fullScreenMode.subscribe(fCheckHeaderHeight);
-		this.showFullInfo.subscribe(fCheckHeaderHeight);
-		this.message.subscribe(fCheckHeaderHeight);
-
-		addEventListener(
-			'resize',
-			(()=>{
-				setTimeout(fCheckHeaderHeight, 1);
-				setTimeout(fCheckHeaderHeight, 200);
-				setTimeout(fCheckHeaderHeight, 500);
-			}).throttle(50)
-		);
-
 		this.showFullInfo.subscribe((value) => {
-			windowResize();
-			windowResize(200);
 			Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0');
 		});
 
-		this.oHeaderDom = jQuery('.messageItemHeader', dom);
-		this.oHeaderDom = this.oHeaderDom[0] ? this.oHeaderDom : null;
+		this.oHeaderDom = dom[0].querySelector('.messageItemHeader');
+		if (this.oHeaderDom) {
+			if (!this.resizeObserver) {
+				this.resizeObserver = new ResizeObserver(this.checkHeaderHeight.throttle(50).bind(this));
+			}
+			this.resizeObserver.observe(this.oHeaderDom);
+		} else if (this.resizeObserver) {
+			this.resizeObserver.disconnect();
+		}
 
 		if (this.mobile) {
 			dom.on('click', () => {
@@ -865,15 +839,12 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			} else {
 				this.oMessageScrollerDom.scrollTop = 0;
 			}
-
-			windowResize();
 		}
 	}
 
 	scrollMessageToLeft() {
 		if (this.oMessageScrollerDom) {
 			this.oMessageScrollerDom.scrollLeft = 0;
-			windowResize();
 		}
 	}
 
@@ -909,8 +880,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		if (message && message.showExternalImages) {
 			message.showExternalImages(true);
 		}
-
-		this.checkHeaderHeight();
 	}
 
 	/**
@@ -942,8 +911,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 			getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
-
-		this.checkHeaderHeight();
 	}
 }
 
