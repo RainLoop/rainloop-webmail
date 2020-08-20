@@ -29,7 +29,7 @@ import { AbstractAjaxRemote } from 'Remote/AbstractAjax';
 //const toUTF8 = window.TextEncoder
 //		? text => String.fromCharCode(...new TextEncoder().encode(text))
 //		: text => unescape(encodeURIComponent(text)),
-const urlsafeArray = array => btoa(unescape(encodeURIComponent(array.join(0x00).replace(/\r\n/g, '\n'))))
+const urlsafeArray = array => btoa(unescape(encodeURIComponent(array.join('\x00').replace(/\r\n/g, '\n'))))
 		.replace('+', '-')
 		.replace('/', '_')
 		.replace('=', '');
