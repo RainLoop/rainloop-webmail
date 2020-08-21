@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import { StorageResultType, ServerSecure, Ports, Notification } from 'Common/Enums';
 import { IMAP_DEFAULT_PORT, SIEVE_DEFAULT_PORT, SMTP_DEFAULT_PORT } from 'Common/Consts';
-import { bMobileDevice } from 'Common/Globals';
 import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 

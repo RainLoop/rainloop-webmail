@@ -4,6 +4,8 @@ import { $htmlCL, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
 
 import { pString, createCommandLegacy, isNonEmptyArray } from 'Common/Utils';
 
+//import { bMobileDevice } from 'Common/Globals';
+
 let currentScreen = null,
 	defaultScreenName = '';
 
@@ -217,6 +219,7 @@ export function showScreenPopup(ViewModelClassToShow, params = []) {
 
 			ModalView.__vm.onShow && ModalView.__vm.onShow(...params);
 
+//			if (!bMobileDevice) {
 			const af = ModalView.__dom[0].querySelector('[autofocus]');
 			af && af.focus();
 		}
@@ -330,6 +333,7 @@ export function screenOnRoute(screenName, subPart) {
 
 								ViewModelClass.__vm.onShow && ViewModelClass.__vm.onShow();
 
+//								if (!bMobileDevice) {
 								const af = ViewModelClass.__dom[0].querySelector('[autofocus]');
 								af && af.focus();
 

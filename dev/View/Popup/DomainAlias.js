@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
-import { bMobileDevice } from 'Common/Globals';
 import { i18n } from 'Common/Translator';
 
 import DomainStore from 'Stores/Admin/Domain';
