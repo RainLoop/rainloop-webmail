@@ -47,7 +47,6 @@ class LoginUserView extends AbstractViewNext {
 		this.additionalCode = ko.observable('');
 		this.additionalCode.error = ko.observable(false);
 		this.additionalCode.errorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
-		this.additionalCode.focused = ko.observable(false);
 		this.additionalCode.visibility = ko.observable(false);
 		this.additionalCodeSignMe = ko.observable(false);
 
@@ -75,8 +74,8 @@ class LoginUserView extends AbstractViewNext {
 				(this.additionalCode.visibility() && this.additionalCode.errorAnimation())
 		);
 
-		this.emailFocus = ko.observable(false);
-		this.passwordFocus = ko.observable(false);
+//		this.emailFocus = ko.observable(false);
+//		this.passwordFocus = ko.observable(false);
 
 		this.email.subscribe(() => {
 			this.emailError(false);
@@ -152,32 +151,24 @@ class LoginUserView extends AbstractViewNext {
 		this.emailError(false);
 		this.passwordError(false);
 
-		this.emailError(!this.email().trim());
-		this.passwordError(!this.password().trim());
-
+		let error;
 		if (this.additionalCode.visibility()) {
 			this.additionalCode.error(false);
-			this.additionalCode.error(!this.additionalCode().trim());
-		}
-
-		if (
-			this.emailError() ||
-			this.passwordError() ||
-			(this.additionalCode.visibility() && this.additionalCode.error())
-		) {
-			switch (true) {
-				case this.emailError():
-					this.emailFocus(true);
-					break;
-				case this.passwordError():
-					this.passwordFocus(true);
-					break;
-				case this.additionalCode.visibility() && this.additionalCode.error():
-					this.additionalCode.focused(true);
-					break;
-				// no default
+			if (!this.additionalCode().trim()) {
+				this.additionalCode.error(true);
+				error = '.inputAdditionalCode';
 			}
-
+		}
+		if (!this.password().trim()) {
+			this.passwordError(true);
+			error = '#RainLoopPassword';
+		}
+		if (!this.email().trim()) {
+			this.emailError(true);
+			error = '#RainLoopEmail';
+		}
+		if (error) {
+			this.querySelector(error).focus();
 			return false;
 		}
 
@@ -210,7 +201,7 @@ class LoginUserView extends AbstractViewNext {
 								this.additionalCode.visibility(true);
 								this.submitRequest(false);
 
-								setTimeout(() => this.additionalCode.focused(true), 100);
+								setTimeout(() => this.querySelector('.inputAdditionalCode').focus(), 100);
 							} else if (oData.Admin) {
 								getApp().redirectToAdminPanel();
 							} else {
@@ -260,23 +251,6 @@ class LoginUserView extends AbstractViewNext {
 
 	onShow() {
 		routeOff();
-	}
-
-	onShowWithDelay() {
-		if (this.email() && this.password()) {
-			this.passwordFocus(true);
-		} else if (!this.email()) {
-			this.emailFocus(true);
-		} else if (!this.password()) {
-			this.passwordFocus(true);
-		} else {
-			this.emailFocus(true);
-		}
-	}
-
-	onHide() {
-		this.emailFocus(false);
-		this.passwordFocus(false);
 	}
 
 	onBuild() {
@@ -339,9 +313,7 @@ class LoginUserView extends AbstractViewNext {
 
 	selectLanguageOnTab(bShift) {
 		if (!bShift) {
-			setTimeout(() => {
-				this.emailFocus(true);
-			}, 50);
+//			setTimeout(() => this.emailFocus(true), 50);
 
 			return false;
 		}

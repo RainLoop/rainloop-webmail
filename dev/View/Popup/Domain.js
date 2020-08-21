@@ -61,7 +61,6 @@ class DomainPopupView extends AbstractViewNext {
 		this.smtpServerFocus = ko.observable(false);
 
 		this.name = ko.observable('');
-		this.name.focused = ko.observable(false);
 
 		this.imapServer = ko.observable('');
 		this.imapPort = ko.observable('' + IMAP_DEFAULT_PORT);
@@ -379,12 +378,6 @@ class DomainPopupView extends AbstractViewNext {
 		}
 	}
 
-	onShowWithDelay() {
-		if (!this.name() && !bMobileDevice) {
-			this.name.focused(true);
-		}
-	}
-
 	clearForm() {
 		this.edit(false);
 
@@ -396,7 +389,6 @@ class DomainPopupView extends AbstractViewNext {
 		this.savingError('');
 
 		this.name('');
-		this.name.focused(false);
 
 		this.imapServer('');
 		this.imapPort('' + IMAP_DEFAULT_PORT);

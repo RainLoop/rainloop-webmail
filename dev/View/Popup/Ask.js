@@ -18,9 +18,6 @@ class AskPopupView extends AbstractViewNext {
 		this.yesButton = ko.observable('');
 		this.noButton = ko.observable('');
 
-		this.yesFocus = ko.observable(false);
-		this.noFocus = ko.observable(false);
-
 		this.fYesAction = null;
 		this.fNoAction = null;
 
@@ -33,9 +30,6 @@ class AskPopupView extends AbstractViewNext {
 		this.askDesc('');
 		this.yesButton(i18n('POPUPS_ASK/BUTTON_YES'));
 		this.noButton(i18n('POPUPS_ASK/BUTTON_NO'));
-
-		this.yesFocus(false);
-		this.noFocus(false);
 
 		this.fYesAction = null;
 		this.fNoAction = null;
@@ -87,17 +81,17 @@ class AskPopupView extends AbstractViewNext {
 
 	onShowWithDelay() {
 		if (this.bFocusYesOnShow) {
-			this.yesFocus(true);
+			this.querySelector('.buttonYes').focus();
 		}
 	}
 
 	onBuild() {
 		key('tab, shift+tab, right, left', KeyState.PopupAsk, () => {
-			if (this.yesFocus()) {
-				this.noFocus(true);
-			} else {
-				this.yesFocus(true);
+			let btn = this.querySelector('.buttonYes');
+			if (btn.matches(':focus')) {
+				btn = this.querySelector('.buttonNo');
 			}
+			btn.focus();
 			return false;
 		});
 

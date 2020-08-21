@@ -14,13 +14,10 @@ class WelcomePagePopupView extends AbstractViewNext {
 		super();
 
 		this.welcomePageURL = ko.observable('');
-
-		this.closeFocused = ko.observable(false);
 	}
 
 	clearPopup() {
 		this.welcomePageURL('');
-		this.closeFocused(false);
 	}
 
 	/**
@@ -31,10 +28,6 @@ class WelcomePagePopupView extends AbstractViewNext {
 		this.clearPopup();
 
 		this.welcomePageURL(sUrl);
-	}
-
-	onShowWithDelay() {
-		this.closeFocused(true);
 	}
 
 	onHide() {

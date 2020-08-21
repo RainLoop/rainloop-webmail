@@ -27,7 +27,6 @@ class IdentityPopupView extends AbstractViewNext {
 		this.email = ko.observable('').validateEmail();
 		this.email.focused = ko.observable(false);
 		this.name = ko.observable('');
-		this.name.focused = ko.observable(false);
 		this.replyTo = ko.observable('').validateSimpleEmail();
 		this.replyTo.focused = ko.observable(false);
 		this.bcc = ko.observable('').validateSimpleEmail();

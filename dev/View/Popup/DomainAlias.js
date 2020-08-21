@@ -25,7 +25,6 @@ class DomainAliasPopupView extends AbstractViewNext {
 		this.savingError = ko.observable('');
 
 		this.name = ko.observable('');
-		this.name.focused = ko.observable(false);
 
 		this.alias = ko.observable('');
 
@@ -64,18 +63,11 @@ class DomainAliasPopupView extends AbstractViewNext {
 		this.clearForm();
 	}
 
-	onShowWithDelay() {
-		if (!this.name() && !bMobileDevice) {
-			this.name.focused(true);
-		}
-	}
-
 	clearForm() {
 		this.saving(false);
 		this.savingError('');
 
 		this.name('');
-		this.name.focused(false);
 
 		this.alias('');
 	}

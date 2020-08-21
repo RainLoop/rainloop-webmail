@@ -246,6 +246,9 @@ export function showScreenPopup(ViewModelClassToShow, params = []) {
 
 			ModalView.__vm.onShow && ModalView.__vm.onShow(...params);
 
+			const af = ModalView.__dom[0].querySelector('[autofocus]');
+			af && af.focus();
+
 			vmRunHook('view-model-on-show', ModalView, params || []);
 		}
 	}
@@ -373,6 +376,9 @@ export function screenOnRoute(screenName, subPart) {
 								if (ViewModelClass.__vm.onShowTrigger) {
 									ViewModelClass.__vm.onShowTrigger(!ViewModelClass.__vm.onShowTrigger());
 								}
+
+								const af = ViewModelClass.__dom[0].querySelector('[autofocus]');
+								af && af.focus();
 
 								ViewModelClass.__vm.onShowWithDelay && setTimeout(()=>ViewModelClass.__vm.onShowWithDelay, 200);
 

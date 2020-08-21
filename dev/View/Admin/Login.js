@@ -37,7 +37,7 @@ class LoginAdminView extends AbstractViewNext {
 		this.loginErrorAnimation = ko.observable(false).extend({ 'falseTimeout': 500 });
 		this.passwordErrorAnimation = ko.observable(false).extend({ 'falseTimeout': 500 });
 
-		this.loginFocus = ko.observable(false);
+//		this.loginFocus = ko.observable(false);
 
 		this.formHidden = ko.observable(false);
 
@@ -96,14 +96,9 @@ class LoginAdminView extends AbstractViewNext {
 
 	onShow() {
 		routeOff();
-
-		setTimeout(() => {
-			this.loginFocus(true);
-		}, 100);
 	}
 
 	onHide() {
-		this.loginFocus(false);
 	}
 
 	onBuild() {

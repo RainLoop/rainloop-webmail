@@ -16,7 +16,6 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 		super();
 
 		this.key = ko.observable('');
-		this.key.focus = ko.observable(false);
 		this.key.error = ko.observable(false);
 		this.key.errorMessage = ko.observable('');
 
@@ -94,10 +93,6 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 
 	onShow() {
 		this.clearPopup();
-	}
-
-	onShowWithDelay() {
-		this.key.focus(true);
 	}
 }
 
