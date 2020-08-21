@@ -3,7 +3,6 @@ import { StorageResultType, Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { data as GlobalsData } from 'Common/Globals';
 import { ajax } from 'Common/Links';
-import { runHook } from 'Common/Plugins';
 
 import * as Settings from 'Storage/Settings';
 
@@ -80,14 +79,6 @@ class AbstractAjaxRemote {
 				GlobalsData.iAjaxErrorCount = 0;
 				GlobalsData.iTokenErrorCount = 0;
 			}
-
-			runHook('ajax-default-response', [
-				sRequestAction,
-				StorageResultType.Success === sType ? oData : null,
-				sType,
-				bCached,
-				oRequestParameters
-			]);
 
 			if (fCallback) {
 				fCallback(
@@ -221,8 +212,6 @@ class AbstractAjaxRemote {
 		oParameters.Action = sAction;
 
 		sGetAdd = pString(sGetAdd);
-
-		runHook('ajax-default-request', [sAction, oParameters, sGetAdd]);
 
 		return this.ajaxRequest(
 			fCallback,

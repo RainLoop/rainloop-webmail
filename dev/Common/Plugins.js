@@ -1,35 +1,8 @@
 import { data as GlobalsData } from 'Common/Globals';
 import * as Settings from 'Storage/Settings';
 
-const SIMPLE_HOOKS = {},
-	USER_VIEW_MODELS_HOOKS = [],
+const USER_VIEW_MODELS_HOOKS = [],
 	ADMIN_VIEW_MODELS_HOOKS = [];
-
-/**
- * @param {string} name
- * @param {Function} callback
- */
-export function addHook(name, callback) {
-	if (typeof callback === 'function') {
-		if (!Array.isArray(SIMPLE_HOOKS[name])) {
-			SIMPLE_HOOKS[name] = [];
-		}
-
-		SIMPLE_HOOKS[name].push(callback);
-	}
-}
-
-/**
- * @param {string} name
- * @param {Array=} args = []
- */
-export function runHook(name, args = []) {
-	if (Array.isArray(SIMPLE_HOOKS[name])) {
-		SIMPLE_HOOKS[name].forEach(callback => {
-			callback(...args);
-		});
-	}
-}
 
 /**
  * @param {string} name

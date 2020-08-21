@@ -12,8 +12,6 @@ import { convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
 
 import { getNotification, getNotificationFromResponse, reload as translatorReload } from 'Common/Translator';
 
-import * as Plugins from 'Common/Plugins';
-
 import AppStore from 'Stores/User/App';
 import LanguageStore from 'Stores/Language';
 
@@ -169,23 +167,6 @@ class LoginUserView extends AbstractViewNext {
 		}
 		if (error) {
 			this.querySelector(error).focus();
-			return false;
-		}
-
-		let pluginResultCode = 0,
-			pluginResultMessage = '';
-
-		const fSubmitResult = (iResultCode, sResultMessage) => {
-			pluginResultCode = iResultCode || 0;
-			pluginResultMessage = sResultMessage || '';
-		};
-
-		Plugins.runHook('user-login-submit', [fSubmitResult]);
-		if (0 < pluginResultCode) {
-			this.submitError(getNotification(pluginResultCode));
-			return false;
-		} else if (pluginResultMessage) {
-			this.submitError(pluginResultMessage);
 			return false;
 		}
 

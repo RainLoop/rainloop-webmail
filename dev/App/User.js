@@ -21,7 +21,6 @@ import {
 import { $htmlCL, leftPanelDisabled, bMobileDevice } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { runHook } from 'Common/Plugins';
 
 import {
 	initMessageFlagsFromCache,
@@ -924,8 +923,6 @@ class AppUser extends AbstractApp {
 		const customLoginLink = pString(Settings.appSettingsGet('customLoginLink'));
 		if (!customLoginLink) {
 			startScreens([LoginUserScreen]);
-
-			runHook('rl-start-login-screens');
 		} else {
 			routeOff();
 			setHash(root(), true);
@@ -1061,8 +1058,6 @@ class AppUser extends AbstractApp {
 
 						addEventListener('rl.auto-logout', () => this.logout());
 
-						runHook('rl-start-user-screens');
-
 						if (Settings.settingsGet('WelcomePageUrl')) {
 							setTimeout(() => this.bootstartWelcomePopup(Settings.settingsGet('WelcomePageUrl')), 1000);
 						}
@@ -1104,8 +1099,6 @@ class AppUser extends AbstractApp {
 		}
 
 		setInterval(() => dispatchEvent(new CustomEvent('reload-time')), 60000);
-
-		runHook('rl-start-screens');
 	}
 }
 

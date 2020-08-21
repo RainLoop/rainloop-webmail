@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { runHook } from 'Common/Plugins';
 import { $htmlCL, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
 
 import { pString, createCommandLegacy, isNonEmptyArray } from 'Common/Utils';
@@ -121,17 +120,6 @@ export function hideScreenPopup(ViewModelClassToHide) {
 }
 
 /**
- * @param {string} hookName
- * @param {Function} ViewModelClass
- * @param {mixed=} params = null
- */
-export function vmRunHook(hookName, ViewModelClass, params = null) {
-	ViewModelClass.__names.forEach(name => {
-		runHook(hookName, [name, ViewModelClass.__vm, params]);
-	});
-}
-
-/**
  * @param {Function} ViewModelClass
  * @param {Object=} vmScreen
  * @returns {*}
@@ -145,9 +133,6 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = vm;
-
-		vm.onShowTrigger = ko.observable(false);
-		vm.onHideTrigger = ko.observable(false);
 
 		vm.viewModelName = ViewModelClass.__name;
 		vm.viewModelNames = ViewModelClass.__names;
@@ -177,22 +162,12 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 						popupVisibilityNames.push(vm.viewModelName);
 						vm.viewModelDom.css('z-index', 3000 + popupVisibilityNames().length + 10);
 
-						if (vm.onShowTrigger) {
-							vm.onShowTrigger(!vm.onShowTrigger());
-						}
-
 						vm.onShowWithDelay && setTimeout(()=>vm.onShowWithDelay, 500);
 					} else {
 						vm.onHide && vm.onHide();
 						vm.onHideWithDelay && setTimeout(()=>vm.onHideWithDelay, 500);
 
-						if (vm.onHideTrigger) {
-							vm.onHideTrigger(!vm.onHideTrigger());
-						}
-
 						vm.restoreKeyScope();
-
-						vmRunHook('view-model-on-hide', ViewModelClass);
 
 						popupVisibilityNames.remove(vm.viewModelName);
 						vm.viewModelDom.css('z-index', 2000);
@@ -201,8 +176,6 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 					}
 				});
 			}
-
-			vmRunHook('view-model-pre-build', ViewModelClass, vmDom);
 
 			ko.applyBindingAccessorsToNode(
 				vmDom[0],
@@ -217,8 +190,6 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 			if (vm && ViewType.Popup === position) {
 				vm.registerPopupKeyDown();
 			}
-
-			vmRunHook('view-model-post-build', ViewModelClass, vmDom);
 		} else {
 			console.log('Cannot find view model position: ' + position);
 		}
@@ -248,8 +219,6 @@ export function showScreenPopup(ViewModelClassToShow, params = []) {
 
 			const af = ModalView.__dom[0].querySelector('[autofocus]');
 			af && af.focus();
-
-			vmRunHook('view-model-on-show', ModalView, params || []);
 		}
 	}
 }
@@ -323,10 +292,6 @@ export function screenOnRoute(screenName, subPart) {
 					currentScreen.onHide && currentScreen.onHide();
 					currentScreen.onHideWithDelay && setTimeout(()=>currentScreen.onHideWithDelay(), 500);
 
-					if (currentScreen.onHideTrigger) {
-						currentScreen.onHideTrigger(!currentScreen.onHideTrigger());
-					}
-
 					if (isNonEmptyArray(currentScreen.viewModels())) {
 						currentScreen.viewModels().forEach(ViewModelClass => {
 							if (
@@ -339,10 +304,6 @@ export function screenOnRoute(screenName, subPart) {
 
 								ViewModelClass.__vm.onHide && ViewModelClass.__vm.onHide();
 								ViewModelClass.__vm.onHideWithDelay && setTimeout(()=>ViewModelClass.__vm.onHideWithDelay(), 500);
-
-								if (ViewModelClass.__vm.onHideTrigger) {
-									ViewModelClass.__vm.onHideTrigger(!ViewModelClass.__vm.onHideTrigger());
-								}
 							}
 						});
 					}
@@ -354,11 +315,6 @@ export function screenOnRoute(screenName, subPart) {
 				// show screen
 				if (currentScreen && !isSameScreen) {
 					currentScreen.onShow && currentScreen.onShow();
-					if (currentScreen.onShowTrigger) {
-						currentScreen.onShowTrigger(!currentScreen.onShowTrigger());
-					}
-
-					runHook('screen-on-show', [currentScreen.screenName(), currentScreen]);
 
 					if (isNonEmptyArray(currentScreen.viewModels())) {
 						currentScreen.viewModels().forEach(ViewModelClass => {
@@ -373,16 +329,11 @@ export function screenOnRoute(screenName, subPart) {
 								ViewModelClass.__vm.viewModelVisibility(true);
 
 								ViewModelClass.__vm.onShow && ViewModelClass.__vm.onShow();
-								if (ViewModelClass.__vm.onShowTrigger) {
-									ViewModelClass.__vm.onShowTrigger(!ViewModelClass.__vm.onShowTrigger());
-								}
 
 								const af = ViewModelClass.__dom[0].querySelector('[autofocus]');
 								af && af.focus();
 
 								ViewModelClass.__vm.onShowWithDelay && setTimeout(()=>ViewModelClass.__vm.onShowWithDelay, 200);
-
-								vmRunHook('view-model-on-show', ViewModelClass);
 							}
 						});
 					}
@@ -422,10 +373,7 @@ export function startScreens(screensClasses) {
 		if (vmScreen && !vmScreen.__started && vmScreen.__start) {
 			vmScreen.__started = true;
 			vmScreen.__start();
-
-			runHook('screen-pre-start', [vmScreen.screenName(), vmScreen]);
 			vmScreen.onStart && vmScreen.onStart();
-			runHook('screen-post-start', [vmScreen.screenName(), vmScreen]);
 		}
 	});
 

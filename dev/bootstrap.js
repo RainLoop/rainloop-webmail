@@ -44,7 +44,6 @@ export default (App) => {
 	rl.addSettingsViewModel = Plugins.addSettingsViewModel;
 	rl.addSettingsViewModelForAdmin = Plugins.addSettingsViewModelForAdmin;
 
-	rl.addHook = Plugins.addHook;
 	rl.settingsGet = Plugins.mainSettingsGet;
 	rl.pluginSettingsGet = Plugins.settingsGet;
 	rl.pluginRemoteRequest = Plugins.remoteRequest;

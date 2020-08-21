@@ -3,7 +3,6 @@ import { pInt, pString } from 'Common/Utils';
 import { DEFAULT_AJAX_TIMEOUT, TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT } from 'Common/Consts';
 import { Notification } from 'Common/Enums';
 import { data as GlobalsData } from 'Common/Globals';
-import { runHook } from 'Common/Plugins';
 import * as Settings from 'Storage/Settings';
 
 import { AbstractBasicPromises } from 'Promises/AbstractBasic';
@@ -68,8 +67,6 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 			init.body = new URLSearchParams(formData);
 		}
 
-		runHook('ajax-default-request', [action, params, additionalGetString]);
-
 		this.setTrigger(fTrigger, true);
 
 		if (window.AbortController) {
@@ -110,13 +107,6 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 						type = StorageResultType.Error;
 						break;
 				}
-				runHook('ajax-default-response', [
-					action,
-					StorageResultType.Success === type ? data : null,
-					type,
-					isCached,
-					params
-				]);
 */
 				this.setTrigger(fTrigger, false);
 
