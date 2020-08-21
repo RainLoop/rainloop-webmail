@@ -20,7 +20,7 @@ import { emailArrayFromJson, emailArrayToStringClear, emailArrayToString, replyH
 import { AttachmentModel, staticCombinedIconClass } from 'Model/Attachment';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-const $ = jQuery;
+const $ = jQuery, isArray = Array.isArray;
 
 class MessageModel extends AbstractModel {
 	constructor() {
@@ -259,7 +259,7 @@ class MessageModel extends AbstractModel {
 			this.unsubsribeLinks = isNonEmptyArray(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
 
 			this.subject(json.Subject);
-			if (Array.isArray(json.SubjectParts)) {
+			if (isArray(json.SubjectParts)) {
 				this.subjectPrefix(json.SubjectParts[0]);
 				this.subjectSuffix(json.SubjectParts[1]);
 			} else {
@@ -269,14 +269,14 @@ class MessageModel extends AbstractModel {
 
 			this.dateTimeStampInUTC(pInt(json.DateTimeStampInUTC));
 			this.hasAttachments(!!json.HasAttachments);
-			this.attachmentsSpecData(Array.isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
+			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
 
 			this.fromEmailString(emailArrayToString(this.from, true));
 			this.fromClearEmailString(emailArrayToStringClear(this.from));
 			this.toEmailsString(emailArrayToString(this.to, true));
 			this.toClearEmailsString(emailArrayToStringClear(this.to));
 
-			this.threads(Array.isArray(json.Threads) ? json.Threads : []);
+			this.threads(isArray(json.Threads) ? json.Threads : []);
 
 			this.initFlagsByJson(json);
 			this.computeSenderEmail();
@@ -315,9 +315,9 @@ class MessageModel extends AbstractModel {
 			}
 
 			this.hasAttachments(!!json.HasAttachments);
-			this.attachmentsSpecData(Array.isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
+			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
 
-			this.foundedCIDs = Array.isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];
+			this.foundedCIDs = isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];
 			this.attachments(this.initAttachmentsFromJson(json.Attachments));
 
 			this.readReceipt(json.ReadReceipt || '');
@@ -539,7 +539,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	fromAsSingleEmail() {
-		return Array.isArray(this.from) && this.from[0] ? this.from[0].email : '';
+		return isArray(this.from) && this.from[0] ? this.from[0].email : '';
 	}
 
 	/**

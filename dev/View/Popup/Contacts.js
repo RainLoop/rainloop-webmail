@@ -13,7 +13,6 @@ import {
 import {
 	delegateRunOnDestroy,
 	computedPagenatorHelper,
-	trim,
 	isNonEmptyArray,
 	fakeMd5,
 	pInt
@@ -41,6 +40,8 @@ import { getApp } from 'Helper/Apps/User';
 
 import { popup, command, showScreenPopup, hideScreenPopup, routeOn, routeOff } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+
+const trim = text => null == text ? "" : (text + "").trim();
 
 @popup({
 	name: 'View/Popup/Contacts',

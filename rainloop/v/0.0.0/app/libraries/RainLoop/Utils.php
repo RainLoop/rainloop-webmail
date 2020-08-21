@@ -378,7 +378,7 @@ class Utils
 		if (null === $sPath)
 		{
 			$sPath = static::$CookieDefaultPath;
-			$sPath = $sPath && 0 < \strlen($sPath) ? $sPath : null;
+			$sPath = $sPath && 0 < \strlen($sPath) ? $sPath : '/';
 		}
 
 		if (null === $bSecure)
@@ -390,7 +390,7 @@ class Utils
 		\setcookie($sName, $sValue, array(
 			'expires' => $iExpire,
 			'path' => $sPath,
-			'domain' => $sDomain,
+//			'domain' => $sDomain,
 			'secure' => $bSecure,
 			'httponly' => $bHttpOnly,
 			'samesite' => 'Strict'
@@ -405,10 +405,16 @@ class Utils
 		}
 
 		$sPath = static::$CookieDefaultPath;
-		$sPath = $sPath && 0 < \strlen($sPath) ? $sPath : null;
 
 		unset(static::$Cookies[$sName]);
-		\setcookie($sName, '', \time() - 3600 * 24 * 30, $sPath);
+		\setcookie($sName, '', array(
+			'expires' => \time() - 3600 * 24 * 30,
+			'path' => $sPath && 0 < \strlen($sPath) ? $sPath : '/',
+//			'domain' => null,
+			'secure' => static::$CookieDefaultSecure,
+			'httponly' => true,
+			'samesite' => 'Strict'
+		));
 	}
 
 	public static function UrlEncode(string $sV, bool $bEncode = false) : string
