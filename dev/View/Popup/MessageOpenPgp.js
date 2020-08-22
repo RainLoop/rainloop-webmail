@@ -20,8 +20,6 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 		this.privateKeys = ko.observableArray([]);
 
 		this.password = ko.observable('');
-		this.password.focus = ko.observable(false);
-		this.buttonFocus = ko.observable(false);
 
 		this.resultCallback = null;
 
@@ -72,8 +70,6 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 		this.notification('');
 
 		this.password('');
-		this.password.focus(false);
-		this.buttonFocus(false);
 
 		this.selectedKey(false);
 		this.submitRequest(false);
@@ -84,16 +80,11 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 
 	onBuild(oDom) {
 		key('tab,shift+tab', KeyState.PopupMessageOpenPGP, () => {
-			switch (true) {
-				case this.password.focus():
-					this.buttonFocus(true);
-					break;
-				case this.buttonFocus():
-					this.password.focus(true);
-					break;
-				// no default
+			let btn = this.querySelector('.inputPassword');
+			if (btn.matches(':focus')) {
+				btn = this.querySelector('.buttonDo');
 			}
-
+			btn.focus();
 			return false;
 		});
 
@@ -114,17 +105,12 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 
 			self.selectedKey(ko.dataFor(this)); // eslint-disable-line no-invalid-this
 
-			self.password.focus(true);
+//			this.querySelector('.inputPassword').focus();
 		});
 	}
 
 	onHideWithDelay() {
 		this.clearPopup();
-	}
-
-	onShowWithDelay() {
-		this.password.focus(true);
-		//		this.buttonFocus(true);
 	}
 
 	onShow(fCallback, privateKeys) {

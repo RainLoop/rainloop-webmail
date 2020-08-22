@@ -31,8 +31,6 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		this.encrypt = ko.observable(false);
 
 		this.password = ko.observable('');
-		this.password.focus = ko.observable(false);
-		this.buttonFocus = ko.observable(false);
 
 		this.text = ko.observable('');
 		this.selectedPrivateKey = ko.observable(null);
@@ -296,8 +294,6 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		this.encrypt(false);
 
 		this.password('');
-		this.password.focus(false);
-		this.buttonFocus(false);
 
 		this.signKey(null);
 		this.encryptKeys([]);
@@ -308,15 +304,11 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 
 	onBuild() {
 		key('tab,shift+tab', KeyState.PopupComposeOpenPGP, () => {
-			switch (true) {
-				case this.password.focus():
-					this.buttonFocus(true);
-					break;
-				case this.buttonFocus():
-					this.password.focus(true);
-					break;
-				// no default
+			let btn = this.querySelector('.inputPassword');
+			if (btn.matches(':focus')) {
+				btn = this.querySelector('.buttonDo');
 			}
+			btn.focus();
 			return false;
 		});
 	}
@@ -326,11 +318,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 	}
 
 	onShowWithDelay() {
-		if (this.sign()) {
-			this.password.focus(true);
-		} else {
-			this.buttonFocus(true);
-		}
+		this.querySelector(this.sign() ? '.inputPassword' : '.buttonDo').focus();
 	}
 
 	onShow(fCallback, sText, identity, sTo, sCc, sBcc) {

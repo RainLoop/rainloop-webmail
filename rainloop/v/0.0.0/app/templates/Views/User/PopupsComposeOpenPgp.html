@@ -87,7 +87,7 @@
 							<input type="password" class="inputPassword input-block-level i18n"
 								autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-i18n="[placeholder]POPUPS_COMPOSE_OPEN_PGP/LABEL_PASSWORD"
-								data-bind="textInput: password, hasfocus: password.focus, onEnter: doCommand" />
+								data-bind="textInput: password, onEnter: doCommand" />
 							<div class="form-inline" data-bind="visible: 0 < privateKeysOptions().length">
 								<select class="input-block-level" data-bind="options: privateKeysOptions, value: selectedPrivateKey,
 									optionsCaption: privateKeysOptionsCaption, optionsText: 'name', optionsValue: 'id',
@@ -105,7 +105,7 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button class="btn buttonDo" data-bind="command: doCommand, hasfocus: buttonFocus,
+				<button class="btn buttonDo" data-bind="command: doCommand,
 					enable: (sign() || encrypt()) && (!encrypt() || encrypt() && encryptKeys().length > 0)">
 					<i data-bind="css: {'icon-key': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
 					&nbsp;&nbsp;
