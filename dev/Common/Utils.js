@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { dropdownVisibility, data as GlobalsData } from 'Common/Globals';
 import { ComposeType, SaveSettingsStep, FolderType } from 'Common/Enums';
 import { Mime } from 'Common/Mime';
@@ -246,34 +244,6 @@ export function friendlySize(sizeInBytes) {
 	}
 
 	return sizeInBytes + 'B';
-}
-
-/**
- * @param {(Object|null|undefined)} context
- * @param {Function} fExecute
- * @param {(Function|boolean|null)=} fCanExecute = true
- * @returns {Function}
- */
-export function createCommandLegacy(context, fExecute, fCanExecute = true) {
-	let fResult = null;
-	const fNonEmpty = (...args) => {
-		if (fResult && fResult.canExecute && fResult.canExecute()) {
-			fExecute.apply(context, args);
-		}
-		return false;
-	};
-
-	fResult = fExecute ? fNonEmpty : ()=>{};
-	fResult.enabled = ko.observable(true);
-	fResult.isCommand = true;
-
-	if (typeof fCanExecute === 'function') {
-		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && fCanExecute.call(context));
-	} else {
-		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && !!fCanExecute);
-	}
-
-	return fResult;
 }
 
 /**
