@@ -2,14 +2,13 @@ import ko from 'ko';
 
 import { $htmlCL, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
 
-import { pString, createCommandLegacy, isNonEmptyArray } from 'Common/Utils';
-
 //import { bMobileDevice } from 'Common/Globals';
 
 let currentScreen = null,
 	defaultScreenName = '';
 
-const SCREENS = {}, $ = jQuery;
+const SCREENS = {}, $ = jQuery,
+	isNonEmptyArray = values => Array.isArray(values) && values.length;
 
 export const ViewType = {
 	Popup: 'Popups',
@@ -34,7 +33,25 @@ export function hideLoading() {
  * @returns {Function}
  */
 export function createCommand(fExecute, fCanExecute = true) {
-	return createCommandLegacy(null, fExecute, fCanExecute);
+	let fResult = null;
+	const fNonEmpty = (...args) => {
+		if (fResult && fResult.canExecute && fResult.canExecute()) {
+			fExecute.apply(null, args);
+		}
+		return false;
+	};
+
+	fResult = fExecute ? fNonEmpty : ()=>{};
+	fResult.enabled = ko.observable(true);
+	fResult.isCommand = true;
+
+	if (typeof fCanExecute === 'function') {
+		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && fCanExecute.call(null));
+	} else {
+		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && !!fCanExecute);
+	}
+
+	return fResult;
 }
 
 /**
@@ -260,7 +277,7 @@ export function screenOnRoute(screenName, subPart) {
 		isSameScreen = false,
 		cross = null;
 
-	if (!pString(screenName)) {
+	if (null == screenName || '' == screenName) {
 		screenName = defaultScreenName;
 	}
 
