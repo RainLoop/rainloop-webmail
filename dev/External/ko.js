@@ -249,10 +249,11 @@ ko.bindingHandlers.draggable = {
 			Utils = require('Common/Utils');
 
 		if (!Globals.bMobileDevice) {
-			const triggerZone = 100,
+			const triggerZone = 50,
 				scrollSpeed = 3,
 				fAllValueFunc = fAllBindingsAccessor(),
-				droppableSelector = fAllValueFunc && fAllValueFunc.droppableSelector ? fAllValueFunc.droppableSelector : '',
+				selector = fAllValueFunc ? fAllValueFunc.droppableSelector : '',
+				droppable = selector ? document.querySelector(selector) : null,
 				conf = {
 					distance: 20,
 					handle: '.dragHandle',
@@ -263,61 +264,47 @@ ko.bindingHandlers.draggable = {
 					stop: null,
 					helper: null
 				};
+			let bcr;
 
-			if (droppableSelector) {
-				conf.drag = (event) => {
-					$(droppableSelector).each(function() {
-						const $this = $(this), // eslint-disable-line no-invalid-this
-							offset = $this.offset(),
-							bottomPos = offset.top + $this.height();
-
-						clearInterval($this.data('timerScroll'));
-						$this.data('timerScroll', false);
-
-						if (event.pageX >= offset.left && event.pageX <= offset.left + $this.width()) {
-							if (event.pageY >= bottomPos - triggerZone && event.pageY <= bottomPos) {
-								const moveUp = () => {
-									$this.scrollTop($this.scrollTop() + scrollSpeed);
-								};
-
-								$this.data('timerScroll', setInterval(moveUp, 10));
-								moveUp();
-							}
-
-							if (event.pageY >= offset.top && event.pageY <= offset.top + triggerZone) {
-								const moveDown = () => {
-									$this.scrollTop($this.scrollTop() - scrollSpeed);
-								};
-
-								$this.data('timerScroll', setInterval(moveDown, 10));
-								moveDown();
-							}
+			if (droppable) {
+				conf.drag = event => {
+					if (droppable.scrollTopMax) {
+						clearInterval(droppable.timerScroll);
+						if (droppable.scrollTop
+							&& bcr.top < event.clientY
+							&& bcr.top + triggerZone > event.clientY)
+						{
+							droppable.timerScroll = setInterval(() => droppable.scrollTop -= scrollSpeed, 10);
 						}
-					});
+						else if (droppable.scrollTop < droppable.scrollTopMax
+							&& bcr.bottom > event.clientY
+							&& bcr.bottom - triggerZone < event.clientY)
+						{
+							droppable.timerScroll = setInterval(() => droppable.scrollTop += scrollSpeed, 10);
+						}
+						else {
+							clearInterval(droppable.timerScroll);
+						}
+					}
 				};
 
-				conf.stop = () => {
-					$(droppableSelector).each(function() {
-						const $this = $(this); // eslint-disable-line no-invalid-this
-						clearInterval($this.data('timerScroll'));
-						$this.data('timerScroll', false);
-					});
-				};
+				conf.stop = () => clearInterval(droppable.timerScroll);
 			}
 
-			conf.helper = (event) => fValueAccessor()(event && event.target ? ko.dataFor(event.target) : null);
+			conf.helper = event => fValueAccessor()(event && event.target ? ko.dataFor(event.target) : null);
 
 			$(element)
 				.draggable(conf)
 				.on('mousedown.koDraggable', () => {
 					Utils.removeInFocus();
+					bcr = droppable ? droppable.getBoundingClientRect() : null;
 				});
 
-			ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
+			ko.utils.domNodeDisposal.addDisposeCallback(element, () =>
 				$(element)
 					.off('mousedown.koDraggable')
-					.draggable('destroy');
-			});
+					.draggable('destroy')
+			);
 		}
 	}
 };
