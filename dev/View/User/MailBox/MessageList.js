@@ -13,7 +13,7 @@ import {
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
-import { bMobileDevice, popupVisibility, leftPanelDisabled, moveAction } from 'Common/Globals';
+import { bMobileDevice, leftPanelDisabled, moveAction } from 'Common/Globals';
 
 import { computedPagenatorHelper, draggablePlace, friendlySize } from 'Common/Utils';
 
@@ -40,7 +40,7 @@ import Remote from 'Remote/User/Ajax';
 
 import { getApp } from 'Helper/Apps/User';
 
-import { view, command, ViewType, showScreenPopup, setHash } from 'Knoin/Knoin';
+import { view, command, ViewType, showScreenPopup, setHash, popupVisibility } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 const

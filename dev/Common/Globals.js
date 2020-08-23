@@ -131,15 +131,6 @@ moveAction.subscribe((value) => {
 	}
 });
 
-// popups
-export const popupVisibilityNames = ko.observableArray([]);
-
-export const popupVisibility = ko.computed(() => 0 < popupVisibilityNames().length);
-
-popupVisibility.subscribe((bValue) => {
-	$htmlCL.toggle('rl-modal', bValue);
-});
-
 // keys
 export const keyScopeReal = ko.observable(KeyState.All);
 export const keyScopeFake = ko.observable(KeyState.All);

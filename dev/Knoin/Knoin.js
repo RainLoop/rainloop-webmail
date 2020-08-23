@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { $htmlCL, VIEW_MODELS, popupVisibilityNames } from 'Common/Globals';
+import { $htmlCL, VIEW_MODELS } from 'Common/Globals';
 
 //import { bMobileDevice } from 'Common/Globals';
 
@@ -8,7 +8,15 @@ let currentScreen = null,
 	defaultScreenName = '';
 
 const SCREENS = {}, $ = jQuery,
-	isNonEmptyArray = values => Array.isArray(values) && values.length;
+	isNonEmptyArray = values => Array.isArray(values) && values.length,
+
+	popupVisibilityNames = ko.observableArray([]);
+
+export const popupVisibility = ko.computed(() => 0 < popupVisibilityNames().length);
+
+popupVisibility.subscribe((bValue) => {
+	$htmlCL.toggle('rl-modal', bValue);
+});
 
 export const ViewType = {
 	Popup: 'Popups',
