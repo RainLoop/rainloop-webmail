@@ -25,6 +25,11 @@ if ($gzip = trim(`which gzip`)) {
 //	passthru("{$gzip} -k --best -r ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/css/*'), $return_var);
 }
 
+if ($brotli = trim(`which brotli`)) {
+//	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/*'), $return_var);
+//	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/css/*'), $return_var);
+}
+
 // Temporary rename folder to speed up PharData
 if (!rename('rainloop/v/0.0.0', "rainloop/v/{$package->version}")){
 	exit('Failed to temporary rename rainloop/v/0.0.0');
