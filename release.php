@@ -27,6 +27,7 @@ if ($gzip = trim(`which gzip`)) {
 
 if ($brotli = trim(`which brotli`)) {
 //	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/*'), $return_var);
+//	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/min/*'), $return_var);
 //	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/css/*'), $return_var);
 }
 
