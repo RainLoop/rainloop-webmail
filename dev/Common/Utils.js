@@ -1,4 +1,3 @@
-import { dropdownVisibility, data as GlobalsData } from 'Common/Globals';
 import { ComposeType, SaveSettingsStep, FolderType } from 'Common/Enums';
 import { Mime } from 'Common/Mime';
 
@@ -766,10 +765,6 @@ export function selectElement(element) {
 	range.selectNodeContents(element);
 	sel.addRange(range);
 }
-
-export const detectDropdownVisibility = (()=>
-	dropdownVisibility(!!GlobalsData.aBootstrapDropdowns.find(item => item.hasClass('open')))
-).debounce(50);
 
 /**
  * @param {boolean=} delay = false

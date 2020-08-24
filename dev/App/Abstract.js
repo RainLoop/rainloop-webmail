@@ -7,7 +7,7 @@ import {
 	bMobileDevice
 } from 'Common/Globals';
 
-import { pString, detectDropdownVisibility } from 'Common/Utils';
+import { pString } from 'Common/Utils';
 
 import { KeyState } from 'Common/Enums';
 import { root, rootAdmin, rootUser, populateAuthSuffix } from 'Common/Links';
@@ -48,9 +48,7 @@ class AbstractApp extends AbstractBoot {
 		$doc.addEventListener('keypress', fn);
 		$doc.addEventListener('click', fn);
 
-		key('esc, enter', KeyState.All, () => {
-			detectDropdownVisibility();
-		});
+		key('esc, enter', KeyState.All, () => rl.Dropdowns.detectVisibility());
 	}
 
 	remote() {

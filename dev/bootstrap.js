@@ -1,5 +1,4 @@
-import { detectDropdownVisibility } from 'Common/Utils';
-import { $html, $htmlCL, data as GlobalsData, bMobileDevice } from 'Common/Globals';
+import { $html, $htmlCL, data as GlobalsData, bMobileDevice, dropdownVisibility } from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
 import { i18n } from 'Common/Translator';
@@ -30,12 +29,10 @@ export default (App) => {
 			}
 		}
 	});
-	addEventListener('unload', () => {
-		GlobalsData.bUnload = true;
-	});
+	addEventListener('unload', () => GlobalsData.bUnload = true);
 
 	$htmlCL.add(bMobileDevice ? 'mobile' : 'no-mobile');
-	$html.on('click.dropdown.data-api', detectDropdownVisibility);
+	$html.on('click.dropdown.data-api', ()=>rl.Dropdowns.detectVisibility());
 
 	const rl = window.rl || {};
 
@@ -50,6 +47,15 @@ export default (App) => {
 
 	rl.EmailModel = EmailModel;
 	rl.Enums = Enums;
+
+	rl.Dropdowns = [];
+	rl.Dropdowns.registrate = function(element) {
+		this.push(element);
+		element.addEventListener('click', () => rl.Dropdowns.detectVisibility());
+	};
+	rl.Dropdowns.detectVisibility = (() =>
+		dropdownVisibility(!!rl.Dropdowns.find(item => item.classList.contains('open')))
+	).debounce(50);
 
 	window.rl = rl;
 

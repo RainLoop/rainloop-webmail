@@ -91,13 +91,7 @@ ko.bindingHandlers.tooltipErrorTip = {
 };
 
 ko.bindingHandlers.registrateBootstrapDropdown = {
-	init: (element) => {
-		const Globals = require('Common/Globals');
-		if (Globals && Globals.data.aBootstrapDropdowns) {
-			Globals.data.aBootstrapDropdowns.push($(element));
-			element.addEventListener('click', () => require('Common/Utils').detectDropdownVisibility());
-		}
-	}
+	init: element => rl.Dropdowns.registrate(element)
 };
 
 ko.bindingHandlers.openDropdownTrigger = {
@@ -110,7 +104,7 @@ ko.bindingHandlers.openDropdownTrigger = {
 
 			t.focus();
 
-			require('Common/Utils').detectDropdownVisibility();
+			rl.Dropdowns.detectVisibility();
 			fValueAccessor()(false);
 		}
 	}
