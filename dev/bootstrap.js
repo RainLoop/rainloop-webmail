@@ -59,21 +59,17 @@ export default (App) => {
 
 	window.rl = rl;
 
-	const start = () => {
-		setTimeout(() => {
-			$htmlCL.remove('no-js', 'rl-booted-trigger');
-			$htmlCL.add('rl-booted');
-
-			App.bootstart();
-		}, 10);
-	};
-
 	window.__APP_BOOT = fErrorCallback => {
 		jQuery(() => {
 			setTimeout(() => {
 				if (window.rainloopTEMPLATES && rainloopTEMPLATES[0]) {
 					document.getElementById('rl-templates').innerHTML = rainloopTEMPLATES[0];
-					start();
+					setTimeout(() => {
+						$htmlCL.remove('no-js', 'rl-booted-trigger');
+						$htmlCL.add('rl-booted');
+
+						App.bootstart();
+					}, 10);
 				} else {
 					fErrorCallback();
 				}

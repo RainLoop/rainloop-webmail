@@ -201,7 +201,7 @@ ko.bindingHandlers.modal = {
 
 		$(element).modal(ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
 
-		if (Globals.$htmlCL.contains('rl-anim')) {
+		if (Globals.$htmlCL.contains('no-mobile')) {
 			Globals.$htmlCL.add('rl-modal-animation');
 			setTimeout(() => Globals.$htmlCL.remove('rl-modal-animation'), 500);
 		}
