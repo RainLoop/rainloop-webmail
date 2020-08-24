@@ -7,8 +7,6 @@ import {
 	bMobileDevice
 } from 'Common/Globals';
 
-import { pString } from 'Common/Utils';
-
 import { KeyState } from 'Common/Enums';
 import { root, rootAdmin, rootUser, populateAuthSuffix } from 'Common/Links';
 import { initOnStartOrLangChange, initNotificationLanguage } from 'Common/Translator';
@@ -85,7 +83,7 @@ class AbstractApp extends AbstractBoot {
 	 * @param {string} title
 	 */
 	setWindowTitle(title) {
-		title = pString(title);
+		title = null == title ? '' : '' + title;
 		if (Settings.settingsGet('Title')) {
 			title += (title ? ' - ' : '') + Settings.settingsGet('Title');
 		}
@@ -123,8 +121,8 @@ class AbstractApp extends AbstractBoot {
 	 * @param {boolean=} close = false
 	 */
 	loginAndLogoutReload(admin = false, logout = false, close = false) {
-		const inIframe = !!Settings.appSettingsGet('inIframe');
-		let customLogoutLink = pString(Settings.appSettingsGet('customLogoutLink'));
+		const inIframe = !!Settings.appSettingsGet('inIframe'),
+			logoutLink = admin ? rootAdmin() : rootUser();
 
 		if (logout) {
 			this.clearClientSideToken();
@@ -134,14 +132,12 @@ class AbstractApp extends AbstractBoot {
 			window.close();
 		}
 
-		customLogoutLink = customLogoutLink || (admin ? rootAdmin() : rootUser());
-
-		if (logout && location.href !== customLogoutLink) {
+		if (logout && location.href !== logoutLink) {
 			setTimeout(() => {
 				if (inIframe && parent) {
-					parent.location.href = customLogoutLink;
+					parent.location.href = logoutLink;
 				} else {
-					location.href = customLogoutLink;
+					location.href = logoutLink;
 				}
 			}, 100);
 		} else {

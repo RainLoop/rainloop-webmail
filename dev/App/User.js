@@ -919,19 +919,7 @@ class AppUser extends AbstractApp {
 	bootstartLoginScreen() {
 		$htmlCL.remove('rl-user-auth');
 		$htmlCL.add('rl-user-no-auth');
-
-		const customLoginLink = pString(Settings.appSettingsGet('customLoginLink'));
-		if (!customLoginLink) {
-			startScreens([LoginUserScreen]);
-		} else {
-			routeOff();
-			setHash(root(), true);
-			routeOff();
-
-			setTimeout(() =>
-				location.href = customLoginLink
-			, 1);
-		}
+		startScreens([LoginUserScreen]);
 	}
 
 	bootend() {

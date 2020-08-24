@@ -1189,8 +1189,6 @@ class Actions
 			'allowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
 			'allowHtmlEditorBitiButtons' => (bool) $oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
 			'allowCtrlEnterOnCompose' => (bool) $oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
-			'customLoginLink' => $oConfig->Get('labs', 'custom_login_link', ''),
-			'customLogoutLink' => $oConfig->Get('labs', 'custom_logout_link', ''),
 			'forgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
 			'registrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
 			'hideSubmitButton' => (bool) $oConfig->Get('login', 'hide_submit_button', true),
