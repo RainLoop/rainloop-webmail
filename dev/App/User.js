@@ -68,7 +68,6 @@ import { IdentityModel } from 'Model/Identity';
 import { TemplateModel } from 'Model/Template';
 import { OpenPgpKeyModel } from 'Model/OpenPgpKey';
 
-// import {AboutUserScreen} from 'Screen/User/About';
 import { LoginUserScreen } from 'Screen/User/Login';
 import { MailBoxUserScreen } from 'Screen/User/MailBox';
 import { SettingsUserScreen } from 'Screen/User/Settings';
