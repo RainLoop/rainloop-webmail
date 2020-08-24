@@ -4,7 +4,6 @@ es_ES:
     LABEL_PASSWORD: "Contraseña"
     BUTTON_LOGIN: "Ingresar al panel de control"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Panel de Control"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "General"
@@ -63,14 +62,6 @@ es_ES:
     LABEL_USER_LOGO_TITLE: "Título del Logo"
     LABEL_USER_LOGO_MESSAGE: "Logo (Vista desde mensaje)"
     LABEL_USER_CUSTOM_CSS: "CSS Personalizado"
-    LEGEND_WELCOME_PAGE: "Pantalla de bienvenida"
-    LABEL_WELCOME_PAGE_TITLE: "Título"
-    LABEL_WELCOME_PAGE_URL: "URL"
-    LABEL_WELCOME_PAGE_DISPLAY: "Mostrar"
-    OPTION_WELCOME_PAGE_DISPLAY_NONE: "Ninguno"
-    OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Una vez"
-    OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Siempre"
-    HTML_ALERT_PREMIUM: "Esta función se encuentra disponible para <strong><a href=\"#/licensing\">Usuarios Premium</a></strong>."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Contactos"
     LEGEND_STORAGE: "Almacenamiento (PDO)"
@@ -165,14 +156,6 @@ es_ES:
     LEGEND_ABOUT: "Acerca"
     LABEL_TAG_HINT: "Moderno, simple y rápido cliente web de correo electrónico"
     LABEL_ALL_RIGHTS_RESERVED: "Todos los Derechos Reservados."
-    HINT_READ_CHANGE_LOG: "Revisa la lista de cambios antes de actualizar."
-    HINT_IS_UP_TO_DATE: "RainLoop está actualizado."
-    HTML_NEW_VERSION: "Nueva versión ( <b>%VERSION%</b> ) está disponible."
-    LABEL_UPDATING: "Actualizando"
-    LABEL_CHECKING: "Buscando actualizaciones"
-    BUTTON_UPDATE: "Actualizar"
-    BUTTON_DOWNLOAD: "Descargar"
-    BUTTON_CHANGELOG: "Lista de Cambios"
   POPUPS_ACTIVATE:
     TITLE_ACTIVATE: "¿Activar la clave de suscripción?"
     TITLE_ACTIVATION: "Activando..."

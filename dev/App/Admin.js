@@ -10,7 +10,6 @@ import CapaStore from 'Stores/Admin/Capa';
 import DomainStore from 'Stores/Admin/Domain';
 import PluginStore from 'Stores/Admin/Plugin';
 import PackageStore from 'Stores/Admin/Package';
-import CoreStore from 'Stores/Admin/Core';
 import Remote from 'Remote/Admin/Ajax';
 
 import { SettingsAdminScreen } from 'Screen/Admin/Settings';
@@ -92,52 +91,6 @@ class AdminApp extends AbstractApp {
 				PackageStore.packages(list);
 			} else {
 				PackageStore.packagesReal(false);
-			}
-		});
-	}
-
-	updateCoreData() {
-		CoreStore.coreUpdating(true);
-		Remote.updateCoreData((result, data) => {
-			CoreStore.coreUpdating(false);
-			CoreStore.coreVersion('');
-			CoreStore.coreRemoteVersion('');
-			CoreStore.coreRemoteRelease('');
-			CoreStore.coreVersionCompare(-2);
-			if (StorageResultType.Success === result && data && data.Result) {
-				CoreStore.coreReal(true);
-				location.reload();
-			} else {
-				CoreStore.coreReal(false);
-			}
-		});
-	}
-
-	reloadCoreData() {
-		CoreStore.coreChecking(true);
-		CoreStore.coreReal(true);
-		Remote.coreData((result, data) => {
-			CoreStore.coreChecking(false);
-			if (StorageResultType.Success === result && data && data.Result) {
-				CoreStore.coreReal(!!data.Result.Real);
-				CoreStore.coreChannel(data.Result.Channel || 'stable');
-				CoreStore.coreType(data.Result.Type || 'stable');
-				CoreStore.coreUpdatable(!!data.Result.Updatable);
-				CoreStore.coreAccess(!!data.Result.Access);
-				CoreStore.coreWarning(!!data.Result.Warning);
-				CoreStore.coreVersion(data.Result.Version || '');
-				CoreStore.coreRemoteVersion(data.Result.RemoteVersion || '');
-				CoreStore.coreRemoteRelease(data.Result.RemoteRelease || '');
-				CoreStore.coreVersionCompare(parseInt(data.Result.VersionCompare, 10) || 0);
-			} else {
-				CoreStore.coreReal(false);
-				CoreStore.coreChannel('stable');
-				CoreStore.coreType('stable');
-				CoreStore.coreWarning(false);
-				CoreStore.coreVersion('');
-				CoreStore.coreRemoteVersion('');
-				CoreStore.coreRemoteRelease('');
-				CoreStore.coreVersionCompare(-2);
 			}
 		});
 	}

@@ -14,8 +14,6 @@ module.exports = {
 	},
 	globals: {
 		// RainLoop
-		'RL_COMMUNITY': true,
-		'RL_ES6': true,
 		'__rlah_set': "readonly",
 		'__rlah_clear': "readonly",
 		'__rlah_data': "readonly",

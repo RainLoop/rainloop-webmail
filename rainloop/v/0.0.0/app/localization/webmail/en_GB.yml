@@ -239,8 +239,6 @@ en_GB:
     BUTTON_MARK_AS_IMPORTANT: "Mark as important"
     BUTTON_OPEN_PGP: "OpenPGP (Plain Text Only)"
     BUTTON_REQUEST_DSN: "Request a delivery receipt"
-  POPUPS_WELCOME_PAGE:
-    BUTTON_CLOSE: "Close"
   POPUPS_ASK:
     BUTTON_YES: "Yes"
     BUTTON_NO: "No"

@@ -238,8 +238,6 @@ es_ES:
     BUTTON_MARK_AS_IMPORTANT: "Marcar como importante"
     BUTTON_OPEN_PGP: "OpenPGP (solo texto plano)"
     BUTTON_REQUEST_DSN: "Solicitar una confirmación de entrega"
-  POPUPS_WELCOME_PAGE:
-    BUTTON_CLOSE: "Cerrar"
   POPUPS_ASK:
     BUTTON_YES: "Sí"
     BUTTON_NO: "No"

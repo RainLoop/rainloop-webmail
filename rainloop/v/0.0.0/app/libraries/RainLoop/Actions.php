@@ -1202,7 +1202,6 @@ class Actions
 			'themes' => $this->GetThemes($bMobile, false),
 			'languages' => $this->GetLanguages(false),
 			'languagesAdmin' => $this->GetLanguages(true),
-			'appVersionType' => 'community',
 			'attachmentsActions' => $aAttachmentsActions
 		), $bAdmin ? array(
 			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
@@ -1247,8 +1246,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'UserLogoTitle' => '',
 			'UserLogoMessage' => '',
 			'UserCss' => '',
-			'WelcomePageUrl' => '',
-			'WelcomePageDisplay' => 'none',
 			'IncludeCss' => '',
 			'IncludeBackground' => '',
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
@@ -1259,15 +1256,11 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'SieveAllowFileintoInbox' => (bool) $oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false),
 			'ContactsIsAllowed' => false,
 			'RequireTwoFactor' => false,
-			'Community' => true,
-			'PremType' => false,
 			'Admin' => array(),
 			'Capa' => array(),
 			'Plugins' => array(),
 			'System' => $this->AppDataSystem($bAdmin, $bMobile, $bMobileDevice)
 /*
-			'Community' => false,
-			'PremType' => true,
 			'LoginLogo' => $oConfig->Get('branding', 'login_logo', ''),
 			'LoginBackground' => $oConfig->Get('branding', 'login_background', ''),
 			'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
@@ -1277,8 +1270,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'UserLogoMessage' => $oConfig->Get('branding', 'user_logo_message', ''),
 			'UserIframeMessage' => $oConfig->Get('branding', 'user_iframe_message', ''),
 			'UserCss' => $oConfig->Get('branding', 'user_css', ''),
-			'WelcomePageUrl' => $oConfig->Get('branding', 'welcome_page_url', ''),
-			'WelcomePageDisplay' => \strtolower($oConfig->Get('branding', 'welcome_page_display', 'none')),
 */
 		);
 
@@ -1346,26 +1337,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 					}
 				}
 
-				$oSettings = $this->SettingsProvider()->Load($oAccount);
-
-				if (!$oAccount->IsAdditionalAccount() && !empty($aResult['WelcomePageUrl']) &&
-					('once' === $aResult['WelcomePageDisplay'] || 'always' === $aResult['WelcomePageDisplay']))
-				{
-					if ('once' === $aResult['WelcomePageDisplay'])
-					{
-						if ($aResult['WelcomePageUrl'] === $oSettings->GetConf('LastWelcomePage', ''))
-						{
-							$aResult['WelcomePageUrl'] = '';
-							$aResult['WelcomePageDisplay'] = '';
-						}
-					}
-				}
-				else
-				{
-					$aResult['WelcomePageUrl'] = '';
-					$aResult['WelcomePageDisplay'] = '';
-				}
-
 				if (!empty($aResult['StartupUrl']))
 				{
 					$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount, true);
@@ -1383,9 +1354,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
-
-				$aResult['WelcomePageUrl'] = '';
-				$aResult['WelcomePageDisplay'] = '';
 
 				$aResult['StartupUrl'] = '';
 
@@ -1437,11 +1405,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 				$aResult['ContactsPdoUser'] = (string) $oConfig->Get('contacts', 'pdo_user', '');
 				$aResult['ContactsPdoPassword'] = (string) APP_DUMMY;
 
-				$aResult['SubscriptionEnabled'] = (bool) \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain'], true);
-//					|| \MailSo\Base\Utils::ValidateIP($aResult['AdminDomain']);
-
 				$aResult['WeakPassword'] = (bool) $oConfig->ValidatePassword('12345');
-				$aResult['CoreAccess'] = (bool) $this->rainLoopCoreAccess();
 
 				$aResult['PhpUploadSizes'] = array(
 					'upload_max_filesize' => \ini_get('upload_max_filesize'),
@@ -3130,8 +3094,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 		if ($this && $this->HasOneOfActionParams(array(
 			'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss',
-			'UserLogo', 'UserLogoTitle', 'UserLogoMessage', 'UserIframeMessage', 'UserCss',
-			'WelcomePageUrl', 'WelcomePageDisplay'
+			'UserLogo', 'UserLogoTitle', 'UserLogoMessage', 'UserIframeMessage', 'UserCss'
 		)))
 		{
 			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
@@ -3144,9 +3107,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			$this->setConfigFromParams($oConfig, 'UserLogoMessage', 'branding', 'user_logo_message', 'string');
 			$this->setConfigFromParams($oConfig, 'UserIframeMessage', 'branding', 'user_iframe_message', 'string');
 			$this->setConfigFromParams($oConfig, 'UserCss', 'branding', 'user_css', 'string');
-
-			$this->setConfigFromParams($oConfig, 'WelcomePageUrl', 'branding', 'welcome_page_url', 'string');
-			$this->setConfigFromParams($oConfig, 'WelcomePageDisplay', 'branding', 'welcome_page_display', 'string');
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $oConfig->Save());
@@ -3481,14 +3441,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		;
 	}
 
-	private function rainLoopCoreAccess() : bool
-	{
-		$sCoreAccess = \strtolower(\preg_replace('/[\s,;]+/', ' ',
-			$this->Config()->Get('security', 'core_install_access_domain', '')));
-
-		return '' === $sCoreAccess || '*' === $sCoreAccess || APP_SITE === $sCoreAccess;
-	}
-
 	private function getRepositoryDataByUrl(string $sRepo, bool &$bReal = false) : array
 	{
 		$bReal = false;
@@ -3587,56 +3539,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		return $sChannel;
 	}
 
-	private function getCoreData(bool &$bReal) : ?array
-	{
-		$bReal = false;
-
-		$sChannel = $this->getCoreChannel();
-
-		$sRepo = \str_replace('{{channel}}', $sChannel, APP_REPO_CORE_FILE);
-
-		$oHttp = \MailSo\Base\Http::SingletonInstance();
-
-		$sCacheKey = KeyPathHelper::RepositoryCacheCore($sRepo);
-		$sRep = $this->Cacher()->Get($sCacheKey);
-		if ('' !== $sRep)
-		{
-			$iRepTime = $this->Cacher()->GetTimer($sCacheKey);
-		}
-
-		if ('' === $sRep || 0 === $iRepTime || \time() - 3600 > $iRepTime)
-		{
-			$iCode = 0;
-			$sContentType = '';
-
-			$sRep = '' !== $sRepo ? $oHttp->GetUrlAsString($sRepo, 'RainLoop', $sContentType, $iCode, $this->Logger(), 10,
-				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', '')) : false;
-
-			if (false !== $sRep)
-			{
-				$aRep = \json_decode($sRep, true, 10);
-				$bReal = \is_array($aRep) && 0 < \count($aRep) && isset($aRep['id']) && 'rainloop' === $aRep['id'];
-
-				if ($bReal)
-				{
-					$this->Cacher()->Set($sCacheKey, $sRep);
-					$this->Cacher()->SetTimer($sCacheKey);
-				}
-			}
-			else
-			{
-				$this->Logger()->Write('Cannot read remote repository file: '.$sRepo, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-			}
-		}
-		else if ('' !== $sRep)
-		{
-			$aRep = \json_decode($sRep, true, 10);
-			$bReal = \is_array($aRep) && 0 < \count($aRep) && isset($aRep['id']) && 'rainloop' === $aRep['id'];
-		}
-
-		return $bReal ? $aRep : null;
-	}
-
 	private function getRepositoryData(bool &$bReal, bool &$bRainLoopUpdatable) : array
 	{
 		$bRainLoopUpdatable = $this->rainLoopUpdatable();
@@ -3710,59 +3612,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			 'Real' => $bReal,
 			 'MainUpdatable' => $bRainLoopUpdatable,
 			 'List' => $aList
-		));
-	}
-
-	public function DoAdminCoreData() : array
-	{
-		$this->IsAdminLoggined();
-
-		$bReal = false;
-		$aData = array();
-
-		$bRainLoopUpdatable = $this->rainLoopUpdatable();
-		$bRainLoopAccess = $this->rainLoopCoreAccess();
-
-		if ($bRainLoopAccess)
-		{
-			$aData = $this->getCoreData($bReal);
-		}
-
-		$sVersion = empty($aData['version']) ? '' : $aData['version'];
-		$sType = empty($aData['channel']) ? 'stable' : $aData['channel'];
-
-		$sWarnings = empty($aData['warnings']) ? '' : $aData['warnings'];
-		$aWarnings = $sWarnings ? explode('|', $sWarnings) : array();
-
-		$sCurrentVersion = APP_VERSION;
-
-		$bShowWarning = false;
-		if ($sCurrentVersion !== APP_DEV_VERSION)
-		{
-			foreach ($aWarnings as $sWarningVersion)
-			{
-				$sWarningVersion = \trim($sWarningVersion);
-
-				if (\version_compare($sCurrentVersion, $sWarningVersion, '<') &&
-					\version_compare($sVersion, $sWarningVersion, '>='))
-				{
-					$bShowWarning = true;
-					break;
-				}
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, array(
-			 'Real' => $bReal,
-			 'Access' => $bRainLoopAccess,
-			 'Updatable' => $bRainLoopUpdatable,
-			 'Warning' => $bShowWarning,
-			 'Channel' => $this->getCoreChannel(),
-			 'Type' => $sType,
-			 'Version' => $sCurrentVersion,
-			 'RemoteVersion' => $sVersion,
-			 'RemoteRelease' => empty($aData['release']) ? '' : $aData['release'],
-			 'VersionCompare' => \version_compare($sCurrentVersion, $sVersion)
 		));
 	}
 
@@ -4166,22 +4015,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 	public function DoPing() : array
 	{
 		return $this->DefaultResponse(__FUNCTION__, 'Pong');
-	}
-
-	public function DoWelcomeClose() : array
-	{
-		$oAccount = $this->getAccountFromToken();
-		if ($oAccount && !$oAccount->IsAdditionalAccount())
-		{
-			$oSettings = $this->SettingsProvider()->Load($oAccount);
-			$oSettings->SetConf('LastWelcomePage',
-				$this->Config()->Get('branding', 'welcome_page_url', ''));
-
-			return $this->DefaultResponse(__FUNCTION__,
-				$this->SettingsProvider()->Save($oAccount, $oSettings));
-		}
-
-		return $this->FalseResponse(__FUNCTION__);
 	}
 
 	public function DoVersion() : array
@@ -8122,8 +7955,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 
 	public function StaticPath(string $sPath) : string
 	{
-		$sResult = Utils::WebStaticPath().$sPath;
-		return $sResult.(false === \strpos($sResult, '?') ? '?' : '&').'community';
+		return Utils::WebStaticPath().$sPath;
 	}
 
 	/**

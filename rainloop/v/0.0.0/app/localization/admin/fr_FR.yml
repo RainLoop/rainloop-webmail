@@ -4,7 +4,6 @@ fr_FR:
     LABEL_PASSWORD: "Mot de passe"
     BUTTON_LOGIN: "Se connecter au panneau d'administration"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Panneau d'Administration"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Général"
@@ -63,14 +62,6 @@ fr_FR:
     LABEL_USER_LOGO_TITLE: "Titre du logo"
     LABEL_USER_LOGO_MESSAGE: "Logo (vue message)"
     LABEL_USER_CUSTOM_CSS: "CSS personnalisés"
-    LEGEND_WELCOME_PAGE: "Page d'accueil"
-    LABEL_WELCOME_PAGE_TITLE: "Titre"
-    LABEL_WELCOME_PAGE_URL: "URL"
-    LABEL_WELCOME_PAGE_DISPLAY: "Affichage"
-    OPTION_WELCOME_PAGE_DISPLAY_NONE: "Aucun"
-    OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Une seule fois"
-    OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Toujours"
-    HTML_ALERT_PREMIUM: "Cette fonctionnalité est réservé aux utilisateurs <strong><a href=\"#/licensing\">Premium</a></strong>."
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Contacts"
     LEGEND_STORAGE: "Stockage (PDO)"
@@ -165,14 +156,6 @@ fr_FR:
     LEGEND_ABOUT: "A propos"
     LABEL_TAG_HINT: "Un client webmail simple, moderne et rapide "
     LABEL_ALL_RIGHTS_RESERVED: "Tous droits réservés."
-    HINT_READ_CHANGE_LOG: "Veuillez lire le journal des modifications avant de faire la mise à jour."
-    HINT_IS_UP_TO_DATE: "Rainloop est à jour."
-    HTML_NEW_VERSION: "Une nouvelle version <b>%VERSION%</b> est disponible."
-    LABEL_UPDATING: "Mise à jour"
-    LABEL_CHECKING: "Vérification des mises à jour"
-    BUTTON_UPDATE: "Mettre à jour"
-    BUTTON_DOWNLOAD: "Télécharger"
-    BUTTON_CHANGELOG: "Journal des modifications"
   POPUPS_ACTIVATE:
     TITLE_ACTIVATE: "Activer une clé de souscription ?"
     TITLE_ACTIVATION: "Activation..."

@@ -238,8 +238,6 @@ de_DE:
     BUTTON_MARK_AS_IMPORTANT: "Als Wichtig markieren"
     BUTTON_OPEN_PGP: "OpenPGP (nur bei unformatiertem Text)"
     BUTTON_REQUEST_DSN: "Übermittlungsstatus anfordern"
-  POPUPS_WELCOME_PAGE:
-    BUTTON_CLOSE: "Schließen"
   POPUPS_ASK:
     BUTTON_YES: "Ja"
     BUTTON_NO: "Nein"

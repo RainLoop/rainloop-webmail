@@ -68,7 +68,6 @@ module.exports = function(publicPath, pro, mode) {
 		plugins: [
 //			new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
 			new webpack.DefinePlugin({
-				'RL_COMMUNITY': !pro,
 				'process.env.NODE_ENV': JSON.stringify('production'),
 				'process.env': {
 					NODE_ENV: JSON.stringify('production')

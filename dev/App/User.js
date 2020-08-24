@@ -912,10 +912,6 @@ class AppUser extends AbstractApp {
 		showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
 	}
 
-	bootstartWelcomePopup(url) {
-		showScreenPopup(require('View/Popup/WelcomePage'), [url]);
-	}
-
 	bootstartLoginScreen() {
 		$htmlCL.remove('rl-user-auth');
 		$htmlCL.add('rl-user-no-auth');
@@ -1045,10 +1041,6 @@ class AppUser extends AbstractApp {
 						setTimeout(() => Remote.appDelayStart(()=>{}), 35000);
 
 						addEventListener('rl.auto-logout', () => this.logout());
-
-						if (Settings.settingsGet('WelcomePageUrl')) {
-							setTimeout(() => this.bootstartWelcomePopup(Settings.settingsGet('WelcomePageUrl')), 1000);
-						}
 
 						if (
 							!!Settings.settingsGet('AccountSignMe') &&

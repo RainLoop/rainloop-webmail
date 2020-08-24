@@ -5,11 +5,6 @@ export const $html = jQuery('html');
 export const $htmlCL = document.documentElement.classList;
 
 /**
- * @type {boolean}
- */
-export const community = RL_COMMUNITY;
-
-/**
  * @type {?}
  */
 export const dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 });

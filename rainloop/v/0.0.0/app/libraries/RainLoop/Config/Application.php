@@ -147,10 +147,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'user_logo'			=> array(''),
 				'user_logo_title'	=> array(''),
 				'user_logo_message'	=> array(''),
-				'user_iframe_message'	=> array(''),
-
-				'welcome_page_url'		=> array(''),
-				'welcome_page_display'	=> array('none')
+				'user_iframe_message'	=> array('')
 			),
 
 			'contacts' => array(

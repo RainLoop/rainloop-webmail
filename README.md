@@ -77,32 +77,33 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Replaced ifvisible.js with simple drop-in replacement
 * Replaced momentToNode with proper HTML5 <time>
 * Replaced resize listeners with ResizeObserver
+* Removed non-community (aka Prem/Premium/License) code
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|1.038.620	|
-|app.js      	|4.184.455	|2.685.732	|
+|admin.js    	|2.130.942	|1.007.370	|
+|app.js      	|4.184.455	|2.676.306	|
 |boot.js     	|  671.522	|   43.856	|
 |libs.js     	|  647.614	|  316.969	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|4.085.177	|
+|TOTAL      	|7.960.367	|4.044.501	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  142.134	| 73.657	| 40.994	| 34.975	|
-|app.min.js      	|  511.202	|  361.315	|140.462	| 95.185	| 76.480	|
-|boot.min.js     	|   66.007	|    5.575	| 22.567	|  2.341	|  2.001	|
+|admin.min.js    	|  252.147	|  138.101	| 73.657	| 40.104	| 34.210	|
+|app.min.js      	|  511.202	|  360.198	|140.462	| 95.043	| 76.240	|
+|boot.min.js     	|   66.007	|    5.575	| 22.567	|  2.340	|  2.000	|
 |libs.min.js     	|  572.545	|  300.691	|176.720	| 92.925	| 82.046	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  809.715	|424.718	|231.445	|195.502	|
+|TOTAL          	|1.434.353	|  804.565	|424.718	|230.412	|194.496	|
 
-624.638 bytes (193.273 gzip) is not much, but it feels faster.
+629.788 bytes (194.306 gzip) is not much, but it feels faster.
 
 
 |css/*       	|1.14.0   	|native   	|
 |--------------	|--------:	|--------:	|
-|app.css    	|  340.334	|  266.586	|
-|app.min.css	|  274.791	|  211.427	|
+|app.css    	|  340.334	|  266.769	|
+|app.min.css	|  274.791	|  211.601	|
 
 
 ### PHP73 branch

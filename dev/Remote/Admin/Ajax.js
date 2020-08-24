@@ -73,20 +73,6 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 */
-	coreData(fCallback) {
-		this.defaultRequest(fCallback, 'AdminCoreData');
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 */
-	updateCoreData(fCallback) {
-		this.defaultRequest(fCallback, 'AdminUpdateCoreData', {}, 90000);
-	}
-
-	/**
-	 * @param {?Function} fCallback
 	 * @param {Object} oPackage
 	 */
 	packageInstall(fCallback, oPackage) {

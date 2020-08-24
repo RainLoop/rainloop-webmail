@@ -6,7 +6,6 @@ import { getNotification } from 'Common/Translator';
 import { settingsGet } from 'Storage/Settings';
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import AppStore from 'Stores/Admin/App';
 import PluginStore from 'Stores/Admin/Plugin';
 
 import Remote from 'Remote/Admin/Ajax';
@@ -19,8 +18,6 @@ class PluginsAdminSettings {
 
 		this.plugins = PluginStore.plugins;
 		this.pluginsError = PluginStore.plugins.error;
-
-		this.community = RL_COMMUNITY || AppStore.community();
 
 		this.visibility = ko.computed(() => (PluginStore.plugins.loading() ? 'visible' : 'hidden'));
 

@@ -51,10 +51,6 @@ class UserAjaxUserPromises extends AbstractAjaxPromises {
 			'Hashes': aHashes
 		});
 	}
-
-	welcomeClose() {
-		return this.postRequest('WelcomeClose');
-	}
 }
 
 export default new UserAjaxUserPromises();

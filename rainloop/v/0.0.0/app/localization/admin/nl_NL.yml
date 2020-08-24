@@ -4,7 +4,6 @@ nl_NL:
     LABEL_PASSWORD: "Wachtwoord"
     BUTTON_LOGIN: "Aanmelden in het beheer paneel"
   TOP_PANEL:
-    LABEL_PREMIUM: "Premium"
     LABEL_ADMIN_PANEL: "Beheer paneel"
   TABS_LABELS:
     LABEL_GENERAL_NAME: "Algemeen"
@@ -62,14 +61,6 @@ nl_NL:
     LABEL_USER_LOGO_TITLE: "Logo titel"
     LABEL_USER_LOGO_MESSAGE: "Logo (berichtweergave)"
     LABEL_USER_CUSTOM_CSS: "Aangepaste CSS"
-    LEGEND_WELCOME_PAGE: "Welkom pagina"
-    LABEL_WELCOME_PAGE_TITLE: "Titel"
-    LABEL_WELCOME_PAGE_URL: "URL"
-    LABEL_WELCOME_PAGE_DISPLAY: "Weergave"
-    OPTION_WELCOME_PAGE_DISPLAY_NONE: "Nooit"
-    OPTION_WELCOME_PAGE_DISPLAY_ONCE: "Eenmalig"
-    OPTION_WELCOME_PAGE_DISPLAY_ALWAYS: "Altijd"
-    HTML_ALERT_PREMIUM: "Deze functionaliteit is alleen beschikbaar voor <strong><a href=\"#/licensing\">Premium</a></strong> abonnees.\n"
   TAB_CONTACTS:
     LEGEND_CONTACTS: "Contactpersonen"
     LEGEND_STORAGE: "Opslag (PDO)"
@@ -163,14 +154,6 @@ nl_NL:
     LEGEND_ABOUT: "Over"
     LABEL_TAG_HINT: "Simpel, modern en snelle web-based e-mail client"
     LABEL_ALL_RIGHTS_RESERVED: "Alle rechten gereserveerd."
-    HINT_READ_CHANGE_LOG: "Lees a.u.b. het veranderingen logboek alvorens te updaten."
-    HINT_IS_UP_TO_DATE: "De laatste versie van RainLoop is geïnstalleerd."
-    HTML_NEW_VERSION: "Een nieuwe versie <b>%VERSION%</b> is beschikbaar."
-    LABEL_UPDATING: "Bezig met updaten"
-    LABEL_CHECKING: "Controleren op updates"
-    BUTTON_UPDATE: "Bijwerken"
-    BUTTON_DOWNLOAD: "Download"
-    BUTTON_CHANGELOG: "Veranderingen logboek"
   POPUPS_ACTIVATE:
     TITLE_ACTIVATE: "Activatie code activeren?"
     TITLE_ACTIVATION: "Activeren..."

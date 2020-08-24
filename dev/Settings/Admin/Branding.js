@@ -1,17 +1,13 @@
 import ko from 'ko';
 
 import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
-import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Ajax';
-import AppStore from 'Stores/Admin/App';
 
 import { settingsGet } from 'Storage/Settings';
 
 class BrandingAdminSettings {
 	constructor() {
-		this.capa = AppStore.prem;
-
 		this.title = ko.observable(settingsGet('Title')).idleTrigger();
 		this.loadingDesc = ko.observable(settingsGet('LoadingDescription')).idleTrigger();
 		this.faviconUrl = ko.observable(settingsGet('FaviconUrl')).idleTrigger();
@@ -24,18 +20,6 @@ class BrandingAdminSettings {
 		this.loginDescription = ko.observable(settingsGet('LoginDescription')).idleTrigger();
 		this.loginCss = ko.observable(settingsGet('LoginCss')).idleTrigger();
 		this.userCss = ko.observable(settingsGet('UserCss')).idleTrigger();
-		this.welcomePageUrl = ko.observable(settingsGet('WelcomePageUrl')).idleTrigger();
-		this.welcomePageDisplay = ko.observable(settingsGet('WelcomePageDisplay')).idleTrigger();
-		this.welcomePageDisplay.options = ko.computed(() => {
-			translatorTrigger();
-			return [
-				{ optValue: 'none', optText: i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_NONE') },
-				{ optValue: 'once', optText: i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_ONCE') },
-				{ optValue: 'always', optText: i18n('TAB_BRANDING/OPTION_WELCOME_PAGE_DISPLAY_ALWAYS') }
-			];
-		});
-
-		this.community = RL_COMMUNITY || AppStore.community();
 	}
 
 	onBuild() {
