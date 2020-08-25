@@ -24,7 +24,6 @@ import {
 } from 'Common/Cache';
 
 import { MESSAGE_BODY_CACHE_LIMIT } from 'Common/Consts';
-import { data as GlobalsData } from 'Common/Globals';
 import { mailBox, notificationMailIcon } from 'Common/Links';
 import { i18n, getNotification } from 'Common/Translator';
 
@@ -57,6 +56,9 @@ const
 		$hcont.empty();
 		return result;
 	};
+
+let iMessageBodyCacheCount = 0;
+
 $hcont
 	.attr('area', 'hidden')
 	.css({ position: 'absolute', left: -5000 })
@@ -232,7 +234,7 @@ class MessageUserStore {
 
 	purgeMessageBodyCache() {
 		let count = 0;
-		const end = GlobalsData.iMessageBodyCacheCount - MESSAGE_BODY_CACHE_LIMIT;
+		const end = iMessageBodyCacheCount - MESSAGE_BODY_CACHE_LIMIT;
 
 		if (0 < end) {
 			const messagesDom = this.messagesBodiesDom();
@@ -563,12 +565,12 @@ class MessageUserStore {
 							resultHtml = '<pre>' + resultHtml + '</pre>';
 						}
 
-						GlobalsData.iMessageBodyCacheCount += 1;
+						iMessageBodyCacheCount += 1;
 
 						body = $('<div id="' + id + '" ></div>')
 							.hide()
 							.addClass('rl-cache-class');
-						body.data('rl-cache-count', GlobalsData.iMessageBodyCacheCount);
+						body.data('rl-cache-count', iMessageBodyCacheCount);
 
 						body.html(findEmailAndLinks(resultHtml)).addClass('b-text-part ' + (isHtml ? 'html' : 'plain'));
 
@@ -594,8 +596,8 @@ class MessageUserStore {
 					} else {
 						message.body = textBody;
 						if (message.body) {
-							GlobalsData.iMessageBodyCacheCount += 1;
-							message.body.data('rl-cache-count', GlobalsData.iMessageBodyCacheCount);
+							iMessageBodyCacheCount += 1;
+							message.body.data('rl-cache-count', iMessageBodyCacheCount);
 							message.fetchDataFromDom();
 						}
 					}

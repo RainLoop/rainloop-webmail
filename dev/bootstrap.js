@@ -32,7 +32,7 @@ export default (App) => {
 	addEventListener('unload', () => GlobalsData.bUnload = true);
 
 	$htmlCL.add(bMobileDevice ? 'mobile' : 'no-mobile');
-	$html.on('click.dropdown.data-api', ()=>rl.Dropdowns.detectVisibility());
+	jQuery($html).on('click.dropdown.data-api', ()=>rl.Dropdowns.detectVisibility());
 
 	const rl = window.rl || {};
 
