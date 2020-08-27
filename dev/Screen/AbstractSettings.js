@@ -34,7 +34,6 @@ class AbstractSettingsScreen extends AbstractScreen {
 	onRoute(subName) {
 		let settingsScreen = null,
 			RoutedSettingsViewModel = null,
-			viewModelPlace = null,
 			viewModelDom = null;
 
 		RoutedSettingsViewModel = VIEW_MODELS.settings.find(
@@ -67,20 +66,19 @@ class AbstractSettingsScreen extends AbstractScreen {
 			if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm) {
 				settingsScreen = RoutedSettingsViewModel.__vm;
 			} else {
-				viewModelPlace = this.oViewModelPlace;
-				if (viewModelPlace && 1 === viewModelPlace.length) {
+				if (this.oViewModelPlace) {
 					settingsScreen = new RoutedSettingsViewModel();
 
-					viewModelDom = jQuery('<div></div>')
-						.addClass('rl-settings-view-model')
-						.hide();
-					viewModelDom.appendTo(viewModelPlace);
+					viewModelDom = jQuery('<div></div>');
+					viewModelDom[0].classList.add('rl-settings-view-model');
+					viewModelDom[0].hidden = true;
+					this.oViewModelPlace.append(viewModelDom[0]);
 
-					settingsScreen.viewModelDom = viewModelDom;
+					settingsScreen.viewModelDom = viewModelDom[0];
 
 					settingsScreen.__rlSettingsData = RoutedSettingsViewModel.__rlSettingsData;
 
-					RoutedSettingsViewModel.__dom = viewModelDom;
+					RoutedSettingsViewModel.__dom = viewModelDom[0];
 					RoutedSettingsViewModel.__builded = true;
 					RoutedSettingsViewModel.__vm = settingsScreen;
 
@@ -106,7 +104,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 					// hide
 					if (o.oCurrentSubScreen) {
 						o.oCurrentSubScreen.onHide && o.oCurrentSubScreen.onHide();
-						o.oCurrentSubScreen.viewModelDom.hide();
+						o.oCurrentSubScreen.viewModelDom.hidden = true;
 					}
 					// --
 
@@ -115,7 +113,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 					// show
 					if (o.oCurrentSubScreen) {
 						o.oCurrentSubScreen.onBeforeShow && o.oCurrentSubScreen.onBeforeShow();
-						o.oCurrentSubScreen.viewModelDom.show();
+						o.oCurrentSubScreen.viewModelDom.hidden = false;
 						o.oCurrentSubScreen.onShow && o.oCurrentSubScreen.onShow();
 						o.oCurrentSubScreen.onShowWithDelay && setTimeout(() => o.oCurrentSubScreen.onShowWithDelay(), 200);
 
@@ -127,7 +125,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 							);
 						});
 
-						jQuery('#rl-content .b-settings .b-content')[0].scrollTop = 0;
+						document.querySelector('#rl-content .b-settings .b-content').scrollTop = 0;
 					}
 					// --
 				}, 1);
@@ -140,7 +138,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 	onHide() {
 		if (this.oCurrentSubScreen && this.oCurrentSubScreen.viewModelDom) {
 			this.oCurrentSubScreen.onHide && this.oCurrentSubScreen.onHide();
-			this.oCurrentSubScreen.viewModelDom.hide();
+			this.oCurrentSubScreen.viewModelDom.hidden = true;
 		}
 	}
 
@@ -164,7 +162,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 			}
 		});
 
-		this.oViewModelPlace = jQuery('#rl-content #rl-settings-subscreen');
+		this.oViewModelPlace = document.getElementById('rl-settings-subscreen');
 	}
 
 	routes() {

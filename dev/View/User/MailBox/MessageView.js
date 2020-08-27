@@ -243,8 +243,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			return '';
 		});
 
-		this.messageActiveDom.subscribe((dom) => {
-			this.bodyBackgroundColor(dom ? this.detectDomBackgroundColor(dom) : '');
+		this.messageActiveDom.subscribe(dom => {
+			this.bodyBackgroundColor(this.detectDomBackgroundColor(dom));
 		}, this);
 
 		this.message.subscribe((message) => {
@@ -357,45 +357,26 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	}
 
 	detectDomBackgroundColor(dom) {
-		let limit = 5,
-			result = '';
+		let color = '';
 
-		const fFindDom = function(inputDom) {
-				const children = inputDom ? inputDom.children() : null;
-				return children && 1 === children.length && children.is('table,div,center') ? children : null;
-			},
-			fFindColor = function(inputDom) {
-				let color = '';
-				if (inputDom) {
-					color = inputDom.css('background-color') || '';
-					if (!inputDom.is('table')) {
-						color = isTransparent(color) ? '' : color;
-					}
-				}
+		if (dom) {
+			let limit = 5,
+				aC = dom;
+			while (!color && aC && limit--) {
+				let children = aC.children;
+				if (!children || 1 !== children.length || !children[0].matches('table,div,center')) break;
 
-				return color;
-			};
-
-		if (dom && 1 === dom.length) {
-			let aC = dom;
-			while (!result) {
-				limit -= 1;
-				if (0 >= limit) {
-					break;
-				}
-
-				aC = fFindDom(aC);
-				if (aC) {
-					result = fFindColor(aC);
-				} else {
-					break;
+				aC = children[0];
+				color = aC.style.backgroundColor || '';
+				if (!aC.matches('table')) {
+					color = isTransparent(color) ? '' : color;
 				}
 			}
 
-			result = isTransparent(result) ? '' : result;
+			color = isTransparent(color) ? '' : color;
 		}
 
-		return result;
+		return color;
 	}
 
 	fullScreen() {
@@ -545,7 +526,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 					!!event &&
 					3 !== event.which &&
 					mailToHelper(
-						jQuery(this).attr('href'),
+						this.href,
 						Settings.capa(Capa.Composer) ? require('View/Popup/Compose') : null // eslint-disable-line no-invalid-this
 					)
 				);
@@ -701,13 +682,11 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 		// toggle message blockquotes
 		key('b', [KeyState.MessageList, KeyState.MessageView], () => {
-			if (MessageStore.message() && MessageStore.message().body) {
-				MessageStore.message()
-					.body.find('.rlBlockquoteSwitcher')
-					.click();
+			const message = MessageStore.message();
+			if (message && message.body) {
+				message.body.querySelectorAll('.rlBlockquoteSwitcher').forEach(node => node.click());
 				return false;
 			}
-
 			return true;
 		});
 
@@ -878,7 +857,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	 */
 	showImages(message) {
 		if (message && message.showExternalImages) {
-			message.showExternalImages(true);
+			message.showExternalImages();
 		}
 	}
 

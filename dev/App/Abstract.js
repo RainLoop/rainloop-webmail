@@ -72,7 +72,7 @@ class AbstractApp extends AbstractBoot {
 		} else {
 			const oLink = document.createElement('a');
 			oLink.href = link;
-			document.body.appendChild(oLink).click();
+			document.body.append(oLink).click();
 			oLink.remove();
 //			open(link, '_self');
 		}
@@ -165,11 +165,7 @@ class AbstractApp extends AbstractBoot {
 		ko.components.register('SaveTrigger', require('Component/SaveTrigger').default);
 		ko.components.register('Input', require('Component/Input').default);
 		ko.components.register('Select', require('Component/Select').default);
-		ko.components.register('Radio', require('Component/Radio').default);
 		ko.components.register('TextArea', require('Component/TextArea').default);
-		ko.components.register('Date', require('Component/Date').default);
-
-		ko.components.register('x-script', require('Component/Script').default);
 
 		if (Settings.appSettingsGet('materialDesign') && !bMobileDevice) {
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox').default);

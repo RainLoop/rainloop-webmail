@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import { MESSAGES_PER_PAGE, MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType } from 'Common/Enums';
-import { $htmlCL } from 'Common/Globals';
 import { pInt } from 'Common/Utils';
 
 import * as Settings from 'Storage/Settings';
@@ -43,10 +42,11 @@ class SettingsUserStore {
 	}
 
 	subscribers() {
-		this.layout.subscribe((value) => {
-			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
-			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
-			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
+		const htmlCL = document.documentElement.classList;
+		this.layout.subscribe(value => {
+			htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
+			htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
+			htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
 			dispatchEvent(new CustomEvent('rl-layout', {detail:value}));
 		});
 	}

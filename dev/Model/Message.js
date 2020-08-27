@@ -5,7 +5,8 @@ import { i18n } from 'Common/Translator';
 
 import {
 	pInt,
-	previewMessage,
+	deModule,
+	encodeHtml,
 	friendlySize,
 	isNonEmptyArray
 } from 'Common/Utils';
@@ -20,7 +21,7 @@ import { emailArrayFromJson, emailArrayToStringClear, emailArrayToString, replyH
 import { AttachmentModel, staticCombinedIconClass } from 'Model/Attachment';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-const $ = jQuery, isArray = Array.isArray;
+const isArray = Array.isArray;
 
 class MessageModel extends AbstractModel {
 	constructor() {
@@ -607,13 +608,6 @@ class MessageModel extends AbstractModel {
 	/**
 	 * @returns {string}
 	 */
-	textBodyToString() {
-		return this.body ? this.body.html() : '';
-	}
-
-	/**
-	 * @returns {string}
-	 */
 	attachmentsToStringLine() {
 		const attachLines = this.attachments().map(item => item.fileName + ' (' + item.friendlySize + ')');
 		return attachLines && attachLines.length ? attachLines.join(', ') : '';
@@ -625,24 +619,30 @@ class MessageModel extends AbstractModel {
 	viewPopupMessage(print = false) {
 		const timeStampInUTC = this.dateTimeStampInUTC() || 0,
 			ccLine = this.ccToLine(false),
-			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null;
+			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
+			win = open(''),
+			doc = win.document;
 
-		previewMessage(
-			{
-				title: this.subject(),
-				subject: this.subject(),
-				date: m ? m.format('LLL') : '',
-				fromCreds: this.fromToLine(false),
-				toLabel: i18n('MESSAGE/LABEL_TO'),
-				toCreds: this.toToLine(false),
-				ccClass: ccLine ? '' : 'rl-preview-hide',
-				ccLabel: i18n('MESSAGE/LABEL_CC'),
-				ccCreds: ccLine
-			},
-			this.body,
-			this.isHtml(),
-			print
+		doc.write(
+			deModule(require('Html/PreviewMessage.html'))
+				.replace('{{title}}', encodeHtml(this.subject()))
+				.replace('{{subject}}', encodeHtml(this.subject()))
+				.replace('{{date}}', encodeHtml(m ? m.format('LLL') : ''))
+				.replace('{{fromCreds}}', encodeHtml(this.fromToLine(false)))
+				.replace('{{toCreds}}', encodeHtml(this.toToLine(false)))
+				.replace('{{toLabel}}', encodeHtml(i18n('MESSAGE/LABEL_TO')))
+				.replace('{{ccClass}}', encodeHtml(ccLine ? '' : 'rl-preview-hide'))
+				.replace('{{ccCreds}}', encodeHtml(ccLine))
+				.replace('{{ccLabel}}', encodeHtml(i18n('MESSAGE/LABEL_CC')))
+				.replace('{{bodyClass}}', this.isHtml() ? 'html' : 'plain')
+				.replace('{{html}}', this.bodyAsHTML())
 		);
+
+		doc.close();
+
+		if (print) {
+			setTimeout(() => win.print(), 100);
+		}
 	}
 
 	printMessage() {
@@ -725,74 +725,60 @@ class MessageModel extends AbstractModel {
 		return this;
 	}
 
-	showExternalImages(lazy = false) {
-		if (this.body && this.body.data('rl-has-images')) {
+	showExternalImages() {
+		if (this.body && this.body.rlHasImages) {
 			this.hasImages(false);
-			this.body.data('rl-has-images', false);
+			this.body.rlHasImages = false;
 
-			let attr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
-			$('[' + attr + ']', this.body).each(function() {
-				const $this = $(this); // eslint-disable-line no-invalid-this
-				if (lazy && $this.is('img')) {
-					$this.attr('loading', 'lazy');
+			let body = this.body, attr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
+			body.querySelectorAll('[' + attr + ']').forEach(node => {
+				if (node.matches('img')) {
+					node.loading = 'lazy';
 				}
-				$this.attr('src', $this.attr(attr)).removeAttr('data-loaded');
+				node.src = node.getAttribute(attr);
+				node.removeAttribute('data-loaded');
 			});
 
 			attr = this.proxy ? 'data-x-additional-style-url' : 'data-x-style-url';
-			$('[' + attr + ']', this.body).each(function() {
-				const $this = $(this); // eslint-disable-line no-invalid-this
-				let style = $this.attr('style').trim();
-				style = style ? (';' === style.substr(-1) ? style + ' ' : style + '; ') : '';
-				$this.attr('style', style + $this.attr(attr));
+			body.querySelectorAll('[' + attr + ']').forEach(node => {
+				node.setAttribute('style', ((node.getAttribute('style')||'')
+					+ ';' + node.getAttribute(attr))
+					.replace(/^[;\s]+/,''));
 			});
 		}
 	}
 
-	showInternalImages(lazy = false) {
-		if (this.body && !this.body.data('rl-init-internal-images')) {
-			this.body.data('rl-init-internal-images', true);
+	showInternalImages() {
+		if (this.body && !this.body.rlInitInternalImages) {
+			this.body.rlInitInternalImages = true;
 
-			const self = this;
+			const body = this.body;
 
-			$('[data-x-src-cid]', this.body).each(function() {
-				const $this = $(this), // eslint-disable-line no-invalid-this
-					attachment = self.findAttachmentByCid($this.attr('data-x-src-cid'));
-
+			body.querySelectorAll('[data-x-src-cid]').forEach(node => {
+				const attachment = this.findAttachmentByCid(node.dataset.xSrcCid);
 				if (attachment && attachment.download) {
-					$this.attr('src', attachment.linkPreview());
+					node.src = attachment.linkPreview();
 				}
 			});
 
-			$('[data-x-src-location]', this.body).each(function() {
-				const $this = $(this); // eslint-disable-line no-invalid-this
-				let attachment = self.findAttachmentByContentLocation($this.attr('data-x-src-location'));
-				if (!attachment) {
-					attachment = self.findAttachmentByCid($this.attr('data-x-src-location'));
-				}
-
+			body.querySelectorAll('[data-x-src-location]').forEach(node => {
+				const attachment = this.findAttachmentByContentLocation(node.dataset.xSrcLocation)
+					|| this.findAttachmentByCid(node.dataset.xSrcLocation);
 				if (attachment && attachment.download) {
-					if (lazy && $this.is('img')) {
-						$this.attr('loading', 'lazy');
+					if (node.matches('img')) {
+						node.loading = 'lazy';
 					}
-					$this.attr('src', attachment.linkPreview());
+					node.src = attachment.linkPreview();
 				}
 			});
 
-			$('[data-x-style-cid]', this.body).each(function() {
-				let style = '',
-					name = '';
-
-				const $this = $(this), // eslint-disable-line no-invalid-this
-					attachment = self.findAttachmentByCid($this.attr('data-x-style-cid'));
-
-				if (attachment && attachment.linkPreview) {
-					name = $this.attr('data-x-style-cid-name');
-					if (name) {
-						style = $this.attr('style').trim();
-						style = style ? (';' === style.substr(-1) ? style + ' ' : style + '; ') : '';
-						$this.attr('style', style + name + ": url('" + attachment.linkPreview() + "')");
-					}
+			body.querySelectorAll('[style-cid]').forEach(node => {
+				const name = node.dataset.xStyleCidName,
+					attachment = this.findAttachmentByCid(node.dataset.xStyleCid);
+				if (attachment && attachment.linkPreview && name) {
+					node.setAttribute('style', ((node.getAttribute('style')||'')
+						+ ';' + name + ": url('" + attachment.linkPreview() + "')")
+						.replace(/^[;\s]+/,''));
 				}
 			});
 		}
@@ -800,22 +786,37 @@ class MessageModel extends AbstractModel {
 
 	storeDataInDom() {
 		if (this.body) {
-			this.body.data('rl-is-html', !!this.isHtml());
-			this.body.data('rl-has-images', !!this.hasImages());
+			this.body.rlIsHtml = !!this.isHtml();
+			this.body.rlHasImages = !!this.hasImages();
 		}
 	}
 
 	fetchDataFromDom() {
 		if (this.body) {
-			this.isHtml(!!this.body.data('rl-is-html'));
-			this.hasImages(!!this.body.data('rl-has-images'));
+			this.isHtml(!!this.body.rlIsHtml);
+			this.hasImages(!!this.body.rlHasImages);
 		}
 	}
 
-	replacePlaneTextBody(plain) {
+	/**
+	 * @returns {string}
+	 */
+	bodyAsHTML() {
 		if (this.body) {
-			this.body.html(plain).addClass('b-text-part plain');
+			let clone = this.body.cloneNode(true),
+				attr = 'data-html-editor-font-wrapper';
+			clone.querySelectorAll('blockquote.rl-bq-switcher').forEach(
+				node => node.classList.remove('rl-bq-switcher','hidden-bq')
+			);
+			clone.querySelectorAll('.rlBlockquoteSwitcher').forEach(
+				node => node.remove()
+			);
+			clone.querySelectorAll('['+attr+']').forEach(
+				node => node.removeAttribute(attr)
+			);
+			return clone.innerHTML;
 		}
+		return '';
 	}
 
 	/**

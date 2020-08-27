@@ -120,10 +120,8 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 		this.privateKeys(privateKeys);
 
 		if (this.viewModelDom) {
-			this.viewModelDom
-				.find('.key-list__item')
-				.first()
-				.click();
+			const el = this.viewModelDom.querySelector('.key-list__item');
+			el && el.click();
 		}
 	}
 }

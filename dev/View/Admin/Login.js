@@ -1,7 +1,5 @@
 import ko from 'ko';
 
-import { triggerAutocompleteInputChange } from 'Common/Utils';
-
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
@@ -37,8 +35,6 @@ class LoginAdminView extends AbstractViewNext {
 		this.loginErrorAnimation = ko.observable(false).extend({ 'falseTimeout': 500 });
 		this.passwordErrorAnimation = ko.observable(false).extend({ 'falseTimeout': 500 });
 
-//		this.loginFocus = ko.observable(false);
-
 		this.formHidden = ko.observable(false);
 
 		this.formError = ko.computed(() => this.loginErrorAnimation() || this.passwordErrorAnimation());
@@ -59,8 +55,6 @@ class LoginAdminView extends AbstractViewNext {
 
 	@command((self) => !self.submitRequest())
 	submitCommand() {
-		triggerAutocompleteInputChange();
-
 		this.loginError(false);
 		this.passwordError(false);
 
@@ -96,13 +90,6 @@ class LoginAdminView extends AbstractViewNext {
 
 	onShow() {
 		routeOff();
-	}
-
-	onHide() {
-	}
-
-	onBuild() {
-		triggerAutocompleteInputChange(true);
 	}
 
 	submitForm() {

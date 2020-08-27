@@ -53,7 +53,7 @@ export class AbstractViewNext {
 	closeCommand() {} // eslint-disable-line no-empty-function
 
 	querySelector(selectors) {
-		return this.viewModelDom[0].querySelector(selectors);
+		return this.viewModelDom.querySelector(selectors);
 	}
 
 }

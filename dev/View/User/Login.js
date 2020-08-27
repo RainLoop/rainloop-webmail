@@ -8,7 +8,7 @@ import {
 	Notification
 } from 'Common/Enums';
 
-import { convertLangName, triggerAutocompleteInputChange } from 'Common/Utils';
+import { convertLangName } from 'Common/Utils';
 
 import { getNotification, getNotificationFromResponse, reload as translatorReload } from 'Common/Translator';
 
@@ -71,9 +71,6 @@ class LoginUserView extends AbstractViewNext {
 				this.passwordErrorAnimation() ||
 				(this.additionalCode.visibility() && this.additionalCode.errorAnimation())
 		);
-
-//		this.emailFocus = ko.observable(false);
-//		this.passwordFocus = ko.observable(false);
 
 		this.email.subscribe(() => {
 			this.emailError(false);
@@ -144,8 +141,6 @@ class LoginUserView extends AbstractViewNext {
 
 	@command((self) => !self.submitRequest())
 	submitCommand() {
-		triggerAutocompleteInputChange();
-
 		this.emailError(false);
 		this.passwordError(false);
 
@@ -280,8 +275,6 @@ class LoginUserView extends AbstractViewNext {
 				);
 			});
 		}, 50);
-
-		triggerAutocompleteInputChange(true);
 	}
 
 	submitForm() {
@@ -290,16 +283,6 @@ class LoginUserView extends AbstractViewNext {
 
 	selectLanguage() {
 		showScreenPopup(require('View/Popup/Languages'), [this.language, this.languages(), LanguageStore.userLanguage()]);
-	}
-
-	selectLanguageOnTab(bShift) {
-		if (!bShift) {
-//			setTimeout(() => this.emailFocus(true), 50);
-
-			return false;
-		}
-
-		return true;
 	}
 }
 

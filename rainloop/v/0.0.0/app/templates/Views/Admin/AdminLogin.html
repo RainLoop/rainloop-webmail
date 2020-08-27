@@ -9,7 +9,7 @@
 				<form class="wrapper submitting-pane loginForm thm-login thm-login-text" action="#/" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
 					<div class="controls" data-bind="css: {'error': loginError, 'animated': loginErrorAnimation}">
 						<div class="input-append">
-							<input type="text" class="input-block-level inputLogin checkAutocomplete"
+							<input type="text" class="input-block-level inputLogin"
 								name="RainLoopAdminLogin" id="RainLoopAdminLogin"
 								autofocus=""
 								autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_LOGIN"
@@ -21,7 +21,7 @@
 					</div>
 					<div class="controls" data-bind="css: {'error': passwordError, 'animated': passwordErrorAnimation}">
 						<div class="input-append">
-							<input type="password" class="input-block-level inputPassword checkAutocomplete"
+							<input type="password" class="input-block-level inputPassword"
 								placeholder="Password" name="RainLoopAdminPassword" id="RainLoopAdminPassword"
 								autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
 								data-bind="textInput: password, disable: submitRequest" />

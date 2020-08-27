@@ -6,7 +6,8 @@ import {
 	pInt,
 	pString,
 	plainToHtml,
-	findEmailAndLinks
+	findEmailAndLinks,
+	htmlToElement
 } from 'Common/Utils';
 
 import {
@@ -44,25 +45,17 @@ import { getApp } from 'Helper/Apps/User';
 import Remote from 'Remote/User/Ajax';
 
 const
-	$ = jQuery,
-	$div = $('<div></div>'),
-	$hcont = $('<div></div>'),
-	getRealHeight = $el => {
-		$el
-			.clone()
-			.show()
-			.appendTo($hcont);
-		const result = $hcont.height();
-		$hcont.empty();
+	hcont = htmlToElement('<div area="hidden" style="position:absolute;left:-5000px"></div>'),
+	getRealHeight = el => {
+		hcont.innerHTML = el.outerHTML;
+		const result = hcont.clientHeight;
+		hcont.innerHTML = '';
 		return result;
 	};
 
 let iMessageBodyCacheCount = 0;
 
-$hcont
-	.attr('area', 'hidden')
-	.css({ position: 'absolute', left: -5000 })
-	.appendTo($('body'));
+document.body.append(hcont);
 
 class MessageUserStore {
 	constructor() {
@@ -218,12 +211,6 @@ class MessageUserStore {
 
 		this.messageLoading.subscribe(value => this.messageLoadingThrottle(value));
 
-		this.messagesBodiesDom.subscribe((dom) => {
-			if (dom && !(dom instanceof $)) {
-				this.messagesBodiesDom($(dom));
-			}
-		});
-
 		this.messageListEndFolder.subscribe(folder => {
 			const message = this.message();
 			if (message && folder && folder !== message.folderFullNameRaw) {
@@ -233,22 +220,20 @@ class MessageUserStore {
 	}
 
 	purgeMessageBodyCache() {
-		let count = 0;
 		const end = iMessageBodyCacheCount - MESSAGE_BODY_CACHE_LIMIT;
-
 		if (0 < end) {
+			let count = 0;
 			const messagesDom = this.messagesBodiesDom();
 			if (messagesDom) {
-				messagesDom.find('.rl-cache-class').each(function() {
-					const item = $(this); // eslint-disable-line no-invalid-this
-					if (end > item.data('rl-cache-count')) {
-						item.addClass('rl-cache-purge');
-						count += 1;
+				messagesDom.querySelectorAll('.rl-cache-class').forEach(node => {
+					if (end > node.rlCacheCount) {
+						node.classList.add('rl-cache-purge');
+						++count;
 					}
 				});
 
 				if (0 < count) {
-					setTimeout(() => messagesDom.find('.rl-cache-purge').remove(), 350);
+					setTimeout(() => messagesDom.querySelectorAll('.rl-cache-purge').forEach(node => node.remove()), 350);
 				}
 			}
 		}
@@ -291,9 +276,7 @@ class MessageUserStore {
 
 	hideMessageBodies() {
 		const messagesDom = this.messagesBodiesDom();
-		if (messagesDom) {
-			messagesDom.find('.b-text-part').hide();
-		}
+		messagesDom && messagesDom.querySelectorAll('.b-text-part').forEach(el => el.hidden = true);
 	}
 
 	/**
@@ -441,30 +424,17 @@ class MessageUserStore {
 	 * @param {Object} messageTextBody
 	 */
 	initBlockquoteSwitcher(messageTextBody) {
-		if (messageTextBody) {
-			const $oList = $('blockquote:not(.rl-bq-switcher)', messageTextBody).filter(function() {
-				return !$(this).parent().closest('blockquote', messageTextBody).length;
-			});
-
-			if ($oList && $oList.length) {
-				$oList.each(function() {
-					const $this = $(this); // eslint-disable-line no-invalid-this
-
-					let h = $this.height() || getRealHeight($this);
-
-					if ($this.text().trim() && (0 === h || 100 < h)) {
-						$this.addClass('rl-bq-switcher hidden-bq');
-						$('<span class="rlBlockquoteSwitcher"><i class="icon-ellipsis" /></span>')
-							.insertBefore($this)
-							.on('click.rlBlockquoteSwitcher', () => {
-								$this.toggleClass('hidden-bq');
-							})
-							.after('<br />')
-							.before('<br />');
-					}
-				});
+		messageTextBody && messageTextBody.querySelectorAll('blockquote:not(.rl-bq-switcher)').forEach(node => {
+			if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
+				let h = node.clientHeight || getRealHeight(node);
+				if (0 === h || 100 < h) {
+					const el = htmlToElement('<span class="rlBlockquoteSwitcher">•••</span>');
+					node.classList.add('rl-bq-switcher','hidden-bq');
+					node.before(el);
+					el.addEventListener('click', () => node.classList.toggle('hidden-bq'));
+				}
 			}
-		}
+		});
 	}
 
 	/**
@@ -472,11 +442,9 @@ class MessageUserStore {
 	 * @param {Object} message
 	 */
 	initOpenPgpControls(messageTextBody, message) {
-		if (messageTextBody && messageTextBody.find) {
-			messageTextBody.find('.b-plain-openpgp:not(.inited)').each(function() {
-				PgpStore.initMessageBodyControls($(this), message); // eslint-disable-line no-invalid-this
-			});
-		}
+		messageTextBody && messageTextBody.querySelectorAll('.b-plain-openpgp:not(.inited)').forEach(node =>
+			PgpStore.initMessageBodyControls(node, message)
+		);
 	}
 
 	setMessage(data, cached) {
@@ -521,19 +489,22 @@ class MessageUserStore {
 					message.initFlagsByJson(data.Result);
 				}
 
-				messagesDom = messagesDom && messagesDom[0] ? messagesDom : null;
 				if (messagesDom) {
 					id = 'rl-mgs-' + message.hash.replace(/[^a-zA-Z0-9]/g, '');
 
-					const textBody = messagesDom.find('#' + id);
-					if (!textBody || !textBody[0]) {
+					const textBody = document.getElementById(id);
+					if (textBody) {
+						iMessageBodyCacheCount += 1;
+						textBody.rlCacheCount = iMessageBodyCacheCount;
+						message.fetchDataFromDom();
+					} else {
 						let isHtml = false;
 						if (data.Result.Html) {
 							isHtml = true;
 							resultHtml = data.Result.Html.toString();
 						} else if (data.Result.Plain) {
 							isHtml = false;
-							resultHtml = plainToHtml(data.Result.Plain.toString(), false);
+							resultHtml = plainToHtml(data.Result.Plain.toString());
 
 							if ((message.isPgpSigned() || message.isPgpEncrypted()) && PgpStore.capaOpenPGP()) {
 								plain = pString(data.Result.Plain);
@@ -544,16 +515,17 @@ class MessageUserStore {
 										/-----BEGIN PGP SIGNED MESSAGE-----/.test(plain) && /-----BEGIN PGP SIGNATURE-----/.test(plain);
 								}
 
-								$div.empty();
+								const pre = document.createElement('pre');
 								if (pgpSigned && message.isPgpSigned()) {
-									resultHtml = $div.append($('<pre class="b-plain-openpgp signed"></pre>').text(plain)).html();
+									pre.className = 'b-plain-openpgp signed';
+									pre.textContent = plain;
 								} else if (isPgpEncrypted && message.isPgpEncrypted()) {
-									resultHtml = $div.append($('<pre class="b-plain-openpgp encrypted"></pre>').text(plain)).html();
+									pre.className = 'b-plain-openpgp encrypted';
+									pre.textContent = plain;
 								} else {
-									resultHtml = '<pre>' + resultHtml + '</pre>';
+									pre.innerHTML = resultHtml;
 								}
-
-								$div.empty();
+								resultHtml = pre.outerHTML;
 
 								message.isPgpSigned(pgpSigned);
 								message.isPgpEncrypted(isPgpEncrypted);
@@ -567,41 +539,31 @@ class MessageUserStore {
 
 						iMessageBodyCacheCount += 1;
 
-						body = $('<div id="' + id + '" ></div>')
-							.hide()
-							.addClass('rl-cache-class');
-						body.data('rl-cache-count', iMessageBodyCacheCount);
-
-						body.html(findEmailAndLinks(resultHtml)).addClass('b-text-part ' + (isHtml ? 'html' : 'plain'));
+						body = htmlToElement('<div id="' + id + '" hidden="" class="rl-cache-class b-text-part '
+							+ (isHtml ? 'html' : 'plain') + '">'
+							+ findEmailAndLinks(resultHtml)
+							+ '</div>');
+						body.rlCacheCount = iMessageBodyCacheCount;
 
 						message.isHtml(!!isHtml);
 						message.hasImages(!!data.Result.HasExternals);
 
-						message.body = body;
-						if (message.body) {
-							messagesDom.append(message.body);
-						}
+						messagesDom.append(body);
 
 						message.storeDataInDom();
 
 						if (data.Result.HasInternals) {
-							message.showInternalImages(true);
+							message.showInternalImages();
 						}
 
 						if (message.hasImages() && SettingsStore.showImages()) {
-							message.showExternalImages(true);
+							message.showExternalImages();
 						}
 
 						this.purgeMessageBodyCacheThrottle();
-					} else {
-						message.body = textBody;
-						if (message.body) {
-							iMessageBodyCacheCount += 1;
-							message.body.data('rl-cache-count', iMessageBodyCacheCount);
-							message.fetchDataFromDom();
-						}
 					}
 
+					message.body = body || textBody;
 					this.messageActiveDom(message.body);
 
 					this.hideMessageBodies();
@@ -612,7 +574,7 @@ class MessageUserStore {
 						this.initBlockquoteSwitcher(body);
 					}
 
-					message.body.show();
+					message.body.hidden = false;
 				}
 
 				initMessageFlagsFromCache(message);

@@ -1,8 +1,8 @@
 import ko from 'ko';
 import { KeyState } from 'Common/Enums';
 
-export const $html = jQuery('html');
-export const $htmlCL = document.documentElement.classList;
+export const $html = document.documentElement;
+export const $htmlCL = $html.classList;
 
 /**
  * @type {?}

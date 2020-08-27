@@ -17,8 +17,6 @@ import { getApp } from 'Helper/Apps/User';
 import { view, ViewType, showScreenPopup, setHash } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
-const $ = jQuery;
-
 @view({
 	name: 'View/User/MailBox/FolderList',
 	type: ViewType.Left,
@@ -28,7 +26,6 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.oContentVisible = null;
 		this.oContentScrollable = null;
 
 		this.composeInEdit = AppStore.composeInEdit;
@@ -61,10 +58,8 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		this.oContentVisible = $('.b-content', dom);
-		this.oContentScrollable = this.oContentVisible ? this.oContentVisible[0] : null;
-
 		const self = this,
+			qs = s => dom[0].querySelector(s),
 			isMobile = Settings.appSettingsGet('mobile'),
 			fSelectFolder = (el, event, starred) => {
 				const isMove = moveAction();
@@ -108,6 +103,8 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				}
 			};
 
+		this.oContentScrollable = qs('.b-content');
+
 		dom
 			.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function(event) {
 				// eslint-disable-line prefer-arrow-callback
@@ -132,21 +129,22 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 
 		key('up, down', KeyState.FolderList, (event, handler) => {
 			const keyCode = handler && 'up' === handler.shortcut ? EventKeyCode.Up : EventKeyCode.Down,
-				$items = $('.b-folders .e-item .e-link:not(.hidden):visible', dom);
-
-			if (event && $items.length) {
-				let index = $items.index($items.filter('.focused'));
-				if (-1 < index) {
-					$items.eq(index).removeClass('focused');
+				$items = jQuery('.b-folders .e-item .e-link:not(.hidden):visible', dom);
+			let index = $items.length;
+			if (event && index) {
+				while (index--) {
+					if ($items[index].matches('.focused')) {
+						$items[index].classList.remove('focused');
+						break;
+					}
 				}
-
 				if (EventKeyCode.Up === keyCode && 0 < index) {
-					index -= 1;
+					--index;
 				} else if (EventKeyCode.Down === keyCode && index < $items.length - 1) {
-					index += 1;
+					++index;
 				}
 
-				$items.eq(index).addClass('focused');
+				$items[index].classList.add('focused');
 				self.scrollToFocused();
 			}
 
@@ -154,24 +152,22 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 		});
 
 		key('enter', KeyState.FolderList, () => {
-			const $items = $('.b-folders .e-item .e-link:not(.hidden).focused', dom);
-			if ($items.length && $items[0]) {
+			const item = qs('.b-folders .e-item .e-link:not(.hidden).focused');
+			if (item) {
 				AppStore.focusedState(Focused.MessageList);
-				$items.click();
+				item.click();
 			}
 
 			return false;
 		});
 
 		key('space', KeyState.FolderList, () => {
-			const $items = $('.b-folders .e-item .e-link:not(.hidden).focused', dom);
-			if ($items.length && $items[0]) {
-				const folder = ko.dataFor($items[0]);
-				if (folder) {
-					const collapsed = folder.collapsed();
-					getApp().setExpandedFolder(folder.fullNameHash, collapsed);
-					folder.collapsed(!collapsed);
-				}
+			const item = qs('.b-folders .e-item .e-link:not(.hidden).focused'),
+				folder = item && ko.dataFor(item);
+			if (folder) {
+				const collapsed = folder.collapsed();
+				getApp().setExpandedFolder(folder.fullNameHash, collapsed);
+				folder.collapsed(!collapsed);
 			}
 
 			return false;
@@ -183,10 +179,12 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			return false;
 		});
 
-		AppStore.focusedState.subscribe((value) => {
-			$('.b-folders .e-item .e-link.focused', dom).removeClass('focused');
+		AppStore.focusedState.subscribe(value => {
+			let el = qs('.b-folders .e-item .e-link.focused');
+			el && qs('.b-folders .e-item .e-link.focused').classList.remove('focused');
 			if (Focused.FolderList === value) {
-				$('.b-folders .e-item .e-link.selected', dom).addClass('focused');
+				el = qs('.b-folders .e-item .e-link.selected');
+				el && qs('.b-folders .e-item .e-link.selected').classList.add('focused');
 			}
 		});
 	}
@@ -206,28 +204,20 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	}
 
 	scrollToFocused() {
-		if (!this.oContentVisible || !this.oContentScrollable) {
-			return false;
-		}
-
-		const offset = 20,
-			focused = $('.e-item .e-link.focused', this.oContentScrollable),
-			pos = focused.position(),
-			visibleHeight = this.oContentVisible.height(),
-			focusedHeight = focused.outerHeight();
-
-		if (pos && (0 > pos.top || pos.top + focusedHeight > visibleHeight)) {
-			let top = this.oContentScrollable.scrollTop + pos.top;
-			if (0 > pos.top) {
-				this.oContentScrollable.scrollTop = top - offset;
-			} else {
-				this.oContentScrollable.scrollTop = top - visibleHeight + focusedHeight + offset;
+		const scrollable = this.oContentScrollable;
+		if (scrollable) {
+			let block, focused = scrollable.querySelector('.e-item .e-link.focused');
+			if (focused) {
+				const fRect = focused.getBoundingClientRect(),
+					sRect = scrollable.getBoundingClientRect();
+				if (fRect.top < sRect.top) {
+					block = 'start';
+				} else if (fRect.bottom > sRect.bottom) {
+					block = 'end';
+				}
+				block && focused.scrollIntoView(block === 'start');
 			}
-
-			return true;
 		}
-
-		return false;
 	}
 
 	/**
@@ -237,9 +227,9 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	 */
 	messagesDrop(toFolder, ui) {
 		if (toFolder && ui && ui.helper) {
-			const fromFolderFullNameRaw = ui.helper.data('rl-folder'),
+			const fromFolderFullNameRaw = ui.helper.rlFolder,
 				copy = $htmlCL.contains('rl-ctrl-key-pressed'),
-				uids = ui.helper.data('rl-uids');
+				uids = ui.helper.rlUids;
 
 			if (fromFolderFullNameRaw && Array.isArray(uids)) {
 				getApp().moveMessagesToFolder(fromFolderFullNameRaw, uids, toFolder.fullNameRaw, copy);

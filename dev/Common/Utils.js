@@ -3,8 +3,7 @@ import { Mime } from 'Common/Mime';
 
 const
 	doc = document,
-	$ = jQuery,
-	$div = $('<div></div>'),
+	tpl = doc.createElement('template'),
 	isArray = Array.isArray,
 	htmlmap = {
 		'&': '&amp;',
@@ -14,6 +13,13 @@ const
 		"'": '&#x27;'
 	},
 	htmlspecialchars = str => (''+str).replace(/[&<>"']/g, m => htmlmap[m]);
+
+export function htmlToElement(html) {
+	var template = document.createElement('template');
+	template.innerHTML = html.trim();
+	return template.content.firstChild;
+}
+
 
 /**
  * @param {(string|number)} value
@@ -137,7 +143,7 @@ export function inFocus() {
 	try {
 		if (doc.activeElement) {
 			if (undefined === doc.activeElement.__inFocusCache) {
-				doc.activeElement.__inFocusCache = $(doc.activeElement).is(
+				doc.activeElement.__inFocusCache = doc.activeElement.matches(
 					'input,textarea,iframe,.cke_editable'
 				);
 			}
@@ -156,8 +162,7 @@ export function inFocus() {
 export function removeInFocus(force) {
 	if (doc.activeElement && doc.activeElement.blur) {
 		try {
-			const activeEl = $(doc.activeElement);
-			if (force || (activeEl && activeEl.is('input,textarea'))) {
+			if (force || doc.activeElement.matches('input,textarea')) {
 				doc.activeElement.blur();
 			}
 		} catch (e) {} // eslint-disable-line no-empty
@@ -276,19 +281,6 @@ export function convertLangName(language, isEng = false) {
 }
 
 /**
- * @returns {object}
- */
-export function draggablePlace() {
-	return $(
-		'<div class="draggablePlace">' +
-			'<span class="text"></span>&nbsp;' +
-			'<i class="icon-copy icon-white visible-on-ctrl"></i>' +
-			'<i class="icon-mail icon-white hidden-on-ctrl"></i>' +
-			'</div>'
-	).appendTo('#rl-hidden');
-}
-
-/**
  * @param {object} domOption
  * @param {object} item
  * @returns {void}
@@ -296,65 +288,6 @@ export function draggablePlace() {
 export function defautOptionsAfterRender(domItem, item) {
 	if (item && undefined !== item.disabled && domItem) {
 		domItem.classList.toggle('disabled', domItem.disabled = item.disabled);
-	}
-}
-
-/**
- * @param {string} title
- * @param {Object} body
- * @param {boolean} isHtml
- * @param {boolean} print
- */
-export function clearBqSwitcher(body) {
-	body.find('blockquote.rl-bq-switcher').removeClass('rl-bq-switcher hidden-bq');
-	body
-		.find('.rlBlockquoteSwitcher')
-		.off('.rlBlockquoteSwitcher')
-		.remove();
-	body.find('[data-html-editor-font-wrapper]').removeAttr('data-html-editor-font-wrapper');
-}
-
-/**
- * @param {object} messageData
- * @param {Object} body
- * @param {boolean} isHtml
- * @param {boolean} print
- * @returns {void}
- */
-export function previewMessage(
-	{ title, subject, date, fromCreds, toCreds, toLabel, ccClass, ccCreds, ccLabel },
-	body,
-	isHtml,
-	print
-) {
-	const win = open(''),
-		doc = win.document,
-		bodyClone = body.clone(),
-		bodyClass = isHtml ? 'html' : 'plain';
-
-	clearBqSwitcher(bodyClone);
-
-	const html = bodyClone ? bodyClone.html() : '';
-
-	doc.write(
-		deModule(require('Html/PreviewMessage.html'))
-			.replace('{{title}}', encodeHtml(title))
-			.replace('{{subject}}', encodeHtml(subject))
-			.replace('{{date}}', encodeHtml(date))
-			.replace('{{fromCreds}}', encodeHtml(fromCreds))
-			.replace('{{toCreds}}', encodeHtml(toCreds))
-			.replace('{{toLabel}}', encodeHtml(toLabel))
-			.replace('{{ccClass}}', encodeHtml(ccClass))
-			.replace('{{ccCreds}}', encodeHtml(ccCreds))
-			.replace('{{ccLabel}}', encodeHtml(ccLabel))
-			.replace('{{bodyClass}}', bodyClass)
-			.replace('{{html}}', html)
-	);
-
-	doc.close();
-
-	if (print) {
-		setTimeout(() => win.print(), 100);
 	}
 }
 
@@ -483,7 +416,7 @@ export function htmlToPlain(html) {
 		fixAttibuteValue = (...args) => (args && 1 < args.length ? '' + args[1] + htmlspecialchars(args[2]) : ''),
 		convertLinks = (...args) => (args && 1 < args.length ? args[1].trim() : '');
 
-	text = html
+	tpl.innerHTML = html
 		.replace(/<p[^>]*><\/p>/gi, '')
 		.replace(/<pre[^>]*>([\s\S\r\n\t]*)<\/pre>/gim, convertPre)
 		.replace(/[\s]+/gm, ' ')
@@ -507,16 +440,13 @@ export function htmlToPlain(html) {
 		.replace(/&quot;/gi, '"')
 		.replace(/<[^>]*>/gm, '');
 
-	text = $div.html(text).text();
-
-	text = text
+	text = splitPlainText(tpl.textContent
 		.replace(/\n[ \t]+/gm, '\n')
 		.replace(/[\n]{3,}/gm, '\n\n')
 		.replace(/&gt;/gi, '>')
 		.replace(/&lt;/gi, '<')
-		.replace(/&amp;/gi, '&');
-
-	text = splitPlainText(text);
+		.replace(/&amp;/gi, '&')
+	);
 
 	pos = 0;
 	limit = 800;
@@ -530,7 +460,6 @@ export function htmlToPlain(html) {
 
 			if ((-1 === iP2 || iP3 < iP2) && iP1 < iP3) {
 				text = text.substring(0, iP1) + convertBlockquote(text.substring(iP1 + 13, iP3)) + text.substring(iP3 + 11);
-
 				pos = 0;
 			} else if (-1 < iP2 && iP2 < iP3) {
 				pos = iP2 - 1;
@@ -552,7 +481,7 @@ export function htmlToPlain(html) {
  * @param {boolean} findEmailAndLinksInText = false
  * @returns {string}
  */
-export function plainToHtml(plain, findEmailAndLinksInText = false) {
+export function plainToHtml(plain) {
 	plain = plain.toString().replace(/\r/g, '');
 	plain = plain.replace(/^>[> ]>+/gm, ([match]) => (match ? match.replace(/[ ]+/g, '') : match));
 
@@ -595,9 +524,7 @@ export function plainToHtml(plain, findEmailAndLinksInText = false) {
 		aText = aNextText;
 	} while (bDo);
 
-	plain = aText.join('\n');
-
-	plain = plain
+	return aText.join('\n')
 		// .replace(/~~~\/blockquote~~~\n~~~blockquote~~~/g, '\n')
 		.replace(/&/g, '&amp;')
 		.replace(/>/g, '&gt;')
@@ -605,8 +532,6 @@ export function plainToHtml(plain, findEmailAndLinksInText = false) {
 		.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 		.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
 		.replace(/\n/g, '<br />');
-
-	return findEmailAndLinksInText ? findEmailAndLinks(plain) : plain;
 }
 
 window['rainloop_Utils_htmlToPlain'] = htmlToPlain; // eslint-disable-line dot-notation
@@ -764,39 +689,6 @@ export function selectElement(element) {
 	sel.removeAllRanges();
 	range.selectNodeContents(element);
 	sel.addRange(range);
-}
-
-/**
- * @param {boolean=} delay = false
- */
-export function triggerAutocompleteInputChange(delay = false) {
-	const fFunc = () => $('.checkAutocomplete').trigger('change');
-
-	if (delay) {
-		setTimeout(fFunc, 100);
-	} else {
-		fFunc();
-	}
-}
-
-const configurationScriptTagCache = {};
-
-/**
- * @param {string} configuration
- * @returns {object}
- */
-export function getConfigurationFromScriptTag(configuration) {
-	if (!configurationScriptTagCache[configuration]) {
-		configurationScriptTagCache[configuration] = $(
-			'script[type="application/json"][data-configuration="' + configuration + '"]'
-		);
-	}
-
-	try {
-		return JSON.parse(configurationScriptTagCache[configuration].text());
-	} catch (e) {} // eslint-disable-line no-empty
-
-	return {};
 }
 
 /**

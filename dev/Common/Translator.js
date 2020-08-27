@@ -1,13 +1,12 @@
 import ko from 'ko';
 import { Notification, UploadErrorCode } from 'Common/Enums';
-import { pInt } from 'Common/Utils';
-import { $html, $htmlCL } from 'Common/Globals';
 import { langLink } from 'Common/Links';
 
 let I18N_DATA = window.rainloopI18N || {};
 
-const I18N_NOTIFICATION_DATA = {};
-const I18N_NOTIFICATION_MAP = [
+const doc = document,
+I18N_NOTIFICATION_DATA = {},
+I18N_NOTIFICATION_MAP = [
 	[Notification.InvalidToken, 'NOTIFICATIONS/INVALID_TOKEN'],
 	[Notification.InvalidToken, 'NOTIFICATIONS/INVALID_TOKEN'],
 	[Notification.AuthError, 'NOTIFICATIONS/AUTH_ERROR'],
@@ -101,26 +100,24 @@ export function i18n(key, valueList, defaulValue) {
 	return result;
 }
 
-const i18nToNode = (element) => {
-	const $el = jQuery(element),
-		key = $el.data('i18n');
-
+const i18nToNode = element => {
+	const key = element.dataset.i18n;
 	if (key) {
 		if ('[' === key.substr(0, 1)) {
 			switch (key.substr(0, 6)) {
 				case '[html]':
-					$el.html(i18n(key.substr(6)));
+					element.innerHTML = i18n(key.substr(6));
 					break;
 				case '[place':
-					$el.attr('placeholder', i18n(key.substr(13)));
+					element.placeholder = i18n(key.substr(13));
 					break;
 				case '[title':
-					$el.attr('title', i18n(key.substr(7)));
+					element.title = i18n(key.substr(7));
 					break;
 				// no default
 			}
 		} else {
-			$el.text(i18n(key));
+			element.textContent = i18n(key);
 		}
 	}
 };
@@ -129,11 +126,9 @@ const i18nToNode = (element) => {
  * @param {Object} elements
  * @param {boolean=} animate = false
  */
-export function i18nToNodes(elements) {
+export function i18nToNodes(element) {
 	setTimeout(() =>
-		jQuery('[data-i18n]', elements).each((index, item) => {
-			i18nToNode(item);
-		})
+		element.querySelectorAll('[data-i18n]').forEach(item => i18nToNode(item))
 	, 1);
 }
 
@@ -141,7 +136,7 @@ const reloadData = () => {
 	if (window.rainloopI18N) {
 		I18N_DATA = window.rainloopI18N || {};
 
-		i18nToNodes(document);
+		i18nToNodes(doc);
 
 		dispatchEvent(new CustomEvent('reload-time'));
 		trigger(!trigger());
@@ -209,7 +204,7 @@ export function getNotification(code, message = '', defCode = null) {
  */
 export function getNotificationFromResponse(response, defCode = Notification.UnknownNotification) {
 	return response && response.ErrorCode
-		? getNotification(pInt(response.ErrorCode), response.ErrorMessage || '')
+		? getNotification(parseInt(response.ErrorCode, 10) || defCode, response.ErrorMessage || '')
 		: getNotification(defCode);
 }
 
@@ -253,8 +248,6 @@ export function getUploadErrorDescByCode(code) {
 export function reload(admin, language) {
 	const start = Date.now();
 
-	$htmlCL.add('rl-changing-language');
-
 	return new Promise((resolve, reject) => {
 		return fetch(langLink(language, admin), {cache: 'reload'})
 			.then(response => {
@@ -269,18 +262,19 @@ export function reload(admin, language) {
 					reject(new Error(error.message))
 				})
 			.then(data => {
-				var script = document.createElement('script');
+				var script = doc.createElement('script');
 				script.text = data;
-				document.head.appendChild(script).parentNode.removeChild(script);
+				doc.head.append(script).remove();
 				setTimeout(
 					() => {
 						reloadData();
 
-						const isRtl = ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir'].includes((language || '').toLowerCase());
+						const isRtl = ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir'].includes((language || '').toLowerCase()),
+							htmlCL = doc.documentElement.classList;
 
-						$htmlCL.remove('rl-changing-language', 'rl-rtl', 'rl-ltr');
-						// $html.attr('dir', isRtl ? 'rtl' : 'ltr')
-						$htmlCL.add(isRtl ? 'rl-rtl' : 'rl-ltr');
+						htmlCL.remove('rl-rtl', 'rl-ltr');
+						htmlCL.add(isRtl ? 'rl-rtl' : 'rl-ltr');
+						// doc.documentElement.dir = isRtl ? 'rtl' : 'ltr'
 
 						resolve();
 					},
@@ -289,6 +283,3 @@ export function reload(admin, language) {
 			});
 	});
 }
-
-// init section
-$htmlCL.add('rl-' + ($html.attr('dir') || 'ltr'));

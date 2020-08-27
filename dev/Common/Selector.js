@@ -15,7 +15,6 @@ class Selector {
 
 	iSelectNextHelper = 0;
 	iFocusedNextHelper = 0;
-	oContentVisible;
 	oContentScrollable;
 
 	sItemSelector;
@@ -262,12 +261,11 @@ class Selector {
 		this.focusedItem(null);
 	}
 
-	init(contentVisible, contentScrollable, keyScope = 'all') {
-		this.oContentVisible = contentVisible;
-		this.oContentScrollable = contentScrollable ? contentScrollable[0] : null;
+	init(contentScrollable, keyScope = 'all') {
+		this.oContentScrollable = contentScrollable;
 
-		if (this.oContentVisible && this.oContentScrollable) {
-			jQuery(this.oContentVisible)
+		if (contentScrollable) {
+			jQuery(contentScrollable)
 				.on('selectstart', (event) => {
 					if (event && event.preventDefault) {
 						event.preventDefault();
@@ -289,8 +287,9 @@ class Selector {
 				});
 
 			key('enter', keyScope, () => {
-				if (this.focusedItem() && !this.focusedItem().selected()) {
-					this.actionClick(this.focusedItem());
+				const focused = this.focusedItem();
+				if (focused && !focused.selected()) {
+					this.actionClick(focused);
 					return false;
 				}
 
@@ -500,45 +499,29 @@ class Selector {
 	 * @returns {boolean}
 	 */
 	scrollToFocused() {
-		if (!this.oContentVisible || !this.oContentScrollable) {
-			return false;
+		const scrollable = this.oContentScrollable;
+		if (scrollable) {
+			let block, focused = scrollable.querySelector(this.sItemFocusedSelector);
+			if (focused) {
+				const fRect = focused.getBoundingClientRect(),
+					sRect = scrollable.getBoundingClientRect();
+				if (fRect.top < sRect.top) {
+					block = 'start';
+				} else if (fRect.bottom > sRect.bottom) {
+					block = 'end';
+				}
+				block && focused.scrollIntoView(block === 'start');
+			} else {
+				scrollable.scrollTop = 0;
+			}
 		}
-
-		const offset = 20,
-			list = this.list(),
-			$focused = jQuery(this.sItemFocusedSelector, this.oContentScrollable),
-			pos = $focused.position(),
-			visibleHeight = this.oContentVisible.height(),
-			focusedHeight = $focused.outerHeight();
-
-		if (list && list[0] && list[0].focused()) {
-			this.oContentScrollable.scrollTop = 0;
-			return true;
-		} else if (pos && (0 > pos.top || pos.top + focusedHeight > visibleHeight)) {
-			let top = this.oContentScrollable.scrollTop + pos.top;
-			this.oContentScrollable.scrollTop =
-				0 > pos.top
-					? top - offset
-					: top - visibleHeight + focusedHeight + offset
-			;
-
-			return true;
-		}
-
-		return false;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	scrollToTop() {
-		if (!this.oContentVisible || !this.oContentScrollable) {
-			return false;
-		}
-
-		this.oContentScrollable.scrollTop = 0;
-
-		return true;
+		this.oContentScrollable && (this.oContentScrollable.scrollTop = 0);
 	}
 
 	eventClickFunction(item, event) {

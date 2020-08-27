@@ -106,7 +106,6 @@ class HtmlEditor {
 		this.onModeChange = onModeChange;
 
 		this.element = element;
-		this.$element = jQuery(element);
 
 		this.resize = this.resizeEditor.throttle(100);
 
@@ -414,7 +413,7 @@ class HtmlEditor {
 	resizeEditor() {
 		if (this.editor && this.__resizable) {
 			try {
-				this.editor.resize(this.$element.width(), this.$element.innerHeight());
+				this.editor.resize(this.element.clientWidth, this.element.clientHeight);
 			} catch (e) {} // eslint-disable-line no-empty
 		}
 	}

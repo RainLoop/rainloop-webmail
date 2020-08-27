@@ -1,11 +1,133 @@
 import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
-import { isNonEmptyArray, pString } from 'Common/Utils';
+import { isNonEmptyArray, pString, htmlToElement } from 'Common/Utils';
 
 import AccountStore from 'Stores/User/Account';
 
 import { showScreenPopup } from 'Knoin/Knoin';
+
+function controlsHelper(dom, verControl, success, title, text)
+{
+	dom.classList.toggle('error', !success);
+	dom.classList.toggle('success', success);
+	verControl.classList.toggle('error', !success);
+	verControl.classList.toggle('success', success);
+	dom.title = verControl.title = title;
+
+	if (undefined !== text) {
+		dom.textContent = text.trim();
+	}
+}
+
+function domControlEncryptedClickHelper(store, dom, armoredMessage, recipients) {
+	return function() {
+		let message = null;
+
+		if (this.classList.contains('success')) {
+			return false;
+		}
+
+		try {
+			message = store.openpgp.message.readArmored(armoredMessage);
+		} catch (e) {
+			console.log(e);
+		}
+
+		if (message && message.getText && message.verify && message.decrypt) {
+			store.decryptMessage(
+				message,
+				recipients,
+				(validPrivateKey, decryptedMessage, validPublicKey, signingKeyIds) => {
+					if (decryptedMessage) {
+						if (validPublicKey) {
+							controlsHelper(
+								dom,
+								this,
+								true,
+								i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+									'USER': validPublicKey.user + ' (' + validPublicKey.id + ')'
+								}),
+								decryptedMessage.getText()
+							);
+						} else if (validPrivateKey) {
+							const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
+								additional = keyIds
+									? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(value => !!value).join(', ')
+									: '';
+
+							controlsHelper(
+								dom,
+								this,
+								false,
+								i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : ''),
+								decryptedMessage.getText()
+							);
+						} else {
+							controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+						}
+					} else {
+						controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+					}
+				}
+			);
+
+			return false;
+		}
+
+		controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+		return false;
+	};
+}
+
+function domControlSignedClickHelper(store, dom, armoredMessage) {
+	return function() {
+		let message = null;
+
+		if (this.classList.contains('success') || this.classList.contains('error')) {
+			return false;
+		}
+
+		try {
+			message = store.openpgp.cleartext.readArmored(armoredMessage);
+		} catch (e) {
+			console.log(e);
+		}
+
+		if (message && message.getText && message.verify) {
+			store.verifyMessage(message, (validKey, signingKeyIds) => {
+				if (validKey) {
+					controlsHelper(
+						dom,
+						this,
+						true,
+						i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
+							'USER': validKey.user + ' (' + validKey.id + ')'
+						}),
+						message.getText()
+					);
+				} else {
+					const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
+						additional = keyIds
+							? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(value => !!value).join(', ')
+							: '';
+
+					controlsHelper(
+						dom,
+						this,
+						false,
+						i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : '')
+					);
+				}
+			});
+
+			return false;
+		}
+
+		controlsHelper(dom, this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
+		return false;
+	};
+}
 
 class PgpUserStore {
 	constructor() {
@@ -209,174 +331,34 @@ class PgpUserStore {
 		return false;
 	}
 
-	controlsHelper(dom, verControl, success, title, text) {
-		if (success) {
-			dom
-				.removeClass('error')
-				.addClass('success')
-				.attr('title', title);
-			verControl
-				.removeClass('error')
-				.addClass('success')
-				.attr('title', title);
-		} else {
-			dom
-				.removeClass('success')
-				.addClass('error')
-				.attr('title', title);
-			verControl
-				.removeClass('success')
-				.addClass('error')
-				.attr('title', title);
-		}
-
-		if (undefined !== text) {
-			dom.text(text.trim());
-		}
-	}
-
-	static domControlEncryptedClickHelper(store, dom, armoredMessage, recipients) {
-		return function() {
-			let message = null;
-			const $this = jQuery(this); // eslint-disable-line no-invalid-this
-
-			if ($this.hasClass('success')) {
-				return false;
-			}
-
-			try {
-				message = store.openpgp.message.readArmored(armoredMessage);
-			} catch (e) {
-				console.log(e);
-			}
-
-			if (message && message.getText && message.verify && message.decrypt) {
-				store.decryptMessage(
-					message,
-					recipients,
-					(validPrivateKey, decryptedMessage, validPublicKey, signingKeyIds) => {
-						if (decryptedMessage) {
-							if (validPublicKey) {
-								store.controlsHelper(
-									dom,
-									$this,
-									true,
-									i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-										'USER': validPublicKey.user + ' (' + validPublicKey.id + ')'
-									}),
-									decryptedMessage.getText()
-								);
-							} else if (validPrivateKey) {
-								const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
-									additional = keyIds
-										? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(value => !!value).join(', ')
-										: '';
-
-								store.controlsHelper(
-									dom,
-									$this,
-									false,
-									i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : ''),
-									decryptedMessage.getText()
-								);
-							} else {
-								store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-							}
-						} else {
-							store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-						}
-					}
-				);
-
-				return false;
-			}
-
-			store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-			return false;
-		};
-	}
-
-	static domControlSignedClickHelper(store, dom, armoredMessage) {
-		return function() {
-			let message = null;
-			const $this = jQuery(this); // eslint-disable-line no-invalid-this
-
-			if ($this.hasClass('success') || $this.hasClass('error')) {
-				return false;
-			}
-
-			try {
-				message = store.openpgp.cleartext.readArmored(armoredMessage);
-			} catch (e) {
-				console.log(e);
-			}
-
-			if (message && message.getText && message.verify) {
-				store.verifyMessage(message, (validKey, signingKeyIds) => {
-					if (validKey) {
-						store.controlsHelper(
-							dom,
-							$this,
-							true,
-							i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-								'USER': validKey.user + ' (' + validKey.id + ')'
-							}),
-							message.getText()
-						);
-					} else {
-						const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
-							additional = keyIds
-								? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(value => !!value).join(', ')
-								: '';
-
-						store.controlsHelper(
-							dom,
-							$this,
-							false,
-							i18n('PGP_NOTIFICATIONS/UNVERIFIRED_SIGNATURE') + (additional ? ' (' + additional + ')' : '')
-						);
-					}
-				});
-
-				return false;
-			}
-
-			store.controlsHelper(dom, $this, false, i18n('PGP_NOTIFICATIONS/DECRYPTION_ERROR'));
-			return false;
-		};
-	}
-
 	/**
 	 * @param {*} dom
 	 * @param {MessageModel} rainLoopMessage
 	 */
 	initMessageBodyControls(dom, rainLoopMessage) {
-		if (dom && !dom.hasClass('inited')) {
-			dom.addClass('inited');
+		const cl = dom && dom.classList;
+		if (!cl.has('inited')) {
+			cl.add('inited');
 
-			const encrypted = dom.hasClass('encrypted'),
-				signed = dom.hasClass('signed'),
+			const encrypted = cl.has('encrypted'),
+				signed = cl.has('signed'),
 				recipients = rainLoopMessage ? rainLoopMessage.getEmails(['from', 'to', 'cc']) : [];
 
 			let verControl = null;
 
 			if (encrypted || signed) {
-				const domText = dom.text();
-				dom.data('openpgp-original', domText);
+				const domText = dom.textContent;
 
+				verControl = htmlToElement('<div class="b-openpgp-control"><i class="icon-lock"></i></div>'); // 🔒
 				if (encrypted) {
-					verControl = jQuery('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
-						.attr('title', i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC'))
-						.on('click', PgpUserStore.domControlEncryptedClickHelper(this, dom, domText, recipients));
-				} else if (signed) {
-					verControl = jQuery('<div class="b-openpgp-control"><i class="icon-lock"></i></div>')
-						.attr('title', i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC'))
-						.on('click', PgpUserStore.domControlSignedClickHelper(this, dom, domText));
+					verControl.title = i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC');
+					verControl.addEventHandler('click', domControlEncryptedClickHelper(this, dom, domText, recipients));
+				} else {
+					verControl.title = i18n('MESSAGE/PGP_SIGNED_MESSAGE_DESC');
+					verControl.addEventHandler('click', domControlSignedClickHelper(this, dom, domText));
 				}
 
-				if (verControl) {
-					dom.before(verControl).before('<div></div>');
-				}
+				dom.before(verControl, document.createElement('div'));
 			}
 		}
 	}

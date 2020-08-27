@@ -6,8 +6,8 @@
  *
  * @requires:
  *
- * 	jQuery 1.7+
- * 	jQueryUI 1.8+ Core
+ * 	jQuery 3.5+
+ * 	jQueryUI 1.12+ Core
  *
  * @version 0.1.6
  * @author Dan Kielp <dan@sproutsocial.com>

@@ -15,7 +15,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import { bMobileDevice, leftPanelDisabled, moveAction } from 'Common/Globals';
 
-import { computedPagenatorHelper, draggablePlace, friendlySize } from 'Common/Utils';
+import { computedPagenatorHelper, friendlySize, htmlToElement } from 'Common/Utils';
 
 import { mailBox, append } from 'Common/Links';
 import { Selector } from 'Common/Selector';
@@ -267,9 +267,9 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			}
 		});
 
-		MessageStore.messageListEndHash.subscribe(() => {
-			this.selector.scrollToTop();
-		});
+		MessageStore.messageListEndHash.subscribe((() =>
+			this.selector.scrollToFocused()
+		).throttle(50));
 	}
 
 	@command()
@@ -502,14 +502,20 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			oMessageListItem.checked(true);
 		}
 
-		const el = draggablePlace(),
+		const el = htmlToElement('<div class="draggablePlace">' +
+			'<span class="text"></span>&nbsp;' +
+			'<i class="icon-copy icon-white visible-on-ctrl"></i>' +
+			'<i class="icon-mail icon-white hidden-on-ctrl"></i>' +
+			'</div>'),
 			updateUidsInfo = () => {
 				const uids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails();
-				el.data('rl-uids', uids);
-				el.find('.text').text('' + uids.length);
+				el.rlUids = uids;
+				el.querySelector('.text').textContent = uids.length;
 			};
 
-		el.data('rl-folder', FolderStore.currentFolderFullNameRaw());
+		document.getElementById('rl-hidden').append(el);
+
+		el.rlFolder = FolderStore.currentFolderFullNameRaw();
 
 		updateUidsInfo();
 		setTimeout(updateUidsInfo,1);
@@ -735,9 +741,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	onBuild(dom) {
 		const self = this;
 
-		this.oContentVisible = jQuery('.b-content', dom);
-
-		this.selector.init(this.oContentVisible, this.oContentVisible, KeyState.MessageList);
+		this.selector.init(dom[0].querySelector('.b-content'), KeyState.MessageList);
 
 		if (this.mobile) {
 			dom.on('click', () => {

@@ -128,7 +128,7 @@ class MailBoxUserScreen extends AbstractScreen {
 			, 1);
 		}
 
-		$html.on('click', '#rl-right', () => {
+		jQuery($html).on('click', '#rl-right', () => {
 			moveAction(false);
 		});
 	}

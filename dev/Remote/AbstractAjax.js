@@ -116,7 +116,6 @@ class AbstractAjaxRemote {
 	 * @param {?number=} iTimeOut = 20000
 	 * @param {string=} sGetAdd = ''
 	 * @param {Array=} aAbortActions = []
-	 * @returns {jQuery.jqXHR}
 	 */
 	ajaxRequest(fResultCallback, params, iTimeOut = 20000, sGetAdd = '', abortActions = []) {
 		params = params || {};

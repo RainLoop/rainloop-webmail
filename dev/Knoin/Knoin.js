@@ -7,7 +7,8 @@ import { $htmlCL, VIEW_MODELS } from 'Common/Globals';
 let currentScreen = null,
 	defaultScreenName = '';
 
-const SCREENS = {}, $ = jQuery,
+const SCREENS = {},
+	qs = s => document.querySelector(s),
 	isNonEmptyArray = values => Array.isArray(values) && values.length,
 
 	popupVisibilityNames = ko.observableArray([]);
@@ -29,10 +30,8 @@ export const ViewType = {
  * @returns {void}
  */
 export function hideLoading() {
-	$('#rl-content').addClass('rl-content-show');
-	$('#rl-loading')
-		.hide()
-		.remove();
+	qs('#rl-content').classList.add('rl-content-show');
+	qs('#rl-loading').remove();
 }
 
 /**
@@ -156,7 +155,7 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 		let vmDom = null;
 		const vm = new ViewModelClass(vmScreen),
 			position = ViewModelClass.__type || '',
-			vmPlace = position ? $('#rl-content #rl-' + position.toLowerCase()) : null;
+			vmPlace = position ? qs('#rl-content #rl-' + position.toLowerCase()) : null;
 
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = vm;
@@ -166,15 +165,14 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 		vm.viewModelTemplateID = ViewModelClass.__templateID;
 		vm.viewModelPosition = ViewModelClass.__type;
 
-		if (vmPlace && 1 === vmPlace.length) {
-			vmDom = $('<div></div>')
-				.addClass('rl-view-model')
-				.addClass('RL-' + vm.viewModelTemplateID)
-				.hide();
-			vmDom.appendTo(vmPlace);
+		if (vmPlace) {
+			vmDom = jQuery('<div></div>');
+			vmDom[0].classList.add('rl-view-model', 'RL-' + vm.viewModelTemplateID);
+			vmDom[0].hidden = true;
+			vmPlace.append(vmDom[0]);
 
-			vm.viewModelDom = vmDom;
-			ViewModelClass.__dom = vmDom;
+			vm.viewModelDom = vmDom[0];
+			ViewModelClass.__dom = vmDom[0];
 
 			if (ViewType.Popup === position) {
 				vm.cancelCommand = vm.closeCommand = createCommand(() => {
@@ -183,11 +181,11 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 
 				vm.modalVisibility.subscribe((value) => {
 					if (value) {
-						vm.viewModelDom.show();
+						vm.viewModelDom.hidden = false;
 						vm.storeAndSetKeyScope();
 
 						popupVisibilityNames.push(vm.viewModelName);
-						vm.viewModelDom.css('z-index', 3000 + popupVisibilityNames().length + 10);
+						vm.viewModelDom.style.zIndex = 3000 + popupVisibilityNames().length + 10;
 
 						vm.onShowWithDelay && setTimeout(()=>vm.onShowWithDelay, 500);
 					} else {
@@ -197,9 +195,9 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 						vm.restoreKeyScope();
 
 						popupVisibilityNames.remove(vm.viewModelName);
-						vm.viewModelDom.css('z-index', 2000);
+						vm.viewModelDom.style.zIndex = 2000;
 
-						setTimeout(() => vm.viewModelDom.hide(), 300);
+						setTimeout(() => vm.viewModelDom.hidden = true, 300);
 					}
 				});
 			}
@@ -245,7 +243,7 @@ export function showScreenPopup(ViewModelClassToShow, params = []) {
 			ModalView.__vm.onShow && ModalView.__vm.onShow(...params);
 
 //			if (!bMobileDevice) {
-			const af = ModalView.__dom[0].querySelector('[autofocus]');
+			const af = ModalView.__dom.querySelector('[autofocus]');
 			af && af.focus();
 		}
 	}
@@ -327,7 +325,7 @@ export function screenOnRoute(screenName, subPart) {
 								ViewModelClass.__dom &&
 								ViewType.Popup !== ViewModelClass.__vm.viewModelPosition
 							) {
-								ViewModelClass.__dom.hide();
+								ViewModelClass.__dom.hidden = true;
 								ViewModelClass.__vm.viewModelVisibility(false);
 
 								ViewModelClass.__vm.onHide && ViewModelClass.__vm.onHide();
@@ -353,13 +351,13 @@ export function screenOnRoute(screenName, subPart) {
 							) {
 								ViewModelClass.__vm.onBeforeShow && ViewModelClass.__vm.onBeforeShow();
 
-								ViewModelClass.__dom.show();
+								ViewModelClass.__dom.hidden = false;
 								ViewModelClass.__vm.viewModelVisibility(true);
 
 								ViewModelClass.__vm.onShow && ViewModelClass.__vm.onShow();
 
 //								if (!bMobileDevice) {
-								const af = ViewModelClass.__dom[0].querySelector('[autofocus]');
+								const af = ViewModelClass.__dom.querySelector('[autofocus]');
 								af && af.focus();
 
 								ViewModelClass.__vm.onShowWithDelay && setTimeout(()=>ViewModelClass.__vm.onShowWithDelay, 200);

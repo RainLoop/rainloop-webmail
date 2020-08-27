@@ -45,8 +45,8 @@ function writeCSS(css) {
 	const style = doc.createElement('style');
 	style.type = 'text/css';
 	style.textContent = css;
-//	style.appendChild(doc.createTextNode(styles));
-	doc.head.appendChild(style);
+//	style.append(doc.createTextNode(styles));
+	doc.head.append(style);
 }
 
 function loadScript(src) {
@@ -59,8 +59,8 @@ function loadScript(src) {
 		script.onerror = () => reject(new Error(src));
 		script.src = src;
 //		script.type = 'text/javascript';
-		doc.head.appendChild(script);
-//		doc.body.appendChild(element);
+		doc.head.append(script);
+//		doc.body.append(element);
 	});
 }
 

@@ -819,7 +819,7 @@ class AppUser extends AbstractApp {
 				const resizer = doc.createElement('div'),
 					cssint = s => parseFloat(getComputedStyle(source, null).getPropertyValue(s).replace('px', ''));
 				resizer.className = 'resizer';
-				source.appendChild(resizer);
+				source.append(resizer);
 				resizer.addEventListener('mousedown', {
 					source: source,
 					mode: mode,
@@ -995,7 +995,7 @@ class AppUser extends AbstractApp {
 								script.onload = openpgpCallback;
 								script.onerror = () => console.error(script.src);
 								script.src = openPgpJs();
-								doc.head.appendChild(script);
+								doc.head.append(script);
 							}
 						} else {
 							PgpStore.capaOpenPGP(false);

@@ -2,6 +2,7 @@ import { SaveSettingsStep } from 'Common/Enums';
 
 const
 	$ = jQuery,
+	doc = document,
 	ko = window.ko,
 	Translator = () => require('Common/Translator'),
 	isFunction = v => typeof v === 'function';
@@ -75,7 +76,7 @@ ko.bindingHandlers.tooltip = {
 
 ko.bindingHandlers.tooltipErrorTip = {
 	init: element => {
-		document.addEventListener('click', () => element.removeAttribute('data-rainloopErrorTip'));
+		doc.addEventListener('click', () => element.removeAttribute('data-rainloopErrorTip'));
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeAttribute('data-rainloopErrorTip'));
 	},
 	update: (element, fValueAccessor) => {
@@ -197,13 +198,13 @@ ko.bindingHandlers.modal = {
 		});
 	},
 	update: (element, fValueAccessor) => {
-		const Globals = require('Common/Globals');
+		const htmlCL = doc.documentElement.classList;
 
 		$(element).modal(ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
 
-		if (Globals.$htmlCL.contains('no-mobile')) {
-			Globals.$htmlCL.add('rl-modal-animation');
-			setTimeout(() => Globals.$htmlCL.remove('rl-modal-animation'), 500);
+		if (htmlCL.contains('no-mobile')) {
+			htmlCL.add('rl-modal-animation');
+			setTimeout(() => htmlCL.remove('rl-modal-animation'), 500);
 		}
 	}
 };
@@ -226,11 +227,11 @@ ko.bindingHandlers.i18nUpdate = {
 };
 
 ko.bindingHandlers.link = {
-	update: (element, fValueAccessor) => element.setAttribute('href', ko.unwrap(fValueAccessor()))
+	update: (element, fValueAccessor) => element.href = ko.unwrap(fValueAccessor())
 };
 
 ko.bindingHandlers.title = {
-	update: (element, fValueAccessor) => element.setAttribute('title', ko.unwrap(fValueAccessor()))
+	update: (element, fValueAccessor) => element.title = ko.unwrap(fValueAccessor())
 };
 
 ko.bindingHandlers.initDom = {
@@ -247,7 +248,7 @@ ko.bindingHandlers.draggable = {
 				scrollSpeed = 3,
 				fAllValueFunc = fAllBindingsAccessor(),
 				selector = fAllValueFunc ? fAllValueFunc.droppableSelector : '',
-				droppable = selector ? document.querySelector(selector) : null,
+				droppable = selector ? doc.querySelector(selector) : null,
 				conf = {
 					distance: 20,
 					handle: '.dragHandle',
@@ -352,7 +353,7 @@ ko.bindingHandlers.saveTrigger = {
 
 		$el.data(
 			'save-trigger-type',
-			$el.is('input[type=text],input[type=email],input[type=password],select,textarea') ? 'input' : 'custom'
+			element.matches('input[type=text],input[type=email],input[type=password],select,textarea') ? 'input' : 'custom'
 		);
 
 		if ('custom' === $el.data('save-trigger-type')) {

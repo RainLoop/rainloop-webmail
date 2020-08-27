@@ -13,7 +13,6 @@ import {
 
 import {
 	isNonEmptyArray,
-	clearBqSwitcher,
 	replySubjectAdd,
 	encodeHtml,
 	inFocus,
@@ -855,13 +854,7 @@ class ComposePopupView extends AbstractViewNext {
 			sDate = momentorFormat(message.dateTimeStampInUTC(), 'FULL');
 			sSubject = message.subject();
 			aDraftInfo = message.aDraftInfo;
-
-			const clonedText = jQuery(message.body).clone();
-			if (clonedText) {
-				clearBqSwitcher(clonedText);
-
-				sText = clonedText.html();
-			}
+			sText = message.bodyAsHTML();
 
 			let resplyAllParts = null;
 			switch (lineComposeType) {

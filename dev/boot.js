@@ -16,7 +16,7 @@ progress.className = "progressjs-inner";
 progress.appendChild(doc.createElement('div')).className = "progressjs-percent";
 
 setPercentWidth(1);
-doc.body.appendChild(container);
+doc.body.append(container);
 
 win.progressJs = new class {
 	set(percent) {
@@ -80,7 +80,7 @@ function writeCSS(css) {
 	const style = doc.createElement('style');
 	style.type = 'text/css';
 	style.textContent = css;
-	doc.head.appendChild(style);
+	doc.head.append(style);
 }
 
 function loadScript(src) {
@@ -93,8 +93,8 @@ function loadScript(src) {
 		script.onerror = () => reject(new Error(src));
 		script.src = src;
 //		script.type = 'text/javascript';
-		doc.head.appendChild(script);
-//		doc.body.appendChild(element);
+		doc.head.append(script);
+//		doc.body.append(element);
 	});
 }
 
