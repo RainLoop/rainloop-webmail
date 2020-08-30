@@ -418,7 +418,7 @@ class Client {
         );
 
         if ($curlErrNo) {
-            throw new Exception('[CURL] Error while making request: ' . $curlError . ' (error code: ' . $curlErrNo . ')');
+            throw new Exception('[CURL] Error while making request: ' . $curlError . ' (error code: ' . $curlErrNo . ', uri: ' . $url . ')');
         }
 
         if ($response['statusCode']>=400) {

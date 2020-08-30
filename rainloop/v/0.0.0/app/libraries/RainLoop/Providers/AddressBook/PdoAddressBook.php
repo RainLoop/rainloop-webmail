@@ -491,13 +491,13 @@ class PdoAddressBook
 			$aUrl = array();
 		}
 
-		$aUrl['scheme'] = isset($aUrl['scheme']) ? $aUrl['scheme'] : 'http';
-		$aUrl['host'] = isset($aUrl['host']) ? $aUrl['host'] : 'localhost';
-		$aUrl['port'] = isset($aUrl['port']) ? $aUrl['port'] : 80;
+		$aUrl['scheme'] = $aUrl['scheme'] ?? 'http';
+		$aUrl['host'] = $aUrl['host'] ?? 'localhost';
+		$aUrl['port'] = $aUrl['port'] ?? 0;
 		$aUrl['path'] = isset($aUrl['path']) ? \rtrim($aUrl['path'], '\\/').'/' : '/';
 
 		$aSettings = array(
-			'baseUri' => $aUrl['scheme'].'://'.$aUrl['host'].('80' === (string) $aUrl['port'] ? '' : ':'.$aUrl['port']),
+			'baseUri' => $aUrl['scheme'].'://'.$aUrl['host'].($aUrl['port'] ? ':'.$aUrl['port'] : ''),
 			'userName' => $sUser,
 			'password' => $sPassword
 		);
