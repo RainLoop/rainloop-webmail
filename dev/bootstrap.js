@@ -1,4 +1,4 @@
-import { $html, $htmlCL, data as GlobalsData, bMobileDevice, dropdownVisibility } from 'Common/Globals';
+import { $htmlCL, data as GlobalsData, bMobileDevice, dropdownVisibility } from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
 import { i18n } from 'Common/Translator';
@@ -32,7 +32,7 @@ export default (App) => {
 	addEventListener('unload', () => GlobalsData.bUnload = true);
 
 	$htmlCL.add(bMobileDevice ? 'mobile' : 'no-mobile');
-	jQuery($html).on('click.dropdown.data-api', ()=>rl.Dropdowns.detectVisibility());
+	addEventListener('click', ()=>rl.Dropdowns.detectVisibility());
 
 	const rl = window.rl || {};
 
@@ -60,10 +60,10 @@ export default (App) => {
 	window.rl = rl;
 
 	window.__APP_BOOT = fErrorCallback => {
-		jQuery(() => {
-			setTimeout(() => {
+		const doc = document,
+			cb = () => setTimeout(() => {
 				if (window.rainloopTEMPLATES && rainloopTEMPLATES[0]) {
-					document.getElementById('rl-templates').innerHTML = rainloopTEMPLATES[0];
+					doc.getElementById('rl-templates').innerHTML = rainloopTEMPLATES[0];
 					setTimeout(() => {
 						$htmlCL.remove('no-js', 'rl-booted-trigger');
 						$htmlCL.add('rl-booted');
@@ -76,6 +76,6 @@ export default (App) => {
 
 				window.__APP_BOOT = null;
 			}, 10);
-		});
+		('loading' !== doc.readyState) ? cb() : doc.addEventListener('DOMContentLoaded', cb);
 	};
 };

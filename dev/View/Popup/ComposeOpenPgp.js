@@ -99,7 +99,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 			this.defautOptionsAfterRender(domOption, item);
 
 			if (item && undefined !== item.class && domOption) {
-				jQuery(domOption).addClass(item.class);
+				domOption.classList.add(item.class);
 			}
 		};
 

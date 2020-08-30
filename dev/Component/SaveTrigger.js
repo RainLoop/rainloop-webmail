@@ -9,7 +9,7 @@ class SaveTriggerComponent extends AbstractComponent {
 	constructor(params) {
 		super();
 
-		this.element = params.element || null;
+		this.element = jQuery(params.element) || null;
 		this.value = params.value && params.value.subscribe ? params.value : null;
 
 		if (this.element) {

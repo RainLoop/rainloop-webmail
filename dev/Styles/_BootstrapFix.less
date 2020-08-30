@@ -204,7 +204,7 @@ select {
 	overflow: hidden;
 	text-overflow: ellipsis;
 
-	&.in {
+	&.show {
 		opacity: 1;
 	}
 
@@ -330,7 +330,7 @@ html.no-rgba .modal {
 	border-width: 0px !important;
 }
 
-.modal-backdrop, .modal-backdrop.fade.in {
+.modal-backdrop, .modal-backdrop.fade.show {
 	.opacity(20);
 	transform: none;
 }
@@ -344,6 +344,7 @@ html.no-rgba .modal {
 	right: 0;
 	z-index: 1100;
 	overflow: auto;
+	background-color: rgba(0,0,0,0.3);
 //	-webkit-overflow-scrolling: touch;
 
 	.modal {
@@ -367,7 +368,7 @@ html.no-rgba .modal {
 	top: 0;
 }
 
-.modal.fade.in {
+.modal.fade.show {
 	top: 0;
 }
 

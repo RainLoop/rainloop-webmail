@@ -90,22 +90,18 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 
 		const self = this;
 
-		oDom.on('click', '.key-list__item', function() {
-			// eslint-disable-line prefer-arrow-callback
+		oDom.addEventListener('click', event => {
+			const el = event.target.closestWithin('.key-list__item', oDom);
+			if (el) {
+				oDom.querySelectorAll('.key-list__item .key-list__item__radio').forEach(node => {
+					node.classList.toggle('icon-radio-unchecked', el !== node);
+					node.classList.toggle('icon-radio-checked', el === node);
+				});
 
-			oDom
-				.find('.key-list__item .key-list__item__radio')
-				.addClass('icon-radio-unchecked')
-				.removeClass('icon-radio-checked');
+				self.selectedKey(ko.dataFor(el)); // eslint-disable-line no-invalid-this
 
-			jQuery(this)
-				.find('.key-list__item__radio') // eslint-disable-line no-invalid-this
-				.removeClass('icon-radio-unchecked')
-				.addClass('icon-radio-checked');
-
-			self.selectedKey(ko.dataFor(this)); // eslint-disable-line no-invalid-this
-
-//			this.querySelector('.inputPassword').focus();
+//				this.querySelector('.inputPassword').focus();
+			}
 		});
 	}
 

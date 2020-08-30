@@ -14,13 +14,6 @@ const
 	},
 	htmlspecialchars = str => (''+str).replace(/[&<>"']/g, m => htmlmap[m]);
 
-export function htmlToElement(html) {
-	var template = document.createElement('template');
-	template.innerHTML = html.trim();
-	return template.content.firstChild;
-}
-
-
 /**
  * @param {(string|number)} value
  * @param {boolean=} includeZero = true

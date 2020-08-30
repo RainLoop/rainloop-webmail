@@ -17,7 +17,6 @@ class AbstractSettingsScreen extends AbstractScreen {
 		this.menu = ko.observableArray([]);
 
 		this.oCurrentSubScreen = null;
-		this.oViewModelPlace = null;
 
 		this.setupSettings();
 	}
@@ -66,25 +65,24 @@ class AbstractSettingsScreen extends AbstractScreen {
 			if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm) {
 				settingsScreen = RoutedSettingsViewModel.__vm;
 			} else {
-				if (this.oViewModelPlace) {
+				const vmPlace = document.getElementById('rl-settings-subscreen');
+				if (vmPlace) {
 					settingsScreen = new RoutedSettingsViewModel();
 
-					viewModelDom = jQuery('<div></div>');
-					viewModelDom[0].classList.add('rl-settings-view-model');
-					viewModelDom[0].hidden = true;
-					this.oViewModelPlace.append(viewModelDom[0]);
+					viewModelDom = Element.fromHTML('<div class="rl-settings-view-model" hidden=""></div>');
+					vmPlace.append(viewModelDom);
 
-					settingsScreen.viewModelDom = viewModelDom[0];
+					settingsScreen.viewModelDom = viewModelDom;
 
 					settingsScreen.__rlSettingsData = RoutedSettingsViewModel.__rlSettingsData;
 
-					RoutedSettingsViewModel.__dom = viewModelDom[0];
+					RoutedSettingsViewModel.__dom = viewModelDom;
 					RoutedSettingsViewModel.__builded = true;
 					RoutedSettingsViewModel.__vm = settingsScreen;
 
 					const tmpl = { name: RoutedSettingsViewModel.__rlSettingsData.Template };
 					ko.applyBindingAccessorsToNode(
-						viewModelDom[0],
+						viewModelDom,
 						{
 							i18nInit: true,
 							template: () => tmpl
@@ -161,8 +159,6 @@ class AbstractSettingsScreen extends AbstractScreen {
 				});
 			}
 		});
-
-		this.oViewModelPlace = document.getElementById('rl-settings-subscreen');
 	}
 
 	routes() {

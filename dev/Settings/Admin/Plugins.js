@@ -35,23 +35,13 @@ class PluginsAdminSettings {
 	}
 
 	onBuild(oDom) {
-		const self = this;
+		oDom.addEventListener('click', event => {
+			let el = event.target.closestWithin('.e-item .configure-plugin-action', oDom);
+			el && ko.dataFor(el) && this.configurePlugin(ko.dataFor(el));
 
-		oDom
-			.on('click', '.e-item .configure-plugin-action', function() {
-				// eslint-disable-line prefer-arrow-callback
-				const plugin = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (plugin) {
-					self.configurePlugin(plugin);
-				}
-			})
-			.on('click', '.e-item .disabled-plugin', function() {
-				// eslint-disable-line prefer-arrow-callback
-				const plugin = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (plugin) {
-					self.disablePlugin(plugin);
-				}
-			});
+			el = event.target.closestWithin('.e-item .disabled-plugin', oDom);
+			el && ko.dataFor(el) && this.disablePlugin(ko.dataFor(el));
+		});
 
 		this.enabledPlugins.subscribe((value) => {
 			Remote.saveAdminConfig(null, {

@@ -1,5 +1,5 @@
 import { Focused, Capa, ClientSideKeyName } from 'Common/Enums';
-import { $html, leftPanelDisabled, leftPanelType, moveAction, bMobileDevice } from 'Common/Globals';
+import { leftPanelDisabled, leftPanelType, moveAction, bMobileDevice } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
@@ -128,9 +128,9 @@ class MailBoxUserScreen extends AbstractScreen {
 			, 1);
 		}
 
-		jQuery($html).on('click', '#rl-right', () => {
-			moveAction(false);
-		});
+		document.addEventListener('click', event =>
+			event.target.closest('#rl-right') && moveAction(false)
+		);
 	}
 
 	/**

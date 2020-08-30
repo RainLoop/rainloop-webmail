@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { Capa, Focused, Layout, KeyState, EventKeyCode } from 'Common/Enums';
+import { Capa, Focused, Layout, KeyState } from 'Common/Enums';
 import { $htmlCL, leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
@@ -58,8 +58,8 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		const self = this,
-			qs = s => dom[0].querySelector(s),
+		const qs = s => dom.querySelector(s),
+			eqs = (ev, s) => ev.target.closestWithin(s, dom),
 			isMobile = Settings.appSettingsGet('mobile'),
 			fSelectFolder = (el, event, starred) => {
 				const isMove = moveAction();
@@ -105,11 +105,11 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 
 		this.oContentScrollable = qs('.b-content');
 
-		dom
-			.on('click', '.b-folders .e-item .e-link .e-collapsed-sign', function(event) {
-				// eslint-disable-line prefer-arrow-callback
-				const folder = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (folder && event) {
+		dom.addEventListener('click', event => {
+			let el = eqs(event, '.b-folders .e-item .e-link .e-collapsed-sign');
+			if (el) {
+				const folder = ko.dataFor(el);
+				if (folder) {
 					const collapsed = folder.collapsed();
 					getApp().setExpandedFolder(folder.fullNameHash, collapsed);
 
@@ -117,35 +117,34 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 					event.preventDefault();
 					event.stopPropagation();
 				}
-			})
-			.on('click', '.b-folders .e-item .e-link.selectable .inbox-star-icon', function(event) {
-				// eslint-disable-line prefer-arrow-callback
-				fSelectFolder(this, event, !self.isInboxStarred()); // eslint-disable-line no-invalid-this
-			})
-			.on('click', '.b-folders .e-item .e-link.selectable', function(event) {
-				// eslint-disable-line prefer-arrow-callback
-				fSelectFolder(this, event, false); // eslint-disable-line no-invalid-this
-			});
+			}
+
+			el = eqs(event, '.b-folders .e-item .e-link.selectable .inbox-star-icon');
+			el && fSelectFolder(el, event, !this.isInboxStarred());
+
+			el = eqs(event, '.b-folders .e-item .e-link.selectable');
+			el && fSelectFolder(el, event, false);
+		});
 
 		key('up, down', KeyState.FolderList, (event, handler) => {
-			const keyCode = handler && 'up' === handler.shortcut ? EventKeyCode.Up : EventKeyCode.Down,
-				$items = jQuery('.b-folders .e-item .e-link:not(.hidden):visible', dom);
-			let index = $items.length;
-			if (event && index) {
-				while (index--) {
-					if ($items[index].matches('.focused')) {
-						$items[index].classList.remove('focused');
-						break;
+			let items = [], index = 0;
+			dom.querySelectorAll('.b-folders .e-item .e-link:not(.hidden)').forEach(node => {
+				if (node.offsetHeight || node.getClientRects().length) {
+					items.push(node);
+					if (node.matches('.focused')) {
+						node.classList.remove('focused');
+						index = items.length - 1;
 					}
 				}
-				if (EventKeyCode.Up === keyCode && 0 < index) {
-					--index;
-				} else if (EventKeyCode.Down === keyCode && index < $items.length - 1) {
+			});
+			if (items.length) {
+				if (handler && 'up' === handler.shortcut) {
+					index && --index;
+				} else if (index < items.length - 1) {
 					++index;
 				}
-
-				$items[index].classList.add('focused');
-				self.scrollToFocused();
+				items[index].classList.add('focused');
+				this.scrollToFocused();
 			}
 
 			return false;

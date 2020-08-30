@@ -180,14 +180,9 @@ class FiltersUserSettings {
 	}
 
 	onBuild(oDom) {
-		const self = this;
-
-		oDom.on('click', '.filter-item .e-action', function() {
-			// eslint-disable-line prefer-arrow-callback
-			const filter = ko.dataFor(this); // eslint-disable-line no-invalid-this
-			if (filter) {
-				self.editFilter(filter);
-			}
+		oDom.addEventListener('click', event => {
+			const el = event.target.closestWithin('.filter-item .e-action', oDom);
+			el && ko.dataFor(el) && this.editFilter(ko.dataFor(el));
 		});
 	}
 

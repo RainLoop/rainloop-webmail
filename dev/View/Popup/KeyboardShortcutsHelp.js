@@ -14,27 +14,27 @@ class KeyboardShortcutsHelpPopupView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
+		dom.querySelectorAll('a[data-toggle="tab"]').forEach(node => node.Tab || new BSN.Tab(node));
+
 		key(
 			'tab, shift+tab, left, right',
 			KeyState.PopupKeyboardShortcutsHelp,
 			((event, handler)=>{
 				if (event && handler) {
-					const $tabs = dom.find('.nav.nav-tabs > li'),
-						isNext = handler && ('tab' === handler.shortcut || 'right' === handler.shortcut);
+					const tabs = dom.querySelectorAll('.nav.nav-tabs > li'),
+						last = tabs.length - 1;
+					let next = 0;
+					tabs.forEach((node, index) => {
+						if (node.matches('.active')) {
+							if (['tab','right'].includes(handler.shortcut)) {
+								next = index < last ? index+1 : 0;
+							} else {
+								next = index ? index-1 : last;
+							}
+						}
+					});
 
-					let index = $tabs.index($tabs.filter('.active'));
-					if (!isNext && 0 < index) {
-						index -= 1;
-					} else if (isNext && index < $tabs.length - 1) {
-						index += 1;
-					} else {
-						index = isNext ? 0 : $tabs.length - 1;
-					}
-
-					$tabs
-						.eq(index)
-						.find('a[data-toggle="tab"]')
-						.tab('show');
+					tabs[next].querySelector('a[data-toggle="tab"]').Tab.show();
 				}
 			}).throttle(100)
 		);

@@ -31,7 +31,7 @@ class AbstractInput extends AbstractComponent {
 		});
 
 		if (undefined !== params.width && params.element) {
-			params.element.find('input,select,textarea').css('width', params.width);
+			params.element.querySelectorAll('input,select,textarea').forEach(node => node.style.width = params.width);
 		}
 
 		this.disposable.push(this.className);

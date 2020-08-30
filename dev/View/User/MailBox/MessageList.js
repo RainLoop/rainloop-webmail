@@ -15,7 +15,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import { bMobileDevice, leftPanelDisabled, moveAction } from 'Common/Globals';
 
-import { computedPagenatorHelper, friendlySize, htmlToElement } from 'Common/Utils';
+import { computedPagenatorHelper, friendlySize } from 'Common/Utils';
 
 import { mailBox, append } from 'Common/Links';
 import { Selector } from 'Common/Selector';
@@ -502,7 +502,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			oMessageListItem.checked(true);
 		}
 
-		const el = htmlToElement('<div class="draggablePlace">' +
+		const el = Element.fromHTML('<div class="draggablePlace">' +
 			'<span class="text"></span>&nbsp;' +
 			'<i class="icon-copy icon-white visible-on-ctrl"></i>' +
 			'<i class="icon-mail icon-white hidden-on-ctrl"></i>' +
@@ -739,41 +739,33 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		const self = this;
+		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
 
-		this.selector.init(dom[0].querySelector('.b-content'), KeyState.MessageList);
+		this.selector.init(dom.querySelector('.b-content'), KeyState.MessageList);
 
-		if (this.mobile) {
-			dom.on('click', () => {
-				leftPanelDisabled(true);
-			});
-		}
+		dom.addEventListener('click', event => {
+			this.mobile && leftPanelDisabled(true);
 
-		dom
-			.on('click', '.messageList .b-message-list-wrapper', () => {
-				if (Focused.MessageView === AppStore.focusedState()) {
-					AppStore.focusedState(Focused.MessageList);
-				}
-			})
-			.on('click', '.e-pagenator .e-page', function() {
-				// eslint-disable-line prefer-arrow-callback
-				self.gotoPage(ko.dataFor(this)); // eslint-disable-line no-invalid-this
-			})
-			.on('click', '.messageList .checkboxCkeckAll', () => {
-				this.checkAll(!this.checkAll());
-			})
-			.on('click', '.messageList .messageListItem .flagParent', function() {
-				// eslint-disable-line prefer-arrow-callback
-				self.flagMessages(ko.dataFor(this)); // eslint-disable-line no-invalid-this
-			})
-			.on('click', '.messageList .messageListItem .threads-len', function() {
-				// eslint-disable-line prefer-arrow-callback
-				self.gotoThread(ko.dataFor(this)); // eslint-disable-line no-invalid-this
-			})
-			.on('dblclick', '.messageList .messageListItem .actionHandle', function() {
-				// eslint-disable-line prefer-arrow-callback
-				self.gotoThread(ko.dataFor(this)); // eslint-disable-line no-invalid-this
-			});
+			if (eqs(event, '.messageList .b-message-list-wrapper') && Focused.MessageView === AppStore.focusedState()) {
+				AppStore.focusedState(Focused.MessageList);
+			}
+
+			let el = eqs(event, '.e-pagenator .e-page');
+			el && this.gotoPage(ko.dataFor(el));
+
+			eqs(event, '.messageList .checkboxCkeckAll') && this.checkAll(!this.checkAll());
+
+			el = eqs(event, '.messageList .messageListItem .flagParent');
+			el && this.flagMessages(ko.dataFor(el));
+
+			el = eqs(event, '.messageList .messageListItem .threads-len');
+			el && this.gotoThread(ko.dataFor(el));
+		});
+
+		dom.addEventListener('dblclick', event => {
+			let  el = eqs(event, '.messageList .messageListItem .actionHandle');
+			el && this.gotoThread(ko.dataFor(el));
+		});
 
 		this.initUploaderForAppend();
 		this.initShortcuts();

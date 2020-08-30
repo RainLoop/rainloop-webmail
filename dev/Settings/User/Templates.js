@@ -58,14 +58,9 @@ class TemplatesUserSettings {
 	}
 
 	onBuild(oDom) {
-		const self = this;
-
-		oDom.on('click', '.templates-list .template-item .e-action', function() {
-			// eslint-disable-line prefer-arrow-callback
-			const template = ko.dataFor(this); // eslint-disable-line no-invalid-this
-			if (template) {
-				self.editTemplate(template);
-			}
+		oDom.addEventListener('click', event => {
+			const el = event.target.closestWithin('.templates-list .template-item .e-action', oDom);
+			el && ko.dataFor(el) && this.editTemplate(ko.dataFor(el));
 		});
 
 		this.reloadTemplates();

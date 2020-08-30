@@ -29,12 +29,12 @@ class MenuSettingsUserView extends AbstractViewNext {
 
 	onBuild(dom) {
 		if (this.mobile) {
-			dom.on('click', '.b-settings-menu .e-item.selectable', () => {
-				leftPanelDisabled(true);
-			});
+			dom.addEventListener('click', event =>
+				event.target.closestWithin('.b-settings-menu .e-item.selectable', dom) && leftPanelDisabled(true)
+			);
 		}
 
-		key('up, down', KeyState.Settings, settingsMenuKeysHandler(jQuery('.b-settings-menu .e-item', dom)));
+		key('up, down', KeyState.Settings, settingsMenuKeysHandler(dom.querySelectoAll('.b-settings-menu .e-item')));
 	}
 
 	link(route) {

@@ -610,7 +610,7 @@ class ContactsPopupView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		this.selector.init(dom[0].querySelector('.b-list-content'), KeyState.ContactList);
+		this.selector.init(dom.querySelector('.b-list-content'), KeyState.ContactList);
 
 		key('delete', KeyState.ContactList, () => {
 			this.deleteCommand();
@@ -624,11 +624,10 @@ class ContactsPopupView extends AbstractViewNext {
 
 		const self = this;
 
-		dom.on('click', '.e-pagenator .e-page', function() {
-			// eslint-disable-line prefer-arrow-callback
-			const page = ko.dataFor(this); // eslint-disable-line no-invalid-this
-			if (page) {
-				self.contactsPage(pInt(page.value));
+		dom.addEventListener('click', event => {
+			let el = event.target.closestWithin('.e-pagenator .e-page', dom);
+			if (el && ko.dataFor(el)) {
+				self.contactsPage(pInt(ko.dataFor(el).value));
 				self.reloadContactList();
 			}
 		});

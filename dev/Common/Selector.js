@@ -265,26 +265,23 @@ class Selector {
 		this.oContentScrollable = contentScrollable;
 
 		if (contentScrollable) {
-			jQuery(contentScrollable)
-				.on('selectstart', (event) => {
-					if (event && event.preventDefault) {
-						event.preventDefault();
-					}
-				})
-				.on('click', this.sItemSelector, (event) => {
-					this.actionClick(ko.dataFor(event.currentTarget), event);
-				})
-				.on('click', this.sItemCheckedSelector, (event) => {
-					const item = ko.dataFor(event.currentTarget);
+			contentScrollable.addEventListener('click', event => {
+				let el = event.target.closestWithin(this.sItemSelector, contentScrollable);
+				el && this.actionClick(ko.dataFor(el), event);
+
+				el = event.target.closestWithin(this.sItemCheckedSelector, contentScrollable);
+				if (el) {
+					const item = ko.dataFor(el);
 					if (item) {
-						if (event && event.shiftKey) {
+						if (event.shiftKey) {
 							this.actionClick(item, event);
 						} else {
 							this.focusedItem(item);
 							item.checked(!item.checked());
 						}
 					}
-				});
+				}
+			});
 
 			key('enter', keyScope, () => {
 				const focused = this.focusedItem();

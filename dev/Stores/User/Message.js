@@ -6,8 +6,7 @@ import {
 	pInt,
 	pString,
 	plainToHtml,
-	findEmailAndLinks,
-	htmlToElement
+	findEmailAndLinks
 } from 'Common/Utils';
 
 import {
@@ -45,7 +44,7 @@ import { getApp } from 'Helper/Apps/User';
 import Remote from 'Remote/User/Ajax';
 
 const
-	hcont = htmlToElement('<div area="hidden" style="position:absolute;left:-5000px"></div>'),
+	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-5000px"></div>'),
 	getRealHeight = el => {
 		hcont.innerHTML = el.outerHTML;
 		const result = hcont.clientHeight;
@@ -428,7 +427,7 @@ class MessageUserStore {
 			if (node.textContent.trim() && !node.parentNode.closest('blockquote')) {
 				let h = node.clientHeight || getRealHeight(node);
 				if (0 === h || 100 < h) {
-					const el = htmlToElement('<span class="rlBlockquoteSwitcher">•••</span>');
+					const el = Element.fromHTML('<span class="rlBlockquoteSwitcher">•••</span>');
 					node.classList.add('rl-bq-switcher','hidden-bq');
 					node.before(el);
 					el.addEventListener('click', () => node.classList.toggle('hidden-bq'));
@@ -539,7 +538,7 @@ class MessageUserStore {
 
 						iMessageBodyCacheCount += 1;
 
-						body = htmlToElement('<div id="' + id + '" hidden="" class="rl-cache-class b-text-part '
+						body = Element.fromHTML('<div id="' + id + '" hidden="" class="rl-cache-class b-text-part '
 							+ (isHtml ? 'html' : 'plain') + '">'
 							+ findEmailAndLinks(resultHtml)
 							+ '</div>');

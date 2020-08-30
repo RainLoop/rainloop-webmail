@@ -79,8 +79,9 @@ config.paths.js = {
 			'vendors/jua/jua.min.js', // custom
 			'vendors/keymaster/keymaster.js', // custom (modified)
 			'vendors/qr.js/qr.min.js', // fixed (license)
-			'vendors/bootstrap/js/bootstrap.min.js', // fixed
+			'vendors/bootstrap/js/bootstrap.native.min.js', // fixed
 			'dev/prototype-date.js',
+			'dev/prototype-element.js',
 			'dev/prototype-function.js',
 			'node_modules/knockout/build/output/knockout-latest.js',
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',

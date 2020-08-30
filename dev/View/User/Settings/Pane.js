@@ -42,11 +42,7 @@ class PaneSettingsUserView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		if (this.mobile) {
-			dom.on('click', () => {
-				leftPanelDisabled(true);
-			});
-		}
+		this.mobile && dom.addEventListener('click', () => leftPanelDisabled(true));
 	}
 
 	backToMailBoxClick() {

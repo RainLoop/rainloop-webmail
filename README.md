@@ -78,32 +78,33 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Replaced momentToNode with proper HTML5 <time>
 * Replaced resize listeners with ResizeObserver
 * Removed non-community (aka Prem/Premium/License) code
+* Replaced bootstrap.js with native drop-in replacement
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  973.239	|
-|app.js      	|4.184.455	|2.640.205	|
+|admin.js    	|2.130.942	|  971.538	|
+|app.js      	|4.184.455	|2.635.592	|
 |boot.js     	|  671.522	|   43.824	|
-|libs.js     	|  647.614	|  316.970	|
+|libs.js     	|  647.614	|  315.749	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.974.238	|
+|TOTAL      	|7.960.367	|3.966.789	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  132.156	| 73.657	| 38.184	| 32.740	|
-|app.min.js      	|  511.202	|  356.109	|140.462	| 93.738	| 75.150	|
+|admin.min.js    	|  252.147	|  132.110	| 73.657	| 38.198	| 32.764	|
+|app.min.js      	|  511.202	|  355.996	|140.462	| 93.741	| 75.209	|
 |boot.min.js     	|   66.007	|    5.560	| 22.567	|  2.341	|  2.004	|
-|libs.min.js     	|  572.545	|  300.691	|176.720	| 92.925	| 82.046	|
+|libs.min.js     	|  572.545	|  299.213	|176.720	| 92.512	| 81.723	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  794.516	|424.718	|227.188	|191.940	|
+|TOTAL          	|1.434.353	|  792.879	|424.718	|226.792	|191.700	|
 
-639.837 bytes (197.530 gzip) is not much, but it feels faster.
+641.474 bytes (197.926 gzip) is not much, but it feels faster.
 
 
 |css/*       	|1.14.0   	|native   	|
 |--------------	|--------:	|--------:	|
-|app.css    	|  340.334	|  266.739	|
-|app.min.css	|  274.791	|  211.574	|
+|app.css    	|  340.334	|  266.793	|
+|app.min.css	|  274.791	|  211.620	|
 
 
 ### PHP73 branch

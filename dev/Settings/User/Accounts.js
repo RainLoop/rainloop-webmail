@@ -99,23 +99,13 @@ class AccountsUserSettings {
 	}
 
 	onBuild(oDom) {
-		const self = this;
+		oDom.addEventListener('click', event => {
+			let el = event.target.closestWithin('.accounts-list .account-item .e-action', oDom);
+			el && ko.dataFor(el) && this.editAccount(ko.dataFor(el));
 
-		oDom
-			.on('click', '.accounts-list .account-item .e-action', function() {
-				// eslint-disable-line prefer-arrow-callback
-				const account = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (account) {
-					self.editAccount(account);
-				}
-			})
-			.on('click', '.identities-list .identity-item .e-action', function() {
-				// eslint-disable-line prefer-arrow-callback
-				const identity = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (identity) {
-					self.editIdentity(identity);
-				}
-			});
+			el = event.target.closestWithin('.identities-list .identity-item .e-action', oDom);
+			el && ko.dataFor(el) && this.editIdentity(ko.dataFor(el));
+		});
 	}
 }
 

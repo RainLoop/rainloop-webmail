@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
-import { isNonEmptyArray, pString, htmlToElement } from 'Common/Utils';
+import { isNonEmptyArray, pString } from 'Common/Utils';
 
 import AccountStore from 'Stores/User/Account';
 
@@ -349,7 +349,7 @@ class PgpUserStore {
 			if (encrypted || signed) {
 				const domText = dom.textContent;
 
-				verControl = htmlToElement('<div class="b-openpgp-control"><i class="icon-lock"></i></div>'); // 🔒
+				verControl = Element.fromHTML('<div class="b-openpgp-control"><i class="icon-lock"></i></div>'); // 🔒
 				if (encrypted) {
 					verControl.title = i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC');
 					verControl.addEventHandler('click', domControlEncryptedClickHelper(this, dom, domText, recipients));

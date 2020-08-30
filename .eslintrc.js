@@ -39,7 +39,9 @@ module.exports = {
 		// vendors/jua
 		'Jua': "readonly",
 		// vendors/qr.js
-		'qr': "readonly"
+		'qr': "readonly",
+		// vendors/bootstrap/bootstrap.native.js
+		'BSN': "readonly"
 	},
 	// http://eslint.org/docs/rules/
 	rules: {

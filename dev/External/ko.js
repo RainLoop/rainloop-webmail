@@ -92,18 +92,18 @@ ko.bindingHandlers.tooltipErrorTip = {
 };
 
 ko.bindingHandlers.registrateBootstrapDropdown = {
-	init: element => rl.Dropdowns.registrate(element)
+	init: element => {
+		rl.Dropdowns.registrate(element);
+		element.ddBtn = new BSN.Dropdown(element.querySelector('[data-toggle="dropdown"]'));
+	}
 };
 
 ko.bindingHandlers.openDropdownTrigger = {
 	update: (element, fValueAccessor) => {
 		if (ko.unwrap(fValueAccessor())) {
-			const $el = $(element), t = $el.find('.dropdown-toggle');
-			if (!$el.hasClass('open')) {
-				t.dropdown('toggle');
-			}
-
-			t.focus();
+			const el = element.ddBtn;
+			el.open || el.Dropdown.toggle();
+//			el.focus();
 
 			rl.Dropdowns.detectVisibility();
 			fValueAccessor()(false);
@@ -112,11 +112,9 @@ ko.bindingHandlers.openDropdownTrigger = {
 };
 
 ko.bindingHandlers.dropdownCloser = {
-	init: element => $(element)
-		.closest('.dropdown')
-		.on('click', '.e-item', () => {
-			$(element).dropdown('toggle');
-		})
+	init: element => element.closest('.dropdown').addEventListener('click', event =>
+		event.target.closestWithin('.e-item', element) && element.ddBtn.Dropdown.toggle()
+	)
 };
 
 ko.bindingHandlers.popover = {
@@ -179,28 +177,22 @@ ko.bindingHandlers.modal = {
 	init: (element, fValueAccessor) => {
 		const Globals = require('Common/Globals');
 
-		$(element)
-			.toggleClass('fade', !Globals.bMobileDevice)
-			.modal({
-				'keyboard': false,
-				'show': ko.unwrap(fValueAccessor())
-			})
-			.find('.close')
-			.on('click.koModal', () => {
-				fValueAccessor()(false);
-			});
-
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			$(element)
-				.off('shown.koModal')
-				.find('.close')
-				.off('click.koModal');
+		element.classList.toggle('fade', !Globals.bMobileDevice);
+		new BSN.Modal(element, {
+			'keyboard': false,
+			'show': ko.unwrap(fValueAccessor())
 		});
+		const close = element.querySelector('.close'), click = () => fValueAccessor()(false);
+		close && close.addEventListener('click.koModal', click);
+
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () =>
+			close.removeEventListener('click.koModal', click)
+		);
 	},
 	update: (element, fValueAccessor) => {
 		const htmlCL = doc.documentElement.classList;
 
-		$(element).modal(ko.unwrap(fValueAccessor()) ? 'show' : 'hide');
+		element.Modal[ko.unwrap(fValueAccessor()) ? 'show' : 'hide']();
 
 		if (htmlCL.contains('no-mobile')) {
 			htmlCL.add('rl-modal-animation');

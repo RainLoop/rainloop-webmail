@@ -166,13 +166,11 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 		vm.viewModelPosition = ViewModelClass.__type;
 
 		if (vmPlace) {
-			vmDom = jQuery('<div></div>');
-			vmDom[0].classList.add('rl-view-model', 'RL-' + vm.viewModelTemplateID);
-			vmDom[0].hidden = true;
-			vmPlace.append(vmDom[0]);
+			vmDom = Element.fromHTML('<div class="rl-view-model RL-' + vm.viewModelTemplateID + '" hidden=""></div>');
+			vmPlace.append(vmDom);
 
-			vm.viewModelDom = vmDom[0];
-			ViewModelClass.__dom = vmDom[0];
+			vm.viewModelDom = vmDom;
+			ViewModelClass.__dom = vmDom;
 
 			if (ViewType.Popup === position) {
 				vm.cancelCommand = vm.closeCommand = createCommand(() => {
@@ -203,7 +201,7 @@ export function buildViewModel(ViewModelClass, vmScreen) {
 			}
 
 			ko.applyBindingAccessorsToNode(
-				vmDom[0],
+				vmDom,
 				{
 					i18nInit: true,
 					template: () => ({ name: vm.viewModelTemplateID })
@@ -509,19 +507,18 @@ function commandDecorator(canExecute = true) {
  * @param {miced} $items
  * @returns {Function}
  */
-function settingsMenuKeysHandler($items) {
+function settingsMenuKeysHandler(items) {
 	return ((event, handler)=>{
-		const up = handler && 'up' === handler.shortcut;
-
-		if (event && $items.length) {
-			let index = $items.index($items.filter('.selected'));
-			if (up && 0 < index) {
-				index -= 1;
-			} else if (!up && index < $items.length - 1) {
-				index += 1;
+		let index = items.length;
+		if (event && index) {
+			while (index-- && !items[index].matches('.selected'));
+			if (handler && 'up' === handler.shortcut) {
+				 index && --index;
+			} else if (index < items.length - 1) {
+				++index;
 			}
 
-			const resultHash = $items.eq(index).attr('href');
+			const resultHash = items[index].href;
 			if (resultHash) {
 				setHash(resultHash, false, true);
 			}

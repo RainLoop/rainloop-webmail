@@ -28,12 +28,12 @@ const componentExportHelper = (ClassObject, templateID = '') => ({
 
 			if (componentInfo && componentInfo.element) {
 				params.component = componentInfo;
-				params.element = jQuery(componentInfo.element);
+				params.element = componentInfo.element;
 
 				i18nToNodes(componentInfo.element);
 
 				if (undefined !== params.inline && ko.unwrap(params.inline)) {
-					params.element.css('display', 'inline-block');
+					params.element.style.display = 'inline-block';
 				}
 			}
 

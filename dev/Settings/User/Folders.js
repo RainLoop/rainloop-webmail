@@ -70,19 +70,13 @@ class FoldersUserSettings {
 	}
 
 	onBuild(oDom) {
-		oDom
-			.on('mouseover', '.delete-folder-parent', () => {
-				this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_DELETE_FOLDER'));
-			})
-			.on('mouseover', '.subscribe-folder-parent', () => {
-				this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_SHOW_HIDE_FOLDER'));
-			})
-			.on('mouseover', '.check-folder-parent', () => {
-				this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_CHECK_FOR_NEW_MESSAGES'));
-			})
-			.on('mouseout', '.subscribe-folder-parent, .check-folder-parent, .delete-folder-parent', () => {
-				this.folderListHelp('');
-			});
+		oDom.addEventListener('mouseover', event => {
+			const eqs = s => event.target.closestWithin(s, oDom);
+			eqs('.delete-folder-parent') && this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_DELETE_FOLDER'));
+			eqs('.subscribe-folder-parent') && this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_SHOW_HIDE_FOLDER'));
+			eqs('.check-folder-parent') && this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_CHECK_FOR_NEW_MESSAGES'));
+		});
+		oDom.addEventListener('mouseout', () => this.folderListHelp(''));
 	}
 
 	createFolder() {

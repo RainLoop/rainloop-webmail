@@ -39,13 +39,9 @@ class DomainsAdminSettings {
 	}
 
 	onBuild(oDom) {
-		const self = this;
-		oDom.on('click', '.b-admin-domains-list-table .e-item .e-action', function() {
-			// eslint-disable-line prefer-arrow-callback
-			const domainItem = ko.dataFor(this); // eslint-disable-line no-invalid-this
-			if (domainItem) {
-				Remote.domain(self.onDomainLoadRequest, domainItem.name);
-			}
+		oDom.addEventListener('click', event => {
+			let el = event.target.closestWithin('.b-admin-domains-list-table .e-item .e-action', oDom);
+			el && ko.dataFor(el) && Remote.domain(this.onDomainLoadRequest, ko.dataFor(el).name);
 		});
 
 		getApp().reloadDomainList();

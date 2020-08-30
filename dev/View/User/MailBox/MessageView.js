@@ -74,7 +74,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				}
 			}, this.messageVisibility);
 
-		this.oDom = null;
 		this.oHeaderDom = null;
 		this.oMessageScrollerDom = null;
 
@@ -488,10 +487,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		const self = this;
-
-		this.oDom = dom;
-
 		this.fullScreenMode.subscribe((value) => {
 			if (value && this.message()) {
 				AppStore.focusedState(Focused.MessageView);
@@ -502,7 +497,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0');
 		});
 
-		this.oHeaderDom = dom[0].querySelector('.messageItemHeader');
+		this.oHeaderDom = dom.querySelector('.messageItemHeader');
 		if (this.oHeaderDom) {
 			if (!this.resizeObserver) {
 				this.resizeObserver = new ResizeObserver(this.checkHeaderHeight.throttle(50).bind(this));
@@ -512,37 +507,30 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			this.resizeObserver.disconnect();
 		}
 
-		if (this.mobile) {
-			dom.on('click', () => {
-				leftPanelDisabled(true);
-			});
-		}
+		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
+		dom.addEventListener('click', event => {
+			this.mobile && leftPanelDisabled(true);
 
-		dom
-			.on('click', 'a', function(event) {
-				// eslint-disable-line prefer-arrow-callback
-				// setup maito protocol
+			let el = eqs(event, 'a');
+			if (el) {
 				return !(
 					!!event &&
 					3 !== event.which &&
 					mailToHelper(
-						this.href,
-						Settings.capa(Capa.Composer) ? require('View/Popup/Compose') : null // eslint-disable-line no-invalid-this
+						el.href,
+						Settings.capa(Capa.Composer) ? require('View/Popup/Compose') : null
 					)
 				);
-			})
-			.on('click', '.attachmentsPlace .attachmentIconParent', (event) => {
-				if (event && event.stopPropagation) {
-					event.stopPropagation();
-				}
-			})
-			.on('click', '.attachmentsPlace .showPreplay', function(event) {
-				// eslint-disable-line prefer-arrow-callback
-				if (event && event.stopPropagation) {
-					event.stopPropagation();
-				}
+			}
 
-				const attachment = ko.dataFor(this); // eslint-disable-line no-invalid-this
+			if (eqs(event, '.attachmentsPlace .attachmentIconParent')) {
+				event.stopPropagation();
+			}
+
+			el = eqs(event, '.attachmentsPlace .showPreplay');
+			if (el) {
+				event.stopPropagation();
+				const attachment = ko.dataFor(el); // eslint-disable-line no-invalid-this
 				if (attachment && Audio.supported) {
 					switch (true) {
 						case Audio.supportedMp3 && attachment.isMp3():
@@ -557,17 +545,17 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 						// no default
 					}
 				}
-			})
-			.on('click', '.attachmentsPlace .attachmentItem .attachmentNameParent', function() {
+			}
+
+			el = eqs(event, '.attachmentsPlace .attachmentItem .attachmentNameParent');
+			if (el) {
+				const attachment = ko.dataFor(el);
+				attachment && attachment.download && getApp().download(attachment.linkDownload());
+			}
+
+			if (eqs(event, '.messageItemHeader .subjectParent .flagParent')) {
 				// eslint-disable-line prefer-arrow-callback
-				const attachment = ko.dataFor(this); // eslint-disable-line no-invalid-this
-				if (attachment && attachment.download) {
-					getApp().download(attachment.linkDownload());
-				}
-			})
-			.on('click', '.messageItemHeader .subjectParent .flagParent', function() {
-				// eslint-disable-line prefer-arrow-callback
-				const message = self.message();
+				const message = this.message();
 				if (message) {
 					getApp().messageListAction(
 						message.folderFullNameRaw,
@@ -575,10 +563,12 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 						[message]
 					);
 				}
-			})
-			.on('click', '.thread-list .flagParent', function() {
+			}
+
+			el = eqs(event, '.thread-list .flagParent');
+			if (el) {
 				// eslint-disable-line prefer-arrow-callback
-				const message = ko.dataFor(this); // eslint-disable-line no-invalid-this
+				const message = ko.dataFor(el); // eslint-disable-line no-invalid-this
 				if (message && message.folder && message.uid) {
 					getApp().messageListAction(
 						message.folder,
@@ -587,10 +577,11 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 					);
 				}
 
-				self.threadsDropdownTrigger(true);
+				this.threadsDropdownTrigger(true);
 
 				return false;
-			});
+			}
+		});
 
 		AppStore.focusedState.subscribe((value) => {
 			if (Focused.MessageView !== value) {
@@ -603,8 +594,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			this.messageDomFocused(KeyState.MessageView === value && !inFocus());
 		});
 
-		const node = dom.find('.messageItem');
-		this.oMessageScrollerDom = node && node[0] ? node[0] : null;
+		this.oMessageScrollerDom = dom.querySelector('.messageItem');
 
 		this.initShortcuts();
 	}
