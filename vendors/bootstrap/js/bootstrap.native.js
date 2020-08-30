@@ -9,88 +9,81 @@ window.BSN = (() => {
 
 	const transitionEndEvent = 'transitionend',
 		doc = document,
-		body = doc.body;
+		body = doc.body,
+		setFocus = element => element.focus ? element.focus() : element.setActive();
 
-	function getElementTransitionDuration(element) {
-		var duration = parseFloat(getComputedStyle(element).transitionDuration);
-		duration = typeof duration === 'number' && !isNaN(duration) ? duration * 1000 : 0;
-		return duration;
-	}
-
-	function emulateTransitionEnd(element,handler){
-		var called = 0, duration = getElementTransitionDuration(element);
-		duration ? element.addEventListener( transitionEndEvent, function transitionEndWrapper(e){
+	function emulateTransitionEnd(element,handler) {
+		var called = 0, duration = parseFloat(getComputedStyle(element).transitionDuration),
+			transitionEndWrapper = e => {
 				!called && handler(e), called = 1;
 				element.removeEventListener( transitionEndEvent, transitionEndWrapper);
-			})
-		 : setTimeout(() => { !called && handler(), called = 1; }, 17);
-	}
-
-	function queryElement(selector, parent) {
-		var lookUp = parent && parent instanceof Element ? parent : doc;
-		return selector instanceof Element ? selector : lookUp.querySelector(selector);
-	}
-
-	function setFocus (element){
-		element.focus ? element.focus() : element.setActive();
+			};
+		(isFinite(duration) && duration)
+			? element.addEventListener( transitionEndEvent, transitionEndWrapper )
+			: setTimeout(() => { !called && handler(), called = 1; }, 17);
 	}
 
 	function Dropdown(element) {
 		var self = this,
 			parent, menu, menuItems = [];
-		function preventEmptyAnchor(anchor) {
-			(anchor.href && anchor.href.slice(-1) === '#' || anchor.parentNode && anchor.parentNode.href
-				&& anchor.parentNode.href.slice(-1) === '#') && this.preventDefault();
+		function preventEmptyAnchor(ev, anchor) {
+			const p = anchor.parentNode;
+			((anchor.href && anchor.href.slice(-1) === '#') || (p && p.href && p.href.slice(-1) === '#'))
+			&& ev.preventDefault();
 		}
-		function toggleDismiss() {
-			var action = element.open ? 'addEventListener' : 'removeEventListener';
+		function toggleEvents() {
+			let action = element.open ? 'addEventListener' : 'removeEventListener';
 			doc[action]('click',dismissHandler,false);
 			doc[action]('keydown',preventScroll,false);
 			doc[action]('keyup',keyHandler,false);
 			doc[action]('focus',dismissHandler,false);
 		}
 		function dismissHandler(e) {
-			var eventTarget = e.target,
+			let eventTarget = e.target,
 				hasData = eventTarget && (eventTarget.getAttribute('data-toggle')
-					|| eventTarget.parentNode && eventTarget.parentNode.getAttribute
-					&& eventTarget.parentNode.getAttribute('data-toggle'));
+					|| (eventTarget.parentNode && eventTarget.parentNode.getAttribute('data-toggle')));
 			if ( e.type === 'focus' && (eventTarget === element || eventTarget === menu || menu.contains(eventTarget) ) ) {
 				return;
 			}
 			if ( hasData && (eventTarget === menu || menu.contains(eventTarget)) ) { return; }
 			self.hide();
-			preventEmptyAnchor.call(e,eventTarget);
+			preventEmptyAnchor(e,eventTarget);
 		}
 		function clickHandler(e) {
 			self.show();
-			preventEmptyAnchor.call(e,e.target);
+			preventEmptyAnchor(e,e.target);
 		}
 		function preventScroll(e) {
-			var key = e.which || e.keyCode;
-			if( key === 38 || key === 40 ) { e.preventDefault(); }
+			( e.code === 'ArrowUp' || e.code === 'ArrowDown' ) && e.preventDefault();
 		}
 		function keyHandler(e) {
-			var key = e.which || e.keyCode,
-				activeItem = doc.activeElement,
+			var activeItem = doc.activeElement,
 				isSameElement = activeItem === element,
 				isInsideMenu = menu.contains(activeItem),
 				isMenuItem = activeItem.parentNode === menu || activeItem.parentNode.parentNode === menu,
 				idx = menuItems.indexOf(activeItem);
 			if ( isMenuItem ) {
 				idx = isSameElement ? 0
-					: key === 38 ? (idx>1?idx-1:0)
-					: key === 40 ? (idx<menuItems.length-1?idx+1:idx) : idx;
+					: e.code === 'ArrowUp' ? (idx>1?idx-1:0)
+					: e.code === 'ArrowDown' ? (idx<menuItems.length-1?idx+1:idx) : idx;
 				menuItems[idx] && setFocus(menuItems[idx]);
 			}
 			if ( (menuItems.length && isMenuItem
 				|| !menuItems.length && (isInsideMenu || isSameElement)
 				|| !isInsideMenu )
-				&& element.open && key === 27
+				&& element.open && e.code === 'Escape'
 			) {
 				self.toggle();
 			}
 		}
 		self.show = () => {
+			menu = parent.querySelector('.dropdown-menu');
+			menuItems = [];
+			Array.from(menu.children).forEach(child => {
+				child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
+				child.tagName === 'A' && menuItems.push(child);
+			});
+			!('tabindex' in menu) && menu.setAttribute('tabindex', '0');
 			menu.classList.add('show');
 			parent.classList.add('show');
 			element.setAttribute('aria-expanded',true);
@@ -98,7 +91,7 @@ window.BSN = (() => {
 			element.removeEventListener('click',clickHandler,false);
 			setTimeout(() => {
 				setFocus( menu.getElementsByTagName('INPUT')[0] || element );
-				toggleDismiss();
+				toggleEvents();
 			},1);
 		};
 		self.hide = () => {
@@ -106,21 +99,13 @@ window.BSN = (() => {
 			parent.classList.remove('show');
 			element.setAttribute('aria-expanded',false);
 			element.open = false;
-			toggleDismiss();
+			toggleEvents();
 			setFocus(element);
 			setTimeout(() => element.Dropdown && element.addEventListener('click',clickHandler,false), 1);
 		};
 		self.toggle = () => (parent.classList.contains('show') && element.open) ? self.hide() : self.show();
 		parent = element.parentNode;
-		menu = queryElement('.dropdown-menu', parent);
-		Array.from(menu.children).forEach(child => {
-			child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
-			child.tagName === 'A' && menuItems.push(child);
-		});
-		if ( !element.Dropdown ) {
-			!('tabindex' in menu) && menu.setAttribute('tabindex', '0');
-			element.addEventListener('click',clickHandler,false);
-		}
+		element.addEventListener('click',clickHandler,false);
 		element.open = false;
 		element.Dropdown = self;
 	}
@@ -152,8 +137,8 @@ window.BSN = (() => {
 			return widthValue;
 		}
 		function toggleEvents(action) {
-			action = action ? 'addEventListener' : 'removeEventListener';
-			window[action]( 'resize', () => modal.classList.contains('show') && setScrollbar(), { passive: true });
+			window[action ? 'addEventListener' : 'removeEventListener']( 'resize',
+				() => modal.classList.contains('show') && setScrollbar(), { passive: true });
 		}
 		function beforeShow() {
 			modal.style.display = 'block';
@@ -205,9 +190,9 @@ window.BSN = (() => {
 			if (!li.classList.contains('active')) {
 				const previous = el.closest('ul').querySelector('.active a');
 				previous.closest('li').classList.remove('active');
-				queryElement(previous.getAttribute('href')).classList.remove('active');
+				doc.querySelector(previous.getAttribute('href')).classList.remove('active');
 				li.classList.add('active');
-				queryElement(el.getAttribute('href')).classList.add('active');
+				doc.querySelector(el.getAttribute('href')).classList.add('active');
 			}
 		}
 	}
