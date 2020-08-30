@@ -26,7 +26,7 @@ class MenuSettingsAdminView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		key('up, down', KeyState.Settings, settingsMenuKeysHandler(dom.querySelectoAll('.b-admin-menu .e-item')));
+		key('up, down', KeyState.Settings, settingsMenuKeysHandler(dom.querySelectorAll('.b-admin-menu .e-item')));
 	}
 }
 
