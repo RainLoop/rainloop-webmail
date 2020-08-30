@@ -2,7 +2,7 @@
 
 class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	public function Init() : void
 	{
 		$this->addHook('filter.smtp-credentials', 'FilterSmtpCredentials');
 	}
@@ -49,7 +49,7 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('smtp_host')->SetLabel('SMTP Host')

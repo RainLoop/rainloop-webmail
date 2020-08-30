@@ -5,7 +5,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return void
 	 */
-	public function Init()
+	public function Init() : void
 	{
 		$this->addHook('filter.app-data', 'FilterAppData');
 		$this->addHook('filter.action-params', 'FilterActionParams');
@@ -17,7 +17,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	protected function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('email')->SetLabel('Demo Email')

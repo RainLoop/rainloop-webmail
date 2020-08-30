@@ -2,7 +2,7 @@
 
 class ProxyauthLoginExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	public function Init() : void
 	{
 		$this->addHook('event.login-post-login-provide', 'EventLoginPostLoginProvide');
 	}

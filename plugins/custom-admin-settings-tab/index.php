@@ -5,7 +5,7 @@ class CustomAdminSettingsTabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return void
 	 */
-	public function Init()
+	public function Init() : void
 	{
 		$this->UseLangs(true); // start use langs folder
 

@@ -2,7 +2,7 @@
 
 class AddXOriginatingIpHeaderPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	public function Init() : void
 	{
 		$this->addHook('filter.build-message', 'FilterBuildMessage');
 	}
@@ -27,7 +27,7 @@ class AddXOriginatingIpHeaderPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('check_proxy')

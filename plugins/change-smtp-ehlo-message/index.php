@@ -2,7 +2,7 @@
 
 class ChangeSmtpEhloMessagePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	public function Init() : void
 	{
 		$this->addHook('filter.smtp-credentials', 'FilterSmtpCredentials');
 	}

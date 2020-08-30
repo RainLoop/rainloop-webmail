@@ -16,7 +16,7 @@ class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	private $imap_prefix = "mail.";
 	private $smtp_prefix = "mail.";
 
-	public function Init()
+	public function Init() : void
 	{
 		$this->addHook('filter.smtp-credentials', 'FilterSmtpCredentials');
 		$this->addHook('filter.imap-credentials', 'FilterImapCredentials');

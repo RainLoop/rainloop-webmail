@@ -2,7 +2,7 @@
 
 class WhiteListPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	public function Init() : void
 	{
 		$this->addHook('filter.login-credentials', 'FilterLoginCredentials');
 	}
@@ -32,7 +32,7 @@ class WhiteListPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('auth_error')->SetLabel('Auth Error')

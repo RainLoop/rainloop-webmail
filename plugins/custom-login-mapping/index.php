@@ -2,7 +2,7 @@
 
 class CustomLoginMappingPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
-	public function Init()
+	public function Init() : void
 	{
 		$this->addHook('filter.login-credentials', 'FilterLoginСredentials');
 	}
@@ -41,7 +41,7 @@ class CustomLoginMappingPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function configMapping()
+	protected function configMapping() : array
 	{
 		return array(
 			\RainLoop\Plugins\Property::NewInstance('mapping')->SetLabel('Mapping')
