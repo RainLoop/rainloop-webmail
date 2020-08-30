@@ -3133,7 +3133,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			 && $this->Config()->Get('security', 'allow_admin_panel', true)
 			 && \openlog('rainloop', 0, \LOG_AUTHPRIV))
 			{
-				\syslog(\LOG_ERR, $this->compileLogParams('Admin Auth failed: ip={request:ip} user='.$sLogin, $oAccount, false, $aAdditionalParams));
+				\syslog(\LOG_ERR, $this->compileLogParams('Admin Auth failed: ip={request:ip} user='.$sLogin));
 				\closelog();
 			}
 			throw new Exceptions\ClientException(Notifications::AuthError);
