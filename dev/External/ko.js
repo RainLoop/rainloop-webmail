@@ -628,15 +628,6 @@ ko.observable.fn.validateEmail = function() {
 	return this;
 };
 
-ko.observable.fn.validateSimpleEmail = function() {
-	this.hasError = ko.observable(false);
-
-	this.subscribe(value => this.hasError(value && !/^.+@.+$/.test(value)));
-
-	this.valueHasMutated();
-	return this;
-};
-
 ko.observable.fn.deleteAccessHelper = function() {
 	this.extend({ falseTimeout: 3000 }).extend({ toggleSubscribeProperty: [this, 'deleteAccess'] });
 	return this;

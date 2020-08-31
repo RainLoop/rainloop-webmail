@@ -81,22 +81,6 @@ export function addSettingsViewModel(SettingsViewModelClass, template, labelName
 }
 
 /**
- * @param {Function} SettingsViewModelClass
- * @returns {void}
- */
-export function removeSettingsViewModel(SettingsViewModelClass) {
-	VIEW_MODELS['settings-removed'].push(SettingsViewModelClass);
-}
-
-/**
- * @param {Function} SettingsViewModelClass
- * @returns {void}
- */
-export function disableSettingsViewModel(SettingsViewModelClass) {
-	VIEW_MODELS['settings-disabled'].push(SettingsViewModelClass);
-}
-
-/**
  * @returns {void}
  */
 export function routeOff() {
@@ -122,7 +106,7 @@ export function screen(screenName) {
  * @param {Function} ViewModelClassToShow
  * @returns {Function|null}
  */
-export function getScreenPopup(PopuViewModelClass) {
+function getScreenPopup(PopuViewModelClass) {
 	let result = null;
 	if (PopuViewModelClass) {
 		result = PopuViewModelClass;
@@ -150,7 +134,7 @@ export function hideScreenPopup(ViewModelClassToHide) {
  * @param {Object=} vmScreen
  * @returns {*}
  */
-export function buildViewModel(ViewModelClass, vmScreen) {
+function buildViewModel(ViewModelClass, vmScreen) {
 	if (ViewModelClass && !ViewModelClass.__builded) {
 		let vmDom = null;
 		const vm = new ViewModelClass(vmScreen),
@@ -276,7 +260,7 @@ export function isPopupVisible(ViewModelClassToShow) {
  * @param {string} subPart
  * @returns {void}
  */
-export function screenOnRoute(screenName, subPart) {
+function screenOnRoute(screenName, subPart) {
 	let vmScreen = null,
 		isSameScreen = false,
 		cross = null;
@@ -531,7 +515,6 @@ export {
 	commandDecorator as command,
 	viewDecorator,
 	viewDecorator as view,
-	viewDecorator as viewModel,
 	popupDecorator,
 	popupDecorator as popup,
 	settingsMenuKeysHandler

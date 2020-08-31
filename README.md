@@ -61,8 +61,14 @@ The result is faster and smaller download code (good for mobile networks).
 
 Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill for array.flat().
 
+* Added dev/prototype-*.js for some additional features
 * Replaced jQuery with jQuery.slim
 * Replaced ProgressJS with simple native dropin
+* Replaced Autolinker with simple https/email detection
+* Replaced ifvisible.js with simple drop-in replacement
+* Replaced momentToNode with proper HTML5 <time>
+* Replaced resize listeners with ResizeObserver
+* Replaced bootstrap.js with native drop-in replacement
 * Removed pikaday
 * Removed underscore
 * Removed polyfills
@@ -73,38 +79,53 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Removed matchmedia-polyfill
 * Removed momentjs (localization still used)
 * Removed opentip (use CSS)
-* Replaced Autolinker with simple https/email detection
-* Replaced ifvisible.js with simple drop-in replacement
-* Replaced momentToNode with proper HTML5 <time>
-* Replaced resize listeners with ResizeObserver
 * Removed non-community (aka Prem/Premium/License) code
-* Replaced bootstrap.js with native drop-in replacement
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  967.065	|
-|app.js      	|4.184.455	|2.630.967	|
+|admin.js    	|2.130.942	|  963.702	|
+|app.js      	|4.184.455	|2.626.779	|
 |boot.js     	|  671.522	|   43.824	|
 |libs.js     	|  647.614	|  315.759	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.957.615	|
+|TOTAL      	|7.960.367	|3.950.064	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  131.409	| 73.657	| 38.016	| 32.576	|
-|app.min.js      	|  511.202	|  355.295	|140.462	| 93.568	| 75.036	|
-|boot.min.js     	|   66.007	|    5.560	| 22.567	|  2.341	|  2.004	|
-|libs.min.js     	|  572.545	|  299.223	|176.720	| 92.519	| 81.725	|
+|admin.min.js    	|  252.147	|  130.802	| 73.657	| 37.916	| 32.474	|
+|app.min.js      	|  511.202	|  354.515	|140.462	| 93.408	| 74.849	|
+|boot.min.js     	|   66.007	|    5.564	| 22.567	|  2.327	|  1.989	|
+|libs.min.js     	|  572.545	|  299.283	|176.720	| 92.510	| 81.659	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  791.487	|424.718	|226.444	|191.341	|
+|TOTAL          	|1.434.353	|  790.164	|424.718	|226.161	|190.971	|
 
-641.922 bytes (197.980 gzip) is not much, but it feels faster.
+644.189 bytes (198.557 gzip) is not much, but it feels faster.
+
+### CSS changes
+
+* Solve jQuery removed "features" with native css code.
+* Removed html.no-css
+* Removed dev/Styles/Cmd.less
+* Removed dev/Styles/Scroll.less
+* Removed Internet Explorer from normalize.css
+* Removed node_modules/opentip/css/opentip.css
+* Removed node_modules/pikaday/css/pikaday.css
+* Removed vendors/bootstrap/less/breadcrumbs.less
+* Removed vendors/bootstrap/less/navbar.less
+* Removed vendors/bootstrap/less/popovers.less
+* Removed vendors/bootstrap/less/progress-bars.less
+* Removed vendors/bootstrap/less/scaffolding.less
+* Removed vendors/bootstrap/less/sprites.less
+* Removed vendors/bootstrap/less/tooltip.less
+* Removed vendors/jquery-nanoscroller/nanoscroller.css
+* Removed vendors/jquery-letterfx/jquery-letterfx.min.css
+* Removed vendors/Progress.js/minified/progressjs.min.css
 
 
 |css/*       	|1.14.0   	|native   	|
 |--------------	|--------:	|--------:	|
-|app.css    	|  340.334	|  265.864	|
-|app.min.css	|  274.791	|  211.468	|
+|app.css    	|  340.334	|  265.871	|
+|app.min.css	|  274.791	|  211.493	|
 
 
 ### PHP73 branch
