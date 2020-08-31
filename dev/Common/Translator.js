@@ -264,7 +264,7 @@ export function reload(admin, language) {
 			.then(data => {
 				var script = doc.createElement('script');
 				script.text = data;
-				doc.head.append(script).remove();
+				doc.head.appendChild(script).remove();
 				setTimeout(
 					() => {
 						reloadData();
