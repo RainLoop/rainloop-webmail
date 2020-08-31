@@ -99,6 +99,10 @@ class ServiceActions
 			}
 			else if (!empty($sAction))
 			{
+				if (0 === stripos($sAction, 'Admin') && 'AdminLogin' !== $sAction && 'AdminLogout' !== $sAction) {
+					$this->oActions->IsAdminLoggined();
+				}
+
 				$sMethodName = 'Do'.$sAction;
 
 				$this->Logger()->Write('Action: '.$sMethodName, \MailSo\Log\Enumerations\Type::NOTE, 'AJAX');
