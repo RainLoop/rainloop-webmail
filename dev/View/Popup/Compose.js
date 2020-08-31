@@ -1053,7 +1053,6 @@ class ComposePopupView extends AbstractViewNext {
 
 		let el = document.querySelector('.b-compose');
 		this.resizeObserver.compose = el;
-		this.resizeObserver.popups = el.parentNode; // el.closest('.popups');
 		this.resizeObserver.els = [el.querySelector('.textAreaParent'), el.querySelector('.attachmentAreaParent')];
 		this.resizeObserver.observe(el);
 		this.resizeObserver.observe(el.querySelector('.b-header'));
@@ -1509,13 +1508,11 @@ class ComposePopupView extends AbstractViewNext {
 	}
 
 	resizerTrigger() {
-		let top = 0;
-		this.resizeObserver.els.forEach(element => top = Math.max(top, element.getBoundingClientRect().top));
+		let top = 0, ro = this.resizeObserver;
+		ro.els.forEach(element => top = Math.max(top, element.getBoundingClientRect().top));
 		if (0 < top) {
-			top = this.resizeObserver.popups.clientHeight - this.resizeObserver.compose.offsetTop - 50 - top;
-			this.resizeObserver.els.forEach(element =>
-				element.style.height = Math.max(top, Math.max(200,parseInt(element.style.minHeight,10))) + 'px'
-			);
+			top = ro.compose.clientHeight - top;
+			ro.els.forEach(element => element.style.height = Math.max(top, 200) + 'px');
 			if (this.oEditor) {
 				this.oEditor.resize();
 			}
