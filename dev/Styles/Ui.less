@@ -129,27 +129,33 @@
 .settings-saved-trigger {
 
 	display: inline-block;
+	height: 17px;
 	line-height: 17px;
 	font-size: 16px;
+	position: relative;
 
 	.animated {
-		color: green;
+		color: #888;
 	}
 
 	.success {
-		color: green;
-		transition: opacity 0.5s linear;
-		opacity: 0;
+		color: #080;
 	}
 
 	.error {
-		color: red;
-		transition: opacity 0.5s linear;
-		opacity: 0;
+		color: #F00;
 	}
 
-	.visible {
+	i {
+		transition: opacity 2s linear;
+		position: absolute;
+	}
+
+	i:not([hidden]) {
 		opacity: 1;
+	}
+	i[hidden] {
+		opacity: 0;
 	}
 }
 

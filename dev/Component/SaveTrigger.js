@@ -1,4 +1,3 @@
-import { pInt } from 'Common/Utils';
 import { SaveSettingsStep } from 'Common/Enums';
 import { AbstractComponent, componentExportHelper } from 'Component/Abstract';
 
@@ -9,68 +8,32 @@ class SaveTriggerComponent extends AbstractComponent {
 	constructor(params) {
 		super();
 
-		this.element = jQuery(params.element) || null;
+		const el = params.element;
+		this.element = el || null;
 		this.value = params.value && params.value.subscribe ? params.value : null;
 
-		if (this.element) {
+		if (el) {
 			if (this.value) {
-				this.element.css('display', 'inline-block');
+				el.style.display = 'inline-block';
 
 				if (params.verticalAlign) {
-					this.element.css('vertical-align', params.verticalAlign);
+					el.style.verticalAlign = params.verticalAlign;
 				}
 
 				this.setState(this.value());
 
 				this.disposable.push(this.value.subscribe(this.setState, this));
 			} else {
-				this.element.hide();
+				el.style.display = 'none';
 			}
 		}
 	}
 
 	setState(value) {
-		switch (pInt(value)) {
-			case SaveSettingsStep.TrueResult:
-				this.element
-					.find('.animated,.error')
-					.hide()
-					.removeClass('visible')
-					.end()
-					.find('.success')
-					.show()
-					.addClass('visible');
-				break;
-			case SaveSettingsStep.FalseResult:
-				this.element
-					.find('.animated,.success')
-					.hide()
-					.removeClass('visible')
-					.end()
-					.find('.error')
-					.show()
-					.addClass('visible');
-				break;
-			case SaveSettingsStep.Animate:
-				this.element
-					.find('.error,.success')
-					.hide()
-					.removeClass('visible')
-					.end()
-					.find('.animated')
-					.show()
-					.addClass('visible');
-				break;
-			case SaveSettingsStep.Idle:
-			default:
-				this.element
-					.find('.animated')
-					.hide()
-					.end()
-					.find('.error,.success')
-					.removeClass('visible');
-				break;
-		}
+		value = parseInt(value,10);
+		this.element.querySelector('.animated').hidden = value !== SaveSettingsStep.Animate;
+		this.element.querySelector('.success').hidden = value !== SaveSettingsStep.TrueResult;
+		this.element.querySelector('.error').hidden = value !== SaveSettingsStep.FalseResult;
 	}
 }
 

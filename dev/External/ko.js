@@ -341,85 +341,30 @@ ko.bindingHandlers.droppable = {
 
 ko.bindingHandlers.saveTrigger = {
 	init: (element) => {
-		const $el = $(element);
+		element.saveTriggerType = element.matches('input[type=text],input[type=email],input[type=password],select,textarea')
+			 ? 'input' : 'custom';
 
-		$el.data(
-			'save-trigger-type',
-			element.matches('input[type=text],input[type=email],input[type=password],select,textarea') ? 'input' : 'custom'
-		);
-
-		if ('custom' === $el.data('save-trigger-type')) {
-			$el
-				.append(
-					'&nbsp;&nbsp;' +
-						'<i class="icon-spinner animated"></i>' +
-						'<i class="icon-remove error"></i>' +
-						'<i class="icon-ok success"></i>'
-				)
-				.addClass('settings-saved-trigger');
+		if ('custom' === element.saveTriggerType) {
+			element.append(
+				'&nbsp;&nbsp;',
+				Element.fromHTML('<i class="icon-spinner animated"></i>'),
+				Element.fromHTML('<i class="icon-remove error"></i>'),
+				Element.fromHTML('<i class="icon-ok success"></i>')
+			);
+			element.classList.add('settings-saved-trigger');
 		} else {
-			$el.addClass('settings-saved-trigger-input');
+			element.classList.add('settings-saved-trigger-input');
 		}
 	},
 	update: (element, fValueAccessor) => {
-		const value = ko.unwrap(fValueAccessor()),
-			$el = $(element);
-
-		if ('custom' === $el.data('save-trigger-type')) {
-			switch (value.toString()) {
-				case '1':
-					$el
-						.find('.animated,.error')
-						.hide()
-						.removeClass('visible')
-						.end()
-						.find('.success')
-						.show()
-						.addClass('visible');
-					break;
-				case '0':
-					$el
-						.find('.animated,.success')
-						.hide()
-						.removeClass('visible')
-						.end()
-						.find('.error')
-						.show()
-						.addClass('visible');
-					break;
-				case '-2':
-					$el
-						.find('.error,.success')
-						.hide()
-						.removeClass('visible')
-						.end()
-						.find('.animated')
-						.show()
-						.addClass('visible');
-					break;
-				default:
-					$el
-						.find('.animated')
-						.hide()
-						.end()
-						.find('.error,.success')
-						.removeClass('visible');
-					break;
-			}
-		} else {
-			switch (value.toString()) {
-				case '1':
-					$el.addClass('success').removeClass('error');
-					break;
-				case '0':
-					$el.addClass('error').removeClass('success');
-					break;
-				case '-2':
-					break;
-				default:
-					$el.removeClass('error success');
-					break;
-			}
+		const value = parseInt(ko.unwrap(fValueAccessor()),10);
+		if ('custom' === element.saveTriggerType) {
+			element.querySelector('.animated').hidden = value !== SaveSettingsStep.Animate;
+			element.querySelector('.success').hidden = value !== SaveSettingsStep.TrueResult;
+			element.querySelector('.error').hidden = value !== SaveSettingsStep.FalseResult;
+		} else if (value !== SaveSettingsStep.Animate) {
+			element.classList.toggle('success', value === SaveSettingsStep.TrueResult);
+			element.classList.toggle('error', value === SaveSettingsStep.FalseResult);
 		}
 	}
 };
@@ -457,7 +402,7 @@ ko.bindingHandlers.emailsTags = {
 					item => (item.toLine ? [item.toLine(false), item] : [item, null])
 				),
 			change: event => {
-				$el.data('EmailsTagsValue', event.target.value);
+				element.EmailsTagsValue = event.target.value;
 				fValue(event.target.value);
 			}
 		});
@@ -469,14 +414,12 @@ ko.bindingHandlers.emailsTags = {
 		}
 	},
 	update: (element, fValueAccessor) => {
-		const $oEl = $(element),
-			fValue = fValueAccessor(),
-			value = ko.unwrap(fValue);
+		const value = ko.unwrap(fValueAccessor());
 
-		if ($oEl.data('EmailsTagsValue') !== value) {
-			$oEl.val(value);
-			$oEl.data('EmailsTagsValue', value);
-			$oEl.inputosaurus('refresh');
+		if (element.EmailsTagsValue !== value) {
+			element.value = value;
+			element.EmailsTagsValue = value;
+			$(element).inputosaurus('refresh');
 		}
 	}
 };

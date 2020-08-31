@@ -10,24 +10,19 @@ class ScriptComponent extends AbstractComponent {
 		if (
 			params.component &&
 			params.component.templateNodes &&
-			params.element &&
-			params.element[0] &&
-			params.element[0].outerHTML
+			params.element
 		) {
-			let script = params.element[0].outerHTML;
-			script = !script ? '' : script.replace(/<x-script/i, '<script').replace(/<b><\/b><\/x-script>/i, '</script>');
+			let el = params.element, script = el.outerHTML;
+			script = script ? script.replace(/<x-script/i, '<script').replace(/<b><\/b><\/x-script>/i, '</script>') : '';
 
 			if (script) {
-				params.element.text('');
-				params.element.replaceWith(
-					jQuery(script).text(
-						params.component.templateNodes[0] && params.component.templateNodes[0].nodeValue
-							? params.component.templateNodes[0].nodeValue
-							: ''
-					)
+				const koNodes = params.component.templateNodes[0];
+				el.textContent = '';
+				el.replaceWith(
+					Element.fromHTML(script).textContent = koNodes && koNodes.nodeValue ? koNodes.nodeValue : ''
 				);
 			} else {
-				params.element.remove();
+				el.remove();
 			}
 		}
 	}

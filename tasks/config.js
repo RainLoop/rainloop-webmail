@@ -50,7 +50,7 @@ config.paths.css = {
 	main: {
 		name: 'app.css',
 		src: [
-			'node_modules/normalize.css/normalize.css',
+			'vendors/normalize.css/normalize.css',
 			'vendors/jquery-ui/css/smoothness/jquery-ui-1.12.1.custom.css',
 			'vendors/fontastic/styles.css',
 			'vendors/inputosaurus/inputosaurus.css',

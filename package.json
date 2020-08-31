@@ -89,7 +89,6 @@
     "knockout-sortable": "1.2.0",
     "moment": "2.24.0",
     "node-fs": "0.1.7",
-    "normalize.css": "8.0.1",
     "openpgp": "2.6.2",
     "prettier": "1.19.1",
     "raw-loader": "4.0.0",
