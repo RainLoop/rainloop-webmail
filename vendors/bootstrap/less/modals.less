@@ -7,8 +7,6 @@
 .modal-open {
   .dropdown-menu {  z-index: @zindexDropdown + @zindexModal; }
   .dropdown.open { *z-index: @zindexDropdown + @zindexModal; }
-  .popover       {  z-index: @zindexPopover  + @zindexModal; }
-  .tooltip       {  z-index: @zindexTooltip  + @zindexModal; }
 }
 
 // Background
@@ -49,7 +47,7 @@
     .transition(e('opacity .3s linear, top .3s ease-out'));
     top: -25%;
   }
-  &.fade.show { top: 50%; }
+  &.fade.show { top: 0; }
 }
 .modal-header {
   padding: 9px 15px;
