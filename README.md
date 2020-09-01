@@ -80,26 +80,27 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Removed momentjs (localization still used)
 * Removed opentip (use CSS)
 * Removed non-community (aka Prem/Premium/License) code
+* Modified Jua.js to be without jQuery
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
 |admin.js    	|2.130.942	|  963.702	|
-|app.js      	|4.184.455	|2.626.779	|
+|app.js      	|4.184.455	|2.626.733	|
 |boot.js     	|  671.522	|   43.824	|
-|libs.js     	|  647.614	|  315.759	|
+|libs.js     	|  647.614	|  313.912	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.950.064	|
+|TOTAL      	|7.960.367	|3.948.171	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
 |admin.min.js    	|  252.147	|  130.802	| 73.657	| 37.916	| 32.474	|
-|app.min.js      	|  511.202	|  354.515	|140.462	| 93.408	| 74.849	|
+|app.min.js      	|  511.202	|  354.471	|140.462	| 93.386	| 74.944	|
 |boot.min.js     	|   66.007	|    5.564	| 22.567	|  2.327	|  1.989	|
-|libs.min.js     	|  572.545	|  299.283	|176.720	| 92.510	| 81.659	|
+|libs.min.js     	|  572.545	|  297.403	|176.720	| 92.006	| 81.186	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  790.164	|424.718	|226.161	|190.971	|
+|TOTAL          	|1.434.353	|  788.240	|424.718	|225.635	|190.593	|
 
-644.189 bytes (198.557 gzip) is not much, but it feels faster.
+646.113 bytes (199.083 gzip) is not much, but it feels faster.
 
 ### CSS changes
 

@@ -86,13 +86,12 @@ class ThemesUserSettings {
 	initUploader() {
 		if (this.background.uploaderButton() && this.capaUserBackground()) {
 			const oJua = new Jua({
-				'action': uploadBackground(),
-				'name': 'uploader',
-				'queueSize': 1,
-				'multipleSizeLimit': 1,
-				'disableDragAndDrop': true,
-				'disableMultiple': true,
-				'clickElement': this.background.uploaderButton()
+				action: uploadBackground(),
+				name: 'uploader',
+				queueSize: 1,
+				multipleSizeLimit: 1,
+				disableMultiple: true,
+				clickElement: this.background.uploaderButton()
 			});
 
 			oJua

@@ -2,11 +2,9 @@
 (()=>{
 	'use strict';
 
-	var
-		iDefLimit = 20,
-		$ = jQuery;
-
 	const
+		doc = document,
+		iDefLimit = 20,
 		defined = v => undefined !== v,
 		/**
 		 * @param {*} aItems
@@ -18,16 +16,14 @@
 		{
 			if (aItems && aItems.length)
 			{
-				var
-					iInputLimit = 0,
+				iLimit = defined(iLimit) ? parseInt(iLimit || 0, 10) : iDefLimit;
+				let
+					iInputLimit = iLimit,
 					oFile = null,
-					bUseLimit = false,
+					bUseLimit = 0 < iLimit,
 					bCallLimit = false
 				;
 
-				iLimit = defined(iLimit) ? parseInt(iLimit || 0, 10) : iDefLimit;
-				iInputLimit = iLimit;
-				bUseLimit = 0 < iLimit;
 				Array.from(aItems).forEach(oItem => {
 					if (oItem)
 					{
@@ -45,75 +41,12 @@
 				});
 			}
 		},
-		/**
-		 * @param {number=} iLen
-		 * @return {string}
-		 */
-		fakeMd5 = iLen =>
-		{
-			var
-				sResult = '',
-				sLine = '0123456789abcdefghijklmnopqrstuvwxyz'
-			;
 
-			iLen = defined(iLen) ? parseInt(iLen || 0, 10) : 32;
-
-			while (iLen--)
-				sResult += sLine.substr(Math.round(Math.random() * 36), 1);
-
-			return sResult;
-		};
-
-	var Utils = {
-		/**
-		 * @param {*} oParent
-		 * @param {*} oDescendant
-		 *
-		 * @return {boolean}
-		 */
-		contains : (oParent, oDescendant) =>
-		{
-			if (oParent && oDescendant)
-			{
-				if (oParent === oDescendant)
-				{
-					return true;
-				}
-				if (oParent.contains)
-				{
-					return oParent.contains(oDescendant);
-				}
-				/*jshint bitwise: false*/
-				return oDescendant.compareDocumentPosition ?
-					!!(oDescendant.compareDocumentPosition(oParent) & 8) : false;
-				/*jshint bitwise: true*/
-			}
-
-			return false;
+		addEventListeners = (element, obj) => {
+			Object.entries(obj).forEach(([key, value]) => element.addEventListener(key, value));
 		},
 
-		mainClearTimeout : iTimer =>
-		{
-			if (0 < iTimer)
-			{
-				clearTimeout(iTimer);
-			}
-
-			iTimer = 0;
-		},
-
-		/**
-		 * @param {Event} oEvent
-		 * @return {?Event}
-		 */
-		getEvent : oEvent =>
-		{
-			oEvent = (oEvent && (oEvent.originalEvent ?
-				oEvent.originalEvent : oEvent)) || window.event;
-
-			return oEvent.dataTransfer ? oEvent : null;
-		},
-
+	Utils = {
 		/**
 		 * @param {Object} oValues
 		 * @param {string} sKey
@@ -123,27 +56,12 @@
 		getValue : (oValues, sKey, mDefault) => (!oValues || !sKey || !defined(oValues[sKey])) ? mDefault : oValues[sKey],
 
 		/**
-		 * @param {Function} fFunction
-		 * @param {Object=} oScope
-		 * @return {Function}
-		 */
-		scopeBind : (fFunction, oScope) => (...args) => {
-			return fFunction.apply(defined(oScope) ? oScope : null,
-				Array.prototype.slice.call(args));
-		},
-
-		/**
-		 * @return {string}
-		 */
-		getNewUid : () => 'jua-uid-' + fakeMd5(16) + '-' + (new Date()).getTime().toString(),
-
-		/**
 		 * @param {*} oFile
 		 * @return {Object}
 		 */
 		getDataFromFile : oFile =>
 		{
-			var
+			let
 				sFileName = defined(oFile.fileName) ? oFile.fileName : (defined(oFile.name) ? oFile.name : null),
 				iSize = defined(oFile.fileSize) ? oFile.fileSize : (defined(oFile.size) ? oFile.size : null),
 				sType = defined(oFile.type) ? oFile.type : null
@@ -168,116 +86,18 @@
 			};
 		},
 
-		/**
-		 * @param {*} oInput
-		 * @param {Function} fFileCallback
-		 * @param {number=} iLimit = 20
-		 * @param {Function=} fLimitCallback
-		 */
-		getDataFromInput : (oInput, fFileCallback, iLimit, fLimitCallback) =>
-		{
-			var aFiles = oInput && 0 < oInput.files.length ? oInput.files : null;
-			if (aFiles)
-			{
-				getDataFromFiles(aFiles, fFileCallback, iLimit, fLimitCallback);
-			}
-			else
-			{
-				fFileCallback({
-					'FileName': oInput.value.split('\\').pop().split('/').pop(),
-					'Size': null,
-					'Type': null,
-					'Folder': '',
-					'File' : null
-				});
-			}
-		},
-
 		eventContainsFiles : oEvent =>
 		{
-			var bResult = false;
-			if (oEvent && oEvent.dataTransfer && oEvent.dataTransfer.types && oEvent.dataTransfer.types.length)
-			{
-				var
-					iIindex = 0,
-					iLen = oEvent.dataTransfer.types.length
-				;
-
-				for (; iIindex < iLen; iIindex++)
-				{
-					if (oEvent.dataTransfer.types[iIindex].toLowerCase() === 'files')
-					{
-						bResult = true;
-						break;
+			if (oEvent.dataTransfer && oEvent.dataTransfer.types && oEvent.dataTransfer.types.length) {
+				let index = oEvent.dataTransfer.types.length;
+				while (index--) {
+					if (oEvent.dataTransfer.types[index].toLowerCase() === 'files') {
+						return true;
 					}
 				}
 			}
-
-			return bResult;
-		},
-
-		/**
-		 * @param {Event} oEvent
-		 * @param {Function} fFileCallback
-		 * @param {number=} iLimit = 20
-		 * @param {Function=} fLimitCallback
-		 */
-		getDataFromDragEvent : (oEvent, fFileCallback, iLimit, fLimitCallback) =>
-		{
-			var aFiles = null;
-
-			oEvent = Utils.getEvent(oEvent);
-			if (oEvent && Utils.eventContainsFiles(oEvent))
-			{
-				aFiles = (Utils.getValue(oEvent, 'files', null) || (oEvent.dataTransfer ?
-					Utils.getValue(oEvent.dataTransfer, 'files', null) : null));
-
-				getDataFromFiles(aFiles, fFileCallback, iLimit, fLimitCallback);
-			}
-		},
-
-		createNextLabel : () =>
-		{
-			return $('<label style="' +
-		'position: absolute; background-color:#fff; right: 0px; top: 0px; left: 0px; bottom: 0px; margin: 0px; padding: 0px; cursor: pointer;' +
-			'"></label>').css({
-				'opacity': 0
-			});
-		},
-
-		createNextInput : () => $('<input type="file" tabindex="-1" hidefocus="hidefocus" style="position: absolute; left: -9999px;" />'),
-
-		/**
-		 * @param {string=} sName
-		 * @param {boolean=} bMultiple = true
-		 * @return {?Object}
-		 */
-		getNewInput : (sName, bMultiple) =>
-		{
-			sName = defined(sName) ? sName.toString() : '';
-
-			var oLocal = Utils.createNextInput();
-			if (0 < sName.length)
-			{
-				oLocal.attr('name', sName);
-			}
-
-			if (defined(bMultiple) ? bMultiple : true)
-			{
-				oLocal.prop('multiple', true);
-			}
-
-			return oLocal;
-		},
-
-		/**
-		 * @param {?} mStringOrFunction
-		 * @param {Array=} aFunctionParams
-		 * @return {string}
-		 */
-		getStringOrCallFunction : (mStringOrFunction, aFunctionParams) => $.isFunction(mStringOrFunction) ?
-				mStringOrFunction.apply(null, Array.isArray(aFunctionParams) ? aFunctionParams : []).toString() :
-				mStringOrFunction.toString()
+			return false;
+		}
 	};
 
 
@@ -319,7 +139,7 @@
 
 			try
 			{
-				var
+				const
 					self = this,
 					oXhr = new XMLHttpRequest(),
 					oFormData = new FormData(),
@@ -347,7 +167,7 @@
 					{
 						if (fCompleteFunction)
 						{
-							var
+							let
 								bResult = false,
 								oResult = null
 							;
@@ -389,9 +209,9 @@
 
 				oFormData.append('jua-post-type', 'ajax');
 				oFormData.append(Utils.getValue(this.oOptions, 'name', 'juaFile'), oFileInfo['File']);
-				$.each(aHidden, function (sKey, sValue) {
-					oFormData.append(sKey, Utils.getStringOrCallFunction(sValue, [oFileInfo]));
-				});
+				Object.entries(aHidden).forEach(([key, value]) =>
+					oFormData.append(key, (typeof value === "function" ? value(oFileInfo) : value).toString())
+				);
 
 				oXhr.send(oFormData);
 
@@ -408,40 +228,43 @@
 
 		generateNewInput(oClickElement)
 		{
-			var
-				self = this,
-				oLabel = null,
-				oInput = null
-			;
-
 			if (oClickElement)
 			{
-				oInput = Utils.getNewInput('', !Utils.getValue(this.oOptions, 'disableMultiple', false));
-				oLabel = Utils.createNextLabel();
-				oLabel.append(oInput);
+				const self = this,
+					oLabel = doc.createElement('label'),
+					oInput = oLabel.appendChild(doc.createElement('input'));
 
-				$(oClickElement).append(oLabel);
+				oInput.type = 'file';
+				oInput.tabIndex = -1;
+				oInput.style.cssText = 'position:absolute;left:-9999px;';
+				oInput.multiple = !Utils.getValue(self.oOptions, 'disableMultiple', false);
 
-				oInput
-					.on('click', function () {
-						var fOn = self.oJua.getEvent('onDialog');
-						if (fOn)
-						{
-							fOn();
-						}
-					})
-					.on('change', function () {
-						Utils.getDataFromInput(this, oFile => {
-								self.oJua.addNewFile(oFile);
-								self.generateNewInput(oClickElement);
+				oLabel.style.cssText = 'position:absolute;background-color:#fff;right:0;top:0;left:0;bottom:0;margin:0;padding:0;cursor:pointer;opacity:0';
 
-								setTimeout(() => oLabel.remove(), 10);
-							},
+				oClickElement.append(oLabel);
+
+				oInput.addEventListener('input', () => {
+					const fFileCallback = oFile => {
+						self.oJua.addNewFile(oFile);
+						self.generateNewInput(oClickElement);
+
+						setTimeout(() => oLabel.remove(), 10);
+					};
+					if (oInput.files && oInput.files.length) {
+						getDataFromFiles(oInput.files, fFileCallback,
 							Utils.getValue(self.oOptions, 'multipleSizeLimit', iDefLimit),
 							self.oJua.getEvent('onLimitReached')
 						);
-					})
-				;
+					} else {
+						fFileCallback({
+							'FileName': oInput.value.split('\\').pop().split('/').pop(),
+							'Size': null,
+							'Type': null,
+							'Folder': '',
+							'File' : null
+						});
+					}
+				});
 			}
 		}
 
@@ -490,7 +313,7 @@
 	function queue(a) {
 		function l() {
 			if (g && d < a) {
-				var b = g,
+				let b = g,
 					c = b[0],
 					f = Array.prototype.slice.call(b, 1),
 					m = b.index;
@@ -502,7 +325,7 @@
 				c.apply(null, f)
 			}
 		}
-		var c = {},
+		let c = {},
 			d = 0,
 			e = 0,
 			f = -1,
@@ -511,7 +334,7 @@
 			k = ()=>{};
 		return arguments.length < 1 && (a = Infinity), c.defer = function () {
 			if (!i) {
-				var a = arguments;
+				let a = arguments;
 				a.index = ++f, h ? (h.next = a, h = h.next) : g = h = a, ++e, l()
 			}
 			return c
@@ -530,251 +353,159 @@
 		{
 			oOptions = defined(oOptions) ? oOptions : {};
 
-			var
-				self = this,
-
-				$ = jQuery
-			;
-
-			self.bEnableDnD = true;
+			const self = this;
 
 			self.oEvents = {
-				'onDialog': null,
-				'onSelect': null,
-				'onStart': null,
-				'onComplete': null,
-				'onCompleteAll': null,
-				'onProgress': null,
-				'onDragEnter': null,
-				'onDragLeave': null,
-				'onDrop': null,
-				'onBodyDragEnter': null,
-				'onBodyDragLeave': null,
-				'onLimitReached': null
+				onSelect: null,
+				onStart: null,
+				onComplete: null,
+				onProgress: null,
+				onDragEnter: null,
+				onDragLeave: null,
+				onBodyDragEnter: null,
+				onBodyDragLeave: null,
+				onLimitReached: null
 			};
 
 			self.oOptions = {
-				'action': '',
-				'name': '',
-				'hidden': {},
-				'queueSize': 10,
-				'clickElement': false,
-				'dragAndDropElement': false,
-				'dragAndDropBodyElement': false,
-				'disableDragAndDrop': false,
-				'disableMultiple': false,
-				'disableDocumentDropPrevent': false,
-				'multipleSizeLimit': 50
+				action: '',
+				name: '',
+				hidden: {},
+				queueSize: 10,
+				clickElement: false,
+				dragAndDropElement: false,
+				dragAndDropBodyElement: false,
+				disableMultiple: false,
+				disableDocumentDropPrevent: false,
+				multipleSizeLimit: 50
 			};
-			Object.entries(oOptions).forEach(([key, value])=>self.oOptions[key]=value);
+			Object.entries(oOptions).forEach(([key, value]) => self.oOptions[key] = value);
 
 			self.oQueue = queue(parseInt(Utils.getValue(self.oOptions, 'queueSize', 10) || 0, 10));
-			if (self.runEvent('onCompleteAll'))
-			{
-				self.oQueue.await(function () {
-					self.runEvent('onCompleteAll');
-				});
-			}
 
 			self.oDriver = new AjaxDriver(self, self.oOptions);
 
-			self.oClickElement = Utils.getValue(self.oOptions, 'clickElement', null);
-
-			if (self.oClickElement)
-			{
-				$(self.oClickElement).css({
-					'position': 'relative',
-					'overflow': 'hidden'
-				});
-
-				if ('inline' === $(this.oClickElement).css('display'))
-				{
-					$(this.oClickElement).css('display', 'inline-block');
+			const el = Utils.getValue(self.oOptions, 'clickElement', null);
+			if (el) {
+				el.style.position = 'relative';
+				el.style.overflow = 'hidden';
+				if ('inline' === el.style.display) {
+					el.style.display = 'inline-block';
 				}
 
-				this.oDriver.generateNewInput(this.oClickElement);
+				this.oDriver.generateNewInput(el);
 			}
 
 			if (Utils.getValue(this.oOptions, 'dragAndDropElement', false))
 			{
-				(function (self) {
-					var
-						$doc = $(document),
-						oBigDropZone = $(Utils.getValue(self.oOptions, 'dragAndDropBodyElement', false) || $doc),
-						oDragAndDropElement = Utils.getValue(self.oOptions, 'dragAndDropElement', false),
-						fHandleDragOver = function (oEvent) {
-							if (self.bEnableDnD && oEvent)
+				let
+					oBigDropZone = Utils.getValue(self.oOptions, 'dragAndDropBodyElement', false) || doc,
+					oDragAndDropElement = Utils.getValue(self.oOptions, 'dragAndDropElement', false);
+
+				if (oDragAndDropElement)
+				{
+					if (!Utils.getValue(self.oOptions, 'disableDocumentDropPrevent', false))
+					{
+						doc.addEventListener('dragover', oEvent => {
+							if (Utils.eventContainsFiles(oEvent))
 							{
-								oEvent = Utils.getEvent(oEvent);
-								if (oEvent && oEvent.dataTransfer && Utils.eventContainsFiles(oEvent))
+								try
 								{
-									try
-									{
-										var sEffect = oEvent.dataTransfer.effectAllowed;
+									oEvent.dataTransfer.dropEffect = 'none';
+									oEvent.preventDefault();
+								}
+								catch (oExc) {}
+							}
+						});
+					}
 
-										Utils.mainClearTimeout(self.iDocTimer);
+					if (oBigDropZone)
+					{
+						addEventListeners(oBigDropZone, {
+							dragover: () => self.docTimer.clear(),
+							dragenter: oEvent => {
+								if (Utils.eventContainsFiles(oEvent))
+								{
+									self.docTimer.clear();
+									oEvent.preventDefault();
 
-										oEvent.dataTransfer.dropEffect = (sEffect === 'move' || sEffect === 'linkMove') ? 'move' : 'copy';
+									self.runEvent('onBodyDragEnter', [oEvent]);
+								}
+							},
+							dragleave: oEvent =>
+								oEvent.dataTransfer && self.docTimer.start(() => self.runEvent('onBodyDragLeave', [oEvent])),
+							drop: oEvent => {
+								if (oEvent.dataTransfer) {
+									let bFiles = Utils.eventContainsFiles(oEvent);
+									bFiles && oEvent.preventDefault();
 
-										oEvent.stopPropagation();
-										oEvent.preventDefault();
+									self.runEvent('onBodyDragLeave', [oEvent]);
 
-										oBigDropZone.trigger('dragover', oEvent);
-									}
-									catch (oExc) {}
+									return !bFiles;
+								}
+
+								return false;
+							}
+						});
+					}
+
+					addEventListeners(oDragAndDropElement, {
+						dragenter: oEvent => {
+							if (Utils.eventContainsFiles(oEvent)) {
+								self.docTimer.clear();
+
+								oEvent.preventDefault();
+								self.runEvent('onDragEnter', [oDragAndDropElement, oEvent]);
+							}
+						},
+						dragover: oEvent => {
+							if (Utils.eventContainsFiles(oEvent)) {
+								try
+								{
+									let sEffect = oEvent.dataTransfer.effectAllowed;
+
+									self.docTimer.clear();
+
+									oEvent.dataTransfer.dropEffect = (sEffect === 'move' || sEffect === 'linkMove') ? 'move' : 'copy';
+
+									oEvent.stopPropagation();
+									oEvent.preventDefault();
+
+									oBigDropZone && oBigDropZone.dispatchEvent(oEvent);
+								}
+								catch (oExc) {}
+							}
+						},
+						dragleave: oEvent => {
+							if (oEvent.dataTransfer) {
+								let oRelatedTarget = doc.elementFromPoint(oEvent.clientX, oEvent.clientY);
+								if (!oRelatedTarget || !oDragAndDropElement.contains(oRelatedTarget)) {
+									self.docTimer.clear();
+									self.runEvent('onDragLeave', [oDragAndDropElement, oEvent]);
 								}
 							}
 						},
-						fHandleDrop = function (oEvent) {
-							if (self.bEnableDnD && oEvent)
-							{
-								oEvent = Utils.getEvent(oEvent);
-								if (oEvent && Utils.eventContainsFiles(oEvent))
-								{
-									oEvent.preventDefault();
+						drop: oEvent => {
+							if (Utils.eventContainsFiles(oEvent)) {
+								oEvent.preventDefault();
 
-									Utils.getDataFromDragEvent(oEvent, function (oFile) {
-											if (oFile)
-											{
-												self.runEvent('onDrop', [oFile, oEvent]);
-												self.addNewFile(oFile);
-												Utils.mainClearTimeout(self.iDocTimer);
-											}
-										},
-										Utils.getValue(self.oOptions, 'multipleSizeLimit', iDefLimit),
-										self.getEvent('onLimitReached')
-									);
-								}
+								getDataFromFiles(
+									Utils.getValue(oEvent, 'files', null) || Utils.getValue(oEvent.dataTransfer, 'files', null),
+									oFile => {
+										if (oFile) {
+											self.addNewFile(oFile);
+											self.docTimer.clear();
+										}
+									},
+									Utils.getValue(self.oOptions, 'multipleSizeLimit', iDefLimit),
+									self.getEvent('onLimitReached')
+								);
 							}
 
 							self.runEvent('onDragLeave', [oEvent]);
-						},
-						fHandleDragEnter = function (oEvent) {
-							if (self.bEnableDnD && oEvent)
-							{
-								oEvent = Utils.getEvent(oEvent);
-								if (oEvent && Utils.eventContainsFiles(oEvent))
-								{
-									Utils.mainClearTimeout(self.iDocTimer);
-
-									oEvent.preventDefault();
-									self.runEvent('onDragEnter', [oDragAndDropElement, oEvent]);
-								}
-							}
-						},
-						fHandleDragLeave = function (oEvent) {
-							if (self.bEnableDnD && oEvent)
-							{
-								oEvent = Utils.getEvent(oEvent);
-								if (oEvent)
-								{
-									var oRelatedTarget = document['elementFromPoint'] ? document['elementFromPoint'](oEvent['clientX'], oEvent['clientY']) : null;
-									if (oRelatedTarget && Utils.contains(this, oRelatedTarget))
-									{
-										return;
-									}
-
-									Utils.mainClearTimeout(self.iDocTimer);
-									self.runEvent('onDragLeave', [oDragAndDropElement, oEvent]);
-								}
-
-								return;
-							}
 						}
-					;
-
-					if (oDragAndDropElement)
-					{
-						if (!Utils.getValue(self.oOptions, 'disableDocumentDropPrevent', false))
-						{
-							$doc.on('dragover', function (oEvent) {
-								if (self.bEnableDnD && oEvent)
-								{
-									oEvent = Utils.getEvent(oEvent);
-									if (oEvent && oEvent.dataTransfer && Utils.eventContainsFiles(oEvent))
-									{
-										try
-										{
-											oEvent.dataTransfer.dropEffect = 'none';
-											oEvent.preventDefault();
-										}
-										catch (oExc) {}
-									}
-								}
-							});
-						}
-
-						if (oBigDropZone && oBigDropZone[0])
-						{
-							oBigDropZone
-								.on('dragover', function (oEvent) {
-									if (self.bEnableDnD && oEvent)
-									{
-										Utils.mainClearTimeout(self.iDocTimer);
-									}
-								})
-								.on('dragenter', function (oEvent) {
-									if (self.bEnableDnD && oEvent)
-									{
-										oEvent = Utils.getEvent(oEvent);
-										if (oEvent && Utils.eventContainsFiles(oEvent))
-										{
-											Utils.mainClearTimeout(self.iDocTimer);
-											oEvent.preventDefault();
-
-											self.runEvent('onBodyDragEnter', [oEvent]);
-										}
-									}
-								})
-								.on('dragleave', function (oEvent) {
-									if (self.bEnableDnD && oEvent)
-									{
-										oEvent = Utils.getEvent(oEvent);
-										if (oEvent)
-										{
-											Utils.mainClearTimeout(self.iDocTimer);
-											self.iDocTimer = setTimeout(function () {
-												self.runEvent('onBodyDragLeave', [oEvent]);
-											}, 200);
-										}
-									}
-								})
-								.on('drop', function (oEvent) {
-									if (self.bEnableDnD && oEvent)
-									{
-										oEvent = Utils.getEvent(oEvent);
-										if (oEvent)
-										{
-											var bFiles = Utils.eventContainsFiles(oEvent);
-											if (bFiles)
-											{
-												oEvent.preventDefault();
-											}
-
-											self.runEvent('onBodyDragLeave', [oEvent]);
-
-											return !bFiles;
-										}
-									}
-
-									return false;
-								})
-							;
-						}
-
-						$(oDragAndDropElement)
-							.on('dragenter', fHandleDragEnter)
-							.on('dragover', fHandleDragOver)
-							.on('dragleave', fHandleDragLeave)
-							.on('drop', fHandleDrop)
-						;
-					}
-
-				}(self));
-			}
-			else
-			{
-				self.bEnableDnD = false;
+					});
+				}
 			}
 		}
 
@@ -817,19 +548,18 @@
 		}
 
 		/**
-		 * @param {boolean} bEnabled
-		 */
-		setDragAndDropEnabledStatus(bEnabled)
-		{
-			this.bEnableDnD = !!bEnabled;
-		}
-
-		/**
 		 * @param {Object} oFileInfo
 		 */
 		addNewFile(oFileInfo)
 		{
-			this.addFile(Utils.getNewUid(), oFileInfo);
+			let iLen = 16,
+				fakeMd5 = '',
+				sLine = '0123456789abcdefghijklmnopqrstuvwxyz';
+
+			while (iLen--)
+				fakeMd5 += sLine.substr(Math.round(Math.random() * 36), 1);
+
+			this.addFile('jua-uid-' + fakeMd5 + '-' + (new Date()).getTime().toString(), oFileInfo);
 		}
 
 		/**
@@ -838,11 +568,11 @@
 		 */
 		addFile(sUid, oFileInfo)
 		{
-			var fOnSelect = this.getEvent('onSelect');
+			const fOnSelect = this.getEvent('onSelect');
 			if (oFileInfo && (!fOnSelect || (false !== fOnSelect(sUid, oFileInfo))))
 			{
 				this.oDriver.regTaskUid(sUid);
-				this.oQueue.defer(Utils.scopeBind(this.oDriver.uploadTask, this.oDriver), sUid, oFileInfo);
+				this.oQueue.defer((...args) => this.oDriver.uploadTask(...args), sUid, oFileInfo);
 			}
 			else
 			{
@@ -852,14 +582,18 @@
 	}
 
 	/**
-	 * @type {boolean}
-	 */
-	Jua.prototype.bEnableDnD = true;
-
-	/**
 	 * @type {number}
 	 */
-	Jua.prototype.iDocTimer = 0;
+	Jua.prototype.docTimer = {
+		start: function(fn){
+			this.clear();
+			this.timer = setTimeout(fn, 200);
+		},
+		clear: function(){
+			this.timer && clearTimeout(this.timer);
+			this.timer = 0;
+		}
+	};
 
 	/**
 	 * @type {Object}

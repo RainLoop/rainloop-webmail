@@ -1182,12 +1182,12 @@ class ComposePopupView extends AbstractViewNext {
 			const uploadCache = {},
 				attachmentSizeLimit = pInt(Settings.settingsGet('AttachmentLimit')),
 				oJua = new Jua({
-					'action': upload(),
-					'name': 'uploader',
-					'queueSize': 2,
-					'multipleSizeLimit': 50,
-					'clickElement': this.composeUploaderButton(),
-					'dragAndDropElement': this.composeUploaderDropPlace()
+					action: upload(),
+					name: 'uploader',
+					queueSize: 2,
+					multipleSizeLimit: 50,
+					clickElement: this.composeUploaderButton(),
+					dragAndDropElement: this.composeUploaderDropPlace()
 				});
 
 			if (oJua) {
