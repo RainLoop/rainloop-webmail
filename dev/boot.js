@@ -219,7 +219,6 @@ if (app) {
 		<div id="rl-top"></div>\
 		<div id="rl-left"></div>\
 		<div id="rl-right"></div>\
-		<div id="rl-bottom"></div>\
 	</div>\
 </div>\
 <div id="rl-templates"></div>\

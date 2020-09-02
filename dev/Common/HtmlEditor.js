@@ -211,7 +211,7 @@ class HtmlEditor {
 		return (this.isHtml() ? ':HTML:' : '') + this.getData(wrapIsHtml);
 	}
 
-	modeToggle(plain, resize) {
+	modeToggle(plain) {
 		if (this.editor) {
 			try {
 				if (plain) {
@@ -222,10 +222,6 @@ class HtmlEditor {
 					this.editor.setMode('plain');
 				}
 			} catch (e) {} // eslint-disable-line no-empty
-
-			if (resize) {
-				this.resize();
-			}
 		}
 	}
 

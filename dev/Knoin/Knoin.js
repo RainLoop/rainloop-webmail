@@ -11,13 +11,15 @@ const SCREENS = {},
 	qs = s => document.querySelector(s),
 	isNonEmptyArray = values => Array.isArray(values) && values.length,
 
-	popupVisibilityNames = ko.observableArray([]);
+	popupVisibilityNames = ko.observableArray([]),
+
+	autofocus = dom => {
+//		if (!bMobileDevice) {
+		const af = dom.querySelector('[autofocus]');
+		af && af.focus();
+	};
 
 export const popupVisibility = ko.computed(() => 0 < popupVisibilityNames().length);
-
-popupVisibility.subscribe((bValue) => {
-	$htmlCL.toggle('rl-modal', bValue);
-});
 
 export const ViewType = {
 	Popup: 'Popups',
@@ -161,27 +163,43 @@ function buildViewModel(ViewModelClass, vmScreen) {
 					hideScreenPopup(ViewModelClass);
 				});
 
-				vm.modalVisibility.subscribe((value) => {
+				// show/hide popup/modal
+				const endShowHide = e => {
+					if (e.target === vmDom && 'background-color' === e.propertyName) {
+						if (vmDom.classList.contains('show')) {
+							autofocus(vmDom);
+							vm.onShowWithDelay && vm.onShowWithDelay();
+						} else {
+							vmDom.hidden = true;
+							vm.onHideWithDelay && vm.onHideWithDelay();
+						}
+					}
+				};
+
+				vm.modalVisibility.subscribe(value => {
 					if (value) {
-						vm.viewModelDom.hidden = false;
+						vmDom.style.zIndex = 3000 + popupVisibilityNames().length + 10;
+						vmDom.hidden = false;
 						vm.storeAndSetKeyScope();
-
 						popupVisibilityNames.push(vm.viewModelName);
-						vm.viewModelDom.style.zIndex = 3000 + popupVisibilityNames().length + 10;
-
-						vm.onShowWithDelay && setTimeout(()=>vm.onShowWithDelay, 500);
+						requestAnimationFrame(() => { // wait just before the next paint
+							document.body.offsetHeight; // force a reflow
+							vmDom.classList.add('show'); // trigger the transitions
+						});
 					} else {
 						vm.onHide && vm.onHide();
-						vm.onHideWithDelay && setTimeout(()=>vm.onHideWithDelay, 500);
-
+						vmDom.classList.remove('show');
 						vm.restoreKeyScope();
-
 						popupVisibilityNames.remove(vm.viewModelName);
-						vm.viewModelDom.style.zIndex = 2000;
-
-						setTimeout(() => vm.viewModelDom.hidden = true, 300);
 					}
+					vmDom.setAttribute('aria-hidden', !value);
 				});
+				if ('ontransitionend' in vmDom) {
+					vmDom.addEventListener('transitionend', endShowHide);
+				} else {
+					// For Edge < 79 and mobile browsers
+					vm.modalVisibility.subscribe(() => ()=>setTimeout(endShowHide({target:vmDom}), 500));
+				}
 			}
 
 			ko.applyBindingAccessorsToNode(
@@ -223,10 +241,6 @@ export function showScreenPopup(ViewModelClassToShow, params = []) {
 			ModalView.__vm.modalVisibility(true);
 
 			ModalView.__vm.onShow && ModalView.__vm.onShow(...params);
-
-//			if (!bMobileDevice) {
-			const af = ModalView.__dom.querySelector('[autofocus]');
-			af && af.focus();
 		}
 	}
 }
@@ -338,9 +352,7 @@ function screenOnRoute(screenName, subPart) {
 
 								ViewModelClass.__vm.onShow && ViewModelClass.__vm.onShow();
 
-//								if (!bMobileDevice) {
-								const af = ViewModelClass.__dom.querySelector('[autofocus]');
-								af && af.focus();
+								autofocus(ViewModelClass.__dom);
 
 								ViewModelClass.__vm.onShowWithDelay && setTimeout(()=>ViewModelClass.__vm.onShowWithDelay, 200);
 							}

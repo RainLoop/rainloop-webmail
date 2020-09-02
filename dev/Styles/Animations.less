@@ -142,19 +142,17 @@ html.no-mobile {
 		}
 	}
 
-	&.rl-modal.rl-modal-animation .popups {
-		overflow: hidden;
+	#rl-popups > .rl-view-model .modal {
+		transition: all .2s ease-out;
 	}
-
-	& .modal.fade {
-
-		.transition(all 200ms ease-out);
-		/*transform: scale(0.95);*/
-		transform: translateY(-20px);
-
-		&.show {
-			transform: none;
-		}
+	#rl-popups > .rl-view-model:not(.show) .modal {
+		top: -25%;
+	}
+	#rl-popups > .rl-view-model .modal.fade {
+		opacity: 1;
+	}
+	#rl-popups > .rl-view-model:not(.show) .modal.fade {
+		opacity: 0;
 	}
 
 	& .b-compose.loading .b-header-toolbar {
@@ -162,6 +160,13 @@ html.no-mobile {
 		.rl-strip-animation(255, 0.2);
 		animation: animate-stripes 2s linear infinite;
 	}
+}
+
+#rl-popups > .rl-view-model {
+	transition: background-color 0.2s linear;
+}
+#rl-popups > .rl-view-model:not(.show) {
+	background-color: rgba(0,0,0,0);
 }
 
 .textLoadingAnimationD1, .textLoadingAnimationD2, .textLoadingAnimationD3 {

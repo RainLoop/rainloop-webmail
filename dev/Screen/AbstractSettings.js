@@ -113,7 +113,6 @@ class AbstractSettingsScreen extends AbstractScreen {
 						o.oCurrentSubScreen.onBeforeShow && o.oCurrentSubScreen.onBeforeShow();
 						o.oCurrentSubScreen.viewModelDom.hidden = false;
 						o.oCurrentSubScreen.onShow && o.oCurrentSubScreen.onShow();
-						o.oCurrentSubScreen.onShowWithDelay && setTimeout(() => o.oCurrentSubScreen.onShowWithDelay(), 200);
 
 						o.menu().forEach(item => {
 							item.selected(

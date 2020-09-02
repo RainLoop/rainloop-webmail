@@ -287,47 +287,6 @@ html.no-rgba .modal {
 	border-width: 0px !important;
 }
 
-.modal-backdrop, .modal-backdrop.fade.show {
-	.opacity(20);
-	transform: none;
-}
-
-.popups {
-
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	z-index: 1100;
-	overflow: auto;
-	background-color: rgba(0,0,0,0.3);
-//	-webkit-overflow-scrolling: touch;
-
-	.modal {
-		position: static;
-		z-index: 1101;
-		margin: 5% auto;
-		background-color: transparent;
-		overflow: hidden;
-
-		.modal-body {
-			background-color: #fff;
-			max-height: none;
-		}
-
-		box-shadow: 0 5px 80px rgba(0,0,0,0.3);
-	}
-}
-
-.modal.fade {
-	transition: none;
-}
-
-.modal-backdrop {
-	.g-ui-user-select-none();
-}
-
 .modal.loginContent .modal-body, .modal.loginAdminContent .modal-body {
 	background-color: transparent !important;
 }
@@ -355,7 +314,7 @@ html.no-rgba .modal {
 
 html.rl-mobile {
 
-	.popups .modal {
+	#rl-popups .modal {
 		width: 100% !important;
 		width: calc(~'100% - 20px') !important;
 	}

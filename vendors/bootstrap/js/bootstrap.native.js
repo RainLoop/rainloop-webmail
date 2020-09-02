@@ -8,7 +8,6 @@ window.BSN = (() => {
 	'use strict';
 
 	const doc = document,
-		body = doc.body,
 		setFocus = element => element.focus ? element.focus() : element.setActive();
 
 	return {
@@ -96,51 +95,6 @@ window.BSN = (() => {
 			element.addEventListener('click',clickHandler,false);
 			element.open = false;
 			element.Dropdown = self;
-		},
-
-		Modal: function(modal) {
-			let isAnimating = false;
-			const mcl = modal.classList,
-				emulateTransitionEnd = (element,handler) => {
-					let transitionEndEvent = 'transitionend',
-						duration = parseFloat(getComputedStyle(element).transitionDuration),
-						transitionEndWrapper = e => {
-							handler && handler(e), handler = 0;
-							element.removeEventListener( transitionEndEvent, transitionEndWrapper);
-						};
-					(isFinite(duration) && duration)
-						? element.addEventListener( transitionEndEvent, transitionEndWrapper )
-						: setTimeout(() => { handler && handler(), handler = 0; }, 17);
-				},
-				beforeShow = () => {
-					!doc.getElementsByClassName('modal show')[0] && body.classList.add('modal-open');
-					mcl.add('show');
-					modal.setAttribute('aria-hidden', false);
-					mcl.contains('fade') ? emulateTransitionEnd(modal, triggerShow) : triggerShow();
-				},
-				triggerShow = () => {
-					setFocus(modal);
-					isAnimating = false;
-				},
-				triggerHide = () => {
-					body.classList.remove('modal-open');
-					isAnimating = false;
-				};
-			this.show = () => {
-				if (!mcl.contains('show') || !isAnimating) {
-					isAnimating = true;
-					doc.getElementsByClassName('modal show')[0] ? beforeShow() : setTimeout( beforeShow, 0 );
-				}
-			};
-			this.hide = () => {
-				if (mcl.contains('show') ) {
-					isAnimating = true;
-					mcl.remove('show');
-					modal.setAttribute('aria-hidden', true);
-					mcl.contains('fade') ? emulateTransitionEnd(modal, triggerHide) : triggerHide();
-				}
-			};
-			modal.Modal = this;
 		},
 
 		Tab: class {

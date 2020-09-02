@@ -168,6 +168,26 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
 	}
 }
 
+/*
+	#rl-popups > dialog {
+		top: 0;
+		margin: 10px auto;
+		padding: 0;
+		border: 0;
+	}
+*/
+#rl-popups > .rl-view-model {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1100;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.3);
+//	-webkit-overflow-scrolling: touch;
+}
+
 html.ssm-state-desktop-large {
 
 	#rl-left {

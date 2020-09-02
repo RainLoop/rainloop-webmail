@@ -173,26 +173,13 @@ ko.bindingHandlers.modal = {
 		const Globals = require('Common/Globals');
 
 		element.classList.toggle('fade', !Globals.bMobileDevice);
-		new BSN.Modal(element, {
-			'keyboard': false,
-			'show': ko.unwrap(fValueAccessor())
-		});
+
 		const close = element.querySelector('.close'), click = () => fValueAccessor()(false);
 		close && close.addEventListener('click.koModal', click);
 
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () =>
 			close.removeEventListener('click.koModal', click)
 		);
-	},
-	update: (element, fValueAccessor) => {
-		const htmlCL = doc.documentElement.classList;
-
-		element.Modal[ko.unwrap(fValueAccessor()) ? 'show' : 'hide']();
-
-		if (htmlCL.contains('no-mobile')) {
-			htmlCL.add('rl-modal-animation');
-			setTimeout(() => htmlCL.remove('rl-modal-animation'), 500);
-		}
 	}
 };
 
