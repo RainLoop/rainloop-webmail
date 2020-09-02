@@ -42,7 +42,9 @@ input,
 button,
 select,
 textarea {
-  #font > .shorthand(@baseFontSize,normal,@baseLineHeight); // Set size, weight, line-height here
+  font-size: @baseFontSize;
+  font-weight: normal;
+  line-height: @baseLineHeight;
 }
 input,
 button,
@@ -85,7 +87,7 @@ input[type="color"],
   font-size: @baseFontSize;
   line-height: @baseLineHeight;
   color: @gray;
-  .border-radius(@inputBorderRadius);
+  border-radius: @inputBorderRadius;
 }
 
 // Reset appearance properties for textual inputs and textarea
@@ -117,15 +119,14 @@ input[type="color"],
 .uneditable-input {
   background-color: @inputBackground;
   border: 1px solid @inputBorder;
-  .box-shadow(inset 0 1px 1px rgba(0,0,0,.075));
-  .transition(~"border linear .2s, box-shadow linear .2s");
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+  transition: border linear .2s, box-shadow linear .2s;
 
   // Focus state
   &:focus {
     border-color: rgba(82,168,236,.8);
     outline: 0;
-    outline: thin dotted \9; /* IE6-9 */
-    .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6)");
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
   }
 }
 
@@ -133,8 +134,6 @@ input[type="color"],
 input[type="radio"],
 input[type="checkbox"] {
   margin: 4px 0 0;
-  *margin-top: 0; /* IE7 */
-  margin-top: 1px \9; /* IE8-9 */
   line-height: normal;
   cursor: pointer;
 }
@@ -153,8 +152,7 @@ input[type="checkbox"] {
 // Set the height of select and file controls to match text inputs
 select,
 input[type="file"] {
-  height: 30px; /* In IE7, the height of the select element cannot be changed by height, only font-size */
-  *margin-top: 4px; /* For IE7, add top margin to align select with labels */
+  height: 30px;
   line-height: 30px;
 }
 
@@ -189,7 +187,7 @@ input[type="checkbox"]:focus {
   color: @grayLight;
   background-color: darken(@inputBackground, 1%);
   border-color: @inputBorder;
-  .box-shadow(inset 0 1px 2px rgba(0,0,0,.025));
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.025);
   cursor: not-allowed;
 }
 
@@ -210,9 +208,9 @@ input[type="checkbox"]:focus {
 // -------------------------
 
 // Placeholder text gets special styles; can't be bundled together though for some reason
-input,
-textarea {
-  .placeholder();
+input::placeholder,
+textarea::placeholder {
+  color: @placeholderText;
 }
 
 
@@ -359,7 +357,7 @@ select:focus:required:invalid {
   border-color: #ee5f5b;
   &:focus {
     border-color: darken(#ee5f5b, 10%);
-    .box-shadow(0 0 6px lighten(#ee5f5b, 20%));
+    box-shadow: 0 0 6px lighten(#ee5f5b, 20%);
   }
 }
 
@@ -394,7 +392,6 @@ select:focus:required:invalid {
 
 .help-inline {
   display: inline-block;
-  .ie7-inline-block();
   vertical-align: middle;
   padding-left: 5px;
 }
@@ -416,10 +413,9 @@ select:focus:required:invalid {
   .uneditable-input {
     position: relative; // placed here by default so that on :focus we can place the input above the .add-on for full border and box-shadow goodness
     margin-bottom: 0; // prevent bottom margin from screwing up alignment in stacked forms
-    *margin-left: 0;
     font-size: @baseFontSize;
     vertical-align: top;
-    .border-radius(0 @inputBorderRadius @inputBorderRadius 0);
+    border-radius: 0 @inputBorderRadius @inputBorderRadius 0;
     // Make input on top when focused so blue border and shadow always show
     &:focus {
       z-index: 2;
@@ -443,7 +439,7 @@ select:focus:required:invalid {
   .btn {
     margin-left: -1px;
     vertical-align: top;
-    .border-radius(0);
+    border-radius: 0;
   }
   .active {
     background-color: lighten(@green, 30);
@@ -457,18 +453,18 @@ select:focus:required:invalid {
   }
   .add-on:first-child,
   .btn:first-child {
-    .border-radius(@inputBorderRadius 0 0 @inputBorderRadius);
+    border-radius: @inputBorderRadius 0 0 @inputBorderRadius;
   }
 }
 .input-append {
   input,
   select,
   .uneditable-input {
-    .border-radius(@inputBorderRadius 0 0 @inputBorderRadius);
+    border-radius: @inputBorderRadius 0 0 @inputBorderRadius;
   }
   .add-on:last-child,
   .btn:last-child {
-    .border-radius(0 @inputBorderRadius @inputBorderRadius 0);
+    border-radius: 0 @inputBorderRadius @inputBorderRadius 0;
   }
 }
 // Remove all border-radius for inputs with both prepend and append
@@ -476,17 +472,17 @@ select:focus:required:invalid {
   input,
   select,
   .uneditable-input {
-    .border-radius(0);
+    border-radius: 0;
   }
   .add-on:first-child,
   .btn:first-child {
     margin-right: -1px;
-    .border-radius(@inputBorderRadius 0 0 @inputBorderRadius);
+    border-radius: @inputBorderRadius 0 0 @inputBorderRadius;
   }
   .add-on:last-child,
   .btn:last-child {
     margin-left: -1px;
-    .border-radius(0 @inputBorderRadius @inputBorderRadius 0);
+    border-radius: 0 @inputBorderRadius @inputBorderRadius 0;
   }
 }
 
@@ -497,29 +493,27 @@ select:focus:required:invalid {
 
 input.search-query {
   padding-right: 14px;
-  padding-right: 4px \9;
   padding-left: 14px;
-  padding-left: 4px \9; /* IE7-8 doesn't have border-radius, so don't indent the padding */
   margin-bottom: 0; // Remove the default margin on all inputs
-  .border-radius(15px);
+  border-radius: 15px;
 }
 
 /* Allow for input prepend/append in search forms */
 .form-search .input-append .search-query,
 .form-search .input-prepend .search-query {
-  .border-radius(0); // Override due to specificity
+  border-radius: 0; // Override due to specificity
 }
 .form-search .input-append .search-query {
-  .border-radius(14px 0 0 14px)
+  border-radius: 14px 0 0 14px
 }
 .form-search .input-append .btn {
-  .border-radius(0 14px 14px 0)
+  border-radius: 0 14px 14px 0
 }
 .form-search .input-prepend .search-query {
-  .border-radius(0 14px 14px 0)
+  border-radius: 0 14px 14px 0
 }
 .form-search .input-prepend .btn {
-  .border-radius(14px 0 0 14px)
+  border-radius: 14px 0 0 14px
 }
 
 
@@ -542,7 +536,6 @@ input.search-query {
   .input-prepend,
   .input-append {
     display: inline-block;
-    .ie7-inline-block();
     margin-bottom: 0;
     vertical-align: middle;
   }
@@ -615,13 +608,7 @@ legend + .control-group {
   .controls {
     // Super jank IE7 fix to ensure the inputs in .input-append and input-prepend
     // don't inherit the margin of the parent, in this case .controls
-    *display: inline-block;
-    *padding-left: 20px;
     margin-left: 160px;
-    *margin-left: 0;
-    &:first-child {
-      *padding-left: 160px;
-    }
   }
   // Remove bottom margin on block level help text since that's accounted for on .control-group
   .help-block {

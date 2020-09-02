@@ -12,7 +12,7 @@
 				<span class="desc" data-bind="text: loginDescription"></span>
 			</div>
 			{{INCLUDE/AfterLogo/PLACE}}
-			<div class="alert alertError" data-bind="visibleAnimated: '' !== submitError()" hidden="">
+			<div class="alert alertError" data-bind="attr: { hidden: '' === submitError() ? '' : null }" hidden="">
 				<button type="button" class="close" data-bind="click: function () { submitError('') }">&times;</button>
 				<span data-bind="text: submitError"></span>
 				<div data-bind="visible: '' !== submitErrorAddidional()">
@@ -81,7 +81,7 @@
 						}"></div>
 					</div>
 					{{INCLUDE/BottomControlGroup/PLACE}}
-					<div class="controls controls-submit-wrp" data-bind="hidden: hideSubmitButton">
+					<div class="controls controls-submit-wrp" data-bind="attr: { hidden: hideSubmitButton }">
 						<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
 							<span class="i18n i18n-animation" data-i18n="LOGIN/BUTTON_SIGN_IN"></span>
 						</button>

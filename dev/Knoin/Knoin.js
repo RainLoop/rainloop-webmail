@@ -5,21 +5,19 @@ import { $htmlCL, VIEW_MODELS } from 'Common/Globals';
 //import { bMobileDevice } from 'Common/Globals';
 
 let currentScreen = null,
-	defaultScreenName = '';
+	defaultScreenName = '',
+	popupVisibilityNames = [];
 
 const SCREENS = {},
 	qs = s => document.querySelector(s),
 	isNonEmptyArray = values => Array.isArray(values) && values.length,
-
-	popupVisibilityNames = ko.observableArray([]),
-
 	autofocus = dom => {
 //		if (!bMobileDevice) {
 		const af = dom.querySelector('[autofocus]');
 		af && af.focus();
 	};
 
-export const popupVisibility = ko.computed(() => 0 < popupVisibilityNames().length);
+export const popupVisibility = ko.computed(() => 0 < popupVisibilityNames.length);
 
 export const ViewType = {
 	Popup: 'Popups',
@@ -165,7 +163,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 
 				// show/hide popup/modal
 				const endShowHide = e => {
-					if (e.target === vmDom && 'background-color' === e.propertyName) {
+					if (e.target === vmDom) {
 						if (vmDom.classList.contains('show')) {
 							autofocus(vmDom);
 							vm.onShowWithDelay && vm.onShowWithDelay();
@@ -178,19 +176,19 @@ function buildViewModel(ViewModelClass, vmScreen) {
 
 				vm.modalVisibility.subscribe(value => {
 					if (value) {
-						vmDom.style.zIndex = 3000 + popupVisibilityNames().length + 10;
+						vmDom.style.zIndex = 3000 + popupVisibilityNames.length + 10;
 						vmDom.hidden = false;
 						vm.storeAndSetKeyScope();
 						popupVisibilityNames.push(vm.viewModelName);
 						requestAnimationFrame(() => { // wait just before the next paint
-							document.body.offsetHeight; // force a reflow
+							vmDom.offsetHeight; // force a reflow
 							vmDom.classList.add('show'); // trigger the transitions
 						});
 					} else {
 						vm.onHide && vm.onHide();
 						vmDom.classList.remove('show');
 						vm.restoreKeyScope();
-						popupVisibilityNames.remove(vm.viewModelName);
+						popupVisibilityNames = popupVisibilityNames.filter(v=>v!==vm.viewModelName);
 					}
 					vmDom.setAttribute('aria-hidden', !value);
 				});
@@ -419,8 +417,7 @@ export function startScreens(screensClasses) {
  * @returns {void}
  */
 export function setHash(hash, silence = false, replace = false) {
-	hash = '#' === hash.substr(0, 1) ? hash.substr(1) : hash;
-	hash = '/' === hash.substr(0, 1) ? hash.substr(1) : hash;
+	hash = hash.replace(/^[#/]+/, '');
 
 	const cmd = replace ? 'replaceHash' : 'setHash';
 
@@ -509,15 +506,13 @@ function settingsMenuKeysHandler(items) {
 		if (event && index) {
 			while (index-- && !items[index].matches('.selected'));
 			if (handler && 'up' === handler.shortcut) {
-				 index && --index;
+				index && --index;
 			} else if (index < items.length - 1) {
 				++index;
 			}
 
 			const resultHash = items[index].href;
-			if (resultHash) {
-				setHash(resultHash, false, true);
-			}
+			resultHash && setHash(resultHash, false, true);
 		}
 	}).throttle(200);
 }

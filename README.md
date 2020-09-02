@@ -84,23 +84,23 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  963.108	|
-|app.js      	|4.184.455	|2.626.387	|
+|admin.js    	|2.130.942	|  961.538	|
+|app.js      	|4.184.455	|2.624.797	|
 |boot.js     	|  671.522	|   43.742	|
 |libs.js     	|  647.614	|  312.276	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.945.513	|
+|TOTAL      	|7.960.367	|3.942.353	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  130.575	| 73.657	| 37.877	| 32.469	|
-|app.min.js      	|  511.202	|  354.284	|140.462	| 93.363	| 74.888	|
+|admin.min.js    	|  252.147	|  130.359	| 73.657	| 37.825	| 32.456	|
+|app.min.js      	|  511.202	|  354.068	|140.462	| 93.278	| 74.852	|
 |boot.min.js     	|   66.007	|    5.534	| 22.567	|  2.319	|  1.988	|
 |libs.min.js     	|  572.545	|  295.771	|176.720	| 91.520	| 80.851	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  786.164	|424.718	|225.079	|190.196	|
+|TOTAL          	|1.434.353	|  785.732	|424.718	|224.942	|190.147	|
 
-648.189 bytes (199.639 gzip) is not much, but it feels faster.
+648.621 bytes (199.776 gzip) is not much, but it feels faster.
 
 ### CSS changes
 
@@ -123,10 +123,10 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Removed vendors/Progress.js/minified/progressjs.min.css
 
 
-|css/*       	|1.14.0   	|native   	|
-|--------------	|--------:	|--------:	|
-|app.css    	|  340.334	|  263.469	|
-|app.min.css	|  274.791	|  209.640	|
+|css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
+|--------------	|-------:	|-------:	|------:	|------:	|------:	|
+|app.css    	| 340.334	| 255.627	| 46,959	| 36.929	| 31.015	|
+|app.min.css	| 274.791	| 208.711	| 39,618	| 32.226	| 27.364	|
 
 
 ### PHP73 branch

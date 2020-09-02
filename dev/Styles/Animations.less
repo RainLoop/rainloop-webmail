@@ -41,25 +41,25 @@ html.rl-started-trigger.no-mobile .b-login-content .loginFormWrapper {
 }*/
 
 #rl-loading {
-	.transition(opacity 0.5s linear);
+	transition: opacity 0.5s linear;
 }
 
 html.rl-started-delay {
 
 	#rl-left {
-		.transition(width 0.3s ease-out);
+		transition: width 0.3s ease-out;
 	}
 
 	#rl-right {
-		.transition(~'left 0.3s ease-out, right 0.3s ease-out');
+		transition: left 0.3s ease-out, right 0.3s ease-out;
 	}
 
 	#rl-sub-left, #rl-sub-left .messageList .inputSearch {
-		.transition(width 0.3s ease-out);
+		transition: width 0.3s ease-out;
 	}
 
 	#rl-sub-right {
-		.transition(left 0.3s ease-out);
+		transition: left 0.3s ease-out;
 	}
 }
 
@@ -77,7 +77,7 @@ html.no-mobile {
 		.alertError {
 			display: block;
 			opacity: 1;
-			.transition(opacity 0.5s linear);
+			transition: opacity 0.5s linear;
 		}
 		.alertError[hidden] {
 			opacity: 0;
@@ -102,11 +102,11 @@ html.no-mobile {
 	}
 
 	&.no-mobile .b-login-content .loginFormWrapper {
-		.transition(all 0.3s ease-out);
+		transition: all 0.3s ease-out;
 	}
 
 	& .button-delete-transitions {
-		.transition(all 0.2s linear);
+		transition: all 0.2s linear;
 	}
 
 	& .b-folders .e-item .anim-action-class {
@@ -114,31 +114,31 @@ html.no-mobile {
 	}
 
 	& .b-folders .btn.buttonContacts {
-		.transition(margin 0.3s linear);
+		transition: margin 0.3s linear;
 	}
 
 	& .b-folders .b-content.opacity-on-panel-disabled {
-		.transition(opacity 0.3s linear);
+		transition: opacity 0.3s linear;
 	}
 
 	& .messageList {
 		.messageListItem {
-			.transition(max-height 400ms ease);
+			transition: max-height 400ms ease;
 		}
 		.listDragOver {
-			.transition(all 400ms ease);
+			transition: all 400ms ease;
 		}
 	}
 
 	& .b-list-content {
 		.e-contact-item {
-			.transition(max-height 400ms ease);
+			transition: max-height 400ms ease;
 		}
 	}
 
 	& .modal.b-domain-content {
 		.modal-body {
-			.transition(left 500ms ease);
+			transition: left 500ms ease;
 		}
 	}
 

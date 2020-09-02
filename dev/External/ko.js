@@ -33,11 +33,6 @@ ko.bindingHandlers.editor = {
 	}
 };
 
-ko.bindingHandlers.visibleAnimated = {
-	init: (element, fValueAccessor) => element.hidden = !ko.unwrap(fValueAccessor()),
-	update: (element, fValueAccessor) => element.hidden = !ko.unwrap(fValueAccessor())
-};
-
 ko.bindingHandlers.tooltip = {
 	init: (element, fValueAccessor) => {
 		const fValue = fValueAccessor(),

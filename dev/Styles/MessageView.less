@@ -34,7 +34,7 @@ html.rl-no-preview-pane {
 		/*overflow: hidden;*/
 		border: @rlLowBorderSize solid @rlMainDarkColor;
 
-		.border-radius(@rlLowBorderRadius);
+		border-radius: @rlLowBorderRadius;
 
 		background-color: #fff;
 
@@ -277,10 +277,10 @@ html.rl-no-preview-pane {
 				z-index: 2;
 				cursor: pointer;
 				border-radius: 5px;
-				.opacity(50);
+				opacity: 0.5;
 
 				&:hover {
-					.opacity(80);
+					opacity: 0.8;
 					border-color: #666;
 					background-color: #888;
 					color: #fff;
