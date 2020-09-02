@@ -728,6 +728,10 @@ class ComposePopupView extends AbstractViewNext {
 	onShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText) {
 		routeOff();
 
+		const ro = this.resizeObserver;
+		ro.observe(ro.compose);
+		ro.observe(ro.header);
+
 		this.autosaveStart();
 
 		if (AppStore.composeInEdit()) {
@@ -1050,12 +1054,6 @@ class ComposePopupView extends AbstractViewNext {
 		if (identity) {
 			this.currentIdentity(identity);
 		}
-
-		let el = document.querySelector('.b-compose');
-		this.resizeObserver.compose = el;
-		this.resizeObserver.els = [el.querySelector('.textAreaParent'), el.querySelector('.attachmentAreaParent')];
-		this.resizeObserver.observe(el);
-		this.resizeObserver.observe(el.querySelector('.b-header'));
 	}
 
 	onMessageUploadAttachments(sResult, oData) {
@@ -1109,7 +1107,7 @@ class ComposePopupView extends AbstractViewNext {
 		}
 	}
 
-	onBuild() {
+	onBuild(dom) {
 		this.initUploader();
 
 		key('ctrl+q, command+q, ctrl+w, command+w', KeyState.Compose, ()=>false);
@@ -1153,6 +1151,12 @@ class ComposePopupView extends AbstractViewNext {
 			}
 			return false;
 		});
+
+		const ro = this.resizeObserver;
+		ro.compose = dom.querySelector('.b-compose');
+		ro.header = dom.querySelector('.b-header');
+		ro.toolbar = dom.querySelector('.b-header-toolbar');
+		ro.els = [dom.querySelector('.textAreaParent'), dom.querySelector('.attachmentAreaParent')];
 	}
 
 	/**
@@ -1508,14 +1512,12 @@ class ComposePopupView extends AbstractViewNext {
 	}
 
 	resizerTrigger() {
-		let top = 0, ro = this.resizeObserver;
-		ro.els.forEach(element => top = Math.max(top, element.getBoundingClientRect().top));
-		if (0 < top) {
-			top = ro.compose.clientHeight - top;
-			ro.els.forEach(element => element.style.height = Math.max(top, 200) + 'px');
-			if (this.oEditor) {
-				this.oEditor.resize();
-			}
+		let ro = this.resizeObserver,
+			height = Math.max(200, ro.compose.clientHeight - ro.header.offsetHeight - ro.toolbar.offsetHeight) + 'px';
+		if (ro.height !== height) {
+			ro.height = height;
+			ro.els.forEach(element => element.style.height = height);
+			this.oEditor && this.oEditor.resize();
 		}
 	}
 }
