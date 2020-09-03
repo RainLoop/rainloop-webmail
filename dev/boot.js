@@ -235,7 +235,6 @@ if (!navigator || !navigator.cookieEnabled) {
 	doc.location.replace('./?/NoCookie');
 }
 
-// require('Styles/@Boot.css');
 writeCSS('#rl-content{display:none;}.internal-hiddden{display:none !important;}');
 
 if (app) {
@@ -243,7 +242,6 @@ if (app) {
 		meta = doc.getElementById('app-boot-data'),
 		options = meta ? JSON.parse(meta.getAttribute('content')) || {} : {};
 
-//	require('Html/Layout.html')
 	app.innerHTML = '<div id="rl-loading" class="thm-loading" style="opacity:0">\
 	<div id="rl-loading-desc"></div>\
 	<div class="e-spinner">\
