@@ -88,13 +88,11 @@ const
 		set: percent => setPercentWidth(percent),
 		end: () => {
 			if (container) {
-				progress.addEventListener('transitionend', () => {
-					if (container) {
-						container.hidden = true;
-						setTimeout(() => {container.remove();container=null;}, 200);
-					}
-				}, false);
 				setPercentWidth(100);
+				setTimeout(() => {
+					container.remove();
+					container = progress = null;
+				}, 600);
 			}
 		}
 	};
