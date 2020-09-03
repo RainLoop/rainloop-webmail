@@ -1,8 +1,5 @@
-let SETTINGS = window.__rlah_data() || null;
+let SETTINGS = RainLoop.data() || null;
 SETTINGS = null != SETTINGS ? SETTINGS : {};
-
-let APP_SETTINGS = SETTINGS.System || null;
-APP_SETTINGS = null != APP_SETTINGS ? APP_SETTINGS : {};
 
 /**
  * @param {string} name
@@ -25,6 +22,7 @@ export function settingsSet(name, value) {
  * @returns {*}
  */
 export function appSettingsGet(name) {
+	const APP_SETTINGS = SETTINGS.System || {};
 	return null == APP_SETTINGS[name] ? null : APP_SETTINGS[name];
 }
 
@@ -33,6 +31,6 @@ export function appSettingsGet(name) {
  * @returns {boolean}
  */
 export function capa(name) {
-	const values = settingsGet('Capa');
+	const values = SETTINGS.Capa;
 	return Array.isArray(values) && null != name && values.includes(name);
 }

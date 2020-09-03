@@ -23,6 +23,13 @@ const { webpack } = require('./webpack');
 
 const jsClean = () => del(config.paths.staticJS + '/**/*.{js,map}');
 
+// boot
+const jsBoot = () => {
+	return gulp
+		.src('dev/boot.js')
+		.pipe(gulp.dest('rainloop/v/' + config.devVersion + '/static/js'));
+};
+
 // libs
 const jsLibs = () => {
 	const src = config.paths.js.libs.src;
@@ -90,7 +97,7 @@ const jsLint = () =>
 		.pipe(eslint.failAfterError());
 
 const jsState1 = gulp.series(jsLint);
-const jsState3 = gulp.parallel(jsLibs, jsApp, jsAdmin);
+const jsState3 = gulp.parallel(jsBoot, jsLibs, jsApp, jsAdmin);
 const jsState2 = gulp.series(jsClean, webpack, jsState3, jsMin);
 
 exports.jsLint = jsLint;

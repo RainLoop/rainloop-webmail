@@ -48,7 +48,6 @@ module.exports = function(publicPath, pro, mode) {
 		mode: mode || 'development',
 		devtool: 'inline-source-map',
 		entry: {
-			'js/boot': path.join(devPathJoin, 'boot.js'),
 			'js/app': path.join(devPathJoin, 'app.js'),
 			'js/admin': path.join(devPathJoin, 'admin.js')
 		},

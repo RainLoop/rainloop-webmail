@@ -14,9 +14,7 @@ module.exports = {
 	},
 	globals: {
 		// RainLoop
-		'__rlah_set': "readonly",
-		'__rlah_clear': "readonly",
-		'__rlah_data': "readonly",
+		'RainLoop': "readonly",
 		'rainloopI18N': "readonly",
 		'rainloopTEMPLATES': "readonly",
 		'rl': "readonly",

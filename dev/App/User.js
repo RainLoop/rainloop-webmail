@@ -57,7 +57,6 @@ import QuotaStore from 'Stores/User/Quota';
 
 import * as Local from 'Storage/Client';
 import * as Settings from 'Storage/Settings';
-import { checkTimestamp } from 'Storage/RainLoop';
 
 import Remote from 'Remote/User/Ajax';
 import Promises from 'Promises/User/Ajax';
@@ -95,7 +94,7 @@ class AppUser extends AbstractApp {
 		setInterval(() => {
 			const currentTime = (new Date()).getTime();
 			if (currentTime > (lastTime + interval + 1000)) {
-				if (checkTimestamp()) {
+				if (RainLoop.hash.check()) {
 					this.reload();
 				}
 				Remote.jsVersion((sResult, oData) => {
@@ -107,7 +106,7 @@ class AppUser extends AbstractApp {
 			lastTime = currentTime;
 		}, interval);
 
-		if (checkTimestamp()) {
+		if (RainLoop.hash.check()) {
 			this.reload();
 		}
 
@@ -919,7 +918,7 @@ class AppUser extends AbstractApp {
 
 	bootend() {
 		if (window.progressJs) {
-			progressJs.set(100).end();
+			progressJs.end();
 		}
 		hideLoading();
 	}

@@ -62,6 +62,7 @@ The result is faster and smaller download code (good for mobile networks).
 Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill for array.flat().
 
 * Added dev/prototype-*.js for some additional features
+* boot.js without webpack overhead
 * Replaced jQuery with jQuery.slim
 * Replaced ProgressJS with simple native dropin
 * Replaced Autolinker with simple https/email detection
@@ -85,23 +86,23 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  958.580	|
-|app.js      	|4.184.455	|2.591.395	|
-|boot.js     	|  671.522	|   37.334	|
-|libs.js     	|  647.614	|  313.217	|
+|admin.js    	|2.130.942	|  958.397	|
+|app.js      	|4.184.455	|2.586.232	|
+|boot.js     	|  671.522	|    6.947	|
+|libs.js     	|  647.614	|  312.269	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.900.526	|
+|TOTAL      	|7.960.367	|3.863.845	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  130.139	| 73.657	| 37.785	| 32.445	|
-|app.min.js      	|  511.202	|  351.142	|140.462	| 92.245	| 74.050	|
-|boot.min.js     	|   66.007	|    4.938	| 22.567	|  2.097	|  1.767	|
-|libs.min.js     	|  572.545	|  296.365	|176.720	| 91.813	| 80.999	|
+|admin.min.js    	|  252.147	|  130.128	| 73.657	| 37.783	| 32.395	|
+|app.min.js      	|  511.202	|  350.575	|140.462	| 92.070	| 73.949	|
+|boot.min.js     	|   66.007	|    4.141	| 22.567	|  1.869	|  1.557	|
+|libs.min.js     	|  572.545	|  295.776	|176.720	| 91.524	| 80.746	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  782.584	|424.718	|223.940	|189.261	|
+|TOTAL          	|1.434.353	|  780.620	|424.718	|223.246	|188.642	|
 
-651.769 bytes (200.778 gzip) is not much, but it feels faster.
+653.733 bytes (201.472 gzip) is not much, but it feels faster.
 
 ### CSS changes
 

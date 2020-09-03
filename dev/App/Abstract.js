@@ -98,8 +98,8 @@ class AbstractApp extends AbstractBoot {
 	}
 
 	clearClientSideToken() {
-		if (window.__rlah_clear) {
-			__rlah_clear();
+		if (RainLoop.hash.clear) {
+			RainLoop.hash.clear();
 		}
 	}
 
@@ -107,8 +107,8 @@ class AbstractApp extends AbstractBoot {
 	 * @param {string} token
 	 */
 	setClientSideToken(token) {
-		if (window.__rlah_set) {
-			__rlah_set(token);
+		if (RainLoop.hash.set) {
+			RainLoop.hash.set(token);
 
 			Settings.settingsSet('AuthAccountHash', token);
 			populateAuthSuffix();

@@ -1,15 +1,108 @@
-import { getHash, setHash, clearHash } from 'Storage/RainLoop';
 
 (win => {
 
 const
 	doc = win.document,
-	setPercentWidth = (percent) => {
-		setTimeout(() => progress.style.width = parseInt(Math.min(percent, 100)) + '%', 50);
+	app = doc.getElementById('rl-app'),
+	setPercentWidth = percent => setTimeout(() => progress.style.width = parseInt(Math.min(percent, 100)) + '%', 50),
+
+	Storage = type => {
+		let name = type+'Storage';
+		try {
+			win[name].setItem('storage', '');
+			win[name].getItem('storage');
+			win[name].removeItem('storage');
+		} catch (e) {
+			console.error(e);
+			const cookieName = encodeURIComponent(name+('session' === type ? win.name || (win.name = Date.now()) : ''));
+
+			// initialise if there's already data
+			let data = document.cookie.match('(^|;) ?'+cookieName+'=([^;]*)(;|$)');
+			data = data ? decodeURIComponent(data[2]) : null;
+			data = data ? JSON.parse(data) : {};
+
+			win[name] = {
+				getItem: key => data[key] === undefined ? null : data[key],
+				setItem: function (key, value) {
+					data[key] = ''+value; // forces the value to a string
+					document.cookie = cookieName+'='+encodeURIComponent(JSON.stringify(data))
+						+"; expires="+('local' === type ? (new Date(Date.now()+(365*24*60*60*1000))).toGMTString() : '')
+						+"; path=/; samesite=strict";
+				}
+			};
+		}
+	},
+	STORAGE_KEY = '__rlA',
+	TIME_KEY = '__rlT',
+	AUTH_KEY = 'AuthAccountHash',
+	storage = () => window.sessionStorage,
+	timestamp = () => Math.round(Date.now() / 1000),
+	setTimestamp = () => storage().setItem(TIME_KEY, timestamp()),
+
+	showError = () => {
+		const oR = doc.getElementById('rl-loading'),
+			oL = doc.getElementById('rl-loading-error');
+
+		if (oR) {
+			oR.style.display = 'none';
+		}
+
+		if (oL) {
+			oL.style.display = 'block';
+		}
+
+		p.end();
+	},
+
+	runMainBoot = withError => {
+		if (win.__APP_BOOT && !withError) {
+			win.__APP_BOOT(() => showError());
+		} else {
+			showError();
+		}
+	},
+
+	writeCSS = css => {
+		const style = doc.createElement('style');
+		style.type = 'text/css';
+		style.textContent = css;
+		doc.head.append(style);
+	},
+
+	loadScript = src => {
+		if (!src) {
+			throw new Error('src should not be empty.');
+		}
+		return new Promise((resolve, reject) => {
+			const script = doc.createElement('script');
+			script.onload = () => resolve();
+			script.onerror = () => reject(new Error(src));
+			script.src = src;
+//			script.type = 'text/javascript';
+			doc.head.append(script);
+//			doc.body.append(element);
+		});
+	},
+
+	p = win.progressJs = {
+		set: percent => setPercentWidth(percent),
+		end: () => {
+			if (container) {
+				progress.addEventListener('transitionend', () => {
+					if (container) {
+						container.hidden = true;
+						setTimeout(() => {container.remove();container=null;}, 200);
+					}
+				}, false);
+				setPercentWidth(100);
+			}
+		}
 	};
 
 let container = doc.createElement('div'),
-	progress = container.appendChild(doc.createElement("div"));
+	progress = container.appendChild(doc.createElement("div")),
+
+	RL_APP_DATA_STORAGE = null;
 
 container.className = 'progressjs-progress progressjs-theme-rainloop';
 progress.className = "progressjs-inner";
@@ -18,99 +111,53 @@ progress.appendChild(doc.createElement('div')).className = "progressjs-percent";
 setPercentWidth(1);
 doc.body.append(container);
 
-win.progressJs = new class {
-	set(percent) {
-		setPercentWidth(percent);
-		return this;
-	}
+Storage('local');
+Storage('session');
 
-	end() {
-		if (progress) {
-			progress.addEventListener('transitionend', () => {
-				if (container) {
-					container.hidden = true;
-					setTimeout(() => {container.remove();container=null;}, 200);
-				}
-			}, false);
-			setPercentWidth(100);
+win.RainLoop = {
+	hash: {
+		// getHash
+		get: () => storage().getItem(STORAGE_KEY) || null,
+		// setHash
+		set: () => {
+			storage().setItem(STORAGE_KEY, RL_APP_DATA_STORAGE && RL_APP_DATA_STORAGE[AUTH_KEY]
+				? RL_APP_DATA_STORAGE[AUTH_KEY] : '');
+			setTimestamp();
+		},
+		// clearHash
+		clear: () => {
+			storage().setItem(STORAGE_KEY, '');
+			setTimestamp();
+		},
+		// checkTimestamp
+		check: () => {
+			if (timestamp() > (parseInt(storage().getItem(TIME_KEY) || 0, 10) || 0) + 3600000) {
+				// 60m
+				RainLoop.hash.clear();
+				return true;
+			}
+			return false;
 		}
-		return this;
-	}
+	},
+	data: () => RL_APP_DATA_STORAGE
 };
 
-let RL_APP_DATA_STORAGE = null;
-
-win.__rlah_set = () => setHash();
-win.__rlah_clear = () => clearHash();
-win.__rlah_data = () => RL_APP_DATA_STORAGE;
+// init section
+setInterval(setTimestamp, 60000); // 1m
 
 /**
+ * @param {mixed} appData
  * @returns {void}
  */
-function showError() {
-	const oR = doc.getElementById('rl-loading'),
-		oL = doc.getElementById('rl-loading-error');
+win.__initAppData = appData => {
+	RL_APP_DATA_STORAGE = appData;
 
-	if (oR) {
-		oR.style.display = 'none';
-	}
+	RainLoop.hash.set();
 
-	if (oL) {
-		oL.style.display = 'block';
-	}
-
-	if (win.progressJs) {
-		progressJs.set(100).end();
-	}
-}
-
-/**
- * @param {boolean} withError
- * @returns {void}
- */
-function runMainBoot(withError) {
-	if (win.__APP_BOOT && !withError) {
-		win.__APP_BOOT(() => showError());
-	} else {
-		showError();
-	}
-}
-
-function writeCSS(css) {
-	const style = doc.createElement('style');
-	style.type = 'text/css';
-	style.textContent = css;
-	doc.head.append(style);
-}
-
-function loadScript(src) {
-	if (!src) {
-		throw new Error('src should not be empty.');
-	}
-	return new Promise((resolve, reject) => {
-		const script = doc.createElement('script');
-		script.onload = () => resolve();
-		script.onerror = () => reject(new Error(src));
-		script.src = src;
-//		script.type = 'text/javascript';
-		doc.head.append(script);
-//		doc.body.append(element);
-	});
-}
-
-/**
- * @param {mixed} data
- * @returns {void}
- */
-win.__initAppData = data => {
-	RL_APP_DATA_STORAGE = data;
-
-	win.__rlah_set();
-
-	if (RL_APP_DATA_STORAGE) {
-		const css = RL_APP_DATA_STORAGE.IncludeCss,
-			theme = RL_APP_DATA_STORAGE.NewThemeLink,
-			description= RL_APP_DATA_STORAGE.LoadingDescriptionEsc || '',
+	if (appData) {
+		const css = appData.IncludeCss,
+			theme = appData.NewThemeLink,
+			description= appData.LoadingDescriptionEsc || '',
 			oE = doc.getElementById('rl-loading'),
 			oElDesc = doc.getElementById('rl-loading-desc');
 
@@ -129,10 +176,7 @@ win.__initAppData = data => {
 		}
 	}
 
-	const appData = win.__rlah_data(), p = progressJs;
-
 	if (
-		p &&
 		appData &&
 		appData.TemplatesLink &&
 		appData.LangLink &&
@@ -146,7 +190,7 @@ win.__initAppData = data => {
 			loadScript(appData.StaticLibJsLink).then(() => {
 				doc.getElementById('rl-check').remove();
 				if (appData.IncludeBackground) {
-					const img = appData.IncludeBackground.replace('{{USER}}', getHash() || '0');
+					const img = appData.IncludeBackground.replace('{{USER}}', RainLoop.hash.get() || '0');
 					if (img) {
 						doc.documentElement.classList.add('UserBackground');
 						doc.body.style.backgroundImage = "url("+img+")";
@@ -186,8 +230,6 @@ win.__initAppData = data => {
 		runMainBoot(true);
 	}
 };
-
-const app = doc.getElementById('rl-app');
 
 if (!navigator || !navigator.cookieEnabled) {
 	doc.location.replace('./?/NoCookie');
@@ -230,7 +272,7 @@ if (app) {
 		+ (options.mobile ? 'mobile' : 'no-mobile')
 		+ (options.mobileDevice ? '-1' : '-0')
 		+ '/'
-		+ (getHash() || '0')
+		+ (RainLoop.hash.get() || '0')
 		+ '/'
 		+ Math.random().toString().substr(2)
 		+ '/').then(() => {});
