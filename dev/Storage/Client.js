@@ -1,11 +1,6 @@
-import { CookieDriver } from 'Common/ClientStorageDriver/Cookie';
-import { LocalStorageDriver } from 'Common/ClientStorageDriver/LocalStorage';
+import { CLIENT_SIDE_STORAGE_INDEX_NAME } from 'Common/Consts';
 
-const SupportedStorageDriver = [LocalStorageDriver, CookieDriver].find(
-	StorageDriver => StorageDriver && StorageDriver.supported()
-);
-
-const driver = SupportedStorageDriver ? new SupportedStorageDriver() : null;
+const storage = window.localStorage;
 
 /**
  * @param {number} key
@@ -13,7 +8,20 @@ const driver = SupportedStorageDriver ? new SupportedStorageDriver() : null;
  * @returns {boolean}
  */
 export function set(key, data) {
-	return driver ? driver.set('p' + key, data) : false;
+	let storageResult = null;
+	try {
+		const storageValue = storage.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null;
+		storageResult = null === storageValue ? null : JSON.parse(storageValue);
+	} catch (e) {} // eslint-disable-line no-empty
+
+	(storageResult || (storageResult = {}))['p' + key] = data;
+
+	try {
+		storage.setItem(CLIENT_SIDE_STORAGE_INDEX_NAME, JSON.stringify(storageResult));
+		return true;
+	} catch (e) {} // eslint-disable-line no-empty
+
+	return false;
 }
 
 /**
@@ -21,5 +29,13 @@ export function set(key, data) {
  * @returns {*}
  */
 export function get(key) {
-	return driver ? driver.get('p' + key) : null;
+	try {
+		key = 'p' + key;
+		const storageValue = storage.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null,
+			storageResult = null === storageValue ? null : JSON.parse(storageValue);
+
+		return storageResult && null != storageResult[key] ? storageResult[key] : null;
+	} catch (e) {} // eslint-disable-line no-empty
+
+	return null;
 }

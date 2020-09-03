@@ -305,7 +305,7 @@ export function openPgpWorkerPath() {
 export function themePreviewLink(theme) {
 	let prefix = VERSION_PREFIX;
 	if ('@custom' === theme.substr(-7)) {
-		theme = theme.substring(0, theme.length - 7).trim();
+		theme = theme.substr(0, theme.length - 7).trim();
 		prefix = WEB_PREFIX;
 	}
 

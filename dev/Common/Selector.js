@@ -9,8 +9,6 @@ class Selector {
 	focusedItem;
 	selectedItem;
 
-	itemSelectedThrottle;
-
 	selectedItemUseCallback = true;
 
 	iSelectNextHelper = 0;
@@ -51,7 +49,7 @@ class Selector {
 		this.focusedItem = koFocusedItem || ko.observable(null);
 		this.selectedItem = koSelectedItem || ko.observable(null);
 
-		this.itemSelectedThrottle = (item=>this.itemSelected(item)).debounce(300);
+		const itemSelectedThrottle = (item => this.itemSelected(item)).debounce(300);
 
 		this.listChecked.subscribe((items) => {
 			if (items.length) {
@@ -70,13 +68,11 @@ class Selector {
 		this.selectedItem.subscribe((item) => {
 			if (item) {
 				if (this.isListChecked()) {
-					this.listChecked().forEach(subItem => {
-						subItem.checked(false);
-					});
+					this.listChecked().forEach(subItem => subItem.checked(false));
 				}
 
 				if (this.selectedItemUseCallback) {
-					this.itemSelectedThrottle(item);
+					itemSelectedThrottle(item);
 				}
 			} else if (this.selectedItemUseCallback) {
 				this.itemSelected(null);
@@ -91,11 +87,7 @@ class Selector {
 		this.sItemCheckedSelector = sItemCheckedSelector;
 		this.sItemFocusedSelector = sItemFocusedSelector;
 
-		this.focusedItem.subscribe((item) => {
-			if (item) {
-				this.sLastUid = this.getItemUid(item);
-			}
-		}, this);
+		this.focusedItem.subscribe(item => item && (this.sLastUid = this.getItemUid(item)), this);
 
 		let aCache = [],
 			aCheckedCache = [],
@@ -110,9 +102,7 @@ class Selector {
 							const uid = this.getItemUid(item);
 
 							aCache.push(uid);
-							if (item.checked()) {
-								aCheckedCache.push(uid);
-							}
+							item.checked() && aCheckedCache.push(uid);
 							if (null === mFocused && item.focused()) {
 								mFocused = uid;
 							}
@@ -178,7 +168,8 @@ class Selector {
 							isNextFocused = aCache.find(sUid => {
 								if (getNext && uids.includes(sUid)) {
 									return sUid;
-								} else if (isNextFocused === sUid) {
+								}
+								if (isNextFocused === sUid) {
 									getNext = true;
 								}
 								return false;
@@ -347,13 +338,6 @@ class Selector {
 	}
 
 	/**
-	 * @param {boolean} up
-	 */
-	doUpUpOrDownDown(up) {
-		(this.oCallbacks.onUpUpOrDownDown || (()=>true))(!!up);
-	}
-
-	/**
 	 * @param {Object} oItem
 	 * @returns {string}
 	 */
@@ -433,7 +417,7 @@ class Selector {
 					});
 
 					if (!result && (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Up === iEventKeyCode)) {
-						this.doUpUpOrDownDown(EventKeyCode.Up === iEventKeyCode);
+						(this.oCallbacks.onUpUpOrDownDown || (()=>true))(EventKeyCode.Up === iEventKeyCode);
 					}
 				} else if (EventKeyCode.Home === iEventKeyCode || EventKeyCode.End === iEventKeyCode) {
 					if (EventKeyCode.Home === iEventKeyCode) {

@@ -104,9 +104,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		this.messageListCompleteLoadingThrottle = MessageStore.messageListCompleteLoadingThrottle;
 		this.messageListCompleteLoadingThrottleForAnimation = MessageStore.messageListCompleteLoadingThrottleForAnimation;
 
-		initOnStartOrLangChange(() => {
-			this.emptySubjectValue = i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT');
-		});
+		initOnStartOrLangChange(() => this.emptySubjectValue = i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT'));
 
 		this.userQuota = QuotaStore.quota;
 		this.userUsageSize = QuotaStore.usage;
@@ -140,9 +138,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			read: () => 0 < MessageStore.messageListChecked().length,
 			write: (value) => {
 				value = !!value;
-				MessageStore.messageList().forEach(message => {
-					message.checked(value);
-				});
+				MessageStore.messageList().forEach(message => message.checked(value));
 			}
 		});
 
@@ -151,9 +147,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		this.sLastSearchValue = '';
 		this.inputProxyMessageListSearch = ko.computed({
 			read: this.mainMessageListSearch,
-			write: (value) => {
-				this.sLastSearchValue = value;
-			}
+			write: value => this.sLastSearchValue = value
 		});
 
 		this.isIncompleteChecked = ko.computed(() => {
@@ -205,9 +199,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			return this.mobile ? 0 < this.messageListChecked().length : true;
 		});
 
-		this.mobileCheckedStateHide = ko.computed(() => {
-			return this.mobile ? !this.messageListChecked().length : true;
-		});
+		this.mobileCheckedStateHide = ko.computed(() => this.mobile ? !this.messageListChecked().length : true);
 
 		this.messageListFocused = ko.computed(() => Focused.MessageList === AppStore.focusedState());
 
@@ -225,25 +217,17 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			'.messageListItem.focused'
 		);
 
-		this.selector.on('onItemSelect', (message) => {
-			MessageStore.selectMessage(message);
-		});
+		this.selector.on('onItemSelect', message => MessageStore.selectMessage(message));
 
-		this.selector.on('onItemGetUid', (message) => (message ? message.generateUid() : ''));
+		this.selector.on('onItemGetUid', message => (message ? message.generateUid() : ''));
 
 		this.selector.on('onAutoSelect', () => this.useAutoSelect());
 
-		this.selector.on('onUpUpOrDownDown', (v) => {
-			this.goToUpUpOrDownDown(v);
-		});
+		this.selector.on('onUpUpOrDownDown', v => this.goToUpUpOrDownDown(v));
 
-		addEventListener('mailbox.message-list.selector.go-down', e => {
-			this.selector.goDown(e.detail);
-		});
+		addEventListener('mailbox.message-list.selector.go-down', e => this.selector.goDown(e.detail));
 
-		addEventListener('mailbox.message-list.selector.go-up', e => {
-			this.selector.goUp(e.detail);
-		});
+		addEventListener('mailbox.message-list.selector.go-up', e => this.selector.goUp(e.detail));
 
 		addEventListener('mailbox.message.show', e => {
 			const sFolder = e.detail.Folder, sUid = e.detail.Uid;
@@ -708,16 +692,14 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	gotoPage(page) {
-		if (page) {
-			setHash(
-				mailBox(
-					FolderStore.currentFolderFullNameHash(),
-					page.value,
-					MessageStore.messageListSearch(),
-					MessageStore.messageListThreadUid()
-				)
-			);
-		}
+		page && setHash(
+			mailBox(
+				FolderStore.currentFolderFullNameHash(),
+				page.value,
+				MessageStore.messageListSearch(),
+				MessageStore.messageListThreadUid()
+			)
+		);
 	}
 
 	gotoThread(message) {
@@ -938,9 +920,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 						const next = !!(StorageResultType.Success === result && data && data.Result);
 						setTimeout(() => {
 							this.bPrefetch = false;
-							if (next) {
-								this.prefetchNextTick();
-							}
+							next && this.prefetchNextTick();
 						}, 1000);
 					},
 					message.folderFullNameRaw,
@@ -951,9 +931,8 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	advancedSearchClick() {
-		if (Settings.capa(Capa.SearchAdv)) {
-			showScreenPopup(require('View/Popup/AdvancedSearch'), [this.mainMessageListSearch()]);
-		}
+		Settings.capa(Capa.SearchAdv)
+			&& showScreenPopup(require('View/Popup/AdvancedSearch'), [this.mainMessageListSearch()]);
 	}
 
 	quotaTooltip() {
@@ -981,25 +960,13 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			dragAndDropBodyElement: this.dragOverBodyArea()
 		});
 
-		this.dragOver.subscribe((value) => {
-			if (value) {
-				this.selector.scrollToTop();
-			}
-		});
+		this.dragOver.subscribe(value => value && this.selector.scrollToTop());
 
 		oJua
-			.on('onDragEnter', () => {
-				this.dragOverEnter(true);
-			})
-			.on('onDragLeave', () => {
-				this.dragOverEnter(false);
-			})
-			.on('onBodyDragEnter', () => {
-				this.dragOver(true);
-			})
-			.on('onBodyDragLeave', () => {
-				this.dragOver(false);
-			})
+			.on('onDragEnter', () => this.dragOverEnter(true))
+			.on('onDragLeave', () => this.dragOverEnter(false))
+			.on('onBodyDragEnter', () => this.dragOver(true))
+			.on('onBodyDragLeave', () => this.dragOver(false))
 			.on('onSelect', (sUid, oData) => {
 				if (sUid && oData && 'message/rfc822' === oData.Type) {
 					MessageStore.messageListLoading(true);
@@ -1008,9 +975,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 				return false;
 			})
-			.on('onComplete', () => {
-				getApp().reloadMessageList(true, true);
-			});
+			.on('onComplete', () => getApp().reloadMessageList(true, true));
 
 		return !!oJua;
 	}

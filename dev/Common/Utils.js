@@ -102,7 +102,7 @@ export function splitPlainText(text, len = 100) {
 		newLinePos = 0;
 
 	while (result.length > len) {
-		subText = result.substring(0, len);
+		subText = result.substr(0, len);
 		spacePos = subText.lastIndexOf(' ');
 		newLinePos = subText.lastIndexOf('\n');
 
@@ -114,8 +114,8 @@ export function splitPlainText(text, len = 100) {
 			spacePos = len;
 		}
 
-		prefix += subText.substring(0, spacePos) + '\n';
-		result = result.substring(spacePos + 1);
+		prefix += subText.substr(0, spacePos) + '\n';
+		result = result.substr(spacePos + 1);
 	}
 
 	return prefix + result;
@@ -215,32 +215,13 @@ export function replySubjectAdd(prefix, subject) {
 }
 
 /**
- * @param {number} num
- * @param {number} dec
- * @returns {number}
- */
-export function roundNumber(num, dec) {
-	return Math.round(num * Math.pow(10, dec)) / Math.pow(10, dec);
-}
-
-/**
  * @param {(number|string)} sizeInBytes
  * @returns {string}
  */
 export function friendlySize(sizeInBytes) {
 	sizeInBytes = pInt(sizeInBytes);
-
-	switch (true) {
-		case 1073741824 <= sizeInBytes:
-			return roundNumber(sizeInBytes / 1073741824, 1) + 'GB';
-		case 1048576 <= sizeInBytes:
-			return roundNumber(sizeInBytes / 1048576, 1) + 'MB';
-		case 1024 <= sizeInBytes:
-			return roundNumber(sizeInBytes / 1024, 0) + 'KB';
-		// no default
-	}
-
-	return sizeInBytes + 'B';
+	const sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB'], i = pInt(Math.floor(Math.log(sizeInBytes) / Math.log(1024)));
+	return (sizeInBytes / Math.pow(1024, i)).toFixed(2>i ? 0 : 1) + sizes[i];
 }
 
 /**
@@ -249,14 +230,14 @@ export function friendlySize(sizeInBytes) {
  */
 export const convertThemeName = theme => {
 	if ('@custom' === theme.substr(-7)) {
-		theme = theme.substring(0, theme.length - 7).trim();
+		theme = theme.substr(0, theme.length - 7).trim();
 	}
 
 	return theme
-			.replace(/[^a-zA-Z0-9]+/g, ' ')
-			.replace(/([A-Z])/g, ' $1')
-			.replace(/\s+/g, ' ')
-			.trim();
+		.replace(/[^a-zA-Z0-9]+/g, ' ')
+		.replace(/([A-Z])/g, ' $1')
+		.replace(/\s+/g, ' ')
+		.trim();
 };
 
 /**
@@ -452,7 +433,7 @@ export function htmlToPlain(html) {
 			iP3 = text.indexOf('__bq__end__', iP1 + 5);
 
 			if ((-1 === iP2 || iP3 < iP2) && iP1 < iP3) {
-				text = text.substring(0, iP1) + convertBlockquote(text.substring(iP1 + 13, iP3)) + text.substring(iP3 + 11);
+				text = text.substr(0, iP1) + convertBlockquote(text.substring(iP1 + 13, iP3)) + text.substr(iP3 + 11);
 				pos = 0;
 			} else if (-1 < iP2 && iP2 < iP3) {
 				pos = iP2 - 1;
@@ -722,7 +703,7 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 			.replace(/\/Css\/[^/]+\/User\//, '/Css/0/User/')
 			.replace(/\/Hash\/[^/]+\//, '/Hash/-/');
 
-		if ('Json/' !== url.substring(url.length - 5, url.length)) {
+		if ('Json/' !== url.substr(-5)) {
 			url += 'Json/';
 		}
 

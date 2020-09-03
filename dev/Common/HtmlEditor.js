@@ -90,7 +90,6 @@ class HtmlEditor {
 	onModeChange = null;
 
 	element;
-	$element;
 
 	resize;
 
@@ -113,24 +112,18 @@ class HtmlEditor {
 	}
 
 	runOnBlur() {
-		if (this.onBlur) {
-			this.onBlur();
-		}
+		this.onBlur && this.onBlur();
 	}
 
 	blurTrigger() {
 		if (this.onBlur) {
 			clearTimeout(this.blurTimer);
-			this.blurTimer = setTimeout(() => {
-				this.runOnBlur();
-			}, 200);
+			this.blurTimer = setTimeout(() => this.runOnBlur(), 200);
 		}
 	}
 
 	focusTrigger() {
-		if (this.onBlur) {
-			clearTimeout(this.blurTimer);
-		}
+		this.onBlur && clearTimeout(this.blurTimer);
 	}
 
 	/**
@@ -175,9 +168,7 @@ class HtmlEditor {
 	}
 
 	resetDirty() {
-		if (this.editor) {
-			this.editor.resetDirty();
-		}
+		this.editor && this.editor.resetDirty();
 	}
 
 	/**
@@ -245,9 +236,7 @@ class HtmlEditor {
 				this.editor.setData(html);
 			} catch (e) {} // eslint-disable-line no-empty
 
-			if (focus) {
-				this.focus();
-			}
+			focus && this.focus();
 		}
 	}
 
@@ -272,9 +261,7 @@ class HtmlEditor {
 				} catch (e) {} // eslint-disable-line no-empty
 			}
 
-			if (focus) {
-				this.focus();
-			}
+			focus && this.focus();
 		}
 	}
 
@@ -308,28 +295,16 @@ class HtmlEditor {
 
 				this.editor = window.CKEDITOR.appendTo(this.element, config);
 
-				this.editor.on('key', (event) => {
-					if (event && event.data && EventKeyCode.Tab === event.data.keyCode) {
-						return false;
-					}
+				this.editor.on('key', event => !(event && event.data && EventKeyCode.Tab === event.data.keyCode));
 
-					return true;
-				});
-
-				this.editor.on('blur', () => {
-					this.blurTrigger();
-				});
+				this.editor.on('blur', () => this.blurTrigger());
 
 				this.editor.on('mode', () => {
 					this.blurTrigger();
-					if (this.onModeChange) {
-						this.onModeChange('plain' !== this.editor.mode);
-					}
+					this.onModeChange && this.onModeChange('plain' !== this.editor.mode);
 				});
 
-				this.editor.on('focus', () => {
-					this.focusTrigger();
-				});
+				this.editor.on('focus', () => this.focusTrigger());
 
 				if (window.FileReader) {
 					this.editor.on('drop', (event) => {
@@ -366,9 +341,7 @@ class HtmlEditor {
 
 					this.resize();
 
-					if (this.onReady) {
-						this.onReady();
-					}
+					this.onReady && this.onReady();
 				});
 			};
 
@@ -381,45 +354,35 @@ class HtmlEditor {
 	}
 
 	focus() {
-		if (this.editor) {
-			try {
-				this.editor.focus();
-			} catch (e) {} // eslint-disable-line no-empty
-		}
+		try {
+			this.editor && this.editor.focus();
+		} catch (e) {} // eslint-disable-line no-empty
 	}
 
 	hasFocus() {
-		if (this.editor) {
-			try {
-				return !!this.editor.focusManager.hasFocus;
-			} catch (e) {} // eslint-disable-line no-empty
+		try {
+			return this.editor && !!this.editor.focusManager.hasFocus;
+		} catch (e) {
+			return false;
 		}
-
-		return false;
 	}
 
 	blur() {
-		if (this.editor) {
-			try {
-				this.editor.focusManager.blur(true);
-			} catch (e) {} // eslint-disable-line no-empty
-		}
+		try {
+			this.editor && this.editor.focusManager.blur(true);
+		} catch (e) {} // eslint-disable-line no-empty
 	}
 
 	resizeEditor() {
-		if (this.editor && this.__resizable) {
-			try {
-				this.editor.resize(this.element.clientWidth, this.element.clientHeight);
-			} catch (e) {} // eslint-disable-line no-empty
-		}
+		try {
+			this.editor && this.__resizable && this.editor.resize(this.element.clientWidth, this.element.clientHeight);
+		} catch (e) {} // eslint-disable-line no-empty
 	}
 
 	setReadOnly(value) {
-		if (this.editor) {
-			try {
-				this.editor.setReadOnly(!!value);
-			} catch (e) {} // eslint-disable-line no-empty
-		}
+		try {
+			this.editor && this.editor.setReadOnly(!!value);
+		} catch (e) {} // eslint-disable-line no-empty
 	}
 
 	clear(focus) {

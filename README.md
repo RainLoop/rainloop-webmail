@@ -69,6 +69,7 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Replaced momentToNode with proper HTML5 <time>
 * Replaced resize listeners with ResizeObserver
 * Replaced bootstrap.js with native drop-in replacement
+* Replaced dev/Common/ClientStorageDriver/* with Web Storage Objects polyfill
 * Removed pikaday
 * Removed underscore
 * Removed polyfills
@@ -84,23 +85,23 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  961.538	|
-|app.js      	|4.184.455	|2.624.797	|
-|boot.js     	|  671.522	|   43.742	|
-|libs.js     	|  647.614	|  312.276	|
+|admin.js    	|2.130.942	|  958.580	|
+|app.js      	|4.184.455	|2.591.395	|
+|boot.js     	|  671.522	|   37.334	|
+|libs.js     	|  647.614	|  313.217	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.942.353	|
+|TOTAL      	|7.960.367	|3.900.526	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  130.359	| 73.657	| 37.825	| 32.456	|
-|app.min.js      	|  511.202	|  354.068	|140.462	| 93.278	| 74.852	|
-|boot.min.js     	|   66.007	|    5.534	| 22.567	|  2.319	|  1.988	|
-|libs.min.js     	|  572.545	|  295.771	|176.720	| 91.520	| 80.851	|
+|admin.min.js    	|  252.147	|  130.139	| 73.657	| 37.785	| 32.445	|
+|app.min.js      	|  511.202	|  351.142	|140.462	| 92.245	| 74.050	|
+|boot.min.js     	|   66.007	|    4.938	| 22.567	|  2.097	|  1.767	|
+|libs.min.js     	|  572.545	|  296.365	|176.720	| 91.813	| 80.999	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  785.732	|424.718	|224.942	|190.147	|
+|TOTAL          	|1.434.353	|  782.584	|424.718	|223.940	|189.261	|
 
-648.621 bytes (199.776 gzip) is not much, but it feels faster.
+651.769 bytes (200.778 gzip) is not much, but it feels faster.
 
 ### CSS changes
 

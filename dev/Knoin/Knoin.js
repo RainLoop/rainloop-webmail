@@ -41,14 +41,14 @@ export function hideLoading() {
  */
 export function createCommand(fExecute, fCanExecute = true) {
 	let fResult = null;
-	const fNonEmpty = (...args) => {
-		if (fResult && fResult.canExecute && fResult.canExecute()) {
-			fExecute.apply(null, args);
-		}
-		return false;
-	};
 
-	fResult = fExecute ? fNonEmpty : ()=>{};
+	fResult = fExecute
+		? (...args) => {
+			if (fResult && fResult.canExecute && fResult.canExecute()) {
+				fExecute.apply(null, args);
+			}
+			return false;
+		} : ()=>{};
 	fResult.enabled = ko.observable(true);
 	fResult.isCommand = true;
 
