@@ -83,7 +83,7 @@ class PluginPopupView extends AbstractViewNext {
 			this.readme(oPlugin.Readme);
 
 			const config = oPlugin.Config;
-			if (Array.isArray(config) && config.length) {
+			if (Array.isNotEmpty(config)) {
 				this.configures(
 					config.map(item => ({
 						'value': ko.observable(item[0]),

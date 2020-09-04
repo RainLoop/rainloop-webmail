@@ -13,7 +13,6 @@ import {
 import {
 	delegateRunOnDestroy,
 	computedPagenatorHelper,
-	isNonEmptyArray,
 	fakeMd5,
 	pInt
 } from 'Common/Utils';
@@ -229,7 +228,7 @@ class ContactsPopupView extends AbstractViewNext {
 			bccEmails = null;
 
 		const aC = this.contactsCheckedOrSelected();
-		if (isNonEmptyArray(aC)) {
+		if (Array.isNotEmpty(aC)) {
 			aE = aC.map(oItem => {
 				if (oItem) {
 					const data = oItem.getNameAndEmailHelper(),
@@ -246,7 +245,7 @@ class ContactsPopupView extends AbstractViewNext {
 			aE = aE.filter(value => !!value);
 		}
 
-		if (isNonEmptyArray(aE)) {
+		if (Array.isNotEmpty(aE)) {
 			this.bBackToCompose = false;
 
 			hideScreenPopup(ContactsPopupView);
@@ -511,7 +510,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 		if (contact) {
 			id = contact.idContact;
-			if (isNonEmptyArray(contact.properties)) {
+			if (Array.isNotEmpty(contact.properties)) {
 				contact.properties.forEach(property => {
 					if (property && property[0]) {
 						if (ContactPropertyType.LastName === property[0]) {
@@ -579,7 +578,7 @@ class ContactsPopupView extends AbstractViewNext {
 					list = [];
 
 				if (StorageResultType.Success === result && data && data.Result && data.Result.List) {
-					if (isNonEmptyArray(data.Result.List)) {
+					if (Array.isNotEmpty(data.Result.List)) {
 						list = data.Result.List.map(item => {
 							const contact = new ContactModel();
 							return contact.parse(item) ? contact : null;

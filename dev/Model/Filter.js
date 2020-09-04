@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { FilterRulesType, FiltersAction } from 'Common/Enums';
-import { pString, isNonEmptyArray, fakeMd5, delegateRunOnDestroy } from 'Common/Utils';
+import { pString, fakeMd5, delegateRunOnDestroy } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 import { getFolderFromCacheList } from 'Common/Cache';
 
@@ -225,7 +225,7 @@ class FilterModel extends AbstractModel {
 
 			this.conditions([]);
 
-			if (isNonEmptyArray(json.Conditions)) {
+			if (Array.isNotEmpty(json.Conditions)) {
 				this.conditions(
 					json.Conditions.map(aData => {
 						const filterCondition = new FilterConditionModel();

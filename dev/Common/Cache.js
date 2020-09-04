@@ -265,7 +265,7 @@ export function storeMessageFlagsToCache(message) {
  * @param {Array} flags
  */
 export function storeMessageFlagsToCacheByFolderAndUid(folder, uid, flags) {
-	if (Array.isArray(flags) && flags.length) {
+	if (Array.isNotEmpty(flags)) {
 		setMessageFlagsToCache(folder, uid, flags);
 	}
 }
@@ -279,7 +279,7 @@ export function storeMessageFlagsToCacheBySetAction(folder, uid, setAction) {
 	let unread = 0;
 	const flags = getMessageFlagsFromCache(folder, uid);
 
-	if (Array.isArray(flags) && flags.length) {
+	if (Array.isNotEmpty(flags)) {
 		if (flags[0]) {
 			unread = 1;
 		}

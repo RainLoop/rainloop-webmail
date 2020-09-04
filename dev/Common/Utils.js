@@ -42,14 +42,6 @@ export function pString(value) {
 }
 
 /**
- * @param {*} values
- * @returns {boolean}
- */
-export function isNonEmptyArray(values) {
-	return isArray(values) && values.length;
-}
-
-/**
  * @param {string} queryString
  * @returns {Object}
  */

@@ -240,7 +240,7 @@ class MessageUserStore {
 
 	initUidNextAndNewMessages(folder, uidNext, newMessages) {
 		if (getFolderInboxName() === folder && uidNext) {
-			if (Array.isArray(newMessages) && newMessages.length) {
+			if (Array.isNotEmpty(newMessages)) {
 				newMessages.forEach(item => {
 					addNewMessageCache(folder, item.Uid);
 				});

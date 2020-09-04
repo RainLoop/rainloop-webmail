@@ -44,7 +44,7 @@ export class AbstractScreen {
 			fMatcher = null;
 		const routes = this.routes();
 
-		if (Array.isArray(routes) && routes.length) {
+		if (Array.isNotEmpty(routes)) {
 			fMatcher = (this.onRoute || (()=>{})).bind(this);
 			route = new Crossroads();
 

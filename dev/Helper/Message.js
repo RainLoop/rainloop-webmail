@@ -1,4 +1,3 @@
-import { isNonEmptyArray } from 'Common/Utils';
 import { EmailModel } from 'Model/Email';
 
 /**
@@ -9,7 +8,7 @@ import { EmailModel } from 'Model/Email';
  */
 export function emailArrayToString(emails, friendlyView = false, wrapWithLink = false) {
 	const result = [];
-	if (isNonEmptyArray(emails)) {
+	if (Array.isNotEmpty(emails)) {
 		emails.forEach(email => result.push(email.toLine(friendlyView, wrapWithLink)));
 	}
 
@@ -22,7 +21,7 @@ export function emailArrayToString(emails, friendlyView = false, wrapWithLink = 
  */
 export function emailArrayToStringClear(emails) {
 	const result = [];
-	if (isNonEmptyArray(emails)) {
+	if (Array.isNotEmpty(emails)) {
 		emails.forEach(email => {
 			if (email && email.email && email.name) {
 				result.push(email.email);
@@ -39,7 +38,7 @@ export function emailArrayToStringClear(emails) {
  */
 export function emailArrayFromJson(json) {
 	const result = [];
-	if (isNonEmptyArray(json)) {
+	if (Array.isNotEmpty(json)) {
 		json.forEach(email => {
 			email = EmailModel.newInstanceFromJson(email);
 			if (email) {

@@ -12,7 +12,7 @@ let currentScreen = null,
 
 const SCREENS = {},
 	qs = s => document.querySelector(s),
-	isNonEmptyArray = values => Array.isArray(values) && values.length,
+	isNonEmptyArray = Array.isNotEmpty,
 	autofocus = dom => {
 //		if (!bMobileDevice) {
 		const af = dom.querySelector('[autofocus]');

@@ -68,7 +68,7 @@ class FolderUserStore {
 				trashFolder = this.trashFolder(),
 				archiveFolder = this.archiveFolder();
 
-			if (Array.isArray(folders) && folders.length) {
+			if (Array.isNotEmpty(folders)) {
 				if (sentFolder && UNUSED_OPTION_VALUE !== sentFolder) {
 					list.push(sentFolder);
 				}

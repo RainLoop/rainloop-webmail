@@ -7,8 +7,7 @@ import {
 	pInt,
 	deModule,
 	encodeHtml,
-	friendlySize,
-	isNonEmptyArray
+	friendlySize
 } from 'Common/Utils';
 
 import { messageViewLink, messageDownloadLink } from 'Common/Links';
@@ -257,7 +256,7 @@ class MessageModel extends AbstractModel {
 			this.bcc = emailArrayFromJson(json.Bcc);
 			this.replyTo = emailArrayFromJson(json.ReplyTo);
 			this.deliveredTo = emailArrayFromJson(json.DeliveredTo);
-			this.unsubsribeLinks = isNonEmptyArray(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
+			this.unsubsribeLinks = Array.isNotEmpty(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
 
 			this.subject(json.Subject);
 			if (isArray(json.SubjectParts)) {
@@ -341,7 +340,7 @@ class MessageModel extends AbstractModel {
 			attachment = null;
 		const result = [];
 
-		if (json && 'Collection/AttachmentCollection' === json['@Object'] && isNonEmptyArray(json['@Collection'])) {
+		if (json && 'Collection/AttachmentCollection' === json['@Object'] && Array.isNotEmpty(json['@Collection'])) {
 			for (index = 0, len = json['@Collection'].length; index < len; index++) {
 				attachment = AttachmentModel.newInstanceFromJson(json['@Collection'][index]);
 				if (attachment) {
@@ -408,7 +407,7 @@ class MessageModel extends AbstractModel {
 	 */
 	fromDkimData() {
 		let result = ['none', ''];
-		if (isNonEmptyArray(this.from) && 1 === this.from.length && this.from[0] && this.from[0].dkimStatus) {
+		if (Array.isNotEmpty(this.from) && 1 === this.from.length && this.from[0] && this.from[0].dkimStatus) {
 			result = [this.from[0].dkimStatus, this.from[0].dkimValue || ''];
 		}
 
@@ -492,7 +491,7 @@ class MessageModel extends AbstractModel {
 		let result = null;
 		const attachments = this.attachments();
 
-		if (isNonEmptyArray(attachments)) {
+		if (Array.isNotEmpty(attachments)) {
 			cid = cid.replace(/^<+/, '').replace(/>+$/, '');
 			result = attachments.find(item => cid === item.cidWithOutTags);
 		}
@@ -508,7 +507,7 @@ class MessageModel extends AbstractModel {
 		let result = null;
 		const attachments = this.attachments();
 
-		if (isNonEmptyArray(attachments)) {
+		if (Array.isNotEmpty(attachments)) {
 			result = attachments.find(item => contentLocation === item.contentLocation);
 		}
 

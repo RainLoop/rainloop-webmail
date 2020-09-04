@@ -2,7 +2,6 @@ import ko from 'ko';
 import { Focused, KeyState } from 'Common/Enums';
 
 import { keyScope, leftPanelDisabled } from 'Common/Globals';
-import { isNonEmptyArray } from 'Common/Utils';
 
 import { AbstractAppStore } from 'Stores/AbstractApp';
 
@@ -70,7 +69,7 @@ class AppUserStore extends AbstractAppStore {
 		this.contactsIsAllowed(!!Settings.get('ContactsIsAllowed'));
 
 		const attachmentsActions = Settings.app('attachmentsActions');
-		this.attachmentsActions(isNonEmptyArray(attachmentsActions) ? attachmentsActions : []);
+		this.attachmentsActions(Array.isNotEmpty(attachmentsActions) ? attachmentsActions : []);
 
 		this.devEmail = Settings.get('DevEmail');
 		this.devPassword = Settings.get('DevPassword');

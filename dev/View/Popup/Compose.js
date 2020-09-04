@@ -12,7 +12,6 @@ import {
 } from 'Common/Enums';
 
 import {
-	isNonEmptyArray,
 	replySubjectAdd,
 	encodeHtml,
 	inFocus,
@@ -263,7 +262,7 @@ class ComposePopupView extends AbstractViewNext {
 		});
 
 		this.attachmentsInProcess.subscribe(value => {
-			if (this.attachmentsInProcessError() && isNonEmptyArray(value)) {
+			if (this.attachmentsInProcessError() && Array.isNotEmpty(value)) {
 				this.attachmentsInProcessError(false);
 			}
 		});
@@ -772,7 +771,7 @@ class ComposePopupView extends AbstractViewNext {
 	 * @param {Array} emails
 	 */
 	addEmailsTo(fKoValue, emails) {
-		if (isNonEmptyArray(emails)) {
+		if (Array.isNotEmpty(emails)) {
 			const value = fKoValue().trim(),
 				values = emails.map(item => item ? item.toLine(false) : null)
 					.filter((value, index, self) => !!value && self.indexOf(value) == index);
@@ -842,15 +841,15 @@ class ComposePopupView extends AbstractViewNext {
 			excludeEmail[identity.email()] = true;
 		}
 
-		if (isNonEmptyArray(aToEmails)) {
+		if (Array.isNotEmpty(aToEmails)) {
 			this.to(this.emailArrayToStringLineHelper(aToEmails));
 		}
 
-		if (isNonEmptyArray(aCcEmails)) {
+		if (Array.isNotEmpty(aCcEmails)) {
 			this.cc(this.emailArrayToStringLineHelper(aCcEmails));
 		}
 
-		if (isNonEmptyArray(aBccEmails)) {
+		if (Array.isNotEmpty(aBccEmails)) {
 			this.bcc(this.emailArrayToStringLineHelper(aBccEmails));
 		}
 
@@ -915,7 +914,7 @@ class ComposePopupView extends AbstractViewNext {
 					this.subject(sSubject);
 					this.prepearMessageAttachments(message, lineComposeType);
 
-					this.aDraftInfo = isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
+					this.aDraftInfo = Array.isNotEmpty(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
 					this.sInReplyTo = message.sInReplyTo;
 					this.sReferences = message.sReferences;
 					break;
@@ -929,7 +928,7 @@ class ComposePopupView extends AbstractViewNext {
 					this.subject(sSubject);
 					this.prepearMessageAttachments(message, lineComposeType);
 
-					this.aDraftInfo = isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
+					this.aDraftInfo = Array.isNotEmpty(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
 					this.sInReplyTo = message.sInReplyTo;
 					this.sReferences = message.sReferences;
 					break;
@@ -1021,7 +1020,7 @@ class ComposePopupView extends AbstractViewNext {
 
 				this.setFocusInPopup();
 			});
-		} else if (isNonEmptyArray(oMessageOrArray)) {
+		} else if (Array.isNotEmpty(oMessageOrArray)) {
 			oMessageOrArray.forEach(item => {
 				this.addMessageAsAttachment(item);
 			});
@@ -1047,7 +1046,7 @@ class ComposePopupView extends AbstractViewNext {
 		}
 
 		const downloads = this.getAttachmentsDownloadsForUpload();
-		if (isNonEmptyArray(downloads)) {
+		if (Array.isNotEmpty(downloads)) {
 			Remote.messageUploadAttachments(()=>this.onMessageUploadAttachments(), downloads);
 		}
 
@@ -1375,7 +1374,7 @@ class ComposePopupView extends AbstractViewNext {
 				this.addMessageAsAttachment(message);
 			} else {
 				const attachments = message.attachments();
-				(isNonEmptyArray(attachments) ? attachments : []).forEach(item => {
+				(Array.isNotEmpty(attachments) ? attachments : []).forEach(item => {
 					let add = false;
 					switch (type) {
 						case ComposeType.Reply:

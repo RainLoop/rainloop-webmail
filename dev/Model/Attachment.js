@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { FileType } from 'Common/Enums';
 import { bMobileDevice } from 'Common/Globals';
-import { pInt, isNonEmptyArray, getFileExtension, friendlySize } from 'Common/Utils';
+import { pInt, getFileExtension, friendlySize } from 'Common/Utils';
 import {
 	attachmentDownload,
 	attachmentPreview,
@@ -149,7 +149,7 @@ export const staticCombinedIconClass = (data) => {
 	let result = '',
 		types = [];
 
-	if (isNonEmptyArray(data)) {
+	if (Array.isNotEmpty(data)) {
 		result = 'icon-attachment';
 		types = data.map(item => item ? staticFileType(getFileExtension(item[0]), item[1]) : '')
 			.filter((value, index, self) => !!value && self.indexOf(value) == index);

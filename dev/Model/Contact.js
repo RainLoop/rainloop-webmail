@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { ContactPropertyType } from 'Common/Enums';
-import { isNonEmptyArray, pInt, pString } from 'Common/Utils';
+import { pInt, pString } from 'Common/Utils';
 import { emptyContactPic } from 'Common/Links';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -28,7 +28,7 @@ class ContactModel extends AbstractModel {
 		let name = '',
 			email = '';
 
-		if (isNonEmptyArray(this.properties)) {
+		if (Array.isNotEmpty(this.properties)) {
 			this.properties.forEach(property => {
 				if (property) {
 					if (ContactPropertyType.FirstName === property[0]) {
@@ -56,7 +56,7 @@ class ContactModel extends AbstractModel {
 			this.display = pString(json.Display);
 			this.readOnly = !!json.ReadOnly;
 
-			if (isNonEmptyArray(json.Properties)) {
+			if (Array.isNotEmpty(json.Properties)) {
 				json.Properties.forEach(property => {
 					if (property && property.Type && null != property.Value && null != property.TypeStr) {
 						this.properties.push([pInt(property.Type), pString(property.Value), pString(property.TypeStr)]);

@@ -485,7 +485,7 @@ ko.extenders.limitedList = (target, limitedList) => {
 					const currentValue = ko.unwrap(target),
 						list = ko.unwrap(limitedList);
 
-					if (Array.isArray(list) && list.length) {
+					if (Array.isNotEmpty(list)) {
 						if (list.includes(newValue)) {
 							target(newValue);
 						} else if (list.includes(currentValue, list)) {

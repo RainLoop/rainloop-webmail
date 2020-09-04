@@ -16,7 +16,6 @@ import {
 import { $htmlCL, leftPanelDisabled, keyScopeReal, useKeyboardShortcuts, moveAction } from 'Common/Globals';
 
 import {
-	isNonEmptyArray,
 	inFocus,
 	removeSelection,
 	removeInFocus,
@@ -213,7 +212,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 		this.viewFromDkimStatusTitle = ko.computed(() => {
 			const status = this.viewFromDkimData();
-			if (isNonEmptyArray(status)) {
+			if (Array.isNotEmpty(status)) {
 				if (status[0] && status[1]) {
 					return status[1];
 				} else if (status[0]) {

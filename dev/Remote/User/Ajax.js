@@ -445,7 +445,7 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 		let request = true;
 		const uids = [];
 
-		if (Array.isArray(list) && list.length) {
+		if (Array.isNotEmpty(list)) {
 			request = false;
 			list.forEach(messageListItem => {
 				if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, messageListItem.uid)) {

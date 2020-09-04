@@ -1,6 +1,5 @@
 import {
 	isPosNumeric,
-	isNonEmptyArray,
 	pInt,
 	pString,
 	delegateRunOnDestroy,
@@ -89,9 +88,9 @@ class AppUser extends AbstractApp {
 
 		// wakeUp
 		const interval = 3600000; // 60m
-		var lastTime = (new Date()).getTime();
+		var lastTime = Date.now();
 		setInterval(() => {
-			const currentTime = (new Date()).getTime();
+			const currentTime = Date.now();
 			if (currentTime > (lastTime + interval + 1000)) {
 				if (rl.hash.check()) {
 					this.reload();
@@ -645,10 +644,10 @@ class AppUser extends AbstractApp {
 	 */
 	folderInformationMultiply(boot = false) {
 		const folders = FolderStore.getNextFolderNames();
-		if (isNonEmptyArray(folders)) {
+		if (Array.isNotEmpty(folders)) {
 			Remote.folderInformationMultiply((sResult, oData) => {
 				if (StorageResultType.Success === sResult) {
-					if (oData && oData.Result && oData.Result.List && isNonEmptyArray(oData.Result.List)) {
+					if (oData && oData.Result && oData.Result.List && Array.isNotEmpty(oData.Result.List)) {
 						const utc = Date.now() / 1000;
 						oData.Result.List.forEach(item => {
 							const hash = getFolderHash(item.Folder),
@@ -685,7 +684,7 @@ class AppUser extends AbstractApp {
 								} else if (unreadCountChange) {
 									if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw()) {
 										const list = MessageStore.messageList();
-										if (isNonEmptyArray(list)) {
+										if (Array.isNotEmpty(list)) {
 											this.folderInformation(folder.fullNameRaw, list);
 										}
 									}

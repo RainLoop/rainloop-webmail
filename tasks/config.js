@@ -70,6 +70,7 @@ config.paths.js = {
 		name: 'libs.js',
 		src: [
 			'dev/polyfill.js',
+			'dev/prototype.js',
 			'node_modules/jquery/dist/jquery.slim.min.js',
 			'vendors/jquery-ui/js/jquery-ui-1.12.1.custom.min.js', // custom
 			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
@@ -80,9 +81,6 @@ config.paths.js = {
 			'vendors/keymaster/keymaster.js', // custom (modified)
 			'vendors/qr.js/qr.min.js', // fixed (license)
 			'vendors/bootstrap/js/bootstrap.native.min.js', // fixed
-			'dev/prototype-date.js',
-			'dev/prototype-element.js',
-			'dev/prototype-function.js',
 			'node_modules/knockout/build/output/knockout-latest.js',
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',
 			'node_modules/simplestatemanager/dist/ssm.min.js',

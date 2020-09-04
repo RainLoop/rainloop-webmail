@@ -1,5 +1,6 @@
 
 (w=>{
+	Array.isNotEmpty = array => Array.isArray(array) && array.length;
 
 	// Import momentjs locales function
 	w.moment = {
@@ -167,7 +168,7 @@
 	// Simulate momentjs fromNow function
 	Date.prototype.fromNow = function() {
 		let format,
-			seconds = ((new Date()).getTime() - this.getTime()) / 1000,
+			seconds = (Date.now() - this.getTime()) / 1000,
 			str = locale.relativeTime[0 < seconds ? 'past' : 'future'];
 		seconds = Math.abs(seconds);
 		if (60 > seconds) {
@@ -193,6 +194,52 @@
 			format += format;
 		}
 		return str.replace('%s', locale.relativeTime[format].replace('%d', seconds));
+	}
+
+	Element.prototype.closestWithin = function(selector, parent) {
+		const el = this.closest(selector);
+		return (el && el !== parent && parent.contains(el)) ? el : null;
+	};
+
+	Element.fromHTML = string => {
+		const template = document.createElement('template');
+		template.innerHTML = string.trim();
+		return template.content.firstChild;
+	};
+
+	/**
+	 * Every time the function is executed,
+	 * it will delay the execution with the given amount of milliseconds.
+	 */
+	if (!Function.prototype.debounce) {
+		Function.prototype.debounce = function(ms) {
+			let func = this, timer;
+			return function(...args) {
+				timer && clearTimeout(timer);
+				timer = setTimeout(()=>{
+					func.apply(this, args)
+					timer = 0;
+				}, ms);
+			};
+		};
+	}
+
+	/**
+	 * No matter how many times the event is executed,
+	 * the function will be executed only once, after the given amount of milliseconds.
+	 */
+	if (!Function.prototype.throttle) {
+		Function.prototype.throttle = function(ms) {
+			let func = this, timer;
+			return function(...args) {
+				if (!timer) {
+					timer = setTimeout(()=>{
+						func.apply(this, args)
+						timer = 0;
+					}, ms);
+				}
+			};
+		};
 	}
 
 })(this);
