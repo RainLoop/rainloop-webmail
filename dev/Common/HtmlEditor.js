@@ -1,5 +1,4 @@
 import { EventKeyCode } from 'Common/Enums';
-import * as Settings from 'Storage/Settings';
 
 /**
  * @type {Object}
@@ -269,9 +268,9 @@ class HtmlEditor {
 		if (this.element && !this.editor) {
 			const initFunc = () => {
 				const config = htmlEditorDefaultConfig,
-					language = Settings.settingsGet('Language'),
-					allowSource = !!Settings.appSettingsGet('allowHtmlEditorSourceButton'),
-					biti = !!Settings.appSettingsGet('allowHtmlEditorBitiButtons');
+					language = rl.settings.get('Language'),
+					allowSource = !!rl.settings.app('allowHtmlEditorSourceButton'),
+					biti = !!rl.settings.app('allowHtmlEditorBitiButtons');
 
 				if ((allowSource || !biti) && !config.toolbarGroups.__cfgInited) {
 					config.toolbarGroups.__cfgInited = true;

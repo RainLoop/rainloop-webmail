@@ -6,7 +6,6 @@ import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 import AppStore from 'Stores/User/App';
 import AccountStore from 'Stores/User/Account';
 
-import * as Settings from 'Storage/Settings';
 import { addSettingsViewModel } from 'Knoin/Knoin';
 
 import { AbstractSettingsScreen } from 'Screen/AbstractSettings';
@@ -25,7 +24,7 @@ import { SystemDropDownSettingsUserView } from 'View/User/Settings/SystemDropDow
 import { MenuSettingsUserView } from 'View/User/Settings/Menu';
 import { PaneSettingsUserView } from 'View/User/Settings/Pane';
 
-import { getApp } from 'Helper/Apps/User';
+const Settings = rl.settings;
 
 class SettingsUserScreen extends AbstractSettingsScreen {
 	constructor() {
@@ -113,14 +112,14 @@ class SettingsUserScreen extends AbstractSettingsScreen {
 		keyScope(KeyState.Settings);
 		leftPanelType('');
 
-		if (Settings.appSettingsGet('mobile')) {
+		if (Settings.app('mobile')) {
 			leftPanelDisabled(true);
 		}
 	}
 
 	setSettingsTitle() {
 		const sEmail = AccountStore.email();
-		getApp().setWindowTitle((sEmail ? sEmail + ' - ' :  '') + this.sSettingsTitle);
+		rl.setWindowTitle((sEmail ? sEmail + ' - ' :  '') + this.sSettingsTitle);
 	}
 }
 

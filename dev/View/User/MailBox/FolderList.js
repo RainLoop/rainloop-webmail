@@ -10,12 +10,12 @@ import SettingsStore from 'Stores/User/Settings';
 import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
 
-import * as Settings from 'Storage/Settings';
-
 import { getApp } from 'Helper/Apps/User';
 
 import { view, ViewType, showScreenPopup, setHash } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+
+const Settings = rl.settings;
 
 @view({
 	name: 'View/User/MailBox/FolderList',
@@ -60,7 +60,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	onBuild(dom) {
 		const qs = s => dom.querySelector(s),
 			eqs = (ev, s) => ev.target.closestWithin(s, dom),
-			isMobile = Settings.appSettingsGet('mobile'),
+			isMobile = Settings.app('mobile'),
 			fSelectFolder = (el, event, starred) => {
 				const isMove = moveAction();
 				if (isMobile) {

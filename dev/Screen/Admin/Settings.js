@@ -12,8 +12,6 @@ import { PluginsAdminSettings } from 'Settings/Admin/Plugins';
 import { PackagesAdminSettings } from 'Settings/Admin/Packages';
 import { AboutAdminSettings } from 'Settings/Admin/About';
 
-import { getApp } from 'Helper/Apps/Admin';
-
 import { MenuSettingsAdminView } from 'View/Admin/Settings/Menu';
 import { PaneSettingsAdminView } from 'View/Admin/Settings/Pane';
 
@@ -60,7 +58,7 @@ class SettingsAdminScreen extends AbstractSettingsScreen {
 	}
 
 	onShow() {
-		getApp().setWindowTitle('');
+		rl.setWindowTitle();
 	}
 }
 

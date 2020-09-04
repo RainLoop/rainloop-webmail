@@ -3,7 +3,6 @@ import ko from 'ko';
 import { DesktopNotification } from 'Common/Enums';
 import Audio from 'Common/Audio';
 
-import * as Settings from 'Storage/Settings';
 
 class NotificationUserStore {
 	constructor() {
@@ -159,8 +158,8 @@ class NotificationUserStore {
 	}
 
 	populate() {
-		this.enableSoundNotification(!!Settings.settingsGet('SoundNotification'));
-		this.enableDesktopNotification(!!Settings.settingsGet('DesktopNotifications'));
+		this.enableSoundNotification(!!rl.settings.get('SoundNotification'));
+		this.enableDesktopNotification(!!rl.settings.get('DesktopNotifications'));
 	}
 
 	/**

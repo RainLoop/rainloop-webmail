@@ -1,10 +1,8 @@
 import ko from 'ko';
 
-import { appSettingsGet } from 'Storage/Settings';
-
 class AboutAdminSettings {
 	constructor() {
-		this.version = ko.observable(appSettingsGet('version'));
+		this.version = ko.observable(rl.settings.app('version'));
 		this.coreType = ko.observable('djmaze');
 	}
 }

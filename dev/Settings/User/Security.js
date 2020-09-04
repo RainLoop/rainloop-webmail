@@ -4,8 +4,6 @@ import { pInt, settingsSaveHelperSimpleFunction } from 'Common/Utils';
 import { Capa, SaveSettingsStep } from 'Common/Enums';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
-import { capa } from 'Storage/Settings';
-
 import { showScreenPopup } from 'Knoin/Knoin';
 
 import SettinsStore from 'Stores/User/Settings';
@@ -14,8 +12,8 @@ import Remote from 'Remote/User/Ajax';
 
 class SecurityUserSettings {
 	constructor() {
-		this.capaAutoLogout = capa(Capa.AutoLogout);
-		this.capaTwoFactor = capa(Capa.TwoFactor);
+		this.capaAutoLogout = rl.settings.capa(Capa.AutoLogout);
+		this.capaTwoFactor = rl.settings.capa(Capa.TwoFactor);
 
 		this.autoLogout = SettinsStore.autoLogout;
 		this.autoLogout.trigger = ko.observable(SaveSettingsStep.Idle);

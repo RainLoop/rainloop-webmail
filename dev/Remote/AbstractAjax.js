@@ -4,7 +4,6 @@ import { pInt, pString } from 'Common/Utils';
 import { data as GlobalsData } from 'Common/Globals';
 import { ajax } from 'Common/Links';
 
-import * as Settings from 'Storage/Settings';
 
 class AbstractAjaxRemote {
 	constructor() {
@@ -67,8 +66,8 @@ class AbstractAjaxRemote {
 				}
 
 				if (oData.ClearAuth || oData.Logout || AJAX_ERROR_LIMIT < GlobalsData.iAjaxErrorCount) {
-					if (GlobalsData.__APP__ && GlobalsData.__APP__.clearClientSideToken) {
-						GlobalsData.__APP__.clearClientSideToken();
+					if (GlobalsData.__APP__) {
+						rl.hash.clear();
 
 						if (!oData.ClearAuth && GlobalsData.__APP__.loginAndLogoutReload) {
 							GlobalsData.__APP__.loginAndLogoutReload(false, true);
@@ -140,7 +139,7 @@ class AbstractAjaxRemote {
 //				'Content-Type': 'application/json'
 				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 			};
-			params.XToken = Settings.appSettingsGet('token');
+			params.XToken = rl.settings.app('token');
 //			init.body = JSON.stringify(params);
 			const formData = new FormData(),
 			buildFormData = (formData, data, parentKey) => {
@@ -175,9 +174,8 @@ class AbstractAjaxRemote {
 				}
 
 				if (oData && oData.UpdateToken) {
-					if (GlobalsData.__APP__ && GlobalsData.__APP__.setClientSideToken) {
-						GlobalsData.__APP__.setClientSideToken(oData.UpdateToken);
-					}
+					rl.hash.set();
+					rl.settings.set('AuthAccountHash', oData.UpdateToken);
 				}
 
 				let sType = 'success';

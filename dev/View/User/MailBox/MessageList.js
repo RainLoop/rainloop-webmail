@@ -35,7 +35,6 @@ import SettingsStore from 'Stores/User/Settings';
 import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
 
-import * as Settings from 'Storage/Settings';
 import Remote from 'Remote/User/Ajax';
 
 import { getApp } from 'Helper/Apps/User';
@@ -44,6 +43,7 @@ import { view, command, ViewType, showScreenPopup, setHash, popupVisibility } fr
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 const
+	Settings = rl.settings,
 	canBeMovedHelper = (self) => self.canBeMoved(),
 	ifvisible = window.ifvisible;
 
@@ -62,7 +62,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 		this.iGoToUpUpOrDownDownTimeout = 0;
 
-		this.mobile = !!Settings.appSettingsGet('mobile');
+		this.mobile = !!Settings.app('mobile');
 		this.newMoveToFolder = AppStore.newMoveToFolder;
 
 		this.allowReload = !!Settings.capa(Capa.Reload);
@@ -944,7 +944,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	initUploaderForAppend() {
-		if (!Settings.appSettingsGet('allowAppendMessage') || !this.dragOverArea()) {
+		if (!Settings.app('allowAppendMessage') || !this.dragOverArea()) {
 			return false;
 		}
 

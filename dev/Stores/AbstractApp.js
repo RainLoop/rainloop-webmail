@@ -1,5 +1,4 @@
 import ko from 'ko';
-import * as Settings from 'Storage/Settings';
 
 class AbstractAppStore {
 	constructor() {
@@ -9,9 +8,9 @@ class AbstractAppStore {
 	}
 
 	populate() {
-		this.allowLanguagesOnLogin(!!Settings.settingsGet('AllowLanguagesOnLogin'));
-		this.allowLanguagesOnSettings(!!Settings.settingsGet('AllowLanguagesOnSettings'));
-		this.newMoveToFolder(!!Settings.settingsGet('NewMoveToFolder'));
+		this.allowLanguagesOnLogin(!!rl.settings.get('AllowLanguagesOnLogin'));
+		this.allowLanguagesOnSettings(!!rl.settings.get('AllowLanguagesOnSettings'));
+		this.newMoveToFolder(!!rl.settings.get('NewMoveToFolder'));
 	}
 }
 

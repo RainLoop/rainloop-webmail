@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
-import { settingsGet } from 'Storage/Settings';
 
 import AppStore from 'Stores/Admin/App';
 
@@ -12,7 +11,7 @@ class LoginAdminSettings {
 		this.determineUserLanguage = AppStore.determineUserLanguage;
 		this.determineUserDomain = AppStore.determineUserDomain;
 
-		this.defaultDomain = ko.observable(settingsGet('LoginDefaultDomain')).idleTrigger();
+		this.defaultDomain = ko.observable(rl.settings.get('LoginDefaultDomain')).idleTrigger();
 		this.allowLanguagesOnLogin = AppStore.allowLanguagesOnLogin;
 
 		this.dummy = ko.observable(false);

@@ -7,22 +7,23 @@ import MessageStore from 'Stores/User/Message';
 import { Capa, KeyState } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
-import * as Settings from 'Storage/Settings';
 
 import { getApp } from 'Helper/Apps/User';
 
 import { showScreenPopup, setHash } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
+const Settings = rl.settings;
+
 class AbstractSystemDropDownUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.logoImg = (Settings.settingsGet('UserLogo')||'').trim();
-		this.logoTitle = (Settings.settingsGet('UserLogoTitle')||'').trim();
+		this.logoImg = (Settings.get('UserLogo')||'').trim();
+		this.logoTitle = (Settings.get('UserLogoTitle')||'').trim();
 
-		this.mobile = !!Settings.appSettingsGet('mobile');
-		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+		this.mobile = !!Settings.app('mobile');
+		this.mobileDevice = !!Settings.app('mobileDevice');
 
 		this.allowSettings = !!Settings.capa(Capa.Settings);
 		this.allowHelp = !!Settings.capa(Capa.Help);

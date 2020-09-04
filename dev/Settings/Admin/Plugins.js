@@ -3,7 +3,6 @@ import ko from 'ko';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
-import { settingsGet } from 'Storage/Settings';
 import { showScreenPopup } from 'Knoin/Knoin';
 
 import PluginStore from 'Stores/Admin/Plugin';
@@ -14,7 +13,7 @@ import { getApp } from 'Helper/Apps/Admin';
 
 class PluginsAdminSettings {
 	constructor() {
-		this.enabledPlugins = ko.observable(!!settingsGet('EnabledPlugins'));
+		this.enabledPlugins = ko.observable(!!rl.settings.get('EnabledPlugins'));
 
 		this.plugins = PluginStore.plugins;
 		this.pluginsError = PluginStore.plugins.error;

@@ -15,7 +15,6 @@ import { getNotification, getNotificationFromResponse, reload as translatorReloa
 import AppStore from 'Stores/User/App';
 import LanguageStore from 'Stores/Language';
 
-import * as Settings from 'Storage/Settings';
 import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Ajax';
@@ -24,6 +23,8 @@ import { getApp } from 'Helper/Apps/User';
 
 import { view, command, ViewType, routeOff, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+
+const Settings = rl.settings;
 
 @view({
 	name: ['View/App/Login', 'View/User/Login'],
@@ -34,9 +35,9 @@ class LoginUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.hideSubmitButton = Settings.appSettingsGet('hideSubmitButton') ? '' : null;
+		this.hideSubmitButton = Settings.app('hideSubmitButton') ? '' : null;
 
-		this.welcome = ko.observable(!!Settings.settingsGet('UseLoginWelcomePage'));
+		this.welcome = ko.observable(!!Settings.get('UseLoginWelcomePage'));
 
 		this.email = ko.observable('');
 		this.password = ko.observable('');
@@ -48,14 +49,14 @@ class LoginUserView extends AbstractViewNext {
 		this.additionalCode.visibility = ko.observable(false);
 		this.additionalCodeSignMe = ko.observable(false);
 
-		this.logoImg = (Settings.settingsGet('LoginLogo')||'').trim();
-		this.loginDescription = (Settings.settingsGet('LoginDescription')||'').trim();
+		this.logoImg = (Settings.get('LoginLogo')||'').trim();
+		this.loginDescription = (Settings.get('LoginDescription')||'').trim();
 
-		this.mobile = !!Settings.appSettingsGet('mobile');
-		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+		this.mobile = !!Settings.app('mobile');
+		this.mobileDevice = !!Settings.app('mobileDevice');
 
-		this.forgotPasswordLinkUrl = Settings.appSettingsGet('forgotPasswordLinkUrl');
-		this.registrationLinkUrl = Settings.appSettingsGet('registrationLinkUrl');
+		this.forgotPasswordLinkUrl = Settings.app('forgotPasswordLinkUrl');
+		this.registrationLinkUrl = Settings.app('registrationLinkUrl');
 
 		this.emailError = ko.observable(false);
 		this.passwordError = ko.observable(false);
@@ -130,8 +131,8 @@ class LoginUserView extends AbstractViewNext {
 
 		this.signMeVisibility = ko.computed(() => LoginSignMeType.Unused !== this.signMeType());
 
-		if (Settings.settingsGet('AdditionalLoginError') && !this.submitError()) {
-			this.submitError(Settings.settingsGet('AdditionalLoginError'));
+		if (Settings.get('AdditionalLoginError') && !this.submitError()) {
+			this.submitError(Settings.get('AdditionalLoginError'));
 		}
 	}
 
@@ -231,7 +232,7 @@ class LoginUserView extends AbstractViewNext {
 
 	onBuild() {
 		const signMeLocal = Local.get(ClientSideKeyName.LastSignMe),
-			signMe = (Settings.settingsGet('SignMe') || 'unused').toLowerCase();
+			signMe = (Settings.get('SignMe') || 'unused').toLowerCase();
 
 		switch (signMe) {
 			case LoginSignMeTypeAsString.DefaultOff:

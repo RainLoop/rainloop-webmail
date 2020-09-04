@@ -3,8 +3,6 @@ import { leftPanelDisabled } from 'Common/Globals';
 import { settings, inbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 
-import * as Settings from 'Storage/Settings';
-
 import { view, ViewType, setHash, settingsMenuKeysHandler } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -22,7 +20,7 @@ class MenuSettingsUserView extends AbstractViewNext {
 
 		this.leftPanelDisabled = leftPanelDisabled;
 
-		this.mobile = Settings.appSettingsGet('mobile');
+		this.mobile = rl.settings.app('mobile');
 
 		this.menu = screen.menu;
 	}

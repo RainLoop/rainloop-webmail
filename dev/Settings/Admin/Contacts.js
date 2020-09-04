@@ -4,9 +4,10 @@ import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender } from 'Comm
 
 import { SaveSettingsStep, StorageResultType } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
-import { settingsGet } from 'Storage/Settings';
 import Remote from 'Remote/Admin/Ajax';
 import { command } from 'Knoin/Knoin';
+
+const settingsGet = rl.settings.get;
 
 class ContactsAdminSettings {
 	constructor() {

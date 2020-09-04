@@ -38,7 +38,6 @@ import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
 
 import * as Local from 'Storage/Client';
-import * as Settings from 'Storage/Settings';
 
 import Remote from 'Remote/User/Ajax';
 import Promises from 'Promises/User/Ajax';
@@ -47,6 +46,8 @@ import { getApp } from 'Helper/Apps/User';
 
 import { view, command, ViewType, showScreenPopup, createCommand } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+
+const Settings = rl.settings;
 
 @view({
 	name: 'View/User/MailBox/MessageView',
@@ -87,10 +88,10 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.allowMessageActions = !!Settings.capa(Capa.MessageActions);
 		this.allowMessageListActions = !!Settings.capa(Capa.MessageListActions);
 
-		this.logoImg = (Settings.settingsGet('UserLogoMessage')||'').trim();
-		this.logoIframe = (Settings.settingsGet('UserIframeMessage')||'').trim();
+		this.logoImg = (Settings.get('UserLogoMessage')||'').trim();
+		this.logoIframe = (Settings.get('UserIframeMessage')||'').trim();
 
-		this.mobile = !!Settings.appSettingsGet('mobile');
+		this.mobile = !!Settings.app('mobile');
 
 		this.attachmentsActions = AppStore.attachmentsActions;
 

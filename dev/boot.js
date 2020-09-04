@@ -4,7 +4,7 @@
 const
 	doc = win.document,
 	app = doc.getElementById('rl-app'),
-	setPercentWidth = percent => setTimeout(() => progress.style.width = parseInt(Math.min(percent, 100)) + '%', 50),
+	options = app && app.dataset.boot && JSON.parse(app.dataset.boot) || {},
 
 	Storage = type => {
 		let name = type+'Storage';
@@ -85,10 +85,10 @@ const
 	},
 
 	p = win.progressJs = {
-		set: percent => setPercentWidth(percent),
+		set: percent => progress.style.width = Math.min(percent, 100) + '%',
 		end: () => {
 			if (container) {
-				setPercentWidth(100);
+				p.set(100);
 				setTimeout(() => {
 					container.remove();
 					container = progress = null;
@@ -100,19 +100,19 @@ const
 let container = doc.createElement('div'),
 	progress = container.appendChild(doc.createElement("div")),
 
-	RL_APP_DATA_STORAGE = null;
+	RL_APP_DATA_STORAGE = {};
 
 container.className = 'progressjs-progress progressjs-theme-rainloop';
 progress.className = "progressjs-inner";
 progress.appendChild(doc.createElement('div')).className = "progressjs-percent";
 
-setPercentWidth(1);
+p.set(1);
 doc.body.append(container);
 
 Storage('local');
 Storage('session');
 
-win.RainLoop = {
+win.rl = {
 	hash: {
 		// getHash
 		get: () => storage().getItem(STORAGE_KEY) || null,
@@ -131,13 +131,30 @@ win.RainLoop = {
 		check: () => {
 			if (timestamp() > (parseInt(storage().getItem(TIME_KEY) || 0, 10) || 0) + 3600000) {
 				// 60m
-				RainLoop.hash.clear();
+				rl.hash.clear();
 				return true;
 			}
 			return false;
 		}
 	},
-	data: () => RL_APP_DATA_STORAGE
+	data: () => RL_APP_DATA_STORAGE,
+	adminArea: () => options.admin,
+	settings: {
+		get: name => null == RL_APP_DATA_STORAGE[name] ? null : RL_APP_DATA_STORAGE[name],
+		set: (name, value) => RL_APP_DATA_STORAGE[name] = value,
+		app: name => {
+			const APP_SETTINGS = RL_APP_DATA_STORAGE.System || {};
+			return null == APP_SETTINGS[name] ? null : APP_SETTINGS[name];
+		},
+		capa: name => null != name && Array.isArray(RL_APP_DATA_STORAGE.Capa) && RL_APP_DATA_STORAGE.Capa.includes(name)
+	},
+	setWindowTitle: title => {
+		title = null == title ? '' : '' + title;
+		if (RL_APP_DATA_STORAGE.Title) {
+			title += (title ? ' - ' : '') + RL_APP_DATA_STORAGE.Title;
+		}
+		document.title = null == title ? '' : '' + title;
+	}
 };
 
 // init section
@@ -150,7 +167,7 @@ setInterval(setTimestamp, 60000); // 1m
 win.__initAppData = appData => {
 	RL_APP_DATA_STORAGE = appData;
 
-	RainLoop.hash.set();
+	rl.hash.set();
 
 	if (appData) {
 		const css = appData.IncludeCss,
@@ -188,7 +205,7 @@ win.__initAppData = appData => {
 			loadScript(appData.StaticLibJsLink).then(() => {
 				doc.getElementById('rl-check').remove();
 				if (appData.IncludeBackground) {
-					const img = appData.IncludeBackground.replace('{{USER}}', RainLoop.hash.get() || '0');
+					const img = appData.IncludeBackground.replace('{{USER}}', rl.hash.get() || '0');
 					if (img) {
 						doc.documentElement.classList.add('UserBackground');
 						doc.body.style.backgroundImage = "url("+img+")";
@@ -236,10 +253,6 @@ if (!navigator || !navigator.cookieEnabled) {
 writeCSS('#rl-content{display:none;}.internal-hiddden{display:none !important;}');
 
 if (app) {
-	const
-		meta = doc.getElementById('app-boot-data'),
-		options = meta ? JSON.parse(meta.getAttribute('content')) || {} : {};
-
 	app.innerHTML = '<div id="rl-loading" class="thm-loading" style="opacity:0">\
 	<div id="rl-loading-desc"></div>\
 	<div class="e-spinner">\
@@ -248,9 +261,7 @@ if (app) {
 		<div class="e-bounce bounce3"></div>\
 	</div>\
 </div>\
-<div id="rl-loading-error" class="thm-loading">\
-	An error occurred. <br /> Please refresh the page and try again.\
-</div>\
+<div id="rl-loading-error" class="thm-loading">An error occurred.<br/>Please refresh the page and try again.</div>\
 <div id="rl-content">\
 	<div id="rl-popups"></div>\
 	<div id="rl-center">\
@@ -268,7 +279,7 @@ if (app) {
 		+ (options.mobile ? 'mobile' : 'no-mobile')
 		+ (options.mobileDevice ? '-1' : '-0')
 		+ '/'
-		+ (RainLoop.hash.get() || '0')
+		+ (rl.hash.get() || '0')
 		+ '/'
 		+ Math.random().toString().substr(2)
 		+ '/').then(() => {});

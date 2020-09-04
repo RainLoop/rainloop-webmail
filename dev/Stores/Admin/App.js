@@ -1,5 +1,4 @@
 import ko from 'ko';
-import { settingsGet } from 'Storage/Settings';
 import { AbstractAppStore } from 'Stores/AbstractApp';
 
 class AppAdminStore extends AbstractAppStore {
@@ -18,6 +17,7 @@ class AppAdminStore extends AbstractAppStore {
 	populate() {
 		super.populate();
 
+		const settingsGet = rl.settings
 		this.determineUserLanguage(!!settingsGet('DetermineUserLanguage'));
 		this.determineUserDomain(!!settingsGet('DetermineUserDomain'));
 

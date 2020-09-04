@@ -3,8 +3,6 @@ import ko from 'ko';
 import { Capa, StorageResultType } from 'Common/Enums';
 import { root } from 'Common/Links';
 
-import { capa } from 'Storage/Settings';
-
 import AccountStore from 'Stores/User/Account';
 import IdentityStore from 'Stores/User/Identity';
 import Remote from 'Remote/User/Ajax';
@@ -15,8 +13,8 @@ import { showScreenPopup, routeOff, setHash } from 'Knoin/Knoin';
 
 class AccountsUserSettings {
 	constructor() {
-		this.allowAdditionalAccount = capa(Capa.AdditionalAccounts);
-		this.allowIdentities = capa(Capa.Identities);
+		this.allowAdditionalAccount = rl.settings.capa(Capa.AdditionalAccounts);
+		this.allowIdentities = rl.settings.capa(Capa.Identities);
 
 		this.accounts = AccountStore.accounts;
 		this.identities = IdentityStore.identities;

@@ -5,8 +5,6 @@ import { changeTheme, convertThemeName } from 'Common/Utils';
 import { userBackground, themePreviewLink, uploadBackground } from 'Common/Links';
 import { i18n } from 'Common/Translator';
 
-import { capa } from 'Storage/Settings';
-
 import ThemeStore from 'Stores/Theme';
 
 import Remote from 'Remote/User/Ajax';
@@ -24,7 +22,7 @@ class ThemesUserSettings {
 		this.background.loading = ko.observable(false);
 		this.background.error = ko.observable('');
 
-		this.capaUserBackground = ko.observable(capa(Capa.UserBackground));
+		this.capaUserBackground = ko.observable(rl.settings.capa(Capa.UserBackground));
 
 		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
 

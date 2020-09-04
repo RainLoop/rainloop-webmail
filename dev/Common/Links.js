@@ -1,25 +1,19 @@
 import { pString, pInt } from 'Common/Utils';
-import * as Settings from 'Storage/Settings';
 
-const ROOT = './',
+const
+	Settings = rl.settings,
+	ROOT = './',
 	HASH_PREFIX = '#/',
 	SERVER_PREFIX = './?',
 	SUB_QUERY_PREFIX = '&q[]=',
-	VERSION = Settings.appSettingsGet('version'),
-	WEB_PREFIX = Settings.appSettingsGet('webPath') || '',
-	VERSION_PREFIX = Settings.appSettingsGet('webVersionPath') || 'rainloop/v/' + VERSION + '/',
+	VERSION = Settings.app('version'),
+	WEB_PREFIX = Settings.app('webPath') || '',
+	VERSION_PREFIX = Settings.app('webVersionPath') || 'rainloop/v/' + VERSION + '/',
 	STATIC_PREFIX = VERSION_PREFIX + 'static/',
-	ADMIN_HOST_USE = !!Settings.appSettingsGet('adminHostUse'),
-	ADMIN_PATH = Settings.appSettingsGet('adminPath') || 'admin';
+	ADMIN_HOST_USE = !!Settings.app('adminHostUse'),
+	ADMIN_PATH = Settings.app('adminPath') || 'admin',
 
-let AUTH_PREFIX = Settings.settingsGet('AuthAccountHash') || '0';
-
-/**
- * @returns {void}
- */
-export function populateAuthSuffix() {
-	AUTH_PREFIX = Settings.settingsGet('AuthAccountHash') || '0';
-}
+	getHash = () => Settings.get('AuthAccountHash') || '0';
 
 /**
  * @returns {string}
@@ -57,7 +51,7 @@ export function rootUser() {
  * @returns {string}
  */
 export function attachmentRaw(type, download, customSpecSuffix) {
-	customSpecSuffix = undefined === customSpecSuffix ? AUTH_PREFIX : customSpecSuffix;
+	customSpecSuffix = undefined === customSpecSuffix ? getHash() : customSpecSuffix;
 	return (
 		SERVER_PREFIX +
 		'/Raw/' +
@@ -123,7 +117,7 @@ export function attachmentFramed(download, customSpecSuffix) {
  * @returns {string}
  */
 export function serverRequest(type) {
-	return SERVER_PREFIX + '/' + type + '/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/';
+	return SERVER_PREFIX + '/' + type + '/' + SUB_QUERY_PREFIX + '/' + getHash() + '/';
 }
 
 /**
@@ -180,7 +174,7 @@ export function messageViewLink(requestHash) {
 		'/Raw/' +
 		SUB_QUERY_PREFIX +
 		'/' +
-		AUTH_PREFIX +
+		getHash() +
 		'/ViewAsPlain/' +
 		SUB_QUERY_PREFIX +
 		'/' +
@@ -194,7 +188,7 @@ export function messageViewLink(requestHash) {
  */
 export function messageDownloadLink(requestHash) {
 	return (
-		SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/Download/' + SUB_QUERY_PREFIX + '/' + requestHash
+		SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + getHash() + '/Download/' + SUB_QUERY_PREFIX + '/' + requestHash
 	);
 }
 
@@ -220,7 +214,7 @@ export function publicLink(hash) {
  */
 export function userBackground(hash) {
 	return (
-		SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/UserBackground/' + SUB_QUERY_PREFIX + '/' + hash
+		SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + getHash() + '/UserBackground/' + SUB_QUERY_PREFIX + '/' + hash
 	);
 }
 
@@ -237,14 +231,14 @@ export function langLink(lang, isAdmin) {
  * @returns {string}
  */
 export function exportContactsVcf() {
-	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/ContactsVcf/';
+	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + getHash() + '/ContactsVcf/';
 }
 
 /**
  * @returns {string}
  */
 export function exportContactsCsv() {
-	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + AUTH_PREFIX + '/ContactsCsv/';
+	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + getHash() + '/ContactsCsv/';
 }
 
 /**

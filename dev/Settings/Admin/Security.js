@@ -2,14 +2,14 @@ import ko from 'ko';
 
 import { StorageResultType } from 'Common/Enums';
 
-import { settingsGet } from 'Storage/Settings';
-
 import AppAdminStore from 'Stores/Admin/App';
 import CapaAdminStore from 'Stores/Admin/Capa';
 
 import Remote from 'Remote/Admin/Ajax';
 
 import { command } from 'Knoin/Knoin';
+
+const settingsGet = rl.settings.get;
 
 class SecurityAdminSettings {
 	constructor() {

@@ -4,10 +4,9 @@ import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Ajax';
 
-import { settingsGet } from 'Storage/Settings';
-
 class BrandingAdminSettings {
 	constructor() {
+		const settingsGet = rl.settings.get;
 		this.title = ko.observable(settingsGet('Title')).idleTrigger();
 		this.loadingDesc = ko.observable(settingsGet('LoadingDescription')).idleTrigger();
 		this.faviconUrl = ko.observable(settingsGet('FaviconUrl')).idleTrigger();

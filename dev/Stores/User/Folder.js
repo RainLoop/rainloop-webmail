@@ -1,7 +1,5 @@
 import ko from 'ko';
 
-import { settingsGet } from 'Storage/Settings';
-
 import { FolderType } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { folderListOptionsBuilder } from 'Common/Utils';
@@ -32,7 +30,7 @@ class FolderUserStore {
 
 		this.currentFolder = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'selected'] });
 
-		this.sieveAllowFileintoInbox = !!settingsGet('SieveAllowFileintoInbox');
+		this.sieveAllowFileintoInbox = !!rl.settings.get('SieveAllowFileintoInbox');
 
 		this.computers();
 		this.subscribers();

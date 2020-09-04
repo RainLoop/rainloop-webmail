@@ -3,8 +3,6 @@ import ko from 'ko';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
-import * as Settings from 'Storage/Settings';
-
 import Remote from 'Remote/Admin/Ajax';
 
 import { getApp } from 'Helper/Apps/Admin';
@@ -21,10 +19,11 @@ class LoginAdminView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.mobile = !!Settings.appSettingsGet('mobile');
-		this.mobileDevice = !!Settings.appSettingsGet('mobileDevice');
+		const appSettingsGet = rl.settings.app;
+		this.mobile = !!appSettingsGet('mobile');
+		this.mobileDevice = !!appSettingsGet('mobileDevice');
 
-		this.hideSubmitButton = Settings.appSettingsGet('hideSubmitButton') ? '' : null;
+		this.hideSubmitButton = appSettingsGet('hideSubmitButton') ? '' : null;
 
 		this.login = ko.observable('');
 		this.password = ko.observable('');

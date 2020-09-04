@@ -1,5 +1,4 @@
 import { data as GlobalsData } from 'Common/Globals';
-import * as Settings from 'Storage/Settings';
 
 const USER_VIEW_MODELS_HOOKS = [],
 	ADMIN_VIEW_MODELS_HOOKS = [];
@@ -9,7 +8,7 @@ const USER_VIEW_MODELS_HOOKS = [],
  * @returns {?}
  */
 export function mainSettingsGet(name) {
-	return Settings.settingsGet(name);
+	return rl.settings.get(name);
 }
 
 /**
@@ -60,7 +59,7 @@ export function runSettingsViewModelHooks(admin) {
  * @returns {?}
  */
 export function settingsGet(pluginSection, name) {
-	let plugins = Settings.settingsGet('Plugins');
+	let plugins = rl.settings.get('Plugins');
 	plugins = plugins && null != plugins[pluginSection] ? plugins[pluginSection] : null;
 	return plugins ? (null == plugins[name] ? null : plugins[name]) : null;
 }

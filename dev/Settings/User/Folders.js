@@ -5,7 +5,6 @@ import { getNotification, i18n } from 'Common/Translator';
 
 import { removeFolderFromCacheList } from 'Common/Cache';
 
-import { appSettingsGet } from 'Storage/Settings';
 import * as Local from 'Storage/Client';
 
 import FolderStore from 'Stores/User/Folder';
@@ -37,7 +36,7 @@ class FoldersUserSettings {
 
 		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'edited'] });
 
-		this.useImapSubscribe = !!appSettingsGet('useImapSubscribe');
+		this.useImapSubscribe = !!rl.settings.app('useImapSubscribe');
 	}
 
 	folderEditOnEnter(folder) {

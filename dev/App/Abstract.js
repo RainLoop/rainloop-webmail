@@ -8,15 +8,16 @@ import {
 } from 'Common/Globals';
 
 import { KeyState } from 'Common/Enums';
-import { root, rootAdmin, rootUser, populateAuthSuffix } from 'Common/Links';
+import { root, rootAdmin, rootUser } from 'Common/Links';
 import { initOnStartOrLangChange, initNotificationLanguage } from 'Common/Translator';
-import * as Settings from 'Storage/Settings';
 
 import LanguageStore from 'Stores/Language';
 import ThemeStore from 'Stores/Theme';
 
 import { routeOff, setHash } from 'Knoin/Knoin';
 import { AbstractBoot } from 'Knoin/AbstractBoot';
+
+const Settings = rl.settings;
 
 class AbstractApp extends AbstractBoot {
 	/**
@@ -57,10 +58,6 @@ class AbstractApp extends AbstractBoot {
 		return null;
 	}
 
-	getApplicationConfiguration(name, default_) {
-		return this.applicationConfiguration[name] || default_;
-	}
-
 	/**
 	 * @param {string} link
 	 * @returns {boolean}
@@ -79,40 +76,16 @@ class AbstractApp extends AbstractBoot {
 		return true;
 	}
 
-	/**
-	 * @param {string} title
-	 */
-	setWindowTitle(title) {
-		title = null == title ? '' : '' + title;
-		if (Settings.settingsGet('Title')) {
-			title += (title ? ' - ' : '') + Settings.settingsGet('Title');
-		}
-
-		document.title = title;
-	}
-
 	redirectToAdminPanel() {
-		setTimeout(() => {
-			location.href = rootAdmin();
-		}, 100);
-	}
-
-	clearClientSideToken() {
-		if (RainLoop.hash.clear) {
-			RainLoop.hash.clear();
-		}
+		setTimeout(() => location.href = rootAdmin(), 100);
 	}
 
 	/**
 	 * @param {string} token
 	 */
 	setClientSideToken(token) {
-		if (RainLoop.hash.set) {
-			RainLoop.hash.set(token);
-
-			Settings.settingsSet('AuthAccountHash', token);
-			populateAuthSuffix();
-		}
+		rl.hash.set();
+		Settings.set('AuthAccountHash', token);
 	}
 
 	/**
@@ -121,11 +94,11 @@ class AbstractApp extends AbstractBoot {
 	 * @param {boolean=} close = false
 	 */
 	loginAndLogoutReload(admin = false, logout = false, close = false) {
-		const inIframe = !!Settings.appSettingsGet('inIframe'),
+		const inIframe = !!Settings.app('inIframe'),
 			logoutLink = admin ? rootAdmin() : rootUser();
 
 		if (logout) {
-			this.clearClientSideToken();
+			rl.hash.clear();
 		}
 
 		if (logout && close && window.close) {
@@ -155,19 +128,15 @@ class AbstractApp extends AbstractBoot {
 		}
 	}
 
-	historyBack() {
-		history.back();
-	}
-
 	bootstart() {
-		const mobile = Settings.appSettingsGet('mobile');
+		const mobile = Settings.app('mobile');
 
 		ko.components.register('SaveTrigger', require('Component/SaveTrigger').default);
 		ko.components.register('Input', require('Component/Input').default);
 		ko.components.register('Select', require('Component/Select').default);
 		ko.components.register('TextArea', require('Component/TextArea').default);
 
-		if (Settings.appSettingsGet('materialDesign') && !bMobileDevice) {
+		if (Settings.app('materialDesign') && !bMobileDevice) {
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox').default);
 			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
 		} else {

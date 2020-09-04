@@ -1,5 +1,4 @@
 import ko from 'ko';
-import * as Settings from 'Storage/Settings';
 
 class LanguageStore {
 	constructor() {
@@ -21,17 +20,18 @@ class LanguageStore {
 	}
 
 	populate() {
-		const aLanguages = Settings.appSettingsGet('languages'),
-			aLanguagesAdmin = Settings.appSettingsGet('languagesAdmin');
+		const Settings = rl.settings,
+			aLanguages = Settings.app('languages'),
+			aLanguagesAdmin = Settings.app('languagesAdmin');
 
 		this.languages(Array.isArray(aLanguages) ? aLanguages : []);
 		this.languagesAdmin(Array.isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
 
-		this.language(Settings.settingsGet('Language'));
-		this.languageAdmin(Settings.settingsGet('LanguageAdmin'));
+		this.language(Settings.get('Language'));
+		this.languageAdmin(Settings.get('LanguageAdmin'));
 
-		this.userLanguage(Settings.settingsGet('UserLanguage'));
-		this.userLanguageAdmin(Settings.settingsGet('UserLanguageAdmin'));
+		this.userLanguage(Settings.get('UserLanguage'));
+		this.userLanguageAdmin(Settings.get('UserLanguageAdmin'));
 	}
 }
 

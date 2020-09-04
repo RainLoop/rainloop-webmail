@@ -39,14 +39,14 @@ import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Ajax';
 
-import * as Settings from 'Storage/Settings';
-
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 
 import { getApp } from 'Helper/Apps/User';
 
 import { popup, command, isPopupVisible, showScreenPopup, hideScreenPopup, routeOn, routeOff } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+
+const Settings = rl.settings;
 
 @popup({
 	name: 'View/Popup/Compose',
@@ -1138,7 +1138,7 @@ class ComposePopupView extends AbstractViewNext {
 			});
 		}
 
-		if (Settings.appSettingsGet('allowCtrlEnterOnCompose')) {
+		if (Settings.app('allowCtrlEnterOnCompose')) {
 			key('ctrl+enter, command+enter', KeyState.Compose, () => {
 				this.sendCommand();
 				return false;
@@ -1184,7 +1184,7 @@ class ComposePopupView extends AbstractViewNext {
 	initUploader() {
 		if (this.composeUploaderButton()) {
 			const uploadCache = {},
-				attachmentSizeLimit = pInt(Settings.settingsGet('AttachmentLimit')),
+				attachmentSizeLimit = pInt(Settings.get('AttachmentLimit')),
 				oJua = new Jua({
 					action: upload(),
 					name: 'uploader',

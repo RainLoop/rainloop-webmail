@@ -1,7 +1,5 @@
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
-import { getApp } from 'Helper/Apps/Admin';
-
 import { LoginAdminView } from 'View/Admin/Login';
 
 class LoginAdminScreen extends AbstractScreen {
@@ -10,7 +8,7 @@ class LoginAdminScreen extends AbstractScreen {
 	}
 
 	onShow() {
-		getApp().setWindowTitle('');
+		rl.setWindowTitle();
 	}
 }
 

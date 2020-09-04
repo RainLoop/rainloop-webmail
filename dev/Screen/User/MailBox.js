@@ -4,8 +4,6 @@ import { pString, pInt } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
 
-import * as Settings from 'Storage/Settings';
-
 import AppStore from 'Stores/User/App';
 import AccountStore from 'Stores/User/Account';
 import SettingsStore from 'Stores/User/Settings';
@@ -22,6 +20,8 @@ import { getApp } from 'Helper/Apps/User';
 import { warmUpScreenPopup } from 'Knoin/Knoin';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
+
+const Settings = rl.settings;
 
 class MailBoxUserScreen extends AbstractScreen {
 	constructor() {
@@ -40,11 +40,11 @@ class MailBoxUserScreen extends AbstractScreen {
 		let foldersInboxUnreadCount = FolderStore.foldersInboxUnreadCount();
 		const email = AccountStore.email();
 
-		if (Settings.appSettingsGet('listPermanentFiltered')) {
+		if (Settings.app('listPermanentFiltered')) {
 			foldersInboxUnreadCount = 0;
 		}
 
-		getApp().setWindowTitle(
+		rl.setWindowTitle(
 			(email
 				? '' + (0 < foldersInboxUnreadCount ? '(' + foldersInboxUnreadCount + ') ' : ' ') + email + ' - '
 				: ''
@@ -61,7 +61,7 @@ class MailBoxUserScreen extends AbstractScreen {
 		AppStore.focusedState(Focused.None);
 		AppStore.focusedState(Focused.MessageList);
 
-		if (Settings.appSettingsGet('mobile')) {
+		if (Settings.app('mobile')) {
 			leftPanelDisabled(true);
 		}
 
@@ -122,7 +122,7 @@ class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onBuild() {
-		if (!bMobileDevice && !Settings.appSettingsGet('mobile')) {
+		if (!bMobileDevice && !Settings.app('mobile')) {
 			setTimeout(() =>
 				getApp().initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize)
 			, 1);

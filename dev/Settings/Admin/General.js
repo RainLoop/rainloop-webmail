@@ -11,7 +11,6 @@ import {
 import { SaveSettingsStep } from 'Common/Enums';
 import { reload as translatorReload } from 'Common/Translator';
 
-import { settingsGet } from 'Storage/Settings';
 import { showScreenPopup } from 'Knoin/Knoin';
 
 import Remote from 'Remote/Admin/Ajax';
@@ -20,6 +19,8 @@ import ThemeStore from 'Stores/Theme';
 import LanguageStore from 'Stores/Language';
 import AppAdminStore from 'Stores/Admin/App';
 import CapaAdminStore from 'Stores/Admin/Capa';
+
+const settingsGet = rl.settings.get;
 
 class GeneralAdminSettings {
 	constructor() {

@@ -1,7 +1,5 @@
 import ko from 'ko';
 
-import * as Settings from 'Storage/Settings';
-
 import Remote from 'Remote/Admin/Ajax';
 
 import DomainStore from 'Stores/Admin/Domain';
@@ -22,7 +20,7 @@ class PaneSettingsAdminView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.version = ko.observable(Settings.appSettingsGet('version'));
+		this.version = ko.observable(rl.settings.app('version'));
 
 		this.adminManLoading = ko.computed(
 			() =>

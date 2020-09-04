@@ -4,9 +4,9 @@ import { Focused, KeyState } from 'Common/Enums';
 import { keyScope, leftPanelDisabled } from 'Common/Globals';
 import { isNonEmptyArray } from 'Common/Utils';
 
-import * as Settings from 'Storage/Settings';
-
 import { AbstractAppStore } from 'Stores/AbstractApp';
+
+const Settings = rl.settings;
 
 class AppUserStore extends AbstractAppStore {
 	constructor() {
@@ -16,7 +16,7 @@ class AppUserStore extends AbstractAppStore {
 
 		this.focusedState = ko.observable(Focused.None);
 
-		const isMobile = Settings.appSettingsGet('mobile');
+		const isMobile = Settings.app('mobile');
 
 		this.focusedState.subscribe((value) => {
 			switch (value) {
@@ -62,18 +62,18 @@ class AppUserStore extends AbstractAppStore {
 	populate() {
 		super.populate();
 
-		this.projectHash(Settings.settingsGet('ProjectHash'));
+		this.projectHash(Settings.get('ProjectHash'));
 
-		this.contactsAutosave(!!Settings.settingsGet('ContactsAutosave'));
-		this.useLocalProxyForExternalImages(!!Settings.settingsGet('UseLocalProxyForExternalImages'));
+		this.contactsAutosave(!!Settings.get('ContactsAutosave'));
+		this.useLocalProxyForExternalImages(!!Settings.get('UseLocalProxyForExternalImages'));
 
-		this.contactsIsAllowed(!!Settings.settingsGet('ContactsIsAllowed'));
+		this.contactsIsAllowed(!!Settings.get('ContactsIsAllowed'));
 
-		const attachmentsActions = Settings.appSettingsGet('attachmentsActions');
+		const attachmentsActions = Settings.app('attachmentsActions');
 		this.attachmentsActions(isNonEmptyArray(attachmentsActions) ? attachmentsActions : []);
 
-		this.devEmail = Settings.settingsGet('DevEmail');
-		this.devPassword = Settings.settingsGet('DevPassword');
+		this.devEmail = Settings.get('DevEmail');
+		this.devPassword = Settings.get('DevPassword');
 	}
 }
 

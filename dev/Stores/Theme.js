@@ -1,5 +1,4 @@
 import ko from 'ko';
-import * as Settings from 'Storage/Settings';
 
 class ThemeStore {
 	constructor() {
@@ -11,12 +10,13 @@ class ThemeStore {
 	}
 
 	populate() {
-		const themes = Settings.appSettingsGet('themes');
+		const Settings = rl.settings,
+			themes = Settings.app('themes');
 
 		this.themes(Array.isArray(themes) ? themes : []);
-		this.theme(Settings.settingsGet('Theme'));
-		this.themeBackgroundName(Settings.settingsGet('UserBackgroundName'));
-		this.themeBackgroundHash(Settings.settingsGet('UserBackgroundHash'));
+		this.theme(Settings.get('Theme'));
+		this.themeBackgroundName(Settings.get('UserBackgroundName'));
+		this.themeBackgroundHash(Settings.get('UserBackgroundHash'));
 	}
 }
 

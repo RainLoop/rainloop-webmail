@@ -4,8 +4,6 @@ import { MESSAGES_PER_PAGE, MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType } from 'Common/Enums';
 import { pInt } from 'Common/Utils';
 
-import * as Settings from 'Storage/Settings';
-
 class SettingsUserStore {
 	constructor() {
 		this.iAutoLogoutTimer = 0;
@@ -52,21 +50,22 @@ class SettingsUserStore {
 	}
 
 	populate() {
-		this.layout(pInt(Settings.settingsGet('Layout')));
-		this.editorDefaultType(Settings.settingsGet('EditorDefaultType'));
+		const settingsGet = rl.settings.get;
+		this.layout(pInt(settingsGet('Layout')));
+		this.editorDefaultType(settingsGet('EditorDefaultType'));
 
-		this.autoLogout(pInt(Settings.settingsGet('AutoLogout')));
-		this.messagesPerPage(Settings.settingsGet('MPP'));
+		this.autoLogout(pInt(settingsGet('AutoLogout')));
+		this.messagesPerPage(settingsGet('MPP'));
 
-		this.showImages(!!Settings.settingsGet('ShowImages'));
-		this.useCheckboxesInList(!!Settings.settingsGet('UseCheckboxesInList'));
-		this.allowDraftAutosave(!!Settings.settingsGet('AllowDraftAutosave'));
-		this.useThreads(!!Settings.settingsGet('UseThreads'));
-		this.replySameFolder(!!Settings.settingsGet('ReplySameFolder'));
+		this.showImages(!!settingsGet('ShowImages'));
+		this.useCheckboxesInList(!!settingsGet('UseCheckboxesInList'));
+		this.allowDraftAutosave(!!settingsGet('AllowDraftAutosave'));
+		this.useThreads(!!settingsGet('UseThreads'));
+		this.replySameFolder(!!settingsGet('ReplySameFolder'));
 
 		const refresh = () => {
 			clearTimeout(this.iAutoLogoutTimer);
-			if (0 < this.autoLogout() && !Settings.settingsGet('AccountSignMe')) {
+			if (0 < this.autoLogout() && !settingsGet('AccountSignMe')) {
 				this.iAutoLogoutTimer = setTimeout(() =>
 					dispatchEvent(new CustomEvent('rl.auto-logout'))
 				, this.autoLogout() * 60000);

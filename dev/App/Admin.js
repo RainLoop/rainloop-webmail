@@ -3,8 +3,6 @@ import ko from 'ko';
 import { root } from 'Common/Links';
 import { StorageResultType } from 'Common/Enums';
 
-import * as Settings from 'Storage/Settings';
-
 import AppStore from 'Stores/Admin/App';
 import CapaStore from 'Stores/Admin/Capa';
 import DomainStore from 'Stores/Admin/Domain';
@@ -113,7 +111,7 @@ class AdminApp extends AbstractApp {
 
 		hideLoading();
 
-		if (!Settings.appSettingsGet('allowAdminPanel')) {
+		if (!rl.settings.app('allowAdminPanel')) {
 			routeOff();
 			setHash(root(), true);
 			routeOff();
@@ -122,7 +120,7 @@ class AdminApp extends AbstractApp {
 				location.href = '/'
 			, 1);
 		} else {
-			if (Settings.settingsGet('Auth')) {
+			if (rl.settings.get('Auth')) {
 				startScreens([SettingsAdminScreen]);
 			} else {
 				startScreens([LoginAdminScreen]);

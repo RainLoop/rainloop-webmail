@@ -56,7 +56,6 @@ import MessageStore from 'Stores/User/Message';
 import QuotaStore from 'Stores/User/Quota';
 
 import * as Local from 'Storage/Client';
-import * as Settings from 'Storage/Settings';
 
 import Remote from 'Remote/User/Ajax';
 import Promises from 'Promises/User/Ajax';
@@ -75,7 +74,7 @@ import { hideLoading, routeOff, routeOn, setHash, startScreens, showScreenPopup 
 
 import { AbstractApp } from 'App/Abstract';
 
-const doc = document;
+const doc = document, Settings = rl.settings;
 
 class AppUser extends AbstractApp {
 	constructor() {
@@ -94,25 +93,25 @@ class AppUser extends AbstractApp {
 		setInterval(() => {
 			const currentTime = (new Date()).getTime();
 			if (currentTime > (lastTime + interval + 1000)) {
-				if (RainLoop.hash.check()) {
+				if (rl.hash.check()) {
 					this.reload();
 				}
 				Remote.jsVersion((sResult, oData) => {
 					if (StorageResultType.Success === sResult && oData && !oData.Result) {
 						this.reload();
 					}
-				}, Settings.appSettingsGet('version'));
+				}, Settings.app('version'));
 			}
 			lastTime = currentTime;
 		}, interval);
 
-		if (RainLoop.hash.check()) {
+		if (rl.hash.check()) {
 			this.reload();
 		}
 
-		if (Settings.settingsGet('UserBackgroundHash')) {
+		if (Settings.get('UserBackgroundHash')) {
 			setTimeout(() => {
-				const img = userBackground(Settings.settingsGet('UserBackgroundHash'));
+				const img = userBackground(Settings.get('UserBackgroundHash'));
 				if (img) {
 					$htmlCL.add('UserBackground');
 					doc.body.style.backgroundImage = "url("+img+")";
@@ -126,7 +125,7 @@ class AppUser extends AbstractApp {
 	}
 
 	reload() {
-		if (parent && !!Settings.appSettingsGet('inIframe')) {
+		if (parent && !!Settings.app('inIframe')) {
 			parent.location.reload();
 		} else {
 			location.reload();
@@ -489,7 +488,7 @@ class AppUser extends AbstractApp {
 			if (StorageResultType.Success === sResult && oData.Result) {
 				const counts = {},
 					sAccountEmail = AccountStore.email();
-				let parentEmail = Settings.settingsGet('ParentEmail') || sAccountEmail;
+				let parentEmail = Settings.get('ParentEmail') || sAccountEmail;
 
 				if (Array.isArray(oData.Result.Accounts)) {
 					AccountStore.accounts().forEach(oAccount => {
@@ -901,7 +900,7 @@ class AppUser extends AbstractApp {
 			this.loginAndLogoutReload(
 				false,
 				true,
-				0 < (Settings.settingsGet('ParentEmail')||{length:0}).length
+				0 < (Settings.get('ParentEmail')||{length:0}).length
 			);
 		});
 	}
@@ -932,27 +931,27 @@ class AppUser extends AbstractApp {
 		AccountStore.populate();
 		ContactStore.populate();
 
-		let contactsSyncInterval = pInt(Settings.settingsGet('ContactsSyncInterval'));
+		let contactsSyncInterval = pInt(Settings.get('ContactsSyncInterval'));
 
-		const startupUrl = pString(Settings.settingsGet('StartupUrl'));
+		const startupUrl = pString(Settings.get('StartupUrl'));
 
 		if (window.progressJs) {
 			progressJs.set(90);
 		}
 
-		this.setWindowTitle('');
-		if (Settings.settingsGet('Auth')) {
+		rl.setWindowTitle();
+		if (Settings.get('Auth')) {
 			$htmlCL.add('rl-user-auth');
 
 			if (
 				Settings.capa(Capa.TwoFactor) &&
 				Settings.capa(Capa.TwoFactorForce) &&
-				Settings.settingsGet('RequireTwoFactor')
+				Settings.get('RequireTwoFactor')
 			) {
 				this.bootend();
 				this.bootstartTwoFactorScreen();
 			} else {
-				this.setWindowTitle(i18n('TITLES/LOADING'));
+				rl.setWindowTitle(i18n('TITLES/LOADING'));
 
 				// require.ensure([], function() { // require code splitting
 
@@ -1041,7 +1040,7 @@ class AppUser extends AbstractApp {
 						addEventListener('rl.auto-logout', () => this.logout());
 
 						if (
-							!!Settings.settingsGet('AccountSignMe') &&
+							!!Settings.get('AccountSignMe') &&
 							navigator.registerProtocolHandler &&
 							Settings.capa(Capa.Composer)
 						) {
@@ -1050,12 +1049,12 @@ class AppUser extends AbstractApp {
 									navigator.registerProtocolHandler(
 										'mailto',
 										location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-										'' + (Settings.settingsGet('Title') || 'RainLoop')
+										'' + (Settings.get('Title') || 'RainLoop')
 									);
 								} catch (e) {} // eslint-disable-line no-empty
 
-								if (Settings.settingsGet('MailToEmail')) {
-									mailToHelper(Settings.settingsGet('MailToEmail'), require('View/Popup/Compose'));
+								if (Settings.get('MailToEmail')) {
+									mailToHelper(Settings.get('MailToEmail'), require('View/Popup/Compose'));
 								}
 							}, 500);
 						}

@@ -64,12 +64,7 @@ export default (App) => {
 			cb = () => setTimeout(() => {
 				if (window.rainloopTEMPLATES && rainloopTEMPLATES[0]) {
 					doc.getElementById('rl-templates').innerHTML = rainloopTEMPLATES[0];
-					setTimeout(() => {
-						$htmlCL.remove('no-js', 'rl-booted-trigger');
-						$htmlCL.add('rl-booted');
-
-						App.bootstart();
-					}, 10);
+					setTimeout(() => App.bootstart(), 10);
 				} else {
 					fErrorCallback();
 				}

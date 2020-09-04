@@ -3,7 +3,6 @@ import { pInt } from 'Common/Utils';
 import { ClientSideKeyName, ServerFolderType } from 'Common/Enums';
 import * as Cache from 'Common/Cache';
 
-import * as Settings from 'Storage/Settings';
 import * as Local from 'Storage/Client';
 
 import AppStore from 'Stores/User/App';
@@ -13,6 +12,8 @@ import Remote from 'Remote/User/Ajax';
 
 import { FolderModel } from 'Model/Folder';
 import { AbstractBasicPromises } from 'Promises/AbstractBasic';
+
+const Settings = rl.settings;
 
 class PromisesUserPopulator extends AbstractBasicPromises {
 	/**
@@ -109,7 +110,7 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 			const expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders),
 				cnt = pInt(oData.CountRec);
 
-			let limit = pInt(Settings.appSettingsGet('folderSpecLimit'));
+			let limit = pInt(Settings.app('folderSpecLimit'));
 			limit = 100 < limit ? 100 : 10 > limit ? 10 : limit;
 
 			FolderStore.displaySpecSetting(0 >= cnt || limit < cnt);
@@ -136,7 +137,7 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 				FolderStore.namespace = oData.Namespace;
 			}
 
-			AppStore.threadsAllowed(!!Settings.appSettingsGet('useImapThread') && oData.IsThreadsSupported && true);
+			AppStore.threadsAllowed(!!Settings.app('useImapThread') && oData.IsThreadsSupported && true);
 
 			FolderStore.folderList.optimized(!!oData.Optimized);
 
@@ -145,27 +146,27 @@ class PromisesUserPopulator extends AbstractBasicPromises {
 			if (
 				oData.SystemFolders &&
 					!('' +
-						Settings.settingsGet('SentFolder') +
-						Settings.settingsGet('DraftFolder') +
-						Settings.settingsGet('SpamFolder') +
-						Settings.settingsGet('TrashFolder') +
-						Settings.settingsGet('ArchiveFolder') +
-						Settings.settingsGet('NullFolder'))
+						Settings.get('SentFolder') +
+						Settings.get('DraftFolder') +
+						Settings.get('SpamFolder') +
+						Settings.get('TrashFolder') +
+						Settings.get('ArchiveFolder') +
+						Settings.get('NullFolder'))
 			) {
-				Settings.settingsSet('SentFolder', oData.SystemFolders[ServerFolderType.SENT] || null);
-				Settings.settingsSet('DraftFolder', oData.SystemFolders[ServerFolderType.DRAFTS] || null);
-				Settings.settingsSet('SpamFolder', oData.SystemFolders[ServerFolderType.JUNK] || null);
-				Settings.settingsSet('TrashFolder', oData.SystemFolders[ServerFolderType.TRASH] || null);
-				Settings.settingsSet('ArchiveFolder', oData.SystemFolders[ServerFolderType.ALL] || null);
+				Settings.set('SentFolder', oData.SystemFolders[ServerFolderType.SENT] || null);
+				Settings.set('DraftFolder', oData.SystemFolders[ServerFolderType.DRAFTS] || null);
+				Settings.set('SpamFolder', oData.SystemFolders[ServerFolderType.JUNK] || null);
+				Settings.set('TrashFolder', oData.SystemFolders[ServerFolderType.TRASH] || null);
+				Settings.set('ArchiveFolder', oData.SystemFolders[ServerFolderType.ALL] || null);
 
 				update = true;
 			}
 
-			FolderStore.sentFolder(this.normalizeFolder(Settings.settingsGet('SentFolder')));
-			FolderStore.draftFolder(this.normalizeFolder(Settings.settingsGet('DraftFolder')));
-			FolderStore.spamFolder(this.normalizeFolder(Settings.settingsGet('SpamFolder')));
-			FolderStore.trashFolder(this.normalizeFolder(Settings.settingsGet('TrashFolder')));
-			FolderStore.archiveFolder(this.normalizeFolder(Settings.settingsGet('ArchiveFolder')));
+			FolderStore.sentFolder(this.normalizeFolder(Settings.get('SentFolder')));
+			FolderStore.draftFolder(this.normalizeFolder(Settings.get('DraftFolder')));
+			FolderStore.spamFolder(this.normalizeFolder(Settings.get('SpamFolder')));
+			FolderStore.trashFolder(this.normalizeFolder(Settings.get('TrashFolder')));
+			FolderStore.archiveFolder(this.normalizeFolder(Settings.get('ArchiveFolder')));
 
 			if (update) {
 				Remote.saveSystemFolders(()=>{}, {

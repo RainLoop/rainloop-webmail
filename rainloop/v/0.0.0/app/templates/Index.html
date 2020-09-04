@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js rl-booted-trigger rl-started-trigger glass" dir="{{BaseDir}}">
+<html class="rl-started-trigger glass" dir="{{BaseDir}}">
 
 <head>
 	<noscript>
@@ -10,7 +10,6 @@
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="google" content="notranslate" />
 	<meta name="robots" content="noindex,nofollow,noodp" />
-	<meta name="AppBootData" content='{{RainloopBootData}}' id="app-boot-data" />
 	<title></title>
 	{{BaseAppFaviconPngLinkTag}}
 	{{BaseAppFaviconTouchLinkTag}}
@@ -20,7 +19,7 @@
 </head>
 
 <body class="thm-body">
-	<div id="rl-app"></div>
+	<div id="rl-app" data-boot='{{RainloopBootData}}'></div>
 	<div id="rl-check"></div>
 	<script type="text/javascript" data-cfasync="false" src="{{BaseAppBootScriptLink}}"></script>
 </body>

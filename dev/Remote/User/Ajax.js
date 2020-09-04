@@ -17,7 +17,6 @@ import {
 } from 'Common/Cache';
 
 import { subQueryPrefix } from 'Common/Links';
-import * as Settings from 'Storage/Settings';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
@@ -44,15 +43,16 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	 * @param {?Function} fCallback
 	 */
 	folders(fCallback) {
+		const settingsGet = rl.settings.get;
 		this.defaultRequest(
 			fCallback,
 			'Folders',
 			{
-				SentFolder: Settings.settingsGet('SentFolder'),
-				DraftFolder: Settings.settingsGet('DraftFolder'),
-				SpamFolder: Settings.settingsGet('SpamFolder'),
-				TrashFolder: Settings.settingsGet('TrashFolder'),
-				ArchiveFolder: Settings.settingsGet('ArchiveFolder')
+				SentFolder: settingsGet('SentFolder'),
+				DraftFolder: settingsGet('DraftFolder'),
+				SpamFolder: settingsGet('SpamFolder'),
+				TrashFolder: settingsGet('TrashFolder'),
+				ArchiveFolder: settingsGet('ArchiveFolder')
 			},
 			null,
 			'',

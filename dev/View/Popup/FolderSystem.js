@@ -7,7 +7,6 @@ import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import FolderStore from 'Stores/User/Folder';
 
-import * as Settings from 'Storage/Settings';
 import Remote from 'Remote/User/Ajax';
 
 import { popup } from 'Knoin/Knoin';
@@ -55,12 +54,13 @@ class FolderSystemPopupView extends AbstractViewNext {
 		this.trashFolder = FolderStore.trashFolder;
 		this.archiveFolder = FolderStore.archiveFolder;
 
-		const fSetSystemFolders = () => {
-				Settings.settingsSet('SentFolder', FolderStore.sentFolder());
-				Settings.settingsSet('DraftFolder', FolderStore.draftFolder());
-				Settings.settingsSet('SpamFolder', FolderStore.spamFolder());
-				Settings.settingsSet('TrashFolder', FolderStore.trashFolder());
-				Settings.settingsSet('ArchiveFolder', FolderStore.archiveFolder());
+		const settingsSet = rl.settings.set,
+			fSetSystemFolders = () => {
+				settingsSet('SentFolder', FolderStore.sentFolder());
+				settingsSet('DraftFolder', FolderStore.draftFolder());
+				settingsSet('SpamFolder', FolderStore.spamFolder());
+				settingsSet('TrashFolder', FolderStore.trashFolder());
+				settingsSet('ArchiveFolder', FolderStore.archiveFolder());
 			},
 			fSaveSystemFolders = (()=>{
 				fSetSystemFolders();

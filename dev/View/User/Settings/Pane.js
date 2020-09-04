@@ -2,8 +2,6 @@ import { inbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 import { leftPanelDisabled } from 'Common/Globals';
 
-import * as Settings from 'Storage/Settings';
-
 import MessageStore from 'Stores/User/Message';
 
 import { view, ViewType, setHash } from 'Knoin/Knoin';
@@ -18,7 +16,7 @@ class PaneSettingsUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.mobile = Settings.appSettingsGet('mobile');
+		this.mobile = rl.settings.app('mobile');
 
 		this.leftPanelDisabled = leftPanelDisabled;
 	}

@@ -30,8 +30,6 @@ import ContactStore from 'Stores/User/Contact';
 
 import Remote from 'Remote/User/Ajax';
 
-import * as Settings from 'Storage/Settings';
-
 import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
 import { ContactPropertyModel } from 'Model/ContactProperty';
@@ -221,7 +219,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 	@command((self) => 0 < self.contactsCheckedOrSelected().length)
 	newMessageCommand() {
-		if (!Settings.capa(Capa.Composer)) {
+		if (!rl.settings.capa(Capa.Composer)) {
 			return false;
 		}
 
@@ -658,7 +656,7 @@ class ContactsPopupView extends AbstractViewNext {
 		if (this.bBackToCompose) {
 			this.bBackToCompose = false;
 
-			if (Settings.capa(Capa.Composer)) {
+			if (rl.settings.capa(Capa.Composer)) {
 				showScreenPopup(require('View/Popup/Compose'));
 			}
 		}

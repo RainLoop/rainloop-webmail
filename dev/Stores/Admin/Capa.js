@@ -1,6 +1,5 @@
 import ko from 'ko';
 import { Capa } from 'Common/Enums';
-import * as Settings from 'Storage/Settings';
 
 class CapaAdminStore {
 	constructor() {
@@ -18,17 +17,18 @@ class CapaAdminStore {
 	}
 
 	populate() {
-		this.additionalAccounts(Settings.capa(Capa.AdditionalAccounts));
-		this.identities(Settings.capa(Capa.Identities));
-		this.attachmentThumbnails(Settings.capa(Capa.AttachmentThumbnails));
-		this.sieve(Settings.capa(Capa.Sieve));
-		this.filters(Settings.capa(Capa.Filters));
-		this.themes(Settings.capa(Capa.Themes));
-		this.userBackground(Settings.capa(Capa.UserBackground));
-		this.openPGP(Settings.capa(Capa.OpenPGP));
-		this.twoFactorAuth(Settings.capa(Capa.TwoFactor));
-		this.twoFactorAuthForce(Settings.capa(Capa.TwoFactorForce));
-		this.templates(Settings.capa(Capa.Templates));
+		let capa = rl.settings.capa;
+		this.additionalAccounts(capa(Capa.AdditionalAccounts));
+		this.identities(capa(Capa.Identities));
+		this.attachmentThumbnails(capa(Capa.AttachmentThumbnails));
+		this.sieve(capa(Capa.Sieve));
+		this.filters(capa(Capa.Filters));
+		this.themes(capa(Capa.Themes));
+		this.userBackground(capa(Capa.UserBackground));
+		this.openPGP(capa(Capa.OpenPGP));
+		this.twoFactorAuth(capa(Capa.TwoFactor));
+		this.twoFactorAuthForce(capa(Capa.TwoFactorForce));
+		this.templates(capa(Capa.Templates));
 	}
 }
 

@@ -3,7 +3,6 @@ import { pInt, pString } from 'Common/Utils';
 import { DEFAULT_AJAX_TIMEOUT, TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT } from 'Common/Consts';
 import { Notification } from 'Common/Enums';
 import { data as GlobalsData } from 'Common/Globals';
-import * as Settings from 'Storage/Settings';
 
 import { AbstractBasicPromises } from 'Promises/AbstractBasic';
 
@@ -51,7 +50,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 //				'Content-Type': 'application/json'
 				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
 			};
-			params.XToken = Settings.appSettingsGet('token');
+			params.XToken = rl.settings.app('token');
 //			init.body = JSON.stringify(params);
 			const formData = new FormData(),
 			buildFormData = (formData, data, parentKey) => {
@@ -86,8 +85,9 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 					return Promise.reject(Notification.AjaxParse);
 				}
 
-				if (data.UpdateToken && GlobalsData.__APP__ && GlobalsData.__APP__.setClientSideToken) {
-					GlobalsData.__APP__.setClientSideToken(data.UpdateToken);
+				if (data.UpdateToken) {
+					rl.hash.set();
+					rl.settings.set('AuthAccountHash', data.UpdateToken);
 				}
 
 /*
@@ -136,12 +136,12 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 					}
 
 					if (data.ClearAuth || data.Logout || AJAX_ERROR_LIMIT < GlobalsData.iAjaxErrorCount) {
-						if (GlobalsData.__APP__ && GlobalsData.__APP__.clearClientSideToken) {
-							GlobalsData.__APP__.clearClientSideToken();
-						}
+						if (GlobalsData.__APP__) {
+							rl.hash.clear();
 
-						if (GlobalsData.__APP__ && !data.ClearAuth && GlobalsData.__APP__.loginAndLogoutReload) {
-							GlobalsData.__APP__.loginAndLogoutReload(false, true);
+							if (!data.ClearAuth && GlobalsData.__APP__.loginAndLogoutReload) {
+								GlobalsData.__APP__.loginAndLogoutReload(false, true);
+							}
 						}
 					}
 

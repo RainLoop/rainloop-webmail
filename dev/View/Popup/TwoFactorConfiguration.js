@@ -4,8 +4,6 @@ import { Capa, StorageResultType } from 'Common/Enums';
 import { pString } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
-import * as Settings from 'Storage/Settings';
-
 import Remote from 'Remote/User/Ajax';
 
 import { getApp } from 'Helper/Apps/User';
@@ -23,7 +21,7 @@ class TwoFactorConfigurationPopupView extends AbstractViewNext {
 
 		this.lock = ko.observable(false);
 
-		this.capaTwoFactor = Settings.capa(Capa.TwoFactor);
+		this.capaTwoFactor = rl.settings.capa(Capa.TwoFactor);
 
 		this.processing = ko.observable(false);
 		this.clearing = ko.observable(false);
