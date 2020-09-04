@@ -69,9 +69,8 @@ class AbstractApp extends AbstractBoot {
 		} else {
 			const oLink = document.createElement('a');
 			oLink.href = link;
-			document.body.append(oLink).click();
+			document.body.appendChild(oLink).click();
 			oLink.remove();
-//			open(link, '_self');
 		}
 		return true;
 	}
