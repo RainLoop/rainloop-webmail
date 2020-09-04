@@ -8,13 +8,13 @@ import {
 } from 'Common/Globals';
 
 import { KeyState } from 'Common/Enums';
-import { root, rootAdmin, rootUser } from 'Common/Links';
+import { rootAdmin, rootUser } from 'Common/Links';
 import { initOnStartOrLangChange, initNotificationLanguage } from 'Common/Translator';
 
 import LanguageStore from 'Stores/Language';
 import ThemeStore from 'Stores/Theme';
 
-import { routeOff, setHash } from 'Knoin/Knoin';
+import { routeReload } from 'Knoin/Knoin';
 import { AbstractBoot } from 'Knoin/AbstractBoot';
 
 const Settings = rl.settings;
@@ -76,10 +76,6 @@ class AbstractApp extends AbstractBoot {
 		return true;
 	}
 
-	redirectToAdminPanel() {
-		setTimeout(() => location.href = rootAdmin(), 100);
-	}
-
 	/**
 	 * @param {string} token
 	 */
@@ -88,43 +84,16 @@ class AbstractApp extends AbstractBoot {
 		Settings.set('AuthAccountHash', token);
 	}
 
-	/**
-	 * @param {boolean=} admin = false
-	 * @param {boolean=} logout = false
-	 * @param {boolean=} close = false
-	 */
-	loginAndLogoutReload(admin = false, logout = false, close = false) {
-		const inIframe = !!Settings.app('inIframe'),
-			logoutLink = admin ? rootAdmin() : rootUser();
+	logoutReload(close = false) {
+		const logoutLink = rl.adminArea() ? rootAdmin() : rootUser();
 
-		if (logout) {
-			rl.hash.clear();
-		}
+		rl.hash.clear();
+		close && window.close && window.close();
 
-		if (logout && close && window.close) {
-			window.close();
-		}
-
-		if (logout && location.href !== logoutLink) {
-			setTimeout(() => {
-				if (inIframe && parent) {
-					parent.location.href = logoutLink;
-				} else {
-					location.href = logoutLink;
-				}
-			}, 100);
+		if (location.href !== logoutLink) {
+			setTimeout(() => (Settings.app('inIframe') ? parent : window).location.href = logoutLink, 100);
 		} else {
-			routeOff();
-			setHash(root(), true);
-			routeOff();
-
-			setTimeout(() => {
-				if (inIframe && parent) {
-					parent.location.reload();
-				} else {
-					location.reload();
-				}
-			}, 100);
+			routeReload();
 		}
 	}
 

@@ -125,11 +125,7 @@ class AppUser extends AbstractApp {
 	}
 
 	reload() {
-		if (parent && !!Settings.app('inIframe')) {
-			parent.location.reload();
-		} else {
-			location.reload();
-		}
+		(Settings.app('inIframe') ? parent : window).location.reload();
 	}
 
 	reloadFlagsCurrentMessageListAndMessageFromCache() {
@@ -896,13 +892,7 @@ class AppUser extends AbstractApp {
 	}
 
 	logout() {
-		Remote.logout(() => {
-			this.loginAndLogoutReload(
-				false,
-				true,
-				0 < (Settings.get('ParentEmail')||{length:0}).length
-			);
-		});
+		Remote.logout(() => this.logoutReload(0 < (Settings.get('ParentEmail')||{length:0}).length));
 	}
 
 	bootstartTwoFactorScreen() {

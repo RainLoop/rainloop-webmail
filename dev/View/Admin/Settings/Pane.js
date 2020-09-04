@@ -6,8 +6,6 @@ import DomainStore from 'Stores/Admin/Domain';
 import PluginStore from 'Stores/Admin/Plugin';
 import PackageStore from 'Stores/Admin/Package';
 
-import { getApp } from 'Helper/Apps/Admin';
-
 import { view, ViewType } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -38,9 +36,7 @@ class PaneSettingsAdminView extends AbstractViewNext {
 	}
 
 	logoutClick() {
-		Remote.adminLogout(() => {
-			getApp().loginAndLogoutReload(true, true);
-		});
+		Remote.adminLogout(() => rl.logoutReload());
 	}
 }
 

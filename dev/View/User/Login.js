@@ -19,10 +19,10 @@ import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Ajax';
 
-import { getApp } from 'Helper/Apps/User';
-
-import { view, command, ViewType, routeOff, showScreenPopup } from 'Knoin/Knoin';
+import { view, command, ViewType, routeOff, showScreenPopup, routeReload } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+
+import { rootAdmin } from 'Common/Links';
 
 const Settings = rl.settings;
 
@@ -180,9 +180,9 @@ class LoginUserView extends AbstractViewNext {
 
 								setTimeout(() => this.querySelector('.inputAdditionalCode').focus(), 100);
 							} else if (oData.Admin) {
-								getApp().redirectToAdminPanel();
+								setTimeout(() => location.href = rootAdmin(), 100);
 							} else {
-								getApp().loginAndLogoutReload(false);
+								routeReload();
 							}
 						} else if (oData.ErrorCode) {
 							this.submitRequest(false);

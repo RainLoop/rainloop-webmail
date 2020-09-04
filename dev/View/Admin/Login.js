@@ -5,9 +5,7 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Ajax';
 
-import { getApp } from 'Helper/Apps/Admin';
-
-import { view, command, ViewType, routeOff } from 'Knoin/Knoin';
+import { view, command, ViewType, routeOff, routeReload } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @view({
@@ -70,7 +68,7 @@ class LoginAdminView extends AbstractViewNext {
 			(sResult, oData) => {
 				if (StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action) {
 					if (oData.Result) {
-						getApp().loginAndLogoutReload(true);
+						routeReload();
 					} else if (oData.ErrorCode) {
 						this.submitRequest(false);
 						this.submitError(getNotification(oData.ErrorCode));

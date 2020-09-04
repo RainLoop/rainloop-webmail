@@ -60,17 +60,15 @@ class AbstractAjaxRemote {
 				}
 
 				if (TOKEN_ERROR_LIMIT < GlobalsData.iTokenErrorCount) {
-					if (GlobalsData.__APP__ && GlobalsData.__APP__.loginAndLogoutReload) {
-						GlobalsData.__APP__.loginAndLogoutReload(false, true);
-					}
+					rl.logoutReload();
 				}
 
 				if (oData.ClearAuth || oData.Logout || AJAX_ERROR_LIMIT < GlobalsData.iAjaxErrorCount) {
 					if (GlobalsData.__APP__) {
 						rl.hash.clear();
 
-						if (!oData.ClearAuth && GlobalsData.__APP__.loginAndLogoutReload) {
-							GlobalsData.__APP__.loginAndLogoutReload(false, true);
+						if (!oData.ClearAuth) {
+							rl.logoutReload();
 						}
 					}
 				}

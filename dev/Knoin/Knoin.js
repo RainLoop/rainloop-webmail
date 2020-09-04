@@ -2,6 +2,8 @@ import ko from 'ko';
 
 import { $htmlCL, VIEW_MODELS } from 'Common/Globals';
 
+import { root } from 'Common/Links';
+
 //import { bMobileDevice } from 'Common/Globals';
 
 let currentScreen = null,
@@ -78,6 +80,16 @@ export function addSettingsViewModel(SettingsViewModelClass, template, labelName
 	};
 
 	VIEW_MODELS.settings.push(SettingsViewModelClass);
+}
+
+/**
+ * @returns {void}
+ */
+export function routeReload() {
+	routeOff();
+	setHash(root(), true);
+	routeOff();
+	setTimeout(() => (rl.settings.app('inIframe') ? parent : window).location.reload(), 100);
 }
 
 /**

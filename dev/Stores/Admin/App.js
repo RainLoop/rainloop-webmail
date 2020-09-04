@@ -17,7 +17,7 @@ class AppAdminStore extends AbstractAppStore {
 	populate() {
 		super.populate();
 
-		const settingsGet = rl.settings
+		const settingsGet = rl.settings.get;
 		this.determineUserLanguage(!!settingsGet('DetermineUserLanguage'));
 		this.determineUserDomain(!!settingsGet('DetermineUserDomain'));
 

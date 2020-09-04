@@ -34,7 +34,8 @@ export default (App) => {
 	$htmlCL.add(bMobileDevice ? 'mobile' : 'no-mobile');
 	addEventListener('click', ()=>rl.Dropdowns.detectVisibility());
 
-	const rl = window.rl || {};
+	rl.app = App;
+	rl.logoutReload = () => App && App.logoutReload && App.logoutReload();
 
 	rl.i18n = i18n;
 
@@ -56,8 +57,6 @@ export default (App) => {
 	rl.Dropdowns.detectVisibility = (() =>
 		dropdownVisibility(!!rl.Dropdowns.find(item => item.classList.contains('open')))
 	).debounce(50);
-
-	window.rl = rl;
 
 	window.__APP_BOOT = fErrorCallback => {
 		const doc = document,

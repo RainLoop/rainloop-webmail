@@ -130,17 +130,15 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 					}
 
 					if (TOKEN_ERROR_LIMIT < GlobalsData.iTokenErrorCount) {
-						if (GlobalsData.__APP__ && GlobalsData.__APP__.loginAndLogoutReload) {
-							GlobalsData.__APP__.loginAndLogoutReload(false, true);
-						}
+						rl.logoutReload();
 					}
 
 					if (data.ClearAuth || data.Logout || AJAX_ERROR_LIMIT < GlobalsData.iAjaxErrorCount) {
 						if (GlobalsData.__APP__) {
 							rl.hash.clear();
 
-							if (!data.ClearAuth && GlobalsData.__APP__.loginAndLogoutReload) {
-								GlobalsData.__APP__.loginAndLogoutReload(false, true);
+							if (!data.ClearAuth) {
+								rl.logoutReload();
 							}
 						}
 					}

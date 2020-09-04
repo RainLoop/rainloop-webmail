@@ -3381,7 +3381,7 @@ gulp-stripbom@1.0.5:
     strip-bom "^1.0.0"
     through2 "^0.5.1"
 
-gulp-terser@^1.2.0:
+gulp-terser@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/gulp-terser/-/gulp-terser-1.4.0.tgz#0ac4dfdbed4ab46906007c5b358810c1642b9764"
   integrity sha512-7df9leJna3WOmj76tYHxjpn7BSU+vmKVjVSd6bz3uLEyrzCfZI97KPhRcIabrSNzs0UY/UXTt+JwkxPw3sF85w==
