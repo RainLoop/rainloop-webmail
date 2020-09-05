@@ -57,6 +57,12 @@ config.paths.css = {
 			'vendors/flags/flags-fixed.css',
 			'vendors/lightgallery/dist/css/lightgallery.min.css',
 			'vendors/lightgallery/dist/css/lg-transitions.min.css',
+		]
+	},
+	boot: {
+		name: 'boot.css',
+		src: [
+			'dev/Styles/@Boot.css',
 			'dev/Styles/_progressjs.css'
 		]
 	}

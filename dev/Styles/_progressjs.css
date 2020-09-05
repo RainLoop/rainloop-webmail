@@ -1,11 +1,4 @@
-.progressjs-inner {
-    width: 0;
-}
-.progressjs-progress {
-    z-index: 9999999;
-}
-
-.progressjs-theme-rainloop {
+.progressjs {
 	left: 0;
 	position: fixed;
 	top: 0;
@@ -13,17 +6,17 @@
 	z-index: 2000;
 }
 
-.progressjs-theme-rainloop .progressjs-inner {
-
+.progressjs-inner {
 	background-color: #939595;
-	position: relative;
-	z-index: 2000;
 	height: 3px;
 	overflow: hidden;
+	position: relative;
 	transition: width .5s;
+    width: 0;
+	z-index: 2000;
 }
 
-.progressjs-theme-rainloop .progressjs-percent {
+.progressjs-percent {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -31,10 +24,10 @@
 	bottom: 0;
 	background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent);
 	background-size: 32px 32px;
-	animation: simple-pace-stripe-animation 500ms linear infinite;
+    animation: simple-pace-stripe-animation 500ms linear infinite;
 }
 
 @keyframes simple-pace-stripe-animation {
-	0% { transform: none; transform: none; }
-	100% { transform: translate(-32px, 0); transform: translate(-32px, 0); }
+	0% { transform: none; }
+	100% { transform: translate(-32px, 0); }
 }

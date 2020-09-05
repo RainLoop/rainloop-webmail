@@ -16,6 +16,19 @@ const { del } = require('./common');
 
 const cssClean = () => del(config.paths.staticCSS + '/*.css');
 
+const cssBootBuild = () => {
+	const autoprefixer = require('gulp-autoprefixer'),
+		src = config.paths.css.boot.src;
+	return gulp
+		.src(src)
+		.pipe(expect.real({ errorOnFailure: true }, src))
+		.pipe(concat(config.paths.css.boot.name))
+		.pipe(autoprefixer())
+		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(config.paths.staticCSS));
+};
+
 const cssMainBuild = () => {
 	const autoprefixer = require('gulp-autoprefixer'),
 		less = require('gulp-less'),
@@ -41,6 +54,16 @@ const cssMainBuild = () => {
 		.pipe(livereload());
 };
 
+const cssBootMin = () => {
+	const cleanCss = require('gulp-clean-css');
+	return gulp
+		.src(config.paths.staticCSS + config.paths.css.boot.name)
+		.pipe(cleanCss())
+		.pipe(rename({ suffix: '.min' }))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(config.paths.staticCSS));
+};
+
 const cssMainMin = () => {
 	const cleanCss = require('gulp-clean-css');
 	return gulp
@@ -51,8 +74,8 @@ const cssMainMin = () => {
 		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
-const cssBuild = gulp.parallel(cssMainBuild);
-const cssMin = gulp.parallel(cssMainMin);
+const cssBuild = gulp.parallel(cssBootBuild, cssMainBuild);
+const cssMin = gulp.parallel(cssBootMin, cssMainMin);
 
 const cssLint = (done) => done();
 

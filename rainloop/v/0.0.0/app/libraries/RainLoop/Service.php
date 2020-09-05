@@ -242,6 +242,8 @@ class Service
 		$sFaviconPngLink = $sFaviconUrl ? $sFaviconUrl : $this->staticPath('apple-touch-icon.png');
 		$sAppleTouchLink = $sFaviconUrl ? '' : $this->staticPath('apple-touch-icon.png');
 
+		$LoadingDescription = $this->oActions->Config()->Get('webmail', 'loading_description', 'RainLoop');
+
 		$aTemplateParameters = array(
 			'{{BaseAppHeadScriptLink}}' => '',
 			'{{BaseAppBodyScript}}' => '',
@@ -254,7 +256,9 @@ class Service
 			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
 			'{{BaseContentSecurityPolicy}}' => '',
 			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
-			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json')
+			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),
+			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.($bAppCssDebug ? '' : '.min').'.css'),
+			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8')
 		);
 
 		$aTemplateParameters['{{RainloopBootData}}'] = \json_encode(array(

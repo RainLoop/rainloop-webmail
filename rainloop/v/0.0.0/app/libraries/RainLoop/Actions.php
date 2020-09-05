@@ -1162,7 +1162,7 @@ class Actions
 
 /*
 required by Index.html and rl.js:
-NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBackground PluginsLink AuthAccountHash
+NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink AuthAccountHash
 */
 
 		$aResult = array(
@@ -1176,7 +1176,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 			'DevPassword' => '',
 			'Title' => $oConfig->Get('webmail', 'title', 'RainLoop Webmail'),
 			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', 'RainLoop'),
-			'LoadingDescriptionEsc' => 'RainLoop',
 			'FaviconUrl' => $oConfig->Get('webmail', 'favicon_url', ''),
 			'LoginDescription' => '',
 			'LoginLogo' => '',
@@ -1216,11 +1215,6 @@ NewThemeLink IncludeCss LoadingDescriptionEsc TemplatesLink LangLink IncludeBack
 		if (0 < \strlen($sAuthAccountHash))
 		{
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
-		}
-
-		if ('' !== $aResult['LoadingDescription'] && 'RainLoop' !== $aResult['LoadingDescription'])
-		{
-			$aResult['LoadingDescriptionEsc'] = \htmlspecialchars($aResult['LoadingDescription'], ENT_QUOTES|ENT_IGNORE, 'UTF-8');
 		}
 
 		$oSettings = null;

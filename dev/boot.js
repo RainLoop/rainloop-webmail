@@ -78,9 +78,7 @@ const
 			script.onload = () => resolve();
 			script.onerror = () => reject(new Error(src));
 			script.src = src;
-//			script.type = 'text/javascript';
 			doc.head.append(script);
-//			doc.body.append(element);
 		});
 	},
 
@@ -97,17 +95,16 @@ const
 		}
 	};
 
-let container = doc.createElement('div'),
-	progress = container.appendChild(doc.createElement("div")),
+if (!navigator || !navigator.cookieEnabled) {
+	doc.location.replace('./?/NoCookie');
+}
+
+let container = doc.querySelector('.progressjs'),
+	progress = doc.querySelector('.progressjs-inner'),
 
 	RL_APP_DATA_STORAGE = {};
 
-container.className = 'progressjs-progress progressjs-theme-rainloop';
-progress.className = "progressjs-inner";
-progress.appendChild(doc.createElement('div')).className = "progressjs-percent";
-
 p.set(1);
-doc.body.append(container);
 
 Storage('local');
 Storage('session');
@@ -170,25 +167,11 @@ win.__initAppData = appData => {
 	rl.hash.set();
 
 	if (appData) {
-		const css = appData.IncludeCss,
-			theme = appData.NewThemeLink,
-			description= appData.LoadingDescriptionEsc || '',
-			oE = doc.getElementById('rl-loading'),
-			oElDesc = doc.getElementById('rl-loading-desc');
-
-		if (theme) {
-			(doc.getElementById('app-theme-link') || {}).href = theme;
+		if (appData.NewThemeLink) {
+			(doc.getElementById('app-theme-link') || {}).href = appData.NewThemeLink;
 		}
 
-		css && writeCSS(css);
-
-		if (oElDesc && description) {
-			oElDesc.innerHTML = description;
-		}
-		if (oE && oE.style) {
-			oE.style.opacity = 0;
-			setTimeout(() => oE.style.opacity = 1, 300);
-		}
+		appData.IncludeCss && writeCSS(appData.IncludeCss);
 	}
 
 	if (
@@ -246,32 +229,11 @@ win.__initAppData = appData => {
 	}
 };
 
-if (!navigator || !navigator.cookieEnabled) {
-	doc.location.replace('./?/NoCookie');
-}
-
-writeCSS('#rl-content{display:none;}.internal-hiddden{display:none !important;}');
-
 if (app) {
-	app.innerHTML = '<div id="rl-loading" class="thm-loading" style="opacity:0">\
-	<div id="rl-loading-desc"></div>\
-	<div class="e-spinner">\
-		<div class="e-bounce bounce1"></div>\
-		<div class="e-bounce bounce2"></div>\
-		<div class="e-bounce bounce3"></div>\
-	</div>\
-</div>\
-<div id="rl-loading-error" class="thm-loading">An error occurred.<br/>Please refresh the page and try again.</div>\
-<div id="rl-content">\
-	<div id="rl-popups"></div>\
-	<div id="rl-center">\
-		<div id="rl-top"></div>\
-		<div id="rl-left"></div>\
-		<div id="rl-right"></div>\
-	</div>\
-</div>\
-<div id="rl-templates"></div>\
-<div id="rl-hidden"></div>'.replace(/[\r\n\t]+/g, '');
+	['app-css','app-theme-link'].forEach(css => {
+		css = doc.getElementById(css);
+		css.href = css.dataset.href;
+	});
 
 	loadScript('./?/'
 		+ (options.admin ? 'Admin' : '')
@@ -285,4 +247,4 @@ if (app) {
 		+ '/').then(() => {});
 }
 
-})(window);
+})(this);

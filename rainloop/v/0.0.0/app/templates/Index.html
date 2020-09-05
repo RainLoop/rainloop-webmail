@@ -13,14 +13,36 @@
 	<title></title>
 	{{BaseAppFaviconPngLinkTag}}
 	{{BaseAppFaviconTouchLinkTag}}
-	<link type="text/css" rel="stylesheet" href="{{BaseAppMainCssLink}}" />
-	<link type="text/css" rel="stylesheet" href="{{BaseAppThemeCssLink}}" id="app-theme-link" />
+	<style>{{BaseAppBootCss}}</style>
+	<link type="text/css" rel="stylesheet" data-href="{{BaseAppMainCssLink}}" id="app-css" />
+	<link type="text/css" rel="stylesheet" data-href="{{BaseAppThemeCssLink}}" id="app-theme-link" />
 	<link rel="manifest" href="{{BaseAppManifestLink}}" />
 </head>
 
 <body class="thm-body">
-	<div id="rl-app" data-boot='{{RainloopBootData}}'></div>
+	<div id="rl-app" data-boot='{{RainloopBootData}}'>
+		<div id="rl-loading" class="thm-loading">
+			<div id="rl-loading-desc">{{LoadingDescriptionEsc}}</div>
+			<div class="e-spinner">
+				<div class="e-bounce bounce1"></div>
+				<div class="e-bounce bounce2"></div>
+				<div class="e-bounce bounce3"></div>
+			</div>
+		</div>
+		<div id="rl-loading-error" class="thm-loading">An error occurred.<br/>Please refresh the page and try again.</div>
+		<div id="rl-content">
+			<div id="rl-popups"></div>
+			<div id="rl-center">
+				<div id="rl-top"></div>
+				<div id="rl-left"></div>
+				<div id="rl-right"></div>
+			</div>
+		</div>
+		<div id="rl-templates"></div>
+		<div id="rl-hidden"></div>
+	</div>
 	<div id="rl-check"></div>
+	<div class="progressjs"><div class="progressjs-inner"><div class="progressjs-percent"></div></div></div>
 	<script type="text/javascript" data-cfasync="false" src="{{BaseAppBootScriptLink}}"></script>
 </body>
 
