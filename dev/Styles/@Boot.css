@@ -10,10 +10,6 @@ body {
 	color: #333;
 }
 
-#rl-content, #rl-loading-error {
-    display: none;
-}
-
 #rl-loading, #rl-loading-error {
 	font-size: 30px;
 	line-height: 130%;

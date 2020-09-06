@@ -234,15 +234,17 @@ class Service
 
 		list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme($bAdmin, $bMobile);
 
-		$bAppJsDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_js', false);
-		$bAppCssDebug = !!$this->oActions->Config()->Get('labs', 'use_app_debug_css', false);
+		$oConfig = $this->oActions->Config();
 
-		$sFaviconUrl = (string) $this->oActions->Config()->Get('webmail', 'favicon_url', '');
+		$bAppJsDebug = !!$oConfig->Get('labs', 'use_app_debug_js', false);
+		$bAppCssDebug = !!$oConfig->Get('labs', 'use_app_debug_css', false);
+
+		$sFaviconUrl = (string) $oConfig->Get('webmail', 'favicon_url', '');
 
 		$sFaviconPngLink = $sFaviconUrl ? $sFaviconUrl : $this->staticPath('apple-touch-icon.png');
 		$sAppleTouchLink = $sFaviconUrl ? '' : $this->staticPath('apple-touch-icon.png');
 
-		$LoadingDescription = $this->oActions->Config()->Get('webmail', 'loading_description', 'RainLoop');
+		$LoadingDescription = $oConfig->Get('webmail', 'loading_description', 'RainLoop');
 
 		$aTemplateParameters = array(
 			'{{BaseAppHeadScriptLink}}' => '',
@@ -253,11 +255,12 @@ class Service
 			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($sTheme, $bAdmin),
 			'{{BaseAppPolyfillsScriptLink}}' => '',
 			'{{BaseAppBootScriptLink}}' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'boot'.($bAppJsDebug ? '' : '.min').'.js'),
+			'{{BaseAppBootScript}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js/min/boot.min.js'),
 			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
 			'{{BaseContentSecurityPolicy}}' => '',
 			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
 			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),
-			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot'.($bAppCssDebug ? '' : '.min').'.css'),
+			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot.min.css'),
 			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8')
 		);
 
@@ -272,7 +275,7 @@ class Service
 		$aTemplateParameters['{{BaseHash}}'] = \md5(
 			\implode('~', array(
 				$bAdmin ? '1' : '0',
-				\md5($this->oActions->Config()->Get('cache', 'index', '')),
+				\md5($oConfig->Get('cache', 'index', '')),
 				$this->oActions->Plugins()->Hash(),
 				Utils::WebVersionPath(),
 				APP_VERSION,

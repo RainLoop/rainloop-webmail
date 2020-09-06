@@ -13,7 +13,7 @@
 	<title></title>
 	{{BaseAppFaviconPngLinkTag}}
 	{{BaseAppFaviconTouchLinkTag}}
-	<style>{{BaseAppBootCss}}</style>
+	<style id="app-boot-css">{{BaseAppBootCss}}</style>
 	<link type="text/css" rel="stylesheet" data-href="{{BaseAppMainCssLink}}" id="app-css" />
 	<link type="text/css" rel="stylesheet" data-href="{{BaseAppThemeCssLink}}" id="app-theme-link" />
 	<link rel="manifest" href="{{BaseAppManifestLink}}" />
@@ -29,8 +29,8 @@
 				<div class="e-bounce bounce3"></div>
 			</div>
 		</div>
-		<div id="rl-loading-error" class="thm-loading">An error occurred.<br/>Please refresh the page and try again.</div>
-		<div id="rl-content">
+		<div id="rl-loading-error" class="thm-loading" hidden="">An error occurred.<br/>Please refresh the page and try again.</div>
+		<div id="rl-content" hidden="">
 			<div id="rl-popups"></div>
 			<div id="rl-center">
 				<div id="rl-top"></div>
@@ -43,7 +43,7 @@
 	</div>
 	<div id="rl-check"></div>
 	<div class="progressjs"><div class="progressjs-inner"><div class="progressjs-percent"></div></div></div>
-	<script type="text/javascript" data-cfasync="false" src="{{BaseAppBootScriptLink}}"></script>
+	<script type="text/javascript">{{BaseAppBootScript}}</script>
 </body>
 
 </html>

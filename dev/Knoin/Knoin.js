@@ -32,7 +32,7 @@ export const ViewType = {
  * @returns {void}
  */
 export function hideLoading() {
-	qs('#rl-content').classList.add('rl-content-show');
+	qs('#rl-content').hidden = false;
 	qs('#rl-loading').remove();
 }
 

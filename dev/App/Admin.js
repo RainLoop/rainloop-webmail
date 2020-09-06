@@ -93,13 +93,9 @@ class AdminApp extends AbstractApp {
 		});
 	}
 
-	bootend(bootendCallback = null) {
+	bootend() {
 		if (window.progressJs) {
 			progressJs.end();
-		}
-
-		if (bootendCallback) {
-			bootendCallback();
 		}
 	}
 

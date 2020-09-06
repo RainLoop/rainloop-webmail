@@ -2,7 +2,7 @@
 (win => {
 
 const
-	doc = win.document,
+	doc = document,
 	app = doc.getElementById('rl-app'),
 	options = app && app.dataset.boot && JSON.parse(app.dataset.boot) || {},
 
@@ -17,7 +17,7 @@ const
 			const cookieName = encodeURIComponent(name+('session' === type ? win.name || (win.name = Date.now()) : ''));
 
 			// initialise if there's already data
-			let data = document.cookie.match('(^|;) ?'+cookieName+'=([^;]*)(;|$)');
+			let data = doc.cookie.match('(^|;) ?'+cookieName+'=([^;]*)(;|$)');
 			data = data ? decodeURIComponent(data[2]) : null;
 			data = data ? JSON.parse(data) : {};
 
@@ -25,7 +25,7 @@ const
 				getItem: key => data[key] === undefined ? null : data[key],
 				setItem: function (key, value) {
 					data[key] = ''+value; // forces the value to a string
-					document.cookie = cookieName+'='+encodeURIComponent(JSON.stringify(data))
+					doc.cookie = cookieName+'='+encodeURIComponent(JSON.stringify(data))
 						+"; expires="+('local' === type ? (new Date(Date.now()+(365*24*60*60*1000))).toGMTString() : '')
 						+"; path=/; samesite=strict";
 				}
@@ -40,17 +40,8 @@ const
 	setTimestamp = () => storage().setItem(TIME_KEY, timestamp()),
 
 	showError = () => {
-		const oR = doc.getElementById('rl-loading'),
-			oL = doc.getElementById('rl-loading-error');
-
-		if (oR) {
-			oR.style.display = 'none';
-		}
-
-		if (oL) {
-			oL.style.display = 'block';
-		}
-
+		doc.getElementById('rl-loading').hidden = true;
+		doc.getElementById('rl-loading-error').hidden = false;
 		p.end();
 	},
 
@@ -104,11 +95,6 @@ let container = doc.querySelector('.progressjs'),
 
 	RL_APP_DATA_STORAGE = {};
 
-p.set(1);
-
-Storage('local');
-Storage('session');
-
 win.rl = {
 	hash: {
 		// getHash
@@ -150,12 +136,9 @@ win.rl = {
 		if (RL_APP_DATA_STORAGE.Title) {
 			title += (title ? ' - ' : '') + RL_APP_DATA_STORAGE.Title;
 		}
-		document.title = null == title ? '' : '' + title;
+		doc.title = null == title ? '' : '' + title;
 	}
 };
-
-// init section
-setInterval(setTimestamp, 60000); // 1m
 
 /**
  * @param {mixed} appData
@@ -229,22 +212,28 @@ win.__initAppData = appData => {
 	}
 };
 
-if (app) {
-	['app-css','app-theme-link'].forEach(css => {
-		css = doc.getElementById(css);
-		css.href = css.dataset.href;
-	});
+p.set(1);
 
-	loadScript('./?/'
-		+ (options.admin ? 'Admin' : '')
-		+ 'AppData@'
-		+ (options.mobile ? 'mobile' : 'no-mobile')
-		+ (options.mobileDevice ? '-1' : '-0')
-		+ '/'
-		+ (rl.hash.get() || '0')
-		+ '/'
-		+ Math.random().toString().substr(2)
-		+ '/').then(() => {});
-}
+Storage('local');
+Storage('session');
+
+// init section
+setInterval(setTimestamp, 60000); // 1m
+
+['app-css','app-theme-link'].forEach(css => {
+	css = doc.getElementById(css);
+	css.href = css.dataset.href;
+});
+
+loadScript('./?/'
+	+ (options.admin ? 'Admin' : '')
+	+ 'AppData@'
+	+ (options.mobile ? 'mobile' : 'no-mobile')
+	+ (options.mobileDevice ? '-1' : '-0')
+	+ '/'
+	+ (rl.hash.get() || '0')
+	+ '/'
+	+ Math.random().toString().substr(2)
+	+ '/').then(() => {});
 
 })(this);

@@ -51,6 +51,7 @@ This fork has the following changes:
 * Removed Sentry (Application Monitoring and Error Tracking Software)
 * Replaced gulp-uglify with gulp-terser
 * CRLF => LF line endings
+* Embed boot.js and boot.css into index.html
 * Ongoing removal of old JavaScript code (things are native these days)
 
 ### Removal of old JavaScript
@@ -86,23 +87,23 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  938.738	|
-|app.js      	|4.184.455	|2.556.224	|
-|boot.js     	|  671.522	|    7.265	|
+|admin.js    	|2.130.942	|  938.371	|
+|app.js      	|4.184.455	|2.556.162	|
+|boot.js     	|  671.522	|    5.889	|
 |libs.js     	|  647.614	|  312.343	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.814.570	|
+|TOTAL      	|7.960.367	|3.812.765	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  128.761	| 73.657	| 37.546	| 32.178	|
-|app.min.js      	|  511.202	|  349.280	|140.462	| 91.746	| 73.635	|
-|boot.min.js     	|   66.007	|    4.258	| 22.567	|  1.946	|  1.648	|
+|admin.min.js    	|  252.147	|  128.725	| 73.657	| 37.530	| 32.194	|
+|app.min.js      	|  511.202	|  349.257	|140.462	| 91.739	| 73.672	|
+|boot.min.js     	|   66.007	|    3.207	| 22.567	|  1.598	|  1.369	|
 |libs.min.js     	|  572.545	|  295.754	|176.720	| 91.521	| 80.871	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  778.053	|424.718	|222.759	|188.332	|
+|TOTAL          	|1.434.353	|  776.943	|424.718	|222.388	|188.106	|
 
-655.728 bytes (201.830 gzip) is not much, but it feels faster.
+657.410 bytes (202.330 gzip) is not much, but it feels faster.
 
 ### CSS changes
 
@@ -127,8 +128,10 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 255.729	| 46,959	| 36.948	| 31.049	|
-|app.min.css	| 274.791	| 208.793	| 39,618	| 32.238	| 27.339	|
+|app.css    	| 340.334	| 252.797	| 46,959	| 36.394	| 30.615	|
+|app.min.css	| 274.791	| 206.474	| 39.618	| 32.238	| 27.339	|
+|boot.css    	|       	|   2.538	|       	|    837	|    668	|
+|boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 
 
 ### PHP73 branch
