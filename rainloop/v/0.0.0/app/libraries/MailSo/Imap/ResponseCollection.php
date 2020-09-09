@@ -104,11 +104,15 @@ class ResponseCollection extends \MailSo\Base\Collection
 			{
 				try
 				{
-					if (!\is_string($oResponse->ResponseList[4])) {
-						\error_log('ResponseCollection::getFoldersResult: invalid string ' . \var_export($oResponse->ResponseList[4], true));
+					$sFullNameRaw = $oResponse->ResponseList[4];
+					if (\is_array($sFullNameRaw)) {
+						$sFullNameRaw = "[{$sFullNameRaw[0]}]";
+					}
+					if (!\is_string($sFullNameRaw)) {
+						\error_log('ResponseCollection::getFoldersResult: invalid string ' . \var_export($sFullNameRaw, true));
 						continue;
 					}
-					$oFolder = new Folder($oResponse->ResponseList[4],
+					$oFolder = new Folder($sFullNameRaw,
 						$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
 
 					if ($oFolder->IsInbox()) {
