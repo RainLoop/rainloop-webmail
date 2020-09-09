@@ -1498,7 +1498,11 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		$aResult['StaticAppJsLink'] = $this->StaticPath('js/'.($bAppJsDebug ? '' : 'min/').
 			($bAdmin ? 'admin' : 'app').($bAppJsDebug ? '' : '.min').'.js');
 
-		$aResult['StaticEditorJsLink'] = $this->StaticPath('ckeditor/ckeditor.js');
+		if ($this->Config()->Get('labs', 'use_squire_html_editor', false)) {
+			$aResult['StaticEditorJsLink'] = $this->StaticPath('squire/squire'.($bAppJsDebug ? '-raw' : '').'.js');
+		} else {
+			$aResult['StaticEditorJsLink'] = $this->StaticPath('ckeditor/ckeditor.js');
+		}
 
 		$aResult['EditorDefaultType'] = \in_array($aResult['EditorDefaultType'], array('Plain', 'Html', 'HtmlForced', 'PlainForced')) ?
 			$aResult['EditorDefaultType'] : 'Plain';

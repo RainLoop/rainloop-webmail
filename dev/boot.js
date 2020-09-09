@@ -202,10 +202,8 @@ win.__initAppData = appData => {
 			})
 			.then(() => loadScript(appData.StaticEditorJsLink))
 			.then(() => {
-				if (win.CKEDITOR && win.__initEditor) {
-					win.__initEditor();
-					win.__initEditor = null;
-				}
+				win.__initEditor && win.__initEditor();
+				win.__initEditor = null;
 			});
 	} else {
 		runMainBoot(true);

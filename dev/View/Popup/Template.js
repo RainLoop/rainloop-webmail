@@ -107,12 +107,8 @@ class TemplatePopupView extends AbstractViewNext {
 		if (!this.editor && this.signatureDom()) {
 			this.editor = new HtmlEditor(
 				this.signatureDom(),
-				() => {
-					this.populateBodyFromEditor();
-				},
-				() => {
-					this.editor.setHtmlOrPlain(sBody);
-				}
+				() => this.populateBodyFromEditor(),
+				() => this.editor.setHtmlOrPlain(sBody)
 			);
 		} else {
 			this.editor.setHtmlOrPlain(sBody);

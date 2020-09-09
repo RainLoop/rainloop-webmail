@@ -33,6 +33,19 @@ const fontasticFontsCopy = () =>
 
 const fontastic = gulp.series(fontasticFontsClear, fontasticFontsCopy);
 
+// squire
+const squireClear = () => del('rainloop/v/' + config.devVersion + '/static/squire');
+
+const squireCopy = () =>
+	gulp
+		.src([
+			'vendors/squire/build/squire.js',
+			'vendors/squire/build/squire-raw.js'
+		])
+		.pipe(gulp.dest('rainloop/v/' + config.devVersion + '/static/squire'));
+
+const squire = gulp.series(squireClear, squireCopy);
+
 // ckeditor
 const ckeditorClear = () => del('rainloop/v/' + config.devVersion + '/static/ckeditor');
 
@@ -61,4 +74,4 @@ const ckeditorSetup = () =>
 
 const ckeditor = gulp.series(ckeditorClear, ckeditorCopy, ckeditorCopyPlugins, ckeditorSetup);
 
-exports.vendors = gulp.parallel(moment, ckeditor, fontastic, lightgallery);
+exports.vendors = gulp.parallel(moment, squire, ckeditor, fontastic, lightgallery);

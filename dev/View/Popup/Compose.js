@@ -650,12 +650,8 @@ class ComposePopupView extends AbstractViewNext {
 				this.oEditor = new HtmlEditor(
 					this.composeEditorArea(),
 					null,
-					() => {
-						fOnInit(this.oEditor);
-					},
-					(bHtml) => {
-						this.isHtml(!!bHtml);
-					}
+					() => fOnInit(this.oEditor),
+					bHtml => this.isHtml(!!bHtml)
 				);
 				// }, 1000);
 			} else if (this.oEditor) {
