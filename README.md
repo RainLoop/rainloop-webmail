@@ -53,6 +53,7 @@ This fork has the following changes:
 * CRLF => LF line endings
 * Embed boot.js and boot.css into index.html
 * Ongoing removal of old JavaScript code (things are native these days)
+* Added modified Squire HTML editor as replacement for CKEditor
 
 ### Removal of old JavaScript
 
@@ -132,6 +133,20 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 |app.min.css	| 274.791	| 206.474	| 39.618	| 32.238	| 27.339	|
 |boot.css    	|       	|   2.538	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
+
+
+### Squire vs CKEditor
+The squire implementation is not 100% compatible yet, but is show the massive overhead of CKEditor.
+
+|       	| normal	| min    	| gzip  	| min gzip	|
+|--------	|-------:	|-------:	|------:	|--------:	|
+|squire  	| 128.729	|  47.215	| 33.671	|   15.596	|
+|ckeditor	|       ?	| 520.035	|      ?	|  155.916	|
+
+CKEditor including the 8 asset requests is 633.46 KB / 183.54 KB (gzip).
+
+Enable it in /data/_data_/_default_/configs/application.ini in the [labs] section add/edit: `use_squire_html_editor = On`
+
 
 
 ### PHP73 branch
