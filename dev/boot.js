@@ -3,6 +3,7 @@
 
 const
 	doc = document,
+	html = doc.documentElement,
 	app = doc.getElementById('rl-app'),
 	options = app && app.dataset.boot && JSON.parse(app.dataset.boot) || {},
 
@@ -151,7 +152,7 @@ win.__initAppData = appData => {
 
 	if (appData) {
 		if (appData.NewThemeLink) {
-			(doc.getElementById('app-theme-link') || {}).href = appData.NewThemeLink;
+			doc.getElementById('app-theme-link').href = appData.NewThemeLink;
 		}
 
 		appData.IncludeCss && writeCSS(appData.IncludeCss);
@@ -169,11 +170,10 @@ win.__initAppData = appData => {
 
 		const libs = () =>
 			loadScript(appData.StaticLibJsLink).then(() => {
-				doc.getElementById('rl-check').remove();
 				if (appData.IncludeBackground) {
 					const img = appData.IncludeBackground.replace('{{USER}}', rl.hash.get() || '0');
 					if (img) {
-						doc.documentElement.classList.add('UserBackground');
+						html.classList.add('UserBackground');
 						doc.body.style.backgroundImage = "url("+img+")";
 					}
 				}
@@ -219,6 +219,8 @@ Storage('session');
 
 // init section
 setInterval(setTimestamp, 60000); // 1m
+
+html.classList.add(options.mobileDevice ? 'mobile' : 'no-mobile');
 
 ['app-css','app-theme-link'].forEach(css => {
 	css = doc.getElementById(css);
