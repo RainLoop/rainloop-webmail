@@ -88,23 +88,23 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  990.560	|
-|app.js      	|4.184.455	|2.607.924	|
+|admin.js    	|2.130.942	|1.000.931	|
+|app.js      	|4.184.455	|2.618.339	|
 |boot.js     	|  671.522	|    5.834	|
 |libs.js     	|  647.614	|  312.343	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.916.661	|
+|TOTAL      	|7.960.367	|3.937.447	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  135.441	| 73.657	| 40.158	| 34.434	|
-|app.min.js      	|  511.202	|  355.966	|140.462	| 94.405	| 75.847	|
+|admin.min.js    	|  252.147	|  136.658	| 73.657	| 40.569	| 34.783	|
+|app.min.js      	|  511.202	|  357.183	|140.462	| 94.834	| 76.231	|
 |boot.min.js     	|   66.007	|    3.166	| 22.567	|  1.571	|  1.345	|
 |libs.min.js     	|  572.545	|  295.754	|176.720	| 91.521	| 80.871	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  790.327	|424.718	|227.655	|192.497	|
+|TOTAL          	|1.434.353	|  792.761	|424.718	|228.495	|193.230	|
 
-644.026 bytes (197.063 gzip) is not much, but it feels faster.
+641.592 bytes (196.223 gzip) is not much, but it feels faster.
 
 ### CSS changes
 
@@ -142,7 +142,6 @@ Still TODO:
 
 * upload image inline
 * support for tables (really needed?!?)
-* alternative for vendors/ckeditor-plugins/signature/plugin.js
 
 |       	| normal	| min    	| gzip  	| min gzip	|
 |--------	|-------:	|-------:	|------:	|--------:	|

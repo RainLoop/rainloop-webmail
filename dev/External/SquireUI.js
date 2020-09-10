@@ -6,7 +6,7 @@ const doc = document,
 allowedElements = 'A,B,BLOCKQUOTE,BR,DIV,FONT,H1,H2,H3,H4,H5,H6,HR,IMG,LABEL,LI,OL,P,SPAN,STRONG,TABLE,TD,TH,TR,U,UL',
 allowedAttributes = 'abbr,align,background,bgcolor,border,cellpadding,cellspacing,class,color,colspan,dir,face,frame,height,href,hspace,id,lang,rowspan,rules,scope,size,src,style,target,type,usemap,valign,vspace,width'.split(','),
 
-i18n = (str, def) => window.rl && window.rl.i18n ? window.rl.i18n(str) : def,
+i18n = (str, def) => rl.i18n(str) || def,
 
 SquireDefaultConfig = {
 /*
@@ -40,7 +40,7 @@ SquireDefaultConfig = {
 			tpl = doc.createElement('div');
 		tpl.innerHTML = html;
 		if (isPaste) {
-			tpl.querySelectorAll(':not('+allowedElements+')').forEach(el => el.remove());
+			tpl.querySelectorAll(':not('+allowedElements+',signature)').forEach(el => el.remove());
 			tpl.querySelectorAll(allowedElements).forEach(el => {
 				if (el.hasAttributes()) {
 					Array.from(el.attributes).forEach(attr => {
@@ -55,6 +55,68 @@ SquireDefaultConfig = {
 		frag.append(...tpl.childNodes);
 		return frag;
 	}
+},
+
+rl_signature_replacer = (editor, text, signature, isHtml, insertBefore) => {
+	let
+		prevSignature = editor.__previous_signature,
+		skipInsert = false,
+		isEmptyText = false,
+		newLine = (isHtml ? '<br />' : "\n"),
+		clearHtmlLine = html => rl.Utils.htmlToPlain(html).trim();
+
+	isEmptyText = !text.trim();
+	if (!isEmptyText && isHtml) {
+		isEmptyText = !clearHtmlLine(text);
+	}
+
+	if (prevSignature && !isEmptyText) {
+		if (isHtml && !prevSignature.isHtml) {
+			prevSignature = {
+				body: rl.Utils.plainToHtml(prevSignature.body),
+				isHtml: true
+			};
+		} else if (!isHtml && prevSignature.isHtml) {
+			prevSignature = {
+				body: rl.Utils.htmlToPlain(prevSignature.body),
+				isHtml: true
+			};
+		}
+
+		if (isHtml) {
+			var clearSig = clearHtmlLine(prevSignature.body);
+			text = text.replace(/<signature>([\s\S]*)<\/signature>/igm, all => {
+				var c = clearSig === clearHtmlLine(all);
+				if (!c) {
+					skipInsert = true;
+				}
+				return c ? '' : all;
+			});
+		} else {
+			var textLen = text.length;
+			text = text
+				.replace('' + prevSignature.body, '')
+				.replace('' + prevSignature.body, '');
+			skipInsert = textLen === text.length;
+		}
+	}
+
+	if (!skipInsert) {
+		signature = newLine + newLine + (isHtml ? '<signature>' : '') + signature + (isHtml ? '</signature>' : '');
+
+		text = insertBefore ? signature + text : text + signature;
+
+		if (10 < signature.length) {
+			prevSignature = {
+				body: signature,
+				isHtml: isHtml
+			};
+		}
+	}
+
+	editor.__previous_signature = prevSignature;
+
+	return text;
 };
 
 class SquireUI
@@ -101,12 +163,12 @@ class SquireUI
 				textColor: {
 					input: 'color',
 					cmd: s => squire.setTextColour(s.value),
-					hint: 'text'
+					hint: 'Text color'
 				},
 				backgroundColor: {
 					input: 'color',
 					cmd: s => squire.setHighlightColour(s.value),
-					hint: i18n('EDITOR/TEXT_BACKGROUND_COLOR', 'Background')
+					hint: 'Background color'
 				},
 			},
 /*
@@ -118,61 +180,72 @@ class SquireUI
 				bold: {
 					html: '𝐁',
 					cmd: () => this.doAction('bold','B'),
-					key: 'B'
+					key: 'B',
+					hint: 'Bold'
 				},
 				italic: {
 					html: '𝐼',
 					cmd: () => this.doAction('italic','I'),
-					key: 'I'
+					key: 'I',
+					hint: 'Italic'
 				},
 				underline: {
 					html: '<u>U</u>',
 					cmd: () => this.doAction('underline','U'),
-					key: 'U'
+					key: 'U',
+					hint: 'Underline'
 				},
 				strike: {
 					html: '<s>S</s>',
 					cmd: () => this.doAction('strikethrough','S'),
-					key: 'Shift + 7'
+					key: 'Shift + 7',
+					hint: 'Strikethrough'
 				},
 				sub: {
 					html: 'S<sub>x</sub>',
 					cmd: () => this.doAction('subscript','SUB'),
-					key: 'Shift + 5'
+					key: 'Shift + 5',
+					hint: 'Subscript'
 				},
 				sup: {
 					html: 'S<sup>x</sup>',
 					cmd: () => this.doAction('superscript','SUP'),
-					key: 'Shift + 6'
+					key: 'Shift + 6',
+					hint: 'Superscript'
 				}
 			},
 			block: {
 				ol: {
 					html: '#',
 					cmd: () => this.doList('OL'),
-					key: 'Shift + 8'
+					key: 'Shift + 8',
+					hint: 'Ordered list'
 				},
 				ul: {
 					html: '⋮',
 					cmd: () => this.doList('UL'),
-					key: 'Shift + 9'
+					key: 'Shift + 9',
+					hint: 'Unordered list'
 				},
 				quote: {
 					html: '"',
 					cmd: () => {
 						let parent = this.getParentNodeName('UL,OL');
 						(parent && 'BLOCKQUOTE' == parent) ? squire.decreaseQuoteLevel() : squire.increaseQuoteLevel();
-					}
+					},
+					hint: 'Blockquote'
 				},
 				indentDecrease: {
 					html: '⇤',
 					cmd: () => squire.changeIndentationLevel('decrease'),
-					key: ']'
+					key: ']',
+					hint: 'Decrease indent'
 				},
 				indentIncrease: {
 					html: '⇥',
 					cmd: () => squire.changeIndentationLevel('increase'),
-					key: '['
+					key: '[',
+					hint: 'Increase indent'
 				}
 			},
 			targets: {
@@ -185,7 +258,8 @@ class SquireUI
 							let url = prompt("Link","https://");
 							url != null && url.length && squire.makeLink(url);
 						}
-					}
+					},
+					hint: 'Link'
 				},
 				image: {
 					html: '🖼️',
@@ -196,7 +270,8 @@ class SquireUI
 							let src = prompt("Image","https://");
 							src != null && src.length && squire.insertImage(src);
 						}
-					}
+					},
+					hint: 'Image'
 				},
 /*
 				imageUpload: {
@@ -213,12 +288,14 @@ class SquireUI
 				undo: {
 					html: '↶',
 					cmd: () => squire.undo(),
-					key: 'Z'
+					key: 'Z',
+					hint: 'Undo'
 				},
 				redo: {
 					html: '↷',
 					cmd: () => squire.redo(),
-					key: 'Y'
+					key: 'Y',
+					hint: 'Redo'
 				}
 			}
 		},
@@ -230,7 +307,7 @@ class SquireUI
 
 		plain.className = 'squire-plain cke_plain cke_editable';
 		wysiwyg.className = 'squire-wysiwyg cke_wysiwyg_div cke_editable';
-		this.mode = 'plain'; // 'wysiwyg'
+		this.mode = ''; // 'plain' | 'wysiwyg'
 		this.__plain = {
 			getRawData: () => this.plain.value,
 			setRawData: plain => this.plain.value = plain
@@ -326,7 +403,6 @@ squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 		this.plugins = {
 			plain: true
 		};
-		// .plugins.plain && this.editor.__plain
 		this.focusManager = {
 			hasFocus: () => squire._isFocused,
 			blur: () => squire.blur()
@@ -384,12 +460,29 @@ squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 
 	execCommand(cmd, cfg) {
 		if ('insertSignature' == cmd) {
+			cfg = Object.assign({
+				clearCache: false,
+				isHtml: false,
+				insertBefore: false,
+				signature: ''
+			}, cfg);
+
 			if (cfg.clearCache) {
-				// remove it;
-			} else {
-				cfg.isHtml; // bool
-				cfg.insertBefore; // bool
-				cfg.signature; // string
+				this.__previous_signature = null;
+			} else try {
+				if ('plain' === this.mode) {
+					if (cfg.isHtml) {
+						cfg.signature = rl.Utils.htmlToPlain(cfg.signature);
+					}
+					this.plain.value = rl_signature_replacer(this, this.plain.value, cfg.signature, false, cfg.insertBefore);
+				} else {
+					if (!cfg.isHtml) {
+						cfg.signature = rl.Utils.plainToHtml(cfg.signature);
+					}
+					this.squire.setHTML(rl_signature_replacer(this, this.squire.getHTML(), cfg.signature, true, cfg.insertBefore));
+				}
+			} catch (e) {
+				console.error(e);
 			}
 		}
 	}
