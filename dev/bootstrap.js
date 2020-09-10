@@ -1,4 +1,4 @@
-import { data as GlobalsData, bMobileDevice, dropdownVisibility } from 'Common/Globals';
+import { data as GlobalsData, dropdownVisibility } from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
 import { i18n } from 'Common/Translator';

@@ -156,6 +156,14 @@ win.__initAppData = appData => {
 		}
 
 		appData.IncludeCss && writeCSS(appData.IncludeCss);
+
+		if (appData.IncludeBackground) {
+			const img = appData.IncludeBackground.replace('{{USER}}', rl.hash.get() || '0');
+			if (img) {
+				html.classList.add('UserBackground');
+				doc.body.style.backgroundImage = "url("+img+")";
+			}
+		}
 	}
 
 	if (
@@ -163,23 +171,11 @@ win.__initAppData = appData => {
 		appData.TemplatesLink &&
 		appData.LangLink &&
 		appData.StaticLibJsLink &&
-		appData.StaticAppJsLink &&
-		appData.StaticEditorJsLink
+		appData.StaticAppJsLink
 	) {
 		p.set(5);
 
-		const libs = () =>
-			loadScript(appData.StaticLibJsLink).then(() => {
-				if (appData.IncludeBackground) {
-					const img = appData.IncludeBackground.replace('{{USER}}', rl.hash.get() || '0');
-					if (img) {
-						html.classList.add('UserBackground');
-						doc.body.style.backgroundImage = "url("+img+")";
-					}
-				}
-			});
-
-		libs()
+		loadScript(appData.StaticLibJsLink)
 			.then(() => {
 				p.set(20);
 				return Promise.all([loadScript(appData.TemplatesLink), loadScript(appData.LangLink)]);
@@ -200,10 +196,13 @@ win.__initAppData = appData => {
 				runMainBoot(true);
 				throw e;
 			})
-			.then(() => loadScript(appData.StaticEditorJsLink))
 			.then(() => {
-				win.__initEditor && win.__initEditor();
-				win.__initEditor = null;
+				if (appData.Auth) {
+					loadScript(appData.StaticEditorJsLink).then(() => {
+						win.__initEditor && win.__initEditor();
+						win.__initEditor = null;
+					});
+				}
 			});
 	} else {
 		runMainBoot(true);
