@@ -498,8 +498,10 @@ export function plainToHtml(plain) {
 		.replace(/\n/g, '<br />');
 }
 
-window['rainloop_Utils_htmlToPlain'] = htmlToPlain; // eslint-disable-line dot-notation
-window['rainloop_Utils_plainToHtml'] = plainToHtml; // eslint-disable-line dot-notation
+rl.Utils = {
+	htmlToPlain: htmlToPlain,
+	plainToHtml: plainToHtml
+};
 
 /**
  * @param {Array} aSystem

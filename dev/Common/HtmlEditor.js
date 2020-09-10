@@ -267,7 +267,21 @@ class HtmlEditor {
 
 	init() {
 		if (this.element && !this.editor) {
-			const initFunc = () => {
+			const onReady = () => {
+				if (this.editor.removeMenuItem) {
+					this.editor.removeMenuItem('cut');
+					this.editor.removeMenuItem('copy');
+					this.editor.removeMenuItem('paste');
+				}
+
+				this.__resizable = true;
+				this.__inited = true;
+
+				this.resize();
+
+				this.onReady && this.onReady();
+			},
+			initFunc = () => {
 				if (window.CKEDITOR) {
 					const config = CKEditorDefaultConfig,
 						language = rl.settings.get('Language'),
@@ -298,15 +312,6 @@ class HtmlEditor {
 
 					this.editor.on('key', event => !(event && event.data && EventKeyCode.Tab === event.data.keyCode));
 
-					this.editor.on('blur', () => this.blurTrigger());
-
-					this.editor.on('mode', () => {
-						this.blurTrigger();
-						this.onModeChange && this.onModeChange('plain' !== this.editor.mode);
-					});
-
-					this.editor.on('focus', () => this.focusTrigger());
-
 					if (window.FileReader) {
 						this.editor.on('drop', (event) => {
 							if (0 < event.data.dataTransfer.getFilesCount()) {
@@ -330,32 +335,13 @@ class HtmlEditor {
 						});
 					}
 
-					this.editor.on('instanceReady', () => {
-						if (this.editor.removeMenuItem) {
-							this.editor.removeMenuItem('cut');
-							this.editor.removeMenuItem('copy');
-							this.editor.removeMenuItem('paste');
-						}
-
-						this.__resizable = true;
-						this.__inited = true;
-
-						this.resize();
-
-						this.onReady && this.onReady();
-					});
+					this.editor.on('instanceReady', onReady);
 				}
 				else if (window.Squire) {
 					this.editor = new SquireUI(this.element, this.editor);
-					this.editor.on('blur', () => this.blurTrigger());
-					this.editor.on('focus', () => this.focusTrigger());
 /*
 					// TODO
 					this.editor.on('key', event => !(event && event.data && EventKeyCode.Tab === event.data.keyCode));
-					this.editor.on('mode', () => {
-						this.blurTrigger();
-						this.onModeChange && this.onModeChange('plain' !== this.editor.mode);
-					});
 					if (window.FileReader) {
 						this.editor.on('dragover', (event) => {
 							event.dataTransfer = clipboardData
@@ -383,12 +369,16 @@ class HtmlEditor {
 						});
 					}
 */
-					this.__resizable = true;
-					this.__inited = true;
+					setTimeout(onReady,1);
+				}
 
-					this.resize();
-
-					this.onReady && setTimeout(() => this.onReady(), 1);
+				if (this.editor) {
+					this.editor.on('blur', () => this.blurTrigger());
+					this.editor.on('focus', () => this.focusTrigger());
+					this.editor.on('mode', () => {
+						this.blurTrigger();
+						this.onModeChange && this.onModeChange('plain' !== this.editor.mode);
+					});
 				}
 			};
 

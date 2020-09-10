@@ -33,7 +33,24 @@
 	width: 4em;
 }
 
-.squire-content {
+.squire-wysiwyg, .squire-plain {
 	min-height: 200px;
 	padding: .5em;
+}
+
+.squire-plain {
+	width: 100%;
+}
+
+.squire-plain {
+	display: none;
+}
+.squire-mode-plain .squire-wysiwyg {
+	display: none;
+}
+.squire-mode-plain .squire-plain {
+	display: block;
+}
+.squire-mode-plain .squire-toolgroup:not(#squire-toolgroup-mode) {
+	opacity: 0.5;
 }

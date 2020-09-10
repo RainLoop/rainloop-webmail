@@ -418,8 +418,6 @@ fr_FR:
     ERROR_UNKNOWN: "Une erreur inconnue de téléversement de fichier s'est produite"
   EDITOR:
     TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> Non-formaté"
-    TEXT_SWITCHER_RICH_FORMATTING: "Format riche"
-    TEXT_SWITCHER_CONFIRM: "Le formatage du texte et les images seront perdus. Êtes-vous sûr de vouloir continuer ?"
   SETTINGS_LABELS:
     LABEL_PERSONAL_NAME: "Personnel"
     LABEL_GENERAL_NAME: "Général"

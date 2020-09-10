@@ -416,8 +416,6 @@ nl_NL:
     ERROR_UNKNOWN: "Er is een onbekende fout opgetreden"
   EDITOR:
     TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEKST"
-    TEXT_SWITCHER_RICH_FORMATTING: "Tekst met opmaak"
-    TEXT_SWITCHER_CONFIRM: "Tekst opmaak zal verloren gaan. Wenst u verder te gaan?"
   SETTINGS_LABELS:
     LABEL_PERSONAL_NAME: "Persoonlijk"
     LABEL_GENERAL_NAME: "Algemeen"

@@ -27,46 +27,6 @@
 			if (el) {
 				el.scrollTop = 0;
 			}
-		},
-		simplePlainToHtml = function (sPlain) {
-			return sPlain
-				.replace(/&/g, '&amp;')
-				.replace(/>/g, '&gt;').replace(/</g, '&lt;')
-				.replace(/[\-_~]{10,}/g, '<hr />')
-				.replace(/\n/g, '<br />')
-				.replace(/ /g, '&nbsp;')
-			;
-		},
-		simpleHtmlToPlain = function (sHtml) {
-
-			var sText = sHtml
-				.replace(/[\s]+/gm, ' ')
-				.replace(/<br[^>]*>/gmi, '\n')
-				.replace(/<\/h[\d]>/gi, '\n')
-				.replace(/<\/p>/gi, '\n\n')
-				.replace(/<\/li>/gi, '\n')
-				.replace(/<\/td>/gi, '\n')
-				.replace(/<\/tr>/gi, '\n')
-				.replace(/<\/div>/gi, '\n')
-				.replace(/<blockquote[^>]*>/gmi, '\n')
-				.replace(/<\/blockquote>/gi, '\n')
-				.replace(/<hr[^>]*>/gmi, '\n_______________________________\n\n')
-				.replace(/&nbsp;/gi, ' ')
-				.replace(/&quot;/gi, '"')
-				.replace(/<[^>]*>/gm, '')
-			;
-
-			sText = $('<div></div>').html(sText).text();
-
-			sText = sText
-				.replace(/\n[ \t]+/gm, '\n')
-				.replace(/[\n]{3,}/gm, '\n\n')
-				.replace(/&gt;/gi, '>')
-				.replace(/&lt;/gi, '<')
-				.replace(/&amp;/gi, '&')
-			;
-
-			return sText;
 		}
 	;
 
@@ -81,14 +41,8 @@
 			}
 
 			editor.__textUtils = {
-				plainToHtml: function(data) {
-					return window.rainloop_Utils_plainToHtml ?
-						window.rainloop_Utils_plainToHtml(data, true) : simplePlainToHtml(data);
-				},
-				htmlToPlain: function(data) {
-					return window.rainloop_Utils_htmlToPlain ?
-						window.rainloop_Utils_htmlToPlain(data, true) : simpleHtmlToPlain(data);
-				}
+				plainToHtml: data => rl.Utils.plainToHtml(data, true),
+				htmlToPlain: data => rl.Utils.htmlToPlain(data, true)
 			};
 
 			var plain = CKEDITOR.plugins.plain;

@@ -417,8 +417,6 @@ de_DE:
     ERROR_UNKNOWN: "Ein unbekannter Fehler trat beim Hochladen auf"
   EDITOR:
     TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXT"
-    TEXT_SWITCHER_RICH_FORMATTING: "Formatierter Text (Rich Text)"
-    TEXT_SWITCHER_CONFIRM: "Alle Textformatierungen und Grafiken gehen verloren. Wollen Sie wirklich fortfahren?"
   SETTINGS_LABELS:
     LABEL_PERSONAL_NAME: "Persönlich"
     LABEL_GENERAL_NAME: "Allgemein"

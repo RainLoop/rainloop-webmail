@@ -1,9 +1,12 @@
 /* eslint max-len: 0 */
+'use strict';
 
 const doc = document,
 
 allowedElements = 'A,B,BLOCKQUOTE,BR,DIV,FONT,H1,H2,H3,H4,H5,H6,HR,IMG,LABEL,LI,OL,P,SPAN,STRONG,TABLE,TD,TH,TR,U,UL',
 allowedAttributes = 'abbr,align,background,bgcolor,border,cellpadding,cellspacing,class,color,colspan,dir,face,frame,height,href,hspace,id,lang,rowspan,rules,scope,size,src,style,target,type,usemap,valign,vspace,width'.split(','),
+
+i18n = (str, def) => window.rl && window.rl.i18n ? window.rl.i18n(str) : def,
 
 SquireDefaultConfig = {
 /*
@@ -33,11 +36,12 @@ SquireDefaultConfig = {
 	addLinks: true // allow_smart_html_links
 */
 	sanitizeToDOMFragment: (html, isPaste/*, squire*/) => {
-		const frag = doc.createDocumentFragment();
-		frag.innerHTML = html;
+		const frag = doc.createDocumentFragment(),
+			tpl = doc.createElement('div');
+		tpl.innerHTML = html;
 		if (isPaste) {
-			frag.querySelectorAll(':not('+allowedElements+')').forEach(el => el.remove());
-			frag.querySelectorAll(allowedElements).forEach(el => {
+			tpl.querySelectorAll(':not('+allowedElements+')').forEach(el => el.remove());
+			tpl.querySelectorAll(allowedElements).forEach(el => {
 				if (el.hasAttributes()) {
 					Array.from(el.attributes).forEach(attr => {
 						let name = attr.name.toLowerCase();
@@ -48,6 +52,7 @@ SquireDefaultConfig = {
 				}
 			});
 		}
+		frag.append(...tpl.childNodes);
 		return frag;
 	}
 };
@@ -58,10 +63,11 @@ class SquireUI
 		const
 		ctrlKey = /Mac OS X/.test( navigator.userAgent ) ? 'meta + ' : 'Ctrl + ',
 		actions = {
-			group1: {
-				source: {
+			mode: {
+				plain: {
 					html: '〈〉',
-					cmd: () => console.log('TODO: toggle HTML <> Text')
+					cmd: () => this.setMode('plain' == this.mode ? 'wysiwyg' : 'plain'),
+					hint: i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT', 'Plain')
 				}
 			},
 			font: {
@@ -100,7 +106,7 @@ class SquireUI
 				backgroundColor: {
 					input: 'color',
 					cmd: s => squire.setHighlightColour(s.value),
-					hint: 'background'
+					hint: i18n('EDITOR/TEXT_BACKGROUND_COLOR', 'Background')
 				},
 			},
 /*
@@ -185,7 +191,7 @@ class SquireUI
 					html: '🖼️',
 					cmd: () => {
 						if ('IMG' === this.getParentNodeName()) {
-//							wysiwyg.removeLink();
+//							squire.removeLink();
 						} else {
 							let src = prompt("Image","https://");
 							src != null && src.length && squire.insertImage(src);
@@ -217,19 +223,29 @@ class SquireUI
 			}
 		},
 
-		content = doc.createElement('div'),
+		plain = doc.createElement('textarea'),
+		wysiwyg = doc.createElement('div'),
 		toolbar = doc.createElement('div'),
-		squire = new Squire(content, SquireDefaultConfig);
+		squire = new Squire(wysiwyg, SquireDefaultConfig);
 
-		content.className = 'squire-content cke_wysiwyg_div cke_editable';
+		plain.className = 'squire-plain cke_plain cke_editable';
+		wysiwyg.className = 'squire-wysiwyg cke_wysiwyg_div cke_editable';
+		this.mode = 'plain'; // 'wysiwyg'
+		this.__plain = {
+			getRawData: () => this.plain.value,
+			setRawData: plain => this.plain.value = plain
+		};
 
+		this.container = container;
 		this.squire = squire;
-		this.content = content;
+		this.plain = plain;
+		this.wysiwyg = wysiwyg;
 
 		toolbar.className = 'squire-toolbar cke_top';
 		for (let group in actions) {
 			let toolgroup = doc.createElement('div');
 			toolgroup.className = 'squire-toolgroup cke_toolgroup';
+			toolgroup.id = 'squire-toolgroup-'+group;
 			for (let action in actions[group]) {
 				if ('source' == action && !rl.settings.app('allowHtmlEditorSourceButton')) {
 					continue;
@@ -279,7 +295,9 @@ class SquireUI
 		}
 		toolbar.addEventListener('click', e => {
 			let t = e.target;
-			t.action_cmd && t.action_cmd(t);
+			if ('plain' != this.mode || 'plain' == t.dataset.action) {
+				t.action_cmd && t.action_cmd(t);
+			}
 		});
 
 		let changes = actions.changes
@@ -289,7 +307,7 @@ class SquireUI
 			changes.redo.input.disabled = !state.canRedo;
 		});
 
-		container.append(toolbar, content);
+		container.append(toolbar, wysiwyg, plain);
 
 /*
 squire-raw.js:2161: this.fireEvent( 'dragover', {
@@ -305,9 +323,8 @@ squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 */
 
 		// CKEditor gimmicks used by HtmlEditor
-		this.mode = 'wysiwyg'; // 'plain'
 		this.plugins = {
-			plain: false
+			plain: true
 		};
 		// .plugins.plain && this.editor.__plain
 		this.focusManager = {
@@ -338,13 +355,31 @@ squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 		return validation.test(this.squire.getPath()) | this.squire.hasFormat(format);
 	}
 
-	// CKeditor gimmicks used by HtmlEditor
 	setMode(mode) {
+		let cl = this.container.classList;
+		cl.remove('squire-mode-'+this.mode);
+		if ('plain' == mode) {
+			let html = this.squire.getHTML();
+			this.plain.value = rl.Utils.htmlToPlain(html, true).trim();
+		} else {
+			let plain = this.plain.value;
+			this.squire.setHTML(rl.Utils.plainToHtml(plain, true));
+			mode = 'wysiwyg';
+		}
 		this.mode = mode; // 'wysiwyg' or 'plain'
+		cl.add('squire-mode-'+mode);
+		this.onModeChange && this.onModeChange();
+		setTimeout(()=>this.focus(),1);
 	}
 
+	// CKeditor gimmicks used by HtmlEditor
 	on(type, fn) {
-		this.squire.addEventListener(type, fn);
+		if ('mode' == type) {
+			this.onModeChange = fn;
+		} else {
+			this.squire.addEventListener(type, fn);
+			this.plain.addEventListener(type, fn);
+		}
 	}
 
 	execCommand(cmd, cfg) {
@@ -374,15 +409,18 @@ squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 	}
 
 	focus() {
-		this.squire.focus();
+		('plain' == this.editor.mode ? this.plain : this.squire).focus();
 	}
 
 	resize(width, height) {
-		this.content.style.height = Math.max(200, (height - this.content.offsetTop)) + 'px';
+		height = Math.max(200, (height - this.wysiwyg.offsetTop)) + 'px';
+		this.wysiwyg.style.height = height;
+		this.plain.style.height = height;
 	}
 
 	setReadOnly(bool) {
-		this.content.contentEditable = !!bool;
+		this.plain.readOnly = !!bool;
+		this.wysiwyg.contentEditable = !!bool;
 	}
 }
 

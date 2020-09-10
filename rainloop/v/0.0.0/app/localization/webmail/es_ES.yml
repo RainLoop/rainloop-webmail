@@ -418,8 +418,6 @@ es_ES:
     ERROR_UNKNOWN: "Se ha producido un error de carga de archivo desconocido"
   EDITOR:
     TEXT_SWITCHER_PLAINT_TEXT: "HTML <-> TEXTO"
-    TEXT_SWITCHER_RICH_FORMATTING: "Texto enriquecido"
-    TEXT_SWITCHER_CONFIRM: "Se perderá el formato de texto e imágenes. ¿Está seguro que desea continuar?"
   SETTINGS_LABELS:
     LABEL_PERSONAL_NAME: "Personal"
     LABEL_GENERAL_NAME: "General"

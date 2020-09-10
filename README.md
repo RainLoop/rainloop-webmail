@@ -88,23 +88,23 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  986.303	|
-|app.js      	|4.184.455	|2.603.659	|
+|admin.js    	|2.130.942	|  990.560	|
+|app.js      	|4.184.455	|2.607.924	|
 |boot.js     	|  671.522	|    5.834	|
 |libs.js     	|  647.614	|  312.343	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.908.139	|
+|TOTAL      	|7.960.367	|3.916.661	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  134.678	| 73.657	| 39.834	| 34.181	|
-|app.min.js      	|  511.202	|  355.203	|140.462	| 94.064	| 75.648	|
+|admin.min.js    	|  252.147	|  135.441	| 73.657	| 40.158	| 34.434	|
+|app.min.js      	|  511.202	|  355.966	|140.462	| 94.405	| 75.847	|
 |boot.min.js     	|   66.007	|    3.166	| 22.567	|  1.571	|  1.345	|
 |libs.min.js     	|  572.545	|  295.754	|176.720	| 91.521	| 80.871	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  788.801	|424.718	|226.990	|192.045	|
+|TOTAL          	|1.434.353	|  790.327	|424.718	|227.655	|192.497	|
 
-657.410 bytes (202.330 gzip) is not much, but it feels faster.
+644.026 bytes (197.063 gzip) is not much, but it feels faster.
 
 ### CSS changes
 
@@ -129,8 +129,8 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 252.797	| 46,959	| 36.394	| 30.615	|
-|app.min.css	| 274.791	| 206.474	| 39.618	| 32.238	| 27.339	|
+|app.css    	| 340.334	| 253.711	| 46,959	| 36.587	| 30.802	|
+|app.min.css	| 274.791	| 207.227	| 39.618	| 31.993	| 27.160	|
 |boot.css    	|       	|   2.538	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 
@@ -142,7 +142,7 @@ Still TODO:
 
 * upload image inline
 * support for tables (really needed?!?)
-* toggle between HTML and plain
+* alternative for vendors/ckeditor-plugins/signature/plugin.js
 
 |       	| normal	| min    	| gzip  	| min gzip	|
 |--------	|-------:	|-------:	|------:	|--------:	|
