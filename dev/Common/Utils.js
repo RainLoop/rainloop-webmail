@@ -3,7 +3,7 @@ import { Mime } from 'Common/Mime';
 
 const
 	doc = document,
-	tpl = doc.createElement('template'),
+	tpl = doc.createElement('div'),
 	isArray = Array.isArray,
 	htmlmap = {
 		'&': '&amp;',
@@ -437,9 +437,7 @@ export function htmlToPlain(html) {
 		}
 	}
 
-	text = text.replace(/__bq__start__/gm, '').replace(/__bq__end__/gm, '');
-
-	return text;
+	return text.replace(/__bq__start__/gm, '').replace(/__bq__end__/gm, '');
 }
 
 /**
