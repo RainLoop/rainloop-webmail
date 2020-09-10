@@ -88,21 +88,21 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  938.371	|
-|app.js      	|4.184.455	|2.556.162	|
-|boot.js     	|  671.522	|    5.889	|
+|admin.js    	|2.130.942	|  986.303	|
+|app.js      	|4.184.455	|2.603.659	|
+|boot.js     	|  671.522	|    5.834	|
 |libs.js     	|  647.614	|  312.343	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.812.765	|
+|TOTAL      	|7.960.367	|3.908.139	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  128.725	| 73.657	| 37.530	| 32.194	|
-|app.min.js      	|  511.202	|  349.257	|140.462	| 91.739	| 73.672	|
-|boot.min.js     	|   66.007	|    3.207	| 22.567	|  1.598	|  1.369	|
+|admin.min.js    	|  252.147	|  134.678	| 73.657	| 39.834	| 34.181	|
+|app.min.js      	|  511.202	|  355.203	|140.462	| 94.064	| 75.648	|
+|boot.min.js     	|   66.007	|    3.166	| 22.567	|  1.571	|  1.345	|
 |libs.min.js     	|  572.545	|  295.754	|176.720	| 91.521	| 80.871	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  776.943	|424.718	|222.388	|188.106	|
+|TOTAL          	|1.434.353	|  788.801	|424.718	|226.990	|192.045	|
 
 657.410 bytes (202.330 gzip) is not much, but it feels faster.
 
@@ -136,7 +136,13 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 
 ### Squire vs CKEditor
-The squire implementation is not 100% compatible yet, but is show the massive overhead of CKEditor.
+The [squire](https://github.com/neilj/Squire) implementation is not 100% compatible yet, but is shows the massive overhead of CKEditor.
+
+Still TODO:
+
+* upload image inline
+* support for tables (really needed?!?)
+* toggle between HTML and plain
 
 |       	| normal	| min    	| gzip  	| min gzip	|
 |--------	|-------:	|-------:	|------:	|--------:	|
@@ -145,9 +151,7 @@ The squire implementation is not 100% compatible yet, but is show the massive ov
 
 CKEditor including the 8 asset requests is 633.46 KB / 183.54 KB (gzip).
 
-Enable it in /data/_data_/_default_/configs/application.ini in the [labs] section add/edit: `use_squire_html_editor = On`
-
-
+Enable it in /data/\_data\_/\_default\_/configs/application.ini in the [labs] section add/edit: `use_squire_html_editor = On`
 
 ### PHP73 branch
 
