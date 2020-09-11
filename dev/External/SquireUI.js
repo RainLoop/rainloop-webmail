@@ -1,309 +1,322 @@
 /* eslint max-len: 0 */
+
+(() => {
+
 'use strict';
 
 const doc = document,
 
-allowedElements = 'A,B,BLOCKQUOTE,BR,DIV,FONT,H1,H2,H3,H4,H5,H6,HR,IMG,LABEL,LI,OL,P,SPAN,STRONG,TABLE,TD,TH,TR,U,UL',
-allowedAttributes = 'abbr,align,background,bgcolor,border,cellpadding,cellspacing,class,color,colspan,dir,face,frame,height,href,hspace,id,lang,rowspan,rules,scope,size,src,style,target,type,usemap,valign,vspace,width'.split(','),
+	removeElements = 'HEAD,LINK,META,NOSCRIPT,SCRIPT,TEMPLATE,TITLE',
+	allowedElements = 'A,B,BLOCKQUOTE,BR,DIV,FONT,H1,H2,H3,H4,H5,H6,HR,IMG,LI,OL,P,SPAN,STRONG,TABLE,TD,TH,TR,U,UL',
+	allowedAttributes = 'abbr,align,background,bgcolor,border,cellpadding,cellspacing,class,color,colspan,dir,face,frame,height,href,hspace,id,lang,rowspan,rules,scope,size,src,style,target,type,usemap,valign,vspace,width'.split(','),
 
-i18n = (str, def) => rl.i18n(str) || def,
+	i18n = (str, def) => rl.i18n(str) || def,
 
-SquireDefaultConfig = {
-/*
-	blockTag: 'P',
-	blockAttributes: null,
-	tagAttributes: {
-		blockquote: null,
-		ul: null,
-		ol: null,
-		li: null,
-		a: null
-	},
-	classNames: {
-		colour: 'colour',
-		fontFamily: 'font',
-		fontSize: 'size',
-		highlight: 'highlight'
-	},
-	leafNodeNames: leafNodeNames,
-	undo: {
-		documentSizeThreshold: -1, // -1 means no threshold
-		undoLimit: -1 // -1 means no limit
-	},
-	isInsertedHTMLSanitized: true,
-	isSetHTMLSanitized: true,
-	willCutCopy: null,
-	addLinks: true // allow_smart_html_links
-*/
-	sanitizeToDOMFragment: (html, isPaste/*, squire*/) => {
-		const frag = doc.createDocumentFragment(),
-			tpl = doc.createElement('div');
-		tpl.innerHTML = html;
-		if (isPaste) {
-			tpl.querySelectorAll(':not('+allowedElements+',signature)').forEach(el => el.remove());
-			tpl.querySelectorAll(allowedElements).forEach(el => {
-				if (el.hasAttributes()) {
-					Array.from(el.attributes).forEach(attr => {
-						let name = attr.name.toLowerCase();
-						if (!allowedAttributes.includes(name)) {
-							el.removeAttribute(name);
-						}
-					});
-				}
-			});
-		}
-		frag.append(...tpl.childNodes);
+	ctrlKey = /Mac OS X/.test( navigator.userAgent ) ? 'meta + ' : 'Ctrl + ',
+
+	getFragmentOfChildren = parent => {
+		let frag = doc.createDocumentFragment();
+		frag.append(...parent.childNodes);
 		return frag;
-	}
-},
+	},
 
-rl_signature_replacer = (editor, text, signature, isHtml, insertBefore) => {
-	let
-		prevSignature = editor.__previous_signature,
-		skipInsert = false,
-		isEmptyText = false,
-		newLine = (isHtml ? '<br />' : "\n"),
-		clearHtmlLine = html => rl.Utils.htmlToPlain(html).trim();
+	SquireDefaultConfig = {
+/*
+		blockTag: 'P',
+		blockAttributes: null,
+		tagAttributes: {
+			blockquote: null,
+			ul: null,
+			ol: null,
+			li: null,
+			a: null
+		},
+		classNames: {
+			colour: 'colour',
+			fontFamily: 'font',
+			fontSize: 'size',
+			highlight: 'highlight'
+		},
+		leafNodeNames: leafNodeNames,
+		undo: {
+			documentSizeThreshold: -1, // -1 means no threshold
+			undoLimit: -1 // -1 means no limit
+		},
+		isInsertedHTMLSanitized: true,
+		isSetHTMLSanitized: true,
+		willCutCopy: null,
+		addLinks: true // allow_smart_html_links
+*/
+		sanitizeToDOMFragment: (html, isPaste/*, squire*/) => {
+			let tpl = doc.createElement('div');
+			tpl.innerHTML = html
+				.replace(/<\/?(BODY|HTML)[^>]*>/gi,'')
+				.replace(/<!--[^>]+-->/g,'')
+				.trim();
+			if (isPaste) {
+				tpl.querySelectorAll(removeElements).forEach(el => el.remove());
+				tpl.querySelectorAll(':not('+allowedElements+',signature)').forEach(el => el.replaceWith(getFragmentOfChildren(el)));
+				tpl.querySelectorAll('*').forEach(el => {
+					if (el.hasAttributes()) {
+						Array.from(el.attributes).forEach(attr => {
+							let name = attr.name.toLowerCase();
+							if (!allowedAttributes.includes(name)) {
+								el.removeAttribute(name);
+							}
+						});
+					}
+				});
+			}
+			return getFragmentOfChildren(tpl);
+		}
+	},
 
-	isEmptyText = !text.trim();
-	if (!isEmptyText && isHtml) {
-		isEmptyText = !clearHtmlLine(text);
-	}
+	rl_signature_replacer = (editor, text, signature, isHtml, insertBefore) => {
+		let
+			prevSignature = editor.__previous_signature,
+			skipInsert = false,
+			isEmptyText = false,
+			newLine = (isHtml ? '<br />' : "\n"),
+			clearHtmlLine = html => rl.Utils.htmlToPlain(html).trim();
 
-	if (prevSignature && !isEmptyText) {
-		if (isHtml && !prevSignature.isHtml) {
-			prevSignature = {
-				body: rl.Utils.plainToHtml(prevSignature.body),
-				isHtml: true
-			};
-		} else if (!isHtml && prevSignature.isHtml) {
-			prevSignature = {
-				body: rl.Utils.htmlToPlain(prevSignature.body),
-				isHtml: true
-			};
+		isEmptyText = !text.trim();
+		if (!isEmptyText && isHtml) {
+			isEmptyText = !clearHtmlLine(text);
 		}
 
-		if (isHtml) {
-			var clearSig = clearHtmlLine(prevSignature.body);
-			text = text.replace(/<signature>([\s\S]*)<\/signature>/igm, all => {
-				var c = clearSig === clearHtmlLine(all);
-				if (!c) {
-					skipInsert = true;
-				}
-				return c ? '' : all;
-			});
-		} else {
-			var textLen = text.length;
-			text = text
-				.replace('' + prevSignature.body, '')
-				.replace('' + prevSignature.body, '');
-			skipInsert = textLen === text.length;
+		if (prevSignature && !isEmptyText) {
+			if (isHtml && !prevSignature.isHtml) {
+				prevSignature = {
+					body: rl.Utils.plainToHtml(prevSignature.body),
+					isHtml: true
+				};
+			} else if (!isHtml && prevSignature.isHtml) {
+				prevSignature = {
+					body: rl.Utils.htmlToPlain(prevSignature.body),
+					isHtml: true
+				};
+			}
+
+			if (isHtml) {
+				var clearSig = clearHtmlLine(prevSignature.body);
+				text = text.replace(/<signature>([\s\S]*)<\/signature>/igm, all => {
+					var c = clearSig === clearHtmlLine(all);
+					if (!c) {
+						skipInsert = true;
+					}
+					return c ? '' : all;
+				});
+			} else {
+				var textLen = text.length;
+				text = text
+					.replace('' + prevSignature.body, '')
+					.replace('' + prevSignature.body, '');
+				skipInsert = textLen === text.length;
+			}
 		}
-	}
 
-	if (!skipInsert) {
-		signature = newLine + newLine + (isHtml ? '<signature>' : '') + signature + (isHtml ? '</signature>' : '');
+		if (!skipInsert) {
+			signature = newLine + newLine + (isHtml ? '<signature>' : '') + signature + (isHtml ? '</signature>' : '');
 
-		text = insertBefore ? signature + text : text + signature;
+			text = insertBefore ? signature + text : text + signature;
 
-		if (10 < signature.length) {
-			prevSignature = {
-				body: signature,
-				isHtml: isHtml
-			};
+			if (10 < signature.length) {
+				prevSignature = {
+					body: signature,
+					isHtml: isHtml
+				};
+			}
 		}
-	}
 
-	editor.__previous_signature = prevSignature;
+		editor.__previous_signature = prevSignature;
 
-	return text;
-};
+		return text;
+	};
 
 class SquireUI
 {
 	constructor(container) {
 		const
-		ctrlKey = /Mac OS X/.test( navigator.userAgent ) ? 'meta + ' : 'Ctrl + ',
-		actions = {
-			mode: {
-				plain: {
-					html: '〈〉',
-					cmd: () => this.setMode('plain' == this.mode ? 'wysiwyg' : 'plain'),
-					hint: i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT', 'Plain')
-				}
-			},
-			font: {
-				fontFamily: {
-					select: {
-						'sans-serif': {
-							Arial: "'Nimbus Sans L', 'Liberation sans', 'Arial Unicode MS', Arial, Helvetica, Garuda, Utkal, FreeSans, sans-serif",
-							Tahoma: "'Luxi Sans', Tahoma, Loma, Geneva, Meera, sans-serif",
-							Trebuchet: "'DejaVu Sans Condensed', Trebuchet, 'Trebuchet MS', sans-serif",
-							Lucida: "'Lucida Sans Unicode', 'Lucida Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'DejaVu LGC Sans', sans-serif",
-							Verdana: "'DejaVu Sans', Verdana, Geneva, 'Bitstream Vera Sans', 'DejaVu LGC Sans', sans-serif"
+			actions = {
+				mode: {
+					plain: {
+						html: '〈〉',
+						cmd: () => this.setMode('plain' == this.mode ? 'wysiwyg' : 'plain'),
+						hint: i18n('EDITOR/TEXT_SWITCHER_PLAINT_TEXT', 'Plain')
+					}
+				},
+				font: {
+					fontFamily: {
+						select: {
+							'sans-serif': {
+								Arial: "'Nimbus Sans L', 'Liberation sans', 'Arial Unicode MS', Arial, Helvetica, Garuda, Utkal, FreeSans, sans-serif",
+								Tahoma: "'Luxi Sans', Tahoma, Loma, Geneva, Meera, sans-serif",
+								Trebuchet: "'DejaVu Sans Condensed', Trebuchet, 'Trebuchet MS', sans-serif",
+								Lucida: "'Lucida Sans Unicode', 'Lucida Sans', 'DejaVu Sans', 'Bitstream Vera Sans', 'DejaVu LGC Sans', sans-serif",
+								Verdana: "'DejaVu Sans', Verdana, Geneva, 'Bitstream Vera Sans', 'DejaVu LGC Sans', sans-serif"
+							},
+							monospace: {
+								Courier: "'Liberation Mono', 'Courier New', FreeMono, Courier, monospace",
+								Lucida: "'DejaVu Sans Mono', 'DejaVu LGC Sans Mono', 'Bitstream Vera Sans Mono', 'Lucida Console', Monaco, monospace"
+							},
+							sans: {
+								Times: "'Nimbus Roman No9 L', 'Times New Roman', Times, FreeSerif, serif",
+								Palatino: "'Bitstream Charter', 'Palatino Linotype', Palatino, Palladio, 'URW Palladio L', 'Book Antiqua', Times, serif",
+								Georgia: "'URW Palladio L', Georgia, Times, serif"
+							}
 						},
-						monospace: {
-							Courier: "'Liberation Mono', 'Courier New', FreeMono, Courier, monospace",
-							Lucida: "'DejaVu Sans Mono', 'DejaVu LGC Sans Mono', 'Bitstream Vera Sans Mono', 'Lucida Console', Monaco, monospace"
-						},
-						sans: {
-							Times: "'Nimbus Roman No9 L', 'Times New Roman', Times, FreeSerif, serif",
-							Palatino: "'Bitstream Charter', 'Palatino Linotype', Palatino, Palladio, 'URW Palladio L', 'Book Antiqua', Times, serif",
-							Georgia: "'URW Palladio L', Georgia, Times, serif"
-						}
+						cmd: s => squire.setFontFace(s.value)
 					},
-					cmd: s => squire.setFontFace(s.value)
+					fontSize: {
+						select: ['11px','13px','16px','20px','24px','30px'],
+						cmd: s => squire.setFontSize(s.value)
+					}
 				},
-				fontSize: {
-					select: ['11px','13px','16px','20px','24px','30px'],
-					cmd: s => squire.setFontSize(s.value)
-				}
-			},
-			colors: {
-				textColor: {
-					input: 'color',
-					cmd: s => squire.setTextColour(s.value),
-					hint: 'Text color'
+				colors: {
+					textColor: {
+						input: 'color',
+						cmd: s => squire.setTextColour(s.value),
+						hint: 'Text color'
+					},
+					backgroundColor: {
+						input: 'color',
+						cmd: s => squire.setHighlightColour(s.value),
+						hint: 'Background color'
+					},
 				},
-				backgroundColor: {
-					input: 'color',
-					cmd: s => squire.setHighlightColour(s.value),
-					hint: 'Background color'
-				},
-			},
 /*
-			bidi: {
-				allowHtmlEditorBitiButtons
-			},
+				bidi: {
+					allowHtmlEditorBitiButtons
+				},
 */
-			inline: {
-				bold: {
-					html: '𝐁',
-					cmd: () => this.doAction('bold','B'),
-					key: 'B',
-					hint: 'Bold'
-				},
-				italic: {
-					html: '𝐼',
-					cmd: () => this.doAction('italic','I'),
-					key: 'I',
-					hint: 'Italic'
-				},
-				underline: {
-					html: '<u>U</u>',
-					cmd: () => this.doAction('underline','U'),
-					key: 'U',
-					hint: 'Underline'
-				},
-				strike: {
-					html: '<s>S</s>',
-					cmd: () => this.doAction('strikethrough','S'),
-					key: 'Shift + 7',
-					hint: 'Strikethrough'
-				},
-				sub: {
-					html: 'S<sub>x</sub>',
-					cmd: () => this.doAction('subscript','SUB'),
-					key: 'Shift + 5',
-					hint: 'Subscript'
-				},
-				sup: {
-					html: 'S<sup>x</sup>',
-					cmd: () => this.doAction('superscript','SUP'),
-					key: 'Shift + 6',
-					hint: 'Superscript'
-				}
-			},
-			block: {
-				ol: {
-					html: '#',
-					cmd: () => this.doList('OL'),
-					key: 'Shift + 8',
-					hint: 'Ordered list'
-				},
-				ul: {
-					html: '⋮',
-					cmd: () => this.doList('UL'),
-					key: 'Shift + 9',
-					hint: 'Unordered list'
-				},
-				quote: {
-					html: '"',
-					cmd: () => {
-						let parent = this.getParentNodeName('UL,OL');
-						(parent && 'BLOCKQUOTE' == parent) ? squire.decreaseQuoteLevel() : squire.increaseQuoteLevel();
+				inline: {
+					bold: {
+						html: '𝐁',
+						cmd: () => this.doAction('bold','B'),
+						key: 'B',
+						hint: 'Bold'
 					},
-					hint: 'Blockquote'
-				},
-				indentDecrease: {
-					html: '⇤',
-					cmd: () => squire.changeIndentationLevel('decrease'),
-					key: ']',
-					hint: 'Decrease indent'
-				},
-				indentIncrease: {
-					html: '⇥',
-					cmd: () => squire.changeIndentationLevel('increase'),
-					key: '[',
-					hint: 'Increase indent'
-				}
-			},
-			targets: {
-				link: {
-					html: '🔗',
-					cmd: () => {
-						if ('A' === this.getParentNodeName()) {
-							squire.removeLink();
-						} else {
-							let url = prompt("Link","https://");
-							url != null && url.length && squire.makeLink(url);
-						}
+					italic: {
+						html: '𝐼',
+						cmd: () => this.doAction('italic','I'),
+						key: 'I',
+						hint: 'Italic'
 					},
-					hint: 'Link'
-				},
-				image: {
-					html: '🖼️',
-					cmd: () => {
-						if ('IMG' === this.getParentNodeName()) {
-//							squire.removeLink();
-						} else {
-							let src = prompt("Image","https://");
-							src != null && src.length && squire.insertImage(src);
-						}
+					underline: {
+						html: '<u>U</u>',
+						cmd: () => this.doAction('underline','U'),
+						key: 'U',
+						hint: 'Underline'
 					},
-					hint: 'Image'
+					strike: {
+						html: '<s>S</s>',
+						cmd: () => this.doAction('strikethrough','S'),
+						key: 'Shift + 7',
+						hint: 'Strikethrough'
+					},
+					sub: {
+						html: 'S<sub>x</sub>',
+						cmd: () => this.doAction('subscript','SUB'),
+						key: 'Shift + 5',
+						hint: 'Subscript'
+					},
+					sup: {
+						html: 'S<sup>x</sup>',
+						cmd: () => this.doAction('superscript','SUP'),
+						key: 'Shift + 6',
+						hint: 'Superscript'
+					}
+				},
+				block: {
+					ol: {
+						html: '#',
+						cmd: () => this.doList('OL'),
+						key: 'Shift + 8',
+						hint: 'Ordered list'
+					},
+					ul: {
+						html: '⋮',
+						cmd: () => this.doList('UL'),
+						key: 'Shift + 9',
+						hint: 'Unordered list'
+					},
+					quote: {
+						html: '"',
+						cmd: () => {
+							let parent = this.getParentNodeName('UL,OL');
+							(parent && 'BLOCKQUOTE' == parent) ? squire.decreaseQuoteLevel() : squire.increaseQuoteLevel();
+						},
+						hint: 'Blockquote'
+					},
+					indentDecrease: {
+						html: '⇤',
+						cmd: () => squire.changeIndentationLevel('decrease'),
+						key: ']',
+						hint: 'Decrease indent'
+					},
+					indentIncrease: {
+						html: '⇥',
+						cmd: () => squire.changeIndentationLevel('increase'),
+						key: '[',
+						hint: 'Increase indent'
+					}
+				},
+				targets: {
+					link: {
+						html: '🔗',
+						cmd: () => {
+							if ('A' === this.getParentNodeName()) {
+								squire.removeLink();
+							} else {
+								let url = prompt("Link","https://");
+								url != null && url.length && squire.makeLink(url);
+							}
+						},
+						hint: 'Link'
+					},
+					image: {
+						html: '🖼️',
+						cmd: () => {
+							if ('IMG' === this.getParentNodeName()) {
+//								squire.removeLink();
+							} else {
+								let src = prompt("Image","https://");
+								src != null && src.length && squire.insertImage(src);
+							}
+						},
+						hint: 'Image'
+					},
+/*
+					imageUpload: {
+						// TODO
+					}
+*/
 				},
 /*
-				imageUpload: {
+				table: {
 					// TODO
-				}
-*/
-			},
-/*
-			table: {
-				// TODO
-			},
-*/
-			changes: {
-				undo: {
-					html: '↶',
-					cmd: () => squire.undo(),
-					key: 'Z',
-					hint: 'Undo'
 				},
-				redo: {
-					html: '↷',
-					cmd: () => squire.redo(),
-					key: 'Y',
-					hint: 'Redo'
+*/
+				changes: {
+					undo: {
+						html: '↶',
+						cmd: () => squire.undo(),
+						key: 'Z',
+						hint: 'Undo'
+					},
+					redo: {
+						html: '↷',
+						cmd: () => squire.redo(),
+						key: 'Y',
+						hint: 'Redo'
+					}
 				}
-			}
-		},
+			},
 
-		plain = doc.createElement('textarea'),
-		wysiwyg = doc.createElement('div'),
-		toolbar = doc.createElement('div'),
-		squire = new Squire(wysiwyg, SquireDefaultConfig);
+			plain = doc.createElement('textarea'),
+			wysiwyg = doc.createElement('div'),
+			toolbar = doc.createElement('div'),
+			squire = new Squire(wysiwyg, SquireDefaultConfig);
 
 		plain.className = 'squire-plain cke_plain cke_editable';
 		wysiwyg.className = 'squire-wysiwyg cke_wysiwyg_div cke_editable';
@@ -331,7 +344,7 @@ class SquireUI
 				if (cfg.input) {
 					input = doc.createElement('input');
 					input.type = cfg.input;
-					input.addEventListener('input', () => cfg.cmd(input));
+					input.addEventListener('change', () => cfg.cmd(input));
 				} else if (cfg.select) {
 					input = doc.createElement('select');
 					if (Array.isArray(cfg.select)) {
@@ -372,12 +385,10 @@ class SquireUI
 		}
 		toolbar.addEventListener('click', e => {
 			let t = e.target;
-			if ('plain' != this.mode || 'plain' == t.dataset.action) {
-				t.action_cmd && t.action_cmd(t);
-			}
+			t.action_cmd && t.action_cmd(t);
 		});
 
-		let changes = actions.changes
+		let changes = actions.changes;
 		changes.undo.input.disabled = changes.redo.input.disabled = true;
 		squire.addEventListener('undoStateChange', state => {
 			changes.undo.input.disabled = !state.canUndo;
@@ -502,7 +513,7 @@ squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 	}
 
 	focus() {
-		('plain' == this.editor.mode ? this.plain : this.squire).focus();
+		('plain' == this.mode ? this.plain : this.squire).focus();
 	}
 
 	resize(width, height) {
@@ -517,4 +528,6 @@ squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 	}
 }
 
-export { SquireUI, SquireUI as default };
+window.SquireUI = SquireUI;
+
+})();

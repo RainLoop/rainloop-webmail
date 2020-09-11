@@ -1,5 +1,4 @@
 import { EventKeyCode } from 'Common/Enums';
-import { SquireUI } from 'External/SquireUI';
 
 /**
  * @type {Object}

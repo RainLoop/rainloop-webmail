@@ -1,6 +1,13 @@
 /* Copyright © 2011-2015 by Neil Jenkins. MIT Licensed. */
 /* eslint max-len: 0 */
 
+/**
+	TODO: modifyBlocks function doesn't work very good.
+	For example you have: UL > LI > [cursor here in text]
+	Then create blockquote at cursor, the result is: BLOCKQUOTE > UL > LI
+	not UL > LI > BLOCKQUOTE
+*/
+
 ( doc => {
 
 "use strict";
@@ -58,8 +65,7 @@ const
 		11: 1024
 	},
 
-//	blockElementNames = /^(?:ADDRESS|ARTICLE|ASIDE|BLOCKQUOTE|CANVAS|DETAILS|DIALOG|DIV|D[DLT]|FIELDSET|FIG(CAPTION|URE)|FOOTER|FORM|H[1-6]|HEADER|HGROUP|HR|LI|MAIN|NAV|OL|P|PRE|SECTION|TABLE|UL|VIDEO)$/,
-	inlineNodeNames = /^(?:#text|A|ABBR|ACRONYM|B|BR|BDI|BDO|CITE|CODE|DATA|DEL|DFN|EM|FONT|HR|IMG|INPUT|INS|KBD|Q|RP|RT|RUBY|SAMP|SMALL|SPAN|STRIKE|STRONG|SUB|SUP|TIME|U|VAR|WBR)$/,
+	inlineNodeNames = /^(?:#text|A|ABBR|ACRONYM|B|BR|BD[IO]|CITE|CODE|DATA|DEL|DFN|EM|FONT|HR|IMG|INPUT|INS|KBD|Q|RP|RT|RUBY|SAMP|SMALL|SPAN|STR(IKE|ONG)|SU[BP]|TIME|U|VAR|WBR)$/,
 
 	leafNodeNames = {
 		BR: 1,
@@ -110,10 +116,12 @@ const
 		return walker;
 	},
 	getPreviousBlock = ( node, root ) => {
+//		node = getClosest( node, root, blockElementNames );
 		node = getBlockWalker( node, root ).previousNode();
 		return node !== root ? node : null;
 	},
 	getNextBlock = ( node, root ) => {
+//		node = getClosest( node, root, blockElementNames );
 		node = getBlockWalker( node, root ).nextNode();
 		return node !== root ? node : null;
 	},
@@ -261,7 +269,7 @@ const
 			child = node.firstChild;
 			while ( isWebKit && child &&
 					child.nodeType === TEXT_NODE && !child.data ) {
-				node.removeChild( child );
+				child.remove(  );
 				child = node.firstChild;
 			}
 			if ( !child ) {
@@ -467,7 +475,7 @@ const
 		// Remove extra <BR> fixer if present.
 		last = block.lastChild;
 		if ( last && last.nodeName === 'BR' ) {
-			block.removeChild( last );
+			last.remove(  );
 			--offset;
 		}
 
@@ -817,7 +825,7 @@ const
 		moveRangeBoundariesDownTree( range );
 	},
 
-	isNodeContainedInRange = ( range, node, partial ) => {
+	isNodeContainedInRange = ( range, node, partial = true ) => {
 		let nodeRange = doc.createRange();
 
 		nodeRange.selectNode( node );
@@ -970,7 +978,7 @@ const
 			block = getNextBlock( block, root );
 		}
 		// Check the block actually intersects the range
-		return block && isNodeContainedInRange( range, block, true ) ? block : null;
+		return block && isNodeContainedInRange( range, block ) ? block : null;
 	},
 
 	// Returns the last block at least partially contained by the range,
@@ -995,7 +1003,7 @@ const
 			block = getPreviousBlock( block, root );
 		}
 		// Check the block actually intersects the range
-		return block && isNodeContainedInRange( range, block, true ) ? block : null;
+		return block && isNodeContainedInRange( range, block ) ? block : null;
 	},
 
 	newContentWalker = root => doc.createTreeWalker( root,
@@ -1065,10 +1073,12 @@ const
 			parent;
 
 		if ( start && end ) {
-			parent = start.parentNode;
-			range.setStart( parent, indexOf( parent.childNodes, start ) );
-			parent = end.parentNode;
-			range.setEnd( parent, indexOf( parent.childNodes, end ) + 1 );
+			range.setStart( start, 0 );
+			range.setEnd( end, end.childNodes.length );
+//			parent = start.parentNode;
+//			range.setStart( parent, indexOf( parent.childNodes, start ) );
+//			parent = end.parentNode;
+//			range.setEnd( parent, indexOf( parent.childNodes, end ) + 1 );
 		}
 	};
 
@@ -1185,7 +1195,7 @@ let afterDelete = ( self, range ) => {
 				indexOf( parent.childNodes, node ) );
 			range.collapse( true );
 			// Remove empty inline(s)
-			parent.removeChild( node );
+			node.remove(  );
 			// Fix cursor in block
 			if ( !isBlock( parent ) ) {
 				parent = getPreviousBlock( parent, self._root );
@@ -1785,6 +1795,10 @@ let stylesRewriters = {
 		newTreeBottom.append( empty( node ) );
 		return newTreeBottom;
 	},
+//	KBD:
+//	VAR:
+//	CODE:
+//	SAMP:
 	TT: ( node, parent, config ) => {
 		let el = createElement( doc, 'SPAN', {
 			'class': config.classNames.fontFamily,
@@ -1822,13 +1836,13 @@ let cleanTree = ( node, config, preserveWS ) => {
 		child = children[i];
 		nodeName = child.nodeName;
 		nodeType = child.nodeType;
-		rewriter = stylesRewriters[ nodeName ];
 		if ( nodeType === ELEMENT_NODE ) {
+			rewriter = stylesRewriters[ nodeName ];
 			childLength = child.childNodes.length;
 			if ( rewriter ) {
 				child = rewriter( child, node, config );
 			} else if ( blacklist.test( nodeName ) ) {
-				node.removeChild( child );
+				child.remove(  );
 				--i;
 				--l;
 				continue;
@@ -1888,7 +1902,7 @@ let cleanTree = ( node, config, preserveWS ) => {
 					continue;
 				}
 			}
-			node.removeChild( child );
+			child.remove(  );
 			--i;
 			--l;
 		}
@@ -1907,10 +1921,10 @@ let removeEmptyInlines = node => {
 		if ( child.nodeType === ELEMENT_NODE && !isLeaf( child ) ) {
 			removeEmptyInlines( child );
 			if ( isInline( child ) && !child.firstChild ) {
-				node.removeChild( child );
+				child.remove(  );
 			}
 		} else if ( child.nodeType === TEXT_NODE && !child.data ) {
-			node.removeChild( child );
+			child.remove(  );
 		}
 	}
 };
@@ -1996,7 +2010,7 @@ let setClipboardData =
 		body.append( node );
 		text = node.innerText || node.textContent;
 		text = text.replace( NBSP, ' ' ); // Replace nbsp with regular space
-		body.removeChild( node );
+		node.remove(  );
 	}
 	// Firefox (and others?) returns unix line endings (\n) even on Windows.
 	// If on Windows, normalise to \r\n, since Notepad and some other crappy
@@ -2668,7 +2682,7 @@ proto.getCursorPosition = function ( range ) {
 		insertNodeInRange( range, node );
 		rect = node.getBoundingClientRect();
 		parent = node.parentNode;
-		parent.removeChild( node );
+		node.remove(  );
 		mergeInlines( parent, range );
 	}
 	return rect;
@@ -2749,7 +2763,7 @@ proto.selectionContains = function (selector) {
 		node = range && range.commonAncestorContainer;
 	if (node && !range.collapsed) {
 		node = node.querySelector ? node : node.parentElement;
-		// TODO: startContainer / endContainer for real selection match?
+		// TODO: isNodeContainedInRange( range, node ) for real selection match?
 		return !!(node && node.querySelector(selector));
 	}
 	return false;
@@ -2763,7 +2777,7 @@ proto.getSelectedText = function () {
 	let walker = doc.createTreeWalker(
 		range.commonAncestorContainer,
 		SHOW_TEXT|SHOW_ELEMENT,
-		node => isNodeContainedInRange( range, node, true )
+		node => isNodeContainedInRange( range, node )
 	);
 	let startContainer = range.startContainer;
 	let endContainer = range.endContainer;
@@ -2821,7 +2835,7 @@ let removeZWS = ( root, keepNode ) => {
 			if ( node.length === 1 ) {
 				do {
 					parent = node.parentNode;
-					parent.removeChild( node );
+					node.remove(  );
 					node = parent;
 					walker.currentNode = parent;
 				} while ( isInline( node ) && !getLength( node ) );
@@ -3146,7 +3160,7 @@ proto.hasFormat = function ( tag, attributes, range ) {
 
 	// Otherwise, check each text node at least partially contained within
 	// the selection and make sure all of them have the format we want.
-	walker = doc.createTreeWalker( common, SHOW_TEXT, node => isNodeContainedInRange( range, node, true ) );
+	walker = doc.createTreeWalker( common, SHOW_TEXT, node => isNodeContainedInRange( range, node ) );
 
 	let seenNode = false;
 	while ( node = walker.nextNode() ) {
@@ -3248,7 +3262,7 @@ proto._addFormat = function ( tag, attributes, range ) {
 			node => ( node.nodeType === TEXT_NODE ||
 						node.nodeName === 'BR' ||
 						node.nodeName === 'IMG'
-					) && isNodeContainedInRange( range, node, true )
+					) && isNodeContainedInRange( range, node )
 		);
 
 		// Start at the beginning node of the range and iterate through
@@ -3356,7 +3370,7 @@ proto._removeFormat = function ( tag, attributes, range, partial ) {
 
 			// If not at least partially contained, wrap entire contents
 			// in a clone of the tag we're removing and we're done.
-			if ( !isNodeContainedInRange( range, node, true ) ) {
+			if ( !isNodeContainedInRange( range, node ) ) {
 				// Ignore bookmarks and empty text nodes
 				if ( node.nodeName !== 'INPUT' &&
 						( !isText || node.data ) ) {
@@ -3387,7 +3401,7 @@ proto._removeFormat = function ( tag, attributes, range, partial ) {
 		},
 		formatTags = Array.prototype.filter.call(
 			root.getElementsByTagName( tag ), function ( el ) {
-				return isNodeContainedInRange( range, el, true ) &&
+				return isNodeContainedInRange( range, el ) &&
 					hasTagAttributes( el, tag, attributes );
 			}
 		);
@@ -3758,7 +3772,7 @@ proto.decreaseListLevel = function ( range ) {
 		makeNotList = !/^[OU]L$/.test( newParent.nodeName );
 		do {
 			next = startLi === endLi ? null : startLi.nextSibling;
-			list.removeChild( startLi );
+			startLi.remove(  );
 			if ( makeNotList && startLi.nodeName === 'LI' ) {
 				startLi = this.createDefaultBlock([ empty( startLi ) ]);
 			}
@@ -3859,7 +3873,7 @@ proto.setHTML = function ( html ) {
 
 	// Remove existing root children
 	while ( child = root.lastChild ) {
-		root.removeChild( child );
+		child.remove(  );
 	}
 
 	// And insert new content

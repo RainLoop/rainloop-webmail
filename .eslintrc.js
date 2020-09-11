@@ -25,6 +25,7 @@ module.exports = {
 		'openpgp': "readonly",
 		'CKEDITOR': "readonly",
 		'Squire': "readonly",
+		'SquireUI': "readonly",
 		// node_modules/knockout but dev/External/ko.js is used
 //		'ko': "readonly",
 		// node_modules/simplestatemanager

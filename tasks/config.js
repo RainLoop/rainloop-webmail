@@ -95,7 +95,8 @@ config.paths.js = {
 			'vendors/lightgallery/dist/js/lg-thumbnail.min.js',
 			'vendors/lightgallery/dist/js/lg-zoom.min.js',
 			'vendors/lightgallery/dist/js/lg-autoplay.min.js',
-			'dev/External/ifvisible.js'
+			'dev/External/ifvisible.js',
+			'dev/External/SquireUI.js'
 		]
 	},
 	app: {
