@@ -141,6 +141,7 @@ The [squire](https://github.com/neilj/Squire) implementation is not 100% compati
 Still TODO:
 
 * support for tables (really needed?!?)
+* support BIDI (really needed?!?)
 
 |       	| normal	| min    	| gzip  	| min gzip	|
 |--------	|-------:	|-------:	|------:	|--------:	|
