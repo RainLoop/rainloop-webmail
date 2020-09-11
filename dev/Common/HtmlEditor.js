@@ -105,24 +105,20 @@ class HtmlEditor {
 
 		this.element = element;
 
-		this.resize = this.resizeEditor.throttle(100);
+		this.resize = (() => {
+			try {
+				this.editor && this.__resizable && this.editor.resize(element.clientWidth, element.clientHeight);
+			} catch (e) {} // eslint-disable-line no-empty
+		}).throttle(100);
 
 		this.init();
-	}
-
-	runOnBlur() {
-		this.onBlur && this.onBlur();
 	}
 
 	blurTrigger() {
 		if (this.onBlur) {
 			clearTimeout(this.blurTimer);
-			this.blurTimer = setTimeout(() => this.runOnBlur(), 200);
+			this.blurTimer = setTimeout(() => this.onBlur && this.onBlur(), 200);
 		}
-	}
-
-	focusTrigger() {
-		this.onBlur && clearTimeout(this.blurTimer);
 	}
 
 	/**
@@ -136,11 +132,9 @@ class HtmlEditor {
 	 * @returns {void}
 	 */
 	clearCachedSignature() {
-		if (this.editor) {
-			this.editor.execCommand('insertSignature', {
-				clearCache: true
-			});
-		}
+		this.editor && this.editor.execCommand('insertSignature', {
+			clearCache: true
+		});
 	}
 
 	/**
@@ -150,24 +144,11 @@ class HtmlEditor {
 	 * @returns {void}
 	 */
 	setSignature(signature, html, insertBefore = false) {
-		if (this.editor) {
-			this.editor.execCommand('insertSignature', {
-				isHtml: html,
-				insertBefore: insertBefore,
-				signature: signature
-			});
-		}
-	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	checkDirty() {
-		return this.editor ? this.editor.checkDirty() : false;
-	}
-
-	resetDirty() {
-		this.editor && this.editor.resetDirty();
+		this.editor && this.editor.execCommand('insertSignature', {
+			isHtml: html,
+			insertBefore: insertBefore,
+			signature: signature
+		});
 	}
 
 	/**
@@ -338,42 +319,12 @@ class HtmlEditor {
 				}
 				else if (window.Squire) {
 					this.editor = new SquireUI(this.element, this.editor);
-/*
-					// TODO
-					this.editor.on('key', event => !(event && event.data && EventKeyCode.Tab === event.data.keyCode));
-					if (window.FileReader) {
-						this.editor.on('dragover', (event) => {
-							event.dataTransfer = clipboardData
-						});
-						this.editor.on('drop', (event) => {
-							event.dataTransfer = clipboardData
-							if (0 < event.data.dataTransfer.getFilesCount()) {
-								const file = event.data.dataTransfer.getFile(0);
-								if (file && event.data.dataTransfer.id && file.type && file.type.match(/^image/i)) {
-									const id = event.data.dataTransfer.id,
-										imageId = `[img=${id}]`,
-										reader = new FileReader();
-
-									reader.onloadend = () => {
-										if (reader.result) {
-											this.replaceHtml(imageId, `<img src="${reader.result}" />`);
-										}
-									};
-
-									reader.readAsDataURL(file);
-
-									event.data.dataTransfer.setData('text/html', imageId);
-								}
-							}
-						});
-					}
-*/
 					setTimeout(onReady,1);
 				}
 
 				if (this.editor) {
 					this.editor.on('blur', () => this.blurTrigger());
-					this.editor.on('focus', () => this.focusTrigger());
+					this.editor.on('focus', () => this.blurTimer && clearTimeout(this.blurTimer));
 					this.editor.on('mode', () => {
 						this.blurTrigger();
 						this.onModeChange && this.onModeChange('plain' !== this.editor.mode);
@@ -406,18 +357,6 @@ class HtmlEditor {
 	blur() {
 		try {
 			this.editor && this.editor.focusManager.blur(true);
-		} catch (e) {} // eslint-disable-line no-empty
-	}
-
-	resizeEditor() {
-		try {
-			this.editor && this.__resizable && this.editor.resize(this.element.clientWidth, this.element.clientHeight);
-		} catch (e) {} // eslint-disable-line no-empty
-	}
-
-	setReadOnly(value) {
-		try {
-			this.editor && this.editor.setReadOnly(!!value);
 		} catch (e) {} // eslint-disable-line no-empty
 	}
 

@@ -88,23 +88,23 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  941.623	|
-|app.js      	|4.184.455	|2.559.130	|
+|admin.js    	|2.130.942	|  936.773	|
+|app.js      	|4.184.455	|2.554.276	|
 |boot.js     	|  671.522	|    5.834	|
-|libs.js     	|  647.614	|  326.686	|
+|libs.js     	|  647.614	|  327.282	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.833.273	|
+|TOTAL      	|7.960.367	|3.824.165	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  128.739	| 73.657	| 37.549	| 32.265	|
-|app.min.js      	|  511.202	|  349.263	|140.462	| 91.754	| 73.588	|
+|admin.min.js    	|  252.147	|  128.449	| 73.657	| 37.486	| 32.167	|
+|app.min.js      	|  511.202	|  348.973	|140.462	| 91.692	| 73.600	|
 |boot.min.js     	|   66.007	|    3.166	| 22.567	|  1.571	|  1.345	|
-|libs.min.js     	|  572.545	|  303.770	|176.720	| 94.774	| 83.577	|
+|libs.min.js     	|  572.545	|  304.025	|176.720	| 94.879	| 83.565	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  784.938	|424.718	|225.648	|190.775	|
+|TOTAL          	|1.434.353	|  784.938	|424.718	|225.628	|190.677	|
 
-649.415 bytes (199.070 gzip) is not much, but it feels faster.
+649.415 bytes (199.090 gzip) is not much, but it feels faster.
 
 ### CSS changes
 
@@ -140,15 +140,14 @@ The [squire](https://github.com/neilj/Squire) implementation is not 100% compati
 
 Still TODO:
 
-* upload image inline
 * support for tables (really needed?!?)
 
 |       	| normal	| min    	| gzip  	| min gzip	|
 |--------	|-------:	|-------:	|------:	|--------:	|
-|squire  	| 128.729	|  47.215	| 33.671	|   15.596	|
+|squire  	| 128.826	|  47.074	| 33.671	|   15.596	|
 |ckeditor	|       ?	| 520.035	|      ?	|  155.916	|
 
-CKEditor including the 8 asset requests is 633.46 KB / 183.54 KB (gzip).
+CKEditor including the 7 asset requests (css,language,plugins,icons) is 633.46 KB / 180.47 KB (gzip).
 
 Enable it in /data/\_data\_/\_default\_/configs/application.ini in the [labs] section add/edit: `use_squire_html_editor = On`
 

@@ -186,7 +186,16 @@ class SquireUI
 				},
 /*
 				bidi: {
-					allowHtmlEditorBitiButtons
+					bdoLtr: {
+						html: '&lrm;𝐁',
+						cmd: () => this.doAction('bold','B'),
+						hint: 'Bold'
+					},
+					bdoRtl: {
+						html: '&rlm;𝐁',
+						cmd: () => this.doAction('bold','B'),
+						hint: 'Bold'
+					}
 				},
 */
 				inline: {
@@ -274,7 +283,7 @@ class SquireUI
 						},
 						hint: 'Link'
 					},
-					image: {
+					imageUrl: {
 						html: '🖼️',
 						cmd: () => {
 							if ('IMG' === this.getParentNodeName()) {
@@ -284,13 +293,13 @@ class SquireUI
 								src != null && src.length && squire.insertImage(src);
 							}
 						},
-						hint: 'Image'
+						hint: 'Image URL'
 					},
-/*
 					imageUpload: {
-						// TODO
+						html: '📂️',
+						cmd: () => browseImage.click(),
+						hint: 'Image select',
 					}
-*/
 				},
 /*
 				table: {
@@ -316,7 +325,19 @@ class SquireUI
 			plain = doc.createElement('textarea'),
 			wysiwyg = doc.createElement('div'),
 			toolbar = doc.createElement('div'),
+			browseImage = doc.createElement('input'),
 			squire = new Squire(wysiwyg, SquireDefaultConfig);
+
+		browseImage.type = 'file';
+		browseImage.accept = 'image/*';
+		browseImage.style.display = 'none';
+		browseImage.onchange = () => {
+			if (browseImage.files.length) {
+				let reader = new FileReader();
+				reader.readAsDataURL(browseImage.files[0]);
+				reader.onloadend = () => reader.result && squire.insertImage(reader.result);
+			}
+		}
 
 		plain.className = 'squire-plain cke_plain cke_editable';
 		wysiwyg.className = 'squire-wysiwyg cke_wysiwyg_div cke_editable';
@@ -333,6 +354,9 @@ class SquireUI
 
 		toolbar.className = 'squire-toolbar cke_top';
 		for (let group in actions) {
+			if ('bidi' == group && !rl.settings.app('allowHtmlEditorBitiButtons')) {
+				continue;
+			}
 			let toolgroup = doc.createElement('div');
 			toolgroup.className = 'squire-toolgroup cke_toolgroup';
 			toolgroup.id = 'squire-toolgroup-'+group;
@@ -498,12 +522,6 @@ squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 		}
 	}
 
-	checkDirty() {
-		return false;
-	}
-
-	resetDirty() {}
-
 	getData() {
 		return this.squire.getHTML();
 	}
@@ -520,11 +538,6 @@ squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 		height = Math.max(200, (height - this.wysiwyg.offsetTop)) + 'px';
 		this.wysiwyg.style.height = height;
 		this.plain.style.height = height;
-	}
-
-	setReadOnly(bool) {
-		this.plain.readOnly = !!bool;
-		this.wysiwyg.contentEditable = !!bool;
 	}
 }
 
