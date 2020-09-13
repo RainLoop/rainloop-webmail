@@ -3,8 +3,9 @@
 
 const
 	doc = document,
-	html = doc.documentElement,
-	app = doc.getElementById('rl-app'),
+	eId = id => doc.getElementById(id),
+	htmlCL = doc.documentElement.classList,
+	app = eId('rl-app'),
 	options = app && app.dataset.boot && JSON.parse(app.dataset.boot) || {},
 
 	Storage = type => {
@@ -41,8 +42,8 @@ const
 	setTimestamp = () => storage().setItem(TIME_KEY, timestamp()),
 
 	showError = () => {
-		doc.getElementById('rl-loading').hidden = true;
-		doc.getElementById('rl-loading-error').hidden = false;
+		eId('rl-loading').hidden = true;
+		eId('rl-loading-error').hidden = false;
 		p.end();
 	},
 
@@ -88,7 +89,7 @@ const
 	};
 
 if (!navigator || !navigator.cookieEnabled) {
-	doc.location.replace('./?/NoCookie');
+	doc.location.href = './?/NoCookie';
 }
 
 let container = doc.querySelector('.progressjs'),
@@ -152,7 +153,7 @@ win.__initAppData = appData => {
 
 	if (appData) {
 		if (appData.NewThemeLink) {
-			doc.getElementById('app-theme-link').href = appData.NewThemeLink;
+			eId('app-theme-link').href = appData.NewThemeLink;
 		}
 
 		appData.IncludeCss && writeCSS(appData.IncludeCss);
@@ -160,7 +161,7 @@ win.__initAppData = appData => {
 		if (appData.IncludeBackground) {
 			const img = appData.IncludeBackground.replace('{{USER}}', rl.hash.get() || '0');
 			if (img) {
-				html.classList.add('UserBackground');
+				htmlCL.add('UserBackground');
 				doc.body.style.backgroundImage = "url("+img+")";
 			}
 		}
@@ -217,12 +218,9 @@ Storage('session');
 // init section
 setInterval(setTimestamp, 60000); // 1m
 
-html.classList.add(options.mobileDevice ? 'mobile' : 'no-mobile');
+htmlCL.add(options.mobileDevice ? 'mobile' : 'no-mobile');
 
-['app-css','app-theme-link'].forEach(css => {
-	css = doc.getElementById(css);
-	css.href = css.dataset.href;
-});
+['app-css','app-theme-link'].forEach(css => eId(css).href = css.dataset.href);
 
 loadScript('./?/'
 	+ (options.admin ? 'Admin' : '')

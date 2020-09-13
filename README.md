@@ -53,7 +53,7 @@ This fork has the following changes:
 * CRLF => LF line endings
 * Embed boot.js and boot.css into index.html
 * Ongoing removal of old JavaScript code (things are native these days)
-* Added modified Squire HTML editor as replacement for CKEditor
+* Added modified [Squire](https://github.com/neilj/Squire) HTML editor as replacement for CKEditor
 
 ### Removal of old JavaScript
 
@@ -136,7 +136,7 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 
 ### Squire vs CKEditor
-The [squire](https://github.com/neilj/Squire) implementation is not 100% compatible yet, but is shows the massive overhead of CKEditor.
+The [Squire](https://github.com/neilj/Squire) implementation is not 100% compatible yet, but is shows the massive overhead of CKEditor.
 
 Still TODO:
 

@@ -12,7 +12,7 @@ const doc = document,
 
 	i18n = (str, def) => rl.i18n(str) || def,
 
-	ctrlKey = /Mac OS X/.test( navigator.userAgent ) ? 'meta + ' : 'Ctrl + ',
+	ctrlKey = /Mac OS X/.test( navigator.userAgent ) ? '⌘ + ' : 'Ctrl + ',
 
 	getFragmentOfChildren = parent => {
 		let frag = doc.createDocumentFragment();
@@ -200,13 +200,13 @@ class SquireUI
 */
 				inline: {
 					bold: {
-						html: '𝐁',
+						html: 'B',
 						cmd: () => this.doAction('bold','B'),
 						key: 'B',
 						hint: 'Bold'
 					},
 					italic: {
-						html: '𝐼',
+						html: 'I',
 						cmd: () => this.doAction('italic','I'),
 						key: 'I',
 						hint: 'Italic'
@@ -224,13 +224,13 @@ class SquireUI
 						hint: 'Strikethrough'
 					},
 					sub: {
-						html: 'S<sub>x</sub>',
+						html: 'Xₙ',
 						cmd: () => this.doAction('subscript','SUB'),
 						key: 'Shift + 5',
 						hint: 'Subscript'
 					},
 					sup: {
-						html: 'S<sup>x</sup>',
+						html: 'Xⁿ',
 						cmd: () => this.doAction('superscript','SUP'),
 						key: 'Shift + 6',
 						hint: 'Superscript'
