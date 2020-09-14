@@ -711,8 +711,7 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 			__themeAjax = new AbortController();
 			init.signal = __themeAjax.signal;
 		}
-		fetch(url, init)
-			.then(response => response.json())
+		rl.fetchJSON(url, init)
 			.then(data => {
 				if (data && isArray(data) && 2 === data.length) {
 					if (themeLink && !themeStyle) {

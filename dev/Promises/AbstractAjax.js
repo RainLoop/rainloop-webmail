@@ -37,34 +37,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 
 		additionalGetString = pString(additionalGetString);
 
-		let init = {
-			mode: 'same-origin',
-			cache: 'no-cache',
-			redirect: 'error',
-			referrerPolicy: 'no-referrer',
-			credentials: 'same-origin'
-		};
-		if (isPost) {
-			init.method = 'POST';
-			init.headers = {
-//				'Content-Type': 'application/json'
-				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-			};
-			params.XToken = rl.settings.app('token');
-//			init.body = JSON.stringify(params);
-			const formData = new FormData(),
-			buildFormData = (formData, data, parentKey) => {
-				if (data && typeof data === 'object' && !(data instanceof Date || data instanceof File)) {
-					Object.keys(data).forEach(key =>
-						buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key)
-					);
-				} else {
-					formData.set(parentKey, data == null ? '' : data);
-				}
-			};
-			buildFormData(formData, params);
-			init.body = new URLSearchParams(formData);
-		}
+		let init = {};
 
 		this.setTrigger(fTrigger, true);
 
@@ -76,8 +49,7 @@ class AbstractAjaxPromises extends AbstractBasicPromises {
 			this.oRequests[action] = controller;
 		}
 
-		return fetch(ajax(additionalGetString), init)
-			.then(response => response.json())
+		return rl.fetchJSON(ajax(additionalGetString), init, pInt(timeOut, DEFAULT_AJAX_TIMEOUT), isPost ? params : null)
 			.then(data => {
 				this.abort(action, true);
 

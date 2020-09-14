@@ -2,7 +2,6 @@ import { data as GlobalsData, dropdownVisibility } from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
 import { i18n } from 'Common/Translator';
-import { EmailModel } from 'Model/Email';
 
 export default (App) => {
 	GlobalsData.__APP__ = App;
@@ -45,7 +44,6 @@ export default (App) => {
 	rl.pluginSettingsGet = Plugins.settingsGet;
 	rl.pluginRemoteRequest = Plugins.remoteRequest;
 
-	rl.EmailModel = EmailModel;
 	rl.Enums = Enums;
 
 	rl.Dropdowns = [];
@@ -56,6 +54,40 @@ export default (App) => {
 	rl.Dropdowns.detectVisibility = (() =>
 		dropdownVisibility(!!rl.Dropdowns.find(item => item.classList.contains('open')))
 	).debounce(50);
+
+	rl.fetchJSON = (resource, init, timeout, postData) => {
+		init = Object.assign({
+			mode: 'same-origin',
+			cache: 'no-cache',
+			redirect: 'error',
+			referrerPolicy: 'no-referrer',
+			credentials: 'same-origin'
+		}, init);
+
+		if (postData) {
+			init.method = 'POST';
+			init.headers = {
+//				'Content-Type': 'application/json'
+				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+			};
+			postData.XToken = rl.settings.app('token');
+//			init.body = JSON.stringify(postData);
+			const formData = new FormData(),
+			buildFormData = (formData, data, parentKey) => {
+				if (data && typeof data === 'object' && !(data instanceof Date || data instanceof File)) {
+					Object.keys(data).forEach(key =>
+						buildFormData(formData, data[key], parentKey ? `${parentKey}[${key}]` : key)
+					);
+				} else {
+					formData.set(parentKey, data == null ? '' : data);
+				}
+			};
+			buildFormData(formData, postData);
+			init.body = new URLSearchParams(formData);
+		}
+
+		return fetch(resource, init).then(response => response.json());
+	};
 
 	window.__APP_BOOT = fErrorCallback => {
 		const doc = document,
