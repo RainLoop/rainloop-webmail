@@ -66,6 +66,7 @@ const
 	},
 
 	inlineNodeNames = /^(?:#text|A|ABBR|ACRONYM|B|BR|BD[IO]|CITE|CODE|DATA|DEL|DFN|EM|FONT|HR|IMG|INPUT|INS|KBD|Q|RP|RT|RUBY|SAMP|SMALL|SPAN|STR(IKE|ONG)|SU[BP]|TIME|U|VAR|WBR)$/,
+	phrasingElements = 'ABBR,AUDIO,B,BDO,BR,BUTTON,CANVAS,CITE,CODE,COMMAND,DATA,DATALIST,DFN,EM,EMBED,I,IFRAME,IMG,INPUT,KBD,KEYGEN,LABEL,MARK,MATH,METER,NOSCRIPT,OBJECT,OUTPUT,PROGRESS,Q,RUBY,SAMP,SCRIPT,SELECT,SMALL,SPAN,STRONG,SUB,SUP,SVG,TEXTAREA,TIME,VAR,VIDEO,WBR',
 
 	leafNodeNames = {
 		BR: 1,
@@ -310,7 +311,11 @@ const
 		for ( i = 0, l = children.length; i < l; ++i ) {
 			child = children[i];
 			isBR = child.nodeName === 'BR';
-			if ( !isBR && isInline( child ) ) {
+			if ( !isBR && isInline( child ) && (
+					config.blockTag !== 'DIV' ||
+					!phrasingContentElements.matches(phrasingElements)
+				)
+			) {
 				if ( !wrapper ) {
 					 wrapper = createElement( doc, 'div' );
 				}
