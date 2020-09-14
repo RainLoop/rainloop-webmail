@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import AppStore from 'Stores/User/App';
 import ContactStore from 'Stores/User/Contact';
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 class ContactsUserSettings {
 	constructor() {

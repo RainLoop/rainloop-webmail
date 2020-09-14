@@ -101,8 +101,5 @@ dropdownVisibility.subscribe((value) => {
  * @type {*}
  */
 export const data = {
-	__APP__: null,
-	iAjaxErrorCount: 0,
-	iTokenErrorCount: 0,
-	bUnload: false
+	__APP__: null
 };

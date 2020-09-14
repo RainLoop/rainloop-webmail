@@ -6,7 +6,7 @@ import { setFolderHash } from 'Common/Cache';
 
 import MessageStore from 'Stores/User/Message';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { getApp } from 'Helper/Apps/User';
 

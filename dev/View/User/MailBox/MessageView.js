@@ -38,8 +38,7 @@ import MessageStore from 'Stores/User/Message';
 
 import * as Local from 'Storage/Client';
 
-import Remote from 'Remote/User/Ajax';
-import Promises from 'Promises/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { getApp } from 'Helper/Apps/User';
 
@@ -781,7 +780,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	downloadAsZip() {
 		const hashes = this.getAttachmentsHashes();
 		if (hashes.length) {
-			Promises.attachmentsActions('Zip', hashes, this.downloadAsZipLoading)
+			Remote.attachmentsActions('Zip', hashes, this.downloadAsZipLoading)
 				.then((result) => {
 					if (result && result.Result && result.Result.Files && result.Result.Files[0] && result.Result.Files[0].Hash) {
 						getApp().download(attachmentDownload(result.Result.Files[0].Hash));

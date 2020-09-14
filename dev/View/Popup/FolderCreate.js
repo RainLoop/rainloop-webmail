@@ -7,7 +7,7 @@ import { defautOptionsAfterRender, folderListOptionsBuilder } from 'Common/Utils
 
 import FolderStore from 'Stores/User/Folder';
 
-import Promises from 'Promises/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { getApp } from 'Helper/Apps/User';
 
@@ -54,7 +54,7 @@ class FolderCreateView extends AbstractViewNext {
 		}
 
 		getApp().foldersPromisesActionHelper(
-			Promises.folderCreate(this.folderName(), parentFolderName, FolderStore.foldersCreating),
+			Remote.folderCreate(this.folderName(), parentFolderName, FolderStore.foldersCreating),
 			Notification.CantCreateFolder
 		);
 

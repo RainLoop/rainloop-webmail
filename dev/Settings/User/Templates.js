@@ -3,7 +3,7 @@ import ko from 'ko';
 import { i18n } from 'Common/Translator';
 
 import TemplateStore from 'Stores/User/Template';
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { getApp } from 'Helper/Apps/User';
 

@@ -4,7 +4,7 @@ import { StorageResultType } from 'Common/Enums';
 import { showScreenPopup } from 'Knoin/Knoin';
 
 import DomainStore from 'Stores/Admin/Domain';
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 import { getApp } from 'Helper/Apps/Admin';
 

@@ -3,7 +3,7 @@ import ko from 'ko';
 import { StorageResultType } from 'Common/Enums';
 import { bMobileDevice } from 'Common/Globals';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';

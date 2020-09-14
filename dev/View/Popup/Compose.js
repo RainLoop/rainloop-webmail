@@ -36,7 +36,7 @@ import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
 import MessageStore from 'Stores/User/Message';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 

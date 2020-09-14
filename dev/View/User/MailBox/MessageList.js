@@ -35,7 +35,7 @@ import SettingsStore from 'Stores/User/Settings';
 import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { getApp } from 'Helper/Apps/User';
 

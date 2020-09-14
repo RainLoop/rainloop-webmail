@@ -3,7 +3,7 @@ import ko from 'ko';
 import { KeyState, StorageResultType, Notification } from 'Common/Enums';
 import { getNotification, i18n } from 'Common/Translator';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 import { popup, command, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';

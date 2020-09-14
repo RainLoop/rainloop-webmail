@@ -4,7 +4,7 @@ import { Capa, StorageResultType } from 'Common/Enums';
 import { pString } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { getApp } from 'Helper/Apps/User';
 

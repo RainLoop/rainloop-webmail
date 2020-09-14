@@ -5,7 +5,7 @@ import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
 import FilterStore from 'Stores/User/Filter';
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { FilterModel } from 'Model/Filter';
 

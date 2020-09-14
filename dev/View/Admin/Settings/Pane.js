@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 import DomainStore from 'Stores/Admin/Domain';
 import PluginStore from 'Stores/Admin/Plugin';

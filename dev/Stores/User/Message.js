@@ -41,7 +41,7 @@ import NotificationStore from 'Stores/User/Notification';
 
 import { getApp } from 'Helper/Apps/User';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 const
 	hcont = Element.fromHTML('<div area="hidden" style="position:absolute;left:-5000px"></div>'),

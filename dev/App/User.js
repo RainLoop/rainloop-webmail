@@ -56,8 +56,7 @@ import QuotaStore from 'Stores/User/Quota';
 
 import * as Local from 'Storage/Client';
 
-import Remote from 'Remote/User/Ajax';
-import Promises from 'Promises/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { EmailModel } from 'Model/Email';
 import { AccountModel } from 'Model/Account';
@@ -382,7 +381,7 @@ class AppUser extends AbstractApp {
 	 * @param {Function=} callback = null
 	 */
 	foldersReload(callback = null) {
-		const prom = Promises.foldersReload(FolderStore.foldersLoading);
+		const prom = Remote.foldersReload(FolderStore.foldersLoading);
 		if (callback) {
 			prom
 				.then((value) => !!value)
@@ -398,16 +397,16 @@ class AppUser extends AbstractApp {
 	}
 
 	foldersPromisesActionHelper(promise, errorDefCode) {
-		Promises.abort('Folders')
+		Remote.abort('Folders')
 			.fastResolve(true)
 			.then(() => promise)
 			.then(
 				() => {
-					Promises.foldersReloadWithTimeout(FolderStore.foldersLoading);
+					Remote.foldersReloadWithTimeout(FolderStore.foldersLoading);
 				},
 				(errorCode) => {
 					FolderStore.folderList.error(getNotification(errorCode, '', errorDefCode));
-					Promises.foldersReloadWithTimeout(FolderStore.foldersLoading);
+					Remote.foldersReloadWithTimeout(FolderStore.foldersLoading);
 				}
 			);
 	}

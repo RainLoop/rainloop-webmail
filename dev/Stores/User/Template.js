@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-// import Remote from 'Remote/User/Ajax';
+// import Remote from 'Remote/User/Fetch';
 
 class TemplateUserStore {
 	constructor() {

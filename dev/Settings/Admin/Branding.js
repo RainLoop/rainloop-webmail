@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 class BrandingAdminSettings {
 	constructor() {

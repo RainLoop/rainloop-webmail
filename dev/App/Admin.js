@@ -8,7 +8,7 @@ import CapaStore from 'Stores/Admin/Capa';
 import DomainStore from 'Stores/Admin/Domain';
 import PluginStore from 'Stores/Admin/Plugin';
 import PackageStore from 'Stores/Admin/Package';
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 import { SettingsAdminScreen } from 'Screen/Admin/Settings';
 import { LoginAdminScreen } from 'Screen/Admin/Login';

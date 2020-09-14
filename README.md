@@ -85,26 +85,27 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Removed opentip (use CSS)
 * Removed non-community (aka Prem/Premium/License) code
 * Modified Jua.js to be without jQuery
+* Replaced *Ajax with *Fetch classes because we use the Fetch API, not jQuery.ajax
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  936.773	|
-|app.js      	|4.184.455	|2.554.276	|
-|boot.js     	|  671.522	|    5.834	|
-|libs.js     	|  647.614	|  327.282	|
+|admin.js    	|2.130.942	|  941.273	|
+|app.js      	|4.184.455	|2.533.271	|
+|boot.js     	|  671.522	|    5.777	|
+|libs.js     	|  647.614	|  327.257	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.824.165	|
+|TOTAL      	|7.960.367	|3.807.578	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  128.449	| 73.657	| 37.486	| 32.167	|
-|app.min.js      	|  511.202	|  348.973	|140.462	| 91.692	| 73.600	|
-|boot.min.js     	|   66.007	|    3.166	| 22.567	|  1.571	|  1.345	|
-|libs.min.js     	|  572.545	|  304.025	|176.720	| 94.879	| 83.565	|
+|admin.min.js    	|  252.147	|  128.671	| 73.657	| 37.600	| 32.254	|
+|app.min.js      	|  511.202	|  346.350	|140.462	| 90.770	| 73.272	|
+|boot.min.js     	|   66.007	|    3.101	| 22.567	|  1.576	|  1.346	|
+|libs.min.js     	|  572.545	|  304.000	|176.720	| 94.870	| 83.524	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  784.938	|424.718	|225.628	|190.677	|
+|TOTAL          	|1.434.353	|  782.122	|424.718	|224.816	|190.396	|
 
-649.415 bytes (199.090 gzip) is not much, but it feels faster.
+652.231 bytes (199.902 gzip) is not much, but it feels faster.
 
 ### CSS changes
 
@@ -129,8 +130,8 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 253.711	| 46,959	| 36.587	| 30.802	|
-|app.min.css	| 274.791	| 207.227	| 39.618	| 31.993	| 27.160	|
+|app.css    	| 340.334	| 253.691	| 46,959	| 36.574	| 30.777	|
+|app.min.css	| 274.791	| 207.298	| 39.618	| 32.001	| 27.155	|
 |boot.css    	|       	|   2.538	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 

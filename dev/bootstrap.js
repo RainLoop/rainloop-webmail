@@ -28,7 +28,6 @@ export default (App) => {
 			}
 		}
 	});
-	addEventListener('unload', () => GlobalsData.bUnload = true);
 
 	addEventListener('click', ()=>rl.Dropdowns.detectVisibility());
 

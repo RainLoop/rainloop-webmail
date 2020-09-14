@@ -7,7 +7,7 @@ import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import FolderStore from 'Stores/User/Folder';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { popup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';

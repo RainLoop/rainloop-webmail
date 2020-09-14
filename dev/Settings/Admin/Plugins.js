@@ -7,7 +7,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 
 import PluginStore from 'Stores/Admin/Plugin';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 import { getApp } from 'Helper/Apps/Admin';
 

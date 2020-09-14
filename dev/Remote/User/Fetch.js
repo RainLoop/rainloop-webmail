@@ -1,4 +1,5 @@
 import { pString, pInt } from 'Common/Utils';
+import PromisesPopulator from 'Promises/User/Populator';
 
 import {
 	CONTACTS_SYNC_AJAX_TIMEOUT,
@@ -23,7 +24,7 @@ import SettingsStore from 'Stores/User/Settings';
 
 import { getApp } from 'Helper/Apps/User';
 
-import { AbstractAjaxRemote } from 'Remote/AbstractAjax';
+import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
 //const toUTF8 = window.TextEncoder
 //		? text => String.fromCharCode(...new TextEncoder().encode(text))
@@ -33,12 +34,7 @@ const urlsafeArray = array => btoa(unescape(encodeURIComponent(array.join('\x00'
 		.replace('/', '_')
 		.replace('=', '');
 
-class RemoteUserAjax extends AbstractAjaxRemote {
-	constructor() {
-		super();
-		this.oRequests = {};
-	}
-
+class RemoteUserFetch extends AbstractFetchRemote {
 	/**
 	 * @param {?Function} fCallback
 	 */
@@ -775,6 +771,50 @@ class RemoteUserAjax extends AbstractAjaxRemote {
 	clearUserBackground(fCallback) {
 		this.defaultRequest(fCallback, 'ClearUserBackground');
 	}
+
+	foldersReload(fTrigger) {
+		return this.abort('Folders')
+			.postRequest('Folders', fTrigger)
+			.then((data) => {
+				PromisesPopulator.foldersList(data.Result);
+				PromisesPopulator.foldersAdditionalParameters(data.Result);
+				return true;
+			});
+	}
+
+	foldersReloadWithTimeout(fTrigger) {
+		this.setTrigger(fTrigger, true);
+
+		clearTimeout(this.foldersTimeout);
+		this.foldersTimeout = setTimeout(() => this.foldersReload(fTrigger), 500);
+	}
+
+	folderDelete(sFolderFullNameRaw, fTrigger) {
+		return this.postRequest('FolderDelete', fTrigger, {
+			'Folder': sFolderFullNameRaw
+		});
+	}
+
+	folderCreate(sNewFolderName, sParentName, fTrigger) {
+		return this.postRequest('FolderCreate', fTrigger, {
+			'Folder': sNewFolderName,
+			'Parent': sParentName
+		});
+	}
+
+	folderRename(sPrevFolderFullNameRaw, sNewFolderName, fTrigger) {
+		return this.postRequest('FolderRename', fTrigger, {
+			'Folder': sPrevFolderFullNameRaw,
+			'NewFolderName': sNewFolderName
+		});
+	}
+
+	attachmentsActions(sAction, aHashes, fTrigger) {
+		return this.postRequest('AttachmentsActions', fTrigger, {
+			'Do': sAction,
+			'Hashes': aHashes
+		});
+	}
 }
 
-export default new RemoteUserAjax();
+export default new RemoteUserFetch();

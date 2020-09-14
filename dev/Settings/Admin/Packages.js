@@ -4,7 +4,7 @@ import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
 import PackageStore from 'Stores/Admin/Package';
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 import { getApp } from 'Helper/Apps/Admin';
 

@@ -7,7 +7,7 @@ import { i18n } from 'Common/Translator';
 
 import CapaAdminStore from 'Stores/Admin/Capa';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 import { getApp } from 'Helper/Apps/Admin';
 

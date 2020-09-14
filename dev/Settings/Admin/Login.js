@@ -4,7 +4,7 @@ import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 
 import AppStore from 'Stores/Admin/App';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 class LoginAdminSettings {
 	constructor() {

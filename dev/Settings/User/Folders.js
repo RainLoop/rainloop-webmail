@@ -9,8 +9,7 @@ import * as Local from 'Storage/Client';
 
 import FolderStore from 'Stores/User/Folder';
 
-import Promises from 'Promises/User/Ajax';
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { getApp } from 'Helper/Apps/User';
 
@@ -46,7 +45,7 @@ class FoldersUserSettings {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
 
 			getApp().foldersPromisesActionHelper(
-				Promises.folderRename(folder.fullNameRaw, nameToEdit, FolderStore.foldersRenaming),
+				Remote.folderRename(folder.fullNameRaw, nameToEdit, FolderStore.foldersRenaming),
 				Notification.CantRenameFolder
 			);
 
@@ -109,7 +108,7 @@ class FoldersUserSettings {
 				FolderStore.folderList.remove(fRemoveFolder);
 
 				getApp().foldersPromisesActionHelper(
-					Promises.folderDelete(folderToRemove.fullNameRaw, FolderStore.foldersDeleting),
+					Remote.folderDelete(folderToRemove.fullNameRaw, FolderStore.foldersDeleting),
 					Notification.CantDeleteFolder
 				);
 

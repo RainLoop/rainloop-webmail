@@ -17,7 +17,7 @@ import LanguageStore from 'Stores/Language';
 
 import * as Local from 'Storage/Client';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { view, command, ViewType, routeOff, showScreenPopup, routeReload } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';

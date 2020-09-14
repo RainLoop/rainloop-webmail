@@ -157,14 +157,6 @@ export function change(email) {
 }
 
 /**
- * @param {string} add
- * @returns {string}
- */
-export function ajax(add) {
-	return serverRequest('Ajax') + add;
-}
-
-/**
  * @param {string} requestHash
  * @returns {string}
  */

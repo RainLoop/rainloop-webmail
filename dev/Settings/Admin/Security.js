@@ -5,7 +5,7 @@ import { StorageResultType } from 'Common/Enums';
 import AppAdminStore from 'Stores/Admin/App';
 import CapaAdminStore from 'Stores/Admin/Capa';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 import { command } from 'Knoin/Knoin';
 

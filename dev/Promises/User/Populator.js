@@ -8,14 +8,14 @@ import * as Local from 'Storage/Client';
 import AppStore from 'Stores/User/App';
 import FolderStore from 'Stores/User/Folder';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { FolderModel } from 'Model/Folder';
-import { AbstractBasicPromises } from 'Promises/AbstractBasic';
 
 const Settings = rl.settings;
 
-class PromisesUserPopulator extends AbstractBasicPromises {
+class PromisesUserPopulator {
+
 	/**
 	 * @param {string} sFullNameHash
 	 * @param {Array?} expandedFolders

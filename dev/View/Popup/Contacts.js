@@ -27,7 +27,7 @@ import { i18n, getNotification } from 'Common/Translator';
 import SettingsStore from 'Stores/User/Settings';
 import ContactStore from 'Stores/User/Contact';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';

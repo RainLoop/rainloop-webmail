@@ -17,7 +17,7 @@ import IdentityStore from 'Stores/User/Identity';
 import NotificationStore from 'Stores/User/Notification';
 import MessageStore from 'Stores/User/Message';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 class GeneralUserSettings {
 	constructor() {

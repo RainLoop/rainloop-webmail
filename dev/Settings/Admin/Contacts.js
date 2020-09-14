@@ -4,7 +4,7 @@ import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender } from 'Comm
 
 import { SaveSettingsStep, StorageResultType } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 import { command } from 'Knoin/Knoin';
 
 const settingsGet = rl.settings.get;

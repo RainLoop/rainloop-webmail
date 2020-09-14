@@ -5,7 +5,7 @@ import { bMobileDevice } from 'Common/Globals';
 import { fakeMd5 } from 'Common/Utils';
 import { getNotification } from 'Common/Translator';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { getApp } from 'Helper/Apps/User';
 

@@ -1,12 +1,6 @@
-import { AbstractAjaxRemote } from 'Remote/AbstractAjax';
+import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
-class RemoteAdminAjax extends AbstractAjaxRemote {
-	constructor() {
-		super();
-
-		this.oRequests = {};
-	}
-
+class RemoteAdminFetch extends AbstractFetchRemote {
 	/**
 	 * @param {?Function} fCallback
 	 * @param {string} sLogin
@@ -271,4 +265,4 @@ class RemoteAdminAjax extends AbstractAjaxRemote {
 	}
 }
 
-export default new RemoteAdminAjax();
+export default new RemoteAdminFetch();

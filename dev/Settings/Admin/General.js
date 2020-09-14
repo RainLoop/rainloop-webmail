@@ -13,7 +13,7 @@ import { reload as translatorReload } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 import ThemeStore from 'Stores/Theme';
 import LanguageStore from 'Stores/Language';

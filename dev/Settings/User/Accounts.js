@@ -5,7 +5,7 @@ import { root } from 'Common/Links';
 
 import AccountStore from 'Stores/User/Account';
 import IdentityStore from 'Stores/User/Identity';
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { getApp } from 'Helper/Apps/User';
 

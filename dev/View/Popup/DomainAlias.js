@@ -5,7 +5,7 @@ import { i18n } from 'Common/Translator';
 
 import DomainStore from 'Stores/Admin/Domain';
 
-import Remote from 'Remote/Admin/Ajax';
+import Remote from 'Remote/Admin/Fetch';
 
 import { getApp } from 'Helper/Apps/Admin';
 

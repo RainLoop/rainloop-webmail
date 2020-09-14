@@ -7,7 +7,7 @@ import { i18n } from 'Common/Translator';
 
 import ThemeStore from 'Stores/Theme';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 class ThemesUserSettings {
 	constructor() {

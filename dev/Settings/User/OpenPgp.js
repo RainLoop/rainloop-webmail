@@ -5,7 +5,7 @@ import { delegateRunOnDestroy } from 'Common/Utils';
 import PgpStore from 'Stores/User/Pgp';
 import SettingsStore from 'Stores/User/Settings';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 import { getApp } from 'Helper/Apps/User';
 

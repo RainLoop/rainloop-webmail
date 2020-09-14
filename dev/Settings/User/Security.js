@@ -8,7 +8,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 
 import SettinsStore from 'Stores/User/Settings';
 
-import Remote from 'Remote/User/Ajax';
+import Remote from 'Remote/User/Fetch';
 
 class SecurityUserSettings {
 	constructor() {
