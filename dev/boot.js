@@ -220,7 +220,7 @@ setInterval(setTimestamp, 60000); // 1m
 
 htmlCL.add(options.mobileDevice ? 'mobile' : 'no-mobile');
 
-['app-css','app-theme-link'].forEach(css => eId(css).href = css.dataset.href);
+[eId('app-css'),eId('app-theme-link')].forEach(css => css.href = css.dataset.href);
 
 loadScript('./?/'
 	+ (options.admin ? 'Admin' : '')
