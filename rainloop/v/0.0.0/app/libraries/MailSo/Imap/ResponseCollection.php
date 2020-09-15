@@ -76,15 +76,15 @@ class ResponseCollection extends \MailSo\Base\Collection
 		return null;
 	}
 
-	public function getFetchResult() : array
+	public function getFetchResult($oLogger) : array
 	{
 		$aReturn = array();
 		foreach ($this as $oResponse) {
 			if (FetchResponse::IsValidFetchImapResponse($oResponse)) {
 				if (FetchResponse::IsNotEmptyFetchImapResponse($oResponse)) {
 					$aReturn[] = new FetchResponse($oResponse);
-				} else if ($this->oLogger) {
-					$this->oLogger->Write('Skipped Imap Response! ['.$oResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
+				} else if ($oLogger) {
+					$oLogger->Write('Skipped Imap Response! ['.$oResponse->ToLine().']', \MailSo\Log\Enumerations\Type::NOTICE);
 				}
 			}
 		}

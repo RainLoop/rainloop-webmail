@@ -578,7 +578,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			$this->aFetchCallbacks = array();
 		}
 
-		return $oResult->getFetchResult();
+		return $oResult->getFetchResult($this->oLogger);
 	}
 
 	/**

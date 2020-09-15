@@ -92,15 +92,10 @@ class File implements \MailSo\Cache\DriverInterface
 			$sKeyPath = \substr($sKeyPath, 0, 2).'/'.\substr($sKeyPath, 2, 2).'/'.$sKeyPath;
 
 			$sFilePath = $this->sCacheFolder.$this->sKeyPrefix.$sKeyPath;
-			if ($bMkDir && !\is_dir(\dirname($sFilePath)))
+			$dir = \dirname($sFilePath);
+			if ($bMkDir && !\is_dir($dir) && !\mkdir($dir, 0755, true))
 			{
-				if (!\mkdir(\dirname($sFilePath), 0755, true))
-				{
-					if (!\mkdir(\dirname($sFilePath), 0755, true))
-					{
-						$sFilePath = '';
-					}
-				}
+				$sFilePath = '';
 			}
 		}
 
