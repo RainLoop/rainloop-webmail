@@ -1162,7 +1162,7 @@ class ComposePopupView extends AbstractViewNext {
 
 	cancelAttachmentHelper(id, oJua) {
 		return () => {
-			const attachment = this.attachments().find(item => item && item.id === id);
+			const attachment = this.getAttachmentById(id);
 			if (attachment) {
 				this.attachments.remove(attachment);
 				delegateRunOnDestroy(attachment);
@@ -1367,8 +1367,7 @@ class ComposePopupView extends AbstractViewNext {
 			if (ComposeType.ForwardAsAttachment === type) {
 				this.addMessageAsAttachment(message);
 			} else {
-				const attachments = message.attachments();
-				(Array.isNotEmpty(attachments) ? attachments : []).forEach(item => {
+				message.attachments.forEach(item => {
 					let add = false;
 					switch (type) {
 						case ComposeType.Reply:
@@ -1406,14 +1405,6 @@ class ComposePopupView extends AbstractViewNext {
 					}
 				});
 			}
-		}
-	}
-
-	removeLinkedAttachments() {
-		const arrachment = this.attachments().find(item => item && item.isLinked);
-		if (arrachment) {
-			this.attachments.remove(arrachment);
-			delegateRunOnDestroy(arrachment);
 		}
 	}
 

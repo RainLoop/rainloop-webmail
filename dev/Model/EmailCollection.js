@@ -10,16 +10,14 @@ class EmailCollectionModel extends Array
 
 	/**
 	 * @param {?Array} json
-	 * @returns {Array.<EmailModel>}
+	 * @returns {EmailCollectionModel}
 	 */
 	static reviveFromJson(items) {
 		let result = new EmailCollectionModel;
-		if (Array.isArray(items)) {
-			items.forEach(email => {
-				email = EmailModel.newInstanceFromJson(email);
-				email && result.push(email);
-			});
-		}
+		Array.isArray(items) && items.forEach(email => {
+			email = EmailModel.newInstanceFromJson(email);
+			email && result.push(email);
+		});
 		return result;
 	}
 

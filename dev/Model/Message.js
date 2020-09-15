@@ -15,7 +15,8 @@ import { messageViewLink, messageDownloadLink } from 'Common/Links';
 import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
 
-import { AttachmentModel, staticCombinedIconClass } from 'Model/Attachment';
+import { staticCombinedIconClass } from 'Model/Attachment';
+import { AttachmentCollectionModel } from 'Model/AttachmentCollection';
 import { EmailCollectionModel } from 'Model/EmailCollection';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -73,7 +74,7 @@ class MessageModel extends AbstractModel {
 
 		this.isHtml = ko.observable(false);
 		this.hasImages = ko.observable(false);
-		this.attachments = ko.observableArray([]);
+		this.attachments = new AttachmentCollectionModel;
 
 		this.isPgpSigned = ko.observable(false);
 		this.isPgpEncrypted = ko.observable(false);
@@ -158,7 +159,7 @@ class MessageModel extends AbstractModel {
 
 		this.isHtml(false);
 		this.hasImages(false);
-		this.attachments([]);
+		this.attachments = new AttachmentCollectionModel;
 
 		this.isPgpSigned(false);
 		this.isPgpEncrypted(false);
@@ -299,42 +300,13 @@ class MessageModel extends AbstractModel {
 			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
 
 			this.foundedCIDs = isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];
-			this.attachments(this.initAttachmentsFromJson(json.Attachments));
+			this.attachments = AttachmentCollectionModel.reviveFromJson(json.Attachments, this.foundedCIDs);
 
 			this.readReceipt(json.ReadReceipt || '');
 
 			this.computeSenderEmail();
 
 			result = true;
-		}
-
-		return result;
-	}
-
-	/**
-	 * @param {(AjaxJsonAttachment|null)} oJsonAttachments
-	 * @returns {Array}
-	 */
-	initAttachmentsFromJson(json) {
-		let index = 0,
-			len = 0,
-			attachment = null;
-		const result = [];
-
-		if (json && 'Collection/AttachmentCollection' === json['@Object'] && Array.isNotEmpty(json['@Collection'])) {
-			for (index = 0, len = json['@Collection'].length; index < len; index++) {
-				attachment = AttachmentModel.newInstanceFromJson(json['@Collection'][index]);
-				if (attachment) {
-					if (
-						attachment.cidWithOutTags &&
-						this.foundedCIDs.includes(attachment.cidWithOutTags)
-					) {
-						attachment.isLinked = true;
-					}
-
-					result.push(attachment);
-				}
-			}
 		}
 
 		return result;
@@ -458,44 +430,6 @@ class MessageModel extends AbstractModel {
 	}
 
 	/**
-	 * @returns {boolean}
-	 */
-	hasVisibleAttachments() {
-		return !!this.attachments().find(item => !item.isLinked);
-	}
-
-	/**
-	 * @param {string} cid
-	 * @returns {*}
-	 */
-	findAttachmentByCid(cid) {
-		let result = null;
-		const attachments = this.attachments();
-
-		if (Array.isNotEmpty(attachments)) {
-			cid = cid.replace(/^<+/, '').replace(/>+$/, '');
-			result = attachments.find(item => cid === item.cidWithOutTags);
-		}
-
-		return result || null;
-	}
-
-	/**
-	 * @param {string} contentLocation
-	 * @returns {*}
-	 */
-	findAttachmentByContentLocation(contentLocation) {
-		let result = null;
-		const attachments = this.attachments();
-
-		if (Array.isNotEmpty(attachments)) {
-			result = attachments.find(item => contentLocation === item.contentLocation);
-		}
-
-		return result || null;
-	}
-
-	/**
 	 * @returns {string}
 	 */
 	messageId() {
@@ -583,14 +517,6 @@ class MessageModel extends AbstractModel {
 		}
 
 		return [toResult, ccResult];
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	attachmentsToStringLine() {
-		const attachLines = this.attachments().map(item => item.fileName + ' (' + item.friendlySize + ')');
-		return attachLines && attachLines.length ? attachLines.join(', ') : '';
 	}
 
 	/**
@@ -732,18 +658,19 @@ class MessageModel extends AbstractModel {
 		if (this.body && !this.body.rlInitInternalImages) {
 			this.body.rlInitInternalImages = true;
 
-			const body = this.body;
+			const body = this.body,
+				findAttachmentByCid = cid => this.attachments.findByCid(cid);
 
 			body.querySelectorAll('[data-x-src-cid]').forEach(node => {
-				const attachment = this.findAttachmentByCid(node.dataset.xSrcCid);
+				const attachment = findAttachmentByCid(node.dataset.xSrcCid);
 				if (attachment && attachment.download) {
 					node.src = attachment.linkPreview();
 				}
 			});
 
 			body.querySelectorAll('[data-x-src-location]').forEach(node => {
-				const attachment = this.findAttachmentByContentLocation(node.dataset.xSrcLocation)
-					|| this.findAttachmentByCid(node.dataset.xSrcLocation);
+				const attachment = this.attachments.find(item => node.dataset.xSrcLocation === item.contentLocation)
+					|| findAttachmentByCid(node.dataset.xSrcLocation);
 				if (attachment && attachment.download) {
 					if (node.matches('img')) {
 						node.loading = 'lazy';
@@ -754,7 +681,7 @@ class MessageModel extends AbstractModel {
 
 			body.querySelectorAll('[style-cid]').forEach(node => {
 				const name = node.dataset.xStyleCidName,
-					attachment = this.findAttachmentByCid(node.dataset.xStyleCid);
+					attachment = findAttachmentByCid(node.dataset.xStyleCid);
 				if (attachment && attachment.linkPreview && name) {
 					node.setAttribute('style', ((node.getAttribute('style')||'')
 						+ ';' + name + ": url('" + attachment.linkPreview() + "')")

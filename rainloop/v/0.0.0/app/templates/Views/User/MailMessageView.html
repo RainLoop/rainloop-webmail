@@ -341,9 +341,9 @@
 											&nbsp;&nbsp;
 											<span class="i18n text" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
 										</div>
-										<div class="attachmentsPlace" data-bind="visible: message() && message().hasVisibleAttachments(),
+										<div class="attachmentsPlace" data-bind="visible: message() && message().attachments.hasVisible(),
 											css: {'selection-mode' : showAttachmnetControls, 'unselectedAttachmentsError': highlightUnselectedAttachments}">
-											<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
+											<ul class="attachmentList" data-bind="foreach: message() ? message().attachments : []">
 												<li class="attachmentItem clearfix" draggable="true" data-tooltip-join="top"
 														data-bind="visible: !isLinked, event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }, css: {'checked': checked}">
 													<div class="attachmentIconParent pull-left" data-bind="css: { 'hasPreview': hasPreview(), 'hasPreplay': hasPreplay(), 'isImage': isImage() }">
@@ -393,7 +393,7 @@
 										</div>
 
 										<div class="attachmentsControls"
-											data-bind="visible: showAttachmnetControls() && message() && message().hasVisibleAttachments()">
+											data-bind="visible: showAttachmnetControls() && message() && message().attachments.hasVisible()">
 
 											<span data-bind="visible: downloadAsZipAllowed">
 												<i class="icon-remove iconcolor-red" data-bind="visible: downloadAsZipError"></i>
