@@ -23,7 +23,9 @@ const bAllowPdfPreview = !bMobileDevice && undefined !== navigator.mimeTypes['ap
  * @returns {string}
  */
 export const staticFileType = (() => {
-	let cache = {};
+	let cache = {},
+		msOffice = 'vnd.openxmlformats-officedocument',
+		openDoc = 'vnd.oasis.opendocument';
 	return (ext, mimeType) => {
 		ext = ext.toLowerCase().trim();
 		mimeType = mimeType.toLowerCase().trim();
@@ -34,10 +36,12 @@ export const staticFileType = (() => {
 		}
 
 		let result = FileType.Unknown;
-		const mimeTypeParts = mimeType.split('/');
+		const mimeTypeParts = mimeType.split('/'),
+			type = mimeTypeParts[1],
+			match = str => type.includes(str);
 
 		switch (true) {
-			case 'image' === mimeTypeParts[0] || ['png', 'jpg', 'jpeg', 'gif', 'bmp'].includes(ext):
+			case 'image' === mimeTypeParts[0] || ['png', 'jpg', 'jpeg', 'gif'].includes(ext):
 				result = FileType.Image;
 				break;
 			case 'audio' === mimeTypeParts[0] || ['mp3', 'ogg', 'oga', 'wav'].includes(ext):
@@ -52,7 +56,7 @@ export const staticFileType = (() => {
 			case 'eml' === ext || ['message/delivery-status', 'message/rfc822'].includes(mimeType):
 				result = FileType.Eml;
 				break;
-			case ('text' === mimeTypeParts[0] && 'html' !== mimeTypeParts[1]) || ['txt', 'log'].includes(ext):
+			case ('text' === mimeTypeParts[0] && 'html' !== type) || ['txt', 'log'].includes(ext):
 				result = FileType.Text;
 				break;
 			case 'text/html' === mimeType || ['html'].includes(ext):
@@ -76,10 +80,10 @@ export const staticFileType = (() => {
 					'x-zip-compressed',
 					'x-7z-compressed',
 					'x-rar-compressed'
-				].includes(mimeTypeParts[1]) || ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2'].includes(ext):
+				].includes(type) || ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2'].includes(ext):
 				result = FileType.Archive;
 				break;
-			case ['pdf', 'x-pdf'].includes(mimeTypeParts[1]) || ['pdf'].includes(ext):
+			case ['pdf', 'x-pdf'].includes(type) || ['pdf'].includes(ext):
 				result = FileType.Pdf;
 				break;
 			case ['application/pgp-signature', 'application/pgp-keys'].includes(mimeType) ||
@@ -89,42 +93,14 @@ export const staticFileType = (() => {
 			case ['application/pkcs7-signature'].includes(mimeType) || ['p7s'].includes(ext):
 				result = FileType.CertificateBin;
 				break;
-			case [
-					'rtf',
-					'msword',
-					'vnd.msword',
-					'vnd.openxmlformats-officedocument.wordprocessingml.document',
-					'vnd.openxmlformats-officedocument.wordprocessingml.template',
-					'vnd.ms-word.document.macroEnabled.12',
-					'vnd.ms-word.template.macroEnabled.12'
-				].includes(mimeTypeParts[1]):
+			case match(msOffice+'.wordprocessingml') || match(openDoc+'.text') || match('vnd.ms-word')
+				|| ['rtf', 'msword', 'vnd.msword'].includes(type):
 				result = FileType.WordText;
 				break;
-			case [
-					'excel',
-					'ms-excel',
-					'vnd.ms-excel',
-					'vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-					'vnd.openxmlformats-officedocument.spreadsheetml.template',
-					'vnd.ms-excel.sheet.macroEnabled.12',
-					'vnd.ms-excel.template.macroEnabled.12',
-					'vnd.ms-excel.addin.macroEnabled.12',
-					'vnd.ms-excel.sheet.binary.macroEnabled.12'
-				].includes(mimeTypeParts[1]):
+			case match(msOffice+'.spreadsheetml') || match(openDoc+'.spreadsheet') || match('ms-excel'):
 				result = FileType.Sheet;
 				break;
-			case [
-					'powerpoint',
-					'ms-powerpoint',
-					'vnd.ms-powerpoint',
-					'vnd.openxmlformats-officedocument.presentationml.presentation',
-					'vnd.openxmlformats-officedocument.presentationml.template',
-					'vnd.openxmlformats-officedocument.presentationml.slideshow',
-					'vnd.ms-powerpoint.addin.macroEnabled.12',
-					'vnd.ms-powerpoint.presentation.macroEnabled.12',
-					'vnd.ms-powerpoint.template.macroEnabled.12',
-					'vnd.ms-powerpoint.slideshow.macroEnabled.12'
-				].includes(mimeTypeParts[1]):
+			case match(msOffice+'.presentationml') || match(openDoc+'.presentation') || match('ms-powerpoint'):
 				result = FileType.Presentation;
 				break;
 			// no default
