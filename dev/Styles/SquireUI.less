@@ -1,5 +1,6 @@
 .squire-toolbar {
 	overflow-x: auto;
+	overflow-y: hidden;
 	white-space: nowrap;
 }
 
@@ -18,7 +19,7 @@
 	cursor: pointer;
 	font-size: 14px;
 	height: 1.5em;
-	line-height: 1.7em;
+	line-height: 1.7;
 	margin: 0;
 	padding: 0;
 	vertical-align: bottom;
@@ -30,10 +31,10 @@
 }
 
 .squire-toolgroup select {
-	width: 7em;
+	width: 7em !important;
 }
 .squire-toolgroup select[data-action="fontSize"] {
-	width: 4em;
+	width: 4em !important;
 }
 .squire-toolgroup select[data-action="bold"] {
 	font-weight: bold;
@@ -75,4 +76,20 @@
 }
 .squire-mode-plain .squire-toolgroup:not(#squire-toolgroup-mode) {
 	display: none;
+}
+
+/* @media (hover: none) */
+.rl-mobile .squire-toolbar {
+	padding: 1px;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+.rl-mobile .squire-toolgroup > button,
+.rl-mobile .squire-toolgroup > select,
+.rl-mobile .squire-toolgroup > input[type="color"] {
+	height: 2.5em;
+	line-height: 2.8;
+	width: 3em;
 }
