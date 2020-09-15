@@ -53,7 +53,7 @@ export default (App) => {
 		dropdownVisibility(!!rl.Dropdowns.find(item => item.classList.contains('open')))
 	).debounce(50);
 
-	rl.fetchJSON = (resource, init, timeout, postData) => {
+	rl.fetchJSON = (resource, init, postData) => {
 		init = Object.assign({
 			mode: 'same-origin',
 			cache: 'no-cache',
@@ -85,21 +85,6 @@ export default (App) => {
 		}
 
 		return fetch(resource, init).then(response => response.json());
-/*
-		let f = fetch(resource, init);
-		if (reviver) {
-			return f.then(response => response.text())
-				.then(json => {
-					try {
-						return JSON.parse(json, reviver);
-					} catch (e) {
-						console.error(e);
-						throw e;
-					}
-				});
-		}
-		return f.then(response => response.json());
-*/
 	};
 
 	window.__APP_BOOT = fErrorCallback => {

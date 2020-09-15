@@ -70,14 +70,19 @@ class AbstractFetchRemote
 	}
 
 	/**
-	 * @param {?Function} fResultCallback
-	 * @param {Object} oParameters
-	 * @param {?number=} iTimeOut = 20000
+	 * @param {?Function} fCallback
+	 * @param {string} sAction
+	 * @param {Object=} oParameters
+	 * @param {?number=} iTimeout
 	 * @param {string=} sGetAdd = ''
 	 * @param {Array=} aAbortActions = []
 	 */
-	ajaxRequest(fResultCallback, params, iTimeOut = 20000, sGetAdd = '', abortActions = []) {
+	defaultRequest(fCallback, sAction, params, iTimeout, sGetAdd, abortActions) {
 		params = params || {};
+		params.Action = sAction;
+
+		sGetAdd = pString(sGetAdd);
+
 		const start = Date.now(),
 			action = params.Action || '';
 
@@ -86,8 +91,8 @@ class AbstractFetchRemote
 		}
 
 		return rl.fetchJSON(getURL(sGetAdd), {
-				signal: this.createAbort(action, iTimeOut)
-			}, iTimeOut, sGetAdd ? null : params
+				signal: this.createAbort(action, undefined === iTimeout ? DEFAULT_AJAX_TIMEOUT : pInt(iTimeout))
+			}, sGetAdd ? null : params
 		).then(data => {
 			let cached = false;
 			if (data) {
@@ -117,8 +122,8 @@ class AbstractFetchRemote
 					iAjaxErrorCount = iTokenErrorCount = 0;
 				}
 
-				if (fResultCallback) {
-					fResultCallback(
+				if (fCallback) {
+					fCallback(
 						sType,
 						StorageResultType.Success === sType ? data : null,
 						cached,
@@ -152,27 +157,6 @@ class AbstractFetchRemote
 			}
 			return Promise.reject(err);
 		});
-	}
-
-	/**
-	 * @param {?Function} fCallback
-	 * @param {string} sAction
-	 * @param {Object=} oParameters
-	 * @param {?number=} iTimeout
-	 * @param {string=} sGetAdd = ''
-	 * @param {Array=} aAbortActions = []
-	 */
-	defaultRequest(fCallback, sAction, oParameters, iTimeout, sGetAdd, aAbortActions) {
-		oParameters = oParameters || {};
-		oParameters.Action = sAction;
-
-		return this.ajaxRequest(
-			fCallback,
-			oParameters,
-			undefined === iTimeout ? DEFAULT_AJAX_TIMEOUT : pInt(iTimeout),
-			pString(sGetAdd),
-			aAbortActions
-		);
 	}
 
 	/**
@@ -234,7 +218,7 @@ class AbstractFetchRemote
 
 		return rl.fetchJSON(getURL(), {
 				signal: this.createAbort(action, pInt(timeOut, DEFAULT_AJAX_TIMEOUT))
-			}, pInt(timeOut, DEFAULT_AJAX_TIMEOUT), params
+			}, params
 		).then(data => {
 			this.abort(action, true);
 

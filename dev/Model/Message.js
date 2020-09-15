@@ -185,13 +185,6 @@ class MessageModel extends AbstractModel {
 	}
 
 	/**
-	 * @returns {Array}
-	 */
-	getRecipientsEmails() {
-		return this.getEmails(['to', 'cc']);
-	}
-
-	/**
 	 * @returns {string}
 	 */
 	friendlySize() {
