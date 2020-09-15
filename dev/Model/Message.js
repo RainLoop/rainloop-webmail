@@ -15,29 +15,33 @@ import { messageViewLink, messageDownloadLink } from 'Common/Links';
 import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
 
-import { emailArrayFromJson, emailArrayToStringClear, emailArrayToString, replyHelper } from 'Helper/Message';
-
 import { AttachmentModel, staticCombinedIconClass } from 'Model/Attachment';
+import { EmailCollectionModel } from 'Model/EmailCollection';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-const isArray = Array.isArray;
+const isArray = Array.isArray,
+
+	replyHelper = (emails, unic, localEmails) => {
+		emails.forEach(email => {
+			if (undefined === unic[email.email]) {
+				unic[email.email] = true;
+				localEmails.push(email);
+			}
+		});
+	};
 
 class MessageModel extends AbstractModel {
 	constructor() {
 		super('MessageModel');
 
-		this.folderFullNameRaw = '';
-		this.uid = '';
-		this.hash = '';
-		this.requestHash = '';
+		this._reset();
+
 		this.subject = ko.observable('');
 		this.subjectPrefix = ko.observable('');
 		this.subjectSuffix = ko.observable('');
 		this.size = ko.observable(0);
 		this.dateTimeStampInUTC = ko.observable(0);
 		this.priority = ko.observable(MessagePriority.Normal);
-
-		this.proxy = false;
 
 		this.fromEmailString = ko.observable('');
 		this.fromClearEmailString = ko.observable('');
@@ -46,16 +50,6 @@ class MessageModel extends AbstractModel {
 
 		this.senderEmailsString = ko.observable('');
 		this.senderClearEmailsString = ko.observable('');
-
-		this.emails = [];
-
-		this.from = [];
-		this.to = [];
-		this.cc = [];
-		this.bcc = [];
-		this.replyTo = [];
-		this.deliveredTo = [];
-		this.unsubsribeLinks = [];
 
 		this.newForAnimation = ko.observable(false);
 
@@ -77,8 +71,6 @@ class MessageModel extends AbstractModel {
 			staticCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : [])
 		);
 
-		this.body = null;
-
 		this.isHtml = ko.observable(false);
 		this.hasImages = ko.observable(false);
 		this.attachments = ko.observableArray([]);
@@ -90,11 +82,6 @@ class MessageModel extends AbstractModel {
 
 		this.priority = ko.observable(MessagePriority.Normal);
 		this.readReceipt = ko.observable('');
-
-		this.aDraftInfo = [];
-		this.sMessageId = '';
-		this.sInReplyTo = '';
-		this.sReferences = '';
 
 		this.hasUnseenSubMessage = ko.observable(false);
 		this.hasFlaggedSubMessage = ko.observable(false);
@@ -117,11 +104,29 @@ class MessageModel extends AbstractModel {
 		return oMessageModel.initByJson(json) ? oMessageModel : null;
 	}
 
-	clear() {
+	_reset() {
 		this.folderFullNameRaw = '';
 		this.uid = '';
 		this.hash = '';
 		this.requestHash = '';
+		this.proxy = false;
+		this.emails = [];
+		this.from = new EmailCollectionModel;
+		this.to = new EmailCollectionModel;
+		this.cc = new EmailCollectionModel;
+		this.bcc = new EmailCollectionModel;
+		this.replyTo = new EmailCollectionModel;
+		this.deliveredTo = new EmailCollectionModel;
+		this.unsubsribeLinks = [];
+		this.body = null;
+		this.aDraftInfo = [];
+		this.sMessageId = '';
+		this.sInReplyTo = '';
+		this.sReferences = '';
+	}
+
+	clear() {
+		this._reset();
 		this.subject('');
 		this.subjectPrefix('');
 		this.subjectSuffix('');
@@ -129,24 +134,12 @@ class MessageModel extends AbstractModel {
 		this.dateTimeStampInUTC(0);
 		this.priority(MessagePriority.Normal);
 
-		this.proxy = false;
-
 		this.fromEmailString('');
 		this.fromClearEmailString('');
 		this.toEmailsString('');
 		this.toClearEmailsString('');
 		this.senderEmailsString('');
 		this.senderClearEmailsString('');
-
-		this.emails = [];
-
-		this.from = [];
-		this.to = [];
-		this.cc = [];
-		this.bcc = [];
-		this.replyTo = [];
-		this.deliveredTo = [];
-		this.unsubsribeLinks = [];
 
 		this.newForAnimation(false);
 
@@ -163,7 +156,6 @@ class MessageModel extends AbstractModel {
 		this.hasAttachments(false);
 		this.attachmentsSpecData([]);
 
-		this.body = null;
 		this.isHtml(false);
 		this.hasImages(false);
 		this.attachments([]);
@@ -175,10 +167,6 @@ class MessageModel extends AbstractModel {
 
 		this.priority(MessagePriority.Normal);
 		this.readReceipt('');
-		this.aDraftInfo = [];
-		this.sMessageId = '';
-		this.sInReplyTo = '';
-		this.sReferences = '';
 
 		this.threads([]);
 
@@ -250,12 +238,12 @@ class MessageModel extends AbstractModel {
 
 			this.size(pInt(json.Size));
 
-			this.from = emailArrayFromJson(json.From);
-			this.to = emailArrayFromJson(json.To);
-			this.cc = emailArrayFromJson(json.Cc);
-			this.bcc = emailArrayFromJson(json.Bcc);
-			this.replyTo = emailArrayFromJson(json.ReplyTo);
-			this.deliveredTo = emailArrayFromJson(json.DeliveredTo);
+			this.from = EmailCollectionModel.reviveFromJson(json.From);
+			this.to = EmailCollectionModel.reviveFromJson(json.To);
+			this.cc = EmailCollectionModel.reviveFromJson(json.Cc);
+			this.bcc = EmailCollectionModel.reviveFromJson(json.Bcc);
+			this.replyTo = EmailCollectionModel.reviveFromJson(json.ReplyTo);
+			this.deliveredTo = EmailCollectionModel.reviveFromJson(json.DeliveredTo);
 			this.unsubsribeLinks = Array.isNotEmpty(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
 
 			this.subject(json.Subject);
@@ -271,10 +259,10 @@ class MessageModel extends AbstractModel {
 			this.hasAttachments(!!json.HasAttachments);
 			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
 
-			this.fromEmailString(emailArrayToString(this.from, true));
-			this.fromClearEmailString(emailArrayToStringClear(this.from));
-			this.toEmailsString(emailArrayToString(this.to, true));
-			this.toClearEmailsString(emailArrayToStringClear(this.to));
+			this.fromEmailString(this.from.toString(true));
+			this.fromClearEmailString(this.from.toStringClear());
+			this.toEmailsString(this.to.toString(true));
+			this.toClearEmailsString(this.to.toStringClear());
 
 			this.threads(isArray(json.Threads) ? json.Threads : []);
 
@@ -399,7 +387,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	fromToLine(friendlyView, wrapWithLink = false) {
-		return emailArrayToString(this.from, friendlyView, wrapWithLink);
+		return this.from.toString(friendlyView, wrapWithLink);
 	}
 
 	/**
@@ -420,7 +408,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	toToLine(friendlyView, wrapWithLink = false) {
-		return emailArrayToString(this.to, friendlyView, wrapWithLink);
+		return this.to.toString(friendlyView, wrapWithLink);
 	}
 
 	/**
@@ -429,7 +417,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	ccToLine(friendlyView, wrapWithLink = false) {
-		return emailArrayToString(this.cc, friendlyView, wrapWithLink);
+		return this.cc.toString(friendlyView, wrapWithLink);
 	}
 
 	/**
@@ -438,7 +426,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	bccToLine(friendlyView, wrapWithLink = false) {
-		return emailArrayToString(this.bcc, friendlyView, wrapWithLink);
+		return this.bcc.toString(friendlyView, wrapWithLink);
 	}
 
 	/**
@@ -447,7 +435,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	replyToToLine(friendlyView, wrapWithLink = false) {
-		return emailArrayToString(this.replyTo, friendlyView, wrapWithLink);
+		return this.replyTo.toString(friendlyView, wrapWithLink);
 	}
 
 	/**

@@ -27,7 +27,7 @@ import { MESSAGE_BODY_CACHE_LIMIT } from 'Common/Consts';
 import { mailBox, notificationMailIcon } from 'Common/Links';
 import { i18n, getNotification } from 'Common/Translator';
 
-import * as MessageHelper from 'Helper/Message';
+import { EmailCollectionModel } from 'Model/EmailCollection';
 import { MessageModel } from 'Model/Message';
 
 import { setHash } from 'Knoin/Knoin';
@@ -259,7 +259,7 @@ class MessageUserStore {
 					newMessages.forEach(item => {
 						NotificationStore.displayDesktopNotification(
 							notificationMailIcon(),
-							MessageHelper.emailArrayToString(MessageHelper.emailArrayFromJson(item.From), false),
+							EmailCollectionModel.reviveFromJson(item.From).toString(),
 							item.Subject,
 							{ 'Folder': item.Folder, 'Uid': item.Uid }
 						);
