@@ -494,6 +494,7 @@ class MessageUserStore {
 						iMessageBodyCacheCount += 1;
 						textBody.rlCacheCount = iMessageBodyCacheCount;
 						message.fetchDataFromDom();
+						message.body = textBody;
 					} else {
 						let isHtml = false;
 						if (data.Result.Html) {
@@ -542,6 +543,8 @@ class MessageUserStore {
 							+ '</div>');
 						body.rlCacheCount = iMessageBodyCacheCount;
 
+						message.body = body;
+
 						message.isHtml(!!isHtml);
 						message.hasImages(!!data.Result.HasExternals);
 
@@ -560,7 +563,6 @@ class MessageUserStore {
 						this.purgeMessageBodyCacheThrottle();
 					}
 
-					message.body = body || textBody;
 					this.messageActiveDom(message.body);
 
 					this.hideMessageBodies();

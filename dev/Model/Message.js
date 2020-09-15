@@ -655,37 +655,33 @@ class MessageModel extends AbstractModel {
 	}
 
 	showInternalImages() {
-		if (this.body && !this.body.rlInitInternalImages) {
-			this.body.rlInitInternalImages = true;
+		const body = this.body;
+		if (body && !body.rlInitInternalImages) {
+			const findAttachmentByCid = cid => this.attachments.findByCid(cid);
 
-			const body = this.body,
-				findAttachmentByCid = cid => this.attachments.findByCid(cid);
+			body.rlInitInternalImages = true;
 
-			body.querySelectorAll('[data-x-src-cid]').forEach(node => {
-				const attachment = findAttachmentByCid(node.dataset.xSrcCid);
-				if (attachment && attachment.download) {
-					node.src = attachment.linkPreview();
-				}
-			});
-
-			body.querySelectorAll('[data-x-src-location]').forEach(node => {
-				const attachment = this.attachments.find(item => node.dataset.xSrcLocation === item.contentLocation)
-					|| findAttachmentByCid(node.dataset.xSrcLocation);
-				if (attachment && attachment.download) {
-					if (node.matches('img')) {
-						node.loading = 'lazy';
+			body.querySelectorAll('[data-x-src-cid],[data-x-src-location],[data-x-style-cid]').forEach(el => {
+				const data = el.dataset;
+				if (data.xSrcCid) {
+					const attachment = findAttachmentByCid(data.xSrcCid);
+					if (attachment && attachment.download) {
+						el.src = attachment.linkPreview();
 					}
-					node.src = attachment.linkPreview();
-				}
-			});
-
-			body.querySelectorAll('[style-cid]').forEach(node => {
-				const name = node.dataset.xStyleCidName,
-					attachment = findAttachmentByCid(node.dataset.xStyleCid);
-				if (attachment && attachment.linkPreview && name) {
-					node.setAttribute('style', ((node.getAttribute('style')||'')
-						+ ';' + name + ": url('" + attachment.linkPreview() + "')")
-						.replace(/^[;\s]+/,''));
+				} else if (data.xSrcLocation) {
+					const attachment = this.attachments.find(item => data.xSrcLocation === item.contentLocation)
+						|| findAttachmentByCid(data.xSrcLocation);
+					if (attachment && attachment.download) {
+						el.loading = 'lazy';
+						el.src = attachment.linkPreview();
+					}
+				} else if (data.xStyleCid) {
+					const name = data.xStyleCidName,
+						attachment = findAttachmentByCid(data.xStyleCid);
+					if (attachment && attachment.linkPreview && name) {
+						el.setAttribute('style', name + ": url('" + attachment.linkPreview() + "');"
+							+ (el.getAttribute('style') || ''));
+					}
 				}
 			});
 		}
