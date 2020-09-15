@@ -6,8 +6,6 @@ import { getNotification } from 'Common/Translator';
 import PackageStore from 'Stores/Admin/Package';
 import Remote from 'Remote/Admin/Fetch';
 
-import { getApp } from 'Helper/Apps/Admin';
-
 class PackagesAdminSettings {
 	constructor() {
 		this.packagesError = ko.observable('');
@@ -34,7 +32,7 @@ class PackagesAdminSettings {
 	}
 
 	onBuild() {
-		getApp().reloadPackagesList();
+		rl.app.reloadPackagesList();
 	}
 
 	requestHelper(packageToRequest, install) {
@@ -59,7 +57,7 @@ class PackagesAdminSettings {
 			if (StorageResultType.Success === result && data && data.Result && data.Result.Reload) {
 				location.reload();
 			} else {
-				getApp().reloadPackagesList();
+				rl.app.reloadPackagesList();
 			}
 		};
 	}

@@ -33,8 +33,6 @@ import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
 import { ContactPropertyModel } from 'Model/ContactProperty';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { popup, command, showScreenPopup, hideScreenPopup, routeOn, routeOff } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -336,7 +334,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 	@command((self) => !self.contacts.syncing() && !self.contacts.importing())
 	syncCommand() {
-		getApp().contactsSync((result, data) => {
+		rl.app.contactsSync((result, data) => {
 			if (StorageResultType.Success !== result || !data || !data.Result) {
 				alert(getNotification(data && data.ErrorCode ? data.ErrorCode : Notification.ContactsSyncError));
 			}
@@ -403,11 +401,11 @@ class ContactsPopupView extends AbstractViewNext {
 	}
 
 	exportVcf() {
-		getApp().download(exportContactsVcf());
+		rl.app.download(exportContactsVcf());
 	}
 
 	exportCsv() {
-		getApp().download(exportContactsCsv());
+		rl.app.download(exportContactsCsv());
 	}
 
 	initUploader() {

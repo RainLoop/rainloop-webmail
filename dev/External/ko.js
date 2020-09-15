@@ -423,7 +423,7 @@ ko.bindingHandlers.command = {
 		}
 
 		element.classList.add('command');
-		ko.bindingHandlers[element.tagName.match(/FORM/i) ? 'submit' : 'click'].init(
+		ko.bindingHandlers['FORM'==element.nodeName ? 'submit' : 'click'].init(
 			element,
 			fValueAccessor,
 			fAllBindingsAccessor,
@@ -447,7 +447,7 @@ ko.bindingHandlers.command = {
 		['command-disabled','disable','disabled'].forEach(s=>cl.toggle(s, !result));
 		cl.toggle('no-disabled', !!result);
 
-		if (element.tagName.match(/INPUT|TEXTAREA|BUTTON/i)) {
+		if (element.nodeName.match(/INPUT|TEXTAREA|BUTTON/)) {
 			element.disabled = !result;
 		}
 	}

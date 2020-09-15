@@ -7,8 +7,6 @@ import DomainStore from 'Stores/Admin/Domain';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { getApp } from 'Helper/Apps/Admin';
-
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -48,7 +46,7 @@ class DomainAliasPopupView extends AbstractViewNext {
 		this.saving(false);
 		if (StorageResultType.Success === result && data) {
 			if (data.Result) {
-				getApp().reloadDomainList();
+				rl.app.reloadDomainList();
 				this.closeCommand();
 			} else if (Notification.DomainAlreadyExists === data.ErrorCode) {
 				this.savingError(i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));

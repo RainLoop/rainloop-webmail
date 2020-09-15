@@ -55,6 +55,6 @@ export function timeToNode(element, time) {
 }
 
 addEventListener('reload-time', () => setTimeout(() =>
-		document.querySelectorAll('[data-bind*="moment:"]').forEach(element => timeToNode(element))
+	document.querySelectorAll('[data-bind*="moment:"]').forEach(element => timeToNode(element))
 	, 1)
 );

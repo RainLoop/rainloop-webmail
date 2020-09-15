@@ -9,8 +9,6 @@ import PluginStore from 'Stores/Admin/Plugin';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { getApp } from 'Helper/Apps/Admin';
-
 class PluginsAdminSettings {
 	constructor() {
 		this.enabledPlugins = ko.observable(!!rl.settings.get('EnabledPlugins'));
@@ -51,7 +49,7 @@ class PluginsAdminSettings {
 
 	onShow() {
 		PluginStore.plugins.error('');
-		getApp().reloadPluginList();
+		rl.app.reloadPluginList();
 	}
 
 	onPluginLoadRequest(result, data) {
@@ -71,7 +69,7 @@ class PluginsAdminSettings {
 			}
 		}
 
-		getApp().reloadPluginList();
+		rl.app.reloadPluginList();
 	}
 }
 

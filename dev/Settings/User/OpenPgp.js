@@ -7,8 +7,6 @@ import SettingsStore from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { showScreenPopup } from 'Knoin/Knoin';
 
 class OpenPgpUserSettings {
@@ -55,7 +53,7 @@ class OpenPgpUserSettings {
 					PgpStore.openpgpKeyring.store();
 				}
 
-				getApp().reloadOpenPgpKeys();
+				rl.app.reloadOpenPgpKeys();
 			}
 		}
 	}

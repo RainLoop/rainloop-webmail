@@ -5,8 +5,6 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -57,7 +55,7 @@ class AccountPopupView extends AbstractViewNext {
 				this.submitRequest(false);
 				if (StorageResultType.Success === result && data) {
 					if (data.Result) {
-						getApp().accountsAndIdentities();
+						rl.app.accountsAndIdentities();
 						this.cancelCommand();
 					} else {
 						this.submitError(

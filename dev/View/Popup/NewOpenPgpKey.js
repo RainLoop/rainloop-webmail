@@ -4,8 +4,6 @@ import { pInt } from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -68,7 +66,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 
 							openpgpKeyring.store();
 
-							getApp().reloadOpenPgpKeys();
+							rl.app.reloadOpenPgpKeys();
 							this.cancelCommand && this.cancelCommand();
 						}
 					})

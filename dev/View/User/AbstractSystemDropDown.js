@@ -7,9 +7,6 @@ import MessageStore from 'Stores/User/Message';
 import { Capa, KeyState } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
-
-import { getApp } from 'Helper/Apps/User';
-
 import { showScreenPopup, setHash } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -80,7 +77,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 	}
 
 	logoutClick() {
-		getApp().logout();
+		rl.app.logout();
 	}
 
 	onBuild() {

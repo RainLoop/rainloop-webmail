@@ -9,8 +9,6 @@ import FolderStore from 'Stores/User/Folder';
 
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -53,7 +51,7 @@ class FolderCreateView extends AbstractViewNext {
 			parentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
 		}
 
-		getApp().foldersPromisesActionHelper(
+		rl.app.foldersPromisesActionHelper(
 			Remote.folderCreate(this.folderName(), parentFolderName, FolderStore.foldersCreating),
 			Notification.CantCreateFolder
 		);

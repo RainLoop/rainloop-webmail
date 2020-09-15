@@ -39,8 +39,6 @@ import PgpStore from 'Stores/User/Pgp';
 import SettingsStore from 'Stores/User/Settings';
 import NotificationStore from 'Stores/User/Notification';
 
-import { getApp } from 'Helper/Apps/User';
-
 import Remote from 'Remote/User/Fetch';
 
 const
@@ -578,7 +576,7 @@ class MessageUserStore {
 
 				initMessageFlagsFromCache(message);
 				if (message.unseen() || message.hasUnseenSubMessage()) {
-					getApp().messageListAction(message.folderFullNameRaw, MessageSetAction.SetSeen, [message]);
+					rl.app.messageListAction(message.folderFullNameRaw, MessageSetAction.SetSeen, [message]);
 				}
 
 				if (isNew) {
@@ -754,7 +752,7 @@ class MessageUserStore {
 			clearNewMessageCache();
 
 			if (folder && (cached || unreadCountChange || SettingsStore.useThreads())) {
-				getApp().folderInformation(folder.fullNameRaw, list);
+				rl.app.folderInformation(folder.fullNameRaw, list);
 			}
 		} else {
 			this.messageListCount(0);

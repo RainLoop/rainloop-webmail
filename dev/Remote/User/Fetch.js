@@ -22,8 +22,6 @@ import { subQueryPrefix } from 'Common/Links';
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
 //const toUTF8 = window.TextEncoder
@@ -469,7 +467,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 				UidNext: getFolderInboxName() === folder ? getFolderUidNext(folder) : ''
 			});
 		} else if (SettingsStore.useThreads()) {
-			getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
+			rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	}
 

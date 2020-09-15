@@ -18,7 +18,7 @@ export const useKeyboardShortcuts = ko.observable(true);
  * @type {boolean}
  */
 export const bMobileDevice = (/android|iphone|ipod|ipad|blackberry|mobile/i).test(
-	(window.navigator && navigator.userAgent && navigator.userAgent.toLowerCase()) || ''
+	(navigator.userAgent && navigator.userAgent.toLowerCase()) || ''
 );
 
 export const VIEW_MODELS = {
@@ -59,14 +59,14 @@ export const keyScope = ko.computed({
 				// restoreKeyFilter
 				key.filter = (event) => {
 					if (useKeyboardShortcuts()) {
-						const el = event.target || event.srcElement,
-							tagName = el ? el.tagName.toUpperCase() : '';
+						const el = event.target,
+							nodeName = el ? el.nodeName : '';
 
 						return !(
-							'INPUT' === tagName ||
-							'SELECT' === tagName ||
-							'TEXTAREA' === tagName ||
-							(el && 'DIV' === tagName && ('editorHtmlArea' === el.className || 'true' === '' + el.contentEditable))
+							'INPUT' === nodeName ||
+							'SELECT' === nodeName ||
+							'TEXTAREA' === nodeName ||
+							(el && el.contentEditable)
 						);
 					}
 
@@ -96,10 +96,3 @@ dropdownVisibility.subscribe((value) => {
 		keyScope(keyScopeFake());
 	}
 });
-
-/**
- * @type {*}
- */
-export const data = {
-	__APP__: null
-};

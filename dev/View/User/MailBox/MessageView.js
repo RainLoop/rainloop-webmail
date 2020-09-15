@@ -40,8 +40,6 @@ import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { view, command, ViewType, showScreenPopup, createCommand } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -69,7 +67,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				const message = this.message();
 				if (message && this.allowMessageListActions) {
 					this.message(null);
-					getApp().deleteMessagesFromFolder(folderType, message.folderFullNameRaw, [message.uid], useFolder);
+					rl.app.deleteMessagesFromFolder(folderType, message.folderFullNameRaw, [message.uid], useFolder);
 				}
 			}, this.messageVisibility);
 
@@ -510,13 +508,13 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			el = eqs(event, '.attachmentsPlace .attachmentItem .attachmentNameParent');
 			if (el) {
 				const attachment = ko.dataFor(el);
-				attachment && attachment.download && getApp().download(attachment.linkDownload());
+				attachment && attachment.download && rl.app.download(attachment.linkDownload());
 			}
 
 			if (eqs(event, '.messageItemHeader .subjectParent .flagParent')) {
 				// eslint-disable-line prefer-arrow-callback
 				const message = this.message();
-				message && getApp().messageListAction(
+				message && rl.app.messageListAction(
 					message.folderFullNameRaw,
 					message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
 					[message]
@@ -527,7 +525,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			if (el) {
 				// eslint-disable-line prefer-arrow-callback
 				const message = ko.dataFor(el); // eslint-disable-line no-invalid-this
-				message && message.folder && message.uid &&  getApp().messageListAction(
+				message && message.folder && message.uid &&  rl.app.messageListAction(
 					message.folder,
 					message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
 					[message]
@@ -783,7 +781,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			Remote.attachmentsActions('Zip', hashes, this.downloadAsZipLoading)
 				.then((result) => {
 					if (result && result.Result && result.Result.Files && result.Result.Files[0] && result.Result.Files[0].Hash) {
-						getApp().download(attachmentDownload(result.Result.Files[0].Hash));
+						rl.app.download(attachmentDownload(result.Result.Files[0].Hash));
 					} else {
 						this.downloadAsZipError(true);
 					}
@@ -833,7 +831,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 			storeMessageFlagsToCache(oMessage);
 
-			getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
+			rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	}
 }

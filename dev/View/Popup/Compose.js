@@ -40,8 +40,6 @@ import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { popup, command, isPopupVisible, showScreenPopup, hideScreenPopup, routeOn, routeOff } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -370,7 +368,7 @@ class ComposePopupView extends AbstractViewNext {
 						}
 
 						setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
-						getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
+						rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
 						setFolderHash(this.aDraftInfo[2], '');
 					}
 				}
@@ -421,7 +419,7 @@ class ComposePopupView extends AbstractViewNext {
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
 					if (this.modalVisibility()) {
-						getApp().deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
+						rl.app.deleteMessagesFromFolderWithoutCheck(this.draftFolder(), [this.draftUid()]);
 						hideScreenPopup(ComposePopupView);
 					}
 				}
@@ -482,7 +480,7 @@ class ComposePopupView extends AbstractViewNext {
 	}
 
 	emailsSource(oData, fResponse) {
-		getApp().getAutocomplete(oData.term, aData => fResponse(aData.map(oEmailItem => oEmailItem.toLine(false))));
+		rl.app.getAutocomplete(oData.term, aData => fResponse(aData.map(oEmailItem => oEmailItem.toLine(false))));
 	}
 
 	openOpenPgpPopup() {
@@ -507,9 +505,9 @@ class ComposePopupView extends AbstractViewNext {
 		if (draftFolder && UNUSED_OPTION_VALUE !== draftFolder) {
 			setFolderHash(draftFolder, '');
 			if (FolderStore.currentFolderFullNameRaw() === draftFolder) {
-				getApp().reloadMessageList(true);
+				rl.app.reloadMessageList(true);
 			} else {
-				getApp().folderInformation(draftFolder);
+				rl.app.folderInformation(draftFolder);
 			}
 		}
 	}

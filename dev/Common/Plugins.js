@@ -1,5 +1,3 @@
-import { data as GlobalsData } from 'Common/Globals';
-
 const USER_VIEW_MODELS_HOOKS = [],
 	ADMIN_VIEW_MODELS_HOOKS = [];
 
@@ -18,8 +16,8 @@ export function mainSettingsGet(name) {
  * @param {?number=} timeout
  */
 export function remoteRequest(callback, action, parameters, timeout) {
-	if (GlobalsData.__APP__) {
-		GlobalsData.__APP__.remote().defaultRequest(callback, 'Plugin' + action, parameters, timeout);
+	if (rl.app) {
+		rl.app.remote().defaultRequest(callback, 'Plugin' + action, parameters, timeout);
 	}
 }
 

@@ -9,8 +9,6 @@ import CapaAdminStore from 'Stores/Admin/Capa';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { getApp } from 'Helper/Apps/Admin';
-
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -317,7 +315,7 @@ class DomainPopupView extends AbstractViewNext {
 		this.saving(false);
 		if (StorageResultType.Success === sResult && oData) {
 			if (oData.Result) {
-				getApp().reloadDomainList();
+				rl.app.reloadDomainList();
 				this.closeCommand();
 			} else if (Notification.DomainAlreadyExists === oData.ErrorCode) {
 				this.savingError(i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));

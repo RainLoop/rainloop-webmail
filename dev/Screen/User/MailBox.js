@@ -15,8 +15,6 @@ import { FolderListMailBoxUserView } from 'View/User/MailBox/FolderList';
 import { MessageListMailBoxUserView } from 'View/User/MailBox/MessageList';
 import { MessageViewMailBoxUserView } from 'View/User/MailBox/MessageView';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { warmUpScreenPopup } from 'Knoin/Knoin';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
@@ -93,7 +91,7 @@ class MailBoxUserScreen extends AbstractScreen {
 			MessageStore.messageListSearch(search);
 			MessageStore.messageListThreadUid(threadUid);
 
-			getApp().reloadMessageList();
+			rl.app.reloadMessageList();
 		}
 	}
 
@@ -124,7 +122,7 @@ class MailBoxUserScreen extends AbstractScreen {
 	onBuild() {
 		if (!bMobileDevice && !Settings.app('mobile')) {
 			setTimeout(() =>
-				getApp().initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize)
+				rl.app.initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize)
 			, 1);
 		}
 

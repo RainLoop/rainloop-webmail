@@ -1,6 +1,6 @@
 import { CLIENT_SIDE_STORAGE_INDEX_NAME } from 'Common/Consts';
 
-const storage = window.localStorage;
+const storage = localStorage;
 
 /**
  * @param {number} key

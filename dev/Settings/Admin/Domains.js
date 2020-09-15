@@ -6,8 +6,6 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import DomainStore from 'Stores/Admin/Domain';
 import Remote from 'Remote/Admin/Fetch';
 
-import { getApp } from 'Helper/Apps/Admin';
-
 class DomainsAdminSettings {
 	constructor() {
 		this.domains = DomainStore.domains;
@@ -44,7 +42,7 @@ class DomainsAdminSettings {
 			el && ko.dataFor(el) && Remote.domain(this.onDomainLoadRequest, ko.dataFor(el).name);
 		});
 
-		getApp().reloadDomainList();
+		rl.app.reloadDomainList();
 	}
 
 	onDomainLoadRequest(sResult, oData) {
@@ -54,7 +52,7 @@ class DomainsAdminSettings {
 	}
 
 	onDomainListChangeRequest() {
-		getApp().reloadDomainList();
+		rl.app.reloadDomainList();
 	}
 }
 

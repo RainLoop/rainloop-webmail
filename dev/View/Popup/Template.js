@@ -6,8 +6,6 @@ import { HtmlEditor } from 'Common/HtmlEditor';
 
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -62,7 +60,7 @@ class TemplatePopupView extends AbstractViewNext {
 				this.submitRequest(false);
 				if (StorageResultType.Success === result && data) {
 					if (data.Result) {
-						getApp().templates();
+						rl.app.templates();
 						this.cancelCommand();
 					} else if (data.ErrorCode) {
 						this.submitError(getNotification(data.ErrorCode));

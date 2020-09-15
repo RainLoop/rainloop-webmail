@@ -11,8 +11,6 @@ import FolderStore from 'Stores/User/Folder';
 
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { showScreenPopup } from 'Knoin/Knoin';
 
 class FoldersUserSettings {
@@ -44,7 +42,7 @@ class FoldersUserSettings {
 		if (nameToEdit && folder.name() !== nameToEdit) {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
 
-			getApp().foldersPromisesActionHelper(
+			rl.app.foldersPromisesActionHelper(
 				Remote.folderRename(folder.fullNameRaw, nameToEdit, FolderStore.foldersRenaming),
 				Notification.CantRenameFolder
 			);
@@ -107,7 +105,7 @@ class FoldersUserSettings {
 
 				FolderStore.folderList.remove(fRemoveFolder);
 
-				getApp().foldersPromisesActionHelper(
+				rl.app.foldersPromisesActionHelper(
 					Remote.folderDelete(folderToRemove.fullNameRaw, FolderStore.foldersDeleting),
 					Notification.CantDeleteFolder
 				);

@@ -1,10 +1,9 @@
-import { data as GlobalsData, dropdownVisibility } from 'Common/Globals';
+import { dropdownVisibility } from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
 import { i18n } from 'Common/Translator';
 
 export default (App) => {
-	GlobalsData.__APP__ = App;
 
 	addEventListener('keydown', event => {
 		event = event || window.event;
@@ -86,6 +85,21 @@ export default (App) => {
 		}
 
 		return fetch(resource, init).then(response => response.json());
+/*
+		let f = fetch(resource, init);
+		if (reviver) {
+			return f.then(response => response.text())
+				.then(json => {
+					try {
+						return JSON.parse(json, reviver);
+					} catch (e) {
+						console.error(e);
+						throw e;
+					}
+				});
+		}
+		return f.then(response => response.json());
+*/
 	};
 
 	window.__APP_BOOT = fErrorCallback => {

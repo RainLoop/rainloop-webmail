@@ -8,8 +8,6 @@ import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -62,7 +60,7 @@ class FolderClearPopupView extends AbstractViewNext {
 			Remote.folderClear((result, data) => {
 				this.clearingProcess(false);
 				if (StorageResultType.Success === result && data && data.Result) {
-					getApp().reloadMessageList(true);
+					rl.app.reloadMessageList(true);
 					this.cancelCommand();
 				} else {
 					if (data && data.ErrorCode) {

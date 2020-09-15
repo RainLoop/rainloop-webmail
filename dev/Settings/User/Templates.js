@@ -5,8 +5,6 @@ import { i18n } from 'Common/Translator';
 import TemplateStore from 'Stores/User/Template';
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { showScreenPopup } from 'Knoin/Knoin';
 
 class TemplatesUserSettings {
@@ -54,7 +52,7 @@ class TemplatesUserSettings {
 	}
 
 	reloadTemplates() {
-		getApp().templates();
+		rl.app.templates();
 	}
 
 	onBuild(oDom) {

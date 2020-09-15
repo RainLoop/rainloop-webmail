@@ -10,8 +10,6 @@ import SettingsStore from 'Stores/User/Settings';
 import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { view, ViewType, showScreenPopup, setHash } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -77,7 +75,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				if (folder) {
 					if (isMove) {
 						moveAction(false);
-						getApp().moveMessagesToFolder(
+						rl.app.moveMessagesToFolder(
 							FolderStore.currentFolderFullNameRaw(),
 							MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
 							folder.fullNameRaw,
@@ -111,7 +109,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				const folder = ko.dataFor(el);
 				if (folder) {
 					const collapsed = folder.collapsed();
-					getApp().setExpandedFolder(folder.fullNameHash, collapsed);
+					rl.app.setExpandedFolder(folder.fullNameHash, collapsed);
 
 					folder.collapsed(!collapsed);
 					event.preventDefault();
@@ -165,7 +163,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				folder = item && ko.dataFor(item);
 			if (folder) {
 				const collapsed = folder.collapsed();
-				getApp().setExpandedFolder(folder.fullNameHash, collapsed);
+				rl.app.setExpandedFolder(folder.fullNameHash, collapsed);
 				folder.collapsed(!collapsed);
 			}
 
@@ -193,7 +191,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 		if (folder && folder.collapsed()) {
 			this.iDropOverTimer = setTimeout(() => {
 				folder.collapsed(false);
-				getApp().setExpandedFolder(folder.fullNameHash, true);
+				rl.app.setExpandedFolder(folder.fullNameHash, true);
 			}, 500);
 		}
 	}
@@ -231,7 +229,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				uids = ui.helper.rlUids;
 
 			if (fromFolderFullNameRaw && Array.isArray(uids)) {
-				getApp().moveMessagesToFolder(fromFolderFullNameRaw, uids, toFolder.fullNameRaw, copy);
+				rl.app.moveMessagesToFolder(fromFolderFullNameRaw, uids, toFolder.fullNameRaw, copy);
 			}
 		}
 	}

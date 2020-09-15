@@ -37,8 +37,6 @@ import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { view, command, ViewType, showScreenPopup, setHash, popupVisibility } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -266,7 +264,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	@command()
 	reloadCommand() {
 		if (!MessageStore.messageListCompleteLoadingThrottleForAnimation() && this.allowReload) {
-			getApp().reloadMessageList(false, true);
+			rl.app.reloadMessageList(false, true);
 		}
 	}
 
@@ -283,7 +281,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	@command(canBeMovedHelper)
 	deleteWithoutMoveCommand() {
 		if (Settings.capa(Capa.DangerousActions)) {
-			getApp().deleteMessagesFromFolder(
+			rl.app.deleteMessagesFromFolder(
 				FolderType.Trash,
 				FolderStore.currentFolderFullNameRaw(),
 				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
@@ -294,7 +292,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	@command(canBeMovedHelper)
 	deleteCommand() {
-		getApp().deleteMessagesFromFolder(
+		rl.app.deleteMessagesFromFolder(
 			FolderType.Trash,
 			FolderStore.currentFolderFullNameRaw(),
 			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
@@ -304,7 +302,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	@command(canBeMovedHelper)
 	archiveCommand() {
-		getApp().deleteMessagesFromFolder(
+		rl.app.deleteMessagesFromFolder(
 			FolderType.Archive,
 			FolderStore.currentFolderFullNameRaw(),
 			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
@@ -314,7 +312,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	@command(canBeMovedHelper)
 	spamCommand() {
-		getApp().deleteMessagesFromFolder(
+		rl.app.deleteMessagesFromFolder(
 			FolderType.Spam,
 			FolderStore.currentFolderFullNameRaw(),
 			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
@@ -324,7 +322,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	@command(canBeMovedHelper)
 	notSpamCommand() {
-		getApp().deleteMessagesFromFolder(
+		rl.app.deleteMessagesFromFolder(
 			FolderType.NotSpam,
 			FolderStore.currentFolderFullNameRaw(),
 			MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
@@ -470,7 +468,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	 */
 	moveSelectedMessagesToFolder(sToFolderFullNameRaw, bCopy) {
 		if (this.canBeMoved()) {
-			getApp().moveMessagesToFolder(
+			rl.app.moveMessagesToFolder(
 				FolderStore.currentFolderFullNameRaw(),
 				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
 				sToFolderFullNameRaw,
@@ -514,7 +512,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	 * @returns {void}
 	 */
 	setAction(sFolderFullNameRaw, iSetAction, aMessages) {
-		getApp().messageListAction(sFolderFullNameRaw, iSetAction, aMessages);
+		rl.app.messageListAction(sFolderFullNameRaw, iSetAction, aMessages);
 	}
 
 	/**
@@ -586,7 +584,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 					// no default
 				}
 
-				getApp().reloadFlagsCurrentMessageListAndMessageFromCache();
+				rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
 			}
 		}
 	}
@@ -975,7 +973,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 				return false;
 			})
-			.on('onComplete', () => getApp().reloadMessageList(true, true));
+			.on('onComplete', () => rl.app.reloadMessageList(true, true));
 
 		return !!oJua;
 	}

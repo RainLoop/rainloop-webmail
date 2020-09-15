@@ -6,8 +6,6 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { popup, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
@@ -104,7 +102,7 @@ class TwoFactorConfigurationPopupView extends AbstractViewNext {
 	}
 
 	logout() {
-		getApp().logout();
+		rl.app.logout();
 	}
 
 	testTwoFactor() {

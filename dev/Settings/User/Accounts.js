@@ -7,8 +7,6 @@ import AccountStore from 'Stores/User/Account';
 import IdentityStore from 'Stores/User/Identity';
 import Remote from 'Remote/User/Fetch';
 
-import { getApp } from 'Helper/Apps/User';
-
 import { showScreenPopup, routeOff, setHash } from 'Knoin/Knoin';
 
 class AccountsUserSettings {
@@ -67,7 +65,7 @@ class AccountsUserSettings {
 
 						setTimeout(() => location.reload(), 1);
 					} else {
-						getApp().accountsAndIdentities();
+						rl.app.accountsAndIdentities();
 					}
 				}, accountToRemove.email);
 			}
@@ -86,7 +84,7 @@ class AccountsUserSettings {
 				IdentityStore.identities.remove((oIdentity) => identityToRemove === oIdentity);
 
 				Remote.identityDelete(() => {
-					getApp().accountsAndIdentities();
+					rl.app.accountsAndIdentities();
 				}, identityToRemove.id);
 			}
 		}
