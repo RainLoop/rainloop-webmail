@@ -1,5 +1,4 @@
 import { pString, pInt } from 'Common/Utils';
-import PromisesPopulator from 'Promises/User/Populator';
 
 import {
 	CONTACTS_SYNC_AJAX_TIMEOUT,
@@ -23,6 +22,8 @@ import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
 
 import { AbstractFetchRemote } from 'Remote/AbstractFetch';
+
+import { FolderCollectionModel } from 'Model/FolderCollection';
 
 //const toUTF8 = window.TextEncoder
 //		? text => String.fromCharCode(...new TextEncoder().encode(text))
@@ -773,9 +774,9 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	foldersReload(fTrigger) {
 		return this.abort('Folders')
 			.postRequest('Folders', fTrigger)
-			.then((data) => {
-				PromisesPopulator.foldersList(data.Result);
-				PromisesPopulator.foldersAdditionalParameters(data.Result);
+			.then(data => {
+				data = FolderCollectionModel.reviveFromJson(data.Result);
+				data && data.storeIt();
 				return true;
 			});
 	}

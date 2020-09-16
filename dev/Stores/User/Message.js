@@ -543,6 +543,13 @@ class MessageUserStore {
 							+ '</div>');
 						body.rlCacheCount = iMessageBodyCacheCount;
 
+						// Drop Microsoft Office style properties
+						const rgbRE = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/g,
+							hex = n => ('0' + parseInt(n).toString(16)).slice(-2);
+						body.querySelectorAll('[style*=mso]').forEach(el =>
+							el.setAttribute('style', el.style.cssText.replace(rgbRE, (m,r,g,b) => '#' + hex(r) + hex(g) + hex(b)))
+						);
+
 						message.body = body;
 
 						message.isHtml(!!isHtml);
