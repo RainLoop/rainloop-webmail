@@ -18,8 +18,6 @@ import {
 	initMessageFlagsFromCache,
 	addRequestedMessage,
 	clearMessageFlagsFromCacheByFolder,
-	hasNewMessageAndRemoveFromCache,
-	storeMessageFlagsToCache,
 	clearNewMessageCache
 } from 'Common/Cache';
 
@@ -29,6 +27,7 @@ import { i18n, getNotification } from 'Common/Translator';
 
 import { EmailCollectionModel } from 'Model/EmailCollection';
 import { MessageModel } from 'Model/Message';
+import { MessageCollectionModel } from 'Model/MessageCollection';
 
 import { setHash } from 'Knoin/Knoin';
 
@@ -681,87 +680,54 @@ class MessageUserStore {
 	}
 
 	setMessageList(data, cached) {
-		if (
-			data &&
-			data.Result &&
-			'Collection/MessageCollection' === data.Result['@Object'] &&
-			data.Result['@Collection'] &&
-			Array.isArray(data.Result['@Collection'])
-		) {
-			let newCount = 0,
-				unreadCountChange = false;
+		const collection = data && MessageCollectionModel.reviveFromJson(data.Result, cached);
+		if (collection) {
+			let unreadCountChange = false;
 
-			const list = [],
-				iCount = pInt(data.Result.MessageResultCount),
-				iOffset = pInt(data.Result.Offset);
-
-			const folder = getFolderFromCacheList(data.Result.Folder);
+			const iCount = collection.MessageResultCount,
+				iOffset = collection.Offset,
+				folder = getFolderFromCacheList(collection.Folder);
 
 			if (folder && !cached) {
 				folder.interval = Date.now() / 1000;
 
-				setFolderHash(data.Result.Folder, data.Result.FolderHash);
+				setFolderHash(collection.Folder, collection.FolderHash);
 
-				if (null != data.Result.MessageCount) {
-					folder.messageCountAll(data.Result.MessageCount);
+				if (null != collection.MessageCount) {
+					folder.messageCountAll(collection.MessageCount);
 				}
 
-				if (null != data.Result.MessageUnseenCount) {
-					if (pInt(folder.messageCountUnread()) !== pInt(data.Result.MessageUnseenCount)) {
+				if (null != collection.MessageUnseenCount) {
+					if (pInt(folder.messageCountUnread()) !== pInt(collection.MessageUnseenCount)) {
 						unreadCountChange = true;
+						clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
 					}
 
-					folder.messageCountUnread(data.Result.MessageUnseenCount);
+					folder.messageCountUnread(collection.MessageUnseenCount);
 				}
 
-				this.initUidNextAndNewMessages(folder.fullNameRaw, data.Result.UidNext, data.Result.NewMessages);
+				this.initUidNextAndNewMessages(folder.fullNameRaw, collection.UidNext, collection.NewMessages);
 			}
-
-			if (unreadCountChange && folder) {
-				clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
-			}
-
-			data.Result['@Collection'].forEach(jsonMessage => {
-				if (jsonMessage && 'Object/Message' === jsonMessage['@Object']) {
-					const message = MessageModel.newInstanceFromJson(jsonMessage);
-					if (message) {
-						if (hasNewMessageAndRemoveFromCache(message.folderFullNameRaw, message.uid) && 5 >= newCount) {
-							newCount += 1;
-							message.newForAnimation(true);
-						}
-
-						message.deleted(false);
-
-						if (cached) {
-							initMessageFlagsFromCache(message);
-						} else {
-							storeMessageFlagsToCache(message);
-						}
-
-						list.push(message);
-					}
-				}
-			});
 
 			this.messageListCount(iCount);
-			this.messageListSearch(null != data.Result.Search ? data.Result.Search : '');
+			this.messageListSearch(pString(collection.Search));
 			this.messageListPage(Math.ceil(iOffset / SettingsStore.messagesPerPage() + 1));
-			this.messageListThreadUid(null != data.Result.ThreadUid ? pString(data.Result.ThreadUid) : '');
+			this.messageListThreadUid(pString(data.Result.ThreadUid));
 
-			this.messageListEndFolder(null != data.Result.Folder ? data.Result.Folder : '');
+			this.messageListEndFolder(collection.Folder);
 			this.messageListEndSearch(this.messageListSearch());
 			this.messageListEndThreadUid(this.messageListThreadUid());
 			this.messageListEndPage(this.messageListPage());
 
 			this.messageListDisableAutoSelect(true);
 
-			this.messageList(list);
+			this.messageList(collection);
 			this.messageListIsNotCompleted(false);
 
 			clearNewMessageCache();
 
 			if (folder && (cached || unreadCountChange || SettingsStore.useThreads())) {
-				rl.app.folderInformation(folder.fullNameRaw, list);
+				rl.app.folderInformation(folder.fullNameRaw, collection);
 			}
 		} else {
 			this.messageListCount(0);

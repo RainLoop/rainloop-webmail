@@ -16,7 +16,7 @@ import Remote from 'Remote/User/Fetch';
 
 const Settings = rl.settings,
 
-normalizeFolder = sFolderFullNameRaw => (!sFolderFullNameRaw
+normalizeFolder = sFolderFullNameRaw => ('' === sFolderFullNameRaw
 	|| UNUSED_OPTION_VALUE === sFolderFullNameRaw
 	|| null !== Cache.getFolderFromCacheList(sFolderFullNameRaw))
 		? sFolderFullNameRaw
@@ -28,81 +28,73 @@ class FolderCollectionModel extends Array
 		super();
 /*
 		this.CountRec
-		this.Namespace;
+		this.FoldersHash
 		this.IsThreadsSupported
+		this.Namespace;
 		this.Optimized
 		this.SystemFolders
-		this.FoldersHash
 */
 	}
 
 	/**
-	 * @param {?Array} json
+	 * @param {?Object} json
 	 * @returns {FolderCollectionModel}
 	 */
-	static reviveFromJson(items) {
-		if (!items || 'Collection/FolderCollection' !== items['@Object'] || !Array.isArray(items['@Collection'])) {
-			return;
-		}
+	static reviveFromJson(collection) {
+		if (collection && 'Collection/FolderCollection' === collection['@Object']
+		 && Array.isArray(collection['@Collection'])) {
+			const result = new FolderCollectionModel,
+				expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders),
+				bDisplaySpecSetting = FolderStore.displaySpecSetting();
 
-		const result = new FolderCollectionModel,
-			expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders),
-			bDisplaySpecSetting = FolderStore.displaySpecSetting();
+			Object.entries(collection).forEach(([key, value]) => '@' !== key[0] && (result[key] = value));
 
-		result.CountRec = items.CountRec;
-		result.Namespace = items.Namespace;
-		result.IsThreadsSupported = items.IsThreadsSupported;
-		result.Optimized = !!items.Optimized;
-		result.SystemFolders = items.SystemFolders;
-		result.FoldersHash = items.FoldersHash;
+			collection['@Collection'].forEach(oFolder => {
+				if (oFolder) {
+					let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
+					if (!oCacheFolder) {
+						oCacheFolder = FolderModel.newInstanceFromJson(oFolder);
+						if (oCacheFolder) {
+							Cache.setFolderToCacheList(oFolder.FullNameRaw, oCacheFolder);
+							Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, oFolder.FullNameRaw, oCacheFolder);
+						}
+					}
 
-		items['@Collection'].forEach(oFolder => {
-			if (oFolder) {
-				let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
-				if (!oCacheFolder) {
-					oCacheFolder = FolderModel.newInstanceFromJson(oFolder);
 					if (oCacheFolder) {
-						Cache.setFolderToCacheList(oFolder.FullNameRaw, oCacheFolder);
-						Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, oFolder.FullNameRaw, oCacheFolder);
-					}
-				}
-
-				if (oCacheFolder) {
-					if (bDisplaySpecSetting) {
-						oCacheFolder.checkable(!!oFolder.Checkable);
-					} else {
-						oCacheFolder.checkable(true);
-					}
-
-					oCacheFolder.collapsed(!expandedFolders
-						|| !Array.isArray(expandedFolders)
-						|| !expandedFolders.includes(oCacheFolder.fullNameHash));
-
-					if (oFolder.Extended) {
-						if (oFolder.Extended.Hash) {
-							Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);
+						if (bDisplaySpecSetting) {
+							oCacheFolder.checkable(!!oFolder.Checkable);
+						} else {
+							oCacheFolder.checkable(true);
 						}
 
-						if (null != oFolder.Extended.MessageCount) {
-							oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
+						oCacheFolder.collapsed(!expandedFolders
+							|| !Array.isArray(expandedFolders)
+							|| !expandedFolders.includes(oCacheFolder.fullNameHash));
+
+						if (oFolder.Extended) {
+							if (oFolder.Extended.Hash) {
+								Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);
+							}
+
+							if (null != oFolder.Extended.MessageCount) {
+								oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
+							}
+
+							if (null != oFolder.Extended.MessageUnseenCount) {
+								oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
+							}
 						}
 
-						if (null != oFolder.Extended.MessageUnseenCount) {
-							oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
-						}
-					}
-
-					if (oFolder.SubFolders) {
 						oFolder.SubFolders = FolderCollectionModel.reviveFromJson(oFolder.SubFolders);
-						oCacheFolder.subFolders(oFolder.SubFolders);
+						oFolder.SubFolders && oCacheFolder.subFolders(oFolder.SubFolders);
+
+						result.push(oCacheFolder);
 					}
-
-					result.push(oCacheFolder);
 				}
-			}
-		});
+			});
 
-		return result;
+			return result;
+		}
 	}
 
 	storeIt() {
@@ -121,7 +113,7 @@ class FolderCollectionModel extends Array
 
 		AppStore.threadsAllowed(!!(Settings.app('useImapThread') && this.IsThreadsSupported));
 
-		FolderStore.folderList.optimized(this.Optimized);
+		FolderStore.folderList.optimized(!!this.Optimized);
 
 		let update = false;
 

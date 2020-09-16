@@ -308,34 +308,25 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			useThreads = AppStore.threadsAllowed() && SettingsStore.useThreads(),
 			inboxUidNext = getFolderInboxName() === sFolderFullNameRaw ? getFolderUidNext(sFolderFullNameRaw) : '';
 
-		if (folderHash && (!sSearch || !sSearch.includes('is:'))) {
-			return this.defaultRequest(
-				fCallback,
-				'MessageList',
-				{},
-				sSearch ? SEARCH_AJAX_TIMEOUT : DEFAULT_AJAX_TIMEOUT,
-				'MessageList/' +
-					subQueryPrefix() +
-					'/' +
-					urlsafeArray([
-						sFolderFullNameRaw,
-						iOffset,
-						iLimit,
-						sSearch,
-						AppStore.projectHash(),
-						folderHash,
-						inboxUidNext,
-						useThreads ? 1 : 0,
-						useThreads ? sThreadUid : ''
-					]),
-				bSilent ? [] : ['MessageList']
-			);
-		}
+		let params = {}, sGetAdd = '';
 
-		return this.defaultRequest(
-			fCallback,
-			'MessageList',
-			{
+		if (folderHash && (!sSearch || !sSearch.includes('is:'))) {
+			sGetAdd = 'MessageList/' +
+				subQueryPrefix() +
+				'/' +
+				urlsafeArray([
+					sFolderFullNameRaw,
+					iOffset,
+					iLimit,
+					sSearch,
+					AppStore.projectHash(),
+					folderHash,
+					inboxUidNext,
+					useThreads ? 1 : 0,
+					useThreads ? sThreadUid : ''
+				]);
+		} else {
+			params = {
 				Folder: sFolderFullNameRaw,
 				Offset: iOffset,
 				Limit: iLimit,
@@ -343,9 +334,15 @@ class RemoteUserFetch extends AbstractFetchRemote {
 				UidNext: inboxUidNext,
 				UseThreads: useThreads ? 1 : 0,
 				ThreadUid: useThreads ? sThreadUid : ''
-			},
+			};
+		}
+
+		return this.defaultRequest(
+			fCallback,
+			'MessageList',
+			params,
 			sSearch ? SEARCH_AJAX_TIMEOUT : DEFAULT_AJAX_TIMEOUT,
-			'',
+			sGetAdd,
 			bSilent ? [] : ['MessageList']
 		);
 	}
