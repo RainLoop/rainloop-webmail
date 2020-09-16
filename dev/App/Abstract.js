@@ -165,6 +165,16 @@ class AbstractApp {
 		LanguageStore.populate();
 		ThemeStore.populate();
 	}
+
+	/**
+	 * @returns {void}
+	 */
+	hideLoading() {
+		const id = id => document.getElementById(id);
+		id('rl-content').hidden = false;
+		id('rl-loading').remove();
+	}
+
 }
 
 export { AbstractApp, AbstractApp as default };

@@ -9,7 +9,6 @@ let currentScreen = null,
 	popupVisibilityNames = [];
 
 const SCREENS = {},
-	qs = s => document.querySelector(s),
 	isNonEmptyArray = Array.isNotEmpty,
 	autofocus = dom => {
 //		if (!bMobileDevice) {
@@ -25,14 +24,6 @@ export const ViewType = {
 	Right: 'Right',
 	Center: 'Center'
 };
-
-/**
- * @returns {void}
- */
-export function hideLoading() {
-	qs('#rl-content').hidden = false;
-	qs('#rl-loading').remove();
-}
 
 /**
  * @param {Function} fExecute
@@ -125,7 +116,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 		let vmDom = null;
 		const vm = new ViewModelClass(vmScreen),
 			position = ViewModelClass.__type || '',
-			vmPlace = position ? qs('#rl-content #rl-' + position.toLowerCase()) : null;
+			vmPlace = position ? document.querySelector('#rl-content #rl-' + position.toLowerCase()) : null;
 
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = vm;

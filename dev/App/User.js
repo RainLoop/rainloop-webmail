@@ -68,7 +68,7 @@ import { LoginUserScreen } from 'Screen/User/Login';
 import { MailBoxUserScreen } from 'Screen/User/MailBox';
 import { SettingsUserScreen } from 'Screen/User/Settings';
 
-import { hideLoading, startScreens, showScreenPopup } from 'Knoin/Knoin';
+import { startScreens, showScreenPopup } from 'Knoin/Knoin';
 
 import { AbstractApp } from 'App/Abstract';
 
@@ -907,7 +907,7 @@ class AppUser extends AbstractApp {
 		if (window.progressJs) {
 			progressJs.end();
 		}
-		hideLoading();
+		this.hideLoading();
 	}
 
 	bootstart() {

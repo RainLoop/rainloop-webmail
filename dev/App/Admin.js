@@ -12,7 +12,7 @@ import Remote from 'Remote/Admin/Fetch';
 import { SettingsAdminScreen } from 'Screen/Admin/Settings';
 import { LoginAdminScreen } from 'Screen/Admin/Login';
 
-import { hideLoading, startScreens } from 'Knoin/Knoin';
+import { startScreens } from 'Knoin/Knoin';
 import { AbstractApp } from 'App/Abstract';
 
 class AdminApp extends AbstractApp {
@@ -104,7 +104,7 @@ class AdminApp extends AbstractApp {
 		AppStore.populate();
 		CapaStore.populate();
 
-		hideLoading();
+		this.hideLoading();
 
 		if (!rl.settings.app('allowAdminPanel')) {
 			rl.route.root();
