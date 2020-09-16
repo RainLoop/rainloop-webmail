@@ -15,17 +15,14 @@ import LanguageStore from 'Stores/Language';
 import ThemeStore from 'Stores/Theme';
 
 import { routeReload } from 'Knoin/Knoin';
-import { AbstractBoot } from 'Knoin/AbstractBoot';
 
 const Settings = rl.settings;
 
-class AbstractApp extends AbstractBoot {
+class AbstractApp {
 	/**
 	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 */
 	constructor() {
-		super();
-
 		this.isLocalAutocomplete = true;
 		this.lastErrorTime = 0;
 
