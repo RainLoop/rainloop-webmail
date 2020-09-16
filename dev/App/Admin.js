@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { root } from 'Common/Links';
 import { StorageResultType } from 'Common/Enums';
 
 import AppStore from 'Stores/Admin/App';
@@ -13,7 +12,7 @@ import Remote from 'Remote/Admin/Fetch';
 import { SettingsAdminScreen } from 'Screen/Admin/Settings';
 import { LoginAdminScreen } from 'Screen/Admin/Login';
 
-import { hideLoading, routeOff, setHash, startScreens } from 'Knoin/Knoin';
+import { hideLoading, startScreens } from 'Knoin/Knoin';
 import { AbstractApp } from 'App/Abstract';
 
 class AdminApp extends AbstractApp {
@@ -108,13 +107,8 @@ class AdminApp extends AbstractApp {
 		hideLoading();
 
 		if (!rl.settings.app('allowAdminPanel')) {
-			routeOff();
-			setHash(root(), true);
-			routeOff();
-
-			setTimeout(() =>
-				location.href = '/'
-			, 1);
+			rl.route.root();
+			setTimeout(() => location.href = '/', 1);
 		} else {
 			if (rl.settings.get('Auth')) {
 				startScreens([SettingsAdminScreen]);

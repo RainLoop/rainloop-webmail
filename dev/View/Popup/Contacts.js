@@ -33,7 +33,7 @@ import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
 import { ContactPropertyModel } from 'Model/ContactProperty';
 
-import { popup, command, showScreenPopup, hideScreenPopup, routeOn, routeOff } from 'Knoin/Knoin';
+import { popup, command, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 const trim = text => null == text ? "" : (text + "").trim();
@@ -633,12 +633,12 @@ class ContactsPopupView extends AbstractViewNext {
 		this.bBackToCompose = undefined === bBackToCompose ? false : !!bBackToCompose;
 		this.sLastComposeFocusedField = undefined === sLastComposeFocusedField ? '' : sLastComposeFocusedField;
 
-		routeOff();
+		rl.route.off();
 		this.reloadContactList(true);
 	}
 
 	onHide() {
-		routeOn();
+		rl.route.on();
 
 		this.currentContact(null);
 		this.emptySelection(true);

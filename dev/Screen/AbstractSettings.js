@@ -4,7 +4,6 @@ import { VIEW_MODELS } from 'Common/Globals';
 import { pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
 
-import { setHash } from 'Knoin/Knoin';
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
 class AbstractSettingsScreen extends AbstractScreen {
@@ -128,7 +127,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 				}, 1);
 			}
 		} else {
-			setHash(settings(), false, true);
+			rl.route.setHash(settings(), false, true);
 		}
 	}
 

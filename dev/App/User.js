@@ -68,7 +68,7 @@ import { LoginUserScreen } from 'Screen/User/Login';
 import { MailBoxUserScreen } from 'Screen/User/MailBox';
 import { SettingsUserScreen } from 'Screen/User/Settings';
 
-import { hideLoading, routeOff, routeOn, setHash, startScreens, showScreenPopup } from 'Knoin/Knoin';
+import { hideLoading, startScreens, showScreenPopup } from 'Knoin/Knoin';
 
 import { AbstractApp } from 'App/Abstract';
 
@@ -149,7 +149,7 @@ class AppUser extends AbstractApp {
 			MessageStore.messageListPageBeforeThread(1);
 			iOffset = 0;
 
-			setHash(
+			rl.route.setHash(
 				mailBox(
 					FolderStore.currentFolderFullNameHash(),
 					MessageStore.messageListPage(),
@@ -948,9 +948,7 @@ class AppUser extends AbstractApp {
 
 					if (value) {
 						if (startupUrl) {
-							routeOff();
-							setHash(root(startupUrl), true);
-							routeOn();
+							rl.route.setHash(root(startupUrl), true);
 						}
 
 						if (window.crypto && crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {

@@ -19,7 +19,7 @@ import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Fetch';
 
-import { view, command, ViewType, routeOff, showScreenPopup, routeReload } from 'Knoin/Knoin';
+import { view, command, ViewType, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 import { rootAdmin } from 'Common/Links';
@@ -182,7 +182,7 @@ class LoginUserView extends AbstractViewNext {
 							} else if (oData.Admin) {
 								setTimeout(() => location.href = rootAdmin(), 100);
 							} else {
-								routeReload();
+								rl.route.reload();
 							}
 						} else if (oData.ErrorCode) {
 							this.submitRequest(false);
@@ -227,7 +227,7 @@ class LoginUserView extends AbstractViewNext {
 	}
 
 	onShow() {
-		routeOff();
+		rl.route.off();
 	}
 
 	onBuild() {

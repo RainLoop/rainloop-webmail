@@ -4,7 +4,7 @@ import { leftPanelDisabled } from 'Common/Globals';
 
 import MessageStore from 'Stores/User/Message';
 
-import { view, ViewType, setHash } from 'Knoin/Knoin';
+import { view, ViewType } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @view({
@@ -44,7 +44,7 @@ class PaneSettingsUserView extends AbstractViewNext {
 	}
 
 	backToMailBoxClick() {
-		setHash(inbox(getFolderInboxName()));
+		rl.route.setHash(inbox(getFolderInboxName()));
 	}
 }
 

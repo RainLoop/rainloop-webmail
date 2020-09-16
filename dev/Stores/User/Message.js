@@ -29,8 +29,6 @@ import { EmailCollectionModel } from 'Model/EmailCollection';
 import { MessageModel } from 'Model/Message';
 import { MessageCollectionModel } from 'Model/MessageCollection';
 
-import { setHash } from 'Knoin/Knoin';
-
 import AppStore from 'Stores/User/App';
 import AccountStore from 'Stores/User/Account';
 import FolderStore from 'Stores/User/Folder';
@@ -127,7 +125,7 @@ class MessageUserStore {
 		this.mainMessageListSearch = ko.computed({
 			read: this.messageListSearch,
 			write: (value) => {
-				setHash(
+				rl.route.setHash(
 					mailBox(FolderStore.currentFolderFullNameHash(), 1, value.toString().trim(), this.messageListThreadUid())
 				);
 			}
@@ -374,7 +372,7 @@ class MessageUserStore {
 				if (message && this.messageListThreadUid() !== pString(message.uid)) {
 					this.messageListThreadUid(pString(message.uid));
 
-					setHash(
+					rl.route.setHash(
 						mailBox(
 							FolderStore.currentFolderFullNameHash(),
 							this.messageListPage(),
@@ -388,7 +386,7 @@ class MessageUserStore {
 					if (1 < this.messageListPage()) {
 						this.messageListPage(this.messageListPage() - 1);
 
-						setHash(
+						rl.route.setHash(
 							mailBox(
 								FolderStore.currentFolderFullNameHash(),
 								this.messageListPage(),
@@ -401,7 +399,7 @@ class MessageUserStore {
 					} else {
 						this.messageListThreadUid('');
 
-						setHash(
+						rl.route.setHash(
 							mailBox(
 								FolderStore.currentFolderFullNameHash(),
 								this.messageListPageBeforeThread(),

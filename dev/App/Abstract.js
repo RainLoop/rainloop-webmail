@@ -14,8 +14,6 @@ import { initOnStartOrLangChange, initNotificationLanguage } from 'Common/Transl
 import LanguageStore from 'Stores/Language';
 import ThemeStore from 'Stores/Theme';
 
-import { routeReload } from 'Knoin/Knoin';
-
 const Settings = rl.settings;
 
 class AbstractApp {
@@ -89,7 +87,7 @@ class AbstractApp {
 		if (location.href !== logoutLink) {
 			setTimeout(() => (Settings.app('inIframe') ? parent : window).location.href = logoutLink, 100);
 		} else {
-			routeReload();
+			rl.route.reload();
 		}
 	}
 

@@ -3,7 +3,7 @@ import { leftPanelDisabled } from 'Common/Globals';
 import { settings, inbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 
-import { view, ViewType, setHash, settingsMenuKeysHandler } from 'Knoin/Knoin';
+import { view, ViewType, settingsMenuKeysHandler } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @view({
@@ -40,7 +40,7 @@ class MenuSettingsUserView extends AbstractViewNext {
 	}
 
 	backToMailBoxClick() {
-		setHash(inbox(getFolderInboxName()));
+		rl.route.setHash(inbox(getFolderInboxName()));
 	}
 }
 

@@ -1,13 +1,12 @@
 import ko from 'ko';
 
 import { Capa, StorageResultType } from 'Common/Enums';
-import { root } from 'Common/Links';
 
 import AccountStore from 'Stores/User/Account';
 import IdentityStore from 'Stores/User/Identity';
 import Remote from 'Remote/User/Fetch';
 
-import { showScreenPopup, routeOff, setHash } from 'Knoin/Knoin';
+import { showScreenPopup } from 'Knoin/Knoin';
 
 class AccountsUserSettings {
 	constructor() {
@@ -59,10 +58,7 @@ class AccountsUserSettings {
 
 				Remote.accountDelete((result, data) => {
 					if (StorageResultType.Success === result && data && data.Result && data.Reload) {
-						routeOff();
-						setHash(root(), true);
-						routeOff();
-
+						rl.route.root();
 						setTimeout(() => location.reload(), 1);
 					} else {
 						rl.app.accountsAndIdentities();

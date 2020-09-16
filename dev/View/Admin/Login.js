@@ -5,7 +5,7 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { view, command, ViewType, routeOff, routeReload } from 'Knoin/Knoin';
+import { view, command, ViewType } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 @view({
@@ -68,7 +68,7 @@ class LoginAdminView extends AbstractViewNext {
 			(sResult, oData) => {
 				if (StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action) {
 					if (oData.Result) {
-						routeReload();
+						rl.route.reload();
 					} else if (oData.ErrorCode) {
 						this.submitRequest(false);
 						this.submitError(getNotification(oData.ErrorCode));
@@ -86,7 +86,7 @@ class LoginAdminView extends AbstractViewNext {
 	}
 
 	onShow() {
-		routeOff();
+		rl.route.off();
 	}
 
 	submitForm() {

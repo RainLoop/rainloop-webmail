@@ -37,7 +37,7 @@ import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
-import { view, command, ViewType, showScreenPopup, setHash, popupVisibility } from 'Knoin/Knoin';
+import { view, command, ViewType, showScreenPopup, popupVisibility } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 const
@@ -235,14 +235,14 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			);
 
 			if ('INBOX' === sFolder) {
-				setHash(mailBox(sFolder, 1));
+				rl.route.setHash(mailBox(sFolder, 1));
 			}
 
 			if (message) {
 				this.selector.selectMessageItem(message);
 			} else {
 				if ('INBOX' !== sFolder) {
-					setHash(mailBox(sFolder, 1));
+					rl.route.setHash(mailBox(sFolder, 1));
 				}
 
 				MessageStore.selectMessageByFolderAndUid(sFolder, sUid);
@@ -452,7 +452,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	cancelThreadUid() {
-		setHash(
+		rl.route.setHash(
 			mailBox(
 				FolderStore.currentFolderFullNameHash(),
 				MessageStore.messageListPageBeforeThread(),
@@ -690,7 +690,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	gotoPage(page) {
-		page && setHash(
+		page && rl.route.setHash(
 			mailBox(
 				FolderStore.currentFolderFullNameHash(),
 				page.value,
@@ -704,7 +704,9 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		if (message && 0 < message.threadsLen()) {
 			MessageStore.messageListPageBeforeThread(MessageStore.messageListPage());
 
-			setHash(mailBox(FolderStore.currentFolderFullNameHash(), 1, MessageStore.messageListSearch(), message.uid));
+			rl.route.setHash(
+				mailBox(FolderStore.currentFolderFullNameHash(), 1, MessageStore.messageListSearch(), message.uid)
+			);
 		}
 	}
 

@@ -3,6 +3,8 @@ import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
 import { i18n } from 'Common/Translator';
 
+import { root } from 'Common/Links';
+
 export default (App) => {
 
 	addEventListener('keydown', event => {
@@ -52,6 +54,40 @@ export default (App) => {
 	rl.Dropdowns.detectVisibility = (() =>
 		dropdownVisibility(!!rl.Dropdowns.find(item => item.classList.contains('open')))
 	).debounce(50);
+
+	rl.route = {
+		root: () => {
+			rl.route.setHash(root(), true);
+			rl.route.off();
+		},
+		reload: () => {
+			rl.root();
+			setTimeout(() => (rl.settings.app('inIframe') ? parent : window).location.reload(), 100);
+		},
+		off: () => hasher.changed.active = false,
+		on: () => hasher.changed.active = true,
+		/**
+		 * @param {string} sHash
+		 * @param {boolean=} silence = false
+		 * @param {boolean=} replace = false
+		 * @returns {void}
+		 */
+		setHash: (hash, silence = false, replace = false) => {
+			hash = hash.replace(/^[#/]+/, '');
+
+			const cmd = replace ? 'replaceHash' : 'setHash';
+
+			if (silence) {
+				hasher.changed.active = false;
+				hasher[cmd](hash);
+				hasher.changed.active = true;
+			} else {
+				hasher.changed.active = true;
+				hasher[cmd](hash);
+				hasher.setHash(hash);
+			}
+		}
+	};
 
 	rl.fetchJSON = (resource, init, postData) => {
 		init = Object.assign({

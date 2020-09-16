@@ -7,7 +7,7 @@ import MessageStore from 'Stores/User/Message';
 import { Capa, KeyState } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
-import { showScreenPopup, setHash } from 'Knoin/Knoin';
+import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 const Settings = rl.settings;
@@ -60,7 +60,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 
 	settingsClick() {
 		if (Settings.capa(Capa.Settings)) {
-			setHash(settings());
+			rl.route.setHash(settings());
 		}
 	}
 

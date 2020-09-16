@@ -2,8 +2,6 @@ import ko from 'ko';
 
 import { $htmlCL, VIEW_MODELS } from 'Common/Globals';
 
-import { root } from 'Common/Links';
-
 //import { bMobileDevice } from 'Common/Globals';
 
 let currentScreen = null,
@@ -80,30 +78,6 @@ export function addSettingsViewModel(SettingsViewModelClass, template, labelName
 	};
 
 	VIEW_MODELS.settings.push(SettingsViewModelClass);
-}
-
-/**
- * @returns {void}
- */
-export function routeReload() {
-	routeOff();
-	setHash(root(), true);
-	routeOff();
-	setTimeout(() => (rl.settings.app('inIframe') ? parent : window).location.reload(), 100);
-}
-
-/**
- * @returns {void}
- */
-export function routeOff() {
-	hasher.changed.active = false;
-}
-
-/**
- * @returns {void}
- */
-export function routeOn() {
-	hasher.changed.active = true;
 }
 
 /**
@@ -423,28 +397,6 @@ export function startScreens(screensClasses) {
 }
 
 /**
- * @param {string} sHash
- * @param {boolean=} silence = false
- * @param {boolean=} replace = false
- * @returns {void}
- */
-export function setHash(hash, silence = false, replace = false) {
-	hash = hash.replace(/^[#/]+/, '');
-
-	const cmd = replace ? 'replaceHash' : 'setHash';
-
-	if (silence) {
-		hasher.changed.active = false;
-		hasher[cmd](hash);
-		hasher.changed.active = true;
-	} else {
-		hasher.changed.active = true;
-		hasher[cmd](hash);
-		hasher.setHash(hash);
-	}
-}
-
-/**
  * @param {Object} params
  * @returns {Function}
  */
@@ -524,7 +476,7 @@ function settingsMenuKeysHandler(items) {
 			}
 
 			const resultHash = items[index].href;
-			resultHash && setHash(resultHash, false, true);
+			resultHash && rl.route.setHash(resultHash, false, true);
 		}
 	}).throttle(200);
 }

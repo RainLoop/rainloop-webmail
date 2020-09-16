@@ -40,7 +40,7 @@ import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 
-import { popup, command, isPopupVisible, showScreenPopup, hideScreenPopup, routeOn, routeOff } from 'Knoin/Knoin';
+import { popup, command, isPopupVisible, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 const Settings = rl.settings;
@@ -636,7 +636,7 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.to.focused(false);
 
-		routeOn();
+		rl.route.on();
 
 		this.resizeObserver.disconnect();
 	}
@@ -719,7 +719,7 @@ class ComposePopupView extends AbstractViewNext {
 	 * @param {string=} sCustomPlainText = null
 	 */
 	onShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText) {
-		routeOff();
+		rl.route.off();
 
 		const ro = this.resizeObserver;
 		ro.observe(ro.compose);

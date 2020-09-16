@@ -10,7 +10,7 @@ import SettingsStore from 'Stores/User/Settings';
 import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
 
-import { view, ViewType, showScreenPopup, setHash } from 'Knoin/Knoin';
+import { view, ViewType, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 const Settings = rl.settings;
@@ -90,11 +90,10 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 							setFolderHash(folder.fullNameRaw, '');
 						}
 
-						if (starred) {
-							setHash(mailBox(folder.fullNameHash, 1, 'is:flagged'));
-						} else {
-							setHash(mailBox(folder.fullNameHash));
-						}
+						rl.route.setHash(starred
+							? mailBox(folder.fullNameHash, 1, 'is:flagged')
+							: mailBox(folder.fullNameHash)
+						);
 					}
 
 					AppStore.focusedState(Focused.MessageList);
@@ -245,7 +244,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	}
 
 	configureFolders() {
-		setHash(settings('folders'));
+		rl.route.setHash(settings('folders'));
 	}
 
 	contactsClick() {
