@@ -61,7 +61,7 @@ export default (App) => {
 			rl.route.off();
 		},
 		reload: () => {
-			rl.root();
+			rl.route.root();
 			setTimeout(() => (rl.settings.app('inIframe') ? parent : window).location.reload(), 100);
 		},
 		off: () => hasher.changed.active = false,
