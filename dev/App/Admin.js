@@ -1,4 +1,4 @@
-import ko from 'ko';
+import ko from 'External/Admin/ko';
 
 import { StorageResultType } from 'Common/Enums';
 

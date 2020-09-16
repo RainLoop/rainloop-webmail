@@ -72,7 +72,10 @@ import { startScreens, showScreenPopup } from 'Knoin/Knoin';
 
 import { AbstractApp } from 'App/Abstract';
 
-const doc = document, Settings = rl.settings;
+require('External/User/ko');
+
+const doc = document,
+	Settings = rl.settings;
 
 class AppUser extends AbstractApp {
 	constructor() {

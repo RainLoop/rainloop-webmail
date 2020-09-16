@@ -45,6 +45,12 @@ import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 const Settings = rl.settings;
 
+ko.extenders.toggleSubscribe = (target, options) => {
+	target.subscribe(options[1], options[0], 'beforeChange');
+	target.subscribe(options[2], options[0]);
+	return target;
+};
+
 @popup({
 	name: 'View/Popup/Compose',
 	templateID: 'PopupsCompose'

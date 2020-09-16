@@ -10,6 +10,15 @@ import Remote from 'Remote/User/Fetch';
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
+ko.observable.fn.validateEmail = function() {
+	this.hasError = ko.observable(false);
+
+	this.subscribe(value => this.hasError(value && !/^[^@\s]+@[^@\s]+$/.test(value)));
+
+	this.valueHasMutated();
+	return this;
+};
+
 @popup({
 	name: 'View/Popup/Identity',
 	templateID: 'PopupsIdentity'

@@ -1,44 +1,17 @@
-import { SaveSettingsStep } from 'Common/Enums';
-
 const
 	$ = jQuery,
 	doc = document,
 	ko = window.ko,
 	Translator = () => require('Common/Translator'),
+	Globals = () => require('Common/Globals'),
 	isFunction = v => typeof v === 'function';
-
-ko.bindingHandlers.editor = {
-	init: (element, fValueAccessor) => {
-		let editor = null;
-
-		const fValue = fValueAccessor(),
-			HtmlEditor = require('Common/HtmlEditor').default,
-			fUpdateEditorValue = () => fValue && fValue.__editor && fValue.__editor.setHtmlOrPlain(fValue()),
-			fUpdateKoValue = () => fValue && fValue.__editor && fValue(fValue.__editor.getDataWithHtmlMark()),
-			fOnReady = () => {
-				fValue.__editor = editor;
-				fUpdateEditorValue();
-			};
-
-		if (ko.isObservable(fValue) && HtmlEditor) {
-			editor = new HtmlEditor(element, fUpdateKoValue, fOnReady, fUpdateKoValue);
-
-			fValue.__fetchEditorValue = fUpdateKoValue;
-
-			fValue.subscribe(fUpdateEditorValue);
-
-			// ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			// });
-		}
-	}
-};
 
 ko.bindingHandlers.tooltip = {
 	init: (element, fValueAccessor) => {
 		const fValue = fValueAccessor(),
-			Globals = require('Common/Globals');
+			Global = Globals();
 
-		if (!Globals.bMobileDevice || 'on' === element.dataset.tooltipMobile) {
+		if (!Global.bMobileDevice || 'on' === element.dataset.tooltipMobile) {
 			const sValue = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 
 			if ('off' === element.dataset.tooltipI18n) {
@@ -48,17 +21,16 @@ ko.bindingHandlers.tooltip = {
 				Translator().trigger.subscribe(() =>
 					element.title = Translator().i18n(sValue)
 				);
-				Globals.dropdownVisibility.subscribe(() =>
+				Global.dropdownVisibility.subscribe(() =>
 					element.title = Translator().i18n(sValue)
 				);
 			}
 		}
 	},
 	update: (element, fValueAccessor) => {
-		const fValue = fValueAccessor(),
-			Globals = require('Common/Globals');
+		const fValue = fValueAccessor();
 
-		if (!Globals.bMobileDevice || 'on' === element.dataset.tooltipMobile) {
+		if (!Globals().bMobileDevice || 'on' === element.dataset.tooltipMobile) {
 			const sValue = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
 			if (sValue) {
 				element.title = 'off' === element.dataset.tooltipI18n ? sValue : Translator().i18n(sValue);
@@ -148,26 +120,9 @@ ko.bindingHandlers.onSpace = {
 	}
 };
 
-ko.bindingHandlers.onEsc = {
-	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
-		$(element).on('keyup.koOnEsc', (event) => {
-			if (event && 27 === parseInt(event.keyCode, 10)) {
-				$(element).trigger('change');
-				fValueAccessor().call(viewModel);
-			}
-		});
-
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			$(element).off('keyup.koOnEsc');
-		});
-	}
-};
-
 ko.bindingHandlers.modal = {
 	init: (element, fValueAccessor) => {
-		const Globals = require('Common/Globals');
-
-		element.classList.toggle('fade', !Globals.bMobileDevice);
+		element.classList.toggle('fade', !Globals().bMobileDevice);
 
 		const close = element.querySelector('.close'), click = () => fValueAccessor()(false);
 		close && close.addEventListener('click.koModal', click);
@@ -176,12 +131,6 @@ ko.bindingHandlers.modal = {
 			close.removeEventListener('click.koModal', click)
 		);
 	}
-};
-
-let ttn = (element, fValueAccessor) => require('Common/Momentor').timeToNode(element, ko.unwrap(fValueAccessor()));
-ko.bindingHandlers.moment = {
-	init: ttn,
-	update: ttn
 };
 
 ko.bindingHandlers.i18nInit = {
@@ -195,210 +144,8 @@ ko.bindingHandlers.i18nUpdate = {
 	}
 };
 
-ko.bindingHandlers.link = {
-	update: (element, fValueAccessor) => element.href = ko.unwrap(fValueAccessor())
-};
-
 ko.bindingHandlers.title = {
 	update: (element, fValueAccessor) => element.title = ko.unwrap(fValueAccessor())
-};
-
-ko.bindingHandlers.initDom = {
-	init: (element, fValueAccessor) => fValueAccessor()(element)
-};
-
-ko.bindingHandlers.draggable = {
-	init: (element, fValueAccessor, fAllBindingsAccessor) => {
-		const Globals = require('Common/Globals'),
-			Utils = require('Common/Utils');
-
-		if (!Globals.bMobileDevice) {
-			const triggerZone = 50,
-				scrollSpeed = 3,
-				fAllValueFunc = fAllBindingsAccessor(),
-				selector = fAllValueFunc ? fAllValueFunc.droppableSelector : '',
-				droppable = selector ? doc.querySelector(selector) : null,
-				conf = {
-					distance: 20,
-					handle: '.dragHandle',
-					cursorAt: { top: 22, left: 3 },
-					refreshPositions: true,
-					scroll: true,
-					drag: null,
-					stop: null,
-					helper: null
-				};
-			let bcr;
-
-			if (droppable) {
-				conf.drag = event => {
-					if (droppable.scrollTopMax) {
-						clearInterval(droppable.timerScroll);
-						if (droppable.scrollTop
-							&& bcr.top < event.clientY
-							&& bcr.top + triggerZone > event.clientY)
-						{
-							droppable.timerScroll = setInterval(() => droppable.scrollTop -= scrollSpeed, 10);
-						}
-						else if (droppable.scrollTop < droppable.scrollTopMax
-							&& bcr.bottom > event.clientY
-							&& bcr.bottom - triggerZone < event.clientY)
-						{
-							droppable.timerScroll = setInterval(() => droppable.scrollTop += scrollSpeed, 10);
-						}
-						else {
-							clearInterval(droppable.timerScroll);
-						}
-					}
-				};
-
-				conf.stop = () => clearInterval(droppable.timerScroll);
-			}
-
-			conf.helper = event => fValueAccessor()(event && event.target ? ko.dataFor(event.target) : null);
-
-			$(element)
-				.draggable(conf)
-				.on('mousedown.koDraggable', () => {
-					Utils.removeInFocus();
-					bcr = droppable ? droppable.getBoundingClientRect() : null;
-				});
-
-			ko.utils.domNodeDisposal.addDisposeCallback(element, () =>
-				$(element)
-					.off('mousedown.koDraggable')
-					.draggable('destroy')
-			);
-		}
-	}
-};
-
-ko.bindingHandlers.droppable = {
-	init: (element, fValueAccessor, fAllBindingsAccessor) => {
-		const Globals = require('Common/Globals');
-		if (!Globals.bMobileDevice) {
-			const fValueFunc = fValueAccessor(),
-				fAllValueFunc = fAllBindingsAccessor(),
-				fOverCallback = fAllValueFunc && fAllValueFunc.droppableOver ? fAllValueFunc.droppableOver : null,
-				fOutCallback = fAllValueFunc && fAllValueFunc.droppableOut ? fAllValueFunc.droppableOut : null,
-				conf = {
-					tolerance: 'pointer',
-					hoverClass: 'droppableHover',
-					drop: null,
-					over: null,
-					out: null
-				};
-
-			if (fValueFunc) {
-				conf.drop = (event, ui) => {
-					fValueFunc(event, ui);
-				};
-
-				if (fOverCallback) {
-					conf.over = (event, ui) => {
-						fOverCallback(event, ui);
-					};
-				}
-
-				if (fOutCallback) {
-					conf.out = (event, ui) => {
-						fOutCallback(event, ui);
-					};
-				}
-
-				$(element).droppable(conf);
-
-				ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-					$(element).droppable('destroy');
-				});
-			}
-		}
-	}
-};
-
-ko.bindingHandlers.saveTrigger = {
-	init: (element) => {
-		element.saveTriggerType = element.matches('input[type=text],input[type=email],input[type=password],select,textarea')
-			 ? 'input' : 'custom';
-
-		if ('custom' === element.saveTriggerType) {
-			element.append(
-				'&nbsp;&nbsp;',
-				Element.fromHTML('<i class="icon-spinner animated"></i>'),
-				Element.fromHTML('<i class="icon-remove error"></i>'),
-				Element.fromHTML('<i class="icon-ok success"></i>')
-			);
-			element.classList.add('settings-saved-trigger');
-		} else {
-			element.classList.add('settings-saved-trigger-input');
-		}
-	},
-	update: (element, fValueAccessor) => {
-		const value = parseInt(ko.unwrap(fValueAccessor()),10);
-		if ('custom' === element.saveTriggerType) {
-			element.querySelector('.animated').hidden = value !== SaveSettingsStep.Animate;
-			element.querySelector('.success').hidden = value !== SaveSettingsStep.TrueResult;
-			element.querySelector('.error').hidden = value !== SaveSettingsStep.FalseResult;
-		} else if (value !== SaveSettingsStep.Animate) {
-			element.classList.toggle('success', value === SaveSettingsStep.TrueResult);
-			element.classList.toggle('error', value === SaveSettingsStep.FalseResult);
-		}
-	}
-};
-
-ko.bindingHandlers.emailsTags = {
-	init: (element, fValueAccessor, fAllBindingsAccessor) => {
-		const EmailModel = require('Model/Email').default,
-			$el = $(element),
-			fValue = fValueAccessor(),
-			fAllBindings = fAllBindingsAccessor(),
-			inputDelimiters = [',', ';', '\n'];
-
-		$el.inputosaurus({
-			parseOnBlur: true,
-			allowDragAndDrop: true,
-			focusCallback: value => {
-				if (fValue && fValue.focused) {
-					fValue.focused(!!value);
-				}
-			},
-			inputDelimiters: inputDelimiters,
-			autoCompleteSource: fAllBindings.autoCompleteSource || null,
-			splitHook: value => {
-				const v = value.trim();
-				if (v && inputDelimiters.includes(v.substr(-1))) {
-					return EmailModel.splitEmailLine(value);
-				}
-				return null;
-			},
-			parseHook: input =>
-				input.map(inputValue => {
-					const values = EmailModel.parseEmailLine(inputValue);
-					return values.length ? values : inputValue;
-				}).flat(Infinity).map(
-					item => (item.toLine ? [item.toLine(false), item] : [item, null])
-				),
-			change: event => {
-				element.EmailsTagsValue = event.target.value;
-				fValue(event.target.value);
-			}
-		});
-
-		if (fValue && fValue.focused && fValue.focused.subscribe) {
-			fValue.focused.subscribe((value) => {
-				$el.inputosaurus(value ? 'focus' : 'blur');
-			});
-		}
-	},
-	update: (element, fValueAccessor) => {
-		const value = ko.unwrap(fValueAccessor());
-
-		if (element.EmailsTagsValue !== value) {
-			element.value = value;
-			element.EmailsTagsValue = value;
-			$(element).inputosaurus('refresh');
-		}
-	}
 };
 
 ko.bindingHandlers.command = {
@@ -455,28 +202,6 @@ ko.bindingHandlers.command = {
 
 // extenders
 
-ko.extenders.posInterer = (target, defaultVal) => {
-	const Utils = require('Common/Utils'),
-		result = ko.computed({
-			read: target,
-			write: (newValue) => {
-				let val = Utils.pInt(newValue.toString(), defaultVal);
-				if (0 >= val) {
-					val = defaultVal;
-				}
-
-				if (val === target() && '' + val !== '' + newValue) {
-					target(val + 1);
-				}
-
-				target(val);
-			}
-		});
-
-	result(target());
-	return result;
-};
-
 ko.extenders.limitedList = (target, limitedList) => {
 	const result = ko
 			.computed({
@@ -522,12 +247,6 @@ ko.extenders.reversible = (target) => {
 	return target;
 };
 
-ko.extenders.toggleSubscribe = (target, options) => {
-	target.subscribe(options[1], options[0], 'beforeChange');
-	target.subscribe(options[2], options[0]);
-	return target;
-};
-
 ko.extenders.toggleSubscribeProperty = (target, options) => {
 	const prop = options[1];
 	if (prop) {
@@ -558,52 +277,7 @@ ko.extenders.falseTimeout = (target, option) => {
 	return target;
 };
 
-ko.extenders.specialThrottle = (target, option) => {
-	target.iSpecialThrottleTimeoutValue = require('Common/Utils').pInt(option);
-	if (0 < target.iSpecialThrottleTimeoutValue) {
-		target.iSpecialThrottleTimeout = 0;
-		target.valueForRead = ko.observable(!!target()).extend({ throttle: 10 });
-
-		return ko.computed({
-			read: target.valueForRead,
-			write: (bValue) => {
-				if (bValue) {
-					target.valueForRead(bValue);
-				} else if (target.valueForRead()) {
-					clearTimeout(target.iSpecialThrottleTimeout);
-					target.iSpecialThrottleTimeout = setTimeout(() => {
-						target.valueForRead(false);
-						target.iSpecialThrottleTimeout = 0;
-					}, target.iSpecialThrottleTimeoutValue);
-				} else {
-					target.valueForRead(bValue);
-				}
-			}
-		});
-	}
-
-	return target;
-};
-
-ko.extenders.idleTrigger = (target) => {
-	target.trigger = ko.observable(SaveSettingsStep.Idle);
-	return target;
-};
-
 // functions
-
-ko.observable.fn.idleTrigger = function() {
-	return this.extend({ 'idleTrigger': true });
-};
-
-ko.observable.fn.validateEmail = function() {
-	this.hasError = ko.observable(false);
-
-	this.subscribe(value => this.hasError(value && !/^[^@\s]+@[^@\s]+$/.test(value)));
-
-	this.valueHasMutated();
-	return this;
-};
 
 ko.observable.fn.deleteAccessHelper = function() {
 	this.extend({ falseTimeout: 3000 }).extend({ toggleSubscribeProperty: [this, 'deleteAccess'] });

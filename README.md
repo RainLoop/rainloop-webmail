@@ -54,6 +54,7 @@ This fork has the following changes:
 * Embed boot.js and boot.css into index.html
 * Ongoing removal of old JavaScript code (things are native these days)
 * Added modified [Squire](https://github.com/neilj/Squire) HTML editor as replacement for CKEditor
+* Split Admin specific JavaScript code from User code
 
 ### Removal of old JavaScript
 
@@ -89,23 +90,23 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  935.611	|
-|app.js      	|4.184.455	|2.517.449	|
+|admin.js    	|2.130.942	|  857.772	|
+|app.js      	|4.184.455	|2.507.407	|
 |boot.js     	|  671.522	|    5.777	|
 |libs.js     	|  647.614	|  327.257	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.786.094	|
+|TOTAL      	|7.960.367	|3.698.213	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  128.146	| 73.657	| 37.448	| 32.137	|
-|app.min.js      	|  511.202	|  344.299	|140.462	| 90.265	| 73.006	|
+|admin.min.js    	|  252.147	|  117.678	| 73.657	| 33.668	| 29.096	|
+|app.min.js      	|  511.202	|  342.012	|140.462	| 89.893	| 72.807	|
 |boot.min.js     	|   66.007	|    3.101	| 22.567	|  1.576	|  1.346	|
 |libs.min.js     	|  572.545	|  304.000	|176.720	| 94.870	| 83.524	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  779.546	|424.718	|224.159	|190.013	|
+|TOTAL          	|1.434.353	|  766.791	|424.718	|220.007	|186.773	|
 
-654.807 bytes (200.559 gzip) is not much, but it feels faster.
+667.562 bytes (204.711 gzip) is not much, but it feels faster.
 
 ### CSS changes
 
@@ -130,8 +131,8 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 253.691	| 46,959	| 36.574	| 30.777	|
-|app.min.css	| 274.791	| 207.298	| 39.618	| 32.001	| 27.155	|
+|app.css    	| 340.334	| 254.033	| 46,959	| 36.648	| 30.815	|
+|app.min.css	| 274.791	| 207.558	| 39.618	| 32.050	| 27.234	|
 |boot.css    	|       	|   2.538	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 
