@@ -1,22 +1,17 @@
+import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { AttachmentModel } from 'Model/Attachment';
 
 'use strict';
 
-class AttachmentCollectionModel extends Array
+export class AttachmentCollectionModel extends AbstractCollectionModel
 {
-	constructor() {
-		super();
-	}
-
 	/**
 	 * @param {?Array} json
 	 * @returns {AttachmentCollectionModel}
 	 */
 	static reviveFromJson(items, foundedCIDs) {
 		let result = new AttachmentCollectionModel;
-		if (items && 'Collection/AttachmentCollection' === items['@Object']) {
-			items = items['@Collection'];
-		}
+		items = this.getFromJSON(items, 'AttachmentCollection') || items;
 		Array.isArray(items) && items.forEach(attachment => {
 			attachment = AttachmentModel.newInstanceFromJson(attachment);
 			if (attachment) {
@@ -45,5 +40,3 @@ class AttachmentCollectionModel extends Array
 		return this.find(item => cid === item.cidWithOutTags);
 	}
 }
-
-export { AttachmentCollectionModel, AttachmentCollectionModel as default };

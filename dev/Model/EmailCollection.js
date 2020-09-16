@@ -1,13 +1,10 @@
+import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { EmailModel } from 'Model/Email';
 
 'use strict';
 
-class EmailCollectionModel extends Array
+export class EmailCollectionModel extends AbstractCollectionModel
 {
-	constructor() {
-		super();
-	}
-
 	/**
 	 * @param {?Array} json
 	 * @returns {EmailCollectionModel}
@@ -45,5 +42,3 @@ class EmailCollectionModel extends Array
 		return result.join(', ');
 	}
 }
-
-export { EmailCollectionModel, EmailCollectionModel as default };

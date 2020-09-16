@@ -1,3 +1,5 @@
+import { AbstractCollectionModel } from 'Model/AbstractCollection';
+
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { pInt } from 'Common/Utils';
 import { ClientSideKeyName, ServerFolderType } from 'Common/Enums';
@@ -22,34 +24,32 @@ normalizeFolder = sFolderFullNameRaw => ('' === sFolderFullNameRaw
 		? sFolderFullNameRaw
 		: '';
 
-class FolderCollectionModel extends Array
+export class FolderCollectionModel extends AbstractCollectionModel
 {
+/*
 	constructor() {
 		super();
-/*
 		this.CountRec
 		this.FoldersHash
 		this.IsThreadsSupported
 		this.Namespace;
 		this.Optimized
 		this.SystemFolders
-*/
 	}
+*/
 
 	/**
 	 * @param {?Object} json
 	 * @returns {FolderCollectionModel}
 	 */
-	static reviveFromJson(collection) {
-		if (collection && 'Collection/FolderCollection' === collection['@Object']
-		 && Array.isArray(collection['@Collection'])) {
-			const result = new FolderCollectionModel,
+	static reviveFromJson(object) {
+		const collection = this.getFromJSON(object, 'FolderCollection');
+		if (collection) {
+			const result = new FolderCollectionModel(object),
 				expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders),
 				bDisplaySpecSetting = FolderStore.displaySpecSetting();
 
-			Object.entries(collection).forEach(([key, value]) => '@' !== key[0] && (result[key] = value));
-
-			collection['@Collection'].forEach(oFolder => {
+			collection.forEach(oFolder => {
 				if (oFolder) {
 					let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
 					if (!oCacheFolder) {
@@ -157,5 +157,3 @@ class FolderCollectionModel extends Array
 	}
 
 }
-
-export { FolderCollectionModel, FolderCollectionModel as default };
