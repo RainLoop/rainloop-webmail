@@ -87,7 +87,7 @@ config.paths.js = {
 			'vendors/keymaster/keymaster.js', // custom (modified)
 			'vendors/qr.js/qr.min.js', // fixed (license)
 			'vendors/bootstrap/js/bootstrap.native.min.js', // fixed
-			'node_modules/knockout/build/output/knockout-latest.js',
+			'vendors/knockout/build/output/knockout-latest.js',
 			'node_modules/knockout-sortable/build/knockout-sortable.min.js ',
 			'node_modules/simplestatemanager/dist/ssm.min.js',
 			'vendors/lightgallery/dist/js/lightgallery.min.js', // license

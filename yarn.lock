@@ -4068,11 +4068,6 @@ knockout-sortable@1.2.0:
   resolved "https://registry.yarnpkg.com/knockout-sortable/-/knockout-sortable-1.2.0.tgz#e63c21a009cd0686bf1d40effa3ff12c12372566"
   integrity sha512-cJq4jm4SWdaCIkuYIrNZpVaNYFUafJT83RlFEP/dsPOqIi3xWkCnm1Y5zLEQ2QqMDRT9GI9HxN9Jz+lhZNFHPA==
 
-knockout@3.4.2:
-  version "3.4.2"
-  resolved "https://registry.yarnpkg.com/knockout/-/knockout-3.4.2.tgz#e87958de77ad1e936f7ce645bab8b5d7c456d937"
-  integrity sha1-6HlY3netHpNvfOZFuri118RW2Tc=
-
 last-run@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/last-run/-/last-run-1.1.1.tgz#45b96942c17b1c79c772198259ba943bebf8ca5b"
