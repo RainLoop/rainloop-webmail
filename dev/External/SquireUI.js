@@ -428,9 +428,6 @@ squire-raw.js:2583: this.fireEvent( event.type, event );
 squire-raw.js:2864: this.fireEvent( 'pathChange', { path: newPath } );
 squire-raw.js:2867: this.fireEvent( range.collapsed ? 'cursor' : 'select', {
 squire-raw.js:3004: this.fireEvent( 'input' );
-squire-raw.js:3080: this.fireEvent( 'input' );
-squire-raw.js:3101: this.fireEvent( 'input' );
-squire-raw.js:4036: this.fireEvent( 'willPaste', event );
 squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 */
 

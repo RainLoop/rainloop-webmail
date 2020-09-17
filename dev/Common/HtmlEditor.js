@@ -125,7 +125,7 @@ class HtmlEditor {
 	 * @returns {boolean}
 	 */
 	isHtml() {
-		return this.editor ? 'wysiwyg' === this.editor.mode : false;
+		return this.editor ? 'plain' !== this.editor.mode : false;
 	}
 
 	/**

@@ -762,7 +762,7 @@ class ComposePopupView extends AbstractViewNext {
 
 	onWarmUp() {
 		if (this.modalVisibility && !this.modalVisibility()) {
-			this.editor((editor) => editor.modeToggle(false));
+			this.editor(editor => editor.modeToggle(false));
 		}
 	}
 
