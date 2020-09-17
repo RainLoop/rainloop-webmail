@@ -74,7 +74,7 @@ class MessageModel extends AbstractModel {
 
 		this.isHtml = ko.observable(false);
 		this.hasImages = ko.observable(false);
-		this.attachments = new AttachmentCollectionModel;
+		this.attachments = ko.observable(new AttachmentCollectionModel);
 
 		this.isPgpSigned = ko.observable(false);
 		this.isPgpEncrypted = ko.observable(false);
@@ -159,7 +159,7 @@ class MessageModel extends AbstractModel {
 
 		this.isHtml(false);
 		this.hasImages(false);
-		this.attachments = new AttachmentCollectionModel;
+		this.attachments(new AttachmentCollectionModel);
 
 		this.isPgpSigned(false);
 		this.isPgpEncrypted(false);
@@ -300,7 +300,7 @@ class MessageModel extends AbstractModel {
 			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
 
 			this.foundedCIDs = isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];
-			this.attachments = AttachmentCollectionModel.reviveFromJson(json.Attachments, this.foundedCIDs);
+			this.attachments(AttachmentCollectionModel.reviveFromJson(json.Attachments, this.foundedCIDs));
 
 			this.readReceipt(json.ReadReceipt || '');
 
@@ -657,7 +657,7 @@ class MessageModel extends AbstractModel {
 	showInternalImages() {
 		const body = this.body;
 		if (body && !body.rlInitInternalImages) {
-			const findAttachmentByCid = cid => this.attachments.findByCid(cid);
+			const findAttachmentByCid = cid => this.attachments().findByCid(cid);
 
 			body.rlInitInternalImages = true;
 
@@ -669,7 +669,7 @@ class MessageModel extends AbstractModel {
 						el.src = attachment.linkPreview();
 					}
 				} else if (data.xSrcLocation) {
-					const attachment = this.attachments.find(item => data.xSrcLocation === item.contentLocation)
+					const attachment = this.attachments().find(item => data.xSrcLocation === item.contentLocation)
 						|| findAttachmentByCid(data.xSrcLocation);
 					if (attachment && attachment.download) {
 						el.loading = 'lazy';
