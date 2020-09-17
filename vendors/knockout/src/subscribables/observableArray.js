@@ -52,52 +52,8 @@ ko.observableArray['fn'] = {
         });
     },
 
-    'destroy': function (valueOrPredicate) {
-        var underlyingArray = this.peek();
-        var predicate = typeof valueOrPredicate == "function" && !ko.isObservable(valueOrPredicate) ? valueOrPredicate : function (value) { return value === valueOrPredicate; };
-        this.valueWillMutate();
-        for (var i = underlyingArray.length - 1; i >= 0; i--) {
-            var value = underlyingArray[i];
-            if (predicate(value))
-                value["_destroy"] = true;
-        }
-        this.valueHasMutated();
-    },
-
-    'destroyAll': function (arrayOfValues) {
-        // If you passed zero args, we destroy everything
-        if (arrayOfValues === undefined)
-            return this['destroy'](function() { return true });
-
-        // If you passed an arg, we interpret it as an array of entries to destroy
-        if (!arrayOfValues)
-            return [];
-        return this['destroy'](function (value) {
-            return ko.utils.arrayIndexOf(arrayOfValues, value) >= 0;
-        });
-    },
-
     'indexOf': function (item) {
-        var underlyingArray = this();
-        return ko.utils.arrayIndexOf(underlyingArray, item);
-    },
-
-    'replace': function(oldItem, newItem) {
-        var index = this['indexOf'](oldItem);
-        if (index >= 0) {
-            this.valueWillMutate();
-            this.peek()[index] = newItem;
-            this.valueHasMutated();
-        }
-    },
-
-    'sorted': function (compareFunction) {
-        var arrayCopy = this().slice(0);
-        return compareFunction ? arrayCopy.sort(compareFunction) : arrayCopy.sort();
-    },
-
-    'reversed': function () {
-        return this().slice(0).reverse();
+        return ko.utils.arrayIndexOf(this(), item);
     }
 };
 

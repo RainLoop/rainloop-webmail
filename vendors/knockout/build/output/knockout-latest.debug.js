@@ -88,13 +88,6 @@ ko.utils = (function () {
 
     var canSetPrototype = ({ __proto__: [] } instanceof Array);
 
-    function isClickOnCheckableElement(element, eventType) {
-        if ((element.nodeName !== "INPUT") || !element.type) return false;
-        if (eventType.toLowerCase() != "click") return false;
-        var inputType = element.type;
-        return (inputType == "checkbox") || (inputType == "radio");
-    }
-
     return {
         arrayForEach: function (array, action, actionOwner) {
             arrayCall('forEach', array, action, actionOwner);
@@ -182,7 +175,7 @@ ko.utils = (function () {
         setDomNodeChildren: function (domNode, childNodes) {
             ko.utils.emptyDomNode(domNode);
             if (childNodes) {
-                Element.prototype.append.apply(domNode, childNodes);
+                domNode.append.apply(domNode, childNodes);
             }
         },
 
@@ -314,17 +307,7 @@ ko.utils = (function () {
             if (!(element && element.nodeType))
                 throw new Error("element must be a DOM node when calling triggerEvent");
 
-            // For click events on checkboxes and radio buttons, jQuery toggles the element checked state *after* the
-            // event handler runs instead of *before*. (This was fixed in 1.9 for checkboxes but not for radio buttons.)
-            // IE doesn't change the checked state when you trigger the click event using "fireEvent".
-            // In both cases, we'll use the click method instead.
-            var useClickWorkaround = isClickOnCheckableElement(element, eventType);
-
-            if (!ko.options['useOnlyNativeEvents'] && jQuery && !useClickWorkaround) {
-                jQuery(element)['trigger'](eventType);
-            } else {
-                element.dispatchEvent(new Event(eventType));
-            }
+            element.dispatchEvent(new Event(eventType));
         },
 
         unwrapObservable: function (value) {
@@ -556,12 +539,6 @@ ko.exportSymbol('utils.domNodeDisposal.removeDisposeCallback', ko.utils.domNodeD
         var windowContext = documentContext['parentWindow'] || documentContext['defaultView'] || window;
 
         // Based on jQuery's "clean" function, but only accounting for table-related elements.
-        // If you have referenced jQuery, this won't be used anyway - KO will use jQuery's "clean" function directly
-
-        // Note that there's still an issue in IE < 9 whereby it will discard comment nodes that are the first child of
-        // a descendant node. For example: "<div><!-- mycomment -->abc</div>" will get parsed as "<div>abc</div>"
-        // This won't affect anyone who has referenced jQuery, and there's always the workaround of inserting a dummy node
-        // (possibly a text node) in front of the comment. So, KO does not attempt to workaround this IE issue automatically at present.
 
         // Trim whitespace, otherwise indexOf won't work as expected
         var tags = ko.utils.stringTrim(html).toLowerCase(), div = documentContext.createElement("div"),
@@ -696,32 +673,13 @@ ko.tasks = (function () {
         nextHandle = 1,
         nextIndexToProcess = 0;
 
-    if (window['MutationObserver']) {
-        // Chrome 27+, Firefox 14+, IE 11+, Opera 15+, Safari 6.1+
-        // From https://github.com/petkaantonov/bluebird * Copyright (c) 2014 Petka Antonov * License: MIT
-        scheduler = (function (callback) {
-            var div = document.createElement("div");
-            new MutationObserver(callback).observe(div, {attributes: true});
-            return function () { div.classList.toggle("foo"); };
-        })(scheduledProcess);
-    } else if (document && "onreadystatechange" in document.createElement("script")) {
-        // IE 6-10
-        // From https://github.com/YuzuJS/setImmediate * Copyright (c) 2012 Barnesandnoble.com, llc, Donavon West, and Domenic Denicola * License: MIT
-        scheduler = function (callback) {
-            var script = document.createElement("script");
-            script.onreadystatechange = function () {
-                script.onreadystatechange = null;
-                document.documentElement.removeChild(script);
-                script = null;
-                callback();
-            };
-            document.documentElement.append(script);
-        };
-    } else {
-        scheduler = function (callback) {
-            setTimeout(callback, 0);
-        };
-    }
+    // Chrome 27+, Firefox 14+, IE 11+, Opera 15+, Safari 6.1+
+    // From https://github.com/petkaantonov/bluebird * Copyright (c) 2014 Petka Antonov * License: MIT
+    scheduler = (function (callback) {
+        var div = document.createElement("div");
+        new MutationObserver(callback).observe(div, {attributes: true});
+        return function () { div.classList.toggle("foo"); };
+    })(scheduledProcess);
 
     function processTasks() {
         if (taskQueueLength) {
@@ -1333,52 +1291,8 @@ ko.observableArray['fn'] = {
         });
     },
 
-    'destroy': function (valueOrPredicate) {
-        var underlyingArray = this.peek();
-        var predicate = typeof valueOrPredicate == "function" && !ko.isObservable(valueOrPredicate) ? valueOrPredicate : function (value) { return value === valueOrPredicate; };
-        this.valueWillMutate();
-        for (var i = underlyingArray.length - 1; i >= 0; i--) {
-            var value = underlyingArray[i];
-            if (predicate(value))
-                value["_destroy"] = true;
-        }
-        this.valueHasMutated();
-    },
-
-    'destroyAll': function (arrayOfValues) {
-        // If you passed zero args, we destroy everything
-        if (arrayOfValues === undefined)
-            return this['destroy'](function() { return true });
-
-        // If you passed an arg, we interpret it as an array of entries to destroy
-        if (!arrayOfValues)
-            return [];
-        return this['destroy'](function (value) {
-            return ko.utils.arrayIndexOf(arrayOfValues, value) >= 0;
-        });
-    },
-
     'indexOf': function (item) {
-        var underlyingArray = this();
-        return ko.utils.arrayIndexOf(underlyingArray, item);
-    },
-
-    'replace': function(oldItem, newItem) {
-        var index = this['indexOf'](oldItem);
-        if (index >= 0) {
-            this.valueWillMutate();
-            this.peek()[index] = newItem;
-            this.valueHasMutated();
-        }
-    },
-
-    'sorted': function (compareFunction) {
-        var arrayCopy = this().slice(0);
-        return compareFunction ? arrayCopy.sort(compareFunction) : arrayCopy.sort();
-    },
-
-    'reversed': function () {
-        return this().slice(0).reverse();
+        return ko.utils.arrayIndexOf(this(), item);
     }
 };
 
@@ -2166,9 +2080,7 @@ ko.exportSymbol('when', ko.when);
                 case 'option':
                     if (typeof value === "string") {
                         ko.utils.domData.set(element, ko.bindingHandlers.options.optionValueDomDataKey, undefined);
-                        if (hasDomDataExpandoProperty in element) { // IE <= 8 throws errors if you delete non-existent properties from a DOM node
-                            delete element[hasDomDataExpandoProperty];
-                        }
+                        delete element[hasDomDataExpandoProperty];
                         element.value = value;
                     }
                     else {
@@ -2428,21 +2340,16 @@ ko.exportSymbol('jsonExpressionRewriting.insertPropertyAccessorsIntoJson', ko.ex
     // The point of all this is to support containerless templates (e.g., <!-- ko foreach:someCollection -->blah<!-- /ko -->)
     // without having to scatter special cases all over the binding and templating code.
 
-    // IE 9 cannot reliably read the "nodeValue" property of a comment node (see https://github.com/SteveSanderson/knockout/issues/186)
-    // but it does give them a nonstandard alternative property called "text" that it can read reliably. Other browsers don't have that property.
-    // So, use node.text where available, and node.nodeValue elsewhere
-    var commentNodesHaveTextProperty = document && document.createComment("test").text === "<!--test-->";
-
-    var startCommentRegex = commentNodesHaveTextProperty ? /^<!--\s*ko(?:\s+([\s\S]+))?\s*-->$/ : /^\s*ko(?:\s+([\s\S]+))?\s*$/;
-    var endCommentRegex =   commentNodesHaveTextProperty ? /^<!--\s*\/ko\s*-->$/ : /^\s*\/ko\s*$/;
+    var startCommentRegex = /^\s*ko(?:\s+([\s\S]+))?\s*$/;
+    var endCommentRegex =   /^\s*\/ko\s*$/;
     var htmlTagsWithOptionallyClosingChildren = { 'ul': true, 'ol': true };
 
     function isStartComment(node) {
-        return (node.nodeType == 8) && startCommentRegex.test(commentNodesHaveTextProperty ? node.text : node.nodeValue);
+        return (node.nodeType == 8) && startCommentRegex.test(node.nodeValue);
     }
 
     function isEndComment(node) {
-        return (node.nodeType == 8) && endCommentRegex.test(commentNodesHaveTextProperty ? node.text : node.nodeValue);
+        return (node.nodeType == 8) && endCommentRegex.test(node.nodeValue);
     }
 
     function isUnmatchedEndComment(node) {
@@ -2602,37 +2509,8 @@ ko.exportSymbol('jsonExpressionRewriting.insertPropertyAccessorsIntoJson', ko.ex
         hasBindingValue: isStartComment,
 
         virtualNodeBindingValue: function(node) {
-            var regexMatch = (commentNodesHaveTextProperty ? node.text : node.nodeValue).match(startCommentRegex);
+            var regexMatch = (node.nodeValue).match(startCommentRegex);
             return regexMatch ? regexMatch[1] : null;
-        },
-
-        normaliseVirtualElementDomStructure: function(elementVerified) {
-            // Workaround for https://github.com/SteveSanderson/knockout/issues/155
-            // (IE <= 8 or IE 9 quirks mode parses your HTML weirdly, treating closing </li> tags as if they don't exist, thereby moving comment nodes
-            // that are direct descendants of <ul> into the preceding <li>)
-            if (!htmlTagsWithOptionallyClosingChildren[ko.utils.tagNameLower(elementVerified)])
-                return;
-
-            // Scan immediate children to see if they contain unbalanced comment tags. If they do, those comment tags
-            // must be intended to appear *after* that child, so move them there.
-            var childNode = elementVerified.firstChild;
-            if (childNode) {
-                do {
-                    if (childNode.nodeType === 1) {
-                        var unbalancedTags = getUnbalancedChildTags(childNode);
-                        if (unbalancedTags) {
-                            // Fix up the DOM by moving the unbalanced tags to where they most likely were intended to be placed - *after* the child
-                            var nodeToInsertBefore = childNode.nextSibling;
-                            for (var i = 0; i < unbalancedTags.length; i++) {
-                                if (nodeToInsertBefore)
-                                    elementVerified.insertBefore(unbalancedTags[i], nodeToInsertBefore);
-                                else
-                                    elementVerified.append(unbalancedTags[i]);
-                            }
-                        }
-                    }
-                } while (childNode = childNode.nextSibling);
-            }
         }
     };
 })();
@@ -3056,8 +2934,6 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
         var bindingContextForDescendants = bindingContext;
 
         var isElement = (nodeVerified.nodeType === 1);
-        if (isElement) // Workaround IE <= 8 HTML parsing weirdness
-            ko.virtualElements.normaliseVirtualElementDomStructure(nodeVerified);
 
         // Perf optimisation: Apply bindings only if...
         // (1) We need to store the binding info for the node (all element nodes)
@@ -3268,8 +3144,6 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
     }
 
     ko.applyBindingAccessorsToNode = function (node, bindings, viewModelOrBindingContext) {
-        if (node.nodeType === 1) // If it's an element, workaround IE <= 8 HTML parsing weirdness
-            ko.virtualElements.normaliseVirtualElementDomStructure(node);
         return applyBindingsToNodeInternal(node, bindings, getBindingContext(viewModelOrBindingContext));
     };
 
@@ -3302,7 +3176,6 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
         if (node && (node.nodeType === 1 || node.nodeType === 8)) {
             return ko.storedBindingContextForNode(node);
         }
-        return undefined;
     };
     ko.dataFor = function(node) {
         var context = ko.contextFor(node);
@@ -3317,7 +3190,6 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
     ko.exportSymbol('applyBindingsToDescendants', ko.applyBindingsToDescendants);
     ko.exportSymbol('applyBindingAccessorsToNode', ko.applyBindingAccessorsToNode);
     ko.exportSymbol('applyBindingsToNode', ko.applyBindingsToNode);
-    ko.exportSymbol('contextFor', ko.contextFor);
     ko.exportSymbol('dataFor', ko.dataFor);
 })();
 (function(undefined) {
@@ -3621,22 +3493,14 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
     }
 
     function cloneNodesFromTemplateSourceElement(elemInstance) {
-        switch (ko.utils.tagNameLower(elemInstance)) {
-            case 'script':
-                return ko.utils.parseHtmlFragment(elemInstance.text);
-            case 'textarea':
-                return ko.utils.parseHtmlFragment(elemInstance.value);
-            case 'template':
-                // For browsers with proper <template> element support (i.e., where the .content property
-                // gives a document fragment), use that document fragment.
-                if (isDocumentFragment(elemInstance.content)) {
-                    return ko.utils.cloneNodes(elemInstance.content.childNodes);
-                }
+        if ('template' == ko.utils.tagNameLower(elemInstance)) {
+            // For browsers with proper <template> element support (i.e., where the .content property
+            // gives a document fragment), use that document fragment.
+            if (isDocumentFragment(elemInstance.content)) {
+                return ko.utils.cloneNodes(elemInstance.content.childNodes);
+            }
         }
-
-        // Regular elements such as <div>, and <template> elements on old browsers that don't really
-        // understand <template> and just treat it as a regular container
-        return ko.utils.cloneNodes(elemInstance.childNodes);
+        throw 'Template Source Element not a <template>';
     }
 
     function isDomElement(obj) {
@@ -3689,9 +3553,6 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
 
     // By default, the default loader is the only registered component loader
     ko.components['loaders'].push(ko.components.defaultLoader);
-
-    // Privately expose the underlying config registry for use in old-IE shim
-    ko.components._allRegisteredComponents = defaultConfigRegistry;
 })();
 (function (undefined) {
     // Overridable API for determining which component name applies to a given node. By overriding this,
@@ -4035,10 +3896,6 @@ ko.bindingHandlers['checked'] = {
             rawValueIsNonArrayObservable = !(valueIsArray && rawValue.push && rawValue.splice),
             useElementValue = isRadio || valueIsArray,
             oldElemValue = valueIsArray ? checkedValue() : undefined;
-
-        // IE 6 won't allow radio buttons to be selected unless they have a name
-        if (isRadio && !element.name)
-            ko.bindingHandlers['uniqueName']['init'](element, function() { return true });
 
         // Set up two computeds to update the binding:
 
@@ -4533,10 +4390,7 @@ ko.bindingHandlers['selectedOptions'] = {
 
             if (newValue && typeof newValue.length == "number") {
                 ko.utils.arrayForEach(element.getElementsByTagName("option"), function(node) {
-                    var isSelected = ko.utils.arrayIndexOf(newValue, ko.selectExtensions.readValue(node)) >= 0;
-                    if (node.selected != isSelected) {      // This check prevents flashing of the select element in IE
-                        node.selected = isSelected;
-                    }
+                    node.selected = ko.utils.arrayIndexOf(newValue, ko.selectExtensions.readValue(node)) >= 0;
                 });
             }
 

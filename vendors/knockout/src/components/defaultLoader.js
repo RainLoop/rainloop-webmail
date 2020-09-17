@@ -157,22 +157,14 @@
     }
 
     function cloneNodesFromTemplateSourceElement(elemInstance) {
-        switch (ko.utils.tagNameLower(elemInstance)) {
-            case 'script':
-                return ko.utils.parseHtmlFragment(elemInstance.text);
-            case 'textarea':
-                return ko.utils.parseHtmlFragment(elemInstance.value);
-            case 'template':
-                // For browsers with proper <template> element support (i.e., where the .content property
-                // gives a document fragment), use that document fragment.
-                if (isDocumentFragment(elemInstance.content)) {
-                    return ko.utils.cloneNodes(elemInstance.content.childNodes);
-                }
+        if ('template' == ko.utils.tagNameLower(elemInstance)) {
+            // For browsers with proper <template> element support (i.e., where the .content property
+            // gives a document fragment), use that document fragment.
+            if (isDocumentFragment(elemInstance.content)) {
+                return ko.utils.cloneNodes(elemInstance.content.childNodes);
+            }
         }
-
-        // Regular elements such as <div>, and <template> elements on old browsers that don't really
-        // understand <template> and just treat it as a regular container
-        return ko.utils.cloneNodes(elemInstance.childNodes);
+        throw 'Template Source Element not a <template>';
     }
 
     function isDomElement(obj) {
@@ -225,7 +217,4 @@
 
     // By default, the default loader is the only registered component loader
     ko.components['loaders'].push(ko.components.defaultLoader);
-
-    // Privately expose the underlying config registry for use in old-IE shim
-    ko.components._allRegisteredComponents = defaultConfigRegistry;
 })();

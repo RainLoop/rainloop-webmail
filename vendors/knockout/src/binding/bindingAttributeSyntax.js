@@ -337,8 +337,6 @@
         var bindingContextForDescendants = bindingContext;
 
         var isElement = (nodeVerified.nodeType === 1);
-        if (isElement) // Workaround IE <= 8 HTML parsing weirdness
-            ko.virtualElements.normaliseVirtualElementDomStructure(nodeVerified);
 
         // Perf optimisation: Apply bindings only if...
         // (1) We need to store the binding info for the node (all element nodes)
@@ -549,8 +547,6 @@
     }
 
     ko.applyBindingAccessorsToNode = function (node, bindings, viewModelOrBindingContext) {
-        if (node.nodeType === 1) // If it's an element, workaround IE <= 8 HTML parsing weirdness
-            ko.virtualElements.normaliseVirtualElementDomStructure(node);
         return applyBindingsToNodeInternal(node, bindings, getBindingContext(viewModelOrBindingContext));
     };
 
@@ -583,7 +579,6 @@
         if (node && (node.nodeType === 1 || node.nodeType === 8)) {
             return ko.storedBindingContextForNode(node);
         }
-        return undefined;
     };
     ko.dataFor = function(node) {
         var context = ko.contextFor(node);
@@ -598,6 +593,5 @@
     ko.exportSymbol('applyBindingsToDescendants', ko.applyBindingsToDescendants);
     ko.exportSymbol('applyBindingAccessorsToNode', ko.applyBindingAccessorsToNode);
     ko.exportSymbol('applyBindingsToNode', ko.applyBindingsToNode);
-    ko.exportSymbol('contextFor', ko.contextFor);
     ko.exportSymbol('dataFor', ko.dataFor);
 })();

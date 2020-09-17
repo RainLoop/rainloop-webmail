@@ -26,13 +26,6 @@ ko.utils = (function () {
 
     var canSetPrototype = ({ __proto__: [] } instanceof Array);
 
-    function isClickOnCheckableElement(element, eventType) {
-        if ((element.nodeName !== "INPUT") || !element.type) return false;
-        if (eventType.toLowerCase() != "click") return false;
-        var inputType = element.type;
-        return (inputType == "checkbox") || (inputType == "radio");
-    }
-
     return {
         arrayForEach: function (array, action, actionOwner) {
             arrayCall('forEach', array, action, actionOwner);
@@ -120,7 +113,7 @@ ko.utils = (function () {
         setDomNodeChildren: function (domNode, childNodes) {
             ko.utils.emptyDomNode(domNode);
             if (childNodes) {
-                Element.prototype.append.apply(domNode, childNodes);
+                domNode.append.apply(domNode, childNodes);
             }
         },
 
@@ -252,17 +245,7 @@ ko.utils = (function () {
             if (!(element && element.nodeType))
                 throw new Error("element must be a DOM node when calling triggerEvent");
 
-            // For click events on checkboxes and radio buttons, jQuery toggles the element checked state *after* the
-            // event handler runs instead of *before*. (This was fixed in 1.9 for checkboxes but not for radio buttons.)
-            // IE doesn't change the checked state when you trigger the click event using "fireEvent".
-            // In both cases, we'll use the click method instead.
-            var useClickWorkaround = isClickOnCheckableElement(element, eventType);
-
-            if (!ko.options['useOnlyNativeEvents'] && jQuery && !useClickWorkaround) {
-                jQuery(element)['trigger'](eventType);
-            } else {
-                element.dispatchEvent(new Event(eventType));
-            }
+            element.dispatchEvent(new Event(eventType));
         },
 
         unwrapObservable: function (value) {

@@ -23,9 +23,7 @@
                 case 'option':
                     if (typeof value === "string") {
                         ko.utils.domData.set(element, ko.bindingHandlers.options.optionValueDomDataKey, undefined);
-                        if (hasDomDataExpandoProperty in element) { // IE <= 8 throws errors if you delete non-existent properties from a DOM node
-                            delete element[hasDomDataExpandoProperty];
-                        }
+                        delete element[hasDomDataExpandoProperty];
                         element.value = value;
                     }
                     else {

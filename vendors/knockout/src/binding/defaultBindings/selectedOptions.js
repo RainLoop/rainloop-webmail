@@ -15,10 +15,7 @@ ko.bindingHandlers['selectedOptions'] = {
 
             if (newValue && typeof newValue.length == "number") {
                 ko.utils.arrayForEach(element.getElementsByTagName("option"), function(node) {
-                    var isSelected = ko.utils.arrayIndexOf(newValue, ko.selectExtensions.readValue(node)) >= 0;
-                    if (node.selected != isSelected) {      // This check prevents flashing of the select element in IE
-                        node.selected = isSelected;
-                    }
+                    node.selected = ko.utils.arrayIndexOf(newValue, ko.selectExtensions.readValue(node)) >= 0;
                 });
             }
 
