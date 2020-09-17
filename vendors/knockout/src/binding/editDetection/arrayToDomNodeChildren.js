@@ -88,7 +88,7 @@
         } else {
             if (!editScript || (lastMappingResult && lastMappingResult['_countWaitingForRemove'])) {
                 // Compare the provided array against the previous one
-                var lastArray = ko.utils.arrayMap(lastMappingResult, function (x) { return x.arrayEntry; }),
+                var lastArray = Array.prototype.map.call(lastMappingResult, function (x) { return x.arrayEntry; }),
                     compareOptions = {
                         'dontLimitMoves': options['dontLimitMoves'],
                         'sparse': true

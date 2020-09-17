@@ -16,7 +16,6 @@ knockoutDebugCallback([
     'src/subscribables/observableArray.js',
     'src/subscribables/observableArray.changeTracking.js',
     'src/subscribables/dependentObservable.js',
-    'src/subscribables/mappingHelpers.js',
     'src/subscribables/observableUtils.js',
     'src/binding/selectExtensions.js',
     'src/binding/expressionRewriting.js',
@@ -55,6 +54,5 @@ knockoutDebugCallback([
     'src/templating/templating.js',
     'src/binding/editDetection/compareArrays.js',
     'src/binding/editDetection/arrayToDomNodeChildren.js',
-    'src/templating/native/nativeTemplateEngine.js',
-    'src/templating/jquery.tmpl/jqueryTmplTemplateEngine.js'
+    'src/templating/native/nativeTemplateEngine.js'
 ]);

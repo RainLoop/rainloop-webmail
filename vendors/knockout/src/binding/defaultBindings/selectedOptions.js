@@ -17,7 +17,7 @@ ko.bindingHandlers['selectedOptions'] = {
                 ko.utils.arrayForEach(element.getElementsByTagName("option"), function(node) {
                     var isSelected = ko.utils.arrayIndexOf(newValue, ko.selectExtensions.readValue(node)) >= 0;
                     if (node.selected != isSelected) {      // This check prevents flashing of the select element in IE
-                        ko.utils.setOptionNodeSelectionState(node, isSelected);
+                        node.selected = isSelected;
                     }
                 });
             }

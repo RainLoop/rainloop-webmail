@@ -1,4 +1,4 @@
-var computedState = ko.utils.createSymbolOrString('_state');
+var computedState = Symbol('_state');
 
 ko.computed = ko.dependentObservable = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget, options) {
     if (typeof evaluatorFunctionOrOptions === "object") {

@@ -1,8 +1,7 @@
 ko.bindingHandlers['uniqueName'] = {
     'init': function (element, valueAccessor) {
         if (valueAccessor()) {
-            var name = "ko_unique_" + (++ko.bindingHandlers['uniqueName'].currentIndex);
-            ko.utils.setElementName(element, name);
+            element.name = "ko_unique_" + (++ko.bindingHandlers['uniqueName'].currentIndex);
         }
     }
 };

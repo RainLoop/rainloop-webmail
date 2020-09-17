@@ -1,5 +1,16 @@
 (function() {
 
+function addOrRemoveItem(array, value, included) {
+	var existingEntryIndex = ko.utils.arrayIndexOf(ko.utils.peekObservable(array), value);
+	if (existingEntryIndex < 0) {
+		if (included)
+			array.push(value);
+	} else {
+		if (!included)
+			array.splice(existingEntryIndex, 1);
+	}
+}
+
 ko.bindingHandlers['checked'] = {
     'after': ['value', 'attr'],
     'init': function (element, valueAccessor, allBindings) {
@@ -45,13 +56,13 @@ ko.bindingHandlers['checked'] = {
                     // currently checked, replace the old elem value with the new elem value
                     // in the model array.
                     if (isChecked) {
-                        ko.utils.addOrRemoveItem(writableValue, elemValue, true);
-                        ko.utils.addOrRemoveItem(writableValue, saveOldValue, false);
+                        addOrRemoveItem(writableValue, elemValue, true);
+                        addOrRemoveItem(writableValue, saveOldValue, false);
                     }
                 } else {
                     // When we're responding to the user having checked/unchecked a checkbox,
                     // add/remove the element value to the model array.
-                    ko.utils.addOrRemoveItem(writableValue, elemValue, isChecked);
+                    addOrRemoveItem(writableValue, elemValue, isChecked);
                 }
 
                 if (rawValueIsNonArrayObservable && ko.isWriteableObservable(modelValue)) {

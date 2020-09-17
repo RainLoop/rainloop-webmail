@@ -11,7 +11,6 @@ ko.bindingHandlers['value'] = {
 
         var eventsToCatch = [];
         var requestedEventsToCatch = allBindings.get("valueUpdate");
-        var propertyChangedFired = false;
         var elementValueBeforeEvent = null;
 
         if (requestedEventsToCatch) {
@@ -19,31 +18,18 @@ ko.bindingHandlers['value'] = {
             if (typeof requestedEventsToCatch == "string") {
                 eventsToCatch = [requestedEventsToCatch];
             } else {
-                eventsToCatch = ko.utils.arrayGetDistinctValues(requestedEventsToCatch);
+                eventsToCatch = requestedEventsToCatch ? requestedEventsToCatch.filter(function(item, index) {
+                    return requestedEventsToCatch.indexOf(item) === index;
+                }) : [];
             }
             ko.utils.arrayRemoveItem(eventsToCatch, "change");  // We'll subscribe to "change" events later
         }
 
         var valueUpdateHandler = function() {
             elementValueBeforeEvent = null;
-            propertyChangedFired = false;
             var modelValue = valueAccessor();
             var elementValue = ko.selectExtensions.readValue(element);
             ko.expressionRewriting.writeValueToProperty(modelValue, allBindings, 'value', elementValue);
-        }
-
-        // Workaround for https://github.com/SteveSanderson/knockout/issues/122
-        // IE doesn't fire "change" events on textboxes if the user selects a value from its autocomplete list
-        var ieAutoCompleteHackNeeded = ko.utils.ieVersion && isInputElement && element.type == "text"
-                                       && element.autocomplete != "off" && (!element.form || element.form.autocomplete != "off");
-        if (ieAutoCompleteHackNeeded && ko.utils.arrayIndexOf(eventsToCatch, "propertychange") == -1) {
-            ko.utils.registerEventHandler(element, "propertychange", function () { propertyChangedFired = true });
-            ko.utils.registerEventHandler(element, "focus", function () { propertyChangedFired = false });
-            ko.utils.registerEventHandler(element, "blur", function() {
-                if (propertyChangedFired) {
-                    valueUpdateHandler();
-                }
-            });
         }
 
         ko.utils.arrayForEach(eventsToCatch, function(eventName) {

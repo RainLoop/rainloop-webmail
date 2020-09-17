@@ -19,17 +19,7 @@ ko.bindingHandlers['attr'] = {
                 attrValue = attrValue.toString();
             }
 
-            // In IE <= 7 and IE8 Quirks Mode, you have to use the JavaScript property name instead of the
-            // HTML attribute name for certain attributes. IE8 Standards Mode supports the correct behavior,
-            // but instead of figuring out the mode, we'll just set the attribute through the JavaScript
-            // property for IE <= 8.
-            if (ko.utils.ieVersion <= 8 && attrName in attrHtmlToJavaScriptMap) {
-                attrName = attrHtmlToJavaScriptMap[attrName];
-                if (toRemove)
-                    element.removeAttribute(attrName);
-                else
-                    element[attrName] = attrValue;
-            } else if (!toRemove) {
+            if (!toRemove) {
                 namespace ? element.setAttributeNS(namespace, attrName, attrValue) : element.setAttribute(attrName, attrValue);
             }
 
@@ -38,7 +28,7 @@ ko.bindingHandlers['attr'] = {
             // Deliberately being case-sensitive here because XHTML would regard "Name" as a different thing
             // entirely, and there's no strong reason to allow for such casing in HTML.
             if (attrName === "name") {
-                ko.utils.setElementName(element, toRemove ? "" : attrValue);
+                element.name = toRemove ? "" : attrValue;
             }
         });
     }

@@ -1,8 +1,8 @@
 (function () {
     // Hide or don't minify context properties, see https://github.com/knockout/knockout/issues/2294
-    var contextSubscribable = ko.utils.createSymbolOrString('_subscribable');
-    var contextAncestorBindingInfo = ko.utils.createSymbolOrString('_ancestorBindingInfo');
-    var contextDataDependency = ko.utils.createSymbolOrString('_dataDependency');
+    var contextSubscribable = Symbol('_subscribable');
+    var contextAncestorBindingInfo = Symbol('_ancestorBindingInfo');
+    var contextDataDependency = Symbol('_dataDependency');
 
     ko.bindingHandlers = {};
 
@@ -565,11 +565,6 @@
     };
 
     ko.applyBindings = function (viewModelOrBindingContext, rootNode, extendContextCallback) {
-        // If jQuery is loaded after Knockout, we won't initially have access to it. So save it here.
-        if (!jQueryInstance && window['jQuery']) {
-            jQueryInstance = window['jQuery'];
-        }
-
         if (arguments.length < 2) {
             rootNode = document.body;
             if (!rootNode) {

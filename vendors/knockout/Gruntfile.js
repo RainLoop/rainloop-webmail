@@ -4,6 +4,8 @@ module.exports = function(grunt) {
 
     // Project configuration
     grunt.initConfig({
+//		language_in:'ECMASCRIPT6',
+//		language_out:'ECMASCRIPT6',
         // Metadata
         pkg: grunt.file.readJSON('package.json'),
         fragments: './build/fragments/',
@@ -109,6 +111,8 @@ module.exports = function(grunt) {
     function buildMin(output, done) {
         var cc = require('closure-compiler');
         var options = {
+//			language_in:'ECMASCRIPT6',
+//			language_out:'ECMASCRIPT6',
             compilation_level: 'ADVANCED_OPTIMIZATIONS',
             output_wrapper: '(function() {%output%})();'
         };
@@ -156,6 +160,7 @@ module.exports = function(grunt) {
     });
 
     grunt.registerMultiTask('testtypes', 'Run types tests', function () {
+/*
         var done = this.async(),
             target = this.target;
 
@@ -171,6 +176,7 @@ module.exports = function(grunt) {
                 done(!error);
             }
         );
+*/
     });
 
     grunt.registerTask('dist', function() {

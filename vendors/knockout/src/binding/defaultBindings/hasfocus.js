@@ -10,17 +10,7 @@ ko.bindingHandlers['hasfocus'] = {
             // from calling 'blur()' on the element when it loses focus.
             // Discussion at https://github.com/SteveSanderson/knockout/pull/352
             element[hasfocusUpdatingProperty] = true;
-            var ownerDoc = element.ownerDocument;
-            if ("activeElement" in ownerDoc) {
-                var active;
-                try {
-                    active = ownerDoc.activeElement;
-                } catch(e) {
-                    // IE9 throws if you access activeElement during page load (see issue #703)
-                    active = ownerDoc.body;
-                }
-                isFocused = (active === element);
-            }
+            isFocused = (element.ownerDocument.activeElement === element);
             var modelValue = valueAccessor();
             ko.expressionRewriting.writeValueToProperty(modelValue, allBindings, 'hasfocus', isFocused, true);
 
@@ -32,9 +22,9 @@ ko.bindingHandlers['hasfocus'] = {
         var handleElementFocusOut = handleElementFocusChange.bind(null, false);
 
         ko.utils.registerEventHandler(element, "focus", handleElementFocusIn);
-        ko.utils.registerEventHandler(element, "focusin", handleElementFocusIn); // For IE
+        ko.utils.registerEventHandler(element, "focusin", handleElementFocusIn);
         ko.utils.registerEventHandler(element, "blur",  handleElementFocusOut);
-        ko.utils.registerEventHandler(element, "focusout",  handleElementFocusOut); // For IE
+        ko.utils.registerEventHandler(element, "focusout",  handleElementFocusOut);
 
         // Assume element is not focused (prevents "blur" being called initially)
         element[hasfocusLastValue] = false;

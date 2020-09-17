@@ -30,7 +30,7 @@ ko.bindingHandlers['options'] = {
 
         if (!valueAllowUnset) {
             if (multiple) {
-                previousSelectedValues = ko.utils.arrayMap(selectedOptions(), ko.selectExtensions.readValue);
+                previousSelectedValues = selectedOptions().map(ko.selectExtensions.readValue);
             } else if (element.selectedIndex >= 0) {
                 previousSelectedValues.push(ko.selectExtensions.readValue(element.options[element.selectedIndex]));
             }
@@ -108,7 +108,7 @@ ko.bindingHandlers['options'] = {
                 // IE6 doesn't like us to assign selection to OPTION nodes before they're added to the document.
                 // That's why we first added them without selection. Now it's time to set the selection.
                 var isSelected = ko.utils.arrayIndexOf(previousSelectedValues, ko.selectExtensions.readValue(newOptions[0])) >= 0;
-                ko.utils.setOptionNodeSelectionState(newOptions[0], isSelected);
+                newOptions[0].selected = isSelected;
 
                 // If this option was changed from being selected during a single-item update, notify the change
                 if (itemUpdate && !isSelected) {
@@ -153,9 +153,6 @@ ko.bindingHandlers['options'] = {
         if (valueAllowUnset || ko.computedContext.isInitial()) {
             ko.bindingEvent.notify(element, ko.bindingEvent.childrenComplete);
         }
-
-        // Workaround for IE bug
-        ko.utils.ensureSelectElementIsRenderedCorrectly(element);
 
         if (previousScrollTop && Math.abs(previousScrollTop - element.scrollTop) > 20)
             element.scrollTop = previousScrollTop;

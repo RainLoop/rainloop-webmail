@@ -12,11 +12,10 @@ ko.when = function(predicate, callback, context) {
 
         return subscription;
     }
-    if (typeof Promise === "function" && !callback) {
-        return new Promise(kowhen);
-    } else {
+    if (callback) {
         return kowhen(callback.bind(context));
     }
+    return new Promise(kowhen);
 };
 
 ko.exportSymbol('when', ko.when);

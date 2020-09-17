@@ -1,52 +1,26 @@
 
 ko.utils.domData = new (function () {
     var uniqueId = 0;
-    var dataStoreKeyExpandoPropertyName = "__ko__" + (new Date).getTime();
-    var dataStore = {};
+    var dataStoreKeyExpandoPropertyName = "__ko__" + (Date.now());
 
     var getDataForNode, clear;
-    if (!ko.utils.ieVersion) {
-        // We considered using WeakMap, but it has a problem in IE 11 and Edge that prevents using
-        // it cross-window, so instead we just store the data directly on the node.
-        // See https://github.com/knockout/knockout/issues/2141
-        getDataForNode = function (node, createIfNotFound) {
-            var dataForNode = node[dataStoreKeyExpandoPropertyName];
-            if (!dataForNode && createIfNotFound) {
-                dataForNode = node[dataStoreKeyExpandoPropertyName] = {};
-            }
-            return dataForNode;
-        };
-        clear = function (node) {
-            if (node[dataStoreKeyExpandoPropertyName]) {
-                delete node[dataStoreKeyExpandoPropertyName];
-                return true; // Exposing "did clean" flag purely so specs can infer whether things have been cleaned up as intended
-            }
-            return false;
-        };
-    } else {
-        // Old IE versions have memory issues if you store objects on the node, so we use a
-        // separate data storage and link to it from the node using a string key.
-        getDataForNode = function (node, createIfNotFound) {
-            var dataStoreKey = node[dataStoreKeyExpandoPropertyName];
-            var hasExistingDataStore = dataStoreKey && (dataStoreKey !== "null") && dataStore[dataStoreKey];
-            if (!hasExistingDataStore) {
-                if (!createIfNotFound)
-                    return undefined;
-                dataStoreKey = node[dataStoreKeyExpandoPropertyName] = "ko" + uniqueId++;
-                dataStore[dataStoreKey] = {};
-            }
-            return dataStore[dataStoreKey];
-        };
-        clear = function (node) {
-            var dataStoreKey = node[dataStoreKeyExpandoPropertyName];
-            if (dataStoreKey) {
-                delete dataStore[dataStoreKey];
-                node[dataStoreKeyExpandoPropertyName] = null;
-                return true; // Exposing "did clean" flag purely so specs can infer whether things have been cleaned up as intended
-            }
-            return false;
-        };
-    }
+    // We considered using WeakMap, but it has a problem in IE 11 and Edge that prevents using
+    // it cross-window, so instead we just store the data directly on the node.
+    // See https://github.com/knockout/knockout/issues/2141
+    getDataForNode = function (node, createIfNotFound) {
+        var dataForNode = node[dataStoreKeyExpandoPropertyName];
+        if (!dataForNode && createIfNotFound) {
+            dataForNode = node[dataStoreKeyExpandoPropertyName] = {};
+        }
+        return dataForNode;
+    };
+    clear = function (node) {
+        if (node[dataStoreKeyExpandoPropertyName]) {
+            delete node[dataStoreKeyExpandoPropertyName];
+            return true; // Exposing "did clean" flag purely so specs can infer whether things have been cleaned up as intended
+        }
+        return false;
+    };
 
     return {
         get: function (node, key) {

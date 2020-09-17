@@ -9,9 +9,7 @@ ko.bindingHandlers['style'] = {
                 styleValue = "";
             }
 
-            if (jQueryInstance) {
-                jQueryInstance(element)['css'](styleName, styleValue);
-            } else if (/^--/.test(styleName)) {
+            if (/^--/.test(styleName)) {
                 // Is styleName a custom CSS property?
                 element.style.setProperty(styleName, styleValue);
             } else {
