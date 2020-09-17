@@ -26,6 +26,17 @@ ko.utils = (function () {
 
     var canSetPrototype = ({ __proto__: [] } instanceof Array);
 
+    // For details on the pattern for changing node classes
+    // see: https://github.com/knockout/knockout/issues/1597
+    function toggleDomNodeCssClass(node, classNames, shouldHaveClass) {
+        if (classNames) {
+            var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
+            classNames.split(/\s+/).forEach(function(className) {
+                node.classList[addOrRemoveFn](className);
+            });
+        }
+    }
+
     return {
         arrayForEach: function (array, action, actionOwner) {
             arrayCall('forEach', array, action, actionOwner);
@@ -256,6 +267,8 @@ ko.utils = (function () {
             return ko.isObservable(value) ? value.peek() : value;
         },
 
+        toggleDomNodeCssClass: toggleDomNodeCssClass,
+
         setTextContent: function(element, textContent) {
             var value = ko.utils.unwrapObservable(textContent);
             if ((value === null) || (value === undefined))
@@ -291,6 +304,7 @@ ko.exportSymbol('utils.objectMap', ko.utils.objectMap);
 ko.exportSymbol('utils.peekObservable', ko.utils.peekObservable);
 ko.exportSymbol('utils.registerEventHandler', ko.utils.registerEventHandler);
 ko.exportSymbol('utils.stringifyJson', ko.utils.stringifyJson);
+ko.exportSymbol('utils.toggleDomNodeCssClass', ko.utils.toggleDomNodeCssClass);
 ko.exportSymbol('utils.triggerEvent', ko.utils.triggerEvent);
 ko.exportSymbol('utils.unwrapObservable', ko.utils.unwrapObservable);
 ko.exportSymbol('utils.objectForEach', ko.utils.objectForEach);
