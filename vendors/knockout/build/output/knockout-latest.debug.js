@@ -83,14 +83,6 @@ ko.utils = (function () {
 
     var canSetPrototype = ({ __proto__: [] } instanceof Array);
 
-    // Represent the known event types in a compact way, then at runtime transform it into a hash with event name as key (for fast lookup)
-    var ke = 'KeyboardEvent', me = 'MouseEvent',
-        knownEventTypesByEventName = {
-            keyup: ke, keydown: ke, keypress: ke,
-            click: me, dblclick: me, mousedown: me, mouseup: me, mousemove: me,
-            mouseover: me, mouseout: me, mouseenter: me, mouseleave: me
-        };
-
     function isClickOnCheckableElement(element, eventType) {
         if ((element.nodeName !== "INPUT") || !element.type) return false;
         if (eventType.toLowerCase() != "click") return false;
@@ -332,10 +324,7 @@ ko.utils = (function () {
             if (!ko.options['useOnlyNativeEvents'] && jQuery && !useClickWorkaround) {
                 jQuery(element)['trigger'](eventType);
             } else {
-                var eventCategory = knownEventTypesByEventName[eventType] || "HTMLEvents";
-                var event = document.createEvent(eventCategory);
-                event.initEvent(eventType, true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, element);
-                element.dispatchEvent(event);
+                element.dispatchEvent(new Event(eventType));
             }
         },
 

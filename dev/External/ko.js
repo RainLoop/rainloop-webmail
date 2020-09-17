@@ -1,5 +1,4 @@
 const
-	$ = jQuery,
 	doc = document,
 	ko = window.ko,
 	Translator = () => require('Common/Translator'),
@@ -93,30 +92,26 @@ ko.bindingHandlers.popover = {
 
 ko.bindingHandlers.onEnter = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
-		$(element).on('keypress.koOnEnter', event => {
-			if (event && 'Enter' === event.key) {
-				$(element).trigger('change');
+		let fn = event => {
+			if ('Enter' == event.key) {
+				element.dispatchEvent(new Event('change'));
 				fValueAccessor().call(viewModel);
 			}
-		});
-
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			$(element).off('keypress.koOnEnter');
-		});
+		};
+		element.addEventListener('keydown', fn);
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keydown', fn));
 	}
 };
 
 ko.bindingHandlers.onSpace = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
-		$(element).on('keyup.koOnSpace', event => {
-			if (event && ' ' === event.key) {
+		let fn = event => {
+			if (' ' == event.key) {
 				fValueAccessor().call(viewModel, event);
 			}
-		});
-
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			$(element).off('keyup.koOnSpace');
-		});
+		};
+		element.addEventListener('keyup', fn);
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keyup', fn));
 	}
 };
 

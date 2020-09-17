@@ -203,16 +203,14 @@ ko.bindingHandlers.initDom = {
 
 ko.bindingHandlers.onEsc = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
-		$(element).on('keyup.koOnEsc', event => {
-			if (event && 'Escape' === event.key) {
-				$(element).trigger('change');
+		let fn = event => {
+			if ('Escape' == event.key) {
+				element.dispatchEvent(new Event('change'));
 				fValueAccessor().call(viewModel);
 			}
-		});
-
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () =>
-			$(element).off('keyup.koOnEsc')
-		);
+		};
+		element.addEventListener('keyup', fn);
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keyup', fn));
 	}
 };
 
