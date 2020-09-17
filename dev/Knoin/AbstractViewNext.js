@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { inFocus } from 'Common/Utils';
-import { KeyState, EventKeyCode } from 'Common/Enums';
+import { KeyState } from 'Common/Enums';
 import { keyScope } from 'Common/Globals';
 
 export class AbstractViewNext {
@@ -35,12 +35,12 @@ export class AbstractViewNext {
 	 * @returns {void}
 	 */
 	registerPopupKeyDown() {
-		addEventListener('keydown', (event) => {
+		addEventListener('keydown', event => {
 			if (event && this.modalVisibility && this.modalVisibility()) {
-				if (!this.bDisabeCloseOnEsc && EventKeyCode.Esc === event.keyCode) {
+				if (!this.bDisabeCloseOnEsc && 'Escape' == event.key) {
 					this.cancelCommand && this.cancelCommand();
 					return false;
-				} else if (EventKeyCode.Backspace === event.keyCode && !inFocus()) {
+				} else if ('Backspace' == event.key && !inFocus()) {
 					return false;
 				}
 			}

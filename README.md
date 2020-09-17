@@ -87,26 +87,27 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Removed non-community (aka Prem/Premium/License) code
 * Modified Jua.js to be without jQuery
 * Replaced *Ajax with *Fetch classes because we use the Fetch API, not jQuery.ajax
+* Replaced knockoutjs 3.4 with a modified 3.5.1
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  857.772	|
-|app.js      	|4.184.455	|2.507.407	|
+|admin.js    	|2.130.942	|  855.381	|
+|app.js      	|4.184.455	|2.498.825	|
 |boot.js     	|  671.522	|    5.777	|
-|libs.js     	|  647.614	|  327.257	|
+|libs.js     	|  647.614	|  326.075	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.698.213	|
+|TOTAL      	|7.960.367	|3.686.058	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  117.678	| 73.657	| 33.668	| 29.096	|
-|app.min.js      	|  511.202	|  342.012	|140.462	| 89.893	| 72.807	|
-|boot.min.js     	|   66.007	|    3.101	| 22.567	|  1.576	|  1.346	|
-|libs.min.js     	|  572.545	|  304.000	|176.720	| 94.870	| 83.524	|
+|admin.min.js    	|  252.147	|  117.342	| 73.657	| 33.520	| 28.941	|
+|app.min.js      	|  511.202	|  340.862	|140.462	| 89.653	| 72.639	|
+|boot.min.js     	|   66.007	|    3.117	| 22.567	|  1.563	|  1.333	|
+|libs.min.js     	|  572.545	|  302.989	|176.720	| 94.417	| 83.208	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  766.791	|424.718	|220.007	|186.773	|
+|TOTAL          	|1.434.353	|  764.310	|424.718	|219.153	|186.121	|
 
-667.562 bytes (204.711 gzip) is not much, but it feels faster.
+670.043 bytes (205.565 gzip) is almost 50% smaller and it feels faster.
 
 ### CSS changes
 

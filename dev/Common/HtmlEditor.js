@@ -1,5 +1,3 @@
-import { EventKeyCode } from 'Common/Enums';
-
 /**
  * @type {Object}
  */
@@ -290,7 +288,7 @@ class HtmlEditor {
 
 					this.editor = CKEDITOR.appendTo(this.element, config);
 
-					this.editor.on('key', event => !(event && event.data && EventKeyCode.Tab === event.data.keyCode));
+					this.editor.on('key', event => !(event && event.data && 'Tab' == event.data.key));
 
 					if (window.FileReader) {
 						this.editor.on('drop', (event) => {

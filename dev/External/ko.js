@@ -93,8 +93,8 @@ ko.bindingHandlers.popover = {
 
 ko.bindingHandlers.onEnter = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
-		$(element).on('keypress.koOnEnter', (event) => {
-			if (event && 13 === parseInt(event.keyCode, 10)) {
+		$(element).on('keypress.koOnEnter', event => {
+			if (event && 'Enter' === event.key) {
 				$(element).trigger('change');
 				fValueAccessor().call(viewModel);
 			}
@@ -108,8 +108,8 @@ ko.bindingHandlers.onEnter = {
 
 ko.bindingHandlers.onSpace = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
-		$(element).on('keyup.koOnSpace', (event) => {
-			if (event && 32 === parseInt(event.keyCode, 10)) {
+		$(element).on('keyup.koOnSpace', event => {
+			if (event && ' ' === event.key) {
 				fValueAccessor().call(viewModel, event);
 			}
 		});

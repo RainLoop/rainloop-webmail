@@ -1,5 +1,4 @@
 import ko from 'ko';
-import { EventKeyCode } from 'Common/Enums';
 
 class Selector {
 	list;
@@ -237,14 +236,14 @@ class Selector {
 	 * @param {boolean} forceSelect
 	 */
 	goDown(forceSelect) {
-		this.newSelectPosition(EventKeyCode.Down, false, forceSelect);
+		this.newSelectPosition('ArrowDown', false, forceSelect);
 	}
 
 	/**
 	 * @param {boolean} forceSelect
 	 */
 	goUp(forceSelect) {
-		this.newSelectPosition(EventKeyCode.Up, false, forceSelect);
+		this.newSelectPosition('ArrowUp', false, forceSelect);
 	}
 
 	unselect() {
@@ -288,38 +287,38 @@ class Selector {
 
 			key('up, shift+up, down, shift+down, home, end, pageup, pagedown, insert, space', keyScope, (event, handler) => {
 				if (event && handler && handler.shortcut) {
-					let eventKey = 0;
+					let eventKey;
 					switch (handler.shortcut) {
 						case 'up':
 						case 'shift+up':
-							eventKey = EventKeyCode.Up;
+							eventKey = 'ArrowUp';
 							break;
 						case 'down':
 						case 'shift+down':
-							eventKey = EventKeyCode.Down;
+							eventKey = 'ArrowDown';
 							break;
 						case 'insert':
-							eventKey = EventKeyCode.Insert;
+							eventKey = 'Insert';
 							break;
 						case 'space':
-							eventKey = EventKeyCode.Space;
+							eventKey = ' ';
 							break;
 						case 'home':
-							eventKey = EventKeyCode.Home;
+							eventKey = 'Home';
 							break;
 						case 'end':
-							eventKey = EventKeyCode.End;
+							eventKey = 'End';
 							break;
 						case 'pageup':
-							eventKey = EventKeyCode.PageUp;
+							eventKey = 'PageUp';
 							break;
 						case 'pagedown':
-							eventKey = EventKeyCode.PageDown;
+							eventKey = 'PageDown';
 							break;
 						// no default
 					}
 
-					if (0 < eventKey) {
+					if (eventKey) {
 						this.newSelectPosition(eventKey, key.shift);
 						return false;
 					}
@@ -353,11 +352,11 @@ class Selector {
 	}
 
 	/**
-	 * @param {number} iEventKeyCode
+	 * @param {string} sEventKey
 	 * @param {boolean} bShiftKey
 	 * @param {boolean=} bForceSelect = false
 	 */
-	newSelectPosition(iEventKeyCode, bShiftKey, bForceSelect) {
+	newSelectPosition(sEventKey, bShiftKey, bForceSelect) {
 		let index = 0,
 			isNext = false,
 			isStop = false,
@@ -371,39 +370,39 @@ class Selector {
 		if (0 < listLen) {
 			if (!focused) {
 				if (
-					EventKeyCode.Down === iEventKeyCode ||
-					EventKeyCode.Insert === iEventKeyCode ||
-					EventKeyCode.Space === iEventKeyCode ||
-					EventKeyCode.Home === iEventKeyCode ||
-					EventKeyCode.PageUp === iEventKeyCode
+					'ArrowDown' == sEventKey ||
+					'Insert' == sEventKey ||
+					' ' == sEventKey ||
+					'Home' == sEventKey ||
+					'PageUp' == sEventKey
 				) {
 					result = list[0];
 				} else if (
-					EventKeyCode.Up === iEventKeyCode ||
-					EventKeyCode.End === iEventKeyCode ||
-					EventKeyCode.PageDown === iEventKeyCode
+					'ArrowUp' === sEventKey ||
+					'End' === sEventKey ||
+					'PageDown' === sEventKey
 				) {
 					result = list[list.length - 1];
 				}
 			} else if (focused) {
 				if (
-					EventKeyCode.Down === iEventKeyCode ||
-					EventKeyCode.Up === iEventKeyCode ||
-					EventKeyCode.Insert === iEventKeyCode ||
-					EventKeyCode.Space === iEventKeyCode
+					'ArrowDown' === sEventKey ||
+					'ArrowUp' === sEventKey ||
+					'Insert' === sEventKey ||
+					' ' === sEventKey
 				) {
 					list.forEach(item => {
 						if (!isStop) {
-							switch (iEventKeyCode) {
-								case EventKeyCode.Up:
+							switch (sEventKey) {
+								case 'ArrowUp':
 									if (focused === item) {
 										isStop = true;
 									} else {
 										result = item;
 									}
 									break;
-								case EventKeyCode.Down:
-								case EventKeyCode.Insert:
+								case 'ArrowDown':
+								case 'Insert':
 									if (isNext) {
 										result = item;
 										isStop = true;
@@ -416,16 +415,16 @@ class Selector {
 						}
 					});
 
-					if (!result && (EventKeyCode.Down === iEventKeyCode || EventKeyCode.Up === iEventKeyCode)) {
-						(this.oCallbacks.onUpUpOrDownDown || (()=>true))(EventKeyCode.Up === iEventKeyCode);
+					if (!result && ('ArrowDown' === sEventKey || 'ArrowUp' === sEventKey)) {
+						(this.oCallbacks.onUpUpOrDownDown || (()=>true))('ArrowUp' === sEventKey);
 					}
-				} else if (EventKeyCode.Home === iEventKeyCode || EventKeyCode.End === iEventKeyCode) {
-					if (EventKeyCode.Home === iEventKeyCode) {
+				} else if ('Home' === sEventKey || 'End' === sEventKey) {
+					if ('Home' === sEventKey) {
 						result = list[0];
-					} else if (EventKeyCode.End === iEventKeyCode) {
+					} else if ('End' === sEventKey) {
 						result = list[list.length - 1];
 					}
-				} else if (EventKeyCode.PageDown === iEventKeyCode) {
+				} else if ('PageDown' === sEventKey) {
 					for (; index < listLen; index++) {
 						if (focused === list[index]) {
 							index += pageStep;
@@ -434,7 +433,7 @@ class Selector {
 							break;
 						}
 					}
-				} else if (EventKeyCode.PageUp === iEventKeyCode) {
+				} else if ('PageUp' === sEventKey) {
 					for (index = listLen; 0 <= index; index--) {
 						if (focused === list[index]) {
 							index -= pageStep;
@@ -452,23 +451,23 @@ class Selector {
 
 			if (focused) {
 				if (bShiftKey) {
-					if (EventKeyCode.Up === iEventKeyCode || EventKeyCode.Down === iEventKeyCode) {
+					if ('ArrowUp' === sEventKey || 'ArrowDown' === sEventKey) {
 						focused.checked(!focused.checked());
 					}
-				} else if (EventKeyCode.Insert === iEventKeyCode || EventKeyCode.Space === iEventKeyCode) {
+				} else if ('Insert' === sEventKey || ' ' === sEventKey) {
 					focused.checked(!focused.checked());
 				}
 			}
 
-			if ((this.autoSelect() || !!bForceSelect) && !this.isListChecked() && EventKeyCode.Space !== iEventKeyCode) {
+			if ((this.autoSelect() || !!bForceSelect) && !this.isListChecked() && ' ' !== sEventKey) {
 				this.selectedItem(result);
 			}
 
 			this.scrollToFocused();
 		} else if (focused) {
-			if (bShiftKey && (EventKeyCode.Up === iEventKeyCode || EventKeyCode.Down === iEventKeyCode)) {
+			if (bShiftKey && ('ArrowUp' === sEventKey || 'ArrowDown' === sEventKey)) {
 				focused.checked(!focused.checked());
-			} else if (EventKeyCode.Insert === iEventKeyCode || EventKeyCode.Space === iEventKeyCode) {
+			} else if ('Insert' === sEventKey || ' ' === sEventKey) {
 				focused.checked(!focused.checked());
 			}
 

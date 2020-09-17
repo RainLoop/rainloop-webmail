@@ -41,7 +41,7 @@ ko.extenders.posInterer = (target, defaultVal) => {
 	const Utils = require('Common/Utils'),
 		result = ko.computed({
 			read: target,
-			write: (newValue) => {
+			write: newValue => {
 				let val = Utils.pInt(newValue.toString(), defaultVal);
 				if (0 >= val) {
 					val = defaultVal;

@@ -10,11 +10,9 @@ export default (App) => {
 	addEventListener('keydown', event => {
 		event = event || window.event;
 		if (event && event.ctrlKey && !event.shiftKey && !event.altKey) {
-			const key = event.keyCode || event.which;
-			if (key === Enums.EventKeyCode.S) {
+			if ('S' == event.key) {
 				event.preventDefault();
-				return;
-			} else if (key === Enums.EventKeyCode.A) {
+			} else if ('A' == event.key) {
 				const sender = event.target || event.srcElement;
 				if (
 					sender &&

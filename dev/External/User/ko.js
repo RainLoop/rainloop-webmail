@@ -1,5 +1,3 @@
-import { bMobileDevice } from 'Common/Globals';
-
 const ko = window.ko,
 	$ = jQuery;
 
@@ -92,9 +90,7 @@ ko.bindingHandlers.emailsTags = {
 
 ko.bindingHandlers.draggable = {
 	init: (element, fValueAccessor, fAllBindingsAccessor) => {
-		const Utils = require('Common/Utils');
-
-		if (!bMobileDevice) {
+		if (!rl.settings.app('mobile')) {
 			const triggerZone = 50,
 				scrollSpeed = 3,
 				fAllValueFunc = fAllBindingsAccessor(),
@@ -142,7 +138,7 @@ ko.bindingHandlers.draggable = {
 			$(element)
 				.draggable(conf)
 				.on('mousedown.koDraggable', () => {
-					Utils.removeInFocus();
+					require('Common/Utils').removeInFocus();
 					bcr = droppable ? droppable.getBoundingClientRect() : null;
 				});
 
@@ -157,7 +153,7 @@ ko.bindingHandlers.draggable = {
 
 ko.bindingHandlers.droppable = {
 	init: (element, fValueAccessor, fAllBindingsAccessor) => {
-		if (!bMobileDevice) {
+		if (!rl.settings.app('mobile')) {
 			const fValueFunc = fValueAccessor(),
 				fAllValueFunc = fAllBindingsAccessor(),
 				fOverCallback = fAllValueFunc && fAllValueFunc.droppableOver ? fAllValueFunc.droppableOver : null,
@@ -207,40 +203,40 @@ ko.bindingHandlers.initDom = {
 
 ko.bindingHandlers.onEsc = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
-		$(element).on('keyup.koOnEsc', (event) => {
-			if (event && 27 === parseInt(event.keyCode, 10)) {
+		$(element).on('keyup.koOnEsc', event => {
+			if (event && 'Escape' === event.key) {
 				$(element).trigger('change');
 				fValueAccessor().call(viewModel);
 			}
 		});
 
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-			$(element).off('keyup.koOnEsc');
-		});
+		ko.utils.domNodeDisposal.addDisposeCallback(element, () =>
+			$(element).off('keyup.koOnEsc')
+		);
 	}
 };
 
 // extenders
 
-ko.extenders.specialThrottle = (target, option) => {
-	target.iSpecialThrottleTimeoutValue = require('Common/Utils').pInt(option);
-	if (0 < target.iSpecialThrottleTimeoutValue) {
-		target.iSpecialThrottleTimeout = 0;
-		target.valueForRead = ko.observable(!!target()).extend({ throttle: 10 });
+ko.extenders.specialThrottle = (target, timeout) => {
+	timeout = parseInt(timeout, 10);
+	if (0 < timeout) {
+		let timer = 0,
+			valueForRead = ko.observable(!!target()).extend({ throttle: 10 });
 
 		return ko.computed({
-			read: target.valueForRead,
+			read: valueForRead,
 			write: (bValue) => {
 				if (bValue) {
-					target.valueForRead(bValue);
-				} else if (target.valueForRead()) {
-					clearTimeout(target.iSpecialThrottleTimeout);
-					target.iSpecialThrottleTimeout = setTimeout(() => {
-						target.valueForRead(false);
-						target.iSpecialThrottleTimeout = 0;
-					}, target.iSpecialThrottleTimeoutValue);
+					valueForRead(bValue);
+				} else if (valueForRead()) {
+					clearTimeout(timer);
+					timer = setTimeout(() => {
+						valueForRead(false);
+						timer = 0;
+					}, timeout);
 				} else {
-					target.valueForRead(bValue);
+					valueForRead(bValue);
 				}
 			}
 		});

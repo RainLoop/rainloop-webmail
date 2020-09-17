@@ -258,29 +258,6 @@ export const ClientSideKeyName = {
 /**
  * @enum {number}
  */
-export const EventKeyCode = {
-	Backspace: 8,
-	Tab: 9,
-	Enter: 13,
-	Esc: 27,
-	PageUp: 33,
-	PageDown: 34,
-	Left: 37,
-	Right: 39,
-	Up: 38,
-	Down: 40,
-	End: 35,
-	Home: 36,
-	Space: 32,
-	Insert: 45,
-	Delete: 46,
-	A: 65,
-	S: 83
-};
-
-/**
- * @enum {number}
- */
 export const MessageSetAction = {
 	SetSeen: 0,
 	UnsetSeen: 1,
