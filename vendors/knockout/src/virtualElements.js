@@ -124,7 +124,7 @@
             }
 
             if (!insertBeforeNode) {
-                containerNode.appendChild(nodeToPrepend);
+                containerNode.append(nodeToPrepend);
             } else if (nodeToPrepend !== insertBeforeNode) {       // IE will sometimes crash if you try to insert a node before itself
                 containerNode.insertBefore(nodeToPrepend, insertBeforeNode);
             }
@@ -142,7 +142,7 @@
                 }
 
                 if (!insertBeforeNode) {
-                    containerNode.appendChild(nodeToInsert);
+                    containerNode.append(nodeToInsert);
                 } else if (nodeToInsert !== insertBeforeNode) {       // IE will sometimes crash if you try to insert a node before itself
                     containerNode.insertBefore(nodeToInsert, insertBeforeNode);
                 }
@@ -206,7 +206,7 @@
                                 if (nodeToInsertBefore)
                                     elementVerified.insertBefore(unbalancedTags[i], nodeToInsertBefore);
                                 else
-                                    elementVerified.appendChild(unbalancedTags[i]);
+                                    elementVerified.append(unbalancedTags[i]);
                             }
                         }
                     }

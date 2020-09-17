@@ -7,6 +7,9 @@ const devPathJoin = path.join(__dirname, 'dev');
 const externalPathJoin = path.join(__dirname, 'dev', 'External');
 const loose = true;
 
+//npm install closure-webpack-plugin google-closure-compiler
+//const ClosurePlugin = require('closure-webpack-plugin');
+
 const babelLoaderOptions = function() {
 	return {
 		ignore: [/\/core-js/],
@@ -63,6 +66,22 @@ module.exports = function(publicPath, pro, mode) {
 		optimization: {
 			concatenateModules: false,
 			minimize: false
+/*
+			,minimizer: [
+				new ClosurePlugin({mode: 'STANDARD'}, {
+					language_in:'ECMASCRIPT6',
+					language_out:'ECMASCRIPT6',
+					compilation_level: 'ADVANCED_OPTIMIZATIONS'
+					// compiler flags here
+					//
+					// for debugging help, try these:
+					//
+					// formatting: 'PRETTY_PRINT'
+					// debug: true,
+					// renaming: false
+				})
+			]
+*/
 		},
 		plugins: [
 //			new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),

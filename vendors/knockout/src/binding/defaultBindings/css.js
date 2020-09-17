@@ -3,12 +3,12 @@ var classesWrittenByBindingKey = '__ko__cssValue';
 // For details on the pattern for changing node classes
 // see: https://github.com/knockout/knockout/issues/1597
 function toggleDomNodeCssClass(node, classNames, shouldHaveClass) {
-	if (classNames) {
-		var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
-		classNames.split(/\s+/).forEach(function(className) {
-			node.classList[addOrRemoveFn](className);
-		});
-	}
+    if (classNames) {
+        var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
+        classNames.split(/\s+/).forEach(function(className) {
+            node.classList[addOrRemoveFn](className);
+        });
+    }
 }
 
 ko.bindingHandlers['class'] = {

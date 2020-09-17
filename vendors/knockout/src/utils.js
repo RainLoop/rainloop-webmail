@@ -1,4 +1,9 @@
 ko.utils = (function () {
+
+    function arrayCall(name, arr, p1, p2) {
+        return Array.prototype[name].call(arr, p1, p2);
+    }
+
     function objectForEach(obj, action) {
         obj && Object.entries(obj).forEach(function(prop) {
             action(prop[0], prop[1]);
@@ -30,13 +35,11 @@ ko.utils = (function () {
 
     return {
         arrayForEach: function (array, action, actionOwner) {
-            for (var i = 0, j = array.length; i < j; i++) {
-                action.call(actionOwner, array[i], i, array);
-            }
+            arrayCall('forEach', array, action, actionOwner);
         },
 
         arrayIndexOf: function (array, item) {
-            return Array.prototype.indexOf.call(array, item);
+            return arrayCall('indexOf', array, item);
         },
 
         arrayFirst: function (array, predicate, predicateOwner) {
@@ -58,7 +61,7 @@ ko.utils = (function () {
         },
 
         arrayFilter: function (array, predicate, predicateOwner) {
-            return array ? Array.prototype.filter.call(array, predicate, predicateOwner) : [];
+            return array ? arrayCall('filter', array, predicate, predicateOwner) : [];
         },
 
         arrayPushAll: function (array, valuesToPush) {
@@ -103,25 +106,21 @@ ko.utils = (function () {
             var templateDocument = (nodesArray[0] && nodesArray[0].ownerDocument) || document;
 
             var container = templateDocument.createElement('div');
-            for (var i = 0, j = nodesArray.length; i < j; i++) {
-                container.appendChild(ko.cleanNode(nodesArray[i]));
-            }
+            nodes.forEach(function(node){container.append(ko.cleanNode(node));});
             return container;
         },
 
         cloneNodes: function (nodesArray, shouldCleanNodes) {
-            for (var i = 0, j = nodesArray.length, newNodesArray = []; i < j; i++) {
-                var clonedNode = nodesArray[i].cloneNode(true);
-                newNodesArray.push(shouldCleanNodes ? ko.cleanNode(clonedNode) : clonedNode);
-            }
-            return newNodesArray;
+            return arrayCall('map', nodesArray, shouldCleanNodes
+                ? function(node){return ko.cleanNode(node.cloneNode(true));}
+                : function(node){return node.cloneNode(true);}
+            );
         },
 
         setDomNodeChildren: function (domNode, childNodes) {
             ko.utils.emptyDomNode(domNode);
             if (childNodes) {
-                for (var i = 0, j = childNodes.length; i < j; i++)
-                    domNode.appendChild(childNodes[i]);
+                Element.prototype.append.apply(domNode, childNodes);
             }
         },
 

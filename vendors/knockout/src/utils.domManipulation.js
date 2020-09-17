@@ -44,7 +44,7 @@
             // Note that innerShiv is deprecated in favour of html5shiv. We should consider adding
             // support for html5shiv (except if no explicit support is needed, e.g., if html5shiv
             // somehow shims the native APIs so it just works anyway)
-            div.appendChild(windowContext['innerShiv'](markup));
+            div.append(windowContext['innerShiv'](markup));
         } else {
             div.innerHTML = markup;
         }

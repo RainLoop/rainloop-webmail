@@ -61,6 +61,11 @@ ko.options = {
 
 //ko.exportSymbol('options', ko.options);   // 'options' isn't minified
 ko.utils = (function () {
+
+    function arrayCall(name, arr, p1, p2) {
+        return Array.prototype[name].call(arr, p1, p2);
+    }
+
     function objectForEach(obj, action) {
         obj && Object.entries(obj).forEach(function(prop) {
             action(prop[0], prop[1]);
@@ -92,13 +97,11 @@ ko.utils = (function () {
 
     return {
         arrayForEach: function (array, action, actionOwner) {
-            for (var i = 0, j = array.length; i < j; i++) {
-                action.call(actionOwner, array[i], i, array);
-            }
+            arrayCall('forEach', array, action, actionOwner);
         },
 
         arrayIndexOf: function (array, item) {
-            return Array.prototype.indexOf.call(array, item);
+            return arrayCall('indexOf', array, item);
         },
 
         arrayFirst: function (array, predicate, predicateOwner) {
@@ -120,7 +123,7 @@ ko.utils = (function () {
         },
 
         arrayFilter: function (array, predicate, predicateOwner) {
-            return array ? Array.prototype.filter.call(array, predicate, predicateOwner) : [];
+            return array ? arrayCall('filter', array, predicate, predicateOwner) : [];
         },
 
         arrayPushAll: function (array, valuesToPush) {
@@ -165,25 +168,21 @@ ko.utils = (function () {
             var templateDocument = (nodesArray[0] && nodesArray[0].ownerDocument) || document;
 
             var container = templateDocument.createElement('div');
-            for (var i = 0, j = nodesArray.length; i < j; i++) {
-                container.appendChild(ko.cleanNode(nodesArray[i]));
-            }
+            nodes.forEach(function(node){container.append(ko.cleanNode(node));});
             return container;
         },
 
         cloneNodes: function (nodesArray, shouldCleanNodes) {
-            for (var i = 0, j = nodesArray.length, newNodesArray = []; i < j; i++) {
-                var clonedNode = nodesArray[i].cloneNode(true);
-                newNodesArray.push(shouldCleanNodes ? ko.cleanNode(clonedNode) : clonedNode);
-            }
-            return newNodesArray;
+            return arrayCall('map', nodesArray, shouldCleanNodes
+                ? function(node){return ko.cleanNode(node.cloneNode(true));}
+                : function(node){return node.cloneNode(true);}
+            );
         },
 
         setDomNodeChildren: function (domNode, childNodes) {
             ko.utils.emptyDomNode(domNode);
             if (childNodes) {
-                for (var i = 0, j = childNodes.length; i < j; i++)
-                    domNode.appendChild(childNodes[i]);
+                Element.prototype.append.apply(domNode, childNodes);
             }
         },
 
@@ -576,7 +575,7 @@ ko.exportSymbol('utils.domNodeDisposal.removeDisposeCallback', ko.utils.domNodeD
             // Note that innerShiv is deprecated in favour of html5shiv. We should consider adding
             // support for html5shiv (except if no explicit support is needed, e.g., if html5shiv
             // somehow shims the native APIs so it just works anyway)
-            div.appendChild(windowContext['innerShiv'](markup));
+            div.append(windowContext['innerShiv'](markup));
         } else {
             div.innerHTML = markup;
         }
@@ -716,7 +715,7 @@ ko.tasks = (function () {
                 script = null;
                 callback();
             };
-            document.documentElement.appendChild(script);
+            document.documentElement.append(script);
         };
     } else {
         scheduler = function (callback) {
@@ -2546,7 +2545,7 @@ ko.exportSymbol('jsonExpressionRewriting.insertPropertyAccessorsIntoJson', ko.ex
             }
 
             if (!insertBeforeNode) {
-                containerNode.appendChild(nodeToPrepend);
+                containerNode.append(nodeToPrepend);
             } else if (nodeToPrepend !== insertBeforeNode) {       // IE will sometimes crash if you try to insert a node before itself
                 containerNode.insertBefore(nodeToPrepend, insertBeforeNode);
             }
@@ -2564,7 +2563,7 @@ ko.exportSymbol('jsonExpressionRewriting.insertPropertyAccessorsIntoJson', ko.ex
                 }
 
                 if (!insertBeforeNode) {
-                    containerNode.appendChild(nodeToInsert);
+                    containerNode.append(nodeToInsert);
                 } else if (nodeToInsert !== insertBeforeNode) {       // IE will sometimes crash if you try to insert a node before itself
                     containerNode.insertBefore(nodeToInsert, insertBeforeNode);
                 }
@@ -2628,7 +2627,7 @@ ko.exportSymbol('jsonExpressionRewriting.insertPropertyAccessorsIntoJson', ko.ex
                                 if (nodeToInsertBefore)
                                     elementVerified.insertBefore(unbalancedTags[i], nodeToInsertBefore);
                                 else
-                                    elementVerified.appendChild(unbalancedTags[i]);
+                                    elementVerified.append(unbalancedTags[i]);
                             }
                         }
                     }
@@ -3924,14 +3923,14 @@ ko.bindingHandlers['attr'] = {
 (function() {
 
 function addOrRemoveItem(array, value, included) {
-	var existingEntryIndex = ko.utils.arrayIndexOf(ko.utils.peekObservable(array), value);
-	if (existingEntryIndex < 0) {
-		if (included)
-			array.push(value);
-	} else {
-		if (!included)
-			array.splice(existingEntryIndex, 1);
-	}
+    var existingEntryIndex = ko.utils.arrayIndexOf(ko.utils.peekObservable(array), value);
+    if (existingEntryIndex < 0) {
+        if (included)
+            array.push(value);
+    } else {
+        if (!included)
+            array.splice(existingEntryIndex, 1);
+    }
 }
 
 ko.bindingHandlers['checked'] = {
@@ -4067,12 +4066,12 @@ var classesWrittenByBindingKey = '__ko__cssValue';
 // For details on the pattern for changing node classes
 // see: https://github.com/knockout/knockout/issues/1597
 function toggleDomNodeCssClass(node, classNames, shouldHaveClass) {
-	if (classNames) {
-		var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
-		classNames.split(/\s+/).forEach(function(className) {
-			node.classList[addOrRemoveFn](className);
-		});
-	}
+    if (classNames) {
+        var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
+        classNames.split(/\s+/).forEach(function(className) {
+            node.classList[addOrRemoveFn](className);
+        });
+    }
 }
 
 ko.bindingHandlers['class'] = {

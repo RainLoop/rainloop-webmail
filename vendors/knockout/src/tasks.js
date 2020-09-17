@@ -24,7 +24,7 @@ ko.tasks = (function () {
                 script = null;
                 callback();
             };
-            document.documentElement.appendChild(script);
+            document.documentElement.append(script);
         };
     } else {
         scheduler = function (callback) {

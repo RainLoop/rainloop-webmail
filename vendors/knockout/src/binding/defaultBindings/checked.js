@@ -1,14 +1,14 @@
 (function() {
 
 function addOrRemoveItem(array, value, included) {
-	var existingEntryIndex = ko.utils.arrayIndexOf(ko.utils.peekObservable(array), value);
-	if (existingEntryIndex < 0) {
-		if (included)
-			array.push(value);
-	} else {
-		if (!included)
-			array.splice(existingEntryIndex, 1);
-	}
+    var existingEntryIndex = ko.utils.arrayIndexOf(ko.utils.peekObservable(array), value);
+    if (existingEntryIndex < 0) {
+        if (included)
+            array.push(value);
+    } else {
+        if (!included)
+            array.splice(existingEntryIndex, 1);
+    }
 }
 
 ko.bindingHandlers['checked'] = {
