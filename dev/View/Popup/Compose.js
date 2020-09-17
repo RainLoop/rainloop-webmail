@@ -1373,7 +1373,7 @@ class ComposePopupView extends AbstractViewNext {
 			if (ComposeType.ForwardAsAttachment === type) {
 				this.addMessageAsAttachment(message);
 			} else {
-				message.attachments.forEach(item => {
+				message.attachments().forEach(item => {
 					let add = false;
 					switch (type) {
 						case ComposeType.Reply:
