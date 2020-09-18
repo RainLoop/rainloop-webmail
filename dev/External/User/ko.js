@@ -1,5 +1,7 @@
 const ko = window.ko,
-	$ = jQuery;
+	$ = jQuery,
+	validTransfer = data => ('move' === data.dropEffect || 'copy' === data.dropEffect) // effectAllowed
+		&& data.getData('text/x-rainloop-json');
 
 ko.bindingHandlers.editor = {
 	init: (element, fValueAccessor) => {
@@ -89,106 +91,40 @@ ko.bindingHandlers.emailsTags = {
 };
 
 ko.bindingHandlers.draggable = {
-	init: (element, fValueAccessor, fAllBindingsAccessor) => {
+	init: (element, fValueAccessor) => {
 		if (!rl.settings.app('mobile')) {
-			const triggerZone = 50,
-				scrollSpeed = 3,
-				fAllValueFunc = fAllBindingsAccessor(),
-				selector = fAllValueFunc ? fAllValueFunc.droppableSelector : '',
-				droppable = selector ? document.querySelector(selector) : null,
-				conf = {
-					distance: 20,
-					handle: '.dragHandle',
-					cursorAt: { top: 22, left: 3 },
-					refreshPositions: true,
-					scroll: true,
-					drag: null,
-					stop: null,
-					helper: null
-				};
-			let bcr;
-
-			if (droppable) {
-				conf.drag = event => {
-					if (droppable.scrollTopMax) {
-						clearInterval(droppable.timerScroll);
-						if (droppable.scrollTop
-							&& bcr.top < event.clientY
-							&& bcr.top + triggerZone > event.clientY)
-						{
-							droppable.timerScroll = setInterval(() => droppable.scrollTop -= scrollSpeed, 10);
-						}
-						else if (droppable.scrollTop < droppable.scrollTopMax
-							&& bcr.bottom > event.clientY
-							&& bcr.bottom - triggerZone < event.clientY)
-						{
-							droppable.timerScroll = setInterval(() => droppable.scrollTop += scrollSpeed, 10);
-						}
-						else {
-							clearInterval(droppable.timerScroll);
-						}
-					}
-				};
-
-				conf.stop = () => clearInterval(droppable.timerScroll);
-			}
-
-			conf.helper = event => fValueAccessor()(event && event.target ? ko.dataFor(event.target) : null);
-
-			$(element)
-				.draggable(conf)
-				.on('mousedown.koDraggable', () => {
-					require('Common/Utils').removeInFocus();
-					bcr = droppable ? droppable.getBoundingClientRect() : null;
-				});
-
-			ko.utils.domNodeDisposal.addDisposeCallback(element, () =>
-				$(element)
-					.off('mousedown.koDraggable')
-					.draggable('destroy')
-			);
+			element.addEventListener("dragstart", e => fValueAccessor()(e));
 		}
 	}
 };
 
 ko.bindingHandlers.droppable = {
-	init: (element, fValueAccessor, fAllBindingsAccessor) => {
+	init: (element, fValueAccessor) => {
 		if (!rl.settings.app('mobile')) {
-			const fValueFunc = fValueAccessor(),
-				fAllValueFunc = fAllBindingsAccessor(),
-				fOverCallback = fAllValueFunc && fAllValueFunc.droppableOver ? fAllValueFunc.droppableOver : null,
-				fOutCallback = fAllValueFunc && fAllValueFunc.droppableOut ? fAllValueFunc.droppableOut : null,
-				conf = {
-					tolerance: 'pointer',
-					hoverClass: 'droppableHover',
-					drop: null,
-					over: null,
-					out: null
+			const FolderList = fValueAccessor(),
+				folder = ko.dataFor(element),
+				fnHover = e => {
+					if (validTransfer(e.dataTransfer)) {
+						e.preventDefault();
+						element.classList.add('droppableHover');
+						FolderList.messagesDropOver(folder);
+					}
 				};
-
-			if (fValueFunc) {
-				conf.drop = (event, ui) => {
-					fValueFunc(event, ui);
-				};
-
-				if (fOverCallback) {
-					conf.over = (event, ui) => {
-						fOverCallback(event, ui);
-					};
+			element.addEventListener("dragenter", fnHover);
+			element.addEventListener("dragover", fnHover);
+			element.addEventListener("dragleave", e => {
+				e.preventDefault();
+				element.classList.remove('droppableHover');
+				FolderList.messagesDropOut();
+			});
+			element.addEventListener("drop", e => {
+				const data = JSON.parse(validTransfer(e.dataTransfer));
+				if (data) {
+					data.copy = data.copy && event.ctrlKey;
+					e.preventDefault();
+					FolderList.messagesDrop(folder, data);
 				}
-
-				if (fOutCallback) {
-					conf.out = (event, ui) => {
-						fOutCallback(event, ui);
-					};
-				}
-
-				$(element).droppable(conf);
-
-				ko.utils.domNodeDisposal.addDisposeCallback(element, () => {
-					$(element).droppable('destroy');
-				});
-			}
+			});
 		}
 	}
 };

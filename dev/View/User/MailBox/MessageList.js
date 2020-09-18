@@ -45,6 +45,8 @@ const
 	canBeMovedHelper = (self) => self.canBeMoved(),
 	ifvisible = window.ifvisible;
 
+let dragImage;
+
 @view({
 	name: 'View/User/MailBox/MessageList',
 	type: ViewType.Right,
@@ -479,30 +481,38 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		return false;
 	}
 
-	dragAndDronHelper(oMessageListItem) {
-		if (oMessageListItem) {
-			oMessageListItem.checked(true);
+	dragStart(event) {
+		const item = ko.dataFor(document.elementFromPoint(event.clientX, event.clientY));
+		item && item.checked(true);
+
+		dragImage || (dragImage = document.getElementById('messagesDragImage'));
+
+		const uids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails();
+		if (dragImage && uids.length) {
+			dragImage.querySelector('.text').textContent = uids.length;
+			let img = dragImage.querySelector('.icon-white');
+			img.classList.toggle('icon-copy', event.ctrlKey);
+			img.classList.toggle('icon-mail', !event.ctrlKey);
+
+			// Else Chrome doesn't show it
+			dragImage.style.left = event.clientX + 'px';
+			dragImage.style.top = event.clientY + 'px';
+			dragImage.style.right = 'auto';
+
+			let action = event.ctrlKey ? 'copy' : 'move';
+			event.dataTransfer.setData('text/x-rainloop-json', JSON.stringify({
+				copy: event.ctrlKey,
+				folder: FolderStore.currentFolderFullNameRaw(),
+				uids: uids
+			}));
+			event.dataTransfer.setDragImage(dragImage, 0, 0);
+			event.dataTransfer.effectAllowed = action;
+
+			// Remove the Chrome visibility
+			dragImage.style.cssText = '';
+		} else {
+			event.preventDefault();
 		}
-
-		const el = Element.fromHTML('<div class="draggablePlace">' +
-			'<span class="text"></span>&nbsp;' +
-			'<i class="icon-copy icon-white visible-on-ctrl"></i>' +
-			'<i class="icon-mail icon-white hidden-on-ctrl"></i>' +
-			'</div>'),
-			updateUidsInfo = () => {
-				const uids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails();
-				el.rlUids = uids;
-				el.querySelector('.text').textContent = uids.length;
-			};
-
-		document.getElementById('rl-hidden').append(el);
-
-		el.rlFolder = FolderStore.currentFolderFullNameRaw();
-
-		updateUidsInfo();
-		setTimeout(updateUidsInfo,1);
-
-		return el;
 	}
 
 	/**

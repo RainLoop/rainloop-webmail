@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Capa, Focused, Layout, KeyState } from 'Common/Enums';
-import { $htmlCL, leftPanelDisabled, moveAction } from 'Common/Globals';
+import { leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
 
@@ -218,18 +218,12 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 
 	/**
 	 * @param {FolderModel} toFolder
-	 * @param {{helper:jQuery}} ui
+	 * @param {Array} data
 	 * @returns {void}
 	 */
-	messagesDrop(toFolder, ui) {
-		if (toFolder && ui && ui.helper) {
-			const fromFolderFullNameRaw = ui.helper.rlFolder,
-				copy = $htmlCL.contains('rl-ctrl-key-pressed'),
-				uids = ui.helper.rlUids;
-
-			if (fromFolderFullNameRaw && Array.isArray(uids)) {
-				rl.app.moveMessagesToFolder(fromFolderFullNameRaw, uids, toFolder.fullNameRaw, copy);
-			}
+	messagesDrop(toFolder, data) {
+		if (toFolder && data && data.folder && Array.isArray(data.uids)) {
+			rl.app.moveMessagesToFolder(data.folder, data.uids, toFolder.fullNameRaw, data.copy);
 		}
 	}
 

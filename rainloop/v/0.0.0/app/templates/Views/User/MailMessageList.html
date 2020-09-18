@@ -198,9 +198,10 @@
 						<div class="listEmptySearchList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' !== messageListSearch()">
 							<span class="i18n" data-i18n="MESSAGE_LIST/EMPTY_SEARCH_LIST"></span>
 						</div>
-						<div data-bind="draggable: dragAndDronHelper, droppableSelector: '.b-folders .b-content'">
+						<div draggable="true" data-bind="draggable: dragStart">
 							<div class="messageListPlace" data-bind="template: { name: messageListItemTemplate(), foreach: messageList }"></div>
 						</div>
+						<div id="messagesDragImage"><span class="text"></span>&nbsp;<i class="icon-mail icon-white"></i></div>
 					</div>
 				</div>
 			</div>
