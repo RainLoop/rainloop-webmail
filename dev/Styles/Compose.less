@@ -5,16 +5,19 @@
 		width: 98%;
 		max-width: 1000px;
 		margin: 10px auto;
+/*		height: calc(100% - 52px);*/
 		min-height: calc(100% - 52px);
 
 		.modal-body {
+/*			height: calc(100% - 60px);*/
 			padding: 0;
 		}
 	}
 
 	.textAreaParent, .attachmentAreaParent {
-		position: relative;
+		box-sizing: border-box;
 		min-height: 200px;
+		position: relative;
 	}
 
 	.attachmentAreaParent {
