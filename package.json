@@ -85,7 +85,6 @@
     "gulp-util": "3.0.8",
     "gulp-zip": "5.0.1",
     "jquery": "^3.5.1",
-    "knockout-sortable": "1.2.0",
     "moment": "2.24.0",
     "node-fs": "0.1.7",
     "openpgp": "2.6.2",

@@ -1390,17 +1390,7 @@ class ComposePopupView extends AbstractViewNext {
 					}
 
 					if (add) {
-						const attachment = new ComposeAttachmentModel(
-							item.download,
-							item.fileName,
-							item.estimatedSize,
-							item.isInline,
-							item.isLinked,
-							item.cid,
-							item.contentLocation
-						);
-
-						attachment.fromMessage = true;
+						const attachment = ComposeAttachmentModel.fromAttachment(item);
 						attachment.cancel = this.cancelAttachmentHelper(item.download);
 						attachment
 							.waiting(false)

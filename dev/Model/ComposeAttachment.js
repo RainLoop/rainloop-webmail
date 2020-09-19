@@ -67,6 +67,21 @@ class ComposeAttachmentModel extends AbstractModel {
 		]);
 	}
 
+	static fromAttachment(item)
+	{
+		const attachment = new ComposeAttachmentModel(
+			item.download,
+			item.fileName,
+			item.estimatedSize,
+			item.isInline,
+			item.isLinked,
+			item.cid,
+			item.contentLocation
+		);
+		attachment.fromMessage = true;
+		return attachment;
+	}
+
 	/**
 	 * @param {AjaxJsonComposeAttachment} json
 	 * @returns {boolean}

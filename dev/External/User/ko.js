@@ -90,6 +90,7 @@ ko.bindingHandlers.emailsTags = {
 	}
 };
 
+// Start dragging selected messages
 ko.bindingHandlers.draggable = {
 	init: (element, fValueAccessor) => {
 		if (!rl.settings.app('mobile')) {
@@ -98,6 +99,7 @@ ko.bindingHandlers.draggable = {
 	}
 };
 
+// Drop selected messages on folder
 ko.bindingHandlers.droppable = {
 	init: (element, fValueAccessor) => {
 		if (!rl.settings.app('mobile')) {
