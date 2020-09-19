@@ -29,7 +29,7 @@
 					{
 						if (!bUseLimit || 0 <= --iLimit)
 						{
-							oFile = Utils.getDataFromFile(oItem);
+							oFile = getDataFromFile(oItem);
 							oFile && fFileCallback(oFile);
 						}
 						else if (bUseLimit && !bCallLimit && 0 > iLimit && fLimitCallback)
@@ -46,20 +46,11 @@
 			Object.entries(obj).forEach(([key, value]) => element.addEventListener(key, value));
 		},
 
-	Utils = {
-		/**
-		 * @param {Object} oValues
-		 * @param {string} sKey
-		 * @param {?} mDefault
-		 * @return {?}
-		 */
-		getValue : (oValues, sKey, mDefault) => (!oValues || !sKey || !defined(oValues[sKey])) ? mDefault : oValues[sKey],
-
 		/**
 		 * @param {*} oFile
 		 * @return {Object}
 		 */
-		getDataFromFile : oFile =>
+		getDataFromFile = oFile =>
 		{
 			let
 				sFileName = defined(oFile.fileName) ? oFile.fileName : (defined(oFile.name) ? oFile.name : null),
@@ -86,7 +77,7 @@
 			};
 		},
 
-		eventContainsFiles : oEvent =>
+		eventContainsFiles = oEvent =>
 		{
 			if (oEvent.dataTransfer && oEvent.dataTransfer.types && oEvent.dataTransfer.types.length) {
 				let index = oEvent.dataTransfer.types.length;
@@ -97,8 +88,7 @@
 				}
 			}
 			return false;
-		}
-	};
+		};
 
 
 	/**
@@ -113,7 +103,12 @@
 			this.oXhrs = {};
 			this.oUids = {};
 			this.oJua = oJua;
-			this.oOptions = oOptions;
+			this.oOptions = Object.assign({
+				action: '',
+				name: 'juaFile',
+				hidden: {},
+				disableMultiple: false
+			}, oOptions);
 		}
 
 		/**
@@ -143,8 +138,8 @@
 					self = this,
 					oXhr = new XMLHttpRequest(),
 					oFormData = new FormData(),
-					sAction = Utils.getValue(this.oOptions, 'action', ''),
-					aHidden = Utils.getValue(this.oOptions, 'hidden', {}),
+					sAction = this.oOptions.action,
+					aHidden = this.oOptions.hidden,
 					fStartFunction = this.oJua.getEvent('onStart'),
 					fCompleteFunction = this.oJua.getEvent('onComplete'),
 					fProgressFunction = this.oJua.getEvent('onProgress')
@@ -208,7 +203,7 @@
 				}
 
 				oFormData.append('jua-post-type', 'ajax');
-				oFormData.append(Utils.getValue(this.oOptions, 'name', 'juaFile'), oFileInfo['File']);
+				oFormData.append(this.oOptions.name, oFileInfo['File']);
 				Object.entries(aHidden).forEach(([key, value]) =>
 					oFormData.append(key, (typeof value === "function" ? value(oFileInfo) : value).toString())
 				);
@@ -237,7 +232,7 @@
 				oInput.type = 'file';
 				oInput.tabIndex = -1;
 				oInput.style.cssText = 'position:absolute;left:-9999px;';
-				oInput.multiple = !Utils.getValue(self.oOptions, 'disableMultiple', false);
+				oInput.multiple = !self.oOptions.disableMultiple;
 
 				oLabel.style.cssText = 'position:absolute;background-color:#fff;right:0;top:0;left:0;bottom:0;margin:0;padding:0;cursor:pointer;opacity:0';
 
@@ -252,7 +247,7 @@
 					};
 					if (oInput.files && oInput.files.length) {
 						getDataFromFiles(oInput.files, fFileCallback,
-							Utils.getValue(self.oOptions, 'multipleSizeLimit', iDefLimit),
+							self.oOptions.multipleSizeLimit,
 							self.oJua.getEvent('onLimitReached')
 						);
 					} else {
@@ -351,8 +346,6 @@
 	{
 		constructor(oOptions)
 		{
-			oOptions = defined(oOptions) ? oOptions : {};
-
 			const self = this;
 
 			self.oEvents = {
@@ -367,25 +360,20 @@
 				onLimitReached: null
 			};
 
-			self.oOptions = {
-				action: '',
-				name: '',
-				hidden: {},
+			oOptions = Object.assign({
 				queueSize: 10,
-				clickElement: false,
-				dragAndDropElement: false,
-				dragAndDropBodyElement: false,
-				disableMultiple: false,
+				clickElement: null,
+				dragAndDropElement: null,
+				dragAndDropBodyElement: null,
 				disableDocumentDropPrevent: false,
-				multipleSizeLimit: 50
-			};
-			Object.entries(oOptions).forEach(([key, value]) => self.oOptions[key] = value);
+				multipleSizeLimit: iDefLimit
+			}, oOptions || {});
 
-			self.oQueue = queue(parseInt(Utils.getValue(self.oOptions, 'queueSize', 10) || 0, 10));
+			self.oQueue = queue(parseInt(oOptions.queueSize || 0, 10));
 
-			self.oDriver = new AjaxDriver(self, self.oOptions);
+			self.oDriver = new AjaxDriver(self, oOptions);
 
-			const el = Utils.getValue(self.oOptions, 'clickElement', null);
+			let el = oOptions.clickElement;
 			if (el) {
 				el.style.position = 'relative';
 				el.style.overflow = 'hidden';
@@ -396,116 +384,112 @@
 				this.oDriver.generateNewInput(el);
 			}
 
-			if (Utils.getValue(this.oOptions, 'dragAndDropElement', false))
+			el = oOptions.dragAndDropElement;
+			if (el)
 			{
-				let
-					oBigDropZone = Utils.getValue(self.oOptions, 'dragAndDropBodyElement', false) || doc,
-					oDragAndDropElement = Utils.getValue(self.oOptions, 'dragAndDropElement', false);
+				let oBigDropZone = oOptions.dragAndDropBodyElement || doc;
 
-				if (oDragAndDropElement)
+				if (!oOptions.disableDocumentDropPrevent)
 				{
-					if (!Utils.getValue(self.oOptions, 'disableDocumentDropPrevent', false))
-					{
-						doc.addEventListener('dragover', oEvent => {
-							if (Utils.eventContainsFiles(oEvent))
+					doc.addEventListener('dragover', oEvent => {
+						if (eventContainsFiles(oEvent))
+						{
+							try
 							{
-								try
-								{
-									oEvent.dataTransfer.dropEffect = 'none';
-									oEvent.preventDefault();
-								}
-								catch (oExc) {}
-							}
-						});
-					}
-
-					if (oBigDropZone)
-					{
-						addEventListeners(oBigDropZone, {
-							dragover: () => self.docTimer.clear(),
-							dragenter: oEvent => {
-								if (Utils.eventContainsFiles(oEvent))
-								{
-									self.docTimer.clear();
-									oEvent.preventDefault();
-
-									self.runEvent('onBodyDragEnter', [oEvent]);
-								}
-							},
-							dragleave: oEvent =>
-								oEvent.dataTransfer && self.docTimer.start(() => self.runEvent('onBodyDragLeave', [oEvent])),
-							drop: oEvent => {
-								if (oEvent.dataTransfer) {
-									let bFiles = Utils.eventContainsFiles(oEvent);
-									bFiles && oEvent.preventDefault();
-
-									self.runEvent('onBodyDragLeave', [oEvent]);
-
-									return !bFiles;
-								}
-
-								return false;
-							}
-						});
-					}
-
-					addEventListeners(oDragAndDropElement, {
-						dragenter: oEvent => {
-							if (Utils.eventContainsFiles(oEvent)) {
-								self.docTimer.clear();
-
+								oEvent.dataTransfer.dropEffect = 'none';
 								oEvent.preventDefault();
-								self.runEvent('onDragEnter', [oDragAndDropElement, oEvent]);
 							}
-						},
-						dragover: oEvent => {
-							if (Utils.eventContainsFiles(oEvent)) {
-								try
-								{
-									let sEffect = oEvent.dataTransfer.effectAllowed;
-
-									self.docTimer.clear();
-
-									oEvent.dataTransfer.dropEffect = (sEffect === 'move' || sEffect === 'linkMove') ? 'move' : 'copy';
-
-									oEvent.stopPropagation();
-									oEvent.preventDefault();
-
-									oBigDropZone && oBigDropZone.dispatchEvent(oEvent);
-								}
-								catch (oExc) {}
-							}
-						},
-						dragleave: oEvent => {
-							if (oEvent.dataTransfer) {
-								let oRelatedTarget = doc.elementFromPoint(oEvent.clientX, oEvent.clientY);
-								if (!oRelatedTarget || !oDragAndDropElement.contains(oRelatedTarget)) {
-									self.docTimer.clear();
-									self.runEvent('onDragLeave', [oDragAndDropElement, oEvent]);
-								}
-							}
-						},
-						drop: oEvent => {
-							if (Utils.eventContainsFiles(oEvent)) {
-								oEvent.preventDefault();
-
-								getDataFromFiles(
-									Utils.getValue(oEvent, 'files', null) || Utils.getValue(oEvent.dataTransfer, 'files', null),
-									oFile => {
-										if (oFile) {
-											self.addNewFile(oFile);
-											self.docTimer.clear();
-										}
-									},
-									Utils.getValue(self.oOptions, 'multipleSizeLimit', iDefLimit),
-									self.getEvent('onLimitReached')
-								);
-							}
-
-							self.runEvent('onDragLeave', [oEvent]);
+							catch (oExc) {}
 						}
 					});
 				}
+
+				if (oBigDropZone)
+				{
+					addEventListeners(oBigDropZone, {
+						dragover: () => self.docTimer.clear(),
+						dragenter: oEvent => {
+							if (eventContainsFiles(oEvent))
+							{
+								self.docTimer.clear();
+								oEvent.preventDefault();
+
+								self.runEvent('onBodyDragEnter', [oEvent]);
+							}
+						},
+						dragleave: oEvent =>
+							oEvent.dataTransfer && self.docTimer.start(() => self.runEvent('onBodyDragLeave', [oEvent])),
+						drop: oEvent => {
+							if (oEvent.dataTransfer) {
+								let bFiles = eventContainsFiles(oEvent);
+								bFiles && oEvent.preventDefault();
+
+								self.runEvent('onBodyDragLeave', [oEvent]);
+
+								return !bFiles;
+							}
+
+							return false;
+						}
+					});
+				}
+
+				addEventListeners(el, {
+					dragenter: oEvent => {
+						if (eventContainsFiles(oEvent)) {
+							self.docTimer.clear();
+
+							oEvent.preventDefault();
+							self.runEvent('onDragEnter', [el, oEvent]);
+						}
+					},
+					dragover: oEvent => {
+						if (eventContainsFiles(oEvent)) {
+							try
+							{
+								let sEffect = oEvent.dataTransfer.effectAllowed;
+
+								self.docTimer.clear();
+
+								oEvent.dataTransfer.dropEffect = (sEffect === 'move' || sEffect === 'linkMove') ? 'move' : 'copy';
+
+								oEvent.stopPropagation();
+								oEvent.preventDefault();
+
+								oBigDropZone && oBigDropZone.dispatchEvent(oEvent);
+							}
+							catch (oExc) {}
+						}
+					},
+					dragleave: oEvent => {
+						if (oEvent.dataTransfer) {
+							let oRelatedTarget = doc.elementFromPoint(oEvent.clientX, oEvent.clientY);
+							if (!oRelatedTarget || !el.contains(oRelatedTarget)) {
+								self.docTimer.clear();
+								self.runEvent('onDragLeave', [el, oEvent]);
+							}
+						}
+					},
+					drop: oEvent => {
+						if (eventContainsFiles(oEvent)) {
+							oEvent.preventDefault();
+
+							getDataFromFiles(
+								oEvent.files || oEvent.dataTransfer.files,
+								oFile => {
+									if (oFile) {
+										self.addNewFile(oFile);
+										self.docTimer.clear();
+									}
+								},
+								oOptions.multipleSizeLimit,
+								self.getEvent('onLimitReached')
+							);
+						}
+
+						self.runEvent('onDragLeave', [oEvent]);
+					}
+				});
 			}
 		}
 
@@ -594,11 +578,6 @@
 			this.timer = 0;
 		}
 	};
-
-	/**
-	 * @type {Object}
-	 */
-	Jua.prototype.oOptions = {};
 
 	/**
 	 * @type {Object}
