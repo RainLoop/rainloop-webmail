@@ -88,6 +88,17 @@ ko.utils = (function () {
 
     var canSetPrototype = ({ __proto__: [] } instanceof Array);
 
+    // For details on the pattern for changing node classes
+    // see: https://github.com/knockout/knockout/issues/1597
+    function toggleDomNodeCssClass(node, classNames, shouldHaveClass) {
+        if (classNames) {
+            var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
+            classNames.split(/\s+/).forEach(function(className) {
+                node.classList[addOrRemoveFn](className);
+            });
+        }
+    }
+
     return {
         arrayForEach: function (array, action, actionOwner) {
             arrayCall('forEach', array, action, actionOwner);
@@ -318,6 +329,8 @@ ko.utils = (function () {
             return ko.isObservable(value) ? value.peek() : value;
         },
 
+        toggleDomNodeCssClass: toggleDomNodeCssClass,
+
         setTextContent: function(element, textContent) {
             var value = ko.utils.unwrapObservable(textContent);
             if ((value === null) || (value === undefined))
@@ -353,6 +366,7 @@ ko.exportSymbol('utils.objectMap', ko.utils.objectMap);
 ko.exportSymbol('utils.peekObservable', ko.utils.peekObservable);
 ko.exportSymbol('utils.registerEventHandler', ko.utils.registerEventHandler);
 ko.exportSymbol('utils.stringifyJson', ko.utils.stringifyJson);
+ko.exportSymbol('utils.toggleDomNodeCssClass', ko.utils.toggleDomNodeCssClass);
 ko.exportSymbol('utils.triggerEvent', ko.utils.triggerEvent);
 ko.exportSymbol('utils.unwrapObservable', ko.utils.unwrapObservable);
 ko.exportSymbol('utils.objectForEach', ko.utils.objectForEach);
@@ -2451,11 +2465,7 @@ ko.exportSymbol('jsonExpressionRewriting.insertPropertyAccessorsIntoJson', ko.ex
                 insertBeforeNode = containerNode.firstChild;
             }
 
-            if (!insertBeforeNode) {
-                containerNode.append(nodeToPrepend);
-            } else if (nodeToPrepend !== insertBeforeNode) {       // IE will sometimes crash if you try to insert a node before itself
-                containerNode.insertBefore(nodeToPrepend, insertBeforeNode);
-            }
+            containerNode.insertBefore(nodeToPrepend, insertBeforeNode);
         },
 
         insertAfter: function(containerNode, nodeToInsert, insertAfterNode) {
@@ -2469,11 +2479,7 @@ ko.exportSymbol('jsonExpressionRewriting.insertPropertyAccessorsIntoJson', ko.ex
                     containerNode = containerNode.parentNode;
                 }
 
-                if (!insertBeforeNode) {
-                    containerNode.append(nodeToInsert);
-                } else if (nodeToInsert !== insertBeforeNode) {       // IE will sometimes crash if you try to insert a node before itself
-                    containerNode.insertBefore(nodeToInsert, insertBeforeNode);
-                }
+                containerNode.insertBefore(nodeToInsert, insertBeforeNode);
             }
         },
 
@@ -3920,23 +3926,12 @@ ko.bindingHandlers['checkedValue'] = {
 })();
 var classesWrittenByBindingKey = '__ko__cssValue';
 
-// For details on the pattern for changing node classes
-// see: https://github.com/knockout/knockout/issues/1597
-function toggleDomNodeCssClass(node, classNames, shouldHaveClass) {
-    if (classNames) {
-        var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
-        classNames.split(/\s+/).forEach(function(className) {
-            node.classList[addOrRemoveFn](className);
-        });
-    }
-}
-
 ko.bindingHandlers['class'] = {
     'update': function (element, valueAccessor) {
         var value = ko.utils.stringTrim(ko.utils.unwrapObservable(valueAccessor()));
-        toggleDomNodeCssClass(element, element[classesWrittenByBindingKey], false);
+        ko.utils.toggleDomNodeCssClass(element, element[classesWrittenByBindingKey], false);
         element[classesWrittenByBindingKey] = value;
-        toggleDomNodeCssClass(element, value, true);
+        ko.utils.toggleDomNodeCssClass(element, value, true);
     }
 };
 
@@ -3946,7 +3941,7 @@ ko.bindingHandlers['css'] = {
         if (value !== null && typeof value == "object") {
             ko.utils.objectForEach(value, function(className, shouldHaveClass) {
                 shouldHaveClass = ko.utils.unwrapObservable(shouldHaveClass);
-                toggleDomNodeCssClass(element, className, shouldHaveClass);
+                ko.utils.toggleDomNodeCssClass(element, className, shouldHaveClass);
             });
         } else {
             ko.bindingHandlers['class']['update'](element, valueAccessor);
@@ -5627,11 +5622,7 @@ ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);
 
         // Since most browsers remove the focus from an element when it's moved to another location,
         // save the focused element and try to restore it later.
-        try {
-            activeElement = domNode.ownerDocument.activeElement;
-        } catch(e) {
-            // IE9 throws if you access activeElement during page load (see issue #703)
-        }
+        activeElement = domNode.ownerDocument.activeElement;
 
         // Try to reduce overall moved nodes by first moving the ones that were marked as moved by the edit script
         if (itemsToMoveFirstIndexes.length) {

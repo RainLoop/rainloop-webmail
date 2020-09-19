@@ -118,11 +118,7 @@
                 insertBeforeNode = containerNode.firstChild;
             }
 
-            if (!insertBeforeNode) {
-                containerNode.append(nodeToPrepend);
-            } else if (nodeToPrepend !== insertBeforeNode) {       // IE will sometimes crash if you try to insert a node before itself
-                containerNode.insertBefore(nodeToPrepend, insertBeforeNode);
-            }
+            containerNode.insertBefore(nodeToPrepend, insertBeforeNode);
         },
 
         insertAfter: function(containerNode, nodeToInsert, insertAfterNode) {
@@ -136,11 +132,7 @@
                     containerNode = containerNode.parentNode;
                 }
 
-                if (!insertBeforeNode) {
-                    containerNode.append(nodeToInsert);
-                } else if (nodeToInsert !== insertBeforeNode) {       // IE will sometimes crash if you try to insert a node before itself
-                    containerNode.insertBefore(nodeToInsert, insertBeforeNode);
-                }
+                containerNode.insertBefore(nodeToInsert, insertBeforeNode);
             }
         },
 

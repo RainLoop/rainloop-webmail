@@ -168,11 +168,7 @@
 
         // Since most browsers remove the focus from an element when it's moved to another location,
         // save the focused element and try to restore it later.
-        try {
-            activeElement = domNode.ownerDocument.activeElement;
-        } catch(e) {
-            // IE9 throws if you access activeElement during page load (see issue #703)
-        }
+        activeElement = domNode.ownerDocument.activeElement;
 
         // Try to reduce overall moved nodes by first moving the ones that were marked as moved by the edit script
         if (itemsToMoveFirstIndexes.length) {
