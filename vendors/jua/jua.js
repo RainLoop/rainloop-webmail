@@ -79,15 +79,11 @@
 
 		eventContainsFiles = oEvent =>
 		{
-			if (oEvent.dataTransfer && oEvent.dataTransfer.types && oEvent.dataTransfer.types.length) {
-				let index = oEvent.dataTransfer.types.length;
-				while (index--) {
-					if (oEvent.dataTransfer.types[index].toLowerCase() === 'files') {
-						return true;
-					}
-				}
+			try {
+				return oEvent.dataTransfer.types.includes('Files');
+			} catch (e) {
+				return false;
 			}
-			return false;
 		};
 
 
@@ -122,13 +118,11 @@
 		/**
 		 * @param {string} sUid
 		 * @param {?} oFileInfo
-		 * @param {Function} fCallback
 		 */
-		uploadTask(sUid, oFileInfo, fCallback)
+		uploadTask(sUid, oFileInfo)
 		{
 			if (false === this.oUids[sUid] || !oFileInfo || !oFileInfo['File'])
 			{
-				fCallback(null, sUid);
 				return false;
 			}
 
@@ -184,23 +178,17 @@
 						{
 							self.oXhrs[sUid] = null;
 						}
-
-						fCallback(null, sUid);
 					}
 					else
 					{
 						if (4 === oXhr.readyState)
 						{
 							fCompleteFunction(sUid, false, null);
-							fCallback(null, sUid);
 						}
 					}
 				};
 
-				if (fStartFunction)
-				{
-					fStartFunction(sUid);
-				}
+				fStartFunction && fStartFunction(sUid);
 
 				oFormData.append('jua-post-type', 'ajax');
 				oFormData.append(this.oOptions.name, oFileInfo['File']);
@@ -215,9 +203,9 @@
 			}
 			catch (oError)
 			{
+				console.error(oError)
 			}
 
-			fCallback(null, sUid);
 			return false;
 		}
 
@@ -277,6 +265,7 @@
 				}
 				catch (oError)
 				{
+					console.error(oError);
 				}
 
 				this.oXhrs[sUid] = null;
@@ -284,58 +273,26 @@
 		}
 	}
 
-	/**
-	 * @type {Object}
-	 */
-	AjaxDriver.prototype.oXhrs = {};
-
-	/**
-	 * @type {Object}
-	 */
-	AjaxDriver.prototype.oUids = {};
-
-	/**
-	 * @type {?Jua}
-	 */
-	AjaxDriver.prototype.oJua = null;
-
-	/**
-	 * @type {Object}
-	 */
-	AjaxDriver.prototype.oOptions = {};
-
-
-	function queue(a) {
-		function l() {
-			if (g && d < a) {
-				let b = g,
-					c = b[0],
-					f = Array.prototype.slice.call(b, 1),
-					m = b.index;
-				g === h ? g = h = null : g = g.next, ++d, f.push(function (a, b) {
-					--d;
-					if (i) return;
-					a ? e && k(i = a, e = j = g = h = null) : (j[m] = b, --e ? l() : k(null, j))
-				}),
-				c.apply(null, f)
+	class Queue extends Array
+	{
+		constructor(limit) {
+			super();
+			this.limit = parseInt(limit || 0, 10);
+		}
+		push(fn, ...args) {
+			if (this.limit > this.length) {
+				super.push([fn, args]);
+				this.call();
 			}
 		}
-		let c = {},
-			d = 0,
-			e = 0,
-			f = -1,
-			g, h, i = null,
-			j = [],
-			k = ()=>{};
-		return arguments.length < 1 && (a = Infinity), c.defer = function () {
-			if (!i) {
-				let a = arguments;
-				a.index = ++f, h ? (h.next = a, h = h.next) : g = h = a, ++e, l()
+		call() {
+			if (!this.running) {
+				this.running = true;
+				let f;
+				while ((f = this.shift())) f[0](...f[1]);
+				this.running = false;
 			}
-			return c
-		}, c.await = function (a) {
-			return k = a, e || k(i, j), c
-		}, c
+		}
 	}
 
 	/**
@@ -369,7 +326,7 @@
 				multipleSizeLimit: iDefLimit
 			}, oOptions || {});
 
-			self.oQueue = queue(parseInt(oOptions.queueSize || 0, 10));
+			self.oQueue = new Queue(oOptions.queueSize);
 
 			self.oDriver = new AjaxDriver(self, oOptions);
 
@@ -381,7 +338,7 @@
 					el.style.display = 'inline-block';
 				}
 
-				this.oDriver.generateNewInput(el);
+				self.oDriver.generateNewInput(el);
 			}
 
 			el = oOptions.dragAndDropElement;
@@ -399,7 +356,9 @@
 								oEvent.dataTransfer.dropEffect = 'none';
 								oEvent.preventDefault();
 							}
-							catch (oExc) {}
+							catch (oExc) {
+								console.error(oExc);
+							}
 						}
 					});
 				}
@@ -455,10 +414,10 @@
 
 								oEvent.stopPropagation();
 								oEvent.preventDefault();
-
-								oBigDropZone && oBigDropZone.dispatchEvent(oEvent);
 							}
-							catch (oExc) {}
+							catch (oExc) {
+								console.error(oExc);
+							}
 						}
 					},
 					dragleave: oEvent => {
@@ -556,7 +515,7 @@
 			if (oFileInfo && (!fOnSelect || (false !== fOnSelect(sUid, oFileInfo))))
 			{
 				this.oDriver.regTaskUid(sUid);
-				this.oQueue.defer((...args) => this.oDriver.uploadTask(...args), sUid, oFileInfo);
+				this.oQueue.push((...args) => this.oDriver.uploadTask(...args), sUid, oFileInfo);
 			}
 			else
 			{
@@ -578,21 +537,6 @@
 			this.timer = 0;
 		}
 	};
-
-	/**
-	 * @type {Object}
-	 */
-	Jua.prototype.oEvents = {};
-
-	/**
-	 * @type {?Object}
-	 */
-	Jua.prototype.oQueue = null;
-
-	/**
-	 * @type {?Object}
-	 */
-	Jua.prototype.oDriver = null;
 
 	window.Jua = Jua;
 
