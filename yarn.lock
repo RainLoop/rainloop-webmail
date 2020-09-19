@@ -4063,11 +4063,6 @@ kind-of@^6.0.0, kind-of@^6.0.2:
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
 
-knockout-sortable@1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/knockout-sortable/-/knockout-sortable-1.2.0.tgz#e63c21a009cd0686bf1d40effa3ff12c12372566"
-  integrity sha512-cJq4jm4SWdaCIkuYIrNZpVaNYFUafJT83RlFEP/dsPOqIi3xWkCnm1Y5zLEQ2QqMDRT9GI9HxN9Jz+lhZNFHPA==
-
 last-run@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/last-run/-/last-run-1.1.1.tgz#45b96942c17b1c79c772198259ba943bebf8ca5b"
