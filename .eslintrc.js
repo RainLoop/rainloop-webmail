@@ -28,8 +28,6 @@ module.exports = {
 		'SquireUI': "readonly",
 		// node_modules/knockout but dev/External/ko.js is used
 //		'ko': "readonly",
-		// node_modules/simplestatemanager
-		'ssm': "readonly",
 		// vendors/routes/
 		'hasher': "readonly",
 		'signals': "readonly",

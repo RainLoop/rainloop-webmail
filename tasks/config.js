@@ -89,7 +89,6 @@ config.paths.js = {
 			'vendors/bootstrap/js/bootstrap.native.min.js', // fixed
 			'vendors/knockout/build/output/knockout-latest.js',
 			'vendors/knockout-sortable/build/knockout-sortable.min.js ',
-			'node_modules/simplestatemanager/dist/ssm.min.js',
 			'vendors/lightgallery/dist/js/lightgallery.min.js', // license
 			'vendors/lightgallery/dist/js/lg-fullscreen.min.js',
 			'vendors/lightgallery/dist/js/lg-thumbnail.min.js',

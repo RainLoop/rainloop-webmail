@@ -110,43 +110,10 @@ class AbstractApp {
 		initOnStartOrLangChange(initNotificationLanguage);
 
 		if (!mobile) {
-			$htmlCL.add('rl-desktop');
-
-			ssm.addState({
-				id: 'mobile',
-				query: '(max-width: 767px)',
-				onEnter: () => {
-					$htmlCL.add('ssm-state-mobile');
-					leftPanelDisabled(true);
-				},
-				onLeave: () => {
-					$htmlCL.remove('ssm-state-mobile');
-					leftPanelDisabled(false);
-				}
-			});
-
-			ssm.addState({
-				id: 'tablet',
-				query: '(min-width: 768px) and (max-width: 999px)',
-				onEnter: () => $htmlCL.add('ssm-state-tablet'),
-				onLeave: () => $htmlCL.remove('ssm-state-tablet')
-			});
-
-			ssm.addState({
-				id: 'desktop',
-				query: '(min-width: 1000px) and (max-width: 1400px)',
-				onEnter: () => $htmlCL.add('ssm-state-desktop'),
-				onLeave: () => $htmlCL.remove('ssm-state-desktop')
-			});
-
-			ssm.addState({
-				id: 'desktop-large',
-				query: '(min-width: 1401px)',
-				onEnter: () => $htmlCL.add('ssm-state-desktop-large'),
-				onLeave: () => $htmlCL.remove('ssm-state-desktop-large')
-			});
+			// mobile
+			window.addEventListener('resize', () => leftPanelDisabled(767 >= window.innerWidth));
 		} else {
-			$htmlCL.add('ssm-state-mobile', 'rl-mobile');
+			$htmlCL.add('rl-mobile');
 			leftPanelDisabled(true);
 		}
 

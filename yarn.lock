@@ -5883,11 +5883,6 @@ signal-exit@^3.0.0, signal-exit@^3.0.2:
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.3.tgz#a1410c2edd8f077b08b4e253c8eacfcaf057461c"
   integrity sha512-VUJ49FC8U1OxwZLxIbTTrDvLnf/6TDgxZcK8wxR8zs13xpx7xbG60ndBlhNrFi2EMuFRoeDoJO7wthSLq42EjA==
 
-simplestatemanager@4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/simplestatemanager/-/simplestatemanager-4.1.1.tgz#723879947cd8a40dd20645a0ee6a7cadcc669d4f"
-  integrity sha512-RRhB4rPEU10dwERLLrOTx3rdKW6sLHTsYpr+SBKoh/Vl4XETgNnux45+wgX59M1cDiJQX/CuMVu0eOWFSDECDg==
-
 slash@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-1.0.0.tgz#c41f2f6c39fc16d1cd17ad4b5d896114ae470d55"
