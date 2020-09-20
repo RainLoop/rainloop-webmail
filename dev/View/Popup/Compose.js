@@ -1378,7 +1378,7 @@ class ComposePopupView extends AbstractViewNext {
 					switch (type) {
 						case ComposeType.Reply:
 						case ComposeType.ReplyAll:
-							add = item.isLinked;
+//							add = item.isLinked;
 							break;
 
 						case ComposeType.Forward:
