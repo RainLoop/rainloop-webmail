@@ -14,7 +14,7 @@
 	<br />
 	<br />
 	<br />
-	<div class="templates-list-wrp">
+	<div>
 		<div class="templates-list-top-padding"></div>
 			<table class="table table-hover list-table templates-list" data-bind="i18nUpdate: templates">
 				<colgroup>
@@ -22,8 +22,8 @@
 					<col style="width: 150px" />
 					<col style="width: 1%" />
 				</colgroup>
-				<tbody data-bind="sortable: {data: templates, options: scrollableOptions('.templates-list-wrp')}">
-					<tr class="template-item">
+				<tbody data-bind="foreach: templates">
+					<tr class="template-item" draggable="true" data-bind="sortableItem: { list: $root.templates }">
 						<td class="e-action">
 							<span class="template-img icon-user"></span>
 							<i class="icon-braille drag-handle"></i>

@@ -60,7 +60,7 @@
 						data-bind="value: filterRaw, valueUpdate: 'afterkeydown'"></textarea>
 				</div>
 			</div>
-			<div class="filters-list-wrp">
+			<div>
 				<div class="filters-list-top-padding"></div>
 					<table class="table table-hover list-table filters-list g-ui-user-select-none"
 						data-bind="visible: inited() && (!filterRaw.active() || !filterRaw.active()), i18nUpdate: filters">
@@ -71,8 +71,8 @@
 							<col style="width: 140px" />
 							<col style="width: 1%" />
 						</colgroup>
-						<tbody data-bind="sortable: {data: filters, options: scrollableOptions('.filters-list-wrp')}" style="width: 600px">
-							<tr class="filter-item">
+						<tbody data-bind="foreach: filters" style="width: 600px">
+							<tr class="filter-item" draggable="true" data-bind="sortableItem: { list: $root.filters }">
 								<td>
 									<span class="disabled-filter" data-bind="click: function () { $root.haveChanges(true); enabled(!enabled()); }">
 										<i data-bind="css: {'icon-checkbox-checked': enabled, 'icon-checkbox-unchecked': !enabled()}"></i>

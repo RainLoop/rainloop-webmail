@@ -131,6 +131,69 @@ ko.bindingHandlers.droppable = {
 	}
 };
 
+let sortableElement = null,
+isOrderData = data => 'move' === data.dropEffect && 'orderable' === data.getData('text/x-rainloop-action');
+ko.bindingHandlers.sortableItem = {
+	init: (element, fValueAccessor/*, allBindingsAccessor, data, context*/) => {
+		const options = ko.utils.unwrapObservable(fValueAccessor()) || {},
+			parent = element.parentNode,
+			fnHover = e => {
+				if (isOrderData(e.dataTransfer)) {
+					e.preventDefault();
+					let node = (e.target.closest ? e.target : e.target.parentNode).closest('[draggable]');
+					if (node && node !== sortableElement && parent.contains(node)) {
+						let rect = node.getBoundingClientRect();
+						if (rect.top + (rect.height / 2) <= e.clientY) {
+							if (node.nextElementSibling !== sortableElement) {
+								node.after(sortableElement);
+							}
+						} else if (node.previousElementSibling !== sortableElement) {
+							node.before(sortableElement);
+						}
+					}
+				}
+			};
+		element.addEventListener("dragstart", e => {
+			sortableElement = element;
+			e.dataTransfer.setData('text/x-rainloop-action', 'orderable');
+			e.dataTransfer.setDragImage(element, 0, 0);
+			e.dataTransfer.effectAllowed = 'move';
+			element.style.opacity = 0.25;
+		});
+		element.addEventListener("dragend", e => {
+			element.style.opacity = null;
+			if ('move' != e.dataTransfer.dropEffect) {
+				const index = options.list.indexOf(ko.dataFor(element)),
+					row = parent.rows[index];
+				if (row != sortableElement) {
+					row.before(sortableElement);
+				}
+			}
+		});
+		if (!parent.orderable) {
+			parent.orderable = true;
+			parent.addEventListener("dragenter", fnHover);
+			parent.addEventListener("dragover", fnHover);
+//			parent.addEventListener("dragleave", e => e.preventDefault());
+			parent.addEventListener("drop", e => {
+				if (isOrderData(e.dataTransfer)) {
+					e.dataTransfer.dropEffect = 'move';
+					let data = ko.dataFor(sortableElement),
+						from = options.list.indexOf(data),
+						to = [...parent.children].indexOf(sortableElement);
+					if (from != to) {
+						let arr = options.list();
+						arr.splice(to, 0, ...arr.splice(from, 1));
+						options.list(arr);
+					}
+					e.preventDefault();
+					options.afterMove && options.afterMove();
+				}
+			});
+		}
+	}
+};
+
 ko.bindingHandlers.link = {
 	update: (element, fValueAccessor) => element.href = ko.unwrap(fValueAccessor())
 };

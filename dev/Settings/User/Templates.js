@@ -19,14 +19,6 @@ class TemplatesUserSettings {
 		this.templateForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
-	scrollableOptions(sWrapper) {
-		return {
-			handle: '.drag-handle',
-			containment: sWrapper || 'parent',
-			axis: 'y'
-		};
-	}
-
 	addNewTemplate() {
 		showScreenPopup(require('View/Popup/Template'));
 	}

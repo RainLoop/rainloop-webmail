@@ -20,14 +20,6 @@ class AccountsUserSettings {
 		this.identityForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
-	scrollableOptions(wrapper) {
-		return {
-			handle: '.drag-handle',
-			containment: wrapper || 'parent',
-			axis: 'y'
-		};
-	}
-
 	addNewAccount() {
 		showScreenPopup(require('View/Popup/Account'));
 	}

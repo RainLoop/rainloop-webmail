@@ -15,7 +15,7 @@
 		<br />
 		<br />
 		<br />
-		<div class="accounts-list-wrp">
+		<div>
 			<div class="accounts-list-top-padding"></div>
 			<table class="table table-hover list-table accounts-list" data-bind="i18nUpdate: accounts">
 				<colgroup>
@@ -23,8 +23,8 @@
 					<col style="width: 150px" />
 					<col style="width: 1%" />
 				</colgroup>
-				<tbody data-bind="sortable: {data: accounts, options: scrollableOptions('.accounts-list-wrp'), afterMove: accountsAndIdentitiesAfterMove}">
-					<tr class="account-item">
+				<tbody data-bind="foreach: accounts">
+					<tr class="account-item" draggable="true" data-bind="sortableItem: { list: $root.accounts, afterMove: $root.accountsAndIdentitiesAfterMove }">
 						<td class="e-action" data-bind="css: {'e-action': canBeEdit}">
 							<span class="account-img icon-user"></span>
 							<i class="icon-braille drag-handle"></i>
@@ -62,7 +62,7 @@
 		<br />
 		<br />
 		<br />
-		<div class="identities-list-wrp">
+		<div>
 			<div class="identities-list-top-padding"></div>
 			<table class="table table-hover list-table identities-list" data-bind="i18nUpdate: identities">
 				<colgroup>
@@ -70,8 +70,8 @@
 					<col style="width: 150px" />
 					<col style="width: 1%" />
 				</colgroup>
-				<tbody data-bind="sortable: {data: identities, options: scrollableOptions('.identities-list-wrp'), afterMove: accountsAndIdentitiesAfterMove}">
-					<tr class="identity-item">
+				<tbody data-bind="foreach: identities">
+					<tr class="identity-item" draggable="true" data-bind="sortableItem: { list: $root.identities, afterMove: $root.accountsAndIdentitiesAfterMove }">
 						<td class="e-action">
 							<span class="identity-img icon-user"></span>
 							<i class="icon-braille drag-handle"></i>

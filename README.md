@@ -66,6 +66,7 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 * Added dev/prototype-*.js for some additional features
 * boot.js without webpack overhead
+* Modified Jua.js to be without jQuery
 * Replaced jQuery with jQuery.slim
 * Replaced ProgressJS with simple native dropin
 * Replaced Autolinker with simple https/email detection
@@ -74,6 +75,10 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Replaced resize listeners with ResizeObserver
 * Replaced bootstrap.js with native drop-in replacement
 * Replaced dev/Common/ClientStorageDriver/* with Web Storage Objects polyfill
+* Replaced *Ajax with *Fetch classes because we use the Fetch API, not jQuery.ajax
+* Replaced knockoutjs 3.4 with a modified 3.5.1
+* Replaced knockout-sortable with native HTML5 drag&drop
+* Replaced simplestatemanager with @media
 * Removed pikaday
 * Removed underscore
 * Removed polyfills
@@ -85,29 +90,26 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Removed momentjs (localization still used)
 * Removed opentip (use CSS)
 * Removed non-community (aka Prem/Premium/License) code
-* Modified Jua.js to be without jQuery
-* Replaced *Ajax with *Fetch classes because we use the Fetch API, not jQuery.ajax
-* Replaced knockoutjs 3.4 with a modified 3.5.1
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  855.305	|
-|app.js      	|4.184.455	|2.494.229	|
+|admin.js    	|2.130.942	|  851.365	|
+|app.js      	|4.184.455	|2.496.337	|
 |boot.js     	|  671.522	|    5.777	|
-|libs.js     	|  647.614	|  320.872	|
+|libs.js     	|  647.614	|  311.853	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.676.183	|
+|TOTAL      	|7.960.367	|3.665.332	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  117.361	| 73.657	| 33.500	| 28.906	|
-|app.min.js      	|  511.202	|  340.564	|140.462	| 89.522	| 72.478	|
+|admin.min.js    	|  252.147	|  116.656	| 73.657	| 33.346	| 28.783	|
+|app.min.js      	|  511.202	|  340.291	|140.462	| 89.644	| 72.618	|
 |boot.min.js     	|   66.007	|    3.117	| 22.567	|  1.563	|  1.333	|
-|libs.min.js     	|  572.545	|  297.806	|176.720	| 93.005	| 82.087	|
+|libs.min.js     	|  572.545	|  288.859	|176.720	| 90.396	| 79.821	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  758.848	|424.718	|217.590	|184.804	|
+|TOTAL          	|1.434.353	|  748.923	|424.718	|214.949	|182.555	|
 
-675.505 bytes (207.128 gzip) is around 48% smaller and faster.
+685.430 bytes (209.769 gzip) is around 48% smaller and faster.
 
 ### CSS changes
 
@@ -132,8 +134,8 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 254.180	| 46,959	| 36.648	| 30.815	|
-|app.min.css	| 274.791	| 207.630	| 39.618	| 32.050	| 27.234	|
+|app.css    	| 340.334	| 254.026	| 46,959	| 36.763	| 30.920	|
+|app.min.css	| 274.791	| 207.208	| 39.618	| 32.074	| 27.219	|
 |boot.css    	|       	|   2.534	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 

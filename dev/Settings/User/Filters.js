@@ -89,14 +89,6 @@ class FiltersUserSettings {
 		return true;
 	}
 
-	scrollableOptions(wrapper) {
-		return {
-			handle: '.drag-handle',
-			containment: wrapper || 'parent',
-			axis: 'y'
-		};
-	}
-
 	updateList() {
 		if (!this.filters.loading()) {
 			this.filters.loading(true);
