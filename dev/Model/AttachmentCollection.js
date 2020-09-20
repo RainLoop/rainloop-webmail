@@ -9,15 +9,12 @@ export class AttachmentCollectionModel extends AbstractCollectionModel
 	 * @param {?Array} json
 	 * @returns {AttachmentCollectionModel}
 	 */
-	static reviveFromJson(items, foundedCIDs) {
+	static reviveFromJson(items) {
 		let result = new AttachmentCollectionModel;
 		items = this.getFromJSON(items, 'AttachmentCollection') || items;
 		Array.isArray(items) && items.forEach(attachment => {
 			attachment = AttachmentModel.newInstanceFromJson(attachment);
 			if (attachment) {
-				if (attachment.cidWithOutTags && foundedCIDs.includes(attachment.cidWithOutTags)) {
-					attachment.isLinked = true;
-				}
 				result.push(attachment);
 			}
 		});
@@ -37,6 +34,6 @@ export class AttachmentCollectionModel extends AbstractCollectionModel
 	 */
 	findByCid(cid) {
 		cid = cid.replace(/^<+|>+$/, '');
-		return this.find(item => cid === item.cidWithOutTags);
+		return this.find(item => cid === item.cidWithoutTags);
 	}
 }

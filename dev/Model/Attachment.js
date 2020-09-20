@@ -186,7 +186,7 @@ class AttachmentModel extends AbstractModel {
 		this.isLinked = false;
 		this.isThumbnail = false;
 		this.cid = '';
-		this.cidWithOutTags = '';
+		this.cidWithoutTags = '';
 		this.contentLocation = '';
 		this.download = '';
 		this.folder = '';
@@ -215,7 +215,10 @@ class AttachmentModel extends AbstractModel {
 			this.mimeType = ((json.MimeType || '').toLowerCase()).trim();
 			this.fileName = json.FileName.trim();
 			this.estimatedSize = pInt(json.EstimatedSize);
+			// if it is inline
 			this.isInline = !!json.IsInline;
+			// if inline image is linked with CID in html
+			// and 'src="cid:' or background-image:url(cid:)
 			this.isLinked = !!json.IsLinked;
 			this.isThumbnail = !!json.IsThumbnail;
 			this.cid = json.CID;
@@ -228,7 +231,7 @@ class AttachmentModel extends AbstractModel {
 			this.framed = !!json.Framed;
 
 			this.friendlySize = friendlySize(this.estimatedSize);
-			this.cidWithOutTags = this.cid.replace(/^<+/, '').replace(/>+$/, '');
+			this.cidWithoutTags = this.cid.replace(/^<+/, '').replace(/>+$/, '');
 
 			this.fileNameExt = getFileExtension(this.fileName);
 			this.fileType = staticFileType(this.fileNameExt, this.mimeType);
