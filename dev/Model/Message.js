@@ -209,26 +209,35 @@ class MessageModel extends AbstractModel {
 		);
 	}
 
+	setFromJson(json) {
+		if (json && 'Object/Message' === json['@Object']) {
+			let priority = pInt(json.Priority);
+			this.priority(
+				[MessagePriority.High, MessagePriority.Low].includes(priority) ? priority : MessagePriority.Normal
+			);
+
+			this.proxy = !!json.ExternalProxy;
+
+			this.hasAttachments(!!json.HasAttachments);
+			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
+
+			return true;
+		}
+
+		return false;
+	}
+
 	/**
 	 * @param {AjaxJsonMessage} json
 	 * @returns {boolean}
 	 */
 	initByJson(json) {
-		let result = false,
-			priority = MessagePriority.Normal;
-
-		if (json && 'Object/Message' === json['@Object']) {
-			priority = pInt(json.Priority);
-			this.priority(
-				[MessagePriority.High, MessagePriority.Low].includes(priority) ? priority : MessagePriority.Normal
-			);
-
+		let result = this.setFromJson(json);
+		if (result) {
 			this.folderFullNameRaw = json.Folder;
 			this.uid = json.Uid;
 			this.hash = json.Hash;
 			this.requestHash = json.RequestHash;
-
-			this.proxy = !!json.ExternalProxy;
 
 			this.size(pInt(json.Size));
 
@@ -250,8 +259,6 @@ class MessageModel extends AbstractModel {
 			}
 
 			this.dateTimeStampInUTC(pInt(json.DateTimeStampInUTC));
-			this.hasAttachments(!!json.HasAttachments);
-			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
 
 			this.fromEmailString(this.from.toString(true));
 			this.fromClearEmailString(this.from.toStringClear());
@@ -262,8 +269,6 @@ class MessageModel extends AbstractModel {
 
 			this.initFlagsByJson(json);
 			this.computeSenderEmail();
-
-			result = true;
 		}
 
 		return result;
@@ -274,41 +279,27 @@ class MessageModel extends AbstractModel {
 	 * @returns {boolean}
 	 */
 	initUpdateByMessageJson(json) {
-		let result = false,
-			priority = MessagePriority.Normal;
-
-		if (json && 'Object/Message' === json['@Object']) {
-			priority = pInt(json.Priority);
-			this.priority(
-				[MessagePriority.High, MessagePriority.Low].includes(priority) ? priority : MessagePriority.Normal
-			);
-
+		let result = this.setFromJson(json);
+		if (result) {
 			this.aDraftInfo = json.DraftInfo;
 
 			this.sMessageId = json.MessageId;
 			this.sInReplyTo = json.InReplyTo;
 			this.sReferences = json.References;
 
-			this.proxy = !!json.ExternalProxy;
-
 			if (PgpStore.capaOpenPGP()) {
 				this.isPgpSigned(!!json.PgpSigned);
 				this.isPgpEncrypted(!!json.PgpEncrypted);
 			}
 
-			this.hasAttachments(!!json.HasAttachments);
-			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
-
-			this.foundedCIDs = isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];
-			this.attachments(AttachmentCollectionModel.reviveFromJson(json.Attachments, this.foundedCIDs));
+//			this.foundedCIDs = isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];
+//			this.attachments(AttachmentCollectionModel.reviveFromJson(json.Attachments, this.foundedCIDs));
+			this.attachments(AttachmentCollectionModel.reviveFromJson(json.Attachments));
 
 			this.readReceipt(json.ReadReceipt || '');
 
 			this.computeSenderEmail();
-
-			result = true;
 		}
-
 		return result;
 	}
 

@@ -449,7 +449,7 @@ class ContactsPopupView extends AbstractViewNext {
 				}
 
 				contact.deleted(true);
-				count -= 1;
+				--count;
 			});
 
 			if (0 >= count) {

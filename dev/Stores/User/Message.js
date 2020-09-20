@@ -154,11 +154,9 @@ class MessageUserStore {
 				return selectedMessage
 					? checked.concat([selectedMessage]).filter((value, index, self) => self.indexOf(value) == index)
 					: checked;
-			} else if (selectedMessage) {
-				return [selectedMessage];
 			}
 
-			return focusedMessage ? [focusedMessage] : [];
+			return selectedMessage ? [selectedMessage] : (focusedMessage ? [focusedMessage] : []);
 		});
 
 		this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(() => {
@@ -298,7 +296,7 @@ class MessageUserStore {
 
 		messages.forEach(item => {
 			if (item && item.unseen()) {
-				unseenCount += 1;
+				++unseenCount;
 			}
 		});
 
@@ -488,8 +486,7 @@ class MessageUserStore {
 
 					const textBody = document.getElementById(id);
 					if (textBody) {
-						iMessageBodyCacheCount += 1;
-						textBody.rlCacheCount = iMessageBodyCacheCount;
+						textBody.rlCacheCount = ++iMessageBodyCacheCount;
 						message.fetchDataFromDom();
 						message.body = textBody;
 					} else {
@@ -532,13 +529,11 @@ class MessageUserStore {
 							resultHtml = '<pre>' + resultHtml + '</pre>';
 						}
 
-						iMessageBodyCacheCount += 1;
-
 						body = Element.fromHTML('<div id="' + id + '" hidden="" class="rl-cache-class b-text-part '
 							+ (isHtml ? 'html' : 'plain') + '">'
 							+ findEmailAndLinks(resultHtml)
 							+ '</div>');
-						body.rlCacheCount = iMessageBodyCacheCount;
+						body.rlCacheCount = ++iMessageBodyCacheCount;
 
 						// Drop Microsoft Office style properties
 						const rgbRE = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/g,

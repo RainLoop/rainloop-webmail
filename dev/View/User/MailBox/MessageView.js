@@ -92,7 +92,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.attachmentsActions = AppStore.attachmentsActions;
 
 		this.message = MessageStore.message;
-		this.messageListChecked = MessageStore.messageListChecked;
+//		this.messageListChecked = MessageStore.messageListChecked;
 		this.hasCheckedMessages = MessageStore.hasCheckedMessages;
 		this.messageListCheckedOrSelectedUidsWithSubMails = MessageStore.messageListCheckedOrSelectedUidsWithSubMails;
 		this.messageLoadingThrottle = MessageStore.messageLoadingThrottle;
@@ -410,7 +410,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 							index = listIndex;
 						}
 
-						listIndex += 1;
+						++listIndex;
 
 						return {
 							src: item.linkPreview(),

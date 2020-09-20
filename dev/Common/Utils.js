@@ -418,7 +418,7 @@ export function htmlToPlain(html) {
 	limit = 800;
 
 	while (0 < limit) {
-		limit -= 1;
+		--limit;
 		iP1 = text.indexOf('__bq__start__', pos);
 		if (-1 < iP1) {
 			iP2 = text.indexOf('__bq__start__', iP1 + 5);
@@ -778,17 +778,17 @@ export function computedPagenatorHelper(koCurrentPage, koPageCount) {
 			}
 
 			while (0 < limit) {
-				prev -= 1;
-				next += 1;
+				--prev;
+				++next;
 
 				if (0 < prev) {
 					fAdd(prev, false);
-					limit -= 1;
+					--limit;
 				}
 
 				if (pageCount >= next) {
 					fAdd(next, true);
-					limit -= 1;
+					--limit;
 				} else if (0 >= prev) {
 					break;
 				}

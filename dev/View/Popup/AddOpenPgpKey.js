@@ -64,7 +64,7 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 					}
 				}
 
-				count -= 1;
+				--count;
 				done = false;
 			} else {
 				done = true;

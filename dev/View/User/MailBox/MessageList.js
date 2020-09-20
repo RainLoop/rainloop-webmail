@@ -98,7 +98,6 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		this.messageListEndFolder = MessageStore.messageListEndFolder;
 		this.messageListEndThreadUid = MessageStore.messageListEndThreadUid;
 
-		this.messageListChecked = MessageStore.messageListChecked;
 		this.messageListCheckedOrSelected = MessageStore.messageListCheckedOrSelected;
 		this.messageListCheckedOrSelectedUidsWithSubMails = MessageStore.messageListCheckedOrSelectedUidsWithSubMails;
 		this.messageListCompleteLoadingThrottle = MessageStore.messageListCompleteLoadingThrottle;
@@ -195,11 +194,10 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			() => this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder()
 		);
 
-		this.mobileCheckedStateShow = ko.computed(() => {
-			return this.mobile ? 0 < this.messageListChecked().length : true;
-		});
+//		this.messageListChecked = MessageStore.messageListChecked;
+		this.mobileCheckedStateShow = ko.computed(() => this.mobile ? 0 < MessageStore.messageListChecked().length : true);
 
-		this.mobileCheckedStateHide = ko.computed(() => this.mobile ? !this.messageListChecked().length : true);
+		this.mobileCheckedStateHide = ko.computed(() => this.mobile ? !MessageStore.messageListChecked().length : true);
 
 		this.messageListFocused = ko.computed(() => Focused.MessageList === AppStore.focusedState());
 
@@ -376,7 +374,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	goToUpUpOrDownDown(up) {
-		if (this.messageListChecked().length) {
+		if (MessageStore.messageListChecked().length) {
 			return false;
 		}
 
@@ -488,6 +486,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		dragImage || (dragImage = document.getElementById('messagesDragImage'));
 
 		const uids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails();
+		item && !uids.includes(item.uid) && uids.push(item.uid);
 		if (dragImage && uids.length) {
 			dragImage.querySelector('.text').textContent = uids.length;
 			let img = dragImage.querySelector('.icon-white');
@@ -544,7 +543,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 						if (folder) {
 							MessageStore.messageList().forEach(message => {
 								if (message.unseen()) {
-									cnt += 1;
+									++cnt;
 								}
 
 								message.unseen(false);
@@ -570,7 +569,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 						if (folder) {
 							MessageStore.messageList().forEach(message => {
 								if (!message.unseen()) {
-									cnt += 1;
+									++cnt;
 								}
 
 								message.unseen(true);

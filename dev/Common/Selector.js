@@ -146,7 +146,7 @@ class Selector {
 					if (0 < len && aCheckedCache.includes(uid)) {
 						isChecked = true;
 						item.checked(true);
-						len -= 1;
+						--len;
 					}
 
 					if (!isChecked && null !== mSelected && mSelected === uid) {
