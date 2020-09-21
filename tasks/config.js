@@ -53,9 +53,7 @@ config.paths.css = {
 			'vendors/normalize.css/normalize.css',
 			'vendors/fontastic/styles.css',
 			'vendors/inputosaurus/inputosaurus.css',
-			'vendors/flags/flags-fixed.css',
-			'vendors/lightgallery/dist/css/lightgallery.min.css',
-			'vendors/lightgallery/dist/css/lg-transitions.min.css',
+			'vendors/flags/flags-fixed.css'
 		]
 	},
 	boot: {
@@ -76,7 +74,6 @@ config.paths.js = {
 		src: [
 			'dev/polyfill.js',
 			'dev/prototype.js',
-			'node_modules/jquery/dist/jquery.slim.min.js',
 			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
 			'vendors/routes/signals.min.js', // fixed
 			'vendors/routes/hasher.min.js', // fixed
@@ -86,11 +83,6 @@ config.paths.js = {
 			'vendors/qr.js/qr.min.js', // fixed (license)
 			'vendors/bootstrap/js/bootstrap.native.min.js', // fixed
 			'vendors/knockout/build/output/knockout-latest.js',
-			'vendors/lightgallery/dist/js/lightgallery.min.js', // license
-			'vendors/lightgallery/dist/js/lg-fullscreen.min.js',
-			'vendors/lightgallery/dist/js/lg-thumbnail.min.js',
-			'vendors/lightgallery/dist/js/lg-zoom.min.js',
-			'vendors/lightgallery/dist/js/lg-autoplay.min.js',
 			'dev/External/ifvisible.js',
 			'dev/External/SquireUI.js'
 		]

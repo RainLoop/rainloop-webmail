@@ -16,12 +16,7 @@ const moment = gulp.series(momentLocalesClear, momentLocales);
 // lightgallery
 const lightgalleryFontsClear = () => del('rainloop/v/' + config.devVersion + '/static/css/fonts/lg.*');
 
-const lightgalleryFontsCopy = () =>
-	gulp
-		.src('vendors/lightgallery/dist/fonts/lg.*')
-		.pipe(gulp.dest('rainloop/v/' + config.devVersion + '/static/css/fonts'));
-
-const lightgallery = gulp.series(lightgalleryFontsClear, lightgalleryFontsCopy);
+const lightgallery = gulp.series(lightgalleryFontsClear);
 
 // fontastic
 const fontasticFontsClear = () => del('rainloop/v/' + config.devVersion + '/static/css/fonts/rainloop.*');

@@ -13,12 +13,11 @@ import {
 	MessageSetAction
 } from 'Common/Enums';
 
-import { $htmlCL, leftPanelDisabled, keyScopeReal, useKeyboardShortcuts, moveAction } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction } from 'Common/Globals';
 
 import {
 	inFocus,
 	removeSelection,
-	removeInFocus,
 	mailToHelper,
 	isTransparent
 } from 'Common/Utils';
@@ -398,55 +397,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	 * @param {Object} oAttachment
 	 * @returns {boolean}
 	 */
-	attachmentPreview(attachment) {
-		if (attachment && attachment.isImage() && !attachment.isLinked && this.message() && this.message().attachments()) {
-			let index = 0,
-				listIndex = 0;
-
-			const div = jQuery('<div>'),
-				dynamicEls = this.message().attachments().map(item => {
-					if (item && !item.isLinked && item.isImage()) {
-						if (item === attachment) {
-							index = listIndex;
-						}
-
-						++listIndex;
-
-						return {
-							src: item.linkPreview(),
-							thumb: item.linkThumbnail(),
-							subHtml: item.fileName,
-							downloadUrl: item.linkPreview()
-						};
-					}
-
-					return null;
-				}).filter(value => !!value);
-
-			if (dynamicEls.length) {
-				div.on('onBeforeOpen.lg', () => {
-					useKeyboardShortcuts(false);
-					removeInFocus(true);
-				});
-
-				div.on('onCloseAfter.lg', () => useKeyboardShortcuts(true));
-
-				div.lightGallery({
-					dynamic: true,
-					loadYoutubeThumbnail: false,
-					loadVimeoThumbnail: false,
-					thumbWidth: 80,
-					thumbContHeight: 95,
-					showThumbByDefault: false,
-					mode: 'lg-lollipop', // 'lg-slide',
-					index: index,
-					dynamicEl: dynamicEls
-				});
-			}
-
-			return false;
-		}
-
+	attachmentPreview() {
+		// TODO: add lightgallery alternative?
 		return true;
 	}
 
