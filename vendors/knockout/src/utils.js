@@ -246,10 +246,7 @@ ko.utils = (function () {
         registerEventHandler: function (element, eventType, handler) {
             var wrappedHandler = ko.utils.catchFunctionErrors(handler);
 
-            if (!ko.options['useOnlyNativeEvents'] && jQuery) {
-                jQuery(element)['on'](eventType, wrappedHandler);
-            } else
-                element.addEventListener(eventType, wrappedHandler, false);
+            element.addEventListener(eventType, wrappedHandler, false);
         },
 
         triggerEvent: function (element, eventType) {
