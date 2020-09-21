@@ -4,11 +4,6 @@
  * Must be instantiated on an <input> element
  * Allows multiple input items. Each item is represented with a removable tag that appears to be inside the input area.
  *
- * @requires:
- *
- * 	jQuery 3.5+
- * 	jQueryUI 1.12+ Core
- *
  * @version 0.1.6
  * @author Dan Kielp <dan@sproutsocial.com>
  * @created October 3,2012
@@ -17,15 +12,36 @@
  * @modified by DJMaze
  */
 
+(() => {
 
-($ => {
+const doc = document,
+	createEl = (name, attr) => {
+		let el = doc.createElement(name);
+		attr && Object.entries(attr).forEach(([k,v]) => el.setAttribute(k,v));
+		return el;
+	},
+	datalist = createEl('datalist',{id:"inputosaurus-datalist"}),
+	fakeSpan = createEl('span',{class:"inputosaurus-fake-span"}),
 
-	const fakeSpan = $('<span class="inputosaurus-fake-span"></span>');
+	contentType = 'application/x-inputosaurus-item',
+	getTransferData = data => 'move' === data.dropEffect && data.getData(contentType);
 
-	$('body').append(fakeSpan);
-	$.widget("ui.inputosaurus", {
+doc.body.append(fakeSpan, datalist);
 
-		options: {
+let removeDragged = null;
+
+window.Inputosaurus = class {
+
+	constructor(element, options) {
+
+		var self = this,
+			els = {};
+
+		self.element = element;
+
+		self._focusTriggerTimer = 0;
+
+		self.options = Object.assign({
 
 			// bindable events
 			//
@@ -34,607 +50,446 @@
 
 			// while typing, the user can separate values using these delimiters
 			// the value tags are created on the fly when an inputDelimiter is detected
-			inputDelimiters : [',', ';'],
-
-			allowDragAndDrop : true,
+			inputDelimiters : [',', ';', '\n'],
 
 			focusCallback : null,
 
-			parseOnBlur : false,
-
 			// simply passing an autoComplete source (array, string or function) will instantiate autocomplete functionality
 			autoCompleteSource : '',
-
-			// When forcing users to select from the autocomplete list, allow them to press 'Enter' to select an item if it's the only option left.
-			activateFinalResult : false,
 
 			// manipulate and return the input value after parseInput() parsing
 			// the array of tag names is passed and expected to be returned as an array after manipulation
 			parseHook : null,
 
 			splitHook : null
-		},
+		}, options);
 
-		_create: function() {
-			var widget = this,
-				els = {},
-				o = widget.options,
-				placeholder =  this.element.attr('placeholder') || null;
+		self._chosenValues = [];
 
-			this._chosenValues = [];
+		// Create the elements
+		els.ul = createEl('ul',{class:"inputosaurus-container"});
 
-			// Create the elements
-			els.ul = $('<ul class="inputosaurus-container"></ul>');
+		els.ul.addEventListener("dragover", e => getTransferData(e.dataTransfer) && e.preventDefault());
+		els.ul.addEventListener("drop", e => {
+			let value = getTransferData(e.dataTransfer);
+			if (value) {
+				els.input.value = value;
+				removeDragged();
+				self.parseInput();
+			}
+		});
 
-			if (this.options.allowDragAndDrop)
-			{
-				els.ul.droppable({
-					'drop': (event, ui) => {
+		els.input = createEl('input',{type:"text", list:datalist.id,
+			autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false"});
 
-						ui.draggable.addClass('inputosaurus-dropped');
-						els.input.val(ui.draggable.data('inputosaurus-value'));
+		els.lastEdit = '';
 
-						if (ui.draggable.__widget)
-						{
-							ui.draggable.__widget._removeDraggedTag(ui.draggable);
+		els.input.addEventListener('focus', () => self._focusTrigger(true));
+		els.input.addEventListener('blur', () => self._focusTrigger(false));
+
+		// define starting placeholder
+		if (element.placeholder) {
+			els.input.placeholder = element.placeholder;
+		}
+
+		element.replaceWith(els.ul);
+		element.hidden = true;
+
+		els.inputCont = createEl('li',{class:"inputosaurus-input"});
+		els.inputCont.append(els.input);
+		els.ul.append(els.inputCont);
+
+		self.elements = els;
+
+		els.input.addEventListener('keyup', e => self._inputKeypress(e));
+		els.input.addEventListener('keydown', e => self._inputKeypress(e));
+		els.input.addEventListener('change', e => self._inputKeypress(e));
+		els.input.addEventListener('input', e => self._inputKeypress(e));
+		els.input.addEventListener('focus', () => els.input.value || self._resetAutocomplete());
+		els.input.addEventListener('blur', e => self.parseInput(e));
+
+		els.ul.addEventListener('click', e => self._focus(e));
+		els.ul.addEventListener('dblclick', e => e.currentTarget.closest('li') && self._editTag(e));
+
+		// if instantiated input already contains a value, parse that junk
+		if (element.value.trim()) {
+			els.input.value = element.value;
+			self.parseInput();
+		}
+
+		self._updateAutocomplete = self.options.autoCompleteSource
+			? (() => {
+				let value = self.elements.input.value.trim();
+				if (datalist.inputValue !== value) {
+					datalist.inputValue = value;
+					value.length && self.options.autoCompleteSource(
+						{term:value},
+						items => {
+							self._resetAutocomplete();
+							items && items.forEach(item => datalist.append(new Option(item)));
 						}
+					)
+				}
+			}).throttle(500)
+			: () => {};
+	}
 
-						widget.parseInput();
-					}
-				});
-			}
+	_focusTrigger(bValue) {
+		var self = this;
+		clearTimeout(self._focusTriggerTimer);
+		self._focusTriggerTimer = setTimeout(() => {
+			self.elements.ul.classList.toggle('inputosaurus-focused', bValue);
+			self.options.focusCallback(bValue);
+		}, 10);
+	}
 
-			els.input = $('<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />');
-//			els.input = $('<input type="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />');
-			els.inputCont = $('<li class="inputosaurus-input inputosaurus-required"></li>');
-			els.origInputCont = $('<li class="inputosaurus-input-hidden inputosaurus-required"></li>');
-			els.lastEdit = '';
+	_resetAutocomplete() {
+		datalist.textContent = '';
+	}
 
-			els.input.on('focus', () => {
-				widget._focusTrigger(true);
-			}).on('blur', () => {
-				widget._focusTrigger(false);
-			});
+	parseInput(ev) {
+		var self = this,
+			val,
+			hook,
+			delimiterFound = false,
+			values = [];
 
-			// define starting placeholder
-			if (placeholder) {
-				o.placeholder = placeholder;
-				els.input.attr('placeholder', o.placeholder);
-			}
+		val = self.elements.input.value;
 
-			this.element.replaceWith(els.ul);
-			els.origInputCont.append(this.element).hide();
+		if (val) {
+			hook = self.options.splitHook(val);
+		}
 
-			els.inputCont.append(els.input);
-			els.ul.append(els.inputCont);
-			els.ul.append(els.origInputCont);
+		if (hook) {
+			values = hook;
+		} else if (delimiterFound !== false) {
+			values = val.split(delimiterFound);
+		} else if (!ev || ev.key == 'Enter') {
+			values.push(val);
+			ev && ev.preventDefault();
 
-			this.elements = els;
+		// prevent autoComplete menu click from causing a false 'blur'
+		} else if(ev.type === 'blur'){
+			values.push(val);
+		}
 
-			widget._attachEvents();
+		values = self.options.parseHook(values);
 
-			// if instantiated input already contains a value, parse that junk
-			if($.trim(this.element.val())){
-				els.input.val( this.element.val() );
-				this.parseInput();
-			}
+		if (values.length) {
+			self._setChosen(values);
+			self.elements.input.value = '';
+			self.resizeInput();
+		}
+	}
 
-			this._instAutocomplete();
-		},
+	_inputKeypress(ev) {
+		let self = this;
 
-		_focusTriggerTimer : 0,
+		switch (ev.key) {
+			case 'Backspace':
+			case 'ArrowLeft':
+				// if our input contains no value and backspace has been pressed, select the last tag
+				if (ev.type === 'keydown') {
+					var lastTag = self.elements.inputCont.previousElementSibling,
+						target = ev.currentTarget;
 
-		_focusTrigger : function (bValue) {
-			var widget = this;
-			clearTimeout(this._focusTriggerTimer);
-			this._focusTriggerTimer = setTimeout(() => {
-				widget.elements.ul[!bValue ? 'removeClass' : 'addClass']('inputosaurus-focused');
-				widget.options.focusCallback(bValue);
-			}, 10);
-		},
+					// IE goes back in history if the event isn't stopped
+					ev.stopPropagation();
 
-		_instAutocomplete : function() {
-			if(this.options.autoCompleteSource){
-				var widget = this;
-
-				this.elements.input.autocomplete({
-					position : {
-						of : this.elements.ul
-					},
-					source : this.options.autoCompleteSource,
-					minLength : 1,
-					autoFocus : true,
-					select : (ev, ui) => {
+					if (lastTag && (!target.value
+						|| (('selectionStart' in target) && target.selectionStart === 0 && target.selectionEnd === 0))
+					) {
 						ev.preventDefault();
-						widget.elements.input.val(ui.item.value);
-						widget.parseInput();
-					},
-					open : function() {
-						var menu = $(this).data('ui-autocomplete').menu,
-							$menuItems;
+						lastTag.querySelector('a').focus();
+					}
 
-						menu.element.width(widget.elements.ul.outerWidth() - 6);
-
-						// auto-activate the result if it's the only one
-						if(widget.options.activateFinalResult){
-							$menuItems = menu.element.find('li');
-
-							// activate single item to allow selection upon pressing 'Enter'
-							if($menuItems.length === 1){
-								menu[menu.activate ? 'activate' : 'focus']($.Event('click'), $menuItems);
-							}
-						}
-					},
-					focus: () => false
-				});
-			}
-		},
-
-		_autoCompleteMenuPosition : function() {
-			var widget;
-			if(this.options.autoCompleteSource){
-				widget = this.elements.input.data('ui-autocomplete');
-				widget && widget.menu.element.position({
-					of: this.elements.ul,
-					my: 'left top',
-					at: 'left bottom',
-					collision: 'none'
-				});
-			}
-		},
-
-		parseInput : function(ev) {
-			var widget = (ev && ev.data.widget) || this,
-				val,
-				hook,
-				delimiterFound = false,
-				values = [];
-
-			val = widget.elements.input.val();
-
-			if (val) {
-				hook = widget.options.splitHook(val);
-			}
-
-			if (hook) {
-				values = hook;
-			} else if(delimiterFound !== false){
-				values = val.split(delimiterFound);
-			} else if(!ev || ev.which === $.ui.keyCode.ENTER && !$('.ui-menu-item .ui-state-focus').length && !$('#ui-active-menuitem').length){
-				values.push(val);
-				ev && ev.preventDefault();
-
-			// prevent autoComplete menu click from causing a false 'blur'
-			} else if(ev.type === 'blur' && !$('#ui-active-menuitem').length){
-				values.push(val);
-			}
-
-			values = widget.options.parseHook(values);
-
-			if(values.length){
-				widget._setChosen(values);
-				widget.elements.input.val('');
-				widget._resizeInput();
-			}
-		},
-
-		_inputFocus : function(ev) {
-			var widget = ev.data.widget || this;
-
-			widget.elements.input.value || (widget.options.autoCompleteSource.length && widget.elements.input.autocomplete('search', ''));
-		},
-
-		_inputKeypress : function(ev) {
-			var widget = ev.data.widget || this;
-
-			ev.type === 'keyup' && widget._trigger('keyup', ev, widget);
-
-			switch(ev.which){
-				case $.ui.keyCode.BACKSPACE:
-					ev.type === 'keydown' && widget._inputBackspace(ev);
-					break;
-
-				case $.ui.keyCode.LEFT:
-					ev.type === 'keydown' && widget._inputBackspace(ev);
-					break;
-
-				default :
-					widget.parseInput(ev);
-					widget._resizeInput(ev);
-			}
-
-			// reposition autoComplete menu as <ul> grows and shrinks vertically
-			if(widget.options.autoCompleteSource){
-				setTimeout(()=>widget._autoCompleteMenuPosition.call(widget), 200);
-			}
-		},
-
-		resizeInput : function () {
-			this._resizeInput();
-		},
-
-		// the input dynamically resizes based on the length of its value
-		_resizeInput : function(ev) {
-			var widget = (ev && ev.data.widget) || this;
-			fakeSpan.text(widget.elements.input.val());
-
-//			setTimeout(function  () {
-				var txtWidth = 25 + fakeSpan.width();
-				txtWidth = txtWidth > 50 ? txtWidth : 50;
-				txtWidth = txtWidth < 500 ? txtWidth : 500;
-				widget.elements.input.width(txtWidth);
-//			}, 1);
-		},
-
-		// if our input contains no value and backspace has been pressed, select the last tag
-		_inputBackspace : function(ev) {
-			var widget = (ev && ev.data.widget) || this,
-				lastTag = widget.elements.ul.find('li:not(.inputosaurus-required):last');
-
-			// IE goes back in history if the event isn't stopped
-			ev.stopPropagation();
-
-			if((!$(ev.currentTarget).val() || (('selectionStart' in ev.currentTarget) && ev.currentTarget.selectionStart === 0 && ev.currentTarget.selectionEnd === 0)) && lastTag.length){
-				ev.preventDefault();
-				lastTag.find('a').focus();
-			}
-
-		},
-
-		_editTag : function(ev) {
-			var widget = (ev && ev.data.widget) || this,
-				tagName = '',
-				$li = $(ev.currentTarget).closest('li'),
-				tagKey = $li.data('inputosaurus');
-
-			if(!tagKey){
-				return true;
-			}
-
-			ev.preventDefault();
-
-			var
-				oPrev = null,
-				next = false
-			;
-
-			$.each(widget._chosenValues, (i,v) => {
-				if (v.key === tagKey)
-				{
-					tagName = v.value;
-					next = true;
 				}
-				else if (next && !oPrev)
-				{
-					oPrev = v;
-				}
-			});
+				break;
 
-			if (oPrev)
+			default :
+				self.parseInput(ev);
+				self.resizeInput();
+		}
+
+		self._updateAutocomplete();
+	}
+
+	// the input dynamically resizes based on the length of its value
+	resizeInput() {
+		let input = this.elements.input;
+		fakeSpan.textContent = input.value;
+//		setTimeout(function  () {
+			input.style.width = Math.min(500, Math.max(200, 25 + fakeSpan.clientWidth)) + 'px';
+//		}, 1);
+	}
+
+	_editTag(ev) {
+		var self = this,
+			tagName = '',
+			li = ev.currentTarget.closest('li'),
+			tagKey = li.inputosaurusKey;
+
+		if (!tagKey) {
+			return true;
+		}
+
+		ev.preventDefault();
+
+		var
+			oPrev = null,
+			next = false
+		;
+
+		self._chosenValues.forEach(v => {
+			if (v.key === tagKey)
 			{
-				widget.elements.lastEdit = oPrev.value;
+				tagName = v.value;
+				next = true;
 			}
-
-			$li.after(widget.elements.inputCont);
-
-			widget.elements.input.val(tagName);
-			setTimeout(() => widget.elements.input.select(), 100);
-
-			widget._removeTag(ev);
-			widget._resizeInput(ev);
-		},
-
-		_tagKeypress : ev => {
-			var widget = ev.data.widget;
-			switch(ev.which){
-
-				case $.ui.keyCode.DELETE:
-				case $.ui.keyCode.BACKSPACE:
-					ev && ev.preventDefault();
-					ev && ev.stopPropagation();
-					$(ev.currentTarget).trigger('click');
-					break;
-
-				// 'e' - edit tag (removes tag and places value into visible input
-				case 69:
-				case $.ui.keyCode.ENTER:
-					widget._editTag(ev);
-					break;
-
-				case $.ui.keyCode.LEFT:
-					ev.type === 'keydown' && widget._prevTag(ev);
-					break;
-
-				case $.ui.keyCode.RIGHT:
-					ev.type === 'keydown' && widget._nextTag(ev);
-					break;
-
-				case $.ui.keyCode.DOWN:
-					ev.type === 'keydown' && widget._focus(ev);
-					break;
-			}
-		},
-
-		// select the previous tag or input if no more tags exist
-		_prevTag : function(ev) {
-			var widget = (ev && ev.data.widget) || this,
-				tag = $(ev.currentTarget).closest('li'),
-				previous = tag.prev();
-
-			if(previous.is('li')){
-				previous.find('a').focus();
-			} else {
-				widget._focus();
-			}
-		},
-
-		// select the next tag or input if no more tags exist
-		_nextTag : function(ev) {
-			var widget = (ev && ev.data.widget) || this,
-				tag = $(ev.currentTarget).closest('li'),
-				next = tag.next();
-
-			if(next.is('li:not(.inputosaurus-input)')){
-				next.find('a').focus();
-			} else {
-				widget._focus();
-			}
-		},
-
-		// return the inputDelimiter that was detected or false if none were found
-		_containsDelimiter : function(tagStr) {
-
-			var found = false;
-
-			$.each(this.options.inputDelimiters, (k,v) => {
-				if(tagStr.indexOf(v) !== -1){
-					found = v;
-				}
-			});
-
-			return found;
-		},
-
-		_setChosen : function(valArr) {
-			var self = this;
-
-			if(!Array.isArray(valArr)){
-				return false;
-			}
-
-			$.each(valArr, (k,a) => {
-				var v = '', exists = false,
-					lastIndex = -1,
-					obj = {
-						key : '',
-						obj : null,
-						value : ''
-					};
-
-				v = $.trim(a[0]);
-
-				$.each(self._chosenValues, (kk, vv) => {
-					if (vv.value === self.elements.lastEdit)
-					{
-						lastIndex = kk;
-					}
-
-					vv.value === v && (exists = true);
-				});
-
-				if(v !== '' && a && a[1] && !exists){
-
-					obj.key = 'mi_' + Math.random().toString( 16 ).slice( 2, 10 );
-					obj.value = v;
-					obj.obj = a[1];
-
-					if (-1 < lastIndex)
-					{
-						self._chosenValues.splice(lastIndex, 0, obj);
-					}
-					else
-					{
-						self._chosenValues.push(obj);
-					}
-
-					self.elements.lastEdit = '';
-					self._renderTags();
-				}
-			});
-
-			if (valArr.length === 1 && valArr[0] === '' && self.elements.lastEdit !== '')
+			else if (next && !oPrev)
 			{
+				oPrev = v;
+			}
+		});
+
+		if (oPrev)
+		{
+			self.elements.lastEdit = oPrev.value;
+		}
+
+		li.after(self.elements.inputCont);
+
+		self.elements.input.value = tagName;
+		setTimeout(() => self.elements.input.select(), 100);
+
+		self._removeTag(ev);
+		self.resizeInput(ev);
+	}
+
+	// select the next tag or input if no more tags exist
+	_nextTag(ev) {
+		var tag = ev.currentTarget.closest('li'),
+			next = tag.next();
+
+		if (next !== this.elements.inputCont) {
+			next.querySelector('a').focus();
+		} else {
+			this._focus();
+		}
+	}
+
+	// return the inputDelimiter that was detected or false if none were found
+	_containsDelimiter(tagStr) {
+		return -1 < this.options.inputDelimiters.findIndex(v => tagStr.indexOf(v) !== -1);
+	}
+
+	_setChosen(valArr) {
+		var self = this;
+
+		if (!Array.isArray(valArr)){
+			return false;
+		}
+
+		valArr.forEach(a => {
+			var v = '', exists = false,
+				lastIndex = -1,
+				obj = {
+					key : '',
+					obj : null,
+					value : ''
+				};
+
+			v = a[0].trim();
+
+			self._chosenValues.forEach((vv, kk) => {
+				if (vv.value === self.elements.lastEdit)
+				{
+					lastIndex = kk;
+				}
+
+				vv.value === v && (exists = true);
+			});
+
+			if (v !== '' && a && a[1] && !exists) {
+
+				obj.key = 'mi_' + Math.random().toString( 16 ).slice( 2, 10 );
+				obj.value = v;
+				obj.obj = a[1];
+
+				if (-1 < lastIndex)
+				{
+					self._chosenValues.splice(lastIndex, 0, obj);
+				}
+				else
+				{
+					self._chosenValues.push(obj);
+				}
+
 				self.elements.lastEdit = '';
 				self._renderTags();
 			}
+		});
 
-			self._setValue(self._buildValue());
-		},
+		if (valArr.length === 1 && valArr[0] === '' && self.elements.lastEdit !== '')
+		{
+			self.elements.lastEdit = '';
+			self._renderTags();
+		}
 
-		_buildValue : function() {
-			var value = '';
+		self._setValue(self._buildValue());
+	}
 
-			$.each(this._chosenValues, (k,v) => {
-				value += value.length ? ',' + v.value : v.value;
-			});
+	_buildValue() {
+		return this._chosenValues.map(v => v.value).join(',');
+	}
 
-			return value;
-		},
+	_setValue(value) {
+		var val = this.element.value;
+		if (val !== value) {
+			this.element.value = value;
+		}
+	}
 
-		_setValue : function(value) {
-			var val = this.element.val();
+	_renderTags() {
+		let self = this, els = self.elements;
+		[...els.ul.children].forEach(node => node !== els.inputCont && node.remove());
 
-			if(val !== value){
-				this.element.val(value);
-				this._trigger('change');
-			}
-		},
+		self._chosenValues.forEach(v => {
+			if (v.obj) {
+				let li = createEl('li',{title:v.obj.toLine(false, false, true),draggable:'true'}),
+					el = createEl('span');
+				el.append(v.obj.toLine(true, false, true));
+				li.append(el);
 
-		// @name text for tag
-		// @className optional className for <li>
-		_createTag : function(name, key, obj) {
-			if (name !== undefined && obj) {
-				var
-					widget = this,
-					$li = $('<li data-inputosaurus="' + key + '" title="' + obj.toLine(false, false, true) +
-						'"><a href="javascript:void(0);" class="ficon">&#x2716;</a><span>' +
-						obj.toLine(true, false, true) + '</span></li>')
-				;
+				el = createEl('a',{href:'#', class:'ficon'});
+				el.append('✖');
+				el.addEventListener('click', e => self._removeTag(e));
+				el.addEventListener('focus', () => li.className = 'inputosaurus-selected');
+				el.addEventListener('blur', () => li.className = null);
+				el.addEventListener('keydown', e => {
+					switch (e.key) {
+						case 'Delete':
+						case 'Backspace':
+							self._removeTag(e);
+							break;
 
-				$li.data('inputosaurus-value', obj.toLine(false, false, false));
+						// 'e' - edit tag (removes tag and places value into visible input
+						case 'e':
+						case 'Enter':
+							self._editTag(e);
+							break;
 
-				if (this.options.allowDragAndDrop)
-				{
-					$li.draggable({
-						'revert': 'invalid',
-						'revertDuration': 200,
-						'start': (event, ui) => ui.helper.__widget = widget
-					});
-				}
+						case 'ArrowLeft':
+							// select the previous tag or input if no more tags exist
+							var previous = el.closest('li').previousElementSibling;
+							if (previous.matches('li')) {
+								previous.querySelector('a').focus();
+							} else {
+								self._focus();
+							}
+							break;
 
-				return $li;
-			}
-		},
+						case 'ArrowRight':
+							self._nextTag(e);
+							break;
 
-		_renderTags : function() {
-			var self = this;
-
-			this.elements.ul.find('li:not(.inputosaurus-required)').remove();
-
-			$.each(this._chosenValues, (k, v) => {
-				var el = self._createTag(v.value, v.key, v.obj);
-				if (el) {
-					self.elements.ul.find('li.inputosaurus-input').before(el);
-				}
-			});
-		},
-
-		_removeTag : function(ev) {
-			var key = $(ev.currentTarget).closest('li').data('inputosaurus'),
-				indexFound = false,
-				widget = (ev && ev.data.widget) || this;
-
-
-			$.each(widget._chosenValues, (k,v) => {
-				if(key === v.key){
-					indexFound = k;
-				}
-			});
-
-			indexFound !== false && widget._chosenValues.splice(indexFound, 1);
-
-			widget._setValue(widget._buildValue());
-
-			$(ev.currentTarget).closest('li').remove();
-			setTimeout(() => widget.elements.input.focus(), 100);
-		},
-
-		_removeDraggedTag : function ($li) {
-			var
-				key = $li.data('inputosaurus'),
-				widget = this,
-				indexFound = false
-			;
-
-			$.each(widget._chosenValues, (k,v) => {
-				if (key === v.key) {
-
-					indexFound = k;
-				}
-			});
-
-			if (false !== indexFound)
-			{
-				widget._chosenValues.splice(indexFound, 1);
-				widget._setValue(widget._buildValue());
-			}
-
-			$li.remove();
-		},
-
-		focus : function () {
-			this.elements.input.focus();
-		},
-
-		blur : function () {
-			this.elements.input.blur();
-		},
-
-		_focus : function(ev) {
-			var
-				widget = (ev && ev.data.widget) || this,
-				li = (ev && ev.target) ? $(ev.target).closest('li') : null
-			;
-
-			if (li && li.is('li')) {
-				li.find('a').focus();
-			}
-			if (!ev || !$(ev.target).closest('li').data('inputosaurus')) {
-				widget.elements.input.focus();
-			}
-		},
-
-		_tagFocus : ev => $(ev.currentTarget).parent()[ev.type === 'focusout' ? 'removeClass' : 'addClass']('inputosaurus-selected'),
-
-		refresh : function() {
-			var delim = ',',
-				val = this.element.val(),
-				values = [];
-
-			values.push(val);
-
-			if (val) {
-				if ($.isFunction(this.options.splitHook)) {
-					var hook = this.options.splitHook(val);
-					if (hook) {
-						values = hook;
+						case 'ArrowDown':
+							self._focus(e);
+							break;
 					}
-				} else {
-					delim && (values = val.split(delim));
-				}
+				});
+				li.append(el);
+
+				li.inputosaurusKey = v.key;
+				li.inputosaurusValue = v.obj.toLine(false, false, false);
+
+				li.addEventListener("dragstart", e => {
+					e.dataTransfer.setData(contentType, li.inputosaurusValue);
+					e.dataTransfer.setDragImage(li, 0, 0);
+					e.dataTransfer.effectAllowed = 'move';
+					li.style.opacity = 0.25;
+					removeDragged = () => self._removeDraggedTag(li);
+				});
+				li.addEventListener("dragend", () => li.style.opacity = null);
+
+				els.inputCont.before(li);
 			}
+		});
+	}
 
-			if (values.length) {
-				this._chosenValues = [];
+	_removeTag(ev) {
+		ev.preventDefault();
 
-				values = this.options.parseHook(values);
+		var target = ev.currentTarget,
+			key = target.closest('li').inputosaurusKey,
+			self = this,
+			indexFound = self._chosenValues.findIndex(v => key === v.key);
 
-				this._setChosen(values);
-				this._renderTags();
-				this.elements.input.val('');
-				this._resizeInput();
-			}
-		},
+		indexFound > -1 && self._chosenValues.splice(indexFound, 1);
 
-		_attachEvents : function() {
+		self._setValue(self._buildValue());
 
-			var widget = this, els = this.elements;
-			if (els) {
-				els.input.on('keyup.inputosaurus', {widget : widget}, this._inputKeypress);
-				els.input.on('keydown.inputosaurus', {widget : widget}, this._inputKeypress);
-				els.input.on('change.inputosaurus', {widget : widget}, this._inputKeypress);
-				els.input.on('focus.inputosaurus', {widget : widget}, this._inputFocus);
+		target.closest('li').remove();
+		setTimeout(() => self.elements.input.focus(), 100);
+	}
 
-				this.options.parseOnBlur && els.input.on('blur.inputosaurus', {widget : widget}, this.parseInput);
+	_removeDraggedTag(li) {
+		var
+			key = li.inputosaurusKey,
+			self = this,
+			indexFound = self._chosenValues.findIndex(v => key === v.key)
+		;
+		if (-1 < indexFound)
+		{
+			self._chosenValues.splice(indexFound, 1);
+			self._setValue(self._buildValue());
+		}
 
-				els.ul.on('click.inputosaurus', {widget : widget}, this._focus);
-				els.ul.on('click.inputosaurus', 'a', {widget : widget}, this._removeTag);
-				els.ul.on('dblclick.inputosaurus', 'li', {widget : widget}, this._editTag);
-				els.ul.on('doubletap.inputosaurus', 'li', {widget : widget}, this._editTag);
-				els.ul.on('focus.inputosaurus', 'a', {widget : widget}, this._tagFocus);
-				els.ul.on('blur.inputosaurus', 'a', {widget : widget}, this._tagFocus);
-				els.ul.on('keydown.inputosaurus', 'a', {widget : widget}, this._tagKeypress);
-			}
-		},
+		li.remove();
+	}
 
-		_destroy: function() {
-			var els = this.elements;
-			if (els) {
-				els.input.off('.inputosaurus');
-				els.ul.replaceWith(this.element);
+	focus () {
+		this.elements.input.focus();
+	}
+
+	blur() {
+		this.elements.input.blur();
+	}
+
+	_focus(ev) {
+		var li = ev && ev.target && ev.target.closest('li');
+		if (li && li.inputosaurusKey) {
+			li.querySelector('a').focus();
+		} else {
+			this.focus();
+		}
+	}
+
+	refresh() {
+		var self = this,
+			val = self.element.value,
+			values = [];
+
+		values.push(val);
+
+		if (val) {
+			var hook = self.options.splitHook(val);
+			if (hook) {
+				values = hook;
 			}
 		}
-	});
 
-})(jQuery);
+		if (values.length) {
+			self._chosenValues = [];
 
+			values = self.options.parseHook(values);
+
+			self._setChosen(values);
+			self._renderTags();
+			self.elements.input.value = '';
+			self.resizeInput();
+		}
+	}
+};
+
+})();

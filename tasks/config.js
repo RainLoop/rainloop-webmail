@@ -51,7 +51,6 @@ config.paths.css = {
 		name: 'app.css',
 		src: [
 			'vendors/normalize.css/normalize.css',
-			'vendors/jquery-ui/css/smoothness/jquery-ui-1.12.1.custom.css',
 			'vendors/fontastic/styles.css',
 			'vendors/inputosaurus/inputosaurus.css',
 			'vendors/flags/flags-fixed.css',
@@ -78,7 +77,6 @@ config.paths.js = {
 			'dev/polyfill.js',
 			'dev/prototype.js',
 			'node_modules/jquery/dist/jquery.slim.min.js',
-			'vendors/jquery-ui/js/jquery-ui-1.12.1.custom.min.js', // custom
 			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
 			'vendors/routes/signals.min.js', // fixed
 			'vendors/routes/hasher.min.js', // fixed

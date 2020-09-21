@@ -79,11 +79,13 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Replaced knockoutjs 3.4 with a modified 3.5.1
 * Replaced knockout-sortable with native HTML5 drag&drop
 * Replaced simplestatemanager with @media
+* Replaced inputosaurus to native
 * Removed pikaday
 * Removed underscore
 * Removed polyfills
 * Removed Modernizr
 * Removed nanoscroll
+* Removed jquery-ui
 * Removed jquery-scrollstop
 * Removed jquery-mousewheel
 * Removed matchmedia-polyfill
@@ -94,22 +96,22 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
 |admin.js    	|2.130.942	|  851.365	|
-|app.js      	|4.184.455	|2.496.337	|
+|app.js      	|4.184.455	|2.494.604	|
 |boot.js     	|  671.522	|    5.777	|
-|libs.js     	|  647.614	|  311.853	|
+|libs.js     	|  647.614	|  227.246	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.665.332	|
+|TOTAL      	|7.960.367	|3.578.992	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
 |admin.min.js    	|  252.147	|  116.656	| 73.657	| 33.346	| 28.783	|
-|app.min.js      	|  511.202	|  340.291	|140.462	| 89.644	| 72.618	|
+|app.min.js      	|  511.202	|  340.071	|140.462	| 89.602	| 72.526	|
 |boot.min.js     	|   66.007	|    3.117	| 22.567	|  1.563	|  1.333	|
-|libs.min.js     	|  572.545	|  288.859	|176.720	| 90.396	| 79.821	|
+|libs.min.js     	|  572.545	|  206.304	|176.720	| 69.988	| 62.272	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  748.923	|424.718	|214.949	|182.555	|
+|TOTAL          	|1.434.353	|  666.148	|424.718	|194.499	|164.914	|
 
-685.430 bytes (209.769 gzip) is around 48% smaller and faster.
+768.205 bytes (230.219 gzip) is around 54% smaller and faster.
 
 ### CSS changes
 
@@ -134,8 +136,8 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 254.026	| 46,959	| 36.763	| 30.920	|
-|app.min.css	| 274.791	| 207.208	| 39.618	| 32.074	| 27.219	|
+|app.css    	| 340.334	| 233.750	| 46,959	| 33.604	| 28.245	|
+|app.min.css	| 274.791	| 200.511	| 39.618	| 30.790	| 26.080	|
 |boot.css    	|       	|   2.534	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 

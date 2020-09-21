@@ -1,5 +1,4 @@
 const ko = window.ko,
-	$ = jQuery,
 	rlContentType = 'application/x-rainloop-action',
 	validTransfer = data => ['move','copy'].includes(data.dropEffect) // effectAllowed
 		&& data.getData('application/x-rainloop-messages');
@@ -39,24 +38,18 @@ ko.bindingHandlers.moment = {
 ko.bindingHandlers.emailsTags = {
 	init: (element, fValueAccessor, fAllBindingsAccessor) => {
 		const EmailModel = require('Model/Email').default,
-			$el = $(element),
 			fValue = fValueAccessor(),
 			fAllBindings = fAllBindingsAccessor(),
 			inputDelimiters = [',', ';', '\n'];
 
-		$el.inputosaurus({
-			focusCallback: value => {
-				if (fValue && fValue.focused) {
-					fValue.focused(!!value);
-				}
-			},
+		element.inputosaurus = new window.Inputosaurus(element, {
+			focusCallback: value => fValue && fValue.focused && fValue.focused(!!value),
 			autoCompleteSource: fAllBindings.autoCompleteSource || null,
 			splitHook: value => {
 				const v = value.trim();
-				if (v && inputDelimiters.includes(v.substr(-1))) {
-					return EmailModel.splitEmailLine(value);
-				}
-				return null;
+				return (v && inputDelimiters.includes(v.substr(-1)))
+					 ? EmailModel.splitEmailLine(value)
+					 : null;
 			},
 			parseHook: input =>
 				input.map(inputValue => {
@@ -72,8 +65,8 @@ ko.bindingHandlers.emailsTags = {
 		});
 
 		if (fValue && fValue.focused && fValue.focused.subscribe) {
-			fValue.focused.subscribe((value) => {
-				$el.inputosaurus(value ? 'focus' : 'blur');
+			fValue.focused.subscribe(value => {
+				element.inputosaurus[value ? 'focus' : 'blur']();
 			});
 		}
 	},
@@ -83,7 +76,7 @@ ko.bindingHandlers.emailsTags = {
 		if (element.EmailsTagsValue !== value) {
 			element.value = value;
 			element.EmailsTagsValue = value;
-			$(element).inputosaurus('refresh');
+			element.inputosaurus.refresh();
 		}
 	}
 };
