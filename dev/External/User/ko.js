@@ -1,7 +1,8 @@
 const ko = window.ko,
 	$ = jQuery,
-	validTransfer = data => ('move' === data.dropEffect || 'copy' === data.dropEffect) // effectAllowed
-		&& data.getData('text/x-rainloop-json');
+	rlContentType = 'application/x-rainloop-action',
+	validTransfer = data => ['move','copy'].includes(data.dropEffect) // effectAllowed
+		&& data.getData('application/x-rainloop-messages');
 
 ko.bindingHandlers.editor = {
 	init: (element, fValueAccessor) => {
@@ -44,14 +45,11 @@ ko.bindingHandlers.emailsTags = {
 			inputDelimiters = [',', ';', '\n'];
 
 		$el.inputosaurus({
-			parseOnBlur: true,
-			allowDragAndDrop: true,
 			focusCallback: value => {
 				if (fValue && fValue.focused) {
 					fValue.focused(!!value);
 				}
 			},
-			inputDelimiters: inputDelimiters,
 			autoCompleteSource: fAllBindings.autoCompleteSource || null,
 			splitHook: value => {
 				const v = value.trim();
@@ -91,7 +89,7 @@ ko.bindingHandlers.emailsTags = {
 };
 
 // Start dragging selected messages
-ko.bindingHandlers.draggable = {
+ko.bindingHandlers.dragmessages = {
 	init: (element, fValueAccessor) => {
 		if (!rl.settings.app('mobile')) {
 			element.addEventListener("dragstart", e => fValueAccessor()(e));
@@ -100,16 +98,27 @@ ko.bindingHandlers.draggable = {
 };
 
 // Drop selected messages on folder
-ko.bindingHandlers.droppable = {
+const dragTimer = {
+	id: 0,
+	stop: () => clearTimeout(this.id),
+	start: fn => this.id = setTimeout(fn, 500)
+};
+ko.bindingHandlers.dropmessages = {
 	init: (element, fValueAccessor) => {
 		if (!rl.settings.app('mobile')) {
-			const FolderList = fValueAccessor(),
-				folder = ko.dataFor(element),
+			const folder = fValueAccessor(),
+//				folder = ko.dataFor(element),
 				fnHover = e => {
 					if (validTransfer(e.dataTransfer)) {
+						dragTimer.stop();
 						e.preventDefault();
 						element.classList.add('droppableHover');
-						FolderList.messagesDropOver(folder);
+						if (folder && folder.collapsed()) {
+							dragTimer.start(() => {
+								folder.collapsed(false);
+								rl.app.setExpandedFolder(folder.fullNameHash, true);
+							}, 500);
+						}
 					}
 				};
 			element.addEventListener("dragenter", fnHover);
@@ -117,14 +126,16 @@ ko.bindingHandlers.droppable = {
 			element.addEventListener("dragleave", e => {
 				e.preventDefault();
 				element.classList.remove('droppableHover');
-				FolderList.messagesDropOut();
+				dragTimer.stop();
 			});
 			element.addEventListener("drop", e => {
 				const data = JSON.parse(validTransfer(e.dataTransfer));
 				if (data) {
 					data.copy = data.copy && event.ctrlKey;
 					e.preventDefault();
-					FolderList.messagesDrop(folder, data);
+					if (folder && data && data.folder && Array.isArray(data.uids)) {
+						rl.app.moveMessagesToFolder(data.folder, data.uids, folder.fullNameRaw, data.copy);
+					}
 				}
 			});
 		}
@@ -132,13 +143,13 @@ ko.bindingHandlers.droppable = {
 };
 
 let sortableElement = null,
-isOrderData = data => 'move' === data.dropEffect && 'orderable' === data.getData('text/x-rainloop-action');
+isSortableData = data => 'move' === data.dropEffect && 'sortable' === data.getData(rlContentType);
 ko.bindingHandlers.sortableItem = {
-	init: (element, fValueAccessor/*, allBindingsAccessor, data, context*/) => {
-		const options = ko.utils.unwrapObservable(fValueAccessor()) || {},
+	init: (element, fValueAccessor) => {
+		let options = ko.utils.unwrapObservable(fValueAccessor()) || {},
 			parent = element.parentNode,
 			fnHover = e => {
-				if (isOrderData(e.dataTransfer)) {
+				if (isSortableData(e.dataTransfer)) {
 					e.preventDefault();
 					let node = (e.target.closest ? e.target : e.target.parentNode).closest('[draggable]');
 					if (node && node !== sortableElement && parent.contains(node)) {
@@ -155,29 +166,27 @@ ko.bindingHandlers.sortableItem = {
 			};
 		element.addEventListener("dragstart", e => {
 			sortableElement = element;
-			e.dataTransfer.setData('text/x-rainloop-action', 'orderable');
+			e.dataTransfer.setData(rlContentType, 'sortable');
 			e.dataTransfer.setDragImage(element, 0, 0);
 			e.dataTransfer.effectAllowed = 'move';
 			element.style.opacity = 0.25;
 		});
 		element.addEventListener("dragend", e => {
 			element.style.opacity = null;
-			if ('move' != e.dataTransfer.dropEffect) {
-				const index = options.list.indexOf(ko.dataFor(element)),
-					row = parent.rows[index];
+			if (isSortableData(e.dataTransfer)) {
+				let row = parent.rows[options.list.indexOf(ko.dataFor(element))];
 				if (row != sortableElement) {
 					row.before(sortableElement);
 				}
 			}
 		});
-		if (!parent.orderable) {
-			parent.orderable = true;
+		if (!parent.sortable) {
+			parent.sortable = true;
 			parent.addEventListener("dragenter", fnHover);
 			parent.addEventListener("dragover", fnHover);
-//			parent.addEventListener("dragleave", e => e.preventDefault());
 			parent.addEventListener("drop", e => {
-				if (isOrderData(e.dataTransfer)) {
-					e.dataTransfer.dropEffect = 'move';
+				if (isSortableData(e.dataTransfer)) {
+					e.dataTransfer.clearData();
 					let data = ko.dataFor(sortableElement),
 						from = options.list.indexOf(data),
 						to = [...parent.children].indexOf(sortableElement);

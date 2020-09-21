@@ -39,8 +39,6 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 
 		this.leftPanelDisabled = leftPanelDisabled;
 
-		this.iDropOverTimer = 0;
-
 		this.allowComposer = !!Settings.capa(Capa.Composer);
 		this.allowContacts = !!AppStore.contactsIsAllowed();
 		this.allowFolders = !!Settings.capa(Capa.Folders);
@@ -185,20 +183,6 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 		});
 	}
 
-	messagesDropOver(folder) {
-		clearTimeout(this.iDropOverTimer);
-		if (folder && folder.collapsed()) {
-			this.iDropOverTimer = setTimeout(() => {
-				folder.collapsed(false);
-				rl.app.setExpandedFolder(folder.fullNameHash, true);
-			}, 500);
-		}
-	}
-
-	messagesDropOut() {
-		clearTimeout(this.iDropOverTimer);
-	}
-
 	scrollToFocused() {
 		const scrollable = this.oContentScrollable;
 		if (scrollable) {
@@ -213,17 +197,6 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				}
 				block && focused.scrollIntoView(block === 'start');
 			}
-		}
-	}
-
-	/**
-	 * @param {FolderModel} toFolder
-	 * @param {Array} data
-	 * @returns {void}
-	 */
-	messagesDrop(toFolder, data) {
-		if (toFolder && data && data.folder && Array.isArray(data.uids)) {
-			rl.app.moveMessagesToFolder(data.folder, data.uids, toFolder.fullNameRaw, data.copy);
 		}
 	}
 

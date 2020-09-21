@@ -499,7 +499,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			dragImage.style.right = 'auto';
 
 			let action = event.ctrlKey ? 'copy' : 'move';
-			event.dataTransfer.setData('text/x-rainloop-json', JSON.stringify({
+			event.dataTransfer.setData('application/x-rainloop-messages', JSON.stringify({
 				copy: event.ctrlKey,
 				folder: FolderStore.currentFolderFullNameRaw(),
 				uids: uids
