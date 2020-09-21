@@ -67,7 +67,6 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Added dev/prototype-*.js for some additional features
 * boot.js without webpack overhead
 * Modified Jua.js to be without jQuery
-* Replaced jQuery with jQuery.slim
 * Replaced ProgressJS with simple native dropin
 * Replaced Autolinker with simple https/email detection
 * Replaced ifvisible.js with simple drop-in replacement
@@ -85,6 +84,8 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Removed polyfills
 * Removed Modernizr
 * Removed nanoscroll
+* Removed lightgallery
+* Removed jQuery
 * Removed jquery-ui
 * Removed jquery-scrollstop
 * Removed jquery-mousewheel
@@ -96,22 +97,22 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
 |admin.js    	|2.130.942	|  851.365	|
-|app.js      	|4.184.455	|2.494.604	|
+|app.js      	|4.184.455	|2.489.357	|
 |boot.js     	|  671.522	|    5.777	|
-|libs.js     	|  647.614	|  227.246	|
+|libs.js     	|  647.614	|  121.175	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.578.992	|
+|TOTAL      	|7.960.367	|3.467.674	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
 |admin.min.js    	|  252.147	|  116.656	| 73.657	| 33.346	| 28.783	|
-|app.min.js      	|  511.202	|  340.071	|140.462	| 89.602	| 72.526	|
+|app.min.js      	|  511.202	|  339.410	|140.462	| 89.322	| 72.406	|
 |boot.min.js     	|   66.007	|    3.117	| 22.567	|  1.563	|  1.333	|
-|libs.min.js     	|  572.545	|  206.304	|176.720	| 69.988	| 62.272	|
+|libs.min.js     	|  572.545	|  101.255	|176.720	| 37.419	| 33.277	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  666.148	|424.718	|194.499	|164.914	|
+|TOTAL          	|1.434.353	|  560.438	|424.718	|161.650	|135.799	|
 
-768.205 bytes (230.219 gzip) is around 54% smaller and faster.
+873.915 bytes (263.068 gzip) is around 61% smaller and faster.
 
 ### CSS changes
 
@@ -136,8 +137,8 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 233.750	| 46,959	| 33.604	| 28.245	|
-|app.min.css	| 274.791	| 200.511	| 39.618	| 30.790	| 26.080	|
+|app.css    	| 340.334	| 190.855	| 46,959	| 29.153	| 24.543	|
+|app.min.css	| 274.791	| 157.619	| 39.618	| 26.332	| 22.624	|
 |boot.css    	|       	|   2.534	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 

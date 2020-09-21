@@ -21,7 +21,6 @@ module.exports = {
 		// deb/boot.js
 		'progressJs': "readonly",
 		// others
-		'jQuery': "readonly",
 		'openpgp': "readonly",
 		'CKEDITOR': "readonly",
 		'Squire': "readonly",
