@@ -40,11 +40,9 @@ class LoginAdminView extends AbstractViewNext {
 
 		this.password.subscribe(() => this.passwordError(false));
 
-		this.loginError.subscribe((v) => this.loginErrorAnimation(!!v));
+		this.loginError.subscribe(v => this.loginErrorAnimation(!!v));
 
-		this.passwordError.subscribe((v) => {
-			this.passwordErrorAnimation(!!v);
-		});
+		this.passwordError.subscribe(v => this.passwordErrorAnimation(!!v));
 
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');

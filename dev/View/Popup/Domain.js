@@ -35,23 +35,11 @@ class DomainPopupView extends AbstractViewNext {
 		this.testingSieveErrorDesc = ko.observable('');
 		this.testingSmtpErrorDesc = ko.observable('');
 
-		this.testingImapError.subscribe((value) => {
-			if (!value) {
-				this.testingImapErrorDesc('');
-			}
-		});
+		this.testingImapError.subscribe(value => value || this.testingImapErrorDesc(''));
 
-		this.testingSieveError.subscribe((value) => {
-			if (!value) {
-				this.testingSieveErrorDesc('');
-			}
-		});
+		this.testingSieveError.subscribe(value => value || this.testingSieveErrorDesc(''));
 
-		this.testingSmtpError.subscribe((value) => {
-			if (!value) {
-				this.testingSmtpErrorDesc('');
-			}
-		});
+		this.testingSmtpError.subscribe(value => value || this.testingSmtpErrorDesc(''));
 
 		this.imapServerFocus = ko.observable(false);
 		this.sieveServerFocus = ko.observable(false);
@@ -123,28 +111,20 @@ class DomainPopupView extends AbstractViewNext {
 		this.canBeTested = ko.computed(() => !this.testing() && this.domainIsComputed());
 		this.canBeSaved = ko.computed(() => !this.saving() && this.domainIsComputed());
 
-		this.page.subscribe(() => {
-			this.sieveSettings(false);
-		});
+		this.page.subscribe(() => this.sieveSettings(false));
 
 		// smart form improvements
-		this.imapServerFocus.subscribe((value) => {
-			if (value && this.name() && !this.imapServer()) {
-				this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''));
-			}
-		});
+		this.imapServerFocus.subscribe(value =>
+			value && this.name() && !this.imapServer() && this.imapServer(this.name().replace(/[.]?[*][.]?/g, ''))
+		);
 
-		this.sieveServerFocus.subscribe((value) => {
-			if (value && this.imapServer() && !this.sieveServer()) {
-				this.sieveServer(this.imapServer());
-			}
-		});
+		this.sieveServerFocus.subscribe(value =>
+			value && this.imapServer() && !this.sieveServer() && this.sieveServer(this.imapServer())
+		);
 
-		this.smtpServerFocus.subscribe((value) => {
-			if (value && this.imapServer() && !this.smtpServer()) {
-				this.smtpServer(this.imapServer().replace(/imap/gi, 'smtp'));
-			}
-		});
+		this.smtpServerFocus.subscribe(value =>
+			value && this.imapServer() && !this.smtpServer() && this.smtpServer(this.imapServer().replace(/imap/gi, 'smtp'))
+		);
 
 		this.imapSecure.subscribe((value) => {
 			if (this.enableSmartPorts()) {

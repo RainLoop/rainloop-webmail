@@ -79,39 +79,23 @@ class LoginUserView extends AbstractViewNext {
 			this.additionalCode.visibility(false);
 		});
 
-		this.password.subscribe(() => {
-			this.passwordError(false);
-		});
+		this.password.subscribe(() => this.passwordError(false));
 
-		this.additionalCode.subscribe(() => {
-			this.additionalCode.error(false);
-		});
+		this.additionalCode.subscribe(() => this.additionalCode.error(false));
 
-		this.additionalCode.visibility.subscribe(() => {
-			this.additionalCode.error(false);
-		});
+		this.additionalCode.visibility.subscribe(() => this.additionalCode.error(false));
 
-		this.emailError.subscribe((bV) => {
-			this.emailErrorAnimation(!!bV);
-		});
+		this.emailError.subscribe(bV => this.emailErrorAnimation(!!bV));
 
-		this.passwordError.subscribe((bV) => {
-			this.passwordErrorAnimation(!!bV);
-		});
+		this.passwordError.subscribe(bV => this.passwordErrorAnimation(!!bV));
 
-		this.additionalCode.error.subscribe((bV) => {
-			this.additionalCode.errorAnimation(!!bV);
-		});
+		this.additionalCode.error.subscribe(bV => this.additionalCode.errorAnimation(!!bV));
 
 		this.submitRequest = ko.observable(false);
 		this.submitError = ko.observable('');
 		this.submitErrorAddidional = ko.observable('');
 
-		this.submitError.subscribe((value) => {
-			if (!value) {
-				this.submitErrorAddidional('');
-			}
-		});
+		this.submitError.subscribe(value => value || this.submitErrorAddidional(''));
 
 		this.allowLanguagesOnLogin = AppStore.allowLanguagesOnLogin;
 
@@ -125,9 +109,7 @@ class LoginUserView extends AbstractViewNext {
 
 		this.signMeType = ko.observable(LoginSignMeType.Unused);
 
-		this.signMeType.subscribe((iValue) => {
-			this.signMe(LoginSignMeType.DefaultOn === iValue);
-		});
+		this.signMeType.subscribe(iValue => this.signMe(LoginSignMeType.DefaultOn === iValue));
 
 		this.signMeVisibility = ko.computed(() => LoginSignMeType.Unused !== this.signMeType());
 

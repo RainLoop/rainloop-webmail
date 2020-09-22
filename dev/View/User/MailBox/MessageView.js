@@ -55,13 +55,13 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 		let lastEmail = '';
 
-		const createCommandReplyHelper = (type) =>
+		const createCommandReplyHelper = type =>
 			createCommand(() => {
 				this.lastReplyAction(type);
 				this.replyOrforward(type);
-			}, this.canBeRepliedOrForwarded);
+			}, this.canBeRepliedOrForwarded),
 
-		const createCommandActionHelper = (folderType, useFolder) =>
+		createCommandActionHelper = (folderType, useFolder) =>
 			createCommand(() => {
 				const message = this.message();
 				if (message && this.allowMessageListActions) {
@@ -209,10 +209,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.viewFromDkimStatusTitle = ko.computed(() => {
 			const status = this.viewFromDkimData();
 			if (Array.isNotEmpty(status)) {
-				if (status[0] && status[1]) {
-					return status[1];
-				} else if (status[0]) {
-					return 'DKIM: ' + status[0];
+				if (status[0]) {
+					return status[1] || 'DKIM: ' + status[0];
 				}
 			}
 
