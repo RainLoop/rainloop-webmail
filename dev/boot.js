@@ -194,6 +194,7 @@ win.__initAppData = appData => {
 				throw e;
 			})
 			.then(() => {
+				// Enable the old CKEditor
 				if (appData.Auth && appData.StaticEditorJsLink) {
 					loadScript(appData.StaticEditorJsLink).then(() => {
 						win.__initEditor && win.__initEditor();

@@ -1498,9 +1498,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		$aResult['StaticAppJsLink'] = $this->StaticPath('js/'.($bAppJsDebug ? '' : 'min/').
 			($bAdmin ? 'admin' : 'app').($bAppJsDebug ? '' : '.min').'.js');
 
-		if ($this->Config()->Get('labs', 'use_squire_html_editor', false)) {
-			$aResult['StaticEditorJsLink'] = null;
-		} else {
+		if ($this->Config()->Get('labs', 'use_ck_html_editor', false)) {
 			$aResult['StaticEditorJsLink'] = $this->StaticPath('ckeditor/ckeditor.js');
 		}
 

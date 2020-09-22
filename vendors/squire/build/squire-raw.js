@@ -66,7 +66,7 @@ const
 	},
 
 	inlineNodeNames = /^(?:#text|A|ABBR|ACRONYM|B|BR|BD[IO]|CITE|CODE|DATA|DEL|DFN|EM|FONT|HR|IMG|INPUT|INS|KBD|Q|RP|RT|RUBY|SAMP|SMALL|SPAN|STR(IKE|ONG)|SU[BP]|TIME|U|VAR|WBR)$/,
-	phrasingElements = 'ABBR,AUDIO,B,BDO,BR,BUTTON,CANVAS,CITE,CODE,COMMAND,DATA,DATALIST,DFN,EM,EMBED,I,IFRAME,IMG,INPUT,KBD,KEYGEN,LABEL,MARK,MATH,METER,NOSCRIPT,OBJECT,OUTPUT,PROGRESS,Q,RUBY,SAMP,SCRIPT,SELECT,SMALL,SPAN,STRONG,SUB,SUP,SVG,TEXTAREA,TIME,VAR,VIDEO,WBR',
+//	phrasingElements = 'ABBR,AUDIO,B,BDO,BR,BUTTON,CANVAS,CITE,CODE,COMMAND,DATA,DATALIST,DFN,EM,EMBED,I,IFRAME,IMG,INPUT,KBD,KEYGEN,LABEL,MARK,MATH,METER,NOSCRIPT,OBJECT,OUTPUT,PROGRESS,Q,RUBY,SAMP,SCRIPT,SELECT,SMALL,SPAN,STRONG,SUB,SUP,SVG,TEXTAREA,TIME,VAR,VIDEO,WBR',
 
 	leafNodeNames = {
 		BR: 1,
@@ -304,7 +304,7 @@ const
 
 	// Recursively examine container nodes and wrap any inline children.
 	fixContainer = ( container, root ) => {
-		let children = container.children;
+		let children = container.childNodes;
 		let wrapper = null;
 		let i, l, child, isBR;
 
@@ -312,7 +312,7 @@ const
 			child = children[i];
 			isBR = child.nodeName === 'BR';
 			if ( !isBR && isInline( child )
-			 && (this._config.blockTag !== 'DIV' || !child.matches(phrasingElements))
+//			 && (root.__squire__._config.blockTag !== 'DIV' || (child.matches && !child.matches(phrasingElements)))
 			) {
 				if ( !wrapper ) {
 					 wrapper = createElement( doc, 'div' );
@@ -343,7 +343,7 @@ const
 		[...container.children].forEach(child => {
 			isBR = child.nodeName === 'BR';
 			if ( !isBR && isInline( child )
-			 && (root.__squire__._config.blockTag !== 'DIV' || !child.matches(phrasingElements))
+//			 && (root.__squire__._config.blockTag !== 'DIV' || (child.matches && !child.matches(phrasingElements)))
 			) {
 				if ( !wrapper ) {
 					 wrapper = createElement( doc, 'div' );
