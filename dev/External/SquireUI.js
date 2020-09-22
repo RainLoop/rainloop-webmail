@@ -58,7 +58,7 @@ const doc = document,
 				tpl.querySelectorAll(':not('+allowedElements+',signature)').forEach(el => el.replaceWith(getFragmentOfChildren(el)));
 				tpl.querySelectorAll('*').forEach(el => {
 					if (el.hasAttributes()) {
-						Array.from(el.attributes).forEach(attr => {
+						[...el.attributes].forEach(attr => {
 							let name = attr.name.toLowerCase();
 							if (!allowedAttributes.includes(name)) {
 								el.removeAttribute(name);

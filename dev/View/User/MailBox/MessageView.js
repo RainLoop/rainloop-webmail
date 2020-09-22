@@ -397,8 +397,28 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	 * @param {Object} oAttachment
 	 * @returns {boolean}
 	 */
-	attachmentPreview() {
-		// TODO: add lightgallery alternative?
+	attachmentPreview(/*attachment*/) {
+/*
+		if (attachment && attachment.isImage() && !attachment.isLinked && this.message() && this.message().attachments()) {
+			const items = this.message().attachments().map(item => {
+					if (item && !item.isLinked && item.isImage()) {
+						if (item === attachment) {
+							index = listIndex;
+						}
+						++listIndex;
+						return {
+							src: item.linkPreview(),
+							msrc: item.linkThumbnail(),
+							title: item.fileName
+						};
+					}
+					return null;
+				}).filter(value => !!value);
+
+			if (items.length) {
+			}
+		}
+*/
 		return true;
 	}
 

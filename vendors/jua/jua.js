@@ -24,7 +24,7 @@
 					bCallLimit = false
 				;
 
-				Array.from(aItems).forEach(oItem => {
+				[...aItems].forEach(oItem => {
 					if (oItem)
 					{
 						if (!bUseLimit || 0 <= --iLimit)

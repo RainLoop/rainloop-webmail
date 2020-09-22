@@ -67,7 +67,7 @@ window.BSN = (() => {
 			self.show = () => {
 				menu = parent.querySelector('.dropdown-menu');
 				menuItems = [];
-				Array.from(menu.children).forEach(child => {
+				[...menu.children].forEach(child => {
 					child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
 					child.tagName === 'A' && menuItems.push(child);
 				});
