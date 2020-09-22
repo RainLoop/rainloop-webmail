@@ -96,23 +96,23 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  851.365	|
-|app.js      	|4.184.455	|2.489.357	|
-|boot.js     	|  671.522	|    5.777	|
-|libs.js     	|  647.614	|  121.175	|
+|admin.js    	|2.130.942	|  850.483	|
+|app.js      	|4.184.455	|2.489.620	|
+|boot.js     	|  671.522	|    5.749	|
+|libs.js     	|  647.614	|  251.448	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.467.674	|
+|TOTAL      	|7.960.367	|3.597.300	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  116.656	| 73.657	| 33.346	| 28.783	|
-|app.min.js      	|  511.202	|  339.410	|140.462	| 89.322	| 72.406	|
-|boot.min.js     	|   66.007	|    3.117	| 22.567	|  1.563	|  1.333	|
-|libs.min.js     	|  572.545	|  101.255	|176.720	| 37.419	| 33.277	|
+|admin.min.js    	|  252.147	|  116.639	| 73.657	| 33.352	| 28.765	|
+|app.min.js      	|  511.202	|  339.395	|140.462	| 89.334	| 72.305	|
+|boot.min.js     	|   66.007	|    3.096	| 22.567	|  1.545	|  1.319	|
+|libs.min.js     	|  572.545	|  148.577	|176.720	| 52.312	| 46.561	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL          	|1.434.353	|  560.438	|424.718	|161.650	|135.799	|
+|TOTAL          	|1.434.353	|  607.707	|424.718	|176.543	|148.950	|
 
-873.915 bytes (263.068 gzip) is around 61% smaller and faster.
+826.646 bytes (248.175 gzip) is around 58% smaller and faster.
 
 ### CSS changes
 
@@ -137,8 +137,8 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 190.855	| 46,959	| 29.153	| 24.543	|
-|app.min.css	| 274.791	| 157.619	| 39.618	| 26.332	| 22.624	|
+|app.css    	| 340.334	| 190.855	| 46,959	| 29.156	| 24.561	|
+|app.min.css	| 274.791	| 157.619	| 39.618	| 26.336	| 22.667	|
 |boot.css    	|       	|   2.534	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 
@@ -158,7 +158,8 @@ Still TODO:
 
 CKEditor including the 7 asset requests (css,language,plugins,icons) is 633.46 KB / 180.47 KB (gzip).
 
-Enable it in /data/\_data\_/\_default\_/configs/application.ini in the [labs] section add/edit: `use_squire_html_editor = On`
+To use the old CKEditor, you must enable it in /data/\_data\_/\_default\_/configs/application.ini
+in the [labs] section add/edit: `use_ck_html_editor = On`
 
 ### PHP73 branch
 
