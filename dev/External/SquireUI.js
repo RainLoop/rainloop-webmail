@@ -353,6 +353,7 @@ class SquireUI
 		this.wysiwyg = wysiwyg;
 
 		toolbar.className = 'squire-toolbar cke_top';
+		let touchTap;
 		for (let group in actions) {
 			if ('bidi' == group && !rl.settings.app('allowHtmlEditorBitiButtons')) {
 				continue;
@@ -364,11 +365,11 @@ class SquireUI
 				if ('source' == action && !rl.settings.app('allowHtmlEditorSourceButton')) {
 					continue;
 				}
-				let cfg = actions[group][action], input;
+				let cfg = actions[group][action], input, ev = 'click';
 				if (cfg.input) {
 					input = doc.createElement('input');
 					input.type = cfg.input;
-					input.addEventListener('change', () => cfg.cmd(input));
+					ev = 'change';
 				} else if (cfg.select) {
 					input = doc.createElement('select');
 					if (Array.isArray(cfg.select)) {
@@ -389,13 +390,23 @@ class SquireUI
 							input.append(group);
 						});
 					}
-					input.addEventListener('input', () => cfg.cmd(input));
+					ev = 'input';
 				} else {
 					input = doc.createElement('button');
 					input.type = 'button';
 					input.innerHTML = cfg.html;
 					input.action_cmd = cfg.cmd;
+					input.addEventListener('touchstart', () => touchTap = input);
+					input.addEventListener('touchmove', () => touchTap = null);
+					input.addEventListener('touchend', e => {
+						if (touchTap === input) {
+							e.preventDefault();
+							cfg.cmd(input);
+						}
+						touchTap = null;
+					});
 				}
+				input.addEventListener(ev, () => cfg.cmd(input));
 				if (cfg.hint) {
 					input.title = cfg.key ? cfg.hint + ' (' + ctrlKey + cfg.key + ')' : cfg.hint;
 				} else if (cfg.key) {
@@ -407,10 +418,6 @@ class SquireUI
 			}
 			toolgroup.children.length && toolbar.append(toolgroup);
 		}
-		toolbar.addEventListener('click', e => {
-			let t = e.target;
-			t.action_cmd && t.action_cmd(t);
-		});
 
 		let changes = actions.changes;
 		changes.undo.input.disabled = changes.redo.input.disabled = true;
