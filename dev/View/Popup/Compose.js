@@ -944,6 +944,7 @@ class ComposePopupView extends AbstractViewNext {
 						'EMAIL': sFrom
 					});
 
+					sText = sText.replace(/<img[^>]+>/g, '').replace(/<a\s[^>]+><\/a>/g, '');
 					sText = '<br /><br />' + sReplyTitle + ':' + '<br /><br />' + '<blockquote>' + sText.trim() + '</blockquote>';
 
 					break;
