@@ -31,15 +31,7 @@ const fontastic = gulp.series(fontasticFontsClear, fontasticFontsCopy);
 // squire
 const squireClear = () => del('rainloop/v/' + config.devVersion + '/static/squire');
 
-const squireCopy = () =>
-	gulp
-		.src([
-			'vendors/squire/build/squire.js',
-			'vendors/squire/build/squire-raw.js'
-		])
-		.pipe(gulp.dest('rainloop/v/' + config.devVersion + '/static/squire'));
-
-const squire = gulp.series(squireClear, squireCopy);
+const squire = gulp.series(squireClear);
 
 // ckeditor
 const ckeditorClear = () => del('rainloop/v/' + config.devVersion + '/static/ckeditor');

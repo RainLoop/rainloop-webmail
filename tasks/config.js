@@ -84,6 +84,7 @@ config.paths.js = {
 			'vendors/bootstrap/js/bootstrap.native.min.js', // fixed
 			'vendors/knockout/build/output/knockout-latest.js',
 			'dev/External/ifvisible.js',
+			'vendors/squire/build/squire-raw.js',
 			'dev/External/SquireUI.js'
 		]
 	},

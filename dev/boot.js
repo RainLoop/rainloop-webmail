@@ -194,7 +194,7 @@ win.__initAppData = appData => {
 				throw e;
 			})
 			.then(() => {
-				if (appData.Auth) {
+				if (appData.Auth && appData.StaticEditorJsLink) {
 					loadScript(appData.StaticEditorJsLink).then(() => {
 						win.__initEditor && win.__initEditor();
 						win.__initEditor = null;

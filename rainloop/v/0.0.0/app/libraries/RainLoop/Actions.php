@@ -1499,7 +1499,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 			($bAdmin ? 'admin' : 'app').($bAppJsDebug ? '' : '.min').'.js');
 
 		if ($this->Config()->Get('labs', 'use_squire_html_editor', false)) {
-			$aResult['StaticEditorJsLink'] = $this->StaticPath('squire/squire'.($bAppJsDebug ? '-raw' : '').'.js');
+			$aResult['StaticEditorJsLink'] = null;
 		} else {
 			$aResult['StaticEditorJsLink'] = $this->StaticPath('ckeditor/ckeditor.js');
 		}
