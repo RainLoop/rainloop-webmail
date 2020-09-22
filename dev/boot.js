@@ -11,9 +11,9 @@ const
 	Storage = type => {
 		let name = type+'Storage';
 		try {
-			win[name].setItem('storage', '');
-			win[name].getItem('storage');
-			win[name].removeItem('storage');
+			win[name].setItem(name, '');
+			win[name].getItem(name);
+			win[name].removeItem(name);
 		} catch (e) {
 			console.error(e);
 			const cookieName = encodeURIComponent(name+('session' === type ? win.name || (win.name = Date.now()) : ''));
@@ -45,14 +45,6 @@ const
 		eId('rl-loading').hidden = true;
 		eId('rl-loading-error').hidden = false;
 		p.end();
-	},
-
-	runMainBoot = withError => {
-		if (win.__APP_BOOT && !withError) {
-			win.__APP_BOOT(() => showError());
-		} else {
-			showError();
-		}
 	},
 
 	writeCSS = css => {
@@ -190,11 +182,15 @@ win.__initAppData = appData => {
 				return appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve();
 			})
 			.then(() => {
-				p.set(70);
-				runMainBoot(false);
+				if (win.__APP_BOOT) {
+					p.set(70);
+					win.__APP_BOOT(() => showError());
+				} else {
+					showError();
+				}
 			})
 			.catch((e) => {
-				runMainBoot(true);
+				showError();
 				throw e;
 			})
 			.then(() => {
@@ -206,7 +202,7 @@ win.__initAppData = appData => {
 				}
 			});
 	} else {
-		runMainBoot(true);
+		showError();
 	}
 };
 
