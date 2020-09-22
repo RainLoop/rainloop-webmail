@@ -304,17 +304,15 @@ const
 
 	// Recursively examine container nodes and wrap any inline children.
 	fixContainer = ( container, root ) => {
-		let children = container.childNodes;
+		let children = container.children;
 		let wrapper = null;
 		let i, l, child, isBR;
 
 		for ( i = 0, l = children.length; i < l; ++i ) {
 			child = children[i];
 			isBR = child.nodeName === 'BR';
-			if ( !isBR && isInline( child ) && (
-					config.blockTag !== 'DIV' ||
-					!phrasingContentElements.matches(phrasingElements)
-				)
+			if ( !isBR && isInline( child )
+			 && (this._config.blockTag !== 'DIV' || !child.matches(phrasingElements))
 			) {
 				if ( !wrapper ) {
 					 wrapper = createElement( doc, 'div' );
@@ -340,6 +338,34 @@ const
 				fixContainer( child, root );
 			}
 		}
+/*
+		// Not live
+		[...container.children].forEach(child => {
+			isBR = child.nodeName === 'BR';
+			if ( !isBR && isInline( child )
+			 && (root.__squire__._config.blockTag !== 'DIV' || !child.matches(phrasingElements))
+			) {
+				if ( !wrapper ) {
+					 wrapper = createElement( doc, 'div' );
+				}
+				wrapper.append( child );
+			} else if ( isBR || wrapper ) {
+				if ( !wrapper ) {
+					wrapper = createElement( doc, 'div' );
+				}
+				fixCursor( wrapper, root );
+				if ( isBR ) {
+					child.replaceWith( wrapper );
+				} else {
+					child.before( wrapper  );
+				}
+				wrapper = null;
+			}
+			if ( isContainer( child ) ) {
+				fixContainer( child, root );
+			}
+		});
+*/
 		if ( wrapper ) {
 			container.append( fixCursor( wrapper, root ) );
 		}

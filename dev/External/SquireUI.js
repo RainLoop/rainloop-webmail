@@ -14,6 +14,8 @@ const doc = document,
 
 	ctrlKey = /Mac OS X/.test( navigator.userAgent ) ? '⌘ + ' : 'Ctrl + ',
 
+	tpl = doc.createElement('template'),
+
 	getFragmentOfChildren = parent => {
 		let frag = doc.createDocumentFragment();
 		frag.append(...parent.childNodes);
@@ -48,14 +50,16 @@ const doc = document,
 		addLinks: true // allow_smart_html_links
 */
 		sanitizeToDOMFragment: (html, isPaste/*, squire*/) => {
-			let tpl = doc.createElement('div');
 			tpl.innerHTML = html
 				.replace(/<\/?(BODY|HTML)[^>]*>/gi,'')
 				.replace(/<!--[^>]+-->/g,'')
+				.replace(/<span[^>]*>\s*<\/span>/gi,'')
 				.trim();
+			tpl.querySelectorAll('a:empty,span:empty').forEach(el => el.remove());
+			tpl.querySelectorAll('[data-x-div-type]').forEach(el => el.replaceWith(getFragmentOfChildren(el)));
 			if (isPaste) {
 				tpl.querySelectorAll(removeElements).forEach(el => el.remove());
-				tpl.querySelectorAll(':not('+allowedElements+',signature)').forEach(el => el.replaceWith(getFragmentOfChildren(el)));
+				tpl.querySelectorAll(':not('+allowedElements+')').forEach(el => el.replaceWith(getFragmentOfChildren(el)));
 				tpl.querySelectorAll('*').forEach(el => {
 					if (el.hasAttributes()) {
 						[...el.attributes].forEach(attr => {
@@ -67,7 +71,7 @@ const doc = document,
 					}
 				});
 			}
-			return getFragmentOfChildren(tpl);
+			return tpl.content;
 		}
 	},
 
@@ -518,7 +522,7 @@ squire-raw.js:4089: this.fireEvent( 'willPaste', event );
 					if (!cfg.isHtml) {
 						cfg.signature = rl.Utils.plainToHtml(cfg.signature);
 					}
-					this.squire.setHTML(rl_signature_replacer(this, this.squire.getHTML(), cfg.signature, true, cfg.insertBefore));
+					this.squire.setHTML(rl_signature_replacer(this, this.getData(), cfg.signature, true, cfg.insertBefore));
 				}
 			} catch (e) {
 				console.error(e);
