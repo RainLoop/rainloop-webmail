@@ -3,7 +3,7 @@ import { Mime } from 'Common/Mime';
 
 const
 	doc = document,
-	tpl = doc.createElement('div'),
+	tpl = doc.createElement('template'),
 	isArray = Array.isArray,
 	htmlmap = {
 		'&': '&amp;',
@@ -406,7 +406,7 @@ export function htmlToPlain(html) {
 		.replace(/&quot;/gi, '"')
 		.replace(/<[^>]*>/gm, '');
 
-	text = splitPlainText(tpl.textContent
+	text = splitPlainText(tpl.innerText
 		.replace(/\n[ \t]+/gm, '\n')
 		.replace(/[\n]{3,}/gm, '\n\n')
 		.replace(/&gt;/gi, '>')
