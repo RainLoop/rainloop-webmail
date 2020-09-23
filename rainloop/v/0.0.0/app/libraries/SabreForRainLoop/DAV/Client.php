@@ -315,7 +315,7 @@ class Client {
             // Return headers as part of the response
             CURLOPT_HEADER => true,
             CURLOPT_POSTFIELDS => $body,
-			CURLOPT_USERAGENT => 'RainLoop DAV Client', // TODO rainloop
+			CURLOPT_USERAGENT => 'SnappyMail DAV Client', // TODO rainloop
             // Automatically follow redirects
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_MAXREDIRS => 5,

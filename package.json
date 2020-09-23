@@ -1,18 +1,18 @@
 {
-  "name": "rainloop",
-  "title": "RainLoop Webmail",
+  "name": "snappymail",
+  "title": "SnappyMail",
   "description": "Simple, modern & fast web-based email client",
   "private": true,
   "version": "1.14.0-djmaze8",
-  "homepage": "https://www.rainloop.net",
+  "homepage": "https://snappymail.eu",
   "author": {
-    "name": "RainLoop Team",
-    "email": "support@rainloop.net",
-    "web": "https://www.rainloop.net"
+    "name": "DJ Maze",
+    "email": "support@snappymail.eu",
+    "web": "https://snappymail.eu"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/RainLoop/rainloop-webmail.git"
+    "url": "git://github.com/the-djmaze/snappymail.git"
   },
   "scripts": {
     "watch-css": "gulp watchCss",
@@ -23,14 +23,10 @@
     {
       "type": "AGPL 3.0",
       "ulr": "http://www.gnu.org/licenses/agpl-3.0.html"
-    },
-    {
-      "type": "RainLoop Software License",
-      "ulr": "https://www.rainloop.net/licensing/"
     }
   ],
   "bugs": {
-    "url": "https://github.com/RainLoop/rainloop-webmail/issues"
+    "url": "https://github.com/the-djmaze/snappymail/issues"
   },
   "keywords": [
     "webmail",

@@ -111,7 +111,7 @@ class Service
 		{
 			$this->oHttp->StatusHeader(403);
 			echo $this->oServiceActions->ErrorTemplates('Access Denied.',
-				'Access to the RainLoop Webmail Admin Panel is not allowed!', true);
+				'Access to the SnappyMail Admin Panel is not allowed!', true);
 
 			return $this;
 		}
@@ -165,7 +165,7 @@ class Service
 			{
 				echo $this->oServiceActions->ErrorTemplates(
 					'Permission denied!',
-					'RainLoop Webmail cannot access to the data folder "'.APP_DATA_FOLDER_PATH.'"'
+					'SnappyMail cannot access to the data folder "'.APP_DATA_FOLDER_PATH.'"'
 				);
 
 				return $this;
@@ -245,7 +245,7 @@ class Service
 		$sFaviconPngLink = $sFaviconUrl ? $sFaviconUrl : $this->staticPath('apple-touch-icon.png');
 		$sAppleTouchLink = $sFaviconUrl ? '' : $this->staticPath('apple-touch-icon.png');
 
-		$LoadingDescription = $oConfig->Get('webmail', 'loading_description', 'RainLoop');
+		$LoadingDescription = $oConfig->Get('webmail', 'loading_description', 'SnappyMail');
 
 		$aTemplateParameters = array(
 			'{{BaseAppHeadScriptLink}}' => '',

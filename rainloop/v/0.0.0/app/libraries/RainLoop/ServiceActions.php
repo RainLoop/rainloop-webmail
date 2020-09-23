@@ -367,7 +367,7 @@ class ServiceActions
 			{
 				$iCode = 404;
 				$sContentType = '';
-				$mResult = $this->oHttp->GetUrlAsString($aData['Url'], 'RainLoop External Proxy', $sContentType, $iCode);
+				$mResult = $this->oHttp->GetUrlAsString($aData['Url'], 'SnappyMail External Proxy', $sContentType, $iCode);
 
 				if (false !== $mResult && 200 === $iCode &&
 					\in_array($sContentType, array('image/png', 'image/jpeg', 'image/jpg', 'image/bmp', 'image/gif')))

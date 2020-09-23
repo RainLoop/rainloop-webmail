@@ -1174,8 +1174,8 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 			'Email' => '',
 			'DevEmail' => '',
 			'DevPassword' => '',
-			'Title' => $oConfig->Get('webmail', 'title', 'RainLoop Webmail'),
-			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', 'RainLoop'),
+			'Title' => $oConfig->Get('webmail', 'title', 'SnappyMail Webmail'),
+			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', 'SnappyMail'),
 			'FaviconUrl' => $oConfig->Get('webmail', 'favicon_url', ''),
 			'LoginDescription' => '',
 			'LoginLogo' => '',
@@ -2403,7 +2403,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 						{
 							$oZip = new \ZipArchive();
 							$oZip->open($sZipFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
-							$oZip->setArchiveComment('RainLoop/'.APP_VERSION);
+							$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
 
 							foreach ($aData as $aItem)
 							{
@@ -3693,9 +3693,9 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 
 		$oMessage = new \MailSo\Mime\Message();
 
-		if (!$this->Config()->Get('security', 'hide_x_mailer_header', false))
+		if (!$this->Config()->Get('security', 'hide_x_mailer_header', true))
 		{
-			$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
+			$oMessage->SetXMailer('SnappyMail/'.APP_VERSION);
 		} else {
 			$oMessage->DoesNotAddDefaultXMailer();
 		}
@@ -3876,9 +3876,9 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 
 		$oMessage = new \MailSo\Mime\Message();
 
-		if (!$this->Config()->Get('security', 'hide_x_mailer_header', false))
+		if (!$this->Config()->Get('security', 'hide_x_mailer_header', true))
 		{
-			$oMessage->SetXMailer('RainLoop/'.APP_VERSION);
+			$oMessage->SetXMailer('SnappyMail/'.APP_VERSION);
 		}
 
 		$oMessage->SetFrom(new \MailSo\Mime\Email($oIdentity->Email(), $oIdentity->Name()));

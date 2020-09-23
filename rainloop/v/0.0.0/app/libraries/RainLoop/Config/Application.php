@@ -9,7 +9,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 	public function __construct()
 	{
 		parent::__construct('application.ini',
-			'; RainLoop Webmail configuration file
+			'; SnappyMail configuration file
 ; Please don\'t add custom parameters here, those will be overwritten',
 			defined('APP_ADDITIONAL_CONFIGURATION_NAME') ? APP_ADDITIONAL_CONFIGURATION_NAME : '');
 	}
@@ -110,8 +110,8 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'webmail' => array(
 
-				'title'							=> array('RainLoop Webmail', 'Text displayed as page title'),
-				'loading_description'			=> array('RainLoop', 'Text displayed on startup'),
+				'title'							=> array('SnappyMail Webmail', 'Text displayed as page title'),
+				'loading_description'			=> array('SnappyMail', 'Text displayed on startup'),
 				'favicon_url'					=> array('', ''),
 
 				'theme'							=> array('Default', 'Theme used by default'),
@@ -165,7 +165,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'csrf_protection'	=> array(true,
 					'Enable CSRF protection (http://en.wikipedia.org/wiki/Cross-site_request_forgery)'),
 
-				'custom_server_signature'	=> array('RainLoop'),
+				'custom_server_signature'	=> array('SnappyMail'),
 				'x_frame_options_header'	=> array('DENY'),
 				'x_xss_protection_header'	=> array('1; mode=block'),
 

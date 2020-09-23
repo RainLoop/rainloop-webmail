@@ -461,7 +461,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		$aCapa = array();
 		$aParts = array();
 
-		$aParts[] = '# This is RainLoop Webmail sieve script.';
+		$aParts[] = '# This is SnappyMail sieve script.';
 		$aParts[] = '# Please don\'t change anything here.';
 		$aParts[] = '# RAINLOOP:SIEVE';
 		$aParts[] = '';

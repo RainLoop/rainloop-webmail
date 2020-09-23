@@ -13,7 +13,7 @@ class Plugin extends \RainLoop\Config\AbstractConfig
 	{
 		$this->aMap = is_array($aMap) ? $this->convertConfigMap($aMap) : array();
 
-		parent::__construct('plugin-'.$sPluginName.'.ini', '; RainLoop Webmail plugin ('.$sPluginName.')');
+		parent::__construct('plugin-'.$sPluginName.'.ini', '; SnappyMail plugin ('.$sPluginName.')');
 	}
 
 	private function convertConfigMap(array $aMap) : array

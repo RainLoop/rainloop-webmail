@@ -547,7 +547,7 @@ trait Admin
 			$sContentType = '';
 
 			$sRepPath = $sRepo.$sRepoFile;
-			$sRep = '' !== $sRepo ? $oHttp->GetUrlAsString($sRepPath, 'RainLoop', $sContentType, $iCode, $this->Logger(), 10,
+			$sRep = '' !== $sRepo ? $oHttp->GetUrlAsString($sRepPath, 'SnappyMail', $sContentType, $iCode, $this->Logger(), 10,
 				$this->Config()->Get('labs', 'curl_proxy', ''), $this->Config()->Get('labs', 'curl_proxy_auth', '')) : false;
 
 			if (false !== $sRep)

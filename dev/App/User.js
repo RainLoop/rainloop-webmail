@@ -1038,7 +1038,7 @@ class AppUser extends AbstractApp {
 									navigator.registerProtocolHandler(
 										'mailto',
 										location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-										'' + (Settings.get('Title') || 'RainLoop')
+										'' + (Settings.get('Title') || 'SnappyMail')
 									);
 								} catch (e) {} // eslint-disable-line no-empty
 

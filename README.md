@@ -1,38 +1,44 @@
 <div align="center">
-  <a href="https://github.com/RainLoop/rainloop-webmail">
-    <img width="200" heigth="200" src="https://www.rainloop.net/static/img/logo-256x256-tiny.png">
+  <a href="https://github.com/the-djmaze/snappymail">
+    <img width="200" heigth="200" src="https://snappymail.eu/static/img/logo-256x256-tiny.png">
   </a>
   <br>
-  <h1>RainLoop Webmail</h1>
+  <h1>SnappyMail</h1>
   <br>
   <p>
     Simple, modern &amp; fast web-based email client.
   </p>
   <p>
-    Modest system requirements, decent performance, simple installation and upgrade, no database required
-    - all these make RainLoop Webmail a perfect choice for your email solution.
+    The drastically upgraded &amp; secured fork of <a href="https://github.com/RainLoop/rainloop-webmail">RainLoop Webmail Community edition</a>.
+  </p>
+  <p>
+    We thank RainLoop team for making a great PHP 5 product that was good in the past.
+  </p>
+  <p>
+    Up to date system requirements, snappy performance, simple installation and upgrade, no database required
+    - all these make SnappyMail a good choice.
   </p>
   <h2></h2>
   <br>
 </div>
 
-For more information about the product, check [rainloop.net](https://www.rainloop.net/).
+For more information about the product, check [snappymail.eu](https://snappymail.eu/).
 
-Information about installing the product, check the [wiki page](https://github.com/the-djmaze/rainloop-webmail/wiki/Installation-instructions).
+Information about installing the product, check the [wiki page](https://github.com/the-djmaze/snappymail/wiki/Installation-instructions).
 
-And don't forget to read the [official documentation](https://www.rainloop.net/docs/).
+And don't forget to read the [RainLoop documentation](https://www.rainloop.net/docs/).
 
 ## License
 
-**RainLoop Webmail (Community edition)** is released under
+**SnappyMail** is released under
 **GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
 http://www.gnu.org/licenses/agpl-3.0.html
 
-Copyright (c) 2019 Rainloop Team
+Copyright (c) 2020 SnappyMail
 
 ## Modifications
 
-This fork has the following changes:
+This fork of RainLoop has the following changes:
 
 * Privacy/GDPR friendly (no: Social, Gravatar, Facebook, Google, Twitter, DropBox, OwnCloud, X-Mailer)
 * Admin uses password_hash/password_verify
@@ -164,5 +170,5 @@ in the [labs] section add/edit: `use_ck_html_editor = On`
 
 ### PHP73 branch
 
-There's a branch with only the PHP 7.3 changes at
-https://github.com/the-djmaze/rainloop-webmail/tree/php73
+There's a RainLoop 1.14.0 branch with only the PHP 7.3 changes at
+https://github.com/the-djmaze/snappymail/tree/php73
