@@ -51,7 +51,7 @@ class Property
 		$this->TypeStr = $sTypeStr;
 	}
 
-	public function Clear()
+	public function Clear() : void
 	{
 		$this->IdProperty = 0;
 
@@ -91,7 +91,7 @@ class Property
 		return $this->IsEmail() || $this->IsName() || $this->IsWeb();
 	}
 
-	public function TypesAsArray() : bool
+	public function TypesAsArray() : array
 	{
 		$aResult = array();
 		if (!empty($this->TypeStr))
@@ -108,7 +108,7 @@ class Property
 		return \array_map('strtoupper', $this->TypesAsArray());
 	}
 
-	public function UpdateDependentValues()
+	public function UpdateDependentValues() : void
 	{
 		$this->Value = \trim($this->Value);
 		$this->ValueCustom = \trim($this->ValueCustom);
