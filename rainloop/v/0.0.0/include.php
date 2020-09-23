@@ -83,11 +83,11 @@
 
 				if (!is_dir(APP_DATA_FOLDER_PATH))
 				{
-					mkdir(APP_DATA_FOLDER_PATH, 0755);
+					mkdir(APP_DATA_FOLDER_PATH, 0700);
 				}
 				else
 				{
-					chmod(APP_DATA_FOLDER_PATH, 0755);
+					chmod(APP_DATA_FOLDER_PATH, 0700);
 				}
 
 				$sTest = '';
@@ -102,7 +102,7 @@
 					case !is_writable(APP_DATA_FOLDER_PATH):
 						$sTest = 'is_writable';
 						break;
-					case !mkdir($sCheckFolder, 0755):
+					case !mkdir($sCheckFolder, 0700):
 						$sTest = 'mkdir';
 						break;
 					case false === file_put_contents($sCheckFilePath, time()):
