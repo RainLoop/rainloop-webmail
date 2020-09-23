@@ -59,9 +59,10 @@ const doc = document,
 			tpl.querySelectorAll('[data-x-div-type]').forEach(el => el.replaceWith(getFragmentOfChildren(el)));
 			if (isPaste) {
 				tpl.querySelectorAll(removeElements).forEach(el => el.remove());
-				tpl.querySelectorAll(':not('+allowedElements+')').forEach(el => el.replaceWith(getFragmentOfChildren(el)));
 				tpl.querySelectorAll('*').forEach(el => {
-					if (el.hasAttributes()) {
+					if (!el.matches(allowedElements)) {
+						el.replaceWith(getFragmentOfChildren(el));
+					} else if (el.hasAttributes()) {
 						[...el.attributes].forEach(attr => {
 							let name = attr.name.toLowerCase();
 							if (!allowedAttributes.includes(name)) {
