@@ -21,15 +21,18 @@ if ($return_var) {
 	exit("gulp failed with error code {$return_var}\n");
 }
 
+$cmddir = escapeshellcmd(__DIR__) . '/rainloop/v/0.0.0/static';
+
 if ($gzip = trim(`which gzip`)) {
-	passthru("{$gzip} -k --best -r ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/*.js'), $return_var);
-	passthru("{$gzip} -k --best -r ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/css/app*.css'), $return_var);
+	passthru("{$gzip} -k --best {$cmddir}/js/*.js");
+	passthru("{$gzip} -k --best {$cmddir}/js/min/*.js");
+	passthru("{$gzip} -k --best {$cmddir}/css/app*.css");
 }
 
 if ($brotli = trim(`which brotli`)) {
-	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/*.js'), $return_var);
-	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/min/*.js'), $return_var);
-	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/css/app*.css'), $return_var);
+	passthru("{$brotli} -k --best {$cmddir}/js/*.js");
+	passthru("{$brotli} -k --best {$cmddir}/js/min/*.js");
+	passthru("{$brotli} -k --best {$cmddir}/css/app*.css");
 }
 
 // Temporary rename folder to speed up PharData
