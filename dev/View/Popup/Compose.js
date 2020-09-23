@@ -1048,30 +1048,34 @@ class ComposePopupView extends AbstractViewNext {
 
 		const downloads = this.getAttachmentsDownloadsForUpload();
 		if (Array.isNotEmpty(downloads)) {
-			Remote.messageUploadAttachments(()=>this.onMessageUploadAttachments(), downloads);
+			Remote.messageUploadAttachments((sResult, oData) => {
+				if (StorageResultType.Success === sResult && oData && oData.Result) {
+					Object.entries(oData.Result).forEach(([tempName, id]) => {
+						const attachment = this.getAttachmentById(id);
+						if (attachment) {
+							attachment.tempName(tempName);
+							attachment
+								.waiting(false)
+								.uploading(false)
+								.complete(true);
+						}
+					});
+				} else {
+					this.attachments().forEach(attachment => {
+						if (attachment && attachment.fromMessage) {
+							attachment
+								.waiting(false)
+								.uploading(false)
+								.complete(true)
+								.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
+						}
+					});
+				}
+			}, downloads);
 		}
 
 		if (identity) {
 			this.currentIdentity(identity);
-		}
-	}
-
-	onMessageUploadAttachments(sResult, oData) {
-		if (StorageResultType.Success === sResult && oData && oData.Result) {
-			if (!this.viewModelVisibility()) {
-				oData.Result.forEach((id, tempName) => {
-					const attachment = this.getAttachmentById(id);
-					if (attachment) {
-						attachment.tempName(tempName);
-						attachment
-							.waiting(false)
-							.uploading(false)
-							.complete(true);
-					}
-				});
-			}
-		} else {
-			this.setMessageAttachmentFailedDownloadText();
 		}
 	}
 
@@ -1402,18 +1406,6 @@ class ComposePopupView extends AbstractViewNext {
 				});
 			}
 		}
-	}
-
-	setMessageAttachmentFailedDownloadText() {
-		this.attachments().forEach(attachment => {
-			if (attachment && attachment.fromMessage) {
-				attachment
-					.waiting(false)
-					.uploading(false)
-					.complete(true)
-					.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
-			}
-		});
 	}
 
 	/**
