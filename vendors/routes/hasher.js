@@ -28,11 +28,7 @@
     // Private Methods
     //--------------------------------------------------------------------------------------
 
-    const _trimHash = hash => {
-        if(! hash) return '';
-        var regexp = new RegExp('^\\/|\\$', 'g');
-        return hash.replace(regexp, '');
-    },
+    const _trimHash = hash => hash ? hash.replace(new RegExp('^\\/|\\$', 'g'), '') : '',
     _getWindowHash = () => {
         //parsed full URL instead of getting window.location.hash because Firefox decode hash value (and all the other browsers don't)
         //also because of IE8 bug with hash query in local file [issue #6]

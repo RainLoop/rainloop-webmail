@@ -101,14 +101,7 @@
          * @return {Function|null} Handler function bound to the signal or `null` if binding was previously detached.
          */
         detach () {
-            return this.isBound()? this._signal.remove(this._listener, this.context) : null;
-        }
-
-        /**
-         * @return {Boolean} `true` if binding is still bound to the signal and have a listener.
-         */
-        isBound () {
-            return (!!this._signal && !!this._listener);
+            return (this._signal && this._listener) ? this._signal.remove(this._listener, this.context) : null;
         }
 
         /**
@@ -116,20 +109,6 @@
          */
         isOnce () {
             return this._isOnce;
-        }
-
-        /**
-         * @return {Function} Handler function bound to the signal.
-         */
-        getListener () {
-            return this._listener;
-        }
-
-        /**
-         * @return {Signal} Signal that listener is currently bound to.
-         */
-        getSignal () {
-            return this._signal;
         }
 
         /**

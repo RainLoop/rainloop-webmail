@@ -40,19 +40,12 @@ export class AbstractScreen {
 	 * @returns {void}
 	 */
 	__start() {
-		let route = null,
-			fMatcher = null;
 		const routes = this.routes();
-
 		if (Array.isNotEmpty(routes)) {
-			fMatcher = (this.onRoute || (()=>{})).bind(this);
-			route = new Crossroads();
+			let route = new Crossroads(),
+				fMatcher = (this.onRoute || (()=>{})).bind(this);
 
-			routes.forEach((item) => {
-				if (item && route) {
-					route.addRoute(item[0], fMatcher).rules = item[1];
-				}
-			});
+			routes.forEach(item => item && route && (route.addRoute(item[0], fMatcher).rules = item[1]));
 
 			this.oCross = route;
 		}
