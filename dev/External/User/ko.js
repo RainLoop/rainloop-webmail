@@ -1,7 +1,28 @@
 const ko = window.ko,
-	rlContentType = 'application/x-rainloop-action',
-	validTransfer = data => ['move','copy'].includes(data.dropEffect) // effectAllowed
-		&& data.getData('application/x-rainloop-messages');
+
+	rlContentType = 'rainloop/action',
+
+	// In Chrome we have no access to getData unless it's the 'drop' event
+	getDragAction = e => dragData && e.dataTransfer.types.includes(rlContentType) ? dragData.action : false,
+	setDragAction = (e, action, effect, data, img) => {
+		dragData = {
+			action: action,
+			data: data
+		};
+		e.dataTransfer.setData(rlContentType, action);
+		e.dataTransfer.setData('Text', rlContentType+'/'+action);
+		e.dataTransfer.setDragImage(img, 0, 0);
+		e.dataTransfer.effectAllowed = effect;
+	},
+
+	dragTimer = {
+		id: 0,
+		stop: () => clearTimeout(dragTimer.id),
+		start: fn => dragTimer.id = setTimeout(fn, 500)
+	};
+
+let dragImage,
+	dragData;
 
 ko.bindingHandlers.editor = {
 	init: (element, fValueAccessor) => {
@@ -85,26 +106,49 @@ ko.bindingHandlers.emailsTags = {
 ko.bindingHandlers.dragmessages = {
 	init: (element, fValueAccessor) => {
 		if (!rl.settings.app('mobile')) {
-			element.addEventListener("dragstart", e => fValueAccessor()(e));
+			element.addEventListener("dragstart", e => {
+				let data = fValueAccessor()(e);
+				dragImage || (dragImage = document.getElementById('messagesDragImage'));
+				if (data && dragImage) {
+					dragImage.querySelector('.text').textContent = data.uids.length;
+					let img = dragImage.querySelector('.icon-white');
+					img.classList.toggle('icon-copy', e.ctrlKey);
+					img.classList.toggle('icon-mail', !e.ctrlKey);
+
+					// Else Chrome doesn't show it
+					dragImage.style.left = e.clientX + 'px';
+					dragImage.style.top = e.clientY + 'px';
+					dragImage.style.right = 'auto';
+
+					setDragAction(e, 'messages', e.ctrlKey ? 'copy' : 'move', data, dragImage);
+
+					// Remove the Chrome visibility
+					dragImage.style.cssText = '';
+				} else {
+					e.preventDefault();
+				}
+
+			}, false);
+			element.addEventListener("dragend", () => dragData = null);
+			element.setAttribute('draggable', true);
 		}
 	}
 };
 
 // Drop selected messages on folder
-const dragTimer = {
-	id: 0,
-	stop: () => clearTimeout(this.id),
-	start: fn => this.id = setTimeout(fn, 500)
-};
 ko.bindingHandlers.dropmessages = {
 	init: (element, fValueAccessor) => {
 		if (!rl.settings.app('mobile')) {
 			const folder = fValueAccessor(),
 //				folder = ko.dataFor(element),
+				fnStop = e => {
+					e.preventDefault();
+					element.classList.remove('droppableHover');
+					dragTimer.stop();
+				},
 				fnHover = e => {
-					if (validTransfer(e.dataTransfer)) {
-						dragTimer.stop();
-						e.preventDefault();
+					if ('messages' === getDragAction(e)) {
+						fnStop(e);
 						element.classList.add('droppableHover');
 						if (folder && folder.collapsed()) {
 							dragTimer.start(() => {
@@ -116,18 +160,13 @@ ko.bindingHandlers.dropmessages = {
 				};
 			element.addEventListener("dragenter", fnHover);
 			element.addEventListener("dragover", fnHover);
-			element.addEventListener("dragleave", e => {
-				e.preventDefault();
-				element.classList.remove('droppableHover');
-				dragTimer.stop();
-			});
+			element.addEventListener("dragleave", fnStop);
 			element.addEventListener("drop", e => {
-				const data = JSON.parse(validTransfer(e.dataTransfer));
-				if (data) {
-					data.copy = data.copy && event.ctrlKey;
-					e.preventDefault();
+				fnStop(e);
+				if ('messages' === getDragAction(e) && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
+					let data = dragData.data;
 					if (folder && data && data.folder && Array.isArray(data.uids)) {
-						rl.app.moveMessagesToFolder(data.folder, data.uids, folder.fullNameRaw, data.copy);
+						rl.app.moveMessagesToFolder(data.folder, data.uids, folder.fullNameRaw, data.copy && e.ctrlKey);
 					}
 				}
 			});
@@ -135,41 +174,40 @@ ko.bindingHandlers.dropmessages = {
 	}
 };
 
-let sortableElement = null,
-isSortableData = data => 'move' === data.dropEffect && 'sortable' === data.getData(rlContentType);
 ko.bindingHandlers.sortableItem = {
 	init: (element, fValueAccessor) => {
 		let options = ko.utils.unwrapObservable(fValueAccessor()) || {},
 			parent = element.parentNode,
 			fnHover = e => {
-				if (isSortableData(e.dataTransfer)) {
+				if ('sortable' === getDragAction(e)) {
 					e.preventDefault();
 					let node = (e.target.closest ? e.target : e.target.parentNode).closest('[draggable]');
-					if (node && node !== sortableElement && parent.contains(node)) {
+					if (node && node !== dragData.data && parent.contains(node)) {
 						let rect = node.getBoundingClientRect();
 						if (rect.top + (rect.height / 2) <= e.clientY) {
-							if (node.nextElementSibling !== sortableElement) {
-								node.after(sortableElement);
+							if (node.nextElementSibling !== dragData.data) {
+								node.after(dragData.data);
 							}
-						} else if (node.previousElementSibling !== sortableElement) {
-							node.before(sortableElement);
+						} else if (node.previousElementSibling !== dragData.data) {
+							node.before(dragData.data);
 						}
 					}
 				}
 			};
 		element.addEventListener("dragstart", e => {
-			sortableElement = element;
-			e.dataTransfer.setData(rlContentType, 'sortable');
-			e.dataTransfer.setDragImage(element, 0, 0);
-			e.dataTransfer.effectAllowed = 'move';
+			dragData = {
+				action: 'sortable',
+				element: element
+			};
+			setDragAction(e, 'sortable', 'move', element, element);
 			element.style.opacity = 0.25;
 		});
 		element.addEventListener("dragend", e => {
 			element.style.opacity = null;
-			if (isSortableData(e.dataTransfer)) {
+			if ('sortable' === getDragAction(e)) {
 				let row = parent.rows[options.list.indexOf(ko.dataFor(element))];
-				if (row != sortableElement) {
-					row.before(sortableElement);
+				if (row != dragData.data) {
+					row.before(dragData.data);
 				}
 			}
 		});
@@ -178,17 +216,18 @@ ko.bindingHandlers.sortableItem = {
 			parent.addEventListener("dragenter", fnHover);
 			parent.addEventListener("dragover", fnHover);
 			parent.addEventListener("drop", e => {
-				if (isSortableData(e.dataTransfer)) {
-					e.dataTransfer.clearData();
-					let data = ko.dataFor(sortableElement),
+				if ('sortable' === getDragAction(e)) {
+					dragData.data.style.opacity = null;
+					e.preventDefault();
+					let data = ko.dataFor(dragData.data),
 						from = options.list.indexOf(data),
-						to = [...parent.children].indexOf(sortableElement);
+						to = [...parent.children].indexOf(dragData.data);
 					if (from != to) {
 						let arr = options.list();
 						arr.splice(to, 0, ...arr.splice(from, 1));
 						options.list(arr);
 					}
-					e.preventDefault();
+					dragData = null;
 					options.afterMove && options.afterMove();
 				}
 			});

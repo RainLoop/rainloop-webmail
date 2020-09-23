@@ -45,8 +45,6 @@ const
 	canBeMovedHelper = (self) => self.canBeMoved(),
 	ifvisible = window.ifvisible;
 
-let dragImage;
-
 @view({
 	name: 'View/User/MailBox/MessageList',
 	type: ViewType.Right,
@@ -479,39 +477,16 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		return false;
 	}
 
-	dragStart(event) {
+	getDragData(event) {
 		const item = ko.dataFor(document.elementFromPoint(event.clientX, event.clientY));
-		item && item.checked(true);
-
-		dragImage || (dragImage = document.getElementById('messagesDragImage'));
-
+		item && item.checked && item.checked(true);
 		const uids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails();
 		item && !uids.includes(item.uid) && uids.push(item.uid);
-		if (dragImage && uids.length) {
-			dragImage.querySelector('.text').textContent = uids.length;
-			let img = dragImage.querySelector('.icon-white');
-			img.classList.toggle('icon-copy', event.ctrlKey);
-			img.classList.toggle('icon-mail', !event.ctrlKey);
-
-			// Else Chrome doesn't show it
-			dragImage.style.left = event.clientX + 'px';
-			dragImage.style.top = event.clientY + 'px';
-			dragImage.style.right = 'auto';
-
-			let action = event.ctrlKey ? 'copy' : 'move';
-			event.dataTransfer.setData('application/x-rainloop-messages', JSON.stringify({
-				copy: event.ctrlKey,
-				folder: FolderStore.currentFolderFullNameRaw(),
-				uids: uids
-			}));
-			event.dataTransfer.setDragImage(dragImage, 0, 0);
-			event.dataTransfer.effectAllowed = action;
-
-			// Remove the Chrome visibility
-			dragImage.style.cssText = '';
-		} else {
-			event.preventDefault();
-		}
+		return uids.length ? {
+			copy: event.ctrlKey,
+			folder: FolderStore.currentFolderFullNameRaw(),
+			uids: uids
+		} : null;
 	}
 
 	/**
