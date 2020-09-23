@@ -1,5 +1,5 @@
 
-(function(CKEDITOR, $) {
+(function(CKEDITOR) {
 
 	'use strict';
 
@@ -10,10 +10,10 @@
 			isEmptyText = false,
 			newLine = (isHtml ? '<br />' : "\n"),
 			clearHtmlLine = function(html) {
-				return $.trim(editor.__textUtils.htmlToPlain(html));
+				return editor.__textUtils.htmlToPlain(html).trim();
 			};
 
-		isEmptyText = !$.trim(text);
+		isEmptyText = !text.trim();
 		if (!isEmptyText && isHtml)
 		{
 			isEmptyText = !clearHtmlLine(text);
@@ -138,4 +138,4 @@
 		}
 	});
 
-}(CKEDITOR, $));
+}(CKEDITOR));

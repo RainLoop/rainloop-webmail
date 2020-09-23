@@ -1007,9 +1007,11 @@ class ServiceActions
 			$this->oActions->SetSpecAuthToken($sAuthAccountHash);
 		}
 
-		$sResult = $this->compileAppData($this->oActions->AppData($bAdmin,
-			0 === \strpos($sAdd, 'mobile'), '1' === \substr($sAdd, -1),
-			$sAuthAccountHash), false);
+		$sResult = 'rl.initData('
+			.\json_encode($this->oActions->AppData($bAdmin,
+				0 === \strpos($sAdd, 'mobile'), '1' === \substr($sAdd, -1),
+				$sAuthAccountHash))
+			.');';
 
 		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'APPDATA');
 
@@ -1089,15 +1091,6 @@ class ServiceActions
 		return
 			($bWrapByScriptTag ? '<script data-cfasync="false">' : '').
 			'window.rainloopI18N='.$sResult.';'.$sMoment.
-			($bWrapByScriptTag ? '</script>' : '')
-		;
-	}
-
-	private function compileAppData(array $aAppData, bool $bWrapByScriptTag = true) : string
-	{
-		return
-			($bWrapByScriptTag ? '<script type="text/javascript" data-cfasync="false">' : '').
-			'if(window.__initAppData){window.__initAppData('.\json_encode($aAppData).');}'.
 			($bWrapByScriptTag ? '</script>' : '')
 		;
 	}

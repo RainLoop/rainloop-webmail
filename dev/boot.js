@@ -60,13 +60,18 @@ const
 		}
 		return new Promise((resolve, reject) => {
 			const script = doc.createElement('script');
-			script.onload = () => resolve();
+			script.onload = () => {
+				p.set(pStep += step);
+				resolve();
+			};
 			script.onerror = () => reject(new Error(src));
 			script.src = src;
+//			script.async = true;
 			doc.head.append(script);
 		});
 	},
 
+	step = 100 / 7,
 	p = win.progressJs = {
 		set: percent => progress.style.width = Math.min(percent, 100) + '%',
 		end: () => {
@@ -84,10 +89,11 @@ if (!navigator || !navigator.cookieEnabled) {
 	doc.location.href = './?/NoCookie';
 }
 
-let container = doc.querySelector('.progressjs'),
+let pStep = 0,
+	container = doc.querySelector('.progressjs'),
 	progress = doc.querySelector('.progressjs-inner'),
 
-	RL_APP_DATA_STORAGE = {};
+	RL_APP_DATA = {};
 
 win.rl = {
 	hash: {
@@ -95,8 +101,8 @@ win.rl = {
 		get: () => storage().getItem(STORAGE_KEY) || null,
 		// setHash
 		set: () => {
-			storage().setItem(STORAGE_KEY, RL_APP_DATA_STORAGE && RL_APP_DATA_STORAGE[AUTH_KEY]
-				? RL_APP_DATA_STORAGE[AUTH_KEY] : '');
+			storage().setItem(STORAGE_KEY, RL_APP_DATA && RL_APP_DATA[AUTH_KEY]
+				? RL_APP_DATA[AUTH_KEY] : '');
 			setTimestamp();
 		},
 		// clearHash
@@ -114,96 +120,63 @@ win.rl = {
 			return false;
 		}
 	},
-	data: () => RL_APP_DATA_STORAGE,
+	data: () => RL_APP_DATA,
 	adminArea: () => options.admin,
 	settings: {
-		get: name => null == RL_APP_DATA_STORAGE[name] ? null : RL_APP_DATA_STORAGE[name],
-		set: (name, value) => RL_APP_DATA_STORAGE[name] = value,
+		get: name => null == RL_APP_DATA[name] ? null : RL_APP_DATA[name],
+		set: (name, value) => RL_APP_DATA[name] = value,
 		app: name => {
-			const APP_SETTINGS = RL_APP_DATA_STORAGE.System || {};
+			const APP_SETTINGS = RL_APP_DATA.System || {};
 			return null == APP_SETTINGS[name] ? null : APP_SETTINGS[name];
 		},
-		capa: name => null != name && Array.isArray(RL_APP_DATA_STORAGE.Capa) && RL_APP_DATA_STORAGE.Capa.includes(name)
+		capa: name => null != name && Array.isArray(RL_APP_DATA.Capa) && RL_APP_DATA.Capa.includes(name)
 	},
 	setWindowTitle: title => {
 		title = null == title ? '' : '' + title;
-		if (RL_APP_DATA_STORAGE.Title) {
-			title += (title ? ' - ' : '') + RL_APP_DATA_STORAGE.Title;
+		if (RL_APP_DATA.Title) {
+			title += (title ? ' - ' : '') + RL_APP_DATA.Title;
 		}
 		doc.title = null == title ? '' : '' + title;
-	}
-};
+	},
 
-/**
- * @param {mixed} appData
- * @returns {void}
- */
-win.__initAppData = appData => {
-	RL_APP_DATA_STORAGE = appData;
+	initData: appData => {
+		RL_APP_DATA = appData;
 
-	rl.hash.set();
+		rl.hash.set();
 
-	if (appData) {
-		if (appData.NewThemeLink) {
-			eId('app-theme-link').href = appData.NewThemeLink;
-		}
-
-		appData.IncludeCss && writeCSS(appData.IncludeCss);
-
-		if (appData.IncludeBackground) {
-			const img = appData.IncludeBackground.replace('{{USER}}', rl.hash.get() || '0');
-			if (img) {
-				htmlCL.add('UserBackground');
-				doc.body.style.backgroundImage = "url("+img+")";
+		if (appData) {
+			if (appData.NewThemeLink) {
+				eId('app-theme-link').href = appData.NewThemeLink;
 			}
-		}
-	}
 
-	if (
-		appData &&
-		appData.TemplatesLink &&
-		appData.LangLink &&
-		appData.StaticLibJsLink &&
-		appData.StaticAppJsLink
-	) {
-		p.set(5);
+			appData.IncludeCss && writeCSS(appData.IncludeCss);
 
-		loadScript(appData.StaticLibJsLink)
-			.then(() => {
-				p.set(20);
-				return Promise.all([loadScript(appData.TemplatesLink), loadScript(appData.LangLink)]);
-			})
-			.then(() => {
-				p.set(30);
-				return loadScript(appData.StaticAppJsLink);
-			})
-			.then(() => {
-				p.set(50);
-				return appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve();
-			})
-			.then(() => {
-				if (win.__APP_BOOT) {
-					p.set(70);
-					win.__APP_BOOT(() => showError());
-				} else {
-					showError();
+			if (appData.IncludeBackground) {
+				const img = appData.IncludeBackground.replace('{{USER}}', rl.hash.get() || '0');
+				if (img) {
+					htmlCL.add('UserBackground');
+					doc.body.style.backgroundImage = "url("+img+")";
 				}
-			})
-			.catch((e) => {
+			}
+
+			loadScript(appData.StaticLibJsLink)
+			.then(() => Promise.all([loadScript(appData.TemplatesLink), loadScript(appData.LangLink)]))
+			.then(() => loadScript(appData.StaticAppJsLink))
+			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
+			.then(() =>
+				// Enable the old CKEditor?
+				(appData.Auth && appData.StaticEditorJsLink)
+					? loadScript(appData.StaticEditorJsLink)
+					: Promise.resolve()
+			)
+			.then(() => win.__APP_BOOT ? win.__APP_BOOT(showError) : showError())
+			.catch(e => {
 				showError();
 				throw e;
-			})
-			.then(() => {
-				// Enable the old CKEditor
-				if (appData.Auth && appData.StaticEditorJsLink) {
-					loadScript(appData.StaticEditorJsLink).then(() => {
-						win.__initEditor && win.__initEditor();
-						win.__initEditor = null;
-					});
-				}
 			});
-	} else {
-		showError();
+		} else {
+			showError();
+		}
 	}
 };
 
