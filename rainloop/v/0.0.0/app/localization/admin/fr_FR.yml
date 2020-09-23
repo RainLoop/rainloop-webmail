@@ -56,7 +56,6 @@ fr_FR:
     LABEL_LOGIN_DESCRIPTION: "Description"
     LABEL_LOGIN_BACKGROUND: "Arrière-plan"
     LABEL_LOGIN_CUSTOM_CSS: "CSS personnalisés"
-    LABEL_LOGIN_SHOW_POWERED_LINK: "Afficher le lien \"Powered by RainLoop\""
     LEGEND_USER: "Utilisateur"
     LABEL_USER_LOGO: "Logo"
     LABEL_USER_LOGO_TITLE: "Titre du logo"
@@ -136,22 +135,6 @@ fr_FR:
     LEGEND_AVAILABLE_FOR_INSTALLATION: "Disponible pour l'installation"
     LEGEND_INSTALLED_PACKAGES: "Paquets installés"
     ALERT_CANNOT_ACCESS_REPOSITORY: "Impossible d'accéder au dépôt pour l'instant."
-  TAB_LICENSING:
-    LABEL_YOUR_DOMAIN: "Votre domaine"
-    LABEL_VERSION: "Version"
-    LABEL_CHECKING: "Vérification"
-    TYPE_BASIC_HINT: "Ce domaine ne possède pas de licence pour un usage commercial (avec des fonctionnalités supplémentaires)."
-    TYPE_BASIC_HINT_2: "Ce domaine ne peut pas obtenir de licence."
-    HTML_ALERT_TOP_1: "La licence RainLoop Webmail appartient à"
-    HTML_ALERT_TOP_2: "Vous êtes <b>libre</b> de l'utiliser pour vos projets <b>personnels</b>"
-    HTML_ALERT_TOP_3: |
-        L'usage commercial (avec des fonctionnalités supplémentaires) de <b>RainLoop Webmail</b> nécessite une
-        <a href="http://www.rainloop.net/purchase/" target="_blank">souscription</a>.
-    TYPE_PREMIUM_LIFETIME: "A vie"
-    LABEL_SUB_EXPIRES: "La souscription expire"
-    BUTTON_ACTIVATE: "Activer une clé de souscription pour ce domaine"
-    BUTTON_PURCHASE: "Acheter"
-    BUTTON_TRIAL: "Essai"
   TAB_ABOUT:
     LEGEND_ABOUT: "A propos"
     LABEL_TAG_HINT: "Un client webmail simple, moderne et rapide "
