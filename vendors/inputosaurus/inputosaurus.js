@@ -43,11 +43,6 @@ window.Inputosaurus = class {
 
 		self.options = Object.assign({
 
-			// bindable events
-			//
-			// 'change' - triggered whenever a tag is added or removed (should be similar to binding the the change event of the instantiated input
-			// 'keyup' - keyup event on the newly created input
-
 			// while typing, the user can separate values using these delimiters
 			// the value tags are created on the fly when an inputDelimiter is detected
 			inputDelimiters : [',', ';', '\n'],
@@ -61,7 +56,9 @@ window.Inputosaurus = class {
 			// the array of tag names is passed and expected to be returned as an array after manipulation
 			parseHook : null,
 
-			splitHook : null
+			splitHook : null,
+
+			onChange : null
 		}, options);
 
 		self._chosenValues = [];
@@ -93,7 +90,6 @@ window.Inputosaurus = class {
 		}
 
 		element.replaceWith(els.ul);
-		element.hidden = true;
 
 		els.inputCont = createEl('li',{class:"inputosaurus-input"});
 		els.inputCont.append(els.input);
@@ -344,9 +340,9 @@ window.Inputosaurus = class {
 	}
 
 	_setValue(value) {
-		var val = this.element.value;
-		if (val !== value) {
+		if (this.element.value !== value) {
 			this.element.value = value;
+			this.options.onChange(value);
 		}
 	}
 

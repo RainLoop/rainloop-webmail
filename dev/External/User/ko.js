@@ -79,9 +79,9 @@ ko.bindingHandlers.emailsTags = {
 				}).flat(Infinity).map(
 					item => (item.toLine ? [item.toLine(false), item] : [item, null])
 				),
-			change: event => {
-				element.EmailsTagsValue = event.target.value;
-				fValue(event.target.value);
+			onChange: value => {
+				element.EmailsTagsValue = value;
+				fValue(value);
 			}
 		});
 
