@@ -22,14 +22,14 @@ if ($return_var) {
 }
 
 if ($gzip = trim(`which gzip`)) {
-//	passthru("{$gzip} -k --best -r ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/*.js'), $return_var);
-//	passthru("{$gzip} -k --best -r ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/css/app*.css'), $return_var);
+	passthru("{$gzip} -k --best -r ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/*.js'), $return_var);
+	passthru("{$gzip} -k --best -r ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/css/app*.css'), $return_var);
 }
 
 if ($brotli = trim(`which brotli`)) {
-//	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/*.js'), $return_var);
-//	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/min/*.js'), $return_var);
-//	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/css/app*.css'), $return_var);
+	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/*.js'), $return_var);
+	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/js/min/*.js'), $return_var);
+	passthru("{$brotli} -k --best ".escapeshellarg(__DIR__ . '/rainloop/v/0.0.0/static/css/app*.css'), $return_var);
 }
 
 // Temporary rename folder to speed up PharData
@@ -72,6 +72,9 @@ $tar->addFromString('data/VERSION', $package->version);
 
 $zip->addFile('_include.php');
 $tar->addFile('_include.php');
+
+$zip->addFile('.htaccess');
+$tar->addFile('.htaccess');
 
 $index = file_get_contents('index.php');
 $index = str_replace('0.0.0', $package->version, $index);
