@@ -1,7 +1,6 @@
 <div id="rl-sub-right">
 	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected, 'message-focused': messageFocused}">
 		<div class="toolbar top-toolbar g-ui-user-select-none" data-bind="visible: !usePreviewPane()">
-			<nobr>
 			<div class="messageButtons btn-toolbar">
 				<div class="btn-group" data-tooltip-join="top" data-bind="tooltip: 'MESSAGE/BUTTON_CLOSE'">
 					<a class="btn single btn-dark-disabled-border buttonClose" data-bind="command: closeMessageCommand">
@@ -39,7 +38,6 @@
 					</a>
 				</div>
 			</div>
-			</nobr>
 		</div>
 		<div class="b-content b-message-view-wrapper thm-message-view-background-color">
 			<div style="height: 100%">
@@ -79,145 +77,142 @@
 				</div>
 
 				<div class="message-fixed-button-toolbar clearfix" data-bind="visible: message">
-					<nobr>
-						<div class="btn-group pull-right" style="margin-right: -11px;">
-							<div class="btn-group pull-right" data-bind="registrateBootstrapDropdown: true, visible: allowComposer || allowMessageListActions || allowMessageActions">
-								<a class="btn btn-thin-2 btn-transparent last btn-dark-disabled-border dropdown-toggle buttonMore" id="more-view-dropdown-id" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-join="bottom" style="margin-left: -4px; margin-right: 2px" data-bind="command: messageVisibilityCommand, css: {'first': !allowComposer}">
-										<span data-bind="visible: !allowComposer" class="icon-ellipsis-alt"></span>
-										<span data-bind="visible: allowComposer" class="caret"></span>
-								</a>
-								<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-view-dropdown-id">
-									<div data-bind="visible: allowComposer && !isDraftFolder()">
-										<li class="e-item" role="presentation">
-											<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyCommand">
-												<i class="icon-reply"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_REPLY"></span>
-											</a>
-										</li>
-										<li class="e-item" role="presentation">
-											<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyAllCommand">
-												<i class="icon-reply-all"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_REPLY_ALL"></span>
-											</a>
-										</li>
-										<li class="e-item" role="presentation">
-											<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardCommand">
-												<i class="icon-forward"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_FORWARD"></span>
-											</a>
-										</li>
-										<li class="e-item" role="presentation">
-											<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: editAsNewCommand">
-												<i class="icon-pencil"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_EDIT_AS_NEW"></span>
-											</a>
-										</li>
-										<li class="e-item" role="presentation">
-											<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand">
-												<i class="icon-forward"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></span>
-											</a>
-										</li>
-									</div>
-									<div data-bind="visible: allowMessageListActions && usePreviewPane()">
-										<li class="divider" role="presentation" data-bind="visible: allowComposer && !isDraftFolder()"></li>
-										<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
-											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: archiveCommand">
-												<i class="icon-archive"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_ARCHIVE"></span>
-											</a>
-										</li>
-										<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
-											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: spamCommand">
-												<i class="icon-warning"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_SPAM"></span>
-											</a>
-										</li>
-										<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled()">
-											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: notSpamCommand">
-												<i class="icon-check-mark-circle-two"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_NOT_SPAM"></span>
-											</a>
-										</li>
-										<li class="e-item" role="presentation">
-											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: deleteCommand">
-												<i class="icon-trash"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_DELETE"></span>
-											</a>
-										</li>
-										<li class="e-item" role="presentation" data-bind="visible: message() && message().hasUnsubsribeLinks()">
-											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewUnsubscribeLink()">
-												<i class="icon-remove"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_UNSUBSCRIBE"></span>
-											</a>
-										</li>
-									</div>
-									<div data-bind="visible: allowMessageActions">
-										<li class="divider" role="presentation"
-											data-bind="visible: (allowComposer && !isDraftFolder()) || (allowMessageListActions && usePreviewPane())"></li>
-										<li class="e-item" role="presentation">
-											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().printMessage(); }} ">
-												<i class="icon-print"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/MENU_PRINT"></span>
-											</a>
-										</li>
-										<li class="e-item" role="presentation">
-											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
-												<i class="icon-popup"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
-											</a>
-										</li>
-										<li class="divider" role="presentation"></li>
-										<li class="e-item" role="presentation">
-											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewViewLink()">
-												<i class="icon-file-code"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/MENU_VIEW_ORIGINAL"></span>
-											</a>
-										</li>
-										<li class="e-item" role="presentation">
-											<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewDownloadLink()">
-												<i class="icon-download"></i>
-												&nbsp;&nbsp;
-												<span class="i18n" data-i18n="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
-											</a>
-										</li>
-									</div>
-								</ul>
-							</div>
-							<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonReply pull-right" data-tooltip-join="bottom"
-								data-bind="visible: 'reply' === lastReplyAction() && allowComposer, command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
-								<i class="icon-reply"></i>
+					<div class="btn-group pull-right" style="margin-right: -11px;">
+						<div class="btn-group pull-right" data-bind="registrateBootstrapDropdown: true, visible: allowComposer || allowMessageListActions || allowMessageActions">
+							<a class="btn btn-thin-2 btn-transparent last btn-dark-disabled-border dropdown-toggle buttonMore" id="more-view-dropdown-id" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-join="bottom" style="margin-left: -4px; margin-right: 2px" data-bind="command: messageVisibilityCommand, css: {'first': !allowComposer}">
+									<span data-bind="visible: !allowComposer" class="icon-ellipsis-alt"></span>
+									<span data-bind="visible: allowComposer" class="caret"></span>
 							</a>
-							<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonReplyAll pull-right" data-tooltip-join="bottom"
-								data-bind="visible: 'replyall' === lastReplyAction() && allowComposer, command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
-								<i class="icon-reply-all"></i>
-							</a>
-							<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonForward pull-right" data-tooltip-join="bottom"
-								data-bind="visible: 'forward' === lastReplyAction() && allowComposer, command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
-								<i class="icon-forward"></i>
-							</a>
+							<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-view-dropdown-id">
+								<div data-bind="visible: allowComposer && !isDraftFolder()">
+									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyCommand">
+											<i class="icon-reply"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_REPLY"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyAllCommand">
+											<i class="icon-reply-all"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_REPLY_ALL"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardCommand">
+											<i class="icon-forward"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_FORWARD"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: editAsNewCommand">
+											<i class="icon-pencil"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_EDIT_AS_NEW"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand">
+											<i class="icon-forward"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></span>
+										</a>
+									</li>
+								</div>
+								<div data-bind="visible: allowMessageListActions && usePreviewPane()">
+									<li class="divider" role="presentation" data-bind="visible: allowComposer && !isDraftFolder()"></li>
+									<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: archiveCommand">
+											<i class="icon-archive"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_ARCHIVE"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: spamCommand">
+											<i class="icon-warning"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_SPAM"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled()">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: notSpamCommand">
+											<i class="icon-check-mark-circle-two"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_NOT_SPAM"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: deleteCommand">
+											<i class="icon-trash"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_DELETE"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation" data-bind="visible: message() && message().hasUnsubsribeLinks()">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewUnsubscribeLink()">
+											<i class="icon-remove"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_UNSUBSCRIBE"></span>
+										</a>
+									</li>
+								</div>
+								<div data-bind="visible: allowMessageActions">
+									<li class="divider" role="presentation"
+										data-bind="visible: (allowComposer && !isDraftFolder()) || (allowMessageListActions && usePreviewPane())"></li>
+									<li class="e-item" role="presentation">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().printMessage(); }} ">
+											<i class="icon-print"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/MENU_PRINT"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().viewPopupMessage(); }}">
+											<i class="icon-popup"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
+										</a>
+									</li>
+									<li class="divider" role="presentation"></li>
+									<li class="e-item" role="presentation">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewViewLink()">
+											<i class="icon-file-code"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/MENU_VIEW_ORIGINAL"></span>
+										</a>
+									</li>
+									<li class="e-item" role="presentation">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewDownloadLink()">
+											<i class="icon-download"></i>
+											&nbsp;&nbsp;
+											<span class="i18n" data-i18n="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
+										</a>
+									</li>
+								</div>
+							</ul>
 						</div>
+						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonReply pull-right" data-tooltip-join="bottom"
+							data-bind="visible: 'reply' === lastReplyAction() && allowComposer, command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
+							<i class="icon-reply"></i>
+						</a>
+						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonReplyAll pull-right" data-tooltip-join="bottom"
+							data-bind="visible: 'replyall' === lastReplyAction() && allowComposer, command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
+							<i class="icon-reply-all"></i>
+						</a>
+						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonForward pull-right" data-tooltip-join="bottom"
+							data-bind="visible: 'forward' === lastReplyAction() && allowComposer, command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
+							<i class="icon-forward"></i>
+						</a>
+					</div>
 
-						<div class="btn-group pull-right hide-on-mobile" data-tooltip-join="right" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'" style="margin-right: 5px">
-							<a class="btn single btn-success buttonEdit" data-bind="command: messageEditCommand">
-								<i class="icon-pencil icon-white"></i>
-							</a>
-						</div>
-
-					</nobr>
+					<div class="btn-group pull-right hide-on-mobile" data-tooltip-join="right" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'" style="margin-right: 5px">
+						<a class="btn single btn-success buttonEdit" data-bind="command: messageEditCommand">
+							<i class="icon-pencil icon-white"></i>
+						</a>
+					</div>
 				</div>
 
 				<div data-bind="visible: message">
