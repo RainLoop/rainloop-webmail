@@ -10,13 +10,7 @@ class AccountUserStore {
 		this.accounts = ko.observableArray([]);
 		this.accounts.loading = ko.observable(false).extend({ throttle: 100 });
 
-		this.computers();
-	}
-
-	computers() {
-		this.accountsEmails = ko.computed(
-			() => this.accounts().map(item => (item ? item.email : null)).filter(value => !!value)
-		);
+		this.getEmailAddresses = () => this.accounts().map(item => item ? item.email : null).filter(value => !!value);
 
 		this.accountsUnreadCount = ko.computed(() => 0);
 		// this.accountsUnreadCount = ko.computed(() => {

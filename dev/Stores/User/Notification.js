@@ -84,12 +84,6 @@ class NotificationUserStore {
 			};
 		}
 
-		this.computers();
-
-		this.initNotificationPlayer();
-	}
-
-	computers() {
 		this.isDesktopNotificationSupported = ko.computed(
 			() => DesktopNotification.NotSupported !== this.desktopNotificationPermissions()
 		);
@@ -99,6 +93,8 @@ class NotificationUserStore {
 				DesktopNotification.NotSupported === this.desktopNotificationPermissions() ||
 				DesktopNotification.Denied === this.desktopNotificationPermissions()
 		);
+
+		this.initNotificationPlayer();
 	}
 
 	initNotificationPlayer() {

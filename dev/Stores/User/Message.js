@@ -95,15 +95,6 @@ class MessageUserStore {
 		this.messagesBodiesDom = ko.observable(null);
 		this.messageActiveDom = ko.observable(null);
 
-		this.computers();
-		this.subscribers();
-
-		this.onMessageResponse = this.onMessageResponse.bind(this);
-
-		this.purgeMessageBodyCacheThrottle = this.purgeMessageBodyCache.throttle(30000);
-	}
-
-	computers() {
 		this.messageLoading = ko.computed(() => this.messageCurrentLoading());
 
 		this.messageListEndHash = ko.computed(
@@ -171,6 +162,12 @@ class MessageUserStore {
 			});
 			return result;
 		});
+
+		this.subscribers();
+
+		this.onMessageResponse = this.onMessageResponse.bind(this);
+
+		this.purgeMessageBodyCacheThrottle = this.purgeMessageBodyCache.throttle(30000);
 	}
 
 	subscribers() {

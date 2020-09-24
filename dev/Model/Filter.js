@@ -211,7 +211,7 @@ class FilterModel extends AbstractModel {
 	}
 
 	setRecipients() {
-		this.actionValueFourth(AccountStore.accountsEmails().join(', '));
+		this.actionValueFourth(AccountStore.getEmailAddresses().join(', '));
 	}
 
 	parse(json) {

@@ -32,11 +32,6 @@ class FolderUserStore {
 
 		this.sieveAllowFileintoInbox = !!rl.settings.get('SieveAllowFileintoInbox');
 
-		this.computers();
-		this.subscribers();
-	}
-
-	computers() {
 		this.draftFolderNotEnabled = ko.computed(
 			() => !this.draftFolder() || UNUSED_OPTION_VALUE === this.draftFolder()
 		);
@@ -118,6 +113,8 @@ class FolderUserStore {
 				(item) => (item ? item.localName() : '')
 			)
 		);
+
+		this.subscribers();
 	}
 
 	subscribers() {

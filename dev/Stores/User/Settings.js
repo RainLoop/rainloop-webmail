@@ -31,12 +31,9 @@ class SettingsUserStore {
 
 		this.autoLogout = ko.observable(30);
 
-		this.computers();
-		this.subscribers();
-	}
-
-	computers() {
 		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout());
+
+		this.subscribers();
 	}
 
 	subscribers() {

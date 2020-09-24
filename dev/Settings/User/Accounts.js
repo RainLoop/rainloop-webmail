@@ -79,7 +79,7 @@ class AccountsUserSettings {
 	}
 
 	accountsAndIdentitiesAfterMove() {
-		Remote.accountsAndIdentitiesSortOrder(null, AccountStore.accountsEmails.peek(), IdentityStore.identitiesIDS.peek());
+		Remote.accountsAndIdentitiesSortOrder(null, AccountStore.getEmailAddresses(), IdentityStore.getIDS());
 	}
 
 	onBuild(oDom) {
