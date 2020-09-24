@@ -1271,6 +1271,8 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 					}
 				}
 
+				$oSettings = $this->SettingsProvider()->Load($oAccount);
+
 				if (!empty($aResult['StartupUrl']))
 				{
 					$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount, true);
