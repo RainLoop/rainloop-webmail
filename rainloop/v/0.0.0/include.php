@@ -44,8 +44,6 @@
 
 			define('APP_DUMMY', '********');
 			define('APP_DEV_VERSION', '0.0.0');
-			define('APP_REPOSITORY_PATH', 'http://repository.rainloop.net/v1/');
-			define('APP_REPO_CORE_FILE', 'http://repository.rainloop.net/v2/core.{{channel}}.json');
 
 			$sCustomDataPath = '';
 			$sCustomConfiguration = '';

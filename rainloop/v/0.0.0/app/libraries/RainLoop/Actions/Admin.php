@@ -503,15 +503,9 @@ trait Admin
 		));
 	}
 
-	private function rainLoopRepo() : string
+	private function snappyMailRepo() : string
 	{
-		$sUrl = APP_REPOSITORY_PATH;
-		if ('' !== $sUrl)
-		{
-			$sUrl = rtrim($sUrl, '\\/').'/';
-		}
-
-		return $sUrl;
+		return 'https://snappymail.eu/repository/';
 	}
 
 	private function rainLoopUpdatable() : bool
@@ -529,7 +523,7 @@ trait Admin
 		$aRep = null;
 
 		$sRep = '';
-		$sRepoFile = 'repository.json';
+		$sRepoFile = 'packages.json';
 		$iRepTime = 0;
 
 		$oHttp = \MailSo\Base\Http::SingletonInstance();
@@ -614,7 +608,7 @@ trait Admin
 	{
 		$bRainLoopUpdatable = $this->rainLoopUpdatable();
 
-		$aResult = $this->getRepositoryDataByUrl($this->rainLoopRepo(), $bReal);
+		$aResult = $this->getRepositoryDataByUrl($this->snappyMailRepo(), $bReal);
 
 		$aSub = array();
 		foreach ($aResult as $aItem)
@@ -783,8 +777,7 @@ trait Admin
 		$bResult = false;
 		if ('' !== $sRealFile)
 		{
-			$sUrl = $this->rainLoopRepo().$sRealFile;
-			$sTmp = $this->downloadRemotePackageByUrl($sUrl);
+			$sTmp = $this->downloadRemotePackageByUrl($this->snappyMailRepo().$sRealFile);
 		}
 
 		if ('' !== $sTmp)
