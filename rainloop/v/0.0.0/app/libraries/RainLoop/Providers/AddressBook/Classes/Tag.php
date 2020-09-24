@@ -24,7 +24,7 @@ class Tag
 		$this->Clear();
 	}
 
-	public function Clear()
+	public function Clear() : void
 	{
 		$this->IdContactTag = '';
 		$this->Name = '';

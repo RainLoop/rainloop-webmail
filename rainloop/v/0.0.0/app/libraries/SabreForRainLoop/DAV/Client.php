@@ -149,7 +149,7 @@ class Client {
      * @param int $depth
      * @return array
      */
-    public function propFind($url, array $properties, $depth = 0) {
+    public function propFind($url, array $properties, $depth = 0) : array {
 
         $body = '<?xml version="1.0"?>' . "\n";
         $body.= '<d:propfind xmlns:d="DAV:">' . "\n";
@@ -304,9 +304,8 @@ class Client {
      * @param string $url
      * @param string $body
      * @param array $headers
-     * @return array
      */
-    public function request($method, $url = '', $body = null, $headers = array()) {
+    public function request($method, $url = '', $body = null, $headers = array()) : array {
 
         $url = $this->getAbsoluteUrl($url);
 
