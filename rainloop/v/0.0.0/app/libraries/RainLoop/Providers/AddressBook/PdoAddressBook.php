@@ -545,7 +545,7 @@ class PdoAddressBook
 
 		$sPath = $oClient->__UrlPath__;
 
-		$bGood = false;
+		$bGood = true;
 		if ('' === $sPath || '/' === $sPath || !$this->checkContactsPath($oClient, $sPath))
 		{
 			$sNewPath = '';
@@ -597,10 +597,6 @@ class PdoAddressBook
 			$sPath = $sNewPath;
 
 			$bGood = $this->checkContactsPath($oClient, $sPath);
-		}
-		else
-		{
-			$bGood = true;
 		}
 
 		return $bGood ? $oClient : null;
