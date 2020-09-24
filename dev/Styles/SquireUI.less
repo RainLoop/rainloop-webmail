@@ -56,15 +56,19 @@
 	overflow: auto;
 }
 
+/* This does make the block element focusable with mouse in Gecko and Webkit so we don't need a <BR>.
+However, arrow up/down still not working.
+Secondly, we can't rely on MUA's what to do with :empty
 .squire-wysiwyg div:empty,
 .squire-wysiwyg div:-moz-only-whitespace {
-	min-height: 1em;
+	min-height: 16px;
 }
-/*
+/* This "placeholder" doesn't work good in Gecko
 .squire-wysiwyg div:empty::before,
 .squire-wysiwyg div:-moz-only-whitespace::before {
 	content: "Start writing here…";
 	opacity: 0.5;
+	user-select: text;
 	-moz-user-select: text;
 }
 */
