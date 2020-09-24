@@ -241,7 +241,7 @@ const
 
 	fixCursor = ( node, root ) => {
 		// In Webkit and Gecko, block level elements are collapsed and
-		// unfocusable if they have no content. To remedy this, a <BR> must be
+		// unfocusable if they have no content (:empty). To remedy this, a <BR> must be
 		// inserted. In Opera and IE, we just need a textnode in order for the
 		// cursor to appear.
 		let self = root.__squire__;
@@ -281,10 +281,9 @@ const
 					fixer = doc.createTextNode( '' );
 				}
 			}
-		} else if ( !node.querySelector( 'BR' ) ) {
+//		} else if ( !node.querySelector( 'BR' ) ) {
+		} else if ( node.matches( ':empty' ) ) {
 			fixer = createElement( doc, 'BR' );
-//			fixer = doc.createTextNode( ZWS );
-//			fixer = doc.createTextNode( NBSP );
 			while ( ( child = node.lastElementChild ) && !isInline( child ) ) {
 				node = child;
 			}
