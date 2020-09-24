@@ -41,7 +41,7 @@ class PdoAddressBook
 	public function IsSupported() : bool
 	{
 		$aDrivers = \class_exists('PDO') ? \PDO::getAvailableDrivers() : array();
-		return \is_array($aDrivers) ? \in_array($this->sDsnType, $aDrivers) : false;
+		return \is_array($aDrivers) && \in_array($this->sDsnType, $aDrivers);
 	}
 
 	public function IsSharingAllowed() : bool
@@ -49,14 +49,14 @@ class PdoAddressBook
 		return $this->IsSupported() && false; // TODO
 	}
 
-	private function flushDeletedContacts(int $iUserID)
+	private function flushDeletedContacts(int $iUserID) : bool
 	{
 		return !!$this->prepareAndExecute('DELETE FROM rainloop_ab_contacts WHERE id_user = :id_user AND deleted = 1', array(
 			':id_user' => array($iUserID, \PDO::PARAM_INT)
 		));
 	}
 
-	private function updateContactEtagAndTime(int $iUserID, int $iID, string $sEtag, int $iChanged)
+	private function updateContactEtagAndTime(int $iUserID, int $iID, string $sEtag, int $iChanged) : bool
 	{
 		return !!$this->prepareAndExecute('UPDATE rainloop_ab_contacts SET changed = :changed, etag = :etag '.
 			'WHERE id_user = :id_user AND id_contact = :id_contact', array(
@@ -68,7 +68,7 @@ class PdoAddressBook
 		);
 	}
 
-	private function prepearDatabaseSyncData(int $iUserID)
+	private function prepearDatabaseSyncData(int $iUserID) : array
 	{
 		$aResult = array();
 		$oStmt = $this->prepareAndExecute('SELECT id_contact, id_contact_str, changed, deleted, etag FROM rainloop_ab_contacts WHERE id_user = :id_user', array(
@@ -175,7 +175,7 @@ class PdoAddressBook
 		return $mResult;
 	}
 
-	private function davClientRequest($oClient, string $sCmd, string $sUrl, $mData = null)
+	private function davClientRequest($oClient, string $sCmd, string $sUrl, $mData = null) : ?array
 	{
 		\MailSo\Base\Utils::ResetTimeLimit();
 
@@ -187,23 +187,23 @@ class PdoAddressBook
 //			$this->oLogger->Write($mData, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
 //		}
 
-		$oResponse = false;
+		$aResponse = null;
 		try
 		{
 			if (('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData)
 			{
-				$oResponse = $oClient->request($sCmd, $sUrl, $mData, array(
+				$aResponse = $oClient->request($sCmd, $sUrl, $mData, array(
 					'Content-Type' => 'text/vcard; charset=utf-8'
 				));
 			}
 			else
 			{
-				$oResponse = $oClient->request($sCmd, $sUrl);
+				$aResponse = $oClient->request($sCmd, $sUrl);
 			}
 
 //			if ('GET' === $sCmd)
 //			{
-//				$this->oLogger->WriteDump($oResponse, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
+//				$this->oLogger->WriteDump($aResponse, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
 //			}
 		}
 		catch (\Throwable $oException)
@@ -211,10 +211,10 @@ class PdoAddressBook
 			$this->oLogger->WriteException($oException);
 		}
 
-		return $oResponse;
+		return $aResponse;
 	}
 
-	private function detectionPropFind(\SabreForRainLoop\DAV\Client $oClient, string $sPath) : bool
+	private function detectionPropFind(\SabreForRainLoop\DAV\Client $oClient, string $sPath) : ?array
 	{
 		$aResponse = null;
 
@@ -551,10 +551,9 @@ class PdoAddressBook
 			return null;
 		}
 
-		$bGood = false;
 		$sPath = $oClient->__UrlPath__;
 
-		$bGood = false;
+		$bGood = true;
 		if ('' === $sPath || '/' === $sPath || !$this->checkContactsPath($oClient, $sPath))
 		{
 			$sNewPath = '';
@@ -607,17 +606,8 @@ class PdoAddressBook
 
 			$bGood = $this->checkContactsPath($oClient, $sPath);
 		}
-		else
-		{
-			$bGood = true;
-		}
 
-		if (!$bGood)
-		{
-			$oClient = false;
-		}
-
-		return $oClient;
+		return $bGood ? $oClient : null;
 	}
 
 	public function Sync(string $sEmail, string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : bool
@@ -1653,7 +1643,7 @@ class PdoAddressBook
 		return $sResult;
 	}
 
-	private function getInitialTablesArray(string $sDbType)
+	private function getInitialTablesArray(string $sDbType) : array
 	{
 		switch ($sDbType)
 		{
@@ -1761,6 +1751,7 @@ SQLITEINITIAL;
 				break;
 		}
 
+		$aResult = array();
 		if (0 < \strlen($sInitial))
 		{
 			$aList = \explode(';', \trim($sInitial));

@@ -101,10 +101,7 @@ class File implements \MailSo\Cache\DriverInterface
 			{
 				if (!@\mkdir(\dirname($sFilePath), 0755, true))
 				{
-					if (!@\mkdir(\dirname($sFilePath), 0755, true))
-					{
-						$sFilePath = '';
-					}
+					$sFilePath = '';
 				}
 			}
 		}

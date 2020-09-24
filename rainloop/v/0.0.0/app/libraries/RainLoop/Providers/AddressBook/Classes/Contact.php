@@ -479,7 +479,7 @@ class Contact
 	/**
 	 * @param mixed $oProp
 	 */
-	private function addArrayPropertyHelper(array &$aProperties, $oArrayProp, int $iType) : string
+	private function addArrayPropertyHelper(array &$aProperties, $oArrayProp, int $iType) : void
 	{
 		foreach ($oArrayProp as $oProp)
 		{
@@ -501,7 +501,7 @@ class Contact
 		}
 	}
 
-	public function PopulateByVCard(string $sUid, string $sVCard, string $sEtag = '', $oLogger = null)
+	public function PopulateByVCard(string $sUid, string $sVCard, string $sEtag = '', $oLogger = null) : bool
 	{
 		if ("\xef\xbb\xbf" === \substr($sVCard, 0, 3))
 		{
