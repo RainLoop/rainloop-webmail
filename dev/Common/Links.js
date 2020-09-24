@@ -260,7 +260,7 @@ export function sound(fileName) {
  * @returns {string}
  */
 export function notificationMailIcon() {
-	return staticPrefix('css/images/icom-message-notification.png');
+	return staticPrefix('css/images/icon-message-notification.png');
 }
 
 /**
