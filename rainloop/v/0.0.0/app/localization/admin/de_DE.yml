@@ -206,8 +206,6 @@ de_DE:
     BETA: "Beta"
     UNSTABLE: "Nicht stabil"
     WARNING: "Warnung!"
-    NOT_SUPPORTED: "Nicht unterstützt"
-    REQUIRES_PHP_54: "PHP 5.4 oder höher ist erforderlich"
   ERRORS:
     DOMAIN_ALREADY_EXISTS: "Domain existiert bereits"
     UNKNOWN_ERROR: "Unbekannter Fehler"

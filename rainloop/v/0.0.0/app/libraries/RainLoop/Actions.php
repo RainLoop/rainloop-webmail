@@ -1326,10 +1326,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 				$aResult['VerifySslCertificate'] = (bool) $oConfig->Get('ssl', 'verify_certificate', false);
 				$aResult['AllowSelfSigned'] = (bool) $oConfig->Get('ssl', 'allow_self_signed', true);
 
-				$aDrivers = \class_exists('PDO') ? \PDO::getAvailableDrivers() : null;
-				$aResult['MySqlIsSupported'] = \is_array($aDrivers) ? \in_array('mysql', $aDrivers) : false;
-				$aResult['SQLiteIsSupported'] = \is_array($aDrivers) ? \in_array('sqlite', $aDrivers) : false;
-				$aResult['PostgreSqlIsSupported'] = \is_array($aDrivers) ? \in_array('pgsql', $aDrivers) : false;
+				$aResult['supportedPdoDrivers'] = \class_exists('PDO') ? \PDO::getAvailableDrivers() : [];
 
 				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
 				$aResult['ContactsSync'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);

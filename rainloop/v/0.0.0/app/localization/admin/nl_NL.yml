@@ -206,8 +206,6 @@ nl_NL:
     BETA: "bèta"
     UNSTABLE: "onstabiel"
     WARNING: "Waarschuwing!"
-    NOT_SUPPORTED: "niet ondersteund"
-    REQUIRES_PHP_54: "vereist PHP 5.4 of hoger"
   ERRORS:
     DOMAIN_ALREADY_EXISTS: "Domein bestaat al"
     UNKNOWN_ERROR: "Onbekende fout"

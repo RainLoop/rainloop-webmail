@@ -3,7 +3,6 @@ import ko from 'ko';
 import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender } from 'Common/Utils';
 
 import { SaveSettingsStep, StorageResultType } from 'Common/Enums';
-import { i18n } from 'Common/Translator';
 import Remote from 'Remote/Admin/Fetch';
 import { command } from 'Knoin/Knoin';
 
@@ -15,50 +14,22 @@ class ContactsAdminSettings {
 		this.enableContacts = ko.observable(!!settingsGet('ContactsEnable'));
 		this.contactsSync = ko.observable(!!settingsGet('ContactsSync'));
 
-		const supportedTypes = [],
-			types = ['sqlite', 'mysql', 'pgsql'],
-			getTypeName = (name) => {
-				switch (name) {
-					case 'sqlite':
-						name = 'SQLite';
-						break;
-					case 'mysql':
-						name = 'MySQL';
-						break;
-					case 'pgsql':
-						name = 'PostgreSQL';
-						break;
-					// no default
-				}
+		const supportedTypes = settingsGet('supportedPdoDrivers') || [],
+			types = [{
+				id:'sqlite',
+				name:'SQLite'
+			},{
+				id:'mysql',
+				name:'MySQL'
+			},{
+				id:'pgsql',
+				name:'PostgreSQL'
+			}].filter(type => supportedTypes.includes(type.id));
 
-				return name;
-			};
+		this.contactsSupported = 0 < types.length;
 
-		if (settingsGet('SQLiteIsSupported')) {
-			supportedTypes.push('sqlite');
-		}
-		if (settingsGet('MySqlIsSupported')) {
-			supportedTypes.push('mysql');
-		}
-		if (settingsGet('PostgreSqlIsSupported')) {
-			supportedTypes.push('pgsql');
-		}
+		this.contactsTypesOptions = types;
 
-		this.contactsSupported = 0 < supportedTypes.length;
-
-		this.contactsTypes = ko.observableArray([]);
-		this.contactsTypesOptions = ko.computed(() =>
-			this.contactsTypes().map(value => {
-				const disabled = !supportedTypes.includes(value);
-				return {
-					'id': value,
-					'name': getTypeName(value) + (disabled ? ' (' + i18n('HINTS/NOT_SUPPORTED') + ')' : ''),
-					'disabled': disabled
-				};
-			})
-		);
-
-		this.contactsTypes(types);
 		this.contactsType = ko.observable('');
 
 		this.mainContactsType = ko
@@ -68,7 +39,7 @@ class ContactsAdminSettings {
 					if (value !== this.contactsType()) {
 						if (supportedTypes.includes(value)) {
 							this.contactsType(value);
-						} else if (supportedTypes.length) {
+						} else if (types.length) {
 							this.contactsType('');
 						}
 					} else {
