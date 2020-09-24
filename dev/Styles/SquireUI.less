@@ -56,6 +56,17 @@
 	overflow: auto;
 }
 
+.squire-wysiwyg div:empty,
+.squire-wysiwyg div:-moz-only-whitespace {
+	min-height: 1em;
+}
+.squire-wysiwyg div:empty:before,
+.squire-wysiwyg div:-moz-only-whitespace:before {
+	content: "Start writing here…";
+	opacity: 0.5;
+	position: absolute
+}
+
 .squire-wysiwyg, .squire-plain {
 	min-height: 200px;
 	padding: .5em;

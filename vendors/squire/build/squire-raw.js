@@ -283,6 +283,8 @@ const
 			}
 		} else if ( !node.querySelector( 'BR' ) ) {
 			fixer = createElement( doc, 'BR' );
+//			fixer = doc.createTextNode( ZWS );
+//			fixer = doc.createTextNode( NBSP );
 			while ( ( child = node.lastElementChild ) && !isInline( child ) ) {
 				node = child;
 			}
