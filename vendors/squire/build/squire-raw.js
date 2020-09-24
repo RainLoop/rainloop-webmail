@@ -1100,8 +1100,7 @@ const
 
 	expandRangeToBlockBoundaries = ( range, root ) => {
 		let start = getStartBlockOfRange( range, root ),
-			end = getEndBlockOfRange( range, root ),
-			parent;
+			end = getEndBlockOfRange( range, root );
 
 		if ( start && end ) {
 			range.setStart( start, 0 );
@@ -2109,15 +2108,16 @@ let onCut = function ( event ) {
 	this.setSelection( range );
 };
 
-let _onCopy = ( event, range, root, willCutCopy, toPlainText, plainTextOnly ) => {
-	let startBlock, endBlock, copyRoot, contents, parent, newContents;
+let onCopy = function ( event ) {
 	// Edge only seems to support setting plain text as of 2016-03-11.
 	if ( !isEdge && event.clipboardData ) {
-		// Clipboard content should include all parents within block, or all
-		// parents up to root if selection across blocks
-		startBlock = getStartBlockOfRange( range, root );
-		endBlock = getEndBlockOfRange( range, root );
-		copyRoot = ( ( startBlock === endBlock ) && startBlock ) || root;
+		let range = this.getSelection(), root = this._root,
+			// Clipboard content should include all parents within block, or all
+			// parents up to root if selection across blocks
+			startBlock = getStartBlockOfRange( range, root ),
+			endBlock = getEndBlockOfRange( range, root ),
+			copyRoot = ( ( startBlock === endBlock ) && startBlock ) || root,
+			contents, parent, newContents;
 		// Clone range to mutate, then move up as high as possible without
 		// passing the copy root node.
 		range = range.cloneRange();
@@ -2137,19 +2137,8 @@ let _onCopy = ( event, range, root, willCutCopy, toPlainText, plainTextOnly ) =>
 			parent = parent.parentNode;
 		}
 		// Set clipboard data
-		setClipboardData( event, contents, root, willCutCopy, toPlainText, plainTextOnly );
+		setClipboardData( event, contents, root, this._config.willCutCopy, null, false );
 	}
-};
-
-let onCopy = function ( event ) {
-	_onCopy(
-		event,
-		this.getSelection(),
-		this._root,
-		this._config.willCutCopy,
-		null,
-		false
-	);
 };
 
 // Need to monitor for shift key like this, as event.shiftKey is not available
@@ -2232,18 +2221,10 @@ let onPaste = function ( event ) {
 		}
 	}
 
-	// Old interface
-	// -------------
-
 	// Safari (and indeed many other OS X apps) copies stuff as text/rtf
 	// rather than text/html; even from a webpage in Safari. The only way
 	// to get an HTML version is to fallback to letting the browser insert
 	// the content. Same for getting image data. *Sigh*.
-	//
-	// Firefox is even worse: it doesn't even let you know that there might be
-	// an RTF version on the clipboard, but it will also convert to HTML if you
-	// let the browser insert the content. I've filed
-	// https://bugzilla.mozilla.org/show_bug.cgi?id=1254028
 	types = clipboardData && clipboardData.types;
 	if ( !isEdge && types && (
 			indexOf( types, 'text/html' ) > -1 || (
@@ -2266,62 +2247,6 @@ let onPaste = function ( event ) {
 		}
 		return;
 	}
-
-	// No interface. Includes all versions of IE :(
-	// --------------------------------------------
-
-	let body = doc.body,
-		range = this.getSelection(),
-		startContainer = range.startContainer,
-		startOffset = range.startOffset,
-		endContainer = range.endContainer,
-		endOffset = range.endOffset;
-
-	// We need to position the pasteArea in the visible portion of the screen
-	// to stop the browser auto-scrolling.
-	let pasteArea = this.createElement( 'DIV', {
-		contenteditable: 'true',
-		style: 'position:fixed; overflow:hidden; top:0; right:100%; width:1px; height:1px;'
-	});
-	body.append( pasteArea );
-	range.selectNodeContents( pasteArea );
-	this.setSelection( range );
-
-	// A setTimeout of 0 means this is added to the back of the
-	// single javascript thread, so it will be executed after the
-	// paste event.
-	setTimeout( () => {
-		try {
-			// Get the pasted content and clean
-			let html = '',
-				next = pasteArea,
-				first, range;
-
-			// #88: Chrome can apparently split the paste area if certain
-			// content is inserted; gather them all up.
-			while ( pasteArea = next ) {
-				next = pasteArea.nextSibling;
-				pasteArea.remove();
-				// Safari and IE like putting extra divs around things.
-				first = pasteArea.firstChild;
-				if ( first && first === pasteArea.lastChild &&
-						first.nodeName === 'DIV' ) {
-					pasteArea = first;
-				}
-				html += pasteArea.innerHTML;
-			}
-
-			range = self.createRange(
-				startContainer, startOffset, endContainer, endOffset );
-			self.setSelection( range );
-
-			if ( html ) {
-				self.insertHTML( html, true );
-			}
-		} catch ( error ) {
-			self.didError( error );
-		}
-	}, 0 );
 };
 
 // On Windows you can drag an drop text. We can't handle this ourselves, because
