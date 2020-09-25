@@ -1,6 +1,6 @@
 const ko = window.ko,
 
-	rlContentType = 'rainloop/action',
+	rlContentType = 'snappymail/action',
 
 	// In Chrome we have no access to getData unless it's the 'drop' event
 	getDragAction = e => dragData && e.dataTransfer.types.includes(rlContentType) ? dragData.action : false,
