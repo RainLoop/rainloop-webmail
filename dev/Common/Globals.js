@@ -54,24 +54,12 @@ export const keyScope = ko.computed({
 		if (KeyState.Menu !== value) {
 			if (KeyState.Compose === value) {
 				// disableKeyFilter
-				key.filter = () => useKeyboardShortcuts();
+				shortcuts.filter = () => useKeyboardShortcuts();
 			} else {
 				// restoreKeyFilter
-				key.filter = (event) => {
-					if (useKeyboardShortcuts()) {
-						const el = event.target,
-							nodeName = el ? el.nodeName : '';
-
-						return !(
-							'INPUT' === nodeName ||
-							'SELECT' === nodeName ||
-							'TEXTAREA' === nodeName ||
-							(el && el.contentEditable)
-						);
-					}
-
-					return false;
-				};
+				shortcuts.filter = event => !(event.target.matches
+					&& (event.target.matches('input,select,textarea')
+					 || event.target.closest('[contenteditable]')));
 			}
 
 			keyScopeFake(value);
@@ -86,13 +74,13 @@ export const keyScope = ko.computed({
 
 keyScopeReal.subscribe((value) => {
 	//	console.log('keyScope=' + sValue); // DEBUG
-	key.setScope(value);
+	shortcuts.setScope(value);
 });
 
 dropdownVisibility.subscribe((value) => {
 	if (value) {
 		keyScope(KeyState.Menu);
-	} else if (KeyState.Menu === key.getScope()) {
+	} else if (KeyState.Menu === shortcuts.getScope()) {
 		keyScope(keyScopeFake());
 	}
 });

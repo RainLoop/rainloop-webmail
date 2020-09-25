@@ -121,7 +121,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			el && fSelectFolder(el, event, false);
 		});
 
-		key('up, down', KeyState.FolderList, (event, handler) => {
+		shortcuts.add(['arrowup','arrowdown'], '', KeyState.FolderList, event => {
 			let items = [], index = 0;
 			dom.querySelectorAll('.b-folders .e-item .e-link:not(.hidden)').forEach(node => {
 				if (node.offsetHeight || node.getClientRects().length) {
@@ -133,7 +133,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 				}
 			});
 			if (items.length) {
-				if (handler && 'up' === handler.shortcut) {
+				if ('ArrowUp' === event.key) {
 					index && --index;
 				} else if (index < items.length - 1) {
 					++index;
@@ -145,7 +145,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			return false;
 		});
 
-		key('enter', KeyState.FolderList, () => {
+		shortcuts.add('enter', '', KeyState.FolderList, () => {
 			const item = qs('.b-folders .e-item .e-link:not(.hidden).focused');
 			if (item) {
 				AppStore.focusedState(Focused.MessageList);
@@ -155,7 +155,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			return false;
 		});
 
-		key('space', KeyState.FolderList, () => {
+		shortcuts.add('space', '', KeyState.FolderList, () => {
 			const item = qs('.b-folders .e-item .e-link:not(.hidden).focused'),
 				folder = item && ko.dataFor(item);
 			if (folder) {
@@ -167,7 +167,8 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			return false;
 		});
 
-		key('esc, tab, shift+tab, right', KeyState.FolderList, () => {
+//		shortcuts.add('tab', 'shift', KeyState.FolderList, () => {
+		shortcuts.add(['escape','tab','arrowright'], '', KeyState.FolderList, () => {
 			AppStore.focusedState(Focused.MessageList);
 			moveAction(false);
 			return false;

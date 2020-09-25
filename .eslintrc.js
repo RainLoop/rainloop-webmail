@@ -13,10 +13,11 @@ module.exports = {
 		es6: true
 	},
 	globals: {
-		// RainLoop
+		// SnappyMail
 		'rainloopI18N': "readonly",
 		'rainloopTEMPLATES': "readonly",
 		'rl': "readonly",
+		'shortcuts': "readonly",
 //		'__APP_BOOT': "readonly",
 		// deb/boot.js
 		'progressJs': "readonly",
@@ -31,8 +32,6 @@ module.exports = {
 		'hasher': "readonly",
 		'signals': "readonly",
 		'Crossroads': "readonly",
-		// vendors/keymaster
-		'key': "readonly",
 		// vendors/jua
 		'Jua': "readonly",
 		// vendors/qr.js

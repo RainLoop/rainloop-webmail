@@ -79,7 +79,7 @@ config.paths.js = {
 			'vendors/routes/hasher.min.js', // fixed
 			'vendors/routes/crossroads.min.js', // fixed
 			'vendors/jua/jua.min.js', // custom
-			'vendors/keymaster/keymaster.js', // custom (modified)
+			'dev/shortcuts.js',
 			'vendors/qr.js/qr.min.js', // fixed (license)
 			'vendors/bootstrap/js/bootstrap.native.min.js', // fixed
 			'vendors/knockout/build/output/knockout-latest.js',

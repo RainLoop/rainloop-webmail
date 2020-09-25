@@ -1,6 +1,7 @@
 
 (w=>{
 	Array.isNotEmpty = array => Array.isArray(array) && array.length;
+	Array.prototype.unique((v, i, a) => a.indexOf(v) === i);
 
 	// Import momentjs locales function
 	w.moment = {

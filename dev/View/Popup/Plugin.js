@@ -110,7 +110,7 @@ class PluginPopupView extends AbstractViewNext {
 	}
 
 	onBuild() {
-		key('esc', KeyState.All, () => {
+		shortcuts.add('escape', '', KeyState.All, () => {
 			if (this.modalVisibility()) {
 				this.tryToClosePopup();
 			}

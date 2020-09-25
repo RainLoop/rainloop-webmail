@@ -547,26 +547,25 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	initShortcuts() {
 		// exit fullscreen, back
-		key('esc, backspace', KeyState.MessageView, this.escShortcuts.bind(this));
+		shortcuts.add(['escape','backspace'], '', KeyState.MessageView, this.escShortcuts.bind(this));
 
 		// fullscreen
-		key('enter', KeyState.MessageView, () => {
+		shortcuts.add('enter', '', KeyState.MessageView, () => {
 			this.toggleFullScreen();
 			return false;
 		});
 
 		// reply
-		key('r', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('r', '', [KeyState.MessageList, KeyState.MessageView], () => {
 			if (MessageStore.message()) {
 				this.replyCommand();
 				return false;
 			}
-
 			return true;
 		});
 
 		// replaAll
-		key('a', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('a', '', [KeyState.MessageList, KeyState.MessageView], () => {
 			if (MessageStore.message()) {
 				this.replyAllCommand();
 				return false;
@@ -576,7 +575,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		});
 
 		// forward
-		key('f', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('f', '', [KeyState.MessageList, KeyState.MessageView], () => {
 			if (MessageStore.message()) {
 				this.forwardCommand();
 				return false;
@@ -586,7 +585,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		});
 
 		// message information
-		key('ctrl+i, command+i', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('i', 'meta', [KeyState.MessageList, KeyState.MessageView], () => {
 			if (MessageStore.message()) {
 				this.showFullInfo(!this.showFullInfo());
 			}
@@ -594,7 +593,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		});
 
 		// toggle message blockquotes
-		key('b', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('b', '', [KeyState.MessageList, KeyState.MessageView], () => {
 			const message = MessageStore.message();
 			if (message && message.body) {
 				message.body.querySelectorAll('.rlBlockquoteSwitcher').forEach(node => node.click());
@@ -603,62 +602,49 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			return true;
 		});
 
-		key('ctrl+up, command+up, ctrl+left, command+left', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add(['arrowup','arrowleft'], 'meta', [KeyState.MessageList, KeyState.MessageView], () => {
 			this.goUpCommand();
 			return false;
 		});
 
-		key('ctrl+down, command+down, ctrl+right, command+right', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add(['arrowdown','arrowright'], 'meta', [KeyState.MessageList, KeyState.MessageView], () => {
 			this.goDownCommand();
 			return false;
 		});
 
 		// print
-		key('ctrl+p, command+p', [KeyState.MessageView, KeyState.MessageList], () => {
+		shortcuts.add('p', 'meta', [KeyState.MessageView, KeyState.MessageList], () => {
 			if (this.message()) {
 				this.message().printMessage();
 			}
-
 			return false;
 		});
 
 		// delete
-		key('delete, shift+delete', KeyState.MessageView, (event, handler) => {
-			if (event) {
-				if (handler && 'shift+delete' === handler.shortcut) {
-					this.deleteWithoutMoveCommand();
-				} else {
-					this.deleteCommand();
-				}
-
-				return false;
-			}
-
-			return true;
+		shortcuts.add('delete', '', KeyState.MessageView, () => {
+			this.deleteCommand();
+			return false;
+		});
+		shortcuts.add('delete', 'shift', KeyState.MessageView, () => {
+			this.deleteWithoutMoveCommand();
+			return false;
 		});
 
 		// change focused state
-		key('tab, shift+tab, left', KeyState.MessageView, (event, handler) => {
+		shortcuts.add('arrowleft', '', KeyState.MessageView, () => {
 			if (!this.fullScreenMode() && this.message() && Layout.NoPreview !== this.layout()) {
-				if (event && handler && 'left' === handler.shortcut) {
-					if (this.oMessageScrollerDom && 0 < this.oMessageScrollerDom.scrollLeft) {
-						return true;
-					}
-
-					AppStore.focusedState(Focused.MessageList);
-				} else {
-					AppStore.focusedState(Focused.MessageList);
+				if (this.oMessageScrollerDom && 0 < this.oMessageScrollerDom.scrollLeft) {
+					return true;
 				}
-			} else if (
-				this.message() &&
-				Layout.NoPreview === this.layout() &&
-				event &&
-				handler &&
-				'left' === handler.shortcut
-			) {
-				return true;
+				AppStore.focusedState(Focused.MessageList);
+				return false;
 			}
-
+		});
+//		shortcuts.add('tab', 'shift', KeyState.MessageView, (event, handler) => {
+		shortcuts.add('tab', '', KeyState.MessageView, () => {
+			if (!this.fullScreenMode() && this.message() && Layout.NoPreview !== this.layout()) {
+				AppStore.focusedState(Focused.MessageList);
+			}
 			return false;
 		});
 	}

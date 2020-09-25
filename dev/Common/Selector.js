@@ -273,7 +273,7 @@ class Selector {
 				}
 			});
 
-			key('enter', keyScope, () => {
+			shortcuts.add('enter', '', keyScope, () => {
 				const focused = this.focusedItem();
 				if (focused && !focused.selected()) {
 					this.actionClick(focused);
@@ -283,48 +283,16 @@ class Selector {
 				return true;
 			});
 
-			key('ctrl+up, command+up, ctrl+down, command+down', keyScope, () => false);
+			shortcuts.add('arrowup', 'meta', keyScope, () => false);
+			shortcuts.add('arrowdown', 'meta', keyScope, () => false);
 
-			key('up, shift+up, down, shift+down, home, end, pageup, pagedown, insert, space', keyScope, (event, handler) => {
-				if (event && handler && handler.shortcut) {
-					let eventKey;
-					switch (handler.shortcut) {
-						case 'up':
-						case 'shift+up':
-							eventKey = 'ArrowUp';
-							break;
-						case 'down':
-						case 'shift+down':
-							eventKey = 'ArrowDown';
-							break;
-						case 'insert':
-							eventKey = 'Insert';
-							break;
-						case 'space':
-							eventKey = ' ';
-							break;
-						case 'home':
-							eventKey = 'Home';
-							break;
-						case 'end':
-							eventKey = 'End';
-							break;
-						case 'pageup':
-							eventKey = 'PageUp';
-							break;
-						case 'pagedown':
-							eventKey = 'PageDown';
-							break;
-						// no default
-					}
-
-					if (eventKey) {
-						this.newSelectPosition(eventKey, key.shift);
-						return false;
-					}
-				}
-
-				return true;
+			shortcuts.add(['arrowup','arrowdown'], 'shift', keyScope, event => {
+				this.newSelectPosition(event.key, true);
+				return false;
+			});
+			shortcuts.add(['arrowup','arrowdown','home','end','pageup','pagedown','insert','space'], '', keyScope, event => {
+				this.newSelectPosition(event.key, false);
+				return false;
 			});
 		}
 	}

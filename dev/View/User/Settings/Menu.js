@@ -32,7 +32,8 @@ class MenuSettingsUserView extends AbstractViewNext {
 			);
 		}
 
-		key('up, down', KeyState.Settings, settingsMenuKeysHandler(dom.querySelectorAll('.b-settings-menu .e-item')));
+		shortcuts.add(['ArrowUp','ArrowDown'], '', KeyState.Settings,
+			settingsMenuKeysHandler(dom.querySelectorAll('.b-settings-menu .e-item')));
 	}
 
 	link(route) {

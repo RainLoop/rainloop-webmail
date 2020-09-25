@@ -40,7 +40,7 @@ class ViewOpenPgpKeyPopupView extends AbstractViewNext {
 	}
 
 	onBuild() {
-		key('ctrl+a, command+a', KeyState.PopupViewOpenPGP, () => {
+		shortcuts.add('a', 'meta', KeyState.PopupViewOpenPGP, () => {
 			this.selectKey();
 			return false;
 		});

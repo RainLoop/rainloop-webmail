@@ -42,7 +42,7 @@ class AbstractApp {
 		$doc.addEventListener('keypress', fn);
 		$doc.addEventListener('click', fn);
 
-		key('esc, enter', KeyState.All, () => rl.Dropdowns.detectVisibility());
+		shortcuts.add(['escape','enter'], '', KeyState.All, () => rl.Dropdowns.detectVisibility());
 	}
 
 	remote() {

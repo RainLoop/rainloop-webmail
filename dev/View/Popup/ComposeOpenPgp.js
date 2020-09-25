@@ -303,7 +303,8 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 	}
 
 	onBuild() {
-		key('tab,shift+tab', KeyState.PopupComposeOpenPGP, () => {
+//		shortcuts.add(('tab', 'shift', KeyState.PopupComposeOpenPGP, () => {
+		shortcuts.add('tab', '', KeyState.PopupComposeOpenPGP, () => {
 			let btn = this.querySelector('.inputPassword');
 			if (btn.matches(':focus')) {
 				btn = this.querySelector('.buttonDo');

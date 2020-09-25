@@ -606,12 +606,12 @@ class ContactsPopupView extends AbstractViewNext {
 	onBuild(dom) {
 		this.selector.init(dom.querySelector('.b-list-content'), KeyState.ContactList);
 
-		key('delete', KeyState.ContactList, () => {
+		shortcuts.add('delete', '', KeyState.ContactList, () => {
 			this.deleteCommand();
 			return false;
 		});
 
-		key('c, w', KeyState.ContactList, () => {
+		shortcuts.add(['c','w'], '', KeyState.ContactList, () => {
 			this.newMessageCommand();
 			return false;
 		});

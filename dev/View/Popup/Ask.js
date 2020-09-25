@@ -86,7 +86,8 @@ class AskPopupView extends AbstractViewNext {
 	}
 
 	onBuild() {
-		key('tab, shift+tab, right, left', KeyState.PopupAsk, () => {
+//		shortcuts.add('tab', 'shift', KeyState.PopupAsk, () => {
+		shortcuts.add(['tab','arrowright','arrowleft'], '', KeyState.PopupAsk, () => {
 			let btn = this.querySelector('.buttonYes');
 			if (btn.matches(':focus')) {
 				btn = this.querySelector('.buttonNo');
@@ -95,7 +96,7 @@ class AskPopupView extends AbstractViewNext {
 			return false;
 		});
 
-		key('esc', KeyState.PopupAsk, () => {
+		shortcuts.add('escape', '', KeyState.PopupAsk, () => {
 			this.noClick();
 			return false;
 		});

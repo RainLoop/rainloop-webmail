@@ -1114,9 +1114,10 @@ class ComposePopupView extends AbstractViewNext {
 	onBuild(dom) {
 		this.initUploader();
 
-		key('ctrl+q, command+q, ctrl+w, command+w', KeyState.Compose, ()=>false);
+		shortcuts.add('q', 'meta', KeyState.Compose, ()=>false);
+		shortcuts.add('w', 'meta', KeyState.Compose, ()=>false);
 
-		key('`', KeyState.Compose, () => {
+		shortcuts.add('`', '', KeyState.Compose, () => {
 			if (this.oEditor && !this.oEditor.hasFocus() && !inFocus()) {
 				this.identitiesDropdownTrigger(true);
 				return false;
@@ -1125,31 +1126,35 @@ class ComposePopupView extends AbstractViewNext {
 			return true;
 		});
 
-		key('ctrl+`', KeyState.Compose, () => {
+		shortcuts.add('`', 'ctrl', KeyState.Compose, () => {
 			this.identitiesDropdownTrigger(true);
 			return false;
 		});
 
-		key('esc, ctrl+down, command+down', KeyState.Compose, () => {
+		shortcuts.add('escape', '', KeyState.Compose, () => {
+			this.skipCommand();
+			return false;
+		});
+		shortcuts.add('arrowdown', 'meta', KeyState.Compose, () => {
 			this.skipCommand();
 			return false;
 		});
 
 		if (this.allowFolders) {
-			key('ctrl+s, command+s', KeyState.Compose, () => {
+			shortcuts.add('s', 'meta', KeyState.Compose, () => {
 				this.saveCommand();
 				return false;
 			});
 		}
 
 		if (Settings.app('allowCtrlEnterOnCompose')) {
-			key('ctrl+enter, command+enter', KeyState.Compose, () => {
+			shortcuts.add('enter', 'meta', KeyState.Compose, () => {
 				this.sendCommand();
 				return false;
 			});
 		}
 
-		key('shift+esc', KeyState.Compose, () => {
+		shortcuts.add('escape', 'shift', KeyState.Compose, () => {
 			if (this.modalVisibility()) {
 				this.tryToClosePopup();
 			}

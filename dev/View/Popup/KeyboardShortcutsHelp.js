@@ -16,8 +16,8 @@ class KeyboardShortcutsHelpPopupView extends AbstractViewNext {
 	onBuild(dom) {
 		dom.querySelectorAll('a[data-toggle="tab"]').forEach(node => node.Tab || new BSN.Tab(node));
 
-		key(
-			'tab, shift+tab, left, right',
+//		shortcuts.add('tab', 'shift',
+		shortcuts.add(['tab','arrowleft','arrowright'], '',
 			KeyState.PopupKeyboardShortcutsHelp,
 			((event, handler)=>{
 				if (event && handler) {
@@ -26,7 +26,7 @@ class KeyboardShortcutsHelpPopupView extends AbstractViewNext {
 					let next = 0;
 					tabs.forEach((node, index) => {
 						if (node.matches('.active')) {
-							if (['tab','right'].includes(handler.shortcut)) {
+							if (['tab','arrowright'].includes(handler.shortcut)) {
 								next = index < last ? index+1 : 0;
 							} else {
 								next = index ? index-1 : last;
