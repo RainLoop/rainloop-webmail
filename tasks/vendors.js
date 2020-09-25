@@ -19,11 +19,11 @@ const lightgalleryFontsClear = () => del('rainloop/v/' + config.devVersion + '/s
 const lightgallery = gulp.series(lightgalleryFontsClear);
 
 // fontastic
-const fontasticFontsClear = () => del('rainloop/v/' + config.devVersion + '/static/css/fonts/rainloop.*');
+const fontasticFontsClear = () => del('rainloop/v/' + config.devVersion + '/static/css/fonts/snappymail.*');
 
 const fontasticFontsCopy = () =>
 	gulp
-		.src('vendors/fontastic/fonts/rainloop.*')
+		.src('vendors/fontastic/fonts/snappymail.*')
 		.pipe(gulp.dest('rainloop/v/' + config.devVersion + '/static/css/fonts'));
 
 const fontastic = gulp.series(fontasticFontsClear, fontasticFontsCopy);
