@@ -27,12 +27,16 @@ if ($gzip = trim(`which gzip`)) {
 	passthru("{$gzip} -k --best {$cmddir}/js/*.js");
 	passthru("{$gzip} -k --best {$cmddir}/js/min/*.js");
 	passthru("{$gzip} -k --best {$cmddir}/css/app*.css");
+	unlink(__DIR__ . '/rainloop/v/0.0.0/static/js/boot.js.gz');
+	unlink(__DIR__ . '/rainloop/v/0.0.0/static/js/min/boot.min.js.gz');
 }
 
 if ($brotli = trim(`which brotli`)) {
 	passthru("{$brotli} -k --best {$cmddir}/js/*.js");
 	passthru("{$brotli} -k --best {$cmddir}/js/min/*.js");
 	passthru("{$brotli} -k --best {$cmddir}/css/app*.css");
+	unlink(__DIR__ . '/rainloop/v/0.0.0/static/js/boot.js.br');
+	unlink(__DIR__ . '/rainloop/v/0.0.0/static/js/min/boot.min.js.br');
 }
 
 // Temporary rename folder to speed up PharData
@@ -66,6 +70,9 @@ foreach ($files as $file) {
 }
 
 $tar->buildFromDirectory('./', "@rainloop/v/{$package->version}@");
+
+$zip->addFromString('data/.htaccess', $package->version);
+$tar->addFromString('data/.htaccess', $package->version);
 
 $zip->addFromString('data/VERSION', $package->version);
 $tar->addFromString('data/VERSION', $package->version);

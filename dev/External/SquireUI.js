@@ -431,16 +431,21 @@ class SquireUI
 			changes.redo.input.disabled = !state.canRedo;
 		});
 
+		squire.addEventListener('focus', () => shortcuts.off());
+		squire.addEventListener('blur', () => shortcuts.on());
+
 		container.append(toolbar, wysiwyg, plain);
 
 /*
-squire-raw.js:2161: this.fireEvent( 'dragover', {
-squire-raw.js:2168: this.fireEvent( 'drop', {
-squire-raw.js:2583: this.fireEvent( event.type, event );
-squire-raw.js:2864: this.fireEvent( 'pathChange', { path: newPath } );
-squire-raw.js:2867: this.fireEvent( range.collapsed ? 'cursor' : 'select', {
-squire-raw.js:3004: this.fireEvent( 'input' );
-squire-raw.js:4089: this.fireEvent( 'willPaste', event );
+		squire.addEventListener('dragover', );
+		squire.addEventListener('drop', );
+		squire.addEventListener('pathChange', );
+		squire.addEventListener('cursor', );
+		squire.addEventListener('select', );
+		squire.addEventListener('input', );
+		squire.addEventListener('willPaste', );
+		squire.addEventListener( 'keydown keyup', monitorShiftKey )
+		squire.addEventListener( 'keydown', onKey )
 */
 
 		// CKEditor gimmicks used by HtmlEditor

@@ -12,7 +12,7 @@
     The drastically upgraded &amp; secured fork of <a href="https://github.com/RainLoop/rainloop-webmail">RainLoop Webmail Community edition</a>.
   </p>
   <p>
-    We thank RainLoop team for making a great PHP 5 product that was good in the past.
+    We thank the RainLoop Team for making a great PHP 5 product that was good in the past.
   </p>
   <p>
     Up to date system requirements, snappy performance, simple installation and upgrade, no database required
@@ -106,7 +106,7 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 |admin.js    	|2.130.942	|  844.753	|
 |app.js      	|4.184.455	|2.487.401	|
 |boot.js     	|  671.522	|    5.285	|
-|libs.js     	|  647.614	|  246.085	|
+|libs.js     	|  647.614	|  246.183	|
 |polyfills.js	|  325.834	|        0	|
 |TOTAL      	|7.960.367	|3.583.524	|
 
@@ -115,10 +115,10 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 |admin.min.js    	|  252.147	|  116.068	| 73.657	| 33.279	| 28.711	|
 |app.min.js      	|  511.202	|  339.263	|140.462	| 89.051	| 72.194	|
 |boot.min.js     	|   66.007	|    2.935	| 22.567	|  1.510	|  1.285	|
-|libs.min.js     	|  572.545	|  147.019	|176.720	| 51.583	| 45.825	|
+|libs.min.js     	|  572.545	|  147.113	|176.720	| 51.608	| 45.901	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  605.285	|424.718	|175.423	|148.015	|
-|TOTAL (no admin)	|1.182.206	|  489.217	|351.061	|142.144	|119.304	|
+|TOTAL           	|1.434.353	|  605.379	|424.718	|175.448	|148.091	|
+|TOTAL (no admin)	|1.182.206	|  489.311	|351.061	|142.169	|119.380	|
 
 For a user its around 58% smaller and faster than traditional RainLoop.
 
