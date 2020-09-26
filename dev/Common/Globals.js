@@ -12,11 +12,6 @@ export const dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 });
 /**
  * @type {boolean}
  */
-export const useKeyboardShortcuts = ko.observable(true);
-
-/**
- * @type {boolean}
- */
 export const bMobileDevice = (/android|iphone|ipod|ipad|blackberry|mobile/i).test(
 	(navigator.userAgent && navigator.userAgent.toLowerCase()) || ''
 );
@@ -50,18 +45,8 @@ export const keyScopeFake = ko.observable(KeyState.All);
 
 export const keyScope = ko.computed({
 	read: () => keyScopeFake(),
-	write: (value) => {
+	write: value => {
 		if (KeyState.Menu !== value) {
-			if (KeyState.Compose === value) {
-				// disableKeyFilter
-				shortcuts.filter = () => useKeyboardShortcuts();
-			} else {
-				// restoreKeyFilter
-				shortcuts.filter = event => !(event.target.matches
-					&& (event.target.matches('input,select,textarea')
-					 || event.target.closest('[contenteditable]')));
-			}
-
 			keyScopeFake(value);
 			if (dropdownVisibility()) {
 				value = KeyState.Menu;
@@ -72,12 +57,9 @@ export const keyScope = ko.computed({
 	}
 });
 
-keyScopeReal.subscribe((value) => {
-	//	console.log('keyScope=' + sValue); // DEBUG
-	shortcuts.setScope(value);
-});
+keyScopeReal.subscribe(value => shortcuts.setScope(value));
 
-dropdownVisibility.subscribe((value) => {
+dropdownVisibility.subscribe(value => {
 	if (value) {
 		keyScope(KeyState.Menu);
 	} else if (KeyState.Menu === shortcuts.getScope()) {
