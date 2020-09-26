@@ -79,7 +79,7 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 	}
 
 	onBuild(oDom) {
-//		shortcuts.add('tab','shift', KeyState.PopupMessageOpenPGP, () => {
+//		shortcuts.add('tab', 'shift', KeyState.PopupMessageOpenPGP, () => {
 		shortcuts.add('tab', '', KeyState.PopupMessageOpenPGP, () => {
 			let btn = this.querySelector('.inputPassword');
 			if (btn.matches(':focus')) {

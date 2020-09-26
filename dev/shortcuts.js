@@ -6,7 +6,7 @@ const
 	doc = document,
 	meta = /Mac OS X/.test(navigator.userAgent) ? 'meta' : 'ctrl',
 	_scopes = {},
-	toArray = v => Array.isArray(v) ? v : [v],
+	toArray = v => Array.isArray(v) ? v : v.split(/\s*,\s*/),
 
 	fire = (actions, event) => {
 		let modifiers = [];
@@ -20,7 +20,7 @@ const
 			actions[modifiers].forEach(cmd => {
 				try {
 					// call the handler and stop the event if neccessary
-					if (!event.defaultPrevented  && cmd(event) === false) {
+					if (!event.defaultPrevented && cmd(event) === false) {
 						event.preventDefault();
 						event.stopPropagation();
 					}

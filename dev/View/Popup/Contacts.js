@@ -611,7 +611,7 @@ class ContactsPopupView extends AbstractViewNext {
 			return false;
 		});
 
-		shortcuts.add(['c','w'], '', KeyState.ContactList, () => {
+		shortcuts.add('c,w', '', KeyState.ContactList, () => {
 			this.newMessageCommand();
 			return false;
 		});

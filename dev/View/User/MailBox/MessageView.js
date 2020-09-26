@@ -547,7 +547,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	initShortcuts() {
 		// exit fullscreen, back
-		shortcuts.add(['escape','backspace'], '', KeyState.MessageView, this.escShortcuts.bind(this));
+		shortcuts.add('escape,backspace', '', KeyState.MessageView, this.escShortcuts.bind(this));
 
 		// fullscreen
 		shortcuts.add('enter', '', KeyState.MessageView, () => {
@@ -602,12 +602,12 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			return true;
 		});
 
-		shortcuts.add(['arrowup','arrowleft'], 'meta', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('arrowup,arrowleft', 'meta', [KeyState.MessageList, KeyState.MessageView], () => {
 			this.goUpCommand();
 			return false;
 		});
 
-		shortcuts.add(['arrowdown','arrowright'], 'meta', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('arrowdown,arrowright', 'meta', [KeyState.MessageList, KeyState.MessageView], () => {
 			this.goDownCommand();
 			return false;
 		});

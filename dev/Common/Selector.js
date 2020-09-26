@@ -286,11 +286,11 @@ class Selector {
 			shortcuts.add('arrowup', 'meta', keyScope, () => false);
 			shortcuts.add('arrowdown', 'meta', keyScope, () => false);
 
-			shortcuts.add(['arrowup','arrowdown'], 'shift', keyScope, event => {
+			shortcuts.add('arrowup,arrowdown', 'shift', keyScope, event => {
 				this.newSelectPosition(event.key, true);
 				return false;
 			});
-			shortcuts.add(['arrowup','arrowdown','home','end','pageup','pagedown','insert','space'], '', keyScope, event => {
+			shortcuts.add('arrowup,arrowdown,home,end,pageup,pagedown,insert,space', '', keyScope, event => {
 				this.newSelectPosition(event.key, false);
 				return false;
 			});

@@ -121,7 +121,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			el && fSelectFolder(el, event, false);
 		});
 
-		shortcuts.add(['arrowup','arrowdown'], '', KeyState.FolderList, event => {
+		shortcuts.add('arrowup,arrowdown', '', KeyState.FolderList, event => {
 			let items = [], index = 0;
 			dom.querySelectorAll('.b-folders .e-item .e-link:not(.hidden)').forEach(node => {
 				if (node.offsetHeight || node.getClientRects().length) {
@@ -168,7 +168,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 		});
 
 //		shortcuts.add('tab', 'shift', KeyState.FolderList, () => {
-		shortcuts.add(['escape','tab','arrowright'], '', KeyState.FolderList, () => {
+		shortcuts.add('escape,tab,arrowright', '', KeyState.FolderList, () => {
 			AppStore.focusedState(Focused.MessageList);
 			moveAction(false);
 			return false;

@@ -786,7 +786,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 		if (Settings.capa(Capa.Composer)) {
 			// write/compose (open compose popup)
-			shortcuts.add(['w','c'], '', [KeyState.MessageList, KeyState.MessageView], () => {
+			shortcuts.add('w,c', '', [KeyState.MessageList, KeyState.MessageView], () => {
 				showScreenPopup(require('View/Popup/Compose'));
 				return false;
 			});
@@ -877,7 +877,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			AppStore.focusedState(Focused.FolderList);
 			return false;
 		});
-		shortcuts.add(['tab','arrowright'], '', KeyState.MessageList, () => {
+		shortcuts.add('tab,arrowright', '', KeyState.MessageList, () => {
 			this.message() && AppStore.focusedState(Focused.MessageView);
 			return false;
 		});

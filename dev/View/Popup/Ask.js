@@ -87,7 +87,7 @@ class AskPopupView extends AbstractViewNext {
 
 	onBuild() {
 //		shortcuts.add('tab', 'shift', KeyState.PopupAsk, () => {
-		shortcuts.add(['tab','arrowright','arrowleft'], '', KeyState.PopupAsk, () => {
+		shortcuts.add('tab,arrowright,arrowleft', '', KeyState.PopupAsk, () => {
 			let btn = this.querySelector('.buttonYes');
 			if (btn.matches(':focus')) {
 				btn = this.querySelector('.buttonNo');

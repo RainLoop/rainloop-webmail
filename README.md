@@ -6,7 +6,7 @@
   <h1>SnappyMail</h1>
   <br>
   <p>
-    Simple, modern &amp; fast web-based email client.
+    Simple, modern, lightweight &amp; fast web-based email client.
   </p>
   <p>
     The drastically upgraded &amp; secured fork of <a href="https://github.com/RainLoop/rainloop-webmail">RainLoop Webmail Community edition</a>.
@@ -85,6 +85,7 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Replaced knockout-sortable with native HTML5 drag&drop
 * Replaced simplestatemanager with @media
 * Replaced inputosaurus to native
+* Replaced keymaster with own shortcuts handler
 * Removed pikaday
 * Removed underscore
 * Removed polyfills
@@ -102,22 +103,22 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 
 |js/*       	|1.14.0 	|native 	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  850.202	|
-|app.js      	|4.184.455	|2.488.837	|
+|admin.js    	|2.130.942	|  844.753	|
+|app.js      	|4.184.455	|2.487.401	|
 |boot.js     	|  671.522	|    5.285	|
-|libs.js     	|  647.614	|  250.948	|
+|libs.js     	|  647.614	|  246.085	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.595.272	|
+|TOTAL      	|7.960.367	|3.583.524	|
 
 |js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  116.626	| 73.657	| 33.343	| 28.869	|
-|app.min.js      	|  511.202	|  339.176	|140.462	| 89.271	| 72.393	|
+|admin.min.js    	|  252.147	|  116.068	| 73.657	| 33.279	| 28.711	|
+|app.min.js      	|  511.202	|  339.263	|140.462	| 89.051	| 72.194	|
 |boot.min.js     	|   66.007	|    2.935	| 22.567	|  1.510	|  1.285	|
-|libs.min.js     	|  572.545	|  148.303	|176.720	| 52.206	| 46.472	|
+|libs.min.js     	|  572.545	|  147.019	|176.720	| 51.583	| 45.825	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  607.040	|424.718	|176.330	|149.019	|
-|TOTAL (no admin)	|1.182.206	|  490.414	|351.061	|142.987	|120.150	|
+|TOTAL           	|1.434.353	|  605.285	|424.718	|175.423	|148.015	|
+|TOTAL (no admin)	|1.182.206	|  489.217	|351.061	|142.144	|119.304	|
 
 For a user its around 58% smaller and faster than traditional RainLoop.
 
@@ -144,8 +145,8 @@ For a user its around 58% smaller and faster than traditional RainLoop.
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 190.855	| 46,959	| 29.156	| 24.561	|
-|app.min.css	| 274.791	| 157.619	| 39.618	| 26.336	| 22.667	|
+|app.css    	| 340.334	| 190.086	| 46,959	| 29.415	| 24.717	|
+|app.min.css	| 274.791	| 156.076	| 39.618	| 26.034	| 22.418	|
 |boot.css    	|       	|   2.534	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 

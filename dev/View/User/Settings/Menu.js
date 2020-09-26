@@ -32,7 +32,7 @@ class MenuSettingsUserView extends AbstractViewNext {
 			);
 		}
 
-		shortcuts.add(['ArrowUp','ArrowDown'], '', KeyState.Settings,
+		shortcuts.add('arrowup,arrowdown', '', KeyState.Settings,
 			settingsMenuKeysHandler(dom.querySelectorAll('.b-settings-menu .e-item')));
 	}
 

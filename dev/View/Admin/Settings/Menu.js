@@ -26,7 +26,7 @@ class MenuSettingsAdminView extends AbstractViewNext {
 	}
 
 	onBuild(dom) {
-		shortcuts.add(['arrowup','arrowdown'], '', KeyState.Settings,
+		shortcuts.add('arrowup,arrowdown', '', KeyState.Settings,
 			settingsMenuKeysHandler(dom.querySelectorAll('.b-admin-menu .e-item')));
 	}
 }
