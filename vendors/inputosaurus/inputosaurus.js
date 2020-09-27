@@ -23,23 +23,26 @@ const doc = document,
 	datalist = createEl('datalist',{id:"inputosaurus-datalist"}),
 	fakeSpan = createEl('span',{class:"inputosaurus-fake-span"}),
 
-	contentType = 'application/x-inputosaurus-item',
-	getTransferData = data => 'move' === data.dropEffect && data.getData(contentType);
+	contentType = 'inputosaurus/item';
 
 doc.body.append(fakeSpan, datalist);
 
-let removeDragged = null;
+let dragData;
 
 window.Inputosaurus = class {
 
 	constructor(element, options) {
 
 		var self = this,
-			els = {};
+			els = {},
+			// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
+			// In Chrome Mobile dataTransfer.types.includes(contentType) fails, only text/plain is set
+			validDropzone = () => dragData && dragData.li.parentNode !== els.ul,
+			fnDrag = e => validDropzone(e) && e.preventDefault();
 
 		self.element = element;
 
-		self._focusTriggerTimer = 0;
+		self._focusTimer = 0;
 
 		self.options = Object.assign({
 
@@ -66,12 +69,13 @@ window.Inputosaurus = class {
 		// Create the elements
 		els.ul = createEl('ul',{class:"inputosaurus-container"});
 
-		els.ul.addEventListener("dragover", e => getTransferData(e.dataTransfer) && e.preventDefault());
+		els.ul.addEventListener("dragenter", fnDrag);
+		els.ul.addEventListener("dragover", fnDrag);
 		els.ul.addEventListener("drop", e => {
-			let value = getTransferData(e.dataTransfer);
-			if (value) {
-				els.input.value = value;
-				removeDragged();
+			if (validDropzone(e) && dragData.value) {
+				e.preventDefault();
+				dragData.source._removeDraggedTag(dragData.li);
+				els.input.value = dragData.value;
 				self.parseInput();
 			}
 		});
@@ -132,8 +136,8 @@ window.Inputosaurus = class {
 
 	_focusTrigger(bValue) {
 		var self = this;
-		clearTimeout(self._focusTriggerTimer);
-		self._focusTriggerTimer = setTimeout(() => {
+		clearTimeout(self._focusTimer);
+		self._focusTimer = setTimeout(() => {
 			self.elements.ul.classList.toggle('inputosaurus-focused', bValue);
 			self.options.focusCallback(bValue);
 		}, 10);
@@ -400,13 +404,21 @@ window.Inputosaurus = class {
 				li.inputosaurusValue = v.obj.toLine(false, false, false);
 
 				li.addEventListener("dragstart", e => {
-					e.dataTransfer.setData(contentType, li.inputosaurusValue);
-					e.dataTransfer.setDragImage(li, 0, 0);
+					dragData = {
+						source: self,
+						li: li,
+						value: li.inputosaurusValue
+					};
+//					e.dataTransfer.setData(contentType, li.inputosaurusValue);
+					e.dataTransfer.setData('text/plain', contentType);
+//					e.dataTransfer.setDragImage(li, 0, 0);
 					e.dataTransfer.effectAllowed = 'move';
 					li.style.opacity = 0.25;
-					removeDragged = () => self._removeDraggedTag(li);
 				});
-				li.addEventListener("dragend", () => li.style.opacity = null);
+				li.addEventListener("dragend", () => {
+					dragData = null;
+					li.style.cssText = '';
+				});
 
 				els.inputCont.before(li);
 			}

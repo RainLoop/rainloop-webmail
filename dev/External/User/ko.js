@@ -2,15 +2,16 @@ const ko = window.ko,
 
 	rlContentType = 'snappymail/action',
 
-	// In Chrome we have no access to getData unless it's the 'drop' event
-	getDragAction = e => dragData && e.dataTransfer.types.includes(rlContentType) ? dragData.action : false,
+	// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
+	// In Chrome Mobile dataTransfer.types.includes(rlContentType) fails, only text/plain is set
+	getDragAction = () => dragData ? dragData.action : false,
 	setDragAction = (e, action, effect, data, img) => {
 		dragData = {
 			action: action,
 			data: data
 		};
-		e.dataTransfer.setData(rlContentType, action);
-		e.dataTransfer.setData('Text', rlContentType+'/'+action);
+//		e.dataTransfer.setData(rlContentType, action);
+		e.dataTransfer.setData('text/plain', rlContentType+'/'+action);
 		e.dataTransfer.setDragImage(img, 0, 0);
 		e.dataTransfer.effectAllowed = effect;
 	},
@@ -205,10 +206,12 @@ ko.bindingHandlers.sortableItem = {
 		element.addEventListener("dragend", e => {
 			element.style.opacity = null;
 			if ('sortable' === getDragAction(e)) {
+				dragData.data.style.cssText = '';
 				let row = parent.rows[options.list.indexOf(ko.dataFor(element))];
 				if (row != dragData.data) {
 					row.before(dragData.data);
 				}
+				dragData = null;
 			}
 		});
 		if (!parent.sortable) {
@@ -217,7 +220,6 @@ ko.bindingHandlers.sortableItem = {
 			parent.addEventListener("dragover", fnHover);
 			parent.addEventListener("drop", e => {
 				if ('sortable' === getDragAction(e)) {
-					dragData.data.style.opacity = null;
 					e.preventDefault();
 					let data = ko.dataFor(dragData.data),
 						from = options.list.indexOf(data),
