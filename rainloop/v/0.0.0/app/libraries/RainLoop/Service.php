@@ -42,6 +42,9 @@ class Service
 		\header('X-Content-Type-Options: nosniff');
 
 		$sContentSecurityPolicy = \trim($this->oActions->Config()->Get('security', 'content_security_policy', '')) ?: APP_DEFAULT_CSP;
+		if ($this->oActions->Config()->Get('security', 'use_local_proxy_for_external_images', '')) {
+			$sContentSecurityPolicy = preg_replace('/(img-src[^;]+)\\shttps:(\\s|;|$)/D', '$1$2', $sContentSecurityPolicy);
+		}
 		\header('Content-Security-Policy: '.$sContentSecurityPolicy, true);
 
 		$sXFrameOptionsHeader = \trim($this->oActions->Config()->Get('security', 'x_frame_options_header', '')) ?: 'DENY';

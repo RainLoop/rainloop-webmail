@@ -179,7 +179,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'hide_x_mailer_header'		=> array(true),
 				'admin_panel_host'			=> array(''),
 				'admin_panel_key'			=> array('admin'),
-				'content_security_policy'	=> array(APP_DEFAULT_CSP),
+				'content_security_policy'	=> array(''),
 				'core_install_access_domain' => array('')
 			),
 
@@ -388,7 +388,7 @@ Enables caching in the system'),
 				'fast_cache_memcache_port' => array(11211),
 				'fast_cache_redis_host' => array('127.0.0.1'),
 				'fast_cache_redis_port' => array(6379),
-				'use_local_proxy_for_external_images' => array(false),
+				'use_local_proxy_for_external_images' => array(true),
 				'detect_image_exif_orientation' => array(true),
 				'cookie_default_path' => array(''),
 				'cookie_default_secure' => array(false),
