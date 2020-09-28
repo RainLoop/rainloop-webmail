@@ -402,7 +402,7 @@ export function htmlToPlain(html) {
 		.replace(/<\/blockquote>/gim, '\n__bq__end__\n')
 		.replace(/<a [^>]*>([\s\S\r\n]*?)<\/a>/gim, convertLinks)
 		.replace(/<\/div>/gi, '\n')
-		.replace(/&nbsp;/gi, ' ')
+		.replace(/&nbsp;/gi, ' ')
 		.replace(/&quot;/gi, '"')
 		.replace(/<[^>]*>/gm, '');
 
