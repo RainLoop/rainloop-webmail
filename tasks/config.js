@@ -74,16 +74,17 @@ config.paths.js = {
 		src: [
 			'dev/polyfill.js',
 			'dev/prototype.js',
+			'dev/External/ifvisible.js',
+			'dev/dragdropgecko.js',
+			'dev/shortcuts.js',
 			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
 			'vendors/routes/signals.min.js', // fixed
 			'vendors/routes/hasher.min.js', // fixed
 			'vendors/routes/crossroads.min.js', // fixed
 			'vendors/jua/jua.min.js', // custom
-			'dev/shortcuts.js',
 			'vendors/qr.js/qr.min.js', // fixed (license)
 			'vendors/bootstrap/js/bootstrap.native.min.js', // fixed
 			'vendors/knockout/build/output/knockout-latest.js',
-			'dev/External/ifvisible.js',
 			'vendors/squire/build/squire-raw.js',
 			'dev/External/SquireUI.js'
 		]

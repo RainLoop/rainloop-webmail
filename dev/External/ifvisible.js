@@ -1,6 +1,5 @@
-(() => {
-	const doc = document,
-		visible = "visible",
+(doc => {
+	let visible = "visible",
 		wakeUp = () => {
 			clearTimeout(timer);
 			if (status !== visible) {
@@ -12,24 +11,21 @@
 					dispatchEvent(new CustomEvent("idle"));
 				}
 			}, 10000);
-		};
-
-	let status = visible,
-		timer = false,
+		},
+		status = visible,
+		timer = 0,
 		init = () => {
 			init = ()=>{};
 			doc.addEventListener("visibilitychange", () => {
 				status = doc.visibilityState;
 				doc.hidden || wakeUp();
-			}, false);
+			});
 			wakeUp();
-			doc.addEventListener("mousemove", wakeUp);
-			doc.addEventListener("keyup", wakeUp);
-			doc.addEventListener("touchstart", wakeUp);
+			["mousemove","keyup","touchstart"].forEach(t => doc.addEventListener(t, wakeUp));
 			addEventListener("scroll", wakeUp);
 		};
 
-	window.ifvisible = {
+	this.ifvisible = {
 		idle: callback => {
 			init();
 			addEventListener("idle", callback);
@@ -39,4 +35,4 @@
 			return status === visible;
 		}
 	};
-})();
+})(document);
