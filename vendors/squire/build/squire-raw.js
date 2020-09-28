@@ -166,39 +166,36 @@ const
 	},
 
 	getPath = ( node, root, config ) => {
-		let path = '';
-		let id, className, classNames, dir, styleNames;
+		let path = '', classNames, styleNames;
 		if ( node && node !== root ) {
 			path = getPath( node.parentNode, root, config );
 			if ( node.nodeType === ELEMENT_NODE ) {
 				path += ( path ? '>' : '' ) + node.nodeName;
-				if ( id = node.id ) {
-					path += '#' + id;
+				if ( node.id ) {
+					path += '#' + node.id;
 				}
-				if ( className = node.className.trim() ) {
-					classNames = className.split( /\s+/ );
-					classNames.sort();
-					path += '.';
-					path += classNames.join( '.' );
+				if ( node.classList.length ) {
+					classNames = [...node.classList].sort();
+					path += '.' + classNames.join( '.' );
 				}
-				if ( dir = node.dir ) {
-					path += '[dir=' + dir + ']';
+				if ( node.dir ) {
+					path += '[dir=' + node.dir + ']';
 				}
 				if ( classNames ) {
 					styleNames = config.classNames;
-					if ( indexOf( classNames, styleNames.highlight ) > -1 ) {
+					if ( classNames.includes( styleNames.highlight ) ) {
 						path += '[backgroundColor=' +
 							node.style.backgroundColor.replace( / /g,'' ) + ']';
 					}
-					if ( indexOf( classNames, styleNames.colour ) > -1 ) {
+					if ( classNames.includes( styleNames.colour ) ) {
 						path += '[color=' +
 							node.style.color.replace( / /g,'' ) + ']';
 					}
-					if ( indexOf( classNames, styleNames.fontFamily ) > -1 ) {
+					if ( classNames.includes( styleNames.fontFamily ) ) {
 						path += '[fontFamily=' +
 							node.style.fontFamily.replace( / /g,'' ) + ']';
 					}
-					if ( indexOf( classNames, styleNames.fontSize ) > -1 ) {
+					if ( classNames.includes( styleNames.fontSize ) ) {
 						path += '[fontSize=' + node.style.fontSize + ']';
 					}
 				}
@@ -550,7 +547,7 @@ const
 			}
 		} else if ( isListItem ) {
 			prev = createElement( doc, 'DIV' );
-			first.before( prev );
+			node.insertBefore( prev, first );
 			fixCursor( prev, root );
 		}
 	},
@@ -622,7 +619,7 @@ const
 		if ( startOffset === childCount ) {
 			startContainer.append( node );
 		} else {
-			children[ startOffset ].before( node );
+			startContainer.insertBefore( node, children[ startOffset ] );
 		}
 
 		if ( startContainer === endContainer ) {
@@ -824,7 +821,7 @@ const
 			nodeBeforeSplit = nodeAfterSplit ?
 				nodeAfterSplit.previousSibling :
 				stopPoint.lastChild;
-			nodeAfterSplit.before( frag  );
+			stopPoint.insertBefore( frag, nodeAfterSplit );
 			if ( nodeAfterSplit ) {
 				range.setEndBefore( nodeAfterSplit );
 			} else {
@@ -3924,7 +3921,7 @@ let addLinks = ( frag, root, self ) => {
 			endIndex = index + match[0].length;
 			if ( index ) {
 				child = doc.createTextNode( data.slice( 0, index ) );
-				node.before( child );
+				parent.insertBefore( child, node );
 			}
 			child = self.createElement( 'A', mergeObjects({
 				href: match[1] ?
@@ -3934,7 +3931,7 @@ let addLinks = ( frag, root, self ) => {
 					'mailto:' + match[0]
 			}, defaultAttributes, false ));
 			child.textContent = data.slice( index, endIndex );
-			node.before( child );
+			parent.insertBefore( child, node );
 			node.data = data = data.slice( endIndex );
 		}
 	}
@@ -4045,7 +4042,7 @@ proto.insertPlainText = function ( plainText, isPaste ) {
 		let text, event;
 		if ( !node || node.nodeType !== TEXT_NODE ) {
 			text = doc.createTextNode( '' );
-			node.childNodes[ offset ].before( text );
+			node && node.childNodes[ offset ].before( text );
 			node = text;
 			offset = 0;
 		}
@@ -4450,7 +4447,7 @@ proto.removeAllFormatting = function ( range ) {
 	// Restore selection
 	childNodes = stopNode.childNodes;
 	if ( nodeInSplit ) {
-		nodeAfterSplit.before( cleanNodes );
+		stopNode.insertBefore( cleanNodes, nodeAfterSplit );
 		startOffset = indexOf( childNodes, nodeInSplit );
 		endOffset = indexOf( childNodes, nextNode ) + 1;
 	} else {
