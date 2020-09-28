@@ -6,6 +6,7 @@
 			&nbsp;
 			"<span data-bind="text: name"></span>"
 		</h4>
+		<span data-bind="visible: hasReadme, text: readme"></span>
 	</div>
 	<div class="modal-body">
 		<form class="form-horizontal plugin-form" action="#/" onsubmit="return false;">
@@ -22,9 +23,6 @@
 		</form>
 	</div>
 	<div class="modal-footer">
-		<span class="information pull-left" data-bind="visible: hasReadme, popover: readmePopoverConf">
-			<i class="icon-info"></i>
-		</span>
 		<a class="btn buttonClose" data-bind="command: cancelCommand">
 			<i class="icon-remove"></i>
 			&nbsp;&nbsp;

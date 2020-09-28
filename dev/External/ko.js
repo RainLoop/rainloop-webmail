@@ -83,13 +83,6 @@ ko.bindingHandlers.dropdownCloser = {
 	)
 };
 
-ko.bindingHandlers.popover = {
-	init: (element, fValueAccessor) => {
-		const conf = ko.unwrap(fValueAccessor());
-		element.title = conf.content; // conf.title
-	}
-};
-
 ko.bindingHandlers.onEnter = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel) => {
 		let fn = event => {

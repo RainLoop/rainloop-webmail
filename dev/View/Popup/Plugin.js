@@ -28,15 +28,6 @@ class PluginPopupView extends AbstractViewNext {
 		this.hasReadme = ko.computed(() => !!this.readme());
 		this.hasConfiguration = ko.computed(() => 0 < this.configures().length);
 
-		this.readmePopoverConf = {
-			'placement': 'right',
-			'trigger': 'hover',
-			'title': i18n('POPUPS_PLUGIN/TOOLTIP_ABOUT_TITLE'),
-			'container': 'body',
-			'html': true,
-			'content': () => `<pre>${this.readme()}</pre>`
-		};
-
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = KeyState.All;
 
@@ -74,8 +65,8 @@ class PluginPopupView extends AbstractViewNext {
 	}
 
 	onShow(oPlugin) {
-		this.name();
-		this.readme();
+		this.name('');
+		this.readme('');
 		this.configures([]);
 
 		if (oPlugin) {

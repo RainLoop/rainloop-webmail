@@ -194,7 +194,6 @@ es_ES:
     DESC_NOTHING_TO_CONFIGURE: "Nada para configurar"
     BUTTON_CLOSE: "Cerrar"
     BUTTON_SAVE: "Guardar"
-    TOOLTIP_ABOUT_TITLE: "Acerca"
   POPUPS_ASK:
     DESC_WANT_CLOSE_THIS_WINDOW: "¿Estás seguro de que deseas cerrar esta ventana?"
   POPUPS_LANGUAGES:
