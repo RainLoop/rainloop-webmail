@@ -9,7 +9,7 @@ ko.bindingHandlers.saveTrigger = {
 
 		if ('custom' === element.saveTriggerType) {
 			element.append(
-				'&nbsp;&nbsp;',
+				'  ',
 				Element.fromHTML('<i class="icon-spinner animated"></i>'),
 				Element.fromHTML('<i class="icon-remove error"></i>'),
 				Element.fromHTML('<i class="icon-ok success"></i>')
