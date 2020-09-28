@@ -15,6 +15,7 @@ const doc = document,
 	ctrlKey = /Mac OS X/.test( navigator.userAgent ) ? '⌘ + ' : 'Ctrl + ',
 
 	tpl = doc.createElement('template'),
+	clr = doc.createElement('input'),
 
 	getFragmentOfChildren = parent => {
 		let frag = doc.createDocumentFragment();
@@ -138,6 +139,10 @@ const doc = document,
 		return text;
 	};
 
+clr.type = "color";
+clr.style.display = 'none';
+doc.body.append(clr);
+
 class SquireUI
 {
 	constructor(container) {
@@ -179,13 +184,19 @@ class SquireUI
 				},
 				colors: {
 					textColor: {
-						input: 'color',
-						cmd: s => squire.setTextColour(s.value),
+						html: 'A<sub>▾</sub>',
+						cmd: () => {
+							clr.onchange = () => squire.setTextColour(clr.value);
+							clr.click();
+						},
 						hint: 'Text color'
 					},
 					backgroundColor: {
-						input: 'color',
-						cmd: s => squire.setHighlightColour(s.value),
+						html: '🎨', /* ▧ */
+						cmd: () => {
+							clr.onchange = () => squire.setHighlightColour(clr.value);
+							clr.click();
+						},
 						hint: 'Background color'
 					},
 				},
