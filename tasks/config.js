@@ -52,8 +52,7 @@ config.paths.css = {
 		src: [
 			'vendors/normalize.css/normalize.css',
 			'vendors/fontastic/styles.css',
-			'vendors/inputosaurus/inputosaurus.css',
-			'vendors/flags/flags-fixed.css'
+			'vendors/inputosaurus/inputosaurus.css'
 		]
 	},
 	boot: {
