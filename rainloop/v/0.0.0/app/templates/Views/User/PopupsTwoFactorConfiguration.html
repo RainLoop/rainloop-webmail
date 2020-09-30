@@ -1,4 +1,4 @@
-<div class="modal b-two-factor-content g-ui-user-select-none" data-bind="modal: modalVisibility">
+<div class="modal fade b-two-factor-content g-ui-user-select-none" data-bind="modal: modalVisibility">
 	<div>
 		<div class="modal-header">
 			<button type="button" class="close" data-bind="visible: viewEnable() || !lock(), command: cancelCommand">&times;</button>
@@ -10,7 +10,7 @@
 			<div class="form-horizontal" data-bind="visible: capaTwoFactor" style="margin-top: 10px;">
 				<div class="control-group" data-bind="visible: twoFactorStatus">
 					<div class="controls">
-						<div style="display: inline-block" data-tooltip-join="top" data-bind="tooltip: viewTwoFactorEnableTooltip">
+						<div style="display: inline-block" data-bind="tooltip: viewTwoFactorEnableTooltip">
 							<div data-bind="component: {
 								name: 'Checkbox',
 								params: {

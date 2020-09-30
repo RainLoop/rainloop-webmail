@@ -1,5 +1,5 @@
 import { Focused, Capa, ClientSideKeyName } from 'Common/Enums';
-import { leftPanelDisabled, leftPanelType, moveAction, bMobileDevice } from 'Common/Globals';
+import { leftPanelDisabled, leftPanelType, moveAction } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
@@ -120,7 +120,7 @@ class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onBuild() {
-		if (!bMobileDevice && !Settings.app('mobile')) {
+		if (!Settings.app('mobile')) {
 			setTimeout(() =>
 				rl.app.initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize)
 			, 1);

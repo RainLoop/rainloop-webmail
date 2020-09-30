@@ -2,8 +2,6 @@ import ko from 'ko';
 
 import { $htmlCL, VIEW_MODELS } from 'Common/Globals';
 
-//import { bMobileDevice } from 'Common/Globals';
-
 let currentScreen = null,
 	defaultScreenName = '',
 	popupVisibilityNames = [];
@@ -11,7 +9,7 @@ let currentScreen = null,
 const SCREENS = {},
 	isNonEmptyArray = Array.isNotEmpty,
 	autofocus = dom => {
-//		if (!bMobileDevice) {
+//		if (!rl.settings.app('mobile')) {
 		const af = dom.querySelector('[autofocus]');
 		af && af.focus();
 	};

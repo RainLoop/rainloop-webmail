@@ -236,10 +236,7 @@ class Actions
 	private function fabrica(string $sName, ?Model\Account $oAccount = null)
 	{
 		$mResult = null;
-		$this->Plugins()
-			->RunHook('main.fabrica', array($sName, &$mResult), false)
-			->RunHook('main.fabrica[2]', array($sName, &$mResult, $oAccount), false)
-		;
+		$this->Plugins()->RunHook('main.fabrica', array($sName, &$mResult), false);
 
 		if (null === $mResult)
 		{
@@ -3839,7 +3836,6 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		}
 
 		$this->Plugins()->RunHook('filter.build-message', array($oMessage));
-		$this->Plugins()->RunHook('filter.build-message[2]', array($oMessage, $oAccount));
 
 		return $oMessage;
 	}
@@ -3932,10 +3928,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 
 		$oMessage = $this->buildMessage($oAccount, true);
 
-		$this->Plugins()
-			->RunHook('filter.save-message', array($oMessage))
-			->RunHook('filter.save-message[2]', array($oMessage, $oAccount))
-		;
+		$this->Plugins()->RunHook('filter.save-message', array($oMessage));
 
 		$mResult = false;
 		if ($oMessage)
@@ -4156,10 +4149,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 
 		$oMessage = $this->buildMessage($oAccount, false);
 
-		$this->Plugins()
-			->RunHook('filter.send-message', array($oMessage))
-			->RunHook('filter.send-message[2]', array($oMessage, $oAccount))
-		;
+		$this->Plugins()->RunHook('filter.send-message', array($oMessage));
 
 		$mResult = false;
 		try
@@ -4217,7 +4207,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 									\rewind($rMessageStream);
 								}
 
-								$this->Plugins()->RunHook('filter.sent-message-stream',
+								$this->Plugins()->RunHook('filter.send-message-stream',
 									array($oAccount, &$rMessageStream, &$iMessageStreamSize));
 
 								$this->MailClient()->MessageAppendStream(
@@ -4233,7 +4223,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 								$iAppendMessageStreamSize = \MailSo\Base\Utils::MultipleStreamWriter(
 									$oMessage->ToStream(false), array($rAppendMessageStream), 8192, true, true, true);
 
-								$this->Plugins()->RunHook('filter.sent-message-stream',
+								$this->Plugins()->RunHook('filter.send-message-stream',
 									array($oAccount, &$rAppendMessageStream, &$iAppendMessageStreamSize));
 
 								$this->MailClient()->MessageAppendStream(
@@ -5018,10 +5008,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 
 		if ($oMessage)
 		{
-			$this->Plugins()
-				->RunHook('filter.result-message', array($oMessage))
-				->RunHook('filter.result-message[2]', array($oMessage, $oAccount))
-			;
+			$this->Plugins()->RunHook('filter.result-message', array($oMessage));
 
 			$this->cacheByKey($sRawKey);
 		}

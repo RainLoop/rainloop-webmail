@@ -18,7 +18,6 @@ import {
 } from 'Common/Utils';
 
 import { CONTACTS_PER_PAGE } from 'Common/Consts';
-import { bMobileDevice } from 'Common/Globals';
 
 import { Selector } from 'Common/Selector';
 import { exportContactsVcf, exportContactsCsv, uploadContacts } from 'Common/Links';
@@ -58,7 +57,6 @@ class ContactsPopupView extends AbstractViewNext {
 
 		this.allowContactsSync = ContactStore.allowContactsSync;
 		this.enableContactsSync = ContactStore.enableContactsSync;
-		this.allowExport = !bMobileDevice;
 
 		this.search = ko.observable('');
 		this.contactsCount = ko.observable(0);

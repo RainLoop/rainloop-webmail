@@ -3,39 +3,32 @@ const
 	ko = window.ko,
 	Translator = () => require('Common/Translator'),
 	Globals = () => require('Common/Globals'),
-	isFunction = v => typeof v === 'function';
+	isFunction = v => typeof v === 'function',
+	koValue = value => !ko.isObservable(value) && isFunction(value) ? value() : ko.unwrap(value);
 
 ko.bindingHandlers.tooltip = {
 	init: (element, fValueAccessor) => {
-		const fValue = fValueAccessor(),
-			Global = Globals();
+		const Global = Globals();
+		const sValue = koValue(fValueAccessor());
 
-		if (!Global.bMobileDevice || 'on' === element.dataset.tooltipMobile) {
-			const sValue = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
-
-			if ('off' === element.dataset.tooltipI18n) {
-				element.title = sValue;
-			} else {
-				element.title = Translator().i18n(sValue);
-				Translator().trigger.subscribe(() =>
-					element.title = Translator().i18n(sValue)
-				);
-				Global.dropdownVisibility.subscribe(() =>
-					element.title = Translator().i18n(sValue)
-				);
-			}
+		if ('off' === element.dataset.tooltipI18n) {
+			element.title = sValue;
+		} else {
+			element.title = Translator().i18n(sValue);
+			Translator().trigger.subscribe(() =>
+				element.title = Translator().i18n(sValue)
+			);
+			Global.dropdownVisibility.subscribe(() =>
+				element.title = Translator().i18n(sValue)
+			);
 		}
 	},
 	update: (element, fValueAccessor) => {
-		const fValue = fValueAccessor();
-
-		if (!Globals().bMobileDevice || 'on' === element.dataset.tooltipMobile) {
-			const sValue = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
-			if (sValue) {
-				element.title = 'off' === element.dataset.tooltipI18n ? sValue : Translator().i18n(sValue);
-			} else {
-				element.title = '';
-			}
+		const sValue = koValue(fValueAccessor());
+		if (sValue) {
+			element.title = 'off' === element.dataset.tooltipI18n ? sValue : Translator().i18n(sValue);
+		} else {
+			element.title = '';
 		}
 	}
 };
@@ -46,9 +39,7 @@ ko.bindingHandlers.tooltipErrorTip = {
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeAttribute('data-rainloopErrorTip'));
 	},
 	update: (element, fValueAccessor) => {
-		const fValue = fValueAccessor(),
-			value = !ko.isObservable(fValue) && isFunction(fValue) ? fValue() : ko.unwrap(fValue);
-
+		const value = koValue(fValueAccessor());
 		if (value) {
 			setTimeout(() => element.setAttribute('data-rainloopErrorTip', value), 100);
 		} else {
@@ -110,9 +101,8 @@ ko.bindingHandlers.onSpace = {
 
 ko.bindingHandlers.modal = {
 	init: (element, fValueAccessor) => {
-		element.classList.toggle('fade', !Globals().bMobileDevice);
-
-		const close = element.querySelector('.close'), click = () => fValueAccessor()(false);
+		const close = element.querySelector('.close'),
+			click = () => fValueAccessor()(false);
 		close && close.addEventListener('click.koModal', click);
 
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () =>

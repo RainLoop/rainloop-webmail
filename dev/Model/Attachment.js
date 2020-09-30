@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { FileType } from 'Common/Enums';
-import { bMobileDevice } from 'Common/Globals';
 import { pInt, getFileExtension, friendlySize } from 'Common/Utils';
 import {
 	attachmentDownload,
@@ -15,7 +14,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import Audio from 'Common/Audio';
 
-const bAllowPdfPreview = !bMobileDevice && undefined !== navigator.mimeTypes['application/pdf'];
+const bAllowPdfPreview = undefined !== navigator.mimeTypes['application/pdf'];
 
 /**
  * @param {string} sExt

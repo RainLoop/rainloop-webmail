@@ -26,7 +26,6 @@ import { format as momentorFormat } from 'Common/Momentor';
 import { getMessageFlagsFromCache, setMessageFlagsToCache, setFolderHash } from 'Common/Cache';
 
 import { HtmlEditor } from 'Common/HtmlEditor';
-import { bMobileDevice } from 'Common/Globals';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
@@ -1080,17 +1079,16 @@ class ComposePopupView extends AbstractViewNext {
 	}
 
 	setFocusInPopup() {
-		if (!bMobileDevice) {
-			setTimeout(() => {
-				if (!this.to()) {
-					this.to.focused(true);
-				} else if (this.oEditor) {
-					if (!this.to.focused()) {
-						this.oEditor.focus();
-					}
+//		rl.settings.app('mobile') ||
+		setTimeout(() => {
+			if (!this.to()) {
+				this.to.focused(true);
+			} else if (this.oEditor) {
+				if (!this.to.focused()) {
+					this.oEditor.focus();
 				}
-			}, 100);
-		}
+			}
+		}, 100);
 	}
 
 	tryToClosePopup() {

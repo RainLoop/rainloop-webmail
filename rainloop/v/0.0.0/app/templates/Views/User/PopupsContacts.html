@@ -1,4 +1,4 @@
-<div class="modal b-contacts-content" data-bind="modal: modalVisibility">
+<div class="modal fade b-contacts-content" data-bind="modal: modalVisibility">
 	<div class="modal-header b-header-toolbar g-ui-user-select-none">
 
 		<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
@@ -38,15 +38,15 @@
 							<span class="i18n" data-i18n="CONTACTS/BUTTON_IMPORT"></span>
 						</a>
 					</li>
-					<li class="divider" role="presentation" data-bind="visible: allowExport"></li>
-					<li class="e-item" role="presentation" data-bind="visible: allowExport">
+					<li class="divider hide-mobile" role="presentation"></li>
+					<li class="e-item hide-mobile" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: exportCsv">
 							<i data-bind="css: {'icon-export': !contacts.exportingCsv(), 'icon-spinner animated': contacts.exportingCsv}"></i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="CONTACTS/BUTTON_EXPORT_CSV"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation" data-bind="visible: allowExport" >
+					<li class="e-item hide-mobile" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: exportVcf">
 							<i data-bind="css: {'icon-export': !contacts.exportingVcf(), 'icon-spinner animated': contacts.exportingVcf}"></i>
 							&nbsp;&nbsp;
@@ -204,7 +204,7 @@
 							</div>
 							<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesEmails().length">
 								<label class="control-label remove-padding-top fix-width">
-									<i class="icon-at iconsize24" data-tooltip-join="right" data-bind="tooltip: 'CONTACTS/LABEL_EMAIL'"></i>
+									<i class="icon-at iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_EMAIL'"></i>
 								</label>
 								<div class="controls fix-width">
 									<div data-bind="foreach: viewPropertiesEmails">
@@ -220,7 +220,7 @@
 							</div>
 							<div class="control-group" data-bind="visible: 0 < viewPropertiesPhones().length">
 								<label class="control-label remove-padding-top fix-width">
-									<i class="icon-telephone iconsize24" data-tooltip-join="right" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'"></i>
+									<i class="icon-telephone iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'"></i>
 								</label>
 								<div class="controls fix-width">
 									<div data-bind="foreach: viewPropertiesPhones">
@@ -235,7 +235,7 @@
 							</div>
 							<div class="control-group" data-bind="visible: 0 < viewPropertiesWeb().length">
 								<label class="control-label remove-padding-top fix-width">
-									<i class="icon-world iconsize24" data-tooltip-join="right" data-bind="tooltip: 'CONTACTS/LABEL_WEB'"></i>
+									<i class="icon-world iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_WEB'"></i>
 								</label>
 								<div class="controls fix-width">
 									<div data-bind="foreach: viewPropertiesWeb">
@@ -257,7 +257,7 @@
 						</div>
 
 <!--						<div class="e-read-only-sign">
-							<i class="icon-lock iconsize24" data-tooltip-join="right" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'"></i>
+							<i class="icon-lock iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'"></i>
 						</div>-->
 
 

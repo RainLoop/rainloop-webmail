@@ -17,7 +17,7 @@ import {
 	ClientSideKeyName
 } from 'Common/Enums';
 
-import { $htmlCL, leftPanelDisabled, bMobileDevice } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
@@ -1048,9 +1048,8 @@ class AppUser extends AbstractApp {
 							}, 500);
 						}
 
-						if (!bMobileDevice) {
-							const o = this;
-							setTimeout(() => o.initVerticalLayoutResizer(ClientSideKeyName.FolderListSize), 1);
+						if (!Settings.app('mobile')) {
+							setTimeout(() => this.initVerticalLayoutResizer(ClientSideKeyName.FolderListSize), 1);
 						}
 					} else {
 						this.logout();

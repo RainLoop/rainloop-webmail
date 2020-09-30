@@ -1,26 +1,16 @@
 
 // mixins +++
 .thm-linear-gradient-mixin(@start, @end) when (iscolor(@start)) and (iscolor(@end)) {
-	background-color: mix(@start, @end, 60%) !important;
-    background-image: -moz-linear-gradient(top, @start, @end) !important; // FF 3.6+
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(@start), to(@end)) !important; // Safari 4+, Chrome 2+
-    background-image: -webkit-linear-gradient(top, @start, @end) !important; // Safari 5.1+, Chrome 10+
-    background-image: -o-linear-gradient(top, @start, @end !important); // Opera 11.10
     background-image: linear-gradient(to bottom, @start, @end) !important; // Standard, IE10
     background-repeat: repeat-x !important;
-    filter: e(%("progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0)",argb(@start),argb(@end))) !important; // IE9 and down
 }
 
 .thm-border-radius(@radius) when (ispixel(@radius)) {
-  -webkit-border-radius: @radius !important;
-     -moz-border-radius: @radius !important;
-          border-radius: @radius !important;
+	border-radius: @radius !important;
 }
 
 .thm-box-shadow(@shadow) {
-  -webkit-box-shadow: @shadow !important;
-     -moz-box-shadow: @shadow !important;
-          box-shadow: @shadow !important;
+	box-shadow: @shadow !important;
 }
 .thm-body-background-image(@value) when (isstring(@value)) {
 	background-image: url("@{base}@{value}");
@@ -231,26 +221,6 @@ html.glass {
 				color: @glass-color;
 				border-color: @glass-m-color;
 
-				&::-webkit-input-placeholder {
-					color: @glass-color;
-					text-shadow: none !important;
-				}
-				&::-moz-placeholder {
-					color: @glass-color;
-					text-shadow: none !important;
-				}
-				&:-moz-placeholder {
-					color: @glass-color;
-					text-shadow: none !important;
-				}
-				&:-ms-input-placeholder {
-					color: @glass-color;
-					text-shadow: none !important;
-				}
-				&:input-placeholder {
-					color: @glass-color;
-					text-shadow: none !important;
-				}
 				&:placeholder {
 					color: @glass-color;
 					text-shadow: none !important;

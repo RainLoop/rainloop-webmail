@@ -289,12 +289,6 @@ class Manager
 			}
 
 			$this->RunHook('filter.app-data', array($bAdmin, &$aAppData));
-
-			$this->RunHook('filter.app-data[2]', array(
-				'IsAdmin' => $bAdmin,
-				'AppData' => &$aAppData,
-				'Account' => $oAccount
-			));
 		}
 
 		return $this;

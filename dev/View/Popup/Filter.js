@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { FiltersAction, FilterConditionField, FilterConditionType } from 'Common/Enums';
-import { bMobileDevice } from 'Common/Globals';
 import { defautOptionsAfterRender } from 'Common/Utils';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
@@ -163,7 +162,7 @@ class FilterPopupView extends AbstractViewNext {
 	}
 
 	onShowWithDelay() {
-		if (this.isNew() && this.filter() && !bMobileDevice) {
+		if (this.isNew() && this.filter()/* && !rl.settings.app('mobile')*/) {
 			this.filter().name.focused(true);
 		}
 	}

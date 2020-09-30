@@ -3,8 +3,7 @@ import ko from 'ko';
 import {
 	$htmlCL,
 	leftPanelDisabled,
-	leftPanelType,
-	bMobileDevice
+	leftPanelType
 } from 'Common/Globals';
 
 import { KeyState } from 'Common/Enums';
@@ -58,7 +57,7 @@ class AbstractApp {
 	 * @returns {boolean}
 	 */
 	download(link) {
-		if (bMobileDevice) {
+		if (rl.settings.app('mobile')) {
 			open(link, '_self');
 			focus();
 		} else {
@@ -99,7 +98,7 @@ class AbstractApp {
 		ko.components.register('Select', require('Component/Select').default);
 		ko.components.register('TextArea', require('Component/TextArea').default);
 
-		if (Settings.app('materialDesign') && !bMobileDevice) {
+		if (Settings.app('materialDesign') && !rl.settings.app('mobile')) {
 			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox').default);
 			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
 		} else {

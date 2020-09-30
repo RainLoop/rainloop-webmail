@@ -1,4 +1,4 @@
-<div class="modal b-compose" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
+<div class="modal fade b-compose" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
 	<div class="modal-header b-header-toolbar g-ui-user-select-none">
 		<a class="btn btn-large button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
 			<i class="icon-white" data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner animated big': sending()}"></i>
@@ -9,8 +9,8 @@
 			<span class="i18n btn-text hide-on-mobile" data-i18n="COMPOSE/BUTTON_SAVE"></span>
 		</a>
 
-		<a class="close-custom" data-tooltip-join="top" data-bind="click: tryToClosePopup, tooltip: 'COMPOSE/BUTTON_CANCEL'">&times;</a>
-		<a class="minimize-custom" data-tooltip-join="top" data-bind="click: skipCommand, tooltip: 'COMPOSE/BUTTON_MINIMIZE'"></a>
+		<a class="close-custom" data-bind="click: tryToClosePopup, tooltip: 'COMPOSE/BUTTON_CANCEL'">&times;</a>
+		<a class="minimize-custom" data-bind="click: skipCommand, tooltip: 'COMPOSE/BUTTON_MINIMIZE'"></a>
 
 		<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
 			<i class="icon-trash icon-white"></i>
@@ -83,7 +83,7 @@
 							</div>
 							<div class="btn-group pull-right">&nbsp;</div>
 							<div class="btn-group pull-right">
-								<a class="btn single" data-tooltip-join="top" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'FOLDER_LIST/BUTTON_CONTACTS'">
+								<a class="btn single" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'FOLDER_LIST/BUTTON_CONTACTS'">
 									<i class="icon-address-book"></i>
 								</a>
 							</div>
@@ -107,7 +107,7 @@
 				<div class="e-row">
 					<div class="e-cell e-label">
 						<label class="control-label" data-bind="css: {'error-to': emptyToError}">
-							<span class="i18n" data-i18n="COMPOSE/TITLE_TO" data-tooltip-join="top"
+							<span class="i18n" data-i18n="COMPOSE/TITLE_TO"
 								data-bind="tooltipErrorTip: emptyToErrorTooltip"></span>
 						</label>
 					</div>
@@ -157,7 +157,7 @@
 										css: { 'active': !attachmentsPlace() }">
 										<i class="icon-file-text"></i>
 									</button>
-									<button type="button" class="btn last" data-tooltip-join="left" data-bind="click: function () { attachmentsPlace(true); },
+									<button type="button" class="btn last" data-bind="click: function () { attachmentsPlace(true); },
 										css: { 'btn-danger': 0 < attachmentsInErrorCount(), 'active': attachmentsPlace() },
 										tooltipErrorTip: attachmentsErrorTooltip">
 										<span data-bind="visible: 0 < attachmentsCount()">
@@ -170,7 +170,7 @@
 							</div>
 							<div class="pull-right" style="margin-right: 4px;">
 								<div class="btn-group pull-right">
-									<a class="btn first" data-tooltip-join="bottom"
+									<a class="btn first"
 										style="padding-left: 10px; padding-right: 10px;"
 										data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
 										<sup style="font-weight: bold; font-size: 100%; top: -0.3em;">+</sup><i class="icon-attachment"></i>

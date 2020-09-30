@@ -13,7 +13,7 @@ import {
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
-import { bMobileDevice, leftPanelDisabled, moveAction } from 'Common/Globals';
+import { leftPanelDisabled, moveAction } from 'Common/Globals';
 
 import { computedPagenatorHelper, friendlySize } from 'Common/Utils';
 
@@ -736,7 +736,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		this.initUploaderForAppend();
 		this.initShortcuts();
 
-		if (!bMobileDevice && ifvisible && Settings.capa(Capa.Prefetch)) {
+		if (ifvisible && !rl.settings.app('mobile') && Settings.capa(Capa.Prefetch)) {
 			ifvisible.idle(this.prefetchNextTick.bind(this));
 		}
 	}

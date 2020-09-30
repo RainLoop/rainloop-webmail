@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { StorageResultType } from 'Common/Enums';
-import { bMobileDevice } from 'Common/Globals';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -54,9 +53,8 @@ class TwoFactorTestPopupView extends AbstractViewNext {
 	}
 
 	onShowWithDelay() {
-		if (!bMobileDevice) {
-			this.code.focused(true);
-		}
+//		rl.settings.app('mobile') ||
+		this.code.focused(true);
 	}
 }
 

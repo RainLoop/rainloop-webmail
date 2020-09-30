@@ -2,29 +2,29 @@
 	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected, 'message-focused': messageFocused}">
 		<div class="toolbar top-toolbar g-ui-user-select-none" data-bind="visible: !usePreviewPane()">
 			<div class="messageButtons btn-toolbar">
-				<div class="btn-group" data-tooltip-join="top" data-bind="tooltip: 'MESSAGE/BUTTON_CLOSE'">
+				<div class="btn-group" data-bind="tooltip: 'MESSAGE/BUTTON_CLOSE'">
 					<a class="btn single btn-dark-disabled-border buttonClose" data-bind="command: closeMessageCommand">
 						<i class="icon-remove"></i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
-				<div class="btn-group" data-tooltip-join="top" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
+				<div class="btn-group" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
 					<a class="btn single btn-success buttonEdit" data-bind="command: messageEditCommand">
 						<i class="icon-pencil icon-white"></i>
 					</a>
 				</div>
 				<div class="btn-group" data-bind="visible: !usePreviewPane()">&nbsp;</div>
 				<div class="btn-group" data-bind="visible: !usePreviewPane()">
-					<a class="btn first btn-dark-disabled-border button-archive" data-tooltip-join="top" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE/BUTTON_ARCHIVE'">
+					<a class="btn first btn-dark-disabled-border button-archive" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE/BUTTON_ARCHIVE'">
 						<i class="icon-archive"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-spam" data-tooltip-join="top" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
+					<a class="btn btn-dark-disabled-border button-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
 						<i class="icon-warning"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-not-spam" data-tooltip-join="top" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand, tooltip: 'MESSAGE/BUTTON_NOT_SPAM'">
+					<a class="btn btn-dark-disabled-border button-not-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand, tooltip: 'MESSAGE/BUTTON_NOT_SPAM'">
 						<i class="icon-check-mark-circle-two"></i>
 					</a>
-					<a class="btn last btn-dark-disabled-border button-delete" data-tooltip-join="top" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
+					<a class="btn last btn-dark-disabled-border button-delete" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
 						<i class="icon-trash"></i>
 					</a>
 				</div>
@@ -79,7 +79,7 @@
 				<div class="message-fixed-button-toolbar clearfix" data-bind="visible: message">
 					<div class="btn-group pull-right" style="margin-right: -11px;">
 						<div class="btn-group pull-right" data-bind="registrateBootstrapDropdown: true, visible: allowComposer || allowMessageListActions || allowMessageActions">
-							<a class="btn btn-thin-2 btn-transparent last btn-dark-disabled-border dropdown-toggle buttonMore" id="more-view-dropdown-id" href="#" tabindex="-1" data-toggle="dropdown" data-tooltip-join="bottom" style="margin-left: -4px; margin-right: 2px" data-bind="command: messageVisibilityCommand, css: {'first': !allowComposer}">
+							<a class="btn btn-thin-2 btn-transparent last btn-dark-disabled-border dropdown-toggle buttonMore" id="more-view-dropdown-id" href="#" tabindex="-1" data-toggle="dropdown" style="margin-left: -4px; margin-right: 2px" data-bind="command: messageVisibilityCommand, css: {'first': !allowComposer}">
 									<span data-bind="visible: !allowComposer" class="icon-ellipsis-alt"></span>
 									<span data-bind="visible: allowComposer" class="caret"></span>
 							</a>
@@ -194,21 +194,21 @@
 								</div>
 							</ul>
 						</div>
-						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonReply pull-right" data-tooltip-join="bottom"
+						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonReply pull-right"
 							data-bind="visible: 'reply' === lastReplyAction() && allowComposer, command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
 							<i class="icon-reply"></i>
 						</a>
-						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonReplyAll pull-right" data-tooltip-join="bottom"
+						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonReplyAll pull-right"
 							data-bind="visible: 'replyall' === lastReplyAction() && allowComposer, command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
 							<i class="icon-reply-all"></i>
 						</a>
-						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonForward pull-right" data-tooltip-join="bottom"
+						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonForward pull-right"
 							data-bind="visible: 'forward' === lastReplyAction() && allowComposer, command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
 							<i class="icon-forward"></i>
 						</a>
 					</div>
 
-					<div class="btn-group pull-right hide-on-mobile" data-tooltip-join="right" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'" style="margin-right: 5px">
+					<div class="btn-group pull-right hide-on-mobile" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'" style="margin-right: 5px">
 						<a class="btn single btn-success buttonEdit" data-bind="command: messageEditCommand">
 							<i class="icon-pencil icon-white"></i>
 						</a>
@@ -339,7 +339,7 @@
 										<div class="attachmentsPlace" data-bind="visible: message() && message().attachments().hasVisible(),
 											css: {'selection-mode' : showAttachmnetControls, 'unselectedAttachmentsError': highlightUnselectedAttachments}">
 											<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
-												<li class="attachmentItem clearfix" draggable="true" data-tooltip-join="top"
+												<li class="attachmentItem clearfix" draggable="true"
 														data-bind="visible: !isLinked, event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }, css: {'checked': checked}">
 													<div class="attachmentIconParent pull-left" data-bind="css: { 'hasPreview': hasPreview(), 'hasPreplay': hasPreplay(), 'isImage': isImage() }">
 														<div class="hidePreview">

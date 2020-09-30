@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import { Notification } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { bMobileDevice } from 'Common/Globals';
 import { defautOptionsAfterRender, folderListOptionsBuilder } from 'Common/Utils';
 
 import FolderStore from 'Stores/User/Folder';
@@ -74,9 +73,8 @@ class FolderCreateView extends AbstractViewNext {
 	}
 
 	onShowWithDelay() {
-		if (!bMobileDevice) {
-			this.folderName.focused(true);
-		}
+//		rl.settings.app('mobile') ||
+		this.folderName.focused(true);
 	}
 }
 

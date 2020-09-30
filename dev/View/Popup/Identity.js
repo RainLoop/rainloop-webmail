@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
-import { bMobileDevice } from 'Common/Globals';
 import { fakeMd5 } from 'Common/Utils';
 import { getNotification } from 'Common/Translator';
 
@@ -164,7 +163,7 @@ class IdentityPopupView extends AbstractViewNext {
 	}
 
 	onShowWithDelay() {
-		if (!this.owner() && !bMobileDevice) {
+		if (!this.owner()/* && !rl.settings.app('mobile')*/) {
 			this.email.focused(true);
 		}
 	}

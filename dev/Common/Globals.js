@@ -9,13 +9,6 @@ export const $htmlCL = $html.classList;
  */
 export const dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 });
 
-/**
- * @type {boolean}
- */
-export const bMobileDevice = (/android|iphone|ipod|ipad|blackberry|mobile/i).test(
-	(navigator.userAgent && navigator.userAgent.toLowerCase()) || ''
-);
-
 export const VIEW_MODELS = {
 	settings: [],
 	'settings-removed': [],
