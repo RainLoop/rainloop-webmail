@@ -1,4 +1,3 @@
-import { DEFAULT_AJAX_TIMEOUT } from 'Common/Consts';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { serverRequest } from 'Common/Links';
@@ -91,7 +90,7 @@ class AbstractFetchRemote
 		}
 
 		return rl.fetchJSON(getURL(sGetAdd), {
-				signal: this.createAbort(action, undefined === iTimeout ? DEFAULT_AJAX_TIMEOUT : pInt(iTimeout))
+				signal: this.createAbort(action, undefined === iTimeout ? 30000 : pInt(iTimeout))
 			}, sGetAdd ? null : params
 		).then(data => {
 			let cached = false;
@@ -217,7 +216,7 @@ class AbstractFetchRemote
 		this.setTrigger(fTrigger, true);
 
 		return rl.fetchJSON(getURL(), {
-				signal: this.createAbort(action, pInt(timeOut, DEFAULT_AJAX_TIMEOUT))
+				signal: this.createAbort(action, pInt(timeOut, 30000))
 			}, params
 		).then(data => {
 			this.abort(action, true);

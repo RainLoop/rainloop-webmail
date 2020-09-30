@@ -1,7 +1,5 @@
 import { pString, pInt } from 'Common/Utils';
 
-import { DEFAULT_AJAX_TIMEOUT } from 'Common/Consts';
-
 import {
 	getFolderHash,
 	getFolderInboxName,
@@ -335,7 +333,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			fCallback,
 			'MessageList',
 			params,
-			sSearch ? 300000 : DEFAULT_AJAX_TIMEOUT,
+			sSearch ? 300000 : 30000,
 			sGetAdd,
 			bSilent ? [] : ['MessageList']
 		);

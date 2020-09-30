@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { DATA_IMAGE_USER_DOT_PIC, UNUSED_OPTION_VALUE } from 'Common/Consts';
+import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {
 	Capa,
@@ -27,7 +27,7 @@ import Audio from 'Common/Audio';
 import { i18n } from 'Common/Translator';
 import { attachmentDownload } from 'Common/Links';
 
-import { getUserPic, storeMessageFlagsToCache } from 'Common/Cache';
+import { storeMessageFlagsToCache } from 'Common/Cache';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
@@ -52,8 +52,6 @@ const Settings = rl.settings;
 class MessageViewMailBoxUserView extends AbstractViewNext {
 	constructor() {
 		super();
-
-		let lastEmail = '';
 
 		const createCommandReplyHelper = type =>
 			createCommand(() => {
@@ -188,8 +186,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.viewViewLink = ko.observable('');
 		this.viewUnsubscribeLink = ko.observable('');
 		this.viewDownloadLink = ko.observable('');
-		this.viewUserPic = ko.observable(DATA_IMAGE_USER_DOT_PIC);
-		this.viewUserPicVisible = ko.observable(false);
 		this.viewIsImportant = ko.observable(false);
 		this.viewIsFlagged = ko.observable(false);
 
@@ -254,18 +250,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				this.viewDownloadLink(message.downloadLink());
 				this.viewIsImportant(message.isImportant());
 				this.viewIsFlagged(message.flagged());
-
-				lastEmail = message.fromAsSingleEmail();
-				getUserPic(lastEmail, (pic, email) => {
-					if (pic !== this.viewUserPic() && lastEmail === email) {
-						this.viewUserPicVisible(false);
-						this.viewUserPic(DATA_IMAGE_USER_DOT_PIC);
-						if (pic) {
-							this.viewUserPicVisible(true);
-							this.viewUserPic(pic);
-						}
-					}
-				});
 			} else {
 				this.viewFolder = '';
 				this.viewUid = '';

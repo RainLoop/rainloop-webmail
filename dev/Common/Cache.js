@@ -23,15 +23,6 @@ export function clear() {
 }
 
 /**
- * @param {string} email
- * @param {Function} callback
- * @returns {string}
- */
-export function getUserPic(email, callback) {
-	callback('', email.trim());
-}
-
-/**
  * @param {string} folderFullNameRaw
  * @param {string} uid
  * @returns {string}

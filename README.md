@@ -101,26 +101,29 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Removed opentip (use CSS)
 * Removed non-community (aka Prem/Premium/License) code
 
-|js/*       	|1.14.0 	|native 	|
+
+RainLoop 1.14 vs SnappyMail
+
+|js/*       	|RainLoop 	|Snappy   	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  844.753	|
-|app.js      	|4.184.455	|2.487.401	|
+|admin.js    	|2.130.942	|  825.627	|
+|app.js      	|4.184.455	|2.463.325	|
 |boot.js     	|  671.522	|    5.285	|
-|libs.js     	|  647.614	|  246.183	|
+|libs.js     	|  647.614	|  253.356	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.583.524	|
+|TOTAL      	|7.960.367	|3.547.593	|
 
-|js/min/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
+|js/min/*       	|RainLoop 	|Snappy   	|Rain gzip	|gzip     	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  116.068	| 73.657	| 33.279	| 28.711	|
-|app.min.js      	|  511.202	|  339.263	|140.462	| 89.051	| 72.194	|
+|admin.min.js    	|  252.147	|  112.115	| 73.657	| 30.610	| 26.437	|
+|app.min.js      	|  511.202	|  334.897	|140.462	| 86.030	| 69.713	|
 |boot.min.js     	|   66.007	|    2.935	| 22.567	|  1.510	|  1.285	|
-|libs.min.js     	|  572.545	|  147.113	|176.720	| 51.608	| 45.901	|
+|libs.min.js     	|  572.545	|  149.819	|176.720	| 52.834	| 46.924	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  605.379	|424.718	|175.448	|148.091	|
-|TOTAL (no admin)	|1.182.206	|  489.311	|351.061	|142.169	|119.380	|
+|TOTAL           	|1.434.353	|  599.766	|424.718	|170.984	|144.359	|
+|TOTAL (no admin)	|1.182.206	|  487.651	|351.061	|140.374	|117.922	|
 
-For a user its around 58% smaller and faster than traditional RainLoop.
+For a user its around 60% smaller and faster than traditional RainLoop.
 
 ### CSS changes
 
@@ -145,8 +148,8 @@ For a user its around 58% smaller and faster than traditional RainLoop.
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 190.086	| 46,959	| 29.415	| 24.717	|
-|app.min.css	| 274.791	| 156.076	| 39.618	| 26.034	| 22.418	|
+|app.css    	| 340.334	| 186.431	| 46,959	| 28.748	| 24.209	|
+|app.min.css	| 274.791	| 152.540	| 39.618	| 25.289	| 21.842	|
 |boot.css    	|       	|   2.534	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 
