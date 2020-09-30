@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { MESSAGES_PER_PAGE, MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
+import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType } from 'Common/Enums';
 import { pInt } from 'Common/Utils';
 
@@ -21,7 +21,7 @@ class SettingsUserStore {
 			]
 		});
 
-		this.messagesPerPage = ko.observable(MESSAGES_PER_PAGE).extend({ limitedList: MESSAGES_PER_PAGE_VALUES });
+		this.messagesPerPage = ko.observable(20).extend({ limitedList: MESSAGES_PER_PAGE_VALUES });
 
 		this.showImages = ko.observable(false);
 		this.useCheckboxesInList = ko.observable(true);

@@ -336,18 +336,12 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		if (this.newMoveToFolder() && this.mobileCheckedStateShow()) {
 			if (vm && event && event.preventDefault) {
 				event.preventDefault();
-				if (event.stopPropagation) {
-					event.stopPropagation();
-				}
+				event.stopPropagation();
 			}
 
-			if (moveAction()) {
-				AppStore.focusedState(Focused.MessageList);
-				moveAction(false);
-			} else {
-				AppStore.focusedState(Focused.FolderList);
-				moveAction(true);
-			}
+			let b = moveAction();
+			AppStore.focusedState(b ? Focused.MessageList : Focused.FolderList);
+			moveAction(!b);
 		}
 	}
 
@@ -378,10 +372,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 		clearTimeout(this.iGoToUpUpOrDownDownTimeout);
 		this.iGoToUpUpOrDownDownTimeout = setTimeout(() => {
-			let prev = null,
-				next = null,
-				temp = null,
-				current = null;
+			let prev, next, temp, current;
 
 			this.messageListPagenator().find(item => {
 				if (item) {
@@ -420,15 +411,9 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	useAutoSelect() {
-		if (this.messageListDisableAutoSelect()) {
-			return false;
-		}
-
-		if (/is:unseen/.test(this.mainMessageListSearch())) {
-			return false;
-		}
-
-		return Layout.NoPreview !== SettingsStore.layout();
+		return !this.messageListDisableAutoSelect()
+		 && !/is:unseen/.test(this.mainMessageListSearch())
+		 && Layout.NoPreview !== SettingsStore.layout();
 	}
 
 	searchEnterAction() {

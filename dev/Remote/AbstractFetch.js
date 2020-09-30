@@ -1,4 +1,4 @@
-import { TOKEN_ERROR_LIMIT, AJAX_ERROR_LIMIT, DEFAULT_AJAX_TIMEOUT } from 'Common/Consts';
+import { DEFAULT_AJAX_TIMEOUT } from 'Common/Consts';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { serverRequest } from 'Common/Links';
@@ -36,11 +36,11 @@ checkResponseError = data => {
 		++iTokenErrorCount;
 	}
 
-	if (TOKEN_ERROR_LIMIT < iTokenErrorCount) {
+	if (10 < iTokenErrorCount) {
 		rl.logoutReload();
 	}
 
-	if (window.rl && (data.ClearAuth || data.Logout || AJAX_ERROR_LIMIT < iAjaxErrorCount)) {
+	if (window.rl && (data.ClearAuth || data.Logout || 7 < iAjaxErrorCount)) {
 		rl.hash.clear();
 
 		if (!data.ClearAuth) {

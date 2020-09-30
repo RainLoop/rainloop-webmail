@@ -1,6 +1,5 @@
-import { CLIENT_SIDE_STORAGE_INDEX_NAME } from 'Common/Consts';
-
 const storage = localStorage,
+CLIENT_SIDE_STORAGE_INDEX_NAME = 'rlcsc',
 getStorage = () => {
 	try {
 		const value = storage.getItem(CLIENT_SIDE_STORAGE_INDEX_NAME) || null;

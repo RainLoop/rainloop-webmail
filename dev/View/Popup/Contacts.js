@@ -17,8 +17,6 @@ import {
 	pInt
 } from 'Common/Utils';
 
-import { CONTACTS_PER_PAGE } from 'Common/Consts';
-
 import { Selector } from 'Common/Selector';
 import { exportContactsVcf, exportContactsCsv, uploadContacts } from 'Common/Links';
 import { i18n, getNotification } from 'Common/Translator';
@@ -35,7 +33,8 @@ import { ContactPropertyModel } from 'Model/ContactProperty';
 import { popup, command, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
-const trim = text => null == text ? "" : (text + "").trim();
+const trim = text => null == text ? "" : (text + "").trim(),
+	CONTACTS_PER_PAGE = 50;
 
 @popup({
 	name: 'View/Popup/Contacts',

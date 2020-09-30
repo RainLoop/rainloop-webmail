@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { StorageResultType, ServerSecure, Ports, Notification } from 'Common/Enums';
-import { IMAP_DEFAULT_PORT, SIEVE_DEFAULT_PORT, SMTP_DEFAULT_PORT } from 'Common/Consts';
 import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 
@@ -48,16 +47,16 @@ class DomainPopupView extends AbstractViewNext {
 		this.name = ko.observable('');
 
 		this.imapServer = ko.observable('');
-		this.imapPort = ko.observable('' + IMAP_DEFAULT_PORT);
+		this.imapPort = ko.observable('143');
 		this.imapSecure = ko.observable(ServerSecure.None);
 		this.imapShortLogin = ko.observable(false);
 		this.useSieve = ko.observable(false);
 		this.sieveAllowRaw = ko.observable(false);
 		this.sieveServer = ko.observable('');
-		this.sievePort = ko.observable('' + SIEVE_DEFAULT_PORT);
+		this.sievePort = ko.observable('4190');
 		this.sieveSecure = ko.observable(ServerSecure.None);
 		this.smtpServer = ko.observable('');
-		this.smtpPort = ko.observable('' + SMTP_DEFAULT_PORT);
+		this.smtpPort = ko.observable('25');
 		this.smtpSecure = ko.observable(ServerSecure.None);
 		this.smtpShortLogin = ko.observable(false);
 		this.smtpAuth = ko.observable(true);
@@ -368,18 +367,18 @@ class DomainPopupView extends AbstractViewNext {
 		this.name('');
 
 		this.imapServer('');
-		this.imapPort('' + IMAP_DEFAULT_PORT);
+		this.imapPort('143');
 		this.imapSecure(ServerSecure.None);
 		this.imapShortLogin(false);
 
 		this.useSieve(false);
 		this.sieveAllowRaw(false);
 		this.sieveServer('');
-		this.sievePort('' + SIEVE_DEFAULT_PORT);
+		this.sievePort('4190');
 		this.sieveSecure(ServerSecure.None);
 
 		this.smtpServer('');
-		this.smtpPort('' + SMTP_DEFAULT_PORT);
+		this.smtpPort('25');
 		this.smtpSecure(ServerSecure.None);
 		this.smtpShortLogin(false);
 		this.smtpAuth(true);

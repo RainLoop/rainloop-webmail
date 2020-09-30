@@ -20,17 +20,9 @@ export const leftPanelDisabled = ko.observable(false);
 export const leftPanelType = ko.observable('');
 export const leftPanelWidth = ko.observable(0);
 
-leftPanelDisabled.subscribe((value) => {
-	if (value && moveAction()) {
-		moveAction(false);
-	}
-});
+leftPanelDisabled.subscribe(value => value && moveAction() && moveAction(false));
 
-moveAction.subscribe((value) => {
-	if (value && leftPanelDisabled()) {
-		leftPanelDisabled(false);
-	}
-});
+moveAction.subscribe(value => value && leftPanelDisabled() && leftPanelDisabled(false));
 
 // keys
 export const keyScopeReal = ko.observable(KeyState.All);

@@ -1,40 +1,8 @@
-export const MESSAGES_PER_PAGE = 20;
-
 export const MESSAGES_PER_PAGE_VALUES = [10, 20, 30, 50, 100];
-
-export const CONTACTS_PER_PAGE = 50;
 
 export const DEFAULT_AJAX_TIMEOUT = 30000;
 
-export const SEARCH_AJAX_TIMEOUT = 300000;
-
-export const SEND_MESSAGE_AJAX_TIMEOUT = 300000;
-
-export const SAVE_MESSAGE_AJAX_TIMEOUT = 200000;
-
-export const CONTACTS_SYNC_AJAX_TIMEOUT = 200000;
-
 export const UNUSED_OPTION_VALUE = '__UNUSE__';
-
-export const CLIENT_SIDE_STORAGE_INDEX_NAME = 'rlcsc';
-
-export const IMAP_DEFAULT_PORT = 143;
-
-export const IMAP_DEFAULT_SECURE_PORT = 993;
-
-export const SMTP_DEFAULT_PORT = 25;
-
-export const SMTP_DEFAULT_SECURE_PORT = 465;
-
-export const SIEVE_DEFAULT_PORT = 4190;
-
-export const MESSAGE_BODY_CACHE_LIMIT = 15;
-
-export const AJAX_ERROR_LIMIT = 7;
-
-export const TOKEN_ERROR_LIMIT = 10;
-
-export const RAINLOOP_TRIAL_KEY = 'RAINLOOP-TRIAL-KEY';
 
 /* eslint max-len: 0 */
 export const DATA_IMAGE_USER_DOT_PIC =

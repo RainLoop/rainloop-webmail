@@ -1,12 +1,6 @@
 import { pString, pInt } from 'Common/Utils';
 
-import {
-	CONTACTS_SYNC_AJAX_TIMEOUT,
-	DEFAULT_AJAX_TIMEOUT,
-	SEARCH_AJAX_TIMEOUT,
-	SAVE_MESSAGE_AJAX_TIMEOUT,
-	SEND_MESSAGE_AJAX_TIMEOUT
-} from 'Common/Consts';
+import { DEFAULT_AJAX_TIMEOUT } from 'Common/Consts';
 
 import {
 	getFolderHash,
@@ -136,7 +130,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 * @param {?Function} fCallback
 	 */
 	contactsSync(fCallback) {
-		this.defaultRequest(fCallback, 'ContactsSync', null, CONTACTS_SYNC_AJAX_TIMEOUT);
+		this.defaultRequest(fCallback, 'ContactsSync', null, 200000);
 	}
 
 	/**
@@ -341,7 +335,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			fCallback,
 			'MessageList',
 			params,
-			sSearch ? SEARCH_AJAX_TIMEOUT : DEFAULT_AJAX_TIMEOUT,
+			sSearch ? 300000 : DEFAULT_AJAX_TIMEOUT,
 			sGetAdd,
 			bSilent ? [] : ['MessageList']
 		);
@@ -533,7 +527,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 * @param {Object} oData
 	 */
 	saveMessage(fCallback, oData) {
-		this.defaultRequest(fCallback, 'SaveMessage', oData, SAVE_MESSAGE_AJAX_TIMEOUT);
+		this.defaultRequest(fCallback, 'SaveMessage', oData, 200000);
 	}
 
 	/**
@@ -559,7 +553,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 * @param {Object} oData
 	 */
 	sendMessage(fCallback, oData) {
-		this.defaultRequest(fCallback, 'SendMessage', oData, SEND_MESSAGE_AJAX_TIMEOUT);
+		this.defaultRequest(fCallback, 'SendMessage', oData, 300000);
 	}
 
 	/**

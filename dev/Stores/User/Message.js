@@ -21,7 +21,6 @@ import {
 	clearNewMessageCache
 } from 'Common/Cache';
 
-import { MESSAGE_BODY_CACHE_LIMIT } from 'Common/Consts';
 import { mailBox, notificationMailIcon } from 'Common/Links';
 import { i18n, getNotification } from 'Common/Translator';
 
@@ -209,7 +208,7 @@ class MessageUserStore {
 	}
 
 	purgeMessageBodyCache() {
-		const end = iMessageBodyCacheCount - MESSAGE_BODY_CACHE_LIMIT;
+		const end = iMessageBodyCacheCount - 15;
 		if (0 < end) {
 			let count = 0;
 			const messagesDom = this.messagesBodiesDom();
