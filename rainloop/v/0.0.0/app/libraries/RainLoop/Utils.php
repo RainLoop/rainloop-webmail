@@ -18,19 +18,7 @@ class Utils
 
 	static $RsaKey = null;
 
-	static public function PgpVerifyFile(string $sFileName, string $sSignature) : bool
-	{
-		$sKeyFile = APP_VERSION_ROOT_PATH.'app/resources/RainLoop.asc';
-		if (\file_exists($sKeyFile) && \file_exists($sFileName) && !empty($sSignature))
-		{
-			$sKeyFile = \file_get_contents($sKeyFile);
-			return !empty($sKeyFile); // TODO
-		}
-
-		return false;
-	}
-
-	static public function RsaPrivateKey() : string
+	public static function RsaPrivateKey() : string
 	{
 		if (!empty(static::$RsaKey))
 		{
@@ -43,7 +31,7 @@ class Utils
 		static::$RsaKey = \is_string(static::$RsaKey) ? static::$RsaKey : '';
 	}
 
-	static public function EncryptStringRSA(string $sString, string $sKey = '') : string
+	public static function EncryptStringRSA(string $sString, string $sKey = '') : string
 	{
 		$sResult = '';
 		$sKey = \md5($sKey);
@@ -80,7 +68,7 @@ class Utils
 		return $sResult;
 	}
 
-	static public function DecryptStringRSA(string $sString, string $sKey = '') : string
+	public static function DecryptStringRSA(string $sString, string $sKey = '') : string
 	{
 		$sResult = '';
 		$sKey = \md5($sKey);
@@ -112,17 +100,17 @@ class Utils
 		return $sResult;
 	}
 
-	static public function EncryptString(string $sString, string $sKey) : string
+	public static function EncryptString(string $sString, string $sKey) : string
 	{
 		return \MailSo\Base\Crypt::Encrypt($sString, $sKey);
 	}
 
-	static public function DecryptString(string $sEncryptedString, string $sKey) : string
+	public static function DecryptString(string $sEncryptedString, string $sKey) : string
 	{
 		return \MailSo\Base\Crypt::Decrypt($sEncryptedString, $sKey);
 	}
 
-	static public function EncryptStringQ(string $sString, string $sKey) : string
+	public static function EncryptStringQ(string $sString, string $sKey) : string
 	{
 //		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_pkey_get_private'))
 //		{
@@ -134,7 +122,7 @@ class Utils
 			$sKey.'Q'.static::GetShortToken());
 	}
 
-	static public function DecryptStringQ(string $sEncryptedString, string $sKey) : string
+	public static function DecryptStringQ(string $sEncryptedString, string $sKey) : string
 	{
 //		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_pkey_get_private'))
 //		{
@@ -146,13 +134,13 @@ class Utils
 			$sKey.'Q'.static::GetShortToken());
 	}
 
-	static public function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
+	public static function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
 			static::EncryptString(\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
 	}
 
-	static public function DecodeKeyValues(string $sEncodedValues, string $sCustomKey = '') : array
+	public static function DecodeKeyValues(string $sEncodedValues, string $sCustomKey = '') : array
 	{
 		$aResult = \unserialize(
 			static::DecryptString(
@@ -161,14 +149,14 @@ class Utils
 		return \is_array($aResult) ? $aResult : array();
 	}
 
-	static public function EncodeKeyValuesQ(array $aValues, string $sCustomKey = '') : string
+	public static function EncodeKeyValuesQ(array $aValues, string $sCustomKey = '') : string
 	{
 		return \MailSo\Base\Utils::UrlSafeBase64Encode(
 			static::EncryptStringQ(
 				\serialize($aValues), \md5(APP_SALT.$sCustomKey)));
 	}
 
-	static public function DecodeKeyValuesQ(string $sEncodedValues, string $sCustomKey = '') : array
+	public static function DecodeKeyValuesQ(string $sEncodedValues, string $sCustomKey = '') : array
 	{
 		$aResult = \unserialize(
 			static::DecryptStringQ(
@@ -177,7 +165,7 @@ class Utils
 		return \is_array($aResult) ? $aResult : array();
 	}
 
-	static public function GetConnectionToken() : string
+	public static function GetConnectionToken() : string
 	{
 		$sKey = 'rltoken';
 
@@ -191,12 +179,12 @@ class Utils
 		return \md5('Connection'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
 
-	static public function Fingerprint() : string
+	public static function Fingerprint() : string
 	{
 		return \md5(empty($_SERVER['HTTP_USER_AGENT']) ? 'RainLoopFingerprint' : $_SERVER['HTTP_USER_AGENT']);
 	}
 
-	static public function GetShortToken() : string
+	public static function GetShortToken() : string
 	{
 		$sKey = 'rlsession';
 
@@ -210,7 +198,7 @@ class Utils
 		return \md5('Session'.APP_SALT.$sToken.'Token'.APP_SALT);
 	}
 
-	static public function UpdateConnectionToken() : void
+	public static function UpdateConnectionToken() : void
 	{
 		$sKey = 'rltoken';
 
@@ -221,7 +209,7 @@ class Utils
 		}
 	}
 
-	static public function GetCsrfToken() : string
+	public static function GetCsrfToken() : string
 	{
 		return \md5('Csrf'.APP_SALT.self::GetConnectionToken().'Token'.APP_SALT);
 	}
@@ -324,20 +312,6 @@ class Utils
 			\preg_replace('/[\r\n\t]+/', ' ',
 			$sHtml
 		))))));
-	}
-
-	public static function FastCheck(string $sKey) : bool
-	{
-		$bResult = false;
-
-		$aMatches = array();
-		if (!empty($sKey) && 0 < \strlen($sKey) && \preg_match('/^(RL[\d]+)\-(.+)\-([^\-]+)$/', $sKey, $aMatches) && 3 === \count($aMatches))
-		{
-			$bResult = $aMatches[3] === \strtoupper(\base_convert(\crc32(\md5(
-				$aMatches[1].'-'.$aMatches[2].'-')), 10, 32));
-		}
-
-		return $bResult;
 	}
 
 	public static function CompileTemplates(array &$aList, string $sDirName, string $sNameSuffix = '')
@@ -462,54 +436,5 @@ class Utils
 //		}
 
 		return @\parse_ini_string(\file_get_contents($sFileName), $bProcessSections) ?: array();
-	}
-
-	public static function CustomBaseConvert(string $sNumberInput, string $sFromBaseInput = '0123456789', string $sToBaseInput = '0123456789')
-	{
-		if ($sFromBaseInput === $sToBaseInput)
-		{
-			return $sNumberInput;
-		}
-
-		$mFromBase = \str_split($sFromBaseInput, 1);
-		$mToBase = \str_split($sToBaseInput, 1);
-		$aNumber = \str_split($sNumberInput, 1);
-		$iFromLen = \strlen($sFromBaseInput);
-		$iToLen = \strlen($sToBaseInput);
-		$numberLen = \strlen($sNumberInput);
-		$mRetVal = '';
-
-		if ($sToBaseInput === '0123456789')
-		{
-			$mRetVal = 0;
-			for ($iIndex = 1; $iIndex <= $numberLen; $iIndex++)
-			{
-				$mRetVal = \bcadd($mRetVal, \bcmul(\array_search($aNumber[$iIndex - 1], $mFromBase), \bcpow($iFromLen, $numberLen - $iIndex)));
-			}
-
-			return $mRetVal;
-		}
-
-		if ($sFromBaseInput != '0123456789')
-		{
-			$sBase10 = static::CustomBaseConvert($sNumberInput, $sFromBaseInput, '0123456789');
-		}
-		else
-		{
-			$sBase10 = $sNumberInput;
-		}
-
-		if ($sBase10 < \strlen($sToBaseInput))
-		{
-			return $mToBase[$sBase10];
-		}
-
-		while ($sBase10 !== '0')
-		{
-			$mRetVal = $mToBase[\bcmod($sBase10, $iToLen)].$mRetVal;
-			$sBase10 = \bcdiv($sBase10, $iToLen, 0);
-		}
-
-		return $mRetVal;
 	}
 }
