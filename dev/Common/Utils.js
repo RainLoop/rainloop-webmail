@@ -437,7 +437,7 @@ export function htmlToPlain(html) {
 		}
 	}
 
-	return text.replace(/__bq__start__/gm, '').replace(/__bq__end__/gm, '');
+	return text.replace(/__bq__start__|__bq__end__/gm, '').trim();
 }
 
 /**

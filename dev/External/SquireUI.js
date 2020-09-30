@@ -17,6 +17,9 @@ const doc = document,
 	tpl = doc.createElement('template'),
 	clr = doc.createElement('input'),
 
+	trimLines = html => html.trim().replace(/^(<div>\s*<br\s*\/?>\s*<\/div>)+/, '').trim(),
+	clearHtmlLine = html => rl.Utils.htmlToPlain(html).trim(),
+
 	getFragmentOfChildren = parent => {
 		let frag = doc.createDocumentFragment();
 		frag.append(...parent.childNodes);
@@ -81,9 +84,7 @@ const doc = document,
 		let
 			prevSignature = editor.__previous_signature,
 			skipInsert = false,
-			isEmptyText = false,
-			newLine = (isHtml ? '<br />' : "\n"),
-			clearHtmlLine = html => rl.Utils.htmlToPlain(html).trim();
+			isEmptyText = false;
 
 		isEmptyText = !text.trim();
 		if (!isEmptyText && isHtml) {
@@ -115,14 +116,14 @@ const doc = document,
 			} else {
 				var textLen = text.length;
 				text = text
-					.replace('' + prevSignature.body, '')
-					.replace('' + prevSignature.body, '');
+					.replace(prevSignature.body, '')
+					.replace(prevSignature.body, '');
 				skipInsert = textLen === text.length;
 			}
 		}
 
 		if (!skipInsert) {
-			signature = newLine + newLine + (isHtml ? '<signature>' : '') + signature + (isHtml ? '</signature>' : '');
+			signature = (isHtml ? '<br/><br/><signature>' : "\n\n") + signature + (isHtml ? '</signature>' : '');
 
 			text = insertBefore ? signature + text : text + signature;
 
@@ -500,7 +501,7 @@ class SquireUI
 			this.plain.value = rl.Utils.htmlToPlain(html, true).trim();
 		} else {
 			let plain = this.plain.value;
-			this.squire.setHTML(rl.Utils.plainToHtml(plain, true));
+			this.setData(rl.Utils.plainToHtml(plain, true));
 			mode = 'wysiwyg';
 		}
 		this.mode = mode; // 'wysiwyg' or 'plain'
@@ -540,7 +541,7 @@ class SquireUI
 					if (!cfg.isHtml) {
 						cfg.signature = rl.Utils.plainToHtml(cfg.signature);
 					}
-					this.squire.setHTML(rl_signature_replacer(this, this.getData(), cfg.signature, true, cfg.insertBefore));
+					this.setData(rl_signature_replacer(this, this.getData(), cfg.signature, true, cfg.insertBefore));
 				}
 			} catch (e) {
 				console.error(e);
@@ -549,11 +550,11 @@ class SquireUI
 	}
 
 	getData() {
-		return this.squire.getHTML();
+		return trimLines(this.squire.getHTML());
 	}
 
 	setData(html) {
-		this.squire.setHTML(html);
+		this.squire.setHTML(trimLines(html));
 	}
 
 	focus() {
