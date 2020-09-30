@@ -46,7 +46,7 @@ class Syslog extends \MailSo\Log\Driver
 			$mDesc = \implode($this->sNewLine, $mDesc);
 		}
 
-		\openlog('rainloop', LOG_ODELAY, LOG_USER);
+		\openlog('snappymail', LOG_ODELAY, LOG_USER);
 		$result = \syslog($this->iLogLevel, $mDesc);
 		\closelog();
 		return $result;

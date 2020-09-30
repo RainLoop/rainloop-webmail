@@ -958,7 +958,7 @@ class Actions
 		{
 			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount, false, $aAdditionalParams));
 		}
-		if ($this->Config()->Get('logs', 'auth_logging', false) && \openlog('rainloop', 0, \LOG_AUTHPRIV))
+		if ($this->Config()->Get('logs', 'auth_logging', false) && \openlog('snappymail', 0, \LOG_AUTHPRIV))
 		{
 			\syslog(\LOG_ERR, $this->compileLogParams('Auth failed: ip={request:ip} user={imap:login}', $oAccount, false, $aAdditionalParams));
 			\closelog();
