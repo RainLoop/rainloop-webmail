@@ -77,7 +77,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 							FolderStore.currentFolderFullNameRaw(),
 							MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
 							folder.fullNameRaw,
-							false
+							event.ctrlKey
 						);
 					} else {
 						if (Layout.NoPreview === SettingsStore.layout()) {
