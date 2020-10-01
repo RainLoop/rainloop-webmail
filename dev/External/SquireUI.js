@@ -1,18 +1,15 @@
 /* eslint max-len: 0 */
 
-(() => {
+(doc => {
 
-'use strict';
-
-const doc = document,
-
+const
 	removeElements = 'HEAD,LINK,META,NOSCRIPT,SCRIPT,TEMPLATE,TITLE',
 	allowedElements = 'A,B,BLOCKQUOTE,BR,DIV,FONT,H1,H2,H3,H4,H5,H6,HR,IMG,LI,OL,P,SPAN,STRONG,TABLE,TD,TH,TR,U,UL',
 	allowedAttributes = 'abbr,align,background,bgcolor,border,cellpadding,cellspacing,class,color,colspan,dir,face,frame,height,href,hspace,id,lang,rowspan,rules,scope,size,src,style,target,type,usemap,valign,vspace,width'.split(','),
 
 	i18n = (str, def) => rl.i18n(str) || def,
 
-	ctrlKey = /Mac OS X/.test( navigator.userAgent ) ? '⌘ + ' : 'Ctrl + ',
+	ctrlKey = shortcuts.getMetaKey().replace('meta','⌘') + ' + ',
 
 	tpl = doc.createElement('template'),
 	clr = doc.createElement('input'),
@@ -568,6 +565,6 @@ class SquireUI
 	}
 }
 
-window.SquireUI = SquireUI;
+this.SquireUI = SquireUI;
 
-})();
+})(document);

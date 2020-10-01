@@ -6,8 +6,6 @@
  */
 
 (doc => {
-	'use strict';
-
 	let ua = navigator.userAgent.toLowerCase(),
 
 		dropEffect = 'move',

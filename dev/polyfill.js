@@ -1,3 +1,5 @@
+'use strict';
+
 (w=>{
 
 Array.prototype.flat || Object.defineProperty(Array.prototype, 'flat', {
@@ -30,4 +32,4 @@ w.ResizeObserver || (w.ResizeObserver = class {
 	}
 });
 
-})(window);
+})(this);

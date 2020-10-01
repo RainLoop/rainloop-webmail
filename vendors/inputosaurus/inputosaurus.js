@@ -12,10 +12,9 @@
  * @modified by DJMaze
  */
 
-(() => {
+(doc => {
 
-const doc = document,
-	createEl = (name, attr) => {
+const createEl = (name, attr) => {
 		let el = doc.createElement(name);
 		attr && Object.entries(attr).forEach(([k,v]) => el.setAttribute(k,v));
 		return el;
@@ -29,7 +28,7 @@ doc.body.append(fakeSpan, datalist);
 
 let dragData;
 
-window.Inputosaurus = class {
+this.Inputosaurus = class {
 
 	constructor(element, options) {
 
@@ -500,4 +499,4 @@ window.Inputosaurus = class {
 	}
 };
 
-})();
+})(document);

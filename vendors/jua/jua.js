@@ -1,9 +1,6 @@
 /* RainLoop Webmail (c) RainLoop Team | MIT */
-(()=>{
-	'use strict';
-
+(doc => {
 	const
-		doc = document,
 		iDefLimit = 20,
 		defined = v => undefined !== v,
 		/**
@@ -42,9 +39,8 @@
 			}
 		},
 
-		addEventListeners = (element, obj) => {
-			Object.entries(obj).forEach(([key, value]) => element.addEventListener(key, value));
-		},
+		addEventListeners = (element, obj) =>
+			Object.entries(obj).forEach(([key, value]) => element.addEventListener(key, value)),
 
 		/**
 		 * @param {*} oFile
@@ -214,24 +210,24 @@
 			if (oClickElement)
 			{
 				const self = this,
-					oLabel = doc.createElement('label'),
-					oInput = oLabel.appendChild(doc.createElement('input'));
+					oInput = doc.createElement('input'),
+					onClick = ()=>oInput.click();
 
 				oInput.type = 'file';
 				oInput.tabIndex = -1;
-				oInput.style.cssText = 'position:absolute;left:-9999px;';
+				oInput.style.display = 'none';
 				oInput.multiple = !self.oOptions.disableMultiple;
 
-				oLabel.style.cssText = 'position:absolute;background-color:#fff;right:0;top:0;left:0;bottom:0;margin:0;padding:0;cursor:pointer;opacity:0';
-
-				oClickElement.append(oLabel);
+				oClickElement.addEventListener('click', onClick);
 
 				oInput.addEventListener('input', () => {
 					const fFileCallback = oFile => {
 						self.oJua.addNewFile(oFile);
-						self.generateNewInput(oClickElement);
-
-						setTimeout(() => oLabel.remove(), 10);
+						setTimeout(() => {
+							oInput.remove();
+							oClickElement.removeEventListener('click', onClick);
+							self.generateNewInput(oClickElement);
+						}, 10);
 					};
 					if (oInput.files && oInput.files.length) {
 						getDataFromFiles(oInput.files, fFileCallback,
@@ -258,10 +254,7 @@
 			{
 				try
 				{
-					if (this.oXhrs[sUid].abort)
-					{
-						this.oXhrs[sUid].abort();
-					}
+					this.oXhrs[sUid].abort && this.oXhrs[sUid].abort();
 				}
 				catch (oError)
 				{
@@ -496,11 +489,10 @@
 		addNewFile(oFileInfo)
 		{
 			let iLen = 16,
-				fakeMd5 = '',
-				sLine = '0123456789abcdefghijklmnopqrstuvwxyz';
+				fakeMd5 = '';
 
 			while (iLen--)
-				fakeMd5 += sLine.substr(Math.round(Math.random() * 36), 1);
+				fakeMd5 += '0123456789abcdefghijklmnopqrstuvwxyz'.substr(Math.round(Math.random() * 36), 1);
 
 			this.addFile('jua-uid-' + fakeMd5 + '-' + (new Date()).getTime().toString(), oFileInfo);
 		}
@@ -538,6 +530,6 @@
 		}
 	};
 
-	window.Jua = Jua;
+	this.Jua = Jua;
 
-})();
+})(document);

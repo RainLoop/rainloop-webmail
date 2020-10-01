@@ -38,7 +38,7 @@
 
 			define('APP_DEFAULT_PRIVATE_DATA_NAME', '_default_');
 
-			$sPrivateDataFolderInternalName = is_file(APP_INDEX_ROOT_PATH.'MULTIPLY') ? APP_SITE : '';
+			$sPrivateDataFolderInternalName = defined('MULTIDOMAIN') ? APP_SITE : '';
 			define('APP_PRIVATE_DATA_NAME', 0 === strlen($sPrivateDataFolderInternalName) ? APP_DEFAULT_PRIVATE_DATA_NAME : $sPrivateDataFolderInternalName);
 			define('APP_MULTIPLY', 0 < strlen($sPrivateDataFolderInternalName) && APP_DEFAULT_PRIVATE_DATA_NAME !== APP_PRIVATE_DATA_NAME);
 

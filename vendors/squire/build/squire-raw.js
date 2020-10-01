@@ -10,8 +10,6 @@
 
 ( doc => {
 
-"use strict";
-
 const
 	DOCUMENT_POSITION_PRECEDING = 2, // Node.DOCUMENT_POSITION_PRECEDING
 	ELEMENT_NODE = 1,                // Node.ELEMENT_NODE,
@@ -35,8 +33,7 @@ const
 
 	isMac = /Mac OS X/.test( ua ),
 	isWin = /Windows NT/.test( ua ),
-	isIOS = /iP(?:ad|hone|od)/.test( ua ) ||
-	( isMac && !!navigator.maxTouchPoints ),
+	isIOS = /iP(?:ad|hone|od)/.test( ua ) || ( isMac && !!navigator.maxTouchPoints ),
 
 	isGecko = /Gecko\//.test( ua ),
 	isEdge = /Edge\//.test( ua ),

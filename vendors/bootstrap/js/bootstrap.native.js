@@ -4,13 +4,10 @@
 	* Licensed under MIT (https://github.com/thednp/bootstrap.native/blob/master/LICENSE)
 	*/
 
-window.BSN = (() => {
-	'use strict';
+(doc => {
+	const setFocus = element => element.focus ? element.focus() : element.setActive();
 
-	const doc = document,
-		setFocus = element => element.focus ? element.focus() : element.setActive();
-
-	return {
+	this.BSN = {
 		Dropdown: function(element) {
 			let menu, menuItems = [];
 			const self = this,
@@ -20,30 +17,29 @@ window.BSN = (() => {
 					(href && href.slice(-1) === '#') && e.preventDefault();
 				},
 				toggleEvents = () => {
-					let action = element.open ? 'addEventListener' : 'removeEventListener';
-					doc[action]('click',dismissHandler,false);
-					doc[action]('keydown',preventScroll,false);
-					doc[action]('keyup',keyHandler,false);
-					doc[action]('focus',dismissHandler,false);
+					let action = (element.open ? 'add' : 'remove') + 'EventListener';
+					doc[action]('click',dismissHandler);
+					doc[action]('keydown',preventScroll);
+					doc[action]('keyup',keyHandler);
+					doc[action]('focus',dismissHandler);
 				},
 				dismissHandler = e => {
 					let eventTarget = e.target,
 						inside = menu.contains(eventTarget),
 						hasData = eventTarget && (eventTarget.getAttribute('data-toggle')
 							|| (eventTarget.parentNode && eventTarget.parentNode.getAttribute('data-toggle')));
-					if ((e.type === 'focus' && (eventTarget === element || inside))
-					 || (hasData && inside)
+					if (!(hasData && inside)
+					 && !(e.type === 'focus' && (inside || eventTarget === element))
 					) {
-						return;
+						self.hide();
+						preventEmptyAnchor(e);
 					}
-					self.hide();
-					preventEmptyAnchor(e);
 				},
 				clickHandler = e => {
 					self.show();
 					preventEmptyAnchor(e);
 				},
-				preventScroll = e => (e.code === 'ArrowUp' || e.code === 'ArrowDown') && e.preventDefault(),
+				preventScroll = e => (e.key === 'ArrowUp' || e.key === 'ArrowDown') && e.preventDefault(),
 				keyHandler = e => {
 					let activeItem = doc.activeElement,
 						isSameElement = activeItem === element,
@@ -52,14 +48,14 @@ window.BSN = (() => {
 						idx = menuItems.indexOf(activeItem);
 					if ( isMenuItem ) {
 						idx = isSameElement ? 0
-							: e.code === 'ArrowUp' ? (idx>1?idx-1:0)
-							: e.code === 'ArrowDown' ? (idx<menuItems.length-1?idx+1:idx) : idx;
+							: e.key === 'ArrowUp' ? (idx>1?idx-1:0)
+							: e.key === 'ArrowDown' ? (idx<menuItems.length-1?idx+1:idx) : idx;
 						menuItems[idx] && setFocus(menuItems[idx]);
 					}
 					if ( (menuItems.length && isMenuItem
 						|| !menuItems.length && (isInsideMenu || isSameElement)
 						|| !isInsideMenu )
-						&& element.open && e.code === 'Escape'
+						&& element.open && e.key === 'Escape'
 					) {
 						self.toggle();
 					}
@@ -76,7 +72,7 @@ window.BSN = (() => {
 				parent.classList.add('show');
 				element.setAttribute('aria-expanded',true);
 				element.open = true;
-				element.removeEventListener('click',clickHandler,false);
+				element.removeEventListener('click',clickHandler);
 				setTimeout(() => {
 					setFocus( menu.getElementsByTagName('INPUT')[0] || element );
 					toggleEvents();
@@ -89,10 +85,10 @@ window.BSN = (() => {
 				element.open = false;
 				toggleEvents();
 				setFocus(element);
-				setTimeout(() => element.Dropdown && element.addEventListener('click',clickHandler,false), 1);
+				setTimeout(() => element.Dropdown && element.addEventListener('click',clickHandler), 1);
 			};
 			self.toggle = () => (parent.classList.contains('show') && element.open) ? self.hide() : self.show();
-			element.addEventListener('click',clickHandler,false);
+			element.addEventListener('click',clickHandler);
 			element.open = false;
 			element.Dropdown = self;
 		},
@@ -101,7 +97,10 @@ window.BSN = (() => {
 			constructor(element) {
 				this.element = element
 				element.Tab = this;
-				element.addEventListener('click', e => {e.preventDefault();this.show();});
+				element.addEventListener('click', e => {
+					e.preventDefault();
+					this.show();
+				});
 			}
 
 			show() {
@@ -117,4 +116,4 @@ window.BSN = (() => {
 		}
 	};
 
-})();
+})(document);

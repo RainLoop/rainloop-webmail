@@ -281,8 +281,13 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
 	}
 }
 
-.visible-on-ctrl,
-.visible-on-ctrl-btn,
+.hidden-on-ctrl-btn,
+.visible-on-ctrl-btn {
+	display: inline-block;
+}
+
+html:not(.rl-ctrl-key-pressed) .visible-on-ctrl-btn,
+html.rl-ctrl-key-pressed .hidden-on-ctrl-btn,
 .show-on-panel-disabled {
 	display: none;
 }
@@ -314,26 +319,14 @@ html.rl-left-panel-disabled {
 	}
 }
 
-html.rl-left-panel-short {
-
-	#rl-left {
-		width: 60px !important;
-	}
-
-	#rl-right {
-		left: 60px !important;
-	}
+html.rl-left-panel-short #rl-left,
+html.rl-left-panel-short #rl-right {
+	width: 60px !important;
 }
 
-html.rl-left-panel-none {
-
-	#rl-left {
-		width: 10px !important;
-	}
-
-	#rl-right {
-		left: 10px !important;
-	}
+html.rl-left-panel-none #rl-left,
+html.rl-left-panel-none #rl-right {
+	width: 10px !important;
 }
 
 html.rl-no-preview-pane {
@@ -391,34 +384,8 @@ html.rl-bottom-preview-pane {
 	}
 }
 
-.hidden-on-ctrl-btn {
-	display: inline-block;
-}
-
-html.rl-ctrl-key-pressed {
-
-	.visible-on-ctrl {
-		display: inline-block;
-	}
-
-	.btn-group.open .visible-on-ctrl-btn {
-		display: inline-block;
-	}
-
-	.hidden-on-ctrl {
-		display: none;
-	}
-
-	.btn-group.open .hidden-on-ctrl-btn {
-		display: none;
-	}
-}
-
+.show-on-mobile,
 html.rl-mobile .hide-on-mobile {
-	display: none !important;
-}
-
-.show-on-mobile {
 	display: none !important;
 }
 

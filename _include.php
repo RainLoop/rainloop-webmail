@@ -4,7 +4,11 @@
 
 //header('Strict-Transport-Security: max-age=31536000');
 
-//define('USE_GZIP', true); // to use gzip encoded output
+// Uncomment to use gzip encoded output
+//define('USE_GZIP', 1);
+
+// Uncomment to enable multiple domain installation.
+//define('MULTIDOMAIN', 1);
 
 /**
  * @return string

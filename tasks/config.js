@@ -76,13 +76,13 @@ config.paths.js = {
 			'dev/External/ifvisible.js',
 			'dev/dragdropgecko.js',
 			'dev/shortcuts.js',
-			'vendors/inputosaurus/inputosaurus.js', // custom (modified)
-			'vendors/routes/signals.min.js', // fixed
-			'vendors/routes/hasher.min.js', // fixed
-			'vendors/routes/crossroads.min.js', // fixed
-			'vendors/jua/jua.min.js', // custom
-			'vendors/qr.js/qr.min.js', // fixed (license)
-			'vendors/bootstrap/js/bootstrap.native.min.js', // fixed
+			'vendors/inputosaurus/inputosaurus.js',
+			'vendors/routes/signals.min.js',
+			'vendors/routes/hasher.min.js',
+			'vendors/routes/crossroads.min.js',
+			'vendors/jua/jua.min.js',
+			'vendors/qr.js/qr.min.js',
+			'vendors/bootstrap/js/bootstrap.native.js',
 			'vendors/knockout/build/output/knockout-latest.js',
 			'vendors/squire/build/squire-raw.js',
 			'dev/External/SquireUI.js'
