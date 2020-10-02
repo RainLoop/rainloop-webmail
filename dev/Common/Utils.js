@@ -1,5 +1,4 @@
 import { ComposeType, SaveSettingsStep, FolderType } from 'Common/Enums';
-import { Mime } from 'Common/Mime';
 
 const
 	doc = document,
@@ -818,39 +817,6 @@ export function computedPagenatorHelper(koCurrentPage, koPageCount) {
 
 		return result;
 	};
-}
-
-/**
- * @param {string} fileName
- * @returns {string}
- */
-export function getFileExtension(fileName) {
-	fileName = fileName.toLowerCase().trim();
-
-	const result = fileName.split('.').pop();
-	return result === fileName ? '' : result;
-}
-
-/**
- * @param {string} fileName
- * @returns {string}
- */
-export function mimeContentType(fileName) {
-	let ext = '',
-		result = 'application/octet-stream';
-
-	fileName = fileName.toLowerCase().trim();
-
-	if ('winmail.dat' === fileName) {
-		return 'application/ms-tnef';
-	}
-
-	ext = getFileExtension(fileName);
-	if (ext && ext.length && undefined !== Mime[ext]) {
-		result = Mime[ext];
-	}
-
-	return result;
 }
 
 /**

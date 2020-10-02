@@ -828,26 +828,20 @@ END;
 			'ttc'	=> 'application/x-font-ttf',
 
 			// audio
+			'aac'	=> 'audio/aac',
+			'flac'	=> 'audio/flac',
 			'mp3'	=> 'audio/mpeg',
-			'amr'	=> 'audio/amr',
-			'aac'	=> 'audio/x-aac',
-			'aif'	=> 'audio/x-aiff',
-			'aifc'	=> 'audio/x-aiff',
-			'aiff'	=> 'audio/x-aiff',
+			'aif'	=> 'audio/aiff',
+			'aifc'	=> 'audio/aiff',
+			'aiff'	=> 'audio/aiff',
 			'wav'	=> 'audio/x-wav',
-			'wma'	=> 'audio/x-ms-wma',
-			'wax'	=> 'audio/x-ms-wax',
 			'midi'	=> 'audio/midi',
 			'mp4a'	=> 'audio/mp4',
 			'ogg'	=> 'audio/ogg',
 			'weba'	=> 'audio/webm',
-			'ra'	=> 'audio/x-pn-realaudio',
-			'ram'	=> 'audio/x-pn-realaudio',
-			'rmp'	=> 'audio/x-pn-realaudio-plugin',
 			'm3u'	=> 'audio/x-mpegurl',
 
 			// video
-			'flv'	=> 'video/x-flv',
 			'qt'	=> 'video/quicktime',
 			'mov'	=> 'video/quicktime',
 			'avi'	=> 'video/x-msvideo',
@@ -896,7 +890,8 @@ END;
 
 			// open office
 			'odt'	=> 'application/vnd.oasis.opendocument.text',
-			'ods'	=> 'application/vnd.oasis.opendocument.spreadsheet'
+			'ods'	=> 'application/vnd.oasis.opendocument.spreadsheet',
+			'odp'	=> 'application/vnd.oasis.opendocument.presentation'
 
 		);
 

@@ -1,7 +1,7 @@
 import ko from 'ko';
 
-import { FileType } from 'Common/Enums';
-import { pInt, getFileExtension, friendlySize } from 'Common/Utils';
+import { File, FileType } from 'Common/File';
+import { pInt, friendlySize } from 'Common/Utils';
 import {
 	attachmentDownload,
 	attachmentPreview,
@@ -15,159 +15,6 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 import Audio from 'Common/Audio';
 
 const bAllowPdfPreview = undefined !== navigator.mimeTypes['application/pdf'];
-
-/**
- * @param {string} sExt
- * @param {string} sMimeType
- * @returns {string}
- */
-export const staticFileType = (() => {
-	let cache = {},
-		msOffice = 'vnd.openxmlformats-officedocument',
-		openDoc = 'vnd.oasis.opendocument';
-	return (ext, mimeType) => {
-		ext = ext.toLowerCase().trim();
-		mimeType = mimeType.toLowerCase().trim();
-
-		let key = ext + mimeType;
-		if (cache[key]) {
-			return cache[key];
-		}
-
-		let result = FileType.Unknown;
-		const mimeTypeParts = mimeType.split('/'),
-			type = mimeTypeParts[1],
-			match = str => type.includes(str);
-
-		switch (true) {
-			case 'image' === mimeTypeParts[0] || ['png', 'jpg', 'jpeg', 'gif'].includes(ext):
-				result = FileType.Image;
-				break;
-			case 'audio' === mimeTypeParts[0] || ['mp3', 'ogg', 'oga', 'wav'].includes(ext):
-				result = FileType.Audio;
-				break;
-			case 'video' === mimeTypeParts[0] || ['mkv', 'avi'].includes(ext):
-				result = FileType.Video;
-				break;
-			case ['php', 'js', 'css'].includes(ext):
-				result = FileType.Code;
-				break;
-			case 'eml' === ext || ['message/delivery-status', 'message/rfc822'].includes(mimeType):
-				result = FileType.Eml;
-				break;
-			case ('text' === mimeTypeParts[0] && 'html' !== type) || ['txt', 'log'].includes(ext):
-				result = FileType.Text;
-				break;
-			case 'text/html' === mimeType || ['html'].includes(ext):
-				result = FileType.Html;
-				break;
-			case [
-					'zip',
-					'7z',
-					'tar',
-					'rar',
-					'gzip',
-					'bzip',
-					'bzip2',
-					'x-zip',
-					'x-7z',
-					'x-rar',
-					'x-tar',
-					'x-gzip',
-					'x-bzip',
-					'x-bzip2',
-					'x-zip-compressed',
-					'x-7z-compressed',
-					'x-rar-compressed'
-				].includes(type) || ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2'].includes(ext):
-				result = FileType.Archive;
-				break;
-			case ['pdf', 'x-pdf'].includes(type) || ['pdf'].includes(ext):
-				result = FileType.Pdf;
-				break;
-			case ['application/pgp-signature', 'application/pgp-keys'].includes(mimeType) ||
-				['asc', 'pem', 'ppk'].includes(ext):
-				result = FileType.Certificate;
-				break;
-			case ['application/pkcs7-signature'].includes(mimeType) || ['p7s'].includes(ext):
-				result = FileType.CertificateBin;
-				break;
-			case match(msOffice+'.wordprocessingml') || match(openDoc+'.text') || match('vnd.ms-word')
-				|| ['rtf', 'msword', 'vnd.msword'].includes(type):
-				result = FileType.WordText;
-				break;
-			case match(msOffice+'.spreadsheetml') || match(openDoc+'.spreadsheet') || match('ms-excel'):
-				result = FileType.Sheet;
-				break;
-			case match(msOffice+'.presentationml') || match(openDoc+'.presentation') || match('ms-powerpoint'):
-				result = FileType.Presentation;
-				break;
-			// no default
-		}
-
-		return cache[key] = result;
-	};
-})();
-
-/**
- * @param {string} sFileType
- * @returns {string}
- */
-export const staticIconClass = fileType => FileType.getIconClass(fileType);
-
-/**
- * @static
- * @param {string} sFileType
- * @returns {string}
- */
-export const staticCombinedIconClass = (data) => {
-	let result = '',
-		types = [];
-
-	if (Array.isNotEmpty(data)) {
-		result = 'icon-attachment';
-		types = data.map(item => item ? staticFileType(getFileExtension(item[0]), item[1]) : '')
-			.filter((value, index, self) => !!value && self.indexOf(value) == index);
-
-		if (types && 1 === types.length && types[0]) {
-			switch (types[0]) {
-				case FileType.Text:
-				case FileType.WordText:
-					result = 'icon-file-text';
-					break;
-				case FileType.Html:
-				case FileType.Code:
-					result = 'icon-file-code';
-					break;
-				case FileType.Image:
-					result = 'icon-file-image';
-					break;
-				case FileType.Audio:
-					result = 'icon-file-music';
-					break;
-				case FileType.Video:
-					result = 'icon-file-movie';
-					break;
-				case FileType.Archive:
-					result = 'icon-file-zip';
-					break;
-				case FileType.Certificate:
-				case FileType.CertificateBin:
-					result = 'icon-file-certificate';
-					break;
-				case FileType.Sheet:
-					result = 'icon-file-excel';
-					break;
-				case FileType.Presentation:
-					result = 'icon-file-chart-graph';
-					break;
-				// no default
-			}
-		}
-	}
-
-	return result;
-};
 
 class AttachmentModel extends AbstractModel {
 	constructor() {
@@ -232,8 +79,8 @@ class AttachmentModel extends AbstractModel {
 			this.friendlySize = friendlySize(this.estimatedSize);
 			this.cidWithoutTags = this.cid.replace(/^<+/, '').replace(/>+$/, '');
 
-			this.fileNameExt = getFileExtension(this.fileName);
-			this.fileType = staticFileType(this.fileNameExt, this.mimeType);
+			this.fileNameExt = File.getExtension(this.fileName);
+			this.fileType = File.getType(this.fileNameExt, this.mimeType);
 
 			bResult = true;
 		}
@@ -406,14 +253,14 @@ class AttachmentModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	iconClass() {
-		return staticIconClass(this.fileType)[0];
+		return File.getTypeIconClass(this.fileType)[0];
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	iconText() {
-		return staticIconClass(this.fileType)[1];
+		return File.getTypeIconClass(this.fileType)[1];
 	}
 }
 

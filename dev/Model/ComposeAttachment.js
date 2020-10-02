@@ -1,7 +1,7 @@
 import ko from 'ko';
-import { pInt, friendlySize, mimeContentType, getFileExtension } from 'Common/Utils';
+import { pInt, friendlySize } from 'Common/Utils';
+import { File } from 'Common/File';
 
-import { staticIconClass, staticFileType } from 'Model/Attachment';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
 class ComposeAttachmentModel extends AbstractModel {
@@ -54,8 +54,8 @@ class ComposeAttachmentModel extends AbstractModel {
 			return null === localSize ? '' : friendlySize(localSize);
 		});
 
-		this.mimeType = ko.computed(() => mimeContentType(this.fileName()));
-		this.fileExt = ko.computed(() => getFileExtension(this.fileName()));
+		this.mimeType = ko.computed(() => File.getContentType(this.fileName()));
+		this.fileExt = ko.computed(() => File.getExtension(this.fileName()));
 
 		this.regDisposables([
 			this.progressText,
@@ -104,14 +104,14 @@ class ComposeAttachmentModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	iconClass() {
-		return staticIconClass(staticFileType(this.fileExt(), this.mimeType()))[0];
+		return File.getIconClass(this.fileExt(), this.mimeType())[0];
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	iconText() {
-		return staticIconClass(staticFileType(this.fileExt(), this.mimeType()))[1];
+		return File.getIconClass(this.fileExt(), this.mimeType())[1];
 	}
 }
 

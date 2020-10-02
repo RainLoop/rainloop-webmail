@@ -15,7 +15,7 @@ import { messageViewLink, messageDownloadLink } from 'Common/Links';
 import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
 
-import { staticCombinedIconClass } from 'Model/Attachment';
+import { File } from 'Common/File';
 import { AttachmentCollectionModel } from 'Model/AttachmentCollection';
 import { EmailCollectionModel } from 'Model/EmailCollection';
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -69,7 +69,7 @@ class MessageModel extends AbstractModel {
 		this.attachmentsSpecData = ko.observableArray([]);
 
 		this.attachmentIconClass = ko.computed(() =>
-			staticCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : [])
+			File.getCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : [])
 		);
 
 		this.isHtml = ko.observable(false);
