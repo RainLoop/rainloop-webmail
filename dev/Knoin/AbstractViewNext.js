@@ -9,7 +9,7 @@ export class AbstractViewNext {
 	sDefaultKeyScope = KeyState.None;
 	sCurrentKeyScope = KeyState.None;
 
-	viewModelVisibility = ko.observable(false);
+	viewModelVisible = false;
 	modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
 
 	viewModelName = '';

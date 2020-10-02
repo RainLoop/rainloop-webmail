@@ -109,7 +109,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 		this.showAttachmnetControls = ko.observable(false);
 
-		this.showAttachmnetControlsState = v => Local.set(ClientSideKeyName.MessageAttachmnetControls, !!v);
+		this.showAttachmnetControlsState = v => Local.set(ClientSideKeyName.MessageAttachmentControls, !!v);
 
 		this.allowAttachmnetControls = ko.computed(
 			() => this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions)
@@ -220,7 +220,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 			if (message) {
 				this.showAttachmnetControls(false);
-				if (Local.get(ClientSideKeyName.MessageAttachmnetControls)) {
+				if (Local.get(ClientSideKeyName.MessageAttachmentControls)) {
 					setTimeout(() => {
 						this.showAttachmnetControls(true);
 					}, 50);
@@ -509,7 +509,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	 * @returns {boolean}
 	 */
 	escShortcuts() {
-		if (this.viewModelVisibility() && this.message()) {
+		if (this.viewModelVisible && this.message()) {
 			const preview = Layout.NoPreview !== this.layout();
 			if (this.fullScreenMode()) {
 				this.fullScreenMode(false);

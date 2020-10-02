@@ -18,9 +18,7 @@ export class AbstractModel {
 
 	regDisposables(value) {
 		if (Array.isArray(value)) {
-			value.forEach((item) => {
-				this.disposables.push(item);
-			});
+			value.forEach(item => this.disposables.push(item));
 		} else if (value) {
 			this.disposables.push(value);
 		}

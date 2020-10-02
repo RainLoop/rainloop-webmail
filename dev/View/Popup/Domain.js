@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { StorageResultType, ServerSecure, Ports, Notification } from 'Common/Enums';
+import { StorageResultType, ServerSecure, Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 
@@ -125,19 +125,19 @@ class DomainPopupView extends AbstractViewNext {
 			value && this.imapServer() && !this.smtpServer() && this.smtpServer(this.imapServer().replace(/imap/gi, 'smtp'))
 		);
 
-		this.imapSecure.subscribe((value) => {
+		this.imapSecure.subscribe(value => {
 			if (this.enableSmartPorts()) {
 				const port = pInt(this.imapPort());
 				switch (pString(value)) {
 					case '0':
 					case '2':
-						if (Ports.ImapSsl === port) {
-							this.imapPort(pString(Ports.Imap));
+						if (993 === port) {
+							this.imapPort('143');
 						}
 						break;
 					case '1':
-						if (Ports.Imap === port) {
-							this.imapPort(pString(Ports.ImapSsl));
+						if (143 === port) {
+							this.imapPort('993');
 						}
 						break;
 					// no default
@@ -145,23 +145,23 @@ class DomainPopupView extends AbstractViewNext {
 			}
 		});
 
-		this.smtpSecure.subscribe((value) => {
+		this.smtpSecure.subscribe(value => {
 			if (this.enableSmartPorts()) {
 				const port = pInt(this.smtpPort());
 				switch (pString(value)) {
 					case '0':
-						if (Ports.SmtpSsl === port || Ports.SmtpStartTls === port) {
-							this.smtpPort(pString(Ports.Smtp));
+						if (465 === port || 587 === port) {
+							this.smtpPort('25');
 						}
 						break;
 					case '1':
-						if (Ports.Smtp === port || Ports.SmtpStartTls === port) {
-							this.smtpPort(pString(Ports.SmtpSsl));
+						if (25 === port || 587 === port) {
+							this.smtpPort('465');
 						}
 						break;
 					case '2':
-						if (Ports.Smtp === port || Ports.SmtpSsl === port) {
-							this.smtpPort(pString(Ports.SmtpStartTls));
+						if (25 === port || 465 === port) {
+							this.smtpPort('587');
 						}
 						break;
 					// no default

@@ -7,11 +7,7 @@ const
 	SERVER_PREFIX = './?',
 	SUB_QUERY_PREFIX = '&q[]=',
 	VERSION = Settings.app('version'),
-	WEB_PREFIX = Settings.app('webPath') || '',
 	VERSION_PREFIX = Settings.app('webVersionPath') || 'rainloop/v/' + VERSION + '/',
-	STATIC_PREFIX = VERSION_PREFIX + 'static/',
-	ADMIN_HOST_USE = !!Settings.app('adminHostUse'),
-	ADMIN_PATH = Settings.app('adminPath') || 'admin',
 
 	getHash = () => Settings.get('AuthAccountHash') || '0';
 
@@ -34,7 +30,7 @@ export function root(startupUrl = '') {
  * @returns {string}
  */
 export function rootAdmin() {
-	return ADMIN_HOST_USE ? ROOT : SERVER_PREFIX + ADMIN_PATH;
+	return Settings.app('adminHostUse') ? ROOT : SERVER_PREFIX + (Settings.app('adminPath') || 'admin');
 }
 
 /**
@@ -238,7 +234,7 @@ export function exportContactsCsv() {
  * @returns {string}
  */
 export function staticPrefix(path) {
-	return STATIC_PREFIX + path;
+	return VERSION_PREFIX + 'static/' + path;
 }
 
 /**
@@ -292,7 +288,7 @@ export function themePreviewLink(theme) {
 	let prefix = VERSION_PREFIX;
 	if ('@custom' === theme.substr(-7)) {
 		theme = theme.substr(0, theme.length - 7).trim();
-		prefix = WEB_PREFIX;
+		prefix = Settings.app('webPath') || '';
 	}
 
 	return prefix + 'themes/' + encodeURI(theme) + '/images/preview.png';

@@ -872,7 +872,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	prefetchNextTick() {
-		if (ifvisible && !this.bPrefetch && !ifvisible.now() && this.viewModelVisibility()) {
+		if (ifvisible && !this.bPrefetch && !ifvisible.now() && this.viewModelVisible) {
 			const message = this.messageList().find(
 				item => item && !hasRequestedMessage(item.folderFullNameRaw, item.uid)
 			);

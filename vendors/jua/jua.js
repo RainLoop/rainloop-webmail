@@ -494,7 +494,7 @@
 			while (iLen--)
 				fakeMd5 += '0123456789abcdefghijklmnopqrstuvwxyz'.substr(Math.round(Math.random() * 36), 1);
 
-			this.addFile('jua-uid-' + fakeMd5 + '-' + (new Date()).getTime().toString(), oFileInfo);
+			this.addFile('jua-uid-' + fakeMd5 + '-' + (Date.now().toString()), oFileInfo);
 		}
 
 		/**

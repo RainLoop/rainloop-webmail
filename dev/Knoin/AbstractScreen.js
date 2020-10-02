@@ -32,7 +32,7 @@ export class AbstractScreen {
 	/**
 	 * @returns {?Object}
 	 */
-	__cross() {
+	get __cross() {
 		return this.oCross;
 	}
 

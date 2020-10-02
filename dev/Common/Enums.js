@@ -84,23 +84,6 @@ export const Focused = {
 };
 
 /**
- * @enum {number}
- */
-export const State = {
-	Empty: 10,
-	Login: 20,
-	Auth: 30
-};
-
-/**
- * @enum {number}
- */
-export const StateType = {
-	Webmail: 0,
-	Admin: 1
-};
-
-/**
  * @enum {string}
  */
 export const Capa = {
@@ -108,7 +91,6 @@ export const Capa = {
 	TwoFactorForce: 'TWO_FACTOR_FORCE',
 	OpenPGP: 'OPEN_PGP',
 	Prefetch: 'PREFETCH',
-	Gravatar: 'GRAVATAR',
 	Folders: 'FOLDERS',
 	Composer: 'COMPOSER',
 	Contacts: 'CONTACTS',
@@ -252,7 +234,7 @@ export const ClientSideKeyName = {
 	LastSignMe: 7,
 	ComposeLastIdentityID: 8,
 	MessageHeaderFullInfo: 9,
-	MessageAttachmnetControls: 10
+	MessageAttachmentControls: 10
 };
 
 /**
@@ -430,17 +412,6 @@ export const ContactPropertyType = {
 	Note: 110,
 
 	Custom: 250
-};
-
-/**
- * @enum {number}
- */
-export const Ports = {
-	Imap: 143,
-	ImapSsl: 993,
-	Smtp: 25,
-	SmtpSsl: 465,
-	SmtpStartTls: 587
 };
 
 /**

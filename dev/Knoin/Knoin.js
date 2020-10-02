@@ -249,8 +249,7 @@ export function isPopupVisible(ViewModelClassToShow) {
  */
 function screenOnRoute(screenName, subPart) {
 	let vmScreen = null,
-		isSameScreen = false,
-		cross = null;
+		isSameScreen = false;
 
 	if (null == screenName || '' == screenName) {
 		screenName = defaultScreenName;
@@ -295,7 +294,7 @@ function screenOnRoute(screenName, subPart) {
 								ViewType.Popup !== ViewModelClass.__vm.viewModelPosition
 							) {
 								ViewModelClass.__dom.hidden = true;
-								ViewModelClass.__vm.viewModelVisibility(false);
+								ViewModelClass.__vm.viewModelVisible = false;
 
 								ViewModelClass.__vm.onHide && ViewModelClass.__vm.onHide();
 								ViewModelClass.__vm.onHideWithDelay && setTimeout(()=>ViewModelClass.__vm.onHideWithDelay(), 500);
@@ -321,7 +320,7 @@ function screenOnRoute(screenName, subPart) {
 								ViewModelClass.__vm.onBeforeShow && ViewModelClass.__vm.onBeforeShow();
 
 								ViewModelClass.__dom.hidden = false;
-								ViewModelClass.__vm.viewModelVisibility(true);
+								ViewModelClass.__vm.viewModelVisible = true;
 
 								ViewModelClass.__vm.onShow && ViewModelClass.__vm.onShow();
 
@@ -334,10 +333,7 @@ function screenOnRoute(screenName, subPart) {
 				}
 				// --
 
-				cross = vmScreen && vmScreen.__cross ? vmScreen.__cross() : null;
-				if (cross) {
-					cross.parse(subPart);
-				}
+				vmScreen && vmScreen.__cross && vmScreen.__cross.parse(subPart);
 			}, 1);
 		}
 	}

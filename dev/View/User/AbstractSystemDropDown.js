@@ -82,7 +82,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 
 	onBuild() {
 		shortcuts.add('`', '', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
-			if (this.viewModelVisibility()) {
+			if (this.viewModelVisible) {
 				MessageStore.messageFullScreenMode(false);
 				this.accountMenuDropdownTrigger(true);
 			}
@@ -90,7 +90,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 
 		// shortcuts help
 		shortcuts.add('/', 'shift', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
-			if (this.viewModelVisibility()) {
+			if (this.viewModelVisible) {
 				showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
 				return false;
 			}
