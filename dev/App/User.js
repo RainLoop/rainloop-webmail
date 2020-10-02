@@ -255,8 +255,7 @@ class AppUser extends AbstractApp {
 			};
 		}
 
-		this.moveCache[hash].Uid = this.moveCache[hash].Uid.concat(uidsForMove)
-			.filter((value, index, self) => self.indexOf(value) == index);
+		this.moveCache[hash].Uid = this.moveCache[hash].Uid.concat(uidsForMove).unique();
 		this.messagesMoveTrigger();
 	}
 
@@ -457,7 +456,7 @@ class AppUser extends AbstractApp {
 									.toLowerCase(),
 								oItem.getKeyIds()
 									.map(item => (item && item.toHex ? item.toHex() : null))
-									.filter((value, index, self) => !!value && self.indexOf(value) == index),
+									.validUnique(),
 								aUsers,
 								aEmails,
 								oItem.isPrivate(),
@@ -537,7 +536,7 @@ class AppUser extends AbstractApp {
 					data.Result.Templates.map(templateData => {
 						const template = new TemplateModel();
 						return template.parse(templateData) ? template : null;
-					}).filter(value => !!value)
+					}).filter(v => v)
 				);
 			}
 		});
@@ -718,7 +717,7 @@ class AppUser extends AbstractApp {
 		}
 
 		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
-			.filter((value, index, self) => !!value && self.indexOf(value) == index);
+			.validUnique();
 
 		if (sFolderFullNameRaw && rootUids.length) {
 			switch (iSetAction) {
@@ -779,7 +778,7 @@ class AppUser extends AbstractApp {
 		Remote.suggestions((result, data) => {
 			if (StorageResultType.Success === result && data && Array.isArray(data.Result)) {
 				autocompleteCallback(
-					data.Result.map(item => (item && item[0] ? new EmailModel(item[0], item[1]) : null)).filter(value => !!value)
+					data.Result.map(item => (item && item[0] ? new EmailModel(item[0], item[1]) : null)).filter(v => v)
 				);
 			} else if (StorageResultType.Abort !== result) {
 				autocompleteCallback([]);

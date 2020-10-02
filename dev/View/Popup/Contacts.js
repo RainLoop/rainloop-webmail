@@ -13,7 +13,6 @@ import {
 import {
 	delegateRunOnDestroy,
 	computedPagenatorHelper,
-	fakeMd5,
 	pInt
 } from 'Common/Utils';
 
@@ -154,7 +153,7 @@ class ContactsPopupView extends AbstractViewNext {
 				selected = this.currentContact();
 
 			return selected
-				? checked.concat([selected]).filter((value, index, self) => self.indexOf(value) == index)
+				? checked.concat([selected]).unique()
 				: checked;
 		});
 
@@ -282,7 +281,7 @@ class ContactsPopupView extends AbstractViewNext {
 		this.viewSaving(true);
 		this.viewSaveTrigger(SaveSettingsStep.Animate);
 
-		const requestUid = fakeMd5(),
+		const requestUid = Jua.randomId(),
 			properties = [];
 
 		this.viewProperties().forEach(oItem => {
@@ -579,7 +578,7 @@ class ContactsPopupView extends AbstractViewNext {
 							return contact.parse(item) ? contact : null;
 						});
 
-						list = list.filter(value => !!value);
+						list = list.filter(v => v);
 
 						count = pInt(data.Result.Count);
 						count = 0 < count ? count : 0;

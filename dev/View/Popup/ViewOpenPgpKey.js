@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { KeyState } from 'Common/Enums';
-import { selectElement } from 'Common/Utils';
 
 import { popup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
@@ -27,7 +26,11 @@ class ViewOpenPgpKeyPopupView extends AbstractViewNext {
 	selectKey() {
 		const el = this.keyDom();
 		if (el) {
-			selectElement(el);
+			let sel = getSelection(),
+				range = document.createRange();
+			sel.removeAllRanges();
+			range.selectNodeContents(el);
+			sel.addRange(range);
 		}
 	}
 

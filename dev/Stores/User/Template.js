@@ -15,7 +15,7 @@ class TemplateUserStore {
 
 	subscribers() {
 		this.templates.subscribe((list) => {
-			this.templatesNames(list.map(item => (item ? item.name : null)).filter(value => !!value));
+			this.templatesNames(list.map(item => (item ? item.name : null)).filter(v => v));
 		});
 
 		// this.templatesNames.subscribe((aList) => {

@@ -2,6 +2,9 @@
 (w=>{
 	Array.isNotEmpty = array => Array.isArray(array) && array.length;
 	Array.prototype.unique = function() { return this.filter((v, i, a) => a.indexOf(v) === i); };
+	Array.prototype.validUnique = function(fn) {
+		return this.filter((v, i, a) => (fn ? fn(v) : v) && a.indexOf(v) === i);
+	};
 
 	// Import momentjs locales function
 	w.moment = {
@@ -45,7 +48,6 @@
 		}
 	},
 	pad2 = v => 10 > v ? '0' + v : v,
-	pad3 = v => 10 > v ? '00' + v : (100 > v ? '0' + v : v),
 	getISODay = x => x.getDay() || 7,
 	getDayOfYear = x => Math.floor((Date.UTC(x.getFullYear(),x.getMonth(),x.getDate())
 		- Date.UTC(x.getFullYear(),0,1)) / 86400000),
@@ -149,7 +151,7 @@
 				case 'H': return pad2(d.H);
 				case 'i': return pad2(UTC?x.getUTCMinutes():x.getMinutes());
 				case 's': return pad2(UTC?x.getUTCSeconds():x.getSeconds());
-				case 'u': return pad3(UTC?x.getUTCMilliseconds():x.getMilliseconds());
+				case 'u': return (UTC?x.getUTCMilliseconds():x.getMilliseconds()).toString().padStart(3,'0');
 				// Timezone
 				case 'I': return UTC ? 0 : isDST(x) ? 1 : 0;
 				case 'O': return UTC ? 'Z' : (d.Z > 0 ? '+' : '-') + pad2(Math.abs(d.Z / 60)) + '00';

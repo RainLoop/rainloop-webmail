@@ -440,7 +440,7 @@ class EmailModel {
 		if (parsedResult.length) {
 			return parsedResult.map(item =>
 				item.address ? new EmailModel(item.address.replace(/^[<]+(.*)[>]+$/g, '$1'), item.name || '') : null
-			).filter(value => !!value);
+			).filter(v => v);
 		}
 
 		return [];

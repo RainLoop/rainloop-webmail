@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { FilterRulesType, FiltersAction } from 'Common/Enums';
-import { pString, fakeMd5, delegateRunOnDestroy } from 'Common/Utils';
+import { pString, delegateRunOnDestroy } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 import { getFolderFromCacheList } from 'Common/Cache';
 
@@ -133,7 +133,7 @@ class FilterModel extends AbstractModel {
 	}
 
 	generateID() {
-		this.id = fakeMd5();
+		this.id = Jua.randomId();
 	}
 
 	verify() {
@@ -230,7 +230,7 @@ class FilterModel extends AbstractModel {
 					json.Conditions.map(aData => {
 						const filterCondition = new FilterConditionModel();
 						return filterCondition && filterCondition.parse(aData) ? filterCondition : null;
-					}).filter(value => !!value)
+					}).filter(v => v)
 				);
 			}
 

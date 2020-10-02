@@ -17,7 +17,6 @@ import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction } from 'Common/Glo
 
 import {
 	inFocus,
-	removeSelection,
 	mailToHelper,
 	isTransparent
 } from 'Common/Utils';
@@ -336,7 +335,9 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	}
 
 	toggleFullScreen() {
-		removeSelection();
+		try {
+			getSelection().removeAllRanges();
+		} catch (e) {} // eslint-disable-line no-empty
 
 		this.fullScreenMode(!this.fullScreenMode());
 	}
@@ -365,7 +366,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	//						var oEmailModel = new EmailModel();
 	//						oEmailModel.parse(sItem);
 	//						return oEmailModel.email ? oEmailModel : null;
-	//					}).filter(value => !!value) : null;
+	//					}).filter(v => v) : null;
 	//			}
 	//		;
 	//
@@ -395,7 +396,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 						};
 					}
 					return null;
-				}).filter(value => !!value);
+				}).filter(v => v);
 
 			if (items.length) {
 			}
@@ -712,7 +713,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	getAttachmentsHashes() {
 		const atts = this.message() ? this.message().attachments() : [];
-		return atts.map(item => (item && !item.isLinked && item.checked() ? item.download : '')).filter(value => !!value);
+		return atts.map(item => (item && !item.isLinked && item.checked() ? item.download : '')).filter(v => v);
 	}
 
 	downloadAsZip() {

@@ -488,13 +488,7 @@
 		 */
 		addNewFile(oFileInfo)
 		{
-			let iLen = 16,
-				fakeMd5 = '';
-
-			while (iLen--)
-				fakeMd5 += '0123456789abcdefghijklmnopqrstuvwxyz'.substr(Math.round(Math.random() * 36), 1);
-
-			this.addFile('jua-uid-' + fakeMd5 + '-' + (Date.now().toString()), oFileInfo);
+			this.addFile('jua-uid-' + Jua.randomId(16) + '-' + (Date.now().toString()), oFileInfo);
 		}
 
 		/**
@@ -514,6 +508,12 @@
 				this.oDriver.cancel(sUid);
 			}
 		}
+	}
+
+	Jua.randomId = len => {
+		let arr = new Uint8Array((len || 32) / 2);
+		crypto.getRandomValues(arr);
+		return arr.map(dec => dec.toString(16).padStart(2,'0')).join('');
 	}
 
 	/**

@@ -182,7 +182,7 @@ class MessageModel extends AbstractModel {
 	getEmails(properties) {
 		return properties.reduce((carry, property) => carry.concat(this[property]), []).map(
 			oItem => oItem ? oItem.email : ''
-		).filter((value, index, self) => !!value && self.indexOf(value) == index);
+		).validUnique();
 	}
 
 	/**

@@ -301,7 +301,7 @@ export const File = {
 		if (Array.isNotEmpty(data)) {
 			let icons = data
 				.map(item => item ? File.getIconClass(File.getExtension(item[0]), item[1])[0] : '')
-				.filter((value, index, self) => value && self.indexOf(value) == index);
+				.validUnique();
 
 			return (icons && 1 === icons.length && 'icon-file' !== icons[0])
 				 ? icons[0]

@@ -41,38 +41,6 @@ export function pString(value) {
 }
 
 /**
- * @param {string} queryString
- * @returns {Object}
- */
-export function simpleQueryParser(queryString) {
-	const queries = queryString.split('&'),
-		params = {};
-
-	queries.forEach(temp => {
-		temp = temp.split('=');
-		params[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
-	});
-
-	return params;
-}
-
-/**
- * @param {number=} len = 32
- * @returns {string}
- */
-export function fakeMd5(len = 32) {
-	const line = '0123456789abcdefghijklmnopqrstuvwxyz';
-
-	len = pInt(len);
-
-	let result = '';
-	while (len--)
-		result += line.substr(Math.round(Math.random() * 36), 1);
-
-	return result;
-}
-
-/**
  * @param {string} text
  * @returns {string}
  */
@@ -85,7 +53,7 @@ export function encodeHtml(text) {
  * @param {number=} len = 100
  * @returns {string}
  */
-export function splitPlainText(text, len = 100) {
+function splitPlainText(text, len = 100) {
 	let prefix = '',
 		subText = '',
 		result = text,
@@ -140,72 +108,6 @@ export function inFocus() {
 }
 
 /**
- * @param {boolean} force
- * @returns {void}
- */
-export function removeInFocus(force) {
-	if (doc.activeElement && doc.activeElement.blur) {
-		try {
-			if (force || doc.activeElement.matches('input,textarea')) {
-				doc.activeElement.blur();
-			}
-		} catch (e) {} // eslint-disable-line no-empty
-	}
-}
-
-/**
- * @returns {void}
- */
-export function removeSelection() {
-	try {
-		getSelection().removeAllRanges();
-	} catch (e) {} // eslint-disable-line no-empty
-}
-
-/**
- * @param {string} prefix
- * @param {string} subject
- * @returns {string}
- */
-export function replySubjectAdd(prefix, subject) {
-	prefix = prefix.toUpperCase().trim();
-	subject = subject.replace(/[\s]+/g, ' ').trim();
-
-	let drop = false,
-		re = 'RE' === prefix,
-		fwd = 'FWD' === prefix;
-
-	const parts = [],
-		prefixIsRe = !fwd;
-
-	if (subject) {
-		subject.split(':').forEach(part => {
-			const trimmedPart = part.trim();
-			if (!drop && (/^(RE|FWD)$/i.test(trimmedPart) || /^(RE|FWD)[[(][\d]+[\])]$/i.test(trimmedPart))) {
-				if (!re) {
-					re = !!/^RE/i.test(trimmedPart);
-				}
-
-				if (!fwd) {
-					fwd = !!/^FWD/i.test(trimmedPart);
-				}
-			} else {
-				parts.push(part);
-				drop = true;
-			}
-		});
-	}
-
-	if (prefixIsRe) {
-		re = false;
-	} else {
-		fwd = false;
-	}
-
-	return ((prefixIsRe ? 'Re: ' : 'Fwd: ') + (re ? 'Re: ' : '') + (fwd ? 'Fwd: ' : '') + parts.join(':').trim()).trim();
-}
-
-/**
  * @param {(number|string)} sizeInBytes
  * @returns {string}
  */
@@ -257,85 +159,15 @@ export function defautOptionsAfterRender(domItem, item) {
 }
 
 /**
- * @param {Function} fCallback
- * @param {?} koTrigger
- * @param {?} context = null
- * @param {number=} timer = 1000
- * @returns {Function}
- */
-export function settingsSaveHelperFunction(fCallback, koTrigger, context = null, timer = 1000) {
-	timer = pInt(timer);
-	return (type, data, cached, requestAction, requestParameters) => {
-		koTrigger.call(context, data && data.Result ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult);
-		if (fCallback) {
-			fCallback.call(context, type, data, cached, requestAction, requestParameters);
-		}
-		setTimeout(() => {
-			koTrigger.call(context, SaveSettingsStep.Idle);
-		}, timer);
-	};
-}
-
-/**
  * @param {object} koTrigger
  * @param {mixed} context
  * @returns {mixed}
  */
 export function settingsSaveHelperSimpleFunction(koTrigger, context) {
-	return settingsSaveHelperFunction(null, koTrigger, context, 1000);
-}
-
-/**
- * @param {object} remote
- * @param {string} settingName
- * @param {string} type
- * @param {function} fTriggerFunction
- * @returns {function}
- */
-export function settingsSaveHelperSubscribeFunction(remote, settingName, type, fTriggerFunction) {
-	return (value) => {
-		if (remote) {
-			switch (type) {
-				case 'bool':
-				case 'boolean':
-					value = value ? '1' : '0';
-					break;
-				case 'int':
-				case 'integer':
-				case 'number':
-					value = pInt(value);
-					break;
-				case 'trim':
-					value = value.trim();
-					break;
-				default:
-					value = pString(value);
-					break;
-			}
-
-			const data = {};
-			data[settingName] = value;
-
-			if (remote.saveAdminConfig) {
-				remote.saveAdminConfig(fTriggerFunction || null, data);
-			} else if (remote.saveSettings) {
-				remote.saveSettings(fTriggerFunction || null, data);
-			}
-		}
+	return (type, data) => {
+		koTrigger.call(context, data && data.Result ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult);
+		setTimeout(() => koTrigger.call(context, SaveSettingsStep.Idle), 1000);
 	};
-}
-
-/**
- * @param {string} html
- * @returns {string}
- */
-/*eslint-disable max-len*/
-const url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
-	email = /(^|[\s\n]|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi;
-export function findEmailAndLinks(html) {
-	return html
-	.replace(url, '$1<a href="$2" target="_blank">$2</a>')
-	.replace(email, '$1<a href="mailto:$2">$2</a>');
 }
 
 /**
@@ -645,18 +477,6 @@ export function folderListOptionsBuilder(
 }
 
 /**
- * @param {object} element
- * @returns {void}
- */
-export function selectElement(element) {
-	let sel = getSelection(),
-		range = doc.createRange();
-	sel.removeAllRanges();
-	range.selectNodeContents(element);
-	sel.addRange(range);
-}
-
-/**
  * @param {Object|Array} objectOrObjects
  * @returns {void}
  */
@@ -828,38 +648,6 @@ export function isTransparent(color) {
 }
 
 /**
- * @param {string} url
- * @param {number} value
- * @param {Function} fCallback
- */
-export function resizeAndCrop(url, value, fCallback) {
-	const img = new Image();
-	img.onload = function() {
-		let diff = [0, 0];
-
-		const canvas = doc.createElement('canvas'),
-			ctx = canvas.getContext('2d');
-
-		canvas.width = value;
-		canvas.height = value;
-
-		if (this.width > this.height) {
-			diff = [this.width - this.height, 0];
-		} else {
-			diff = [0, this.height - this.width];
-		}
-
-		ctx.fillStyle = '#fff';
-		ctx.fillRect(0, 0, value, value);
-		ctx.drawImage(this, diff[0] / 2, diff[1] / 2, this.width - diff[0], this.height - diff[1], 0, 0, value, value);
-
-		fCallback(canvas.toDataURL('image/jpeg'));
-	};
-
-	img.src = url;
-}
-
-/**
  * @param {string} mailToUrl
  * @param {Function} PopupComposeViewModel
  * @returns {boolean}
@@ -888,7 +676,10 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 			query = mailToUrl.replace(/^[^?]*\?/, ''),
 			EmailModel = require('Model/Email').default;
 
-		params = simpleQueryParser(query);
+		query.split('&').forEach(temp => {
+			temp = temp.split('=');
+			params[decodeURIComponent(temp[0])] = decodeURIComponent(temp[1]);
+		});
 
 		if (undefined !== params.to) {
 			to = EmailModel.parseEmailLine(decodeURIComponent(email + ',' + params.to));

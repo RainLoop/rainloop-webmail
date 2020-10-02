@@ -82,7 +82,7 @@ class AdminApp extends AbstractApp {
 							return 'core' === item.type && !item.canBeInstalled ? null : item;
 						}
 						return null;
-					}).filter(value => !!value);
+					}).filter(v => v);
 				}
 
 				PackageStore.packages(list);

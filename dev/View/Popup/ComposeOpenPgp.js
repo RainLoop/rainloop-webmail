@@ -40,7 +40,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		this.encryptKeys = ko.observableArray([]);
 
 		this.encryptKeysView = ko.computed(
-			() => this.encryptKeys().map(oKey => (oKey ? oKey.key : null)).filter(value => !!value)
+			() => this.encryptKeys().map(oKey => (oKey ? oKey.key : null)).filter(v => v)
 		);
 
 		this.privateKeysOptions = ko.computed(() => {
@@ -56,7 +56,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 				}));
 			});
 
-			return opts.flat().filter(value => !!value);
+			return opts.flat().filter(v => v);
 		});
 
 		this.publicKeysOptions = ko.computed(() => {
@@ -71,7 +71,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 					'class': index % 2 ? 'odd' : 'even'
 				}));
 			});
-			return opts.flat().filter(value => !!value);
+			return opts.flat().filter(v => v);
 		});
 
 		this.submitRequest = ko.observable(false);
@@ -156,7 +156,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 
 				this.encryptKeys().forEach(oKey => {
 					if (oKey && oKey.key) {
-						aPublicKeys = aPublicKeys.concat(oKey.key.getNativeKeys().flat(Infinity).filter(value => !!value));
+						aPublicKeys = aPublicKeys.concat(oKey.key.getNativeKeys().flat(Infinity).filter(v => v));
 					} else if (oKey && oKey.email) {
 						this.notification(
 							i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
@@ -349,7 +349,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 				email.clear();
 				email.parse(value.trim());
 				return email.email || false;
-			}).filter(value => !!value);
+			}).filter(v => v);
 
 		if (identity && identity.email()) {
 			emailLine = identity.email();
@@ -385,9 +385,7 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 								'key': publicKey
 						  }))
 						: [];
-				}).flat().filter(
-					(encryptKey, index, self) => encryptKey => !!encryptKey.hash && self.indexOf(encryptKey) == index
-				)
+				}).flat().validUnique(encryptKey => encryptKey.hash)
 			);
 
 			if (this.encryptKeys().length) {

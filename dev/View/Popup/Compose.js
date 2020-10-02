@@ -12,7 +12,6 @@ import {
 } from 'Common/Enums';
 
 import {
-	replySubjectAdd,
 	encodeHtml,
 	inFocus,
 	delegateRunOnDestroy,
@@ -42,7 +41,50 @@ import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 import { popup, command, isPopupVisible, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
-const Settings = rl.settings;
+const Settings = rl.settings,
+	/**
+	 * @param {string} prefix
+	 * @param {string} subject
+	 * @returns {string}
+	 */
+	replySubjectAdd = (prefix, subject) => {
+		prefix = prefix.toUpperCase().trim();
+		subject = subject.replace(/[\s]+/g, ' ').trim();
+
+		let drop = false,
+			re = 'RE' === prefix,
+			fwd = 'FWD' === prefix;
+
+		const parts = [],
+			prefixIsRe = !fwd;
+
+		if (subject) {
+			subject.split(':').forEach(part => {
+				const trimmedPart = part.trim();
+				if (!drop && (/^(RE|FWD)$/i.test(trimmedPart) || /^(RE|FWD)[[(][\d]+[\])]$/i.test(trimmedPart))) {
+					if (!re) {
+						re = !!/^RE/i.test(trimmedPart);
+					}
+
+					if (!fwd) {
+						fwd = !!/^FWD/i.test(trimmedPart);
+					}
+				} else {
+					parts.push(part);
+					drop = true;
+				}
+			});
+		}
+
+		if (prefixIsRe) {
+			re = false;
+		} else {
+			fwd = false;
+		}
+
+		return ((prefixIsRe ? 'Re: ' : 'Fwd: ') + (re ? 'Re: ' : '')
+			+ (fwd ? 'Fwd: ' : '') + parts.join(':').trim()).trim();
+	};
 
 ko.extenders.toggleSubscribe = (target, options) => {
 	target.subscribe(options[1], options[0], 'beforeChange');
@@ -773,7 +815,7 @@ class ComposePopupView extends AbstractViewNext {
 		if (Array.isNotEmpty(emails)) {
 			const value = fKoValue().trim(),
 				values = emails.map(item => item ? item.toLine(false) : null)
-					.filter((value, index, self) => !!value && self.indexOf(value) == index);
+					.validUnique();
 
 			fKoValue(value + (value ? ', ' :  '') + values.join(', ').trim());
 		}

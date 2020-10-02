@@ -5,8 +5,7 @@ import { Layout, Focused, MessageSetAction, StorageResultType, Notification } fr
 import {
 	pInt,
 	pString,
-	plainToHtml,
-	findEmailAndLinks
+	plainToHtml
 } from 'Common/Utils';
 
 import {
@@ -44,6 +43,14 @@ const
 		const result = hcont.clientHeight;
 		hcont.innerHTML = '';
 		return result;
+	},
+	/*eslint-disable max-len*/
+	url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
+	email = /(^|[\s\n]|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi,
+	findEmailAndLinks = html => {
+		return html
+		.replace(url, '$1<a href="$2" target="_blank">$2</a>')
+		.replace(email, '$1<a href="mailto:$2">$2</a>');
 	};
 
 let iMessageBodyCacheCount = 0;
@@ -142,7 +149,7 @@ class MessageUserStore {
 
 			if (checked.length) {
 				return selectedMessage
-					? checked.concat([selectedMessage]).filter((value, index, self) => self.indexOf(value) == index)
+					? checked.concat([selectedMessage]).unique()
 					: checked;
 			}
 
@@ -155,7 +162,7 @@ class MessageUserStore {
 				if (message) {
 					result.push(message.uid);
 					if (1 < message.threadsLen()) {
-						result = result.concat(message.threads()).filter((value, index, self) => self.indexOf(value) == index);
+						result = result.concat(message.threads()).unique();
 					}
 				}
 			});

@@ -53,7 +53,7 @@ function domControlEncryptedClickHelper(store, dom, armoredMessage, recipients) 
 						} else if (validPrivateKey) {
 							const keyIds = Array.isNotEmpty(signingKeyIds) ? signingKeyIds : null,
 								additional = keyIds
-									? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(value => !!value).join(', ')
+									? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
 									: '';
 
 							controlsHelper(
@@ -109,7 +109,7 @@ function domControlSignedClickHelper(store, dom, armoredMessage) {
 				} else {
 					const keyIds = Array.isNotEmpty(signingKeyIds) ? signingKeyIds : null,
 						additional = keyIds
-							? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(value => !!value).join(', ')
+							? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
 							: '';
 
 					controlsHelper(
@@ -138,8 +138,8 @@ class PgpUserStore {
 		this.openpgpkeys = ko.observableArray([]);
 		this.openpgpKeyring = null;
 
-		this.openpgpkeysPublic = ko.computed(() => this.openpgpkeys().filter(item => !!(item && !item.isPrivate)));
-		this.openpgpkeysPrivate = ko.computed(() => this.openpgpkeys().filter(item => !!(item && item.isPrivate)));
+		this.openpgpkeysPublic = ko.computed(() => this.openpgpkeys().filter(item => item && !item.isPrivate));
+		this.openpgpkeysPrivate = ko.computed(() => this.openpgpkeys().filter(item => item && item.isPrivate));
 	}
 
 	/**
@@ -165,14 +165,14 @@ class PgpUserStore {
 		return this.openpgpkeysPublic().map(item => {
 			const key = item && item.emails.includes(email) ? item : null;
 			return key ? key.getNativeKeys() : [null];
-		}).flat().filter(value => !!value);
+		}).flat().filter(v => v);
 	}
 
 	findPublicKeysBySigningKeyIds(signingKeyIds) {
 		return signingKeyIds.map(id => {
 			const key = id && id.toHex ? this.findPublicKeyByHex(id.toHex()) : null;
 			return key ? key.getNativeKeys() : [null];
-		}).flat().filter(value => !!value);
+		}).flat().filter(v => v);
 	}
 
 	findPrivateKeysByEncryptionKeyIds(encryptionKeyIds, recipients, returnWrapKeys) {
@@ -180,7 +180,7 @@ class PgpUserStore {
 			? encryptionKeyIds.map(id => {
 					const key = id && id.toHex ? this.findPrivateKeyByHex(id.toHex()) : null;
 					return key ? (returnWrapKeys ? [key] : key.getNativeKeys()) : [null];
-				}).flat().filter(value => !!value)
+				}).flat().filter(v => v)
 			: [];
 
 		if (!result.length && Array.isNotEmpty(recipients)) {
@@ -191,7 +191,7 @@ class PgpUserStore {
 						? keys
 						: keys.map(key => key.getNativeKeys()).flat()
 					: [null];
-			}).flat().filter((key, index, self) => key => !!key.id && self.indexOf(key) == index);
+			}).flat().validUnique(key => key.id);
 		}
 
 		return result;

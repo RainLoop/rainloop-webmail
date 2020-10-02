@@ -105,7 +105,7 @@ class FiltersUserSettings {
 						data.Result.Filters.map(aItem => {
 							const filter = new FilterModel();
 							return filter && filter.parse(aItem) ? filter : null;
-						}).filter(value => !!value)
+						}).filter(v => v)
 					);
 
 					this.modules(data.Result.Modules ? data.Result.Modules : {});
