@@ -15,7 +15,8 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import { leftPanelDisabled, moveAction } from 'Common/Globals';
 
-import { computedPagenatorHelper, friendlySize } from 'Common/Utils';
+import { computedPagenatorHelper } from 'Common/Utils';
+import { File } from 'Common/File';
 
 import { mailBox, append } from 'Common/Links';
 import { Selector } from 'Common/Selector';
@@ -903,9 +904,9 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	quotaTooltip() {
 		return i18n('MESSAGE_LIST/QUOTA_SIZE', {
-			'SIZE': friendlySize(this.userUsageSize()),
+			'SIZE': File.friendlySize(this.userUsageSize()),
 			'PROC': this.userUsageProc(),
-			'LIMIT': friendlySize(this.userQuota())
+			'LIMIT': File.friendlySize(this.userQuota())
 		});
 	}
 

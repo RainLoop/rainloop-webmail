@@ -7,6 +7,7 @@ const
 	msOffice = app+'vnd.openxmlformats-officedocument.',
 	openDoc = app+'vnd.oasis.opendocument.',
 	font = app+'x-font-',
+	sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB'],
 
 	exts = {
 	'eml': 'message/rfc822',
@@ -309,5 +310,12 @@ export const File = {
 		}
 
 		return '';
+	},
+
+	friendlySize: bytes => {
+		bytes = parseInt(bytes, 10) || 0;
+		let i = Math.floor(Math.log(bytes) / Math.log(1024));
+		return (bytes / Math.pow(1024, i)).toFixed(2>i ? 0 : 1) + sizes[i];
 	}
+
 };

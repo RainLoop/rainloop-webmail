@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { pInt, friendlySize } from 'Common/Utils';
+import { pInt } from 'Common/Utils';
 import { File } from 'Common/File';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -51,7 +51,7 @@ class ComposeAttachmentModel extends AbstractModel {
 
 		this.friendlySize = ko.computed(() => {
 			const localSize = this.size();
-			return null === localSize ? '' : friendlySize(localSize);
+			return null === localSize ? '' : File.friendlySize(localSize);
 		});
 
 		this.mimeType = ko.computed(() => File.getContentType(this.fileName()));

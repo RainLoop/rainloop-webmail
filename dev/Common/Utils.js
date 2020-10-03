@@ -100,16 +100,6 @@ export function inFocus() {
 }
 
 /**
- * @param {(number|string)} sizeInBytes
- * @returns {string}
- */
-export function friendlySize(sizeInBytes) {
-	sizeInBytes = pInt(sizeInBytes);
-	const sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB'], i = pInt(Math.floor(Math.log(sizeInBytes) / Math.log(1024)));
-	return (sizeInBytes / Math.pow(1024, i)).toFixed(2>i ? 0 : 1) + sizes[i];
-}
-
-/**
  * @param {string} theme
  * @returns {string}
  */

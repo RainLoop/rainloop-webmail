@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { File, FileType } from 'Common/File';
-import { pInt, friendlySize } from 'Common/Utils';
 import {
 	attachmentDownload,
 	attachmentPreview,
@@ -26,7 +25,6 @@ class AttachmentModel extends AbstractModel {
 		this.fileName = '';
 		this.fileNameExt = '';
 		this.fileType = FileType.Unknown;
-		this.estimatedSize = 0;
 		this.friendlySize = '';
 		this.isInline = false;
 		this.isLinked = false;
@@ -60,7 +58,6 @@ class AttachmentModel extends AbstractModel {
 		if (json && 'Object/Attachment' === json['@Object']) {
 			this.mimeType = ((json.MimeType || '').toLowerCase()).trim();
 			this.fileName = json.FileName.trim();
-			this.estimatedSize = pInt(json.EstimatedSize);
 			// if it is inline
 			this.isInline = !!json.IsInline;
 			// if inline image is linked with CID in html
@@ -76,7 +73,7 @@ class AttachmentModel extends AbstractModel {
 			this.mimeIndex = json.MimeIndex;
 			this.framed = !!json.Framed;
 
-			this.friendlySize = friendlySize(this.estimatedSize);
+			this.friendlySize = File.friendlySize(json.EstimatedSize);
 			this.cidWithoutTags = this.cid.replace(/^<+/, '').replace(/>+$/, '');
 
 			this.fileNameExt = File.getExtension(this.fileName);

@@ -60,13 +60,6 @@
 		return (1 > w
 			? getWeek(new Date(x.getFullYear()-1,11,31)) /* previous year, last week */
 			: (52 < w && 4 > getISODay(x) ? 1 /* next year, first week */ : w) );
-	},
-	isDST = x => {
-		let y=x.getFullYear();
-		return x.getTimezoneOffset() != Math.max(
-			new Date(y, 0, 1).getTimezoneOffset(),
-			new Date(y, 6, 1).getTimezoneOffset()
-		);
 	};
 
 	// Defining locale
@@ -153,7 +146,6 @@
 				case 's': return pad2(UTC?x.getUTCSeconds():x.getSeconds());
 				case 'u': return (UTC?x.getUTCMilliseconds():x.getMilliseconds()).toString().padStart(3,'0');
 				// Timezone
-				case 'I': return UTC ? 0 : isDST(x) ? 1 : 0;
 				case 'O': return UTC ? 'Z' : (d.Z > 0 ? '+' : '-') + pad2(Math.abs(d.Z / 60)) + '00';
 				case 'P': return UTC ? 'Z' : (d.Z > 0 ? '+' : '-') + pad2(Math.abs(d.Z / 60)) + ':' + pad2(Math.abs(d.Z % 60));
 				case 'T': return UTC ? 'UTC' : new Date(d.Y, 0, 1).toTimeString().replace(/^.+ \(?([^)]+)\)?$/, '$1');
@@ -170,34 +162,25 @@
 
 	// Simulate momentjs fromNow function
 	Date.prototype.fromNow = function() {
-		let format,
+		let format = 's',
 			seconds = (Date.now() - this.getTime()) / 1000,
-			str = locale.relativeTime[0 < seconds ? 'past' : 'future'];
+			str = locale.relativeTime[0 < seconds ? 'past' : 'future'],
+			t = [[60,'m'],[3600,'h'],[86400,'d'],[2628000,'M'],[31536000,'y']],
+			i = 5;
 		seconds = Math.abs(seconds);
-		if (60 > seconds) {
-			format = 's';
-		} else if (3600 > seconds) {
-			seconds = seconds / 60;
-			format = 'm';
-		} else if (86400 > seconds) {
-			seconds = seconds / 3600;
-			format = 'h';
-		} else if (2628000 > seconds) {
-			seconds = seconds / 86400;
-			format = 'd';
-		} else if (31536000 > seconds) {
-			seconds = seconds / 2628000;
-			format = 'M';
-		} else {
-			seconds = seconds / 31536000;
-			format = 'y';
+		while (i--) {
+			if (t[i][0] <= seconds) {
+				seconds = seconds / t[i][0];
+				format = t[i][1];
+				break;
+			}
 		}
 		seconds = Math.round(seconds);
 		if (1 < seconds) {
 			format += format;
 		}
 		return str.replace('%s', locale.relativeTime[format].replace('%d', seconds));
-	}
+	};
 
 	Element.prototype.closestWithin = function(selector, parent) {
 		const el = this.closest(selector);

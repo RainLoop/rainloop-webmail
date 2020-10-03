@@ -5,8 +5,7 @@ import { i18n } from 'Common/Translator';
 
 import {
 	pInt,
-	encodeHtml,
-	friendlySize
+	encodeHtml
 } from 'Common/Utils';
 
 import { messageViewLink, messageDownloadLink } from 'Common/Links';
@@ -188,7 +187,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	friendlySize() {
-		return friendlySize(this.size());
+		return File.friendlySize(this.size());
 	}
 
 	computeSenderEmail() {
