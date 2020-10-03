@@ -5,7 +5,6 @@ import { i18n } from 'Common/Translator';
 
 import {
 	pInt,
-	deModule,
 	encodeHtml,
 	friendlySize
 } from 'Common/Utils';
@@ -518,21 +517,19 @@ class MessageModel extends AbstractModel {
 			ccLine = this.ccToLine(false),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
 			win = open(''),
-			doc = win.document;
-
-		doc.write(
-			deModule(require('Html/PreviewMessage.html'))
-				.replace('{{title}}', encodeHtml(this.subject()))
-				.replace('{{subject}}', encodeHtml(this.subject()))
-				.replace('{{date}}', encodeHtml(m ? m.format('LLL') : ''))
-				.replace('{{fromCreds}}', encodeHtml(this.fromToLine(false)))
-				.replace('{{toCreds}}', encodeHtml(this.toToLine(false)))
-				.replace('{{toLabel}}', encodeHtml(i18n('MESSAGE/LABEL_TO')))
-				.replace('{{ccClass}}', encodeHtml(ccLine ? '' : 'rl-preview-hide'))
-				.replace('{{ccCreds}}', encodeHtml(ccLine))
-				.replace('{{ccLabel}}', encodeHtml(i18n('MESSAGE/LABEL_CC')))
-				.replace('{{bodyClass}}', this.isHtml() ? 'html' : 'plain')
-				.replace('{{html}}', this.bodyAsHTML())
+			doc = win.document,
+			html = require('Html/PreviewMessage.html');
+		doc.write((html.default)
+			.replace(/{{subject}}/g, encodeHtml(this.subject()))
+			.replace('{{date}}', encodeHtml(m ? m.format('LLL') : ''))
+			.replace('{{fromCreds}}', encodeHtml(this.fromToLine(false)))
+			.replace('{{toCreds}}', encodeHtml(this.toToLine(false)))
+			.replace('{{toLabel}}', encodeHtml(i18n('MESSAGE/LABEL_TO')))
+			.replace('{{ccHide}}', ccLine ? '' : 'hidden=""')
+			.replace('{{ccCreds}}', encodeHtml(ccLine))
+			.replace('{{ccLabel}}', encodeHtml(i18n('MESSAGE/LABEL_CC')))
+			.replace('{{bodyClass}}', this.isHtml() ? 'html' : 'plain')
+			.replace('{{html}}', this.bodyAsHTML())
 		);
 
 		doc.close();

@@ -81,14 +81,6 @@ function splitPlainText(text, len = 100) {
 }
 
 /**
- * @param {any} m
- * @returns {any}
- */
-export function deModule(m) {
-	return (m && m.default ? m.default : m) || '';
-}
-
-/**
  * @returns {boolean}
  */
 export function inFocus() {
