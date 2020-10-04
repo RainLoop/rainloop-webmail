@@ -1,5 +1,5 @@
 var arrayChangeEventName = 'arrayChange';
-ko.extenders['trackArrayChanges'] = function(target, options) {
+ko.extenders['trackArrayChanges'] = (target, options) => {
     // Use the provided options--each call to trackArrayChanges overwrites the previously set options
     target.compareArrayOptions = {};
     if (options && typeof options == "object") {
@@ -21,7 +21,7 @@ ko.extenders['trackArrayChanges'] = function(target, options) {
         underlyingAfterSubscriptionRemoveFunction = target.afterSubscriptionRemove;
 
     // Watch "subscribe" calls, and for array change events, ensure change tracking is enabled
-    target.beforeSubscriptionAdd = function (event) {
+    target.beforeSubscriptionAdd = event => {
         if (underlyingBeforeSubscriptionAddFunction) {
             underlyingBeforeSubscriptionAddFunction.call(target, event);
         }
@@ -30,7 +30,7 @@ ko.extenders['trackArrayChanges'] = function(target, options) {
         }
     };
     // Watch "dispose" calls, and for array change events, ensure change tracking is disabled when all are disposed
-    target.afterSubscriptionRemove = function (event) {
+    target.afterSubscriptionRemove = event => {
         if (underlyingAfterSubscriptionRemoveFunction) {
             underlyingAfterSubscriptionRemoveFunction.call(target, event);
         }
@@ -58,9 +58,7 @@ ko.extenders['trackArrayChanges'] = function(target, options) {
         trackingChanges = true;
 
         // Track how many times the array actually changed value
-        spectateSubscription = target.subscribe(function () {
-            ++pendingChanges;
-        }, null, "spectate");
+        spectateSubscription = target.subscribe(() => ++pendingChanges, null, "spectate");
 
         // Each time the array changes value, capture a clone so that on the next
         // change it's possible to produce a diff
@@ -102,7 +100,7 @@ ko.extenders['trackArrayChanges'] = function(target, options) {
         return cachedDiff;
     }
 
-    target.cacheDiffForKnownOperation = function(rawArray, operationName, args) {
+    target.cacheDiffForKnownOperation = (rawArray, operationName, args) => {
         // Only run if we're currently tracking changes for this observable array
         // and there aren't any pending deferred notifications.
         if (!trackingChanges || pendingChanges) {

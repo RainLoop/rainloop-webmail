@@ -1,4 +1,4 @@
-(function () {
+(() => {
     // Objective:
     // * Given an input array, a container DOM node, and a function from array elements to arrays of DOM nodes,
     //   map the array elements to arrays of DOM nodes, concatenate together all these arrays, and use them to populate the container DOM node
@@ -12,7 +12,7 @@
     function mapNodeAndRefreshWhenChanged(containerNode, mapping, valueToMap, callbackAfterAddingNodes, index) {
         // Map this array value inside a dependentObservable so we re-map when any dependency changes
         var mappedNodes = [];
-        var dependentObservable = ko.dependentObservable(function() {
+        var dependentObservable = ko.dependentObservable(() => {
             var newMappedNodes = mapping(valueToMap, index, ko.utils.fixUpContinuousNodeArray(mappedNodes, containerNode)) || [];
 
             // On subsequent evaluations, just replace the previously-inserted DOM nodes
@@ -33,7 +33,7 @@
     var lastMappingResultDomDataKey = ko.utils.domData.nextKey(),
         deletedItemDummyValue = ko.utils.domData.nextKey();
 
-    ko.utils.setDomNodeChildrenFromArrayMapping = function (domNode, array, mapping, options, callbackAfterAddingNodes, editScript) {
+    ko.utils.setDomNodeChildrenFromArrayMapping = (domNode, array, mapping, options, callbackAfterAddingNodes, editScript) => {
         array = array || [];
         if (typeof array.length == "undefined") // Coerce single value into array
             array = [array];
@@ -88,7 +88,7 @@
         } else {
             if (!editScript || (lastMappingResult && lastMappingResult['_countWaitingForRemove'])) {
                 // Compare the provided array against the previous one
-                var lastArray = Array.prototype.map.call(lastMappingResult, function (x) { return x.arrayEntry; }),
+                var lastArray = Array.prototype.map.call(lastMappingResult, x => x.arrayEntry),
                     compareOptions = {
                         'dontLimitMoves': options['dontLimitMoves'],
                         'sparse': true
@@ -96,7 +96,7 @@
                 editScript = ko.utils.compareArrays(lastArray, array, compareOptions);
             }
 
-            for (var i = 0, editScriptItem, movedIndex, itemIndex; editScriptItem = editScript[i]; i++) {
+            for (let i = 0, editScriptItem, movedIndex, itemIndex; editScriptItem = editScript[i]; i++) {
                 movedIndex = editScriptItem['moved'];
                 itemIndex = editScriptItem['index'];
                 switch (editScriptItem['status']) {

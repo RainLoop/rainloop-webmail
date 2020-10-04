@@ -1,5 +1,5 @@
 // Go through the items that have been added and deleted and try to find matches between them.
-ko.utils.findMovesInArrayComparison = function (left, right, limitFailedCompares) {
+ko.utils.findMovesInArrayComparison = (left, right, limitFailedCompares) => {
     if (left.length && right.length) {
         var failedCompares, l, r, leftItem, rightItem;
         for (failedCompares = l = 0; (!limitFailedCompares || failedCompares < limitFailedCompares) && (leftItem = left[l]); ++l) {
@@ -17,7 +17,7 @@ ko.utils.findMovesInArrayComparison = function (left, right, limitFailedCompares
     }
 };
 
-ko.utils.compareArrays = (function () {
+ko.utils.compareArrays = (() => {
     var statusNotInOld = 'added', statusNotInNew = 'deleted';
 
     // Simple calculation based on Levenshtein distance.

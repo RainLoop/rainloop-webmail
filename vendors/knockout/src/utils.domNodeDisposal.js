@@ -41,20 +41,20 @@ ko.utils.domNodeDisposal = new (function () {
             if (!onlyComments || nodeList[i].nodeType === 8) {
                 cleanSingleNode(cleanedNodes[cleanedNodes.length] = lastCleanedNode = nodeList[i]);
                 if (nodeList[i] !== lastCleanedNode) {
-                    while (i-- && ko.utils.arrayIndexOf(cleanedNodes, nodeList[i]) == -1) {}
+                    while (i-- && ko.utils.arrayIndexOf(cleanedNodes, nodeList[i]) == -1);
                 }
             }
         }
     }
 
     return {
-        addDisposeCallback : function(node, callback) {
+        addDisposeCallback : (node, callback) => {
             if (typeof callback != "function")
                 throw new Error("Callback must be a function");
             getDisposeCallbacksCollection(node, true).push(callback);
         },
 
-        removeDisposeCallback : function(node, callback) {
+        removeDisposeCallback : (node, callback) => {
             var callbacksCollection = getDisposeCallbacksCollection(node, false);
             if (callbacksCollection) {
                 ko.utils.arrayRemoveItem(callbacksCollection, callback);
@@ -63,8 +63,8 @@ ko.utils.domNodeDisposal = new (function () {
             }
         },
 
-        cleanNode : function(node) {
-            ko.dependencyDetection.ignore(function () {
+        cleanNode : node => {
+            ko.dependencyDetection.ignore(() => {
                 // First clean this node, where applicable
                 if (cleanableNodeTypes[node.nodeType]) {
                     cleanSingleNode(node);
@@ -79,7 +79,7 @@ ko.utils.domNodeDisposal = new (function () {
             return node;
         },
 
-        removeNode : function(node) {
+        removeNode : node => {
             ko.cleanNode(node);
             if (node.parentNode)
                 node.parentNode.removeChild(node);

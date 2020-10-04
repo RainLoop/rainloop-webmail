@@ -1,7 +1,7 @@
-ko.when = function(predicate, callback, context) {
+ko.when = (predicate, callback, context) => {
     function kowhen (resolve) {
         var observable = ko.pureComputed(predicate, context).extend({notify:'always'});
-        var subscription = observable.subscribe(function(value) {
+        var subscription = observable.subscribe(value => {
             if (value) {
                 subscription.dispose();
                 resolve(value);
@@ -12,10 +12,7 @@ ko.when = function(predicate, callback, context) {
 
         return subscription;
     }
-    if (callback) {
-        return kowhen(callback.bind(context));
-    }
-    return new Promise(kowhen);
+    return callback ? kowhen(callback.bind(context)) : new Promise(kowhen);
 };
 
 ko.exportSymbol('when', ko.when);

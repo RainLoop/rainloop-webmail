@@ -1,16 +1,15 @@
-ko.tasks = (function () {
-    var scheduler,
-        taskQueue = [],
+ko.tasks = (() => {
+    var taskQueue = [],
         taskQueueLength = 0,
         nextHandle = 1,
-        nextIndexToProcess = 0;
+        nextIndexToProcess = 0,
 
     // Chrome 27+, Firefox 14+, IE 11+, Opera 15+, Safari 6.1+
     // From https://github.com/petkaantonov/bluebird * Copyright (c) 2014 Petka Antonov * License: MIT
-    scheduler = (function (callback) {
+    scheduler = (callback => {
         var div = document.createElement("div");
         new MutationObserver(callback).observe(div, {attributes: true});
-        return function () { div.classList.toggle("foo"); };
+        return () => div.classList.toggle("foo");
     })(scheduledProcess);
 
     function processTasks() {
@@ -47,37 +46,22 @@ ko.tasks = (function () {
         nextIndexToProcess = taskQueueLength = taskQueue.length = 0;
     }
 
-    function scheduleTaskProcessing() {
-        ko.tasks['scheduler'](scheduledProcess);
-    }
-
     var tasks = {
-        'scheduler': scheduler,     // Allow overriding the scheduler
-
-        schedule: function (func) {
+        schedule: func => {
             if (!taskQueueLength) {
-                scheduleTaskProcessing();
+                scheduler(scheduledProcess);
             }
 
             taskQueue[taskQueueLength++] = func;
             return nextHandle++;
         },
 
-        cancel: function (handle) {
+        cancel: handle => {
             var index = handle - (nextHandle - taskQueueLength);
             if (index >= nextIndexToProcess && index < taskQueueLength) {
                 taskQueue[index] = null;
             }
-        },
-
-        // For testing only: reset the queue and return the previous queue length
-        'resetForTesting': function () {
-            var length = taskQueueLength - nextIndexToProcess;
-            nextIndexToProcess = taskQueueLength = taskQueue.length = 0;
-            return length;
-        },
-
-        runEarly: processTasks
+        }
     };
 
     return tasks;
@@ -86,4 +70,3 @@ ko.tasks = (function () {
 ko.exportSymbol('tasks', ko.tasks);
 ko.exportSymbol('tasks.schedule', ko.tasks.schedule);
 //ko.exportSymbol('tasks.cancel', ko.tasks.cancel);  "cancel" isn't minified
-ko.exportSymbol('tasks.runEarly', ko.tasks.runEarly);

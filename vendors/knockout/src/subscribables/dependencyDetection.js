@@ -1,18 +1,8 @@
 
-ko.computedContext = ko.dependencyDetection = (function () {
+ko.computedContext = ko.dependencyDetection = (() => {
     var outerFrames = [],
         currentFrame,
         lastId = 0;
-
-    // Return a unique ID that can be assigned to an observable for dependency tracking.
-    // Theoretically, you could eventually overflow the number storage size, resulting
-    // in duplicate IDs. But in JavaScript, the largest exact integral value is 2^53
-    // or 9,007,199,254,740,992. If you created 1,000,000 IDs per second, it would
-    // take over 285 years to reach that number.
-    // Reference http://blog.vjeux.com/2010/javascript/javascript-max_int-number-limits.html
-    function getId() {
-        return ++lastId;
-    }
 
     function begin(options) {
         outerFrames.push(currentFrame);
@@ -28,15 +18,15 @@ ko.computedContext = ko.dependencyDetection = (function () {
 
         end: end,
 
-        registerDependency: function (subscribable) {
+        registerDependency: subscribable => {
             if (currentFrame) {
                 if (!ko.isSubscribable(subscribable))
                     throw new Error("Only subscribable things can act as dependencies");
-                currentFrame.callback.call(currentFrame.callbackTarget, subscribable, subscribable._id || (subscribable._id = getId()));
+                currentFrame.callback.call(currentFrame.callbackTarget, subscribable, subscribable._id || (subscribable._id = ++lastId));
             }
         },
 
-        ignore: function (callback, callbackTarget, callbackArgs) {
+        ignore: (callback, callbackTarget, callbackArgs) => {
             try {
                 begin();
                 return callback.apply(callbackTarget, callbackArgs || []);
@@ -45,22 +35,22 @@ ko.computedContext = ko.dependencyDetection = (function () {
             }
         },
 
-        getDependenciesCount: function () {
+        getDependenciesCount: () => {
             if (currentFrame)
                 return currentFrame.computed.getDependenciesCount();
         },
 
-        getDependencies: function () {
+        getDependencies: () => {
             if (currentFrame)
                 return currentFrame.computed.getDependencies();
         },
 
-        isInitial: function() {
+        isInitial: () => {
             if (currentFrame)
                 return currentFrame.isInitial;
         },
 
-        computed: function() {
+        computed: () => {
             if (currentFrame)
                 return currentFrame.computed;
         }

@@ -1,4 +1,4 @@
-ko.expressionRewriting = (function () {
+ko.expressionRewriting = (() => {
     var javaScriptReservedWords = ["true", "false", "null", "undefined"];
 
     // Matches something that can be assigned to--either an isolated identifier or something ending with a property accessor
@@ -28,7 +28,7 @@ ko.expressionRewriting = (function () {
             "//.*\n",
             // Match a regular expression (text enclosed by slashes), but will also match sets of divisions
             // as a regular expression (this is handled by the parsing loop below).
-            '/(?:\\\\.|[^/])+/\w*',
+            '/(?:\\\\.|[^/])+/w*',
             // Match text (at least two characters) that does not contain any of the above special characters,
             // although some of the special characters are allowed to start it (all but the colon and comma).
             // The text can contain spaces, but leading or trailing spaces are skipped.
@@ -143,9 +143,9 @@ ko.expressionRewriting = (function () {
             keyValueArray = typeof bindingsStringOrKeyValueArray === "string" ?
                 parseObjectLiteral(bindingsStringOrKeyValueArray) : bindingsStringOrKeyValueArray;
 
-        ko.utils.arrayForEach(keyValueArray, function(keyValue) {
-            processKeyValue(keyValue.key || keyValue['unknown'], keyValue.value);
-        });
+        ko.utils.arrayForEach(keyValueArray, keyValue =>
+            processKeyValue(keyValue.key || keyValue['unknown'], keyValue.value)
+        );
 
         if (propertyAccessorResultStrings.length)
             processKeyValue('_ko_property_writers', "{" + propertyAccessorResultStrings.join(",") + " }");
@@ -162,7 +162,7 @@ ko.expressionRewriting = (function () {
 
         preProcessBindings: preProcessBindings,
 
-        keyValueArrayContainsKey: function(keyValueArray, key) {
+        keyValueArrayContainsKey: (keyValueArray, key) => {
             for (var i = 0; i < keyValueArray.length; i++)
                 if (keyValueArray[i]['key'] == key)
                     return true;
@@ -178,7 +178,7 @@ ko.expressionRewriting = (function () {
         // value:               The value to be written
         // checkIfDifferent:    If true, and if the property being written is a writable observable, the value will only be written if
         //                      it is !== existing value on that writable observable
-        writeValueToProperty: function(property, allBindings, key, value, checkIfDifferent) {
+        writeValueToProperty: (property, allBindings, key, value, checkIfDifferent) => {
             if (!property || !ko.isObservable(property)) {
                 var propWriters = allBindings.get('_ko_property_writers');
                 if (propWriters && propWriters[key])
@@ -194,17 +194,3 @@ ko.exportSymbol('expressionRewriting', ko.expressionRewriting);
 ko.exportSymbol('expressionRewriting.bindingRewriteValidators', ko.expressionRewriting.bindingRewriteValidators);
 ko.exportSymbol('expressionRewriting.parseObjectLiteral', ko.expressionRewriting.parseObjectLiteral);
 ko.exportSymbol('expressionRewriting.preProcessBindings', ko.expressionRewriting.preProcessBindings);
-
-// Making bindings explicitly declare themselves as "two way" isn't ideal in the long term (it would be better if
-// all bindings could use an official 'property writer' API without needing to declare that they might). However,
-// since this is not, and has never been, a public API (_ko_property_writers was never documented), it's acceptable
-// as an internal implementation detail in the short term.
-// For those developers who rely on _ko_property_writers in their custom bindings, we expose _twoWayBindings as an
-// undocumented feature that makes it relatively easy to upgrade to KO 3.0. However, this is still not an official
-// public API, and we reserve the right to remove it at any time if we create a real public property writers API.
-ko.exportSymbol('expressionRewriting._twoWayBindings', ko.expressionRewriting.twoWayBindings);
-
-// For backward compatibility, define the following aliases. (Previously, these function names were misleading because
-// they referred to JSON specifically, even though they actually work with arbitrary JavaScript object literal expressions.)
-ko.exportSymbol('jsonExpressionRewriting', ko.expressionRewriting);
-ko.exportSymbol('jsonExpressionRewriting.insertPropertyAccessorsIntoJson', ko.expressionRewriting.preProcessBindings);

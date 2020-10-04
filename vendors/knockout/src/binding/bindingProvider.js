@@ -6,7 +6,7 @@
     };
 
     ko.utils.extend(ko.bindingProvider.prototype, {
-        'nodeHasBindings': function(node) {
+        'nodeHasBindings': node => {
             switch (node.nodeType) {
                 case 1: // Element
                     return node.getAttribute(defaultBindingAttributeName) != null
@@ -31,12 +31,12 @@
 
         // The following function is only used internally by this default provider.
         // It's not part of the interface definition for a general binding provider.
-        'getBindingsString': function(node, bindingContext) {
+        'getBindingsString': (node, bindingContext) => {
             switch (node.nodeType) {
                 case 1: return node.getAttribute(defaultBindingAttributeName);   // Element
                 case 8: return ko.virtualElements.virtualNodeBindingValue(node); // Comment node
-                default: return null;
             }
+            return null;
         },
 
         // The following function is only used internally by this default provider.

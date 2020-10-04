@@ -1,4 +1,4 @@
-(function(undefined) {
+(() => {
 
     // The default loader is responsible for two things:
     // 1. Maintaining the default in-memory registry of component configuration objects
@@ -12,7 +12,7 @@
 
     var defaultConfigRegistry = {};
 
-    ko.components.register = function(componentName, config) {
+    ko.components.register = (componentName, config) => {
         if (!config) {
             throw new Error('Invalid configuration for ' + componentName);
         }
@@ -24,37 +24,35 @@
         defaultConfigRegistry[componentName] = config;
     };
 
-    ko.components.isRegistered = function(componentName) {
-        return Object.prototype.hasOwnProperty.call(defaultConfigRegistry, componentName);
-    };
+    ko.components.isRegistered = componentName =>
+        Object.prototype.hasOwnProperty.call(defaultConfigRegistry, componentName);
 
-    ko.components.unregister = function(componentName) {
+    ko.components.unregister = componentName => {
         delete defaultConfigRegistry[componentName];
         ko.components.clearCachedDefinition(componentName);
     };
 
     ko.components.defaultLoader = {
-        'getConfig': function(componentName, callback) {
+        'getConfig': (componentName, callback) => {
             var result = ko.components.isRegistered(componentName)
                 ? defaultConfigRegistry[componentName]
                 : null;
             callback(result);
         },
 
-        'loadComponent': function(componentName, config, callback) {
+        'loadComponent': (componentName, config, callback) => {
             var errorCallback = makeErrorCallback(componentName);
-            possiblyGetConfigFromAmd(errorCallback, config, function(loadedConfig) {
-                resolveConfig(componentName, errorCallback, loadedConfig, callback);
-            });
+            possiblyGetConfigFromAmd(errorCallback, config, loadedConfig =>
+                resolveConfig(componentName, errorCallback, loadedConfig, callback)
+            );
         },
 
-        'loadTemplate': function(componentName, templateConfig, callback) {
-            resolveTemplate(makeErrorCallback(componentName), templateConfig, callback);
-        },
+        'loadTemplate': (componentName, templateConfig, callback) =>
+            resolveTemplate(makeErrorCallback(componentName), templateConfig, callback)
+        ,
 
-        'loadViewModel': function(componentName, viewModelConfig, callback) {
-            resolveViewModel(makeErrorCallback(componentName), viewModelConfig, callback);
-        }
+        'loadViewModel': (componentName, viewModelConfig, callback) =>
+            resolveViewModel(makeErrorCallback(componentName), viewModelConfig, callback)
     };
 
     var createViewModelKey = 'createViewModel';
@@ -68,7 +66,7 @@
     function resolveConfig(componentName, errorCallback, config, callback) {
         var result = {},
             makeCallBackWhenZero = 2,
-            tryIssueCallback = function() {
+            tryIssueCallback = () => {
                 if (--makeCallBackWhenZero === 0) {
                     callback(result);
                 }
@@ -77,23 +75,23 @@
             viewModelConfig = config['viewModel'];
 
         if (templateConfig) {
-            possiblyGetConfigFromAmd(errorCallback, templateConfig, function(loadedConfig) {
-                ko.components._getFirstResultFromLoaders('loadTemplate', [componentName, loadedConfig], function(resolvedTemplate) {
+            possiblyGetConfigFromAmd(errorCallback, templateConfig, loadedConfig =>
+                ko.components._getFirstResultFromLoaders('loadTemplate', [componentName, loadedConfig], resolvedTemplate => {
                     result['template'] = resolvedTemplate;
                     tryIssueCallback();
-                });
-            });
+                })
+            );
         } else {
             tryIssueCallback();
         }
 
         if (viewModelConfig) {
-            possiblyGetConfigFromAmd(errorCallback, viewModelConfig, function(loadedConfig) {
-                ko.components._getFirstResultFromLoaders('loadViewModel', [componentName, loadedConfig], function(resolvedViewModel) {
+            possiblyGetConfigFromAmd(errorCallback, viewModelConfig, loadedConfig =>
+                ko.components._getFirstResultFromLoaders('loadViewModel', [componentName, loadedConfig], resolvedViewModel => {
                     result[createViewModelKey] = resolvedViewModel;
                     tryIssueCallback();
-                });
-            });
+                })
+            );
         } else {
             tryIssueCallback();
         }
@@ -106,12 +104,12 @@
         } else if (templateConfig instanceof Array) {
             // Assume already an array of DOM nodes - pass through unchanged
             callback(templateConfig);
-        } else if (isDocumentFragment(templateConfig)) {
+        } else if (templateConfig instanceof DocumentFragment) {
             // Document fragment - use its child nodes
             callback(ko.utils.makeArray(templateConfig.childNodes));
         } else if (templateConfig['element']) {
             var element = templateConfig['element'];
-            if (isDomElement(element)) {
+            if (element instanceof HTMLElement) {
                 // Element instance - copy its child nodes
                 callback(cloneNodesFromTemplateSourceElement(element));
             } else if (typeof element === 'string') {
@@ -136,18 +134,14 @@
             // By design, this does *not* supply componentInfo to the constructor, as the intent is that
             // componentInfo contains non-viewmodel data (e.g., the component's element) that should only
             // be used in factory functions, not viewmodel constructors.
-            callback(function (params /*, componentInfo */) {
-                return new viewModelConfig(params);
-            });
+            callback(params => new viewModelConfig(params));
         } else if (typeof viewModelConfig[createViewModelKey] === 'function') {
             // Already a factory function - use it as-is
             callback(viewModelConfig[createViewModelKey]);
         } else if ('instance' in viewModelConfig) {
             // Fixed object instance - promote to createViewModel format for API consistency
             var fixedInstance = viewModelConfig['instance'];
-            callback(function (params, componentInfo) {
-                return fixedInstance;
-            });
+            callback(() => fixedInstance);
         } else if ('viewModel' in viewModelConfig) {
             // Resolved AMD module whose value is of the form { viewModel: ... }
             resolveViewModel(errorCallback, viewModelConfig['viewModel'], callback);
@@ -160,34 +154,18 @@
         if ('template' == ko.utils.tagNameLower(elemInstance)) {
             // For browsers with proper <template> element support (i.e., where the .content property
             // gives a document fragment), use that document fragment.
-            if (isDocumentFragment(elemInstance.content)) {
+            if (elemInstance.content instanceof DocumentFragment) {
                 return ko.utils.cloneNodes(elemInstance.content.childNodes);
             }
         }
         throw 'Template Source Element not a <template>';
     }
 
-    function isDomElement(obj) {
-        if (window['HTMLElement']) {
-            return obj instanceof HTMLElement;
-        } else {
-            return obj && obj.tagName && obj.nodeType === 1;
-        }
-    }
-
-    function isDocumentFragment(obj) {
-        if (window['DocumentFragment']) {
-            return obj instanceof DocumentFragment;
-        } else {
-            return obj && obj.nodeType === 11;
-        }
-    }
-
     function possiblyGetConfigFromAmd(errorCallback, config, callback) {
         if (typeof config['require'] === 'string') {
             // The config is the value of an AMD module
             if (amdRequire || window['require']) {
-                (amdRequire || window['require'])([config['require']], function (module) {
+                (amdRequire || window['require'])([config['require']], module => {
                     if (module && typeof module === 'object' && module.__esModule && module['default']) {
                         module = module['default'];
                     }
@@ -202,8 +180,8 @@
     }
 
     function makeErrorCallback(componentName) {
-        return function (message) {
-            throw new Error('Component \'' + componentName + '\': ' + message);
+        return message => {
+            throw new Error('Component \'' + componentName + '\': ' + message)
         };
     }
 

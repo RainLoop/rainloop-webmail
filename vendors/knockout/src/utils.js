@@ -1,20 +1,16 @@
-ko.utils = (function () {
+ko.utils = (() => {
 
     function arrayCall(name, arr, p1, p2) {
         return Array.prototype[name].call(arr, p1, p2);
     }
 
     function objectForEach(obj, action) {
-        obj && Object.entries(obj).forEach(function(prop) {
-            action(prop[0], prop[1]);
-        });
+        obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1]));
     }
 
     function extend(target, source) {
         if (source) {
-            Object.entries(source).forEach(function(prop) {
-                target[prop[0]] = prop[1];
-            });
+            Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
         }
         return target;
     }
@@ -31,22 +27,20 @@ ko.utils = (function () {
     function toggleDomNodeCssClass(node, classNames, shouldHaveClass) {
         if (classNames) {
             var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
-            classNames.split(/\s+/).forEach(function(className) {
-                node.classList[addOrRemoveFn](className);
-            });
+            classNames.split(/\s+/).forEach(className =>
+                node.classList[addOrRemoveFn](className)
+            );
         }
     }
 
     return {
-        arrayForEach: function (array, action, actionOwner) {
-            arrayCall('forEach', array, action, actionOwner);
-        },
+        arrayForEach: (array, action, actionOwner) =>
+            arrayCall('forEach', array, action, actionOwner),
 
-        arrayIndexOf: function (array, item) {
-            return arrayCall('indexOf', array, item);
-        },
+        arrayIndexOf: (array, item) =>
+            arrayCall('indexOf', array, item),
 
-        arrayFirst: function (array, predicate, predicateOwner) {
+        arrayFirst: (array, predicate, predicateOwner) => {
             for (var i = 0, j = array.length; i < j; i++) {
                 if (predicate.call(predicateOwner, array[i], i, array))
                     return array[i];
@@ -54,7 +48,7 @@ ko.utils = (function () {
             return undefined;
         },
 
-        arrayRemoveItem: function (array, itemToRemove) {
+        arrayRemoveItem: (array, itemToRemove) => {
             var index = ko.utils.arrayIndexOf(array, itemToRemove);
             if (index > 0) {
                 array.splice(index, 1);
@@ -64,11 +58,10 @@ ko.utils = (function () {
             }
         },
 
-        arrayFilter: function (array, predicate, predicateOwner) {
-            return array ? arrayCall('filter', array, predicate, predicateOwner) : [];
-        },
+        arrayFilter: (array, predicate, predicateOwner) =>
+            array ? arrayCall('filter', array, predicate, predicateOwner) : [],
 
-        arrayPushAll: function (array, valuesToPush) {
+        arrayPushAll: (array, valuesToPush) => {
             if (valuesToPush instanceof Array)
                 array.push.apply(array, valuesToPush);
             else
@@ -87,48 +80,45 @@ ko.utils = (function () {
 
         objectForEach: objectForEach,
 
-        objectMap: function(source, mapping, mappingOwner) {
+        objectMap: (source, mapping, mappingOwner) => {
             if (!source)
                 return source;
             var target = {};
-            Object.entries(source).forEach(function(prop) {
-                target[prop[0]] = mapping.call(mappingOwner, prop[1], prop[0], source);
-            });
+            Object.entries(source).forEach(prop =>
+                target[prop[0]] = mapping.call(mappingOwner, prop[1], prop[0], source)
+            );
             return target;
         },
 
-        emptyDomNode: function (domNode) {
+        emptyDomNode: domNode => {
             while (domNode.firstChild) {
                 ko.removeNode(domNode.firstChild);
             }
         },
 
-        moveCleanedNodesToContainerElement: function(nodes) {
+        moveCleanedNodesToContainerElement: nodes => {
             // Ensure it's a real array, as we're about to reparent the nodes and
             // we don't want the underlying collection to change while we're doing that.
             var nodesArray = ko.utils.makeArray(nodes);
             var templateDocument = (nodesArray[0] && nodesArray[0].ownerDocument) || document;
 
             var container = templateDocument.createElement('div');
-            nodes.forEach(function(node){container.append(ko.cleanNode(node));});
+            nodes.forEach(node => container.append(ko.cleanNode(node)));
             return container;
         },
 
-        cloneNodes: function (nodesArray, shouldCleanNodes) {
-            return arrayCall('map', nodesArray, shouldCleanNodes
-                ? function(node){return ko.cleanNode(node.cloneNode(true));}
-                : function(node){return node.cloneNode(true);}
-            );
-        },
+        cloneNodes: (nodesArray, shouldCleanNodes) =>
+            arrayCall('map', nodesArray, shouldCleanNodes
+                ? node => ko.cleanNode(node.cloneNode(true))
+                : node => node.cloneNode(true)
+            ),
 
-        setDomNodeChildren: function (domNode, childNodes) {
+        setDomNodeChildren: (domNode, childNodes) => {
             ko.utils.emptyDomNode(domNode);
-            if (childNodes) {
-                domNode.append.apply(domNode, childNodes);
-            }
+            childNodes && domNode.append.apply(domNode, childNodes);
         },
 
-        replaceDomNodes: function (nodeToReplaceOrNodeArray, newNodesArray) {
+        replaceDomNodes: (nodeToReplaceOrNodeArray, newNodesArray) => {
             var nodesToReplaceArray = nodeToReplaceOrNodeArray.nodeType
                 ? [nodeToReplaceOrNodeArray] : nodeToReplaceOrNodeArray;
             if (nodesToReplaceArray.length > 0) {
@@ -143,7 +133,7 @@ ko.utils = (function () {
             }
         },
 
-        fixUpContinuousNodeArray: function(continuousNodeArray, parentNode) {
+        fixUpContinuousNodeArray: (continuousNodeArray, parentNode) => {
             // Before acting on a set of nodes that were previously outputted by a template function, we have to reconcile
             // them against what is in the DOM right now. It may be that some of the nodes have already been removed, or that
             // new nodes might have been inserted in the middle, for example by a binding. Also, there may previously have been
@@ -188,40 +178,31 @@ ko.utils = (function () {
             return continuousNodeArray;
         },
 
-        stringTrim: function (string) {
-            return string === null || string === undefined ? '' :
+        stringTrim: string => string === null || string === undefined ? '' :
                 string.trim ?
                     string.trim() :
-                    string.toString().replace(/^[\s\xa0]+|[\s\xa0]+$/g, '');
-        },
+                    string.toString().replace(/^[\s\xa0]+|[\s\xa0]+$/g, ''),
 
-        stringStartsWith: function (string, startsWith) {
+        stringStartsWith: (string, startsWith) => {
             string = string || "";
             if (startsWith.length > string.length)
                 return false;
             return string.substring(0, startsWith.length) === startsWith;
         },
 
-        domNodeIsContainedBy: function (node, containedByNode) {
-            return containedByNode.contains(node.nodeType !== 1 ? node.parentNode : node);
-        },
+        domNodeIsContainedBy: (node, containedByNode) =>
+			containedByNode.contains(node.nodeType !== 1 ? node.parentNode : node),
 
-        domNodeIsAttachedToDocument: function (node) {
-            return ko.utils.domNodeIsContainedBy(node, node.ownerDocument.documentElement);
-        },
+        domNodeIsAttachedToDocument: node => ko.utils.domNodeIsContainedBy(node, node.ownerDocument.documentElement),
 
-        anyDomNodeIsAttachedToDocument: function(nodes) {
-            return !!ko.utils.arrayFirst(nodes, ko.utils.domNodeIsAttachedToDocument);
-        },
+        anyDomNodeIsAttachedToDocument: nodes => !!ko.utils.arrayFirst(nodes, ko.utils.domNodeIsAttachedToDocument),
 
-        tagNameLower: function(element) {
-            // For HTML elements, tagName will always be upper case; for XHTML elements, it'll be lower case.
-            // Possible future optimization: If we know it's an element from an XHTML document (not HTML),
-            // we don't need to do the .toLowerCase() as it will always be lower case anyway.
-            return element && element.tagName && element.tagName.toLowerCase();
-        },
+        // For HTML elements, tagName will always be upper case; for XHTML elements, it'll be lower case.
+        // Possible future optimization: If we know it's an element from an XHTML document (not HTML),
+        // we don't need to do the .toLowerCase() as it will always be lower case anyway.
+        tagNameLower: element => element && element.tagName && element.tagName.toLowerCase(),
 
-        catchFunctionErrors: function (delegate) {
+        catchFunctionErrors: delegate => {
             return ko['onError'] ? function () {
                 try {
                     return delegate.apply(this, arguments);
@@ -232,41 +213,33 @@ ko.utils = (function () {
             } : delegate;
         },
 
-        setTimeout: function (handler, timeout) {
-            return setTimeout(ko.utils.catchFunctionErrors(handler), timeout);
-        },
+        setTimeout: (handler, timeout) => setTimeout(ko.utils.catchFunctionErrors(handler), timeout),
 
-        deferError: function (error) {
-            setTimeout(function () {
+        deferError: error => setTimeout(() => {
                 ko['onError'] && ko['onError'](error);
                 throw error;
-            }, 0);
-        },
+            }, 0),
 
-        registerEventHandler: function (element, eventType, handler) {
+        registerEventHandler: (element, eventType, handler) => {
             var wrappedHandler = ko.utils.catchFunctionErrors(handler);
 
             element.addEventListener(eventType, wrappedHandler, false);
         },
 
-        triggerEvent: function (element, eventType) {
+        triggerEvent: (element, eventType) => {
             if (!(element && element.nodeType))
                 throw new Error("element must be a DOM node when calling triggerEvent");
 
             element.dispatchEvent(new Event(eventType));
         },
 
-        unwrapObservable: function (value) {
-            return ko.isObservable(value) ? value() : value;
-        },
+        unwrapObservable: value => ko.isObservable(value) ? value() : value,
 
-        peekObservable: function (value) {
-            return ko.isObservable(value) ? value.peek() : value;
-        },
+        peekObservable: value => ko.isObservable(value) ? value.peek() : value,
 
         toggleDomNodeCssClass: toggleDomNodeCssClass,
 
-        setTextContent: function(element, textContent) {
+        setTextContent: (element, textContent) => {
             var value = ko.utils.unwrapObservable(textContent);
             if ((value === null) || (value === undefined))
                 value = "";
@@ -282,11 +255,9 @@ ko.utils = (function () {
             }
         },
 
-        makeArray: function(arrayLikeObject) {
-            return Array['from'](arrayLikeObject);
-        }
+        makeArray: arrayLikeObject => Array['from'](arrayLikeObject)
     }
-}());
+})();
 
 ko.exportSymbol('utils', ko.utils);
 ko.exportSymbol('utils.arrayForEach', ko.utils.arrayForEach);

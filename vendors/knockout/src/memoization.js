@@ -22,7 +22,7 @@ ko.memoization = (function () {
     }
 
     return {
-        memoize: function (callback) {
+        memoize: callback => {
             if (typeof callback != "function")
                 throw new Error("You can only pass a function to ko.memoization.memoize()");
             var memoId = generateRandomId();
@@ -30,7 +30,7 @@ ko.memoization = (function () {
             return "<!--[ko_memo:" + memoId + "]-->";
         },
 
-        unmemoize: function (memoId, callbackParams) {
+        unmemoize: (memoId, callbackParams) => {
             var callback = memos[memoId];
             if (callback === undefined)
                 throw new Error("Couldn't find any memo with ID " + memoId + ". Perhaps it's already been unmemoized.");
@@ -41,7 +41,7 @@ ko.memoization = (function () {
             finally { delete memos[memoId]; }
         },
 
-        unmemoizeDomNodeAndDescendants: function (domNode, extraCallbackParamsArray) {
+        unmemoizeDomNodeAndDescendants: (domNode, extraCallbackParamsArray) => {
             var memos = [];
             findMemoNodes(domNode, memos);
             for (var i = 0, j = memos.length; i < j; i++) {
@@ -56,8 +56,8 @@ ko.memoization = (function () {
             }
         },
 
-        parseMemoText: function (memoText) {
-            var match = memoText.match(/^\[ko_memo\:(.*?)\]$/);
+        parseMemoText: memoText => {
+            var match = memoText.match(/^\[ko_memo:(.*?)\]$/);
             return match ? match[1] : null;
         }
     };

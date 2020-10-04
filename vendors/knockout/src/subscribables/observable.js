@@ -1,6 +1,6 @@
 var observableLatestValue = Symbol('_latestValue');
 
-ko.observable = function (initialValue) {
+ko.observable = initialValue => {
     function observable() {
         if (arguments.length > 0) {
             // Write
@@ -59,7 +59,7 @@ if (ko.utils.canSetPrototype) {
 var protoProperty = ko.observable.protoProperty = '__ko_proto__';
 observableFn[protoProperty] = ko.observable;
 
-ko.isObservable = function (instance) {
+ko.isObservable = instance => {
     var proto = typeof instance == 'function' && instance[protoProperty];
     if (proto && proto !== observableFn[protoProperty] && proto !== ko.computed['fn'][protoProperty]) {
         throw Error("Invalid object that looks like an observable; possibly from another Knockout instance");
@@ -67,7 +67,7 @@ ko.isObservable = function (instance) {
     return !!proto;
 };
 
-ko.isWriteableObservable = function (instance) {
+ko.isWriteableObservable = instance => {
     return (typeof instance == 'function' && (
         (instance[protoProperty] === observableFn[protoProperty]) ||  // Observable
         (instance[protoProperty] === ko.computed['fn'][protoProperty] && instance.hasWriteFunction)));   // Writable computed observable

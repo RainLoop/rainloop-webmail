@@ -1,7 +1,7 @@
 ko.bindingHandlers['style'] = {
-    'update': function (element, valueAccessor) {
+    'update': (element, valueAccessor) => {
         var value = ko.utils.unwrapObservable(valueAccessor() || {});
-        ko.utils.objectForEach(value, function(styleName, styleValue) {
+        ko.utils.objectForEach(value, (styleName, styleValue) => {
             styleValue = ko.utils.unwrapObservable(styleValue);
 
             if (styleValue === null || styleValue === undefined || styleValue === false) {
@@ -13,9 +13,7 @@ ko.bindingHandlers['style'] = {
                 // Is styleName a custom CSS property?
                 element.style.setProperty(styleName, styleValue);
             } else {
-                styleName = styleName.replace(/-(\w)/g, function (all, letter) {
-                    return letter.toUpperCase();
-                });
+                styleName = styleName.replace(/-(\w)/g, (all, letter) => letter.toUpperCase());
 
                 var previousStyle = element.style[styleName];
                 element.style[styleName] = styleValue;

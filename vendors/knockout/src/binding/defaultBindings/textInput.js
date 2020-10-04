@@ -1,13 +1,11 @@
-(function () {
-
 ko.bindingHandlers['textInput'] = {
-    'init': function (element, valueAccessor, allBindings) {
+    'init': (element, valueAccessor, allBindings) => {
 
         var previousElementValue = element.value,
             timeoutHandle,
             elementValueBeforeEvent;
 
-        var updateModel = function (event) {
+        var updateModel = event => {
             clearTimeout(timeoutHandle);
             elementValueBeforeEvent = timeoutHandle = undefined;
 
@@ -20,7 +18,7 @@ ko.bindingHandlers['textInput'] = {
             }
         };
 
-        var deferUpdateModel = function (event) {
+        var deferUpdateModel = event => {
             if (!timeoutHandle) {
                 // The elementValueBeforeEvent variable is set *only* during the brief gap between an
                 // event firing and the updateModel function running. This allows us to ignore model
@@ -32,11 +30,7 @@ ko.bindingHandlers['textInput'] = {
             }
         };
 
-        // IE9 will mess up the DOM if you handle events synchronously which results in DOM changes (such as other bindings);
-        // so we'll make sure all updates are asynchronous
-        var ourUpdate = false;
-
-        var updateView = function () {
+        var updateView = () => {
             var modelValue = ko.utils.unwrapObservable(valueAccessor());
 
             if (modelValue === null || modelValue === undefined) {
@@ -51,20 +45,17 @@ ko.bindingHandlers['textInput'] = {
             // Update the element only if the element and model are different. On some browsers, updating the value
             // will move the cursor to the end of the input, which would be bad while the user is typing.
             if (element.value !== modelValue) {
-                ourUpdate = true;  // Make sure we ignore events (propertychange) that result from updating the value
                 element.value = modelValue;
-                ourUpdate = false;
                 previousElementValue = element.value; // In case the browser changes the value (see #2281)
             }
         };
 
-        var onEvent = function (event, handler) {
+        var onEvent = (event, handler) =>
             ko.utils.registerEventHandler(element, event, handler);
-        };
 
         if (DEBUG && ko.bindingHandlers['textInput']['_forceUpdateOn']) {
             // Provide a way for tests to specify exactly which events are bound
-            ko.utils.arrayForEach(ko.bindingHandlers['textInput']['_forceUpdateOn'], function(eventName) {
+            ko.utils.arrayForEach(ko.bindingHandlers['textInput']['_forceUpdateOn'], eventName => {
                 if (eventName.slice(0,5) == 'after') {
                     onEvent(eventName.slice(5), deferUpdateModel);
                 } else {
@@ -89,9 +80,5 @@ ko.expressionRewriting.twoWayBindings['textInput'] = true;
 // textinput is an alias for textInput
 ko.bindingHandlers['textinput'] = {
     // preprocess is the only way to set up a full alias
-    'preprocess': function (value, name, addBinding) {
-        addBinding('textInput', value);
-    }
+    'preprocess': (value, name, addBinding) => addBinding('textInput', value)
 };
-
-})();

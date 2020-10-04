@@ -1,4 +1,4 @@
-(function() {
+(() => {
     // A template source represents a read/write way of accessing a template. This is to eliminate the need for template loading/saving
     // logic to be duplicated in every template engine (and means they can all work with anonymous templates, etc.)
     //
@@ -54,22 +54,20 @@
 
         if (arguments.length == 0) {
             return this.domElement[elemContentsProperty];
-        } else {
-            var valueToWrite = arguments[0];
-            if (elemContentsProperty === "innerHTML")
-                ko.utils.setHtml(this.domElement, valueToWrite);
-            else
-                this.domElement[elemContentsProperty] = valueToWrite;
         }
+        var valueToWrite = arguments[0];
+        if (elemContentsProperty === "innerHTML")
+            ko.utils.setHtml(this.domElement, valueToWrite);
+        else
+            this.domElement[elemContentsProperty] = valueToWrite;
     };
 
     var dataDomDataPrefix = ko.utils.domData.nextKey() + "_";
     ko.templateSources.domElement.prototype['data'] = function(key /*, valueToWrite */) {
         if (arguments.length === 1) {
             return ko.utils.domData.get(this.domElement, dataDomDataPrefix + key);
-        } else {
-            ko.utils.domData.set(this.domElement, dataDomDataPrefix + key, arguments[1]);
         }
+        ko.utils.domData.set(this.domElement, dataDomDataPrefix + key, arguments[1]);
     };
 
     var templatesDomDataKey = ko.utils.domData.nextKey();
@@ -99,13 +97,12 @@
                 }
             }
             return nodes;
-        } else {
-            var valueToWrite = arguments[0];
-            if (this.templateType !== undefined) {
-                this['text']("");   // clear the text from the node
-            }
-            setTemplateDomData(element, {containerData: valueToWrite});
         }
+        var valueToWrite = arguments[0];
+        if (this.templateType !== undefined) {
+            this['text']("");   // clear the text from the node
+        }
+        setTemplateDomData(element, {containerData: valueToWrite});
     };
 
     // ---- ko.templateSources.anonymousTemplate -----
@@ -115,7 +112,7 @@
 
     ko.templateSources.anonymousTemplate = function(element) {
         this.domElement = element;
-    }
+    };
     ko.templateSources.anonymousTemplate.prototype = new ko.templateSources.domElement();
     ko.templateSources.anonymousTemplate.prototype.constructor = ko.templateSources.anonymousTemplate;
     ko.templateSources.anonymousTemplate.prototype['text'] = function(/* valueToWrite */) {
@@ -124,10 +121,9 @@
             if (templateData.textData === undefined && templateData.containerData)
                 templateData.textData = templateData.containerData.innerHTML;
             return templateData.textData;
-        } else {
-            var valueToWrite = arguments[0];
-            setTemplateDomData(this.domElement, {textData: valueToWrite});
         }
+        var valueToWrite = arguments[0];
+        setTemplateDomData(this.domElement, {textData: valueToWrite});
     };
 
     ko.exportSymbol('templateSources', ko.templateSources);

@@ -1,7 +1,7 @@
-(function (undefined) {
+(() => {
     // Overridable API for determining which component name applies to a given node. By overriding this,
     // you can for example map specific tagNames to components that are not preregistered.
-    ko.components['getComponentNameForNode'] = function(node) {
+    ko.components['getComponentNameForNode'] = node => {
         var tagNameLower = ko.utils.tagNameLower(node);
         if (ko.components.isRegistered(tagNameLower)) {
             // Try to determine that this node can be considered a *custom* element; see https://github.com/knockout/knockout/issues/1603
@@ -11,7 +11,7 @@
         }
     };
 
-    ko.components.addBindingsForCustomElement = function(allBindings, node, bindingContext, valueAccessors) {
+    ko.components.addBindingsForCustomElement = (allBindings, node, bindingContext, valueAccessors) => {
         // Determine if it's really a custom element matching a component
         if (node.nodeType === 1) {
             var componentName = ko.components['getComponentNameForNode'](node);
@@ -27,7 +27,7 @@
                 var componentBindingValue = { 'name': componentName, 'params': getComponentParamsFromCustomElement(node, bindingContext) };
 
                 allBindings['component'] = valueAccessors
-                    ? function() { return componentBindingValue; }
+                    ? () => componentBindingValue
                     : componentBindingValue;
             }
         }
@@ -42,10 +42,10 @@
 
         if (paramsAttribute) {
             var params = nativeBindingProviderInstance['parseBindingsString'](paramsAttribute, bindingContext, elem, { 'valueAccessors': true, 'bindingParams': true }),
-                rawParamComputedValues = ko.utils.objectMap(params, function(paramValue, paramName) {
-                    return ko.computed(paramValue, null, { disposeWhenNodeIsRemoved: elem });
-                }),
-                result = ko.utils.objectMap(rawParamComputedValues, function(paramValueComputed, paramName) {
+                rawParamComputedValues = ko.utils.objectMap(params, paramValue =>
+                    ko.computed(paramValue, null, { disposeWhenNodeIsRemoved: elem })
+                ),
+                result = ko.utils.objectMap(rawParamComputedValues, paramValueComputed => {
                     var paramValue = paramValueComputed.peek();
                     // Does the evaluation of the parameter value unwrap any observables?
                     if (!paramValueComputed.isActive()) {
@@ -58,12 +58,8 @@
                         // This means the component doesn't have to worry about multiple unwrapping. If the value is a
                         // writable observable, the computed will also be writable and pass the value on to the observable.
                         return ko.computed({
-                            'read': function() {
-                                return ko.utils.unwrapObservable(paramValueComputed());
-                            },
-                            'write': ko.isWriteableObservable(paramValue) && function(value) {
-                                paramValueComputed()(value);
-                            },
+                            'read': () => ko.utils.unwrapObservable(paramValueComputed()),
+                            'write': ko.isWriteableObservable(paramValue) && (value => paramValueComputed()(value)),
                             disposeWhenNodeIsRemoved: elem
                         });
                     }
@@ -77,11 +73,10 @@
             }
 
             return result;
-        } else {
-            // For consistency, absence of a "params" attribute is treated the same as the presence of
-            // any empty one. Otherwise component viewmodels need special code to check whether or not
-            // 'params' or 'params.$raw' is null/undefined before reading subproperties, which is annoying.
-            return { '$raw': {} };
         }
+        // For consistency, absence of a "params" attribute is treated the same as the presence of
+        // any empty one. Otherwise component viewmodels need special code to check whether or not
+        // 'params' or 'params.$raw' is null/undefined before reading subproperties, which is annoying.
+        return { '$raw': {} };
     }
 })();

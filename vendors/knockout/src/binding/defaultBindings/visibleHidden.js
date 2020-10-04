@@ -1,5 +1,5 @@
 ko.bindingHandlers['visible'] = {
-    'update': function (element, valueAccessor) {
+    'update': (element, valueAccessor) => {
         var value = ko.utils.unwrapObservable(valueAccessor());
         var isCurrentlyVisible = !(element.style.display == "none");
         if (value && !isCurrentlyVisible)
@@ -10,7 +10,6 @@ ko.bindingHandlers['visible'] = {
 };
 
 ko.bindingHandlers['hidden'] = {
-    'update': function (element, valueAccessor) {
-        ko.bindingHandlers['visible']['update'](element, function() { return !ko.utils.unwrapObservable(valueAccessor()) });
-    }
+    'update': (element, valueAccessor) =>
+        ko.bindingHandlers['visible']['update'](element, () => !ko.utils.unwrapObservable(valueAccessor()) )
 };

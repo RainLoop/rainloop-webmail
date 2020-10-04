@@ -153,9 +153,9 @@ var computedFn = {
     getDependencies: function () {
         var dependencyTracking = this[computedState].dependencyTracking, dependentObservables = [];
 
-        ko.utils.objectForEach(dependencyTracking, function (id, dependency) {
-            dependentObservables[dependency._order] = dependency._target;
-        });
+        ko.utils.objectForEach(dependencyTracking, (id, dependency) =>
+            dependentObservables[dependency._order] = dependency._target
+        );
 
         return dependentObservables;
     },
@@ -167,9 +167,9 @@ var computedFn = {
         if (ko.utils.arrayIndexOf(dependencies, obs) !== -1) {
             return true;
         }
-        return !!ko.utils.arrayFirst(dependencies, function (dep) {
-            return dep.hasAncestorDependency && dep.hasAncestorDependency(obs);
-        });
+        return !!ko.utils.arrayFirst(dependencies, dep =>
+            dep.hasAncestorDependency && dep.hasAncestorDependency(obs)
+        );
     },
     addDependencyTracking: function (id, target, trackingObj) {
         if (this[computedState].pure && target === this) {
@@ -215,7 +215,7 @@ var computedFn = {
                 changeSub = target.subscribe(this.respondToChange, this);
             return {
                 _target: target,
-                dispose: function () {
+                dispose: () => {
                     dirtySub.dispose();
                     changeSub.dispose();
                 }
@@ -229,9 +229,9 @@ var computedFn = {
             throttleEvaluationTimeout = computedObservable['throttleEvaluation'];
         if (throttleEvaluationTimeout && throttleEvaluationTimeout >= 0) {
             clearTimeout(this[computedState].evaluationTimeoutInstance);
-            this[computedState].evaluationTimeoutInstance = ko.utils.setTimeout(function () {
-                computedObservable.evaluateImmediate(true /*notifyChange*/);
-            }, throttleEvaluationTimeout);
+            this[computedState].evaluationTimeoutInstance = ko.utils.setTimeout(() =>
+                computedObservable.evaluateImmediate(true /*notifyChange*/)
+            , throttleEvaluationTimeout);
         } else if (computedObservable._evalDelayed) {
             computedObservable._evalDelayed(true /*isChange*/);
         } else {
@@ -340,7 +340,7 @@ var computedFn = {
 
         return changed;
     },
-    evaluateImmediate_CallReadThenEndDependencyDetection: function (state, dependencyDetectionContext) {
+    evaluateImmediate_CallReadThenEndDependencyDetection: (state, dependencyDetectionContext) => {
         // This function is really part of the evaluateImmediate_CallReadWithDependencyDetection logic.
         // You'd never call it from anywhere else. Factoring it out means that evaluateImmediate_CallReadWithDependencyDetection
         // can be independent of try/finally blocks, which contributes to saving about 40% off the CPU
@@ -399,10 +399,9 @@ var computedFn = {
     dispose: function () {
         var state = this[computedState];
         if (!state.isSleeping && state.dependencyTracking) {
-            ko.utils.objectForEach(state.dependencyTracking, function (id, dependency) {
-                if (dependency.dispose)
-                    dependency.dispose();
-            });
+            ko.utils.objectForEach(state.dependencyTracking, (id, dependency) =>
+                dependency.dispose && dependency.dispose()
+            );
         }
         if (state.disposeWhenNodeIsRemoved && state.domNodeDisposalCallback) {
             ko.utils.domNodeDisposal.removeDisposeCallback(state.disposeWhenNodeIsRemoved, state.domNodeDisposalCallback);
@@ -438,11 +437,11 @@ var pureComputedOverrides = {
             } else {
                 // First put the dependencies in order
                 var dependenciesOrder = [];
-                ko.utils.objectForEach(state.dependencyTracking, function (id, dependency) {
-                    dependenciesOrder[dependency._order] = id;
-                });
+                ko.utils.objectForEach(state.dependencyTracking, (id, dependency) =>
+                    dependenciesOrder[dependency._order] = id
+                );
                 // Next, subscribe to each one
-                ko.utils.arrayForEach(dependenciesOrder, function (id, order) {
+                ko.utils.arrayForEach(dependenciesOrder, (id, order) => {
                     var dependency = state.dependencyTracking[id],
                         subscription = computedObservable.subscribeToDependency(dependency._target);
                     subscription._order = order;
@@ -465,7 +464,7 @@ var pureComputedOverrides = {
     afterSubscriptionRemove: function (event) {
         var state = this[computedState];
         if (!state.isDisposed && event == 'change' && !this.hasSubscriptionsForEvent('change')) {
-            ko.utils.objectForEach(state.dependencyTracking, function (id, dependency) {
+            ko.utils.objectForEach(state.dependencyTracking, (id, dependency) => {
                 if (dependency.dispose) {
                     state.dependencyTracking[id] = {
                         _target: dependency._target,
@@ -510,13 +509,9 @@ if (ko.utils.canSetPrototype) {
 var protoProp = ko.observable.protoProperty; // == "__ko_proto__"
 computedFn[protoProp] = ko.computed;
 
-ko.isComputed = function (instance) {
-    return (typeof instance == 'function' && instance[protoProp] === computedFn[protoProp]);
-};
+ko.isComputed = instance => (typeof instance == 'function' && instance[protoProp] === computedFn[protoProp]);
 
-ko.isPureComputed = function (instance) {
-    return ko.isComputed(instance) && instance[computedState] && instance[computedState].pure;
-};
+ko.isPureComputed = instance => ko.isComputed(instance) && instance[computedState] && instance[computedState].pure;
 
 ko.exportSymbol('computed', ko.computed);
 ko.exportSymbol('dependentObservable', ko.computed);    // export ko.dependentObservable for backwards compatibility (1.x)
@@ -529,13 +524,12 @@ ko.exportProperty(computedFn, 'isActive', computedFn.isActive);
 ko.exportProperty(computedFn, 'getDependenciesCount', computedFn.getDependenciesCount);
 ko.exportProperty(computedFn, 'getDependencies', computedFn.getDependencies);
 
-ko.pureComputed = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget) {
+ko.pureComputed = (evaluatorFunctionOrOptions, evaluatorFunctionTarget) => {
     if (typeof evaluatorFunctionOrOptions === 'function') {
         return ko.computed(evaluatorFunctionOrOptions, evaluatorFunctionTarget, {'pure':true});
-    } else {
-        evaluatorFunctionOrOptions = ko.utils.extend({}, evaluatorFunctionOrOptions);   // make a copy of the parameter object
-        evaluatorFunctionOrOptions['pure'] = true;
-        return ko.computed(evaluatorFunctionOrOptions, evaluatorFunctionTarget);
     }
-}
+    evaluatorFunctionOrOptions = ko.utils.extend({}, evaluatorFunctionOrOptions);   // make a copy of the parameter object
+    evaluatorFunctionOrOptions['pure'] = true;
+    return ko.computed(evaluatorFunctionOrOptions, evaluatorFunctionTarget);
+};
 ko.exportSymbol('pureComputed', ko.pureComputed);

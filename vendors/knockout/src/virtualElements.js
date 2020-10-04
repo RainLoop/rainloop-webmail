@@ -1,4 +1,4 @@
-(function() {
+(() => {
     // "Virtual elements" is an abstraction on top of the usual DOM API which understands the notion that comment nodes
     // may be used to represent hierarchy (in addition to the DOM's natural hierarchy).
     // If you call the DOM-manipulating functions on ko.virtualElements, you will be able to read and write the state
@@ -52,18 +52,16 @@
             if (allVirtualChildren.length > 0)
                 return allVirtualChildren[allVirtualChildren.length - 1].nextSibling;
             return startComment.nextSibling;
-        } else
-            return null; // Must have no matching end comment, and allowUnbalanced is true
+        }
+        return null; // Must have no matching end comment, and allowUnbalanced is true
     }
 
     ko.virtualElements = {
         allowedBindings: {},
 
-        childNodes: function(node) {
-            return isStartComment(node) ? getVirtualChildren(node) : node.childNodes;
-        },
+        childNodes: node => isStartComment(node) ? getVirtualChildren(node) : node.childNodes,
 
-        emptyNode: function(node) {
+        emptyNode: node => {
             if (!isStartComment(node))
                 ko.utils.emptyDomNode(node);
             else {
@@ -73,7 +71,7 @@
             }
         },
 
-        setDomNodeChildren: function(node, childNodes) {
+        setDomNodeChildren: (node, childNodes) => {
             if (!isStartComment(node))
                 ko.utils.setDomNodeChildren(node, childNodes);
             else {
@@ -84,7 +82,7 @@
             }
         },
 
-        prepend: function(containerNode, nodeToPrepend) {
+        prepend: (containerNode, nodeToPrepend) => {
             var insertBeforeNode;
 
             if (isStartComment(containerNode)) {
@@ -98,7 +96,7 @@
             containerNode.insertBefore(nodeToPrepend, insertBeforeNode);
         },
 
-        insertAfter: function(containerNode, nodeToInsert, insertAfterNode) {
+        insertAfter: (containerNode, nodeToInsert, insertAfterNode) => {
             if (!insertAfterNode) {
                 ko.virtualElements.prepend(containerNode, nodeToInsert);
             } else {
@@ -113,20 +111,17 @@
             }
         },
 
-        firstChild: function(node) {
+        firstChild: node => {
             if (!isStartComment(node)) {
                 if (node.firstChild && isEndComment(node.firstChild)) {
                     throw new Error("Found invalid end comment, as the first child of " + node);
                 }
                 return node.firstChild;
-            } else if (!node.nextSibling || isEndComment(node.nextSibling)) {
-                return null;
-            } else {
-                return node.nextSibling;
             }
+            return (!node.nextSibling || isEndComment(node.nextSibling)) ? null : node.nextSibling;
         },
 
-        nextSibling: function(node) {
+        nextSibling: node => {
             if (isStartComment(node)) {
                 node = getMatchingEndComment(node);
             }
@@ -134,17 +129,15 @@
             if (node.nextSibling && isEndComment(node.nextSibling)) {
                 if (isUnmatchedEndComment(node.nextSibling)) {
                     throw Error("Found end comment without a matching opening comment, as child of " + node);
-                } else {
-                    return null;
                 }
-            } else {
-                return node.nextSibling;
+                return null;
             }
+            return node.nextSibling;
         },
 
         hasBindingValue: isStartComment,
 
-        virtualNodeBindingValue: function(node) {
+        virtualNodeBindingValue: node => {
             var regexMatch = (node.nodeValue).match(startCommentRegex);
             return regexMatch ? regexMatch[1] : null;
         }

@@ -1,4 +1,4 @@
-(function () {
+(() => {
     var none = [0, "", ""],
         table = [1, "<table>", "</table>"],
         tbody = [2, "<table><tbody>", "</tbody></table>"],
@@ -50,16 +50,15 @@
         return ko.utils.makeArray(div.lastChild.childNodes);
     }
 
-    ko.utils.parseHtmlFragment = function(html, documentContext) {
-        return simpleHtmlParse(html, documentContext);  // ... otherwise, this simple logic will do in most common cases.
-    };
+    ko.utils.parseHtmlFragment = (html, documentContext) =>
+        simpleHtmlParse(html, documentContext);  // ... otherwise, this simple logic will do in most common cases.
 
-    ko.utils.parseHtmlForTemplateNodes = function(html, documentContext) {
+    ko.utils.parseHtmlForTemplateNodes = (html, documentContext) => {
         var nodes = ko.utils.parseHtmlFragment(html, documentContext);
         return (nodes.length && nodes[0].parentElement) || ko.utils.moveCleanedNodesToContainerElement(nodes);
     };
 
-    ko.utils.setHtml = function(node, html) {
+    ko.utils.setHtml = (node, html) => {
         ko.utils.emptyDomNode(node);
 
         // There's no legitimate reason to display a stringified observable without unwrapping it, so we'll unwrap it

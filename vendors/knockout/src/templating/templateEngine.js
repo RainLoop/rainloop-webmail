@@ -27,15 +27,15 @@
 
 ko.templateEngine = function () { };
 
-ko.templateEngine.prototype['renderTemplateSource'] = function (templateSource, bindingContext, options, templateDocument) {
+ko.templateEngine.prototype['renderTemplateSource'] = (templateSource, bindingContext, options, templateDocument) => {
     throw new Error("Override renderTemplateSource");
 };
 
-ko.templateEngine.prototype['createJavaScriptEvaluatorBlock'] = function (script) {
+ko.templateEngine.prototype['createJavaScriptEvaluatorBlock'] = script => {
     throw new Error("Override createJavaScriptEvaluatorBlock");
 };
 
-ko.templateEngine.prototype['makeTemplateSource'] = function(template, templateDocument) {
+ko.templateEngine.prototype['makeTemplateSource'] = (template, templateDocument) => {
     // Named template
     if (typeof template == "string") {
         templateDocument = templateDocument || document;

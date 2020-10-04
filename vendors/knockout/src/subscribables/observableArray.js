@@ -1,4 +1,4 @@
-ko.observableArray = function (initialValues) {
+ko.observableArray = initialValues => {
     initialValues = initialValues || [];
 
     if (typeof initialValues != 'object' || !('length' in initialValues))
@@ -66,7 +66,7 @@ if (ko.utils.canSetPrototype) {
 // Populate ko.observableArray.fn with read/write functions from native arrays
 // Important: Do not add any additional functions here that may reasonably be used to *read* data from the array
 // because we'll eval them without causing subscriptions, so ko.computed output could end up getting stale
-ko.utils.arrayForEach(["pop", "push", "reverse", "shift", "sort", "splice", "unshift"], function (methodName) {
+ko.utils.arrayForEach(["pop", "push", "reverse", "shift", "sort", "splice", "unshift"], methodName => {
     ko.observableArray['fn'][methodName] = function () {
         // Use "peek" to avoid creating a subscription in any computed that we're executing in the context of
         // (for consistency with mutating regular observables)
@@ -81,14 +81,14 @@ ko.utils.arrayForEach(["pop", "push", "reverse", "shift", "sort", "splice", "uns
 });
 
 // Populate ko.observableArray.fn with read-only functions from native arrays
-ko.utils.arrayForEach(["slice"], function (methodName) {
+ko.utils.arrayForEach(["slice"], methodName => {
     ko.observableArray['fn'][methodName] = function () {
         var underlyingArray = this();
         return underlyingArray[methodName].apply(underlyingArray, arguments);
     };
 });
 
-ko.isObservableArray = function (instance) {
+ko.isObservableArray = instance => {
     return ko.isObservable(instance)
         && typeof instance["remove"] == "function"
         && typeof instance["push"] == "function";

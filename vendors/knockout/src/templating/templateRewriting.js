@@ -1,5 +1,5 @@
 
-ko.templateRewriting = (function () {
+ko.templateRewriting = (() => {
     var memoizeDataBindingAttributeSyntaxRegex = /(<([a-z]+\d*)(?:\s+(?!data-bind\s*=\s*)[a-z0-9\-]+(?:=(?:\"[^\"]*\"|\'[^\']*\'|[^>]*))?)*\s+)data-bind\s*=\s*(["'])([\s\S]*?)\3/gi;
     var memoizeVirtualContainerBindingSyntaxRegex = /<!--\s*ko\b\s*([\s\S]*?)\s*-->/g;
 
@@ -35,23 +35,23 @@ ko.templateRewriting = (function () {
     }
 
     return {
-        ensureTemplateIsRewritten: function (template, templateEngine, templateDocument) {
+        ensureTemplateIsRewritten: (template, templateEngine, templateDocument) => {
             if (!templateEngine['isTemplateRewritten'](template, templateDocument))
-                templateEngine['rewriteTemplate'](template, function (htmlString) {
-                    return ko.templateRewriting.memoizeBindingAttributeSyntax(htmlString, templateEngine);
-                }, templateDocument);
+                templateEngine['rewriteTemplate'](template, htmlString =>
+                    ko.templateRewriting.memoizeBindingAttributeSyntax(htmlString, templateEngine)
+                , templateDocument);
         },
 
-        memoizeBindingAttributeSyntax: function (htmlString, templateEngine) {
-            return htmlString.replace(memoizeDataBindingAttributeSyntaxRegex, function () {
-                return constructMemoizedTagReplacement(/* dataBindAttributeValue: */ arguments[4], /* tagToRetain: */ arguments[1], /* nodeName: */ arguments[2], templateEngine);
-            }).replace(memoizeVirtualContainerBindingSyntaxRegex, function() {
-                return constructMemoizedTagReplacement(/* dataBindAttributeValue: */ arguments[1], /* tagToRetain: */ "<!-- ko -->", /* nodeName: */ "#comment", templateEngine);
-            });
+        memoizeBindingAttributeSyntax: (htmlString, templateEngine) => {
+            return htmlString.replace(memoizeDataBindingAttributeSyntaxRegex, (...args) =>
+                constructMemoizedTagReplacement(/* dataBindAttributeValue: */ args[4], /* tagToRetain: */ args[1], /* nodeName: */ args[2], templateEngine)
+            ).replace(memoizeVirtualContainerBindingSyntaxRegex, (...args) =>
+                constructMemoizedTagReplacement(/* dataBindAttributeValue: */ args[1], /* tagToRetain: */ "<!-- ko -->", /* nodeName: */ "#comment", templateEngine)
+            );
         },
 
-        applyMemoizedBindingsToNextSibling: function (bindings, nodeName) {
-            return ko.memoization.memoize(function (domNode, bindingContext) {
+        applyMemoizedBindingsToNextSibling: (bindings, nodeName) => {
+            return ko.memoization.memoize((domNode, bindingContext) => {
                 var nodeToBind = domNode.nextSibling;
                 if (nodeToBind && nodeToBind.nodeName.toLowerCase() === nodeName) {
                     ko.applyBindingAccessorsToNode(nodeToBind, bindings, bindingContext);

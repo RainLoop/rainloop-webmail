@@ -1,5 +1,5 @@
 ko.bindingHandlers['value'] = {
-    'init': function (element, valueAccessor, allBindings) {
+    'init': (element, valueAccessor, allBindings) => {
         var tagName = ko.utils.tagNameLower(element),
             isInputElement = tagName == "input";
 
@@ -18,27 +18,27 @@ ko.bindingHandlers['value'] = {
             if (typeof requestedEventsToCatch == "string") {
                 eventsToCatch = [requestedEventsToCatch];
             } else {
-                eventsToCatch = requestedEventsToCatch ? requestedEventsToCatch.filter(function(item, index) {
-                    return requestedEventsToCatch.indexOf(item) === index;
-                }) : [];
+                eventsToCatch = requestedEventsToCatch ? requestedEventsToCatch.filter((item, index) =>
+                    requestedEventsToCatch.indexOf(item) === index
+                ) : [];
             }
             ko.utils.arrayRemoveItem(eventsToCatch, "change");  // We'll subscribe to "change" events later
         }
 
-        var valueUpdateHandler = function() {
+        var valueUpdateHandler = () => {
             elementValueBeforeEvent = null;
             var modelValue = valueAccessor();
             var elementValue = ko.selectExtensions.readValue(element);
             ko.expressionRewriting.writeValueToProperty(modelValue, allBindings, 'value', elementValue);
         }
 
-        ko.utils.arrayForEach(eventsToCatch, function(eventName) {
+        ko.utils.arrayForEach(eventsToCatch, eventName => {
             // The syntax "after<eventname>" means "run the handler asynchronously after the event"
             // This is useful, for example, to catch "keydown" events after the browser has updated the control
             // (otherwise, ko.selectExtensions.readValue(this) will receive the control's value *before* the key event)
             var handler = valueUpdateHandler;
             if (ko.utils.stringStartsWith(eventName, "after")) {
-                handler = function() {
+                handler = () => {
                     // The elementValueBeforeEvent variable is non-null *only* during the brief gap between
                     // a keyX event firing and the valueUpdateHandler running, which is scheduled to happen
                     // at the earliest asynchronous opportunity. We store this temporary information so that
@@ -58,7 +58,7 @@ ko.bindingHandlers['value'] = {
 
         if (isInputElement && element.type == "file") {
             // For file input elements, can only write the empty string
-            updateFromModel = function () {
+            updateFromModel = () => {
                 var newValue = ko.utils.unwrapObservable(valueAccessor());
                 if (newValue === null || newValue === undefined || newValue === "") {
                     element.value = "";
@@ -67,7 +67,7 @@ ko.bindingHandlers['value'] = {
                 }
             }
         } else {
-            updateFromModel = function () {
+            updateFromModel = () => {
                 var newValue = ko.utils.unwrapObservable(valueAccessor());
                 var elementValue = ko.selectExtensions.readValue(element);
 
@@ -96,7 +96,7 @@ ko.bindingHandlers['value'] = {
 
         if (tagName === "select") {
             var updateFromModelComputed;
-            ko.bindingEvent.subscribe(element, ko.bindingEvent.childrenComplete, function () {
+            ko.bindingEvent.subscribe(element, ko.bindingEvent.childrenComplete, () => {
                 if (!updateFromModelComputed) {
                     ko.utils.registerEventHandler(element, "change", valueUpdateHandler);
                     updateFromModelComputed = ko.computed(updateFromModel, null, { disposeWhenNodeIsRemoved: element });
@@ -111,6 +111,6 @@ ko.bindingHandlers['value'] = {
             ko.computed(updateFromModel, null, { disposeWhenNodeIsRemoved: element });
         }
     },
-    'update': function() {} // Keep for backwards compatibility with code that may have wrapped value binding
+    'update': () => {} // Keep for backwards compatibility with code that may have wrapped value binding
 };
 ko.expressionRewriting.twoWayBindings['value'] = true;

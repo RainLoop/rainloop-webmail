@@ -1,10 +1,10 @@
 (function () {
     var _templateEngine;
-    ko.setTemplateEngine = function (templateEngine) {
+    ko.setTemplateEngine = templateEngine => {
         if ((templateEngine != undefined) && !(templateEngine instanceof ko.templateEngine))
             throw new Error("templateEngine must inherit from ko.templateEngine");
         _templateEngine = templateEngine;
-    }
+    };
 
     function invokeForEachNodeInContinuousRange(firstNode, lastNode, action) {
         var node, nextInQueue = firstNode, firstOutOfRangeNode = ko.virtualElements.nextSibling(lastNode);
@@ -29,7 +29,7 @@
                 preprocessNode = provider['preprocessNode'];
 
             if (preprocessNode) {
-                invokeForEachNodeInContinuousRange(firstNode, lastNode, function(node, nextNodeInRange) {
+                invokeForEachNodeInContinuousRange(firstNode, lastNode, (node, nextNodeInRange) => {
                     var nodePreviousSibling = node.previousSibling;
                     var newNodes = preprocessNode.call(provider, node);
                     if (newNodes) {
@@ -57,11 +57,11 @@
 
             // Need to applyBindings *before* unmemoziation, because unmemoization might introduce extra nodes (that we don't want to re-bind)
             // whereas a regular applyBindings won't introduce new memoized nodes
-            invokeForEachNodeInContinuousRange(firstNode, lastNode, function(node) {
+            invokeForEachNodeInContinuousRange(firstNode, lastNode, node => {
                 if (node.nodeType === 1 || node.nodeType === 8)
                     ko.applyBindings(bindingContext, node);
             });
-            invokeForEachNodeInContinuousRange(firstNode, lastNode, function(node) {
+            invokeForEachNodeInContinuousRange(firstNode, lastNode, node => {
                 if (node.nodeType === 1 || node.nodeType === 8)
                     ko.memoization.unmemoizeDomNodeAndDescendants(node, [bindingContext]);
             });
@@ -122,13 +122,9 @@
         if (ko.isObservable(template)) {
             // 1. An observable, with string value
             return template();
-        } else if (typeof template === 'function') {
-            // 2. A function of (data, context) returning a string
-            return template(data, context);
-        } else {
-            // 3. A string
-            return template;
         }
+        // 2. A function of (data, context) returning a string ELSE 3. A string
+        return (typeof template === 'function') ? template(data, context) : template;
     }
 
     ko.renderTemplate = function (template, dataOrBindingContext, options, targetNodeOrNodeArray, renderMode) {
@@ -140,11 +136,11 @@
         if (targetNodeOrNodeArray) {
             var firstTargetNode = getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
 
-            var whenToDispose = function () { return (!firstTargetNode) || !ko.utils.domNodeIsAttachedToDocument(firstTargetNode); }; // Passive disposal (on next evaluation)
+            var whenToDispose = () => (!firstTargetNode) || !ko.utils.domNodeIsAttachedToDocument(firstTargetNode); // Passive disposal (on next evaluation)
             var activelyDisposeWhenNodeIsRemoved = (firstTargetNode && renderMode == "replaceNode") ? firstTargetNode.parentNode : firstTargetNode;
 
             return ko.dependentObservable( // So the DOM is automatically updated when any dependency changes
-                function () {
+                () => {
                     // Ensure we've got a proper binding context to work with
                     var bindingContext = (dataOrBindingContext && (dataOrBindingContext instanceof ko.bindingContext))
                         ? dataOrBindingContext
@@ -163,24 +159,24 @@
             );
         } else {
             // We don't yet have a DOM node to evaluate, so use a memo and render the template later when there is a DOM node
-            return ko.memoization.memoize(function (domNode) {
-                ko.renderTemplate(template, dataOrBindingContext, options, domNode, "replaceNode");
-            });
+            return ko.memoization.memoize(domNode =>
+                ko.renderTemplate(template, dataOrBindingContext, options, domNode, "replaceNode")
+            );
         }
     };
 
-    ko.renderTemplateForEach = function (template, arrayOrObservableArray, options, targetNode, parentBindingContext) {
+    ko.renderTemplateForEach = (template, arrayOrObservableArray, options, targetNode, parentBindingContext) => {
         // Since setDomNodeChildrenFromArrayMapping always calls executeTemplateForArrayItem and then
         // activateBindingsCallback for added items, we can store the binding context in the former to use in the latter.
         var arrayItemContext, asName = options['as'];
 
         // This will be called by setDomNodeChildrenFromArrayMapping to get the nodes to add to targetNode
-        var executeTemplateForArrayItem = function (arrayValue, index) {
+        var executeTemplateForArrayItem = (arrayValue, index) => {
             // Support selecting template as a function of the data being rendered
             arrayItemContext = parentBindingContext['createChildContext'](arrayValue, {
                 'as': asName,
                 'noChildContext': options['noChildContext'],
-                'extend': function(context) {
+                'extend': context => {
                     context['$index'] = index;
                     if (asName) {
                         context[asName + "Index"] = index;
@@ -193,7 +189,7 @@
         };
 
         // This will be called whenever setDomNodeChildrenFromArrayMapping has added nodes to targetNode
-        var activateBindingsCallback = function(arrayValue, addedNodesArray, index) {
+        var activateBindingsCallback = (arrayValue, addedNodesArray) => {
             activateBindingsOnContinuousNodeArray(addedNodesArray, arrayItemContext);
             if (options['afterRender'])
                 options['afterRender'](addedNodesArray, arrayValue);
@@ -215,21 +211,21 @@
         if (!shouldHideDestroyed && !options['beforeRemove'] && ko.isObservableArray(arrayOrObservableArray)) {
             setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
 
-            var subscription = arrayOrObservableArray.subscribe(function (changeList) {
+            var subscription = arrayOrObservableArray.subscribe(changeList => {
                 setDomNodeChildrenFromArrayMapping(arrayOrObservableArray(), changeList);
             }, null, "arrayChange");
             subscription.disposeWhenNodeIsRemoved(targetNode);
 
             return subscription;
         } else {
-            return ko.dependentObservable(function () {
+            return ko.dependentObservable(() => {
                 var unwrappedArray = ko.utils.unwrapObservable(arrayOrObservableArray) || [];
                 if (typeof unwrappedArray.length == "undefined") // Coerce single value into array
                     unwrappedArray = [unwrappedArray];
 
                 if (shouldHideDestroyed) {
                     // Filter out any entries marked as destroyed
-                    unwrappedArray = ko.utils.arrayFilter(unwrappedArray, function(item) {
+                    unwrappedArray = ko.utils.arrayFilter(unwrappedArray, item => {
                         return item === undefined || item === null || !ko.utils.unwrapObservable(item['_destroy']);
                     });
                 }
@@ -249,7 +245,7 @@
 
     var cleanContainerDomDataKey = ko.utils.domData.nextKey();
     ko.bindingHandlers['template'] = {
-        'init': function(element, valueAccessor) {
+        'init': (element, valueAccessor) => {
             // Support anonymous templates
             var bindingValue = ko.utils.unwrapObservable(valueAccessor());
             if (typeof bindingValue == "string" || 'name' in bindingValue) {
@@ -267,7 +263,7 @@
 
                 // If the nodes are already attached to a KO-generated container, we reuse that container without moving the
                 // elements to a new one (we check only the first node, as the nodes are always moved together)
-                var container = nodes[0] && nodes[0].parentNode;
+                let container = nodes[0] && nodes[0].parentNode;
                 if (!container || !ko.utils.domData.get(container, cleanContainerDomDataKey)) {
                     container = ko.utils.moveCleanedNodesToContainerElement(nodes);
                     ko.utils.domData.set(container, cleanContainerDomDataKey, true);
@@ -278,7 +274,7 @@
                 // It's an anonymous template - store the element contents, then clear the element
                 var templateNodes = ko.virtualElements.childNodes(element);
                 if (templateNodes.length > 0) {
-                    var container = ko.utils.moveCleanedNodesToContainerElement(templateNodes); // This also removes the nodes from their current parent
+                    let container = ko.utils.moveCleanedNodesToContainerElement(templateNodes); // This also removes the nodes from their current parent
                     new ko.templateSources.anonymousTemplate(element)['nodes'](container);
                 } else {
                     throw new Error("Anonymous template defined, but no template content was provided");
@@ -286,7 +282,7 @@
             }
             return { 'controlsDescendantBindings': true };
         },
-        'update': function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+        'update': (element, valueAccessor, allBindings, viewModel, bindingContext) => {
             var value = valueAccessor(),
                 options = ko.utils.unwrapObservable(value),
                 shouldDisplay = true,
@@ -336,7 +332,7 @@
     };
 
     // Anonymous templates can't be rewritten. Give a nice error message if you try to do it.
-    ko.expressionRewriting.bindingRewriteValidators['template'] = function(bindingValue) {
+    ko.expressionRewriting.bindingRewriteValidators['template'] = bindingValue => {
         var parsedBindingValue = ko.expressionRewriting.parseObjectLiteral(bindingValue);
 
         if ((parsedBindingValue.length == 1) && parsedBindingValue[0]['unknown'])

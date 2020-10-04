@@ -1,5 +1,5 @@
 ko.extenders = {
-    'throttle': function(target, timeout) {
+    'throttle': (target, timeout) => {
         // Throttling means two things:
 
         // (1) For dependent observables, we throttle *evaluations* so that, no matter how fast its dependencies
@@ -11,16 +11,14 @@ ko.extenders = {
         var writeTimeoutInstance = null;
         return ko.dependentObservable({
             'read': target,
-            'write': function(value) {
+            'write': value => {
                 clearTimeout(writeTimeoutInstance);
-                writeTimeoutInstance = ko.utils.setTimeout(function() {
-                    target(value);
-                }, timeout);
+                writeTimeoutInstance = ko.utils.setTimeout(() => target(value), timeout);
             }
         });
     },
 
-    'rateLimit': function(target, options) {
+    'rateLimit': (target, options) => {
         var timeout, method, limitFunction;
 
         if (typeof options == 'number') {
@@ -34,22 +32,20 @@ ko.extenders = {
         target._deferUpdates = false;
 
         limitFunction = typeof method == 'function' ? method : method == 'notifyWhenChangesStop' ?  debounce : throttle;
-        target.limit(function(callback) {
-            return limitFunction(callback, timeout, options);
-        });
+        target.limit(callback => limitFunction(callback, timeout, options));
     },
 
-    'deferred': function(target, options) {
+    'deferred': (target, options) => {
         if (options !== true) {
             throw new Error('The \'deferred\' extender only accepts the value \'true\', because it is not supported to turn deferral off once enabled.')
         }
 
         if (!target._deferUpdates) {
             target._deferUpdates = true;
-            target.limit(function (callback) {
+            target.limit(callback => {
                 var handle,
                     ignoreUpdates = false;
-                return function () {
+                return () => {
                     if (!ignoreUpdates) {
                         ko.tasks.cancel(handle);
                         handle = ko.tasks.schedule(callback);
@@ -66,7 +62,7 @@ ko.extenders = {
         }
     },
 
-    'notify': function(target, notifyWhen) {
+    'notify': (target, notifyWhen) => {
         target["equalityComparer"] = notifyWhen == "always" ?
             null :  // null equalityComparer means to always notify
             valuesArePrimitiveAndEqual;
@@ -81,9 +77,9 @@ function valuesArePrimitiveAndEqual(a, b) {
 
 function throttle(callback, timeout) {
     var timeoutInstance;
-    return function () {
+    return () => {
         if (!timeoutInstance) {
-            timeoutInstance = ko.utils.setTimeout(function () {
+            timeoutInstance = ko.utils.setTimeout(() => {
                 timeoutInstance = undefined;
                 callback();
             }, timeout);
@@ -93,7 +89,7 @@ function throttle(callback, timeout) {
 
 function debounce(callback, timeout) {
     var timeoutInstance;
-    return function () {
+    return () => {
         clearTimeout(timeoutInstance);
         timeoutInstance = ko.utils.setTimeout(callback, timeout);
     };
@@ -102,7 +98,7 @@ function debounce(callback, timeout) {
 function applyExtenders(requestedExtenders) {
     var target = this;
     if (requestedExtenders) {
-        ko.utils.objectForEach(requestedExtenders, function(key, value) {
+        ko.utils.objectForEach(requestedExtenders, (key, value) => {
             var extenderHandler = ko.extenders[key];
             if (typeof extenderHandler == 'function') {
                 target = extenderHandler(target, value) || target;

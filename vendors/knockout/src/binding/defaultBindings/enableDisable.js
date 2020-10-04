@@ -1,5 +1,5 @@
 ko.bindingHandlers['enable'] = {
-    'update': function (element, valueAccessor) {
+    'update': (element, valueAccessor) => {
         var value = ko.utils.unwrapObservable(valueAccessor());
         if (value && element.disabled)
             element.removeAttribute("disabled");
@@ -9,7 +9,6 @@ ko.bindingHandlers['enable'] = {
 };
 
 ko.bindingHandlers['disable'] = {
-    'update': function (element, valueAccessor) {
-        ko.bindingHandlers['enable']['update'](element, function() { return !ko.utils.unwrapObservable(valueAccessor()) });
-    }
+    'update': (element, valueAccessor) =>
+        ko.bindingHandlers['enable']['update'](element, () => !ko.utils.unwrapObservable(valueAccessor()))
 };

@@ -1,12 +1,12 @@
-(function(undefined) {
+(() => {
     var componentLoadingOperationUniqueId = 0;
 
     ko.bindingHandlers['component'] = {
-        'init': function(element, valueAccessor, ignored1, ignored2, bindingContext) {
+        'init': (element, valueAccessor, ignored1, ignored2, bindingContext) => {
             var currentViewModel,
                 currentLoadingOperationId,
                 afterRenderSub,
-                disposeAssociatedComponentViewModel = function () {
+                disposeAssociatedComponentViewModel = () => {
                     var currentViewModelDispose = currentViewModel && currentViewModel['dispose'];
                     if (typeof currentViewModelDispose === 'function') {
                         currentViewModelDispose.call(currentViewModel);
@@ -24,7 +24,7 @@
             ko.virtualElements.emptyNode(element);
             ko.utils.domNodeDisposal.addDisposeCallback(element, disposeAssociatedComponentViewModel);
 
-            ko.computed(function () {
+            ko.computed(() => {
                 var value = ko.utils.unwrapObservable(valueAccessor()),
                     componentName, componentParams;
 
@@ -42,7 +42,7 @@
                 var asyncContext = ko.bindingEvent.startPossiblyAsyncContentBinding(element, bindingContext);
 
                 var loadingOperationId = currentLoadingOperationId = ++componentLoadingOperationUniqueId;
-                ko.components.get(componentName, function(componentDefinition) {
+                ko.components.get(componentName, componentDefinition => {
                     // If this is not the current load operation for this element, ignore it.
                     if (currentLoadingOperationId !== loadingOperationId) {
                         return;
@@ -64,7 +64,7 @@
 
                     var componentViewModel = createViewModel(componentDefinition, componentParams, componentInfo),
                         childBindingContext = asyncContext['createChildContext'](componentViewModel, {
-                            'extend': function(ctx) {
+                            'extend': ctx => {
                                 ctx['$component'] = componentViewModel;
                                 ctx['$componentTemplateNodes'] = originalChildNodes;
                             }

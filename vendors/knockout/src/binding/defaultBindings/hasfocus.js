@@ -1,8 +1,8 @@
 var hasfocusUpdatingProperty = '__ko_hasfocusUpdating';
 var hasfocusLastValue = '__ko_hasfocusLastValue';
 ko.bindingHandlers['hasfocus'] = {
-    'init': function(element, valueAccessor, allBindings) {
-        var handleElementFocusChange = function(isFocused) {
+    'init': (element, valueAccessor, allBindings) => {
+        var handleElementFocusChange = isFocused => {
             // Where possible, ignore which event was raised and determine focus state using activeElement,
             // as this avoids phantom focus/blur events raised when changing tabs in modern browsers.
             // However, not all KO-targeted browsers (Firefox 2) support activeElement. For those browsers,
@@ -29,7 +29,7 @@ ko.bindingHandlers['hasfocus'] = {
         // Assume element is not focused (prevents "blur" being called initially)
         element[hasfocusLastValue] = false;
     },
-    'update': function(element, valueAccessor) {
+    'update': (element, valueAccessor) => {
         var value = !!ko.utils.unwrapObservable(valueAccessor());
 
         if (!element[hasfocusUpdatingProperty] && element[hasfocusLastValue] !== value) {

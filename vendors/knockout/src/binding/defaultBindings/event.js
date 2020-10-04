@@ -3,7 +3,7 @@
 function makeEventHandlerShortcut(eventName) {
     ko.bindingHandlers[eventName] = {
         'init': function(element, valueAccessor, allBindings, viewModel, bindingContext) {
-            var newValueAccessor = function () {
+            var newValueAccessor = () => {
                 var result = {};
                 result[eventName] = valueAccessor();
                 return result;
@@ -14,9 +14,9 @@ function makeEventHandlerShortcut(eventName) {
 }
 
 ko.bindingHandlers['event'] = {
-    'init' : function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+    'init' : (element, valueAccessor, allBindings, viewModel, bindingContext) => {
         var eventsToHandle = valueAccessor() || {};
-        ko.utils.objectForEach(eventsToHandle, function(eventName) {
+        ko.utils.objectForEach(eventsToHandle, eventName => {
             if (typeof eventName == "string") {
                 ko.utils.registerEventHandler(element, eventName, function (event) {
                     var handlerReturnValue;

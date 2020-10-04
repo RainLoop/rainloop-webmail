@@ -2,6 +2,13 @@
 
 **Knockout** is a JavaScript [MVVM](http://en.wikipedia.org/wiki/Model_View_ViewModel) (a modern variant of MVC) library that makes it easier to create rich, desktop-like user interfaces with JavaScript and HTML. It uses *observers* to make your UI automatically stay in sync with an underlying data model, along with a powerful and extensible set of *declarative bindings* to enable productive development.
 
+## SnappyMail Modifications
+
+Knockout has a high level of backward compatibility. We don't use it, so a lot of IE code is stripped.
+
+npm closure-compiler is old and broken for ES2015/ES6, so we use the new google-closure-compiler.
+
+
 ## Getting started
 
 [![Join the chat at https://gitter.im/knockout/knockout](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/knockout/knockout?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)

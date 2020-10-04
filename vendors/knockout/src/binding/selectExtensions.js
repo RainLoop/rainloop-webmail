@@ -1,11 +1,11 @@
-(function () {
+(() => {
     var hasDomDataExpandoProperty = '__ko__hasDomDataOptionValue__';
 
     // Normally, SELECT elements and their OPTIONs can only take value of type 'string' (because the values
     // are stored on DOM attributes). ko.selectExtensions provides a way for SELECTs/OPTIONs to have values
     // that are arbitrary objects. This is very convenient when implementing things like cascading dropdowns.
     ko.selectExtensions = {
-        readValue : function(element) {
+        readValue : element => {
             switch (ko.utils.tagNameLower(element)) {
                 case 'option':
                     if (element[hasDomDataExpandoProperty] === true)
@@ -18,7 +18,7 @@
             }
         },
 
-        writeValue: function(element, value, allowUnset) {
+        writeValue: (element, value, allowUnset) => {
             switch (ko.utils.tagNameLower(element)) {
                 case 'option':
                     if (typeof value === "string") {

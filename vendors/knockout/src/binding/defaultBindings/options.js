@@ -1,6 +1,6 @@
 var captionPlaceholder = {};
 ko.bindingHandlers['options'] = {
-    'init': function(element) {
+    'init': element => {
         if (ko.utils.tagNameLower(element) !== "select")
             throw new Error("options binding applies only to SELECT elements");
 
@@ -12,9 +12,9 @@ ko.bindingHandlers['options'] = {
         // Ensures that the binding processor doesn't try to bind the options
         return { 'controlsDescendantBindings': true };
     },
-    'update': function (element, valueAccessor, allBindings) {
+    'update': (element, valueAccessor, allBindings) => {
         function selectedOptions() {
-            return ko.utils.arrayFilter(element.options, function (node) { return node.selected; });
+            return ko.utils.arrayFilter(element.options, node => node.selected);
         }
 
         var selectWasPreviouslyEmpty = element.length == 0,
@@ -41,9 +41,9 @@ ko.bindingHandlers['options'] = {
                 unwrappedArray = [unwrappedArray];
 
             // Filter out any entries marked as destroyed
-            filteredArray = ko.utils.arrayFilter(unwrappedArray, function(item) {
-                return includeDestroyed || item === undefined || item === null || !ko.utils.unwrapObservable(item['_destroy']);
-            });
+            filteredArray = ko.utils.arrayFilter(unwrappedArray, item =>
+                includeDestroyed || item === undefined || item === null || !ko.utils.unwrapObservable(item['_destroy'])
+            );
 
             // If caption is included, add it to the array
             if (allBindings['has']('optionsCaption')) {
@@ -95,10 +95,7 @@ ko.bindingHandlers['options'] = {
 
         // By using a beforeRemove callback, we delay the removal until after new items are added. This fixes a selection
         // problem in IE<=8 and Firefox. See https://github.com/knockout/knockout/issues/1208
-        arrayToDomNodeChildrenOptions['beforeRemove'] =
-            function (option) {
-                element.removeChild(option);
-            };
+        arrayToDomNodeChildrenOptions['beforeRemove'] = option => element.removeChild(option);
 
         function setSelectionCallback(arrayEntry, newOptions) {
             if (itemUpdate && valueAllowUnset) {
@@ -119,7 +116,7 @@ ko.bindingHandlers['options'] = {
 
         var callback = setSelectionCallback;
         if (allBindings['has']('optionsAfterRender') && typeof allBindings.get('optionsAfterRender') == "function") {
-            callback = function(arrayEntry, newOptions) {
+            callback = (arrayEntry, newOptions) => {
                 setSelectionCallback(arrayEntry, newOptions);
                 ko.dependencyDetection.ignore(allBindings.get('optionsAfterRender'), null, [newOptions[0], arrayEntry !== captionPlaceholder ? arrayEntry : undefined]);
             }

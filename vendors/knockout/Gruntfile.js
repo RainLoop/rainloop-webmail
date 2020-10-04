@@ -109,8 +109,8 @@ module.exports = function(grunt) {
     function buildMin(output, done) {
         var cc = require('closure-compiler');
         var options = {
-//			language_in:'ECMASCRIPT6', // BROKEN!!
-//			language_out:'ECMASCRIPT6',
+			language_in:'ECMASCRIPT6', // BROKEN!!
+			language_out:'ECMASCRIPT6',
             compilation_level: 'ADVANCED_OPTIMIZATIONS',
             output_wrapper: '(function() {%output%})();'
         };

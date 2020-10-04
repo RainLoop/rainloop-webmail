@@ -1,20 +1,20 @@
-(function(undefined) {
+(() => {
     var loadingSubscribablesCache = {}, // Tracks component loads that are currently in flight
         loadedDefinitionsCache = {};    // Tracks component loads that have already completed
 
     ko.components = {
-        get: function(componentName, callback) {
+        get: (componentName, callback) => {
             var cachedDefinition = getObjectOwnProperty(loadedDefinitionsCache, componentName);
             if (cachedDefinition) {
                 // It's already loaded and cached. Reuse the same definition object.
                 // Note that for API consistency, even cache hits complete asynchronously by default.
                 // You can bypass this by putting synchronous:true on your component config.
                 if (cachedDefinition.isSynchronousComponent) {
-                    ko.dependencyDetection.ignore(function() { // See comment in loaderRegistryBehaviors.js for reasoning
-                        callback(cachedDefinition.definition);
-                    });
+                    ko.dependencyDetection.ignore(() => // See comment in loaderRegistryBehaviors.js for reasoning
+                        callback(cachedDefinition.definition)
+                    );
                 } else {
-                    ko.tasks.schedule(function() { callback(cachedDefinition.definition); });
+                    ko.tasks.schedule(() => callback(cachedDefinition.definition) );
                 }
             } else {
                 // Join the loading process that is already underway, or start a new one.
@@ -22,9 +22,9 @@
             }
         },
 
-        clearCachedDefinition: function(componentName) {
-            delete loadedDefinitionsCache[componentName];
-        },
+        clearCachedDefinition: componentName =>
+            delete loadedDefinitionsCache[componentName]
+        ,
 
         _getFirstResultFromLoaders: getFirstResultFromLoaders
     };
@@ -41,7 +41,7 @@
             subscribable = loadingSubscribablesCache[componentName] = new ko.subscribable();
             subscribable.subscribe(callback);
 
-            beginLoadingComponent(componentName, function(definition, config) {
+            beginLoadingComponent(componentName, (definition, config) => {
                 var isSynchronousComponent = !!(config && config['synchronous']);
                 loadedDefinitionsCache[componentName] = { definition: definition, isSynchronousComponent: isSynchronousComponent };
                 delete loadingSubscribablesCache[componentName];
@@ -57,9 +57,7 @@
                     // See comment in loaderRegistryBehaviors.js for reasoning
                     subscribable['notifySubscribers'](definition);
                 } else {
-                    ko.tasks.schedule(function() {
-                        subscribable['notifySubscribers'](definition);
-                    });
+                    ko.tasks.schedule(() => subscribable['notifySubscribers'](definition));
                 }
             });
             completedAsync = true;
@@ -69,12 +67,12 @@
     }
 
     function beginLoadingComponent(componentName, callback) {
-        getFirstResultFromLoaders('getConfig', [componentName], function(config) {
+        getFirstResultFromLoaders('getConfig', [componentName], config => {
             if (config) {
                 // We have a config, so now load its definition
-                getFirstResultFromLoaders('loadComponent', [componentName, config], function(definition) {
-                    callback(definition, config);
-                });
+                getFirstResultFromLoaders('loadComponent', [componentName, config], definition =>
+                    callback(definition, config)
+                );
             } else {
                 // The component has no config - it's unknown to all the loaders.
                 // Note that this is not an error (e.g., a module loading error) - that would abort the

@@ -45,7 +45,7 @@ function limitNotifySubscribers(value, event) {
 }
 
 var ko_subscribable_fn = {
-    init: function(instance) {
+    init: instance => {
         instance._subscriptions = { "change": [] };
         instance._versionNumber = 1;
     },
@@ -56,7 +56,7 @@ var ko_subscribable_fn = {
         event = event || defaultEvent;
         var boundCallback = callbackTarget ? callback.bind(callbackTarget) : callback;
 
-        var subscription = new ko.subscription(self, boundCallback, function () {
+        var subscription = new ko.subscription(self, boundCallback, () => {
             ko.utils.arrayRemoveItem(self._subscriptions[event], subscription);
             if (self.afterSubscriptionRemove)
                 self.afterSubscriptionRemove(event);
@@ -115,7 +115,7 @@ var ko_subscribable_fn = {
             self["notifySubscribers"] = limitNotifySubscribers;
         }
 
-        var finish = limitFunction(function() {
+        var finish = limitFunction(() => {
             self._notificationIsPending = false;
 
             // If an observable provided a reference to itself, access it to get the latest value.
@@ -132,7 +132,7 @@ var ko_subscribable_fn = {
             }
         });
 
-        self._limitChange = function(value, isDirty) {
+        self._limitChange = (value, isDirty) => {
             if (!isDirty || !self._notificationIsPending) {
                 didUpdate = !isDirty;
             }
@@ -141,16 +141,16 @@ var ko_subscribable_fn = {
             pendingValue = value;
             finish();
         };
-        self._limitBeforeChange = function(value) {
+        self._limitBeforeChange = value => {
             if (!ignoreBeforeChange) {
                 previousValue = value;
                 self._origNotifySubscribers(value, beforeChange);
             }
         };
-        self._recordUpdate = function() {
+        self._recordUpdate = () => {
             didUpdate = true;
         };
-        self._notifyNextChangeIfValueIsDifferent = function() {
+        self._notifyNextChangeIfValueIsDifferent = () => {
             if (self.isDifferent(previousValue, self.peek(true /*evaluate*/))) {
                 notifyNextChange = true;
             }
@@ -164,23 +164,20 @@ var ko_subscribable_fn = {
     getSubscriptionsCount: function (event) {
         if (event) {
             return this._subscriptions[event] && this._subscriptions[event].length || 0;
-        } else {
-            var total = 0;
-            ko.utils.objectForEach(this._subscriptions, function(eventName, subscriptions) {
-                if (eventName !== 'dirty')
-                    total += subscriptions.length;
-            });
-            return total;
         }
+        var total = 0;
+        ko.utils.objectForEach(this._subscriptions, (eventName, subscriptions) => {
+            if (eventName !== 'dirty')
+                total += subscriptions.length;
+        });
+        return total;
     },
 
     isDifferent: function(oldValue, newValue) {
         return !this['equalityComparer'] || !this['equalityComparer'](oldValue, newValue);
     },
 
-    toString: function() {
-      return '[object Object]'
-    },
+    toString: () => '[object Object]',
 
     extend: applyExtenders
 };
@@ -200,9 +197,8 @@ if (ko.utils.canSetPrototype) {
 ko.subscribable['fn'] = ko_subscribable_fn;
 
 
-ko.isSubscribable = function (instance) {
-    return instance != null && typeof instance.subscribe == "function" && typeof instance["notifySubscribers"] == "function";
-};
+ko.isSubscribable = instance =>
+    instance != null && typeof instance.subscribe == "function" && typeof instance["notifySubscribers"] == "function";
 
 ko.exportSymbol('subscribable', ko.subscribable);
 ko.exportSymbol('isSubscribable', ko.isSubscribable);
