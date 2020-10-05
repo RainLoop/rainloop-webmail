@@ -42,9 +42,7 @@
 
         'loadComponent': (componentName, config, callback) => {
             var errorCallback = makeErrorCallback(componentName);
-            possiblyGetConfigFromAmd(errorCallback, config, loadedConfig =>
-                resolveConfig(componentName, errorCallback, loadedConfig, callback)
-            );
+            resolveConfig(componentName, errorCallback, config, callback);
         },
 
         'loadTemplate': (componentName, templateConfig, callback) =>
@@ -75,23 +73,19 @@
             viewModelConfig = config['viewModel'];
 
         if (templateConfig) {
-            possiblyGetConfigFromAmd(errorCallback, templateConfig, loadedConfig =>
-                ko.components._getFirstResultFromLoaders('loadTemplate', [componentName, loadedConfig], resolvedTemplate => {
-                    result['template'] = resolvedTemplate;
-                    tryIssueCallback();
-                })
-            );
+            ko.components._getFirstResultFromLoaders('loadTemplate', [componentName, templateConfig], resolvedTemplate => {
+                result['template'] = resolvedTemplate;
+                tryIssueCallback();
+            });
         } else {
             tryIssueCallback();
         }
 
         if (viewModelConfig) {
-            possiblyGetConfigFromAmd(errorCallback, viewModelConfig, loadedConfig =>
-                ko.components._getFirstResultFromLoaders('loadViewModel', [componentName, loadedConfig], resolvedViewModel => {
-                    result[createViewModelKey] = resolvedViewModel;
-                    tryIssueCallback();
-                })
-            );
+            ko.components._getFirstResultFromLoaders('loadViewModel', [componentName, viewModelConfig], resolvedViewModel => {
+                result[createViewModelKey] = resolvedViewModel;
+                tryIssueCallback();
+            });
         } else {
             tryIssueCallback();
         }
@@ -159,24 +153,6 @@
             }
         }
         throw 'Template Source Element not a <template>';
-    }
-
-    function possiblyGetConfigFromAmd(errorCallback, config, callback) {
-        if (typeof config['require'] === 'string') {
-            // The config is the value of an AMD module
-            if (amdRequire || window['require']) {
-                (amdRequire || window['require'])([config['require']], module => {
-                    if (module && typeof module === 'object' && module.__esModule && module['default']) {
-                        module = module['default'];
-                    }
-                    callback(module);
-                });
-            } else {
-                errorCallback('Uses require, but no AMD loader is present');
-            }
-        } else {
-            callback(config);
-        }
     }
 
     function makeErrorCallback(componentName) {

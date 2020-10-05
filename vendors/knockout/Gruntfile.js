@@ -83,9 +83,7 @@ module.exports = function(grunt) {
         var fragments = grunt.config('fragments'),
             sourceFilenames = [
                 fragments + 'extern-pre.js',
-                fragments + 'amd-pre.js',
                 getReferencedSources(fragments + 'source-references.js'),
-                fragments + 'amd-post.js',
                 fragments + 'extern-post.js'
             ],
             flattenedSourceFilenames = Array.prototype.concat.apply([], sourceFilenames),
@@ -109,10 +107,10 @@ module.exports = function(grunt) {
     function buildMin(output, done) {
         var cc = require('closure-compiler');
         var options = {
-			language_in:'ECMASCRIPT6', // BROKEN!!
+			language_in:'ECMASCRIPT6',
 			language_out:'ECMASCRIPT6',
             compilation_level: 'ADVANCED_OPTIMIZATIONS',
-            output_wrapper: '(function() {%output%})();'
+            output_wrapper: '(()=>{%output%})();'
         };
         grunt.log.write('Compiling...');
         cc.compile('/**@const*/var DEBUG=false;' + getCombinedSources(), options, function (err, stdout, stderr) {

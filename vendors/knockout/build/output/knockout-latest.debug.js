@@ -6,31 +6,13 @@
 
 (function(){
 var DEBUG=true;
-(function(undefined){
+(window => {
     // (0, eval)('this') is a robust way of getting a reference to the global object
     // For details, see http://stackoverflow.com/questions/14119988/return-this-0-evalthis/14120023#14120023
-    var window = this || (0, eval)('this'),
-        document = window['document'],
+    var document = window['document'],
         navigator = window['navigator'],
-        jQueryInstance = window["jQuery"],
-        JSON = window["JSON"];
-
-    if (!jQueryInstance && typeof jQuery !== "undefined") {
-        jQueryInstance = jQuery;
-    }
-(function(factory) {
-    // Support three module loading scenarios
-    if (typeof define === 'function' && define['amd']) {
-        // [1] AMD anonymous module
-        define(['exports', 'require'], factory);
-    } else if (typeof exports === 'object' && typeof module === 'object') {
-        // [2] CommonJS/Node.js
-        factory(module['exports'] || exports);  // module.exports is for Node.js
-    } else {
-        // [3] No module loader (plain <script> tag) - put directly in global namespace
-        factory(window['ko'] = {});
-    }
-}(function(koExports, amdRequire){
+        JSON = window["JSON"],
+        koExports = {};
 // Internally, all KO objects are attached to koExports (even the non-exported ones whose names will be minified by the closure compiler).
 // In the future, the following "ko" variable may be made distinct from "koExports" so that private objects are not externally reachable.
 var ko = typeof koExports !== 'undefined' ? koExports : {};
@@ -3230,9 +3212,7 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
 
         'loadComponent': (componentName, config, callback) => {
             var errorCallback = makeErrorCallback(componentName);
-            possiblyGetConfigFromAmd(errorCallback, config, loadedConfig =>
-                resolveConfig(componentName, errorCallback, loadedConfig, callback)
-            );
+            resolveConfig(componentName, errorCallback, config, callback);
         },
 
         'loadTemplate': (componentName, templateConfig, callback) =>
@@ -3263,23 +3243,19 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
             viewModelConfig = config['viewModel'];
 
         if (templateConfig) {
-            possiblyGetConfigFromAmd(errorCallback, templateConfig, loadedConfig =>
-                ko.components._getFirstResultFromLoaders('loadTemplate', [componentName, loadedConfig], resolvedTemplate => {
-                    result['template'] = resolvedTemplate;
-                    tryIssueCallback();
-                })
-            );
+            ko.components._getFirstResultFromLoaders('loadTemplate', [componentName, templateConfig], resolvedTemplate => {
+                result['template'] = resolvedTemplate;
+                tryIssueCallback();
+            });
         } else {
             tryIssueCallback();
         }
 
         if (viewModelConfig) {
-            possiblyGetConfigFromAmd(errorCallback, viewModelConfig, loadedConfig =>
-                ko.components._getFirstResultFromLoaders('loadViewModel', [componentName, loadedConfig], resolvedViewModel => {
-                    result[createViewModelKey] = resolvedViewModel;
-                    tryIssueCallback();
-                })
-            );
+            ko.components._getFirstResultFromLoaders('loadViewModel', [componentName, viewModelConfig], resolvedViewModel => {
+                result[createViewModelKey] = resolvedViewModel;
+                tryIssueCallback();
+            });
         } else {
             tryIssueCallback();
         }
@@ -3347,24 +3323,6 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
             }
         }
         throw 'Template Source Element not a <template>';
-    }
-
-    function possiblyGetConfigFromAmd(errorCallback, config, callback) {
-        if (typeof config['require'] === 'string') {
-            // The config is the value of an AMD module
-            if (amdRequire || window['require']) {
-                (amdRequire || window['require'])([config['require']], module => {
-                    if (module && typeof module === 'object' && module.__esModule && module['default']) {
-                        module = module['default'];
-                    }
-                    callback(module);
-                });
-            } else {
-                errorCallback('Uses require, but no AMD loader is present');
-            }
-        } else {
-            callback(config);
-        }
     }
 
     function makeErrorCallback(componentName) {
@@ -5202,6 +5160,6 @@ ko.nativeTemplateEngine.instance = new ko.nativeTemplateEngine();
 ko.setTemplateEngine(ko.nativeTemplateEngine.instance);
 
 ko.exportSymbol('nativeTemplateEngine', ko.nativeTemplateEngine);
-}));
-}());
+	window['ko'] = koExports;
+})(this);
 })();
