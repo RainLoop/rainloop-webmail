@@ -298,7 +298,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 	@command((self) => !self.messageListAndMessageViewLoading())
 	goDownCommand() {
-		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-up',
+		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-down',
 			{detail:Layout.NoPreview === this.layout() ? !!this.message() : true}
 		));
 	}
