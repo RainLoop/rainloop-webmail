@@ -94,7 +94,7 @@ class Selector {
 			mSelected = null;
 
 		this.list.subscribe(
-			(items) => {
+			items => {
 				if (Array.isArray(items)) {
 					items.forEach(item => {
 						if (item) {
@@ -290,7 +290,7 @@ class Selector {
 				this.newSelectPosition(event.key, true);
 				return false;
 			});
-			shortcuts.add('arrowup,arrowdown,home,end,pageup,pagedown,insert,space', '', keyScope, event => {
+			shortcuts.add('arrowup,arrowdown,home,end,pageup,pagedown,space', '', keyScope, event => {
 				this.newSelectPosition(event.key, false);
 				return false;
 			});
@@ -325,9 +325,7 @@ class Selector {
 	 * @param {boolean=} bForceSelect = false
 	 */
 	newSelectPosition(sEventKey, bShiftKey, bForceSelect) {
-		let index = 0,
-			isNext = false,
-			isStop = false,
+		let isArrow = 'ArrowUp' === sEventKey || 'ArrowDown' === sEventKey,
 			result = null;
 
 		const pageStep = 10,
@@ -336,81 +334,44 @@ class Selector {
 			focused = this.focusedItem();
 
 		if (0 < listLen) {
-			if (!focused) {
-				if (
-					'ArrowDown' == sEventKey ||
-					'Insert' == sEventKey ||
-					' ' == sEventKey ||
-					'Home' == sEventKey ||
-					'PageUp' == sEventKey
-				) {
-					result = list[0];
-				} else if (
-					'ArrowUp' === sEventKey ||
-					'End' === sEventKey ||
-					'PageDown' === sEventKey
-				) {
-					result = list[list.length - 1];
-				}
-			} else if (focused) {
-				if (
-					'ArrowDown' === sEventKey ||
-					'ArrowUp' === sEventKey ||
-					'Insert' === sEventKey ||
-					' ' === sEventKey
-				) {
-					list.forEach(item => {
-						if (!isStop) {
-							switch (sEventKey) {
-								case 'ArrowUp':
-									if (focused === item) {
-										isStop = true;
-									} else {
-										result = item;
-									}
-									break;
-								case 'ArrowDown':
-								case 'Insert':
-									if (isNext) {
-										result = item;
-										isStop = true;
-									} else if (focused === item) {
-										isNext = true;
-									}
-									break;
-								// no default
-							}
-						}
-					});
-
-					if (!result && ('ArrowDown' === sEventKey || 'ArrowUp' === sEventKey)) {
+			if (focused) {
+				if (isArrow) {
+					let i = list.indexOf(focused);
+					if ('ArrowUp' == sEventKey) {
+						i > 0 && (result = list[i-1]);
+					} else if (++i < listLen) {
+						result = list[i];
+					}
+					if (!result && ' ' !== sEventKey) {
 						(this.oCallbacks.onUpUpOrDownDown || (()=>true))('ArrowUp' === sEventKey);
 					}
-				} else if ('Home' === sEventKey || 'End' === sEventKey) {
-					if ('Home' === sEventKey) {
-						result = list[0];
-					} else if ('End' === sEventKey) {
-						result = list[list.length - 1];
-					}
+				} else if ('Home' === sEventKey) {
+					result = list[0];
+				} else if ('End' === sEventKey) {
+					result = list[list.length - 1];
 				} else if ('PageDown' === sEventKey) {
-					for (; index < listLen; index++) {
-						if (focused === list[index]) {
-							index += pageStep;
-							index = listLen - 1 < index ? listLen - 1 : index;
-							result = list[index];
-							break;
-						}
+					let i = list.indexOf(focused);
+					if (i < listLen - 1) {
+						result = list[Math.min(i + pageStep, listLen - 1)];
 					}
 				} else if ('PageUp' === sEventKey) {
-					for (index = listLen; 0 <= index; index--) {
-						if (focused === list[index]) {
-							index -= pageStep;
-							index = 0 > index ? 0 : index;
-							result = list[index];
-							break;
-						}
+					let i = list.indexOf(focused);
+					if (i > 0) {
+						result = list[Math.max(0, i - pageStep)];
 					}
 				}
+			} else if (
+				'ArrowUp' == sEventKey ||
+				'Home' == sEventKey ||
+				'PageUp' == sEventKey
+			) {
+				result = list[0];
+			} else if (
+				'ArrowDown' === sEventKey ||
+				'End' === sEventKey ||
+				'PageDown' === sEventKey
+			) {
+				result = list[list.length - 1];
 			}
 		}
 
@@ -418,11 +379,9 @@ class Selector {
 			this.focusedItem(result);
 
 			if (focused) {
-				if (bShiftKey) {
-					if ('ArrowUp' === sEventKey || 'ArrowDown' === sEventKey) {
-						focused.checked(!focused.checked());
-					}
-				} else if ('Insert' === sEventKey || ' ' === sEventKey) {
+				if (bShiftKey && isArrow) {
+					focused.checked(!focused.checked());
+				} else if (' ' === sEventKey) {
 					focused.checked(!focused.checked());
 				}
 			}
@@ -433,9 +392,9 @@ class Selector {
 
 			this.scrollToFocused();
 		} else if (focused) {
-			if (bShiftKey && ('ArrowUp' === sEventKey || 'ArrowDown' === sEventKey)) {
+			if (bShiftKey && isArrow) {
 				focused.checked(!focused.checked());
-			} else if ('Insert' === sEventKey || ' ' === sEventKey) {
+			} else if (' ' === sEventKey) {
 				focused.checked(!focused.checked());
 			}
 

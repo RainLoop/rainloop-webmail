@@ -81,10 +81,11 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 	}
 
 	onBuild() {
-		shortcuts.add('`', '', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
+		shortcuts.add('m,contextmenu', '', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
 			if (this.viewModelVisible) {
 				MessageStore.messageFullScreenMode(false);
 				this.accountMenuDropdownTrigger(true);
+				return false;
 			}
 		});
 

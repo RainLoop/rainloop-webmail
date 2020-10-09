@@ -9,7 +9,7 @@ const
 	toArray = v => Array.isArray(v) ? v : v.split(/\s*,\s*/),
 
 	keydown = event => {
-		let key = (event.key || event.code || '').toLowerCase(),
+		let key = (event.key || event.code || '').toLowerCase().replace(' ','space'),
 			scopes = [];
 		scope[key] && scopes.push(scope[key]);
 		_scope !== 'all' && _scopes.all[key] && scopes.push(_scopes.all[key]);

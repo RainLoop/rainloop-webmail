@@ -59,7 +59,7 @@ ko.bindingHandlers.openDropdownTrigger = {
 	update: (element, fValueAccessor) => {
 		if (ko.unwrap(fValueAccessor())) {
 			const el = element.ddBtn;
-			el.open || el.Dropdown.toggle();
+			el.open || el.toggle();
 //			el.focus();
 
 			rl.Dropdowns.detectVisibility();
@@ -70,7 +70,7 @@ ko.bindingHandlers.openDropdownTrigger = {
 
 ko.bindingHandlers.dropdownCloser = {
 	init: element => element.closest('.dropdown').addEventListener('click', event =>
-		event.target.closestWithin('.e-item', element) && element.ddBtn.Dropdown.toggle()
+		event.target.closestWithin('.e-item', element) && element.ddBtn.toggle()
 	)
 };
 

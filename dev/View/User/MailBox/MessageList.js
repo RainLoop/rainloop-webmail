@@ -801,7 +801,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 		if (Settings.capa(Capa.MessageListActions)) {
 			// move
-			shortcuts.add('m', '', KeyState.MessageList, () => {
+			shortcuts.add('insert', '', KeyState.MessageList, () => {
 				if (this.newMoveToFolder()) {
 					this.moveNewCommand();
 				} else {

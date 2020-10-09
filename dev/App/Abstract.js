@@ -24,16 +24,16 @@ class AbstractApp {
 		this.lastErrorTime = 0;
 
 		const $doc = document;
-		$doc.addEventListener('keydown', (event) => {
-			if (event && event.ctrlKey) {
-				$htmlCL.add('rl-ctrl-key-pressed');
-			}
-		});
-		$doc.addEventListener('keyup', (event) => {
-			if (event && !event.ctrlKey) {
-				$htmlCL.remove('rl-ctrl-key-pressed');
-			}
-		});
+		$doc.addEventListener('keydown', event =>
+			event.ctrlKey && $htmlCL.add('rl-ctrl-key-pressed')
+//			$htmlCL.toggle('rl-ctrl-key-pressed', event.ctrlKey)
+//			'Control' === event.key && $htmlCL.add('rl-ctrl-key-pressed')
+		);
+		$doc.addEventListener('keyup', event =>
+//			!event.ctrlKey && $htmlCL.remove('rl-ctrl-key-pressed')
+			$htmlCL.toggle('rl-ctrl-key-pressed', event.ctrlKey)
+//			'Control' === event.key && $htmlCL.remove('rl-ctrl-key-pressed')
+		);
 
 		const fn = (()=>dispatchEvent(new CustomEvent('rl.auto-logout-refresh'))).debounce(5000);
 

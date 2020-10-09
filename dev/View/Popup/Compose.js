@@ -1151,25 +1151,23 @@ class ComposePopupView extends AbstractViewNext {
 		}
 	}
 
+	popupMenu(event) {
+		if (event.ctrlKey || event.metaKey || 'ContextMenu' == event.key
+		 || (this.oEditor && !this.oEditor.hasFocus() && !inFocus())) {
+			this.identitiesDropdownTrigger(true);
+			return false;
+		}
+		return true;
+	}
+
 	onBuild(dom) {
 		this.initUploader();
 
 		shortcuts.add('q', 'meta', KeyState.Compose, ()=>false);
 		shortcuts.add('w', 'meta', KeyState.Compose, ()=>false);
 
-		shortcuts.add('`', '', KeyState.Compose, () => {
-			if (this.oEditor && !this.oEditor.hasFocus() && !inFocus()) {
-				this.identitiesDropdownTrigger(true);
-				return false;
-			}
-
-			return true;
-		});
-
-		shortcuts.add('`', 'ctrl', KeyState.Compose, () => {
-			this.identitiesDropdownTrigger(true);
-			return false;
-		});
+		shortcuts.add('m,contextmenu', '', KeyState.Compose, e => this.popupMenu(e));
+		shortcuts.add('m', 'ctrl', KeyState.Compose, e => this.popupMenu(e));
 
 		shortcuts.add('escape,close', '', KeyState.Compose, () => {
 			this.skipCommand();
