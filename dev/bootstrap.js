@@ -124,8 +124,8 @@ export default (App) => {
 	window.__APP_BOOT = fErrorCallback => {
 		const doc = document,
 			cb = () => setTimeout(() => {
-				if (window.rainloopTEMPLATES && rainloopTEMPLATES[0]) {
-					doc.getElementById('rl-templates').innerHTML = rainloopTEMPLATES[0];
+				if (rl.TEMPLATES) {
+					doc.getElementById('rl-templates').innerHTML = rl.TEMPLATES;
 					setTimeout(() => App.bootstart(), 10);
 				} else {
 					fErrorCallback();

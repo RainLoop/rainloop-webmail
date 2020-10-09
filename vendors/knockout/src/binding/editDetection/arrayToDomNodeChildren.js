@@ -12,7 +12,7 @@
     function mapNodeAndRefreshWhenChanged(containerNode, mapping, valueToMap, callbackAfterAddingNodes, index) {
         // Map this array value inside a dependentObservable so we re-map when any dependency changes
         var mappedNodes = [];
-        var dependentObservable = ko.dependentObservable(() => {
+        var dependentObservable = ko.computed(() => {
             var newMappedNodes = mapping(valueToMap, index, ko.utils.fixUpContinuousNodeArray(mappedNodes, containerNode)) || [];
 
             // On subsequent evaluations, just replace the previously-inserted DOM nodes

@@ -687,7 +687,7 @@ ko.extenders = {
         // (2) For writable targets (observables, or writable dependent observables), we throttle *writes*
         //     so the target cannot change value synchronously or faster than a certain rate
         var writeTimeoutInstance = null;
-        return ko.dependentObservable({
+        return ko.computed({
             'read': target,
             'write': value => {
                 clearTimeout(writeTimeoutInstance);
@@ -1360,7 +1360,7 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
 };
 var computedState = Symbol('_state');
 
-ko.computed = ko.dependentObservable = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget, options) {
+ko.computed = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget, options) {
     if (typeof evaluatorFunctionOrOptions === "object") {
         // Single-parameter syntax - everything is on this "options" param
         options = evaluatorFunctionOrOptions;
@@ -1858,7 +1858,6 @@ ko.isComputed = instance => (typeof instance == 'function' && instance[protoProp
 ko.isPureComputed = instance => ko.isComputed(instance) && instance[computedState] && instance[computedState].pure;
 
 ko.exportSymbol('computed', ko.computed);
-ko.exportSymbol('dependentObservable', ko.computed);    // export ko.dependentObservable for backwards compatibility (1.x)
 ko.exportSymbol('isComputed', ko.isComputed);
 ko.exportSymbol('isPureComputed', ko.isPureComputed);
 ko.exportSymbol('computed.fn', computedFn);
@@ -2777,7 +2776,7 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
 
             // Get the binding from the provider within a computed observable so that we can update the bindings whenever
             // the binding context is updated or if the binding provider accesses observables.
-            var bindingsUpdater = ko.dependentObservable(
+            var bindingsUpdater = ko.computed(
                 () => {
                     bindings = sourceBindings ? sourceBindings(bindingContext, node) : getBindings.call(provider, node, bindingContext);
                     // Register a dependency on the binding context to support observable view models.
@@ -2870,7 +2869,7 @@ ko.exportSymbol('bindingProvider', ko.bindingProvider);
 
                     // Run update in its own computed wrapper
                     if (typeof handlerUpdateFn == "function") {
-                        ko.dependentObservable(
+                        ko.computed(
                             () => handlerUpdateFn(node, getValueAccessor(bindingKey), allBindings, contextToExtend['$data'], contextToExtend),
                             null,
                             { disposeWhenNodeIsRemoved: node }
@@ -4499,7 +4498,7 @@ ko.exportSymbol('__tr_ambtns', ko.templateRewriting.applyMemoizedBindingsToNextS
             var whenToDispose = () => (!firstTargetNode) || !ko.utils.domNodeIsAttachedToDocument(firstTargetNode); // Passive disposal (on next evaluation)
             var activelyDisposeWhenNodeIsRemoved = (firstTargetNode && renderMode == "replaceNode") ? firstTargetNode.parentNode : firstTargetNode;
 
-            return ko.dependentObservable( // So the DOM is automatically updated when any dependency changes
+            return ko.computed( // So the DOM is automatically updated when any dependency changes
                 () => {
                     // Ensure we've got a proper binding context to work with
                     var bindingContext = (dataOrBindingContext && (dataOrBindingContext instanceof ko.bindingContext))
@@ -4578,7 +4577,7 @@ ko.exportSymbol('__tr_ambtns', ko.templateRewriting.applyMemoizedBindingsToNextS
 
             return subscription;
         } else {
-            return ko.dependentObservable(() => {
+            return ko.computed(() => {
                 var unwrappedArray = ko.utils.unwrapObservable(arrayOrObservableArray) || [];
                 if (typeof unwrappedArray.length == "undefined") // Coerce single value into array
                     unwrappedArray = [unwrappedArray];
@@ -4822,7 +4821,7 @@ ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);
     function mapNodeAndRefreshWhenChanged(containerNode, mapping, valueToMap, callbackAfterAddingNodes, index) {
         // Map this array value inside a dependentObservable so we re-map when any dependency changes
         var mappedNodes = [];
-        var dependentObservable = ko.dependentObservable(() => {
+        var dependentObservable = ko.computed(() => {
             var newMappedNodes = mapping(valueToMap, index, ko.utils.fixUpContinuousNodeArray(mappedNodes, containerNode)) || [];
 
             // On subsequent evaluations, just replace the previously-inserted DOM nodes

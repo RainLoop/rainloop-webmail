@@ -87,9 +87,9 @@ ko.bindingHandlers.emailsTags = {
 		});
 
 		if (fValue && fValue.focused && fValue.focused.subscribe) {
-			fValue.focused.subscribe(value => {
-				element.inputosaurus[value ? 'focus' : 'blur']();
-			});
+			fValue.focused.subscribe(value =>
+				element.inputosaurus[value ? 'focus' : 'blur']()
+			);
 		}
 	},
 	update: (element, fValueAccessor) => {

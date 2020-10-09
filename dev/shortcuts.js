@@ -8,36 +8,34 @@ const
 	_scopes = {},
 	toArray = v => Array.isArray(v) ? v : v.split(/\s*,\s*/),
 
-	fire = (actions, event) => {
-		let modifiers = [];
-		event.altKey && modifiers.push('alt');
-		event.ctrlKey && modifiers.push('ctrl');
-		event.metaKey && modifiers.push('meta');
-		event.shiftKey && modifiers.push('shift');
-		modifiers = modifiers.join('+');
-		if (actions[modifiers]) {
-			// for each potential shortcut
-			actions[modifiers].forEach(cmd => {
-				try {
-					// call the handler and stop the event if neccessary
-					if (!event.defaultPrevented && cmd(event) === false) {
-						event.preventDefault();
-						event.stopPropagation();
-					}
-				} catch (e) {
-					console.error(e);
+	keydown = event => {
+		let key = (event.key || event.code || '').toLowerCase(),
+			scopes = [];
+		scope[key] && scopes.push(scope[key]);
+		_scope !== 'all' && _scopes.all[key] && scopes.push(_scopes.all[key]);
+		if (scopes.length && win.shortcuts.filter(event.target)) {
+			let modifiers = [];
+			event.altKey && modifiers.push('alt');
+			event.ctrlKey && modifiers.push('ctrl');
+			event.metaKey && modifiers.push('meta');
+			event.shiftKey && modifiers.push('shift');
+			modifiers = modifiers.join('+');
+			scopes.forEach(actions => {
+				if (actions[modifiers]) {
+					// for each potential shortcut
+					actions[modifiers].forEach(cmd => {
+						try {
+							// call the handler and stop the event if neccessary
+							if (!event.defaultPrevented && cmd(event) === false) {
+								event.preventDefault();
+								event.stopPropagation();
+							}
+						} catch (e) {
+							console.error(e);
+						}
+					});
 				}
 			});
-		}
-	},
-
-	keydown = event => {
-		const key = (event.key||event.code||'').toLowerCase();
-		if (scope[key] && win.shortcuts.filter(event.target)) {
-			fire(scope[key], event);
-		}
-		if (!event.defaultPrevented && _scope !== 'all' && _scopes.all[key] && win.shortcuts.filter(event.target)) {
-			fire(_scopes.all[key], event);
 		}
 	};
 

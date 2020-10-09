@@ -392,7 +392,7 @@
 
             // Get the binding from the provider within a computed observable so that we can update the bindings whenever
             // the binding context is updated or if the binding provider accesses observables.
-            var bindingsUpdater = ko.dependentObservable(
+            var bindingsUpdater = ko.computed(
                 () => {
                     bindings = sourceBindings ? sourceBindings(bindingContext, node) : getBindings.call(provider, node, bindingContext);
                     // Register a dependency on the binding context to support observable view models.
@@ -485,7 +485,7 @@
 
                     // Run update in its own computed wrapper
                     if (typeof handlerUpdateFn == "function") {
-                        ko.dependentObservable(
+                        ko.computed(
                             () => handlerUpdateFn(node, getValueAccessor(bindingKey), allBindings, contextToExtend['$data'], contextToExtend),
                             null,
                             { disposeWhenNodeIsRemoved: node }

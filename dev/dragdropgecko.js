@@ -18,7 +18,7 @@
 		allowDrop,
 		lastTarget,
 		lastTouch,
-		pressHoldInterval,
+		holdInterval,
 
 		img, imgCustom, imgOffset;
 
@@ -64,21 +64,16 @@
 	}
 
 	const
-		// copy styles/attributes from drag source to drag image element
-		rmvAtts = 'id,class,style,draggable'.split(','),
-		kbdProps = 'altKey,ctrlKey,metaKey,shiftKey'.split(','),
-		ptProps = 'pageX,pageY,clientX,clientY,screenX,screenY,offsetX,offsetY'.split(','),
-
 	// clear all members
 	reset = () => {
-		destroyImage();
-		dragSource = lastTouch = lastTarget = dataTransfer = null;
-		isDragging = allowDrop = false;
-		clearInterval(pressHoldInterval);
+		if (dragSource) {
+			clearInterval(holdInterval);
+			destroyImage();
+			isDragging && dispatchEvent(lastTouch, 'dragend', dragSource);
+			dragSource = lastTouch = lastTarget = dataTransfer = holdInterval = null;
+			isDragging = allowDrop = false;
+		}
 	},
-
-	// ignore events that have been handled or that involve more than one touch
-	shouldHandle = e => e && !e.defaultPrevented && e.touches && e.touches.length < 2,
 
 	// get point for a touch event
 	getPoint = e => {
@@ -89,28 +84,26 @@
 	},
 
 	touchstart = e => {
-		if (shouldHandle(e)) {
-			// clear all variables
-			reset();
-
+		// clear all variables
+		reset();
+		// ignore events that have been handled or that involve more than one touch
+		if (e && !e.defaultPrevented && e.touches && e.touches.length < 2) {
 			// get nearest draggable element
-			let src = e.target.closest('[draggable]');
-			if (src) {
+			dragSource = e.target.closest('[draggable]');
+			if (dragSource) {
 				// get ready to start dragging
-				dragSource = src;
 				lastTouch = e;
 				e.preventDefault(); // prevent scrolling NOTE: this creates a bug that click will not work
 
 				// 1000 ms to wait, chrome on android triggers dragstart in 600
-				pressHoldInterval = setTimeout(() => {
+				holdInterval = setTimeout(() => {
 					// start dragging
-					if (dragSource && !isDragging) {
-						isDragging = true;
-						dataTransfer = new DataTransfer();
-						if ((isDragging = dispatchEvent(e, 'dragstart', dragSource))) {
-							createImage(e);
-							dispatchEvent(e, 'dragenter', getTarget(e));
-						}
+					dataTransfer = new DataTransfer();
+					if ((isDragging = dispatchEvent(e, 'dragstart', dragSource))) {
+						createImage(e);
+						dispatchEvent(e, 'dragenter', getTarget(e));
+					} else {
+						reset();
 					}
 				}, 1000);
 			}
@@ -120,37 +113,30 @@
 	touchmove = e => {
 		if (isDragging) {
 			// continue dragging
-			if (isDragging) {
-				let target = getTarget(e);
-				lastTouch = e;
-				e.preventDefault(); // prevent scrolling
-				if (target != lastTarget) {
-					dispatchEvent(lastTouch, 'dragleave', lastTarget);
-					dispatchEvent(e, 'dragenter', target);
-					lastTarget = target;
-				}
-				moveImage(e);
-				allowDrop = !dispatchEvent(e, 'dragover', target);
+			let target = getTarget(e);
+			lastTouch = e;
+			e.preventDefault(); // prevent scrolling
+			if (target != lastTarget) {
+				dispatchEvent(lastTouch, 'dragleave', lastTarget);
+				dispatchEvent(e, 'dragenter', target);
+				lastTarget = target;
 			}
+			moveImage(e);
+			allowDrop = !dispatchEvent(e, 'dragover', target);
 		} else {
 			reset();
 		}
 	},
 
 	touchend = e => {
-		if (shouldHandle(e)) {
+		if (dragSource) {
 			if (!isDragging) {
 				// touched the element but didn't drag, so simulate a click
 				dispatchEvent(lastTouch, 'click', e.target);
 			}
 			// finish dragging
-			if (dragSource) {
-				if (allowDrop && !e.type.includes('cancel')) {
-					dispatchEvent(lastTouch, 'drop', lastTarget);
-				}
-				dispatchEvent(lastTouch, 'dragend', dragSource);
-				reset();
-			}
+			allowDrop && 'touchcancel' !== e.type && dispatchEvent(lastTouch, 'drop', lastTarget);
+			reset();
 		}
 	},
 
@@ -205,9 +191,7 @@
 
 	copyStyle = (src, dst) => {
 		// remove potentially troublesome attributes
-		rmvAtts.forEach(function (att) {
-			dst.removeAttribute(att);
-		});
+		['id','class','style','draggable'].forEach(att => dst.removeAttribute(att));
 		// copy canvas content
 		if (src instanceof HTMLCanvasElement) {
 			let cSrc = src, cDst = dst;
@@ -237,10 +221,10 @@
 			evt.button = 0;
 			evt.which = evt.buttons = 1;
 			// copy event properties into new event
-			kbdProps.forEach(k => evt[k] = e[k]);
+			['altKey','ctrlKey','metaKey','shiftKey'].forEach(k => evt[k] = e[k]);
 			let src = e.touches ? e.touches[0] : e;
-			ptProps.forEach(k => evt[k] = src[k]);
-			if (isDragging) {
+			['pageX','pageY','clientX','clientY','screenX','screenY','offsetX','offsetY'].forEach(k => evt[k] = src[k]);
+			if (dragSource) {
 				evt.dataTransfer = dataTransfer;
 			}
 			return target.dispatchEvent(evt);
@@ -249,7 +233,7 @@
 	};
 
 	// Chrome on mobile supports drag & drop
-	if (ua.includes("mobile") && ua.includes('gecko/')) {
+	if (ua.includes('mobile') && ua.includes('gecko/')) {
 		let opt = { passive: false, capture: false };
 		doc.addEventListener('touchstart', touchstart, opt);
 		doc.addEventListener('touchmove', touchmove, opt);

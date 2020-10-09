@@ -73,7 +73,13 @@ const jsMin = () =>
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(
 			terser({
-				output: {comments: false}
+				output: {
+					comments: false
+				},
+				compress:{
+					ecma: 6,
+					drop_console: true
+				}
 			})
 		)
 		.pipe(eol('\n', true))

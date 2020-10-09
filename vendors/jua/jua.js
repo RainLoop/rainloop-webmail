@@ -131,7 +131,6 @@
 					sAction = this.oOptions.action,
 					aHidden = this.oOptions.hidden,
 					fStartFunction = this.oJua.getEvent('onStart'),
-					fCompleteFunction = this.oJua.getEvent('onComplete'),
 					fProgressFunction = this.oJua.getEvent('onProgress')
 				;
 
@@ -139,7 +138,7 @@
 
 				if (fProgressFunction && oXhr.upload)
 				{
-					oXhr.upload.onprogress = function (oEvent) {
+					oXhr.upload.onprogress = oEvent => {
 						if (oEvent && oEvent.lengthComputable && defined(oEvent.loaded) && defined(oEvent.total))
 						{
 							fProgressFunction(sUid, oEvent.loaded, oEvent.total);
@@ -147,40 +146,25 @@
 					};
 				}
 
-				oXhr.onreadystatechange = function () {
-					if (4 === oXhr.readyState && 200 === oXhr.status)
+				oXhr.onreadystatechange = () => {
+					if (4 === oXhr.readyState)
 					{
-						if (fCompleteFunction)
+						delete self.oXhrs[sUid];
+						let bResult = false,
+							oResult = null;
+						if (200 === oXhr.status)
 						{
-							let
-								bResult = false,
-								oResult = null
-							;
-
 							try
 							{
 								oResult = JSON.parse(oXhr.responseText);
 								bResult = true;
 							}
-							catch (oException)
+							catch (e)
 							{
-								oResult = null;
+								console.error(e);
 							}
-
-							fCompleteFunction(sUid, bResult, oResult);
 						}
-
-						if (defined(self.oXhrs[sUid]))
-						{
-							self.oXhrs[sUid] = null;
-						}
-					}
-					else
-					{
-						if (4 === oXhr.readyState)
-						{
-							fCompleteFunction(sUid, false, null);
-						}
+						this.oJua.getEvent('onComplete')(sUid, bResult, bResult ? oResult : null);
 					}
 				};
 
@@ -261,7 +245,7 @@
 					console.error(oError);
 				}
 
-				this.oXhrs[sUid] = null;
+				delete this.oXhrs[sUid];
 			}
 		}
 	}

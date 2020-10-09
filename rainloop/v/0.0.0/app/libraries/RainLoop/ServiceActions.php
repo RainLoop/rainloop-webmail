@@ -1038,7 +1038,7 @@ class ServiceActions
 
 		unset($aTemplates);
 
-		return $bJsOutput ? 'window.rainloopTEMPLATES='.\MailSo\Base\Utils::Php2js(array($sHtml), $this->Logger()).';' : $sHtml;
+		return $bJsOutput ? 'rl.TEMPLATES='.\MailSo\Base\Utils::Php2js($sHtml, $this->Logger()).';' : $sHtml;
 	}
 
 	private function convertLanguageNameToMomentLanguageName(string $sLanguage) : string

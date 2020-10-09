@@ -41,8 +41,6 @@ this.Inputosaurus = class {
 
 		self.element = element;
 
-		self._focusTimer = 0;
-
 		self.options = Object.assign({
 
 			// while typing, the user can separate values using these delimiters
@@ -65,6 +63,8 @@ this.Inputosaurus = class {
 
 		self._chosenValues = [];
 
+		self._lastEdit = '';
+
 		// Create the elements
 		els.ul = createEl('ul',{class:"inputosaurus-container"});
 
@@ -81,8 +81,6 @@ this.Inputosaurus = class {
 
 		els.input = createEl('input',{type:"text", list:datalist.id,
 			autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false"});
-
-		els.lastEdit = '';
 
 		els.input.addEventListener('focus', () => self._focusTrigger(true));
 		els.input.addEventListener('blur', () => self._focusTrigger(false));
@@ -108,7 +106,7 @@ this.Inputosaurus = class {
 		els.input.addEventListener('blur', e => self.parseInput(e));
 
 		els.ul.addEventListener('click', e => self._focus(e));
-		els.ul.addEventListener('dblclick', e => e.currentTarget.closest('li') && self._editTag(e));
+		els.ul.addEventListener('dblclick', e => self._editTag(e));
 
 		// if instantiated input already contains a value, parse that junk
 		if (element.value.trim()) {
@@ -134,12 +132,8 @@ this.Inputosaurus = class {
 	}
 
 	_focusTrigger(bValue) {
-		var self = this;
-		clearTimeout(self._focusTimer);
-		self._focusTimer = setTimeout(() => {
-			self.elements.ul.classList.toggle('inputosaurus-focused', bValue);
-			self.options.focusCallback(bValue);
-		}, 10);
+		this.elements.ul.classList.toggle('inputosaurus-focused', bValue);
+		this.options.focusCallback(bValue);
 	}
 
 	_resetAutocomplete() {
@@ -168,7 +162,7 @@ this.Inputosaurus = class {
 			ev && ev.preventDefault();
 
 		// prevent autoComplete menu click from causing a false 'blur'
-		} else if(ev.type === 'blur'){
+		} else if (ev.type === 'blur') {
 			values.push(val);
 		}
 
@@ -190,13 +184,9 @@ this.Inputosaurus = class {
 				// if our input contains no value and backspace has been pressed, select the last tag
 				if (ev.type === 'keydown') {
 					var lastTag = self.elements.inputCont.previousElementSibling,
-						target = ev.currentTarget;
-
-					// IE goes back in history if the event isn't stopped
-					ev.stopPropagation();
-
-					if (lastTag && (!target.value
-						|| (('selectionStart' in target) && target.selectionStart === 0 && target.selectionEnd === 0))
+						input = self.elements.input;
+					if (lastTag && (!input.value
+						|| (('selectionStart' in input) && input.selectionStart === 0 && input.selectionEnd === 0))
 					) {
 						ev.preventDefault();
 						lastTag.querySelector('a').focus();
@@ -223,18 +213,15 @@ this.Inputosaurus = class {
 	}
 
 	_editTag(ev) {
-		var self = this,
-			tagName = '',
-			li = ev.currentTarget.closest('li'),
-			tagKey = li.inputosaurusKey;
+		var li = ev.target.closest('li'),
+			tagKey = li && li.inputosaurusKey;
 
 		if (!tagKey) {
 			return true;
 		}
 
-		ev.preventDefault();
-
-		var
+		var self = this,
+			tagName = '',
 			oPrev = null,
 			next = false
 		;
@@ -253,7 +240,7 @@ this.Inputosaurus = class {
 
 		if (oPrev)
 		{
-			self.elements.lastEdit = oPrev.value;
+			self._lastEdit = oPrev.value;
 		}
 
 		li.after(self.elements.inputCont);
@@ -261,20 +248,8 @@ this.Inputosaurus = class {
 		self.elements.input.value = tagName;
 		setTimeout(() => self.elements.input.select(), 100);
 
-		self._removeTag(ev);
+		self._removeTag(ev, li);
 		self.resizeInput(ev);
-	}
-
-	// select the next tag or input if no more tags exist
-	_nextTag(ev) {
-		var tag = ev.currentTarget.closest('li'),
-			next = tag.next();
-
-		if (next !== this.elements.inputCont) {
-			next.querySelector('a').focus();
-		} else {
-			this._focus();
-		}
 	}
 
 	// return the inputDelimiter that was detected or false if none were found
@@ -301,7 +276,7 @@ this.Inputosaurus = class {
 			v = a[0].trim();
 
 			self._chosenValues.forEach((vv, kk) => {
-				if (vv.value === self.elements.lastEdit)
+				if (vv.value === self._lastEdit)
 				{
 					lastIndex = kk;
 				}
@@ -324,14 +299,14 @@ this.Inputosaurus = class {
 					self._chosenValues.push(obj);
 				}
 
-				self.elements.lastEdit = '';
+				self._lastEdit = '';
 				self._renderTags();
 			}
 		});
 
-		if (valArr.length === 1 && valArr[0] === '' && self.elements.lastEdit !== '')
+		if (valArr.length === 1 && valArr[0] === '' && self._lastEdit !== '')
 		{
-			self.elements.lastEdit = '';
+			self._lastEdit = '';
 			self._renderTags();
 		}
 
@@ -362,14 +337,14 @@ this.Inputosaurus = class {
 
 				el = createEl('a',{href:'#', class:'ficon'});
 				el.append('✖');
-				el.addEventListener('click', e => self._removeTag(e));
+				el.addEventListener('click', e => self._removeTag(e, li));
 				el.addEventListener('focus', () => li.className = 'inputosaurus-selected');
 				el.addEventListener('blur', () => li.className = null);
 				el.addEventListener('keydown', e => {
 					switch (e.key) {
 						case 'Delete':
 						case 'Backspace':
-							self._removeTag(e);
+							self._removeTag(e, li);
 							break;
 
 						// 'e' - edit tag (removes tag and places value into visible input
@@ -384,12 +359,18 @@ this.Inputosaurus = class {
 							if (previous.matches('li')) {
 								previous.querySelector('a').focus();
 							} else {
-								self._focus();
+								self.focus();
 							}
 							break;
 
 						case 'ArrowRight':
-							self._nextTag(e);
+							// select the next tag or input if no more tags exist
+							var next = el.closest('li').nextElementSibling;
+							if (next !== this.elements.inputCont) {
+								next.querySelector('a').focus();
+							} else {
+								this.focus();
+							}
 							break;
 
 						case 'ArrowDown':
@@ -400,7 +381,7 @@ this.Inputosaurus = class {
 				li.append(el);
 
 				li.inputosaurusKey = v.key;
-				li.inputosaurusValue = v.obj.toLine(false, false, false);
+				li.inputosaurusValue = v.obj.toLine();
 
 				li.addEventListener("dragstart", e => {
 					dragData = {
@@ -424,11 +405,10 @@ this.Inputosaurus = class {
 		});
 	}
 
-	_removeTag(ev) {
+	_removeTag(ev, li) {
 		ev.preventDefault();
 
-		var target = ev.currentTarget,
-			key = target.closest('li').inputosaurusKey,
+		var key = li.inputosaurusKey,
 			self = this,
 			indexFound = self._chosenValues.findIndex(v => key === v.key);
 
@@ -436,7 +416,7 @@ this.Inputosaurus = class {
 
 		self._setValue(self._buildValue());
 
-		target.closest('li').remove();
+		li.remove();
 		setTimeout(() => self.elements.input.focus(), 100);
 	}
 
@@ -464,7 +444,7 @@ this.Inputosaurus = class {
 	}
 
 	_focus(ev) {
-		var li = ev && ev.target && ev.target.closest('li');
+		var li = ev.target.closest('li');
 		if (li && li.inputosaurusKey) {
 			li.querySelector('a').focus();
 		} else {

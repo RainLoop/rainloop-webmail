@@ -139,7 +139,7 @@
             var whenToDispose = () => (!firstTargetNode) || !ko.utils.domNodeIsAttachedToDocument(firstTargetNode); // Passive disposal (on next evaluation)
             var activelyDisposeWhenNodeIsRemoved = (firstTargetNode && renderMode == "replaceNode") ? firstTargetNode.parentNode : firstTargetNode;
 
-            return ko.dependentObservable( // So the DOM is automatically updated when any dependency changes
+            return ko.computed( // So the DOM is automatically updated when any dependency changes
                 () => {
                     // Ensure we've got a proper binding context to work with
                     var bindingContext = (dataOrBindingContext && (dataOrBindingContext instanceof ko.bindingContext))
@@ -218,7 +218,7 @@
 
             return subscription;
         } else {
-            return ko.dependentObservable(() => {
+            return ko.computed(() => {
                 var unwrappedArray = ko.utils.unwrapObservable(arrayOrObservableArray) || [];
                 if (typeof unwrappedArray.length == "undefined") // Coerce single value into array
                     unwrappedArray = [unwrappedArray];

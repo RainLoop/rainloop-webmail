@@ -352,12 +352,12 @@ class EmailModel {
 	}
 
 	/**
-	 * @param {boolean} friendlyView
+	 * @param {boolean} friendlyView = false
 	 * @param {boolean=} wrapWithLink = false
 	 * @param {boolean=} useEncodeHtml = false
 	 * @returns {string}
 	 */
-	toLine(friendlyView, wrapWithLink = false, useEncodeHtml = false) {
+	toLine(friendlyView, wrapWithLink, useEncodeHtml) {
 		let result = '';
 		if (this.email) {
 			if (friendlyView && this.name) {
