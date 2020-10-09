@@ -101,7 +101,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 		this.oContentScrollable = qs('.b-content');
 
 		dom.addEventListener('click', event => {
-			let el = eqs(event, '.b-folders .e-item .e-link .e-collapsed-sign');
+			let el = event.target.closest('.e-collapsed-sign');
 			if (el) {
 				const folder = ko.dataFor(el);
 				if (folder) {
@@ -111,6 +111,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 					folder.collapsed(!collapsed);
 					event.preventDefault();
 					event.stopPropagation();
+					return;
 				}
 			}
 
