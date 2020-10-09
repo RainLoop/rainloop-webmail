@@ -89,7 +89,7 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 		});
 
 		// shortcuts help
-		shortcuts.add('/', 'shift', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
+		shortcuts.add('?,f1,help', '', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
 			if (this.viewModelVisible) {
 				showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
 				return false;

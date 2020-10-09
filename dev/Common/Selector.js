@@ -273,7 +273,7 @@ class Selector {
 				}
 			});
 
-			shortcuts.add('enter', '', keyScope, () => {
+			shortcuts.add('enter,open', '', keyScope, () => {
 				const focused = this.focusedItem();
 				if (focused && !focused.selected()) {
 					this.actionClick(focused);

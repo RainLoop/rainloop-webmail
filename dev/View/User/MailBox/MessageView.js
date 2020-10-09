@@ -535,13 +535,13 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		shortcuts.add('escape,backspace', '', KeyState.MessageView, this.escShortcuts.bind(this));
 
 		// fullscreen
-		shortcuts.add('enter', '', KeyState.MessageView, () => {
+		shortcuts.add('enter,open', '', KeyState.MessageView, () => {
 			this.toggleFullScreen();
 			return false;
 		});
 
 		// reply
-		shortcuts.add('r', '', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('r,mailreply', '', [KeyState.MessageList, KeyState.MessageView], () => {
 			if (MessageStore.message()) {
 				this.replyCommand();
 				return false;
@@ -555,12 +555,18 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				this.replyAllCommand();
 				return false;
 			}
-
+			return true;
+		});
+		shortcuts.add('mailreply', 'shift', [KeyState.MessageList, KeyState.MessageView], () => {
+			if (MessageStore.message()) {
+				this.replyAllCommand();
+				return false;
+			}
 			return true;
 		});
 
 		// forward
-		shortcuts.add('f', '', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('f,mailforward', '', [KeyState.MessageList, KeyState.MessageView], () => {
 			if (MessageStore.message()) {
 				this.forwardCommand();
 				return false;
@@ -598,10 +604,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		});
 
 		// print
-		shortcuts.add('p', 'meta', [KeyState.MessageView, KeyState.MessageList], () => {
-			if (this.message()) {
-				this.message().printMessage();
-			}
+		shortcuts.add('p,printscreen', 'meta', [KeyState.MessageView, KeyState.MessageList], () => {
+			this.message() && this.message().printMessage();
 			return false;
 		});
 

@@ -1675,7 +1675,9 @@ keyHandlers[ ctrlKey + '[' ] = changeIndentationLevel( 'decrease' );
 keyHandlers[ ctrlKey + ']' ] = changeIndentationLevel( 'increase' );
 keyHandlers[ ctrlKey + 'd' ] = mapKeyTo( 'toggleCode' );
 keyHandlers[ ctrlKey + 'y' ] = mapKeyTo( 'redo' );
+keyHandlers[ 'redo' ] = mapKeyTo( 'redo' );
 keyHandlers[ ctrlKey + 'z' ] = mapKeyTo( 'undo' );
+keyHandlers[ 'undo' ] = mapKeyTo( 'undo' );
 keyHandlers[ ctrlKey + 'shift-z' ] = mapKeyTo( 'redo' );
 
 let fontSizes = {

@@ -1171,7 +1171,7 @@ class ComposePopupView extends AbstractViewNext {
 			return false;
 		});
 
-		shortcuts.add('escape', '', KeyState.Compose, () => {
+		shortcuts.add('escape,close', '', KeyState.Compose, () => {
 			this.skipCommand();
 			return false;
 		});
@@ -1185,6 +1185,10 @@ class ComposePopupView extends AbstractViewNext {
 				this.saveCommand();
 				return false;
 			});
+			shortcuts.add('save', KeyState.Compose, () => {
+				this.saveCommand();
+				return false;
+			});
 		}
 
 		if (Settings.app('allowCtrlEnterOnCompose')) {
@@ -1193,11 +1197,13 @@ class ComposePopupView extends AbstractViewNext {
 				return false;
 			});
 		}
+		shortcuts.add('mailsend', '', KeyState.Compose, () => {
+			this.sendCommand();
+			return false;
+		});
 
-		shortcuts.add('escape', 'shift', KeyState.Compose, () => {
-			if (this.modalVisibility()) {
-				this.tryToClosePopup();
-			}
+		shortcuts.add('escape,close', 'shift', KeyState.Compose, () => {
+			this.modalVisibility() && this.tryToClosePopup();
 			return false;
 		});
 

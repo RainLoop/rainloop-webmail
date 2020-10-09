@@ -145,7 +145,7 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 			return false;
 		});
 
-		shortcuts.add('enter', '', KeyState.FolderList, () => {
+		shortcuts.add('enter,open', '', KeyState.FolderList, () => {
 			const item = qs('.b-folders .e-item .e-link:not(.hidden).focused');
 			if (item) {
 				AppStore.focusedState(Focused.MessageList);

@@ -728,7 +728,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 
 	initShortcuts() {
-		shortcuts.add('enter', '', KeyState.MessageList, () => {
+		shortcuts.add('enter,open', '', KeyState.MessageList, () => {
 			if (this.message() && this.useAutoSelect()) {
 				dispatchEvent(new CustomEvent('mailbox.message-view.toggle-full-screen'));
 				return false;
@@ -772,7 +772,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 		if (Settings.capa(Capa.Composer)) {
 			// write/compose (open compose popup)
-			shortcuts.add('w,c', '', [KeyState.MessageList, KeyState.MessageView], () => {
+			shortcuts.add('w,c,new', '', [KeyState.MessageList, KeyState.MessageView], () => {
 				showScreenPopup(require('View/Popup/Compose'));
 				return false;
 			});
@@ -827,7 +827,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		}
 
 		if (Settings.capa(Capa.Composer)) {
-			shortcuts.add('f', 'shift', [KeyState.MessageList, KeyState.MessageView], () => {
+			shortcuts.add('f,mailforward', 'shift', [KeyState.MessageList, KeyState.MessageView], () => {
 				this.multyForwardCommand();
 				return false;
 			});

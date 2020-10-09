@@ -33,10 +33,10 @@ const
 
 	keydown = event => {
 		const key = (event.key||event.code||'').toLowerCase();
-		if (scope[key] && win.shortcuts.filter(event)) {
+		if (scope[key] && win.shortcuts.filter(event.target)) {
 			fire(scope[key], event);
 		}
-		if (!event.defaultPrevented && _scope !== 'all' && _scopes.all[key] && win.shortcuts.filter(event)) {
+		if (!event.defaultPrevented && _scope !== 'all' && _scopes.all[key] && win.shortcuts.filter(event.target)) {
 			fire(_scopes.all[key], event);
 		}
 	};
@@ -44,8 +44,6 @@ const
 let
 	scope = {},
 	_scope = 'all';
-
-doc.addEventListener('keydown', keydown);
 
 win.shortcuts = {
 	on: () => doc.addEventListener('keydown', keydown),
@@ -81,8 +79,7 @@ win.shortcuts = {
 	getScope: () => _scope,
 	getMetaKey: () => meta,
 	// ignore keydown in any element that supports keyboard input
-	filter: event => !(event.target.matches
-		&& (event.target.matches('input,select,textarea') || event.target.closest('[contenteditable]')))
+	filter: node => !(!node.closest || node.closest('input,select,textarea,[contenteditable]'))
 };
 
 win.shortcuts.on();
