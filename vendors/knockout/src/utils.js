@@ -1,37 +1,28 @@
 ko.utils = (() => {
 
-    function arrayCall(name, arr, p1, p2) {
-        return Array.prototype[name].call(arr, p1, p2);
-    }
-
-    function objectForEach(obj, action) {
-        obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1]));
-    }
-
-    function extend(target, source) {
-        if (source) {
-            Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
-        }
-        return target;
-    }
-
-    function setPrototypeOf(obj, proto) {
-        obj.__proto__ = proto;
-        return obj;
-    }
+	const
+		arrayCall = (name, arr, p1, p2) => Array.prototype[name].call(arr, p1, p2),
+		objectForEach = (obj, action) => obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1])),
+		extend = (target, source) => {
+			source && Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
+			return target;
+		},
+		setPrototypeOf = (obj, proto) => {
+			obj.__proto__ = proto;
+			return obj;
+		},
+		// For details on the pattern for changing node classes
+		// see: https://github.com/knockout/knockout/issues/1597
+		toggleDomNodeCssClass = (node, classNames, shouldHaveClass) => {
+			if (classNames) {
+				var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
+				classNames.split(/\s+/).forEach(className =>
+					node.classList[addOrRemoveFn](className)
+				);
+			}
+		};
 
     var canSetPrototype = ({ __proto__: [] } instanceof Array);
-
-    // For details on the pattern for changing node classes
-    // see: https://github.com/knockout/knockout/issues/1597
-    function toggleDomNodeCssClass(node, classNames, shouldHaveClass) {
-        if (classNames) {
-            var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
-            classNames.split(/\s+/).forEach(className =>
-                node.classList[addOrRemoveFn](className)
-            );
-        }
-    }
 
     return {
         arrayForEach: (array, action, actionOwner) =>

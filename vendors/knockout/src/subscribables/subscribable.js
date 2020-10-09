@@ -33,17 +33,6 @@ ko.subscribable = function () {
 
 var defaultEvent = "change";
 
-// Moved out of "limit" to avoid the extra closure
-function limitNotifySubscribers(value, event) {
-    if (!event || event === defaultEvent) {
-        this._limitChange(value);
-    } else if (event === 'beforeChange') {
-        this._limitBeforeChange(value);
-    } else {
-        this._origNotifySubscribers(value, event);
-    }
-}
-
 var ko_subscribable_fn = {
     init: instance => {
         instance._subscriptions = { "change": [] };
@@ -112,7 +101,16 @@ var ko_subscribable_fn = {
 
         if (!self._origNotifySubscribers) {
             self._origNotifySubscribers = self["notifySubscribers"];
-            self["notifySubscribers"] = limitNotifySubscribers;
+			// Moved out of "limit" to avoid the extra closure
+            self["notifySubscribers"] = function(value, event) {
+				if (!event || event === defaultEvent) {
+					this._limitChange(value);
+				} else if (event === 'beforeChange') {
+					this._limitBeforeChange(value);
+				} else {
+					this._origNotifySubscribers(value, event);
+				}
+			}
         }
 
         var finish = limitFunction(() => {

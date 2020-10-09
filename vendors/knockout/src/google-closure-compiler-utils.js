@@ -1,5 +1,5 @@
 // Google Closure Compiler helpers (used only to make the minified file smaller)
-ko.exportSymbol = function(koPath, object) {
+ko.exportSymbol = (koPath, object) => {
     var tokens = koPath.split(".");
 
     // In the future, "ko" may become distinct from "koExports" (so that non-exported objects are not reachable)
@@ -10,6 +10,4 @@ ko.exportSymbol = function(koPath, object) {
         target = target[tokens[i]];
     target[tokens[tokens.length - 1]] = object;
 };
-ko.exportProperty = function(owner, publicName, object) {
-    owner[publicName] = object;
-};
+ko.exportProperty = (owner, publicName, object) => owner[publicName] = object;

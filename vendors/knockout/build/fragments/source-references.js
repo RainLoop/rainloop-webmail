@@ -34,6 +34,7 @@ knockoutDebugCallback([
     'src/binding/defaultBindings/foreach.js',
     'src/binding/defaultBindings/hasfocus.js',
     'src/binding/defaultBindings/html.js',
+    'src/binding/defaultBindings/ifIfnot.js',
 //    'src/binding/defaultBindings/ifIfnotWith.js',
 //    'src/binding/defaultBindings/let.js',
     'src/binding/defaultBindings/options.js',
