@@ -1,5 +1,5 @@
 /*!
- * Knockout JavaScript library v3.5.1-pre
+ * Knockout JavaScript library v3.5.1-sm
  * (c) The Knockout.js team - http://knockoutjs.com/
  * License: MIT (http://www.opensource.org/licenses/mit-license.php)
  */
@@ -17,7 +17,7 @@ var DEBUG=true;
 // In the future, the following "ko" variable may be made distinct from "koExports" so that private objects are not externally reachable.
 var ko = typeof koExports !== 'undefined' ? koExports : {};
 // Google Closure Compiler helpers (used only to make the minified file smaller)
-ko.exportSymbol = function(koPath, object) {
+ko.exportSymbol = (koPath, object) => {
     var tokens = koPath.split(".");
 
     // In the future, "ko" may become distinct from "koExports" (so that non-exported objects are not reachable)
@@ -28,46 +28,35 @@ ko.exportSymbol = function(koPath, object) {
         target = target[tokens[i]];
     target[tokens[tokens.length - 1]] = object;
 };
-ko.exportProperty = function(owner, publicName, object) {
-    owner[publicName] = object;
-};
-ko.version = "3.5.1-pre";
+ko.exportProperty = (owner, publicName, object) => owner[publicName] = object;
+ko.version = "3.5.1-sm";
 
 ko.exportSymbol('version', ko.version);
 ko.utils = (() => {
 
-    function arrayCall(name, arr, p1, p2) {
-        return Array.prototype[name].call(arr, p1, p2);
-    }
-
-    function objectForEach(obj, action) {
-        obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1]));
-    }
-
-    function extend(target, source) {
-        if (source) {
-            Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
-        }
-        return target;
-    }
-
-    function setPrototypeOf(obj, proto) {
-        obj.__proto__ = proto;
-        return obj;
-    }
+	const
+		arrayCall = (name, arr, p1, p2) => Array.prototype[name].call(arr, p1, p2),
+		objectForEach = (obj, action) => obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1])),
+		extend = (target, source) => {
+			source && Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
+			return target;
+		},
+		setPrototypeOf = (obj, proto) => {
+			obj.__proto__ = proto;
+			return obj;
+		},
+		// For details on the pattern for changing node classes
+		// see: https://github.com/knockout/knockout/issues/1597
+		toggleDomNodeCssClass = (node, classNames, shouldHaveClass) => {
+			if (classNames) {
+				var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
+				classNames.split(/\s+/).forEach(className =>
+					node.classList[addOrRemoveFn](className)
+				);
+			}
+		};
 
     var canSetPrototype = ({ __proto__: [] } instanceof Array);
-
-    // For details on the pattern for changing node classes
-    // see: https://github.com/knockout/knockout/issues/1597
-    function toggleDomNodeCssClass(node, classNames, shouldHaveClass) {
-        if (classNames) {
-            var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
-            classNames.split(/\s+/).forEach(className =>
-                node.classList[addOrRemoveFn](className)
-            );
-        }
-    }
 
     return {
         arrayForEach: (array, action, actionOwner) =>
@@ -792,17 +781,6 @@ ko.subscribable = function () {
 
 var defaultEvent = "change";
 
-// Moved out of "limit" to avoid the extra closure
-function limitNotifySubscribers(value, event) {
-    if (!event || event === defaultEvent) {
-        this._limitChange(value);
-    } else if (event === 'beforeChange') {
-        this._limitBeforeChange(value);
-    } else {
-        this._origNotifySubscribers(value, event);
-    }
-}
-
 var ko_subscribable_fn = {
     init: instance => {
         instance._subscriptions = { "change": [] };
@@ -871,7 +849,16 @@ var ko_subscribable_fn = {
 
         if (!self._origNotifySubscribers) {
             self._origNotifySubscribers = self["notifySubscribers"];
-            self["notifySubscribers"] = limitNotifySubscribers;
+			// Moved out of "limit" to avoid the extra closure
+            self["notifySubscribers"] = function(value, event) {
+				if (!event || event === defaultEvent) {
+					this._limitChange(value);
+				} else if (event === 'beforeChange') {
+					this._limitBeforeChange(value);
+				} else {
+					this._origNotifySubscribers(value, event);
+				}
+			}
         }
 
         var finish = limitFunction(() => {
@@ -3659,6 +3646,78 @@ ko.bindingHandlers['html'] = {
         // setHtml will unwrap the value if needed
         ko.utils.setHtml(element, valueAccessor())
 };
+(() => {
+
+// Makes a binding like with or if
+function makeIfBinding(bindingKey, isNot) {
+    ko.bindingHandlers[bindingKey] = {
+        'init': (element, valueAccessor, allBindings, viewModel, bindingContext) => {
+            var didDisplayOnLastUpdate, savedNodes, contextOptions = {}, completeOnRender, needAsyncContext, renderOnEveryChange;
+
+            completeOnRender = allBindings.get("completeOn") == "render";
+            needAsyncContext = completeOnRender || allBindings['has'](ko.bindingEvent.descendantsComplete);
+
+            ko.computed(() => {
+                var value = ko.utils.unwrapObservable(valueAccessor()),
+                    shouldDisplay = !isNot !== !value, // equivalent to isNot ? !value : !!value,
+                    isInitial = !savedNodes,
+                    childContext;
+
+                if (!renderOnEveryChange && shouldDisplay === didDisplayOnLastUpdate) {
+                    return;
+                }
+
+                if (needAsyncContext) {
+                    bindingContext = ko.bindingEvent.startPossiblyAsyncContentBinding(element, bindingContext);
+                }
+
+                if (shouldDisplay) {
+                    if (renderOnEveryChange) {
+                        contextOptions['dataDependency'] = ko.computedContext.computed();
+                    }
+
+                    if (ko.computedContext.getDependenciesCount()) {
+                        childContext = bindingContext['extend'](null, contextOptions);
+                    } else {
+                        childContext = bindingContext;
+                    }
+                }
+
+                // Save a copy of the inner nodes on the initial update, but only if we have dependencies.
+                if (isInitial && ko.computedContext.getDependenciesCount()) {
+                    savedNodes = ko.utils.cloneNodes(ko.virtualElements.childNodes(element), true /* shouldCleanNodes */);
+                }
+
+                if (shouldDisplay) {
+                    if (!isInitial) {
+                        ko.virtualElements.setDomNodeChildren(element, ko.utils.cloneNodes(savedNodes));
+                    }
+
+                    ko.applyBindingsToDescendants(childContext, element);
+                } else {
+                    ko.virtualElements.emptyNode(element);
+
+                    if (!completeOnRender) {
+                        ko.bindingEvent.notify(element, ko.bindingEvent.childrenComplete);
+                    }
+                }
+
+                didDisplayOnLastUpdate = shouldDisplay;
+
+            }, null, { disposeWhenNodeIsRemoved: element });
+
+            return { 'controlsDescendantBindings': true };
+        }
+    };
+    ko.expressionRewriting.bindingRewriteValidators[bindingKey] = false; // Can't rewrite control flow bindings
+    ko.virtualElements.allowedBindings[bindingKey] = true;
+}
+
+// Construct the actual binding handlers
+makeIfBinding('if');
+makeIfBinding('ifnot', true);
+
+})();
 var captionPlaceholder = {};
 ko.bindingHandlers['options'] = {
     'init': element => {
