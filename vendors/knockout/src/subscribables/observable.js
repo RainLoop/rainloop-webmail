@@ -32,10 +32,6 @@ ko.observable = initialValue => {
     // Inherit from 'observable'
     ko.utils.setPrototypeOfOrExtend(observable, observableFn);
 
-    if (ko.options['deferUpdates']) {
-        ko.extenders['deferred'](observable, true);
-    }
-
     return observable;
 }
 
@@ -76,7 +72,6 @@ ko.isWriteableObservable = instance => {
 ko.exportSymbol('observable', ko.observable);
 ko.exportSymbol('isObservable', ko.isObservable);
 ko.exportSymbol('isWriteableObservable', ko.isWriteableObservable);
-ko.exportSymbol('isWritableObservable', ko.isWriteableObservable);
 ko.exportSymbol('observable.fn', observableFn);
 ko.exportProperty(observableFn, 'peek', observableFn.peek);
 ko.exportProperty(observableFn, 'valueHasMutated', observableFn.valueHasMutated);

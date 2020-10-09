@@ -76,10 +76,6 @@ ko.computed = ko.dependentObservable = function (evaluatorFunctionOrOptions, eva
         ko.utils.extend(computedObservable, deferEvaluationOverrides);
     }
 
-    if (ko.options['deferUpdates']) {
-        ko.extenders['deferred'](computedObservable, true);
-    }
-
     if (DEBUG) {
         // #1731 - Aid debugging by exposing the computed's options
         computedObservable["_options"] = options;
@@ -210,19 +206,7 @@ var computedFn = {
         }
     },
     subscribeToDependency: function (target) {
-        if (target._deferUpdates) {
-            var dirtySub = target.subscribe(this.markDirty, this, 'dirty'),
-                changeSub = target.subscribe(this.respondToChange, this);
-            return {
-                _target: target,
-                dispose: () => {
-                    dirtySub.dispose();
-                    changeSub.dispose();
-                }
-            };
-        } else {
-            return target.subscribe(this.evaluatePossiblyAsync, this);
-        }
+        return target.subscribe(this.evaluatePossiblyAsync, this);
     },
     evaluatePossiblyAsync: function () {
         var computedObservable = this,

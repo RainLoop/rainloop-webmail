@@ -58,9 +58,6 @@ ko.utils = (() => {
             }
         },
 
-        arrayFilter: (array, predicate, predicateOwner) =>
-            array ? arrayCall('filter', array, predicate, predicateOwner) : [],
-
         arrayPushAll: (array, valuesToPush) => {
             if (valuesToPush instanceof Array)
                 array.push.apply(array, valuesToPush);
@@ -191,7 +188,7 @@ ko.utils = (() => {
         },
 
         domNodeIsContainedBy: (node, containedByNode) =>
-			containedByNode.contains(node.nodeType !== 1 ? node.parentNode : node),
+            containedByNode.contains(node.nodeType !== 1 ? node.parentNode : node),
 
         domNodeIsAttachedToDocument: node => ko.utils.domNodeIsContainedBy(node, node.ownerDocument.documentElement),
 
@@ -262,7 +259,6 @@ ko.utils = (() => {
 ko.exportSymbol('utils', ko.utils);
 ko.exportSymbol('utils.arrayForEach', ko.utils.arrayForEach);
 ko.exportSymbol('utils.arrayFirst', ko.utils.arrayFirst);
-ko.exportSymbol('utils.arrayFilter', ko.utils.arrayFilter);
 ko.exportSymbol('utils.arrayIndexOf', ko.utils.arrayIndexOf);
 ko.exportSymbol('utils.arrayPushAll', ko.utils.arrayPushAll);
 ko.exportSymbol('utils.arrayRemoveItem', ko.utils.arrayRemoveItem);

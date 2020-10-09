@@ -14,7 +14,7 @@ ko.bindingHandlers['options'] = {
     },
     'update': (element, valueAccessor, allBindings) => {
         function selectedOptions() {
-            return ko.utils.arrayFilter(element.options, node => node.selected);
+            return Array.from(element.options).filter(node => node.selected);
         }
 
         var selectWasPreviouslyEmpty = element.length == 0,
@@ -22,7 +22,6 @@ ko.bindingHandlers['options'] = {
             previousScrollTop = (!selectWasPreviouslyEmpty && multiple) ? element.scrollTop : null,
             unwrappedArray = ko.utils.unwrapObservable(valueAccessor()),
             valueAllowUnset = allBindings.get('valueAllowUnset') && allBindings['has']('value'),
-            includeDestroyed = allBindings.get('optionsIncludeDestroyed'),
             arrayToDomNodeChildrenOptions = {},
             captionValue,
             filteredArray,
@@ -41,9 +40,7 @@ ko.bindingHandlers['options'] = {
                 unwrappedArray = [unwrappedArray];
 
             // Filter out any entries marked as destroyed
-            filteredArray = ko.utils.arrayFilter(unwrappedArray, item =>
-                includeDestroyed || item === undefined || item === null || !ko.utils.unwrapObservable(item['_destroy'])
-            );
+            filteredArray = unwrappedArray.filter(item => item || item == null);
 
             // If caption is included, add it to the array
             if (allBindings['has']('optionsCaption')) {

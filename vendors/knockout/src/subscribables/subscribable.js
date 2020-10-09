@@ -166,10 +166,9 @@ var ko_subscribable_fn = {
             return this._subscriptions[event] && this._subscriptions[event].length || 0;
         }
         var total = 0;
-        ko.utils.objectForEach(this._subscriptions, (eventName, subscriptions) => {
-            if (eventName !== 'dirty')
-                total += subscriptions.length;
-        });
+        ko.utils.objectForEach(this._subscriptions, (eventName, subscriptions) =>
+            total += subscriptions.length
+        );
         return total;
     },
 

@@ -254,38 +254,22 @@
         }
     };
 
-    // Returns the valueAccessor function for a binding value
-    function makeValueAccessor(value) {
-        return function() {
-            return value;
-        };
-    }
-
-    // Returns the value of a valueAccessor function
-    function evaluateValueAccessor(valueAccessor) {
-        return valueAccessor();
-    }
-
     // Given a function that returns bindings, create and return a new object that contains
     // binding value-accessors functions. Each accessor function calls the original function
     // so that it always gets the latest value and all dependencies are captured. This is used
     // by ko.applyBindingsToNode and getBindingsAndMakeAccessors.
     function makeAccessorsFromFunction(callback) {
-        return ko.utils.objectMap(ko.dependencyDetection.ignore(callback), function(value, key) {
-            return function() {
-                return callback()[key];
-            };
-        });
+        return ko.utils.objectMap(ko.dependencyDetection.ignore(callback), (value, key) =>
+            () => callback()[key]
+        );
     }
 
     // Given a bindings function or object, create and return a new object that contains
     // binding value-accessors functions. This is used by ko.applyBindingsToNode.
     function makeBindingAccessors(bindings, context, node) {
-        if (typeof bindings === 'function') {
-            return makeAccessorsFromFunction(bindings.bind(null, context, node));
-        } else {
-            return ko.utils.objectMap(bindings, makeValueAccessor);
-        }
+        return (typeof bindings === 'function')
+            ? makeAccessorsFromFunction(bindings.bind(null, context, node))
+            : ko.utils.objectMap(bindings, value => () => value);
     }
 
     // This function is used if the binding provider doesn't include a getBindingAccessors function.
@@ -359,7 +343,7 @@
                     // First add dependencies (if any) of the current binding
                     if (binding['after']) {
                         cyclicDependencyStack.push(bindingKey);
-                        ko.utils.arrayForEach(binding['after'], function(bindingDependencyKey) {
+                        ko.utils.arrayForEach(binding['after'], bindingDependencyKey => {
                             if (bindings[bindingDependencyKey]) {
                                 if (ko.utils.arrayIndexOf(cyclicDependencyStack, bindingDependencyKey) !== -1) {
                                     throw Error("Cannot combine the following bindings, because they have a cyclic dependency: " + cyclicDependencyStack.join(", "));
@@ -409,7 +393,7 @@
             // Get the binding from the provider within a computed observable so that we can update the bindings whenever
             // the binding context is updated or if the binding provider accesses observables.
             var bindingsUpdater = ko.dependentObservable(
-                function() {
+                () => {
                     bindings = sourceBindings ? sourceBindings(bindingContext, node) : getBindings.call(provider, node, bindingContext);
                     // Register a dependency on the binding context to support observable view models.
                     if (bindings) {
@@ -436,20 +420,20 @@
             // context update), just return the value accessor from the binding. Otherwise, return a function that always gets
             // the latest binding value and registers a dependency on the binding updater.
             var getValueAccessor = bindingsUpdater
-                ? bindingKey => () => evaluateValueAccessor(bindingsUpdater()[bindingKey])
+                ? bindingKey => () => bindingsUpdater()[bindingKey]()
                 : bindingKey => bindings[bindingKey];
 
             // Use of allBindings as a function is maintained for backwards compatibility, but its use is deprecated
             function allBindings() {
-                return ko.utils.objectMap(bindingsUpdater ? bindingsUpdater() : bindings, evaluateValueAccessor);
+                return ko.utils.objectMap(bindingsUpdater ? bindingsUpdater() : bindings, valueAccessor => valueAccessor());
             }
             // The following is the 3.x allBindings API
-            allBindings['get'] = key => bindings[key] && evaluateValueAccessor(getValueAccessor(key));
+            allBindings['get'] = key => bindings[key] && getValueAccessor(key)();
             allBindings['has'] = key => key in bindings;
 
             if (ko.bindingEvent.childrenComplete in bindings) {
                 ko.bindingEvent.subscribe(node, ko.bindingEvent.childrenComplete, () => {
-                    var callback = evaluateValueAccessor(bindings[ko.bindingEvent.childrenComplete]);
+                    var callback = bindings[ko.bindingEvent.childrenComplete]();
                     if (callback) {
                         var nodes = ko.virtualElements.childNodes(node);
                         if (nodes.length) {
@@ -461,8 +445,8 @@
 
             if (ko.bindingEvent.descendantsComplete in bindings) {
                 contextToExtend = ko.bindingEvent.startPossiblyAsyncContentBinding(node, bindingContext);
-                ko.bindingEvent.subscribe(node, ko.bindingEvent.descendantsComplete, function () {
-                    var callback = evaluateValueAccessor(bindings[ko.bindingEvent.descendantsComplete]);
+                ko.bindingEvent.subscribe(node, ko.bindingEvent.descendantsComplete, () => {
+                    var callback = bindings[ko.bindingEvent.descendantsComplete]();
                     if (callback && ko.virtualElements.firstChild(node)) {
                         callback(node);
                     }
@@ -473,7 +457,7 @@
             var orderedBindings = topologicalSortBindings(bindings);
 
             // Go through the sorted bindings, calling init and update for each
-            ko.utils.arrayForEach(orderedBindings, function(bindingKeyAndHandler) {
+            ko.utils.arrayForEach(orderedBindings, bindingKeyAndHandler => {
                 // Note that topologicalSortBindings has already filtered out any nonexistent binding handlers,
                 // so bindingKeyAndHandler.handler will always be nonnull.
                 var handlerInitFn = bindingKeyAndHandler.handler["init"],
@@ -559,14 +543,9 @@
     };
 
     // Retrieving binding context from arbitrary nodes
-    ko.contextFor = node => {
-        // We can only do something meaningful for elements and comment nodes (in particular, not text nodes, as IE can't store domdata for them)
-        if (node && (node.nodeType === 1 || node.nodeType === 8)) {
-            return ko.storedBindingContextForNode(node);
-        }
-    };
     ko.dataFor = node => {
-        var context = ko.contextFor(node);
+        // We can only do something meaningful for elements and comment nodes (in particular, not text nodes, as IE can't store domdata for them)
+        var context = node && [1,8].includes(node.nodeType) && ko.storedBindingContextForNode(node);
         return context ? context['$data'] : undefined;
     };
 

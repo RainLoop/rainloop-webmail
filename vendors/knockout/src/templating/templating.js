@@ -206,7 +206,7 @@
             ko.bindingEvent.notify(targetNode, ko.bindingEvent.childrenComplete);
         };
 
-        var shouldHideDestroyed = (options['includeDestroyed'] === false) || (ko.options['foreachHidesDestroyed'] && !options['includeDestroyed']);
+        var shouldHideDestroyed = (options['includeDestroyed'] === false);
 
         if (!shouldHideDestroyed && !options['beforeRemove'] && ko.isObservableArray(arrayOrObservableArray)) {
             setDomNodeChildrenFromArrayMapping(arrayOrObservableArray.peek());
@@ -225,9 +225,7 @@
 
                 if (shouldHideDestroyed) {
                     // Filter out any entries marked as destroyed
-                    unwrappedArray = ko.utils.arrayFilter(unwrappedArray, item => {
-                        return item === undefined || item === null || !ko.utils.unwrapObservable(item['_destroy']);
-                    });
+                    unwrappedArray = unwrappedArray.filter(item => item || item == null);
                 }
                 setDomNodeChildrenFromArrayMapping(unwrappedArray);
 
