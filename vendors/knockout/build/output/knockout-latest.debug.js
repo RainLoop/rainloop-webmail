@@ -4135,14 +4135,14 @@ ko.bindingHandlers['visible'] = {
         var isCurrentlyVisible = !(element.style.display == "none");
         if (value && !isCurrentlyVisible)
             element.style.display = "";
-        else if ((!value) && isCurrentlyVisible)
+        else if (isCurrentlyVisible && !value)
             element.style.display = "none";
     }
 };
 
 ko.bindingHandlers['hidden'] = {
     'update': (element, valueAccessor) =>
-        ko.bindingHandlers['visible']['update'](element, () => !ko.utils.unwrapObservable(valueAccessor()) )
+        element.hidden = !!ko.utils.unwrapObservable(valueAccessor())
 };
 // 'click' is just a shorthand for the usual full-length event:{click:handler}
 makeEventHandlerShortcut('click');

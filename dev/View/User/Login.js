@@ -35,7 +35,7 @@ class LoginUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.hideSubmitButton = Settings.app('hideSubmitButton') ? '' : null;
+		this.hideSubmitButton = Settings.app('hideSubmitButton');
 
 		this.welcome = ko.observable(!!Settings.get('UseLoginWelcomePage'));
 

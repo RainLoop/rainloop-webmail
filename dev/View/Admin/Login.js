@@ -21,7 +21,7 @@ class LoginAdminView extends AbstractViewNext {
 		this.mobile = !!appSettingsGet('mobile');
 		this.mobileDevice = !!appSettingsGet('mobileDevice');
 
-		this.hideSubmitButton = appSettingsGet('hideSubmitButton') ? '' : null;
+		this.hideSubmitButton = appSettingsGet('hideSubmitButton');
 
 		this.login = ko.observable('');
 		this.password = ko.observable('');
