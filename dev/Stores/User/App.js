@@ -3,14 +3,10 @@ import { Focused, KeyState } from 'Common/Enums';
 
 import { keyScope, leftPanelDisabled } from 'Common/Globals';
 
-import { AbstractAppStore } from 'Stores/AbstractApp';
-
 const Settings = rl.settings;
 
-class AppUserStore extends AbstractAppStore {
+class AppUserStore {
 	constructor() {
-		super();
-
 		this.currentAudio = ko.observable('');
 
 		this.focusedState = ko.observable(Focused.None);
@@ -59,8 +55,6 @@ class AppUserStore extends AbstractAppStore {
 	}
 
 	populate() {
-		super.populate();
-
 		this.projectHash(Settings.get('ProjectHash'));
 
 		this.contactsAutosave(!!Settings.get('ContactsAutosave'));

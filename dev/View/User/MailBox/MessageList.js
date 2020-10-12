@@ -62,7 +62,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		this.iGoToUpUpOrDownDownTimeout = 0;
 
 		this.mobile = !!Settings.app('mobile');
-		this.newMoveToFolder = AppStore.newMoveToFolder;
+		this.newMoveToFolder = !!Settings.get('NewMoveToFolder');
 
 		this.allowReload = !!Settings.capa(Capa.Reload);
 		this.allowSearch = !!Settings.capa(Capa.Search);
@@ -334,7 +334,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	@command(canBeMovedHelper)
 	moveNewCommand(vm, event) {
-		if (this.newMoveToFolder() && this.mobileCheckedStateShow()) {
+		if (this.newMoveToFolder && this.mobileCheckedStateShow()) {
 			if (vm && event && event.preventDefault) {
 				event.preventDefault();
 				event.stopPropagation();
@@ -802,7 +802,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		if (Settings.capa(Capa.MessageListActions)) {
 			// move
 			shortcuts.add('insert', '', KeyState.MessageList, () => {
-				if (this.newMoveToFolder()) {
+				if (this.newMoveToFolder) {
 					this.moveNewCommand();
 				} else {
 					this.moveDropdownTrigger(true);

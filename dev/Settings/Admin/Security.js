@@ -13,7 +13,7 @@ const settingsGet = rl.settings.get;
 
 class SecurityAdminSettings {
 	constructor() {
-		this.useLocalProxyForExternalImages = AppAdminStore.useLocalProxyForExternalImages;
+		this.useLocalProxyForExternalImages = ko.observable(!!rl.settings.get('UseLocalProxyForExternalImages'));
 
 		this.weakPassword = AppAdminStore.weakPassword;
 
@@ -22,7 +22,7 @@ class SecurityAdminSettings {
 		this.capaTwoFactorAuth = CapaAdminStore.twoFactorAuth;
 		this.capaTwoFactorAuthForce = CapaAdminStore.twoFactorAuthForce;
 
-		this.capaTwoFactorAuth.subscribe((value) => {
+		this.capaTwoFactorAuth.subscribe(value => {
 			if (!value) {
 				this.capaTwoFactorAuthForce(false);
 			}
@@ -31,7 +31,7 @@ class SecurityAdminSettings {
 		this.verifySslCertificate = ko.observable(!!settingsGet('VerifySslCertificate'));
 		this.allowSelfSigned = ko.observable(!!settingsGet('AllowSelfSigned'));
 
-		this.verifySslCertificate.subscribe((value) => {
+		this.verifySslCertificate.subscribe(value => {
 			if (!value) {
 				this.allowSelfSigned(true);
 			}
@@ -123,37 +123,37 @@ class SecurityAdminSettings {
 	}
 
 	onBuild() {
-		this.capaOpenPGP.subscribe((value) => {
+		this.capaOpenPGP.subscribe(value => {
 			Remote.saveAdminConfig(null, {
 				'CapaOpenPGP': value ? '1' : '0'
 			});
 		});
 
-		this.capaTwoFactorAuth.subscribe((value) => {
+		this.capaTwoFactorAuth.subscribe(value => {
 			Remote.saveAdminConfig(null, {
 				'CapaTwoFactorAuth': value ? '1' : '0'
 			});
 		});
 
-		this.capaTwoFactorAuthForce.subscribe((value) => {
+		this.capaTwoFactorAuthForce.subscribe(value => {
 			Remote.saveAdminConfig(null, {
 				'CapaTwoFactorAuthForce': value ? '1' : '0'
 			});
 		});
 
-		this.useLocalProxyForExternalImages.subscribe((value) => {
+		this.useLocalProxyForExternalImages.subscribe(value => {
 			Remote.saveAdminConfig(null, {
 				'UseLocalProxyForExternalImages': value ? '1' : '0'
 			});
 		});
 
-		this.verifySslCertificate.subscribe((value) => {
+		this.verifySslCertificate.subscribe(value => {
 			Remote.saveAdminConfig(null, {
 				'VerifySslCertificate': value ? '1' : '0'
 			});
 		});
 
-		this.allowSelfSigned.subscribe((value) => {
+		this.allowSelfSigned.subscribe(value => {
 			Remote.saveAdminConfig(null, {
 				'AllowSelfSigned': value ? '1' : '0'
 			});

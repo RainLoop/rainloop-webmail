@@ -97,7 +97,7 @@ class LoginUserView extends AbstractViewNext {
 
 		this.submitError.subscribe(value => value || this.submitErrorAddidional(''));
 
-		this.allowLanguagesOnLogin = AppStore.allowLanguagesOnLogin;
+		this.allowLanguagesOnLogin = !!Settings.get('AllowLanguagesOnLogin');
 
 		this.langRequest = ko.observable(false);
 		this.language = LanguageStore.language;

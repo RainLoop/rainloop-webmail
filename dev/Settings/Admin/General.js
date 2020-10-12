@@ -39,9 +39,9 @@ class GeneralAdminSettings {
 		this.capaAttachmentThumbnails = CapaAdminStore.attachmentThumbnails;
 		this.capaTemplates = CapaAdminStore.templates;
 
-		this.allowLanguagesOnSettings = AppAdminStore.allowLanguagesOnSettings;
+		this.allowLanguagesOnSettings = ko.observable(!!settingsGet('AllowLanguagesOnSettings'));
 		this.weakPassword = AppAdminStore.weakPassword;
-		this.newMoveToFolder = AppAdminStore.newMoveToFolder;
+		this.newMoveToFolder = ko.observable(!!settingsGet('NewMoveToFolder'));
 
 		this.dataFolderAccess = AppAdminStore.dataFolderAccess;
 
@@ -83,19 +83,19 @@ class GeneralAdminSettings {
 					setTimeout(() => this.languageAdminTrigger(SaveSettingsStep.Idle), 1000);
 				};
 
-			this.mainAttachmentLimit.subscribe((value) => {
+			this.mainAttachmentLimit.subscribe(value => {
 				Remote.saveAdminConfig(f1, {
 					'AttachmentLimit': pInt(value)
 				});
 			});
 
-			this.language.subscribe((value) => {
+			this.language.subscribe(value => {
 				Remote.saveAdminConfig(f2, {
 					'Language': value.trim()
 				});
 			});
 
-			this.languageAdmin.subscribe((value) => {
+			this.languageAdmin.subscribe(value => {
 				this.languageAdminTrigger(SaveSettingsStep.Animate);
 				translatorReload(true, value)
 					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
@@ -106,56 +106,56 @@ class GeneralAdminSettings {
 					});
 			});
 
-			this.theme.subscribe((value) => {
+			this.theme.subscribe(value => {
 				changeTheme(value, this.themeTrigger);
 				Remote.saveAdminConfig(f3, {
 					'Theme': value.trim()
 				});
 			});
 
-			this.capaAdditionalAccounts.subscribe((value) => {
+			this.capaAdditionalAccounts.subscribe(value => {
 				Remote.saveAdminConfig(null, {
 					'CapaAdditionalAccounts': value ? '1' : '0'
 				});
 			});
 
-			this.capaIdentities.subscribe((value) => {
+			this.capaIdentities.subscribe(value => {
 				Remote.saveAdminConfig(null, {
 					'CapaIdentities': value ? '1' : '0'
 				});
 			});
 
-			this.capaTemplates.subscribe((value) => {
+			this.capaTemplates.subscribe(value => {
 				Remote.saveAdminConfig(null, {
 					'CapaTemplates': value ? '1' : '0'
 				});
 			});
 
-			this.capaAttachmentThumbnails.subscribe((value) => {
+			this.capaAttachmentThumbnails.subscribe(value => {
 				Remote.saveAdminConfig(null, {
 					'CapaAttachmentThumbnails': value ? '1' : '0'
 				});
 			});
 
-			this.capaThemes.subscribe((value) => {
+			this.capaThemes.subscribe(value => {
 				Remote.saveAdminConfig(null, {
 					'CapaThemes': value ? '1' : '0'
 				});
 			});
 
-			this.capaUserBackground.subscribe((value) => {
+			this.capaUserBackground.subscribe(value => {
 				Remote.saveAdminConfig(null, {
 					'CapaUserBackground': value ? '1' : '0'
 				});
 			});
 
-			this.allowLanguagesOnSettings.subscribe((value) => {
+			this.allowLanguagesOnSettings.subscribe(value => {
 				Remote.saveAdminConfig(null, {
 					'AllowLanguagesOnSettings': value ? '1' : '0'
 				});
 			});
 
-			this.newMoveToFolder.subscribe((value) => {
+			this.newMoveToFolder.subscribe(value => {
 				Remote.saveAdminConfig(null, {
 					'NewMoveToFolder': value ? '1' : '0'
 				});

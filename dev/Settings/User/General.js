@@ -42,7 +42,7 @@ class GeneralUserSettings {
 		this.threadsAllowed = AppStore.threadsAllowed;
 		this.useThreads = SettingsStore.useThreads;
 		this.replySameFolder = SettingsStore.replySameFolder;
-		this.allowLanguagesOnSettings = AppStore.allowLanguagesOnSettings;
+		this.allowLanguagesOnSettings = !!rl.settings.get('AllowLanguagesOnSettings');
 
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
 		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });

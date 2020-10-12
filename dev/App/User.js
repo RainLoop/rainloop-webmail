@@ -895,16 +895,6 @@ class AppUser extends AbstractApp {
 		Remote.logout(() => this.logoutReload(0 < (Settings.get('ParentEmail')||{length:0}).length));
 	}
 
-	bootstartTwoFactorScreen() {
-		showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
-	}
-
-	bootstartLoginScreen() {
-		$htmlCL.remove('rl-user-auth');
-		$htmlCL.add('rl-user-no-auth');
-		startScreens([LoginUserScreen]);
-	}
-
 	bootend() {
 		if (window.progressJs) {
 			progressJs.end();
@@ -931,127 +921,129 @@ class AppUser extends AbstractApp {
 
 		rl.setWindowTitle();
 		if (Settings.get('Auth')) {
-			$htmlCL.add('rl-user-auth');
-
 			if (
 				Settings.capa(Capa.TwoFactor) &&
 				Settings.capa(Capa.TwoFactorForce) &&
 				Settings.get('RequireTwoFactor')
 			) {
 				this.bootend();
-				this.bootstartTwoFactorScreen();
+				showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
 			} else {
 				rl.setWindowTitle(i18n('TITLES/LOADING'));
 
 				// require.ensure([], function() { // require code splitting
 
-				this.foldersReload((value) => {
-					this.bootend();
+				this.foldersReload(value => {
+					try {
+						this.bootend();
 
-					if (value) {
-						if (startupUrl) {
-							rl.route.setHash(root(startupUrl), true);
-						}
+						if (value) {
+							if (startupUrl) {
+								rl.route.setHash(root(startupUrl), true);
+							}
 
-						if (window.crypto && crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
-							const openpgpCallback = () => {
-								if (!window.openpgp) {
-									return false;
-								}
-								PgpStore.openpgp = openpgp;
-
-								if (window.Worker) {
-									try {
-										PgpStore.openpgp.initWorker({ path: openPgpWorkerJs() });
-									} catch (e) {
-										console.log(e);
+							if (window.crypto && crypto.getRandomValues && Settings.capa(Capa.OpenPGP)) {
+								const openpgpCallback = () => {
+									if (!window.openpgp) {
+										return false;
 									}
+									PgpStore.openpgp = openpgp;
+
+									if (window.Worker) {
+										try {
+											PgpStore.openpgp.initWorker({ path: openPgpWorkerJs() });
+										} catch (e) {
+											console.error(e);
+										}
+									}
+
+									PgpStore.openpgpKeyring = new openpgp.Keyring();
+									PgpStore.capaOpenPGP(true);
+
+									this.reloadOpenPgpKeys();
+
+									return true;
+								};
+
+								if (!openpgpCallback()) {
+									const script = doc.createElement('script');
+									script.onload = openpgpCallback;
+									script.onerror = () => console.error(script.src);
+									script.src = openPgpJs();
+									doc.head.append(script);
 								}
+							} else {
+								PgpStore.capaOpenPGP(false);
+							}
 
-								PgpStore.openpgpKeyring = new openpgp.Keyring();
-								PgpStore.capaOpenPGP(true);
+							startScreens([
+								MailBoxUserScreen,
+								Settings.capa(Capa.Settings) ? SettingsUserScreen : null
+								// false ? AboutUserScreen : null
+							]);
 
-								this.reloadOpenPgpKeys();
+							setInterval(() => this.folderInformation(getFolderInboxName()), 120000);
+							setInterval(() => {
+								const sF = FolderStore.currentFolderFullNameRaw();
+								if (getFolderInboxName() !== sF) {
+									this.folderInformation(sF);
+								}
+							}, 180000);
 
-								return true;
-							};
+							setTimeout(() => setInterval(this.folderInformationMultiply, 120000), 300000);
+							setInterval(this.quota, 900000);
+							setInterval(this.foldersReload, 1200000);
 
-							if (!openpgpCallback()) {
-								const script = doc.createElement('script');
-								script.onload = openpgpCallback;
-								script.onerror = () => console.error(script.src);
-								script.src = openPgpJs();
-								doc.head.append(script);
+							contactsSyncInterval = 5 <= contactsSyncInterval ? contactsSyncInterval : 20;
+							contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
+
+							setTimeout(this.contactsSync, 10000);
+							setTimeout(() => this.folderInformationMultiply(true), 2000);
+
+							setInterval(this.contactsSync, contactsSyncInterval * 60000 + 5000);
+
+							this.accountsAndIdentities(true);
+
+							setTimeout(() => {
+								const sF = FolderStore.currentFolderFullNameRaw();
+								if (getFolderInboxName() !== sF) {
+									this.folderInformation(sF);
+								}
+							}, 1000);
+
+							setTimeout(this.quota, 5000);
+							setTimeout(() => Remote.appDelayStart(()=>{}), 35000);
+
+							addEventListener('rl.auto-logout', () => this.logout());
+
+							if (
+								!!Settings.get('AccountSignMe') &&
+								navigator.registerProtocolHandler &&
+								Settings.capa(Capa.Composer)
+							) {
+								setTimeout(() => {
+									try {
+										navigator.registerProtocolHandler(
+											'mailto',
+											location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
+											'' + (Settings.get('Title') || 'SnappyMail')
+										);
+									} catch (e) {} // eslint-disable-line no-empty
+
+									if (Settings.get('MailToEmail')) {
+										mailToHelper(Settings.get('MailToEmail'), require('View/Popup/Compose'));
+									}
+								}, 500);
+							}
+
+							if (!Settings.app('mobile')) {
+								setTimeout(() => this.initVerticalLayoutResizer(ClientSideKeyName.FolderListSize), 1);
 							}
 						} else {
-							PgpStore.capaOpenPGP(false);
+							this.logout();
 						}
-
-						startScreens([
-							MailBoxUserScreen,
-							Settings.capa(Capa.Settings) ? SettingsUserScreen : null
-							// false ? AboutUserScreen : null
-						]);
-
-						setInterval(() => this.folderInformation(getFolderInboxName()), 120000);
-						setInterval(() => {
-							const sF = FolderStore.currentFolderFullNameRaw();
-							if (getFolderInboxName() !== sF) {
-								this.folderInformation(sF);
-							}
-						}, 180000);
-
-						setTimeout(() => setInterval(this.folderInformationMultiply, 120000), 300000);
-						setInterval(this.quota, 900000);
-						setInterval(this.foldersReload, 1200000);
-
-						contactsSyncInterval = 5 <= contactsSyncInterval ? contactsSyncInterval : 20;
-						contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
-
-						setTimeout(this.contactsSync, 10000);
-						setTimeout(() => this.folderInformationMultiply(true), 2000);
-
-						setInterval(this.contactsSync, contactsSyncInterval * 60000 + 5000);
-
-						this.accountsAndIdentities(true);
-
-						setTimeout(() => {
-							const sF = FolderStore.currentFolderFullNameRaw();
-							if (getFolderInboxName() !== sF) {
-								this.folderInformation(sF);
-							}
-						}, 1000);
-
-						setTimeout(this.quota, 5000);
-						setTimeout(() => Remote.appDelayStart(()=>{}), 35000);
-
-						addEventListener('rl.auto-logout', () => this.logout());
-
-						if (
-							!!Settings.get('AccountSignMe') &&
-							navigator.registerProtocolHandler &&
-							Settings.capa(Capa.Composer)
-						) {
-							setTimeout(() => {
-								try {
-									navigator.registerProtocolHandler(
-										'mailto',
-										location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-										'' + (Settings.get('Title') || 'SnappyMail')
-									);
-								} catch (e) {} // eslint-disable-line no-empty
-
-								if (Settings.get('MailToEmail')) {
-									mailToHelper(Settings.get('MailToEmail'), require('View/Popup/Compose'));
-								}
-							}, 500);
-						}
-
-						if (!Settings.app('mobile')) {
-							setTimeout(() => this.initVerticalLayoutResizer(ClientSideKeyName.FolderListSize), 1);
-						}
-					} else {
-						this.logout();
+					} catch (e) {
+						console.error(e);
 					}
 				});
 
@@ -1059,7 +1051,7 @@ class AppUser extends AbstractApp {
 			}
 		} else {
 			this.bootend();
-			this.bootstartLoginScreen();
+			startScreens([LoginUserScreen]);
 		}
 
 		setInterval(() => dispatchEvent(new CustomEvent('reload-time')), 60000);

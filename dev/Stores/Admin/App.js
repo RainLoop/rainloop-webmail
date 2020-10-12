@@ -1,28 +1,14 @@
 import ko from 'ko';
-import { AbstractAppStore } from 'Stores/AbstractApp';
 
-class AppAdminStore extends AbstractAppStore {
+class AppAdminStore {
 	constructor() {
-		super();
-
-		this.determineUserLanguage = ko.observable(false);
-		this.determineUserDomain = ko.observable(false);
-
 		this.weakPassword = ko.observable(false);
-		this.useLocalProxyForExternalImages = ko.observable(false);
 
 		this.dataFolderAccess = ko.observable(false);
 	}
 
 	populate() {
-		super.populate();
-
-		const settingsGet = rl.settings.get;
-		this.determineUserLanguage(!!settingsGet('DetermineUserLanguage'));
-		this.determineUserDomain(!!settingsGet('DetermineUserDomain'));
-
-		this.weakPassword(!!settingsGet('WeakPassword'));
-		this.useLocalProxyForExternalImages(!!settingsGet('UseLocalProxyForExternalImages'));
+		this.weakPassword(!!rl.settings.get('WeakPassword'));
 /*
 		if (settingsGet('Auth')) {
 			fetch('./data/VERSION?' + Math.random()).then(() => this.dataFolderAccess(true));
