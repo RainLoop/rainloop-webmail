@@ -121,8 +121,7 @@
 										</a>
 									</li>
 								</div>
-								<div data-bind="visible: allowMessageListActions && usePreviewPane()">
-									<li class="divider" role="presentation" data-bind="visible: allowComposer && !isDraftFolder()"></li>
+								<div data-bind="visible: allowMessageListActions && usePreviewPane()" class="dividerbar">
 									<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: archiveCommand">
 											<i class="icon-archive"></i>
@@ -159,9 +158,7 @@
 										</a>
 									</li>
 								</div>
-								<div data-bind="visible: allowMessageActions">
-									<li class="divider" role="presentation"
-										data-bind="visible: (allowComposer && !isDraftFolder()) || (allowMessageListActions && usePreviewPane())"></li>
+								<div data-bind="visible: allowMessageActions" class="dividerbar">
 									<li class="e-item" role="presentation">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().printMessage(); }} ">
 											<i class="icon-print"></i>
@@ -176,8 +173,7 @@
 											<span class="i18n" data-i18n="MESSAGE/BUTTON_IN_NEW_WINDOW"></span>
 										</a>
 									</li>
-									<li class="divider" role="presentation"></li>
-									<li class="e-item" role="presentation">
+									<li class="e-item dividerbar" role="presentation">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewViewLink()">
 											<i class="icon-file-code"></i>
 											&nbsp;&nbsp;

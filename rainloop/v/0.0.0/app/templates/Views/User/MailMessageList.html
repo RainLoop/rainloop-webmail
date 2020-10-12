@@ -36,14 +36,9 @@
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="move-dropdown-id" role="menu" data-bind="foreach: folderMenuForMove">
-						<!-- ko if: seporator -->
-							<li class="divider" role="presentation" data-bind="visible: seporator"></li>
-						<!-- /ko -->
-						<!-- ko if: !seporator -->
-							<li class="e-item" role="presentation" data-bind="css: { 'disabled': disabled }, click: function (mdata, oEvent) { if (!disabled) $root.moveSelectedMessagesToFolder(id, oEvent && !!oEvent.ctrlKey); }">
-								<a class="e-link menuitem" href="#" tabindex="-1" data-bind="text: name"></a>
-							</li>
-						<!-- /ko -->
+						<li class="e-item" role="presentation" data-bind="css: { 'disabled': disabled, 'dividerbar': dividerbar }, click: function (mdata, oEvent) { if (!disabled) $root.moveSelectedMessagesToFolder(id, oEvent && !!oEvent.ctrlKey); }">
+							<a class="e-link menuitem" href="#" tabindex="-1" data-bind="text: name"></a>
+						</li>
 					</ul>
 				</div>
 				<!-- /ko -->
@@ -120,16 +115,14 @@
 								</a>
 							</li>
 						</div>
-						<li class="divider" role="presentation" data-bind="visible: allowComposer && allowMessageListActions"></li>
-						<li class="e-item" role="presentation" data-bind="visible: allowComposer, command: multyForwardCommand">
+						<li class="e-item dividerbar" role="presentation" data-bind="visible: allowComposer, command: multyForwardCommand">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-reply-all"></i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></span>
 							</a>
 						</li>
-						<li class="divider" role="presentation" data-bind="visible: allowDangerousActions"></li>
-						<li class="e-item" role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
+						<li class="e-item dividerbar" role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="icon-trash"></i>
 								&nbsp;&nbsp;

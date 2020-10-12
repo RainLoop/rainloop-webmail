@@ -369,7 +369,7 @@ export function folderListOptionsBuilder(
 			id: line[0],
 			name: line[1],
 			system: false,
-			seporator: false,
+			dividerbar: false,
 			disabled: false
 		});
 	});
@@ -377,27 +377,17 @@ export function folderListOptionsBuilder(
 	bSep = true;
 	aSystem.forEach(oItem => {
 		if (fVisibleCallback ? fVisibleCallback(oItem) : true) {
-			if (bSep && aResult.length) {
-				aResult.push({
-					id: '---',
-					name: '---',
-					system: false,
-					seporator: true,
-					disabled: true
-				});
-			}
-
-			bSep = false;
 			aResult.push({
 				id: oItem.fullNameRaw,
 				name: fRenameCallback ? fRenameCallback(oItem) : oItem.name(),
 				system: true,
-				seporator: false,
+				dividerbar: bSep,
 				disabled:
 					!oItem.selectable ||
 					aDisabled.includes(oItem.fullNameRaw) ||
 					(fDisableCallback ? fDisableCallback(oItem) : false)
 			});
+			bSep = false;
 		}
 	});
 
@@ -410,29 +400,19 @@ export function folderListOptionsBuilder(
 		) {
 			if (fVisibleCallback ? fVisibleCallback(oItem) : true) {
 				if (FolderType.User === oItem.type() || !bSystem || oItem.hasSubScribedSubfolders()) {
-					if (bSep && aResult.length) {
-						aResult.push({
-							id: '---',
-							name: '---',
-							system: false,
-							seporator: true,
-							disabled: true
-						});
-					}
-
-					bSep = false;
 					aResult.push({
 						id: oItem.fullNameRaw,
 						name:
 							new Array(oItem.deep + 1 - iUnDeep).join(sDeepPrefix) +
 							(fRenameCallback ? fRenameCallback(oItem) : oItem.name()),
 						system: false,
-						seporator: false,
+						dividerbar: bSep,
 						disabled:
 							!oItem.selectable ||
 							aDisabled.includes(oItem.fullNameRaw) ||
 							(fDisableCallback ? fDisableCallback(oItem) : false)
 					});
+					bSep = false;
 				}
 			}
 		}

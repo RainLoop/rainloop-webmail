@@ -38,8 +38,7 @@
 							<span class="i18n" data-i18n="CONTACTS/BUTTON_IMPORT"></span>
 						</a>
 					</li>
-					<li class="divider hide-mobile" role="presentation"></li>
-					<li class="e-item hide-mobile" role="presentation">
+					<li class="e-item dividerbar hide-mobile" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: exportCsv">
 							<i data-bind="css: {'icon-export': !contacts.exportingCsv(), 'icon-spinner animated': contacts.exportingCsv}"></i>
 							&nbsp;&nbsp;
@@ -53,8 +52,7 @@
 							<span class="i18n" data-i18n="CONTACTS/BUTTON_EXPORT_VCARD"></span>
 						</a>
 					</li>
-					<li class="divider" role="presentation" data-bind="visible: enableContactsSync() && allowContactsSync()"></li>
-					<li class="e-item" role="presentation" data-bind="visible: enableContactsSync() && allowContactsSync()">
+					<li class="e-item dividerbar" role="presentation" data-bind="visible: enableContactsSync() && allowContactsSync()">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: syncCommand">
 							<i data-bind="css: {'icon-sync': !contacts.syncing(), 'icon-spinner animated': contacts.syncing}"></i>
 							&nbsp;&nbsp;
@@ -138,8 +136,7 @@
 							<span class="i18n" data-i18n="CONTACTS/ADD_MENU_URL"></span>
 						</a>
 					</li>
-					<li class="divider" role="presentation"></li>
-					<li class="e-item" role="presentation">
+					<li class="e-item dividerbar" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewNickname">
 							<i class="icon-none"></i>
 							&nbsp;&nbsp;

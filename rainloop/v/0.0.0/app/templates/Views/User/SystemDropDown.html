@@ -32,8 +32,7 @@
 					<!-- /ko -->
 
 					<!-- ko if: capaAdditionalAccounts -->
-					<li class="divider" role="presentation"></li>
-					<li class="e-item" role="presentation">
+					<li class="e-item dividerbar" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addAccountClick">
 							<i class="icon-plus"></i>
 							&nbsp;&nbsp;
@@ -55,15 +54,14 @@
 							<span class="i18n" data-i18n="TOP_TOOLBAR/BUTTON_HELP"></span>
 						</a>
 					</li>
-					<li class="divider" role="presentation" data-bind="visible: allowSettings || allowHelp"></li>
-					<li class="e-item" role="presentation" data-bind="visible: mobile">
+					<li class="e-item dividerbar" role="presentation" data-bind="visible: mobile">
 						<a class="e-link menuitem" href="./?/DesktopVersion/" tabindex="-1">
 							<i class="icon-laptop"></i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></span>
 						</a>
 					</li>
-					<li class="e-item" role="presentation" data-bind="visible: !mobile">
+					<li class="e-item dividerbar" role="presentation" data-bind="visible: !mobile">
 						<a class="e-link menuitem" href="./?/MobileVersion/" tabindex="-1">
 							<i class="icon-mobile"></i>
 							&nbsp;&nbsp;
