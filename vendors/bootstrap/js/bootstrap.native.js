@@ -26,7 +26,8 @@
 				dismissHandler = e => {
 					let eventTarget = e.target,
 						inside = menu.contains(eventTarget),
-						hasData = eventTarget && (eventTarget.getAttribute('data-toggle')
+						hasData = eventTarget && (
+							(eventTarget.getAttribute && eventTarget.getAttribute('data-toggle'))
 							|| (eventTarget.parentNode && eventTarget.parentNode.getAttribute('data-toggle')));
 					if (!(hasData && inside)
 					 && !(e.type === 'focus' && (inside || eventTarget === element))
