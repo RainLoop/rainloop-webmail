@@ -518,7 +518,7 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 /**
  * @returns {function}
  */
-export function computedPagenatorHelper(koCurrentPage, koPageCount) {
+export function computedPaginatorHelper(koCurrentPage, koPageCount) {
 	return () => {
 		const currentPage = koCurrentPage(),
 			pageCount = koPageCount(),

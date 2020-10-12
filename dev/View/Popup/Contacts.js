@@ -12,7 +12,7 @@ import {
 
 import {
 	delegateRunOnDestroy,
-	computedPagenatorHelper,
+	computedPaginatorHelper,
 	pInt
 } from 'Common/Utils';
 
@@ -70,7 +70,7 @@ class ContactsPopupView extends AbstractViewNext {
 			return 0 >= iPage ? 1 : iPage;
 		});
 
-		this.contactsPagenator = ko.computed(computedPagenatorHelper(this.contactsPage, this.contactsPageCount));
+		this.contactsPaginator = ko.computed(computedPaginatorHelper(this.contactsPage, this.contactsPageCount));
 
 		this.emptySelection = ko.observable(true);
 		this.viewClearSearch = ko.observable(false);
@@ -615,7 +615,7 @@ class ContactsPopupView extends AbstractViewNext {
 		const self = this;
 
 		dom.addEventListener('click', event => {
-			let el = event.target.closestWithin('.e-pagenator .e-page', dom);
+			let el = event.target.closestWithin('.e-paginator .e-page', dom);
 			if (el && ko.dataFor(el)) {
 				self.contactsPage(pInt(ko.dataFor(el).value));
 				self.reloadContactList();

@@ -15,7 +15,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import { leftPanelDisabled, moveAction } from 'Common/Globals';
 
-import { computedPagenatorHelper } from 'Common/Utils';
+import { computedPaginatorHelper } from 'Common/Utils';
 import { File } from 'Common/File';
 
 import { mailBox, append } from 'Common/Links';
@@ -128,8 +128,8 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { 'SEARCH': value }) : '';
 		});
 
-		this.messageListPagenator = ko.computed(
-			computedPagenatorHelper(MessageStore.messageListPage, MessageStore.messageListPageCount)
+		this.messageListPaginator = ko.computed(
+			computedPaginatorHelper(MessageStore.messageListPage, MessageStore.messageListPageCount)
 		);
 
 		this.checkAll = ko.computed({
@@ -375,7 +375,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		this.iGoToUpUpOrDownDownTimeout = setTimeout(() => {
 			let prev, next, temp, current;
 
-			this.messageListPagenator().find(item => {
+			this.messageListPaginator().find(item => {
 				if (item) {
 					if (current) {
 						next = item;
@@ -702,7 +702,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 				AppStore.focusedState(Focused.MessageList);
 			}
 
-			let el = eqs(event, '.e-pagenator .e-page');
+			let el = eqs(event, '.e-paginator .e-page');
 			el && this.gotoPage(ko.dataFor(el));
 
 			eqs(event, '.messageList .checkboxCkeckAll') && this.checkAll(!this.checkAll());
