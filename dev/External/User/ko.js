@@ -177,7 +177,7 @@ ko.bindingHandlers.dropmessages = {
 
 ko.bindingHandlers.sortableItem = {
 	init: (element, fValueAccessor) => {
-		let options = ko.utils.unwrapObservable(fValueAccessor()) || {},
+		let options = ko.unwrap(fValueAccessor()) || {},
 			parent = element.parentNode,
 			fnHover = e => {
 				if ('sortable' === getDragAction(e)) {
