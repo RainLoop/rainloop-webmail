@@ -3909,12 +3909,13 @@ let addLinks = ( frag, root, self ) => {
 	let walker = doc.createTreeWalker( frag, SHOW_TEXT, node => !getClosest( node, root, 'A' ));
 	let linkRegExp = self.linkRegExp;
 	let defaultAttributes = self._config.tagAttributes.a;
-	let node, data, match, index, endIndex, child;
+	let node, data, parent, match, index, endIndex, child;
 	if ( !linkRegExp ) {
 		return;
 	}
 	while (( node = walker.nextNode() )) {
 		data = node.data;
+		parent = node.parentNode;
 		while (( match = linkRegExp.exec( data ) )) {
 			index = match.index;
 			endIndex = index + match[0].length;
