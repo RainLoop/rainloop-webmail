@@ -410,8 +410,8 @@ class SquireUI
 					input.type = 'button';
 					input.innerHTML = cfg.html;
 					input.action_cmd = cfg.cmd;
-					input.addEventListener('touchstart', () => touchTap = input);
-					input.addEventListener('touchmove', () => touchTap = null);
+					input.addEventListener('touchstart', () => touchTap = input, {passive:true});
+					input.addEventListener('touchmove', () => touchTap = null, {passive:true});
 					input.addEventListener('touchcancel', () => touchTap = null);
 					input.addEventListener('touchend', e => {
 						if (touchTap === input) {

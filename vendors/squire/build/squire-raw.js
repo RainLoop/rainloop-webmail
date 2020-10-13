@@ -2567,7 +2567,7 @@ proto.addEventListener = function ( type, fn ) {
 				if ( type === 'selectionchange' ) {
 					target = doc;
 				}
-				target.addEventListener( type, this, true );
+				target.addEventListener( type, this, {capture:true,passive:'touchstart'===type} );
 			}
 		}
 		handlers.push( fn );
