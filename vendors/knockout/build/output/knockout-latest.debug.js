@@ -3646,13 +3646,19 @@ ko.bindingHandlers['html'] = {
         // setHtml will unwrap the value if needed
         ko.utils.setHtml(element, valueAccessor())
 };
-(() => {
+(function () {
 
 // Makes a binding like with or if
-function makeIfBinding(bindingKey, isNot) {
+function makeWithIfBinding(bindingKey, isWith, isNot) {
     ko.bindingHandlers[bindingKey] = {
         'init': (element, valueAccessor, allBindings, viewModel, bindingContext) => {
             var didDisplayOnLastUpdate, savedNodes, contextOptions = {}, completeOnRender, needAsyncContext, renderOnEveryChange;
+
+            if (isWith) {
+                var as = allBindings.get('as'), noChildContext = allBindings.get('noChildContext');
+                renderOnEveryChange = !(as && noChildContext);
+                contextOptions = { 'as': as, 'noChildContext': noChildContext, 'exportDependencies': renderOnEveryChange };
+            }
 
             completeOnRender = allBindings.get("completeOn") == "render";
             needAsyncContext = completeOnRender || allBindings['has'](ko.bindingEvent.descendantsComplete);
@@ -3672,11 +3678,13 @@ function makeIfBinding(bindingKey, isNot) {
                 }
 
                 if (shouldDisplay) {
-                    if (renderOnEveryChange) {
+                    if (!isWith || renderOnEveryChange) {
                         contextOptions['dataDependency'] = ko.computedContext.computed();
                     }
 
-                    if (ko.computedContext.getDependenciesCount()) {
+                    if (isWith) {
+                        childContext = bindingContext['createChildContext'](typeof value == "function" ? value : valueAccessor, contextOptions);
+                    } else if (ko.computedContext.getDependenciesCount()) {
                         childContext = bindingContext['extend'](null, contextOptions);
                     } else {
                         childContext = bindingContext;
@@ -3714,8 +3722,9 @@ function makeIfBinding(bindingKey, isNot) {
 }
 
 // Construct the actual binding handlers
-makeIfBinding('if');
-makeIfBinding('ifnot', true);
+makeWithIfBinding('if');
+makeWithIfBinding('ifnot', false /* isWith */, true /* isNot */);
+makeWithIfBinding('with', true /* isWith */);
 
 })();
 var captionPlaceholder = {};
