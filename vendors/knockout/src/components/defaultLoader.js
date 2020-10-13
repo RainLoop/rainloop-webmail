@@ -162,12 +162,6 @@
     }
 
     ko.exportSymbol('components.register', ko.components.register);
-    ko.exportSymbol('components.isRegistered', ko.components.isRegistered);
-    ko.exportSymbol('components.unregister', ko.components.unregister);
-
-    // Expose the default loader so that developers can directly ask it for configuration
-    // or to resolve configuration
-    ko.exportSymbol('components.defaultLoader', ko.components.defaultLoader);
 
     // By default, the default loader is the only registered component loader
     ko.components['loaders'].push(ko.components.defaultLoader);

@@ -71,8 +71,5 @@ ko.isWriteableObservable = instance => {
 
 ko.exportSymbol('observable', ko.observable);
 ko.exportSymbol('isObservable', ko.isObservable);
-ko.exportSymbol('isWriteableObservable', ko.isWriteableObservable);
 ko.exportSymbol('observable.fn', observableFn);
-ko.exportProperty(observableFn, 'peek', observableFn.peek);
 ko.exportProperty(observableFn, 'valueHasMutated', observableFn.valueHasMutated);
-ko.exportProperty(observableFn, 'valueWillMutate', observableFn.valueWillMutate);

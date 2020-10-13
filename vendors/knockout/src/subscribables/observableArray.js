@@ -95,4 +95,3 @@ ko.isObservableArray = instance => {
 };
 
 ko.exportSymbol('observableArray', ko.observableArray);
-ko.exportSymbol('isObservableArray', ko.isObservableArray);

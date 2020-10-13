@@ -1,14 +1,5 @@
 var classesWrittenByBindingKey = '__ko__cssValue';
 
-ko.bindingHandlers['class'] = {
-    'update': (element, valueAccessor) => {
-        var value = ko.utils.stringTrim(ko.utils.unwrapObservable(valueAccessor()));
-        ko.utils.toggleDomNodeCssClass(element, element[classesWrittenByBindingKey], false);
-        element[classesWrittenByBindingKey] = value;
-        ko.utils.toggleDomNodeCssClass(element, value, true);
-    }
-};
-
 ko.bindingHandlers['css'] = {
     'update': (element, valueAccessor) => {
         var value = ko.utils.unwrapObservable(valueAccessor());
@@ -18,7 +9,10 @@ ko.bindingHandlers['css'] = {
                 ko.utils.toggleDomNodeCssClass(element, className, shouldHaveClass);
             });
         } else {
-            ko.bindingHandlers['class']['update'](element, valueAccessor);
+            value = ko.utils.stringTrim(value);
+            ko.utils.toggleDomNodeCssClass(element, element[classesWrittenByBindingKey], false);
+            element[classesWrittenByBindingKey] = value;
+            ko.utils.toggleDomNodeCssClass(element, value, true);
         }
     }
 };

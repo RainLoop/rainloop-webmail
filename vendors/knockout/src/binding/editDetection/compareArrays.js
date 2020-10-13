@@ -98,5 +98,3 @@ ko.utils.compareArrays = (() => {
 
     return compareArrays;
 })();
-
-ko.exportSymbol('utils.compareArrays', ko.utils.compareArrays);

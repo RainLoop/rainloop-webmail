@@ -101,16 +101,16 @@ var ko_subscribable_fn = {
 
         if (!self._origNotifySubscribers) {
             self._origNotifySubscribers = self["notifySubscribers"];
-			// Moved out of "limit" to avoid the extra closure
+            // Moved out of "limit" to avoid the extra closure
             self["notifySubscribers"] = function(value, event) {
-				if (!event || event === defaultEvent) {
-					this._limitChange(value);
-				} else if (event === 'beforeChange') {
-					this._limitBeforeChange(value);
-				} else {
-					this._origNotifySubscribers(value, event);
-				}
-			}
+                if (!event || event === defaultEvent) {
+                    this._limitChange(value);
+                } else if (event === 'beforeChange') {
+                    this._limitBeforeChange(value);
+                } else {
+                    this._origNotifySubscribers(value, event);
+                }
+            }
         }
 
         var finish = limitFunction(() => {
@@ -196,6 +196,3 @@ ko.subscribable['fn'] = ko_subscribable_fn;
 
 ko.isSubscribable = instance =>
     instance != null && typeof instance.subscribe == "function" && typeof instance["notifySubscribers"] == "function";
-
-ko.exportSymbol('subscribable', ko.subscribable);
-ko.exportSymbol('isSubscribable', ko.isSubscribable);

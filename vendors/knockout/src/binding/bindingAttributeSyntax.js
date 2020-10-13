@@ -550,12 +550,7 @@
     };
 
     ko.exportSymbol('bindingHandlers', ko.bindingHandlers);
-    ko.exportSymbol('bindingEvent', ko.bindingEvent);
-    ko.exportSymbol('bindingEvent.subscribe', ko.bindingEvent.subscribe);
-    ko.exportSymbol('bindingEvent.startPossiblyAsyncContentBinding', ko.bindingEvent.startPossiblyAsyncContentBinding);
     ko.exportSymbol('applyBindings', ko.applyBindings);
-    ko.exportSymbol('applyBindingsToDescendants', ko.applyBindingsToDescendants);
     ko.exportSymbol('applyBindingAccessorsToNode', ko.applyBindingAccessorsToNode);
-    ko.exportSymbol('applyBindingsToNode', ko.applyBindingsToNode);
     ko.exportSymbol('dataFor', ko.dataFor);
 })();

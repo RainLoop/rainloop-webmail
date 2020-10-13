@@ -61,10 +61,6 @@
                 if (node.nodeType === 1 || node.nodeType === 8)
                     ko.applyBindings(bindingContext, node);
             });
-            invokeForEachNodeInContinuousRange(firstNode, lastNode, node => {
-                if (node.nodeType === 1 || node.nodeType === 8)
-                    ko.memoization.unmemoizeDomNodeAndDescendants(node, [bindingContext]);
-            });
 
             // Make sure any changes done by applyBindings or unmemoize are reflected in the array
             ko.utils.fixUpContinuousNodeArray(continuousNodeArray, parentNode);
@@ -82,7 +78,10 @@
         var firstTargetNode = targetNodeOrNodeArray && getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
         var templateDocument = (firstTargetNode || template || {}).ownerDocument;
         var templateEngineToUse = (options['templateEngine'] || _templateEngine);
-        ko.templateRewriting.ensureTemplateIsRewritten(template, templateEngineToUse, templateDocument);
+        if (!templateEngineToUse['isTemplateRewritten'](template, templateDocument)) {
+            templateEngineToUse['rewriteTemplate'](template, htmlString => htmlString, templateDocument);
+        }
+
         var renderedNodesArray = templateEngineToUse['renderTemplate'](template, bindingContext, options, templateDocument);
 
         // Loosely check result is an array of DOM nodes
@@ -93,10 +92,6 @@
         switch (renderMode) {
             case "replaceChildren":
                 ko.virtualElements.setDomNodeChildren(targetNodeOrNodeArray, renderedNodesArray);
-                haveAddedNodesToParent = true;
-                break;
-            case "replaceNode":
-                ko.utils.replaceDomNodes(targetNodeOrNodeArray, renderedNodesArray);
                 haveAddedNodesToParent = true;
                 break;
             case "ignoreTargetNode": break;
@@ -137,7 +132,6 @@
             var firstTargetNode = getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
 
             var whenToDispose = () => (!firstTargetNode) || !ko.utils.domNodeIsAttachedToDocument(firstTargetNode); // Passive disposal (on next evaluation)
-            var activelyDisposeWhenNodeIsRemoved = (firstTargetNode && renderMode == "replaceNode") ? firstTargetNode.parentNode : firstTargetNode;
 
             return ko.computed( // So the DOM is automatically updated when any dependency changes
                 () => {
@@ -148,20 +142,12 @@
 
                     var templateName = resolveTemplateName(template, bindingContext['$data'], bindingContext),
                         renderedNodesArray = executeTemplate(targetNodeOrNodeArray, renderMode, templateName, bindingContext, options);
-
-                    if (renderMode == "replaceNode") {
-                        targetNodeOrNodeArray = renderedNodesArray;
-                        firstTargetNode = getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
-                    }
                 },
                 null,
-                { disposeWhen: whenToDispose, disposeWhenNodeIsRemoved: activelyDisposeWhenNodeIsRemoved }
+                { disposeWhen: whenToDispose, disposeWhenNodeIsRemoved: firstTargetNode }
             );
         } else {
-            // We don't yet have a DOM node to evaluate, so use a memo and render the template later when there is a DOM node
-            return ko.memoization.memoize(domNode =>
-                ko.renderTemplate(template, dataOrBindingContext, options, domNode, "replaceNode")
-            );
+            console.log('no targetNodeOrNodeArray');
         }
     };
 
@@ -343,6 +329,3 @@
 
     ko.virtualElements.allowedBindings['template'] = true;
 })();
-
-ko.exportSymbol('setTemplateEngine', ko.setTemplateEngine);
-ko.exportSymbol('renderTemplate', ko.renderTemplate);

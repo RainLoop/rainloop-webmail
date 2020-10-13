@@ -17,7 +17,17 @@
 
             // On subsequent evaluations, just replace the previously-inserted DOM nodes
             if (mappedNodes.length > 0) {
-                ko.utils.replaceDomNodes(mappedNodes, newMappedNodes);
+                var nodesToReplaceArray = mappedNodes.nodeType ? [mappedNodes] : mappedNodes;
+                if (nodesToReplaceArray.length > 0) {
+                    var insertionPoint = nodesToReplaceArray[0],
+                        parent = insertionPoint.parentNode,
+                        i, j;
+                    for (i = 0, j = newMappedNodes.length; i < j; i++)
+                        parent.insertBefore(newMappedNodes[i], insertionPoint);
+                    for (i = 0, j = nodesToReplaceArray.length; i < j; i++) {
+                        ko.removeNode(nodesToReplaceArray[i]);
+                    }
+                }
                 if (callbackAfterAddingNodes)
                     ko.dependencyDetection.ignore(callbackAfterAddingNodes, null, [valueToMap, newMappedNodes, index]);
             }
@@ -26,7 +36,7 @@
             // of which nodes would be deleted if valueToMap was itself later removed
             mappedNodes.length = 0;
             ko.utils.arrayPushAll(mappedNodes, newMappedNodes);
-        }, null, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: function() { return !ko.utils.anyDomNodeIsAttachedToDocument(mappedNodes); } });
+        }, null, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: ()=>!!ko.utils.arrayFirst(mappedNodes, ko.utils.domNodeIsAttachedToDocument) });
         return { mappedNodes : mappedNodes, dependentObservable : (dependentObservable.isActive() ? dependentObservable : undefined) };
     }
 
@@ -229,5 +239,3 @@
         callCallback(options['afterAdd'], itemsForAfterAddCallbacks);
     }
 })();
-
-ko.exportSymbol('utils.setDomNodeChildrenFromArrayMapping', ko.utils.setDomNodeChildrenFromArrayMapping);

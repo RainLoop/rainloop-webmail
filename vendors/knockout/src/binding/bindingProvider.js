@@ -69,5 +69,3 @@
         return new Function("$context", "$element", functionBody);
     }
 })();
-
-ko.exportSymbol('bindingProvider', ko.bindingProvider);

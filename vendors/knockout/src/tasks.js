@@ -68,5 +68,3 @@ ko.tasks = (() => {
 })();
 
 ko.exportSymbol('tasks', ko.tasks);
-ko.exportSymbol('tasks.schedule', ko.tasks.schedule);
-//ko.exportSymbol('tasks.cancel', ko.tasks.cancel);  "cancel" isn't minified

@@ -68,5 +68,3 @@ ko.templateEngine.prototype['rewriteTemplate'] = function (template, rewriterCal
     templateSource['text'](rewritten);
     templateSource['data']("isRewritten", true);
 };
-
-ko.exportSymbol('templateEngine', ko.templateEngine);

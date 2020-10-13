@@ -60,7 +60,3 @@
         }
     };
 })();
-
-ko.exportSymbol('selectExtensions', ko.selectExtensions);
-ko.exportSymbol('selectExtensions.readValue', ko.selectExtensions.readValue);
-ko.exportSymbol('selectExtensions.writeValue', ko.selectExtensions.writeValue);

@@ -41,6 +41,3 @@ ko.utils.domData = new (function () {
         nextKey: () => (uniqueId++) + dataStoreKeyExpandoPropertyName
     };
 })();
-
-ko.exportSymbol('utils.domData', ko.utils.domData);
-ko.exportSymbol('utils.domData.clear', ko.utils.domData.clear); // Exporting only so specs can clear up after themselves fully

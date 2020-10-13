@@ -1,26 +1,26 @@
 ko.utils = (() => {
 
-	const
-		arrayCall = (name, arr, p1, p2) => Array.prototype[name].call(arr, p1, p2),
-		objectForEach = (obj, action) => obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1])),
-		extend = (target, source) => {
-			source && Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
-			return target;
-		},
-		setPrototypeOf = (obj, proto) => {
-			obj.__proto__ = proto;
-			return obj;
-		},
-		// For details on the pattern for changing node classes
-		// see: https://github.com/knockout/knockout/issues/1597
-		toggleDomNodeCssClass = (node, classNames, shouldHaveClass) => {
-			if (classNames) {
-				var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
-				classNames.split(/\s+/).forEach(className =>
-					node.classList[addOrRemoveFn](className)
-				);
-			}
-		};
+    const
+        arrayCall = (name, arr, p1, p2) => Array.prototype[name].call(arr, p1, p2),
+        objectForEach = (obj, action) => obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1])),
+        extend = (target, source) => {
+            source && Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
+            return target;
+        },
+        setPrototypeOf = (obj, proto) => {
+            obj.__proto__ = proto;
+            return obj;
+        },
+        // For details on the pattern for changing node classes
+        // see: https://github.com/knockout/knockout/issues/1597
+        toggleDomNodeCssClass = (node, classNames, shouldHaveClass) => {
+            if (classNames) {
+                var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
+                classNames.split(/\s+/).forEach(className =>
+                    node.classList[addOrRemoveFn](className)
+                );
+            }
+        };
 
     var canSetPrototype = ({ __proto__: [] } instanceof Array);
 
@@ -31,13 +31,8 @@ ko.utils = (() => {
         arrayIndexOf: (array, item) =>
             arrayCall('indexOf', array, item),
 
-        arrayFirst: (array, predicate, predicateOwner) => {
-            for (var i = 0, j = array.length; i < j; i++) {
-                if (predicate.call(predicateOwner, array[i], i, array))
-                    return array[i];
-            }
-            return undefined;
-        },
+        arrayFirst: (array, predicate, predicateOwner) =>
+            arrayCall('find', array, (e, i, a) => predicate.call(predicateOwner, e, i, a)),
 
         arrayRemoveItem: (array, itemToRemove) => {
             var index = ko.utils.arrayIndexOf(array, itemToRemove);
@@ -106,21 +101,6 @@ ko.utils = (() => {
             childNodes && domNode.append.apply(domNode, childNodes);
         },
 
-        replaceDomNodes: (nodeToReplaceOrNodeArray, newNodesArray) => {
-            var nodesToReplaceArray = nodeToReplaceOrNodeArray.nodeType
-                ? [nodeToReplaceOrNodeArray] : nodeToReplaceOrNodeArray;
-            if (nodesToReplaceArray.length > 0) {
-                var insertionPoint = nodesToReplaceArray[0],
-                    parent = insertionPoint.parentNode,
-                    i, j;
-                for (i = 0, j = newNodesArray.length; i < j; i++)
-                    parent.insertBefore(newNodesArray[i], insertionPoint);
-                for (i = 0, j = nodesToReplaceArray.length; i < j; i++) {
-                    ko.removeNode(nodesToReplaceArray[i]);
-                }
-            }
-        },
-
         fixUpContinuousNodeArray: (continuousNodeArray, parentNode) => {
             // Before acting on a set of nodes that were previously outputted by a template function, we have to reconcile
             // them against what is in the DOM right now. It may be that some of the nodes have already been removed, or that
@@ -166,7 +146,7 @@ ko.utils = (() => {
             return continuousNodeArray;
         },
 
-        stringTrim: string => string === null || string === undefined ? '' :
+        stringTrim: string => string == null ? '' :
                 string.trim ?
                     string.trim() :
                     string.toString().replace(/^[\s\xa0]+|[\s\xa0]+$/g, ''),
@@ -182,8 +162,6 @@ ko.utils = (() => {
             containedByNode.contains(node.nodeType !== 1 ? node.parentNode : node),
 
         domNodeIsAttachedToDocument: node => ko.utils.domNodeIsContainedBy(node, node.ownerDocument.documentElement),
-
-        anyDomNodeIsAttachedToDocument: nodes => !!ko.utils.arrayFirst(nodes, ko.utils.domNodeIsAttachedToDocument),
 
         // For HTML elements, tagName will always be upper case; for XHTML elements, it'll be lower case.
         // Possible future optimization: If we know it's an element from an XHTML document (not HTML),
@@ -227,41 +205,12 @@ ko.utils = (() => {
 
         toggleDomNodeCssClass: toggleDomNodeCssClass,
 
-        setTextContent: (element, textContent) => {
-            var value = ko.utils.unwrapObservable(textContent);
-            if ((value === null) || (value === undefined))
-                value = "";
-
-            // We need there to be exactly one child: a text node.
-            // If there are no children, more than one, or if it's not a text node,
-            // we'll clear everything and create a single text node.
-            var innerTextNode = ko.virtualElements.firstChild(element);
-            if (!innerTextNode || innerTextNode.nodeType != 3 || ko.virtualElements.nextSibling(innerTextNode)) {
-                ko.virtualElements.setDomNodeChildren(element, [element.ownerDocument.createTextNode(value)]);
-            } else {
-                innerTextNode.data = value;
-            }
-        },
+        setTextContent: (element, textContent) =>
+            element.textContent = ko.utils.unwrapObservable(textContent) || "",
 
         makeArray: arrayLikeObject => Array['from'](arrayLikeObject)
     }
 })();
 
 ko.exportSymbol('utils', ko.utils);
-ko.exportSymbol('utils.arrayForEach', ko.utils.arrayForEach);
-ko.exportSymbol('utils.arrayFirst', ko.utils.arrayFirst);
-ko.exportSymbol('utils.arrayIndexOf', ko.utils.arrayIndexOf);
-ko.exportSymbol('utils.arrayPushAll', ko.utils.arrayPushAll);
-ko.exportSymbol('utils.arrayRemoveItem', ko.utils.arrayRemoveItem);
-ko.exportSymbol('utils.cloneNodes', ko.utils.cloneNodes);
-ko.exportSymbol('utils.extend', ko.utils.extend);
-ko.exportSymbol('utils.objectMap', ko.utils.objectMap);
-ko.exportSymbol('utils.peekObservable', ko.utils.peekObservable);
-ko.exportSymbol('utils.registerEventHandler', ko.utils.registerEventHandler);
-ko.exportSymbol('utils.stringifyJson', ko.utils.stringifyJson);
-ko.exportSymbol('utils.toggleDomNodeCssClass', ko.utils.toggleDomNodeCssClass);
-ko.exportSymbol('utils.triggerEvent', ko.utils.triggerEvent);
-ko.exportSymbol('utils.unwrapObservable', ko.utils.unwrapObservable);
-ko.exportSymbol('utils.objectForEach', ko.utils.objectForEach);
-ko.exportSymbol('utils.setTextContent', ko.utils.setTextContent);
 ko.exportSymbol('unwrap', ko.utils.unwrapObservable); // Convenient shorthand, because this is used so commonly

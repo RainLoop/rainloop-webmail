@@ -135,6 +135,4 @@
     ko.components['loaders'] = [];
 
     ko.exportSymbol('components', ko.components);
-    ko.exportSymbol('components.get', ko.components.get);
-    ko.exportSymbol('components.clearCachedDefinition', ko.components.clearCachedDefinition);
 })();

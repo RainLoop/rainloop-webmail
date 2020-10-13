@@ -493,19 +493,9 @@ if (ko.utils.canSetPrototype) {
 var protoProp = ko.observable.protoProperty; // == "__ko_proto__"
 computedFn[protoProp] = ko.computed;
 
-ko.isComputed = instance => (typeof instance == 'function' && instance[protoProp] === computedFn[protoProp]);
-
-ko.isPureComputed = instance => ko.isComputed(instance) && instance[computedState] && instance[computedState].pure;
-
 ko.exportSymbol('computed', ko.computed);
-ko.exportSymbol('isComputed', ko.isComputed);
-ko.exportSymbol('isPureComputed', ko.isPureComputed);
 ko.exportSymbol('computed.fn', computedFn);
-ko.exportProperty(computedFn, 'peek', computedFn.peek);
 ko.exportProperty(computedFn, 'dispose', computedFn.dispose);
-ko.exportProperty(computedFn, 'isActive', computedFn.isActive);
-ko.exportProperty(computedFn, 'getDependenciesCount', computedFn.getDependenciesCount);
-ko.exportProperty(computedFn, 'getDependencies', computedFn.getDependencies);
 
 ko.pureComputed = (evaluatorFunctionOrOptions, evaluatorFunctionTarget) => {
     if (typeof evaluatorFunctionOrOptions === 'function') {
@@ -515,4 +505,3 @@ ko.pureComputed = (evaluatorFunctionOrOptions, evaluatorFunctionTarget) => {
     evaluatorFunctionOrOptions['pure'] = true;
     return ko.computed(evaluatorFunctionOrOptions, evaluatorFunctionTarget);
 };
-ko.exportSymbol('pureComputed', ko.pureComputed);
