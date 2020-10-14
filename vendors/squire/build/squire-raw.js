@@ -494,7 +494,8 @@ const
 				parent.childNodes.length === 1 ) {
 			container = parent;
 		}
-		container.remove();
+//		container.remove(); // not a function?
+		container.parentNode && container.parentNode.removeChild( container );
 
 		offset = block.childNodes.length;
 
