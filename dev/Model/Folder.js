@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { FolderType } from 'Common/Enums';
-import { isPosNumeric } from 'Common/Utils';
+import { isPosNumeric } from 'Common/UtilsUser';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 import { getFolderInboxName } from 'Common/Cache';
 

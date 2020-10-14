@@ -2,11 +2,8 @@ import ko from 'ko';
 
 import { Layout, Focused, MessageSetAction, StorageResultType, Notification } from 'Common/Enums';
 
-import {
-	pInt,
-	pString,
-	plainToHtml
-} from 'Common/Utils';
+import { pInt, pString } from 'Common/Utils';
+import { plainToHtml } from 'Common/UtilsUser';
 
 import {
 	getFolderInboxName,

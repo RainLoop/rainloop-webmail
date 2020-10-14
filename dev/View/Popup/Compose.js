@@ -11,12 +11,8 @@ import {
 	UploadErrorCode
 } from 'Common/Enums';
 
-import {
-	encodeHtml,
-	inFocus,
-	delegateRunOnDestroy,
-	pInt
-} from 'Common/Utils';
+import { inFocus, pInt } from 'Common/Utils';
+import { encodeHtml, delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { upload } from 'Common/Links';

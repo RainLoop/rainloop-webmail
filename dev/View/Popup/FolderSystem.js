@@ -2,7 +2,8 @@ import ko from 'ko';
 
 import { SetSystemFoldersNotification } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { folderListOptionsBuilder, defautOptionsAfterRender } from 'Common/Utils';
+import { defaultOptionsAfterRender } from 'Common/Utils';
+import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import FolderStore from 'Stores/User/Folder';
@@ -84,7 +85,7 @@ class FolderSystemPopupView extends AbstractViewNext {
 		FolderStore.trashFolder.subscribe(fCallback);
 		FolderStore.archiveFolder.subscribe(fCallback);
 
-		this.defautOptionsAfterRender = defautOptionsAfterRender;
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 	}
 
 	/**

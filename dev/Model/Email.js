@@ -1,4 +1,4 @@
-import { encodeHtml } from 'Common/Utils';
+import { encodeHtml } from 'Common/UtilsUser';
 
 'use strict';
 

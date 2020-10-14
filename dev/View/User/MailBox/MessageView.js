@@ -15,11 +15,8 @@ import {
 
 import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction } from 'Common/Globals';
 
-import {
-	inFocus,
-	mailToHelper,
-	isTransparent
-} from 'Common/Utils';
+import { inFocus } from 'Common/Utils';
+import { mailToHelper, isTransparent } from 'Common/UtilsUser';
 
 import Audio from 'Common/Audio';
 

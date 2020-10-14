@@ -2,7 +2,8 @@ import ko from 'ko';
 
 import { Notification } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { defautOptionsAfterRender, folderListOptionsBuilder } from 'Common/Utils';
+import { defaultOptionsAfterRender } from 'Common/Utils';
+import { folderListOptionsBuilder } from 'Common/UtilsUser';
 
 import FolderStore from 'Stores/User/Folder';
 
@@ -40,7 +41,7 @@ class FolderCreateView extends AbstractViewNext {
 			return folderListOptionsBuilder([], list, [], top, null, fDisableCallback, null, fRenameCallback);
 		});
 
-		this.defautOptionsAfterRender = defautOptionsAfterRender;
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 	}
 
 	@command((self) => self.simpleFolderNameValidation(self.folderName()))

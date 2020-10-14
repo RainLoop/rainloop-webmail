@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { settingsSaveHelperSimpleFunction, defautOptionsAfterRender } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, defaultOptionsAfterRender } from 'Common/Utils';
 
 import { SaveSettingsStep, StorageResultType } from 'Common/Enums';
 import Remote from 'Remote/Admin/Fetch';
@@ -10,7 +10,7 @@ const settingsGet = rl.settings.get;
 
 class ContactsAdminSettings {
 	constructor() {
-		this.defautOptionsAfterRender = defautOptionsAfterRender;
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.enableContacts = ko.observable(!!settingsGet('ContactsEnable'));
 		this.contactsSync = ko.observable(!!settingsGet('ContactsSync'));
 

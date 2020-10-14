@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { FolderType } from 'Common/Enums';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { folderListOptionsBuilder } from 'Common/Utils';
+import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 
 class FolderUserStore {

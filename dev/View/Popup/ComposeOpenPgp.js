@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { pString, defautOptionsAfterRender } from 'Common/Utils';
+import { pString, defaultOptionsAfterRender } from 'Common/Utils';
 
 import { KeyState } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
@@ -93,10 +93,10 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 
 		this.sDefaultKeyScope = KeyState.PopupComposeOpenPGP;
 
-		this.defautOptionsAfterRender = defautOptionsAfterRender;
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 
 		this.addOptionClass = (domOption, item) => {
-			this.defautOptionsAfterRender(domOption, item);
+			this.defaultOptionsAfterRender(domOption, item);
 
 			if (item && undefined !== item.class && domOption) {
 				domOption.classList.add(item.class);

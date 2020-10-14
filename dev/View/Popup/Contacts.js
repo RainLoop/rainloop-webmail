@@ -10,11 +10,8 @@ import {
 	KeyState
 } from 'Common/Enums';
 
-import {
-	delegateRunOnDestroy,
-	computedPaginatorHelper,
-	pInt
-} from 'Common/Utils';
+import { pInt } from 'Common/Utils';
+import { delegateRunOnDestroy, computedPaginatorHelper } from 'Common/UtilsUser';
 
 import { Selector } from 'Common/Selector';
 import { exportContactsVcf, exportContactsCsv, uploadContacts } from 'Common/Links';

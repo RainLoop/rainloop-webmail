@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { delegateRunOnDestroy } from 'Common/Utils';
+import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 

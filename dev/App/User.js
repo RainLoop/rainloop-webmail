@@ -1,10 +1,5 @@
-import {
-	isPosNumeric,
-	pInt,
-	pString,
-	delegateRunOnDestroy,
-	mailToHelper
-} from 'Common/Utils';
+import { pInt, pString } from 'Common/Utils';
+import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
 
 import {
 	Layout,

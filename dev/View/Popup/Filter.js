@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { FiltersAction, FilterConditionField, FilterConditionType } from 'Common/Enums';
-import { defautOptionsAfterRender } from 'Common/Utils';
+import { defaultOptionsAfterRender } from 'Common/Utils';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
 import FilterStore from 'Stores/User/Filter';
@@ -27,7 +27,7 @@ class FilterPopupView extends AbstractViewNext {
 
 		this.allowMarkAsRead = ko.observable(false);
 
-		this.defautOptionsAfterRender = defautOptionsAfterRender;
+		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.folderSelectList = FolderStore.folderMenuForFilters;
 		this.selectedFolderValue = ko.observable('');
 

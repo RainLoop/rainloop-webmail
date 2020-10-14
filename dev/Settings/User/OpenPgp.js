@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { delegateRunOnDestroy } from 'Common/Utils';
+import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import PgpStore from 'Stores/User/Pgp';
 import SettingsStore from 'Stores/User/Settings';

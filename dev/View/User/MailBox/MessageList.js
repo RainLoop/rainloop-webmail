@@ -15,7 +15,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import { leftPanelDisabled, moveAction } from 'Common/Globals';
 
-import { computedPaginatorHelper } from 'Common/Utils';
+import { computedPaginatorHelper } from 'Common/UtilsUser';
 import { File } from 'Common/File';
 
 import { mailBox, append } from 'Common/Links';

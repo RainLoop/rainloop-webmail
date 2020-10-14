@@ -1,7 +1,8 @@
 import ko from 'ko';
 
 import { FilterRulesType, FiltersAction } from 'Common/Enums';
-import { pString, delegateRunOnDestroy } from 'Common/Utils';
+import { pString } from 'Common/Utils';
+import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { i18n } from 'Common/Translator';
 import { getFolderFromCacheList } from 'Common/Cache';
 
@@ -114,17 +115,9 @@ class FilterModel extends AbstractModel {
 			return result;
 		});
 
-		this.regDisposables(
-			this.name.subscribe((sValue) => {
-				this.name.error(!sValue);
-			})
-		);
+		this.regDisposables(this.name.subscribe(sValue => this.name.error(!sValue)));
 
-		this.regDisposables(
-			this.actionValue.subscribe((sValue) => {
-				this.actionValue.error(!sValue);
-			})
-		);
+		this.regDisposables(this.actionValue.subscribe(sValue => this.actionValue.error(!sValue)));
 
 		this.regDisposables([this.actionNoStop, this.actionTemplate]);
 

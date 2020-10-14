@@ -3,10 +3,8 @@ import ko from 'ko';
 import { MessagePriority, SignedVerifyStatus } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
-import {
-	pInt,
-	encodeHtml
-} from 'Common/Utils';
+import { pInt } from 'Common/Utils';
+import { encodeHtml } from 'Common/UtilsUser';
 
 import { messageViewLink, messageDownloadLink } from 'Common/Links';
 
