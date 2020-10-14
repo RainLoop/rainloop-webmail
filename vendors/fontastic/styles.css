@@ -2,9 +2,7 @@
 
 @font-face {
   font-family: "snappymail";
-  src: url("fonts/snappymail.woff") format("woff"),
-    url("fonts/snappymail.ttf") format("truetype"),
-    url("fonts/snappymail.svg#snappymail") format("svg");
+  src: url("fonts/snappymail.woff2") format("woff2"), url("fonts/snappymail.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 
