@@ -12,13 +12,14 @@ export function format(timeStampInUTC, formatStr) {
 			case 'SHORT': {
 				if (4 >= (now - time) / 3600000)
 					return m.fromNow();
-				const ymd = m.format('Ymd'), date = new Date;
-				if (date.format('Ymd') === ymd)
+				const mt = m.getTime(), date = new Date,
+					dt = date.setHours(0,0,0,0);
+				if (mt > dt)
 					return i18n('MESSAGE_LIST/TODAY_AT', {TIME: m.format('LT')});
-				if (new Date(now - 86400000).format('Ymd') === ymd)
+				if (mt > dt - 86400000)
 					return i18n('MESSAGE_LIST/YESTERDAY_AT', {TIME: m.format('LT')});
 				if (date.getFullYear() === m.getFullYear())
-					return m.format('d M.');
+					return m.format('d M');
 				return m.format('LL');
 			}
 			case 'FULL':

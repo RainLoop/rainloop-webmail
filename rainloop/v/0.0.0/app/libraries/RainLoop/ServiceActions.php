@@ -470,8 +470,8 @@ class ServiceActions
 
 		if (!empty($this->aPaths[3]))
 		{
-			$bAdmim =  'Admin' === (isset($this->aPaths[2]) ? (string) $this->aPaths[2] : 'App');
-			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[3], '', $bAdmim);
+			$bAdmin = 'Admin' === (isset($this->aPaths[2]) ? (string) $this->aPaths[2] : 'App');
+			$sLanguage = $this->oActions->ValidateLanguage($this->aPaths[3], '', $bAdmin);
 
 			$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
 			if (!empty($sLanguage) && $bCacheEnabled)
@@ -483,14 +483,14 @@ class ServiceActions
 			if ($bCacheEnabled)
 			{
 				$sCacheFileName = KeyPathHelper::LangCache(
-					$sLanguage, $bAdmim, $this->oActions->Plugins()->Hash());
+					$sLanguage, $bAdmin, $this->oActions->Plugins()->Hash());
 
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
 			if (0 === \strlen($sResult))
 			{
-				$sResult = $this->compileLanguage($sLanguage, $bAdmim, false);
+				$sResult = $this->compileLanguage($sLanguage, $bAdmin);
 				if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
 				{
 					$this->Cacher()->Set($sCacheFileName, $sResult);
@@ -1041,27 +1041,9 @@ class ServiceActions
 		return $bJsOutput ? 'rl.TEMPLATES='.\MailSo\Base\Utils::Php2js($sHtml, $this->Logger()).';' : $sHtml;
 	}
 
-	private function convertLanguageNameToMomentLanguageName(string $sLanguage) : string
-	{
-		$aHelper = array('en_gb' => 'en-gb', 'fr_ca' => 'fr-ca', 'pt_br' => 'pt-br',
-			'uk_ua' => 'ua', 'zh_cn' => 'zh-cn', 'zh_tw' => 'zh-tw', 'fa_ir' => 'fa');
-
-		return isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : \substr($sLanguage, 0, 2);
-	}
-
-	private function compileLanguage(string $sLanguage, bool $bAdmin = false, bool $bWrapByScriptTag = true) : string
+	private function compileLanguage(string $sLanguage, bool $bAdmin = false) : string
 	{
 		$aResultLang = array();
-
-		$sMoment = 'window.moment && window.moment.locale && window.moment.locale(\'en\');';
-		$sMomentFileName = APP_VERSION_ROOT_PATH.'app/localization/moment/'.
-			$this->convertLanguageNameToMomentLanguageName($sLanguage).'.js';
-
-		if (\is_file($sMomentFileName))
-		{
-			$sMoment = \file_get_contents($sMomentFileName);
-			$sMoment = \preg_replace('/\/\/[^\n]+\n/', '', $sMoment);
-		}
 
 		Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/langs.yml', $aResultLang);
 		Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
@@ -1071,7 +1053,7 @@ class ServiceActions
 
 		$this->Plugins()->ReadLang($sLanguage, $aResultLang);
 
-		$sLangJs = '';
+		$sResult = '';
 		$aLangKeys = \array_keys($aResultLang);
 		foreach ($aLangKeys as $sKey)
 		{
@@ -1081,17 +1063,25 @@ class ServiceActions
 				$sString = \implode("\n", $sString);
 			}
 
-			$sLangJs .= '"'.\str_replace('"', '\\"', \str_replace('\\', '\\\\', $sKey)).'":'
+			$sResult .= '"'.\str_replace('"', '\\"', \str_replace('\\', '\\\\', $sKey)).'":'
 				.'"'.\str_replace(array("\r", "\n", "\t"), array('\r', '\n', '\t'),
 					\str_replace('"', '\\"', \str_replace('\\', '\\\\', $sString))).'",';
 		}
+		$sResult = $sResult ? '{'.\substr($sResult, 0, -1).'}' : 'null';
 
-		$sResult = empty($sLangJs) ? 'null' : '{'.\substr($sLangJs, 0, -1).'}';
+		$sLanguage = strtr($sLanguage, '_', '-');
 
-		return
-			($bWrapByScriptTag ? '<script data-cfasync="false">' : '').
-			'window.rainloopI18N='.$sResult.';'.$sMoment.
-			($bWrapByScriptTag ? '</script>' : '')
-		;
+		$sMoment = 'window.moment && window.moment.locale && window.moment.locale(\'en\');';
+		$options = [$sLanguage, \substr($sLanguage, 0, 2)];
+		foreach ($options as $lang) {
+			$sMomentFileName = APP_VERSION_ROOT_PATH.'app/localization/moment/'.$lang.'.js';
+			if (\is_file($sMomentFileName)) {
+				$sMoment = \file_get_contents($sMomentFileName);
+				$sMoment = \preg_replace('/\/\/[^\n]+\n/', '', $sMoment);
+				break;
+			}
+		}
+
+		return 'document.documentElement.lang = "'.$sLanguage.'";window.rainloopI18N='.$sResult.';'.$sMoment;
 	}
 }

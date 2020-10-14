@@ -8,28 +8,62 @@
 
 	// Import momentjs locales function
 	w.moment = {
-		defineLocale: (name, config)=>{
-			locale = config;
-			const m = config.monthsShort;
-			if (Array.isArray(m)) {
-				Date.shortMonths = m;
-			} else for (let i = 0; i < 12; ++i) {
-				Date.shortMonths[i] = config.monthsShort({month:()=>i}, '-MMM-');
-			}
-			Date.longMonths = config.months,
-			Date.longDays = config.weekdays;
-			Date.shortDays = config.weekdaysMin;
-		}
+		defineLocale: (name, config) => locale = config
 	};
 
-	let locale = {
-		longDateFormat: {
-			LT   : 'h:mm A', // 'g:i A',
-			L    : 'MM/DD/YYYY', // 'Y-m-d',
-			LL   : 'MMMM D, YYYY', // 'F j, Y'
-			LLL  : 'MMMM D, YYYY h:mm A', // 'F j, Y g:i A'
-			LLLL : 'dddd, MMMM D, YYYY h:mm A' // 'l, F j, Y g:i A'
-		},
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
+	let formats = {
+		LT   : {hour: 'numeric', minute: 'numeric'},
+		L    : {},
+		LL   : {year: 'numeric', month: 'short', day: 'numeric'},
+		LLL  : {year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'},
+		LLLL : {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'},
+		'd M': {day: '2-digit', month: 'short'}
+	},
+	phpFormats = {
+		// Day
+		d: {day: '2-digit'},
+		D: {weekday: 'short'},
+		j: {day: 'numeric'},
+		l: {weekday: 'long'},
+//		N: {},
+//		w: {},
+//		z: {},
+		// Week
+//		W: {},
+		// Month
+		F: {month: 'long'},
+		m: {month: '2-digit'},
+		M: {month: 'short'},
+		n: {month: 'numeric'},
+//		t: {},
+		// Year
+//		L: {},
+//		o: {},
+		Y: {year: 'numeric'},
+		y: {year: '2-digit'},
+		// Time
+		a: {hour12: true},
+		A: {hour12: true},
+		g: {hour: 'numeric', hourCycle: 'h12'},
+		G: {hour: 'numeric'},
+		h: {hour: '2-digit', hourCycle: 'h12'},
+		H: {hour: '2-digit'},
+		i: {minute: '2-digit'},
+		s: {second: '2-digit'},
+		u: {fractionalSecondDigits: 3},
+		// Timezone
+//		O: return UTC ? 'Z' : (d.Z > 0 ? '+' : '-') + pad2(Math.abs(d.Z / 60)) + '00';
+//		P: return UTC ? 'Z' : (d.Z > 0 ? '+' : '-') + pad2(Math.abs(d.Z / 60)) + :' + pad2(Math.abs(d.Z % 60));
+//		T: return UTC ? 'UTC' : new Date(d.Y, 0, 1).toTimeString().replace(/^.+ \(?([^)]+)\)?$/, '$1');
+		Z: {timeZone: 'UTC'}
+		// Full Date/Time
+//		c: {},
+//		r: {},
+//		U: {},
+//		options.timeZoneName = 'short';
+	},
+	locale = {
 		relativeTime : {
 			future : 'in %s',
 			past : '%s ago',
@@ -47,117 +81,29 @@
 			yy : '%d years'
 		}
 	},
-	pad2 = v => 10 > v ? '0' + v : v,
-	getISODay = x => x.getDay() || 7,
-	getDayOfYear = x => Math.floor((Date.UTC(x.getFullYear(),x.getMonth(),x.getDate())
-		- Date.UTC(x.getFullYear(),0,1)) / 86400000),
-	getWeek = x => {
-		let d = new Date(x.getFullYear(),0,1),
-			wd = getISODay(d),
-			w = Math.ceil((getDayOfYear(x)+wd) / 7);
-		/* ISO 8601 states that week 1 is the week with january 4th in it */
-		if (4 < wd) --w;
-		return (1 > w
-			? getWeek(new Date(x.getFullYear()-1,11,31)) /* previous year, last week */
-			: (52 < w && 4 > getISODay(x) ? 1 /* next year, first week */ : w) );
-	};
-
-	// Defining locale
-	Date.shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-	Date.longMonths = ['January', 'February', 'March', 'April', 'May', 'June',
-		'July', 'August', 'September', 'October', 'November', 'December'];
-	Date.shortDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-	Date.longDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	pad2 = v => 10 > v ? '0' + v : v;
 
 	// Simulate PHP's date function
 	Date.prototype.format = function (str, UTC) {
-		if (locale.longDateFormat[str]) {
-			str = locale.longDateFormat[str]
-				.replace('YYYY', 'Y')
-				.replace(/(^|[^M])M([^M]|$)/, '$1n$2')
-				.replace('MMMM', 'F')
-				.replace('MMM', 'M')
-				.replace('MM', 'm')
-				.replace(/(^|[^D])D([^D]|$)/, '$1j$2')
-				.replace('DD', 'd')
-				.replace('dddd', 'l')
-				.replace('ddd', 'D')
-				.replace('dd', 'D')
-				.replace(/(^|[^H])H([^H]|$)/, '$1G$2')
-				.replace('HH', 'H')
-				.replace('h', 'g')
-				.replace('hh', 'h')
-				.replace('mm', 'i');
+		if ('Y-m-d\\TH:i:s' == str) {
+			return this.getFullYear() + '-' + pad2(1 + this.getMonth()) + '-' + pad2(this.getDate())
+				+ 'T' + pad2(this.getHours()) + ':' + pad2(this.getMinutes()) + ':' + pad2(this.getSeconds());
 		}
-		UTC = UTC || str.match(/\\Z$/);
-		let x = this,
-			d = UTC ? {
-				D: x.getUTCDay(),
-				Y: x.getUTCFullYear(),
-				m: x.getUTCMonth(),
-				d: x.getUTCDate(),
-				H: x.getUTCHours(),
-				Z: 0
-			} : {
-				D: x.getDay(),
-				Y: x.getFullYear(),
-				m: x.getMonth(),
-				d: x.getDate(),
-				H: x.getHours(),
-				Z: -x.getTimezoneOffset()
-			};
-		return str
-			? str.replace(/\\?[a-zA-Z]/g, m => {
-				if (m[0] === '\\') { return m[1]; }
-				switch (m) {
-				// Day
-				case 'd': return pad2(d.d);
-				case 'D': return Date.shortDays[d.D];
-				case 'j': return d.d;
-				case 'l': return Date.longDays[d.D];
-				case 'N': return getISODay(x);
-				case 'w': return d.D;
-				case 'z': return getDayOfYear(x);
-				// Week
-				case 'W': return pad2(getWeek(x));
-				// Month
-				case 'F': return Date.longMonths[d.m];
-				case 'm': return pad2(d.m + 1);
-				case 'M': return Date.shortMonths[d.m];
-				case 'n': return d.m + 1;
-				case 't': return 32 - new Date(x.getFullYear(), x.getMonth(), 32).getDate();
-				// Year
-				case 'L': return (((d.Y%4===0)&&(d.Y%100 !== 0)) || (d.Y%400===0)) ? '1' : '0';
-				case 'o': return new Date(
-						x.getFullYear(),
-						x.getMonth(),
-						x.getDate() - ((x.getDay() + 6) % 7) + 3
-					).getFullYear();
-				case 'Y': return d.Y;
-				case 'y': return ('' + d.Y).substr(2);
-				// Time
-				case 'a': return d.H < 12 ? "am" : "pm";
-				case 'A': return d.H < 12 ? "AM" : "PM";
-				case 'g': return d.H % 12 || 12;
-				case 'G': return d.H;
-				case 'h': return pad2(d.H % 12 || 12);
-				case 'H': return pad2(d.H);
-				case 'i': return pad2(UTC?x.getUTCMinutes():x.getMinutes());
-				case 's': return pad2(UTC?x.getUTCSeconds():x.getSeconds());
-				case 'u': return (UTC?x.getUTCMilliseconds():x.getMilliseconds()).toString().padStart(3,'0');
-				// Timezone
-				case 'O': return UTC ? 'Z' : (d.Z > 0 ? '+' : '-') + pad2(Math.abs(d.Z / 60)) + '00';
-				case 'P': return UTC ? 'Z' : (d.Z > 0 ? '+' : '-') + pad2(Math.abs(d.Z / 60)) + ':' + pad2(Math.abs(d.Z % 60));
-				case 'T': return UTC ? 'UTC' : new Date(d.Y, 0, 1).toTimeString().replace(/^.+ \(?([^)]+)\)?$/, '$1');
-				case 'Z': return d.Z * 60;
-				// Full Date/Time
-				case 'c': return x.format("Y-m-d\\TH:i:sO");
-				case 'r': return x.format("D, d M Y H:i:s O");
-				case 'U': return x.getTime() / 1000;
-				}
-				return m;
-			})
-			: x.toString();
+		let options = {};
+		if (formats[str]) {
+			options = formats[str];
+		} else {
+			console.log('Date.format('+str+', '+(UTC?'true':'false')+')');
+			if (UTC) {
+				str += 'Z';
+			}
+			let i = str.length;
+			while (i--) {
+				phpFormats[str[i]] && Object.entries(phpFormats[str[i]]).forEach(([k,v])=>options[k]=v);
+			}
+			formats[str] = options;
+		}
+		return new Intl.DateTimeFormat(document.documentElement.lang, options).format(this);
 	};
 
 	// Simulate momentjs fromNow function

@@ -132,26 +132,11 @@ export function i18nToNodes(element) {
 	, 1);
 }
 
-const reloadData = () => {
-	if (window.rainloopI18N) {
-		I18N_DATA = window.rainloopI18N || {};
-
-		i18nToNodes(doc);
-
-		dispatchEvent(new CustomEvent('reload-time'));
-		trigger(!trigger());
-	}
-
-	window.rainloopI18N = null;
-};
-
 /**
  * @returns {void}
  */
 export function initNotificationLanguage() {
-	I18N_NOTIFICATION_MAP.forEach((item) => {
-		I18N_NOTIFICATION_DATA[item[0]] = i18n(item[1]);
-	});
+	I18N_NOTIFICATION_MAP.forEach(item => I18N_NOTIFICATION_DATA[item[0]] = i18n(item[1]));
 }
 
 /**
@@ -159,22 +144,9 @@ export function initNotificationLanguage() {
  * @param {Function=} langCallback = null
  */
 export function initOnStartOrLangChange(startCallback, langCallback = null) {
-	if (startCallback) {
-		startCallback();
-	}
-
-	if (langCallback) {
-		trigger.subscribe(() => {
-			if (startCallback) {
-				startCallback();
-			}
-			if (langCallback) {
-				langCallback();
-			}
-		});
-	} else if (startCallback) {
-		trigger.subscribe(startCallback);
-	}
+	startCallback && startCallback();
+	startCallback && trigger.subscribe(startCallback);
+	langCallback && trigger.subscribe(langCallback);
 }
 
 /**
@@ -251,11 +223,8 @@ export function reload(admin, language) {
 	return new Promise((resolve, reject) => {
 		return fetch(langLink(language, admin), {cache: 'reload'})
 			.then(response => {
-					if (response.ok) {
-						const type = response.headers.get('Content-Type');
-						if (type.includes('application/javascript')) {
-							return response.text();
-						}
+					if (response.ok && response.headers.get('Content-Type').includes('application/javascript')) {
+						return response.text();
 					}
 					reject(new Error('Invalid response'))
 				}, error => {
@@ -267,15 +236,14 @@ export function reload(admin, language) {
 				doc.head.appendChild(script).remove();
 				setTimeout(
 					() => {
-						reloadData();
-
-						const isRtl = ['ar', 'ar_sa', 'he', 'he_he', 'ur', 'ur_ir'].includes((language || '').toLowerCase()),
-							htmlCL = doc.documentElement.classList;
-
-						htmlCL.remove('rl-rtl', 'rl-ltr');
-						htmlCL.add(isRtl ? 'rl-rtl' : 'rl-ltr');
-						// doc.documentElement.dir = isRtl ? 'rtl' : 'ltr'
-
+						// reload the data
+						if (window.rainloopI18N) {
+							I18N_DATA = window.rainloopI18N || {};
+							i18nToNodes(doc);
+							dispatchEvent(new CustomEvent('reload-time'));
+							trigger(!trigger());
+						}
+						window.rainloopI18N = null;
 						resolve();
 					},
 					500 < Date.now() - start ? 1 : 500

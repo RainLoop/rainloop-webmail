@@ -31,12 +31,8 @@ class SettingsUserScreen extends AbstractSettingsScreen {
 		super([SystemDropDownSettingsUserView, MenuSettingsUserView, PaneSettingsUserView]);
 
 		initOnStartOrLangChange(
-			() => {
-				this.sSettingsTitle = i18n('TITLES/SETTINGS');
-			},
-			() => {
-				this.setSettingsTitle();
-			}
+			() => this.sSettingsTitle = i18n('TITLES/SETTINGS'),
+			() => this.setSettingsTitle()
 		);
 	}
 
