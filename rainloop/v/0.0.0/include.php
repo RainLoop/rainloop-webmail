@@ -23,7 +23,7 @@
 			define('APP_USE_APC_CACHE', true);
 
 			// "img-src https:" is allowed due to remote images in e-mails
-			define('APP_DEFAULT_CSP', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'");
+			define('APP_DEFAULT_CSP', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https: http:; style-src 'self' 'unsafe-inline'");
 
 			date_default_timezone_set('UTC');
 
