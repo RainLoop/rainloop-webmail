@@ -13,33 +13,21 @@ import { initOnStartOrLangChange, initNotificationLanguage } from 'Common/Transl
 import LanguageStore from 'Stores/Language';
 import ThemeStore from 'Stores/Theme';
 
-const Settings = rl.settings;
+const Settings = rl.settings, doc = document;
 
 class AbstractApp {
 	/**
 	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 */
 	constructor() {
-		this.isLocalAutocomplete = true;
-		this.lastErrorTime = 0;
+		const refresh = (()=>dispatchEvent(new CustomEvent('rl.auto-logout-refresh'))).debounce(5000),
+			fn = (ev=>{
+				$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey);
+				refresh();
+			}).debounce(500);
 
-		const $doc = document;
-		$doc.addEventListener('keydown', event =>
-			event.ctrlKey && $htmlCL.add('rl-ctrl-key-pressed')
-//			$htmlCL.toggle('rl-ctrl-key-pressed', event.ctrlKey)
-//			'Control' === event.key && $htmlCL.add('rl-ctrl-key-pressed')
-		);
-		$doc.addEventListener('keyup', event =>
-//			!event.ctrlKey && $htmlCL.remove('rl-ctrl-key-pressed')
-			$htmlCL.toggle('rl-ctrl-key-pressed', event.ctrlKey)
-//			'Control' === event.key && $htmlCL.remove('rl-ctrl-key-pressed')
-		);
-
-		const fn = (()=>dispatchEvent(new CustomEvent('rl.auto-logout-refresh'))).debounce(5000);
-
-		$doc.addEventListener('mousemove', fn);
-		$doc.addEventListener('keypress', fn);
-		$doc.addEventListener('click', fn);
+//		doc.addEventListener('touchstart', fn, {passive:true});
+		['mousedown','keydown','keyup'/*,'mousemove'*/].forEach(t => doc.addEventListener(t, fn));
 
 		shortcuts.add('escape,enter', '', KeyState.All, () => rl.Dropdowns.detectVisibility());
 	}
@@ -61,9 +49,9 @@ class AbstractApp {
 			open(link, '_self');
 			focus();
 		} else {
-			const oLink = document.createElement('a');
+			const oLink = doc.createElement('a');
 			oLink.href = link;
-			document.body.appendChild(oLink).click();
+			doc.body.appendChild(oLink).click();
 			oLink.remove();
 		}
 		return true;
@@ -136,7 +124,7 @@ class AbstractApp {
 	 * @returns {void}
 	 */
 	hideLoading() {
-		const id = id => document.getElementById(id);
+		const id = id => doc.getElementById(id);
 		id('rl-content').hidden = false;
 		id('rl-loading').remove();
 	}
