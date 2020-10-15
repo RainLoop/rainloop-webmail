@@ -2,7 +2,7 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { pInt } from 'Common/Utils';
-import { ClientSideKeyName, ServerFolderType } from 'Common/Enums';
+import { ClientSideKeyName, FolderType, ServerFolderType } from 'Common/Enums';
 import * as Cache from 'Common/Cache';
 
 import * as Local from 'Storage/Client';
@@ -55,8 +55,11 @@ export class FolderCollectionModel extends AbstractCollectionModel
 					if (!oCacheFolder) {
 						oCacheFolder = FolderModel.newInstanceFromJson(oFolder);
 						if (oCacheFolder) {
-							Cache.setFolderToCacheList(oFolder.FullNameRaw, oCacheFolder);
-							Cache.setFolderFullNameRaw(oCacheFolder.fullNameHash, oFolder.FullNameRaw, oCacheFolder);
+							if (oFolder.FullNameRaw == result.SystemFolders[ServerFolderType.INBOX]) {
+								oCacheFolder.type(FolderType.Inbox);
+								Cache.setFolderInboxName(oFolder.FullNameRaw);
+							}
+							Cache.setFolder(oCacheFolder.fullNameHash, oFolder.FullNameRaw, oCacheFolder);
 						}
 					}
 

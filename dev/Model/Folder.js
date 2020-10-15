@@ -3,7 +3,6 @@ import ko from 'ko';
 import { FolderType } from 'Common/Enums';
 import { isPosNumeric } from 'Common/UtilsUser';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
-import { getFolderInboxName } from 'Common/Cache';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -56,8 +55,6 @@ class FolderModel extends AbstractModel {
 	 * @returns {FolderModel}
 	 */
 	initComputed() {
-		const inboxFolderName = getFolderInboxName();
-
 		this.isInbox = ko.computed(() => FolderType.Inbox === this.type());
 
 		this.hasSubScribedSubfolders = ko.computed(
@@ -136,11 +133,11 @@ class FolderModel extends AbstractModel {
 
 		this.canBeDeleted = ko.computed(() => {
 			const bSystem = this.isSystemFolder();
-			return !bSystem && !this.subFolders().length && inboxFolderName !== this.fullNameRaw;
+			return !bSystem && !this.subFolders().length;
 		});
 
 		this.canBeSubScribed = ko.computed(
-			() => !this.isSystemFolder() && this.selectable && inboxFolderName !== this.fullNameRaw
+			() => !this.isSystemFolder() && this.selectable
 		);
 
 		this.canBeChecked = this.canBeSubScribed;
@@ -263,7 +260,6 @@ class FolderModel extends AbstractModel {
 	 */
 	initByJson(json) {
 		let bResult = false;
-		const sInboxFolderName = getFolderInboxName();
 
 		if (json && 'Object/Folder' === json['@Object']) {
 			this.name(json.Name);
@@ -277,8 +273,6 @@ class FolderModel extends AbstractModel {
 
 			this.subScribed(!!json.IsSubscribed);
 			this.checkable(!!json.Checkable);
-
-			this.type(sInboxFolderName === this.fullNameRaw ? FolderType.Inbox : FolderType.User);
 
 			bResult = true;
 		}

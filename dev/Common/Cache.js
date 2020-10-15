@@ -7,7 +7,7 @@ let FOLDERS_CACHE = {},
 	FOLDERS_UID_NEXT_CACHE = {},
 	MESSAGE_FLAGS_CACHE = {},
 	NEW_MESSAGE_CACHE = {},
-	inboxFolderName = '';
+	inboxFolderName = 'INBOX';
 
 const REQUESTED_MESSAGE_CACHE = {};
 
@@ -79,7 +79,14 @@ export function clearNewMessageCache() {
  * @returns {string}
  */
 export function getFolderInboxName() {
-	return inboxFolderName || 'INBOX';
+	return inboxFolderName;
+}
+
+/**
+ * @returns {string}
+ */
+export function setFolderInboxName(name) {
+	inboxFolderName = name;
 }
 
 /**
@@ -93,12 +100,11 @@ export function getFolderFullNameRaw(folderHash) {
 /**
  * @param {string} folderHash
  * @param {string} folderFullNameRaw
+ * @param {?FolderModel} folder
  */
-export function setFolderFullNameRaw(folderHash, folderFullNameRaw) {
+export function setFolder(folderHash, folderFullNameRaw, folder) {
+	FOLDERS_CACHE[folderFullNameRaw] = folder;
 	FOLDERS_NAME_CACHE[folderHash] = folderFullNameRaw;
-	if (!inboxFolderName || 'INBOX' === folderFullNameRaw) {
-		inboxFolderName = folderFullNameRaw;
-	}
 }
 
 /**
@@ -147,17 +153,9 @@ export function getFolderFromCacheList(folderFullNameRaw) {
 
 /**
  * @param {string} folderFullNameRaw
- * @param {?FolderModel} folder
- */
-export function setFolderToCacheList(folderFullNameRaw, folder) {
-	FOLDERS_CACHE[folderFullNameRaw] = folder;
-}
-
-/**
- * @param {string} folderFullNameRaw
  */
 export function removeFolderFromCacheList(folderFullNameRaw) {
-	setFolderToCacheList(folderFullNameRaw, null);
+	delete FOLDERS_CACHE[folderFullNameRaw];
 }
 
 /**

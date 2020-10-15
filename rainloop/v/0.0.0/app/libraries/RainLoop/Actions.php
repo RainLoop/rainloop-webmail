@@ -3108,6 +3108,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 				{
 					$iFolderListType = $oFolder->GetFolderListType();
 					if (!isset($aResult[$iFolderListType]) && \in_array($iFolderListType, array(
+						\MailSo\Imap\Enumerations\FolderType::INBOX,
 						\MailSo\Imap\Enumerations\FolderType::SENT,
 						\MailSo\Imap\Enumerations\FolderType::DRAFTS,
 						\MailSo\Imap\Enumerations\FolderType::JUNK,
@@ -3139,6 +3140,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 				{
 					$iFolderType = isset($aMap[$sName]) ? $aMap[$sName] : $aMap[$sFullName];
 					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
+						\MailSo\Imap\Enumerations\FolderType::INBOX,
 						\MailSo\Imap\Enumerations\FolderType::SENT,
 						\MailSo\Imap\Enumerations\FolderType::DRAFTS,
 						\MailSo\Imap\Enumerations\FolderType::JUNK,
