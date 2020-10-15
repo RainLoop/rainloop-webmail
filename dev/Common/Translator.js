@@ -218,36 +218,23 @@ export function getUploadErrorDescByCode(code) {
  * @param {string} language
  */
 export function reload(admin, language) {
-	const start = Date.now();
-
 	return new Promise((resolve, reject) => {
-		return fetch(langLink(language, admin), {cache: 'reload'})
-			.then(response => {
-					if (response.ok && response.headers.get('Content-Type').includes('application/javascript')) {
-						return response.text();
-					}
-					reject(new Error('Invalid response'))
-				}, error => {
-					reject(new Error(error.message))
-				})
-			.then(data => {
-				var script = doc.createElement('script');
-				script.text = data;
-				doc.head.appendChild(script).remove();
-				setTimeout(
-					() => {
-						// reload the data
-						if (window.rainloopI18N) {
-							I18N_DATA = window.rainloopI18N || {};
-							i18nToNodes(doc);
-							dispatchEvent(new CustomEvent('reload-time'));
-							trigger(!trigger());
-						}
-						window.rainloopI18N = null;
-						resolve();
-					},
-					500 < Date.now() - start ? 1 : 500
-				);
-			});
+		const script = doc.createElement('script');
+		script.onload = () => {
+			// reload the data
+			if (window.rainloopI18N) {
+				I18N_DATA = window.rainloopI18N || {};
+				i18nToNodes(doc);
+				dispatchEvent(new CustomEvent('reload-time'));
+				trigger(!trigger());
+			}
+			window.rainloopI18N = null;
+			script.remove();
+			resolve();
+		};
+		script.onerror = () => reject(new Error('Language '+language+' failed'));
+		script.src = langLink(language, admin);
+//		script.async = true;
+		doc.head.append(script);
 	});
 }
