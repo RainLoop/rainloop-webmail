@@ -30,7 +30,6 @@ config.paths.static = 'rainloop/v/' + config.devVersion + '/static/';
 config.paths.staticJS = 'rainloop/v/' + config.devVersion + '/static/js/';
 config.paths.staticMinJS = 'rainloop/v/' + config.devVersion + '/static/js/min/';
 config.paths.staticCSS = 'rainloop/v/' + config.devVersion + '/static/css/';
-config.paths.momentLocales = 'rainloop/v/' + config.devVersion + '/app/localization/moment/';
 
 config.paths.assets = {
 	src: 'assets/**/*.*'
@@ -65,9 +64,6 @@ config.paths.css = {
 };
 
 config.paths.js = {
-	moment: {
-		locales: ['node_modules/moment/locale/*.js']
-	},
 	libs: {
 		name: 'libs.js',
 		src: [

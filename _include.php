@@ -28,4 +28,3 @@ function __get_additional_configuration_name()
 	return '';
 	return defined('APP_SITE') && 0 < strlen(APP_SITE) ? APP_SITE.'.ini' : ''; // additional configuration file name
 }
-

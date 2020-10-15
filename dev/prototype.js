@@ -1,15 +1,12 @@
 
-(w=>{
+(doc=>{
 	Array.isNotEmpty = array => Array.isArray(array) && array.length;
 	Array.prototype.unique = function() { return this.filter((v, i, a) => a.indexOf(v) === i); };
 	Array.prototype.validUnique = function(fn) {
 		return this.filter((v, i, a) => (fn ? fn(v) : v) && a.indexOf(v) === i);
 	};
 
-	// Import momentjs locales function
-	w.moment = {
-		defineLocale: (name, config) => locale = config
-	};
+	Date.defineRelativeTimeFormat = config => relativeTime = config;
 
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
 	let formats = {
@@ -26,20 +23,11 @@
 		D: {weekday: 'short'},
 		j: {day: 'numeric'},
 		l: {weekday: 'long'},
-//		N: {},
-//		w: {},
-//		z: {},
-		// Week
-//		W: {},
 		// Month
 		F: {month: 'long'},
 		m: {month: '2-digit'},
 		M: {month: 'short'},
 		n: {month: 'numeric'},
-//		t: {},
-		// Year
-//		L: {},
-//		o: {},
 		Y: {year: 'numeric'},
 		y: {year: '2-digit'},
 		// Time
@@ -52,38 +40,15 @@
 		i: {minute: '2-digit'},
 		s: {second: '2-digit'},
 		u: {fractionalSecondDigits: 3},
-		// Timezone
-//		O: return UTC ? 'Z' : (d.Z > 0 ? '+' : '-') + pad2(Math.abs(d.Z / 60)) + '00';
-//		P: return UTC ? 'Z' : (d.Z > 0 ? '+' : '-') + pad2(Math.abs(d.Z / 60)) + :' + pad2(Math.abs(d.Z % 60));
-//		T: return UTC ? 'UTC' : new Date(d.Y, 0, 1).toTimeString().replace(/^.+ \(?([^)]+)\)?$/, '$1');
 		Z: {timeZone: 'UTC'}
-		// Full Date/Time
-//		c: {},
-//		r: {},
-//		U: {},
-//		options.timeZoneName = 'short';
 	},
-	locale = {
-		relativeTime : {
-			future : 'in %s',
-			past : '%s ago',
-			s : 'a few seconds',
-			ss : '%d seconds',
-			m : 'a minute',
-			mm : '%d minutes',
-			h : 'an hour',
-			hh : '%d hours',
-			d : 'a day',
-			dd : '%d days',
-			M : 'a month',
-			MM : '%d months',
-			y : 'a year',
-			yy : '%d years'
-		}
+	relativeTime = {
+		// see /rainloop/v/0.0.0/app/localization/relativetimeformat/
 	},
 	pad2 = v => 10 > v ? '0' + v : v;
 
-	// Simulate PHP's date function
+	// Format momentjs/PHP date formats to Intl.DateTimeFormat
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
 	Date.prototype.format = function (str, UTC) {
 		if ('Y-m-d\\TH:i:s' == str) {
 			return this.getFullYear() + '-' + pad2(1 + this.getMonth()) + '-' + pad2(this.getDate())
@@ -103,29 +68,31 @@
 			}
 			formats[str] = options;
 		}
-		return new Intl.DateTimeFormat(document.documentElement.lang, options).format(this);
+		return new Intl.DateTimeFormat(doc.documentElement.lang, options).format(this);
 	};
 
-	// Simulate momentjs fromNow function
+	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
 	Date.prototype.fromNow = function() {
-		let format = 's',
-			seconds = (Date.now() - this.getTime()) / 1000,
-			str = locale.relativeTime[0 < seconds ? 'past' : 'future'],
-			t = [[60,'m'],[3600,'h'],[86400,'d'],[2628000,'M'],[31536000,'y']],
-			i = 5;
-		seconds = Math.abs(seconds);
+		let unit = 'second',
+			value = (this.getTime() - Date.now()) / 1000,
+			t = [[60,'minute'],[3600,'hour'],[86400,'day'],[2628000,'month'],[31536000,'year']],
+			i = 5,
+			abs = Math.abs(value);
 		while (i--) {
-			if (t[i][0] <= seconds) {
-				seconds = seconds / t[i][0];
-				format = t[i][1];
+			if (t[i][0] <= abs) {
+				value = Math.round(value / t[i][0]);
+				unit = t[i][1];
 				break;
 			}
 		}
-		seconds = Math.round(seconds);
-		if (1 < seconds) {
-			format += format;
+		if (Intl.RelativeTimeFormat) {
+			let rtf = new Intl.RelativeTimeFormat(doc.documentElement.lang);
+			return rtf.format(value, unit);
 		}
-		return str.replace('%s', locale.relativeTime[format].replace('%d', seconds));
+		abs = Math.abs(value);
+		let rtf = relativeTime.long[unit][0 > value ? 'past' : 'future'],
+			plural = relativeTime.plural(abs);
+		return (rtf[plural] || rtf).replace('{0}', abs);
 	};
 
 	Element.prototype.closestWithin = function(selector, parent) {
@@ -134,7 +101,7 @@
 	};
 
 	Element.fromHTML = string => {
-		const template = document.createElement('template');
+		const template = doc.createElement('template');
 		template.innerHTML = string.trim();
 		return template.content.firstChild;
 	};
@@ -174,4 +141,4 @@
 		};
 	}
 
-})(this);
+})(document);

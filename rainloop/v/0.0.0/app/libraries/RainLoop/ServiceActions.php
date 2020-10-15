@@ -1071,17 +1071,16 @@ class ServiceActions
 
 		$sLanguage = strtr($sLanguage, '_', '-');
 
-		$sMoment = 'window.moment && window.moment.locale && window.moment.locale(\'en\');';
-		$options = [$sLanguage, \substr($sLanguage, 0, 2)];
+		$sTimeFormat = '';
+		$options = [$sLanguage, \substr($sLanguage, 0, 2), 'en'];
 		foreach ($options as $lang) {
-			$sMomentFileName = APP_VERSION_ROOT_PATH.'app/localization/moment/'.$lang.'.js';
-			if (\is_file($sMomentFileName)) {
-				$sMoment = \file_get_contents($sMomentFileName);
-				$sMoment = \preg_replace('/\/\/[^\n]+\n/', '', $sMoment);
+			$sFileName = APP_VERSION_ROOT_PATH.'app/localization/relativetimeformat/'.$lang.'.json';
+			if (\is_file($sFileName)) {
+				$sTimeFormat = \preg_replace('/^\\s+/', '', \file_get_contents($sFileName));
 				break;
 			}
 		}
 
-		return 'document.documentElement.lang = "'.$sLanguage.'";window.rainloopI18N='.$sResult.';'.$sMoment;
+		return "document.documentElement.lang = '{$sLanguage}';\nwindow.rainloopI18N={$sResult};\nDate.defineRelativeTimeFormat({$sTimeFormat});";
 	}
 }

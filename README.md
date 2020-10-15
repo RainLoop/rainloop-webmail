@@ -97,7 +97,7 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Removed jquery-scrollstop
 * Removed jquery-mousewheel
 * Removed matchmedia-polyfill
-* Removed momentjs (localization still used)
+* Removed momentjs (use Intl)
 * Removed opentip (use CSS)
 * Removed non-community (aka Prem/Premium/License) code
 
@@ -106,22 +106,22 @@ RainLoop 1.14 vs SnappyMail
 
 |js/*       	|RainLoop 	|Snappy   	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  774.093	|
-|app.js      	|4.184.455	|2.426.328	|
+|admin.js    	|2.130.942	|  669.377	|
+|app.js      	|4.184.455	|2.418.170	|
 |boot.js     	|  671.522	|    5.285	|
-|libs.js     	|  647.614	|  247.440	|
+|libs.js     	|  647.614	|  240.181	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.453.146	|
+|TOTAL      	|7.960.367	|3.333.013	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|Rain gzip	|gzip     	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|  103.575	| 73.657	| 27.571	| 23.931	|
-|app.min.js      	|  511.202	|  327.895	|140.462	| 84.341	| 68.393	|
+|admin.min.js    	|  252.147	|   92.040	| 73.657	| 23.656	| 20.584	|
+|app.min.js      	|  511.202	|  325.791	|140.462	| 84.060	| 68.147	|
 |boot.min.js     	|   66.007	|    2.918	| 22.567	|  1.500	|  1.275	|
-|libs.min.js     	|  572.545	|  142.244	|176.720	| 50.849	| 45.242	|
+|libs.min.js     	|  572.545	|  135.084	|176.720	| 48.346	| 42.934	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  576.632	|424.718	|164.261	|138.841	|
-|TOTAL (no admin)	|1.182.206	|  473.057	|351.061	|136.690	|114.910	|
+|TOTAL           	|1.434.353	|  555.833	|424.718	|157.562	|132.940	|
+|TOTAL (no admin)	|1.182.206	|  463.793	|351.061	|133.906	|112.356	|
 
 For a user its around 61% smaller and faster than traditional RainLoop.
 

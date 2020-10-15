@@ -6,13 +6,6 @@ const stripbom = require('gulp-stripbom');
 const { config } = require('./config');
 const { del } = require('./common');
 
-// moment
-const momentLocalesClear = () => del('rainloop/v/' + config.devVersion + '/app/localization/moment/*.js');
-
-const momentLocales = () => gulp.src(config.paths.js.moment.locales).pipe(gulp.dest(config.paths.momentLocales));
-
-const moment = gulp.series(momentLocalesClear, momentLocales);
-
 // lightgallery
 const lightgalleryFontsClear = () => del('rainloop/v/' + config.devVersion + '/static/css/fonts/lg.*');
 
@@ -61,4 +54,4 @@ const ckeditorSetup = () =>
 
 const ckeditor = gulp.series(ckeditorClear, ckeditorCopy, ckeditorCopyPlugins, ckeditorSetup);
 
-exports.vendors = gulp.parallel(moment, squire, ckeditor, fontastic, lightgallery);
+exports.vendors = gulp.parallel(squire, ckeditor, fontastic, lightgallery);
