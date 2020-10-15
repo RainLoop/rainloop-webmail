@@ -56,9 +56,9 @@ module.exports = function(publicPath, pro, mode) {
 		},
 		output: {
 			pathinfo: true,
-			path: path.join(__dirname, 'rainloop', 'v', '0.0.0', 'static'),
+			path: path.join(__dirname, 'snappymail', 'v', '0.0.0', 'static'),
 			filename: '[name].js',
-			publicPath: publicPath || 'rainloop/v/0.0.0/static/'
+			publicPath: publicPath || 'snappymail/v/0.0.0/static/'
 		},
 		performance: {
 			hints: false

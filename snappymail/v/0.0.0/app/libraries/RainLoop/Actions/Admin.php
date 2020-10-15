@@ -512,7 +512,7 @@ trait Admin
 	{
 		return file_exists(APP_INDEX_ROOT_PATH.'index.php') &&
 			is_writable(APP_INDEX_ROOT_PATH.'index.php') &&
-			is_writable(APP_INDEX_ROOT_PATH.'rainloop/') &&
+			is_writable(APP_INDEX_ROOT_PATH.'snappymail/') &&
 			APP_VERSION !== APP_DEV_VERSION
 		;
 	}

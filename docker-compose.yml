@@ -31,9 +31,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: rainloop
-      MYSQL_PASSWORD: rainloop
-      MYSQL_DATABASE: rainloop
+      MYSQL_USER: snappymail
+      MYSQL_PASSWORD: snappymail
+      MYSQL_DATABASE: snappymail
     volumes:
       - mysql:/var/lib/mysql
       - tmp:/tmp
@@ -50,7 +50,7 @@ services:
     volumes:
       - ./:/var/www
       # - ./build/local/:/var/www
-      - ./.docker/php/rainloop.ini:/usr/local/etc/php/conf.d/rainloop.ini
+      - ./.docker/php/snappymail.ini:/usr/local/etc/php/conf.d/snappymail.ini
       - tmp:/tmp
   node:
     build:

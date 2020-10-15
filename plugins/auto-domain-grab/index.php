@@ -6,7 +6,7 @@
  * This plugin sets the IMAP and SMTP host to "example.com" upon login, and then connects to it.
  *
  * Based on:
- * https://github.com/RainLoop/rainloop-webmail/blob/master/plugins/override-smtp-credentials/index.php
+ * https://github.com/the-djmaze/snappymail/blob/master/plugins/override-smtp-credentials/index.php
  *
  */
 

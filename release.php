@@ -9,8 +9,8 @@ if (!$gulp) {
 
 $package = json_decode(file_get_contents('package.json'));
 
-$zip_destination = "rainloop-{$package->version}.zip";
-$tar_destination = "rainloop-{$package->version}.tar";
+$zip_destination = "snappymail-{$package->version}.zip";
+$tar_destination = "snappymail-{$package->version}.tar";
 
 @unlink($zip_destination);
 @unlink($tar_destination);
@@ -21,31 +21,32 @@ if ($return_var) {
 	exit("gulp failed with error code {$return_var}\n");
 }
 
-$cmddir = escapeshellcmd(__DIR__) . '/rainloop/v/0.0.0/static';
+$cmddir = escapeshellcmd(__DIR__) . '/snappymail/v/0.0.0/static';
 
 if ($gzip = trim(`which gzip`)) {
 	passthru("{$gzip} -k --best {$cmddir}/js/*.js");
 	passthru("{$gzip} -k --best {$cmddir}/js/min/*.js");
 	passthru("{$gzip} -k --best {$cmddir}/css/app*.css");
-	unlink(__DIR__ . '/rainloop/v/0.0.0/static/js/boot.js.gz');
-	unlink(__DIR__ . '/rainloop/v/0.0.0/static/js/min/boot.min.js.gz');
+	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/boot.js.gz');
+	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/min/boot.min.js.gz');
 }
 
 if ($brotli = trim(`which brotli`)) {
 	passthru("{$brotli} -k --best {$cmddir}/js/*.js");
 	passthru("{$brotli} -k --best {$cmddir}/js/min/*.js");
 	passthru("{$brotli} -k --best {$cmddir}/css/app*.css");
-	unlink(__DIR__ . '/rainloop/v/0.0.0/static/js/boot.js.br');
-	unlink(__DIR__ . '/rainloop/v/0.0.0/static/js/min/boot.min.js.br');
+	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/boot.js.br');
+	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/min/boot.min.js.br');
 }
 
 // Temporary rename folder to speed up PharData
-if (!rename('rainloop/v/0.0.0', "rainloop/v/{$package->version}")){
-	exit('Failed to temporary rename rainloop/v/0.0.0');
+//if (!rename('snappymail/v/0.0.0', "snappymail/v/{$package->version}")){
+if (!rename('snappymail/v/0.0.0', "snappymail/v/{$package->version}")) {
+	exit('Failed to temporary rename snappymail/v/0.0.0');
 }
 register_shutdown_function(function(){
 	// Rename folder back to original
-	@rename("rainloop/v/{$GLOBALS['package']->version}", 'rainloop/v/0.0.0');
+	@rename("snappymail/v/{$GLOBALS['package']->version}", 'snappymail/v/0.0.0');
 });
 
 $zip = new ZipArchive();
@@ -55,7 +56,7 @@ if (!$zip->open($zip_destination, ZIPARCHIVE::CREATE)) {
 
 $tar = new PharData($tar_destination);
 
-$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('rainloop/v'), RecursiveIteratorIterator::SELF_FIRST);
+$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('snappymail/v'), RecursiveIteratorIterator::SELF_FIRST);
 foreach ($files as $file) {
 	$file = str_replace('\\', '/', $file);
 	echo "{$file}\n";
@@ -69,7 +70,7 @@ foreach ($files as $file) {
 	}
 }
 
-$tar->buildFromDirectory('./', "@rainloop/v/{$package->version}@");
+$tar->buildFromDirectory('./', "@snappymail/v/{$package->version}@");
 
 $zip->addFromString('data/.htaccess', $package->version);
 $tar->addFromString('data/.htaccess', $package->version);

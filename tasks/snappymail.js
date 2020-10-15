@@ -1,4 +1,4 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
+/* SnappyMail Webmail (c) SnappyMail | Licensed under AGPL 3 */
 /* eslint-disable consistent-return */
 const gulp = require('gulp');
 const fs = require('node-fs');
@@ -8,20 +8,20 @@ const pkg = require('../package.json');
 const { config } = require('./config');
 const { copy, zip, del } = require('./common');
 
-const rainloopCopy = () => {
+const snappymailCopy = () => {
 	const versionFull = pkg.version,
 		dist = config.releasesPath + '/webmail/' + versionFull + '/src/';
 	fs.mkdirSync(dist, '0777', true);
 	fs.mkdirSync(dist + 'data');
-	fs.mkdirSync(dist + 'rainloop/v/' + versionFull, '0777', true);
+	fs.mkdirSync(dist + 'snappymail/v/' + versionFull, '0777', true);
 
 	return gulp
-		.src('rainloop/v/' + config.devVersion + '/**/*', { base: 'rainloop/v/' + config.devVersion })
+		.src('snappymail/v/' + config.devVersion + '/**/*', { base: 'snappymail/v/' + config.devVersion })
 		.pipe(chmod(0o644, 0o755))
-		.pipe(gulp.dest(dist + 'rainloop/v/' + versionFull));
+		.pipe(gulp.dest(dist + 'snappymail/v/' + versionFull));
 };
 
-const rainloopSetup = (done) => {
+const snappymailSetup = (done) => {
 	const versionFull = pkg.version,
 		dist = config.releasesPath + '/webmail/' + versionFull + '/src/';
 	fs.writeFileSync(dist + 'data/VERSION', versionFull);
@@ -34,24 +34,24 @@ const rainloopSetup = (done) => {
 			.replace("'APP_VERSION', '0.0.0'", "'APP_VERSION', '" + versionFull + "'")
 	);
 
-	fs.writeFileSync(dist + 'rainloop/v/' + versionFull + '/index.php.root', fs.readFileSync(dist + 'index.php'));
+	fs.writeFileSync(dist + 'snappymail/v/' + versionFull + '/index.php.root', fs.readFileSync(dist + 'index.php'));
 
 	if (config.community) {
-		require('rimraf').sync(dist + 'rainloop/v/' + versionFull + '/app/libraries/RainLoop/Providers/Prem.php');
+		require('rimraf').sync(dist + 'snappymail/v/' + versionFull + '/app/libraries/snappymail/Providers/Prem.php');
 	}
 
 	config.destPath = config.releasesPath + '/webmail/' + versionFull + '/';
 	config.cleanPath = dist;
 	config.zipSrcPath = dist;
-	config.zipFile = 'rainloop-' + (config.community ? 'community-' : '') + versionFull + '.zip';
-	config.zipFileShort = 'rainloop-' + (config.community ? 'community-' : '') + 'latest.zip';
+	config.zipFile = 'snappymail-' + (config.community ? 'community-' : '') + versionFull + '.zip';
+	config.zipFileShort = 'snappymail-' + (config.community ? 'community-' : '') + 'latest.zip';
 
-	config.rainloopBuilded = true;
+	config.snappymailBuilded = true;
 
 	done();
 };
 
-const rainloopZip = (done) => {
+const snappymailZip = (done) => {
 	if (config.destPath && config.zipSrcPath && config.zipFile) {
 		return zip(config.zipSrcPath, config.destPath, config.zipFile);
 	}
@@ -59,7 +59,7 @@ const rainloopZip = (done) => {
 	done();
 };
 
-const rainloopClean = (done) => {
+const snappymailClean = (done) => {
 	if (config.cleanPath) {
 		return del(config.cleanPath);
 	}
@@ -67,8 +67,8 @@ const rainloopClean = (done) => {
 	done();
 };
 
-const rainloopShortName = (done) => copy(config.destPath + config.zipFile, config.destPath + config.zipFileShort, done);
+const snappymailShortName = (done) => copy(config.destPath + config.zipFile, config.destPath + config.zipFileShort, done);
 
-exports.rainloopBuild = gulp.series(rainloopCopy, rainloopSetup);
+exports.snappymailBuild = gulp.series(snappymailCopy, snappymailSetup);
 
-exports.rainloop = gulp.series(exports.rainloopBuild, rainloopZip, rainloopClean, rainloopShortName);
+exports.snappymail = gulp.series(exports.snappymailBuild, snappymailZip, snappymailClean, snappymailShortName);

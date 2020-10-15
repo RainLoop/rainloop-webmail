@@ -7,7 +7,7 @@ const { js, jsLint } = require('./tasks/js');
 const { css, cssLint } = require('./tasks/css');
 const { vendors } = require('./tasks/vendors');
 const { watchCss } = require('./tasks/watch');
-const { rainloop } = require('./tasks/rainloop');
+const { snappymail } = require('./tasks/snappymail');
 
 const clean = gulp.series(cleanStatic);
 
@@ -25,5 +25,5 @@ exports.default = build;
 
 exports.watchCss = watchCss;
 
-exports.rainloop = gulp.series(build, rainloop);
-exports.all = gulp.series(exports.rainloop);
+exports.snappymail = gulp.series(build, snappymail);
+exports.all = gulp.series(exports.snappymail);

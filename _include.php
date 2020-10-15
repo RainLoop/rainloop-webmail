@@ -16,8 +16,8 @@
 function __get_custom_data_full_path()
 {
 	return '';
-	return dirname(__DIR__) . '/rainloop-data';
-	return '/var/external-rainloop-data-folder'; // custom data folder path
+	return dirname(__DIR__) . '/snappymail-data';
+	return '/var/external-snappymail-data-folder'; // custom data folder path
 }
 
 /**

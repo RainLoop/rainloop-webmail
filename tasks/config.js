@@ -1,11 +1,10 @@
-/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL 3 */
+/* SnappyMail Webmail (c) SnappyMail Team | Licensed under AGPL 3 */
 const path = require('path');
 const { argv } = require('yargs');
 
 const config = {
 	head: {
-		rainloop: '/* RainLoop Webmail (c) RainLoop Team | Licensed under RainLoop Software License */',
-		agpl: '/* RainLoop Webmail (c) RainLoop Team | Licensed under AGPL v3 */'
+		agpl: '/* SnappyMail Webmail (c) SnappyMail | Licensed under AGPL v3 */'
 	},
 	devVersion: '0.0.0',
 	releasesPath: 'build/dist/releases',
@@ -26,10 +25,10 @@ const config = {
 };
 
 config.paths.globjs = 'dev/**/*.js';
-config.paths.static = 'rainloop/v/' + config.devVersion + '/static/';
-config.paths.staticJS = 'rainloop/v/' + config.devVersion + '/static/js/';
-config.paths.staticMinJS = 'rainloop/v/' + config.devVersion + '/static/js/min/';
-config.paths.staticCSS = 'rainloop/v/' + config.devVersion + '/static/css/';
+config.paths.static = 'snappymail/v/' + config.devVersion + '/static/';
+config.paths.staticJS = 'snappymail/v/' + config.devVersion + '/static/js/';
+config.paths.staticMinJS = 'snappymail/v/' + config.devVersion + '/static/js/min/';
+config.paths.staticCSS = 'snappymail/v/' + config.devVersion + '/static/css/';
 
 config.paths.assets = {
 	src: 'assets/**/*.*'

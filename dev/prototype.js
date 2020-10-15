@@ -43,7 +43,7 @@
 		Z: {timeZone: 'UTC'}
 	},
 	relativeTime = {
-		// see /rainloop/v/0.0.0/app/localization/relativetimeformat/
+		// see /snappymail/v/0.0.0/app/localization/relativetimeformat/
 	},
 	pad2 = v => 10 > v ? '0' + v : v;
 

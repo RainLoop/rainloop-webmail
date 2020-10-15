@@ -27,7 +27,7 @@ const jsClean = () => del(config.paths.staticJS + '/**/*.{js,map}');
 const jsBoot = () => {
 	return gulp
 		.src('dev/boot.js')
-		.pipe(gulp.dest('rainloop/v/' + config.devVersion + '/static/js'));
+		.pipe(gulp.dest('snappymail/v/' + config.devVersion + '/static/js'));
 };
 
 // libs
@@ -69,7 +69,7 @@ const jsMin = () =>
 			})
 		)
 		.pipe(gulpif(config.source, sourcemaps.init({ loadMaps: true })))
-		.pipe(replace(/"rainloop\/v\/([^/]+)\/static\/js\/"/g, '"rainloop/v/$1/static/js/min/"'))
+		.pipe(replace(/"snappymail\/v\/([^/]+)\/static\/js\/"/g, '"snappymail/v/$1/static/js/min/"'))
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(
 			terser({
@@ -79,7 +79,16 @@ const jsMin = () =>
 				compress:{
 					ecma: 6,
 					drop_console: true
+/*
+					,hoist_props: false
+					,keep_fargs: false
+					,toplevel: true
+					,unsafe_arrows: true // Issue with knockoutjs
+					,unsafe_methods: true
+					,unsafe_proto: true
+*/
 				}
+//				,mangle: {reserved:['SendMessage']}
 			})
 		)
 		.pipe(eol('\n', true))

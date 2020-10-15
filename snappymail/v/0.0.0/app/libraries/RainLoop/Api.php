@@ -210,9 +210,9 @@ class Api
 
 	public static function ExitOnEnd() : void
 	{
-		if (!\defined('RAINLOOP_EXIT_ON_END'))
+		if (!\defined('SNAPPYMAIL_EXIT_ON_END'))
 		{
-			\define('RAINLOOP_EXIT_ON_END', true);
+			\define('SNAPPYMAIL_EXIT_ON_END', true);
 		}
 	}
 }

@@ -7,7 +7,7 @@ const
 	SERVER_PREFIX = './?',
 	SUB_QUERY_PREFIX = '&q[]=',
 	VERSION = Settings.app('version'),
-	VERSION_PREFIX = Settings.app('webVersionPath') || 'rainloop/v/' + VERSION + '/',
+	VERSION_PREFIX = Settings.app('webVersionPath') || 'snappymail/v/' + VERSION + '/',
 
 	getHash = () => Settings.get('AuthAccountHash') || '0';
 

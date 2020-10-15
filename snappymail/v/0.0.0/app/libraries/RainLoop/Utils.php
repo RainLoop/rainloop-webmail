@@ -404,7 +404,7 @@ class Utils
 
 	public static function WebVersionPath() : string
 	{
-		return self::WebPath().'rainloop/v/'.APP_VERSION.'/';
+		return self::WebPath().'snappymail/v/'.APP_VERSION.'/';
 	}
 
 	public static function WebStaticPath() : string

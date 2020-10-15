@@ -18,10 +18,10 @@ class CustomAuthExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		// Your custom php logic
 		// You may change login credentials
-		if ('demo@rainloop.net' === $sEmail)
+		if ('demo@snappymail.eu' === $sEmail)
 		{
-			$sEmail = 'user@rainloop.net';
-			$sLogin = 'user@rainloop.net';
+			$sEmail = 'user@snappymail.eu';
+			$sLogin = 'user@snappymail.eu';
 			$sPassword = 'super-puper-password';
 		}
 		else

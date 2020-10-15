@@ -16,7 +16,7 @@
 		"build",
 		"data",
 		"vendors",
-		"rainloop",
+		"snappymail",
 		"plugins",
 		"node_modules",
 		"bower_components",

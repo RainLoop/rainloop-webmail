@@ -1,16 +1,7 @@
-/.idea
-/.vscode
+/*.bak
 /api.php
-/error.log
-/nbproject
-/npm-debug.log
-/yarn-error.log
-/rainloop.sublime-project
-/rainloop.sublime-workspace
-/rainloop/v/0.0.0/static/*
-/rainloop/v/0.0.0/app/localization/moment/*
-!/rainloop/v/0.0.0/app/localization/moment/.gitempty
-/vendors/.*
+/*.log
+/snappymail/v/0.0.0/static/*
 /node_modules
 /build/local
 /build/dist
@@ -22,6 +13,5 @@
 !/.docker/nginx/ssl/.gitempty
 /dist
 /data
-.DS_Store
 /MULTIPLY
 /include.php
