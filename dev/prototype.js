@@ -8,7 +8,6 @@
 
 	Date.defineRelativeTimeFormat = config => relativeTime = config;
 
-	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat
 	let formats = {
 		LT   : {hour: 'numeric', minute: 'numeric'},
 		L    : {},
@@ -23,6 +22,7 @@
 		D: {weekday: 'short'},
 		j: {day: 'numeric'},
 		l: {weekday: 'long'},
+		z: {},
 		// Month
 		F: {month: 'long'},
 		m: {month: '2-digit'},
@@ -31,11 +31,8 @@
 		Y: {year: 'numeric'},
 		y: {year: '2-digit'},
 		// Time
-		a: {hour12: true},
 		A: {hour12: true},
-		g: {hour: 'numeric', hourCycle: 'h12'},
 		G: {hour: 'numeric'},
-		h: {hour: '2-digit', hourCycle: 'h12'},
 		H: {hour: '2-digit'},
 		i: {minute: '2-digit'},
 		s: {second: '2-digit'},
@@ -49,24 +46,24 @@
 
 	// Format momentjs/PHP date formats to Intl.DateTimeFormat
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat
-	Date.prototype.format = function (str, UTC) {
-		if ('Y-m-d\\TH:i:s' == str) {
-			return this.getFullYear() + '-' + pad2(1 + this.getMonth()) + '-' + pad2(this.getDate())
-				+ 'T' + pad2(this.getHours()) + ':' + pad2(this.getMinutes()) + ':' + pad2(this.getSeconds());
-		}
-		let options = {};
-		if (formats[str]) {
-			options = formats[str];
-		} else {
-			console.log('Date.format('+str+', '+(UTC?'true':'false')+')');
-			if (UTC) {
-				str += 'Z';
+	Date.prototype.format = function (options, UTC) {
+		if (typeof options == 'string') {
+			if ('Y-m-d\\TH:i:s' == options) {
+				return this.getFullYear() + '-' + pad2(1 + this.getMonth()) + '-' + pad2(this.getDate())
+					+ 'T' + pad2(this.getHours()) + ':' + pad2(this.getMinutes()) + ':' + pad2(this.getSeconds());
 			}
-			let i = str.length;
-			while (i--) {
-				phpFormats[str[i]] && Object.entries(phpFormats[str[i]]).forEach(([k,v])=>options[k]=v);
+			if (formats[options]) {
+				options = formats[options];
+			} else {
+				let o, s = options + (UTC?'Z':''), i = s.length;
+				console.log('Date.format('+s+')');
+				options = {};
+				while (i--) {
+					o = phpFormats[s[i]] || phpFormats[s[i].toUpperCase()];
+					o && Object.entries(o).forEach(([k,v])=>options[k]=v);
+				}
+				formats[s] = options;
 			}
-			formats[str] = options;
 		}
 		return new Intl.DateTimeFormat(doc.documentElement.lang, options).format(this);
 	};

@@ -35,6 +35,7 @@ And don't forget to read the [RainLoop documentation](https://www.rainloop.net/d
 http://www.gnu.org/licenses/agpl-3.0.html
 
 Copyright (c) 2020 SnappyMail
+Copyright (c) 2019 RainLoop
 
 ## Modifications
 
@@ -106,22 +107,22 @@ RainLoop 1.14 vs SnappyMail
 
 |js/*       	|RainLoop 	|Snappy   	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  669.377	|
-|app.js      	|4.184.455	|2.418.170	|
+|admin.js    	|2.130.942	|  666.175	|
+|app.js      	|4.184.455	|2.412.164	|
 |boot.js     	|  671.522	|    5.285	|
-|libs.js     	|  647.614	|  240.181	|
+|libs.js     	|  647.614	|  238.674	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.333.013	|
+|TOTAL      	|7.960.367	|3.322.298	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|Rain gzip	|gzip     	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|   92.040	| 73.657	| 23.656	| 20.584	|
-|app.min.js      	|  511.202	|  325.791	|140.462	| 84.060	| 68.147	|
+|admin.min.js    	|  252.147	|   91.598	| 73.657	| 23.547	| 20.518	|
+|app.min.js      	|  511.202	|  325.187	|140.462	| 83.936	| 68.135	|
 |boot.min.js     	|   66.007	|    2.918	| 22.567	|  1.500	|  1.275	|
-|libs.min.js     	|  572.545	|  135.084	|176.720	| 48.346	| 42.934	|
+|libs.min.js     	|  572.545	|  134.223	|176.720	| 48.183	| 42.816	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  555.833	|424.718	|157.562	|132.940	|
-|TOTAL (no admin)	|1.182.206	|  463.793	|351.061	|133.906	|112.356	|
+|TOTAL           	|1.434.353	|  553.926	|424.718	|157.166	|132.744	|
+|TOTAL (no admin)	|1.182.206	|  462.328	|351.061	|133.619	|112.226	|
 
 For a user its around 61% smaller and faster than traditional RainLoop.
 

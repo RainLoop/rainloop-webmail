@@ -14,7 +14,6 @@ const
 	DOCUMENT_POSITION_PRECEDING = 2, // Node.DOCUMENT_POSITION_PRECEDING
 	ELEMENT_NODE = 1,                // Node.ELEMENT_NODE,
 	TEXT_NODE = 3,                   // Node.TEXT_NODE,
-	DOCUMENT_NODE = 9,               // Node.DOCUMENT_NODE,
 	DOCUMENT_FRAGMENT_NODE = 11,     // Node.DOCUMENT_FRAGMENT_NODE,
 	SHOW_ELEMENT = 1,                // NodeFilter.SHOW_ELEMENT,
 	SHOW_TEXT = 4,                   // NodeFilter.SHOW_TEXT,
@@ -207,6 +206,13 @@ const
 			node.childNodes.length : node.length || 0;
 	},
 
+	detach = node => {
+//		node.remove();
+		let parent = node.parentNode;
+		parent && parent.removeChild( node );
+		return node;
+	},
+
 	empty = node => {
 		let frag = doc.createDocumentFragment(),
 			childNodes = node.childNodes;
@@ -214,7 +220,7 @@ const
 		return frag;
 	},
 
-	createElement = ( doc, tag, props, children ) => {
+	createElement = ( tag, props, children ) => {
 		let el = doc.createElement( tag ),
 			attr, value;
 		if ( props instanceof Array ) {
@@ -277,7 +283,7 @@ const
 			}
 //		} else if ( !node.querySelector( 'BR' ) ) {
 		} else if ( node.matches( ':empty' ) ) {
-			fixer = createElement( doc, 'BR' );
+			fixer = createElement( 'BR' );
 			while ( ( child = node.lastElementChild ) && !isInline( child ) ) {
 				node = child;
 			}
@@ -310,14 +316,14 @@ const
 //			 && (root.__squire__._config.blockTag !== 'DIV' || (child.matches && !child.matches(phrasingElements)))
 			) {
 				if ( !wrapper ) {
-					 wrapper = createElement( doc, 'div' );
+					 wrapper = createElement( 'div' );
 				}
 				wrapper.append( child );
 				--i;
 				--l;
 			} else if ( isBR || wrapper ) {
 				if ( !wrapper ) {
-					wrapper = createElement( doc, 'div' );
+					wrapper = createElement( 'div' );
 				}
 				fixCursor( wrapper, root );
 				if ( isBR ) {
@@ -341,12 +347,12 @@ const
 //			 && (root.__squire__._config.blockTag !== 'DIV' || (child.matches && !child.matches(phrasingElements)))
 			) {
 				if ( !wrapper ) {
-					 wrapper = createElement( doc, 'div' );
+					 wrapper = createElement( 'div' );
 				}
 				wrapper.append( child );
 			} else if ( isBR || wrapper ) {
 				if ( !wrapper ) {
-					wrapper = createElement( doc, 'div' );
+					wrapper = createElement( 'div' );
 				}
 				fixCursor( wrapper, root );
 				if ( isBR ) {
@@ -452,7 +458,7 @@ const
 						fakeRange.endOffset = getLength( prev );
 					}
 				}
-				child.remove();
+				detach( child );
 				if ( child.nodeType === TEXT_NODE ) {
 					prev.appendData( child.data );
 				}
@@ -494,8 +500,7 @@ const
 				parent.childNodes.length === 1 ) {
 			container = parent;
 		}
-//		container.remove(); // not a function?
-		container.parentNode && container.parentNode.removeChild( container );
+		detach( container );
 
 		offset = block.childNodes.length;
 
@@ -527,14 +532,14 @@ const
 		if ( prev && areAlike( prev, node ) ) {
 			if ( !isContainer( prev ) ) {
 				if ( isListItem ) {
-					block = createElement( doc, 'DIV' );
+					block = createElement( 'DIV' );
 					block.append( empty( prev ) );
 					prev.append( block );
 				} else {
 					return;
 				}
 			}
-			node.remove();
+			detach( node );
 			needsFix = !isContainer( node );
 			prev.append( empty( node ) );
 			if ( needsFix ) {
@@ -544,7 +549,7 @@ const
 				mergeContainers( first, root );
 			}
 		} else if ( isListItem ) {
-			prev = createElement( doc, 'DIV' );
+			prev = createElement( 'DIV' );
 			node.insertBefore( prev, first );
 			fixCursor( prev, root );
 		}
@@ -679,7 +684,7 @@ const
 				afterText = NBSP + afterText.slice( 1 ); // nbsp
 			}
 			before.appendData( afterText );
-			after.remove();
+			detach( after );
 		}
 
 		range.setStart( startContainer, startOffset );
@@ -810,7 +815,7 @@ const
 			if ( replaceBlock ) {
 				range.setEndBefore( block );
 				range.collapse( false );
-				block.remove();
+				detach( block );
 			}
 			moveRangeBoundariesUpTree( range, stopPoint, stopPoint, root );
 			// Now split after block up to blockquote (if a parent) or root
@@ -952,10 +957,7 @@ const
 			startContainer = parent;
 		}
 
-		while ( true ) {
-			if ( endContainer === endMax || endContainer === root ) {
-				break;
-			}
+		while ( endContainer !== endMax && endContainer !== root ) {
 			if ( maySkipBR &&
 					endContainer.nodeType !== TEXT_NODE &&
 					endContainer.childNodes[ endOffset ] &&
@@ -1119,21 +1121,19 @@ TreeWalker.prototype.previousPONode = function () {
 		nodeType = this.nodeType,
 		filter = this.filter,
 		node;
-	while ( true ) {
+	while ( current ) {
 		node = current.lastChild;
 		while ( !node && current && current !== root) {
 			node = current.previousSibling;
 			if ( !node ) { current = current.parentNode; }
 		}
-		if ( !node ) {
-			return null;
-		}
-		if ( ( typeToBitArray[ node.nodeType ] & nodeType ) && filter( node ) ) {
+		if ( node && ( typeToBitArray[ node.nodeType ] & nodeType ) && filter( node ) ) {
 			this.currentNode = node;
 			return node;
 		}
 		current = node;
 	}
+	return null;
 };
 
 let onKey = function ( event ) {
@@ -1236,7 +1236,7 @@ let afterDelete = ( self, range ) => {
 		// block.
 		if ( node === self._root &&
 				( node = node.firstChild ) && node.nodeName === 'BR' ) {
-			node.remove();
+			detach( node );
 		}
 		self._ensureBottomLine();
 		self.setSelection( range );
@@ -1254,7 +1254,7 @@ let detachUneditableNode = ( node, root ) => {
 		}
 		node = parent;
 	}
-	node.remove();
+	detach( node );
 };
 
 let handleEnter = ( self, shiftKey, range ) => {
@@ -1299,12 +1299,12 @@ let handleEnter = ( self, shiftKey, range ) => {
 				split( node, offset && offset - 1, root, root );
 			node = nodeAfterSplit.previousSibling;
 			if ( !node.textContent ) {
-				node.remove();
+				detach( node );
 			}
 			node = self.createDefaultBlock();
 			nodeAfterSplit.before( node );
 			if ( !nodeAfterSplit.textContent ) {
-				nodeAfterSplit.remove();
+				detach( nodeAfterSplit );
 			}
 			range.setStart( node, 0 );
 		} else {
@@ -1332,7 +1332,7 @@ let handleEnter = ( self, shiftKey, range ) => {
 	if ( !block || shiftKey || /^T[HD]$/.test( block.nodeName ) ) {
 		// If inside an <a>, move focus out
 		moveRangeBoundaryOutOf( range, 'A', root );
-		insertNodeInRange( range, self.createElement( 'BR' ) );
+		insertNodeInRange( range, createElement( 'BR' ) );
 		range.collapse( false );
 		self.setSelection( range );
 		self._updatePath( range, true );
@@ -1382,7 +1382,7 @@ let handleEnter = ( self, shiftKey, range ) => {
 			if ( !next || next.nodeName === 'BR' ) {
 				break;
 			}
-			child.remove();
+			detach( child );
 			child = next;
 		}
 
@@ -1554,7 +1554,7 @@ let keyHandlers = {
 				nodeAfterCursor = cursorContainer.childNodes[ cursorOffset ];
 				if ( nodeAfterCursor && nodeAfterCursor.nodeName === 'IMG' ) {
 					event.preventDefault();
-					nodeAfterCursor.remove();
+					detach( nodeAfterCursor );
 					moveRangeBoundariesDownTree( range );
 					afterDelete( self, range );
 					return;
@@ -1694,40 +1694,40 @@ let fontSizes = {
 let styleToSemantic = {
 	fontWeight: {
 		regexp: /^bold|^700/i,
-		replace: doc => createElement( doc, 'B' )
+		replace: () => createElement( 'B' )
 	},
 	fontStyle: {
 		regexp: /^italic/i,
-		replace: doc => createElement( doc, 'I' )
+		replace: () => createElement( 'I' )
 	},
 	fontFamily: {
 		regexp: notWS,
-		replace: ( doc, classNames, family ) => createElement( doc, 'SPAN', {
+		replace: ( doc, classNames, family ) => createElement( 'SPAN', {
 			'class': classNames.fontFamily,
 			style: 'font-family:' + family
 		})
 	},
 	fontSize: {
 		regexp: notWS,
-		replace: ( doc, classNames, size ) => createElement( doc, 'SPAN', {
+		replace: ( doc, classNames, size ) => createElement( 'SPAN', {
 			'class': classNames.fontSize,
 			style: 'font-size:' + size
 		})
 	},
 	textDecoration: {
 		regexp: /^underline/i,
-		replace: doc => createElement( doc, 'U' )
+		replace: () => createElement( 'U' )
 	}
 /*
 	textDecoration: {
 		regexp: /^line-through/i,
-		replace: doc => createElement( doc, 'S' )
+		replace: doc => createElement( 'S' )
 	}
 */
 };
 
 let replaceWithTag = tag => node => {
-	let el = createElement( doc, tag );
+	let el = createElement( tag );
 	Array.prototype.forEach.call( node.attributes, attr => el.setAttribute( attr.name, attr.value ) );
 	node.replaceWith( el );
 	el.append( empty( node ) );
@@ -1780,7 +1780,7 @@ let stylesRewriters = {
 		let fontSpan, sizeSpan, colourSpan;
 		let newTreeBottom, newTreeTop;
 		if ( face ) {
-			fontSpan = createElement( doc, 'SPAN', {
+			fontSpan = createElement( 'SPAN', {
 				'class': classNames.fontFamily,
 				style: 'font-family:' + face
 			});
@@ -1788,7 +1788,7 @@ let stylesRewriters = {
 			newTreeBottom = fontSpan;
 		}
 		if ( size ) {
-			sizeSpan = createElement( doc, 'SPAN', {
+			sizeSpan = createElement( 'SPAN', {
 				'class': classNames.fontSize,
 				style: 'font-size:' + fontSizes[ size ] + 'px'
 			});
@@ -1804,7 +1804,7 @@ let stylesRewriters = {
 			if ( colour.charAt( 0 ) !== '#' ) {
 				colour = '#' + colour;
 			}
-			colourSpan = createElement( doc, 'SPAN', {
+			colourSpan = createElement( 'SPAN', {
 				'class': classNames.colour,
 				style: 'color:' + colour
 			});
@@ -1817,7 +1817,7 @@ let stylesRewriters = {
 			newTreeBottom = colourSpan;
 		}
 		if ( !newTreeTop ) {
-			newTreeTop = newTreeBottom = createElement( doc, 'SPAN' );
+			newTreeTop = newTreeBottom = createElement( 'SPAN' );
 		}
 		node.replaceWith( newTreeTop );
 		newTreeBottom.append( empty( node ) );
@@ -1828,7 +1828,7 @@ let stylesRewriters = {
 //	CODE:
 //	SAMP:
 	TT: ( node, parent, config ) => {
-		let el = createElement( doc, 'SPAN', {
+		let el = createElement( 'SPAN', {
 			'class': config.classNames.fontFamily,
 			style: 'font-family:menlo,consolas,"courier new",monospace'
 		});
@@ -2002,7 +2002,7 @@ let cleanupBRs = ( node, root, keepForBlankLine ) => {
 		// browser. If it breaks a line, wrap the content in div tags
 		// and replace the brs.
 		if ( !brBreaksLine[l] ) {
-			br.remove();
+			detach( br );
 		} else if ( !isInline( parent ) ) {
 			fixContainer( parent, root );
 		}
@@ -2016,7 +2016,7 @@ let setClipboardData =
 		( event, contents, root, willCutCopy, toPlainText, plainTextOnly ) => {
 	let clipboardData = event.clipboardData;
 	let body = doc.body;
-	let node = createElement( doc, 'div' );
+	let node = createElement( 'div' );
 	let html, text;
 
 	node.append( contents );
@@ -2291,11 +2291,6 @@ function mergeObjects ( base, extras, mayOverride ) {
 }
 
 function Squire ( root, config ) {
-	if ( root.nodeType === DOCUMENT_NODE ) {
-		root = root.body;
-	}
-	let mutation;
-
 	this._root = root;
 
 	this._events = {};
@@ -2308,16 +2303,14 @@ function Squire ( root, config ) {
 	this._lastAnchorNode = null;
 	this._lastFocusNode = null;
 	this._path = '';
-	this._willUpdatePath = false;
 
+	let _willUpdatePath;
 	const selectionchange = () => {
 		if (root.contains(doc.activeElement)) {
-			let self = this;
-			if ( self._isFocused && !self._willUpdatePath ) {
-				self._willUpdatePath = true;
-				setTimeout( function () {
-					self._willUpdatePath = false;
-					self._updatePath( self.getSelection() );
+			if ( this._isFocused && !_willUpdatePath ) {
+				_willUpdatePath = setTimeout( () => {
+					_willUpdatePath = 0;
+					this._updatePath( this.getSelection() );
 				}, 0 );
 			}
 		} else {
@@ -2333,14 +2326,13 @@ function Squire ( root, config ) {
 	this._ignoreChange = false;
 	this._ignoreAllChanges = false;
 
-	mutation = new MutationObserver( ()=>this._docWasChanged() );
-	mutation.observe( root, {
+	this._mutation = new MutationObserver( ()=>this._docWasChanged() );
+	this._mutation.observe( root, {
 		childList: true,
 		attributes: true,
 		characterData: true,
 		subtree: true
 	});
-	this._mutation = mutation;
 
 	// On blur, restore focus except if the user taps or clicks to focus a
 	// specific point. Can't actually use click event because focus happens
@@ -2430,14 +2422,10 @@ proto.setConfig = function ( config ) {
 	return this;
 };
 
-proto.createElement = function ( tag, props, children ) {
-	return createElement( doc, tag, props, children );
-};
-
 proto.createDefaultBlock = function ( children ) {
 	let config = this._config;
 	return fixCursor(
-		this.createElement( config.blockTag, config.blockAttributes, children ),
+		createElement( config.blockTag, config.blockAttributes, children ),
 		this._root
 	);
 };
@@ -2606,8 +2594,7 @@ proto.removeEventListener = function ( type, fn ) {
 
 // --- Selection and Path ---
 
-proto.createRange =
-		function ( range, startOffset, endContainer, endOffset ) {
+proto.createRange = ( range, startOffset, endContainer, endOffset ) => {
 	if ( range instanceof win.Range ) {
 		return range.cloneRange();
 	}
@@ -2631,7 +2618,7 @@ proto.getCursorPosition = function ( range ) {
 	let node, parent;
 	if ( rect && !rect.top ) {
 		this._ignoreChange = true;
-		node = doc.createElement( 'SPAN' );
+		node = createElement( 'SPAN' );
 		node.textContent = ZWS;
 		insertNodeInRange( range, node );
 		rect = node.getBoundingClientRect();
@@ -2854,12 +2841,12 @@ proto.blur = function () {
 let startSelectionId = 'squire-selection-start';
 let endSelectionId = 'squire-selection-end';
 
-const createBookmarkNodes = self => [
-	self.createElement( 'INPUT', {
+const createBookmarkNodes = () => [
+	createElement( 'INPUT', {
 		id: startSelectionId,
 		type: 'hidden'
 	}),
-	self.createElement( 'INPUT', {
+	createElement( 'INPUT', {
 		id: endSelectionId,
 		type: 'hidden'
 	})
@@ -2902,8 +2889,8 @@ proto._getRangeAndRemoveBookmark = function ( range ) {
 			--endOffset;
 		}
 
-		start.remove();
-		end.remove();
+		detach( start );
+		detach( end );
 
 		if ( !range ) {
 			range = doc.createRange();
@@ -3182,7 +3169,7 @@ proto._addFormat = function ( tag, attributes, range ) {
 		node, needsFormat, block;
 
 	if ( range.collapsed ) {
-		el = fixCursor( this.createElement( tag, attributes ), root );
+		el = fixCursor( createElement( tag, attributes ), root );
 		insertNodeInRange( range, el );
 		range.setStart( el.firstChild, el.firstChild.length );
 		range.collapse( true );
@@ -3256,7 +3243,7 @@ proto._addFormat = function ( tag, attributes, range ) {
 					startContainer = node;
 					startOffset = 0;
 				}
-				el = this.createElement( tag, attributes );
+				el = createElement( tag, attributes );
 				node.replaceWith( el );
 				el.append( node );
 			}
@@ -3312,7 +3299,7 @@ proto._removeFormat = function ( tag, attributes, range, partial ) {
 		endContainer = range.endContainer,
 		endOffset = range.endOffset,
 		toWrap = [],
-		examineNode = function ( node, exemplar ) {
+		examineNode = ( node, exemplar ) => {
 			// If the node is completely contained by the range then
 			// we're going to remove all formatting so ignore it.
 			if ( isNodeContainedInRange( range, node, false ) ) {
@@ -3354,20 +3341,16 @@ proto._removeFormat = function ( tag, attributes, range, partial ) {
 			}
 		},
 		formatTags = Array.prototype.filter.call(
-			root.getElementsByTagName( tag ), function ( el ) {
-				return isNodeContainedInRange( range, el ) &&
-					hasTagAttributes( el, tag, attributes );
-			}
+			root.getElementsByTagName( tag ),
+			el => isNodeContainedInRange( range, el ) && hasTagAttributes( el, tag, attributes )
 		);
 
 	if ( !partial ) {
-		formatTags.forEach( function ( node ) {
-			examineNode( node, node );
-		});
+		formatTags.forEach( node => examineNode( node, node ) );
 	}
 
 	// Now wrap unselected nodes in the tag
-	toWrap.forEach( function ( item ) {
+	toWrap.forEach( item => {
 		// [ exemplar, node ] tuple
 		let el = item[0].cloneNode( false ),
 			node = item[1];
@@ -3375,9 +3358,7 @@ proto._removeFormat = function ( tag, attributes, range, partial ) {
 		el.append( node );
 	});
 	// and remove old formatting tags.
-	formatTags.forEach( function ( el ) {
-		el.replaceWith( empty( el ) );
-	});
+	formatTags.forEach( el => el.replaceWith( empty( el ) ) );
 
 	// Merge adjacent inlines:
 	this._getRangeAndRemoveBookmark( range );
@@ -3435,8 +3416,7 @@ let splitBlock = ( self, block, node, offset ) => {
 
 	// Make sure the new node is the correct type.
 	if ( !hasTagAttributes( nodeAfterSplit, splitTag, splitProperties ) ) {
-		block = createElement( doc,
-			splitTag, splitProperties );
+		block = createElement( splitTag, splitProperties );
 		if ( nodeAfterSplit.dir ) {
 			block.dir = nodeAfterSplit.dir;
 		}
@@ -3511,13 +3491,13 @@ proto.modifyBlocks = function ( modify, range ) {
 };
 
 let increaseBlockQuoteLevel = function ( frag ) {
-	return this.createElement( 'BLOCKQUOTE',
+	return createElement( 'BLOCKQUOTE',
 		this._config.tagAttributes.blockquote, [
 			frag
 		]);
 };
 
-let decreaseBlockQuoteLevel = function ( frag ) {
+let decreaseBlockQuoteLevel = frag => {
 	var blockquotes = frag.querySelectorAll( 'blockquote' );
 	Array.prototype.filter.call( blockquotes, el =>
 		!getClosest( el.parentNode, frag, 'BLOCKQUOTE' )
@@ -3538,7 +3518,7 @@ let makeList = ( self, frag, type ) => {
 			walker.currentNode = node.lastChild;
 		}
 		if ( node.nodeName !== 'LI' ) {
-			newLi = self.createElement( 'LI', listItemAttrs );
+			newLi = createElement( 'LI', listItemAttrs );
 			if ( node.dir ) {
 				newLi.dir = node.dir;
 			}
@@ -3546,12 +3526,12 @@ let makeList = ( self, frag, type ) => {
 			// Have we replaced the previous block with a new <ul>/<ol>?
 			if ( ( prev = node.previousSibling ) && prev.nodeName === type ) {
 				prev.append( newLi );
-				node.remove();
+				detach( node );
 			}
 			// Otherwise, replace this block with the <ul>/<ol>
 			else {
 				node.replaceWith(
-					self.createElement( type, listAttrs, [
+					createElement( type, listAttrs, [
 						newLi
 					])
 				);
@@ -3563,7 +3543,7 @@ let makeList = ( self, frag, type ) => {
 			tag = node.nodeName;
 			if ( tag !== type && ( /^[OU]L$/.test( tag ) ) ) {
 				node.replaceWith(
-					self.createElement( type, listAttrs, [ empty( node ) ] )
+					createElement( type, listAttrs, [ empty( node ) ] )
 				);
 			}
 		}
@@ -3659,7 +3639,7 @@ proto.increaseListLevel = function ( range ) {
 	let listAttrs, next;
 	if ( newParent.nodeName !== type ) {
 		listAttrs = this._config.tagAttributes[ type.toLowerCase() ];
-		newParent = this.createElement( type, listAttrs );
+		newParent = createElement( type, listAttrs );
 		startLi.before( newParent );
 	}
 	do {
@@ -3735,7 +3715,7 @@ proto.decreaseListLevel = function ( range ) {
 	}
 
 	if ( !list.firstChild ) {
-		list.remove();
+		detach( list );
 	}
 
 	if ( insertBefore ) {
@@ -3805,7 +3785,7 @@ proto.setHTML = function ( html ) {
 	if ( typeof sanitizeToDOMFragment === 'function' ) {
 		frag = sanitizeToDOMFragment( html, false, this );
 	} else {
-		div = this.createElement( 'DIV' );
+		div = createElement( 'DIV' );
 		div.innerHTML = html;
 		frag = doc.createDocumentFragment();
 		frag.append( empty( div ) );
@@ -3897,7 +3877,7 @@ proto.insertElement = function ( el, range ) {
 };
 
 proto.insertImage = function ( src, attributes ) {
-	let img = this.createElement( 'IMG', mergeObjects({
+	let img = createElement( 'IMG', mergeObjects({
 		src: src
 	}, attributes, true ));
 	this.insertElement( img );
@@ -3924,7 +3904,7 @@ let addLinks = ( frag, root, self ) => {
 				child = doc.createTextNode( data.slice( 0, index ) );
 				parent.insertBefore( child, node );
 			}
-			child = self.createElement( 'A', mergeObjects({
+			child = createElement( 'A', mergeObjects({
 				href: match[1] ?
 					/^(?:ht|f)tps?:/i.test( match[1] ) ?
 						match[1] :
@@ -3971,7 +3951,7 @@ proto.insertHTML = function ( html, isPaste ) {
 			html = '<TABLE>' + html + '</TABLE>';
 		}
 		// Parse HTML into DOM tree
-		div = this.createElement( 'DIV' );
+		div = createElement( 'DIV' );
 		div.innerHTML = html;
 		frag = doc.createDocumentFragment();
 		frag.append( empty( div ) );
@@ -4106,7 +4086,7 @@ let command = ( method, arg, arg2 ) => function () {
 proto.addStyles = function ( styles ) {
 	if ( styles ) {
 		let head = doc.documentElement.firstChild,
-			style = this.createElement( 'STYLE', {
+			style = createElement( 'STYLE', {
 				type: 'text/css'
 			});
 		style.append( doc.createTextNode( styles ) );
@@ -4225,26 +4205,14 @@ proto.setHighlightColour = function ( colour ) {
 };
 
 proto.setTextAlignment = function ( alignment ) {
-	this.forEachBlock( function ( block ) {
-		let className = block.className
-			.split( /\s+/ )
-			.filter( function ( klass ) {
-				return !!klass && !/^align/.test( klass );
-			})
-			.join( ' ' );
-		if ( alignment ) {
-			block.className = className + ' align-' + alignment;
-			block.style.textAlign = alignment;
-		} else {
-			block.className = className;
-			block.style.textAlign = '';
-		}
+	this.forEachBlock( block => {
+		block.style.textAlign = alignment || '';
 	}, true );
 	return this.focus();
 };
 
 proto.setTextDirection = function ( direction ) {
-	this.forEachBlock( function ( block ) {
+	this.forEachBlock( block => {
 		if ( direction ) {
 			block.dir = direction;
 		} else {
@@ -4280,7 +4248,7 @@ let addPre = function ( frag ) {
 		while ( l-- ) {
 			br = nodes[l];
 			if ( !brBreaksLine[l] ) {
-				br.remove();
+				detach( br );
 			} else {
 				br.replaceWith( doc.createTextNode( '\n' ) );
 			}
@@ -4289,7 +4257,7 @@ let addPre = function ( frag ) {
 		nodes = node.querySelectorAll( 'CODE' );
 		l = nodes.length;
 		while ( l-- ) {
-			nodes[l].remove();
+			detach( nodes[l] );
 		}
 		if ( output.childNodes.length ) {
 			output.append( doc.createTextNode( '\n' ) );
@@ -4302,7 +4270,7 @@ let addPre = function ( frag ) {
 		node.data = node.data.replace( NBSP, ' ' ); // nbsp -> sp
 	}
 	output.normalize();
-	return fixCursor( this.createElement( 'PRE',
+	return fixCursor( createElement( 'PRE',
 		this._config.tagAttributes.pre, [
 			output
 		]), root );
@@ -4324,7 +4292,7 @@ let removePre = function ( frag ) {
 				contents.append(
 					doc.createTextNode( value.slice( 0, index ) )
 				);
-				contents.append( doc.createElement( 'BR' ) );
+				contents.append( createElement( 'BR' ) );
 				value = value.slice( index + 1 );
 			}
 			node.before( contents );

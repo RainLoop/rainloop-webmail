@@ -487,7 +487,7 @@ class SquireUI
 	}
 
 	testPresenceinSelection(format, validation) {
-		return validation.test(this.squire.getPath()) | this.squire.hasFormat(format);
+		return validation.test(this.squire.getPath()) || this.squire.hasFormat(format);
 	}
 
 	setMode(mode) {
