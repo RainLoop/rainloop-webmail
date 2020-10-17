@@ -325,7 +325,7 @@ class Message
 		return $this->aFlagsLowerCase;
 	}
 
-	public function From() : \MailSo\Mime\EmailCollection
+	public function From() : ?\MailSo\Mime\EmailCollection
 	{
 		return $this->oFrom;
 	}
