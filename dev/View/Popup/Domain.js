@@ -331,24 +331,24 @@ class DomainPopupView extends AbstractViewNext {
 
 			this.edit(true);
 
-			this.name(oDomain.Name.trim());
-			this.imapServer(oDomain.IncHost.trim());
+			this.name(oDomain.Name);
+			this.imapServer(oDomain.IncHost);
 			this.imapPort('' + pInt(oDomain.IncPort));
-			this.imapSecure(oDomain.IncSecure.trim());
+			this.imapSecure(oDomain.IncSecure);
 			this.imapShortLogin(!!oDomain.IncShortLogin);
 			this.useSieve(!!oDomain.UseSieve);
 			this.sieveAllowRaw(!!oDomain.SieveAllowRaw);
-			this.sieveServer(oDomain.SieveHost.trim());
+			this.sieveServer(oDomain.SieveHost);
 			this.sievePort('' + pInt(oDomain.SievePort));
-			this.sieveSecure(oDomain.SieveSecure.trim());
-			this.smtpServer(oDomain.OutHost.trim());
+			this.sieveSecure(oDomain.SieveSecure);
+			this.smtpServer(oDomain.OutHost);
 			this.smtpPort('' + pInt(oDomain.OutPort));
-			this.smtpSecure(oDomain.OutSecure.trim());
+			this.smtpSecure(oDomain.OutSecure);
 			this.smtpShortLogin(!!oDomain.OutShortLogin);
 			this.smtpAuth(!!oDomain.OutAuth);
 			this.smtpPhpMail(!!oDomain.OutUsePhpMail);
-			this.whiteList(oDomain.WhiteList.trim());
-			this.aliasName(oDomain.AliasName.trim());
+			this.whiteList(oDomain.WhiteList);
+			this.aliasName(oDomain.AliasName);
 
 			this.enableSmartPorts(true);
 		}
