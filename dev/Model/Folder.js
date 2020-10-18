@@ -43,241 +43,220 @@ class FolderModel extends AbstractModel {
 
 	/**
 	 * @static
-	 * @param {AjaxJsonFolder} json
+	 * @param {FetchJsonFolder} json
 	 * @returns {?FolderModel}
 	 */
-	static newInstanceFromJson(json) {
-		const folder = new FolderModel();
-		return folder.initByJson(json) ? folder.initComputed() : null;
-	}
+	static reviveFromJson(json) {
+		const folder = super.reviveFromJson(json);
+		if (folder) {
+			folder.name(json.Name);
+			folder.delimiter = json.Delimiter;
+			folder.fullName = json.FullName;
+			folder.fullNameRaw = json.FullNameRaw;
+			folder.fullNameHash = json.FullNameHash;
+			folder.deep = json.FullNameRaw.split(folder.delimiter).length - 1;
+			folder.selectable = !!json.IsSelectable;
+			folder.existen = !!json.IsExists;
 
-	/**
-	 * @returns {FolderModel}
-	 */
-	initComputed() {
-		this.isInbox = ko.computed(() => FolderType.Inbox === this.type());
+			folder.subScribed(!!json.IsSubscribed);
+			folder.checkable(!!json.Checkable);
 
-		this.hasSubScribedSubfolders = ko.computed(
-			() =>
-				!!this.subFolders().find(
-					oFolder => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder()
-				)
-		);
+			folder.isInbox = ko.computed(() => FolderType.Inbox === folder.type());
 
-		this.canBeEdited = ko.computed(() => FolderType.User === this.type() && this.existen && this.selectable);
+			folder.hasSubScribedSubfolders = ko.computed(
+				() =>
+					!!folder.subFolders().find(
+						oFolder => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder()
+					)
+			);
 
-		this.visible = ko.computed(() => {
-			const isSubScribed = this.subScribed(),
-				isSubFolders = this.hasSubScribedSubfolders();
+			folder.canBeEdited = ko.computed(() => FolderType.User === folder.type() && folder.existen && folder.selectable);
 
-			return isSubScribed || (isSubFolders && (!this.existen || !this.selectable));
-		});
+			folder.visible = ko.computed(() => {
+				const isSubScribed = folder.subScribed(),
+					isSubFolders = folder.hasSubScribedSubfolders();
 
-		this.isSystemFolder = ko.computed(() => FolderType.User !== this.type());
+				return isSubScribed || (isSubFolders && (!folder.existen || !folder.selectable));
+			});
 
-		this.hidden = ko.computed(() => {
-			const isSystem = this.isSystemFolder(),
-				isSubFolders = this.hasSubScribedSubfolders();
+			folder.isSystemFolder = ko.computed(() => FolderType.User !== folder.type());
 
-			return (isSystem && !isSubFolders) || (!this.selectable && !isSubFolders);
-		});
+			folder.hidden = ko.computed(() => {
+				const isSystem = folder.isSystemFolder(),
+					isSubFolders = folder.hasSubScribedSubfolders();
 
-		this.selectableForFolderList = ko.computed(() => !this.isSystemFolder() && this.selectable);
+				return (isSystem && !isSubFolders) || (!folder.selectable && !isSubFolders);
+			});
 
-		this.messageCountAll = ko
-			.computed({
-				read: this.privateMessageCountAll,
-				write: (iValue) => {
-					if (isPosNumeric(iValue, true)) {
-						this.privateMessageCountAll(iValue);
-					} else {
-						this.privateMessageCountAll.valueHasMutated();
+			folder.selectableForFolderList = ko.computed(() => !folder.isSystemFolder() && folder.selectable);
+
+			folder.messageCountAll = ko
+				.computed({
+					read: folder.privateMessageCountAll,
+					write: (iValue) => {
+						if (isPosNumeric(iValue, true)) {
+							folder.privateMessageCountAll(iValue);
+						} else {
+							folder.privateMessageCountAll.valueHasMutated();
+						}
+					}
+				})
+				.extend({ notify: 'always' });
+
+			folder.messageCountUnread = ko
+				.computed({
+					read: folder.privateMessageCountUnread,
+					write: (value) => {
+						if (isPosNumeric(value, true)) {
+							folder.privateMessageCountUnread(value);
+						} else {
+							folder.privateMessageCountUnread.valueHasMutated();
+						}
+					}
+				})
+				.extend({ notify: 'always' });
+
+			folder.printableUnreadCount = ko.computed(() => {
+				const count = folder.messageCountAll(),
+					unread = folder.messageCountUnread(),
+					type = folder.type();
+
+				if (0 < count) {
+					if (FolderType.Draft === type) {
+						return '' + count;
+					}
+					if (
+						0 < unread &&
+						FolderType.Trash !== type &&
+						FolderType.Archive !== type &&
+						FolderType.SentItems !== type
+					) {
+						return '' + unread;
 					}
 				}
-			})
-			.extend({ notify: 'always' });
 
-		this.messageCountUnread = ko
-			.computed({
-				read: this.privateMessageCountUnread,
+				return '';
+			});
+
+			folder.canBeDeleted = ko.computed(
+				() => !folder.isSystemFolder() && !folder.subFolders().length
+			);
+
+			folder.canBeSubScribed = ko.computed(
+				() => !folder.isSystemFolder() && folder.selectable
+			);
+
+			folder.canBeChecked = folder.canBeSubScribed;
+
+			folder.localName = ko.computed(() => {
+				translatorTrigger();
+
+				let name = folder.name();
+				const type = folder.type();
+
+				if (folder.isSystemFolder()) {
+					switch (type) {
+						case FolderType.Inbox:
+							name = i18n('FOLDER_LIST/INBOX_NAME');
+							break;
+						case FolderType.SentItems:
+							name = i18n('FOLDER_LIST/SENT_NAME');
+							break;
+						case FolderType.Draft:
+							name = i18n('FOLDER_LIST/DRAFTS_NAME');
+							break;
+						case FolderType.Spam:
+							name = i18n('FOLDER_LIST/SPAM_NAME');
+							break;
+						case FolderType.Trash:
+							name = i18n('FOLDER_LIST/TRASH_NAME');
+							break;
+						case FolderType.Archive:
+							name = i18n('FOLDER_LIST/ARCHIVE_NAME');
+							break;
+						// no default
+					}
+				}
+
+				return name;
+			});
+
+			folder.manageFolderSystemName = ko.computed(() => {
+				translatorTrigger();
+
+				let suffix = '';
+				const type = folder.type(),
+					name = folder.name();
+
+				if (folder.isSystemFolder()) {
+					switch (type) {
+						case FolderType.Inbox:
+							suffix = '(' + i18n('FOLDER_LIST/INBOX_NAME') + ')';
+							break;
+						case FolderType.SentItems:
+							suffix = '(' + i18n('FOLDER_LIST/SENT_NAME') + ')';
+							break;
+						case FolderType.Draft:
+							suffix = '(' + i18n('FOLDER_LIST/DRAFTS_NAME') + ')';
+							break;
+						case FolderType.Spam:
+							suffix = '(' + i18n('FOLDER_LIST/SPAM_NAME') + ')';
+							break;
+						case FolderType.Trash:
+							suffix = '(' + i18n('FOLDER_LIST/TRASH_NAME') + ')';
+							break;
+						case FolderType.Archive:
+							suffix = '(' + i18n('FOLDER_LIST/ARCHIVE_NAME') + ')';
+							break;
+						// no default
+					}
+				}
+
+				if ((suffix && '(' + name + ')' === suffix) || '(inbox)' === suffix.toLowerCase()) {
+					suffix = '';
+				}
+
+				return suffix;
+			});
+
+			folder.collapsed = ko.computed({
+				read: () => !folder.hidden() && folder.collapsedPrivate(),
 				write: (value) => {
-					if (isPosNumeric(value, true)) {
-						this.privateMessageCountUnread(value);
-					} else {
-						this.privateMessageCountUnread.valueHasMutated();
-					}
+					folder.collapsedPrivate(value);
 				}
-			})
-			.extend({ notify: 'always' });
+			});
 
-		this.printableUnreadCount = ko.computed(() => {
-			const count = this.messageCountAll(),
-				unread = this.messageCountUnread(),
-				type = this.type();
+			folder.hasUnreadMessages = ko.computed(() => 0 < folder.messageCountUnread() && folder.printableUnreadCount());
 
-			if (0 < count) {
-				if (FolderType.Draft === type) {
-					return '' + count;
-				} else if (
-					0 < unread &&
-					FolderType.Trash !== type &&
-					FolderType.Archive !== type &&
-					FolderType.SentItems !== type
-				) {
-					return '' + unread;
+			folder.hasSubScribedUnreadMessagesSubfolders = ko.computed(
+				() =>
+					!!folder.subFolders().find(
+						folder => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders()
+					)
+			);
+
+			// subscribe
+			folder.name.subscribe(value => folder.nameForEdit(value));
+
+			folder.edited.subscribe(value => value && folder.nameForEdit(folder.name()));
+
+			folder.messageCountUnread.subscribe((unread) => {
+				if (FolderType.Inbox === folder.type()) {
+					dispatchEvent(new CustomEvent('mailbox.inbox-unread-count', {detail:unread}));
 				}
-			}
-
-			return '';
-		});
-
-		this.canBeDeleted = ko.computed(() => {
-			const bSystem = this.isSystemFolder();
-			return !bSystem && !this.subFolders().length;
-		});
-
-		this.canBeSubScribed = ko.computed(
-			() => !this.isSystemFolder() && this.selectable
-		);
-
-		this.canBeChecked = this.canBeSubScribed;
-
-		this.localName = ko.computed(() => {
-			translatorTrigger();
-
-			let name = this.name();
-			const type = this.type();
-
-			if (this.isSystemFolder()) {
-				switch (type) {
-					case FolderType.Inbox:
-						name = i18n('FOLDER_LIST/INBOX_NAME');
-						break;
-					case FolderType.SentItems:
-						name = i18n('FOLDER_LIST/SENT_NAME');
-						break;
-					case FolderType.Draft:
-						name = i18n('FOLDER_LIST/DRAFTS_NAME');
-						break;
-					case FolderType.Spam:
-						name = i18n('FOLDER_LIST/SPAM_NAME');
-						break;
-					case FolderType.Trash:
-						name = i18n('FOLDER_LIST/TRASH_NAME');
-						break;
-					case FolderType.Archive:
-						name = i18n('FOLDER_LIST/ARCHIVE_NAME');
-						break;
-					// no default
-				}
-			}
-
-			return name;
-		});
-
-		this.manageFolderSystemName = ko.computed(() => {
-			translatorTrigger();
-
-			let suffix = '';
-			const type = this.type(),
-				name = this.name();
-
-			if (this.isSystemFolder()) {
-				switch (type) {
-					case FolderType.Inbox:
-						suffix = '(' + i18n('FOLDER_LIST/INBOX_NAME') + ')';
-						break;
-					case FolderType.SentItems:
-						suffix = '(' + i18n('FOLDER_LIST/SENT_NAME') + ')';
-						break;
-					case FolderType.Draft:
-						suffix = '(' + i18n('FOLDER_LIST/DRAFTS_NAME') + ')';
-						break;
-					case FolderType.Spam:
-						suffix = '(' + i18n('FOLDER_LIST/SPAM_NAME') + ')';
-						break;
-					case FolderType.Trash:
-						suffix = '(' + i18n('FOLDER_LIST/TRASH_NAME') + ')';
-						break;
-					case FolderType.Archive:
-						suffix = '(' + i18n('FOLDER_LIST/ARCHIVE_NAME') + ')';
-						break;
-					// no default
-				}
-			}
-
-			if ((suffix && '(' + name + ')' === suffix) || '(inbox)' === suffix.toLowerCase()) {
-				suffix = '';
-			}
-
-			return suffix;
-		});
-
-		this.collapsed = ko.computed({
-			read: () => !this.hidden() && this.collapsedPrivate(),
-			write: (value) => {
-				this.collapsedPrivate(value);
-			}
-		});
-
-		this.hasUnreadMessages = ko.computed(() => 0 < this.messageCountUnread() && this.printableUnreadCount());
-
-		this.hasSubScribedUnreadMessagesSubfolders = ko.computed(
-			() =>
-				!!this.subFolders().find(
-					folder => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders()
-				)
-		);
-
-		// subscribe
-		this.name.subscribe(value => this.nameForEdit(value));
-
-		this.edited.subscribe(value => value && this.nameForEdit(this.name()));
-
-		this.messageCountUnread.subscribe((unread) => {
-			if (FolderType.Inbox === this.type()) {
-				dispatchEvent(new CustomEvent('mailbox.inbox-unread-count', {detail:unread}));
-			}
-		});
-
-		return this;
+			});
+		}
+		return folder;
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	collapsedCss() {
-		return this.hasSubScribedSubfolders()
-			? this.collapsed()
-				? 'icon-right-mini e-collapsed-sign'
-				: 'icon-down-mini e-collapsed-sign'
-			: 'icon-none e-collapsed-sign';
-	}
-
-	/**
-	 * @param {AjaxJsonFolder} json
-	 * @returns {boolean}
-	 */
-	initByJson(json) {
-		let bResult = false;
-
-		if (json && 'Object/Folder' === json['@Object']) {
-			this.name(json.Name);
-			this.delimiter = json.Delimiter;
-			this.fullName = json.FullName;
-			this.fullNameRaw = json.FullNameRaw;
-			this.fullNameHash = json.FullNameHash;
-			this.deep = json.FullNameRaw.split(this.delimiter).length - 1;
-			this.selectable = !!json.IsSelectable;
-			this.existen = !!json.IsExists;
-
-			this.subScribed(!!json.IsSubscribed);
-			this.checkable(!!json.Checkable);
-
-			bResult = true;
-		}
-
-		return bResult;
+		return 'e-collapsed-sign ' + (this.hasSubScribedSubfolders()
+			? (this.collapsed() ? 'icon-right-mini' : 'icon-down-mini')
+			: 'icon-none'
+		);
 	}
 
 	/**

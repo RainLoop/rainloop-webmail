@@ -41,48 +41,36 @@ class AttachmentModel extends AbstractModel {
 
 	/**
 	 * @static
-	 * @param {AjaxJsonAttachment} json
+	 * @param {FetchJsonAttachment} json
 	 * @returns {?AttachmentModel}
 	 */
-	static newInstanceFromJson(json) {
-		const attachment = new AttachmentModel();
-		return attachment.initByJson(json) ? attachment : null;
-	}
-
-	/**
-	 * @param {AjaxJsonAttachment} json
-	 * @returns {boolean}
-	 */
-	initByJson(json) {
-		let bResult = false;
-		if (json && 'Object/Attachment' === json['@Object']) {
-			this.mimeType = ((json.MimeType || '').toLowerCase()).trim();
-			this.fileName = json.FileName.trim();
+	static reviveFromJson(json) {
+		const attachment = super.reviveFromJson(json);
+		if (attachment) {
+			attachment.mimeType = ((json.MimeType || '').toLowerCase()).trim();
+			attachment.fileName = json.FileName.trim();
 			// if it is inline
-			this.isInline = !!json.IsInline;
+			attachment.isInline = !!json.IsInline;
 			// if inline image is linked with CID in html
 			// and 'src="cid:' or background-image:url(cid:)
-			this.isLinked = !!json.IsLinked;
-			this.isThumbnail = !!json.IsThumbnail;
-			this.cid = json.CID;
-			this.contentLocation = json.ContentLocation;
-			this.download = json.Download;
+			attachment.isLinked = !!json.IsLinked;
+			attachment.isThumbnail = !!json.IsThumbnail;
+			attachment.cid = json.CID;
+			attachment.contentLocation = json.ContentLocation;
+			attachment.download = json.Download;
 
-			this.folder = json.Folder;
-			this.uid = json.Uid;
-			this.mimeIndex = json.MimeIndex;
-			this.framed = !!json.Framed;
+			attachment.folder = json.Folder;
+			attachment.uid = json.Uid;
+			attachment.mimeIndex = json.MimeIndex;
+			attachment.framed = !!json.Framed;
 
-			this.friendlySize = File.friendlySize(json.EstimatedSize);
-			this.cidWithoutTags = this.cid.replace(/^<+/, '').replace(/>+$/, '');
+			attachment.friendlySize = File.friendlySize(json.EstimatedSize);
+			attachment.cidWithoutTags = attachment.cid.replace(/^<+/, '').replace(/>+$/, '');
 
-			this.fileNameExt = File.getExtension(this.fileName);
-			this.fileType = File.getType(this.fileNameExt, this.mimeType);
-
-			bResult = true;
+			attachment.fileNameExt = File.getExtension(attachment.fileName);
+			attachment.fileType = File.getType(attachment.fileNameExt, attachment.mimeType);
 		}
-
-		return bResult;
+		return attachment;
 	}
 
 	/**

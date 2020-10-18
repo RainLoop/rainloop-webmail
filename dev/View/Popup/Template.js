@@ -8,6 +8,7 @@ import Remote from 'Remote/User/Fetch';
 
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { TemplateModel } from 'Model/Template';
 
 @popup({
 	name: 'View/Popup/Template',
@@ -133,8 +134,7 @@ class TemplatePopupView extends AbstractViewNext {
 					if (
 						StorageResultType.Success === result &&
 						data &&
-						data.Result &&
-						'Object/Template' === data.Result['@Object'] &&
+						TemplateModel.validJson(data.Result) &&
 						null != data.Result.Body
 					) {
 						template.body = data.Result.Body;

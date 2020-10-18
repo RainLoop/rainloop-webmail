@@ -12,7 +12,7 @@ export class EmailCollectionModel extends AbstractCollectionModel
 	static reviveFromJson(items) {
 		let result = new EmailCollectionModel;
 		Array.isArray(items) && items.forEach(email => {
-			email = EmailModel.newInstanceFromJson(email);
+			email = EmailModel.reviveFromJson(email);
 			email && result.push(email);
 		});
 		return result;

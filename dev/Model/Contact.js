@@ -46,28 +46,26 @@ class ContactModel extends AbstractModel {
 	}
 
 	/**
-	 * @param {Object} oItem
-	 * @returns {boolean}
+	 * @static
+	 * @param {FetchJsonContact} json
+	 * @returns {?ContactModel}
 	 */
-	parse(json) {
-		let result = false;
-		if (json && 'Object/Contact' === json['@Object']) {
-			this.idContact = pInt(json.IdContact);
-			this.display = pString(json.Display);
-			this.readOnly = !!json.ReadOnly;
+	static reviveFromJson(json) {
+		const contact = super.reviveFromJson(json);
+		if (contact) {
+			contact.idContact = pInt(json.IdContact);
+			contact.display = pString(json.Display);
+			contact.readOnly = !!json.ReadOnly;
 
 			if (Array.isNotEmpty(json.Properties)) {
 				json.Properties.forEach(property => {
 					if (property && property.Type && null != property.Value && null != property.TypeStr) {
-						this.properties.push([pInt(property.Type), pString(property.Value), pString(property.TypeStr)]);
+						contact.properties.push([pInt(property.Type), pString(property.Value), pString(property.TypeStr)]);
 					}
 				});
 			}
-
-			result = true;
 		}
-
-		return result;
+		return contact;
 	}
 
 	/**

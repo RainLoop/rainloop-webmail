@@ -12,7 +12,14 @@ export class AbstractModel {
 	 * @param {string} modelName = ''
 	 */
 	constructor() {
-//		this.sModelName = new.target.name;
+/*
+	constructor(props) {
+		if (new.target === Parent) {
+			throw new Error("Can't instantiate abstract class!");
+		}
+		this.sModelName = new.target.name;
+		props && Object.entries(props).forEach(([key, value]) => '@' !== key[0] && (this[key] = value));
+*/
 	}
 
 	regDisposables(value) {
@@ -29,4 +36,30 @@ export class AbstractModel {
 		}
 		Object.values(this).forEach(disposeOne);
 	}
+
+	/**
+	 * @static
+	 * @param {FetchJson} json
+	 * @returns {boolean}
+	 */
+	static validJson(json) {
+		return !!(json && ('Object/'+this.name.replace('Model', '') === json['@Object']));
+	}
+
+	/**
+	 * @static
+	 * @param {FetchJson} json
+	 * @returns {*Model}
+	 */
+	static reviveFromJson(json) {
+		// Object/Attachment
+		// Object/Contact
+		// Object/Email
+		// Object/Filter
+		// Object/Folder
+		// Object/Message
+		// Object/Template
+		return this.validJson(json) ? new this(json) : null;
+	}
+
 }

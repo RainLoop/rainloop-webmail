@@ -22,20 +22,19 @@ class TemplateModel extends AbstractModel {
 	}
 
 	/**
-	 * @returns {boolean}
+	 * @static
+	 * @param {FetchJsonTemplate} json
+	 * @returns {?TemplateModel}
 	 */
-	parse(json) {
-		let result = false;
-		if (json && 'Object/Template' === json['@Object']) {
-			this.id = pString(json.ID);
-			this.name = pString(json.Name);
-			this.body = pString(json.Body);
-			this.populated = !!json.Populated;
-
-			result = true;
+	static reviveFromJson(json) {
+		const template = super.reviveFromJson(json);
+		if (template) {
+			template.id = pString(json.ID);
+			template.name = pString(json.Name);
+			template.body = pString(json.Body);
+			template.populated = !!json.Populated;
 		}
-
-		return result;
+		return template;
 	}
 }
 

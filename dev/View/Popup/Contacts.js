@@ -468,7 +468,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 	/**
 	 * @param {string} sResult
-	 * @param {AjaxJsonDefaultResponse} oData
+	 * @param {FetchJsonDefaultResponse} oData
 	 */
 	deleteResponse(sResult, oData) {
 		if (500 < (StorageResultType.Success === sResult && oData && oData.Time ? pInt(oData.Time) : 0)) {
@@ -570,12 +570,10 @@ class ContactsPopupView extends AbstractViewNext {
 
 				if (StorageResultType.Success === result && data && data.Result && data.Result.List) {
 					if (Array.isNotEmpty(data.Result.List)) {
-						list = data.Result.List.map(item => {
-							const contact = new ContactModel();
-							return contact.parse(item) ? contact : null;
+						data.Result.List.forEach(item => {
+							item = ContactModel.reviveFromJson(item);
+							item && list.push(item);
 						});
-
-						list = list.filter(v => v);
 
 						count = pInt(data.Result.Count);
 						count = 0 < count ? count : 0;

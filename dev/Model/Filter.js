@@ -207,19 +207,24 @@ class FilterModel extends AbstractModel {
 		this.actionValueFourth(AccountStore.getEmailAddresses().join(', '));
 	}
 
-	parse(json) {
-		let result = false;
-		if (json && 'Object/Filter' === json['@Object']) {
-			this.id = pString(json.ID);
-			this.name(pString(json.Name));
-			this.enabled(!!json.Enabled);
+	/**
+	 * @static
+	 * @param {FetchJsonFilter} json
+	 * @returns {?FilterModel}
+	 */
+	static reviveFromJson(json) {
+		const filter = super.reviveFromJson(json);
+		if (filter) {
+			filter.id = pString(json.ID);
+			filter.name(pString(json.Name));
+			filter.enabled(!!json.Enabled);
 
-			this.conditionsType(pString(json.ConditionsType));
+			filter.conditionsType(pString(json.ConditionsType));
 
-			this.conditions([]);
+			filter.conditions([]);
 
 			if (Array.isNotEmpty(json.Conditions)) {
-				this.conditions(
+				filter.conditions(
 					json.Conditions.map(aData => {
 						const filterCondition = new FilterConditionModel();
 						return filterCondition && filterCondition.parse(aData) ? filterCondition : null;
@@ -227,21 +232,18 @@ class FilterModel extends AbstractModel {
 				);
 			}
 
-			this.actionType(pString(json.ActionType));
+			filter.actionType(pString(json.ActionType));
 
-			this.actionValue(pString(json.ActionValue));
-			this.actionValueSecond(pString(json.ActionValueSecond));
-			this.actionValueThird(pString(json.ActionValueThird));
-			this.actionValueFourth(pString(json.ActionValueFourth));
+			filter.actionValue(pString(json.ActionValue));
+			filter.actionValueSecond(pString(json.ActionValueSecond));
+			filter.actionValueThird(pString(json.ActionValueThird));
+			filter.actionValueFourth(pString(json.ActionValueFourth));
 
-			this.actionNoStop(!json.Stop);
-			this.actionKeep(!!json.Keep);
-			this.actionMarkAsRead(!!json.MarkAsRead);
-
-			result = true;
+			filter.actionNoStop(!json.Stop);
+			filter.actionKeep(!!json.Keep);
+			filter.actionMarkAsRead(!!json.MarkAsRead);
 		}
-
-		return result;
+		return filter;
 	}
 
 	cloneSelf() {

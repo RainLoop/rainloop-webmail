@@ -1,5 +1,7 @@
 import { encodeHtml } from 'Common/UtilsUser';
 
+import { AbstractModel } from 'Knoin/AbstractModel';
+
 'use strict';
 
 /**
@@ -258,7 +260,7 @@ class Tokenizer
 	}
 }
 
-class EmailModel {
+class EmailModel extends AbstractModel {
 	email = '';
 	name = '';
 	dkimStatus = '';
@@ -271,6 +273,7 @@ class EmailModel {
 	 * @param {string=} dkimValue = ''
 	 */
 	constructor(email = '', name = '', dkimStatus = 'none', dkimValue = '') {
+		super();
 		this.email = email;
 		this.name = name;
 		this.dkimStatus = dkimStatus;
@@ -281,12 +284,20 @@ class EmailModel {
 
 	/**
 	 * @static
-	 * @param {AjaxJsonEmail} json
+	 * @param {FetchJsonEmail} json
 	 * @returns {?EmailModel}
 	 */
-	static newInstanceFromJson(json) {
-		const email = new EmailModel();
-		return email.initByJson(json) ? email : null;
+	static reviveFromJson(json) {
+		const email = super.reviveFromJson(json);
+		if (email && email.email) {
+			email.name = json.Name.trim();
+			email.email = json.Email.trim();
+			email.dkimStatus = (json.DkimStatus || '').trim();
+			email.dkimValue = (json.DkimValue || '').trim();
+			email.clearDuplicateName();
+			return email;
+		}
+		return null;
 	}
 
 	/**
@@ -330,25 +341,6 @@ class EmailModel {
 	 */
 	search(query) {
 		return (this.name + ' ' + this.email).toLowerCase().includes(query.toLowerCase());
-	}
-
-	/**
-	 * @param {AjaxJsonEmail} oJsonEmail
-	 * @returns {boolean}
-	 */
-	initByJson(json) {
-		let result = false;
-		if (json && 'Object/Email' === json['@Object']) {
-			this.name = json.Name.trim();
-			this.email = json.Email.trim();
-			this.dkimStatus = (json.DkimStatus || '').trim();
-			this.dkimValue = (json.DkimValue || '').trim();
-
-			result = !!this.email;
-			this.clearDuplicateName();
-		}
-
-		return result;
 	}
 
 	/**

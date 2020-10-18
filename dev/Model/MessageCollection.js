@@ -36,19 +36,17 @@ export class MessageCollectionModel extends AbstractCollectionModel
 	static reviveFromJson(object, cached) {
 		let newCount = 0;
 		return super.reviveFromJson(object, message => {
-			if (message && 'Object/Message' === message['@Object']) {
-				message = MessageModel.newInstanceFromJson(message);
-				if (message) {
-					if (hasNewMessageAndRemoveFromCache(message.folderFullNameRaw, message.uid) && 5 >= newCount) {
-						++newCount;
-						message.newForAnimation(true);
-					}
-
-					message.deleted(false);
-
-					cached ? initMessageFlagsFromCache(message) : storeMessageFlagsToCache(message);
-					return message;
+			message = MessageModel.reviveFromJson(message);
+			if (message) {
+				if (hasNewMessageAndRemoveFromCache(message.folderFullNameRaw, message.uid) && 5 >= newCount) {
+					++newCount;
+					message.newForAnimation(true);
 				}
+
+				message.deleted(false);
+
+				cached ? initMessageFlagsFromCache(message) : storeMessageFlagsToCache(message);
+				return message;
 			}
 		});
 	}

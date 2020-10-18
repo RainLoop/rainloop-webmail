@@ -528,10 +528,9 @@ class AppUser extends AbstractApp {
 				delegateRunOnDestroy(TemplateStore.templates());
 
 				TemplateStore.templates(
-					data.Result.Templates.map(templateData => {
-						const template = new TemplateModel();
-						return template.parse(templateData) ? template : null;
-					}).filter(v => v)
+					data.Result.Templates.map(templateData =>
+						TemplateModel.reviveFromJson(templateData)
+					).filter(v => v)
 				);
 			}
 		});

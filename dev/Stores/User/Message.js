@@ -452,14 +452,13 @@ class MessageUserStore {
 
 		if (
 			data &&
+			MessageModel.validJson(data.Result) &&
 			message &&
-			data.Result &&
-			'Object/Message' === data.Result['@Object'] &&
 			message.folderFullNameRaw === data.Result.Folder
 		) {
 			const threads = message.threads();
 			if (message.uid !== data.Result.Uid && 1 < threads.length && threads.includes(data.Result.Uid)) {
-				message = MessageModel.newInstanceFromJson(data.Result);
+				message = MessageModel.reviveFromJson(data.Result);
 				if (message) {
 					message.threads(threads);
 					initMessageFlagsFromCache(message);
@@ -641,7 +640,7 @@ class MessageUserStore {
 
 	/**
 	 * @param {string} sResult
-	 * @param {AjaxJsonDefaultResponse} oData
+	 * @param {FetchJsonDefaultResponse} oData
 	 * @param {boolean} bCached
 	 */
 	onMessageResponse(sResult, oData, bCached) {

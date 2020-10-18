@@ -93,12 +93,49 @@ class MessageModel extends AbstractModel {
 
 	/**
 	 * @static
-	 * @param {AjaxJsonMessage} oJsonMessage
+	 * @param {FetchJsonMessage} json
 	 * @returns {?MessageModel}
 	 */
-	static newInstanceFromJson(json) {
-		const oMessageModel = new MessageModel();
-		return oMessageModel.initByJson(json) ? oMessageModel : null;
+	static reviveFromJson(json) {
+		const oMessageModel = super.reviveFromJson(json);
+		if (oMessageModel) {
+			oMessageModel.folderFullNameRaw = json.Folder;
+			oMessageModel.uid = json.Uid;
+			oMessageModel.hash = json.Hash;
+			oMessageModel.requestHash = json.RequestHash;
+
+			oMessageModel.size(pInt(json.Size));
+
+			oMessageModel.from = EmailCollectionModel.reviveFromJson(json.From);
+			oMessageModel.to = EmailCollectionModel.reviveFromJson(json.To);
+			oMessageModel.cc = EmailCollectionModel.reviveFromJson(json.Cc);
+			oMessageModel.bcc = EmailCollectionModel.reviveFromJson(json.Bcc);
+			oMessageModel.replyTo = EmailCollectionModel.reviveFromJson(json.ReplyTo);
+			oMessageModel.deliveredTo = EmailCollectionModel.reviveFromJson(json.DeliveredTo);
+			oMessageModel.unsubsribeLinks = Array.isNotEmpty(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
+
+			oMessageModel.subject(json.Subject);
+			if (isArray(json.SubjectParts)) {
+				oMessageModel.subjectPrefix(json.SubjectParts[0]);
+				oMessageModel.subjectSuffix(json.SubjectParts[1]);
+			} else {
+				oMessageModel.subjectPrefix('');
+				oMessageModel.subjectSuffix(oMessageModel.subject());
+			}
+
+			oMessageModel.dateTimeStampInUTC(pInt(json.DateTimeStampInUTC));
+
+			oMessageModel.fromEmailString(oMessageModel.from.toString(true));
+			oMessageModel.fromClearEmailString(oMessageModel.from.toStringClear());
+			oMessageModel.toEmailsString(oMessageModel.to.toString(true));
+			oMessageModel.toClearEmailsString(oMessageModel.to.toStringClear());
+
+			oMessageModel.threads(isArray(json.Threads) ? json.Threads : []);
+
+			oMessageModel.initFlagsByJson(json);
+			oMessageModel.computeSenderEmail();
+		}
+		return oMessageModel;
 	}
 
 	_reset() {
@@ -206,7 +243,8 @@ class MessageModel extends AbstractModel {
 	}
 
 	setFromJson(json) {
-		if (json && 'Object/Message' === json['@Object']) {
+		let result = MessageModel.validJson(json);
+		if (result) {
 			let priority = pInt(json.Priority);
 			this.priority(
 				[MessagePriority.High, MessagePriority.Low].includes(priority) ? priority : MessagePriority.Normal
@@ -216,62 +254,12 @@ class MessageModel extends AbstractModel {
 
 			this.hasAttachments(!!json.HasAttachments);
 			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
-
-			return true;
 		}
-
-		return false;
-	}
-
-	/**
-	 * @param {AjaxJsonMessage} json
-	 * @returns {boolean}
-	 */
-	initByJson(json) {
-		let result = this.setFromJson(json);
-		if (result) {
-			this.folderFullNameRaw = json.Folder;
-			this.uid = json.Uid;
-			this.hash = json.Hash;
-			this.requestHash = json.RequestHash;
-
-			this.size(pInt(json.Size));
-
-			this.from = EmailCollectionModel.reviveFromJson(json.From);
-			this.to = EmailCollectionModel.reviveFromJson(json.To);
-			this.cc = EmailCollectionModel.reviveFromJson(json.Cc);
-			this.bcc = EmailCollectionModel.reviveFromJson(json.Bcc);
-			this.replyTo = EmailCollectionModel.reviveFromJson(json.ReplyTo);
-			this.deliveredTo = EmailCollectionModel.reviveFromJson(json.DeliveredTo);
-			this.unsubsribeLinks = Array.isNotEmpty(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
-
-			this.subject(json.Subject);
-			if (isArray(json.SubjectParts)) {
-				this.subjectPrefix(json.SubjectParts[0]);
-				this.subjectSuffix(json.SubjectParts[1]);
-			} else {
-				this.subjectPrefix('');
-				this.subjectSuffix(this.subject());
-			}
-
-			this.dateTimeStampInUTC(pInt(json.DateTimeStampInUTC));
-
-			this.fromEmailString(this.from.toString(true));
-			this.fromClearEmailString(this.from.toStringClear());
-			this.toEmailsString(this.to.toString(true));
-			this.toClearEmailsString(this.to.toStringClear());
-
-			this.threads(isArray(json.Threads) ? json.Threads : []);
-
-			this.initFlagsByJson(json);
-			this.computeSenderEmail();
-		}
-
 		return result;
 	}
 
 	/**
-	 * @param {AjaxJsonMessage} json
+	 * @param {FetchJsonMessage} json
 	 * @returns {boolean}
 	 */
 	initUpdateByMessageJson(json) {
@@ -314,22 +302,19 @@ class MessageModel extends AbstractModel {
 	}
 
 	/**
-	 * @param {AjaxJsonMessage} json
+	 * @param {FetchJsonMessage} json
 	 * @returns {boolean}
 	 */
 	initFlagsByJson(json) {
-		let result = false;
-		if (json && 'Object/Message' === json['@Object']) {
+		let result = MessageModel.validJson(json);
+		if (result) {
 			this.unseen(!json.IsSeen);
 			this.flagged(!!json.IsFlagged);
 			this.answered(!!json.IsAnswered);
 			this.forwarded(!!json.IsForwarded);
 			this.isReadReceipt(!!json.IsReadReceipt);
 			this.deletedMark(!!json.IsDeleted);
-
-			result = true;
 		}
-
 		return result;
 	}
 

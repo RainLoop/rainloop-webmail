@@ -47,7 +47,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			bDisplaySpecSetting = FolderStore.displaySpecSetting();
 		return super.reviveFromJson(object, (oFolder, self) => {
 			let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
-			if (!oCacheFolder && (oCacheFolder = FolderModel.newInstanceFromJson(oFolder))) {
+			if (!oCacheFolder && (oCacheFolder = FolderModel.reviveFromJson(oFolder))) {
 				if (oFolder.FullNameRaw == self.SystemFolders[ServerFolderType.INBOX]) {
 					oCacheFolder.type(FolderType.Inbox);
 					Cache.setFolderInboxName(oFolder.FullNameRaw);

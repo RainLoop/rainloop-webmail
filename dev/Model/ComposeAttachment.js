@@ -83,7 +83,7 @@ class ComposeAttachmentModel extends AbstractModel {
 	}
 
 	/**
-	 * @param {AjaxJsonComposeAttachment} json
+	 * @param {FetchJsonComposeAttachment} json
 	 * @returns {boolean}
 	 */
 	initByUploadJson(json) {

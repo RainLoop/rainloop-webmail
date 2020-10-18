@@ -102,10 +102,7 @@ class FiltersUserSettings {
 					this.serverError(false);
 
 					this.filters(
-						data.Result.Filters.map(aItem => {
-							const filter = new FilterModel();
-							return filter && filter.parse(aItem) ? filter : null;
-						}).filter(v => v)
+						data.Result.Filters.map(aItem => FilterModel.reviveFromJson(aItem)).filter(v => v)
 					);
 
 					this.modules(data.Result.Modules ? data.Result.Modules : {});
