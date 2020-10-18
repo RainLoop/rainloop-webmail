@@ -43,61 +43,45 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	 * @returns {FolderCollectionModel}
 	 */
 	static reviveFromJson(object) {
-		const collection = this.getFromJSON(object, 'FolderCollection');
-		if (collection) {
-			const result = new FolderCollectionModel(object),
-				expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders),
-				bDisplaySpecSetting = FolderStore.displaySpecSetting();
+		const expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders),
+			bDisplaySpecSetting = FolderStore.displaySpecSetting();
+		return super.reviveFromJson(object, (oFolder, self) => {
+			let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
+			if (!oCacheFolder && (oCacheFolder = FolderModel.newInstanceFromJson(oFolder))) {
+				if (oFolder.FullNameRaw == self.SystemFolders[ServerFolderType.INBOX]) {
+					oCacheFolder.type(FolderType.Inbox);
+					Cache.setFolderInboxName(oFolder.FullNameRaw);
+				}
+				Cache.setFolder(oCacheFolder.fullNameHash, oFolder.FullNameRaw, oCacheFolder);
+			}
 
-			collection.forEach(oFolder => {
-				if (oFolder) {
-					let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
-					if (!oCacheFolder) {
-						oCacheFolder = FolderModel.newInstanceFromJson(oFolder);
-						if (oCacheFolder) {
-							if (oFolder.FullNameRaw == result.SystemFolders[ServerFolderType.INBOX]) {
-								oCacheFolder.type(FolderType.Inbox);
-								Cache.setFolderInboxName(oFolder.FullNameRaw);
-							}
-							Cache.setFolder(oCacheFolder.fullNameHash, oFolder.FullNameRaw, oCacheFolder);
-						}
+			if (oCacheFolder) {
+				oCacheFolder.checkable(bDisplaySpecSetting ? !!oFolder.Checkable : true);
+
+				oCacheFolder.collapsed(!expandedFolders
+					|| !Array.isArray(expandedFolders)
+					|| !expandedFolders.includes(oCacheFolder.fullNameHash));
+
+				if (oFolder.Extended) {
+					if (oFolder.Extended.Hash) {
+						Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);
 					}
 
-					if (oCacheFolder) {
-						if (bDisplaySpecSetting) {
-							oCacheFolder.checkable(!!oFolder.Checkable);
-						} else {
-							oCacheFolder.checkable(true);
-						}
+					if (null != oFolder.Extended.MessageCount) {
+						oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
+					}
 
-						oCacheFolder.collapsed(!expandedFolders
-							|| !Array.isArray(expandedFolders)
-							|| !expandedFolders.includes(oCacheFolder.fullNameHash));
-
-						if (oFolder.Extended) {
-							if (oFolder.Extended.Hash) {
-								Cache.setFolderHash(oCacheFolder.fullNameRaw, oFolder.Extended.Hash);
-							}
-
-							if (null != oFolder.Extended.MessageCount) {
-								oCacheFolder.messageCountAll(oFolder.Extended.MessageCount);
-							}
-
-							if (null != oFolder.Extended.MessageUnseenCount) {
-								oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
-							}
-						}
-
-						oFolder.SubFolders = FolderCollectionModel.reviveFromJson(oFolder.SubFolders);
-						oFolder.SubFolders && oCacheFolder.subFolders(oFolder.SubFolders);
-
-						result.push(oCacheFolder);
+					if (null != oFolder.Extended.MessageUnseenCount) {
+						oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
 					}
 				}
-			});
 
-			return result;
-		}
+				oFolder.SubFolders = FolderCollectionModel.reviveFromJson(oFolder.SubFolders);
+				oFolder.SubFolders && oCacheFolder.subFolders(oFolder.SubFolders);
+
+			}
+			return oCacheFolder;
+		});
 	}
 
 	storeIt() {

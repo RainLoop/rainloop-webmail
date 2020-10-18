@@ -34,30 +34,22 @@ export class MessageCollectionModel extends AbstractCollectionModel
 	 * @returns {MessageCollectionModel}
 	 */
 	static reviveFromJson(object, cached) {
-		const collection = this.getFromJSON(object, 'MessageCollection');
-		if (collection) {
-			const result = new MessageCollectionModel(object);
-
-			let newCount = 0;
-			collection.forEach(message => {
-				if (message && 'Object/Message' === message['@Object']) {
-					message = MessageModel.newInstanceFromJson(message);
-					if (message) {
-						if (hasNewMessageAndRemoveFromCache(message.folderFullNameRaw, message.uid) && 5 >= newCount) {
-							++newCount;
-							message.newForAnimation(true);
-						}
-
-						message.deleted(false);
-
-						cached ? initMessageFlagsFromCache(message) : storeMessageFlagsToCache(message);
-
-						result.push(message);
+		let newCount = 0;
+		return super.reviveFromJson(object, message => {
+			if (message && 'Object/Message' === message['@Object']) {
+				message = MessageModel.newInstanceFromJson(message);
+				if (message) {
+					if (hasNewMessageAndRemoveFromCache(message.folderFullNameRaw, message.uid) && 5 >= newCount) {
+						++newCount;
+						message.newForAnimation(true);
 					}
-				}
-			});
 
-			return result;
-		}
+					message.deleted(false);
+
+					cached ? initMessageFlagsFromCache(message) : storeMessageFlagsToCache(message);
+					return message;
+				}
+			}
+		});
 	}
 }
