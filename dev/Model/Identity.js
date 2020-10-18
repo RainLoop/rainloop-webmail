@@ -8,7 +8,7 @@ class IdentityModel extends AbstractModel {
 	 * @param {string} email
 	 */
 	constructor(id, email) {
-		super('IdentityModel');
+		super();
 
 		this.id = ko.observable(id || '');
 		this.email = ko.observable(email);

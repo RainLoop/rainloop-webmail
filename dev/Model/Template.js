@@ -11,7 +11,7 @@ class TemplateModel extends AbstractModel {
 	 * @param {string} body
 	 */
 	constructor(id, name, body) {
-		super('TemplateModel');
+		super();
 
 		this.id = id;
 		this.name = name;

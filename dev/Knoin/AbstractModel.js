@@ -6,14 +6,13 @@ function disposeOne(disposable) {
 }
 
 export class AbstractModel {
-	sModelName = '';
 	disposables = [];
 
 	/**
 	 * @param {string} modelName = ''
 	 */
-	constructor(modelName = '') {
-		this.sModelName = modelName || '';
+	constructor() {
+//		this.sModelName = new.target.name;
 	}
 
 	regDisposables(value) {

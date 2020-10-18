@@ -17,7 +17,7 @@ class OpenPgpKeyModel extends AbstractModel {
 	 * @param {string} userID
 	 */
 	constructor(index, guID, ID, IDs, userIDs, emails, isPrivate, armor, userID) {
-		super('OpenPgpKeyModel');
+		super();
 
 		this.index = index;
 		this.id = ID;

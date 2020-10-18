@@ -29,7 +29,7 @@ const isArray = Array.isArray,
 
 class MessageModel extends AbstractModel {
 	constructor() {
-		super('MessageModel');
+		super();
 
 		this._reset();
 

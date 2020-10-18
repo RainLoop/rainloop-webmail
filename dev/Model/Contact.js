@@ -8,7 +8,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 class ContactModel extends AbstractModel {
 	constructor() {
-		super('ContactModel');
+		super();
 
 		this.idContact = 0;
 		this.display = '';

@@ -11,7 +11,7 @@ class AccountModel extends AbstractModel {
 	 * @param {number=} count = 0
 	 */
 	constructor(email, canBeDelete = true, count = 0) {
-		super('AccountModel');
+		super();
 
 		this.email = email;
 

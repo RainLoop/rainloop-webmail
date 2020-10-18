@@ -13,7 +13,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 class FilterModel extends AbstractModel {
 	constructor() {
-		super('FilterModel');
+		super();
 
 		this.enabled = ko.observable(true);
 

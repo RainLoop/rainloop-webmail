@@ -15,7 +15,7 @@ class ContactPropertyModel extends AbstractModel {
 	 * @param {string=} placeholder = ''
 	 */
 	constructor(type = ContactPropertyType.Unknown, typeStr = '', value = '', focused = false, placeholder = '') {
-		super('ContactPropertyModel');
+		super();
 
 		this.type = ko.observable(pInt(type));
 		this.typeStr = ko.observable(pString(typeStr));

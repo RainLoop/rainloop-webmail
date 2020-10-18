@@ -17,7 +17,7 @@ const bAllowPdfPreview = undefined !== navigator.mimeTypes['application/pdf'];
 
 class AttachmentModel extends AbstractModel {
 	constructor() {
-		super('AttachmentModel');
+		super();
 
 		this.checked = ko.observable(false);
 

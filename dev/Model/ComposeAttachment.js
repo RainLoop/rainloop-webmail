@@ -15,7 +15,7 @@ class ComposeAttachmentModel extends AbstractModel {
 	 * @param {string=} contentLocation = ''
 	 */
 	constructor(id, fileName, size = null, isInline = false, isLinked = false, CID = '', contentLocation = '') {
-		super('ComposeAttachmentModel');
+		super();
 
 		this.id = id;
 		this.isInline = !!isInline;
