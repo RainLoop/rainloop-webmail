@@ -12,21 +12,19 @@ export class AbstractCollectionModel extends Array
 //		props[@Count]
 	}
 
-	static getFromJSON(object, name) {
-		return object && 'Collection/'+name === object['@Object'] && Array.isArray(object['@Collection'])
-			? object['@Collection']
-			: null;
-	}
-
-	static reviveFromJson(object, itemCallback) {
+	/**
+	 * @static
+	 * @param {FetchJson} json
+	 * @returns {*CollectionModel}
+	 */
+	static reviveFromJson(json, itemCallback) {
 		// FolderCollectionModel     => FolderCollection
 		// AttachmentCollectionModel => AttachmentCollection
 		// MessageCollectionModel    => MessageCollection
-		const name = this.name.replace('Model', ''),
-			collection = this.getFromJSON(object, name);
-		if (collection) {
-			const result = new this(object);
-			collection.forEach(item => {
+		if (json && 'Collection/'+this.name.replace('Model', '') === json['@Object']
+		 && Array.isArray(json['@Collection'])) {
+			const result = new this(json);
+			json['@Collection'].forEach(item => {
 				item && itemCallback && (item = itemCallback(item, result));
 				item && result.push(item);
 			});
