@@ -1074,7 +1074,7 @@ class ServiceActions
 		$sTimeFormat = '';
 		$options = [$sLanguage, \substr($sLanguage, 0, 2), 'en'];
 		foreach ($options as $lang) {
-			$sFileName = APP_VERSION_ROOT_PATH.'app/localization/relativetimeformat/'.$lang.'.json';
+			$sFileName = APP_VERSION_ROOT_PATH.'app/localization/relativetimeformat/'.$lang.'.js';
 			if (\is_file($sFileName)) {
 				$sTimeFormat = \preg_replace('/^\\s+/', '', \file_get_contents($sFileName));
 				break;
