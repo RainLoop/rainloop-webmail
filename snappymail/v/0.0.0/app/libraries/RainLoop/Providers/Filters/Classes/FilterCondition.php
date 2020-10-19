@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Filters\Classes;
 
-class FilterCondition
+class FilterCondition implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -71,16 +71,6 @@ class FilterCondition
 		return true;
 	}
 
-	public function ToSimpleJSON(bool $bAjax = false) : array
-	{
-		return array(
-			'Field' => $this->Field(),
-			'Type' => $this->Type(),
-			'Value' => $this->Value(),
-			'ValueSecond' => $this->ValueSecond()
-		);
-	}
-
 	public static function CollectionFromJSON(array $aCollection) : array
 	{
 		$aResult = array();
@@ -96,5 +86,16 @@ class FilterCondition
 			}
 		}
 		return $aResult;
+	}
+
+	public function jsonSerialize()
+	{
+		return array(
+//			'@Object' => 'Object/FilterCondition',
+			'Field' => $this->Field(),
+			'Type' => $this->Type(),
+			'Value' => $this->Value(),
+			'ValueSecond' => $this->ValueSecond()
+		);
 	}
 }

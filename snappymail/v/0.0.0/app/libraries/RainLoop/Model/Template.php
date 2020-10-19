@@ -2,7 +2,7 @@
 
 namespace RainLoop\Model;
 
-class Template
+class Template implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -66,32 +66,32 @@ class Template
 		return false;
 	}
 
-	public function ToSimpleJSON(bool $bAjax = false) : array
+	public function ToSimpleJSON() : array
+	{
+		return array(
+			'ID' => $this->Id(),
+			'Name' => $this->Name(),
+			'Body' => $this->Body()
+		);
+	}
+
+	public function jsonSerialize()
 	{
 		$sBody = $this->Body();
 		$bPopulated = true;
-
-		if ($bAjax && $bPopulated && !$this->bPopulateAlways)
-		{
-			if (1024 * 5 < \strlen($sBody) || true)
-			{
+		if ($bPopulated && !$this->bPopulateAlways) {
+			if (1024 * 5 < \strlen($sBody) || true) {
 				$bPopulated = false;
 				$sBody = '';
 			}
 		}
-
-		$aResult = array(
+		return array(
+//			'@Object' => 'Object/Template',
 			'ID' => $this->Id(),
 			'Name' => $this->Name(),
-			'Body' => $sBody
+			'Body' => $sBody,
+			'Populated' => $bPopulated
 		);
-
-		if ($bAjax)
-		{
-			$aResult['Populated'] = $bPopulated;
-		}
-
-		return $aResult;
 	}
 
 	public function GenerateID() : bool

@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import { ContactPropertyType } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
-import { emptyContactPic } from 'Common/Links';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -10,7 +9,7 @@ class ContactModel extends AbstractModel {
 	constructor() {
 		super();
 
-		this.idContact = 0;
+		this.id = 0;
 		this.display = '';
 		this.properties = [];
 		this.readOnly = false;
@@ -53,11 +52,11 @@ class ContactModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const contact = super.reviveFromJson(json);
 		if (contact) {
-			contact.idContact = pInt(json.IdContact);
-			contact.display = pString(json.Display);
-			contact.readOnly = !!json.ReadOnly;
+			contact.id = pInt(json.id);
+			contact.display = pString(json.display);
+			contact.readOnly = !!json.readOnly;
 
-			if (Array.isNotEmpty(json.Properties)) {
+			if (Array.isNotEmpty(json.properties)) {
 				json.Properties.forEach(property => {
 					if (property && property.Type && null != property.Value && null != property.TypeStr) {
 						contact.properties.push([pInt(property.Type), pString(property.Value), pString(property.TypeStr)]);
@@ -71,15 +70,8 @@ class ContactModel extends AbstractModel {
 	/**
 	 * @returns {string}
 	 */
-	srcAttr() {
-		return emptyContactPic();
-	}
-
-	/**
-	 * @returns {string}
-	 */
 	generateUid() {
-		return pString(this.idContact);
+		return pString(this.id);
 	}
 
 	/**

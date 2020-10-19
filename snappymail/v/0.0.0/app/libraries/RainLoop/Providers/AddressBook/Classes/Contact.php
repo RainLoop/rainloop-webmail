@@ -7,7 +7,7 @@ use
 	RainLoop\Providers\AddressBook\Classes\Property
 ;
 
-class Contact
+class Contact implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -635,5 +635,20 @@ class Contact
 		$this->UpdateDependentValues();
 
 		return true;
+	}
+
+	public function jsonSerialize()
+	{
+		$properties = array();
+		foreach ($this->Properties as $property) {
+			$properties[] = $property->jsonSerialize();
+		}
+		return array(
+			'@Object' => 'Object/Contact',
+			'display' => \MailSo\Base\Utils::Utf8Clear($this->Display),
+			'readOnly' => $this->ReadOnly,
+			'IdPropertyFromSearch' => $this->IdPropertyFromSearch,
+			'properties' => $properties
+		);
 	}
 }

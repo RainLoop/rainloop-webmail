@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\AddressBook\Classes;
 
-class Tag
+class Tag implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -29,5 +29,15 @@ class Tag
 		$this->IdContactTag = '';
 		$this->Name = '';
 		$this->ReadOnly = false;
+	}
+
+	public function jsonSerialize()
+	{
+		return array(
+			'@Object' => 'Object/Tag',
+			'id' => $this->IdContactTag,
+			'name' => \MailSo\Base\Utils::Utf8Clear($mResponse->Name),
+			'readOnly' => $this->ReadOnly
+		);
 	}
 }

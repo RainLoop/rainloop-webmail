@@ -13,12 +13,10 @@ export class AbstractModel {
 	 */
 	constructor() {
 /*
-	constructor(props) {
 		if (new.target === Parent) {
 			throw new Error("Can't instantiate abstract class!");
 		}
 		this.sModelName = new.target.name;
-		props && Object.entries(props).forEach(([key, value]) => '@' !== key[0] && (this[key] = value));
 */
 	}
 
@@ -59,7 +57,8 @@ export class AbstractModel {
 		// Object/Folder
 		// Object/Message
 		// Object/Template
-		return this.validJson(json) ? new this(json) : null;
+		return this.validJson(json) ? new this() : null;
+//		json && Object.entries(json).forEach(([key, value]) => '@' !== key[0] && (this[key] = value));
 	}
 
 }

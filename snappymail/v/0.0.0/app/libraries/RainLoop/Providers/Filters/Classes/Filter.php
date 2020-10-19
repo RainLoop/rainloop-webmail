@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Filters\Classes;
 
-class Filter
+class Filter implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -166,11 +166,6 @@ class Filter
 		return $this->bKeep;
 	}
 
-	public function serializeToJson() : string
-	{
-		return \json_encode($this->ToSimpleJSON());
-	}
-
 	public function unserializeFromJson(string $sFilterJson)
 	{
 		$aFilterJson = \json_decode(\trim($sFilterJson), true);
@@ -210,22 +205,14 @@ class Filter
 		return true;
 	}
 
-	public function ToSimpleJSON(bool $bAjax = false) : array
+	public function jsonSerialize()
 	{
-		$aConditions = array();
-		foreach ($this->Conditions() as $oItem)
-		{
-			if ($oItem)
-			{
-				$aConditions[] = $oItem->ToSimpleJSON($bAjax);
-			}
-		}
-
 		return array(
+			'@Object' => 'Object/Filter',
 			'ID' => $this->ID(),
 			'Enabled' => $this->Enabled(),
 			'Name' => $this->Name(),
-			'Conditions' => $aConditions,
+			'Conditions' => $this->Conditions(),
 			'ConditionsType' => $this->ConditionsType(),
 			'ActionType' => $this->ActionType(),
 			'ActionValue' => $this->ActionValue(),

@@ -2,7 +2,7 @@
 
 namespace RainLoop\Model;
 
-class Identity
+class Identity implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -111,11 +111,25 @@ class Identity
 		return false;
 	}
 
-	public function ToSimpleJSON(bool $bAjax = false) : array
+	public function ToSimpleJSON() : array
 	{
 		return array(
 			'Id' => $this->Id(),
-			'Email' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->Email()) : $this->Email(),
+			'Email' => $this->Email(),
+			'Name' => $this->Name(),
+			'ReplyTo' => $this->ReplyTo(),
+			'Bcc' => $this->Bcc(),
+			'Signature' => $this->Signature(),
+			'SignatureInsertBefore' => $this->SignatureInsertBefore()
+		);
+	}
+
+	public function jsonSerialize()
+	{
+		return array(
+//			'@Object' => 'Object/Identity',
+			'Id' => $this->Id(),
+			'Email' => \MailSo\Base\Utils::IdnToUtf8($this->Email()),
 			'Name' => $this->Name(),
 			'ReplyTo' => $this->ReplyTo(),
 			'Bcc' => $this->Bcc(),

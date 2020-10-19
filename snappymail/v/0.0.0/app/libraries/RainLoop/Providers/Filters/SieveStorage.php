@@ -472,7 +472,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 			$aData[] = '/*';
 			$aData[] = 'BEGIN:FILTER:'.$oItem->ID();
 			$aData[] = 'BEGIN:HEADER';
-			$aData[] = \chunk_split(\base64_encode($oItem->serializeToJson()), 74, $sNL).'END:HEADER';
+			$aData[] = \chunk_split(\base64_encode(\json_encode($oItem)), 74, $sNL).'END:HEADER';
 			$aData[] = '*/';
 			$aData[] = $oItem->Enabled() ? '' : '/* @Filter is disabled ';
 			$aData[] = $this->filterToSieveScript($oItem, $aCapa);

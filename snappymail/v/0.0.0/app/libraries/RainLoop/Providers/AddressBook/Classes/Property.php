@@ -4,7 +4,7 @@ namespace RainLoop\Providers\AddressBook\Classes;
 
 use RainLoop\Providers\AddressBook\Enumerations\PropertyType;
 
-class Property
+class Property implements \JsonSerializable
 {
 	/**
 	 * @var int
@@ -144,5 +144,21 @@ class Property
 				$this->ValueCustom = \trim($sPhone);
 			}
 		}
+	}
+
+	public function jsonSerialize()
+	{
+		// Simple hack
+		if ($this && $this->IsWeb())
+		{
+			$this->Value = \preg_replace('/(skype|ftp|http[s]?)\\\:\/\//i', '$1://', $this->Value);
+		}
+		return array(
+			'@Object' => 'Object/Property',
+			'IdProperty' => $this->IdProperty,
+			'Type' => $this->Type,
+			'TypeStr' => $this->TypeStr,
+			'Value' => \MailSo\Base\Utils::Utf8Clear($this->Value)
+		));
 	}
 }

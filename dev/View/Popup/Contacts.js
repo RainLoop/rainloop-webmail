@@ -155,7 +155,7 @@ class ContactsPopupView extends AbstractViewNext {
 		});
 
 		this.contactsCheckedOrSelectedUids = ko.computed(() =>
-			this.contactsCheckedOrSelected().map(contact => contact.idContact)
+			this.contactsCheckedOrSelected().map(contact => contact.id)
 		);
 
 		this.selector = new Selector(
@@ -436,7 +436,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 		if (contacts.length) {
 			contacts.forEach(contact => {
-				if (currentContact && currentContact.idContact === contact.idContact) {
+				if (currentContact && currentContact.id === contact.id) {
 					currentContact = null;
 					this.currentContact(null);
 				}
@@ -500,7 +500,7 @@ class ContactsPopupView extends AbstractViewNext {
 		this.viewReadOnly(false);
 
 		if (contact) {
-			id = contact.idContact;
+			id = contact.id;
 			if (Array.isNotEmpty(contact.properties)) {
 				contact.properties.forEach(property => {
 					if (property && property[0]) {

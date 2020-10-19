@@ -4,7 +4,7 @@ namespace RainLoop\Model;
 
 use MailSo\Net\Enumerations\ConnectionSecurityType;
 
-class Domain
+class Domain implements \JsonSerializable
 {
 	const DEFAULT_FORWARDED_FLAG = '$Forwarded';
 
@@ -401,20 +401,45 @@ class Domain
 		return true;
 	}
 
-	public function ToSimpleJSON(bool $bAjax = false) : array
+	public function ToSimpleJSON() : array
 	{
 		return array(
-			'Name' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->Name()) : $this->Name(),
-			'IncHost' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->IncHost()) : $this->IncHost(),
+			'Name' => $this->Name(),
+			'IncHost' => $this->IncHost(),
 			'IncPort' => $this->IncPort(),
 			'IncSecure' => $this->IncSecure(),
 			'IncShortLogin' => $this->IncShortLogin(),
 			'UseSieve' => $this->UseSieve(),
-			'SieveHost' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->SieveHost()) : $this->SieveHost(),
+			'SieveHost' => $this->SieveHost(),
 			'SievePort' => $this->SievePort(),
 			'SieveSecure' => $this->SieveSecure(),
 			'SieveAllowRaw' => $this->SieveAllowRaw(),
-			'OutHost' => $bAjax ? \MailSo\Base\Utils::IdnToUtf8($this->OutHost()) : $this->OutHost(),
+			'OutHost' => $this->OutHost(),
+			'OutPort' => $this->OutPort(),
+			'OutSecure' => $this->OutSecure(),
+			'OutShortLogin' => $this->OutShortLogin(),
+			'OutAuth' => $this->OutAuth(),
+			'OutUsePhpMail' => $this->OutUsePhpMail(),
+			'WhiteList' => $this->WhiteList(),
+			'AliasName' => $this->AliasName()
+		);
+	}
+
+	public function jsonSerialize()
+	{
+		return array(
+//			'@Object' => 'Object/Domain',
+			'Name' => \MailSo\Base\Utils::IdnToUtf8($this->Name()),
+			'IncHost' => \MailSo\Base\Utils::IdnToUtf8($this->IncHost()),
+			'IncPort' => $this->IncPort(),
+			'IncSecure' => $this->IncSecure(),
+			'IncShortLogin' => $this->IncShortLogin(),
+			'UseSieve' => $this->UseSieve(),
+			'SieveHost' => \MailSo\Base\Utils::IdnToUtf8($this->SieveHost()),
+			'SievePort' => $this->SievePort(),
+			'SieveSecure' => $this->SieveSecure(),
+			'SieveAllowRaw' => $this->SieveAllowRaw(),
+			'OutHost' => \MailSo\Base\Utils::IdnToUtf8($this->OutHost()),
 			'OutPort' => $this->OutPort(),
 			'OutSecure' => $this->OutSecure(),
 			'OutShortLogin' => $this->OutShortLogin(),

@@ -238,13 +238,6 @@ export function staticPrefix(path) {
 }
 
 /**
- * @returns {string}
- */
-export function emptyContactPic() {
-	return staticPrefix('css/images/empty-contact.png');
-}
-
-/**
  * @param {string} fileName
  * @returns {string}
  */

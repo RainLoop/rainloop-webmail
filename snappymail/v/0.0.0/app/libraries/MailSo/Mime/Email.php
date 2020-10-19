@@ -15,7 +15,7 @@ namespace MailSo\Mime;
  * @category MailSo
  * @package Mime
  */
-class Email
+class Email implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -252,5 +252,16 @@ class Email
 		}
 
 		return \trim($sReturn);
+	}
+
+	public function jsonSerialize()
+	{
+		return array(
+			'@Object' => 'Object/Email',
+			'Name' => \MailSo\Base\Utils::Utf8Clear($this->GetDisplayName()),
+			'Email' => \MailSo\Base\Utils::Utf8Clear($this->GetEmail(true)),
+			'DkimStatus' => $this->GetDkimStatus(),
+			'DkimValue' => $this->GetDkimValue()
+		);
 	}
 }
