@@ -40,13 +40,6 @@ class ContactsPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		const fFastClearEmptyListHelper = (list) => {
-			if (list && list.length) {
-				this.viewProperties.removeAll(list);
-				delegateRunOnDestroy(list);
-			}
-		};
-
 		this.bBackToCompose = false;
 		this.sLastComposeFocusedField = '';
 
@@ -98,7 +91,7 @@ class ContactsPopupView extends AbstractViewNext {
 		this.viewHasNonEmptyRequiredProperties = ko.computed(() => {
 			const names = this.viewPropertiesNames(),
 				emails = this.viewPropertiesEmails(),
-				fFilter = (property) => !!trim(property.value());
+				fFilter = property => !!trim(property.value());
 
 			return !!(names.find(fFilter) || emails.find(fFilter));
 		});
@@ -130,10 +123,19 @@ class ContactsPopupView extends AbstractViewNext {
 			this.viewPropertiesOther().filter(propertyFocused)
 		);
 
+/*
+		// Somehow this is broken now when calling addNewProperty
+		const fFastClearEmptyListHelper = list => {
+			if (list && list.length) {
+				this.viewProperties.removeAll(list);
+				delegateRunOnDestroy(list);
+			}
+		};
 		this.viewPropertiesEmailsEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
 		this.viewPropertiesPhonesEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
 		this.viewPropertiesWebEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
 		this.viewPropertiesOtherEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
+*/
 
 		this.viewSaving = ko.observable(false);
 
@@ -278,14 +280,7 @@ class ContactsPopupView extends AbstractViewNext {
 		this.viewSaving(true);
 		this.viewSaveTrigger(SaveSettingsStep.Animate);
 
-		const requestUid = Jua.randomId(),
-			properties = [];
-
-		this.viewProperties().forEach(oItem => {
-			if (oItem.type() && oItem.type() !== ContactPropertyType.FullName && trim(oItem.value())) {
-				properties.push([oItem.type(), oItem.value(), oItem.typeStr()]);
-			}
-		});
+		const requestUid = Jua.randomId();
 
 		Remote.contactSave(
 			(sResult, oData) => {
@@ -303,25 +298,22 @@ class ContactsPopupView extends AbstractViewNext {
 						this.viewID(pInt(oData.Result.ResultID));
 					}
 
-					this.reloadContactList();
+					this.reloadContactList(); // TODO: remove when e-contact-foreach is dynamic
 					res = true;
 				}
 
-				setTimeout(() => {
-					this.viewSaveTrigger(res ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult);
-				}, 350);
+				setTimeout(() =>
+					this.viewSaveTrigger(res ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult)
+				, 350);
 
 				if (res) {
 					this.watchDirty(false);
-
-					setTimeout(() => {
-						this.viewSaveTrigger(SaveSettingsStep.Idle);
-					}, 1000);
+					setTimeout(() => this.viewSaveTrigger(SaveSettingsStep.Idle), 1000);
 				}
 			},
 			requestUid,
 			this.viewID(),
-			properties
+			this.viewProperties().map(oItem => oItem.toJSON())
 		);
 	}
 

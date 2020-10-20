@@ -31,12 +31,12 @@ class ContactModel extends AbstractModel {
 		if (Array.isNotEmpty(this.properties)) {
 			this.properties.forEach(property => {
 				if (property) {
-					if (ContactPropertyType.FirstName === property[0]) {
-						name = (property[1] + ' ' + name).trim();
-					} else if (ContactPropertyType.LastName === property[0]) {
-						name = (name + ' ' + property[1]).trim();
-					} else if (!email && ContactPropertyType.Email === property[0]) {
-						email = property[1];
+					if (ContactPropertyType.FirstName === property.type()) {
+						name = (property.value() + ' ' + name).trim();
+					} else if (ContactPropertyType.LastName === property.type()) {
+						name = (name + ' ' + property.value()).trim();
+					} else if (!email && ContactPropertyType.Email === property.type()) {
+						email = property.value();
 					}
 				}
 			});
@@ -59,7 +59,7 @@ class ContactModel extends AbstractModel {
 
 			let list = [];
 			if (Array.isNotEmpty(json.properties)) {
-				json.Properties.forEach(property => {
+				json.properties.forEach(property => {
 					property = ContactPropertyModel.reviveFromJson(property);
 					property && list.push(property);
 				});

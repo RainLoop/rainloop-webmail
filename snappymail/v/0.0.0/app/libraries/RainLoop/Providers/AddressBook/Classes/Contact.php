@@ -645,6 +645,7 @@ class Contact implements \JsonSerializable
 		}
 		return array(
 			'@Object' => 'Object/Contact',
+			'id' => $this->IdContact,
 			'display' => \MailSo\Base\Utils::Utf8Clear($this->Display),
 			'readOnly' => $this->ReadOnly,
 			'IdPropertyFromSearch' => $this->IdPropertyFromSearch,

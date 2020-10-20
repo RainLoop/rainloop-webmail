@@ -719,7 +719,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	contactSave(fCallback, sRequestUid, sUid, aProperties) {
 		this.defaultRequest(fCallback, 'ContactSave', {
 			RequestUid: sRequestUid,
-			Uid: sUid.trim(),
+			Uid: sUid,
 			Properties: aProperties
 		});
 	}

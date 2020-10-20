@@ -144,12 +144,15 @@ trait Contacts
 			{
 				foreach ($aProperties as $aItem)
 				{
-					if ($aItem && isset($aItem[0], $aItem[1]) && \is_numeric($aItem[0]))
+					if ($aItem && isset($aItem['type'], $aItem['value'])
+					 && \is_numeric($aItem['type']) && (int) $aItem['type']
+					 && \RainLoop\Providers\AddressBook\Enumerations\PropertyType::FULLNAME != $aItem['type']
+					 && \strlen(\trim($aItem['value'])))
 					{
 						$oProp = new \RainLoop\Providers\AddressBook\Classes\Property();
-						$oProp->Type = (int) $aItem[0];
-						$oProp->Value = $aItem[1];
-						$oProp->TypeStr = empty($aItem[2]) ? '': $aItem[2];
+						$oProp->Type = (int) $aItem['type'];
+						$oProp->Value = \trim($aItem['value']);
+						$oProp->TypeStr = $aItem['typeStr'] ?? '';
 
 						$oContact->Properties[] = $oProp;
 					}

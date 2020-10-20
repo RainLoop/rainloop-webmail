@@ -34,11 +34,19 @@ class ContactPropertyModel extends AbstractModel {
 		this.regDisposables([this.placeholderValue, this.largeValue]);
 	}
 
+	toJSON() {
+		return {
+			type: this.type(),
+			typeStr: this.typeStr(),
+			value: this.value()
+		};
+	}
+
 	static reviveFromJson(json) {
 		const property = super.reviveFromJson(json);
 		if (property) {
-			property.type(pInt(property.type));
-			property.typeStr(pInt(property.typeStr));
+			property.type(pInt(json.type));
+			property.typeStr(pString(json.typeStr));
 			property.value(pString(json.value));
 			return property;
 		}

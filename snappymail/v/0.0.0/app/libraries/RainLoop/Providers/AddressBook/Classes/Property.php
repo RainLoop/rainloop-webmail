@@ -159,6 +159,6 @@ class Property implements \JsonSerializable
 			'type' => $this->Type,
 			'typeStr' => $this->TypeStr,
 			'value' => \MailSo\Base\Utils::Utf8Clear($this->Value)
-		));
+		);
 	}
 }
