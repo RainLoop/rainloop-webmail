@@ -27,7 +27,7 @@ module.exports = {
 		'Squire': "readonly",
 		'SquireUI': "readonly",
 		// node_modules/knockout but dev/External/ko.js is used
-//		'ko': "readonly",
+		'ko': "readonly",
 		// vendors/routes/
 		'hasher': "readonly",
 		'signals': "readonly",

@@ -431,7 +431,7 @@ trait Response
 					'FileName' => \MailSo\Base\Utils::ClearFileName(
 						\MailSo\Base\Utils::ClearXss($mResponse->FileName(true))),
 					'EstimatedSize' => $mResponse->EstimatedSize(),
-					'CID' => $mResponse->Cid(),
+					'Cid' => $mResponse->Cid(),
 					'ContentLocation' => $mResponse->ContentLocation(),
 					'IsInline' => $mResponse->IsInline(),
 					'IsThumbnail' => $this->GetCapa(false, false, Capa::ATTACHMENT_THUMBNAILS),

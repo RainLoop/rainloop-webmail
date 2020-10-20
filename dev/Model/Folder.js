@@ -49,17 +49,11 @@ class FolderModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const folder = super.reviveFromJson(json);
 		if (folder) {
-			folder.name(json.Name);
-			folder.delimiter = json.Delimiter;
-			folder.fullName = json.FullName;
-			folder.fullNameRaw = json.FullNameRaw;
-			folder.fullNameHash = json.FullNameHash;
 			folder.deep = json.FullNameRaw.split(folder.delimiter).length - 1;
 			folder.selectable = !!json.IsSelectable;
 			folder.existen = !!json.IsExists;
 
 			folder.subScribed(!!json.IsSubscribed);
-			folder.checkable(!!json.Checkable);
 
 			folder.isInbox = ko.computed(() => FolderType.Inbox === folder.type());
 

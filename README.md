@@ -71,7 +71,7 @@ The result is faster and smaller download code (good for mobile networks).
 
 Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill for array.flat().
 
-* Added dev/prototype-*.js for some additional features
+* Added dev/prototype*.js for some additional features
 * boot.js without webpack overhead
 * Modified Jua.js to be without jQuery
 * Replaced ProgressJS with simple native dropin
@@ -107,22 +107,22 @@ RainLoop 1.14 vs SnappyMail
 
 |js/*       	|RainLoop 	|Snappy   	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  666.175	|
-|app.js      	|4.184.455	|2.412.164	|
+|admin.js    	|2.130.942	|  665.605	|
+|app.js      	|4.184.455	|2.402.380	|
 |boot.js     	|  671.522	|    5.285	|
-|libs.js     	|  647.614	|  238.674	|
+|libs.js     	|  647.614	|  238.766	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.322.298	|
+|TOTAL      	|7.960.367	|3.312.036	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|Rain gzip	|gzip     	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|   91.598	| 73.657	| 23.547	| 20.518	|
-|app.min.js      	|  511.202	|  325.187	|140.462	| 83.936	| 68.135	|
+|admin.min.js    	|  252.147	|   91.510	| 73.657	| 23.529	| 20.480	|
+|app.min.js      	|  511.202	|  322.449	|140.462	| 83.183	| 67.656	|
 |boot.min.js     	|   66.007	|    2.918	| 22.567	|  1.500	|  1.275	|
-|libs.min.js     	|  572.545	|  134.223	|176.720	| 48.183	| 42.816	|
+|libs.min.js     	|  572.545	|  134.315	|176.720	| 48.216	| 42.855	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  553.926	|424.718	|157.166	|132.744	|
-|TOTAL (no admin)	|1.182.206	|  462.328	|351.061	|133.619	|112.226	|
+|TOTAL           	|1.434.353	|  551.192	|424.718	|156.428	|132.266	|
+|TOTAL (no admin)	|1.182.206	|  459.682	|351.061	|132.899	|111.786	|
 
 For a user its around 61% smaller and faster than traditional RainLoop.
 
@@ -156,7 +156,7 @@ For a user its around 61% smaller and faster than traditional RainLoop.
 
 
 ### Squire vs CKEditor
-The [Squire](https://github.com/neilj/Squire) implementation is not 100% compatible yet, but is shows the massive overhead of CKEditor.
+The [Squire](https://github.com/neilj/Squire) implementation is not 100% compatible yet, but it shows the massive overhead of CKEditor.
 
 Still TODO:
 

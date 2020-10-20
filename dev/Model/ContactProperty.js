@@ -42,16 +42,7 @@ class ContactPropertyModel extends AbstractModel {
 		};
 	}
 
-	static reviveFromJson(json) {
-		const property = super.reviveFromJson(json);
-		if (property) {
-			property.type(pInt(json.type));
-			property.typeStr(pString(json.typeStr));
-			property.value(pString(json.value));
-			return property;
-		}
-		return null;
-	}
+//	static reviveFromJson(json) {}
 }
 
 export { ContactPropertyModel, ContactPropertyModel as default };

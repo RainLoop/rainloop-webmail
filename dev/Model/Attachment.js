@@ -47,23 +47,6 @@ class AttachmentModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const attachment = super.reviveFromJson(json);
 		if (attachment) {
-			attachment.mimeType = ((json.MimeType || '').toLowerCase()).trim();
-			attachment.fileName = json.FileName.trim();
-			// if it is inline
-			attachment.isInline = !!json.IsInline;
-			// if inline image is linked with CID in html
-			// and 'src="cid:' or background-image:url(cid:)
-			attachment.isLinked = !!json.IsLinked;
-			attachment.isThumbnail = !!json.IsThumbnail;
-			attachment.cid = json.CID;
-			attachment.contentLocation = json.ContentLocation;
-			attachment.download = json.Download;
-
-			attachment.folder = json.Folder;
-			attachment.uid = json.Uid;
-			attachment.mimeIndex = json.MimeIndex;
-			attachment.framed = !!json.Framed;
-
 			attachment.friendlySize = File.friendlySize(json.EstimatedSize);
 			attachment.cidWithoutTags = attachment.cid.replace(/^<+/, '').replace(/>+$/, '');
 

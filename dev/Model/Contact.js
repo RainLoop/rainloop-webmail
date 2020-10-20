@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import { ContactPropertyModel } from 'Model/ContactProperty';
 import { ContactPropertyType } from 'Common/Enums';
-import { pInt, pString } from 'Common/Utils';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -53,10 +52,6 @@ class ContactModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const contact = super.reviveFromJson(json);
 		if (contact) {
-			contact.id = pInt(json.id);
-			contact.display = pString(json.display);
-			contact.readOnly = !!json.readOnly;
-
 			let list = [];
 			if (Array.isNotEmpty(json.properties)) {
 				json.properties.forEach(property => {
@@ -103,7 +98,7 @@ class ContactModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	generateUid() {
-		return pString(this.id);
+		return ''+this.id;
 	}
 
 	/**

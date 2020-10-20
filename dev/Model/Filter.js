@@ -216,10 +216,6 @@ class FilterModel extends AbstractModel {
 		const filter = super.reviveFromJson(json);
 		if (filter) {
 			filter.id = pString(json.ID);
-			filter.name(pString(json.Name));
-			filter.enabled(!!json.Enabled);
-
-			filter.conditionsType(pString(json.ConditionsType));
 
 			filter.conditions([]);
 
@@ -228,13 +224,6 @@ class FilterModel extends AbstractModel {
 					json.Conditions.map(aData => FilterConditionModel.reviveFromJson(aData)).filter(v => v)
 				);
 			}
-
-			filter.actionType(pString(json.ActionType));
-
-			filter.actionValue(pString(json.ActionValue));
-			filter.actionValueSecond(pString(json.ActionValueSecond));
-			filter.actionValueThird(pString(json.ActionValueThird));
-			filter.actionValueFourth(pString(json.ActionValueFourth));
 
 			filter.actionNoStop(!json.Stop);
 			filter.actionKeep(!!json.Keep);

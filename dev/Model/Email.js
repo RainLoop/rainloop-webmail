@@ -289,13 +289,7 @@ class EmailModel extends AbstractModel {
 	 */
 	static reviveFromJson(json) {
 		const email = super.reviveFromJson(json);
-		if (email) {
-			email.name = json.Name;
-			email.email = json.Email;
-			email.dkimStatus = (json.DkimStatus || '');
-			email.dkimValue = (json.DkimValue || '');
-			email.clearDuplicateName();
-		}
+		email && email.clearDuplicateName();
 		return email;
 	}
 

@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import { FilterConditionField, FilterConditionType } from 'Common/Enums';
-import { pString } from 'Common/Utils';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -56,16 +55,7 @@ class FilterConditionModel extends AbstractModel {
 		return true;
 	}
 
-	static reviveFromJson(json) {
-		const filter = super.reviveFromJson(json);
-		if (filter) {
-			this.field(pString(json.field));
-			this.type(pString(json.type));
-			this.value(pString(json.value));
-			this.valueSecond(pString(json.valueSecond));
-		}
-		return filter;
-	}
+//	static reviveFromJson(json) {}
 
 	toJson() {
 		return {

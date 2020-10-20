@@ -86,11 +86,11 @@ class Template implements \JsonSerializable
 			}
 		}
 		return array(
-//			'@Object' => 'Object/Template',
-			'ID' => $this->Id(),
-			'Name' => $this->Name(),
-			'Body' => $sBody,
-			'Populated' => $bPopulated
+			'@Object' => 'Object/Template',
+			'id' => $this->Id(),
+			'name' => $this->Name(),
+			'body' => $sBody,
+			'populated' => $bPopulated
 		);
 	}
 

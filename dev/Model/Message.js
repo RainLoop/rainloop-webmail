@@ -100,11 +100,6 @@ class MessageModel extends AbstractModel {
 		const oMessageModel = super.reviveFromJson(json);
 		if (oMessageModel) {
 			oMessageModel.folderFullNameRaw = json.Folder;
-			oMessageModel.uid = json.Uid;
-			oMessageModel.hash = json.Hash;
-			oMessageModel.requestHash = json.RequestHash;
-
-			oMessageModel.size(pInt(json.Size));
 
 			oMessageModel.from = EmailCollectionModel.reviveFromJson(json.From);
 			oMessageModel.to = EmailCollectionModel.reviveFromJson(json.To);
@@ -114,7 +109,6 @@ class MessageModel extends AbstractModel {
 			oMessageModel.deliveredTo = EmailCollectionModel.reviveFromJson(json.DeliveredTo);
 			oMessageModel.unsubsribeLinks = Array.isNotEmpty(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
 
-			oMessageModel.subject(json.Subject);
 			if (isArray(json.SubjectParts)) {
 				oMessageModel.subjectPrefix(json.SubjectParts[0]);
 				oMessageModel.subjectSuffix(json.SubjectParts[1]);
@@ -122,8 +116,6 @@ class MessageModel extends AbstractModel {
 				oMessageModel.subjectPrefix('');
 				oMessageModel.subjectSuffix(oMessageModel.subject());
 			}
-
-			oMessageModel.dateTimeStampInUTC(pInt(json.DateTimeStampInUTC));
 
 			oMessageModel.fromEmailString(oMessageModel.from.toString(true));
 			oMessageModel.fromClearEmailString(oMessageModel.from.toStringClear());

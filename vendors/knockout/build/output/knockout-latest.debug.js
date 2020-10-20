@@ -1046,6 +1046,7 @@ ko.isObservableArray = instance => {
 };
 
 ko.exportSymbol('observableArray', ko.observableArray);
+ko.exportSymbol('isObservableArray', ko.isObservableArray);
 var arrayChangeEventName = 'arrayChange';
 ko.extenders['trackArrayChanges'] = (target, options) => {
     // Use the provided options--each call to trackArrayChanges overwrites the previously set options

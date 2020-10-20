@@ -5,6 +5,18 @@ function disposeOne(disposable) {
 	}
 }
 
+function typeCast(current, value) {
+	switch (typeof current)
+	{
+	case 'boolean': return !!value;
+	case 'string':  return null != value ? '' + value : '';
+	case 'number':
+		value = parseInt(value, 10);
+		return (isNaN(value) || !isFinite(value)) ? 0 : value;
+	}
+	return value;
+}
+
 export class AbstractModel {
 	disposables = [];
 
@@ -13,7 +25,7 @@ export class AbstractModel {
 	 */
 	constructor() {
 /*
-		if (new.target === Parent) {
+		if (new.target === AbstractModel) {
 			throw new Error("Can't instantiate abstract class!");
 		}
 		this.sModelName = new.target.name;
@@ -50,15 +62,35 @@ export class AbstractModel {
 	 * @returns {*Model}
 	 */
 	static reviveFromJson(json) {
-		// Object/Attachment
-		// Object/Contact
-		// Object/Email
-		// Object/Filter
-		// Object/Folder
-		// Object/Message
-		// Object/Template
-		return this.validJson(json) ? new this() : null;
-//		json && Object.entries(json).forEach(([key, value]) => '@' !== key[0] && (this[key] = value));
+		let obj = this.validJson(json) ? new this() : null;
+		try {
+			obj && Object.entries(json).forEach(([key, value]) => {
+				if ('@' !== key[0]) {
+					key = key[0].toLowerCase() + key.substr(1);
+					switch (typeof obj[key])
+					{
+					case 'function':
+						if (ko.isObservable(obj[key]) && !ko.isObservableArray(obj[key])) {
+							obj[key](typeCast(obj[key](), value));
+						}
+//						else { console.log('('+(typeof obj[key])+') '+key+' not revived'); }
+						break;
+					case 'boolean':
+					case 'string':
+					case 'number':
+						obj[key] = typeCast(obj[key], value);
+						break;
+//					case 'undefined':
+//					default:
+//						console.log('('+(typeof obj[key])+') '+key+' not revived');
+					}
+				}
+			});
+		} catch (e) {
+			console.log(this.name);
+			console.error(e);
+		}
+		return obj;
 	}
 
 }
