@@ -76,6 +76,7 @@ const jsMin = () =>
 				output: {
 					comments: false
 				},
+				keep_classnames: true, // Required for AbstractModel and AbstractCollectionModel
 				compress:{
 					ecma: 6,
 					drop_console: true
