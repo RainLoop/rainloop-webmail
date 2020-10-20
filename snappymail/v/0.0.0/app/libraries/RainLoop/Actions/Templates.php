@@ -4,6 +4,8 @@ namespace RainLoop\Actions;
 
 use \RainLoop\Enumerations\Capa;
 use \RainLoop\Exceptions\ClientException;
+use \RainLoop\Model\Account;
+use \RainLoop\Model\Template;
 use \RainLoop\Notifications;
 
 trait Templates
@@ -21,7 +23,7 @@ trait Templates
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
-		$oTemplate = new \RainLoop\Model\Template();
+		$oTemplate = new Template();
 		if (!$oTemplate->FromJSON($this->GetActionParams(), true))
 		{
 			throw new ClientException(Notifications::InvalidInputArgument);
@@ -129,5 +131,85 @@ trait Templates
 		return $this->DefaultResponse(__FUNCTION__, array(
 			'Templates' => $this->GetTemplates($oAccount)
 		));
+	}
+
+	private function GetTemplates(?Account $oAccount) : array
+	{
+		$aTemplates = array();
+		if ($oAccount)
+		{
+			$aData = array();
+
+			$sData = $this->StorageProvider(true)->Get($oAccount,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+				'templates'
+			);
+
+			if ('' !== $sData && '[' === \substr($sData, 0, 1))
+			{
+				$aData = \json_decode($sData, true);
+			}
+
+			if (\is_array($aData) && 0 < \count($aData))
+			{
+				foreach ($aData as $aItem)
+				{
+					$oItem = new Template();
+					$oItem->FromJSON($aItem);
+
+					if ($oItem && $oItem->Validate())
+					{
+						\array_push($aTemplates, $oItem);
+					}
+				}
+			}
+
+			if (1 < \count($aTemplates))
+			{
+				$sOrder = $this->StorageProvider()->Get($oAccount,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+					'templates_order'
+				);
+
+				$aOrder = empty($sOrder) ? array() : \json_decode($sOrder, true);
+				if (\is_array($aOrder) && 1 < \count($aOrder))
+				{
+					\usort($aTemplates, function ($a, $b) use ($aOrder) {
+						return \array_search($a->Id(), $aOrder) < \array_search($b->Id(), $aOrder) ? -1 : 1;
+					});
+				}
+			}
+		}
+
+		return $aTemplates;
+	}
+
+	private function GetTemplateByID(Account $oAccount, string $sID) : ?\RainLoop\Model\Identity
+	{
+		$aTemplates = $this->GetTemplates($oAccount);
+		foreach ($aTemplates as $oIdentity)
+		{
+			if ($oIdentity && $sID === $oIdentity->Id())
+			{
+				return $oIdentity;
+			}
+		}
+
+		return isset($aTemplates[0]) ? $aTemplates[0] : null;
+	}
+
+	private function SetTemplates(Account $oAccount, array $aTemplates = array()) : array
+	{
+		$aResult = array();
+		foreach ($aTemplates as $oItem)
+		{
+			$aResult[] = $oItem->ToSimpleJSON();
+		}
+
+		return $this->StorageProvider(true)->Put($oAccount,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			'templates',
+			\json_encode($aResult)
+		);
 	}
 }

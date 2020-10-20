@@ -1005,4 +1005,16 @@ trait Admin
 		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
+	private function HasOneOfActionParams(array $aKeys) : bool
+	{
+		foreach ($aKeys as $sKey)
+		{
+			if ($this->HasActionParam($sKey))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

@@ -173,4 +173,90 @@ trait Contacts
 		));
 	}
 
+	public function UploadContacts() : array
+	{
+		$oAccount = $this->getAccountFromToken();
+
+		$mResponse = false;
+
+		$aFile = $this->GetActionParam('File', null);
+		$iError = $this->GetActionParam('Error', \RainLoop\Enumerations\UploadError::UNKNOWN);
+
+		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile))
+		{
+			$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);
+			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name']))
+			{
+				$iError = \RainLoop\Enumerations\UploadError::ON_SAVING;
+			}
+			else
+			{
+				\ini_set('auto_detect_line_endings', true);
+				$mData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
+				if ($mData)
+				{
+					$sFileStart = \fread($mData, 20);
+					\rewind($mData);
+
+					if (false !== $sFileStart)
+					{
+						$sFileStart = \trim($sFileStart);
+						if (false !== \strpos($sFileStart, 'BEGIN:VCARD'))
+						{
+							$mResponse = $this->importContactsFromVcfFile($oAccount, $mData);
+						}
+						else if (false !== \strpos($sFileStart, ',') || false !== \strpos($sFileStart, ';'))
+						{
+							$mResponse = $this->importContactsFromCsvFile($oAccount, $mData, $sFileStart);
+						}
+					}
+				}
+
+				if (\is_resource($mData))
+				{
+					\fclose($mData);
+				}
+
+				unset($mData);
+				$this->FilesProvider()->Clear($oAccount, $sSavedName);
+
+				\ini_set('auto_detect_line_endings', false);
+			}
+		}
+
+		if (UPLOAD_ERR_OK !== $iError)
+		{
+			$iClientError = \RainLoop\Enumerations\UploadClientError::NORMAL;
+			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
+
+			if (!empty($sError))
+			{
+				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
+			}
+		}
+
+		return $this->DefaultResponse(__FUNCTION__, $mResponse);
+	}
+
+	protected function getContactsSyncData(\RainLoop\Model\Account $oAccount) : ?array
+	{
+		$mResult = null;
+		$sData = $this->StorageProvider()->Get($oAccount,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			'contacts_sync'
+		);
+		if (!empty($sData)) {
+			$aData = \RainLoop\Utils::DecodeKeyValues($sData);
+			if ($aData) {
+				$mResult = array(
+					'Enable' => isset($aData['Enable']) ? !!$aData['Enable'] : false,
+					'Url' => isset($aData['Url']) ? \trim($aData['Url']) : '',
+					'User' => isset($aData['User']) ? \trim($aData['User']) : '',
+					'Password' => isset($aData['Password']) ? $aData['Password'] : ''
+				);
+			}
+		}
+		return $mResult;
+	}
+
 }

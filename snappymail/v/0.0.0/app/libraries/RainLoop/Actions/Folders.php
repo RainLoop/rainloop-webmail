@@ -448,4 +448,161 @@ trait Folders
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));
 	}
 
+	private function recFoldersNames(\MailSo\Mail\FolderCollection $oFolders) : array
+	{
+		$aResult = array();
+		if ($oFolders)
+		{
+			foreach ($oFolders as $oFolder)
+			{
+				$aResult[] = $oFolder->FullNameRaw()."|".
+					implode("|", $oFolder->Flags()).($oFolder->IsSubscribed() ? '1' : '0');
+
+				$oSub = $oFolder->SubFolders();
+				if ($oSub && 0 < $oSub->Count())
+				{
+					$aResult = \array_merge($aResult, $this->recFoldersNames($oSub));
+				}
+			}
+		}
+
+		return $aResult;
+	}
+
+	private function recFoldersTypes(\RainLoop\Model\Account $oAccount, \MailSo\Mail\FolderCollection $oFolders, array &$aResult, bool $bListFolderTypes = true) : void
+	{
+		if ($oFolders && $oFolders->Count())
+		{
+			if ($bListFolderTypes)
+			{
+				foreach ($oFolders as $oFolder)
+				{
+					$iFolderListType = $oFolder->GetFolderListType();
+					if (!isset($aResult[$iFolderListType]) && \in_array($iFolderListType, array(
+						FolderType::INBOX,
+						FolderType::SENT,
+						FolderType::DRAFTS,
+						FolderType::JUNK,
+						FolderType::TRASH,
+						FolderType::ALL
+					)))
+					{
+						$aResult[$iFolderListType] = $oFolder->FullNameRaw();
+					}
+				}
+
+				foreach ($oFolders as $oFolder)
+				{
+					$oSub = $oFolder->SubFolders();
+					if ($oSub && 0 < $oSub->Count())
+					{
+						$this->recFoldersTypes($oAccount, $oSub, $aResult, true);
+					}
+				}
+			}
+
+			$aMap = $this->systemFoldersNames($oAccount);
+			foreach ($oFolders as $oFolder)
+			{
+				$sName = $oFolder->Name();
+				$sFullName = $oFolder->FullName();
+
+				if (isset($aMap[$sName]) || isset($aMap[$sFullName]))
+				{
+					$iFolderType = isset($aMap[$sName]) ? $aMap[$sName] : $aMap[$sFullName];
+					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
+						FolderType::INBOX,
+						FolderType::SENT,
+						FolderType::DRAFTS,
+						FolderType::JUNK,
+						FolderType::TRASH,
+						FolderType::ALL
+					)))
+					{
+						$aResult[$iFolderType] = $oFolder->FullNameRaw();
+					}
+				}
+			}
+
+			foreach ($oFolders as $oFolder)
+			{
+				$oSub = $oFolder->SubFolders();
+				if ($oSub && 0 < $oSub->Count())
+				{
+					$this->recFoldersTypes($oAccount, $oSub, $aResult, false);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @staticvar array $aCache
+	 */
+	private function systemFoldersNames(\RainLoop\Model\Account $oAccount) : array
+	{
+		static $aCache = null;
+		if (null === $aCache)
+		{
+			$aCache = array(
+
+				'Sent' => FolderType::SENT,
+				'Send' => FolderType::SENT,
+
+				'Outbox' => FolderType::SENT,
+				'Out box' => FolderType::SENT,
+
+				'Sent Item' => FolderType::SENT,
+				'Sent Items' => FolderType::SENT,
+				'Send Item' => FolderType::SENT,
+				'Send Items' => FolderType::SENT,
+				'Sent Mail' => FolderType::SENT,
+				'Sent Mails' => FolderType::SENT,
+				'Send Mail' => FolderType::SENT,
+				'Send Mails' => FolderType::SENT,
+
+				'Drafts' => FolderType::DRAFTS,
+
+				'Draft' => FolderType::DRAFTS,
+				'Draft Mail' => FolderType::DRAFTS,
+				'Draft Mails' => FolderType::DRAFTS,
+				'Drafts Mail' => FolderType::DRAFTS,
+				'Drafts Mails' => FolderType::DRAFTS,
+
+				'Junk E-mail' => FolderType::JUNK,
+
+				'Spam' => FolderType::JUNK,
+				'Spams' => FolderType::JUNK,
+
+				'Junk' => FolderType::JUNK,
+				'Bulk Mail' => FolderType::JUNK,
+				'Bulk Mails' => FolderType::JUNK,
+
+				'Deleted Items' => FolderType::TRASH,
+
+				'Trash' => FolderType::TRASH,
+				'Deleted' => FolderType::TRASH,
+				'Bin' => FolderType::TRASH,
+
+				'Archive' => FolderType::ALL,
+				'Archives' => FolderType::ALL,
+
+				'All' => FolderType::ALL,
+				'All Mail' => FolderType::ALL,
+				'All Mails' => FolderType::ALL,
+			);
+
+			$aNewCache = array();
+			foreach ($aCache as $sKey => $iType)
+			{
+				$aNewCache[$sKey] = $iType;
+				$aNewCache[\str_replace(' ', '', $sKey)] = $iType;
+			}
+
+			$aCache = $aNewCache;
+
+			$this->Plugins()->RunHook('filter.system-folders-names', array($oAccount, &$aCache));
+		}
+
+		return $aCache;
+	}
 }

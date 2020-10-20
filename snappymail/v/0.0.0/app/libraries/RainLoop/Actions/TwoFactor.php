@@ -2,15 +2,21 @@
 
 namespace RainLoop\Actions;
 
+use \RainLoop\Enumerations\Capa;
+
 trait TwoFactor
 {
+	/**
+	 * @var \RainLoop\Providers\TwoFactorAuth
+	 */
+	private $oTwoFactorAuthProvider;
 
 	public function DoGetTwoFactorInfo() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -24,7 +30,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -61,7 +67,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -77,7 +83,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -108,7 +114,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -134,7 +140,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, \RainLoop\Enumerations\Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -148,4 +154,109 @@ trait TwoFactor
 			$this->getTwoFactorInfo($oAccount, true));
 	}
 
+	protected function TwoFactorAuthProvider() : \RainLoop\Providers\TwoFactorAuth
+	{
+		if (!$this->oTwoFactorAuthProvider) {
+			$this->oTwoFactorAuthProvider = new \RainLoop\Providers\TwoFactorAuth(
+				$this->Config()->Get('security', 'allow_two_factor_auth', false) ? $this->fabrica('two-factor-auth') : null
+			);
+		}
+		return $this->oTwoFactorAuthProvider;
+	}
+
+	protected function getTwoFactorInfo(\RainLoop\Model\Account $oAccount, bool $bRemoveSecret = false) : array
+	{
+		$sEmail = $oAccount->ParentEmailHelper();
+
+		$mData = null;
+
+		$aResult = array(
+			'User' => '',
+			'IsSet' => false,
+			'Enable' => false,
+			'Secret' => '',
+			'UrlTitle' => '',
+			'BackupCodes' => ''
+		);
+
+		if (!empty($sEmail))
+		{
+			$aResult['User'] = $sEmail;
+
+			$sData = $this->StorageProvider()->Get($oAccount,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+				'two_factor'
+			);
+
+			if ($sData)
+			{
+				$mData = \RainLoop\Utils::DecodeKeyValues($sData);
+			}
+		}
+
+		if (!empty($aResult['User']) &&
+			!empty($mData['User']) && !empty($mData['Secret']) &&
+			!empty($mData['BackupCodes']) && $sEmail === $mData['User'])
+		{
+			$aResult['IsSet'] = true;
+			$aResult['Enable'] = isset($mData['Enable']) ? !!$mData['Enable'] : false;
+			$aResult['Secret'] = $mData['Secret'];
+			$aResult['BackupCodes'] = $mData['BackupCodes'];
+			$aResult['UrlTitle'] = $this->Config()->Get('webmail', 'title', '');
+		}
+
+		if ($bRemoveSecret)
+		{
+			if (isset($aResult['Secret']))
+			{
+				unset($aResult['Secret']);
+			}
+
+			if (isset($aResult['UrlTitle']))
+			{
+				unset($aResult['UrlTitle']);
+			}
+
+			if (isset($aResult['BackupCodes']))
+			{
+				unset($aResult['BackupCodes']);
+			}
+		}
+
+		return $aResult;
+	}
+
+	protected function removeBackupCodeFromTwoFactorInfo(\RainLoop\Model\Account $oAccount, string $sCode) : bool
+	{
+		if (!$oAccount || empty($sCode))
+		{
+			return false;
+		}
+
+		$sData = $this->StorageProvider()->Get($oAccount,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			'two_factor'
+		);
+
+		if ($sData)
+		{
+			$mData = \RainLoop\Utils::DecodeKeyValues($sData);
+
+			if (!empty($mData['BackupCodes']))
+			{
+				$sBackupCodes = \preg_replace('/[^\d]+/', ' ', ' '.$mData['BackupCodes'].' ');
+				$sBackupCodes = \str_replace(' '.$sCode.' ', '', $sBackupCodes);
+
+				$mData['BackupCodes'] = \trim(\preg_replace('/[^\d]+/', ' ', $sBackupCodes));
+
+				return $this->StorageProvider()->Put($oAccount,
+					\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+					'two_factor',
+					\RainLoop\Utils::EncodeKeyValues($mData)
+				);
+			}
+		}
+
+		return false;
+	}
 }

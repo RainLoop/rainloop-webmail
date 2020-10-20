@@ -214,4 +214,26 @@ trait Accounts
 		));
 	}
 
+	private function SetIdentities(\RainLoop\Model\Account $oAccount, array $aIdentities = array()) : bool
+	{
+		$bAllowIdentities = $this->GetCapa(false, false, Capa::IDENTITIES, $oAccount);
+
+		$aResult = array();
+		foreach ($aIdentities as $oItem)
+		{
+			if (!$bAllowIdentities && $oItem && !$oItem->IsAccountIdentities())
+			{
+				continue;
+			}
+
+			$aResult[] = $oItem->ToSimpleJSON();
+		}
+
+		return $this->StorageProvider(true)->Put($oAccount,
+			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+			'identities',
+			\json_encode($aResult)
+		);
+	}
+
 }

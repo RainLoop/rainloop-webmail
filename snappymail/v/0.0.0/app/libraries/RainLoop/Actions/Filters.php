@@ -7,6 +7,11 @@ use \RainLoop\Enumerations\Capa;
 trait Filters
 {
 	/**
+	 * @var \RainLoop\Providers\Filters
+	 */
+	private $oFiltersProvider;
+
+	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
 	public function DoFilters() : array
@@ -71,4 +76,11 @@ trait Filters
 			$aFilters, $sRaw, $bRawIsActive));
 	}
 
+	protected function FiltersProvider() : \RainLoop\Providers\Filters
+	{
+		if (!$this->oFiltersProvider) {
+			$this->oFiltersProvider = new \RainLoop\Providers\Filters($this->fabrica('filters'));
+		}
+		return $this->oFiltersProvider;
+	}
 }

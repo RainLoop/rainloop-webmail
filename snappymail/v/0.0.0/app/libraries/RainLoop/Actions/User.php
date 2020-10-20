@@ -2,6 +2,11 @@
 
 namespace RainLoop\Actions;
 
+use \RainLoop\Enumerations\Capa;
+use \RainLoop\Exceptions\ClientException;
+use \RainLoop\Notifications;
+use \RainLoop\Utils;
+
 trait User
 {
 	use Accounts;
@@ -35,7 +40,7 @@ trait User
 		)
 		{
 			\sleep((int) $sPassword);
-			throw new Exceptions\ClientException(Notifications::AuthError);
+			throw new ClientException(Notifications::AuthError);
 		}
 
 		try
@@ -44,7 +49,7 @@ trait User
 				$bSignMe ? $this->generateSignMeToken($sEmail) : '',
 				$sAdditionalCode, $bAdditionalCodeSignMe);
 		}
-		catch (Exceptions\ClientException $oException)
+		catch (ClientException $oException)
 		{
 			if ($oException &&
 				Notifications::AccountTwoFactorAuthRequired === $oException->getCode())
@@ -85,7 +90,7 @@ trait User
 	 */
 	public function DoAttachmentsActions() : array
 	{
-		if (!$this->GetCapa(false, false, Enumerations\Capa::ATTACHMENTS_ACTIONS))
+		if (!$this->GetCapa(false, false, Capa::ATTACHMENTS_ACTIONS))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -211,7 +216,7 @@ trait User
 
 			if (!$oAccount->IsAdditionalAccount())
 			{
-				Utils::ClearCookie(Actions::AUTH_SPEC_TOKEN_KEY);
+				Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
 			}
 		}
 
@@ -233,7 +238,7 @@ trait User
 		$iOneDay3 = 60 * 60 * 30;
 
 		$sTimers = $this->StorageProvider()->Get(null,
-			Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers', '');
+			\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers', '');
 
 		$aTimers = \explode(',', $sTimers);
 
@@ -262,7 +267,7 @@ trait User
 		if ($bMainCache || $bFilesCache || $bVersionsCache)
 		{
 			if (!$this->StorageProvider()->Put(null,
-				Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers',
+				\RainLoop\Providers\Storage\Enumerations\StorageType::NOBODY, 'Cache/Timers',
 				\implode(',', array($iMainCacheTime, $iFilesCacheTime, $iVersionsCacheTime))))
 			{
 				$bMainCache = $bFilesCache = $bVersionsCache = false;
@@ -290,7 +295,7 @@ trait User
 	public function DoSettingsUpdate() : array
 	{
 		$oAccount = $this->getAccountFromToken();
-		if (!$this->GetCapa(false, false, Enumerations\Capa::SETTINGS, $oAccount))
+		if (!$this->GetCapa(false, false, Capa::SETTINGS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -312,7 +317,7 @@ trait User
 			$oSettings->SetConf('Language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
 		}
 
-		if ($this->GetCapa(false, false, Enumerations\Capa::THEMES, $oAccount))
+		if ($this->GetCapa(false, false, Capa::THEMES, $oAccount))
 		{
 			$this->setSettingsFromParams($oSettingsLocal, 'Theme', 'string', function ($sTheme) use ($self) {
 				return $self->ValidateTheme($sTheme);
@@ -328,9 +333,9 @@ trait User
 		});
 
 		$this->setSettingsFromParams($oSettings, 'Layout', 'int', function ($iValue) {
-			return (int) (\in_array((int) $iValue, array(Enumerations\Layout::NO_PREVIW,
-				Enumerations\Layout::SIDE_PREVIEW, Enumerations\Layout::BOTTOM_PREVIEW)) ?
-					$iValue : Enumerations\Layout::SIDE_PREVIEW);
+			return (int) (\in_array((int) $iValue, array(\RainLoop\Enumerations\Layout::NO_PREVIW,
+				\RainLoop\Enumerations\Layout::SIDE_PREVIEW, \RainLoop\Enumerations\Layout::BOTTOM_PREVIEW)) ?
+					$iValue : \RainLoop\Enumerations\Layout::SIDE_PREVIEW);
 		});
 
 		$this->setSettingsFromParams($oSettings, 'EditorDefaultType', 'string');
@@ -356,7 +361,7 @@ trait User
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, false, Enumerations\Capa::QUOTA, $oAccount))
+		if (!$this->GetCapa(false, false, Capa::QUOTA, $oAccount))
 		{
 			return $this->DefaultResponse(__FUNCTION__, array(0, 0, 0, 0));
 		}
@@ -367,7 +372,7 @@ trait User
 		}
 		catch (\Throwable $oException)
 		{
-			throw new Exceptions\ClientException(Notifications::MailServerError, $oException);
+			throw new ClientException(Notifications::MailServerError, $oException);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $aQuota);
@@ -489,7 +494,7 @@ trait User
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Enumerations\Capa::USER_BACKGROUND, $oAccount))
+		if (!$this->GetCapa(false, false, Capa::USER_BACKGROUND, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -498,7 +503,7 @@ trait User
 		if ($oAccount && $oSettings)
 		{
 			$this->StorageProvider()->Clear($oAccount,
-				Providers\Storage\Enumerations\StorageType::CONFIG,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
 				'background'
 			);
 
@@ -510,4 +515,96 @@ trait User
 			$this->SettingsProvider()->Save($oAccount, $oSettings) : false);
 	}
 
+	protected function ClearSignMeData(Model\Account $oAccount) : void
+	{
+		if ($oAccount) {
+			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
+			$this->StorageProvider()->Clear($oAccount,
+				\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
+				'sign_me'
+			);
+		}
+	}
+
+	private function generateSignMeToken(string $sEmail) : string
+	{
+		return \MailSo\Base\Utils::Md5Rand(APP_SALT.$sEmail);
+	}
+
+	private function getMimeFileByHash(\RainLoop\Model\Account $oAccount, string $sHash) : array
+	{
+		$aValues = $this->getDecodedRawKeyValue($sHash);
+
+		$sFolder = isset($aValues['Folder']) ? $aValues['Folder'] : '';
+		$iUid = (int) isset($aValues['Uid']) ? $aValues['Uid'] : 0;
+		$sMimeIndex = (string) isset($aValues['MimeIndex']) ? $aValues['MimeIndex'] : '';
+
+		$sContentTypeIn = (string) isset($aValues['MimeType']) ? $aValues['MimeType'] : '';
+		$sFileNameIn = (string) isset($aValues['FileName']) ? $aValues['FileName'] : '';
+
+		$oFileProvider = $this->FilesProvider();
+
+		$sResultHash = '';
+
+		$mResult = $this->MailClient()->MessageMimeStream(function($rResource, $sContentType, $sFileName, $sMimeIndex = '')
+			use ($oAccount, $oFileProvider, $sFileNameIn, $sContentTypeIn, &$sResultHash) {
+
+				unset($sContentType, $sFileName, $sMimeIndex);
+
+				if ($oAccount && \is_resource($rResource))
+				{
+					$sHash = \MailSo\Base\Utils::Md5Rand($sFileNameIn.'~'.$sContentTypeIn);
+					$rTempResource = $oFileProvider->GetFile($oAccount, $sHash, 'wb+');
+
+					if (\is_resource($rTempResource))
+					{
+						if (false !== \MailSo\Base\Utils::MultipleStreamWriter($rResource, array($rTempResource)))
+						{
+							$sResultHash = $sHash;
+						}
+
+						\fclose($rTempResource);
+					}
+				}
+
+			}, $sFolder, $iUid, true, $sMimeIndex);
+
+		$aValues['FileHash'] = '';
+		if ($mResult)
+		{
+			$aValues['FileHash'] = $sResultHash;
+		}
+
+		return $aValues;
+	}
+
+	private function setSettingsFromParams(\RainLoop\Settings $oSettings, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null) : void
+	{
+		if ($this->HasActionParam($sConfigName))
+		{
+			$sValue = $this->GetActionParam($sConfigName, '');
+			switch ($sType)
+			{
+				default:
+				case 'string':
+					$sValue = (string) $sValue;
+					if ($mStringCallback && is_callable($mStringCallback))
+					{
+						$sValue = call_user_func($mStringCallback, $sValue);
+					}
+
+					$oSettings->SetConf($sConfigName, (string) $sValue);
+					break;
+
+				case 'int':
+					$iValue = (int) $sValue;
+					$oSettings->SetConf($sConfigName, $iValue);
+					break;
+
+				case 'bool':
+					$oSettings->SetConf($sConfigName, '1' === (string) $sValue);
+					break;
+			}
+		}
+	}
 }

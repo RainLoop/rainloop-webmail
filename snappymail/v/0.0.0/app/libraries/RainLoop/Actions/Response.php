@@ -2,9 +2,9 @@
 
 namespace RainLoop\Actions;
 
+use \RainLoop\Enumerations\Capa;
 use \RainLoop\Notifications;
 use \RainLoop\Utils;
-use \RainLoop\Enumerations\Capa;
 
 trait Response
 {
@@ -112,15 +112,6 @@ trait Response
 		return $aResult;
 	}
 
-/*
-	$this->Cacher(
-	$this->Config(
-	$this->getAccountFromToken(
-	$this->GetCapa(
-	$this->MailClient(
-	$this->SettingsProvider(
-	$this->Plugins(
-*/
 	private function isFileHasFramedPreview(string $sFileName) : bool
 	{
 		$sExt = \MailSo\Base\Utils::GetFileExtension($sFileName);
@@ -167,50 +158,6 @@ trait Response
 			'spam', 'junk', 'bin', 'trash', 'archive', 'allmail', 'all')) ?
 				$sFolderFullName : \md5($sFolderFullName);
 	}
-
-/*
-	public function RawFramedView() : string
-	{
-		$oAccount = $this->getAccountFromToken(false);
-		if ($oAccount)
-		{
-			$sRawKey = (string) $this->GetActionParam('RawKey', '');
-			$aParams = $this->GetActionParam('Params', null);
-			$this->Http()->ServerNoCache();
-
-			$aData = Utils::DecodeKeyValuesQ($sRawKey);
-			if (isset($aParams[0], $aParams[1], $aParams[2]) &&
-				'Raw' === $aParams[0] && 'FramedView' === $aParams[2] && isset($aData['Framed']) && $aData['Framed'] && $aData['FileName'])
-			{
-				if ($this->isFileHasFramedPreview($aData['FileName']))
-				{
-					$sNewSpecAuthToken = $this->GetShortLifeSpecAuthToken();
-					if (!empty($sNewSpecAuthToken))
-					{
-						$aParams[1] = '_'.$sNewSpecAuthToken;
-						$aParams[2] = 'View';
-
-						\array_shift($aParams);
-						$sLast = \array_pop($aParams);
-
-						$sUrl = $this->Http()->GetFullUrl().'?/Raw/&q[]=/'.\implode('/', $aParams).'/&q[]=/'.$sLast;
-						$sFullUrl = 'https://docs.google.com/viewer?embedded=true&url='.\urlencode($sUrl);
-
-						\header('Content-Type: text/html; charset=utf-8');
-						echo '<html style="height: 100%; width: 100%; margin: 0; padding: 0"><head></head>'.
-							'<body style="height: 100%; width: 100%; margin: 0; padding: 0">'.
-							'<iframe style="height: 100%; width: 100%; margin: 0; padding: 0; border: 0" src="'.$sFullUrl.'"></iframe>'.
-							'</body></html>';
-					}
-				}
-			}
-		}
-
-
-		return true;
-
-	}
-*/
 
 	private function objectData(object $oData, string $sParent, array $aParameters = array()) : array
 	{
@@ -633,4 +580,48 @@ trait Response
 
 		return $mResponse;
 	}
+
+	private function explodeSubject(string $sSubject) : array
+	{
+		$aResult = array('', '');
+		if (0 < \strlen($sSubject))
+		{
+			$bDrop = false;
+			$aPrefix = array();
+			$aSuffix = array();
+
+			$aParts = \explode(':', $sSubject);
+			foreach ($aParts as $sPart)
+			{
+				if (!$bDrop &&
+					(\preg_match('/^(RE|FWD)$/i', \trim($sPart)) || \preg_match('/^(RE|FWD)[\[\(][\d]+[\]\)]$/i', \trim($sPart))))
+				{
+					$aPrefix[] = $sPart;
+				}
+				else
+				{
+					$aSuffix[] = $sPart;
+					$bDrop = true;
+				}
+			}
+
+			if (0 < \count($aPrefix))
+			{
+				$aResult[0] = \rtrim(\trim(\implode(':', $aPrefix)), ':').': ';
+			}
+
+			if (0 < \count($aSuffix))
+			{
+				$aResult[1] = \trim(\implode(':', $aSuffix));
+			}
+
+			if (0 === \strlen($aResult[1]))
+			{
+				$aResult = array('', $sSubject);
+			}
+		}
+
+		return $aResult;
+	}
+
 }
