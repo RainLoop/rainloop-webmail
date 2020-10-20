@@ -37,6 +37,10 @@ ko.observable = initialValue => {
 
 // Define prototype for observables
 var observableFn = {
+    'toJSON': function() {
+        let value = this[observableLatestValue];
+        return value.toJSON ? value.toJSON() : value;
+    },
     'equalityComparer': valuesArePrimitiveAndEqual,
     peek: function() { return this[observableLatestValue]; },
     valueHasMutated: function () {
