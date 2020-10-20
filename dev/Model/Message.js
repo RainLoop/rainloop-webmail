@@ -132,6 +132,7 @@ class MessageModel extends AbstractModel {
 
 			oMessageModel.threads(isArray(json.Threads) ? json.Threads : []);
 
+			oMessageModel.setFromJson(json);
 			oMessageModel.initFlagsByJson(json);
 			oMessageModel.computeSenderEmail();
 		}
