@@ -330,7 +330,7 @@ export const ContactPropertyType = {
 
 	FirstName: 15,
 	LastName: 16,
-	MiddleName: 16,
+	MiddleName: 17,
 	Nick: 18,
 
 	NamePrefix: 20,

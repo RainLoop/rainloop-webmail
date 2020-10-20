@@ -1,5 +1,6 @@
 import ko from 'ko';
 
+import { ContactPropertyModel } from 'Model/ContactProperty';
 import { ContactPropertyType } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 
@@ -56,15 +57,46 @@ class ContactModel extends AbstractModel {
 			contact.display = pString(json.display);
 			contact.readOnly = !!json.readOnly;
 
+			let list = [];
 			if (Array.isNotEmpty(json.properties)) {
 				json.Properties.forEach(property => {
-					if (property && property.Type && null != property.Value && null != property.TypeStr) {
-						contact.properties.push([pInt(property.Type), pString(property.Value), pString(property.TypeStr)]);
-					}
+					property = ContactPropertyModel.reviveFromJson(property);
+					property && list.push(property);
 				});
 			}
+			contact.properties = list;
+			contact.initDefaultProperties();
 		}
 		return contact;
+	}
+
+	initDefaultProperties() {
+		let list = this.properties;
+		list.sort((p1,p2) =>{
+			if (p2.type() == ContactPropertyType.FirstName) {
+				return 1;
+			}
+			if (p1.type() == ContactPropertyType.FirstName || p1.type() == ContactPropertyType.LastName) {
+				return -1;
+			}
+			if (p2.type() == ContactPropertyType.LastName) {
+				return 1;
+			}
+			return 0;
+		});
+		let found = list.find(prop => prop.type() == ContactPropertyType.LastName);
+		if (!found) {
+			found = new ContactPropertyModel(ContactPropertyType.LastName);
+			list.unshift(found);
+		}
+		found.placeholder('CONTACTS/PLACEHOLDER_ENTER_LAST_NAME');
+		found = list.find(prop => prop.type() == ContactPropertyType.FirstName);
+		if (!found) {
+			found = new ContactPropertyModel(ContactPropertyType.FirstName);
+			list.unshift(found);
+		}
+		found.placeholder('CONTACTS/PLACEHOLDER_ENTER_FIRST_NAME');
+		this.properties = list;
 	}
 
 	/**

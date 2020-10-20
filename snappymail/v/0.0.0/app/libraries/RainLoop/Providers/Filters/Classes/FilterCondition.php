@@ -91,11 +91,11 @@ class FilterCondition implements \JsonSerializable
 	public function jsonSerialize()
 	{
 		return array(
-//			'@Object' => 'Object/FilterCondition',
-			'Field' => $this->Field(),
-			'Type' => $this->Type(),
-			'Value' => $this->Value(),
-			'ValueSecond' => $this->ValueSecond()
+			'@Object' => 'Object/FilterCondition',
+			'field' => $this->Field(),
+			'type' => $this->Type(),
+			'value' => $this->Value(),
+			'valueSecond' => $this->ValueSecond()
 		);
 	}
 }

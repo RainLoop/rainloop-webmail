@@ -489,10 +489,7 @@ class ContactsPopupView extends AbstractViewNext {
 	 * @param {?ContactModel} contact
 	 */
 	populateViewContact(contact) {
-		let id = '',
-			lastName = '',
-			firstName = '';
-		const list = [];
+		let id = '';
 
 		this.watchHash(false);
 
@@ -501,49 +498,18 @@ class ContactsPopupView extends AbstractViewNext {
 
 		if (contact) {
 			id = contact.id;
-			if (Array.isNotEmpty(contact.properties)) {
-				contact.properties.forEach(property => {
-					if (property && property[0]) {
-						if (ContactPropertyType.LastName === property[0]) {
-							lastName = property[1];
-						} else if (ContactPropertyType.FirstName === property[0]) {
-							firstName = property[1];
-						} else {
-							list.push(new ContactPropertyModel(property[0], property[2] || '', property[1]));
-						}
-					}
-				});
-			}
-
 			this.viewReadOnly(!!contact.readOnly);
+		} else {
+			contact = new ContactModel;
+			contact.initDefaultProperties();
 		}
-
-		list.unshift(
-			new ContactPropertyModel(
-				ContactPropertyType.LastName,
-				'',
-				lastName,
-				false,
-				this.getPropertyPlaceholder(ContactPropertyType.LastName)
-			)
-		);
-
-		list.unshift(
-			new ContactPropertyModel(
-				ContactPropertyType.FirstName,
-				'',
-				firstName,
-				!contact,
-				this.getPropertyPlaceholder(ContactPropertyType.FirstName)
-			)
-		);
 
 		this.viewID(id);
 
 		delegateRunOnDestroy(this.viewProperties());
 
 		this.viewProperties([]);
-		this.viewProperties(list);
+		this.viewProperties(contact.properties);
 
 		this.watchDirty(false);
 		this.watchHash(true);

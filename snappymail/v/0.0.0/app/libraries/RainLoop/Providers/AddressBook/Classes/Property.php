@@ -151,14 +151,14 @@ class Property implements \JsonSerializable
 		// Simple hack
 		if ($this && $this->IsWeb())
 		{
-			$this->Value = \preg_replace('/(skype|ftp|http[s]?)\\\:\/\//i', '$1://', $this->Value);
+			$this->Value = \preg_replace('#(https?)\\\://#i', '$1://', $this->Value);
 		}
 		return array(
-			'@Object' => 'Object/Property',
-			'IdProperty' => $this->IdProperty,
-			'Type' => $this->Type,
-			'TypeStr' => $this->TypeStr,
-			'Value' => \MailSo\Base\Utils::Utf8Clear($this->Value)
+			'@Object' => 'Object/ContactProperty',
+			'id' => $this->IdProperty,
+			'type' => $this->Type,
+			'typeStr' => $this->TypeStr,
+			'value' => \MailSo\Base\Utils::Utf8Clear($this->Value)
 		));
 	}
 }

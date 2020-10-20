@@ -225,10 +225,7 @@ class FilterModel extends AbstractModel {
 
 			if (Array.isNotEmpty(json.Conditions)) {
 				filter.conditions(
-					json.Conditions.map(aData => {
-						const filterCondition = new FilterConditionModel();
-						return filterCondition && filterCondition.parse(aData) ? filterCondition : null;
-					}).filter(v => v)
+					json.Conditions.map(aData => FilterConditionModel.reviveFromJson(aData)).filter(v => v)
 				);
 			}
 

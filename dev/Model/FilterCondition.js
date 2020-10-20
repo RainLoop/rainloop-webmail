@@ -56,17 +56,15 @@ class FilterConditionModel extends AbstractModel {
 		return true;
 	}
 
-	parse(json) {
-		if (json && json.Field && json.Type) {
-			this.field(pString(json.Field));
-			this.type(pString(json.Type));
-			this.value(pString(json.Value));
-			this.valueSecond(pString(json.ValueSecond));
-
-			return true;
+	static reviveFromJson(json) {
+		const filter = super.reviveFromJson(json);
+		if (filter) {
+			this.field(pString(json.field));
+			this.type(pString(json.type));
+			this.value(pString(json.value));
+			this.valueSecond(pString(json.valueSecond));
 		}
-
-		return false;
+		return filter;
 	}
 
 	toJson() {
