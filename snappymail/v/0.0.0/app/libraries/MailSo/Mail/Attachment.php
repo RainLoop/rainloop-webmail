@@ -15,7 +15,7 @@ namespace MailSo\Mail;
  * @category MailSo
  * @package Mail
  */
-class Attachment
+class Attachment implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -159,5 +159,21 @@ class Attachment
 		$this->iUid = $iUid;
 		$this->oBodyStructure = $oBodyStructure;
 		return $this;
+	}
+
+	public function jsonSerialize()
+	{
+		return array(
+			'@Object' => 'Object/Attachment',
+			'Folder' => $this->Folder(),
+			'Uid' => (string) $this->Uid(),
+			'MimeIndex' => (string) $this->MimeIndex(),
+			'MimeType' => $this->MimeType(),
+			'FileName' => \MailSo\Base\Utils::ClearFileName(\MailSo\Base\Utils::ClearXss($this->FileName(true))),
+			'EstimatedSize' => $this->EstimatedSize(),
+			'Cid' => $this->Cid(),
+			'ContentLocation' => $this->ContentLocation(),
+			'IsInline' => $this->IsInline()
+		);
 	}
 }

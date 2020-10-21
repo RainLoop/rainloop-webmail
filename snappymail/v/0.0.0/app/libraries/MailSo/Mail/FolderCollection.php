@@ -232,4 +232,17 @@ class FolderCollection extends \MailSo\Base\Collection
 			}
 		}
 	}
+
+	public function jsonSerialize()
+	{
+		return array_merge(parent::jsonSerialize(), array(
+			'Namespace' => $this->GetNamespace(),
+			'FoldersHash' => $this->FoldersHash ?: '',
+			'IsThreadsSupported' => $this->IsThreadsSupported,
+			'Optimized' => $this->Optimized,
+			'CountRec' => $this->CountRec(),
+			'SystemFolders' => isset($this->SystemFolders) && \is_array($this->SystemFolders) ?
+				$this->SystemFolders : array()
+		));
+	}
 }

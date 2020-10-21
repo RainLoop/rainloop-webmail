@@ -110,4 +110,22 @@ class MessageCollection extends \MailSo\Base\Collection
 
 		$this->Filtered = false;
 	}
+
+	public function jsonSerialize()
+	{
+		return array_merge(parent::jsonSerialize(), array(
+			'MessageCount' => $this->MessageCount,
+			'MessageUnseenCount' => $this->MessageUnseenCount,
+			'MessageResultCount' => $this->MessageResultCount,
+			'Folder' => $this->FolderName,
+			'FolderHash' => $this->FolderHash,
+			'UidNext' => $this->UidNext,
+			'ThreadUid' => $this->ThreadUid,
+			'NewMessages' => $this->NewMessages,
+			'Filtered' => $this->Filtered,
+			'Offset' => $this->Offset,
+			'Limit' => $this->Limit,
+			'Search' => $this->Search
+		));
+	}
 }

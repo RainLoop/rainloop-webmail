@@ -55,4 +55,11 @@ class AttachmentCollection extends \MailSo\Base\Collection
 		}
 		return $aResult;
 	}
+
+	public function jsonSerialize()
+	{
+		return array_merge(parent::jsonSerialize(), array(
+			'InlineCount' => $this->InlineCount()
+		));
+	}
 }

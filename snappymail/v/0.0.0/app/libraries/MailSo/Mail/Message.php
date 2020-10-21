@@ -15,7 +15,7 @@ namespace MailSo\Mail;
  * @category MailSo
  * @package Mail
  */
-class Message
+class Message implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -743,5 +743,45 @@ class Message
 		}
 
 		return $this;
+	}
+
+	public function jsonSerialize()
+	{
+		$oAttachments = $this->Attachments();
+		$aFlags = $this->FlagsLowerCase();
+		return array(
+			'@Object' => 'Object/Message',
+			'Folder' => $this->Folder(),
+			'Uid' => (string) $this->Uid(),
+			'Subject' => \trim(\MailSo\Base\Utils::Utf8Clear($this->Subject())),
+			'MessageId' => $this->MessageId(),
+			'Size' => $this->Size(),
+			'DateTimeStampInUTC' => $this->InternalTimeStampInUTC(),
+
+			// \MailSo\Mime\EmailCollection
+			'From' => $this->From(),
+			'ReplyTo' => $this->ReplyTo(),
+			'To' => $this->To(),
+			'Cc' => $this->Cc(),
+			'Bcc' => $this->Bcc(),
+			'Sender' => $this->Sender(),
+			'DeliveredTo' => $this->DeliveredTo(),
+
+			'Priority' => $this->Priority(),
+			'Threads' => $this->Threads(),
+			'Sensitivity' => $this->Sensitivity(),
+			'UnsubsribeLinks' => $this->UnsubsribeLinks(),
+			'ExternalProxy' => false,
+			'ReadReceipt' => '',
+
+			'HasAttachments' => $oAttachments ? 0 < $oAttachments->Count() : false,
+			'AttachmentsSpecData' => $oAttachments ? $oAttachments->SpecData() : array(),
+
+			// Flags
+			'IsSeen' => \in_array('\\seen', $aFlags),
+			'IsFlagged' => \in_array('\\flagged', $aFlags),
+			'IsAnswered' => \in_array('\\answered', $aFlags),
+			'IsDeleted' => \in_array('\\deleted', $aFlags)
+		);
 	}
 }

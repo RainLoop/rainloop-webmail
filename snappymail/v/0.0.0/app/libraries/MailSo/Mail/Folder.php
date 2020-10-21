@@ -15,7 +15,7 @@ namespace MailSo\Mail;
  * @category MailSo
  * @package Mail
  */
-class Folder
+class Folder implements \JsonSerializable
 {
 	/**
 	 * @var string
@@ -225,5 +225,21 @@ class Folder
 		}
 
 		return $iListType;
+	}
+
+	public function jsonSerialize()
+	{
+		return array(
+			'@Object' => 'Object/Folder',
+			'Name' => $this->Name(),
+			'FullName' => $this->FullName(),
+			'FullNameRaw' => $this->FullNameRaw(),
+			'Delimiter' => (string) $this->Delimiter(),
+			'HasVisibleSubFolders' => $this->HasVisibleSubFolders(),
+			'IsSubscribed' => $this->IsSubscribed(),
+			'IsExists' => $this->IsExists(),
+			'IsSelectable' => $this->IsSelectable(),
+			'Flags' => $this->FlagsLowerCase()
+		);
 	}
 }
