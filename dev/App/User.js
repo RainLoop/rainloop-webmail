@@ -988,13 +988,13 @@ class AppUser extends AbstractApp {
 							setInterval(this.quota, 900000);
 							setInterval(this.foldersReload, 1200000);
 
+							setTimeout(this.contactsSync, 10000);
 							contactsSyncInterval = 5 <= contactsSyncInterval ? contactsSyncInterval : 20;
 							contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
+							setInterval(this.contactsSync, contactsSyncInterval * 60000 + 5000);
 
-							setTimeout(this.contactsSync, 10000);
 							setTimeout(() => this.folderInformationMultiply(true), 2000);
 
-							setInterval(this.contactsSync, contactsSyncInterval * 60000 + 5000);
 
 							this.accountsAndIdentities(true);
 
