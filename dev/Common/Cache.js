@@ -198,14 +198,14 @@ export function initMessageFlagsFromCache(message) {
 			flags = getMessageFlagsFromCache(message.folderFullNameRaw, uid);
 
 		if (flags && flags.length) {
-			message.flagged(!!flags[1]);
+			message.isFlagged(!!flags[1]);
 
 			if (!message.isSimpleMessage) {
-				message.unseen(!!flags[0]);
-				message.answered(!!flags[2]);
-				message.forwarded(!!flags[3]);
+				message.isUnseen(!!flags[0]);
+				message.isAnswered(!!flags[2]);
+				message.isForwarded(!!flags[3]);
 				message.isReadReceipt(!!flags[4]);
-				message.deletedMark(!!flags[5]);
+				message.isDeleted(!!flags[5]);
 			}
 		}
 
@@ -238,12 +238,12 @@ export function initMessageFlagsFromCache(message) {
 export function storeMessageFlagsToCache(message) {
 	if (message) {
 		setMessageFlagsToCache(message.folderFullNameRaw, message.uid, [
-			message.unseen(),
-			message.flagged(),
-			message.answered(),
-			message.forwarded(),
+			message.isUnseen(),
+			message.isFlagged(),
+			message.isAnswered(),
+			message.isForwarded(),
 			message.isReadReceipt(),
-			message.deletedMark()
+			message.isDeleted()
 		]);
 	}
 }

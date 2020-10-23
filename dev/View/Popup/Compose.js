@@ -643,7 +643,7 @@ class ComposePopupView extends AbstractViewNext {
 
 				if (this.bFromDraft) {
 					const message = MessageStore.message();
-					if (message && this.draftFolder() === message.folderFullNameRaw && this.draftUid() === message.uid) {
+					if (message && this.draftFolder() === message.folder && this.draftUid() === message.uid) {
 						MessageStore.message(null);
 					}
 				}
@@ -905,7 +905,7 @@ class ComposePopupView extends AbstractViewNext {
 					this.to(this.emailArrayToStringLineHelper(message.replyEmails(excludeEmail)));
 					this.subject(replySubjectAdd('Re', sSubject));
 					this.prepareMessageAttachments(message, lineComposeType);
-					this.aDraftInfo = ['reply', message.uid, message.folderFullNameRaw];
+					this.aDraftInfo = ['reply', message.uid, message.folder];
 					this.sInReplyTo = message.sMessageId;
 					this.sReferences = (this.sInReplyTo + ' ' + message.sReferences).trim();
 					break;
@@ -916,15 +916,15 @@ class ComposePopupView extends AbstractViewNext {
 					this.cc(this.emailArrayToStringLineHelper(resplyAllParts[1]));
 					this.subject(replySubjectAdd('Re', sSubject));
 					this.prepareMessageAttachments(message, lineComposeType);
-					this.aDraftInfo = ['reply', message.uid, message.folderFullNameRaw];
+					this.aDraftInfo = ['reply', message.uid, message.folder];
 					this.sInReplyTo = message.sMessageId;
-					this.sReferences = (this.sInReplyTo + ' ' + message.references()).trim();
+					this.sReferences = (this.sInReplyTo + ' ' + message.references).trim();
 					break;
 
 				case ComposeType.Forward:
 					this.subject(replySubjectAdd('Fwd', sSubject));
 					this.prepareMessageAttachments(message, lineComposeType);
-					this.aDraftInfo = ['forward', message.uid, message.folderFullNameRaw];
+					this.aDraftInfo = ['forward', message.uid, message.folder];
 					this.sInReplyTo = message.sMessageId;
 					this.sReferences = (this.sInReplyTo + ' ' + message.sReferences).trim();
 					break;
@@ -932,7 +932,7 @@ class ComposePopupView extends AbstractViewNext {
 				case ComposeType.ForwardAsAttachment:
 					this.subject(replySubjectAdd('Fwd', sSubject));
 					this.prepareMessageAttachments(message, lineComposeType);
-					this.aDraftInfo = ['forward', message.uid, message.folderFullNameRaw];
+					this.aDraftInfo = ['forward', message.uid, message.folder];
 					this.sInReplyTo = message.sMessageId;
 					this.sReferences = (this.sInReplyTo + ' ' + message.sReferences).trim();
 					break;
@@ -945,7 +945,7 @@ class ComposePopupView extends AbstractViewNext {
 
 					this.bFromDraft = true;
 
-					this.draftFolder(message.folderFullNameRaw);
+					this.draftFolder(message.folder);
 					this.draftUid(message.uid);
 
 					this.subject(sSubject);

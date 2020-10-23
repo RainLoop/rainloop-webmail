@@ -195,17 +195,17 @@ trait Response
 	{
 		if (!($mResponse instanceof \JsonSerializable))
 		{
+			if (\is_object($mResponse))
+			{
+				return '["'.\get_class($mResponse).'"]';
+			}
+
 			if (\is_array($mResponse))
 			{
 				foreach ($mResponse as $iKey => $oItem)
 				{
 					$mResponse[$iKey] = $this->responseObject($oItem, $sParent, $aParameters);
 				}
-			}
-
-			if (\is_object($mResponse))
-			{
-				return '["'.\get_class($mResponse).'"]';
 			}
 
 			return $mResponse;
@@ -255,8 +255,6 @@ trait Response
 			{
 				$mResult['IsReadReceipt'] = true;
 			}
-
-			$mResult['TextPartIsTrimmed'] = false;
 
 			if ('Message' === $sParent)
 			{
@@ -323,10 +321,8 @@ trait Response
 
 				$mResult['TextHash'] = \md5($mResult['Html'].$mResult['Plain']);
 
-				$mResult['TextPartIsTrimmed'] = $mResponse->TextPartIsTrimmed();
-
-				$mResult['PgpSigned'] = $mResponse->PgpSigned();
-				$mResult['PgpEncrypted'] = $mResponse->PgpEncrypted();
+				$mResult['isPgpSigned'] = $mResponse->isPgpSigned();
+				$mResult['isPgpEncrypted'] = $mResponse->isPgpEncrypted();
 				$mResult['PgpSignature'] = $mResponse->PgpSignature();
 
 				unset($sHtml, $sPlain);

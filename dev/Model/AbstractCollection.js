@@ -1,15 +1,13 @@
 
 export class AbstractCollectionModel extends Array
 {
-	constructor(props) {
+	constructor() {
 /*
-		if (new.target === Parent) {
-			throw new Error("Can't instantiate abstract class!");
+		if (new.target === AbstractCollectionModel) {
+			throw new Error("Can't instantiate AbstractCollectionModel!");
 		}
 */
 		super();
-		props && Object.entries(props).forEach(([key, value]) => '@' !== key[0] && (this[key] = value));
-//		props[@Count]
 	}
 
 	/**
@@ -18,18 +16,22 @@ export class AbstractCollectionModel extends Array
 	 * @returns {*CollectionModel}
 	 */
 	static reviveFromJson(json, itemCallback) {
-		// FolderCollectionModel     => FolderCollection
-		// AttachmentCollectionModel => AttachmentCollection
-		// MessageCollectionModel    => MessageCollection
-		if (json && 'Collection/'+this.name.replace('Model', '') === json['@Object']
-		 && Array.isArray(json['@Collection'])) {
-			const result = new this(json);
-			json['@Collection'].forEach(item => {
-				item && itemCallback && (item = itemCallback(item, result));
-				item && result.push(item);
-			});
-			return result;
+		if (json) {
+			const result = new this();
+			if ('Collection/'+this.name.replace('Model', '') === json['@Object']) {
+				Object.entries(json).forEach(([key, value]) => '@' !== key[0] && (result[key] = value));
+//				json[@Count]
+				json = json['@Collection'];
+			}
+			if (Array.isArray(json)) {
+				json.forEach(item => {
+					item && itemCallback && (item = itemCallback(item, result));
+					item && result.push(item);
+				});
+				return result;
+			}
 		}
+		return null;
 	}
 
 }

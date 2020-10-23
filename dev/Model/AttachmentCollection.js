@@ -10,16 +10,7 @@ export class AttachmentCollectionModel extends AbstractCollectionModel
 	 * @returns {AttachmentCollectionModel}
 	 */
 	static reviveFromJson(items) {
-		let cb = attachment => AttachmentModel.reviveFromJson(attachment),
-			result = super.reviveFromJson(items, cb);
-		if (!result) {
-			result = new AttachmentCollectionModel;
-			Array.isArray(items) && items.forEach(attachment => {
-				attachment = cb(attachment);
-				attachment && result.push(attachment);
-			});
-		}
-		return result;
+		return super.reviveFromJson(items, attachment => AttachmentModel.reviveFromJson(attachment));
 	}
 
 	/**

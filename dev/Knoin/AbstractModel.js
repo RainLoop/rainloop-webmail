@@ -9,10 +9,14 @@ function typeCast(current, value) {
 	switch (typeof current)
 	{
 	case 'boolean': return !!value;
-	case 'string':  return null != value ? '' + value : '';
-	case 'number':
-		value = parseInt(value, 10);
-		return (isNaN(value) || !isFinite(value)) ? 0 : value;
+	case 'number': return isFinite(value) ? parseFloat(value) : 0;
+	case 'string': return null != value ? '' + value : '';
+	case 'object':
+		if (current.constructor.reviveFromJson) {
+			return current.constructor.reviveFromJson(value) || undefined;
+		}
+		if (!Array.isArray(current) || !Array.isArray(value))
+			return undefined;
 	}
 	return value;
 }
@@ -26,7 +30,7 @@ export class AbstractModel {
 	constructor() {
 /*
 		if (new.target === AbstractModel) {
-			throw new Error("Can't instantiate abstract class!");
+			throw new Error("Can't instantiate AbstractModel!");
 		}
 		this.sModelName = new.target.name;
 */
@@ -63,34 +67,53 @@ export class AbstractModel {
 	 */
 	static reviveFromJson(json) {
 		let obj = this.validJson(json) ? new this() : null;
+		obj && obj.revivePropertiesFromJson(json);
+		return obj;
+	}
+
+	revivePropertiesFromJson(json) {
+		let model = this.constructor;
 		try {
-			obj && Object.entries(json).forEach(([key, value]) => {
+			if (!model.validJson(json)) {
+				return false;
+			}
+			Object.entries(json).forEach(([key, value]) => {
 				if ('@' !== key[0]) {
 					key = key[0].toLowerCase() + key.substr(1);
-					switch (typeof obj[key])
+					switch (typeof this[key])
 					{
 					case 'function':
-						if (ko.isObservable(obj[key]) && !ko.isObservableArray(obj[key])) {
-							obj[key](typeCast(obj[key](), value));
+						if (ko.isObservable(this[key])) {
+							value = typeCast(this[key](), value);
+							if (undefined !== value) {
+								this[key](value);
+								break;
+							}
+//							console.log((typeof this[key]())+' '+(model.name)+'.'+key+' not revived');
 						}
-//						else { console.log('('+(typeof obj[key])+') '+key+' not revived'); }
+//						else console.log(model.name + '.' + key + ' is a function');
 						break;
 					case 'boolean':
-					case 'string':
 					case 'number':
-						obj[key] = typeCast(obj[key], value);
-						break;
-//					case 'undefined':
-//					default:
-//						console.log('('+(typeof obj[key])+') '+key+' not revived');
+					case 'object':
+					case 'string':
+						value = typeCast(this[key], value);
+						if (undefined !== value) {
+							this[key] = value;
+							break;
+						}
+						// fall through
+					case 'undefined':
+					default:
+//						console.log((typeof this[key])+' '+(model.name)+'.'+key+' not revived');
 					}
 				}
 			});
 		} catch (e) {
-			console.log(this.name);
+			console.log(model.name);
 			console.error(e);
 		}
-		return obj;
+		return true;
 	}
 
 }

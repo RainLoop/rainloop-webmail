@@ -3,13 +3,11 @@ import ko from 'ko';
 import { MessagePriority, SignedVerifyStatus } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
-import { pInt } from 'Common/Utils';
 import { encodeHtml } from 'Common/UtilsUser';
 
 import { messageViewLink, messageDownloadLink } from 'Common/Links';
 
 import FolderStore from 'Stores/User/Folder';
-import PgpStore from 'Stores/User/Pgp';
 
 import { File } from 'Common/File';
 import { AttachmentCollectionModel } from 'Model/AttachmentCollection';
@@ -40,22 +38,17 @@ class MessageModel extends AbstractModel {
 		this.dateTimeStampInUTC = ko.observable(0);
 		this.priority = ko.observable(MessagePriority.Normal);
 
-		this.fromEmailString = ko.observable('');
-		this.fromClearEmailString = ko.observable('');
-		this.toEmailsString = ko.observable('');
-		this.toClearEmailsString = ko.observable('');
-
 		this.senderEmailsString = ko.observable('');
 		this.senderClearEmailsString = ko.observable('');
 
 		this.newForAnimation = ko.observable(false);
 
 		this.deleted = ko.observable(false);
-		this.deletedMark = ko.observable(false);
-		this.unseen = ko.observable(false);
-		this.flagged = ko.observable(false);
-		this.answered = ko.observable(false);
-		this.forwarded = ko.observable(false);
+		this.isDeleted = ko.observable(false);
+		this.isUnseen = ko.observable(false);
+		this.isFlagged = ko.observable(false);
+		this.isAnswered = ko.observable(false);
+		this.isForwarded = ko.observable(false);
 		this.isReadReceipt = ko.observable(false);
 
 		this.focused = ko.observable(false);
@@ -91,52 +84,12 @@ class MessageModel extends AbstractModel {
 		this.regDisposables([this.attachmentIconClass, this.threadsLen, this.isImportant]);
 	}
 
-	/**
-	 * @static
-	 * @param {FetchJsonMessage} json
-	 * @returns {?MessageModel}
-	 */
-	static reviveFromJson(json) {
-		const oMessageModel = super.reviveFromJson(json);
-		if (oMessageModel) {
-			oMessageModel.folderFullNameRaw = json.Folder;
-
-			oMessageModel.from = EmailCollectionModel.reviveFromJson(json.From);
-			oMessageModel.to = EmailCollectionModel.reviveFromJson(json.To);
-			oMessageModel.cc = EmailCollectionModel.reviveFromJson(json.Cc);
-			oMessageModel.bcc = EmailCollectionModel.reviveFromJson(json.Bcc);
-			oMessageModel.replyTo = EmailCollectionModel.reviveFromJson(json.ReplyTo);
-			oMessageModel.deliveredTo = EmailCollectionModel.reviveFromJson(json.DeliveredTo);
-			oMessageModel.unsubsribeLinks = Array.isNotEmpty(json.UnsubsribeLinks) ? json.UnsubsribeLinks : [];
-
-			if (isArray(json.SubjectParts)) {
-				oMessageModel.subjectPrefix(json.SubjectParts[0]);
-				oMessageModel.subjectSuffix(json.SubjectParts[1]);
-			} else {
-				oMessageModel.subjectPrefix('');
-				oMessageModel.subjectSuffix(oMessageModel.subject());
-			}
-
-			oMessageModel.fromEmailString(oMessageModel.from.toString(true));
-			oMessageModel.fromClearEmailString(oMessageModel.from.toStringClear());
-			oMessageModel.toEmailsString(oMessageModel.to.toString(true));
-			oMessageModel.toClearEmailsString(oMessageModel.to.toStringClear());
-
-			oMessageModel.threads(isArray(json.Threads) ? json.Threads : []);
-
-			oMessageModel.setFromJson(json);
-			oMessageModel.initFlagsByJson(json);
-			oMessageModel.computeSenderEmail();
-		}
-		return oMessageModel;
-	}
-
 	_reset() {
-		this.folderFullNameRaw = '';
+		this.folder = '';
 		this.uid = '';
 		this.hash = '';
 		this.requestHash = '';
-		this.proxy = false;
+		this.externalProxy = false;
 		this.emails = [];
 		this.from = new EmailCollectionModel;
 		this.to = new EmailCollectionModel;
@@ -146,10 +99,10 @@ class MessageModel extends AbstractModel {
 		this.deliveredTo = new EmailCollectionModel;
 		this.unsubsribeLinks = [];
 		this.body = null;
-		this.aDraftInfo = [];
-		this.sMessageId = '';
-		this.sInReplyTo = '';
-		this.sReferences = '';
+		this.draftInfo = [];
+		this.messageId = '';
+		this.inReplyTo = '';
+		this.references = '';
 	}
 
 	clear() {
@@ -161,21 +114,17 @@ class MessageModel extends AbstractModel {
 		this.dateTimeStampInUTC(0);
 		this.priority(MessagePriority.Normal);
 
-		this.fromEmailString('');
-		this.fromClearEmailString('');
-		this.toEmailsString('');
-		this.toClearEmailsString('');
 		this.senderEmailsString('');
 		this.senderClearEmailsString('');
 
 		this.newForAnimation(false);
 
 		this.deleted(false);
-		this.deletedMark(false);
-		this.unseen(false);
-		this.flagged(false);
-		this.answered(false);
-		this.forwarded(false);
+		this.isDeleted(false);
+		this.isUnseen(false);
+		this.isFlagged(false);
+		this.isAnswered(false);
+		this.isForwarded(false);
 		this.isReadReceipt(false);
 
 		this.selected(false);
@@ -219,65 +168,34 @@ class MessageModel extends AbstractModel {
 	}
 
 	computeSenderEmail() {
-		const sentFolder = FolderStore.sentFolder(),
-			draftFolder = FolderStore.draftFolder();
-
-		this.senderEmailsString(
-			this.folderFullNameRaw === sentFolder || this.folderFullNameRaw === draftFolder
-				? this.toEmailsString()
-				: this.fromEmailString()
-		);
-
-		this.senderClearEmailsString(
-			this.folderFullNameRaw === sentFolder || this.folderFullNameRaw === draftFolder
-				? this.toClearEmailsString()
-				: this.fromClearEmailString()
-		);
-	}
-
-	setFromJson(json) {
-		let result = MessageModel.validJson(json);
-		if (result) {
-			let priority = pInt(json.Priority);
-			this.priority(
-				[MessagePriority.High, MessagePriority.Low].includes(priority) ? priority : MessagePriority.Normal
-			);
-
-			this.proxy = !!json.ExternalProxy;
-
-			this.hasAttachments(!!json.HasAttachments);
-			this.attachmentsSpecData(isArray(json.AttachmentsSpecData) ? json.AttachmentsSpecData : []);
-		}
-		return result;
+		const list = [FolderStore.sentFolder(), FolderStore.draftFolder()].includes(this.folder) ? 'to' : 'from';
+		this.senderEmailsString(this[list].toString(true));
+		this.senderClearEmailsString(this[list].toStringClear());
 	}
 
 	/**
 	 * @param {FetchJsonMessage} json
 	 * @returns {boolean}
 	 */
-	initUpdateByMessageJson(json) {
-		let result = this.setFromJson(json);
-		if (result) {
-			this.aDraftInfo = json.DraftInfo;
-
-			this.sMessageId = json.MessageId;
-			this.sInReplyTo = json.InReplyTo;
-			this.sReferences = json.References;
-
-			if (PgpStore.capaOpenPGP()) {
-				this.isPgpSigned(!!json.PgpSigned);
-				this.isPgpEncrypted(!!json.PgpEncrypted);
+	revivePropertiesFromJson(json) {
+		if ('Priority' in json) {
+			let p = parseInt(json.Priority, 10);
+			json.Priority = MessagePriority.High == p || MessagePriority.Low == p ? p : MessagePriority.Normal;
+		}
+		if (super.revivePropertiesFromJson(json)) {
+			if (isArray(json.SubjectParts)) {
+				this.subjectPrefix(json.SubjectParts[0]);
+				this.subjectSuffix(json.SubjectParts[1]);
+			} else {
+				this.subjectPrefix('');
+				this.subjectSuffix(this.subject());
 			}
 
 //			this.foundedCIDs = isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];
 //			this.attachments(AttachmentCollectionModel.reviveFromJson(json.Attachments, this.foundedCIDs));
-			this.attachments(AttachmentCollectionModel.reviveFromJson(json.Attachments));
-
-			this.readReceipt(json.ReadReceipt || '');
 
 			this.computeSenderEmail();
 		}
-		return result;
 	}
 
 	/**
@@ -292,23 +210,6 @@ class MessageModel extends AbstractModel {
 	 */
 	getFirstUnsubsribeLink() {
 		return this.unsubsribeLinks && this.unsubsribeLinks.length ? this.unsubsribeLinks[0] || '' : '';
-	}
-
-	/**
-	 * @param {FetchJsonMessage} json
-	 * @returns {boolean}
-	 */
-	initFlagsByJson(json) {
-		let result = MessageModel.validJson(json);
-		if (result) {
-			this.unseen(!json.IsSeen);
-			this.flagged(!!json.IsFlagged);
-			this.answered(!!json.IsAnswered);
-			this.forwarded(!!json.IsForwarded);
-			this.isReadReceipt(!!json.IsReadReceipt);
-			this.deletedMark(!!json.IsDeleted);
-		}
-		return result;
 	}
 
 	/**
@@ -375,13 +276,13 @@ class MessageModel extends AbstractModel {
 		let classes = [];
 		Object.entries({
 			'deleted': this.deleted(),
-			'deleted-mark': this.deletedMark(),
+			'deleted-mark': this.isDeleted(),
 			'selected': this.selected(),
 			'checked': this.checked(),
-			'flagged': this.flagged(),
-			'unseen': this.unseen(),
-			'answered': this.answered(),
-			'forwarded': this.forwarded(),
+			'flagged': this.isFlagged(),
+			'unseen': this.isUnseen(),
+			'answered': this.isAnswered(),
+			'forwarded': this.isForwarded(),
 			'focused': this.focused(),
 			'important': this.isImportant(),
 			'withAttachments': this.hasAttachments(),
@@ -392,27 +293,6 @@ class MessageModel extends AbstractModel {
 			'hasFlaggedSubMessage': this.hasFlaggedSubMessage()
 		}).forEach(([key, value]) => value && classes.push(key));
 		return classes.join(' ');
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	messageId() {
-		return this.sMessageId;
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	inReplyTo() {
-		return this.sInReplyTo;
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	references() {
-		return this.sReferences;
 	}
 
 	/**
@@ -522,7 +402,7 @@ class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	generateUid() {
-		return this.folderFullNameRaw + '/' + this.uid;
+		return this.folder + '/' + this.uid;
 	}
 
 	/**
@@ -531,7 +411,7 @@ class MessageModel extends AbstractModel {
 	 */
 	populateByMessageListItem(message) {
 		if (message) {
-			this.folderFullNameRaw = message.folderFullNameRaw;
+			this.folder = message.folder;
 			this.uid = message.uid;
 			this.hash = message.hash;
 			this.requestHash = message.requestHash;
@@ -546,12 +426,7 @@ class MessageModel extends AbstractModel {
 			this.dateTimeStampInUTC(message.dateTimeStampInUTC());
 			this.priority(message.priority());
 
-			this.proxy = message.proxy;
-
-			this.fromEmailString(message.fromEmailString());
-			this.fromClearEmailString(message.fromClearEmailString());
-			this.toEmailsString(message.toEmailsString());
-			this.toClearEmailsString(message.toClearEmailsString());
+			this.externalProxy = message.externalProxy;
 
 			this.emails = message.emails;
 
@@ -563,12 +438,12 @@ class MessageModel extends AbstractModel {
 			this.deliveredTo = message.deliveredTo;
 			this.unsubsribeLinks = message.unsubsribeLinks;
 
-			this.unseen(message.unseen());
-			this.flagged(message.flagged());
-			this.answered(message.answered());
-			this.forwarded(message.forwarded());
+			this.isUnseen(message.isUnseen());
+			this.isFlagged(message.isFlagged());
+			this.isAnswered(message.isAnswered());
+			this.isForwarded(message.isForwarded());
 			this.isReadReceipt(message.isReadReceipt());
-			this.deletedMark(message.deletedMark());
+			this.isDeleted(message.isDeleted());
 
 			this.priority(message.priority());
 
@@ -580,10 +455,10 @@ class MessageModel extends AbstractModel {
 
 		this.body = null;
 
-		this.aDraftInfo = [];
-		this.sMessageId = '';
-		this.sInReplyTo = '';
-		this.sReferences = '';
+		this.draftInfo = [];
+		this.messageId = '';
+		this.inReplyTo = '';
+		this.references = '';
 
 		if (message) {
 			this.threads(message.threads());
@@ -599,7 +474,7 @@ class MessageModel extends AbstractModel {
 			this.hasImages(false);
 			this.body.rlHasImages = false;
 
-			let body = this.body, attr = this.proxy ? 'data-x-additional-src' : 'data-x-src';
+			let body = this.body, attr = this.externalProxy ? 'data-x-additional-src' : 'data-x-src';
 			body.querySelectorAll('[' + attr + ']').forEach(node => {
 				if (node.matches('img')) {
 					node.loading = 'lazy';
@@ -608,7 +483,7 @@ class MessageModel extends AbstractModel {
 				node.removeAttribute('data-loaded');
 			});
 
-			attr = this.proxy ? 'data-x-additional-style-url' : 'data-x-style-url';
+			attr = this.externalProxy ? 'data-x-additional-style-url' : 'data-x-style-url';
 			body.querySelectorAll('[' + attr + ']').forEach(node => {
 				node.setAttribute('style', ((node.getAttribute('style')||'')
 					+ ';' + node.getAttribute(attr))
@@ -691,11 +566,11 @@ class MessageModel extends AbstractModel {
 	flagHash() {
 		return [
 			this.deleted(),
-			this.deletedMark(),
-			this.unseen(),
-			this.flagged(),
-			this.answered(),
-			this.forwarded(),
+			this.isDeleted(),
+			this.isUnseen(),
+			this.isFlagged(),
+			this.isAnswered(),
+			this.isForwarded(),
 			this.isReadReceipt()
 		].join(',');
 	}

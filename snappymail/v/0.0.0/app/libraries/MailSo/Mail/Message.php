@@ -255,12 +255,12 @@ class Message implements \JsonSerializable
 		return $this->sPgpSignature;
 	}
 
-	public function PgpSigned() : bool
+	public function isPgpSigned() : bool
 	{
 		return $this->bPgpSigned;
 	}
 
-	public function PgpEncrypted() : bool
+	public function isPgpEncrypted() : bool
 	{
 		return $this->bPgpEncrypted;
 	}
@@ -418,11 +418,6 @@ class Message implements \JsonSerializable
 	public function SetThreads(array $aThreads)
 	{
 		$this->aThreads = $aThreads;
-	}
-
-	public function TextPartIsTrimmed() : bool
-	{
-		return $this->bTextPartIsTrimmed;
 	}
 
 	public static function NewFetchResponseInstance(string $sFolder, \MailSo\Imap\FetchResponse $oFetchResponse, ?\MailSo\Imap\BodyStructure $oBodyStructure = null) : self
@@ -771,13 +766,13 @@ class Message implements \JsonSerializable
 			'Threads' => $this->Threads(),
 			'Sensitivity' => $this->Sensitivity(),
 			'UnsubsribeLinks' => $this->UnsubsribeLinks(),
-			'ExternalProxy' => false,
 			'ReadReceipt' => '',
 
 			'HasAttachments' => $oAttachments ? 0 < $oAttachments->Count() : false,
 			'AttachmentsSpecData' => $oAttachments ? $oAttachments->SpecData() : array(),
 
 			// Flags
+			'IsUnseen' => \in_array('\\unseen', $aFlags) || !\in_array('\\seen', $aFlags),
 			'IsSeen' => \in_array('\\seen', $aFlags),
 			'IsFlagged' => \in_array('\\flagged', $aFlags),
 			'IsAnswered' => \in_array('\\answered', $aFlags),

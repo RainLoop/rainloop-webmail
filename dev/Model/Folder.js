@@ -5,6 +5,7 @@ import { isPosNumeric } from 'Common/UtilsUser';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
+import { FolderCollectionModel } from 'Model/FolderCollection';
 
 class FolderModel extends AbstractModel {
 	constructor() {
@@ -29,7 +30,7 @@ class FolderModel extends AbstractModel {
 		this.edited = ko.observable(false);
 		this.subScribed = ko.observable(true);
 		this.checkable = ko.observable(false);
-		this.subFolders = ko.observableArray([]);
+		this.subFolders = ko.observableArray(new FolderCollectionModel);
 		this.deleteAccess = ko.observable(false);
 		this.actionBlink = ko.observable(false).extend({ falseTimeout: 1000 });
 

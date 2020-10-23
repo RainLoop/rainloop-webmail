@@ -432,13 +432,13 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		if (Array.isNotEmpty(list)) {
 			request = false;
 			list.forEach(messageListItem => {
-				if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, messageListItem.uid)) {
+				if (!getMessageFlagsFromCache(messageListItem.folder, messageListItem.uid)) {
 					uids.push(messageListItem.uid);
 				}
 
 				if (messageListItem.threads().length) {
 					messageListItem.threads().forEach(uid => {
-						if (!getMessageFlagsFromCache(messageListItem.folderFullNameRaw, uid)) {
+						if (!getMessageFlagsFromCache(messageListItem.folder, uid)) {
 							uids.push(uid);
 						}
 					});
@@ -779,28 +779,28 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	folderDelete(sFolderFullNameRaw, fTrigger) {
 		return this.postRequest('FolderDelete', fTrigger, {
-			'Folder': sFolderFullNameRaw
+			Folder: sFolderFullNameRaw
 		});
 	}
 
 	folderCreate(sNewFolderName, sParentName, fTrigger) {
 		return this.postRequest('FolderCreate', fTrigger, {
-			'Folder': sNewFolderName,
-			'Parent': sParentName
+			Folder: sNewFolderName,
+			Parent: sParentName
 		});
 	}
 
 	folderRename(sPrevFolderFullNameRaw, sNewFolderName, fTrigger) {
 		return this.postRequest('FolderRename', fTrigger, {
-			'Folder': sPrevFolderFullNameRaw,
-			'NewFolderName': sNewFolderName
+			Folder: sPrevFolderFullNameRaw,
+			NewFolderName: sNewFolderName
 		});
 	}
 
 	attachmentsActions(sAction, aHashes, fTrigger) {
 		return this.postRequest('AttachmentsActions', fTrigger, {
-			'Do': sAction,
-			'Hashes': aHashes
+			Do: sAction,
+			Hashes: aHashes
 		});
 	}
 }

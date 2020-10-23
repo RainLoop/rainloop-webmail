@@ -372,6 +372,7 @@ trait Folders
 				{
 					$aLowerFlags = array_map('strtolower', $aFlags);
 					$aInboxInformation['Flags'][$iUid] = array(
+						'IsUnseen' => \in_array('\\unseen', $aLowerFlags) || !\in_array('\\seen', $aLowerFlags),
 						'IsSeen' => in_array('\\seen', $aLowerFlags),
 						'IsFlagged' => in_array('\\flagged', $aLowerFlags),
 						'IsAnswered' => in_array('\\answered', $aLowerFlags),

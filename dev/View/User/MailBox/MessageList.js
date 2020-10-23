@@ -230,7 +230,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			const sFolder = e.detail.Folder, sUid = e.detail.Uid;
 
 			const message = this.messageList().find(
-				item => item && sFolder === item.folderFullNameRaw && sUid === item.uid
+				item => item && sFolder === item.folder && sUid === item.uid
 			);
 
 			if ('INBOX' === sFolder) {
@@ -503,11 +503,11 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
 						if (folder) {
 							MessageStore.messageList().forEach(message => {
-								if (message.unseen()) {
+								if (message.isUnseen()) {
 									++cnt;
 								}
 
-								message.unseen(false);
+								message.isUnseen(false);
 								uids.push(message.uid);
 							});
 
@@ -529,11 +529,11 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
 						if (folder) {
 							MessageStore.messageList().forEach(message => {
-								if (!message.unseen()) {
+								if (!message.isUnseen()) {
 									++cnt;
 								}
 
-								message.unseen(true);
+								message.isUnseen(true);
 								uids.push(message.uid);
 							});
 
@@ -605,14 +605,14 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			const checkedUids = checked.map(message => message.uid);
 			if (checkedUids.includes(currentMessage.uid)) {
 				this.setAction(
-					currentMessage.folderFullNameRaw,
-					currentMessage.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
+					currentMessage.folder,
+					currentMessage.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
 					checked
 				);
 			} else {
 				this.setAction(
-					currentMessage.folderFullNameRaw,
-					currentMessage.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
+					currentMessage.folder,
+					currentMessage.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
 					[currentMessage]
 				);
 			}
@@ -623,15 +623,15 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		const checked = this.messageListCheckedOrSelected();
 		if (checked.length) {
 			if (undefined === bFlag) {
-				const flagged = checked.filter(message => message.flagged());
+				const flagged = checked.filter(message => message.isFlagged());
 				this.setAction(
-					checked[0].folderFullNameRaw,
+					checked[0].folder,
 					checked.length === flagged.length ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
 					checked
 				);
 			} else {
 				this.setAction(
-					checked[0].folderFullNameRaw,
+					checked[0].folder,
 					!bFlag ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
 					checked
 				);
@@ -643,15 +643,15 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		const checked = this.messageListCheckedOrSelected();
 		if (checked.length) {
 			if (undefined === seen) {
-				const unseen = checked.filter(message => message.unseen());
+				const unseen = checked.filter(message => message.isUnseen());
 				this.setAction(
-					checked[0].folderFullNameRaw,
+					checked[0].folder,
 					unseen.length ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,
 					checked
 				);
 			} else {
 				this.setAction(
-					checked[0].folderFullNameRaw,
+					checked[0].folder,
 					seen ? MessageSetAction.SetSeen : MessageSetAction.UnsetSeen,
 					checked
 				);
@@ -875,12 +875,12 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	prefetchNextTick() {
 		if (ifvisible && !this.bPrefetch && !ifvisible.now() && this.viewModelVisible) {
 			const message = this.messageList().find(
-				item => item && !hasRequestedMessage(item.folderFullNameRaw, item.uid)
+				item => item && !hasRequestedMessage(item.folder, item.uid)
 			);
 			if (message) {
 				this.bPrefetch = true;
 
-				addRequestedMessage(message.folderFullNameRaw, message.uid);
+				addRequestedMessage(message.folder, message.uid);
 
 				Remote.message(
 					(result, data) => {
@@ -890,7 +890,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 							next && this.prefetchNextTick();
 						}, 1000);
 					},
-					message.folderFullNameRaw,
+					message.folder,
 					message.uid
 				);
 			}

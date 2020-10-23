@@ -38,7 +38,7 @@ export class MessageCollectionModel extends AbstractCollectionModel
 		return super.reviveFromJson(object, message => {
 			message = MessageModel.reviveFromJson(message);
 			if (message) {
-				if (hasNewMessageAndRemoveFromCache(message.folderFullNameRaw, message.uid) && 5 >= newCount) {
+				if (hasNewMessageAndRemoveFromCache(message.folder, message.uid) && 5 >= newCount) {
 					++newCount;
 					message.newForAnimation(true);
 				}

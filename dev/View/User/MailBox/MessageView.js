@@ -60,7 +60,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				const message = this.message();
 				if (message && this.allowMessageListActions) {
 					this.message(null);
-					rl.app.deleteMessagesFromFolder(folderType, message.folderFullNameRaw, [message.uid], useFolder);
+					rl.app.deleteMessagesFromFolder(folderType, message.folder, [message.uid], useFolder);
 				}
 			}, this.messageVisibility);
 
@@ -226,7 +226,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 					this.scrollMessageToTop();
 				}
 
-				this.viewFolder = message.folderFullNameRaw;
+				this.viewFolder = message.folder;
 				this.viewUid = message.uid;
 				this.viewHash = message.hash;
 				this.viewSubject(message.subject());
@@ -245,7 +245,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				this.viewUnsubscribeLink(message.getFirstUnsubsribeLink());
 				this.viewDownloadLink(message.downloadLink());
 				this.viewIsImportant(message.isImportant());
-				this.viewIsFlagged(message.flagged());
+				this.viewIsFlagged(message.isFlagged());
 			} else {
 				this.viewFolder = '';
 				this.viewUid = '';
@@ -257,7 +257,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 		this.message.viewTrigger.subscribe(() => {
 			const message = this.message();
-			message ? this.viewIsFlagged(message.flagged()) : this.viewIsFlagged(false);
+			message ? this.viewIsFlagged(message.isFlagged()) : this.viewIsFlagged(false);
 		});
 
 		this.fullScreenMode.subscribe(value => $htmlCL.toggle('rl-message-fullscreen', value));
@@ -467,8 +467,8 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				// eslint-disable-line prefer-arrow-callback
 				const message = this.message();
 				message && rl.app.messageListAction(
-					message.folderFullNameRaw,
-					message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
+					message.folder,
+					message.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
 					[message]
 				);
 			}
@@ -479,7 +479,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 				const message = ko.dataFor(el); // eslint-disable-line no-invalid-this
 				message && message.folder && message.uid &&  rl.app.messageListAction(
 					message.folder,
-					message.flagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
+					message.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
 					[message]
 				);
 
@@ -639,21 +639,21 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	 * @returns {boolean}
 	 */
 	isDraftFolder() {
-		return MessageStore.message() && FolderStore.draftFolder() === MessageStore.message().folderFullNameRaw;
+		return MessageStore.message() && FolderStore.draftFolder() === MessageStore.message().folder;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	isSentFolder() {
-		return MessageStore.message() && FolderStore.sentFolder() === MessageStore.message().folderFullNameRaw;
+		return MessageStore.message() && FolderStore.sentFolder() === MessageStore.message().folder;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	isSpamFolder() {
-		return MessageStore.message() && FolderStore.spamFolder() === MessageStore.message().folderFullNameRaw;
+		return MessageStore.message() && FolderStore.spamFolder() === MessageStore.message().folder;
 	}
 
 	/**
@@ -667,7 +667,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	 * @returns {boolean}
 	 */
 	isArchiveFolder() {
-		return MessageStore.message() && FolderStore.archiveFolder() === MessageStore.message().folderFullNameRaw;
+		return MessageStore.message() && FolderStore.archiveFolder() === MessageStore.message().folder;
 	}
 
 	/**
@@ -762,7 +762,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		if (oMessage && oMessage.readReceipt()) {
 			Remote.sendReadReceiptMessage(
 				()=>{},
-				oMessage.folderFullNameRaw,
+				oMessage.folder,
 				oMessage.uid,
 				oMessage.readReceipt(),
 				i18n('READ_RECEIPT/SUBJECT', { 'SUBJECT': oMessage.subject() }),

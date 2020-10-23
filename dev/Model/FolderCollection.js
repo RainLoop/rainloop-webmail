@@ -47,6 +47,12 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			bDisplaySpecSetting = FolderStore.displaySpecSetting();
 		return super.reviveFromJson(object, (oFolder, self) => {
 			let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
+/*
+			if (oCacheFolder) {
+				oFolder.SubFolders = FolderCollectionModel.reviveFromJson(oFolder.SubFolders);
+				oFolder.SubFolders && oCacheFolder.subFolders(oFolder.SubFolders);
+			}
+*/
 			if (!oCacheFolder && (oCacheFolder = FolderModel.reviveFromJson(oFolder))) {
 				if (oFolder.FullNameRaw == self.SystemFolders[ServerFolderType.INBOX]) {
 					oCacheFolder.type(FolderType.Inbox);
@@ -75,10 +81,6 @@ export class FolderCollectionModel extends AbstractCollectionModel
 						oCacheFolder.messageCountUnread(oFolder.Extended.MessageUnseenCount);
 					}
 				}
-
-				oFolder.SubFolders = FolderCollectionModel.reviveFromJson(oFolder.SubFolders);
-				oFolder.SubFolders && oCacheFolder.subFolders(oFolder.SubFolders);
-
 			}
 			return oCacheFolder;
 		});

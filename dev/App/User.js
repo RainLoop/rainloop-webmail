@@ -596,7 +596,7 @@ class AppUser extends AbstractApp {
 											check = true;
 											const flags = data.Result.Flags[uid];
 											storeMessageFlagsToCacheByFolderAndUid(folderFromCache.fullNameRaw, uid.toString(), [
-												!flags.IsSeen,
+												!!flags.IsUnseen,
 												!!flags.IsFlagged,
 												!!flags.IsAnswered,
 												!!flags.IsForwarded,

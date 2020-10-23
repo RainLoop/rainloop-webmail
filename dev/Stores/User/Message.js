@@ -205,7 +205,7 @@ class MessageUserStore {
 
 		this.messageListEndFolder.subscribe(folder => {
 			const message = this.message();
-			if (message && folder && folder !== message.folderFullNameRaw) {
+			if (message && folder && folder !== message.folder) {
 				this.message(null);
 			}
 		});
@@ -295,7 +295,7 @@ class MessageUserStore {
 					: [];
 
 		messages.forEach(item => {
-			if (item && item.unseen()) {
+			if (item && item.isUnseen()) {
 				++unseenCount;
 			}
 		});
@@ -442,6 +442,7 @@ class MessageUserStore {
 	setMessage(data, cached) {
 		let isNew = false,
 			body = null,
+			json = data && data.Result,
 			id = '',
 			plain = '',
 			resultHtml = '',
@@ -451,14 +452,14 @@ class MessageUserStore {
 			message = this.message();
 
 		if (
-			data &&
-			MessageModel.validJson(data.Result) &&
+			json &&
+			MessageModel.validJson(json) &&
 			message &&
-			message.folderFullNameRaw === data.Result.Folder
+			message.folder === json.Folder
 		) {
 			const threads = message.threads();
-			if (message.uid !== data.Result.Uid && 1 < threads.length && threads.includes(data.Result.Uid)) {
-				message = MessageModel.reviveFromJson(data.Result);
+			if (message.uid !== json.Uid && 1 < threads.length && threads.includes(json.Uid)) {
+				message = MessageModel.reviveFromJson(json);
 				if (message) {
 					message.threads(threads);
 					initMessageFlagsFromCache(message);
@@ -470,15 +471,20 @@ class MessageUserStore {
 				}
 			}
 
-			if (message && message.uid === data.Result.Uid) {
+			if (message && message.uid === json.Uid) {
 				this.messageError('');
 
-				message.initUpdateByMessageJson(data.Result);
-				addRequestedMessage(message.folderFullNameRaw, message.uid);
-
-				if (!cached) {
-					message.initFlagsByJson(data.Result);
+				if (cached) {
+					delete json.IsSeen;
+					delete json.IsFlagged;
+					delete json.IsAnswered;
+					delete json.IsForwarded;
+					delete json.IsReadReceipt;
+					delete json.IsDeleted;
 				}
+
+				message.revivePropertiesFromJson(json);
+				addRequestedMessage(message.folder, message.uid);
 
 				if (messagesDom) {
 					id = 'rl-mgs-' + message.hash.replace(/[^a-zA-Z0-9]/g, '');
@@ -490,15 +496,15 @@ class MessageUserStore {
 						message.body = textBody;
 					} else {
 						let isHtml = false;
-						if (data.Result.Html) {
+						if (json.Html) {
 							isHtml = true;
-							resultHtml = data.Result.Html.toString();
-						} else if (data.Result.Plain) {
+							resultHtml = json.Html.toString();
+						} else if (json.Plain) {
 							isHtml = false;
-							resultHtml = plainToHtml(data.Result.Plain.toString());
+							resultHtml = plainToHtml(json.Plain.toString());
 
 							if ((message.isPgpSigned() || message.isPgpEncrypted()) && PgpStore.capaOpenPGP()) {
-								plain = pString(data.Result.Plain);
+								plain = pString(json.Plain);
 
 								const isPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(plain);
 								if (!isPgpEncrypted) {
@@ -544,13 +550,13 @@ class MessageUserStore {
 						message.body = body;
 
 						message.isHtml(!!isHtml);
-						message.hasImages(!!data.Result.HasExternals);
+						message.hasImages(!!json.HasExternals);
 
 						messagesDom.append(body);
 
 						message.storeDataInDom();
 
-						if (data.Result.HasInternals) {
+						if (json.HasInternals) {
 							message.showInternalImages();
 						}
 
@@ -575,8 +581,8 @@ class MessageUserStore {
 				}
 
 				initMessageFlagsFromCache(message);
-				if (message.unseen() || message.hasUnseenSubMessage()) {
-					rl.app.messageListAction(message.folderFullNameRaw, MessageSetAction.SetSeen, [message]);
+				if (message.isUnseen() || message.hasUnseenSubMessage()) {
+					rl.app.messageListAction(message.folder, MessageSetAction.SetSeen, [message]);
 				}
 
 				if (isNew) {
@@ -585,7 +591,7 @@ class MessageUserStore {
 					if (
 						selectedMessage &&
 						message &&
-						(message.folderFullNameRaw !== selectedMessage.folderFullNameRaw || message.uid !== selectedMessage.uid)
+						(message.folder !== selectedMessage.folder || message.uid !== selectedMessage.uid)
 					) {
 						this.selectorMessageSelected(null);
 						if (1 === this.messageList().length) {
@@ -595,7 +601,7 @@ class MessageUserStore {
 						selectedMessage = this.messageList().find(
 							subMessage =>
 								subMessage &&
-								subMessage.folderFullNameRaw === message.folderFullNameRaw &&
+								subMessage.folder === message.folder &&
 								subMessage.uid === message.uid
 						);
 
@@ -621,7 +627,7 @@ class MessageUserStore {
 	selectMessageByFolderAndUid(sFolder, sUid) {
 		if (sFolder && sUid) {
 			this.message(this.staticMessage.populateByMessageListItem(null));
-			this.message().folderFullNameRaw = sFolder;
+			this.message().folder = sFolder;
 			this.message().uid = sUid;
 
 			this.populateMessageBody(this.message());
@@ -631,10 +637,8 @@ class MessageUserStore {
 	}
 
 	populateMessageBody(oMessage) {
-		if (oMessage) {
-			if (Remote.message(this.onMessageResponse, oMessage.folderFullNameRaw, oMessage.uid)) {
-				this.messageCurrentLoading(true);
-			}
+		if (oMessage && Remote.message(this.onMessageResponse, oMessage.folder, oMessage.uid)) {
+			this.messageCurrentLoading(true);
 		}
 	}
 
