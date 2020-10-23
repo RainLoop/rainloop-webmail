@@ -20,11 +20,10 @@ const createEl = (name, attr) => {
 		return el;
 	},
 	datalist = createEl('datalist',{id:"inputosaurus-datalist"}),
-	fakeSpan = createEl('span',{class:"inputosaurus-fake-span"}),
 
 	contentType = 'inputosaurus/item';
 
-doc.body.append(fakeSpan, datalist);
+doc.body.append(datalist);
 
 let dragData;
 
@@ -33,10 +32,9 @@ this.Inputosaurus = class {
 	constructor(element, options) {
 
 		var self = this,
-			els = {},
 			// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
 			// In Chrome Mobile dataTransfer.types.includes(contentType) fails, only text/plain is set
-			validDropzone = () => dragData && dragData.li.parentNode !== els.ul,
+			validDropzone = () => dragData && dragData.li.parentNode !== self.ul,
 			fnDrag = e => validDropzone(e) && e.preventDefault();
 
 		self.element = element;
@@ -66,63 +64,59 @@ this.Inputosaurus = class {
 		self._lastEdit = '';
 
 		// Create the elements
-		els.ul = createEl('ul',{class:"inputosaurus-container"});
+		self.ul = createEl('ul',{class:"inputosaurus-container"});
 
-		els.ul.addEventListener("dragenter", fnDrag);
-		els.ul.addEventListener("dragover", fnDrag);
-		els.ul.addEventListener("drop", e => {
+		self.ul.addEventListener('click', e => self._focus(e));
+		self.ul.addEventListener('dblclick', e => self._editTag(e));
+		self.ul.addEventListener("dragenter", fnDrag);
+		self.ul.addEventListener("dragover", fnDrag);
+		self.ul.addEventListener("drop", e => {
 			if (validDropzone(e) && dragData.value) {
 				e.preventDefault();
 				dragData.source._removeDraggedTag(dragData.li);
-				els.input.value = dragData.value;
+				self.input.value = dragData.value;
 				self.parseInput();
 			}
 		});
 
-		els.input = createEl('input',{type:"text", list:datalist.id,
+		self.input = createEl('input',{type:"text", list:datalist.id,
 			autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false"});
 
-		els.input.addEventListener('focus', () => self._focusTrigger(true));
-		els.input.addEventListener('blur', () => self._focusTrigger(false));
+		self.input.addEventListener('focus', () => self._focusTrigger(true));
+		self.input.addEventListener('blur', () => self._focusTrigger(false));
+		self.input.addEventListener('keyup', e => self._inputKeypress(e));
+		self.input.addEventListener('keydown', e => self._inputKeypress(e));
+		self.input.addEventListener('change', e => self._inputKeypress(e));
+		self.input.addEventListener('input', e => self._inputKeypress(e));
+		self.input.addEventListener('focus', () => self.input.value || self._resetDatalist());
+		self.input.addEventListener('blur', e => self.parseInput(e));
 
 		// define starting placeholder
 		if (element.placeholder) {
-			els.input.placeholder = element.placeholder;
+			self.input.placeholder = element.placeholder;
 		}
 
-		element.replaceWith(els.ul);
+		self.inputCont = createEl('li',{class:"inputosaurus-input"});
+		self.inputCont.append(self.input);
+		self.ul.append(self.inputCont);
 
-		els.inputCont = createEl('li',{class:"inputosaurus-input"});
-		els.inputCont.append(els.input);
-		els.ul.append(els.inputCont);
-
-		self.elements = els;
-
-		els.input.addEventListener('keyup', e => self._inputKeypress(e));
-		els.input.addEventListener('keydown', e => self._inputKeypress(e));
-		els.input.addEventListener('change', e => self._inputKeypress(e));
-		els.input.addEventListener('input', e => self._inputKeypress(e));
-		els.input.addEventListener('focus', () => els.input.value || self._resetAutocomplete());
-		els.input.addEventListener('blur', e => self.parseInput(e));
-
-		els.ul.addEventListener('click', e => self._focus(e));
-		els.ul.addEventListener('dblclick', e => self._editTag(e));
+		element.replaceWith(self.ul);
 
 		// if instantiated input already contains a value, parse that junk
 		if (element.value.trim()) {
-			els.input.value = element.value;
+			self.input.value = element.value;
 			self.parseInput();
 		}
 
-		self._updateAutocomplete = self.options.autoCompleteSource
+		self._updateDatalist = self.options.autoCompleteSource
 			? (() => {
-				let value = self.elements.input.value.trim();
+				let value = self.input.value.trim();
 				if (datalist.inputValue !== value) {
 					datalist.inputValue = value;
 					value.length && self.options.autoCompleteSource(
 						{term:value},
 						items => {
-							self._resetAutocomplete();
+							self._resetDatalist();
 							items && items.forEach(item => datalist.append(new Option(item)));
 						}
 					)
@@ -132,11 +126,11 @@ this.Inputosaurus = class {
 	}
 
 	_focusTrigger(bValue) {
-		this.elements.ul.classList.toggle('inputosaurus-focused', bValue);
+		this.ul.classList.toggle('inputosaurus-focused', bValue);
 		this.options.focusCallback(bValue);
 	}
 
-	_resetAutocomplete() {
+	_resetDatalist() {
 		datalist.textContent = '';
 	}
 
@@ -147,7 +141,7 @@ this.Inputosaurus = class {
 			delimiterFound = false,
 			values = [];
 
-		val = self.elements.input.value;
+		val = self.input.value;
 
 		if (val) {
 			hook = self.options.splitHook(val);
@@ -170,7 +164,7 @@ this.Inputosaurus = class {
 
 		if (values.length) {
 			self._setChosen(values);
-			self.elements.input.value = '';
+			self.input.value = '';
 			self.resizeInput();
 		}
 	}
@@ -183,8 +177,8 @@ this.Inputosaurus = class {
 			case 'ArrowLeft':
 				// if our input contains no value and backspace has been pressed, select the last tag
 				if (ev.type === 'keydown') {
-					var lastTag = self.elements.inputCont.previousElementSibling,
-						input = self.elements.input;
+					var lastTag = self.inputCont.previousElementSibling,
+						input = self.input;
 					if (lastTag && (!input.value
 						|| (('selectionStart' in input) && input.selectionStart === 0 && input.selectionEnd === 0))
 					) {
@@ -200,16 +194,15 @@ this.Inputosaurus = class {
 				self.resizeInput();
 		}
 
-		self._updateAutocomplete();
+		self._updateDatalist();
 	}
 
 	// the input dynamically resizes based on the length of its value
 	resizeInput() {
-		let input = this.elements.input;
-		fakeSpan.textContent = input.value;
-//		setTimeout(function  () {
-			input.style.width = Math.min(500, Math.max(200, 25 + fakeSpan.clientWidth)) + 'px';
-//		}, 1);
+		let input = this.input;
+		if (input.clientWidth < input.scrollWidth) {
+			input.style.width = Math.min(500, Math.max(200, input.scrollWidth)) + 'px';
+		}
 	}
 
 	_editTag(ev) {
@@ -243,10 +236,10 @@ this.Inputosaurus = class {
 			self._lastEdit = oPrev.value;
 		}
 
-		li.after(self.elements.inputCont);
+		li.after(self.inputCont);
 
-		self.elements.input.value = tagName;
-		setTimeout(() => self.elements.input.select(), 100);
+		self.input.value = tagName;
+		setTimeout(() => self.input.select(), 100);
 
 		self._removeTag(ev, li);
 		self.resizeInput(ev);
@@ -325,8 +318,8 @@ this.Inputosaurus = class {
 	}
 
 	_renderTags() {
-		let self = this, els = self.elements;
-		[...els.ul.children].forEach(node => node !== els.inputCont && node.remove());
+		let self = this;
+		[...self.ul.children].forEach(node => node !== self.inputCont && node.remove());
 
 		self._chosenValues.forEach(v => {
 			if (v.obj) {
@@ -366,7 +359,7 @@ this.Inputosaurus = class {
 						case 'ArrowRight':
 							// select the next tag or input if no more tags exist
 							var next = el.closest('li').nextElementSibling;
-							if (next !== this.elements.inputCont) {
+							if (next !== this.inputCont) {
 								next.querySelector('a').focus();
 							} else {
 								this.focus();
@@ -400,7 +393,7 @@ this.Inputosaurus = class {
 					li.style.cssText = '';
 				});
 
-				els.inputCont.before(li);
+				self.inputCont.before(li);
 			}
 		});
 	}
@@ -417,7 +410,7 @@ this.Inputosaurus = class {
 		self._setValue(self._buildValue());
 
 		li.remove();
-		setTimeout(() => self.elements.input.focus(), 100);
+		setTimeout(() => self.input.focus(), 100);
 	}
 
 	_removeDraggedTag(li) {
@@ -436,11 +429,11 @@ this.Inputosaurus = class {
 	}
 
 	focus () {
-		this.elements.input.focus();
+		this.input.focus();
 	}
 
 	blur() {
-		this.elements.input.blur();
+		this.input.blur();
 	}
 
 	_focus(ev) {
@@ -473,7 +466,7 @@ this.Inputosaurus = class {
 
 			self._setChosen(values);
 			self._renderTags();
-			self.elements.input.value = '';
+			self.input.value = '';
 			self.resizeInput();
 		}
 	}
