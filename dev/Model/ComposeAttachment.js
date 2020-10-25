@@ -1,4 +1,3 @@
-import ko from 'ko';
 import { pInt } from 'Common/Utils';
 import { File } from 'Common/File';
 
@@ -37,27 +36,27 @@ class ComposeAttachmentModel extends AbstractModel {
 			complete: false
 		});
 
-		this.progressText = ko.computed(() => {
-			const p = this.progress();
-			return 0 === p ? '' : '' + (98 < p ? 100 : p) + '%';
-		});
+		this.addComputables({
+			progressText: () => {
+				const p = this.progress();
+				return 0 === p ? '' : '' + (98 < p ? 100 : p) + '%';
+			},
 
-		this.progressStyle = ko.computed(() => {
-			const p = this.progress();
-			return 0 === p ? '' : 'width:' + (98 < p ? 100 : p) + '%';
-		});
+			progressStyle: () => {
+				const p = this.progress();
+				return 0 === p ? '' : 'width:' + (98 < p ? 100 : p) + '%';
+			},
 
-		this.title = ko.computed(() => {
-			return this.error() || this.fileName();
-		});
+			title: () => this.error() || this.fileName(),
 
-		this.friendlySize = ko.computed(() => {
-			const localSize = this.size();
-			return null === localSize ? '' : File.friendlySize(localSize);
-		});
+			friendlySize: () => {
+				const localSize = this.size();
+				return null === localSize ? '' : File.friendlySize(localSize);
+			},
 
-		this.mimeType = ko.computed(() => File.getContentType(this.fileName()));
-		this.fileExt = ko.computed(() => File.getExtension(this.fileName()));
+			mimeType: () => File.getContentType(this.fileName()),
+			fileExt: () => File.getExtension(this.fileName())
+		});
 	}
 
 	static fromAttachment(item)

@@ -41,6 +41,10 @@ export class AbstractModel {
 */
 	}
 
+	addComputables(obj) {
+		Object.entries(obj).forEach(([key, fn]) => this[key] = ko.computed(fn) );
+	}
+
 	addSubscribables(obj) {
 		Object.entries(obj).forEach(([key, fn]) => this.disposables.push( this[key].subscribe(fn) ) );
 	}

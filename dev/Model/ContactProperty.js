@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { ContactPropertyType } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
@@ -26,12 +24,14 @@ class ContactPropertyModel extends AbstractModel {
 			placeholder: placeholder
 		});
 
-		this.placeholderValue = ko.computed(() => {
-			const v = this.placeholder();
-			return v ? i18n(v) : '';
-		});
+		this.addComputables({
+			placeholderValue: () => {
+				const v = this.placeholder();
+				return v ? i18n(v) : '';
+			},
 
-		this.largeValue = ko.computed(() => ContactPropertyType.Note === this.type());
+			largeValue: () => ContactPropertyType.Note === this.type()
+		});
 	}
 
 	toJSON() {

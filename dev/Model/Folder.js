@@ -59,37 +59,7 @@ class FolderModel extends AbstractModel {
 
 			folder.subScribed(!!json.IsSubscribed);
 
-			folder.isInbox = ko.computed(() => FolderType.Inbox === folder.type());
-
-			folder.hasSubScribedSubfolders = ko.computed(
-				() =>
-					!!folder.subFolders().find(
-						oFolder => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder()
-					)
-			);
-
-			folder.canBeEdited = ko.computed(() => FolderType.User === folder.type() && folder.existen && folder.selectable);
-
-			folder.visible = ko.computed(() => {
-				const isSubScribed = folder.subScribed(),
-					isSubFolders = folder.hasSubScribedSubfolders();
-
-				return isSubScribed || (isSubFolders && (!folder.existen || !folder.selectable));
-			});
-
-			folder.isSystemFolder = ko.computed(() => FolderType.User !== folder.type());
-
-			folder.hidden = ko.computed(() => {
-				const isSystem = folder.isSystemFolder(),
-					isSubFolders = folder.hasSubScribedSubfolders();
-
-				return (isSystem && !isSubFolders) || (!folder.selectable && !isSubFolders);
-			});
-
-			folder.selectableForFolderList = ko.computed(() => !folder.isSystemFolder() && folder.selectable);
-
-			folder.messageCountAll = ko
-				.computed({
+			folder.messageCountAll = ko.computed({
 					read: folder.privateMessageCountAll,
 					write: (iValue) => {
 						if (isPosNumeric(iValue, true)) {
@@ -101,8 +71,7 @@ class FolderModel extends AbstractModel {
 				})
 				.extend({ notify: 'always' });
 
-			folder.messageCountUnread = ko
-				.computed({
+			folder.messageCountUnread = ko.computed({
 					read: folder.privateMessageCountUnread,
 					write: (value) => {
 						if (isPosNumeric(value, true)) {
@@ -114,124 +83,149 @@ class FolderModel extends AbstractModel {
 				})
 				.extend({ notify: 'always' });
 
-			folder.printableUnreadCount = ko.computed(() => {
-				const count = folder.messageCountAll(),
-					unread = folder.messageCountUnread(),
-					type = folder.type();
+			folder.addComputables({
 
-				if (0 < count) {
-					if (FolderType.Draft === type) {
-						return '' + count;
+				isInbox: () => FolderType.Inbox === folder.type(),
+
+				hasSubScribedSubfolders:
+					() =>
+						!!folder.subFolders().find(
+							oFolder => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder()
+						),
+
+				canBeEdited: () => FolderType.User === folder.type() && folder.existen && folder.selectable,
+
+				visible: () => {
+					const isSubScribed = folder.subScribed(),
+						isSubFolders = folder.hasSubScribedSubfolders();
+
+					return isSubScribed || (isSubFolders && (!folder.existen || !folder.selectable));
+				},
+
+				isSystemFolder: () => FolderType.User !== folder.type(),
+
+				hidden: () => {
+					const isSystem = folder.isSystemFolder(),
+						isSubFolders = folder.hasSubScribedSubfolders();
+
+					return (isSystem && !isSubFolders) || (!folder.selectable && !isSubFolders);
+				},
+
+				printableUnreadCount: () => {
+					const count = folder.messageCountAll(),
+						unread = folder.messageCountUnread(),
+						type = folder.type();
+
+					if (0 < count) {
+						if (FolderType.Draft === type) {
+							return '' + count;
+						}
+						if (
+							0 < unread &&
+							FolderType.Trash !== type &&
+							FolderType.Archive !== type &&
+							FolderType.SentItems !== type
+						) {
+							return '' + unread;
+						}
 					}
-					if (
-						0 < unread &&
-						FolderType.Trash !== type &&
-						FolderType.Archive !== type &&
-						FolderType.SentItems !== type
-					) {
-						return '' + unread;
+
+					return '';
+				},
+
+				canBeDeleted: () => !folder.isSystemFolder() && !folder.subFolders().length,
+
+				selectableForFolderList: () => !folder.isSystemFolder() && folder.selectable,
+
+				canBeSubScribed: () => !folder.isSystemFolder() && folder.selectable,
+
+				canBeChecked: () => !folder.isSystemFolder() && folder.selectable,
+
+				localName: () => {
+					translatorTrigger();
+
+					let name = folder.name();
+					const type = folder.type();
+
+					if (folder.isSystemFolder()) {
+						switch (type) {
+							case FolderType.Inbox:
+								name = i18n('FOLDER_LIST/INBOX_NAME');
+								break;
+							case FolderType.SentItems:
+								name = i18n('FOLDER_LIST/SENT_NAME');
+								break;
+							case FolderType.Draft:
+								name = i18n('FOLDER_LIST/DRAFTS_NAME');
+								break;
+							case FolderType.Spam:
+								name = i18n('FOLDER_LIST/SPAM_NAME');
+								break;
+							case FolderType.Trash:
+								name = i18n('FOLDER_LIST/TRASH_NAME');
+								break;
+							case FolderType.Archive:
+								name = i18n('FOLDER_LIST/ARCHIVE_NAME');
+								break;
+							// no default
+						}
 					}
-				}
 
-				return '';
-			});
+					return name;
+				},
 
-			folder.canBeDeleted = ko.computed(
-				() => !folder.isSystemFolder() && !folder.subFolders().length
-			);
+				manageFolderSystemName: () => {
+					translatorTrigger();
 
-			folder.canBeSubScribed = ko.computed(
-				() => !folder.isSystemFolder() && folder.selectable
-			);
+					let suffix = '';
+					const type = folder.type(),
+						name = folder.name();
 
-			folder.canBeChecked = folder.canBeSubScribed;
-
-			folder.localName = ko.computed(() => {
-				translatorTrigger();
-
-				let name = folder.name();
-				const type = folder.type();
-
-				if (folder.isSystemFolder()) {
-					switch (type) {
-						case FolderType.Inbox:
-							name = i18n('FOLDER_LIST/INBOX_NAME');
-							break;
-						case FolderType.SentItems:
-							name = i18n('FOLDER_LIST/SENT_NAME');
-							break;
-						case FolderType.Draft:
-							name = i18n('FOLDER_LIST/DRAFTS_NAME');
-							break;
-						case FolderType.Spam:
-							name = i18n('FOLDER_LIST/SPAM_NAME');
-							break;
-						case FolderType.Trash:
-							name = i18n('FOLDER_LIST/TRASH_NAME');
-							break;
-						case FolderType.Archive:
-							name = i18n('FOLDER_LIST/ARCHIVE_NAME');
-							break;
-						// no default
+					if (folder.isSystemFolder()) {
+						switch (type) {
+							case FolderType.Inbox:
+								suffix = '(' + i18n('FOLDER_LIST/INBOX_NAME') + ')';
+								break;
+							case FolderType.SentItems:
+								suffix = '(' + i18n('FOLDER_LIST/SENT_NAME') + ')';
+								break;
+							case FolderType.Draft:
+								suffix = '(' + i18n('FOLDER_LIST/DRAFTS_NAME') + ')';
+								break;
+							case FolderType.Spam:
+								suffix = '(' + i18n('FOLDER_LIST/SPAM_NAME') + ')';
+								break;
+							case FolderType.Trash:
+								suffix = '(' + i18n('FOLDER_LIST/TRASH_NAME') + ')';
+								break;
+							case FolderType.Archive:
+								suffix = '(' + i18n('FOLDER_LIST/ARCHIVE_NAME') + ')';
+								break;
+							// no default
+						}
 					}
-				}
 
-				return name;
-			});
-
-			folder.manageFolderSystemName = ko.computed(() => {
-				translatorTrigger();
-
-				let suffix = '';
-				const type = folder.type(),
-					name = folder.name();
-
-				if (folder.isSystemFolder()) {
-					switch (type) {
-						case FolderType.Inbox:
-							suffix = '(' + i18n('FOLDER_LIST/INBOX_NAME') + ')';
-							break;
-						case FolderType.SentItems:
-							suffix = '(' + i18n('FOLDER_LIST/SENT_NAME') + ')';
-							break;
-						case FolderType.Draft:
-							suffix = '(' + i18n('FOLDER_LIST/DRAFTS_NAME') + ')';
-							break;
-						case FolderType.Spam:
-							suffix = '(' + i18n('FOLDER_LIST/SPAM_NAME') + ')';
-							break;
-						case FolderType.Trash:
-							suffix = '(' + i18n('FOLDER_LIST/TRASH_NAME') + ')';
-							break;
-						case FolderType.Archive:
-							suffix = '(' + i18n('FOLDER_LIST/ARCHIVE_NAME') + ')';
-							break;
-						// no default
+					if ((suffix && '(' + name + ')' === suffix) || '(inbox)' === suffix.toLowerCase()) {
+						suffix = '';
 					}
-				}
 
-				if ((suffix && '(' + name + ')' === suffix) || '(inbox)' === suffix.toLowerCase()) {
-					suffix = '';
-				}
+					return suffix;
+				},
 
-				return suffix;
+				collapsed: {
+					read: () => !folder.hidden() && folder.collapsedPrivate(),
+					write: (value) => {
+						folder.collapsedPrivate(value);
+					}
+				},
+
+				hasUnreadMessages: () => 0 < folder.messageCountUnread() && folder.printableUnreadCount(),
+
+				hasSubScribedUnreadMessagesSubfolders: () =>
+						!!folder.subFolders().find(
+							folder => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders()
+						)
 			});
-
-			folder.collapsed = ko.computed({
-				read: () => !folder.hidden() && folder.collapsedPrivate(),
-				write: (value) => {
-					folder.collapsedPrivate(value);
-				}
-			});
-
-			folder.hasUnreadMessages = ko.computed(() => 0 < folder.messageCountUnread() && folder.printableUnreadCount());
-
-			folder.hasSubScribedUnreadMessagesSubfolders = ko.computed(
-				() =>
-					!!folder.subFolders().find(
-						folder => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders()
-					)
-			);
 
 			folder.addSubscribables({
 				name: value => folder.nameForEdit(value),

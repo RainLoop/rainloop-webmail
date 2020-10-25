@@ -53,62 +53,64 @@ class FilterModel extends AbstractModel {
 			return folder ? folder.fullName.replace('.' === folder.delimiter ? /\./ : /[\\/]+/, ' / ') : folderFullNameRaw;
 		};
 
-		this.nameSub = ko.computed(() => {
-			let result = '';
-			const actionValue = this.actionValue();
+		this.addComputables({
+			nameSub: () => {
+				let result = '';
+				const actionValue = this.actionValue();
 
-			switch (this.actionType()) {
-				case FiltersAction.MoveTo:
-					result = i18n('SETTINGS_FILTERS/SUBNAME_MOVE_TO', {
-						FOLDER: fGetRealFolderName(actionValue)
-					});
-					break;
-				case FiltersAction.Forward:
-					result = i18n('SETTINGS_FILTERS/SUBNAME_FORWARD_TO', {
-						EMAIL: actionValue
-					});
-					break;
-				case FiltersAction.Vacation:
-					result = i18n('SETTINGS_FILTERS/SUBNAME_VACATION_MESSAGE');
-					break;
-				case FiltersAction.Reject:
-					result = i18n('SETTINGS_FILTERS/SUBNAME_REJECT');
-					break;
-				case FiltersAction.Discard:
-					result = i18n('SETTINGS_FILTERS/SUBNAME_DISCARD');
-					break;
-				// no default
+				switch (this.actionType()) {
+					case FiltersAction.MoveTo:
+						result = i18n('SETTINGS_FILTERS/SUBNAME_MOVE_TO', {
+							FOLDER: fGetRealFolderName(actionValue)
+						});
+						break;
+					case FiltersAction.Forward:
+						result = i18n('SETTINGS_FILTERS/SUBNAME_FORWARD_TO', {
+							EMAIL: actionValue
+						});
+						break;
+					case FiltersAction.Vacation:
+						result = i18n('SETTINGS_FILTERS/SUBNAME_VACATION_MESSAGE');
+						break;
+					case FiltersAction.Reject:
+						result = i18n('SETTINGS_FILTERS/SUBNAME_REJECT');
+						break;
+					case FiltersAction.Discard:
+						result = i18n('SETTINGS_FILTERS/SUBNAME_DISCARD');
+						break;
+					// no default
+				}
+
+				return result ? '(' + result + ')' : '';
+			},
+
+			actionTemplate: () => {
+				let result = '';
+
+				switch (this.actionType()) {
+					case FiltersAction.Forward:
+						result = 'SettingsFiltersActionForward';
+						break;
+					case FiltersAction.Vacation:
+						result = 'SettingsFiltersActionVacation';
+						break;
+					case FiltersAction.Reject:
+						result = 'SettingsFiltersActionReject';
+						break;
+					case FiltersAction.None:
+						result = 'SettingsFiltersActionNone';
+						break;
+					case FiltersAction.Discard:
+						result = 'SettingsFiltersActionDiscard';
+						break;
+					case FiltersAction.MoveTo:
+					default:
+						result = 'SettingsFiltersActionMoveToFolder';
+						break;
+				}
+
+				return result;
 			}
-
-			return result ? '(' + result + ')' : '';
-		});
-
-		this.actionTemplate = ko.computed(() => {
-			let result = '';
-
-			switch (this.actionType()) {
-				case FiltersAction.Forward:
-					result = 'SettingsFiltersActionForward';
-					break;
-				case FiltersAction.Vacation:
-					result = 'SettingsFiltersActionVacation';
-					break;
-				case FiltersAction.Reject:
-					result = 'SettingsFiltersActionReject';
-					break;
-				case FiltersAction.None:
-					result = 'SettingsFiltersActionNone';
-					break;
-				case FiltersAction.Discard:
-					result = 'SettingsFiltersActionDiscard';
-					break;
-				case FiltersAction.MoveTo:
-				default:
-					result = 'SettingsFiltersActionMoveToFolder';
-					break;
-			}
-
-			return result;
 		});
 
 		this.addSubscribables({

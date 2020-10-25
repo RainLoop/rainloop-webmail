@@ -71,16 +71,15 @@ class MessageModel extends AbstractModel {
 			hasFlaggedSubMessage: false
 		});
 
-		this.attachmentIconClass = ko.computed(() =>
-			File.getCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : [])
-		);
-
 		this.attachments = ko.observableArray(new AttachmentCollectionModel);
 		this.attachmentsSpecData = ko.observableArray([]);
 		this.threads = ko.observableArray([]);
 
-		this.threadsLen = ko.computed(() => this.threads().length);
-		this.isImportant = ko.computed(() => MessagePriority.High === this.priority());
+		this.addComputables({
+			attachmentIconClass: () => File.getCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : []),
+			threadsLen: () => this.threads().length,
+			isImportant: () => MessagePriority.High === this.priority(),
+		});
 	}
 
 	_reset() {
