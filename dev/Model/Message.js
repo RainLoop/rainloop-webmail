@@ -415,12 +415,7 @@ class MessageModel extends AbstractModel {
 			this.hash = message.hash;
 			this.requestHash = message.requestHash;
 			this.subject(message.subject());
-		}
 
-		this.subjectPrefix(this.subjectPrefix());
-		this.subjectSuffix(this.subjectSuffix());
-
-		if (message) {
 			this.size(message.size());
 			this.dateTimeStampInUTC(message.dateTimeStampInUTC());
 			this.priority(message.priority());
@@ -450,6 +445,9 @@ class MessageModel extends AbstractModel {
 			this.checked(message.checked());
 			this.hasAttachments(message.hasAttachments());
 			this.attachmentsSpecData(message.attachmentsSpecData());
+
+			this.subjectPrefix(this.subjectPrefix());
+			this.subjectSuffix(this.subjectSuffix());
 		}
 
 		this.body = null;

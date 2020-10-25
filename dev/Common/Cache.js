@@ -158,139 +158,142 @@ export function removeFolderFromCacheList(folderFullNameRaw) {
 	delete FOLDERS_CACHE[folderFullNameRaw];
 }
 
-/**
- * @param {string} folderFullName
- * @param {string} uid
- * @returns {?Array}
- */
-export function getMessageFlagsFromCache(folderFullName, uid) {
-	return MESSAGE_FLAGS_CACHE[folderFullName] && MESSAGE_FLAGS_CACHE[folderFullName][uid]
-		? MESSAGE_FLAGS_CACHE[folderFullName][uid]
-		: null;
-}
+export class MessageFlagsCache
+{
+	/**
+	 * @param {string} folderFullName
+	 * @param {string} uid
+	 * @returns {?Array}
+	 */
+	static getFor(folderFullName, uid) {
+		return MESSAGE_FLAGS_CACHE[folderFullName] && MESSAGE_FLAGS_CACHE[folderFullName][uid]
+			? MESSAGE_FLAGS_CACHE[folderFullName][uid]
+			: null;
+	}
 
-/**
- * @param {string} folderFullName
- * @param {string} uid
- * @param {Array} flagsCache
- */
-export function setMessageFlagsToCache(folderFullName, uid, flagsCache) {
-	if (!MESSAGE_FLAGS_CACHE[folderFullName]) {
+	/**
+	 * @param {string} folderFullName
+	 * @param {string} uid
+	 * @param {Array} flagsCache
+	 */
+	static setFor(folderFullName, uid, flagsCache) {
+		if (!MESSAGE_FLAGS_CACHE[folderFullName]) {
+			MESSAGE_FLAGS_CACHE[folderFullName] = {};
+		}
+		MESSAGE_FLAGS_CACHE[folderFullName][uid] = flagsCache;
+	}
+
+	/**
+	 * @param {string} folderFullName
+	 */
+	static clearFolder(folderFullName) {
 		MESSAGE_FLAGS_CACHE[folderFullName] = {};
 	}
 
-	MESSAGE_FLAGS_CACHE[folderFullName][uid] = flagsCache;
-}
+	/**
+	 * @param {(MessageModel|null)} message
+	 */
+	static initMessage(message) {
+		if (message) {
+			const uid = message.uid,
+				flags = this.getFor(message.folder, uid);
 
-/**
- * @param {string} folderFullName
- */
-export function clearMessageFlagsFromCacheByFolder(folderFullName) {
-	MESSAGE_FLAGS_CACHE[folderFullName] = {};
-}
+			if (flags && flags.length) {
+				message.isFlagged(!!flags[1]);
 
-/**
- * @param {(MessageModel|null)} message
- */
-export function initMessageFlagsFromCache(message) {
-	if (message) {
-		const uid = message.uid,
-			flags = getMessageFlagsFromCache(message.folderFullNameRaw, uid);
+				if (!message.isSimpleMessage) {
+					message.isUnseen(!!flags[0]);
+					message.isAnswered(!!flags[2]);
+					message.isForwarded(!!flags[3]);
+					message.isReadReceipt(!!flags[4]);
+					message.isDeleted(!!flags[5]);
+				}
+			}
 
-		if (flags && flags.length) {
-			message.isFlagged(!!flags[1]);
+			if (message.threads().length) {
+				const unseenSubUid = message.threads().find(sSubUid => {
+					if (uid !== sSubUid) {
+						const subFlags = this.getFor(message.folder, sSubUid);
+						return subFlags && subFlags.length && !!subFlags[0];
+					}
+					return false;
+				});
 
-			if (!message.isSimpleMessage) {
-				message.isUnseen(!!flags[0]);
-				message.isAnswered(!!flags[2]);
-				message.isForwarded(!!flags[3]);
-				message.isReadReceipt(!!flags[4]);
-				message.isDeleted(!!flags[5]);
+				const flaggedSubUid = message.threads().find(sSubUid => {
+					if (uid !== sSubUid) {
+						const subFlags = this.getFor(message.folder, sSubUid);
+						return subFlags && subFlags.length && !!subFlags[1];
+					}
+					return false;
+				});
+
+				message.hasUnseenSubMessage(unseenSubUid && 0 < pInt(unseenSubUid));
+				message.hasFlaggedSubMessage(flaggedSubUid && 0 < pInt(flaggedSubUid));
 			}
 		}
+	}
 
-		if (message.threads().length) {
-			const unseenSubUid = message.threads().find(sSubUid => {
-				if (uid !== sSubUid) {
-					const subFlags = getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
-					return subFlags && subFlags.length && !!subFlags[0];
-				}
-				return false;
-			});
-
-			const flaggedSubUid = message.threads().find(sSubUid => {
-				if (uid !== sSubUid) {
-					const subFlags = getMessageFlagsFromCache(message.folderFullNameRaw, sSubUid);
-					return subFlags && subFlags.length && !!subFlags[1];
-				}
-				return false;
-			});
-
-			message.hasUnseenSubMessage(unseenSubUid && 0 < pInt(unseenSubUid));
-			message.hasFlaggedSubMessage(flaggedSubUid && 0 < pInt(flaggedSubUid));
+	/**
+	 * @param {(MessageModel|null)} message
+	 */
+	static store(message) {
+		if (message) {
+			this.setFor(message.folder, message.uid, [
+				message.isUnseen(),
+				message.isFlagged(),
+				message.isAnswered(),
+				message.isForwarded(),
+				message.isReadReceipt(),
+				message.isDeleted()
+			]);
 		}
 	}
-}
 
-/**
- * @param {(MessageModel|null)} message
- */
-export function storeMessageFlagsToCache(message) {
-	if (message) {
-		setMessageFlagsToCache(message.folderFullNameRaw, message.uid, [
-			message.isUnseen(),
-			message.isFlagged(),
-			message.isAnswered(),
-			message.isForwarded(),
-			message.isReadReceipt(),
-			message.isDeleted()
-		]);
+	/**
+	 * @param {string} folder
+	 * @param {string} uid
+	 * @param {Array} flags
+	 */
+	static storeByFolderAndUid(folder, uid, flags) {
+		if (Array.isNotEmpty(flags)) {
+			this.setFor(folder, uid, flags);
+		}
 	}
-}
 
-/**
- * @param {string} folder
- * @param {string} uid
- * @param {Array} flags
- */
-export function storeMessageFlagsToCacheByFolderAndUid(folder, uid, flags) {
-	if (Array.isNotEmpty(flags)) {
-		setMessageFlagsToCache(folder, uid, flags);
-	}
-}
+	/**
+	 * @param {string} folder
+	 * @param {string} uid
+	 * @param {number} setAction
+	 */
+	static storeBySetAction(folder, uid, setAction) {
+		let unread = 0;
+		const flags = this.getFor(folder, uid);
 
-/**
- * @param {string} folder
- * @param {string} uid
- * @param {number} setAction
- */
-export function storeMessageFlagsToCacheBySetAction(folder, uid, setAction) {
-	let unread = 0;
-	const flags = getMessageFlagsFromCache(folder, uid);
+		if (Array.isNotEmpty(flags)) {
+			if (flags[0]) {
+				unread = 1;
+			}
 
-	if (Array.isNotEmpty(flags)) {
-		if (flags[0]) {
-			unread = 1;
+			switch (setAction) {
+				case MessageSetAction.SetSeen:
+					flags[0] = false;
+					break;
+				case MessageSetAction.UnsetSeen:
+					flags[0] = true;
+					break;
+				case MessageSetAction.SetFlag:
+					flags[1] = true;
+					break;
+				case MessageSetAction.UnsetFlag:
+					flags[1] = false;
+					break;
+				// no default
+			}
+
+			this.setFor(folder, uid, flags);
 		}
 
-		switch (setAction) {
-			case MessageSetAction.SetSeen:
-				flags[0] = false;
-				break;
-			case MessageSetAction.UnsetSeen:
-				flags[0] = true;
-				break;
-			case MessageSetAction.SetFlag:
-				flags[1] = true;
-				break;
-			case MessageSetAction.UnsetFlag:
-				flags[1] = false;
-				break;
-			// no default
-		}
-
-		setMessageFlagsToCache(folder, uid, flags);
+		return unread;
 	}
 
-	return unread;
 }

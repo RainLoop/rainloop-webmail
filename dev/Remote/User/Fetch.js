@@ -5,7 +5,7 @@ import {
 	getFolderInboxName,
 	getFolderUidNext,
 	getFolderFromCacheList,
-	getMessageFlagsFromCache
+	MessageFlagsCache
 } from 'Common/Cache';
 
 import { subQueryPrefix } from 'Common/Links';
@@ -432,13 +432,13 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		if (Array.isNotEmpty(list)) {
 			request = false;
 			list.forEach(messageListItem => {
-				if (!getMessageFlagsFromCache(messageListItem.folder, messageListItem.uid)) {
+				if (!MessageFlagsCache.getFor(messageListItem.folder, messageListItem.uid)) {
 					uids.push(messageListItem.uid);
 				}
 
 				if (messageListItem.threads().length) {
 					messageListItem.threads().forEach(uid => {
-						if (!getMessageFlagsFromCache(messageListItem.folder, uid)) {
+						if (!MessageFlagsCache.getFor(messageListItem.folder, uid)) {
 							uids.push(uid);
 						}
 					});

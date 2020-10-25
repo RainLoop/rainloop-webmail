@@ -18,7 +18,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { upload } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode } from 'Common/Translator';
 import { format as momentorFormat } from 'Common/Momentor';
-import { getMessageFlagsFromCache, setMessageFlagsToCache, setFolderHash } from 'Common/Cache';
+import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
 
 import { HtmlEditor } from 'Common/HtmlEditor';
 
@@ -402,7 +402,7 @@ class ComposePopupView extends AbstractViewNext {
 				this.sending(true);
 
 				if (Array.isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length) {
-					const flagsCache = getMessageFlagsFromCache(this.aDraftInfo[2], this.aDraftInfo[1]);
+					const flagsCache = MessageFlagsCache.getFlags(this.aDraftInfo[2], this.aDraftInfo[1]);
 					if (flagsCache) {
 						if ('forward' === this.aDraftInfo[0]) {
 							flagsCache[3] = true;
@@ -410,7 +410,7 @@ class ComposePopupView extends AbstractViewNext {
 							flagsCache[2] = true;
 						}
 
-						setMessageFlagsToCache(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
+						MessageFlagsCache.setFor(this.aDraftInfo[2], this.aDraftInfo[1], flagsCache);
 						rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
 						setFolderHash(this.aDraftInfo[2], '');
 					}

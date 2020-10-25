@@ -17,14 +17,11 @@ import { $htmlCL, leftPanelDisabled } from 'Common/Globals';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {
-	initMessageFlagsFromCache,
+	MessageFlagsCache,
 	setFolderHash,
 	getFolderHash,
 	getFolderInboxName,
-	getFolderFromCacheList,
-	clearMessageFlagsFromCacheByFolder,
-	storeMessageFlagsToCacheBySetAction,
-	storeMessageFlagsToCacheByFolderAndUid
+	getFolderFromCacheList
 } from 'Common/Cache';
 
 import {
@@ -125,10 +122,10 @@ class AppUser extends AbstractApp {
 	}
 
 	reloadFlagsCurrentMessageListAndMessageFromCache() {
-		MessageStore.messageList().forEach(message => {
-			initMessageFlagsFromCache(message);
-		});
-		initMessageFlagsFromCache(MessageStore.message());
+		MessageStore.messageList().forEach(message =>
+			MessageFlagsCache.initMessage(message)
+		);
+		MessageFlagsCache.initMessage(MessageStore.message());
 	}
 
 	/**
@@ -587,7 +584,7 @@ class AppUser extends AbstractApp {
 								}
 
 								if (unreadCountChange) {
-									clearMessageFlagsFromCacheByFolder(folderFromCache.fullNameRaw);
+									MessageFlagsCache.clearFolder(folderFromCache.fullNameRaw);
 								}
 
 								if (data.Result.Flags) {
@@ -595,7 +592,7 @@ class AppUser extends AbstractApp {
 										if (Object.prototype.hasOwnProperty.call(data.Result.Flags, uid)) {
 											check = true;
 											const flags = data.Result.Flags[uid];
-											storeMessageFlagsToCacheByFolderAndUid(folderFromCache.fullNameRaw, uid.toString(), [
+											MessageFlagsCache.storeByFolderAndUid(folderFromCache.fullNameRaw, uid.toString(), [
 												!!flags.IsUnseen,
 												!!flags.IsFlagged,
 												!!flags.IsAnswered,
@@ -669,7 +666,7 @@ class AppUser extends AbstractApp {
 								}
 
 								if (unreadCountChange) {
-									clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
+									MessageFlagsCache.clearFolder(folder.fullNameRaw);
 								}
 
 								if (!hash || item.Hash !== hash) {
@@ -716,9 +713,9 @@ class AppUser extends AbstractApp {
 		if (sFolderFullNameRaw && rootUids.length) {
 			switch (iSetAction) {
 				case MessageSetAction.SetSeen:
-					rootUids.forEach(sSubUid => {
-						alreadyUnread += storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
-					});
+					rootUids.forEach(sSubUid =>
+						alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+					);
 
 					folder = getFolderFromCacheList(sFolderFullNameRaw);
 					if (folder) {
@@ -729,9 +726,9 @@ class AppUser extends AbstractApp {
 					break;
 
 				case MessageSetAction.UnsetSeen:
-					rootUids.forEach(sSubUid => {
-						alreadyUnread += storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
-					});
+					rootUids.forEach(sSubUid =>
+						alreadyUnread += MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+					);
 
 					folder = getFolderFromCacheList(sFolderFullNameRaw);
 					if (folder) {
@@ -742,17 +739,17 @@ class AppUser extends AbstractApp {
 					break;
 
 				case MessageSetAction.SetFlag:
-					rootUids.forEach(sSubUid => {
-						storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
-					});
+					rootUids.forEach(sSubUid =>
+						MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+					);
 
 					Remote.messageSetFlagged(()=>{}, sFolderFullNameRaw, rootUids, true);
 					break;
 
 				case MessageSetAction.UnsetFlag:
-					rootUids.forEach(sSubUid => {
-						storeMessageFlagsToCacheBySetAction(sFolderFullNameRaw, sSubUid, iSetAction);
-					});
+					rootUids.forEach(sSubUid =>
+						MessageFlagsCache.storeBySetAction(sFolderFullNameRaw, sSubUid, iSetAction)
+					);
 
 					Remote.messageSetFlagged(()=>{}, sFolderFullNameRaw, rootUids, false);
 					break;

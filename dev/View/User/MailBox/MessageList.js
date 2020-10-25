@@ -25,7 +25,7 @@ import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
 import {
 	getFolderFromCacheList,
-	clearMessageFlagsFromCacheByFolder,
+	MessageFlagsCache,
 	hasRequestedMessage,
 	addRequestedMessage
 } from 'Common/Cache';
@@ -520,7 +520,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 								folder.messageCountUnread(0);
 							}
 
-							clearMessageFlagsFromCacheByFolder(sFolderFullNameRaw);
+							MessageFlagsCache.clearFolder(sFolderFullNameRaw);
 						}
 
 						Remote.messageSetSeenToAll(()=>{}, sFolderFullNameRaw, true, sThreadUid ? uids : null);
@@ -546,7 +546,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 								folder.messageCountUnread(folder.messageCountAll());
 							}
 
-							clearMessageFlagsFromCacheByFolder(sFolderFullNameRaw);
+							MessageFlagsCache.clearFolder(sFolderFullNameRaw);
 						}
 
 						Remote.messageSetSeenToAll(()=>{}, sFolderFullNameRaw, false, sThreadUid ? uids : null);

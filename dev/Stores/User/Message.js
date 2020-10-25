@@ -11,9 +11,8 @@ import {
 	setFolderUidNext,
 	getFolderFromCacheList,
 	setFolderHash,
-	initMessageFlagsFromCache,
+	MessageFlagsCache,
 	addRequestedMessage,
-	clearMessageFlagsFromCacheByFolder,
 	clearNewMessageCache
 } from 'Common/Cache';
 
@@ -462,7 +461,7 @@ class MessageUserStore {
 				message = MessageModel.reviveFromJson(json);
 				if (message) {
 					message.threads(threads);
-					initMessageFlagsFromCache(message);
+					MessageFlagsCache.initMessage(message);
 
 					this.message(this.staticMessage.populateByMessageListItem(message));
 					message = this.message();
@@ -580,7 +579,7 @@ class MessageUserStore {
 					message.body.hidden = false;
 				}
 
-				initMessageFlagsFromCache(message);
+				MessageFlagsCache.initMessage(message);
 				if (message.isUnseen() || message.hasUnseenSubMessage()) {
 					rl.app.messageListAction(message.folder, MessageSetAction.SetSeen, [message]);
 				}
@@ -696,7 +695,7 @@ class MessageUserStore {
 				if (null != collection.MessageUnseenCount) {
 					if (pInt(folder.messageCountUnread()) !== pInt(collection.MessageUnseenCount)) {
 						unreadCountChange = true;
-						clearMessageFlagsFromCacheByFolder(folder.fullNameRaw);
+						MessageFlagsCache.clearFolder(folder.fullNameRaw);
 					}
 
 					folder.messageCountUnread(collection.MessageUnseenCount);

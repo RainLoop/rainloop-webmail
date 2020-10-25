@@ -23,7 +23,7 @@ import Audio from 'Common/Audio';
 import { i18n } from 'Common/Translator';
 import { attachmentDownload } from 'Common/Links';
 
-import { storeMessageFlagsToCache } from 'Common/Cache';
+import { MessageFlagsCache } from 'Common/Cache';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
@@ -771,7 +771,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 			oMessage.isReadReceipt(true);
 
-			storeMessageFlagsToCache(oMessage);
+			MessageFlagsCache.store(oMessage);
 
 			rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}

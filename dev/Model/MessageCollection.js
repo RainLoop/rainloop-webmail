@@ -2,8 +2,7 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 import { MessageModel } from 'Model/Message';
 
 import {
-	initMessageFlagsFromCache,
-	storeMessageFlagsToCache,
+	MessageFlagsCache,
 	hasNewMessageAndRemoveFromCache
 } from 'Common/Cache';
 
@@ -45,7 +44,7 @@ export class MessageCollectionModel extends AbstractCollectionModel
 
 				message.deleted(false);
 
-				cached ? initMessageFlagsFromCache(message) : storeMessageFlagsToCache(message);
+				cached ? MessageFlagsCache.initMessage(message) : MessageFlagsCache.store(message);
 				return message;
 			}
 		});
