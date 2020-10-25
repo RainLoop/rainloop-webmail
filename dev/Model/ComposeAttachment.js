@@ -24,16 +24,18 @@ class ComposeAttachmentModel extends AbstractModel {
 		this.contentLocation = contentLocation;
 		this.fromMessage = false;
 
-		this.fileName = ko.observable(fileName);
-		this.size = ko.observable(size);
-		this.tempName = ko.observable('');
+		this.addObservables({
+			fileName: fileName,
+			size: size,
+			tempName: '',
 
-		this.progress = ko.observable(0);
-		this.error = ko.observable('');
-		this.waiting = ko.observable(true);
-		this.uploading = ko.observable(false);
-		this.enabled = ko.observable(true);
-		this.complete = ko.observable(false);
+			progress: 0,
+			error: '',
+			waiting: true,
+			uploading: false,
+			enabled: true,
+			complete: false
+		});
 
 		this.progressText = ko.computed(() => {
 			const p = this.progress();
@@ -56,15 +58,6 @@ class ComposeAttachmentModel extends AbstractModel {
 
 		this.mimeType = ko.computed(() => File.getContentType(this.fileName()));
 		this.fileExt = ko.computed(() => File.getExtension(this.fileName()));
-
-		this.regDisposables([
-			this.progressText,
-			this.progressStyle,
-			this.title,
-			this.friendlySize,
-			this.mimeType,
-			this.fileExt
-		]);
 	}
 
 	static fromAttachment(item)

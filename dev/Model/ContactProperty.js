@@ -17,12 +17,14 @@ class ContactPropertyModel extends AbstractModel {
 	constructor(type = ContactPropertyType.Unknown, typeStr = '', value = '', focused = false, placeholder = '') {
 		super();
 
-		this.type = ko.observable(pInt(type));
-		this.typeStr = ko.observable(pString(typeStr));
-		this.focused = ko.observable(!!focused);
-		this.value = ko.observable(pString(value));
+		this.addObservables({
+			type: pInt(type),
+			typeStr: pString(typeStr),
+			focused: !!focused,
+			value: pString(value),
 
-		this.placeholder = ko.observable(placeholder);
+			placeholder: placeholder
+		});
 
 		this.placeholderValue = ko.computed(() => {
 			const v = this.placeholder();
@@ -30,8 +32,6 @@ class ContactPropertyModel extends AbstractModel {
 		});
 
 		this.largeValue = ko.computed(() => ContactPropertyType.Note === this.type());
-
-		this.regDisposables([this.placeholderValue, this.largeValue]);
 	}
 
 	toJSON() {

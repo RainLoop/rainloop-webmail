@@ -8,13 +8,15 @@ class FilterConditionModel extends AbstractModel {
 	constructor() {
 		super();
 
-		this.field = ko.observable(FilterConditionField.From);
-		this.type = ko.observable(FilterConditionType.Contains);
-		this.value = ko.observable('');
-		this.value.error = ko.observable(false);
+		this.addObservables({
+			field: FilterConditionField.From,
+			type: FilterConditionType.Contains,
+			value: '',
+			valueError: false,
 
-		this.valueSecond = ko.observable('');
-		this.valueSecond.error = ko.observable(false);
+			valueSecond: '',
+			valueSecondError: false
+		});
 
 		this.template = ko.computed(() => {
 			let template = '';
@@ -33,22 +35,22 @@ class FilterConditionModel extends AbstractModel {
 			return template;
 		}, this);
 
-		this.field.subscribe(() => {
-			this.value('');
-			this.valueSecond('');
+		this.addSubscribables({
+			field: () => {
+				this.value('');
+				this.valueSecond('');
+			}
 		});
-
-		this.regDisposables([this.template]);
 	}
 
 	verify() {
 		if (!this.value()) {
-			this.value.error(true);
+			this.valueError(true);
 			return false;
 		}
 
 		if (FilterConditionField.Header === this.field() && !this.valueSecond()) {
-			this.valueSecond.error(true);
+			this.valueSecondError(true);
 			return false;
 		}
 

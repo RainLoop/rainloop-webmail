@@ -10,17 +10,20 @@ class IdentityModel extends AbstractModel {
 	constructor(id, email) {
 		super();
 
-		this.id = ko.observable(id || '');
-		this.email = ko.observable(email);
-		this.name = ko.observable('');
+		this.addObservables({
+			id: id || '',
+			email: email,
+			name: '',
 
-		this.replyTo = ko.observable('');
-		this.bcc = ko.observable('');
+			replyTo: '',
+			bcc: '',
 
-		this.signature = ko.observable('');
-		this.signatureInsertBefore = ko.observable(false);
+			signature: '',
+			signatureInsertBefore: false,
 
-		this.deleteAccess = ko.observable(false);
+			deleteAccess: false
+		});
+
 		this.canBeDeleted = ko.computed(() => !!this.id());
 	}
 

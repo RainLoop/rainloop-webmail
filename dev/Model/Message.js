@@ -31,57 +31,56 @@ class MessageModel extends AbstractModel {
 
 		this._reset();
 
-		this.subject = ko.observable('');
-		this.subjectPrefix = ko.observable('');
-		this.subjectSuffix = ko.observable('');
-		this.size = ko.observable(0);
-		this.dateTimeStampInUTC = ko.observable(0);
-		this.priority = ko.observable(MessagePriority.Normal);
+		this.addObservables({
+			subject: '',
+			subjectPrefix: '',
+			subjectSuffix: '',
+			size: 0,
+			dateTimeStampInUTC: 0,
+			priority: MessagePriority.Normal,
 
-		this.senderEmailsString = ko.observable('');
-		this.senderClearEmailsString = ko.observable('');
+			senderEmailsString: '',
+			senderClearEmailsString: '',
 
-		this.newForAnimation = ko.observable(false);
+			newForAnimation: false,
 
-		this.deleted = ko.observable(false);
-		this.isDeleted = ko.observable(false);
-		this.isUnseen = ko.observable(false);
-		this.isFlagged = ko.observable(false);
-		this.isAnswered = ko.observable(false);
-		this.isForwarded = ko.observable(false);
-		this.isReadReceipt = ko.observable(false);
+			deleted: false,
+			isDeleted: false,
+			isUnseen: false,
+			isFlagged: false,
+			isAnswered: false,
+			isForwarded: false,
+			isReadReceipt: false,
 
-		this.focused = ko.observable(false);
-		this.selected = ko.observable(false);
-		this.checked = ko.observable(false);
-		this.hasAttachments = ko.observable(false);
-		this.attachmentsSpecData = ko.observableArray([]);
+			focused: false,
+			selected: false,
+			checked: false,
+			hasAttachments: false,
+
+			isHtml: false,
+			hasImages: false,
+
+			isPgpSigned: false,
+			isPgpEncrypted: false,
+			pgpSignedVerifyStatus: SignedVerifyStatus.None,
+			pgpSignedVerifyUser: '',
+
+			readReceipt: '',
+
+			hasUnseenSubMessage: false,
+			hasFlaggedSubMessage: false
+		});
 
 		this.attachmentIconClass = ko.computed(() =>
 			File.getCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : [])
 		);
 
-		this.isHtml = ko.observable(false);
-		this.hasImages = ko.observable(false);
-		this.attachments = ko.observable(new AttachmentCollectionModel);
-
-		this.isPgpSigned = ko.observable(false);
-		this.isPgpEncrypted = ko.observable(false);
-		this.pgpSignedVerifyStatus = ko.observable(SignedVerifyStatus.None);
-		this.pgpSignedVerifyUser = ko.observable('');
-
-		this.priority = ko.observable(MessagePriority.Normal);
-		this.readReceipt = ko.observable('');
-
-		this.hasUnseenSubMessage = ko.observable(false);
-		this.hasFlaggedSubMessage = ko.observable(false);
-
+		this.attachments = ko.observableArray(new AttachmentCollectionModel);
+		this.attachmentsSpecData = ko.observableArray([]);
 		this.threads = ko.observableArray([]);
 
 		this.threadsLen = ko.computed(() => this.threads().length);
 		this.isImportant = ko.computed(() => MessagePriority.High === this.priority());
-
-		this.regDisposables([this.attachmentIconClass, this.threadsLen, this.isImportant]);
 	}
 
 	_reset() {

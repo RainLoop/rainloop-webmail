@@ -5,50 +5,52 @@ function disposeOne(disposable) {
 	}
 }
 
-function typeCast(current, value) {
-	switch (typeof current)
+function typeCast(curValue, newValue) {
+	switch (typeof curValue)
 	{
-	case 'boolean': return !!value;
-	case 'number': return isFinite(value) ? parseFloat(value) : 0;
-	case 'string': return null != value ? '' + value : '';
+	case 'boolean': return !!newValue;
+	case 'number': return isFinite(newValue) ? parseFloat(newValue) : 0;
+	case 'string': return null != newValue ? '' + newValue : '';
 	case 'object':
-		if (current.constructor.reviveFromJson) {
-			return current.constructor.reviveFromJson(value) || undefined;
+		if (curValue.constructor.reviveFromJson) {
+			return curValue.constructor.reviveFromJson(newValue) || undefined;
 		}
-		if (!Array.isArray(current) || !Array.isArray(value))
+		if (!Array.isArray(curValue) || !Array.isArray(newValue))
 			return undefined;
 	}
-	return value;
+	return newValue;
 }
 
 export class AbstractModel {
 	disposables = [];
 
-	/**
-	 * @param {string} modelName = ''
-	 */
 	constructor() {
 /*
 		if (new.target === AbstractModel) {
 			throw new Error("Can't instantiate AbstractModel!");
 		}
-		this.sModelName = new.target.name;
 */
 	}
 
-	regDisposables(value) {
-		if (Array.isArray(value)) {
-			value.forEach(item => this.disposables.push(item));
-		} else if (value) {
-			this.disposables.push(value);
-		}
+	addObservables(obj) {
+		Object.entries(obj).forEach(([key, value]) => this[key] = ko.observable(value) );
+/*
+		Object.entries(obj).forEach(([key, value]) =>
+			this[key] = Array.isArray(value) ? ko.observableArray(value) : ko.observable(value)
+		);
+*/
+	}
+
+	addSubscribables(obj) {
+		Object.entries(obj).forEach(([key, fn]) => this.disposables.push( this[key].subscribe(fn) ) );
 	}
 
 	onDestroy() {
-		if (Array.isArray(this.disposables)) {
-			this.disposables.forEach(disposeOne);
-		}
-		Object.values(this).forEach(disposeOne);
+		this.disposables.forEach(disposeOne);
+		Object.entries(this).forEach(([key, value]) => {
+			disposeOne(value);
+			this[key] = null;
+		});
 	}
 
 	/**

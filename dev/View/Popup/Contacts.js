@@ -55,10 +55,9 @@ class ContactsPopupView extends AbstractViewNext {
 		this.importUploaderButton = ko.observable(null);
 
 		this.contactsPage = ko.observable(1);
-		this.contactsPageCount = ko.computed(() => {
-			const iPage = Math.ceil(this.contactsCount() / CONTACTS_PER_PAGE);
-			return 0 >= iPage ? 1 : iPage;
-		});
+		this.contactsPageCount = ko.computed(() =>
+			Math.max(1, Math.ceil(this.contactsCount() / CONTACTS_PER_PAGE))
+		);
 
 		this.contactsPaginator = ko.computed(computedPaginatorHelper(this.contactsPage, this.contactsPageCount));
 
@@ -104,10 +103,7 @@ class ContactsPopupView extends AbstractViewNext {
 			this.viewPropertiesNames().filter(property => !!trim(property.value()))
 		);
 
-		const propertyFocused = (property) => {
-			const focused = property.focused();
-			return !trim(property.value()) && !focused;
-		};
+		const propertyFocused = property => !trim(property.value()) && !property.focused();
 
 		this.viewPropertiesEmailsEmptyAndOnFocused = ko.computed(() =>
 			this.viewPropertiesEmails().filter(propertyFocused)
@@ -117,7 +113,9 @@ class ContactsPopupView extends AbstractViewNext {
 			this.viewPropertiesPhones().filter(propertyFocused)
 		);
 
-		this.viewPropertiesWebEmptyAndOnFocused = ko.computed(() => this.viewPropertiesWeb().filter(propertyFocused));
+		this.viewPropertiesWebEmptyAndOnFocused = ko.computed(() =>
+			this.viewPropertiesWeb().filter(propertyFocused)
+		);
 
 		this.viewPropertiesOtherEmptyAndOnFocused = ko.computed(() =>
 			this.viewPropertiesOther().filter(propertyFocused)
@@ -141,9 +139,7 @@ class ContactsPopupView extends AbstractViewNext {
 
 		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
 
-		this.search.subscribe(() => {
-			this.reloadContactList();
-		});
+		this.search.subscribe(() => this.reloadContactList());
 
 		this.contactsChecked = ko.computed(() => this.contacts().filter(item => item.checked()));
 
@@ -170,14 +166,14 @@ class ContactsPopupView extends AbstractViewNext {
 			'.e-contact-item.focused'
 		);
 
-		this.selector.on('onItemSelect', (contact) => {
-			this.populateViewContact(contact ? contact : null);
+		this.selector.on('onItemSelect', contact => {
+			this.populateViewContact(contact || null);
 			if (!contact) {
 				this.emptySelection(true);
 			}
 		});
 
-		this.selector.on('onItemGetUid', (contact) => (contact ? contact.generateUid() : ''));
+		this.selector.on('onItemGetUid', contact => contact ? contact.generateUid() : '');
 
 		this.bDropPageAfterDelete = false;
 

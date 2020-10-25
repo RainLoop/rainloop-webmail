@@ -33,7 +33,7 @@ class FilterPopupView extends AbstractViewNext {
 
 		this.selectedFolderValue.subscribe(() => {
 			if (this.filter()) {
-				this.filter().actionValue.error(false);
+				this.filter().actionValueError(false);
 			}
 		});
 
@@ -157,13 +157,13 @@ class FilterPopupView extends AbstractViewNext {
 		this.isNew(!bEdit);
 
 		if (!bEdit && oFilter) {
-			oFilter.name.focused(true);
+			oFilter.nameFocused(true);
 		}
 	}
 
 	onShowWithDelay() {
 		if (this.isNew() && this.filter()/* && !rl.settings.app('mobile')*/) {
-			this.filter().name.focused(true);
+			this.filter().nameFocused(true);
 		}
 	}
 }

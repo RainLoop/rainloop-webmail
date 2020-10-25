@@ -11,7 +11,6 @@ class FolderModel extends AbstractModel {
 	constructor() {
 		super();
 
-		this.name = ko.observable('');
 		this.fullName = '';
 		this.fullNameRaw = '';
 		this.fullNameHash = '';
@@ -23,23 +22,27 @@ class FolderModel extends AbstractModel {
 		this.selectable = false;
 		this.existen = true;
 
-		this.type = ko.observable(FolderType.User);
+		this.addObservables({
+			name: '',
+			type: FolderType.User,
 
-		this.focused = ko.observable(false);
-		this.selected = ko.observable(false);
-		this.edited = ko.observable(false);
-		this.subScribed = ko.observable(true);
-		this.checkable = ko.observable(false);
+			focused: false,
+			selected: false,
+			edited: false,
+			subScribed: true,
+			checkable: false,
+			deleteAccess: false,
+
+			nameForEdit: '',
+
+			privateMessageCountAll: 0,
+			privateMessageCountUnread: 0,
+
+			collapsedPrivate: true
+		});
+
 		this.subFolders = ko.observableArray(new FolderCollectionModel);
-		this.deleteAccess = ko.observable(false);
 		this.actionBlink = ko.observable(false).extend({ falseTimeout: 1000 });
-
-		this.nameForEdit = ko.observable('');
-
-		this.privateMessageCountAll = ko.observable(0);
-		this.privateMessageCountUnread = ko.observable(0);
-
-		this.collapsedPrivate = ko.observable(true);
 	}
 
 	/**
@@ -230,14 +233,15 @@ class FolderModel extends AbstractModel {
 					)
 			);
 
-			// subscribe
-			folder.name.subscribe(value => folder.nameForEdit(value));
+			folder.addSubscribables({
+				name: value => folder.nameForEdit(value),
 
-			folder.edited.subscribe(value => value && folder.nameForEdit(folder.name()));
+				edited: value => value && folder.nameForEdit(folder.name()),
 
-			folder.messageCountUnread.subscribe((unread) => {
-				if (FolderType.Inbox === folder.type()) {
-					dispatchEvent(new CustomEvent('mailbox.inbox-unread-count', {detail:unread}));
+				messageCountUnread: unread => {
+					if (FolderType.Inbox === folder.type()) {
+						dispatchEvent(new CustomEvent('mailbox.inbox-unread-count', {detail:unread}));
+					}
 				}
 			});
 		}

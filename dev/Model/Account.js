@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { change } from 'Common/Links';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -15,10 +13,11 @@ class AccountModel extends AbstractModel {
 
 		this.email = email;
 
-		this.count = ko.observable(count);
-
-		this.deleteAccess = ko.observable(false);
-		this.canBeDeleted = ko.observable(!!canBeDelete);
+		this.addObservables({
+			count: count,
+			deleteAccess: false,
+			canBeDeleted: !!canBeDelete
+		});
 		this.canBeEdit = this.canBeDeleted;
 	}
 

@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { ContactPropertyModel } from 'Model/ContactProperty';
 import { ContactPropertyType } from 'Common/Enums';
 
@@ -14,10 +12,12 @@ class ContactModel extends AbstractModel {
 		this.properties = [];
 		this.readOnly = false;
 
-		this.focused = ko.observable(false);
-		this.selected = ko.observable(false);
-		this.checked = ko.observable(false);
-		this.deleted = ko.observable(false);
+		this.addObservables({
+			focused: false,
+			selected: false,
+			checked: false,
+			deleted: false
+		});
 	}
 
 	/**

@@ -15,42 +15,38 @@ class FilterModel extends AbstractModel {
 	constructor() {
 		super();
 
-		this.enabled = ko.observable(true);
-
 		this.id = '';
 
-		this.name = ko.observable('');
-		this.name.error = ko.observable(false);
-		this.name.focused = ko.observable(false);
+		this.addObservables({
+			enabled: true,
+			deleteAccess: false,
+			canBeDeleted: true,
+
+			name: '',
+			nameError: false,
+			nameFocused: false,
+
+			conditionsType: FilterRulesType.Any,
+
+			// Actions
+			actionValue: '',
+			actionValueError: false,
+
+			actionValueSecond: '',
+			actionValueThird: '',
+
+			actionValueFourth: '',
+			actionValueFourthError: false,
+
+			actionMarkAsRead: false,
+
+			actionKeep: true,
+			actionNoStop: false,
+
+			actionType: FiltersAction.MoveTo
+		});
 
 		this.conditions = ko.observableArray([]);
-		this.conditionsType = ko.observable(FilterRulesType.Any);
-
-		// Actions
-		this.actionValue = ko.observable('');
-		this.actionValue.error = ko.observable(false);
-
-		this.actionValueSecond = ko.observable('');
-		this.actionValueThird = ko.observable('');
-
-		this.actionValueFourth = ko.observable('');
-		this.actionValueFourth.error = ko.observable(false);
-
-		this.actionMarkAsRead = ko.observable(false);
-
-		this.actionKeep = ko.observable(true);
-		this.actionNoStop = ko.observable(false);
-
-		this.actionType = ko.observable(FiltersAction.MoveTo);
-
-		this.actionType.subscribe(() => {
-			this.actionValue('');
-			this.actionValue.error(false);
-			this.actionValueSecond('');
-			this.actionValueThird('');
-			this.actionValueFourth('');
-			this.actionValueFourth.error(false);
-		});
 
 		const fGetRealFolderName = (folderFullNameRaw) => {
 			const folder = getFolderFromCacheList(folderFullNameRaw);
@@ -115,14 +111,18 @@ class FilterModel extends AbstractModel {
 			return result;
 		});
 
-		this.regDisposables(this.name.subscribe(sValue => this.name.error(!sValue)));
-
-		this.regDisposables(this.actionValue.subscribe(sValue => this.actionValue.error(!sValue)));
-
-		this.regDisposables([this.actionNoStop, this.actionTemplate]);
-
-		this.deleteAccess = ko.observable(false);
-		this.canBeDeleted = ko.observable(true);
+		this.addSubscribables({
+			name: sValue => this.nameError(!sValue),
+			actionValue: sValue => this.actionValueError(!sValue),
+			actionType: () => {
+				this.actionValue('');
+				this.actionValueError(false);
+				this.actionValueSecond('');
+				this.actionValueThird('');
+				this.actionValueFourth('');
+				this.actionValueFourthError(false);
+			}
+		});
 	}
 
 	generateID() {
@@ -131,14 +131,12 @@ class FilterModel extends AbstractModel {
 
 	verify() {
 		if (!this.name()) {
-			this.name.error(true);
+			this.nameError(true);
 			return false;
 		}
 
-		if (this.conditions().length) {
-			if (this.conditions().find(cond => cond && !cond.verify())) {
-				return false;
-			}
+		if (this.conditions().length && this.conditions().find(cond => cond && !cond.verify())) {
+			return false;
 		}
 
 		if (!this.actionValue()) {
@@ -149,13 +147,13 @@ class FilterModel extends AbstractModel {
 					FiltersAction.Vacation
 				].includes(this.actionType())
 			) {
-				this.actionValue.error(true);
+				this.actionValueError(true);
 				return false;
 			}
 		}
 
 		if (FiltersAction.Forward === this.actionType() && !this.actionValue().includes('@')) {
-			this.actionValue.error(true);
+			this.actionValueError(true);
 			return false;
 		}
 
@@ -164,12 +162,12 @@ class FilterModel extends AbstractModel {
 			this.actionValueFourth() &&
 			!this.actionValueFourth().includes('@')
 		) {
-			this.actionValueFourth.error(true);
+			this.actionValueFourthError(true);
 			return false;
 		}
 
-		this.name.error(false);
-		this.actionValue.error(false);
+		this.nameError(false);
+		this.actionValueError(false);
 
 		return true;
 	}
@@ -240,7 +238,7 @@ class FilterModel extends AbstractModel {
 		filter.enabled(this.enabled());
 
 		filter.name(this.name());
-		filter.name.error(this.name.error());
+		filter.nameError(this.nameError());
 
 		filter.conditionsType(this.conditionsType());
 
@@ -249,7 +247,7 @@ class FilterModel extends AbstractModel {
 		filter.actionType(this.actionType());
 
 		filter.actionValue(this.actionValue());
-		filter.actionValue.error(this.actionValue.error());
+		filter.actionValueError(this.actionValueError());
 
 		filter.actionValueSecond(this.actionValueSecond());
 		filter.actionValueThird(this.actionValueThird());

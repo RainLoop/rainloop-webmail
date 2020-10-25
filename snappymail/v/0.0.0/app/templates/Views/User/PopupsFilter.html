@@ -11,10 +11,10 @@
 			<div class="row filter" data-bind="with: filter, i18nInit: filter">
 				<div class="span9" data-bind="i18nInit: true">
 
-					<div class="control-group" data-bind="css: {'error': name.error}">
+					<div class="control-group" data-bind="css: {'error': nameError}">
 						<div class="controls">
 							<input type="text" class="i18n span5"
-								data-bind="value: name,  hasFocus: name.focused"
+								data-bind="value: name,  hasFocus: nameFocused"
 								autocorrect="off" autocapitalize="off" spellcheck="false"
 								data-i18n="[placeholder]POPUPS_FILTER/FILTER_NAME"
 							/>
