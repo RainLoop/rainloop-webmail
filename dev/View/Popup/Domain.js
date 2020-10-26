@@ -60,6 +60,52 @@ class DomainPopupView extends AbstractViewNext {
 			enableSmartPorts: false
 		});
 
+		this.addComputables({
+			allowSieve: () => CapaAdminStore.filters() && CapaAdminStore.sieve(),
+
+			headerText: () => {
+				const name = this.name(),
+					aliasName = this.aliasName();
+
+				let result = '';
+
+				if (this.edit()) {
+					result = i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', { 'NAME': name });
+					if (aliasName) {
+						result += ' ← ' + aliasName;
+					}
+				} else {
+					result = name
+							? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { 'NAME': name })
+							: i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN');
+				}
+
+				return result;
+			},
+
+			domainDesc: () => {
+				const name = this.name();
+				return !this.edit() && name ? i18n('POPUPS_DOMAIN/NEW_DOMAIN_DESC', { 'NAME': '*@' + name }) : '';
+			},
+
+			domainIsComputed: () => {
+				const usePhpMail = this.smtpPhpMail(),
+					allowSieve = this.allowSieve(),
+					useSieve = this.useSieve();
+
+				return (
+					this.name() &&
+					this.imapServer() &&
+					this.imapPort() &&
+					(allowSieve && useSieve ? this.sieveServer() && this.sievePort() : true) &&
+					((this.smtpServer() && this.smtpPort()) || usePhpMail)
+				);
+			},
+
+			canBeTested: () => !this.testing() && this.domainIsComputed(),
+			canBeSaved: () => !this.saving() && this.domainIsComputed()
+		});
+
 		this.addSubscribables({
 			testingImapError: value => value || this.testingImapErrorDesc(''),
 			testingSieveError: value => value || this.testingSieveErrorDesc(''),
@@ -120,52 +166,6 @@ class DomainPopupView extends AbstractViewNext {
 					}
 				}
 			}
-		});
-
-		this.addComputables({
-			allowSieve: () => CapaAdminStore.filters() && CapaAdminStore.sieve(),
-
-			headerText: () => {
-				const name = this.name(),
-					aliasName = this.aliasName();
-
-				let result = '';
-
-				if (this.edit()) {
-					result = i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', { 'NAME': name });
-					if (aliasName) {
-						result += ' ← ' + aliasName;
-					}
-				} else {
-					result = name
-							? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { 'NAME': name })
-							: i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN');
-				}
-
-				return result;
-			},
-
-			domainDesc: () => {
-				const name = this.name();
-				return !this.edit() && name ? i18n('POPUPS_DOMAIN/NEW_DOMAIN_DESC', { 'NAME': '*@' + name }) : '';
-			},
-
-			domainIsComputed: () => {
-				const usePhpMail = this.smtpPhpMail(),
-					allowSieve = this.allowSieve(),
-					useSieve = this.useSieve();
-
-				return (
-					this.name() &&
-					this.imapServer() &&
-					this.imapPort() &&
-					(allowSieve && useSieve ? this.sieveServer() && this.sievePort() : true) &&
-					((this.smtpServer() && this.smtpPort()) || usePhpMail)
-				);
-			},
-
-			canBeTested: () => !this.testing() && this.domainIsComputed(),
-			canBeSaved: () => !this.saving() && this.domainIsComputed()
 		});
 	}
 

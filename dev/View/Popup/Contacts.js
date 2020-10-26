@@ -94,8 +94,6 @@ class ContactsPopupView extends AbstractViewNext {
 
 		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
 
-		this.search.subscribe(() => this.reloadContactList());
-
 		this.selector = new Selector(
 			this.contacts,
 			this.currentContact,
@@ -118,12 +116,6 @@ class ContactsPopupView extends AbstractViewNext {
 		this.bDropPageAfterDelete = false;
 
 		// this.saveCommandDebounce = _.debounce(this.saveCommand.bind(this), 1000);
-
-		this.viewHash.subscribe(() => {
-			if (this.watchHash() && !this.viewReadOnly() && !this.watchDirty()) {
-				this.watchDirty(true);
-			}
-		});
 
 		this.sDefaultKeyScope = KeyState.ContactList;
 
@@ -180,6 +172,14 @@ class ContactsPopupView extends AbstractViewNext {
 			contactsCheckedOrSelectedUids: () => this.contactsCheckedOrSelected().map(contact => contact.id),
 
 			viewHash: () => '' + this.viewProperties().map(oItem => oItem.value()).join('')
+		});
+
+		this.search.subscribe(() => this.reloadContactList());
+
+		this.viewHash.subscribe(() => {
+			if (this.watchHash() && !this.viewReadOnly() && !this.watchDirty()) {
+				this.watchDirty(true);
+			}
 		});
 	}
 

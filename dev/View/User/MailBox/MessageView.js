@@ -159,6 +159,54 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			viewIsFlagged: false
 		});
 
+		this.addComputables({
+			allowAttachmnetControls: () => this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions),
+
+			downloadAsZipAllowed: () => this.attachmentsActions().includes('zip') && this.allowAttachmnetControls(),
+
+			lastReplyAction: {
+				read: this.lastReplyAction_,
+				write: value => this.lastReplyAction_(
+					[ComposeType.Reply, ComposeType.ReplyAll, ComposeType.Forward].includes(value)
+						? ComposeType.Reply
+						: value
+				)
+			},
+
+			messageVisibility: () => !this.messageLoadingThrottle() && !!this.message(),
+
+			canBeRepliedOrForwarded: () => !this.isDraftFolder() && this.messageVisibility(),
+
+			viewFromDkimVisibility: () => 'none' !== this.viewFromDkimData()[0],
+
+			viewFromDkimStatusIconClass:() => {
+				switch (this.viewFromDkimData()[0]) {
+					case 'none':
+						return 'icon-none iconcolor-display-none';
+					case 'pass':
+						return 'icon-ok iconcolor-green';
+					default:
+						return 'icon-warning-alt iconcolor-red';
+				}
+			},
+
+			viewFromDkimStatusTitle:() => {
+				const status = this.viewFromDkimData();
+				if (Array.isNotEmpty(status)) {
+					if (status[0]) {
+						return status[1] || 'DKIM: ' + status[0];
+					}
+				}
+
+				return '';
+			},
+
+			messageFocused: () => Focused.MessageView === AppStore.focusedState(),
+
+			messageListAndMessageViewLoading:
+				() => MessageStore.messageListCompleteLoadingThrottle() || MessageStore.messageLoadingThrottle()
+		});
+
 		this.addSubscribables({
 			showAttachmnetControls: v => this.message()
 				&& this.message().attachments().forEach(item => item && item.checked(!!v)),
@@ -219,54 +267,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.message.viewTrigger.subscribe(() => {
 			const message = this.message();
 			message ? this.viewIsFlagged(message.isFlagged()) : this.viewIsFlagged(false);
-		});
-
-		this.addComputables({
-			allowAttachmnetControls: () => this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions),
-
-			downloadAsZipAllowed: () => this.attachmentsActions().includes('zip') && this.allowAttachmnetControls(),
-
-			lastReplyAction: {
-				read: this.lastReplyAction_,
-				write: value => this.lastReplyAction_(
-					[ComposeType.Reply, ComposeType.ReplyAll, ComposeType.Forward].includes(value)
-						? ComposeType.Reply
-						: value
-				)
-			},
-
-			messageVisibility: () => !this.messageLoadingThrottle() && !!this.message(),
-
-			canBeRepliedOrForwarded: () => !this.isDraftFolder() && this.messageVisibility(),
-
-			viewFromDkimVisibility: () => 'none' !== this.viewFromDkimData()[0],
-
-			viewFromDkimStatusIconClass:() => {
-				switch (this.viewFromDkimData()[0]) {
-					case 'none':
-						return 'icon-none iconcolor-display-none';
-					case 'pass':
-						return 'icon-ok iconcolor-green';
-					default:
-						return 'icon-warning-alt iconcolor-red';
-				}
-			},
-
-			viewFromDkimStatusTitle:() => {
-				const status = this.viewFromDkimData();
-				if (Array.isNotEmpty(status)) {
-					if (status[0]) {
-						return status[1] || 'DKIM: ' + status[0];
-					}
-				}
-
-				return '';
-			},
-
-			messageFocused: () => Focused.MessageView === AppStore.focusedState(),
-
-			messageListAndMessageViewLoading:
-				() => MessageStore.messageListCompleteLoadingThrottle() || MessageStore.messageLoadingThrottle()
 		});
 
 		this.lastReplyAction(Local.get(ClientSideKeyName.LastReplyAction) || ComposeType.Reply);
