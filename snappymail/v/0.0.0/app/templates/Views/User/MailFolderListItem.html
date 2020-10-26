@@ -1,6 +1,6 @@
 <div class="e-item" data-bind="visible: visible, css: { 'i-am-inbox-wrapper': isInbox }">
 	<a class="e-link" data-bind="dropmessages: $data,
-	   css: { 'i-am-inbox': isInbox, 'selected': selected() && !isSystemFolder(), 'selectable': selectableForFolderList, 'hidden' : hidden, 'print-count': hasUnreadMessages, 'unread-sub': hasSubScribedUnreadMessagesSubfolders, 'system': isSystemFolder, 'anim-action-class': actionBlink }">
+	   css: { 'i-am-inbox': isInbox, 'selected': selected() && !isSystemFolder(), 'selectable': selectableForFolderList, 'hidden' : hidden, 'print-count': hasUnreadMessages, 'unread-sub': hasSubscribedUnreadMessagesSubfolders, 'system': isSystemFolder, 'anim-action-class': actionBlink }">
 		<span class="badge pull-right count" data-bind="text: printableUnreadCount"></span>
 		<i data-bind="css: collapsedCss()"></i>
 		<span class="focused-poiner"></span>

@@ -23,29 +23,33 @@ class LoginAdminView extends AbstractViewNext {
 
 		this.hideSubmitButton = appSettingsGet('hideSubmitButton');
 
-		this.login = ko.observable('');
-		this.password = ko.observable('');
+		this.addObservables({
+			login: '',
+			password: '',
 
-		this.loginError = ko.observable(false);
-		this.passwordError = ko.observable(false);
+			loginError: false,
+			passwordError: false,
+
+			formHidden: false,
+
+			submitRequest: false,
+			submitError: ''
+		});
 
 		this.loginErrorAnimation = ko.observable(false).extend({ 'falseTimeout': 500 });
 		this.passwordErrorAnimation = ko.observable(false).extend({ 'falseTimeout': 500 });
 
-		this.formHidden = ko.observable(false);
-
 		this.formError = ko.computed(() => this.loginErrorAnimation() || this.passwordErrorAnimation());
 
-		this.login.subscribe(() => this.loginError(false));
+		this.addSubscribables({
+			login: () => this.loginError(false),
 
-		this.password.subscribe(() => this.passwordError(false));
+			password: () => this.passwordError(false),
 
-		this.loginError.subscribe(v => this.loginErrorAnimation(!!v));
+			loginError: v => this.loginErrorAnimation(!!v),
 
-		this.passwordError.subscribe(v => this.passwordErrorAnimation(!!v));
-
-		this.submitRequest = ko.observable(false);
-		this.submitError = ko.observable('');
+			passwordError: v => this.passwordErrorAnimation(!!v)
+		});
 	}
 
 	@command((self) => !self.submitRequest())

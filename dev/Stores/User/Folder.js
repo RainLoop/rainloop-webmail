@@ -160,9 +160,9 @@ class FolderUserStore {
 						folder &&
 						inboxFolderName !== folder.fullNameRaw &&
 						folder.selectable &&
-						folder.existen &&
+						folder.exists &&
 						timeout > folder.interval &&
-						(folder.isSystemFolder() || (folder.subScribed() && folder.checkable()))
+						(folder.isSystemFolder() || (folder.subscribed() && folder.checkable()))
 					) {
 						timeouts.push([folder.interval, folder.fullNameRaw]);
 					}

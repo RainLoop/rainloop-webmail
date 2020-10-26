@@ -10,6 +10,10 @@ export class AbstractCollectionModel extends Array
 		super();
 	}
 
+	onDestroy() {
+		this.forEach(item => item.onDestroy && item.onDestroy());
+	}
+
 	/**
 	 * @static
 	 * @param {FetchJson} json

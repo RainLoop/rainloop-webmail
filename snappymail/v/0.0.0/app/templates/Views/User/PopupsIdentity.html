@@ -19,7 +19,7 @@
 					<div class="controls">
 						<input type="email" class="inputEmail input-xlarge" autofocus=""
 							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: email, onEnter: addOrEditIdentityCommand, hasfocus: email.focused" />
+							data-bind="value: email, onEnter: addOrEditIdentityCommand, hasfocus: emailFocused" />
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: owner">
@@ -41,7 +41,7 @@
 					<div class="controls">
 						<input type="text" class="inputReplyTo input-xlarge"
 							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: replyTo, onEnter: addOrEditIdentityCommand, hasfocus: replyTo.focused" />
+							data-bind="value: replyTo, onEnter: addOrEditIdentityCommand, hasfocus: replyToFocused" />
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: showBcc, css: {'error': bcc.hasError}">
@@ -49,7 +49,7 @@
 					<div class="controls">
 						<input type="text" class="inputBcc input-xlarge"
 							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-							data-bind="value: bcc, onEnter: addOrEditIdentityCommand, hasfocus: bcc.focused" />
+							data-bind="value: bcc, onEnter: addOrEditIdentityCommand, hasfocus: bccFocused" />
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: !showReplyTo() || !showBcc()">

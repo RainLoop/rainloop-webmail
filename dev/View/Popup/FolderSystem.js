@@ -79,11 +79,13 @@ class FolderSystemPopupView extends AbstractViewNext {
 				fSaveSystemFolders();
 			};
 
-		FolderStore.sentFolder.subscribe(fCallback);
-		FolderStore.draftFolder.subscribe(fCallback);
-		FolderStore.spamFolder.subscribe(fCallback);
-		FolderStore.trashFolder.subscribe(fCallback);
-		FolderStore.archiveFolder.subscribe(fCallback);
+		ko.addSubscribablesTo(FolderStore, {
+			sentFolder: fCallback,
+			draftFolder: fCallback,
+			spamFolder: fCallback,
+			trashFolder: fCallback,
+			archiveFolder: fCallback
+		});
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 	}

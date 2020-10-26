@@ -108,97 +108,87 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		this.userUsageSize = QuotaStore.usage;
 		this.userUsageProc = QuotaStore.percentage;
 
-		this.moveDropdownTrigger = ko.observable(false);
-		this.moreDropdownTrigger = ko.observable(false);
+		this.addObservables({
+			moveDropdownTrigger: false,
+			moreDropdownTrigger: false,
+
+			dragOverArea: null,
+			dragOverBodyArea: null,
+
+			inputMessageListSearchFocus: false
+		});
 
 		// append drag and drop
 		this.dragOver = ko.observable(false).extend({ 'throttle': 1 });
 		this.dragOverEnter = ko.observable(false).extend({ 'throttle': 1 });
-		this.dragOverArea = ko.observable(null);
-		this.dragOverBodyArea = ko.observable(null);
-
-		this.messageListItemTemplate = ko.computed(() =>
-			this.mobile || Layout.SidePreview === SettingsStore.layout()
-				? 'MailMessageListItem'
-				: 'MailMessageListItemNoPreviewPane'
-		);
-
-		this.messageListSearchDesc = ko.computed(() => {
-			const value = MessageStore.messageListEndSearch();
-			return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { 'SEARCH': value }) : '';
-		});
-
-		this.messageListPaginator = ko.computed(
-			computedPaginatorHelper(MessageStore.messageListPage, MessageStore.messageListPageCount)
-		);
-
-		this.checkAll = ko.computed({
-			read: () => 0 < MessageStore.messageListChecked().length,
-			write: (value) => {
-				value = !!value;
-				MessageStore.messageList().forEach(message => message.checked(value));
-			}
-		});
-
-		this.inputMessageListSearchFocus = ko.observable(false);
 
 		this.sLastSearchValue = '';
-		this.inputProxyMessageListSearch = ko.computed({
-			read: this.mainMessageListSearch,
-			write: value => this.sLastSearchValue = value
+
+		this.addComputables({
+			messageListItemTemplate: () =>
+				this.mobile || Layout.SidePreview === SettingsStore.layout()
+					? 'MailMessageListItem'
+					: 'MailMessageListItemNoPreviewPane',
+
+			messageListSearchDesc: () => {
+				const value = MessageStore.messageListEndSearch();
+				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { 'SEARCH': value }) : ''
+			},
+
+			messageListPaginator: computedPaginatorHelper(MessageStore.messageListPage, MessageStore.messageListPageCount),
+
+			checkAll: {
+				read: () => 0 < MessageStore.messageListChecked().length,
+				write: (value) => {
+					value = !!value;
+					MessageStore.messageList().forEach(message => message.checked(value));
+				}
+			},
+
+			inputProxyMessageListSearch: {
+				read: this.mainMessageListSearch,
+				write: value => this.sLastSearchValue = value
+			},
+
+			isIncompleteChecked: () => {
+				const c = MessageStore.messageListChecked().length;
+				return c && MessageStore.messageList().length > c;
+			},
+
+			hasMessages: () => 0 < this.messageList().length,
+
+			hasCheckedOrSelectedLines: () => 0 < this.messageListCheckedOrSelected().length,
+
+			isSpamFolder: () => FolderStore.spamFolder() === this.messageListEndFolder() && FolderStore.spamFolder(),
+
+			isSpamDisabled: () => UNUSED_OPTION_VALUE === FolderStore.spamFolder(),
+
+			isTrashFolder: () => FolderStore.trashFolder() === this.messageListEndFolder() && FolderStore.trashFolder(),
+
+			isDraftFolder: () => FolderStore.draftFolder() === this.messageListEndFolder() && FolderStore.draftFolder(),
+
+			isSentFolder: () => FolderStore.sentFolder() === this.messageListEndFolder() && FolderStore.sentFolder(),
+
+			isArchiveFolder: () => FolderStore.archiveFolder() === this.messageListEndFolder() && FolderStore.archiveFolder(),
+
+			isArchiveDisabled: () => UNUSED_OPTION_VALUE === FolderStore.archiveFolder(),
+
+			isArchiveVisible: () => !this.isArchiveFolder() && !this.isArchiveDisabled() && !this.isDraftFolder(),
+
+			isSpamVisible: () =>
+				!this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder(),
+
+			isUnSpamVisible: () =>
+				this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder(),
+
+			mobileCheckedStateShow: () => this.mobile ? 0 < MessageStore.messageListChecked().length : true,
+
+			mobileCheckedStateHide: () => this.mobile ? !MessageStore.messageListChecked().length : true,
+
+			messageListFocused: () => Focused.MessageList === AppStore.focusedState()
 		});
-
-		this.isIncompleteChecked = ko.computed(() => {
-			const c = MessageStore.messageListChecked().length;
-			return c && MessageStore.messageList().length > c;
-		});
-
-		this.hasMessages = ko.computed(() => 0 < this.messageList().length);
-
-		this.hasCheckedOrSelectedLines = ko.computed(() => 0 < this.messageListCheckedOrSelected().length);
-
-		this.isSpamFolder = ko.computed(
-			() => FolderStore.spamFolder() === this.messageListEndFolder() && FolderStore.spamFolder()
-		);
-
-		this.isSpamDisabled = ko.computed(() => UNUSED_OPTION_VALUE === FolderStore.spamFolder());
-
-		this.isTrashFolder = ko.computed(
-			() => FolderStore.trashFolder() === this.messageListEndFolder() && FolderStore.trashFolder()
-		);
-
-		this.isDraftFolder = ko.computed(
-			() => FolderStore.draftFolder() === this.messageListEndFolder() && FolderStore.draftFolder()
-		);
-
-		this.isSentFolder = ko.computed(
-			() => FolderStore.sentFolder() === this.messageListEndFolder() && FolderStore.sentFolder()
-		);
-
-		this.isArchiveFolder = ko.computed(
-			() => FolderStore.archiveFolder() === this.messageListEndFolder() && FolderStore.archiveFolder()
-		);
-
-		this.isArchiveDisabled = ko.computed(() => UNUSED_OPTION_VALUE === FolderStore.archiveFolder());
-
-		this.isArchiveVisible = ko.computed(
-			() => !this.isArchiveFolder() && !this.isArchiveDisabled() && !this.isDraftFolder()
-		);
-
-		this.isSpamVisible = ko.computed(
-			() => !this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder()
-		);
-
-		this.isUnSpamVisible = ko.computed(
-			() => this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder()
-		);
 
 //		this.messageListChecked = MessageStore.messageListChecked;
-		this.mobileCheckedStateShow = ko.computed(() => this.mobile ? 0 < MessageStore.messageListChecked().length : true);
-
-		this.mobileCheckedStateHide = ko.computed(() => this.mobile ? !MessageStore.messageListChecked().length : true);
-
-		this.messageListFocused = ko.computed(() => Focused.MessageList === AppStore.focusedState());
 
 		this.canBeMoved = this.hasCheckedOrSelectedLines;
 

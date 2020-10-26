@@ -29,9 +29,7 @@ class LanguagesPopupView extends AbstractViewNext {
 			}));
 		});
 
-		this.langs.subscribe(() => {
-			this.setLanguageSelection();
-		});
+		this.langs.subscribe(() => this.setLanguageSelection());
 	}
 
 	languageTooltipName(language) {

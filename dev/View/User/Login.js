@@ -37,17 +37,31 @@ class LoginUserView extends AbstractViewNext {
 
 		this.hideSubmitButton = Settings.app('hideSubmitButton');
 
-		this.welcome = ko.observable(!!Settings.get('UseLoginWelcomePage'));
+		this.addObservables({
+			welcome: !!Settings.get('UseLoginWelcomePage'),
+			email: '',
+			password: '',
+			signMe: false,
+			additionalCode: '',
 
-		this.email = ko.observable('');
-		this.password = ko.observable('');
-		this.signMe = ko.observable(false);
+			emailError: false,
+			passwordError: false,
 
-		this.additionalCode = ko.observable('');
-		this.additionalCode.error = ko.observable(false);
-		this.additionalCode.errorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
-		this.additionalCode.visibility = ko.observable(false);
-		this.additionalCodeSignMe = ko.observable(false);
+			formHidden: false,
+
+			submitRequest: false,
+			submitError: '',
+			submitErrorAddidional: '',
+
+			langRequest: false,
+
+			additionalCodeError: false,
+			additionalCodeSignMe: false,
+			additionalCodeVisibility: false,
+			signMeType: LoginSignMeType.Unused
+		});
+
+		this.additionalCodeErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
 
 		this.logoImg = (Settings.get('LoginLogo')||'').trim();
 		this.loginDescription = (Settings.get('LoginDescription')||'').trim();
@@ -58,60 +72,49 @@ class LoginUserView extends AbstractViewNext {
 		this.forgotPasswordLinkUrl = Settings.app('forgotPasswordLinkUrl');
 		this.registrationLinkUrl = Settings.app('registrationLinkUrl');
 
-		this.emailError = ko.observable(false);
-		this.passwordError = ko.observable(false);
-
 		this.emailErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
 		this.passwordErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
 
-		this.formHidden = ko.observable(false);
+		this.addComputables({
+			formError:
+				() =>
+					this.emailErrorAnimation() ||
+					this.passwordErrorAnimation() ||
+					(this.additionalCodeVisibility() && this.additionalCodeErrorAnimation()),
 
-		this.formError = ko.computed(
-			() =>
-				this.emailErrorAnimation() ||
-				this.passwordErrorAnimation() ||
-				(this.additionalCode.visibility() && this.additionalCode.errorAnimation())
-		);
+			languageFullName: () => convertLangName(this.language()),
 
-		this.email.subscribe(() => {
-			this.emailError(false);
-			this.additionalCode('');
-			this.additionalCode.visibility(false);
+			signMeVisibility: () => LoginSignMeType.Unused !== this.signMeType()
 		});
 
-		this.password.subscribe(() => this.passwordError(false));
+		this.addSubscribables({
+			email: () => {
+				this.emailError(false);
+				this.additionalCode('');
+				this.additionalCodeVisibility(false);
+			},
 
-		this.additionalCode.subscribe(() => this.additionalCode.error(false));
+			password: () => this.passwordError(false),
 
-		this.additionalCode.visibility.subscribe(() => this.additionalCode.error(false));
+			additionalCode: () => this.additionalCodeError(false),
+			additionalCodeError: bV => this.additionalCodeErrorAnimation(!!bV),
+			additionalCodeVisibility: () => this.additionalCodeError(false),
 
-		this.emailError.subscribe(bV => this.emailErrorAnimation(!!bV));
+			emailError: bV => this.emailErrorAnimation(!!bV),
 
-		this.passwordError.subscribe(bV => this.passwordErrorAnimation(!!bV));
+			passwordError: bV => this.passwordErrorAnimation(!!bV),
 
-		this.additionalCode.error.subscribe(bV => this.additionalCode.errorAnimation(!!bV));
+			submitError: value => value || this.submitErrorAddidional(''),
 
-		this.submitRequest = ko.observable(false);
-		this.submitError = ko.observable('');
-		this.submitErrorAddidional = ko.observable('');
-
-		this.submitError.subscribe(value => value || this.submitErrorAddidional(''));
+			signMeType: iValue => this.signMe(LoginSignMeType.DefaultOn === iValue)
+		});
 
 		this.allowLanguagesOnLogin = !!Settings.get('AllowLanguagesOnLogin');
 
-		this.langRequest = ko.observable(false);
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
 
 		this.bSendLanguage = false;
-
-		this.languageFullName = ko.computed(() => convertLangName(this.language()));
-
-		this.signMeType = ko.observable(LoginSignMeType.Unused);
-
-		this.signMeType.subscribe(iValue => this.signMe(LoginSignMeType.DefaultOn === iValue));
-
-		this.signMeVisibility = ko.computed(() => LoginSignMeType.Unused !== this.signMeType());
 
 		if (Settings.get('AdditionalLoginError') && !this.submitError()) {
 			this.submitError(Settings.get('AdditionalLoginError'));
@@ -128,10 +131,10 @@ class LoginUserView extends AbstractViewNext {
 		this.passwordError(false);
 
 		let error;
-		if (this.additionalCode.visibility()) {
-			this.additionalCode.error(false);
+		if (this.additionalCodeVisibility()) {
+			this.additionalCodeError(false);
 			if (!this.additionalCode().trim()) {
-				this.additionalCode.error(true);
+				this.additionalCodeError(true);
 				error = '.inputAdditionalCode';
 			}
 		}
@@ -157,7 +160,7 @@ class LoginUserView extends AbstractViewNext {
 						if (oData.Result) {
 							if (oData.TwoFactorAuth) {
 								this.additionalCode('');
-								this.additionalCode.visibility(true);
+								this.additionalCodeVisibility(true);
 								this.submitRequest(false);
 
 								setTimeout(() => this.querySelector('.inputAdditionalCode').focus(), 100);
@@ -192,8 +195,8 @@ class LoginUserView extends AbstractViewNext {
 				sLoginPassword,
 				!!this.signMe(),
 				this.bSendLanguage ? this.language() : '',
-				this.additionalCode.visibility() ? this.additionalCode() : '',
-				this.additionalCode.visibility() ? !!this.additionalCodeSignMe() : false
+				this.additionalCodeVisibility() ? this.additionalCode() : '',
+				this.additionalCodeVisibility() ? !!this.additionalCodeSignMe() : false
 			);
 
 			Local.set(ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');

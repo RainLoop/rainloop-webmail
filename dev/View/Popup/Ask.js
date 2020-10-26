@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { KeyState } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
@@ -14,9 +12,11 @@ class AskPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.askDesc = ko.observable('');
-		this.yesButton = ko.observable('');
-		this.noButton = ko.observable('');
+		this.addObservables({
+			askDesc: '',
+			yesButton: '',
+			noButton: ''
+		});
 
 		this.fYesAction = null;
 		this.fNoAction = null;

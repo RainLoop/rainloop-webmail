@@ -59,7 +59,7 @@
 						</div>
 					</div>
 					<div class="controls"
-						data-bind="visible: additionalCode.visibility(), css: {'error': additionalCode.error, 'animated': additionalCode.errorAnimation}">
+						data-bind="visible: additionalCodeVisibility(), css: {'error': additionalCodeError, 'animated': additionalCodeErrorAnimation}">
 						<div class="input-append">
 							<input type="text" class="i18n input-block-level inputAdditionalCode" autocomplete="off"
 								autocorrect="off" autocapitalize="off" spellcheck="false" style="padding-right: 35px;"
@@ -71,7 +71,7 @@
 						</div>
 					</div>
 					<div class="controls plugin-mark-Login-BottomControlGroup"
-						data-bind="visible: additionalCode.visibility()">
+						data-bind="visible: additionalCodeVisibility()">
 						<div class="additionalCodeSignMeLabel" data-bind="component: {
 							name: 'CheckboxSimple',
 							params: {

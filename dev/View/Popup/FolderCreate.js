@@ -20,10 +20,12 @@ class FolderCreateView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.folderName = ko.observable('');
-		this.folderName.focused = ko.observable(false);
+		this.addObservables({
+			folderName: '',
+			folderNameFocused: false,
 
-		this.selectedParentValue = ko.observable(UNUSED_OPTION_VALUE);
+			selectedParentValue: UNUSED_OPTION_VALUE
+		});
 
 		this.parentFolderSelectList = ko.computed(() => {
 			const top = [],
@@ -66,7 +68,7 @@ class FolderCreateView extends AbstractViewNext {
 	clearPopup() {
 		this.folderName('');
 		this.selectedParentValue('');
-		this.folderName.focused(false);
+		this.folderNameFocused(false);
 	}
 
 	onShow() {
@@ -75,7 +77,7 @@ class FolderCreateView extends AbstractViewNext {
 
 	onShowWithDelay() {
 //		rl.settings.app('mobile') ||
-		this.folderName.focused(true);
+		this.folderNameFocused(true);
 	}
 }
 

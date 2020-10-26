@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { pInt } from 'Common/Utils';
 
 import PgpStore from 'Stores/User/Pgp';
@@ -15,20 +13,20 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.email = ko.observable('');
-		this.email.focus = ko.observable('');
-		this.email.error = ko.observable(false);
+		this.addObservables({
+			email: '',
+			emailFocus: '',
+			emailError: false,
 
-		this.name = ko.observable('');
-		this.password = ko.observable('');
-		this.keyBitLength = ko.observable(2048);
+			name: '',
+			password: '',
+			keyBitLength: 2048,
 
-		this.submitRequest = ko.observable(false);
-		this.submitError = ko.observable('');
-
-		this.email.subscribe(() => {
-			this.email.error(false);
+			submitRequest: false,
+			submitError: ''
 		});
+
+		this.email.subscribe(() => this.emailError(false));
 	}
 
 	@command()
@@ -36,8 +34,8 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 		const userId = {},
 			openpgpKeyring = PgpStore.openpgpKeyring;
 
-		this.email.error(!this.email().trim());
-		if (!openpgpKeyring || this.email.error()) {
+		this.emailError(!this.email().trim());
+		if (!openpgpKeyring || this.emailError()) {
 			return false;
 		}
 
@@ -95,7 +93,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 		this.password('');
 
 		this.email('');
-		this.email.error(false);
+		this.emailError(false);
 		this.keyBitLength(2048);
 
 		this.submitError('');
@@ -106,7 +104,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewNext {
 	}
 
 	onShowWithDelay() {
-		this.email.focus(true);
+		this.emailFocus(true);
 	}
 }
 

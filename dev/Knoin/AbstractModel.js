@@ -1,5 +1,5 @@
 
-function disposeOne(disposable) {
+function dispose(disposable) {
 	if (disposable && 'function' === typeof disposable.dispose) {
 		disposable.dispose();
 	}
@@ -22,7 +22,7 @@ function typeCast(curValue, newValue) {
 }
 
 export class AbstractModel {
-	disposables = [];
+	subscribables = [];
 
 	constructor() {
 /*
@@ -32,27 +32,30 @@ export class AbstractModel {
 */
 	}
 
-	addObservables(obj) {
-		Object.entries(obj).forEach(([key, value]) => this[key] = ko.observable(value) );
-/*
-		Object.entries(obj).forEach(([key, value]) =>
-			this[key] = Array.isArray(value) ? ko.observableArray(value) : ko.observable(value)
-		);
-*/
+	addObservables(observables) {
+		ko.addObservablesTo(this, observables);
 	}
 
-	addComputables(obj) {
-		Object.entries(obj).forEach(([key, fn]) => this[key] = ko.computed(fn) );
+	addComputables(computables) {
+		ko.addComputablesTo(this, computables);
 	}
 
-	addSubscribables(obj) {
-		Object.entries(obj).forEach(([key, fn]) => this.disposables.push( this[key].subscribe(fn) ) );
+	addSubscribables(subscribables) {
+		Object.entries(subscribables).forEach(([key, fn]) => this.subscribables.push( this[key].subscribe(fn) ) );
 	}
 
+	/** Called by delegateRunOnDestroy */
 	onDestroy() {
-		this.disposables.forEach(disposeOne);
+		/** clear ko.subscribe */
+		this.subscribables.forEach(dispose);
+		/** clear object entries */
 		Object.entries(this).forEach(([key, value]) => {
-			disposeOne(value);
+			/** clear CollectionModel */
+			let arr = ko.isObservableArray(value) ? value() : value;
+			arr && arr.onDestroy && value.onDestroy();
+			/** destroy ko.observable/ko.computed? */
+			dispose(value);
+			/** clear object value */
 			this[key] = null;
 		});
 	}

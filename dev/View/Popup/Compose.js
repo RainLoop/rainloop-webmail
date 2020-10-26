@@ -132,150 +132,86 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.capaOpenPGP = PgpStore.capaOpenPGP;
 
-		this.identitiesDropdownTrigger = ko.observable(false);
+		this.identities = IdentityStore.identities;
 
-		this.to = ko.observable('');
-		this.to.focused = ko.observable(false);
-		this.cc = ko.observable('');
-		this.cc.focused = ko.observable(false);
-		this.bcc = ko.observable('');
-		this.bcc.focused = ko.observable(false);
-		this.replyTo = ko.observable('');
-		this.replyTo.focused = ko.observable(false);
+		this.addObservables({
+			identitiesDropdownTrigger: false,
+
+			to: '',
+			toFocused: false,
+			cc: '',
+			ccFocused: false,
+			bcc: '',
+			bccFocused: false,
+			replyTo: '',
+			replyToFocused: false,
+
+			subject: '',
+			subjectFocused: false,
+
+			isHtml: false,
+
+			requestDsn: false,
+			requestReadReceipt: false,
+			markAsImportant: false,
+
+			sendError: false,
+			sendSuccessButSaveError: false,
+			savedError: false,
+
+			sendErrorDesc: '',
+			savedErrorDesc: '',
+
+			savedTime: 0,
+
+			emptyToError: false,
+
+			attachmentsInProcessError: false,
+			attachmentsInErrorError: false,
+
+			showCc: false,
+			showBcc: false,
+			showReplyTo: false,
+
+			draftFolder: '',
+			draftUid: '',
+			sending: false,
+			saving: false,
+
+			attachmentsPlace: false,
+
+			composeUploaderButton: null,
+			composeUploaderDropPlace: null,
+			dragAndDropEnabled: false,
+			attacheMultipleAllowed: false,
+			addAttachmentEnabled: false,
+
+			composeEditorArea: null,
+
+			currentIdentity: this.identities()[0] ? this.identities()[0] : null
+		});
 
 		// this.to.subscribe((v) => console.log(v));
 
 		ko.computed(() => {
 			switch (true) {
-				case this.to.focused():
+				case this.toFocused():
 					this.sLastFocusedField = 'to';
 					break;
-				case this.cc.focused():
+				case this.ccFocused():
 					this.sLastFocusedField = 'cc';
 					break;
-				case this.bcc.focused():
+				case this.bccFocused():
 					this.sLastFocusedField = 'bcc';
 					break;
 				// no default
 			}
 		}).extend({ notify: 'always' });
 
-		this.subject = ko.observable('');
-		this.subject.focused = ko.observable(false);
-
-		this.isHtml = ko.observable(false);
-
-		this.requestDsn = ko.observable(false);
-		this.requestReadReceipt = ko.observable(false);
-		this.markAsImportant = ko.observable(false);
-
-		this.sendError = ko.observable(false);
-		this.sendSuccessButSaveError = ko.observable(false);
-		this.savedError = ko.observable(false);
-
-		this.sendButtonSuccess = ko.computed(() => !this.sendError() && !this.sendSuccessButSaveError());
-
-		this.sendErrorDesc = ko.observable('');
-		this.savedErrorDesc = ko.observable('');
-
-		this.sendError.subscribe(value => !value && this.sendErrorDesc(''));
-
-		this.savedError.subscribe(value => !value && this.savedErrorDesc(''));
-
-		this.sendSuccessButSaveError.subscribe(value => !value && this.savedErrorDesc(''));
-
-		this.savedTime = ko.observable(0);
-		this.savedTimeText = ko.computed(() =>
-			this.savedTime()
-				? i18n('COMPOSE/SAVED_TIME', { 'TIME': this.savedTime().format('LT') })
-				: ''
-		);
-
-		this.emptyToError = ko.observable(false);
-		this.emptyToErrorTooltip = ko.computed(() => (this.emptyToError() ? i18n('COMPOSE/EMPTY_TO_ERROR_DESC') : ''));
-
-		this.attachmentsInProcessError = ko.observable(false);
-		this.attachmentsInErrorError = ko.observable(false);
-
-		this.attachmentsErrorTooltip = ko.computed(() => {
-			let result = '';
-			switch (true) {
-				case this.attachmentsInProcessError():
-					result = i18n('COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC');
-					break;
-				case this.attachmentsInErrorError():
-					result = i18n('COMPOSE/ATTACHMENTS_ERROR_DESC');
-					break;
-				// no default
-			}
-			return result;
-		});
-
-		this.showCc = ko.observable(false);
-		this.showBcc = ko.observable(false);
-		this.showReplyTo = ko.observable(false);
-
-		this.cc.subscribe((value) => {
-			if (false === this.showCc() && value.length) {
-				this.showCc(true);
-			}
-		});
-
-		this.bcc.subscribe((value) => {
-			if (false === this.showBcc() && value.length) {
-				this.showBcc(true);
-			}
-		});
-
-		this.replyTo.subscribe((value) => {
-			if (false === this.showReplyTo() && value.length) {
-				this.showReplyTo(true);
-			}
-		});
-
-		this.draftFolder = ko.observable('');
-		this.draftUid = ko.observable('');
-		this.sending = ko.observable(false);
-		this.saving = ko.observable(false);
 		this.attachments = ko.observableArray([]);
 
-		this.attachmentsInProcess = ko.computed(() => this.attachments().filter(item => item && !item.complete()));
-		this.attachmentsInReady = ko.computed(() => this.attachments().filter(item => item && item.complete()));
-		this.attachmentsInError = ko.computed(() => this.attachments().filter(item => item && item.error()));
-
-		this.attachmentsCount = ko.computed(() => this.attachments().length);
-		this.attachmentsInErrorCount = ko.computed(() => this.attachmentsInError().length);
-		this.attachmentsInProcessCount = ko.computed(() => this.attachmentsInProcess().length);
-		this.isDraftFolderMessage = ko.computed(() => this.draftFolder() && this.draftUid());
-
-		this.attachmentsPlace = ko.observable(false);
-
-		this.attachmentsInErrorCount.subscribe((value) => {
-			if (0 === value) {
-				this.attachmentsInErrorError(false);
-			}
-		});
-
-		this.composeUploaderButton = ko.observable(null);
-		this.composeUploaderDropPlace = ko.observable(null);
-		this.dragAndDropEnabled = ko.observable(false);
 		this.dragAndDropOver = ko.observable(false).extend({ throttle: 1 });
 		this.dragAndDropVisible = ko.observable(false).extend({ throttle: 1 });
-		this.attacheMultipleAllowed = ko.observable(false);
-		this.addAttachmentEnabled = ko.observable(false);
-
-		this.composeEditorArea = ko.observable(null);
-
-		this.identities = IdentityStore.identities;
-		this.identitiesOptions = ko.computed(() =>
-			IdentityStore.identities().map(item => ({
-				'item': item,
-				'optValue': item.id(),
-				'optText': item.formattedName()
-			}))
-		);
-
-		this.currentIdentity = ko.observable(this.identities()[0] ? this.identities()[0] : null);
 
 		this.currentIdentity.extend({
 			toggleSubscribe: [
@@ -291,24 +227,105 @@ class ComposePopupView extends AbstractViewNext {
 			]
 		});
 
-		this.currentIdentityView = ko.computed(() => {
-			const item = this.currentIdentity();
-			return item ? item.formattedName() : 'unknown';
+		this.bDisabeCloseOnEsc = true;
+		this.sDefaultKeyScope = KeyState.Compose;
+
+		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
+
+		this.iTimer = 0;
+
+		this.addComputables({
+			sendButtonSuccess: () => !this.sendError() && !this.sendSuccessButSaveError(),
+
+			savedTimeText: () =>
+				this.savedTime() ? i18n('COMPOSE/SAVED_TIME', { 'TIME': this.savedTime().format('LT') }) : '',
+
+			emptyToErrorTooltip: () => (this.emptyToError() ? i18n('COMPOSE/EMPTY_TO_ERROR_DESC') : ''),
+
+			attachmentsErrorTooltip: () => {
+				let result = '';
+				switch (true) {
+					case this.attachmentsInProcessError():
+						result = i18n('COMPOSE/ATTACHMENTS_UPLOAD_ERROR_DESC');
+						break;
+					case this.attachmentsInErrorError():
+						result = i18n('COMPOSE/ATTACHMENTS_ERROR_DESC');
+						break;
+					// no default
+				}
+				return result;
+			},
+
+			attachmentsInProcess: () => this.attachments().filter(item => item && !item.complete()),
+			attachmentsInReady: () => this.attachments().filter(item => item && item.complete()),
+			attachmentsInError: () => this.attachments().filter(item => item && item.error()),
+
+			attachmentsCount: () => this.attachments().length,
+			attachmentsInErrorCount: () => this.attachmentsInError().length,
+			attachmentsInProcessCount: () => this.attachmentsInProcess().length,
+			isDraftFolderMessage: () => this.draftFolder() && this.draftUid(),
+
+			identitiesOptions: () =>
+				IdentityStore.identities().map(item => ({
+					'item': item,
+					'optValue': item.id(),
+					'optText': item.formattedName()
+				})),
+
+			currentIdentityView: () => {
+				const item = this.currentIdentity();
+				return item ? item.formattedName() : 'unknown';
+			},
+
+			canBeSentOrSaved: () => !this.sending() && !this.saving()
+
 		});
 
-		this.to.subscribe((value) => {
-			if (this.emptyToError() && value.length) {
-				this.emptyToError(false);
+		this.addSubscribables({
+			sendError: value => !value && this.sendErrorDesc(''),
+
+			savedError: value => !value && this.savedErrorDesc(''),
+
+			sendSuccessButSaveError: value => !value && this.savedErrorDesc(''),
+
+			cc: value => {
+				if (false === this.showCc() && value.length) {
+					this.showCc(true);
+				}
+			},
+
+			bcc: value => {
+				if (false === this.showBcc() && value.length) {
+					this.showBcc(true);
+				}
+			},
+
+			replyTo: value => {
+				if (false === this.showReplyTo() && value.length) {
+					this.showReplyTo(true);
+				}
+			},
+
+			attachmentsInErrorCount: value => {
+				if (0 === value) {
+					this.attachmentsInErrorError(false);
+				}
+			},
+
+			to: value => {
+				if (this.emptyToError() && value.length) {
+					this.emptyToError(false);
+				}
+			},
+
+			attachmentsInProcess: value => {
+				if (this.attachmentsInProcessError() && Array.isNotEmpty(value)) {
+					this.attachmentsInProcessError(false);
+				}
 			}
 		});
 
-		this.attachmentsInProcess.subscribe(value => {
-			if (this.attachmentsInProcessError() && Array.isNotEmpty(value)) {
-				this.attachmentsInProcessError(false);
-			}
-		});
-
-		this.canBeSentOrSaved = ko.computed(() => !this.sending() && !this.saving());
+		this.resizeObserver = new ResizeObserver(this.resizerTrigger.throttle(50).bind(this));
 
 		setInterval(() => {
 			if (
@@ -323,15 +340,6 @@ class ComposePopupView extends AbstractViewNext {
 				this.saveCommand();
 			}
 		}, 120000);
-
-		this.bDisabeCloseOnEsc = true;
-		this.sDefaultKeyScope = KeyState.Compose;
-
-		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
-
-		this.iTimer = 0;
-
-		this.resizeObserver = new ResizeObserver(this.resizerTrigger.throttle(50).bind(this));
 	}
 
 	getMessageRequestParams(sSaveFolder)
@@ -677,7 +685,7 @@ class ComposePopupView extends AbstractViewNext {
 
 		this.bSkipNextHide = false;
 
-		this.to.focused(false);
+		this.toFocused(false);
 
 		rl.route.on();
 
@@ -1120,9 +1128,9 @@ class ComposePopupView extends AbstractViewNext {
 //		rl.settings.app('mobile') ||
 		setTimeout(() => {
 			if (!this.to()) {
-				this.to.focused(true);
+				this.toFocused(true);
 			} else if (this.oEditor) {
-				if (!this.to.focused()) {
+				if (!this.toFocused()) {
 					this.oEditor.focus();
 				}
 			}
@@ -1222,10 +1230,7 @@ class ComposePopupView extends AbstractViewNext {
 			if (attachment) {
 				this.attachments.remove(attachment);
 				delegateRunOnDestroy(attachment);
-
-				if (oJua) {
-					oJua.cancel(id);
-				}
+				oJua && oJua.cancel(id);
 			}
 		};
 	}

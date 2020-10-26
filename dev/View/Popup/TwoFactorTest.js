@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { StorageResultType } from 'Common/Enums';
 
 import Remote from 'Remote/User/Fetch';
@@ -15,13 +13,15 @@ class TwoFactorTestPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.code = ko.observable('');
-		this.code.focused = ko.observable(false);
-		this.code.status = ko.observable(null);
+		this.addObservables({
+			code: '',
+			codeFocused: false,
+			codeStatus: null,
+
+			testing: false
+		});
 
 		this.koTestedTrigger = null;
-
-		this.testing = ko.observable(false);
 	}
 
 	@command((self) => self.code() && !self.testing())
@@ -29,9 +29,9 @@ class TwoFactorTestPopupView extends AbstractViewNext {
 		this.testing(true);
 		Remote.testTwoFactor((result, data) => {
 			this.testing(false);
-			this.code.status(StorageResultType.Success === result && data && !!data.Result);
+			this.codeStatus(StorageResultType.Success === result && data && !!data.Result);
 
-			if (this.koTestedTrigger && this.code.status()) {
+			if (this.koTestedTrigger && this.codeStatus()) {
 				this.koTestedTrigger(true);
 			}
 		}, this.code());
@@ -39,8 +39,8 @@ class TwoFactorTestPopupView extends AbstractViewNext {
 
 	clearPopup() {
 		this.code('');
-		this.code.focused(false);
-		this.code.status(null);
+		this.codeFocused(false);
+		this.codeStatus(null);
 		this.testing(false);
 
 		this.koTestedTrigger = null;
@@ -54,7 +54,7 @@ class TwoFactorTestPopupView extends AbstractViewNext {
 
 	onShowWithDelay() {
 //		rl.settings.app('mobile') ||
-		this.code.focused(true);
+		this.codeFocused(true);
 	}
 }
 

@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { StorageResultType, Notification } from 'Common/Enums';
 import { i18n, getNotification } from 'Common/Translator';
 import { setFolderHash } from 'Common/Cache';
@@ -19,23 +17,25 @@ class FolderClearPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.selectedFolder = ko.observable(null);
-		this.clearingProcess = ko.observable(false);
-		this.clearingError = ko.observable('');
-
-		this.folderFullNameForClear = ko.computed(() => {
-			const folder = this.selectedFolder();
-			return folder ? folder.printableFullName() : '';
+		this.addObservables({
+			selectedFolder: null,
+			clearingProcess: false,
+			clearingError: ''
 		});
 
-		this.folderNameForClear = ko.computed(() => {
-			const folder = this.selectedFolder();
-			return folder ? folder.localName() : '';
-		});
+		this.addComputables({
+			folderFullNameForClear: () => {
+				const folder = this.selectedFolder();
+				return folder ? folder.printableFullName() : '';
+			},
 
-		this.dangerDescHtml = ko.computed(() =>
-			i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', { 'FOLDER': this.folderNameForClear() })
-		);
+			folderNameForClear: () => {
+				const folder = this.selectedFolder();
+				return folder ? folder.localName() : '';
+			},
+
+			dangerDescHtml: () => i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', { 'FOLDER': this.folderNameForClear() })
+		});
 	}
 
 	@command((self) => {

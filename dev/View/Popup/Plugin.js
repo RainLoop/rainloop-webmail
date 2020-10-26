@@ -18,10 +18,11 @@ class PluginPopupView extends AbstractViewNext {
 
 		this.onPluginSettingsUpdateResponse = this.onPluginSettingsUpdateResponse.bind(this);
 
-		this.saveError = ko.observable('');
-
-		this.name = ko.observable('');
-		this.readme = ko.observable('');
+		this.addObservables({
+			saveError: '',
+			name: '',
+			readme: ''
+		});
 
 		this.configures = ko.observableArray([]);
 

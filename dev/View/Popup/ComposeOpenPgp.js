@@ -25,56 +25,58 @@ class ComposeOpenPgpPopupView extends AbstractViewNext {
 		this.publicKeysOptionsCaption = i18n('PGP_NOTIFICATIONS/ADD_A_PUBLICK_KEY');
 		this.privateKeysOptionsCaption = i18n('PGP_NOTIFICATIONS/SELECT_A_PRIVATE_KEY');
 
-		this.notification = ko.observable('');
+		this.addObservables({
+			notification: '',
 
-		this.sign = ko.observable(false);
-		this.encrypt = ko.observable(false);
+			sign: false,
+			encrypt: false,
 
-		this.password = ko.observable('');
+			password: '',
 
-		this.text = ko.observable('');
-		this.selectedPrivateKey = ko.observable(null);
-		this.selectedPublicKey = ko.observable(null);
+			text: '',
+			selectedPrivateKey: null,
+			selectedPublicKey: null,
 
-		this.signKey = ko.observable(null);
+			signKey: null,
+
+			submitRequest: false
+		});
 		this.encryptKeys = ko.observableArray([]);
 
-		this.encryptKeysView = ko.computed(
-			() => this.encryptKeys().map(oKey => (oKey ? oKey.key : null)).filter(v => v)
-		);
+		this.addComputables({
+			encryptKeysView:  () => this.encryptKeys().map(oKey => (oKey ? oKey.key : null)).filter(v => v),
 
-		this.privateKeysOptions = ko.computed(() => {
-			const opts = PgpStore.openpgpkeysPrivate().map((oKey, iIndex) => {
-				if (this.signKey() && this.signKey().key.id === oKey.id) {
-					return null;
-				}
-				return oKey.users.map(user => ({
-					'id': oKey.guid,
-					'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
-					'key': oKey,
-					'class': iIndex % 2 ? 'odd' : 'even'
-				}));
-			});
+			privateKeysOptions: () => {
+				const opts = PgpStore.openpgpkeysPrivate().map((oKey, iIndex) => {
+					if (this.signKey() && this.signKey().key.id === oKey.id) {
+						return null;
+					}
+					return oKey.users.map(user => ({
+						'id': oKey.guid,
+						'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
+						'key': oKey,
+						'class': iIndex % 2 ? 'odd' : 'even'
+					}));
+				});
 
-			return opts.flat().filter(v => v);
+				return opts.flat().filter(v => v);
+			},
+
+			publicKeysOptions: () => {
+				const opts = PgpStore.openpgpkeysPublic().map((oKey, index) => {
+					if (this.encryptKeysView().includes(oKey)) {
+						return null;
+					}
+					return oKey.users.map(user => ({
+						'id': oKey.guid,
+						'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
+						'key': oKey,
+						'class': index % 2 ? 'odd' : 'even'
+					}));
+				});
+				return opts.flat().filter(v => v);
+			}
 		});
-
-		this.publicKeysOptions = ko.computed(() => {
-			const opts = PgpStore.openpgpkeysPublic().map((oKey, index) => {
-				if (this.encryptKeysView().includes(oKey)) {
-					return null;
-				}
-				return oKey.users.map(user => ({
-					'id': oKey.guid,
-					'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
-					'key': oKey,
-					'class': index % 2 ? 'odd' : 'even'
-				}));
-			});
-			return opts.flat().filter(v => v);
-		});
-
-		this.submitRequest = ko.observable(false);
 
 		this.resultCallback = null;
 

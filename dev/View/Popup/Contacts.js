@@ -46,80 +46,35 @@ class ContactsPopupView extends AbstractViewNext {
 		this.allowContactsSync = ContactStore.allowContactsSync;
 		this.enableContactsSync = ContactStore.enableContactsSync;
 
-		this.search = ko.observable('');
-		this.contactsCount = ko.observable(0);
-		this.contacts = ContactStore.contacts;
+		this.addObservables({
+			search: '',
+			contactsCount: 0,
 
-		this.currentContact = ko.observable(null);
+			currentContact: null,
 
-		this.importUploaderButton = ko.observable(null);
+			importUploaderButton: null,
 
-		this.contactsPage = ko.observable(1);
-		this.contactsPageCount = ko.computed(() =>
-			Math.max(1, Math.ceil(this.contactsCount() / CONTACTS_PER_PAGE))
-		);
+			contactsPage: 1,
 
-		this.contactsPaginator = ko.computed(computedPaginatorHelper(this.contactsPage, this.contactsPageCount));
+			emptySelection: true,
+			viewClearSearch: false,
 
-		this.emptySelection = ko.observable(true);
-		this.viewClearSearch = ko.observable(false);
+			viewID: '',
+			viewReadOnly: false,
 
-		this.viewID = ko.observable('');
-		this.viewReadOnly = ko.observable(false);
-		this.viewProperties = ko.observableArray([]);
+			viewSaveTrigger: SaveSettingsStep.Idle,
 
-		this.viewSaveTrigger = ko.observable(SaveSettingsStep.Idle);
+			viewSaving: false,
 
-		this.viewPropertiesNames = ko.computed(() =>
-			this.viewProperties().filter(
-				property => [ContactPropertyType.FirstName, ContactPropertyType.LastName].includes(property.type())
-			)
-		);
-		this.viewPropertiesOther = ko.computed(() =>
-			this.viewProperties().filter(property => [ContactPropertyType.Nick].includes(property.type()))
-		);
-
-		this.viewPropertiesEmails = ko.computed(() =>
-			this.viewProperties().filter(property => ContactPropertyType.Email === property.type())
-		);
-
-		this.viewPropertiesWeb = ko.computed(() =>
-			this.viewProperties().filter(property => ContactPropertyType.Web === property.type())
-		);
-
-		this.viewHasNonEmptyRequiredProperties = ko.computed(() => {
-			const names = this.viewPropertiesNames(),
-				emails = this.viewPropertiesEmails(),
-				fFilter = property => !!trim(property.value());
-
-			return !!(names.find(fFilter) || emails.find(fFilter));
+			watchDirty: false,
+			watchHash: false
 		});
 
-		this.viewPropertiesPhones = ko.computed(() =>
-			this.viewProperties().filter(property => ContactPropertyType.Phone === property.type())
-		);
+		this.contacts = ContactStore.contacts;
 
-		this.viewPropertiesEmailsNonEmpty = ko.computed(() =>
-			this.viewPropertiesNames().filter(property => !!trim(property.value()))
-		);
+		this.viewProperties = ko.observableArray([]);
 
 		const propertyFocused = property => !trim(property.value()) && !property.focused();
-
-		this.viewPropertiesEmailsEmptyAndOnFocused = ko.computed(() =>
-			this.viewPropertiesEmails().filter(propertyFocused)
-		);
-
-		this.viewPropertiesPhonesEmptyAndOnFocused = ko.computed(() =>
-			this.viewPropertiesPhones().filter(propertyFocused)
-		);
-
-		this.viewPropertiesWebEmptyAndOnFocused = ko.computed(() =>
-			this.viewPropertiesWeb().filter(propertyFocused)
-		);
-
-		this.viewPropertiesOtherEmptyAndOnFocused = ko.computed(() =>
-			this.viewPropertiesOther().filter(propertyFocused)
-		);
 
 /*
 		// Somehow this is broken now when calling addNewProperty
@@ -129,32 +84,17 @@ class ContactsPopupView extends AbstractViewNext {
 				delegateRunOnDestroy(list);
 			}
 		};
-		this.viewPropertiesEmailsEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
-		this.viewPropertiesPhonesEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
-		this.viewPropertiesWebEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
-		this.viewPropertiesOtherEmptyAndOnFocused.subscribe(fFastClearEmptyListHelper);
+		this.addSubscribables({
+			viewPropertiesEmailsEmptyAndOnFocused: fFastClearEmptyListHelper,
+			viewPropertiesPhonesEmptyAndOnFocused: fFastClearEmptyListHelper,
+			viewPropertiesWebEmptyAndOnFocused: fFastClearEmptyListHelper,
+			viewPropertiesOtherEmptyAndOnFocused: fFastClearEmptyListHelper
+		});
 */
-
-		this.viewSaving = ko.observable(false);
 
 		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
 
 		this.search.subscribe(() => this.reloadContactList());
-
-		this.contactsChecked = ko.computed(() => this.contacts().filter(item => item.checked()));
-
-		this.contactsCheckedOrSelected = ko.computed(() => {
-			const checked = this.contactsChecked(),
-				selected = this.currentContact();
-
-			return selected
-				? checked.concat([selected]).unique()
-				: checked;
-		});
-
-		this.contactsCheckedOrSelectedUids = ko.computed(() =>
-			this.contactsCheckedOrSelected().map(contact => contact.id)
-		);
 
 		this.selector = new Selector(
 			this.contacts,
@@ -177,11 +117,6 @@ class ContactsPopupView extends AbstractViewNext {
 
 		this.bDropPageAfterDelete = false;
 
-		this.watchDirty = ko.observable(false);
-		this.watchHash = ko.observable(false);
-
-		this.viewHash = ko.computed(() => '' + this.viewProperties().map(oItem => oItem.value()).join(''));
-
 		// this.saveCommandDebounce = _.debounce(this.saveCommand.bind(this), 1000);
 
 		this.viewHash.subscribe(() => {
@@ -191,6 +126,61 @@ class ContactsPopupView extends AbstractViewNext {
 		});
 
 		this.sDefaultKeyScope = KeyState.ContactList;
+
+		this.addComputables({
+			contactsPageCount: () => Math.max(1, Math.ceil(this.contactsCount() / CONTACTS_PER_PAGE)),
+
+			contactsPaginator: computedPaginatorHelper(this.contactsPage, this.contactsPageCount),
+
+			viewPropertiesNames: () =>
+				this.viewProperties().filter(
+					property => [ContactPropertyType.FirstName, ContactPropertyType.LastName].includes(property.type())
+				),
+
+			viewPropertiesOther: () =>
+				this.viewProperties().filter(property => [ContactPropertyType.Nick].includes(property.type())),
+
+			viewPropertiesEmails: () =>
+				this.viewProperties().filter(property => ContactPropertyType.Email === property.type()),
+
+			viewPropertiesWeb: () => this.viewProperties().filter(property => ContactPropertyType.Web === property.type()),
+
+			viewHasNonEmptyRequiredProperties: () => {
+				const names = this.viewPropertiesNames(),
+					emails = this.viewPropertiesEmails(),
+					fFilter = property => !!trim(property.value());
+
+				return !!(names.find(fFilter) || emails.find(fFilter));
+			},
+
+			viewPropertiesPhones: () =>
+				this.viewProperties().filter(property => ContactPropertyType.Phone === property.type()),
+
+			viewPropertiesEmailsNonEmpty: () => this.viewPropertiesNames().filter(property => !!trim(property.value())),
+
+			viewPropertiesEmailsEmptyAndOnFocused: () => this.viewPropertiesEmails().filter(propertyFocused),
+
+			viewPropertiesPhonesEmptyAndOnFocused: () => this.viewPropertiesPhones().filter(propertyFocused),
+
+			viewPropertiesWebEmptyAndOnFocused: () => this.viewPropertiesWeb().filter(propertyFocused),
+
+			viewPropertiesOtherEmptyAndOnFocused: () => this.viewPropertiesOther().filter(propertyFocused),
+
+			contactsChecked: () => this.contacts().filter(item => item.checked()),
+
+			contactsCheckedOrSelected: () => {
+				const checked = this.contactsChecked(),
+					selected = this.currentContact();
+
+				return selected
+					? checked.concat([selected]).unique()
+					: checked;
+			},
+
+			contactsCheckedOrSelectedUids: () => this.contactsCheckedOrSelected().map(contact => contact.id),
+
+			viewHash: () => '' + this.viewProperties().map(oItem => oItem.value()).join('')
+		});
 	}
 
 	@command()

@@ -56,4 +56,16 @@ export class AbstractViewNext {
 		return this.viewModelDom.querySelector(selectors);
 	}
 
+	addObservables(observables) {
+		ko.addObservablesTo(this, observables);
+	}
+
+	addComputables(computables) {
+		ko.addComputablesTo(this, computables);
+	}
+
+	addSubscribables(subscribables) {
+		ko.addSubscribablesTo(this, subscribables);
+	}
+
 }

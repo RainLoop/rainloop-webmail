@@ -20,7 +20,7 @@ class FolderModel extends AbstractModel {
 		this.interval = 0;
 
 		this.selectable = false;
-		this.existen = true;
+		this.exists = true;
 
 		this.addObservables({
 			name: '',
@@ -29,7 +29,7 @@ class FolderModel extends AbstractModel {
 			focused: false,
 			selected: false,
 			edited: false,
-			subScribed: true,
+			subscribed: true,
 			checkable: false,
 			deleteAccess: false,
 
@@ -54,10 +54,6 @@ class FolderModel extends AbstractModel {
 		const folder = super.reviveFromJson(json);
 		if (folder) {
 			folder.deep = json.FullNameRaw.split(folder.delimiter).length - 1;
-			folder.selectable = !!json.IsSelectable;
-			folder.existen = !!json.IsExists;
-
-			folder.subScribed(!!json.IsSubscribed);
 
 			folder.messageCountAll = ko.computed({
 					read: folder.privateMessageCountAll,
@@ -87,26 +83,26 @@ class FolderModel extends AbstractModel {
 
 				isInbox: () => FolderType.Inbox === folder.type(),
 
-				hasSubScribedSubfolders:
+				hasSubscribedSubfolders:
 					() =>
 						!!folder.subFolders().find(
-							oFolder => (oFolder.subScribed() || oFolder.hasSubScribedSubfolders()) && !oFolder.isSystemFolder()
+							oFolder => (oFolder.subscribed() || oFolder.hasSubscribedSubfolders()) && !oFolder.isSystemFolder()
 						),
 
-				canBeEdited: () => FolderType.User === folder.type() && folder.existen && folder.selectable,
+				canBeEdited: () => FolderType.User === folder.type() && folder.exists && folder.selectable,
 
 				visible: () => {
-					const isSubScribed = folder.subScribed(),
-						isSubFolders = folder.hasSubScribedSubfolders();
+					const isSubscribed = folder.subscribed(),
+						isSubFolders = folder.hasSubscribedSubfolders();
 
-					return isSubScribed || (isSubFolders && (!folder.existen || !folder.selectable));
+					return isSubscribed || (isSubFolders && (!folder.exists || !folder.selectable));
 				},
 
 				isSystemFolder: () => FolderType.User !== folder.type(),
 
 				hidden: () => {
 					const isSystem = folder.isSystemFolder(),
-						isSubFolders = folder.hasSubScribedSubfolders();
+						isSubFolders = folder.hasSubscribedSubfolders();
 
 					return (isSystem && !isSubFolders) || (!folder.selectable && !isSubFolders);
 				},
@@ -137,7 +133,7 @@ class FolderModel extends AbstractModel {
 
 				selectableForFolderList: () => !folder.isSystemFolder() && folder.selectable,
 
-				canBeSubScribed: () => !folder.isSystemFolder() && folder.selectable,
+				canBeSubscribed: () => !folder.isSystemFolder() && folder.selectable,
 
 				canBeChecked: () => !folder.isSystemFolder() && folder.selectable,
 
@@ -221,9 +217,9 @@ class FolderModel extends AbstractModel {
 
 				hasUnreadMessages: () => 0 < folder.messageCountUnread() && folder.printableUnreadCount(),
 
-				hasSubScribedUnreadMessagesSubfolders: () =>
+				hasSubscribedUnreadMessagesSubfolders: () =>
 						!!folder.subFolders().find(
-							folder => folder.hasUnreadMessages() || folder.hasSubScribedUnreadMessagesSubfolders()
+							folder => folder.hasUnreadMessages() || folder.hasSubscribedUnreadMessagesSubfolders()
 						)
 			});
 
@@ -246,7 +242,7 @@ class FolderModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	collapsedCss() {
-		return 'e-collapsed-sign ' + (this.hasSubScribedSubfolders()
+		return 'e-collapsed-sign ' + (this.hasSubscribedSubfolders()
 			? (this.collapsed() ? 'icon-right-mini' : 'icon-down-mini')
 			: 'icon-none'
 		);

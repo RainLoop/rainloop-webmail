@@ -1,5 +1,4 @@
 import { ComposeType, FolderType } from 'Common/Enums';
-import { pString } from 'Common/Utils';
 
 const
 	tpl = document.createElement('template'),
@@ -303,13 +302,13 @@ export function folderListOptionsBuilder(
 
 	bSep = true;
 	aList.forEach(oItem => {
-		// if (oItem.subScribed() || !oItem.existen || bBuildUnvisible)
+		// if (oItem.subscribed() || !oItem.exists || bBuildUnvisible)
 		if (
-			(oItem.subScribed() || !oItem.existen || bBuildUnvisible) &&
-			(oItem.selectable || oItem.hasSubScribedSubfolders())
+			(oItem.subscribed() || !oItem.exists || bBuildUnvisible) &&
+			(oItem.selectable || oItem.hasSubscribedSubfolders())
 		) {
 			if (fVisibleCallback ? fVisibleCallback(oItem) : true) {
-				if (FolderType.User === oItem.type() || !bSystem || oItem.hasSubScribedSubfolders()) {
+				if (FolderType.User === oItem.type() || !bSystem || oItem.hasSubscribedSubfolders()) {
 					aResult.push({
 						id: oItem.fullNameRaw,
 						name:
@@ -327,7 +326,7 @@ export function folderListOptionsBuilder(
 			}
 		}
 
-		if (oItem.subScribed() && oItem.subFolders().length) {
+		if (oItem.subscribed() && oItem.subFolders().length) {
 			aResult = aResult.concat(
 				folderListOptionsBuilder(
 					[],
@@ -349,17 +348,14 @@ export function folderListOptionsBuilder(
 }
 
 /**
+ * Call the Model/CollectionModel onDestroy() to clear knockout functions/objects
  * @param {Object|Array} objectOrObjects
  * @returns {void}
  */
 export function delegateRunOnDestroy(objectOrObjects) {
-	if (objectOrObjects) {
-		if (isArray(objectOrObjects)) {
-			objectOrObjects.forEach(item => delegateRunOnDestroy(item));
-		} else {
-			objectOrObjects.onDestroy && objectOrObjects.onDestroy();
-		}
-	}
+	objectOrObjects && (isArray(objectOrObjects) ? objectOrObjects : [objectOrObjects]).forEach(
+		obj => obj.onDestroy && obj.onDestroy()
+	);
 }
 
 /**
@@ -449,14 +445,6 @@ export function computedPaginatorHelper(koCurrentPage, koPageCount) {
 }
 
 /**
- * @param {string} color
- * @returns {boolean}
- */
-export function isTransparent(color) {
-	return 'rgba(0, 0, 0, 0)' === color || 'transparent' === color;
-}
-
-/**
  * @param {string} mailToUrl
  * @param {Function} PopupComposeViewModel
  * @returns {boolean}
@@ -524,8 +512,8 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 			to,
 			cc,
 			bcc,
-			null == params.subject ? null : pString(decodeURIComponent(params.subject)),
-			null == params.body ? null : plainToHtml(pString(decodeURIComponent(params.body)))
+			null == params.subject ? null : decodeURIComponent(params.subject),
+			null == params.body ? null : plainToHtml(decodeURIComponent(params.body))
 		]);
 
 		return true;

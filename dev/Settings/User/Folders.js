@@ -120,13 +120,13 @@ class FoldersUserSettings {
 	subscribeFolder(folder) {
 		Local.set(ClientSideKeyName.FoldersLashHash, '');
 		Remote.folderSetSubscribe(()=>{}, folder.fullNameRaw, true);
-		folder.subScribed(true);
+		folder.subscribed(true);
 	}
 
 	unSubscribeFolder(folder) {
 		Local.set(ClientSideKeyName.FoldersLashHash, '');
 		Remote.folderSetSubscribe(()=>{}, folder.fullNameRaw, false);
-		folder.subScribed(false);
+		folder.subscribed(false);
 	}
 
 	checkableTrueFolder(folder) {

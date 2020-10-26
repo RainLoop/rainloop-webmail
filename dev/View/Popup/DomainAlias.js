@@ -18,18 +18,18 @@ class DomainAliasPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.saving = ko.observable(false);
-		this.savingError = ko.observable('');
+		this.addObservables({
+			saving: false,
+			savingError: '',
 
-		this.name = ko.observable('');
+			name: '',
 
-		this.alias = ko.observable('');
+			alias: ''
+		});
 
 		this.domains = DomainStore.domainsWithoutAliases;
 
-		this.domainsOptions = ko.computed(() =>
-			this.domains().map(item => ({ optValue: item.name, optText: item.name }))
-		);
+		this.domainsOptions = ko.computed(() => this.domains().map(item => ({ optValue: item.name, optText: item.name })));
 
 		this.canBeSaved = ko.computed(() => !this.saving() && this.name() && this.alias());
 

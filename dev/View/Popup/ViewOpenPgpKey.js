@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { KeyState } from 'Common/Enums';
 
 import { popup } from 'Knoin/Knoin';
@@ -13,8 +11,10 @@ class ViewOpenPgpKeyPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.key = ko.observable('');
-		this.keyDom = ko.observable(null);
+		this.addObservables({
+			key: '',
+			keyDom: null
+		});
 
 		this.sDefaultKeyScope = KeyState.PopupViewOpenPGP;
 	}

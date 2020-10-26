@@ -30,7 +30,7 @@ class Folder implements \JsonSerializable
 	/**
 	 * @var bool
 	 */
-	private $bExisten;
+	private $bExists;
 
 	/**
 	 * @var bool
@@ -50,7 +50,7 @@ class Folder implements \JsonSerializable
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	function __construct(\MailSo\Imap\Folder $oImapFolder, bool $bSubscribed = true, bool $bExisten = true)
+	function __construct(\MailSo\Imap\Folder $oImapFolder, bool $bSubscribed = true, bool $bExists = true)
 	{
 		$this->oImapFolder = $oImapFolder;
 		$this->oSubFolders = null;
@@ -66,7 +66,7 @@ class Folder implements \JsonSerializable
 		}
 
 		$this->bSubscribed = $bSubscribed;
-		$this->bExisten = $bExisten;
+		$this->bExists = $bExists;
 	}
 
 	/**
@@ -164,12 +164,12 @@ class Folder implements \JsonSerializable
 
 	public function IsExists() : bool
 	{
-		return $this->bExisten;
+		return $this->bExists;
 	}
 
 	public function IsSelectable() : bool
 	{
-		return $this->IsExists() && $this->oImapFolder->IsSelectable();
+		return $this->bExists && $this->oImapFolder->IsSelectable();
 	}
 
 	/**
@@ -236,9 +236,9 @@ class Folder implements \JsonSerializable
 			'FullNameRaw' => $this->FullNameRaw(),
 			'Delimiter' => (string) $this->Delimiter(),
 			'HasVisibleSubFolders' => $this->HasVisibleSubFolders(),
-			'IsSubscribed' => $this->IsSubscribed(),
-			'IsExists' => $this->IsExists(),
-			'IsSelectable' => $this->IsSelectable(),
+			'Subscribed' => $this->bSubscribed,
+			'Exists' => $this->bExists,
+			'Selectable' => $this->IsSelectable(),
 			'Flags' => $this->FlagsLowerCase()
 		);
 	}

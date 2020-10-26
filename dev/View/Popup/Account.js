@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
@@ -16,27 +14,25 @@ class AccountPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.isNew = ko.observable(true);
+		this.addObservables({
+			isNew: true,
 
-		this.email = ko.observable('');
-		this.password = ko.observable('');
+			email: '',
+			password: '',
 
-		this.emailError = ko.observable(false);
-		this.passwordError = ko.observable(false);
+			emailError: false,
+			passwordError: false,
 
-		this.email.subscribe(() => {
-			this.emailError(false);
+			submitRequest: false,
+			submitError: '',
+			submitErrorAdditional: '',
+
+			emailFocus: false
 		});
 
-		this.password.subscribe(() => {
-			this.passwordError(false);
-		});
+		this.email.subscribe(() => this.emailError(false));
 
-		this.submitRequest = ko.observable(false);
-		this.submitError = ko.observable('');
-		this.submitErrorAdditional = ko.observable('');
-
-		this.emailFocus = ko.observable(false);
+		this.password.subscribe(() => this.passwordError(false));
 	}
 
 	@command((self) => !self.submitRequest())

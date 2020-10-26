@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { Capa, StorageResultType } from 'Common/Enums';
 import { pString } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
@@ -17,68 +15,72 @@ class TwoFactorConfigurationPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.lock = ko.observable(false);
+		this.addObservables({
+			lock: false,
+
+			processing: false,
+			clearing: false,
+			secreting: false,
+
+			viewUser: '',
+			twoFactorStatus: false,
+
+			twoFactorTested: false,
+
+			viewSecret: '',
+			viewBackupCodes: '',
+			viewUrlTitle: '',
+			viewUrl: '',
+
+			viewEnable_: false
+		});
 
 		this.capaTwoFactor = rl.settings.capa(Capa.TwoFactor);
 
-		this.processing = ko.observable(false);
-		this.clearing = ko.observable(false);
-		this.secreting = ko.observable(false);
-
-		this.viewUser = ko.observable('');
-		this.twoFactorStatus = ko.observable(false);
-
-		this.twoFactorTested = ko.observable(false);
-
-		this.viewSecret = ko.observable('');
-		this.viewBackupCodes = ko.observable('');
-		this.viewUrlTitle = ko.observable('');
-		this.viewUrl = ko.observable('');
-
-		this.viewEnable_ = ko.observable(false);
-
-		this.viewEnable = ko.computed({
-			read: this.viewEnable_,
-			write: (value) => {
-				value = !!value;
-				if (value && this.twoFactorTested()) {
-					this.viewEnable_(value);
-					Remote.enableTwoFactor((result, data) => {
-						if (StorageResultType.Success !== result || !data || !data.Result) {
-							this.viewEnable_(false);
-						}
-					}, true);
-				} else {
-					if (!value) {
+		this.addComputables({
+			viewEnable: {
+				read: this.viewEnable_,
+				write: (value) => {
+					value = !!value;
+					if (value && this.twoFactorTested()) {
 						this.viewEnable_(value);
-					}
-
-					Remote.enableTwoFactor((result, data) => {
-						if (StorageResultType.Success !== result || !data || !data.Result) {
-							this.viewEnable_(false);
+						Remote.enableTwoFactor((result, data) => {
+							if (StorageResultType.Success !== result || !data || !data.Result) {
+								this.viewEnable_(false);
+							}
+						}, true);
+					} else {
+						if (!value) {
+							this.viewEnable_(value);
 						}
-					}, false);
+
+						Remote.enableTwoFactor((result, data) => {
+							if (StorageResultType.Success !== result || !data || !data.Result) {
+								this.viewEnable_(false);
+							}
+						}, false);
+					}
 				}
-			}
-		});
+			},
 
-		this.viewTwoFactorEnableTooltip = ko.computed(() => {
-			translatorTrigger();
-			return this.twoFactorTested() || this.viewEnable_()
-				? ''
-				: i18n('POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_TEST_BEFORE_DESC');
-		});
+			viewTwoFactorEnableTooltip: () => {
+				translatorTrigger();
+				return this.twoFactorTested() || this.viewEnable_()
+					? ''
+					: i18n('POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_TEST_BEFORE_DESC');
+			},
 
-		this.viewTwoFactorStatus = ko.computed(() => {
-			translatorTrigger();
-			return i18n(
-				this.twoFactorStatus()
-					? 'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_CONFIGURED_DESC'
-					: 'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC'
-			);
-		});
+			viewTwoFactorStatus: () => {
+				translatorTrigger();
+				return i18n(
+					this.twoFactorStatus()
+						? 'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_CONFIGURED_DESC'
+						: 'POPUPS_TWO_FACTOR_CFG/TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC'
+				);
+			},
 
-		this.twoFactorAllowedEnable = ko.computed(() => this.viewEnable() || this.twoFactorTested());
+			twoFactorAllowedEnable: () => this.viewEnable() || this.twoFactorTested()
+		});
 
 		this.onResult = this.onResult.bind(this);
 		this.onShowSecretResult = this.onShowSecretResult.bind(this);

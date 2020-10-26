@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 import { HtmlEditor } from 'Common/HtmlEditor';
@@ -19,38 +17,37 @@ class TemplatePopupView extends AbstractViewNext {
 		super();
 
 		this.editor = null;
-		this.signatureDom = ko.observable(null);
 
-		this.id = ko.observable('');
+		this.addObservables({
+			signatureDom: null,
 
-		this.name = ko.observable('');
-		this.name.error = ko.observable(false);
-		this.name.focus = ko.observable(false);
+			id: '',
 
-		this.body = ko.observable('');
-		this.body.loading = ko.observable(false);
-		this.body.error = ko.observable(false);
+			name: '',
+			nameError: false,
+			nameFocus: false,
 
-		this.name.subscribe(() => {
-			this.name.error(false);
+			body: '',
+			bodyLoading: false,
+			bodyError: false,
+
+			submitRequest: false,
+			submitError: ''
 		});
 
-		this.body.subscribe(() => {
-			this.body.error(false);
-		});
+		this.name.subscribe(() =>  this.nameError(false));
 
-		this.submitRequest = ko.observable(false);
-		this.submitError = ko.observable('');
+		this.body.subscribe(() => this.bodyError(false));
 	}
 
 	@command((self) => !self.submitRequest())
 	addTemplateCommand() {
 		this.populateBodyFromEditor();
 
-		this.name.error(!this.name().trim());
-		this.body.error(!this.body().trim() || ':HTML:' === this.body().trim());
+		this.nameError(!this.name().trim());
+		this.bodyError(!this.body().trim() || ':HTML:' === this.body().trim());
 
-		if (this.name.error() || this.body.error()) {
+		if (this.nameError() || this.bodyError()) {
 			return false;
 		}
 
@@ -82,11 +79,11 @@ class TemplatePopupView extends AbstractViewNext {
 		this.id('');
 
 		this.name('');
-		this.name.error(false);
+		this.nameError(false);
 
 		this.body('');
-		this.body.loading(false);
-		this.body.error(false);
+		this.bodyLoading(false);
+		this.bodyError(false);
 
 		this.submitRequest(false);
 		this.submitError('');
@@ -125,11 +122,11 @@ class TemplatePopupView extends AbstractViewNext {
 			if (template.populated) {
 				this.editorSetBody(this.body());
 			} else {
-				this.body.loading(true);
-				this.body.error(false);
+				this.bodyLoading(true);
+				this.bodyError(false);
 
 				Remote.templateGetById((result, data) => {
-					this.body.loading(false);
+					this.bodyLoading(false);
 
 					if (
 						StorageResultType.Success === result &&
@@ -141,10 +138,10 @@ class TemplatePopupView extends AbstractViewNext {
 						template.populated = true;
 
 						this.body(template.body);
-						this.body.error(false);
+						this.bodyError(false);
 					} else {
 						this.body('');
-						this.body.error(true);
+						this.bodyError(true);
 					}
 
 					this.editorSetBody(this.body());
@@ -156,7 +153,7 @@ class TemplatePopupView extends AbstractViewNext {
 	}
 
 	onShowWithDelay() {
-		this.name.focus(true);
+		this.nameFocus(true);
 	}
 }
 

@@ -16,7 +16,7 @@ import {
 import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction } from 'Common/Globals';
 
 import { inFocus } from 'Common/Utils';
-import { mailToHelper, isTransparent } from 'Common/UtilsUser';
+import { mailToHelper } from 'Common/UtilsUser';
 
 import Audio from 'Common/Audio';
 
@@ -39,6 +39,10 @@ import { view, command, ViewType, showScreenPopup, createCommand } from 'Knoin/K
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 const Settings = rl.settings;
+
+function isTransparent(color) {
+	return 'rgba(0, 0, 0, 0)' === color || 'transparent' === color;
+}
 
 @view({
 	name: 'View/User/MailBox/MessageView',
@@ -67,7 +71,14 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.oHeaderDom = null;
 		this.oMessageScrollerDom = null;
 
-		this.bodyBackgroundColor = ko.observable('');
+		this.addObservables({
+			bodyBackgroundColor: '',
+			showAttachmnetControls: false,
+			downloadAsZipLoading: false,
+			lastReplyAction_: '',
+			showFullInfo: '1' === Local.get(ClientSideKeyName.MessageHeaderFullInfo),
+			moreDropdownTrigger: false
+		});
 
 		this.pswp = null;
 
@@ -103,49 +114,11 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.messageListOfThreadsLoading = ko.observable(false).extend({ rateLimit: 1 });
 		this.highlightUnselectedAttachments = ko.observable(false).extend({ falseTimeout: 2000 });
 
-		this.showAttachmnetControls = ko.observable(false);
-
 		this.showAttachmnetControlsState = v => Local.set(ClientSideKeyName.MessageAttachmentControls, !!v);
 
-		this.allowAttachmnetControls = ko.computed(
-			() => this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions)
-		);
-
-		this.downloadAsZipAllowed = ko.computed(
-			() => this.attachmentsActions().includes('zip') && this.allowAttachmnetControls()
-		);
-
-		this.downloadAsZipLoading = ko.observable(false);
 		this.downloadAsZipError = ko.observable(false).extend({ falseTimeout: 7000 });
 
-		this.showAttachmnetControls.subscribe(v => this.message()
-			&& this.message().attachments().forEach(item => item && item.checked(!!v))
-		);
-
-		this.lastReplyAction_ = ko.observable('');
-		this.lastReplyAction = ko.computed({
-			read: this.lastReplyAction_,
-			write: value => this.lastReplyAction_(
-				[ComposeType.Reply, ComposeType.ReplyAll, ComposeType.Forward].includes(value)
-					? ComposeType.Reply
-					: value
-			)
-		});
-
-		this.lastReplyAction(Local.get(ClientSideKeyName.LastReplyAction) || ComposeType.Reply);
-
-		this.lastReplyAction_.subscribe(value => Local.set(ClientSideKeyName.LastReplyAction, value));
-
-		this.showFullInfo = ko.observable('1' === Local.get(ClientSideKeyName.MessageHeaderFullInfo));
-
-		this.moreDropdownTrigger = ko.observable(false);
 		this.messageDomFocused = ko.observable(false).extend({ rateLimit: 0 });
-
-		this.messageVisibility = ko.computed(() => !this.messageLoadingThrottle() && !!this.message());
-
-		this.message.subscribe(message => (!message) && MessageStore.selectorMessageSelected(null));
-
-		this.canBeRepliedOrForwarded = ko.computed(() => !this.isDraftFolder() && this.messageVisibility());
 
 		// commands
 		this.replyCommand = createCommandReplyHelper(ComposeType.Reply);
@@ -162,97 +135,85 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 		// viewer
 
-		this.viewBodyTopValue = ko.observable(0);
-
 		this.viewFolder = '';
 		this.viewUid = '';
 		this.viewHash = '';
-		this.viewSubject = ko.observable('');
-		this.viewFromShort = ko.observable('');
-		this.viewFromDkimData = ko.observable(['none', '']);
-		this.viewToShort = ko.observable('');
-		this.viewFrom = ko.observable('');
-		this.viewTo = ko.observable('');
-		this.viewCc = ko.observable('');
-		this.viewBcc = ko.observable('');
-		this.viewReplyTo = ko.observable('');
-		this.viewTimeStamp = ko.observable(0);
-		this.viewSize = ko.observable('');
-		this.viewLineAsCss = ko.observable('');
-		this.viewViewLink = ko.observable('');
-		this.viewUnsubscribeLink = ko.observable('');
-		this.viewDownloadLink = ko.observable('');
-		this.viewIsImportant = ko.observable(false);
-		this.viewIsFlagged = ko.observable(false);
-
-		this.viewFromDkimVisibility = ko.computed(() => 'none' !== this.viewFromDkimData()[0]);
-
-		this.viewFromDkimStatusIconClass = ko.computed(() => {
-			switch (this.viewFromDkimData()[0]) {
-				case 'none':
-					return 'icon-none iconcolor-display-none';
-				case 'pass':
-					return 'icon-ok iconcolor-green';
-				default:
-					return 'icon-warning-alt iconcolor-red';
-			}
+		this.addObservables({
+			viewBodyTopValue: 0,
+			viewSubject: '',
+			viewFromShort: '',
+			viewFromDkimData: ['none', ''],
+			viewToShort: '',
+			viewFrom: '',
+			viewTo: '',
+			viewCc: '',
+			viewBcc: '',
+			viewReplyTo: '',
+			viewTimeStamp: 0,
+			viewSize: '',
+			viewLineAsCss: '',
+			viewViewLink: '',
+			viewUnsubscribeLink: '',
+			viewDownloadLink: '',
+			viewIsImportant: false,
+			viewIsFlagged: false
 		});
 
-		this.viewFromDkimStatusTitle = ko.computed(() => {
-			const status = this.viewFromDkimData();
-			if (Array.isNotEmpty(status)) {
-				if (status[0]) {
-					return status[1] || 'DKIM: ' + status[0];
-				}
-			}
+		this.addSubscribables({
+			showAttachmnetControls: v => this.message()
+				&& this.message().attachments().forEach(item => item && item.checked(!!v)),
 
-			return '';
-		});
+			lastReplyAction_: value => Local.set(ClientSideKeyName.LastReplyAction, value),
 
-		this.messageActiveDom.subscribe(dom => this.bodyBackgroundColor(this.detectDomBackgroundColor(dom)), this);
+			messageActiveDom: dom => this.bodyBackgroundColor(this.detectDomBackgroundColor(dom)),
 
-		this.message.subscribe((message) => {
-			this.messageActiveDom(null);
+			message: message => {
+				this.messageActiveDom(null);
 
-			if (message) {
-				this.showAttachmnetControls(false);
-				if (Local.get(ClientSideKeyName.MessageAttachmentControls)) {
-					setTimeout(() => {
-						this.showAttachmnetControls(true);
-					}, 50);
-				}
+				if (message) {
+					this.showAttachmnetControls(false);
+					if (Local.get(ClientSideKeyName.MessageAttachmentControls)) {
+						setTimeout(() => {
+							this.showAttachmnetControls(true);
+						}, 50);
+					}
 
-				if (this.viewHash !== message.hash) {
+					if (this.viewHash !== message.hash) {
+						this.scrollMessageToTop();
+					}
+
+					this.viewFolder = message.folder;
+					this.viewUid = message.uid;
+					this.viewHash = message.hash;
+					this.viewSubject(message.subject());
+					this.viewFromShort(message.fromToLine(true, true));
+					this.viewFromDkimData(message.fromDkimData());
+					this.viewToShort(message.toToLine(true, true));
+					this.viewFrom(message.fromToLine(false));
+					this.viewTo(message.toToLine(false));
+					this.viewCc(message.ccToLine(false));
+					this.viewBcc(message.bccToLine(false));
+					this.viewReplyTo(message.replyToToLine(false));
+					this.viewTimeStamp(message.dateTimeStampInUTC());
+					this.viewSize(message.friendlySize());
+					this.viewLineAsCss(message.lineAsCss());
+					this.viewViewLink(message.viewLink());
+					this.viewUnsubscribeLink(message.getFirstUnsubsribeLink());
+					this.viewDownloadLink(message.downloadLink());
+					this.viewIsImportant(message.isImportant());
+					this.viewIsFlagged(message.isFlagged());
+				} else {
+					MessageStore.selectorMessageSelected(null);
+
+					this.viewFolder = '';
+					this.viewUid = '';
+					this.viewHash = '';
+
 					this.scrollMessageToTop();
 				}
+			},
 
-				this.viewFolder = message.folder;
-				this.viewUid = message.uid;
-				this.viewHash = message.hash;
-				this.viewSubject(message.subject());
-				this.viewFromShort(message.fromToLine(true, true));
-				this.viewFromDkimData(message.fromDkimData());
-				this.viewToShort(message.toToLine(true, true));
-				this.viewFrom(message.fromToLine(false));
-				this.viewTo(message.toToLine(false));
-				this.viewCc(message.ccToLine(false));
-				this.viewBcc(message.bccToLine(false));
-				this.viewReplyTo(message.replyToToLine(false));
-				this.viewTimeStamp(message.dateTimeStampInUTC());
-				this.viewSize(message.friendlySize());
-				this.viewLineAsCss(message.lineAsCss());
-				this.viewViewLink(message.viewLink());
-				this.viewUnsubscribeLink(message.getFirstUnsubsribeLink());
-				this.viewDownloadLink(message.downloadLink());
-				this.viewIsImportant(message.isImportant());
-				this.viewIsFlagged(message.isFlagged());
-			} else {
-				this.viewFolder = '';
-				this.viewUid = '';
-				this.viewHash = '';
-
-				this.scrollMessageToTop();
-			}
+			fullScreenMode: value => $htmlCL.toggle('rl-message-fullscreen', value)
 		});
 
 		this.message.viewTrigger.subscribe(() => {
@@ -260,13 +221,55 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			message ? this.viewIsFlagged(message.isFlagged()) : this.viewIsFlagged(false);
 		});
 
-		this.fullScreenMode.subscribe(value => $htmlCL.toggle('rl-message-fullscreen', value));
+		this.addComputables({
+			allowAttachmnetControls: () => this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions),
 
-		this.messageFocused = ko.computed(() => Focused.MessageView === AppStore.focusedState());
+			downloadAsZipAllowed: () => this.attachmentsActions().includes('zip') && this.allowAttachmnetControls(),
 
-		this.messageListAndMessageViewLoading = ko.computed(
-			() => MessageStore.messageListCompleteLoadingThrottle() || MessageStore.messageLoadingThrottle()
-		);
+			lastReplyAction: {
+				read: this.lastReplyAction_,
+				write: value => this.lastReplyAction_(
+					[ComposeType.Reply, ComposeType.ReplyAll, ComposeType.Forward].includes(value)
+						? ComposeType.Reply
+						: value
+				)
+			},
+
+			messageVisibility: () => !this.messageLoadingThrottle() && !!this.message(),
+
+			canBeRepliedOrForwarded: () => !this.isDraftFolder() && this.messageVisibility(),
+
+			viewFromDkimVisibility: () => 'none' !== this.viewFromDkimData()[0],
+
+			viewFromDkimStatusIconClass:() => {
+				switch (this.viewFromDkimData()[0]) {
+					case 'none':
+						return 'icon-none iconcolor-display-none';
+					case 'pass':
+						return 'icon-ok iconcolor-green';
+					default:
+						return 'icon-warning-alt iconcolor-red';
+				}
+			},
+
+			viewFromDkimStatusTitle:() => {
+				const status = this.viewFromDkimData();
+				if (Array.isNotEmpty(status)) {
+					if (status[0]) {
+						return status[1] || 'DKIM: ' + status[0];
+					}
+				}
+
+				return '';
+			},
+
+			messageFocused: () => Focused.MessageView === AppStore.focusedState(),
+
+			messageListAndMessageViewLoading:
+				() => MessageStore.messageListCompleteLoadingThrottle() || MessageStore.messageLoadingThrottle()
+		});
+
+		this.lastReplyAction(Local.get(ClientSideKeyName.LastReplyAction) || ComposeType.Reply);
 
 		addEventListener('mailbox.message-view.toggle-full-screen', () => this.toggleFullScreen());
 

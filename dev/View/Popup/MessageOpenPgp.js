@@ -14,16 +14,15 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.notification = ko.observable('');
-
-		this.selectedKey = ko.observable(null);
+		this.addObservables({
+			notification: '',
+			selectedKey: null,
+			password: '',
+			submitRequest: false
+		});
 		this.privateKeys = ko.observableArray([]);
 
-		this.password = ko.observable('');
-
 		this.resultCallback = null;
-
-		this.submitRequest = ko.observable(false);
 
 		this.sDefaultKeyScope = KeyState.PopupMessageOpenPGP;
 	}

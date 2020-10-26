@@ -26,25 +26,27 @@ class IdentityPopupView extends AbstractViewNext {
 		super();
 
 		this.id = '';
-		this.edit = ko.observable(false);
-		this.owner = ko.observable(false);
+		this.addObservables({
+			edit: false,
+			owner: false,
+			emailFocused: false,
+			name: '',
+			replyToFocused: false,
+			bccFocused: false,
+
+			signature: '',
+			signatureInsertBefore: false,
+
+			showBcc: false,
+			showReplyTo: false,
+
+			submitRequest: false,
+			submitError: ''
+		});
 
 		this.email = ko.observable('').validateEmail();
-		this.email.focused = ko.observable(false);
-		this.name = ko.observable('');
 		this.replyTo = ko.observable('').validateEmail();
-		this.replyTo.focused = ko.observable(false);
 		this.bcc = ko.observable('').validateEmail();
-		this.bcc.focused = ko.observable(false);
-
-		this.signature = ko.observable('');
-		this.signatureInsertBefore = ko.observable(false);
-
-		this.showBcc = ko.observable(false);
-		this.showReplyTo = ko.observable(false);
-
-		this.submitRequest = ko.observable(false);
-		this.submitError = ko.observable('');
 
 		this.bcc.subscribe((value) => {
 			if (false === this.showBcc() && value.length) {
@@ -71,19 +73,19 @@ class IdentityPopupView extends AbstractViewNext {
 
 		if (this.email.hasError()) {
 			if (!this.owner()) {
-				this.email.focused(true);
+				this.emailFocused(true);
 			}
 
 			return false;
 		}
 
 		if (this.replyTo.hasError()) {
-			this.replyTo.focused(true);
+			this.replyToFocused(true);
 			return false;
 		}
 
 		if (this.bcc.hasError()) {
-			this.bcc.focused(true);
+			this.bccFocused(true);
 			return false;
 		}
 
@@ -163,7 +165,7 @@ class IdentityPopupView extends AbstractViewNext {
 
 	onShowWithDelay() {
 		if (!this.owner()/* && !rl.settings.app('mobile')*/) {
-			this.email.focused(true);
+			this.emailFocused(true);
 		}
 	}
 

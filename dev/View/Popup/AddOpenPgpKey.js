@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import PgpStore from 'Stores/User/Pgp';
 
 import { popup, command } from 'Knoin/Knoin';
@@ -13,13 +11,15 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.key = ko.observable('');
-		this.key.error = ko.observable(false);
-		this.key.errorMessage = ko.observable('');
+		this.addObservables({
+			key: '',
+			keyError: false,
+			keyErrorMessage: ''
+		});
 
 		this.key.subscribe(() => {
-			this.key.error(false);
-			this.key.errorMessage('');
+			this.keyError(false);
+			this.keyErrorMessage('');
 		});
 	}
 
@@ -35,10 +35,10 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 			keyTrimmed = keyTrimmed.replace(/[\r]+/g, '').replace(/[\n]{2,}/g, '\n\n');
 		}
 
-		this.key.error(!keyTrimmed);
-		this.key.errorMessage('');
+		this.keyError(!keyTrimmed);
+		this.keyErrorMessage('');
 
-		if (!openpgpKeyring || this.key.error()) {
+		if (!openpgpKeyring || this.keyError()) {
 			return false;
 		}
 
@@ -58,8 +58,8 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 					}
 
 					if (err) {
-						this.key.error(true);
-						this.key.errorMessage(err && err[0] ? '' + err[0] : '');
+						this.keyError(true);
+						this.keyErrorMessage(err && err[0] ? '' + err[0] : '');
 						console.log(err);
 					}
 				}
@@ -75,7 +75,7 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 
 		rl.app.reloadOpenPgpKeys();
 
-		if (this.key.error()) {
+		if (this.keyError()) {
 			return false;
 		}
 
@@ -85,8 +85,8 @@ class AddOpenPgpKeyPopupView extends AbstractViewNext {
 
 	clearPopup() {
 		this.key('');
-		this.key.error(false);
-		this.key.errorMessage('');
+		this.keyError(false);
+		this.keyErrorMessage('');
 	}
 
 	onShow() {

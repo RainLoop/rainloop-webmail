@@ -15,17 +15,19 @@ class AdvancedSearchPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.fromFocus = ko.observable(false);
+		this.addObservables({
+			fromFocus: false,
 
-		this.from = ko.observable('');
-		this.to = ko.observable('');
-		this.subject = ko.observable('');
-		this.text = ko.observable('');
-		this.selectedDateValue = ko.observable(-1);
+			from: '',
+			to: '',
+			subject: '',
+			text: '',
+			selectedDateValue: -1,
 
-		this.hasAttachment = ko.observable(false);
-		this.starred = ko.observable(false);
-		this.unseen = ko.observable(false);
+			hasAttachment: false,
+			starred: false,
+			unseen: false
+		});
 
 		this.selectedDates = ko.computed(() => {
 			translatorTrigger();

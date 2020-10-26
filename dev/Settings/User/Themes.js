@@ -26,9 +26,6 @@ class ThemesUserSettings {
 
 		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
 
-		this.iTimer = 0;
-		this.oThemeAjaxRequest = null;
-
 		this.theme.subscribe((value) => {
 			this.themesObjects().forEach(theme => {
 				theme.selected(value === theme.name);

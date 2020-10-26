@@ -18,24 +18,21 @@ class FilterPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.isNew = ko.observable(true);
+		this.addObservables({
+			isNew: true,
+			filter: null,
+			allowMarkAsRead: false,
+			selectedFolderValue: ''
+		});
 
 		this.modules = FilterStore.modules;
 
 		this.fTrueCallback = null;
-		this.filter = ko.observable(null);
-
-		this.allowMarkAsRead = ko.observable(false);
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 		this.folderSelectList = FolderStore.folderMenuForFilters;
-		this.selectedFolderValue = ko.observable('');
 
-		this.selectedFolderValue.subscribe(() => {
-			if (this.filter()) {
-				this.filter().actionValueError(false);
-			}
-		});
+		this.selectedFolderValue.subscribe(() => this.filter() && this.filter().actionValueError(false));
 
 		this.actionTypeOptions = ko.observableArray([]);
 		this.fieldOptions = ko.observableArray([]);
