@@ -75,6 +75,13 @@ class LoginUserView extends AbstractViewNext {
 		this.emailErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
 		this.passwordErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
 
+		this.allowLanguagesOnLogin = !!Settings.get('AllowLanguagesOnLogin');
+
+		this.language = LanguageStore.language;
+		this.languages = LanguageStore.languages;
+
+		this.bSendLanguage = false;
+
 		this.addComputables({
 			formError:
 				() =>
@@ -108,13 +115,6 @@ class LoginUserView extends AbstractViewNext {
 
 			signMeType: iValue => this.signMe(LoginSignMeType.DefaultOn === iValue)
 		});
-
-		this.allowLanguagesOnLogin = !!Settings.get('AllowLanguagesOnLogin');
-
-		this.language = LanguageStore.language;
-		this.languages = LanguageStore.languages;
-
-		this.bSendLanguage = false;
 
 		if (Settings.get('AdditionalLoginError') && !this.submitError()) {
 			this.submitError(Settings.get('AdditionalLoginError'));
