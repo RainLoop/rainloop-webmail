@@ -29,7 +29,7 @@
 				</div>
 				<div class="btn-group" data-bind="visible: allowReload && mobileCheckedStateHide()">&nbsp;</div>
 				<!-- ko if: !newMoveToFolder -->
-				<div class="btn-group dropdown colored-toggle hide-on-mobile" data-bind="visible: allowMessageListActions, registrateBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
+				<div class="btn-group dropdown colored-toggle hide-on-mobile" data-bind="visible: allowMessageListActions, registerBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
 					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn single btn-dark-disabled-border dropdown-toggle buttonMove" data-toggle="dropdown" data-bind="command: moveCommand, tooltip: 'MESSAGE_LIST/BUTTON_MOVE_TO'">
 						<i class="icon-copy visible-on-ctrl-btn"></i>
 						<i class="icon-folder hidden-on-ctrl-btn"></i>
@@ -73,7 +73,7 @@
 						<!--<span data-bind="text: printableMessageCountForDeletion()"></span>-->
 					</a>
 				</div>
-				<div class="btn-group dropdown colored-toggle" data-bind="visible: allowComposer || allowMessageListActions || allowDangerousActions, registrateBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
+				<div class="btn-group dropdown colored-toggle" data-bind="visible: allowComposer || allowMessageListActions || allowDangerousActions, registerBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
 					<a id="more-list-dropdown-id" class="btn single btn-dark-disabled-border dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-bind="tooltip: 'MESSAGE_LIST/BUTTON_MORE'">
 						<i class="icon-list animate-this-icon-on-open"></i>
 					</a>

@@ -42,32 +42,26 @@
 				},
 				preventScroll = e => (e.key === 'ArrowUp' || e.key === 'ArrowDown') && e.preventDefault(),
 				keyHandler = e => {
-					let activeItem = doc.activeElement,
-						isSameElement = activeItem === element,
-						isInsideMenu = menu.contains(activeItem),
-						isMenuItem = activeItem.parentNode === menu || activeItem.parentNode.parentNode === menu,
-						idx = menuItems.indexOf(activeItem);
-					if ( isMenuItem ) {
-						idx = isSameElement ? 0
-							: e.key === 'ArrowUp' ? (idx>1?idx-1:0)
-							: e.key === 'ArrowDown' ? (idx<menuItems.length-1?idx+1:idx) : idx;
-						menuItems[idx] && setFocus(menuItems[idx]);
-					}
-					if ( (menuItems.length && isMenuItem
-						|| !menuItems.length && (isInsideMenu || isSameElement)
-						|| !isInsideMenu )
-						&& element.open && e.key === 'Escape'
-					) {
+					if (e.key === 'Escape') {
 						self.toggle();
+					} else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+						let activeItem = doc.activeElement,
+							isMenuButton = activeItem === element,
+							idx = isMenuButton ? 0 : menuItems.indexOf(activeItem);
+						if (parent.contains(activeItem)) {
+							if (!isMenuButton) {
+								idx = e.key === 'ArrowUp' ? (idx > 1 ? idx-1 : 0)
+									: e.key === 'ArrowDown' ? (idx < menuItems.length-1 ? idx+1 : idx) : idx;
+							}
+							menuItems[idx] && setFocus(menuItems[idx]);
+						} else {
+							console.log('activeElement not in menu');
+						}
 					}
 				};
 			self.show = () => {
 				menu = parent.querySelector('.dropdown-menu');
-				menuItems = [];
-				[...menu.children].forEach(child => {
-					child.children.length && (child.children[0].tagName === 'A' && menuItems.push(child.children[0]));
-					child.tagName === 'A' && menuItems.push(child);
-				});
+				menuItems = [...menu.querySelectorAll('A')].filter(item => 'none' != item.parentNode.style.display);
 				!('tabindex' in menu) && menu.setAttribute('tabindex', '0');
 				menu.classList.add('show');
 				parent.classList.add('show');
@@ -88,7 +82,7 @@
 				setFocus(element);
 				setTimeout(() => element.Dropdown && element.addEventListener('click',clickHandler), 1);
 			};
-			self.toggle = () => (parent.classList.contains('show') && element.open) ? self.hide() : self.show();
+			self.toggle = () => element.open ? self.hide() : self.show();
 			element.addEventListener('click',clickHandler);
 			element.open = false;
 			element.Dropdown = self;

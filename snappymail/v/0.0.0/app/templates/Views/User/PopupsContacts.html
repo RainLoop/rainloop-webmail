@@ -25,7 +25,7 @@
 				</a>
 			</div>
 
-			<div class="btn-group dropdown colored-toggle" data-bind="registrateBootstrapDropdown: true">
+			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true">
 				<a id="contacts-more-dropdown-id" class="btn single dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown">
 					<i data-bind="css: {'icon-list': !contacts.importing() && !contacts.syncing(),
 						'icon-spinner animated': contacts.importing() || contacts.syncing()}"></i>
@@ -108,7 +108,7 @@
 			</div>
 		</div>
 		<div class="b-view-content-toolbar btn-toolbar" data-bind="css: {'read-only': viewReadOnly}">
-			<div class="btn-group pull-right dropdown colored-toggle button-add-prop" data-bind="visible: !emptySelection(), registrateBootstrapDropdown: true">
+			<div class="btn-group pull-right dropdown colored-toggle button-add-prop" data-bind="visible: !emptySelection(), registerBootstrapDropdown: true">
 				<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn single dropdown-toggle" data-toggle="dropdown">
 					<span class="i18n" data-i18n="CONTACTS/ADD_MENU_LABEL"></span>
 					&nbsp;&nbsp;

@@ -45,12 +45,9 @@ export default (App) => {
 	rl.Enums = Enums;
 
 	rl.Dropdowns = [];
-	rl.Dropdowns.registrate = function(element) {
-		this.push(element);
-		element.addEventListener('click', () => rl.Dropdowns.detectVisibility());
-	};
+	rl.Dropdowns.register = function(element) { this.push(element); };
 	rl.Dropdowns.detectVisibility = (() =>
-		dropdownVisibility(!!rl.Dropdowns.find(item => item.classList.contains('open')))
+		dropdownVisibility(!!rl.Dropdowns.find(item => item.classList.contains('show')))
 	).debounce(50);
 
 	rl.route = {
