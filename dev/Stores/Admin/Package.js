@@ -5,8 +5,10 @@ class PackageAdminStore {
 		this.packages = ko.observableArray([]);
 		this.packages.loading = ko.observable(false).extend({ throttle: 100 });
 
-		this.packagesReal = ko.observable(true);
-		this.packagesMainUpdatable = ko.observable(true);
+		ko.addObservablesTo(this, {
+			packagesReal: true,
+			packagesMainUpdatable: true
+		});
 	}
 }
 

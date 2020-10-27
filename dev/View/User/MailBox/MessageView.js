@@ -264,7 +264,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 			fullScreenMode: value => $htmlCL.toggle('rl-message-fullscreen', value)
 		});
 
-		this.message.viewTrigger.subscribe(() => {
+		MessageStore.messageViewTrigger.subscribe(() => {
 			const message = this.message();
 			message ? this.viewIsFlagged(message.isFlagged()) : this.viewIsFlagged(false);
 		});

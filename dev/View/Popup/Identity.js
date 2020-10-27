@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
@@ -8,14 +6,7 @@ import Remote from 'Remote/User/Fetch';
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
-ko.observable.fn.validateEmail = function() {
-	this.hasError = ko.observable(false);
-
-	this.subscribe(value => this.hasError(value && !/^[^@\s]+@[^@\s]+$/.test(value)));
-
-	this.valueHasMutated();
-	return this;
-};
+const reEmail = /^[^@\s]+@[^@\s]+$/;
 
 @popup({
 	name: 'View/Popup/Identity',
@@ -29,10 +20,20 @@ class IdentityPopupView extends AbstractViewNext {
 		this.addObservables({
 			edit: false,
 			owner: false,
+
+			email: '',
 			emailFocused: false,
+			emailHasError: false,
+
 			name: '',
+
+			replyTo: '',
 			replyToFocused: false,
+			replyToHasError: false,
+
+			bcc: '',
 			bccFocused: false,
+			bccHasError: false,
 
 			signature: '',
 			signatureInsertBefore: false,
@@ -44,21 +45,26 @@ class IdentityPopupView extends AbstractViewNext {
 			submitError: ''
 		});
 
-		this.email = ko.observable('').validateEmail();
-		this.replyTo = ko.observable('').validateEmail();
-		this.bcc = ko.observable('').validateEmail();
-
-		this.bcc.subscribe((value) => {
-			if (false === this.showBcc() && value.length) {
-				this.showBcc(true);
+		this.addSubscribables({
+			email: value => this.emailHasError(value && !reEmail.test(value)),
+			replyTo: value => {
+				this.replyToHasError(value && !reEmail.test(value));
+				if (false === this.showReplyTo() && value.length) {
+					this.showReplyTo(true);
+				}
+			},
+			bcc: value => {
+				this.bccHasError(value && !reEmail.test(value));
+				if (false === this.showBcc() && value.length) {
+					this.showBcc(true);
+				}
 			}
 		});
-
-		this.replyTo.subscribe((value) => {
-			if (false === this.showReplyTo() && value.length) {
-				this.showReplyTo(true);
-			}
-		});
+/*
+		this.email.valueHasMutated();
+		this.replyTo.valueHasMutated();
+		this.bcc.valueHasMutated();
+*/
 	}
 
 	@command((self) => !self.submitRequest())
@@ -67,11 +73,11 @@ class IdentityPopupView extends AbstractViewNext {
 			this.signature.__fetchEditorValue();
 		}
 
-		if (!this.email.hasError()) {
-			this.email.hasError(!this.email().trim());
+		if (!this.emailHasError()) {
+			this.emailHasError(!this.email().trim());
 		}
 
-		if (this.email.hasError()) {
+		if (this.emailHasError()) {
 			if (!this.owner()) {
 				this.emailFocused(true);
 			}
@@ -79,12 +85,12 @@ class IdentityPopupView extends AbstractViewNext {
 			return false;
 		}
 
-		if (this.replyTo.hasError()) {
+		if (this.replyToHasError()) {
 			this.replyToFocused(true);
 			return false;
 		}
 
-		if (this.bcc.hasError()) {
+		if (this.bccHasError()) {
 			this.bccFocused(true);
 			return false;
 		}
@@ -129,9 +135,9 @@ class IdentityPopupView extends AbstractViewNext {
 		this.signature('');
 		this.signatureInsertBefore(false);
 
-		this.email.hasError(false);
-		this.replyTo.hasError(false);
-		this.bcc.hasError(false);
+		this.emailHasError(false);
+		this.replyToHasError(false);
+		this.bccHasError(false);
 
 		this.showBcc(false);
 		this.showReplyTo(false);

@@ -39,9 +39,15 @@ class GeneralAdminSettings {
 		this.capaAttachmentThumbnails = CapaAdminStore.attachmentThumbnails;
 		this.capaTemplates = CapaAdminStore.templates;
 
-		this.allowLanguagesOnSettings = ko.observable(!!settingsGet('AllowLanguagesOnSettings'));
+		ko.addObservablesTo(this, {
+			allowLanguagesOnSettings: !!settingsGet('AllowLanguagesOnSettings'),
+			newMoveToFolder: !!settingsGet('NewMoveToFolder'),
+			attachmentLimitTrigger: SaveSettingsStep.Idle,
+			languageTrigger: SaveSettingsStep.Idle,
+			themeTrigger: SaveSettingsStep.Idle
+		});
+
 		this.weakPassword = AppAdminStore.weakPassword;
-		this.newMoveToFolder = ko.observable(!!settingsGet('NewMoveToFolder'));
 
 		this.dataFolderAccess = AppAdminStore.dataFolderAccess;
 
@@ -67,10 +73,7 @@ class GeneralAdminSettings {
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
 		this.languageAdminFullName = ko.computed(() => convertLangName(this.languageAdmin()));
 
-		this.attachmentLimitTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.languageTrigger = ko.observable(SaveSettingsStep.Idle);
 		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
-		this.themeTrigger = ko.observable(SaveSettingsStep.Idle);
 	}
 
 	onBuild() {

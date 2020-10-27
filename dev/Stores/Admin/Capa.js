@@ -3,17 +3,19 @@ import { Capa } from 'Common/Enums';
 
 class CapaAdminStore {
 	constructor() {
-		this.additionalAccounts = ko.observable(false);
-		this.identities = ko.observable(false);
-		this.attachmentThumbnails = ko.observable(false);
-		this.sieve = ko.observable(false);
-		this.filters = ko.observable(false);
-		this.themes = ko.observable(true);
-		this.userBackground = ko.observable(false);
-		this.openPGP = ko.observable(false);
-		this.twoFactorAuth = ko.observable(false);
-		this.twoFactorAuthForce = ko.observable(false);
-		this.templates = ko.observable(false);
+		ko.addObservablesTo(this, {
+			additionalAccounts: false,
+			identities: false,
+			attachmentThumbnails: false,
+			sieve: false,
+			filters: false,
+			themes: true,
+			userBackground: false,
+			openPGP: false,
+			twoFactorAuth: false,
+			twoFactorAuthForce: false,
+			templates: false
+		});
 	}
 
 	populate() {

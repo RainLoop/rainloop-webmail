@@ -2,10 +2,11 @@ import ko from 'ko';
 
 class AccountUserStore {
 	constructor() {
-		this.email = ko.observable('');
-		this.parentEmail = ko.observable('');
-
-		this.signature = ko.observable('');
+		ko.addObservablesTo(this, {
+			email: '',
+			parentEmail: '',
+			signature: ''
+		});
 
 		this.accounts = ko.observableArray([]);
 		this.accounts.loading = ko.observable(false).extend({ throttle: 100 });

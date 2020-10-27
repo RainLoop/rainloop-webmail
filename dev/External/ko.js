@@ -36,7 +36,6 @@ ko.bindingHandlers.tooltip = {
 ko.bindingHandlers.tooltipErrorTip = {
 	init: element => {
 		doc.addEventListener('click', () => element.removeAttribute('data-rainloopErrorTip'));
-		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeAttribute('data-rainloopErrorTip'));
 	},
 	update: (element, fValueAccessor) => {
 		const value = koValue(fValueAccessor());
@@ -258,8 +257,7 @@ ko.extenders.falseTimeout = (target, option) => {
 // functions
 
 ko.observable.fn.deleteAccessHelper = function() {
-	this.extend({ falseTimeout: 3000 }).extend({ toggleSubscribeProperty: [this, 'deleteAccess'] });
-	return this;
+	return this.extend({ falseTimeout: 3000, toggleSubscribeProperty: [this, 'deleteAccess'] });
 };
 
 ko.addObservablesTo = (target, observables) => {

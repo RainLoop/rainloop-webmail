@@ -287,15 +287,4 @@ ko.extenders.specialThrottle = (target, timeout) => {
 	return target;
 };
 
-// functions
-
-ko.observable.fn.validateEmail = function() {
-	this.hasError = ko.observable(false);
-
-	this.subscribe(value => this.hasError(value && !/^[^@\s]+@[^@\s]+$/.test(value)));
-
-	this.valueHasMutated();
-	return this;
-};
-
 export default ko;

@@ -16,12 +16,14 @@ class FiltersUserSettings {
 		this.modules = FilterStore.modules;
 		this.filters = FilterStore.filters;
 
-		this.inited = ko.observable(false);
-		this.serverError = ko.observable(false);
-		this.serverErrorDesc = ko.observable('');
-		this.haveChanges = ko.observable(false);
+		ko.addObservablesTo(this, {
+			inited: false,
+			serverError: false,
+			serverErrorDesc: '',
+			haveChanges: false,
 
-		this.saveErrorText = ko.observable('');
+			saveErrorText: ''
+		});
 
 		this.serverError.subscribe((value) => {
 			if (!value) {
@@ -37,18 +39,14 @@ class FiltersUserSettings {
 
 		this.filterForDeletion = ko.observable(null).deleteAccessHelper();
 
-		this.filters.subscribe(() => {
-			this.haveChanges(true);
-		});
+		this.filters.subscribe(() => this.haveChanges(true));
 
 		this.filterRaw.subscribe(() => {
 			this.haveChanges(true);
 			this.filterRaw.error(false);
 		});
 
-		this.haveChanges.subscribe(() => {
-			this.saveErrorText('');
-		});
+		this.haveChanges.subscribe(() => this.saveErrorText(''));
 
 		this.filterRaw.active.subscribe(() => {
 			this.haveChanges(true);

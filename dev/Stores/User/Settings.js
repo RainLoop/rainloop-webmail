@@ -23,13 +23,15 @@ class SettingsUserStore {
 
 		this.messagesPerPage = ko.observable(20).extend({ limitedList: MESSAGES_PER_PAGE_VALUES });
 
-		this.showImages = ko.observable(false);
-		this.useCheckboxesInList = ko.observable(true);
-		this.allowDraftAutosave = ko.observable(true);
-		this.useThreads = ko.observable(false);
-		this.replySameFolder = ko.observable(false);
+		ko.addObservablesTo(this, {
+			showImages: false,
+			useCheckboxesInList: true,
+			allowDraftAutosave: true,
+			useThreads: false,
+			replySameFolder: false,
 
-		this.autoLogout = ko.observable(30);
+			autoLogout: 30
+		});
 
 		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout());
 

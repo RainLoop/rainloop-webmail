@@ -102,7 +102,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 		AppStore.threadsAllowed(!!(Settings.app('useImapThread') && this.IsThreadsSupported));
 
-		FolderStore.folderList.optimized(!!this.Optimized);
+		FolderStore.folderListOptimized(!!this.Optimized);
 
 		let update = false;
 

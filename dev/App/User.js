@@ -399,7 +399,7 @@ class AppUser extends AbstractApp {
 					Remote.foldersReloadWithTimeout(FolderStore.foldersLoading);
 				},
 				(errorCode) => {
-					FolderStore.folderList.error(getNotification(errorCode, '', errorDefCode));
+					FolderStore.folderListError(getNotification(errorCode, '', errorDefCode));
 					Remote.foldersReloadWithTimeout(FolderStore.foldersLoading);
 				}
 			);
@@ -757,7 +757,7 @@ class AppUser extends AbstractApp {
 			}
 
 			this.reloadFlagsCurrentMessageListAndMessageFromCache();
-			MessageStore.message.viewTrigger(!MessageStore.message.viewTrigger());
+			MessageStore.messageViewTrigger(!MessageStore.messageViewTrigger());
 		}
 	}
 

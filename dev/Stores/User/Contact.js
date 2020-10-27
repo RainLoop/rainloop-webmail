@@ -9,11 +9,13 @@ class ContactUserStore {
 		this.contacts.exportingVcf = ko.observable(false).extend({ throttle: 200 });
 		this.contacts.exportingCsv = ko.observable(false).extend({ throttle: 200 });
 
-		this.allowContactsSync = ko.observable(false);
-		this.enableContactsSync = ko.observable(false);
-		this.contactsSyncUrl = ko.observable('');
-		this.contactsSyncUser = ko.observable('');
-		this.contactsSyncPass = ko.observable('');
+		ko.addObservablesTo(this, {
+			allowContactsSync: false,
+			enableContactsSync: false,
+			contactsSyncUrl: '',
+			contactsSyncUser: '',
+			contactsSyncPass: ''
+		});
 	}
 
 	populate() {

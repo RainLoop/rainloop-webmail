@@ -7,9 +7,21 @@ const Settings = rl.settings;
 
 class AppUserStore {
 	constructor() {
-		this.currentAudio = ko.observable('');
+		ko.addObservablesTo(this, {
+			currentAudio: '',
 
-		this.focusedState = ko.observable(Focused.None);
+			focusedState: Focused.None,
+
+			projectHash: '',
+			threadsAllowed: false,
+
+			composeInEdit: false,
+
+			contactsAutosave: false,
+			useLocalProxyForExternalImages: false,
+
+			contactsIsAllowed: false
+		});
 
 		const isMobile = Settings.app('mobile');
 
@@ -37,16 +49,6 @@ class AppUserStore {
 					break;
 			}
 		});
-
-		this.projectHash = ko.observable('');
-		this.threadsAllowed = ko.observable(false);
-
-		this.composeInEdit = ko.observable(false);
-
-		this.contactsAutosave = ko.observable(false);
-		this.useLocalProxyForExternalImages = ko.observable(false);
-
-		this.contactsIsAllowed = ko.observable(false);
 
 		this.attachmentsActions = ko.observableArray([]);
 

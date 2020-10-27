@@ -1,5 +1,3 @@
-import ko from 'ko';
-
 import AppStore from 'Stores/User/App';
 import AccountStore from 'Stores/User/Account';
 import MessageStore from 'Stores/User/Message';
@@ -32,8 +30,10 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 		this.accounts = AccountStore.accounts;
 		this.accountsUnreadCount = AccountStore.accountsUnreadCount;
 
-		this.accountMenuDropdownTrigger = ko.observable(false);
-		this.capaAdditionalAccounts = ko.observable(Settings.capa(Capa.AdditionalAccounts));
+		this.addObservables({
+			accountMenuDropdownTrigger: false,
+			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts)
+		});
 
 		this.addAccountClick = this.addAccountClick.bind(this);
 

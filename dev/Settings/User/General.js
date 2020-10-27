@@ -47,9 +47,11 @@ class GeneralUserSettings {
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
 		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
 
-		this.mppTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.editorDefaultTypeTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.layoutTrigger = ko.observable(SaveSettingsStep.Idle);
+		ko.addObservablesTo(this, {
+			mppTrigger: SaveSettingsStep.Idle,
+			editorDefaultTypeTrigger: SaveSettingsStep.Idle,
+			layoutTrigger: SaveSettingsStep.Idle
+		});
 
 		this.identities = IdentityStore.identities;
 

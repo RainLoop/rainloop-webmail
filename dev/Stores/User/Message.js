@@ -59,43 +59,46 @@ class MessageUserStore {
 
 		this.messageList = ko.observableArray([]).extend({ rateLimit: 0 });
 
-		this.messageListCount = ko.observable(0);
-		this.messageListSearch = ko.observable('');
-		this.messageListThreadUid = ko.observable('');
-		this.messageListPage = ko.observable(1);
-		this.messageListPageBeforeThread = ko.observable(1);
-		this.messageListError = ko.observable('');
+		ko.addObservablesTo(this, {
+			messageListCount: 0,
+			messageListSearch: '',
+			messageListThreadUid: '',
+			messageListPage: 1,
+			messageListPageBeforeThread: 1,
+			messageListError: '',
 
-		this.messageListEndFolder = ko.observable('');
-		this.messageListEndSearch = ko.observable('');
-		this.messageListEndThreadUid = ko.observable('');
-		this.messageListEndPage = ko.observable(1);
+			messageListEndFolder: '',
+			messageListEndSearch: '',
+			messageListEndThreadUid: '',
+			messageListEndPage: 1,
 
-		this.messageListLoading = ko.observable(false);
-		this.messageListIsNotCompleted = ko.observable(false);
+			messageListLoading: false,
+			messageListIsNotCompleted: false,
+
+			selectorMessageSelected: null,
+			selectorMessageFocused: null,
+
+			// message viewer
+			message: null,
+
+			messageViewTrigger: false,
+
+			messageError: '',
+
+			messageCurrentLoading: false,
+
+			messageFullScreenMode: false,
+
+			messagesBodiesDom: null,
+			messageActiveDom: null
+		});
+
 		this.messageListCompleteLoadingThrottle = ko.observable(false).extend({ throttle: 200 });
 		this.messageListCompleteLoadingThrottleForAnimation = ko.observable(false).extend({ specialThrottle: 700 });
 
 		this.messageListDisableAutoSelect = ko.observable(false).extend({ falseTimeout: 500 });
 
-		this.selectorMessageSelected = ko.observable(null);
-		this.selectorMessageFocused = ko.observable(null);
-
-		// message viewer
-		this.message = ko.observable(null);
-
-		this.message.viewTrigger = ko.observable(false);
-
-		this.messageError = ko.observable('');
-
-		this.messageCurrentLoading = ko.observable(false);
-
 		this.messageLoadingThrottle = ko.observable(false).extend({ throttle: 50 });
-
-		this.messageFullScreenMode = ko.observable(false);
-
-		this.messagesBodiesDom = ko.observable(null);
-		this.messageActiveDom = ko.observable(null);
 
 		this.messageLoading = ko.computed(() => this.messageCurrentLoading());
 

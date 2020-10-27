@@ -13,8 +13,6 @@ const settingsGet = rl.settings.get;
 
 class SecurityAdminSettings {
 	constructor() {
-		this.useLocalProxyForExternalImages = ko.observable(!!rl.settings.get('UseLocalProxyForExternalImages'));
-
 		this.weakPassword = AppAdminStore.weakPassword;
 
 		this.capaOpenPGP = CapaAdminStore.openPGP;
@@ -22,34 +20,38 @@ class SecurityAdminSettings {
 		this.capaTwoFactorAuth = CapaAdminStore.twoFactorAuth;
 		this.capaTwoFactorAuthForce = CapaAdminStore.twoFactorAuthForce;
 
+		ko.addObservablesTo(this, {
+			useLocalProxyForExternalImages: !!rl.settings.get('UseLocalProxyForExternalImages'),
+
+			verifySslCertificate: !!settingsGet('VerifySslCertificate'),
+			allowSelfSigned: !!settingsGet('AllowSelfSigned'),
+
+			isTwoFactorDropperShown: false,
+			twoFactorDropperUser: '',
+			twoFactorDropperUserFocused: false,
+
+			adminLogin: settingsGet('AdminLogin'),
+			adminLoginError: false,
+			adminPassword: '',
+			adminPasswordNew: '',
+			adminPasswordNew2: '',
+			adminPasswordNewError: false,
+
+			adminPasswordUpdateError: false,
+			adminPasswordUpdateSuccess: false
+		});
+
 		this.capaTwoFactorAuth.subscribe(value => {
 			if (!value) {
 				this.capaTwoFactorAuthForce(false);
 			}
 		});
 
-		this.verifySslCertificate = ko.observable(!!settingsGet('VerifySslCertificate'));
-		this.allowSelfSigned = ko.observable(!!settingsGet('AllowSelfSigned'));
-
 		this.verifySslCertificate.subscribe(value => {
 			if (!value) {
 				this.allowSelfSigned(true);
 			}
 		});
-
-		this.isTwoFactorDropperShown = ko.observable(false);
-		this.twoFactorDropperUser = ko.observable('');
-		this.twoFactorDropperUser.focused = ko.observable(false);
-
-		this.adminLogin = ko.observable(settingsGet('AdminLogin'));
-		this.adminLoginError = ko.observable(false);
-		this.adminPassword = ko.observable('');
-		this.adminPasswordNew = ko.observable('');
-		this.adminPasswordNew2 = ko.observable('');
-		this.adminPasswordNewError = ko.observable(false);
-
-		this.adminPasswordUpdateError = ko.observable(false);
-		this.adminPasswordUpdateSuccess = ko.observable(false);
 
 		this.adminPassword.subscribe(() => {
 			this.adminPasswordUpdateError(false);
@@ -104,7 +106,7 @@ class SecurityAdminSettings {
 		this.isTwoFactorDropperShown(true);
 
 		setTimeout(() => {
-			this.twoFactorDropperUser.focused(true);
+			this.twoFactorDropperUserFocused(true);
 		}, 50);
 	}
 
@@ -167,7 +169,7 @@ class SecurityAdminSettings {
 
 		this.isTwoFactorDropperShown(false);
 		this.twoFactorDropperUser('');
-		this.twoFactorDropperUser.focused(false);
+		this.twoFactorDropperUserFocused(false);
 	}
 }
 

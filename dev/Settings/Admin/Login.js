@@ -7,13 +7,14 @@ import Remote from 'Remote/Admin/Fetch';
 class LoginAdminSettings {
 	constructor() {
 		const settingsGet = rl.settings.get;
-		this.determineUserLanguage = ko.observable(!!settingsGet('DetermineUserLanguage'));
-		this.determineUserDomain = ko.observable(!!settingsGet('DetermineUserDomain'));
+		ko.addObservablesTo(this, {
+			determineUserLanguage: !!settingsGet('DetermineUserLanguage'),
+			determineUserDomain: !!settingsGet('DetermineUserDomain'),
+			allowLanguagesOnLogin: !!settingsGet('AllowLanguagesOnLogin'),
+			dummy: false
+		});
 
 		this.defaultDomain = ko.observable(settingsGet('LoginDefaultDomain')).idleTrigger();
-		this.allowLanguagesOnLogin = ko.observable(!!settingsGet('AllowLanguagesOnLogin'));
-
-		this.dummy = ko.observable(false);
 	}
 
 	onBuild() {

@@ -62,7 +62,7 @@ class FoldersUserSettings {
 	}
 
 	onShow() {
-		FolderStore.folderList.error('');
+		FolderStore.folderListError('');
 	}
 
 	onBuild(oDom) {
@@ -113,7 +113,7 @@ class FoldersUserSettings {
 				removeFolderFromCacheList(folderToRemove.fullNameRaw);
 			}
 		} else if (0 < folderToRemove.privateMessageCountAll()) {
-			FolderStore.folderList.error(getNotification(Notification.CantDeleteNonEmptyFolder));
+			FolderStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
 		}
 	}
 

@@ -11,8 +11,26 @@ const settingsGet = rl.settings.get;
 class ContactsAdminSettings {
 	constructor() {
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
-		this.enableContacts = ko.observable(!!settingsGet('ContactsEnable'));
-		this.contactsSync = ko.observable(!!settingsGet('ContactsSync'));
+
+		ko.addObservablesTo(this, {
+			enableContacts: !!settingsGet('ContactsEnable'),
+			contactsSync: !!settingsGet('ContactsSync'),
+			contactsType: '',
+
+			pdoDsn: settingsGet('ContactsPdoDsn'),
+			pdoUser: settingsGet('ContactsPdoUser'),
+			pdoPassword: settingsGet('ContactsPdoPassword'),
+
+			pdoDsnTrigger: SaveSettingsStep.Idle,
+			pdoUserTrigger: SaveSettingsStep.Idle,
+			pdoPasswordTrigger: SaveSettingsStep.Idle,
+			contactsTypeTrigger: SaveSettingsStep.Idle,
+
+			testing: false,
+			testContactsSuccess: false,
+			testContactsError: false,
+			testContactsErrorMessage: ''
+		});
 
 		const supportedTypes = settingsGet('supportedPdoDrivers') || [],
 			types = [{
@@ -29,8 +47,6 @@ class ContactsAdminSettings {
 		this.contactsSupported = 0 < types.length;
 
 		this.contactsTypesOptions = types;
-
-		this.contactsType = ko.observable('');
 
 		this.mainContactsType = ko
 			.computed({
@@ -54,20 +70,6 @@ class ContactsAdminSettings {
 			this.testContactsError(false);
 			this.testContactsErrorMessage('');
 		});
-
-		this.pdoDsn = ko.observable(settingsGet('ContactsPdoDsn'));
-		this.pdoUser = ko.observable(settingsGet('ContactsPdoUser'));
-		this.pdoPassword = ko.observable(settingsGet('ContactsPdoPassword'));
-
-		this.pdoDsnTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.pdoUserTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.pdoPasswordTrigger = ko.observable(SaveSettingsStep.Idle);
-		this.contactsTypeTrigger = ko.observable(SaveSettingsStep.Idle);
-
-		this.testing = ko.observable(false);
-		this.testContactsSuccess = ko.observable(false);
-		this.testContactsError = ko.observable(false);
-		this.testContactsErrorMessage = ko.observable('');
 
 		this.contactsType(settingsGet('ContactsPdoType'));
 

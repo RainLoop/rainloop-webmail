@@ -14,7 +14,7 @@
 					<span data-bind="text: submitError"></span>
 				</div>
 				<br />
-				<div class="control-group" data-bind="visible: !owner(), css: {'error': email.hasError}">
+				<div class="control-group" data-bind="visible: !owner(), css: {'error': emailHasError}">
 					<label class="i18n control-label" data-i18n="POPUPS_IDENTITY/LABEL_EMAIL"></label>
 					<div class="controls">
 						<input type="email" class="inputEmail input-xlarge" autofocus=""
@@ -36,7 +36,7 @@
 							data-bind="value: name, onEnter: addOrEditIdentityCommand" />
 					</div>
 				</div>
-				<div class="control-group" data-bind="visible: showReplyTo, css: {'error': replyTo.hasError}">
+				<div class="control-group" data-bind="visible: showReplyTo, css: {'error': replyToHasError}">
 					<label class="i18n control-label" data-i18n="POPUPS_IDENTITY/LABEL_REPLY_TO"></label>
 					<div class="controls">
 						<input type="text" class="inputReplyTo input-xlarge"
@@ -44,7 +44,7 @@
 							data-bind="value: replyTo, onEnter: addOrEditIdentityCommand, hasfocus: replyToFocused" />
 					</div>
 				</div>
-				<div class="control-group" data-bind="visible: showBcc, css: {'error': bcc.hasError}">
+				<div class="control-group" data-bind="visible: showBcc, css: {'error': bccHasError}">
 					<label class="i18n control-label" data-i18n="POPUPS_IDENTITY/LABEL_BCC"></label>
 					<div class="controls">
 						<input type="text" class="inputBcc input-xlarge"

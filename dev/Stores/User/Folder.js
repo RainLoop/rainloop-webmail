@@ -7,26 +7,29 @@ import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 
 class FolderUserStore {
 	constructor() {
-		this.displaySpecSetting = ko.observable(true);
+		ko.addObservablesTo(this, {
+			displaySpecSetting: true,
 
-		this.sentFolder = ko.observable('');
-		this.draftFolder = ko.observable('');
-		this.spamFolder = ko.observable('');
-		this.trashFolder = ko.observable('');
-		this.archiveFolder = ko.observable('');
+			sentFolder: '',
+			draftFolder: '',
+			spamFolder: '',
+			trashFolder: '',
+			archiveFolder: '',
+
+			folderListOptimized: false,
+			folderListError: '',
+
+			foldersLoading: false,
+			foldersCreating: false,
+			foldersDeleting: false,
+			foldersRenaming: false,
+
+			foldersInboxUnreadCount: 0
+		});
 
 		this.namespace = '';
 
 		this.folderList = ko.observableArray([]);
-		this.folderList.optimized = ko.observable(false);
-		this.folderList.error = ko.observable('');
-
-		this.foldersLoading = ko.observable(false);
-		this.foldersCreating = ko.observable(false);
-		this.foldersDeleting = ko.observable(false);
-		this.foldersRenaming = ko.observable(false);
-
-		this.foldersInboxUnreadCount = ko.observable(0);
 
 		this.currentFolder = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'selected'] });
 

@@ -7,13 +7,11 @@ class LanguageStore {
 
 		this.language = ko
 			.observable('')
-			.extend({ limitedList: this.languages })
-			.extend({ reversible: true });
+			.extend({ limitedList: this.languages, reversible: true });
 
 		this.languageAdmin = ko
 			.observable('')
-			.extend({ limitedList: this.languagesAdmin })
-			.extend({ reversible: true });
+			.extend({ limitedList: this.languagesAdmin, reversible: true });
 
 		this.userLanguage = ko.observable('');
 		this.userLanguageAdmin = ko.observable('');
