@@ -62,6 +62,8 @@ This fork of RainLoop has the following changes:
 * Ongoing removal of old JavaScript code (things are native these days)
 * Added modified [Squire](https://github.com/neilj/Squire) HTML editor as replacement for CKEditor
 * Split Admin specific JavaScript code from User code
+* JSON reviver
+* Better memory garbage collection management
 
 ### Removal of old JavaScript
 
@@ -107,24 +109,24 @@ RainLoop 1.14 vs SnappyMail
 
 |js/*       	|RainLoop 	|Snappy   	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  665.605	|
-|app.js      	|4.184.455	|2.402.380	|
+|admin.js    	|2.130.942	|  653.696	|
+|app.js      	|4.184.455	|2.322.177	|
 |boot.js     	|  671.522	|    5.285	|
-|libs.js     	|  647.614	|  238.766	|
+|libs.js     	|  647.614	|  237.066	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.312.036	|
+|TOTAL      	|7.960.367	|3.218.258	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|Rain gzip	|gzip     	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|   92.652	| 73.657	| 23.778	| 20.706	|
-|app.min.js      	|  511.202	|  325.099	|140.462	| 83.865	| 68.191	|
+|admin.min.js    	|  252.147	|   90.699	| 73.657	| 23.757	| 20.795	|
+|app.min.js      	|  511.202	|  313.385	|140.462	| 83.493	| 67.903	|
 |boot.min.js     	|   66.007	|    2.918	| 22.567	|  1.500	|  1.275	|
-|libs.min.js     	|  572.545	|  134.376	|176.720	| 48.321	| 42.972	|
+|libs.min.js     	|  572.545	|  132.597	|176.720	| 47.935	| 42.630	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  555.045	|424.718	|157.464	|133.144	|
-|TOTAL (no admin)	|1.182.206	|  462.393	|351.061	|133.686	|112.438	|
+|TOTAL           	|1.434.353	|  539.599	|424.718	|156.685	|132.603	|
+|TOTAL (no admin)	|1.182.206	|  448.900	|351.061	|132.928	|111.808	|
 
-For a user its around 61% smaller and faster than traditional RainLoop.
+For a user its around 62% smaller and faster than traditional RainLoop.
 
 ### CSS changes
 
@@ -149,8 +151,8 @@ For a user its around 61% smaller and faster than traditional RainLoop.
 
 |css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 186.119	| 46,959	| 28.731	| 24.189	|
-|app.min.css	| 274.791	| 152.283	| 39.618	| 25.276	| 21.801	|
+|app.css    	| 340.334	| 185.728	| 46,959	| 28.737	| 24.177	|
+|app.min.css	| 274.791	| 151.748	| 39.618	| 25.223	| 21.753	|
 |boot.css    	|       	|   2.534	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 

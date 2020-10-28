@@ -82,15 +82,7 @@ export function screen(screenName) {
  * @returns {Function|null}
  */
 function getScreenPopup(PopuViewModelClass) {
-	let result = null;
-	if (PopuViewModelClass) {
-		result = PopuViewModelClass;
-		if (PopuViewModelClass.default) {
-			result = PopuViewModelClass.default;
-		}
-	}
-
-	return result;
+	return PopuViewModelClass ? PopuViewModelClass.default || PopuViewModelClass : null;
 }
 
 /**
