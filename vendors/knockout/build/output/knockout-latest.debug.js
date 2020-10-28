@@ -59,32 +59,14 @@ ko.utils = (() => {
     var canSetPrototype = ({ __proto__: [] } instanceof Array);
 
     return {
-        arrayForEach: (array, action, actionOwner) =>
-            arrayCall('forEach', array, action, actionOwner),
-
-        arrayIndexOf: (array, item) =>
-            arrayCall('indexOf', array, item),
-
-        arrayFirst: (array, predicate, predicateOwner) =>
-            arrayCall('find', array, (e, i, a) => predicate.call(predicateOwner, e, i, a)),
-
         arrayRemoveItem: (array, itemToRemove) => {
-            var index = ko.utils.arrayIndexOf(array, itemToRemove);
+            var index = array.indexOf(itemToRemove);
             if (index > 0) {
                 array.splice(index, 1);
             }
             else if (index === 0) {
                 array.shift();
             }
-        },
-
-        arrayPushAll: (array, valuesToPush) => {
-            if (valuesToPush instanceof Array)
-                array.push.apply(array, valuesToPush);
-            else
-                for (var i = 0, j = valuesToPush.length; i < j; i++)
-                    array.push(valuesToPush[i]);
-            return array;
         },
 
         canSetPrototype: canSetPrototype,
@@ -332,7 +314,7 @@ ko.utils.domNodeDisposal = new (function () {
             if (!onlyComments || nodeList[i].nodeType === 8) {
                 cleanSingleNode(cleanedNodes[cleanedNodes.length] = lastCleanedNode = nodeList[i]);
                 if (nodeList[i] !== lastCleanedNode) {
-                    while (i-- && ko.utils.arrayIndexOf(cleanedNodes, nodeList[i]) == -1);
+                    while (i-- && !cleanedNodes.includes(nodeList[i]));
                 }
             }
         }
@@ -415,16 +397,7 @@ ko.exportSymbol('utils.domNodeDisposal.addDisposeCallback', ko.utils.domNodeDisp
             depth = wrap[0];
 
         // Go to html and back, then peel off extra wrappers
-        // Note that we always prefix with some dummy text, because otherwise, IE<9 will strip out leading comment nodes in descendants. Total madness.
-        var markup = "ignored<div>" + wrap[1] + html + wrap[2] + "</div>";
-        if (typeof windowContext['innerShiv'] == "function") {
-            // Note that innerShiv is deprecated in favour of html5shiv. We should consider adding
-            // support for html5shiv (except if no explicit support is needed, e.g., if html5shiv
-            // somehow shims the native APIs so it just works anyway)
-            div.append(windowContext['innerShiv'](markup));
-        } else {
-            div.innerHTML = markup;
-        }
+        div.innerHTML = "<div>" + wrap[1] + html + wrap[2] + "</div>";
 
         // Move to the right depth
         while (depth--)
@@ -996,13 +969,11 @@ ko.observableArray['fn'] = {
         // If you passed an arg, we interpret it as an array of entries to remove
         if (!arrayOfValues)
             return [];
-        return this['remove'](function (value) {
-            return ko.utils.arrayIndexOf(arrayOfValues, value) >= 0;
-        });
+        return this['remove'](value => arrayOfValues.includes(value));
     },
 
     'indexOf': function (item) {
-        return ko.utils.arrayIndexOf(this(), item);
+        return this().indexOf(item);
     }
 };
 
@@ -1363,10 +1334,10 @@ var computedFn = {
             return false;
         }
         var dependencies = this.getDependencies();
-        if (ko.utils.arrayIndexOf(dependencies, obs) !== -1) {
+        if (dependencies.includes(obs)) {
             return true;
         }
-        return !!ko.utils.arrayFirst(dependencies, dep =>
+        return !!dependencies.find(dep =>
             dep.hasAncestorDependency && dep.hasAncestorDependency(obs)
         );
     },
@@ -1628,7 +1599,7 @@ var pureComputedOverrides = {
                     dependenciesOrder[dependency._order] = id
                 );
                 // Next, subscribe to each one
-                ko.utils.arrayForEach(dependenciesOrder, (id, order) => {
+                dependenciesOrder.forEach((id, order) => {
                     var dependency = state.dependencyTracking[id],
                         subscription = computedObservable.subscribeToDependency(dependency._target);
                     subscription._order = order;
@@ -1779,7 +1750,7 @@ ko.expressionRewriting = (() => {
     var javaScriptAssignmentTarget = /^(?:[$_a-z][$\w]*|(.+)(\.\s*[$_a-z][$\w]*|\[.+\]))$/i;
 
     function getWriteableValue(expression) {
-        if (ko.utils.arrayIndexOf(javaScriptReservedWords, expression) >= 0)
+        if (javaScriptReservedWords.includes(expression))
             return false;
         var match = expression.match(javaScriptAssignmentTarget);
         return match === null ? false : match[1] ? ('Object(' + match[1] + ')' + match[2]) : expression;
@@ -1915,7 +1886,7 @@ ko.expressionRewriting = (() => {
             keyValueArray = typeof bindingsStringOrKeyValueArray === "string" ?
                 parseObjectLiteral(bindingsStringOrKeyValueArray) : bindingsStringOrKeyValueArray;
 
-        ko.utils.arrayForEach(keyValueArray, keyValue =>
+        keyValueArray.forEach(keyValue =>
             processKeyValue(keyValue.key || keyValue['unknown'], keyValue.value)
         );
 
@@ -2520,13 +2491,12 @@ ko.expressionRewriting = (() => {
                     // First add dependencies (if any) of the current binding
                     if (binding['after']) {
                         cyclicDependencyStack.push(bindingKey);
-                        ko.utils.arrayForEach(binding['after'], bindingDependencyKey => {
+                        binding['after'].forEach(bindingDependencyKey => {
                             if (bindings[bindingDependencyKey]) {
-                                if (ko.utils.arrayIndexOf(cyclicDependencyStack, bindingDependencyKey) !== -1) {
+                                if (cyclicDependencyStack.includes(bindingDependencyKey)) {
                                     throw Error("Cannot combine the following bindings, because they have a cyclic dependency: " + cyclicDependencyStack.join(", "));
-                                } else {
-                                    pushBinding(bindingDependencyKey);
                                 }
+                                pushBinding(bindingDependencyKey);
                             }
                         });
                         cyclicDependencyStack.length--;
@@ -2631,10 +2601,8 @@ ko.expressionRewriting = (() => {
             }
 
             // First put the bindings into the right order
-            var orderedBindings = topologicalSortBindings(bindings);
-
             // Go through the sorted bindings, calling init and update for each
-            ko.utils.arrayForEach(orderedBindings, bindingKeyAndHandler => {
+            topologicalSortBindings(bindings).forEach(bindingKeyAndHandler => {
                 // Note that topologicalSortBindings has already filtered out any nonexistent binding handlers,
                 // so bindingKeyAndHandler.handler will always be nonnull.
                 var handlerInitFn = bindingKeyAndHandler.handler["init"],
@@ -3610,7 +3578,7 @@ ko.bindingHandlers['options'] = {
             } else if (previousSelectedValues.length) {
                 // IE6 doesn't like us to assign selection to OPTION nodes before they're added to the document.
                 // That's why we first added them without selection. Now it's time to set the selection.
-                var isSelected = ko.utils.arrayIndexOf(previousSelectedValues, ko.selectExtensions.readValue(newOptions[0])) >= 0;
+                var isSelected = previousSelectedValues.includes(ko.selectExtensions.readValue(newOptions[0]));
                 newOptions[0].selected = isSelected;
 
                 // If this option was changed from being selected during a single-item update, notify the change
@@ -3775,7 +3743,7 @@ ko.bindingHandlers['textInput'] = {
 
         if (DEBUG && ko.bindingHandlers['textInput']['_forceUpdateOn']) {
             // Provide a way for tests to specify exactly which events are bound
-            ko.utils.arrayForEach(ko.bindingHandlers['textInput']['_forceUpdateOn'], eventName => {
+            ko.bindingHandlers['textInput']['_forceUpdateOn'].forEach(eventName => {
                 if (eventName.slice(0,5) == 'after') {
                     onEvent(eventName.slice(5), deferUpdateModel);
                 } else {
@@ -3836,7 +3804,7 @@ ko.bindingHandlers['value'] = {
             ko.expressionRewriting.writeValueToProperty(modelValue, allBindings, 'value', elementValue);
         }
 
-        ko.utils.arrayForEach(eventsToCatch, eventName => {
+        eventsToCatch.forEach(eventName => {
             // The syntax "after<eventname>" means "run the handler asynchronously after the event"
             // This is useful, for example, to catch "keydown" events after the browser has updated the control
             // (otherwise, ko.selectExtensions.readValue(this) will receive the control's value *before* the key event)
@@ -3965,9 +3933,7 @@ makeEventHandlerShortcut('click');
     // ---- ko.templateSources.domElement -----
 
     // template types
-    var templateScript = 1,
-        templateTextArea = 2,
-        templateTemplate = 3,
+    var templateTemplate = 3,
         templateElement = 4;
 
     ko.templateSources.domElement = function(element) {
@@ -3976,27 +3942,17 @@ makeEventHandlerShortcut('click');
         if (element) {
             var tagNameLower = ko.utils.tagNameLower(element);
             this.templateType =
-                tagNameLower === "script" ? templateScript :
-                tagNameLower === "textarea" ? templateTextArea :
-                    // For browsers with proper <template> element support, where the .content property gives a document fragment
                 tagNameLower == "template" && element.content && element.content.nodeType === 11 ? templateTemplate :
                 templateElement;
         }
     }
 
     ko.templateSources.domElement.prototype['text'] = function(/* valueToWrite */) {
-        var elemContentsProperty = this.templateType === templateScript ? "text"
-                                 : this.templateType === templateTextArea ? "value"
-                                 : "innerHTML";
-
+        var elemContentsProperty = "innerHTML";
         if (arguments.length == 0) {
-            return this.domElement[elemContentsProperty];
+            return this.domElement.innerHTML;
         }
-        var valueToWrite = arguments[0];
-        if (elemContentsProperty === "innerHTML")
-            ko.utils.setHtml(this.domElement, valueToWrite);
-        else
-            this.domElement[elemContentsProperty] = valueToWrite;
+        ko.utils.setHtml(this.domElement, arguments[0]);
     };
 
     var dataDomDataPrefix = ko.utils.domData.nextKey() + "_";
@@ -4544,8 +4500,8 @@ ko.utils.compareArrays = (() => {
             // Replace the contents of the mappedNodes array, thereby updating the record
             // of which nodes would be deleted if valueToMap was itself later removed
             mappedNodes.length = 0;
-            ko.utils.arrayPushAll(mappedNodes, newMappedNodes);
-        }, null, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: ()=>!!ko.utils.arrayFirst(mappedNodes, ko.utils.domNodeIsAttachedToDocument) });
+            mappedNodes.push(...newMappedNodes);
+        }, null, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: ()=>!!mappedNodes.find(ko.utils.domNodeIsAttachedToDocument) });
         return { mappedNodes : mappedNodes, dependentObservable : (dependentObservable.isActive() ? dependentObservable : undefined) };
     }
 
@@ -4595,15 +4551,13 @@ ko.utils.compareArrays = (() => {
         function callCallback(callback, items) {
             if (callback) {
                 for (var i = 0, n = items.length; i < n; i++) {
-                    ko.utils.arrayForEach(items[i].mappedNodes, function(node) {
-                        callback(node, i, items[i].arrayEntry);
-                    });
+                    items[i].mappedNodes.forEach(node => callback(node, i, items[i].arrayEntry));
                 }
             }
         }
 
         if (isFirstExecution) {
-            ko.utils.arrayForEach(array, itemAdded);
+            array.forEach(itemAdded);
         } else {
             if (!editScript || (lastMappingResult && lastMappingResult['_countWaitingForRemove'])) {
                 // Compare the provided array against the previous one
@@ -4681,7 +4635,7 @@ ko.utils.compareArrays = (() => {
         callCallback(options['beforeMove'], itemsForMoveCallbacks);
 
         // Next remove nodes for deleted items (or just clean if there's a beforeRemove callback)
-        ko.utils.arrayForEach(nodesToDelete, options['beforeRemove'] ? ko.cleanNode : ko.removeNode);
+        nodesToDelete.forEach(options['beforeRemove'] ? ko.cleanNode : ko.removeNode);
 
         var i, j, lastNode, nodeToInsert, mappedNodes, activeElement;
 

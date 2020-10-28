@@ -35,8 +35,8 @@
             // Replace the contents of the mappedNodes array, thereby updating the record
             // of which nodes would be deleted if valueToMap was itself later removed
             mappedNodes.length = 0;
-            ko.utils.arrayPushAll(mappedNodes, newMappedNodes);
-        }, null, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: ()=>!!ko.utils.arrayFirst(mappedNodes, ko.utils.domNodeIsAttachedToDocument) });
+            mappedNodes.push(...newMappedNodes);
+        }, null, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: ()=>!!mappedNodes.find(ko.utils.domNodeIsAttachedToDocument) });
         return { mappedNodes : mappedNodes, dependentObservable : (dependentObservable.isActive() ? dependentObservable : undefined) };
     }
 
@@ -86,15 +86,13 @@
         function callCallback(callback, items) {
             if (callback) {
                 for (var i = 0, n = items.length; i < n; i++) {
-                    ko.utils.arrayForEach(items[i].mappedNodes, function(node) {
-                        callback(node, i, items[i].arrayEntry);
-                    });
+                    items[i].mappedNodes.forEach(node => callback(node, i, items[i].arrayEntry));
                 }
             }
         }
 
         if (isFirstExecution) {
-            ko.utils.arrayForEach(array, itemAdded);
+            array.forEach(itemAdded);
         } else {
             if (!editScript || (lastMappingResult && lastMappingResult['_countWaitingForRemove'])) {
                 // Compare the provided array against the previous one
@@ -172,7 +170,7 @@
         callCallback(options['beforeMove'], itemsForMoveCallbacks);
 
         // Next remove nodes for deleted items (or just clean if there's a beforeRemove callback)
-        ko.utils.arrayForEach(nodesToDelete, options['beforeRemove'] ? ko.cleanNode : ko.removeNode);
+        nodesToDelete.forEach(options['beforeRemove'] ? ko.cleanNode : ko.removeNode);
 
         var i, j, lastNode, nodeToInsert, mappedNodes, activeElement;
 

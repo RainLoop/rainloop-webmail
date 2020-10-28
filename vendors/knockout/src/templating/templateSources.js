@@ -28,9 +28,7 @@
     // ---- ko.templateSources.domElement -----
 
     // template types
-    var templateScript = 1,
-        templateTextArea = 2,
-        templateTemplate = 3,
+    var templateTemplate = 3,
         templateElement = 4;
 
     ko.templateSources.domElement = function(element) {
@@ -39,27 +37,17 @@
         if (element) {
             var tagNameLower = ko.utils.tagNameLower(element);
             this.templateType =
-                tagNameLower === "script" ? templateScript :
-                tagNameLower === "textarea" ? templateTextArea :
-                    // For browsers with proper <template> element support, where the .content property gives a document fragment
                 tagNameLower == "template" && element.content && element.content.nodeType === 11 ? templateTemplate :
                 templateElement;
         }
     }
 
     ko.templateSources.domElement.prototype['text'] = function(/* valueToWrite */) {
-        var elemContentsProperty = this.templateType === templateScript ? "text"
-                                 : this.templateType === templateTextArea ? "value"
-                                 : "innerHTML";
-
+        var elemContentsProperty = "innerHTML";
         if (arguments.length == 0) {
-            return this.domElement[elemContentsProperty];
+            return this.domElement.innerHTML;
         }
-        var valueToWrite = arguments[0];
-        if (elemContentsProperty === "innerHTML")
-            ko.utils.setHtml(this.domElement, valueToWrite);
-        else
-            this.domElement[elemContentsProperty] = valueToWrite;
+        ko.utils.setHtml(this.domElement, arguments[0]);
     };
 
     var dataDomDataPrefix = ko.utils.domData.nextKey() + "_";

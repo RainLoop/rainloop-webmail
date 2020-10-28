@@ -41,7 +41,7 @@ ko.utils.domNodeDisposal = new (function () {
             if (!onlyComments || nodeList[i].nodeType === 8) {
                 cleanSingleNode(cleanedNodes[cleanedNodes.length] = lastCleanedNode = nodeList[i]);
                 if (nodeList[i] !== lastCleanedNode) {
-                    while (i-- && ko.utils.arrayIndexOf(cleanedNodes, nodeList[i]) == -1);
+                    while (i-- && !cleanedNodes.includes(nodeList[i]));
                 }
             }
         }

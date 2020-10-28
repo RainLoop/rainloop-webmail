@@ -7,7 +7,7 @@ ko.expressionRewriting = (() => {
     var javaScriptAssignmentTarget = /^(?:[$_a-z][$\w]*|(.+)(\.\s*[$_a-z][$\w]*|\[.+\]))$/i;
 
     function getWriteableValue(expression) {
-        if (ko.utils.arrayIndexOf(javaScriptReservedWords, expression) >= 0)
+        if (javaScriptReservedWords.includes(expression))
             return false;
         var match = expression.match(javaScriptAssignmentTarget);
         return match === null ? false : match[1] ? ('Object(' + match[1] + ')' + match[2]) : expression;
@@ -143,7 +143,7 @@ ko.expressionRewriting = (() => {
             keyValueArray = typeof bindingsStringOrKeyValueArray === "string" ?
                 parseObjectLiteral(bindingsStringOrKeyValueArray) : bindingsStringOrKeyValueArray;
 
-        ko.utils.arrayForEach(keyValueArray, keyValue =>
+        keyValueArray.forEach(keyValue =>
             processKeyValue(keyValue.key || keyValue['unknown'], keyValue.value)
         );
 

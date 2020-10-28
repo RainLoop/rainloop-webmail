@@ -160,10 +160,10 @@ var computedFn = {
             return false;
         }
         var dependencies = this.getDependencies();
-        if (ko.utils.arrayIndexOf(dependencies, obs) !== -1) {
+        if (dependencies.includes(obs)) {
             return true;
         }
-        return !!ko.utils.arrayFirst(dependencies, dep =>
+        return !!dependencies.find(dep =>
             dep.hasAncestorDependency && dep.hasAncestorDependency(obs)
         );
     },
@@ -425,7 +425,7 @@ var pureComputedOverrides = {
                     dependenciesOrder[dependency._order] = id
                 );
                 // Next, subscribe to each one
-                ko.utils.arrayForEach(dependenciesOrder, (id, order) => {
+                dependenciesOrder.forEach((id, order) => {
                     var dependency = state.dependencyTracking[id],
                         subscription = computedObservable.subscribeToDependency(dependency._target);
                     subscription._order = order;

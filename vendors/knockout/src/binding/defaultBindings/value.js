@@ -32,7 +32,7 @@ ko.bindingHandlers['value'] = {
             ko.expressionRewriting.writeValueToProperty(modelValue, allBindings, 'value', elementValue);
         }
 
-        ko.utils.arrayForEach(eventsToCatch, eventName => {
+        eventsToCatch.forEach(eventName => {
             // The syntax "after<eventname>" means "run the handler asynchronously after the event"
             // This is useful, for example, to catch "keydown" events after the browser has updated the control
             // (otherwise, ko.selectExtensions.readValue(this) will receive the control's value *before* the key event)

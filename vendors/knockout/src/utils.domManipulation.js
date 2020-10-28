@@ -32,16 +32,7 @@
             depth = wrap[0];
 
         // Go to html and back, then peel off extra wrappers
-        // Note that we always prefix with some dummy text, because otherwise, IE<9 will strip out leading comment nodes in descendants. Total madness.
-        var markup = "ignored<div>" + wrap[1] + html + wrap[2] + "</div>";
-        if (typeof windowContext['innerShiv'] == "function") {
-            // Note that innerShiv is deprecated in favour of html5shiv. We should consider adding
-            // support for html5shiv (except if no explicit support is needed, e.g., if html5shiv
-            // somehow shims the native APIs so it just works anyway)
-            div.append(windowContext['innerShiv'](markup));
-        } else {
-            div.innerHTML = markup;
-        }
+        div.innerHTML = "<div>" + wrap[1] + html + wrap[2] + "</div>";
 
         // Move to the right depth
         while (depth--)

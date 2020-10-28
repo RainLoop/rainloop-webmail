@@ -25,32 +25,14 @@ ko.utils = (() => {
     var canSetPrototype = ({ __proto__: [] } instanceof Array);
 
     return {
-        arrayForEach: (array, action, actionOwner) =>
-            arrayCall('forEach', array, action, actionOwner),
-
-        arrayIndexOf: (array, item) =>
-            arrayCall('indexOf', array, item),
-
-        arrayFirst: (array, predicate, predicateOwner) =>
-            arrayCall('find', array, (e, i, a) => predicate.call(predicateOwner, e, i, a)),
-
         arrayRemoveItem: (array, itemToRemove) => {
-            var index = ko.utils.arrayIndexOf(array, itemToRemove);
+            var index = array.indexOf(itemToRemove);
             if (index > 0) {
                 array.splice(index, 1);
             }
             else if (index === 0) {
                 array.shift();
             }
-        },
-
-        arrayPushAll: (array, valuesToPush) => {
-            if (valuesToPush instanceof Array)
-                array.push.apply(array, valuesToPush);
-            else
-                for (var i = 0, j = valuesToPush.length; i < j; i++)
-                    array.push(valuesToPush[i]);
-            return array;
         },
 
         canSetPrototype: canSetPrototype,

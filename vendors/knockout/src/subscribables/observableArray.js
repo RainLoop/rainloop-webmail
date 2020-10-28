@@ -47,13 +47,11 @@ ko.observableArray['fn'] = {
         // If you passed an arg, we interpret it as an array of entries to remove
         if (!arrayOfValues)
             return [];
-        return this['remove'](function (value) {
-            return ko.utils.arrayIndexOf(arrayOfValues, value) >= 0;
-        });
+        return this['remove'](value => arrayOfValues.includes(value));
     },
 
     'indexOf': function (item) {
-        return ko.utils.arrayIndexOf(this(), item);
+        return this().indexOf(item);
     }
 };
 
