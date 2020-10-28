@@ -82,7 +82,7 @@ ko.utils = (() => {
         moveCleanedNodesToContainerElement: nodes => {
             // Ensure it's a real array, as we're about to reparent the nodes and
             // we don't want the underlying collection to change while we're doing that.
-            var nodesArray = ko.utils.makeArray(nodes);
+            var nodesArray = [...nodes];
             var templateDocument = (nodesArray[0] && nodesArray[0].ownerDocument) || document;
 
             var container = templateDocument.createElement('div');
@@ -206,9 +206,7 @@ ko.utils = (() => {
         toggleDomNodeCssClass: toggleDomNodeCssClass,
 
         setTextContent: (element, textContent) =>
-            element.textContent = ko.utils.unwrapObservable(textContent) || "",
-
-        makeArray: arrayLikeObject => Array['from'](arrayLikeObject)
+            element.textContent = ko.utils.unwrapObservable(textContent) || ""
     }
 })();
 

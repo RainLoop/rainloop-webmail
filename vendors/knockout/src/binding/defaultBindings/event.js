@@ -4,9 +4,9 @@ function makeEventHandlerShortcut(eventName) {
     ko.bindingHandlers[eventName] = {
         'init': function(element, valueAccessor, allBindings, viewModel, bindingContext) {
             var newValueAccessor = () => {
-                var result = {};
-                result[eventName] = valueAccessor();
-                return result;
+                return {
+                    [eventName]: valueAccessor()
+                };
             };
             return ko.bindingHandlers['event']['init'].call(this, element, newValueAccessor, allBindings, viewModel, bindingContext);
         }
@@ -25,25 +25,19 @@ ko.bindingHandlers['event'] = {
                         return;
 
                     try {
-                        // Take all the event args, and prefix with the viewmodel
-                        var argsForHandler = ko.utils.makeArray(arguments);
                         viewModel = bindingContext['$data'];
-                        argsForHandler.unshift(viewModel);
-                        handlerReturnValue = handlerFunction.apply(viewModel, argsForHandler);
+                        // Take all the event args, and prefix with the viewmodel
+                        handlerReturnValue = handlerFunction.apply(viewModel, [viewModel, ...arguments]);
                     } finally {
                         if (handlerReturnValue !== true) { // Normally we want to prevent default action. Developer can override this be explicitly returning true.
-                            if (event.preventDefault)
-                                event.preventDefault();
-                            else
-                                event.returnValue = false;
+                            event.preventDefault();
                         }
                     }
 
                     var bubble = allBindings.get(eventName + 'Bubble') !== false;
                     if (!bubble) {
                         event.cancelBubble = true;
-                        if (event.stopPropagation)
-                            event.stopPropagation();
+                        event.stopPropagation();
                     }
                 });
             }

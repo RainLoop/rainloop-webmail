@@ -19,7 +19,7 @@
                     // Any in-flight loading operation is no longer relevant, so make sure we ignore its completion
                     currentLoadingOperationId = null;
                 },
-                originalChildNodes = ko.utils.makeArray(ko.virtualElements.childNodes(element));
+                originalChildNodes = [...ko.virtualElements.childNodes(element)];
 
             ko.virtualElements.emptyNode(element);
             ko.utils.domNodeDisposal.addDisposeCallback(element, disposeAssociatedComponentViewModel);

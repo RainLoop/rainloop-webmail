@@ -1,18 +1,34 @@
-(function () {
-    var _templateEngine;
-    ko.setTemplateEngine = templateEngine => {
-        if ((templateEngine != undefined) && !(templateEngine instanceof ko.templateEngine))
-            throw new Error("templateEngine must inherit from ko.templateEngine");
-        _templateEngine = templateEngine;
-    };
+(() => {
+    var renderTemplateSource = (templateSource, bindingContext, options, templateDocument) => {
+            var templateNodes = templateSource.nodes ? templateSource.nodes() : null;
+            return templateNodes
+                ? [...templateNodes.cloneNode(true).childNodes]
+                : ko.utils.parseHtmlFragment(templateSource['text'](), templateDocument);
+        },
 
-    function invokeForEachNodeInContinuousRange(firstNode, lastNode, action) {
-        var node, nextInQueue = firstNode, firstOutOfRangeNode = ko.virtualElements.nextSibling(lastNode);
-        while (nextInQueue && ((node = nextInQueue) !== firstOutOfRangeNode)) {
-            nextInQueue = ko.virtualElements.nextSibling(node);
-            action(node, nextInQueue);
-        }
-    }
+        makeTemplateSource = (template, templateDocument) => {
+            // Named template
+            if (typeof template == "string") {
+                templateDocument = templateDocument || document;
+                var elem = templateDocument.getElementById(template);
+                if (!elem)
+                    throw new Error("Cannot find template with ID " + template);
+                return new ko.templateSources.domElement(elem);
+            }
+            if ([1,8].includes(template.nodeType)) {
+                // Anonymous template
+                return new ko.templateSources.anonymousTemplate(template);
+            }
+            throw new Error("Unknown template type: " + template);
+        },
+
+        invokeForEachNodeInContinuousRange = (firstNode, lastNode, action) => {
+            var node, nextInQueue = firstNode, firstOutOfRangeNode = ko.virtualElements.nextSibling(lastNode);
+            while (nextInQueue && ((node = nextInQueue) !== firstOutOfRangeNode)) {
+                nextInQueue = ko.virtualElements.nextSibling(node);
+                action(node, nextInQueue);
+            }
+        };
 
     function activateBindingsOnContinuousNodeArray(continuousNodeArray, bindingContext) {
         // To be used on any nodes that have been rendered by a template and have been inserted into some parent element
@@ -77,12 +93,11 @@
         options = options || {};
         var firstTargetNode = targetNodeOrNodeArray && getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
         var templateDocument = (firstTargetNode || template || {}).ownerDocument;
-        var templateEngineToUse = (options['templateEngine'] || _templateEngine);
-        if (!templateEngineToUse['isTemplateRewritten'](template, templateDocument)) {
-            templateEngineToUse['rewriteTemplate'](template, htmlString => htmlString, templateDocument);
-        }
 
-        var renderedNodesArray = templateEngineToUse['renderTemplate'](template, bindingContext, options, templateDocument);
+        var renderedNodesArray = renderTemplateSource(
+            makeTemplateSource(template, templateDocument),
+            bindingContext, options, templateDocument
+        );
 
         // Loosely check result is an array of DOM nodes
         if ((typeof renderedNodesArray.length != "number") || (renderedNodesArray.length > 0 && typeof renderedNodesArray[0].nodeType != "number"))
@@ -124,8 +139,6 @@
 
     ko.renderTemplate = function (template, dataOrBindingContext, options, targetNodeOrNodeArray, renderMode) {
         options = options || {};
-        if ((options['templateEngine'] || _templateEngine) == undefined)
-            throw new Error("Set a template engine before calling renderTemplate");
         renderMode = renderMode || "replaceChildren";
 
         if (targetNodeOrNodeArray) {
@@ -140,8 +153,8 @@
                         ? dataOrBindingContext
                         : new ko.bindingContext(dataOrBindingContext, null, null, null, { "exportDependencies": true });
 
-                    var templateName = resolveTemplateName(template, bindingContext['$data'], bindingContext),
-                        renderedNodesArray = executeTemplate(targetNodeOrNodeArray, renderMode, templateName, bindingContext, options);
+                    var templateName = resolveTemplateName(template, bindingContext['$data'], bindingContext);
+                    executeTemplate(targetNodeOrNodeArray, renderMode, templateName, bindingContext, options);
                 },
                 null,
                 { disposeWhen: whenToDispose, disposeWhenNodeIsRemoved: firstTargetNode }

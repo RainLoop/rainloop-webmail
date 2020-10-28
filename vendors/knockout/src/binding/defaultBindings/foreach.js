@@ -10,7 +10,7 @@ ko.bindingHandlers['foreach'] = {
             // The value will be unwrapped and tracked within the template binding
             // (See https://github.com/SteveSanderson/knockout/issues/523)
             if ((!unwrappedValue) || typeof unwrappedValue.length == "number")
-                return { 'foreach': modelValue, 'templateEngine': ko.nativeTemplateEngine.instance };
+                return { 'foreach': modelValue };
 
             // If unwrappedValue.data is the array, preserve all relevant options and unwrap again value so we get updates
             ko.utils.unwrapObservable(modelValue);
@@ -23,8 +23,7 @@ ko.bindingHandlers['foreach'] = {
                 'beforeRemove': unwrappedValue['beforeRemove'],
                 'afterRender': unwrappedValue['afterRender'],
                 'beforeMove': unwrappedValue['beforeMove'],
-                'afterMove': unwrappedValue['afterMove'],
-                'templateEngine': ko.nativeTemplateEngine.instance
+                'afterMove': unwrappedValue['afterMove']
             };
         };
     },

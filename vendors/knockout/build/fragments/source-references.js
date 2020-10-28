@@ -48,11 +48,11 @@ knockoutDebugCallback([
     'src/binding/defaultBindings/visibleHidden.js',
     // click depends on event - The order matters for specs, which includes each file individually
     'src/binding/defaultBindings/click.js',
-    'src/templating/templateEngine.js',
+//    'src/templating/templateEngine.js',
 //    'src/templating/templateRewriting.js',
     'src/templating/templateSources.js',
     'src/templating/templating.js',
     'src/binding/editDetection/compareArrays.js',
     'src/binding/editDetection/arrayToDomNodeChildren.js',
-    'src/templating/native/nativeTemplateEngine.js'
+//    'src/templating/native/nativeTemplateEngine.js'
 ]);

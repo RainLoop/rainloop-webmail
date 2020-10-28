@@ -47,7 +47,7 @@
         while (depth--)
             div = div.lastChild;
 
-        return ko.utils.makeArray(div.lastChild.childNodes);
+        return [...div.lastChild.childNodes];
     }
 
     ko.utils.parseHtmlFragment = (html, documentContext) =>

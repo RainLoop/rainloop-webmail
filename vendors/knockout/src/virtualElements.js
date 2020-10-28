@@ -62,24 +62,22 @@
         childNodes: node => isStartComment(node) ? getVirtualChildren(node) : node.childNodes,
 
         emptyNode: node => {
-            if (!isStartComment(node))
-                ko.utils.emptyDomNode(node);
-            else {
-                var virtualChildren = ko.virtualElements.childNodes(node);
+            if (isStartComment(node)) {
+                var virtualChildren = getVirtualChildren(node);
                 for (var i = 0, j = virtualChildren.length; i < j; i++)
                     ko.removeNode(virtualChildren[i]);
-            }
+            } else
+                ko.utils.emptyDomNode(node);
         },
 
         setDomNodeChildren: (node, childNodes) => {
-            if (!isStartComment(node))
-                ko.utils.setDomNodeChildren(node, childNodes);
-            else {
+            if (isStartComment(node)) {
                 ko.virtualElements.emptyNode(node);
                 var endCommentNode = node.nextSibling; // Must be the next sibling, as we just emptied the children
                 for (var i = 0, j = childNodes.length; i < j; i++)
                     endCommentNode.parentNode.insertBefore(childNodes[i], endCommentNode);
-            }
+            } else
+                ko.utils.setDomNodeChildren(node, childNodes);
         },
 
         prepend: (containerNode, nodeToPrepend) => {
@@ -97,9 +95,7 @@
         },
 
         insertAfter: (containerNode, nodeToInsert, insertAfterNode) => {
-            if (!insertAfterNode) {
-                ko.virtualElements.prepend(containerNode, nodeToInsert);
-            } else {
+            if (insertAfterNode) {
                 // Children of start comments must always have a parent and at least one following sibling (the end comment)
                 var insertBeforeNode = insertAfterNode.nextSibling;
 
@@ -108,17 +104,19 @@
                 }
 
                 containerNode.insertBefore(nodeToInsert, insertBeforeNode);
+            } else {
+                ko.virtualElements.prepend(containerNode, nodeToInsert);
             }
         },
 
         firstChild: node => {
-            if (!isStartComment(node)) {
-                if (node.firstChild && isEndComment(node.firstChild)) {
-                    throw new Error("Found invalid end comment, as the first child of " + node);
-                }
-                return node.firstChild;
+            if (isStartComment(node)) {
+                return (!node.nextSibling || isEndComment(node.nextSibling)) ? null : node.nextSibling;
             }
-            return (!node.nextSibling || isEndComment(node.nextSibling)) ? null : node.nextSibling;
+            if (node.firstChild && isEndComment(node.firstChild)) {
+                throw new Error("Found invalid end comment, as the first child of " + node);
+            }
+            return node.firstChild;
         },
 
         nextSibling: node => {
@@ -138,7 +136,7 @@
         hasBindingValue: isStartComment,
 
         virtualNodeBindingValue: node => {
-            var regexMatch = (node.nodeValue).match(startCommentRegex);
+            var regexMatch = node.nodeValue.match(startCommentRegex);
             return regexMatch ? regexMatch[1] : null;
         }
     };

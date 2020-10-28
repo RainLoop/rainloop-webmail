@@ -97,7 +97,7 @@ module.exports = function(grunt) {
     function buildDebug(output) {
         var source = [];
         source.push(grunt.config('banner'));
-        source.push('(function(){\n');
+        source.push('(()=>{\n');
         source.push('var DEBUG=true;\n');
         source.push(getCombinedSources());
         source.push('})();\n');
