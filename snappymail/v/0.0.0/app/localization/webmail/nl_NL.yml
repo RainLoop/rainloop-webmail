@@ -7,9 +7,6 @@ nl_NL:
     LABEL_VERIFICATION_CODE: "Verificatie Code"
     LABEL_DONT_ASK_VERIFICATION_CODE: "Vraag 2 weken niet naar code"
     BUTTON_SIGN_IN: "Aanmelden"
-    TITLE_SIGN_IN_GOOGLE: "Aanmelden met Google"
-    TITLE_SIGN_IN_FACEBOOK: "Aanmelden met Facebook"
-    TITLE_SIGN_IN_TWITTER: "Aanmelden met Twitter"
     LABEL_FORGOT_PASSWORD: "Wachtwoord vergeten"
     LABEL_REGISTRATION: "Registratie"
   TOP_TOOLBAR:
@@ -44,12 +41,9 @@ nl_NL:
     FULLSCREEN: "Schakel volledig scherm in/uit"
     ZOOM: "Zoom in/uit"
     CLOSE: "Sluiten (Esc)"
-    LOADING: "Ophalen..."
     GALLERY_PREV: "Vorige (Linker Pijl toets)"
     GALLERY_NEXT: "Volgende (Rechter Pijl toets)"
     GALLERY_COUNTER: "%curr% van %total%"
-    IMAGE_ERROR: "<a href=\"%url%\" target=\"_blank\">De afbeelding</a> kan niet worden geladen"
-    AJAX_ERROR: "<a href=\"%url%\" target=\"_blank\">De inhoud</a> kan niet worden geladen"
   FOLDER_LIST:
     BUTTON_COMPOSE: "Nieuw bericht"
     BUTTON_CONTACTS: "Contactpersonen"
@@ -315,7 +309,7 @@ nl_NL:
     TITLE_EDIT_FILTER: "Filter aanpassen"
     FILTER_NAME: "Naam"
     LEGEND_CONDITIONS: "Voorwaarden"
-    LEGEND_ACTIONS: "Akties"
+    LEGEND_ACTIONS: "Acties"
     BUTTON_DONE: "Klaar"
     BUTTON_ADD_CONDITION: "Voorwaarde toevoegen"
     SELECT_ACTION_NONE: "Geen"
@@ -694,8 +688,6 @@ nl_NL:
   STATIC:
     BACK_LINK: "Opnieuw laden"
     DOMAIN_LIST_DESC: "Lijst van webmail domeinen die toegankelijk zijn"
-    PHP_EXSTENSIONS_ERROR_DESC: "Vereiste PHP extensies zijn niet beschikbaar in uw PHP configuratie!"
-    PHP_VERSION_ERROR_DESC: "Uw PHP versie (%VERSION%) is lager dan de minimaal vereiste 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript is benodigd voor deze applicatie"
     NO_SCRIPT_DESC: |
         JavaScript ondersteuning is niet beschikbaar in uw browser.

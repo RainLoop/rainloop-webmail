@@ -7,9 +7,6 @@ es_ES:
     LABEL_VERIFICATION_CODE: "Código de verificación"
     LABEL_DONT_ASK_VERIFICATION_CODE: "No solicitar el código de verificación durante 2 semanas"
     BUTTON_SIGN_IN: "Acceder"
-    TITLE_SIGN_IN_GOOGLE: "Acceder usando Google"
-    TITLE_SIGN_IN_FACEBOOK: "Acceder usando Facebook"
-    TITLE_SIGN_IN_TWITTER: "Acceder usando Twitter"
     LABEL_FORGOT_PASSWORD: "Olvidé mi contraseña"
     LABEL_REGISTRATION: "Registro"
   TOP_TOOLBAR:
@@ -44,12 +41,9 @@ es_ES:
     FULLSCREEN: "Cambiar a pantalla completa"
     ZOOM: "Acercar / Alejar"
     CLOSE: "Cerrar (Esc)"
-    LOADING: "Cargando..."
     GALLERY_PREV: "Anterior (Flecha Izquierda)"
     GALLERY_NEXT: "Siguiente (Flecha Derecha)"
     GALLERY_COUNTER: "%curr% de %total%"
-    IMAGE_ERROR: "La <a href=\"%url%\" target=\"_blank\">imagen</a> no se pudo cargar."
-    AJAX_ERROR: "El <a href=\"%url%\" target=\"_blank\">contenido</a> no se pudo cargar."
   FOLDER_LIST:
     BUTTON_COMPOSE: "Redactar"
     BUTTON_CONTACTS: "Contactos"
@@ -696,8 +690,6 @@ es_ES:
   STATIC:
     BACK_LINK: "Recargar"
     DOMAIN_LIST_DESC: "Lista de dominios de correo web que se le permite acceder."
-    PHP_EXSTENSIONS_ERROR_DESC: "La extensión de PHP requerida no está disponible en su configuración de PHP!"
-    PHP_VERSION_ERROR_DESC: "Su versión de PHP (%VERSION%) es menor a la mínima requerida 5.3.0!"
     NO_SCRIPT_TITLE: "Esta aplicación requiere de JavaScript."
     NO_SCRIPT_DESC: |
         JavaScript no está disponible en su navegador.

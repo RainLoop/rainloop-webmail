@@ -7,9 +7,6 @@ fr_FR:
     LABEL_VERIFICATION_CODE: "Code de vérification"
     LABEL_DONT_ASK_VERIFICATION_CODE: "Ne plus demander le code pendant 2 semaines"
     BUTTON_SIGN_IN: "Se connecter"
-    TITLE_SIGN_IN_GOOGLE: "Se connecter avec Google"
-    TITLE_SIGN_IN_FACEBOOK: "Se connecter avec Facebook"
-    TITLE_SIGN_IN_TWITTER: "Se connecter avec Twitter"
     LABEL_FORGOT_PASSWORD: "Mot de passe oublié"
     LABEL_REGISTRATION: "S'enregistrer"
   TOP_TOOLBAR:
@@ -44,12 +41,9 @@ fr_FR:
     FULLSCREEN: "Basculer en plein écran"
     ZOOM: "Zoom Avant/Arrière"
     CLOSE: "Fermer (Esc)"
-    LOADING: "Chargement..."
     GALLERY_PREV: "Précédent (flèche gauche)"
     GALLERY_NEXT: "Suivant (flèche droite)"
     GALLERY_COUNTER: "%curr% de %total%"
-    IMAGE_ERROR: "<a href=\"%url%\" target=\"_blank\">L'image</a> ne peut être chargée."
-    AJAX_ERROR: "<a href=\"%url%\" target=\"_blank\">Le contenu</a> ne peut être chargé."
   FOLDER_LIST:
     BUTTON_COMPOSE: "Nouveau message"
     BUTTON_CONTACTS: "Contacts"
@@ -697,8 +691,6 @@ fr_FR:
   STATIC:
     BACK_LINK: "Recharger"
     DOMAIN_LIST_DESC: "Liste des domaines auxquels le webmail est autorisé à accéder."
-    PHP_EXSTENSIONS_ERROR_DESC: "Les extensions PHP nécessaires ne sont pas disponibles dans votre configuration de PHP !"
-    PHP_VERSION_ERROR_DESC: "Votre version de PHP (% VERSION%) est inférieure à la minimale requise 5.3.0 !"
     NO_SCRIPT_TITLE: "JavaScript est nécessaire pour cette application."
     NO_SCRIPT_DESC: |
         Le support de JavaScript n'est pas disponible dans votre navigateur.

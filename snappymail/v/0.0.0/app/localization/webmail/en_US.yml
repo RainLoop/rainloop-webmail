@@ -7,9 +7,6 @@ en_US:
     LABEL_VERIFICATION_CODE: "Verification Code"
     LABEL_DONT_ASK_VERIFICATION_CODE: "Don't ask for the code for 2 weeks"
     BUTTON_SIGN_IN: "Sign In"
-    TITLE_SIGN_IN_GOOGLE: "Sign In using Google"
-    TITLE_SIGN_IN_FACEBOOK: "Sign In using Facebook"
-    TITLE_SIGN_IN_TWITTER: "Sign In using Twitter"
     LABEL_FORGOT_PASSWORD: "Forgot password"
     LABEL_REGISTRATION: "Registration"
   TOP_TOOLBAR:
@@ -44,12 +41,9 @@ en_US:
     FULLSCREEN: "Toggle fullscreen"
     ZOOM: "Zoom in/out"
     CLOSE: "Close (Esc)"
-    LOADING: "Loading..."
     GALLERY_PREV: "Previous (arrow left)"
     GALLERY_NEXT: "Next (arrow right)"
     GALLERY_COUNTER: "%curr% of %total%"
-    IMAGE_ERROR: "<a href=\"%url%\" target=\"_blank\">The image</a> could not be loaded."
-    AJAX_ERROR: "<a href=\"%url%\" target=\"_blank\">The content</a> could not be loaded."
   FOLDER_LIST:
     BUTTON_COMPOSE: "Compose"
     BUTTON_CONTACTS: "Contacts"
@@ -693,8 +687,6 @@ en_US:
   STATIC:
     BACK_LINK: "Reload"
     DOMAIN_LIST_DESC: "List of domains webmail is allowed to access."
-    PHP_EXSTENSIONS_ERROR_DESC: "Required PHP extension are not available in your PHP configuration!"
-    PHP_VERSION_ERROR_DESC: "Your PHP version (%VERSION%) is lower than the minimal required 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript is required for this application."
     NO_SCRIPT_DESC: |
         JavaScript support is not available in your browser.

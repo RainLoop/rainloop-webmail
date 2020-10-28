@@ -7,9 +7,6 @@ de_DE:
     LABEL_VERIFICATION_CODE: "Verifizierungscode"
     LABEL_DONT_ASK_VERIFICATION_CODE: "Für zwei Wochen nicht nach dem Code fragen"
     BUTTON_SIGN_IN: "Anmelden"
-    TITLE_SIGN_IN_GOOGLE: "Mit Google anmelden"
-    TITLE_SIGN_IN_FACEBOOK: "Mit Facebook anmelden"
-    TITLE_SIGN_IN_TWITTER: "Mit Twitter anmelden"
     LABEL_FORGOT_PASSWORD: "Passwort vergessen"
     LABEL_REGISTRATION: "Registrierung"
   TOP_TOOLBAR:
@@ -44,12 +41,9 @@ de_DE:
     FULLSCREEN: "Vollbild umschalten"
     ZOOM: "Herein-/Herauszoomen"
     CLOSE: "Schließen (Esc)"
-    LOADING: "Wird geladen ..."
     GALLERY_PREV: "Zurück (Linke Pfeil-Taste)"
     GALLERY_NEXT: "Weiter (Rechte Pfeil-Taste)"
     GALLERY_COUNTER: "%curr% von %total%"
-    IMAGE_ERROR: "<a href=\"%url%\" target=\"_blank\">Die Grafikdatei</a> konnte nicht geladen werden."
-    AJAX_ERROR: "<a href=\"%url%\" target=\"_blank\">Der Inhalt</a> konnte nicht geladen werden."
   FOLDER_LIST:
     BUTTON_COMPOSE: "Erstellen"
     BUTTON_CONTACTS: "Kontakte"
@@ -695,8 +689,6 @@ de_DE:
   STATIC:
     BACK_LINK: "Aktualisieren"
     DOMAIN_LIST_DESC: "Liste der Domains, auf die zugegriffen werden darf"
-    PHP_EXSTENSIONS_ERROR_DESC: "Notwendige PHP-Erweiterungen sind in Ihrer PHP-Konfiguration nicht vorhanden!"
-    PHP_VERSION_ERROR_DESC: "Ihre PHP Version (%VERSION%) ist älter als die notwendige Version: 5.3.0!"
     NO_SCRIPT_TITLE: "Diese Anwendung benötigt JavaScript."
     NO_SCRIPT_DESC: |
         Ihr Browser unterstützt JavaScript nicht.
