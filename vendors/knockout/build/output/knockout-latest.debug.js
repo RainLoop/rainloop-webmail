@@ -41,10 +41,6 @@ ko.utils = (() => {
             source && Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
             return target;
         },
-        setPrototypeOf = (obj, proto) => {
-            obj.__proto__ = proto;
-            return obj;
-        },
         // For details on the pattern for changing node classes
         // see: https://github.com/knockout/knockout/issues/1597
         toggleDomNodeCssClass = (node, classNames, shouldHaveClass) => {
@@ -55,8 +51,6 @@ ko.utils = (() => {
                 );
             }
         };
-
-    var canSetPrototype = ({ __proto__: [] } instanceof Array);
 
     return {
         arrayRemoveItem: (array, itemToRemove) => {
@@ -69,13 +63,7 @@ ko.utils = (() => {
             }
         },
 
-        canSetPrototype: canSetPrototype,
-
         extend: extend,
-
-        setPrototypeOf: setPrototypeOf,
-
-        setPrototypeOfOrExtend: canSetPrototype ? setPrototypeOf : extend,
 
         objectForEach: objectForEach,
 
@@ -614,7 +602,7 @@ ko.subscription.prototype.disposeWhenNodeIsRemoved = function (node) {
 };
 
 ko.subscribable = function () {
-    ko.utils.setPrototypeOfOrExtend(this, ko_subscribable_fn);
+    Object.setPrototypeOf(this, ko_subscribable_fn);
     ko_subscribable_fn.init(this);
 }
 
@@ -774,9 +762,7 @@ ko.exportProperty(ko_subscribable_fn, 'getSubscriptionsCount', ko_subscribable_f
 // For browsers that support proto assignment, we overwrite the prototype of each
 // observable instance. Since observables are functions, we need Function.prototype
 // to still be in the prototype chain.
-if (ko.utils.canSetPrototype) {
-    ko.utils.setPrototypeOf(ko_subscribable_fn, Function.prototype);
-}
+Object.setPrototypeOf(ko_subscribable_fn, Function.prototype);
 
 ko.subscribable['fn'] = ko_subscribable_fn;
 
@@ -866,14 +852,10 @@ ko.observable = initialValue => {
     observable[observableLatestValue] = initialValue;
 
     // Inherit from 'subscribable'
-    if (!ko.utils.canSetPrototype) {
-        // 'subscribable' won't be on the prototype chain unless we put it there directly
-        ko.utils.extend(observable, ko.subscribable['fn']);
-    }
     ko.subscribable['fn'].init(observable);
 
     // Inherit from 'observable'
-    ko.utils.setPrototypeOfOrExtend(observable, observableFn);
+    Object.setPrototypeOf(observable, observableFn);
 
     return observable;
 }
@@ -895,9 +877,7 @@ var observableFn = {
 
 // Note that for browsers that don't support proto assignment, the
 // inheritance chain is created manually in the ko.observable constructor
-if (ko.utils.canSetPrototype) {
-    ko.utils.setPrototypeOf(observableFn, ko.subscribable['fn']);
-}
+Object.setPrototypeOf(observableFn, ko.subscribable['fn']);
 
 var protoProperty = ko.observable.protoProperty = '__ko_proto__';
 observableFn[protoProperty] = ko.observable;
@@ -927,7 +907,7 @@ ko.observableArray = initialValues => {
         throw new Error("The argument passed when initializing an observable array must be an array, or null, or undefined.");
 
     var result = ko.observable(initialValues);
-    ko.utils.setPrototypeOfOrExtend(result, ko.observableArray['fn']);
+    Object.setPrototypeOf(result, ko.observableArray['fn']);
     return result.extend({'trackArrayChanges':true});
 };
 
@@ -979,9 +959,7 @@ ko.observableArray['fn'] = {
 
 // Note that for browsers that don't support proto assignment, the
 // inheritance chain is created manually in the ko.observableArray constructor
-if (ko.utils.canSetPrototype) {
-    ko.utils.setPrototypeOf(ko.observableArray['fn'], ko.observable['fn']);
-}
+Object.setPrototypeOf(ko.observableArray['fn'], ko.observable['fn']);
 
 // Populate ko.observableArray.fn with read/write functions from native arrays
 // Important: Do not add any additional functions here that may reasonably be used to *read* data from the array
@@ -1233,14 +1211,10 @@ ko.computed = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget, opt
     computedObservable.hasWriteFunction = typeof writeFunction === "function";
 
     // Inherit from 'subscribable'
-    if (!ko.utils.canSetPrototype) {
-        // 'subscribable' won't be on the prototype chain unless we put it there directly
-        ko.utils.extend(computedObservable, ko.subscribable['fn']);
-    }
     ko.subscribable['fn'].init(computedObservable);
 
     // Inherit from 'computed'
-    ko.utils.setPrototypeOfOrExtend(computedObservable, computedFn);
+    Object.setPrototypeOf(computedObservable, computedFn);
 
     if (options['pure']) {
         state.pure = true;
@@ -1659,9 +1633,7 @@ var deferEvaluationOverrides = {
 
 // Note that for browsers that don't support proto assignment, the
 // inheritance chain is created manually in the ko.computed constructor
-if (ko.utils.canSetPrototype) {
-    ko.utils.setPrototypeOf(computedFn, ko.subscribable['fn']);
-}
+Object.setPrototypeOf(computedFn, ko.subscribable['fn']);
 
 // Set the proto values for ko.computed
 var protoProp = ko.observable.protoProperty; // == "__ko_proto__"

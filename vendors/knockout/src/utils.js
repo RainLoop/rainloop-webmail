@@ -7,10 +7,6 @@ ko.utils = (() => {
             source && Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
             return target;
         },
-        setPrototypeOf = (obj, proto) => {
-            obj.__proto__ = proto;
-            return obj;
-        },
         // For details on the pattern for changing node classes
         // see: https://github.com/knockout/knockout/issues/1597
         toggleDomNodeCssClass = (node, classNames, shouldHaveClass) => {
@@ -21,8 +17,6 @@ ko.utils = (() => {
                 );
             }
         };
-
-    var canSetPrototype = ({ __proto__: [] } instanceof Array);
 
     return {
         arrayRemoveItem: (array, itemToRemove) => {
@@ -35,13 +29,7 @@ ko.utils = (() => {
             }
         },
 
-        canSetPrototype: canSetPrototype,
-
         extend: extend,
-
-        setPrototypeOf: setPrototypeOf,
-
-        setPrototypeOfOrExtend: canSetPrototype ? setPrototypeOf : extend,
 
         objectForEach: objectForEach,
 

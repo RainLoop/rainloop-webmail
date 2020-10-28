@@ -27,7 +27,7 @@ ko.subscription.prototype.disposeWhenNodeIsRemoved = function (node) {
 };
 
 ko.subscribable = function () {
-    ko.utils.setPrototypeOfOrExtend(this, ko_subscribable_fn);
+    Object.setPrototypeOf(this, ko_subscribable_fn);
     ko_subscribable_fn.init(this);
 }
 
@@ -187,9 +187,7 @@ ko.exportProperty(ko_subscribable_fn, 'getSubscriptionsCount', ko_subscribable_f
 // For browsers that support proto assignment, we overwrite the prototype of each
 // observable instance. Since observables are functions, we need Function.prototype
 // to still be in the prototype chain.
-if (ko.utils.canSetPrototype) {
-    ko.utils.setPrototypeOf(ko_subscribable_fn, Function.prototype);
-}
+Object.setPrototypeOf(ko_subscribable_fn, Function.prototype);
 
 ko.subscribable['fn'] = ko_subscribable_fn;
 
