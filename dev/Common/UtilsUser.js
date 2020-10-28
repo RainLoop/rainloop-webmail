@@ -128,7 +128,7 @@ export function htmlToPlain(html) {
 		.replace(/&quot;/gi, '"')
 		.replace(/<[^>]*>/gm, '');
 
-	text = splitPlainText(tpl.innerText
+	text = splitPlainText(tpl.content.textContent
 		.replace(/\n[ \t]+/gm, '\n')
 		.replace(/[\n]{3,}/gm, '\n\n')
 		.replace(/&gt;/gi, '>')
