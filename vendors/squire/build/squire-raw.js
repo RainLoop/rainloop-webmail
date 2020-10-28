@@ -107,8 +107,12 @@ const
 	isInline = node => getNodeCategory( node ) === INLINE,
 	isBlock = node => getNodeCategory( node ) === BLOCK,
 	isContainer = node => getNodeCategory( node ) === CONTAINER,
+	createTreeWalker = (root, whatToShow, filter) => doc.createTreeWalker( root, whatToShow, filter ? {
+			acceptNode: node => filter(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP
+		} : null
+	),
 	getBlockWalker = ( node, root ) => {
-		let walker = doc.createTreeWalker( root, SHOW_ELEMENT, isBlock );
+		let walker = createTreeWalker( root, SHOW_ELEMENT, isBlock );
 		walker.currentNode = node;
 		return walker;
 	},
@@ -282,6 +286,7 @@ const
 				}
 			}
 //		} else if ( !node.querySelector( 'BR' ) ) {
+//		} else if ( !node.innerText.trim().length ) {
 		} else if ( node.matches( ':empty' ) ) {
 			fixer = createElement( 'BR' );
 			while ( ( child = node.lastElementChild ) && !isInline( child ) ) {
@@ -1035,7 +1040,7 @@ const
 		return block && isNodeContainedInRange( range, block ) ? block : null;
 	},
 
-	newContentWalker = root => doc.createTreeWalker( root,
+	newContentWalker = root => createTreeWalker( root,
 		SHOW_TEXT|SHOW_ELEMENT,
 		node => node.nodeType === TEXT_NODE ? notWS.test( node.data ) : node.nodeName === 'IMG'
 	),
@@ -1858,7 +1863,7 @@ let cleanTree = ( node, config, preserveWS ) => {
 	while ( isInline( nonInlineParent ) ) {
 		nonInlineParent = nonInlineParent.parentNode;
 	}
-	let walker = doc.createTreeWalker( nonInlineParent, SHOW_TEXT|SHOW_ELEMENT );
+	let walker = createTreeWalker( nonInlineParent, SHOW_TEXT|SHOW_ELEMENT );
 
 	for ( i = 0, l = children.length; i < l; ++i ) {
 		child = children[i];
@@ -1966,7 +1971,7 @@ let isLineBreak = ( br, isLBIfEmptyBlock ) => {
 	while ( isInline( block ) ) {
 		block = block.parentNode;
 	}
-	walker = doc.createTreeWalker( block, SHOW_ELEMENT|SHOW_TEXT, notWSTextNode );
+	walker = createTreeWalker( block, SHOW_ELEMENT|SHOW_TEXT, notWSTextNode );
 	walker.currentNode = br;
 	return !!walker.nextNode() ||
 		( isLBIfEmptyBlock && !walker.previousNode() );
@@ -2715,7 +2720,7 @@ proto.getSelectedText = function () {
 	if ( !range || range.collapsed ) {
 		return '';
 	}
-	let walker = doc.createTreeWalker(
+	let walker = createTreeWalker(
 		range.commonAncestorContainer,
 		SHOW_TEXT|SHOW_ELEMENT,
 		node => isNodeContainedInRange( range, node )
@@ -2768,7 +2773,7 @@ proto.getPath = function () {
 // the bottom of the tree so the block can be selected. Define that node as the
 // keepNode.
 let removeZWS = ( root, keepNode ) => {
-	let walker = doc.createTreeWalker( root, SHOW_TEXT );
+	let walker = createTreeWalker( root, SHOW_TEXT );
 	let parent, node, index;
 	while ( node = walker.nextNode() ) {
 		while ( ( index = node.data.indexOf( ZWS ) ) > -1  &&
@@ -3101,7 +3106,7 @@ proto.hasFormat = function ( tag, attributes, range ) {
 
 	// Otherwise, check each text node at least partially contained within
 	// the selection and make sure all of them have the format we want.
-	walker = doc.createTreeWalker( common, SHOW_TEXT, node => isNodeContainedInRange( range, node ) );
+	walker = createTreeWalker( common, SHOW_TEXT, node => isNodeContainedInRange( range, node ) );
 
 	let seenNode = false;
 	while ( node = walker.nextNode() ) {
@@ -3197,7 +3202,7 @@ proto._addFormat = function ( tag, attributes, range ) {
 		//
 		// IMG tags are included because we may want to create a link around
 		// them, and adding other styles is harmless.
-		walker = doc.createTreeWalker(
+		walker = createTreeWalker(
 			range.commonAncestorContainer,
 			SHOW_TEXT|SHOW_ELEMENT,
 			node => ( node.nodeType === TEXT_NODE ||
@@ -3797,8 +3802,8 @@ proto.setHTML = function ( html ) {
 	fixContainer( frag, root );
 
 	// Fix cursor
-	let node = frag;
-	while ( node = getNextBlock( node, root ) ) {
+	let node, walker = getBlockWalker( frag, root );
+	while ( (node = walker.nextNode()) && node !== root ) {
 		fixCursor( node, root );
 	}
 
@@ -3887,7 +3892,7 @@ proto.insertImage = function ( src, attributes ) {
 proto.linkRegExp = /\b(?:((?:(?:ht|f)tps?:\/\/|www\d{0,3}[.]|[a-z0-9][a-z0-9.-]*[.][a-z]{2,}\/)(?:[^\s()<>]+|\([^\s()<>]+\))+(?:[^\s?&`!()[\]{};:'".,<>«»“”‘’]|\([^\s()<>]+\)))|([\w\-.%+]+@(?:[\w-]+\.)+[a-z]{2,}\b(?:[?][^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+(?:&[^&?\s]+=[^\s?&`!()[\]{};:'".,<>«»“”‘’]+)*)?))/i;
 
 let addLinks = ( frag, root, self ) => {
-	let walker = doc.createTreeWalker( frag, SHOW_TEXT, node => !getClosest( node, root, 'A' ));
+	let walker = createTreeWalker( frag, SHOW_TEXT, node => !getClosest( node, root, 'A' ) );
 	let linkRegExp = self.linkRegExp;
 	let defaultAttributes = self._config.tagAttributes.a;
 	let node, data, parent, match, index, endIndex, child;
@@ -4265,7 +4270,7 @@ let addPre = function ( frag ) {
 		output.append( empty( node ) );
 	}
 	// 4. Replace nbsp with regular sp
-	walker = doc.createTreeWalker( output, SHOW_TEXT );
+	walker = createTreeWalker( output, SHOW_TEXT );
 	while (( node = walker.nextNode() )) {
 		node.data = node.data.replace( NBSP, ' ' ); // nbsp -> sp
 	}
@@ -4283,7 +4288,7 @@ let removePre = function ( frag ) {
 	let pre, walker, node, value, contents, index;
 	while ( l-- ) {
 		pre = pres[l];
-		walker = doc.createTreeWalker( pre, SHOW_TEXT );
+		walker = createTreeWalker( pre, SHOW_TEXT );
 		while (( node = walker.nextNode() )) {
 			value = node.data;
 			value = value.replace( / (?= )/g, NBSP ); // sp -> nbsp
