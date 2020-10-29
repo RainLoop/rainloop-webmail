@@ -17,6 +17,8 @@ class FoldersUserSettings {
 	constructor() {
 		this.displaySpecSetting = FolderStore.displaySpecSetting;
 		this.folderList = FolderStore.folderList;
+		this.folderListOptimized = FolderStore.folderListOptimized;
+		this.folderListError = FolderStore.folderListError;
 
 		this.folderListHelp = ko.observable('').extend({ throttle: 100 });
 
