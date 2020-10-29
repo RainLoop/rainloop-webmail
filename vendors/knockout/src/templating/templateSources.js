@@ -35,9 +35,8 @@
         this.domElement = element;
 
         if (element) {
-            var tagNameLower = ko.utils.tagNameLower(element);
             this.templateType =
-                tagNameLower == "template" && element.content && element.content.nodeType === 11 ? templateTemplate :
+                element.matches("TEMPLATE") && element.content && element.content.nodeType === 11 ? templateTemplate :
                 templateElement;
         }
     }

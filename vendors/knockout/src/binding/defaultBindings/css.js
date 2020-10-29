@@ -1,4 +1,11 @@
-var classesWrittenByBindingKey = '__ko__cssValue';
+var classesWrittenByBindingKey = '__ko__cssValue',
+    toggleClasses = (node, classNames, force) => {
+        if (classNames) {
+            classNames.split(/\s+/).forEach(className =>
+                node.classList.toggle(className, force)
+            );
+        }
+    };
 
 ko.bindingHandlers['css'] = {
     'update': (element, valueAccessor) => {
@@ -6,13 +13,13 @@ ko.bindingHandlers['css'] = {
         if (value !== null && typeof value == "object") {
             ko.utils.objectForEach(value, (className, shouldHaveClass) => {
                 shouldHaveClass = ko.utils.unwrapObservable(shouldHaveClass);
-                ko.utils.toggleDomNodeCssClass(element, className, shouldHaveClass);
+                toggleClasses(element, className, !!shouldHaveClass);
             });
         } else {
             value = ko.utils.stringTrim(value);
-            ko.utils.toggleDomNodeCssClass(element, element[classesWrittenByBindingKey], false);
+            toggleClasses(element, element[classesWrittenByBindingKey], false);
             element[classesWrittenByBindingKey] = value;
-            ko.utils.toggleDomNodeCssClass(element, value, true);
+            toggleClasses(element, value, true);
         }
     }
 };

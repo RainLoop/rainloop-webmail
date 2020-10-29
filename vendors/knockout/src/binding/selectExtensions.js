@@ -6,12 +6,12 @@
     // that are arbitrary objects. This is very convenient when implementing things like cascading dropdowns.
     ko.selectExtensions = {
         readValue : element => {
-            switch (ko.utils.tagNameLower(element)) {
-                case 'option':
+            switch (element.nodeName) {
+                case 'OPTION':
                     if (element[hasDomDataExpandoProperty] === true)
                         return ko.utils.domData.get(element, ko.bindingHandlers.options.optionValueDomDataKey);
                     return element.value;
-                case 'select':
+                case 'SELECT':
                     return element.selectedIndex >= 0 ? ko.selectExtensions.readValue(element.options[element.selectedIndex]) : undefined;
                 default:
                     return element.value;
@@ -19,8 +19,8 @@
         },
 
         writeValue: (element, value, allowUnset) => {
-            switch (ko.utils.tagNameLower(element)) {
-                case 'option':
+            switch (element.nodeName) {
+                case 'OPTION':
                     if (typeof value === "string") {
                         ko.utils.domData.set(element, ko.bindingHandlers.options.optionValueDomDataKey, undefined);
                         delete element[hasDomDataExpandoProperty];
@@ -35,7 +35,7 @@
                         element.value = typeof value === "number" ? value : "";
                     }
                     break;
-                case 'select':
+                case 'SELECT':
                     if (value === "" || value === null)       // A blank string or null value will select the caption
                         value = undefined;
                     var selection = -1;

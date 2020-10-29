@@ -4,7 +4,8 @@ ko.bindingHandlers['foreach'] = {
     makeTemplateValueAccessor: valueAccessor => {
         return () => {
             var modelValue = valueAccessor(),
-                unwrappedValue = ko.utils.peekObservable(modelValue);    // Unwrap without setting a dependency here
+                // Unwrap without setting a dependency here
+                unwrappedValue = ko.isObservable(modelValue) ? modelValue.peek() : modelValue;
 
             // If unwrappedValue is the array, pass in the wrapped value on its own
             // The value will be unwrapped and tracked within the template binding

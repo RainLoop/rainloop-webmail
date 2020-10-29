@@ -145,7 +145,7 @@
     }
 
     function cloneNodesFromTemplateSourceElement(elemInstance) {
-        if ('template' == ko.utils.tagNameLower(elemInstance)) {
+        if (elemInstance.matches('TEMPLATE')) {
             // For browsers with proper <template> element support (i.e., where the .content property
             // gives a document fragment), use that document fragment.
             if (elemInstance.content instanceof DocumentFragment) {

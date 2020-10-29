@@ -32,187 +32,159 @@ ko.exportProperty = (owner, publicName, object) => owner[publicName] = object;
 ko.version = "3.5.1-sm";
 
 ko.exportSymbol('version', ko.version);
-ko.utils = (() => {
+ko.utils = {
+    arrayRemoveItem: (array, itemToRemove) => {
+        var index = array.indexOf(itemToRemove);
+        if (index > 0) {
+            array.splice(index, 1);
+        }
+        else if (index === 0) {
+            array.shift();
+        }
+    },
 
-    const
-        arrayCall = (name, arr, p1, p2) => Array.prototype[name].call(arr, p1, p2),
-        objectForEach = (obj, action) => obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1])),
-        extend = (target, source) => {
-            source && Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
-            return target;
-        },
-        // For details on the pattern for changing node classes
-        // see: https://github.com/knockout/knockout/issues/1597
-        toggleDomNodeCssClass = (node, classNames, shouldHaveClass) => {
-            if (classNames) {
-                var addOrRemoveFn = shouldHaveClass ? 'add' : 'remove';
-                classNames.split(/\s+/).forEach(className =>
-                    node.classList[addOrRemoveFn](className)
-                );
-            }
-        };
+    extend: (target, source) => {
+        source && Object.entries(source).forEach(prop => target[prop[0]] = prop[1]);
+        return target;
+    },
 
-    return {
-        arrayRemoveItem: (array, itemToRemove) => {
-            var index = array.indexOf(itemToRemove);
-            if (index > 0) {
-                array.splice(index, 1);
-            }
-            else if (index === 0) {
-                array.shift();
-            }
-        },
+    objectForEach: (obj, action) => obj && Object.entries(obj).forEach(prop => action(prop[0], prop[1])),
 
-        extend: extend,
+    objectMap: (source, mapping, mappingOwner) => {
+        if (!source)
+            return source;
+        var target = {};
+        Object.entries(source).forEach(prop =>
+            target[prop[0]] = mapping.call(mappingOwner, prop[1], prop[0], source)
+        );
+        return target;
+    },
 
-        objectForEach: objectForEach,
+    emptyDomNode: domNode => {
+        while (domNode.firstChild) {
+            ko.removeNode(domNode.firstChild);
+        }
+    },
 
-        objectMap: (source, mapping, mappingOwner) => {
-            if (!source)
-                return source;
-            var target = {};
-            Object.entries(source).forEach(prop =>
-                target[prop[0]] = mapping.call(mappingOwner, prop[1], prop[0], source)
-            );
-            return target;
-        },
+    moveCleanedNodesToContainerElement: nodes => {
+        // Ensure it's a real array, as we're about to reparent the nodes and
+        // we don't want the underlying collection to change while we're doing that.
+        var nodesArray = [...nodes];
+        var templateDocument = (nodesArray[0] && nodesArray[0].ownerDocument) || document;
 
-        emptyDomNode: domNode => {
-            while (domNode.firstChild) {
-                ko.removeNode(domNode.firstChild);
-            }
-        },
+        var container = templateDocument.createElement('div');
+        nodes.forEach(node => container.append(ko.cleanNode(node)));
+        return container;
+    },
 
-        moveCleanedNodesToContainerElement: nodes => {
-            // Ensure it's a real array, as we're about to reparent the nodes and
-            // we don't want the underlying collection to change while we're doing that.
-            var nodesArray = [...nodes];
-            var templateDocument = (nodesArray[0] && nodesArray[0].ownerDocument) || document;
+    cloneNodes: (nodesArray, shouldCleanNodes) =>
+        Array.prototype.map.call(nodesArray, shouldCleanNodes
+            ? node => ko.cleanNode(node.cloneNode(true))
+            : node => node.cloneNode(true)),
 
-            var container = templateDocument.createElement('div');
-            nodes.forEach(node => container.append(ko.cleanNode(node)));
-            return container;
-        },
+    setDomNodeChildren: (domNode, childNodes) => {
+        ko.utils.emptyDomNode(domNode);
+        childNodes && domNode.append(...childNodes);
+    },
 
-        cloneNodes: (nodesArray, shouldCleanNodes) =>
-            arrayCall('map', nodesArray, shouldCleanNodes
-                ? node => ko.cleanNode(node.cloneNode(true))
-                : node => node.cloneNode(true)
-            ),
+    fixUpContinuousNodeArray: (continuousNodeArray, parentNode) => {
+        // Before acting on a set of nodes that were previously outputted by a template function, we have to reconcile
+        // them against what is in the DOM right now. It may be that some of the nodes have already been removed, or that
+        // new nodes might have been inserted in the middle, for example by a binding. Also, there may previously have been
+        // leading comment nodes (created by rewritten string-based templates) that have since been removed during binding.
+        // So, this function translates the old "map" output array into its best guess of the set of current DOM nodes.
+        //
+        // Rules:
+        //   [A] Any leading nodes that have been removed should be ignored
+        //       These most likely correspond to memoization nodes that were already removed during binding
+        //       See https://github.com/knockout/knockout/pull/440
+        //   [B] Any trailing nodes that have been remove should be ignored
+        //       This prevents the code here from adding unrelated nodes to the array while processing rule [C]
+        //       See https://github.com/knockout/knockout/pull/1903
+        //   [C] We want to output a continuous series of nodes. So, ignore any nodes that have already been removed,
+        //       and include any nodes that have been inserted among the previous collection
 
-        setDomNodeChildren: (domNode, childNodes) => {
-            ko.utils.emptyDomNode(domNode);
-            childNodes && domNode.append.apply(domNode, childNodes);
-        },
+        if (continuousNodeArray.length) {
+            // The parent node can be a virtual element; so get the real parent node
+            parentNode = (parentNode.nodeType === 8 && parentNode.parentNode) || parentNode;
 
-        fixUpContinuousNodeArray: (continuousNodeArray, parentNode) => {
-            // Before acting on a set of nodes that were previously outputted by a template function, we have to reconcile
-            // them against what is in the DOM right now. It may be that some of the nodes have already been removed, or that
-            // new nodes might have been inserted in the middle, for example by a binding. Also, there may previously have been
-            // leading comment nodes (created by rewritten string-based templates) that have since been removed during binding.
-            // So, this function translates the old "map" output array into its best guess of the set of current DOM nodes.
-            //
-            // Rules:
-            //   [A] Any leading nodes that have been removed should be ignored
-            //       These most likely correspond to memoization nodes that were already removed during binding
-            //       See https://github.com/knockout/knockout/pull/440
-            //   [B] Any trailing nodes that have been remove should be ignored
-            //       This prevents the code here from adding unrelated nodes to the array while processing rule [C]
-            //       See https://github.com/knockout/knockout/pull/1903
-            //   [C] We want to output a continuous series of nodes. So, ignore any nodes that have already been removed,
-            //       and include any nodes that have been inserted among the previous collection
+            // Rule [A]
+            while (continuousNodeArray.length && continuousNodeArray[0].parentNode !== parentNode)
+                continuousNodeArray.splice(0, 1);
 
-            if (continuousNodeArray.length) {
-                // The parent node can be a virtual element; so get the real parent node
-                parentNode = (parentNode.nodeType === 8 && parentNode.parentNode) || parentNode;
+            // Rule [B]
+            while (continuousNodeArray.length > 1
+                && continuousNodeArray[continuousNodeArray.length - 1].parentNode !== parentNode)
+                continuousNodeArray.length--;
 
-                // Rule [A]
-                while (continuousNodeArray.length && continuousNodeArray[0].parentNode !== parentNode)
-                    continuousNodeArray.splice(0, 1);
-
-                // Rule [B]
-                while (continuousNodeArray.length > 1
-                    && continuousNodeArray[continuousNodeArray.length - 1].parentNode !== parentNode)
-                    continuousNodeArray.length--;
-
-                // Rule [C]
-                if (continuousNodeArray.length > 1) {
-                    var current = continuousNodeArray[0], last = continuousNodeArray[continuousNodeArray.length - 1];
-                    // Replace with the actual new continuous node set
-                    continuousNodeArray.length = 0;
-                    while (current !== last) {
-                        continuousNodeArray.push(current);
-                        current = current.nextSibling;
-                    }
-                    continuousNodeArray.push(last);
+            // Rule [C]
+            if (continuousNodeArray.length > 1) {
+                var current = continuousNodeArray[0], last = continuousNodeArray[continuousNodeArray.length - 1];
+                // Replace with the actual new continuous node set
+                continuousNodeArray.length = 0;
+                while (current !== last) {
+                    continuousNodeArray.push(current);
+                    current = current.nextSibling;
                 }
+                continuousNodeArray.push(last);
             }
-            return continuousNodeArray;
-        },
+        }
+        return continuousNodeArray;
+    },
 
-        stringTrim: string => string == null ? '' :
-                string.trim ?
-                    string.trim() :
-                    string.toString().replace(/^[\s\xa0]+|[\s\xa0]+$/g, ''),
+    stringTrim: string => string == null ? '' :
+            string.trim ?
+                string.trim() :
+                string.toString().replace(/^[\s\xa0]+|[\s\xa0]+$/g, ''),
 
-        stringStartsWith: (string, startsWith) => {
-            string = string || "";
-            if (startsWith.length > string.length)
-                return false;
-            return string.substring(0, startsWith.length) === startsWith;
-        },
+    stringStartsWith: (string, startsWith) => {
+        string = string || "";
+        if (startsWith.length > string.length)
+            return false;
+        return string.substring(0, startsWith.length) === startsWith;
+    },
 
-        domNodeIsContainedBy: (node, containedByNode) =>
-            containedByNode.contains(node.nodeType !== 1 ? node.parentNode : node),
+    domNodeIsContainedBy: (node, containedByNode) =>
+        containedByNode.contains(node.nodeType !== 1 ? node.parentNode : node),
 
-        domNodeIsAttachedToDocument: node => ko.utils.domNodeIsContainedBy(node, node.ownerDocument.documentElement),
+    domNodeIsAttachedToDocument: node => ko.utils.domNodeIsContainedBy(node, node.ownerDocument.documentElement),
 
-        // For HTML elements, tagName will always be upper case; for XHTML elements, it'll be lower case.
-        // Possible future optimization: If we know it's an element from an XHTML document (not HTML),
-        // we don't need to do the .toLowerCase() as it will always be lower case anyway.
-        tagNameLower: element => element && element.tagName && element.tagName.toLowerCase(),
+    catchFunctionErrors: delegate => {
+        return ko['onError'] ? function () {
+            try {
+                return delegate.apply(this, arguments);
+            } catch (e) {
+                ko['onError'] && ko['onError'](e);
+                throw e;
+            }
+        } : delegate;
+    },
 
-        catchFunctionErrors: delegate => {
-            return ko['onError'] ? function () {
-                try {
-                    return delegate.apply(this, arguments);
-                } catch (e) {
-                    ko['onError'] && ko['onError'](e);
-                    throw e;
-                }
-            } : delegate;
-        },
+    setTimeout: (handler, timeout) => setTimeout(ko.utils.catchFunctionErrors(handler), timeout),
 
-        setTimeout: (handler, timeout) => setTimeout(ko.utils.catchFunctionErrors(handler), timeout),
+    deferError: error => setTimeout(() => {
+            ko['onError'] && ko['onError'](error);
+            throw error;
+        }, 0),
 
-        deferError: error => setTimeout(() => {
-                ko['onError'] && ko['onError'](error);
-                throw error;
-            }, 0),
+    registerEventHandler: (element, eventType, handler) => {
+        var wrappedHandler = ko.utils.catchFunctionErrors(handler);
 
-        registerEventHandler: (element, eventType, handler) => {
-            var wrappedHandler = ko.utils.catchFunctionErrors(handler);
+        element.addEventListener(eventType, wrappedHandler, false);
+    },
 
-            element.addEventListener(eventType, wrappedHandler, false);
-        },
+    triggerEvent: (element, eventType) => {
+        if (!(element && element.nodeType))
+            throw new Error("element must be a DOM node when calling triggerEvent");
 
-        triggerEvent: (element, eventType) => {
-            if (!(element && element.nodeType))
-                throw new Error("element must be a DOM node when calling triggerEvent");
+        element.dispatchEvent(new Event(eventType));
+    },
 
-            element.dispatchEvent(new Event(eventType));
-        },
+    unwrapObservable: value => ko.isObservable(value) ? value() : value,
 
-        unwrapObservable: value => ko.isObservable(value) ? value() : value,
-
-        peekObservable: value => ko.isObservable(value) ? value.peek() : value,
-
-        toggleDomNodeCssClass: toggleDomNodeCssClass,
-
-        setTextContent: (element, textContent) =>
-            element.textContent = ko.utils.unwrapObservable(textContent) || ""
-    }
-})();
+    setTextContent: (element, textContent) =>
+        element.textContent = ko.utils.unwrapObservable(textContent) || ""
+};
 
 ko.exportSymbol('utils', ko.utils);
 ko.exportSymbol('unwrap', ko.utils.unwrapObservable); // Convenient shorthand, because this is used so commonly
@@ -1659,12 +1631,12 @@ ko.pureComputed = (evaluatorFunctionOrOptions, evaluatorFunctionTarget) => {
     // that are arbitrary objects. This is very convenient when implementing things like cascading dropdowns.
     ko.selectExtensions = {
         readValue : element => {
-            switch (ko.utils.tagNameLower(element)) {
-                case 'option':
+            switch (element.nodeName) {
+                case 'OPTION':
                     if (element[hasDomDataExpandoProperty] === true)
                         return ko.utils.domData.get(element, ko.bindingHandlers.options.optionValueDomDataKey);
                     return element.value;
-                case 'select':
+                case 'SELECT':
                     return element.selectedIndex >= 0 ? ko.selectExtensions.readValue(element.options[element.selectedIndex]) : undefined;
                 default:
                     return element.value;
@@ -1672,8 +1644,8 @@ ko.pureComputed = (evaluatorFunctionOrOptions, evaluatorFunctionTarget) => {
         },
 
         writeValue: (element, value, allowUnset) => {
-            switch (ko.utils.tagNameLower(element)) {
-                case 'option':
+            switch (element.nodeName) {
+                case 'OPTION':
                     if (typeof value === "string") {
                         ko.utils.domData.set(element, ko.bindingHandlers.options.optionValueDomDataKey, undefined);
                         delete element[hasDomDataExpandoProperty];
@@ -1688,7 +1660,7 @@ ko.pureComputed = (evaluatorFunctionOrOptions, evaluatorFunctionTarget) => {
                         element.value = typeof value === "number" ? value : "";
                     }
                     break;
-                case 'select':
+                case 'SELECT':
                     if (value === "" || value === null)       // A blank string or null value will select the caption
                         value = undefined;
                     var selection = -1;
@@ -2058,8 +2030,7 @@ ko.expressionRewriting = (() => {
         'nodeHasBindings': node => {
             switch (node.nodeType) {
                 case 1: // Element
-                    return node.getAttribute(defaultBindingAttributeName) != null
-                        || ko.components['getComponentNameForNode'](node);
+                    return node.getAttribute(defaultBindingAttributeName) != null;
                 case 8: // Comment node
                     return ko.virtualElements.hasBindingValue(node);
                 default: return false;
@@ -2067,15 +2038,13 @@ ko.expressionRewriting = (() => {
         },
 
         'getBindings': function(node, bindingContext) {
-            var bindingsString = this['getBindingsString'](node, bindingContext),
-                parsedBindings = bindingsString ? this['parseBindingsString'](bindingsString, bindingContext, node) : null;
-            return ko.components.addBindingsForCustomElement(parsedBindings, node, bindingContext, /* valueAccessors */ false);
+            var bindingsString = this['getBindingsString'](node, bindingContext);
+            return bindingsString ? this['parseBindingsString'](bindingsString, bindingContext, node) : null;
         },
 
         'getBindingAccessors': function(node, bindingContext) {
-            var bindingsString = this['getBindingsString'](node, bindingContext),
-                parsedBindings = bindingsString ? this['parseBindingsString'](bindingsString, bindingContext, node, { 'valueAccessors': true }) : null;
-            return ko.components.addBindingsForCustomElement(parsedBindings, node, bindingContext, /* valueAccessors */ true);
+            var bindingsString = this['getBindingsString'](node, bindingContext);
+            return bindingsString ? this['parseBindingsString'](bindingsString, bindingContext, node, { 'valueAccessors': true }) : null;
         },
 
         // The following function is only used internally by this default provider.
@@ -2125,18 +2094,6 @@ ko.expressionRewriting = (() => {
     var contextDataDependency = Symbol('_dataDependency');
 
     ko.bindingHandlers = {};
-
-    // The following element types will not be recursed into during binding.
-    var bindingDoesNotRecurseIntoElementTypes = {
-        // Don't want bindings that operate on text nodes to mutate <script> and <textarea> contents,
-        // because it's unexpected and a potential XSS issue.
-        // Also bindings should not operate on <template> elements since this breaks in Internet Explorer
-        // and because such elements' contents are always intended to be bound in a different context
-        // from where they appear in the document.
-        'script': true,
-        'textarea': true,
-        'template': true
-    };
 
     // Use an overridable method for retrieving binding handlers so that plugins may support dynamically created handlers
     ko['getBindingHandler'] = bindingKey => ko.bindingHandlers[bindingKey];
@@ -2446,7 +2403,12 @@ ko.expressionRewriting = (() => {
         if (shouldApplyBindings)
             bindingContextForDescendants = applyBindingsToNodeInternal(nodeVerified, null, bindingContext)['bindingContextForDescendants'];
 
-        if (bindingContextForDescendants && !bindingDoesNotRecurseIntoElementTypes[ko.utils.tagNameLower(nodeVerified)]) {
+        // Don't want bindings that operate on text nodes to mutate <script> and <textarea> contents,
+        // because it's unexpected and a potential XSS issue.
+        // Also bindings should not operate on <template> elements since this breaks in Internet Explorer
+        // and because such elements' contents are always intended to be bound in a different context
+        // from where they appear in the document.
+        if (bindingContextForDescendants && nodeVerified.matches && !nodeVerified.matches('SCRIPT,TEXTAREA,TEMPLATE')) {
             applyBindingsToDescendantsInternal(bindingContextForDescendants, nodeVerified);
         }
     }
@@ -2956,7 +2918,7 @@ ko.expressionRewriting = (() => {
     }
 
     function cloneNodesFromTemplateSourceElement(elemInstance) {
-        if ('template' == ko.utils.tagNameLower(elemInstance)) {
+        if (elemInstance.matches('TEMPLATE')) {
             // For browsers with proper <template> element support (i.e., where the .content property
             // gives a document fragment), use that document fragment.
             if (elemInstance.content instanceof DocumentFragment) {
@@ -2976,88 +2938,6 @@ ko.expressionRewriting = (() => {
 
     // By default, the default loader is the only registered component loader
     ko.components['loaders'].push(ko.components.defaultLoader);
-})();
-(() => {
-    // Overridable API for determining which component name applies to a given node. By overriding this,
-    // you can for example map specific tagNames to components that are not preregistered.
-    ko.components['getComponentNameForNode'] = node => {
-        var tagNameLower = ko.utils.tagNameLower(node);
-        if (ko.components.isRegistered(tagNameLower)) {
-            // Try to determine that this node can be considered a *custom* element; see https://github.com/knockout/knockout/issues/1603
-            if (tagNameLower.indexOf('-') != -1 || ('' + node) == "[object HTMLUnknownElement]") {
-                return tagNameLower;
-            }
-        }
-    };
-
-    ko.components.addBindingsForCustomElement = (allBindings, node, bindingContext, valueAccessors) => {
-        // Determine if it's really a custom element matching a component
-        if (node.nodeType === 1) {
-            var componentName = ko.components['getComponentNameForNode'](node);
-            if (componentName) {
-                // It does represent a component, so add a component binding for it
-                allBindings = allBindings || {};
-
-                if (allBindings['component']) {
-                    // Avoid silently overwriting some other 'component' binding that may already be on the element
-                    throw new Error('Cannot use the "component" binding on a custom element matching a component');
-                }
-
-                var componentBindingValue = { 'name': componentName, 'params': getComponentParamsFromCustomElement(node, bindingContext) };
-
-                allBindings['component'] = valueAccessors
-                    ? () => componentBindingValue
-                    : componentBindingValue;
-            }
-        }
-
-        return allBindings;
-    }
-
-    var nativeBindingProviderInstance = new ko.bindingProvider();
-
-    function getComponentParamsFromCustomElement(elem, bindingContext) {
-        var paramsAttribute = elem.getAttribute('params');
-
-        if (paramsAttribute) {
-            var params = nativeBindingProviderInstance['parseBindingsString'](paramsAttribute, bindingContext, elem, { 'valueAccessors': true, 'bindingParams': true }),
-                rawParamComputedValues = ko.utils.objectMap(params, paramValue =>
-                    ko.computed(paramValue, null, { disposeWhenNodeIsRemoved: elem })
-                ),
-                result = ko.utils.objectMap(rawParamComputedValues, paramValueComputed => {
-                    var paramValue = paramValueComputed.peek();
-                    // Does the evaluation of the parameter value unwrap any observables?
-                    if (!paramValueComputed.isActive()) {
-                        // No it doesn't, so there's no need for any computed wrapper. Just pass through the supplied value directly.
-                        // Example: "someVal: firstName, age: 123" (whether or not firstName is an observable/computed)
-                        return paramValue;
-                    } else {
-                        // Yes it does. Supply a computed property that unwraps both the outer (binding expression)
-                        // level of observability, and any inner (resulting model value) level of observability.
-                        // This means the component doesn't have to worry about multiple unwrapping. If the value is a
-                        // writable observable, the computed will also be writable and pass the value on to the observable.
-                        return ko.computed({
-                            'read': () => ko.utils.unwrapObservable(paramValueComputed()),
-                            'write': ko.isWriteableObservable(paramValue) && (value => paramValueComputed()(value)),
-                            disposeWhenNodeIsRemoved: elem
-                        });
-                    }
-                });
-
-            // Give access to the raw computeds, as long as that wouldn't overwrite any custom param also called '$raw'
-            // This is in case the developer wants to react to outer (binding) observability separately from inner
-            // (model value) observability, or in case the model value observable has subobservables.
-            if (!Object.prototype.hasOwnProperty.call(result, '$raw')) {
-                result['$raw'] = rawParamComputedValues;
-            }
-
-            return result;
-        }
-        // For consistency, absence of a "params" attribute is treated the same as the presence of
-        // any empty one. Otherwise component viewmodels need special code to check whether or not
-        // 'params' or 'params.$raw' is null/undefined before reading subproperties, which is annoying.
-        return { '$raw': {} };
-    }
 })();
 (() => {
     var componentLoadingOperationUniqueId = 0;
@@ -3199,7 +3079,14 @@ ko.bindingHandlers['attr'] = {
         });
     }
 };
-var classesWrittenByBindingKey = '__ko__cssValue';
+var classesWrittenByBindingKey = '__ko__cssValue',
+    toggleClasses = (node, classNames, force) => {
+        if (classNames) {
+            classNames.split(/\s+/).forEach(className =>
+                node.classList.toggle(className, force)
+            );
+        }
+    };
 
 ko.bindingHandlers['css'] = {
     'update': (element, valueAccessor) => {
@@ -3207,13 +3094,13 @@ ko.bindingHandlers['css'] = {
         if (value !== null && typeof value == "object") {
             ko.utils.objectForEach(value, (className, shouldHaveClass) => {
                 shouldHaveClass = ko.utils.unwrapObservable(shouldHaveClass);
-                ko.utils.toggleDomNodeCssClass(element, className, shouldHaveClass);
+                toggleClasses(element, className, !!shouldHaveClass);
             });
         } else {
             value = ko.utils.stringTrim(value);
-            ko.utils.toggleDomNodeCssClass(element, element[classesWrittenByBindingKey], false);
+            toggleClasses(element, element[classesWrittenByBindingKey], false);
             element[classesWrittenByBindingKey] = value;
-            ko.utils.toggleDomNodeCssClass(element, value, true);
+            toggleClasses(element, value, true);
         }
     }
 };
@@ -3283,7 +3170,8 @@ ko.bindingHandlers['foreach'] = {
     makeTemplateValueAccessor: valueAccessor => {
         return () => {
             var modelValue = valueAccessor(),
-                unwrappedValue = ko.utils.peekObservable(modelValue);    // Unwrap without setting a dependency here
+                // Unwrap without setting a dependency here
+                unwrappedValue = ko.isObservable(modelValue) ? modelValue.peek() : modelValue;
 
             // If unwrappedValue is the array, pass in the wrapped value on its own
             // The value will be unwrapped and tracked within the template binding
@@ -3450,7 +3338,7 @@ makeWithIfBinding('with', true /* isWith */);
 var captionPlaceholder = {};
 ko.bindingHandlers['options'] = {
     'init': element => {
-        if (ko.utils.tagNameLower(element) !== "select")
+        if (!element.matches("SELECT"))
             throw new Error("options binding applies only to SELECT elements");
 
         // Remove all existing <option>s.
@@ -3744,8 +3632,8 @@ ko.bindingHandlers['textinput'] = {
 };
 ko.bindingHandlers['value'] = {
     'init': (element, valueAccessor, allBindings) => {
-        var tagName = ko.utils.tagNameLower(element),
-            isInputElement = tagName == "input";
+        var isSelectElement = element.matches("SELECT"),
+            isInputElement = element.matches("INPUT");
 
         // If the value binding is placed on a radio/checkbox, then just pass through to checkedValue and quit
         if (isInputElement && (element.type == "checkbox" || element.type == "radio")) {
@@ -3823,7 +3711,7 @@ ko.bindingHandlers['value'] = {
                 var valueHasChanged = newValue !== elementValue;
 
                 if (valueHasChanged || elementValue === undefined) {
-                    if (tagName === "select") {
+                    if (isSelectElement) {
                         var allowUnset = allBindings.get('valueAllowUnset');
                         ko.selectExtensions.writeValue(element, newValue, allowUnset);
                         if (!allowUnset && newValue !== ko.selectExtensions.readValue(element)) {
@@ -3838,7 +3726,7 @@ ko.bindingHandlers['value'] = {
             };
         }
 
-        if (tagName === "select") {
+        if (isSelectElement) {
             var updateFromModelComputed;
             ko.bindingEvent.subscribe(element, ko.bindingEvent.childrenComplete, () => {
                 if (!updateFromModelComputed) {
@@ -3912,9 +3800,8 @@ makeEventHandlerShortcut('click');
         this.domElement = element;
 
         if (element) {
-            var tagNameLower = ko.utils.tagNameLower(element);
             this.templateType =
-                tagNameLower == "template" && element.content && element.content.nodeType === 11 ? templateTemplate :
+                element.matches("TEMPLATE") && element.content && element.content.nodeType === 11 ? templateTemplate :
                 templateElement;
         }
     }

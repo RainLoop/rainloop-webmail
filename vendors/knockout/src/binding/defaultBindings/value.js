@@ -1,7 +1,7 @@
 ko.bindingHandlers['value'] = {
     'init': (element, valueAccessor, allBindings) => {
-        var tagName = ko.utils.tagNameLower(element),
-            isInputElement = tagName == "input";
+        var isSelectElement = element.matches("SELECT"),
+            isInputElement = element.matches("INPUT");
 
         // If the value binding is placed on a radio/checkbox, then just pass through to checkedValue and quit
         if (isInputElement && (element.type == "checkbox" || element.type == "radio")) {
@@ -79,7 +79,7 @@ ko.bindingHandlers['value'] = {
                 var valueHasChanged = newValue !== elementValue;
 
                 if (valueHasChanged || elementValue === undefined) {
-                    if (tagName === "select") {
+                    if (isSelectElement) {
                         var allowUnset = allBindings.get('valueAllowUnset');
                         ko.selectExtensions.writeValue(element, newValue, allowUnset);
                         if (!allowUnset && newValue !== ko.selectExtensions.readValue(element)) {
@@ -94,7 +94,7 @@ ko.bindingHandlers['value'] = {
             };
         }
 
-        if (tagName === "select") {
+        if (isSelectElement) {
             var updateFromModelComputed;
             ko.bindingEvent.subscribe(element, ko.bindingEvent.childrenComplete, () => {
                 if (!updateFromModelComputed) {
