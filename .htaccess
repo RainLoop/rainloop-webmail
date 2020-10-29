@@ -14,6 +14,7 @@ RewriteRule cpsess.* https://%{HTTP_HOST}/ [L,R=301]
 	ExpiresByType image/webp A15768000
 	ExpiresByType image/vnd.microsoft.icon A15768000
 	ExpiresByType font/woff A15768000
+	ExpiresByType font/woff2 A15768000
 </IfModule>
 
 <IfModule mod_headers.c>
