@@ -46,6 +46,8 @@ const
 
 	indexOf = (array, value) => Array.prototype.indexOf.call(array, value),
 
+	filterAccept = NodeFilter.FILTER_ACCEPT,
+
 	typeToBitArray = {
 		// ELEMENT_NODE
 		1: 1,
@@ -108,7 +110,7 @@ const
 	isBlock = node => getNodeCategory( node ) === BLOCK,
 	isContainer = node => getNodeCategory( node ) === CONTAINER,
 	createTreeWalker = (root, whatToShow, filter) => doc.createTreeWalker( root, whatToShow, filter ? {
-			acceptNode: node => filter(node) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP
+			acceptNode: node => filter(node) ? filterAccept : NodeFilter.FILTER_SKIP
 		} : null
 	),
 	getBlockWalker = ( node, root ) => {
@@ -2732,7 +2734,7 @@ proto.getSelectedText = function () {
 	let addedTextInBlock = false;
 	let value;
 
-	if ( !walker.filter( node ) ) {
+	if ( filterAccept != walker.filter.acceptNode( node ) ) {
 		node = walker.nextNode();
 	}
 
@@ -3220,7 +3222,7 @@ proto._addFormat = function ( tag, attributes, range ) {
 
 		// Make sure we start with a valid node.
 		walker.currentNode = startContainer;
-		if ( !walker.filter( startContainer ) ) {
+		if ( filterAccept != walker.filter.acceptNode( startContainer ) ) {
 			startContainer = walker.nextNode();
 			startOffset = 0;
 		}
