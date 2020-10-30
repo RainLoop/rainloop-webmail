@@ -410,7 +410,7 @@ class ComposePopupView extends AbstractViewNext {
 				this.sending(true);
 
 				if (Array.isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length) {
-					const flagsCache = MessageFlagsCache.getFlags(this.aDraftInfo[2], this.aDraftInfo[1]);
+					const flagsCache = MessageFlagsCache.getFor(this.aDraftInfo[2], this.aDraftInfo[1]);
 					if (flagsCache) {
 						if ('forward' === this.aDraftInfo[0]) {
 							flagsCache[3] = true;
