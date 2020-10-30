@@ -168,7 +168,7 @@
 					</div>
 					<div data-bind="visible: !emptySelection()">
 						<div class="form-horizontal top-part">
-							<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesEmailsNonEmpty().length">
+							<div class="control-group" data-bind="visible: !viewReadOnly() || contactHasValidName()">
 								<label class="control-label remove-padding-top fix-width">
 									<i class="icon-user iconsize24"></i>
 								</label>

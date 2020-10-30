@@ -46,18 +46,20 @@ export class AbstractModel {
 
 	/** Called by delegateRunOnDestroy */
 	onDestroy() {
-		/** clear ko.subscribe */
+		/** dispose ko subscribables */
 		this.subscribables.forEach(dispose);
 		/** clear object entries */
-		Object.entries(this).forEach(([key, value]) => {
+//		Object.entries(this).forEach(([key, value]) => {
+		Object.values(this).forEach(value => {
 			/** clear CollectionModel */
 			let arr = ko.isObservableArray(value) ? value() : value;
 			arr && arr.onDestroy && value.onDestroy();
 			/** destroy ko.observable/ko.computed? */
 			dispose(value);
 			/** clear object value */
-			this[key] = null;
+//			this[key] = null; // TODO: issue with Contacts view
 		});
+//		this.subscribables = [];
 	}
 
 	/**

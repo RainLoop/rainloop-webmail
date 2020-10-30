@@ -4,6 +4,8 @@ import { i18n } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
+const trim = text => null == text ? "" : (text + "").trim();
+
 class ContactPropertyModel extends AbstractModel {
 	/**
 	 * @param {number=} type = Enums.ContactPropertyType.Unknown
@@ -32,6 +34,14 @@ class ContactPropertyModel extends AbstractModel {
 
 			largeValue: () => ContactPropertyType.Note === this.type()
 		});
+	}
+
+	isType(type) {
+		return this.type && type === this.type();
+	}
+
+	isValid() {
+		return this.value && !!trim(this.value());
 	}
 
 	toJSON() {
