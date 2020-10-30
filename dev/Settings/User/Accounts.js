@@ -69,11 +69,8 @@ class AccountsUserSettings {
 			this.identityForDeletion(null);
 
 			if (identityToRemove) {
-				IdentityStore.identities.remove((oIdentity) => identityToRemove === oIdentity);
-
-				Remote.identityDelete(() => {
-					rl.app.accountsAndIdentities();
-				}, identityToRemove.id);
+				IdentityStore.identities.remove(oIdentity => identityToRemove === oIdentity);
+				Remote.identityDelete(() => rl.app.accountsAndIdentities(), identityToRemove.id());
 			}
 		}
 	}
