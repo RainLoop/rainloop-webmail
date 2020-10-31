@@ -248,8 +248,9 @@ trait Response
 			$sForwardedFlag = $this->Config()->Get('labs', 'imap_forwarded_flag', '');
 			$sReadReceiptFlag = $this->Config()->Get('labs', 'imap_read_receipt_flag', '');
 
-			$mResult['IsForwarded'] = 0 < \strlen($sForwardedFlag) && \in_array(\strtolower($sForwardedFlag), $aFlags);
-			$mResult['IsReadReceipt'] = 0 < \strlen($sReadReceiptFlag) && \in_array(\strtolower($sReadReceiptFlag), $aFlags);
+			$aFlags = $mResponse->FlagsLowerCase();
+			$mResult['IsForwarded'] = \strlen($sForwardedFlag) && \in_array(\strtolower($sForwardedFlag), $aFlags);
+			$mResult['IsReadReceipt'] = \strlen($sReadReceiptFlag) && \in_array(\strtolower($sReadReceiptFlag), $aFlags);
 
 			if (!$this->GetCapa(false, false, Capa::COMPOSER, $oAccount))
 			{
