@@ -3,7 +3,7 @@
 
 	$(function() {
 
-		$(window.document).on('keyup', '.b-compose .b-header .inputosaurus-input input[type="text"]:first', function() {
+		$(window.document).on('keyup', '.b-compose .b-header .inputosaurus-input input[type="text"]', function() {
 
 			var
 				$this = $(this),
