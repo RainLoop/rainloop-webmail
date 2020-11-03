@@ -11,7 +11,7 @@ class TextAreaComponent extends AbstractInput {
 		super(params);
 
 		this.rows = params.rows || DEFAULT_ROWS;
-		this.spellcheck = undefined === params.spellcheck ? false : !!params.spellcheck;
+		this.spellcheck = !!params.spellcheck;
 	}
 }
 
