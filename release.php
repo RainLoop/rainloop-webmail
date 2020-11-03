@@ -72,14 +72,17 @@ foreach ($files as $file) {
 
 $tar->buildFromDirectory('./', "@snappymail/v/{$package->version}@");
 
-$zip->addFromString('data/.htaccess', $package->version);
-$tar->addFromString('data/.htaccess', $package->version);
+$zip->addFile('data/.htaccess');
+$tar->addFile('data/.htaccess');
 
 $zip->addFromString('data/VERSION', $package->version);
 $tar->addFromString('data/VERSION', $package->version);
 
-//$zip->addFromString('data/EMPTY', $package->version);
-//$tar->addFromString('data/EMPTY', $package->version);
+$zip->addFile('data/README.md');
+$tar->addFile('data/README.md');
+
+//$zip->addFile('data/EMPTY');
+//$tar->addFile('data/EMPTY');
 
 $zip->addFile('_include.php');
 $tar->addFile('_include.php');
