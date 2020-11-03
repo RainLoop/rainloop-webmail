@@ -14,7 +14,8 @@ ko.observableArray['fn'] = {
         var underlyingArray = this.peek();
         var removedValues = [];
         var predicate = typeof valueOrPredicate == "function" && !ko.isObservable(valueOrPredicate) ? valueOrPredicate : function (value) { return value === valueOrPredicate; };
-        for (var i = 0; i < underlyingArray.length; i++) {
+        var i = underlyingArray.length;
+        while (i--) {
             var value = underlyingArray[i];
             if (predicate(value)) {
                 if (removedValues.length === 0) {
@@ -25,7 +26,6 @@ ko.observableArray['fn'] = {
                 }
                 removedValues.push(value);
                 underlyingArray.splice(i, 1);
-                i--;
             }
         }
         if (removedValues.length) {
@@ -48,10 +48,6 @@ ko.observableArray['fn'] = {
         if (!arrayOfValues)
             return [];
         return this['remove'](value => arrayOfValues.includes(value));
-    },
-
-    'indexOf': function (item) {
-        return this().indexOf(item);
     }
 };
 
@@ -59,29 +55,31 @@ ko.observableArray['fn'] = {
 // inheritance chain is created manually in the ko.observableArray constructor
 Object.setPrototypeOf(ko.observableArray['fn'], ko.observable['fn']);
 
-// Populate ko.observableArray.fn with read/write functions from native arrays
-// Important: Do not add any additional functions here that may reasonably be used to *read* data from the array
-// because we'll eval them without causing subscriptions, so ko.computed output could end up getting stale
-["pop", "push", "reverse", "shift", "sort", "splice", "unshift"].forEach(methodName => {
-    ko.observableArray['fn'][methodName] = function () {
-        // Use "peek" to avoid creating a subscription in any computed that we're executing in the context of
-        // (for consistency with mutating regular observables)
-        var underlyingArray = this.peek();
-        this.valueWillMutate();
-        this.cacheDiffForKnownOperation(underlyingArray, methodName, arguments);
-        var methodCallResult = underlyingArray[methodName].apply(underlyingArray, arguments);
-        this.valueHasMutated();
-        // The native sort and reverse methods return a reference to the array, but it makes more sense to return the observable array instead.
-        return methodCallResult === underlyingArray ? this : methodCallResult;
-    };
-});
-
-// Populate ko.observableArray.fn with read-only functions from native arrays
-["slice"].forEach(methodName => {
-    ko.observableArray['fn'][methodName] = function () {
-        var underlyingArray = this();
-        return underlyingArray[methodName].apply(underlyingArray, arguments);
-    };
+// Populate ko.observableArray.fn with native arrays functions
+Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
+    if (typeof Array.prototype[methodName] === 'function') {
+        if (["pop", "push", "reverse", "shift", "sort", "splice", "unshift"].includes(methodName)) {
+            // Mutator methods
+            // Important: Do not add any additional functions here that may reasonably be used to *read* data from the array
+            // because we'll eval them without causing subscriptions, so ko.computed output could end up getting stale
+            ko.observableArray['fn'][methodName] = function (...args) {
+                // Use "peek" to avoid creating a subscription in any computed that we're executing in the context of
+                // (for consistency with mutating regular observables)
+                var underlyingArray = this.peek();
+                this.valueWillMutate();
+                this.cacheDiffForKnownOperation(underlyingArray, methodName, args);
+                var methodCallResult = underlyingArray[methodName](...args);
+                this.valueHasMutated();
+                // The native sort and reverse methods return a reference to the array, but it makes more sense to return the observable array instead.
+                return methodCallResult === underlyingArray ? this : methodCallResult;
+            };
+        } else {
+            // Accessor and Iteration methods
+            ko.observableArray['fn'][methodName] = function (...args) {
+                return this()[methodName](...args);
+            };
+        }
+    }
 });
 
 ko.isObservableArray = instance => {

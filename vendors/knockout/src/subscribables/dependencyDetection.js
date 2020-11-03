@@ -2,16 +2,14 @@
 ko.computedContext = ko.dependencyDetection = (() => {
     var outerFrames = [],
         currentFrame,
-        lastId = 0;
+        lastId = 0,
 
-    function begin(options) {
-        outerFrames.push(currentFrame);
-        currentFrame = options;
-    }
+        begin = options => {
+            outerFrames.push(currentFrame);
+            currentFrame = options;
+        },
 
-    function end() {
-        currentFrame = outerFrames.pop();
-    }
+        end = () => currentFrame = outerFrames.pop();
 
     return {
         begin: begin,
@@ -22,7 +20,8 @@ ko.computedContext = ko.dependencyDetection = (() => {
             if (currentFrame) {
                 if (!ko.isSubscribable(subscribable))
                     throw new Error("Only subscribable things can act as dependencies");
-                currentFrame.callback.call(currentFrame.callbackTarget, subscribable, subscribable._id || (subscribable._id = ++lastId));
+                currentFrame.callback.call(currentFrame.callbackTarget, subscribable,
+                    subscribable._id || (subscribable._id = ++lastId));
             }
         },
 
@@ -36,23 +35,19 @@ ko.computedContext = ko.dependencyDetection = (() => {
         },
 
         getDependenciesCount: () => {
-            if (currentFrame)
-                return currentFrame.computed.getDependenciesCount();
+            return currentFrame && currentFrame.computed.getDependenciesCount();
         },
 
         getDependencies: () => {
-            if (currentFrame)
-                return currentFrame.computed.getDependencies();
+            return currentFrame && currentFrame.computed.getDependencies();
         },
 
         isInitial: () => {
-            if (currentFrame)
-                return currentFrame.isInitial;
+            return currentFrame && currentFrame.isInitial;
         },
 
         computed: () => {
-            if (currentFrame)
-                return currentFrame.computed;
+            return currentFrame && currentFrame.computed;
         }
     };
 })();

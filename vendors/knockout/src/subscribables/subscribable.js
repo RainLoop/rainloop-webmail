@@ -1,30 +1,35 @@
 
-ko.subscription = function (target, callback, disposeCallback) {
-    this._target = target;
-    this._callback = callback;
-    this._disposeCallback = disposeCallback;
-    this._isDisposed = false;
-    this._node = null;
-    this._domNodeDisposalCallback = null;
-    ko.exportProperty(this, 'dispose', this.dispose);
-    ko.exportProperty(this, 'disposeWhenNodeIsRemoved', this.disposeWhenNodeIsRemoved);
-};
-ko.subscription.prototype.dispose = function () {
-    var self = this;
-    if (!self._isDisposed) {
-        if (self._domNodeDisposalCallback) {
-            ko.utils.domNodeDisposal.removeDisposeCallback(self._node, self._domNodeDisposalCallback);
-        }
-        self._isDisposed = true;
-        self._disposeCallback();
-
-        self._target = self._callback = self._disposeCallback = self._node = self._domNodeDisposalCallback = null;
+class koSubscription
+{
+    constructor (target, callback, disposeCallback) {
+        this._target = target;
+        this._callback = callback;
+        this._disposeCallback = disposeCallback;
+        this._isDisposed = false;
+        this._node = null;
+        this._domNodeDisposalCallback = null;
+        ko.exportProperty(this, 'dispose', this.dispose);
+        ko.exportProperty(this, 'disposeWhenNodeIsRemoved', this.disposeWhenNodeIsRemoved);
     }
-};
-ko.subscription.prototype.disposeWhenNodeIsRemoved = function (node) {
-    this._node = node;
-    ko.utils.domNodeDisposal.addDisposeCallback(node, this._domNodeDisposalCallback = this.dispose.bind(this));
-};
+
+    dispose() {
+        var self = this;
+        if (!self._isDisposed) {
+            if (self._domNodeDisposalCallback) {
+                ko.utils.domNodeDisposal.removeDisposeCallback(self._node, self._domNodeDisposalCallback);
+            }
+            self._isDisposed = true;
+            self._disposeCallback();
+
+            self._target = self._callback = self._disposeCallback = self._node = self._domNodeDisposalCallback = null;
+        }
+    }
+
+    disposeWhenNodeIsRemoved(node) {
+        this._node = node;
+        ko.utils.domNodeDisposal.addDisposeCallback(node, this._domNodeDisposalCallback = this.dispose.bind(this));
+    }
+}
 
 ko.subscribable = function () {
     Object.setPrototypeOf(this, ko_subscribable_fn);
@@ -45,7 +50,7 @@ var ko_subscribable_fn = {
         event = event || defaultEvent;
         var boundCallback = callbackTarget ? callback.bind(callbackTarget) : callback;
 
-        var subscription = new ko.subscription(self, boundCallback, () => {
+        var subscription = new koSubscription(self, boundCallback, () => {
             ko.utils.arrayRemoveItem(self._subscriptions[event], subscription);
             if (self.afterSubscriptionRemove)
                 self.afterSubscriptionRemove(event);
@@ -70,7 +75,8 @@ var ko_subscribable_fn = {
             var subs = event === defaultEvent && this._changeSubscriptions || this._subscriptions[event].slice(0);
             try {
                 ko.dependencyDetection.begin(); // Begin suppressing dependency detection (by setting the top frame to undefined)
-                for (var i = 0, subscription; subscription = subs[i]; ++i) {
+                var i = 0, subscription;
+                while ((subscription = subs[i++])) {
                     // In case a subscription was disposed during the arrayForEach cycle, check
                     // for isDisposed on each subscription before invoking its callback
                     if (!subscription._isDisposed)
@@ -159,17 +165,6 @@ var ko_subscribable_fn = {
         return this._subscriptions[event] && this._subscriptions[event].length;
     },
 
-    getSubscriptionsCount: function (event) {
-        if (event) {
-            return this._subscriptions[event] && this._subscriptions[event].length || 0;
-        }
-        var total = 0;
-        ko.utils.objectForEach(this._subscriptions, (eventName, subscriptions) =>
-            total += subscriptions.length
-        );
-        return total;
-    },
-
     isDifferent: function(oldValue, newValue) {
         return !this['equalityComparer'] || !this['equalityComparer'](oldValue, newValue);
     },
@@ -182,7 +177,6 @@ var ko_subscribable_fn = {
 ko.exportProperty(ko_subscribable_fn, 'init', ko_subscribable_fn.init);
 ko.exportProperty(ko_subscribable_fn, 'subscribe', ko_subscribable_fn.subscribe);
 ko.exportProperty(ko_subscribable_fn, 'extend', ko_subscribable_fn.extend);
-ko.exportProperty(ko_subscribable_fn, 'getSubscriptionsCount', ko_subscribable_fn.getSubscriptionsCount);
 
 // For browsers that support proto assignment, we overwrite the prototype of each
 // observable instance. Since observables are functions, we need Function.prototype

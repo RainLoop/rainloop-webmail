@@ -546,32 +546,37 @@ function applyExtenders(requestedExtenders) {
 
 ko.exportSymbol('extenders', ko.extenders);
 
-ko.subscription = function (target, callback, disposeCallback) {
-    this._target = target;
-    this._callback = callback;
-    this._disposeCallback = disposeCallback;
-    this._isDisposed = false;
-    this._node = null;
-    this._domNodeDisposalCallback = null;
-    ko.exportProperty(this, 'dispose', this.dispose);
-    ko.exportProperty(this, 'disposeWhenNodeIsRemoved', this.disposeWhenNodeIsRemoved);
-};
-ko.subscription.prototype.dispose = function () {
-    var self = this;
-    if (!self._isDisposed) {
-        if (self._domNodeDisposalCallback) {
-            ko.utils.domNodeDisposal.removeDisposeCallback(self._node, self._domNodeDisposalCallback);
-        }
-        self._isDisposed = true;
-        self._disposeCallback();
-
-        self._target = self._callback = self._disposeCallback = self._node = self._domNodeDisposalCallback = null;
+class koSubscription
+{
+    constructor (target, callback, disposeCallback) {
+        this._target = target;
+        this._callback = callback;
+        this._disposeCallback = disposeCallback;
+        this._isDisposed = false;
+        this._node = null;
+        this._domNodeDisposalCallback = null;
+        ko.exportProperty(this, 'dispose', this.dispose);
+        ko.exportProperty(this, 'disposeWhenNodeIsRemoved', this.disposeWhenNodeIsRemoved);
     }
-};
-ko.subscription.prototype.disposeWhenNodeIsRemoved = function (node) {
-    this._node = node;
-    ko.utils.domNodeDisposal.addDisposeCallback(node, this._domNodeDisposalCallback = this.dispose.bind(this));
-};
+
+    dispose() {
+        var self = this;
+        if (!self._isDisposed) {
+            if (self._domNodeDisposalCallback) {
+                ko.utils.domNodeDisposal.removeDisposeCallback(self._node, self._domNodeDisposalCallback);
+            }
+            self._isDisposed = true;
+            self._disposeCallback();
+
+            self._target = self._callback = self._disposeCallback = self._node = self._domNodeDisposalCallback = null;
+        }
+    }
+
+    disposeWhenNodeIsRemoved(node) {
+        this._node = node;
+        ko.utils.domNodeDisposal.addDisposeCallback(node, this._domNodeDisposalCallback = this.dispose.bind(this));
+    }
+}
 
 ko.subscribable = function () {
     Object.setPrototypeOf(this, ko_subscribable_fn);
@@ -592,7 +597,7 @@ var ko_subscribable_fn = {
         event = event || defaultEvent;
         var boundCallback = callbackTarget ? callback.bind(callbackTarget) : callback;
 
-        var subscription = new ko.subscription(self, boundCallback, () => {
+        var subscription = new koSubscription(self, boundCallback, () => {
             ko.utils.arrayRemoveItem(self._subscriptions[event], subscription);
             if (self.afterSubscriptionRemove)
                 self.afterSubscriptionRemove(event);
@@ -617,7 +622,8 @@ var ko_subscribable_fn = {
             var subs = event === defaultEvent && this._changeSubscriptions || this._subscriptions[event].slice(0);
             try {
                 ko.dependencyDetection.begin(); // Begin suppressing dependency detection (by setting the top frame to undefined)
-                for (var i = 0, subscription; subscription = subs[i]; ++i) {
+                var i = 0, subscription;
+                while ((subscription = subs[i++])) {
                     // In case a subscription was disposed during the arrayForEach cycle, check
                     // for isDisposed on each subscription before invoking its callback
                     if (!subscription._isDisposed)
@@ -706,17 +712,6 @@ var ko_subscribable_fn = {
         return this._subscriptions[event] && this._subscriptions[event].length;
     },
 
-    getSubscriptionsCount: function (event) {
-        if (event) {
-            return this._subscriptions[event] && this._subscriptions[event].length || 0;
-        }
-        var total = 0;
-        ko.utils.objectForEach(this._subscriptions, (eventName, subscriptions) =>
-            total += subscriptions.length
-        );
-        return total;
-    },
-
     isDifferent: function(oldValue, newValue) {
         return !this['equalityComparer'] || !this['equalityComparer'](oldValue, newValue);
     },
@@ -729,7 +724,6 @@ var ko_subscribable_fn = {
 ko.exportProperty(ko_subscribable_fn, 'init', ko_subscribable_fn.init);
 ko.exportProperty(ko_subscribable_fn, 'subscribe', ko_subscribable_fn.subscribe);
 ko.exportProperty(ko_subscribable_fn, 'extend', ko_subscribable_fn.extend);
-ko.exportProperty(ko_subscribable_fn, 'getSubscriptionsCount', ko_subscribable_fn.getSubscriptionsCount);
 
 // For browsers that support proto assignment, we overwrite the prototype of each
 // observable instance. Since observables are functions, we need Function.prototype
@@ -745,16 +739,14 @@ ko.isSubscribable = instance =>
 ko.computedContext = ko.dependencyDetection = (() => {
     var outerFrames = [],
         currentFrame,
-        lastId = 0;
+        lastId = 0,
 
-    function begin(options) {
-        outerFrames.push(currentFrame);
-        currentFrame = options;
-    }
+        begin = options => {
+            outerFrames.push(currentFrame);
+            currentFrame = options;
+        },
 
-    function end() {
-        currentFrame = outerFrames.pop();
-    }
+        end = () => currentFrame = outerFrames.pop();
 
     return {
         begin: begin,
@@ -765,7 +757,8 @@ ko.computedContext = ko.dependencyDetection = (() => {
             if (currentFrame) {
                 if (!ko.isSubscribable(subscribable))
                     throw new Error("Only subscribable things can act as dependencies");
-                currentFrame.callback.call(currentFrame.callbackTarget, subscribable, subscribable._id || (subscribable._id = ++lastId));
+                currentFrame.callback.call(currentFrame.callbackTarget, subscribable,
+                    subscribable._id || (subscribable._id = ++lastId));
             }
         },
 
@@ -779,23 +772,19 @@ ko.computedContext = ko.dependencyDetection = (() => {
         },
 
         getDependenciesCount: () => {
-            if (currentFrame)
-                return currentFrame.computed.getDependenciesCount();
+            return currentFrame && currentFrame.computed.getDependenciesCount();
         },
 
         getDependencies: () => {
-            if (currentFrame)
-                return currentFrame.computed.getDependencies();
+            return currentFrame && currentFrame.computed.getDependencies();
         },
 
         isInitial: () => {
-            if (currentFrame)
-                return currentFrame.isInitial;
+            return currentFrame && currentFrame.isInitial;
         },
 
         computed: () => {
-            if (currentFrame)
-                return currentFrame.computed;
+            return currentFrame && currentFrame.computed;
         }
     };
 })();
@@ -888,7 +877,8 @@ ko.observableArray['fn'] = {
         var underlyingArray = this.peek();
         var removedValues = [];
         var predicate = typeof valueOrPredicate == "function" && !ko.isObservable(valueOrPredicate) ? valueOrPredicate : function (value) { return value === valueOrPredicate; };
-        for (var i = 0; i < underlyingArray.length; i++) {
+        var i = underlyingArray.length;
+        while (i--) {
             var value = underlyingArray[i];
             if (predicate(value)) {
                 if (removedValues.length === 0) {
@@ -899,7 +889,6 @@ ko.observableArray['fn'] = {
                 }
                 removedValues.push(value);
                 underlyingArray.splice(i, 1);
-                i--;
             }
         }
         if (removedValues.length) {
@@ -922,10 +911,6 @@ ko.observableArray['fn'] = {
         if (!arrayOfValues)
             return [];
         return this['remove'](value => arrayOfValues.includes(value));
-    },
-
-    'indexOf': function (item) {
-        return this().indexOf(item);
     }
 };
 
@@ -933,29 +918,31 @@ ko.observableArray['fn'] = {
 // inheritance chain is created manually in the ko.observableArray constructor
 Object.setPrototypeOf(ko.observableArray['fn'], ko.observable['fn']);
 
-// Populate ko.observableArray.fn with read/write functions from native arrays
-// Important: Do not add any additional functions here that may reasonably be used to *read* data from the array
-// because we'll eval them without causing subscriptions, so ko.computed output could end up getting stale
-["pop", "push", "reverse", "shift", "sort", "splice", "unshift"].forEach(methodName => {
-    ko.observableArray['fn'][methodName] = function () {
-        // Use "peek" to avoid creating a subscription in any computed that we're executing in the context of
-        // (for consistency with mutating regular observables)
-        var underlyingArray = this.peek();
-        this.valueWillMutate();
-        this.cacheDiffForKnownOperation(underlyingArray, methodName, arguments);
-        var methodCallResult = underlyingArray[methodName].apply(underlyingArray, arguments);
-        this.valueHasMutated();
-        // The native sort and reverse methods return a reference to the array, but it makes more sense to return the observable array instead.
-        return methodCallResult === underlyingArray ? this : methodCallResult;
-    };
-});
-
-// Populate ko.observableArray.fn with read-only functions from native arrays
-["slice"].forEach(methodName => {
-    ko.observableArray['fn'][methodName] = function () {
-        var underlyingArray = this();
-        return underlyingArray[methodName].apply(underlyingArray, arguments);
-    };
+// Populate ko.observableArray.fn with native arrays functions
+Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
+    if (typeof Array.prototype[methodName] === 'function') {
+        if (["pop", "push", "reverse", "shift", "sort", "splice", "unshift"].includes(methodName)) {
+            // Mutator methods
+            // Important: Do not add any additional functions here that may reasonably be used to *read* data from the array
+            // because we'll eval them without causing subscriptions, so ko.computed output could end up getting stale
+            ko.observableArray['fn'][methodName] = function (...args) {
+                // Use "peek" to avoid creating a subscription in any computed that we're executing in the context of
+                // (for consistency with mutating regular observables)
+                var underlyingArray = this.peek();
+                this.valueWillMutate();
+                this.cacheDiffForKnownOperation(underlyingArray, methodName, args);
+                var methodCallResult = underlyingArray[methodName](...args);
+                this.valueHasMutated();
+                // The native sort and reverse methods return a reference to the array, but it makes more sense to return the observable array instead.
+                return methodCallResult === underlyingArray ? this : methodCallResult;
+            };
+        } else {
+            // Accessor and Iteration methods
+            ko.observableArray['fn'][methodName] = function (...args) {
+                return this()[methodName](...args);
+            };
+        }
+    }
 });
 
 ko.isObservableArray = instance => {
