@@ -109,22 +109,22 @@ RainLoop 1.14 vs SnappyMail
 
 |js/*       	|RainLoop 	|Snappy   	|
 |-----------	|--------:	|--------:	|
-|admin.js    	|2.130.942	|  653.696	|
-|app.js      	|4.184.455	|2.322.177	|
+|admin.js    	|2.130.942	|  652.764	|
+|app.js      	|4.184.455	|2.319.847	|
 |boot.js     	|  671.522	|    5.285	|
-|libs.js     	|  647.614	|  237.066	|
+|libs.js     	|  647.614	|  235.271	|
 |polyfills.js	|  325.834	|        0	|
-|TOTAL      	|7.960.367	|3.218.258	|
+|TOTAL      	|7.960.367	|3.213.167	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|Rain gzip	|gzip     	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|   90.699	| 73.657	| 23.757	| 20.795	|
-|app.min.js      	|  511.202	|  313.385	|140.462	| 83.493	| 67.903	|
+|admin.min.js    	|  252.147	|   90.573	| 73.657	| 23.735	| 20.767	|
+|app.min.js      	|  511.202	|  312.734	|140.462	| 83.425	| 67.822	|
 |boot.min.js     	|   66.007	|    2.918	| 22.567	|  1.500	|  1.275	|
-|libs.min.js     	|  572.545	|  132.597	|176.720	| 47.935	| 42.630	|
+|libs.min.js     	|  572.545	|  130.767	|176.720	| 47.288	| 42.043	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  539.599	|424.718	|156.685	|132.603	|
-|TOTAL (no admin)	|1.182.206	|  448.900	|351.061	|132.928	|111.808	|
+|TOTAL           	|1.434.353	|  536.992	|424.718	|155.948	|131.907	|
+|TOTAL (no admin)	|1.182.206	|  446.419	|351.061	|132.213	|111.140	|
 
 For a user its around 62% smaller and faster than traditional RainLoop.
 
@@ -149,10 +149,10 @@ For a user its around 62% smaller and faster than traditional RainLoop.
 * Removed vendors/Progress.js/minified/progressjs.min.css
 
 
-|css/*       	|1.14.0   	|native   	|gzip 1.14	|gzip   	|brotli   	|
+|css/*       	|RainLoop	|Snappy   	|Rain gzip	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 185.728	| 46,959	| 28.737	| 24.177	|
-|app.min.css	| 274.791	| 151.748	| 39.618	| 25.223	| 21.753	|
+|app.css    	| 340.334	| 185.811	| 46,959	| 28.756	| 24.192	|
+|app.min.css	| 274.791	| 151.823	| 39.618	| 25.242	| 21.777	|
 |boot.css    	|       	|   2.534	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 
