@@ -13,10 +13,10 @@ function typeCast(curValue, newValue) {
 	case 'string': return null != newValue ? '' + newValue : '';
 	case 'object':
 		if (curValue.constructor.reviveFromJson) {
-			return curValue.constructor.reviveFromJson(newValue) || undefined;
+			return curValue.constructor.reviveFromJson(newValue);
 		}
-		if (!Array.isArray(curValue) || !Array.isArray(newValue))
-			return undefined;
+		if (Array.isArray(curValue) && !Array.isArray(newValue))
+			return [];
 	}
 	return newValue;
 }
@@ -95,12 +95,8 @@ export class AbstractModel {
 					{
 					case 'function':
 						if (ko.isObservable(this[key])) {
-							value = typeCast(this[key](), value);
-							if (undefined !== value) {
-								this[key](value);
-								break;
-							}
-//							console.log((typeof this[key]())+' '+(model.name)+'.'+key+' not revived');
+							this[key](typeCast(this[key](), value));
+//							console.log('Observable ' + (typeof this[key]()) + ' ' + (model.name) + '.' + key + ' revived');
 						}
 //						else console.log(model.name + '.' + key + ' is a function');
 						break;
@@ -108,11 +104,8 @@ export class AbstractModel {
 					case 'number':
 					case 'object':
 					case 'string':
-						value = typeCast(this[key], value);
-						if (undefined !== value) {
-							this[key] = value;
-							break;
-						}
+						this[key] = typeCast(this[key], value);
+						break;
 						// fall through
 					case 'undefined':
 					default:

@@ -20,8 +20,8 @@ export class AbstractCollectionModel extends Array
 	 * @returns {*CollectionModel}
 	 */
 	static reviveFromJson(json, itemCallback) {
+		const result = new this();
 		if (json) {
-			const result = new this();
 			if ('Collection/'+this.name.replace('Model', '') === json['@Object']) {
 				Object.entries(json).forEach(([key, value]) => '@' !== key[0] && (result[key] = value));
 //				json[@Count]
@@ -32,10 +32,9 @@ export class AbstractCollectionModel extends Array
 					item && itemCallback && (item = itemCallback(item, result));
 					item && result.push(item);
 				});
-				return result;
 			}
 		}
-		return null;
+		return result;
 	}
 
 }
