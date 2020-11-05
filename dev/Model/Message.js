@@ -476,7 +476,6 @@ class MessageModel extends AbstractModel {
 					node.loading = 'lazy';
 				}
 				node.src = node.getAttribute(attr);
-				node.removeAttribute('data-loaded');
 			});
 
 			attr = this.externalProxy ? 'data-x-additional-style-url' : 'data-x-style-url';

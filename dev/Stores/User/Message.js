@@ -494,8 +494,8 @@ class MessageUserStore {
 					const textBody = document.getElementById(id);
 					if (textBody) {
 						textBody.rlCacheCount = ++iMessageBodyCacheCount;
-						message.fetchDataFromDom();
 						message.body = textBody;
+						message.fetchDataFromDom();
 					} else {
 						let isHtml = false;
 						if (json.Html) {
