@@ -429,6 +429,28 @@ html.rl-no-preview-pane {
 						img {
 							max-width: 100%;
 						}
+						img[data-x-src]:not([src]) {
+							border: 1px solid #999;
+							position: relative;
+						}
+						img[data-x-src]:not([src])::after {
+							content: "\e00e"; font-family: snappymail;height:16px;width:16px;
+							position: absolute;
+							top: 0;
+							left: 0;
+							color: #000;
+							background-color: #fff;
+							border: 1px solid #999;
+							padding: 3px;
+						}
+						img[data-x-src]:not([src]):hover::after {
+							content: attr(data-x-src);
+							font-family: sans-serif;
+							height: auto;
+							transform: translate(-25%,0);
+							width: auto;
+							width: fit-content;
+						}
 
 						pre, code {
 							margin: 0;
