@@ -4,6 +4,9 @@ namespace RainLoop;
 
 use RainLoop\Enumerations\UploadError;
 use RainLoop\Enumerations\UploadClientError;
+use RainLoop\Model\Identity;
+use RainLoop\Providers\Identities;
+use RainLoop\Providers\Storage\Enumerations\StorageType;
 
 class Actions
 {
@@ -54,6 +57,11 @@ class Actions
 	 * @var array of \MailSo\Cache\CacheClient
 	 */
 	private $aCachers;
+
+    /**
+     * @var Providers\Identities
+     */
+	private $oIdentitiesProvider;
 
 	/**
 	 * @var \RainLoop\Providers\Storage
@@ -282,12 +290,6 @@ class Actions
 					}
 					break;
 				case 'suggestions':
-
-					if (null === $mResult)
-					{
-						$mResult = array();
-					}
-
 					break;
 				case 'two-factor-auth':
 					// Providers\TwoFactorAuth\TwoFactorAuthInterface
@@ -295,6 +297,12 @@ class Actions
 					break;
 			}
 		}
+
+        // Always give the file provider as last for identities, it is the override
+		if($sName === 'identities') {
+            if($mResult === null) $mResult = [];
+            $mResult[] = new Providers\Identities\FileIdentities($this->StorageProvider(true));
+        }
 
 		foreach (\is_array($mResult) ? $mResult : array($mResult) as $oItem)
 		{
@@ -633,9 +641,16 @@ class Actions
 
 			return $this->oStorageProvider;
 		}
-
-		return null;
 	}
+
+	public function IdentitiesProvider() : Identities
+    {
+        if(null === $this->oIdentitiesProvider) {
+            $this->oIdentitiesProvider = new Providers\Identities($this->fabrica('identities'));
+        }
+
+        return $this->oIdentitiesProvider;
+    }
 
 	public function SettingsProvider(bool $bLocal = false) : Providers\Settings
 	{
@@ -659,8 +674,6 @@ class Actions
 
 			return $this->oSettingsProvider;
 		}
-
-		return null;
 	}
 
 	public function FilesProvider() : Providers\Files
@@ -1865,88 +1878,6 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		}
 
 		return $aAccounts;
-	}
-
-	public function GetIdentities(Model\Account $oAccount) : array
-	{
-		$bAllowIdentities = $this->GetCapa(false, false,
-			Enumerations\Capa::IDENTITIES, $oAccount);
-
-		$aIdentities = array();
-		if ($oAccount)
-		{
-			$aSubIdentities = array();
-
-			$sData = $this->StorageProvider(true)->Get($oAccount,
-				Providers\Storage\Enumerations\StorageType::CONFIG,
-				'identities'
-			);
-
-			if ('' !== $sData && '[' === \substr($sData, 0, 1))
-			{
-				$aSubIdentities = \json_decode($sData, true);
-			}
-
-			$bHasAccountIdentity = false;
-
-			if (\is_array($aSubIdentities) && 0 < \count($aSubIdentities))
-			{
-				foreach ($aSubIdentities as $aItem)
-				{
-					$oItem = new Model\Identity();
-					$oItem->FromJSON($aItem);
-
-					if ($oItem && $oItem->Validate())
-					{
-						if ($oItem->IsAccountIdentities())
-						{
-							$oItem->SetEmail($oAccount->Email());
-							$bHasAccountIdentity = true;
-
-							\array_push($aIdentities, $oItem);
-						}
-						else if ($bAllowIdentities)
-						{
-							\array_push($aIdentities, $oItem);
-						}
-					}
-				}
-			}
-
-			if (!$bHasAccountIdentity)
-			{
-				\array_unshift($aIdentities,
-					new Model\Identity('', $oAccount->Email()));
-			}
-
-			if (1 < \count($aIdentities) && $bAllowIdentities)
-			{
-				$sOrder = $this->StorageProvider()->Get($oAccount,
-					Providers\Storage\Enumerations\StorageType::CONFIG,
-					'accounts_identities_order'
-				);
-
-				$aOrder = empty($sOrder) ? array() : \json_decode($sOrder, true);
-				if (isset($aOrder['Identities']) && \is_array($aOrder['Identities']) &&
-					1 < \count($aOrder['Identities']))
-				{
-					$aList = $aOrder['Identities'];
-					foreach ($aList as $iIndex => $sItem)
-					{
-						if ('' === $sItem)
-						{
-							$aList[$iIndex] = '---';
-						}
-					}
-
-					\usort($aIdentities, function ($a, $b) use ($aList) {
-						return \array_search($a->Id(true), $aList) < \array_search($b->Id(true), $aList) ? -1 : 1;
-					});
-				}
-			}
-		}
-
-		return $aIdentities;
 	}
 
 	public function GetIdentityByID(Model\Account $oAccount, string $sID, bool $bFirstOnEmpty = false) : ?Model\Identity

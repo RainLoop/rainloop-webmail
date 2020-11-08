@@ -4,7 +4,11 @@ namespace RainLoop\Actions;
 
 use \RainLoop\Enumerations\Capa;
 use \RainLoop\Exceptions\ClientException;
+use \RainLoop\Model\Account;
+use \RainLoop\Model\Identity;
 use \RainLoop\Notifications;
+use RainLoop\Providers\Storage\Enumerations\StorageType;
+use function trim;
 
 trait Accounts
 {
@@ -25,7 +29,7 @@ trait Accounts
 
 		$aAccounts = $this->GetAccounts($oAccount);
 
-		$sEmail = \trim($this->GetActionParam('Email', ''));
+		$sEmail = trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
 		$bNew = '1' === (string) $this->GetActionParam('New', '1');
 
@@ -65,7 +69,7 @@ trait Accounts
 		}
 
 		$sParentEmail = $oAccount->ParentEmailHelper();
-		$sEmailToDelete = \trim($this->GetActionParam('EmailToDelete', ''));
+		$sEmailToDelete = trim($this->GetActionParam('EmailToDelete', ''));
 		$sEmailToDelete = \MailSo\Base\Utils::IdnToAscii($sEmailToDelete, true);
 
 		$aAccounts = $this->GetAccounts($oAccount);
@@ -104,32 +108,8 @@ trait Accounts
 			throw new ClientException(Notifications::InvalidInputArgument);
 		}
 
-		$aIdentities = $this->GetIdentities($oAccount);
-
-		$bAdded = false;
-		$aIdentitiesForSave = array();
-		foreach ($aIdentities as $oItem)
-		{
-			if ($oItem)
-			{
-				if ($oItem->Id() === $oIdentity->Id())
-				{
-					$aIdentitiesForSave[] = $oIdentity;
-					$bAdded = true;
-				}
-				else
-				{
-					$aIdentitiesForSave[] = $oItem;
-				}
-			}
-		}
-
-		if (!$bAdded)
-		{
-			$aIdentitiesForSave[] = $oIdentity;
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aIdentitiesForSave));
+		$this->IdentitiesProvider()->UpdateIdentity($oAccount, $oIdentity);
+		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
 	/**
@@ -144,24 +124,14 @@ trait Accounts
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
-		$sId = \trim($this->GetActionParam('IdToDelete', ''));
+		$sId = trim($this->GetActionParam('IdToDelete', ''));
 		if (empty($sId))
 		{
 			throw new ClientException(Notifications::UnknownError);
 		}
 
-		$aNew = array();
-		$aIdentities = $this->GetIdentities($oAccount);
-
-		foreach ($aIdentities as $oItem)
-		{
-			if ($oItem && $sId !== $oItem->Id())
-			{
-				$aNew[] = $oItem;
-			}
-		}
-
-		return $this->DefaultResponse(__FUNCTION__, $this->SetIdentities($oAccount, $aNew));
+		$this->IdentitiesProvider()->DeleteIdentity($oAccount, $sId);
+		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
 	/**
@@ -214,26 +184,35 @@ trait Accounts
 		));
 	}
 
-	private function SetIdentities(\RainLoop\Model\Account $oAccount, array $aIdentities = array()) : bool
-	{
-		$bAllowIdentities = $this->GetCapa(false, false, Capa::IDENTITIES, $oAccount);
+    /**
+     * @param Account $account
+     * @return Identity[]
+     */
+    public function GetIdentities(Account $account) : array
+    {
+        if(!$account) return [];
 
-		$aResult = array();
-		foreach ($aIdentities as $oItem)
-		{
-			if (!$bAllowIdentities && $oItem && !$oItem->IsAccountIdentities())
-			{
-				continue;
-			}
+        // A custom name for a single identity is also stored in this system
+        $allowMultipleIdentities = $this->GetCapa(false, false, Capa::IDENTITIES, $account);
 
-			$aResult[] = $oItem->ToSimpleJSON();
-		}
+        // Get all identities
+        $identities = $this->IdentitiesProvider()->GetIdentities($account, $allowMultipleIdentities);
 
-		return $this->StorageProvider(true)->Put($oAccount,
-			\RainLoop\Providers\Storage\Enumerations\StorageType::CONFIG,
-			'identities',
-			\json_encode($aResult)
-		);
-	}
+        // Sort identities
+        $orderString = $this->StorageProvider()->Get($account, StorageType::CONFIG, 'accounts_identities_order');
+        $order = json_decode($orderString, true) ?? [];
+        if(isset($order['Identities']) && is_array($order['Identities']) && count($order['Identities']) > 1) {
+            $list = array_map(function($item) {
+                if('' === $item) $item = '---';
+                return $item;
+            }, $order['Identities']);
+
+            usort($identities, function($a, $b) use ($list) {
+                return array_search($a->Id(true), $list) < array_search($b->Id(true), $list) ? -1 : 1;
+            });
+        }
+
+        return $identities;
+    }
 
 }

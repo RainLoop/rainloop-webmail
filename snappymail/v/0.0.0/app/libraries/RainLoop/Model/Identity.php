@@ -2,42 +2,45 @@
 
 namespace RainLoop\Model;
 
-class Identity implements \JsonSerializable
+use JsonSerializable;
+use MailSo\Base\Utils;
+
+class Identity implements JsonSerializable
 {
-	/**
-	 * @var string
-	 */
-	private $sId;
+    /**
+     * @var string
+     */
+    private $sId;
 
-	/**
-	 * @var string
-	 */
-	private $sEmail;
+    /**
+     * @var string
+     */
+    private $sEmail;
 
-	/**
-	 * @var string
-	 */
-	private $sName;
+    /**
+     * @var string
+     */
+    private $sName;
 
-	/**
-	 * @var string
-	 */
-	private $sReplyTo;
+    /**
+     * @var string
+     */
+    private $sReplyTo;
 
-	/**
-	 * @var string
-	 */
-	private $sBcc;
+    /**
+     * @var string
+     */
+    private $sBcc;
 
-	/**
-	 * @var string
-	 */
-	private $sSignature;
+    /**
+     * @var string
+     */
+    private $sSignature;
 
-	/**
-	 * @var bool
-	 */
-	private $bSignatureInsertBefore;
+    /**
+     * @var bool
+     */
+    private $bSignatureInsertBefore;
 
 	function __construct(string $sId = '', string $sEmail = '')
 	{
@@ -92,12 +95,48 @@ class Identity implements \JsonSerializable
 		return $this->bSignatureInsertBefore;
 	}
 
+    public function SetId(string $sId): Identity
+    {
+        $this->sId = $sId;
+        return $this;
+    }
+
+    public function SetName(string $sName): Identity
+    {
+        $this->sName = $sName;
+        return $this;
+    }
+
+    public function SetReplyTo(string $sReplyTo): Identity
+    {
+        $this->sReplyTo = $sReplyTo;
+        return $this;
+    }
+
+    public function SetBcc(string $sBcc): Identity
+    {
+        $this->sBcc = $sBcc;
+        return $this;
+    }
+
+    public function SetSignature(string $sSignature): Identity
+    {
+        $this->sSignature = $sSignature;
+        return $this;
+    }
+
+    public function SetSignatureInsertBefore(bool $bSignatureInsertBefore): Identity
+    {
+        $this->bSignatureInsertBefore = $bSignatureInsertBefore;
+        return $this;
+    }
+
 	public function FromJSON(array $aData, bool $bAjax = false) : bool
 	{
 		if (!empty($aData['Email']))
 		{
 			$this->sId = !empty($aData['Id']) ? $aData['Id'] : '';
-			$this->sEmail = $bAjax ? \MailSo\Base\Utils::IdnToAscii($aData['Email'], true) : $aData['Email'];
+			$this->sEmail = $bAjax ? Utils::IdnToAscii($aData['Email'], true) : $aData['Email'];
 			$this->sName = isset($aData['Name']) ? $aData['Name'] : '';
 			$this->sReplyTo = !empty($aData['ReplyTo']) ? $aData['ReplyTo'] : '';
 			$this->sBcc = !empty($aData['Bcc']) ? $aData['Bcc'] : '';
@@ -127,9 +166,8 @@ class Identity implements \JsonSerializable
 	public function jsonSerialize()
 	{
 		return array(
-//			'@Object' => 'Object/Identity',
 			'Id' => $this->Id(),
-			'Email' => \MailSo\Base\Utils::IdnToUtf8($this->Email()),
+			'Email' => Utils::IdnToUtf8($this->Email()),
 			'Name' => $this->Name(),
 			'ReplyTo' => $this->ReplyTo(),
 			'Bcc' => $this->Bcc(),
