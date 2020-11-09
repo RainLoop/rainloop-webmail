@@ -30,11 +30,9 @@ class GeneralUserSettings {
 		this.layout = SettingsStore.layout;
 		this.usePreviewPane = SettingsStore.usePreviewPane;
 
-		this.soundNotificationIsSupported = NotificationStore.soundNotificationIsSupported;
 		this.enableSoundNotification = NotificationStore.enableSoundNotification;
 
 		this.enableDesktopNotification = NotificationStore.enableDesktopNotification;
-		this.isDesktopNotificationSupported = NotificationStore.isDesktopNotificationSupported;
 		this.isDesktopNotificationDenied = NotificationStore.isDesktopNotificationDenied;
 
 		this.showImages = SettingsStore.showImages;
@@ -96,6 +94,10 @@ class GeneralUserSettings {
 		NotificationStore.playSoundNotification(true);
 	}
 
+	testSystemNotification() {
+		NotificationStore.displayDesktopNotification('SnappyMail', 'Test notification', { 'Folder': '', 'Uid': '' });
+	}
+
 	onBuild() {
 		setTimeout(() => {
 			const f0 = settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this),
@@ -155,10 +157,6 @@ class GeneralUserSettings {
 				});
 			});
 		}, 50);
-	}
-
-	onShow() {
-		this.enableDesktopNotification.valueHasMutated();
 	}
 
 	selectLanguage() {

@@ -30,6 +30,13 @@ const jsBoot = () => {
 		.pipe(gulp.dest('snappymail/v/' + config.devVersion + '/static/js'));
 };
 
+// ServiceWorker
+const jsServiceWorker = () => {
+	return gulp
+		.src('dev/serviceworker.js')
+		.pipe(gulp.dest('snappymail/v/' + config.devVersion + '/static/js'));
+};
+
 // libs
 const jsLibs = () => {
 	const src = config.paths.js.libs.src;
@@ -113,7 +120,7 @@ const jsLint = () =>
 		.pipe(eslint.failAfterError());
 
 const jsState1 = gulp.series(jsLint);
-const jsState3 = gulp.parallel(jsBoot, jsLibs, jsApp, jsAdmin);
+const jsState3 = gulp.parallel(jsBoot, jsServiceWorker, jsLibs, jsApp, jsAdmin);
 const jsState2 = gulp.series(jsClean, webpack, jsState3, jsMin);
 
 exports.jsLint = jsLint;

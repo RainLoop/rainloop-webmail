@@ -16,7 +16,7 @@ import {
 	clearNewMessageCache
 } from 'Common/Cache';
 
-import { mailBox, notificationMailIcon } from 'Common/Links';
+import { mailBox } from 'Common/Links';
 import { i18n, getNotification } from 'Common/Translator';
 
 import { EmailCollectionModel } from 'Model/EmailCollection';
@@ -245,7 +245,6 @@ class MessageUserStore {
 				const len = newMessages.length;
 				if (3 < len) {
 					NotificationStore.displayDesktopNotification(
-						notificationMailIcon(),
 						AccountStore.email(),
 						i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': len
@@ -255,7 +254,6 @@ class MessageUserStore {
 				} else {
 					newMessages.forEach(item => {
 						NotificationStore.displayDesktopNotification(
-							notificationMailIcon(),
 							EmailCollectionModel.reviveFromJson(item.From).toString(),
 							item.Subject,
 							{ 'Folder': item.Folder, 'Uid': item.Uid }

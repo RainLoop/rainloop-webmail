@@ -200,16 +200,6 @@ export const MessageSelectAction = {
 /**
  * @enum {number}
  */
-export const DesktopNotification = {
-	Allowed: 0,
-	NotAllowed: 1,
-	Denied: 2,
-	NotSupported: 9
-};
-
-/**
- * @enum {number}
- */
 export const MessagePriority = {
 	Low: 5,
 	Normal: 3,

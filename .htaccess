@@ -26,9 +26,8 @@ RewriteRule cpsess.* https://%{HTTP_HOST}/ [L,R=301]
 	Header set X-Content-Type-Options "nosniff"
 	Header set X-Frame-Options "DENY"
 	Header set X-XSS-Protection "1; mode=block"
-</IfModule>
+	Header set Service-Worker-Allowed "/"
 
-<IfModule mod_headers.c>
 	RewriteCond %{HTTP:Accept-encoding} br
 	RewriteCond "%{REQUEST_FILENAME}\.br" -s
 	RewriteRule "^(.+)" "$1\.br" [L,T=text/javascript,QSA]

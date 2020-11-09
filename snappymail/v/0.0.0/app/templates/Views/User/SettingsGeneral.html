@@ -114,13 +114,13 @@
 			</div>
 		</div>
 	</div>
-	<div class="form-horizontal hide-on-mobile" data-bind="visible: isDesktopNotificationSupported() || soundNotificationIsSupported()">
+	<div class="form-horizontal">
 		<div class="legend">
 			<span class="i18n i18n-animation" data-i18n="SETTINGS_GENERAL/LABEL_NOTIFICATIONS"></span>
 		</div>
 		<div class="control-group">
 			<div class="controls">
-				<div data-bind="visible: isDesktopNotificationSupported">
+				<div>
 					<div data-bind="component: {
 						name: 'Checkbox',
 						params: {
@@ -131,11 +131,12 @@
 						}
 					}"></div>
 					&nbsp;
-					<span data-bind="visible: isDesktopNotificationDenied">
-						<span class="i18n" style="color: #999" data-i18n="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC_DENIED"></span>
+					<span data-bind="visible: isDesktopNotificationDenied" class="i18n" style="color: #999" data-i18n="SETTINGS_GENERAL/LABEL_CHROME_NOTIFICATION_DESC_DENIED"></span>
+					<span data-bind="click: testSystemNotification" style="color:green;cursor:pointer">
+						<i class="icon-right-dir iconsize20"></i>
 					</span>
 				</div>
-				<div data-bind="visible: soundNotificationIsSupported">
+ 				<div>
 					<div data-bind="component: {
 						name: 'Checkbox',
 						params: {
@@ -144,7 +145,7 @@
 							inline: true
 						}
 					}"></div>
-					&nbsp;&nbsp;
+					&nbsp;
 					<span data-bind="click: testSoundNotification" style="color:green;cursor:pointer">
 						<i class="icon-right-dir iconsize20"></i>
 					</span>
