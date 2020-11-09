@@ -36,15 +36,13 @@ class Identities extends AbstractProvider
         // Find all identities stored in the system
         $identities = $this->MergeIdentitiesPerDriver($this->GetIdentiesPerDriver($account));
 
-        file_put_contents('php://stderr', print_r($this->identitiesPerDriverPerAccount, TRUE));
-
         // Find the primary identity
-        $primaryIdentity = array_filter($identities, function($identity) {
+        $primaryIdentity = current(array_filter($identities, function($identity) {
             return $identity->IsAccountIdentities();
-        })[0];
+        }));
 
         // If no primary identity is found, generate default one from account info
-        if($primaryIdentity === null)
+        if($primaryIdentity === null || $primaryIdentity === false)
             $identities[] = $primaryIdentity = new Identity('', $account->Email());
 
         // Return only primary identity or all identities
@@ -73,9 +71,9 @@ class Identities extends AbstractProvider
         // If it is a new identity we add it to any storage driver
         if($isNew) {
             // Pick any storage driver to store the result, typically only file storage
-            $storageDriver = array_filter($this->drivers, function($driver) {
+            $storageDriver = current(array_filter($this->drivers, function($driver) {
                 return $driver->SupportsStore();
-            })[0];
+            }));
 
             $identities[$storageDriver->Name()][$identity->Id(true)] = $identity;
             $storageDriver->SetIdentities($account, $identities[$storageDriver->Name()]);
