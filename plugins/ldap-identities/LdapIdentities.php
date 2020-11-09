@@ -95,6 +95,9 @@ class LdapIdentities implements IIdentities
             $identities[] = $identity;
         }
 
+        if(!$this->config->group_get)
+            return $identities;
+
         try {
             $groupResults = $this->FindLdapResults(
                 $this->config->group_field_member,
