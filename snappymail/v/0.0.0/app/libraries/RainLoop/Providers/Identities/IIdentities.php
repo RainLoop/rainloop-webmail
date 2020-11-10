@@ -7,28 +7,28 @@ use RainLoop\Model\Identity;
 
 interface IIdentities
 {
-    /**
-     * @param Account $account
-     * 
-     * @return Identity[]
-     */
-    public function GetIdentities(Account $account) : array;
+	/**
+	 * @param Account $account
+	 *
+	 * @return Identity[]
+	 */
+	public function GetIdentities(Account $account): array;
 
-    /**
-     * @param Account $account
-     * @param Identity[] $identities
-     * 
-     * @return void
-     */
-    public function SetIdentities(Account $account, array $identities);
+	/**
+	 * @param Account $account
+	 * @param Identity[] $identities
+	 *
+	 * @return void
+	 */
+	public function SetIdentities(Account $account, array $identities);
 
-    /**
-     * @return bool
-     */
-    public function SupportsStore() : bool;
+	/**
+	 * @return bool
+	 */
+	public function SupportsStore(): bool;
 
-    /**
-     * @return string
-     */
-    public function Name() : string;
+	/**
+	 * @return string
+	 */
+	public function Name(): string;
 }

@@ -7,40 +7,40 @@ use MailSo\Base\Utils;
 
 class Identity implements JsonSerializable
 {
-    /**
-     * @var string
-     */
-    private $sId;
+	/**
+	 * @var string
+	 */
+	private $sId;
 
-    /**
-     * @var string
-     */
-    private $sEmail;
+	/**
+	 * @var string
+	 */
+	private $sEmail;
 
-    /**
-     * @var string
-     */
-    private $sName;
+	/**
+	 * @var string
+	 */
+	private $sName;
 
-    /**
-     * @var string
-     */
-    private $sReplyTo;
+	/**
+	 * @var string
+	 */
+	private $sReplyTo;
 
-    /**
-     * @var string
-     */
-    private $sBcc;
+	/**
+	 * @var string
+	 */
+	private $sBcc;
 
-    /**
-     * @var string
-     */
-    private $sSignature;
+	/**
+	 * @var string
+	 */
+	private $sSignature;
 
-    /**
-     * @var bool
-     */
-    private $bSignatureInsertBefore;
+	/**
+	 * @var bool
+	 */
+	private $bSignatureInsertBefore;
 
 	function __construct(string $sId = '', string $sEmail = '')
 	{
@@ -53,88 +53,87 @@ class Identity implements JsonSerializable
 		$this->bSignatureInsertBefore = false;
 	}
 
-	public function Id(bool $bFillOnEmpty = false) : string
+	public function Id(bool $bFillOnEmpty = false): string
 	{
 		return $bFillOnEmpty ? ('' === $this->sId ? '---' : $this->sId) : $this->sId;
 	}
 
-	public function Email() : string
+	public function Email(): string
 	{
 		return $this->sEmail;
 	}
 
-	public function SetEmail(string $sEmail) : self
+	public function SetEmail(string $sEmail): self
 	{
 		$this->sEmail = $sEmail;
 
 		return $this;
 	}
 
-	public function Name() : string
+	public function Name(): string
 	{
 		return $this->sName;
 	}
 
-	public function ReplyTo() : string
+	public function ReplyTo(): string
 	{
 		return $this->sReplyTo;
 	}
 
-	public function Bcc() : string
+	public function Bcc(): string
 	{
 		return $this->sBcc;
 	}
 
-	public function Signature() : string
+	public function Signature(): string
 	{
 		return $this->sSignature;
 	}
 
-	public function SignatureInsertBefore() : bool
+	public function SignatureInsertBefore(): bool
 	{
 		return $this->bSignatureInsertBefore;
 	}
 
-    public function SetId(string $sId): Identity
-    {
-        $this->sId = $sId;
-        return $this;
-    }
-
-    public function SetName(string $sName): Identity
-    {
-        $this->sName = $sName;
-        return $this;
-    }
-
-    public function SetReplyTo(string $sReplyTo): Identity
-    {
-        $this->sReplyTo = $sReplyTo;
-        return $this;
-    }
-
-    public function SetBcc(string $sBcc): Identity
-    {
-        $this->sBcc = $sBcc;
-        return $this;
-    }
-
-    public function SetSignature(string $sSignature): Identity
-    {
-        $this->sSignature = $sSignature;
-        return $this;
-    }
-
-    public function SetSignatureInsertBefore(bool $bSignatureInsertBefore): Identity
-    {
-        $this->bSignatureInsertBefore = $bSignatureInsertBefore;
-        return $this;
-    }
-
-	public function FromJSON(array $aData, bool $bAjax = false) : bool
+	public function SetId(string $sId): Identity
 	{
-		if (!empty($aData['Email']))
-		{
+		$this->sId = $sId;
+		return $this;
+	}
+
+	public function SetName(string $sName): Identity
+	{
+		$this->sName = $sName;
+		return $this;
+	}
+
+	public function SetReplyTo(string $sReplyTo): Identity
+	{
+		$this->sReplyTo = $sReplyTo;
+		return $this;
+	}
+
+	public function SetBcc(string $sBcc): Identity
+	{
+		$this->sBcc = $sBcc;
+		return $this;
+	}
+
+	public function SetSignature(string $sSignature): Identity
+	{
+		$this->sSignature = $sSignature;
+		return $this;
+	}
+
+	public function SetSignatureInsertBefore(bool $bSignatureInsertBefore): Identity
+	{
+		$this->bSignatureInsertBefore = $bSignatureInsertBefore;
+		return $this;
+	}
+
+	public function FromJSON(array $aData, bool $bAjax = false): bool
+	{
+		if (!empty($aData['Email'])) {
 			$this->sId = !empty($aData['Id']) ? $aData['Id'] : '';
 			$this->sEmail = $bAjax ? Utils::IdnToAscii($aData['Email'], true) : $aData['Email'];
 			$this->sName = isset($aData['Name']) ? $aData['Name'] : '';
@@ -150,7 +149,7 @@ class Identity implements JsonSerializable
 		return false;
 	}
 
-	public function ToSimpleJSON() : array
+	public function ToSimpleJSON(): array
 	{
 		return array(
 			'Id' => $this->Id(),
@@ -176,12 +175,12 @@ class Identity implements JsonSerializable
 		);
 	}
 
-	public function Validate() : bool
+	public function Validate(): bool
 	{
 		return !empty($this->sEmail);
 	}
 
-	public function IsAccountIdentities() : bool
+	public function IsAccountIdentities(): bool
 	{
 		return '' === $this->Id();
 	}

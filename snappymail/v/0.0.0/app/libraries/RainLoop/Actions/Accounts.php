@@ -2,11 +2,11 @@
 
 namespace RainLoop\Actions;
 
-use \RainLoop\Enumerations\Capa;
-use \RainLoop\Exceptions\ClientException;
-use \RainLoop\Model\Account;
-use \RainLoop\Model\Identity;
-use \RainLoop\Notifications;
+use RainLoop\Enumerations\Capa;
+use RainLoop\Exceptions\ClientException;
+use RainLoop\Model\Account;
+use RainLoop\Model\Identity;
+use RainLoop\Notifications;
 use RainLoop\Providers\Storage\Enumerations\StorageType;
 use function trim;
 
@@ -16,12 +16,11 @@ trait Accounts
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountSetup() : array
+	public function DoAccountSetup(): array
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::ADDITIONAL_ACCOUNTS, $oAccount))
-		{
+		if (!$this->GetCapa(false, false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -31,15 +30,12 @@ trait Accounts
 
 		$sEmail = trim($this->GetActionParam('Email', ''));
 		$sPassword = $this->GetActionParam('Password', '');
-		$bNew = '1' === (string) $this->GetActionParam('New', '1');
+		$bNew = '1' === (string)$this->GetActionParam('New', '1');
 
 		$sEmail = \MailSo\Base\Utils::IdnToAscii($sEmail, true);
-		if ($bNew && ($oAccount->Email() === $sEmail || $sParentEmail === $sEmail || isset($aAccounts[$sEmail])))
-		{
+		if ($bNew && ($oAccount->Email() === $sEmail || $sParentEmail === $sEmail || isset($aAccounts[$sEmail]))) {
 			throw new ClientException(Notifications::AccountAlreadyExists);
-		}
-		else if (!$bNew && !isset($aAccounts[$sEmail]))
-		{
+		} else if (!$bNew && !isset($aAccounts[$sEmail])) {
 			throw new ClientException(Notifications::AccountDoesNotExist);
 		}
 
@@ -47,8 +43,7 @@ trait Accounts
 		$oNewAccount->SetParentEmail($sParentEmail);
 
 		$aAccounts[$oNewAccount->Email()] = $oNewAccount->GetAuthToken();
-		if (!$oAccount->IsAdditionalAccount())
-		{
+		if (!$oAccount->IsAdditionalAccount()) {
 			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
 		}
 
@@ -59,12 +54,11 @@ trait Accounts
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountDelete() : array
+	public function DoAccountDelete(): array
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::ADDITIONAL_ACCOUNTS, $oAccount))
-		{
+		if (!$this->GetCapa(false, false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -74,16 +68,13 @@ trait Accounts
 
 		$aAccounts = $this->GetAccounts($oAccount);
 
-		if (0 < \strlen($sEmailToDelete) && $sEmailToDelete !== $sParentEmail && isset($aAccounts[$sEmailToDelete]))
-		{
+		if (0 < \strlen($sEmailToDelete) && $sEmailToDelete !== $sParentEmail && isset($aAccounts[$sEmailToDelete])) {
 			unset($aAccounts[$sEmailToDelete]);
 
 			$oAccountToChange = null;
-			if ($oAccount->Email() === $sEmailToDelete && !empty($aAccounts[$sParentEmail]))
-			{
+			if ($oAccount->Email() === $sEmailToDelete && !empty($aAccounts[$sParentEmail])) {
 				$oAccountToChange = $this->GetAccountFromCustomToken($aAccounts[$sParentEmail], false, false);
-				if ($oAccountToChange)
-				{
+				if ($oAccountToChange) {
 					$this->AuthToken($oAccountToChange);
 				}
 			}
@@ -98,13 +89,12 @@ trait Accounts
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoIdentityUpdate() : array
+	public function DoIdentityUpdate(): array
 	{
 		$oAccount = $this->getAccountFromToken();
 
 		$oIdentity = new \RainLoop\Model\Identity();
-		if (!$oIdentity->FromJSON($this->GetActionParams(), true))
-		{
+		if (!$oIdentity->FromJSON($this->GetActionParams(), true)) {
 			throw new ClientException(Notifications::InvalidInputArgument);
 		}
 
@@ -115,18 +105,16 @@ trait Accounts
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoIdentityDelete() : array
+	public function DoIdentityDelete(): array
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::IDENTITIES, $oAccount))
-		{
+		if (!$this->GetCapa(false, false, Capa::IDENTITIES, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
 		$sId = trim($this->GetActionParam('IdToDelete', ''));
-		if (empty($sId))
-		{
+		if (empty($sId)) {
 			throw new ClientException(Notifications::UnknownError);
 		}
 
@@ -137,15 +125,14 @@ trait Accounts
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountsAndIdentitiesSortOrder() : array
+	public function DoAccountsAndIdentitiesSortOrder(): array
 	{
 		$oAccount = $this->getAccountFromToken();
 
 		$aAccounts = $this->GetActionParam('Accounts', null);
 		$aIdentities = $this->GetActionParam('Identities', null);
 
-		if (!\is_array($aAccounts) && !\is_array($aIdentities))
-		{
+		if (!\is_array($aAccounts) && !\is_array($aIdentities)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -161,19 +148,17 @@ trait Accounts
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function DoAccountsAndIdentities() : array
+	public function DoAccountsAndIdentities(): array
 	{
 		$oAccount = $this->getAccountFromToken();
 
 		$mAccounts = false;
 
-		if ($this->GetCapa(false, false, Capa::ADDITIONAL_ACCOUNTS, $oAccount))
-		{
+		if ($this->GetCapa(false, false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
 			$mAccounts = $this->GetAccounts($oAccount);
 			$mAccounts = \array_keys($mAccounts);
 
-			foreach ($mAccounts as $iIndex => $sName)
-			{
+			foreach ($mAccounts as $iIndex => $sName) {
 				$mAccounts[$iIndex] = \MailSo\Base\Utils::IdnToUtf8($sName);
 			}
 		}
@@ -184,35 +169,35 @@ trait Accounts
 		));
 	}
 
-    /**
-     * @param Account $account
-     * @return Identity[]
-     */
-    public function GetIdentities(Account $account) : array
-    {
-        if(!$account) return [];
+	/**
+	 * @param Account $account
+	 * @return Identity[]
+	 */
+	public function GetIdentities(Account $account): array
+	{
+		if (!$account) return [];
 
-        // A custom name for a single identity is also stored in this system
-        $allowMultipleIdentities = $this->GetCapa(false, false, Capa::IDENTITIES, $account);
+		// A custom name for a single identity is also stored in this system
+		$allowMultipleIdentities = $this->GetCapa(false, false, Capa::IDENTITIES, $account);
 
-        // Get all identities
-        $identities = $this->IdentitiesProvider()->GetIdentities($account, $allowMultipleIdentities);
+		// Get all identities
+		$identities = $this->IdentitiesProvider()->GetIdentities($account, $allowMultipleIdentities);
 
-        // Sort identities
-        $orderString = $this->StorageProvider()->Get($account, StorageType::CONFIG, 'accounts_identities_order');
-        $order = json_decode($orderString, true) ?? [];
-        if(isset($order['Identities']) && is_array($order['Identities']) && count($order['Identities']) > 1) {
-            $list = array_map(function($item) {
-                if('' === $item) $item = '---';
-                return $item;
-            }, $order['Identities']);
+		// Sort identities
+		$orderString = $this->StorageProvider()->Get($account, StorageType::CONFIG, 'accounts_identities_order');
+		$order = json_decode($orderString, true) ?? [];
+		if (isset($order['Identities']) && is_array($order['Identities']) && count($order['Identities']) > 1) {
+			$list = array_map(function ($item) {
+				if ('' === $item) $item = '---';
+				return $item;
+			}, $order['Identities']);
 
-            usort($identities, function($a, $b) use ($list) {
-                return array_search($a->Id(true), $list) < array_search($b->Id(true), $list) ? -1 : 1;
-            });
-        }
+			usort($identities, function ($a, $b) use ($list) {
+				return array_search($a->Id(true), $list) < array_search($b->Id(true), $list) ? -1 : 1;
+			});
+		}
 
-        return $identities;
-    }
+		return $identities;
+	}
 
 }
