@@ -8,6 +8,8 @@ import * as Links from 'Common/Links';
  */
 const HTML5Notification = window.Notification ? Notification : null,
 	HTML5NotificationStatus = () => (HTML5Notification && HTML5Notification.permission) || 'denied',
+	NotificationsDenied = () => 'denied' === HTML5NotificationStatus(),
+	NotificationsGranted = () => 'granted' === HTML5NotificationStatus(),
 	dispatchMessage = data => {
 		focus();
 		if (data.Folder && data.Uid) {
@@ -20,7 +22,6 @@ let DesktopNotifications = false,
 
 // Are Notifications supported in the service worker?
 if (WorkerNotifications && ServiceWorkerRegistration && ServiceWorkerRegistration.prototype.showNotification) {
-	console.log('ServiceWorker supported');
 	/* Listen for close requests from the ServiceWorker */
 	WorkerNotifications.addEventListener('message', event => {
 		const obj = JSON.parse(event.data);
@@ -28,7 +29,7 @@ if (WorkerNotifications && ServiceWorkerRegistration && ServiceWorkerRegistratio
 	});
 } else {
 	WorkerNotifications = null;
-	console.log('WorkerNotifications not supported');
+	console.log('ServiceWorker Notifications not supported');
 }
 
 class NotificationUserStore {
@@ -37,13 +38,13 @@ class NotificationUserStore {
 
 		this.enableDesktopNotification = ko.observable(false)/*.extend({ notify: 'always' })*/;
 
-		this.isDesktopNotificationDenied = ko.observable('denied' === HTML5NotificationStatus());
+		this.isDesktopNotificationDenied = ko.observable(NotificationsDenied());
 
 		this.enableDesktopNotification.subscribe(value => {
 			DesktopNotifications = !!value;
-			if (value && HTML5Notification && 'granted' !== HTML5Notification.permission) {
+			if (value && HTML5Notification && !NotificationsGranted()) {
 				HTML5Notification.requestPermission(() =>
-					this.isDesktopNotificationDenied('denied' === HTML5Notification.permission)
+					this.isDesktopNotificationDenied(NotificationsDenied())
 				);
 			}
 		});
@@ -62,12 +63,15 @@ class NotificationUserStore {
 	 * Used with DesktopNotifications setting
 	 */
 	displayDesktopNotification(title, text, messageData, imageSrc) {
-		if (DesktopNotifications && 'granted' === HTML5NotificationStatus()) {
+		if (DesktopNotifications && NotificationsGranted()) {
 			const options = {
 				body: text,
 				icon: imageSrc || Links.notificationMailIcon(),
 				data: messageData
 			};
+			if (messageData && messageData.Uid) {
+				options.tag = messageData.Uid;
+			}
 			if (WorkerNotifications) {
 				// Service-Worker-Allowed HTTP header to allow the scope.
 				WorkerNotifications.register('/serviceworker.js')

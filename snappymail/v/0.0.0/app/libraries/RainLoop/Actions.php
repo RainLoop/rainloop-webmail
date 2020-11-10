@@ -1480,8 +1480,6 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		{
 			$aResult['Layout'] = Enumerations\Layout::NO_PREVIW;
 
-			$aResult['SoundNotification'] = false;
-			$aResult['DesktopNotifications'] = false;
 			$aResult['UseCheckboxesInList'] = true;
 
 			$aResult['UserBackgroundName'] = '';
