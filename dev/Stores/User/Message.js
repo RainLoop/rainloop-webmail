@@ -236,9 +236,7 @@ class MessageUserStore {
 	initUidNextAndNewMessages(folder, uidNext, newMessages) {
 		if (getFolderInboxName() === folder && uidNext) {
 			if (Array.isNotEmpty(newMessages)) {
-				newMessages.forEach(item => {
-					addNewMessageCache(folder, item.Uid);
-				});
+				newMessages.forEach(item => addNewMessageCache(folder, item.Uid));
 
 				NotificationStore.playSoundNotification();
 
@@ -249,7 +247,7 @@ class MessageUserStore {
 						i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': len
 						}),
-						{ 'Folder': '', 'Uid': '' }
+						{ 'Url': mailBox(newMessages[0].Folder, 1) }
 					);
 				} else {
 					newMessages.forEach(item => {

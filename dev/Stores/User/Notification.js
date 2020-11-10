@@ -14,6 +14,8 @@ const HTML5Notification = window.Notification ? Notification : null,
 		focus();
 		if (data.Folder && data.Uid) {
 			dispatchEvent(new CustomEvent('mailbox.message.show', {detail:data}));
+		} else if (data.Url) {
+			rl.route.setHash(data.Url);
 		}
 	};
 

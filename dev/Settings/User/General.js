@@ -95,7 +95,7 @@ class GeneralUserSettings {
 	}
 
 	testSystemNotification() {
-		NotificationStore.displayDesktopNotification('SnappyMail', 'Test notification', { 'Folder': '', 'Uid': '' });
+		NotificationStore.displayDesktopNotification('SnappyMail', 'Test notification', { });
 	}
 
 	onBuild() {
