@@ -4,7 +4,7 @@ let notificator = null,
 	player = null,
 	canPlay = type => player && !!player.canPlayType(type).replace('no', ''),
 
-	audioCtx = AudioContext || window.webkitAudioContext,
+	audioCtx = window.AudioContext || window.webkitAudioContext,
 
 	play = (url, name) => {
 		if (player) {
