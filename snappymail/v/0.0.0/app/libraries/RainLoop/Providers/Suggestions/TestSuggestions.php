@@ -2,9 +2,11 @@
 
 namespace RainLoop\Providers\Suggestions;
 
-class TestSuggestions implements \RainLoop\Providers\Suggestions\ISuggestions
+use RainLoop\Model\Account;
+
+class TestSuggestions implements ISuggestions
 {
-	public function Process(\RainLoop\Model\Account $oAccount, string $sQuery, int $iLimit = 20) : array
+	public function Process(Account $oAccount, string $sQuery, int $iLimit = 20) : array
 	{
 		return array(
 			array($oAccount->Email(), ''),

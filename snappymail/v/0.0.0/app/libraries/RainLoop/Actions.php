@@ -2,8 +2,9 @@
 
 namespace RainLoop;
 
-use RainLoop\Enumerations\UploadError;
 use RainLoop\Enumerations\UploadClientError;
+use RainLoop\Enumerations\UploadError;
+use RainLoop\Providers\Identities;
 
 class Actions
 {
@@ -54,6 +55,11 @@ class Actions
 	 * @var array of \MailSo\Cache\CacheClient
 	 */
 	private $aCachers;
+
+	/**
+	 * @var Providers\Identities
+	 */
+	private $oIdentitiesProvider;
 
 	/**
 	 * @var \RainLoop\Providers\Storage
@@ -143,47 +149,46 @@ class Actions
 		$this->Logger()->Ping();
 	}
 
-	public function SetSpecAuthToken(string $sSpecAuthToken) : self
+	public function SetSpecAuthToken(string $sSpecAuthToken): self
 	{
 		$this->sSpecAuthToken = $sSpecAuthToken;
 
 		return $this;
 	}
 
-	public function SetUpdateAuthToken(string $sUpdateAuthToken) : self
+	public function SetUpdateAuthToken(string $sUpdateAuthToken): self
 	{
 		$this->sUpdateAuthToken = $sUpdateAuthToken;
 
 		return $this;
 	}
 
-	public function SetIsAjax(bool $bIsAjax) : self
+	public function SetIsAjax(bool $bIsAjax): self
 	{
 		$this->bIsAjax = $bIsAjax;
 
 		return $this;
 	}
 
-	public function GetSpecAuthToken() : string
+	public function GetSpecAuthToken(): string
 	{
 		return $this->sSpecAuthToken;
 	}
 
-	public function GetUpdateAuthToken() : string
+	public function GetUpdateAuthToken(): string
 	{
 		return $this->sUpdateAuthToken;
 	}
 
-	public function GetIsAjax() : bool
+	public function GetIsAjax(): bool
 	{
 		return $this->bIsAjax;
 	}
 
-	public function GetShortLifeSpecAuthToken(int $iLife = 60) : string
+	public function GetShortLifeSpecAuthToken(int $iLife = 60): string
 	{
 		$aAccountHash = Utils::DecodeKeyValues($this->getLocalAuthToken());
-		if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0])
-		{
+		if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0]) {
 			$aAccountHash[10] = \time() + $iLife;
 			return Utils::EncodeKeyValues($aAccountHash);
 		}
@@ -191,13 +196,11 @@ class Actions
 		return '';
 	}
 
-	public function Config() : Config\Application
+	public function Config(): Config\Application
 	{
-		if (null === $this->oConfig)
-		{
+		if (null === $this->oConfig) {
 			$this->oConfig = new Config\Application();
-			if (!$this->oConfig->Load())
-			{
+			if (!$this->oConfig->Load()) {
 				usleep(10000);
 				$this->oConfig->Load();
 			}
@@ -229,19 +232,17 @@ class Actions
 		$mResult = null;
 		$this->Plugins()->RunHook('main.fabrica', array($sName, &$mResult), false);
 
-		if (null === $mResult)
-		{
-			switch ($sName)
-			{
+		if (null === $mResult) {
+			switch ($sName) {
 				case 'files':
 					// RainLoop\Providers\Files\IFiles
-					$mResult = new Providers\Files\FileStorage(APP_PRIVATE_DATA.'storage/files');
+					$mResult = new Providers\Files\FileStorage(APP_PRIVATE_DATA . 'storage/files');
 					break;
 				case 'storage':
 				case 'storage-local':
 					// RainLoop\Providers\Storage\IStorage
 					$mResult = new Providers\Storage\FileStorage(
-						APP_PRIVATE_DATA.'storage', 'storage-local' === $sName);
+						APP_PRIVATE_DATA . 'storage', 'storage-local' === $sName);
 					break;
 				case 'settings':
 				case 'settings-local':
@@ -255,7 +256,7 @@ class Actions
 					break;
 				case 'domain':
 					// Providers\Domain\DomainAdminInterface
-					$mResult = new Providers\Domain\DefaultDomain(APP_PRIVATE_DATA.'domains', $this->Cacher());
+					$mResult = new Providers\Domain\DefaultDomain(APP_PRIVATE_DATA . 'domains', $this->Cacher());
 					break;
 				case 'filters':
 					// Providers\Filters\FiltersInterface
@@ -268,26 +269,17 @@ class Actions
 
 					$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
 					$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
-					$sPassword = (string) $this->Config()->Get('contacts', 'pdo_password', '');
+					$sPassword = (string)$this->Config()->Get('contacts', 'pdo_password', '');
 
 					$sDsnType = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
-					if ('sqlite' === $sDsnType)
-					{
+					if ('sqlite' === $sDsnType) {
 						$mResult = new Providers\AddressBook\PdoAddressBook(
-							'sqlite:'.APP_PRIVATE_DATA.'AddressBook.sqlite', '', '', 'sqlite');
-					}
-					else
-					{
+							'sqlite:' . APP_PRIVATE_DATA . 'AddressBook.sqlite', '', '', 'sqlite');
+					} else {
 						$mResult = new Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
 					}
 					break;
 				case 'suggestions':
-
-					if (null === $mResult)
-					{
-						$mResult = array();
-					}
-
 					break;
 				case 'two-factor-auth':
 					// Providers\TwoFactorAuth\TwoFactorAuthInterface
@@ -296,10 +288,14 @@ class Actions
 			}
 		}
 
-		foreach (\is_array($mResult) ? $mResult : array($mResult) as $oItem)
-		{
-			if ($oItem && \method_exists($oItem, 'SetLogger'))
-			{
+		// Always give the file provider as last for identities, it is the override
+		if ($sName === 'identities') {
+			if ($mResult === null) $mResult = [];
+			$mResult[] = new Providers\Identities\FileIdentities($this->StorageProvider(true));
+		}
+
+		foreach (\is_array($mResult) ? $mResult : array($mResult) as $oItem) {
+			if ($oItem && \method_exists($oItem, 'SetLogger')) {
 				$oItem->SetLogger($this->Logger());
 			}
 		}
@@ -309,48 +305,42 @@ class Actions
 		return $mResult;
 	}
 
-	public function BootEnd() : void
+	public function BootEnd(): void
 	{
-		try
-		{
-			if ($this->MailClient()->IsLoggined())
-			{
+		try {
+			if ($this->MailClient()->IsLoggined()) {
 				$this->MailClient()->LogoutAndDisconnect();
 			}
+		} catch (\Throwable $oException) {
+			unset($oException);
 		}
-		catch (\Throwable $oException) { unset($oException); }
 	}
 
-	public function ParseQueryAuthString() : string
+	public function ParseQueryAuthString(): string
 	{
 		$sQuery = \trim($this->Http()->GetQueryString());
 
 		$iPos = \strpos($sQuery, '&');
-		if (0 < $iPos)
-		{
+		if (0 < $iPos) {
 			$sQuery = \substr($sQuery, 0, $iPos);
 		}
 
 		$sQuery = \trim(\trim($sQuery), ' /');
 
 		$aSubQuery = $this->Http()->GetQuery('q');
-		if (\is_array($aSubQuery))
-		{
+		if (\is_array($aSubQuery)) {
 			$aSubQuery = \array_map(function ($sS) {
 				return \trim(\trim($sS), ' /');
 			}, $aSubQuery);
 
-			if (0 < \count($aSubQuery))
-			{
-				$sQuery .= '/'.\implode('/', $aSubQuery);
+			if (0 < \count($aSubQuery)) {
+				$sQuery .= '/' . \implode('/', $aSubQuery);
 			}
 		}
 
-		if ('' === $this->GetSpecAuthToken())
-		{
+		if ('' === $this->GetSpecAuthToken()) {
 			$aPaths = \explode('/', $sQuery);
-			if (!empty($aPaths[0]) && !empty($aPaths[1]) && '_' === substr($aPaths[1], 0, 1))
-			{
+			if (!empty($aPaths[0]) && !empty($aPaths[1]) && '_' === substr($aPaths[1], 0, 1)) {
 				$this->SetSpecAuthToken($aPaths[1]);
 			}
 		}
@@ -358,13 +348,12 @@ class Actions
 		return $sQuery;
 	}
 
-	private function compileLogParams(string $sLine, ?Model\Account $oAccount = null, bool $bUrlEncode = false, array $aAdditionalParams = array()) : string
+	private function compileLogParams(string $sLine, ?Model\Account $oAccount = null, bool $bUrlEncode = false, array $aAdditionalParams = array()): string
 	{
 		$aClear = array();
 
-		if (false !== \strpos($sLine, '{date:'))
-		{
-			$sTimeOffset = (string) $this->Config()->Get('logs', 'time_offset', '0');
+		if (false !== \strpos($sLine, '{date:')) {
+			$sTimeOffset = (string)$this->Config()->Get('logs', 'time_offset', '0');
 			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($sTimeOffset, $bUrlEncode) {
 				return Utils::UrlEncode(\MailSo\Log\Logger::DateHelper($aMatch[1], $sTimeOffset), $bUrlEncode);
 			}, $sLine);
@@ -372,16 +361,13 @@ class Actions
 			$aClear['/\{date:([^}]*)\}/'] = 'date';
 		}
 
-		if (false !== \strpos($sLine, '{imap:') || false !== \strpos($sLine, '{smtp:'))
-		{
-			if (!$oAccount)
-			{
+		if (false !== \strpos($sLine, '{imap:') || false !== \strpos($sLine, '{smtp:')) {
+			if (!$oAccount) {
 				$this->ParseQueryAuthString();
 				$oAccount = $this->getAccountFromToken(false);
 			}
 
-			if ($oAccount)
-			{
+			if ($oAccount) {
 				$sLine = \str_replace('{imap:login}', Utils::UrlEncode($oAccount->IncLogin(), $bUrlEncode), $sLine);
 				$sLine = \str_replace('{imap:host}', Utils::UrlEncode($oAccount->DomainIncHost(), $bUrlEncode), $sLine);
 				$sLine = \str_replace('{imap:port}', Utils::UrlEncode($oAccount->DomainIncPort(), $bUrlEncode), $sLine);
@@ -395,22 +381,18 @@ class Actions
 			$aClear['/\{smtp:([^}]*)\}/i'] = 'smtp';
 		}
 
-		if (false !== \strpos($sLine, '{request:'))
-		{
-			if (false !== \strpos($sLine, '{request:ip}'))
-			{
+		if (false !== \strpos($sLine, '{request:')) {
+			if (false !== \strpos($sLine, '{request:ip}')) {
 				$sLine = \str_replace('{request:ip}', Utils::UrlEncode($this->Http()->GetClientIp(
 					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $bUrlEncode), $sLine);
 			}
 
-			if (false !== \strpos($sLine, '{request:domain}'))
-			{
+			if (false !== \strpos($sLine, '{request:domain}')) {
 				$sLine = \str_replace('{request:domain}',
 					Utils::UrlEncode($this->Http()->GetHost(false, true, true), $bUrlEncode), $sLine);
 			}
 
-			if (false !== \strpos($sLine, '{request:domain-clear}'))
-			{
+			if (false !== \strpos($sLine, '{request:domain-clear}')) {
 				$sLine = \str_replace('{request:domain-clear}',
 					Utils::UrlEncode(
 						\MailSo\Base\Utils::GetClearDomainName($this->Http()->GetHost(false, true, true)), $bUrlEncode), $sLine);
@@ -419,10 +401,8 @@ class Actions
 			$aClear['/\{request:([^}]*)\}/i'] = 'request';
 		}
 
-		if (false !== \strpos($sLine, '{user:'))
-		{
-			if (false !== \strpos($sLine, '{user:uid}'))
-			{
+		if (false !== \strpos($sLine, '{user:')) {
+			if (false !== \strpos($sLine, '{user:uid}')) {
 				$sLine = \str_replace('{user:uid}',
 					Utils::UrlEncode(\base_convert(\sprintf('%u',
 						\crc32(\md5(Utils::GetConnectionToken()))), 10, 32), $bUrlEncode),
@@ -430,22 +410,18 @@ class Actions
 				);
 			}
 
-			if (false !== \strpos($sLine, '{user:ip}'))
-			{
+			if (false !== \strpos($sLine, '{user:ip}')) {
 				$sLine = \str_replace('{user:ip}', Utils::UrlEncode($this->Http()->GetClientIp(
 					$this->Config()->Get('labs', 'http_client_ip_check_proxy', false)), $bUrlEncode), $sLine);
 			}
 
-			if (\preg_match('/\{user:(email|login|domain)\}/i', $sLine))
-			{
-				if (!$oAccount)
-				{
+			if (\preg_match('/\{user:(email|login|domain)\}/i', $sLine)) {
+				if (!$oAccount) {
 					$this->ParseQueryAuthString();
 					$oAccount = $this->getAccountFromToken(false);
 				}
 
-				if ($oAccount)
-				{
+				if ($oAccount) {
 					$sEmail = $oAccount->Email();
 
 					$sLine = \str_replace('{user:email}', Utils::UrlEncode($sEmail, $bUrlEncode), $sLine);
@@ -462,8 +438,7 @@ class Actions
 			$aClear['/\{user:([^}]*)\}/i'] = 'unknown';
 		}
 
-		if (false !== \strpos($sLine, '{labs:'))
-		{
+		if (false !== \strpos($sLine, '{labs:')) {
 			$sLine = \preg_replace_callback('/\{labs:rand:([1-9])\}/', function ($aMatch) {
 				return \rand(\pow(10, $aMatch[1] - 1), \pow(10, $aMatch[1]) - 1);
 			}, $sLine);
@@ -471,54 +446,49 @@ class Actions
 			$aClear['/\{labs:([^}]*)\}/'] = 'labs';
 		}
 
-		foreach ($aAdditionalParams as $sKey => $sValue)
-		{
+		foreach ($aAdditionalParams as $sKey => $sValue) {
 			$sLine = \str_replace($sKey, $sValue, $sLine);
 		}
 
-		foreach ($aClear as $sKey => $sValue)
-		{
+		foreach ($aClear as $sKey => $sValue) {
 			$sLine = \preg_replace($sKey, $sValue, $sLine);
 		}
 
 		return $sLine;
 	}
 
-	private function compileLogFileName(string $sFileName) : string
+	private function compileLogFileName(string $sFileName): string
 	{
 		$sFileName = \trim($sFileName);
 
-		if (0 !== \strlen($sFileName))
-		{
+		if (0 !== \strlen($sFileName)) {
 			$sFileName = $this->compileLogParams($sFileName);
 
 			$sFileName = \preg_replace('/[\/]+/', '/', \preg_replace('/[.]+/', '.', $sFileName));
 			$sFileName = \preg_replace('/[^a-zA-Z0-9@_+=\-\.\/!()\[\]]/', '', $sFileName);
 		}
 
-		if (0 === \strlen($sFileName))
-		{
+		if (0 === \strlen($sFileName)) {
 			$sFileName = 'rainloop-log.txt';
 		}
 
 		return $sFileName;
 	}
 
-	public function SetAuthLogoutToken() : void
+	public function SetAuthLogoutToken(): void
 	{
 		\header('X-RainLoop-Action: Logout');
 		Utils::SetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, \md5($_SERVER['REQUEST_TIME_FLOAT']), 0);
 	}
 
-	public function SetAuthToken(Model\Account $oAccount) : void
+	public function SetAuthToken(Model\Account $oAccount): void
 	{
-		$sSpecAuthToken = '_'.$oAccount->GetAuthTokenQ();
+		$sSpecAuthToken = '_' . $oAccount->GetAuthTokenQ();
 
 		$this->SetSpecAuthToken($sSpecAuthToken);
 		Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken, 0);
 
-		if ($oAccount->SignMe() && 0 < \strlen($oAccount->SignMeToken()))
-		{
+		if ($oAccount->SignMe() && 0 < \strlen($oAccount->SignMeToken())) {
 			Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,
 				Utils::EncodeKeyValuesQ(array(
 					'e' => $oAccount->Email(),
@@ -538,45 +508,42 @@ class Actions
 		}
 	}
 
-	public function GetSpecAuthTokenWithDeletion() : string
+	public function GetSpecAuthTokenWithDeletion(): string
 	{
 		$sResult = Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY, '');
-		if (0 < strlen($sResult))
-		{
+		if (0 < strlen($sResult)) {
 			Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
 		}
 
 		return $sResult;
 	}
 
-	public function GetSpecAuthLogoutTokenWithDeletion() : string
+	public function GetSpecAuthLogoutTokenWithDeletion(): string
 	{
 		$sResult = Utils::GetCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY, '');
-		if (0 < strlen($sResult))
-		{
+		if (0 < strlen($sResult)) {
 			Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_TOKEN_KEY);
 		}
 
 		return $sResult;
 	}
 
-	public function GetSpecLogoutCustomMgsWithDeletion() : string
+	public function GetSpecLogoutCustomMgsWithDeletion(): string
 	{
 		$sResult = Utils::GetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, '');
-		if (0 < strlen($sResult))
-		{
+		if (0 < strlen($sResult)) {
 			Utils::ClearCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY);
 		}
 
 		return $sResult;
 	}
 
-	public function SetSpecLogoutCustomMgsWithDeletion(string $sMessage) : string
+	public function SetSpecLogoutCustomMgsWithDeletion(string $sMessage): string
 	{
 		Utils::SetCookie(self::AUTH_SPEC_LOGOUT_CUSTOM_MSG_KEY, $sMessage, 0);
 	}
 
-	private function getLocalAuthToken() : string
+	private function getLocalAuthToken(): string
 	{
 		$sToken = $this->GetSpecAuthToken();
 		return !empty($sToken) && '_' === \substr($sToken, 0, 1) ? \substr($sToken, 1) : '';
@@ -585,25 +552,23 @@ class Actions
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function GetAccount(bool $bThrowExceptionOnFalse = false) : ?Model\Account
+	public function GetAccount(bool $bThrowExceptionOnFalse = false): ?Model\Account
 	{
 		return $this->getAccountFromToken($bThrowExceptionOnFalse);
 	}
 
-	public function Http() : \MailSo\Base\Http
+	public function Http(): \MailSo\Base\Http
 	{
-		if (null === $this->oHttp)
-		{
+		if (null === $this->oHttp) {
 			$this->oHttp = \MailSo\Base\Http::SingletonInstance();
 		}
 
 		return $this->oHttp;
 	}
 
-	public function MailClient() : \MailSo\Mail\MailClient
+	public function MailClient(): \MailSo\Mail\MailClient
 	{
-		if (null === $this->oMailClient)
-		{
+		if (null === $this->oMailClient) {
 			$this->oMailClient = new \MailSo\Mail\MailClient();
 			$this->oMailClient->SetLogger($this->Logger());
 		}
@@ -611,62 +576,56 @@ class Actions
 		return $this->oMailClient;
 	}
 
-	public function StorageProvider(bool $bLocal = false) : Providers\Storage
+	public function StorageProvider(bool $bLocal = false): Providers\Storage
 	{
-		if ($bLocal)
-		{
-			if (null === $this->oLocalStorageProvider)
-			{
+		if ($bLocal) {
+			if (null === $this->oLocalStorageProvider) {
 				$this->oLocalStorageProvider = new Providers\Storage(
 					$this->fabrica('storage-local'));
 			}
 
 			return $this->oLocalStorageProvider;
-		}
-		else
-		{
-			if (null === $this->oStorageProvider)
-			{
+		} else {
+			if (null === $this->oStorageProvider) {
 				$this->oStorageProvider = new Providers\Storage(
 					$this->fabrica('storage'));
 			}
 
 			return $this->oStorageProvider;
 		}
-
-		return null;
 	}
 
-	public function SettingsProvider(bool $bLocal = false) : Providers\Settings
+	public function IdentitiesProvider(): Identities
 	{
-		if ($bLocal)
-		{
-			if (null === $this->oLocalSettingsProvider)
-			{
+		if (null === $this->oIdentitiesProvider) {
+			$this->oIdentitiesProvider = new Providers\Identities($this->fabrica('identities'));
+		}
+
+		return $this->oIdentitiesProvider;
+	}
+
+	public function SettingsProvider(bool $bLocal = false): Providers\Settings
+	{
+		if ($bLocal) {
+			if (null === $this->oLocalSettingsProvider) {
 				$this->oLocalSettingsProvider = new Providers\Settings(
 					$this->fabrica('settings-local'));
 			}
 
 			return $this->oLocalSettingsProvider;
-		}
-		else
-		{
-			if (null === $this->oSettingsProvider)
-			{
+		} else {
+			if (null === $this->oSettingsProvider) {
 				$this->oSettingsProvider = new Providers\Settings(
 					$this->fabrica('settings'));
 			}
 
 			return $this->oSettingsProvider;
 		}
-
-		return null;
 	}
 
-	public function FilesProvider() : Providers\Files
+	public function FilesProvider(): Providers\Files
 	{
-		if (null === $this->oFilesProvider)
-		{
+		if (null === $this->oFilesProvider) {
 			$this->oFilesProvider = new Providers\Files(
 				$this->fabrica('files'));
 		}
@@ -674,10 +633,9 @@ class Actions
 		return $this->oFilesProvider;
 	}
 
-	public function DomainProvider() : Providers\Domain
+	public function DomainProvider(): Providers\Domain
 	{
-		if (null === $this->oDomainProvider)
-		{
+		if (null === $this->oDomainProvider) {
 			$this->oDomainProvider = new Providers\Domain(
 				$this->fabrica('domain'), $this->Plugins());
 		}
@@ -685,10 +643,9 @@ class Actions
 		return $this->oDomainProvider;
 	}
 
-	public function SuggestionsProvider() : Providers\Suggestions
+	public function SuggestionsProvider(): Providers\Suggestions
 	{
-		if (null === $this->oSuggestionsProvider)
-		{
+		if (null === $this->oSuggestionsProvider) {
 			$this->oSuggestionsProvider = new Providers\Suggestions(
 				$this->fabrica('suggestions'));
 		}
@@ -696,15 +653,12 @@ class Actions
 		return $this->oSuggestionsProvider;
 	}
 
-	public function AddressBookProvider(?Model\Account $oAccount = null, bool $bForceEnable = false) : Providers\AddressBook
+	public function AddressBookProvider(?Model\Account $oAccount = null, bool $bForceEnable = false): Providers\AddressBook
 	{
-		if (null === $this->oAddressBookProvider)
-		{
+		if (null === $this->oAddressBookProvider) {
 			$oDriver = null;
-			if ($this->GetCapa(false, false, Enumerations\Capa::CONTACTS, $oAccount))
-			{
-				if ($this->Config()->Get('contacts', 'enable', false) || $bForceEnable)
-				{
+			if ($this->GetCapa(false, false, Enumerations\Capa::CONTACTS, $oAccount)) {
+				if ($this->Config()->Get('contacts', 'enable', false) || $bForceEnable) {
 					$oDriver = $this->fabrica('address-book', $oAccount);
 				}
 			}
@@ -716,32 +670,28 @@ class Actions
 		return $this->oAddressBookProvider;
 	}
 
-	public function Cacher(?Model\Account $oAccount = null, bool $bForceFile = false) : \MailSo\Cache\CacheClient
+	public function Cacher(?Model\Account $oAccount = null, bool $bForceFile = false): \MailSo\Cache\CacheClient
 	{
 		$sKey = '';
-		if ($oAccount)
-		{
+		if ($oAccount) {
 			$sKey = $oAccount->ParentEmailHelper();
 		}
 
 		$sIndexKey = empty($sKey) ? '_default_' : $sKey;
-		if ($bForceFile)
-		{
+		if ($bForceFile) {
 			$sIndexKey .= '/_files_';
 		}
 
-		if (!isset($this->aCachers[$sIndexKey]))
-		{
+		if (!isset($this->aCachers[$sIndexKey])) {
 			$this->aCachers[$sIndexKey] = new \MailSo\Cache\CacheClient();
 
 			$oDriver = null;
 			$sDriver = \strtoupper(\trim($this->Config()->Get('cache', 'fast_cache_driver', 'files')));
 
-			switch (true)
-			{
+			switch (true) {
 				default:
 				case $bForceFile:
-					$oDriver = new \MailSo\Cache\Drivers\File(APP_PRIVATE_DATA.'cache', $sKey);
+					$oDriver = new \MailSo\Cache\Drivers\File(APP_PRIVATE_DATA . 'cache', $sKey);
 					break;
 
 				case ('APC' === $sDriver || 'APCU' === $sDriver) &&
@@ -756,7 +706,7 @@ class Actions
 
 					$oDriver = new \MailSo\Cache\Drivers\Memcache(
 						$this->Config()->Get('labs', 'fast_cache_memcache_host', '127.0.0.1'),
-						(int) $this->Config()->Get('labs', 'fast_cache_memcache_port', 11211),
+						(int)$this->Config()->Get('labs', 'fast_cache_memcache_port', 11211),
 						43200,
 						$sKey
 					);
@@ -765,15 +715,14 @@ class Actions
 				case 'REDIS' === $sDriver && \class_exists('Predis\Client'):
 					$oDriver = new \MailSo\Cache\Drivers\Redis(
 						$this->Config()->Get('labs', 'fast_cache_redis_host', '127.0.0.1'),
-						(int) $this->Config()->Get('labs', 'fast_cache_redis_port', 6379),
+						(int)$this->Config()->Get('labs', 'fast_cache_redis_port', 6379),
 						43200,
 						$sKey
 					);
 					break;
 			}
 
-			if ($oDriver)
-			{
+			if ($oDriver) {
 				$this->aCachers[$sIndexKey]->SetDriver($oDriver);
 			}
 
@@ -783,10 +732,9 @@ class Actions
 		return $this->aCachers[$sIndexKey];
 	}
 
-	public function Plugins() : Plugins\Manager
+	public function Plugins(): Plugins\Manager
 	{
-		if (null === $this->oPlugins)
-		{
+		if (null === $this->oPlugins) {
 			$this->oPlugins = new Plugins\Manager($this);
 			$this->oPlugins->SetLogger($this->Logger());
 		}
@@ -794,44 +742,36 @@ class Actions
 		return $this->oPlugins;
 	}
 
-	public function Logger() : \MailSo\Log\Logger
+	public function Logger(): \MailSo\Log\Logger
 	{
-		if (null === $this->oLogger)
-		{
+		if (null === $this->oLogger) {
 			$this->oLogger = \MailSo\Log\Logger::SingletonInstance();
 
-			if (!!$this->Config()->Get('logs', 'enable', false))
-			{
-				$sSessionFilter = (string) $this->Config()->Get('logs', 'session_filter', '');
-				if (!empty($sSessionFilter))
-				{
+			if (!!$this->Config()->Get('logs', 'enable', false)) {
+				$sSessionFilter = (string)$this->Config()->Get('logs', 'session_filter', '');
+				if (!empty($sSessionFilter)) {
 					$aSessionParts = \explode(':', $sSessionFilter, 2);
 
 					if (empty($aSessionParts[0]) || empty($aSessionParts[1]) ||
-						(string) $aSessionParts[1] !== (string) Utils::GetCookie($aSessionParts[0], ''))
-					{
+						(string)$aSessionParts[1] !== (string)Utils::GetCookie($aSessionParts[0], '')) {
 						return $this->oLogger;
 					}
 				}
 
-				$sTimeOffset = (string) $this->Config()->Get('logs', 'time_offset', '0');
+				$sTimeOffset = (string)$this->Config()->Get('logs', 'time_offset', '0');
 
 				$this->oLogger->SetShowSecter(!$this->Config()->Get('logs', 'hide_passwords', true));
 
 				$sLogFileName = $this->Config()->Get('logs', 'filename', '');
 
 				$oDriver = null;
-				if ('syslog' === $sLogFileName)
-				{
+				if ('syslog' === $sLogFileName) {
 					$oDriver = new \MailSo\Log\Drivers\Syslog();
-				}
-				else
-				{
-					$sLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName($sLogFileName);
+				} else {
+					$sLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName($sLogFileName);
 					$sLogFileDir = \dirname($sLogFileFullPath);
 
-					if (!is_dir($sLogFileDir))
-					{
+					if (!is_dir($sLogFileDir)) {
 						mkdir($sLogFileDir, 0755, true);
 					}
 
@@ -845,8 +785,7 @@ class Actions
 					->SetTimeOffset($sTimeOffset)
 				);
 
-				if (!$this->Config()->Get('debug', 'enable', false))
-				{
+				if (!$this->Config()->Get('debug', 'enable', false)) {
 					$this->oLogger->AddForbiddenType(\MailSo\Log\Enumerations\Type::TIME);
 				}
 
@@ -854,29 +793,29 @@ class Actions
 
 				$oHttp = $this->Http();
 
-				$this->oLogger->Write('[DATE:'.\MailSo\Log\Logger::DateHelper('d.m.y', $sTimeOffset).
-					(0 !== $sTimeOffset ? '][OFFSET:'.(0 < $sTimeOffset ? '+' : '-').
-						\str_pad((string) \abs($sTimeOffset), 2, '0', STR_PAD_LEFT) : '').
-					'][RL:'.APP_VERSION.'][PHP:'.PHP_VERSION.'][IP:'.
-					$oHttp->GetClientIp($this->Config()->Get('labs', 'http_client_ip_check_proxy', false)).'][PID:'.
-					(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown').']['.
-					$oHttp->GetServer('SERVER_SOFTWARE', '~').']['.
-					(\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~' ).']'
+				$this->oLogger->Write('[DATE:' . \MailSo\Log\Logger::DateHelper('d.m.y', $sTimeOffset) .
+					(0 !== $sTimeOffset ? '][OFFSET:' . (0 < $sTimeOffset ? '+' : '-') .
+						\str_pad((string)\abs($sTimeOffset), 2, '0', STR_PAD_LEFT) : '') .
+					'][RL:' . APP_VERSION . '][PHP:' . PHP_VERSION . '][IP:' .
+					$oHttp->GetClientIp($this->Config()->Get('labs', 'http_client_ip_check_proxy', false)) . '][PID:' .
+					(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown') . '][' .
+					$oHttp->GetServer('SERVER_SOFTWARE', '~') . '][' .
+					(\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~') . ']'
 				);
 
 				$sPdo = (\class_exists('PDO') ? \implode(',', \PDO::getAvailableDrivers()) : 'off');
 				$sPdo = empty($sPdo) ? '~' : $sPdo;
 
-				$this->oLogger->Write('['.
-					'Suhosin:'.(\extension_loaded('suhosin') || \ini_get('suhosin.get.max_value_length') ? 'on' : 'off').
-					'][APC:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off').
-					'][MB:'.(\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off').
-					'][PDO:'.$sPdo.
-					'][Streams:'.\implode(',', \stream_get_transports()).
-				']');
+				$this->oLogger->Write('[' .
+					'Suhosin:' . (\extension_loaded('suhosin') || \ini_get('suhosin.get.max_value_length') ? 'on' : 'off') .
+					'][APC:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off') .
+					'][MB:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off') .
+					'][PDO:' . $sPdo .
+					'][Streams:' . \implode(',', \stream_get_transports()) .
+					']');
 
 				$this->oLogger->Write(
-					'['.$oHttp->GetMethod().'] '.$oHttp->GetScheme().'://'.$oHttp->GetHost(false, false).$oHttp->GetServer('REQUEST_URI', ''),
+					'[' . $oHttp->GetMethod() . '] ' . $oHttp->GetScheme() . '://' . $oHttp->GetHost(false, false) . $oHttp->GetServer('REQUEST_URI', ''),
 					\MailSo\Log\Enumerations\Type::NOTE, 'REQUEST');
 			}
 		}
@@ -884,21 +823,18 @@ class Actions
 		return $this->oLogger;
 	}
 
-	public function LoggerAuth() : \MailSo\Log\Logger
+	public function LoggerAuth(): \MailSo\Log\Logger
 	{
-		if (null === $this->oLoggerAuth)
-		{
+		if (null === $this->oLoggerAuth) {
 			$this->oLoggerAuth = new \MailSo\Log\Logger(false);
 
-			if (!!$this->Config()->Get('logs', 'auth_logging', false))
-			{
-				$sAuthLogFileFullPath = \APP_PRIVATE_DATA.'logs/'.$this->compileLogFileName(
-					$this->Config()->Get('logs', 'auth_logging_filename', ''));
+			if (!!$this->Config()->Get('logs', 'auth_logging', false)) {
+				$sAuthLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName(
+						$this->Config()->Get('logs', 'auth_logging_filename', ''));
 
 				$sLogFileDir = \dirname($sAuthLogFileFullPath);
 
-				if (!is_dir($sLogFileDir))
-				{
+				if (!is_dir($sLogFileDir)) {
 					mkdir($sLogFileDir, 0755, true);
 				}
 
@@ -919,24 +855,21 @@ class Actions
 		return $this->oLoggerAuth;
 	}
 
-	public function LoggerAuthHelper(?Model\Account $oAccount = null, array $aAdditionalParams = array()) : void
+	public function LoggerAuthHelper(?Model\Account $oAccount = null, array $aAdditionalParams = array()): void
 	{
 		$sLine = $this->Config()->Get('logs', 'auth_logging_format', '');
-		if (!empty($sLine))
-		{
+		if (!empty($sLine)) {
 			$this->LoggerAuth()->Write($this->compileLogParams($sLine, $oAccount, false, $aAdditionalParams));
 		}
-		if ($this->Config()->Get('logs', 'auth_logging', false) && \openlog('snappymail', 0, \LOG_AUTHPRIV))
-		{
+		if ($this->Config()->Get('logs', 'auth_logging', false) && \openlog('snappymail', 0, \LOG_AUTHPRIV)) {
 			\syslog(\LOG_ERR, $this->compileLogParams('Auth failed: ip={request:ip} user={imap:login}', $oAccount, false, $aAdditionalParams));
 			\closelog();
 		}
 	}
 
-	public function SetMailtoRequest(string $sTo) : void
+	public function SetMailtoRequest(string $sTo): void
 	{
-		if (!empty($sTo))
-		{
+		if (!empty($sTo)) {
 			Utils::SetCookie(self::AUTH_MAILTO_TOKEN_KEY,
 				Utils::EncodeKeyValuesQ(array(
 					'Time' => \microtime(true),
@@ -946,31 +879,23 @@ class Actions
 		}
 	}
 
-	public function LoginProvide(string $sEmail, string $sLogin, string $sPassword, string $sSignMeToken = '', string $sClientCert = '', bool $bThrowProvideException = false) : ?Model\Account
+	public function LoginProvide(string $sEmail, string $sLogin, string $sPassword, string $sSignMeToken = '', string $sClientCert = '', bool $bThrowProvideException = false): ?Model\Account
 	{
 		$oAccount = null;
-		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword))
-		{
+		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword)) {
 			$oDomain = $this->DomainProvider()->Load(\MailSo\Base\Utils::GetDomainFromEmail($sEmail), true);
-			if ($oDomain)
-			{
-				if ($oDomain->ValidateWhiteList($sEmail, $sLogin))
-				{
+			if ($oDomain) {
+				if ($oDomain->ValidateWhiteList($sEmail, $sLogin)) {
 					$oAccount = new Model\Account($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, '', '', $sClientCert);
 					$this->Plugins()->RunHook('filter.acount', array($oAccount));
 
-					if ($bThrowProvideException && !$oAccount)
-					{
+					if ($bThrowProvideException && !$oAccount) {
 						throw new Exceptions\ClientException(Notifications::AuthError);
 					}
-				}
-				else if ($bThrowProvideException)
-				{
+				} else if ($bThrowProvideException) {
 					throw new Exceptions\ClientException(Notifications::AccountNotAllowed);
 				}
-			}
-			else if ($bThrowProvideException)
-			{
+			} else if ($bThrowProvideException) {
 				throw new Exceptions\ClientException(Notifications::DomainNotAllowed);
 			}
 		}
@@ -981,24 +906,21 @@ class Actions
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function GetAccountFromCustomToken(string $sToken, bool $bThrowExceptionOnFalse = true, bool $bValidateShortToken = true, bool $bQ = false) : ?Model\Account
+	public function GetAccountFromCustomToken(string $sToken, bool $bThrowExceptionOnFalse = true, bool $bValidateShortToken = true, bool $bQ = false): ?Model\Account
 	{
 		$oResult = null;
-		if (!empty($sToken))
-		{
+		if (!empty($sToken)) {
 			$aAccountHash = $bQ ? Utils::DecodeKeyValuesQ($sToken) : Utils::DecodeKeyValues($sToken);
 			if (!empty($aAccountHash[0]) && 'token' === $aAccountHash[0] && // simple token validation
 				8 <= \count($aAccountHash) && // length checking
 				!empty($aAccountHash[7]) && // does short token exist
 				(!$bValidateShortToken || Utils::GetShortToken() === $aAccountHash[7] ||  // check short token if needed
 					(isset($aAccountHash[10]) && 0 < $aAccountHash[10] && \time() < $aAccountHash[10]))
-			)
-			{
+			) {
 				$oAccount = $this->LoginProvide($aAccountHash[1], $aAccountHash[2], $aAccountHash[3],
 					empty($aAccountHash[5]) ? '' : $aAccountHash[5], empty($aAccountHash[11]) ? '' : $aAccountHash[11], $bThrowExceptionOnFalse);
 
-				if ($oAccount)
-				{
+				if ($oAccount) {
 					if (!empty($aAccountHash[8]) && !empty($aAccountHash[9])) // init proxy user/password
 					{
 						$oAccount->SetProxyAuthUser($aAccountHash[8]);
@@ -1011,50 +933,41 @@ class Actions
 					$oAccount->SetParentEmail($aAccountHash[6]);
 					$oResult = $oAccount;
 				}
-			}
-			else if ($bThrowExceptionOnFalse)
-			{
+			} else if ($bThrowExceptionOnFalse) {
 				throw new Exceptions\ClientException(Notifications::AuthError);
 			}
 		}
 
-		if ($bThrowExceptionOnFalse && !$oResult)
-		{
+		if ($bThrowExceptionOnFalse && !$oResult) {
 			throw new Exceptions\ClientException(Notifications::AuthError);
 		}
 
 		return $oResult;
 	}
 
-	public function GetAccountFromSignMeToken() : ?Model\Account
+	public function GetAccountFromSignMeToken(): ?Model\Account
 	{
 		$oAccount = null;
 
 		$sSignMeToken = Utils::GetCookie(self::AUTH_SIGN_ME_TOKEN_KEY, '');
-		if (!empty($sSignMeToken))
-		{
+		if (!empty($sSignMeToken)) {
 			$aTokenData = Utils::DecodeKeyValuesQ($sSignMeToken);
-			if (!empty($aTokenData['e']) && !empty($aTokenData['t']))
-			{
+			if (!empty($aTokenData['e']) && !empty($aTokenData['t'])) {
 				$sTokenSettings = $this->StorageProvider()->Get($aTokenData['e'],
 					Providers\Storage\Enumerations\StorageType::CONFIG,
 					'sign_me'
 				);
 
-				if (!empty($sTokenSettings))
-				{
+				if (!empty($sTokenSettings)) {
 					$aSignMeData = Utils::DecodeKeyValuesQ($sTokenSettings);
 					if (!empty($aSignMeData['AuthToken']) &&
 						!empty($aSignMeData['SignMetToken']) &&
-						$aSignMeData['SignMetToken'] === $aTokenData['t'])
-					{
+						$aSignMeData['SignMetToken'] === $aTokenData['t']) {
 						$oAccount = $this->GetAccountFromCustomToken($aSignMeData['AuthToken'], false, false, true);
 					}
 				}
 			}
-		}
-		else
-		{
+		} else {
 			Utils::ClearCookie(self::AUTH_SIGN_ME_TOKEN_KEY);
 		}
 
@@ -1064,20 +977,18 @@ class Actions
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true) : ?Model\Account
+	public function getAccountFromToken(bool $bThrowExceptionOnFalse = true): ?Model\Account
 	{
 		return $this->GetAccountFromCustomToken($this->getLocalAuthToken(), $bThrowExceptionOnFalse, true, true);
 	}
 
-	public function AppDataSystem(bool $bAdmin = false, bool $bMobile = false, bool $bMobileDevice = false) : array
+	public function AppDataSystem(bool $bAdmin = false, bool $bMobile = false, bool $bMobileDevice = false): array
 	{
 		$oConfig = $this->Config();
 
 		$aAttachmentsActions = array();
-		if ($this->GetCapa(false, $bMobile, Enumerations\Capa::ATTACHMENTS_ACTIONS))
-		{
-			if (!!\class_exists('ZipArchive'))
-			{
+		if ($this->GetCapa(false, $bMobile, Enumerations\Capa::ATTACHMENTS_ACTIONS)) {
+			if (!!\class_exists('ZipArchive')) {
 				$aAttachmentsActions[] = 'zip';
 			}
 		}
@@ -1090,19 +1001,19 @@ class Actions
 			'webPath' => Utils::WebPath(),
 			'webVersionPath' => Utils::WebVersionPath(),
 			'token' => $oConfig->Get('security', 'csrf_protection', false) ? Utils::GetCsrfToken() : '',
-			'inIframe' => (bool) $oConfig->Get('labs', 'in_iframe', false),
-			'allowHtmlEditorSourceButton' => (bool) $oConfig->Get('labs', 'allow_html_editor_source_button', false),
-			'allowHtmlEditorBitiButtons' => (bool) $oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
-			'allowCtrlEnterOnCompose' => (bool) $oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
+			'inIframe' => (bool)$oConfig->Get('labs', 'in_iframe', false),
+			'allowHtmlEditorSourceButton' => (bool)$oConfig->Get('labs', 'allow_html_editor_source_button', false),
+			'allowHtmlEditorBitiButtons' => (bool)$oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
+			'allowCtrlEnterOnCompose' => (bool)$oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
 			'forgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
 			'registrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
-			'hideSubmitButton' => (bool) $oConfig->Get('login', 'hide_submit_button', true),
-			'useImapThread' => (bool) $oConfig->Get('labs', 'use_imap_thread', false),
-			'useImapSubscribe' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
-			'allowAppendMessage' => (bool) $oConfig->Get('labs', 'allow_message_append', false),
-			'materialDesign' => (bool) $oConfig->Get('labs', 'use_material_design', true),
-			'folderSpecLimit' => (int) $oConfig->Get('labs', 'folders_spec_limit', 50),
-			'faviconStatus' => (bool) $oConfig->Get('labs', 'favicon_status', true),
+			'hideSubmitButton' => (bool)$oConfig->Get('login', 'hide_submit_button', true),
+			'useImapThread' => (bool)$oConfig->Get('labs', 'use_imap_thread', false),
+			'useImapSubscribe' => (bool)$oConfig->Get('labs', 'use_imap_list_subscribe', true),
+			'allowAppendMessage' => (bool)$oConfig->Get('labs', 'allow_message_append', false),
+			'materialDesign' => (bool)$oConfig->Get('labs', 'use_material_design', true),
+			'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
+			'faviconStatus' => (bool)$oConfig->Get('labs', 'favicon_status', true),
 			'listPermanentFiltered' => '' !== \trim(Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
 			'themes' => $this->GetThemes($bMobile, false),
 			'languages' => $this->GetLanguages(false),
@@ -1111,24 +1022,23 @@ class Actions
 		), $bAdmin ? array(
 			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
 			'adminPath' => \strtolower($oConfig->Get('security', 'admin_panel_key', 'admin')),
-			'allowAdminPanel' => (bool) $oConfig->Get('security', 'allow_admin_panel', true),
+			'allowAdminPanel' => (bool)$oConfig->Get('security', 'allow_admin_panel', true),
 		) : array());
 	}
 
-	public function AppData(bool $bAdmin, bool $bMobile = false, bool $bMobileDevice = false, string $sAuthAccountHash = '') : array
+	public function AppData(bool $bAdmin, bool $bMobile = false, bool $bMobileDevice = false, string $sAuthAccountHash = ''): array
 	{
-		if (0 < \strlen($sAuthAccountHash) && \preg_match('/[^_\-\.a-zA-Z0-9]/', $sAuthAccountHash))
-		{
+		if (0 < \strlen($sAuthAccountHash) && \preg_match('/[^_\-\.a-zA-Z0-9]/', $sAuthAccountHash)) {
 			$sAuthAccountHash = '';
 		}
 
 		$oAccount = null;
 		$oConfig = $this->Config();
 
-/*
-required by Index.html and rl.js:
-NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink AuthAccountHash
-*/
+		/*
+		required by Index.html and rl.js:
+		NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink AuthAccountHash
+		*/
 
 		$aResult = array(
 			'Auth' => false,
@@ -1153,42 +1063,39 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 			'IncludeCss' => '',
 			'IncludeBackground' => '',
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
-			'DetermineUserLanguage' => (bool) $oConfig->Get('login', 'determine_user_language', true),
-			'DetermineUserDomain' => (bool) $oConfig->Get('login', 'determine_user_domain', false),
-			'UseLoginWelcomePage' => (bool) $oConfig->Get('login', 'welcome_page', false),
+			'DetermineUserLanguage' => (bool)$oConfig->Get('login', 'determine_user_language', true),
+			'DetermineUserDomain' => (bool)$oConfig->Get('login', 'determine_user_domain', false),
+			'UseLoginWelcomePage' => (bool)$oConfig->Get('login', 'welcome_page', false),
 			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
-			'SieveAllowFileintoInbox' => (bool) $oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false),
+			'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false),
 			'ContactsIsAllowed' => false,
 			'RequireTwoFactor' => false,
 			'Admin' => array(),
 			'Capa' => array(),
 			'Plugins' => array(),
 			'System' => $this->AppDataSystem($bAdmin, $bMobile, $bMobileDevice)
-/*
-			'LoginLogo' => $oConfig->Get('branding', 'login_logo', ''),
-			'LoginBackground' => $oConfig->Get('branding', 'login_background', ''),
-			'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
-			'LoginDescription' => $oConfig->Get('branding', 'login_desc', ''),
-			'UserLogo' => $oConfig->Get('branding', 'user_logo', ''),
-			'UserLogoTitle' => $oConfig->Get('branding', 'user_logo_title', ''),
-			'UserLogoMessage' => $oConfig->Get('branding', 'user_logo_message', ''),
-			'UserIframeMessage' => $oConfig->Get('branding', 'user_iframe_message', ''),
-			'UserCss' => $oConfig->Get('branding', 'user_css', ''),
-*/
+			/*
+						'LoginLogo' => $oConfig->Get('branding', 'login_logo', ''),
+						'LoginBackground' => $oConfig->Get('branding', 'login_background', ''),
+						'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
+						'LoginDescription' => $oConfig->Get('branding', 'login_desc', ''),
+						'UserLogo' => $oConfig->Get('branding', 'user_logo', ''),
+						'UserLogoTitle' => $oConfig->Get('branding', 'user_logo_title', ''),
+						'UserLogoMessage' => $oConfig->Get('branding', 'user_logo_message', ''),
+						'UserIframeMessage' => $oConfig->Get('branding', 'user_iframe_message', ''),
+						'UserCss' => $oConfig->Get('branding', 'user_css', ''),
+			*/
 		);
 
-		if (0 < \strlen($sAuthAccountHash))
-		{
+		if (0 < \strlen($sAuthAccountHash)) {
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
 		}
 
 		$oSettings = null;
 
-		if (!$bAdmin)
-		{
+		if (!$bAdmin) {
 			$oAccount = $this->getAccountFromToken(false);
-			if ($oAccount)
-			{
+			if ($oAccount) {
 				$aResult['IncludeCss'] = $aResult['UserCss'];
 
 				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
@@ -1200,19 +1107,17 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 				$aResult['AccountHash'] = $oAccount->Hash();
 				$aResult['AccountSignMe'] = $oAccount->SignMe();
 				$aResult['ContactsIsAllowed'] = $oAddressBookProvider->IsActive();
-				$aResult['ContactsSyncIsAllowed'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['ContactsSyncInterval'] = (int) $oConfig->Get('contacts', 'sync_interval', 20);
+				$aResult['ContactsSyncIsAllowed'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
+				$aResult['ContactsSyncInterval'] = (int)$oConfig->Get('contacts', 'sync_interval', 20);
 
 				$aResult['EnableContactsSync'] = false;
 				$aResult['ContactsSyncUrl'] = '';
 				$aResult['ContactsSyncUser'] = '';
 				$aResult['ContactsSyncPassword'] = '';
 
-				if ($aResult['ContactsIsAllowed'] && $aResult['ContactsSyncIsAllowed'])
-				{
+				if ($aResult['ContactsIsAllowed'] && $aResult['ContactsSyncIsAllowed']) {
 					$mData = $this->getContactsSyncData($oAccount);
-					if (\is_array($mData))
-					{
+					if (\is_array($mData)) {
 						$aResult['EnableContactsSync'] = isset($mData['Enable']) ? !!$mData['Enable'] : false;
 						$aResult['ContactsSyncUrl'] = isset($mData['Url']) ? \trim($mData['Url']) : '';
 						$aResult['ContactsSyncUser'] = isset($mData['User']) ? \trim($mData['User']) : '';
@@ -1220,17 +1125,14 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 					}
 				}
 
-				if ($aResult['AccountSignMe'])
-				{
+				if ($aResult['AccountSignMe']) {
 					$sToken = Utils::GetCookie(self::AUTH_MAILTO_TOKEN_KEY, null);
-					if (null !== $sToken)
-					{
+					if (null !== $sToken) {
 						Utils::ClearCookie(self::AUTH_MAILTO_TOKEN_KEY);
 
 						$mMailToData = Utils::DecodeKeyValuesQ($sToken);
 						if (!empty($mMailToData['MailTo']) &&
-							'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To']))
-						{
+							'MailTo' === $mMailToData['MailTo'] && !empty($mMailToData['To'])) {
 							$aResult['MailToEmail'] = $mMailToData['To'];
 						}
 					}
@@ -1238,18 +1140,14 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
 
-				if (!empty($aResult['StartupUrl']))
-				{
+				if (!empty($aResult['StartupUrl'])) {
 					$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount, true);
 				}
 
-				if (!empty($aResult['UserIframeMessage']))
-				{
+				if (!empty($aResult['UserIframeMessage'])) {
 					$aResult['UserIframeMessage'] = $this->compileLogParams($aResult['UserIframeMessage'], $oAccount, true);
 				}
-			}
-			else
-			{
+			} else {
 				$aResult['IncludeBackground'] = $aResult['LoginBackground'];
 				$aResult['IncludeCss'] = $aResult['LoginCss'];
 
@@ -1258,20 +1156,17 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 
 				$aResult['StartupUrl'] = '';
 
-				if (empty($aResult['AdditionalLoginError']))
-				{
+				if (empty($aResult['AdditionalLoginError'])) {
 					$aResult['AdditionalLoginError'] = $this->GetSpecLogoutCustomMgsWithDeletion();
 				}
 			}
 
 			$aResult['Capa'] = $this->Capa(false, $bMobile, $oAccount);
 
-			if ($aResult['Auth'] && !$aResult['RequireTwoFactor'])
-			{
+			if ($aResult['Auth'] && !$aResult['RequireTwoFactor']) {
 				if ($this->GetCapa(false, $bMobile, Enumerations\Capa::TWO_FACTOR, $oAccount) &&
 					$this->GetCapa(false, $bMobile, Enumerations\Capa::TWO_FACTOR_FORCE, $oAccount) &&
-					$this->TwoFactorAuthProvider()->IsActive())
-				{
+					$this->TwoFactorAuthProvider()->IsActive()) {
 					$aData = $this->getTwoFactorInfo($oAccount, true);
 
 					$aResult['RequireTwoFactor'] = !$aData ||
@@ -1279,31 +1174,28 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 						!($aData['IsSet'] && $aData['Enable']);
 				}
 			}
-		}
-		else
-		{
+		} else {
 			$aResult['Auth'] = $this->IsAdminLoggined(false);
-			if ($aResult['Auth'])
-			{
+			if ($aResult['Auth']) {
 				$aResult['AdminDomain'] = APP_SITE;
-				$aResult['AdminLogin'] = (string) $oConfig->Get('security', 'admin_login', '');
-				$aResult['UseTokenProtection'] = (bool) $oConfig->Get('security', 'csrf_protection', true);
-				$aResult['EnabledPlugins'] = (bool) $oConfig->Get('plugins', 'enable', false);
+				$aResult['AdminLogin'] = (string)$oConfig->Get('security', 'admin_login', '');
+				$aResult['UseTokenProtection'] = (bool)$oConfig->Get('security', 'csrf_protection', true);
+				$aResult['EnabledPlugins'] = (bool)$oConfig->Get('plugins', 'enable', false);
 
-				$aResult['VerifySslCertificate'] = (bool) $oConfig->Get('ssl', 'verify_certificate', false);
-				$aResult['AllowSelfSigned'] = (bool) $oConfig->Get('ssl', 'allow_self_signed', true);
+				$aResult['VerifySslCertificate'] = (bool)$oConfig->Get('ssl', 'verify_certificate', false);
+				$aResult['AllowSelfSigned'] = (bool)$oConfig->Get('ssl', 'allow_self_signed', true);
 
 				$aResult['supportedPdoDrivers'] = \class_exists('PDO') ? \PDO::getAvailableDrivers() : [];
 
-				$aResult['ContactsEnable'] = (bool) $oConfig->Get('contacts', 'enable', false);
-				$aResult['ContactsSync'] = (bool) $oConfig->Get('contacts', 'allow_sync', false);
-				$aResult['ContactsPdoType'] = (string) $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
-				$aResult['ContactsPdoDsn'] = (string) $oConfig->Get('contacts', 'pdo_dsn', '');
-				$aResult['ContactsPdoType'] = (string) $oConfig->Get('contacts', 'type', '');
-				$aResult['ContactsPdoUser'] = (string) $oConfig->Get('contacts', 'pdo_user', '');
-				$aResult['ContactsPdoPassword'] = (string) APP_DUMMY;
+				$aResult['ContactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
+				$aResult['ContactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
+				$aResult['ContactsPdoType'] = (string)$this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
+				$aResult['ContactsPdoDsn'] = (string)$oConfig->Get('contacts', 'pdo_dsn', '');
+				$aResult['ContactsPdoType'] = (string)$oConfig->Get('contacts', 'type', '');
+				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
+				$aResult['ContactsPdoPassword'] = (string)APP_DUMMY;
 
-				$aResult['WeakPassword'] = (bool) $oConfig->ValidatePassword('12345');
+				$aResult['WeakPassword'] = (bool)$oConfig->ValidatePassword('12345');
 
 				$aResult['PhpUploadSizes'] = array(
 					'upload_max_filesize' => \ini_get('upload_max_filesize'),
@@ -1314,85 +1206,78 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 			$aResult['Capa'] = $this->Capa(true, $bMobile);
 		}
 
-		$aResult['ProjectHash'] = \md5($aResult['AccountHash'].APP_VERSION.$this->Plugins()->Hash());
+		$aResult['ProjectHash'] = \md5($aResult['AccountHash'] . APP_VERSION . $this->Plugins()->Hash());
 
 		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
 		$sLanguageAdmin = $oConfig->Get('webmail', 'language_admin', 'en');
 		$sTheme = $oConfig->Get('webmail', 'theme', 'Default');
 
-		$aResult['NewMoveToFolder'] = (bool) $oConfig->Get('interface', 'new_move_to_folder_button', true);
-		$aResult['AllowLanguagesOnSettings'] = (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true);
-		$aResult['AllowLanguagesOnLogin'] = (bool) $oConfig->Get('login', 'allow_languages_on_login', true);
-		$aResult['AttachmentLimit'] = ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
-		$aResult['SignMe'] = (string) $oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAILT_OFF);
-		$aResult['UseLocalProxyForExternalImages'] = (bool) $oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
+		$aResult['NewMoveToFolder'] = (bool)$oConfig->Get('interface', 'new_move_to_folder_button', true);
+		$aResult['AllowLanguagesOnSettings'] = (bool)$oConfig->Get('webmail', 'allow_languages_on_settings', true);
+		$aResult['AllowLanguagesOnLogin'] = (bool)$oConfig->Get('login', 'allow_languages_on_login', true);
+		$aResult['AttachmentLimit'] = ((int)$oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
+		$aResult['SignMe'] = (string)$oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAILT_OFF);
+		$aResult['UseLocalProxyForExternalImages'] = (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
 
 		// user
-		$aResult['ShowImages'] = (bool) $oConfig->Get('defaults', 'show_images', false);
-		$aResult['MPP'] = (int) $oConfig->Get('webmail', 'messages_per_page', 25);
+		$aResult['ShowImages'] = (bool)$oConfig->Get('defaults', 'show_images', false);
+		$aResult['MPP'] = (int)$oConfig->Get('webmail', 'messages_per_page', 25);
 		$aResult['SoundNotification'] = false;
 		$aResult['DesktopNotifications'] = false;
-		$aResult['Layout'] = (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW);
-		$aResult['EditorDefaultType'] = (string) $oConfig->Get('defaults', 'view_editor_type', '');
-		$aResult['UseCheckboxesInList'] = (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true);
-		$aResult['AutoLogout'] = (int) $oConfig->Get('defaults', 'autologout', 30);
-		$aResult['UseThreads'] = (bool) $oConfig->Get('defaults', 'mail_use_threads', false);
-		$aResult['AllowDraftAutosave'] = (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true);
-		$aResult['ReplySameFolder'] = (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false);
-		$aResult['ContactsAutosave'] = (bool) $oConfig->Get('defaults', 'contacts_autosave', true);
+		$aResult['Layout'] = (int)$oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW);
+		$aResult['EditorDefaultType'] = (string)$oConfig->Get('defaults', 'view_editor_type', '');
+		$aResult['UseCheckboxesInList'] = (bool)$oConfig->Get('defaults', 'view_use_checkboxes', true);
+		$aResult['AutoLogout'] = (int)$oConfig->Get('defaults', 'autologout', 30);
+		$aResult['UseThreads'] = (bool)$oConfig->Get('defaults', 'mail_use_threads', false);
+		$aResult['AllowDraftAutosave'] = (bool)$oConfig->Get('defaults', 'allow_draft_autosave', true);
+		$aResult['ReplySameFolder'] = (bool)$oConfig->Get('defaults', 'mail_reply_same_folder', false);
+		$aResult['ContactsAutosave'] = (bool)$oConfig->Get('defaults', 'contacts_autosave', true);
 		$aResult['EnableTwoFactor'] = false;
 		$aResult['ParentEmail'] = '';
 		$aResult['InterfaceAnimation'] = true;
 		$aResult['UserBackgroundName'] = '';
 		$aResult['UserBackgroundHash'] = '';
 
-		if (!$bAdmin && $oAccount)
-		{
+		if (!$bAdmin && $oAccount) {
 			$aResult['ParentEmail'] = $oAccount->ParentEmail();
 
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
-			if ($oSettingsLocal instanceof Settings)
-			{
+			if ($oSettingsLocal instanceof Settings) {
 //				if ($this->GetCapa(false, $bMobile, Enumerations\Capa::FOLDERS, $oAccount))
 
-				$aResult['SentFolder'] = (string) $oSettingsLocal->GetConf('SentFolder', '');
-				$aResult['DraftFolder'] = (string) $oSettingsLocal->GetConf('DraftFolder', '');
-				$aResult['SpamFolder'] = (string) $oSettingsLocal->GetConf('SpamFolder', '');
-				$aResult['TrashFolder'] = (string) $oSettingsLocal->GetConf('TrashFolder', '');
-				$aResult['ArchiveFolder'] = (string) $oSettingsLocal->GetConf('ArchiveFolder', '');
-				$aResult['NullFolder'] = (string) $oSettingsLocal->GetConf('NullFolder', '');
+				$aResult['SentFolder'] = (string)$oSettingsLocal->GetConf('SentFolder', '');
+				$aResult['DraftFolder'] = (string)$oSettingsLocal->GetConf('DraftFolder', '');
+				$aResult['SpamFolder'] = (string)$oSettingsLocal->GetConf('SpamFolder', '');
+				$aResult['TrashFolder'] = (string)$oSettingsLocal->GetConf('TrashFolder', '');
+				$aResult['ArchiveFolder'] = (string)$oSettingsLocal->GetConf('ArchiveFolder', '');
+				$aResult['NullFolder'] = (string)$oSettingsLocal->GetConf('NullFolder', '');
 			}
 
-			if ($this->GetCapa(false, $bMobile, Enumerations\Capa::SETTINGS, $oAccount))
-			{
-				if ($oSettings instanceof Settings)
-				{
-					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true))
-					{
-						$sLanguage = (string) $oSettings->GetConf('Language', $sLanguage);
+			if ($this->GetCapa(false, $bMobile, Enumerations\Capa::SETTINGS, $oAccount)) {
+				if ($oSettings instanceof Settings) {
+					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
+						$sLanguage = (string)$oSettings->GetConf('Language', $sLanguage);
 					}
 
-					$aResult['EditorDefaultType'] = (string) $oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
-					$aResult['ShowImages'] = (bool) $oSettings->GetConf('ShowImages', $aResult['ShowImages']);
-					$aResult['ContactsAutosave'] = (bool) $oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
-					$aResult['MPP'] = (int) $oSettings->GetConf('MPP', $aResult['MPP']);
-					$aResult['SoundNotification'] = (bool) $oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
-					$aResult['DesktopNotifications'] = (bool) $oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
-					$aResult['UseCheckboxesInList'] = (bool) $oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
-					$aResult['AllowDraftAutosave'] = (bool) $oSettings->GetConf('AllowDraftAutosave', $aResult['AllowDraftAutosave']);
-					$aResult['AutoLogout'] = (int) $oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
-					$aResult['Layout'] = (int) $oSettings->GetConf('Layout', $aResult['Layout']);
+					$aResult['EditorDefaultType'] = (string)$oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
+					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
+					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
+					$aResult['MPP'] = (int)$oSettings->GetConf('MPP', $aResult['MPP']);
+					$aResult['SoundNotification'] = (bool)$oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);
+					$aResult['DesktopNotifications'] = (bool)$oSettings->GetConf('DesktopNotifications', $aResult['DesktopNotifications']);
+					$aResult['UseCheckboxesInList'] = (bool)$oSettings->GetConf('UseCheckboxesInList', $aResult['UseCheckboxesInList']);
+					$aResult['AllowDraftAutosave'] = (bool)$oSettings->GetConf('AllowDraftAutosave', $aResult['AllowDraftAutosave']);
+					$aResult['AutoLogout'] = (int)$oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
+					$aResult['Layout'] = (int)$oSettings->GetConf('Layout', $aResult['Layout']);
 
-					if (!$this->GetCapa(false, $bMobile, Enumerations\Capa::AUTOLOGOUT, $oAccount))
-					{
+					if (!$this->GetCapa(false, $bMobile, Enumerations\Capa::AUTOLOGOUT, $oAccount)) {
 						$aResult['AutoLogout'] = 0;
 					}
 
-					if ($this->GetCapa(false, $bMobile, Enumerations\Capa::USER_BACKGROUND, $oAccount))
-					{
-						$aResult['UserBackgroundName'] = (string) $oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
-						$aResult['UserBackgroundHash'] = (string) $oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
+					if ($this->GetCapa(false, $bMobile, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
+						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
+						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
 //						if (!empty($aResult['UserBackgroundName']) && !empty($aResult['UserBackgroundHash']))
 //						{
 //							$aResult['IncludeBackground'] = './?/Raw/&q[]=/{{USER}}/UserBackground/&q[]=/'.
@@ -1400,29 +1285,24 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 //						}
 					}
 
-					$aResult['EnableTwoFactor'] = (bool) $oSettings->GetConf('EnableTwoFactor', $aResult['EnableTwoFactor']);
+					$aResult['EnableTwoFactor'] = (bool)$oSettings->GetConf('EnableTwoFactor', $aResult['EnableTwoFactor']);
 				}
 
-				if ($oSettingsLocal instanceof Settings)
-				{
-					$aResult['UseThreads'] = (bool) $oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
-					$aResult['ReplySameFolder'] = (bool) $oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
+				if ($oSettingsLocal instanceof Settings) {
+					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
+					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
 
-					if ($this->GetCapa(false, $bMobile, Enumerations\Capa::THEMES, $oAccount))
-					{
-						$sTheme = (string) $oSettingsLocal->GetConf('Theme', $sTheme);
+					if ($this->GetCapa(false, $bMobile, Enumerations\Capa::THEMES, $oAccount)) {
+						$sTheme = (string)$oSettingsLocal->GetConf('Theme', $sTheme);
 					}
 				}
 			}
 		}
 
-		if (!$aResult['Auth'])
-		{
-			if (!$bAdmin)
-			{
+		if (!$aResult['Auth']) {
+			if (!$bAdmin) {
 				if ($oConfig->Get('login', 'allow_languages_on_login', true) &&
-					$oConfig->Get('login', 'determine_user_language', true))
-				{
+					$oConfig->Get('login', 'determine_user_language', true)) {
 					$sLanguage = $this->ValidateLanguage(
 						$this->detectUserLanguage($bAdmin), $sLanguage, false);
 				}
@@ -1444,23 +1324,22 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($aResult['UserLanguageRaw'], '', true, true);
 
 		$aResult['PluginsLink'] = '';
-		if (0 < $this->Plugins()->Count() && $this->Plugins()->HaveJs($bAdmin))
-		{
-			$aResult['PluginsLink'] = './?/Plugins/0/'.($bAdmin ? 'Admin' : 'User').'/'.$sStaticCache.'/';
+		if (0 < $this->Plugins()->Count() && $this->Plugins()->HaveJs($bAdmin)) {
+			$aResult['PluginsLink'] = './?/Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $sStaticCache . '/';
 		}
 
-		$aResult['LangLink'] = './?/Lang/0/'.($bAdmin ? 'Admin' : 'App').'/'.
-			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']).'/'.$sStaticCache.'/';
+		$aResult['LangLink'] = './?/Lang/0/' . ($bAdmin ? 'Admin' : 'App') . '/' .
+			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']) . '/' . $sStaticCache . '/';
 
 		// $aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
-		$aResult['TemplatesLink'] = './?/Templates/0/'.($bAdmin ? 'Admin' : 'App').'/'.$sStaticCache.'/';
+		$aResult['TemplatesLink'] = './?/Templates/0/' . ($bAdmin ? 'Admin' : 'App') . '/' . $sStaticCache . '/';
 
 		$bAppJsDebug = !!$this->Config()->Get('labs', 'use_app_debug_js', false);
 
-		$aResult['StaticLibJsLink'] = $this->StaticPath('js/'.($bAppJsDebug ? '' : 'min/').
-			'libs'.($bAppJsDebug ? '' : '.min').'.js');
-		$aResult['StaticAppJsLink'] = $this->StaticPath('js/'.($bAppJsDebug ? '' : 'min/').
-			($bAdmin ? 'admin' : 'app').($bAppJsDebug ? '' : '.min').'.js');
+		$aResult['StaticLibJsLink'] = $this->StaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
+			'libs' . ($bAppJsDebug ? '' : '.min') . '.js');
+		$aResult['StaticAppJsLink'] = $this->StaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
+			($bAdmin ? 'admin' : 'app') . ($bAppJsDebug ? '' : '.min') . '.js');
 
 		if ($this->Config()->Get('labs', 'use_ck_html_editor', false)) {
 			$aResult['StaticEditorJsLink'] = $this->StaticPath('ckeditor/ckeditor.js');
@@ -1476,8 +1355,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		$aResult['DevEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevEmail']);
 
 		// Mobile override
-		if ($bMobile)
-		{
+		if ($bMobile) {
 			$aResult['Layout'] = Enumerations\Layout::NO_PREVIW;
 
 			$aResult['UseCheckboxesInList'] = true;
@@ -1491,15 +1369,13 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $aResult;
 	}
 
-	private function getUserLanguagesFromHeader() : array
+	private function getUserLanguagesFromHeader(): array
 	{
 		$aResult = $aList = array();
 		$sAcceptLang = \strtolower($this->Http()->GetServer('HTTP_ACCEPT_LANGUAGE', 'en'));
-		if (!empty($sAcceptLang) && \preg_match_all('/([a-z]{1,8}(?:-[a-z]{1,8})?)(?:;q=([0-9.]+))?/', $sAcceptLang, $aList))
-		{
+		if (!empty($sAcceptLang) && \preg_match_all('/([a-z]{1,8}(?:-[a-z]{1,8})?)(?:;q=([0-9.]+))?/', $sAcceptLang, $aList)) {
 			$aResult = \array_combine($aList[1], $aList[2]);
-			foreach ($aResult as $n => $v)
-			{
+			foreach ($aResult as $n => $v) {
 				$aResult[$n] = $v ? $v : 1;
 			}
 
@@ -1509,16 +1385,14 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $aResult;
 	}
 
-	public function detectUserLanguage(bool $bAdmin = false) : string
+	public function detectUserLanguage(bool $bAdmin = false): string
 	{
 		$sResult = '';
 		$aLangs = $this->getUserLanguagesFromHeader();
 
-		foreach (\array_keys($aLangs) as $sLang)
-		{
+		foreach (\array_keys($aLangs) as $sLang) {
 			$sLang = $this->ValidateLanguage($sLang, '', $bAdmin, true);
-			if (!empty($sLang))
-			{
+			if (!empty($sLang)) {
 				$sResult = $sLang;
 				break;
 			}
@@ -1527,33 +1401,29 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $sResult;
 	}
 
-	private function requestSleep(int $iWait = 1, int $iDelay = 1) : void
+	private function requestSleep(int $iWait = 1, int $iDelay = 1): void
 	{
-		if (0 < $iDelay && 0 < $iWait)
-		{
-			if ($iWait > \time() - $_SERVER['REQUEST_TIME_FLOAT'])
-			{
+		if (0 < $iDelay && 0 < $iWait) {
+			if ($iWait > \time() - $_SERVER['REQUEST_TIME_FLOAT']) {
 				\sleep($iDelay);
 			}
 		}
 	}
 
-	private function loginErrorDelay() : void
+	private function loginErrorDelay(): void
 	{
-		$iDelay = (int) $this->Config()->Get('labs', 'login_fault_delay', 0);
-		if (0 < $iDelay)
-		{
+		$iDelay = (int)$this->Config()->Get('labs', 'login_fault_delay', 0);
+		if (0 < $iDelay) {
 			$this->requestSleep(1, $iDelay);
 		}
 	}
 
-	public function AuthToken(Model\Account $oAccount) : void
+	public function AuthToken(Model\Account $oAccount): void
 	{
 		$this->SetAuthToken($oAccount);
 
 		$aAccounts = $this->GetAccounts($oAccount);
-		if (isset($aAccounts[$oAccount->Email()]))
-		{
+		if (isset($aAccounts[$oAccount->Email()])) {
 			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
 			$this->SetAccounts($oAccount, $aAccounts);
 		}
@@ -1562,44 +1432,31 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function CheckMailConnection(Model\Account $oAccount, bool $bAuthLog = false) : void
+	public function CheckMailConnection(Model\Account $oAccount, bool $bAuthLog = false): void
 	{
-		try
-		{
+		try {
 			$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
-		}
-		catch (Exceptions\ClientException $oException)
-		{
+		} catch (Exceptions\ClientException $oException) {
 			throw $oException;
-		}
-		catch (\MailSo\Net\Exceptions\ConnectionException $oException)
-		{
+		} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
 			throw new Exceptions\ClientException(Notifications::ConnectionError, $oException);
-		}
-		catch (\MailSo\Imap\Exceptions\LoginBadCredentialsException $oException)
-		{
-			if ($bAuthLog)
-			{
+		} catch (\MailSo\Imap\Exceptions\LoginBadCredentialsException $oException) {
+			if ($bAuthLog) {
 				$this->LoggerAuthHelper($oAccount);
 			}
 
-			if ($this->Config()->Get('labs', 'imap_show_login_alert', true))
-			{
+			if ($this->Config()->Get('labs', 'imap_show_login_alert', true)) {
 				throw new Exceptions\ClientException(Notifications::AuthError,
 					$oException, $oException->getAlertFromStatus());
-			}
-			else
-			{
+			} else {
 				throw new Exceptions\ClientException(Notifications::AuthError, $oException);
 			}
-		}
-		catch (\Throwable $oException)
-		{
+		} catch (\Throwable $oException) {
 			throw new Exceptions\ClientException(Notifications::AuthError, $oException);
 		}
 	}
 
-	private function getAdditionalLogParamsByUserLogin(string $sLogin, bool $bAdmin = false) : array
+	private function getAdditionalLogParamsByUserLogin(string $sLogin, bool $bAdmin = false): array
 	{
 		$sHost = $bAdmin ? $this->Http()->GetHost(false, true, true) : \MailSo\Base\Utils::GetDomainFromEmail($sLogin);
 		return array(
@@ -1617,26 +1474,23 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	public function LoginProcess(string &$sEmail, string &$sPassword, string $sSignMeToken = '',
-		string $sAdditionalCode = '', bool $bAdditionalCodeSignMe = false, bool $bSkipTwoFactorAuth = false) : Model\Account
+								 string $sAdditionalCode = '', bool $bAdditionalCodeSignMe = false, bool $bSkipTwoFactorAuth = false): Model\Account
 	{
 		$sInputEmail = $sEmail;
 
 		$this->Plugins()->RunHook('filter.login-credentials.step-1', array(&$sEmail, &$sPassword));
 
 		$sEmail = \MailSo\Base\Utils::Trim($sEmail);
-		if ($this->Config()->Get('login', 'login_lowercase', true))
-		{
+		if ($this->Config()->Get('login', 'login_lowercase', true)) {
 			$sEmail = \MailSo\Base\Utils::StrToLowerIfAscii($sEmail);
 		}
 
-		if (false === \strpos($sEmail, '@'))
-		{
-			$this->Logger()->Write('The email address "'.$sEmail.'" is not complete', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+		if (false === \strpos($sEmail, '@')) {
+			$this->Logger()->Write('The email address "' . $sEmail . '" is not complete', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
-			if (false === \strpos($sEmail, '@') && !!$this->Config()->Get('login', 'determine_user_domain', false))
-			{
+			if (false === \strpos($sEmail, '@') && !!$this->Config()->Get('login', 'determine_user_domain', false)) {
 				$sUserHost = \trim($this->Http()->GetHost(false, true, true));
-				$this->Logger()->Write('Determined user domain: '.$sUserHost, \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+				$this->Logger()->Write('Determined user domain: ' . $sUserHost, \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
 				$bAdded = false;
 
@@ -1644,67 +1498,56 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 				$aDomainParts = \explode('.', $sUserHost);
 
 				$oDomainProvider = $this->DomainProvider();
-				while (0 < \count($aDomainParts) && 0 < $iLimit)
-				{
+				while (0 < \count($aDomainParts) && 0 < $iLimit) {
 					$sLine = \trim(\implode('.', $aDomainParts), '. ');
 
 					$oDomain = $oDomainProvider->Load($sLine, false);
-					if ($oDomain)
-					{
+					if ($oDomain) {
 						$bAdded = true;
-						$this->Logger()->Write('Check "'.$sLine.'": OK ('.$sEmail.' > '.$sEmail.'@'.$sLine.')',
+						$this->Logger()->Write('Check "' . $sLine . '": OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
 							\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
-						$sEmail = $sEmail.'@'.$sLine;
+						$sEmail = $sEmail . '@' . $sLine;
 						break;
-					}
-					else
-					{
-						$this->Logger()->Write('Check "'.$sLine.'": NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+					} else {
+						$this->Logger()->Write('Check "' . $sLine . '": NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 					}
 
 					\array_shift($aDomainParts);
 					$iLimit--;
 				}
 
-				if (!$bAdded)
-				{
+				if (!$bAdded) {
 					$sLine = $sUserHost;
 					$oDomain = $oDomainProvider->Load($sLine, true);
-					if ($oDomain && $oDomain)
-					{
+					if ($oDomain && $oDomain) {
 						$bAdded = true;
-						$this->Logger()->Write('Check "'.$sLine.'" with wildcard: OK ('.$sEmail.' > '.$sEmail.'@'.$sLine.')',
+						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: OK (' . $sEmail . ' > ' . $sEmail . '@' . $sLine . ')',
 							\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
-						$sEmail = $sEmail.'@'.$sLine;
-					}
-					else
-					{
-						$this->Logger()->Write('Check "'.$sLine.'" with wildcard: NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
+						$sEmail = $sEmail . '@' . $sLine;
+					} else {
+						$this->Logger()->Write('Check "' . $sLine . '" with wildcard: NO', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 					}
 				}
 
-				if (!$bAdded)
-				{
+				if (!$bAdded) {
 					$this->Logger()->Write('Domain was not found!', \MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 				}
 			}
 
 			$sDefDomain = \trim($this->Config()->Get('login', 'default_domain', ''));
-			if (false === \strpos($sEmail, '@') && 0 < \strlen($sDefDomain))
-			{
-				$this->Logger()->Write('Default domain "'.$sDefDomain.'" was used. ('.$sEmail.' > '.$sEmail.'@'.$sDefDomain.')',
+			if (false === \strpos($sEmail, '@') && 0 < \strlen($sDefDomain)) {
+				$this->Logger()->Write('Default domain "' . $sDefDomain . '" was used. (' . $sEmail . ' > ' . $sEmail . '@' . $sDefDomain . ')',
 					\MailSo\Log\Enumerations\Type::INFO, 'LOGIN');
 
-				$sEmail = $sEmail.'@'.$sDefDomain;
+				$sEmail = $sEmail . '@' . $sDefDomain;
 			}
 		}
 
 		$this->Plugins()->RunHook('filter.login-credentials.step-2', array(&$sEmail, &$sPassword));
 
-		if (false === \strpos($sEmail, '@') || 0 === \strlen($sPassword))
-		{
+		if (false === \strpos($sEmail, '@') || 0 === \strlen($sPassword)) {
 			$this->loginErrorDelay();
 
 			throw new Exceptions\ClientException(Notifications::InvalidInputArgument);
@@ -1713,8 +1556,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		$this->Logger()->AddSecret($sPassword);
 
 		$sLogin = $sEmail;
-		if ($this->Config()->Get('login', 'login_lowercase', true))
-		{
+		if ($this->Config()->Get('login', 'login_lowercase', true)) {
 			$sLogin = \MailSo\Base\Utils::StrToLowerIfAscii($sLogin);
 		}
 
@@ -1726,60 +1568,47 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 
 		$oAccount = null;
 		$sClientCert = \trim($this->Config()->Get('ssl', 'client_cert', ''));
-		try
-		{
+		try {
 			$oAccount = $this->LoginProvide($sEmail, $sLogin, $sPassword, $sSignMeToken, $sClientCert, true);
 
-			if (!$oAccount)
-			{
+			if (!$oAccount) {
 				throw new Exceptions\ClientException(Notifications::AuthError);
 			}
 
 			$this->Plugins()->RunHook('event.login-post-login-provide', array($oAccount));
-		}
-		catch (\Throwable $oException)
-		{
+		} catch (\Throwable $oException) {
 			$this->loginErrorDelay();
 			$this->LoggerAuthHelper($oAccount, $this->getAdditionalLogParamsByUserLogin($sInputEmail));
 			throw $oException;
 		}
 
 		// 2FA
-		if (!$bSkipTwoFactorAuth && $this->TwoFactorAuthProvider()->IsActive())
-		{
+		if (!$bSkipTwoFactorAuth && $this->TwoFactorAuthProvider()->IsActive()) {
 			$aData = $this->getTwoFactorInfo($oAccount);
-			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable'])
-			{
-				$sSecretHash = \md5(APP_SALT.$aData['Secret'].Utils::Fingerprint());
+			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable']) {
+				$sSecretHash = \md5(APP_SALT . $aData['Secret'] . Utils::Fingerprint());
 				$sSecretCookieHash = Utils::GetCookie(self::AUTH_TFA_SIGN_ME_TOKEN_KEY, '');
 
-				if (empty($sSecretCookieHash) || $sSecretHash !== $sSecretCookieHash)
-				{
+				if (empty($sSecretCookieHash) || $sSecretHash !== $sSecretCookieHash) {
 					$sAdditionalCode = \trim($sAdditionalCode);
-					if (empty($sAdditionalCode))
-					{
-						$this->Logger()->Write('TFA: Required Code for '.$oAccount->ParentEmailHelper().' account.');
+					if (empty($sAdditionalCode)) {
+						$this->Logger()->Write('TFA: Required Code for ' . $oAccount->ParentEmailHelper() . ' account.');
 
 						throw new Exceptions\ClientException(Notifications::AccountTwoFactorAuthRequired);
-					}
-					else
-					{
-						$this->Logger()->Write('TFA: Verify Code for '.$oAccount->ParentEmailHelper().' account.');
+					} else {
+						$this->Logger()->Write('TFA: Verify Code for ' . $oAccount->ParentEmailHelper() . ' account.');
 
 						$bUseBackupCode = false;
-						if (6 < \strlen($sAdditionalCode) && !empty($aData['BackupCodes']))
-						{
+						if (6 < \strlen($sAdditionalCode) && !empty($aData['BackupCodes'])) {
 							$aBackupCodes = \explode(' ', \trim(\preg_replace('/[^\d]+/', ' ', $aData['BackupCodes'])));
 							$bUseBackupCode = \in_array($sAdditionalCode, $aBackupCodes);
 
-							if ($bUseBackupCode)
-							{
+							if ($bUseBackupCode) {
 								$this->removeBackupCodeFromTwoFactorInfo($oAccount->ParentEmailHelper(), $sAdditionalCode);
 							}
 						}
 
-						if (!$bUseBackupCode && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sAdditionalCode))
-						{
+						if (!$bUseBackupCode && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sAdditionalCode)) {
 							$this->loginErrorDelay();
 
 							$this->LoggerAuthHelper($oAccount);
@@ -1787,8 +1616,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 							throw new Exceptions\ClientException(Notifications::AccountTwoFactorAuthError);
 						}
 
-						if ($bAdditionalCodeSignMe)
-						{
+						if ($bAdditionalCodeSignMe) {
 							Utils::SetCookie(self::AUTH_TFA_SIGN_ME_TOKEN_KEY, $sSecretHash,
 								\time() + 60 * 60 * 24 * 14);
 						}
@@ -1797,12 +1625,9 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 			}
 		}
 
-		try
-		{
+		try {
 			$this->CheckMailConnection($oAccount, true);
-		}
-		catch (\Throwable $oException)
-		{
+		} catch (\Throwable $oException) {
 			$this->loginErrorDelay();
 
 			throw $oException;
@@ -1811,30 +1636,24 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $oAccount;
 	}
 
-	public function GetAccounts(Model\Account $oAccount) : array
+	public function GetAccounts(Model\Account $oAccount): array
 	{
-		if ($this->GetCapa(false, false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
-		{
+		if ($this->GetCapa(false, false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
 			$sAccounts = $this->StorageProvider()->Get($oAccount,
 				Providers\Storage\Enumerations\StorageType::CONFIG,
 				'accounts'
 			);
 
 			$aAccounts = array();
-			if ('' !== $sAccounts && '{' === \substr($sAccounts, 0, 1))
-			{
+			if ('' !== $sAccounts && '{' === \substr($sAccounts, 0, 1)) {
 				$aAccounts = \json_decode($sAccounts, true);
 			}
 
-			if (\is_array($aAccounts) && 0 < \count($aAccounts))
-			{
-				if (1 === \count($aAccounts))
-				{
+			if (\is_array($aAccounts) && 0 < \count($aAccounts)) {
+				if (1 === \count($aAccounts)) {
 					$this->SetAccounts($oAccount, array());
 
-				}
-				else if (1 < \count($aAccounts))
-				{
+				} else if (1 < \count($aAccounts)) {
 					$sOrder = $this->StorageProvider()->Get($oAccount,
 						Providers\Storage\Enumerations\StorageType::CONFIG,
 						'accounts_identities_order'
@@ -1842,8 +1661,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 
 					$aOrder = empty($sOrder) ? array() : \json_decode($sOrder, true);
 					if (isset($aOrder['Accounts']) && \is_array($aOrder['Accounts']) &&
-						1 < \count($aOrder['Accounts']))
-					{
+						1 < \count($aOrder['Accounts'])) {
 						$aAccounts = \array_merge(\array_flip($aOrder['Accounts']), $aAccounts);
 
 						$aAccounts = \array_filter($aAccounts, function ($sHash) {
@@ -1857,104 +1675,19 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		}
 
 		$aAccounts = array();
-		if (!$oAccount->IsAdditionalAccount())
-		{
+		if (!$oAccount->IsAdditionalAccount()) {
 			$aAccounts[$oAccount->Email()] = $oAccount->GetAuthToken();
 		}
 
 		return $aAccounts;
 	}
 
-	public function GetIdentities(Model\Account $oAccount) : array
-	{
-		$bAllowIdentities = $this->GetCapa(false, false,
-			Enumerations\Capa::IDENTITIES, $oAccount);
-
-		$aIdentities = array();
-		if ($oAccount)
-		{
-			$aSubIdentities = array();
-
-			$sData = $this->StorageProvider(true)->Get($oAccount,
-				Providers\Storage\Enumerations\StorageType::CONFIG,
-				'identities'
-			);
-
-			if ('' !== $sData && '[' === \substr($sData, 0, 1))
-			{
-				$aSubIdentities = \json_decode($sData, true);
-			}
-
-			$bHasAccountIdentity = false;
-
-			if (\is_array($aSubIdentities) && 0 < \count($aSubIdentities))
-			{
-				foreach ($aSubIdentities as $aItem)
-				{
-					$oItem = new Model\Identity();
-					$oItem->FromJSON($aItem);
-
-					if ($oItem && $oItem->Validate())
-					{
-						if ($oItem->IsAccountIdentities())
-						{
-							$oItem->SetEmail($oAccount->Email());
-							$bHasAccountIdentity = true;
-
-							\array_push($aIdentities, $oItem);
-						}
-						else if ($bAllowIdentities)
-						{
-							\array_push($aIdentities, $oItem);
-						}
-					}
-				}
-			}
-
-			if (!$bHasAccountIdentity)
-			{
-				\array_unshift($aIdentities,
-					new Model\Identity('', $oAccount->Email()));
-			}
-
-			if (1 < \count($aIdentities) && $bAllowIdentities)
-			{
-				$sOrder = $this->StorageProvider()->Get($oAccount,
-					Providers\Storage\Enumerations\StorageType::CONFIG,
-					'accounts_identities_order'
-				);
-
-				$aOrder = empty($sOrder) ? array() : \json_decode($sOrder, true);
-				if (isset($aOrder['Identities']) && \is_array($aOrder['Identities']) &&
-					1 < \count($aOrder['Identities']))
-				{
-					$aList = $aOrder['Identities'];
-					foreach ($aList as $iIndex => $sItem)
-					{
-						if ('' === $sItem)
-						{
-							$aList[$iIndex] = '---';
-						}
-					}
-
-					\usort($aIdentities, function ($a, $b) use ($aList) {
-						return \array_search($a->Id(true), $aList) < \array_search($b->Id(true), $aList) ? -1 : 1;
-					});
-				}
-			}
-		}
-
-		return $aIdentities;
-	}
-
-	public function GetIdentityByID(Model\Account $oAccount, string $sID, bool $bFirstOnEmpty = false) : ?Model\Identity
+	public function GetIdentityByID(Model\Account $oAccount, string $sID, bool $bFirstOnEmpty = false): ?Model\Identity
 	{
 		$aIdentities = $this->GetIdentities($oAccount);
 
-		foreach ($aIdentities as $oIdentity)
-		{
-			if ($oIdentity && $sID === $oIdentity->Id())
-			{
+		foreach ($aIdentities as $oIdentity) {
+			if ($oIdentity && $sID === $oIdentity->Id()) {
 				return $oIdentity;
 			}
 		}
@@ -1962,19 +1695,16 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $bFirstOnEmpty && isset($aIdentities[0]) ? $aIdentities[0] : null;
 	}
 
-	public function SetAccounts(Model\Account $oAccount, array $aAccounts = array()) : void
+	public function SetAccounts(Model\Account $oAccount, array $aAccounts = array()): void
 	{
 		$sParentEmail = $oAccount->ParentEmailHelper();
 		if (!$aAccounts ||
-			(1 === \count($aAccounts) && !empty($aAccounts[$sParentEmail])))
-		{
+			(1 === \count($aAccounts) && !empty($aAccounts[$sParentEmail]))) {
 			$this->StorageProvider()->Clear($oAccount,
 				Providers\Storage\Enumerations\StorageType::CONFIG,
 				'accounts'
 			);
-		}
-		else
-		{
+		} else {
 			$this->StorageProvider()->Put($oAccount,
 				Providers\Storage\Enumerations\StorageType::CONFIG,
 				'accounts',
@@ -1986,15 +1716,13 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function getAccountUnreadCountFromHash(string $sHash) : int
+	public function getAccountUnreadCountFromHash(string $sHash): int
 	{
 		$iResult = 0;
 
 		$oAccount = $this->GetAccountFromCustomToken($sHash, false);
-		if ($oAccount)
-		{
-			try
-			{
+		if ($oAccount) {
+			try {
 				$oMailClient = new \MailSo\Mail\MailClient();
 				$oMailClient->SetLogger($this->Logger());
 
@@ -2003,9 +1731,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 				$iResult = $oMailClient->InboxUnreadCount();
 
 				$oMailClient->LogoutAndDisconnect();
-			}
-			catch (\Throwable $oException)
-			{
+			} catch (\Throwable $oException) {
 				$this->Logger()->WriteException($oException);
 			}
 		}
@@ -2013,81 +1739,75 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $iResult;
 	}
 
-	public function setConfigFromParams(Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null) : void
+	public function setConfigFromParams(Config\Application $oConfig, string $sParamName, string $sConfigSector, string $sConfigName, string $sType = 'string', ?callable $mStringCallback = null): void
 	{
 		$sValue = $this->GetActionParam($sParamName, '');
-		if ($this->HasActionParam($sParamName))
-		{
-			switch ($sType)
-			{
+		if ($this->HasActionParam($sParamName)) {
+			switch ($sType) {
 				default:
 				case 'string':
-					$sValue = (string) $sValue;
-					if ($mStringCallback && is_callable($mStringCallback))
-					{
+					$sValue = (string)$sValue;
+					if ($mStringCallback && is_callable($mStringCallback)) {
 						$sValue = call_user_func($mStringCallback, $sValue);
 					}
 
-					$oConfig->Set($sConfigSector, $sConfigName, (string) $sValue);
+					$oConfig->Set($sConfigSector, $sConfigName, (string)$sValue);
 					break;
 
 				case 'dummy':
-					$sValue = (string) $this->GetActionParam('ContactsPdoPassword', APP_DUMMY);
-					if (APP_DUMMY !== $sValue)
-					{
-						$oConfig->Set($sConfigSector, $sConfigName, (string) $sValue);
+					$sValue = (string)$this->GetActionParam('ContactsPdoPassword', APP_DUMMY);
+					if (APP_DUMMY !== $sValue) {
+						$oConfig->Set($sConfigSector, $sConfigName, (string)$sValue);
 					}
 					break;
 
 				case 'int':
-					$iValue = (int) $sValue;
+					$iValue = (int)$sValue;
 					$oConfig->Set($sConfigSector, $sConfigName, $iValue);
 					break;
 
 				case 'bool':
-					$oConfig->Set($sConfigSector, $sConfigName, '1' === (string) $sValue);
+					$oConfig->Set($sConfigSector, $sConfigName, '1' === (string)$sValue);
 					break;
 			}
 		}
 	}
 
-	public function DoNoop() : array
+	public function DoNoop(): array
 	{
 		$this->initMailClientConnection();
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	public function DoPing() : array
+	public function DoPing(): array
 	{
 		return $this->DefaultResponse(__FUNCTION__, 'Pong');
 	}
 
-	public function DoVersion() : array
+	public function DoVersion(): array
 	{
 		return $this->DefaultResponse(__FUNCTION__,
-			APP_VERSION === (string) $this->GetActionParam('Version', ''));
+			APP_VERSION === (string)$this->GetActionParam('Version', ''));
 	}
 
-	public function MainClearFileName(string $sFileName, string $sContentType, string $sMimeIndex, int $iMaxLength = 250) : string
+	public function MainClearFileName(string $sFileName, string $sContentType, string $sMimeIndex, int $iMaxLength = 250): string
 	{
-		$sFileName = 0 === \strlen($sFileName) ? \preg_replace('/[^a-zA-Z0-9]/', '.', (empty($sMimeIndex) ? '' : $sMimeIndex.'.').$sContentType) : $sFileName;
+		$sFileName = 0 === \strlen($sFileName) ? \preg_replace('/[^a-zA-Z0-9]/', '.', (empty($sMimeIndex) ? '' : $sMimeIndex . '.') . $sContentType) : $sFileName;
 		$sClearedFileName = \MailSo\Base\Utils::StripSpaces(\preg_replace('/[\.]+/', '.', $sFileName));
 		$sExt = \MailSo\Base\Utils::GetFileExtension($sClearedFileName);
 
-		if (10 < $iMaxLength && $iMaxLength < \strlen($sClearedFileName) - \strlen($sExt))
-		{
-			$sClearedFileName = \substr($sClearedFileName, 0, $iMaxLength).(empty($sExt) ? '' : '.'.$sExt);
+		if (10 < $iMaxLength && $iMaxLength < \strlen($sClearedFileName) - \strlen($sExt)) {
+			$sClearedFileName = \substr($sClearedFileName, 0, $iMaxLength) . (empty($sExt) ? '' : '.' . $sExt);
 		}
 
 		return \MailSo\Base\Utils::ClearFileName(\MailSo\Base\Utils::Utf8Clear($sClearedFileName));
 	}
 
-	private function getUploadErrorMessageByCode(int $iError, int &$iClientError) : string
+	private function getUploadErrorMessageByCode(int $iError, int &$iClientError): string
 	{
 		$sError = '';
 		$iClientError = UploadClientError::NORMAL;
-		switch($iError)
-		{
+		switch ($iError) {
 			case UPLOAD_ERR_OK:
 				break;
 			case UPLOAD_ERR_INI_SIZE:
@@ -2129,7 +1849,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $sError;
 	}
 
-	public function Upload() : array
+	public function Upload(): array
 	{
 		$oAccount = $this->getAccountFromToken();
 
@@ -2138,15 +1858,11 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		$aFile = $this->GetActionParam('File', null);
 		$iError = $this->GetActionParam('Error', Enumerations\UploadError::UNKNOWN);
 
-		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile))
-		{
-			$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);
-			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name']))
-			{
+		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
+			$sSavedName = 'upload-post-' . \md5($aFile['name'] . $aFile['tmp_name']);
+			if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name'])) {
 				$iError = Enumerations\UploadError::ON_SAVING;
-			}
-			else
-			{
+			} else {
 				$sUploadName = $aFile['name'];
 				$iSize = $aFile['size'];
 				$sMimeType = $aFile['type'];
@@ -2155,18 +1871,16 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 					'Name' => $sUploadName,
 					'TempName' => $sSavedName,
 					'MimeType' => $sMimeType,
-					'Size' =>  (int) $iSize
+					'Size' => (int)$iSize
 				);
 			}
 		}
 
-		if (UPLOAD_ERR_OK !== $iError)
-		{
+		if (UPLOAD_ERR_OK !== $iError) {
 			$iClientError = Enumerations\UploadClientError::NORMAL;
 			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
 
-			if (!empty($sError))
-			{
+			if (!empty($sError)) {
 				$aResponse['ErrorCode'] = $iClientError;
 				$aResponse['Error'] = $sError;
 			}
@@ -2175,12 +1889,11 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $this->DefaultResponse(__FUNCTION__, $aResponse);
 	}
 
-	public function UploadBackground() : array
+	public function UploadBackground(): array
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Enumerations\Capa::USER_BACKGROUND, $oAccount))
-		{
+		if (!$this->GetCapa(false, false, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -2190,27 +1903,19 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		$aFile = $this->GetActionParam('File', null);
 		$iError = $this->GetActionParam('Error', Enumerations\UploadError::UNKNOWN);
 
-		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile))
-		{
+		if ($oAccount && UPLOAD_ERR_OK === $iError && \is_array($aFile)) {
 			$sMimeType = \strtolower(\MailSo\Base\Utils::MimeContentType($aFile['name']));
-			if (\in_array($sMimeType, array('image/png', 'image/jpg', 'image/jpeg')))
-			{
-				$sSavedName = 'upload-post-'.\md5($aFile['name'].$aFile['tmp_name']);
-				if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name']))
-				{
+			if (\in_array($sMimeType, array('image/png', 'image/jpg', 'image/jpeg'))) {
+				$sSavedName = 'upload-post-' . \md5($aFile['name'] . $aFile['tmp_name']);
+				if (!$this->FilesProvider()->MoveUploadedFile($oAccount, $sSavedName, $aFile['tmp_name'])) {
 					$iError = Enumerations\UploadError::ON_SAVING;
-				}
-				else
-				{
+				} else {
 					$rData = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
-					if (\is_resource($rData))
-					{
+					if (\is_resource($rData)) {
 						$sData = \stream_get_contents($rData);
-						if (!empty($sData) && 0 < \strlen($sData))
-						{
+						if (!empty($sData) && 0 < \strlen($sData)) {
 							$sName = $aFile['name'];
-							if (empty($sName))
-							{
+							if (empty($sName)) {
 								$sName = '_';
 							}
 
@@ -2222,12 +1927,10 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 									'ContentType' => $sMimeType,
 									'Raw' => \base64_encode($sData)
 								))
-							))
-							{
+							)) {
 								$oSettings = $this->SettingsProvider()->Load($oAccount);
-								if ($oSettings)
-								{
-									$sHash = \MailSo\Base\Utils::Md5Rand($sName.APP_VERSION.APP_SALT);
+								if ($oSettings) {
+									$sHash = \MailSo\Base\Utils::Md5Rand($sName . APP_VERSION . APP_SALT);
 
 									$oSettings->SetConf('UserBackgroundName', $sName);
 									$oSettings->SetConf('UserBackgroundHash', $sHash);
@@ -2239,8 +1942,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 						unset($sData);
 					}
 
-					if (\is_resource($rData))
-					{
+					if (\is_resource($rData)) {
 						\fclose($rData);
 					}
 
@@ -2248,20 +1950,16 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 				}
 
 				$this->FilesProvider()->Clear($oAccount, $sSavedName);
-			}
-			else
-			{
+			} else {
 				$iError = Enumerations\UploadError::FILE_TYPE;
 			}
 		}
 
-		if (UPLOAD_ERR_OK !== $iError)
-		{
+		if (UPLOAD_ERR_OK !== $iError) {
 			$iClientError = Enumerations\UploadClientError::NORMAL;
 			$sError = $this->getUploadErrorMessageByCode($iError, $iClientError);
 
-			if (!empty($sError))
-			{
+			if (!empty($sError)) {
 				return $this->FalseResponse(__FUNCTION__, $iClientError, $sError);
 			}
 		}
@@ -2272,41 +1970,32 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		) : false);
 	}
 
-	private function importContactsFromCsvFile(Model\Account $oAccount, /*resource*/ $rFile, string $sFileStart) : int
+	private function importContactsFromCsvFile(Model\Account $oAccount, /*resource*/ $rFile, string $sFileStart): int
 	{
 		$iCount = 0;
 		$aHeaders = null;
 		$aData = array();
 
-		if ($oAccount && \is_resource($rFile))
-		{
+		if ($oAccount && \is_resource($rFile)) {
 			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
-			{
-				$sDelimiter = ((int) \strpos($sFileStart, ',') > (int) \strpos($sFileStart, ';')) ? ',' : ';';
+			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
+				$sDelimiter = ((int)\strpos($sFileStart, ',') > (int)\strpos($sFileStart, ';')) ? ',' : ';';
 
 				\setlocale(LC_CTYPE, 'en_US.UTF-8');
-				while (false !== ($mRow = \fgetcsv($rFile, 5000, $sDelimiter, '"')))
-				{
-					if (null === $aHeaders)
-					{
-						if (3 >= \count($mRow))
-						{
+				while (false !== ($mRow = \fgetcsv($rFile, 5000, $sDelimiter, '"'))) {
+					if (null === $aHeaders) {
+						if (3 >= \count($mRow)) {
 							return 0;
 						}
 
 						$aHeaders = $mRow;
 
-						foreach ($aHeaders as $iIndex => $sHeaderValue)
-						{
+						foreach ($aHeaders as $iIndex => $sHeaderValue) {
 							$aHeaders[$iIndex] = \MailSo\Base\Utils::Utf8Clear($sHeaderValue);
 						}
-					}
-					else
-					{
+					} else {
 						$aNewItem = array();
-						foreach ($aHeaders as $iIndex => $sHeaderValue)
-						{
+						foreach ($aHeaders as $iIndex => $sHeaderValue) {
 							$aNewItem[$sHeaderValue] = isset($mRow[$iIndex]) ? $mRow[$iIndex] : '';
 						}
 
@@ -2314,8 +2003,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 					}
 				}
 
-				if (0 < \count($aData))
-				{
+				if (0 < \count($aData)) {
 					$this->Logger()->Write('Import contacts from csv');
 					$iCount = $oAddressBookProvider->ImportCsvArray($oAccount->ParentEmailHelper(), $aData);
 				}
@@ -2325,22 +2013,18 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $iCount;
 	}
 
-	private function importContactsFromVcfFile(Model\Account $oAccount, /*resource*/ $rFile) : int
+	private function importContactsFromVcfFile(Model\Account $oAccount, /*resource*/ $rFile): int
 	{
 		$iCount = 0;
-		if ($oAccount && \is_resource($rFile))
-		{
+		if ($oAccount && \is_resource($rFile)) {
 			$oAddressBookProvider = $this->AddressBookProvider($oAccount);
-			if ($oAddressBookProvider && $oAddressBookProvider->IsActive())
-			{
+			if ($oAddressBookProvider && $oAddressBookProvider->IsActive()) {
 				$sFile = \stream_get_contents($rFile);
-				if (\is_resource($rFile))
-				{
+				if (\is_resource($rFile)) {
 					\fclose($rFile);
 				}
 
-				if (is_string($sFile) && 5 < \strlen($sFile))
-				{
+				if (is_string($sFile) && 5 < \strlen($sFile)) {
 					$this->Logger()->Write('Import contacts from vcf');
 					$iCount = $oAddressBookProvider->ImportVcfFile($oAccount->ParentEmailHelper(), $sFile);
 				}
@@ -2353,7 +2037,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
-	public function Append() : bool
+	public function Append(): bool
 	{
 		$oAccount = $this->initMailClientConnection();
 
@@ -2363,17 +2047,13 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		if ($oAccount instanceof Model\Account &&
 			$this->Config()->Get('labs', 'allow_message_append', false) &&
 			isset($_FILES, $_FILES['AppendFile'], $_FILES['AppendFile']['name'],
-				$_FILES['AppendFile']['tmp_name'], $_FILES['AppendFile']['size']))
-		{
-			if (is_string($_FILES['AppendFile']['tmp_name']) && 0 < strlen($_FILES['AppendFile']['tmp_name']))
-			{
-				if (\UPLOAD_ERR_OK === (int) $_FILES['AppendFile']['error'] && !empty($sFolderFullNameRaw))
-				{
-					$sSavedName = 'append-post-'.md5($sFolderFullNameRaw.$_FILES['AppendFile']['name'].$_FILES['AppendFile']['tmp_name']);
+				$_FILES['AppendFile']['tmp_name'], $_FILES['AppendFile']['size'])) {
+			if (is_string($_FILES['AppendFile']['tmp_name']) && 0 < strlen($_FILES['AppendFile']['tmp_name'])) {
+				if (\UPLOAD_ERR_OK === (int)$_FILES['AppendFile']['error'] && !empty($sFolderFullNameRaw)) {
+					$sSavedName = 'append-post-' . md5($sFolderFullNameRaw . $_FILES['AppendFile']['name'] . $_FILES['AppendFile']['tmp_name']);
 
 					if ($this->FilesProvider()->MoveUploadedFile($oAccount,
-						$sSavedName, $_FILES['AppendFile']['tmp_name']))
-					{
+						$sSavedName, $_FILES['AppendFile']['tmp_name'])) {
 						$iMessageStreamSize = $this->FilesProvider()->FileSize($oAccount, $sSavedName);
 						$rMessageStream = $this->FilesProvider()->GetFile($oAccount, $sSavedName);
 
@@ -2388,135 +2068,110 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
-	public function Capa(bool $bAdmin, bool $bMobile = false, ?Model\Account $oAccount = null) : array
+	public function Capa(bool $bAdmin, bool $bMobile = false, ?Model\Account $oAccount = null): array
 	{
 		$oConfig = $this->Config();
 
 		$aResult = array();
 
-		if ($oConfig->Get('capa', 'folders', true))
-		{
+		if ($oConfig->Get('capa', 'folders', true)) {
 			$aResult[] = Enumerations\Capa::FOLDERS;
 
-			if ($oConfig->Get('capa', 'messagelist_actions', true))
-			{
+			if ($oConfig->Get('capa', 'messagelist_actions', true)) {
 				$aResult[] = Enumerations\Capa::MESSAGELIST_ACTIONS;
 
-				if ($oConfig->Get('capa', 'dangerous_actions', true))
-				{
+				if ($oConfig->Get('capa', 'dangerous_actions', true)) {
 					$aResult[] = Enumerations\Capa::DANGEROUS_ACTIONS;
 				}
 			}
 		}
 
-		if ($oConfig->Get('capa', 'reload', true))
-		{
+		if ($oConfig->Get('capa', 'reload', true)) {
 			$aResult[] = Enumerations\Capa::RELOAD;
 		}
 
-		if ($oConfig->Get('capa', 'quota', true))
-		{
+		if ($oConfig->Get('capa', 'quota', true)) {
 			$aResult[] = Enumerations\Capa::QUOTA;
 		}
 
-		if ($oConfig->Get('capa', 'settings', true))
-		{
+		if ($oConfig->Get('capa', 'settings', true)) {
 			$aResult[] = Enumerations\Capa::SETTINGS;
 
-			if ($oConfig->Get('webmail', 'allow_additional_accounts', false))
-			{
+			if ($oConfig->Get('webmail', 'allow_additional_accounts', false)) {
 				$aResult[] = Enumerations\Capa::ADDITIONAL_ACCOUNTS;
 			}
 
-			if ($oConfig->Get('webmail', 'allow_additional_identities', false))
-			{
+			if ($oConfig->Get('webmail', 'allow_additional_identities', false)) {
 				$aResult[] = Enumerations\Capa::IDENTITIES;
 			}
 
-			if ($oConfig->Get('capa', 'x-templates', true) && !$bMobile)
-			{
+			if ($oConfig->Get('capa', 'x-templates', true) && !$bMobile) {
 				$aResult[] = Enumerations\Capa::TEMPLATES;
 			}
 
-			if ($oConfig->Get('webmail', 'allow_themes', false) && !$bMobile)
-			{
+			if ($oConfig->Get('webmail', 'allow_themes', false) && !$bMobile) {
 				$aResult[] = Enumerations\Capa::THEMES;
 			}
 
-			if ($oConfig->Get('webmail', 'allow_user_background', false) && !$bMobile)
-			{
+			if ($oConfig->Get('webmail', 'allow_user_background', false) && !$bMobile) {
 				$aResult[] = Enumerations\Capa::USER_BACKGROUND;
 			}
 
-			if ($oConfig->Get('security', 'openpgp', false) && !$bMobile)
-			{
+			if ($oConfig->Get('security', 'openpgp', false) && !$bMobile) {
 				$aResult[] = Enumerations\Capa::OPEN_PGP;
 			}
 
-			if ($oConfig->Get('capa', 'filters', false))
-			{
+			if ($oConfig->Get('capa', 'filters', false)) {
 				$aResult[] = Enumerations\Capa::FILTERS;
-				if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve()))
-				{
+				if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve())) {
 					$aResult[] = Enumerations\Capa::SIEVE;
 				}
 			}
 		}
 
 		if ($oConfig->Get('security', 'allow_two_factor_auth', false) &&
-			($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount())))
-		{
+			($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount()))) {
 			$aResult[] = Enumerations\Capa::TWO_FACTOR;
 
 			if ($oConfig->Get('security', 'force_two_factor_auth', false) &&
-				($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount())))
-			{
+				($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount()))) {
 				$aResult[] = Enumerations\Capa::TWO_FACTOR_FORCE;
 			}
 		}
 
-		if ($oConfig->Get('capa', 'help', true) && !$bMobile)
-		{
+		if ($oConfig->Get('capa', 'help', true) && !$bMobile) {
 			$aResult[] = Enumerations\Capa::HELP;
 		}
 
-		if ($oConfig->Get('capa', 'attachments_actions', false))
-		{
+		if ($oConfig->Get('capa', 'attachments_actions', false)) {
 			$aResult[] = Enumerations\Capa::ATTACHMENTS_ACTIONS;
 		}
 
-		if ($oConfig->Get('capa', 'message_actions', true))
-		{
+		if ($oConfig->Get('capa', 'message_actions', true)) {
 			$aResult[] = Enumerations\Capa::MESSAGE_ACTIONS;
 		}
 
-		if ($oConfig->Get('capa', 'composer', true))
-		{
+		if ($oConfig->Get('capa', 'composer', true)) {
 			$aResult[] = Enumerations\Capa::COMPOSER;
 
-			if ($oConfig->Get('capa', 'contacts', true))
-			{
+			if ($oConfig->Get('capa', 'contacts', true)) {
 				$aResult[] = Enumerations\Capa::CONTACTS;
 			}
 		}
 
-		if ($oConfig->Get('capa', 'search', true))
-		{
+		if ($oConfig->Get('capa', 'search', true)) {
 			$aResult[] = Enumerations\Capa::SEARCH;
 
-			if ($oConfig->Get('capa', 'search_adv', true) && !$bMobile)
-			{
+			if ($oConfig->Get('capa', 'search_adv', true) && !$bMobile) {
 				$aResult[] = Enumerations\Capa::SEARCH_ADV;
 			}
 		}
 
-		if ($oConfig->Get('interface', 'show_attachment_thumbnail', true))
-		{
+		if ($oConfig->Get('interface', 'show_attachment_thumbnail', true)) {
 			$aResult[] = Enumerations\Capa::ATTACHMENT_THUMBNAILS;
 		}
 
-		if ($oConfig->Get('labs', 'allow_prefetch', false) && !$bMobile)
-		{
+		if ($oConfig->Get('labs', 'allow_prefetch', false) && !$bMobile) {
 			$aResult[] = Enumerations\Capa::PREFETCH;
 		}
 
@@ -2525,44 +2180,39 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $aResult;
 	}
 
-	public function GetCapa(bool $bAdmin, bool $bMobile, string $sName, ?Model\Account $oAccount = null) : bool
+	public function GetCapa(bool $bAdmin, bool $bMobile, string $sName, ?Model\Account $oAccount = null): bool
 	{
 		return \in_array($sName, $this->Capa($bAdmin, $bMobile, $oAccount));
 	}
 
-	public function etag(string $sKey) : string
+	public function etag(string $sKey): string
 	{
-		return \md5('Etag:'.\md5($sKey.\md5($this->Config()->Get('cache', 'index', ''))));
+		return \md5('Etag:' . \md5($sKey . \md5($this->Config()->Get('cache', 'index', ''))));
 	}
 
-	public function cacheByKey(string $sKey, bool $bForce = false) : bool
+	public function cacheByKey(string $sKey, bool $bForce = false): bool
 	{
 		$bResult = false;
-		if (!empty($sKey) && ($bForce || ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true))))
-		{
+		if (!empty($sKey) && ($bForce || ($this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))) {
 			$iExpires = $this->Config()->Get('cache', 'http_expires', 3600);
-			if (0 < $iExpires)
-			{
+			if (0 < $iExpires) {
 				$this->oHttp->ServerUseCache($this->etag($sKey), 1382478804, \time() + $iExpires);
 				$bResult = true;
 			}
 		}
 
-		if (!$bResult)
-		{
+		if (!$bResult) {
 			$this->oHttp->ServerNoCache();
 		}
 
 		return $bResult;
 	}
 
-	public function verifyCacheByKey(string $sKey, bool $bForce = false) : void
+	public function verifyCacheByKey(string $sKey, bool $bForce = false): void
 	{
-		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true)))
-		{
+		if (!empty($sKey) && ($bForce || $this->Config()->Get('cache', 'enable', true) && $this->Config()->Get('cache', 'http', true))) {
 			$sIfNoneMatch = $this->Http()->GetHeader('If-None-Match', '');
-			if ($this->etag($sKey) === $sIfNoneMatch)
-			{
+			if ($this->etag($sKey) === $sIfNoneMatch) {
 				$this->Http()->StatusHeader(304);
 				$this->cacheByKey($sKey);
 				exit(0);
@@ -2570,24 +2220,18 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		}
 	}
 
-	private function initMailClientConnection() : ?Model\Account
+	private function initMailClientConnection(): ?Model\Account
 	{
 		$oAccount = null;
 
-		if (!$this->MailClient()->IsLoggined())
-		{
+		if (!$this->MailClient()->IsLoggined()) {
 			$oAccount = $this->getAccountFromToken();
 
-			try
-			{
+			try {
 				$oAccount->IncConnectAndLoginHelper($this->Plugins(), $this->MailClient(), $this->Config());
-			}
-			catch (\MailSo\Net\Exceptions\ConnectionException $oException)
-			{
+			} catch (\MailSo\Net\Exceptions\ConnectionException $oException) {
 				throw new Exceptions\ClientException(Notifications::ConnectionError, $oException);
-			}
-			catch (\Throwable $oException)
-			{
+			} catch (\Throwable $oException) {
 				throw new Exceptions\ClientException(Notifications::AuthError, $oException);
 			}
 
@@ -2597,30 +2241,28 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $oAccount;
 	}
 
-	private function getDecodedRawKeyValue(string $sRawKey) : array
+	private function getDecodedRawKeyValue(string $sRawKey): array
 	{
 		return empty($sRawKey) ? array() : Utils::DecodeKeyValuesQ($sRawKey);
 	}
 
-	public function StaticCache() : string
+	public function StaticCache(): string
 	{
 		static $sCache = null;
-		if (!$sCache)
-		{
-			$sCache = \md5(APP_VERSION.$this->Plugins()->Hash());
+		if (!$sCache) {
+			$sCache = \md5(APP_VERSION . $this->Plugins()->Hash());
 		}
 		return $sCache;
 	}
 
-	public function ThemeLink(string $sTheme, bool $bAdmin) : string
+	public function ThemeLink(string $sTheme, bool $bAdmin): string
 	{
-		return './?/Css/0/'.($bAdmin ? 'Admin' : 'User').'/-/'.$sTheme.'/-/'.$this->StaticCache().'/Hash/-/';
+		return './?/Css/0/' . ($bAdmin ? 'Admin' : 'User') . '/-/' . $sTheme . '/-/' . $this->StaticCache() . '/Hash/-/';
 	}
 
-	public function ValidateTheme(string $sTheme, bool $bMobile = false) : string
+	public function ValidateTheme(string $sTheme, bool $bMobile = false): string
 	{
-		if ($bMobile)
-		{
+		if ($bMobile) {
 			return 'Mobile';
 		}
 
@@ -2628,7 +2270,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 			$sTheme : $this->Config()->Get('themes', 'default', $bMobile ? 'Mobile' : 'Default');
 	}
 
-	public function ValidateLanguage(string $sLanguage, string $sDefault = '', bool $bAdmin = false, bool $bAllowEmptyResult = false) : string
+	public function ValidateLanguage(string $sLanguage, string $sDefault = '', bool $bAdmin = false, bool $bAllowEmptyResult = false): string
 	{
 		$sResult = '';
 		$aLang = $this->GetLanguages($bAdmin);
@@ -2640,15 +2282,13 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		$sDefault = isset($aHelper[$sDefault]) ? $aHelper[$sDefault] : $sDefault;
 
 		$sLanguage = \strtolower(\str_replace('-', '_', $sLanguage));
-		if (2 === strlen($sLanguage))
-		{
-			$sLanguage = $sLanguage.'_'.$sLanguage;
+		if (2 === strlen($sLanguage)) {
+			$sLanguage = $sLanguage . '_' . $sLanguage;
 		}
 
 		$sDefault = \strtolower(\str_replace('-', '_', $sDefault));
-		if (2 === strlen($sDefault))
-		{
-			$sDefault = $sDefault.'_'.$sDefault;
+		if (2 === strlen($sDefault)) {
+			$sDefault = $sDefault . '_' . $sDefault;
 		}
 
 		$sLanguage = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
@@ -2659,18 +2299,15 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 			return \strtoupper($aData[0]);
 		}, $sDefault);
 
-		if (\in_array($sLanguage, $aLang))
-		{
+		if (\in_array($sLanguage, $aLang)) {
 			$sResult = $sLanguage;
 		}
 
-		if (empty($sResult) && !empty($sDefault) && \in_array($sDefault, $aLang))
-		{
+		if (empty($sResult) && !empty($sDefault) && \in_array($sDefault, $aLang)) {
 			$sResult = $sDefault;
 		}
 
-		if (empty($sResult) && !$bAllowEmptyResult)
-		{
+		if (empty($sResult) && !$bAllowEmptyResult) {
 			$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en_US');
 			$sResult = \in_array($sResult, $aLang) ? $sResult : 'en_US';
 		}
@@ -2678,7 +2315,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $sResult;
 	}
 
-	public function ValidateContactPdoType(string $sType) : string
+	public function ValidateContactPdoType(string $sType): string
 	{
 		return \in_array($sType, array('mysql', 'pgsql', 'sqlite')) ? $sType : 'sqlite';
 	}
@@ -2686,46 +2323,33 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 	/**
 	 * @staticvar array $aCache
 	 */
-	public function GetThemes(bool $bMobile = false, bool $bIncludeMobile = true) : array
+	public function GetThemes(bool $bMobile = false, bool $bIncludeMobile = true): array
 	{
-		if ($bMobile)
-		{
+		if ($bMobile) {
 			return array('Mobile');
 		}
 
 		static $aCache = array('full' => null, 'mobile' => null);
-		if ($bIncludeMobile && \is_array($aCache['full']))
-		{
+		if ($bIncludeMobile && \is_array($aCache['full'])) {
 			return $aCache['full'];
-		}
-		else if ($bIncludeMobile && \is_array($aCache['mobile']))
-		{
+		} else if ($bIncludeMobile && \is_array($aCache['mobile'])) {
 			return $aCache['mobile'];
 		}
 
 		$bClear = false;
 		$bDefault = false;
 		$sList = array();
-		$sDir = APP_VERSION_ROOT_PATH.'themes';
-		if (\is_dir($sDir))
-		{
+		$sDir = APP_VERSION_ROOT_PATH . 'themes';
+		if (\is_dir($sDir)) {
 			$rDirH = \opendir($sDir);
-			if ($rDirH)
-			{
-				while (($sFile = \readdir($rDirH)) !== false)
-				{
-					if ('.' !== $sFile[0] && \is_dir($sDir.'/'.$sFile) && \file_exists($sDir.'/'.$sFile.'/styles.less'))
-					{
-						if ('Default' === $sFile)
-						{
+			if ($rDirH) {
+				while (($sFile = \readdir($rDirH)) !== false) {
+					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile) && \file_exists($sDir . '/' . $sFile . '/styles.less')) {
+						if ('Default' === $sFile) {
 							$bDefault = true;
-						}
-						else if ('Clear' === $sFile)
-						{
+						} else if ('Clear' === $sFile) {
 							$bClear = true;
-						}
-						else if ($bIncludeMobile || 'Mobile' !== $sFile)
-						{
+						} else if ($bIncludeMobile || 'Mobile' !== $sFile) {
 							$sList[] = $sFile;
 						}
 					}
@@ -2734,17 +2358,13 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 			}
 		}
 
-		$sDir = APP_INDEX_ROOT_PATH.'themes'; // custom user themes
-		if (\is_dir($sDir))
-		{
+		$sDir = APP_INDEX_ROOT_PATH . 'themes'; // custom user themes
+		if (\is_dir($sDir)) {
 			$rDirH = \opendir($sDir);
-			if ($rDirH)
-			{
-				while (($sFile = \readdir($rDirH)) !== false)
-				{
-					if ('.' !== $sFile[0] && \is_dir($sDir.'/'.$sFile) && \file_exists($sDir.'/'.$sFile.'/styles.less'))
-					{
-						$sList[] = $sFile.'@custom';
+			if ($rDirH) {
+				while (($sFile = \readdir($rDirH)) !== false) {
+					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile) && \file_exists($sDir . '/' . $sFile . '/styles.less')) {
+						$sList[] = $sFile . '@custom';
 					}
 				}
 
@@ -2755,13 +2375,11 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		$sList = \array_unique($sList);
 		\sort($sList);
 
-		if ($bDefault)
-		{
+		if ($bDefault) {
 			\array_unshift($sList, 'Default');
 		}
 
-		if ($bClear)
-		{
+		if ($bClear) {
 			\array_push($sList, 'Clear');
 		}
 
@@ -2772,31 +2390,25 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 	/**
 	 * @staticvar array $aCache
 	 */
-	public function GetLanguages(bool $bAdmin = false) : array
+	public function GetLanguages(bool $bAdmin = false): array
 	{
 		static $aCache = array();
-		$sDir = APP_VERSION_ROOT_PATH.'app/localization/'.($bAdmin ? 'admin' : 'webmail').'/';
+		$sDir = APP_VERSION_ROOT_PATH . 'app/localization/' . ($bAdmin ? 'admin' : 'webmail') . '/';
 
-		if (isset($aCache[$sDir]))
-		{
+		if (isset($aCache[$sDir])) {
 			return $aCache[$sDir];
 		}
 
 		$aTop = array();
 		$aList = array();
 
-		if (\is_dir($sDir))
-		{
+		if (\is_dir($sDir)) {
 			$rDirH = \opendir($sDir);
-			if ($rDirH)
-			{
-				while (($sFile = \readdir($rDirH)) !== false)
-				{
-					if ('.' !== $sFile[0] && \is_file($sDir.'/'.$sFile) && '.yml' === \substr($sFile, -4))
-					{
+			if ($rDirH) {
+				while (($sFile = \readdir($rDirH)) !== false) {
+					if ('.' !== $sFile[0] && \is_file($sDir . '/' . $sFile) && '.yml' === \substr($sFile, -4)) {
 						$sLang = \substr($sFile, 0, -4);
-						if (0 < \strlen($sLang) && 'always' !== $sLang && '_source.en' !== $sLang)
-						{
+						if (0 < \strlen($sLang) && 'always' !== $sLang && '_source.en' !== $sLang) {
 							\array_push($aList, $sLang);
 						}
 					}
@@ -2813,7 +2425,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $aCache[$sDir];
 	}
 
-	public function ProcessTemplate(string $sName, string $sHtml) : string
+	public function ProcessTemplate(string $sName, string $sHtml): string
 	{
 		$sHtml = $this->Plugins()->ProcessTemplate($sName, $sHtml);
 		$sHtml = \preg_replace('/\{\{INCLUDE\/([a-zA-Z]+)\/PLACE\}\}/', '', $sHtml);
@@ -2824,7 +2436,7 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return Utils::ClearHtmlOutput($sHtml);
 	}
 
-	public function SetActionParams(array $aCurrentActionParams, string $sMethodName = '') : self
+	public function SetActionParams(array $aCurrentActionParams, string $sMethodName = ''): self
 	{
 		$this->Plugins()->RunHook('filter.action-params', array($sMethodName, &$aCurrentActionParams));
 
@@ -2852,42 +2464,36 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return $this->aCurrentActionParams;
 	}
 
-	public function HasActionParam(string $sKey) : bool
+	public function HasActionParam(string $sKey): bool
 	{
 		return isset($this->aCurrentActionParams[$sKey]);
 	}
 
-	public function Location(string $sUrl) : void
+	public function Location(string $sUrl): void
 	{
-		$this->Logger()->Write('Location: '.$sUrl);
-		\header('Location: '.$sUrl);
+		$this->Logger()->Write('Location: ' . $sUrl);
+		\header('Location: ' . $sUrl);
 	}
 
-	public function GetLanguageAndTheme(bool $bAdmin = false, bool $bMobile = false) : array
+	public function GetLanguageAndTheme(bool $bAdmin = false, bool $bMobile = false): array
 	{
 		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
 
-		if ($bAdmin)
-		{
+		if ($bAdmin) {
 			$sLanguage = $this->Config()->Get('webmail', 'language_admin', 'en');
-		}
-		else
-		{
+		} else {
 			$oAccount = $this->GetAccount();
 
 			$sLanguage = $this->Config()->Get('webmail', 'language', 'en');
 
-			if ($oAccount)
-			{
+			if ($oAccount) {
 				$oSettings = $this->SettingsProvider()->Load($oAccount);
-				if ($oSettings instanceof Settings)
-				{
+				if ($oSettings instanceof Settings) {
 					$sLanguage = $oSettings->GetConf('Language', $sLanguage);
 				}
 
 				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-				if ($oSettingsLocal instanceof Settings)
-				{
+				if ($oSettingsLocal instanceof Settings) {
 					$sTheme = $oSettingsLocal->GetConf('Theme', $sTheme);
 				}
 			}
@@ -2899,26 +2505,24 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return array($sLanguage, $sTheme);
 	}
 
-	public function StaticI18N(string $sKey) : string
+	public function StaticI18N(string $sKey): string
 	{
 		static $sLang = null;
 		static $aLang = null;
 
-		if (null === $sLang)
-		{
+		if (null === $sLang) {
 			$aList = $this->GetLanguageAndTheme();
 			$sLang = $aList[0];
 		}
 
-		if (null === $aLang)
-		{
+		if (null === $aLang) {
 			$sLang = $this->ValidateLanguage($sLang, 'en');
 
 			$aLang = array();
 //			Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/i18n/langs.ini', $aLang);
 //			Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'langs/'.$sLang.'.ini', $aLang);
-			Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/langs.yml', $aLang);
-			Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/webmail/'.$sLang.'.yml', $aLang);
+			Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH . 'app/localization/langs.yml', $aLang);
+			Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH . 'app/localization/webmail/' . $sLang . '.yml', $aLang);
 
 			$this->Plugins()->ReadLang($sLang, $aLang);
 		}
@@ -2926,9 +2530,9 @@ NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink Aut
 		return isset($aLang[$sKey]) ? $aLang[$sKey] : $sKey;
 	}
 
-	public function StaticPath(string $sPath) : string
+	public function StaticPath(string $sPath): string
 	{
-		return Utils::WebStaticPath().$sPath;
+		return Utils::WebStaticPath() . $sPath;
 	}
 
 }
