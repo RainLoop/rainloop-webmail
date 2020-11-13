@@ -279,7 +279,11 @@ class Actions
 						$mResult = new Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
 					}
 					break;
+				case 'identities':
+					$mResult = [];
+					break;
 				case 'suggestions':
+					$mResult = [];
 					break;
 				case 'two-factor-auth':
 					// Providers\TwoFactorAuth\TwoFactorAuthInterface
@@ -289,8 +293,7 @@ class Actions
 		}
 
 		// Always give the file provider as last for identities, it is the override
-		if ($sName === 'identities') {
-			if ($mResult === null) $mResult = [];
+		if ('identities' === $sName) {
 			$mResult[] = new Providers\Identities\FileIdentities($this->StorageProvider(true));
 		}
 
@@ -921,8 +924,8 @@ class Actions
 					empty($aAccountHash[5]) ? '' : $aAccountHash[5], empty($aAccountHash[11]) ? '' : $aAccountHash[11], $bThrowExceptionOnFalse);
 
 				if ($oAccount) {
-					if (!empty($aAccountHash[8]) && !empty($aAccountHash[9])) // init proxy user/password
-					{
+					// init proxy user/password
+					if (!empty($aAccountHash[8]) && !empty($aAccountHash[9])) {
 						$oAccount->SetProxyAuthUser($aAccountHash[8]);
 						$oAccount->SetProxyAuthPassword($aAccountHash[9]);
 					}
@@ -1075,15 +1078,15 @@ class Actions
 			'Plugins' => array(),
 			'System' => $this->AppDataSystem($bAdmin, $bMobile, $bMobileDevice)
 			/*
-						'LoginLogo' => $oConfig->Get('branding', 'login_logo', ''),
-						'LoginBackground' => $oConfig->Get('branding', 'login_background', ''),
-						'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
-						'LoginDescription' => $oConfig->Get('branding', 'login_desc', ''),
-						'UserLogo' => $oConfig->Get('branding', 'user_logo', ''),
-						'UserLogoTitle' => $oConfig->Get('branding', 'user_logo_title', ''),
-						'UserLogoMessage' => $oConfig->Get('branding', 'user_logo_message', ''),
-						'UserIframeMessage' => $oConfig->Get('branding', 'user_iframe_message', ''),
-						'UserCss' => $oConfig->Get('branding', 'user_css', ''),
+			'LoginLogo' => $oConfig->Get('branding', 'login_logo', ''),
+			'LoginBackground' => $oConfig->Get('branding', 'login_background', ''),
+			'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
+			'LoginDescription' => $oConfig->Get('branding', 'login_desc', ''),
+			'UserLogo' => $oConfig->Get('branding', 'user_logo', ''),
+			'UserLogoTitle' => $oConfig->Get('branding', 'user_logo_title', ''),
+			'UserLogoMessage' => $oConfig->Get('branding', 'user_logo_message', ''),
+			'UserIframeMessage' => $oConfig->Get('branding', 'user_iframe_message', ''),
+			'UserCss' => $oConfig->Get('branding', 'user_css', ''),
 			*/
 		);
 

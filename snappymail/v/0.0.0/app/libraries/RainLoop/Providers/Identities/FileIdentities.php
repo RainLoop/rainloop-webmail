@@ -27,18 +27,20 @@ class FileIdentities implements IIdentities
 	 */
 	public function GetIdentities(Account $account): array
 	{
-		if (!$account) return [];
-
 		$data = $this->localStorageProvider->Get($account, Storage\Enumerations\StorageType::CONFIG, 'identities');
-		$subIdentities = json_decode($data, true) ?? [];
+		$subIdentities = \json_decode($data, true) ?? [];
 		$result = [];
 
 		foreach ($subIdentities as $subIdentity) {
 			$identity = new Identity();
 			$identity->FromJSON($subIdentity);
 
-			if (!$identity->Validate()) continue;
-			if ($identity->IsAccountIdentities()) $identity->SetEmail($account->Email());
+			if (!$identity->Validate()) {
+				continue;
+			}
+			if ($identity->IsAccountIdentities()) {
+				$identity->SetEmail($account->Email());
+			}
 			$result[] = $identity;
 		}
 
@@ -48,12 +50,12 @@ class FileIdentities implements IIdentities
 	/**
 	 * @inheritDoc
 	 */
-	public function SetIdentities(Account $account, array $identities)
+	public function SetIdentities(Account $account, array $identities): void
 	{
-		$jsons = array_map(function ($identity) {
+		$jsons = \array_map(function ($identity) {
 			return $identity->ToSimpleJSON();
 		}, $identities);
-		$this->localStorageProvider->Put($account, Storage\Enumerations\StorageType::CONFIG, 'identities', json_encode($jsons));
+		$this->localStorageProvider->Put($account, Storage\Enumerations\StorageType::CONFIG, 'identities', \json_encode($jsons));
 	}
 
 	/**

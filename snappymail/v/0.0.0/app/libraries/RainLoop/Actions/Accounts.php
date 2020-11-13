@@ -175,8 +175,6 @@ trait Accounts
 	 */
 	public function GetIdentities(Account $account): array
 	{
-		if (!$account) return [];
-
 		// A custom name for a single identity is also stored in this system
 		$allowMultipleIdentities = $this->GetCapa(false, false, Capa::IDENTITIES, $account);
 
@@ -185,15 +183,17 @@ trait Accounts
 
 		// Sort identities
 		$orderString = $this->StorageProvider()->Get($account, StorageType::CONFIG, 'accounts_identities_order');
-		$order = json_decode($orderString, true) ?? [];
-		if (isset($order['Identities']) && is_array($order['Identities']) && count($order['Identities']) > 1) {
-			$list = array_map(function ($item) {
-				if ('' === $item) $item = '---';
+		$order = \json_decode($orderString, true) ?? [];
+		if (isset($order['Identities']) && \is_array($order['Identities']) && \count($order['Identities']) > 1) {
+			$list = \array_map(function ($item) {
+				if ('' === $item) {
+					$item = '---';
+				}
 				return $item;
 			}, $order['Identities']);
 
-			usort($identities, function ($a, $b) use ($list) {
-				return array_search($a->Id(true), $list) < array_search($b->Id(true), $list) ? -1 : 1;
+			\usort($identities, function ($a, $b) use ($list) {
+				return \array_search($a->Id(true), $list) < \array_search($b->Id(true), $list) ? -1 : 1;
 			});
 		}
 

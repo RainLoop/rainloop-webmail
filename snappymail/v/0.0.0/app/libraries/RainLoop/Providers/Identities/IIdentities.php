@@ -20,7 +20,7 @@ interface IIdentities
 	 *
 	 * @return void
 	 */
-	public function SetIdentities(Account $account, array $identities);
+	public function SetIdentities(Account $account, array $identities): void;
 
 	/**
 	 * @return bool

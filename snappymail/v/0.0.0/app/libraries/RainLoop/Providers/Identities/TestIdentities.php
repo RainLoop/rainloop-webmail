@@ -27,7 +27,7 @@ class TestIdentities implements IIdentities
 	 * @return void
 	 * @throws Exception
 	 */
-	public function SetIdentities(Account $account, array $identities)
+	public function SetIdentities(Account $account, array $identities): void
 	{
 		throw new Exception("Not implemented");
 	}

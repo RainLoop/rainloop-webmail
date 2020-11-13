@@ -22,7 +22,7 @@ class Identities extends AbstractProvider
 	{
 		if ($drivers === null) $drivers = [];
 
-		$this->drivers = array_filter($drivers, function ($driver) {
+		$this->drivers = \array_filter($drivers, function ($driver) {
 			return $driver instanceof IIdentities;
 		});
 	}
@@ -38,7 +38,7 @@ class Identities extends AbstractProvider
 		$identities = $this->MergeIdentitiesPerDriver($this->GetIdentiesPerDriver($account));
 
 		// Find the primary identity
-		$primaryIdentity = current(array_filter($identities, function ($identity) {
+		$primaryIdentity = \current(\array_filter($identities, function ($identity) {
 			return $identity->IsAccountIdentities();
 		}));
 
@@ -73,7 +73,7 @@ class Identities extends AbstractProvider
 		// If it is a new identity we add it to any storage driver
 		if ($isNew) {
 			// Pick any storage driver to store the result, typically only file storage
-			$storageDriver = current(array_filter($this->drivers, function ($driver) {
+			$storageDriver = \current(\array_filter($this->drivers, function ($driver) {
 				return $driver->SupportsStore();
 			}));
 
@@ -134,6 +134,6 @@ class Identities extends AbstractProvider
 				$identities[$identity->Id(true)] = $identity;
 		}
 
-		return array_values($identities);
+		return \array_values($identities);
 	}
 }
