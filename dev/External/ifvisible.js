@@ -16,13 +16,16 @@
 		timer = 0,
 		init = () => {
 			init = ()=>{};
+			// Safari
+			addEventListener('pagehide', status = "hidden");
+			// Else
 			doc.addEventListener("visibilitychange", () => {
 				status = doc.visibilityState;
 				doc.hidden || wakeUp();
 			});
 			wakeUp();
 			["mousemove","keyup","touchstart"].forEach(t => doc.addEventListener(t, wakeUp));
-			addEventListener("scroll", wakeUp);
+			["scroll","pageshow"].forEach(t => addEventListener(t, wakeUp));
 		};
 
 	this.ifvisible = {
