@@ -17,7 +17,7 @@
 		init = () => {
 			init = ()=>{};
 			// Safari
-			addEventListener('pagehide', status = "hidden");
+			addEventListener('pagehide', () => status = "hidden");
 			// Else
 			doc.addEventListener("visibilitychange", () => {
 				status = doc.visibilityState;
