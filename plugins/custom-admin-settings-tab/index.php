@@ -13,7 +13,7 @@ class CustomAdminSettingsTabPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$this->addAjaxHook('AjaxAdminGetData', 'AjaxAdminGetData');
 
-		$this->addTemplate('templates/PluginCustomAdminSettingnTab.html', true);
+		$this->addTemplate('templates/PluginCustomAdminSettingsTab.html', true);
 	}
 
 	/**

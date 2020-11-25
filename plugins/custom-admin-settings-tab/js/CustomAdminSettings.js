@@ -35,7 +35,7 @@
 
 	};
 
-	window.rl.addSettingsViewModelForAdmin(CustomAdminSettings, 'PluginCustomAdminSettingnTab',
+	window.rl.addSettingsViewModelForAdmin(CustomAdminSettings, 'PluginCustomAdminSettingsTab',
 		'SETTINGS_CUSTOM_ADMIN_CUSTOM_TAB_PLUGIN/TAB_NAME', 'custom');
 
 }());
