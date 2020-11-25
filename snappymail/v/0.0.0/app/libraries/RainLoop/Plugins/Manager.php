@@ -560,25 +560,6 @@ class Manager
 		return $this;
 	}
 
-	public function ProcessTemplate(string $sName, string $sHtml) : string
-	{
-		if (isset($this->aProcessTemplate[$sName]))
-		{
-			foreach ($this->aProcessTemplate[$sName] as $sPlace => $aAddHtml)
-			{
-				if (\is_array($aAddHtml) && 0 < \count($aAddHtml))
-				{
-					foreach ($aAddHtml as $sAddHtml)
-					{
-						$sHtml = \str_replace('{{INCLUDE/'.$sPlace.'/PLACE}}', $sAddHtml.'{{INCLUDE/'.$sPlace.'/PLACE}}', $sHtml);
-					}
-				}
-			}
-		}
-
-		return $sHtml;
-	}
-
 	public function bIsEnabled() : bool
 	{
 		return $this->bIsEnabled;

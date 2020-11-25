@@ -2395,9 +2395,6 @@ class Actions
 
 	public function ProcessTemplate(string $sName, string $sHtml): string
 	{
-		$sHtml = $this->Plugins()->ProcessTemplate($sName, $sHtml);
-		$sHtml = \preg_replace('/\{\{INCLUDE\/([a-zA-Z]+)\/PLACE\}\}/', '', $sHtml);
-
 		$sHtml = \preg_replace('/<script/i', '<x-script', $sHtml);
 		$sHtml = \preg_replace('/<\/script>/i', '</x-script>', $sHtml);
 

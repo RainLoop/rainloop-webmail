@@ -16,7 +16,6 @@
 				</div>
 				<form class="wrapper submitting-pane loginForm thm-login thm-login-text" action="#/"
 					data-bind="submit: submitForm, css: {'errorAnimated': formError, 'welcome-off': welcome, 'submitting': submitRequest()}">
-					{{INCLUDE/TopControlGroup/PLACE}}
 					<div class="controls plugin-mark-Login-TopControlGroup"
 						data-bind="css: {'error': emailError, 'animated': emailErrorAnimation}">
 						<div class="input-append">
@@ -69,7 +68,6 @@
 							}
 						}"></div>
 					</div>
-					{{INCLUDE/BottomControlGroup/PLACE}}
 					<div class="controls controls-submit-wrp" data-bind="hidden: hideSubmitButton">
 						<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
 							<span class="i18n i18n-animation" data-i18n="LOGIN/BUTTON_SIGN_IN"></span>
@@ -127,9 +125,6 @@
 					</a>
 				</span>
 			</div>
-			{{INCLUDE/BottomFooter/PLACE}}
 		</center>
 	</div>
-	<a href="#" onclick="return false;"></a>
-	<div class="loginAfter"></div>
 </div>
