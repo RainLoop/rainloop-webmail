@@ -63,9 +63,6 @@ class LoginUserView extends AbstractViewNext {
 
 		this.additionalCodeErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
 
-		this.logoImg = (Settings.get('LoginLogo')||'').trim();
-		this.loginDescription = (Settings.get('LoginDescription')||'').trim();
-
 		this.mobile = !!Settings.app('mobile');
 		this.mobileDevice = !!Settings.app('mobileDevice');
 

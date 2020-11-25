@@ -60,18 +60,8 @@
 
 				<div data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()" style="height: 100%">
 
-					<div class="b-message-view-desc" data-bind="visible: !logoIframe">
-						<span class="i18n" data-bind="visible: !logoImg" data-i18n="MESSAGE/MESSAGE_VIEW_DESC"></span>
-						<div class="logoPlace" data-bind="visible: logoImg, if: logoImg">
-							<img style="height: 99%" data-bind="attr: { 'src': logoImg }" />
-						</div>
-					</div>
-
-					<div class="b-message-view-iframe" data-bind="visible: logoIframe, if: logoIframe" style="position: relative; height: 100%">
-						<iframe src="javascript:1;" tabindex="-1" frameborder="0"
-							style="border: none; width: 100%; height: 100%; position: absolute; top: 0px; left: 0px; right: 0px; bottom: 0px;"
-							data-bind="attr: {'src': logoIframe}"></iframe>
-						<div class="b-message-view-iframe-backdrop"></div>
+					<div class="b-message-view-desc">
+						<span class="i18n" data-i18n="MESSAGE/MESSAGE_VIEW_DESC"></span>
 					</div>
 
 				</div>

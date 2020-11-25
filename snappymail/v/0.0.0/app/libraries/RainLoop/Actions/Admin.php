@@ -174,23 +174,6 @@ trait Admin
 		$this->setConfigFromParams($oConfig, 'TokenProtection', 'security', 'csrf_protection', 'bool');
 		$this->setConfigFromParams($oConfig, 'EnabledPlugins', 'plugins', 'enable', 'bool');
 
-		if ($this->HasOneOfActionParams(array(
-			'LoginLogo', 'LoginBackground', 'LoginDescription', 'LoginCss',
-			'UserLogo', 'UserLogoTitle', 'UserLogoMessage', 'UserIframeMessage', 'UserCss'
-		)))
-		{
-			$this->setConfigFromParams($oConfig, 'LoginLogo', 'branding', 'login_logo', 'string');
-			$this->setConfigFromParams($oConfig, 'LoginBackground', 'branding', 'login_background', 'string');
-			$this->setConfigFromParams($oConfig, 'LoginDescription', 'branding', 'login_desc', 'string');
-			$this->setConfigFromParams($oConfig, 'LoginCss', 'branding', 'login_css', 'string');
-
-			$this->setConfigFromParams($oConfig, 'UserLogo', 'branding', 'user_logo', 'string');
-			$this->setConfigFromParams($oConfig, 'UserLogoTitle', 'branding', 'user_logo_title', 'string');
-			$this->setConfigFromParams($oConfig, 'UserLogoMessage', 'branding', 'user_logo_message', 'string');
-			$this->setConfigFromParams($oConfig, 'UserIframeMessage', 'branding', 'user_iframe_message', 'string');
-			$this->setConfigFromParams($oConfig, 'UserCss', 'branding', 'user_css', 'string');
-		}
-
 		return $this->DefaultResponse(__FUNCTION__, $oConfig->Save());
 	}
 

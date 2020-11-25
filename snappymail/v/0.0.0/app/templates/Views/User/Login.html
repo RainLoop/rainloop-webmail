@@ -1,17 +1,6 @@
 <div class="b-login-content">
 	<div class="loginFormWrapper" data-bind="css: {'afterLoginHide': formHidden}">
 		<center class="plugin-mark-Login-BeforeLogo">
-			{{INCLUDE/BeforeLogo/PLACE}}
-			<!-- ko if: logoImg -->
-			<div class="logoWrapper plugin-mark-Login-AfterLogo">
-				<img class="logoImg" data-bind="attr: {'src': logoImg }" />
-			</div>
-			<!-- /ko -->
-			<div class="descWrapper thm-login-desc plugin-mark-Login-AfterLogoDescription"
-				data-bind="visible: '' !== loginDescription">
-				<span class="desc" data-bind="text: loginDescription"></span>
-			</div>
-			{{INCLUDE/AfterLogo/PLACE}}
 			<div class="alert alertError" data-bind="hidden: !submitError()" hidden="">
 				<button type="button" class="close" data-bind="click: function () { submitError('') }">&times;</button>
 				<span data-bind="text: submitError"></span>

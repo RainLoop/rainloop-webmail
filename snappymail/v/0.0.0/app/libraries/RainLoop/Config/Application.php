@@ -137,19 +137,6 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'new_move_to_folder_button' => array(true)
 			),
 
-			'branding' => array(
-				'login_logo'		=> array(''),
-				'login_background'	=> array(''),
-				'login_desc'		=> array(''),
-				'login_css'			=> array(''),
-
-				'user_css'			=> array(''),
-				'user_logo'			=> array(''),
-				'user_logo_title'	=> array(''),
-				'user_logo_message'	=> array(''),
-				'user_iframe_message'	=> array('')
-			),
-
 			'contacts' => array(
 				'enable'			=> array(false, 'Enable contacts'),
 				'allow_sync'		=> array(false),

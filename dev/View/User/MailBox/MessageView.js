@@ -88,9 +88,6 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		this.allowMessageActions = !!Settings.capa(Capa.MessageActions);
 		this.allowMessageListActions = !!Settings.capa(Capa.MessageListActions);
 
-		this.logoImg = (Settings.get('UserLogoMessage')||'').trim();
-		this.logoIframe = (Settings.get('UserIframeMessage')||'').trim();
-
 		this.mobile = !!Settings.app('mobile');
 
 		this.attachmentsActions = AppStore.attachmentsActions;

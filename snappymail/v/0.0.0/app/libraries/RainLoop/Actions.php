@@ -1040,7 +1040,7 @@ class Actions
 
 		/*
 		required by Index.html and rl.js:
-		NewThemeLink IncludeCss TemplatesLink LangLink IncludeBackground PluginsLink AuthAccountHash
+		NewThemeLink TemplatesLink LangLink PluginsLink AuthAccountHash
 		*/
 
 		$aResult = array(
@@ -1055,16 +1055,6 @@ class Actions
 			'Title' => $oConfig->Get('webmail', 'title', 'SnappyMail Webmail'),
 			'LoadingDescription' => $oConfig->Get('webmail', 'loading_description', 'SnappyMail'),
 			'FaviconUrl' => $oConfig->Get('webmail', 'favicon_url', ''),
-			'LoginDescription' => '',
-			'LoginLogo' => '',
-			'LoginBackground' => '',
-			'LoginCss' => '',
-			'UserLogo' => '',
-			'UserLogoTitle' => '',
-			'UserLogoMessage' => '',
-			'UserCss' => '',
-			'IncludeCss' => '',
-			'IncludeBackground' => '',
 			'LoginDefaultDomain' => $oConfig->Get('login', 'default_domain', ''),
 			'DetermineUserLanguage' => (bool)$oConfig->Get('login', 'determine_user_language', true),
 			'DetermineUserDomain' => (bool)$oConfig->Get('login', 'determine_user_domain', false),
@@ -1077,17 +1067,6 @@ class Actions
 			'Capa' => array(),
 			'Plugins' => array(),
 			'System' => $this->AppDataSystem($bAdmin, $bMobile, $bMobileDevice)
-			/*
-			'LoginLogo' => $oConfig->Get('branding', 'login_logo', ''),
-			'LoginBackground' => $oConfig->Get('branding', 'login_background', ''),
-			'LoginCss' => $oConfig->Get('branding', 'login_css', ''),
-			'LoginDescription' => $oConfig->Get('branding', 'login_desc', ''),
-			'UserLogo' => $oConfig->Get('branding', 'user_logo', ''),
-			'UserLogoTitle' => $oConfig->Get('branding', 'user_logo_title', ''),
-			'UserLogoMessage' => $oConfig->Get('branding', 'user_logo_message', ''),
-			'UserIframeMessage' => $oConfig->Get('branding', 'user_iframe_message', ''),
-			'UserCss' => $oConfig->Get('branding', 'user_css', ''),
-			*/
 		);
 
 		if (0 < \strlen($sAuthAccountHash)) {
@@ -1099,8 +1078,6 @@ class Actions
 		if (!$bAdmin) {
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount) {
-				$aResult['IncludeCss'] = $aResult['UserCss'];
-
 				$oAddressBookProvider = $this->AddressBookProvider($oAccount);
 
 				$aResult['Auth'] = true;
@@ -1146,14 +1123,7 @@ class Actions
 				if (!empty($aResult['StartupUrl'])) {
 					$aResult['StartupUrl'] = $this->compileLogParams($aResult['StartupUrl'], $oAccount, true);
 				}
-
-				if (!empty($aResult['UserIframeMessage'])) {
-					$aResult['UserIframeMessage'] = $this->compileLogParams($aResult['UserIframeMessage'], $oAccount, true);
-				}
 			} else {
-				$aResult['IncludeBackground'] = $aResult['LoginBackground'];
-				$aResult['IncludeCss'] = $aResult['LoginCss'];
-
 				$aResult['DevEmail'] = $oConfig->Get('labs', 'dev_email', '');
 				$aResult['DevPassword'] = $oConfig->Get('labs', 'dev_password', '');
 
@@ -1281,11 +1251,6 @@ class Actions
 					if ($this->GetCapa(false, $bMobile, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
 						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
 						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
-//						if (!empty($aResult['UserBackgroundName']) && !empty($aResult['UserBackgroundHash']))
-//						{
-//							$aResult['IncludeBackground'] = './?/Raw/&q[]=/{{USER}}/UserBackground/&q[]=/'.
-//								$aResult['UserBackgroundHash'].'/';
-//						}
 					}
 
 					$aResult['EnableTwoFactor'] = (bool)$oSettings->GetConf('EnableTwoFactor', $aResult['EnableTwoFactor']);

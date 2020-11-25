@@ -47,13 +47,6 @@ const
 		p.end();
 	},
 
-	writeCSS = css => {
-		const style = doc.createElement('style');
-		style.type = 'text/css';
-		style.textContent = css;
-		doc.head.append(style);
-	},
-
 	loadScript = src => {
 		if (!src) {
 			throw new Error('src should not be empty.');
@@ -147,16 +140,6 @@ win.rl = {
 		if (appData) {
 			if (appData.NewThemeLink) {
 				eId('app-theme-link').href = appData.NewThemeLink;
-			}
-
-			appData.IncludeCss && writeCSS(appData.IncludeCss);
-
-			if (appData.IncludeBackground) {
-				const img = appData.IncludeBackground.replace('{{USER}}', rl.hash.get() || '0');
-				if (img) {
-					htmlCL.add('UserBackground');
-					doc.body.style.backgroundImage = "url("+img+")";
-				}
 			}
 
 			loadScript(appData.StaticLibJsLink)

@@ -14,9 +14,6 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
-		this.logoImg = (Settings.get('UserLogo')||'').trim();
-		this.logoTitle = (Settings.get('UserLogoTitle')||'').trim();
-
 		this.mobile = !!Settings.app('mobile');
 		this.mobileDevice = !!Settings.app('mobileDevice');
 
