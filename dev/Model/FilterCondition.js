@@ -21,6 +21,9 @@ class FilterConditionModel extends AbstractModel {
 		this.template = ko.computed(() => {
 			let template = '';
 			switch (this.field()) {
+				case FilterConditionField.Body:
+					template = 'SettingsFiltersConditionBody';
+					break;
 				case FilterConditionField.Size:
 					template = 'SettingsFiltersConditionSize';
 					break;

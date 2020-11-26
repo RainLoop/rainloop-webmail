@@ -38,6 +38,7 @@ class FilterPopupView extends AbstractViewNext {
 		this.fieldOptions = ko.observableArray([]);
 		this.typeOptions = ko.observableArray([]);
 		this.typeOptionsSize = ko.observableArray([]);
+		this.typeOptionsBody = ko.observableArray([]);
 
 		initOnStartOrLangChange(this.populateOptions.bind(this));
 
@@ -108,7 +109,8 @@ class FilterPopupView extends AbstractViewNext {
 			{ 'id': FilterConditionField.Recipient, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_RECIPIENTS') },
 			{ 'id': FilterConditionField.Subject, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_SUBJECT') },
 			{ 'id': FilterConditionField.Size, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_SIZE') },
-			{ 'id': FilterConditionField.Header, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_HEADER') }
+			{ 'id': FilterConditionField.Header, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_HEADER') },
+			{ 'id': FilterConditionField.Body, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_BODY') }
 		]);
 
 		this.typeOptions([
@@ -125,6 +127,11 @@ class FilterPopupView extends AbstractViewNext {
 		this.typeOptionsSize([
 			{ 'id': FilterConditionType.Over, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_OVER') },
 			{ 'id': FilterConditionType.Under, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_UNDER') }
+		]);
+
+		this.typeOptionsBody([
+			{ 'id': FilterConditionType.Text, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_TEXT') },
+			{ 'id': FilterConditionType.Raw, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_RAW') }
 		]);
 	}
 

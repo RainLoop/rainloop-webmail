@@ -262,6 +262,7 @@ export const FilterConditionField = {
 	Recipient: 'Recipient',
 	Subject: 'Subject',
 	Header: 'Header',
+	Body: 'Body',
 	Size: 'Size'
 };
 
@@ -275,7 +276,9 @@ export const FilterConditionType = {
 	NotEqualTo: 'NotEqualTo',
 	Regex: 'Regex',
 	Over: 'Over',
-	Under: 'Under'
+	Under: 'Under',
+	Text: 'Text',
+	Raw: 'Raw'
 };
 
 /**

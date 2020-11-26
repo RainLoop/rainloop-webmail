@@ -159,11 +159,11 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		{
 			switch ($oCondition->Type())
 			{
+				case \RainLoop\Providers\Filters\Enumerations\ConditionType::TEXT:
+				case \RainLoop\Providers\Filters\Enumerations\ConditionType::RAW:
 				case \RainLoop\Providers\Filters\Enumerations\ConditionType::OVER:
-					$sTypeWord = ':over';
-					break;
 				case \RainLoop\Providers\Filters\Enumerations\ConditionType::UNDER:
-					$sTypeWord = ':under';
+					$sTypeWord = ':' . \strtolower($oCondition->Type());
 					break;
 				case \RainLoop\Providers\Filters\Enumerations\ConditionType::NOT_EQUAL_TO:
 					$sResult .= 'not ';
@@ -198,6 +198,10 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					break;
 				case \RainLoop\Providers\Filters\Enumerations\ConditionField::HEADER:
 					$sResult .= 'header '.$sTypeWord.' ["'.$this->quote($sValueSecond).'"]';
+					break;
+				case \RainLoop\Providers\Filters\Enumerations\ConditionField::BODY:
+					// :text :raw :content
+					$sResult .= 'body '.$sTypeWord.' :contains';
 					break;
 				case \RainLoop\Providers\Filters\Enumerations\ConditionField::SIZE:
 					$sResult .= 'size '.$sTypeWord;
