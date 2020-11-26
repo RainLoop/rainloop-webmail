@@ -9,11 +9,6 @@ adduser --uid "$UID" --disabled-password --gid "$GID" --shell /bin/bash --home /
 sed -i "s/<UPLOAD_MAX_SIZE>/$UPLOAD_MAX_SIZE/g" /usr/local/etc/php-fpm.d/php-fpm.conf /etc/nginx/nginx.conf
 sed -i "s/<MEMORY_LIMIT>/$MEMORY_LIMIT/g" /usr/local/etc/php-fpm.d/php-fpm.conf
 
-# Remove postfixadmin-change-password plugin if exist
-if [ -d "/snappymail/data/_data_/_default_/plugins/postfixadmin-change-password" ]; then
-  rm -rf /snappymail/data/_data_/_default_/plugins/postfixadmin-change-password
-fi
-
 # Set log output to STDERR if wanted (LOG_TO_STDERR=true)
 if [ "$LOG_TO_STDERR" = true ]; then
   echo "[INFO] Logging to stderr activated"
@@ -30,10 +25,6 @@ if [ "${SECURE_COOKIES}" = true ]; then
         	echo 'session.use_only_cookies = On';
         } > /usr/local/etc/php/conf.d/cookies.ini;
 fi
-
-# Add postfixadmin-change-password plugin
-mkdir -p /snappymail/data/_data_/_default_/plugins/
-cp -r /usr/local/include/postfixadmin-change-password /snappymail/data/_data_/_default_/plugins/
 
 # Copy snappymail default config if absent
 SNAPPYMAIL_CONFIG_FILE=/snappymail/data/_data_/_default_/configs/application.ini
