@@ -59,7 +59,7 @@ $tar = new PharData($tar_destination);
 $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('snappymail/v'), RecursiveIteratorIterator::SELF_FIRST);
 foreach ($files as $file) {
 	$file = str_replace('\\', '/', $file);
-	echo "{$file}\n";
+	//echo "{$file}\n";
 	// Ignore "." and ".." folders
 	if (!in_array(substr($file, strrpos($file, '/')+1), array('.', '..'))) {
 		if (is_dir($file)) {
@@ -70,7 +70,7 @@ foreach ($files as $file) {
 	}
 }
 
-$tar->buildFromDirectory('./', "@snappymail/v/{$package->version}@");
+$tar->buildFromDirectory('./snappymail/', "@v/{$package->version}@");
 
 $zip->addFile('data/.htaccess');
 $tar->addFile('data/.htaccess');
