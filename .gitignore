@@ -7,10 +7,10 @@
 /build/dist
 /build/tmp
 /build/docker
-/.docker/.cache
-/.docker/mail/config
-/.docker/nginx/ssl/*
-!/.docker/nginx/ssl/.gitempty
+/.docker/dev/.cache
+/.docker/dev/mail/config
+/.docker/dev/nginx/ssl/*
+!/.docker/dev/nginx/ssl/.gitempty
 /dist
 /data
 /MULTIPLY
