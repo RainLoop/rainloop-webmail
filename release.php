@@ -11,6 +11,7 @@ $package = json_decode(file_get_contents('package.json'));
 
 $zip_destination = "snappymail-{$package->version}.zip";
 $tar_destination = "snappymail-{$package->version}.tar";
+$docker_zip = "./.docker/release/snappymail-{$package->version}.zip";
 
 @unlink($zip_destination);
 @unlink($tar_destination);
@@ -110,3 +111,15 @@ $tar->compress(Phar::GZ);
 unlink($tar_destination);
 
 echo "\n{$zip_destination} created\n{$tar_destination}.gz created\n";
+
+// Docker build
+if(readline("Build Docker image? (Y/N): ") === "Y") {
+	copy($zip_destination, $docker_zip);
+
+	$docker = trim(`which docker`);
+	if(!$docker) {
+		exit("Docker not installed!");
+	}
+
+	passthru("{$docker} build " . __DIR__ . "/.docker/release/ --build-arg FILES_ZIP={$zip_destination} -t snappymail:{$package->version}");
+}
