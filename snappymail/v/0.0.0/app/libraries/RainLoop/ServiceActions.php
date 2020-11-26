@@ -634,7 +634,6 @@ class ServiceActions
 					$aResult = array();
 
 					$sThemeFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sRealTheme.'/styles.less';
-					$sThemeExtFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sRealTheme.'/ext.less';
 
 					$sThemeValuesFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/values.less';
 					$sThemeTemplateFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/template.less';
@@ -648,11 +647,6 @@ class ServiceActions
 						$aResult[] = \file_get_contents($sThemeValuesFile);
 						$aResult[] = \file_get_contents($sThemeFile);
 						$aResult[] = \file_get_contents($sThemeTemplateFile);
-
-						if (\is_file($sThemeExtFile))
-						{
-							$aResult[] = \file_get_contents($sThemeExtFile);
-						}
 					}
 
 					$aResult[] = $this->Plugins()->CompileCss($bAdmin);

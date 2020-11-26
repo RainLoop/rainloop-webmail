@@ -38,7 +38,8 @@ class LoginUserView extends AbstractViewNext {
 		this.hideSubmitButton = Settings.app('hideSubmitButton');
 
 		this.addObservables({
-			welcome: !!Settings.get('UseLoginWelcomePage'),
+			loadingDesc: Settings.get('LoadingDescription'),
+
 			email: '',
 			password: '',
 			signMe: false,
@@ -202,10 +203,6 @@ class LoginUserView extends AbstractViewNext {
 		fLoginRequest(this.password());
 
 		return true;
-	}
-
-	displayMainForm() {
-		this.welcome(false);
 	}
 
 	onShow() {
