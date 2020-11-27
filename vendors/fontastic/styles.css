@@ -31,10 +31,10 @@
   content: "\e002";
 }
 .icon-search::before {
-  content: "\e003"; /* 🔎 */
+  content: "🔎";
 }
 .icon-user::before {
-  content: "\e004"; /* 👤 */
+  content: "👤";
 }
 .icon-user-add::before {
   content: "\e005";
@@ -43,13 +43,13 @@
   content: "\e007";
 }
 .icon-reply::before {
-  content: "\e008";
+  content: "←";
 }
 .icon-reply-all::before {
-  content: "\e009";
+  content: "↞";
 }
 .icon-forward::before {
-  content: "\e00a";
+  content: "→";
 }
 .icon-info::before {
   content: "\e00b";
@@ -58,19 +58,19 @@
   content: "\e00c"; /* ▶ */
 }
 .icon-image::before {
-  content: "\e00e";
+  content: "🖼";
 }
 .icon-print::before {
-  content: "\e00f"; /* 🖨 */
+  content: "🖨";
 }
 .icon-cog::before {
-  content: "\e011"; /* ⚙ */
+  content: "⚙";
 }
 .icon-wrench::before {
-  content: "\e012"; /* 🔧 */
+  content: "🔧";
 }
 .icon-fire::before {
-  content: "\e014"; /* 🔥 */
+  content: "🔥";
 }
 .icon-left::before {
   content: "\e01b"; /* ➔ rotate 180 */
@@ -88,34 +88,34 @@
   content: "\e020"; /* ➔ rotate -90 */
 }
 .icon-star-empty::before {
-  content: "\e021"; /* ★ color:transparent; text-shadow */
+  content: "☆";
 }
 .icon-star::before {
-  content: "\e022"; /* ★ */
+  content: "★";
 }
 .icon-at::before {
-  content: "\e023"; /* @ */
+  content: "@";
 }
 .icon-list-add::before {
   content: "\e024";
 }
 .icon-warning::before {
-  content: "\e029"; /* ⚠️ */
+  content: "⚠";
 }
 .icon-warning-alt::before {
   content: "\e02a";
 }
 .icon-power::before {
-  content: "\e02b"; /* ⏻ */
+  content: "⏻";
 }
 .icon-plus::before {
-  content: "\e02c"; /* ✚ */
+  content: "✚";
 }
 .icon-ok::before {
-  content: "\e02d";
+  content: "✔";
 }
 .icon-remove::before {
-  content: "\e02e"; /* ✖ */
+  content: "✖";
 }
 .icon-file::before {
   content: "\e02f";
@@ -142,7 +142,7 @@
   content: "\e038";
 }
 .icon-attachment::before {
-  content: "\e039";
+  content: "📎";
 }
 .icon-file-excel::before {
   content: "\e03a";
@@ -154,13 +154,13 @@
   content: "\e03c";
 }
 .icon-folder::before {
-  content: "\e03d"; /* 📁 */
+  content: "🗀";
 }
 .icon-floppy::before {
-  content: "\e03e"; /* 💾 */
+  content: "💾";
 }
 .icon-eye::before {
-  content: "\e03f"; /* 👁 */
+  content: "👁";
 }
 .icon-bolt::before {
   content: "\e042";
@@ -178,10 +178,10 @@
   content: "\e048"; /* 📱 */
 }
 .icon-pencil::before {
-  content: "\e049"; /* ✎ */
+  content: "🖉";
 }
 .icon-trash::before {
-  content: "\e04a"; /* 🗑️ */
+  content: "🗑";
 }
 .icon-left-middle::before {
   content: "\e04b"; /* ❮ */
@@ -190,10 +190,10 @@
   content: "\e04c"; /* ❯ */
 }
 .icon-key::before {
-  content: "\e04e"; /* 🔑 */
+  content: "🔑";
 }
 .icon-lock::before {
-  content: "\e04f"; /* 🔒 */
+  content: "🔒";
 }
 .icon-address-book::before {
   content: "\e051";
@@ -202,13 +202,13 @@
   content: "\e055"; /* 👥 */
 }
 .icon-mail::before {
-  content: "\e057"; /* ✉ */
+  content: "✉";
 }
 .icon-checkbox-checked::before {
-  content: "\e058";
+  content: "☑";
 }
 .icon-checkbox-unchecked::before {
-  content: "\e059";
+  content: "☐";
 }
 .icon-checkbox-partial::before {
   content: "\e05a";
@@ -232,7 +232,7 @@
   content: "\e062"; /* ⤻⃔ 🔁 🔃 */
 }
 .icon-ellipsis-alt::before {
-  content: "\e063"; /* ⋮ */
+  content: "⋮";
 }
 .icon-import::before {
   content: "\e066";
@@ -250,23 +250,23 @@
   content: "\e06c";
 }
 .icon-resize-out::before {
-  content: "\e06d"; /* ⤢ */
+  content: "⤢";
 }
 .icon-world::before {
-  content: "\e06f"; /* 🌍 */
+  content: "🌍";
 }
 .icon-braille::before {
   content: "\e06e"; /* ⸭ ⠿ ⁞⁞ */
 }
 .icon-play::before {
-  content: "\e070"; /* ⏯︎ */
+  content: "▶️︎"; /* ⏵ ⏯ */
 }
 .icon-pause::before {
-  content: "\e071"; /* ⏸︎ */
+  content: "⏸︎";
 }
 .icon-check-mark-circle-two::before {
   content: "\e073";
 }
 .icon-laptop::before {
-  content: "\e075"; /* 💻 */
+  content: "💻";
 }
