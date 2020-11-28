@@ -11,6 +11,8 @@ class LdapIdentitiesPlugin extends AbstractPlugin
 		include_once __DIR__ . '/LdapIdentities.php';
 		include_once __DIR__ . '/LdapConfig.php';
 		include_once __DIR__ . '/LdapException.php';
+
+		parent::__construct();
 	}
 
 	public function Init(): void
