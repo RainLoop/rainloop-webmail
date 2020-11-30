@@ -20,12 +20,12 @@ class Message
 	/**
 	 * @var array
 	 */
-	private $aHeadersValue;
+	private $aHeadersValue = array();
 
 	/**
 	 * @var array
 	 */
-	private $aAlternativeParts;
+	private $aAlternativeParts = array();
 
 	/**
 	 * @var AttachmentCollection
@@ -35,20 +35,16 @@ class Message
 	/**
 	 * @var bool
 	 */
-	private $bAddEmptyTextPart;
+	private $bAddEmptyTextPart = true;
 
 	/**
 	 * @var bool
 	 */
-	private $bAddDefaultXMailer;
+	private $bAddDefaultXMailer = true;
 
 	function __construct()
 	{
-		$this->aHeadersValue = array();
-		$this->aAlternativeParts = array();
 		$this->oAttachmentCollection = new AttachmentCollection;
-		$this->bAddEmptyTextPart = true;
-		$this->bAddDefaultXMailer = true;
 	}
 
 	public function DoesNotCreateEmptyTextPart() : self
@@ -325,16 +321,12 @@ class Message
 
 	public function AddPlain(string $sPlain) : self
 	{
-		return $this->AddAlternative(
-			Enumerations\MimeType::TEXT_PLAIN, trim($sPlain),
-			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_LOWER);
+		return $this->AddAlternative(Enumerations\MimeType::TEXT_PLAIN, $sPlain);
 	}
 
 	public function AddHtml(string $sHtml) : self
 	{
-		return $this->AddAlternative(
-			Enumerations\MimeType::TEXT_HTML, trim($sHtml),
-			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_LOWER);
+		return $this->AddAlternative(Enumerations\MimeType::TEXT_HTML, $sHtml);
 	}
 
 	public function AddText(string $sHtmlOrPlainText, bool $bIsHtml = false) : self
@@ -342,10 +334,14 @@ class Message
 		return $bIsHtml ? $this->AddHtml($sHtmlOrPlainText) : $this->AddPlain($sHtmlOrPlainText);
 	}
 
-	public function AddAlternative(string $sContentType, $mData, string $sContentTransferEncoding = '', array $aCustomContentTypeParams = array()) : self
+	public function AddAlternative(string $sContentType, string $sData) : self
 	{
-		$this->aAlternativeParts[] = array($sContentType, $mData, $sContentTransferEncoding, $aCustomContentTypeParams);
-
+		$this->aAlternativeParts[] = array(
+			$sContentType,
+			\preg_replace('/\\r?\\n/', Enumerations\Constants::CRLF, \trim($sData)),
+			\MailSo\Base\Enumerations\Encoding::QUOTED_PRINTABLE_LOWER,
+			array()
+		);
 		return $this;
 	}
 
@@ -531,7 +527,7 @@ class Message
 	private function createNewMessageSimpleOrAlternativeBody() : Part
 	{
 		$oResultPart = null;
-		if (1 < count($this->aAlternativeParts))
+		if (1 < \count($this->aAlternativeParts))
 		{
 			$oResultPart = new Part;
 

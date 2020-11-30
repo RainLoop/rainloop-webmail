@@ -1113,7 +1113,6 @@ abstract class HtmlUtils
 
 	public static function ConvertHtmlToPlain(string $sText) : string
 	{
-		$sText = \trim(\stripslashes($sText));
 		$sText = \MailSo\Base\Utils::StripSpaces($sText);
 
 		$sText = \preg_replace(array(
