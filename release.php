@@ -7,6 +7,9 @@ if (!$gulp) {
 	exit('gulp not installed, run as root: npm install --global gulp-cli');
 }
 
+$options = getopt('', ['docker']);
+$options['docker'] = isset($options['docker']);
+
 $package = json_decode(file_get_contents('package.json'));
 
 $zip_destination = "snappymail-{$package->version}.zip";
@@ -71,7 +74,11 @@ foreach ($files as $file) {
 	}
 }
 
-$tar->buildFromDirectory('./snappymail/', "@v/{$package->version}@");
+if ($options['docker']) {
+	$tar->buildFromDirectory('./snappymail/', "@v/{$package->version}@");
+} else {
+	$tar->buildFromDirectory('./', "@snappymail/v/{$package->version}@");
+}
 
 $zip->addFile('data/.htaccess');
 $tar->addFile('data/.htaccess');
