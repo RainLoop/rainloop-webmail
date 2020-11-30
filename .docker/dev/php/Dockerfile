@@ -1,17 +1,17 @@
-FROM php:7.3-fpm
+FROM php:7.4-fpm
 
 RUN apt-get update
 
 RUN apt-get install -y \
 	git unzip wget zip curl mlocate \
-	libmcrypt-dev libicu-dev libpcre3-dev libicu-dev \
+	libicu-dev libpcre3-dev libicu-dev \
 	build-essential chrpath libssl-dev \
 	libxft-dev libfreetype6 libfreetype6-dev \
 	libpng-dev libjpeg62-turbo-dev \
 	libfontconfig1 libfontconfig1-dev libzip-dev libldap2-dev
 
-RUN pecl install mcrypt-1.0.2 && \
-	docker-php-ext-enable mcrypt
+RUN pecl install xxtea-1.0.11 && \
+	docker-php-ext-enable xxtea
 
 RUN docker-php-ext-configure intl && \
     docker-php-ext-configure ldap && \

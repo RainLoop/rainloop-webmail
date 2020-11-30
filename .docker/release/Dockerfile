@@ -1,5 +1,5 @@
 # Inspired by the original Rainloop dockerfile from youtous on GitLab
-FROM php:7.3-fpm-buster
+FROM php:7.4-fpm-buster
 
 ARG FILES_ZIP
 LABEL org.label-schema.description="SnappyMail webmail client image using nginx, php-fpm based on Debian Buster"
@@ -15,7 +15,7 @@ RUN mkdir -p /usr/share/man/man1/ /usr/share/man/man3/ /usr/share/man/man7/ && \
         apt-transport-https gnupg openssl wget curl ca-certificates nginx supervisor sudo \
         unzip libzip-dev libxml2-dev libldb-dev libldap2-dev \
         sqlite3 libsqlite3-dev libsqlite3-0 libpq-dev postgresql-client mariadb-client logrotate \
-        zip mlocate libmcrypt-dev libpcre3-dev libicu-dev \
+        zip mlocate libpcre3-dev libicu-dev \
         build-essential chrpath libssl-dev \
         libxft-dev libfreetype6 libfreetype6-dev \
         libpng-dev libjpeg62-turbo-dev \
