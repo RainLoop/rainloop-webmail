@@ -4,7 +4,7 @@ namespace RainLoop\Enumerations;
 
 class SignMeType
 {
-	const DEFAILT_OFF = 'DefaultOff';
-	const DEFAILT_ON = 'DefaultOn';
+	const DEFAULT_OFF = 'DefaultOff';
+	const DEFAULT_ON = 'DefaultOn';
 	const UNUSED = 'Unused';
 }

@@ -1188,7 +1188,7 @@ class Actions
 		$aResult['AllowLanguagesOnSettings'] = (bool)$oConfig->Get('webmail', 'allow_languages_on_settings', true);
 		$aResult['AllowLanguagesOnLogin'] = (bool)$oConfig->Get('login', 'allow_languages_on_login', true);
 		$aResult['AttachmentLimit'] = ((int)$oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
-		$aResult['SignMe'] = (string)$oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAILT_OFF);
+		$aResult['SignMe'] = (string)$oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF);
 		$aResult['UseLocalProxyForExternalImages'] = (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
 
 		// user
