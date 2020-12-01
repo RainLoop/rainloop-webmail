@@ -809,9 +809,8 @@ class Actions
 				$sPdo = (\class_exists('PDO') ? \implode(',', \PDO::getAvailableDrivers()) : 'off');
 				$sPdo = empty($sPdo) ? '~' : $sPdo;
 
-				$this->oLogger->Write('[' .
-					'Suhosin:' . (\extension_loaded('suhosin') || \ini_get('suhosin.get.max_value_length') ? 'on' : 'off') .
-					'][APC:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off') .
+				$this->oLogger->Write(
+					'[APC:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off') .
 					'][MB:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off') .
 					'][PDO:' . $sPdo .
 					'][Streams:' . \implode(',', \stream_get_transports()) .

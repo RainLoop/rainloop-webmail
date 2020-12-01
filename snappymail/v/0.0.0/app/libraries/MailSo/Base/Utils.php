@@ -1781,20 +1781,6 @@ END;
 			$sDisableFunctions = \is_string($sDisableFunctions) ? $sDisableFunctions : '';
 
 			$aCache = \explode(',', $sDisableFunctions);
-
-			if (\extension_loaded('suhosin'))
-			{
-				 $sSuhosin = \ini_get('suhosin.executor.func.blacklist');
-				 $sSuhosin = \is_string($sSuhosin) ? $sSuhosin : '';
-
-				 $aSuhosinCache = \explode(',', $sSuhosin);
-
-				 if (0 < \count($aSuhosinCache))
-				 {
-					 $aCache = \array_merge($aCache, $aSuhosinCache);
-					 $aCache = \array_unique($aCache);
-				 }
-			}
 		}
 
 		return !\in_array($mFunctionNameOrNames, $aCache);
