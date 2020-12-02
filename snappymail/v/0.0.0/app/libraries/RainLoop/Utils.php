@@ -16,90 +16,6 @@ class Utils
 
 	static $Cookies = null;
 
-	static $RsaKey = null;
-
-	public static function RsaPrivateKey() : string
-	{
-		if (!empty(static::$RsaKey))
-		{
-			return static::$RsaKey;
-		}
-
-		static::$RsaKey = \file_exists(APP_PRIVATE_DATA.'rsa/private') ?
-			\file_get_contents(APP_PRIVATE_DATA.'rsa/private') : '';
-
-		static::$RsaKey = \is_string(static::$RsaKey) ? static::$RsaKey : '';
-	}
-
-	public static function EncryptStringRSA(string $sString, string $sKey = '') : string
-	{
-		$sResult = '';
-		$sKey = \md5($sKey);
-
-		$sPrivateKey = static::RsaPrivateKey();
-		if (!empty($sPrivateKey))
-		{
-			$oPrivKey  = \openssl_pkey_get_private($sPrivateKey);
-			$oKeyDetails = \openssl_pkey_get_details($oPrivKey);
-
-			if (!empty($oKeyDetails['key']) && !empty($oKeyDetails['bits']))
-			{
-				$oPubKey = \openssl_pkey_get_public($oKeyDetails['key']);
-
-				$iC = (($oKeyDetails['bits'] / 8) - 15);
-				$aString = \str_split($sString, $iC);
-
-				foreach ($aString as $iIndex => $sLine)
-				{
-					$sEncrypted = '';
-					\openssl_public_encrypt($sLine, $sEncrypted, $oPubKey);
-					$aString[$iIndex] = $sEncrypted;
-				}
-
-				$aString[] = $sKey;
-				$sResult = \serialize($aString);
-
-				\openssl_free_key($oPubKey);
-			}
-
-			\openssl_free_key($oPrivKey);
-		}
-
-		return $sResult;
-	}
-
-	public static function DecryptStringRSA(string $sString, string $sKey = '') : string
-	{
-		$sResult = '';
-		$sKey = \md5($sKey);
-
-		$sPrivateKey = static::RsaPrivateKey();
-		if (!empty($sPrivateKey) && !empty($sString))
-		{
-			$oPrivKey  = \openssl_pkey_get_private($sPrivateKey);
-
-			$aString = \unserialize($sString);
-			if (\is_array($aString))
-			{
-				if ($sKey === \array_pop($aString))
-				{
-					foreach ($aString as $iIndex => $sLine)
-					{
-						$sDecrypted = '';
-						\openssl_private_decrypt($sLine, $sDecrypted, $oPrivKey);
-						$aString[$iIndex] = $sDecrypted;
-					}
-
-					$sResult = \implode('', $aString);
-				}
-			}
-
-			\openssl_free_key($oPrivKey);
-		}
-
-		return $sResult;
-	}
-
 	public static function EncryptString(string $sString, string $sKey) : string
 	{
 		return \MailSo\Base\Crypt::Encrypt($sString, $sKey);
@@ -112,26 +28,12 @@ class Utils
 
 	public static function EncryptStringQ(string $sString, string $sKey) : string
 	{
-//		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_pkey_get_private'))
-//		{
-//			return static::EncryptStringRSA($sString,
-//				$sKey.'Q'.static::GetShortToken());
-//		}
-
-		return \MailSo\Base\Crypt::Encrypt($sString,
-			$sKey.'Q'.static::GetShortToken());
+		return \MailSo\Base\Crypt::Encrypt($sString, $sKey.'Q'.static::GetShortToken());
 	}
 
 	public static function DecryptStringQ(string $sEncryptedString, string $sKey) : string
 	{
-//		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('openssl_pkey_get_private'))
-//		{
-//			return static::DecryptStringRSA($sEncryptedString,
-//				$sKey.'Q'.static::GetShortToken());
-//		}
-
-		return \MailSo\Base\Crypt::Decrypt($sEncryptedString,
-			$sKey.'Q'.static::GetShortToken());
+		return \MailSo\Base\Crypt::Decrypt($sEncryptedString, $sKey.'Q'.static::GetShortToken());
 	}
 
 	public static function EncodeKeyValues(array $aValues, string $sCustomKey = '') : string
@@ -235,14 +137,14 @@ class Utils
 	{
 		if (\file_exists($sFileName))
 		{
-			if ('.yml' === substr($sFileName, -4))
+			if ('.yml' === \substr($sFileName, -4))
 			{
 				$aLang = \yaml_parse_file($sFileName);
 				if (\is_array($aLang))
 				{
 					\reset($aLang);
-					$sLangKey = key($aLang);
-					if (isset($aLang[$sLangKey]) && is_array($aLang[$sLangKey]))
+					$sLangKey = \key($aLang);
+					if (isset($aLang[$sLangKey]) && \is_array($aLang[$sLangKey]))
 					{
 						$aLang = $aLang[$sLangKey];
 					}
@@ -336,7 +238,7 @@ class Utils
 	{
 		if (null === static::$Cookies)
 		{
-			static::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
+			static::$Cookies = \is_array($_COOKIE) ? $_COOKIE : array();
 		}
 
 		return isset(static::$Cookies[$sName]) ? static::$Cookies[$sName] : $mDefault;
@@ -346,7 +248,7 @@ class Utils
 	{
 		if (null === static::$Cookies)
 		{
-			static::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
+			static::$Cookies = \is_array($_COOKIE) ? $_COOKIE : array();
 		}
 
 		if (null === $sPath)
@@ -375,7 +277,7 @@ class Utils
 	{
 		if (null === static::$Cookies)
 		{
-			static::$Cookies = is_array($_COOKIE) ? $_COOKIE : array();
+			static::$Cookies = \is_array($_COOKIE) ? $_COOKIE : array();
 		}
 
 		$sPath = static::$CookieDefaultPath;
@@ -430,11 +332,7 @@ class Utils
 
 	public static function CustomParseIniFile(string $sFileName, bool $bProcessSections = false) : array
 	{
-//		if (\MailSo\Base\Utils::FunctionExistsAndEnabled('parse_ini_file'))
-//		{
-//			return \parse_ini_file($sFileName, !!$bProcessSections);
-//		}
-
-		return @\parse_ini_string(\file_get_contents($sFileName), $bProcessSections) ?: array();
+		return @\parse_ini_file($sFileName, !!$bProcessSections) ?: array();
+//		return @\parse_ini_string(\file_get_contents($sFileName), $bProcessSections) ?: array();
 	}
 }
