@@ -356,9 +356,9 @@ class Actions
 		$aClear = array();
 
 		if (false !== \strpos($sLine, '{date:')) {
-			$sTimeOffset = (string)$this->Config()->Get('logs', 'time_offset', '0');
-			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($sTimeOffset, $bUrlEncode) {
-				return Utils::UrlEncode(\MailSo\Log\Logger::DateHelper($aMatch[1], $sTimeOffset), $bUrlEncode);
+			$oConfig = $this->Config();
+			$sLine = \preg_replace_callback('/\{date:([^}]+)\}/', function ($aMatch) use ($oConfig, $bUrlEncode) {
+				return Utils::UrlEncode((new \DateTime('now', new \DateTimeZone($oConfig->Get('logs', 'time_zone', 'UTC'))))->format($aMatch[1]), $bUrlEncode);
 			}, $sLine);
 
 			$aClear['/\{date:([^}]*)\}/'] = 'date';
@@ -761,7 +761,7 @@ class Actions
 					}
 				}
 
-				$sTimeOffset = (string)$this->Config()->Get('logs', 'time_offset', '0');
+				$sTimeZone = $this->Config()->Get('logs', 'time_zone', 'UTC');
 
 				$this->oLogger->SetShowSecter(!$this->Config()->Get('logs', 'hide_passwords', true));
 
@@ -785,7 +785,7 @@ class Actions
 					->WriteOnErrorOnly($this->Config()->Get('logs', 'write_on_error_only', false))
 					->WriteOnPhpErrorOnly($this->Config()->Get('logs', 'write_on_php_error_only', false))
 					->WriteOnTimeoutOnly($this->Config()->Get('logs', 'write_on_timeout_only', 0))
-					->SetTimeOffset($sTimeOffset)
+					->SetTimeZone($sTimeZone)
 				);
 
 				if (!$this->Config()->Get('debug', 'enable', false)) {
@@ -796,9 +796,8 @@ class Actions
 
 				$oHttp = $this->Http();
 
-				$this->oLogger->Write('[DATE:' . \MailSo\Log\Logger::DateHelper('d.m.y', $sTimeOffset) .
-					(0 !== $sTimeOffset ? '][OFFSET:' . (0 < $sTimeOffset ? '+' : '-') .
-						\str_pad((string)\abs($sTimeOffset), 2, '0', STR_PAD_LEFT) : '') .
+				$this->oLogger->Write('[DATE:' . (new \DateTime('now', new \DateTimeZone($sTimeZone)))->format('Y-m-d ') .
+					$sTimeZone .
 					'][RL:' . APP_VERSION . '][PHP:' . PHP_VERSION . '][IP:' .
 					$oHttp->GetClientIp($this->Config()->Get('labs', 'http_client_ip_check_proxy', false)) . '][PID:' .
 					(\MailSo\Base\Utils::FunctionExistsAndEnabled('getmypid') ? \getmypid() : 'unknown') . '][' .

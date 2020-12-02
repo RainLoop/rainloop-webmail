@@ -95,30 +95,4 @@ abstract class DateTimeHelper
 
 		return \MailSo\Base\DateTimeHelper::ParseDateStringType1($sDateTime);
 	}
-
-	public static function TimeToSec(string $sTime) : int
-	{
-		$iMod = 1;
-		$sTime = \trim($sTime);
-		if ('-' === \substr($sTime, 0, 1))
-		{
-			$iMod = -1;
-			$sTime = \substr($sTime, 1);
-		}
-
-		$aParts = \preg_split('/[:.,]/', (string) $sTime);
-
-		$iResult = 0;
-		if (isset($aParts[0]) && \is_numeric($aParts[0]))
-		{
-			$iResult += 3600 * ((int) $aParts[0]);
-		}
-
-		if (isset($aParts[1]) && \is_numeric($aParts[1]))
-		{
-			$iResult += 60 * ((int) $aParts[1]);
-		}
-
-		return $iResult * $iMod;
-	}
 }

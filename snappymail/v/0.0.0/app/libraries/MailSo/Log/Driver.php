@@ -38,9 +38,9 @@ abstract class Driver
 	protected $bGuidPrefix;
 
 	/**
-	 * @var string
+	 * @var DateTimeZone
 	 */
-	protected $sTimeOffset;
+	protected $oTimeZone;
 
 	/**
 	 * @var bool
@@ -91,7 +91,7 @@ abstract class Driver
 		$this->bTypedPrefix = true;
 		$this->bGuidPrefix = true;
 
-		$this->sTimeOffset = '0';
+		$this->oTimeZone = new \DateTimeZone('UTC');
 
 		$this->iWriteOnTimeoutOnly = 0;
 		$this->bWriteOnErrorOnly = false;
@@ -116,9 +116,13 @@ abstract class Driver
 		);
 	}
 
-	public function SetTimeOffset(string $sTimeOffset) : self
+	public function SetTimeZone(/*\DateTimeZone | string*/ $oTimeZone) : self
 	{
-		$this->sTimeOffset = (string) $sTimeOffset;
+		if ($oTimeZone instanceof \DateTimeZone) {
+			$this->oTimeZone = $oTimeZone;
+		} else {
+			$this->oTimeZone = new \DateTimeZone($oTimeZone);
+		}
 		return $this;
 	}
 
@@ -187,9 +191,7 @@ abstract class Driver
 
 	protected function getTimeWithMicroSec() : string
 	{
-		$aMicroTimeItems = \explode(' ', \microtime());
-		return Logger::DateHelper($this->sDatePattern, $this->sTimeOffset, $aMicroTimeItems[1]).'.'.
-			\str_pad((int) ($aMicroTimeItems[0] * 1000), 3, '0', STR_PAD_LEFT);
+		return \substr((new \DateTime('now', $this->DateTimeZone))->format('Y-m-d H:i:s.u'), 0, -3);
 	}
 
 	protected function getTypedPrefix(int $iType, string $sName = '') : string

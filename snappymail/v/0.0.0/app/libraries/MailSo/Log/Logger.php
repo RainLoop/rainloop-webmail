@@ -74,12 +74,6 @@ class Logger extends \MailSo\Base\Collection
 		return $oInstance;
 	}
 
-	public static function DateHelper(string $sFormat, string $sTimeOffset = '0', int $iTimestamp = null) : string
-	{
-		$iTimestamp = null === $iTimestamp ? \time() : (int) $iTimestamp;
-		return \gmdate($sFormat, $iTimestamp + \MailSo\Base\DateTimeHelper::TimeToSec((string) $sTimeOffset));
-	}
-
 	public static function IsSystemEnabled() : bool
 	{
 		return !!(\MailSo\Config::$SystemLogger instanceof Logger);
