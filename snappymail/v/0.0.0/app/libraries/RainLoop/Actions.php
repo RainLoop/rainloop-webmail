@@ -1041,6 +1041,15 @@ class Actions
 		NewThemeLink TemplatesLink LangLink PluginsLink AuthAccountHash
 		*/
 
+		$upload_max_filesize = \ini_get('upload_max_filesize');
+		$size = \strtoupper(\substr($value,-1));
+		$upload_max_filesize = \intval($upload_max_filesize);
+		switch ($size) {
+			case 'G': $upload_max_filesize *= 1024;
+			case 'M': $upload_max_filesize *= 1024;
+			case 'K': $upload_max_filesize *= 1024;
+		}
+
 		$aResult = array(
 			'Auth' => false,
 			'AccountHash' => '',
@@ -1063,7 +1072,33 @@ class Actions
 			'Admin' => array(),
 			'Capa' => array(),
 			'Plugins' => array(),
-			'System' => $this->AppDataSystem($bAdmin, $bMobile, $bMobileDevice)
+			'System' => $this->AppDataSystem($bAdmin, $bMobile, $bMobileDevice),
+
+			'NewMoveToFolder' => (bool) $oConfig->Get('interface', 'new_move_to_folder_button', true),
+			'AllowLanguagesOnSettings' => (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true),
+			'AllowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true),
+			'AttachmentLimit' => \min($upload_max_filesize, ((int) $oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024),
+			'SignMe' => (string) $oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF),
+			'UseLocalProxyForExternalImages' => (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false),
+
+			// user
+			'ShowImages' => (bool) $oConfig->Get('defaults', 'show_images', false),
+			'MPP' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
+			'SoundNotification' => false,
+			'DesktopNotifications' => false,
+			'Layout' => (int) $oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW),
+			'EditorDefaultType' => (string) $oConfig->Get('defaults', 'view_editor_type', ''),
+			'UseCheckboxesInList' => (bool) $oConfig->Get('defaults', 'view_use_checkboxes', true),
+			'AutoLogout' => (int) $oConfig->Get('defaults', 'autologout', 30),
+			'UseThreads' => (bool) $oConfig->Get('defaults', 'mail_use_threads', false),
+			'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
+			'ReplySameFolder' => (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false),
+			'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
+			'EnableTwoFactor' => false,
+			'ParentEmail' => '',
+			'InterfaceAnimation' => true,
+			'UserBackgroundName' => '',
+			'UserBackgroundHash' => '',
 		);
 
 		if (0 < \strlen($sAuthAccountHash)) {
@@ -1182,32 +1217,6 @@ class Actions
 		$sLanguageAdmin = $oConfig->Get('webmail', 'language_admin', 'en');
 		$sTheme = $oConfig->Get('webmail', 'theme', 'Default');
 
-		$aResult['NewMoveToFolder'] = (bool)$oConfig->Get('interface', 'new_move_to_folder_button', true);
-		$aResult['AllowLanguagesOnSettings'] = (bool)$oConfig->Get('webmail', 'allow_languages_on_settings', true);
-		$aResult['AllowLanguagesOnLogin'] = (bool)$oConfig->Get('login', 'allow_languages_on_login', true);
-		$aResult['AttachmentLimit'] = ((int)$oConfig->Get('webmail', 'attachment_size_limit', 10)) * 1024 * 1024;
-		$aResult['SignMe'] = (string)$oConfig->Get('login', 'sign_me_auto', Enumerations\SignMeType::DEFAULT_OFF);
-		$aResult['UseLocalProxyForExternalImages'] = (bool)$oConfig->Get('labs', 'use_local_proxy_for_external_images', false);
-
-		// user
-		$aResult['ShowImages'] = (bool)$oConfig->Get('defaults', 'show_images', false);
-		$aResult['MPP'] = (int)$oConfig->Get('webmail', 'messages_per_page', 25);
-		$aResult['SoundNotification'] = false;
-		$aResult['DesktopNotifications'] = false;
-		$aResult['Layout'] = (int)$oConfig->Get('defaults', 'view_layout', Enumerations\Layout::SIDE_PREVIEW);
-		$aResult['EditorDefaultType'] = (string)$oConfig->Get('defaults', 'view_editor_type', '');
-		$aResult['UseCheckboxesInList'] = (bool)$oConfig->Get('defaults', 'view_use_checkboxes', true);
-		$aResult['AutoLogout'] = (int)$oConfig->Get('defaults', 'autologout', 30);
-		$aResult['UseThreads'] = (bool)$oConfig->Get('defaults', 'mail_use_threads', false);
-		$aResult['AllowDraftAutosave'] = (bool)$oConfig->Get('defaults', 'allow_draft_autosave', true);
-		$aResult['ReplySameFolder'] = (bool)$oConfig->Get('defaults', 'mail_reply_same_folder', false);
-		$aResult['ContactsAutosave'] = (bool)$oConfig->Get('defaults', 'contacts_autosave', true);
-		$aResult['EnableTwoFactor'] = false;
-		$aResult['ParentEmail'] = '';
-		$aResult['InterfaceAnimation'] = true;
-		$aResult['UserBackgroundName'] = '';
-		$aResult['UserBackgroundHash'] = '';
-
 		if (!$bAdmin && $oAccount) {
 			$aResult['ParentEmail'] = $oAccount->ParentEmail();
 
@@ -1321,7 +1330,7 @@ class Actions
 
 		// Mobile override
 		if ($bMobile) {
-			$aResult['Layout'] = Enumerations\Layout::NO_PREVIW;
+			$aResult['Layout'] = Enumerations\Layout::NO_PREVIEW;
 
 			$aResult['UseCheckboxesInList'] = true;
 
