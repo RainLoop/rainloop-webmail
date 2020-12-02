@@ -4,7 +4,7 @@ FROM php:7.4-fpm-buster
 ARG FILES_ZIP
 LABEL org.label-schema.description="SnappyMail webmail client image using nginx, php-fpm based on Debian Buster"
 
-ENV UID=991 GID=991 UPLOAD_MAX_SIZE=50M LOG_TO_STDERR=true MEMORY_LIMIT=128M SECURE_COOKIES=true
+ENV UID=991 GID=991 UPLOAD_MAX_SIZE=25M LOG_TO_STDERR=true MEMORY_LIMIT=128M SECURE_COOKIES=true
 ENV fpm.pool.clear_env=false
 
 # Install dependencies such as nginx
