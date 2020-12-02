@@ -43,9 +43,9 @@ class Crypt
 			return \openssl_decrypt($sString, $sCipher, $sKey, OPENSSL_RAW_DATA, $iv);
 		}
 		if (\is_callable('xxtea_decrypt')) {
-			return \xxtea_decrypt($sEncryptedString, $sKey);
+			return \xxtea_decrypt($sString, $sKey);
 		}
-		return Xxtea::decrypt($sEncryptedString, $sKey);
+		return Xxtea::decrypt($sString, $sKey);
 	}
 
 }
