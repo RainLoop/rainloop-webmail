@@ -27,7 +27,6 @@ de_DE:
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Hintergrundauswahl in den Einstellungen zulassen"
     LABEL_NEW_FOLDER_MOVE: "Neue \"Verschieben nach\"-Schaltfläche"
     LABEL_SHOW_THUMBNAILS: "Vorschaubilder anzeigen (Anhänge)"
-    LABEL_ALLOW_GRAVATAR: "Gravatar erlauben"
     LEGEND_MAIN: "Allgemein"
     LABEL_ATTACHMENT_SIZE_LIMIT: "Größenlimit für Anhänge"
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Zusätzliche Konten erlauben"
@@ -45,6 +44,7 @@ de_DE:
     LABEL_DETERMINE_USER_DOMAIN: "Versuche Domain des Benutzers zu ermitteln"
     LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Sprachauswahl bei der Anmeldung zulassen"
     LABEL_DETERMINE_USER_LANGUAGE: "Versuche Sprache des Benutzers zu ermitteln"
+    LABEL_HIDE_SUBMIT_BUTTON: "Die Schaltfläche 'Anmelden' ausblenden"
   TAB_BRANDING:
     LEGEND_BRANDING: "Branding"
     LABEL_PAGE_TITLE: "Seitentitel"

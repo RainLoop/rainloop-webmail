@@ -27,7 +27,6 @@ fr_FR:
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Permettre la sélection de l'arrière-plan dans les paramètres"
     LABEL_NEW_FOLDER_MOVE: "Nouveau bouton \"déplacer vers le dossier\""
     LABEL_SHOW_THUMBNAILS: "Montrer les miniatures (pièces jointes)"
-    LABEL_ALLOW_GRAVATAR: "Autoriser Gravatar"
     LEGEND_MAIN: "Principal"
     LABEL_ATTACHMENT_SIZE_LIMIT: "Taille limite des pièces jointes"
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Autoriser les comptes supplémentaires"
@@ -46,6 +45,7 @@ fr_FR:
     LABEL_DETERMINE_USER_DOMAIN: "Deviner le domaine de l'utilisateur"
     LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Permettre la sélection de la langue sur l'écran de connexion"
     LABEL_DETERMINE_USER_LANGUAGE: "Deviner la langue de l'utilisateur"
+    LABEL_HIDE_SUBMIT_BUTTON: "Masquer le bouton 'Se connecter'"
   TAB_BRANDING:
     LEGEND_BRANDING: "Logo & Marque"
     LABEL_PAGE_TITLE: "Titre de la page"

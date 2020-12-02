@@ -27,7 +27,6 @@ es_ES:
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Permitir cambiar el fondo de pantalla"
     LABEL_NEW_FOLDER_MOVE: "Nuevo botón \"mover a carpeta\""
     LABEL_SHOW_THUMBNAILS: "Mostrar previsualización (adjuntos)"
-    LABEL_ALLOW_GRAVATAR: "Usar Gravatar"
     LEGEND_MAIN: "Principal"
     LABEL_ATTACHMENT_SIZE_LIMIT: "Tamaño máximo para adjuntos"
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Permitir cuentas adicionales"
@@ -46,6 +45,7 @@ es_ES:
     LABEL_DETERMINE_USER_DOMAIN: "Intentar encontrar el dominio del usuario"
     LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Permitir la selección de idioma en la pantalla de ingreso"
     LABEL_DETERMINE_USER_LANGUAGE: "Intentar definir el idioma del usuari"
+    LABEL_HIDE_SUBMIT_BUTTON: "Ocultar el botón 'Acceder'"
   TAB_BRANDING:
     LEGEND_BRANDING: "Personalización"
     LABEL_PAGE_TITLE: "Título de la página"

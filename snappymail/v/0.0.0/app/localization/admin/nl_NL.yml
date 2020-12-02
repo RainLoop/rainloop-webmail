@@ -27,7 +27,6 @@ nl_NL:
     LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "Sta achtergrond selectie toe in het instellingen scherm"
     LABEL_NEW_FOLDER_MOVE: "Nieuwe \"verplaats naar map\" knop"
     LABEL_SHOW_THUMBNAILS: "Toon miniaturen (bijlage)"
-    LABEL_ALLOW_GRAVATAR: "Toon Gravatar"
     LEGEND_MAIN: "Diverse"
     LABEL_ATTACHMENT_SIZE_LIMIT: "Maximale bijlage grootte"
     LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "Sta extra accounts toe"
@@ -45,6 +44,7 @@ nl_NL:
     LABEL_DETERMINE_USER_DOMAIN: "Probeer gebruikersdomein te bepalen"
     LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Sta taal selectie toe in het login scherm"
     LABEL_DETERMINE_USER_LANGUAGE: "Probeer gebruiker taal te bepalen"
+    LABEL_HIDE_SUBMIT_BUTTON: "Verberg de 'Aanmelden' knop"
   TAB_BRANDING:
     LEGEND_BRANDING: "Huisstijl"
     LABEL_PAGE_TITLE: "Pagina titel"
