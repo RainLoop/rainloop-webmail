@@ -175,7 +175,7 @@
   content: "\e047"; /* ℡ ✆ ☎ ☏ 📞 */
 }
 .icon-mobile::before {
-  content: "\e048"; /* 📱 */
+  content: "📱";
 }
 .icon-pencil::before {
   content: "🖉";
@@ -199,7 +199,7 @@
   content: "\e051";
 }
 .icon-users::before {
-  content: "\e055"; /* 👥 */
+  content: "👥";
 }
 .icon-mail::before {
   content: "✉";
