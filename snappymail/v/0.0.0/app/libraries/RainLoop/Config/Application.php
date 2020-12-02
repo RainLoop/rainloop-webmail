@@ -110,25 +110,24 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 			'webmail' => array(
 
-				'title'							=> array('SnappyMail Webmail', 'Text displayed as page title'),
-				'loading_description'			=> array('SnappyMail', 'Text displayed on startup'),
-				'favicon_url'					=> array('', ''),
+				'title'                       => array('SnappyMail Webmail', 'Text displayed as page title'),
+				'loading_description'         => array('SnappyMail', 'Text displayed on startup'),
+				'favicon_url'                 => array('', ''),
 
-				'theme'							=> array('Default', 'Theme used by default'),
-				'allow_themes'					=> array(true, 'Allow theme selection on settings screen'),
-				'allow_user_background'			=> array(false),
+				'theme'                       => array('Default', 'Theme used by default'),
+				'allow_themes'                => array(true, 'Allow theme selection on settings screen'),
+				'allow_user_background'       => array(false),
 
-				'language'						=> array('en', 'Language used by default'),
-				'language_admin'				=> array('en', 'Admin Panel interface language'),
-				'allow_languages_on_settings'	=> array(true, 'Allow language selection on settings screen'),
+				'language'                    => array('en', 'Language used by default'),
+				'language_admin'              => array('en', 'Admin Panel interface language'),
+				'allow_languages_on_settings' => array(true, 'Allow language selection on settings screen'),
 
-				'allow_additional_accounts'		=> array(true, ''),
-				'allow_additional_identities'	=> array(true, ''),
+				'allow_additional_accounts'   => array(true, ''),
+				'allow_additional_identities' => array(true, ''),
 
-				'messages_per_page'		=> array(20, ' Number of messages displayed on page by default'),
+				'messages_per_page'           => array(20, 'Number of messages displayed on page by default'),
 
-				'attachment_size_limit'	=> array(25,
-					'File size limit (MB) for file upload on compose screen
+				'attachment_size_limit'       => array(25, 'File size limit (MB) for file upload on compose screen
 0 for unlimited.')
 			),
 
@@ -138,44 +137,44 @@ class Application extends \RainLoop\Config\AbstractConfig
 			),
 
 			'contacts' => array(
-				'enable'			=> array(false, 'Enable contacts'),
-				'allow_sync'		=> array(false),
-				'sync_interval'		=> array(20),
-				'type'				=> array('sqlite', ''),
-				'pdo_dsn'			=> array('mysql:host=127.0.0.1;port=3306;dbname=rainloop', ''),
-				'pdo_user'			=> array('root', ''),
-				'pdo_password'		=> array('', ''),
+				'enable'            => array(false, 'Enable contacts'),
+				'allow_sync'        => array(false),
+				'sync_interval'     => array(20),
+				'type'              => array('sqlite', ''),
+				'pdo_dsn'           => array('mysql:host=127.0.0.1;port=3306;dbname=rainloop', ''),
+				'pdo_user'          => array('root', ''),
+				'pdo_password'      => array('', ''),
 				'suggestions_limit' => array(30)
 			),
 
 			'security' => array(
-				'csrf_protection'	=> array(true,
-					'Enable CSRF protection (http://en.wikipedia.org/wiki/Cross-site_request_forgery)'),
+				'csrf_protection'    => array(true,
+				    'Enable CSRF protection (http://en.wikipedia.org/wiki/Cross-site_request_forgery)'),
 
-				'custom_server_signature'	=> array('SnappyMail'),
-				'x_frame_options_header'	=> array('DENY'),
-				'x_xss_protection_header'	=> array('1; mode=block'),
+				'custom_server_signature'    => array('SnappyMail'),
+				'x_frame_options_header'     => array('DENY'),
+				'x_xss_protection_header'    => array('1; mode=block'),
 
-				'openpgp'					=> array(false),
+				'openpgp'                    => array(false),
 
-				'admin_login'				=> array('admin', 'Login and password for web admin panel'),
-				'admin_password'			=> array(\password_hash('12345', PASSWORD_DEFAULT)),
-				'allow_admin_panel'			=> array(true, 'Access settings'),
-				'allow_two_factor_auth'		=> array(false),
-				'force_two_factor_auth'		=> array(false),
-				'hide_x_mailer_header'		=> array(true),
-				'admin_panel_host'			=> array(''),
-				'admin_panel_key'			=> array('admin'),
-				'content_security_policy'	=> array(''),
+				'admin_login'                => array('admin', 'Login and password for web admin panel'),
+				'admin_password'             => array(\password_hash('12345', PASSWORD_DEFAULT)),
+				'allow_admin_panel'          => array(true, 'Access settings'),
+				'allow_two_factor_auth'      => array(false),
+				'force_two_factor_auth'      => array(false),
+				'hide_x_mailer_header'       => array(true),
+				'admin_panel_host'           => array(''),
+				'admin_panel_key'            => array('admin'),
+				'content_security_policy'    => array(''),
 				'core_install_access_domain' => array('')
 			),
 
 			'ssl' => array(
-				'verify_certificate'	=> array(false, 'Require verification of SSL certificate used.'),
-				'allow_self_signed'		=> array(true, 'Allow self-signed certificates. Requires verify_certificate.'),
-				'cafile'			=> array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
-				'capath'			=> array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
-				'client_cert'			=> array('', 'Location of client certificate file (pem format with private key) on local filesystem'),
+				'verify_certificate' => array(false, 'Require verification of SSL certificate used.'),
+				'allow_self_signed'  => array(true, 'Allow self-signed certificates. Requires verify_certificate.'),
+				'cafile'             => array('', 'Location of Certificate Authority file on local filesystem (/etc/ssl/certs/ca-certificates.crt)'),
+				'capath'             => array('', 'capath must be a correctly hashed certificate directory. (/etc/ssl/certs/)'),
+				'client_cert'        => array('', 'Location of client certificate file (pem format with private key) on local filesystem'),
 			),
 
 			'capa' => array(
@@ -213,7 +212,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'login_lowercase' => array(true, ''),
 
-				'sign_me_auto'	=> array(\RainLoop\Enumerations\SignMeType::DEFAULT_OFF,
+				'sign_me_auto' => array(\RainLoop\Enumerations\SignMeType::DEFAULT_OFF,
 					'This option allows webmail to remember the logged in user
 once they closed the browser window.
 
@@ -224,19 +223,19 @@ Values:
 			),
 
 			'plugins' => array(
-				'enable'		=> array(false, 'Enable plugin support'),
-				'enabled_list'	=> array('', 'List of enabled plugins'),
+				'enable'       => array(false, 'Enable plugin support'),
+				'enabled_list' => array('', 'List of enabled plugins'),
 			),
 
 			'defaults' => array(
-				'view_editor_type'		=> array('Html', 'Editor mode used by default (Plain, Html, HtmlForced or PlainForced)'),
-				'view_layout'			=> array(1, 'layout: 0 - no preview, 1 - side preview, 2 - bottom preview'),
-				'view_use_checkboxes'	=> array(true),
-				'autologout'			=> array(30),
-				'show_images'			=> array(false),
-				'contacts_autosave'		=> array(true),
-				'mail_use_threads'		=> array(false),
-				'allow_draft_autosave'	=> array(true),
+				'view_editor_type'       => array('Html', 'Editor mode used by default (Plain, Html, HtmlForced or PlainForced)'),
+				'view_layout'            => array(1, 'layout: 0 - no preview, 1 - side preview, 2 - bottom preview'),
+				'view_use_checkboxes'    => array(true),
+				'autologout'             => array(30),
+				'show_images'            => array(false),
+				'contacts_autosave'      => array(true),
+				'mail_use_threads'       => array(false),
+				'allow_draft_autosave'   => array(true),
 				'mail_reply_same_folder' => array(false)
 			),
 
@@ -288,7 +287,7 @@ Examples:
 			),
 
 			'debug' => array(
-				'enable'	=> array(false, 'Special option required for development purposes')
+				'enable' => array(false, 'Special option required for development purposes')
 			),
 
 			'cache' => array(

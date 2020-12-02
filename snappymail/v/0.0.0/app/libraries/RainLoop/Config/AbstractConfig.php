@@ -74,21 +74,20 @@ abstract class AbstractConfig
 	{
 		if (isset($this->aData[$sSectionKey][$sParamKey][0]))
 		{
-			$sType = \gettype($this->aData[$sSectionKey][$sParamKey][0]);
-			switch ($sType)
+			switch (\gettype($this->aData[$sSectionKey][$sParamKey][0]))
 			{
-				default:
-				case 'float':
-				case 'string':
-					$this->aData[$sSectionKey][$sParamKey][0] = (string) $mParamValue;
+				case 'boolean':
+					$this->aData[$sSectionKey][$sParamKey][0] = (bool) $mParamValue;
 					break;
-				case 'int':
+				case 'double':
+					$this->aData[$sSectionKey][$sParamKey][0] = (float) $mParamValue;
+					break;
 				case 'integer':
 					$this->aData[$sSectionKey][$sParamKey][0] = (int) $mParamValue;
 					break;
-				case 'bool':
-				case 'boolean':
-					$this->aData[$sSectionKey][$sParamKey][0] = (bool) $mParamValue;
+				case 'string':
+				default:
+					$this->aData[$sSectionKey][$sParamKey][0] = (string) $mParamValue;
 					break;
 			}
 		}
@@ -275,17 +274,16 @@ abstract class AbstractConfig
 						$sValue = '""';
 						switch (\gettype($mParamValue[0]))
 						{
-							default:
-							case 'string':
-								$sValue = '"'.\str_replace('"', '\"', $mParamValue[0]).'"';
+							case 'boolean':
+								$sValue = $mParamValue[0] ? 'On' : 'Off';
 								break;
-							case 'int':
+							case 'double':
 							case 'integer':
 								$sValue = $mParamValue[0];
 								break;
-							case 'bool':
-							case 'boolean':
-								$sValue = $mParamValue[0] ? 'On' : 'Off';
+							case 'string':
+							default:
+								$sValue = '"'.\str_replace('"', '\\"', $mParamValue[0]).'"';
 								break;
 						}
 
