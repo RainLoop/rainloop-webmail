@@ -74,7 +74,7 @@ class Api
 			\MailSo\Config::$ImapTimeout =
 				(int) static::Config()->Get('labs', 'imap_timeout', 300);
 
-			\MailSo\Config::$BoundaryPrefix = '_RainLoop_';
+			\MailSo\Config::$BoundaryPrefix = '_SnappyMail_';
 
 			\MailSo\Config::$SystemLogger = static::Logger();
 

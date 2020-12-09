@@ -71,7 +71,7 @@
 	// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/RelativeTimeFormat
 	Date.prototype.fromNow = function() {
 		let unit = 'second',
-			value = (this.getTime() - Date.now()) / 1000,
+			value = Math.round((this.getTime() - Date.now()) / 1000),
 			t = [[60,'minute'],[3600,'hour'],[86400,'day'],[2628000,'month'],[31536000,'year']],
 			i = 5,
 			abs = Math.abs(value);

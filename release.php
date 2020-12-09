@@ -120,7 +120,7 @@ unlink($tar_destination);
 echo "\n{$zip_destination} created\n{$tar_destination}.gz created\n";
 
 // Docker build
-if (readline("Build Docker image? (Y/N): ") === "Y") {
+if ($options['docker'] || readline("Build Docker image? (Y/N): ") === "Y") {
 	copy($zip_destination, $docker_zip);
 
 	$docker = trim(`which docker`);
