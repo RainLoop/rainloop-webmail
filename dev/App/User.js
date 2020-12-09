@@ -565,7 +565,7 @@ class AppUser extends AbstractApp {
 
 							const folderFromCache = getFolderFromCacheList(data.Result.Folder);
 							if (folderFromCache) {
-								folderFromCache.interval = Date.now() / 1000;
+								folderFromCache.interval = Date.now();
 
 								if (data.Result.Hash) {
 									setFolderHash(data.Result.Folder, data.Result.Hash);
@@ -640,7 +640,7 @@ class AppUser extends AbstractApp {
 			Remote.folderInformationMultiply((sResult, oData) => {
 				if (StorageResultType.Success === sResult) {
 					if (oData && oData.Result && oData.Result.List && Array.isNotEmpty(oData.Result.List)) {
-						const utc = Date.now() / 1000;
+						const utc = Date.now();
 						oData.Result.List.forEach(item => {
 							const hash = getFolderHash(item.Folder),
 								folder = getFolderFromCacheList(item.Folder);

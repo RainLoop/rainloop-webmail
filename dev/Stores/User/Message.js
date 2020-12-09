@@ -683,7 +683,7 @@ class MessageUserStore {
 				folder = getFolderFromCacheList(collection.Folder);
 
 			if (folder && !cached) {
-				folder.interval = Date.now() / 1000;
+				folder.interval = Date.now();
 
 				setFolderHash(collection.Folder, collection.FolderHash);
 

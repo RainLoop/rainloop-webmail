@@ -152,9 +152,9 @@ class FolderUserStore {
 	 */
 	getNextFolderNames() {
 		const result = [],
-			limit = 5,
-			utc = Date.now() / 1000,
-			timeout = utc - 60 * 5,
+			limit = 10,
+			utc = Date.now(),
+			timeout = utc - 60000 * 5,
 			timeouts = [],
 			inboxFolderName = getFolderInboxName(),
 			fSearchFunction = (list) => {
@@ -165,7 +165,9 @@ class FolderUserStore {
 						folder.selectable &&
 						folder.exists &&
 						timeout > folder.interval &&
-						(folder.isSystemFolder() || (folder.subscribed() && folder.checkable()))
+						// https://github.com/the-djmaze/snappymail/issues/47
+//						(folder.isSystemFolder() || (folder.subscribed() && folder.checkable()))
+						(folder.isSystemFolder() || folder.subscribed())
 					) {
 						timeouts.push([folder.interval, folder.fullNameRaw]);
 					}
