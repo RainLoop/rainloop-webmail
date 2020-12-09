@@ -130,8 +130,11 @@ class Identities extends AbstractProvider
 		$identities = [];
 		foreach ($this->drivers as $driver) {
 			// Merge and replace by key
-			foreach ($identitiesPerDriver[$driver->Name()] as $identity)
-				$identities[$identity->Id(true)] = $identity;
+			if (isset($identitiesPerDriver[$driver->Name()])) {
+				foreach ($identitiesPerDriver[$driver->Name()] as $identity) {
+					$identities[$identity->Id(true)] = $identity;
+				}
+			}
 		}
 
 		return \array_values($identities);

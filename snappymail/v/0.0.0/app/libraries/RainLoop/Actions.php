@@ -1041,10 +1041,9 @@ class Actions
 		NewThemeLink TemplatesLink LangLink PluginsLink AuthAccountHash
 		*/
 
-		$upload_max_filesize = \ini_get('upload_max_filesize');
-		$size = \strtoupper(\substr($value,-1));
-		$upload_max_filesize = \intval($upload_max_filesize);
-		switch ($size) {
+		$value = \ini_get('upload_max_filesize');
+		$upload_max_filesize = \intval($value);
+		switch (\strtoupper(\substr($value, -1))) {
 			case 'G': $upload_max_filesize *= 1024;
 			case 'M': $upload_max_filesize *= 1024;
 			case 'K': $upload_max_filesize *= 1024;
