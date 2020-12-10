@@ -43,8 +43,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 	 * @returns {FolderCollectionModel}
 	 */
 	static reviveFromJson(object) {
-		const expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders),
-			bDisplaySpecSetting = FolderStore.displaySpecSetting();
+		const expandedFolders = Local.get(ClientSideKeyName.ExpandedFolders);
 		return super.reviveFromJson(object, (oFolder, self) => {
 			let oCacheFolder = Cache.getFolderFromCacheList(oFolder.FullNameRaw);
 /*
@@ -62,8 +61,6 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			}
 
 			if (oCacheFolder) {
-				oCacheFolder.checkable(bDisplaySpecSetting ? !!oFolder.Checkable : true);
-
 				oCacheFolder.collapsed(!expandedFolders
 					|| !Array.isArray(expandedFolders)
 					|| !expandedFolders.includes(oCacheFolder.fullNameHash));

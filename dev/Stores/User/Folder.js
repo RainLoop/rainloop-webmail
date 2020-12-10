@@ -8,7 +8,11 @@ import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 class FolderUserStore {
 	constructor() {
 		ko.addObservablesTo(this, {
-			displaySpecSetting: true,
+			// To use "checkable" option in /#/settings/folders
+			// When true, getNextFolderNames only lists system and "checkable" folders
+			// and affects the update of unseen count
+			// Auto set to true when amount of folders > folderSpecLimit to prevent requests overload
+			displaySpecSetting: false,
 
 			sentFolder: '',
 			draftFolder: '',
@@ -157,6 +161,7 @@ class FolderUserStore {
 			timeout = utc - 60000 * 5,
 			timeouts = [],
 			inboxFolderName = getFolderInboxName(),
+			bDisplaySpecSetting = this.displaySpecSetting(),
 			fSearchFunction = (list) => {
 				list.forEach(folder => {
 					if (
@@ -165,9 +170,7 @@ class FolderUserStore {
 						folder.selectable &&
 						folder.exists &&
 						timeout > folder.interval &&
-						// https://github.com/the-djmaze/snappymail/issues/47
-//						(folder.isSystemFolder() || (folder.subscribed() && folder.checkable()))
-						(folder.isSystemFolder() || folder.subscribed())
+						(folder.isSystemFolder() || (folder.subscribed() && (folder.checkable() || !bDisplaySpecSetting)))
 					) {
 						timeouts.push([folder.interval, folder.fullNameRaw]);
 					}
