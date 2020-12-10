@@ -199,10 +199,9 @@ class Filter implements \JsonSerializable
 		$this->bStop = isset($aFilter['Stop']) ? '1' === (string) $aFilter['Stop'] : true;
 		$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? '1' === (string) $aFilter['MarkAsRead'] : false;
 
-		$this->aConditions = FilterCondition::CollectionFromJSON(
-			isset($aFilter['Conditions']) ? $aFilter['Conditions'] : array());
+		$this->aConditions = empty($aFilter['Conditions']) ? array() : FilterCondition::CollectionFromJSON($aFilter['Conditions']);
 
-		return true;
+		return !empty($this->aConditions);
 	}
 
 	public function jsonSerialize()

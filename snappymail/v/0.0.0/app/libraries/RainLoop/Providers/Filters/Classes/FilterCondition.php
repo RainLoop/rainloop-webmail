@@ -7,35 +7,22 @@ class FilterCondition implements \JsonSerializable
 	/**
 	 * @var string
 	 */
-	private $sField;
+	private $sField = '';
 
 	/**
 	 * @var string
 	 */
-	private $sType;
+	private $sType = '';
 
 	/**
 	 * @var string
 	 */
-	private $sValue;
+	private $sValue = '';
 
 	/**
 	 * @var string
 	 */
-	private $sValueSecond;
-
-	public function __construct()
-	{
-		$this->Clear();
-	}
-
-	public function Clear()
-	{
-		$this->sField = \RainLoop\Providers\Filters\Enumerations\ConditionField::FROM;
-		$this->sType = \RainLoop\Providers\Filters\Enumerations\ConditionType::EQUAL_TO;
-		$this->sValue = '';
-		$this->sValueSecond = '';
-	}
+	private $sValueSecond = '';
 
 	public function Field() : string
 	{
@@ -59,13 +46,12 @@ class FilterCondition implements \JsonSerializable
 
 	public function FromJSON(array $aData) : bool
 	{
-		$this->sField = isset($aData['Field']) ? $aData['Field'] :
-			\RainLoop\Providers\Filters\Enumerations\ConditionField::FROM;
-
-		$this->sType = isset($aData['Type']) ? $aData['Type'] :
-			\RainLoop\Providers\Filters\Enumerations\ConditionType::EQUAL_TO;
-
-		$this->sValue = isset($aData['Value']) ? (string) $aData['Value'] : '';
+		if (empty($aData['Field']) || empty($aData['Type']) || empty($aData['Value'])) {
+			return false;
+		}
+		$this->sField = $aData['Field'];
+		$this->sType = $aData['Type'];
+		$this->sValue = (string) $aData['Value'];
 		$this->sValueSecond = isset($aData['ValueSecond']) ? (string) $aData['ValueSecond'] : '';
 
 		return true;
@@ -92,10 +78,10 @@ class FilterCondition implements \JsonSerializable
 	{
 		return array(
 			'@Object' => 'Object/FilterCondition',
-			'field' => $this->Field(),
-			'type' => $this->Type(),
-			'value' => $this->Value(),
-			'valueSecond' => $this->ValueSecond()
+			'Field' => $this->Field(),
+			'Type' => $this->Type(),
+			'Value' => $this->Value(),
+			'ValueSecond' => $this->ValueSecond()
 		);
 	}
 }

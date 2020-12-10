@@ -58,7 +58,7 @@ trait Filters
 		$aFilters = array();
 		foreach ($aIncFilters as $aFilter)
 		{
-			if (is_array($aFilter))
+			if (\is_array($aFilter))
 			{
 				$oFilter = new \RainLoop\Providers\Filters\Classes\Filter();
 				if ($oFilter->FromJSON($aFilter))
