@@ -202,6 +202,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 				case \RainLoop\Providers\Filters\Enumerations\ConditionField::BODY:
 					// :text :raw :content
 					$sResult .= 'body '.$sTypeWord.' :contains';
+					$aCapa['body'] = true;
 					break;
 				case \RainLoop\Providers\Filters\Enumerations\ConditionField::SIZE:
 					$sResult .= 'size '.$sTypeWord;
@@ -507,7 +508,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 				{
 					if (!empty($sEncodedLine))
 					{
-						$sDecodedLine = \base64_decode(\preg_replace('/[\s]+/', '', $sEncodedLine));
+						$sDecodedLine = \base64_decode(\preg_replace('/\\s+/s', '', $sEncodedLine));
 						if (!empty($sDecodedLine))
 						{
 							$oItem = new \RainLoop\Providers\Filters\Classes\Filter();
