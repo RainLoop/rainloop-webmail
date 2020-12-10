@@ -8,10 +8,13 @@ import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 class FolderUserStore {
 	constructor() {
 		ko.addObservablesTo(this, {
-			// To use "checkable" option in /#/settings/folders
-			// When true, getNextFolderNames only lists system and "checkable" folders
-			// and affects the update of unseen count
-			// Auto set to true when amount of folders > folderSpecLimit to prevent requests overload
+			/**
+			 * To use "checkable" option in /#/settings/folders
+			 * When true, getNextFolderNames only lists system and "checkable" folders
+			 * and affects the update of unseen count
+			 * Auto set to true when amount of folders > folderSpecLimit to prevent requests overload,
+			 * see application.ini [labs] folders_spec_limit
+			 */
 			displaySpecSetting: false,
 
 			sentFolder: '',
