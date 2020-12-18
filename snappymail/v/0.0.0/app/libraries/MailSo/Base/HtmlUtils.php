@@ -680,11 +680,11 @@ abstract class HtmlUtils
 					if ($sAttrName && $oAttr)
 					{
 						$sAttrNameLower = \trim(\strtolower($sAttrName));
-						if ($aHtmlAllowedAttributes && !\in_array($sAttrNameLower, $aHtmlAllowedAttributes))
-						{
-							$sAttrsForRemove[] = $sAttrName;
-						}
-						else if ('on' === \substr($sAttrNameLower, 0, 2) || in_array($sAttrNameLower, array(
+						if (($aHtmlAllowedAttributes && !\in_array($sAttrNameLower, $aHtmlAllowedAttributes))
+						 || 'on' === \substr($sAttrNameLower, 0, 2)
+//						 || 'data-' === \substr($sAttrNameLower, 0, 5)
+//						 || \strpos($sAttrNameLower, ':')
+						 || \in_array($sAttrNameLower, array(
 							'id', 'class', 'contenteditable', 'designmode', 'formaction', 'manifest', 'action',
 							'data-bind', 'data-reactid', 'xmlns', 'srcset', 'data-x-skip-style',
 							'fscommand', 'seeksegmenttime'
@@ -756,8 +756,8 @@ abstract class HtmlUtils
 					$sH = $oElement->hasAttribute('height')
 						? \trim($oElement->getAttribute('height')) : '';
 
-//						$sW = $oElement->hasAttribute('width')
-//							? \trim($oElement->getAttribute('width')) : '';
+//					$sW = $oElement->hasAttribute('width')
+//						? \trim($oElement->getAttribute('width')) : '';
 
 					$sStyles = $oElement->hasAttribute('style')
 						? \preg_replace('/[\s]+/', '', \trim(\trim(\trim($oElement->getAttribute('style')), ';'))) : '';

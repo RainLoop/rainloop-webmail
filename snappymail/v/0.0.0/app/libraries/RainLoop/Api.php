@@ -112,8 +112,6 @@ class Api
 			if (static::Config()->Get('labs', 'strict_html_parser', true))
 			{
 				\MailSo\Config::$HtmlStrictAllowedAttributes = array(
-					// rainloop
-					'data-wrp',
 					// defaults
 					'name',
 					'dir', 'lang', 'style', 'title',
@@ -148,8 +146,10 @@ class Api
 					'selected', 'label',
 					// table
 					'cols', 'rows', 'frame', 'rules', 'summary', 'cellpadding', 'cellspacing',
+					// th
+					'abbr', 'scope',
 					// td
-					'abbr', 'axis', 'colspan', 'rowspan', 'headers', 'nowrap'
+					'axis', 'colspan', 'rowspan', 'headers', 'nowrap'
 				);
 			}
 		}
