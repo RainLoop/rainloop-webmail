@@ -5,34 +5,24 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 	\define('RAINLOOP_APP_PATH', \rtrim(\realpath(__DIR__), '\\/').'/');
 	\define('RAINLOOP_APP_LIBRARIES_PATH', RAINLOOP_APP_PATH.'libraries/');
 
-	\define('RAINLOOP_INCLUDE_AS_API_DEF', isset($_ENV['RAINLOOP_INCLUDE_AS_API']) && $_ENV['RAINLOOP_INCLUDE_AS_API']);
-
-	function rainLoopSplAutoloadNamespaces() : array
-	{
-		return RAINLOOP_INCLUDE_AS_API_DEF ? array('RainLoop', 'Predis', 'MailSo') :
-			array('RainLoop', 'PHPThumb', 'Predis', 'SabreForRainLoop', 'Imagine', 'MailSo');
-	}
-
 	/**
 	 * @param string $sClassName
 	 */
 	function rainLoopSplAutoloadRegisterFunction($sClassName) : void
 	{
-		if ($sClassName && '\\' === $sClassName[0])
-		{
-			$sClassName = \substr($sClassName, 1);
-		}
-
-		foreach (rainLoopSplAutoloadNamespaces() as $sNamespaceName)
-		{
-			if (0 === \strpos($sClassName, $sNamespaceName.'\\'))
-			{
-				include RAINLOOP_APP_LIBRARIES_PATH.\strtr($sClassName, '\\', '/').'.php';
-				break;
-			}
+		/** case-sensitive autoload */
+		$file = \strtr($sClassName, '\\', DIRECTORY_SEPARATOR) . '.php';
+//		if ($file = \stream_resolve_include_path($file)) {
+		if (\is_file(RAINLOOP_APP_LIBRARIES_PATH . $file)) {
+			include_once RAINLOOP_APP_LIBRARIES_PATH . $file;
 		}
 	}
 
+	if (false === \set_include_path(RAINLOOP_APP_LIBRARIES_PATH . PATH_SEPARATOR . \get_include_path())) {
+		exit('set_include_path() failed. Probably due to Apache config using php_admin_value instead of php_value');
+	}
+	\spl_autoload_extensions('.php');
+	\spl_autoload_register();
 	\spl_autoload_register('rainLoopSplAutoloadRegisterFunction');
 }
 
@@ -50,7 +40,7 @@ if (\class_exists('RainLoop\Api'))
 		}
 	}
 
-	if (RAINLOOP_INCLUDE_AS_API_DEF)
+	if (!empty($_ENV['RAINLOOP_INCLUDE_AS_API']))
 	{
 		if (!\defined('APP_API_STARTED'))
 		{
