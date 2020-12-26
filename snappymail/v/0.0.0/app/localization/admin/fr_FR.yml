@@ -12,10 +12,8 @@ fr_FR:
     LABEL_CONTACTS_NAME: "Contacts"
     LABEL_DOMAINS_NAME: "Domaines"
     LABEL_SECURITY_NAME: "Sécurité"
-    LABEL_INTEGRATION_NAME: "Intégrations"
     LABEL_PLUGINS_NAME: "Plugins"
     LABEL_PACKAGES_NAME: "Paquets"
-    LABEL_LICENSING_NAME: "Licences"
     LABEL_ABOUT_NAME: "A propos"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Interface"
@@ -92,28 +90,6 @@ fr_FR:
     LEGEND_SSL: "SSL"
     LABEL_REQUIRE_VERIFICATION: "S'assurer qu'un certificat SSL (IMAP/SMTP) est utilisé"
     LABEL_ALLOW_SELF_SIGNED: "Autoriser les certificats auto-signés"
-  TAB_INTEGRATIONS:
-    LEGEND_GOOGLE: "Google"
-    LABEL_ENABLE_GOOGLE: "Activer l'intégration Google"
-    LABEL_GOOGLE_AUTH: "Autorisation"
-    LABEL_GOOGLE_DRIVE: "Intégration de Google Drive (Panneau de rédaction)"
-    LABEL_GOOGLE_PREVIEW: "Intégration de Google Viewer (Prévisualisation pour les fichiers Microsoft Word, Excel and PowerPoint)"
-    LABEL_GOOGLE_CLIENT_ID: "Client ID"
-    LABEL_GOOGLE_CLIENT_SECRET: "Client Secret"
-    LABEL_GOOGLE_API_KEY: "Clé API"
-    HINT_GOOGLE_API_KEY: "Nécessaire pour le sélecteur de fichier de Google Drive"
-    LEGEND_FACEBOOK: "Facebook"
-    LABEL_ENABLE_FACEBOOK: "Activer l'intégration Facebook (Autorisation)"
-    LABEL_FACEBOOK_APP_ID: "App ID"
-    LABEL_FACEBOOK_APP_SECRET: "App Secret"
-    LEGEND_TWITTER: "Twitter"
-    LABEL_ENABLE_TWITTER: "Activer l'intégration Twitter (Autorisation)"
-    LABEL_TWITTER_CONSUMER_KEY: "Clé client"
-    LABEL_TWITTER_CONSUMER_SECRET: "Secret client"
-    LEGEND_DROPBOX: "Dropbox"
-    LABEL_ENABLE_DROPBOX: "Activer l'intégration Dropbox"
-    LABEL_DROPBOX_API_KEY: "Clé API"
-    TOP_ALERT: "Les informations détaillées sur l'intégration des réseaux sociaux se trouve à"
   TAB_PLUGINS:
     LEGEND_PLUGINS: "Plugins"
     LABEL_ENABLE_PLUGINS: "Activer les plugins"
@@ -129,21 +105,6 @@ fr_FR:
     LEGEND_ABOUT: "A propos"
     LABEL_TAG_HINT: "Un client webmail simple, moderne et rapide "
     LABEL_ALL_RIGHTS_RESERVED: "Tous droits réservés."
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Activer une clé de souscription ?"
-    TITLE_ACTIVATION: "Activation..."
-    LABEL_DOMAIN: "Domaine"
-    LABEL_SUB_KEY: "Clé de souscription"
-    BUTTON_ACTIVATE: "Activer"
-    LABEL_ACTIVATED: "Activé"
-    ERROR_INVALID_SUBS_KEY: "Clé de souscription invalide"
-    SUBS_KEY_ACTIVATED: "Activation de la clé de souscription réussie"
-    HTML_DESC: |
-        Après l'activation, la souscription premium pour <b>%DOMAIN%</b> va être prolongée.
-        <br />
-        Notez que la clé de souscription ne peut être activée que pour un seul domaine.
-        <br /><br />
-        Une fois lancé, le processus d'activation ne peut pas être annulé ou abandonné.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Ajouter un alias"
     LABEL_ALIAS: "Alias"
@@ -205,18 +166,6 @@ fr_FR:
     ACCESS_ERROR: "Erreur d'accès"
     CONNECTION_ERROR: "Serveur injoignable"
     CAPTCHA_ERROR: "CAPTCHA incorrect."
-    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-        Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous
-        en utilisant les informations d'identification du courrier électronique et
-        activez cette fonctionnalité dans les paramètres de votre compte.
-    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-        Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous
-        en utilisant les informations d'identification du courrier électronique et
-        activez cette fonctionnalité dans les paramètres de votre compte.
-    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-        Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous
-        en utilisant les informations d'identification du courrier électronique et
-        activez cette fonctionnalité dans les paramètres de votre compte.
     DOMAIN_NOT_ALLOWED: "Ce domaine n'est pas autorisé"
     ACCOUNT_NOT_ALLOWED: "Ce compte n'est pas autorisé"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Double authentification requise"
@@ -250,9 +199,6 @@ fr_FR:
     CANT_DELETE_PACKAGE: "Impossible de supprimer le paquet"
     INVALID_PLUGIN_PACKAGE: "Ce plugin est invalide"
     UNSUPPORTED_PLUGIN_PACKAGE: "Ce plugin n'est pas supporté"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Le serveur d'abonnement est inaccessible"
-    LICENSING_DOMAIN_EXPIRED: "L'abonnement de ce domaine a expiré."
-    LICENSING_DOMAIN_BANNED: "L'abonnement pour ce domaine est interdit."
     DEMO_SEND_MESSAGE_ERROR: "Pour des raisons de sécurité, ce compte de démonstration n'est pas autorisé à envoyer des messages à des adresses e-mail externes !"
     DEMO_ACCOUNT_ERROR: "Pour des raisons de sécurité, ce compte n'est pas autorisé à faire cette action !"
     ACCOUNT_ALREADY_EXISTS: "Ce compte existe déjà"
@@ -264,7 +210,6 @@ fr_FR:
     BACK_LINK: "Recharger"
     DOMAIN_LIST_DESC: "Liste des domaines autorisés."
     PHP_EXSTENSIONS_ERROR_DESC: "Les extensions PHP nécessaires ne sont pas disponibles dans votre configuration de PHP !"
-    PHP_VERSION_ERROR_DESC: "Votre version de PHP (% VERSION%) est inférieure au minimum requis 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript est nécessaire pour cette application."
     NO_SCRIPT_DESC: |
         Le support de JavaScript n'est pas disponible dans votre navigateur.

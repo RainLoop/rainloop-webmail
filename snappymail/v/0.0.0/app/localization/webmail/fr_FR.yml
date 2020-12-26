@@ -509,19 +509,6 @@ fr_FR:
     ERROR_FILE_IS_TOO_BIG: "Fichier trop volumineux"
     ERROR_FILE_TYPE_ERROR: "Type de fichier invalide (JPG et PNG seulement)"
     ERROR_UNKNOWN: "Une erreur inconnue de téléversement de fichier s'est produite"
-  SETTINGS_SOCIAL:
-    LEGEND_GOOGLE: "Google"
-    BUTTON_GOOGLE_CONNECT: "Se connecter à Google"
-    BUTTON_GOOGLE_DISCONNECT: "Se déconnecter de Google"
-    MAIN_GOOGLE_DESC: "Après l'activation de la connexion via Google, vous pouvez vous connecter à ce compte en utilisant le bouton Google sur l'écran de connexion."
-    LEGEND_FACEBOOK: "Facebook"
-    BUTTON_FACEBOOK_CONNECT: "Se connecter à Facebook"
-    BUTTON_FACEBOOK_DISCONNECT: "Se déconnecter de Facebook"
-    MAIN_FACEBOOK_DESC: "Après l'activation de la connexion via Facebook, vous pouvez vous connecter à ce compte en utilisant le bouton Facebook sur l'écran de connexion."
-    LEGEND_TWITTER: "Twitter"
-    BUTTON_TWITTER_CONNECT: "Se connecter à Twitter"
-    BUTTON_TWITTER_DISCONNECT: "Se déconnecter de Twitter"
-    MAIN_TWITTER_DESC: "Après l'activation de la connexion via Twitter, vous pouvez vous connecter à ce compte en utilisant le bouton Twitter sur l'écran de connexion."
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Liste des dossiers"
     BUTTON_CREATE: "Créer un dossier"
@@ -636,18 +623,6 @@ fr_FR:
     ACCESS_ERROR: "Erreur d'accès"
     CONNECTION_ERROR: "Serveur injoignable"
     CAPTCHA_ERROR: "CAPTCHA incorrect."
-    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-        Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous
-        en utilisant les informations d'identification du courrier électronique et
-        activez cette fonctionnalité dans les paramètres de votre compte.
-    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-        Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous
-        en utilisant les informations d'identification du courrier électronique et
-        activez cette fonctionnalité dans les paramètres de votre compte.
-    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-        Cet ID social n'est pas encore assigné à une adresse email. Connectez-vous
-        en utilisant les informations d'identification du courrier électronique et
-        activez cette fonctionnalité dans les paramètres de votre compte.
     DOMAIN_NOT_ALLOWED: "Ce domaine n'est pas autorisé"
     ACCOUNT_NOT_ALLOWED: "Ce compte n'est pas autorisé"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Double authentification requise"

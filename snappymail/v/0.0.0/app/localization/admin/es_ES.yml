@@ -12,10 +12,8 @@ es_ES:
     LABEL_CONTACTS_NAME: "Contactos"
     LABEL_DOMAINS_NAME: "Dominios"
     LABEL_SECURITY_NAME: "Seguridad"
-    LABEL_INTEGRATION_NAME: "Integración"
     LABEL_PLUGINS_NAME: "Complementos"
     LABEL_PACKAGES_NAME: "Paquetes"
-    LABEL_LICENSING_NAME: "Licencias"
     LABEL_ABOUT_NAME: "Acerca"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Interfaz"
@@ -92,28 +90,6 @@ es_ES:
     LEGEND_SSL: "SSL"
     LABEL_REQUIRE_VERIFICATION: "Requerir verificación del certificado SSL (IMAP / SMTP)"
     LABEL_ALLOW_SELF_SIGNED: "Permitir certificados auto-firmados"
-  TAB_INTEGRATIONS:
-    LEGEND_GOOGLE: "Google"
-    LABEL_ENABLE_GOOGLE: "Activar la integración con Google"
-    LABEL_GOOGLE_AUTH: "Autorización"
-    LABEL_GOOGLE_DRIVE: "Google Drive Integration (vista del editor)"
-    LABEL_GOOGLE_PREVIEW: "Google Viewer Integration (Previsualizar archivos de Microsoft Word, Excel y PowerPoint)"
-    LABEL_GOOGLE_CLIENT_ID: "ID del Cliente"
-    LABEL_GOOGLE_CLIENT_SECRET: "Clave secreta de Cliente"
-    LABEL_GOOGLE_API_KEY: "Llave API"
-    HINT_GOOGLE_API_KEY: "Requerido para seleccionar archivos con Google Drive"
-    LEGEND_FACEBOOK: "Facebook"
-    LABEL_ENABLE_FACEBOOK: "Activar la integración con Facebook (Ingreso)"
-    LABEL_FACEBOOK_APP_ID: "ID de la Aplicación"
-    LABEL_FACEBOOK_APP_SECRET: "Clave secreta de la Aplicación"
-    LEGEND_TWITTER: "Twitter"
-    LABEL_ENABLE_TWITTER: "Activar la integración con Twitter (Ingreso)"
-    LABEL_TWITTER_CONSUMER_KEY: "Llave del Cliente"
-    LABEL_TWITTER_CONSUMER_SECRET: "Llave secreta del Cliente"
-    LEGEND_DROPBOX: "Dropbox"
-    LABEL_ENABLE_DROPBOX: "Activar la integración con Dropbox"
-    LABEL_DROPBOX_API_KEY: "Llave API"
-    TOP_ALERT: "Puedes encontrar más información sobre integración de redes sociales en"
   TAB_PLUGINS:
     LEGEND_PLUGINS: "Complementos"
     LABEL_ENABLE_PLUGINS: "Activar Plugins"
@@ -129,17 +105,6 @@ es_ES:
     LEGEND_ABOUT: "Acerca"
     LABEL_TAG_HINT: "Moderno, simple y rápido cliente web de correo electrónico"
     LABEL_ALL_RIGHTS_RESERVED: "Todos los Derechos Reservados."
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "¿Activar la clave de suscripción?"
-    TITLE_ACTIVATION: "Activando..."
-    LABEL_DOMAIN: "Dominio"
-    LABEL_SUB_KEY: "Clave de Suscripción"
-    BUTTON_ACTIVATE: "Activar"
-    LABEL_ACTIVATED: "Activado"
-    ERROR_INVALID_SUBS_KEY: "Clave de Suscripción inválida"
-    SUBS_KEY_ACTIVATED: "Clave de Suscripción activada correctamente"
-    HTML_DESC: "Después de la activación, la suscripción para <b>%DOMAIN%</b> será extendida.\n<br />\nTome nota que esta llave de suscripci\tón podrá\
-      \ ser activada solo para un dominio.\n<br /><br />\nUna vez comenzado, el proceso de activación no puede ser abortado ni cancelado.\n"
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Agregar alias"
     LABEL_ALIAS: "Alias"
@@ -201,19 +166,6 @@ es_ES:
     ACCESS_ERROR: "Error de acceso"
     CONNECTION_ERROR: "No se puede conectar al servidor"
     CAPTCHA_ERROR: "CAPTCHA Incorrecto."
-    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-        La cuenta social (ID) no está asignada a ninguna cuenta de correo todavía.
-        Inicie sesión con las credenciales de correo electrónico y habilite esta característica
-        en la configuración de cuenta.
-    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-        La cuenta social (ID) no está asignada a ninguna cuenta de correo todavía.
-        Inicie sesión con las credenciales de correo electrónico y habilite esta característica
-        en la configuración de cuenta.
-    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >+
-        La cuenta social (ID) no está asignada a ninguna cuenta de correo todavía.
-        Inicie sesión con las credenciales de correo electrónico y habilite esta característica
-        en la configuración de cuenta.
-
     DOMAIN_NOT_ALLOWED: "Dominio no permitido"
     ACCOUNT_NOT_ALLOWED: "La cuenta no está permitida"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "La verificación en 2 pasos es obligatoria"
@@ -247,9 +199,6 @@ es_ES:
     CANT_DELETE_PACKAGE: "No se ha podido eliminar el paquete"
     INVALID_PLUGIN_PACKAGE: "El paquete del plugin es inválido"
     UNSUPPORTED_PLUGIN_PACKAGE: "El paquete del plugin es incompatible"
-    LICENSING_SERVER_IS_UNAVAILABLE: "El Servidor de Suscripción no está disponible"
-    LICENSING_DOMAIN_EXPIRED: "La suscripción para este dominio ha expirado."
-    LICENSING_DOMAIN_BANNED: "La suscripción para este dominio se ha bloqueado."
     DEMO_SEND_MESSAGE_ERROR: "Por razones de seguridad, esta cuenta no permite enviar mensajes a direcciones de correo electrónico externas"
     DEMO_ACCOUNT_ERROR: "Debido a razones de seguridad, esta cuenta no puede realizar esta acción"
     ACCOUNT_ALREADY_EXISTS: "La cuenta ya existe"
@@ -261,7 +210,6 @@ es_ES:
     BACK_LINK: "Actualizar"
     DOMAIN_LIST_DESC: "Lista de dominios de correo web que se le permite acceder."
     PHP_EXSTENSIONS_ERROR_DESC: "¡La extensión de PHP requerida no está disponible en su configuración de PHP!"
-    PHP_VERSION_ERROR_DESC: "¡La versión de PHP (%VERSION%) es menor a la mínima requerida 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript es requerido para esta aplicación."
     NO_SCRIPT_DESC: |
         JavaScript está desactivado. Por favor habilite JavaScript en la configuración de su navegador e inténtelo de nuevo.
