@@ -507,19 +507,6 @@ nl_NL:
     ERROR_FILE_IS_TOO_BIG: "Bestand is te groot"
     ERROR_FILE_TYPE_ERROR: "Onjuist bestandstype (alleen JPG and PNG)"
     ERROR_UNKNOWN: "Er is een onbekende fout opgetreden"
-  SETTINGS_SOCIAL:
-    LEGEND_GOOGLE: "Google"
-    BUTTON_GOOGLE_CONNECT: "Via Google verbinden"
-    BUTTON_GOOGLE_DISCONNECT: "Verbinding met Google verbreken"
-    MAIN_GOOGLE_DESC: "Na activatie van inloggen via Google kunt u hiermee inloggen d.m.v. de Google knop op het login scherm."
-    LEGEND_FACEBOOK: "Facebook"
-    BUTTON_FACEBOOK_CONNECT: "Via Facebook verbinden"
-    BUTTON_FACEBOOK_DISCONNECT: "Verbinding met Facebook verbreken"
-    MAIN_FACEBOOK_DESC: "Na activatie van inloggen via Facebook kunt u hiermee inloggen d.m.v. de Google knop op het login scherm."
-    LEGEND_TWITTER: "Twitter"
-    BUTTON_TWITTER_CONNECT: "Via Twitter verbinden"
-    BUTTON_TWITTER_DISCONNECT: "Verbinding via Twitter verbreken"
-    MAIN_TWITTER_DESC: "Na activatie van inloggen via Twitter kunt u hiermee inloggen d.m.v. de Google knop op het login scherm."
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Mappen lijst"
     BUTTON_CREATE: "Maak een map"
@@ -633,18 +620,6 @@ nl_NL:
     ACCESS_ERROR: "Toegangsfout"
     CONNECTION_ERROR: "Kan geen verbinding maken met de Server"
     CAPTCHA_ERROR: "Onjuiste CAPTCHA"
-    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-        Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
-        adres en wachtwoord en schakel deze functie in in het account instellingen
-        menu.
-    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-        Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
-        adres en wachtwoord en schakel deze functie in in het account instellingen
-        menu.
-    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-        Deze social ID is nog niet aan een e-mail account gekoppeld. Log in met e-mail
-        adres en wachtwoord en schakel deze functie in in het account instellingen
-        menu.
     DOMAIN_NOT_ALLOWED: "Domein is niet toegestaan"
     ACCOUNT_NOT_ALLOWED: "Account is niet toegestaan"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "2-Stap verificatie vereist"

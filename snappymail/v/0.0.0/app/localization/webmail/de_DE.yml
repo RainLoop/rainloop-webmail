@@ -508,19 +508,6 @@ de_DE:
     ERROR_FILE_IS_TOO_BIG: "Datei ist zu groß"
     ERROR_FILE_TYPE_ERROR: "Ungültiger Dateityp (nur JPG und PNG)"
     ERROR_UNKNOWN: "Ein unbekannter Fehler trat beim Hochladen auf"
-  SETTINGS_SOCIAL:
-    LEGEND_GOOGLE: "Google"
-    BUTTON_GOOGLE_CONNECT: "Mit Google verbinden"
-    BUTTON_GOOGLE_DISCONNECT: "Von Google abmelden"
-    MAIN_GOOGLE_DESC: "Nach der Aktivierung der Anmeldung per Google können Sie sich hier mit dem Google-Button im Anmeldedialog anmelden."
-    LEGEND_FACEBOOK: "Facebook"
-    BUTTON_FACEBOOK_CONNECT: "Mit Facebook verbinden"
-    BUTTON_FACEBOOK_DISCONNECT: "Von Facebook abmelden"
-    MAIN_FACEBOOK_DESC: "Nach der Aktivierung der Anmeldung per Facebook können Sie sich hier mit dem Facebook-Button im Anmeldedialog anmelden."
-    LEGEND_TWITTER: "Twitter"
-    BUTTON_TWITTER_CONNECT: "Mit Twitter verbinden"
-    BUTTON_TWITTER_DISCONNECT: "Von Twitter abmelden"
-    MAIN_TWITTER_DESC: "Nach der Aktivierung der Anmeldung per Twitter können Sie sich hier mit dem Twitter-Button im Anmeldedialog anmelden."
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Ordnerliste"
     BUTTON_CREATE: "Ordner anlegen"
@@ -634,18 +621,6 @@ de_DE:
     ACCESS_ERROR: "Zugriffsfehler"
     CONNECTION_ERROR: "Serververbindung kann nicht hergestellt werden"
     CAPTCHA_ERROR: "Falsche CAPTCHA-Eingabe."
-    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-        Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
-        mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
-        Konteneinstellungen.
-    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-        Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
-        mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
-        Konteneinstellungen.
-    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-        Diese Social-ID ist bisher mit keinem E-Mail-Konto verbunden. Melden Sie sich
-        mit Ihren E-Mail-Anmeldedaten an und aktivieren Sie diese Funktion in Ihren
-        Konteneinstellungen.
     DOMAIN_NOT_ALLOWED: "Diese Domain ist nicht zugelassen."
     ACCOUNT_NOT_ALLOWED: "Konto ist nicht zugelassen."
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Zwei-Faktor-Authentifizierung erforderlich"
