@@ -12,10 +12,8 @@ en_US:
     LABEL_CONTACTS_NAME: "Contacts"
     LABEL_DOMAINS_NAME: "Domains"
     LABEL_SECURITY_NAME: "Security"
-    LABEL_INTEGRATION_NAME: "Integrations"
     LABEL_PLUGINS_NAME: "Plugins"
     LABEL_PACKAGES_NAME: "Packages"
-    LABEL_LICENSING_NAME: "Licensing"
     LABEL_ABOUT_NAME: "About"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Interface"
@@ -92,28 +90,6 @@ en_US:
     LEGEND_SSL: "SSL"
     LABEL_REQUIRE_VERIFICATION: "Require verification of SSL certificate used (IMAP/SMTP)"
     LABEL_ALLOW_SELF_SIGNED: "Allow self signed certificates"
-  TAB_INTEGRATIONS:
-    LEGEND_GOOGLE: "Google"
-    LABEL_ENABLE_GOOGLE: "Enable Google Integration"
-    LABEL_GOOGLE_AUTH: "Authorization"
-    LABEL_GOOGLE_DRIVE: "Google Drive Integration (Compose view)"
-    LABEL_GOOGLE_PREVIEW: "Google Viewer Integration (Preview for Microsoft Word, Excel and PowerPoint files)"
-    LABEL_GOOGLE_CLIENT_ID: "Client ID"
-    LABEL_GOOGLE_CLIENT_SECRET: "Client Secret"
-    LABEL_GOOGLE_API_KEY: "Api Key"
-    HINT_GOOGLE_API_KEY: "Required for Google Drive File Picker"
-    LEGEND_FACEBOOK: "Facebook"
-    LABEL_ENABLE_FACEBOOK: "Enable Facebook Integration (Authorization)"
-    LABEL_FACEBOOK_APP_ID: "App ID"
-    LABEL_FACEBOOK_APP_SECRET: "App Secret"
-    LEGEND_TWITTER: "Twitter"
-    LABEL_ENABLE_TWITTER: "Enable Twitter Integration (Authorization)"
-    LABEL_TWITTER_CONSUMER_KEY: "Consumer Key"
-    LABEL_TWITTER_CONSUMER_SECRET: "Consumer Secret"
-    LEGEND_DROPBOX: "Dropbox"
-    LABEL_ENABLE_DROPBOX: "Enable Dropbox Integration"
-    LABEL_DROPBOX_API_KEY: "Api Key"
-    TOP_ALERT: "Detailed information on social integration is found at"
   TAB_PLUGINS:
     LEGEND_PLUGINS: "Plugins"
     LABEL_ENABLE_PLUGINS: "Enable plugins"
@@ -129,21 +105,6 @@ en_US:
     LEGEND_ABOUT: "About"
     LABEL_TAG_HINT: "Simple, modern & fast web-based email client"
     LABEL_ALL_RIGHTS_RESERVED: "All Rights Reserved."
-  POPUPS_ACTIVATE:
-    TITLE_ACTIVATE: "Activate Subscription Key?"
-    TITLE_ACTIVATION: "Activation..."
-    LABEL_DOMAIN: "Domain"
-    LABEL_SUB_KEY: "Subscription Key"
-    BUTTON_ACTIVATE: "Activate"
-    LABEL_ACTIVATED: "Activated"
-    ERROR_INVALID_SUBS_KEY: "Invalid Subscription Key"
-    SUBS_KEY_ACTIVATED: "Subscription Key Activated Successfully"
-    HTML_DESC: |
-        After activation, premium subscription for <b>%DOMAIN%</b> will be extended.
-        <br />
-        Note that subscription key can be activated for a single domain only.
-        <br /><br />
-        Once started, the process of activation cannot be aborted or cancelled.
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Add Alias"
     LABEL_ALIAS: "Alias"
@@ -205,15 +166,6 @@ en_US:
     ACCESS_ERROR: "Access error"
     CONNECTION_ERROR: "Can't connect to server"
     CAPTCHA_ERROR: "Incorrect CAPTCHA."
-    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-        This social ID is not assigned for any email account yet. Log in using email
-        credentials and enable this feature in account settings.
-    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-        This social ID is not assigned for any email account yet. Log in using email
-        credentials and enable this feature in account settings.
-    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-        This social ID is not assigned for any email account yet. Log in using email
-        credentials and enable this feature in account settings.
     DOMAIN_NOT_ALLOWED: "Domain is not allowed"
     ACCOUNT_NOT_ALLOWED: "Account is not allowed"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Two factor verification required"
@@ -247,9 +199,6 @@ en_US:
     CANT_DELETE_PACKAGE: "Failed to remove package"
     INVALID_PLUGIN_PACKAGE: "Invalid plugin package"
     UNSUPPORTED_PLUGIN_PACKAGE: "Unsupported plugin package"
-    LICENSING_SERVER_IS_UNAVAILABLE: "Subscription server is unvailable"
-    LICENSING_DOMAIN_EXPIRED: "Subscription for this domain has expired."
-    LICENSING_DOMAIN_BANNED: "Subscription for this domain is banned."
     DEMO_SEND_MESSAGE_ERROR: "For security purposes, this account is not allowed to send messages to external e-mail addresses!"
     DEMO_ACCOUNT_ERROR: "For security purposes, this account is not allowed for this action!"
     ACCOUNT_ALREADY_EXISTS: "Account already exists"
@@ -261,7 +210,6 @@ en_US:
     BACK_LINK: "Reload"
     DOMAIN_LIST_DESC: "List of domains webmail is allowed to access."
     PHP_EXSTENSIONS_ERROR_DESC: "Required PHP extension are not available in your PHP configuration!"
-    PHP_VERSION_ERROR_DESC: "Your PHP version (%VERSION%) is lower than the minimal required 5.3.0!"
     NO_SCRIPT_TITLE: "JavaScript is required for this application."
     NO_SCRIPT_DESC: |
         JavaScript support is not available in your browser.

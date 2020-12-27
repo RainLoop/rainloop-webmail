@@ -1,0 +1,224 @@
+zh_CN:
+  LOGIN:
+    LABEL_LOGIN: "登录"
+    LABEL_PASSWORD: "密码"
+    BUTTON_LOGIN: "登录到控制面板"
+  TOP_PANEL:
+    LABEL_ADMIN_PANEL: "控制面板"
+  TABS_LABELS:
+    LABEL_GENERAL_NAME: "常规"
+    LABEL_LOGIN_NAME: "登录"
+    LABEL_BRANDING_NAME: "Logo"
+    LABEL_CONTACTS_NAME: "联系人"
+    LABEL_DOMAINS_NAME: "域名"
+    LABEL_SECURITY_NAME: "安全"
+    LABEL_PLUGINS_NAME: "插件"
+    LABEL_PACKAGES_NAME: "插件包"
+    LABEL_ABOUT_NAME: "关于"
+  TAB_GENERAL:
+    LEGEND_INTERFACE: "界面"
+    LABEL_LANGUAGE: "语言"
+    LABEL_LANGUAGE_ADMIN: "语言(后台)"
+    LABEL_THEME: "主题"
+    LABEL_ALLOW_LANGUAGES_ON_SETTINGS: "允许在设置界面中选择语言"
+    LABEL_ALLOW_THEMES_ON_SETTINGS: "允许在设置界面中选择主题"
+    LABEL_ALLOW_BACKGROUND_ON_SETTINGS: "允许在设置界面中选择背景"
+    LABEL_SHOW_THUMBNAILS: "显示缩略图(附件)"
+    LABEL_NEW_FOLDER_MOVE: "使用新的“移动”按钮样式"
+    LEGEND_MAIN: "主要设置"
+    LABEL_ATTACHMENT_SIZE_LIMIT: "附件大小限制"
+    LABEL_ALLOW_ADDITIONAL_ACCOUNTS: "允许额外的账户"
+    LABEL_ALLOW_IDENTITIES: "允许多重身份"
+    LABEL_ALLOW_TEMPLATES: "允许使用模板"
+    ALERT_DATA_ACCESS: "数据文件夹可被访问。请配置您的 Web 服务器以阻止从外部访问数据文件夹。获取更多帮助："
+    ALERT_WARNING: "警告！"
+    HTML_ALERT_WEAK_PASSWORD: |
+        您正在使用默认的管理员密码
+        <br />
+        安全起见，请立即将密码
+        <strong><a href="#/security">更改</a></strong>
+        为其他的字符串。
+  TAB_LOGIN:
+    LEGEND_LOGIN_SCREEN: "登录界面"
+    LABEL_DEFAULT_DOMAIN: "默认域名"
+    LABEL_DETERMINE_USER_DOMAIN: "尝试判断用户使用的域名"
+    LABEL_ALLOW_LANGUAGES_ON_LOGIN: "允许在登录界面选择语言"
+    LABEL_DETERMINE_USER_LANGUAGE: "尝试判断用户使用语言"
+    LABEL_HIDE_SUBMIT_BUTTON: "隐藏“登录”按钮"
+  TAB_BRANDING:
+    LEGEND_BRANDING: "Logo"
+    LABEL_PAGE_TITLE: "页面标题"
+    LABEL_LOADING_DESCRIPTION: "加载界面文字"
+    LABEL_FAVICON_URL: "网站图标"
+  TAB_CONTACTS:
+    LEGEND_CONTACTS: "联系人"
+    LEGEND_STORAGE: "存储(PDO)"
+    LABEL_ENABLE_CONTACTS: "启用联系人"
+    LABEL_ALLOW_SYNC: "允许同步联系人(依靠外部CardDAV服务器)"
+    LABEL_STORAGE_TYPE: "类型"
+    LABEL_STORAGE_DSN: "Dsn"
+    LABEL_STORAGE_USER: "用户"
+    LABEL_STORAGE_PASSWORD: "密码"
+    BUTTON_TEST: "测试"
+    ALERT_NOTICE: "提示!"
+    HTML_ALERT_DO_NOT_USE_THIS_DATABASE: "如果有大量的活跃用户，请不要选择此数据库类型。"
+    HTML_ALERT_DOES_NOT_SUPPORTED: |
+        你的系统不支持联系人
+        <br />
+        你需要在你的服务器上安装或启用<strong>PDO (SQLite / MySQL / PostgreSQL)</strong> 组件。
+  TAB_DOMAINS:
+    LEGEND_DOMAINS: "域名"
+    BUTTON_ADD_DOMAIN: "添加域名"
+    BUTTON_ADD_ALIAS: "添加别名"
+    DELETE_ARE_YOU_SURE: "你确定吗？"
+    HTML_DOMAINS_HELPER: |
+        允许访问的域名。
+        <br />
+        点击域名进行设置。
+  TAB_SECURITY:
+    LEGEND_SECURITY: "安全"
+    LABEL_ALLOW_TWO_STEP: "允许两步验证"
+    LABEL_FORCE_TWO_STEP: "强制使用两步验证"
+    LABEL_USE_IMAGE_PROXY: "对外部图片使用本地代理"
+    LABEL_ALLOW_OPEN_PGP: "允许使用 OpenPGP"
+    LABEL_SHOW_PHP_INFO: "显示 PHP 信息"
+    LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS: "管理员面板访问凭据"
+    LABEL_CURRENT_PASSWORD: "当前密码"
+    LABEL_NEW_LOGIN: "新的登录用户名"
+    LABEL_NEW_PASSWORD: "新密码"
+    LABEL_REPEAT_PASSWORD: "重复输入新密码"
+    BUTTON_UPDATE_PASSWORD: "更新密码"
+    LEGEND_SSL: "SSL"
+    LABEL_REQUIRE_VERIFICATION: "要求验证 SSL 证书（IMAP/SMTP）"
+    LABEL_ALLOW_SELF_SIGNED: "允许自签名证书"
+  TAB_PLUGINS:
+    LEGEND_PLUGINS: "插件"
+    LABEL_ENABLE_PLUGINS: "启用插件"
+    ALERT_NO_PLUGINS: "当前还未安装插件。"
+    LINK_INSTALL_NEW: "点击此处安装新插件!"
+    HINT_CLICK_NAME: "点击名称来配置插件。"
+  TAB_PACKAGES:
+    LEGEND_AVAILABLE_FOR_UPDATE: "有更新可用"
+    LEGEND_AVAILABLE_FOR_INSTALLATION: "可用于安装"
+    LEGEND_INSTALLED_PACKAGES: "已安装的插件包"
+    ALERT_CANNOT_ACCESS_REPOSITORY: "目前无法访问插件仓库"
+  TAB_ABOUT:
+    LEGEND_ABOUT: "关于"
+    LABEL_TAG_HINT: "简洁、现代化、快速的网页邮件客户端"
+    LABEL_ALL_RIGHTS_RESERVED: "保留所有权利"
+  POPUPS_DOMAIN_ALIAS:
+    TITLE_ADD_DOMAIN_ALIAS: "添加别名"
+    LABEL_ALIAS: "别名"
+    LABEL_DOMAIN: "域名"
+    BUTTON_CLOSE: "关闭"
+    BUTTON_ADD: "添加"
+  POPUPS_DOMAIN:
+    TITLE_ADD_DOMAIN: "添加域名"
+    TITLE_ADD_DOMAIN_WITH_NAME: "添加域名 \"%NAME%\""
+    TITLE_EDIT_DOMAIN: "编辑域名 \"%NAME%\""
+    LABEL_NAME: "名字"
+    NAME_HELPER: "支持通配符"
+    LABEL_IMAP: "IMAP"
+    LABEL_SMTP: "SMTP"
+    LABEL_SIEVE: "SIEVE"
+    LABEL_SERVER: "服务器"
+    LABEL_PORT: "端口"
+    LABEL_SECURE: "加密"
+    LABEL_WHITE_LIST: "白名单"
+    SECURE_OPTION_NONE: "无"
+    SECURE_OPTION_SSL: "SSL/TLS"
+    SECURE_OPTION_STARTTLS: "STARTTLS"
+    LABEL_ALLOW_SIEVE_SCRIPTS: "可使用筛选脚本"
+    LABEL_ALLOW_USER_SCRIPT: "允许用户自定义脚本"
+    LABEL_USE_SHORT_LOGIN: "使用短用户名登录"
+    LABEL_USE_AUTH: "使用认证"
+    LABEL_USE_PHP_MAIL: "使用 php mail() 函数"
+    BUTTON_TEST: "测试"
+    BUTTON_WHITE_LIST: "白名单"
+    BUTTON_SIEVE_CONFIGURATION: "筛选设置"
+    BUTTON_BACK_TO_IMAP: "回到 IMAP 设置"
+    BUTTON_BACK: "返回"
+    BUTTON_CLOSE: "关闭"
+    BUTTON_ADD: "添加"
+    BUTTON_UPDATE: "更新"
+    NEW_DOMAIN_DESC: "此域名配置将允许你<br />和<i>%NAME%</i>电子邮件地址一起工作."
+    WHITE_LIST_ALERT: |
+        允许访问的域用户；使用空格分隔。
+  POPUPS_PLUGIN:
+    TITLE_PLUGIN: "插件"
+    DESC_NOTHING_TO_CONFIGURE: "无可用配置"
+    BUTTON_CLOSE: "关闭"
+    BUTTON_SAVE: "保存"
+  POPUPS_ASK:
+    DESC_WANT_CLOSE_THIS_WINDOW: "你确定要关闭此窗口吗？"
+  POPUPS_LANGUAGES:
+    TITLE_LANGUAGES: "选择您的语言"
+  HINTS:
+    BETA: "测试版本"
+    UNSTABLE: "不稳定版本"
+    WARNING: "警告"
+  ERRORS:
+    DOMAIN_ALREADY_EXISTS: "域名已经存在"
+    UNKNOWN_ERROR: "未知错误"
+  NOTIFICATIONS:
+    INVALID_TOKEN: "无效标记"
+    AUTH_ERROR: "认证失败"
+    ACCESS_ERROR: "访问错误"
+    CONNECTION_ERROR: "无法连接到服务器"
+    CAPTCHA_ERROR: "验证码不正确。"
+    DOMAIN_NOT_ALLOWED: "域名不被允许"
+    ACCOUNT_NOT_ALLOWED: "账户不允许"
+    ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "需要两步验证"
+    ACCOUNT_TWO_FACTOR_AUTH_ERROR: "两步验证错误"
+    COULD_NOT_SAVE_NEW_PASSWORD: "无法保存新密码"
+    CURRENT_PASSWORD_INCORRECT: "当前密码不正确"
+    NEW_PASSWORD_SHORT: "密码太短"
+    NEW_PASSWORD_WEAK: "密码过于简单"
+    NEW_PASSWORD_FORBIDDENT: "密码包含禁止使用的字符"
+    CONTACTS_SYNC_ERROR: "联系人同步错误"
+    CANT_GET_MESSAGE_LIST: "无法获取邮件列表"
+    CANT_GET_MESSAGE: "无法获取邮件"
+    CANT_DELETE_MESSAGE: "无法删除邮件"
+    CANT_MOVE_MESSAGE: "无法移动邮件"
+    CANT_SAVE_MESSAGE: "无法保存邮件"
+    CANT_SEND_MESSAGE: "无法发送邮件"
+    INVALID_RECIPIENTS: "无效接收者"
+    CANT_SAVE_FILTERS: "无法保存过滤器"
+    CANT_GET_FILTERS: "无法获取过滤器"
+    FILTERS_ARE_NOT_CORRECT: "过滤器不正确"
+    CANT_CREATE_FOLDER: "无法创建文件夹"
+    CANT_RENAME_FOLDER: "无法重命名文件夹"
+    CANT_DELETE_FOLDER: "无法删除文件夹"
+    CANT_DELETE_NON_EMPTY_FOLDER: "无法删除非空文件夹"
+    CANT_SUBSCRIBE_FOLDER: "无法订阅文件夹"
+    CANT_UNSUBSCRIBE_FOLDER: "无法取消订阅文件夹"
+    CANT_SAVE_SETTINGS: "无法保存设置"
+    CANT_SAVE_PLUGIN_SETTINGS: "无法保存设置"
+    DOMAIN_ALREADY_EXISTS: "域名已经存在"
+    CANT_INSTALL_PACKAGE: "安装插件包失败"
+    CANT_DELETE_PACKAGE: "移除插件包失败"
+    INVALID_PLUGIN_PACKAGE: "无效插件包"
+    UNSUPPORTED_PLUGIN_PACKAGE: "不支持的插件包"
+    DEMO_SEND_MESSAGE_ERROR: "出于安全考虑，此账号无法发送外部邮件！"
+    DEMO_ACCOUNT_ERROR: "出于安全考虑，此账户不允许进行此操作。"
+    ACCOUNT_ALREADY_EXISTS: "账户已存在"
+    ACCOUNT_DOES_NOT_EXIST: "账户不存在"
+    MAIL_SERVER_ERROR: "访问邮件服务器时遇到错误。"
+    INVALID_INPUT_ARGUMENT: "无效输入参数"
+    UNKNOWN_ERROR: "未知错误"
+  STATIC:
+    BACK_LINK: "重新加载"
+    DOMAIN_LIST_DESC: "可允许通过 webmail 访问的域名列表"
+    PHP_EXSTENSIONS_ERROR_DESC: "需要的PHP扩展在你的PHP配置中不可用！"
+    NO_SCRIPT_TITLE: "此应用需要 JavaScript 支持！"
+    NO_SCRIPT_DESC: |
+        您的浏览器不支持 JavaScript。
+        请启用浏览器的 JavaScript 并重试。
+    NO_COOKIE_TITLE: "此应用需要 Cookies 支持！"
+    NO_COOKIE_DESC: |
+        您的浏览器不支持 Cookies。
+        请启用浏览器的 Cookies 并重试。
+    BAD_BROWSER_TITLE: "您的浏览器过时了。"
+    BAD_BROWSER_DESC: |
+        为了使用所有特性，
+        下载并安装其中一款浏览器：

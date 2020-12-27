@@ -509,19 +509,6 @@ es_ES:
     ERROR_FILE_IS_TOO_BIG: "La imagen es muy grande"
     ERROR_FILE_TYPE_ERROR: "Tipo de archivo inválido (Solo permitido: JPG y PNG)"
     ERROR_UNKNOWN: "Se ha producido un error de carga de archivo desconocido"
-  SETTINGS_SOCIAL:
-    LEGEND_GOOGLE: "Google"
-    BUTTON_GOOGLE_CONNECT: "Conectar con Google"
-    BUTTON_GOOGLE_DISCONNECT: "Desconectar de Google"
-    MAIN_GOOGLE_DESC: "Despues de habilitar el ingreso via Google, usted puede iniciar sesión en la cuenta usando el botón de Google que aparece en la pantalla de ingreso."
-    LEGEND_FACEBOOK: "Facebook"
-    BUTTON_FACEBOOK_CONNECT: "Conectar con Facebook"
-    BUTTON_FACEBOOK_DISCONNECT: "Desconectar Facebook"
-    MAIN_FACEBOOK_DESC: "Despues de habilitar el ingreso via Facebook, usted puede iniciar sesión en la cuenta usando el botón de  Facebook que aparece en la pantalla de ingreso."
-    LEGEND_TWITTER: "Twitter"
-    BUTTON_TWITTER_CONNECT: "Conectar con Twitter"
-    BUTTON_TWITTER_DISCONNECT: "Desconectar Twitter"
-    MAIN_TWITTER_DESC: "Despues de habilitar el ingreso via Twitter, usted puede iniciar sesión en la cuenta usando el botón de Twitter que aparece en la pantalla de ingreso."
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Lista de Carpetas"
     BUTTON_CREATE: "Crear carpeta"
@@ -635,18 +622,6 @@ es_ES:
     ACCESS_ERROR: "Error de acceso"
     CONNECTION_ERROR: "No se puede conectar al servidor"
     CAPTCHA_ERROR: "CAPTCHA Incorrecto."
-    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >-
-        Este ID no está asignado a ninguna cuenta de Email todavía. Inicie sesión
-        con las credenciales de correo electrónico y habilite esta característica
-        en la configuración de cuenta.
-    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >-
-        Este ID no está asignado a ninguna cuenta de Email todavía. Inicie sesión
-        con las credenciales de correo electrónico y habilite esta característica
-        en la configuración de cuenta.
-    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >-
-        Este ID no está asignado a ninguna cuenta de Email todavía. Inicie sesión
-        con las credenciales de correo electrónico y habilite esta característica
-        en la configuración de cuenta.
     DOMAIN_NOT_ALLOWED: "Dominio no permitido"
     ACCOUNT_NOT_ALLOWED: "La cuenta no está permitida"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Factor de verificación en dos pasos requerido"

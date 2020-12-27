@@ -508,19 +508,6 @@ en_GB:
     ERROR_FILE_IS_TOO_BIG: "File is too big"
     ERROR_FILE_TYPE_ERROR: "Invalid file type (JPG and PNG only)"
     ERROR_UNKNOWN: "An unknown file upload error occurred"
-  SETTINGS_SOCIAL:
-    LEGEND_GOOGLE: "Google"
-    BUTTON_GOOGLE_CONNECT: "Connect Google"
-    BUTTON_GOOGLE_DISCONNECT: "Disconnect Google"
-    MAIN_GOOGLE_DESC: "After enabling login via Google, you can log into this account using Google button on the login screen."
-    LEGEND_FACEBOOK: "Facebook"
-    BUTTON_FACEBOOK_CONNECT: "Connect Facebook"
-    BUTTON_FACEBOOK_DISCONNECT: "Disconnect Facebook"
-    MAIN_FACEBOOK_DESC: "After enabling login via Facebook, you can log into this account using Facebook button on the login screen."
-    LEGEND_TWITTER: "Twitter"
-    BUTTON_TWITTER_CONNECT: "Connect Twitter"
-    BUTTON_TWITTER_DISCONNECT: "Disconnect Twitter"
-    MAIN_TWITTER_DESC: "After enabling login via Twitter, you can log into this account using Twitter button on the login screen."
   SETTINGS_FOLDERS:
     LEGEND_FOLDERS: "Folder List"
     BUTTON_CREATE: "Create Folder"
@@ -635,15 +622,6 @@ en_GB:
     ACCESS_ERROR: "Access error"
     CONNECTION_ERROR: "Can't connect to server"
     CAPTCHA_ERROR: "Incorrect CAPTCHA."
-    SOCIAL_FACEBOOK_LOGIN_ACCESS_DISABLE: >
-        This social ID is not assigned for any email account yet. Log in using email
-        credentials and enable this feature in account settings.
-    SOCIAL_TWITTER_LOGIN_ACCESS_DISABLE: >
-        This social ID is not assigned for any email account yet. Log in using email
-        credentials and enable this feature in account settings.
-    SOCIAL_GOOGLE_LOGIN_ACCESS_DISABLE: >
-        This social ID is not assigned for any email account yet. Log in using email
-        credentials and enable this feature in account settings.
     DOMAIN_NOT_ALLOWED: "Domain is not allowed"
     ACCOUNT_NOT_ALLOWED: "Account is not allowed"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Two factor verification required"
