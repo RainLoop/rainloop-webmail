@@ -411,10 +411,10 @@ export const Notification = {
 	ClientViewError: 902,
 	InvalidInputArgument: 903,
 
-	AjaxFalse: 950,
-	AjaxAbort: 951,
-	AjaxParse: 952,
-	AjaxTimeout: 953,
+	JsonFalse: 950,
+	JsonAbort: 951,
+	JsonParse: 952,
+//	JsonTimeout: 953,
 
 	UnknownNotification: 999,
 	UnknownError: 999

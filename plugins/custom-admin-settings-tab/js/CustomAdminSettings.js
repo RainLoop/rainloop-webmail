@@ -31,7 +31,7 @@
 				self.php(oData.Result.PHP || '');
 			}
 
-		}, 'AjaxAdminGetData');
+		}, 'JsonAdminGetData');
 
 	};
 

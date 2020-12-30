@@ -74,7 +74,7 @@ class ServiceActions
 		return $this;
 	}
 
-	public function ServiceAjax() : string
+	public function ServiceJson() : string
 	{
 		\ob_start();
 
@@ -87,7 +87,7 @@ class ServiceActions
 			$sAction = $this->aPaths[2];
 		}
 
-		$this->oActions->SetIsAjax(true);
+		$this->oActions->SetIsJson(true);
 
 		try
 		{
@@ -105,7 +105,7 @@ class ServiceActions
 
 				$sMethodName = 'Do'.$sAction;
 
-				$this->Logger()->Write('Action: '.$sMethodName, \MailSo\Log\Enumerations\Type::NOTE, 'AJAX');
+				$this->Logger()->Write('Action: '.$sMethodName, \MailSo\Log\Enumerations\Type::NOTE, 'JSON');
 
 				$aPost = $this->oHttp->GetPostAsArray();
 				if ($aPost)
@@ -133,15 +133,15 @@ class ServiceActions
 				if (\method_exists($this->oActions, $sMethodName) &&
 					\is_callable(array($this->oActions, $sMethodName)))
 				{
-					$this->Plugins()->RunHook('ajax.action-pre-call', array($sAction));
+					$this->Plugins()->RunHook('json.action-pre-call', array($sAction));
 					$aResponseItem = \call_user_func(array($this->oActions, $sMethodName));
-					$this->Plugins()->RunHook('ajax.action-post-call', array($sAction, &$aResponseItem));
+					$this->Plugins()->RunHook('json.action-post-call', array($sAction, &$aResponseItem));
 				}
-				else if ($this->Plugins()->HasAdditionalAjax($sMethodName))
+				else if ($this->Plugins()->HasAdditionalJson($sMethodName))
 				{
-					$this->Plugins()->RunHook('ajax.action-pre-call', array($sAction));
-					$aResponseItem = $this->Plugins()->RunAdditionalAjax($sMethodName);
-					$this->Plugins()->RunHook('ajax.action-post-call', array($sAction, &$aResponseItem));
+					$this->Plugins()->RunHook('json.action-pre-call', array($sAction));
+					$aResponseItem = $this->Plugins()->RunAdditionalJson($sMethodName);
+					$this->Plugins()->RunHook('json.action-post-call', array($sAction, &$aResponseItem));
 				}
 			}
 
@@ -189,7 +189,7 @@ class ServiceActions
 			}
 		}
 
-		$this->Plugins()->RunHook('filter.ajax-response', array($sAction, &$aResponseItem));
+		$this->Plugins()->RunHook('filter.json-response', array($sAction, &$aResponseItem));
 
 		\header('Content-Type: application/json; charset=utf-8');
 
@@ -211,7 +211,7 @@ class ServiceActions
 
 			$iLimit = (int) $this->Config()->Get('labs', 'log_ajax_response_write_limit', 0);
 			$this->Logger()->Write(0 < $iLimit && $iLimit < \strlen($sResult)
-					? \substr($sResult, 0, $iLimit).'...' : $sResult, \MailSo\Log\Enumerations\Type::INFO, 'AJAX');
+					? \substr($sResult, 0, $iLimit).'...' : $sResult, \MailSo\Log\Enumerations\Type::INFO, 'JSON');
 		}
 
 		return $sResult;
@@ -316,14 +316,7 @@ class ServiceActions
 			$aResponseItem = $this->oActions->ExceptionResponse($sAction, $oException);
 		}
 
-		if ('iframe' === $this->oHttp->GetPost('jua-post-type', ''))
-		{
-			\header('Content-Type: text/html; charset=utf-8');
-		}
-		else
-		{
-			\header('Content-Type: application/json; charset=utf-8');
-		}
+		\header('Content-Type: application/json; charset=utf-8');
 
 		$this->Plugins()->RunHook('filter.upload-response', array(&$aResponseItem));
 		$sResult = \MailSo\Base\Utils::Php2js($aResponseItem, $this->Logger());

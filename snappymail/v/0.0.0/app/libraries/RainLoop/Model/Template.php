@@ -52,7 +52,7 @@ class Template implements \JsonSerializable
 		$this->bPopulateAlways = $bPopulateAlways;
 	}
 
-	public function FromJSON(array $aData, bool $bAjax = false) : bool
+	public function FromJSON(array $aData, bool $bJson = false) : bool
 	{
 		if (isset($aData['ID'], $aData['Name'], $aData['Body']))
 		{

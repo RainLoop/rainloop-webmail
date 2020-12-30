@@ -387,7 +387,7 @@ trait User
 
 		$aResult = array();
 
-		$this->Plugins()->RunHook('ajax.suggestions-input-parameters', array(&$sQuery, &$iLimit, $oAccount));
+		$this->Plugins()->RunHook('json.suggestions-input-parameters', array(&$sQuery, &$iLimit, $oAccount));
 
 		$iLimit = (int) $iLimit;
 		if (5 > $iLimit)
@@ -395,7 +395,7 @@ trait User
 			$iLimit = 5;
 		}
 
-		$this->Plugins()->RunHook('ajax.suggestions-pre', array(&$aResult, $sQuery, $oAccount, $iLimit));
+		$this->Plugins()->RunHook('json.suggestions-pre', array(&$aResult, $sQuery, $oAccount, $iLimit));
 
 		if ($iLimit > \count($aResult) && 0 < \strlen($sQuery))
 		{
@@ -442,7 +442,7 @@ trait User
 			$aResult = \array_slice($aResult, 0, $iLimit);
 		}
 
-		$this->Plugins()->RunHook('ajax.suggestions-post', array(&$aResult, $sQuery, $oAccount, $iLimit));
+		$this->Plugins()->RunHook('json.suggestions-post', array(&$aResult, $sQuery, $oAccount, $iLimit));
 
 		$aResult = Utils::RemoveSuggestionDuplicates($aResult);
 		if ($iLimit < \count($aResult))

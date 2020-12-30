@@ -141,7 +141,7 @@ class Actions
 
 		$this->sSpecAuthToken = '';
 		$this->sUpdateAuthToken = '';
-		$this->bIsAjax = false;
+		$this->bIsJson = false;
 
 		$oConfig = $this->Config();
 		$this->Plugins()->RunHook('filter.application-config', array($oConfig));
@@ -163,9 +163,9 @@ class Actions
 		return $this;
 	}
 
-	public function SetIsAjax(bool $bIsAjax): self
+	public function SetIsJson(bool $bIsJson): self
 	{
-		$this->bIsAjax = $bIsAjax;
+		$this->bIsJson = $bIsJson;
 
 		return $this;
 	}
@@ -180,9 +180,9 @@ class Actions
 		return $this->sUpdateAuthToken;
 	}
 
-	public function GetIsAjax(): bool
+	public function GetIsJson(): bool
 	{
-		return $this->bIsAjax;
+		return $this->bIsJson;
 	}
 
 	public function GetShortLifeSpecAuthToken(int $iLife = 60): string

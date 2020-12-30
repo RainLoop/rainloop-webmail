@@ -22,7 +22,7 @@
 		}, this);
 	}
 
-	CustomUserSettings.prototype.customAjaxSaveData = function ()
+	CustomUserSettings.prototype.customJsonSaveData = function ()
 	{
 		var self = this;
 
@@ -46,7 +46,7 @@
 				// false
 			}
 
-		}, 'AjaxSaveCustomUserData', {
+		}, 'JsonSaveCustomUserData', {
 			'UserSkype': this.userSkype(),
 			'UserFacebook': this.userFacebook()
 		});
@@ -68,7 +68,7 @@
 				self.userFacebook(oData.Result.UserFacebook || '');
 			}
 
-		}, 'AjaxGetCustomUserData');
+		}, 'JsonGetCustomUserData');
 
 	};
 

@@ -88,7 +88,7 @@
 	 * @param {Jua} oJua
 	 * @param {Object} oOptions
 	 */
-	class AjaxDriver
+	class XHRDriver
 	{
 		constructor(oJua, oOptions)
 		{
@@ -170,7 +170,6 @@
 
 				fStartFunction && fStartFunction(sUid);
 
-				oFormData.append('jua-post-type', 'ajax');
 				oFormData.append(this.oOptions.name, oFileInfo['File']);
 				Object.entries(aHidden).forEach(([key, value]) =>
 					oFormData.append(key, (typeof value === "function" ? value(oFileInfo) : value).toString())
@@ -305,7 +304,7 @@
 
 			self.oQueue = new Queue(oOptions.queueSize);
 
-			self.oDriver = new AjaxDriver(self, oOptions);
+			self.oDriver = new XHRDriver(self, oOptions);
 
 			let el = oOptions.clickElement;
 			if (el) {

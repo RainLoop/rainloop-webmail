@@ -232,11 +232,11 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	protected function addAjaxHook(string $sActionName, string $sFunctionName) : self
+	protected function addJsonHook(string $sActionName, string $sFunctionName) : self
 	{
 		if ($this->oPluginManager)
 		{
-			$this->oPluginManager->AddAdditionalAjaxAction($sActionName, array(&$this, $sFunctionName));
+			$this->oPluginManager->AddAdditionalJsonAction($sActionName, array(&$this, $sFunctionName));
 		}
 
 		return $this;
@@ -253,11 +253,11 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	protected function ajaxResponse(string $sFunctionName, array $aData) : self
+	protected function jsonResponse(string $sFunctionName, array $aData) : self
 	{
 		if ($this->oPluginManager)
 		{
-			return $this->oPluginManager->AjaxResponseHelper(
+			return $this->oPluginManager->JsonResponseHelper(
 				$this->oPluginManager->convertPluginFolderNameToClassName($this->Name()).'::'.$sFunctionName, $aData);
 		}
 
@@ -269,7 +269,7 @@ abstract class AbstractPlugin
 	 *
 	 * @return mixed
 	 */
-	public function ajaxParam(string $sKey, $mDefault = null)
+	public function jsonParam(string $sKey, $mDefault = null)
 	{
 		if ($this->oPluginManager)
 		{

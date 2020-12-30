@@ -9,7 +9,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$this->addHook('filter.app-data', 'FilterAppData');
 		$this->addHook('filter.action-params', 'FilterActionParams');
-		$this->addHook('ajax.action-pre-call', 'AjaxActionPreCall');
+		$this->addHook('json.action-pre-call', 'JsonActionPreCall');
 		$this->addHook('filter.send-message', 'FilterSendMessage');
 		$this->addHook('main.fabrica', 'MainFabrica');
 	}
@@ -63,7 +63,7 @@ class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return ($oAccount && $oAccount->Email() === $this->Config()->Get('plugin', 'email'));
 	}
 
-	public function AjaxActionPreCall($sAction)
+	public function JsonActionPreCall($sAction)
 	{
 		if ('AccountSetup' === $sAction &&
 			$this->isDemoAccount($this->Manager()->Actions()->GetAccount()))

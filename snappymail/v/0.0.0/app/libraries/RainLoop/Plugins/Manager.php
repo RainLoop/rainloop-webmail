@@ -47,7 +47,7 @@ class Manager
 	/**
 	 * @var array
 	 */
-	private $aAdditionalAjax;
+	private $aAdditionalJson;
 
 	/**
 	 * @var array
@@ -76,8 +76,8 @@ class Manager
 		$this->aTemplates = array();
 		$this->aAdminTemplates = array();
 
-		$this->aAjaxFilters = array();
-		$this->aAdditionalAjax = array();
+		$this->aJsonFilters = array();
+		$this->aAdditionalJson = array();
 		$this->aProcessTemplate = array();
 
 		$this->bIsEnabled = (bool) $this->oActions->Config()->Get('plugins', 'enable', false);
@@ -438,36 +438,36 @@ class Manager
 	/**
 	 * @param mixed $mCallback
 	 */
-	public function AddAdditionalAjaxAction(string $sActionName, $mCallback) : self
+	public function AddAdditionalJsonAction(string $sActionName, $mCallback) : self
 	{
 		if ($this->bIsEnabled && \is_callable($mCallback) && 0 < \strlen($sActionName))
 		{
 			$sActionName = 'DoPlugin'.$sActionName;
 
-			if (!isset($this->aAdditionalAjax[$sActionName]))
+			if (!isset($this->aAdditionalJson[$sActionName]))
 			{
-				$this->aAdditionalAjax[$sActionName] = $mCallback;
+				$this->aAdditionalJson[$sActionName] = $mCallback;
 			}
 		}
 
 		return $this;
 	}
 
-	public function HasAdditionalAjax(string $sActionName) : bool
+	public function HasAdditionalJson(string $sActionName) : bool
 	{
-		return $this->bIsEnabled && isset($this->aAdditionalAjax[$sActionName]);
+		return $this->bIsEnabled && isset($this->aAdditionalJson[$sActionName]);
 	}
 
 	/**
 	 * @return mixed
 	 */
-	public function RunAdditionalAjax(string $sActionName)
+	public function RunAdditionalJson(string $sActionName)
 	{
 		if ($this->bIsEnabled)
 		{
-			if (isset($this->aAdditionalAjax[$sActionName]))
+			if (isset($this->aAdditionalJson[$sActionName]))
 			{
-				return \call_user_func($this->aAdditionalAjax[$sActionName]);
+				return \call_user_func($this->aAdditionalJson[$sActionName]);
 			}
 		}
 
@@ -479,7 +479,7 @@ class Manager
 	 *
 	 * @return mixed
 	 */
-	public function AjaxResponseHelper(string $sFunctionName, $mData)
+	public function JsonResponseHelper(string $sFunctionName, $mData)
 	{
 		return $this->oActions->DefaultResponse($sFunctionName, $mData);
 	}

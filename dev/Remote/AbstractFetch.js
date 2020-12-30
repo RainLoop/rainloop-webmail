@@ -2,11 +2,11 @@ import { StorageResultType, Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { serverRequest } from 'Common/Links';
 
-let iAjaxErrorCount = 0,
+let iJsonErrorCount = 0,
 	iTokenErrorCount = 0,
 	bUnload = false;
 
-const getURL = (add = '') => serverRequest('Ajax') + add,
+const getURL = (add = '') => serverRequest('Json') + add,
 
 updateToken = data => {
 	if (data.UpdateToken) {
@@ -28,7 +28,7 @@ checkResponseError = data => {
 			Notification.UnknownError
 		].includes(err)
 	) {
-		++iAjaxErrorCount;
+		++iJsonErrorCount;
 	}
 
 	if (Notification.InvalidToken === err) {
@@ -39,7 +39,7 @@ checkResponseError = data => {
 		rl.logoutReload();
 	}
 
-	if (window.rl && (data.ClearAuth || data.Logout || 7 < iAjaxErrorCount)) {
+	if (window.rl && (data.ClearAuth || data.Logout || 7 < iJsonErrorCount)) {
 		rl.hash.clear();
 
 		if (!data.ClearAuth) {
@@ -118,7 +118,7 @@ class AbstractFetchRemote
 				if (StorageResultType.Success === sType && data && !data.Result) {
 					checkResponseError(data);
 				} else if (StorageResultType.Success === sType && data && data.Result) {
-					iAjaxErrorCount = iTokenErrorCount = 0;
+					iJsonErrorCount = iTokenErrorCount = 0;
 				}
 
 				if (fCallback) {
@@ -152,7 +152,7 @@ class AbstractFetchRemote
 
 		}).catch(err => {
 			if (err.name == 'AbortError') { // handle abort()
-				err = Notification.AjaxAbort;
+				err = Notification.JsonAbort;
 			}
 			return Promise.reject(err);
 		});
@@ -222,7 +222,7 @@ class AbstractFetchRemote
 			this.abort(action, true);
 
 			if (!data) {
-				return Promise.reject(Notification.AjaxParse);
+				return Promise.reject(Notification.JsonParse);
 			}
 
 			updateToken(data);
@@ -249,13 +249,13 @@ class AbstractFetchRemote
 			if (!data.Result || action !== data.Action) {
 				checkResponseError(data);
 				const err = data ? data.ErrorCode : null;
-				return Promise.reject(err || Notification.AjaxFalse);
+				return Promise.reject(err || Notification.JsonFalse);
 			}
 
 			return data;
 		}).catch(err => {
 			if (err.name == 'AbortError') { // handle abort()
-				return Promise.reject(Notification.AjaxAbort);
+				return Promise.reject(Notification.JsonAbort);
 			}
 			return Promise.reject(err);
 		});

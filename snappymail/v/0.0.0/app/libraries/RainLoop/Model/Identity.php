@@ -131,17 +131,17 @@ class Identity implements JsonSerializable
 		return $this;
 	}
 
-	public function FromJSON(array $aData, bool $bAjax = false): bool
+	public function FromJSON(array $aData, bool $bJson = false): bool
 	{
 		if (!empty($aData['Email'])) {
 			$this->sId = !empty($aData['Id']) ? $aData['Id'] : '';
-			$this->sEmail = $bAjax ? Utils::IdnToAscii($aData['Email'], true) : $aData['Email'];
+			$this->sEmail = $bJson ? Utils::IdnToAscii($aData['Email'], true) : $aData['Email'];
 			$this->sName = isset($aData['Name']) ? $aData['Name'] : '';
 			$this->sReplyTo = !empty($aData['ReplyTo']) ? $aData['ReplyTo'] : '';
 			$this->sBcc = !empty($aData['Bcc']) ? $aData['Bcc'] : '';
 			$this->sSignature = !empty($aData['Signature']) ? $aData['Signature'] : '';
 			$this->bSignatureInsertBefore = isset($aData['SignatureInsertBefore']) ?
-				($bAjax ? '1' === $aData['SignatureInsertBefore'] : !!$aData['SignatureInsertBefore']) : true;
+				($bJson ? '1' === $aData['SignatureInsertBefore'] : !!$aData['SignatureInsertBefore']) : true;
 
 			return true;
 		}

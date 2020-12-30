@@ -87,7 +87,7 @@ export function settingsSaveHelperSimpleFunction(koTrigger, context) {
 }
 
 let __themeTimer = 0,
-	__themeAjax = null;
+	__themeJson = null;
 
 /**
  * @param {string} value
@@ -98,7 +98,7 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 	const themeLink = doc.getElementById('app-theme-link'),
 		clearTimer = () => {
 			__themeTimer = setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
-			__themeAjax = null;
+			__themeJson = null;
 		};
 
 	let themeStyle = doc.getElementById('app-theme-style'),
@@ -118,13 +118,13 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 
 		themeTrigger(SaveSettingsStep.Animate);
 
-		if (__themeAjax) {
-			__themeAjax.abort();
+		if (__themeJson) {
+			__themeJson.abort();
 		}
 		let init = {};
 		if (window.AbortController) {
-			__themeAjax = new AbortController();
-			init.signal = __themeAjax.signal;
+			__themeJson = new AbortController();
+			init.signal = __themeJson.signal;
 		}
 		rl.fetchJSON(url, init)
 			.then(data => {

@@ -11,7 +11,7 @@ class CustomAdminSettingsTabPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$this->addJs('js/CustomAdminSettings.js', true); // add js file
 
-		$this->addAjaxHook('AjaxAdminGetData', 'AjaxAdminGetData');
+		$this->addJsonHook('JsonAdminGetData', 'JsonAdminGetData');
 
 		$this->addTemplate('templates/PluginCustomAdminSettingsTab.html', true);
 	}
@@ -19,9 +19,9 @@ class CustomAdminSettingsTabPlugin extends \RainLoop\Plugins\AbstractPlugin
 	/**
 	 * @return array
 	 */
-	public function AjaxAdminGetData()
+	public function JsonAdminGetData()
 	{
-		return $this->ajaxResponse(__FUNCTION__, array(
+		return $this->jsonResponse(__FUNCTION__, array(
 			'PHP' => phpversion()
 		));
 	}
