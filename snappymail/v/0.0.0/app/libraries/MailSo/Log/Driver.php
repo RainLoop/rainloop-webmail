@@ -191,7 +191,7 @@ abstract class Driver
 
 	protected function getTimeWithMicroSec() : string
 	{
-		return \substr((new \DateTime('now', $this->DateTimeZone))->format('Y-m-d H:i:s.u'), 0, -3);
+		return \substr((new \DateTime('now', $this->oTimeZone))->format('Y-m-d H:i:s.u'), 0, -3);
 	}
 
 	protected function getTypedPrefix(int $iType, string $sName = '') : string
