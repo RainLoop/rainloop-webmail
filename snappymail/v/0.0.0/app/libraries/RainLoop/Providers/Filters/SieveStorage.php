@@ -2,7 +2,7 @@
 
 namespace RainLoop\Providers\Filters;
 
-class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
+class SieveStorage implements FiltersInterface
 {
 	const NEW_LINE = "\r\n";
 
@@ -144,7 +144,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		return false;
 	}
 
-	private function conditionToSieveScript(\RainLoop\Providers\Filters\Classes\FilterCondition $oCondition, array &$aCapa) : string
+	private function conditionToSieveScript(Classes\FilterCondition $oCondition, array &$aCapa) : string
 	{
 		$sResult = '';
 		$sTypeWord = '';
@@ -155,27 +155,27 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 
 		if (0 < \strlen($sValue) ||
 			(0 < \strlen($sValue) && 0 < \strlen($sValueSecond) &&
-				\RainLoop\Providers\Filters\Enumerations\ConditionField::HEADER === $oCondition->Field()))
+				Enumerations\ConditionField::HEADER === $oCondition->Field()))
 		{
 			switch ($oCondition->Type())
 			{
-				case \RainLoop\Providers\Filters\Enumerations\ConditionType::TEXT:
-				case \RainLoop\Providers\Filters\Enumerations\ConditionType::RAW:
-				case \RainLoop\Providers\Filters\Enumerations\ConditionType::OVER:
-				case \RainLoop\Providers\Filters\Enumerations\ConditionType::UNDER:
+				case Enumerations\ConditionType::TEXT:
+				case Enumerations\ConditionType::RAW:
+				case Enumerations\ConditionType::OVER:
+				case Enumerations\ConditionType::UNDER:
 					$sTypeWord = ':' . \strtolower($oCondition->Type());
 					break;
-				case \RainLoop\Providers\Filters\Enumerations\ConditionType::NOT_EQUAL_TO:
+				case Enumerations\ConditionType::NOT_EQUAL_TO:
 					$sResult .= 'not ';
-				case \RainLoop\Providers\Filters\Enumerations\ConditionType::EQUAL_TO:
+				case Enumerations\ConditionType::EQUAL_TO:
 					$sTypeWord = ':is';
 					break;
-				case \RainLoop\Providers\Filters\Enumerations\ConditionType::NOT_CONTAINS:
+				case Enumerations\ConditionType::NOT_CONTAINS:
 					$sResult .= 'not ';
-				case \RainLoop\Providers\Filters\Enumerations\ConditionType::CONTAINS:
+				case Enumerations\ConditionType::CONTAINS:
 					$sTypeWord = ':contains';
 					break;
-				case \RainLoop\Providers\Filters\Enumerations\ConditionType::REGEX:
+				case Enumerations\ConditionType::REGEX:
 					$sTypeWord = ':regex';
 					$aCapa['regex'] = true;
 					break;
@@ -187,24 +187,24 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 
 			switch ($oCondition->Field())
 			{
-				case \RainLoop\Providers\Filters\Enumerations\ConditionField::FROM:
+				case Enumerations\ConditionField::FROM:
 					$sResult .= 'header '.$sTypeWord.' ["From"]';
 					break;
-				case \RainLoop\Providers\Filters\Enumerations\ConditionField::RECIPIENT:
+				case Enumerations\ConditionField::RECIPIENT:
 					$sResult .= 'header '.$sTypeWord.' ["To", "CC"]';
 					break;
-				case \RainLoop\Providers\Filters\Enumerations\ConditionField::SUBJECT:
+				case Enumerations\ConditionField::SUBJECT:
 					$sResult .= 'header '.$sTypeWord.' ["Subject"]';
 					break;
-				case \RainLoop\Providers\Filters\Enumerations\ConditionField::HEADER:
+				case Enumerations\ConditionField::HEADER:
 					$sResult .= 'header '.$sTypeWord.' ["'.$this->quote($sValueSecond).'"]';
 					break;
-				case \RainLoop\Providers\Filters\Enumerations\ConditionField::BODY:
+				case Enumerations\ConditionField::BODY:
 					// :text :raw :content
 					$sResult .= 'body '.$sTypeWord.' :contains';
 					$aCapa['body'] = true;
 					break;
-				case \RainLoop\Providers\Filters\Enumerations\ConditionField::SIZE:
+				case Enumerations\ConditionField::SIZE:
 					$sResult .= 'size '.$sTypeWord;
 					break;
 				default:
@@ -216,8 +216,8 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 			if ($bTrue)
 			{
 				if (\in_array($oCondition->Field(), array(
-					\RainLoop\Providers\Filters\Enumerations\ConditionField::FROM,
-					\RainLoop\Providers\Filters\Enumerations\ConditionField::RECIPIENT
+					Enumerations\ConditionField::FROM,
+					Enumerations\ConditionField::RECIPIENT
 				)) && false !== \strpos($sValue, ','))
 				{
 					$self = $this;
@@ -227,7 +227,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 
 					$sResult .= ' ['.\trim(\implode(', ', $aValue)).']';
 				}
-				else if (\RainLoop\Providers\Filters\Enumerations\ConditionField::SIZE === $oCondition->Field())
+				else if (Enumerations\ConditionField::SIZE === $oCondition->Field())
 				{
 					$sResult .= ' '.$this->quote($sValue);
 				}
@@ -247,9 +247,9 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		return $sResult;
 	}
 
-	private function filterToSieveScript(\RainLoop\Providers\Filters\Classes\Filter $oFilter, array &$aCapa) : string
+	private function filterToSieveScript(Classes\Filter $oFilter, array &$aCapa) : string
 	{
-		$sNL = \RainLoop\Providers\Filters\SieveStorage::NEW_LINE;
+		$sNL = static::NEW_LINE;
 		$sTab = '    ';
 
 		$bAll = false;
@@ -259,7 +259,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		$aConditions = $oFilter->Conditions();
 		if (1 < \count($aConditions))
 		{
-			if (\RainLoop\Providers\Filters\Enumerations\ConditionsType::ANY ===
+			if (Enumerations\ConditionsType::ANY ===
 				$oFilter->ConditionsType())
 			{
 				$aResult[] = 'if anyof(';
@@ -313,9 +313,9 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 		}
 
 		if ($oFilter->MarkAsRead() && \in_array($oFilter->ActionType(), array(
-			\RainLoop\Providers\Filters\Enumerations\ActionType::NONE,
-			\RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO,
-			\RainLoop\Providers\Filters\Enumerations\ActionType::FORWARD
+			Enumerations\ActionType::NONE,
+			Enumerations\ActionType::MOVE_TO,
+			Enumerations\ActionType::FORWARD
 		)))
 		{
 			$aCapa['imap4flags'] = true;
@@ -324,20 +324,20 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 
 		switch ($oFilter->ActionType())
 		{
-			case \RainLoop\Providers\Filters\Enumerations\ActionType::NONE:
+			case Enumerations\ActionType::NONE:
 				if ($oFilter->Stop())
 				{
 					$aResult[] = $sTab.'stop;';
 				}
 				break;
-			case \RainLoop\Providers\Filters\Enumerations\ActionType::DISCARD:
+			case Enumerations\ActionType::DISCARD:
 				$aResult[] = $sTab.'discard;';
 				if ($oFilter->Stop())
 				{
 					$aResult[] = $sTab.'stop;';
 				}
 				break;
-			case \RainLoop\Providers\Filters\Enumerations\ActionType::VACATION:
+			case Enumerations\ActionType::VACATION:
 				$sValue = \trim($oFilter->ActionValue());
 				$sValueSecond = \trim($oFilter->ActionValueSecond());
 				$sValueThird = \trim($oFilter->ActionValueThird());
@@ -387,7 +387,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					$aResult[] = $sTab.'# @Error (vacation): empty action value';
 				}
 				break;
-			case \RainLoop\Providers\Filters\Enumerations\ActionType::REJECT:
+			case Enumerations\ActionType::REJECT:
 				$sValue = \trim($oFilter->ActionValue());
 				if (0 < \strlen($sValue))
 				{
@@ -404,7 +404,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					$aResult[] = $sTab.'# @Error (reject): empty action value';
 				}
 				break;
-			case \RainLoop\Providers\Filters\Enumerations\ActionType::FORWARD:
+			case Enumerations\ActionType::FORWARD:
 				$sValue = $oFilter->ActionValue();
 				if (0 < \strlen($sValue))
 				{
@@ -425,7 +425,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 					$aResult[] = $sTab.'# @Error (redirect): empty action value';
 				}
 				break;
-			case \RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO:
+			case Enumerations\ActionType::MOVE_TO:
 				$sValue = $oFilter->ActionValue();
 				if (0 < \strlen($sValue))
 				{
@@ -461,7 +461,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 
 	private function collectionToFileString(array $aFilters) : string
 	{
-		$sNL = \RainLoop\Providers\Filters\SieveStorage::NEW_LINE;
+		$sNL = static::NEW_LINE;
 
 		$aCapa = array();
 		$aParts = array();
@@ -511,7 +511,7 @@ class SieveStorage implements \RainLoop\Providers\Filters\FiltersInterface
 						$sDecodedLine = \base64_decode(\preg_replace('/\\s+/s', '', $sEncodedLine));
 						if (!empty($sDecodedLine))
 						{
-							$oItem = new \RainLoop\Providers\Filters\Classes\Filter();
+							$oItem = new Classes\Filter();
 							if ($oItem && $oItem->unserializeFromJson($sDecodedLine))
 							{
 								$aResult[] = $oItem;
