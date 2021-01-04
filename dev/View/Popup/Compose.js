@@ -1112,7 +1112,7 @@ class ComposePopupView extends AbstractViewNext {
 								.waiting(false)
 								.uploading(false)
 								.complete(true)
-								.error(getUploadErrorDescByCode(UploadErrorCode.FileNoUploaded));
+								.error(getUploadErrorDescByCode(UploadErrorCode.NoFileUploaded));
 						}
 					});
 				}

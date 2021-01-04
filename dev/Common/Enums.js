@@ -138,9 +138,9 @@ export const UploadErrorCode = {
 	Normal: 0,
 	FileIsTooBig: 1,
 	FilePartiallyUploaded: 2,
-	FileNoUploaded: 3,
+	NoFileUploaded: 3,
 	MissingTempFolder: 4,
-	FileOnSaveingError: 5,
+	OnSavingFile: 5,
 	FileType: 98,
 	Unknown: 99
 };
@@ -353,9 +353,6 @@ export const Notification = {
 	AccessError: 103,
 	ConnectionError: 104,
 	CaptchaError: 105,
-	SocialFacebookLoginAccessDisable: 106,
-	SocialTwitterLoginAccessDisable: 107,
-	SocialGoogleLoginAccessDisable: 108,
 	DomainNotAllowed: 109,
 	AccountNotAllowed: 110,
 
@@ -416,8 +413,6 @@ export const Notification = {
 	JsonParse: 952,
 //	JsonTimeout: 953,
 
-	UnknownNotification: 999,
+	UnknownNotification: 998,
 	UnknownError: 999
-
-	,getKeyByValue: function(v) { return Object.keys(this).find(key => this[key] === v); }
 };

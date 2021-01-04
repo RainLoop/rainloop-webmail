@@ -8,7 +8,7 @@ import {
 
 import { KeyState } from 'Common/Enums';
 import { rootAdmin, rootUser } from 'Common/Links';
-import { initOnStartOrLangChange, initNotificationLanguage } from 'Common/Translator';
+import { initOnStartOrLangChange } from 'Common/Translator';
 
 import LanguageStore from 'Stores/Language';
 import ThemeStore from 'Stores/Theme';
@@ -94,7 +94,7 @@ class AbstractApp {
 			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
 		}
 
-		initOnStartOrLangChange(initNotificationLanguage);
+		initOnStartOrLangChange();
 
 		if (!mobile) {
 			// mobile

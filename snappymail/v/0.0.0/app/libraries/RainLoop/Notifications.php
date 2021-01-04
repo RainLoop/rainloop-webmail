@@ -9,9 +9,6 @@ class Notifications
 	const AccessError = 103;
 	const ConnectionError = 104;
 	const CaptchaError = 105;
-	const SocialFacebookLoginAccessDisable = 106;
-	const SocialTwitterLoginAccessDisable = 107;
-	const SocialGoogleLoginAccessDisable = 108;
 	const DomainNotAllowed = 109;
 	const AccountNotAllowed = 110;
 
@@ -84,9 +81,6 @@ class Notifications
 			self::AccessError => 'AccessError',
 			self::ConnectionError => 'ConnectionError',
 			self::CaptchaError => 'CaptchaError',
-			self::SocialFacebookLoginAccessDisable => 'SocialFacebookLoginAccessDisable',
-			self::SocialTwitterLoginAccessDisable => 'SocialTwitterLoginAccessDisable',
-			self::SocialGoogleLoginAccessDisable => 'SocialGoogleLoginAccessDisable',
 			self::DomainNotAllowed => 'DomainNotAllowed',
 			self::AccountNotAllowed => 'AccountNotAllowed',
 			self::AccountTwoFactorAuthRequired => 'AccountTwoFactorAuthRequired',

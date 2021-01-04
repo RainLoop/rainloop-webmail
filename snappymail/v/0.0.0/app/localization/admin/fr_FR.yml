@@ -174,7 +174,7 @@ fr_FR:
     CURRENT_PASSWORD_INCORRECT: "Le mot de passe actuel est incorrect"
     NEW_PASSWORD_SHORT: "Le mot de passe est trop court"
     NEW_PASSWORD_WEAK: "Le mot de passe n'est pas assez fort"
-    NEW_PASSWORD_FORBIDDENT: "Le mot de passe contient des caractères invalides"
+    NEW_PASSWORD_FORBIDDEN: "Le mot de passe contient des caractères invalides"
     CONTACTS_SYNC_ERROR: "Erreur de synchronisation des contacts"
     CANT_GET_MESSAGE_LIST: "Impossible d'obtenir la liste des messages"
     CANT_GET_MESSAGE: "Impossible d'obtenir le message"

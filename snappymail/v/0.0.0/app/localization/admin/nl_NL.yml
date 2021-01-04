@@ -173,7 +173,7 @@ nl_NL:
     CURRENT_PASSWORD_INCORRECT: "Huidig wachtwoord is onjuist"
     NEW_PASSWORD_SHORT: "Wachtwoord is te kort"
     NEW_PASSWORD_WEAK: "Wachtwoord is te gemakkelijk"
-    NEW_PASSWORD_FORBIDDENT: "Wachtwoord bevat verboden karakters"
+    NEW_PASSWORD_FORBIDDEN: "Wachtwoord bevat verboden karakters"
     CONTACTS_SYNC_ERROR: "Contactpersonen synchronisatie fout"
     CANT_GET_MESSAGE_LIST: "Kan berichtenlijst niet ophalen"
     CANT_GET_MESSAGE: "Kan bericht niet ophalen"

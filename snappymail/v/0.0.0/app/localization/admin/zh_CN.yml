@@ -174,7 +174,7 @@ zh_CN:
     CURRENT_PASSWORD_INCORRECT: "当前密码不正确"
     NEW_PASSWORD_SHORT: "密码太短"
     NEW_PASSWORD_WEAK: "密码过于简单"
-    NEW_PASSWORD_FORBIDDENT: "密码包含禁止使用的字符"
+    NEW_PASSWORD_FORBIDDEN: "密码包含禁止使用的字符"
     CONTACTS_SYNC_ERROR: "联系人同步错误"
     CANT_GET_MESSAGE_LIST: "无法获取邮件列表"
     CANT_GET_MESSAGE: "无法获取邮件"
