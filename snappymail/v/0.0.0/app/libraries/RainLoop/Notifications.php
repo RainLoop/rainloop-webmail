@@ -70,73 +70,14 @@ class Notifications
 	const UnknownNotification = 998;
 	const UnknownError = 999;
 
-	/**
-	 * @staticvar array $aMap
-	 */
 	static public function GetNotificationsMessage(int $iCode, ?\Throwable $oPrevious = null) : string
 	{
-		static $aMap = array(
-			self::InvalidToken => 'InvalidToken',
-			self::AuthError => 'AuthError',
-			self::AccessError => 'AccessError',
-			self::ConnectionError => 'ConnectionError',
-			self::CaptchaError => 'CaptchaError',
-			self::DomainNotAllowed => 'DomainNotAllowed',
-			self::AccountNotAllowed => 'AccountNotAllowed',
-			self::AccountTwoFactorAuthRequired => 'AccountTwoFactorAuthRequired',
-			self::AccountTwoFactorAuthError => 'AccountTwoFactorAuthError',
-
-			self::CouldNotSaveNewPassword => 'CouldNotSaveNewPassword',
-			self::CurrentPasswordIncorrect => 'CurrentPasswordIncorrect',
-			self::NewPasswordShort => 'NewPasswordShort',
-			self::NewPasswordWeak => 'NewPasswordWeak',
-			self::NewPasswordForbidden => 'NewPasswordForbidden',
-
-			self::ContactsSyncError => 'ContactsSyncError',
-
-			self::CantGetMessageList => 'CantGetMessageList',
-			self::CantGetMessage => 'CantGetMessage',
-			self::CantDeleteMessage => 'CantDeleteMessage',
-			self::CantMoveMessage => 'CantMoveMessage',
-			self::CantSaveMessage => 'CantSaveMessage',
-			self::CantSendMessage => 'CantSendMessage',
-			self::InvalidRecipients => 'InvalidRecipients',
-			self::CantSaveFilters => 'CantSaveFilters',
-			self::CantGetFilters => 'CantGetFilters',
-			self::FiltersAreNotCorrect => 'FiltersAreNotCorrect',
-
-			self::CantCreateFolder => 'CantCreateFolder',
-			self::CantRenameFolder => 'CantRenameFolder',
-			self::CantDeleteFolder => 'CantDeleteFolder',
-			self::CantSubscribeFolder => 'CantSubscribeFolder',
-			self::CantUnsubscribeFolder => 'CantUnsubscribeFolder',
-			self::CantDeleteNonEmptyFolder => 'CantDeleteNonEmptyFolder',
-			self::CantSaveSettings => 'CantSaveSettings',
-			self::CantSavePluginSettings => 'CantSavePluginSettings',
-			self::DomainAlreadyExists => 'DomainAlreadyExists',
-			self::CantInstallPackage => 'CantInstallPackage',
-			self::CantDeletePackage => 'CantDeletePackage',
-			self::InvalidPluginPackage => 'InvalidPluginPackage',
-			self::UnsupportedPluginPackage => 'UnsupportedPluginPackage',
-			self::LicensingServerIsUnavailable => 'LicensingServerIsUnavailable',
-			self::LicensingExpired => 'LicensingExpired',
-			self::LicensingBanned => 'LicensingBanned',
-			self::DemoSendMessageError => 'DemoSendMessageError',
-			self::DemoAccountError => 'DemoAccountError',
-			self::AccountAlreadyExists => 'AccountAlreadyExists',
-			self::AccountDoesNotExist => 'AccountDoesNotExist',
-			self::MailServerError => 'MailServerError',
-			self::ClientViewError => 'ClientViewError',
-			self::InvalidInputArgument => 'InvalidInputArgument',
-			self::UnknownNotification => 'UnknownNotification',
-			self::UnknownError => 'UnknownError'
-		);
-
 		if (self::ClientViewError === $iCode && $oPrevious)
 		{
 			return $oPrevious->getMessage();
 		}
 
-		return isset($aMap[$iCode]) ? $aMap[$iCode].'['.$iCode.']' : 'UnknownNotification['.$iCode.']';
+		$oClass = new \ReflectionClass(__CLASS__);
+		return (\array_search($iCode, $oClass->getConstants(), true) ?: 'UnknownNotification') . '['.$iCode.']';
 	}
 }
