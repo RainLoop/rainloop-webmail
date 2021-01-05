@@ -17,40 +17,17 @@ namespace MailSo\Log;
  */
 class Logger extends \MailSo\Base\Collection
 {
-	/**
-	 * @var bool
-	 */
-	private $bUsed;
+	private $bUsed = false;
 
-	/**
-	 * @var array
-	 */
-	private $aForbiddenTypes;
+	private $aForbiddenTypes = [];
 
-	/**
-	 * @var array
-	 */
-	private $aSecretWords;
+	private $aSecretWords = [];
 
-	/**
-	 * @var bool
-	 */
-	private $bShowSecter;
-
-	/**
-	 * @var bool
-	 */
-	private $bHideErrorNotices;
+	private $bShowSecter = false;
 
 	function __construct(bool $bRegPhpErrorHandler = true)
 	{
 		parent::__construct();
-
-		$this->bUsed = false;
-		$this->aForbiddenTypes = array();
-		$this->aSecretWords = array();
-		$this->bShowSecter = false;
-		$this->bHideErrorNotices = false;
 
 		if ($bRegPhpErrorHandler)
 		{
@@ -125,13 +102,7 @@ class Logger extends \MailSo\Base\Collection
 
 	public function SetShowSecter(bool $bShow) : self
 	{
-		$this->bShowSecter = !!$bShow;
-		return $this;
-	}
-
-	public function HideErrorNotices(bool $bValue) : self
-	{
-		$this->bHideErrorNotices = !!$bValue;
+		$this->bShowSecter = $bShow;
 		return $this;
 	}
 
@@ -155,21 +126,23 @@ class Logger extends \MailSo\Base\Collection
 
 	public function __phpErrorHandler(int $iErrNo, string $sErrStr, string $sErrFile, int $iErrLine) : bool
 	{
-		$iType = \MailSo\Log\Enumerations\Type::NOTICE_PHP;
-		switch ($iErrNo)
-		{
-			 case E_USER_ERROR:
-				 $iType = \MailSo\Log\Enumerations\Type::ERROR_PHP;
-				 break;
-			 case E_USER_WARNING:
-				 $iType = \MailSo\Log\Enumerations\Type::WARNING_PHP;
-				 break;
+		if (\error_reporting() & $iErrNo) {
+			$iType = \MailSo\Log\Enumerations\Type::NOTICE_PHP;
+			switch ($iErrNo)
+			{
+				 case E_USER_ERROR:
+					 $iType = \MailSo\Log\Enumerations\Type::ERROR_PHP;
+					 break;
+				 case E_USER_WARNING:
+					 $iType = \MailSo\Log\Enumerations\Type::WARNING_PHP;
+					 break;
+			}
+
+			$this->Write($sErrFile.' [line:'.$iErrLine.', code:'.$iErrNo.']', $iType, 'PHP');
+			$this->Write('Error: '.$sErrStr, $iType, 'PHP');
 		}
-
-		$this->Write($sErrFile.' [line:'.$iErrLine.', code:'.$iErrNo.']', $iType, 'PHP');
-		$this->Write('Error: '.$sErrStr, $iType, 'PHP');
-
-		return !!(\MailSo\Log\Enumerations\Type::NOTICE === $iType && $this->bHideErrorNotices);
+		/* forward to standard PHP error handler */
+		return false;
 	}
 
 	public function __loggerShutDown() : void
