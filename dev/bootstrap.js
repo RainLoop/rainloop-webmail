@@ -90,15 +90,13 @@ export default (App) => {
 			cache: 'no-cache',
 			redirect: 'error',
 			referrerPolicy: 'no-referrer',
-			credentials: 'same-origin'
+			credentials: 'same-origin',
+			headers: {}
 		}, init);
-
+		init.headers.Accept = 'application/json';
 		if (postData) {
 			init.method = 'POST';
-			init.headers = {
-//				'Content-Type': 'application/json'
-				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-			};
+			init.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
 			postData.XToken = rl.settings.app('token');
 //			init.body = JSON.stringify(postData);
 			const formData = new FormData(),
@@ -115,7 +113,30 @@ export default (App) => {
 			init.body = new URLSearchParams(formData);
 		}
 
-		return fetch(resource, init).then(response => response.json());
+		return fetch(resource, init).then(response => {
+			if (!response.ok) {
+//				return Promise.reject('Network response error: ' + response.status);
+				throw new Error('Network response error: ' + response.status);
+			}
+			/* TODO: use this for non-developers?
+			response.clone()
+			let data = response.text();
+			try {
+				return JSON.parse(data);
+			} catch (e) {
+				console.error(e);
+//				console.log(data);
+				return Promise.reject(Notification.JsonParse);
+				return {
+					Result: false,
+					ErrorCode: 952, // Notification.JsonParse
+					ErrorMessage: e.message,
+					ErrorMessageAdditional: data
+				}
+			}
+			*/
+			return response.json();
+		});
 	};
 
 	window.__APP_BOOT = fErrorCallback => {

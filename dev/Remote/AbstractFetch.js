@@ -17,54 +17,73 @@ updateToken = data => {
 
 checkResponseError = data => {
 	const err = data ? data.ErrorCode : null;
-	if ([
-			Notification.AuthError,
-			Notification.AccessError,
-			Notification.ConnectionError,
-			Notification.DomainNotAllowed,
-			Notification.AccountNotAllowed,
-			Notification.MailServerError,
-			Notification.UnknownNotification,
-			Notification.UnknownError
-		].includes(err)
-	) {
-		++iJsonErrorCount;
-	}
-
-	if (Notification.InvalidToken === err) {
-		++iTokenErrorCount;
-	}
-
-	if (10 < iTokenErrorCount) {
+	if (Notification.InvalidToken === err && 10 < ++iTokenErrorCount) {
 		rl.logoutReload();
-	}
-
-	if (window.rl && (data.ClearAuth || data.Logout || 7 < iJsonErrorCount)) {
-		rl.hash.clear();
-
-		if (!data.ClearAuth) {
-			rl.logoutReload();
+	} else {
+		if ([
+				Notification.AuthError,
+				Notification.AccessError,
+				Notification.ConnectionError,
+				Notification.DomainNotAllowed,
+				Notification.AccountNotAllowed,
+				Notification.MailServerError,
+				Notification.UnknownNotification,
+				Notification.UnknownError
+			].includes(err)
+		) {
+			++iJsonErrorCount;
+		}
+		if (window.rl && (data.ClearAuth || data.Logout || 7 < iJsonErrorCount)) {
+			rl.hash.clear();
+			if (!data.ClearAuth) {
+				rl.logoutReload();
+			}
 		}
 	}
 },
 
-oRequests = {};
+oRequests = {},
+
+abort = (sAction, bClearOnly) => {
+	if (oRequests[sAction]) {
+		if (!bClearOnly && oRequests[sAction].abort) {
+//			oRequests[sAction].__aborted = true;
+			oRequests[sAction].abort();
+		}
+
+		oRequests[sAction] = null;
+		delete oRequests[sAction];
+	}
+},
+
+fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
+	sGetAdd = pString(sGetAdd);
+	params = params || {};
+	params.Action = action;
+	let init = {};
+	if (window.AbortController) {
+		abort(action);
+		const controller = new AbortController();
+		timeout && setTimeout(() => controller.abort(), timeout);
+		oRequests[action] = controller;
+		init.signal = controller.signal;
+	}
+	return rl.fetchJSON(getURL(sGetAdd), init, sGetAdd ? null : params)
+	.then(jsonCallback)
+	.catch(err => {
+		if (err.name == 'AbortError') { // handle abort()
+			err = Notification.JsonAbort;
+		}
+		return Promise.reject(err);
+	});
+};
 
 addEventListener('unload', () => bUnload = true);
 
-class AbstractFetchRemote
+export class AbstractFetchRemote
 {
 	abort(sAction, bClearOnly) {
-		if (oRequests[sAction]) {
-			if (!bClearOnly && oRequests[sAction].abort) {
-//				oRequests[sAction].__aborted = true;
-				oRequests[sAction].abort();
-			}
-
-			oRequests[sAction] = null;
-			delete oRequests[sAction];
-		}
-
+		abort(sAction, bClearOnly);
 		return this;
 	}
 
@@ -78,84 +97,74 @@ class AbstractFetchRemote
 	 */
 	defaultRequest(fCallback, sAction, params, iTimeout, sGetAdd, abortActions) {
 		params = params || {};
-		params.Action = sAction;
 
-		sGetAdd = pString(sGetAdd);
+		const start = Date.now();
 
-		const start = Date.now(),
-			action = params.Action || '';
-
-		if (action && abortActions) {
-			abortActions.forEach(actionToAbort => this.abort(actionToAbort));
+		if (sAction && abortActions) {
+			abortActions.forEach(actionToAbort => abort(actionToAbort));
 		}
 
-		return rl.fetchJSON(getURL(sGetAdd), {
-				signal: this.createAbort(action, undefined === iTimeout ? 30000 : pInt(iTimeout))
-			}, sGetAdd ? null : params
-		).then(data => {
-			let cached = false;
-			if (data) {
-				if (data.Time) {
-					cached = pInt(data.Time) > Date.now() - start;
+		return fetchJSON(sAction, sGetAdd,
+			params,
+			undefined === iTimeout ? 30000 : pInt(iTimeout),
+			data => {
+				let cached = false;
+				if (data) {
+					if (data.Time) {
+						cached = pInt(data.Time) > Date.now() - start;
+					}
+
+					updateToken(data);
 				}
 
-				updateToken(data);
-			}
-
-			let sType = 'success';
-			if (action && oRequests[action]) {
-				if (oRequests[action].__aborted) {
-					sType = 'abort';
-				}
-				this.abort(action, true);
-			}
-
-			const fCall = () => {
-				if (StorageResultType.Success !== sType && bUnload) {
-					sType = StorageResultType.Unload;
+				let sType = 'success';
+				if (sAction && oRequests[sAction]) {
+					if (oRequests[sAction].__aborted) {
+						sType = 'abort';
+					}
+					abort(sAction, true);
 				}
 
-				if (StorageResultType.Success === sType && data && !data.Result) {
-					checkResponseError(data);
-				} else if (StorageResultType.Success === sType && data && data.Result) {
-					iJsonErrorCount = iTokenErrorCount = 0;
+				const fCall = () => {
+					if (StorageResultType.Success !== sType && bUnload) {
+						sType = StorageResultType.Unload;
+					}
+
+					if (StorageResultType.Success === sType && data) {
+						if (data.Result) {
+							iJsonErrorCount = iTokenErrorCount = 0;
+						} else {
+							checkResponseError(data);
+						}
+					}
+
+					if (fCallback) {
+						fCallback(
+							sType,
+							StorageResultType.Success === sType ? data : null,
+							cached,
+							sAction,
+							params
+						);
+					}
+				};
+
+				switch (sType) {
+					case 'success':
+						sType = StorageResultType.Success;
+						fCall();
+						break;
+					case 'abort':
+						sType = StorageResultType.Abort;
+						fCall();
+						break;
+					default:
+						sType = StorageResultType.Error;
+						setTimeout(fCall, 300);
+						break;
 				}
-
-				if (fCallback) {
-					fCallback(
-						sType,
-						StorageResultType.Success === sType ? data : null,
-						cached,
-						action,
-						params
-					);
-				}
-			};
-
-			switch (sType) {
-				case 'success':
-					sType = StorageResultType.Success;
-					break;
-				case 'abort':
-					sType = StorageResultType.Abort;
-					break;
-				default:
-					sType = StorageResultType.Error;
-					break;
 			}
-
-			if (StorageResultType.Error === sType) {
-				setTimeout(fCall, 300);
-			} else {
-				fCall();
-			}
-
-		}).catch(err => {
-			if (err.name == 'AbortError') { // handle abort()
-				err = Notification.JsonAbort;
-			}
-			return Promise.reject(err);
-		});
+		);
 	}
 
 	/**
@@ -182,18 +191,6 @@ class AbstractFetchRemote
 		});
 	}
 
-	createAbort(action, timeout) {
-		if (window.AbortController) {
-			this.abort(action);
-			const controller = new AbortController();
-			if (timeout) {
-				setTimeout(() => controller.abort(), timeout);
-			}
-			oRequests[action] = controller;
-			return controller.signal;
-		}
-	}
-
 	fastResolve(mData) {
 		return Promise.resolve(mData);
 	}
@@ -201,65 +198,51 @@ class AbstractFetchRemote
 	setTrigger(trigger, value) {
 		if (trigger) {
 			value = !!value;
-			(Array.isArray(trigger) ? trigger : [trigger]).forEach((fTrigger) => {
-				if (fTrigger) {
-					fTrigger(value);
-				}
+			(Array.isArray(trigger) ? trigger : [trigger]).forEach(fTrigger => {
+				fTrigger && fTrigger(value);
 			});
 		}
 	}
 
 	postRequest(action, fTrigger, params, timeOut) {
-		params = params || {};
-		params.Action = action;
-
 		this.setTrigger(fTrigger, true);
+		return fetchJSON(action, '', params, pInt(timeOut, 30000),
+			data => {
+				abort(action, true);
 
-		return rl.fetchJSON(getURL(), {
-				signal: this.createAbort(action, pInt(timeOut, 30000))
-			}, params
-		).then(data => {
-			this.abort(action, true);
+				if (!data) {
+					return Promise.reject(Notification.JsonParse);
+				}
 
-			if (!data) {
-				return Promise.reject(Notification.JsonParse);
-			}
-
-			updateToken(data);
+				updateToken(data);
 /*
-			let isCached = false, type = '';
-			if (data && data.Time) {
-				isCached = pInt(data.Time) > microtime() - start;
-			}
-			// backward capability
-			switch (true) {
-				case 'success' === textStatus && data && data.Result && action === data.Action:
-					type = StorageResultType.Success;
-					break;
-				case 'abort' === textStatus && (!data || !data.__aborted__):
-					type = StorageResultType.Abort;
-					break;
-				default:
-					type = StorageResultType.Error;
-					break;
-			}
+				let isCached = false, type = '';
+				if (data && data.Time) {
+					isCached = pInt(data.Time) > microtime() - start;
+				}
+				// backward capability
+				switch (true) {
+					case 'success' === textStatus && data && data.Result && action === data.Action:
+						type = StorageResultType.Success;
+						break;
+					case 'abort' === textStatus && (!data || !data.__aborted__):
+						type = StorageResultType.Abort;
+						break;
+					default:
+						type = StorageResultType.Error;
+						break;
+				}
 */
-			this.setTrigger(fTrigger, false);
+				this.setTrigger(fTrigger, false);
 
-			if (!data.Result || action !== data.Action) {
-				checkResponseError(data);
-				const err = data ? data.ErrorCode : null;
-				return Promise.reject(err || Notification.JsonFalse);
-			}
+				if (!data.Result || action !== data.Action) {
+					checkResponseError(data);
+					const err = data ? data.ErrorCode : null;
+					return Promise.reject(err || Notification.JsonFalse);
+				}
 
-			return data;
-		}).catch(err => {
-			if (err.name == 'AbortError') { // handle abort()
-				return Promise.reject(Notification.JsonAbort);
+				return data;
 			}
-			return Promise.reject(err);
-		});
+		);
 	}
 }
-
-export { AbstractFetchRemote, AbstractFetchRemote as default };
