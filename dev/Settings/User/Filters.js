@@ -103,11 +103,11 @@ class FiltersUserSettings {
 						data.Result.Filters.map(aItem => FilterModel.reviveFromJson(aItem)).filter(v => v)
 					);
 
-					this.modules(data.Result.Modules ? data.Result.Modules : {});
+					this.modules(data.Result.Capa);
 
-					this.filterRaw(data.Result.Raw || '');
-					this.filterRaw.capa(Array.isArray(data.Result.Capa) ? data.Result.Capa.join(' ') : '');
-					this.filterRaw.active(!!data.Result.RawIsActive);
+					this.filterRaw(data.Result.Scripts['rainloop.user.raw'].body);
+					this.filterRaw.capa(data.Result.Capa.join(' '));
+					this.filterRaw.active(data.Result.Scripts['rainloop.user.raw'].active);
 					this.filterRaw.allow(!!data.Result.RawIsAllow);
 				} else {
 					this.filters([]);

@@ -67,50 +67,12 @@ class FilterPopupView extends AbstractViewNext {
 	populateOptions() {
 		this.actionTypeOptions([]);
 
-		// this.actionTypeOptions.push({'id': FiltersAction.None,
-		// 'name': i18n('POPUPS_FILTER/SELECT_ACTION_NONE')});
-
-		const modules = this.modules();
-		if (modules) {
-			if (modules.markasread) {
-				this.allowMarkAsRead(true);
-			}
-
-			if (modules.moveto) {
-				this.actionTypeOptions.push({
-					'id': FiltersAction.MoveTo,
-					'name': i18n('POPUPS_FILTER/SELECT_ACTION_MOVE_TO')
-				});
-			}
-
-			if (modules.redirect) {
-				this.actionTypeOptions.push({
-					'id': FiltersAction.Forward,
-					'name': i18n('POPUPS_FILTER/SELECT_ACTION_FORWARD_TO')
-				});
-			}
-
-			if (modules.reject) {
-				this.actionTypeOptions.push({ 'id': FiltersAction.Reject, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_REJECT') });
-			}
-
-			if (modules.vacation) {
-				this.actionTypeOptions.push({
-					'id': FiltersAction.Vacation,
-					'name': i18n('POPUPS_FILTER/SELECT_ACTION_VACATION_MESSAGE')
-				});
-			}
-		}
-
-		this.actionTypeOptions.push({ 'id': FiltersAction.Discard, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD') });
-
 		this.fieldOptions([
 			{ 'id': FilterConditionField.From, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_FROM') },
 			{ 'id': FilterConditionField.Recipient, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_RECIPIENTS') },
 			{ 'id': FilterConditionField.Subject, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_SUBJECT') },
 			{ 'id': FilterConditionField.Size, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_SIZE') },
-			{ 'id': FilterConditionField.Header, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_HEADER') },
-			{ 'id': FilterConditionField.Body, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_BODY') }
+			{ 'id': FilterConditionField.Header, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_HEADER') }
 		]);
 
 		this.typeOptions([
@@ -120,9 +82,46 @@ class FilterPopupView extends AbstractViewNext {
 			{ 'id': FilterConditionType.NotEqualTo, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_NOT_EQUAL_TO') }
 		]);
 
-		if (modules && modules.regex) {
-			this.typeOptions.push({ 'id': FilterConditionType.Regex, 'name': 'Regex' });
+		// this.actionTypeOptions.push({'id': FiltersAction.None,
+		// 'name': i18n('POPUPS_FILTER/SELECT_ACTION_NONE')});
+		const modules = this.modules();
+		if (modules) {
+			if (modules.includes('imap4flags')) {
+				this.allowMarkAsRead(true);
+			}
+
+			if (modules.includes('fileinto')) {
+				this.actionTypeOptions.push({
+					'id': FiltersAction.MoveTo,
+					'name': i18n('POPUPS_FILTER/SELECT_ACTION_MOVE_TO')
+				});
+				this.actionTypeOptions.push({
+					'id': FiltersAction.Forward,
+					'name': i18n('POPUPS_FILTER/SELECT_ACTION_FORWARD_TO')
+				});
+			}
+
+			if (modules.includes('reject')) {
+				this.actionTypeOptions.push({ 'id': FiltersAction.Reject, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_REJECT') });
+			}
+
+			if (modules.includes('vacation')) {
+				this.actionTypeOptions.push({
+					'id': FiltersAction.Vacation,
+					'name': i18n('POPUPS_FILTER/SELECT_ACTION_VACATION_MESSAGE')
+				});
+			}
+
+			if (modules.includes('body')) {
+				this.fieldOptions.push({ 'id': FilterConditionField.Body, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_BODY') });
+			}
+
+			if (modules.includes('regex')) {
+				this.typeOptions.push({ 'id': FilterConditionType.Regex, 'name': 'Regex' });
+			}
 		}
+
+		this.actionTypeOptions.push({ 'id': FiltersAction.Discard, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD') });
 
 		this.typeOptionsSize([
 			{ 'id': FilterConditionType.Over, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_OVER') },

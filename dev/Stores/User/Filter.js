@@ -4,7 +4,7 @@ class FilterUserStore {
 	constructor() {
 		ko.addObservablesTo(this, {
 			capa: '',
-			modules: {},
+			modules: [],
 			raw: ''
 		});
 

@@ -41,61 +41,53 @@ class SieveStorage implements FiltersInterface
 
 	public function Load(\RainLoop\Model\Account $oAccount, bool $bAllowRaw = false) : array
 	{
-		$sRaw = '';
-
-		$bBasicIsActive = false;
-		$bRawIsActive = false;
-
 		$aModules = array();
 		$aFilters = array();
+		$aScripts = array();
 
 		$oSieveClient = new \MailSo\Sieve\ManageSieveClient();
 		$oSieveClient->SetLogger($this->oLogger);
 		$oSieveClient->SetTimeOuts(10, (int) $this->oConfig->Get('labs', 'sieve_timeout', 10));
 
-		if ($oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig))
-		{
+		if ($oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig)) {
 			$aModules = $oSieveClient->Modules();
 			$aList = $oSieveClient->ListScripts();
 
-			if (0 < \count($aList))
-			{
-				if (isset($aList[self::SIEVE_FILE_NAME]))
-				{
-					$bBasicIsActive = !!$aList[self::SIEVE_FILE_NAME];
-					$sS = $oSieveClient->GetScript(self::SIEVE_FILE_NAME);
-					if ($sS)
-					{
-						$aFilters = $this->fileStringToCollection($sS);
-					}
+			if (!empty($aList[self::SIEVE_FILE_NAME])) {
+				$sS = $oSieveClient->GetScript(self::SIEVE_FILE_NAME);
+				if ($sS) {
+					$aFilters = $this->fileStringToCollection($sS);
 				}
+			}
 
-				if ($bAllowRaw && isset($aList[self::SIEVE_FILE_NAME_RAW]))
-				{
-					$bRawIsActive = !!$aList[self::SIEVE_FILE_NAME_RAW];
-					$sRaw = \trim($oSieveClient->GetScript(self::SIEVE_FILE_NAME_RAW));
+			if ($bAllowRaw) {
+				foreach ($aList as $name => $active) {
+					if ($name != self::SIEVE_FILE_NAME) {
+						$aScripts[$name] = array(
+							'name' => $name,
+							'active' => $active,
+							'body' => $oSieveClient->GetScript($name) // \trim() ?
+						);
+					}
 				}
 			}
 
 			$oSieveClient->LogoutAndDisconnect();
 		}
 
+		if (!isset($aList[self::SIEVE_FILE_NAME_RAW])) {
+			$aScripts[$name] = array(
+				'name' => self::SIEVE_FILE_NAME_RAW,
+				'active' => false,
+				'body' => ''
+			);
+		}
+
 		return array(
 			'RawIsAllow' => $bAllowRaw,
-			'RawIsActive' => $bRawIsActive,
-			'Raw' => $bAllowRaw ? $sRaw : '',
-			'Filters' => !$bBasicIsActive && !$bRawIsActive ? array() : $aFilters,
-			'Capa' => $bAllowRaw ? $aModules : array(),
-			'Modules' => array(
-				'redirect' => \in_array('fileinto', $aModules),
-				'regex' => \in_array('regex', $aModules),
-				'relational' => \in_array('relational', $aModules),
-				'date' => \in_array('date', $aModules),
-				'moveto' => \in_array('fileinto', $aModules),
-				'reject' => \in_array('reject', $aModules),
-				'vacation' => \in_array('vacation', $aModules),
-				'markasread' => \in_array('imap4flags', $aModules)
-			)
+			'Filters' => $aFilters,
+			'Capa' => $aModules,
+			'Scripts' => $aScripts
 		);
 	}
 
