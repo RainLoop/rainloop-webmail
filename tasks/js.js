@@ -49,6 +49,18 @@ const jsLibs = () => {
 		.pipe(gulp.dest(config.paths.staticJS));
 };
 
+// sieve
+const jsSieve = () => {
+	const src = config.paths.js.sieve.src;
+	return gulp
+		.src(src)
+		.pipe(expect.real({ errorOnFailure: true }, src))
+		.pipe(concat(config.paths.js.sieve.name, { separator: '\n\n' }))
+		.pipe(eol('\n', true))
+		.pipe(replace(/sourceMappingURL=[a-z0-9.\-_]{1,20}\.map/gi, ''))
+		.pipe(gulp.dest(config.paths.staticJS));
+};
+
 // app
 const jsApp = () =>
 	gulp
@@ -120,7 +132,7 @@ const jsLint = () =>
 		.pipe(eslint.failAfterError());
 
 const jsState1 = gulp.series(jsLint);
-const jsState3 = gulp.parallel(jsBoot, jsServiceWorker, jsLibs, jsApp, jsAdmin);
+const jsState3 = gulp.parallel(jsBoot, jsServiceWorker, jsLibs, jsSieve, jsApp, jsAdmin);
 const jsState2 = gulp.series(jsClean, webpack, jsState3, jsMin);
 
 exports.jsLint = jsLint;
