@@ -4,10 +4,11 @@
 
 (Sieve => {
 
-Sieve.Extensions.Vacation = class
+class Vacation extends Sieve.Grammar.Command
 {
 	constructor()
 	{
+		super('vacation');
 		this.arguments = {
 			':days'     : new Sieve.Grammar.Number,
 			':subject'  : new Sieve.Grammar.QuotedString,
@@ -79,6 +80,8 @@ Sieve.Extensions.Vacation = class
 		}
 	}
 */
-};
+}
+
+Sieve.Extensions.Vacation = Vacation;
 
 })(this.Sieve);

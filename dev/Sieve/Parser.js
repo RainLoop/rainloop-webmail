@@ -85,12 +85,10 @@ Sieve.parseScript = script => {
 			if ('if' === value) {
 				new_command = new Sieve.Commands.Conditional(value);
 			} else if ('elsif' === value || 'else' === value) {
-				(command instanceof Sieve.Commands.Conditional)
-					|| error('Not after IF condition');
+//				(prev_command instanceof Sieve.Commands.Conditional) || error('Not after IF condition');
 				new_command = new Sieve.Commands.Conditional(value);
 			} else if ('allof' === value || 'anyof' === value) {
-				(command instanceof Sieve.Commands.Conditional)
-					|| error('Test-list not in conditional');
+				(command instanceof Sieve.Commands.Conditional) || error('Test-list not in conditional');
 				new_command = new Sieve.Tests[className]();
 			} else if (Sieve.Tests[className]) {
 				// address / envelope / exists / header / not / size
@@ -102,8 +100,15 @@ Sieve.parseScript = script => {
 				// body / ereject / reject / imap4flags / vacation
 				new_command = new Sieve.Extensions[className]();
 			} else {
-				error('Unknown command ' + value);
-//				new_command = new Sieve.Grammar.Command(value);
+				console.error('Unknown command: ' + value);
+				if (command && (
+				    command instanceof Sieve.Commands.Conditional
+				 || command instanceof Sieve.Tests.Not
+				 || command.tests instanceof Sieve.Grammar.TestList)) {
+					new_command = new Sieve.Grammar.Test(value);
+				} else {
+					new_command = new Sieve.Grammar.Command(value);
+				}
 			}
 
 			if (new_command instanceof Sieve.Grammar.Test) {
@@ -198,6 +203,7 @@ Sieve.parseScript = script => {
 		case T_BLOCK_END:
 			(command instanceof Sieve.Commands.Conditional) || error('Block end has no matching block start');
 			levels.pop();
+//			prev_command = command;
 			command = levels.last();
 			break;
 

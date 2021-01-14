@@ -238,8 +238,8 @@ class True extends Test
 
 Sieve.Tests = {
 	Address: Address,
-	AllOf: AllOf,
-	AnyOf: AnyOf,
+	Allof: AllOf,
+	Anyof: AnyOf,
 	Envelope: Envelope,
 	Exists: Exists,
 	False: False,
