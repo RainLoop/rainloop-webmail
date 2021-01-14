@@ -33,9 +33,22 @@ class Address extends Test
 			+ ' ' + this.key_list;
 	}
 
-	pushArguments(/*args*/)
+	pushArguments(args)
 	{
-		throw 'TODO';
+		args.forEach((arg, i) => {
+			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
+				this.match_type = arg;
+			} else if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
+				this.address_part = arg;
+			} else if (arg instanceof StringList || arg instanceof Grammar.StringType) {
+				if (':comparator' === args[i-1]) {
+					this.comparator = arg;
+				} else {
+					this[args[i+1] ? 'header_list' : 'key_list'] = arg;
+//					(args[i+1] ? this.header_list : this.key_list) = arg;
+				}
+			}
+		});
 	}
 }
 
@@ -100,9 +113,22 @@ class Envelope extends Test
 			+ ' ' + this.key_list;
 	}
 
-	pushArguments(/*args*/)
+	pushArguments(args)
 	{
-		throw 'TODO';
+		args.forEach((arg, i) => {
+			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
+				this.match_type = arg;
+			} else if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
+				this.address_part = arg;
+			} else if (arg instanceof StringList || arg instanceof Grammar.StringType) {
+				if (':comparator' === args[i-1]) {
+					this.comparator = arg;
+				} else {
+					this[args[i+1] ? 'envelope_part' : 'key_list'] = arg;
+//					(args[i+1] ? this.envelope_part : this.key_list) = arg;
+				}
+			}
+		});
 	}
 }
 
@@ -122,9 +148,13 @@ class Exists extends Test
 		return 'exists ' + this.header_names;
 	}
 
-	pushArguments(/*args*/)
+	pushArguments(args)
 	{
-		throw 'TODO';
+		if (args[0] instanceof StringList) {
+			this.header_names = args;
+		} else if (args[0] instanceof Grammar.StringType) {
+			this.header_names.push(args[0].value);
+		}
 	}
 }
 
@@ -168,9 +198,15 @@ class Header extends Test
 		args.forEach((arg, i) => {
 			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
 				this.match_type = arg;
+			} else if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
+				this.address_part = arg;
 			} else if (arg instanceof StringList || arg instanceof Grammar.StringType) {
-				this[args[i+1] ? 'header_names' : 'key_list'] = arg;
-//				(args[i+1] ? this.header_names : this.key_list) = arg;
+				if (':comparator' === args[i-1]) {
+					this.comparator = arg;
+				} else {
+					this[args[i+1] ? 'header_names' : 'key_list'] = arg;
+//					(args[i+1] ? this.header_names : this.key_list) = arg;
+				}
 			}
 		});
 	}
@@ -192,9 +228,9 @@ class Not extends Test
 		return 'not ' + this.test;
 	}
 
-	pushArguments(/*args*/)
+	pushArguments()
 	{
-		throw 'TODO';
+		throw 'No arguments';
 	}
 }
 

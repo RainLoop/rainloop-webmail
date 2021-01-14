@@ -35,10 +35,14 @@ class Body extends Grammar.Test
 				this.match_type = arg;
 			} else if (':raw' === arg || ':text' === arg) {
 				this.body_transform = arg;
-			} else if (':content' === arg) {
-				// string-list
 			} else if (arg instanceof Grammar.StringList || arg instanceof Grammar.StringType) {
-				this[args[i+1] ? 'content_list' : 'key_list'] = arg;
+				if (':comparator' === args[i-1]) {
+					this.comparator = arg;
+				} else if (':content' === args[i-1]) {
+					this.body_transform = ':content ' + arg;
+				} else {
+					this[args[i+1] ? 'content_list' : 'key_list'] = arg;
+				}
 			}
 		});
 	}

@@ -99,7 +99,11 @@ class HasFlag extends Grammar.Test
 			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
 				this.match_type = arg;
 			} else if (arg instanceof Grammar.StringList || arg instanceof Grammar.StringType) {
-				this[args[i+1] ? 'variable_list' : 'list_of_flags'] = arg;
+				if (':comparator' === args[i-1]) {
+					this.comparator = arg;
+				} else {
+					this[args[i+1] ? 'variable_list' : 'list_of_flags'] = arg;
+				}
 			}
 		});
 	}
