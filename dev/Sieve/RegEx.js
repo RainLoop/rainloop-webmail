@@ -28,9 +28,20 @@ const
 	OCTET_NOT_QSPECIAL = '[^\\x00\\r\\n"\\\\]',
 
 	/**
+	 * hash-comment = "#" *octet-not-crlf CRLF
+	 */
+	HASH_COMMENT = '#' + OCTET_NOT_CRLF + '*\\r\\n',
+
+	/**
 	 * QUANTIFIER = "K" / "M" / "G"
 	 */
 	QUANTIFIER = '[KMGkmg]',
+
+	/**
+	 * quoted-safe = CRLF / octet-not-qspecial
+	 * either a CRLF pair, OR a single octet other than NUL, CR, LF, double-quote, or backslash
+	 */
+	QUOTED_SAFE = '\\r\\n|' + OCTET_NOT_QSPECIAL,
 
 	/**
 	 * quoted-special = "\" (DQUOTE / "\")
@@ -42,12 +53,6 @@ const
 	 * quoted-text = *(quoted-safe / quoted-special / quoted-other)
 	 */
 	QUOTED_TEXT = '(?:' + QUOTED_SAFE + '|' + QUOTED_SPECIAL + ')*',
-
-	/**
-	 * quoted-safe = CRLF / octet-not-qspecial
-	 * either a CRLF pair, OR a single octet other than NUL, CR, LF, double-quote, or backslash
-	 */
-	QUOTED_SAFE = '\\r\\n|' + OCTET_NOT_QSPECIAL,
 
 	/**
 	 * multiline-literal = [ octet-not-period *octet-not-crlf ] CRLF
@@ -83,17 +88,29 @@ const
 		/**
 		 * bracket-comment = "/*" *not-star 1*STAR *(not-star-slash *not-star 1*STAR) "/"
 		 */
-		BRACKET_COMMENT: '/\\*.*?\\*/', // '/\\*[\\s\\S]*?\\*/'
+		BRACKET_COMMENT: '/\\*[\\s\\S]*?\\*/',
 
 		/**
 		 * hash-comment = "#" *octet-not-crlf CRLF
 		 */
-		HASH_COMMENT: '#' + OCTET_NOT_CRLF + '*\\r\\n',
+		HASH_COMMENT: HASH_COMMENT,
 
 		/**
 		 * identifier = (ALPHA / "_") *(ALPHA / DIGIT / "_")
 		 */
 		IDENTIFIER: '[a-zA-Z_][a-zA-Z0-9_]*',
+
+		/**
+		 * multi-line = "text:" *(SP / HTAB) (hash-comment / CRLF)
+			*(multiline-literal / multiline-dotstart)
+			"." CRLF
+		 */
+		MULTI_LINE: 'text:[ \\t]*(?:' + HASH_COMMENT + ')?\\r\\n'
+			+ '(?:' + MULTILINE_LITERAL + '|' + MULTILINE_DOTSTART + ')*'
+			+ '\\.\\r\\n',
+
+		MULTILINE_LITERAL: MULTILINE_LITERAL,
+		MULTILINE_DOTSTART: MULTILINE_DOTSTART,
 
 		/**
 		 * number = 1*DIGIT [ QUANTIFIER ]
@@ -104,6 +121,8 @@ const
 		 * quoted-string = DQUOTE quoted-text DQUOTE
 		 */
 		QUOTED_STRING: '"' + QUOTED_TEXT + '"',
+
+		QUOTED_TEXT: QUOTED_TEXT,
 
 		/**
 		 * tag = ":" identifier
@@ -129,16 +148,7 @@ const
 /**
  * comment = bracket-comment / hash-comment
  */
-//RegEx.COMMENT = RegEx.BRACKET_COMMENT + '|' + RegEx.HASH_COMMENT;
-
-/**
- * multi-line = "text:" *(SP / HTAB) (hash-comment / CRLF)
-	*(multiline-literal / multiline-dotstart)
-	"." CRLF
- */
-RegEx.MULTI_LINE = 'text:[ \\t]*(?:' + RegEx.HASH_COMMENT + ')?\\r\\n'
-	+ '(?:' + MULTILINE_LITERAL + '|' + MULTILINE_DOTSTART + ')*'
-	+ '\\.\\r\\n';
+//RegEx.COMMENT = RegEx.BRACKET_COMMENT + '|' + HASH_COMMENT;
 
 /**************************************************
  * https://tools.ietf.org/html/rfc5228#section-8.2
@@ -153,13 +163,13 @@ RegEx.MULTI_LINE = 'text:[ \\t]*(?:' + RegEx.HASH_COMMENT + ')?\\r\\n'
 	 * string-list = "[" string *("," string) "]" / string
 	 * if there is only a single string, the brackets are optional
 	 */
-	RegEx.STRING_LIST = '\\[\\s*(?:' + RegEx.STRING + ')(?:\\s*,\\s*(?:' + RegEx.STRING + '))*\\s*\\]'
-		+ '|(?:' + RegEx.STRING + ')';
+	RegEx.STRING_LIST = '\\[\\s*(?:' + RegEx.STRING + ')(?:\\s*,\\s*(?:' + RegEx.STRING + '))*\\s*\\]';
+//		+ '|(?:' + RegEx.STRING + ')';
 
 	/**
 	 * argument = string-list / number / tag
 	 */
-	RegEx.ARGUMENT = RegEx.STRING_LIST + '|' + RegEx.NUMBER + '|' + RegEx.TAG;
+	RegEx.ARGUMENT = RegEx.STRING_LIST + '|' + RegEx.STRING + '|' + RegEx.NUMBER + '|' + RegEx.TAG;
 
 	/**
 	 * arguments = *argument [ test / test-list ]

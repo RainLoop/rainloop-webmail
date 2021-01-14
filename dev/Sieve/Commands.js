@@ -24,7 +24,10 @@ class Conditional
 	{
 		return this.identifier
 			+ ('else' !== this.identifier ? ' ' + this.test : '')
-			+ " {\r\n\t" + this.commands.join(";\r\n\t") + "\r\n}";
+			+ (this.commands.length
+				? ' {\r\n\t' + Sieve.arrayToString(this.commands, ';\r\n\t') + ';\r\n}'
+				: ';'
+			);
 	}
 /*
 	public function pushArguments(array $args): void
@@ -38,7 +41,7 @@ class Conditional
 /**
  * https://tools.ietf.org/html/rfc5228#section-3.2
  */
-class Requires /* extends Array*/
+class Require /* extends Array*/
 {
 	constructor()
 	{
@@ -47,7 +50,7 @@ class Requires /* extends Array*/
 
 	toString()
 	{
-		return 'require ' + this.capabilities;
+		return 'require ' + this.capabilities.toString();
 	}
 
 	pushArguments(args)
@@ -86,7 +89,7 @@ class FileInto
 
 	toString()
 	{
-		return 'fileinto ' + this.mailbox;
+		return 'fileinto ' + this._mailbox;
 	}
 
 	get mailbox()
@@ -159,11 +162,11 @@ class Discard
 Sieve.Commands = {
 	// Control commands
 	Conditional: Conditional,
-	Requires: Requires,
+	Require: Require,
 	Stop: Stop,
 	// Action commands
 	Discard: Discard,
-	FileInto: FileInto,
+	Fileinto: FileInto,
 	Keep: Keep,
 	Redirect: Redirect
 };

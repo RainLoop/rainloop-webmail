@@ -4,6 +4,8 @@
 
 (Sieve => {
 
+const RegEx = Sieve.RegEx;
+
 /**
  * abstract
  */
@@ -14,7 +16,10 @@ class StringType /*extends String*/
 		this._value = value;
 	}
 
-//	abstract function toString();
+	toString()
+	{
+		return this._value;
+	}
 
 	get value()
 	{
@@ -57,9 +62,7 @@ class Command
 	{
 		let result = this.identifier;
 		if ('anyof' === result || 'allof' === result) {
-			let tests = [];
-			this.commands.forEach(cmd => tests.push(cmd.toString().replace(/;$/, '')));
-			result += ' (\r\n\t' + tests.join(',\r\n\t') + '\r\n)';
+			result += ' (\r\n\t' + Sieve.arrayToString(this.commands, ',\r\n\t') + '\r\n)';
 		} else {
 			this.arguments.forEach(arg => {
 				if (Array.isArray(arg)) {
@@ -69,9 +72,7 @@ class Command
 				}
 			});
 			if (this.commands) {
-				result += ' {\r\n';
-				this.commands.forEach(cmd => result += '\t' + cmd + '\r\n');
-				result += '}';
+				result += ' {\r\n\t' + Sieve.arrayToString(this.commands, ';\r\n\t') + '\r\n}';
 			} else {
 				result += ';';
 			}
@@ -95,11 +96,30 @@ class Command
 	}
 }
 
+/*
+class Commands extends Array
+{
+	toString()
+	{
+		return this.length
+			? '{\r\n\t' + Sieve.arrayToString(this, ';\r\n\t') + ';\r\n}'
+			: ';';
+	}
+
+	push(value)
+	{
+		if (value instanceof Command) {
+			super.push(value);
+		}
+	}
+}
+*/
+
 class BracketComment extends Comment
 {
 	toString()
 	{
-		return '/* ' + super() + ' */';
+		return '/* ' + super.toString() + ' */';
 	}
 }
 
@@ -107,7 +127,7 @@ class HashComment extends Comment
 {
 	toString()
 	{
-		return '# ' + super();
+		return '# ' + super.toString();
 	}
 }
 
@@ -149,20 +169,23 @@ class StringList extends Array
 		if (!(value instanceof StringType)) {
 			value = new QuotedString(value);
 		}
-		super(value);
+		super.push(value);
 	}
 }
 
 StringList.fromString = list => {
 	let string,
 		obj = new StringList,
-		regex = RegExp('(?:^\\s*|\\s*,\\s*)(' + Sieve.RegEx.STRING + ')', 'g');
+		regex = RegExp('(?:^\\s*|\\s*,\\s*)(?:"(' + RegEx.QUOTED_TEXT + ')"|text:[ \\t]*('
+			+ RegEx.HASH_COMMENT + ')?\\r\\n'
+			+ '((?:' + RegEx.MULTILINE_LITERAL + '|' + RegEx.MULTILINE_DOTSTART + ')*)'
+			+ '\\.\\r\\n)', 'gm');
 	list = list.replace(/^[\r\n\t[]+/, '');
 	while ((string = regex.exec(list))) {
-		if (string[4]) {
-			obj.push(new MultiLine(string[4], string[3]));
+		if (string[3]) {
+			obj.push(new MultiLine(string[3], string[2]));
 		} else {
-			obj.push(new QuotedString(string[2]));
+			obj.push(new QuotedString(string[1]));
 		}
 	}
 	return obj;
@@ -173,6 +196,7 @@ class QuotedString extends StringType
 	toString()
 	{
 		return '"' + this._value.replace(/[\\"]/g, '\\$&') + '"';
+//		return '"' + super.toString().replace(/[\\"]/g, '\\$&') + '"';
 	}
 }
 
@@ -211,7 +235,7 @@ class Test
 
 	toString()
 	{
-		return (this.identifier + ' ' + this.arguments.join(' ')).trim();
+		return (this.identifier + ' ' + Sieve.arrayToString(this.arguments, ' ')).trim();
 	}
 
 	pushArguments(args)
@@ -247,20 +271,20 @@ class TestList extends Array
 			value = new Command($value);
 		}
 */
-		super(value);
+		super.push(value);
 	}
 }
 
 TestList.fromString = list => {
 	let test,
 		obj = new TestList,
-		regex = RegExp('(?:^\\s*|\\s*,\\s*)(' + Sieve.RegEx.IDENTIFIER + ')((?:\\s+' + Sieve.RegEx.ARGUMENT + ')*)', 'g');
+		regex = RegExp('(?:^\\s*|\\s*,\\s*)(' + RegEx.IDENTIFIER + ')((?:\\s+' + RegEx.ARGUMENT + ')*)', 'g');
 	list = list.replace(/^[\r\n\t(]+/, '');
 	while ((test = regex.exec(list))) {
 		let command = new Sieve.Commands.Command(test[1]);
 		obj.push(command);
 /*
-		if (\preg_match_all('@\\s+(' . Sieve.RegEx.ARGUMENT . ')@', $test[2], $args, PREG_SET_ORDER)) {
+		if (\preg_match_all('@\\s+(' . RegEx.ARGUMENT . ')@', $test[2], $args, PREG_SET_ORDER)) {
 			foreach ($args as $arg) {
 				$command->arguments[] = $arg;
 			}
