@@ -15,8 +15,11 @@ class SpamTest extends Grammar.Test
 		this.comparator = 'i;ascii-casemap',
 		this.match_type = ':is',
 		this.value = new Grammar.QuotedString;
-//		this.require = this.percent ? 'spamtestplus' : 'spamtest';
 	}
+
+//	get require() { return this.percent ? 'spamtestplus' : 'spamtest'; }
+//	get require() { return /:value|:count/.test(this.match_type) ? 'relational' : ''; }
+	get require() { return 'spamtestplus'; }
 
 	toString()
 	{
@@ -56,8 +59,10 @@ class VirusTest extends Grammar.Test
 		this.comparator = 'i;ascii-casemap',
 		this.match_type = ':is',
 		this.value = new Grammar.QuotedString; // 1 - 5
-//		this.require = 'virustest';
 	}
+
+//	get require() { return /:value|:count/.test(this.match_type) ? ['virustest','relational'] : 'virustest'; }
+	get require() { return 'virustest'; }
 
 	toString()
 	{

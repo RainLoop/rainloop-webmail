@@ -115,8 +115,9 @@ class FileInto extends Command
 		super('fileinto');
 		// QuotedString / MultiLine
 		this._mailbox = new Grammar.QuotedString();
-//		this.require = 'fileinto';
 	}
+
+	get require() { return 'fileinto'; }
 
 	toString()
 	{

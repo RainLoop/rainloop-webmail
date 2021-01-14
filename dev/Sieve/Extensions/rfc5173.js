@@ -15,8 +15,9 @@ class Body extends Grammar.Test
 		this.match_type = ':is',
 		this.body_transform = ''; // :raw, :content <string-list>, :text
 		this.key_list = new Grammar.StringList;
-//		this.require = 'body';
 	}
+
+	get require() { return 'body'; }
 
 	toString()
 	{

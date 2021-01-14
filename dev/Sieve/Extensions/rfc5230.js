@@ -20,8 +20,9 @@ class Vacation extends Grammar.Command
 			':handle'   : new Grammar.QuotedString
 		};
 		this.reason = ''; // QuotedString / MultiLine
-//		this.require = 'vacation';
 	}
+
+	get require() { return 'vacation'; }
 
 	toString()
 	{

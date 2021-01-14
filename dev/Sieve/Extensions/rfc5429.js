@@ -15,8 +15,9 @@ class Ereject extends Grammar.Command
 	{
 		super('ereject');
 		this._reason = new Grammar.QuotedString;
-//		this.require = 'ereject';
 	}
+
+	get require() { return 'ereject'; }
 
 	toString()
 	{
@@ -50,8 +51,9 @@ class Reject extends Grammar.Command
 	{
 		super('reject');
 		this._reason = new Grammar.QuotedString;
-//		this.require = 'reject';
 	}
+
+	get require() { return 'reject'; }
 
 	toString()
 	{

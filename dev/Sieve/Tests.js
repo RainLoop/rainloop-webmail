@@ -88,6 +88,8 @@ class Envelope extends Test
 		this.key_list      = new StringList;
 	}
 
+	get require() { return 'envelope'; }
+
 	toString()
 	{
 		return 'envelope'

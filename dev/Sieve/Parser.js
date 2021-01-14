@@ -56,6 +56,7 @@ Sieve.parseScript = script => {
 
 		levels = [],
 		command = null,
+		requires = [],
 		args = [];
 
 	const
@@ -128,10 +129,19 @@ Sieve.parseScript = script => {
 			}
 			levels.push(new_command);
 			command = new_command;
+			if (command.require) {
+				(Array.isArray(command.require) ? command.require : [command.require])
+					.forEach(string => requires.push(string));
+			}
 			break; }
 
 		// Arguments
 		case T_TAG:
+/*
+			if (':value' === value || ':count' === value) {
+				requires.push('relational');
+			}
+*/
 			command
 				? args.push(value.toLowerCase())
 				: error('Tag must be command argument');
@@ -179,6 +189,9 @@ Sieve.parseScript = script => {
 		case T_SEMICOLON:
 			command || error('Semicolon not at end of command');
 			pushArgs();
+			if (command instanceof Commands.require) {
+				command.capabilities.forEach(string => requires.push(string.value));
+			}
 			levels.pop();
 			command = levels.last();
 			break;

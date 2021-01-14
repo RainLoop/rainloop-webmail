@@ -13,8 +13,9 @@ class Flag extends Grammar.Command
 		super(identifier);
 		this._variablename = new Grammar.QuotedString;
 		this.list_of_flags = new Grammar.StringList;
-//		this.require = 'imap4flags';
 	}
+
+	get require() { return 'imap4flags'; }
 
 	toString()
 	{
@@ -79,8 +80,9 @@ class HasFlag extends Grammar.Test
 		this.match_type = ':is',
 		this.variable_list = new Grammar.StringList;
 		this.list_of_flags = new Grammar.StringList;
-//		this.require = 'imap4flags';
 	}
+
+	get require() { return 'imap4flags'; }
 
 	toString()
 	{
