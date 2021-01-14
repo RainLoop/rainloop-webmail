@@ -49,33 +49,23 @@ class Comment extends StringType
  */
 class Command
 {
-	constructor(identifier, text = null)
+	constructor(identifier)
 	{
 		this.identifier = identifier;
 		this.arguments = [];
-		if (text) {
-			this.text = text;
-		}
+		this.commands = new Commands;
 	}
 
 	toString()
 	{
 		let result = this.identifier;
-		if ('anyof' === result || 'allof' === result) {
-			result += ' (\r\n\t' + Sieve.arrayToString(this.commands, ',\r\n\t') + '\r\n)';
+		if (this.arguments.length) {
+			result += Sieve.arrayToString(this.arguments, ' ');
+		}
+		if (this.commands.length) {
+			result += ' ' + this.commands.toString();
 		} else {
-			this.arguments.forEach(arg => {
-				if (Array.isArray(arg)) {
-					result += ' [' + arg.join(',') + ']';
-				} else {
-					result += ' ' + arg;
-				}
-			});
-			if (this.commands) {
-				result += ' {\r\n\t' + Sieve.arrayToString(this.commands, ';\r\n\t') + '\r\n}';
-			} else {
-				result += ';';
-			}
+			result += ';';
 		}
 		return result;
 	}
@@ -96,24 +86,22 @@ class Command
 	}
 }
 
-/*
 class Commands extends Array
 {
 	toString()
 	{
 		return this.length
-			? '{\r\n\t' + Sieve.arrayToString(this, ';\r\n\t') + ';\r\n}'
-			: ';';
+			? '{\r\n\t' + Sieve.arrayToString(this, '\r\n\t') + '\r\n}'
+			: '{}';
 	}
 
 	push(value)
 	{
-		if (value instanceof Command) {
+		if (value instanceof Command || value instanceof Comment) {
 			super.push(value);
 		}
 	}
 }
-*/
 
 class BracketComment extends Comment
 {
@@ -223,7 +211,7 @@ class MultiLine extends StringType
 
 
 /**
- * https://tools.ietf.org/html/rfc5228#section-2.9
+ * https://tools.ietf.org/html/rfc5228#section-5
  */
 class Test
 {
@@ -250,15 +238,15 @@ class Test
  */
 class TestList extends Array
 {
-	constructor(identifier)
+	constructor()
 	{
 		super();
-		this.identifier = identifier; // allof / anyof
 	}
 
 	toString()
 	{
 		if (1 < this.length) {
+//			return '(\r\n\t' + Sieve.arrayToString(this, ',\r\n\t') + '\r\n)';
 			return '(' + this.join(', ') + ')';
 		}
 		return this.length ? this[0] : '';
@@ -266,32 +254,11 @@ class TestList extends Array
 
 	push(value)
 	{
-/*
-		if (!(value instanceof Command)) {
-			value = new Command($value);
+		if (!(value instanceof Test)) {
+			throw 'Not an instanceof Test';
 		}
-*/
 		super.push(value);
 	}
-}
-
-TestList.fromString = list => {
-	let test,
-		obj = new TestList,
-		regex = RegExp('(?:^\\s*|\\s*,\\s*)(' + RegEx.IDENTIFIER + ')((?:\\s+' + RegEx.ARGUMENT + ')*)', 'g');
-	list = list.replace(/^[\r\n\t(]+/, '');
-	while ((test = regex.exec(list))) {
-		let command = new Sieve.Commands.Command(test[1]);
-		obj.push(command);
-/*
-		if (\preg_match_all('@\\s+(' . RegEx.ARGUMENT . ')@', $test[2], $args, PREG_SET_ORDER)) {
-			foreach ($args as $arg) {
-				$command->arguments[] = $arg;
-			}
-		}
-*/
-	}
-	return obj;
 }
 
 Sieve.Grammar = {

@@ -4,18 +4,23 @@
 
 (Sieve => {
 
+const Grammar = Sieve.Grammar,
+	Test = Grammar.Test,
+	StringList = Grammar.StringList;
+
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.1
  */
-class Address
+class Address extends Test
 {
 	constructor()
 	{
+		super('address');
 		this.comparator   = 'i;ascii-casemap';
 		this.address_part = ':all'; // :localpart | :domain | :all
 		this.match_type   = ':is';
-		this.header_list  = new Sieve.Grammar.StringList;
-		this.key_list     = new Sieve.Grammar.StringList;
+		this.header_list  = new StringList;
+		this.key_list     = new StringList;
 	}
 
 	toString()
@@ -37,37 +42,50 @@ class Address
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.2
  */
-class AllOf extends Sieve.Grammar.TestList
+class AllOf extends Test
 {
 	constructor()
 	{
 		super('allof');
+		this.tests = new Grammar.TestList;
+	}
+
+	toString()
+	{
+		return 'allof' + this.tests;
 	}
 }
 
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.3
  */
-class AnyOf extends Sieve.Grammar.TestList
+class AnyOf extends Test
 {
 	constructor()
 	{
 		super('anyof');
+		this.tests = new Grammar.TestList;
+	}
+
+	toString()
+	{
+		return 'anyof' + this.tests;
 	}
 }
 
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.4
  */
-class Envelope
+class Envelope extends Test
 {
 	constructor()
 	{
+		super('envelope');
 		this.comparator   = 'i;ascii-casemap';
 		this.address_part = ':all'; // :localpart | :domain | :all
 		this.match_type   = ':is';
-		this.envelope_part = new Sieve.Grammar.StringList;
-		this.key_list      = new Sieve.Grammar.StringList;
+		this.envelope_part = new StringList;
+		this.key_list      = new StringList;
 	}
 
 	toString()
@@ -89,16 +107,17 @@ class Envelope
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.5
  */
-class Exists
+class Exists extends Test
 {
 	constructor()
 	{
-		this.header_names = new Sieve.Grammar.StringList;
+		super('exists');
+		this.header_names = new StringList;
 	}
 
 	toString()
 	{
-		return "exists {this.header_names}";
+		return 'exists ' + this.header_names;
 	}
 
 	pushArguments(/*args*/)
@@ -110,7 +129,7 @@ class Exists
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.6
  */
-class False
+class False extends Test
 {
 	toString()
 	{
@@ -121,15 +140,16 @@ class False
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.7
  */
-class Header
+class Header extends Test
 {
 	constructor()
 	{
+		super('header');
 		this.comparator   = 'i;ascii-casemap';
 		this.address_part = ':all'; // :localpart | :domain | :all
 		this.match_type   = ':is';
-		this.header_names = new Sieve.Grammar.StringList;
-		this.key_list     = new Sieve.Grammar.StringList;
+		this.header_names = new StringList;
+		this.key_list     = new StringList;
 	}
 
 	toString()
@@ -146,7 +166,7 @@ class Header
 		args.forEach((arg, i) => {
 			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
 				this.match_type = arg;
-			} else if (arg instanceof Sieve.Grammar.StringList || arg instanceof Sieve.Grammar.StringType) {
+			} else if (arg instanceof StringList || arg instanceof Grammar.StringType) {
 				this[args[i+1] ? 'header_names' : 'key_list'] = arg;
 //				(args[i+1] ? this.header_names : this.key_list) = arg;
 			}
@@ -157,11 +177,12 @@ class Header
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.8
  */
-class Not
+class Not extends Test
 {
 	constructor()
 	{
-		this.test = new Sieve.Grammar.Test;
+		super('not');
+		this.test = new Test;
 	}
 
 	toString()
@@ -178,10 +199,11 @@ class Not
 /**
  * https://tools.ietf.org/html/rfc5228#section-5.9
  */
-class Size
+class Size extends Test
 {
 	constructor()
 	{
+		super('size');
 		this.mode  = ':over'; // :under
 		this.limit = 0;
 	}
@@ -196,10 +218,21 @@ class Size
 		args.forEach(arg => {
 			if (':over' === arg || ':under' === arg) {
 				this.mode = arg;
-			} else if (arg instanceof Sieve.Grammar.Number) {
+			} else if (arg instanceof Grammar.Number) {
 				this.limit = arg;
 			}
 		});
+	}
+}
+
+/**
+ * https://tools.ietf.org/html/rfc5228#section-5.10
+ */
+class True extends Test
+{
+	toString()
+	{
+		return 'true';
 	}
 }
 
@@ -212,7 +245,8 @@ Sieve.Tests = {
 	False: False,
 	Header: Header,
 	Not: Not,
-	Size: Size
+	Size: Size,
+	True: True
 };
 
 })(this.Sieve);

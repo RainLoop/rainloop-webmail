@@ -106,31 +106,32 @@ Sieve.parseScript = script => {
 //				new_command = new Sieve.Grammar.Command(value);
 			}
 
-			if (command instanceof Sieve.Commands.Conditional && !command.test) {
-				if (new_command instanceof Sieve.Grammar.TestList) {
-					levels.push(new_command);
+			if (new_command instanceof Sieve.Grammar.Test) {
+				if (command instanceof Sieve.Commands.Conditional || command instanceof Sieve.Tests.Not) {
+					// if/elsif/else new_command
+					// not new_command
+					command.test = new_command;
+				} else if (command.tests instanceof Sieve.Grammar.TestList) {
+					// allof/anyof .tests[] new_command
+					command.tests.push(new_command);
 				} else {
-					new_command = new Sieve.Grammar.Test(value);
+					error('Test not allowed here');
 				}
-				command.test = new_command;
+			} else if (command) {
+				if (command.commands) {
+					command.commands.push(new_command);
+				} else {
+					console.dir(command);
+					error('commands not allowed');
+				}
 			} else {
-				if (levels.length) {
-					let cmd = levels.last();
-					if (cmd instanceof Sieve.Grammar.TestList) {
-						cmd.push(new_command);
-					} else {
-						cmd.commands.push(new_command);
-					}
-				} else {
-					tree.push(new_command);
-				}
-				if (new_command instanceof Sieve.Commands.Conditional || new_command instanceof Sieve.Grammar.TestList) {
-					levels.push(new_command);
-				}
+				tree.push(new_command);
 			}
+			levels.push(new_command);
 			command = new_command;
 			break; }
 
+		// Arguments
 		case T_TAG:
 			command
 				? args.push(value.toLowerCase())
@@ -157,6 +158,7 @@ Sieve.parseScript = script => {
 				: error('Number must be command argument');
 			break;
 
+		// Comments
 		case T_BRACKET_COMMENT:
 			(command ? command.commands : tree).push(
 				new Sieve.Grammar.BracketComment(value.substr(2, value.length-4))
@@ -174,48 +176,52 @@ Sieve.parseScript = script => {
 			command || tree.push(value.trim());
 			break;
 
+		// Command end
 		case T_SEMICOLON:
 			command || error('Semicolon not at end of command');
 			pushArgs();
-//			levels.pop();
+			levels.pop();
 			command = levels.last();
 			break;
 
+		// Command block
 		case T_BLOCK_START:
+			pushArgs();
 			// https://tools.ietf.org/html/rfc5228#section-2.9
 			// Action commands do not take tests or blocks
-			levels.length || error('Block start not part of control command');
-			command || error('Block start not at end of command arguments');
-			pushArgs();
-			command = levels.last();
+			while (command && !(command instanceof Sieve.Commands.Conditional)) {
+				levels.pop();
+				command = levels.last();
+			}
+			command || error('Block start not part of control command');
 			break;
 		case T_BLOCK_END:
-			levels.length || error('Block end has no matching block start');
+			(command instanceof Sieve.Commands.Conditional) || error('Block end has no matching block start');
 			levels.pop();
 			command = levels.last();
 			break;
 
-		// anyof / allof
+		// anyof / allof ( ... , ... )
 		case T_LEFT_PARENTHESIS:
-			(levels.last() instanceof Sieve.Grammar.TestList)
-				|| error('Test start not part of test-list');
-			command || error('Not inside command');
 			pushArgs();
-			command = levels.last();
+			while (command && !(command.tests instanceof Sieve.Grammar.TestList)) {
+				levels.pop();
+				command = levels.last();
+			}
+			command || error('Test start not part of anyof/allof test');
 			break;
 		case T_RIGHT_PARENTHESIS:
-			(levels.last() instanceof Sieve.Grammar.TestList)
-				|| error('Test end not part of test-list');
 			pushArgs();
 			levels.pop();
 			command = levels.last();
+			(command.tests instanceof Sieve.Grammar.TestList) || error('Test end not part of test-list');
 			break;
 		case T_COMMA:
-			// Must be inside PARENTHESIS aka test-list
-			(levels.last() instanceof Sieve.Grammar.TestList)
-				|| error('Comma not part of test-list');
 			pushArgs();
+			levels.pop();
 			command = levels.last();
+			// Must be inside PARENTHESIS aka test-list
+			(command.tests instanceof Sieve.Grammar.TestList) || error('Comma not part of test-list');
 			break;
 
 		case T_UNKNOWN:

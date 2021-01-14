@@ -4,6 +4,8 @@
 
 (Sieve => {
 
+const Grammar = Sieve.Grammar, Command = Grammar.Command;
+
 /**
  * https://tools.ietf.org/html/rfc5228#section-3.1
  * Usage:
@@ -11,23 +13,19 @@
  *    elsif <test2: test> <block2: block>
  *    else <block3: block>
  */
-class Conditional
+class Conditional extends Command
 {
 	constructor(identifier = 'if')
 	{
-		this.identifier = identifier;
-		this.test = null,
-		this.commands = [];
+		super(identifier);
+		this.test = null;
 	}
 
 	toString()
 	{
 		return this.identifier
 			+ ('else' !== this.identifier ? ' ' + this.test : '')
-			+ (this.commands.length
-				? ' {\r\n\t' + Sieve.arrayToString(this.commands, ';\r\n\t') + ';\r\n}'
-				: ';'
-			);
+			+ ' ' + this.commands;
 	}
 /*
 	public function pushArguments(array $args): void
@@ -41,23 +39,24 @@ class Conditional
 /**
  * https://tools.ietf.org/html/rfc5228#section-3.2
  */
-class Require /* extends Array*/
+class Require extends Command
 {
 	constructor()
 	{
-		this.capabilities = new Sieve.Grammar.StringList();
+		super('require');
+		this.capabilities = new Grammar.StringList();
 	}
 
 	toString()
 	{
-		return 'require ' + this.capabilities.toString();
+		return 'require ' + this.capabilities.toString() + ';';
 	}
 
 	pushArguments(args)
 	{
-		if (args[0] instanceof Sieve.Grammar.StringList) {
+		if (args[0] instanceof Grammar.StringList) {
 			this.capabilities = args[0];
-		} else if (args[0] instanceof Sieve.Grammar.QuotedString) {
+		} else if (args[0] instanceof Grammar.QuotedString) {
 			this.capabilities.push(args[0]);
 		}
 	}
@@ -66,30 +65,36 @@ class Require /* extends Array*/
 /**
  * https://tools.ietf.org/html/rfc5228#section-3.3
  */
-class Stop
+class Stop extends Command
 {
+	constructor()
+	{
+		super('stop');
+	}
+
 	toString()
 	{
-		return 'stop';
+		return 'stop;';
 	}
 }
 
 /**
  * https://tools.ietf.org/html/rfc5228#section-4.1
  */
-class FileInto
+class FileInto extends Command
 {
 //	const REQUIRE = 'fileinto';
 
 	constructor()
 	{
+		super('fileinto');
 		// QuotedString / MultiLine
-		this._mailbox = new Sieve.Grammar.QuotedString();
+		this._mailbox = new Grammar.QuotedString();
 	}
 
 	toString()
 	{
-		return 'fileinto ' + this._mailbox;
+		return 'fileinto ' + this._mailbox + ';';
 	}
 
 	get mailbox()
@@ -104,7 +109,7 @@ class FileInto
 
 	pushArguments(args)
 	{
-		if (args[0] instanceof Sieve.Grammar.StringType) {
+		if (args[0] instanceof Grammar.StringType) {
 			this._mailbox = args[0];
 		}
 	}
@@ -113,17 +118,18 @@ class FileInto
 /**
  * https://tools.ietf.org/html/rfc5228#section-4.2
  */
-class Redirect
+class Redirect extends Command
 {
 	constructor()
 	{
+		super('redirect');
 		// QuotedString / MultiLine
-		this._address = new Sieve.Grammar.QuotedString();
+		this._address = new Grammar.QuotedString();
 	}
 
 	toString()
 	{
-		return 'redirect ' + this.address;
+		return 'redirect ' + this.address + ';';
 	}
 
 	get address()
@@ -140,22 +146,32 @@ class Redirect
 /**
  * https://tools.ietf.org/html/rfc5228#section-4.3
  */
-class Keep
+class Keep extends Command
 {
+	constructor()
+	{
+		super('keep');
+	}
+
 	toString()
 	{
-		return 'keep';
+		return 'keep;';
 	}
 }
 
 /**
  * https://tools.ietf.org/html/rfc5228#section-4.4
  */
-class Discard
+class Discard extends Command
 {
+	constructor()
+	{
+		super('discard');
+	}
+
 	toString()
 	{
-		return 'discard';
+		return 'discard;';
 	}
 }
 
