@@ -57,7 +57,6 @@ const jsSieve = () => {
 		.pipe(expect.real({ errorOnFailure: true }, src))
 		.pipe(concat(config.paths.js.sieve.name, { separator: '\n\n' }))
 		.pipe(eol('\n', true))
-		.pipe(replace(/sourceMappingURL=[a-z0-9.\-_]{1,20}\.map/gi, ''))
 		.pipe(gulp.dest(config.paths.staticJS));
 };
 

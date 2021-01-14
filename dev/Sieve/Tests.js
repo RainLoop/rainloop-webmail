@@ -236,17 +236,17 @@ class True extends Test
 	}
 }
 
-Sieve.Tests = {
-	Address: Address,
-	Allof: AllOf,
-	Anyof: AnyOf,
-	Envelope: Envelope,
-	Exists: Exists,
-	False: False,
-	Header: Header,
-	Not: Not,
-	Size: Size,
-	True: True
-};
+Object.assign(Sieve.Commands, {
+	address: Address,
+	allof: AllOf,
+	anyof: AnyOf,
+	envelope: Envelope,
+	exists: Exists,
+	false: False,
+	header: Header,
+	not: Not,
+	size: Size,
+	true: True
+});
 
 })(this.Sieve);

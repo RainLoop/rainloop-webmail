@@ -15,6 +15,7 @@ class Body extends Grammar.Test
 		this.match_type = ':is',
 		this.body_transform = ''; // :raw, :content <string-list>, :text
 		this.key_list = new Grammar.StringList;
+//		this.require = 'body';
 	}
 
 	toString()
@@ -25,7 +26,6 @@ class Body extends Grammar.Test
 			+ ' ' + this.body_transform
 			+ ' ' + this.key_list;
 	}
-
 
 	pushArguments(args)
 	{
@@ -43,7 +43,7 @@ class Body extends Grammar.Test
 	}
 }
 
-Sieve.Extensions.Body = Body;
+Sieve.Commands.body = Body;
 
 })(this.Sieve);
 

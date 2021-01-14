@@ -23,9 +23,7 @@ class Conditional extends Command
 
 	toString()
 	{
-		return this.identifier
-			+ ('else' !== this.identifier ? ' ' + this.test : '')
-			+ ' ' + this.commands;
+		return this.identifier + ' ' + this.test + ' ' + this.commands;
 	}
 /*
 	public function pushArguments(array $args): void
@@ -34,6 +32,35 @@ class Conditional extends Command
 		exit;
 	}
 */
+}
+
+class If extends Conditional
+{
+	constructor()
+	{
+		super('if');
+	}
+}
+
+class ElsIf extends Conditional
+{
+	constructor()
+	{
+		super('elsif');
+	}
+}
+
+class Else extends Conditional
+{
+	constructor()
+	{
+		super('else');
+	}
+
+	toString()
+	{
+		return this.identifier + ' ' + this.commands;
+	}
 }
 
 /**
@@ -83,13 +110,12 @@ class Stop extends Command
  */
 class FileInto extends Command
 {
-//	const REQUIRE = 'fileinto';
-
 	constructor()
 	{
 		super('fileinto');
 		// QuotedString / MultiLine
 		this._mailbox = new Grammar.QuotedString();
+//		this.require = 'fileinto';
 	}
 
 	toString()
@@ -177,14 +203,17 @@ class Discard extends Command
 
 Sieve.Commands = {
 	// Control commands
-	Conditional: Conditional,
-	Require: Require,
-	Stop: Stop,
+	if: If,
+	elsif: ElsIf,
+	else: Else,
+	conditional: Conditional,
+	require: Require,
+	stop: Stop,
 	// Action commands
-	Discard: Discard,
-	Fileinto: FileInto,
-	Keep: Keep,
-	Redirect: Redirect
+	discard: Discard,
+	fileinto: FileInto,
+	keep: Keep,
+	redirect: Redirect
 };
 
 })(this.Sieve);

@@ -15,6 +15,7 @@ class Ereject extends Grammar.Command
 	{
 		super('ereject');
 		this._reason = new Grammar.QuotedString;
+//		this.require = 'ereject';
 	}
 
 	toString()
@@ -49,6 +50,7 @@ class Reject extends Grammar.Command
 	{
 		super('reject');
 		this._reason = new Grammar.QuotedString;
+//		this.require = 'reject';
 	}
 
 	toString()
@@ -74,7 +76,7 @@ class Reject extends Grammar.Command
 	}
 }
 
-Sieve.Extensions.Ereject = Ereject;
-Sieve.Extensions.Reject = Reject;
+Sieve.Commands.ereject = Ereject;
+Sieve.Commands.reject = Reject;
 
 })(this.Sieve);

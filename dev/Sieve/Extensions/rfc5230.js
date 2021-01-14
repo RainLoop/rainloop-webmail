@@ -4,20 +4,23 @@
 
 (Sieve => {
 
-class Vacation extends Sieve.Grammar.Command
+const Grammar = Sieve.Grammar;
+
+class Vacation extends Grammar.Command
 {
 	constructor()
 	{
 		super('vacation');
 		this.arguments = {
-			':days'     : new Sieve.Grammar.Number,
-			':subject'  : new Sieve.Grammar.QuotedString,
-			':from'     : new Sieve.Grammar.QuotedString,
-			':addresses': new Sieve.Grammar.StringList,
+			':days'     : new Grammar.Number,
+			':subject'  : new Grammar.QuotedString,
+			':from'     : new Grammar.QuotedString,
+			':addresses': new Grammar.StringList,
 			':mime'     : false,
-			':handle'   : new Sieve.Grammar.QuotedString
+			':handle'   : new Grammar.QuotedString
 		};
 		this.reason = ''; // QuotedString / MultiLine
+//		this.require = 'vacation';
 	}
 
 	toString()
@@ -82,6 +85,6 @@ class Vacation extends Sieve.Grammar.Command
 */
 }
 
-Sieve.Extensions.Vacation = Vacation;
+Sieve.Commands.vacation = Vacation;
 
 })(this.Sieve);

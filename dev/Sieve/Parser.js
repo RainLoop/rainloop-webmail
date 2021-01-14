@@ -6,6 +6,8 @@
 
 const
 	RegEx = Sieve.RegEx,
+	Grammar = Sieve.Grammar,
+	Commands = Sieve.Commands,
 
 	T_UNKNOWN           = 0,
 	T_STRING_LIST       = 1,
@@ -80,43 +82,35 @@ Sieve.parseScript = script => {
 		case T_IDENTIFIER: {
 			pushArgs();
 			value = value.toLowerCase();
-			let new_command,
-				className = value[0].toUpperCase() + value.substring(1);
+			let new_command;
 			if ('if' === value) {
-				new_command = new Sieve.Commands.Conditional(value);
+				new_command = new Commands.conditional(value);
 			} else if ('elsif' === value || 'else' === value) {
-//				(prev_command instanceof Sieve.Commands.Conditional) || error('Not after IF condition');
-				new_command = new Sieve.Commands.Conditional(value);
-			} else if ('allof' === value || 'anyof' === value) {
-				(command instanceof Sieve.Commands.Conditional) || error('Test-list not in conditional');
-				new_command = new Sieve.Tests[className]();
-			} else if (Sieve.Tests[className]) {
-				// address / envelope / exists / header / not / size
-				new_command = new Sieve.Tests[className]();
-			} else if (Sieve.Commands[className]) {
-				// discard / fileinto / keep / redirect / require / stop
-				new_command = new Sieve.Commands[className]();
-			} else if (Sieve.Extensions[className]) {
-				// body / ereject / reject / imap4flags / vacation
-				new_command = new Sieve.Extensions[className]();
+//				(prev_command instanceof Commands.conditional) || error('Not after IF condition');
+				new_command = new Commands.conditional(value);
+			} else if (Commands[value]) {
+				if ('allof' === value || 'anyof' === value) {
+					(command instanceof Commands.conditional) || error('Test-list not in conditional');
+				}
+				new_command = new Commands[value]();
 			} else {
 				console.error('Unknown command: ' + value);
 				if (command && (
-				    command instanceof Sieve.Commands.Conditional
-				 || command instanceof Sieve.Tests.Not
-				 || command.tests instanceof Sieve.Grammar.TestList)) {
-					new_command = new Sieve.Grammar.Test(value);
+				    command instanceof Commands.conditional
+				 || command instanceof Commands.not
+				 || command.tests instanceof Grammar.TestList)) {
+					new_command = new Grammar.Test(value);
 				} else {
-					new_command = new Sieve.Grammar.Command(value);
+					new_command = new Grammar.Command(value);
 				}
 			}
 
-			if (new_command instanceof Sieve.Grammar.Test) {
-				if (command instanceof Sieve.Commands.Conditional || command instanceof Sieve.Tests.Not) {
+			if (new_command instanceof Grammar.Test) {
+				if (command instanceof Commands.conditional || command instanceof Commands.not) {
 					// if/elsif/else new_command
 					// not new_command
 					command.test = new_command;
-				} else if (command.tests instanceof Sieve.Grammar.TestList) {
+				} else if (command.tests instanceof Grammar.TestList) {
 					// allof/anyof .tests[] new_command
 					command.tests.push(new_command);
 				} else {
@@ -144,35 +138,35 @@ Sieve.parseScript = script => {
 			break;
 		case T_STRING_LIST:
 			command
-				? args.push(Sieve.Grammar.StringList.fromString(value))
+				? args.push(Grammar.StringList.fromString(value))
 				: error('String list must be command argument');
 			break;
 		case T_MULTILINE_STRING:
 			command
-				? args.push(new Sieve.Grammar.MultiLine(value))
+				? args.push(new Grammar.MultiLine(value))
 				: error('Multi-line string must be command argument');
 			break;
 		case T_QUOTED_STRING:
 			command
-				? args.push(new Sieve.Grammar.QuotedString(value.substr(1,value.length-2)))
+				? args.push(new Grammar.QuotedString(value.substr(1,value.length-2)))
 				: error('Quoted string must be command argument');
 			break;
 		case T_NUMBER:
 			command
-				? args.push(new Sieve.Grammar.Number(value))
+				? args.push(new Grammar.Number(value))
 				: error('Number must be command argument');
 			break;
 
 		// Comments
 		case T_BRACKET_COMMENT:
 			(command ? command.commands : tree).push(
-				new Sieve.Grammar.BracketComment(value.substr(2, value.length-4))
+				new Grammar.BracketComment(value.substr(2, value.length-4))
 			);
 			break;
 
 		case T_HASH_COMMENT:
 			(command ? command.commands : tree).push(
-				new Sieve.Grammar.HashComment(value.substr(1).trim())
+				new Grammar.HashComment(value.substr(1).trim())
 			);
 			break;
 
@@ -194,14 +188,14 @@ Sieve.parseScript = script => {
 			pushArgs();
 			// https://tools.ietf.org/html/rfc5228#section-2.9
 			// Action commands do not take tests or blocks
-			while (command && !(command instanceof Sieve.Commands.Conditional)) {
+			while (command && !(command instanceof Commands.conditional)) {
 				levels.pop();
 				command = levels.last();
 			}
 			command || error('Block start not part of control command');
 			break;
 		case T_BLOCK_END:
-			(command instanceof Sieve.Commands.Conditional) || error('Block end has no matching block start');
+			(command instanceof Commands.conditional) || error('Block end has no matching block start');
 			levels.pop();
 //			prev_command = command;
 			command = levels.last();
@@ -210,7 +204,7 @@ Sieve.parseScript = script => {
 		// anyof / allof ( ... , ... )
 		case T_LEFT_PARENTHESIS:
 			pushArgs();
-			while (command && !(command.tests instanceof Sieve.Grammar.TestList)) {
+			while (command && !(command.tests instanceof Grammar.TestList)) {
 				levels.pop();
 				command = levels.last();
 			}
@@ -220,14 +214,14 @@ Sieve.parseScript = script => {
 			pushArgs();
 			levels.pop();
 			command = levels.last();
-			(command.tests instanceof Sieve.Grammar.TestList) || error('Test end not part of test-list');
+			(command.tests instanceof Grammar.TestList) || error('Test end not part of test-list');
 			break;
 		case T_COMMA:
 			pushArgs();
 			levels.pop();
 			command = levels.last();
 			// Must be inside PARENTHESIS aka test-list
-			(command.tests instanceof Sieve.Grammar.TestList) || error('Comma not part of test-list');
+			(command.tests instanceof Grammar.TestList) || error('Comma not part of test-list');
 			break;
 
 		case T_UNKNOWN:
