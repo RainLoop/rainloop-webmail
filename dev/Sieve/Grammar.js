@@ -203,12 +203,22 @@ class MultiLine extends StringType
 	toString()
 	{
 		return 'text:'
-			+ (this.comment ? "#${this.comment}" : '') + "\r\n"
-//			+ \rtrim(this.value, "\r\n")
+			+ (this.comment ? '# ' + this.comment : '') + "\r\n"
+			+ this.value
 			+ "\r\n.\r\n";
 	}
 }
 
+let MultiLineRegEx = RegExp('text:[ \\t]*(' + RegEx.HASH_COMMENT + ')?\\r\\n'
+	+ '((?:' + RegEx.MULTILINE_LITERAL + '|' + RegEx.MULTILINE_DOTSTART + ')*)'
+	+ '\\.\\r\\n', 'm');
+MultiLine.fromString = string => {
+	string = string.match(MultiLineRegEx);
+	if (string[2]) {
+		return new MultiLine(string[2].replace(/\r\n$/, ''), string[1]);
+	}
+	return new MultiLine();
+}
 
 /**
  * https://tools.ietf.org/html/rfc5228#section-5
@@ -226,7 +236,10 @@ class Test
 
 	toString()
 	{
-		return (this.identifier + ' ' + Sieve.arrayToString(this.arguments, ' ')).trim();
+		return (this.identifier
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
+			+ (this.match_type ? ' ' + this.match_type : '')
+			+ ' ' + Sieve.arrayToString(this.arguments, ' ')).trim();
 	}
 
 	pushArguments(args)

@@ -29,11 +29,11 @@ class DateTest extends Grammar.Test
 		return 'date'
 			+ (this.last ? ' :last' : (this.index.value ? ' :index ' + this.index : ''))
 			+ (this.originalzone ? ' :originalzone' : (this.zone.length ? ' :zone ' + this.zone : ''))
-//			+ ' ' + this.comparator
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
 			+ ' ' + this.header_name
 			+ ' ' + this.date_part
-			+ ' ' + this.key_list;
+			+ ' ' + this.key_list.toString();
 	}
 
 	pushArguments(args)
@@ -75,10 +75,10 @@ class CurrentDate extends Grammar.Test
 	{
 		return 'date'
 			+ (this.zone.length ? ' :zone ' + this.zone : '')
-//			+ ' ' + this.comparator
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
 			+ ' ' + this.date_part
-			+ ' ' + this.key_list;
+			+ ' ' + this.key_list.toString();
 	}
 
 	pushArguments(args)

@@ -20,10 +20,10 @@ class Body extends Grammar.Test
 	toString()
 	{
 		return 'body'
-//			+ ' ' + this.comparator
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
 			+ ' ' + this.body_transform
-			+ ' ' + this.key_list;
+			+ ' ' + this.key_list.toString();
 	}
 
 	pushArguments(args)

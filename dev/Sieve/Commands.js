@@ -156,7 +156,7 @@ class Redirect extends Command
 
 	toString()
 	{
-		return 'redirect ' + this.address + ';';
+		return 'redirect ' + this._address + ';';
 	}
 
 	get address()
@@ -167,6 +167,13 @@ class Redirect extends Command
 	set address(value)
 	{
 		this._address.value = value;
+	}
+
+	pushArguments(args)
+	{
+		if (args[0] instanceof Grammar.StringType) {
+			this._address = args[0];
+		}
 	}
 }
 

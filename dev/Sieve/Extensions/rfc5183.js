@@ -20,10 +20,10 @@ class Environment extends Grammar.Test
 	toString()
 	{
 		return 'body'
-//			+ ' ' + this.comparator
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
 			+ ' ' + this.name
-			+ ' ' + this.key_list;
+			+ ' ' + this.key_list.toString();
 	}
 
 	pushArguments(args)

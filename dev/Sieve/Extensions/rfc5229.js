@@ -55,9 +55,9 @@ class String extends Grammar.Test
 	{
 		return 'string'
 			+ ' ' + this.match_type
-//			+ ' ' + this.comparator
-			+ ' ' + this.source
-			+ ' ' + this.key_list;
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
+			+ ' ' + this.source.toString()
+			+ ' ' + this.key_list.toString();
 	}
 
 	pushArguments(args)

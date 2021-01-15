@@ -16,14 +16,13 @@ class SpamTest extends Grammar.Test
 	}
 
 //	get require() { return this.percent ? 'spamtestplus' : 'spamtest'; }
-//	get require() { return /:value|:count/.test(this.match_type) ? 'relational' : ''; }
-	get require() { return 'spamtestplus'; }
+	get require() { return /:value|:count/.test(this.match_type) ? ['spamtestplus','relational'] : 'spamtestplus'; }
 
 	toString()
 	{
 		return 'spamtest'
 			+ (this.percent ? ' :percent' : '')
-//			+ ' ' + this.comparator
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
 			+ ' ' + this.value;
 	}
@@ -48,13 +47,12 @@ class VirusTest extends Grammar.Test
 		this.value = new Grammar.QuotedString; // 1 - 5
 	}
 
-//	get require() { return /:value|:count/.test(this.match_type) ? ['virustest','relational'] : 'virustest'; }
-	get require() { return 'virustest'; }
+	get require() { return /:value|:count/.test(this.match_type) ? ['virustest','relational'] : 'virustest'; }
 
 	toString()
 	{
 		return 'virustest'
-//			+ ' ' + this.comparator
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
 			+ ' ' + this.value;
 	}

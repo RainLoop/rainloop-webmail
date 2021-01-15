@@ -19,7 +19,7 @@ class Flag extends Grammar.Command
 
 	toString()
 	{
-		return this.identifier + ' ' + this._variablename + ' ' + this.list_of_flags + ';';
+		return this.identifier + ' ' + this._variablename + ' ' + this.list_of_flags.toString() + ';';
 	}
 
 	get variablename()
@@ -86,9 +86,9 @@ class HasFlag extends Grammar.Test
 	{
 		return 'hasflag'
 			+ ' ' + this.match_type
-//			+ ' ' + this.comparator
-			+ ' ' + this.variable_list
-			+ ' ' + this.list_of_flags;
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
+			+ ' ' + this.variable_list.toString()
+			+ ' ' + this.list_of_flags.toString();
 	}
 
 	pushArguments(args)

@@ -53,7 +53,7 @@ class DeleteHeader extends Grammar.Command
 	{
 		return this.identifier
 			+ (this.last ? ' :last' : (this.index.value ? ' :index ' + this.index : ''))
-//			+ ' ' + this.comparator
+			+ (this.comparator ? ' :comparator ' + this.comparator : '')
 			+ ' ' + this.match_type
 			+ ' ' + this.field_name
 			+ ' ' + this.value_patterns + ';';

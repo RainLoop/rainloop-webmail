@@ -40,7 +40,7 @@ class Vacation extends Grammar.Command
 			result += ' :from ' + this.arguments[':from'];
 		}
 		if (this.addresses.length) {
-			result += ' :addresses ' + this.addresses;
+			result += ' :addresses ' + this.addresses.toString();
 		}
 		if (this.mime) {
 			result += ' :mime';

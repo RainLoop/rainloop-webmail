@@ -152,6 +152,9 @@ Sieve.parseScript = (script, name = 'script.sieve') => {
 				(Array.isArray(command.require) ? command.require : [command.require])
 					.forEach(string => requires.push(string));
 			}
+			if (command.comparator) {
+				requires.push('comparator-' + this.comparator);
+			}
 			break; }
 
 		// Arguments
@@ -162,7 +165,7 @@ Sieve.parseScript = (script, name = 'script.sieve') => {
 			pushArg(Grammar.StringList.fromString(value));
 			break;
 		case T_MULTILINE_STRING:
-			pushArg(new Grammar.MultiLine(value));
+			pushArg(Grammar.MultiLine.fromString(value));
 			break;
 		case T_QUOTED_STRING:
 			pushArg(new Grammar.QuotedString(value.substr(1,value.length-2)));
@@ -254,6 +257,7 @@ Sieve.parseScript = (script, name = 'script.sieve') => {
 		line += (value.split('\n').length - 1); // (value.match(/\n/g) || []).length;
 	}
 
+	tree.requires = requires;
 	return tree;
 };
 
