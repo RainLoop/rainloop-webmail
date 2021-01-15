@@ -218,6 +218,9 @@ class Test
 	constructor(identifier)
 	{
 		this.identifier = identifier;
+		// Almost every test has a comparator and match_type, so define them here
+		this.comparator = '',
+		this.match_type = ':is',
 		this.arguments = [];
 	}
 

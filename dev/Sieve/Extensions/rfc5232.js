@@ -76,8 +76,6 @@ class HasFlag extends Grammar.Test
 	constructor()
 	{
 		super('hasflag');
-		this.comparator = '',
-		this.match_type = ':is',
 		this.variable_list = new Grammar.StringList;
 		this.list_of_flags = new Grammar.StringList;
 	}

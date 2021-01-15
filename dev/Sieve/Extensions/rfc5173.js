@@ -11,8 +11,6 @@ class Body extends Grammar.Test
 	constructor()
 	{
 		super('body');
-		this.comparator = '',
-		this.match_type = ':is',
 		this.body_transform = ''; // :raw, :content <string-list>, :text
 		this.key_list = new Grammar.StringList;
 	}

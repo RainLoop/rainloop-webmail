@@ -16,16 +16,20 @@ class Address extends Test
 	constructor()
 	{
 		super('address');
-		this.comparator   = '';
 		this.address_part = ':all'; // :localpart | :domain | :all
-		this.match_type   = ':is';
 		this.header_list  = new StringList;
 		this.key_list     = new StringList;
+		// rfc5260#section-6
+//		this.index        = new Grammar.Number;
+//		this.last         = false;
 	}
+
+	get require() { return this.last ? 'index' : ''; }
 
 	toString()
 	{
 		return 'address'
+//			+ (this.last ? ' :last' : (this.index.value ? ' :index ' + this.index : ''))
 //			+ ' ' + this.comparator
 			+ ' ' + this.address_part
 			+ ' ' + this.match_type
@@ -38,6 +42,10 @@ class Address extends Test
 		args.forEach((arg, i) => {
 			if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
 				this.address_part = arg;
+			} else if (':last' === arg) {
+				this.last = true;
+			} else if (':index' === args[i-1]) {
+				this.index.value = arg.value;
 			} else if (arg instanceof StringList || arg instanceof Grammar.StringType) {
 				this[args[i+1] ? 'header_list' : 'key_list'] = arg;
 //				(args[i+1] ? this.header_list : this.key_list) = arg;
@@ -88,9 +96,7 @@ class Envelope extends Test
 	constructor()
 	{
 		super('envelope');
-		this.comparator   = '';
 		this.address_part = ':all'; // :localpart | :domain | :all
-		this.match_type   = ':is';
 		this.envelope_part = new StringList;
 		this.key_list      = new StringList;
 	}
@@ -165,16 +171,20 @@ class Header extends Test
 	constructor()
 	{
 		super('header');
-		this.comparator   = '';
 		this.address_part = ':all'; // :localpart | :domain | :all
-		this.match_type   = ':is';
 		this.header_names = new StringList;
 		this.key_list     = new StringList;
+		// rfc5260#section-6
+//		this.index        = new Grammar.Number;
+//		this.last         = false;
 	}
+
+	get require() { return this.last ? 'index' : ''; }
 
 	toString()
 	{
 		return 'header'
+//			+ (this.last ? ' :last' : (this.index.value ? ' :index ' + this.index : ''))
 //			+ ' ' + this.comparator
 			+ ' ' + this.match_type
 			+ ' ' + this.header_names
@@ -186,6 +196,10 @@ class Header extends Test
 		args.forEach((arg, i) => {
 			if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
 				this.address_part = arg;
+			} else if (':last' === arg) {
+				this.last = true;
+			} else if (':index' === args[i-1]) {
+				this.index.value = arg.value;
 			} else if (arg instanceof StringList || arg instanceof Grammar.StringType) {
 				this[args[i+1] ? 'header_names' : 'key_list'] = arg;
 //				(args[i+1] ? this.header_names : this.key_list) = arg;

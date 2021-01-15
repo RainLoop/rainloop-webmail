@@ -12,8 +12,6 @@ class SpamTest extends Grammar.Test
 	{
 		super('spamtest');
 		this.percent = false, // 0 - 100 else 0 - 10
-		this.comparator = '',
-		this.match_type = ':is',
 		this.value = new Grammar.QuotedString;
 	}
 
@@ -47,8 +45,6 @@ class VirusTest extends Grammar.Test
 	constructor()
 	{
 		super('virustest');
-		this.comparator = '',
-		this.match_type = ':is',
 		this.value = new Grammar.QuotedString; // 1 - 5
 	}
 
