@@ -12,7 +12,7 @@ class SpamTest extends Grammar.Test
 	{
 		super('spamtest');
 		this.percent = false, // 0 - 100 else 0 - 10
-		this.comparator = 'i;ascii-casemap',
+		this.comparator = '',
 		this.match_type = ':is',
 		this.value = new Grammar.QuotedString;
 	}
@@ -32,20 +32,11 @@ class SpamTest extends Grammar.Test
 
 	pushArguments(args)
 	{
-		args.forEach((arg, i) => {
-			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
-				this.match_type = arg;
-			} else if (':percent' === arg) {
+		args.forEach(arg => {
+			if (':percent' === arg) {
 				this.percent = true;
 			} else if (arg instanceof Grammar.StringType) {
-				if (':comparator' === args[i-1]) {
-					this.comparator = arg;
-				} else if (':value' === args[i-1] || ':count' === args[i-1]) {
-					// Sieve relational [RFC5231] match types
-					this.match_type = args[i-1] + ' ' + arg;
-				} else {
-					this.value = arg;
-				}
+				this.value = arg;
 			}
 		});
 	}
@@ -56,7 +47,7 @@ class VirusTest extends Grammar.Test
 	constructor()
 	{
 		super('virustest');
-		this.comparator = 'i;ascii-casemap',
+		this.comparator = '',
 		this.match_type = ':is',
 		this.value = new Grammar.QuotedString; // 1 - 5
 	}
@@ -74,18 +65,9 @@ class VirusTest extends Grammar.Test
 
 	pushArguments(args)
 	{
-		args.forEach((arg, i) => {
-			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
-				this.match_type = arg;
-			} else if (arg instanceof Grammar.StringType) {
-				if (':comparator' === args[i-1]) {
-					this.comparator = arg;
-				} else if (':value' === args[i-1] || ':count' === args[i-1]) {
-					// Sieve relational [RFC5231] match types
-					this.match_type = args[i-1] + ' ' + arg;
-				} else {
-					this.value = arg;
-				}
+		args.forEach(arg => {
+			if (arg instanceof Grammar.StringType) {
+				this.value = arg;
 			}
 		});
 	}

@@ -16,7 +16,7 @@ class Address extends Test
 	constructor()
 	{
 		super('address');
-		this.comparator   = 'i;ascii-casemap';
+		this.comparator   = '';
 		this.address_part = ':all'; // :localpart | :domain | :all
 		this.match_type   = ':is';
 		this.header_list  = new StringList;
@@ -36,17 +36,11 @@ class Address extends Test
 	pushArguments(args)
 	{
 		args.forEach((arg, i) => {
-			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
-				this.match_type = arg;
-			} else if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
+			if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
 				this.address_part = arg;
 			} else if (arg instanceof StringList || arg instanceof Grammar.StringType) {
-				if (':comparator' === args[i-1]) {
-					this.comparator = arg;
-				} else {
-					this[args[i+1] ? 'header_list' : 'key_list'] = arg;
-//					(args[i+1] ? this.header_list : this.key_list) = arg;
-				}
+				this[args[i+1] ? 'header_list' : 'key_list'] = arg;
+//				(args[i+1] ? this.header_list : this.key_list) = arg;
 			}
 		});
 	}
@@ -65,7 +59,7 @@ class AllOf extends Test
 
 	toString()
 	{
-		return 'allof' + this.tests;
+		return 'allof ' + this.tests;
 	}
 }
 
@@ -82,7 +76,7 @@ class AnyOf extends Test
 
 	toString()
 	{
-		return 'anyof' + this.tests;
+		return 'anyof ' + this.tests;
 	}
 }
 
@@ -94,7 +88,7 @@ class Envelope extends Test
 	constructor()
 	{
 		super('envelope');
-		this.comparator   = 'i;ascii-casemap';
+		this.comparator   = '';
 		this.address_part = ':all'; // :localpart | :domain | :all
 		this.match_type   = ':is';
 		this.envelope_part = new StringList;
@@ -116,17 +110,11 @@ class Envelope extends Test
 	pushArguments(args)
 	{
 		args.forEach((arg, i) => {
-			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
-				this.match_type = arg;
-			} else if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
+			if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
 				this.address_part = arg;
 			} else if (arg instanceof StringList || arg instanceof Grammar.StringType) {
-				if (':comparator' === args[i-1]) {
-					this.comparator = arg;
-				} else {
-					this[args[i+1] ? 'envelope_part' : 'key_list'] = arg;
-//					(args[i+1] ? this.envelope_part : this.key_list) = arg;
-				}
+				this[args[i+1] ? 'envelope_part' : 'key_list'] = arg;
+//				(args[i+1] ? this.envelope_part : this.key_list) = arg;
 			}
 		});
 	}
@@ -177,7 +165,7 @@ class Header extends Test
 	constructor()
 	{
 		super('header');
-		this.comparator   = 'i;ascii-casemap';
+		this.comparator   = '';
 		this.address_part = ':all'; // :localpart | :domain | :all
 		this.match_type   = ':is';
 		this.header_names = new StringList;
@@ -196,17 +184,11 @@ class Header extends Test
 	pushArguments(args)
 	{
 		args.forEach((arg, i) => {
-			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
-				this.match_type = arg;
-			} else if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
+			if (':localpart' === arg || ':domain' === arg || ':all' === arg) {
 				this.address_part = arg;
 			} else if (arg instanceof StringList || arg instanceof Grammar.StringType) {
-				if (':comparator' === args[i-1]) {
-					this.comparator = arg;
-				} else {
-					this[args[i+1] ? 'header_names' : 'key_list'] = arg;
-//					(args[i+1] ? this.header_names : this.key_list) = arg;
-				}
+				this[args[i+1] ? 'header_names' : 'key_list'] = arg;
+//				(args[i+1] ? this.header_names : this.key_list) = arg;
 			}
 		});
 	}

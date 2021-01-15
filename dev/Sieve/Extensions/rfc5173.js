@@ -11,7 +11,7 @@ class Body extends Grammar.Test
 	constructor()
 	{
 		super('body');
-		this.comparator = 'i;ascii-casemap',
+		this.comparator = '',
 		this.match_type = ':is',
 		this.body_transform = ''; // :raw, :content <string-list>, :text
 		this.key_list = new Grammar.StringList;
@@ -31,14 +31,10 @@ class Body extends Grammar.Test
 	pushArguments(args)
 	{
 		args.forEach((arg, i) => {
-			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
-				this.match_type = arg;
-			} else if (':raw' === arg || ':text' === arg) {
+			if (':raw' === arg || ':text' === arg) {
 				this.body_transform = arg;
 			} else if (arg instanceof Grammar.StringList || arg instanceof Grammar.StringType) {
-				if (':comparator' === args[i-1]) {
-					this.comparator = arg;
-				} else if (':content' === args[i-1]) {
+				if (':content' === args[i-1]) {
 					this.body_transform = ':content ' + arg;
 				} else {
 					this[args[i+1] ? 'content_list' : 'key_list'] = arg;

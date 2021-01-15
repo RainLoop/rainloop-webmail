@@ -76,7 +76,7 @@ class HasFlag extends Grammar.Test
 	constructor()
 	{
 		super('hasflag');
-		this.comparator = 'i;ascii-casemap',
+		this.comparator = '',
 		this.match_type = ':is',
 		this.variable_list = new Grammar.StringList;
 		this.list_of_flags = new Grammar.StringList;
@@ -96,14 +96,8 @@ class HasFlag extends Grammar.Test
 	pushArguments(args)
 	{
 		args.forEach((arg, i) => {
-			if (':is' === arg || ':contains' === arg || ':matches' === arg) {
-				this.match_type = arg;
-			} else if (arg instanceof Grammar.StringList || arg instanceof Grammar.StringType) {
-				if (':comparator' === args[i-1]) {
-					this.comparator = arg;
-				} else {
-					this[args[i+1] ? 'variable_list' : 'list_of_flags'] = arg;
-				}
+			if (arg instanceof Grammar.StringList || arg instanceof Grammar.StringType) {
+				this[args[i+1] ? 'variable_list' : 'list_of_flags'] = arg;
 			}
 		});
 	}

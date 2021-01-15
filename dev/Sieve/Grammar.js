@@ -31,7 +31,7 @@ class StringType /*extends String*/
 		this._value = value;
 	}
 
-	length()
+	get length()
 	{
 		return this._value.length;
 	}

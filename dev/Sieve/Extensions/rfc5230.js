@@ -11,15 +11,13 @@ class Vacation extends Grammar.Command
 	constructor()
 	{
 		super('vacation');
-		this.arguments = {
-			':days'     : new Grammar.Number,
-			':subject'  : new Grammar.QuotedString,
-			':from'     : new Grammar.QuotedString,
-			':addresses': new Grammar.StringList,
-			':mime'     : false,
-			':handle'   : new Grammar.QuotedString
-		};
-		this.reason = ''; // QuotedString / MultiLine
+		this._days      = new Grammar.Number;
+		this._subject   = new Grammar.QuotedString;
+		this._from      = new Grammar.QuotedString;
+		this.addresses  = new Grammar.StringList;
+		this.mime       = false;
+		this._handle    = new Grammar.QuotedString;
+		this._reason    = new Grammar.QuotedString; // QuotedString / MultiLine
 	}
 
 	get require() { return 'vacation'; }
@@ -27,63 +25,66 @@ class Vacation extends Grammar.Command
 	toString()
 	{
 		let result = 'vacation';
-		if (0 < this.arguments[':days'].value) {
-			result += ' :days ' + this.arguments[':days'];
+		if (0 < this._days.value) {
+			result += ' :days ' + this._days;
 		}
-		if (this.arguments[':subject'].length()) {
-			result += ' :subject ' + this.arguments[':subject'];
+		if (this._subject.length) {
+			result += ' :subject ' + this._subject;
 		}
-		if (this.arguments[':from'].length()) {
+		if (this._from.length) {
 			result += ' :from ' + this.arguments[':from'];
 		}
-		if (this.arguments[':addresses'].length) {
-			result += ' :addresses ' + this.arguments[':addresses'];
+		if (this.addresses.length) {
+			result += ' :addresses ' + this.addresses;
 		}
-		if (this.arguments[':mime']) {
+		if (this.mime) {
 			result += ' :mime';
 		}
-		if (this.arguments[':handle'].length()) {
-			result += ' :handle ' + this.arguments[':handle'];
+		if (this._handle.length) {
+			result += ' :handle ' + this._handle;
 		}
-		return result + ' ' + this.reason;
-	}
-/*
-	function __get($key)
-	{
-		if ('reason' === $key) {
-			return this.reason;
-		}
-		if (isset(this.arguments[":{$key}"])) {
-			return this.arguments[":{$key}"];
-		}
+		return result + ' ' + this._reason;
 	}
 
-	function __set($key, $value)
-	{
-		if ('days' === $key) {
-			this.arguments[":{$key}"] = (int) $value;
-		} else if ('mime' === $key) {
-			this.arguments[":{$key}"] = (bool) $value;
-		} else if ('reason' === $key) {
-			this.reason = (string) $value;
-		} else if ('addresses' !== $key && isset(this.arguments[":{$key}"])) {
-			this.arguments[":{$key}"] = (string) $value;
-		}
-	}
 
-	public function pushArguments(array $args): void
+	get days()      { return this._days.value; }
+	get subject()   { return this._subject.value; }
+	get from()      { return this._from.value; }
+	get handle()    { return this._handle.value; }
+	get reason()    { return this._reason.value; }
+
+	set days(int)    { this._days.value = int; }
+	set subject(str) { this._subject.value = str; }
+	set from(str)    { this._from.value = str; }
+	set handle(str)  { this._handle.value = str; }
+	set reason(str)  { this._reason.value = str; }
+
+	pushArguments(args)
 	{
-		foreach ($args as $i => $arg) {
-			if (\in_array($arg, [':days',':subject',':from',':addresses', ':handle'])) {
-				this.arguments[$arg] = $args[$i+1];
-			} else if (':mime' === $arg) {
-				this.arguments[':mime'] = true;
-			} else if (!isset($args[$i+1])) {
-				this.reason = $arg;
+		args.forEach((arg, i) => {
+			if (':mime' === arg) {
+				this.mime = true;
+			} else if (i === args.length-1) {
+				this._reason.value = arg.value; // Grammar.QuotedString
+			} else switch (args[i-1]) {
+				case ':days':
+					this._days.value = arg.value; // Grammar.Number
+					break;
+				case ':subject':
+					this._subject.value = arg.value; // Grammar.QuotedString
+					break;
+				case ':from':
+					this._from.value = arg.value; // Grammar.QuotedString
+					break;
+				case ':addresses':
+					this.addresses = arg; // Grammar.StringList
+					break;
+				case ':handle':
+					this._from.value = arg.value; // Grammar.QuotedString
+					break;
 			}
-		}
+		});
 	}
-*/
 }
 
 Sieve.Commands.vacation = Vacation;
