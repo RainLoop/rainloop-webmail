@@ -72,6 +72,7 @@ Sieve.parseScript = (script, name = 'script.sieve') => {
 				command.match_type = arg;
 			} else if (':value' === prev_arg || ':count' === prev_arg) {
 				// Sieve relational [RFC5231] match types
+				/^(gt|ge|lt|le|eq|ne)$/.test(arg.value) || error('Invalid relational match-type ' + arg);
 				command.match_type = prev_arg + ' ' + arg;
 				--args.length;
 //				requires.push('relational');
