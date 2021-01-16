@@ -48,7 +48,7 @@ const rainloopSetup = (done) => {
 	config.cleanPath = dist;
 	config.zipSrcPath = dist;
 	config.zipFile = 'rainloop-' + (config.community ? 'community-' : '') + versionFull + '.zip';
-	config.zipFileShort = 'rainloop-' + (config.community ? 'community-' : '') + 'latest.zip';
+	// config.zipFileShort = 'rainloop-' + (config.community ? 'community-' : '') + 'latest.zip';
 
 	config.rainloopBuilded = true;
 
@@ -71,8 +71,8 @@ const rainloopClean = (done) => {
 	done();
 };
 
-const rainloopShortName = (done) => copy(config.destPath + config.zipFile, config.destPath + config.zipFileShort, done);
+// const rainloopShortName = (done) => copy(config.destPath + config.zipFile, config.destPath + config.zipFileShort, done);
 
 exports.rainloopBuild = gulp.series(rainloopCopy, rainloopSetup);
 
-exports.rainloop = gulp.series(exports.rainloopBuild, rainloopZip, rainloopClean, rainloopShortName);
+exports.rainloop = gulp.series(exports.rainloopBuild, rainloopZip, rainloopClean /*, rainloopShortName*/);
