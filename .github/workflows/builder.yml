@@ -35,6 +35,7 @@ jobs:
 
     - name: Configure GPG Key
       run: |
+        export GPG_TTY=$(tty)
         cat <(echo -e "${{ secrets.GPG_SIGNING_KEY }}") | gpg --batch --import --no-tty --yes
         for ff in `ls ./release/*.zip`; do gpg --detach-sign --no-tty --yes --armor --openpgp -u 87DA4591 --passphrase="$GPG_PASSPHRASE" $ff; done
       env:
