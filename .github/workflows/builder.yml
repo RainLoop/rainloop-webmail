@@ -32,7 +32,6 @@ jobs:
       run: |
         mkdir -p ~/.gnupg/
         chown -R $(whoami) ~/.gnupg/
-        chmod 600 ~/.gnupg/*
         chmod 700 ~/.gnupg
         printf "$GPG_SIGNING_KEY" > ~/.gnupg/private.key
         gpg --import ~/.gnupg/private.key
