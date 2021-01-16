@@ -36,16 +36,17 @@ jobs:
     - name: Configure GPG Key
       run: |
         export GPG_TTY=$(tty)
-        mkdir -p ~/.gnupg/
-        chown -R $(whoami) ~/.gnupg/
-        echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.key
-        find ~/.gnupg -type f -exec chmod 600 {} \;
-        find ~/.gnupg -type d -exec chmod 700 {} \;
-        gpg --batch --import ~/.gnupg/private.key
+        echo "$GPG_SIGNING_KEY" | gpg --batch --import
         for ff in `ls ./release/*.zip`; do gpg --detach-sign --batch --pinentry-mode loopback --armor --openpgp --yes -u 87DA4591 --passphrase="$GPG_PASSPHRASE" $ff; done
       env:
         GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        # mkdir -p ~/.gnupg/
+        # chown -R $(whoami) ~/.gnupg/
+        # echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.key
+        # find ~/.gnupg -type f -exec chmod 600 {} \;
+        # find ~/.gnupg -type d -exec chmod 700 {} \;
+        # gpg --batch --import ~/.gnupg/private.key
 
     - name: Create Release
       id: create_release
