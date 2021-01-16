@@ -26,7 +26,7 @@ jobs:
 
     - run: yarn install --frozen-lockfile --check-files
     - run: yarn build
-    - run: yarn build-pro
+    # - run: yarn build-pro
 
     - name: Move all assets to release folder
       run: |
