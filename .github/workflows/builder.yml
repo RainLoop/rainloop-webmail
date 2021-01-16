@@ -41,12 +41,6 @@ jobs:
       env:
         GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        # mkdir -p ~/.gnupg/
-        # chown -R $(whoami) ~/.gnupg/
-        # echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.key
-        # find ~/.gnupg -type f -exec chmod 600 {} \;
-        # find ~/.gnupg -type d -exec chmod 700 {} \;
-        # gpg --batch --import ~/.gnupg/private.key
 
     - name: Create Release
       id: create_release
