@@ -59,7 +59,7 @@ const owncloudSetup = (done) => {
 	config.cleanPath = dist;
 	config.zipSrcPath = dist;
 	config.zipFile = 'rainloop-owncloud-app-' + (config.community ? '' : 'standard-') + versionFull + '.zip';
-	config.zipFileShort = 'rainloop' + (config.community ? '' : '-standard') + '.zip';
+	// config.zipFileShort = 'rainloop' + (config.community ? '' : '-standard') + '.zip';
 
 	done();
 };
@@ -80,9 +80,9 @@ const owncloudClean = (done) => {
 	done();
 };
 
-const owncloudShortname = (done) => {
-	copy(config.destPath + config.zipFile, config.destPath + config.zipFileShort, done);
-};
+// const owncloudShortname = (done) => {
+// 	copy(config.destPath + config.zipFile, config.destPath + config.zipFileShort, done);
+// };
 
 exports.owncloud = gulp.series(
 	owncloudCopy,
@@ -91,6 +91,6 @@ exports.owncloud = gulp.series(
 	owncloudCopyRainLoopClean,
 	owncloudSetup,
 	owncloudZip,
-	owncloudClean,
-	owncloudShortname
+	owncloudClean
+	// owncloudShortname
 );

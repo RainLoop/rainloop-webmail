@@ -32,7 +32,10 @@ jobs:
       run: |
         mkdir ./release
         cp `ls ./build/dist/releases/**/**/*.zip | xargs` ./release
+        echo "---"
         ls ./release/*.zip
+        echo "---"
+        ls ./release/*.zip | xargs
 
     - name: Configure GPG Key
       run: |
