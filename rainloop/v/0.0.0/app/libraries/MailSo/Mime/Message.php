@@ -493,15 +493,20 @@ class Message
 
 	/**
 	 * @param string $sContentType
-	 * @param string|resource $mData
+	 * @param string $sData
 	 * @param string $sContentTransferEncoding = ''
 	 * @param array $aCustomContentTypeParams = array()
 	 *
 	 * @return \MailSo\Mime\Message
 	 */
-	public function AddAlternative($sContentType, $mData, $sContentTransferEncoding = '', $aCustomContentTypeParams = array())
+	public function AddAlternative($sContentType, $sData, $sContentTransferEncoding = '')
 	{
-		$this->aAlternativeParts[] = array($sContentType, $mData, $sContentTransferEncoding, $aCustomContentTypeParams);
+		$this->aAlternativeParts[] = array(
+			$sContentType,
+			\preg_replace('/\\r?\\n/', Enumerations\Constants::CRLF, \trim($sData)),
+			$sContentTransferEncoding,
+			array()
+		);
 
 		return $this;
 	}
@@ -712,7 +717,7 @@ class Message
 	private function createNewMessageSimpleOrAlternativeBody()
 	{
 		$oResultPart = null;
-		if (1 < count($this->aAlternativeParts))
+		if (1 < \count($this->aAlternativeParts))
 		{
 			$oResultPart = Part::NewInstance();
 
@@ -739,7 +744,7 @@ class Message
 			}
 
 		}
-		else if (1 === count($this->aAlternativeParts))
+		else if (1 === \count($this->aAlternativeParts))
 		{
 			$oAlternativePart = $this->createNewMessageAlternativePartBody($this->aAlternativeParts[0]);
 			if ($oAlternativePart)
@@ -759,7 +764,7 @@ class Message
 			else
 			{
 				$aAttachments = $this->oAttachmentCollection->CloneAsArray();
-				if (\is_array($aAttachments) && 1 === count($aAttachments) && isset($aAttachments[0]))
+				if (\is_array($aAttachments) && 1 === \count($aAttachments) && isset($aAttachments[0]))
 				{
 					$this->oAttachmentCollection->Clear();
 
@@ -784,7 +789,7 @@ class Message
 		$oResultPart = null;
 
 		$aAttachments = $this->oAttachmentCollection->LinkedAttachments();
-		if (0 < count($aAttachments))
+		if (0 < \count($aAttachments))
 		{
 			$oResultPart = Part::NewInstance();
 
@@ -824,7 +829,7 @@ class Message
 		$oResultPart = null;
 
 		$aAttachments = $this->oAttachmentCollection->UnlinkedAttachments();
-		if (0 < count($aAttachments))
+		if (0 < \count($aAttachments))
 		{
 			$oResultPart = Part::NewInstance();
 

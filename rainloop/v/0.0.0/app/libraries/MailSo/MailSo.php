@@ -27,7 +27,7 @@ if (!\defined('MAILSO_LIBRARY_ROOT_PATH'))
 			include MAILSO_LIBRARY_ROOT_PATH.\str_replace('\\', '/', \substr($sClassName, 7)).'.php' : false;
 	}
 
-	\spl_autoload_register('MailSo\MailSoSplAutoloadRegisterFunction', false);
+	\spl_autoload_register('MailSo\MailSoSplAutoloadRegisterFunction');
 
 	if (\class_exists('MailSo\Base\Loader'))
 	{

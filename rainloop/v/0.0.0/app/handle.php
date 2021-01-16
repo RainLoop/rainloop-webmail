@@ -60,7 +60,7 @@ if (!\defined('RAINLOOP_APP_LIBRARIES_PATH'))
 		return false;
 	}
 
-	\spl_autoload_register('rainLoopSplAutoloadRegisterFunction', false);
+	\spl_autoload_register('rainLoopSplAutoloadRegisterFunction');
 }
 
 if (\class_exists('RainLoop\Api'))

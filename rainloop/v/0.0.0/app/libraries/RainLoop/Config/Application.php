@@ -276,7 +276,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 
 				'login_lowercase' => array(true, ''),
 
-				'sign_me_auto'	=> array(\RainLoop\Enumerations\SignMeType::DEFAILT_OFF,
+				'sign_me_auto'	=> array(\RainLoop\Enumerations\SignMeType::DEFAULT_OFF,
 					'This option allows webmail to remember the logged in user
 once they closed the browser window.
 

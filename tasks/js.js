@@ -66,7 +66,9 @@ const jsMin = () =>
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(
 			terser({
-				output: {comments: false}
+				output: {
+					comments: false
+				}
 			})
 		)
 		.pipe(eol('\n', true))

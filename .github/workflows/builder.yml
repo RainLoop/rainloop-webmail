@@ -1,0 +1,57 @@
+name: Builder
+
+on:
+  push:
+    tags:
+    - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+
+    - name: Create Cache
+      uses: actions/cache@v2
+      with:
+        path: '**/node_modules'
+        key: os-${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+    - run: yarn install --frozen-lockfile --check-files
+    - run: yarn build
+    - run: yarn build-pro
+
+    - name: Configure GPG Key
+      run: |
+        mkdir -p ~/.gnupg/
+        printf "$GPG_SIGNING_KEY" | base64 --decode > ~/.gnupg/private.key
+        gpg --import ~/.gnupg/private.key
+        for ff in `ls ./build/dist/releases/**/**/*.zip | xargs`; do gpg --detach-sign --no-tty --yes --armor --openpgp -u 87DA4591 --passphrase $GPG_PASSPHRASE $ff; done
+      env:
+        GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
+        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Upload Release Asset
+      uses: alexellis/upload-assets@0.2.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        asset_paths: '["./build/dist/releases/*"]'

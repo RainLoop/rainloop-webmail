@@ -2249,21 +2249,6 @@ END;
 
 			$aCache = \explode(',', $sDisableFunctions);
 			$aCache = \is_array($aCache) && 0 < \count($aCache) ? $aCache : array();
-
-			if (\extension_loaded('suhosin'))
-			{
-				 $sSuhosin = @\ini_get('suhosin.executor.func.blacklist');
-				 $sSuhosin = \is_string($sSuhosin) && 0 < \strlen($sSuhosin) ? $sSuhosin : '';
-
-				 $aSuhosinCache = \explode(',', $sSuhosin);
-				 $aSuhosinCache = \is_array($aSuhosinCache) && 0 < \count($aSuhosinCache) ? $aSuhosinCache : array();
-
-				 if (0 < \count($aSuhosinCache))
-				 {
-					 $aCache = \array_merge($aCache, $aSuhosinCache);
-					 $aCache = \array_unique($aCache);
-				 }
-			}
 		}
 
 		return !\in_array($mFunctionNameOrNames, $aCache);
