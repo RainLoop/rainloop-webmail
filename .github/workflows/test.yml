@@ -42,7 +42,7 @@ jobs:
         find ~/.gnupg -type f -exec chmod 600 {} \;
         find ~/.gnupg -type d -exec chmod 700 {} \;
         echo "---"
-        gpg --import ~/.gnupg/private.key
+        gpg -v --batch --import ~/.gnupg/private.key
         echo "---"
         gpg --list-secret-keys --keyid-format LONG
         echo "---"
