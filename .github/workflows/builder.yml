@@ -26,23 +26,21 @@ jobs:
 
     - run: yarn install --frozen-lockfile --check-files
     - run: yarn build
-    # - run: yarn build-pro
+    - run: yarn build-pro
 
     - name: Move all assets to release folder
       run: |
         mkdir ./release
         cp `ls ./build/dist/releases/**/**/*.zip | xargs` ./release
-        echo "---"
-        ls ./release/*.zip
-        echo "---"
-        ls ./release/*.zip | xargs
 
     - name: Configure GPG Key
       run: |
         export GPG_TTY=$(tty)
         echo -e "$GPG_SIGNING_KEY" | gpg --batch --import --no-tty --yes
         gpg --list-secret-keys --keyid-format LONG
-        for ff in `ls ./release/*.zip | xargs`; do gpg --detach-sign --armor --openpgp --yes -u 87DA4591 --passphrase="$GPG_PASSPHRASE" $ff; done
+        ls ./release/*.zip
+        echo "---"
+        for ff in `ls ./release/*.zip`; do gpg --detach-sign --armor --openpgp --yes -u 87DA4591 --passphrase="$GPG_PASSPHRASE" $ff; done
       env:
         GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
