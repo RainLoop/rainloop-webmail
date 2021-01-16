@@ -35,16 +35,14 @@ jobs:
 
     - name: Configure GPG Key
       run: |
-        export GPG_TTY=$(tty)
         mkdir -p ~/.gnupg/
         chown -R $(whoami) ~/.gnupg/
-        echo "---"
         echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.key
-        echo "---"
         find ~/.gnupg -type f -exec chmod 600 {} \;
         find ~/.gnupg -type d -exec chmod 700 {} \;
         echo "---"
         gpg --import --yes ~/.gnupg/private.key
+        echo "---"
         gpg --list-secret-keys --keyid-format LONG
         ls ./release/*.zip
         echo "---"
