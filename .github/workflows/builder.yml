@@ -35,18 +35,20 @@ jobs:
 
     - name: Configure GPG Key
       run: |
+        export GPG_TTY=$(tty)
         mkdir -p ~/.gnupg/
         chown -R $(whoami) ~/.gnupg/
         echo "$GPG_SIGNING_KEY" > ~/.gnupg/private.key
         find ~/.gnupg -type f -exec chmod 600 {} \;
         find ~/.gnupg -type d -exec chmod 700 {} \;
         echo "---"
-        gpg --import --yes ~/.gnupg/private.key
+        gpg --import ~/.gnupg/private.key
         echo "---"
         gpg --list-secret-keys --keyid-format LONG
+        echo "---"
         ls ./release/*.zip
         echo "---"
-        for ff in `ls ./release/*.zip`; do gpg --detach-sign --armor --openpgp --pinentry-mode loopback --yes -u 87DA4591 --passphrase="$GPG_PASSPHRASE" $ff; done
+        for ff in `ls ./release/*.zip`; do gpg --detach-sign --armor --openpgp --yes -u 87DA4591 --passphrase="$GPG_PASSPHRASE" $ff; done
       env:
         GPG_SIGNING_KEY: ${{ secrets.GPG_SIGNING_KEY }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
