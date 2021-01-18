@@ -1,6 +1,6 @@
 <div class="modal fade b-plugin-content" data-bind="modal: modalVisibility">
 	<div class="modal-header">
-		<button type="button" class="close" data-bind="command: cancelCommand">&times;</button>
+		<button type="button" class="close" data-bind="command: cancelCommand">×</button>
 		<h4>
 			<span data-i18n="POPUPS_PLUGIN/TITLE_PLUGIN"></span>
 			&nbsp;
@@ -14,7 +14,7 @@
 				<span data-i18n="POPUPS_PLUGIN/DESC_NOTHING_TO_CONFIGURE"></span>
 			</div>
 			<div class="alert" data-bind="visible: '' !== saveError()">
-				<button type="button" class="close" data-bind="click: function () { saveError('') }">&times;</button>
+				<button type="button" class="close" data-bind="click: function () { saveError('') }">×</button>
 				<span data-bind="text: saveError"></span>
 			</div>
 			<div data-bind="foreach: configures, visible: hasConfiguration">
