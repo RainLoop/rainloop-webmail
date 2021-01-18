@@ -19,7 +19,7 @@ const config = {
 	cleanPath: '',
 	zipSrcPath: '',
 	zipFile: '',
-	zipFileShort: '',
+	// zipFileShort: '',
 
 	paths: {}
 };
