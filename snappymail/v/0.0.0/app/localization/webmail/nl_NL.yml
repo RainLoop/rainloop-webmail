@@ -443,7 +443,7 @@ nl_NL:
     CAPABILITY_LABEL: "Mogelijkheden"
     LOADING_PROCESS: "Bezig met updaten van de filter lijst"
     DELETING_ASK: "Weet u het zeker?"
-    CHACHES_NEED_TO_BE_SAVED_DESC: "Wijzigingen moeten nog opgeslagen worden op de server."
+    CHANGES_NEED_TO_BE_SAVED_DESC: "Wijzigingen moeten nog opgeslagen worden op de server."
   SETTINGS_IDENTITY:
     LEGEND_IDENTITY: "Identiteit"
     LABEL_DISPLAY_NAME: "Naam"

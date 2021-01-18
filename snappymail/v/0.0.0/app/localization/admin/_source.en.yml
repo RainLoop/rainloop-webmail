@@ -45,6 +45,8 @@ en:
     LABEL_ALLOW_LANGUAGES_ON_LOGIN: "Allow language selection on login screen"
     LABEL_DETERMINE_USER_LANGUAGE: "Try to determine user language"
     LABEL_HIDE_SUBMIT_BUTTON: "Hide the 'Sign In' button"
+    LABEL_FORGOT_PASSWORD_LINK_URL: "Forgot password url"
+    LABEL_REGISTRATION_LINK_URL: "Register url"
   TAB_BRANDING:
     LEGEND_BRANDING: "Branding"
     LABEL_PAGE_TITLE: "Page Title"

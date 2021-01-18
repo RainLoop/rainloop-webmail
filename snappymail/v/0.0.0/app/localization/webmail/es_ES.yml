@@ -445,7 +445,7 @@ es_ES:
     CAPABILITY_LABEL: "Capability"
     LOADING_PROCESS: "Actualizando lista de filtros"
     DELETING_ASK: "¿Está seguro?"
-    CHACHES_NEED_TO_BE_SAVED_DESC: "Estos cambios deben ser cambiados en el servidor."
+    CHANGES_NEED_TO_BE_SAVED_DESC: "Estos cambios deben ser cambiados en el servidor."
   SETTINGS_IDENTITY:
     LEGEND_IDENTITY: "Identidad"
     LABEL_DISPLAY_NAME: "Nombre"
