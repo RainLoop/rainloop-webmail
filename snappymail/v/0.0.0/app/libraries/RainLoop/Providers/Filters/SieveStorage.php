@@ -64,9 +64,18 @@ class SieveStorage implements FiltersInterface
 				foreach ($aList as $name => $active) {
 					if ($name != self::SIEVE_FILE_NAME) {
 						$aScripts[$name] = array(
+							'@Object' => 'Object/SieveScript',
 							'name' => $name,
 							'active' => $active,
 							'body' => $oSieveClient->GetScript($name) // \trim() ?
+						);
+					} else {
+						$aScripts[$name] = array(
+							'@Object' => 'Object/SieveScript',
+							'name' => $name,
+							'active' => $active,
+							'body' => $oSieveClient->GetScript($name), // \trim() ?
+							'filters' => $aFilters
 						);
 					}
 				}
@@ -77,11 +86,14 @@ class SieveStorage implements FiltersInterface
 
 		if (!isset($aList[self::SIEVE_FILE_NAME_RAW])) {
 			$aScripts[$name] = array(
+				'@Object' => 'Object/SieveScript',
 				'name' => self::SIEVE_FILE_NAME_RAW,
 				'active' => false,
 				'body' => ''
 			);
 		}
+
+		\ksort($aScripts);
 
 		return array(
 			'RawIsAllow' => $bAllowRaw,

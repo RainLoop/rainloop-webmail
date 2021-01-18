@@ -1,13 +1,14 @@
 import ko from 'ko';
 
-import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
 import FilterStore from 'Stores/User/Filter';
+import SieveStore from 'Stores/User/Sieve';
 import Remote from 'Remote/User/Fetch';
 
 import { FilterModel } from 'Model/Filter';
+import { SieveScriptModel } from 'Model/SieveScript';
 
 import { showScreenPopup, command } from 'Knoin/Knoin';
 
@@ -15,6 +16,8 @@ class FiltersUserSettings {
 	constructor() {
 		this.modules = FilterStore.modules;
 		this.filters = FilterStore.filters;
+		this.sieve = SieveStore;
+		this.scripts = SieveStore.scripts;
 
 		ko.addObservablesTo(this, {
 			inited: false,
@@ -94,6 +97,7 @@ class FiltersUserSettings {
 			Remote.filtersGet((result, data) => {
 				this.filters.loading(false);
 				this.serverError(false);
+				this.scripts([]);
 
 				if (StorageResultType.Success === result && data && data.Result && Array.isArray(data.Result.Filters)) {
 					this.inited(true);
@@ -105,6 +109,17 @@ class FiltersUserSettings {
 
 					this.modules(data.Result.Capa);
 
+					this.sieve.capa(data.Result.Capa);
+/*
+					this.scripts(
+						data.Result.Scripts.map(aItem => SieveScriptModel.reviveFromJson(aItem)).filter(v => v)
+					);
+*/
+					Object.values(data.Result.Scripts).forEach(value => {
+						value = SieveScriptModel.reviveFromJson(value);
+						value && this.scripts.push(value)
+					});
+
 					this.filterRaw(data.Result.Scripts['rainloop.user.raw'].body);
 					this.filterRaw.capa(data.Result.Capa.join(' '));
 					this.filterRaw.active(data.Result.Scripts['rainloop.user.raw'].active);
@@ -112,6 +127,9 @@ class FiltersUserSettings {
 				} else {
 					this.filters([]);
 					this.modules({});
+
+					this.sieve.capa([]);
+
 					this.filterRaw('');
 					this.filterRaw.capa({});
 
@@ -126,50 +144,38 @@ class FiltersUserSettings {
 		}
 	}
 
-	deleteFilter(filter) {
-		this.filters.remove(filter);
-		delegateRunOnDestroy(filter);
-	}
-
-	addFilter() {
-		const filter = new FilterModel();
-
-		filter.generateID();
-		showScreenPopup(require('View/Popup/Filter'), [
-			filter,
+	addScript() {
+		const script = new SieveScriptModel();
+		showScreenPopup(require('View/Popup/SieveScript'), [
+			script,
 			() => {
-				this.filters.push(filter);
-				this.filterRaw.active(false);
+				if (!this.scripts[script.name]) {
+					this.scripts[script.name] = script.name;
+				}
 			},
 			false
 		]);
 	}
 
-	editFilter(filter) {
-		const clonedFilter = filter.cloneSelf();
-
-		showScreenPopup(require('View/Popup/Filter'), [
-			clonedFilter,
+	editScript(script) {
+		showScreenPopup(require('View/Popup/SieveScript'), [
+			script,
 			() => {
-				const filters = this.filters(),
-					index = filters.indexOf(filter);
-
-				if (-1 < index && filters[index]) {
-					delegateRunOnDestroy(filters[index]);
-					filters[index] = clonedFilter;
-
-					this.filters(filters);
-					this.haveChanges(true);
-				}
+				// TODO on save
 			},
 			true
 		]);
 	}
 
+	deleteScript() {
+		// TODO
+	}
+
 	onBuild(oDom) {
 		oDom.addEventListener('click', event => {
-			const el = event.target.closestWithin('.filter-item .e-action', oDom);
-			el && ko.dataFor(el) && this.editFilter(ko.dataFor(el));
+			const el = event.target.closestWithin('.script-item .e-action', oDom),
+				script = el && ko.dataFor(el);
+			script && this.editScript(script);
 		});
 	}
 

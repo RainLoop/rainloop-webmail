@@ -431,6 +431,7 @@ en:
     BUTTON_BACK: "Back"
   SETTINGS_FILTERS:
     LEGEND_FILTERS: "Filters"
+    LEGEND_SIEVE_SCRIPT: "Sieve Script"
     BUTTON_SAVE: "Save"
     BUTTON_ADD_FILTER: "Add a Filter"
     BUTTON_DELETE: "Delete"
