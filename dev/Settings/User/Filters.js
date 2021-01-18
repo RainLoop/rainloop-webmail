@@ -10,22 +10,17 @@ import Remote from 'Remote/User/Fetch';
 import { FilterModel } from 'Model/Filter';
 import { SieveScriptModel } from 'Model/SieveScript';
 
-import { showScreenPopup, command } from 'Knoin/Knoin';
+import { showScreenPopup } from 'Knoin/Knoin';
 
 class FiltersUserSettings {
 	constructor() {
-		this.modules = FilterStore.modules;
 		this.filters = FilterStore.filters;
 		this.sieve = SieveStore;
 		this.scripts = SieveStore.scripts;
 
 		ko.addObservablesTo(this, {
-			inited: false,
 			serverError: false,
-			serverErrorDesc: '',
-			haveChanges: false,
-
-			saveErrorText: ''
+			serverErrorDesc: ''
 		});
 
 		this.serverError.subscribe((value) => {
@@ -34,60 +29,7 @@ class FiltersUserSettings {
 			}
 		}, this);
 
-		this.filterRaw = FilterStore.raw;
-		this.filterRaw.capa = FilterStore.capa;
-		this.filterRaw.active = ko.observable(false);
-		this.filterRaw.allow = ko.observable(false);
-		this.filterRaw.error = ko.observable(false);
-
-		this.filterForDeletion = ko.observable(null).deleteAccessHelper();
-
-		this.filters.subscribe(() => this.haveChanges(true));
-
-		this.filterRaw.subscribe(() => {
-			this.haveChanges(true);
-			this.filterRaw.error(false);
-		});
-
-		this.haveChanges.subscribe(() => this.saveErrorText(''));
-
-		this.filterRaw.active.subscribe(() => {
-			this.haveChanges(true);
-			this.filterRaw.error(false);
-		});
-	}
-
-	@command((self) => self.haveChanges())
-	saveChangesCommand() {
-		if (!this.filters.saving()) {
-			if (this.filterRaw.active() && !this.filterRaw().trim()) {
-				this.filterRaw.error(true);
-				return false;
-			}
-
-			this.filters.saving(true);
-			this.saveErrorText('');
-
-			Remote.filtersSave(
-				(result, data) => {
-					this.filters.saving(false);
-
-					if (StorageResultType.Success === result && data && data.Result) {
-						this.haveChanges(false);
-						this.updateList();
-					} else if (data && data.ErrorCode) {
-						this.saveErrorText(data.ErrorMessageAdditional || getNotification(data.ErrorCode));
-					} else {
-						this.saveErrorText(getNotification(Notification.CantSaveFilters));
-					}
-				},
-				this.filters(),
-				this.filterRaw(),
-				this.filterRaw.active()
-			);
-		}
-
-		return true;
+		this.scriptForDeletion = ko.observable(null).deleteAccessHelper();
 	}
 
 	updateList() {
@@ -100,16 +42,15 @@ class FiltersUserSettings {
 				this.scripts([]);
 
 				if (StorageResultType.Success === result && data && data.Result && Array.isArray(data.Result.Filters)) {
-					this.inited(true);
 					this.serverError(false);
 
 					this.filters(
 						data.Result.Filters.map(aItem => FilterModel.reviveFromJson(aItem)).filter(v => v)
 					);
 
-					this.modules(data.Result.Capa);
+					FilterStore.modules(data.Result.Capa);
 
-					this.sieve.capa(data.Result.Capa);
+					SieveStore.capa(data.Result.Capa);
 /*
 					this.scripts(
 						data.Result.Scripts.map(aItem => SieveScriptModel.reviveFromJson(aItem)).filter(v => v)
@@ -120,26 +61,24 @@ class FiltersUserSettings {
 						value && this.scripts.push(value)
 					});
 
-					this.filterRaw(data.Result.Scripts['rainloop.user.raw'].body);
-					this.filterRaw.capa(data.Result.Capa.join(' '));
-					this.filterRaw.active(data.Result.Scripts['rainloop.user.raw'].active);
-					this.filterRaw.allow(!!data.Result.RawIsAllow);
+					FilterStore.raw(data.Result.Scripts['rainloop.user.raw'].body);
+					FilterStore.capa(data.Result.Capa.join(' '));
+//					this.filterRaw.active(data.Result.Scripts['rainloop.user.raw'].active);
+//					this.filterRaw.allow(!!data.Result.RawIsAllow);
 				} else {
 					this.filters([]);
-					this.modules({});
+					FilterStore.modules({});
 
-					this.sieve.capa([]);
+					SieveStore.capa([]);
 
-					this.filterRaw('');
-					this.filterRaw.capa({});
+					FilterStore.raw('');
+					FilterStore.capa({});
 
 					this.serverError(true);
 					this.serverErrorDesc(
 						data && data.ErrorCode ? getNotification(data.ErrorCode) : getNotification(Notification.CantGetFilters)
 					);
 				}
-
-				this.haveChanges(false);
 			});
 		}
 	}
@@ -169,6 +108,11 @@ class FiltersUserSettings {
 
 	deleteScript() {
 		// TODO
+	}
+
+	toggleScript(script) {
+		// TODO: activate/deactivate script
+		script.active(!script.active());
 	}
 
 	onBuild(oDom) {

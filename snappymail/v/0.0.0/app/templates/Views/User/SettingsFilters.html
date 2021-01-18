@@ -29,7 +29,7 @@
 				<tbody data-bind="foreach: scripts">
 					<tr class="script-item">
 						<td>
-							<span class="disabled-script" data-bind="click: function () { $root.haveChanges(true); active(!active()); }">
+							<span class="disabled-script" data-bind="click: function (oScript) { $root.toggleScript(oScript); }">
 								<i data-bind="css: {'icon-checkbox-checked': active, 'icon-checkbox-unchecked': !active()}"></i>
 							</span>
 						</td>
@@ -40,7 +40,7 @@
 							</a>
 						</td>
 						<td>
-							<span class="delete-script" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oScript) { $root.filterForDeletion(oScript); }">
+							<span class="delete-script" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oScript) { $root.scriptForDeletion(oScript); }">
 								<i class="icon-trash"></i>
 							</span>
 						</td>

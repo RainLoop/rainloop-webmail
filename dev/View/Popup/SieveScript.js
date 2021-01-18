@@ -19,8 +19,12 @@ class SieveScriptPopupView extends AbstractViewNext {
 	constructor() {
 		super();
 
+//		this.filters = FilterStore.filters;
+		this.filters = ko.observableArray([]);
+		this.filters.loading = ko.observable(false).extend({ throttle: 200 });
+		this.filters.saving = ko.observable(false).extend({ throttle: 200 });
+
 		this.modules = FilterStore.modules;
-		this.filters = FilterStore.filters;
 
 		this.script = {
 			filters: FilterStore.filters,
@@ -29,17 +33,16 @@ class SieveScriptPopupView extends AbstractViewNext {
 
 		ko.addObservablesTo(this, {
 			isNew: true,
-			inited: false,
 			serverError: false,
 			serverErrorDesc: '',
+			saveErrorText: '',
 			haveChanges: false,
-
-			saveErrorText: ''
+			filterRaw: ''
 		});
 
 		this.serverError.subscribe(value => value || this.serverErrorDesc(''), this);
 
-		this.filterRaw = FilterStore.raw;
+//		this.filterRaw = FilterStore.raw;
 		this.filterRaw.capa = FilterStore.capa;
 		this.filterRaw.active = ko.observable(false);
 		this.filterRaw.allow = ko.observable(false);
@@ -147,6 +150,10 @@ class SieveScriptPopupView extends AbstractViewNext {
 
 		this.fTrueCallback = fTrueCallback;
 		this.filters(oScript.filters());
+
+		this.filterRaw(oScript.body());
+		this.filterRaw.active(!oScript.allowFilters());
+		this.filterRaw.error(false);
 
 		this.isNew(!bEdit);
 

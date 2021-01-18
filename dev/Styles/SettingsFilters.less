@@ -1,64 +1,52 @@
 
-.b-settings-filters {
+html.rl-mobile .b-settings-filters {
+	margin-right: 15px;
+}
 
-	html.rl-mobile &{
-		margin-right: 15px;
-	}
+.b-filter-script {
+	width: 800px;
+	min-width: 640px;
+}
 
-	.process-place {
-		text-align: center;
-		width: 600px;
-		padding: 14px 0;
-	}
+.b-settings-filters .list-table,
+.b-filter-script .list-table {
+	width: 600px;
+}
 
-	.list-table {
+.filter-item td,
+.script-item td {
+	padding: 4px 8px;
+	line-height: 30px;
+}
 
-		width: 600px;
+.filter-item td.drag-wrapper {
+	padding: 4px 0;
+}
 
-		td {
-			padding: 4px 8px;
-			line-height: 30px;
+.b-filter-script .filter-item,
+.b-settings-filters .script-item {
+	white-space: nowrap;
+}
 
-			&.drag-wrapper {
-				padding: 4px 0;
-			}
-		}
+.b-filter-script .e-action,
+.b-settings-filters .e-action {
+	cursor: pointer;
+}
 
-		.filter-img {
-			font-size: 12px;
-			margin-right: 5px;
-		}
+.filter-item .delete-filter {
+	cursor: pointer;
+	opacity: 0.5;
+}
 
-		.filter-name, .filter-sub-name {
-			display: inline-block;
-			word-break: break-all;
-			box-sizing: border-box;
-			line-height: 22px;
-			cursor: pointer;
-		}
+.filter-item .filter-name,
+.filter-item .filter-sub-name {
+	display: inline-block;
+	word-break: break-all;
+	box-sizing: border-box;
+	line-height: 22px;
+	cursor: pointer;
+}
 
-		.filter-sub-name {
-			color: #aaa;
-		}
-	}
-
-	.filters-list-top-padding {
-		display: inline-block;
-		height: 5px;
-		width: 5px;
-	}
-
-	.filter-item {
-
-		white-space: nowrap;
-
-		.e-action {
-			cursor: pointer;
-		}
-
-		.delete-filter {
-			cursor: pointer;
-			opacity: 0.5;
-		}
-	}
+.filter-item .filter-sub-name {
+	color: #aaa;
 }
