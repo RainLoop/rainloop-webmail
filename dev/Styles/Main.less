@@ -47,3 +47,22 @@ html.mobile *, html.rl-mobile * {
 input[type="search"]{
 	box-sizing: content-box;
 }
+
+.button-confirm-delete {
+	margin-right: 15px;
+	opacity: 0;
+	visibility: hidden;
+}
+.button-confirm-delete.delete-access {
+	margin-right: 0;
+	opacity: 1;
+	visibility: visible;
+}
+
+.drag-handle {
+	color: #eee;
+	cursor: grab;
+}
+tr:hover .drag-handle {
+	color: #aaa;
+}
