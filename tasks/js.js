@@ -6,14 +6,11 @@ const concat = require('gulp-concat-util'),
 	rename = require('gulp-rename'),
 	replace = require('gulp-replace'),
 	terser = require('gulp-terser'),
-	plumber = require('gulp-plumber'),
-	gulpif = require('gulp-if'),
 	eol = require('gulp-eol'),
 	eslint = require('gulp-eslint'),
 	cache = require('gulp-cached'),
 	expect = require('gulp-expect-file'),
 	size = require('gulp-size'),
-	sourcemaps = require('gulp-sourcemaps'),
 	gutil = require('gulp-util');
 
 const { config } = require('./config');
@@ -75,7 +72,6 @@ const jsMin = () =>
 				showTotal: false
 			})
 		)
-		.pipe(gulpif(config.source, sourcemaps.init({ loadMaps: true })))
 		.pipe(replace(/"snappymail\/v\/([^/]+)\/static\/js\/"/g, '"snappymail/v/$1/static/js/min/"'))
 		.pipe(rename({ suffix: '.min' }))
 		.pipe(
@@ -100,7 +96,6 @@ const jsMin = () =>
 			})
 		)
 		.pipe(eol('\n', true))
-		.pipe(gulpif(config.source, sourcemaps.write('./')))
 		.pipe(
 			size({
 				showFiles: true,
@@ -115,7 +110,6 @@ const jsLint = () =>
 		.src(config.paths.globjs)
 		.pipe(cache('eslint'))
 		.pipe(eslint())
-		.pipe(gulpif(config.watch, plumber()))
 		.pipe(eslint.format())
 		.pipe(eslint.failAfterError());
 

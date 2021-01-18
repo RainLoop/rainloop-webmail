@@ -8,18 +8,11 @@ const config = {
 	},
 	devVersion: '0.0.0',
 	releasesPath: 'build/dist/releases',
-	community: !argv.pro,
-	source: !!argv.source,
-	watch: false,
-	watchInterval: 1000,
-	googleCompile: false,
 
-	rainloopBuilded: false,
 	destPath: '',
 	cleanPath: '',
 	zipSrcPath: '',
 	zipFile: '',
-	// zipFileShort: '',
 
 	paths: {}
 };
@@ -37,10 +30,12 @@ config.paths.assets = {
 config.paths.less = {
 	main: {
 		src: 'dev/Styles/@Main.less',
-		watch: ['dev/Styles/*.less'],
 		options: {
 			paths: [path.join(__dirname, 'dev', 'Styles'), path.join(__dirname, 'vendors', 'bootstrap', 'less')]
 		}
+	},
+	admin: {
+		src: 'dev/Styles/@Admin.less'
 	}
 };
 
@@ -52,6 +47,9 @@ config.paths.css = {
 			'vendors/fontastic/styles.css',
 			'vendors/inputosaurus/inputosaurus.css'
 		]
+	},
+	admin: {
+		name: 'admin.css'
 	},
 	boot: {
 		name: 'boot.css',

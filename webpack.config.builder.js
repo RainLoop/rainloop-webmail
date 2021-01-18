@@ -45,7 +45,7 @@ const babelLoaderOptions = function() {
 };
 
 process.noDeprecation = true;
-module.exports = function(publicPath, pro, mode) {
+module.exports = function(publicPath, mode) {
 	return {
 //		mode: 'production',
 		mode: mode || 'development',
