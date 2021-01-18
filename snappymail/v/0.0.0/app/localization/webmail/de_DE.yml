@@ -444,7 +444,7 @@ de_DE:
     CAPABILITY_LABEL: "Unterstützte Module"
     LOADING_PROCESS: "Aktualisiere Filterliste"
     DELETING_ASK: "Sind Sie sicher?"
-    CHACHES_NEED_TO_BE_SAVED_DESC: "Die Änderungen müssen auf dem Server gespeichert werden."
+    CHANGES_NEED_TO_BE_SAVED_DESC: "Die Änderungen müssen auf dem Server gespeichert werden."
   SETTINGS_IDENTITY:
     LEGEND_IDENTITY: "Identität"
     LABEL_DISPLAY_NAME: "Name"

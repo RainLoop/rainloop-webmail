@@ -442,7 +442,7 @@ zh_CN:
     CAPABILITY_LABEL: "Capability"
     LOADING_PROCESS: "正在更新筛选规则列表"
     DELETING_ASK: "确定删除？"
-    CHACHES_NEED_TO_BE_SAVED_DESC: "这些更改需要保存。"
+    CHANGES_NEED_TO_BE_SAVED_DESC: "这些更改需要保存。"
   SETTINGS_IDENTITY:
     LEGEND_IDENTITY: "身份"
     LABEL_DISPLAY_NAME: "名称"
