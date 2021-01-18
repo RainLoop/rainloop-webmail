@@ -36,15 +36,10 @@ const snappymailSetup = (done) => {
 
 	fs.writeFileSync(dist + 'snappymail/v/' + versionFull + '/index.php.root', fs.readFileSync(dist + 'index.php'));
 
-	if (config.community) {
-		require('rimraf').sync(dist + 'snappymail/v/' + versionFull + '/app/libraries/snappymail/Providers/Prem.php');
-	}
-
 	config.destPath = config.releasesPath + '/webmail/' + versionFull + '/';
 	config.cleanPath = dist;
 	config.zipSrcPath = dist;
-	config.zipFile = 'snappymail-' + (config.community ? 'community-' : '') + versionFull + '.zip';
-	config.zipFileShort = 'snappymail-' + (config.community ? 'community-' : '') + 'latest.zip';
+	config.zipFile = 'snappymail-' + versionFull + '.zip';
 
 	config.snappymailBuilded = true;
 
@@ -67,8 +62,6 @@ const snappymailClean = (done) => {
 	done();
 };
 
-const snappymailShortName = (done) => copy(config.destPath + config.zipFile, config.destPath + config.zipFileShort, done);
-
 exports.snappymailBuild = gulp.series(snappymailCopy, snappymailSetup);
 
-exports.snappymail = gulp.series(exports.snappymailBuild, snappymailZip, snappymailClean, snappymailShortName);
+exports.snappymail = gulp.series(exports.snappymailBuild, snappymailZip, snappymailClean);

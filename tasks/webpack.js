@@ -17,22 +17,14 @@ const webpackError = (err) => {
 
 const webpackCallback = (done) => (err, stats) => {
 	if (err) {
-		if (config.watch) {
-			webpackError(err);
-		} else {
-			throw new gutil.PluginError('webpack', err);
-		}
+		throw new gutil.PluginError('webpack', err);
 	} else if (stats && stats.compilation && stats.compilation.errors && stats.compilation.errors[0]) {
-		if (config.watch) {
-			stats.compilation.errors.forEach(webpackError);
-		} else {
-			throw new gutil.PluginError('webpack', stats.compilation.errors[0]);
-		}
+		throw new gutil.PluginError('webpack', stats.compilation.errors[0]);
 	}
 
 	done();
 };
 
 exports.webpack = (done) => {
-	webpack(webpackCfgBuilder(config.paths.staticJS, !config.community, 'production'), webpackCallback(done));
+	webpack(webpackCfgBuilder(config.paths.staticJS, 'production'), webpackCallback(done));
 };

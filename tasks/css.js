@@ -4,8 +4,6 @@ const gulp = require('gulp');
 const concat = require('gulp-concat-util');
 const rename = require('gulp-rename');
 const replace = require('gulp-replace');
-const plumber = require('gulp-plumber');
-const gulpif = require('gulp-if');
 const eol = require('gulp-eol');
 const livereload = require('gulp-livereload');
 const filter = require('gulp-filter');
@@ -39,7 +37,6 @@ const cssMainBuild = () => {
 		.src(src)
 		.pipe(expect.real({ errorOnFailure: true }, src))
 		.pipe(lessFilter)
-		.pipe(gulpif(config.watch, plumber()))
 		.pipe(
 			less({
 				'paths': config.paths.less.main.options.paths
@@ -47,6 +44,30 @@ const cssMainBuild = () => {
 		)
 		.pipe(lessFilter.restore)
 		.pipe(concat(config.paths.css.main.name))
+		.pipe(autoprefixer())
+		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(config.paths.staticCSS))
+		.pipe(livereload());
+};
+
+const cssAdminBuild = () => {
+	const autoprefixer = require('gulp-autoprefixer'),
+		less = require('gulp-less'),
+		lessFilter = filter('**/*.less', { restore: true }),
+		src = config.paths.less.admin.src;
+
+	return gulp
+		.src(src)
+		.pipe(expect.real({ errorOnFailure: true }, src))
+		.pipe(lessFilter)
+		.pipe(
+			less({
+				'paths': config.paths.less.main.options.paths
+			})
+		)
+		.pipe(lessFilter.restore)
+		.pipe(concat(config.paths.css.admin.name))
 		.pipe(autoprefixer())
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
@@ -74,8 +95,18 @@ const cssMainMin = () => {
 		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
-const cssBuild = gulp.parallel(cssBootBuild, cssMainBuild);
-const cssMin = gulp.parallel(cssBootMin, cssMainMin);
+const cssAdminMin = () => {
+	const cleanCss = require('gulp-clean-css');
+	return gulp
+		.src(config.paths.staticCSS + config.paths.css.admin.name)
+		.pipe(cleanCss())
+		.pipe(rename({ suffix: '.min' }))
+		.pipe(eol('\n', true))
+		.pipe(gulp.dest(config.paths.staticCSS));
+};
+
+const cssBuild = gulp.parallel(cssBootBuild, cssMainBuild, cssAdminBuild);
+const cssMin = gulp.parallel(cssBootMin, cssMainMin, cssAdminMin);
 
 const cssLint = (done) => done();
 
