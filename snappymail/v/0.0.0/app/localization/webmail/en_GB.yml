@@ -440,6 +440,7 @@ en_GB:
     BUTTON_BACK: "Back"
   SETTINGS_FILTERS:
     LEGEND_FILTERS: "Filters"
+    BUTTON_ADD_SCRIPT: "Add a Script"
     BUTTON_DELETE: "Delete"
     SUBNAME_NONE: "None"
     SUBNAME_MOVE_TO: "Move to \"%FOLDER%\""

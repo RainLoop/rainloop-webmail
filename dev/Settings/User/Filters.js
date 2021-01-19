@@ -67,26 +67,11 @@ class FiltersUserSettings {
 	}
 
 	addScript() {
-		const script = new SieveScriptModel();
-		showScreenPopup(require('View/Popup/SieveScript'), [
-			script,
-			() => {
-				if (!this.scripts[script.name]) {
-					this.scripts[script.name] = script.name;
-				}
-			},
-			false
-		]);
+		showScreenPopup(require('View/Popup/SieveScript'), [new SieveScriptModel()]);
 	}
 
 	editScript(script) {
-		showScreenPopup(require('View/Popup/SieveScript'), [
-			script,
-			() => {
-				// TODO on save
-			},
-			true
-		]);
+		showScreenPopup(require('View/Popup/SieveScript'), [script]);
 	}
 
 	deleteScript(script) {

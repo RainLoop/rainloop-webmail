@@ -439,6 +439,7 @@ nl_NL:
     BUTTON_BACK: "Terug"
   SETTINGS_FILTERS:
     LEGEND_FILTERS: "Filters"
+    BUTTON_ADD_SCRIPT: "Script toevoegen"
     BUTTON_DELETE: "Verwijder"
     SUBNAME_NONE: "Geen"
     SUBNAME_MOVE_TO: "Verplaats naar map \"%FOLDER%\""

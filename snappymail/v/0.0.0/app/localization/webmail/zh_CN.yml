@@ -438,6 +438,7 @@ zh_CN:
     BUTTON_BACK: "返回"
   SETTINGS_FILTERS:
     LEGEND_FILTERS: "筛选器"
+    BUTTON_ADD_SCRIPT: "Add a Script"
     BUTTON_DELETE: "删除"
     SUBNAME_NONE: "无"
     SUBNAME_MOVE_TO: "移动到 \"%FOLDER%\""

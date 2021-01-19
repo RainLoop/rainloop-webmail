@@ -441,6 +441,7 @@ es_ES:
     BUTTON_BACK: "Atrás"
   SETTINGS_FILTERS:
     LEGEND_FILTERS: "Filtros"
+    BUTTON_ADD_SCRIPT: "Añadir un Script"
     BUTTON_DELETE: "Borrar"
     SUBNAME_NONE: "Ninguno"
     SUBNAME_MOVE_TO: "Mover a \"%FOLDER%\""

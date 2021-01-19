@@ -42,6 +42,11 @@ class SieveScriptPopupView extends AbstractViewNext {
 				return false;
 			}
 
+			if (this.isNew() && SieveStore.scripts.find(item => item.name() === script.name())) {
+				script.nameError(true);
+				return false;
+			}
+
 			this.saving = true;
 			this.saveError(false);
 
@@ -51,6 +56,7 @@ class SieveScriptPopupView extends AbstractViewNext {
 
 					if (StorageResultType.Success === result && data && data.Result) {
 						script.hasChanges(false);
+						SieveStore.scripts.push(script);
 					} else {
 						this.saveError(true);
 						this.saveErrorText((data && data.ErrorCode)
@@ -110,11 +116,10 @@ class SieveScriptPopupView extends AbstractViewNext {
 		});
 	}
 
-	onShow(oScript, fTrueCallback, bEdit) {
-		this.fTrueCallback = fTrueCallback;
+	onShow(oScript) {
 		this.script(oScript);
 		this.rawActive(!oScript.allowFilters());
-		this.isNew(!bEdit);
+		this.isNew(!oScript.name());
 		this.saveError(false);
 	}
 

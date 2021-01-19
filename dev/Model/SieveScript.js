@@ -16,7 +16,7 @@ class SieveScriptModel extends AbstractModel
 			nameError: false,
 			bodyError: false,
 			deleteAccess: false,
-			canBeDeleted: false,
+			canBeDeleted: true,
 			hasChanges: false
 		});
 
