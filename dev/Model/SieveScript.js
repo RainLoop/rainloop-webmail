@@ -10,21 +10,23 @@ class SieveScriptModel extends AbstractModel
 
 		this.addObservables({
 			name: '',
-			nameError: false,
-			nameFocused: false,
-
 			active: false,
-
 			body: '',
 
+			nameError: false,
+			bodyError: false,
 			deleteAccess: false,
-			canBeDeleted: false
+			canBeDeleted: false,
+			hasChanges: false
 		});
 
 		this.filters = ko.observableArray([]);
+//		this.saving = ko.observable(false).extend({ throttle: 200 });
 
 		this.addSubscribables({
-			name: sValue => this.nameError(!sValue)
+			name: () => this.hasChanges(true),
+			filters: () => this.hasChanges(true),
+			body: () => this.hasChanges(true)
 		});
 	}
 
@@ -34,20 +36,17 @@ class SieveScriptModel extends AbstractModel
 	}
 
 	verify() {
-		if (!this.name()) {
-			this.nameError(true);
-			return false;
-		}
-		this.nameError(false);
-		return true;
+		this.nameError(!this.name().trim());
+		this.bodyError(this.allowFilters() ? !this.filters().length : !this.body().trim());
+		return !this.nameError() && !this.bodyError();
 	}
 
 	toJson() {
 		return {
 			name: this.name(),
-			active: this.active ? '1' : '0',
-			body: this.body,
-//			filters: this.filters()
+			active: this.active() ? '1' : '0',
+			body: this.body(),
+			filters: this.filters().map(item => item.toJson())
 		};
 	}
 
@@ -66,12 +65,14 @@ class SieveScriptModel extends AbstractModel
 	static reviveFromJson(json) {
 		const script = super.reviveFromJson(json);
 		if (script) {
-			script.filters([]);
 			if (script.allowFilters() && Array.isNotEmpty(json.filters)) {
 				script.filters(
 					json.filters.map(aData => FilterModel.reviveFromJson(aData)).filter(v => v)
 				);
+			} else {
+				script.filters([]);
 			}
+			script.hasChanges(false);
 		}
 		return script;
 	}

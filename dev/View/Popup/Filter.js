@@ -4,8 +4,8 @@ import { FiltersAction, FilterConditionField, FilterConditionType } from 'Common
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
-import FilterStore from 'Stores/User/Filter';
 import FolderStore from 'Stores/User/Folder';
+import SieveStore from 'Stores/User/Sieve';
 
 import { popup, command } from 'Knoin/Knoin';
 import { AbstractViewNext } from 'Knoin/AbstractViewNext';
@@ -25,7 +25,7 @@ class FilterPopupView extends AbstractViewNext {
 			selectedFolderValue: ''
 		});
 
-		this.modules = FilterStore.modules;
+		this.modules = SieveStore.capa;
 
 		this.fTrueCallback = null;
 

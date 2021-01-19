@@ -238,6 +238,30 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
+	 * @param {SieveScriptModel} script
+	 */
+	filtersScriptSave(fCallback, script) {
+		this.defaultRequest(fCallback, 'FiltersScriptSave', script.toJson());
+	}
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} name
+	 */
+	filtersScriptActivate(fCallback, name) {
+		this.defaultRequest(fCallback, 'FiltersScriptActivate', {name:name});
+	}
+
+	/**
+	 * @param {?Function} fCallback
+	 * @param {string} name
+	 */
+	filtersScriptDelete(fCallback, name) {
+		this.defaultRequest(fCallback, 'FiltersScriptDelete', {name:name});
+	}
+
+	/**
+	 * @param {?Function} fCallback
 	 */
 	filtersGet(fCallback) {
 		this.defaultRequest(fCallback, 'Filters', {});

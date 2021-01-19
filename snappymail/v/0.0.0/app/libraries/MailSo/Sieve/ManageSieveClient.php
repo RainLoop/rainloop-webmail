@@ -330,6 +330,17 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
 	 */
+	public function RenameScript(string $sOldName, string $sNewName) : self
+	{
+		$this->sendRequestWithCheck('RENAMESCRIPT "'.$sOldName.'" "'.$sNewName.'"');
+
+		return $this;
+	}
+
+	/**
+	 * @throws \MailSo\Net\Exceptions\Exception
+	 * @throws \MailSo\Sieve\Exceptions\NegativeResponseException
+	 */
 	public function GetActiveScriptName() : string
 	{
 		$aList = $this->ListScripts();

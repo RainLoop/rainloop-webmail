@@ -39,52 +39,67 @@ class SieveStorage implements FiltersInterface
 		$this->bUtf8FolderName = !!$this->oConfig->Get('labs', 'sieve_utf8_folder_name', true);
 	}
 
+	protected function getConnection(\RainLoop\Model\Account $oAccount) : ?\MailSo\Sieve\ManageSieveClient
+	{
+		$oSieveClient = new \MailSo\Sieve\ManageSieveClient();
+		$oSieveClient->SetLogger($this->oLogger);
+		$oSieveClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'sieve_timeout', 10));
+		return $oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig)
+			 ? $oSieveClient
+			 : null;
+	}
+
 	public function Load(\RainLoop\Model\Account $oAccount, bool $bAllowRaw = false) : array
 	{
 		$aModules = array();
-		$aFilters = array();
 		$aScripts = array();
 
-		$oSieveClient = new \MailSo\Sieve\ManageSieveClient();
-		$oSieveClient->SetLogger($this->oLogger);
-		$oSieveClient->SetTimeOuts(10, (int) $this->oConfig->Get('labs', 'sieve_timeout', 10));
-
-		if ($oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig)) {
+		$oSieveClient = $this->getConnection($oAccount);
+		if ($oSieveClient) {
 			$aModules = $oSieveClient->Modules();
+			\sort($aModules);
+
 			$aList = $oSieveClient->ListScripts();
 
-			if (!empty($aList[self::SIEVE_FILE_NAME])) {
-				$sS = $oSieveClient->GetScript(self::SIEVE_FILE_NAME);
-				if ($sS) {
-					$aFilters = $this->fileStringToCollection($sS);
-				}
-			}
-
-			if ($bAllowRaw) {
-				foreach ($aList as $name => $active) {
-					if ($name != self::SIEVE_FILE_NAME) {
+			foreach ($aList as $name => $active) {
+				if ($name != self::SIEVE_FILE_NAME) {
+					if ($bAllowRaw) {
 						$aScripts[$name] = array(
 							'@Object' => 'Object/SieveScript',
 							'name' => $name,
 							'active' => $active,
 							'body' => $oSieveClient->GetScript($name) // \trim() ?
 						);
-					} else {
-						$aScripts[$name] = array(
-							'@Object' => 'Object/SieveScript',
-							'name' => $name,
-							'active' => $active,
-							'body' => $oSieveClient->GetScript($name), // \trim() ?
-							'filters' => $aFilters
-						);
 					}
+				} else {
+					$sS = $oSieveClient->GetScript(self::SIEVE_FILE_NAME);
+					if ($sS) {
+						$aFilters = $this->fileStringToCollection($sS);
+					}
+					$aScripts[$name] = array(
+						'@Object' => 'Object/SieveScript',
+						'name' => $name,
+						'active' => $active,
+						'body' => $oSieveClient->GetScript($name), // \trim() ?
+						'filters' => $aFilters
+					);
 				}
 			}
 
 			$oSieveClient->LogoutAndDisconnect();
 		}
 
-		if (!isset($aList[self::SIEVE_FILE_NAME_RAW])) {
+		if (!isset($aList[self::SIEVE_FILE_NAME])) {
+			$aScripts[$name] = array(
+				'@Object' => 'Object/SieveScript',
+				'name' => self::SIEVE_FILE_NAME,
+				'active' => false,
+				'body' => '',
+				'filters' => []
+			);
+		}
+
+		if ($bAllowRaw && !isset($aList[self::SIEVE_FILE_NAME_RAW])) {
 			$aScripts[$name] = array(
 				'@Object' => 'Object/SieveScript',
 				'name' => self::SIEVE_FILE_NAME_RAW,
@@ -96,55 +111,52 @@ class SieveStorage implements FiltersInterface
 		\ksort($aScripts);
 
 		return array(
-			'RawIsAllow' => $bAllowRaw,
-			'Filters' => $aFilters,
 			'Capa' => $aModules,
 			'Scripts' => $aScripts
 		);
 	}
 
-	public function Save(\RainLoop\Model\Account $oAccount, array $aFilters, string $sRaw = '', bool $bRawIsActive = false) : bool
+	public function Save(\RainLoop\Model\Account $oAccount, string $sScriptName, array $aFilters, string $sRaw = '') : bool
 	{
-		$oSieveClient = new \MailSo\Sieve\ManageSieveClient();
-		$oSieveClient->SetLogger($this->oLogger);
-		$oSieveClient->SetTimeOuts(10, (int) \RainLoop\Api::Config()->Get('labs', 'sieve_timeout', 10));
-
-		if ($oAccount->SieveConnectAndLoginHelper($this->oPlugins, $oSieveClient, $this->oConfig))
-		{
-			$aList = $oSieveClient->ListScripts();
-
-			if ($bRawIsActive)
-			{
-				if (!empty($sRaw))
-				{
-					$oSieveClient->PutScript(self::SIEVE_FILE_NAME_RAW, $sRaw);
-					$oSieveClient->SetActiveScript(self::SIEVE_FILE_NAME_RAW);
+		if (self::SIEVE_FILE_NAME === $sScriptName) {
+			$sRaw = $this->collectionToFileString($aFilters);
+		}
+		$oSieveClient = $this->getConnection($oAccount);
+		if ($oSieveClient) {
+			if (empty($sRaw)) {
+				$aList = $oSieveClient->ListScripts();
+				if (isset($aList[$sScriptName])) {
+					$oSieveClient->DeleteScript($sScriptName);
 				}
-				else if (isset($aList[self::SIEVE_FILE_NAME_RAW]))
-				{
-					$oSieveClient->DeleteScript(self::SIEVE_FILE_NAME_RAW);
-				}
+			} else {
+				$oSieveClient->PutScript($sScriptName, $sRaw);
 			}
-			else
-			{
-				$sUserFilter = $this->collectionToFileString($aFilters);
-
-				if (!empty($sUserFilter))
-				{
-					$oSieveClient->PutScript(self::SIEVE_FILE_NAME, $sUserFilter);
-					$oSieveClient->SetActiveScript(self::SIEVE_FILE_NAME);
-				}
-				else if (isset($aList[self::SIEVE_FILE_NAME]))
-				{
-					$oSieveClient->DeleteScript(self::SIEVE_FILE_NAME);
-				}
-			}
-
 			$oSieveClient->LogoutAndDisconnect();
-
 			return true;
 		}
+		return false;
+	}
 
+	/**
+	 * If $sScriptName is the empty string (i.e., ""), then any active script is disabled.
+	 */
+	public function Activate(\RainLoop\Model\Account $oAccount, string $sScriptName) : bool
+	{
+		$oSieveClient = $this->getConnection($oAccount);
+		if ($oSieveClient) {
+			$oSieveClient->SetActiveScript(\trim($sScriptName));
+			return true;
+		}
+		return false;
+	}
+
+	public function Delete(\RainLoop\Model\Account $oAccount, string $sScriptName) : bool
+	{
+		$oSieveClient = $this->getConnection($oAccount);
+		if ($oSieveClient) {
+			$oSieveClient->DeleteScript(\trim($sScriptName));
+			return true;
+		}
 		return false;
 	}
 

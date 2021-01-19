@@ -1,51 +1,65 @@
 <div class="modal fade b-filter-script g-ui-user-select-none" data-bind="modal: modalVisibility">
-	<div>
+	<div data-bind="with: script">
 		<div class="modal-header">
-			<button type="button" class="close" data-bind="command: cancelCommand">×</button>
-			<h3 class="i18n" data-i18n="POPUPS_FILTER/LEGEND_SIEVE_SCRIPT"></h3>
+			<button type="button" class="close" data-bind="command: $root.cancelCommand">×</button>
+			<h3>
+				<span class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_CREATE" data-bind="visible: $root.isNew"></span>
+				<span class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_EDIT" data-bind="visible: !$root.isNew()"></span>
+			</h3>
 		</div>
 		<div class="modal-body">
-			<div class="row" data-bind="visible: haveChanges">
+
+			<div class="control-group" data-bind="css: {'error': nameError}">
+				<div class="controls">
+					<input type="text" class="i18n span5"
+						data-bind="value: name, hasFocus: $root.isNew, visible: $root.isNew"
+						autocorrect="off" autocapitalize="off" spellcheck="false"
+						data-i18n="[placeholder]POPUPS_SIEVE_SCRIPT/SCRIPT_NAME"
+					/>
+					<span data-bind="text: name, visible: !$root.isNew()"></span>
+				</div>
+			</div>
+
+			<div class="row" data-bind="visible: hasChanges">
 				<div class="span8 width100-on-mobile">
-					<br />
-					<div class="alert g-ui-user-select-none" style="margin-bottom: 0">
+					<div class="alert g-ui-user-select-none">
 						<i class="icon-warning"></i>
 						&nbsp;&nbsp;
-						<span class="i18n" data-i18n="SETTINGS_FILTERS/CHANGES_NEED_TO_BE_SAVED_DESC"></span>
+						<span class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></span>
 					</div>
 				</div>
 			</div>
-			<div class="row" data-bind="visible: serverError">
+			<div class="row" data-bind="visible: $root.saveError">
 				<div class="span8 width100-on-mobile">
-					<div class="alert alert-error g-ui-user-select-none" style="margin-bottom: 0">
+					<div class="alert alert-error g-ui-user-select-none">
 						<i class="icon-warning"></i>
 						&nbsp;&nbsp;
-						<span data-bind="text: serverErrorDesc"></span>
+						<span data-bind="text: $root.saveErrorText"></span>
 					</div>
 				</div>
 			</div>
-			<br />
-			<div class="row">
+<!--
+			<div class="row" data-bind="visible: allowFilters">
 				<div class="span5 width100-on-mobile">
-					<a class="btn" data-bind="click: function () { filterRaw.active(!filterRaw.active()) },
-						css: {'active': filterRaw.active }, tooltip: 'SETTINGS_FILTERS/BUTTON_RAW_SCRIPT'">
+					<a class="btn" data-bind="click: function () { $root.rawActive(!$root.rawActive()) },
+						css: {'active': $root.rawActive }, tooltip: 'POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT'">
 						<i class="icon-file-code"></i>
 					</a>
 				</div>
 			</div>
+-->
 			<div class="row">
 				<div class="span8 width100-on-mobile">
-					<div class="control-group" data-bind="css: {'error': filterRaw.error}, visible: filterRaw.active()">
+					<div class="control-group" data-bind="visible: $root.rawActive">
 						<div class="controls">
-							<pre style="word-break: break-word;" data-bind="visible: '' !== filterRaw.capa()">
-								<b class="i18n" data-i18n="SETTINGS_FILTERS/CAPABILITY_LABEL"></b>:
-								<span data-bind="text: filterRaw.capa"></span>
+							<pre>
+								<b class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/CAPABILITY_LABEL"></b>:
+								<span data-bind="text: $root.sieveCapabilities"></span>
 							</pre>
-							<textarea class="span8" style="height: 300px; font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;"
-								data-bind="value: filterRaw, valueUpdate: 'afterkeydown'"></textarea>
+							<textarea class="span8" data-bind="value: body, valueUpdate: 'afterkeydown'"></textarea>
 						</div>
 					</div>
-					<div data-bind="visible: !filterRaw.active()">
+					<div data-bind="visible: !$root.rawActive()">
 						<table class="table table-hover list-table filters-list g-ui-user-select-none"
 							data-bind="i18nUpdate: filters">
 							<colgroup>
@@ -55,10 +69,10 @@
 								<col style="width: 140px" />
 								<col style="width: 1%" />
 							</colgroup>
-							<tbody data-bind="foreach: filters" style="width: 600px">
+							<tbody data-bind="foreach: filters">
 								<tr class="filter-item" draggable="true" data-bind="sortableItem: { list: $root.filters }">
 									<td>
-										<span class="disabled-filter" data-bind="click: function () { $root.haveChanges(true); enabled(!enabled()); }">
+										<span class="disabled-filter" data-bind="click: function () { $parent.hasChanges(true); enabled(!enabled()); }">
 											<i data-bind="css: {'icon-checkbox-checked': enabled, 'icon-checkbox-unchecked': !enabled()}"></i>
 										</span>
 									</td>
@@ -83,20 +97,20 @@
 								</tr>
 							</tbody>
 						</table>
-						<a class="btn" data-bind="click: addFilter">
+						<a class="btn" data-bind="click: $root.addFilter">
 							<i class="icon-plus"></i>
 							&nbsp;&nbsp;
-							<span class="i18n" data-i18n="SETTINGS_FILTERS/BUTTON_ADD_FILTER"></span>
+							<span class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/BUTTON_ADD_FILTER"></span>
 						</a>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="modal-footer">
-			<a class="btn buttonSave" data-bind="command: saveScriptCommand, tooltipErrorTip: saveErrorText, css: {'btn-danger': '' !== saveErrorText()}">
-				<i data-bind="css: {'icon-floppy': !script.saving(), 'icon-spinner animated': script.saving()}"></i>
+			<a class="btn buttonSave" data-bind="visible: hasChanges, click: function() { $root.saveScriptCommand(); }, css: {'btn-danger': $root.saveError}">
+				<i data-bind="css: {'icon-floppy': !$root.saving, 'icon-spinner animated': $root.saving}"></i>
 				&nbsp;&nbsp;
-				<span class="i18n" data-i18n="SETTINGS_FILTERS/BUTTON_SAVE"></span>
+				<span class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/BUTTON_SAVE"></span>
 			</a>
 		</div>
 	</div>

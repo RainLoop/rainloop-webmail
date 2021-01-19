@@ -35,6 +35,8 @@ class Notifications
 
 	const CantSaveFilters = 351;
 	const CantGetFilters = 352;
+	const CantActivateFiltersScript = 351; // TODO: 353
+	const CantDeleteFiltersScript = 351; // TODO: 354
 	const FiltersAreNotCorrect = 355;
 
 	const CantCreateFolder = 400;

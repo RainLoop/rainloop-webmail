@@ -6,5 +6,9 @@ interface FiltersInterface
 {
 	public function Load(\RainLoop\Model\Account $oAccount, bool $bAllowRaw = false) : array;
 
-	public function Save(\RainLoop\Model\Account $oAccount, array $aFilters) : bool;
+	public function Save(\RainLoop\Model\Account $oAccount, string $sScriptName, array $aFilters, string $sRaw = '') : bool;
+
+	public function Activate(\RainLoop\Model\Account $oAccount, string $sScriptName) : bool;
+
+	public function Delete(\RainLoop\Model\Account $oAccount, string $sScriptName) : bool;
 }

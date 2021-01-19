@@ -14,47 +14,73 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 		$this->oDriver = $oDriver;
 	}
 
+	private static function handleException(\Throwable $oException, int $defNotification) : void
+	{
+		if ($oException instanceof \MailSo\Net\Exceptions\SocketCanNotConnectToHostException) {
+			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
+		}
+
+		if ($oException instanceof \MailSo\Sieve\Exceptions\NegativeResponseException) {
+			throw new \RainLoop\Exceptions\ClientException(
+				\RainLoop\Notifications::ClientViewError, $oException, \implode("\r\n", $oException->GetResponses())
+			);
+		}
+
+		throw new \RainLoop\Exceptions\ClientException($defNotification, $oException);
+	}
+
 	public function Load(\RainLoop\Model\Account $oAccount, bool $bAllowRaw = false) : array
 	{
 		try
 		{
 			return $this->IsActive() ? $this->oDriver->Load($oAccount, $bAllowRaw) : array();
 		}
-		catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
-		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
-		}
 		catch (\Throwable $oException)
 		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantGetFilters, $oException);
+			static::handleException($oException, \RainLoop\Notifications::CantGetFilters);
 		}
-
-		return false;
 	}
 
-	public function Save(\RainLoop\Model\Account $oAccount, array $aFilters, string $sRaw = '', bool $bRawIsActive = false) : bool
+	public function Save(\RainLoop\Model\Account $oAccount, string $sScriptName, array $aFilters, string $sRaw = '') : bool
 	{
 		try
 		{
-			return $this->IsActive() ? $this->oDriver->Save(
-				$oAccount, $aFilters, $sRaw, $bRawIsActive) : false;
-		}
-		catch (\MailSo\Net\Exceptions\SocketCanNotConnectToHostException $oException)
-		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::ConnectionError, $oException);
-		}
-		catch (\MailSo\Sieve\Exceptions\NegativeResponseException $oException)
-		{
-			throw new \RainLoop\Exceptions\ClientException(
-				\RainLoop\Notifications::ClientViewError, $oException,
-					\implode("\r\n", $oException->GetResponses()));
+			return $this->IsActive()
+				? $this->oDriver->Save($oAccount, $sScriptName, $aFilters, $sRaw)
+				: false;
 		}
 		catch (\Throwable $oException)
 		{
-			throw new \RainLoop\Exceptions\ClientException(\RainLoop\Notifications::CantSaveFilters, $oException);
+			static::handleException($oException. \RainLoop\Notifications::CantSaveFilters);
 		}
+	}
 
-		return false;
+	public function ActivateScript(\RainLoop\Model\Account $oAccount, string $sScriptName)
+	{
+		try
+		{
+			return $this->IsActive()
+				? $this->oDriver->Activate($oAccount, $sScriptName)
+				: false;
+		}
+		catch (\Throwable $oException)
+		{
+			static::handleException($oException. \RainLoop\Notifications::CantActivateFiltersScript);
+		}
+	}
+
+	public function DeleteScript(\RainLoop\Model\Account $oAccount, string $sScriptName)
+	{
+		try
+		{
+			return $this->IsActive()
+				? $this->oDriver->Delete($oAccount, $sScriptName)
+				: false;
+		}
+		catch (\Throwable $oException)
+		{
+			static::handleException($oException. \RainLoop\Notifications::CantDeleteFiltersScript);
+		}
 	}
 
 	public function IsActive() : bool
