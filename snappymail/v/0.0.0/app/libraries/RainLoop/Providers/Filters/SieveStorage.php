@@ -87,25 +87,25 @@ class SieveStorage implements FiltersInterface
 			}
 
 			$oSieveClient->LogoutAndDisconnect();
-		}
 
-		if (!isset($aList[self::SIEVE_FILE_NAME])) {
-			$aScripts[$name] = array(
-				'@Object' => 'Object/SieveScript',
-				'name' => self::SIEVE_FILE_NAME,
-				'active' => false,
-				'body' => '',
-				'filters' => []
-			);
-		}
+			if (!isset($aList[self::SIEVE_FILE_NAME])) {
+				$aScripts[self::SIEVE_FILE_NAME] = array(
+					'@Object' => 'Object/SieveScript',
+					'name' => self::SIEVE_FILE_NAME,
+					'active' => false,
+					'body' => '',
+					'filters' => []
+				);
+			}
 
-		if ($bAllowRaw && !isset($aList[self::SIEVE_FILE_NAME_RAW])) {
-			$aScripts[$name] = array(
-				'@Object' => 'Object/SieveScript',
-				'name' => self::SIEVE_FILE_NAME_RAW,
-				'active' => false,
-				'body' => ''
-			);
+			if ($bAllowRaw && !isset($aList[self::SIEVE_FILE_NAME_RAW])) {
+				$aScripts[self::SIEVE_FILE_NAME_RAW] = array(
+					'@Object' => 'Object/SieveScript',
+					'name' => self::SIEVE_FILE_NAME_RAW,
+					'active' => false,
+					'body' => ''
+				);
+			}
 		}
 
 		\ksort($aScripts);
