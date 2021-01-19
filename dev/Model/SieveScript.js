@@ -13,6 +13,7 @@ class SieveScriptModel extends AbstractModel
 			active: false,
 			body: '',
 
+			exists: false,
 			nameError: false,
 			bodyError: false,
 			deleteAccess: false,
@@ -72,6 +73,8 @@ class SieveScriptModel extends AbstractModel
 			} else {
 				script.filters([]);
 			}
+			script.canBeDeleted(0 !== json.name.indexOf('rainloop.user'));
+			script.exists(true);
 			script.hasChanges(false);
 		}
 		return script;

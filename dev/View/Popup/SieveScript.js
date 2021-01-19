@@ -21,7 +21,6 @@ class SieveScriptPopupView extends AbstractViewNext {
 		super();
 
 		ko.addObservablesTo(this, {
-			isNew: true,
 			saveError: false,
 			saveErrorText: '',
 			rawActive: false,
@@ -42,7 +41,7 @@ class SieveScriptPopupView extends AbstractViewNext {
 				return false;
 			}
 
-			if (this.isNew() && SieveStore.scripts.find(item => item.name() === script.name())) {
+			if (!script.exists() && SieveStore.scripts.find(item => item.name() === script.name())) {
 				script.nameError(true);
 				return false;
 			}
@@ -55,6 +54,7 @@ class SieveScriptPopupView extends AbstractViewNext {
 					this.saving = false;
 
 					if (StorageResultType.Success === result && data && data.Result) {
+						script.exists(true);
 						script.hasChanges(false);
 						SieveStore.scripts.push(script);
 					} else {
@@ -119,7 +119,6 @@ class SieveScriptPopupView extends AbstractViewNext {
 	onShow(oScript) {
 		this.script(oScript);
 		this.rawActive(!oScript.allowFilters());
-		this.isNew(!oScript.name());
 		this.saveError(false);
 	}
 
