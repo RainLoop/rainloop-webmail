@@ -51,7 +51,7 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 		}
 		catch (\Throwable $oException)
 		{
-			static::handleException($oException. \RainLoop\Notifications::CantSaveFilters);
+			static::handleException($oException, \RainLoop\Notifications::CantSaveFilters);
 		}
 	}
 
@@ -65,7 +65,7 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 		}
 		catch (\Throwable $oException)
 		{
-			static::handleException($oException. \RainLoop\Notifications::CantActivateFiltersScript);
+			static::handleException($oException, \RainLoop\Notifications::CantActivateFiltersScript);
 		}
 	}
 
@@ -79,7 +79,7 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 		}
 		catch (\Throwable $oException)
 		{
-			static::handleException($oException. \RainLoop\Notifications::CantDeleteFiltersScript);
+			static::handleException($oException, \RainLoop\Notifications::CantDeleteFiltersScript);
 		}
 	}
 

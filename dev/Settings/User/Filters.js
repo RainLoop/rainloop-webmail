@@ -82,8 +82,8 @@ class FiltersUserSettings {
 						this.scripts.remove(script);
 						delegateRunOnDestroy(script);
 					} else {
-						this.saveError(true);
-						this.saveErrorText((data && data.ErrorCode)
+						this.serverError(true);
+						this.serverErrorDesc((data && data.ErrorCode)
 							? (data.ErrorMessageAdditional || getNotification(data.ErrorCode))
 							: getNotification(Notification.CantActivateFiltersScript)
 						);
@@ -101,8 +101,8 @@ class FiltersUserSettings {
 				if (StorageResultType.Success === result && data && data.Result) {
 					this.scripts().forEach(script => script.active(script.name() === name));
 				} else {
-					this.saveError(true);
-					this.saveErrorText((data && data.ErrorCode)
+					this.serverError(true);
+					this.serverErrorDesc((data && data.ErrorCode)
 						? (data.ErrorMessageAdditional || getNotification(data.ErrorCode))
 						: getNotification(Notification.CantActivateFiltersScript)
 					);

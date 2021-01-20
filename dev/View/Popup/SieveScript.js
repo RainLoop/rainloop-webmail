@@ -36,8 +36,9 @@ class SieveScriptPopupView extends AbstractViewNext {
 
 //	@command()
 	saveScriptCommand() {
-		let script = this.script();
-		if (!this.saving/* && script.hasChanges()*/) {
+		let self = this,
+			script = self.script();
+		if (!self.saving/* && script.hasChanges()*/) {
 			if (!script.verify()) {
 				return false;
 			}
@@ -47,21 +48,21 @@ class SieveScriptPopupView extends AbstractViewNext {
 				return false;
 			}
 
-			this.saving = true;
-			this.saveError(false);
+			self.saving = true;
+			self.saveError(false);
 //			script.body(script.filtersToRaw());
 
 			Remote.filtersScriptSave(
 				(result, data) => {
-					this.saving = false;
+					self.saving = false;
 
 					if (StorageResultType.Success === result && data && data.Result) {
 						script.exists(true);
 						script.hasChanges(false);
 						SieveStore.scripts.push(script);
 					} else {
-						this.saveError(true);
-						this.saveErrorText((data && data.ErrorCode)
+						self.saveError(true);
+						self.saveErrorText((data && data.ErrorCode)
 							? (data.ErrorMessageAdditional || getNotification(data.ErrorCode))
 							: getNotification(Notification.CantSaveFilters)
 						);
