@@ -81,18 +81,6 @@ config.paths.js = {
 			'dev/External/SquireUI.js'
 		]
 	},
-	sieve: {
-		name: 'sieve.js',
-		src: [
-			'dev/sieve.js',
-			'dev/Sieve/RegEx.js',
-			'dev/Sieve/Grammar.js',
-			'dev/Sieve/Commands.js',
-			'dev/Sieve/Tests.js',
-			'dev/Sieve/Extensions/*.js',
-			'dev/Sieve/Parser.js'
-		]
-	},
 	app: {
 		name: 'app.js'
 	},
