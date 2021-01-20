@@ -144,8 +144,6 @@ nl_NL:
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP ondertekend bericht (klik om te verifiëren)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP versleuteld bericht (klik om te ontsleutelen)"
     LINK_DOWNLOAD_AS_ZIP: "Download als zip"
-    LINK_SAVE_TO_OWNCLOUD: "Sla op in ownCloud"
-    LINK_SAVE_TO_DROPBOX: "Sla op in Dropbox"
   READ_RECEIPT:
     SUBJECT: "Ontvangstbevestiging (weergegeven) - %SUBJECT%"
     BODY: |
@@ -215,8 +213,6 @@ nl_NL:
     ATTACH_FILES: "Bestand(en) toevoegen"
     ATTACH_DROP_FILES_DESC: "Sleep bestanden naar hier"
     ATTACH_ITEM_CANCEL: "Annuleer"
-    DROPBOX: "Dropbox"
-    GOOGLE_DRIVE: "Google Drive"
     REPLY_MESSAGE_TITLE: "%EMAIL% schreef op %DATETIME%"
     FORWARD_MESSAGE_TOP_TITLE: "-------- Doorgestuurd bericht -------"
     FORWARD_MESSAGE_TOP_FROM: "Van"

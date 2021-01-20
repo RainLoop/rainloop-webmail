@@ -144,9 +144,6 @@ fr_FR:
     PGP_SIGNED_MESSAGE_DESC: "Message signé par OpenPGP (cliquer pour vérifier)"
     PGP_ENCRYPTED_MESSAGE_DESC: "Message chiffré par OpenPGP (cliquer pour déchiffrer)"
     LINK_DOWNLOAD_AS_ZIP: "Télécharger le zip"
-    LINK_SAVE_TO_OWNCLOUD: "Enregistrer sur ownCloud"
-    LINK_SAVE_TO_CLOUD: "Enregistrer sur le cloud"
-    LINK_SAVE_TO_DROPBOX: "Enregistrer sur Dropbox"
   READ_RECEIPT:
     SUBJECT: "Accusé de réception (affiché) - %SUBJECT%"
     BODY: |
@@ -216,8 +213,6 @@ fr_FR:
     ATTACH_FILES: "Joindre des fichiers"
     ATTACH_DROP_FILES_DESC: "Glisser les fichiers ici"
     ATTACH_ITEM_CANCEL: "Annuler"
-    DROPBOX: "Dropbox"
-    GOOGLE_DRIVE: "Google Drive"
     REPLY_MESSAGE_TITLE: "%DATETIME% %EMAIL% a écrit"
     FORWARD_MESSAGE_TOP_TITLE: "-------- Message transféré -------"
     FORWARD_MESSAGE_TOP_FROM: "De"
