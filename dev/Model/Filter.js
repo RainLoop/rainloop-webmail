@@ -176,20 +176,21 @@ class FilterModel extends AbstractModel {
 
 	toJson() {
 		return {
+//			'@Object': 'Object/Filter',
 			ID: this.id,
 			Enabled: this.enabled() ? '1' : '0',
 			Name: this.name(),
-			ConditionsType: this.conditionsType(),
 			Conditions: this.conditions().map(item => item.toJson()),
+			ConditionsType: this.conditionsType(),
 
+			ActionType: this.actionType(),
 			ActionValue: this.actionValue(),
 			ActionValueSecond: this.actionValueSecond(),
 			ActionValueThird: this.actionValueThird(),
 			ActionValueFourth: this.actionValueFourth(),
-			ActionType: this.actionType(),
 
-			Stop: this.actionNoStop() ? '0' : '1',
 			Keep: this.actionKeep() ? '1' : '0',
+			Stop: this.actionNoStop() ? '0' : '1',
 			MarkAsRead: this.actionMarkAsRead() ? '1' : '0'
 		};
 	}

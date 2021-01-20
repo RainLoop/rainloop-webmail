@@ -48,6 +48,7 @@ class SieveScriptPopupView extends AbstractViewNext {
 
 			this.saving = true;
 			this.saveError(false);
+//			script.body(script.filtersToRaw());
 
 			Remote.filtersScriptSave(
 				(result, data) => {
@@ -106,6 +107,16 @@ class SieveScriptPopupView extends AbstractViewNext {
 			},
 			true
 		]);
+	}
+
+	toggleFiltersRaw() {
+		if (!this.rawActive()) {
+			let script = this.script(),
+				changed = script.hasChanges();
+			script.body(script.filtersToRaw());
+			script.hasChanges(changed);
+		}
+		this.rawActive(!this.rawActive());
 	}
 
 	onBuild(oDom) {

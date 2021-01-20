@@ -64,6 +64,7 @@ class FilterConditionModel extends AbstractModel {
 
 	toJson() {
 		return {
+//			'@Object': 'Object/FilterCondition',
 			Field: this.field(),
 			Type: this.type(),
 			Value: this.value(),

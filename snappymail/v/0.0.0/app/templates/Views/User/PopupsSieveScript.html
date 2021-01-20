@@ -38,16 +38,7 @@
 					</div>
 				</div>
 			</div>
-<!--
-			<div class="row" data-bind="visible: allowFilters">
-				<div class="span5 width100-on-mobile">
-					<a class="btn" data-bind="click: function () { $root.rawActive(!$root.rawActive()) },
-						css: {'active': $root.rawActive }, tooltip: 'POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT'">
-						<i class="icon-file-code"></i>
-					</a>
-				</div>
-			</div>
--->
+
 			<div class="row">
 				<div class="span8 width100-on-mobile">
 					<div class="control-group" data-bind="visible: $root.rawActive">
@@ -107,6 +98,10 @@
 			</div>
 		</div>
 		<div class="modal-footer">
+			<a class="btn" data-bind="visible: allowFilters, click: function() { $root.toggleFiltersRaw(); },
+				css: {'active': $root.rawActive }, tooltip: 'POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT'">
+				<i class="icon-file-code"></i>
+			</a>
 			<a class="btn buttonSave" data-bind="visible: hasChanges, click: function() { $root.saveScriptCommand(); }, css: {'btn-danger': $root.saveError}">
 				<i data-bind="css: {'icon-floppy': !$root.saving, 'icon-spinner animated': $root.saving}"></i>
 				&nbsp;&nbsp;
