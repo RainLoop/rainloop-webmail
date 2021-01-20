@@ -57,9 +57,9 @@ class SieveScriptPopupView extends AbstractViewNext {
 					self.saving = false;
 
 					if (StorageResultType.Success === result && data && data.Result) {
+						script.exists() || SieveStore.scripts.push(script);
 						script.exists(true);
 						script.hasChanges(false);
-						SieveStore.scripts.push(script);
 					} else {
 						self.saveError(true);
 						self.saveErrorText((data && data.ErrorCode)
