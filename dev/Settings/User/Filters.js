@@ -13,8 +13,6 @@ import { showScreenPopup } from 'Knoin/Knoin';
 
 class FiltersUserSettings {
 	constructor() {
-		this.sieve = SieveStore;
-
 		this.scripts = SieveStore.scripts;
 		this.loading = ko.observable(false).extend({ throttle: 200 });
 
@@ -23,27 +21,24 @@ class FiltersUserSettings {
 			serverErrorDesc: ''
 		});
 
-		this.serverError.subscribe((value) => {
-			if (!value) {
-				this.serverErrorDesc('');
-			}
-		}, this);
-
 		this.scriptForDeletion = ko.observable(null).deleteAccessHelper();
+	}
+
+	setError(text) {
+		this.serverError(true);
+		this.serverErrorDesc(text);
 	}
 
 	updateList() {
 		if (!this.loading()) {
 			this.loading(true);
+			this.serverError(false);
 
 			Remote.filtersGet((result, data) => {
 				this.loading(false);
-				this.serverError(false);
 				this.scripts([]);
 
 				if (StorageResultType.Success === result && data && data.Result) {
-					this.serverError(false);
-
 					SieveStore.capa(data.Result.Capa);
 /*
 					this.scripts(
@@ -55,10 +50,8 @@ class FiltersUserSettings {
 						value && this.scripts.push(value)
 					});
 				} else {
-					this.scripts([]);
 					SieveStore.capa([]);
-					this.serverError(true);
-					this.serverErrorDesc(
+					this.setError(
 						data && data.ErrorCode ? getNotification(data.ErrorCode) : getNotification(Notification.CantGetFilters)
 					);
 				}
@@ -75,34 +68,32 @@ class FiltersUserSettings {
 	}
 
 	deleteScript(script) {
-		if (!script.active()) {
-			Remote.filtersScriptDelete(
-				(result, data) => {
-					if (StorageResultType.Success === result && data && data.Result) {
-						this.scripts.remove(script);
-						delegateRunOnDestroy(script);
-					} else {
-						this.serverError(true);
-						this.serverErrorDesc((data && data.ErrorCode)
-							? (data.ErrorMessageAdditional || getNotification(data.ErrorCode))
-							: getNotification(Notification.CantActivateFiltersScript)
-						);
-					}
-				},
-				script.name()
-			);
-		}
+		this.serverError(false);
+		Remote.filtersScriptDelete(
+			(result, data) => {
+				if (StorageResultType.Success === result && data && data.Result) {
+					this.scripts.remove(script);
+					delegateRunOnDestroy(script);
+				} else {
+					this.setError((data && data.ErrorCode)
+						? (data.ErrorMessageAdditional || getNotification(data.ErrorCode))
+						: getNotification(Notification.CantActivateFiltersScript)
+					);
+				}
+			},
+			script.name()
+		);
 	}
 
 	toggleScript(script) {
 		let name = script.active() ? '' : script.name();
+		this.serverError(false);
 		Remote.filtersScriptActivate(
 			(result, data) => {
 				if (StorageResultType.Success === result && data && data.Result) {
 					this.scripts().forEach(script => script.active(script.name() === name));
 				} else {
-					this.serverError(true);
-					this.serverErrorDesc((data && data.ErrorCode)
+					this.setError((data && data.ErrorCode)
 						? (data.ErrorMessageAdditional || getNotification(data.ErrorCode))
 						: getNotification(Notification.CantActivateFiltersScript)
 					);

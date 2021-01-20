@@ -179,25 +179,25 @@ class Filter implements \JsonSerializable
 
 	public function FromJSON(array $aFilter) : bool
 	{
-		$this->sID = isset($aFilter['ID']) ? $aFilter['ID'] : '';
-		$this->sName = isset($aFilter['Name']) ? $aFilter['Name'] : '';
+		$this->sID = $aFilter['ID'] ?? '';
+		$this->sName = $aFilter['Name'] ?? '';
 
-		$this->bEnabled = isset($aFilter['Enabled']) ? '1' === (string) $aFilter['Enabled'] : true;
+		$this->bEnabled = !isset($aFilter['Enabled']) || !empty($aFilter['Enabled']);
 
-		$this->sConditionsType = isset($aFilter['ConditionsType']) ? $aFilter['ConditionsType'] :
-			\RainLoop\Providers\Filters\Enumerations\ConditionsType::ANY;
+		$this->sConditionsType = $aFilter['ConditionsType']
+			?? \RainLoop\Providers\Filters\Enumerations\ConditionsType::ANY;
 
-		$this->sActionType = isset($aFilter['ActionType']) ? $aFilter['ActionType'] :
-			\RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO;
+		$this->sActionType = $aFilter['ActionType']
+			?? \RainLoop\Providers\Filters\Enumerations\ActionType::MOVE_TO;
 
-		$this->sActionValue = isset($aFilter['ActionValue']) ? $aFilter['ActionValue'] : '';
-		$this->sActionValueSecond = isset($aFilter['ActionValueSecond']) ? $aFilter['ActionValueSecond'] : '';
-		$this->sActionValueThird = isset($aFilter['ActionValueThird']) ? $aFilter['ActionValueThird'] : '';
-		$this->sActionValueFourth = isset($aFilter['ActionValueFourth']) ? $aFilter['ActionValueFourth'] : '';
+		$this->sActionValue = $aFilter['ActionValue'] ?? '';
+		$this->sActionValueSecond = $aFilter['ActionValueSecond'] ?? '';
+		$this->sActionValueThird = $aFilter['ActionValueThird'] ?? '';
+		$this->sActionValueFourth = $aFilter['ActionValueFourth'] ?? '';
 
-		$this->bKeep = isset($aFilter['Keep']) ? '1' === (string) $aFilter['Keep'] : true;
-		$this->bStop = isset($aFilter['Stop']) ? '1' === (string) $aFilter['Stop'] : true;
-		$this->bMarkAsRead = isset($aFilter['MarkAsRead']) ? '1' === (string) $aFilter['MarkAsRead'] : false;
+		$this->bKeep = !isset($aFilter['Keep']) || !empty($aFilter['Keep']);
+		$this->bStop = !isset($aFilter['Stop']) || !empty($aFilter['Stop']);
+		$this->bMarkAsRead = !isset($aFilter['MarkAsRead']) || !empty($aFilter['MarkAsRead']);
 
 		$this->aConditions = empty($aFilter['Conditions']) ? array() : FilterCondition::CollectionFromJSON($aFilter['Conditions']);
 

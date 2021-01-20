@@ -224,20 +224,6 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {?Function} fCallback
-	 * @param {Array} filters
-	 * @param {string} raw
-	 * @param {boolean} isRawIsActive
-	 */
-	filtersSave(fCallback, filters, raw, isRawIsActive) {
-		this.defaultRequest(fCallback, 'FiltersSave', {
-			Raw: raw,
-			RawIsActive: isRawIsActive ? 1 : 0,
-			Filters: filters.map(item => item.toJson())
-		});
-	}
-
-	/**
-	 * @param {?Function} fCallback
 	 * @param {SieveScriptModel} script
 	 */
 	filtersScriptSave(fCallback, script) {

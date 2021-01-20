@@ -4,7 +4,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 import { FilterModel } from 'Model/Filter';
 
 // collectionToFileString
-function filtersToSieveScript(aFilters)
+function filtersToSieveScript(filters)
 {
 	let eol = '\r\n',
 		split = /.{0,74}/g,
@@ -16,8 +16,8 @@ function filtersToSieveScript(aFilters)
 			''
 		];
 
-	const quote = sValue => '"' + sValue.trim().replace(/(\\|")/, '\\\\$1') + '"';
-	const StripSpaces = sValue => sValue.replace(/\s+/, ' ').trim();
+	const quote = string => '"' + string.trim().replace(/(\\|")/, '\\\\$1') + '"';
+	const StripSpaces = string => string.replace(/\s+/, ' ').trim();
 
 	// conditionToSieveScript
 	const conditionToString = (condition, require) =>
@@ -83,16 +83,11 @@ function filtersToSieveScript(aFilters)
 					return '/* @Error: unknown field value ' + field + ' */ false';
 			}
 
-			if (('From' === field || 'Recipient' === field) && value.includes(','))
-			{
+			if (('From' === field || 'Recipient' === field) && value.includes(',')) {
 				result += ' [' + value.split(',').map(value => quote(value)).join(', ').trim() + ']';
-			}
-			else if ('Size' === field)
-			{
+			} else if ('Size' === field) {
 				result += ' ' + value;
-			}
-			else
-			{
+			} else {
 				result += ' ' + quote(value);
 			}
 
@@ -107,12 +102,12 @@ function filtersToSieveScript(aFilters)
 	{
 		let sTab = '    ',
 			block = true,
-			result = [];
+			result = [],
+			conditions = filter.conditions();
 
 		const errorAction = type => result.push(sTab + '# @Error (' + type + '): empty action value');
 
 		// Conditions
-		let conditions = filter.conditions();
 		if (1 < conditions.length) {
 			result.push('Any' === filter.conditionsType()
 				? 'if anyof('
@@ -127,28 +122,24 @@ function filtersToSieveScript(aFilters)
 		}
 
 		// actions
-		if (block) {
-			result.push('{');
-		} else {
-			sTab = '';
-		}
+		block ? result.push('{') : (sTab = '');
 
 		if (filter.actionMarkAsRead() && ['None','MoveTo','Forward'].includes(filter.actionType())) {
 			require.imap4flags = 1;
 			result.push(sTab + 'addflag "\\\\Seen";');
 		}
 
+		let value = filter.actionValue().trim();
+		value = value.length ? quote(value) : 0;
 		switch (filter.actionType())
 		{
-			// case FiltersAction.None:
 			case 'None':
 				break;
 			case 'Discard':
 				result.push(sTab + 'discard;');
 				break;
-			case 'Vacation': {
-				let value = filter.actionValue().trim();
-				if (value.length) {
+			case 'Vacation':
+				if (value) {
 					require.vacation = 1;
 
 					let days = 1,
@@ -175,41 +166,38 @@ function filtersToSieveScript(aFilters)
 						}
 					}
 
-					result.push(sTab + 'vacation :days ' + days + ' ' + addresses + subject + quote(value) + ';');
+					result.push(sTab + 'vacation :days ' + days + ' ' + addresses + subject + value + ';');
 				} else {
 					errorAction('vacation');
 				}
-				break; }
+				break;
 			case 'Reject': {
-				let value = filter.actionValue().trim();
-				if (value.length) {
+				if (value) {
 					require.reject = 1;
-					result.push(sTab + 'reject ' + quote(value) + ';');
+					result.push(sTab + 'reject ' + value + ';');
 				} else {
 					errorAction('reject');
 				}
 				break; }
-			case 'Forward': {
-				let value = filter.actionValue();
-				if (value.length) {
+			case 'Forward':
+				if (value) {
 					if (filter.actionKeep()) {
 						require.fileinto = 1;
 						result.push(sTab + 'fileinto "INBOX";');
 					}
-					result.push(sTab + 'redirect ' + quote(value) + ';');
+					result.push(sTab + 'redirect ' + value + ';');
 				} else {
 					errorAction('redirect');
 				}
-				break; }
-			case 'MoveTo': {
-				let value = filter.actionValue();
-				if (value.length) {
+				break;
+			case 'MoveTo':
+				if (value) {
 					require.fileinto = 1;
-					result.push(sTab + 'fileinto ' + quote(value) + ';');
+					result.push(sTab + 'fileinto ' + value + ';');
 				} else {
 					errorAction('fileinto');
 				}
-				break; }
+				break;
 		}
 
 		filter.actionNoStop() || result.push(sTab + 'stop;');
@@ -219,7 +207,7 @@ function filtersToSieveScript(aFilters)
 		return result.join(eol);
 	};
 
-	aFilters.forEach(filter => {
+	filters.forEach(filter => {
 		parts.push([
 			'/*',
 			'BEGIN:FILTER:' + filter.id,
@@ -236,6 +224,27 @@ function filtersToSieveScript(aFilters)
 
 	require = Object.keys(require);
 	return (require.length ? 'require ' + JSON.stringify(require) + ';' + eol : '') + eol + parts.join(eol);
+}
+
+// fileStringToCollection
+function sieveScriptToFilters(script)
+{
+	let regex = /BEGIN:HEADER([\s\S]+?)END:HEADER/gm,
+		filters = [],
+		json,
+		filter;
+	if (script.length && script.includes('RAINLOOP:SIEVE')) {
+		while ((json = regex.exec(script))) {
+			json = decodeURIComponent(escape(atob(json[1].replace(/\s+/g, ''))));
+			if (json && json.length && (json = JSON.parse(json))) {
+				json['@Object'] = 'Object/Filter';
+				json.Conditions.forEach(condition => condition['@Object'] = 'Object/FilterCondition');
+				filter = FilterModel.reviveFromJson(json);
+				filter && filters.push(filter);
+			}
+		}
+	}
+	return filters;
 }
 
 class SieveScriptModel extends AbstractModel
@@ -266,13 +275,14 @@ class SieveScriptModel extends AbstractModel
 		});
 	}
 
-	setFilters() {
-		/*let tree = */window.Sieve.parseScript(this.body);
-//		this.filters = ko.observableArray(tree);
-	}
-
 	filtersToRaw() {
 		return filtersToSieveScript(this.filters);
+//		this.body(filtersToSieveScript(this.filters));
+	}
+
+	rawToFilters() {
+		return sieveScriptToFilters(this.body());
+//		this.filters(sieveScriptToFilters(this.body()));
 	}
 
 	verify() {
@@ -305,9 +315,11 @@ class SieveScriptModel extends AbstractModel
 	static reviveFromJson(json) {
 		const script = super.reviveFromJson(json);
 		if (script) {
-			if (script.allowFilters() && Array.isNotEmpty(json.filters)) {
+			if (script.allowFilters()) {
 				script.filters(
-					json.filters.map(aData => FilterModel.reviveFromJson(aData)).filter(v => v)
+					Array.isNotEmpty(json.filters)
+						? json.filters.map(aData => FilterModel.reviveFromJson(aData)).filter(v => v)
+						: sieveScriptToFilters(script.body())
 				);
 			} else {
 				script.filters([]);
