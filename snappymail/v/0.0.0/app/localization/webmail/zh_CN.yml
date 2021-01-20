@@ -144,9 +144,6 @@ zh_CN:
     PGP_SIGNED_MESSAGE_DESC: "由 OpenPGP 签名 (点击验证)"
     PGP_ENCRYPTED_MESSAGE_DESC: "由 OpenPGP 加密 (点击解密)"
     LINK_DOWNLOAD_AS_ZIP: "下载为zip压缩包"
-    LINK_SAVE_TO_OWNCLOUD: "保存到 ownCloud"
-    LINK_SAVE_TO_CLOUD: "保存到 Cloud"
-    LINK_SAVE_TO_DROPBOX: "保存到 Dropbox"
   READ_RECEIPT:
     SUBJECT: "送达回执 - %SUBJECT%"
     BODY: |
@@ -215,8 +212,6 @@ zh_CN:
     ATTACH_FILES: "添加附件"
     ATTACH_DROP_FILES_DESC: "拖动文件至此"
     ATTACH_ITEM_CANCEL: "取消"
-    DROPBOX: "Dropbox"
-    GOOGLE_DRIVE: "Google Drive"
     REPLY_MESSAGE_TITLE: "%DATETIME%, %EMAIL% 写到"
     FORWARD_MESSAGE_TOP_TITLE: "-------- 转发邮件 -------"
     FORWARD_MESSAGE_TOP_FROM: "发送自"
