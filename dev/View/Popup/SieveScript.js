@@ -24,6 +24,7 @@ class SieveScriptPopupView extends AbstractViewNext {
 			saveError: false,
 			saveErrorText: '',
 			rawActive: false,
+			allowToggle: false,
 			script: null
 		});
 
@@ -130,6 +131,7 @@ class SieveScriptPopupView extends AbstractViewNext {
 	onShow(oScript) {
 		this.script(oScript);
 		this.rawActive(!oScript.allowFilters());
+		this.allowToggle(oScript.allowFilters());
 		this.saveError(false);
 	}
 
