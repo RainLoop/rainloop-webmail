@@ -34,8 +34,8 @@ And don't forget to read the [RainLoop documentation](https://www.rainloop.net/d
 **GNU AFFERO GENERAL PUBLIC LICENSE Version 3 (AGPL)**.
 http://www.gnu.org/licenses/agpl-3.0.html
 
-Copyright (c) 2020 SnappyMail
-Copyright (c) 2019 RainLoop
+Copyright (c) 2020 - 2021 SnappyMail
+Copyright (c) 2013 - 2021 RainLoop
 
 ## Modifications
 
@@ -65,6 +65,8 @@ This fork of RainLoop has the following changes:
 * JSON reviver
 * Better memory garbage collection management
 * Added serviceworker for Notifications
+* Added advanced Sieve scripts editor
+* Slimmed down language files
 
 ### Removal of old JavaScript
 
@@ -110,23 +112,23 @@ RainLoop 1.14 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.130.942	|  648.785	|
-|app.js          	|4.184.455	|2.311.912	|
+|admin.js        	|2.130.942	|  628.009	|
+|app.js          	|4.184.455	|2.340.222	|
 |boot.js         	|  671.522	|    4.842	|
-|libs.js         	|  647.614	|  235.394	|
+|libs.js         	|  647.614	|  235.361	|
 |polyfills.js    	|  325.834	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|7.960.367	|3.200.933	|
+|TOTAL           	|7.960.367	|3.208.719	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|Rain gzip	|gzip     	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|   89.946	| 73.657	| 23.622	| 20.672	|
-|app.min.js      	|  511.202	|  310.186	|140.462	| 83.124	| 67.807	|
+|admin.min.js    	|  252.147	|   85.184	| 73.657	| 22.617	| 19.879	|
+|app.min.js      	|  511.202	|  310.381	|140.462	| 84.002	| 68.447	|
 |boot.min.js     	|   66.007	|    2.630	| 22.567	|  1.375	|  1.189	|
-|libs.min.js     	|  572.545	|  130.850	|176.720	| 47.317	| 42.092	|
+|libs.min.js     	|  572.545	|  130.817	|176.720	| 47.296	| 42.076	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  533.612	|424.718	|155.438	|131.760	|
-|TOTAL (no admin)	|1.182.206	|  443.666	|351.061	|131.816	|111.088	|
+|TOTAL           	|1.434.353	|  529.012	|424.718	|155.290	|131.591	|
+|TOTAL (no admin)	|1.182.206	|  443.828	|351.061	|132.673	|111.712	|
 
 For a user its around 62% smaller and faster than traditional RainLoop.
 
@@ -153,8 +155,8 @@ For a user its around 62% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|Rain gzip	|gzip   	|brotli   	|
 |--------------	|-------:	|-------:	|------:	|------:	|------:	|
-|app.css    	| 340.334	| 185.667	| 46,959	| 28.735	| 24.150	|
-|app.min.css	| 274.791	| 151.837	| 39.618	| 25.364	| 21.888	|
+|app.css    	| 340.334	| 183.745	| 46,959	| 28.673	| 24.150	|
+|app.min.css	| 274.791	| 150.065	| 39.618	| 25.312	| 21.846	|
 |boot.css    	|       	|   2.534	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 
