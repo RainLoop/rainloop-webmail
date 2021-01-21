@@ -641,6 +641,8 @@ fr_FR:
     INVALID_RECIPIENTS: "Destinataires invalides"
     CANT_SAVE_FILTERS: "Impossible d'enregistrer les filtres"
     CANT_GET_FILTERS: "Impossible d'obtenir les filtres"
+    CANT_ACTIVATE_FILTERS_SCRIPT: "Can't activate filters script"
+    CANT_DELETE_FILTERS_SCRIPT: "Can't delete filters script"
     FILTERS_ARE_NOT_CORRECT: "Les filtres ne sont pas corrects"
     CANT_CREATE_FOLDER: "Impossible de créer le dossier"
     CANT_RENAME_FOLDER: "Impossible de renommer le dossier"

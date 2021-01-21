@@ -640,6 +640,8 @@ en_US:
     INVALID_RECIPIENTS: "Invalid recipients"
     CANT_SAVE_FILTERS: "Can't save filters"
     CANT_GET_FILTERS: "Can't get filters"
+    CANT_ACTIVATE_FILTERS_SCRIPT: "Can't activate filters script"
+    CANT_DELETE_FILTERS_SCRIPT: "Can't delete filters script"
     FILTERS_ARE_NOT_CORRECT: "Filters are not correct"
     CANT_CREATE_FOLDER: "Can't create folder"
     CANT_RENAME_FOLDER: "Can't rename folder"

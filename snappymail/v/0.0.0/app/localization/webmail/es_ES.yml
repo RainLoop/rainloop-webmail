@@ -641,6 +641,8 @@ es_ES:
     INVALID_RECIPIENTS: "Los destinatarios no son válidos"
     CANT_SAVE_FILTERS: "No se pueden guardar los filtros"
     CANT_GET_FILTERS: "No se pueden obtener los filtros"
+    CANT_ACTIVATE_FILTERS_SCRIPT: "Can't activate filters script"
+    CANT_DELETE_FILTERS_SCRIPT: "Can't delete filters script"
     FILTERS_ARE_NOT_CORRECT: "Filtros incorrectos"
     CANT_CREATE_FOLDER: "No se puede crear la carpeta"
     CANT_RENAME_FOLDER: "No se puede renombrar la carpeta"

@@ -640,6 +640,8 @@ de_DE:
     INVALID_RECIPIENTS: "Ungültige Empfängeradressen"
     CANT_SAVE_FILTERS: "Die Filter können nicht gespeichert werden"
     CANT_GET_FILTERS: "Die Filter sind nicht verfügbar"
+    CANT_ACTIVATE_FILTERS_SCRIPT: "Can't activate filters script"
+    CANT_DELETE_FILTERS_SCRIPT: "Can't delete filters script"
     FILTERS_ARE_NOT_CORRECT: "Die Filter sind fehlerhaft"
     CANT_CREATE_FOLDER: "Dieser Ordner kann nicht angelegt werden"
     CANT_RENAME_FOLDER: "Dieser Ordner kann nicht umbenannt werden"

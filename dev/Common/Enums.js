@@ -379,8 +379,8 @@ export const Notification = {
 
 	CantSaveFilters: 351,
 	CantGetFilters: 352,
-	CantActivateFiltersScript: 351, // TODO: 353
-	CantDeleteFiltersScript: 351, // TODO: 354
+	CantActivateFiltersScript: 353,
+	CantDeleteFiltersScript: 354,
 	FiltersAreNotCorrect: 355,
 
 	CantCreateFolder: 400,

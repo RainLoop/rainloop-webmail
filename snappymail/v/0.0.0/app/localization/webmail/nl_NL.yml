@@ -639,6 +639,8 @@ nl_NL:
     INVALID_RECIPIENTS: "Onjuiste ontvangers"
     CANT_SAVE_FILTERS: "Kan filters niet opslaan"
     CANT_GET_FILTERS: "Kan filters niet ophalen"
+    CANT_ACTIVATE_FILTERS_SCRIPT: "Kan filters script niet activeren"
+    CANT_DELETE_FILTERS_SCRIPT: "Kan filters script niet verwijderen"
     FILTERS_ARE_NOT_CORRECT: "Filters zijn onjuist"
     CANT_CREATE_FOLDER: "Kan map niet aanmaken"
     CANT_RENAME_FOLDER: "Kan map niet hernoemen"
