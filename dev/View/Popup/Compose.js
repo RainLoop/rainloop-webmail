@@ -1002,20 +1002,20 @@ class ComposePopupView extends AbstractViewNext {
 						'<br /><br />' +
 						i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
 						'<br />' +
-						i18n('COMPOSE/FORWARD_MESSAGE_TOP_FROM') +
+						i18n('GLOBAL/FROM') +
 						': ' +
 						sFrom +
 						'<br />' +
-						i18n('COMPOSE/FORWARD_MESSAGE_TOP_TO') +
+						i18n('GLOBAL/TO') +
 						': ' +
 						sTo +
-						(sCc.length ? '<br />' + i18n('COMPOSE/FORWARD_MESSAGE_TOP_CC') + ': ' + sCc : '') +
+						(sCc.length ? '<br />' + i18n('GLOBAL/CC') + ': ' + sCc : '') +
 						'<br />' +
 						i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') +
 						': ' +
 						encodeHtml(sDate) +
 						'<br />' +
-						i18n('COMPOSE/FORWARD_MESSAGE_TOP_SUBJECT') +
+						i18n('GLOBAL/SUBJECT') +
 						': ' +
 						encodeHtml(sSubject) +
 						'<br /><br />' +

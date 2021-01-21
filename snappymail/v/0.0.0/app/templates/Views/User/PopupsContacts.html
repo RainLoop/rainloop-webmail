@@ -66,7 +66,7 @@
 	</div>
 	<div class="modal-body" style="position: relative;">
 		<div class="b-list-toolbar">
-			<input type="text" class="i18n span3 e-search" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]CONTACTS/SEARCH_INPUT_PLACEHOLDER" data-bind="value: search" />
+			<input type="text" class="i18n span3 e-search" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: search" />
 		</div>
 		<div class="b-list-content g-ui-user-select-none" data-bind="css: {'hideContactListCheckbox': !useCheckboxesInList()}">
 			<div class="content g-scrollbox">
@@ -78,7 +78,7 @@
 						<span class="i18n" data-i18n="CONTACTS/EMPTY_LIST"></span>
 					</div>
 					<div class="listEmptyListLoading" data-bind="visible: 0 === contacts().length && '' === search() && contacts.loading()">
-						<span class="i18n" data-i18n="CONTACTS/LIST_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+						<span class="i18n" data-i18n="GLOBAL/LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
 					</div>
 					<div class="listEmptySearchList" data-bind="visible: 0 === contacts().length && '' !== search() && !contacts.loading()">
 						<span class="i18n" data-i18n="CONTACTS/EMPTY_SEARCH"></span>
@@ -119,7 +119,7 @@
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewEmail">
 							<i class="icon-none"></i>
 							&nbsp;&nbsp;
-							<span class="i18n" data-i18n="CONTACTS/ADD_MENU_EMAIL"></span>
+							<span class="i18n" data-i18n="GLOBAL/EMAIL"></span>
 						</a>
 					</li>
 					<li class="e-item" role="presentation">
@@ -201,7 +201,7 @@
 							</div>
 							<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesEmails().length">
 								<label class="control-label remove-padding-top fix-width">
-									<i class="icon-at iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_EMAIL'"></i>
+									<i class="icon-at iconsize24" data-bind="tooltip: 'GLOBAL/EMAIL'"></i>
 								</label>
 								<div class="controls fix-width">
 									<div data-bind="foreach: viewPropertiesEmails">

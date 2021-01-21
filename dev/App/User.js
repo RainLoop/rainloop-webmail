@@ -171,7 +171,7 @@ class AppUser extends AbstractApp {
 					MessageStore.messageList([]);
 					MessageStore.messageListLoading(false);
 					MessageStore.messageListError(
-						oData && oData.ErrorCode ? getNotification(oData.ErrorCode) : i18n('NOTIFICATIONS/CANT_GET_MESSAGE_LIST')
+						getNotification((oData && oData.ErrorCode) || Notification.CantGetMessageList)
 					);
 				}
 			},
@@ -920,7 +920,7 @@ class AppUser extends AbstractApp {
 				this.bootend();
 				showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
 			} else {
-				rl.setWindowTitle(i18n('TITLES/LOADING'));
+				rl.setWindowTitle(i18n('GLOBAL/LOADING'));
 
 				// require.ensure([], function() { // require code splitting
 

@@ -91,7 +91,7 @@ class SettingsUserScreen extends AbstractSettingsScreen {
 		}
 
 		if (Settings.capa(Capa.OpenPGP)) {
-			addSettingsViewModel(OpenPgpUserSettings, 'SettingsOpenPGP', 'SETTINGS_LABELS/LABEL_OPEN_PGP_NAME', 'openpgp');
+			addSettingsViewModel(OpenPgpUserSettings, 'SettingsOpenPGP', 'OpenPGP', 'openpgp');
 		}
 
 		runSettingsViewModelHooks(false);

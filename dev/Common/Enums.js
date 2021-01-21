@@ -350,20 +350,17 @@ export const ContactPropertyType = {
 export const Notification = {
 	InvalidToken: 101,
 	AuthError: 102,
-	AccessError: 103,
 	ConnectionError: 104,
-	CaptchaError: 105,
 	DomainNotAllowed: 109,
 	AccountNotAllowed: 110,
 
 	AccountTwoFactorAuthRequired: 120,
 	AccountTwoFactorAuthError: 121,
 
-	CouldNotSaveNewPassword: 130,
-	CurrentPasswordIncorrect: 131,
-	NewPasswordShort: 132,
-	NewPasswordWeak: 133,
-	NewPasswordForbidden: 134,
+//	CurrentPasswordIncorrect: 131,
+//	NewPasswordShort: 132,
+//	NewPasswordWeak: 133,
+//	NewPasswordForbidden: 134,
 
 	ContactsSyncError: 140,
 
@@ -381,7 +378,7 @@ export const Notification = {
 	CantGetFilters: 352,
 	CantActivateFiltersScript: 353,
 	CantDeleteFiltersScript: 354,
-	FiltersAreNotCorrect: 355,
+//	FiltersAreNotCorrect: 355,
 
 	CantCreateFolder: 400,
 	CantRenameFolder: 401,
@@ -390,7 +387,7 @@ export const Notification = {
 	CantUnsubscribeFolder: 404,
 	CantDeleteNonEmptyFolder: 405,
 
-	CantSaveSettings: 501,
+//	CantSaveSettings: 501,
 	CantSavePluginSettings: 502,
 
 	DomainAlreadyExists: 601,

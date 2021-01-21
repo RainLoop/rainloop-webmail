@@ -64,9 +64,9 @@ class FilterPopupView extends AbstractViewNext {
 		this.actionTypeOptions([]);
 
 		this.fieldOptions([
-			{ 'id': FilterConditionField.From, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_FROM') },
+			{ 'id': FilterConditionField.From, 'name': i18n('GLOBAL/FROM') },
 			{ 'id': FilterConditionField.Recipient, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_RECIPIENTS') },
-			{ 'id': FilterConditionField.Subject, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_SUBJECT') },
+			{ 'id': FilterConditionField.Subject, 'name': i18n('GLOBAL/SUBJECT') },
 			{ 'id': FilterConditionField.Size, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_SIZE') },
 			{ 'id': FilterConditionField.Header, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_HEADER') }
 		]);
@@ -79,7 +79,7 @@ class FilterPopupView extends AbstractViewNext {
 		]);
 
 		// this.actionTypeOptions.push({'id': FiltersAction.None,
-		// 'name': i18n('POPUPS_FILTER/SELECT_ACTION_NONE')});
+		// 'name': i18n('GLOBAL/NONE')});
 		const modules = SieveStore.capa();
 		if (modules) {
 			if (modules.includes('imap4flags')) {

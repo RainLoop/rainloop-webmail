@@ -377,10 +377,10 @@ class MessageModel extends AbstractModel {
 			.replace('{{date}}', encodeHtml(m ? m.format('LLL') : ''))
 			.replace('{{fromCreds}}', encodeHtml(this.fromToLine(false)))
 			.replace('{{toCreds}}', encodeHtml(this.toToLine(false)))
-			.replace('{{toLabel}}', encodeHtml(i18n('MESSAGE/LABEL_TO')))
+			.replace('{{toLabel}}', encodeHtml(i18n('GLOBAL/TO')))
 			.replace('{{ccHide}}', ccLine ? '' : 'hidden=""')
 			.replace('{{ccCreds}}', encodeHtml(ccLine))
-			.replace('{{ccLabel}}', encodeHtml(i18n('MESSAGE/LABEL_CC')))
+			.replace('{{ccLabel}}', encodeHtml(i18n('GLOBAL/CC')))
 			.replace('{{bodyClass}}', this.isHtml() ? 'html' : 'plain')
 			.replace('{{html}}', this.bodyAsHTML())
 		);

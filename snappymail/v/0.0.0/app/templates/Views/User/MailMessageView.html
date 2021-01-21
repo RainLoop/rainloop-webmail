@@ -2,7 +2,7 @@
 	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected, 'message-focused': messageFocused}">
 		<div class="toolbar top-toolbar g-ui-user-select-none" data-bind="visible: !usePreviewPane()">
 			<div class="messageButtons btn-toolbar">
-				<div class="btn-group" data-bind="tooltip: 'MESSAGE/BUTTON_CLOSE'">
+				<div class="btn-group" data-bind="tooltip: 'GLOBAL/CLOSE'">
 					<a class="btn single btn-dark-disabled-border buttonClose" data-bind="command: closeMessageCommand">
 						<i class="icon-remove"></i>
 					</a>
@@ -15,16 +15,16 @@
 				</div>
 				<div class="btn-group" data-bind="visible: !usePreviewPane()">&nbsp;</div>
 				<div class="btn-group" data-bind="visible: !usePreviewPane()">
-					<a class="btn first btn-dark-disabled-border button-archive" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'MESSAGE/BUTTON_ARCHIVE'">
+					<a class="btn first btn-dark-disabled-border button-archive" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'GLOBAL/TO_ARCHIVE'">
 						<i class="icon-archive"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'MESSAGE/BUTTON_SPAM'">
+					<a class="btn btn-dark-disabled-border button-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'GLOBAL/SPAM'">
 						<i class="icon-warning"></i>
 					</a>
-					<a class="btn btn-dark-disabled-border button-not-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand, tooltip: 'MESSAGE/BUTTON_NOT_SPAM'">
+					<a class="btn btn-dark-disabled-border button-not-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand, tooltip: 'GLOBAL/NOT_SPAM'">
 						<i class="icon-check-mark-circle-two"></i>
 					</a>
-					<a class="btn last btn-dark-disabled-border button-delete" data-bind="command: deleteCommand, tooltip: 'MESSAGE/BUTTON_DELETE'">
+					<a class="btn last btn-dark-disabled-border button-delete" data-bind="command: deleteCommand, tooltip: 'GLOBAL/DELETE'">
 						<i class="icon-trash"></i>
 					</a>
 				</div>
@@ -116,28 +116,28 @@
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: archiveCommand">
 											<i class="icon-archive"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n="MESSAGE/BUTTON_ARCHIVE"></span>
+											<span class="i18n" data-i18n="GLOBAL/TO_ARCHIVE"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: spamCommand">
 											<i class="icon-warning"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n="MESSAGE/BUTTON_SPAM"></span>
+											<span class="i18n" data-i18n="GLOBAL/SPAM"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled()">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: notSpamCommand">
 											<i class="icon-check-mark-circle-two"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n="MESSAGE/BUTTON_NOT_SPAM"></span>
+											<span class="i18n" data-i18n="GLOBAL/NOT_SPAM"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: deleteCommand">
 											<i class="icon-trash"></i>
 											&nbsp;&nbsp;
-											<span class="i18n" data-i18n="MESSAGE/BUTTON_DELETE"></span>
+											<span class="i18n" data-i18n="GLOBAL/DELETE"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: message() && message().hasUnsubsribeLinks()">
@@ -232,13 +232,13 @@
 								<div class="informationShortWrp">
 									<div class="informationShort" data-bind="visible: viewTo, event: { 'dblclick': toggleFullScreen }">
 										<span>
-											<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_TO"
+											<span class="i18n uiLabel labelTo" data-i18n="GLOBAL/TO"
 												></span>:&nbsp;<span class="to" data-bind="text: viewTo"></span>
 										</span>
 									</div>
 									<div class="informationShort" data-bind="visible: viewCc, event: { 'dblclick': toggleFullScreen }">
 										<span>
-											<span class="i18n uiLabel labelTo" data-i18n="MESSAGE/LABEL_CC"
+											<span class="i18n uiLabel labelTo" data-i18n="GLOBAL/CC"
 												></span>:&nbsp;<span class="to" data-bind="text: viewCc"></span>
 										</span>
 									</div>
@@ -247,7 +247,7 @@
 							<div class="informationFull" data-bind="visible: showFullInfo()">
 								<table>
 									<tr data-bind="visible: '' !== viewFrom()">
-										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_FROM"></span></td>
+										<td><span class="i18n uiLabel" data-i18n="GLOBAL/FROM"></span></td>
 										<td>
 											<span class="pull-right size" data-bind="text: viewSize"></span>
 											<span class="from uiLabelValue" data-bind="text: viewFrom, title: viewFrom"></span>
@@ -255,19 +255,19 @@
 										</td>
 									</tr>
 									<tr data-bind="visible: '' !== viewTo()">
-										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_TO"></span></td>
+										<td><span class="i18n uiLabel" data-i18n="GLOBAL/TO"></span></td>
 										<td><span class="to uiLabelValue" data-bind="text: viewTo, title: viewTo"></span></td>
 									</tr>
 									<tr data-bind="visible: '' !== viewCc()">
-										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_CC"></span></td>
+										<td><span class="i18n uiLabel" data-i18n="GLOBAL/CC"></span></td>
 										<td><span class="cc uiLabelValue" data-bind="text: viewCc, title: viewCc"></span></td>
 									</tr>
 									<tr data-bind="visible: '' !== viewBcc()">
-										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_BCC"></span></td>
+										<td><span class="i18n uiLabel" data-i18n="GLOBAL/BCC"></span></td>
 										<td><span class="bcc uiLabelValue" data-bind="text: viewBcc, title: viewBcc"></span></td>
 									</tr>
 									<tr data-bind="visible: '' !== viewReplyTo()">
-										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_REPLY_TO"></span></td>
+										<td><span class="i18n uiLabel" data-i18n="GLOBAL/REPLY_TO"></span></td>
 										<td><span class="replyTo uiLabelValue" data-bind="text: viewReplyTo, title: viewReplyTo"></span></td>
 									</tr>
 									<tr data-bind="visible: 0 < viewTimeStamp()">
@@ -302,7 +302,7 @@
 									<div class="line-loading e-strip-animation" data-bind="visible: messageLoadingThrottle()"></div>
 
 									<div class="loading g-ui-min-height-300" data-bind="visible: messageLoadingThrottle()">
-										<span class="i18n text" data-i18n="MESSAGE/MESSAGE_LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+										<span class="i18n text" data-i18n="GLOBAL/LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
 									</div>
 								</div>
 

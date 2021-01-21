@@ -22,7 +22,6 @@ checkResponseError = data => {
 	} else {
 		if ([
 				Notification.AuthError,
-				Notification.AccessError,
 				Notification.ConnectionError,
 				Notification.DomainNotAllowed,
 				Notification.AccountNotAllowed,

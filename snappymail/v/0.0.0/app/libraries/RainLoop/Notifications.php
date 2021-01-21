@@ -6,20 +6,17 @@ class Notifications
 {
 	const InvalidToken = 101;
 	const AuthError = 102;
-	const AccessError = 103;
 	const ConnectionError = 104;
-	const CaptchaError = 105;
 	const DomainNotAllowed = 109;
 	const AccountNotAllowed = 110;
 
 	const AccountTwoFactorAuthRequired = 120;
 	const AccountTwoFactorAuthError = 121;
 
-	const CouldNotSaveNewPassword = 130;
-	const CurrentPasswordIncorrect = 131;
-	const NewPasswordShort = 132;
-	const NewPasswordWeak = 133;
-	const NewPasswordForbidden = 134;
+//	const CurrentPasswordIncorrect = 131;
+//	const NewPasswordShort = 132;
+//	const NewPasswordWeak = 133;
+//	const NewPasswordForbidden = 134;
 
 	const ContactsSyncError = 140;
 
@@ -37,7 +34,7 @@ class Notifications
 	const CantGetFilters = 352;
 	const CantActivateFiltersScript = 353;
 	const CantDeleteFiltersScript = 354;
-	const FiltersAreNotCorrect = 355;
+//	const FiltersAreNotCorrect = 355;
 
 	const CantCreateFolder = 400;
 	const CantRenameFolder = 401;
@@ -46,19 +43,15 @@ class Notifications
 	const CantUnsubscribeFolder = 404;
 	const CantDeleteNonEmptyFolder = 405;
 
-	const CantSaveSettings = 501;
+//	const CantSaveSettings = 501;
 	const CantSavePluginSettings = 502;
 
 	const DomainAlreadyExists = 601;
 
-	const CantInstallPackage = 701;
-	const CantDeletePackage = 702;
+//	const CantInstallPackage = 701;
+//	const CantDeletePackage = 702;
 	const InvalidPluginPackage = 703;
 	const UnsupportedPluginPackage = 704;
-
-	const LicensingServerIsUnavailable = 710;
-	const LicensingExpired = 711;
-	const LicensingBanned = 712;
 
 	const DemoSendMessageError = 750;
 	const DemoAccountError = 751;
@@ -69,7 +62,7 @@ class Notifications
 	const MailServerError = 901;
 	const ClientViewError = 902;
 	const InvalidInputArgument = 903;
-	const UnknownNotification = 998;
+//	const UnknownNotification = 998;
 	const UnknownError = 999;
 
 	static public function GetNotificationsMessage(int $iCode, ?\Throwable $oPrevious = null) : string
