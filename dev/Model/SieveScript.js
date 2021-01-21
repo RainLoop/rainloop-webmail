@@ -3,6 +3,8 @@ import ko from 'ko';
 import { AbstractModel } from 'Knoin/AbstractModel';
 import { FilterModel } from 'Model/Filter';
 
+const SIEVE_FILE_NAME = 'rainloop.user';
+
 // collectionToFileString
 function filtersToSieveScript(filters)
 {
@@ -311,7 +313,7 @@ class SieveScriptModel extends AbstractModel
 	 * Only 'rainloop.user' script supports filters
 	 */
 	allowFilters() {
-		return 'rainloop.user' === this.name();
+		return SIEVE_FILE_NAME === this.name();
 	}
 
 	/**
@@ -331,7 +333,7 @@ class SieveScriptModel extends AbstractModel
 			} else {
 				script.filters([]);
 			}
-			script.canBeDeleted(0 !== json.name.indexOf('rainloop.user'));
+			script.canBeDeleted(SIEVE_FILE_NAME !== json.name);
 			script.exists(true);
 			script.hasChanges(false);
 		}

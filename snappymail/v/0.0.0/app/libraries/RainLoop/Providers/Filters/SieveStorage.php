@@ -5,7 +5,6 @@ namespace RainLoop\Providers\Filters;
 class SieveStorage implements FiltersInterface
 {
 	const SIEVE_FILE_NAME = 'rainloop.user';
-	const SIEVE_FILE_NAME_RAW = 'rainloop.user.raw';
 
 	/**
 	 * @var \MailSo\Log\Logger
@@ -40,7 +39,7 @@ class SieveStorage implements FiltersInterface
 			 : null;
 	}
 
-	public function Load(\RainLoop\Model\Account $oAccount, bool $bAllowRaw = false) : array
+	public function Load(\RainLoop\Model\Account $oAccount) : array
 	{
 		$aModules = array();
 		$aScripts = array();
@@ -53,14 +52,12 @@ class SieveStorage implements FiltersInterface
 			$aList = $oSieveClient->ListScripts();
 
 			foreach ($aList as $name => $active) {
-				if ($bAllowRaw || $name == self::SIEVE_FILE_NAME) {
-					$aScripts[$name] = array(
-						'@Object' => 'Object/SieveScript',
-						'name' => $name,
-						'active' => $active,
-						'body' => $oSieveClient->GetScript($name)
-					);
-				}
+				$aScripts[$name] = array(
+					'@Object' => 'Object/SieveScript',
+					'name' => $name,
+					'active' => $active,
+					'body' => $oSieveClient->GetScript($name)
+				);
 			}
 
 			$oSieveClient->LogoutAndDisconnect();
@@ -72,15 +69,6 @@ class SieveStorage implements FiltersInterface
 					'active' => false,
 					'body' => '',
 					'filters' => []
-				);
-			}
-
-			if ($bAllowRaw && !isset($aList[self::SIEVE_FILE_NAME_RAW])) {
-				$aScripts[self::SIEVE_FILE_NAME_RAW] = array(
-					'@Object' => 'Object/SieveScript',
-					'name' => self::SIEVE_FILE_NAME_RAW,
-					'active' => false,
-					'body' => ''
 				);
 			}
 		}

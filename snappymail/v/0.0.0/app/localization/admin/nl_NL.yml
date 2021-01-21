@@ -127,7 +127,6 @@ nl_NL:
     SECURE_OPTION_SSL: "SSL/TLS"
     SECURE_OPTION_STARTTLS: "STARTTLS"
     LABEL_ALLOW_SIEVE_SCRIPTS: "Sta Sieve scripts toe"
-    LABEL_ALLOW_USER_SCRIPT: "Sta gebruiker scripts toe"
     LABEL_USE_SHORT_LOGIN: "Gebruik verkorte login"
     LABEL_USE_AUTH: "Gebruik authenticatie"
     LABEL_USE_PHP_MAIL: "Gebruik php mail() functie"

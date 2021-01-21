@@ -84,11 +84,6 @@ class Domain implements \JsonSerializable
 	private $iSieveSecure;
 
 	/**
-	 * @var bool
-	 */
-	private $bSieveAllowRaw;
-
-	/**
 	 * @var string
 	 */
 	private $sWhiteList;
@@ -122,8 +117,6 @@ class Domain implements \JsonSerializable
 		$this->iSievePort = $iSievePort;
 		$this->iSieveSecure = $iSieveSecure;
 
-		$this->bSieveAllowRaw = false;
-
 		$this->sWhiteList = \trim($sWhiteList);
 		$this->sAliasName = '';
 	}
@@ -140,7 +133,6 @@ class Domain implements \JsonSerializable
 				!empty($aDomain['imap_secure']) ? $aDomain['imap_secure'] : '');
 
 			$bUseSieve = !empty($aDomain['sieve_use']);
-			$bSieveAllowRaw = !empty($aDomain['sieve_allow_raw']);
 
 			$sSieveHost = empty($aDomain['sieve_host']) ? '' : (string) $aDomain['sieve_host'];
 			$iSievePort = empty($aDomain['sieve_port']) ? 4190 : (int) $aDomain['sieve_port'];
@@ -164,8 +156,6 @@ class Domain implements \JsonSerializable
 				$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
 				$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 				$sWhiteList);
-
-			$oDomain->SetSieveAllowRaw($bSieveAllowRaw);
 		}
 
 		return $oDomain;
@@ -208,7 +198,6 @@ class Domain implements \JsonSerializable
 			'imap_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iIncSecure).'"',
 			'imap_short_login = '.($this->bIncShortLogin ? 'On' : 'Off'),
 			'sieve_use = '.($this->bUseSieve ? 'On' : 'Off'),
-			'sieve_allow_raw = '.($this->bSieveAllowRaw ? 'On' : 'Off'),
 			'sieve_host = "'.$this->encodeIniString($this->sSieveHost).'"',
 			'sieve_port = '.$this->iSievePort,
 			'sieve_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iSieveSecure).'"',
@@ -326,16 +315,6 @@ class Domain implements \JsonSerializable
 		return $this->iSieveSecure;
 	}
 
-	public function SieveAllowRaw() : bool
-	{
-		return $this->bSieveAllowRaw;
-	}
-
-	public function SetSieveAllowRaw(bool $bSieveAllowRaw)
-	{
-		$this->bSieveAllowRaw = $bSieveAllowRaw;
-	}
-
 	public function OutHost() : string
 	{
 		return $this->sOutHost;
@@ -413,7 +392,6 @@ class Domain implements \JsonSerializable
 			'SieveHost' => $this->SieveHost(),
 			'SievePort' => $this->SievePort(),
 			'SieveSecure' => $this->SieveSecure(),
-			'SieveAllowRaw' => $this->SieveAllowRaw(),
 			'OutHost' => $this->OutHost(),
 			'OutPort' => $this->OutPort(),
 			'OutSecure' => $this->OutSecure(),
@@ -438,7 +416,6 @@ class Domain implements \JsonSerializable
 			'SieveHost' => \MailSo\Base\Utils::IdnToUtf8($this->SieveHost()),
 			'SievePort' => $this->SievePort(),
 			'SieveSecure' => $this->SieveSecure(),
-			'SieveAllowRaw' => $this->SieveAllowRaw(),
 			'OutHost' => \MailSo\Base\Utils::IdnToUtf8($this->OutHost()),
 			'OutPort' => $this->OutPort(),
 			'OutSecure' => $this->OutSecure(),

@@ -103,7 +103,6 @@ class Domain extends AbstractProvider
 			$iIncSecure = (int) $oActions->GetActionParam('IncSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
 			$bIncShortLogin = '1' === (string) $oActions->GetActionParam('IncShortLogin', '0');
 			$bUseSieve = '1' === (string) $oActions->GetActionParam('UseSieve', '0');
-			$bSieveAllowRaw = '1' === (string) $oActions->GetActionParam('SieveAllowRaw', '0');
 			$sSieveHost = (string) $oActions->GetActionParam('SieveHost', '');
 			$iSievePort = (int) $oActions->GetActionParam('SievePort', 4190);
 			$iSieveSecure = (int) $oActions->GetActionParam('SieveSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
@@ -146,11 +145,6 @@ class Domain extends AbstractProvider
 						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 						$sWhiteList);
 				}
-			}
-
-			if ($oDomain)
-			{
-				$oDomain->SetSieveAllowRaw($bSieveAllowRaw);
 			}
 		}
 
@@ -170,7 +164,6 @@ class Domain extends AbstractProvider
 			$iIncSecure = (int) $oActions->GetActionParam('IncSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
 			$bIncShortLogin = '1' === (string) $oActions->GetActionParam('IncShortLogin', '0');
 			$bUseSieve = '1' === (string) $oActions->GetActionParam('UseSieve', '0');
-			$bSieveAllowRaw = '1' === (string) $oActions->GetActionParam('SieveAllowRaw', '0');
 			$sSieveHost = (string) $oActions->GetActionParam('SieveHost', '');
 			$iSievePort = (int) $oActions->GetActionParam('SievePort', 4190);
 			$iSieveSecure = (int) $oActions->GetActionParam('SieveSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
@@ -213,11 +206,6 @@ class Domain extends AbstractProvider
 						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
 						$sWhiteList);
 				}
-			}
-
-			if ($oDomain)
-			{
-				$oDomain->SetSieveAllowRaw($bSieveAllowRaw);
 			}
 		}
 

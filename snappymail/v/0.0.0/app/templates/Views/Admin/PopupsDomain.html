@@ -42,10 +42,10 @@
 								<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 									data-bind="textInput: imapServer, hasfocus: imapServerFocus" />
 							</div>
-							<div class="span1">
+							<div class="span2">
 								<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 								<br />
-								<input type="text" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								<input type="number" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 									data-bind="textInput: imapPort" />
 							</div>
 						</div>
@@ -84,8 +84,6 @@
 									<i class="icon-filter"></i>
 									&nbsp;
 									<a href="#" class="g-ui-link" data-i18n="POPUPS_DOMAIN/BUTTON_SIEVE_CONFIGURATION"></a>
-									&nbsp;&nbsp;
-									<span style="color:red">(<span data-i18n="HINTS/BETA"></span>)</span>
 								</span>
 							</div>
 						</div>
@@ -104,18 +102,6 @@
 						</div>
 						<div data-bind="visible: useSieve">
 							<div class="row">
-								<div class="span5">
-									<div data-bind="component: {
-										name: 'Checkbox',
-										params: {
-											label: 'POPUPS_DOMAIN/LABEL_ALLOW_USER_SCRIPT',
-											value: sieveAllowRaw
-										}
-									}"></div>
-								</div>
-							</div>
-							<br />
-							<div class="row">
 								<div class="span3">
 									<span data-i18n="POPUPS_DOMAIN/LABEL_SERVER"></span>
 									<br />
@@ -125,7 +111,7 @@
 								<div class="span1">
 									<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 									<br />
-									<input type="text" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+									<input type="number" class="span2" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 										data-bind="textInput: sievePort" />
 								</div>
 							</div>
@@ -168,10 +154,10 @@
 								<input type="text" class="span3" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 									data-bind="textInput: smtpServer, hasfocus: smtpServerFocus" />
 							</div>
-							<div class="span1">
+							<div class="span2">
 								<span data-i18n="POPUPS_DOMAIN/LABEL_PORT"></span>
 								<br />
-								<input type="text" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+								<input type="number" class="span1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 									data-bind="textInput: smtpPort" />
 							</div>
 						</div>

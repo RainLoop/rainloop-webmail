@@ -29,11 +29,11 @@ class Filters extends \RainLoop\Providers\AbstractProvider
 		throw new \RainLoop\Exceptions\ClientException($defNotification, $oException);
 	}
 
-	public function Load(\RainLoop\Model\Account $oAccount, bool $bAllowRaw = false) : array
+	public function Load(\RainLoop\Model\Account $oAccount) : array
 	{
 		try
 		{
-			return $this->IsActive() ? $this->oDriver->Load($oAccount, $bAllowRaw) : array();
+			return $this->IsActive() ? $this->oDriver->Load($oAccount) : array();
 		}
 		catch (\Throwable $oException)
 		{

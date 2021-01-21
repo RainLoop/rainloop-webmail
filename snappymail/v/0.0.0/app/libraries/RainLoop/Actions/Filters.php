@@ -34,8 +34,7 @@ trait Filters
 			return $this->DefaultResponse(__FUNCTION__, $aFakeFilters);
 		}
 
-		return $this->DefaultResponse(__FUNCTION__,
-			$this->FiltersProvider()->Load($oAccount, $oAccount->DomainSieveAllowRaw()));
+		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Load($oAccount));
 	}
 
 	/**

@@ -128,7 +128,6 @@ es_ES:
     SECURE_OPTION_SSL: "SSL/TLS"
     SECURE_OPTION_STARTTLS: "STARTTLS"
     LABEL_ALLOW_SIEVE_SCRIPTS: "Permitir scripts de filtro"
-    LABEL_ALLOW_USER_SCRIPT: "Permitir scripts propios"
     LABEL_USE_SHORT_LOGIN: "Inicio de Sesión corto"
     LABEL_USE_AUTH: "Usar autenticación"
     LABEL_USE_PHP_MAIL: "Utilizar la función mail() de PHP"

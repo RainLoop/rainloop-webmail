@@ -127,7 +127,6 @@ de_DE:
     SECURE_OPTION_SSL: "SSL/TLS"
     SECURE_OPTION_STARTTLS: "STARTTLS"
     LABEL_ALLOW_SIEVE_SCRIPTS: "Sieve-Skripte erlauben"
-    LABEL_ALLOW_USER_SCRIPT: "Benutzerdefiniertes Skript erlauben"
     LABEL_USE_SHORT_LOGIN: "Kurze Benutzernamen verwenden"
     LABEL_USE_AUTH: "Authentifizierung verwenden"
     LABEL_USE_PHP_MAIL: "PHPs mail()-Funktion verwenden"

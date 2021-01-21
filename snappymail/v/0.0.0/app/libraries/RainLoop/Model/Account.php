@@ -226,11 +226,6 @@ class Account
 		return $this->Domain()->SieveSecure();
 	}
 
-	public function DomainSieveAllowRaw() : bool
-	{
-		return $this->Domain()->SieveAllowRaw();
-	}
-
 	public function GetAuthToken() : string
 	{
 		return \RainLoop\Utils::EncodeKeyValues(array(

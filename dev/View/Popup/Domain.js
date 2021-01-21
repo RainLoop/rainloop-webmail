@@ -44,7 +44,6 @@ class DomainPopupView extends AbstractViewNext {
 			imapSecure: ServerSecure.None,
 			imapShortLogin: false,
 			useSieve: false,
-			sieveAllowRaw: false,
 			sieveServer: '',
 			sievePort: '4190',
 			sieveSecure: ServerSecure.None,
@@ -174,28 +173,7 @@ class DomainPopupView extends AbstractViewNext {
 		this.saving(true);
 		Remote.createOrUpdateDomain(
 			this.onDomainCreateOrSaveResponse.bind(this),
-			!this.edit(),
-			this.name(),
-
-			this.imapServer(),
-			pInt(this.imapPort()),
-			this.imapSecure(),
-			this.imapShortLogin(),
-
-			this.useSieve(),
-			this.sieveAllowRaw(),
-			this.sieveServer(),
-			pInt(this.sievePort()),
-			this.sieveSecure(),
-
-			this.smtpServer(),
-			pInt(this.smtpPort()),
-			this.smtpSecure(),
-			this.smtpShortLogin(),
-			this.smtpAuth(),
-			this.smtpPhpMail(),
-
-			this.whiteList()
+			this
 		);
 	}
 
@@ -211,22 +189,7 @@ class DomainPopupView extends AbstractViewNext {
 
 		Remote.testConnectionForDomain(
 			this.onTestConnectionResponse.bind(this),
-			this.name(),
-
-			this.imapServer(),
-			pInt(this.imapPort()),
-			this.imapSecure(),
-
-			this.useSieve(),
-			this.sieveServer(),
-			pInt(this.sievePort()),
-			this.sieveSecure(),
-
-			this.smtpServer(),
-			pInt(this.smtpPort()),
-			this.smtpSecure(),
-			this.smtpAuth(),
-			this.smtpPhpMail()
+			this
 		);
 	}
 
@@ -336,7 +299,6 @@ class DomainPopupView extends AbstractViewNext {
 			this.imapSecure(oDomain.IncSecure);
 			this.imapShortLogin(!!oDomain.IncShortLogin);
 			this.useSieve(!!oDomain.UseSieve);
-			this.sieveAllowRaw(!!oDomain.SieveAllowRaw);
 			this.sieveServer(oDomain.SieveHost);
 			this.sievePort('' + pInt(oDomain.SievePort));
 			this.sieveSecure(oDomain.SieveSecure);
@@ -371,7 +333,6 @@ class DomainPopupView extends AbstractViewNext {
 		this.imapShortLogin(false);
 
 		this.useSieve(false);
-		this.sieveAllowRaw(false);
 		this.sieveServer('');
 		this.sievePort('4190');
 		this.sieveSecure(ServerSecure.None);
