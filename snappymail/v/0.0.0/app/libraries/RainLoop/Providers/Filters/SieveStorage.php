@@ -83,7 +83,7 @@ class SieveStorage implements FiltersInterface
 
 	public function Save(\RainLoop\Model\Account $oAccount, string $sScriptName, array $aFilters, string $sRaw = '') : bool
 	{
-		if (self::SIEVE_FILE_NAME === $sScriptName) {
+		if ($aFilters && !$sRaw) {
 			Sieve::$bUtf8FolderName = !!$this->oConfig->Get('labs', 'sieve_utf8_folder_name', true);
 			$sRaw = Sieve::collectionToFileString($aFilters);
 		}

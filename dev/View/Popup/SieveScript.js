@@ -50,7 +50,10 @@ class SieveScriptPopupView extends AbstractViewNext {
 
 			self.saving = true;
 			self.saveError(false);
-//			script.body(script.filtersToRaw());
+
+			if (self.allowToggle()) {
+				script.body(script.filtersToRaw());
+			}
 
 			Remote.filtersScriptSave(
 				(result, data) => {
