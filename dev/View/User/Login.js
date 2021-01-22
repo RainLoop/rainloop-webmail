@@ -266,4 +266,4 @@ class LoginUserView extends AbstractViewNext {
 	}
 }
 
-export { LoginUserView, LoginUserView as default };
+export { LoginUserView };

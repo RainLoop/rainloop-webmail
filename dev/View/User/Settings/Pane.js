@@ -48,4 +48,4 @@ class PaneSettingsUserView extends AbstractViewNext {
 	}
 }
 
-export { PaneSettingsUserView, PaneSettingsUserView as default };
+export { PaneSettingsUserView };

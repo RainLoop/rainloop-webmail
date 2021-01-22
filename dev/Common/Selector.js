@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-class Selector {
+export class Selector {
 	list;
 	listChecked;
 	isListChecked;
@@ -516,5 +516,3 @@ class Selector {
 		this.scrollToFocused();
 	}
 }
-
-export { Selector, Selector as default };

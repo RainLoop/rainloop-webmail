@@ -11,7 +11,7 @@ import AccountStore from 'Stores/User/Account';
 import { FilterConditionModel } from 'Model/FilterCondition';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class FilterModel extends AbstractModel {
+export class FilterModel extends AbstractModel {
 	constructor() {
 		super();
 
@@ -264,5 +264,3 @@ class FilterModel extends AbstractModel {
 		return filter;
 	}
 }
-
-export { FilterModel, FilterModel as default };

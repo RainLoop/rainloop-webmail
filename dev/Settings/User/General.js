@@ -19,7 +19,7 @@ import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
-class GeneralUserSettings {
+export class GeneralUserSettings {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
@@ -163,5 +163,3 @@ class GeneralUserSettings {
 		showScreenPopup(require('View/Popup/Languages'), [this.language, this.languages(), LanguageStore.userLanguage()]);
 	}
 }
-
-export { GeneralUserSettings, GeneralUserSettings as default };

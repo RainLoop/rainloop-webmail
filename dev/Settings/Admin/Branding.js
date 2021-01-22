@@ -4,7 +4,7 @@ import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 
-class BrandingAdminSettings {
+export class BrandingAdminSettings {
 	constructor() {
 		const settingsGet = rl.settings.get;
 		this.title = ko.observable(settingsGet('Title')).idleTrigger();
@@ -38,5 +38,3 @@ class BrandingAdminSettings {
 		}, 50);
 	}
 }
-
-export { BrandingAdminSettings, BrandingAdminSettings as default };

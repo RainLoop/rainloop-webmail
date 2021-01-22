@@ -58,4 +58,4 @@ class AbstractInput extends AbstractComponent {
 	}
 }
 
-export { AbstractInput, AbstractInput as default };
+export { AbstractInput };

@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class IdentityModel extends AbstractModel {
+export class IdentityModel extends AbstractModel {
 	/**
 	 * @param {string} id
 	 * @param {string} email
@@ -37,5 +37,3 @@ class IdentityModel extends AbstractModel {
 		return name ? name + ' (' + email + ')' : email;
 	}
 }
-
-export { IdentityModel, IdentityModel as default };

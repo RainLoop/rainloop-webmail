@@ -223,4 +223,4 @@ class FolderListMailBoxUserView extends AbstractViewNext {
 	}
 }
 
-export { FolderListMailBoxUserView, FolderListMailBoxUserView as default };
+export { FolderListMailBoxUserView };

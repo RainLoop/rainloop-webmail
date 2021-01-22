@@ -7,7 +7,7 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-class TemplatesUserSettings {
+export class TemplatesUserSettings {
 	constructor() {
 		this.templates = TemplateStore.templates;
 
@@ -56,5 +56,3 @@ class TemplatesUserSettings {
 		this.reloadTemplates();
 	}
 }
-
-export { TemplatesUserSettings, TemplatesUserSettings as default };

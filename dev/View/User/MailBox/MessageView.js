@@ -775,4 +775,4 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	}
 }
 
-export { MessageViewMailBoxUserView, MessageViewMailBoxUserView as default };
+export { MessageViewMailBoxUserView };

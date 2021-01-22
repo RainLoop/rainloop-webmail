@@ -15,7 +15,7 @@ import ThemeStore from 'Stores/Theme';
 
 const Settings = rl.settings, doc = document;
 
-class AbstractApp {
+export class AbstractApp {
 	/**
 	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 */
@@ -130,5 +130,3 @@ class AbstractApp {
 	}
 
 }
-
-export { AbstractApp, AbstractApp as default };

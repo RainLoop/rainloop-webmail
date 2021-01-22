@@ -37,4 +37,4 @@ class AbstractCheckbox extends AbstractComponent {
 	}
 }
 
-export { AbstractCheckbox, AbstractCheckbox as default };
+export { AbstractCheckbox };

@@ -40,4 +40,4 @@ class PaneSettingsAdminView extends AbstractViewNext {
 	}
 }
 
-export { PaneSettingsAdminView, PaneSettingsAdminView as default };
+export { PaneSettingsAdminView };

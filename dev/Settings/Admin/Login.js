@@ -4,7 +4,7 @@ import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 
-class LoginAdminSettings {
+export class LoginAdminSettings {
 	constructor() {
 		const settingsGet = rl.settings.get;
 		ko.addObservablesTo(this, {
@@ -53,5 +53,3 @@ class LoginAdminSettings {
 		}, 50);
 	}
 }
-
-export { LoginAdminSettings, LoginAdminSettings as default };

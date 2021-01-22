@@ -4,7 +4,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import PgpStore from 'Stores/User/Pgp';
 
-class OpenPgpKeyModel extends AbstractModel {
+export class OpenPgpKeyModel extends AbstractModel {
 	/**
 	 * @param {string} index
 	 * @param {string} guID
@@ -72,5 +72,3 @@ class OpenPgpKeyModel extends AbstractModel {
 		this.select(email, 'emails');
 	}
 }
-
-export { OpenPgpKeyModel, OpenPgpKeyModel as default };

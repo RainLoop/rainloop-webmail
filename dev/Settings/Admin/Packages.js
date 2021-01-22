@@ -6,7 +6,7 @@ import { getNotification } from 'Common/Translator';
 import PackageStore from 'Stores/Admin/Package';
 import Remote from 'Remote/Admin/Fetch';
 
-class PackagesAdminSettings {
+export class PackagesAdminSettings {
 	constructor() {
 		this.packagesError = ko.observable('');
 
@@ -76,5 +76,3 @@ class PackagesAdminSettings {
 		}
 	}
 }
-
-export { PackagesAdminSettings, PackagesAdminSettings as default };

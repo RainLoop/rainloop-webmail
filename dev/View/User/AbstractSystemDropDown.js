@@ -10,7 +10,7 @@ import { AbstractViewNext } from 'Knoin/AbstractViewNext';
 
 const Settings = rl.settings;
 
-class AbstractSystemDropDownUserView extends AbstractViewNext {
+export class AbstractSystemDropDownUserView extends AbstractViewNext {
 	constructor() {
 		super();
 
@@ -96,5 +96,3 @@ class AbstractSystemDropDownUserView extends AbstractViewNext {
 		});
 	}
 }
-
-export { AbstractSystemDropDownUserView, AbstractSystemDropDownUserView as default };

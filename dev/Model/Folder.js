@@ -7,7 +7,7 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 import { AbstractModel } from 'Knoin/AbstractModel';
 import { FolderCollectionModel } from 'Model/FolderCollection';
 
-class FolderModel extends AbstractModel {
+export class FolderModel extends AbstractModel {
 	constructor() {
 		super();
 
@@ -255,5 +255,3 @@ class FolderModel extends AbstractModel {
 		return this.fullName.split(this.delimiter).join(' / ');
 	}
 }
-
-export { FolderModel, FolderModel as default };

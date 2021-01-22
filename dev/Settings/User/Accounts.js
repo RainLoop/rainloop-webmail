@@ -8,7 +8,7 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-class AccountsUserSettings {
+export class AccountsUserSettings {
 	constructor() {
 		this.allowAdditionalAccount = rl.settings.capa(Capa.AdditionalAccounts);
 		this.allowIdentities = rl.settings.capa(Capa.Identities);
@@ -89,5 +89,3 @@ class AccountsUserSettings {
 		});
 	}
 }
-
-export { AccountsUserSettings, AccountsUserSettings as default };

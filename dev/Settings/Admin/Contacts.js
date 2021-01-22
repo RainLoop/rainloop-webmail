@@ -8,7 +8,7 @@ import { command } from 'Knoin/Knoin';
 
 const settingsGet = rl.settings.get;
 
-class ContactsAdminSettings {
+export class ContactsAdminSettings {
 	constructor() {
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 
@@ -163,5 +163,3 @@ class ContactsAdminSettings {
 		}, 50);
 	}
 }
-
-export { ContactsAdminSettings, ContactsAdminSettings as default };

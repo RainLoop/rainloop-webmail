@@ -21,7 +21,7 @@ import { AbstractScreen } from 'Knoin/AbstractScreen';
 
 const Settings = rl.settings;
 
-class MailBoxUserScreen extends AbstractScreen {
+export class MailBoxUserScreen extends AbstractScreen {
 	constructor() {
 		super('mailbox', [
 			SystemDropDownMailBoxUserView,
@@ -168,5 +168,3 @@ class MailBoxUserScreen extends AbstractScreen {
 		];
 	}
 }
-
-export { MailBoxUserScreen, MailBoxUserScreen as default };

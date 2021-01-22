@@ -9,7 +9,7 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-class OpenPgpUserSettings {
+export class OpenPgpUserSettings {
 	constructor() {
 		this.openpgpkeys = PgpStore.openpgpkeys;
 		this.openpgpkeysPublic = PgpStore.openpgpkeysPublic;
@@ -64,5 +64,3 @@ class OpenPgpUserSettings {
 		}, 50);
 	}
 }
-
-export { OpenPgpUserSettings, OpenPgpUserSettings as default };

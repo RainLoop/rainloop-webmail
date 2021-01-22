@@ -10,7 +10,7 @@ import SettinsStore from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
-class SecurityUserSettings {
+export class SecurityUserSettings {
 	constructor() {
 		this.capaAutoLogout = rl.settings.capa(Capa.AutoLogout);
 		this.capaTwoFactor = rl.settings.capa(Capa.TwoFactor);
@@ -47,5 +47,3 @@ class SecurityUserSettings {
 		}
 	}
 }
-
-export { SecurityUserSettings, SecurityUserSettings as default };

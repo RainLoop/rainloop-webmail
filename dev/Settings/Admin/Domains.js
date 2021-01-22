@@ -6,7 +6,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import DomainStore from 'Stores/Admin/Domain';
 import Remote from 'Remote/Admin/Fetch';
 
-class DomainsAdminSettings {
+export class DomainsAdminSettings {
 	constructor() {
 		this.domains = DomainStore.domains;
 
@@ -55,5 +55,3 @@ class DomainsAdminSettings {
 		rl.app.reloadDomainList();
 	}
 }
-
-export { DomainsAdminSettings, DomainsAdminSettings as default };

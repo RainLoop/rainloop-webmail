@@ -4,7 +4,7 @@ import { FilterConditionField, FilterConditionType } from 'Common/Enums';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class FilterConditionModel extends AbstractModel {
+export class FilterConditionModel extends AbstractModel {
 	constructor() {
 		super();
 
@@ -83,5 +83,3 @@ class FilterConditionModel extends AbstractModel {
 		return filterCond;
 	}
 }
-
-export { FilterConditionModel, FilterConditionModel as default };

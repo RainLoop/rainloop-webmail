@@ -188,25 +188,26 @@ function buildViewModel(ViewModelClass, vmScreen) {
 	return ViewModelClass ? ViewModelClass.__vm : null;
 }
 
+function getScreenPopupViewModel(ViewModelClassToShow) {
+	const ModalView = getScreenPopup(ViewModelClassToShow);
+	return (buildViewModel(ModalView) && ModalView.__dom) ? ModalView.__vm : null;
+}
+
 /**
  * @param {Function} ViewModelClassToShow
  * @param {Array=} params
  * @returns {void}
  */
 export function showScreenPopup(ViewModelClassToShow, params = []) {
-	const ModalView = getScreenPopup(ViewModelClassToShow);
-	if (ModalView) {
-		buildViewModel(ModalView);
+	const vm = getScreenPopupViewModel(ViewModelClassToShow);
+	if (vm) {
+		params = params || [];
 
-		if (ModalView.__vm && ModalView.__dom) {
-			params = params || [];
+		vm.onBeforeShow && vm.onBeforeShow(...params);
 
-			ModalView.__vm.onBeforeShow && ModalView.__vm.onBeforeShow(...params);
+		vm.modalVisibility(true);
 
-			ModalView.__vm.modalVisibility(true);
-
-			ModalView.__vm.onShow && ModalView.__vm.onShow(...params);
-		}
+		vm.onShow && vm.onShow(...params);
 	}
 }
 
@@ -215,14 +216,8 @@ export function showScreenPopup(ViewModelClassToShow, params = []) {
  * @returns {void}
  */
 export function warmUpScreenPopup(ViewModelClassToShow) {
-	const ModalView = getScreenPopup(ViewModelClassToShow);
-	if (ModalView) {
-		buildViewModel(ModalView);
-
-		if (ModalView.__vm && ModalView.__dom) {
-			ModalView.__vm.onWarmUp && ModalView.__vm.onWarmUp();
-		}
-	}
+	const vm = getScreenPopupViewModel(ViewModelClassToShow);
+	vm && vm.onWarmUp && vm.onWarmUp();
 }
 
 /**

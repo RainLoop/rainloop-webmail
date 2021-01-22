@@ -25,7 +25,7 @@ const isArray = Array.isArray,
 		});
 	};
 
-class MessageModel extends AbstractModel {
+export class MessageModel extends AbstractModel {
 	constructor() {
 		super();
 
@@ -570,5 +570,3 @@ class MessageModel extends AbstractModel {
 		].join(',');
 	}
 }
-
-export { MessageModel, MessageModel as default };

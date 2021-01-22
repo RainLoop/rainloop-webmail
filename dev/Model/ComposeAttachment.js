@@ -3,7 +3,7 @@ import { File } from 'Common/File';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class ComposeAttachmentModel extends AbstractModel {
+export class ComposeAttachmentModel extends AbstractModel {
 	/**
 	 * @param {string} id
 	 * @param {string} fileName
@@ -106,5 +106,3 @@ class ComposeAttachmentModel extends AbstractModel {
 		return File.getIconClass(this.fileExt(), this.mimeType())[1];
 	}
 }
-
-export { ComposeAttachmentModel, ComposeAttachmentModel as default };

@@ -9,7 +9,7 @@ import PluginStore from 'Stores/Admin/Plugin';
 
 import Remote from 'Remote/Admin/Fetch';
 
-class PluginsAdminSettings {
+export class PluginsAdminSettings {
 	constructor() {
 		this.enabledPlugins = ko.observable(!!rl.settings.get('EnabledPlugins'));
 
@@ -72,5 +72,3 @@ class PluginsAdminSettings {
 		rl.app.reloadPluginList();
 	}
 }
-
-export { PluginsAdminSettings, PluginsAdminSettings as default };

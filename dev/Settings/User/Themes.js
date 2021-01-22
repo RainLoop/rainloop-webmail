@@ -9,7 +9,7 @@ import ThemeStore from 'Stores/Theme';
 
 import Remote from 'Remote/User/Fetch';
 
-class ThemesUserSettings {
+export class ThemesUserSettings {
 	constructor() {
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
@@ -130,5 +130,3 @@ class ThemesUserSettings {
 		}
 	}
 }
-
-export { ThemesUserSettings, ThemesUserSettings as default };

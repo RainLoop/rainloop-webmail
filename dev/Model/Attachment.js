@@ -15,7 +15,7 @@ import Audio from 'Common/Audio';
 
 const bAllowPdfPreview = undefined !== navigator.mimeTypes['application/pdf'];
 
-class AttachmentModel extends AbstractModel {
+export class AttachmentModel extends AbstractModel {
 	constructor() {
 		super();
 
@@ -231,5 +231,3 @@ class AttachmentModel extends AbstractModel {
 		return File.getTypeIconClass(this.fileType)[1];
 	}
 }
-
-export { AttachmentModel, AttachmentModel as default };

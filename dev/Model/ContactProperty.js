@@ -6,7 +6,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 const trim = text => null == text ? "" : (text + "").trim();
 
-class ContactPropertyModel extends AbstractModel {
+export class ContactPropertyModel extends AbstractModel {
 	/**
 	 * @param {number=} type = Enums.ContactPropertyType.Unknown
 	 * @param {string=} typeStr = ''
@@ -54,5 +54,3 @@ class ContactPropertyModel extends AbstractModel {
 
 //	static reviveFromJson(json) {}
 }
-
-export { ContactPropertyModel, ContactPropertyModel as default };

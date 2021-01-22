@@ -22,7 +22,7 @@ import CapaAdminStore from 'Stores/Admin/Capa';
 
 const settingsGet = rl.settings.get;
 
-class GeneralAdminSettings {
+export class GeneralAdminSettings {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
@@ -178,5 +178,3 @@ class GeneralAdminSettings {
 		]);
 	}
 }
-
-export { GeneralAdminSettings, GeneralAdminSettings as default };

@@ -26,7 +26,7 @@ import { PaneSettingsUserView } from 'View/User/Settings/Pane';
 
 const Settings = rl.settings;
 
-class SettingsUserScreen extends AbstractSettingsScreen {
+export class SettingsUserScreen extends AbstractSettingsScreen {
 	constructor() {
 		super([SystemDropDownSettingsUserView, MenuSettingsUserView, PaneSettingsUserView]);
 
@@ -118,5 +118,3 @@ class SettingsUserScreen extends AbstractSettingsScreen {
 		rl.setWindowTitle((sEmail ? sEmail + ' - ' :  '') + this.sSettingsTitle);
 	}
 }
-
-export { SettingsUserScreen, SettingsUserScreen as default };

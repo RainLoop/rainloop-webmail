@@ -11,7 +11,7 @@ import { command } from 'Knoin/Knoin';
 
 const settingsGet = rl.settings.get;
 
-class SecurityAdminSettings {
+export class SecurityAdminSettings {
 	constructor() {
 		this.weakPassword = AppAdminStore.weakPassword;
 
@@ -172,5 +172,3 @@ class SecurityAdminSettings {
 		this.twoFactorDropperUserFocused(false);
 	}
 }
-
-export { SecurityAdminSettings, SecurityAdminSettings as default };

@@ -6,7 +6,7 @@ import { settings } from 'Common/Links';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
-class AbstractSettingsScreen extends AbstractScreen {
+export class AbstractSettingsScreen extends AbstractScreen {
 	/**
 	 * @param {Array} viewModels
 	 */
@@ -181,5 +181,3 @@ class AbstractSettingsScreen extends AbstractScreen {
 		];
 	}
 }
-
-export { AbstractSettingsScreen, AbstractSettingsScreen as default };

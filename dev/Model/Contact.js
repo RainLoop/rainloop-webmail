@@ -3,7 +3,7 @@ import { ContactPropertyType } from 'Common/Enums';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class ContactModel extends AbstractModel {
+export class ContactModel extends AbstractModel {
 	constructor() {
 		super();
 
@@ -122,5 +122,3 @@ class ContactModel extends AbstractModel {
 		return result.join(' ');
 	}
 }
-
-export { ContactModel, ContactModel as default };

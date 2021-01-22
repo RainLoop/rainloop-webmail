@@ -11,11 +11,12 @@ import { SecurityAdminSettings } from 'Settings/Admin/Security';
 import { PluginsAdminSettings } from 'Settings/Admin/Plugins';
 import { PackagesAdminSettings } from 'Settings/Admin/Packages';
 import { AboutAdminSettings } from 'Settings/Admin/About';
+import { BrandingAdminSettings } from 'Settings/Admin/Branding';
 
 import { MenuSettingsAdminView } from 'View/Admin/Settings/Menu';
 import { PaneSettingsAdminView } from 'View/Admin/Settings/Pane';
 
-class SettingsAdminScreen extends AbstractSettingsScreen {
+export class SettingsAdminScreen extends AbstractSettingsScreen {
 	constructor() {
 		super([MenuSettingsAdminView, PaneSettingsAdminView]);
 	}
@@ -24,8 +25,6 @@ class SettingsAdminScreen extends AbstractSettingsScreen {
 	 * @param {Function=} fCallback = null
 	 */
 	setupSettings(fCallback = null) {
-		let branding = require('Settings/Admin/Branding').default;
-
 		addSettingsViewModel(
 			GeneralAdminSettings,
 			'AdminSettingsGeneral',
@@ -34,21 +33,23 @@ class SettingsAdminScreen extends AbstractSettingsScreen {
 			true
 		);
 
-		addSettingsViewModel(DomainsAdminSettings, 'AdminSettingsDomains', 'TABS_LABELS/LABEL_DOMAINS_NAME', 'domains');
-
-		addSettingsViewModel(LoginAdminSettings, 'AdminSettingsLogin', 'TABS_LABELS/LABEL_LOGIN_NAME', 'login');
-
-		addSettingsViewModel(branding, 'AdminSettingsBranding', 'TABS_LABELS/LABEL_BRANDING_NAME', 'branding');
-
-		addSettingsViewModel(ContactsAdminSettings, 'AdminSettingsContacts', 'TABS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
-
-		addSettingsViewModel(SecurityAdminSettings, 'AdminSettingsSecurity', 'TABS_LABELS/LABEL_SECURITY_NAME', 'security');
-
-		addSettingsViewModel(PluginsAdminSettings, 'AdminSettingsPlugins', 'TABS_LABELS/LABEL_PLUGINS_NAME', 'plugins');
-
-		addSettingsViewModel(PackagesAdminSettings, 'AdminSettingsPackages', 'TABS_LABELS/LABEL_PACKAGES_NAME', 'packages');
-
-		addSettingsViewModel(AboutAdminSettings, 'AdminSettingsAbout', 'TABS_LABELS/LABEL_ABOUT_NAME', 'about');
+		[
+			[DomainsAdminSettings, 'Domains'],
+			[LoginAdminSettings, 'Login'],
+			[BrandingAdminSettings, 'Branding'],
+			[ContactsAdminSettings, 'Contacts'],
+			[SecurityAdminSettings, 'Security'],
+			[PluginsAdminSettings, 'Plugins'],
+			[PackagesAdminSettings, 'Packages'],
+			[AboutAdminSettings, 'About'],
+		].forEach(item =>
+			addSettingsViewModel(
+				item[0],
+				'AdminSettings'+item[1],
+				'TABS_LABELS/LABEL_'+item[1].toUpperCase()+'_NAME',
+				item[1].toLowerCase()
+			)
+		);
 
 		runSettingsViewModelHooks(true);
 
@@ -61,5 +62,3 @@ class SettingsAdminScreen extends AbstractSettingsScreen {
 		rl.setWindowTitle();
 	}
 }
-
-export { SettingsAdminScreen, SettingsAdminScreen as default };

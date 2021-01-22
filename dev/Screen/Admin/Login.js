@@ -2,7 +2,7 @@ import { AbstractScreen } from 'Knoin/AbstractScreen';
 
 import { LoginAdminView } from 'View/Admin/Login';
 
-class LoginAdminScreen extends AbstractScreen {
+export class LoginAdminScreen extends AbstractScreen {
 	constructor() {
 		super('login', [LoginAdminView]);
 	}
@@ -11,5 +11,3 @@ class LoginAdminScreen extends AbstractScreen {
 		rl.setWindowTitle();
 	}
 }
-
-export { LoginAdminScreen, LoginAdminScreen as default };

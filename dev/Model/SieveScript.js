@@ -256,7 +256,7 @@ function sieveScriptToFilters(script)
 	return filters;
 }
 
-class SieveScriptModel extends AbstractModel
+export class SieveScriptModel extends AbstractModel
 {
 	constructor() {
 		super();
@@ -341,5 +341,3 @@ class SieveScriptModel extends AbstractModel
 	}
 
 }
-
-export { SieveScriptModel, SieveScriptModel as default };

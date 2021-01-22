@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class TemplateModel extends AbstractModel {
+export class TemplateModel extends AbstractModel {
 	/**
 	 * @param {string} id
 	 * @param {string} name
@@ -21,5 +21,3 @@ class TemplateModel extends AbstractModel {
 
 //	static reviveFromJson(json) {}
 }
-
-export { TemplateModel, TemplateModel as default };

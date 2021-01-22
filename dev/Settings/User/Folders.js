@@ -13,7 +13,7 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-class FoldersUserSettings {
+export class FoldersUserSettings {
 	constructor() {
 		this.displaySpecSetting = FolderStore.displaySpecSetting;
 		this.folderList = FolderStore.folderList;
@@ -141,5 +141,3 @@ class FoldersUserSettings {
 		folder.checkable(false);
 	}
 }
-
-export { FoldersUserSettings, FoldersUserSettings as default };

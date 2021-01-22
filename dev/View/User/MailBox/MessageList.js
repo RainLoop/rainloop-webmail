@@ -938,4 +938,4 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 	}
 }
 
-export { MessageListMailBoxUserView, MessageListMailBoxUserView as default };
+export { MessageListMailBoxUserView };

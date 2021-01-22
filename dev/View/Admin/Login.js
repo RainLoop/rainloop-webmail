@@ -96,4 +96,4 @@ class LoginAdminView extends AbstractViewNext {
 	}
 }
 
-export { LoginAdminView, LoginAdminView as default };
+export { LoginAdminView };

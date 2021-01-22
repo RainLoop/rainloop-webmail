@@ -45,4 +45,4 @@ class MenuSettingsUserView extends AbstractViewNext {
 	}
 }
 
-export { MenuSettingsUserView, MenuSettingsUserView as default };
+export { MenuSettingsUserView };

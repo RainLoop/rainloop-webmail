@@ -31,4 +31,4 @@ class MenuSettingsAdminView extends AbstractViewNext {
 	}
 }
 
-export { MenuSettingsAdminView, MenuSettingsAdminView as default };
+export { MenuSettingsAdminView };

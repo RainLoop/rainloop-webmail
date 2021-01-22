@@ -2,7 +2,7 @@ import { change } from 'Common/Links';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-class AccountModel extends AbstractModel {
+export class AccountModel extends AbstractModel {
 	/**
 	 * @param {string} email
 	 * @param {boolean=} canBeDelete = true
@@ -28,5 +28,3 @@ class AccountModel extends AbstractModel {
 		return change(this.email);
 	}
 }
-
-export { AccountModel, AccountModel as default };

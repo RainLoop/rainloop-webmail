@@ -4,7 +4,7 @@ import AppStore from 'Stores/User/App';
 import ContactStore from 'Stores/User/Contact';
 import Remote from 'Remote/User/Fetch';
 
-class ContactsUserSettings {
+export class ContactsUserSettings {
 	constructor() {
 		this.contactsAutosave = AppStore.contactsAutosave;
 
@@ -44,5 +44,3 @@ class ContactsUserSettings {
 		});
 	}
 }
-
-export { ContactsUserSettings, ContactsUserSettings as default };

@@ -11,7 +11,7 @@ import { SieveScriptModel } from 'Model/SieveScript';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-class FiltersUserSettings {
+export class FiltersUserSettings {
 	constructor() {
 		this.scripts = SieveStore.scripts;
 		this.loading = ko.observable(false).extend({ throttle: 200 });
@@ -115,5 +115,3 @@ class FiltersUserSettings {
 		this.updateList();
 	}
 }
-
-export { FiltersUserSettings, FiltersUserSettings as default };
