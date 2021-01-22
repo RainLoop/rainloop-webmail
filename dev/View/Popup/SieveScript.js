@@ -6,7 +6,7 @@ import { getNotification } from 'Common/Translator';
 import { i18nToNodes } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
-import FilterModel from 'Model/Filter';
+import { FilterModel } from 'Model/Filter';
 import SieveStore from 'Stores/User/Sieve';
 
 import { popup, showScreenPopup/*, command*/ } from 'Knoin/Knoin';
