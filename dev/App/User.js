@@ -122,7 +122,7 @@ class AppUser extends AbstractApp {
 	}
 
 	reloadFlagsCurrentMessageListAndMessageFromCache() {
-		MessageStore.messageList().forEach(message =>
+		MessageStore.messageList.forEach(message =>
 			MessageFlagsCache.initMessage(message)
 		);
 		MessageFlagsCache.initMessage(MessageStore.message());
@@ -271,7 +271,7 @@ class AppUser extends AbstractApp {
 				}
 			}
 
-			this.reloadMessageList(!MessageStore.messageList().length);
+			this.reloadMessageList(!MessageStore.messageList.length);
 			this.quotaDebounce();
 		}
 	}
@@ -479,9 +479,9 @@ class AppUser extends AbstractApp {
 				let parentEmail = Settings.get('ParentEmail') || sAccountEmail;
 
 				if (Array.isArray(oData.Result.Accounts)) {
-					AccountStore.accounts().forEach(oAccount => {
-						counts[oAccount.email] = oAccount.count();
-					});
+					AccountStore.accounts.forEach(oAccount =>
+						counts[oAccount.email] = oAccount.count()
+					);
 
 					delegateRunOnDestroy(AccountStore.accounts());
 
@@ -673,13 +673,10 @@ class AppUser extends AbstractApp {
 									if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw()) {
 										this.reloadMessageList();
 									}
-								} else if (unreadCountChange) {
-									if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw()) {
-										const list = MessageStore.messageList();
-										if (Array.isNotEmpty(list)) {
-											this.folderInformation(folder.fullNameRaw, list);
-										}
-									}
+								} else if (unreadCountChange
+								 && folder.fullNameRaw === FolderStore.currentFolderFullNameRaw()
+								 && MessageStore.messageList.length) {
+									this.folderInformation(folder.fullNameRaw, MessageStore.messageList());
 								}
 							}
 						});

@@ -8,10 +8,10 @@ class AccountUserStore {
 			signature: ''
 		});
 
-		this.accounts = ko.observableArray([]);
+		this.accounts = ko.observableArray();
 		this.accounts.loading = ko.observable(false).extend({ throttle: 100 });
 
-		this.getEmailAddresses = () => this.accounts().map(item => item ? item.email : null).filter(v => v);
+		this.getEmailAddresses = () => this.accounts.map(item => item ? item.email : null).filter(v => v);
 
 		this.accountsUnreadCount = ko.computed(() => 0);
 		// this.accountsUnreadCount = ko.computed(() => {

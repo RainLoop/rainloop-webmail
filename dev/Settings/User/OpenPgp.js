@@ -43,7 +43,7 @@ class OpenPgpUserSettings {
 			this.openPgpKeyForDeletion(null);
 
 			if (openPgpKeyToRemove && PgpStore.openpgpKeyring) {
-				const findedItem = PgpStore.openpgpkeys().find(key => openPgpKeyToRemove === key);
+				const findedItem = PgpStore.openpgpkeys.find(key => openPgpKeyToRemove === key);
 				if (findedItem) {
 					PgpStore.openpgpkeys.remove(findedItem);
 					delegateRunOnDestroy(findedItem);

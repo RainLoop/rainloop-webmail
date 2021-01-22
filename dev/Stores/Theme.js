@@ -2,7 +2,7 @@ import ko from 'ko';
 
 class ThemeStore {
 	constructor() {
-		this.themes = ko.observableArray([]);
+		this.themes = ko.observableArray();
 		this.themeBackgroundName = ko.observable('');
 		this.themeBackgroundHash = ko.observable('');
 

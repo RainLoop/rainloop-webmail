@@ -36,7 +36,7 @@ class FolderUserStore {
 
 		this.namespace = '';
 
-		this.folderList = ko.observableArray([]);
+		this.folderList = ko.observableArray();
 
 		this.currentFolder = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'selected'] });
 
@@ -47,7 +47,7 @@ class FolderUserStore {
 		);
 
 		this.foldersListWithSingleInboxRootFolder = ko.computed(
-			() => !this.folderList().find(folder => folder && !folder.isSystemFolder() && folder.visible())
+			() => !this.folderList.find(folder => folder && !folder.isSystemFolder() && folder.visible())
 		);
 
 		this.currentFolderFullNameRaw = ko.computed(() => (this.currentFolder() ? this.currentFolder().fullNameRaw : ''));
@@ -66,14 +66,13 @@ class FolderUserStore {
 
 		this.folderListSystemNames = ko.computed(() => {
 			const list = [getFolderInboxName()],
-				folders = this.folderList(),
 				sentFolder = this.sentFolder(),
 				draftFolder = this.draftFolder(),
 				spamFolder = this.spamFolder(),
 				trashFolder = this.trashFolder(),
 				archiveFolder = this.archiveFolder();
 
-			if (Array.isNotEmpty(folders)) {
+			if (this.folderList.length) {
 				if (sentFolder && UNUSED_OPTION_VALUE !== sentFolder) {
 					list.push(sentFolder);
 				}
@@ -178,7 +177,7 @@ class FolderUserStore {
 						timeouts.push([folder.interval, folder.fullNameRaw]);
 					}
 
-					if (folder && folder.subFolders().length) {
+					if (folder && folder.subFolders.length) {
 						fSearchFunction(folder.subFolders());
 					}
 				});

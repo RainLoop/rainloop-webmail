@@ -17,11 +17,11 @@ class LanguagesPopupView extends AbstractViewNext {
 		this.fLang = null;
 		this.userLanguage = ko.observable('');
 
-		this.langs = ko.observableArray([]);
+		this.langs = ko.observableArray();
 
 		this.languages = ko.computed(() => {
 			const userLanguage = this.userLanguage();
-			return this.langs().map(language => ({
+			return this.langs.map(language => ({
 				key: language,
 				user: language === userLanguage,
 				selected: ko.observable(false),
@@ -39,9 +39,7 @@ class LanguagesPopupView extends AbstractViewNext {
 
 	setLanguageSelection() {
 		const currentLang = this.fLang ? ko.unwrap(this.fLang) : '';
-		this.languages().forEach(item => {
-			item.selected(item.key === currentLang);
-		});
+		this.languages.forEach(item => item.selected(item.key === currentLang));
 	}
 
 	onBeforeShow() {

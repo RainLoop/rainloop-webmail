@@ -141,7 +141,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 				read: () => 0 < MessageStore.messageListChecked().length,
 				write: (value) => {
 					value = !!value;
-					MessageStore.messageList().forEach(message => message.checked(value));
+					MessageStore.messageList.forEach(message => message.checked(value));
 				}
 			},
 
@@ -152,10 +152,10 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 			isIncompleteChecked: () => {
 				const c = MessageStore.messageListChecked().length;
-				return c && MessageStore.messageList().length > c;
+				return c && MessageStore.messageList.length > c;
 			},
 
-			hasMessages: () => 0 < this.messageList().length,
+			hasMessages: () => 0 < this.messageList.length,
 
 			hasCheckedOrSelectedLines: () => 0 < this.messageListCheckedOrSelected().length,
 
@@ -219,7 +219,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 		addEventListener('mailbox.message.show', e => {
 			const sFolder = e.detail.Folder, sUid = e.detail.Uid;
 
-			const message = this.messageList().find(
+			const message = this.messageList.find(
 				item => item && sFolder === item.folder && sUid === item.uid
 			);
 
@@ -492,7 +492,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 					case MessageSetAction.SetSeen:
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
 						if (folder) {
-							MessageStore.messageList().forEach(message => {
+							MessageStore.messageList.forEach(message => {
 								if (message.isUnseen()) {
 									++cnt;
 								}
@@ -518,7 +518,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 					case MessageSetAction.UnsetSeen:
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
 						if (folder) {
-							MessageStore.messageList().forEach(message => {
+							MessageStore.messageList.forEach(message => {
 								if (!message.isUnseen()) {
 									++cnt;
 								}
@@ -675,7 +675,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 			!this.messageListSearchDesc() &&
 			!this.messageListError() &&
 			!this.messageListEndThreadUid() &&
-			this.messageList().length &&
+			this.messageList.length &&
 			(this.isSpamFolder() || this.isTrashFolder())
 		);
 	}
@@ -864,7 +864,7 @@ class MessageListMailBoxUserView extends AbstractViewNext {
 
 	prefetchNextTick() {
 		if (ifvisible && !this.bPrefetch && !ifvisible.now() && this.viewModelVisible) {
-			const message = this.messageList().find(
+			const message = this.messageList.find(
 				item => item && !hasRequestedMessage(item.folder, item.uid)
 			);
 			if (message) {

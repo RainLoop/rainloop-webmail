@@ -446,8 +446,8 @@ class RemoteUserFetch extends AbstractFetchRemote {
 					uids.push(messageListItem.uid);
 				}
 
-				if (messageListItem.threads().length) {
-					messageListItem.threads().forEach(uid => {
+				if (messageListItem.threads.length) {
+					messageListItem.threads.forEach(uid => {
 						if (!MessageFlagsCache.getFor(messageListItem.folder, uid)) {
 							uids.push(uid);
 						}

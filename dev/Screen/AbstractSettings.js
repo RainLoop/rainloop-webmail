@@ -13,7 +13,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 	constructor(viewModels) {
 		super('settings', viewModels);
 
-		this.menu = ko.observableArray([]);
+		this.menu = ko.observableArray();
 
 		this.oCurrentSubScreen = null;
 
@@ -113,7 +113,7 @@ class AbstractSettingsScreen extends AbstractScreen {
 						o.oCurrentSubScreen.viewModelDom.hidden = false;
 						o.oCurrentSubScreen.onShow && o.oCurrentSubScreen.onShow();
 
-						o.menu().forEach(item => {
+						o.menu.forEach(item => {
 							item.selected(
 								settingsScreen &&
 									settingsScreen.__rlSettingsData &&

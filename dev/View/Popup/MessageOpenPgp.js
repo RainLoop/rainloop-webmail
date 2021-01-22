@@ -20,7 +20,7 @@ class MessageOpenPgpPopupView extends AbstractViewNext {
 			password: '',
 			submitRequest: false
 		});
-		this.privateKeys = ko.observableArray([]);
+		this.privateKeys = ko.observableArray();
 
 		this.resultCallback = null;
 

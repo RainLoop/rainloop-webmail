@@ -46,7 +46,7 @@ class FilterModel extends AbstractModel {
 			actionType: FiltersAction.MoveTo
 		});
 
-		this.conditions = ko.observableArray([]);
+		this.conditions = ko.observableArray();
 
 		const fGetRealFolderName = (folderFullNameRaw) => {
 			const folder = getFolderFromCacheList(folderFullNameRaw);
@@ -137,7 +137,7 @@ class FilterModel extends AbstractModel {
 			return false;
 		}
 
-		if (this.conditions().length && this.conditions().find(cond => cond && !cond.verify())) {
+		if (this.conditions.length && this.conditions.find(cond => cond && !cond.verify())) {
 			return false;
 		}
 
@@ -180,7 +180,7 @@ class FilterModel extends AbstractModel {
 			ID: this.id,
 			Enabled: this.enabled() ? '1' : '0',
 			Name: this.name(),
-			Conditions: this.conditions().map(item => item.toJson()),
+			Conditions: this.conditions.map(item => item.toJson()),
 			ConditionsType: this.conditionsType(),
 
 			ActionType: this.actionType(),
@@ -259,7 +259,7 @@ class FilterModel extends AbstractModel {
 		filter.actionKeep(this.actionKeep());
 		filter.actionNoStop(this.actionNoStop());
 
-		filter.conditions(this.conditions().map(item => item.cloneSelf()));
+		filter.conditions(this.conditions.map(item => item.cloneSelf()));
 
 		return filter;
 	}

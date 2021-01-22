@@ -2,8 +2,8 @@ import ko from 'ko';
 
 class LanguageStore {
 	constructor() {
-		this.languages = ko.observableArray([]);
-		this.languagesAdmin = ko.observableArray([]);
+		this.languages = ko.observableArray();
+		this.languagesAdmin = ko.observableArray();
 
 		this.language = ko
 			.observable('')

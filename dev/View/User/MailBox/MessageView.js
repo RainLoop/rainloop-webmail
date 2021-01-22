@@ -157,9 +157,9 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		});
 
 		this.addComputables({
-			allowAttachmnetControls: () => this.attachmentsActions().length && Settings.capa(Capa.AttachmentsActions),
+			allowAttachmnetControls: () => this.attachmentsActions.length && Settings.capa(Capa.AttachmentsActions),
 
-			downloadAsZipAllowed: () => this.attachmentsActions().includes('zip') && this.allowAttachmnetControls(),
+			downloadAsZipAllowed: () => this.attachmentsActions.includes('zip') && this.allowAttachmnetControls(),
 
 			lastReplyAction: {
 				read: this.lastReplyAction_,
@@ -206,7 +206,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 
 		this.addSubscribables({
 			showAttachmnetControls: v => this.message()
-				&& this.message().attachments().forEach(item => item && item.checked(!!v)),
+				&& this.message().attachments.forEach(item => item && item.checked(!!v)),
 
 			lastReplyAction_: value => Local.set(ClientSideKeyName.LastReplyAction, value),
 
@@ -380,7 +380,7 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 	attachmentPreview(/*attachment*/) {
 /*
 		if (attachment && attachment.isImage() && !attachment.isLinked && this.message() && this.message().attachments()) {
-			const items = this.message().attachments().map(item => {
+			const items = this.message().attachments.map(item => {
 					if (item && !item.isLinked && item.isImage()) {
 						if (item === attachment) {
 							index = listIndex;
@@ -712,13 +712,10 @@ class MessageViewMailBoxUserView extends AbstractViewNext {
 		}
 	}
 
-	getAttachmentsHashes() {
-		const atts = this.message() ? this.message().attachments() : [];
-		return atts.map(item => (item && !item.isLinked && item.checked() ? item.download : '')).filter(v => v);
-	}
-
 	downloadAsZip() {
-		const hashes = this.getAttachmentsHashes();
+		const hashes = (this.message() ? this.message().attachments : [])
+			.map(item => (item && !item.isLinked && item.checked() ? item.download : ''))
+			.filter(v => v);
 		if (hashes.length) {
 			Remote.attachmentsActions('Zip', hashes, this.downloadAsZipLoading)
 				.then((result) => {

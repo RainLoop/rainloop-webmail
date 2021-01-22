@@ -85,7 +85,7 @@ class FolderModel extends AbstractModel {
 
 				hasSubscribedSubfolders:
 					() =>
-						!!folder.subFolders().find(
+						!!folder.subFolders.find(
 							oFolder => (oFolder.subscribed() || oFolder.hasSubscribedSubfolders()) && !oFolder.isSystemFolder()
 						),
 
@@ -129,7 +129,7 @@ class FolderModel extends AbstractModel {
 					return '';
 				},
 
-				canBeDeleted: () => !folder.isSystemFolder() && !folder.subFolders().length,
+				canBeDeleted: () => !folder.isSystemFolder() && !folder.subFolders.length,
 
 				selectableForFolderList: () => !folder.isSystemFolder() && folder.selectable,
 
@@ -218,7 +218,7 @@ class FolderModel extends AbstractModel {
 				hasUnreadMessages: () => 0 < folder.messageCountUnread() && folder.printableUnreadCount(),
 
 				hasSubscribedUnreadMessagesSubfolders: () =>
-						!!folder.subFolders().find(
+						!!folder.subFolders.find(
 							folder => folder.hasUnreadMessages() || folder.hasSubscribedUnreadMessagesSubfolders()
 						)
 			});

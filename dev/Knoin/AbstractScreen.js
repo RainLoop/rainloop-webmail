@@ -11,7 +11,7 @@ export class AbstractScreen {
 	/**
 	 * @returns {Array}
 	 */
-	viewModels() {
+	get viewModels() {
 		return this.aViewModels;
 	}
 

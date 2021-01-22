@@ -326,7 +326,7 @@ export function folderListOptionsBuilder(
 			}
 		}
 
-		if (oItem.subscribed() && oItem.subFolders().length) {
+		if (oItem.subscribed() && oItem.subFolders.length) {
 			aResult = aResult.concat(
 				folderListOptionsBuilder(
 					[],

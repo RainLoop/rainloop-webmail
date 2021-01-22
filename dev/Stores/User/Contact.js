@@ -2,7 +2,7 @@ import ko from 'ko';
 
 class ContactUserStore {
 	constructor() {
-		this.contacts = ko.observableArray([]);
+		this.contacts = ko.observableArray();
 		this.contacts.loading = ko.observable(false).extend({ throttle: 200 });
 		this.contacts.importing = ko.observable(false).extend({ throttle: 200 });
 		this.contacts.syncing = ko.observable(false).extend({ throttle: 200 });

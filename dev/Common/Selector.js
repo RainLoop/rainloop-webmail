@@ -42,7 +42,7 @@ class Selector {
 	) {
 		this.list = koList;
 
-		this.listChecked = ko.computed(() => this.list().filter(item => item.checked())).extend({ rateLimit: 0 });
+		this.listChecked = ko.computed(() => this.list.filter(item => item.checked())).extend({ rateLimit: 0 });
 		this.isListChecked = ko.computed(() => 0 < this.listChecked().length);
 
 		this.focusedItem = koFocusedItem || ko.observable(null);
@@ -329,11 +329,11 @@ class Selector {
 			result = null;
 
 		const pageStep = 10,
-			list = this.list(),
-			listLen = list ? list.length : 0,
+			list = this.list,
+			listLen = list.length,
 			focused = this.focusedItem();
 
-		if (0 < listLen) {
+		if (listLen) {
 			if (focused) {
 				if (isArrow) {
 					let i = list.indexOf(focused);

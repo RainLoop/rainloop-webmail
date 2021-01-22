@@ -91,7 +91,7 @@ class FiltersUserSettings {
 		Remote.filtersScriptActivate(
 			(result, data) => {
 				if (StorageResultType.Success === result && data && data.Result) {
-					this.scripts().forEach(script => script.active(script.name() === name));
+					this.scripts.forEach(script => script.active(script.name() === name));
 				} else {
 					this.setError((data && data.ErrorCode)
 						? (data.ErrorMessageAdditional || getNotification(data.ErrorCode))

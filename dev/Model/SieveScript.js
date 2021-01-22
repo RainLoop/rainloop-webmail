@@ -274,7 +274,7 @@ class SieveScriptModel extends AbstractModel
 			hasChanges: false
 		});
 
-		this.filters = ko.observableArray([]);
+		this.filters = ko.observableArray();
 //		this.saving = ko.observable(false).extend({ throttle: 200 });
 
 		this.addSubscribables({
@@ -296,7 +296,7 @@ class SieveScriptModel extends AbstractModel
 
 	verify() {
 		this.nameError(!this.name().trim());
-		this.bodyError(this.allowFilters() ? !this.filters().length : !this.body().trim());
+		this.bodyError(this.allowFilters() ? !this.filters.length : !this.body().trim());
 		return !this.nameError() && !this.bodyError();
 	}
 
@@ -305,7 +305,7 @@ class SieveScriptModel extends AbstractModel
 			name: this.name(),
 			active: this.active() ? '1' : '0',
 			body: this.body(),
-			filters: this.filters().map(item => item.toJson())
+			filters: this.filters.map(item => item.toJson())
 		};
 	}
 

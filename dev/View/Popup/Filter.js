@@ -33,7 +33,7 @@ class FilterPopupView extends AbstractViewNext {
 		this.selectedFolderValue.subscribe(() => this.filter() && this.filter().actionValueError(false));
 
 		['actionTypeOptions','fieldOptions','typeOptions','typeOptionsSize','typeOptionsBody'].forEach(
-			key => this[key] = ko.observableArray([])
+			key => this[key] = ko.observableArray()
 		);
 
 		initOnStartOrLangChange(this.populateOptions.bind(this));
@@ -80,7 +80,7 @@ class FilterPopupView extends AbstractViewNext {
 
 		// this.actionTypeOptions.push({'id': FiltersAction.None,
 		// 'name': i18n('GLOBAL/NONE')});
-		const modules = SieveStore.capa();
+		const modules = SieveStore.capa;
 		if (modules) {
 			if (modules.includes('imap4flags')) {
 				this.allowMarkAsRead(true);

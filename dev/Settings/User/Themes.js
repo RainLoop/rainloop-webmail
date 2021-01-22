@@ -13,7 +13,7 @@ class ThemesUserSettings {
 	constructor() {
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
-		this.themesObjects = ko.observableArray([]);
+		this.themesObjects = ko.observableArray();
 
 		this.background = {};
 		this.background.name = ThemeStore.themeBackgroundName;
@@ -27,7 +27,7 @@ class ThemesUserSettings {
 		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
 
 		this.theme.subscribe((value) => {
-			this.themesObjects().forEach(theme => {
+			this.themesObjects.forEach(theme => {
 				theme.selected(value === theme.name);
 			});
 
@@ -54,7 +54,7 @@ class ThemesUserSettings {
 		const currentTheme = this.theme();
 
 		this.themesObjects(
-			this.themes().map(theme => ({
+			this.themes.map(theme => ({
 				name: theme,
 				nameDisplay: convertThemeName(theme),
 				selected: ko.observable(theme === currentTheme),

@@ -4,10 +4,10 @@ import ko from 'ko';
 
 class TemplateUserStore {
 	constructor() {
-		this.templates = ko.observableArray([]);
+		this.templates = ko.observableArray();
 		this.templates.loading = ko.observable(false).extend({ throttle: 100 });
 
-		this.templatesNames = ko.observableArray([]).extend({ throttle: 1000 });
+		this.templatesNames = ko.observableArray().extend({ throttle: 1000 });
 		this.templatesNames.skipFirst = true;
 
 		this.subscribers();

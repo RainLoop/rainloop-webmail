@@ -210,8 +210,8 @@ export class MessageFlagsCache
 				}
 			}
 
-			if (message.threads().length) {
-				const unseenSubUid = message.threads().find(sSubUid => {
+			if (message.threads.length) {
+				const unseenSubUid = message.threads.find(sSubUid => {
 					if (uid !== sSubUid) {
 						const subFlags = this.getFor(message.folder, sSubUid);
 						return subFlags && subFlags.length && !!subFlags[0];
@@ -219,7 +219,7 @@ export class MessageFlagsCache
 					return false;
 				});
 
-				const flaggedSubUid = message.threads().find(sSubUid => {
+				const flaggedSubUid = message.threads.find(sSubUid => {
 					if (uid !== sSubUid) {
 						const subFlags = this.getFor(message.folder, sSubUid);
 						return subFlags && subFlags.length && !!subFlags[1];

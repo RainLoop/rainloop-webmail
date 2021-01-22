@@ -135,11 +135,11 @@ class PgpUserStore {
 
 		this.openpgp = null;
 
-		this.openpgpkeys = ko.observableArray([]);
+		this.openpgpkeys = ko.observableArray();
 		this.openpgpKeyring = null;
 
-		this.openpgpkeysPublic = ko.computed(() => this.openpgpkeys().filter(item => item && !item.isPrivate));
-		this.openpgpkeysPrivate = ko.computed(() => this.openpgpkeys().filter(item => item && item.isPrivate));
+		this.openpgpkeysPublic = ko.computed(() => this.openpgpkeys.filter(item => item && !item.isPrivate));
+		this.openpgpkeysPrivate = ko.computed(() => this.openpgpkeys.filter(item => item && item.isPrivate));
 	}
 
 	/**

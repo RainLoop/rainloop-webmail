@@ -50,7 +50,7 @@ class AppUserStore {
 			}
 		});
 
-		this.attachmentsActions = ko.observableArray([]);
+		this.attachmentsActions = ko.observableArray();
 
 		this.devEmail = '';
 		this.devPassword = '';

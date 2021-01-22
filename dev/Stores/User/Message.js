@@ -57,7 +57,7 @@ class MessageUserStore {
 	constructor() {
 		this.staticMessage = new MessageModel();
 
-		this.messageList = ko.observableArray([]).extend({ rateLimit: 0 });
+		this.messageList = ko.observableArray().extend({ rateLimit: 0 });
 
 		ko.addObservablesTo(this, {
 			messageListCount: 0,
@@ -136,7 +136,7 @@ class MessageUserStore {
 		this.isMessageSelected = ko.computed(() => null !== this.message());
 
 		this.messageListChecked = ko
-			.computed(() => this.messageList().filter(item => item.checked()))
+			.computed(() => this.messageList.filter(item => item.checked()))
 			.extend({ rateLimit: 0 });
 
 		this.hasCheckedMessages = ko.computed(() => 0 < this.messageListChecked().length).extend({ rateLimit: 0 });
@@ -279,7 +279,7 @@ class MessageUserStore {
 		uidForRemove = uidForRemove.map(mValue => pInt(mValue));
 
 		let unseenCount = 0,
-			messageList = this.messageList(),
+			messageList = this.messageList,
 			currentMessage = this.message();
 
 		const trashFolder = FolderStore.trashFolder(),
@@ -342,7 +342,7 @@ class MessageUserStore {
 
 				setTimeout(() => {
 					messages.forEach(item => {
-						this.messageList.remove(item);
+						messageList.remove(item);
 					});
 				}, 350);
 			}
@@ -357,10 +357,7 @@ class MessageUserStore {
 		}
 
 		if (this.messageListThreadUid()) {
-			messageList = this.messageList();
-
 			if (
-				messageList &&
 				messageList.length &&
 				!!messageList.find(item => !!(item && item.deleted() && item.uid === this.messageListThreadUid()))
 			) {
@@ -592,11 +589,11 @@ class MessageUserStore {
 						(message.folder !== selectedMessage.folder || message.uid !== selectedMessage.uid)
 					) {
 						this.selectorMessageSelected(null);
-						if (1 === this.messageList().length) {
+						if (1 === this.messageList.length) {
 							this.selectorMessageFocused(null);
 						}
 					} else if (!selectedMessage && message) {
-						selectedMessage = this.messageList().find(
+						selectedMessage = this.messageList.find(
 							subMessage =>
 								subMessage &&
 								subMessage.folder === message.folder &&

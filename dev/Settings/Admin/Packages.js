@@ -15,13 +15,13 @@ class PackagesAdminSettings {
 		this.packagesMainUpdatable = PackageStore.packagesMainUpdatable;
 
 		this.packagesCurrent = ko.computed(() =>
-			this.packages().filter(item => item && item.installed && !item.compare)
+			this.packages.filter(item => item && item.installed && !item.compare)
 		);
 		this.packagesAvailableForUpdate = ko.computed(() =>
-			this.packages().filter(item => item && item.installed && !!item.compare)
+			this.packages.filter(item => item && item.installed && !!item.compare)
 		);
 		this.packagesAvailableForInstallation = ko.computed(() =>
-			this.packages().filter(item => item && !item.installed)
+			this.packages.filter(item => item && !item.installed)
 		);
 
 		this.visibility = ko.computed(() => (PackageStore.packages.loading() ? 'visible' : 'hidden'));
@@ -47,7 +47,7 @@ class PackagesAdminSettings {
 				}
 			}
 
-			this.packages().forEach(item => {
+			this.packages.forEach(item => {
 				if (item && packageToRequest && item.loading && item.loading() && packageToRequest.file === item.file) {
 					packageToRequest.loading(false);
 					item.loading(false);

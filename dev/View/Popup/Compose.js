@@ -208,7 +208,7 @@ class ComposePopupView extends AbstractViewNext {
 			}
 		}).extend({ notify: 'always' });
 
-		this.attachments = ko.observableArray([]);
+		this.attachments = ko.observableArray();
 
 		this.dragAndDropOver = ko.observable(false).extend({ throttle: 1 });
 		this.dragAndDropVisible = ko.observable(false).extend({ throttle: 1 });
@@ -256,17 +256,17 @@ class ComposePopupView extends AbstractViewNext {
 				return result;
 			},
 
-			attachmentsInProcess: () => this.attachments().filter(item => item && !item.complete()),
-			attachmentsInReady: () => this.attachments().filter(item => item && item.complete()),
-			attachmentsInError: () => this.attachments().filter(item => item && item.error()),
+			attachmentsInProcess: () => this.attachments.filter(item => item && !item.complete()),
+			attachmentsInReady: () => this.attachments.filter(item => item && item.complete()),
+			attachmentsInError: () => this.attachments.filter(item => item && item.error()),
 
-			attachmentsCount: () => this.attachments().length,
-			attachmentsInErrorCount: () => this.attachmentsInError().length,
-			attachmentsInProcessCount: () => this.attachmentsInProcess().length,
+			attachmentsCount: () => this.attachments.length,
+			attachmentsInErrorCount: () => this.attachmentsInError.length,
+			attachmentsInProcessCount: () => this.attachmentsInProcess.length,
 			isDraftFolderMessage: () => this.draftFolder() && this.draftUid(),
 
 			identitiesOptions: () =>
-				IdentityStore.identities().map(item => ({
+				IdentityStore.identities.map(item => ({
 					'item': item,
 					'optValue': item.id(),
 					'optText': item.formattedName()
@@ -1106,7 +1106,7 @@ class ComposePopupView extends AbstractViewNext {
 						}
 					});
 				} else {
-					this.attachments().forEach(attachment => {
+					this.attachments.forEach(attachment => {
 						if (attachment && attachment.fromMessage) {
 							attachment
 								.waiting(false)
@@ -1221,7 +1221,7 @@ class ComposePopupView extends AbstractViewNext {
 	 * @returns {?Object}
 	 */
 	getAttachmentById(id) {
-		return this.attachments().find(item => item && id === item.id);
+		return this.attachments.find(item => item && id === item.id);
 	}
 
 	cancelAttachmentHelper(id, oJua) {
@@ -1428,7 +1428,7 @@ class ComposePopupView extends AbstractViewNext {
 			if (ComposeType.ForwardAsAttachment === type) {
 				this.addMessageAsAttachment(message);
 			} else {
-				message.attachments().forEach(item => {
+				message.attachments.forEach(item => {
 					let add = false;
 					switch (type) {
 						case ComposeType.Reply:
@@ -1464,15 +1464,15 @@ class ComposePopupView extends AbstractViewNext {
 	 */
 	isEmptyForm(includeAttachmentInProgress = true) {
 		const withoutAttachment = includeAttachmentInProgress
-			? !this.attachments().length
+			? !this.attachments.length
 			: !this.attachmentsInReady().length;
 
 		return (
-			!this.to().length &&
-			!this.cc().length &&
-			!this.bcc().length &&
-			!this.replyTo().length &&
-			!this.subject().length &&
+			!this.to.length &&
+			!this.cc.length &&
+			!this.bcc.length &&
+			!this.replyTo.length &&
+			!this.subject.length &&
 			withoutAttachment &&
 			(!this.oEditor || !this.oEditor.getData())
 		);
@@ -1528,7 +1528,7 @@ class ComposePopupView extends AbstractViewNext {
 	 * @returns {Array}
 	 */
 	getAttachmentsDownloadsForUpload() {
-		return this.attachments().filter(item => item && !item.tempName()).map(
+		return this.attachments.filter(item => item && !item.tempName()).map(
 			item => item.id
 		);
 	}

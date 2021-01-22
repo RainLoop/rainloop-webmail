@@ -263,8 +263,8 @@ function screenOnRoute(screenName, subPart) {
 			if (!vmScreen.__builded) {
 				vmScreen.__builded = true;
 
-				if (isNonEmptyArray(vmScreen.viewModels())) {
-					vmScreen.viewModels().forEach(ViewModelClass => {
+				if (vmScreen.viewModels.length) {
+					vmScreen.viewModels.forEach(ViewModelClass => {
 						buildViewModel(ViewModelClass, vmScreen);
 					});
 				}
@@ -278,8 +278,8 @@ function screenOnRoute(screenName, subPart) {
 					currentScreen.onHide && currentScreen.onHide();
 					currentScreen.onHideWithDelay && setTimeout(()=>currentScreen.onHideWithDelay(), 500);
 
-					if (isNonEmptyArray(currentScreen.viewModels())) {
-						currentScreen.viewModels().forEach(ViewModelClass => {
+					if (isNonEmptyArray(currentScreen.viewModels)) {
+						currentScreen.viewModels.forEach(ViewModelClass => {
 							if (
 								ViewModelClass.__vm &&
 								ViewModelClass.__dom &&
@@ -302,8 +302,8 @@ function screenOnRoute(screenName, subPart) {
 				if (currentScreen && !isSameScreen) {
 					currentScreen.onShow && currentScreen.onShow();
 
-					if (isNonEmptyArray(currentScreen.viewModels())) {
-						currentScreen.viewModels().forEach(ViewModelClass => {
+					if (isNonEmptyArray(currentScreen.viewModels)) {
+						currentScreen.viewModels.forEach(ViewModelClass => {
 							if (
 								ViewModelClass.__vm &&
 								ViewModelClass.__dom &&

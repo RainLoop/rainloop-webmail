@@ -814,14 +814,7 @@ ko.observable = initialValue => {
     observable[observableLatestValue] = initialValue;
 
     Object.defineProperty(observable, length, {
-        get: () => length in observable[observableLatestValue] ? observable[observableLatestValue][length] : undefined,
-        set: function(value) {
-			if (length in observable[observableLatestValue]) {
-				this.valueWillMutate();
-				observable[observableLatestValue][length] = value;
-				this.valueHasMutated();
-			}
-        }
+        get: () => null == observable[observableLatestValue] ? undefined : observable[observableLatestValue][length]
     });
 
     // Inherit from 'subscribable'
@@ -932,9 +925,11 @@ Object.setPrototypeOf(ko.observableArray['fn'], ko.observable['fn']);
 
 // Populate ko.observableArray.fn with native arrays functions
 Object.getOwnPropertyNames(Array.prototype).forEach(methodName => {
-    if (typeof Array.prototype[methodName] === 'function') {
-        if (["pop", "push", "reverse", "shift", "sort", "splice", "unshift"].includes(methodName)) {
+	// skip property length
+    if (typeof Array.prototype[methodName] === 'function' && 'constructor' != methodName) {
+        if (["copyWithin", "fill", "pop", "push", "reverse", "shift", "sort", "splice", "unshift"].includes(methodName)) {
             // Mutator methods
+            // https://developer.mozilla.org/tr/docs/Web/JavaScript/Reference/Global_Objects/Array/prototype#mutator_methods
             // Important: Do not add any additional functions here that may reasonably be used to *read* data from the array
             // because we'll eval them without causing subscriptions, so ko.computed output could end up getting stale
             ko.observableArray['fn'][methodName] = function (...args) {

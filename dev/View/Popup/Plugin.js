@@ -24,10 +24,10 @@ class PluginPopupView extends AbstractViewNext {
 			readme: ''
 		});
 
-		this.configures = ko.observableArray([]);
+		this.configures = ko.observableArray();
 
 		this.hasReadme = ko.computed(() => !!this.readme());
-		this.hasConfiguration = ko.computed(() => 0 < this.configures().length);
+		this.hasConfiguration = ko.computed(() => 0 < this.configures.length);
 
 		this.bDisabeCloseOnEsc = true;
 		this.sDefaultKeyScope = KeyState.All;
@@ -40,7 +40,7 @@ class PluginPopupView extends AbstractViewNext {
 		const list = {};
 		list.Name = this.name();
 
-		this.configures().forEach(oItem => {
+		this.configures.forEach(oItem => {
 			let value = oItem.value();
 			if (false === value || true === value) {
 				value = value ? '1' : '0';

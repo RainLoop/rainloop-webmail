@@ -72,12 +72,12 @@ class MessageModel extends AbstractModel {
 		});
 
 		this.attachments = ko.observableArray(new AttachmentCollectionModel);
-		this.attachmentsSpecData = ko.observableArray([]);
-		this.threads = ko.observableArray([]);
+		this.attachmentsSpecData = ko.observableArray();
+		this.threads = ko.observableArray();
 
 		this.addComputables({
 			attachmentIconClass: () => File.getCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : []),
-			threadsLen: () => this.threads().length,
+			threadsLen: () => this.threads.length,
 			isImportant: () => MessagePriority.High === this.priority(),
 		});
 	}
@@ -502,7 +502,7 @@ class MessageModel extends AbstractModel {
 						el.src = attachment.linkPreview();
 					}
 				} else if (data.xSrcLocation) {
-					const attachment = this.attachments().find(item => data.xSrcLocation === item.contentLocation)
+					const attachment = this.attachments.find(item => data.xSrcLocation === item.contentLocation)
 						|| findAttachmentByCid(data.xSrcLocation);
 					if (attachment && attachment.download) {
 						el.loading = 'lazy';
