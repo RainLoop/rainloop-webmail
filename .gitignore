@@ -1,4 +1,5 @@
-/*.bak
+*.bak
+*.old
 /api.php
 /*.log
 /snappymail/v/0.0.0/static/*
