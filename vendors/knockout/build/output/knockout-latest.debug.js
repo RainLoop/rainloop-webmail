@@ -788,7 +788,8 @@ ko.computedContext = ko.dependencyDetection = (() => {
         }
     };
 })();
-var observableLatestValue = Symbol('_latestValue');
+const observableLatestValue = Symbol('_latestValue'),
+	length = 'length';
 
 ko.observable = initialValue => {
     function observable() {
@@ -812,6 +813,17 @@ ko.observable = initialValue => {
 
     observable[observableLatestValue] = initialValue;
 
+    Object.defineProperty(observable, length, {
+        get: () => length in observable[observableLatestValue] ? observable[observableLatestValue][length] : undefined,
+        set: function(value) {
+			if (length in observable[observableLatestValue]) {
+				this.valueWillMutate();
+				observable[observableLatestValue][length] = value;
+				this.valueHasMutated();
+			}
+        }
+    });
+
     // Inherit from 'subscribable'
     ko.subscribable['fn'].init(observable);
 
@@ -825,7 +837,7 @@ ko.observable = initialValue => {
 var observableFn = {
     'toJSON': function() {
         let value = this[observableLatestValue];
-        return value.toJSON ? value.toJSON() : value;
+        return value && value.toJSON ? value.toJSON() : value;
     },
     'equalityComparer': valuesArePrimitiveAndEqual,
     peek: function() { return this[observableLatestValue]; },
