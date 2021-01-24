@@ -7,6 +7,26 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 import { AbstractModel } from 'Knoin/AbstractModel';
 import { FolderCollectionModel } from 'Model/FolderCollection';
 
+function getSystemFolderName(type, def)
+{
+	switch (type) {
+		case FolderType.Inbox:
+			return i18n('FOLDER_LIST/INBOX_NAME');
+		case FolderType.SentItems:
+			return i18n('FOLDER_LIST/SENT_NAME');
+		case FolderType.Draft:
+			return i18n('FOLDER_LIST/DRAFTS_NAME');
+		case FolderType.Spam:
+			return i18n('GLOBAL/SPAM');
+		case FolderType.Trash:
+			return i18n('FOLDER_LIST/TRASH_NAME');
+		case FolderType.Archive:
+			return i18n('FOLDER_LIST/ARCHIVE_NAME');
+		// no default
+	}
+	return def;
+}
+
 export class FolderModel extends AbstractModel {
 	constructor() {
 		super();
@@ -138,74 +158,24 @@ export class FolderModel extends AbstractModel {
 				canBeChecked: () => !folder.isSystemFolder() && folder.selectable,
 
 				localName: () => {
-					translatorTrigger();
-
 					let name = folder.name();
-					const type = folder.type();
-
 					if (folder.isSystemFolder()) {
-						switch (type) {
-							case FolderType.Inbox:
-								name = i18n('FOLDER_LIST/INBOX_NAME');
-								break;
-							case FolderType.SentItems:
-								name = i18n('FOLDER_LIST/SENT_NAME');
-								break;
-							case FolderType.Draft:
-								name = i18n('FOLDER_LIST/DRAFTS_NAME');
-								break;
-							case FolderType.Spam:
-								name = i18n('FOLDER_LIST/SPAM_NAME');
-								break;
-							case FolderType.Trash:
-								name = i18n('FOLDER_LIST/TRASH_NAME');
-								break;
-							case FolderType.Archive:
-								name = i18n('FOLDER_LIST/ARCHIVE_NAME');
-								break;
-							// no default
-						}
+						translatorTrigger();
+						name = getSystemFolderName(folder.type(), name);
 					}
-
 					return name;
 				},
 
 				manageFolderSystemName: () => {
-					translatorTrigger();
-
-					let suffix = '';
-					const type = folder.type(),
-						name = folder.name();
-
 					if (folder.isSystemFolder()) {
-						switch (type) {
-							case FolderType.Inbox:
-								suffix = '(' + i18n('FOLDER_LIST/INBOX_NAME') + ')';
-								break;
-							case FolderType.SentItems:
-								suffix = '(' + i18n('FOLDER_LIST/SENT_NAME') + ')';
-								break;
-							case FolderType.Draft:
-								suffix = '(' + i18n('FOLDER_LIST/DRAFTS_NAME') + ')';
-								break;
-							case FolderType.Spam:
-								suffix = '(' + i18n('FOLDER_LIST/SPAM_NAME') + ')';
-								break;
-							case FolderType.Trash:
-								suffix = '(' + i18n('FOLDER_LIST/TRASH_NAME') + ')';
-								break;
-							case FolderType.Archive:
-								suffix = '(' + i18n('FOLDER_LIST/ARCHIVE_NAME') + ')';
-								break;
-							// no default
+						translatorTrigger();
+						let suffix = getSystemFolderName(folder.type(), '');
+						if (folder.name() !== suffix && 'inbox' !== suffix.toLowerCase()) {
+							return '(' + suffix + ')';
 						}
 					}
 
-					if ((suffix && '(' + name + ')' === suffix) || '(inbox)' === suffix.toLowerCase()) {
-						suffix = '';
-					}
-
-					return suffix;
+					return '';
 				},
 
 				collapsed: {

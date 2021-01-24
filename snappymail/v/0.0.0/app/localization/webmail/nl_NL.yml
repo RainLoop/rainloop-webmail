@@ -71,7 +71,6 @@ nl_NL:
     INBOX_NAME: "Postvak IN"
     SENT_NAME: "Verzonden items"
     DRAFTS_NAME: "Concepten"
-    SPAM_NAME: "Ongewenste e-mail"
     TRASH_NAME: "Verwijderde items"
     ARCHIVE_NAME: "Archief"
   QUOTA:
@@ -297,9 +296,6 @@ nl_NL:
     TITLE_SYSTEM_FOLDERS: "Selecteer systeem mappen"
     SELECT_CHOOSE_ONE: "Kies één"
     SELECT_UNUSE_NAME: "Niet gebruiken"
-    LABEL_SENT: "Verzonden items"
-    LABEL_DRAFTS: "Concepten"
-    LABEL_TRASH: "Verwijderde items"
     NOTIFICATION_SENT: |
         U heeft nog geen "Verzonden items" folder aangeduid waar de berichten geplaatst worden na het versturen.
         Indien u geen verzonden berichten wilt bewaren, kies de "Niet gebruiken" optie.

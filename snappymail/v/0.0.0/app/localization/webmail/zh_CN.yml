@@ -71,7 +71,6 @@ zh_CN:
     INBOX_NAME: "收件箱"
     SENT_NAME: "已发邮件"
     DRAFTS_NAME: "草稿"
-    SPAM_NAME: "垃圾邮件"
     TRASH_NAME: "已删除邮件"
     ARCHIVE_NAME: "存档"
   QUOTA:
@@ -296,9 +295,6 @@ zh_CN:
     TITLE_SYSTEM_FOLDERS: "选择系统文件夹"
     SELECT_CHOOSE_ONE: "选择一个"
     SELECT_UNUSE_NAME: "无"
-    LABEL_SENT: "已发邮件"
-    LABEL_DRAFTS: "草稿"
-    LABEL_TRASH: "已删除邮件"
     NOTIFICATION_SENT: |
         您没有选择“已发邮件”文件夹来存储已发送邮件。
         如果您不希望保存已发送邮件，请选择“无”选项。

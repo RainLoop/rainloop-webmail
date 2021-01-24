@@ -71,7 +71,6 @@ es_ES:
     INBOX_NAME: "Bandeja de Entrada"
     SENT_NAME: "Enviados"
     DRAFTS_NAME: "Borradores"
-    SPAM_NAME: "Correo electrónico no deseado"
     TRASH_NAME: "Papelera"
     ARCHIVE_NAME: "Archivo"
   QUOTA:
@@ -297,9 +296,6 @@ es_ES:
     TITLE_SYSTEM_FOLDERS: "Seleccione las carpetas del sistema"
     SELECT_CHOOSE_ONE: "Elija una"
     SELECT_UNUSE_NAME: "No usar"
-    LABEL_SENT: "Enviados"
-    LABEL_DRAFTS: "Borradores"
-    LABEL_TRASH: "Papelera"
     NOTIFICATION_SENT: |
         Usted no ha seleccionado la carpeta del sistema para guardar los "Enviados".
         Si no desea guardar los mensajes enviados, por favor seleccione la opción "No usar".

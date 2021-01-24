@@ -71,7 +71,6 @@ de_DE:
     INBOX_NAME: "Posteingang"
     SENT_NAME: "Gesendet"
     DRAFTS_NAME: "Entwürfe"
-    SPAM_NAME: "Spam"
     TRASH_NAME: "Papierkorb"
     ARCHIVE_NAME: "Archiv"
   QUOTA:
@@ -297,9 +296,6 @@ de_DE:
     TITLE_SYSTEM_FOLDERS: "Wählen Sie die Systemordner aus"
     SELECT_CHOOSE_ONE: "Wählen Sie einen aus"
     SELECT_UNUSE_NAME: "Nicht anwenden"
-    LABEL_SENT: "Gesendet"
-    LABEL_DRAFTS: "Entwürfe"
-    LABEL_TRASH: "Papierkorb"
     NOTIFICATION_SENT: |
         Sie haben keinen "Gesendet"-Systemordner gewählt, in dem Nachrichten nach dem Versenden gespeichert werden.
         Falls Sie versandte Nachrichten nicht speichern möchten, wählen Sie die Option "Nicht anwenden".

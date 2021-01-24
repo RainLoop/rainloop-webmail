@@ -71,7 +71,6 @@ en_US:
     INBOX_NAME: "Inbox"
     SENT_NAME: "Sent"
     DRAFTS_NAME: "Drafts"
-    SPAM_NAME: "Spam"
     TRASH_NAME: "Trash"
     ARCHIVE_NAME: "Archive"
   QUOTA:
@@ -297,9 +296,6 @@ en_US:
     TITLE_SYSTEM_FOLDERS: "Select system folders"
     SELECT_CHOOSE_ONE: "Choose one"
     SELECT_UNUSE_NAME: "Do not use"
-    LABEL_SENT: "Sent"
-    LABEL_DRAFTS: "Drafts"
-    LABEL_TRASH: "Trash"
     NOTIFICATION_SENT: |
         You haven't selected "Sent" system folder messages are put to after sending.
         If you don't want to save sent message, please select "Do not use" option.

@@ -71,7 +71,6 @@ fr_FR:
     INBOX_NAME: "Boîte de réception"
     SENT_NAME: "Envoyés"
     DRAFTS_NAME: "Brouillons"
-    SPAM_NAME: "Indésirables"
     TRASH_NAME: "Corbeille"
     ARCHIVE_NAME: "Archive"
   QUOTA:
@@ -297,9 +296,6 @@ fr_FR:
     TITLE_SYSTEM_FOLDERS: "Sélectionner les dossiers systèmes"
     SELECT_CHOOSE_ONE: "Faites un choix"
     SELECT_UNUSE_NAME: "Ne pas utiliser"
-    LABEL_SENT: "Envoyés"
-    LABEL_DRAFTS: "Brouillons"
-    LABEL_TRASH: "Corbeille"
     NOTIFICATION_SENT: |
         Vous n'avez pas sélectionné de dossier "Envoyés" où copier les messages après envoi.
         Si vous ne souhaitez pas enregistrer une copie des messages envoyés, sélectionnez l'option "Ne pas utiliser".
