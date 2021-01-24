@@ -5,17 +5,12 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { view, command, ViewType } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
-@view({
-	name: 'View/Admin/Login',
-	type: ViewType.Center,
-	templateID: 'AdminLogin'
-})
-class LoginAdminView extends AbstractViewNext {
+class LoginAdminView extends AbstractViewCenter {
 	constructor() {
-		super();
+		super('Admin/Login', 'AdminLogin');
 
 		const appSettingsGet = rl.settings.app;
 		this.mobile = !!appSettingsGet('mobile');

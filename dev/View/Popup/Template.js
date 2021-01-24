@@ -4,17 +4,13 @@ import { HtmlEditor } from 'Common/HtmlEditor';
 
 import Remote from 'Remote/User/Fetch';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { TemplateModel } from 'Model/Template';
 
-@popup({
-	name: 'View/Popup/Template',
-	templateID: 'PopupsTemplate'
-})
-class TemplatePopupView extends AbstractViewNext {
+class TemplatePopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Template');
 
 		this.editor = null;
 

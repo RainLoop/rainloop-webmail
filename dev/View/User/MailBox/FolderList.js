@@ -10,19 +10,14 @@ import SettingsStore from 'Stores/User/Settings';
 import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
 
-import { view, ViewType, showScreenPopup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { showScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewLeft } from 'Knoin/AbstractViews';
 
 const Settings = rl.settings;
 
-@view({
-	name: 'View/User/MailBox/FolderList',
-	type: ViewType.Left,
-	templateID: 'MailFolderList'
-})
-class FolderListMailBoxUserView extends AbstractViewNext {
+class FolderListMailBoxUserView extends AbstractViewLeft {
 	constructor() {
-		super();
+		super('User/MailBox/FolderList', 'MailFolderList');
 
 		this.oContentScrollable = null;
 

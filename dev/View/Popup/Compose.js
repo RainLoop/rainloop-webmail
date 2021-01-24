@@ -34,8 +34,8 @@ import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 
-import { popup, command, isPopupVisible, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command, isPopupVisible, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 const Settings = rl.settings,
 	/**
@@ -88,13 +88,9 @@ ko.extenders.toggleSubscribe = (target, options) => {
 	return target;
 };
 
-@popup({
-	name: 'View/Popup/Compose',
-	templateID: 'PopupsCompose'
-})
-class ComposePopupView extends AbstractViewNext {
+class ComposePopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Compose');
 
 		const fEmailOutInHelper = (context, identity, name, isIn) => {
 			if (identity && context && identity[name]() && (isIn ? true : context[name]())) {

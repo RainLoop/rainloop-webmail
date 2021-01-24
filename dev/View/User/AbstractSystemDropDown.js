@@ -6,13 +6,13 @@ import { Capa, KeyState } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
 import { showScreenPopup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 const Settings = rl.settings;
 
-export class AbstractSystemDropDownUserView extends AbstractViewNext {
-	constructor() {
-		super();
+export class AbstractSystemDropDownUserView extends AbstractViewRight {
+	constructor(name) {
+		super(name, 'SystemDropDown');
 
 		this.mobile = !!Settings.app('mobile');
 		this.mobileDevice = !!Settings.app('mobileDevice');

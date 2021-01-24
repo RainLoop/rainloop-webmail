@@ -19,21 +19,16 @@ import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Fetch';
 
-import { view, command, ViewType, showScreenPopup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command, showScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
 import { rootAdmin } from 'Common/Links';
 
 const Settings = rl.settings;
 
-@view({
-	name: ['View/App/Login', 'View/User/Login'],
-	type: ViewType.Center,
-	templateID: 'Login'
-})
-class LoginUserView extends AbstractViewNext {
+class LoginUserView extends AbstractViewCenter {
 	constructor() {
-		super();
+		super('User/Login', 'Login');
 
 		this.hideSubmitButton = Settings.app('hideSubmitButton');
 

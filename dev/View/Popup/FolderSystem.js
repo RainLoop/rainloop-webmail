@@ -10,16 +10,11 @@ import FolderStore from 'Stores/User/Folder';
 
 import Remote from 'Remote/User/Fetch';
 
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/FolderSystem',
-	templateID: 'PopupsFolderSystem'
-})
-class FolderSystemPopupView extends AbstractViewNext {
+class FolderSystemPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('FolderSystem');
 
 		this.sChooseOnText = '';
 		this.sUnuseText = '';

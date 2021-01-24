@@ -4,17 +4,11 @@ import { leftPanelDisabled } from 'Common/Globals';
 
 import MessageStore from 'Stores/User/Message';
 
-import { view, ViewType } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewRight } from 'Knoin/AbstractViews';
 
-@view({
-	name: 'View/User/Settings/Pane',
-	type: ViewType.Right,
-	templateID: 'SettingsPane'
-})
-class PaneSettingsUserView extends AbstractViewNext {
+class PaneSettingsUserView extends AbstractViewRight {
 	constructor() {
-		super();
+		super('User/Settings/Pane', 'SettingsPane');
 
 		this.mobile = rl.settings.app('mobile');
 

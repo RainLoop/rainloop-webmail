@@ -6,16 +6,12 @@ import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/FolderClear',
-	templateID: 'PopupsFolderClear'
-})
-class FolderClearPopupView extends AbstractViewNext {
+class FolderClearPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('FolderClear');
 
 		this.addObservables({
 			selectedFolder: null,

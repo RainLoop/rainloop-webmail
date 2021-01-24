@@ -1,11 +1,10 @@
-import { view, ViewType } from 'Knoin/Knoin';
 import { AbstractSystemDropDownUserView } from 'View/User/AbstractSystemDropDown';
 
-@view({
-	name: 'View/User/Settings/SystemDropDown',
-	type: ViewType.Right,
-	templateID: 'SystemDropDown'
-})
-class SystemDropDownSettingsUserView extends AbstractSystemDropDownUserView {}
+class SystemDropDownSettingsUserView extends AbstractSystemDropDownUserView
+{
+	constructor() {
+		super('User/Settings/SystemDropDown');
+	}
+}
 
 export { SystemDropDownSettingsUserView };

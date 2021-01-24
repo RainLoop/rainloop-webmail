@@ -38,22 +38,17 @@ import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
-import { view, command, ViewType, showScreenPopup, popupVisibility } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command, showScreenPopup, popupVisibility } from 'Knoin/Knoin';
+import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 const
 	Settings = rl.settings,
 	canBeMovedHelper = (self) => self.canBeMoved(),
 	ifvisible = window.ifvisible;
 
-@view({
-	name: 'View/User/MailBox/MessageList',
-	type: ViewType.Right,
-	templateID: 'MailMessageList'
-})
-class MessageListMailBoxUserView extends AbstractViewNext {
+class MessageListMailBoxUserView extends AbstractViewRight {
 	constructor() {
-		super();
+		super('User/MailBox/MessageList', 'MailMessageList');
 
 		this.sLastUid = null;
 		this.bPrefetch = false;

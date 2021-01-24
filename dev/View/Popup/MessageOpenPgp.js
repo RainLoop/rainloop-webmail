@@ -3,16 +3,12 @@ import ko from 'ko';
 import { pString } from 'Common/Utils';
 import { KeyState } from 'Common/Enums';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/MessageOpenPgp',
-	templateID: 'PopupsMessageOpenPgp'
-})
-class MessageOpenPgpPopupView extends AbstractViewNext {
+class MessageOpenPgpPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('MessageOpenPgp');
 
 		this.addObservables({
 			notification: '',

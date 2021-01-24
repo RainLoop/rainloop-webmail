@@ -7,16 +7,12 @@ import DomainStore from 'Stores/Admin/Domain';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/DomainAlias',
-	templateID: 'PopupsDomainAlias'
-})
-class DomainAliasPopupView extends AbstractViewNext {
+class DomainAliasPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('DomainAlias');
 
 		this.addObservables({
 			saving: false,

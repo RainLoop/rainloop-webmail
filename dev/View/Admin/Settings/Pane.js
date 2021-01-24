@@ -6,17 +6,11 @@ import DomainStore from 'Stores/Admin/Domain';
 import PluginStore from 'Stores/Admin/Plugin';
 import PackageStore from 'Stores/Admin/Package';
 
-import { view, ViewType } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewRight } from 'Knoin/AbstractViews';
 
-@view({
-	name: 'View/Admin/Settings/Pane',
-	type: ViewType.Right,
-	templateID: 'AdminPane'
-})
-class PaneSettingsAdminView extends AbstractViewNext {
+class PaneSettingsAdminView extends AbstractViewRight {
 	constructor() {
-		super();
+		super('Admin/Settings/Pane', 'AdminPane');
 
 		this.version = ko.observable(rl.settings.app('version'));
 

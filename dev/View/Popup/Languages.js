@@ -2,17 +2,11 @@ import ko from 'ko';
 
 import { convertLangName } from 'Common/Utils';
 
-// import {view, ViewType} from 'Knoin/Knoin';
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/Languages',
-	templateID: 'PopupsLanguages'
-})
-class LanguagesPopupView extends AbstractViewNext {
+class LanguagesPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Languages');
 
 		this.fLang = null;
 		this.userLanguage = ko.observable('');

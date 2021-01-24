@@ -1,16 +1,11 @@
 import { KeyState } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/Ask',
-	templateID: 'PopupsAsk'
-})
-class AskPopupView extends AbstractViewNext {
+class AskPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Ask');
 
 		this.addObservables({
 			askDesc: '',

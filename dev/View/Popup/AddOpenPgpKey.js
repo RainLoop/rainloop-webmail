@@ -1,15 +1,11 @@
 import PgpStore from 'Stores/User/Pgp';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/AddOpenPgpKey',
-	templateID: 'PopupsAddOpenPgpKey'
-})
-class AddOpenPgpKeyPopupView extends AbstractViewNext {
+class AddOpenPgpKeyPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('AddOpenPgpKey');
 
 		this.addObservables({
 			key: '',

@@ -26,20 +26,16 @@ import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
 import { ContactPropertyModel } from 'Model/ContactProperty';
 
-import { popup, command, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 const CONTACTS_PER_PAGE = 50,
 	propertyIsMail = prop => prop.isType(ContactPropertyType.Email),
 	propertyIsName = prop => prop.isType(ContactPropertyType.FirstName) || prop.isType(ContactPropertyType.LastName);
 
-@popup({
-	name: 'View/Popup/Contacts',
-	templateID: 'PopupsContacts'
-})
-class ContactsPopupView extends AbstractViewNext {
+class ContactsPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Contacts');
 
 		this.bBackToCompose = false;
 		this.sLastComposeFocusedField = '';

@@ -105,16 +105,11 @@ function buildViewModel(ViewModelClass, vmScreen) {
 	if (ViewModelClass && !ViewModelClass.__builded) {
 		let vmDom = null;
 		const vm = new ViewModelClass(vmScreen),
-			position = ViewModelClass.__type || '',
+			position = vm.viewModelPosition || '',
 			vmPlace = position ? document.querySelector('#rl-content #rl-' + position.toLowerCase()) : null;
 
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = vm;
-
-		vm.viewModelName = ViewModelClass.__name;
-		vm.viewModelNames = ViewModelClass.__names;
-		vm.viewModelTemplateID = ViewModelClass.__templateID;
-		vm.viewModelPosition = ViewModelClass.__type;
 
 		if (vmPlace) {
 			vmDom = Element.fromHTML('<div class="rl-view-model RL-' + vm.viewModelTemplateID + '" hidden=""></div>');
@@ -369,42 +364,6 @@ export function startScreens(screensClasses) {
 }
 
 /**
- * @param {Object} params
- * @returns {Function}
- */
-function viewDecorator({ name, type, templateID }) {
-	return (target) => {
-		if (target) {
-			if (name) {
-				if (Array.isArray(name)) {
-					target.__names = name;
-				} else {
-					target.__names = [name];
-				}
-
-				target.__name = target.__names[0];
-			}
-
-			if (type) {
-				target.__type = type;
-			}
-
-			if (templateID) {
-				target.__templateID = templateID;
-			}
-		}
-	};
-}
-
-/**
- * @param {Object} params
- * @returns {Function}
- */
-function popupDecorator({ name, templateID }) {
-	return viewDecorator({ name, type: ViewType.Popup, templateID });
-}
-
-/**
  * @param {Function} canExecute
  * @returns {Function}
  */
@@ -441,7 +400,7 @@ function settingsMenuKeysHandler(items) {
 		let index = items.length;
 		if (event && index) {
 			while (index-- && !items[index].matches('.selected'));
-			if (handler && 'up' === handler.shortcut) {
+			if (handler && 'arrowup' === handler.shortcut) {
 				index && --index;
 			} else if (index < items.length - 1) {
 				++index;
@@ -456,9 +415,5 @@ function settingsMenuKeysHandler(items) {
 export {
 	commandDecorator,
 	commandDecorator as command,
-	viewDecorator,
-	viewDecorator as view,
-	popupDecorator,
-	popupDecorator as popup,
 	settingsMenuKeysHandler
 };

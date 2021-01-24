@@ -4,16 +4,12 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import MessageStore from 'Stores/User/Message';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/AdvancedSearch',
-	templateID: 'PopupsAdvancedSearch'
-})
-class AdvancedSearchPopupView extends AbstractViewNext {
+class AdvancedSearchPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('AdvancedSearch');
 
 		this.addObservables({
 			fromFocus: false,

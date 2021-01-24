@@ -1,20 +1,15 @@
 import { leftPanelDisabled } from 'Common/Globals';
 import { KeyState } from 'Common/Enums';
 
-import { view, ViewType, settingsMenuKeysHandler } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { settingsMenuKeysHandler } from 'Knoin/Knoin';
+import { AbstractViewLeft } from 'Knoin/AbstractViews';
 
-@view({
-	name: 'View/Admin/Settings/Menu',
-	type: ViewType.Left,
-	templateID: 'AdminMenu'
-})
-class MenuSettingsAdminView extends AbstractViewNext {
+class MenuSettingsAdminView extends AbstractViewLeft {
 	/**
 	 * @param {?} screen
 	 */
 	constructor(screen) {
-		super();
+		super('Admin/Settings/Menu', 'AdminMenu');
 
 		this.leftPanelDisabled = leftPanelDisabled;
 

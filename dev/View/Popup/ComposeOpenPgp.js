@@ -9,18 +9,14 @@ import PgpStore from 'Stores/User/Pgp';
 
 import { EmailModel } from 'Model/Email';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 const KEY_NAME_SUBSTR = -8;
 
-@popup({
-	name: 'View/Popup/ComposeOpenPgp',
-	templateID: 'PopupsComposeOpenPgp'
-})
-class ComposeOpenPgpPopupView extends AbstractViewNext {
+class ComposeOpenPgpPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('ComposeOpenPgp');
 
 		this.publicKeysOptionsCaption = i18n('PGP_NOTIFICATIONS/ADD_A_PUBLICK_KEY');
 		this.privateKeysOptionsCaption = i18n('PGP_NOTIFICATIONS/SELECT_A_PRIVATE_KEY');

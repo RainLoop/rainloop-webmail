@@ -2,16 +2,12 @@ import { StorageResultType } from 'Common/Enums';
 
 import Remote from 'Remote/User/Fetch';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/TwoFactorTest',
-	templateID: 'PopupsTwoFactorTest'
-})
-class TwoFactorTestPopupView extends AbstractViewNext {
+class TwoFactorTestPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('TwoFactorTest');
 
 		this.addObservables({
 			code: '',

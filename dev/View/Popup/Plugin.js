@@ -5,16 +5,12 @@ import { getNotification, i18n } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { popup, command, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/Plugin',
-	templateID: 'PopupsPlugin'
-})
-class PluginPopupView extends AbstractViewNext {
+class PluginPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Plugin');
 
 		this.onPluginSettingsUpdateResponse = this.onPluginSettingsUpdateResponse.bind(this);
 

@@ -6,16 +6,12 @@ import CapaAdminStore from 'Stores/Admin/Capa';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/Domain',
-	templateID: 'PopupsDomain'
-})
-class DomainPopupView extends AbstractViewNext {
+class DomainPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Domain');
 
 		this.addObservables({
 			edit: false,

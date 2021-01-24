@@ -1,15 +1,10 @@
 import { KeyState } from 'Common/Enums';
 
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/ViewOpenPgpKey',
-	templateID: 'PopupsViewOpenPgpKey'
-})
-class ViewOpenPgpKeyPopupView extends AbstractViewNext {
+class ViewOpenPgpKeyPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('ViewOpenPgpKey');
 
 		this.addObservables({
 			key: '',

@@ -9,16 +9,12 @@ import FolderStore from 'Stores/User/Folder';
 
 import Remote from 'Remote/User/Fetch';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/FolderCreate',
-	templateID: 'PopupsFolderCreate'
-})
-class FolderCreateView extends AbstractViewNext {
+class FolderCreateView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('FolderCreate');
 
 		this.addObservables({
 			folderName: '',

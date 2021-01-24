@@ -9,16 +9,12 @@ import Remote from 'Remote/User/Fetch';
 import { FilterModel } from 'Model/Filter';
 import SieveStore from 'Stores/User/Sieve';
 
-import { popup, showScreenPopup/*, command*/ } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { showScreenPopup/*, command*/ } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/SieveScript',
-	templateID: 'PopupsSieveScript'
-})
-class SieveScriptPopupView extends AbstractViewNext {
+class SieveScriptPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('SieveScript');
 
 		ko.addObservablesTo(this, {
 			saveError: false,

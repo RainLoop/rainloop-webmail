@@ -7,16 +7,12 @@ import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 import FolderStore from 'Stores/User/Folder';
 import SieveStore from 'Stores/User/Sieve';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/Filter',
-	templateID: 'PopupsFilter'
-})
-class FilterPopupView extends AbstractViewNext {
+class FilterPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Filter');
 
 		this.addObservables({
 			isNew: true,

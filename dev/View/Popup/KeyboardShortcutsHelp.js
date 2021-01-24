@@ -1,15 +1,10 @@
 import { KeyState } from 'Common/Enums';
 
-import { popup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/KeyboardShortcutsHelp',
-	templateID: 'PopupsKeyboardShortcutsHelp'
-})
-class KeyboardShortcutsHelpPopupView extends AbstractViewNext {
+class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('KeyboardShortcutsHelp');
 		this.sDefaultKeyScope = KeyState.PopupKeyboardShortcutsHelp;
 	}
 

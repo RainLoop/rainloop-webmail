@@ -35,8 +35,8 @@ import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Fetch';
 
-import { view, command, ViewType, showScreenPopup, createCommand } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command, showScreenPopup, createCommand } from 'Knoin/Knoin';
+import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 const Settings = rl.settings;
 
@@ -44,14 +44,9 @@ function isTransparent(color) {
 	return 'rgba(0, 0, 0, 0)' === color || 'transparent' === color;
 }
 
-@view({
-	name: 'View/User/MailBox/MessageView',
-	type: ViewType.Right,
-	templateID: 'MailMessageView'
-})
-class MessageViewMailBoxUserView extends AbstractViewNext {
+class MessageViewMailBoxUserView extends AbstractViewRight {
 	constructor() {
-		super();
+		super('User/MailBox/MessageView', 'MailMessageView');
 
 		const createCommandReplyHelper = type =>
 			createCommand(() => {

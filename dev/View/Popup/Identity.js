@@ -3,18 +3,14 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 const reEmail = /^[^@\s]+@[^@\s]+$/;
 
-@popup({
-	name: 'View/Popup/Identity',
-	templateID: 'PopupsIdentity'
-})
-class IdentityPopupView extends AbstractViewNext {
+class IdentityPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Identity');
 
 		this.id = '';
 		this.addObservables({

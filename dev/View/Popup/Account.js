@@ -3,16 +3,12 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 
-import { popup, command } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { command } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/Account',
-	templateID: 'PopupsAccount'
-})
-class AccountPopupView extends AbstractViewNext {
+class AccountPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('Account');
 
 		this.addObservables({
 			isNew: true,

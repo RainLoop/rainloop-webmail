@@ -3,20 +3,15 @@ import { leftPanelDisabled } from 'Common/Globals';
 import { settings, inbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 
-import { view, ViewType, settingsMenuKeysHandler } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { settingsMenuKeysHandler } from 'Knoin/Knoin';
+import { AbstractViewLeft } from 'Knoin/AbstractViews';
 
-@view({
-	name: 'View/User/Settings/Menu',
-	type: ViewType.Left,
-	templateID: 'SettingsMenu'
-})
-class MenuSettingsUserView extends AbstractViewNext {
+class MenuSettingsUserView extends AbstractViewLeft {
 	/**
 	 * @param {Object} screen
 	 */
 	constructor(screen) {
-		super();
+		super('User/Settings/Menu', 'SettingsMenu');
 
 		this.leftPanelDisabled = leftPanelDisabled;
 

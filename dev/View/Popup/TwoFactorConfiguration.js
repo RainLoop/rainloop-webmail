@@ -4,16 +4,12 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 
-import { popup, showScreenPopup } from 'Knoin/Knoin';
-import { AbstractViewNext } from 'Knoin/AbstractViewNext';
+import { showScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-@popup({
-	name: 'View/Popup/TwoFactorConfiguration',
-	templateID: 'PopupsTwoFactorConfiguration'
-})
-class TwoFactorConfigurationPopupView extends AbstractViewNext {
+class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 	constructor() {
-		super();
+		super('TwoFactorConfiguration');
 
 		this.addObservables({
 			lock: false,
