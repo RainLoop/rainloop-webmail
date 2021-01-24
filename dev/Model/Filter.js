@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { FilterRulesType, FiltersAction } from 'Common/Enums';
 import { pString } from 'Common/Utils';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { i18n } from 'Common/Translator';
@@ -10,6 +9,26 @@ import AccountStore from 'Stores/User/Account';
 
 import { FilterConditionModel } from 'Model/FilterCondition';
 import { AbstractModel } from 'Knoin/AbstractModel';
+
+/**
+ * @enum {string}
+ */
+export const FilterAction = {
+	None: 'None',
+	MoveTo: 'MoveTo',
+	Discard: 'Discard',
+	Vacation: 'Vacation',
+	Reject: 'Reject',
+	Forward: 'Forward'
+};
+
+/**
+ * @enum {string}
+ */
+const FilterRulesType = {
+	All: 'All',
+	Any: 'Any'
+};
 
 export class FilterModel extends AbstractModel {
 	constructor() {
@@ -43,7 +62,7 @@ export class FilterModel extends AbstractModel {
 			actionKeep: true,
 			actionNoStop: false,
 
-			actionType: FiltersAction.MoveTo
+			actionType: FilterAction.MoveTo
 		});
 
 		this.conditions = ko.observableArray();
@@ -59,23 +78,23 @@ export class FilterModel extends AbstractModel {
 				const actionValue = this.actionValue();
 
 				switch (this.actionType()) {
-					case FiltersAction.MoveTo:
+					case FilterAction.MoveTo:
 						result = i18n('SETTINGS_FILTERS/SUBNAME_MOVE_TO', {
 							FOLDER: fGetRealFolderName(actionValue)
 						});
 						break;
-					case FiltersAction.Forward:
+					case FilterAction.Forward:
 						result = i18n('SETTINGS_FILTERS/SUBNAME_FORWARD_TO', {
 							EMAIL: actionValue
 						});
 						break;
-					case FiltersAction.Vacation:
+					case FilterAction.Vacation:
 						result = i18n('SETTINGS_FILTERS/SUBNAME_VACATION_MESSAGE');
 						break;
-					case FiltersAction.Reject:
+					case FilterAction.Reject:
 						result = i18n('SETTINGS_FILTERS/SUBNAME_REJECT');
 						break;
-					case FiltersAction.Discard:
+					case FilterAction.Discard:
 						result = i18n('SETTINGS_FILTERS/SUBNAME_DISCARD');
 						break;
 					// no default
@@ -88,24 +107,24 @@ export class FilterModel extends AbstractModel {
 				let result = '';
 
 				switch (this.actionType()) {
-					case FiltersAction.Forward:
-						result = 'SettingsFiltersActionForward';
+					case FilterAction.Forward:
+						result = 'SettingsFilterActionForward';
 						break;
-					case FiltersAction.Vacation:
-						result = 'SettingsFiltersActionVacation';
+					case FilterAction.Vacation:
+						result = 'SettingsFilterActionVacation';
 						break;
-					case FiltersAction.Reject:
-						result = 'SettingsFiltersActionReject';
+					case FilterAction.Reject:
+						result = 'SettingsFilterActionReject';
 						break;
-					case FiltersAction.None:
-						result = 'SettingsFiltersActionNone';
+					case FilterAction.None:
+						result = 'SettingsFilterActionNone';
 						break;
-					case FiltersAction.Discard:
-						result = 'SettingsFiltersActionDiscard';
+					case FilterAction.Discard:
+						result = 'SettingsFilterActionDiscard';
 						break;
-					case FiltersAction.MoveTo:
+					case FilterAction.MoveTo:
 					default:
-						result = 'SettingsFiltersActionMoveToFolder';
+						result = 'SettingsFilterActionMoveToFolder';
 						break;
 				}
 
@@ -143,10 +162,10 @@ export class FilterModel extends AbstractModel {
 
 		if (!this.actionValue()) {
 			if ([
-					FiltersAction.MoveTo,
-					FiltersAction.Forward,
-					FiltersAction.Reject,
-					FiltersAction.Vacation
+					FilterAction.MoveTo,
+					FilterAction.Forward,
+					FilterAction.Reject,
+					FilterAction.Vacation
 				].includes(this.actionType())
 			) {
 				this.actionValueError(true);
@@ -154,13 +173,13 @@ export class FilterModel extends AbstractModel {
 			}
 		}
 
-		if (FiltersAction.Forward === this.actionType() && !this.actionValue().includes('@')) {
+		if (FilterAction.Forward === this.actionType() && !this.actionValue().includes('@')) {
 			this.actionValueError(true);
 			return false;
 		}
 
 		if (
-			FiltersAction.Vacation === this.actionType() &&
+			FilterAction.Vacation === this.actionType() &&
 			this.actionValueFourth() &&
 			!this.actionValueFourth().includes('@')
 		) {

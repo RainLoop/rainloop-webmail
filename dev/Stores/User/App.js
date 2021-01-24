@@ -1,5 +1,6 @@
 import ko from 'ko';
-import { Focused, KeyState } from 'Common/Enums';
+import { KeyState } from 'Common/Enums';
+import { Focused } from 'Common/EnumsUser';
 
 import { keyScope, leftPanelDisabled } from 'Common/Globals';
 

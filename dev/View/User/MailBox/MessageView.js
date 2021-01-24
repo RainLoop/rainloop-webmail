@@ -4,14 +4,17 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import {
 	Capa,
+	KeyState
+} from 'Common/Enums';
+
+import {
 	ComposeType,
 	ClientSideKeyName,
-	KeyState,
 	FolderType,
 	Focused,
 	Layout,
 	MessageSetAction
-} from 'Common/Enums';
+} from 'Common/EnumsUser';
 
 import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction } from 'Common/Globals';
 

@@ -1,4 +1,4 @@
-import { MessageSetAction } from 'Common/Enums';
+import { MessageSetAction } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
 
 let FOLDERS_CACHE = {},

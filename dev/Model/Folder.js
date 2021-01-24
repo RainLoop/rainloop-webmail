@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { FolderType } from 'Common/Enums';
+import { FolderType } from 'Common/EnumsUser';
 import { isPosNumeric } from 'Common/UtilsUser';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 

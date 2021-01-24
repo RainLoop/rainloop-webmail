@@ -1,6 +1,7 @@
 import ko from 'ko';
 
-import { ClientSideKeyName, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
+import { ClientSideKeyName } from 'Common/EnumsUser';
 import { getNotification, i18n } from 'Common/Translator';
 
 import { removeFolderFromCacheList } from 'Common/Cache';

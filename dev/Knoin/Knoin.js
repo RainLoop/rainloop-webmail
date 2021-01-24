@@ -180,12 +180,12 @@ function buildViewModel(ViewModelClass, vmScreen) {
 		}
 	}
 
-	return ViewModelClass ? ViewModelClass.__vm : null;
+	return ViewModelClass && ViewModelClass.__vm;
 }
 
 function getScreenPopupViewModel(ViewModelClassToShow) {
 	const ModalView = getScreenPopup(ViewModelClassToShow);
-	return (buildViewModel(ModalView) && ModalView.__dom) ? ModalView.__vm : null;
+	return (buildViewModel(ModalView) && ModalView.__dom) && ModalView.__vm;
 }
 
 /**
@@ -221,7 +221,7 @@ export function warmUpScreenPopup(ViewModelClassToShow) {
  */
 export function isPopupVisible(ViewModelClassToShow) {
 	const ModalView = getScreenPopup(ViewModelClassToShow);
-	return ModalView && ModalView.__vm ? ModalView.__vm.modalVisibility() : false;
+	return ModalView && ModalView.__vm && ModalView.__vm.modalVisibility();
 }
 
 /**
@@ -329,7 +329,7 @@ export function startScreens(screensClasses) {
 	screensClasses.forEach(CScreen => {
 		if (CScreen) {
 			const vmScreen = new CScreen(),
-				screenName = vmScreen ? vmScreen.screenName() : '';
+				screenName = vmScreen && vmScreen.screenName();
 
 			if (vmScreen && screenName) {
 				if (!defaultScreenName) {

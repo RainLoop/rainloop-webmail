@@ -1,12 +1,11 @@
 import ko from 'ko';
 
 import {
-	LoginSignMeType,
-	LoginSignMeTypeAsString,
-	ClientSideKeyName,
 	StorageResultType,
 	Notification
 } from 'Common/Enums';
+
+import { ClientSideKeyName } from 'Common/EnumsUser';
 
 import { convertLangName } from 'Common/Utils';
 
@@ -24,7 +23,20 @@ import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
 import { rootAdmin } from 'Common/Links';
 
-const Settings = rl.settings;
+const Settings = rl.settings,
+
+	LoginSignMeType = {
+		DefaultOff: 0,
+		DefaultOn: 1,
+		Unused: 2
+	},
+
+	LoginSignMeTypeAsString = {
+		DefaultOff: 'defaultoff',
+		DefaultOn: 'defaulton',
+		Unused: 'unused'
+	};
+
 
 class LoginUserView extends AbstractViewCenter {
 	constructor() {

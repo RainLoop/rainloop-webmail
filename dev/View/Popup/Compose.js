@@ -3,13 +3,16 @@ import ko from 'ko';
 import {
 	Capa,
 	KeyState,
-	ComposeType,
 	StorageResultType,
-	EditorDefaultType,
 	Notification,
-	SetSystemFoldersNotification,
 	UploadErrorCode
 } from 'Common/Enums';
+
+import {
+	ComposeType,
+	EditorDefaultType,
+	SetSystemFoldersNotification
+} from 'Common/EnumsUser';
 
 import { inFocus, pInt } from 'Common/Utils';
 import { encodeHtml, delegateRunOnDestroy } from 'Common/UtilsUser';

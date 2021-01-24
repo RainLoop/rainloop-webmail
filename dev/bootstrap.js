@@ -13,10 +13,10 @@ export default (App) => {
 			if ('S' == event.key) {
 				event.preventDefault();
 			} else if ('A' == event.key) {
-				const sender = event.target || event.srcElement;
+				const sender = event.target;
 				if (
 					sender &&
-					('true' === '' + sender.contentEditable || (sender.tagName && sender.tagName.match(/INPUT|TEXTAREA/i)))
+					('true' === '' + sender.contentEditable || (sender.matches && sender.matches('INPUT,TEXTAREA')))
 				) {
 					return;
 				}

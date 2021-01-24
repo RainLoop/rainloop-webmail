@@ -1,4 +1,4 @@
-import { StorageResultType, ServerSecure, Notification } from 'Common/Enums';
+import { StorageResultType, Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 
@@ -37,15 +37,15 @@ class DomainPopupView extends AbstractViewPopup {
 
 			imapServer: '',
 			imapPort: '143',
-			imapSecure: ServerSecure.None,
+			imapSecure: 0,
 			imapShortLogin: false,
 			useSieve: false,
 			sieveServer: '',
 			sievePort: '4190',
-			sieveSecure: ServerSecure.None,
+			sieveSecure: 0,
 			smtpServer: '',
 			smtpPort: '25',
-			smtpSecure: ServerSecure.None,
+			smtpSecure: 0,
 			smtpShortLogin: false,
 			smtpAuth: true,
 			smtpPhpMail: false,
@@ -325,17 +325,17 @@ class DomainPopupView extends AbstractViewPopup {
 
 		this.imapServer('');
 		this.imapPort('143');
-		this.imapSecure(ServerSecure.None);
+		this.imapSecure(0);
 		this.imapShortLogin(false);
 
 		this.useSieve(false);
 		this.sieveServer('');
 		this.sievePort('4190');
-		this.sieveSecure(ServerSecure.None);
+		this.sieveSecure(0);
 
 		this.smtpServer('');
 		this.smtpPort('25');
-		this.smtpSecure(ServerSecure.None);
+		this.smtpSecure(0);
 		this.smtpShortLogin(false);
 		this.smtpAuth(true);
 		this.smtpPhpMail(false);

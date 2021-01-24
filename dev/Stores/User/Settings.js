@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
-import { Layout, EditorDefaultType } from 'Common/Enums';
+import { Layout, EditorDefaultType } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
 
 class SettingsUserStore {

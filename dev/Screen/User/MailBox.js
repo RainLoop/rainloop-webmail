@@ -1,4 +1,5 @@
-import { Focused, Capa, ClientSideKeyName } from 'Common/Enums';
+import { Capa } from 'Common/Enums';
+import { Focused, ClientSideKeyName } from 'Common/EnumsUser';
 import { leftPanelDisabled, leftPanelType, moveAction } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';

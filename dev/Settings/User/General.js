@@ -2,7 +2,8 @@ import ko from 'ko';
 
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 
-import { SaveSettingsStep, EditorDefaultType, Layout } from 'Common/Enums';
+import { SaveSettingsStep } from 'Common/Enums';
+import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 
 import { settingsSaveHelperSimpleFunction, convertLangName } from 'Common/Utils';
 

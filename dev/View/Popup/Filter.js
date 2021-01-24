@@ -1,6 +1,7 @@
 import ko from 'ko';
 
-import { FiltersAction, FilterConditionField, FilterConditionType } from 'Common/Enums';
+import { FilterAction } from 'Model/Filter';
+import { FilterConditionField, FilterConditionType } from 'Model/FilterCondition';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
@@ -40,7 +41,7 @@ class FilterPopupView extends AbstractViewPopup {
 	@command()
 	saveFilterCommand() {
 		if (this.filter()) {
-			if (FiltersAction.MoveTo === this.filter().actionType()) {
+			if (FilterAction.MoveTo === this.filter().actionType()) {
 				this.filter().actionValue(this.selectedFolderValue());
 			}
 
@@ -74,7 +75,7 @@ class FilterPopupView extends AbstractViewPopup {
 			{ 'id': FilterConditionType.NotEqualTo, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_NOT_EQUAL_TO') }
 		]);
 
-		// this.actionTypeOptions.push({'id': FiltersAction.None,
+		// this.actionTypeOptions.push({'id': FilterAction.None,
 		// 'name': i18n('GLOBAL/NONE')});
 		const modules = SieveStore.capa;
 		if (modules) {
@@ -84,22 +85,22 @@ class FilterPopupView extends AbstractViewPopup {
 
 			if (modules.includes('fileinto')) {
 				this.actionTypeOptions.push({
-					'id': FiltersAction.MoveTo,
+					'id': FilterAction.MoveTo,
 					'name': i18n('POPUPS_FILTER/SELECT_ACTION_MOVE_TO')
 				});
 				this.actionTypeOptions.push({
-					'id': FiltersAction.Forward,
+					'id': FilterAction.Forward,
 					'name': i18n('POPUPS_FILTER/SELECT_ACTION_FORWARD_TO')
 				});
 			}
 
 			if (modules.includes('reject')) {
-				this.actionTypeOptions.push({ 'id': FiltersAction.Reject, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_REJECT') });
+				this.actionTypeOptions.push({ 'id': FilterAction.Reject, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_REJECT') });
 			}
 
 			if (modules.includes('vacation')) {
 				this.actionTypeOptions.push({
-					'id': FiltersAction.Vacation,
+					'id': FilterAction.Vacation,
 					'name': i18n('POPUPS_FILTER/SELECT_ACTION_VACATION_MESSAGE')
 				});
 			}
@@ -113,7 +114,7 @@ class FilterPopupView extends AbstractViewPopup {
 			}
 		}
 
-		this.actionTypeOptions.push({ 'id': FiltersAction.Discard, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD') });
+		this.actionTypeOptions.push({ 'id': FilterAction.Discard, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD') });
 
 		this.typeOptionsSize([
 			{ 'id': FilterConditionType.Over, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_OVER') },

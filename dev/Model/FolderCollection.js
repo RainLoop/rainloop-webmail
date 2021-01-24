@@ -2,7 +2,7 @@ import { AbstractCollectionModel } from 'Model/AbstractCollection';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { pInt } from 'Common/Utils';
-import { ClientSideKeyName, FolderType, ServerFolderType } from 'Common/Enums';
+import { ClientSideKeyName, FolderType } from 'Common/EnumsUser';
 import * as Cache from 'Common/Cache';
 
 import * as Local from 'Storage/Client';
@@ -17,6 +17,18 @@ import Remote from 'Remote/User/Fetch';
 'use strict';
 
 const Settings = rl.settings,
+
+	ServerFolderType = {
+		USER: 0,
+		INBOX: 1,
+		SENT: 2,
+		DRAFTS: 3,
+		JUNK: 4,
+		TRASH: 5,
+		IMPORTANT: 10,
+		FLAGGED: 11,
+		ALL: 12
+	},
 
 normalizeFolder = sFolderFullNameRaw => ('' === sFolderFullNameRaw
 	|| UNUSED_OPTION_VALUE === sFolderFullNameRaw

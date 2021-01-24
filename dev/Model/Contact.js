@@ -1,5 +1,4 @@
-import { ContactPropertyModel } from 'Model/ContactProperty';
-import { ContactPropertyType } from 'Common/Enums';
+import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 

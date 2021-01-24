@@ -1,8 +1,33 @@
 import ko from 'ko';
 
-import { FilterConditionField, FilterConditionType } from 'Common/Enums';
-
 import { AbstractModel } from 'Knoin/AbstractModel';
+
+/**
+ * @enum {string}
+ */
+export const FilterConditionField = {
+	From: 'From',
+	Recipient: 'Recipient',
+	Subject: 'Subject',
+	Header: 'Header',
+	Body: 'Body',
+	Size: 'Size'
+};
+
+/**
+ * @enum {string}
+ */
+export const FilterConditionType = {
+	Contains: 'Contains',
+	NotContains: 'NotContains',
+	EqualTo: 'EqualTo',
+	NotEqualTo: 'NotEqualTo',
+	Regex: 'Regex',
+	Over: 'Over',
+	Under: 'Under',
+	Text: 'Text',
+	Raw: 'Raw'
+};
 
 export class FilterConditionModel extends AbstractModel {
 	constructor() {

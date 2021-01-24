@@ -1,6 +1,7 @@
 import ko from 'ko';
 
-import { Capa, Focused, Layout, KeyState } from 'Common/Enums';
+import { Capa, KeyState } from 'Common/Enums';
+import { Focused, Layout } from 'Common/EnumsUser';
 import { leftPanelDisabled, moveAction } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';

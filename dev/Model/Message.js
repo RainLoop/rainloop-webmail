@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { MessagePriority, SignedVerifyStatus } from 'Common/Enums';
+import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
 import { encodeHtml } from 'Common/UtilsUser';
@@ -15,6 +15,15 @@ import { EmailCollectionModel } from 'Model/EmailCollection';
 import { AbstractModel } from 'Knoin/AbstractModel';
 
 const isArray = Array.isArray,
+
+	SignedVerifyStatus = {
+		UnknownPublicKeys: -4,
+		UnknownPrivateKey: -3,
+		Unverified: -2,
+		Error: -1,
+		None: 0,
+		Success: 1
+	},
 
 	replyHelper = (emails, unic, localEmails) => {
 		emails.forEach(email => {

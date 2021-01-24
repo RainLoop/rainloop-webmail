@@ -171,7 +171,7 @@ ko.bindingHandlers.command = {
 		['command-disabled','disable','disabled'].forEach(s=>cl.toggle(s, !result));
 		cl.toggle('no-disabled', !!result);
 
-		if (element.nodeName.match(/INPUT|TEXTAREA|BUTTON/)) {
+		if (element.matches('INPUT,TEXTAREA,BUTTON')) {
 			element.disabled = !result;
 		}
 	}

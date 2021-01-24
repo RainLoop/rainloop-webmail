@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { SetSystemFoldersNotification } from 'Common/Enums';
+import { SetSystemFoldersNotification } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';

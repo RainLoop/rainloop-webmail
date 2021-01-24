@@ -2,15 +2,18 @@ import { pInt, pString } from 'Common/Utils';
 import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
 
 import {
-	Layout,
 	Capa,
 	StorageResultType,
-	Notification,
+	Notification
+} from 'Common/Enums';
+
+import {
+	Layout,
 	FolderType,
 	SetSystemFoldersNotification,
 	MessageSetAction,
 	ClientSideKeyName
-} from 'Common/Enums';
+} from 'Common/EnumsUser';
 
 import { $htmlCL, leftPanelDisabled } from 'Common/Globals';
 

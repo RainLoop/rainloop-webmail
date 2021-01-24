@@ -2,14 +2,17 @@ import ko from 'ko';
 
 import {
 	Capa,
+	KeyState,
+	StorageResultType
+} from 'Common/Enums';
+
+import {
 	Layout,
 	Focused,
 	ComposeType,
 	FolderType,
-	MessageSetAction,
-	KeyState,
-	StorageResultType
-} from 'Common/Enums';
+	MessageSetAction
+} from 'Common/EnumsUser';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 

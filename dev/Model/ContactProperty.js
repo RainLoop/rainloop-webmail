@@ -1,10 +1,40 @@
-import { ContactPropertyType } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
 const trim = text => null == text ? "" : (text + "").trim();
+
+/**
+ * @enum {number}
+ */
+export const ContactPropertyType = {
+	Unknown: 0,
+
+	FullName: 10,
+
+	FirstName: 15,
+	LastName: 16,
+	MiddleName: 17,
+	Nick: 18,
+
+	NamePrefix: 20,
+	NameSuffix: 21,
+
+	Email: 30,
+	Phone: 31,
+	Web: 32,
+
+	Birthday: 40,
+
+	Facebook: 90,
+	Skype: 91,
+	GitHub: 92,
+
+	Note: 110,
+
+	Custom: 250
+};
 
 export class ContactPropertyModel extends AbstractModel {
 	/**

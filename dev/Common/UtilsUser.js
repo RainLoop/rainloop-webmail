@@ -1,4 +1,4 @@
-import { ComposeType, FolderType } from 'Common/Enums';
+import { ComposeType, FolderType } from 'Common/EnumsUser';
 
 const
 	tpl = document.createElement('template'),

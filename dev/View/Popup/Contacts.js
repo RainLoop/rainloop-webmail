@@ -2,13 +2,13 @@ import ko from 'ko';
 
 import {
 	SaveSettingsStep,
-	ContactPropertyType,
-	ComposeType,
 	Capa,
 	StorageResultType,
 	Notification,
 	KeyState
 } from 'Common/Enums';
+
+import { ComposeType } from 'Common/EnumsUser';
 
 import { pInt } from 'Common/Utils';
 import { delegateRunOnDestroy, computedPaginatorHelper } from 'Common/UtilsUser';
@@ -24,7 +24,7 @@ import Remote from 'Remote/User/Fetch';
 
 import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
-import { ContactPropertyModel } from 'Model/ContactProperty';
+import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty';
 
 import { command, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';

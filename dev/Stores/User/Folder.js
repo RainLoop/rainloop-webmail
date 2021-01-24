@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { FolderType } from 'Common/Enums';
+import { FolderType } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
