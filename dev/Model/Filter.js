@@ -75,27 +75,27 @@ export class FilterModel extends AbstractModel {
 		this.addComputables({
 			nameSub: () => {
 				let result = '';
-				const actionValue = this.actionValue();
+				const actionValue = this.actionValue(), root = 'SETTINGS_FILTERS/SUBNAME_';
 
 				switch (this.actionType()) {
 					case FilterAction.MoveTo:
-						result = i18n('SETTINGS_FILTERS/SUBNAME_MOVE_TO', {
+						result = i18n(root + 'MOVE_TO', {
 							FOLDER: fGetRealFolderName(actionValue)
 						});
 						break;
 					case FilterAction.Forward:
-						result = i18n('SETTINGS_FILTERS/SUBNAME_FORWARD_TO', {
+						result = i18n(root + 'FORWARD_TO', {
 							EMAIL: actionValue
 						});
 						break;
 					case FilterAction.Vacation:
-						result = i18n('SETTINGS_FILTERS/SUBNAME_VACATION_MESSAGE');
+						result = i18n(root + 'VACATION_MESSAGE');
 						break;
 					case FilterAction.Reject:
-						result = i18n('SETTINGS_FILTERS/SUBNAME_REJECT');
+						result = i18n(root + 'REJECT');
 						break;
 					case FilterAction.Discard:
-						result = i18n('SETTINGS_FILTERS/SUBNAME_DISCARD');
+						result = i18n(root + 'DISCARD');
 						break;
 					// no default
 				}
@@ -104,31 +104,22 @@ export class FilterModel extends AbstractModel {
 			},
 
 			actionTemplate: () => {
-				let result = '';
-
+				const result = 'SettingsFiltersAction';
 				switch (this.actionType()) {
 					case FilterAction.Forward:
-						result = 'SettingsFilterActionForward';
-						break;
+						return result + 'Forward';
 					case FilterAction.Vacation:
-						result = 'SettingsFilterActionVacation';
-						break;
+						return result + 'Vacation';
 					case FilterAction.Reject:
-						result = 'SettingsFilterActionReject';
-						break;
+						return result + 'Reject';
 					case FilterAction.None:
-						result = 'SettingsFilterActionNone';
-						break;
+						return result + 'None';
 					case FilterAction.Discard:
-						result = 'SettingsFilterActionDiscard';
-						break;
+						return result + 'Discard';
 					case FilterAction.MoveTo:
 					default:
-						result = 'SettingsFilterActionMoveToFolder';
-						break;
+						return result + 'MoveToFolder';
 				}
-
-				return result;
 			}
 		});
 

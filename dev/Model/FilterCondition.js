@@ -44,23 +44,17 @@ export class FilterConditionModel extends AbstractModel {
 		});
 
 		this.template = ko.computed(() => {
-			let template = '';
+			const template = 'SettingsFiltersCondition';
 			switch (this.field()) {
 				case FilterConditionField.Body:
-					template = 'SettingsFiltersConditionBody';
-					break;
+					return template + 'Body';
 				case FilterConditionField.Size:
-					template = 'SettingsFiltersConditionSize';
-					break;
+					return template + 'Size';
 				case FilterConditionField.Header:
-					template = 'SettingsFiltersConditionMore';
-					break;
+					return template + 'More';
 				default:
-					template = 'SettingsFiltersConditionDefault';
-					break;
+					return template + 'Default';
 			}
-
-			return template;
 		}, this);
 
 		this.addSubscribables({
