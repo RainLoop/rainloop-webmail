@@ -50,20 +50,6 @@ export const convertThemeName = theme => {
 };
 
 /**
- *
- * @param {string} language
- * @param {boolean=} isEng = false
- * @returns {string}
- */
-export function convertLangName(language, isEng = false) {
-	return require('Common/Translator').i18n(
-		'LANGS_NAMES' + (true === isEng ? '_EN' : '') + '/LANG_' + language.toUpperCase().replace(/[^a-zA-Z0-9]+/g, '_'),
-		null,
-		language
-	);
-}
-
-/**
  * @param {object} domOption
  * @param {object} item
  * @returns {void}

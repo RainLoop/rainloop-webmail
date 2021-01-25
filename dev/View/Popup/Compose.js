@@ -15,7 +15,8 @@ import {
 } from 'Common/EnumsUser';
 
 import { inFocus, pInt } from 'Common/Utils';
-import { encodeHtml, delegateRunOnDestroy } from 'Common/UtilsUser';
+import { delegateRunOnDestroy } from 'Common/UtilsUser';
+import { encodeHtml } from 'Common/Html';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { upload } from 'Common/Links';
@@ -23,7 +24,7 @@ import { i18n, getNotification, getUploadErrorDescByCode } from 'Common/Translat
 import { format as momentorFormat } from 'Common/Momentor';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
 
-import { HtmlEditor } from 'Common/HtmlEditor';
+import { HtmlEditor } from 'Common/Html';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
@@ -39,6 +40,11 @@ import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 
 import { command, isPopupVisible, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
+
+import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
+import { AskPopupView } from 'View/Popup/Ask';
+import { ContactsPopupView } from 'View/Popup/Contacts';
+import { ComposeOpenPgpPopupView } from 'View/Popup/ComposeOpenPgp';
 
 const Settings = rl.settings,
 	/**
@@ -403,7 +409,7 @@ class ComposePopupView extends AbstractViewPopup {
 			}
 
 			if (!sSentFolder) {
-				showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Sent]);
+				showScreenPopup(FolderSystemPopupView, [SetSystemFoldersNotification.Sent]);
 			} else {
 				this.sendError(false);
 				this.sending(true);
@@ -443,7 +449,7 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 
 		if (FolderStore.draftFolderNotEnabled()) {
-			showScreenPopup(require('View/Popup/FolderSystem'), [SetSystemFoldersNotification.Draft]);
+			showScreenPopup(FolderSystemPopupView, [SetSystemFoldersNotification.Draft]);
 		} else {
 			this.savedError(false);
 			this.saving(true);
@@ -463,9 +469,8 @@ class ComposePopupView extends AbstractViewPopup {
 
 	@command((self) => self.isDraftFolderMessage())
 	deleteCommand() {
-		const PopupsAskViewModel = require('View/Popup/Ask');
-		if (!isPopupVisible(PopupsAskViewModel) && this.modalVisibility()) {
-			showScreenPopup(PopupsAskViewModel, [
+		if (!isPopupVisible(AskPopupView) && this.modalVisibility()) {
+			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
 					if (this.modalVisibility()) {
@@ -499,7 +504,7 @@ class ComposePopupView extends AbstractViewPopup {
 		if (this.allowContacts) {
 			this.skipCommand();
 			setTimeout(() => {
-				showScreenPopup(require('View/Popup/Contacts'), [true, this.sLastFocusedField]);
+				showScreenPopup(ContactsPopupView, [true, this.sLastFocusedField]);
 			}, 200);
 		}
 	}
@@ -535,7 +540,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 	openOpenPgpPopup() {
 		if (PgpStore.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml()) {
-			showScreenPopup(require('View/Popup/ComposeOpenPgp'), [
+			showScreenPopup(ComposeOpenPgpPopupView, [
 				(result) => {
 					this.editor((editor) => {
 						editor.setPlain(result);
@@ -780,7 +785,7 @@ class ComposePopupView extends AbstractViewPopup {
 		if (AppStore.composeInEdit()) {
 			type = type || ComposeType.Empty;
 			if (ComposeType.Empty !== type) {
-				showScreenPopup(require('View/Popup/Ask'), [
+				showScreenPopup(AskPopupView, [
 					i18n('COMPOSE/DISCARD_UNSAVED_DATA'),
 					() => {
 						this.initOnShow(type, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText);
@@ -1137,12 +1142,11 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	tryToClosePopup() {
-		const PopupsAskViewModel = require('View/Popup/Ask');
-		if (!isPopupVisible(PopupsAskViewModel) && this.modalVisibility()) {
+		if (!isPopupVisible(AskPopupView) && this.modalVisibility()) {
 			if (this.bSkipNextHide || (this.isEmptyForm() && !this.draftUid())) {
 				this.closeCommand && this.closeCommand();
 			} else {
-				showScreenPopup(PopupsAskViewModel, [
+				showScreenPopup(AskPopupView, [
 					i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
 					() => {
 						if (this.modalVisibility()) {

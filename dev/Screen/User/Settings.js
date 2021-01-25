@@ -6,7 +6,7 @@ import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 import AppStore from 'Stores/User/App';
 import AccountStore from 'Stores/User/Account';
 
-import { addSettingsViewModel } from 'Knoin/Knoin';
+import { settingsAddViewModel } from 'Knoin/Knoin';
 
 import { AbstractSettingsScreen } from 'Screen/AbstractSettings';
 
@@ -48,14 +48,14 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 			return false;
 		}
 
-		addSettingsViewModel(GeneralUserSettings, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
+		settingsAddViewModel(GeneralUserSettings, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
 		if (AppStore.contactsIsAllowed()) {
-			addSettingsViewModel(ContactsUserSettings, 'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
+			settingsAddViewModel(ContactsUserSettings, 'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 		}
 
 		if (Settings.capa(Capa.AdditionalAccounts) || Settings.capa(Capa.Identities)) {
-			addSettingsViewModel(
+			settingsAddViewModel(
 				AccountsUserSettings,
 				'SettingsAccounts',
 				Settings.capa(Capa.AdditionalAccounts)
@@ -66,15 +66,15 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 		}
 
 		if (Settings.capa(Capa.Sieve)) {
-			addSettingsViewModel(FiltersUserSettings, 'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
+			settingsAddViewModel(FiltersUserSettings, 'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
 		}
 
 		if (Settings.capa(Capa.AutoLogout) || Settings.capa(Capa.TwoFactor)) {
-			addSettingsViewModel(SecurityUserSettings, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
+			settingsAddViewModel(SecurityUserSettings, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 
 		if (Settings.capa(Capa.Templates)) {
-			addSettingsViewModel(
+			settingsAddViewModel(
 				TemplatesUserSettings,
 				'SettingsTemplates',
 				'SETTINGS_LABELS/LABEL_TEMPLATES_NAME',
@@ -83,15 +83,15 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 		}
 
 		if (Settings.capa(Capa.Folders)) {
-			addSettingsViewModel(FoldersUserSettings, 'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
+			settingsAddViewModel(FoldersUserSettings, 'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
 		}
 
 		if (Settings.capa(Capa.Themes)) {
-			addSettingsViewModel(ThemesUserSettings, 'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
+			settingsAddViewModel(ThemesUserSettings, 'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
 		}
 
 		if (Settings.capa(Capa.OpenPGP)) {
-			addSettingsViewModel(OpenPgpUserSettings, 'SettingsOpenPGP', 'OpenPGP', 'openpgp');
+			settingsAddViewModel(OpenPgpUserSettings, 'SettingsOpenPGP', 'OpenPGP', 'openpgp');
 		}
 
 		runSettingsViewModelHooks(false);

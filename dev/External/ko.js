@@ -1,32 +1,31 @@
+import { i18n, i18nToNodes, trigger } from 'Common/Translator';
+import { dropdownVisibility } from 'Common/Globals';
+
 const
 	doc = document,
-	ko = window.ko,
-	Translator = () => require('Common/Translator'),
-	Globals = () => require('Common/Globals'),
 	isFunction = v => typeof v === 'function',
 	koValue = value => !ko.isObservable(value) && isFunction(value) ? value() : ko.unwrap(value);
 
 ko.bindingHandlers.tooltip = {
 	init: (element, fValueAccessor) => {
-		const Global = Globals();
 		const sValue = koValue(fValueAccessor());
 
 		if ('off' === element.dataset.tooltipI18n) {
 			element.title = sValue;
 		} else {
-			element.title = Translator().i18n(sValue);
-			Translator().trigger.subscribe(() =>
-				element.title = Translator().i18n(sValue)
+			element.title = i18n(sValue);
+			trigger.subscribe(() =>
+				element.title = i18n(sValue)
 			);
-			Global.dropdownVisibility.subscribe(() =>
-				element.title = Translator().i18n(sValue)
+			dropdownVisibility.subscribe(() =>
+				element.title = i18n(sValue)
 			);
 		}
 	},
 	update: (element, fValueAccessor) => {
 		const sValue = koValue(fValueAccessor());
 		if (sValue) {
-			element.title = 'off' === element.dataset.tooltipI18n ? sValue : Translator().i18n(sValue);
+			element.title = 'off' === element.dataset.tooltipI18n ? sValue : i18n(sValue);
 		} else {
 			element.title = '';
 		}
@@ -111,13 +110,13 @@ ko.bindingHandlers.modal = {
 };
 
 ko.bindingHandlers.i18nInit = {
-	init: element => Translator().i18nToNodes(element)
+	init: element => i18nToNodes(element)
 };
 
 ko.bindingHandlers.i18nUpdate = {
 	update: (element, fValueAccessor) => {
 		ko.unwrap(fValueAccessor());
-		Translator().i18nToNodes(element);
+		i18nToNodes(element);
 	}
 };
 

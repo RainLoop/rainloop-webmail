@@ -1,6 +1,6 @@
 import { SaveSettingsStep } from 'Common/Enums';
-
-const ko = window.ko;
+import { pInt } from 'Common/Utils';
+import ko from 'External/ko';
 
 ko.bindingHandlers.saveTrigger = {
 	init: (element) => {
@@ -38,11 +38,10 @@ ko.extenders.idleTrigger = (target) => {
 };
 
 ko.extenders.posInterer = (target, defaultVal) => {
-	const Utils = require('Common/Utils'),
-		result = ko.computed({
+	const result = ko.computed({
 			read: target,
 			write: newValue => {
-				let val = Utils.pInt(newValue.toString(), defaultVal);
+				let val = pInt(newValue.toString(), defaultVal);
 				if (0 >= val) {
 					val = defaultVal;
 				}

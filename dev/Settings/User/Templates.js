@@ -7,6 +7,8 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
+import { TemplatePopupView } from 'View/Popup/Template';
+
 export class TemplatesUserSettings {
 	constructor() {
 		this.templates = TemplateStore.templates;
@@ -20,12 +22,12 @@ export class TemplatesUserSettings {
 	}
 
 	addNewTemplate() {
-		showScreenPopup(require('View/Popup/Template'));
+		showScreenPopup(TemplatePopupView);
 	}
 
 	editTemplate(oTemplateItem) {
 		if (oTemplateItem) {
-			showScreenPopup(require('View/Popup/Template'), [oTemplateItem]);
+			showScreenPopup(TemplatePopupView, [oTemplateItem]);
 		}
 	}
 

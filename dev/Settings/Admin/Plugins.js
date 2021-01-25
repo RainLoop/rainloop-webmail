@@ -9,6 +9,8 @@ import PluginStore from 'Stores/Admin/Plugin';
 
 import Remote from 'Remote/Admin/Fetch';
 
+import { PluginPopupView } from 'View/Popup/Plugin';
+
 export class PluginsAdminSettings {
 	constructor() {
 		this.enabledPlugins = ko.observable(!!rl.settings.get('EnabledPlugins'));
@@ -54,7 +56,7 @@ export class PluginsAdminSettings {
 
 	onPluginLoadRequest(result, data) {
 		if (StorageResultType.Success === result && data && data.Result) {
-			showScreenPopup(require('View/Popup/Plugin'), [data.Result]);
+			showScreenPopup(PluginPopupView, [data.Result]);
 		}
 	}
 

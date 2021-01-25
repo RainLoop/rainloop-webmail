@@ -8,6 +8,9 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
+import { AccountPopupView } from 'View/Popup/Account';
+import { IdentityPopupView } from 'View/Popup/Identity';
+
 export class AccountsUserSettings {
 	constructor() {
 		this.allowAdditionalAccount = rl.settings.capa(Capa.AdditionalAccounts);
@@ -21,21 +24,21 @@ export class AccountsUserSettings {
 	}
 
 	addNewAccount() {
-		showScreenPopup(require('View/Popup/Account'));
+		showScreenPopup(AccountPopupView);
 	}
 
 	editAccount(account) {
 		if (account && account.canBeEdit()) {
-			showScreenPopup(require('View/Popup/Account'), [account]);
+			showScreenPopup(AccountPopupView, [account]);
 		}
 	}
 
 	addNewIdentity() {
-		showScreenPopup(require('View/Popup/Identity'));
+		showScreenPopup(IdentityPopupView);
 	}
 
 	editIdentity(identity) {
-		showScreenPopup(require('View/Popup/Identity'), [identity]);
+		showScreenPopup(IdentityPopupView, [identity]);
 	}
 
 	/**

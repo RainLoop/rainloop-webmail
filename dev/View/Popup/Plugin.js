@@ -7,6 +7,7 @@ import Remote from 'Remote/Admin/Fetch';
 
 import { command, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
+import { AskPopupView } from 'View/Popup/Ask';
 
 class PluginPopupView extends AbstractViewPopup {
 	constructor() {
@@ -88,9 +89,8 @@ class PluginPopupView extends AbstractViewPopup {
 	}
 
 	tryToClosePopup() {
-		const PopupsAskViewModel = require('View/Popup/Ask');
-		if (!isPopupVisible(PopupsAskViewModel)) {
-			showScreenPopup(PopupsAskViewModel, [
+		if (!isPopupVisible(AskPopupView)) {
+			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_CLOSE_THIS_WINDOW'),
 				() => this.modalVisibility() && this.cancelCommand && this.cancelCommand()
 			]);

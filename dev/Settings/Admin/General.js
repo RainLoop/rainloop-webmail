@@ -4,12 +4,11 @@ import {
 	pInt,
 	settingsSaveHelperSimpleFunction,
 	changeTheme,
-	convertThemeName,
-	convertLangName
+	convertThemeName
 } from 'Common/Utils';
 
 import { SaveSettingsStep } from 'Common/Enums';
-import { reload as translatorReload } from 'Common/Translator';
+import { reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
@@ -19,6 +18,7 @@ import ThemeStore from 'Stores/Theme';
 import LanguageStore from 'Stores/Language';
 import AppAdminStore from 'Stores/Admin/App';
 import CapaAdminStore from 'Stores/Admin/Capa';
+import LanguagesPopupView from 'View/Popup/Languages';
 
 const settingsGet = rl.settings.get;
 
@@ -167,11 +167,11 @@ export class GeneralAdminSettings {
 	}
 
 	selectLanguage() {
-		showScreenPopup(require('View/Popup/Languages'), [this.language, this.languages(), LanguageStore.userLanguage()]);
+		showScreenPopup(LanguagesPopupView, [this.language, this.languages(), LanguageStore.userLanguage()]);
 	}
 
 	selectLanguageAdmin() {
-		showScreenPopup(require('View/Popup/Languages'), [
+		showScreenPopup(LanguagesPopupView, [
 			this.languageAdmin,
 			this.languagesAdmin(),
 			LanguageStore.userLanguageAdmin()

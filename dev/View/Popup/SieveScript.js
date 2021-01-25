@@ -12,6 +12,8 @@ import SieveStore from 'Stores/User/Sieve';
 import { showScreenPopup/*, command*/ } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
+import { FilterPopupView } from 'View/Popup/Filter';
+
 class SieveScriptPopupView extends AbstractViewPopup {
 	constructor() {
 		super('SieveScript');
@@ -83,7 +85,7 @@ class SieveScriptPopupView extends AbstractViewPopup {
 		/* this = SieveScriptModel */
 		const filter = new FilterModel();
 		filter.generateID();
-		showScreenPopup(require('View/Popup/Filter'), [
+		showScreenPopup(FilterPopupView, [
 			filter,
 			() => {
 				this.filters.push(filter);
@@ -94,7 +96,7 @@ class SieveScriptPopupView extends AbstractViewPopup {
 
 	editFilter(filter) {
 		const clonedFilter = filter.cloneSelf();
-		showScreenPopup(require('View/Popup/Filter'), [
+		showScreenPopup(FilterPopupView, [
 			clonedFilter,
 			() => {
 				const script = this.script(),

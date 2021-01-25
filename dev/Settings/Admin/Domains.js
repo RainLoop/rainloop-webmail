@@ -6,6 +6,9 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import DomainStore from 'Stores/Admin/Domain';
 import Remote from 'Remote/Admin/Fetch';
 
+import { DomainPopupView } from 'View/Popup/Domain';
+import { DomainAliasPopupView } from 'View/Popup/DomainAlias';
+
 export class DomainsAdminSettings {
 	constructor() {
 		this.domains = DomainStore.domains;
@@ -19,11 +22,11 @@ export class DomainsAdminSettings {
 	}
 
 	createDomain() {
-		showScreenPopup(require('View/Popup/Domain'));
+		showScreenPopup(DomainPopupView);
 	}
 
 	createDomainAlias() {
-		showScreenPopup(require('View/Popup/DomainAlias'));
+		showScreenPopup(DomainAliasPopupView);
 	}
 
 	deleteDomain(domain) {
@@ -47,7 +50,7 @@ export class DomainsAdminSettings {
 
 	onDomainLoadRequest(sResult, oData) {
 		if (StorageResultType.Success === sResult && oData && oData.Result) {
-			showScreenPopup(require('View/Popup/Domain'), [oData.Result]);
+			showScreenPopup(DomainPopupView, [oData.Result]);
 		}
 	}
 

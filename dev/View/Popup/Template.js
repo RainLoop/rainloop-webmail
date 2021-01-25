@@ -1,6 +1,6 @@
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
-import { HtmlEditor } from 'Common/HtmlEditor';
+import { HtmlEditor } from 'Common/Html';
 
 import Remote from 'Remote/User/Fetch';
 

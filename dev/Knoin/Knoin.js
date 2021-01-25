@@ -58,7 +58,7 @@ export function createCommand(fExecute, fCanExecute = true) {
  * @param {boolean=} isDefault = false
  * @returns {void}
  */
-export function addSettingsViewModel(SettingsViewModelClass, template, labelName, route, isDefault = false) {
+export function settingsAddViewModel(SettingsViewModelClass, template, labelName, route, isDefault = false) {
 	SettingsViewModelClass.__rlSettingsData = {
 		Label: labelName,
 		Template: template,

@@ -12,7 +12,7 @@ import Remote from 'Remote/User/Fetch';
 import { command } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-class FolderCreateView extends AbstractViewPopup {
+class FolderCreatePopupView extends AbstractViewPopup {
 	constructor() {
 		super('FolderCreate');
 
@@ -77,4 +77,4 @@ class FolderCreateView extends AbstractViewPopup {
 	}
 }
 
-export { FolderCreateView, FolderCreateView as default };
+export { FolderCreatePopupView, FolderCreatePopupView as default };

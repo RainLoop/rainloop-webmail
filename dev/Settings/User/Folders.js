@@ -14,6 +14,9 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
+import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
+import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
+
 export class FoldersUserSettings {
 	constructor() {
 		this.displaySpecSetting = FolderStore.displaySpecSetting;
@@ -79,11 +82,11 @@ export class FoldersUserSettings {
 	}
 
 	createFolder() {
-		showScreenPopup(require('View/Popup/FolderCreate'));
+		showScreenPopup(FolderCreatePopupView);
 	}
 
 	systemFolder() {
-		showScreenPopup(require('View/Popup/FolderSystem'));
+		showScreenPopup(FolderSystemPopupView);
 	}
 
 	deleteFolder(folderToRemove) {

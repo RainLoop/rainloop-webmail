@@ -10,6 +10,8 @@ import SettinsStore from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
+import { TwoFactorConfigurationPopupView } from 'View/Popup/TwoFactorConfiguration';
+
 export class SecurityUserSettings {
 	constructor() {
 		this.capaAutoLogout = rl.settings.capa(Capa.AutoLogout);
@@ -34,7 +36,7 @@ export class SecurityUserSettings {
 	}
 
 	configureTwoFactor() {
-		showScreenPopup(require('View/Popup/TwoFactorConfiguration'));
+		showScreenPopup(TwoFactorConfigurationPopupView);
 	}
 
 	onBuild() {

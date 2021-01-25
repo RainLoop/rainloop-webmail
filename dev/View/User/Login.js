@@ -7,9 +7,7 @@ import {
 
 import { ClientSideKeyName } from 'Common/EnumsUser';
 
-import { convertLangName } from 'Common/Utils';
-
-import { getNotification, getNotificationFromResponse, reload as translatorReload } from 'Common/Translator';
+import { getNotification, getNotificationFromResponse, reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import AppStore from 'Stores/User/App';
 import LanguageStore from 'Stores/Language';
@@ -22,6 +20,8 @@ import { command, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
 import { rootAdmin } from 'Common/Links';
+
+import { LanguagesPopupView } from 'View/Popup/Languages';
 
 const Settings = rl.settings,
 
@@ -269,7 +269,7 @@ class LoginUserView extends AbstractViewCenter {
 	}
 
 	selectLanguage() {
-		showScreenPopup(require('View/Popup/Languages'), [this.language, this.languages(), LanguageStore.userLanguage()]);
+		showScreenPopup(LanguagesPopupView, [this.language, this.languages(), LanguageStore.userLanguage()]);
 	}
 }
 

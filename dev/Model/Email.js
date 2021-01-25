@@ -1,4 +1,4 @@
-import { encodeHtml } from 'Common/UtilsUser';
+import { encodeHtml } from 'Common/Html';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 

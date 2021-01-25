@@ -8,6 +8,9 @@ import { settings } from 'Common/Links';
 import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
+import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp';
+import { AccountPopupView } from 'View/Popup/Account';
+
 const Settings = rl.settings;
 
 export class AbstractSystemDropDownUserView extends AbstractViewRight {
@@ -63,13 +66,13 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 
 	settingsHelp() {
 		if (Settings.capa(Capa.Help)) {
-			showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
+			showScreenPopup(KeyboardShortcutsHelpPopupView);
 		}
 	}
 
 	addAccountClick() {
 		if (this.capaAdditionalAccounts()) {
-			showScreenPopup(require('View/Popup/Account'));
+			showScreenPopup(AccountPopupView);
 		}
 	}
 
@@ -89,7 +92,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 		// shortcuts help
 		shortcuts.add('?,f1,help', '', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
 			if (this.viewModelVisible) {
-				showScreenPopup(require('View/Popup/KeyboardShortcutsHelp'));
+				showScreenPopup(KeyboardShortcutsHelpPopupView);
 				return false;
 			}
 			return true;

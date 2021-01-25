@@ -1,6 +1,9 @@
-const ko = window.ko,
+import ko from 'External/ko';
+import { HtmlEditor } from 'Common/Html';
+import { timeToNode } from 'Common/Momentor';
+import { EmailModel } from 'Model/Email';
 
-	rlContentType = 'snappymail/action',
+const rlContentType = 'snappymail/action',
 
 	// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
 	// In Chrome Mobile dataTransfer.types.includes(rlContentType) fails, only text/plain is set
@@ -30,7 +33,6 @@ ko.bindingHandlers.editor = {
 		let editor = null;
 
 		const fValue = fValueAccessor(),
-			HtmlEditor = require('Common/HtmlEditor').default,
 			fUpdateEditorValue = () => fValue && fValue.__editor && fValue.__editor.setHtmlOrPlain(fValue()),
 			fUpdateKoValue = () => fValue && fValue.__editor && fValue(fValue.__editor.getDataWithHtmlMark()),
 			fOnReady = () => {
@@ -51,7 +53,7 @@ ko.bindingHandlers.editor = {
 	}
 };
 
-let ttn = (element, fValueAccessor) => require('Common/Momentor').timeToNode(element, ko.unwrap(fValueAccessor()));
+let ttn = (element, fValueAccessor) => timeToNode(element, ko.unwrap(fValueAccessor()));
 ko.bindingHandlers.moment = {
 	init: ttn,
 	update: ttn
@@ -59,8 +61,7 @@ ko.bindingHandlers.moment = {
 
 ko.bindingHandlers.emailsTags = {
 	init: (element, fValueAccessor, fAllBindingsAccessor) => {
-		const EmailModel = require('Model/Email').default,
-			fValue = fValueAccessor(),
+		const fValue = fValueAccessor(),
 			fAllBindings = fAllBindingsAccessor(),
 			inputDelimiters = [',', ';', '\n'];
 

@@ -11,6 +11,8 @@ import { SieveScriptModel } from 'Model/SieveScript';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
+import { SieveScriptPopupView } from 'View/Popup/SieveScript';
+
 export class FiltersUserSettings {
 	constructor() {
 		this.scripts = SieveStore.scripts;
@@ -60,11 +62,11 @@ export class FiltersUserSettings {
 	}
 
 	addScript() {
-		showScreenPopup(require('View/Popup/SieveScript'), [new SieveScriptModel()]);
+		showScreenPopup(SieveScriptPopupView, [new SieveScriptModel()]);
 	}
 
 	editScript(script) {
-		showScreenPopup(require('View/Popup/SieveScript'), [script]);
+		showScreenPopup(SieveScriptPopupView, [script]);
 	}
 
 	deleteScript(script) {

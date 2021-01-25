@@ -5,9 +5,9 @@ import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 
-import { settingsSaveHelperSimpleFunction, convertLangName } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 
-import { i18n, trigger as translatorTrigger, reload as translatorReload } from 'Common/Translator';
+import { i18n, trigger as translatorTrigger, reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
@@ -19,6 +19,9 @@ import NotificationStore from 'Stores/User/Notification';
 import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
+
+import { IdentityPopupView } from 'View/Popup/Identity';
+import { LanguagesPopupView } from 'View/Popup/Languages';
 
 export class GeneralUserSettings {
 	constructor() {
@@ -87,7 +90,7 @@ export class GeneralUserSettings {
 	editMainIdentity() {
 		const identity = this.identityMain();
 		if (identity) {
-			showScreenPopup(require('View/Popup/Identity'), [identity]);
+			showScreenPopup(IdentityPopupView, [identity]);
 		}
 	}
 
@@ -161,6 +164,6 @@ export class GeneralUserSettings {
 	}
 
 	selectLanguage() {
-		showScreenPopup(require('View/Popup/Languages'), [this.language, this.languages(), LanguageStore.userLanguage()]);
+		showScreenPopup(LanguagesPopupView, [this.language, this.languages(), LanguageStore.userLanguage()]);
 	}
 }

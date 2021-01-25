@@ -41,6 +41,8 @@ import Remote from 'Remote/User/Fetch';
 import { command, showScreenPopup, createCommand } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
+import { ComposePopupView } from 'View/Popup/Compose';
+
 const Settings = rl.settings;
 
 function isTransparent(color) {
@@ -342,7 +344,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	 * @returns {void}
 	 */
 	replyOrforward(sType) {
-		Settings.capa(Capa.Composer) && showScreenPopup(require('View/Popup/Compose'), [sType, MessageStore.message()]);
+		Settings.capa(Capa.Composer) && showScreenPopup(ComposePopupView, [sType, MessageStore.message()]);
 	}
 
 	checkHeaderHeight() {
@@ -426,7 +428,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 					3 !== event.which &&
 					mailToHelper(
 						el.href,
-						Settings.capa(Capa.Composer) ? require('View/Popup/Compose') : null
+						Settings.capa(Capa.Composer) ? ComposePopupView : null
 					)
 				);
 			}
@@ -684,13 +686,13 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 	composeClick() {
 		if (Settings.capa(Capa.Composer)) {
-			showScreenPopup(require('View/Popup/Compose'));
+			showScreenPopup(ComposePopupView);
 		}
 	}
 
 	editMessage() {
 		if (Settings.capa(Capa.Composer) && MessageStore.message()) {
-			showScreenPopup(require('View/Popup/Compose'), [ComposeType.Draft, MessageStore.message()]);
+			showScreenPopup(ComposePopupView, [ComposeType.Draft, MessageStore.message()]);
 		}
 	}
 

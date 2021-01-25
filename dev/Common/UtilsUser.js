@@ -1,16 +1,11 @@
 import { ComposeType, FolderType } from 'Common/EnumsUser';
+import { EmailModel } from 'Model/Email';
+import { showScreenPopup } from 'Knoin/Knoin';
+import { encodeHtml } from 'Common/Html';
 
 const
 	tpl = document.createElement('template'),
-	isArray = Array.isArray,
-	htmlmap = {
-		'&': '&amp;',
-		'<': '&lt;',
-		'>': '&gt;',
-		'"': '&quot;',
-		"'": '&#x27;'
-	},
-	htmlspecialchars = str => (''+str).replace(/[&<>"']/g, m => htmlmap[m]);
+	isArray = Array.isArray;
 
 /**
  * @param {(string|number)} value
@@ -19,14 +14,6 @@ const
  */
 export function isPosNumeric(value, includeZero = true) {
 	return null != value && (includeZero ? /^[0-9]*$/ : /^[1-9]+[0-9]*$/).test(value.toString());
-}
-
-/**
- * @param {string} text
- * @returns {string}
- */
-export function encodeHtml(text) {
-	return null != text ? htmlspecialchars(text.toString()) : '';
 }
 
 /**
@@ -101,7 +88,7 @@ export function htmlToPlain(html) {
 						.replace(/[\n]/gm, '<br />')
 						.replace(/[\r]/gm, '')
 				: '',
-		fixAttibuteValue = (...args) => (args && 1 < args.length ? '' + args[1] + htmlspecialchars(args[2]) : ''),
+		fixAttibuteValue = (...args) => (args && 1 < args.length ? '' + args[1] + encodeHtml(args[2]) : ''),
 		convertLinks = (...args) => (args && 1 < args.length ? args[1].trim() : '');
 
 	tpl.innerHTML = html
@@ -470,8 +457,7 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 			params = {};
 
 		const email = mailToUrl.replace(/\?.+$/, ''),
-			query = mailToUrl.replace(/^[^?]*\?/, ''),
-			EmailModel = require('Model/Email').default;
+			query = mailToUrl.replace(/^[^?]*\?/, '');
 
 		query.split('&').forEach(temp => {
 			temp = temp.split('=');
@@ -506,7 +492,7 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 			bcc = EmailModel.parseEmailLine(decodeURIComponent(params.bcc));
 		}
 
-		require('Knoin/Knoin').showScreenPopup(PopupComposeViewModel, [
+		showScreenPopup(PopupComposeViewModel, [
 			ComposeType.Empty,
 			null,
 			to,

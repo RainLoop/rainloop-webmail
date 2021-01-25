@@ -3,7 +3,7 @@ import ko from 'ko';
 import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
-import { encodeHtml } from 'Common/UtilsUser';
+import { encodeHtml } from 'Common/Html';
 
 import { messageViewLink, messageDownloadLink } from 'Common/Links';
 
@@ -13,6 +13,8 @@ import { File } from 'Common/File';
 import { AttachmentCollectionModel } from 'Model/AttachmentCollection';
 import { EmailCollectionModel } from 'Model/EmailCollection';
 import { AbstractModel } from 'Knoin/AbstractModel';
+
+import PreviewHTML from 'Html/PreviewMessage.html';
 
 const isArray = Array.isArray,
 
@@ -379,9 +381,8 @@ export class MessageModel extends AbstractModel {
 			ccLine = this.ccToLine(false),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
 			win = open(''),
-			doc = win.document,
-			html = require('Html/PreviewMessage.html');
-		doc.write((html.default)
+			doc = win.document;
+		doc.write(PreviewHTML
 			.replace(/{{subject}}/g, encodeHtml(this.subject()))
 			.replace('{{date}}', encodeHtml(m ? m.format('LLL') : ''))
 			.replace('{{fromCreds}}', encodeHtml(this.fromToLine(false)))

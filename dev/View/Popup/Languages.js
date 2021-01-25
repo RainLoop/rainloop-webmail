@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { convertLangName } from 'Common/Utils';
+import { convertLangName } from 'Common/Translator';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 

@@ -26,8 +26,9 @@ import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
 import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty';
 
-import { command, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
+import { command, hideScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
+
 
 const CONTACTS_PER_PAGE = 50,
 	propertyIsMail = prop => prop.isType(ContactPropertyType.Email),
@@ -225,7 +226,7 @@ class ContactsPopupView extends AbstractViewPopup {
 			this.sLastComposeFocusedField = '';
 
 			setTimeout(() => {
-				showScreenPopup(require('View/Popup/Compose'), [ComposeType.Empty, null, toEmails, ccEmails, bccEmails]);
+				rl.app.showComposePopupView([ComposeType.Empty, null, toEmails, ccEmails, bccEmails]);
 			}, 200);
 		}
 
@@ -567,7 +568,7 @@ class ContactsPopupView extends AbstractViewPopup {
 			this.bBackToCompose = false;
 
 			if (rl.settings.capa(Capa.Composer)) {
-				showScreenPopup(require('View/Popup/Compose'));
+				rl.app.showComposePopupView();
 			}
 		}
 	}

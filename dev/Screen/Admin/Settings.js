@@ -1,4 +1,4 @@
-import { addSettingsViewModel } from 'Knoin/Knoin';
+import { settingsAddViewModel } from 'Knoin/Knoin';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 
 import { AbstractSettingsScreen } from 'Screen/AbstractSettings';
@@ -25,7 +25,7 @@ export class SettingsAdminScreen extends AbstractSettingsScreen {
 	 * @param {Function=} fCallback = null
 	 */
 	setupSettings(fCallback = null) {
-		addSettingsViewModel(
+		settingsAddViewModel(
 			GeneralAdminSettings,
 			'AdminSettingsGeneral',
 			'TABS_LABELS/LABEL_GENERAL_NAME',
@@ -43,7 +43,7 @@ export class SettingsAdminScreen extends AbstractSettingsScreen {
 			[PackagesAdminSettings, 'Packages'],
 			[AboutAdminSettings, 'About'],
 		].forEach(item =>
-			addSettingsViewModel(
+			settingsAddViewModel(
 				item[0],
 				'AdminSettings'+item[1],
 				'TABS_LABELS/LABEL_'+item[1].toUpperCase()+'_NAME',

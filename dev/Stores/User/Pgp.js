@@ -7,6 +7,8 @@ import AccountStore from 'Stores/User/Account';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
+import { MessageOpenPgpPopupView } from 'View/Popup/MessageOpenPgp';
+
 function controlsHelper(dom, verControl, success, title, text)
 {
 	dom.classList.toggle('error', !success);
@@ -264,7 +266,7 @@ class PgpUserStore {
 		if (message && message.getEncryptionKeyIds) {
 			const privateKeys = this.findPrivateKeysByEncryptionKeyIds(message.getEncryptionKeyIds(), recipients, true);
 			if (privateKeys && privateKeys.length) {
-				showScreenPopup(require('View/Popup/MessageOpenPgp'), [
+				showScreenPopup(MessageOpenPgpPopupView, [
 					(decryptedKey) => {
 						if (decryptedKey) {
 							message.decrypt(decryptedKey).then(

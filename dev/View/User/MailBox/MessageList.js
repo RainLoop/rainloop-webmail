@@ -44,6 +44,10 @@ import Remote from 'Remote/User/Fetch';
 import { command, showScreenPopup, popupVisibility } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
+import { FolderClearPopupView } from 'View/Popup/FolderClear';
+import { ComposePopupView } from 'View/Popup/Compose';
+import { AdvancedSearchPopupView } from 'View/Popup/AdvancedSearch';
+
 const
 	Settings = rl.settings,
 	canBeMovedHelper = (self) => self.canBeMoved(),
@@ -244,7 +248,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 	@command()
 	clearCommand() {
 		if (Settings.capa(Capa.DangerousActions)) {
-			showScreenPopup(require('View/Popup/FolderClear'), [FolderStore.currentFolder()]);
+			showScreenPopup(FolderClearPopupView, [FolderStore.currentFolder()]);
 		}
 	}
 
@@ -258,7 +262,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 	@command(canBeMovedHelper)
 	multyForwardCommand() {
 		if (Settings.capa(Capa.Composer)) {
-			showScreenPopup(require('View/Popup/Compose'), [
+			showScreenPopup(ComposePopupView, [
 				ComposeType.ForwardAsAttachment,
 				MessageStore.messageListCheckedOrSelected()
 			]);
@@ -350,7 +354,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 
 	composeClick() {
 		if (Settings.capa(Capa.Composer)) {
-			showScreenPopup(require('View/Popup/Compose'));
+			showScreenPopup(ComposePopupView);
 		}
 	}
 
@@ -761,7 +765,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 		if (Settings.capa(Capa.Composer)) {
 			// write/compose (open compose popup)
 			shortcuts.add('w,c,new', '', [KeyState.MessageList, KeyState.MessageView], () => {
-				showScreenPopup(require('View/Popup/Compose'));
+				showScreenPopup(ComposePopupView);
 				return false;
 			});
 		}
@@ -887,7 +891,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 
 	advancedSearchClick() {
 		Settings.capa(Capa.SearchAdv)
-			&& showScreenPopup(require('View/Popup/AdvancedSearch'), [this.mainMessageListSearch()]);
+			&& showScreenPopup(AdvancedSearchPopupView, [this.mainMessageListSearch()]);
 	}
 
 	quotaTooltip() {

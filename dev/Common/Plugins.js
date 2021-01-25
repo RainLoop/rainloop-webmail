@@ -1,3 +1,5 @@
+import * as Knoin from 'Knoin/Knoin';
+
 const USER_VIEW_MODELS_HOOKS = [],
 	ADMIN_VIEW_MODELS_HOOKS = [];
 
@@ -45,9 +47,8 @@ export function addSettingsViewModelForAdmin(SettingsViewModelClass, template, l
  * @param {boolean} admin
  */
 export function runSettingsViewModelHooks(admin) {
-	const Knoin = require('Knoin/Knoin');
 	(admin ? ADMIN_VIEW_MODELS_HOOKS : USER_VIEW_MODELS_HOOKS).forEach(view => {
-		Knoin.addSettingsViewModel(view[0], view[1], view[2], view[3]);
+		Knoin.settingsAddViewModel(view[0], view[1], view[2], view[3]);
 	});
 }
 

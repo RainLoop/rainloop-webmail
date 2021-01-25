@@ -160,3 +160,17 @@ export function reload(admin, language) {
 		doc.head.append(script);
 	});
 }
+
+/**
+ *
+ * @param {string} language
+ * @param {boolean=} isEng = false
+ * @returns {string}
+ */
+export function convertLangName(language, isEng = false) {
+	return i18n(
+		'LANGS_NAMES' + (true === isEng ? '_EN' : '') + '/LANG_' + language.toUpperCase().replace(/[^a-zA-Z0-9]+/g, '_'),
+		null,
+		language
+	);
+}

@@ -13,13 +13,22 @@ import { initOnStartOrLangChange } from 'Common/Translator';
 import LanguageStore from 'Stores/Language';
 import ThemeStore from 'Stores/Theme';
 
+import SaveTriggerComponent from 'Component/SaveTrigger';
+import InputComponent from 'Component/Input';
+import SelectComponent from 'Component/Select';
+import TextAreaComponent from 'Component/TextArea';
+import CheckboxMaterialDesignComponent from 'Component/MaterialDesign/Checkbox';
+import CheckboxComponent from 'Component/Checkbox';
+
 const Settings = rl.settings, doc = document;
 
 export class AbstractApp {
 	/**
 	 * @param {RemoteStorage|AdminRemoteStorage} Remote
 	 */
-	constructor() {
+	constructor(Remote) {
+		this.Remote = Remote;
+
 		const refresh = (()=>dispatchEvent(new CustomEvent('rl.auto-logout-refresh'))).debounce(5000),
 			fn = (ev=>{
 				$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey);
@@ -81,17 +90,15 @@ export class AbstractApp {
 	bootstart() {
 		const mobile = Settings.app('mobile');
 
-		ko.components.register('SaveTrigger', require('Component/SaveTrigger').default);
-		ko.components.register('Input', require('Component/Input').default);
-		ko.components.register('Select', require('Component/Select').default);
-		ko.components.register('TextArea', require('Component/TextArea').default);
-
+		ko.components.register('SaveTrigger', SaveTriggerComponent);
+		ko.components.register('Input', InputComponent);
+		ko.components.register('Select', SelectComponent);
+		ko.components.register('TextArea', TextAreaComponent);
+		ko.components.register('CheckboxSimple', CheckboxComponent);
 		if (Settings.app('materialDesign') && !rl.settings.app('mobile')) {
-			ko.components.register('Checkbox', require('Component/MaterialDesign/Checkbox').default);
-			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
+			ko.components.register('Checkbox', CheckboxMaterialDesignComponent);
 		} else {
-			ko.components.register('Checkbox', require('Component/Checkbox').default);
-			ko.components.register('CheckboxSimple', require('Component/Checkbox').default);
+			ko.components.register('Checkbox', CheckboxComponent);
 		}
 
 		initOnStartOrLangChange();

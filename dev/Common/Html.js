@@ -1,5 +1,23 @@
 import { createCKEditor } from 'External/CKEditor.js';
 
+const
+	htmlre = /[&<>"']/g,
+	htmlmap = {
+		'&': '&amp;',
+		'<': '&lt;',
+		'>': '&gt;',
+		'"': '&quot;',
+		"'": '&#x27;'
+	};
+
+/**
+ * @param {string} text
+ * @returns {string}
+ */
+export function encodeHtml(text) {
+	return (text && text.toString ? text.toString() : ''+text).replace(htmlre, m => htmlmap[m]);
+}
+
 class HtmlEditor {
 	editor;
 	blurTimer = 0;

@@ -9,6 +9,10 @@ import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
+import { AddOpenPgpKeyPopupView } from 'View/Popup/AddOpenPgpKey';
+import { NewOpenPgpKeyPopupView } from 'View/Popup/NewOpenPgpKey';
+import { ViewOpenPgpKeyPopupView } from 'View/Popup/ViewOpenPgpKey';
+
 export class OpenPgpUserSettings {
 	constructor() {
 		this.openpgpkeys = PgpStore.openpgpkeys;
@@ -21,16 +25,16 @@ export class OpenPgpUserSettings {
 	}
 
 	addOpenPgpKey() {
-		showScreenPopup(require('View/Popup/AddOpenPgpKey'));
+		showScreenPopup(AddOpenPgpKeyPopupView);
 	}
 
 	generateOpenPgpKey() {
-		showScreenPopup(require('View/Popup/NewOpenPgpKey'));
+		showScreenPopup(NewOpenPgpKeyPopupView);
 	}
 
 	viewOpenPgpKey(openPgpKey) {
 		if (openPgpKey) {
-			showScreenPopup(require('View/Popup/ViewOpenPgpKey'), [openPgpKey]);
+			showScreenPopup(ViewOpenPgpKeyPopupView, [openPgpKey]);
 		}
 	}
 

@@ -7,6 +7,11 @@ if (!$gulp) {
 	exit('gulp not installed, run as root: npm install --global gulp-cli');
 }
 
+$rollup = trim(`which rollup`);
+if (!$rollup) {
+	exit('rollup not installed, run as root: npm install --global rollup');
+}
+
 $options = getopt('', ['docker']);
 $options['docker'] = isset($options['docker']);
 
@@ -23,6 +28,11 @@ $docker_zip = "./.docker/release/snappymail-{$package->version}.zip";
 passthru($gulp, $return_var);
 if ($return_var) {
 	exit("gulp failed with error code {$return_var}\n");
+}
+
+passthru("{$rollup} -c", $return_var);
+if ($return_var) {
+	exit("rollup failed with error code {$return_var}\n");
 }
 
 $cmddir = escapeshellcmd(__DIR__) . '/snappymail/v/0.0.0/static';

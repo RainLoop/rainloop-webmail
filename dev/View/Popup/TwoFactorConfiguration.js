@@ -7,6 +7,8 @@ import Remote from 'Remote/User/Fetch';
 import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
+import { TwoFactorTestPopupView } from 'View/Popup/TwoFactorTest';
+
 class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 	constructor() {
 		super('TwoFactorConfiguration');
@@ -104,7 +106,7 @@ class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 	}
 
 	testTwoFactor() {
-		showScreenPopup(require('View/Popup/TwoFactorTest'), [this.twoFactorTested]);
+		showScreenPopup(TwoFactorTestPopupView, [this.twoFactorTested]);
 	}
 
 	clearTwoFactor() {

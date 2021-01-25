@@ -20,6 +20,8 @@ import { warmUpScreenPopup } from 'Knoin/Knoin';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
+import { ComposePopupView } from 'View/Popup/Compose';
+
 const Settings = rl.settings;
 
 export class MailBoxUserScreen extends AbstractScreen {
@@ -101,7 +103,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 */
 	onStart() {
 		setTimeout(() => SettingsStore.layout.valueHasMutated(), 50);
-		setTimeout(() => warmUpScreenPopup(require('View/Popup/Compose')), 500);
+		setTimeout(() => warmUpScreenPopup(ComposePopupView), 500);
 
 		addEventListener('mailbox.inbox-unread-count', e => {
 			FolderStore.foldersInboxUnreadCount(e.detail);

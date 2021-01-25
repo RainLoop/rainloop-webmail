@@ -14,6 +14,10 @@ import MessageStore from 'Stores/User/Message';
 import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewLeft } from 'Knoin/AbstractViews';
 
+import { ComposePopupView } from 'View/Popup/Compose';
+import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
+import { ContactsPopupView } from 'View/Popup/Contacts';
+
 const Settings = rl.settings;
 
 class FolderListMailBoxUserView extends AbstractViewLeft {
@@ -200,12 +204,12 @@ class FolderListMailBoxUserView extends AbstractViewLeft {
 
 	composeClick() {
 		if (Settings.capa(Capa.Composer)) {
-			showScreenPopup(require('View/Popup/Compose'));
+			showScreenPopup(ComposePopupView);
 		}
 	}
 
 	createFolder() {
-		showScreenPopup(require('View/Popup/FolderCreate'));
+		showScreenPopup(FolderCreatePopupView);
 	}
 
 	configureFolders() {
@@ -214,7 +218,7 @@ class FolderListMailBoxUserView extends AbstractViewLeft {
 
 	contactsClick() {
 		if (this.allowContacts) {
-			showScreenPopup(require('View/Popup/Contacts'));
+			showScreenPopup(ContactsPopupView);
 		}
 	}
 }

@@ -16,7 +16,7 @@ const concat = require('gulp-concat-util'),
 const { config } = require('./config');
 const { del, getHead } = require('./common');
 
-const { webpack } = require('./webpack');
+//const { rollupJS } = require('./rollup');
 
 const jsClean = () => del(config.paths.staticJS + '/**/*.{js,map}');
 
@@ -24,14 +24,28 @@ const jsClean = () => del(config.paths.staticJS + '/**/*.{js,map}');
 const jsBoot = () => {
 	return gulp
 		.src('dev/boot.js')
-		.pipe(gulp.dest('snappymail/v/' + config.devVersion + '/static/js'));
+		.pipe(gulp.dest(config.paths.staticJS));
 };
 
 // ServiceWorker
 const jsServiceWorker = () => {
 	return gulp
 		.src('dev/serviceworker.js')
-		.pipe(gulp.dest('snappymail/v/' + config.devVersion + '/static/js'));
+		.pipe(gulp.dest(config.paths.staticJS));
+};
+
+// OpenPGP
+const jsOpenPGP = () => {
+	return gulp
+		.src('node_modules/openpgp/dist/openpgp.min.js')
+		.pipe(gulp.dest(config.paths.staticMinJS));
+};
+
+// OpenPGP Worker
+const jsOpenPGPWorker = () => {
+	return gulp
+		.src('node_modules/openpgp/dist/openpgp.worker.min.js')
+		.pipe(gulp.dest(config.paths.staticMinJS));
 };
 
 // libs
@@ -114,8 +128,8 @@ const jsLint = () =>
 		.pipe(eslint.failAfterError());
 
 const jsState1 = gulp.series(jsLint);
-const jsState3 = gulp.parallel(jsBoot, jsServiceWorker, jsLibs, jsApp, jsAdmin);
-const jsState2 = gulp.series(jsClean, webpack, jsState3, jsMin);
+const jsState3 = gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsOpenPGPWorker, jsLibs/*, jsApp, jsAdmin*/);
+const jsState2 = gulp.series(jsClean/*, rollupJS('app.js'), rollupJS('admin.js')*/, jsState3, jsMin);
 
 exports.jsLint = jsLint;
 exports.js = gulp.parallel(jsState1, jsState2);

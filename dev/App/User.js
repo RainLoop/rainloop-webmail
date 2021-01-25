@@ -1,3 +1,5 @@
+import ko from 'External/User/ko'; // eslint-disable-line no-unused-vars
+
 import { pInt, pString } from 'Common/Utils';
 import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
 
@@ -67,7 +69,10 @@ import { startScreens, showScreenPopup } from 'Knoin/Knoin';
 
 import { AbstractApp } from 'App/Abstract';
 
-require('External/User/ko');
+import { ComposePopupView } from 'View/Popup/Compose';
+import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
+import { AskPopupView } from 'View/Popup/Ask';
+import { TwoFactorConfigurationPopupView } from 'View/Popup/TwoFactorConfiguration';
 
 const doc = document,
 	Settings = rl.settings;
@@ -329,13 +334,13 @@ class AppUser extends AbstractApp {
 		}
 
 		if (!oMoveFolder && bUseFolder) {
-			showScreenPopup(require('View/Popup/FolderSystem'), [nSetSystemFoldersNotification]);
+			showScreenPopup(FolderSystemPopupView, [nSetSystemFoldersNotification]);
 		} else if (
 			!bUseFolder ||
 			(FolderType.Trash === iDeleteType &&
 				(sFromFolderFullNameRaw === FolderStore.spamFolder() || sFromFolderFullNameRaw === FolderStore.trashFolder()))
 		) {
-			showScreenPopup(require('View/Popup/Ask'), [
+			showScreenPopup(AskPopupView, [
 				i18n('POPUPS_ASK/DESC_WANT_DELETE_MESSAGES'),
 				() => {
 					this.messagesDeleteHelper(sFromFolderFullNameRaw, aUidForRemove);
@@ -918,7 +923,7 @@ class AppUser extends AbstractApp {
 				Settings.get('RequireTwoFactor')
 			) {
 				this.bootend();
-				showScreenPopup(require('View/Popup/TwoFactorConfiguration'), [true]);
+				showScreenPopup(TwoFactorConfigurationPopupView, [true]);
 			} else {
 				rl.setWindowTitle(i18n('GLOBAL/LOADING'));
 
@@ -1022,7 +1027,7 @@ class AppUser extends AbstractApp {
 									} catch (e) {} // eslint-disable-line no-empty
 
 									if (Settings.get('MailToEmail')) {
-										mailToHelper(Settings.get('MailToEmail'), require('View/Popup/Compose'));
+										mailToHelper(Settings.get('MailToEmail'), ComposePopupView);
 									}
 								}, 500);
 							}
@@ -1046,6 +1051,11 @@ class AppUser extends AbstractApp {
 		}
 
 		setInterval(() => dispatchEvent(new CustomEvent('reload-time')), 60000);
+	}
+
+	showComposePopupView(params = [])
+	{
+		showScreenPopup(ComposePopupView, params);
 	}
 }
 
