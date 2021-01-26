@@ -89,22 +89,22 @@ class FolderSystemPopupView extends AbstractViewPopup {
 	 * @param {number=} notificationType = SetSystemFoldersNotification.None
 	 */
 	onShow(notificationType = SetSystemFoldersNotification.None) {
-		let notification = '';
+		let notification = '', prefix = 'POPUPS_SYSTEM_FOLDERS/NOTIFICATION_';
 		switch (notificationType) {
 			case SetSystemFoldersNotification.Sent:
-				notification = i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_SENT');
+				notification = i18n(prefix + 'SENT');
 				break;
 			case SetSystemFoldersNotification.Draft:
-				notification = i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_DRAFTS');
+				notification = i18n(prefix + 'DRAFTS');
 				break;
 			case SetSystemFoldersNotification.Spam:
-				notification = i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_SPAM');
+				notification = i18n(prefix + 'SPAM');
 				break;
 			case SetSystemFoldersNotification.Trash:
-				notification = i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_TRASH');
+				notification = i18n(prefix + 'TRASH');
 				break;
 			case SetSystemFoldersNotification.Archive:
-				notification = i18n('POPUPS_SYSTEM_FOLDERS/NOTIFICATION_ARCHIVE');
+				notification = i18n(prefix + 'ARCHIVE');
 				break;
 			// no default
 		}

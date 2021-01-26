@@ -60,19 +60,21 @@ class FilterPopupView extends AbstractViewPopup {
 	populateOptions() {
 		this.actionTypeOptions([]);
 
+		let i18nFilter = key => i18n('POPUPS_FILTER/SELECT_' + key);
+
 		this.fieldOptions([
 			{ 'id': FilterConditionField.From, 'name': i18n('GLOBAL/FROM') },
-			{ 'id': FilterConditionField.Recipient, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_RECIPIENTS') },
+			{ 'id': FilterConditionField.Recipient, 'name': i18nFilter('FIELD_RECIPIENTS') },
 			{ 'id': FilterConditionField.Subject, 'name': i18n('GLOBAL/SUBJECT') },
-			{ 'id': FilterConditionField.Size, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_SIZE') },
-			{ 'id': FilterConditionField.Header, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_HEADER') }
+			{ 'id': FilterConditionField.Size, 'name': i18nFilter('FIELD_SIZE') },
+			{ 'id': FilterConditionField.Header, 'name': i18nFilter('FIELD_HEADER') }
 		]);
 
 		this.typeOptions([
-			{ 'id': FilterConditionType.Contains, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_CONTAINS') },
-			{ 'id': FilterConditionType.NotContains, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_NOT_CONTAINS') },
-			{ 'id': FilterConditionType.EqualTo, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_EQUAL_TO') },
-			{ 'id': FilterConditionType.NotEqualTo, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_NOT_EQUAL_TO') }
+			{ 'id': FilterConditionType.Contains, 'name': i18nFilter('TYPE_CONTAINS') },
+			{ 'id': FilterConditionType.NotContains, 'name': i18nFilter('TYPE_NOT_CONTAINS') },
+			{ 'id': FilterConditionType.EqualTo, 'name': i18nFilter('TYPE_EQUAL_TO') },
+			{ 'id': FilterConditionType.NotEqualTo, 'name': i18nFilter('TYPE_NOT_EQUAL_TO') }
 		]);
 
 		// this.actionTypeOptions.push({'id': FilterAction.None,
@@ -86,27 +88,27 @@ class FilterPopupView extends AbstractViewPopup {
 			if (modules.includes('fileinto')) {
 				this.actionTypeOptions.push({
 					'id': FilterAction.MoveTo,
-					'name': i18n('POPUPS_FILTER/SELECT_ACTION_MOVE_TO')
+					'name': i18nFilter('ACTION_MOVE_TO')
 				});
 				this.actionTypeOptions.push({
 					'id': FilterAction.Forward,
-					'name': i18n('POPUPS_FILTER/SELECT_ACTION_FORWARD_TO')
+					'name': i18nFilter('ACTION_FORWARD_TO')
 				});
 			}
 
 			if (modules.includes('reject')) {
-				this.actionTypeOptions.push({ 'id': FilterAction.Reject, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_REJECT') });
+				this.actionTypeOptions.push({ 'id': FilterAction.Reject, 'name': i18nFilter('ACTION_REJECT') });
 			}
 
 			if (modules.includes('vacation')) {
 				this.actionTypeOptions.push({
 					'id': FilterAction.Vacation,
-					'name': i18n('POPUPS_FILTER/SELECT_ACTION_VACATION_MESSAGE')
+					'name': i18nFilter('ACTION_VACATION_MESSAGE')
 				});
 			}
 
 			if (modules.includes('body')) {
-				this.fieldOptions.push({ 'id': FilterConditionField.Body, 'name': i18n('POPUPS_FILTER/SELECT_FIELD_BODY') });
+				this.fieldOptions.push({ 'id': FilterConditionField.Body, 'name': i18nFilter('FIELD_BODY') });
 			}
 
 			if (modules.includes('regex')) {
@@ -114,16 +116,16 @@ class FilterPopupView extends AbstractViewPopup {
 			}
 		}
 
-		this.actionTypeOptions.push({ 'id': FilterAction.Discard, 'name': i18n('POPUPS_FILTER/SELECT_ACTION_DISCARD') });
+		this.actionTypeOptions.push({ 'id': FilterAction.Discard, 'name': i18nFilter('ACTION_DISCARD') });
 
 		this.typeOptionsSize([
-			{ 'id': FilterConditionType.Over, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_OVER') },
-			{ 'id': FilterConditionType.Under, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_UNDER') }
+			{ 'id': FilterConditionType.Over, 'name': i18nFilter('TYPE_OVER') },
+			{ 'id': FilterConditionType.Under, 'name': i18nFilter('TYPE_UNDER') }
 		]);
 
 		this.typeOptionsBody([
-			{ 'id': FilterConditionType.Text, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_TEXT') },
-			{ 'id': FilterConditionType.Raw, 'name': i18n('POPUPS_FILTER/SELECT_TYPE_RAW') }
+			{ 'id': FilterConditionType.Text, 'name': i18nFilter('TYPE_TEXT') },
+			{ 'id': FilterConditionType.Raw, 'name': i18nFilter('TYPE_RAW') }
 		]);
 	}
 

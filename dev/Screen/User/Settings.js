@@ -6,9 +6,7 @@ import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 import AppStore from 'Stores/User/App';
 import AccountStore from 'Stores/User/Account';
 
-import { settingsAddViewModel } from 'Knoin/Knoin';
-
-import { AbstractSettingsScreen } from 'Screen/AbstractSettings';
+import { AbstractSettingsScreen, settingsAddViewModel } from 'Screen/AbstractSettings';
 
 import { GeneralUserSettings } from 'Settings/User/General';
 import { ContactsUserSettings } from 'Settings/User/Contacts';

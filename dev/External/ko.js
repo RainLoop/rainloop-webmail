@@ -273,5 +273,3 @@ ko.addComputablesTo = (target, computables) =>
 
 ko.addSubscribablesTo = (target, subscribables) =>
 	Object.entries(subscribables).forEach(([key, fn]) => target[key].subscribe(fn));
-
-export default ko;

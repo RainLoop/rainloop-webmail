@@ -12,14 +12,15 @@ import { EmailModel } from 'Model/Email';
 import { command } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
-const KEY_NAME_SUBSTR = -8;
+const KEY_NAME_SUBSTR = -8,
+	i18nPGP = (key, params) => i18n('PGP_NOTIFICATIONS/' + key, params);
 
 class ComposeOpenPgpPopupView extends AbstractViewPopup {
 	constructor() {
 		super('ComposeOpenPgp');
 
-		this.publicKeysOptionsCaption = i18n('PGP_NOTIFICATIONS/ADD_A_PUBLICK_KEY');
-		this.privateKeysOptionsCaption = i18n('PGP_NOTIFICATIONS/SELECT_A_PRIVATE_KEY');
+		this.publicKeysOptionsCaption = i18nPGP('ADD_A_PUBLICK_KEY');
+		this.privateKeysOptionsCaption = i18nPGP('SELECT_A_PRIVATE_KEY');
 
 		this.addObservables({
 			notification: '',
@@ -114,11 +115,11 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 
 		if (result && this.sign()) {
 			if (!this.signKey()) {
-				this.notification(i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND'));
+				this.notification(i18nPGP('NO_PRIVATE_KEY_FOUND'));
 				result = false;
 			} else if (!this.signKey().key) {
 				this.notification(
-					i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND_FOR', {
+					i18nPGP('NO_PRIVATE_KEY_FOUND_FOR', {
 						'EMAIL': this.signKey().email
 					})
 				);
@@ -139,7 +140,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 				}
 
 				if (!privateKey) {
-					this.notification(i18n('PGP_NOTIFICATIONS/NO_PRIVATE_KEY_FOUND'));
+					this.notification(i18nPGP('NO_PRIVATE_KEY_FOUND'));
 					result = false;
 				}
 			}
@@ -154,7 +155,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 						aPublicKeys = aPublicKeys.concat(oKey.key.getNativeKeys().flat(Infinity).filter(v => v));
 					} else if (oKey && oKey.email) {
 						this.notification(
-							i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND_FOR', {
+							i18nPGP('NO_PUBLIC_KEYS_FOUND_FOR', {
 								'EMAIL': oKey.email
 							})
 						);
@@ -167,7 +168,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 					result = false;
 				}
 			} else {
-				this.notification(i18n('PGP_NOTIFICATIONS/NO_PUBLIC_KEYS_FOUND'));
+				this.notification(i18nPGP('NO_PUBLIC_KEYS_FOUND'));
 				result = false;
 			}
 		}
@@ -200,7 +201,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 					console.log(e);
 
 					this.notification(
-						i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+						i18nPGP('PGP_ERROR', {
 							'ERROR': '' + e
 						})
 					);
@@ -215,16 +216,14 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 							})
 							.catch((e) => {
 								this.notification(
-									i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
+									i18nPGP('PGP_ERROR', {
 										'ERROR': '' + e
 									})
 								);
 							});
 					} catch (e) {
 						this.notification(
-							i18n('PGP_NOTIFICATIONS/PGP_ERROR', {
-								'ERROR': '' + e
-							})
+							i18nPGP('PGP_ERROR', {'ERROR': '' + e})
 						);
 					}
 				}

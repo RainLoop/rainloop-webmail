@@ -1,6 +1,7 @@
+import 'External/ko';
+import ko from 'ko';
 import { SaveSettingsStep } from 'Common/Enums';
 import { pInt } from 'Common/Utils';
-import ko from 'External/ko';
 
 ko.bindingHandlers.saveTrigger = {
 	init: (element) => {
@@ -63,5 +64,3 @@ ko.extenders.posInterer = (target, defaultVal) => {
 ko.observable.fn.idleTrigger = function() {
 	return this.extend({ 'idleTrigger': true });
 };
-
-export default ko;

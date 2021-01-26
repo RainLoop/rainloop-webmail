@@ -1,7 +1,6 @@
-import { settingsAddViewModel } from 'Knoin/Knoin';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 
-import { AbstractSettingsScreen } from 'Screen/AbstractSettings';
+import { AbstractSettingsScreen, settingsAddViewModel } from 'Screen/AbstractSettings';
 
 import { GeneralAdminSettings } from 'Settings/Admin/General';
 import { DomainsAdminSettings } from 'Settings/Admin/Domains';

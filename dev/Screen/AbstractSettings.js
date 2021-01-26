@@ -1,10 +1,11 @@
 import ko from 'ko';
 
-import { VIEW_MODELS } from 'Common/Globals';
 import { pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
+
+const VIEW_MODELS = [];
 
 export class AbstractSettingsScreen extends AbstractScreen {
 	/**
@@ -34,31 +35,10 @@ export class AbstractSettingsScreen extends AbstractScreen {
 			RoutedSettingsViewModel = null,
 			viewModelDom = null;
 
-		RoutedSettingsViewModel = VIEW_MODELS.settings.find(
+		RoutedSettingsViewModel = VIEW_MODELS.find(
 			SettingsViewModel =>
 				SettingsViewModel && SettingsViewModel.__rlSettingsData && subName === SettingsViewModel.__rlSettingsData.Route
 		);
-
-		if (RoutedSettingsViewModel) {
-			if (
-				VIEW_MODELS['settings-removed'].find(
-					DisabledSettingsViewModel =>
-						DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel
-				)
-			) {
-				RoutedSettingsViewModel = null;
-			}
-
-			if (
-				RoutedSettingsViewModel &&
-				VIEW_MODELS['settings-disabled'].find(
-					DisabledSettingsViewModel =>
-						DisabledSettingsViewModel && DisabledSettingsViewModel === RoutedSettingsViewModel
-				)
-			) {
-				RoutedSettingsViewModel = null;
-			}
-		}
 
 		if (RoutedSettingsViewModel) {
 			if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm) {
@@ -139,28 +119,23 @@ export class AbstractSettingsScreen extends AbstractScreen {
 	}
 
 	onBuild() {
-		VIEW_MODELS.settings.forEach(SettingsViewModel => {
+		VIEW_MODELS.forEach(SettingsViewModel => {
 			if (
 				SettingsViewModel &&
-				SettingsViewModel.__rlSettingsData &&
-				!VIEW_MODELS['settings-removed'].find(
-					RemoveSettingsViewModel => RemoveSettingsViewModel && RemoveSettingsViewModel === SettingsViewModel
-				)
+				SettingsViewModel.__rlSettingsData
 			) {
 				this.menu.push({
 					route: SettingsViewModel.__rlSettingsData.Route,
 					label: SettingsViewModel.__rlSettingsData.Label,
 					selected: ko.observable(false),
-					disabled: !!VIEW_MODELS['settings-disabled'].find(
-						DisabledSettingsViewModel => DisabledSettingsViewModel && DisabledSettingsViewModel === SettingsViewModel
-					)
+					disabled: false
 				});
 			}
 		});
 	}
 
 	routes() {
-		const DefaultViewModel = VIEW_MODELS.settings.find(
+		const DefaultViewModel = VIEW_MODELS.find(
 				SettingsViewModel =>
 					SettingsViewModel && SettingsViewModel.__rlSettingsData && SettingsViewModel.__rlSettingsData.IsDefault
 			),
@@ -180,4 +155,23 @@ export class AbstractSettingsScreen extends AbstractScreen {
 			['', rules]
 		];
 	}
+}
+
+/**
+ * @param {Function} SettingsViewModelClass
+ * @param {string} template
+ * @param {string} labelName
+ * @param {string} route
+ * @param {boolean=} isDefault = false
+ * @returns {void}
+ */
+export function settingsAddViewModel(SettingsViewModelClass, template, labelName, route, isDefault = false) {
+	SettingsViewModelClass.__rlSettingsData = {
+		Label: labelName,
+		Template: template,
+		Route: route,
+		IsDefault: !!isDefault
+	};
+
+	VIEW_MODELS.push(SettingsViewModelClass);
 }

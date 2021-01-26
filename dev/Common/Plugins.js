@@ -1,4 +1,4 @@
-import * as Knoin from 'Knoin/Knoin';
+import { settingsAddViewModel } from 'Screen/AbstractSettings';
 
 const USER_VIEW_MODELS_HOOKS = [],
 	ADMIN_VIEW_MODELS_HOOKS = [];
@@ -48,7 +48,7 @@ export function addSettingsViewModelForAdmin(SettingsViewModelClass, template, l
  */
 export function runSettingsViewModelHooks(admin) {
 	(admin ? ADMIN_VIEW_MODELS_HOOKS : USER_VIEW_MODELS_HOOKS).forEach(view => {
-		Knoin.settingsAddViewModel(view[0], view[1], view[2], view[3]);
+		settingsAddViewModel(view[0], view[1], view[2], view[3]);
 	});
 }
 

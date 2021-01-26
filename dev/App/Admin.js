@@ -1,4 +1,5 @@
-import ko from 'External/Admin/ko';
+import 'External/Admin/ko';
+import ko from 'ko';
 
 import { StorageResultType } from 'Common/Enums';
 
@@ -93,9 +94,7 @@ class AdminApp extends AbstractApp {
 	}
 
 	bootend() {
-		if (window.progressJs) {
-			progressJs.end();
-		}
+		progressJs.end();
 	}
 
 	bootstart() {

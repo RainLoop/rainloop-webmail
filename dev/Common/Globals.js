@@ -9,12 +9,6 @@ export const $htmlCL = $html.classList;
  */
 export const dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 });
 
-export const VIEW_MODELS = {
-	settings: [],
-	'settings-removed': [],
-	'settings-disabled': []
-};
-
 export const moveAction = ko.observable(false);
 export const leftPanelDisabled = ko.observable(false);
 export const leftPanelType = ko.observable('');

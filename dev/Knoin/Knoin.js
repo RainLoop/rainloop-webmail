@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { $htmlCL, VIEW_MODELS } from 'Common/Globals';
+import { $htmlCL } from 'Common/Globals';
 
 let currentScreen = null,
 	defaultScreenName = '',
@@ -51,25 +51,6 @@ export function createCommand(fExecute, fCanExecute = true) {
 }
 
 /**
- * @param {Function} SettingsViewModelClass
- * @param {string} template
- * @param {string} labelName
- * @param {string} route
- * @param {boolean=} isDefault = false
- * @returns {void}
- */
-export function settingsAddViewModel(SettingsViewModelClass, template, labelName, route, isDefault = false) {
-	SettingsViewModelClass.__rlSettingsData = {
-		Label: labelName,
-		Template: template,
-		Route: route,
-		IsDefault: !!isDefault
-	};
-
-	VIEW_MODELS.settings.push(SettingsViewModelClass);
-}
-
-/**
  * @param {string} screenName
  * @returns {?Object}
  */
@@ -78,21 +59,12 @@ export function screen(screenName) {
 }
 
 /**
- * @param {Function} ViewModelClassToShow
- * @returns {Function|null}
- */
-function getScreenPopup(PopuViewModelClass) {
-	return PopuViewModelClass ? PopuViewModelClass.default || PopuViewModelClass : null;
-}
-
-/**
  * @param {Function} ViewModelClassToHide
  * @returns {void}
  */
 export function hideScreenPopup(ViewModelClassToHide) {
-	const ModalView = getScreenPopup(ViewModelClassToHide);
-	if (ModalView && ModalView.__vm && ModalView.__dom) {
-		ModalView.__vm.modalVisibility(false);
+	if (ViewModelClassToHide && ViewModelClassToHide.__vm && ViewModelClassToHide.__dom) {
+		ViewModelClassToHide.__vm.modalVisibility(false);
 	}
 }
 
@@ -184,8 +156,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 }
 
 function getScreenPopupViewModel(ViewModelClassToShow) {
-	const ModalView = getScreenPopup(ViewModelClassToShow);
-	return (buildViewModel(ModalView) && ModalView.__dom) && ModalView.__vm;
+	return (buildViewModel(ViewModelClassToShow) && ViewModelClassToShow.__dom) && ViewModelClassToShow.__vm;
 }
 
 /**
@@ -220,8 +191,7 @@ export function warmUpScreenPopup(ViewModelClassToShow) {
  * @returns {boolean}
  */
 export function isPopupVisible(ViewModelClassToShow) {
-	const ModalView = getScreenPopup(ViewModelClassToShow);
-	return ModalView && ModalView.__vm && ModalView.__vm.modalVisibility();
+	return ViewModelClassToShow && ViewModelClassToShow.__vm && ViewModelClassToShow.__vm.modalVisibility();
 }
 
 /**

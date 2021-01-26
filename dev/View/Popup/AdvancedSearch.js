@@ -25,16 +25,17 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 			unseen: false
 		});
 
+		let prefix = 'SEARCH/LABEL_ADV_DATE_';
 		this.selectedDates = ko.computed(() => {
 			translatorTrigger();
 			return [
-				{ id: -1, name: i18n('SEARCH/LABEL_ADV_DATE_ALL') },
-				{ id: 3, name: i18n('SEARCH/LABEL_ADV_DATE_3_DAYS') },
-				{ id: 7, name: i18n('SEARCH/LABEL_ADV_DATE_7_DAYS') },
-				{ id: 30, name: i18n('SEARCH/LABEL_ADV_DATE_MONTH') },
-				{ id: 90, name: i18n('SEARCH/LABEL_ADV_DATE_3_MONTHS') },
-				{ id: 180, name: i18n('SEARCH/LABEL_ADV_DATE_6_MONTHS') },
-				{ id: 365, name: i18n('SEARCH/LABEL_ADV_DATE_YEAR') }
+				{ id: -1, name: i18n(prefix + 'ALL') },
+				{ id: 3, name: i18n(prefix + '3_DAYS') },
+				{ id: 7, name: i18n(prefix + '7_DAYS') },
+				{ id: 30, name: i18n(prefix + 'MONTH') },
+				{ id: 90, name: i18n(prefix + '3_MONTHS') },
+				{ id: 180, name: i18n(prefix + '6_MONTHS') },
+				{ id: 365, name: i18n(prefix + 'YEAR') }
 			];
 		});
 	}

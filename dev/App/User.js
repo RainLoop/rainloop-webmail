@@ -1,4 +1,4 @@
-import ko from 'External/User/ko'; // eslint-disable-line no-unused-vars
+import 'External/User/ko';
 
 import { pInt, pString } from 'Common/Utils';
 import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
@@ -892,9 +892,7 @@ class AppUser extends AbstractApp {
 	}
 
 	bootend() {
-		if (window.progressJs) {
-			progressJs.end();
-		}
+		progressJs.end();
 		this.hideLoading();
 	}
 
@@ -911,9 +909,7 @@ class AppUser extends AbstractApp {
 
 		const startupUrl = pString(Settings.get('StartupUrl'));
 
-		if (window.progressJs) {
-			progressJs.set(90);
-		}
+		progressJs.set(90);
 
 		rl.setWindowTitle();
 		if (Settings.get('Auth')) {

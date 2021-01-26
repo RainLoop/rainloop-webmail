@@ -1,4 +1,5 @@
-import ko from 'External/ko';
+import 'External/ko';
+import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Momentor';
 import { EmailModel } from 'Model/Email';
@@ -287,5 +288,3 @@ ko.extenders.specialThrottle = (target, timeout) => {
 
 	return target;
 };
-
-export default ko;
