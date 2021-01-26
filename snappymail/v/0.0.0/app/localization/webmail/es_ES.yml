@@ -525,6 +525,7 @@ es_ES:
     CANT_GET_MESSAGE_LIST: "No se puede obtener la lista de mensajes"
     CANT_GET_MESSAGE: "No se puede obtener el mensaje"
     CANT_DELETE_MESSAGE: "No se puede eliminar el mensaje"
+    CANT_COPY_MESSAGE: "No se puede copiar el mensaje"
     CANT_MOVE_MESSAGE: "No se puede mover el mensaje"
     CANT_SAVE_MESSAGE: "No se puede guardar el mensaje"
     CANT_SEND_MESSAGE: "No se puede enviar el mensaje"

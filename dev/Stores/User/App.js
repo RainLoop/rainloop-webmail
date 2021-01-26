@@ -2,9 +2,7 @@ import ko from 'ko';
 import { KeyState } from 'Common/Enums';
 import { Focused } from 'Common/EnumsUser';
 
-import { keyScope, leftPanelDisabled } from 'Common/Globals';
-
-const Settings = rl.settings;
+import { keyScope, leftPanelDisabled, Settings } from 'Common/Globals';
 
 class AppUserStore {
 	constructor() {

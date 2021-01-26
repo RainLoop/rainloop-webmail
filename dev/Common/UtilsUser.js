@@ -2,10 +2,8 @@ import { ComposeType, FolderType } from 'Common/EnumsUser';
 import { EmailModel } from 'Model/Email';
 import { showScreenPopup } from 'Knoin/Knoin';
 import { encodeHtml } from 'Common/Html';
-
-const
-	tpl = document.createElement('template'),
-	isArray = Array.isArray;
+import { isArray } from 'Common/Utils';
+import { doc } from 'Common/Globals';
 
 /**
  * @param {(string|number)} value
@@ -81,7 +79,9 @@ export function htmlToPlain(html) {
 		return '';
 	};
 
-	const convertPre = (...args) =>
+	const
+		tpl = doc.createElement('template'),
+		convertPre = (...args) =>
 			args && 1 < args.length
 				? args[1]
 						.toString()

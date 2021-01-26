@@ -11,7 +11,7 @@ import { AbstractViewRight } from 'Knoin/AbstractViews';
 import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp';
 import { AccountPopupView } from 'View/Popup/Account';
 
-const Settings = rl.settings;
+import { Settings } from 'Common/Globals';
 
 export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	constructor(name) {

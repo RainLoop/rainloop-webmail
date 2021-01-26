@@ -4,8 +4,9 @@ import { SaveSettingsStep, UploadErrorCode, Capa } from 'Common/Enums';
 import { changeTheme, convertThemeName } from 'Common/Utils';
 import { userBackground, themePreviewLink, uploadBackground } from 'Common/Links';
 import { i18n } from 'Common/Translator';
+import { doc, $htmlCL } from 'Common/Globals';
 
-import ThemeStore from 'Stores/Theme';
+import { ThemeStore } from 'Stores/Theme';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -39,13 +40,12 @@ export class ThemesUserSettings {
 		});
 
 		this.background.hash.subscribe((value) => {
-			const b = document.body, cl = document.documentElement.classList;
 			if (!value) {
-				cl.remove('UserBackground');
-				b.removeAttribute('style');
+				$htmlCL.remove('UserBackground');
+				doc.body.removeAttribute('style');
 			} else {
-				cl.add('UserBackground');
-				b.style.backgroundImage = "url("+userBackground(value)+")";
+				$htmlCL.add('UserBackground');
+				doc.body.style.backgroundImage = "url("+userBackground(value)+")";
 			}
 		});
 	}

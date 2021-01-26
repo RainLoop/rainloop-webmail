@@ -175,6 +175,7 @@ de_DE:
     CANT_GET_MESSAGE_LIST: "Die Nachrichtenliste ist nicht verfügbar"
     CANT_GET_MESSAGE: "Diese Nachricht ist nicht verfügbar"
     CANT_DELETE_MESSAGE: "Diese Nachricht kann nicht gelöscht werden"
+    CANT_COPY_MESSAGE: "Diese Nachricht kann nicht kopiert werden"
     CANT_MOVE_MESSAGE: "Diese Nachricht kann nicht verschoben werden"
     CANT_SAVE_MESSAGE: "Diese Nachricht kann nicht gespeichert werden"
     CANT_SEND_MESSAGE: "Diese Nachricht kann nicht gesendet werden"

@@ -2,6 +2,7 @@ import ko from 'ko';
 
 import { pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
+import { doc } from 'Common/Globals';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
@@ -44,7 +45,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 			if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm) {
 				settingsScreen = RoutedSettingsViewModel.__vm;
 			} else {
-				const vmPlace = document.getElementById('rl-settings-subscreen');
+				const vmPlace = doc.getElementById('rl-settings-subscreen');
 				if (vmPlace) {
 					settingsScreen = new RoutedSettingsViewModel();
 
@@ -101,7 +102,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 							);
 						});
 
-						document.querySelector('#rl-content .b-settings .b-content').scrollTop = 0;
+						doc.querySelector('#rl-content .b-settings .b-content').scrollTop = 0;
 					}
 					// --
 				}, 1);

@@ -1,7 +1,7 @@
 import { pString, pInt } from 'Common/Utils';
+import { Settings } from 'Common/Globals';
 
 const
-	Settings = rl.settings,
 	ROOT = './',
 	HASH_PREFIX = '#/',
 	SERVER_PREFIX = './?',
@@ -42,25 +42,17 @@ export function rootUser() {
 
 /**
  * @param {string} type
- * @param {string} download
+ * @param {string} hash
  * @param {string=} customSpecSuffix
  * @returns {string}
  */
-export function attachmentRaw(type, download, customSpecSuffix) {
-	customSpecSuffix = undefined === customSpecSuffix ? getHash() : customSpecSuffix;
-	return (
-		SERVER_PREFIX +
-		'/Raw/' +
-		SUB_QUERY_PREFIX +
-		'/' +
-		customSpecSuffix +
-		'/' +
-		type +
-		'/' +
-		SUB_QUERY_PREFIX +
-		'/' +
-		download
-	);
+export function serverRequestRaw(type, hash, customSpecSuffix) {
+	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/'
+		+ (null == customSpecSuffix ? getHash() : customSpecSuffix) + '/'
+		+ (type
+			? type + '/' + (hash ? SUB_QUERY_PREFIX + '/' + hash : '')
+			: '')
+		;
 }
 
 /**
@@ -69,7 +61,7 @@ export function attachmentRaw(type, download, customSpecSuffix) {
  * @returns {string}
  */
 export function attachmentDownload(download, customSpecSuffix) {
-	return attachmentRaw('Download', download, customSpecSuffix);
+	return serverRequestRaw('Download', download, customSpecSuffix);
 }
 
 /**
@@ -78,7 +70,7 @@ export function attachmentDownload(download, customSpecSuffix) {
  * @returns {string}
  */
 export function attachmentPreview(download, customSpecSuffix) {
-	return attachmentRaw('View', download, customSpecSuffix);
+	return serverRequestRaw('View', download, customSpecSuffix);
 }
 
 /**
@@ -87,7 +79,7 @@ export function attachmentPreview(download, customSpecSuffix) {
  * @returns {string}
  */
 export function attachmentThumbnailPreview(download, customSpecSuffix) {
-	return attachmentRaw('ViewThumbnail', download, customSpecSuffix);
+	return serverRequestRaw('ViewThumbnail', download, customSpecSuffix);
 }
 
 /**
@@ -96,7 +88,7 @@ export function attachmentThumbnailPreview(download, customSpecSuffix) {
  * @returns {string}
  */
 export function attachmentPreviewAsPlain(download, customSpecSuffix) {
-	return attachmentRaw('ViewAsPlain', download, customSpecSuffix);
+	return serverRequestRaw('ViewAsPlain', download, customSpecSuffix);
 }
 
 /**
@@ -105,7 +97,7 @@ export function attachmentPreviewAsPlain(download, customSpecSuffix) {
  * @returns {string}
  */
 export function attachmentFramed(download, customSpecSuffix) {
-	return attachmentRaw('FramedView', download, customSpecSuffix);
+	return serverRequestRaw('FramedView', download, customSpecSuffix);
 }
 
 /**
@@ -157,17 +149,7 @@ export function change(email) {
  * @returns {string}
  */
 export function messageViewLink(requestHash) {
-	return (
-		SERVER_PREFIX +
-		'/Raw/' +
-		SUB_QUERY_PREFIX +
-		'/' +
-		getHash() +
-		'/ViewAsPlain/' +
-		SUB_QUERY_PREFIX +
-		'/' +
-		requestHash
-	);
+	return serverRequestRaw('ViewAsPlain', requestHash);
 }
 
 /**
@@ -175,17 +157,7 @@ export function messageViewLink(requestHash) {
  * @returns {string}
  */
 export function messageDownloadLink(requestHash) {
-	return (
-		SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + getHash() + '/Download/' + SUB_QUERY_PREFIX + '/' + requestHash
-	);
-}
-
-/**
- * @param {string} email
- * @returns {string}
- */
-export function avatarLink(email) {
-	return SERVER_PREFIX + '/Raw/0/Avatar/' + encodeURIComponent(email) + '/';
+	return serverRequestRaw('Download', requestHash);
 }
 
 /**
@@ -201,9 +173,7 @@ export function publicLink(hash) {
  * @returns {string}
  */
 export function userBackground(hash) {
-	return (
-		SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + getHash() + '/UserBackground/' + SUB_QUERY_PREFIX + '/' + hash
-	);
+	return serverRequestRaw('UserBackground', hash);
 }
 
 /**
@@ -219,14 +189,14 @@ export function langLink(lang, isAdmin) {
  * @returns {string}
  */
 export function exportContactsVcf() {
-	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + getHash() + '/ContactsVcf/';
+	return serverRequestRaw('ContactsVcf');
 }
 
 /**
  * @returns {string}
  */
 export function exportContactsCsv() {
-	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/' + getHash() + '/ContactsCsv/';
+	return serverRequestRaw('ContactsCsv');
 }
 
 /**
@@ -267,13 +237,6 @@ export function openPgpWorkerJs() {
 }
 
 /**
- * @returns {string}
- */
-export function openPgpWorkerPath() {
-	return staticPrefix('js/min/');
-}
-
-/**
  * @param {string} theme
  * @returns {string}
  */
@@ -301,13 +264,6 @@ export function inbox(inboxFolderName = 'INBOX') {
  */
 export function settings(screenName = '') {
 	return HASH_PREFIX + 'settings' + (screenName ? '/' + screenName : '');
-}
-
-/**
- * @returns {string}
- */
-export function about() {
-	return HASH_PREFIX + 'about';
 }
 
 /**

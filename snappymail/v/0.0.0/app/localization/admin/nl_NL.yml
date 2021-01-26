@@ -175,6 +175,7 @@ nl_NL:
     CANT_GET_MESSAGE_LIST: "Kan berichtenlijst niet ophalen"
     CANT_GET_MESSAGE: "Kan bericht niet ophalen"
     CANT_DELETE_MESSAGE: "Kan bericht niet verwijderen"
+    CANT_COPY_MESSAGE: "Kan bericht niet kopiëren"
     CANT_MOVE_MESSAGE: "Kan bericht niet verplaatsen"
     CANT_SAVE_MESSAGE: "Kan bericht niet opslaan"
     CANT_SEND_MESSAGE: "Kan bericht niet verzenden"

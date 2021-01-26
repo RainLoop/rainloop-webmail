@@ -1,13 +1,13 @@
 import ko from 'ko';
 
-import { $htmlCL } from 'Common/Globals';
+import { doc, $htmlCL } from 'Common/Globals';
+import { isNonEmptyArray } from 'Common/Utils';
 
 let currentScreen = null,
 	defaultScreenName = '',
 	popupVisibilityNames = [];
 
 const SCREENS = {},
-	isNonEmptyArray = Array.isNotEmpty,
 	autofocus = dom => {
 //		if (!rl.settings.app('mobile')) {
 		const af = dom.querySelector('[autofocus]');
@@ -54,7 +54,7 @@ export function createCommand(fExecute, fCanExecute = true) {
  * @param {string} screenName
  * @returns {?Object}
  */
-export function screen(screenName) {
+function screen(screenName) {
 	return screenName && null != SCREENS[screenName] ? SCREENS[screenName] : null;
 }
 
@@ -78,7 +78,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 		let vmDom = null;
 		const vm = new ViewModelClass(vmScreen),
 			position = vm.viewModelPosition || '',
-			vmPlace = position ? document.querySelector('#rl-content #rl-' + position.toLowerCase()) : null;
+			vmPlace = position ? doc.querySelector('#rl-content #rl-' + position.toLowerCase()) : null;
 
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = vm;
@@ -223,11 +223,9 @@ function screenOnRoute(screenName, subPart) {
 			if (!vmScreen.__builded) {
 				vmScreen.__builded = true;
 
-				if (vmScreen.viewModels.length) {
-					vmScreen.viewModels.forEach(ViewModelClass => {
-						buildViewModel(ViewModelClass, vmScreen);
-					});
-				}
+				vmScreen.viewModels.forEach(ViewModelClass =>
+					buildViewModel(ViewModelClass, vmScreen)
+				);
 
 				vmScreen.onBuild && vmScreen.onBuild();
 			}
@@ -301,23 +299,17 @@ export function startScreens(screensClasses) {
 			const vmScreen = new CScreen(),
 				screenName = vmScreen && vmScreen.screenName();
 
-			if (vmScreen && screenName) {
-				if (!defaultScreenName) {
-					defaultScreenName = screenName;
-				}
+			if (screenName) {
+				defaultScreenName || (defaultScreenName = screenName);
 
 				SCREENS[screenName] = vmScreen;
 			}
 		}
 	});
 
-	Object.values(SCREENS).forEach(vmScreen => {
-		if (vmScreen && !vmScreen.__started && vmScreen.__start) {
-			vmScreen.__started = true;
-			vmScreen.__start();
-			vmScreen.onStart && vmScreen.onStart();
-		}
-	});
+	Object.values(SCREENS).forEach(vmScreen =>
+		vmScreen && vmScreen.onStart && vmScreen.onStart()
+	);
 
 	const cross = new Crossroads();
 	cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);
@@ -326,10 +318,7 @@ export function startScreens(screensClasses) {
 	hasher.changed.add(cross.parse, cross);
 	hasher.init();
 
-	setTimeout(() => {
-		$htmlCL.remove('rl-started-trigger');
-		$htmlCL.add('rl-started');
-	}, 100);
+	setTimeout(() => $htmlCL.remove('rl-started-trigger'), 100);
 	setTimeout(() => $htmlCL.add('rl-started-delay'), 200);
 }
 

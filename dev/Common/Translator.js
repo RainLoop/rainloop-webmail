@@ -1,10 +1,9 @@
 import ko from 'ko';
 import { Notification, UploadErrorCode } from 'Common/Enums';
 import { langLink } from 'Common/Links';
+import { doc } from 'Common/Globals';
 
 let I18N_DATA = window.rainloopI18N || {};
-
-const doc = document;
 
 export const trigger = ko.observable(false);
 
@@ -54,8 +53,10 @@ const i18nToNode = element => {
 		}
 	}
 },
-	getKeyByValue = (o, v) => Object.keys(o).find(key => o[key] === v);
 
+	i18nKey = key => key.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase(),
+
+	getKeyByValue = (o, v) => Object.keys(o).find(key => o[key] === v);
 
 /**
  * @param {Object} elements
@@ -80,9 +81,8 @@ export function initOnStartOrLangChange(startCallback, langCallback = null) {
 function getNotificationMessage(code) {
 	let key = getKeyByValue(Notification, code);
 	if (key) {
-		key = key.replace('CantCopyMessage', 'CantMoveMessage').replace('UnknownNotification', 'UnknownError');
-		key = 'NOTIFICATIONS/' + key.replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
-		return I18N_DATA[key];
+		key = i18nKey(key).replace('_NOTIFICATION', '_ERROR');
+		return I18N_DATA['NOTIFICATIONS/' + key];
 	}
 }
 
@@ -129,7 +129,7 @@ export function getUploadErrorDescByCode(code) {
 		case UploadErrorCode.MissingTempFolder:
 		case UploadErrorCode.OnSavingFile:
 		case UploadErrorCode.FileType:
-			result = getKeyByValue(UploadErrorCode, code).replace(/([a-z])([A-Z])/g, '$1_$2').toUpperCase();
+			result = i18nKey(getKeyByValue(UploadErrorCode, code));
 			break;
 	}
 	return i18n('UPLOAD/ERROR_' + result);

@@ -113,25 +113,25 @@ RainLoop 1.14 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.130.942	|  123.042	|
-|app.js          	|4.184.455	|  534.334	|
+|admin.js        	|2.130.942	|  120.785	|
+|app.js          	|4.184.455	|  529.074	|
 |boot.js         	|  671.522	|    4.842	|
 |libs.js         	|  647.614	|  235.475	|
 |polyfills.js    	|  325.834	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|7.960.367	|  897.978	|
+|TOTAL           	|7.960.367	|  890.449	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|Rain gzip	|gzip     	|brotli   	|
 |---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|   63.913	| 73.657	| 18.158	| 16.135	|
-|app.min.js      	|  511.202	|  262.917	|140.462	| 74.870	| 62.686	|
+|admin.min.js    	|  252.147	|   62.863	| 73.657	| 18.009	| 15.992	|
+|app.min.js      	|  511.202	|  259.534	|140.462	| 74.005	| 62.184	|
 |boot.min.js     	|   66.007	|    2.630	| 22.567	|  1.375	|  1.189	|
 |libs.min.js     	|  572.545	|  130.930	|176.720	| 47.397	| 42.116	|
 |polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  460.390	|424.718	|141.800	|122.126	|
-|TOTAL (no admin)	|1.182.206	|  396.477	|351.061	|123.642	|105.991	|
+|TOTAL           	|1.434.353	|  455.957	|424.718	|140.786	|121.481	|
+|TOTAL (no admin)	|1.182.206	|  393.094	|351.061	|122.777	|105.489	|
 
-For a user its around 64% smaller and faster than traditional RainLoop.
+For a user its around 65% smaller and faster than traditional RainLoop.
 
 ### CSS changes
 

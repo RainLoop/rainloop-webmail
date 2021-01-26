@@ -17,7 +17,7 @@ import {
 	ClientSideKeyName
 } from 'Common/EnumsUser';
 
-import { $htmlCL, leftPanelDisabled } from 'Common/Globals';
+import { doc, $htmlCL, Settings, leftPanelDisabled } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
@@ -73,9 +73,6 @@ import { ComposePopupView } from 'View/Popup/Compose';
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 import { AskPopupView } from 'View/Popup/Ask';
 import { TwoFactorConfigurationPopupView } from 'View/Popup/TwoFactorConfiguration';
-
-const doc = document,
-	Settings = rl.settings;
 
 class AppUser extends AbstractApp {
 	constructor() {

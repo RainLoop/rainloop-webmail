@@ -176,6 +176,7 @@ zh_CN:
     CANT_GET_MESSAGE_LIST: "无法获取邮件列表"
     CANT_GET_MESSAGE: "无法获取邮件"
     CANT_DELETE_MESSAGE: "无法删除邮件"
+    CANT_COPY_MESSAGE: "无法复制邮件"
     CANT_MOVE_MESSAGE: "无法移动邮件"
     CANT_SAVE_MESSAGE: "无法保存邮件"
     CANT_SEND_MESSAGE: "无法发送邮件"

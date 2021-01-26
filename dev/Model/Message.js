@@ -4,6 +4,7 @@ import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
 import { encodeHtml } from 'Common/Html';
+import { isArray } from 'Common/Utils';
 
 import { messageViewLink, messageDownloadLink } from 'Common/Links';
 
@@ -16,8 +17,7 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import PreviewHTML from 'Html/PreviewMessage.html';
 
-const isArray = Array.isArray,
-
+const
 	SignedVerifyStatus = {
 		UnknownPublicKeys: -4,
 		UnknownPrivateKey: -3,

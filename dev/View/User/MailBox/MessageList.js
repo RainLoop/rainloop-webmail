@@ -16,7 +16,7 @@ import {
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
-import { leftPanelDisabled, moveAction } from 'Common/Globals';
+import { doc, leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
 
 import { computedPaginatorHelper } from 'Common/UtilsUser';
 import { File } from 'Common/File';
@@ -49,7 +49,6 @@ import { ComposePopupView } from 'View/Popup/Compose';
 import { AdvancedSearchPopupView } from 'View/Popup/AdvancedSearch';
 
 const
-	Settings = rl.settings,
 	canBeMovedHelper = (self) => self.canBeMoved(),
 	ifvisible = window.ifvisible;
 
@@ -456,7 +455,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 	}
 
 	getDragData(event) {
-		const item = ko.dataFor(document.elementFromPoint(event.clientX, event.clientY));
+		const item = ko.dataFor(doc.elementFromPoint(event.clientX, event.clientY));
 		item && item.checked && item.checked(true);
 		const uids = MessageStore.messageListCheckedOrSelectedUidsWithSubMails();
 		item && !uids.includes(item.uid) && uids.push(item.uid);

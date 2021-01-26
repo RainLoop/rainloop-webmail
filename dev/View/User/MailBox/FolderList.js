@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { Capa, KeyState } from 'Common/Enums';
 import { Focused, Layout } from 'Common/EnumsUser';
-import { leftPanelDisabled, moveAction } from 'Common/Globals';
+import { leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
 
@@ -17,8 +17,6 @@ import { AbstractViewLeft } from 'Knoin/AbstractViews';
 import { ComposePopupView } from 'View/Popup/Compose';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { ContactsPopupView } from 'View/Popup/Contacts';
-
-const Settings = rl.settings;
 
 class FolderListMailBoxUserView extends AbstractViewLeft {
 	constructor() {

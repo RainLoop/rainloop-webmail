@@ -1,4 +1,4 @@
-import { dropdownVisibility } from 'Common/Globals';
+import { doc, dropdownVisibility } from 'Common/Globals';
 import * as Enums from 'Common/Enums';
 import * as Plugins from 'Common/Plugins';
 import { i18n } from 'Common/Translator';
@@ -38,7 +38,6 @@ export default (App) => {
 	rl.addSettingsViewModel = Plugins.addSettingsViewModel;
 	rl.addSettingsViewModelForAdmin = Plugins.addSettingsViewModelForAdmin;
 
-	rl.settingsGet = Plugins.mainSettingsGet;
 	rl.pluginSettingsGet = Plugins.settingsGet;
 	rl.pluginRemoteRequest = Plugins.remoteRequest;
 
@@ -140,8 +139,7 @@ export default (App) => {
 	};
 
 	window.__APP_BOOT = fErrorCallback => {
-		const doc = document,
-			cb = () => setTimeout(() => {
+		const cb = () => setTimeout(() => {
 				if (rl.TEMPLATES) {
 					doc.getElementById('rl-templates').innerHTML = rl.TEMPLATES;
 					setTimeout(() => App.bootstart(), 10);

@@ -523,6 +523,7 @@ en:
     CANT_GET_MESSAGE_LIST: "Can't get message list"
     CANT_GET_MESSAGE: "Can't get message"
     CANT_DELETE_MESSAGE: "Can't delete message"
+    CANT_COPY_MESSAGE: "Can't copy message"
     CANT_MOVE_MESSAGE: "Can't move message"
     CANT_SAVE_MESSAGE: "Can't save message"
     CANT_SEND_MESSAGE: "Can't send message"

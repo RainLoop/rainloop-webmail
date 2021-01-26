@@ -1,6 +1,6 @@
 import { Capa } from 'Common/Enums';
 import { Focused, ClientSideKeyName } from 'Common/EnumsUser';
-import { leftPanelDisabled, leftPanelType, moveAction } from 'Common/Globals';
+import { doc, leftPanelDisabled, leftPanelType, moveAction, Settings } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
@@ -22,8 +22,6 @@ import { AbstractScreen } from 'Knoin/AbstractScreen';
 
 import { ComposePopupView } from 'View/Popup/Compose';
 
-const Settings = rl.settings;
-
 export class MailBoxUserScreen extends AbstractScreen {
 	constructor() {
 		super('mailbox', [
@@ -38,12 +36,8 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	updateWindowTitle() {
-		let foldersInboxUnreadCount = FolderStore.foldersInboxUnreadCount();
-		const email = AccountStore.email();
-
-		if (Settings.app('listPermanentFiltered')) {
-			foldersInboxUnreadCount = 0;
-		}
+		const foldersInboxUnreadCount = Settings.app('listPermanentFiltered') ? 0 : FolderStore.foldersInboxUnreadCount(),
+			email = AccountStore.email();
 
 		rl.setWindowTitle(
 			(email
@@ -66,10 +60,10 @@ export class MailBoxUserScreen extends AbstractScreen {
 			leftPanelDisabled(true);
 		}
 
-		if (!Settings.capa(Capa.Folders)) {
-			leftPanelType(Settings.capa(Capa.Composer) || Settings.capa(Capa.Contacts) ? 'short' : 'none');
-		} else {
+		if (Settings.capa(Capa.Folders)) {
 			leftPanelType('');
+		} else {
+			leftPanelType(Settings.capa(Capa.Composer) || Settings.capa(Capa.Contacts) ? 'short' : 'none');
 		}
 	}
 
@@ -80,10 +74,9 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onRoute(folderHash, page, search) {
-		let threadUid = folderHash.replace(/^(.+)~([\d]+)$/, '$2');
 		const folder = getFolderFromCacheList(getFolderFullNameRaw(folderHash.replace(/~([\d]+)$/, '')));
-
 		if (folder) {
+			let threadUid = folderHash.replace(/^(.+)~([\d]+)$/, '$2');
 			if (folderHash === threadUid) {
 				threadUid = '';
 			}
@@ -102,21 +95,22 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	onStart() {
-		setTimeout(() => SettingsStore.layout.valueHasMutated(), 50);
-		setTimeout(() => warmUpScreenPopup(ComposePopupView), 500);
+		if (!this.__started) {
+			super.onStart();
+			setTimeout(() => SettingsStore.layout.valueHasMutated(), 50);
+			setTimeout(() => warmUpScreenPopup(ComposePopupView), 500);
 
-		addEventListener('mailbox.inbox-unread-count', e => {
-			FolderStore.foldersInboxUnreadCount(e.detail);
+			addEventListener('mailbox.inbox-unread-count', e => {
+				FolderStore.foldersInboxUnreadCount(e.detail);
 
-			const email = AccountStore.email();
-			AccountStore.accounts.forEach(item => {
-				if (item && email === item.email) {
-					item.count(e.detail);
-				}
+				const email = AccountStore.email();
+				AccountStore.accounts.forEach(item =>
+					item && email === item.email && item.count(e.detail)
+				);
+
+				this.updateWindowTitle();
 			});
-
-			this.updateWindowTitle();
-		});
+		}
 	}
 
 	/**
@@ -129,7 +123,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 			, 1);
 		}
 
-		document.addEventListener('click', event =>
+		doc.addEventListener('click', event =>
 			event.target.closest('#rl-right') && moveAction(false)
 		);
 	}
@@ -138,30 +132,19 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {Array}
 	 */
 	routes() {
-		const inboxFolderName = getFolderInboxName(),
+		const
 			fNormS = (request, vals) => {
-				vals[0] = pString(vals[0]);
-				vals[1] = pInt(vals[1]);
-				vals[1] = 0 >= vals[1] ? 1 : vals[1];
-				vals[2] = pString(vals[2]);
-
-				if (!request) {
-					vals[0] = inboxFolderName;
+				if (request) {
+					vals[0] = pString(vals[0]);
+					vals[1] = pInt(vals[1]);
+				} else {
+					vals[0] = getFolderInboxName();
 					vals[1] = 1;
 				}
-
-				return [decodeURI(vals[0]), vals[1], decodeURI(vals[2])];
+				return [decodeURI(vals[0]), 1 > vals[1] ? 1 : vals[1], decodeURI(pString(vals[2]))];
 			},
-			fNormD = (request, vals) => {
-				vals[0] = pString(vals[0]);
-				vals[1] = pString(vals[1]);
-
-				if (!request) {
-					vals[0] = inboxFolderName;
-				}
-
-				return [decodeURI(vals[0]), 1, decodeURI(vals[1])];
-			};
+			fNormD = (request, vals) =>
+				[decodeURI(request ? pString(vals[0]) : getFolderInboxName()), 1, decodeURI(pString(vals[1]))];
 
 		return [
 			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)\/(.+)\/?$/, { 'normalize_': fNormS }],

@@ -4,14 +4,6 @@ const USER_VIEW_MODELS_HOOKS = [],
 	ADMIN_VIEW_MODELS_HOOKS = [];
 
 /**
- * @param {string} name
- * @returns {?}
- */
-export function mainSettingsGet(name) {
-	return rl.settings.get(name);
-}
-
-/**
  * @param {Function} callback
  * @param {string} action
  * @param {Object=} parameters

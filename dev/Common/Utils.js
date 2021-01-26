@@ -1,7 +1,9 @@
 import { SaveSettingsStep } from 'Common/Enums';
+import { doc } from 'Common/Globals';
 
-const
-	doc = document;
+export const
+	isArray = Array.isArray,
+	isNonEmptyArray = Array.isNotEmpty;
 
 /**
  * @param {*} value

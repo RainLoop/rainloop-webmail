@@ -14,17 +14,16 @@ import {
 	SetSystemFoldersNotification
 } from 'Common/EnumsUser';
 
-import { inFocus, pInt } from 'Common/Utils';
+import { inFocus, pInt, isArray, isNonEmptyArray } from 'Common/Utils';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
-import { encodeHtml } from 'Common/Html';
+import { encodeHtml, HtmlEditor } from 'Common/Html';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { upload } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode } from 'Common/Translator';
-import { format as momentorFormat } from 'Common/Momentor';
+import { timestampToString } from 'Common/Momentor';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
-
-import { HtmlEditor } from 'Common/Html';
+import { Settings } from 'Common/Globals';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
@@ -46,7 +45,7 @@ import { AskPopupView } from 'View/Popup/Ask';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 import { ComposeOpenPgpPopupView } from 'View/Popup/ComposeOpenPgp';
 
-const Settings = rl.settings,
+const
 	/**
 	 * @param {string} prefix
 	 * @param {string} subject
@@ -324,7 +323,7 @@ class ComposePopupView extends AbstractViewPopup {
 			},
 
 			attachmentsInProcess: value => {
-				if (this.attachmentsInProcessError() && Array.isNotEmpty(value)) {
+				if (this.attachmentsInProcessError() && isNonEmptyArray(value)) {
 					this.attachmentsInProcessError(false);
 				}
 			}
@@ -395,7 +394,7 @@ class ComposePopupView extends AbstractViewPopup {
 		if (!this.emptyToError() && !this.attachmentsInErrorError() && !this.attachmentsInProcessError()) {
 			if (SettingsStore.replySameFolder()) {
 				if (
-					Array.isArray(this.aDraftInfo) &&
+					isArray(this.aDraftInfo) &&
 					3 === this.aDraftInfo.length &&
 					null != this.aDraftInfo[2] &&
 					this.aDraftInfo[2].length
@@ -414,7 +413,7 @@ class ComposePopupView extends AbstractViewPopup {
 				this.sendError(false);
 				this.sending(true);
 
-				if (Array.isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length) {
+				if (isArray(this.aDraftInfo) && 3 === this.aDraftInfo.length) {
 					const flagsCache = MessageFlagsCache.getFor(this.aDraftInfo[2], this.aDraftInfo[1]);
 					if (flagsCache) {
 						if ('forward' === this.aDraftInfo[0]) {
@@ -820,7 +819,7 @@ class ComposePopupView extends AbstractViewPopup {
 	 * @param {Array} emails
 	 */
 	addEmailsTo(fKoValue, emails) {
-		if (Array.isNotEmpty(emails)) {
+		if (isNonEmptyArray(emails)) {
 			const value = fKoValue().trim(),
 				values = emails.map(item => item ? item.toLine(false) : null)
 					.validUnique();
@@ -870,9 +869,9 @@ class ComposePopupView extends AbstractViewPopup {
 		oMessageOrArray = oMessageOrArray || null;
 		if (oMessageOrArray) {
 			message =
-				Array.isArray(oMessageOrArray) && 1 === oMessageOrArray.length
+				isArray(oMessageOrArray) && 1 === oMessageOrArray.length
 					? oMessageOrArray[0]
-					: !Array.isArray(oMessageOrArray)
+					: !isArray(oMessageOrArray)
 					? oMessageOrArray
 					: null;
 		}
@@ -890,20 +889,20 @@ class ComposePopupView extends AbstractViewPopup {
 			excludeEmail[identity.email()] = true;
 		}
 
-		if (Array.isNotEmpty(aToEmails)) {
+		if (isNonEmptyArray(aToEmails)) {
 			this.to(this.emailArrayToStringLineHelper(aToEmails));
 		}
 
-		if (Array.isNotEmpty(aCcEmails)) {
+		if (isNonEmptyArray(aCcEmails)) {
 			this.cc(this.emailArrayToStringLineHelper(aCcEmails));
 		}
 
-		if (Array.isNotEmpty(aBccEmails)) {
+		if (isNonEmptyArray(aBccEmails)) {
 			this.bcc(this.emailArrayToStringLineHelper(aBccEmails));
 		}
 
 		if (lineComposeType && message) {
-			sDate = momentorFormat(message.dateTimeStampInUTC(), 'FULL');
+			sDate = timestampToString(message.dateTimeStampInUTC(), 'FULL');
 			sSubject = message.subject();
 			aDraftInfo = message.aDraftInfo;
 			sText = message.bodyAsHTML();
@@ -963,7 +962,7 @@ class ComposePopupView extends AbstractViewPopup {
 					this.subject(sSubject);
 					this.prepareMessageAttachments(message, lineComposeType);
 
-					this.aDraftInfo = Array.isNotEmpty(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
+					this.aDraftInfo = isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
 					this.sInReplyTo = message.sInReplyTo;
 					this.sReferences = message.sReferences;
 					break;
@@ -977,7 +976,7 @@ class ComposePopupView extends AbstractViewPopup {
 					this.subject(sSubject);
 					this.prepareMessageAttachments(message, lineComposeType);
 
-					this.aDraftInfo = Array.isNotEmpty(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
+					this.aDraftInfo = isNonEmptyArray(aDraftInfo) && 3 === aDraftInfo.length ? aDraftInfo : null;
 					this.sInReplyTo = message.sInReplyTo;
 					this.sReferences = message.sReferences;
 					break;
@@ -1070,7 +1069,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 				this.setFocusInPopup();
 			});
-		} else if (Array.isNotEmpty(oMessageOrArray)) {
+		} else if (isNonEmptyArray(oMessageOrArray)) {
 			oMessageOrArray.forEach(item => {
 				this.addMessageAsAttachment(item);
 			});
@@ -1096,7 +1095,7 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 
 		const downloads = this.getAttachmentsDownloadsForUpload();
-		if (Array.isNotEmpty(downloads)) {
+		if (isNonEmptyArray(downloads)) {
 			Remote.messageUploadAttachments((sResult, oData) => {
 				if (StorageResultType.Success === sResult && oData && oData.Result) {
 					Object.entries(oData.Result).forEach(([tempName, id]) => {

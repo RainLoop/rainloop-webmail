@@ -3,6 +3,7 @@ import ko from 'ko';
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
+import { doc } from 'Common/Globals';
 
 class SettingsUserStore {
 	constructor() {
@@ -39,7 +40,7 @@ class SettingsUserStore {
 	}
 
 	subscribers() {
-		const htmlCL = document.documentElement.classList;
+		const htmlCL = doc.documentElement.classList;
 		this.layout.subscribe(value => {
 			htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
 			htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);

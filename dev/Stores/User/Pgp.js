@@ -2,6 +2,7 @@ import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
 import { pString } from 'Common/Utils';
+import { doc } from 'Common/Globals';
 
 import AccountStore from 'Stores/User/Account';
 
@@ -360,7 +361,7 @@ class PgpUserStore {
 					verControl.addEventHandler('click', domControlSignedClickHelper(this, dom, domText));
 				}
 
-				dom.before(verControl, document.createElement('div'));
+				dom.before(verControl, doc.createElement('div'));
 			}
 		}
 	}

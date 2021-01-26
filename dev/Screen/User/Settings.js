@@ -1,5 +1,5 @@
 import { Capa, KeyState } from 'Common/Enums';
-import { keyScope, leftPanelType, leftPanelDisabled } from 'Common/Globals';
+import { keyScope, leftPanelType, leftPanelDisabled, Settings } from 'Common/Globals';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
@@ -21,8 +21,6 @@ import { OpenPgpUserSettings } from 'Settings/User/OpenPgp';
 import { SystemDropDownSettingsUserView } from 'View/User/Settings/SystemDropDown';
 import { MenuSettingsUserView } from 'View/User/Settings/Menu';
 import { PaneSettingsUserView } from 'View/User/Settings/Pane';
-
-const Settings = rl.settings;
 
 export class SettingsUserScreen extends AbstractSettingsScreen {
 	constructor() {

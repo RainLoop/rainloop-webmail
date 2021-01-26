@@ -1,9 +1,10 @@
 import ko from 'ko';
 
 import {
+	doc,
 	$htmlCL,
 	leftPanelDisabled,
-	leftPanelType
+	Settings
 } from 'Common/Globals';
 
 import { KeyState } from 'Common/Enums';
@@ -11,7 +12,7 @@ import { rootAdmin, rootUser } from 'Common/Links';
 import { initOnStartOrLangChange } from 'Common/Translator';
 
 import LanguageStore from 'Stores/Language';
-import ThemeStore from 'Stores/Theme';
+import { ThemeStore } from 'Stores/Theme';
 
 import SaveTriggerComponent from 'Component/SaveTrigger';
 import InputComponent from 'Component/Input';
@@ -19,8 +20,6 @@ import SelectComponent from 'Component/Select';
 import TextAreaComponent from 'Component/TextArea';
 import CheckboxMaterialDesignComponent from 'Component/MaterialDesign/Checkbox';
 import CheckboxComponent from 'Component/Checkbox';
-
-const Settings = rl.settings, doc = document;
 
 export class AbstractApp {
 	/**
@@ -45,16 +44,12 @@ export class AbstractApp {
 		return null;
 	}
 
-	data() {
-		return null;
-	}
-
 	/**
 	 * @param {string} link
 	 * @returns {boolean}
 	 */
 	download(link) {
-		if (rl.settings.app('mobile')) {
+		if (Settings.app('mobile')) {
 			open(link, '_self');
 			focus();
 		} else {
@@ -88,38 +83,26 @@ export class AbstractApp {
 	}
 
 	bootstart() {
-		const mobile = Settings.app('mobile');
+		const mobile = Settings.app('mobile'),
+			register = (key, obj) => ko.components.register(key, obj);
 
-		ko.components.register('SaveTrigger', SaveTriggerComponent);
-		ko.components.register('Input', InputComponent);
-		ko.components.register('Select', SelectComponent);
-		ko.components.register('TextArea', TextAreaComponent);
-		ko.components.register('CheckboxSimple', CheckboxComponent);
-		if (Settings.app('materialDesign') && !rl.settings.app('mobile')) {
-			ko.components.register('Checkbox', CheckboxMaterialDesignComponent);
-		} else {
-			ko.components.register('Checkbox', CheckboxComponent);
-		}
+		register('SaveTrigger', SaveTriggerComponent);
+		register('Input', InputComponent);
+		register('Select', SelectComponent);
+		register('TextArea', TextAreaComponent);
+		register('CheckboxSimple', CheckboxComponent);
+		register('Checkbox', Settings.app('materialDesign') && !mobile
+			? CheckboxMaterialDesignComponent
+			: CheckboxComponent);
 
 		initOnStartOrLangChange();
 
-		if (!mobile) {
-			// mobile
-			window.addEventListener('resize', () => leftPanelDisabled(767 >= window.innerWidth));
-		} else {
+		if (mobile) {
 			$htmlCL.add('rl-mobile');
 			leftPanelDisabled(true);
+		} else {
+			window.addEventListener('resize', () => leftPanelDisabled(767 >= window.innerWidth));
 		}
-
-		leftPanelDisabled.subscribe((bValue) => {
-			$htmlCL.toggle('rl-left-panel-disabled', bValue);
-			$htmlCL.toggle('rl-left-panel-enabled', !bValue);
-		});
-
-		leftPanelType.subscribe((sValue) => {
-			$htmlCL.toggle('rl-left-panel-none', 'none' === sValue);
-			$htmlCL.toggle('rl-left-panel-short', 'short' === sValue);
-		});
 
 		leftPanelDisabled.valueHasMutated();
 

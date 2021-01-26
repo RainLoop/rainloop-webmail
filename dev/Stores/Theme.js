@@ -1,15 +1,11 @@
 import ko from 'ko';
 
-class ThemeStore {
-	constructor() {
-		this.themes = ko.observableArray();
-		this.themeBackgroundName = ko.observable('');
-		this.themeBackgroundHash = ko.observable('');
+export const ThemeStore = {
+	themes: ko.observableArray(),
+	themeBackgroundName: ko.observable(''),
+	themeBackgroundHash: ko.observable(''),
 
-		this.theme = ko.observable('').extend({ limitedList: this.themes });
-	}
-
-	populate() {
+	populate: function(){
 		const Settings = rl.settings,
 			themes = Settings.app('themes');
 
@@ -18,6 +14,6 @@ class ThemeStore {
 		this.themeBackgroundName(Settings.get('UserBackgroundName'));
 		this.themeBackgroundHash(Settings.get('UserBackgroundHash'));
 	}
-}
+};
 
-export default new ThemeStore();
+ThemeStore.theme = ko.observable('').extend({ limitedList: ThemeStore.themes });

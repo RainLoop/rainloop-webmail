@@ -1,8 +1,7 @@
 import { i18n, i18nToNodes, trigger } from 'Common/Translator';
-import { dropdownVisibility } from 'Common/Globals';
+import { doc, dropdownVisibility } from 'Common/Globals';
 
 const
-	doc = document,
 	isFunction = v => typeof v === 'function',
 	koValue = value => !ko.isObservable(value) && isFunction(value) ? value() : ko.unwrap(value);
 

@@ -14,7 +14,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import ThemeStore from 'Stores/Theme';
+import { ThemeStore } from 'Stores/Theme';
 import LanguageStore from 'Stores/Language';
 import AppAdminStore from 'Stores/Admin/App';
 import CapaAdminStore from 'Stores/Admin/Capa';

@@ -175,11 +175,11 @@ export const File = {
 
 		let result = FileType.Unknown;
 		const mimeTypeParts = mimeType.split('/'),
-			type = mimeTypeParts[1],
+			type = mimeTypeParts[1].replace('x-','').replace('-compressed',''),
 			match = str => type.includes(str);
 
 		switch (true) {
-			case 'image' === mimeTypeParts[0] || ['png', 'jpg', 'jpeg', 'gif'].includes(ext):
+			case 'image' === mimeTypeParts[0] || ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext):
 				result = FileType.Image;
 				break;
 			case 'audio' === mimeTypeParts[0] || ['mp3', 'ogg', 'oga', 'wav'].includes(ext):
@@ -207,28 +207,18 @@ export const File = {
 					'rar',
 					'gzip',
 					'bzip',
-					'bzip2',
-					'x-zip',
-					'x-7z',
-					'x-rar',
-					'x-tar',
-					'x-gzip',
-					'x-bzip',
-					'x-bzip2',
-					'x-zip-compressed',
-					'x-7z-compressed',
-					'x-rar-compressed'
+					'bzip2'
 				].includes(type) || ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2'].includes(ext):
 				result = FileType.Archive;
 				break;
-			case ['pdf', 'x-pdf'].includes(type) || ['pdf'].includes(ext):
+			case 'pdf' == type || 'pdf' == ext:
 				result = FileType.Pdf;
 				break;
 			case ['application/pgp-signature', 'application/pgp-keys'].includes(mimeType) ||
 				['asc', 'pem', 'ppk'].includes(ext):
 				result = FileType.Certificate;
 				break;
-			case ['application/pkcs7-signature'].includes(mimeType) || ['p7s'].includes(ext):
+			case ['application/pkcs7-signature'].includes(mimeType) || 'p7s' == ext:
 				result = FileType.CertificateBin;
 				break;
 			case match(msOffice+'.wordprocessingml') || match(openDoc+'.text') || match('vnd.ms-word')

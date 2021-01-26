@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
 import { Layout, Focused, MessageSetAction } from 'Common/EnumsUser';
-
+import { doc } from 'Common/Globals';
 import { pInt, pString } from 'Common/Utils';
 import { plainToHtml } from 'Common/UtilsUser';
 
@@ -52,7 +52,7 @@ const
 
 let iMessageBodyCacheCount = 0;
 
-document.body.append(hcont);
+doc.body.append(hcont);
 
 class MessageUserStore {
 	constructor() {
@@ -485,7 +485,7 @@ class MessageUserStore {
 				if (messagesDom) {
 					id = 'rl-mgs-' + message.hash.replace(/[^a-zA-Z0-9]/g, '');
 
-					const textBody = document.getElementById(id);
+					const textBody = doc.getElementById(id);
 					if (textBody) {
 						textBody.rlCacheCount = ++iMessageBodyCacheCount;
 						message.body = textBody;
@@ -508,7 +508,7 @@ class MessageUserStore {
 										/-----BEGIN PGP SIGNED MESSAGE-----/.test(plain) && /-----BEGIN PGP SIGNATURE-----/.test(plain);
 								}
 
-								const pre = document.createElement('pre');
+								const pre = doc.createElement('pre');
 								if (pgpSigned && message.isPgpSigned()) {
 									pre.className = 'b-plain-openpgp signed';
 									pre.textContent = plain;

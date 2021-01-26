@@ -1,5 +1,5 @@
 import { KeyState } from 'Common/Enums';
-
+import { doc } from 'Common/Globals';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class ViewOpenPgpKeyPopupView extends AbstractViewPopup {
@@ -22,7 +22,7 @@ class ViewOpenPgpKeyPopupView extends AbstractViewPopup {
 		const el = this.keyDom();
 		if (el) {
 			let sel = getSelection(),
-				range = document.createRange();
+				range = doc.createRange();
 			sel.removeAllRanges();
 			range.selectNodeContents(el);
 			sel.addRange(range);

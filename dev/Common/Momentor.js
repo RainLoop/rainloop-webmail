@@ -1,6 +1,7 @@
+import { doc } from 'Common/Globals';
 import { i18n } from 'Common/Translator';
 
-export function format(timeStampInUTC, formatStr) {
+export function timestampToString(timeStampInUTC, formatStr) {
 	const now = Date.now(),
 		time = 0 < timeStampInUTC ? Math.min(now, timeStampInUTC * 1000) : (0 === timeStampInUTC ? now : 0);
 
@@ -36,17 +37,15 @@ export function timeToNode(element, time) {
 	try {
 		time = time || (Date.parse(element.dateTime) / 1000);
 		if (time) {
-			let key, m = new Date(time * 1000);
-			element.dateTime = m.format('Y-m-d\\TH:i:s');
+			element.dateTime = (new Date(time * 1000)).format('Y-m-d\\TH:i:s');
 
-			key = element.dataset.momentFormat;
+			let key = element.dataset.momentFormat;
 			if (key) {
-				element.textContent = format(time, key);
+				element.textContent = timestampToString(time, key);
 			}
 
-			key = element.dataset.momentFormatTitle;
-			if (key) {
-				element.title = format(time, key);
+			if ((key = element.dataset.momentFormatTitle)) {
+				element.title = timestampToString(time, key);
 			}
 		}
 	} catch (e) {
@@ -56,6 +55,6 @@ export function timeToNode(element, time) {
 }
 
 addEventListener('reload-time', () => setTimeout(() =>
-	document.querySelectorAll('[data-bind*="moment:"]').forEach(element => timeToNode(element))
+	doc.querySelectorAll('[data-bind*="moment:"]').forEach(element => timeToNode(element))
 	, 1)
 );

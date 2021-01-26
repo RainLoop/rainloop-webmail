@@ -3,6 +3,7 @@ import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Momentor';
 import { EmailModel } from 'Model/Email';
+import { doc } from 'Common/Globals';
 
 const rlContentType = 'snappymail/action',
 
@@ -111,7 +112,7 @@ ko.bindingHandlers.dragmessages = {
 		if (!rl.settings.app('mobile')) {
 			element.addEventListener("dragstart", e => {
 				let data = fValueAccessor()(e);
-				dragImage || (dragImage = document.getElementById('messagesDragImage'));
+				dragImage || (dragImage = doc.getElementById('messagesDragImage'));
 				if (data && dragImage) {
 					dragImage.querySelector('.text').textContent = data.uids.length;
 					let img = dragImage.querySelector('.icon-white');

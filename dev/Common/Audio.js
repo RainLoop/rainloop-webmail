@@ -1,4 +1,5 @@
 import * as Links from 'Common/Links';
+import { doc } from 'Common/Globals';
 
 let notificator = null,
 	player = null,
@@ -48,7 +49,7 @@ let notificator = null,
 			console.log('AudioContext ' + audioCtx.state);
 			audioCtx.resume();
 		}
-		unlockEvents.forEach(type => document.removeEventListener(type, unlock, true));
+		unlockEvents.forEach(type => doc.removeEventListener(type, unlock, true));
 //		setTimeout(()=>Audio.playNotification(1),1);
 	};
 
@@ -56,27 +57,21 @@ if (audioCtx) {
 	audioCtx = audioCtx ? new audioCtx : null;
 	audioCtx.onstatechange = unlock;
 }
-unlockEvents.forEach(type => document.addEventListener(type, unlock, true));
+unlockEvents.forEach(type => doc.addEventListener(type, unlock, true));
 
 /**
  * Browsers can't play without user interaction
  */
 
 const SMAudio = new class {
-	supported = false;
-	supportedMp3 = false;
-	supportedOgg = false;
-	supportedWav = false;
-
 	constructor() {
 		player || (player = createNewObject());
 
 		this.supported = !!player;
+		this.supportedMp3 = canPlay('audio/mpeg;');
+		this.supportedWav = canPlay('audio/wav; codecs="1"');
+		this.supportedOgg = canPlay('audio/ogg; codecs="vorbis"');
 		if (player) {
-			this.supportedMp3 = !!canPlay('audio/mpeg;');
-			this.supportedWav = !!canPlay('audio/wav; codecs="1"');
-			this.supportedOgg = !!canPlay('audio/ogg; codecs="vorbis"');
-
 			const stopFn = () => this.pause();
 			player.addEventListener('ended', stopFn);
 			player.addEventListener('error', stopFn);

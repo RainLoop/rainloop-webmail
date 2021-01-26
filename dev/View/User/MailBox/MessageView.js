@@ -16,7 +16,7 @@ import {
 	MessageSetAction
 } from 'Common/EnumsUser';
 
-import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings } from 'Common/Globals';
 
 import { inFocus } from 'Common/Utils';
 import { mailToHelper } from 'Common/UtilsUser';
@@ -42,8 +42,6 @@ import { command, showScreenPopup, createCommand } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { ComposePopupView } from 'View/Popup/Compose';
-
-const Settings = rl.settings;
 
 function isTransparent(color) {
 	return 'rgba(0, 0, 0, 0)' === color || 'transparent' === color;

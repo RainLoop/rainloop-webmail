@@ -19,12 +19,12 @@ import Remote from 'Remote/User/Fetch';
 import { command, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
+import { Settings } from 'Common/Globals';
 import { rootAdmin } from 'Common/Links';
 
 import { LanguagesPopupView } from 'View/Popup/Languages';
 
-const Settings = rl.settings,
-
+const
 	LoginSignMeType = {
 		DefaultOff: 0,
 		DefaultOn: 1,

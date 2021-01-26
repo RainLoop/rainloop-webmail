@@ -4,6 +4,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { pInt } from 'Common/Utils';
 import { ClientSideKeyName, FolderType } from 'Common/EnumsUser';
 import * as Cache from 'Common/Cache';
+import { Settings } from 'Common/Globals';
 
 import * as Local from 'Storage/Client';
 
@@ -17,8 +18,7 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-const Settings = rl.settings,
-
+const
 	ServerFolderType = {
 		USER: 0,
 		INBOX: 1,
