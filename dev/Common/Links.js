@@ -5,7 +5,6 @@ const
 	ROOT = './',
 	HASH_PREFIX = '#/',
 	SERVER_PREFIX = './?',
-	SUB_QUERY_PREFIX = '&q[]=',
 	VERSION = Settings.app('version'),
 	VERSION_PREFIX = Settings.app('webVersionPath') || 'snappymail/v/' + VERSION + '/',
 
@@ -14,9 +13,7 @@ const
 /**
  * @returns {string}
  */
-export function subQueryPrefix() {
-	return SUB_QUERY_PREFIX;
-}
+export const SUB_QUERY_PREFIX = '&q[]=';
 
 /**
  * @param {string=} startupUrl
@@ -36,8 +33,8 @@ export function rootAdmin() {
 /**
  * @returns {string}
  */
-export function rootUser() {
-	return ROOT;
+export function logoutLink() {
+	return rl.adminArea() ? rootAdmin() : ROOT;
 }
 
 /**

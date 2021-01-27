@@ -8,7 +8,7 @@ import {
 	MessageFlagsCache
 } from 'Common/Cache';
 
-import { subQueryPrefix } from 'Common/Links';
+import { SUB_QUERY_PREFIX } from 'Common/Links';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
@@ -314,7 +314,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 		if (folderHash && (!sSearch || !sSearch.includes('is:'))) {
 			sGetAdd = 'MessageList/' +
-				subQueryPrefix() +
+				SUB_QUERY_PREFIX +
 				'/' +
 				urlsafeArray([
 					sFolderFullNameRaw,
@@ -381,7 +381,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 				{},
 				null,
 				'Message/' +
-					subQueryPrefix() +
+					SUB_QUERY_PREFIX +
 					'/' +
 					urlsafeArray([
 						sFolderFullNameRaw,

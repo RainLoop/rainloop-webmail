@@ -8,7 +8,7 @@ import {
 } from 'Common/Globals';
 
 import { KeyState } from 'Common/Enums';
-import { rootAdmin, rootUser } from 'Common/Links';
+import { logoutLink } from 'Common/Links';
 import { i18nToNodes, initOnStartOrLangChange } from 'Common/Translator';
 
 import { LanguageStore } from 'Stores/Language';
@@ -70,13 +70,13 @@ export class AbstractApp {
 	}
 
 	logoutReload(close = false) {
-		const logoutLink = rl.adminArea() ? rootAdmin() : rootUser();
+		const url = logoutLink();
 
 		rl.hash.clear();
 		close && window.close && window.close();
 
-		if (location.href !== logoutLink) {
-			setTimeout(() => (Settings.app('inIframe') ? parent : window).location.href = logoutLink, 100);
+		if (location.href !== url) {
+			setTimeout(() => (Settings.app('inIframe') ? parent : window).location.href = url, 100);
 		} else {
 			rl.route.reload();
 		}

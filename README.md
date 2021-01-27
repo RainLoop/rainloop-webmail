@@ -109,33 +109,34 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Removed non-community (aka Prem/Premium/License) code
 
 
-RainLoop 1.14 vs SnappyMail
+RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.130.942	|  119.180	|
-|app.js          	|4.184.455	|  527.492	|
-|boot.js         	|  671.522	|    4.842	|
-|libs.js         	|  647.614	|  235.475	|
-|polyfills.js    	|  325.834	|        0	|
+|admin.js        	|2.158.025	|  119.197	|
+|app.js          	|4.215.733	|  527.415	|
+|boot.js         	|  672.433	|    4.842	|
+|libs.js         	|  647.679	|  235.475	|
+|polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|7.960.367	|  887.274	|
+|TOTAL           	|8.019.778	|  887.214	|
 
-|js/min/*       	|RainLoop 	|Snappy   	|Rain gzip	|gzip     	|brotli   	|
-|---------------	|--------:	|--------:	|--------:	|--------:	|--------:	|
-|admin.min.js    	|  252.147	|   61.128	| 73.657	| 17.416	| 15.445	|
-|app.min.js      	|  511.202	|  256.673	|140.462	| 73.698	| 61.839	|
-|boot.min.js     	|   66.007	|    2.630	| 22.567	|  1.375	|  1.189	|
-|libs.min.js     	|  572.545	|  130.930	|176.720	| 47.397	| 42.116	|
-|polyfills.min.js	|   32.452	|        0	| 11.312	|      0	|      0	|
-|TOTAL           	|1.434.353	|  451.361	|424.718	|139.886	|120.589	|
-|TOTAL (no admin)	|1.182.206	|  390.233	|351.061	|122.470	|105.144	|
+|js/min/*       	|RainLoop 	|Snappy   	|Rain gzip	|S gzip   	|R brotli	|S brotli	|
+|---------------	|--------:	|--------:	|--------:	|------:	|-------:	|-------:	|
+|admin.min.js    	|  255.514	|   61.165	| 73.899	| 17.419	| 60.674 	| 15.447	|
+|app.min.js      	|  516.000	|  256.632	|140.430	| 73.688	|110.657 	| 61.812	|
+|boot.min.js     	|   66.456	|    2.630	| 22.553	|  1.375	| 20.043 	|  1.189	|
+|libs.min.js     	|  574.626	|  130.930	|177.280	| 47.397	|151.855 	| 42.116	|
+|polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072 	|      0	|
+|TOTAL           	|1.445.204	|  451.357	|425.477	|139.879	|353.301 	|120.564	|
+|TOTAL (no admin)	|1.189.690	|  390.192	|351.061	|122.460	|292.627 	|105.117	|
 
 For a user its around 65% smaller and faster than traditional RainLoop.
 
 ### CSS changes
 
-* Solve jQuery removed "features" with native css code.
+* Solve jQuery removed "features" with native css code
+* Cleanup unused css
 * Removed html.no-css
 * Removed dev/Styles/Cmd.less
 * Removed dev/Styles/Scroll.less
