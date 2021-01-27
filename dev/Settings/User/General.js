@@ -12,7 +12,7 @@ import { i18n, trigger as translatorTrigger, reload as translatorReload, convert
 import { showScreenPopup } from 'Knoin/Knoin';
 
 import AppStore from 'Stores/User/App';
-import LanguageStore from 'Stores/Language';
+import { LanguageStore } from 'Stores/Language';
 import SettingsStore from 'Stores/User/Settings';
 import IdentityStore from 'Stores/User/Identity';
 import NotificationStore from 'Stores/User/Notification';

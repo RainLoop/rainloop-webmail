@@ -9,11 +9,9 @@ const USER_VIEW_MODELS_HOOKS = [],
  * @param {Object=} parameters
  * @param {?number=} timeout
  */
-export function remoteRequest(callback, action, parameters, timeout) {
-	if (rl.app) {
-		rl.app.remote().defaultRequest(callback, 'Plugin' + action, parameters, timeout);
-	}
-}
+rl.pluginRemoteRequest = (callback, action, parameters, timeout) => {
+	rl.app && rl.app.remote().defaultRequest(callback, 'Plugin' + action, parameters, timeout);
+};
 
 /**
  * @param {Function} SettingsViewModelClass
@@ -21,9 +19,9 @@ export function remoteRequest(callback, action, parameters, timeout) {
  * @param {string} template
  * @param {string} route
  */
-export function addSettingsViewModel(SettingsViewModelClass, template, labelName, route) {
+rl.addSettingsViewModel = (SettingsViewModelClass, template, labelName, route) => {
 	USER_VIEW_MODELS_HOOKS.push([SettingsViewModelClass, template, labelName, route]);
-}
+};
 
 /**
  * @param {Function} SettingsViewModelClass
@@ -31,9 +29,9 @@ export function addSettingsViewModel(SettingsViewModelClass, template, labelName
  * @param {string} template
  * @param {string} route
  */
-export function addSettingsViewModelForAdmin(SettingsViewModelClass, template, labelName, route) {
+rl.addSettingsViewModelForAdmin = (SettingsViewModelClass, template, labelName, route) => {
 	ADMIN_VIEW_MODELS_HOOKS.push([SettingsViewModelClass, template, labelName, route]);
-}
+};
 
 /**
  * @param {boolean} admin
@@ -49,8 +47,8 @@ export function runSettingsViewModelHooks(admin) {
  * @param {string} name
  * @returns {?}
  */
-export function settingsGet(pluginSection, name) {
+rl.pluginSettingsGet = (pluginSection, name) => {
 	let plugins = rl.settings.get('Plugins');
 	plugins = plugins && null != plugins[pluginSection] ? plugins[pluginSection] : null;
 	return plugins ? (null == plugins[name] ? null : plugins[name]) : null;
-}
+};

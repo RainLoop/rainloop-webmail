@@ -10,7 +10,7 @@ import { ClientSideKeyName } from 'Common/EnumsUser';
 import { getNotification, getNotificationFromResponse, reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import AppStore from 'Stores/User/App';
-import LanguageStore from 'Stores/Language';
+import { LanguageStore } from 'Stores/Language';
 
 import * as Local from 'Storage/Client';
 

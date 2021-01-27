@@ -1,7 +1,7 @@
 import { SaveSettingsStep } from 'Common/Enums';
-import { AbstractComponent, componentExportHelper } from 'Component/Abstract';
+import { AbstractComponent } from 'Component/Abstract';
 
-class SaveTriggerComponent extends AbstractComponent {
+export class SaveTriggerComponent extends AbstractComponent {
 	/**
 	 * @param {Object} params
 	 */
@@ -36,5 +36,3 @@ class SaveTriggerComponent extends AbstractComponent {
 		this.element.querySelector('.error').hidden = value !== SaveSettingsStep.FalseResult;
 	}
 }
-
-export default componentExportHelper(SaveTriggerComponent, 'SaveTriggerComponent');

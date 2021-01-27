@@ -33,7 +33,7 @@ class LanguagesPopupView extends AbstractViewPopup {
 
 	setLanguageSelection() {
 		const currentLang = this.fLang ? ko.unwrap(this.fLang) : '';
-		this.languages.forEach(item => item.selected(item.key === currentLang));
+		this.languages().forEach(item => item.selected(item.key === currentLang));
 	}
 
 	onBeforeShow() {
@@ -51,10 +51,7 @@ class LanguagesPopupView extends AbstractViewPopup {
 	}
 
 	changeLanguage(lang) {
-		if (this.fLang) {
-			this.fLang(lang);
-		}
-
+		this.fLang && this.fLang(lang);
 		this.cancelCommand();
 	}
 }

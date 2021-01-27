@@ -15,7 +15,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import Remote from 'Remote/Admin/Fetch';
 
 import { ThemeStore } from 'Stores/Theme';
-import LanguageStore from 'Stores/Language';
+import { LanguageStore } from 'Stores/Language';
 import AppAdminStore from 'Stores/Admin/App';
 import CapaAdminStore from 'Stores/Admin/Capa';
 import LanguagesPopupView from 'View/Popup/Languages';
@@ -26,8 +26,12 @@ export class GeneralAdminSettings {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
-		this.languageAdmin = LanguageStore.languageAdmin;
-		this.languagesAdmin = LanguageStore.languagesAdmin;
+
+		const aLanguagesAdmin = rl.settings.app('languagesAdmin');
+		this.languagesAdmin = ko.observableArray(Array.isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
+		this.languageAdmin = ko
+			.observable(settingsGet('LanguageAdmin'))
+			.extend({ limitedList: this.languagesAdmin, reversible: true });
 
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
@@ -174,7 +178,7 @@ export class GeneralAdminSettings {
 		showScreenPopup(LanguagesPopupView, [
 			this.languageAdmin,
 			this.languagesAdmin(),
-			LanguageStore.userLanguageAdmin()
+			settingsGet('UserLanguageAdmin')
 		]);
 	}
 }

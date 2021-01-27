@@ -1,8 +1,7 @@
 import ko from 'ko';
-import { componentExportHelper } from 'Component/Abstract';
 import { AbstractCheckbox } from 'Component/AbstractCheckbox';
 
-class CheckboxMaterialDesignComponent extends AbstractCheckbox {
+export class CheckboxMaterialDesignComponent extends AbstractCheckbox {
 	/**
 	 * @param {Object} params
 	 */
@@ -40,5 +39,3 @@ class CheckboxMaterialDesignComponent extends AbstractCheckbox {
 		}
 	}
 }
-
-export default componentExportHelper(CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');

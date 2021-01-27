@@ -1,9 +1,8 @@
 import { i18n } from 'Common/Translator';
 import { defaultOptionsAfterRender } from 'Common/Utils';
-import { componentExportHelper } from 'Component/Abstract';
 import { AbstractInput } from 'Component/AbstractInput';
 
-class SelectComponent extends AbstractInput {
+export class SelectComponent extends AbstractInput {
 	/**
 	 * @param {Object} params
 	 */
@@ -23,5 +22,3 @@ class SelectComponent extends AbstractInput {
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 	}
 }
-
-export default componentExportHelper(SelectComponent, 'SelectComponent');

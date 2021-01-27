@@ -9,17 +9,17 @@ import {
 
 import { KeyState } from 'Common/Enums';
 import { rootAdmin, rootUser } from 'Common/Links';
-import { initOnStartOrLangChange } from 'Common/Translator';
+import { i18nToNodes, initOnStartOrLangChange } from 'Common/Translator';
 
-import LanguageStore from 'Stores/Language';
+import { LanguageStore } from 'Stores/Language';
 import { ThemeStore } from 'Stores/Theme';
 
-import SaveTriggerComponent from 'Component/SaveTrigger';
-import InputComponent from 'Component/Input';
-import SelectComponent from 'Component/Select';
-import TextAreaComponent from 'Component/TextArea';
-import CheckboxMaterialDesignComponent from 'Component/MaterialDesign/Checkbox';
-import CheckboxComponent from 'Component/Checkbox';
+import { SaveTriggerComponent } from 'Component/SaveTrigger';
+import { InputComponent } from 'Component/Input';
+import { SelectComponent } from 'Component/Select';
+import { TextAreaComponent } from 'Component/TextArea';
+import { CheckboxMaterialDesignComponent } from 'Component/MaterialDesign/Checkbox';
+import { CheckboxComponent } from 'Component/Checkbox';
 
 export class AbstractApp {
 	/**
@@ -84,16 +84,39 @@ export class AbstractApp {
 
 	bootstart() {
 		const mobile = Settings.app('mobile'),
-			register = (key, obj) => ko.components.register(key, obj);
+			register = (key, ClassObject, templateID) => ko.components.register(key, {
+				template: { element: templateID || (key + 'Component') },
+				viewModel: {
+					createViewModel: (params, componentInfo) => {
+						params = params || {};
+						params.element = null;
+
+						if (componentInfo && componentInfo.element) {
+							params.component = componentInfo;
+							params.element = componentInfo.element;
+
+							i18nToNodes(componentInfo.element);
+
+							if (undefined !== params.inline && ko.unwrap(params.inline)) {
+								params.element.style.display = 'inline-block';
+							}
+						}
+
+						return new ClassObject(params);
+					}
+				}
+			});
 
 		register('SaveTrigger', SaveTriggerComponent);
 		register('Input', InputComponent);
 		register('Select', SelectComponent);
 		register('TextArea', TextAreaComponent);
-		register('CheckboxSimple', CheckboxComponent);
-		register('Checkbox', Settings.app('materialDesign') && !mobile
-			? CheckboxMaterialDesignComponent
-			: CheckboxComponent);
+		register('CheckboxSimple', CheckboxComponent, 'CheckboxComponent');
+		if (mobile || !Settings.app('materialDesign')) {
+			register('Checkbox', CheckboxComponent);
+		} else {
+			register('Checkbox', CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');
+		}
 
 		initOnStartOrLangChange();
 

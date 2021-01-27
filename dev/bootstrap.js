@@ -1,6 +1,5 @@
 import { doc, dropdownVisibility } from 'Common/Globals';
-import * as Enums from 'Common/Enums';
-import * as Plugins from 'Common/Plugins';
+import { StorageResultType } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
 import { root } from 'Common/Links';
@@ -35,13 +34,9 @@ export default (App) => {
 
 	rl.i18n = i18n;
 
-	rl.addSettingsViewModel = Plugins.addSettingsViewModel;
-	rl.addSettingsViewModelForAdmin = Plugins.addSettingsViewModelForAdmin;
-
-	rl.pluginSettingsGet = Plugins.settingsGet;
-	rl.pluginRemoteRequest = Plugins.remoteRequest;
-
-	rl.Enums = Enums;
+	rl.Enums = {
+		StorageResultType: StorageResultType
+	};
 
 	rl.Dropdowns = [];
 	rl.Dropdowns.register = function(element) { this.push(element); };
