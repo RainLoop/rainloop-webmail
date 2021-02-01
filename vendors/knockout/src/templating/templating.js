@@ -1,9 +1,9 @@
 (() => {
-    var renderTemplateSource = (templateSource, bindingContext, options, templateDocument) => {
+    var renderTemplateSource = templateSource => {
             var templateNodes = templateSource.nodes ? templateSource.nodes() : null;
             return templateNodes
                 ? [...templateNodes.cloneNode(true).childNodes]
-                : ko.utils.parseHtmlFragment(templateSource['text'](), templateDocument);
+                : null;
         },
 
         makeTemplateSource = (template, templateDocument) => {
@@ -40,36 +40,7 @@
         if (continuousNodeArray.length) {
             var firstNode = continuousNodeArray[0],
                 lastNode = continuousNodeArray[continuousNodeArray.length - 1],
-                parentNode = firstNode.parentNode,
-                provider = ko.bindingProvider['instance'],
-                preprocessNode = provider['preprocessNode'];
-
-            if (preprocessNode) {
-                invokeForEachNodeInContinuousRange(firstNode, lastNode, (node, nextNodeInRange) => {
-                    var nodePreviousSibling = node.previousSibling;
-                    var newNodes = preprocessNode.call(provider, node);
-                    if (newNodes) {
-                        if (node === firstNode)
-                            firstNode = newNodes[0] || nextNodeInRange;
-                        if (node === lastNode)
-                            lastNode = newNodes[newNodes.length - 1] || nodePreviousSibling;
-                    }
-                });
-
-                // Because preprocessNode can change the nodes, including the first and last nodes, update continuousNodeArray to match.
-                // We need the full set, including inner nodes, because the unmemoize step might remove the first node (and so the real
-                // first node needs to be in the array).
-                continuousNodeArray.length = 0;
-                if (!firstNode) { // preprocessNode might have removed all the nodes, in which case there's nothing left to do
-                    return;
-                }
-                if (firstNode === lastNode) {
-                    continuousNodeArray.push(firstNode);
-                } else {
-                    continuousNodeArray.push(firstNode, lastNode);
-                    ko.utils.fixUpContinuousNodeArray(continuousNodeArray, parentNode);
-                }
-            }
+                parentNode = firstNode.parentNode;
 
             // Need to applyBindings *before* unmemoziation, because unmemoization might introduce extra nodes (that we don't want to re-bind)
             // whereas a regular applyBindings won't introduce new memoized nodes
@@ -94,10 +65,7 @@
         var firstTargetNode = targetNodeOrNodeArray && getFirstNodeFromPossibleArray(targetNodeOrNodeArray);
         var templateDocument = (firstTargetNode || template || {}).ownerDocument;
 
-        var renderedNodesArray = renderTemplateSource(
-            makeTemplateSource(template, templateDocument),
-            bindingContext, options, templateDocument
-        );
+        var renderedNodesArray = renderTemplateSource(makeTemplateSource(template, templateDocument));
 
         // Loosely check result is an array of DOM nodes
         if ((typeof renderedNodesArray.length != "number") || (renderedNodesArray.length > 0 && typeof renderedNodesArray[0].nodeType != "number"))
@@ -266,13 +234,13 @@
                     ko.utils.domData.set(container, cleanContainerDomDataKey, true);
                 }
 
-                new ko.templateSources.anonymousTemplate(element)['nodes'](container);
+                new ko.templateSources.anonymousTemplate(element).nodes(container);
             } else {
                 // It's an anonymous template - store the element contents, then clear the element
                 var templateNodes = ko.virtualElements.childNodes(element);
                 if (templateNodes.length > 0) {
                     let container = ko.utils.moveCleanedNodesToContainerElement(templateNodes); // This also removes the nodes from their current parent
-                    new ko.templateSources.anonymousTemplate(element)['nodes'](container);
+                    new ko.templateSources.anonymousTemplate(element).nodes(container);
                 } else {
                     throw new Error("Anonymous template defined, but no template content was provided");
                 }

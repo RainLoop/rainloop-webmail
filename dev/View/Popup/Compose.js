@@ -142,16 +142,11 @@ class ComposePopupView extends AbstractViewPopup {
 			identitiesDropdownTrigger: false,
 
 			to: '',
-			toFocused: false,
 			cc: '',
-			ccFocused: false,
 			bcc: '',
-			bccFocused: false,
 			replyTo: '',
-			replyToFocused: false,
 
 			subject: '',
-			subjectFocused: false,
 
 			isHtml: false,
 
@@ -197,20 +192,13 @@ class ComposePopupView extends AbstractViewPopup {
 
 		// this.to.subscribe((v) => console.log(v));
 
-		ko.computed(() => {
-			switch (true) {
-				case this.toFocused():
-					this.sLastFocusedField = 'to';
-					break;
-				case this.ccFocused():
-					this.sLastFocusedField = 'cc';
-					break;
-				case this.bccFocused():
-					this.sLastFocusedField = 'bcc';
-					break;
-				// no default
-			}
-		}).extend({ notify: 'always' });
+		// Used by ko.bindingHandlers.emailsTags
+		this.to.focused = ko.observable(false);
+		this.to.focused.subscribe(value => value && (this.sLastFocusedField = 'to'));
+		this.cc.focused = ko.observable(false);
+		this.cc.focused.subscribe(value => value && (this.sLastFocusedField = 'cc'));
+		this.bcc.focused = ko.observable(false);
+		this.bcc.focused.subscribe(value => value && (this.sLastFocusedField = 'bcc'));
 
 		this.attachments = ko.observableArray();
 
@@ -688,7 +676,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.bSkipNextHide = false;
 
-		this.toFocused(false);
+		this.to.focused(false);
 
 		rl.route.on();
 
@@ -1131,11 +1119,9 @@ class ComposePopupView extends AbstractViewPopup {
 //		rl.settings.app('mobile') ||
 		setTimeout(() => {
 			if (!this.to()) {
-				this.toFocused(true);
-			} else if (this.oEditor) {
-				if (!this.toFocused()) {
-					this.oEditor.focus();
-				}
+				this.to.focused(true);
+			} else if (this.oEditor && !this.to.focused()) {
+				this.oEditor.focus();
 			}
 		}, 100);
 	}

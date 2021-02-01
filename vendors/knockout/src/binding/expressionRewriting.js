@@ -162,12 +162,8 @@ ko.expressionRewriting = (() => {
 
         preProcessBindings: preProcessBindings,
 
-        keyValueArrayContainsKey: (keyValueArray, key) => {
-            for (var i = 0; i < keyValueArray.length; i++)
-                if (keyValueArray[i]['key'] == key)
-                    return true;
-            return false;
-        },
+        keyValueArrayContainsKey: (keyValueArray, key) =>
+            -1 < keyValueArray.findIndex(v => v['key'] == key),
 
         // Internal, private KO utility for updating model properties from within bindings
         // property:            If the property being updated is (or might be) an observable, pass it here

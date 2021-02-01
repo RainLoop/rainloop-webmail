@@ -68,7 +68,7 @@ ko.bindingHandlers.emailsTags = {
 			inputDelimiters = [',', ';', '\n'];
 
 		element.inputosaurus = new window.Inputosaurus(element, {
-			focusCallback: value => fValue && fValue.focused && fValue.focused(!!value),
+			focusCallback: value => fValue.focused && fValue.focused(!!value),
 			autoCompleteSource: fAllBindings.autoCompleteSource || null,
 			splitHook: value => {
 				const v = value.trim();
@@ -89,7 +89,7 @@ ko.bindingHandlers.emailsTags = {
 			}
 		});
 
-		if (fValue && fValue.focused && fValue.focused.subscribe) {
+		if (fValue.focused && fValue.focused.subscribe) {
 			fValue.focused.subscribe(value =>
 				element.inputosaurus[value ? 'focus' : 'blur']()
 			);

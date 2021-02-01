@@ -35,15 +35,11 @@ this.Inputosaurus = class {
 			// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
 			// In Chrome Mobile dataTransfer.types.includes(contentType) fails, only text/plain is set
 			validDropzone = () => dragData && dragData.li.parentNode !== self.ul,
-			fnDrag = e => validDropzone(e) && e.preventDefault();
+			fnDrag = e => validDropzone() && e.preventDefault();
 
 		self.element = element;
 
 		self.options = Object.assign({
-
-			// while typing, the user can separate values using these delimiters
-			// the value tags are created on the fly when an inputDelimiter is detected
-			inputDelimiters : [',', ';', '\n'],
 
 			focusCallback : null,
 
@@ -71,11 +67,10 @@ this.Inputosaurus = class {
 		self.ul.addEventListener("dragenter", fnDrag);
 		self.ul.addEventListener("dragover", fnDrag);
 		self.ul.addEventListener("drop", e => {
-			if (validDropzone(e) && dragData.value) {
+			if (validDropzone() && dragData.value) {
 				e.preventDefault();
 				dragData.source._removeDraggedTag(dragData.li);
-				self.input.value = dragData.value;
-				self.parseInput();
+				self._parseValue(dragData.value);
 			}
 		});
 
@@ -83,13 +78,33 @@ this.Inputosaurus = class {
 			autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false"});
 
 		self.input.addEventListener('focus', () => self._focusTrigger(true));
-		self.input.addEventListener('blur', () => self._focusTrigger(false));
-		self.input.addEventListener('keyup', e => self._inputKeypress(e));
-		self.input.addEventListener('keydown', e => self._inputKeypress(e));
-		self.input.addEventListener('change', e => self._inputKeypress(e));
-		self.input.addEventListener('input', e => self._inputKeypress(e));
+		self.input.addEventListener('blur', () => {
+			// prevent autoComplete menu click from causing a false 'blur'
+			self._parseInput();
+			self._focusTrigger(false);
+		});
+		self.input.addEventListener('keydown', e => {
+			if ('Backspace' === e.key || 'ArrowLeft' === e.key) {
+				// if our input contains no value and backspace has been pressed, select the last tag
+				var lastTag = self.inputCont.previousElementSibling,
+					input = self.input;
+				if (lastTag && (!input.value
+					|| (('selectionStart' in input) && input.selectionStart === 0 && input.selectionEnd === 0))
+				) {
+					e.preventDefault();
+					lastTag.querySelector('a').focus();
+				}
+				self._updateDatalist();
+			} else if (e.key == 'Enter') {
+				e.preventDefault();
+				self._parseInput();
+			}
+		});
+		self.input.addEventListener('input', () => {
+			self._parseInput();
+			self._updateDatalist();
+		});
 		self.input.addEventListener('focus', () => self.input.value || self._resetDatalist());
-		self.input.addEventListener('blur', e => self.parseInput(e));
 
 		// define starting placeholder
 		if (element.placeholder) {
@@ -104,8 +119,7 @@ this.Inputosaurus = class {
 
 		// if instantiated input already contains a value, parse that junk
 		if (element.value.trim()) {
-			self.input.value = element.value;
-			self.parseInput();
+			self._parseValue(element.value);
 		}
 
 		self._updateDatalist = self.options.autoCompleteSource
@@ -134,71 +148,34 @@ this.Inputosaurus = class {
 		datalist.textContent = '';
 	}
 
-	parseInput(ev) {
-		var self = this,
-			val,
-			hook,
-			delimiterFound = false,
-			values = [];
-
-		val = self.input.value;
-
-		if (val) {
-			hook = self.options.splitHook(val);
-		}
-
-		if (hook) {
-			values = hook;
-		} else if (delimiterFound !== false) {
-			values = val.split(delimiterFound);
-		} else if (!ev || ev.key == 'Enter') {
-			values.push(val);
-			ev && ev.preventDefault();
-
-		// prevent autoComplete menu click from causing a false 'blur'
-		} else if (ev.type === 'blur') {
-			values.push(val);
-		}
-
-		values = self.options.parseHook(values);
-
-		if (values.length) {
-			self._setChosen(values);
-			self.input.value = '';
-			self.resizeInput();
-		}
+	_parseInput() {
+		this._parseValue(this.input.value) && (this.input.value = '');
+		this._resizeInput();
 	}
 
-	_inputKeypress(ev) {
-		let self = this;
+	_parseValue(val) {
+		var self = this,
+			hook,
+			values = [];
 
-		switch (ev.key) {
-			case 'Backspace':
-			case 'ArrowLeft':
-				// if our input contains no value and backspace has been pressed, select the last tag
-				if (ev.type === 'keydown') {
-					var lastTag = self.inputCont.previousElementSibling,
-						input = self.input;
-					if (lastTag && (!input.value
-						|| (('selectionStart' in input) && input.selectionStart === 0 && input.selectionEnd === 0))
-					) {
-						ev.preventDefault();
-						lastTag.querySelector('a').focus();
-					}
+		if (val) {
+			if ((hook = self.options.splitHook(val))) {
+				values = hook;
+			} else {
+				values.push(val);
+			}
 
-				}
-				break;
+			values = self.options.parseHook(values);
 
-			default :
-				self.parseInput(ev);
-				self.resizeInput();
+			if (values.length) {
+				self._setChosen(values);
+				return true;
+			}
 		}
-
-		self._updateDatalist();
 	}
 
 	// the input dynamically resizes based on the length of its value
-	resizeInput() {
+	_resizeInput() {
 		let input = this.input;
 		if (input.clientWidth < input.scrollWidth) {
 			input.style.width = Math.min(500, Math.max(200, input.scrollWidth)) + 'px';
@@ -220,13 +197,10 @@ this.Inputosaurus = class {
 		;
 
 		self._chosenValues.forEach(v => {
-			if (v.key === tagKey)
-			{
+			if (v.key === tagKey) {
 				tagName = v.value;
 				next = true;
-			}
-			else if (next && !oPrev)
-			{
+			} else if (next && !oPrev) {
 				oPrev = v;
 			}
 		});
@@ -242,12 +216,7 @@ this.Inputosaurus = class {
 		setTimeout(() => self.input.select(), 100);
 
 		self._removeTag(ev, li);
-		self.resizeInput(ev);
-	}
-
-	// return the inputDelimiter that was detected or false if none were found
-	_containsDelimiter(tagStr) {
-		return -1 < this.options.inputDelimiters.findIndex(v => tagStr.indexOf(v) !== -1);
+		self._resizeInput(ev);
 	}
 
 	_setChosen(valArr) {
@@ -258,7 +227,8 @@ this.Inputosaurus = class {
 		}
 
 		valArr.forEach(a => {
-			var v = '', exists = false,
+			var v = a[0].trim(),
+				exists = false,
 				lastIndex = -1,
 				obj = {
 					key : '',
@@ -266,11 +236,8 @@ this.Inputosaurus = class {
 					value : ''
 				};
 
-			v = a[0].trim();
-
 			self._chosenValues.forEach((vv, kk) => {
-				if (vv.value === self._lastEdit)
-				{
+				if (vv.value === self._lastEdit) {
 					lastIndex = kk;
 				}
 
@@ -283,12 +250,9 @@ this.Inputosaurus = class {
 				obj.value = v;
 				obj.obj = a[1];
 
-				if (-1 < lastIndex)
-				{
+				if (-1 < lastIndex) {
 					self._chosenValues.splice(lastIndex, 0, obj);
-				}
-				else
-				{
+				} else {
 					self._chosenValues.push(obj);
 				}
 
@@ -297,8 +261,7 @@ this.Inputosaurus = class {
 			}
 		});
 
-		if (valArr.length === 1 && valArr[0] === '' && self._lastEdit !== '')
-		{
+		if (valArr.length === 1 && valArr[0] === '' && self._lastEdit !== '') {
 			self._lastEdit = '';
 			self._renderTags();
 		}
@@ -419,8 +382,7 @@ this.Inputosaurus = class {
 			self = this,
 			indexFound = self._chosenValues.findIndex(v => key === v.key)
 		;
-		if (-1 < indexFound)
-		{
+		if (-1 < indexFound) {
 			self._chosenValues.splice(indexFound, 1);
 			self._setValue(self._buildValue());
 		}
@@ -467,7 +429,7 @@ this.Inputosaurus = class {
 			self._setChosen(values);
 			self._renderTags();
 			self.input.value = '';
-			self.resizeInput();
+			self._resizeInput();
 		}
 	}
 };

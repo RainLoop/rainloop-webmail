@@ -92,10 +92,7 @@
     }
 
     function resolveTemplate(errorCallback, templateConfig, callback) {
-        if (typeof templateConfig === 'string') {
-            // Markup - parse it
-            callback(ko.utils.parseHtmlFragment(templateConfig));
-        } else if (templateConfig instanceof Array) {
+        if (templateConfig instanceof Array) {
             // Assume already an array of DOM nodes - pass through unchanged
             callback(templateConfig);
         } else if (templateConfig instanceof DocumentFragment) {

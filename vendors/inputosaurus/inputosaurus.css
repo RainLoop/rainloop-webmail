@@ -76,9 +76,3 @@
 	background-color: Highlight;
 	color: HighlightText;
 }
-
-.inputosaurus-fake-span {
-	position: absolute;
-	top: 0;
-	left: -5000px;
-}

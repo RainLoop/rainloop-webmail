@@ -260,12 +260,6 @@
             : ko.utils.objectMap(bindings, value => () => value);
     }
 
-    // This function is used if the binding provider doesn't include a getBindingAccessors function.
-    // It must be called with 'this' set to the provider instance.
-    function getBindingsAndMakeAccessors(node, context) {
-        return makeAccessorsFromFunction(this['getBindings'].bind(this, node, context));
-    }
-
     function validateThatBindingIsAllowedForVirtualElements(bindingName) {
         var validator = ko.virtualElements.allowedBindings[bindingName];
         if (!validator)
@@ -276,22 +270,7 @@
         var nextInQueue = ko.virtualElements.firstChild(elementOrVirtualElement);
 
         if (nextInQueue) {
-            var currentChild,
-                provider = ko.bindingProvider['instance'],
-                preprocessNode = provider['preprocessNode'];
-
-            // Preprocessing allows a binding provider to mutate a node before bindings are applied to it. For example it's
-            // possible to insert new siblings after it, and/or replace the node with a different one. This can be used to
-            // implement custom binding syntaxes, such as {{ value }} for string interpolation, or custom element types that
-            // trigger insertion of <template> contents at that point in the document.
-            if (preprocessNode) {
-                while (currentChild = nextInQueue) {
-                    nextInQueue = ko.virtualElements.nextSibling(currentChild);
-                    preprocessNode.call(provider, currentChild);
-                }
-                // Reset nextInQueue for the next loop
-                nextInQueue = ko.virtualElements.firstChild(elementOrVirtualElement);
-            }
+            var currentChild;
 
             while (currentChild = nextInQueue) {
                 // Keep a record of the next child *before* applying bindings, in case the binding removes the current child from its position
@@ -310,7 +289,7 @@
         // Perf optimisation: Apply bindings only if...
         // (1) We need to store the binding info for the node (all element nodes)
         // (2) It might have bindings (e.g., it has a data-bind attribute, or it's a marker for a containerless template)
-        var shouldApplyBindings = isElement || ko.bindingProvider['instance']['nodeHasBindings'](nodeVerified);
+        var shouldApplyBindings = isElement || ko.bindingProvider.nodeHasBindings(nodeVerified);
         if (shouldApplyBindings)
             bindingContextForDescendants = applyBindingsToNodeInternal(nodeVerified, null, bindingContext)['bindingContextForDescendants'];
 
@@ -379,14 +358,11 @@
         if (sourceBindings && typeof sourceBindings !== 'function') {
             bindings = sourceBindings;
         } else {
-            var provider = ko.bindingProvider['instance'],
-                getBindings = provider['getBindingAccessors'] || getBindingsAndMakeAccessors;
-
             // Get the binding from the provider within a computed observable so that we can update the bindings whenever
             // the binding context is updated or if the binding provider accesses observables.
             var bindingsUpdater = ko.computed(
                 () => {
-                    bindings = sourceBindings ? sourceBindings(bindingContext, node) : getBindings.call(provider, node, bindingContext);
+                    bindings = sourceBindings ? sourceBindings(bindingContext, node) : ko.bindingProvider.getBindingAccessors(node, bindingContext);
                     // Register a dependency on the binding context to support observable view models.
                     if (bindings) {
                         if (bindingContext[contextSubscribable]) {
