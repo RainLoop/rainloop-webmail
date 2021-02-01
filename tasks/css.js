@@ -105,7 +105,7 @@ const cssAdminMin = () => {
 		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
-const cssBuild = gulp.parallel(cssBootBuild, cssMainBuild, cssAdminBuild);
+const cssBuild = gulp.parallel(cssBootBuild, cssMainBuild/*, cssAdminBuild*/);
 const cssMin = gulp.parallel(cssBootMin, cssMainMin, cssAdminMin);
 
 const cssLint = (done) => done();
