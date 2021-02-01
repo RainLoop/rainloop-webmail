@@ -157,8 +157,8 @@ For a user its around 65% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|-------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 183.662	| 46,959	| 28.665	| 24.135	|
-|app.min.css 	| 274.791	| 149.991	| 39.618	| 25.303	| 21.868	|
+|app.css     	| 340.334	| 167.876	| 46,959	| 26.292	| 22.129	|
+|app.min.css 	| 274.791	| 136.861	| 39.618	| 23.066	| 19.978	|
 |boot.css    	|       	|   2.534	|       	|    837	|    668	|
 |boot.min.css	|       	|   2.055	|       	|    732	|    560	|
 
