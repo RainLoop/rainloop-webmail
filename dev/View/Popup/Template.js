@@ -85,7 +85,7 @@ class TemplatePopupView extends AbstractViewPopup {
 		this.submitError('');
 
 		if (this.editor) {
-			this.editor.setPlain('', false);
+			this.editor.setPlain('');
 		}
 	}
 

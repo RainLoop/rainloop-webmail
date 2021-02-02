@@ -85,7 +85,7 @@ export function htmlToPlain(html) {
 			args && 1 < args.length
 				? args[1]
 						.toString()
-						.replace(/[\n]/gm, '<br />')
+						.replace(/[\n]/gm, '<br/>')
 						.replace(/[\r]/gm, '')
 				: '',
 		fixAttibuteValue = (...args) => (args && 1 < args.length ? '' + args[1] + encodeHtml(args[2]) : ''),
@@ -204,7 +204,7 @@ export function plainToHtml(plain) {
 		.replace(/</g, '&lt;')
 		.replace(/~~~blockquote~~~[\s]*/g, '<blockquote>')
 		.replace(/[\s]*~~~\/blockquote~~~/g, '</blockquote>')
-		.replace(/\n/g, '<br />');
+		.replace(/\n/g, '<br/>');
 }
 
 rl.Utils = {

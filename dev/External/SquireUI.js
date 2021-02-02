@@ -491,20 +491,20 @@ class SquireUI
 	}
 
 	setMode(mode) {
-		let cl = this.container.classList;
-		cl.remove('squire-mode-'+this.mode);
-		if ('plain' == mode) {
-			let html = this.squire.getHTML();
-			this.plain.value = rl.Utils.htmlToPlain(html, true).trim();
-		} else {
-			let plain = this.plain.value;
-			this.setData(rl.Utils.plainToHtml(plain, true));
-			mode = 'wysiwyg';
+		if (this.mode != mode) {
+			let cl = this.container.classList;
+			cl.remove('squire-mode-'+this.mode);
+			if ('plain' == mode) {
+				this.plain.value = rl.Utils.htmlToPlain(this.squire.getHTML(), true).trim();
+			} else {
+				this.setData(rl.Utils.plainToHtml(this.plain.value, true));
+				mode = 'wysiwyg';
+			}
+			this.mode = mode; // 'wysiwyg' or 'plain'
+			cl.add('squire-mode-'+mode);
+			this.onModeChange && this.onModeChange();
+			setTimeout(()=>this.focus(),1);
 		}
-		this.mode = mode; // 'wysiwyg' or 'plain'
-		cl.add('squire-mode-'+mode);
-		this.onModeChange && this.onModeChange();
-		setTimeout(()=>this.focus(),1);
 	}
 
 	// CKeditor gimmicks used by HtmlEditor
@@ -551,6 +551,7 @@ class SquireUI
 	}
 
 	setData(html) {
+//		this.plain.value = html;
 		this.squire.setHTML(trimLines(html));
 	}
 

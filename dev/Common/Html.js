@@ -66,7 +66,14 @@ class HtmlEditor {
 	 * @returns {boolean}
 	 */
 	isHtml() {
-		return this.editor ? 'plain' !== this.editor.mode : false;
+		return this.editor ? !this.isPlain() : false;
+	}
+
+	/**
+	 * @returns {boolean}
+	 */
+	isPlain() {
+		return this.editor ? 'plain' === this.editor.mode : false;
 	}
 
 	/**
@@ -100,7 +107,7 @@ class HtmlEditor {
 		let result = '';
 		if (this.editor) {
 			try {
-				if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain) {
+				if (this.isPlain() && this.editor.plugins.plain && this.editor.__plain) {
 					result = this.editor.__plain.getRawData();
 				} else {
 					result = wrapIsHtml
@@ -123,59 +130,45 @@ class HtmlEditor {
 		return (this.isHtml() ? ':HTML:' : '') + this.getData(wrapIsHtml);
 	}
 
-	modeToggle(plain) {
-		if (this.editor) {
-			try {
-				if (plain) {
-					if ('plain' === this.editor.mode) {
-						this.editor.setMode('wysiwyg');
-					}
-				} else if ('wysiwyg' === this.editor.mode) {
-					this.editor.setMode('plain');
-				}
-			} catch (e) {} // eslint-disable-line no-empty
-		}
+	modeWysiwyg() {
+		try {
+			this.editor && this.editor.setMode('wysiwyg');
+		} catch (e) { console.error(e); }
+	}
+	modePlain() {
+		try {
+			this.editor && this.editor.setMode('plain');
+		} catch (e) { console.error(e); }
 	}
 
-	setHtmlOrPlain(text, focus) {
+	setHtmlOrPlain(text) {
 		if (':HTML:' === text.substr(0, 6)) {
-			this.setHtml(text.substr(6), focus);
+			this.setHtml(text.substr(6));
 		} else {
-			this.setPlain(text, focus);
+			this.setPlain(text);
 		}
 	}
 
-	setHtml(html, focus) {
+	setData(mode, data) {
 		if (this.editor && this.__inited) {
 			this.clearCachedSignature();
-
-			this.modeToggle(true);
-
-			html = html.replace(/<p[^>]*><\/p>/gi, '');
-
 			try {
-				this.editor.setData(html);
-			} catch (e) {} // eslint-disable-line no-empty
-
-			focus && this.focus();
+				this.editor.setMode(mode);
+				if (this.isPlain() && this.editor.plugins.plain && this.editor.__plain) {
+					this.editor.__plain.setRawData(data);
+				} else {
+					this.editor.setData(data);
+				}
+			} catch (e) { console.error(e); }
 		}
 	}
 
-	setPlain(plain, focus) {
-		if (this.editor && this.__inited) {
-			this.clearCachedSignature();
+	setHtml(html) {
+		this.setData('wysiwyg', html/*.replace(/<p[^>]*><\/p>/gi, '')*/);
+	}
 
-			this.modeToggle(false);
-			if ('plain' === this.editor.mode && this.editor.plugins.plain && this.editor.__plain) {
-				this.editor.__plain.setRawData(plain);
-			} else {
-				try {
-					this.editor.setData(plain);
-				} catch (e) {} // eslint-disable-line no-empty
-			}
-
-			focus && this.focus();
-		}
+	setPlain(txt) {
+		this.setData('plain', txt);
 	}
 
 	init() {
@@ -208,7 +201,7 @@ class HtmlEditor {
 				this.editor.on('focus', () => this.blurTimer && clearTimeout(this.blurTimer));
 				this.editor.on('mode', () => {
 					this.blurTrigger();
-					this.onModeChange && this.onModeChange('plain' !== this.editor.mode);
+					this.onModeChange && this.onModeChange(!this.isPlain());
 				});
 			}
 		}
@@ -234,8 +227,8 @@ class HtmlEditor {
 		} catch (e) {} // eslint-disable-line no-empty
 	}
 
-	clear(focus) {
-		this.setHtml('', focus);
+	clear() {
+		this.setHtml('');
 	}
 }
 

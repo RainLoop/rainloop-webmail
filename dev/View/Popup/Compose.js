@@ -528,11 +528,7 @@ class ComposePopupView extends AbstractViewPopup {
 	openOpenPgpPopup() {
 		if (PgpStore.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml()) {
 			showScreenPopup(ComposeOpenPgpPopupView, [
-				(result) => {
-					this.editor((editor) => {
-						editor.setPlain(result);
-					});
-				},
+				result => this.editor(editor => editor.setPlain(result)),
 				this.oEditor.getData(false),
 				this.currentIdentity(),
 				this.to(),
@@ -568,9 +564,7 @@ class ComposePopupView extends AbstractViewPopup {
 				}
 			};
 
-		identities.forEach((item, index) => {
-			identitiesCache[item.email()] = [item, index];
-		});
+		identities.forEach((item, index) => identitiesCache[item.email()] = [item, index]);
 
 		if (message) {
 			switch (composeType) {
@@ -700,9 +694,7 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	converSignature(signature) {
-		signature = signature.replace(/[\r]/g, '');
-
+	convertSignature(signature) {
 		let fromLine = this.oLastMessage ? this.emailArrayToStringLineHelper(this.oLastMessage.from, true) : '';
 		if (fromLine) {
 			signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
@@ -714,39 +706,24 @@ class ComposePopupView extends AbstractViewPopup {
 			signature = signature.replace(/{{FROM}}/g, fromLine);
 		}
 
-		signature = signature.replace(/[\s]{1,2}{{FROM}}/g, '{{FROM}}');
-		signature = signature.replace(/[\s]{1,2}{{FROM-FULL}}/g, '{{FROM-FULL}}');
-
-		signature = signature.replace(/{{FROM}}/g, '');
-		signature = signature.replace(/{{FROM-FULL}}/g, '');
-
-		if (signature.includes('{{DATE}}')) {
-			signature = signature.replace(/{{DATE}}/g, new Date().format('LLLL'));
-		}
-
-		if (signature.includes('{{TIME}}')) {
-			signature = signature.replace(/{{TIME}}/g, new Date().format('LT'));
-		}
-
-		signature = signature.replace(/{{MOMENT:[^}]+}}/g, '');
-
-		return signature;
+		return signature
+			.replace(/[\r]/g, '')
+			.replace(/[\s]{1,2}?{{FROM}}/g, '')
+			.replace(/[\s]{1,2}?{{FROM-FULL}}/g, '')
+			.replace(/{{DATE}}/g, new Date().format('LLLL'))
+			.replace(/{{TIME}}/g, new Date().format('LT'))
+			.replace(/{{MOMENT:[^}]+}}/g, '');
 	}
 
 	setSignatureFromIdentity(identity) {
 		if (identity) {
-			this.editor((editor) => {
-				let isHtml = false,
-					signature = identity.signature();
+			this.editor(editor => {
+				let signature = identity.signature(),
+					isHtml = signature && ':HTML:' === signature.substr(0, 6);
 
-				if (signature) {
-					if (':HTML:' === signature.substr(0, 6)) {
-						isHtml = true;
-						signature = signature.substr(6);
-					}
-				}
-
-				editor.setSignature(this.converSignature(signature), isHtml, !!identity.signatureInsertBefore());
+				editor.setSignature(
+					this.convertSignature(isHtml ? signature.substr(6) : signature),
+					isHtml, !!identity.signatureInsertBefore());
 			});
 		}
 	}
@@ -798,7 +775,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 	onWarmUp() {
 		if (this.modalVisibility && !this.modalVisibility()) {
-			this.editor(editor => editor.modeToggle(false));
+			this.editor(editor => editor.modeWysiwyg());
 		}
 	}
 
@@ -825,6 +802,11 @@ class ComposePopupView extends AbstractViewPopup {
 	emailArrayToStringLineHelper(aList, bFriendly) {
 		bFriendly = !!bFriendly;
 		return aList.map(item => item.toLine(bFriendly)).join(', ');
+	}
+
+	isPlainEditor() {
+		let type = this.editorDefaultType();
+		return EditorDefaultType.Html !== type && EditorDefaultType.HtmlForced !== type;
 	}
 
 	/**
@@ -980,8 +962,8 @@ class ComposePopupView extends AbstractViewPopup {
 						'EMAIL': sFrom
 					});
 
-					sText = sText.replace(/<img[^>]+>/g, '').replace(/<a\s[^>]+><\/a>/g, '');
-					sText = '<br /><br />' + sReplyTitle + ':' + '<br /><br />' + '<blockquote>' + sText.trim() + '</blockquote>';
+					sText = sText.replace(/<img[^>]+>/g, '').replace(/<a\s[^>]+><\/a>/g, '').trim();
+					sText = '<br/><br/>' + sReplyTitle + ':<br/><br/><blockquote>' + sText + '</blockquote>';
 
 					break;
 
@@ -990,28 +972,28 @@ class ComposePopupView extends AbstractViewPopup {
 					sTo = message.toToLine(false, true);
 					sCc = message.ccToLine(false, true);
 					sText =
-						'<br /><br />' +
+						'<br/><br/>' +
 						i18n('COMPOSE/FORWARD_MESSAGE_TOP_TITLE') +
-						'<br />' +
+						'<br/>' +
 						i18n('GLOBAL/FROM') +
 						': ' +
 						sFrom +
-						'<br />' +
+						'<br/>' +
 						i18n('GLOBAL/TO') +
 						': ' +
 						sTo +
-						(sCc.length ? '<br />' + i18n('GLOBAL/CC') + ': ' + sCc : '') +
-						'<br />' +
+						(sCc.length ? '<br/>' + i18n('GLOBAL/CC') + ': ' + sCc : '') +
+						'<br/>' +
 						i18n('COMPOSE/FORWARD_MESSAGE_TOP_SENT') +
 						': ' +
 						encodeHtml(sDate) +
-						'<br />' +
+						'<br/>' +
 						i18n('GLOBAL/SUBJECT') +
 						': ' +
 						encodeHtml(sSubject) +
-						'<br /><br />' +
+						'<br/><br/>' +
 						sText.trim() +
-						'<br /><br />';
+						'<br/><br/>';
 					break;
 
 				case ComposeType.ForwardAsAttachment:
@@ -1020,14 +1002,14 @@ class ComposePopupView extends AbstractViewPopup {
 				// no default
 			}
 
-			this.editor((editor) => {
-				editor.setHtml(sText, false);
+			this.editor(editor => {
+				editor.setHtml(sText);
 
 				if (
 					EditorDefaultType.PlainForced === this.editorDefaultType() ||
 					(!message.isHtml() && EditorDefaultType.HtmlForced !== this.editorDefaultType())
 				) {
-					editor.modeToggle(false);
+					editor.modePlain();
 				}
 
 				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType) {
@@ -1041,14 +1023,11 @@ class ComposePopupView extends AbstractViewPopup {
 
 			sText = null != sCustomPlainText ? '' + sCustomPlainText : '';
 
-			this.editor((editor) => {
-				editor.setHtml(sText, false);
+			this.editor(editor => {
+				editor.setHtml(sText);
 
-				if (
-					EditorDefaultType.Html !== this.editorDefaultType() &&
-					EditorDefaultType.HtmlForced !== this.editorDefaultType()
-				) {
-					editor.modeToggle(false);
+				if (this.isPlainEditor()) {
+					editor.modePlain();
 				}
 
 				if (identity) {
@@ -1058,18 +1037,13 @@ class ComposePopupView extends AbstractViewPopup {
 				this.setFocusInPopup();
 			});
 		} else if (isNonEmptyArray(oMessageOrArray)) {
-			oMessageOrArray.forEach(item => {
-				this.addMessageAsAttachment(item);
-			});
+			oMessageOrArray.forEach(item => this.addMessageAsAttachment(item));
 
-			this.editor((editor) => {
-				editor.setHtml('', false);
-
-				if (
-					EditorDefaultType.Html !== this.editorDefaultType() &&
-					EditorDefaultType.HtmlForced !== this.editorDefaultType()
-				) {
-					editor.modeToggle(false);
+			this.editor(editor => {
+				if (this.isPlainEditor()) {
+					editor.setPlain('')
+				} else {
+					editor.setHtml('');
 				}
 
 				if (identity && ComposeType.Draft !== lineComposeType && ComposeType.EditAsNew !== lineComposeType) {
@@ -1508,7 +1482,7 @@ class ComposePopupView extends AbstractViewPopup {
 		this.saving(false);
 
 		if (this.oEditor) {
-			this.oEditor.clear(false);
+			this.oEditor.clear();
 		}
 	}
 

@@ -85,7 +85,7 @@ export function createCKEditor(element)
 					reader.onloadend = () => {
 						if (reader.result && 'wysiwyg' === editor.mode) {
 							try {
-								editor.setData(editor.getData().replace(imageId, `<img src="${reader.result}" />`));
+								editor.setData(editor.getData().replace(imageId, `<img src="${reader.result}"/>`));
 							} catch (e) {} // eslint-disable-line no-empty
 						}
 					};
