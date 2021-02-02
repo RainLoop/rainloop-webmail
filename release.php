@@ -30,10 +30,12 @@ if ($return_var) {
 	exit("gulp failed with error code {$return_var}\n");
 }
 
+/*
 passthru("{$rollup} -c", $return_var);
 if ($return_var) {
 	exit("rollup failed with error code {$return_var}\n");
 }
+*/
 
 $cmddir = escapeshellcmd(__DIR__) . '/snappymail/v/0.0.0/static';
 

@@ -7,12 +7,9 @@ const config = {
 		agpl: '/* SnappyMail Webmail (c) SnappyMail | Licensed under AGPL v3 */'
 	},
 	devVersion: '0.0.0',
-	releasesPath: 'build/dist/releases',
 
 	destPath: '',
 	cleanPath: '',
-	zipSrcPath: '',
-	zipFile: '',
 
 	paths: {}
 };

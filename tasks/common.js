@@ -12,12 +12,6 @@ exports.copy = (sFile, sNewFile, done) => {
 	done();
 };
 
-exports.zip = (srcDir, destDir, fileName) =>
-	gulp
-		.src(srcDir + '**/*')
-		.pipe(require('gulp-zip')(fileName))
-		.pipe(gulp.dest(destDir));
-
 exports.getHead = () => config.head.agpl;
 
 exports.cleanStatic = () => exports.del(config.paths.static);

@@ -16,7 +16,7 @@ const concat = require('gulp-concat-util'),
 const { config } = require('./config');
 const { del, getHead } = require('./common');
 
-//const { rollupJS } = require('./rollup');
+const { rollupJS } = require('./rollup');
 
 const jsClean = () => del(config.paths.staticJS + '/**/*.{js,map}');
 
@@ -61,17 +61,17 @@ const jsLibs = () => {
 };
 
 // app
-const jsApp = () =>
-	gulp
-		.src(config.paths.staticJS + config.paths.js.app.name)
+const jsApp = async () =>
+	(await rollupJS(config.paths.js.app.name))
+//		.pipe(sourcemaps.write('.'))
 		.pipe(header(getHead() + '\n'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(config.paths.staticJS))
 		.on('error', gutil.log);
 
-const jsAdmin = () =>
-	gulp
-		.src(config.paths.staticJS + config.paths.js.admin.name)
+const jsAdmin = async () =>
+	(await rollupJS(config.paths.js.admin.name))
+//		.pipe(sourcemaps.write('.'))
 		.pipe(header(getHead() + '\n'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(config.paths.staticJS))
@@ -128,8 +128,8 @@ const jsLint = () =>
 		.pipe(eslint.failAfterError());
 
 const jsState1 = gulp.series(jsLint);
-const jsState3 = gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsOpenPGPWorker, jsLibs/*, jsApp, jsAdmin*/);
-const jsState2 = gulp.series(jsClean/*, rollupJS('app.js'), rollupJS('admin.js')*/, jsState3, jsMin);
+const jsState3 = gulp.parallel(jsBoot, jsServiceWorker, jsOpenPGP, jsOpenPGPWorker, jsLibs, jsApp, jsAdmin);
+const jsState2 = gulp.series(jsClean, jsState3, jsMin);
 
 exports.jsLint = jsLint;
 exports.js = gulp.parallel(jsState1, jsState2);

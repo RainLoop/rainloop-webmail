@@ -52,7 +52,6 @@
     "gulp": "4.0.2",
     "gulp-autoprefixer": "7.0.1",
     "gulp-cached": "1.1.1",
-    "gulp-chmod": "3.0.0",
     "gulp-clean-css": "4.3.0",
     "gulp-concat-util": "0.5.5",
     "gulp-eol": "0.2.0",
@@ -69,12 +68,12 @@
     "gulp-stripbom": "1.0.5",
     "gulp-terser": "^1.4.0",
     "gulp-util": "3.0.8",
-    "gulp-zip": "5.0.1",
     "node-fs": "0.1.7",
     "openpgp": "2.6.2",
     "rimraf": "3.0.2"
   },
   "dependencies": {
+    "gulp-rollup-2": "^1.2.1",
     "rollup": "^2.38.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-external-globals": "^0.6.1",

@@ -51,30 +51,6 @@ const cssMainBuild = () => {
 		.pipe(livereload());
 };
 
-const cssAdminBuild = () => {
-	const autoprefixer = require('gulp-autoprefixer'),
-		less = require('gulp-less'),
-		lessFilter = filter('**/*.less', { restore: true }),
-		src = config.paths.less.admin.src;
-
-	return gulp
-		.src(src)
-		.pipe(expect.real({ errorOnFailure: true }, src))
-		.pipe(lessFilter)
-		.pipe(
-			less({
-				'paths': config.paths.less.main.options.paths
-			})
-		)
-		.pipe(lessFilter.restore)
-		.pipe(concat(config.paths.css.admin.name))
-		.pipe(autoprefixer())
-		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(config.paths.staticCSS))
-		.pipe(livereload());
-};
-
 const cssBootMin = () => {
 	const cleanCss = require('gulp-clean-css');
 	return gulp
@@ -95,18 +71,8 @@ const cssMainMin = () => {
 		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
-const cssAdminMin = () => {
-	const cleanCss = require('gulp-clean-css');
-	return gulp
-		.src(config.paths.staticCSS + config.paths.css.admin.name)
-		.pipe(cleanCss())
-		.pipe(rename({ suffix: '.min' }))
-		.pipe(eol('\n', true))
-		.pipe(gulp.dest(config.paths.staticCSS));
-};
-
-const cssBuild = gulp.parallel(cssBootBuild, cssMainBuild/*, cssAdminBuild*/);
-const cssMin = gulp.parallel(cssBootMin, cssMainMin, cssAdminMin);
+const cssBuild = gulp.parallel(cssBootBuild, cssMainBuild);
+const cssMin = gulp.parallel(cssBootMin, cssMainMin);
 
 const cssLint = (done) => done();
 

@@ -91,5 +91,5 @@ export default [{
 		html({
 			include: '**/*.html'
 		})
-	],
+	]
 }];
