@@ -9,8 +9,6 @@
 
 (root => {
 
-  'use strict';
-
   // Private constants
   // -----------------
 
