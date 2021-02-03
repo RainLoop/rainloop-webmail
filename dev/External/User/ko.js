@@ -77,12 +77,9 @@ ko.bindingHandlers.emailsTags = {
 					 : null;
 			},
 			parseHook: input =>
-				input.map(inputValue => {
-					const values = EmailModel.parseEmailLine(inputValue);
-					return values.length ? values : inputValue;
-				}).flat(Infinity).map(
-					item => (item.toLine ? [item.toLine(false), item] : [item, null])
-				),
+				input.map(inputValue => EmailModel.parseEmailLine(inputValue))
+					.flat(Infinity)
+					.map(item => (item.toLine ? [item.toLine(false), item] : [item, null])),
 			onChange: value => {
 				element.EmailsTagsValue = value;
 				fValue(value);

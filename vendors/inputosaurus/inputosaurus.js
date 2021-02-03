@@ -80,7 +80,7 @@ this.Inputosaurus = class {
 		self.input.addEventListener('focus', () => self._focusTrigger(true));
 		self.input.addEventListener('blur', () => {
 			// prevent autoComplete menu click from causing a false 'blur'
-			self._parseInput();
+			self._parseInput(true);
 			self._focusTrigger(false);
 		});
 		self.input.addEventListener('keydown', e => {
@@ -97,7 +97,7 @@ this.Inputosaurus = class {
 				self._updateDatalist();
 			} else if (e.key == 'Enter') {
 				e.preventDefault();
-				self._parseInput();
+				self._parseInput(true);
 			}
 		});
 		self.input.addEventListener('input', () => {
@@ -148,8 +148,11 @@ this.Inputosaurus = class {
 		datalist.textContent = '';
 	}
 
-	_parseInput() {
-		this._parseValue(this.input.value) && (this.input.value = '');
+	_parseInput(force) {
+		let val = this.input.value;
+		if (force || val.includes(',') || val.includes(';')) {
+			this._parseValue(val) && (this.input.value = '');
+		}
 		this._resizeInput();
 	}
 
