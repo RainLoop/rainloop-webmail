@@ -13,6 +13,12 @@ export const moveAction = ko.observable(false);
 export const leftPanelDisabled = ko.observable(false);
 export const leftPanelType = ko.observable('');
 
+export const createElement = (name, attr) => {
+	let el = doc.createElement(name);
+	attr && Object.entries(attr).forEach(([k,v]) => el.setAttribute(k,v));
+	return el;
+};
+
 leftPanelDisabled.subscribe(value => {
 	value && moveAction() && moveAction(false);
 	$htmlCL.toggle('rl-left-panel-disabled', value);

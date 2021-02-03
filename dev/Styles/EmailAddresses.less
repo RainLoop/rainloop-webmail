@@ -1,4 +1,4 @@
-.inputosaurus-container {
+.emailaddresses {
 	background-color: #fff;
 	border: 1px solid #ccc;
 	border-radius: 3px;
@@ -12,10 +12,16 @@
 	transition: border linear .2s, box-shadow linear .2s;
 }
 
-.inputosaurus-container li {
+.emailaddresses.emailaddresses-focused {
+	background-color: #fff;
+	border: @rlInputBorderSize solid darken(@inputBorder, 20%);
+	box-shadow: none;
+}
+
+.emailaddresses li {
 	display: inline-block;
 }
-.inputosaurus-container li[draggable] {
+.emailaddresses li[draggable] {
 	background-color: #eee;
 	border: 1px solid #aaa;
 	border-radius: 2px;
@@ -32,15 +38,15 @@
 	white-space: nowrap;
 }
 
-.inputosaurus-container li.pgp {
+.emailaddresses li.pgp {
 	background-color: #E5F3E2;
 }
 
-.inputosaurus-container li span {
+.emailaddresses li span {
 	padding-right: 3px;
 }
 
-.inputosaurus-container li a {
+.emailaddresses li a {
     font-size: 12px;
     color: #999;
 	outline: 0;
@@ -50,18 +56,18 @@
 	text-decoration: none;
     top: 1px;
 }
-.inputosaurus-container li a:hover {
+.emailaddresses li a:hover {
 	color: #666;
 }
 
-.inputosaurus-container .inputosaurus-input {
+.emailaddresses .emailaddresses-input {
 	margin: 0 2px;
 	padding: 0;
 }
 
-.inputosaurus-container input[type="text"],
-.inputosaurus-container input[type="text"]:focus,
-.inputosaurus-container input[type="text"]:hover {
+.emailaddresses input[type="text"],
+.emailaddresses input[type="text"]:focus,
+.emailaddresses input[type="text"]:hover {
 	border: 0;
 	box-shadow: none;
 	height: 24px;
@@ -71,8 +77,8 @@
 	vertical-align: baseline;
 }
 
-.inputosaurus-container li.inputosaurus-selected,
-.inputosaurus-container li.inputosaurus-selected a {
+.emailaddresses li.emailaddresses-selected,
+.emailaddresses li.emailaddresses-selected a {
 	background-color: Highlight;
 	color: HighlightText;
 }

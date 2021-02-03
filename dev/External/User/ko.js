@@ -2,8 +2,8 @@ import 'External/ko';
 import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Momentor';
-import { EmailModel } from 'Model/Email';
 import { doc } from 'Common/Globals';
+import { EmailAddressesComponent } from 'Component/EmailAddresses';
 
 const rlContentType = 'snappymail/action',
 
@@ -64,42 +64,22 @@ ko.bindingHandlers.moment = {
 ko.bindingHandlers.emailsTags = {
 	init: (element, fValueAccessor, fAllBindingsAccessor) => {
 		const fValue = fValueAccessor(),
-			fAllBindings = fAllBindingsAccessor(),
-			inputDelimiters = [',', ';', '\n'];
+			fAllBindings = fAllBindingsAccessor();
 
-		element.inputosaurus = new window.Inputosaurus(element, {
+		element.addresses = new EmailAddressesComponent(element, {
 			focusCallback: value => fValue.focused && fValue.focused(!!value),
 			autoCompleteSource: fAllBindings.autoCompleteSource || null,
-			splitHook: value => {
-				const v = value.trim();
-				return (v && inputDelimiters.includes(v.substr(-1)))
-					 ? EmailModel.splitEmailLine(value)
-					 : null;
-			},
-			parseHook: input =>
-				input.map(inputValue => EmailModel.parseEmailLine(inputValue))
-					.flat(Infinity)
-					.map(item => (item.toLine ? [item.toLine(false), item] : [item, null])),
-			onChange: value => {
-				element.EmailsTagsValue = value;
-				fValue(value);
-			}
+			onChange: value => fValue(value)
 		});
 
 		if (fValue.focused && fValue.focused.subscribe) {
 			fValue.focused.subscribe(value =>
-				element.inputosaurus[value ? 'focus' : 'blur']()
+				element.addresses[value ? 'focus' : 'blur']()
 			);
 		}
 	},
 	update: (element, fValueAccessor) => {
-		const value = ko.unwrap(fValueAccessor());
-
-		if (element.EmailsTagsValue !== value) {
-			element.value = value;
-			element.EmailsTagsValue = value;
-			element.inputosaurus.refresh();
-		}
+		element.addresses.value = ko.unwrap(fValueAccessor());
 	}
 };
 

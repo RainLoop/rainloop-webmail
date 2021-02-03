@@ -1,40 +1,24 @@
-/**
- * Inputosaurus Text
- *
- * Must be instantiated on an <input> element
- * Allows multiple input items. Each item is represented with a removable tag that appears to be inside the input area.
- *
- * @version 0.1.6
- * @author Dan Kielp <dan@sproutsocial.com>
- * @created October 3,2012
- *
- * @modified by RainLoop Team
- * @modified by DJMaze
- */
+import { doc, createElement } from 'Common/Globals';
+import { EmailModel } from 'Model/Email';
 
-(doc => {
+const contentType = 'snappymail/emailaddress';
 
-const createEl = (name, attr) => {
-		let el = doc.createElement(name);
-		attr && Object.entries(attr).forEach(([k,v]) => el.setAttribute(k,v));
-		return el;
-	},
-	datalist = createEl('datalist',{id:"inputosaurus-datalist"}),
+let dragAddress, datalist;
 
-	contentType = 'inputosaurus/item';
-
-doc.body.append(datalist);
-
-let dragData;
-
-this.Inputosaurus = class {
+// mailbox-list
+export class EmailAddressesComponent {
 
 	constructor(element, options) {
+
+		if (!datalist) {
+			datalist = createElement('datalist',{id:"emailaddresses-datalist"});
+			doc.body.append(datalist);
+		}
 
 		var self = this,
 			// In Chrome we have no access to dataTransfer.getData unless it's the 'drop' event
 			// In Chrome Mobile dataTransfer.types.includes(contentType) fails, only text/plain is set
-			validDropzone = () => dragData && dragData.li.parentNode !== self.ul,
+			validDropzone = () => dragAddress && dragAddress.li.parentNode !== self.ul,
 			fnDrag = e => validDropzone() && e.preventDefault();
 
 		self.element = element;
@@ -46,12 +30,6 @@ this.Inputosaurus = class {
 			// simply passing an autoComplete source (array, string or function) will instantiate autocomplete functionality
 			autoCompleteSource : '',
 
-			// manipulate and return the input value after parseInput() parsing
-			// the array of tag names is passed and expected to be returned as an array after manipulation
-			parseHook : null,
-
-			splitHook : null,
-
 			onChange : null
 		}, options);
 
@@ -60,21 +38,21 @@ this.Inputosaurus = class {
 		self._lastEdit = '';
 
 		// Create the elements
-		self.ul = createEl('ul',{class:"inputosaurus-container"});
+		self.ul = createElement('ul',{class:"emailaddresses"});
 
 		self.ul.addEventListener('click', e => self._focus(e));
 		self.ul.addEventListener('dblclick', e => self._editTag(e));
 		self.ul.addEventListener("dragenter", fnDrag);
 		self.ul.addEventListener("dragover", fnDrag);
 		self.ul.addEventListener("drop", e => {
-			if (validDropzone() && dragData.value) {
+			if (validDropzone() && dragAddress.value) {
 				e.preventDefault();
-				dragData.source._removeDraggedTag(dragData.li);
-				self._parseValue(dragData.value);
+				dragAddress.source._removeDraggedTag(dragAddress.li);
+				self._parseValue(dragAddress.value);
 			}
 		});
 
-		self.input = createEl('input',{type:"text", list:datalist.id,
+		self.input = createElement('input',{type:"text", list:datalist.id,
 			autocomplete:"off", autocorrect:"off", autocapitalize:"off", spellcheck:"false"});
 
 		self.input.addEventListener('focus', () => self._focusTrigger(true));
@@ -111,7 +89,7 @@ this.Inputosaurus = class {
 			self.input.placeholder = element.placeholder;
 		}
 
-		self.inputCont = createEl('li',{class:"inputosaurus-input"});
+		self.inputCont = createElement('li',{class:"emailaddresses-input"});
 		self.inputCont.append(self.input);
 		self.ul.append(self.inputCont);
 
@@ -140,7 +118,7 @@ this.Inputosaurus = class {
 	}
 
 	_focusTrigger(bValue) {
-		this.ul.classList.toggle('inputosaurus-focused', bValue);
+		this.ul.classList.toggle('emailaddresses-focused', bValue);
 		this.options.focusCallback(bValue);
 	}
 
@@ -157,18 +135,18 @@ this.Inputosaurus = class {
 	}
 
 	_parseValue(val) {
-		var self = this,
-			hook,
-			values = [];
-
 		if (val) {
-			if ((hook = self.options.splitHook(val))) {
-				values = hook;
-			} else {
-				values.push(val);
-			}
+			var self = this,
+				values = [];
 
-			values = self.options.parseHook(values);
+			const v = val.trim(),
+				hook = (v && [',', ';', '\n'].includes(v.substr(-1)))
+					 ? EmailModel.splitEmailLine(val)
+					 : null;
+
+			values = (hook || [val]).map(value => EmailModel.parseEmailLine(value))
+					.flat(Infinity)
+					.map(item => (item.toLine ? [item.toLine(false), item] : [item, null]));
 
 			if (values.length) {
 				self._setChosen(values);
@@ -187,7 +165,7 @@ this.Inputosaurus = class {
 
 	_editTag(ev) {
 		var li = ev.target.closest('li'),
-			tagKey = li && li.inputosaurusKey;
+			tagKey = li && li.emailaddress.key;
 
 		if (!tagKey) {
 			return true;
@@ -289,15 +267,15 @@ this.Inputosaurus = class {
 
 		self._chosenValues.forEach(v => {
 			if (v.obj) {
-				let li = createEl('li',{title:v.obj.toLine(false, false, true),draggable:'true'}),
-					el = createEl('span');
+				let li = createElement('li',{title:v.obj.toLine(false, false, true),draggable:'true'}),
+					el = createElement('span');
 				el.append(v.obj.toLine(true, false, true));
 				li.append(el);
 
-				el = createEl('a',{href:'#', class:'ficon'});
+				el = createElement('a',{href:'#', class:'ficon'});
 				el.append('✖');
 				el.addEventListener('click', e => self._removeTag(e, li));
-				el.addEventListener('focus', () => li.className = 'inputosaurus-selected');
+				el.addEventListener('focus', () => li.className = 'emailaddresses-selected');
 				el.addEventListener('blur', () => li.className = null);
 				el.addEventListener('keydown', e => {
 					switch (e.key) {
@@ -339,23 +317,22 @@ this.Inputosaurus = class {
 				});
 				li.append(el);
 
-				li.inputosaurusKey = v.key;
-				li.inputosaurusValue = v.obj.toLine();
+				li.emailaddress = v;
 
 				li.addEventListener("dragstart", e => {
-					dragData = {
+					dragAddress = {
 						source: self,
 						li: li,
-						value: li.inputosaurusValue
+						value: li.emailaddress.obj.toLine()
 					};
-//					e.dataTransfer.setData(contentType, li.inputosaurusValue);
+//					e.dataTransfer.setData(contentType, li.emailaddress.obj.toLine());
 					e.dataTransfer.setData('text/plain', contentType);
 //					e.dataTransfer.setDragImage(li, 0, 0);
 					e.dataTransfer.effectAllowed = 'move';
 					li.style.opacity = 0.25;
 				});
 				li.addEventListener("dragend", () => {
-					dragData = null;
+					dragAddress = null;
 					li.style.cssText = '';
 				});
 
@@ -367,7 +344,7 @@ this.Inputosaurus = class {
 	_removeTag(ev, li) {
 		ev.preventDefault();
 
-		var key = li.inputosaurusKey,
+		var key = li.emailaddress.key,
 			self = this,
 			indexFound = self._chosenValues.findIndex(v => key === v.key);
 
@@ -381,7 +358,7 @@ this.Inputosaurus = class {
 
 	_removeDraggedTag(li) {
 		var
-			key = li.inputosaurusKey,
+			key = li.emailaddress.key,
 			self = this,
 			indexFound = self._chosenValues.findIndex(v => key === v.key)
 		;
@@ -403,38 +380,21 @@ this.Inputosaurus = class {
 
 	_focus(ev) {
 		var li = ev.target.closest('li');
-		if (li && li.inputosaurusKey) {
+		if (li && li.emailaddress.key) {
 			li.querySelector('a').focus();
 		} else {
 			this.focus();
 		}
 	}
 
-	refresh() {
-		var self = this,
-			val = self.element.value,
-			values = [];
-
-		values.push(val);
-
-		if (val) {
-			var hook = self.options.splitHook(val);
-			if (hook) {
-				values = hook;
-			}
-		}
-
-		if (values.length) {
+	set value(value) {
+		var self = this;
+		if (self.element.value !== value) {
+//			self.input.value = '';
+//			self._resizeInput();
 			self._chosenValues = [];
-
-			values = self.options.parseHook(values);
-
-			self._setChosen(values);
 			self._renderTags();
-			self.input.value = '';
-			self._resizeInput();
+			self._parseValue(self.element.value = value);
 		}
 	}
-};
-
-})(document);
+}
