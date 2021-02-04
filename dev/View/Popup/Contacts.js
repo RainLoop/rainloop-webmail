@@ -14,7 +14,7 @@ import { pInt } from 'Common/Utils';
 import { delegateRunOnDestroy, computedPaginatorHelper } from 'Common/UtilsUser';
 
 import { Selector } from 'Common/Selector';
-import { exportContactsVcf, exportContactsCsv, uploadContacts } from 'Common/Links';
+import { serverRequestRaw, serverRequest } from 'Common/Links';
 import { i18n, getNotification } from 'Common/Translator';
 
 import SettingsStore from 'Stores/User/Settings';
@@ -352,17 +352,17 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	exportVcf() {
-		rl.app.download(exportContactsVcf());
+		rl.app.download(serverRequestRaw('ContactsVcf'));
 	}
 
 	exportCsv() {
-		rl.app.download(exportContactsCsv());
+		rl.app.download(serverRequestRaw('ContactsCsv'));
 	}
 
 	initUploader() {
 		if (this.importUploaderButton()) {
 			const j = new Jua({
-				action: uploadContacts(),
+				action: serverRequest('UploadContacts'),
 				name: 'uploader',
 				queueSize: 1,
 				multipleSizeLimit: 1,

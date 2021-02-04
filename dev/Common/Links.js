@@ -62,42 +62,6 @@ export function attachmentDownload(download, customSpecSuffix) {
 }
 
 /**
- * @param {string} download
- * @param {string=} customSpecSuffix
- * @returns {string}
- */
-export function attachmentPreview(download, customSpecSuffix) {
-	return serverRequestRaw('View', download, customSpecSuffix);
-}
-
-/**
- * @param {string} download
- * @param {string=} customSpecSuffix
- * @returns {string}
- */
-export function attachmentThumbnailPreview(download, customSpecSuffix) {
-	return serverRequestRaw('ViewThumbnail', download, customSpecSuffix);
-}
-
-/**
- * @param {string} download
- * @param {string=} customSpecSuffix
- * @returns {string}
- */
-export function attachmentPreviewAsPlain(download, customSpecSuffix) {
-	return serverRequestRaw('ViewAsPlain', download, customSpecSuffix);
-}
-
-/**
- * @param {string} download
- * @param {string=} customSpecSuffix
- * @returns {string}
- */
-export function attachmentFramed(download, customSpecSuffix) {
-	return serverRequestRaw('FramedView', download, customSpecSuffix);
-}
-
-/**
  * @param {string} type
  * @returns {string}
  */
@@ -106,63 +70,11 @@ export function serverRequest(type) {
 }
 
 /**
- * @returns {string}
- */
-export function upload() {
-	return serverRequest('Upload');
-}
-
-/**
- * @returns {string}
- */
-export function uploadContacts() {
-	return serverRequest('UploadContacts');
-}
-
-/**
- * @returns {string}
- */
-export function uploadBackground() {
-	return serverRequest('UploadBackground');
-}
-
-/**
- * @returns {string}
- */
-export function append() {
-	return serverRequest('Append');
-}
-
-/**
  * @param {string} email
  * @returns {string}
  */
 export function change(email) {
 	return serverRequest('Change') + encodeURIComponent(email) + '/';
-}
-
-/**
- * @param {string} requestHash
- * @returns {string}
- */
-export function messageViewLink(requestHash) {
-	return serverRequestRaw('ViewAsPlain', requestHash);
-}
-
-/**
- * @param {string} requestHash
- * @returns {string}
- */
-export function messageDownloadLink(requestHash) {
-	return serverRequestRaw('Download', requestHash);
-}
-
-/**
- * @param {string} hash
- * @returns {string}
- */
-export function publicLink(hash) {
-	return SERVER_PREFIX + '/Raw/0/Public/' + hash + '/';
 }
 
 /**
@@ -180,20 +92,6 @@ export function userBackground(hash) {
  */
 export function langLink(lang, isAdmin) {
 	return SERVER_PREFIX + '/Lang/0/' + (isAdmin ? 'Admin' : 'App') + '/' + encodeURI(lang) + '/' + VERSION + '/';
-}
-
-/**
- * @returns {string}
- */
-export function exportContactsVcf() {
-	return serverRequestRaw('ContactsVcf');
-}
-
-/**
- * @returns {string}
- */
-export function exportContactsCsv() {
-	return serverRequestRaw('ContactsCsv');
 }
 
 /**
@@ -301,13 +199,11 @@ export function mailBox(folder, page = 1, search = '', threadUid = '') {
 	}
 
 	if (1 < page) {
-		result = result.replace(/[/]+$/, '');
-		result += '/p' + page;
+		result = result.replace(/[/]+$/, '') + '/p' + page;
 	}
 
 	if (search) {
-		result = result.replace(/[/]+$/, '');
-		result += '/' + encodeURI(search);
+		result = result.replace(/[/]+$/, '') + '/' + encodeURI(search);
 	}
 
 	return result;

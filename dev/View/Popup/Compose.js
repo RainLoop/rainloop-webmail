@@ -19,7 +19,7 @@ import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { encodeHtml, HtmlEditor } from 'Common/Html';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { upload } from 'Common/Links';
+import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode } from 'Common/Translator';
 import { timestampToString } from 'Common/Momentor';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
@@ -1202,7 +1202,7 @@ class ComposePopupView extends AbstractViewPopup {
 			const uploadCache = {},
 				attachmentSizeLimit = pInt(Settings.get('AttachmentLimit')),
 				oJua = new Jua({
-					action: upload(),
+					action: serverRequest('Upload'),
 					name: 'uploader',
 					queueSize: 2,
 					multipleSizeLimit: 50,

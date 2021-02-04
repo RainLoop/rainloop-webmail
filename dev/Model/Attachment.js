@@ -3,10 +3,7 @@ import ko from 'ko';
 import { File, FileType } from 'Common/File';
 import {
 	attachmentDownload,
-	attachmentPreview,
-	attachmentFramed,
-	attachmentPreviewAsPlain,
-	attachmentThumbnailPreview
+	serverRequestRaw
 } from 'Common/Links';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -140,14 +137,14 @@ export class AttachmentModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	linkPreview() {
-		return attachmentPreview(this.download);
+		return serverRequestRaw('View', this.download);
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	linkThumbnail() {
-		return this.hasThumbnail() ? attachmentThumbnailPreview(this.download) : '';
+		return this.hasThumbnail() ? serverRequestRaw('ViewThumbnail', this.download) : '';
 	}
 
 	/**
@@ -161,15 +158,8 @@ export class AttachmentModel extends AbstractModel {
 	/**
 	 * @returns {string}
 	 */
-	linkFramed() {
-		return attachmentFramed(this.download);
-	}
-
-	/**
-	 * @returns {string}
-	 */
 	linkPreviewAsPlain() {
-		return attachmentPreviewAsPlain(this.download);
+		return serverRequestRaw('ViewAsPlain', this.download);
 	}
 
 	/**

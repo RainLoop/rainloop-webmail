@@ -21,7 +21,7 @@ import { doc, leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
 import { computedPaginatorHelper } from 'Common/UtilsUser';
 import { File } from 'Common/File';
 
-import { mailBox, append } from 'Common/Links';
+import { mailBox, serverRequest } from 'Common/Links';
 import { Selector } from 'Common/Selector';
 
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
@@ -907,7 +907,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 		}
 
 		const oJua = new Jua({
-			action: append(),
+			action: serverRequest('Append'),
 			name: 'AppendFile',
 			queueSize: 1,
 			multipleSizeLimit: 1,

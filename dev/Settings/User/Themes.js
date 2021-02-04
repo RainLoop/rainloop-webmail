@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { SaveSettingsStep, UploadErrorCode, Capa } from 'Common/Enums';
 import { changeTheme, convertThemeName } from 'Common/Utils';
-import { userBackground, themePreviewLink, uploadBackground } from 'Common/Links';
+import { userBackground, themePreviewLink, serverRequest } from 'Common/Links';
 import { i18n } from 'Common/Translator';
 import { doc, $htmlCL } from 'Common/Globals';
 
@@ -81,7 +81,7 @@ export class ThemesUserSettings {
 	initUploader() {
 		if (this.background.uploaderButton() && this.capaUserBackground()) {
 			const oJua = new Jua({
-				action: uploadBackground(),
+				action: serverRequest('UploadBackground'),
 				name: 'uploader',
 				queueSize: 1,
 				multipleSizeLimit: 1,

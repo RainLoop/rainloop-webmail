@@ -12,6 +12,7 @@ import { SUB_QUERY_PREFIX } from 'Common/Links';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
+//import FolderStore from 'Stores/User/Folder';
 
 import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
@@ -770,6 +771,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		this.defaultRequest(fCallback, 'ClearUserBackground');
 	}
 
+	// FolderStore.foldersLoading
 	foldersReload(fTrigger) {
 		return this.abort('Folders')
 			.postRequest('Folders', fTrigger)
@@ -780,6 +782,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			});
 	}
 
+	// FolderStore.foldersLoading
 	foldersReloadWithTimeout(fTrigger) {
 		this.setTrigger(fTrigger, true);
 
@@ -787,12 +790,14 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		this.foldersTimeout = setTimeout(() => this.foldersReload(fTrigger), 500);
 	}
 
+	// FolderStore.foldersDeleting
 	folderDelete(sFolderFullNameRaw, fTrigger) {
 		return this.postRequest('FolderDelete', fTrigger, {
 			Folder: sFolderFullNameRaw
 		});
 	}
 
+	// FolderStore.foldersCreating
 	folderCreate(sNewFolderName, sParentName, fTrigger) {
 		return this.postRequest('FolderCreate', fTrigger, {
 			Folder: sNewFolderName,
@@ -800,6 +805,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		});
 	}
 
+	// FolderStore.foldersRenaming
 	folderRename(sPrevFolderFullNameRaw, sNewFolderName, fTrigger) {
 		return this.postRequest('FolderRename', fTrigger, {
 			Folder: sPrevFolderFullNameRaw,

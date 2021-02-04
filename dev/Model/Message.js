@@ -6,7 +6,7 @@ import { i18n } from 'Common/Translator';
 import { encodeHtml } from 'Common/Html';
 import { isArray } from 'Common/Utils';
 
-import { messageViewLink, messageDownloadLink } from 'Common/Links';
+import { serverRequestRaw } from 'Common/Links';
 
 import FolderStore from 'Stores/User/Folder';
 
@@ -315,14 +315,14 @@ export class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	viewLink() {
-		return messageViewLink(this.requestHash);
+		return serverRequestRaw('ViewAsPlain', this.requestHash);
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	downloadLink() {
-		return messageDownloadLink(this.requestHash);
+		return serverRequestRaw('Download', this.requestHash);
 	}
 
 	/**
