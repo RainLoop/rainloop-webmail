@@ -31,7 +31,7 @@ export class SaveTriggerComponent extends AbstractComponent {
 
 	setState(value) {
 		value = parseInt(value,10);
-		this.element.querySelector('.animated').hidden = value !== SaveSettingsStep.Animate;
+		this.element.querySelector('.icon-spinner').hidden = value !== SaveSettingsStep.Animate;
 		this.element.querySelector('.success').hidden = value !== SaveSettingsStep.TrueResult;
 		this.element.querySelector('.error').hidden = value !== SaveSettingsStep.FalseResult;
 	}

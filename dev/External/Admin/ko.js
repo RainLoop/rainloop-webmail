@@ -23,7 +23,7 @@ ko.bindingHandlers.saveTrigger = {
 	update: (element, fValueAccessor) => {
 		const value = parseInt(ko.unwrap(fValueAccessor()),10);
 		if ('custom' === element.saveTriggerType) {
-			element.querySelector('.animated').hidden = value !== SaveSettingsStep.Animate;
+			element.querySelector('.icon-spinner').hidden = value !== SaveSettingsStep.Animate;
 			element.querySelector('.success').hidden = value !== SaveSettingsStep.TrueResult;
 			element.querySelector('.error').hidden = value !== SaveSettingsStep.FalseResult;
 		} else if (value !== SaveSettingsStep.Animate) {
