@@ -314,8 +314,7 @@ export function startScreens(screensClasses) {
 	const cross = new Crossroads();
 	cross.addRoute(/^([a-zA-Z0-9-]*)\/?(.*)$/, screenOnRoute);
 
-	hasher.initialized.add(cross.parse, cross);
-	hasher.changed.add(cross.parse, cross);
+	hasher.changed.add(cross.parse.bind(cross));
 	hasher.init();
 
 	setTimeout(() => $htmlCL.remove('rl-started-trigger'), 100);

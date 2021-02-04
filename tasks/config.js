@@ -41,8 +41,7 @@ config.paths.css = {
 		name: 'app.css',
 		src: [
 			'vendors/normalize.css/normalize.css',
-			'vendors/fontastic/styles.css',
-			'vendors/inputosaurus/inputosaurus.css'
+			'vendors/fontastic/styles.css'
 		]
 	},
 	admin: {
@@ -66,10 +65,8 @@ config.paths.js = {
 			'dev/External/ifvisible.js',
 			'dev/dragdropgecko.js',
 			'dev/shortcuts.js',
-			'vendors/inputosaurus/inputosaurus.js',
-			'vendors/routes/signals.min.js',
-			'vendors/routes/hasher.min.js',
-			'vendors/routes/crossroads.min.js',
+			'vendors/routes/hasher.js',
+			'vendors/routes/crossroads.js',
 			'vendors/jua/jua.min.js',
 			'vendors/qr.js/qr.min.js',
 			'vendors/bootstrap/js/bootstrap.native.js',
