@@ -15,20 +15,19 @@ const { del } = require('./common');
 const cssClean = () => del(config.paths.staticCSS + '/*.css');
 
 const cssBootBuild = () => {
-	const autoprefixer = require('gulp-autoprefixer'),
+	const
 		src = config.paths.css.boot.src;
 	return gulp
 		.src(src)
 		.pipe(expect.real({ errorOnFailure: true }, src))
 		.pipe(concat(config.paths.css.boot.name))
-		.pipe(autoprefixer())
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(config.paths.staticCSS));
 };
 
 const cssMainBuild = () => {
-	const autoprefixer = require('gulp-autoprefixer'),
+	const
 		less = require('gulp-less'),
 		lessFilter = filter('**/*.less', { restore: true }),
 		src = config.paths.css.main.src.concat([config.paths.less.main.src]);
@@ -44,7 +43,6 @@ const cssMainBuild = () => {
 		)
 		.pipe(lessFilter.restore)
 		.pipe(concat(config.paths.css.main.name))
-		.pipe(autoprefixer())
 		.pipe(replace(/\.\.\/(img|images|fonts|svg)\//g, '$1/'))
 		.pipe(eol('\n', true))
 		.pipe(gulp.dest(config.paths.staticCSS))

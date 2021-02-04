@@ -33,13 +33,14 @@ const
 				}
 			};
 		}
+		return win[name];
 	},
 	STORAGE_KEY = '__rlA',
 	TIME_KEY = '__rlT',
 	AUTH_KEY = 'AuthAccountHash',
-	storage = () => window.sessionStorage,
+	storage = Storage('session'),
 	timestamp = () => Math.round(Date.now() / 1000),
-	setTimestamp = () => storage().setItem(TIME_KEY, timestamp()),
+	setTimestamp = () => storage.setItem(TIME_KEY, timestamp()),
 
 	showError = () => {
 		eId('rl-loading').hidden = true;
@@ -83,29 +84,29 @@ if (!navigator || !navigator.cookieEnabled) {
 }
 
 let pStep = 0,
-	container = doc.querySelector('.progressjs'),
-	progress = doc.querySelector('.progressjs-inner'),
+	container = eId('progressjs'),
+	progress = container.querySelector('.progressjs-inner'),
 
 	RL_APP_DATA = {};
 
 win.rl = {
 	hash: {
 		// getHash
-		get: () => storage().getItem(STORAGE_KEY) || null,
+		get: () => storage.getItem(STORAGE_KEY) || null,
 		// setHash
 		set: () => {
-			storage().setItem(STORAGE_KEY, RL_APP_DATA && RL_APP_DATA[AUTH_KEY]
+			storage.setItem(STORAGE_KEY, RL_APP_DATA && RL_APP_DATA[AUTH_KEY]
 				? RL_APP_DATA[AUTH_KEY] : '');
 			setTimestamp();
 		},
 		// clearHash
 		clear: () => {
-			storage().setItem(STORAGE_KEY, '');
+			storage.setItem(STORAGE_KEY, '');
 			setTimestamp();
 		},
 		// checkTimestamp
 		check: () => {
-			if (timestamp() > (parseInt(storage().getItem(TIME_KEY) || 0, 10) || 0) + 3600000) {
+			if (timestamp() > (parseInt(storage.getItem(TIME_KEY) || 0, 10) || 0) + 3600000) {
 				// 60m
 				rl.hash.clear();
 				return true;
@@ -166,7 +167,6 @@ win.rl = {
 p.set(1);
 
 Storage('local');
-Storage('session');
 
 // init section
 setInterval(setTimestamp, 60000); // 1m

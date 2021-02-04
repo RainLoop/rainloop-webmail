@@ -50,7 +50,6 @@
     "eslint": "6.8.0",
     "eslint-plugin-prettier": "3.3.1",
     "gulp": "4.0.2",
-    "gulp-autoprefixer": "7.0.1",
     "gulp-cached": "1.1.1",
     "gulp-clean-css": "4.3.0",
     "gulp-concat-util": "0.5.5",
