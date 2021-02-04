@@ -3,7 +3,7 @@
 		<div class="btn-toolbar">
 			<div class="btn-group btn-group-last pull-right dropdown colored-toggle" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: accountMenuDropdownTrigger">
 				<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-ellipsis btn-block dropdown-toggle system-dropdown" data-toggle="dropdown">
-					<i data-bind="css: {'icon-user': !accounts.loading(), 'icon-spinner animated': accounts.loading()}"></i>
+					<i class="fontastic" data-bind="css: {'icon-spinner': accounts.loading()}">👤</i>
 <!--
 					<b data-bind="text: accountsUnreadCount, visible: 100 > accountsUnreadCount() && 0 < accountsUnreadCount()"></b>
 					<b data-bind="visible: 99 < accountsUnreadCount()">99+</b>
@@ -23,7 +23,7 @@
 										<span data-bind="visible: 99 < count()">99+</span>
 									</b>-->
 									<i class="icon-ok"></i>
-									<i class="icon-user"></i>
+									<i class="icon-user fontastic">👤</i>
 									&nbsp;&nbsp;
 									<span class="email-title" data-bind="text: email, attr: {title: email}"></span>
 								</a>
@@ -42,7 +42,7 @@
 					<!-- /ko -->
 					<li class="e-item" role="presentation" data-bind="visible: allowSettings">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: settingsClick">
-							<i class="icon-cog"></i>
+							<i class="fontastic">⚙</i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="TOP_TOOLBAR/BUTTON_SETTINGS"></span>
 						</a>
@@ -56,21 +56,21 @@
 					</li>
 					<li class="e-item dividerbar" role="presentation" data-bind="visible: mobile">
 						<a class="e-link menuitem" href="./?/DesktopVersion/" tabindex="-1">
-							<i class="icon-laptop"></i>
+							<i class="fontastic">💻</i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></span>
 						</a>
 					</li>
 					<li class="e-item dividerbar" role="presentation" data-bind="visible: !mobile">
 						<a class="e-link menuitem" href="./?/MobileVersion/" tabindex="-1">
-							<i class="icon-mobile"></i>
+							<i class="fontastic">📱</i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></span>
 						</a>
 					</li>
 					<li class="e-item" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: logoutClick">
-							<i class="icon-power"></i>
+							<i class="fontastic">⏻</i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="GLOBAL/LOGOUT"></span>
 						</a>
@@ -85,7 +85,7 @@
 					<div class="bar second"></div>
 					<div class="bar third"></div>
 				</div>
-				<i class="stopIcon icon-pause"></i>
+				<i class="stopIcon fontastic">⏸</i>
 			</div>
 		</div>
 	</div>

@@ -14,7 +14,7 @@
 							autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_LOGIN"
 							data-bind="textInput: login, disable: submitRequest" />
 						<span class="add-on">
-							<i class="icon-user"></i>
+							<i class="fontastic">👤</i>
 						</span>
 					</div>
 				</div>
@@ -25,7 +25,7 @@
 							autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
 							data-bind="textInput: password, disable: submitRequest" />
 						<span class="add-on" tabindex="-1" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_LOGIN'">
-							<i class="icon-key" data-bind="visible: '' === password()"></i>
+							<i class="fontastic" data-bind="visible: '' === password()">🔑</i>
 							<button type="submit" class="btn-submit-icon-wrp" data-bind="visible: '' !== password()">
 								<i class="icon-right-middle login-submit-icon"></i>
 							</button>

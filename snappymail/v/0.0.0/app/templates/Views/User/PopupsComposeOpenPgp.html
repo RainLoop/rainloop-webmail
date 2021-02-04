@@ -59,7 +59,7 @@
 							<!-- ko foreach: encryptKeys -->
 								<div class="key-list__item row-fluid">
 									<div class="key-list__item-delete span1" data-bind="click: removable() ? $parent.deletePublickKey : null, css: {'disabled': !removable()}">
-										<i class="icon-trash"></i>
+										<i class="fontastic">🗑</i>
 									</div>
 									<div class="key-list__item-hash span3" data-bind="visible: !empty">
 										(<span data-bind="text: hash"></span>)
@@ -106,7 +106,7 @@
 		<div class="modal-footer">
 			<button class="btn buttonDo" data-bind="command: doCommand,
 				enable: (sign() || encrypt()) && (!encrypt() || encrypt() && encryptKeys().length > 0)">
-				<i data-bind="css: {'icon-key': !submitRequest(), 'icon-spinner animated': submitRequest()}"></i>
+				<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-bind="visible: sign() && !encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN"></span>
 				<span class="i18n" data-bind="visible: !sign() && encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_ENCRYPT"></span>

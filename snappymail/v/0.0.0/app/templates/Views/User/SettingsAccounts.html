@@ -4,7 +4,7 @@
 			<div class="legend">
 				<span class="i18n" data-i18n="SETTINGS_ACCOUNTS/LEGEND_ACCOUNTS"></span>
 				&nbsp;&nbsp;&nbsp;
-				<i class="icon-spinner animated" style="margin-top: 5px" data-bind="visible: accounts.loading"></i>
+				<i class="icon-spinner" style="margin-top: 5px" data-bind="visible: accounts.loading"></i>
 			</div>
 		</div>
 		<a class="btn" data-bind="click: addNewAccount">
@@ -26,7 +26,7 @@
 				<tbody data-bind="foreach: accounts">
 					<tr class="account-item" draggable="true" data-bind="sortableItem: { list: $root.accounts, afterMove: $root.accountsAndIdentitiesAfterMove }">
 						<td class="e-action" data-bind="css: {'e-action': canBeEdit}">
-							<span class="account-img icon-user"></span>
+							<span class="account-img fontastic">👤</span>
 							<i class="icon-braille drag-handle"></i>
 							&nbsp;&nbsp;
 							<span class="account-name" data-bind="text: email"></span>
@@ -38,7 +38,7 @@
 						</td>
 						<td>
 							<span class="delete-account" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oAccount) { $root.accountForDeletion(oAccount); }">
-								<i class="icon-trash"></i>
+								<i class="fontastic">🗑</i>
 							</span>
 						</td>
 					</tr>
@@ -72,7 +72,7 @@
 				<tbody data-bind="foreach: identities">
 					<tr class="identity-item" draggable="true" data-bind="sortableItem: { list: $root.identities, afterMove: $root.accountsAndIdentitiesAfterMove }">
 						<td class="e-action">
-							<span class="identity-img icon-user"></span>
+							<span class="identity-img fontastic">👤</span>
 							<i class="icon-braille drag-handle"></i>
 							&nbsp;&nbsp;
 							<span class="identity-name" data-bind="text: formattedName()"></span>
@@ -88,7 +88,7 @@
 						</td>
 						<td>
 							<span class="delete-identity" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oIdentity) { $root.identityForDeletion(oIdentity); }">
-								<i class="icon-trash"></i>
+								<i class="fontastic">🗑</i>
 							</span>
 						</td>
 					</tr>

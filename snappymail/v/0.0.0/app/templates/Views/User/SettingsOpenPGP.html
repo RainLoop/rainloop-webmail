@@ -10,7 +10,7 @@
 	&nbsp;&nbsp;
 	<div style="display: inline-block" data-bind="tooltip: 'SETTINGS_OPEN_PGP/GENERATE_ONLY_HTTPS'">
 		<button class="btn" data-bind="click: generateOpenPgpKey">
-			<i class="icon-key"></i>
+			<i class="fontastic">🔑</i>
 			&nbsp;&nbsp;
 			<span class="i18n" data-i18n="SETTINGS_OPEN_PGP/BUTTON_GENERATE_OPEN_PGP_KEYS"></span>
 		</button>
@@ -40,7 +40,7 @@
 			<tr class="open-pgp-key-item">
 				<td>
 					<span class="open-pgp-key-img i18n" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PRIVATE">
-						<i class="icon-lock"></i>
+						<i class="fontastic">🔒</i>
 					</span>
 					<span class="open-pgp-key-user">
 					<!-- ko foreach: users -->
@@ -53,12 +53,12 @@
 				</td>
 				<td>
 					<span class="delete-open-pgp-key" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">
-						<i class="icon-trash"></i>
+						<i class="fontastic">🗑</i>
 					</span>
 				</td>
 				<td>
 					<span class="view-open-pgp-key" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">
-						<i class="icon-eye"></i>
+						<i class="fontastic">👁</i>
 					</span>
 				</td>
 			</tr>
@@ -67,7 +67,7 @@
 			<tr class="open-pgp-key-item">
 				<td>
 					<span class="open-pgp-key-img i18n" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PUBLIC">
-						<i class="icon-key"></i>
+						<i class="fontastic">🔑</i>
 					</span>
 					<span class="open-pgp-key-user">
 					<!-- ko foreach: users -->
@@ -82,12 +82,12 @@
 				</td>
 				<td>
 					<span class="delete-open-pgp-key" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">
-						<i class="icon-trash"></i>
+						<i class="fontastic">🗑</i>
 					</span>
 				</td>
 				<td>
 					<span class="view-open-pgp-key" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">
-						<i class="icon-eye"></i>
+						<i class="fontastic">👁</i>
 					</span>
 				</td>
 			</tr>

@@ -11,8 +11,8 @@ ko.bindingHandlers.saveTrigger = {
 		if ('custom' === element.saveTriggerType) {
 			element.append(
 				'  ',
-				Element.fromHTML('<i class="icon-spinner animated"></i>'),
-				Element.fromHTML('<i class="icon-remove error"></i>'),
+				Element.fromHTML('<i class="icon-spinner"></i>'),
+				Element.fromHTML('<i class="fontastic error">✖</i>'),
 				Element.fromHTML('<i class="icon-ok success"></i>')
 			);
 			element.classList.add('settings-saved-trigger');

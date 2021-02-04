@@ -3,7 +3,7 @@
 		<div class="legend">
 			<span class="i18n" data-i18n="SETTINGS_TEMPLATES/LEGEND_TEMPLATES"></span>
 			&nbsp;&nbsp;&nbsp;
-			<i class="icon-spinner animated" style="margin-top: 5px" data-bind="visible: templates.loading"></i>
+			<i class="icon-spinner" style="margin-top: 5px" data-bind="visible: templates.loading"></i>
 		</div>
 	</div>
 	<a class="btn" data-bind="click: addNewTemplate">
@@ -25,7 +25,7 @@
 				<tbody data-bind="foreach: templates">
 					<tr class="template-item" draggable="true" data-bind="sortableItem: { list: $root.templates }">
 						<td class="e-action">
-							<span class="template-img icon-user"></span>
+							<span class="template-img fontastic">👤</span>
 							<i class="icon-braille drag-handle"></i>
 							&nbsp;&nbsp;
 							<span class="template-name" data-bind="text: name"></span>
@@ -37,7 +37,7 @@
 						</td>
 						<td>
 							<span class="delete-template" data-bind="visible: !deleteAccess(), click: function (oTemplate) { $root.templateForDeletion(oTemplate); }">
-								<i class="icon-trash"></i>
+								<i class="fontastic">🗑</i>
 							</span>
 						</td>
 					</tr>

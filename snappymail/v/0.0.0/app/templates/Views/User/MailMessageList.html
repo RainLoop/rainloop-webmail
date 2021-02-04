@@ -24,7 +24,7 @@
 				<div class="btn-group" data-bind="visible: mobileCheckedStateHide()">&nbsp;</div>
 				<div class="btn-group" data-bind="visible: allowReload && mobileCheckedStateHide()">
 					<a class="btn single btn-dark-disabled-border buttonReload" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
-						<i class="icon-spinner" data-bind="css: {'animated': messageListCompleteLoadingThrottleForAnimation}"></i>
+						<i class="icon-spinner" data-bind="css: {'not-animated': !messageListCompleteLoadingThrottleForAnimation()}"></i>
 					</a>
 				</div>
 				<div class="btn-group" data-bind="visible: allowReload && mobileCheckedStateHide()">&nbsp;</div>
@@ -59,7 +59,7 @@
 					<a class="btn btn-dark-disabled-border button-spam"
 						data-bind="visible: isSpamVisible, command: spamCommand, tooltip: 'GLOBAL/SPAM',
 							css: {'first': !isArchiveVisible()}">
-						<i class="icon-warning"></i>
+						<i class="fontastic">⚠</i>
 					</a>
 					<a class="btn btn-dark-disabled-border button-not-spam"
 						data-bind="visible: isUnSpamVisible, command: notSpamCommand, tooltip: 'GLOBAL/NOT_SPAM',
@@ -69,7 +69,7 @@
 					<a class="btn last btn-dark-disabled-border button-delete"
 						data-bind="command: deleteCommand, tooltip: 'GLOBAL/DELETE',
 							css: {'first': !isArchiveVisible() && !isSpamVisible() && !isUnSpamVisible()}">
-						<i class="icon-trash"></i>
+						<i class="fontastic">🗑</i>
 						<!--<span data-bind="text: printableMessageCountForDeletion()"></span>-->
 					</a>
 				</div>
@@ -117,21 +117,21 @@
 						</div>
 						<li class="e-item dividerbar" role="presentation" data-bind="visible: allowComposer, command: multyForwardCommand">
 							<a class="e-link menuitem" href="#" tabindex="-1">
-								<i class="icon-reply-all"></i>
+								<i class="fontastic">↞</i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></span>
 							</a>
 						</li>
 						<li class="e-item dividerbar" role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
 							<a class="e-link menuitem" href="#" tabindex="-1">
-								<i class="icon-trash"></i>
+								<i class="fontastic">🗑</i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></span>
 							</a>
 						</li>
 						<li class="e-item" role="presentation" data-bind="visible: allowDangerousActions, command: clearCommand">
 							<a class="e-link menuitem" href="#" tabindex="-1">
-								<i class="icon-fire"></i>
+								<i class="fontastic">🔥</i>
 								&nbsp;&nbsp;
 								<span class="i18n" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></span>
 							</a>

@@ -23,7 +23,7 @@
 			<div data-bind="visible: hasChanges">
 				<div class="span8 width100-on-mobile">
 					<div class="alert g-ui-user-select-none">
-						<i class="icon-warning"></i>
+						<i class="fontastic">⚠</i>
 						&nbsp;&nbsp;
 						<span class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></span>
 					</div>
@@ -32,7 +32,7 @@
 			<div data-bind="visible: $root.saveError">
 				<div class="span8 width100-on-mobile">
 					<div class="alert alert-error g-ui-user-select-none">
-						<i class="icon-warning"></i>
+						<i class="fontastic">⚠</i>
 						&nbsp;&nbsp;
 						<span data-bind="text: $root.saveErrorText"></span>
 					</div>
@@ -80,7 +80,7 @@
 							</td>
 							<td>
 								<span class="delete-filter" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oFilter) { $root.filterForDeletion(oFilter); }">
-									<i class="icon-trash"></i>
+									<i class="fontastic">🗑</i>
 								</span>
 							</td>
 						</tr>
@@ -99,7 +99,7 @@
 				<i class="icon-file-code"></i>
 			</a>
 			<a class="btn buttonSave" data-bind="visible: hasChanges, click: function() { $root.saveScriptCommand(); }, css: {'btn-danger': $root.saveError}">
-				<i data-bind="css: {'icon-floppy': !$root.saving, 'icon-spinner animated': $root.saving}"></i>
+				<i class="fontastic" data-bind="css: {'icon-spinner': $root.saving}">💾</i>
 				&nbsp;&nbsp;
 				<span class="i18n" data-i18n="GLOBAL/SAVE"></span>
 			</a>

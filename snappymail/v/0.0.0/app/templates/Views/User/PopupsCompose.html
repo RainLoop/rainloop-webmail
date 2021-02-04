@@ -1,11 +1,11 @@
 <div class="modal fade b-compose" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
 	<div class="modal-header b-header-toolbar g-ui-user-select-none">
 		<a class="btn btn-large button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
-			<i class="icon-white" data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner animated big': sending()}"></i>
+			<i class="icon-white" data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner big': sending()}"></i>
 			<span class="i18n btn-text hide-on-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
 		</a>
 		<a class="btn button-save" data-bind="visible: allowFolders, command: saveCommand, tooltipErrorTip: savedErrorDesc, css: {'btn-danger': savedError }">
-			<i data-bind="css: {'icon-floppy': !saving(), 'icon-spinner animated': saving(), 'icon-white': savedError()}"></i>
+			<i class="fontastic" data-bind="css: {'icon-spinner': saving(), 'icon-white': savedError()}">💾</i>
 			<span class="i18n btn-text hide-on-mobile" data-i18n="GLOBAL/SAVE"></span>
 		</a>
 
@@ -13,7 +13,7 @@
 		<a class="minimize-custom" data-bind="click: skipCommand, tooltip: 'COMPOSE/BUTTON_MINIMIZE'"></a>
 
 		<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
-			<i class="icon-trash icon-white"></i>
+			<i class="fontastic icon-white">🗑</i>
 		</a>
 		<span class="saved-text hide-on-mobile" data-bind="text: savedTimeText"></span>
 	</div>
@@ -73,7 +73,7 @@
 									</li>
 									<li class="e-item dividerbar" data-bind="visible: capaOpenPGP, click: openOpenPgpPopup, css: {'disabled': isHtml()}">
 										<a class="e-link">
-											<i class="icon-key"></i>
+											<i class="fontastic">🔑</i>
 											&nbsp;&nbsp;
 											<span class="i18n" data-i18n="COMPOSE/BUTTON_OPEN_PGP"></span>
 										</a>
@@ -163,7 +163,7 @@
 											<b data-bind="text: attachmentsCount"></b>
 											&nbsp;&nbsp;
 										</span>
-										<i data-bind="css: { 'icon-attachment': 0 === attachmentsInProcessCount(), 'icon-spinner animated': 0 < attachmentsInProcessCount(), 'icon-white': 0 < attachmentsInErrorCount() }"></i>
+										<i data-bind="css: { 'icon-attachment': 0 === attachmentsInProcessCount(), 'icon-spinner': 0 < attachmentsInProcessCount(), 'icon-white': 0 < attachmentsInErrorCount() }"></i>
 									</button>
 								</div>
 							</div>

@@ -352,7 +352,7 @@ class PgpUserStore {
 			if (encrypted || signed) {
 				const domText = dom.textContent;
 
-				verControl = Element.fromHTML('<div class="b-openpgp-control"><i class="icon-lock"></i></div>'); // 🔒
+				verControl = Element.fromHTML('<div class="b-openpgp-control"><i class="fontastic">🔒</i></div>');
 				if (encrypted) {
 					verControl.title = i18n('MESSAGE/PGP_ENCRYPTED_MESSAGE_DESC');
 					verControl.addEventHandler('click', domControlEncryptedClickHelper(this, dom, domText, recipients));

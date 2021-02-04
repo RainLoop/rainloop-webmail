@@ -16,7 +16,7 @@
 	<td class="package-actions-parent">
 		<i class="icon-download e-action button-download" data-bind="visible: !loading() && canBeUpdated, click: function () { $root.installPackage($data); }"></i>
 		&nbsp;
-		<i class="icon-trash e-action button-delete" data-bind="visible: !loading() && canBeDeleted, click: function () { $root.deletePackage($data); }"></i>
-		<i class="icon-spinner animated" data-bind="visible: loading"></i>
+		<i class="fontastic e-action button-delete" data-bind="visible: !loading() && canBeDeleted, click: function () { $root.deletePackage($data); }">🗑</i>
+		<i class="icon-spinner" data-bind="visible: loading"></i>
 	</td>
 </tr>

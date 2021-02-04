@@ -4,13 +4,13 @@
 			<div class="messageButtons btn-toolbar">
 				<div class="btn-group" data-bind="tooltip: 'GLOBAL/CLOSE'">
 					<a class="btn single btn-dark-disabled-border buttonClose" data-bind="command: closeMessageCommand">
-						<i class="icon-remove"></i>
+						<i class="fontastic">✖</i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
 				<div class="btn-group" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
 					<a class="btn single btn-success buttonEdit" data-bind="command: messageEditCommand">
-						<i class="icon-pencil icon-white"></i>
+						<i class="fontastic icon-white">🖉</i>
 					</a>
 				</div>
 				<div class="btn-group" data-bind="visible: !usePreviewPane()">&nbsp;</div>
@@ -19,13 +19,13 @@
 						<i class="icon-archive"></i>
 					</a>
 					<a class="btn btn-dark-disabled-border button-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'GLOBAL/SPAM'">
-						<i class="icon-warning"></i>
+						<i class="fontastic">⚠</i>
 					</a>
 					<a class="btn btn-dark-disabled-border button-not-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand, tooltip: 'GLOBAL/NOT_SPAM'">
 						<i class="icon-check-mark-circle-two"></i>
 					</a>
 					<a class="btn last btn-dark-disabled-border button-delete" data-bind="command: deleteCommand, tooltip: 'GLOBAL/DELETE'">
-						<i class="icon-trash"></i>
+						<i class="fontastic">🗑</i>
 					</a>
 				</div>
 				<div class="btn-group">&nbsp;</div>
@@ -70,42 +70,42 @@
 					<div class="btn-group pull-right" style="margin-right: -11px;">
 						<div class="btn-group pull-right" data-bind="registerBootstrapDropdown: true, visible: allowComposer || allowMessageListActions || allowMessageActions">
 							<a class="btn btn-thin-2 btn-transparent last btn-dark-disabled-border dropdown-toggle buttonMore" id="more-view-dropdown-id" href="#" tabindex="-1" data-toggle="dropdown" style="margin-left: -4px; margin-right: 2px" data-bind="command: messageVisibilityCommand, css: {'first': !allowComposer}">
-									<span data-bind="visible: !allowComposer" class="icon-ellipsis-alt"></span>
+									<span data-bind="visible: !allowComposer" class="fontastic">⋮</span>
 									<span data-bind="visible: allowComposer" class="caret"></span>
 							</a>
 							<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-view-dropdown-id">
 								<div data-bind="visible: allowComposer && !isDraftFolder()">
 									<li class="e-item" role="presentation">
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyCommand">
-											<i class="icon-reply"></i>
+											<i class="fontastic">←</i>
 											&nbsp;&nbsp;
 											<span class="i18n" data-i18n="MESSAGE/BUTTON_REPLY"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation">
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyAllCommand">
-											<i class="icon-reply-all"></i>
+											<i class="fontastic">↞</i>
 											&nbsp;&nbsp;
 											<span class="i18n" data-i18n="MESSAGE/BUTTON_REPLY_ALL"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation">
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardCommand">
-											<i class="icon-forward"></i>
+											<i class="fontastic">→</i>
 											&nbsp;&nbsp;
 											<span class="i18n" data-i18n="MESSAGE/BUTTON_FORWARD"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation">
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: editAsNewCommand">
-											<i class="icon-pencil"></i>
+											<i class="fontastic">🖉</i>
 											&nbsp;&nbsp;
 											<span class="i18n" data-i18n="MESSAGE/BUTTON_EDIT_AS_NEW"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation">
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: forwardAsAttachmentCommand">
-											<i class="icon-forward"></i>
+											<i class="fontastic">→</i>
 											&nbsp;&nbsp;
 											<span class="i18n" data-i18n="MESSAGE/BUTTON_FORWARD_AS_ATTACHMENT"></span>
 										</a>
@@ -121,7 +121,7 @@
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled()">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: spamCommand">
-											<i class="icon-warning"></i>
+											<i class="fontastic">⚠</i>
 											&nbsp;&nbsp;
 											<span class="i18n" data-i18n="GLOBAL/SPAM"></span>
 										</a>
@@ -135,14 +135,14 @@
 									</li>
 									<li class="e-item" role="presentation">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: deleteCommand">
-											<i class="icon-trash"></i>
+											<i class="fontastic">🗑</i>
 											&nbsp;&nbsp;
 											<span class="i18n" data-i18n="GLOBAL/DELETE"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: message() && message().hasUnsubsribeLinks()">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewUnsubscribeLink()">
-											<i class="icon-remove"></i>
+											<i class="fontastic">✖</i>
 											&nbsp;&nbsp;
 											<span class="i18n" data-i18n="MESSAGE/BUTTON_UNSUBSCRIBE"></span>
 										</a>
@@ -151,7 +151,7 @@
 								<div data-bind="visible: allowMessageActions" class="dividerbar">
 									<li class="e-item" role="presentation">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="click: function () { if (message()) { message().printMessage(); }} ">
-											<i class="icon-print"></i>
+											<i class="fontastic">🖨</i>
 											&nbsp;&nbsp;
 											<span class="i18n" data-i18n="MESSAGE/MENU_PRINT"></span>
 										</a>
@@ -182,21 +182,21 @@
 						</div>
 						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonReply pull-right"
 							data-bind="visible: 'reply' === lastReplyAction() && allowComposer, command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
-							<i class="icon-reply"></i>
+							<i class="fontastic">←</i>
 						</a>
 						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonReplyAll pull-right"
 							data-bind="visible: 'replyall' === lastReplyAction() && allowComposer, command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
-							<i class="icon-reply-all"></i>
+							<i class="fontastic">↞</i>
 						</a>
 						<a class="btn btn-thin-2 btn-transparent first btn-dark-disabled-border buttonForward pull-right"
 							data-bind="visible: 'forward' === lastReplyAction() && allowComposer, command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
-							<i class="icon-forward"></i>
+							<i class="fontastic">→</i>
 						</a>
 					</div>
 
 					<div class="btn-group pull-right hide-on-mobile" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'" style="margin-right: 5px">
 						<a class="btn single btn-success buttonEdit" data-bind="command: messageEditCommand">
-							<i class="icon-pencil icon-white"></i>
+							<i class="fontastic icon-white">🖉</i>
 						</a>
 					</div>
 				</div>
@@ -309,7 +309,7 @@
 								<div class="g-ui-min-height-300 content-content" data-bind="visible: !messageLoadingThrottle()">
 									<div class="bodySubHeader">
 										<div class="showImages" data-bind="visible: message() && message().hasImages(), click: function() { showImages(message()); }">
-											<i class="icon-image"></i>
+											<i class="fontastic">🖼</i>
 											&nbsp;&nbsp;
 											<span class="i18n text" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></span>
 										</div>
@@ -338,7 +338,7 @@
 																</div>
 																<div class="iconBG" data-bind="attr: { 'style': linkThumbnailPreviewStyle() }"></div>
 																<div class="iconPreview">
-																	<i class="attachmentIcon icon-eye show-hover"></i>
+																	<i class="attachmentIcon fontastic show-hover">👁</i>
 																</div>
 															</a>
 														</div>
@@ -347,7 +347,7 @@
 																<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
 															</div>
 															<div class="iconPreview">
-																<i class="attachmentIcon icon-play show-hover"></i>
+																<i class="attachmentIcon fontastic show-hover">▶</i>
 															</div>
 														</div>
 													</div>
@@ -366,16 +366,16 @@
 													</div>
 												</li>
 											</ul>
-											<i class="icon-cog controls-handle" data-bind="visible: allowAttachmnetControls() && !showAttachmnetControls(), click: function () { showAttachmnetControls(true); showAttachmnetControlsState(true); }"></i>
+											<i class="fontastic controls-handle" data-bind="visible: allowAttachmnetControls() && !showAttachmnetControls(), click: function () { showAttachmnetControls(true); showAttachmnetControlsState(true); }">⚙</i>
 										</div>
 
 										<div class="attachmentsControls"
 											data-bind="visible: showAttachmnetControls() && message() && message().attachments().hasVisible()">
 
 											<span data-bind="visible: downloadAsZipAllowed">
-												<i class="icon-remove iconcolor-red" data-bind="visible: downloadAsZipError"></i>
+												<i class="fontastic iconcolor-red" data-bind="visible: downloadAsZipError">✖</i>
 												<i class="icon-file-zip" data-bind="visible: !downloadAsZipError(),
-													css: {'icon-file-zip': !downloadAsZipLoading(), 'icon-spinner animated': downloadAsZipLoading()}"></i>
+													css: {'icon-file-zip': !downloadAsZipLoading(), 'icon-spinner': downloadAsZipLoading()}"></i>
 												&nbsp;&nbsp;
 												<span class="g-ui-link" data-bind="click: downloadAsZip">
 													<span class="i18n" data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></span>

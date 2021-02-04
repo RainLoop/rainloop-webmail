@@ -32,7 +32,7 @@
 					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 						data-bind="textInput: twoFactorDropperUser, hasfocus: twoFactorDropperUserFocused" placeholder="Email"/>
 					<button class="btn">
-						<i class="icon-spinner animated" data-bind="visible: true"></i>
+						<i class="icon-spinner" data-bind="visible: true"></i>
 						<span data-bind="visible: false">OK</span>
 					</button>
 				</div>
@@ -102,7 +102,7 @@
 		<div class="control-group">
 			<div class="controls">
 				<a class="btn" data-bind="command: saveNewAdminPasswordCommand, css: { 'btn-success': adminPasswordUpdateSuccess, 'btn-danger': adminPasswordUpdateError }">
-					<i class="icon-key" data-bind="css: {'icon-white': adminPasswordUpdateSuccess() || adminPasswordUpdateError() }"></i>
+					<i class="fontastic" data-bind="css: {'icon-white': adminPasswordUpdateSuccess() || adminPasswordUpdateError() }">🔑></i>
 					&nbsp;&nbsp;
 					<span data-i18n="TAB_SECURITY/BUTTON_UPDATE_PASSWORD"></span>
 				</a>

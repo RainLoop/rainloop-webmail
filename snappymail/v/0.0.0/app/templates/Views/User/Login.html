@@ -38,7 +38,7 @@
 							data-i18n="[placeholder]GLOBAL/PASSWORD" />
 						<span class="add-on" tabindex="-1"
 							data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_SIGN_IN'">
-							<i class="icon-key" data-bind="visible: '' === password()"></i>
+							<i class="fontastic" data-bind="visible: '' === password()">🔑</i>
 							<button type="submit" class="btn-submit-icon-wrp" data-bind="visible: '' !== password()">
 								<i class="icon-right-middle login-submit-icon"></i>
 							</button>
@@ -53,7 +53,7 @@
 							data-bind="textInput: additionalCode, disable: submitRequest"
 							data-i18n="[placeholder]LOGIN/LABEL_VERIFICATION_CODE" />
 						<span class="add-on">
-							<i class="icon-key"></i>
+							<i class="fontastic">🔑</i>
 						</span>
 					</div>
 				</div>
@@ -76,7 +76,7 @@
 					<div class="pull-right language-buttons">
 						<a href="#" tabindex="-1" class="language-button"
 							data-bind="visible: allowLanguagesOnLogin, click: selectLanguage, tooltip: 'POPUPS_LANGUAGES/TITLE_LANGUAGES'">
-							<i data-bind="css: langRequest() ? 'icon-spinner animated' : 'icon-world'"></i>
+							<i class="fontastic" data-bind="css: { 'icon-spinner' : langRequest }">🌍</i>
 						</a>
 					</div>
 
@@ -110,14 +110,14 @@
 		</div>
 		<div class="e-mobile-switcher thm-mobile-switcher">
 			<span data-bind="visible: !mobile">
-				<i class="icon-mobile"></i>
+				<i class="fontastic">📱</i>
 				&nbsp;
 				<a href="./?/MobileVersion/" tabindex="-1">
 					<span class="i18n" data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></span>
 				</a>
 			</span>
 			<span data-bind="visible: mobile">
-				<i class="icon-laptop"></i>
+				<i class="fontastic">💻</i>
 				&nbsp;
 				<a href="./?/DesktopVersion/" tabindex="-1">
 					<span class="i18n" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></span>

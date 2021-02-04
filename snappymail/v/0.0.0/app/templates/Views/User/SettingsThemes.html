@@ -27,14 +27,14 @@
 			</div>
 			<div class="row" data-bind="visible: '' !== background.name()" style="margin-left: 0">
 				<a class="btn" data-bind="visible: '' !== background.name(), click: clearBackground">
-					<i class="icon-remove"></i>
+					<i class="fontastic">✖</i>
 				</a>
 				&nbsp;&nbsp;&nbsp;
 				<b data-bind="text: background.name"></b>
 			</div>
 			<div class="row" data-bind="visible: '' === background.name()" style="margin-left: 0">
 				<a class="btn" data-bind="initDom: background.uploaderButton">
-					<i data-bind="css: {'icon-image': !background.loading(), 'icon-spinner animated': background.loading()}"></i>
+					<i class="fontastic" data-bind="css: {'icon-spinner': background.loading()}">🖼</i>
 					&nbsp;&nbsp;
 					<span class="i18n" data-i18n="SETTINGS_THEMES/BUTTON_UPLOAD_BACKGROUND_IMAGE"></span>
 				</a>
