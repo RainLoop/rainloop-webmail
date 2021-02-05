@@ -1,17 +1,15 @@
-html {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
+html, body {
 	font-family: Arial, Verdana, Geneva, sans-serif;
 	height: 100%;
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
 }
 
 body {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	background-color: #e3e3e3;
-	font-family: Arial, Verdana, Geneva, sans-serif;
+	background-color: var(--main-bg-color, #e3e3e3);
+	background-size: var(--main-bg-size);
+	color: var(--main-color, #000);
 
 	-webkit-touch-callout: none;
 
@@ -20,7 +18,6 @@ body {
 	left: 0;
 	bottom: 0;
 	right: 0;
-	height: 100%;
 }
 
 textarea {

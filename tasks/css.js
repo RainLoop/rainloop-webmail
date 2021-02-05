@@ -12,6 +12,7 @@ const expect = require('gulp-expect-file');
 const { config } = require('./config');
 const { del } = require('./common');
 
+const cleanCss = require('gulp-clean-css');
 const cssClean = () => del(config.paths.staticCSS + '/*.css');
 
 const cssBootBuild = () => {
@@ -50,7 +51,6 @@ const cssMainBuild = () => {
 };
 
 const cssBootMin = () => {
-	const cleanCss = require('gulp-clean-css');
 	return gulp
 		.src(config.paths.staticCSS + config.paths.css.boot.name)
 		.pipe(cleanCss())
@@ -60,7 +60,6 @@ const cssBootMin = () => {
 };
 
 const cssMainMin = () => {
-	const cleanCss = require('gulp-clean-css');
 	return gulp
 		.src(config.paths.staticCSS + config.paths.css.main.name)
 		.pipe(cleanCss())

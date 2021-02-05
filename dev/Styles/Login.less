@@ -22,13 +22,22 @@
 
 			.desc {
 				font-size: 30px;
+				color: var(--loading-color);
+				text-shadow: var(--loading-text-shadow);
 			}
 		}
 
 		.loginForm {
-			background-color: #efefef;
-			color: #333;
+			background-color: var(--login-bg-color, #efefef);
+			border-radius: var(--login-border-radius);
+			box-shadow: var(--login-box-shadow);
+			color: var(--login-color, #333);
+			border: var(--login-border);
 			margin: 0;
+
+			.g-ui-link {
+				color: var(--login-color);
+			}
 		}
 
 		.controls, .control-group {
@@ -80,10 +89,6 @@
 		.controls.error .add-on i, .control-group.error .add-on i {
 			color: #b94a48;
 		}
-
-		.e-mobile-switcher {
-			text-align: center;
-		}
 	}
 
 	.buttonLogin {
@@ -106,8 +111,22 @@
 	}
 
 	.language-button {
+		color: inherit;
 		padding: 5px;
 		outline: none;
+	}
+
+	.e-mobile-switcher {
+		color: var(--powered-color, #333);
+		margin-top: 8px;
+		text-align: center;
+		a {
+			color: var(--powered-color, #333);
+			text-decoration: underline;
+			&:hover {
+				filter: brightness(1.5);
+			}
+		}
 	}
 }
 
@@ -132,8 +151,8 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
-		background: transparent;
-		background: rgba(0,0,0,.3);
+		background: var(---spinner-bg, rgba(0,0,0,.3));
+		border-radius: var(--login-border-radius);
 		z-index: 1051;
 		border-radius: 8px;
 	}
@@ -149,13 +168,13 @@
 
 		border: 8px solid transparent;
 		border-color: transparent;
-		border-top-color: #fff;
+		border-top-color: var(--spinner-color, #fff);
 		animation: loginRotation 1s infinite ease-in-out;
 
 		border-radius: 50%;
 		z-index: 1052;
 	}
- }
+}
 
 .btn-submit-icon-wrp {
 	border: none;
@@ -165,4 +184,89 @@
 	padding: 0;
 	outline: none;
 	cursor: pointer;
+}
+
+// glass style
+html.glass {
+
+	@glass-color: #fff !important;
+	@glass-p-color: #aaa !important;
+	@glass-error-color: #f76260 !important;
+	@glass-m-color: rgba(255, 255, 255, .8) !important;
+
+	.thm-login {
+		background: none !important;
+		background: rgba(0, 0, 0, .5) !important;
+		box-shadow: none !important;
+
+		border: none !important;
+		border: 1px solid rgba(255, 255, 255, .2) !important;
+
+		.controls {
+			.input-append .add-on i {
+				color: @glass-m-color;
+				text-shadow: none !important;
+				outline: none !important;
+				box-shadow: none !important;
+			}
+
+			input {
+				border: 1px solid none !important;
+				background: none !important;
+				outline: none !important;
+				text-shadow: none !important;
+				box-shadow: none !important;
+
+				color: @glass-color;
+				border-color: @glass-m-color;
+
+				&:placeholder {
+					color: @glass-color;
+					text-shadow: none !important;
+				}
+
+				&:focus, &:hover {
+					border-color: @glass-color;
+				}
+			}
+			.btn {
+				border: 1px solid none !important;
+				background: none !important;
+				outline: none !important;
+				text-shadow: none !important;
+				box-shadow: none !important;
+
+				color: @glass-color;
+				border-color: @glass-m-color;
+
+				text-transform: uppercase;
+				font-size: 13px;
+
+				&:hover, &:active{
+					border-color: @glass-color;
+				}
+			}
+
+			&.error {
+				.input-append .add-on i {
+					color: @glass-error-color;
+				}
+
+				input {
+					color: @glass-error-color;
+					border-color: @glass-error-color;
+				}
+			}
+		}
+	}
+
+	.thm-login-text {
+		color: @glass-m-color;
+		text-shadow: none !important;
+
+		.legend, .e-checkbox-icon, .g-ui-link, .language-button {
+			color: @glass-m-color;
+			text-shadow: none !important;
+		}
+	}
 }

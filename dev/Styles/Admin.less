@@ -43,7 +43,7 @@
 		cursor: default;
 
 		background-color: transparent;
-		color: #888;
+		color: var(--settings-menu-disabled-color, #888);
 
 		padding: 4px 10px;
 
@@ -53,12 +53,17 @@
 
 	.e-item.selectable .e-link {
 		cursor: pointer;
+		color: var(--settings-menu-color);
 	}
 
 	.e-item.selectable {
-		&:hover .e-link, &.selected .e-link {
-			background-color: #555;
-			color: #fff;
+		&:hover .e-link{
+			background-color: var(--settings-menu-hover-bg-color, #555);
+			color: var(--settings-menu-hover-color, #fff);
+		}
+		&.selected .e-link {
+			background-color: var(--settings-menu-selected-bg-color, #555);
+			color: var(--settings-menu-selected-color, #fff);
 		}
 	}
 }

@@ -13,9 +13,9 @@
 	font-size: 16px;
 	vertical-align: text-top;
 
-	.disabled &:not(.icon-white),
-	.btn[disabled] &:not(.icon-white){
-		color: grey;
+	.disabled &,
+	.btn[disabled] & {
+		opacity: 0.5;
 	}
 }
 
@@ -52,18 +52,14 @@
 
 .icon-checkbox-checked, .icon-checkbox-unchecked, .icon-checkbox-partial, .icon-radio-checked, .icon-radio-unchecked {
 	cursor: pointer;
-	color: #555;
-	font-size: 1em;
-
 	&:hover, &:active {
-		color: #000;
+		filter: brightness(0.5);
 	}
 }
 
 .icon-white {
 	&.icon-checkbox-checked, &.icon-checkbox-unchecked, &.icon-checkbox-partial, &.icon-radio-checked, &.icon-radio-unchecked {
 		color: #eee;
-
 		&:hover, &:active {
 			color: #fff;
 		}

@@ -86,7 +86,7 @@
 			line-height: 34px;
 			background-color: transparent;
 			vertical-align: middle;
-			color: grey;
+			color: var(--folders-disabled-color, grey);
 			cursor: not-allowed;
 			font-size: 14px;
 
@@ -130,12 +130,17 @@
 
 			&.selectable {
 
-				color: #000;
+				color: var(--folders-color, #000);
 				cursor: pointer;
 
-				&:hover, &.selected, &.focused, &.droppableHover {
-					background-color: #555;
-					color: #fff;
+				&:hover {
+					background-color: var(--folders-hover-bg-color, #555);
+					color: var(--folders-hover-color, #fff);
+				}
+
+				&.droppableHover {
+					background-color: var(--folders-drop-bg-color, #555);
+					color: var(--folders-drop-color, #fff);
 				}
 
 				&.droppableHover * {
@@ -143,7 +148,13 @@
 				}
 
 				&.focused {
-					color: #fff;
+					background-color: var(--folders-focused-bg-color, #555);
+					color: var(--folders-focused-color, #fff);
+				}
+
+				&.selected {
+					background-color: var(--folders-selected-bg-color, #555);
+					color: var(--folders-selected-color, #fff);
 				}
 			}
 
@@ -289,7 +300,7 @@ html.rl-left-panel-disabled, html.rl-left-panel-short {
 
 html.rl-mobile {
 	.btn.buttonCompose {
-		width: 100%;
+		width: auto;
 	}
 	.btn.buttonContacts {
 		display: none;
