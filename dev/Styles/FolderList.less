@@ -273,12 +273,14 @@
 
 	&.buttonCompose {
 		width: calc(~'100% - 85px');
+		max-width: -moz-fit-content;
+		max-width: -webkit-fit-content;
 		max-width: fit-content;
 		white-space: nowrap;
 		overflow: hidden;
 		height: 19px;
-		display: inline-block;
 		margin-top: 1px;
+		padding: 4px 8px;
 	}
 }
 
