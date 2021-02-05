@@ -11,6 +11,10 @@
 	}
 }
 
+@glass-color: #fff !important;
+@glass-error-color: #f76260 !important;
+@glass-m-color: rgba(255, 255, 255, .8) !important;
+
 .b-login-content {
 
 	.loginFormWrapper {
@@ -28,16 +32,17 @@
 		}
 
 		.loginForm {
-			background-color: var(--login-bg-color, #efefef);
+			background-color: var(--login-bg-color, rgba(0, 0, 0, .5));
+			border: var(--login-border, 1px solid rgba(255, 255, 255, .2));
 			border-radius: var(--login-border-radius);
 			box-shadow: var(--login-box-shadow);
-			color: var(--login-color, #333);
-			border: var(--login-border);
 			margin: 0;
+		}
 
-			.g-ui-link {
-				color: var(--login-color);
-			}
+		.input-append .add-on i,
+		.loginForm, .legend, .e-checkbox-icon, .g-ui-link, .language-button {
+			color: var(--login-color, @glass-m-color);
+			text-shadow: none !important;
 		}
 
 		.controls, .control-group {
@@ -59,6 +64,55 @@
 			.inputEmail, .inputPassword {
 				padding-right: 35px;
 			}
+
+			input {
+				border: 1px solid none !important;
+				background: none !important;
+				outline: none !important;
+				text-shadow: none !important;
+				box-shadow: none !important;
+
+				color: @glass-color;
+				border-color: @glass-m-color;
+
+				&:placeholder {
+					color: @glass-color;
+					text-shadow: none !important;
+				}
+
+				&:focus, &:hover {
+					border-color: @glass-color;
+				}
+			}
+
+			.btn {
+				border: 1px solid none !important;
+				background: none !important;
+				outline: none !important;
+				text-shadow: none !important;
+				box-shadow: none !important;
+
+				color: @glass-color;
+				border-color: @glass-m-color;
+
+				text-transform: uppercase;
+				font-size: 13px;
+
+				&:hover, &:active{
+					border-color: @glass-color;
+				}
+			}
+
+			&.error {
+				.input-append .add-on i {
+					color: @glass-error-color;
+				}
+
+				input {
+					color: @glass-error-color;
+					border-color: @glass-error-color;
+				}
+			}
 		}
 
 		.signMeLabel .e-checkbox {
@@ -77,7 +131,8 @@
 		.input-append .add-on i {
 			font-size: 17px;
 			line-height: 29px;
-			color: #999;
+			outline: none !important;
+			box-shadow: none !important;
 
 			&.login-submit-icon{
 				font-size: 24px;
@@ -111,7 +166,6 @@
 	}
 
 	.language-button {
-		color: inherit;
 		padding: 5px;
 		outline: none;
 	}
@@ -184,89 +238,4 @@
 	padding: 0;
 	outline: none;
 	cursor: pointer;
-}
-
-// glass style
-html.glass {
-
-	@glass-color: #fff !important;
-	@glass-p-color: #aaa !important;
-	@glass-error-color: #f76260 !important;
-	@glass-m-color: rgba(255, 255, 255, .8) !important;
-
-	.thm-login {
-		background: none !important;
-		background: rgba(0, 0, 0, .5) !important;
-		box-shadow: none !important;
-
-		border: none !important;
-		border: 1px solid rgba(255, 255, 255, .2) !important;
-
-		.controls {
-			.input-append .add-on i {
-				color: @glass-m-color;
-				text-shadow: none !important;
-				outline: none !important;
-				box-shadow: none !important;
-			}
-
-			input {
-				border: 1px solid none !important;
-				background: none !important;
-				outline: none !important;
-				text-shadow: none !important;
-				box-shadow: none !important;
-
-				color: @glass-color;
-				border-color: @glass-m-color;
-
-				&:placeholder {
-					color: @glass-color;
-					text-shadow: none !important;
-				}
-
-				&:focus, &:hover {
-					border-color: @glass-color;
-				}
-			}
-			.btn {
-				border: 1px solid none !important;
-				background: none !important;
-				outline: none !important;
-				text-shadow: none !important;
-				box-shadow: none !important;
-
-				color: @glass-color;
-				border-color: @glass-m-color;
-
-				text-transform: uppercase;
-				font-size: 13px;
-
-				&:hover, &:active{
-					border-color: @glass-color;
-				}
-			}
-
-			&.error {
-				.input-append .add-on i {
-					color: @glass-error-color;
-				}
-
-				input {
-					color: @glass-error-color;
-					border-color: @glass-error-color;
-				}
-			}
-		}
-	}
-
-	.thm-login-text {
-		color: @glass-m-color;
-		text-shadow: none !important;
-
-		.legend, .e-checkbox-icon, .g-ui-link, .language-button {
-			color: @glass-m-color;
-			text-shadow: none !important;
-		}
-	}
 }
