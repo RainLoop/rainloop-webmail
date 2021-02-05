@@ -630,9 +630,9 @@ class ServiceActions
 
 					if (\is_file($sThemeFile) && \is_file($sThemeTemplateFile) && \is_file($sThemeValuesFile))
 					{
-						$aResult[] = '@base: "'.
-							($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath()).
-							'themes/'.$sRealTheme.'/";';
+						$aResult[] = '@base: "'
+							. ($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath())
+							. 'themes/'.$sRealTheme.'/";';
 
 						$aResult[] = \file_get_contents($sThemeValuesFile);
 						$aResult[] = \file_get_contents($sThemeFile);

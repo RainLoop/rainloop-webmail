@@ -668,14 +668,7 @@ END;
 
 		if (0 < \strlen($sValue) && !static::IsAscii($sValue))
 		{
-			if (!empty($_SERVER['HTTP_USER_AGENT']) && 0 < \strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE'))
-			{
-				$sValue = $sAttrName.'="'.\preg_replace('/[+\s]+/', '%20', \urlencode($sValue)).'"';
-			}
-			else
-			{
-				$sValue = static::AttributeRfc2231Encode($sAttrName, $sValue);
-			}
+			$sValue = static::AttributeRfc2231Encode($sAttrName, $sValue);
 		}
 		else
 		{

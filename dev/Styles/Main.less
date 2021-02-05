@@ -1,13 +1,21 @@
+/**
+ * 1. Correct the line height in all browsers.
+ * 2. Prevent adjustments of font size after orientation changes in iOS.
+ */
+
 html, body {
 	font-family: Arial, Verdana, Geneva, sans-serif;
 	height: 100%;
 	margin: 0;
 	overflow: hidden;
 	padding: 0;
+	line-height: 1.15; /* 1 */
+	-webkit-text-size-adjust: 100%; /* 2 */
 }
 
 body {
 	background-color: var(--main-bg-color, #e3e3e3);
+	background-image: var(--main-bg-image);
 	background-size: var(--main-bg-size);
 	color: var(--main-color, #000);
 
@@ -29,12 +37,8 @@ option:disabled {
 	cursor: not-allowed;
 }
 
-* {
+*, select:focus {
 	outline: none;
-}
-
-select:focus {
-    outline: none;
 }
 
 html.mobile *, html.rl-mobile * {

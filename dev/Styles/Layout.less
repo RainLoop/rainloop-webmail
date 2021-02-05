@@ -6,13 +6,24 @@
 	background-position: center;
 }
 
+#rl-center, #rl-top, #rl-bottom, #rl-left, #rl-right {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	z-index: 0;
+}
+
 #rl-content {
 	height: 100%;
 	width: 100%;
 }
 
 #rl-center {
-	.g-ui-absolute-reset;
 	min-width: 600px;
 	min-height: 400px;
 }
@@ -34,21 +45,16 @@ html.rl-mobile {
 }
 
 #rl-top {
-	.g-ui-absolute-reset;
 	bottom: auto;
 	z-index: 2;
 }
 
 #rl-bottom {
-	.g-ui-absolute-reset;
-
 	top: auto;
 	z-index: 1;
 }
 
 #rl-left {
-	.g-ui-absolute-reset;
-
 	width: @rlLeftWidth;
 	min-width: 60px;
 }
@@ -117,8 +123,6 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
 }
 
 #rl-right {
-	.g-ui-absolute-reset;
-
 	z-index: 1;
 	left: @rlLeftWidth;
 }

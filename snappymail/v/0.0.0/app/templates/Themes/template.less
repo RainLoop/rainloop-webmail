@@ -5,17 +5,18 @@
     background-repeat: repeat-x !important;
 }
 
-.thm-body-background-image(@value) when (isstring(@value)) {
-	background-image: url("@{base}@{value}");
+.thm-main-bg-image(@value) when (isstring(@value)) {
+	--main-bg-image: url("@{base}@{value}");
 }
-.thm-body-background-image(@value) when not (isstring(@value)) {
-	background-image: @value;
+.thm-main-bg-image(@value) when not (isstring(@value)) {
+	--main-bg-image: @value;
 }
 // --- mixins
 
 :root {
 	--main-bg-color: @main-background-color;
 	--main-bg-size: @main-background-size;
+	.thm-main-bg-image(@main-background-image);
 	--main-color: @main-color;
 
 	--loading-color: @loading-color;
@@ -26,8 +27,7 @@
 	--login-border-radius: @login-border-radius;
 	--login-box-shadow: @login-box-shadow;
 	--login-color: @login-color;
-
-	--powered-color: @powered-color;
+	--login-switch-color: @powered-color;
 
 	--spinner-bg: @spinner-background;
 	--spinner-color: @spinner-color;
@@ -58,10 +58,6 @@
 	--settings-menu-hover-color: settings-menu-hover-color;
 	--settings-menu-selected-bg-color: @settings-menu-selected-background-color;
 	--settings-menu-selected-color: @settings-menu-selected-color;
-}
-
-body {
-	.thm-body-background-image(@main-background-image);
 }
 
 .thm-login {
