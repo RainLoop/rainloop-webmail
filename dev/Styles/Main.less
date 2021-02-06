@@ -15,9 +15,8 @@ html, body {
 
 body {
 	background-color: var(--main-bg-color, #e3e3e3);
-	background-image: var(--main-bg-image);
 	background-size: var(--main-bg-size);
-	color: var(--main-color, #000);
+	color: var(--main-color, #333);
 
 	-webkit-touch-callout: none;
 
@@ -26,6 +25,15 @@ body {
 	left: 0;
 	bottom: 0;
 	right: 0;
+}
+
+/*
+.rl-mobile / .no-mobile
+*/
+@media screen and (min-width: 1000px) {
+	body {
+		background-image: var(--main-bg-image);
+	}
 }
 
 textarea {
@@ -39,9 +47,6 @@ option:disabled {
 
 *, select:focus {
 	outline: none;
-}
-
-html.mobile *, html.rl-mobile * {
 	-webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 

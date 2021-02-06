@@ -1016,7 +1016,7 @@ class Actions
 			'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
 			'faviconStatus' => (bool)$oConfig->Get('labs', 'favicon_status', true),
 			'listPermanentFiltered' => '' !== \trim(Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
-			'themes' => $this->GetThemes($bMobile, false),
+			'themes' => $this->GetThemes(),
 			'languages' => $this->GetLanguages(false),
 			'languagesAdmin' => $this->GetLanguages(true),
 			'attachmentsActions' => $aAttachmentsActions
@@ -1097,7 +1097,7 @@ class Actions
 			'ParentEmail' => '',
 			'InterfaceAnimation' => true,
 			'UserBackgroundName' => '',
-			'UserBackgroundHash' => '',
+			'UserBackgroundHash' => ''
 		);
 
 		if (0 < \strlen($sAuthAccountHash)) {
@@ -1282,7 +1282,7 @@ class Actions
 			}
 		}
 
-		$sTheme = $this->ValidateTheme($sTheme, $bMobile);
+		$sTheme = $this->ValidateTheme($sTheme);
 		$sStaticCache = $this->StaticCache();
 
 		$aResult['Theme'] = $sTheme;
@@ -2082,7 +2082,7 @@ class Actions
 				$aResult[] = Enumerations\Capa::TEMPLATES;
 			}
 
-			if ($oConfig->Get('webmail', 'allow_themes', false) && !$bMobile) {
+			if ($oConfig->Get('webmail', 'allow_themes', false)) {
 				$aResult[] = Enumerations\Capa::THEMES;
 			}
 
@@ -2233,14 +2233,10 @@ class Actions
 		return './?/Css/0/' . ($bAdmin ? 'Admin' : 'User') . '/-/' . $sTheme . '/-/' . $this->StaticCache() . '/Hash/-/';
 	}
 
-	public function ValidateTheme(string $sTheme, bool $bMobile = false): string
+	public function ValidateTheme(string $sTheme): string
 	{
-		if ($bMobile) {
-			return 'Mobile';
-		}
-
-		return \in_array($sTheme, $this->GetThemes($bMobile)) ?
-			$sTheme : $this->Config()->Get('themes', 'default', $bMobile ? 'Mobile' : 'Default');
+		return \in_array($sTheme, $this->GetThemes()) ?
+			$sTheme : $this->Config()->Get('themes', 'default', 'Default');
 	}
 
 	public function ValidateLanguage(string $sLanguage, string $sDefault = '', bool $bAdmin = false, bool $bAllowEmptyResult = false): string
@@ -2296,22 +2292,16 @@ class Actions
 	/**
 	 * @staticvar array $aCache
 	 */
-	public function GetThemes(bool $bMobile = false, bool $bIncludeMobile = true): array
+	public function GetThemes(): array
 	{
-		if ($bMobile) {
-			return array('Mobile');
-		}
-
-		static $aCache = array('full' => null, 'mobile' => null);
-		if ($bIncludeMobile && \is_array($aCache['full'])) {
-			return $aCache['full'];
-		} else if ($bIncludeMobile && \is_array($aCache['mobile'])) {
-			return $aCache['mobile'];
+		static $aCache = array();
+		if ($aCache) {
+			return $aCache;
 		}
 
 		$bClear = false;
 		$bDefault = false;
-		$sList = array();
+		$aCache = array();
 		$sDir = APP_VERSION_ROOT_PATH . 'themes';
 		if (\is_dir($sDir)) {
 			$rDirH = \opendir($sDir);
@@ -2322,8 +2312,8 @@ class Actions
 							$bDefault = true;
 						} else if ('Clear' === $sFile) {
 							$bClear = true;
-						} else if ($bIncludeMobile || 'Mobile' !== $sFile) {
-							$sList[] = $sFile;
+						} else {
+							$aCache[] = $sFile;
 						}
 					}
 				}
@@ -2337,7 +2327,7 @@ class Actions
 			if ($rDirH) {
 				while (($sFile = \readdir($rDirH)) !== false) {
 					if ('.' !== $sFile[0] && \is_dir($sDir . '/' . $sFile) && \file_exists($sDir . '/' . $sFile . '/styles.less')) {
-						$sList[] = $sFile . '@custom';
+						$aCache[] = $sFile . '@custom';
 					}
 				}
 
@@ -2345,19 +2335,18 @@ class Actions
 			}
 		}
 
-		$sList = \array_unique($sList);
-		\sort($sList);
+		$aCache = \array_unique($aCache);
+		\sort($aCache);
 
 		if ($bDefault) {
-			\array_unshift($sList, 'Default');
+			\array_unshift($aCache, 'Default');
 		}
 
 		if ($bClear) {
-			\array_push($sList, 'Clear');
+			\array_push($aCache, 'Clear');
 		}
 
-		$aCache[$bIncludeMobile ? 'full' : 'mobile'] = $sList;
-		return $sList;
+		return $aCache;
 	}
 
 	/**
@@ -2445,7 +2434,7 @@ class Actions
 		\header('Location: ' . $sUrl);
 	}
 
-	public function GetLanguageAndTheme(bool $bAdmin = false, bool $bMobile = false): array
+	public function GetLanguageAndTheme(bool $bAdmin = false): array
 	{
 		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
 
@@ -2470,7 +2459,7 @@ class Actions
 		}
 
 		$sLanguage = $this->ValidateLanguage($sLanguage, '', $bAdmin);
-		$sTheme = $this->ValidateTheme($sTheme, $bMobile);
+		$sTheme = $this->ValidateTheme($sTheme);
 
 		return array($sLanguage, $sTheme);
 	}

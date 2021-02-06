@@ -11,7 +11,7 @@ body {
 }
 
 #rl-loading, #rl-loading-error {
-	color: var(--loading-color);
+	color: var(--loading-color, #000);
 	text-shadow: var(--loading-text-shadow);
 	font-size: 30px;
 	line-height: 130%;
@@ -30,7 +30,7 @@ body {
 
 .e-spinner .e-bounce {
 	animation: bouncedelay 1.4s infinite ease-in-out;
-	background-color: var(--loading-color, #333);
+	background-color: var(--loading-color, #000);
 	border-radius: 100%;
 	box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
 	display: inline-block;

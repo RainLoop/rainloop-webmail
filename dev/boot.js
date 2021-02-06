@@ -4,7 +4,6 @@
 const
 	doc = document,
 	eId = id => doc.getElementById(id),
-	htmlCL = doc.documentElement.classList,
 	app = eId('rl-app'),
 	options = app && app.dataset.boot && JSON.parse(app.dataset.boot) || {},
 
@@ -170,8 +169,6 @@ Storage('local');
 
 // init section
 setInterval(setTimestamp, 60000); // 1m
-
-htmlCL.add(options.mobileDevice ? 'mobile' : 'no-mobile');
 
 [eId('app-css'),eId('app-theme-link')].forEach(css => css.href = css.dataset.href);
 

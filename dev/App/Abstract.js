@@ -121,7 +121,7 @@ export class AbstractApp {
 		initOnStartOrLangChange();
 
 		if (mobile) {
-			$htmlCL.add('rl-mobile');
+			$htmlCL.toggle('rl-mobile', mobile);
 			leftPanelDisabled(true);
 		} else {
 			window.addEventListener('resize', () => leftPanelDisabled(767 >= window.innerWidth));

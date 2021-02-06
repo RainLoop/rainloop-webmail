@@ -26,7 +26,7 @@
 
 			.desc {
 				font-size: 30px;
-				color: var(--loading-color);
+				color: var(--loading-color, #000);
 				text-shadow: var(--loading-text-shadow);
 			}
 		}
@@ -34,7 +34,7 @@
 		.loginForm {
 			background-color: var(--login-bg-color, rgba(0, 0, 0, .5));
 			border: var(--login-border, 1px solid rgba(255, 255, 255, .2));
-			border-radius: var(--login-border-radius);
+			border-radius: var(--login-border-radius, 7px);
 			box-shadow: var(--login-box-shadow);
 			margin: 0;
 		}
@@ -206,7 +206,7 @@
 		right: 0;
 		bottom: 0;
 		background: var(---spinner-bg, rgba(0,0,0,.3));
-		border-radius: var(--login-border-radius);
+		border-radius: var(--login-border-radius, 7px);
 		z-index: 1051;
 		border-radius: 8px;
 	}

@@ -31,19 +31,19 @@
 	.e-link {
 		text-decoration: none;
 		cursor: pointer;
-		color: var(--dropdown-menu-color);
-		background-color: var(--dropdown-menu-background-color);
+		color: var(--dropdown-menu-color, #333);
+		background-color: var(--dropdown-menu-bg-color, #fff);
 	}
 
 	.e-item.selected > .e-link {
-		background-color: var(--dropdown-menu-selected-background-color, #eee)  !important;
+		background-color: var(--dropdown-menu-selected-bg-color, #eee)  !important;
 	}
 
 	.e-item:not(.disabled) > .e-link:focus,
 	.e-item:not(.disabled) > .e-link:hover {
-		background-color: var(--dropdown-menu-hover-background-color, #555);
+		background-color: var(--dropdown-menu-hover-bg-color, #444);
 		background-image: none;
-		color: var(--dropdown-menu-hover-color, #fff);
+		color: var(--dropdown-menu-hover-color, #eee);
 	}
 
 	.e-item.disabled > .e-link {

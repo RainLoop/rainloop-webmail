@@ -625,18 +625,13 @@ class ServiceActions
 
 					$sThemeFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sRealTheme.'/styles.less';
 
-					$sThemeValuesFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/values.less';
-					$sThemeTemplateFile = APP_VERSION_ROOT_PATH.'app/templates/Themes/template.less';
-
-					if (\is_file($sThemeFile) && \is_file($sThemeTemplateFile) && \is_file($sThemeValuesFile))
+					if (\is_file($sThemeFile))
 					{
 						$aResult[] = '@base: "'
 							. ($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath())
 							. 'themes/'.$sRealTheme.'/";';
 
-						$aResult[] = \file_get_contents($sThemeValuesFile);
 						$aResult[] = \file_get_contents($sThemeFile);
-						$aResult[] = \file_get_contents($sThemeTemplateFile);
 					}
 
 					$aResult[] = $this->Plugins()->CompileCss($bAdmin);

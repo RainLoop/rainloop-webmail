@@ -267,16 +267,16 @@ class Service
 			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
 			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),
 			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot.min.css'),
-			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8')
+			'{{BaseCssClass}}' => ($bMobileDevice ? 'mobile' : 'no-mobile') . ($bMobile ? ' rl-mobile' : ''),
+			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
+			'{{RainloopBootData}}' => \json_encode(array(
+				'admin' => $bAdmin,
+				'language' => $sLanguage,
+				'theme' => $sTheme,
+				'mobile' => $bMobile,
+				'mobileDevice' => $bMobileDevice
+			))
 		);
-
-		$aTemplateParameters['{{RainloopBootData}}'] = \json_encode(array(
-			'admin' => $bAdmin,
-			'language' => $sLanguage,
-			'theme' => $sTheme,
-			'mobile' => $bMobile,
-			'mobileDevice' => $bMobileDevice
-		));
 
 		$aTemplateParameters['{{BaseHash}}'] = \md5(
 			\implode('~', array(

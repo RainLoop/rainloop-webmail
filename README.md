@@ -90,8 +90,8 @@ Things might work in Edge 18, Firefox 50-62 and Chrome 54-68 due to one polyfill
 * Replaced *Ajax with *Fetch classes because we use the Fetch API, not jQuery.ajax
 * Replaced knockoutjs 3.4 with a modified 3.5.1
 * Replaced knockout-sortable with native HTML5 drag&drop
-* Replaced simplestatemanager with @media
-* Replaced inputosaurus to native
+* Replaced simplestatemanager with CSS @media
+* Replaced inputosaurus with own code
 * Replaced keymaster with own shortcuts handler
 * Removed pikaday
 * Removed underscore
@@ -113,23 +113,23 @@ RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|  119.262	|
-|app.js          	|4.215.733	|  526.403	|
-|boot.js         	|  672.433	|    4.842	|
-|libs.js         	|  647.679	|  232.286	|
+|admin.js        	|2.158.025	|  119.231	|
+|app.js          	|4.215.733	|  535.140	|
+|boot.js         	|  672.433	|    4.713	|
+|libs.js         	|  647.679	|  227.645	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  883.078	|
+|TOTAL           	|8.019.778	|  887.014	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   60.784	| 73.899	| 17.359	| 60.674 	| 15.396	|
-|app.min.js      	|  516.000	|  254.960	|140.430	| 73.405	|110.657 	| 61.490	|
-|boot.min.js     	|   66.456	|    2.630	| 22.553	|  1.375	| 20.043 	|  1.189	|
-|libs.min.js     	|  574.626	|  128.347	|177.280	| 46.608	|151.855 	| 41.481	|
+|admin.min.js    	|  255.514	|   61.142	| 73.899	| 17.432	| 60.674 	| 15.454	|
+|app.min.js      	|  516.000	|  261.321	|140.430	| 75.153	|110.657 	| 63.151	|
+|boot.min.js     	|   66.456	|    2.521	| 22.553	|  1.356	| 20.043 	|  1.165	|
+|libs.min.js     	|  574.626	|  120.243	|177.280	| 44.101	|151.855 	| 39.263	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072 	|      0	|
-|TOTAL           	|1.445.204	|  446.721	|425.477	|138.747	|353.301 	|119.556	|
-|TOTAL (no admin)	|1.189.690	|  385.937	|351.061	|121.388	|292.627 	|104.160	|
+|TOTAL           	|1.445.204	|  445.227	|425.477	|138.042	|353.301 	|119.033	|
+|TOTAL (no admin)	|1.189.690	|  384.085	|351.061	|120.610	|292.627 	|103.579	|
 
 For a user its around 65% smaller and faster than traditional RainLoop.
 
@@ -137,6 +137,8 @@ For a user its around 65% smaller and faster than traditional RainLoop.
 
 * Solve jQuery removed "features" with native css code
 * Cleanup unused css
+* Themes work in mobile mode
+* Bugfix invalid/conflicting css rules
 * Removed html.no-css
 * Removed dev/Styles/Cmd.less
 * Removed dev/Styles/Scroll.less
@@ -153,14 +155,15 @@ For a user its around 65% smaller and faster than traditional RainLoop.
 * Removed vendors/jquery-nanoscroller/nanoscroller.css
 * Removed vendors/jquery-letterfx/jquery-letterfx.min.css
 * Removed vendors/Progress.js/minified/progressjs.min.css
+* Removed gulp-autoprefixer
 
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|-------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 167.876	| 46,959	| 26.292	| 22.129	|
-|app.min.css 	| 274.791	| 136.861	| 39.618	| 23.066	| 19.978	|
-|boot.css    	|       	|   2.534	|       	|    837	|    668	|
-|boot.min.css	|       	|   2.055	|       	|    732	|    560	|
+|app.css     	| 340.334	| 158.923	| 46,959	| 25.624	| 21.575	|
+|app.min.css 	| 274.791	| 130.398	| 39.618	| 22.404	| 19.536	|
+|boot.css    	|       	|   1.820	|       	|    786	|    626	|
+|boot.min.css	|       	|   1.476	|       	|    698	|    548	|
 
 
 ### Squire vs CKEditor
