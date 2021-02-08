@@ -301,11 +301,9 @@ export class FolderModel extends AbstractModel {
 
 				canBeDeleted: () => !folder.isSystemFolder() && !folder.subFolders.length,
 
-				selectableForFolderList: () => !folder.isSystemFolder() && folder.selectable,
+				canBeSubscribed: () => !folder.isSystemFolder() && folder.selectable && rl.settings.app('useImapSubscribe'),
 
-				canBeSubscribed: () => !folder.isSystemFolder() && folder.selectable,
-
-				canBeChecked: () => !folder.isSystemFolder() && folder.selectable,
+				canBeSelected:   () => !folder.isSystemFolder() && folder.selectable,
 
 				localName: () => {
 					let name = folder.name();

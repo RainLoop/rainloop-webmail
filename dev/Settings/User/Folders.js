@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { Notification } from 'Common/Enums';
 import { ClientSideKeyName } from 'Common/EnumsUser';
-import { getNotification, i18n } from 'Common/Translator';
+import { getNotification } from 'Common/Translator';
 
 import { removeFolderFromCacheList } from 'Common/Cache';
 
@@ -24,8 +24,6 @@ export class FoldersUserSettings {
 		this.folderListOptimized = FolderStore.folderListOptimized;
 		this.folderListError = FolderStore.folderListError;
 
-		this.folderListHelp = ko.observable('').extend({ throttle: 100 });
-
 		this.loading = ko.computed(() => {
 			const loading = FolderStore.foldersLoading(),
 				creating = FolderStore.foldersCreating(),
@@ -38,8 +36,6 @@ export class FoldersUserSettings {
 		this.folderForDeletion = ko.observable(null).deleteAccessHelper();
 
 		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'edited'] });
-
-		this.useImapSubscribe = !!rl.settings.app('useImapSubscribe');
 	}
 
 	folderEditOnEnter(folder) {
@@ -70,17 +66,10 @@ export class FoldersUserSettings {
 	onShow() {
 		FolderStore.folderListError('');
 	}
-
+/*
 	onBuild(oDom) {
-		oDom.addEventListener('mouseover', event => {
-			const eqs = s => event.target.closestWithin(s, oDom);
-			eqs('.delete-folder-parent') && this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_DELETE_FOLDER'));
-			eqs('.subscribe-folder-parent') && this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_SHOW_HIDE_FOLDER'));
-			eqs('.check-folder-parent') && this.folderListHelp(i18n('SETTINGS_FOLDERS/HELP_CHECK_FOR_NEW_MESSAGES'));
-		});
-		oDom.addEventListener('mouseout', () => this.folderListHelp(''));
 	}
-
+*/
 	createFolder() {
 		showScreenPopup(FolderCreatePopupView);
 	}
