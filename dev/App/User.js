@@ -17,7 +17,7 @@ import {
 	ClientSideKeyName
 } from 'Common/EnumsUser';
 
-import { doc, $htmlCL, Settings, leftPanelDisabled } from 'Common/Globals';
+import { doc, createElement, $htmlCL, Settings, leftPanelDisabled } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
@@ -803,9 +803,8 @@ class AppUser extends AbstractApp {
 		if (mode) {
 			source.classList.add('resizable');
 			if (!source.querySelector('.resizer')) {
-				const resizer = doc.createElement('div'),
+				const resizer = createElement('div', {'class':'resizer'}),
 					cssint = s => parseFloat(getComputedStyle(source, null).getPropertyValue(s).replace('px', ''));
-				resizer.className = 'resizer';
 				source.append(resizer);
 				resizer.addEventListener('mousedown', {
 					source: source,
@@ -955,10 +954,9 @@ class AppUser extends AbstractApp {
 								};
 
 								if (!openpgpCallback()) {
-									const script = doc.createElement('script');
+									const script = createElement('script', {src:openPgpJs()});
 									script.onload = openpgpCallback;
 									script.onerror = () => console.error(script.src);
-									script.src = openPgpJs();
 									doc.head.append(script);
 								}
 							} else {
