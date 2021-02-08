@@ -81,22 +81,18 @@
 		<div class="modal-footer">
 			<a class="btn pull-left" data-bind="visible: lock, click: logout">
 				<i class="fontastic">⏻</i>
-				&nbsp;&nbsp;
 				<span class="i18n" data-i18n="GLOBAL/LOGOUT"></span>
 			</a>
 			<a class="btn btn-danger" data-bind="click: clearTwoFactor, visible: twoFactorStatus">
 				<i class="fontastic" data-bind="css: {'icon-spinner': clearing()}">✖</i>
-				&nbsp;&nbsp;
 				<span class="i18n" data-i18n="GLOBAL/CLEAR"></span>
 			</a>
 			<a class="btn" data-bind="click: createTwoFactor, visible: !twoFactorStatus()">
 				<i class="fontastic" data-bind="css: {'icon-spinner': processing()}">▶</i>
-				&nbsp;&nbsp;
 				<span class="i18n" data-i18n="POPUPS_TWO_FACTOR_CFG/BUTTON_ACTIVATE"></span>
 			</a>
 			<a class="btn" data-bind="command: cancelCommand, visible: viewEnable() || !lock()">
 				<i class="icon-ok" ></i>
-				&nbsp;&nbsp;
 				<span class="i18n" data-i18n="GLOBAL/DONE"></span>
 			</a>
 		</div>

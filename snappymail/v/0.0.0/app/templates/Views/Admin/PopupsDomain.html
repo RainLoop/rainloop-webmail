@@ -226,28 +226,23 @@
 		   'btn-success': testingDone() && !testingImapError() && !testingSmtpError(),
 		   'btn-danger': testingDone() && (testingImapError() || testingSmtpError()) }">
 			<i data-bind="css: {'icon-info': !testing(), 'icon-spinner': testing(), 'icon-white': testingDone()}"></i>
-			&nbsp;&nbsp;
 			<span data-i18n="POPUPS_DOMAIN/BUTTON_TEST"></span>
 		</a>
 		<a class="btn button-white-list pull-left" data-bind="command: whiteListCommand, visible: 'main' === page()">
 			<i class="fontastic">👥</i>
-			&nbsp;&nbsp;
 			<span data-i18n="POPUPS_DOMAIN/BUTTON_WHITE_LIST"></span>
 		</a>
 		<a class="btn button-white-list pull-left" data-bind="command: backCommand, visible: 'main' !== page()">
 			<i class="icon-left"></i>
-			&nbsp;&nbsp;
 			<span data-i18n="POPUPS_DOMAIN/BUTTON_BACK"></span>
 		</a>
 		<a class="btn buttonClose" data-bind="command: cancelCommand">
 			<i class="fontastic">✖</i>
-			&nbsp;&nbsp;
 			<span data-i18n="POPUPS_DOMAIN/BUTTON_CLOSE"></span>
 		</a>
 		<a class="btn buttonClear" data-bind="command: createOrAddCommand">
 			<i data-bind="css: edit() ? 'icon-ok' : 'icon-plus', visible: !saving()"></i>
 			<i class="icon-spinner" data-bind="visible: saving"></i>
-			&nbsp;&nbsp;
 			<span data-bind="visible: !edit()" data-i18n="POPUPS_DOMAIN/BUTTON_ADD"></span>
 			<span data-bind="visible: edit()" data-i18n="POPUPS_DOMAIN/BUTTON_UPDATE"></span>
 		</a>

@@ -107,7 +107,6 @@
 			<button class="btn buttonDo" data-bind="command: doCommand,
 				enable: (sign() || encrypt()) && (!encrypt() || encrypt() && encryptKeys().length > 0)">
 				<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
-				&nbsp;&nbsp;
 				<span class="i18n" data-bind="visible: sign() && !encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN"></span>
 				<span class="i18n" data-bind="visible: !sign() && encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_ENCRYPT"></span>
 				<span class="i18n" data-bind="visible: (sign() && encrypt()) || (!sign() && !encrypt())" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN_AND_ENCRYPT"></span>

@@ -38,9 +38,8 @@
 		<div class="modal-footer">
 			<a class="btn buttonAddAccount" data-bind="command: addAccountCommand">
 				<i data-bind="visible: isNew, css: {'icon-user-add': !submitRequest(), 'icon-spinner': submitRequest()}"></i>
-				<i data-bind="visible: !isNew(), css: {'icon-ok': !submitRequest(), 'icon-spinner': submitRequest()}"></i>
-				&nbsp;&nbsp;
 				<span data-bind="visible: isNew" class="i18n" data-i18n="POPUPS_ADD_ACCOUNT/BUTTON_ADD_ACCOUNT"></span>
+				<i data-bind="visible: !isNew(), css: {'icon-ok': !submitRequest(), 'icon-spinner': submitRequest()}"></i>
 				<span data-bind="visible: !isNew()" class="i18n" data-i18n="POPUPS_ADD_ACCOUNT/BUTTON_UPDATE_ACCOUNT"></span>
 			</a>
 		</div>

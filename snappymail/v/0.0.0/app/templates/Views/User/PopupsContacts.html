@@ -8,7 +8,6 @@
 			<div class="btn-group">
 				<a class="btn button-create-contact" data-bind="command: newCommand">
 					<i class="icon-plus"></i>
-					&nbsp;&nbsp;
 					<span class="i18n" data-i18n="CONTACTS/BUTTON_ADD_CONTACT"></span>
 				</a>
 			</div>
@@ -34,28 +33,24 @@
 					<li class="e-item" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="initDom: importUploaderButton">
 							<i data-bind="css: {'icon-import': !contacts.importing(), 'icon-spinner': contacts.importing}"></i>
-							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="CONTACTS/BUTTON_IMPORT"></span>
 						</a>
 					</li>
 					<li class="e-item dividerbar hide-mobile" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: exportCsv">
 							<i data-bind="css: {'icon-export': !contacts.exportingCsv(), 'icon-spinner': contacts.exportingCsv}"></i>
-							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="CONTACTS/BUTTON_EXPORT_CSV"></span>
 						</a>
 					</li>
 					<li class="e-item hide-mobile" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: exportVcf">
 							<i data-bind="css: {'icon-export': !contacts.exportingVcf(), 'icon-spinner': contacts.exportingVcf}"></i>
-							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="CONTACTS/BUTTON_EXPORT_VCARD"></span>
 						</a>
 					</li>
 					<li class="e-item dividerbar" role="presentation" data-bind="visible: enableContactsSync() && allowContactsSync()">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: syncCommand">
 							<i data-bind="css: {'icon-sync': !contacts.syncing(), 'icon-spinner': contacts.syncing}"></i>
-							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="CONTACTS/BUTTON_SYNC"></span>
 						</a>
 					</li>
@@ -111,7 +106,6 @@
 			<div class="btn-group">
 				<button class="btn button-save-contact" data-bind="visible: !emptySelection(), command: saveCommand, css: {'dirty': watchDirty}">
 					<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner': viewSaving()}"></i>
-					&nbsp;&nbsp;
 					<span class="i18n" data-i18n="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: '' === viewID()"></span>
 					<span class="i18n" data-i18n="CONTACTS/BUTTON_UPDATE_CONTACT" data-bind="visible: '' !== viewID()"></span>
 				</button>
@@ -126,28 +120,24 @@
 					<li class="e-item" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewEmail">
 							<i class="icon-none"></i>
-							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="GLOBAL/EMAIL"></span>
 						</a>
 					</li>
 					<li class="e-item" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewPhone">
 							<i class="icon-none"></i>
-							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="CONTACTS/ADD_MENU_PHONE"></span>
 						</a>
 					</li>
 					<li class="e-item" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewWeb">
 							<i class="icon-none"></i>
-							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="CONTACTS/ADD_MENU_URL"></span>
 						</a>
 					</li>
 					<li class="e-item dividerbar" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addNewNickname">
 							<i class="icon-none"></i>
-							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="CONTACTS/ADD_MENU_NICKNAME"></span>
 						</a>
 					</li>
