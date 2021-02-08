@@ -49,7 +49,7 @@ import { ComposePopupView } from 'View/Popup/Compose';
 import { AdvancedSearchPopupView } from 'View/Popup/AdvancedSearch';
 
 const
-	canBeMovedHelper = (self) => self.canBeMoved(),
+	canBeMovedHelper = () => MessageStore.hasCheckedOrSelected(),
 	ifvisible = window.ifvisible;
 
 class MessageListMailBoxUserView extends AbstractViewRight {
@@ -158,8 +158,6 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 
 			hasMessages: () => 0 < this.messageList.length,
 
-			hasCheckedOrSelectedLines: () => 0 < this.messageListCheckedOrSelected().length,
-
 			isSpamFolder: () => FolderStore.spamFolder() === this.messageListEndFolder() && FolderStore.spamFolder(),
 
 			isSpamDisabled: () => UNUSED_OPTION_VALUE === FolderStore.spamFolder(),
@@ -191,7 +189,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 
 //		this.messageListChecked = MessageStore.messageListChecked;
 
-		this.canBeMoved = this.hasCheckedOrSelectedLines;
+		this.hasCheckedOrSelectedLines = MessageStore.hasCheckedOrSelected,
 
 		this.quotaTooltip = this.quotaTooltip.bind(this);
 
@@ -442,7 +440,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 	 * @returns {boolean}
 	 */
 	moveSelectedMessagesToFolder(sToFolderFullNameRaw, bCopy) {
-		if (this.canBeMoved()) {
+		if (MessageStore.hasCheckedOrSelected()) {
 			rl.app.moveMessagesToFolder(
 				FolderStore.currentFolderFullNameRaw(),
 				MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),

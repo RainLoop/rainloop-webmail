@@ -44,11 +44,10 @@ const
 	/*eslint-disable max-len*/
 	url = /(^|[\s\n]|\/?>)(https:\/\/[-A-Z0-9+\u0026\u2019#/%?=()~_|!:,.;]*[-A-Z0-9+\u0026#/%=~()_|])/gi,
 	email = /(^|[\s\n]|\/?>)((?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x21\x23-\x5b\x5d-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x21-\x5a\x53-\x7f]|\\[\x21\x23-\x5b\x5d-\x7f])+)\]))/gi,
-	findEmailAndLinks = html => {
-		return html
+	findEmailAndLinks = html => html
 		.replace(url, '$1<a href="$2" target="_blank">$2</a>')
-		.replace(email, '$1<a href="mailto:$2">$2</a>');
-	};
+		.replace(email, '$1<a href="mailto:$2">$2</a>'),
+	isChecked = item => item.checked();
 
 let iMessageBodyCacheCount = 0;
 
@@ -137,10 +136,18 @@ class MessageUserStore {
 		this.isMessageSelected = ko.computed(() => null !== this.message());
 
 		this.messageListChecked = ko
-			.computed(() => this.messageList.filter(item => item.checked()))
+			.computed(() => this.messageList.filter(isChecked))
 			.extend({ rateLimit: 0 });
 
-		this.hasCheckedMessages = ko.computed(() => 0 < this.messageListChecked().length).extend({ rateLimit: 0 });
+		this.hasCheckedMessages = ko
+			.computed(() => !!this.messageList.find(isChecked))
+			.extend({ rateLimit: 0 });
+
+		this.hasCheckedOrSelected = ko
+			.computed(() => !!(this.selectorMessageSelected()
+				|| this.selectorMessageFocused()
+				|| this.messageList.find(item => item.checked())))
+			.extend({ rateLimit: 50 });
 
 		this.messageListCheckedOrSelected = ko.computed(() => {
 			const checked = this.messageListChecked(),
