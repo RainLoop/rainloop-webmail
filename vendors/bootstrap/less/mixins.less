@@ -76,38 +76,8 @@
 
 
 
-// BACKGROUNDS
-// --------------------------------------------------
-
-// Gradients
-#gradient {
-  .vertical(@startColor: #555, @endColor: #333) {
-    background-color: mix(@startColor, @endColor, 60%);
-    background-image: linear-gradient(to bottom, @startColor, @endColor); // Standard, IE10
-    background-repeat: repeat-x;
-  }
-}
-
-
-
 // COMPONENT MIXINS
 // --------------------------------------------------
-
-// Button backgrounds
-// ------------------
-.buttonBackground(@startColor, @endColor, @textColor: #fff, @textShadow: 0 -1px 0 rgba(0,0,0,.25)) {
-  color: @textColor;
-  text-shadow: @textShadow;
-  #gradient > .vertical(@startColor, @endColor);
-  border-color: @endColor @endColor darken(@endColor, 15%);
-  border-color: rgba(0,0,0,.1) rgba(0,0,0,.1) fadein(rgba(0,0,0,.1), 15%);
-
-  // in these cases the gradient won't cover the background, so we override
-  &:hover, &:active, &.active, &.disabled, &[disabled] {
-    color: @textColor;
-    background-color: @endColor;
-  }
-}
 
 // Grid System
 // -----------

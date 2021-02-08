@@ -1,7 +1,17 @@
 <div class="b-system-drop-down g-ui-user-select-none">
 	<div class="b-toolbar">
 		<div class="btn-toolbar">
-			<div class="btn-group btn-group-last pull-right dropdown colored-toggle" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: accountMenuDropdownTrigger">
+			<div class="audioPlace" data-tooltip-i18n="off"
+					data-bind="visible: '' !== currentAudio(), tooltip: currentAudio, click: stopPlay">
+				<div class="playIcon equaliser" data-bind="css: {'animated': '' !== currentAudio()}">
+					<div class="bar first"></div>
+					<div class="bar second"></div>
+					<div class="bar third"></div>
+				</div>
+				<i class="stopIcon fontastic">⏸</i>
+			</div>
+			<div class="accountPlace hide-on-mobile" data-bind="text: emailTitle()"></div>
+			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: accountMenuDropdownTrigger">
 				<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-ellipsis btn-block dropdown-toggle system-dropdown" data-toggle="dropdown">
 					<i class="fontastic" data-bind="css: {'icon-spinner': accounts.loading()}">👤</i>
 <!--
@@ -76,16 +86,6 @@
 						</a>
 					</li>
 				</ul>
-			</div>
-			<div class="accountPlace pull-right hide-on-mobile" data-bind="text: emailTitle()"></div>
-			<div class="audioPlace pull-right" data-tooltip-i18n="off"
-					data-bind="visible: '' !== currentAudio(), tooltip: currentAudio, click: stopPlay">
-				<div class="playIcon equaliser" data-bind="css: {'animated': '' !== currentAudio()}">
-					<div class="bar first"></div>
-					<div class="bar second"></div>
-					<div class="bar third"></div>
-				</div>
-				<i class="stopIcon fontastic">⏸</i>
 			</div>
 		</div>
 	</div>

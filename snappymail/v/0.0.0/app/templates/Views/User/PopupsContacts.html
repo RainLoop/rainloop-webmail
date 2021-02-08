@@ -6,7 +6,7 @@
 		<div class="btn-toolbar">
 
 			<div class="btn-group">
-				<a class="btn single button-create-contact" data-bind="command: newCommand">
+				<a class="btn button-create-contact" data-bind="command: newCommand">
 					<i class="icon-plus"></i>
 					&nbsp;&nbsp;
 					<span class="i18n" data-i18n="CONTACTS/BUTTON_ADD_CONTACT"></span>
@@ -14,19 +14,19 @@
 			</div>
 
 			<div class="btn-group">
-				<a class="btn single btn-success button-new-message" data-bind="command: newMessageCommand">
+				<a class="btn btn-success button-new-message" data-bind="command: newMessageCommand">
 					<i class="icon-mail icon-white"></i>
 				</a>
 			</div>
 
 			<div class="btn-group">
-				<a class="btn single button-delete" data-bind="command: deleteCommand">
+				<a class="btn button-delete" data-bind="command: deleteCommand">
 					<i class="fontastic">🗑</i>
 				</a>
 			</div>
 
 			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true">
-				<a id="contacts-more-dropdown-id" class="btn single dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown">
+				<a id="contacts-more-dropdown-id" class="btn dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown">
 					<i data-bind="css: {'icon-list': !contacts.importing() && !contacts.syncing(),
 						'icon-spinner': contacts.importing() || contacts.syncing()}"></i>
 				</a>
@@ -109,7 +109,7 @@
 		</div>
 		<div class="b-view-content-toolbar btn-toolbar" data-bind="css: {'read-only': viewReadOnly}">
 			<div class="btn-group pull-right dropdown colored-toggle button-add-prop" data-bind="visible: !emptySelection(), registerBootstrapDropdown: true">
-				<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn single dropdown-toggle" data-toggle="dropdown">
+				<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle" data-toggle="dropdown">
 					<span class="i18n" data-i18n="CONTACTS/ADD_MENU_LABEL"></span>
 					&nbsp;&nbsp;
 					<span class="caret"></span>
@@ -152,7 +152,7 @@
 			</div>
 			<div class="btn-group pull-right">&nbsp;</div>
 			<div class="btn-group pull-right">
-				<button class="btn single button-save-contact" data-bind="visible: !emptySelection(), command: saveCommand, css: {'dirty': watchDirty}">
+				<button class="btn button-save-contact" data-bind="visible: !emptySelection(), command: saveCommand, css: {'dirty': watchDirty}">
 					<i data-bind="css: {'icon-ok': !viewSaving(), 'icon-spinner': viewSaving()}"></i>
 					&nbsp;&nbsp;
 					<span class="i18n" data-i18n="CONTACTS/BUTTON_CREATE_CONTACT" data-bind="visible: '' === viewID()"></span>

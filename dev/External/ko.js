@@ -157,20 +157,15 @@ ko.bindingHandlers.command = {
 		const cl = element.classList,
 			command = fValueAccessor();
 
-		let result = command.enabled();
+		let disabled = !command.enabled();
 
-		cl.toggle('command-not-enabled', !result);
+		cl.toggle('no-disabled', !disabled);
 
-		if (result) {
-			result = command.canExecute();
-			cl.toggle('command-can-not-be-execute', !result);
-		}
-
-		['command-disabled','disable','disabled'].forEach(s=>cl.toggle(s, !result));
-		cl.toggle('no-disabled', !!result);
+		disabled = disabled || !command.canExecute();
+		['disable','disabled'].forEach(s => cl.toggle(s, disabled));
 
 		if (element.matches('INPUT,TEXTAREA,BUTTON')) {
-			element.disabled = !result;
+			element.disabled = disabled;
 		}
 	}
 };

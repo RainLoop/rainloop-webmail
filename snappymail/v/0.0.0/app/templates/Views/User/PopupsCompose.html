@@ -46,7 +46,7 @@
 						</div>
 						<div class="pull-right">
 							<div class="btn-group dropdown colored-toggle pull-right" style="margin-right: 4px;" data-bind="registerBootstrapDropdown: true">
-								<a class="btn single dropdown-toggle buttonMore" data-toggle="dropdown">
+								<a class="btn dropdown-toggle buttonMore" data-toggle="dropdown">
 									<i class="icon-list"></i>
 								</a>
 								<ul class="dropdown-menu g-ui-menu" role="menu">
@@ -82,7 +82,7 @@
 							</div>
 							<div class="btn-group pull-right">&nbsp;</div>
 							<div class="btn-group pull-right">
-								<a class="btn single" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'GLOBAL/CONTACTS'">
+								<a class="btn" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'GLOBAL/CONTACTS'">
 									<i class="icon-address-book"></i>
 								</a>
 							</div>
@@ -152,11 +152,11 @@
 						<div>
 							<div class="pull-left">
 								<div class="btn-group" data-toggle="buttons-radio">
-									<button type="button" class="btn first" data-bind="click: function () { attachmentsPlace(false); },
+									<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(false); },
 										css: { 'active': !attachmentsPlace() }">
 										<i class="icon-file-text"></i>
 									</button>
-									<button type="button" class="btn last" data-bind="click: function () { attachmentsPlace(true); },
+									<button type="button" class="btn" data-bind="click: function () { attachmentsPlace(true); },
 										css: { 'btn-danger': 0 < attachmentsInErrorCount(), 'active': attachmentsPlace() },
 										tooltipErrorTip: attachmentsErrorTooltip">
 										<span data-bind="visible: 0 < attachmentsCount()">
@@ -169,7 +169,7 @@
 							</div>
 							<div class="pull-right" style="margin-right: 4px;">
 								<div class="btn-group pull-right">
-									<a class="btn first"
+									<a class="btn"
 										style="padding-left: 10px; padding-right: 10px;"
 										data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
 										<sup style="font-weight: bold; font-size: 100%; top: -0.3em;">+</sup><i class="icon-attachment"></i>

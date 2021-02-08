@@ -1,4 +1,16 @@
 
+#top-system-dropdown-id {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+.rl-left-panel-disabled #more-list-dropdown-id + .dropdown-menu {
+    position: fixed;
+    top: 40px;
+	right: auto;
+	left: 0;
+}
+
 .b-system-drop-down {
 
 	.b-toolbar {
@@ -10,18 +22,9 @@
 		z-index: 103;
 	}
 
-	.e-facebook-name {
-		display: inline-block;
-		padding-top: 4px;
-	}
-
-	.btn.system-dropdown {
-		padding-left: 10px;
-		padding-right: 10px;
-	}
-
-	.button-fb-logout {
-		margin: 5px;
+	.dropdown-menu {
+		right: 0;
+		left: auto;
 	}
 
 	.email-title {
@@ -42,27 +45,16 @@
 	}
 
 	.audioPlace {
-
-		font-size: 25px;
-		line-height: 30px;
+		display: inline-block;
+		font-size: 30px;
+		height: 30px;
 		margin-right: 10px;
-		width: 25px;
+		width: 1em;
 
 		.playIcon, .stopIcon {
 			cursor: pointer;
 			color: orange;
 			text-shadow: 0 1px 0 #555;
-			float: right;
-		}
-
-		.playIcon {
-			margin-top: 5px;
-		}
-
-		.stopIcon {
-			font-size: 30px;
-			line-height: 30px;
-			margin-right: 10px;
 		}
 
 		.stopIcon {
@@ -99,7 +91,6 @@
 		text-overflow: ellipsis;
 		border-radius: 4px;
 		font-weight: bold;
-		margin-right: 5px;
 
 		white-space: nowrap;
 	}
@@ -157,31 +148,28 @@
 
 .equaliser {
 
-	width: 20px;
+	margin-top: 5px;
+	width: 30px;
 	height: 20px;
 	position: relative;
 
 	.bar {
-		float:left;
 		width: 5px;
 		height: 5px;
 		background: orange;
 		position: absolute;
 		bottom:0;
+		animation: none;
 	}
-
 
 	.first {
-		left: 0;
-		animation: none;
+		left: calc(1em / 2 - 10px);
 	}
 	.second {
-		left: 7px;
-		animation: none;
+		left: calc(1em / 2 - 2px);
 	}
 	.third {
-		left: 14px;
-		animation: none;
+		left: calc(1em / 2 + 6px);
 	}
 
 	&.animated {

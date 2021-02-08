@@ -7,20 +7,6 @@ label.inline, span.inline {
 	display: inline-block;
 }
 
-.minimize-custom {
-	border: 0 solid #333;
-	border-bottom-width: 3px;
-	display: inline-block;
-	float: right;
-	height: 20px;
-	width: 16px;
-	font-size: 20px;
-	font-weight: bold;
-	line-height: 20px;
-	margin-right: 15px;
-	cursor: pointer;
-}
-
 .legend {
 	display: block;
 	width: 100%;
@@ -47,10 +33,6 @@ label.inline, span.inline {
 	border-radius: 3px;
 }
 
-select {
-	width: 223px;
-}
-
 .btn-small.btn-small-small {
 	padding: 3px 9px;
 	font-size: 11px;
@@ -63,10 +45,6 @@ select {
 
 .btn.btn-thin-2 {
 	padding: 4px 7px;
-}
-
-.btn.btn-nowrap {
-	white-space: nowrap;
 }
 
 .btn.btn-ellipsis {
@@ -103,27 +81,11 @@ select {
 	}
 }
 
-.btn.btn-narrow {
-	padding-left: 12px;
-	padding-right: 12px;
-}
-
 .btn-group.btn-group-custom-margin > .btn + .btn {
 	margin-left: 0;
 }
 
-.btn.btn-large {
-	font-size: 17px;
-}
-
-.btn-group + .btn-group {
-	margin-left: 3px;
-}
-
 .btn {
-	border-radius: @btnBorderRadius;
-	background-image: none;
-
 //	&:active {
 //		.box-shadow(~"inset 0 2px 4px rgba(0,0,0,.3), 0 0 0 rgba(0,0,0,.1)");
 //	}
@@ -138,26 +100,11 @@ select {
 	}
 }
 
-.btn.btn-dark-disabled-border {
-	&.disabled, &[disabled] {
-		border-color: #aaa;
-	}
-}
-
 //.btn-group.open {
 //  .dropdown-toggle {
 //     .box-shadow(~"inset 0 2px 4px rgba(0,0,0,.3), 0 0 0 rgba(0,0,0,.1)");
 //  }
 //}
-
-.btn.btn-success {
-    background-color: #84AB04;
-}
-
-.btn-toolbar {
-	margin-top: 0;
-	margin-bottom: 0;
-}
 
 .dropdown-menu * + .dividerbar {
     margin-top: 9px;
@@ -168,33 +115,8 @@ select {
 */
 }
 
-.btn-group > .btn {
-	border-radius: 0 !important;
-}
-
 .btn-group > .btn.single {
 	border-radius: @btnBorderRadius !important;
-}
-
-.btn-group > .btn.first {
-	border-top-left-radius: @btnBorderRadius !important;
-	border-bottom-left-radius: @btnBorderRadius !important;
-}
-
-.btn-group > .btn.last {
-	border-top-right-radius: @btnBorderRadius !important;
-	border-bottom-right-radius: @btnBorderRadius !important;
-}
-
-.btn-group + .btn-group {
-	margin-left: 0;
-}
-
-.btn-group {
-	margin-right: 3px;
-}
-.btn-group.btn-group-last {
-	margin-right: 0;
 }
 
 .dropdown.colored-toggle.open .btn.dropdown-toggle {
