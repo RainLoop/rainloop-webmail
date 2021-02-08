@@ -1,5 +1,5 @@
 
-@folderItemPadding: 10px;
+@folderItemPadding: 7px;
 @subPadding: 15px;
 
 .b-folders {
@@ -86,17 +86,7 @@
 			color: var(--folders-disabled-color, #666);
 			cursor: not-allowed;
 			font-size: 14px;
-
-			.focused-poiner {
-				float: left;
-				display: inline-block;
-				background-color: transparent;
-				height: 100%;
-				width: 3px;
-				position: absolute;
-				top: 0;
-				left: 0;
-			}
+			border-left: 3px solid transparent;
 
 			.inbox-star-icon {
 				display: none;
@@ -157,10 +147,7 @@
 
 			&.focused {
 				background-color: #888;
-
-				.focused-poiner {
-					background-color: #fff;
-				}
+				border-left-color: #fff;
 			}
 
 			&.system {

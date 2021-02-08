@@ -54,26 +54,32 @@
 					<i class="icon-mail"></i>
 				</div>
 
-				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError() && !hasCheckedMessages()">
-					<span class="text" data-bind="text: messageError()"></span>
+				<div class="b-message-view-desc error" data-bind="visible: !message() && '' !== messageError() && !hasCheckedMessages(), text: messageError()">
 				</div>
 
-				<div data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()" style="height: 100%">
-
-					<div class="b-message-view-desc">
-						<span class="i18n" data-i18n="MESSAGE/MESSAGE_VIEW_DESC"></span>
-					</div>
-
+				<div class="b-message-view-desc" class="i18n" data-i18n="MESSAGE/MESSAGE_VIEW_DESC" data-bind="visible: !message() && '' === messageError() && !hasCheckedMessages()">
 				</div>
 
-				<div class="message-fixed-button-toolbar clearfix" data-bind="visible: message">
-					<div class="btn-group pull-right" style="margin-right: -11px;">
-						<div class="btn-group pull-right" data-bind="registerBootstrapDropdown: true, visible: allowComposer || allowMessageListActions || allowMessageActions">
+				<div class="message-fixed-button-toolbar" data-bind="visible: message">
+					<div class="btn-group" style="margin-right: -11px;">
+						<a class="btn btn-thin-2 btn-transparent buttonReply"
+							data-bind="visible: 'reply' === lastReplyAction() && allowComposer, command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
+							<i class="fontastic">←</i>
+						</a>
+						<a class="btn btn-thin-2 btn-transparent buttonReplyAll"
+							data-bind="visible: 'replyall' === lastReplyAction() && allowComposer, command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
+							<i class="fontastic">↞</i>
+						</a>
+						<a class="btn btn-thin-2 btn-transparent buttonForward"
+							data-bind="visible: 'forward' === lastReplyAction() && allowComposer, command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
+							<i class="fontastic">→</i>
+						</a>
+						<div class="btn-group" data-bind="registerBootstrapDropdown: true, visible: allowComposer || allowMessageListActions || allowMessageActions" style="display: inline-block">
 							<a class="btn btn-thin-2 btn-transparent dropdown-toggle buttonMore" id="more-view-dropdown-id" href="#" tabindex="-1" data-toggle="dropdown" style="margin-left: -4px; margin-right: 2px" data-bind="command: messageVisibilityCommand">
 									<span data-bind="visible: !allowComposer" class="fontastic">⋮</span>
 									<span data-bind="visible: allowComposer" class="caret"></span>
 							</a>
-							<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-view-dropdown-id">
+							<ul class="dropdown-menu g-ui-menu right-edge" role="menu" aria-labelledby="more-view-dropdown-id">
 								<div data-bind="visible: allowComposer && !isDraftFolder()">
 									<li class="e-item" role="presentation">
 										<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: replyCommand">
@@ -180,21 +186,9 @@
 								</div>
 							</ul>
 						</div>
-						<a class="btn btn-thin-2 btn-transparent buttonReply pull-right"
-							data-bind="visible: 'reply' === lastReplyAction() && allowComposer, command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
-							<i class="fontastic">←</i>
-						</a>
-						<a class="btn btn-thin-2 btn-transparent buttonReplyAll pull-right"
-							data-bind="visible: 'replyall' === lastReplyAction() && allowComposer, command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
-							<i class="fontastic">↞</i>
-						</a>
-						<a class="btn btn-thin-2 btn-transparent buttonForward pull-right"
-							data-bind="visible: 'forward' === lastReplyAction() && allowComposer, command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
-							<i class="fontastic">→</i>
-						</a>
 					</div>
 
-					<div class="btn-group pull-right hide-on-mobile" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'" style="margin-right: 5px">
+					<div class="btn-group hide-on-mobile" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'" style="margin-right: 5px">
 						<a class="btn btn-success buttonEdit" data-bind="command: messageEditCommand">
 							<i class="fontastic icon-white">🖉</i>
 						</a>
@@ -251,7 +245,6 @@
 										<td>
 											<span class="pull-right size" data-bind="text: viewSize"></span>
 											<span class="from uiLabelValue" data-bind="text: viewFrom, title: viewFrom"></span>
-									</div>
 										</td>
 									</tr>
 									<tr data-bind="visible: '' !== viewTo()">

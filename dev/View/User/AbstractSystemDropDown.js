@@ -10,6 +10,7 @@ import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp';
 import { AccountPopupView } from 'View/Popup/Account';
+import { ContactsPopupView } from 'View/Popup/Contacts';
 
 import { Settings } from 'Common/Globals';
 
@@ -34,6 +35,8 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 			accountMenuDropdownTrigger: false,
 			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts)
 		});
+
+		this.allowContacts = !!AppStore.contactsIsAllowed();
 
 		this.addAccountClick = this.addAccountClick.bind(this);
 
@@ -73,6 +76,12 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	addAccountClick() {
 		if (this.capaAdditionalAccounts()) {
 			showScreenPopup(AccountPopupView);
+		}
+	}
+
+	contactsClick() {
+		if (this.allowContacts) {
+			showScreenPopup(ContactsPopupView);
 		}
 	}
 

@@ -41,15 +41,20 @@
 						<!-- /ko -->
 					<!-- /ko -->
 
-					<!-- ko if: capaAdditionalAccounts -->
-					<li class="e-item dividerbar" role="presentation">
+					<li class="e-item dividerbar" role="presentation" data-bind="visible: capaAdditionalAccounts">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: addAccountClick">
 							<i class="icon-plus"></i>
 							&nbsp;&nbsp;
 							<span class="i18n" data-i18n="TOP_TOOLBAR/BUTTON_ADD_ACCOUNT"></span>
 						</a>
 					</li>
-					<!-- /ko -->
+					<li class="e-item" role="presentation" data-bind="visible: allowSettings">
+						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="visible: allowContacts, click: contactsClick">
+							<i class="icon-address-book"></i>
+							&nbsp;&nbsp;
+							<span class="i18n" data-i18n="GLOBAL/CONTACTS"></span>
+						</a>
+					</li>
 					<li class="e-item" role="presentation" data-bind="visible: allowSettings">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: settingsClick">
 							<i class="fontastic">⚙</i>
