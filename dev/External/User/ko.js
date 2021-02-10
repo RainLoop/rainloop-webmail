@@ -217,10 +217,6 @@ ko.bindingHandlers.sortableItem = {
 	}
 };
 
-ko.bindingHandlers.link = {
-	update: (element, fValueAccessor) => element.href = ko.unwrap(fValueAccessor())
-};
-
 ko.bindingHandlers.initDom = {
 	init: (element, fValueAccessor) => fValueAccessor()(element)
 };

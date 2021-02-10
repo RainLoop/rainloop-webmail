@@ -135,7 +135,7 @@
 										</a>
 									</li>
 									<li class="e-item" role="presentation" data-bind="visible: message() && message().hasUnsubsribeLinks()">
-										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewUnsubscribeLink()">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="attr: { href: viewUnsubscribeLink }">
 											<i class="fontastic">✖</i>
 											<span class="i18n" data-i18n="MESSAGE/BUTTON_UNSUBSCRIBE"></span>
 										</a>
@@ -155,13 +155,13 @@
 										</a>
 									</li>
 									<li class="e-item dividerbar" role="presentation">
-										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewViewLink()">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="attr: { href: viewViewLink }">
 											<i class="icon-file-code"></i>
 											<span class="i18n" data-i18n="MESSAGE/MENU_VIEW_ORIGINAL"></span>
 										</a>
 									</li>
 									<li class="e-item" role="presentation">
-										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="link: viewDownloadLink()">
+										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="attr: { href: viewDownloadLink }">
 											<i class="icon-download"></i>
 											<span class="i18n" data-i18n="MESSAGE/MENU_DOWNLOAD_ORIGINAL"></span>
 										</a>
@@ -360,7 +360,7 @@
 										</div>
 									</div>
 
-									<div class="bodyText g-ui-min-height-300 rl-mv-root"
+									<div class="bodyText g-ui-min-height-300"
 										data-bind="initDom: messagesBodiesDom"></div>
 								</div>
 							</div>

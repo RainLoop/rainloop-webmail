@@ -49,8 +49,6 @@ const
 		.replace(email, '$1<a href="mailto:$2">$2</a>'),
 	isChecked = item => item.checked();
 
-let iMessageBodyCacheCount = 0;
-
 doc.body.append(hcont);
 
 class MessageUserStore {
@@ -89,6 +87,7 @@ class MessageUserStore {
 
 			messageFullScreenMode: false,
 
+			// Cache mail bodies
 			messagesBodiesDom: null,
 			messageActiveDom: null
 		});
@@ -234,21 +233,11 @@ class MessageUserStore {
 	}
 
 	purgeMessageBodyCache() {
-		const end = iMessageBodyCacheCount - 15;
-		if (0 < end) {
-			let count = 0;
-			const messagesDom = this.messagesBodiesDom();
-			if (messagesDom) {
-				messagesDom.querySelectorAll('.rl-cache-class').forEach(node => {
-					if (end > node.rlCacheCount) {
-						node.classList.add('rl-cache-purge');
-						++count;
-					}
-				});
-
-				if (0 < count) {
-					setTimeout(() => messagesDom.querySelectorAll('.rl-cache-purge').forEach(node => node.remove()), 350);
-				}
+		const messagesDom = this.messagesBodiesDom(),
+			children = messagesDom && messagesDom.children;
+		if (children) {
+			while (15 < children.length) {
+				children[0].remove();
 			}
 		}
 	}
@@ -286,7 +275,7 @@ class MessageUserStore {
 
 	hideMessageBodies() {
 		const messagesDom = this.messagesBodiesDom();
-		messagesDom && messagesDom.querySelectorAll('.b-text-part').forEach(el => el.hidden = true);
+		messagesDom && Array.from(messagesDom.children).forEach(el => el.hidden = true);
 	}
 
 	/**
@@ -506,9 +495,9 @@ class MessageUserStore {
 
 					const textBody = doc.getElementById(id);
 					if (textBody) {
-						textBody.rlCacheCount = ++iMessageBodyCacheCount;
 						message.body = textBody;
 						message.fetchDataFromDom();
+						messagesDom.append(textBody);
 					} else {
 						let isHtml = false;
 						if (json.Html) {
@@ -549,11 +538,10 @@ class MessageUserStore {
 							resultHtml = '<pre>' + resultHtml + '</pre>';
 						}
 
-						body = Element.fromHTML('<div id="' + id + '" hidden="" class="rl-cache-class b-text-part '
+						body = Element.fromHTML('<div id="' + id + '" hidden="" class="b-text-part '
 							+ (isHtml ? 'html' : 'plain') + '">'
 							+ findEmailAndLinks(resultHtml)
 							+ '</div>');
-						body.rlCacheCount = ++iMessageBodyCacheCount;
 
 						// Drop Microsoft Office style properties
 						const rgbRE = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/g,
