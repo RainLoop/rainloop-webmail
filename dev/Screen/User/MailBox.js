@@ -147,10 +147,9 @@ export class MailBoxUserScreen extends AbstractScreen {
 				[decodeURI(request ? pString(vals[0]) : getFolderInboxName()), 1, decodeURI(pString(vals[1]))];
 
 		return [
-			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)\/(.+)\/?$/, { 'normalize_': fNormS }],
-			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)$/, { 'normalize_': fNormS }],
+			[/^([^/]*)$/, { 'normalize_': fNormS }],
 			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, { 'normalize_': fNormD }],
-			[/^([^/]*)$/, { 'normalize_': fNormS }]
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)(\/(.+)\/?)?$/, { 'normalize_': fNormS }]
 		];
 	}
 }
