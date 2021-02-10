@@ -11,12 +11,9 @@ ko.bindingHandlers['html'] = {
         let html = ko.utils.unwrapObservable(valueAccessor());
 
         if (html != null) {
-            if (typeof html != 'string')
-                html = html.toString();
-
-			const template = document.createElement('template');
-			template.innerHTML = html;
-			element.appendChild(template.content);
+            const template = document.createElement('template');
+            template.innerHTML = typeof html != 'string' ? html.toString() : html;
+            element.appendChild(template.content);
         }
-	}
+    }
 };

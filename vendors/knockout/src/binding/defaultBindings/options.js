@@ -144,7 +144,7 @@ ko.bindingHandlers['options'] = {
             }
         }
 
-        if (valueAllowUnset || ko.computedContext.isInitial()) {
+        if (valueAllowUnset || ko.dependencyDetection.isInitial()) {
             ko.bindingEvent.notify(element, ko.bindingEvent.childrenComplete);
         }
 

@@ -1,6 +1,6 @@
 var computedState = Symbol('_state');
 
-ko.computed = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget, options) {
+ko.computed = function (evaluatorFunctionOrOptions, options) {
     if (typeof evaluatorFunctionOrOptions === "object") {
         // Single-parameter syntax - everything is on this "options" param
         options = evaluatorFunctionOrOptions;
@@ -25,7 +25,6 @@ ko.computed = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget, opt
         pure: false,
         isSleeping: false,
         readFunction: options["read"],
-        evaluatorFunctionTarget: evaluatorFunctionTarget || options["owner"],
         disposeWhenNodeIsRemoved: options["disposeWhenNodeIsRemoved"] || options.disposeWhenNodeIsRemoved || null,
         disposeWhen: options["disposeWhen"] || options.disposeWhen,
         domNodeDisposalCallback: null,
@@ -38,7 +37,7 @@ ko.computed = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget, opt
         if (arguments.length > 0) {
             if (typeof writeFunction === "function") {
                 // Writing a value
-                writeFunction.apply(state.evaluatorFunctionTarget, arguments);
+                writeFunction(...arguments);
             } else {
                 throw new Error("Cannot write a value to a ko.computed unless you specify a 'write' option. If you wish to read the current value, don't pass any parameters.");
             }
@@ -327,8 +326,7 @@ var computedFn = {
         // overhead of computed evaluation (on V8 at least).
 
         try {
-            var readFunction = state.readFunction;
-            return state.evaluatorFunctionTarget ? readFunction.call(state.evaluatorFunctionTarget) : readFunction();
+            return state.readFunction();
         } finally {
             ko.dependencyDetection.end();
 
@@ -395,9 +393,6 @@ var computedFn = {
         state.disposeWhenNodeIsRemoved = undefined;
         state.disposeWhen = undefined;
         state.readFunction = undefined;
-        if (!this.hasWriteFunction) {
-            state.evaluatorFunctionTarget = undefined;
-        }
     }
 };
 
@@ -491,11 +486,11 @@ ko.exportSymbol('computed', ko.computed);
 ko.exportSymbol('computed.fn', computedFn);
 ko.exportProperty(computedFn, 'dispose', computedFn.dispose);
 
-ko.pureComputed = (evaluatorFunctionOrOptions, evaluatorFunctionTarget) => {
+ko.pureComputed = (evaluatorFunctionOrOptions) => {
     if (typeof evaluatorFunctionOrOptions === 'function') {
-        return ko.computed(evaluatorFunctionOrOptions, evaluatorFunctionTarget, {'pure':true});
+        return ko.computed(evaluatorFunctionOrOptions, {'pure':true});
     }
     evaluatorFunctionOrOptions = ko.utils.extend({}, evaluatorFunctionOrOptions);   // make a copy of the parameter object
     evaluatorFunctionOrOptions['pure'] = true;
-    return ko.computed(evaluatorFunctionOrOptions, evaluatorFunctionTarget);
+    return ko.computed(evaluatorFunctionOrOptions);
 };

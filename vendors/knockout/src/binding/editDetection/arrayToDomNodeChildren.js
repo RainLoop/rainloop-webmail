@@ -36,7 +36,7 @@
             // of which nodes would be deleted if valueToMap was itself later removed
             mappedNodes.length = 0;
             mappedNodes.push(...newMappedNodes);
-        }, null, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: ()=>!!mappedNodes.find(ko.utils.domNodeIsAttachedToDocument) });
+        }, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: ()=>!!mappedNodes.find(ko.utils.domNodeIsAttachedToDocument) });
         return { mappedNodes : mappedNodes, dependentObservable : (dependentObservable.isActive() ? dependentObservable : undefined) };
     }
 

@@ -77,7 +77,7 @@
                     currentViewModel = componentViewModel;
                     ko.applyBindingsToDescendants(childBindingContext, element);
                 });
-            }, null, { disposeWhenNodeIsRemoved: element });
+            }, { disposeWhenNodeIsRemoved: element });
 
             return { 'controlsDescendantBindings': true };
         }

@@ -1,5 +1,5 @@
 
-ko.computedContext = ko.dependencyDetection = (() => {
+ko.dependencyDetection = (() => {
     var outerFrames = [],
         currentFrame,
         lastId = 0,
@@ -36,10 +36,6 @@ ko.computedContext = ko.dependencyDetection = (() => {
 
         getDependenciesCount: () => {
             return currentFrame && currentFrame.computed.getDependenciesCount();
-        },
-
-        getDependencies: () => {
-            return currentFrame && currentFrame.computed.getDependencies();
         },
 
         isInitial: () => {

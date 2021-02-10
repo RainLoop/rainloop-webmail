@@ -72,7 +72,7 @@ ko.bindingHandlers['textInput'] = {
         // To deal with browsers that don't notify any kind of event for some changes (IE, Safari, etc.)
         onEvent('blur', updateModel);
 
-        ko.computed(updateView, null, { disposeWhenNodeIsRemoved: element });
+        ko.computed(updateView, { disposeWhenNodeIsRemoved: element });
     }
 };
 ko.expressionRewriting.twoWayBindings['textInput'] = true;

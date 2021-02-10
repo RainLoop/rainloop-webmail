@@ -171,7 +171,18 @@ var ko_subscribable_fn = {
 
     toString: () => '[object Object]',
 
-    extend: applyExtenders
+    extend: function(requestedExtenders) {
+        var target = this;
+        if (requestedExtenders) {
+            ko.utils.objectForEach(requestedExtenders, (key, value) => {
+                var extenderHandler = ko.extenders[key];
+                if (typeof extenderHandler == 'function') {
+                    target = extenderHandler(target, value) || target;
+                }
+            });
+        }
+        return target;
+    }
 };
 
 ko.exportProperty(ko_subscribable_fn, 'init', ko_subscribable_fn.init);

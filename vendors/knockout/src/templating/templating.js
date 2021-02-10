@@ -124,7 +124,6 @@
                     var templateName = resolveTemplateName(template, bindingContext['$data'], bindingContext);
                     executeTemplate(targetNodeOrNodeArray, renderMode, templateName, bindingContext, options);
                 },
-                null,
                 { disposeWhen: whenToDispose, disposeWhenNodeIsRemoved: firstTargetNode }
             );
         } else {
@@ -196,7 +195,7 @@
                 }
                 setDomNodeChildrenFromArrayMapping(unwrappedArray);
 
-            }, null, { disposeWhenNodeIsRemoved: targetNode });
+            }, { disposeWhenNodeIsRemoved: targetNode });
         }
     };
 

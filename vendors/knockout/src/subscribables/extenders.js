@@ -1,22 +1,5 @@
 ko.extenders = {
-    'throttle': (target, timeout) => {
-        // Throttling means two things:
-
-        // (1) For dependent observables, we throttle *evaluations* so that, no matter how fast its dependencies
-        //     notify updates, the target doesn't re-evaluate (and hence doesn't notify) faster than a certain rate
-        target['throttleEvaluation'] = timeout;
-
-        // (2) For writable targets (observables, or writable dependent observables), we throttle *writes*
-        //     so the target cannot change value synchronously or faster than a certain rate
-        var writeTimeoutInstance = null;
-        return ko.computed({
-            'read': target,
-            'write': value => {
-                clearTimeout(writeTimeoutInstance);
-                writeTimeoutInstance = ko.utils.setTimeout(() => target(value), timeout);
-            }
-        });
-    },
+    'debounce': (target, timeout) => target.limit(callback => debounce(callback, timeout)),
 
     'rateLimit': (target, options) => {
         var timeout, method, limitFunction;
@@ -28,7 +11,7 @@ ko.extenders = {
             method = options['method'];
         }
 
-        limitFunction = typeof method == 'function' ? method : method == 'notifyWhenChangesStop' ?  debounce : throttle;
+        limitFunction = typeof method == 'function' ? method : throttle;
         target.limit(callback => limitFunction(callback, timeout, options));
     },
 
@@ -41,8 +24,7 @@ ko.extenders = {
 
 var primitiveTypes = { 'undefined':1, 'boolean':1, 'number':1, 'string':1 };
 function valuesArePrimitiveAndEqual(a, b) {
-    var oldValueIsPrimitive = (a === null) || (typeof(a) in primitiveTypes);
-    return oldValueIsPrimitive ? (a === b) : false;
+    return (a === null || primitiveTypes[typeof(a)]) ? (a === b) : false;
 }
 
 function throttle(callback, timeout) {
@@ -50,7 +32,7 @@ function throttle(callback, timeout) {
     return () => {
         if (!timeoutInstance) {
             timeoutInstance = ko.utils.setTimeout(() => {
-                timeoutInstance = undefined;
+                timeoutInstance = 0;
                 callback();
             }, timeout);
         }
@@ -63,19 +45,6 @@ function debounce(callback, timeout) {
         clearTimeout(timeoutInstance);
         timeoutInstance = ko.utils.setTimeout(callback, timeout);
     };
-}
-
-function applyExtenders(requestedExtenders) {
-    var target = this;
-    if (requestedExtenders) {
-        ko.utils.objectForEach(requestedExtenders, (key, value) => {
-            var extenderHandler = ko.extenders[key];
-            if (typeof extenderHandler == 'function') {
-                target = extenderHandler(target, value) || target;
-            }
-        });
-    }
-    return target;
 }
 
 ko.exportSymbol('extenders', ko.extenders);

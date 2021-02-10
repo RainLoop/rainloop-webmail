@@ -99,7 +99,7 @@ ko.bindingHandlers['value'] = {
             ko.bindingEvent.subscribe(element, ko.bindingEvent.childrenComplete, () => {
                 if (!updateFromModelComputed) {
                     ko.utils.registerEventHandler(element, "change", valueUpdateHandler);
-                    updateFromModelComputed = ko.computed(updateFromModel, null, { disposeWhenNodeIsRemoved: element });
+                    updateFromModelComputed = ko.computed(updateFromModel, { disposeWhenNodeIsRemoved: element });
                 } else if (allBindings.get('valueAllowUnset')) {
                     updateFromModel();
                 } else {
@@ -108,7 +108,7 @@ ko.bindingHandlers['value'] = {
             }, null, { 'notifyImmediately': true });
         } else {
             ko.utils.registerEventHandler(element, "change", valueUpdateHandler);
-            ko.computed(updateFromModel, null, { disposeWhenNodeIsRemoved: element });
+            ko.computed(updateFromModel, { disposeWhenNodeIsRemoved: element });
         }
     },
     'update': () => {} // Keep for backwards compatibility with code that may have wrapped value binding

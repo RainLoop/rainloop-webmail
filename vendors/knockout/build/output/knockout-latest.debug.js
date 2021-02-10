@@ -377,24 +377,7 @@ ko.tasks = (() => {
 
 ko.exportSymbol('tasks', ko.tasks);
 ko.extenders = {
-    'throttle': (target, timeout) => {
-        // Throttling means two things:
-
-        // (1) For dependent observables, we throttle *evaluations* so that, no matter how fast its dependencies
-        //     notify updates, the target doesn't re-evaluate (and hence doesn't notify) faster than a certain rate
-        target['throttleEvaluation'] = timeout;
-
-        // (2) For writable targets (observables, or writable dependent observables), we throttle *writes*
-        //     so the target cannot change value synchronously or faster than a certain rate
-        var writeTimeoutInstance = null;
-        return ko.computed({
-            'read': target,
-            'write': value => {
-                clearTimeout(writeTimeoutInstance);
-                writeTimeoutInstance = ko.utils.setTimeout(() => target(value), timeout);
-            }
-        });
-    },
+    'debounce': (target, timeout) => target.limit(callback => debounce(callback, timeout)),
 
     'rateLimit': (target, options) => {
         var timeout, method, limitFunction;
@@ -406,7 +389,7 @@ ko.extenders = {
             method = options['method'];
         }
 
-        limitFunction = typeof method == 'function' ? method : method == 'notifyWhenChangesStop' ?  debounce : throttle;
+        limitFunction = typeof method == 'function' ? method : throttle;
         target.limit(callback => limitFunction(callback, timeout, options));
     },
 
@@ -419,8 +402,7 @@ ko.extenders = {
 
 var primitiveTypes = { 'undefined':1, 'boolean':1, 'number':1, 'string':1 };
 function valuesArePrimitiveAndEqual(a, b) {
-    var oldValueIsPrimitive = (a === null) || (typeof(a) in primitiveTypes);
-    return oldValueIsPrimitive ? (a === b) : false;
+    return (a === null || primitiveTypes[typeof(a)]) ? (a === b) : false;
 }
 
 function throttle(callback, timeout) {
@@ -428,7 +410,7 @@ function throttle(callback, timeout) {
     return () => {
         if (!timeoutInstance) {
             timeoutInstance = ko.utils.setTimeout(() => {
-                timeoutInstance = undefined;
+                timeoutInstance = 0;
                 callback();
             }, timeout);
         }
@@ -441,19 +423,6 @@ function debounce(callback, timeout) {
         clearTimeout(timeoutInstance);
         timeoutInstance = ko.utils.setTimeout(callback, timeout);
     };
-}
-
-function applyExtenders(requestedExtenders) {
-    var target = this;
-    if (requestedExtenders) {
-        ko.utils.objectForEach(requestedExtenders, (key, value) => {
-            var extenderHandler = ko.extenders[key];
-            if (typeof extenderHandler == 'function') {
-                target = extenderHandler(target, value) || target;
-            }
-        });
-    }
-    return target;
 }
 
 ko.exportSymbol('extenders', ko.extenders);
@@ -630,7 +599,18 @@ var ko_subscribable_fn = {
 
     toString: () => '[object Object]',
 
-    extend: applyExtenders
+    extend: function(requestedExtenders) {
+        var target = this;
+        if (requestedExtenders) {
+            ko.utils.objectForEach(requestedExtenders, (key, value) => {
+                var extenderHandler = ko.extenders[key];
+                if (typeof extenderHandler == 'function') {
+                    target = extenderHandler(target, value) || target;
+                }
+            });
+        }
+        return target;
+    }
 };
 
 ko.exportProperty(ko_subscribable_fn, 'init', ko_subscribable_fn.init);
@@ -648,7 +628,7 @@ ko.subscribable['fn'] = ko_subscribable_fn;
 ko.isSubscribable = instance =>
     instance != null && typeof instance.subscribe == "function" && typeof instance["notifySubscribers"] == "function";
 
-ko.computedContext = ko.dependencyDetection = (() => {
+ko.dependencyDetection = (() => {
     var outerFrames = [],
         currentFrame,
         lastId = 0,
@@ -685,10 +665,6 @@ ko.computedContext = ko.dependencyDetection = (() => {
 
         getDependenciesCount: () => {
             return currentFrame && currentFrame.computed.getDependenciesCount();
-        },
-
-        getDependencies: () => {
-            return currentFrame && currentFrame.computed.getDependencies();
         },
 
         isInitial: () => {
@@ -1030,7 +1006,7 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
 };
 var computedState = Symbol('_state');
 
-ko.computed = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget, options) {
+ko.computed = function (evaluatorFunctionOrOptions, options) {
     if (typeof evaluatorFunctionOrOptions === "object") {
         // Single-parameter syntax - everything is on this "options" param
         options = evaluatorFunctionOrOptions;
@@ -1055,7 +1031,6 @@ ko.computed = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget, opt
         pure: false,
         isSleeping: false,
         readFunction: options["read"],
-        evaluatorFunctionTarget: evaluatorFunctionTarget || options["owner"],
         disposeWhenNodeIsRemoved: options["disposeWhenNodeIsRemoved"] || options.disposeWhenNodeIsRemoved || null,
         disposeWhen: options["disposeWhen"] || options.disposeWhen,
         domNodeDisposalCallback: null,
@@ -1068,7 +1043,7 @@ ko.computed = function (evaluatorFunctionOrOptions, evaluatorFunctionTarget, opt
         if (arguments.length > 0) {
             if (typeof writeFunction === "function") {
                 // Writing a value
-                writeFunction.apply(state.evaluatorFunctionTarget, arguments);
+                writeFunction(...arguments);
             } else {
                 throw new Error("Cannot write a value to a ko.computed unless you specify a 'write' option. If you wish to read the current value, don't pass any parameters.");
             }
@@ -1357,8 +1332,7 @@ var computedFn = {
         // overhead of computed evaluation (on V8 at least).
 
         try {
-            var readFunction = state.readFunction;
-            return state.evaluatorFunctionTarget ? readFunction.call(state.evaluatorFunctionTarget) : readFunction();
+            return state.readFunction();
         } finally {
             ko.dependencyDetection.end();
 
@@ -1425,9 +1399,6 @@ var computedFn = {
         state.disposeWhenNodeIsRemoved = undefined;
         state.disposeWhen = undefined;
         state.readFunction = undefined;
-        if (!this.hasWriteFunction) {
-            state.evaluatorFunctionTarget = undefined;
-        }
     }
 };
 
@@ -1521,13 +1492,13 @@ ko.exportSymbol('computed', ko.computed);
 ko.exportSymbol('computed.fn', computedFn);
 ko.exportProperty(computedFn, 'dispose', computedFn.dispose);
 
-ko.pureComputed = (evaluatorFunctionOrOptions, evaluatorFunctionTarget) => {
+ko.pureComputed = (evaluatorFunctionOrOptions) => {
     if (typeof evaluatorFunctionOrOptions === 'function') {
-        return ko.computed(evaluatorFunctionOrOptions, evaluatorFunctionTarget, {'pure':true});
+        return ko.computed(evaluatorFunctionOrOptions, {'pure':true});
     }
     evaluatorFunctionOrOptions = ko.utils.extend({}, evaluatorFunctionOrOptions);   // make a copy of the parameter object
     evaluatorFunctionOrOptions['pure'] = true;
-    return ko.computed(evaluatorFunctionOrOptions, evaluatorFunctionTarget);
+    return ko.computed(evaluatorFunctionOrOptions);
 };
 (() => {
     var hasDomDataExpandoProperty = '__ko__hasDomDataOptionValue__';
@@ -2045,7 +2016,7 @@ ko.expressionRewriting = (() => {
 
             // When a "parent" context is given and we don't already have a dependency on its context, register a dependency on it.
             // Thus whenever the parent context is updated, this context will also be updated.
-            if (parentContext && parentContext[contextSubscribable] && !ko.computedContext.computed().hasAncestorDependency(parentContext[contextSubscribable])) {
+            if (parentContext && parentContext[contextSubscribable] && !ko.dependencyDetection.computed().hasAncestorDependency(parentContext[contextSubscribable])) {
                 parentContext[contextSubscribable]();
             }
 
@@ -2355,7 +2326,7 @@ ko.expressionRewriting = (() => {
                     }
                     return bindings;
                 },
-                null, { disposeWhenNodeIsRemoved: node }
+                { disposeWhenNodeIsRemoved: node }
             );
 
             if (!bindings || !bindingsUpdater.isActive())
@@ -2434,7 +2405,6 @@ ko.expressionRewriting = (() => {
                     if (typeof handlerUpdateFn == "function") {
                         ko.computed(
                             () => handlerUpdateFn(node, getValueAccessor(bindingKey), allBindings, contextToExtend['$data'], contextToExtend),
-                            null,
                             { disposeWhenNodeIsRemoved: node }
                         );
                     }
@@ -2883,7 +2853,7 @@ ko.expressionRewriting = (() => {
                     currentViewModel = componentViewModel;
                     ko.applyBindingsToDescendants(childBindingContext, element);
                 });
-            }, null, { disposeWhenNodeIsRemoved: element });
+            }, { disposeWhenNodeIsRemoved: element });
 
             return { 'controlsDescendantBindings': true };
         }
@@ -3120,14 +3090,11 @@ ko.bindingHandlers['html'] = {
         let html = ko.utils.unwrapObservable(valueAccessor());
 
         if (html != null) {
-            if (typeof html != 'string')
-                html = html.toString();
-
-			const template = document.createElement('template');
-			template.innerHTML = html;
-			element.appendChild(template.content);
+            const template = document.createElement('template');
+            template.innerHTML = typeof html != 'string' ? html.toString() : html;
+            element.appendChild(template.content);
         }
-	}
+    }
 };
 (function () {
 
@@ -3162,12 +3129,12 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
 
                 if (shouldDisplay) {
                     if (!isWith || renderOnEveryChange) {
-                        contextOptions['dataDependency'] = ko.computedContext.computed();
+                        contextOptions['dataDependency'] = ko.dependencyDetection.computed();
                     }
 
                     if (isWith) {
                         childContext = bindingContext['createChildContext'](typeof value == "function" ? value : valueAccessor, contextOptions);
-                    } else if (ko.computedContext.getDependenciesCount()) {
+                    } else if (ko.dependencyDetection.getDependenciesCount()) {
                         childContext = bindingContext['extend'](null, contextOptions);
                     } else {
                         childContext = bindingContext;
@@ -3175,7 +3142,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
                 }
 
                 // Save a copy of the inner nodes on the initial update, but only if we have dependencies.
-                if (isInitial && ko.computedContext.getDependenciesCount()) {
+                if (isInitial && ko.dependencyDetection.getDependenciesCount()) {
                     savedNodes = ko.utils.cloneNodes(ko.virtualElements.childNodes(element), true /* shouldCleanNodes */);
                 }
 
@@ -3195,7 +3162,7 @@ function makeWithIfBinding(bindingKey, isWith, isNot) {
 
                 didDisplayOnLastUpdate = shouldDisplay;
 
-            }, null, { disposeWhenNodeIsRemoved: element });
+            }, { disposeWhenNodeIsRemoved: element });
 
             return { 'controlsDescendantBindings': true };
         }
@@ -3356,7 +3323,7 @@ ko.bindingHandlers['options'] = {
             }
         }
 
-        if (valueAllowUnset || ko.computedContext.isInitial()) {
+        if (valueAllowUnset || ko.dependencyDetection.isInitial()) {
             ko.bindingEvent.notify(element, ko.bindingEvent.childrenComplete);
         }
 
@@ -3495,7 +3462,7 @@ ko.bindingHandlers['textInput'] = {
         // To deal with browsers that don't notify any kind of event for some changes (IE, Safari, etc.)
         onEvent('blur', updateModel);
 
-        ko.computed(updateView, null, { disposeWhenNodeIsRemoved: element });
+        ko.computed(updateView, { disposeWhenNodeIsRemoved: element });
     }
 };
 ko.expressionRewriting.twoWayBindings['textInput'] = true;
@@ -3606,7 +3573,7 @@ ko.bindingHandlers['value'] = {
             ko.bindingEvent.subscribe(element, ko.bindingEvent.childrenComplete, () => {
                 if (!updateFromModelComputed) {
                     ko.utils.registerEventHandler(element, "change", valueUpdateHandler);
-                    updateFromModelComputed = ko.computed(updateFromModel, null, { disposeWhenNodeIsRemoved: element });
+                    updateFromModelComputed = ko.computed(updateFromModel, { disposeWhenNodeIsRemoved: element });
                 } else if (allBindings.get('valueAllowUnset')) {
                     updateFromModel();
                 } else {
@@ -3615,7 +3582,7 @@ ko.bindingHandlers['value'] = {
             }, null, { 'notifyImmediately': true });
         } else {
             ko.utils.registerEventHandler(element, "change", valueUpdateHandler);
-            ko.computed(updateFromModel, null, { disposeWhenNodeIsRemoved: element });
+            ko.computed(updateFromModel, { disposeWhenNodeIsRemoved: element });
         }
     },
     'update': () => {} // Keep for backwards compatibility with code that may have wrapped value binding
@@ -3822,7 +3789,6 @@ makeEventHandlerShortcut('click');
                     var templateName = resolveTemplateName(template, bindingContext['$data'], bindingContext);
                     executeTemplate(targetNodeOrNodeArray, renderMode, templateName, bindingContext, options);
                 },
-                null,
                 { disposeWhen: whenToDispose, disposeWhenNodeIsRemoved: firstTargetNode }
             );
         } else {
@@ -3894,7 +3860,7 @@ makeEventHandlerShortcut('click');
                 }
                 setDomNodeChildrenFromArrayMapping(unwrappedArray);
 
-            }, null, { disposeWhenNodeIsRemoved: targetNode });
+            }, { disposeWhenNodeIsRemoved: targetNode });
         }
     };
 
@@ -4146,7 +4112,7 @@ ko.utils.compareArrays = (() => {
             // of which nodes would be deleted if valueToMap was itself later removed
             mappedNodes.length = 0;
             mappedNodes.push(...newMappedNodes);
-        }, null, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: ()=>!!mappedNodes.find(ko.utils.domNodeIsAttachedToDocument) });
+        }, { disposeWhenNodeIsRemoved: containerNode, disposeWhen: ()=>!!mappedNodes.find(ko.utils.domNodeIsAttachedToDocument) });
         return { mappedNodes : mappedNodes, dependentObservable : (dependentObservable.isActive() ? dependentObservable : undefined) };
     }
 

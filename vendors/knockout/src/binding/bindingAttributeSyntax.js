@@ -64,7 +64,7 @@
 
             // When a "parent" context is given and we don't already have a dependency on its context, register a dependency on it.
             // Thus whenever the parent context is updated, this context will also be updated.
-            if (parentContext && parentContext[contextSubscribable] && !ko.computedContext.computed().hasAncestorDependency(parentContext[contextSubscribable])) {
+            if (parentContext && parentContext[contextSubscribable] && !ko.dependencyDetection.computed().hasAncestorDependency(parentContext[contextSubscribable])) {
                 parentContext[contextSubscribable]();
             }
 
@@ -374,7 +374,7 @@
                     }
                     return bindings;
                 },
-                null, { disposeWhenNodeIsRemoved: node }
+                { disposeWhenNodeIsRemoved: node }
             );
 
             if (!bindings || !bindingsUpdater.isActive())
@@ -453,7 +453,6 @@
                     if (typeof handlerUpdateFn == "function") {
                         ko.computed(
                             () => handlerUpdateFn(node, getValueAccessor(bindingKey), allBindings, contextToExtend['$data'], contextToExtend),
-                            null,
                             { disposeWhenNodeIsRemoved: node }
                         );
                     }
