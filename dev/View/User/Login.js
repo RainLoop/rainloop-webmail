@@ -69,16 +69,13 @@ class LoginUserView extends AbstractViewCenter {
 			signMeType: LoginSignMeType.Unused
 		});
 
-		this.additionalCodeErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
-
 		this.mobile = !!Settings.app('mobile');
 		this.mobileDevice = !!Settings.app('mobileDevice');
 
 		this.forgotPasswordLinkUrl = Settings.app('forgotPasswordLinkUrl');
 		this.registrationLinkUrl = Settings.app('registrationLinkUrl');
 
-		this.emailErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
-		this.passwordErrorAnimation = ko.observable(false).extend({ falseTimeout: 500 });
+		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 
 		this.allowLanguagesOnLogin = !!Settings.get('AllowLanguagesOnLogin');
 
@@ -88,11 +85,6 @@ class LoginUserView extends AbstractViewCenter {
 		this.bSendLanguage = false;
 
 		this.addComputables({
-			formError:
-				() =>
-					this.emailErrorAnimation() ||
-					this.passwordErrorAnimation() ||
-					(this.additionalCodeVisibility() && this.additionalCodeErrorAnimation()),
 
 			languageFullName: () => convertLangName(this.language()),
 
@@ -109,12 +101,12 @@ class LoginUserView extends AbstractViewCenter {
 			password: () => this.passwordError(false),
 
 			additionalCode: () => this.additionalCodeError(false),
-			additionalCodeError: bV => this.additionalCodeErrorAnimation(!!bV),
+			additionalCodeError: bV => this.formError(!!bV),
 			additionalCodeVisibility: () => this.additionalCodeError(false),
 
-			emailError: bV => this.emailErrorAnimation(!!bV),
+			emailError: bV => this.formError(!!bV),
 
-			passwordError: bV => this.passwordErrorAnimation(!!bV),
+			passwordError: bV => this.formError(!!bV),
 
 			submitError: value => value || this.submitErrorAddidional(''),
 

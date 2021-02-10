@@ -16,7 +16,7 @@
 			<form class="wrapper submitting-pane loginForm" action="#/"
 				data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
 				<div class="controls plugin-mark-Login-TopControlGroup"
-					data-bind="css: {'error': emailError, 'animated': emailErrorAnimation}">
+					data-bind="css: {'error': emailError}">
 					<div class="input-append">
 						<input type="email" class="i18n input-block-level inputEmail"
 							name="RainLoopEmail" id="RainLoopEmail"
@@ -29,7 +29,7 @@
 						</span>
 					</div>
 				</div>
-				<div class="controls" data-bind="css: {'error': passwordError, 'animated': passwordErrorAnimation}">
+				<div class="controls" data-bind="css: {'error': passwordError}">
 					<div class="input-append">
 						<input type="password" class="i18n input-block-level inputPassword"
 							name="RainLoopPassword" id="RainLoopPassword"
@@ -46,7 +46,7 @@
 					</div>
 				</div>
 				<div class="controls"
-					data-bind="visible: additionalCodeVisibility(), css: {'error': additionalCodeError, 'animated': additionalCodeErrorAnimation}">
+					data-bind="visible: additionalCodeVisibility(), css: {'error': additionalCodeError}">
 					<div class="input-append">
 						<input type="text" class="i18n input-block-level inputAdditionalCode" autocomplete="off"
 							autocorrect="off" autocapitalize="off" spellcheck="false" style="padding-right: 35px;"

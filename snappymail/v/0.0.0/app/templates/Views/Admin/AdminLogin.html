@@ -6,7 +6,7 @@
 		</div>
 		<div class="wrapper-parent">
 			<form class="wrapper submitting-pane loginForm" action="#/" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
-				<div class="controls" data-bind="css: {'error': loginError, 'animated': loginErrorAnimation}">
+				<div class="controls" data-bind="css: {'error': loginError}">
 					<div class="input-append">
 						<input type="text" class="input-block-level inputLogin"
 							name="RainLoopAdminLogin" id="RainLoopAdminLogin"
@@ -18,7 +18,7 @@
 						</span>
 					</div>
 				</div>
-				<div class="controls" data-bind="css: {'error': passwordError, 'animated': passwordErrorAnimation}">
+				<div class="controls" data-bind="css: {'error': passwordError}">
 					<div class="input-append">
 						<input type="password" class="input-block-level inputPassword"
 							placeholder="Password" name="RainLoopAdminPassword" id="RainLoopAdminPassword"

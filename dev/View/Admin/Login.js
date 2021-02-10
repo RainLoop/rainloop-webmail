@@ -31,19 +31,16 @@ class LoginAdminView extends AbstractViewCenter {
 			submitError: ''
 		});
 
-		this.loginErrorAnimation = ko.observable(false).extend({ 'falseTimeout': 500 });
-		this.passwordErrorAnimation = ko.observable(false).extend({ 'falseTimeout': 500 });
-
-		this.formError = ko.computed(() => this.loginErrorAnimation() || this.passwordErrorAnimation());
+		this.formError = ko.observable(false).extend({ 'falseTimeout': 500 });
 
 		this.addSubscribables({
 			login: () => this.loginError(false),
 
 			password: () => this.passwordError(false),
 
-			loginError: v => this.loginErrorAnimation(!!v),
+			loginError: v => this.formError(!!v),
 
-			passwordError: v => this.passwordErrorAnimation(!!v)
+			passwordError: v => this.formError(!!v)
 		});
 	}
 
