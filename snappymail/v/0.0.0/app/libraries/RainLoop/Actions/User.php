@@ -131,13 +131,11 @@ trait User
 			{
 				case 'zip':
 
-					if (\class_exists('ZipArchive'))
-					{
-						$sZipHash = \MailSo\Base\Utils::Md5Rand();
-						$sZipFileName = $oFilesProvider->GenerateLocalFullFileName($oAccount, $sZipHash);
+					$sZipHash = \MailSo\Base\Utils::Md5Rand();
+					$sZipFileName = $oFilesProvider->GenerateLocalFullFileName($oAccount, $sZipHash);
 
-						if (!empty($sZipFileName))
-						{
+					if (!empty($sZipFileName)) {
+						if (\class_exists('ZipArchive')) {
 							$oZip = new \ZipArchive();
 							$oZip->open($sZipFileName, \ZIPARCHIVE::CREATE | \ZIPARCHIVE::OVERWRITE);
 							$oZip->setArchiveComment('SnappyMail/'.APP_VERSION);
@@ -165,12 +163,33 @@ trait User
 							{
 								$oZip->close();
 							}
+						} else {
+							@\unlink($sZipFileName);
+							$oZip = new \PharData($sZipFileName . '.zip', 0, null, \Phar::ZIP);
+							$oZip->compressFiles(\Phar::GZ);
+
+							foreach ($aData as $aItem)
+							{
+								$sFileName = (isset($aItem['FileName']) ? (string) $aItem['FileName'] : 'file.dat');
+								$sFileHash = (isset($aItem['FileHash']) ? (string) $aItem['FileHash'] : '');
+
+								if ($sFileHash)
+								{
+									$sFullFileNameHash = $oFilesProvider->GetFileName($oAccount, $sFileHash);
+									$oZip->addFile($sFullFileNameHash, $sFileName);
+								}
+							}
+
+							$oZip->compressFiles(\Phar::GZ);
+
+							unset($oZip);
+							\rename($sZipFileName . '.zip', $sZipFileName);
 						}
 
 						foreach ($aData as $aItem)
 						{
-							$sFileHash = (string) (isset($aItem['FileHash']) ? $aItem['FileHash'] : '');
-							if (!empty($sFileHash))
+							$sFileHash = (isset($aItem['FileHash']) ? (string) $aItem['FileHash'] : '');
+							if ($sFileHash)
 							{
 								$oFilesProvider->Clear($oAccount, $sFileHash);
 							}
@@ -179,15 +198,12 @@ trait User
 						if (!$bError)
 						{
 							$mResult = array(
-								'Files' => array(array(
+								'FileHash' => Utils::EncodeKeyValuesQ(array(
+									'V' => APP_VERSION,
+									'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
 									'FileName' => 'attachments.zip',
-									'Hash' => Utils::EncodeKeyValuesQ(array(
-										'V' => APP_VERSION,
-										'Account' => $oAccount ? \md5($oAccount->Hash()) : '',
-										'FileName' => 'attachments.zip',
-										'MimeType' => 'application/zip',
-										'FileHash' => $sZipHash
-									))
+									'MimeType' => 'application/zip',
+									'FileHash' => $sZipHash
 								))
 							);
 						}

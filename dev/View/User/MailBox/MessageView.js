@@ -717,8 +717,8 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		if (hashes.length) {
 			Remote.attachmentsActions('Zip', hashes, this.downloadAsZipLoading)
 				.then((result) => {
-					if (result && result.Result && result.Result.Files && result.Result.Files[0] && result.Result.Files[0].Hash) {
-						rl.app.download(attachmentDownload(result.Result.Files[0].Hash));
+					if (result && result.Result && result.Result.FileHash) {
+						rl.app.download(attachmentDownload(result.Result.FileHash));
 					} else {
 						this.downloadAsZipError(true);
 					}
