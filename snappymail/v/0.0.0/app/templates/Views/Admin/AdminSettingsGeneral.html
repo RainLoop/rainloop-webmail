@@ -111,14 +111,14 @@
 		<div class="control-group">
 			<label class="control-label" data-i18n="TAB_GENERAL/LABEL_ATTACHMENT_SIZE_LIMIT"></label>
 			<div class="controls">
+				<input type="number" min="1" step="1" class="span1" data-bind="textInput: mainAttachmentLimit"/>
+				&nbsp;
+				<span data-i18n="MB"></span>
+				&nbsp;
+				&nbsp;
 				<div data-bind="component: {
-					name: 'Input',
-					params: {
-						label: 'MB',
-						value: mainAttachmentLimit,
-						trigger: attachmentLimitTrigger,
-						size: 1
-					}
+					name: 'SaveTrigger',
+					params: { value: attachmentLimitTrigger }
 				}"></div>
 				<br />
 				<br />

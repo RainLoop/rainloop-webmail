@@ -237,32 +237,3 @@ ko.bindingHandlers.onEsc = {
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keyup', fn));
 	}
 };
-
-// extenders
-
-ko.extenders.specialThrottle = (target, timeout) => {
-	timeout = parseInt(timeout, 10);
-	if (0 < timeout) {
-		let timer = 0,
-			valueForRead = ko.observable(!!target()).extend({ throttle: 10 });
-
-		return ko.computed({
-			read: valueForRead,
-			write: (bValue) => {
-				if (bValue) {
-					valueForRead(bValue);
-				} else if (valueForRead()) {
-					clearTimeout(timer);
-					timer = setTimeout(() => {
-						valueForRead(false);
-						timer = 0;
-					}, timeout);
-				} else {
-					valueForRead(bValue);
-				}
-			}
-		});
-	}
-
-	return target;
-};

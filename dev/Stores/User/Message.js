@@ -57,7 +57,7 @@ class MessageUserStore {
 	constructor() {
 		this.staticMessage = new MessageModel();
 
-		this.messageList = ko.observableArray().extend({ rateLimit: 0 });
+		this.messageList = ko.observableArray().extend({ debounce: 0 });
 
 		ko.addObservablesTo(this, {
 			messageListCount: 0,
@@ -93,12 +93,12 @@ class MessageUserStore {
 			messageActiveDom: null
 		});
 
-		this.messageListCompleteLoadingThrottle = ko.observable(false).extend({ throttle: 200 });
-		this.messageListCompleteLoadingThrottleForAnimation = ko.observable(false).extend({ specialThrottle: 700 });
+		this.messageListCompleteLoadingThrottle = ko.observable(false).extend({ debounce: 200 });
+		this.messageListCompleteLoadingThrottleForAnimation = ko.observable(false);
 
 		this.messageListDisableAutoSelect = ko.observable(false).extend({ falseTimeout: 500 });
 
-		this.messageLoadingThrottle = ko.observable(false).extend({ throttle: 50 });
+		this.messageLoadingThrottle = ko.observable(false).extend({ debounce: 50 });
 
 		this.messageLoading = ko.computed(() => this.messageCurrentLoading());
 
@@ -184,10 +184,22 @@ class MessageUserStore {
 	}
 
 	subscribers() {
+		let timer = 0, fn = this.messageListCompleteLoadingThrottleForAnimation;
 		this.messageListCompleteLoading.subscribe((value) => {
 			value = !!value;
 			this.messageListCompleteLoadingThrottle(value);
-			this.messageListCompleteLoadingThrottleForAnimation(value);
+
+			if (value) {
+				fn(value);
+			} else if (fn()) {
+				clearTimeout(timer);
+				timer = setTimeout(() => {
+					fn(value);
+					timer = 0;
+				}, 700);
+			} else {
+				fn(value);
+			}
 		});
 
 		this.messageList.subscribe(

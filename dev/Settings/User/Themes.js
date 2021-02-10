@@ -25,7 +25,7 @@ export class ThemesUserSettings {
 
 		this.capaUserBackground = ko.observable(rl.settings.capa(Capa.UserBackground));
 
-		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
+		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
 
 		this.theme.subscribe((value) => {
 			this.themesObjects.forEach(theme => {

@@ -275,7 +275,7 @@ export class SieveScriptModel extends AbstractModel
 		});
 
 		this.filters = ko.observableArray();
-//		this.saving = ko.observable(false).extend({ throttle: 200 });
+//		this.saving = ko.observable(false).extend({ debounce: 200 });
 
 		this.addSubscribables({
 			name: () => this.hasChanges(true),

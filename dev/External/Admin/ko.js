@@ -1,7 +1,6 @@
 import 'External/ko';
 import ko from 'ko';
 import { SaveSettingsStep } from 'Common/Enums';
-import { pInt } from 'Common/Utils';
 
 ko.bindingHandlers.saveTrigger = {
 	init: (element) => {
@@ -36,27 +35,6 @@ ko.bindingHandlers.saveTrigger = {
 ko.extenders.idleTrigger = (target) => {
 	target.trigger = ko.observable(SaveSettingsStep.Idle);
 	return target;
-};
-
-ko.extenders.posInterer = (target, defaultVal) => {
-	const result = ko.computed({
-			read: target,
-			write: newValue => {
-				let val = pInt(newValue.toString(), defaultVal);
-				if (0 >= val) {
-					val = defaultVal;
-				}
-
-				if (val === target() && '' + val !== '' + newValue) {
-					target(val + 1);
-				}
-
-				target(val);
-			}
-		});
-
-	result(target());
-	return result;
 };
 
 // functions

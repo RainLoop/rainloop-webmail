@@ -9,7 +9,7 @@ class AccountUserStore {
 		});
 
 		this.accounts = ko.observableArray();
-		this.accounts.loading = ko.observable(false).extend({ throttle: 100 });
+		this.accounts.loading = ko.observable(false).extend({ debounce: 100 });
 
 		this.getEmailAddresses = () => this.accounts.map(item => item ? item.email : null).filter(v => v);
 

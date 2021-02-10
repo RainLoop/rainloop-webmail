@@ -23,7 +23,7 @@ export class ContactsUserSettings {
 					this.contactsSyncPass()
 				].join('|')
 			)
-			.extend({ throttle: 500 });
+			.extend({ debounce: 500 });
 	}
 
 	onBuild() {

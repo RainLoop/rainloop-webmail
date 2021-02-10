@@ -47,7 +47,7 @@ export class GeneralUserSettings {
 		this.allowLanguagesOnSettings = !!rl.settings.get('AllowLanguagesOnSettings');
 
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
-		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
+		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
 
 		ko.addObservablesTo(this, {
 			mppTrigger: SaveSettingsStep.Idle,

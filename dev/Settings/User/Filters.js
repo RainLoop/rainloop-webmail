@@ -16,7 +16,7 @@ import { SieveScriptPopupView } from 'View/Popup/SieveScript';
 export class FiltersUserSettings {
 	constructor() {
 		this.scripts = SieveStore.scripts;
-		this.loading = ko.observable(false).extend({ throttle: 200 });
+		this.loading = ko.observable(false).extend({ debounce: 200 });
 
 		ko.addObservablesTo(this, {
 			serverError: false,

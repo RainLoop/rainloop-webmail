@@ -57,7 +57,7 @@ export class GeneralAdminSettings {
 
 		this.mainAttachmentLimit = ko
 			.observable(pInt(settingsGet('AttachmentLimit')) / (1024 * 1024))
-			.extend({ posInterer: 25 });
+			.extend({ debounce: 500 });
 
 		this.uploadData = settingsGet('PhpUploadSizes');
 		this.uploadDataDesc =
@@ -77,7 +77,7 @@ export class GeneralAdminSettings {
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
 		this.languageAdminFullName = ko.computed(() => convertLangName(this.languageAdmin()));
 
-		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ throttle: 100 });
+		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
 	}
 
 	onBuild() {

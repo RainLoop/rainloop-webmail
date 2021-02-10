@@ -202,8 +202,8 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.attachments = ko.observableArray();
 
-		this.dragAndDropOver = ko.observable(false).extend({ throttle: 1 });
-		this.dragAndDropVisible = ko.observable(false).extend({ throttle: 1 });
+		this.dragAndDropOver = ko.observable(false).extend({ debounce: 1 });
+		this.dragAndDropVisible = ko.observable(false).extend({ debounce: 1 });
 
 		this.currentIdentity.extend({
 			toggleSubscribe: [

@@ -55,7 +55,7 @@ export class FilterConditionModel extends AbstractModel {
 				default:
 					return template + 'Default';
 			}
-		}, this);
+		});
 
 		this.addSubscribables({
 			field: () => {
