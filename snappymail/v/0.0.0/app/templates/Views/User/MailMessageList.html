@@ -1,6 +1,6 @@
 <div id="rl-sub-left">
 	<div class="messageList g-ui-user-select-none"
-		data-bind="css: {'message-selected': isMessageSelected, 'message-focused': !messageListFocused(), 'loading': messageListCompleteLoadingThrottle, 'hideMessageListCheckbox': !useCheckboxesInList() }">
+		data-bind="css: {'message-selected': isMessageSelected, 'message-focused': !messageListFocused(), 'hideMessageListCheckbox': !useCheckboxesInList() }">
 		<div class="toolbar">
 			<div class="btn-toolbar">
 				<!-- ko if:  allowFolders && mobile -->
@@ -140,8 +140,6 @@
 					<i class="checkboxCkeckAll" data-bind="css: checkAll() ? (isIncompleteChecked() ? 'icon-checkbox-partial' : 'icon-checkbox-checked') : 'icon-checkbox-unchecked'"></i>
 				</div>
 			</div>
-			<div class="line-loading e-strip-animation" data-bind="visible: messageListCompleteLoadingThrottle"></div>
-			<div class="mainDelimiter toolbarDelimiter"></div>
 			<div class="b-content" data-bind="initDom: dragOverBodyArea">
 				<div class="content">
 					<div class="content-wrapper">
@@ -179,7 +177,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="mainDelimiter footerDelimiter"></div>
 			<div class="b-footer thm-message-list-bottom-toolbar">
 				<span data-tooltip-i18n="off" data-bind="visible: 0 < userUsageProc(), tooltip: quotaTooltip" class="e-quota">
 					<span data-bind="text: userUsageProc"></span>%
