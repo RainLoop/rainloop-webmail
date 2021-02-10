@@ -2,6 +2,12 @@
 
 class CustomLoginMappingPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	const
+		NAME = 'Custom Login Mapping',
+		VERSION = '2.0',
+		CATEGORY = 'Login',
+		DESCRIPTION = 'Plugin which allows you to set up custom username by email address.';
+
 	public function Init() : void
 	{
 		$this->addHook('filter.login-credentials', 'FilterLoginСredentials');

@@ -12,6 +12,10 @@
 
 class AutoDomainGrabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	const
+		NAME     = '',
+		CATEGORY = 'General',
+		DESCRIPTION = '';
 
 	private $imap_prefix = "mail.";
 	private $smtp_prefix = "mail.";

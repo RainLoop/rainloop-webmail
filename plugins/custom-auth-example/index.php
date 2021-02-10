@@ -2,6 +2,11 @@
 
 class CustomAuthExamplePlugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	const
+		NAME     = '',
+		CATEGORY = 'Login',
+		DESCRIPTION = '';
+
 	public function Init() : void
 	{
 		$this->addHook('filter.login-credentials', 'FilterLoginСredentials');

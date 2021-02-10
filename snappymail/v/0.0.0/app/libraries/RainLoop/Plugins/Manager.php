@@ -112,35 +112,17 @@ class Manager
 	public function CreatePluginByName(string $sName) : ?\RainLoop\Plugins\AbstractPlugin
 	{
 		$oPlugin = null;
-		if (\preg_match('/^[a-z0-9\-]+$/', $sName) &&
-			\file_exists(APP_PLUGINS_PATH.$sName.'/index.php'))
-		{
-			$sClassName = $this->convertPluginFolderNameToClassName($sName);
 
-			if (!\class_exists($sClassName))
-			{
-				include APP_PLUGINS_PATH.$sName.'/index.php';
-			}
-
-			if (\class_exists($sClassName))
-			{
-				$oPlugin = new $sClassName();
-				if ($oPlugin instanceof \RainLoop\Plugins\AbstractPlugin)
-				{
-					$oPlugin
-						->SetName($sName)
-						->SetPath(APP_PLUGINS_PATH.$sName)
-						->SetVersion(\file_exists(APP_PLUGINS_PATH.$sName.'/VERSION') ?
-							\file_get_contents(APP_PLUGINS_PATH.$sName.'/VERSION') : '')
-						->SetPluginManager($this)
-						->SetPluginConfig(new \RainLoop\Config\Plugin($sName, $oPlugin->ConfigMap()))
-					;
-				}
-				else
-				{
-					$oPlugin = null;
-				}
-			}
+		$sClassName = $this->loadPluginByName($sName);
+		if ($sClassName) {
+			$oPlugin = new $sClassName();
+			$oPlugin
+				->SetName($sName)
+				->SetPath(APP_PLUGINS_PATH.$sName)
+				->SetVersion($sClassName::VERSION)
+				->SetPluginManager($this)
+				->SetPluginConfig(new \RainLoop\Config\Plugin($sName, $oPlugin->ConfigMap()))
+			;
 		}
 
 		return $oPlugin;
@@ -156,15 +138,11 @@ class Manager
 			foreach ($aGlob as $sPathName)
 			{
 				$sName = \basename($sPathName);
-				if (\preg_match('/^[a-z0-9\-]+$/', $sName) &&
-					\file_exists($sPathName.'/index.php'))
-				{
-					$aList[] = array(
-						$sName,
-						\file_exists($sPathName.'/VERSION') ?
-							\file_get_contents($sPathName.'/VERSION') : '0.0'
-					);
-				}
+				$sClassName = $this->loadPluginByName($sName);
+				$aList[] = array(
+					$sName,
+					$sClassName::VERSION
+				);
 			}
 		}
 		else
@@ -182,6 +160,21 @@ class Manager
 			\explode(' ', \preg_replace('/[^a-z0-9]+/', ' ', $sFolderName))));
 
 		return \implode($aParts).'Plugin';
+	}
+
+	public function loadPluginByName(string $sName) : ?string
+	{
+		if (\preg_match('/^[a-z0-9\-]+$/', $sName)
+		 && \file_exists(APP_PLUGINS_PATH.$sName.'/index.php'))
+		{
+			$sClassName = $this->convertPluginFolderNameToClassName($sName);
+			if (!\class_exists($sClassName)) {
+				include APP_PLUGINS_PATH.$sName.'/index.php';
+			}
+			if (\class_exists($sClassName) && \is_subclass_of($sClassName, 'RainLoop\\Plugins\\AbstractPlugin')) {
+				return $sClassName;
+			}
+		}
 	}
 
 	public function Actions() : \RainLoop\Actions

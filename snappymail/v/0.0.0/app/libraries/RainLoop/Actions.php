@@ -989,7 +989,7 @@ class Actions
 
 		$aAttachmentsActions = array();
 		if ($this->GetCapa(false, $bMobile, Enumerations\Capa::ATTACHMENTS_ACTIONS)) {
-			if (!!\class_exists('ZipArchive')) {
+			if (\class_exists('ZipArchive')) {
 				$aAttachmentsActions[] = 'zip';
 			}
 		}

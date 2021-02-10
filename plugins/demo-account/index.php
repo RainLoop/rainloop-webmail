@@ -2,6 +2,11 @@
 
 class DemoAccountPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	const
+		NAME     = '',
+		CATEGORY = 'Login',
+		DESCRIPTION = '';
+
 	/**
 	 * @return void
 	 */

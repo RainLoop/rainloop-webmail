@@ -6,6 +6,16 @@ use RainLoop\Plugins\Property;
 
 class LdapIdentitiesPlugin extends AbstractPlugin
 {
+	const
+		NAME     = 'LDAP Identities',
+		VERSION  = '2.0',
+		AUTHOR   = 'FWest98',
+		URL      = 'https://github.com/FWest98',
+		RELEASE  = '2020-11-11',
+		REQUIRED = '2.1.0',
+		CATEGORY = 'Accounts',
+		DESCRIPTION = 'Plugin that adds functionality to import account identities from LDAP.';
+
 	public function __construct()
 	{
 		include_once __DIR__ . '/LdapIdentities.php';

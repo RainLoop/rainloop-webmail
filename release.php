@@ -2,6 +2,54 @@
 <?php
 chdir(__DIR__);
 
+$options = getopt('', ['aur','docker','plugins']);
+
+if (isset($options['plugins'])) {
+	$destPath = "build/dist/releases/plugins/";
+	is_dir($destPath) || mkdir($destPath, 0777, true);
+	$manifest = [];
+	require 'snappymail/v/0.0.0/app/libraries/RainLoop/Plugins/AbstractPlugin.php';
+	foreach (glob('plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
+		require "{$dir}/index.php";
+		$name = basename($dir);
+		$class = new ReflectionClass(str_replace('-', '', $name) . 'Plugin');
+		$manifest_item = [];
+		foreach ($class->getConstants() as $key => $value) {
+			$manifest_item[\strtolower($key)] = $value;
+		}
+		$version = $manifest_item['version'];
+		if (0 < floatval($version)) {
+			echo "+ {$name} {$version}\n";
+			$manifest_item['type'] = 'plugin';
+			$manifest_item['id']   = $name;
+			$manifest_item['file'] = "{$dir}-{$version}.tgz";
+			ksort($manifest_item);
+			$manifest[$name] = $manifest_item;
+			$tar_destination = "{$destPath}{$name}-{$version}.tar";
+			$tgz_destination = "{$destPath}{$name}-{$version}.tgz";
+			@unlink($tgz_destination);
+			@unlink("{$tar_destination}.gz");
+			$tar = new PharData($tar_destination);
+			$tar->buildFromDirectory('./plugins/', "@{$name}@");
+			$tar->compress(Phar::GZ);
+			unlink($tar_destination);
+			rename("{$tar_destination}.gz", $tgz_destination);
+		} else {
+			echo "- {$name} {$version}\n";
+		}
+	}
+
+	ksort($manifest);
+	$manifest = json_encode(array_values($manifest));
+	$manifest = str_replace('{"', "\n\t{\n\t\t\"", $manifest);
+	$manifest = str_replace('"}', "\"\n\t}", $manifest);
+	$manifest = str_replace('}]', "}\n]", $manifest);
+	$manifest = str_replace('","', "\",\n\t\t\"", $manifest);
+	$manifest = str_replace('\/', '/', $manifest);
+	file_put_contents("{$destPath}packages.json", $manifest);
+	exit;
+}
+
 $gulp = trim(`which gulp`);
 if (!$gulp) {
 	exit('gulp not installed, run as root: npm install --global gulp-cli');
@@ -11,8 +59,6 @@ $rollup = trim(`which rollup`);
 if (!$rollup) {
 	exit('rollup not installed, run as root: npm install --global rollup');
 }
-
-$options = getopt('', ['aur','docker']);
 
 // Arch User Repository
 // https://aur.archlinux.org/packages/snappymail/

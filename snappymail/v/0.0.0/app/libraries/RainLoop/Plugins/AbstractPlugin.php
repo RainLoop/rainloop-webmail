@@ -4,6 +4,17 @@ namespace RainLoop\Plugins;
 
 abstract class AbstractPlugin
 {
+	const
+		NAME     = '',
+		AUTHOR   = 'SnappyMail',
+		URL      = 'https://snappymail.eu/',
+		VERSION  = '0.0',
+		RELEASE  = '2020-11-01',
+		REQUIRED = '2.0.0',
+		CATEGORY = 'General',
+		LICENSE  = 'MIT',
+		DESCRIPTION = '';
+
 	/**
 	 * @var \RainLoop\Plugins\Manager
 	 */

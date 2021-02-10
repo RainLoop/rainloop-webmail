@@ -489,14 +489,14 @@ trait Admin
 
 	private function snappyMailRepo() : string
 	{
-		return 'https://snappymail.eu/repository/';
+		return 'https://snappymail.eu/repository/v2/';
 	}
 
 	private function rainLoopUpdatable() : bool
 	{
-		return file_exists(APP_INDEX_ROOT_PATH.'index.php') &&
-			is_writable(APP_INDEX_ROOT_PATH.'index.php') &&
-			is_writable(APP_INDEX_ROOT_PATH.'snappymail/') &&
+		return \file_exists(APP_INDEX_ROOT_PATH.'index.php') &&
+			\is_writable(APP_INDEX_ROOT_PATH.'index.php') &&
+			\is_writable(APP_INDEX_ROOT_PATH.'snappymail/') &&
 			APP_VERSION !== APP_DEV_VERSION
 		;
 	}
@@ -684,23 +684,23 @@ trait Admin
 			}
 		}
 
-		$bResult = false;
-		if ('' !== $sResultId)
-		{
-			$bResult = \MailSo\Base\Utils::RecRmDir(APP_PLUGINS_PATH.$sResultId);
-			if ($bResult)
-			{
-				$this->pluginEnable($sResultId, false);
-			}
+		$bResult = '' !== $sResultId && static::deletePackageDir($sResultId);
+		if ($bResult) {
+			$this->pluginEnable($sResultId, false);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
 	}
 
+	private static function deletePackageDir(string $sId) : bool
+	{
+		return !\is_dir(APP_PLUGINS_PATH.$sId) || \MailSo\Base\Utils::RecRmDir(APP_PLUGINS_PATH.$sId);
+	}
+
 	private function downloadRemotePackageByUrl(string $sUrl) : string
 	{
 		$bResult = false;
-		$sTmp = APP_PRIVATE_DATA.\md5(\microtime(true).$sUrl).'.zip';
+		$sTmp = APP_PRIVATE_DATA.\md5(\microtime(true).$sUrl) . \substr($sUrl, -4);
 		$pDest = \fopen($sTmp, 'w+b');
 		if ($pDest)
 		{
@@ -757,40 +757,19 @@ trait Admin
 			}
 		}
 
-		$sTmp = '';
 		$bResult = false;
-		if ('' !== $sRealFile)
+		$sTmp = $sRealFile ? $this->downloadRemotePackageByUrl($this->snappyMailRepo().$sRealFile) : null;
+		if ($sTmp)
 		{
-			$sTmp = $this->downloadRemotePackageByUrl($this->snappyMailRepo().$sRealFile);
-		}
-
-		if ('' !== $sTmp)
-		{
-			$oArchive = new \ZipArchive();
-			$oArchive->open($sTmp);
-			if ('plugin' === $sType)
-			{
-				$bResult = true;
-				if (\is_dir(APP_PLUGINS_PATH.$sId))
-				{
-					$bResult = \MailSo\Base\Utils::RecRmDir(APP_PLUGINS_PATH.$sId);
-					if (!$bResult)
-					{
-						$this->Logger()->Write('Cannot remove previous plugin folder: '.$sId, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-					}
+			$oArchive = new \PharData($sTmp, 0, $sRealFile);
+			if (!\is_dir(APP_PLUGINS_PATH.$sId) || static::deletePackageDir($sId)) {
+				$bResult = $oArchive->extractTo(APP_PLUGINS_PATH);
+				if (!$bResult) {
+					$this->Logger()->Write('Cannot extract package files: '.$oArchive->getStatusString(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 				}
-
-				if ($bResult)
-				{
-					$bResult = $oArchive->extractTo(APP_PLUGINS_PATH);
-					if (!$bResult)
-					{
-						$this->Logger()->Write('Cannot extract package files: '.$oArchive->getStatusString(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
-					}
-				}
+			} else {
+				$this->Logger()->Write('Cannot remove previous plugin folder: '.$sId, \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 			}
-			$oArchive->close();
-
 			\unlink($sTmp);
 		}
 

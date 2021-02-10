@@ -2,6 +2,11 @@
 
 class CustomAdminSettingsTabPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	const
+		NAME     = '',
+		CATEGORY = 'General',
+		DESCRIPTION = '';
+
 	/**
 	 * @return void
 	 */

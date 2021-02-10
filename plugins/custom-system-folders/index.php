@@ -2,6 +2,11 @@
 
 class CustomSystemFoldersPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	const
+		NAME     = '',
+		CATEGORY = 'General',
+		DESCRIPTION = '';
+
 	/**
 	 * @var string
 	 */

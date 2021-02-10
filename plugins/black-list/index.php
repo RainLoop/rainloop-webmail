@@ -2,6 +2,12 @@
 
 class BlackListPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
+	const
+		NAME = 'Black list',
+		VERSION = '2.0',
+		CATEGORY = 'Login',
+		DESCRIPTION = 'Simple black list plugin (with wildcard and exceptions functionality).';
+
 	public function Init() : void
 	{
 		$this->addHook('filter.login-credentials', 'FilterLoginCredentials');
