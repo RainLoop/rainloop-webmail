@@ -55,7 +55,7 @@
 						data-bind="command: deleteCommand, tooltip: 'GLOBAL/DELETE'">🗑</a>
 				</div>
 				<div class="btn-group dropdown colored-toggle" data-bind="visible: allowComposer || allowMessageListActions || allowDangerousActions, registerBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
-					<a id="more-list-dropdown-id" class="btn dropdown-toggle buttonMore fontastic" href="#" tabindex="-1" data-toggle="dropdown" data-bind="tooltip: 'GLOBAL/MORE'">☰</a>
+					<a id="more-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-toggle="dropdown" data-bind="tooltip: 'GLOBAL/MORE'">☰</a>
 					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-list-dropdown-id">
 						<div data-bind="visible: allowMessageListActions">
 							<li class="e-item" role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
