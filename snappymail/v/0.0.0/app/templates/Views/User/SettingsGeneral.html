@@ -21,11 +21,7 @@
 			<div class="controls">
 				<div class="flag-selector">
 					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
-					&nbsp;&nbsp;
-					<div data-bind="component: {
-						name: 'SaveTrigger',
-						params: { value: languageTrigger }
-					}"></div>
+					<span data-bind="saveTrigger: languageTrigger"></span>
 				</div>
 			</div>
 		</div>

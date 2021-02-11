@@ -37,7 +37,7 @@
 	}
 
 	.e-item.selected > .e-link {
-		background-color: var(--dropdown-menu-selected-bg-color, #eee)  !important;
+		background-color: var(--dropdown-menu-selected-bg-color, #eee);
 	}
 
 	.e-item:not(.disabled) > .e-link:focus,
@@ -92,48 +92,54 @@
 	}
 }
 
-.settings-saved-trigger {
+.settings-save-trigger {
 
 	display: inline-block;
-	height: 17px;
-	line-height: 17px;
-	font-size: 16px;
-	position: relative;
+	height: 1em;
+	line-height: 1em;
 
-	.animated {
-		color: #888;
+	&::after {
+		font-family: "snappymail";
+		content: " ";
+		display: block;
+		margin-left: 1em;
+		opacity: 0;
+		transition: opacity 1s linear;
 	}
-
-	.success {
+	&.saving::after {
+		animation: rotation .8s infinite ease-in-out;
+		border: 3px solid transparent;
+		border-radius: 100%;
+		border-top-color: #999;
+		height: 11px;
+		opacity: 1;
+		width: 11px;
+	}
+	&.success::after {
 		color: #080;
-	}
-
-	.error {
-		color: #F00;
-	}
-
-	i {
-		transition: opacity 2s linear;
-		position: absolute;
-	}
-
-	i:not([hidden]) {
+		content: "✔";
 		opacity: 1;
 	}
-	i[hidden] {
-		opacity: 0;
+	&.error::after {
+		color: #F00;
+		content: "✖";
+		opacity: 1;
 	}
+}
+
+textarea + .settings-save-trigger {
+	vertical-align: top;
 }
 
 .settings-saved-trigger-input {
 	transition: border-color 0.5s linear;
 
 	&.success {
-		border-color: green !important;
+		border-color: green;
 	}
 
 	&.error {
-		border-color: red !important;
+		border-color: red;
 	}
 }
 

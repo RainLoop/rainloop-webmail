@@ -2,11 +2,7 @@
 	<div class="form-horizontal">
 		<div class="legend">
 			<span class="i18n" data-i18n="SETTINGS_THEMES/LEGEND_THEMES"></span>
-			&nbsp;&nbsp;
-			<div data-bind="component: {
-				name: 'SaveTrigger',
-				params: { value: themeTrigger }
-			}"></div>
+			<span data-bind="saveTrigger: themeTrigger"></span>
 		</div>
 	</div>
 	<div class="b-themes-list" data-bind="foreach: themesObjects">

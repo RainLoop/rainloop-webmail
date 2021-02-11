@@ -23,11 +23,7 @@
 			<div class="controls">
 				<div class="flag-selector">
 					<span class="flag-name" tabindex="0" data-bind="text: languageFullName, click: selectLanguage, onSpace: selectLanguage, onEnter: selectLanguage"></span>
-					&nbsp;&nbsp;
-					<div data-bind="component: {
-						name: 'SaveTrigger',
-						params: { value: languageTrigger }
-					}"></div>
+					<span data-bind="saveTrigger: languageTrigger"></span>
 				</div>
 			</div>
 		</div>
@@ -39,11 +35,7 @@
 						<span data-bind="css: 'flag flag-' + languageAdmin().toLowerCase()"></span>
 					</span>
 					<span class="flag-name" tabindex="0" data-bind="text: languageAdminFullName, click: selectLanguageAdmin, onSpace: selectLanguageAdmin, onEnter: selectLanguageAdmin"></span>
-					&nbsp;&nbsp;
-					<div data-bind="component: {
-						name: 'SaveTrigger',
-						params: { value: languageAdminTrigger }
-					}"></div>
+					<span data-bind="saveTrigger: languageAdminTrigger"></span>
 				</div>
 			</div>
 		</div>
@@ -114,12 +106,7 @@
 				<input type="number" min="1" step="1" class="span1" data-bind="textInput: mainAttachmentLimit"/>
 				&nbsp;
 				<span data-i18n="MB"></span>
-				&nbsp;
-				&nbsp;
-				<div data-bind="component: {
-					name: 'SaveTrigger',
-					params: { value: attachmentLimitTrigger }
-				}"></div>
+				<span data-bind="saveTrigger: attachmentLimitTrigger"></span>
 				<br />
 				<br />
 				<span class="well well-small" data-bind="visible: '' !== uploadDataDesc">

@@ -1,5 +1,6 @@
 import { i18n, i18nToNodes, trigger } from 'Common/Translator';
-import { doc, dropdownVisibility } from 'Common/Globals';
+import { doc, createElement, dropdownVisibility } from 'Common/Globals';
+import { SaveSettingsStep } from 'Common/Enums';
 
 const
 	isFunction = v => typeof v === 'function',
@@ -170,6 +171,29 @@ ko.bindingHandlers.command = {
 	}
 };
 
+ko.bindingHandlers.saveTrigger = {
+	init: (element) => {
+		let icon = element;
+		if (element.matches('input,select,textarea')) {
+			element.classList.add('settings-saved-trigger-input');
+			element.after(element.saveTriggerIcon = icon = createElement('span'));
+		}
+		icon.classList.add('settings-save-trigger');
+	},
+	update: (element, fValueAccessor) => {
+		const value = parseInt(ko.unwrap(fValueAccessor()),10);
+		let cl = (element.saveTriggerIcon || element).classList;
+		if (element.saveTriggerIcon) {
+			cl.toggle('saving', value === SaveSettingsStep.Animate);
+			cl.toggle('success', value === SaveSettingsStep.TrueResult);
+			cl.toggle('error', value === SaveSettingsStep.FalseResult);
+		}
+		cl = element.classList;
+		cl.toggle('success', value === SaveSettingsStep.TrueResult);
+		cl.toggle('error', value === SaveSettingsStep.FalseResult);
+	}
+};
+
 // extenders
 
 ko.extenders.limitedList = (target, limitedList) => {
@@ -233,17 +257,7 @@ ko.extenders.toggleSubscribeProperty = (target, options) => {
 };
 
 ko.extenders.falseTimeout = (target, option) => {
-	target.iFalseTimeoutTimeout = 0;
-	target.subscribe(value => {
-		if (value) {
-			clearTimeout(target.iFalseTimeoutTimeout);
-			target.iFalseTimeoutTimeout = setTimeout(() => {
-				target(false);
-				target.iFalseTimeoutTimeout = 0;
-			}, parseInt(option, 10) || 0);
-		}
-	});
-
+	target.subscribe((() => target(false)).debounce(parseInt(option, 10) || 0));
 	return target;
 };
 
@@ -254,12 +268,8 @@ ko.observable.fn.deleteAccessHelper = function() {
 };
 
 ko.addObservablesTo = (target, observables) => {
-	Object.entries(observables).forEach(([key, value]) => target[key] = ko.observable(value) );
-/*
 	Object.entries(observables).forEach(([key, value]) =>
-		target[key] = Array.isArray(value) ? ko.observableArray(value) : ko.observable(value)
-	);
-*/
+		target[key] = /*Array.isArray(value) ? ko.observableArray(value) :*/ ko.observable(value) );
 };
 
 ko.addComputablesTo = (target, computables) =>

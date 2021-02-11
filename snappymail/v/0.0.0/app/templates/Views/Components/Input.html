@@ -3,12 +3,7 @@
 <!-- ko if: labeled -->
 	&nbsp;
 	<span class="i18n" data-bind="attr: {'data-i18n': label}"></span>
-	&nbsp;
 <!-- /ko -->
 <!-- ko if: triggered -->
-	&nbsp;
-	<div data-bind="component: {
-		name: 'SaveTrigger',
-		params: { value: trigger }
-	}"></div>
+	<span data-bind="saveTrigger: trigger"></span>
 <!-- /ko -->

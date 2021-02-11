@@ -14,7 +14,6 @@ import { i18nToNodes, initOnStartOrLangChange } from 'Common/Translator';
 import { LanguageStore } from 'Stores/Language';
 import { ThemeStore } from 'Stores/Theme';
 
-import { SaveTriggerComponent } from 'Component/SaveTrigger';
 import { InputComponent } from 'Component/Input';
 import { SelectComponent } from 'Component/Select';
 import { TextAreaComponent } from 'Component/TextArea';
@@ -107,7 +106,6 @@ export class AbstractApp {
 				}
 			});
 
-		register('SaveTrigger', SaveTriggerComponent);
 		register('Input', InputComponent);
 		register('Select', SelectComponent);
 		register('TextArea', TextAreaComponent);
