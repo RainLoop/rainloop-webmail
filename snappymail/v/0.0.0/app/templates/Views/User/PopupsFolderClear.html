@@ -3,8 +3,8 @@
 		<div class="modal-header">
 			<button type="button" class="close" data-bind="command: cancelCommand">×</button>
 			<h3>
-				<span class="i18n" data-i18n="POPUPS_CLEAR_FOLDER/TITLE_CLEAR_FOLDER" data-bind="visible: !clearingProcess()"></span>
-				<span class="i18n" data-i18n="POPUPS_CLEAR_FOLDER/TITLE_CLEARING_PROCESS" data-bind="visible: clearingProcess"></span>
+				<span data-i18n="POPUPS_CLEAR_FOLDER/TITLE_CLEAR_FOLDER" data-bind="visible: !clearingProcess()"></span>
+				<span data-i18n="POPUPS_CLEAR_FOLDER/TITLE_CLEARING_PROCESS" data-bind="visible: clearingProcess"></span>
 			</h3>
 		</div>
 		<div class="modal-body">
@@ -12,19 +12,19 @@
 				<i class="fontastic" style="color:red">⚠</i>
 				&nbsp;&nbsp;
 				<strong>
-					<span class="i18n" data-i18n="[html]POPUPS_CLEAR_FOLDER/DANGER_DESC_WARNING"></span>
+					<span data-i18n="[html]POPUPS_CLEAR_FOLDER/DANGER_DESC_WARNING"></span>
 				</strong>
 				<br />
 				<br />
 				<span data-bind="html: dangerDescHtml"></span>
 				<br />
-				<span class="i18n" data-i18n="[html]POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_2"></span>
+				<span data-i18n="[html]POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_2"></span>
 			</div>
 		</div>
 		<div class="modal-footer">
 			<a class="btn btn-danger buttonClear" data-bind="command: clearCommand">
 				<i class="fontastic" data-bind="css: {'icon-spinner white': clearingProcess()}">🔥</i>
-				<span class="i18n" data-i18n="GLOBAL/CLEAR"></span>
+				<span data-i18n="GLOBAL/CLEAR"></span>
 			</a>
 		</div>
 	</div>

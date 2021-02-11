@@ -3,7 +3,7 @@
 		<div class="modal-header">
 			<button type="button" class="close" data-bind="command: cancelCommand">×</button>
 			<h3>
-				<span class="i18n" data-i18n="POPUPS_COMPOSE_OPEN_PGP/TITLE_COMPOSE_OPEN_PGP"></span>
+				<span data-i18n="POPUPS_COMPOSE_OPEN_PGP/TITLE_COMPOSE_OPEN_PGP"></span>
 			</h3>
 		</div>
 		<div class="modal-body">
@@ -83,7 +83,7 @@
 			<div class="row-fluid key-actions">
 				<div class="span6">
 					<div data-bind="visible: sign()">
-						<input type="password" class="inputPassword input-block-level i18n"
+						<input type="password" class="inputPassword input-block-level"
 							autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-i18n="[placeholder]GLOBAL/PASSWORD"
 							data-bind="textInput: password, onEnter: doCommand" />
@@ -107,9 +107,9 @@
 			<button class="btn buttonDo" data-bind="command: doCommand,
 				enable: (sign() || encrypt()) && (!encrypt() || encrypt() && encryptKeys().length > 0)">
 				<i class="fontastic" data-bind="css: {'icon-spinner': submitRequest()}">🔑</i>
-				<span class="i18n" data-bind="visible: sign() && !encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN"></span>
-				<span class="i18n" data-bind="visible: !sign() && encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_ENCRYPT"></span>
-				<span class="i18n" data-bind="visible: (sign() && encrypt()) || (!sign() && !encrypt())" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN_AND_ENCRYPT"></span>
+				<span data-bind="visible: sign() && !encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN"></span>
+				<span data-bind="visible: !sign() && encrypt()" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_ENCRYPT"></span>
+				<span data-bind="visible: (sign() && encrypt()) || (!sign() && !encrypt())" data-i18n="POPUPS_COMPOSE_OPEN_PGP/BUTTON_SIGN_AND_ENCRYPT"></span>
 			</button>
 		</div>
 	</div>

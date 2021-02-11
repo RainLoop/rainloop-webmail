@@ -3,8 +3,8 @@
 		<div class="modal-header">
 			<button type="button" class="close" data-bind="command: $root.cancelCommand">×</button>
 			<h3>
-				<span class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_CREATE" data-bind="visible: !exists()"></span>
-				<span class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_EDIT" data-bind="visible: exists"></span>
+				<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_CREATE" data-bind="visible: !exists()"></span>
+				<span data-i18n="POPUPS_SIEVE_SCRIPT/TITLE_EDIT" data-bind="visible: exists"></span>
 			</h3>
 		</div>
 		<div class="modal-body">
@@ -24,7 +24,7 @@
 				<div class="span8 width100-on-mobile">
 					<div class="alert g-ui-user-select-none">
 						<i class="fontastic">⚠</i>
-						<span class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></span>
+						<span data-i18n="POPUPS_SIEVE_SCRIPT/CHANGES_NEED_TO_BE_SAVED_DESC"></span>
 					</div>
 				</div>
 			</div>
@@ -40,7 +40,7 @@
 			<div class="control-group" data-bind="visible: $root.rawActive">
 				<div class="controls">
 					<pre>
-						<b class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/CAPABILITY_LABEL"></b>:
+						<b data-i18n="POPUPS_SIEVE_SCRIPT/CAPABILITY_LABEL"></b>:
 						<span data-bind="text: $root.sieveCapabilities"></span>
 					</pre>
 					<textarea class="span8" data-bind="value: body, valueUpdate: 'input'"></textarea>
@@ -73,7 +73,7 @@
 							</td>
 							<td>
 								<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oFilter) { $root.deleteFilter(oFilter); }">
-									<span class="i18n" data-i18n="GLOBAL/ARE_YOU_SURE"></span>
+									<span data-i18n="GLOBAL/ARE_YOU_SURE"></span>
 								</a>
 							</td>
 							<td>
@@ -86,7 +86,7 @@
 				</table>
 				<a class="btn" data-bind="click: $root.addFilter">
 					<i class="icon-plus"></i>
-					<span class="i18n" data-i18n="POPUPS_SIEVE_SCRIPT/BUTTON_ADD_FILTER"></span>
+					<span data-i18n="POPUPS_SIEVE_SCRIPT/BUTTON_ADD_FILTER"></span>
 				</a>
 			</div>
 		</div>
@@ -97,7 +97,7 @@
 			</a>
 			<a class="btn buttonSave" data-bind="visible: hasChanges, click: function() { $root.saveScriptCommand(); }, css: {'btn-danger': $root.saveError}">
 				<i class="fontastic" data-bind="css: {'icon-spinner': $root.saving}">💾</i>
-				<span class="i18n" data-i18n="GLOBAL/SAVE"></span>
+				<span data-i18n="GLOBAL/SAVE"></span>
 			</a>
 		</div>
 	</div>

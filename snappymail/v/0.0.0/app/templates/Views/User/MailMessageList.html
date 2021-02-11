@@ -75,50 +75,50 @@
 							<li class="e-item" role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
 								<a class="e-link menuitem" href="#" tabindex="-1">
 									<i class="icon-none"></i>
-									<span class="i18n" data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></span>
+									<span data-i18n="MESSAGE_LIST/MENU_UNSET_SEEN"></span>
 								</a>
 							</li>
 							<li class="e-item" role="presentation" data-bind="click: listSetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
 								<a class="e-link menuitem" href="#" tabindex="-1">
 									<i class="icon-none"></i>
-									<span class="i18n" data-i18n="MESSAGE_LIST/MENU_SET_SEEN"></span>
+									<span data-i18n="MESSAGE_LIST/MENU_SET_SEEN"></span>
 								</a>
 							</li>
 							<li class="e-item" role="presentation" data-bind="click: listSetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
 								<a class="e-link menuitem" href="#" tabindex="-1">
 									<i class="icon-none"></i>
-									<span class="i18n" data-i18n="MESSAGE_LIST/MENU_SET_FLAG"></span>
+									<span data-i18n="MESSAGE_LIST/MENU_SET_FLAG"></span>
 								</a>
 							</li>
 							<li class="e-item" role="presentation" data-bind="click: listUnsetFlags, css: {'disabled': !hasCheckedOrSelectedLines()}">
 								<a class="e-link menuitem" href="#" tabindex="-1">
 									<i class="icon-none"></i>
-									<span class="i18n" data-i18n="MESSAGE_LIST/MENU_UNSET_FLAG"></span>
+									<span data-i18n="MESSAGE_LIST/MENU_UNSET_FLAG"></span>
 								</a>
 							</li>
 							<li class="e-item" role="presentation" data-bind="click: listSetAllSeen, css: {'disabled': !hasMessages()}">
 								<a class="e-link menuitem" href="#" tabindex="-1">
 									<i class="icon-none"></i>
-									<span class="i18n" data-i18n="MESSAGE_LIST/MENU_SET_ALL_SEEN"></span>
+									<span data-i18n="MESSAGE_LIST/MENU_SET_ALL_SEEN"></span>
 								</a>
 							</li>
 						</div>
 						<li class="e-item dividerbar" role="presentation" data-bind="visible: allowComposer, command: multyForwardCommand">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="fontastic">↞</i>
-								<span class="i18n" data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></span>
+								<span data-i18n="MESSAGE_LIST/BUTTON_MULTY_FORWARD"></span>
 							</a>
 						</li>
 						<li class="e-item dividerbar" role="presentation" data-bind="visible: allowDangerousActions, command: deleteWithoutMoveCommand">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="fontastic">🗑</i>
-								<span class="i18n" data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></span>
+								<span data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></span>
 							</a>
 						</li>
 						<li class="e-item" role="presentation" data-bind="visible: allowDangerousActions, command: clearCommand">
 							<a class="e-link menuitem" href="#" tabindex="-1">
 								<i class="fontastic">🔥</i>
-								<span class="i18n" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></span>
+								<span data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER"></span>
 							</a>
 						</li>
 					</ul>
@@ -145,30 +145,30 @@
 					<div class="content-wrapper">
 						<div class="listThreadUidDesc" data-bind="visible: '' !== messageListEndThreadUid(), click: cancelThreadUid">
 							<i class="icon-left" data-bind="click: cancelThreadUid"></i>
-							<span class="i18n" data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
+							<span data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
 						</div>
 						<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc()">
 							<span data-bind="text: messageListSearchDesc"></span>
 						</div>
 						<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
 							<i class="icon-down e-icon"></i>
-							<span class="i18n" data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
+							<span data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
 						</div>
 						<div class="listClear" data-bind="visible: clearListIsVisible()">
-							<span class="g-ui-link i18n" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></span>
+							<span class="g-ui-link" data-i18n="MESSAGE_LIST/BUTTON_EMPTY_FOLDER" data-bind="command: clearCommand"></span>
 						</div>
 						<div class="listError" data-bind="visible: !dragOver() && '' !== messageListError()">
 							<span class="error" data-bind="text: messageListError"></span>
 						</div>
 						<div class="listEmptyList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' === messageListSearch()">
-							<span class="i18n" data-i18n="MESSAGE_LIST/EMPTY_LIST"></span>
+							<span data-i18n="MESSAGE_LIST/EMPTY_LIST"></span>
 						</div>
 						<div class="listEmptyListLoading" data-bind="visible: !dragOver() && 0 === messageList().length &&
 							messageListCompleteLoadingThrottle() && '' === messageListError()">
-							<span class="i18n" data-i18n="GLOBAL/LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+							<span data-i18n="GLOBAL/LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
 						</div>
 						<div class="listEmptySearchList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' !== messageListSearch()">
-							<span class="i18n" data-i18n="MESSAGE_LIST/EMPTY_SEARCH_LIST"></span>
+							<span data-i18n="MESSAGE_LIST/EMPTY_SEARCH_LIST"></span>
 						</div>
 						<div data-bind="dragmessages: getDragData">
 							<div class="messageListPlace" data-bind="template: { name: messageListItemTemplate(), foreach: messageList }"></div>

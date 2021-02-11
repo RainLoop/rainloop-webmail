@@ -3,7 +3,7 @@
 		<div class="modal-header">
 			<button type="button" class="close" data-bind="visible: viewEnable() || !lock(), command: cancelCommand">×</button>
 			<h3>
-				<span class="i18n" data-i18n="POPUPS_TWO_FACTOR_CFG/LEGEND_TWO_FACTOR_AUTH"></span>
+				<span data-i18n="POPUPS_TWO_FACTOR_CFG/LEGEND_TWO_FACTOR_AUTH"></span>
 			</h3>
 		</div>
 		<div class="modal-body">
@@ -28,7 +28,7 @@
 				</div>
 				<div class="control-group">
 					<label class="control-label">
-						<span class="i18n" data-i18n="POPUPS_TWO_FACTOR_CFG/LABEL_TWO_FACTOR_USER"></span>
+						<span data-i18n="POPUPS_TWO_FACTOR_CFG/LABEL_TWO_FACTOR_USER"></span>
 					</label>
 					<div class="controls" style="padding-top: 5px;">
 						<strong><span data-bind="text: viewUser"></span></strong>
@@ -42,18 +42,18 @@
 				<div class="control-group" data-bind="visible: '' === viewSecret() && twoFactorStatus() && !clearing()">
 					<div class="controls" style="padding-top: 5px;">
 						<strong data-bind="visible: secreting">...</strong>
-						<span class="g-ui-link i18n" data-bind="click: showSecret, visible: !secreting()"
+						<span class="g-ui-link" data-bind="click: showSecret, visible: !secreting()"
 							data-i18n="POPUPS_TWO_FACTOR_CFG/BUTTON_SHOW_SECRET"></span>
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: '' !== viewSecret()">
 					<label class="control-label">
-						<span class="i18n" data-i18n="POPUPS_TWO_FACTOR_CFG/LABEL_TWO_FACTOR_SECRET"></span>
+						<span data-i18n="POPUPS_TWO_FACTOR_CFG/LABEL_TWO_FACTOR_SECRET"></span>
 					</label>
 					<div class="controls" style="padding-top: 5px;">
 						<strong data-bind="text: viewSecret"></strong>
 						&nbsp;&nbsp;
-						<span class="g-ui-link i18n" data-bind="click: hideSecret" data-i18n="POPUPS_TWO_FACTOR_CFG/BUTTON_HIDE_SECRET"></span>
+						<span class="g-ui-link" data-bind="click: hideSecret" data-i18n="POPUPS_TWO_FACTOR_CFG/BUTTON_HIDE_SECRET"></span>
 						<br />
 						<br />
 						<blockquote>
@@ -66,7 +66,7 @@
 				</div>
 				<div class="control-group" data-bind="visible: '' !== viewBackupCodes()">
 					<label class="control-label">
-						<span class="i18n" data-i18n="POPUPS_TWO_FACTOR_CFG/LABEL_TWO_FACTOR_BACKUP_CODES"></span>
+						<span data-i18n="POPUPS_TWO_FACTOR_CFG/LABEL_TWO_FACTOR_BACKUP_CODES"></span>
 					</label>
 					<div class="controls" style="padding-top: 5px;">
 						<pre data-bind="text: viewBackupCodes" style="width: 230px; word-break: break-word;"></pre>
@@ -81,19 +81,19 @@
 		<div class="modal-footer">
 			<a class="btn pull-left" data-bind="visible: lock, click: logout">
 				<i class="fontastic">⏻</i>
-				<span class="i18n" data-i18n="GLOBAL/LOGOUT"></span>
+				<span data-i18n="GLOBAL/LOGOUT"></span>
 			</a>
 			<a class="btn btn-danger" data-bind="click: clearTwoFactor, visible: twoFactorStatus">
 				<i class="fontastic" data-bind="css: {'icon-spinner': clearing()}">✖</i>
-				<span class="i18n" data-i18n="GLOBAL/CLEAR"></span>
+				<span data-i18n="GLOBAL/CLEAR"></span>
 			</a>
 			<a class="btn" data-bind="click: createTwoFactor, visible: !twoFactorStatus()">
 				<i class="fontastic" data-bind="css: {'icon-spinner': processing()}">▶</i>
-				<span class="i18n" data-i18n="POPUPS_TWO_FACTOR_CFG/BUTTON_ACTIVATE"></span>
+				<span data-i18n="POPUPS_TWO_FACTOR_CFG/BUTTON_ACTIVATE"></span>
 			</a>
 			<a class="btn" data-bind="command: cancelCommand, visible: viewEnable() || !lock()">
 				<i class="icon-ok" ></i>
-				<span class="i18n" data-i18n="GLOBAL/DONE"></span>
+				<span data-i18n="GLOBAL/DONE"></span>
 			</a>
 		</div>
 	</div>

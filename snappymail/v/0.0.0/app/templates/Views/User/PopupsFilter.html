@@ -3,8 +3,8 @@
 		<div class="modal-header">
 			<button type="button" class="close" data-bind="command: cancelCommand">×</button>
 			<h3>
-				<span class="i18n" data-i18n="POPUPS_FILTER/TITLE_CREATE_FILTER" data-bind="visible: isNew"></span>
-				<span class="i18n" data-i18n="POPUPS_FILTER/TITLE_EDIT_FILTER" data-bind="visible: !isNew()"></span>
+				<span data-i18n="POPUPS_FILTER/TITLE_CREATE_FILTER" data-bind="visible: isNew"></span>
+				<span data-i18n="POPUPS_FILTER/TITLE_EDIT_FILTER" data-bind="visible: !isNew()"></span>
 			</h3>
 		</div>
 		<div class="modal-body">
@@ -21,13 +21,13 @@
 						</div>
 					</div>
 
-					<div class="legend i18n" data-i18n="POPUPS_FILTER/LEGEND_CONDITIONS"></div>
+					<div class="legend" data-i18n="POPUPS_FILTER/LEGEND_CONDITIONS"></div>
 					<div>
 						<div data-bind="visible: 1 < conditions().length">
 							<select class="span4" data-bind="value: conditionsType">
-								<option value="Any" class="i18n"
+								<option value="Any"
 									data-i18n="POPUPS_FILTER/SELECT_MATCH_ANY"></option>
-								<option value="All" class="i18n"
+								<option value="All"
 									data-i18n="POPUPS_FILTER/SELECT_MATCH_ALL"></option>
 							</select>
 						</div>
@@ -35,16 +35,16 @@
 							<div data-bind="template: {'name': template(), 'data': $data}"></div>
 						</div>
 						<div data-bind="visible: 0 === conditions().length">
-							<span class="i18n" data-i18n="POPUPS_FILTER/ALL_INCOMING_MESSAGES_DESC"></span>
+							<span data-i18n="POPUPS_FILTER/ALL_INCOMING_MESSAGES_DESC"></span>
 						</div>
 						<br />
 						<a class="btn" data-bind="click: addCondition, i18nInit: true">
 							<i class="icon-plus"></i>
-							<span class="i18n" data-i18n="POPUPS_FILTER/BUTTON_ADD_CONDITION"></span>
+							<span data-i18n="POPUPS_FILTER/BUTTON_ADD_CONDITION"></span>
 						</a>
 					</div>
 					<br />
-					<div class="legend i18n" data-i18n="POPUPS_FILTER/LEGEND_ACTIONS"></div>
+					<div class="legend" data-i18n="POPUPS_FILTER/LEGEND_ACTIONS"></div>
 					<select class="span3" data-bind="options: $root.actionTypeOptions, value: actionType, optionsText: 'name', optionsValue: 'id'"></select>
 					<div data-bind="template: {'name': actionTemplate()}, i18nUpdate: actionTemplate"></div>
 				</div>
@@ -53,7 +53,7 @@
 		<div class="modal-footer">
 			<a class="btn buttonSave" data-bind="command: saveFilterCommand">
 				<i class="icon-ok"></i>
-				<span class="i18n" data-i18n="GLOBAL/DONE"></span>
+				<span data-i18n="GLOBAL/DONE"></span>
 			</a>
 		</div>
 	</div>
