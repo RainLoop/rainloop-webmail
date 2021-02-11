@@ -3,28 +3,22 @@
 		data-bind="css: {'message-selected': isMessageSelected, 'message-focused': !messageListFocused(), 'hideMessageListCheckbox': !useCheckboxesInList() }">
 		<div class="toolbar">
 			<div class="btn-toolbar">
-				<!-- ko if:  allowFolders && mobile -->
-				<div class="btn-group" data-bind="visible: leftPanelDisabled()">
-					<a class="btn btn-thin-2" data-bind="click: showLeft">
-						<i class="icon-right-middle"></i>
-					</a>
-				</div>
-				<div class="btn-group" data-bind="visible: !leftPanelDisabled()">
-					<a class="btn btn-thin-2" data-bind="click: hideLeft">
-						<i class="icon-left-middle"></i>
-					</a>
-				</div>
+				<!-- ko if: mobile -->
+				<!-- ko if: allowFolders -->
+				<a class="btn btn-thin-2" data-bind="click: showLeft, visible: leftPanelDisabled()">
+					<i class="icon-right-middle"></i>
+				</a>
+				<a class="btn btn-thin-2" data-bind="click: hideLeft, visible: !leftPanelDisabled()">
+					<i class="icon-left-middle"></i>
+				</a>
 				<!-- /ko -->
-				<div class="btn-group" data-bind="visible: mobile && allowComposer && mobileCheckedStateHide()">
-					<a class="btn buttonCompose" data-bind="click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_NEW_MESSAGE', css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}">
-						<i class="icon-paper-plane"></i>
-					</a>
-				</div>
-				<div class="btn-group" data-bind="visible: allowReload && mobileCheckedStateHide()">
-					<a class="btn buttonReload" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD'">
-						<i class="icon-spinner" data-bind="css: {'not-animated': !messageListCompleteLoadingThrottleForAnimation()}"></i>
-					</a>
-				</div>
+				<a class="btn buttonCompose" data-bind="click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_NEW_MESSAGE', css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}, visible: allowComposer && mobileCheckedStateHide()">
+					<i class="icon-paper-plane"></i>
+				</a>
+				<!-- /ko -->
+				<a class="btn buttonReload" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD', visible: allowReload && mobileCheckedStateHide()">
+					<i class="icon-spinner" data-bind="css: {'not-animated': !messageListCompleteLoadingThrottleForAnimation()}"></i>
+				</a>
 				<!-- ko if: !newMoveToFolder -->
 				<div class="btn-group dropdown colored-toggle hide-on-mobile" data-bind="visible: allowMessageListActions, registerBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
 					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle buttonMove" data-toggle="dropdown" data-bind="command: moveCommand, tooltip: 'GLOBAL/MOVE_TO'">
@@ -137,7 +131,7 @@
 							<span class="caret"></span>
 						</a>
 					</div>
-					<i class="checkboxCkeckAll" data-bind="css: checkAll() ? (isIncompleteChecked() ? 'icon-checkbox-partial' : 'icon-checkbox-checked') : 'icon-checkbox-unchecked'"></i>
+					<i class="checkboxCkeckAll fontastic" data-bind="text: checkAll() ? (isIncompleteChecked() ? '▣' : '☑') : '☐'"></i>
 				</div>
 			</div>
 			<div class="b-content" data-bind="initDom: dragOverBodyArea">

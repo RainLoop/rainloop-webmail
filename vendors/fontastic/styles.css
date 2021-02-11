@@ -29,7 +29,7 @@
   content: "\e001";
 }
 .icon-list::before {
-  content: "\e002";
+  content: "☰";
 }
 .icon-user-add::before {
   content: "\e005";
@@ -44,10 +44,10 @@
   content: "\e00c"; /* ▶ */
 }
 .icon-left::before {
-  content: "\e01b"; /* ➔ rotate 180 */
+  content: "⬅";
 }
 .icon-down::before {
-  content: "\e01d"; /* ➔ rotate 90 */
+  content: "⬇";
 }
 .icon-right-mini::before {
   content: "\e01e"; /* › */
@@ -56,7 +56,7 @@
   content: "\e01f"; /* › rotate 90 */
 }
 .icon-up::before {
-  content: "\e020"; /* ➔ rotate -90 */
+  content: "⬆";
 }
 .icon-star-empty::before {
   content: "☆";
@@ -130,7 +130,7 @@
   content: "\e045";
 }
 .icon-telephone::before {
-  content: "\e047"; /* ℡ ✆ ☎ ☏ 📞 */
+  content: "📞"; /* ℡ ✆ ☎ ☏ */
 }
 .icon-left-middle::before {
   content: "\e04b"; /* ❮ */
@@ -151,7 +151,7 @@
   content: "☐";
 }
 .icon-checkbox-partial::before {
-  content: "\e05a";
+  content: "▣";
 }
 .icon-radio-checked::before {
   content: "\e05b";
