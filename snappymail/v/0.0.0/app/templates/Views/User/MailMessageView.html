@@ -16,15 +16,11 @@
 					<a class="btn button-archive" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'GLOBAL/TO_ARCHIVE'">
 						<i class="icon-archive"></i>
 					</a>
-					<a class="btn button-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'GLOBAL/SPAM'">
-						<i class="fontastic">⚠</i>
-					</a>
+					<a class="btn button-spam fontastic" data-bind="visible: !isDraftFolder() && !isSentFolder() && !isSpamFolder() && !isSpamDisabled(), command: spamCommand, tooltip: 'GLOBAL/SPAM'">⚠</a>
 					<a class="btn button-not-spam" data-bind="visible: !isDraftFolder() && !isSentFolder() && isSpamFolder() && !isSpamDisabled(), command: notSpamCommand, tooltip: 'GLOBAL/NOT_SPAM'">
 						<i class="icon-check-mark-circle-two"></i>
 					</a>
-					<a class="btn button-delete" data-bind="command: deleteCommand, tooltip: 'GLOBAL/DELETE'">
-						<i class="fontastic">🗑</i>
-					</a>
+					<a class="btn button-delete fontastic" data-bind="command: deleteCommand, tooltip: 'GLOBAL/DELETE'">🗑</a>
 				</div>
 				<div class="btn-group">
 					<a class="btn btn-thin buttonUp" data-bind="command: goUpCommand">
@@ -265,9 +261,6 @@
 							<div class="content-wrapper">
 
 								<div>
-									<span class="buttonUp" data-bind="click: scrollMessageToTop">
-										<i class="icon-up"></i>
-									</span>
 									<span class="buttonFull" data-bind="click: fullScreen">
 										<i class="icon-arrows-out"></i>
 									</span>
@@ -333,11 +326,9 @@
 															<span class="attachmentSize" data-bind="text: friendlySize"></span>&nbsp;
 														</div>
 													</div>
-													<div class="checkedParent">
-														<i class="checkboxAttachment icon-checkbox-unchecked"
-															data-bind="css: checked() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked',
-															click: function () { checked(!checked()); return false }"></i>
-													</div>
+													<div class="checkboxAttachment fontastic"
+															data-bind="text: checked() ? '☑' : '☐',
+															click: function () { checked(!checked()); return false }"></div>
 												</li>
 											</ul>
 											<i class="fontastic controls-handle" data-bind="visible: allowAttachmnetControls() && !showAttachmnetControls(), click: function () { showAttachmnetControls(true); showAttachmnetControlsState(true); }">⚙</i>

@@ -411,14 +411,6 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 		this.inputMessageListSearchFocus(false);
 	}
 
-	/**
-	 * @returns {string}
-	 */
-	printableMessageCountForDeletion() {
-		const cnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
-		return 1 < cnt ? ' (' + (100 > cnt ? cnt : '99+') + ')' : ''; // eslint-disable-line no-magic-numbers
-	}
-
 	cancelSearch() {
 		this.mainMessageListSearch('');
 		this.inputMessageListSearchFocus(false);
@@ -694,7 +686,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 			let el = eqs(event, '.e-paginator .e-page');
 			el && this.gotoPage(ko.dataFor(el));
 
-			eqs(event, '.messageList .checkboxCkeckAll') && this.checkAll(!this.checkAll());
+			eqs(event, '.messageList .checkboxCheckAll') && this.checkAll(!this.checkAll());
 
 			el = eqs(event, '.messageList .messageListItem .flagParent');
 			el && this.flagMessages(ko.dataFor(el));

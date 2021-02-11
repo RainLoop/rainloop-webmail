@@ -46,25 +46,23 @@
 						</div>
 						<div class="pull-right">
 							<div class="btn-group dropdown colored-toggle pull-right" style="margin-right: 4px;" data-bind="registerBootstrapDropdown: true">
-								<a class="btn dropdown-toggle buttonMore" data-toggle="dropdown">
-									<i class="icon-list"></i>
-								</a>
+								<a class="btn dropdown-toggle buttonMore fontastic" data-toggle="dropdown">☰</a>
 								<ul class="dropdown-menu g-ui-menu" role="menu">
 									<li class="e-item" data-bind="click: function () { requestReadReceipt(!requestReadReceipt()); }">
 										<a class="e-link">
-											<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': requestReadReceipt(), 'icon-checkbox-unchecked': !requestReadReceipt() }"></i>
+											<i class="fontastic" data-bind="text: requestReadReceipt() ? '☑' : '☐'"></i>
 											<span data-i18n="COMPOSE/BUTTON_REQUEST_READ_RECEIPT"></span>
 										</a>
 									</li>
 									<li class="e-item" data-bind="click: function () { requestDsn(!requestDsn()); }">
 										<a class="e-link">
-											<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': requestDsn(), 'icon-checkbox-unchecked': !requestDsn() }"></i>
+											<i class="fontastic" data-bind="text: requestDsn() ? '☑' : '☐'"></i>
 											<span data-i18n="COMPOSE/BUTTON_REQUEST_DSN"></span>
 										</a>
 									</li>
 									<li class="e-item" data-bind="click: function () { markAsImportant(!markAsImportant()); }">
 										<a class="e-link">
-											<i class="icon-checkbox-unchecked" data-bind="css: {'icon-checkbox-checked': markAsImportant(), 'icon-checkbox-unchecked': !markAsImportant() }"></i>
+											<i class="fontastic" data-bind="text: markAsImportant() ? '☑' : '☐'"></i>
 											<span data-i18n="COMPOSE/BUTTON_MARK_AS_IMPORTANT"></span>
 										</a>
 									</li>
@@ -78,9 +76,7 @@
 							</div>
 							<div class="btn-group pull-right">&nbsp;</div>
 							<div class="btn-group pull-right">
-								<a class="btn" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'GLOBAL/CONTACTS'">
-									<i class="icon-address-book"></i>
-								</a>
+								<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'GLOBAL/CONTACTS'">📇</a>
 							</div>
 							<div class="btn-group pull-right">&nbsp;</div>
 						</div>

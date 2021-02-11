@@ -57,14 +57,12 @@
 						<col style="width: 1%" />
 					</colgroup>
 					<tbody data-bind="foreach: filters">
-						<tr class="filter-item" draggable="true" data-bind="sortableItem: { list: $root.filters }">
+						<tr class="filter-item" draggable="true" data-bind="sortableItem: { list: $parent.filters }">
 							<td>
-								<span class="disabled-filter" data-bind="click: function () { $parent.hasChanges(true); enabled(!enabled()); }">
-									<i data-bind="css: {'icon-checkbox-checked': enabled, 'icon-checkbox-unchecked': !enabled()}"></i>
-								</span>
+								<span class="disabled-filter fontastic" data-bind="click: function () { $parent.hasChanges(true); enabled(!enabled()); }, text: enabled() ? '☑' : '☐'"></span>
 							</td>
 							<td class="drag-wrapper">
-								<i class="icon-braille drag-handle"></i>
+								<span class="fontastic drag-handle">⬍</span>
 							</td>
 							<td class="e-action">
 								<span class="filter-name" data-bind="text: name()"></span>

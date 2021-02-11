@@ -16,7 +16,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 
 			name: '',
 			password: '',
-			keyBitLength: 2048,
+			keyBitLength: 4096,
 
 			submitRequest: false,
 			submitError: ''
@@ -90,7 +90,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 
 		this.email('');
 		this.emailError(false);
-		this.keyBitLength(2048);
+		this.keyBitLength(4096);
 
 		this.submitError('');
 	}

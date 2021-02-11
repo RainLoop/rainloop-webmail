@@ -89,10 +89,9 @@ class MessageOpenPgpPopupView extends AbstractViewPopup {
 		oDom.addEventListener('click', event => {
 			const el = event.target.closestWithin('.key-list__item', oDom);
 			if (el) {
-				oDom.querySelectorAll('.key-list__item .key-list__item__radio').forEach(node => {
-					node.classList.toggle('icon-radio-unchecked', el !== node);
-					node.classList.toggle('icon-radio-checked', el === node);
-				});
+				oDom.querySelectorAll('.key-list__item .key-list__item__radio').forEach(node =>
+					node.textContent = el === node ? '⦿' : '○'
+				);
 
 				self.selectedKey(ko.dataFor(el)); // eslint-disable-line no-invalid-this
 

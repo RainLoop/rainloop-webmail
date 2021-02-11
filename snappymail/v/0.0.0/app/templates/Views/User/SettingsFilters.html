@@ -27,9 +27,7 @@
 				<tbody data-bind="foreach: scripts">
 					<tr class="script-item">
 						<td>
-							<span class="disabled-script" data-bind="click: function (oScript) { $root.toggleScript(oScript); }">
-								<i data-bind="css: {'icon-checkbox-checked': active, 'icon-checkbox-unchecked': !active()}"></i>
-							</span>
+							<span class="disabled-script fontastic" data-bind="click: function (oScript) { $root.toggleScript(oScript); }, text: active() ? '☑' : '☐'"></span>
 						</td>
 						<td class="e-action" class="script-name" data-bind="text: name()"></td>
 						<td>

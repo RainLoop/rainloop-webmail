@@ -46,24 +46,16 @@
 						data-bind="visible: isArchiveVisible, command: archiveCommand, tooltip: 'GLOBAL/TO_ARCHIVE'">
 						<i class="icon-archive"></i>
 					</a>
-					<a class="btn button-spam"
-						data-bind="visible: isSpamVisible, command: spamCommand, tooltip: 'GLOBAL/SPAM'">
-						<i class="fontastic">⚠</i>
-					</a>
+					<a class="btn button-spam fontastic" data-bind="visible: isSpamVisible, command: spamCommand, tooltip: 'GLOBAL/SPAM'">⚠</a>
 					<a class="btn button-not-spam"
 						data-bind="visible: isUnSpamVisible, command: notSpamCommand, tooltip: 'GLOBAL/NOT_SPAM'">
 						<i class="icon-check-mark-circle-two"></i>
 					</a>
-					<a class="btn button-delete"
-						data-bind="command: deleteCommand, tooltip: 'GLOBAL/DELETE'">
-						<i class="fontastic">🗑</i>
-						<!--<span data-bind="text: printableMessageCountForDeletion()"></span>-->
-					</a>
+					<a class="btn button-delete fontastic"
+						data-bind="command: deleteCommand, tooltip: 'GLOBAL/DELETE'">🗑</a>
 				</div>
 				<div class="btn-group dropdown colored-toggle" data-bind="visible: allowComposer || allowMessageListActions || allowDangerousActions, registerBootstrapDropdown: true, openDropdownTrigger: moreDropdownTrigger">
-					<a id="more-list-dropdown-id" class="btn dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown" data-bind="tooltip: 'GLOBAL/MORE'">
-						<i class="icon-list"></i>
-					</a>
+					<a id="more-list-dropdown-id" class="btn dropdown-toggle buttonMore fontastic" href="#" tabindex="-1" data-toggle="dropdown" data-bind="tooltip: 'GLOBAL/MORE'">☰</a>
 					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="more-list-dropdown-id">
 						<div data-bind="visible: allowMessageListActions">
 							<li class="e-item" role="presentation" data-bind="click: listUnsetSeen, css: {'disabled': !hasCheckedOrSelectedLines()}">
@@ -131,21 +123,21 @@
 							<span class="caret"></span>
 						</a>
 					</div>
-					<i class="checkboxCkeckAll fontastic" data-bind="text: checkAll() ? (isIncompleteChecked() ? '▣' : '☑') : '☐'"></i>
+					<i class="checkboxCheckAll fontastic" data-bind="text: checkAll() ? (isIncompleteChecked() ? '▣' : '☑') : '☐'"></i>
 				</div>
 			</div>
 			<div class="b-content" data-bind="initDom: dragOverBodyArea">
 				<div class="content">
 					<div class="content-wrapper">
 						<div class="listThreadUidDesc" data-bind="visible: '' !== messageListEndThreadUid(), click: cancelThreadUid">
-							<i class="icon-left" data-bind="click: cancelThreadUid"></i>
+							<i class="fontastic" data-bind="click: cancelThreadUid">⬅</i>
 							<span data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
 						</div>
 						<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc()">
 							<span data-bind="text: messageListSearchDesc"></span>
 						</div>
 						<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
-							<i class="icon-down e-icon"></i>
+							<i class="fontastic e-icon">⬇</i>
 							<span data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
 						</div>
 						<div class="listClear" data-bind="visible: clearListIsVisible()">

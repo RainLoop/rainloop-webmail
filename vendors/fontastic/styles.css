@@ -17,9 +17,13 @@
   font-variant: normal !important;
   text-transform: none !important;
   speak: never;
-  line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]::before,
+[class*=" icon-"]::before {
+  line-height: 1;
 }
 
 .icon-arrows-in::before {
@@ -27,9 +31,6 @@
 }
 .icon-arrows-out::before {
   content: "\e001";
-}
-.icon-list::before {
-  content: "☰";
 }
 .icon-user-add::before {
   content: "\e005";
@@ -43,20 +44,11 @@
 .icon-right-dir::before {
   content: "\e00c"; /* ▶ */
 }
-.icon-left::before {
-  content: "⬅";
-}
-.icon-down::before {
-  content: "⬇";
-}
 .icon-right-mini::before {
   content: "\e01e"; /* › */
 }
 .icon-down-mini::before {
   content: "\e01f"; /* › rotate 90 */
-}
-.icon-up::before {
-  content: "⬆";
 }
 .icon-star-empty::before {
   content: "☆";
@@ -129,35 +121,14 @@
 .icon-popup::before {
   content: "\e045";
 }
-.icon-telephone::before {
-  content: "📞"; /* ℡ ✆ ☎ ☏ */
-}
 .icon-left-middle::before {
   content: "\e04b"; /* ❮ */
 }
 .icon-right-middle::before {
   content: "\e04c"; /* ❯ */
 }
-.icon-address-book::before {
-  content: "\e051";
-}
 .icon-mail::before {
   content: "✉";
-}
-.icon-checkbox-checked::before {
-  content: "☑";
-}
-.icon-checkbox-unchecked::before {
-  content: "☐";
-}
-.icon-checkbox-partial::before {
-  content: "▣";
-}
-.icon-radio-checked::before {
-  content: "\e05b";
-}
-.icon-radio-unchecked::before {
-  content: "\e05c";
 }
 .icon-archive::before {
   content: "\e05f";
@@ -186,13 +157,46 @@
 .icon-resize-out::before {
   content: "⤢";
 }
-.icon-braille::before {
-  content: "\e06e"; /* ⸭ ⠿ ⁞⁞ */
-}
 .icon-check-mark-circle-two::before {
   content: "\e073";
 }
 /*
+.icon-radio-checked::before {
+  content: "⦿";
+}
+.icon-radio-unchecked::before {
+  content: "○";
+}
+.icon-address-book::before {
+  content: "📇";
+}
+.icon-list::before {
+  content: "☰";
+}
+.icon-telephone::before {
+  content: "📞";
+}
+.icon-braille::before {
+  content: "⬍";
+}
+.icon-checkbox-checked::before {
+  content: "☑";
+}
+.icon-checkbox-unchecked::before {
+  content: "☐";
+}
+.icon-checkbox-partial::before {
+  content: "▣";
+}
+.icon-left::before {
+  content: "⬅";
+}
+.icon-up::before {
+  content: "⬆";
+}
+.icon-down::before {
+  content: "⬇";
+}
 .icon-image::before {
   content: "🖼";
 }

@@ -26,7 +26,7 @@
 					<tr class="account-item" draggable="true" data-bind="sortableItem: { list: $root.accounts, afterMove: $root.accountsAndIdentitiesAfterMove }">
 						<td class="e-action" data-bind="css: {'e-action': canBeEdit}">
 							<span class="account-img fontastic">👤</span>
-							<i class="icon-braille drag-handle"></i>
+							<i class="fontastic drag-handle">⬍</i>
 							<span class="account-name" data-bind="text: email"></span>
 						</td>
 						<td>
@@ -70,7 +70,7 @@
 					<tr class="identity-item" draggable="true" data-bind="sortableItem: { list: $root.identities, afterMove: $root.accountsAndIdentitiesAfterMove }">
 						<td class="e-action">
 							<span class="identity-img fontastic">👤</span>
-							<i class="icon-braille drag-handle"></i>
+							<i class="fontastic drag-handle">⬍</i>
 							<span class="identity-name" data-bind="text: formattedName()"></span>
 							&nbsp;&nbsp;
 							<span class="identity-default" data-bind="visible: 0 === $index()">

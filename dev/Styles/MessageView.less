@@ -247,7 +247,7 @@ html.rl-no-preview-pane {
 			border-radius: @rlLowBorderRadius;
 			scroll-behavior: smooth;
 
-			.buttonUp, .buttonUnFull, .buttonFull {
+			.buttonUnFull, .buttonFull {
 				display: inline-block;
 				position: fixed;
 				right: 25px;
@@ -274,12 +274,7 @@ html.rl-no-preview-pane {
 				}
 			}
 
-			.buttonUp {
-				right: 65px;
-				z-index: 0;
-			}
-
-			.buttonUp, .buttonUnFull {
+			.buttonUnFull {
 				display: none;
 			}
 
@@ -326,12 +321,12 @@ html.rl-no-preview-pane {
 					margin: 0;
 				}
 
-				.checkedParent {
+				.checkboxAttachment {
 					display: none;
 				}
 
 				&.selection-mode {
-					.checkedParent {
+					.checkboxAttachment {
 						display: inline-block;
 					}
 				}
@@ -656,14 +651,8 @@ html.rl-message-fullscreen {
 	}
 }
 
-html .messageItem {
-	.buttonUp, .buttonUp {
-		display: none !important;
-	}
-}
-
 html:not(.rl-mobile) .messageItem {
-	.buttonUp, .buttonFull {
+	.buttonFull {
 		display: none !important;
 	}
 }
@@ -673,9 +662,6 @@ html.rl-message-fullscreen .messageItem {
 		display: inline-block !important;
 	}
 	.buttonFull {
-		display: none !important;
-	}
-	.buttonUp {
 		display: none !important;
 	}
 }

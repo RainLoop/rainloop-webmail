@@ -26,8 +26,7 @@
 
 			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true">
 				<a id="contacts-more-dropdown-id" class="btn dropdown-toggle buttonMore" href="#" tabindex="-1" data-toggle="dropdown">
-					<i data-bind="css: {'icon-list': !contacts.importing() && !contacts.syncing(),
-						'icon-spinner': contacts.importing() || contacts.syncing()}"></i>
+					<i class="fontastic" data-bind="css: {'icon-spinner': contacts.importing() || contacts.syncing()}">☰</i>
 				</a>
 				<ul class="dropdown-menu g-ui-menu right-edge" role="menu" aria-labelledby="contacts-more-dropdown-id">
 					<li class="e-item" role="presentation">
@@ -84,9 +83,7 @@
 								&nbsp;
 							</div>
 							<div class="wrapper">
-								<div class="checkedParent">
-									<i class="checkboxItem" data-bind="css: checked() ? 'checkboxMessage icon-checkbox-checked' : 'checkboxMessage icon-checkbox-unchecked'"></i>
-								</div>
+								<div class="checkboxItem fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
 								<div class="nameParent actionHandle">
 									<span class="listName" data-bind="text: display"></span>
 									&nbsp;
@@ -158,9 +155,7 @@
 					<div data-bind="visible: !emptySelection()">
 						<div class="form-horizontal top-part">
 							<div class="control-group" data-bind="visible: !viewReadOnly() || contactHasValidName()">
-								<label class="control-label remove-padding-top fix-width">
-									<i class="fontastic iconsize24">👤</i>
-								</label>
+								<label class="control-label remove-padding-top fix-width fontastic iconsize24">👤</label>
 								<div class="controls fix-width">
 									<div data-bind="foreach: viewPropertiesNames">
 										<div class="property-line">
@@ -189,9 +184,7 @@
 								</div>
 							</div>
 							<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesEmails().length">
-								<label class="control-label remove-padding-top fix-width">
-									<i class="fontastic iconsize24" data-bind="tooltip: 'GLOBAL/EMAIL'">@</i>
-								</label>
+								<label class="control-label remove-padding-top fix-width fontastic iconsize24" data-bind="tooltip: 'GLOBAL/EMAIL'">@</label>
 								<div class="controls fix-width">
 									<div data-bind="foreach: viewPropertiesEmails">
 										<div class="property-line">
@@ -205,9 +198,7 @@
 								</div>
 							</div>
 							<div class="control-group" data-bind="visible: 0 < viewPropertiesPhones().length">
-								<label class="control-label remove-padding-top fix-width">
-									<i class="icon-telephone iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'"></i>
-								</label>
+								<label class="control-label remove-padding-top fix-width fontastic iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'">📞</label>
 								<div class="controls fix-width">
 									<div data-bind="foreach: viewPropertiesPhones">
 										<div class="property-line">
@@ -220,9 +211,7 @@
 								</div>
 							</div>
 							<div class="control-group" data-bind="visible: 0 < viewPropertiesWeb().length">
-								<label class="control-label remove-padding-top fix-width">
-									<i class="fontastic iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_WEB'">🌍</i>
-								</label>
+								<label class="control-label remove-padding-top fix-width fontastic iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_WEB'">🌍</label>
 								<div class="controls fix-width">
 									<div data-bind="foreach: viewPropertiesWeb">
 										<div class="property-line">
@@ -241,12 +230,9 @@
 								</div>
 							</div>
 						</div>
-
-<!--						<div class="e-read-only-sign">
-							<i class="fontastic iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'">🔒</i>
-						</div>-->
-
-
+<!--
+						<div class="e-read-only-sign fontastic iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_READ_ONLY'">🔒</div>
+-->
 					</div>
 				</div>
 			</div>

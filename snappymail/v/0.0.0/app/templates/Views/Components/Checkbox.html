@@ -1,8 +1,5 @@
 <span class="e-component e-checkbox inline" tabindex="0" data-bind="click: click, onSpace: click, css: { 'disabled': disable() || !enable() }">
-	<i role="checkbox" class="e-checkbox-icon" data-bind="css: {
-		'icon-checkbox-checked': value(),
-		'icon-checkbox-unchecked': !value()
-	}"></i>
+	<i role="checkbox" class="e-checkbox-icon fontastic" data-bind="text: value() ? '☑' : '☐'"></i>
 <!-- ko if: labeled -->
 	<span class="sub-label" data-bind="attr: {'data-i18n': label}, css: {'i18n-animation': labelAnimated}"></span>
 <!-- /ko -->

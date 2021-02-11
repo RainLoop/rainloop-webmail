@@ -1,7 +1,8 @@
 import { doc, createElement } from 'Common/Globals';
 import { EmailModel } from 'Model/Email';
 
-const contentType = 'snappymail/emailaddress';
+const contentType = 'snappymail/emailaddress',
+	getAddressKey = li => li && li.emailaddress && li.emailaddress.key;
 
 let dragAddress, datalist;
 
@@ -165,7 +166,7 @@ export class EmailAddressesComponent {
 
 	_editTag(ev) {
 		var li = ev.target.closest('li'),
-			tagKey = li && li.emailaddress.key;
+			tagKey = getAddressKey(li);
 
 		if (!tagKey) {
 			return true;
@@ -344,7 +345,7 @@ export class EmailAddressesComponent {
 	_removeTag(ev, li) {
 		ev.preventDefault();
 
-		var key = li.emailaddress.key,
+		var key = getAddressKey(li),
 			self = this,
 			indexFound = self._chosenValues.findIndex(v => key === v.key);
 
@@ -358,7 +359,7 @@ export class EmailAddressesComponent {
 
 	_removeDraggedTag(li) {
 		var
-			key = li.emailaddress.key,
+			key = getAddressKey(li),
 			self = this,
 			indexFound = self._chosenValues.findIndex(v => key === v.key)
 		;
@@ -380,7 +381,7 @@ export class EmailAddressesComponent {
 
 	_focus(ev) {
 		var li = ev.target.closest('li');
-		if (li && li.emailaddress.key) {
+		if (getAddressKey(li)) {
 			li.querySelector('a').focus();
 		} else {
 			this.focus();

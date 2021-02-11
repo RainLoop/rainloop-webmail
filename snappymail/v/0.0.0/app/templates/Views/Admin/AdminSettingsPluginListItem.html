@@ -4,8 +4,6 @@
 		<span class="plugin-name" data-bind="text: name"></span>
 	</td>
 	<td>
-		<span class="disabled-plugin">
-			<i data-bind="css: {'e-action icon-checkbox-checked': !disabled(), 'e-action icon-checkbox-unchecked': disabled}"></i>
-		</span>
+		<span class="disabled-plugin e-action fontastic" data-bind="text: disabled() ? '☐' : '☑'"></span>
 	</td>
 </tr>
