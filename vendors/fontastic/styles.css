@@ -41,9 +41,6 @@
 .icon-info::before {
   content: "\e00b";
 }
-.icon-right-dir::before {
-  content: "\e00c"; /* ▶ */
-}
 .icon-right-mini::before {
   content: "\e01e"; /* › */
 }
@@ -212,8 +209,11 @@
 .icon-floppy::before {
   content: "💾";
 }
+.icon-right-dir::before {
+  content: "▶";
+}
 .icon-play::before {
-  content: "▶️︎"; ⏵ ⏯
+  content: "▶️"; ⏵ ⏯
 }
 .icon-key::before {
   content: "🔑";
