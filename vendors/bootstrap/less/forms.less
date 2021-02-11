@@ -65,20 +65,7 @@ label {
 // Shared size and type resets
 select,
 textarea,
-input[type="text"],
-input[type="password"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="week"],
-input[type="number"],
-input[type="email"],
-input[type="url"],
-input[type="search"],
-input[type="tel"],
-input[type="color"] {
+input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
   display: inline-block;
   height: @baseLineHeight;
   padding: 4px 6px;
@@ -101,20 +88,7 @@ textarea {
 }
 // Everything else
 textarea,
-input[type="text"],
-input[type="password"],
-input[type="datetime"],
-input[type="datetime-local"],
-input[type="date"],
-input[type="month"],
-input[type="time"],
-input[type="week"],
-input[type="number"],
-input[type="email"],
-input[type="url"],
-input[type="search"],
-input[type="tel"],
-input[type="color"] {
+input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
   background-color: @inputBackground;
   border: 1px solid @inputBorder;
   box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
@@ -122,9 +96,10 @@ input[type="color"] {
 
   // Focus state
   &:focus {
-    border-color: rgba(82,168,236,.8);
+    background-color: #fff;
+    border-color: darken(@inputBorder, 20%);
+    box-shadow: none;
     outline: 0;
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
   }
 }
 
@@ -138,10 +113,6 @@ input[type="checkbox"] {
 
 // Reset width of input images, buttons, radios, checkboxes
 input[type="file"],
-input[type="image"],
-input[type="submit"],
-input[type="reset"],
-input[type="button"],
 input[type="radio"],
 input[type="checkbox"] {
   width: auto; // Override of generic input selector
@@ -157,7 +128,7 @@ input[type="file"] {
 // Make select elements obey height by applying a border
 select {
   width: 223px; // default input width + 10px of padding that doesn't get applied
-  border: 1px solid #bbb;
+  border: 1px solid @inputBorder;
   background-color: @inputBackground; // Chrome on Linux and Mobile Safari need background-color
 }
 
