@@ -431,15 +431,11 @@ html.rl-no-preview-pane {
 						img[data-x-src]:not([src])::after {
 							content: "🖼";
 							font-family: snappymail;
-							height:16px;
-							width:16px;
 							position: absolute;
 							top: 0;
 							left: 0;
 							color: #000;
 							background-color: #fff;
-							border: 1px solid #999;
-							padding: 3px;
 						}
 						img[data-x-src]:not([src]):hover::after {
 							content: attr(data-x-src);
@@ -450,6 +446,7 @@ html.rl-no-preview-pane {
 							width: -moz-fit-content;
 							width: -webkit-fit-content;
 							width: fit-content;
+							z-index: 1000;
 						}
 
 						pre, code {
