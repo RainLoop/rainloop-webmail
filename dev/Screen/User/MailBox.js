@@ -76,7 +76,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 	onRoute(folderHash, page, search) {
 		const folder = getFolderFromCacheList(getFolderFullNameRaw(folderHash.replace(/~([\d]+)$/, '')));
 		if (folder) {
-			let threadUid = folderHash.replace(/^(.+)~([\d]+)$/, '$2');
+			let threadUid = folderHash.replace(/^.+~([\d]+)$/, '$1');
 			if (folderHash === threadUid) {
 				threadUid = '';
 			}
@@ -135,13 +135,13 @@ export class MailBoxUserScreen extends AbstractScreen {
 		const
 			fNormS = (request, vals) => {
 				if (request) {
-					vals[0] = pString(vals[0]);
+					vals[0] = decodeURI(pString(vals[0]));
 					vals[1] = pInt(vals[1]);
 				} else {
 					vals[0] = getFolderInboxName();
 					vals[1] = 1;
 				}
-				return [decodeURI(vals[0]), 1 > vals[1] ? 1 : vals[1], decodeURI(pString(vals[2]))];
+				return [vals[0], 1 > vals[1] ? 1 : vals[1], decodeURI(pString(vals[2]))];
 			},
 			fNormD = (request, vals) =>
 				[decodeURI(request ? pString(vals[0]) : getFolderInboxName()), 1, decodeURI(pString(vals[1]))];
@@ -149,7 +149,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 		return [
 			[/^([^/]*)$/, { 'normalize_': fNormS }],
 			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, { 'normalize_': fNormD }],
-			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)(\/(.+)\/?)?$/, { 'normalize_': fNormS }]
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)(?:\/(.+)\/?)?$/, { 'normalize_': fNormS }]
 		];
 	}
 }
