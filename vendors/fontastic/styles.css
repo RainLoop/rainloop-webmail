@@ -15,6 +15,7 @@
   font-style: normal !important;
   font-weight: normal !important;
   font-variant: normal !important;
+  line-height: 1;
   text-transform: none !important;
   speak: never;
   -webkit-font-smoothing: antialiased;
@@ -105,9 +106,6 @@
 }
 .icon-folder-add::before {
   content: "\e03c";
-}
-.icon-folder::before {
-  content: "🗀";
 }
 .icon-bolt::before {
   content: "\e042";
@@ -280,5 +278,8 @@
 }
 .icon-spinner::before {
   content: "\e05e";
+}
+.icon-folder::before {
+  content: "📁";
 }
 */
