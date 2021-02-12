@@ -489,7 +489,7 @@ class Actions
 		$sSpecAuthToken = '_' . $oAccount->GetAuthTokenQ();
 
 		$this->SetSpecAuthToken($sSpecAuthToken);
-		Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken, 0);
+		Utils::SetCookie(self::AUTH_SPEC_TOKEN_KEY, $sSpecAuthToken);
 
 		if ($oAccount->SignMe() && 0 < \strlen($oAccount->SignMeToken())) {
 			Utils::SetCookie(self::AUTH_SIGN_ME_TOKEN_KEY,

@@ -2,7 +2,6 @@ module.exports = {
 	parser: 'babel-eslint',
 //	extends: ['eslint:recommended', 'plugin:prettier/recommended'],
 	extends: ['eslint:recommended'],
-	plugins: ['prettier'],
 	parserOptions: {
 		ecmaVersion: 6,
 		sourceType: 'module'
@@ -43,7 +42,6 @@ module.exports = {
 	// http://eslint.org/docs/rules/
 	rules: {
 		// plugins
-//		'prettier/prettier': 'error',
 		'no-mixed-spaces-and-tabs': 'off',
 		'max-len': [
 			'error',
