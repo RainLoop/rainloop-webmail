@@ -1,9 +1,4 @@
 <tr class="e-item" data-bind="css: {'disabled': disabled }">
-	<td class="configure-plugin-action e-action">
-		<i class="plugin-img icon-bolt"></i>
-		<span class="plugin-name" data-bind="text: name"></span>
-	</td>
-	<td>
-		<span class="disabled-plugin e-action fontastic" data-bind="text: disabled() ? '☐' : '☑'"></span>
-	</td>
+	<td class="configure-plugin-action e-action plugin-name" data-bind="text: name"></td>
+	<td class="disabled-plugin e-action fontastic" data-bind="text: disabled() ? '☐' : '☑'"></td>
 </tr>

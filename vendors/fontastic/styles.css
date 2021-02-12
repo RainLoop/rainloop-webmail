@@ -22,11 +22,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-[class^="icon-"]::before,
-[class*=" icon-"]::before {
-  line-height: 1;
-}
-
 .icon-arrows-in::before {
   content: "\e000";
 }
@@ -48,25 +43,11 @@
 .icon-down-mini::before {
   content: "\e01f"; /* › rotate 90 */
 }
-.icon-star-empty::before {
-  content: "☆";
-}
-/*
-.icon-star-half::before {
-  content: "⯪";
-}
-*/
-.icon-star::before {
-  content: "★";
-}
 .icon-list-add::before {
   content: "\e024";
 }
 .icon-warning-alt::before {
   content: "\e02a";
-}
-.icon-plus::before {
-  content: "✚";
 }
 .icon-ok::before {
   content: "✔";
@@ -107,9 +88,6 @@
 .icon-folder-add::before {
   content: "\e03c";
 }
-.icon-bolt::before {
-  content: "\e042";
-}
 .icon-download::before {
   content: "\e043";
 }
@@ -130,9 +108,6 @@
 }
 .icon-filter::before {
   content: "\e061"; /* ⊆ */
-}
-.icon-sync::before {
-  content: "\e062"; /* ⤻⃔ 🔁 🔃 */
 }
 .icon-import::before {
   content: "\e066";
@@ -156,6 +131,9 @@
   content: "\e073";
 }
 /*
+.icon-sync::before {
+  content: "⇆";
+}
 .icon-radio-checked::before {
   content: "⦿";
 }
@@ -281,5 +259,17 @@
 }
 .icon-folder::before {
   content: "📁";
+}
+.icon-plus::before {
+  content: "✚";
+}
+.icon-star-empty::before {
+  content: "☆";
+}
+.icon-star-half::before {
+  content: "⯪";
+}
+.icon-star::before {
+  content: "★";
 }
 */

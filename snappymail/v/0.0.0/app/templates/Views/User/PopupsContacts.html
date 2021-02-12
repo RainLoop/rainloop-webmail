@@ -7,7 +7,7 @@
 
 			<div class="btn-group">
 				<a class="btn button-create-contact" data-bind="command: newCommand">
-					<i class="icon-plus"></i>
+					<i class="fontastic">✚</i>
 					<span data-i18n="CONTACTS/BUTTON_ADD_CONTACT"></span>
 				</a>
 			</div>
@@ -49,7 +49,7 @@
 					</li>
 					<li class="e-item dividerbar" role="presentation" data-bind="visible: enableContactsSync() && allowContactsSync()">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="command: syncCommand">
-							<i data-bind="css: {'icon-sync': !contacts.syncing(), 'icon-spinner': contacts.syncing}"></i>
+							<i class="fontastic" data-bind="css: {'icon-spinner': contacts.syncing}">⇆</i>
 							<span data-i18n="CONTACTS/BUTTON_SYNC"></span>
 						</a>
 					</li>

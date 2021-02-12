@@ -181,9 +181,7 @@
 							<span class="infoParent g-ui-user-select-none" data-bind="click: function() { showFullInfo(!showFullInfo()); }">
 								<i class="icon-info" style="padding-top: 1px;"></i>
 							</span>
-							<span class="flagParent g-ui-user-select-none">
-								<i class="icon-star-empty flagOff" data-bind="css: {'icon-star flagOn': viewIsFlagged, 'icon-star-empty flagOff': !viewIsFlagged()}" style="padding-top: 2px;"></i>
-							</span>
+							<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: viewIsFlagged() ? '★' : '☆', css: {'flagOn': viewIsFlagged, 'flagOff': !viewIsFlagged()}"></span>
 							<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
 							<span class="subject" data-bind="text: viewSubject, title: viewSubject, event: { 'dblclick': toggleFullScreen }"></span>
 							<span class="i18n emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT" data-bind="event: { 'dblclick': toggleFullScreen }"></span>
