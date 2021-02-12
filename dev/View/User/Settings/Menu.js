@@ -1,12 +1,12 @@
 import { KeyState } from 'Common/Enums';
 import { leftPanelDisabled } from 'Common/Globals';
-import { settings, inbox } from 'Common/Links';
+import { settings, mailbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 
 import { settingsMenuKeysHandler } from 'Knoin/Knoin';
 import { AbstractViewLeft } from 'Knoin/AbstractViews';
 
-class MenuSettingsUserView extends AbstractViewLeft {
+export class MenuSettingsUserView extends AbstractViewLeft {
 	/**
 	 * @param {Object} screen
 	 */
@@ -36,8 +36,6 @@ class MenuSettingsUserView extends AbstractViewLeft {
 	}
 
 	backToMailBoxClick() {
-		rl.route.setHash(inbox(getFolderInboxName()));
+		rl.route.setHash(mailbox(getFolderInboxName()));
 	}
 }
-
-export { MenuSettingsUserView };

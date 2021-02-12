@@ -1,4 +1,4 @@
-import { inbox } from 'Common/Links';
+import { mailbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 import { leftPanelDisabled } from 'Common/Globals';
 
@@ -6,7 +6,7 @@ import MessageStore from 'Stores/User/Message';
 
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
-class PaneSettingsUserView extends AbstractViewRight {
+export class PaneSettingsUserView extends AbstractViewRight {
 	constructor() {
 		super('User/Settings/Pane', 'SettingsPane');
 
@@ -38,8 +38,6 @@ class PaneSettingsUserView extends AbstractViewRight {
 	}
 
 	backToMailBoxClick() {
-		rl.route.setHash(inbox(getFolderInboxName()));
+		rl.route.setHash(mailbox(getFolderInboxName()));
 	}
 }
-
-export { PaneSettingsUserView };

@@ -359,15 +359,11 @@ export class Selector {
 		if (result) {
 			this.focusedItem(result);
 
-			if (focused) {
-				if (bShiftKey && isArrow) {
-					focused.checked(!focused.checked());
-				} else if (' ' === sEventKey) {
-					focused.checked(!focused.checked());
-				}
+			if (focused && ((bShiftKey && isArrow) || ' ' === sEventKey)) {
+				focused.checked(!focused.checked());
 			}
 
-			if ((this.autoSelect() || !!bForceSelect) && !this.isListChecked() && ' ' !== sEventKey) {
+			if (' ' !== sEventKey && (this.autoSelect() || !!bForceSelect) && !this.isListChecked()) {
 				this.selectedItem(result);
 			}
 

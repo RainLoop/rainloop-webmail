@@ -18,7 +18,7 @@ import { ComposePopupView } from 'View/Popup/Compose';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-class FolderListMailBoxUserView extends AbstractViewLeft {
+export class FolderListMailBoxUserView extends AbstractViewLeft {
 	constructor() {
 		super('User/MailBox/FolderList', 'MailFolderList');
 
@@ -220,5 +220,3 @@ class FolderListMailBoxUserView extends AbstractViewLeft {
 		}
 	}
 }
-
-export { FolderListMailBoxUserView };

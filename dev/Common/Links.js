@@ -149,7 +149,7 @@ export function themePreviewLink(theme) {
  * @param {string} inboxFolderName = 'INBOX'
  * @returns {string}
  */
-export function inbox(inboxFolderName = 'INBOX') {
+export function mailbox(inboxFolderName = 'INBOX') {
 	return HASH_PREFIX + 'mailbox/' + inboxFolderName;
 }
 
