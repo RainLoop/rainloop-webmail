@@ -28,9 +28,10 @@ module.exports = {
 		'SquireUI': "readonly",
 		// node_modules/knockout but dev/External/ko.js is used
 		'ko': "readonly",
+		// dev/External/ifvisible.js
+		'ifvisible': "readonly",
 		// vendors/routes/
 		'hasher': "readonly",
-		'signals': "readonly",
 		'Crossroads': "readonly",
 		// vendors/jua
 		'Jua': "readonly",

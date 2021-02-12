@@ -1,5 +1,7 @@
 (doc => {
 	let visible = "visible",
+		status = visible,
+		timer = 0,
 		wakeUp = () => {
 			clearTimeout(timer);
 			if (status !== visible) {
@@ -12,8 +14,6 @@
 				}
 			}, 10000);
 		},
-		status = visible,
-		timer = 0,
 		init = () => {
 			init = ()=>{};
 			// Safari

@@ -232,20 +232,6 @@ export class Selector {
 		}
 	}
 
-	/**
-	 * @param {boolean} forceSelect
-	 */
-	goDown(forceSelect) {
-		this.newSelectPosition('ArrowDown', false, forceSelect);
-	}
-
-	/**
-	 * @param {boolean} forceSelect
-	 */
-	goUp(forceSelect) {
-		this.newSelectPosition('ArrowUp', false, forceSelect);
-	}
-
 	unselect() {
 		this.selectedItem(null);
 		this.focusedItem(null);
@@ -283,8 +269,7 @@ export class Selector {
 				return true;
 			});
 
-			shortcuts.add('arrowup', 'meta', keyScope, () => false);
-			shortcuts.add('arrowdown', 'meta', keyScope, () => false);
+			shortcuts.add('arrowup,arrowdown', 'meta', keyScope, () => false);
 
 			shortcuts.add('arrowup,arrowdown', 'shift', keyScope, event => {
 				this.newSelectPosition(event.key, true);
@@ -329,7 +314,7 @@ export class Selector {
 			result = null;
 
 		const pageStep = 10,
-			list = this.list,
+			list = this.list(),
 			listLen = list.length,
 			focused = this.focusedItem();
 
@@ -342,9 +327,7 @@ export class Selector {
 					} else if (++i < listLen) {
 						result = list[i];
 					}
-					if (!result && ' ' !== sEventKey) {
-						(this.oCallbacks.onUpUpOrDownDown || (()=>true))('ArrowUp' === sEventKey);
-					}
+					result || (this.oCallbacks.onUpUpOrDownDown || (()=>true))('ArrowUp' === sEventKey);
 				} else if ('Home' === sEventKey) {
 					result = list[0];
 				} else if ('End' === sEventKey) {
@@ -361,13 +344,11 @@ export class Selector {
 					}
 				}
 			} else if (
-				'ArrowUp' == sEventKey ||
 				'Home' == sEventKey ||
 				'PageUp' == sEventKey
 			) {
 				result = list[0];
 			} else if (
-				'ArrowDown' === sEventKey ||
 				'End' === sEventKey ||
 				'PageDown' === sEventKey
 			) {
@@ -392,9 +373,7 @@ export class Selector {
 
 			this.scrollToFocused();
 		} else if (focused) {
-			if (bShiftKey && isArrow) {
-				focused.checked(!focused.checked());
-			} else if (' ' === sEventKey) {
+			if ((bShiftKey && isArrow) || ' ' === sEventKey) {
 				focused.checked(!focused.checked());
 			}
 

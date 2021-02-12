@@ -49,10 +49,9 @@ import { ComposePopupView } from 'View/Popup/Compose';
 import { AdvancedSearchPopupView } from 'View/Popup/AdvancedSearch';
 
 const
-	canBeMovedHelper = () => MessageStore.hasCheckedOrSelected(),
-	ifvisible = window.ifvisible;
+	canBeMovedHelper = () => MessageStore.hasCheckedOrSelected();
 
-class MessageListMailBoxUserView extends AbstractViewRight {
+export class MessageListMailBoxUserView extends AbstractViewRight {
 	constructor() {
 		super('User/MailBox/MessageList', 'MailMessageList');
 
@@ -211,9 +210,13 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 
 		this.selector.on('onUpUpOrDownDown', v => this.goToUpUpOrDownDown(v));
 
-		addEventListener('mailbox.message-list.selector.go-down', e => this.selector.goDown(e.detail));
+		addEventListener('mailbox.message-list.selector.go-down',
+			e => this.selector.newSelectPosition('ArrowDown', false, e.detail)
+		);
 
-		addEventListener('mailbox.message-list.selector.go-up', e => this.selector.goUp(e.detail));
+		addEventListener('mailbox.message-list.selector.go-up',
+			e => this.selector.newSelectPosition('ArrowUp', false, e.detail)
+		);
 
 		addEventListener('mailbox.message.show', e => {
 			const sFolder = e.detail.Folder, sUid = e.detail.Uid;
@@ -703,7 +706,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 		this.initUploaderForAppend();
 		this.initShortcuts();
 
-		if (ifvisible && !rl.settings.app('mobile') && Settings.capa(Capa.Prefetch)) {
+		if (!rl.settings.app('mobile') && Settings.capa(Capa.Prefetch)) {
 			ifvisible.idle(this.prefetchNextTick.bind(this));
 		}
 	}
@@ -854,7 +857,7 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 	}
 
 	prefetchNextTick() {
-		if (ifvisible && !this.bPrefetch && !ifvisible.now() && this.viewModelVisible) {
+		if (!this.bPrefetch && !ifvisible.now() && this.viewModelVisible) {
 			const message = this.messageList.find(
 				item => item && !hasRequestedMessage(item.folder, item.uid)
 			);
@@ -928,5 +931,3 @@ class MessageListMailBoxUserView extends AbstractViewRight {
 		return !!oJua;
 	}
 }
-
-export { MessageListMailBoxUserView };
