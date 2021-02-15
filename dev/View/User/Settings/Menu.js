@@ -19,11 +19,9 @@ export class MenuSettingsUserView extends AbstractViewLeft {
 	}
 
 	onBuild(dom) {
-		if (isMobile()) {
-			dom.addEventListener('click', event =>
+		isMobile() && dom.addEventListener('click', event =>
 				event.target.closestWithin('.b-settings-menu .e-item.selectable', dom) && leftPanelDisabled(true)
 			);
-		}
 
 		shortcuts.add('arrowup,arrowdown', '', KeyState.Settings,
 			settingsMenuKeysHandler(dom.querySelectorAll('.b-settings-menu .e-item')));

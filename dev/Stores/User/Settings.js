@@ -42,9 +42,9 @@ class SettingsUserStore {
 	subscribers() {
 		const htmlCL = doc.documentElement.classList;
 		this.layout.subscribe(value => {
-			htmlCL.toggle('rl-no-preview-pane', isMobile() || Layout.NoPreview === value);
-			htmlCL.toggle('rl-side-preview-pane', !isMobile() && Layout.SidePreview === value);
-			htmlCL.toggle('rl-bottom-preview-pane', !isMobile() && Layout.BottomPreview === value);
+			htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
+			htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
+			htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
 			dispatchEvent(new CustomEvent('rl-layout', {detail:value}));
 		});
 	}

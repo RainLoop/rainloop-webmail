@@ -49,7 +49,6 @@ class TwoFactorTestPopupView extends AbstractViewPopup {
 	}
 
 	onShowWithDelay() {
-//		isMobile() ||
 		this.codeFocused(true);
 	}
 }

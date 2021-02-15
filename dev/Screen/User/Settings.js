@@ -104,9 +104,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 		keyScope(KeyState.Settings);
 		leftPanelType('');
 
-		if (isMobile()) {
-			leftPanelDisabled(true);
-		}
+		isMobile() && leftPanelDisabled(true);
 	}
 
 	setSettingsTitle() {

@@ -72,7 +72,6 @@ class FolderCreatePopupView extends AbstractViewPopup {
 	}
 
 	onShowWithDelay() {
-//		isMobile() ||
 		this.folderNameFocused(true);
 	}
 }

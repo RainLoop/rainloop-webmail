@@ -1,5 +1,5 @@
 import { Capa } from 'Common/Enums';
-import { Focused, ClientSideKeyName } from 'Common/EnumsUser';
+import { Focused } from 'Common/EnumsUser';
 import { doc, leftPanelDisabled, leftPanelType, moveAction, Settings, isMobile } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
@@ -56,9 +56,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 		AppStore.focusedState(Focused.None);
 		AppStore.focusedState(Focused.MessageList);
 
-		if (isMobile()) {
-			leftPanelDisabled(true);
-		}
+		isMobile() && leftPanelDisabled(true);
 
 		if (Settings.capa(Capa.Folders)) {
 			leftPanelType('');
@@ -118,9 +116,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 */
 	onBuild() {
 		if (!isMobile()) {
-			setTimeout(() =>
-				rl.app.initHorizontalLayoutResizer(ClientSideKeyName.MessageListSize)
-			, 1);
+			setTimeout(() => rl.app.initHorizontalLayoutResizer(), 1);
 		}
 
 		doc.addEventListener('click', event =>

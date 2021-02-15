@@ -858,11 +858,11 @@ class AppUser extends AbstractApp {
 		}
 	}
 
-	initHorizontalLayoutResizer(sClientSideKeyName) {
+	initHorizontalLayoutResizer() {
 		const top = doc.querySelector('.b-message-list-wrapper'),
 			bottom = doc.querySelector('.b-message-view-wrapper'),
 			fDisable = bDisable => {
-				this.setLayoutResizer(top, bottom, sClientSideKeyName,
+				this.setLayoutResizer(top, bottom, ClientSideKeyName.MessageListSize,
 					(bDisable || !$htmlCL.contains('rl-bottom-preview-pane')) ? null : 'height');
 			};
 		if (top && bottom) {

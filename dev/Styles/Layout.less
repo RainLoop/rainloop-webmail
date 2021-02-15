@@ -333,6 +333,7 @@ html.rl-left-panel-none #rl-right {
 	width: 10px !important;
 }
 
+html.rl-mobile,
 html.rl-no-preview-pane {
 
 	#rl-sub-left {
@@ -349,11 +350,11 @@ html.rl-no-preview-pane {
 	}
 }
 
-html.rl-side-preview-pane #rl-right .resizer {
+html.rl-side-preview-pane:not(.rl-mobile) #rl-right .resizer {
 	display: none !important;
 }
 
-html.rl-bottom-preview-pane {
+html.rl-bottom-preview-pane:not(.rl-mobile) {
 
 	#rl-sub-left {
 		right: @rlBottomMargin !important;

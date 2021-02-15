@@ -166,9 +166,7 @@ class IdentityPopupView extends AbstractViewPopup {
 	}
 
 	onShowWithDelay() {
-		if (!this.owner()/* && !isMobile()*/) {
-			this.emailFocused(true);
-		}
+		this.owner() || this.emailFocused(true);
 	}
 
 	onHideWithDelay() {
