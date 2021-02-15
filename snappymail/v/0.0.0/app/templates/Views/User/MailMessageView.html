@@ -1,6 +1,6 @@
 <div id="rl-sub-right">
 	<div class="messageView" data-bind="css: {'message-selected': isMessageSelected, 'message-focused': messageFocused}">
-		<div class="toolbar top-toolbar g-ui-user-select-none" data-bind="visible: !usePreviewPane()">
+		<div class="toolbar top-toolbar g-ui-user-select-none">
 			<div class="messageButtons btn-toolbar">
 				<div class="btn-group" data-bind="tooltip: 'GLOBAL/CLOSE'">
 					<a class="btn buttonClose fontastic" data-bind="command: closeMessageCommand">✖</a>
@@ -95,7 +95,7 @@
 										</a>
 									</li>
 								</div>
-								<div data-bind="visible: allowMessageListActions && usePreviewPane()" class="dividerbar">
+								<div data-bind="visible: allowMessageListActions" class="dividerbar">
 									<li class="e-item" role="presentation" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled()">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="command: archiveCommand">
 											<i class="icon-archive"></i>

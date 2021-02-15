@@ -363,7 +363,7 @@ export class Selector {
 				focused.checked(!focused.checked());
 			}
 
-			if (' ' !== sEventKey && (this.autoSelect() || !!bForceSelect) && !this.isListChecked()) {
+			if (' ' !== sEventKey && (this.autoSelect() || bForceSelect) && !this.isListChecked()) {
 				this.selectedItem(result);
 			}
 

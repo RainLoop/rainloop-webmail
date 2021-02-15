@@ -112,7 +112,8 @@
 		<div class="b-message-list-wrapper">
 			<div class="second-toolbar thm-message-list-top-toolbar">
 				<div class="form-inline">
-					<div class="input-append pull-right" data-bind="visible: allowSearch">
+					<i class="checkboxCheckAll fontastic" data-bind="text: checkAll() ? (isIncompleteChecked() ? '▣' : '☑') : '☐'"></i>
+					<div class="input-append" data-bind="visible: allowSearch">
 						<div class="close-input-wrp">
 							<a class="close" data-bind="click: cancelSearch, visible: '' !== messageListSearchDesc()">×</a>
 							<input type="text" class="i18n span4 inputSearch" tabindex="-1" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: inputProxyMessageListSearch, onEnter: searchEnterAction, hasfocus: inputMessageListSearchFocus" />
@@ -121,7 +122,6 @@
 							<span class="caret"></span>
 						</a>
 					</div>
-					<i class="checkboxCheckAll fontastic" data-bind="text: checkAll() ? (isIncompleteChecked() ? '▣' : '☑') : '☐'"></i>
 				</div>
 			</div>
 			<div class="b-content" data-bind="initDom: dragOverBodyArea">

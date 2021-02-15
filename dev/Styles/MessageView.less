@@ -605,6 +605,12 @@ html.rl-no-preview-pane .messageView {
 	}
 }
 
+html:not(.rl-mobile):not(.rl-no-preview-pane) .messageView {
+	.top-toolbar {
+		display: none;
+	}
+}
+
 html.rl-bottom-preview-pane:not(.rl-mobile) .messageView {
 	.b-content {
 		bottom: @rlBottomMargin;

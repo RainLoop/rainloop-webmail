@@ -32,7 +32,6 @@ export class GeneralUserSettings {
 
 		this.editorDefaultType = SettingsStore.editorDefaultType;
 		this.layout = SettingsStore.layout;
-		this.usePreviewPane = SettingsStore.usePreviewPane;
 
 		this.enableSoundNotification = NotificationStore.enableSoundNotification;
 

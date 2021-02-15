@@ -96,7 +96,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		this.useThreads = SettingsStore.useThreads;
 		this.replySameFolder = SettingsStore.replySameFolder;
 		this.layout = SettingsStore.layout;
-		this.usePreviewPane = SettingsStore.usePreviewPane;
 		this.isMessageSelected = MessageStore.isMessageSelected;
 		this.messageActiveDom = MessageStore.messageActiveDom;
 		this.messageError = MessageStore.messageError;
@@ -284,14 +283,14 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	@command((self) => !self.messageListAndMessageViewLoading())
 	goUpCommand() {
 		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-up',
-			{detail:SettingsStore.usePreviewPane() || !!this.message()}
+			{detail:SettingsStore.usePreviewPane() || !!this.message()} // bForceSelect
 		));
 	}
 
 	@command((self) => !self.messageListAndMessageViewLoading())
 	goDownCommand() {
 		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-down',
-			{detail:SettingsStore.usePreviewPane() || !!this.message()}
+			{detail:SettingsStore.usePreviewPane() || !!this.message()} // bForceSelect
 		));
 	}
 
