@@ -17,7 +17,7 @@ import {
 	ClientSideKeyName
 } from 'Common/EnumsUser';
 
-import { doc, createElement, $htmlCL, Settings, leftPanelDisabled } from 'Common/Globals';
+import { doc, createElement, $htmlCL, Settings, leftPanelDisabled, isMobile } from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
@@ -871,12 +871,11 @@ class AppUser extends AbstractApp {
 		}
 	}
 
-	initVerticalLayoutResizer(sClientSideKeyName) {
+	initVerticalLayoutResizer() {
 		const left = doc.getElementById('rl-left'),
 			right = doc.getElementById('rl-right'),
-			fDisable = bDisable => {
-				this.setLayoutResizer(left, right, sClientSideKeyName, bDisable ? null : 'width');
-			};
+			fDisable = bDisable =>
+				this.setLayoutResizer(left, right, ClientSideKeyName.FolderListSize, bDisable ? null : 'width');
 		if (left && right) {
 			fDisable(false);
 			leftPanelDisabled.subscribe(value => fDisable(value));
@@ -1023,8 +1022,8 @@ class AppUser extends AbstractApp {
 								}, 500);
 							}
 
-							if (!Settings.app('mobile')) {
-								setTimeout(() => this.initVerticalLayoutResizer(ClientSideKeyName.FolderListSize), 1);
+							if (!isMobile()) {
+								setTimeout(() => this.initVerticalLayoutResizer(), 1);
 							}
 						} else {
 							this.logout();

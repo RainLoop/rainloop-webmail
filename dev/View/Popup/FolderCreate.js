@@ -72,7 +72,7 @@ class FolderCreatePopupView extends AbstractViewPopup {
 	}
 
 	onShowWithDelay() {
-//		rl.settings.app('mobile') ||
+//		isMobile() ||
 		this.folderNameFocused(true);
 	}
 }

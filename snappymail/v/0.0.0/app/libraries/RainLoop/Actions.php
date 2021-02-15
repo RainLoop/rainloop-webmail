@@ -660,7 +660,7 @@ class Actions
 	{
 		if (null === $this->oAddressBookProvider) {
 			$oDriver = null;
-			if ($this->GetCapa(false, false, Enumerations\Capa::CONTACTS, $oAccount)) {
+			if ($this->GetCapa(false, Enumerations\Capa::CONTACTS, $oAccount)) {
 				if ($this->Config()->Get('contacts', 'enable', false) || $bForceEnable) {
 					$oDriver = $this->fabrica('address-book', $oAccount);
 				}
@@ -983,12 +983,12 @@ class Actions
 		return $this->GetAccountFromCustomToken($this->getLocalAuthToken(), $bThrowExceptionOnFalse, true, true);
 	}
 
-	public function AppDataSystem(bool $bAdmin = false, bool $bMobile = false, bool $bMobileDevice = false): array
+	public function AppDataSystem(bool $bAdmin = false): array
 	{
 		$oConfig = $this->Config();
 
 		$aAttachmentsActions = array();
-		if ($this->GetCapa(false, $bMobile, Enumerations\Capa::ATTACHMENTS_ACTIONS)) {
+		if ($this->GetCapa(false, Enumerations\Capa::ATTACHMENTS_ACTIONS)) {
 			if (\class_exists('PharData') || \class_exists('ZipArchive')) {
 				$aAttachmentsActions[] = 'zip';
 			}
@@ -997,8 +997,6 @@ class Actions
 		return \array_merge(array(
 			'version' => APP_VERSION,
 			'admin' => $bAdmin,
-			'mobile' => $bMobile,
-			'mobileDevice' => $bMobileDevice,
 			'webPath' => Utils::WebPath(),
 			'webVersionPath' => Utils::WebVersionPath(),
 			'token' => $oConfig->Get('security', 'csrf_protection', false) ? Utils::GetCsrfToken() : '',
@@ -1027,7 +1025,7 @@ class Actions
 		) : array());
 	}
 
-	public function AppData(bool $bAdmin, bool $bMobile = false, bool $bMobileDevice = false, string $sAuthAccountHash = ''): array
+	public function AppData(bool $bAdmin, string $sAuthAccountHash = ''): array
 	{
 		if (0 < \strlen($sAuthAccountHash) && \preg_match('/[^_\-\.a-zA-Z0-9]/', $sAuthAccountHash)) {
 			$sAuthAccountHash = '';
@@ -1071,7 +1069,7 @@ class Actions
 			'Admin' => array(),
 			'Capa' => array(),
 			'Plugins' => array(),
-			'System' => $this->AppDataSystem($bAdmin, $bMobile, $bMobileDevice),
+			'System' => $this->AppDataSystem($bAdmin),
 
 			'NewMoveToFolder' => (bool) $oConfig->Get('interface', 'new_move_to_folder_button', true),
 			'AllowLanguagesOnSettings' => (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true),
@@ -1165,11 +1163,11 @@ class Actions
 				}
 			}
 
-			$aResult['Capa'] = $this->Capa(false, $bMobile, $oAccount);
+			$aResult['Capa'] = $this->Capa(false, $oAccount);
 
 			if ($aResult['Auth'] && !$aResult['RequireTwoFactor']) {
-				if ($this->GetCapa(false, $bMobile, Enumerations\Capa::TWO_FACTOR, $oAccount) &&
-					$this->GetCapa(false, $bMobile, Enumerations\Capa::TWO_FACTOR_FORCE, $oAccount) &&
+				if ($this->GetCapa(false, Enumerations\Capa::TWO_FACTOR, $oAccount) &&
+					$this->GetCapa(false, Enumerations\Capa::TWO_FACTOR_FORCE, $oAccount) &&
 					$this->TwoFactorAuthProvider()->IsActive()) {
 					$aData = $this->getTwoFactorInfo($oAccount, true);
 
@@ -1207,7 +1205,7 @@ class Actions
 				);
 			}
 
-			$aResult['Capa'] = $this->Capa(true, $bMobile);
+			$aResult['Capa'] = $this->Capa(true);
 		}
 
 		$aResult['ProjectHash'] = \md5($aResult['AccountHash'] . APP_VERSION . $this->Plugins()->Hash());
@@ -1222,7 +1220,7 @@ class Actions
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 			if ($oSettingsLocal instanceof Settings) {
-//				if ($this->GetCapa(false, $bMobile, Enumerations\Capa::FOLDERS, $oAccount))
+//				if ($this->GetCapa(false, Enumerations\Capa::FOLDERS, $oAccount))
 
 				$aResult['SentFolder'] = (string)$oSettingsLocal->GetConf('SentFolder', '');
 				$aResult['DraftFolder'] = (string)$oSettingsLocal->GetConf('DraftFolder', '');
@@ -1232,7 +1230,7 @@ class Actions
 				$aResult['NullFolder'] = (string)$oSettingsLocal->GetConf('NullFolder', '');
 			}
 
-			if ($this->GetCapa(false, $bMobile, Enumerations\Capa::SETTINGS, $oAccount)) {
+			if ($this->GetCapa(false, Enumerations\Capa::SETTINGS, $oAccount)) {
 				if ($oSettings instanceof Settings) {
 					if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
 						$sLanguage = (string)$oSettings->GetConf('Language', $sLanguage);
@@ -1249,11 +1247,11 @@ class Actions
 					$aResult['AutoLogout'] = (int)$oSettings->GetConf('AutoLogout', $aResult['AutoLogout']);
 					$aResult['Layout'] = (int)$oSettings->GetConf('Layout', $aResult['Layout']);
 
-					if (!$this->GetCapa(false, $bMobile, Enumerations\Capa::AUTOLOGOUT, $oAccount)) {
+					if (!$this->GetCapa(false, Enumerations\Capa::AUTOLOGOUT, $oAccount)) {
 						$aResult['AutoLogout'] = 0;
 					}
 
-					if ($this->GetCapa(false, $bMobile, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
+					if ($this->GetCapa(false, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
 						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
 						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
 					}
@@ -1265,7 +1263,7 @@ class Actions
 					$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 					$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
 
-					if ($this->GetCapa(false, $bMobile, Enumerations\Capa::THEMES, $oAccount)) {
+					if ($this->GetCapa(false, Enumerations\Capa::THEMES, $oAccount)) {
 						$sTheme = (string)$oSettingsLocal->GetConf('Theme', $sTheme);
 					}
 				}
@@ -1326,16 +1324,6 @@ class Actions
 		$aResult['ParentEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['ParentEmail']);
 		$aResult['MailToEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['MailToEmail']);
 		$aResult['DevEmail'] = \MailSo\Base\Utils::IdnToUtf8($aResult['DevEmail']);
-
-		// Mobile override
-		if ($bMobile) {
-			$aResult['Layout'] = Enumerations\Layout::NO_PREVIEW;
-
-			$aResult['UseCheckboxesInList'] = true;
-
-			$aResult['UserBackgroundName'] = '';
-			$aResult['UserBackgroundHash'] = '';
-		}
 
 		$this->Plugins()->InitAppData($bAdmin, $aResult, $oAccount);
 
@@ -1611,7 +1599,7 @@ class Actions
 
 	public function GetAccounts(Model\Account $oAccount): array
 	{
-		if ($this->GetCapa(false, false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
+		if ($this->GetCapa(false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
 			$sAccounts = $this->StorageProvider()->Get($oAccount,
 				Providers\Storage\Enumerations\StorageType::CONFIG,
 				'accounts'
@@ -1866,7 +1854,7 @@ class Actions
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
+		if (!$this->GetCapa(false, Enumerations\Capa::USER_BACKGROUND, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -2041,7 +2029,7 @@ class Actions
 		return $this->DefaultResponse(__FUNCTION__, true);
 	}
 
-	public function Capa(bool $bAdmin, bool $bMobile = false, ?Model\Account $oAccount = null): array
+	public function Capa(bool $bAdmin, ?Model\Account $oAccount = null): array
 	{
 		$oConfig = $this->Config();
 
@@ -2078,7 +2066,7 @@ class Actions
 				$aResult[] = Enumerations\Capa::IDENTITIES;
 			}
 
-			if ($oConfig->Get('capa', 'x-templates', true) && !$bMobile) {
+			if ($oConfig->Get('capa', 'x-templates', true)) {
 				$aResult[] = Enumerations\Capa::TEMPLATES;
 			}
 
@@ -2086,11 +2074,11 @@ class Actions
 				$aResult[] = Enumerations\Capa::THEMES;
 			}
 
-			if ($oConfig->Get('webmail', 'allow_user_background', false) && !$bMobile) {
+			if ($oConfig->Get('webmail', 'allow_user_background', false)) {
 				$aResult[] = Enumerations\Capa::USER_BACKGROUND;
 			}
 
-			if ($oConfig->Get('security', 'openpgp', false) && !$bMobile) {
+			if ($oConfig->Get('security', 'openpgp', false)) {
 				$aResult[] = Enumerations\Capa::OPEN_PGP;
 			}
 
@@ -2112,7 +2100,7 @@ class Actions
 			}
 		}
 
-		if ($oConfig->Get('capa', 'help', true) && !$bMobile) {
+		if ($oConfig->Get('capa', 'help', true)) {
 			$aResult[] = Enumerations\Capa::HELP;
 		}
 
@@ -2135,7 +2123,7 @@ class Actions
 		if ($oConfig->Get('capa', 'search', true)) {
 			$aResult[] = Enumerations\Capa::SEARCH;
 
-			if ($oConfig->Get('capa', 'search_adv', true) && !$bMobile) {
+			if ($oConfig->Get('capa', 'search_adv', true)) {
 				$aResult[] = Enumerations\Capa::SEARCH_ADV;
 			}
 		}
@@ -2144,7 +2132,7 @@ class Actions
 			$aResult[] = Enumerations\Capa::ATTACHMENT_THUMBNAILS;
 		}
 
-		if ($oConfig->Get('labs', 'allow_prefetch', false) && !$bMobile) {
+		if ($oConfig->Get('labs', 'allow_prefetch', false)) {
 			$aResult[] = Enumerations\Capa::PREFETCH;
 		}
 
@@ -2153,9 +2141,9 @@ class Actions
 		return $aResult;
 	}
 
-	public function GetCapa(bool $bAdmin, bool $bMobile, string $sName, ?Model\Account $oAccount = null): bool
+	public function GetCapa(bool $bAdmin, string $sName, ?Model\Account $oAccount = null): bool
 	{
-		return \in_array($sName, $this->Capa($bAdmin, $bMobile, $oAccount));
+		return \in_array($sName, $this->Capa($bAdmin, $oAccount));
 	}
 
 	public function etag(string $sKey): string

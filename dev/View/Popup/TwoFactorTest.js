@@ -49,7 +49,7 @@ class TwoFactorTestPopupView extends AbstractViewPopup {
 	}
 
 	onShowWithDelay() {
-//		rl.settings.app('mobile') ||
+//		isMobile() ||
 		this.codeFocused(true);
 	}
 }

@@ -3,14 +3,10 @@
 		<div class="toolbar top-toolbar g-ui-user-select-none" data-bind="visible: !usePreviewPane()">
 			<div class="messageButtons btn-toolbar">
 				<div class="btn-group" data-bind="tooltip: 'GLOBAL/CLOSE'">
-					<a class="btn buttonClose" data-bind="command: closeMessageCommand">
-						<i class="fontastic">✖</i>
-					</a>
+					<a class="btn buttonClose fontastic" data-bind="command: closeMessageCommand">✖</a>
 				</div>
 				<div class="btn-group" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
-					<a class="btn btn-success buttonEdit" data-bind="command: messageEditCommand">
-						<i class="fontastic icon-white">🖉</i>
-					</a>
+					<a class="btn btn-success buttonEdit fontastic icon-white" data-bind="command: messageEditCommand">🖉</a>
 				</div>
 				<div class="btn-group">
 					<a class="btn button-archive" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'GLOBAL/TO_ARCHIVE'">
@@ -55,18 +51,12 @@
 
 				<div class="message-fixed-button-toolbar" data-bind="visible: message">
 					<div class="btn-group" style="margin-right: -11px;">
-						<a class="btn btn-thin-2 btn-transparent buttonReply"
-							data-bind="visible: 'reply' === lastReplyAction() && allowComposer, command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">
-							<i class="fontastic">←</i>
-						</a>
-						<a class="btn btn-thin-2 btn-transparent buttonReplyAll"
-							data-bind="visible: 'replyall' === lastReplyAction() && allowComposer, command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">
-							<i class="fontastic">↞</i>
-						</a>
-						<a class="btn btn-thin-2 btn-transparent buttonForward"
-							data-bind="visible: 'forward' === lastReplyAction() && allowComposer, command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">
-							<i class="fontastic">→</i>
-						</a>
+						<a class="btn btn-thin-2 btn-transparent buttonReply fontastic"
+							data-bind="visible: 'reply' === lastReplyAction() && allowComposer, command: replyCommand, tooltip: 'MESSAGE/BUTTON_REPLY'">←</a>
+						<a class="btn btn-thin-2 btn-transparent buttonReplyAll fontastic"
+							data-bind="visible: 'replyall' === lastReplyAction() && allowComposer, command: replyAllCommand, tooltip: 'MESSAGE/BUTTON_REPLY_ALL'">↞</a>
+						<a class="btn btn-thin-2 btn-transparent buttonForward fontastic"
+							data-bind="visible: 'forward' === lastReplyAction() && allowComposer, command: forwardCommand, tooltip: 'MESSAGE/BUTTON_FORWARD'">→</a>
 						<div class="btn-group" data-bind="registerBootstrapDropdown: true, visible: allowComposer || allowMessageListActions || allowMessageActions" style="display: inline-block">
 							<a class="btn btn-thin-2 btn-transparent dropdown-toggle" id="more-view-dropdown-id" href="#" tabindex="-1" data-toggle="dropdown" style="margin-left: -4px; margin-right: 2px" data-bind="command: messageVisibilityCommand">
 									<span data-bind="visible: !allowComposer" class="fontastic">⋮</span>
@@ -167,10 +157,8 @@
 						</div>
 					</div>
 
-					<div class="btn-group hide-on-mobile" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'" style="margin-right: 5px">
-						<a class="btn btn-success buttonEdit" data-bind="command: messageEditCommand">
-							<i class="fontastic icon-white">🖉</i>
-						</a>
+					<div class="btn-group hide-mobile" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'" style="margin-right: 5px">
+						<a class="btn btn-success buttonEdit fontastic icon-white" data-bind="command: messageEditCommand">🖉</a>
 					</div>
 				</div>
 
@@ -302,18 +290,14 @@
 																	<i class="attachmentIconText attachmentMainIconText" data-bind="text: iconText()"></i>
 																</div>
 																<div class="iconBG" data-bind="attr: { 'style': linkThumbnailPreviewStyle() }"></div>
-																<div class="iconPreview">
-																	<i class="attachmentIcon fontastic show-hover">👁</i>
-																</div>
+																<div class="iconPreview attachmentIcon fontastic show-hover">👁</div>
 															</a>
 														</div>
 														<div class="showPreplay">
 															<div class="iconMain">
 																<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
 															</div>
-															<div class="iconPreview">
-																<i class="attachmentIcon fontastic show-hover">▶</i>
-															</div>
+															<div class="iconPreview attachmentIcon fontastic show-hover">▶</div>
 														</div>
 													</div>
 													<div class="attachmentNameParent">

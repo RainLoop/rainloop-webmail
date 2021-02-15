@@ -69,9 +69,6 @@ class LoginUserView extends AbstractViewCenter {
 			signMeType: LoginSignMeType.Unused
 		});
 
-		this.mobile = !!Settings.app('mobile');
-		this.mobileDevice = !!Settings.app('mobileDevice');
-
 		this.forgotPasswordLinkUrl = Settings.app('forgotPasswordLinkUrl');
 		this.registrationLinkUrl = Settings.app('registrationLinkUrl');
 

@@ -232,8 +232,6 @@ trait Response
 				$mResult[$prop] = $this->responseObject($mResult[$prop], $sParent, $aParameters);
 			}
 
-			$mResult['SubjectParts'] = $this->explodeSubject($mResult['Subject']);
-
 			$sSubject = $mResult['Subject'];
 			$mResult['Hash'] = \md5($mResult['Folder'].$mResult['Uid']);
 			$mResult['RequestHash'] = Utils::EncodeKeyValuesQ(array(
@@ -252,7 +250,7 @@ trait Response
 			$mResult['IsForwarded'] = \strlen($sForwardedFlag) && \in_array(\strtolower($sForwardedFlag), $aFlags);
 			$mResult['IsReadReceipt'] = \strlen($sReadReceiptFlag) && \in_array(\strtolower($sReadReceiptFlag), $aFlags);
 
-			if (!$this->GetCapa(false, false, Capa::COMPOSER, $oAccount))
+			if (!$this->GetCapa(false, Capa::COMPOSER, $oAccount))
 			{
 				$mResult['IsReadReceipt'] = true;
 			}
@@ -392,7 +390,7 @@ trait Response
 				|| ($mFoundedContentLocationUrls && \in_array(\trim($mResponse->ContentLocation()), $mFoundedContentLocationUrls));
 
 			$mResult['Framed'] = $this->isFileHasFramedPreview($mResult['FileName']);
-			$mResult['IsThumbnail'] = $this->GetCapa(false, false, Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
+			$mResult['IsThumbnail'] = $this->GetCapa(false, Capa::ATTACHMENT_THUMBNAILS) && $this->isFileHasThumbnail($mResult['FileName']);
 
 			$mResult['Download'] = Utils::EncodeKeyValuesQ(array(
 				'V' => APP_VERSION,
@@ -466,48 +464,4 @@ trait Response
 
 		return $mResponse;
 	}
-
-	private function explodeSubject(string $sSubject) : array
-	{
-		$aResult = array('', '');
-		if (0 < \strlen($sSubject))
-		{
-			$bDrop = false;
-			$aPrefix = array();
-			$aSuffix = array();
-
-			$aParts = \explode(':', $sSubject);
-			foreach ($aParts as $sPart)
-			{
-				if (!$bDrop &&
-					(\preg_match('/^(RE|FWD)$/i', \trim($sPart)) || \preg_match('/^(RE|FWD)[\[\(][\d]+[\]\)]$/i', \trim($sPart))))
-				{
-					$aPrefix[] = $sPart;
-				}
-				else
-				{
-					$aSuffix[] = $sPart;
-					$bDrop = true;
-				}
-			}
-
-			if (0 < \count($aPrefix))
-			{
-				$aResult[0] = \rtrim(\trim(\implode(':', $aPrefix)), ':').': ';
-			}
-
-			if (0 < \count($aSuffix))
-			{
-				$aResult[1] = \trim(\implode(':', $aSuffix));
-			}
-
-			if (0 === \strlen($aResult[1]))
-			{
-				$aResult = array('', $sSubject);
-			}
-		}
-
-		return $aResult;
-	}
-
 }

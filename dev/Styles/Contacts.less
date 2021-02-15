@@ -112,10 +112,7 @@
 
 			&.hideContactListCheckbox {
 				.checkboxItem {
-					display: none !important;
-				}
-				.sidebarParent {
-					margin-right: 10px !important;
+					visibility: hidden;
 				}
 			}
 
@@ -132,32 +129,13 @@
 				cursor: pointer;
 
 				margin: 0;
-				border: 0 solid transparent;
+				border: 0;
+				border-left: 6px solid #eee;
 				z-index: 100;
 				border-bottom: 1px solid #ddd;
 
-				.delimiter {
-					position: relative;
-					display: block;
-					height: 1px;
-					background-color: #999;
-					opacity: 0.2;
-				}
-
-				.wrapper {
-					padding: 0;
-				}
-
-				.sidebarParent {
-					display: inline-block;
-					width: 6px;
-					background-color: #eee;
-					float: left;
-					height: 100%;
-				}
-
-				&.focused .sidebarParent {
-					background-color: #bbb;
+				&.focused {
+					border-left-color: #bbb;
 				}
 
 				&.deleted {
@@ -197,28 +175,22 @@
 				}
 
 				&.checked {
+					border-left-color: #69A8F5;
 					z-index: 101;
 
-					.sidebarParent {
-						background-color: #69A8F5;
-					}
-
-					&.focused .sidebarParent {
-						background-color: darken(#69A8F5, 5%) !important;
+					&.focused {
+						border-left-color: darken(#69A8F5, 5%);
 					}
 				}
 
 				&.selected {
 
 					background-color: #fff;
+					border-left-color: #398CF2;
 					z-index: 102;
 
-					.sidebarParent {
-						background-color: #398CF2;
-					}
-
-					&.focused .sidebarParent {
-						background-color: darken(#398CF2, 5%) !important;
+					&.focused {
+						border-left-color: darken(#398CF2, 5%);
 					}
 				}
 			}
@@ -394,7 +366,7 @@
 		cursor: pointer;
 
 		margin: 0;
-		border: 0 solid transparent;
+		border: 0;
 		z-index: 100;
 		border-bottom: 1px solid #ddd;
 	}

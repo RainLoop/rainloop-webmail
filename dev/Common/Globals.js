@@ -7,6 +7,9 @@ export const $htmlCL = doc.documentElement.classList;
 
 export const Settings = rl.settings;
 
+/** @media screen and (max-width: 600px) { */
+export const isMobile = () => $htmlCL.contains('rl-mobile'); // || rl.settings.app('mobile')
+
 export const dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 });
 
 export const moveAction = ko.observable(false);

@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { isMobile } from 'Common/Globals';
 
 export const ThemeStore = {
 	themes: ko.observableArray(),
@@ -11,8 +12,10 @@ export const ThemeStore = {
 
 		this.themes(Array.isArray(themes) ? themes : []);
 		this.theme(Settings.get('Theme'));
-		this.themeBackgroundName(Settings.get('UserBackgroundName'));
-		this.themeBackgroundHash(Settings.get('UserBackgroundHash'));
+		if (!isMobile()) {
+			this.themeBackgroundName(Settings.get('UserBackgroundName'));
+			this.themeBackgroundHash(Settings.get('UserBackgroundHash'));
+		}
 	}
 };
 

@@ -2,11 +2,11 @@
 	<div class="modal-header b-header-toolbar g-ui-user-select-none">
 		<a class="btn btn-large button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
 			<i class="icon-white" data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner big': sending()}"></i>
-			<span class="i18n hide-on-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
+			<span class="i18n hide-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
 		</a>
 		<a class="btn button-save" data-bind="visible: allowFolders, command: saveCommand, tooltipErrorTip: savedErrorDesc, css: {'btn-danger': savedError }">
 			<i class="fontastic" data-bind="css: {'icon-spinner': saving(), 'icon-white': savedError()}">💾</i>
-			<span class="i18n hide-on-mobile" data-i18n="GLOBAL/SAVE"></span>
+			<span class="i18n hide-mobile" data-i18n="GLOBAL/SAVE"></span>
 		</a>
 
 		<a class="close" data-bind="click: tryToClosePopup, tooltip: 'GLOBAL/CANCEL'">×</a>
@@ -15,7 +15,7 @@
 		<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
 			<i class="fontastic icon-white">🗑</i>
 		</a>
-		<span class="saved-text hide-on-mobile" data-bind="text: savedTimeText"></span>
+		<span class="saved-text hide-mobile" data-bind="text: savedTimeText"></span>
 	</div>
 	<div class="modal-body">
 		<div class="b-header g-ui-user-select-none">

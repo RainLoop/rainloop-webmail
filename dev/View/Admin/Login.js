@@ -12,11 +12,7 @@ class LoginAdminView extends AbstractViewCenter {
 	constructor() {
 		super('Admin/Login', 'AdminLogin');
 
-		const appSettingsGet = rl.settings.app;
-		this.mobile = !!appSettingsGet('mobile');
-		this.mobileDevice = !!appSettingsGet('mobileDevice');
-
-		this.hideSubmitButton = appSettingsGet('hideSubmitButton');
+		this.hideSubmitButton = rl.settings.app('hideSubmitButton');
 
 		this.addObservables({
 			login: '',

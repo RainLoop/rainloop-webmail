@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
-import { Layout, Focused, MessageSetAction } from 'Common/EnumsUser';
+import { Focused, MessageSetAction } from 'Common/EnumsUser';
 import { doc } from 'Common/Globals';
 import { pInt, pString } from 'Common/Utils';
 import { plainToHtml } from 'Common/UtilsUser';
@@ -211,7 +211,7 @@ class MessageUserStore {
 
 		this.message.subscribe(message => {
 			if (message) {
-				if (Layout.NoPreview === SettingsStore.layout()) {
+				if (!SettingsStore.usePreviewPane()) {
 					AppStore.focusedState(Focused.MessageView);
 				}
 			} else {

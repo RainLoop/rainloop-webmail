@@ -99,7 +99,7 @@ trait Messages
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, false, Capa::COMPOSER, $oAccount))
+		if (!$this->GetCapa(false, Capa::COMPOSER, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -166,7 +166,7 @@ trait Messages
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, false, Capa::COMPOSER, $oAccount))
+		if (!$this->GetCapa(false, Capa::COMPOSER, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -349,7 +349,7 @@ trait Messages
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, false, Capa::COMPOSER, $oAccount))
+		if (!$this->GetCapa(false, Capa::COMPOSER, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}

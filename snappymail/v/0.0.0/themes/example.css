@@ -4,7 +4,8 @@
 	--main-color: #333;
 	--main-bg-color: #e3e3e3;
 	--main-bg-image: none;	// "images/background.png"
-	--main-bg-size: inherit;
+	--main-bg-size: auto;
+	--main-bg-repeat: repeat;
 
 // LOADING
 	--loading-color: #000;			// #ddd

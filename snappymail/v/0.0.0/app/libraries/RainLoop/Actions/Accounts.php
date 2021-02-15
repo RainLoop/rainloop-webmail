@@ -20,7 +20,7 @@ trait Accounts
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
+		if (!$this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -58,7 +58,7 @@ trait Accounts
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
+		if (!$this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -109,7 +109,7 @@ trait Accounts
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::IDENTITIES, $oAccount)) {
+		if (!$this->GetCapa(false, Capa::IDENTITIES, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -154,7 +154,7 @@ trait Accounts
 
 		$mAccounts = false;
 
-		if ($this->GetCapa(false, false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
+		if ($this->GetCapa(false, Capa::ADDITIONAL_ACCOUNTS, $oAccount)) {
 			$mAccounts = $this->GetAccounts($oAccount);
 			$mAccounts = \array_keys($mAccounts);
 
@@ -176,7 +176,7 @@ trait Accounts
 	public function GetIdentities(Account $account): array
 	{
 		// A custom name for a single identity is also stored in this system
-		$allowMultipleIdentities = $this->GetCapa(false, false, Capa::IDENTITIES, $account);
+		$allowMultipleIdentities = $this->GetCapa(false, Capa::IDENTITIES, $account);
 
 		// Get all identities
 		$identities = $this->IdentitiesProvider()->GetIdentities($account, $allowMultipleIdentities);

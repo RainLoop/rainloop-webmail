@@ -14,8 +14,7 @@ html, body {
 }
 
 body {
-	background-color: var(--main-bg-color, #e3e3e3);
-	background-size: var(--main-bg-size);
+	background: var(--main-bg-color, #e3e3e3);
 	color: var(--main-color, #333);
 
 	-webkit-touch-callout: none;
@@ -28,11 +27,13 @@ body {
 }
 
 /*
-.rl-mobile / .no-mobile
+.rl-mobile
 */
 @media screen and (min-width: 1000px) {
 	body {
 		background-image: var(--main-bg-image);
+		background-size: var(--main-bg-size);
+		background-repeat: var(--main-bg-repeat);
 	}
 }
 

@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { doc, $htmlCL } from 'Common/Globals';
+import { doc, $htmlCL/*, isMobile*/ } from 'Common/Globals';
 import { isNonEmptyArray } from 'Common/Utils';
 
 let currentScreen = null,
@@ -9,7 +9,7 @@ let currentScreen = null,
 
 const SCREENS = {},
 	autofocus = dom => {
-//		if (!rl.settings.app('mobile')) {
+//		if (!isMobile()) {
 		const af = dom.querySelector('[autofocus]');
 		af && af.focus();
 	};

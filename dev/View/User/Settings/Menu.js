@@ -1,5 +1,5 @@
 import { KeyState } from 'Common/Enums';
-import { leftPanelDisabled } from 'Common/Globals';
+import { leftPanelDisabled, isMobile } from 'Common/Globals';
 import { settings, mailbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 
@@ -15,13 +15,11 @@ export class MenuSettingsUserView extends AbstractViewLeft {
 
 		this.leftPanelDisabled = leftPanelDisabled;
 
-		this.mobile = rl.settings.app('mobile');
-
 		this.menu = screen.menu;
 	}
 
 	onBuild(dom) {
-		if (this.mobile) {
+		if (isMobile()) {
 			dom.addEventListener('click', event =>
 				event.target.closestWithin('.b-settings-menu .e-item.selectable', dom) && leftPanelDisabled(true)
 			);

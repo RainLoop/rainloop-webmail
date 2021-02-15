@@ -308,9 +308,6 @@ Enables caching in the system'),
 			),
 
 			'labs' => array(
-				'allow_mobile_version' => array(true,
-					'Experimental settings. Handle with care.
-'),
 				'ignore_folders_subscription' => array(false),
 				'update_channel' => array('stable'),
 				'allow_prefetch' => array(true),

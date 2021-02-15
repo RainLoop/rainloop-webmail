@@ -12,11 +12,10 @@ import {
 	ClientSideKeyName,
 	FolderType,
 	Focused,
-	Layout,
 	MessageSetAction
 } from 'Common/EnumsUser';
 
-import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings, isMobile } from 'Common/Globals';
 
 import { inFocus } from 'Common/Utils';
 import { mailToHelper } from 'Common/UtilsUser';
@@ -85,8 +84,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		this.allowComposer = !!Settings.capa(Capa.Composer);
 		this.allowMessageActions = !!Settings.capa(Capa.MessageActions);
 		this.allowMessageListActions = !!Settings.capa(Capa.MessageListActions);
-
-		this.mobile = !!Settings.app('mobile');
 
 		this.attachmentsActions = AppStore.attachmentsActions;
 
@@ -287,14 +284,14 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	@command((self) => !self.messageListAndMessageViewLoading())
 	goUpCommand() {
 		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-up',
-			{detail:Layout.NoPreview === this.layout() ? !!this.message() : true}
+			{detail:SettingsStore.usePreviewPane() || !!this.message()}
 		));
 	}
 
 	@command((self) => !self.messageListAndMessageViewLoading())
 	goDownCommand() {
 		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-down',
-			{detail:Layout.NoPreview === this.layout() ? !!this.message() : true}
+			{detail:SettingsStore.usePreviewPane() || !!this.message()}
 		));
 	}
 
@@ -408,7 +405,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		this.oHeaderDom = dom.querySelector('.messageItemHeader');
 		if (this.oHeaderDom) {
 			if (!this.resizeObserver) {
-				this.resizeObserver = new ResizeObserver(this.checkHeaderHeight.throttle(50).bind(this));
+				this.resizeObserver = new ResizeObserver(this.checkHeaderHeight.debounce(50).bind(this));
 			}
 			this.resizeObserver.observe(this.oHeaderDom);
 		} else if (this.resizeObserver) {
@@ -417,7 +414,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
 		dom.addEventListener('click', event => {
-			this.mobile && leftPanelDisabled(true);
+			isMobile() && leftPanelDisabled(true);
 
 			let el = eqs(event, 'a');
 			if (el) {
@@ -506,7 +503,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	 */
 	escShortcuts() {
 		if (this.viewModelVisible && this.message()) {
-			const preview = Layout.NoPreview !== this.layout();
+			const preview = SettingsStore.usePreviewPane();
 			if (this.fullScreenMode()) {
 				this.fullScreenMode(false);
 
@@ -616,7 +613,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		// change focused state
 		shortcuts.add('arrowleft', '', KeyState.MessageView, () => {
-			if (!this.fullScreenMode() && this.message() && Layout.NoPreview !== this.layout()) {
+			if (!this.fullScreenMode() && this.message() && SettingsStore.usePreviewPane()) {
 				if (this.oMessageScrollerDom && 0 < this.oMessageScrollerDom.scrollLeft) {
 					return true;
 				}
@@ -626,7 +623,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		});
 //		shortcuts.add('tab', 'shift', KeyState.MessageView, (event, handler) => {
 		shortcuts.add('tab', '', KeyState.MessageView, () => {
-			if (!this.fullScreenMode() && this.message() && Layout.NoPreview !== this.layout()) {
+			if (!this.fullScreenMode() && this.message() && SettingsStore.usePreviewPane()) {
 				AppStore.focusedState(Focused.MessageList);
 			}
 			return false;

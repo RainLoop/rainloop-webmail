@@ -44,8 +44,6 @@ export class MessageModel extends AbstractModel {
 
 		this.addObservables({
 			subject: '',
-			subjectPrefix: '',
-			subjectSuffix: '',
 			size: 0,
 			dateTimeStampInUTC: 0,
 			priority: MessagePriority.Normal,
@@ -117,8 +115,6 @@ export class MessageModel extends AbstractModel {
 	clear() {
 		this._reset();
 		this.subject('');
-		this.subjectPrefix('');
-		this.subjectSuffix('');
 		this.size(0);
 		this.dateTimeStampInUTC(0);
 		this.priority(MessagePriority.Normal);
@@ -192,14 +188,6 @@ export class MessageModel extends AbstractModel {
 			json.Priority = MessagePriority.High == p || MessagePriority.Low == p ? p : MessagePriority.Normal;
 		}
 		if (super.revivePropertiesFromJson(json)) {
-			if (isArray(json.SubjectParts)) {
-				this.subjectPrefix(json.SubjectParts[0]);
-				this.subjectSuffix(json.SubjectParts[1]);
-			} else {
-				this.subjectPrefix('');
-				this.subjectSuffix(this.subject());
-			}
-
 //			this.foundedCIDs = isArray(json.FoundedCIDs) ? json.FoundedCIDs : [];
 //			this.attachments(AttachmentCollectionModel.reviveFromJson(json.Attachments, this.foundedCIDs));
 
@@ -454,9 +442,6 @@ export class MessageModel extends AbstractModel {
 			this.checked(message.checked());
 			this.hasAttachments(message.hasAttachments());
 			this.attachmentsSpecData(message.attachmentsSpecData());
-
-			this.subjectPrefix(this.subjectPrefix());
-			this.subjectSuffix(this.subjectSuffix());
 		}
 
 		this.body = null;

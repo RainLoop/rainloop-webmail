@@ -90,7 +90,7 @@ trait User
 	 */
 	public function DoAttachmentsActions() : array
 	{
-		if (!$this->GetCapa(false, false, Capa::ATTACHMENTS_ACTIONS))
+		if (!$this->GetCapa(false, Capa::ATTACHMENTS_ACTIONS))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -311,7 +311,7 @@ trait User
 	public function DoSettingsUpdate() : array
 	{
 		$oAccount = $this->getAccountFromToken();
-		if (!$this->GetCapa(false, false, Capa::SETTINGS, $oAccount))
+		if (!$this->GetCapa(false, Capa::SETTINGS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -333,7 +333,7 @@ trait User
 			$oSettings->SetConf('Language', $this->ValidateLanguage($oConfig->Get('webmail', 'language', 'en')));
 		}
 
-		if ($this->GetCapa(false, false, Capa::THEMES, $oAccount))
+		if ($this->GetCapa(false, Capa::THEMES, $oAccount))
 		{
 			$this->setSettingsFromParams($oSettingsLocal, 'Theme', 'string', function ($sTheme) use ($self) {
 				return $self->ValidateTheme($sTheme);
@@ -377,7 +377,7 @@ trait User
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, false, Capa::QUOTA, $oAccount))
+		if (!$this->GetCapa(false, Capa::QUOTA, $oAccount))
 		{
 			return $this->DefaultResponse(__FUNCTION__, array(0, 0, 0, 0));
 		}
@@ -510,7 +510,7 @@ trait User
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::USER_BACKGROUND, $oAccount))
+		if (!$this->GetCapa(false, Capa::USER_BACKGROUND, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}

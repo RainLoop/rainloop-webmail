@@ -2,7 +2,7 @@ import ko from 'ko';
 import { KeyState } from 'Common/Enums';
 import { Focused } from 'Common/EnumsUser';
 
-import { keyScope, leftPanelDisabled, Settings } from 'Common/Globals';
+import { keyScope, leftPanelDisabled, Settings, isMobile } from 'Common/Globals';
 
 class AppUserStore {
 	constructor() {
@@ -22,27 +22,19 @@ class AppUserStore {
 			contactsIsAllowed: false
 		});
 
-		const isMobile = Settings.app('mobile');
-
-		this.focusedState.subscribe((value) => {
+		this.focusedState.subscribe(value => {
 			switch (value) {
 				case Focused.MessageList:
 					keyScope(KeyState.MessageList);
-					if (isMobile) {
-						leftPanelDisabled(true);
-					}
+					isMobile() && leftPanelDisabled(true);
 					break;
 				case Focused.MessageView:
 					keyScope(KeyState.MessageView);
-					if (isMobile) {
-						leftPanelDisabled(true);
-					}
+					isMobile() && leftPanelDisabled(true);
 					break;
 				case Focused.FolderList:
 					keyScope(KeyState.FolderList);
-					if (isMobile) {
-						leftPanelDisabled(false);
-					}
+					isMobile() && leftPanelDisabled(false);
 					break;
 				default:
 					break;

@@ -4,7 +4,8 @@ import {
 	doc,
 	$htmlCL,
 	leftPanelDisabled,
-	Settings
+	Settings,
+	isMobile
 } from 'Common/Globals';
 
 import { KeyState } from 'Common/Enums';
@@ -48,7 +49,7 @@ export class AbstractApp {
 	 * @returns {boolean}
 	 */
 	download(link) {
-		if (Settings.app('mobile')) {
+		if (isMobile()) {
 			open(link, '_self');
 			focus();
 		} else {
@@ -82,8 +83,7 @@ export class AbstractApp {
 	}
 
 	bootstart() {
-		const mobile = Settings.app('mobile'),
-			register = (key, ClassObject, templateID) => ko.components.register(key, {
+		const register = (key, ClassObject, templateID) => ko.components.register(key, {
 				template: { element: templateID || (key + 'Component') },
 				viewModel: {
 					createViewModel: (params, componentInfo) => {
@@ -110,7 +110,7 @@ export class AbstractApp {
 		register('Select', SelectComponent);
 		register('TextArea', TextAreaComponent);
 		register('CheckboxSimple', CheckboxComponent, 'CheckboxComponent');
-		if (mobile || !Settings.app('materialDesign')) {
+		if (isMobile() || !Settings.app('materialDesign')) {
 			register('Checkbox', CheckboxComponent);
 		} else {
 			register('Checkbox', CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');
@@ -118,7 +118,7 @@ export class AbstractApp {
 
 		initOnStartOrLangChange();
 
-		if (mobile) {
+		if (isMobile()) {
 			leftPanelDisabled(true);
 		} else {
 			window.addEventListener('resize', () => leftPanelDisabled(767 >= window.innerWidth));

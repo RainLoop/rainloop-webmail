@@ -35,9 +35,7 @@
 							</a>
 						</td>
 						<td>
-							<span class="delete-account" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oAccount) { $root.accountForDeletion(oAccount); }">
-								<i class="fontastic">🗑</i>
-							</span>
+							<span class="delete-account fontastic" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oAccount) { $root.accountForDeletion(oAccount); }">🗑</span>
 						</td>
 					</tr>
 				</tbody>
@@ -83,9 +81,7 @@
 							</a>
 						</td>
 						<td>
-							<span class="delete-identity" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oIdentity) { $root.identityForDeletion(oIdentity); }">
-								<i class="fontastic">🗑</i>
-							</span>
+							<span class="delete-identity fontastic" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oIdentity) { $root.identityForDeletion(oIdentity); }">🗑</span>
 						</td>
 					</tr>
 				</tbody>

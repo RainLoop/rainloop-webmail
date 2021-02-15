@@ -26,16 +26,6 @@
   100% {transform: translateX(0)}
 }
 
-html.rl-started-trigger.no-mobile .b-login-content .loginFormWrapper {
-	/*transform: scale(1.1);*/
-	transform: translateY(-20px);
-	opacity: 0.5;
-}
-
-/*html.rl-started-trigger.no-mobile #rl-content {
-	opacity: 0.7;
-}*/
-
 html.rl-started-delay {
 
 	#rl-left {
@@ -56,97 +46,105 @@ html.rl-started-delay {
 }
 
 html {
-	&.rgba.backgroundsize .e-strip-animation {
+	.e-strip-animation {
 		background-size: 60px 60px;
 		.rl-strip-animation(0, 0.1);
 		animation: animate-stripes 2s linear infinite;
 	}
 }
 
-html.no-mobile {
+@media screen and (min-width: 1000px) {
 
-	.b-login-content {
-		.alertError {
-			display: block;
-			opacity: 1;
-			transition: opacity 0.5s linear;
+	html.rl-started-trigger .b-login-content .loginFormWrapper {
+		/*transform: scale(1.1);*/
+		transform: translateY(-20px);
+		opacity: 0.5;
+	}
+
+	html {
+		.b-login-content {
+			.alertError {
+				display: block;
+				opacity: 1;
+				transition: opacity 0.5s linear;
+			}
+			.alertError[hidden] {
+				opacity: 0;
+			}
 		}
-		.alertError[hidden] {
+
+		.b-login-content .errorAnimated {
+			animation: login-form-shake 400ms ease-in-out;
+		}
+
+		.b-login-content .errorAnimated .buttonLogin {
+			color: #b94a48;
+			font-weight: bold;
+		}
+
+		.b-login-content .afterLoginHide {
 			opacity: 0;
 		}
-	}
 
-	.b-login-content .errorAnimated {
-		animation: login-form-shake 400ms ease-in-out;
-	}
-
-	.b-login-content .errorAnimated .buttonLogin {
-		color: #b94a48;
-		font-weight: bold;
-	}
-
-	.b-login-content .afterLoginHide {
-		opacity: 0;
-	}
-
-	.b-login-content .loginFormWrapper {
-		transition: all 0.3s ease-out;
-	}
-
-	& .button-delete-transitions {
-		transition: all 0.2s linear;
-	}
-
-	& .b-folders .e-item .anim-action-class {
-		animation: highlight-folder-row 0.5s linear;
-	}
-
-	& .b-folders .btn.buttonContacts {
-		transition: margin 0.3s linear;
-	}
-
-	& .b-folders .b-content.opacity-on-panel-disabled {
-		transition: opacity 0.3s linear;
-	}
-
-	& .messageList {
-		.messageListItem {
-			transition: max-height 400ms ease;
+		.b-login-content .loginFormWrapper {
+			transition: all 0.3s ease-out;
 		}
-		.listDragOver {
-			transition: all 400ms ease;
+
+		& .button-delete-transitions {
+			transition: all 0.2s linear;
 		}
-	}
 
-	& .b-list-content {
-		.e-contact-item {
-			transition: max-height 400ms ease;
+		& .b-folders .e-item .anim-action-class {
+			animation: highlight-folder-row 0.5s linear;
 		}
-	}
 
-	& .modal.b-domain-content {
-		.modal-body {
-			transition: left 500ms ease;
+		& .b-folders .btn.buttonContacts {
+			transition: margin 0.3s linear;
 		}
-	}
 
-	#rl-popups > .rl-view-model .modal {
-		transition: all .2s ease-out;
-	}
-	#rl-popups > .rl-view-model:not(.show) .modal {
-		top: -25%;
-	}
-	#rl-popups > .rl-view-model .modal.fade {
-		opacity: 1;
-	}
-	#rl-popups > .rl-view-model:not(.show) .modal.fade {
-		opacity: 0;
-	}
+		& .b-folders .b-content.opacity-on-panel-disabled {
+			transition: opacity 0.3s linear;
+		}
 
-	& .b-compose.loading .b-header-toolbar {
-		background-size: 60px 60px;
-		.rl-strip-animation(255, 0.2);
-		animation: animate-stripes 2s linear infinite;
+		& .messageList {
+			.messageListItem {
+				transition: max-height 400ms ease;
+			}
+			.listDragOver {
+				transition: all 400ms ease;
+			}
+		}
+
+		& .b-list-content {
+			.e-contact-item {
+				transition: max-height 400ms ease;
+			}
+		}
+
+		& .modal.b-domain-content {
+			.modal-body {
+				transition: left 500ms ease;
+			}
+		}
+
+		#rl-popups > .rl-view-model .modal {
+			transition: all .2s ease-out;
+		}
+		#rl-popups > .rl-view-model:not(.show) .modal {
+			top: -25%;
+		}
+		#rl-popups > .rl-view-model .modal.fade {
+			opacity: 1;
+		}
+		#rl-popups > .rl-view-model:not(.show) .modal.fade {
+			opacity: 0;
+		}
+
+		& .b-compose.loading .b-header-toolbar {
+			background-size: 60px 60px;
+			.rl-strip-animation(255, 0.2);
+			animation: animate-stripes 2s linear infinite;
+		}
 	}
 }
 

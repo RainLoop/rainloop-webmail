@@ -18,7 +18,7 @@ trait Templates
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::TEMPLATES, $oAccount))
+		if (!$this->GetCapa(false, Capa::TEMPLATES, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -58,7 +58,7 @@ trait Templates
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::TEMPLATES, $oAccount))
+		if (!$this->GetCapa(false, Capa::TEMPLATES, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -89,7 +89,7 @@ trait Templates
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::TEMPLATES, $oAccount))
+		if (!$this->GetCapa(false, Capa::TEMPLATES, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -123,7 +123,7 @@ trait Templates
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::TEMPLATES, $oAccount))
+		if (!$this->GetCapa(false, Capa::TEMPLATES, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}

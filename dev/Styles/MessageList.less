@@ -183,19 +183,6 @@ html.rl-no-preview-pane {
 			text-align: center;
 		}
 
-		.delimiter {
-			display: block;
-			height: 1px;
-			background-color: #e5e5e5;
-		}
-
-		.messageListItem:last-child {
-			border-bottom: 1px solid #e5e5e5;
-			&.selected {
-				border-bottom: 1px solid #bfd5ef;
-			}
-		}
-
 		.fullThreadsParent {
 			height: 25px;
 			padding: 3px 5px;
@@ -206,49 +193,24 @@ html.rl-no-preview-pane {
 		.messageListItem {
 
 			position: relative;
-			height: 52px;
 			max-height: 60px;
 			font-size: 12px;
-			line-height: 21px;
 			overflow: hidden;
 			cursor: pointer;
 
 			margin: 0;
-			border: 0 solid transparent;
+			padding: 5px 0;
+			border: 0;
+			border-bottom: 1px solid rgba(153, 153, 153, 0.2);
+			border-left: 6px solid #eee;
+
 			z-index: 100;
 
 			background-color: #f9f9f9;
 
-/*			&:nth-child(even) {
-				background-color: #f3f3f3;
-			}*/
-
-			.delimiter {
-				position: relative;
-				display: block;
-				height: 1px;
-				background-color: #999;
-				opacity: 0.2;
-			}
-
-			.wrapper {
-				padding: 5px 0;
-			}
-
-			.sidebarParent {
-				display: inline-block;
-				width: 6px;
-				background-color: #eee;
-				float: left;
-				height: 100%;
-			}
-
 			&.focused {
 				background-color: #f5f5f5;
-			}
-
-			&.focused .sidebarParent {
-				background-color: #ccc !important;
+				border-left-color: #ccc;
 			}
 
 			.importantMark {
@@ -260,22 +222,13 @@ html.rl-no-preview-pane {
 
 			&.deleted-mark {
 				opacity: .7;
-				.sender, .subject, .subject-prefix, .subject-suffix {
+				.subjectParent {
 					text-decoration: line-through;
 				}
 			}
 
 			&.important .importantMark {
 				display: inline;
-			}
-
-			&.e-single-line {
-				height: 35px;
-			}
-
-			&.e-single-line .wrapper {
-				line-height: 25px;
-				padding: 5px;
 			}
 
 			&.new {
@@ -288,62 +241,36 @@ html.rl-no-preview-pane {
 			}
 
 			.checkboxMessage {
-				display: inline-block;
-				float: left;
-				margin-top: 11px;
 				padding: 0 8px 0 6px;
 				font-size: 16px;
 			}
 
-			&.e-single-line .checkboxMessage {
-				margin-top: 1px;
-			}
-
 			.flagParent {
-				display: inline-block;
-				float: right;
 				padding: 0 10px 0 5px;
 			}
 
-			&.e-single-line .flagParent {
-				float: left;
-				padding: 0 8px 0 2px;
-			}
-
-			.dateParent {
-				display: inline-block;
-				float: right;
-				position: relative;
+			time {
 				margin: 0 5px;
 				color: #999;
 				font-size: 11px;
-			}
-
-			&.e-single-line .dateParent {
+				white-space: nowrap;
 			}
 
 			.threadsParent {
-				display: inline-block;
-				float: right;
 				position: relative;
 			}
 
 			.attachmentParent {
-				display: inline-block;
-				float: right;
 				position: relative;
 				margin: 2px 10px 0 5px;
-			}
-
-			&.e-single-line .attachmentParent {
-				float: left;
-				margin: 0 8px 0 0;
+				color: #666;
+				text-shadow: 0 1px 0 #eee;
 			}
 
 			.senderParent {
-				display: block;
 				overflow: hidden;
 				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
 
 			.threadsCountParent {
@@ -366,25 +293,10 @@ html.rl-no-preview-pane {
 				border-color: #666;
 			}
 
-			&.e-single-line .senderParent {
-				display: inline-block;
-				text-overflow: none;
-				width: 200px;
-				float: left;
-				font-weight: normal;
-			}
-
 			.subjectParent {
-				display: block;
+				color: #000;
 				overflow: hidden;
 				text-overflow: ellipsis;
-				color: #000;
-			}
-
-			&.e-single-line .subjectParent {
-			}
-
-			.senderParent, .subjectParent, .dateParent {
 				white-space: nowrap;
 			}
 
@@ -395,7 +307,7 @@ html.rl-no-preview-pane {
 			}
 
 			&.emptySubject .subjectParent {
-				.subject, .subject-prefix, .subject-suffix {
+				.subject {
 					display: none;
 				}
 				.emptySubjectText {
@@ -403,7 +315,8 @@ html.rl-no-preview-pane {
 				}
 			}
 
-			.sender, .subject, .subject-suffix {
+			.sender, .subject {
+				margin-left: 0;
 				overflow: hidden;
 				text-overflow: ellipsis;
 			}
@@ -432,20 +345,6 @@ html.rl-no-preview-pane {
 				}
 			}
 
-			.subject-prefix {
-				color: #888;
-				/*font-style: italic;*/
-			}
-
-			.attachment {
-				display: none;
-			}
-
-			.flagOff, .flagOn, .flagOnHalf {
-				cursor: pointer;
-				display: inline-block;
-			}
-
 			.flagOff {
 				opacity: 0.5;
 				&:hover {
@@ -454,12 +353,12 @@ html.rl-no-preview-pane {
 			}
 
 			.flagOn, .flagOnHalf {
-				display: none;
 				color: orange;
 			}
 
 			.replyFlag, .forwardFlag {
 				display: none;
+				margin-right: 0.25em;
 			}
 
 			&.answered .replyFlag {
@@ -470,81 +369,53 @@ html.rl-no-preview-pane {
 				display: inline-block;
 			}
 
-			&.withAttachments .attachment {
-				display: inline-block;
-				color: #666;
-				text-shadow: 0 1px 0 #eee;
+			&:not(.withAttachments) .attachmentParent {
+				display: none;
 			}
 
 			&.hasUnseenSubMessage {
 				background-color: #FFFFD9;
-				.sidebarParent {
-					background-color: lighten(orange, 30%);
-				}
-				&.focused .sidebarParent {
-					background-color: darken(orange, 10%) !important;
+				border-left-color: lighten(orange, 30%);
+				&.focused {
+					border-left-color: darken(orange, 10%);
 				}
 			}
 
 			&.unseen {
 				background-color: #FFFFD9;
-				.sender, .subject, .subject-suffix {
+				border-left-color: orange;
+				.sender, .subjectParent {
 					font-weight: bold;
 				}
-				.sidebarParent {
-					background-color: orange;
-				}
 
-				&.focused .sidebarParent {
-					background-color: darken(orange, 10%) !important;
+				&.focused {
+					border-left-color: darken(orange, 10%);
 				}
 			}
 
 			&.checked {
-				.sidebarParent {
-					background-color: lighten(#398CF2, 10%) !important;
-				}
+				border-left-color: lighten(#398CF2, 10%);
 
-				&.focused .sidebarParent {
-					background-color: darken(#398CF2, 5%) !important;
+				&.focused {
+					border-left-color: darken(#398CF2, 5%);
 				}
 			}
 
 			&.selected {
 				background-color: #DFEFFF;
+				border-bottom-color: rgba(57, 140, 242, 0.2);
+				border-left-color: #398CF2;
 				z-index: 101;
 
-				.sidebarParent {
-					background-color: #398CF2 !important;
-				}
-
-				.delimiter {
-					background-color: #398CF2;
-					opacity: 0.2;
-				}
-
-				+ .messageListItem .delimiter {
-					background-color: #398CF2;
-					opacity: 0.3;
+				+ .messageListItem {
+					border-bottom-color: rgba(57, 140, 242, 0.3);
 				}
 			}
 
-			&.hasFlaggedSubMessage {
-				.flagOff, .flagOn {
-					display: none;
-				}
-				.flagOnHalf {
-					display: inline-block;
-				}
-			}
-
-			&.flagged {
-				.flagOff, .flagOnHalf {
-					display: none;
-				}
-				.flagOn {
-					display: inline-block;
-				}
+			&:not(.flagged) .flagOn,
+			&:not(.hasFlaggedSubMessage) .flagOnHalf,
+			&.flagged .flagOff, &.hasFlaggedSubMessage .flagOff {
+				display: none;
 			}
 		}
 	}
@@ -560,10 +431,7 @@ html.rl-no-preview-pane {
 
 	&.hideMessageListCheckbox {
 		.checkboxMessage, .checkboxCheckAll {
-			display: none !important;
-		}
-		.sidebarParent {
-			margin-right: 10px !important;
+			visibility: hidden;
 		}
 	}
 }
@@ -572,7 +440,7 @@ html.rl-no-preview-pane {
 @media screen and (min-width: 1401px) {
 	.messageList .b-content .messageListItem {
 		font-size: 13px;
-		.dateParent {
+		time {
 			font-size: 13px;
 		}
 	}
@@ -596,5 +464,78 @@ html .messageList .line-loading {
 html.rl-mobile {
 	#rl-sub-left .messageList .inputSearch {
 		width: 160px !important;
+	}
+}
+
+
+.messageListItem {
+
+	display: flex;
+	flex-wrap: wrap;
+
+	> * {
+		display: flex;
+		flex: 0 0 auto;
+		order: 0;
+	}
+}
+
+.rl-side-preview-pane, .rl-mobile {
+
+	.messageListItem {
+
+		.checkboxMessage {
+			margin: 10px 0 -5px;
+		}
+
+		.subjectParent {
+			flex: 1 0 auto;
+			margin-left: 30px;
+			order: 1;
+			width: calc(100% - 60px);
+		}
+
+		.senderParent {
+			flex: 1 0 auto;
+		}
+
+		.flagParent {
+			order: 1;
+		}
+
+		.attachmentParent {
+			order: 2;
+		}
+	}
+}
+
+html:not(.rl-mobile):not(.rl-side-preview-pane) .messageList {
+
+	.messageListItem {
+
+		line-height: 25px;
+		flex-wrap: nowrap;
+
+		.checkboxMessage {
+			line-height: 25px;
+		}
+
+		.flagParent {
+			margin-top: 6px;
+		}
+
+		.attachmentParent {
+			margin: 6px 8px 0 0;
+		}
+
+		.senderParent {
+			font-weight: normal;
+			text-overflow: none;
+			flex: 0 0 25%;
+		}
+
+		.subjectParent {
+			flex: 1 1 auto;
+		}
 	}
 }

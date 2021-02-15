@@ -17,7 +17,7 @@ trait Folders
 		$oFolderCollection = null;
 		$this->Plugins()->RunHook('filter.folders-before', array($oAccount, $oFolderCollection));
 
-		$bUseFolders = $this->GetCapa(false, false, Capa::FOLDERS, $oAccount);
+		$bUseFolders = $this->GetCapa(false, Capa::FOLDERS, $oAccount);
 
 		if (null === $oFolderCollection)
 		{
@@ -157,7 +157,7 @@ trait Folders
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, false, Capa::FOLDERS, $oAccount))
+		if (!$this->GetCapa(false, Capa::FOLDERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -182,7 +182,7 @@ trait Folders
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, false, Capa::FOLDERS, $oAccount))
+		if (!$this->GetCapa(false, Capa::FOLDERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -213,7 +213,7 @@ trait Folders
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, false, Capa::FOLDERS, $oAccount))
+		if (!$this->GetCapa(false, Capa::FOLDERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -263,7 +263,7 @@ trait Folders
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, false, Capa::FOLDERS, $oAccount))
+		if (!$this->GetCapa(false, Capa::FOLDERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -291,7 +291,7 @@ trait Folders
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, false, Capa::FOLDERS, $oAccount))
+		if (!$this->GetCapa(false, Capa::FOLDERS, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}

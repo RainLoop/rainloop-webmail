@@ -10,7 +10,7 @@
 				</div>
 				<i class="stopIcon fontastic">⏸</i>
 			</div>
-			<div class="accountPlace hide-on-mobile" data-bind="text: emailTitle()"></div>
+			<div class="accountPlace hide-mobile" data-bind="text: emailTitle()"></div>
 			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: accountMenuDropdownTrigger">
 				<a id="top-system-dropdown-id" href="#" tabindex="-1" class="btn single btn-ellipsis btn-block dropdown-toggle system-dropdown" data-toggle="dropdown">
 					<i class="fontastic" data-bind="css: {'icon-spinner': accounts.loading()}">👤</i>
@@ -64,13 +64,13 @@
 							<span data-i18n="TOP_TOOLBAR/BUTTON_HELP"></span>
 						</a>
 					</li>
-					<li class="e-item dividerbar" role="presentation" data-bind="visible: mobile">
+					<li class="e-item dividerbar show-mobile" role="presentation">
 						<a class="e-link menuitem" href="./?/DesktopVersion/" tabindex="-1">
 							<i class="fontastic">💻</i>
 							<span data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></span>
 						</a>
 					</li>
-					<li class="e-item dividerbar" role="presentation" data-bind="visible: !mobile">
+					<li class="e-item dividerbar hide-mobile" role="presentation">
 						<a class="e-link menuitem" href="./?/MobileVersion/" tabindex="-1">
 							<i class="fontastic">📱</i>
 							<span data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></span>

@@ -1,8 +1,8 @@
 import ko from 'ko';
 
 import { Capa, KeyState } from 'Common/Enums';
-import { Focused, Layout } from 'Common/EnumsUser';
-import { leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
+import { Focused } from 'Common/EnumsUser';
+import { leftPanelDisabled, moveAction, Settings, isMobile } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
 
@@ -54,12 +54,9 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 	onBuild(dom) {
 		const qs = s => dom.querySelector(s),
 			eqs = (ev, s) => ev.target.closestWithin(s, dom),
-			isMobile = Settings.app('mobile'),
 			fSelectFolder = (el, event, starred) => {
 				const isMove = moveAction();
-				if (isMobile) {
-					leftPanelDisabled(true);
-				}
+				isMobile() && leftPanelDisabled(true);
 
 				event.preventDefault();
 
@@ -78,7 +75,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 							event.ctrlKey
 						);
 					} else {
-						if (Layout.NoPreview === SettingsStore.layout()) {
+						if (!SettingsStore.usePreviewPane()) {
 							MessageStore.message(null);
 						}
 

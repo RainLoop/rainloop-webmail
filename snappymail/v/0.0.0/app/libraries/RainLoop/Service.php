@@ -142,27 +142,6 @@ class Service
 
 		if ($bIndex)
 		{
-			$bMobile = false;
-			$bMobileDevice = false;
-			if ($this->oActions->Config()->Get('labs', 'allow_mobile_version', false))
-			{
-				$bUseMobileVersionForTablets = $this->oActions->Config()->Get('labs', 'use_mobile_version_for_tablets', false);
-				$bMobileDevice = UserAgent::isMobile() &&
-					($bUseMobileVersionForTablets ? true : !UserAgent::isTablet());
-				$sMobileType = (string) Utils::GetCookie(Actions::RL_MOBILE_TYPE, '');
-				switch ($sMobileType) {
-					default:
-						$bMobile = $bMobileDevice;
-						break;
-					case 'mobile':
-						$bMobile = true;
-						break;
-					case 'desktop':
-						$bMobile = false;
-						break;
-				}
-			}
-
 			header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
 
@@ -176,7 +155,7 @@ class Service
 				return $this;
 			}
 
-			$aTemplateParameters = $this->indexTemplateParameters($bAdmin, $bMobile, $bMobileDevice);
+			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
 
 			$sCacheFileName = '';
 			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true) && !empty($aTemplateParameters['{{BaseHash}}']))
@@ -207,12 +186,6 @@ class Service
 			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
 //			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
 //			$sResult .= '][session:'.\md5(Utils::GetShortToken());
-
-			if ($bMobile)
-			{
-				$sResult .= '][mobile:true';
-			}
-
 			$sResult .= ']-->';
 		}
 		else if (!headers_sent())
@@ -233,12 +206,25 @@ class Service
 		return $this->oActions->StaticPath($sPath);
 	}
 
-	private function indexTemplateParameters(bool $bAdmin = false, bool $bMobile = false, bool $bMobileDevice = false) : array
+	private function indexTemplateParameters(bool $bAdmin = false) : array
 	{
 		$sLanguage = 'en';
 		$sTheme = 'Default';
+		switch (Utils::GetCookie(Actions::RL_MOBILE_TYPE, '')) {
+			case 'mobile':
+				$bMobile = true;
+				break;
+			case 'desktop':
+				$bMobile = false;
+				break;
+			default:
+				$bMobile = UserAgent::isMobile() && (
+					$this->oActions->Config()->Get('labs', 'use_mobile_version_for_tablets', false)
+					|| !UserAgent::isTablet());
+				break;
+		}
 
-		list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme($bAdmin, $bMobile);
+		list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme($bAdmin);
 
 		$oConfig = $this->oActions->Config();
 
@@ -262,19 +248,17 @@ class Service
 			'{{BaseAppPolyfillsScriptLink}}' => '',
 			'{{BaseAppBootScriptLink}}' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'boot'.($bAppJsDebug ? '' : '.min').'.js'),
 			'{{BaseAppBootScript}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js/min/boot.min.js'),
-			'{{BaseViewport}}' => $bMobile ? 'width=device-width,initial-scale=1,user-scalable=no' : 'width=950,maximum-scale=2',
 			'{{BaseContentSecurityPolicy}}' => '',
 			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
 			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),
 			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot.min.css'),
-			'{{BaseCssClass}}' => ($bMobileDevice ? 'mobile' : 'no-mobile') . ($bMobile ? ' rl-mobile' : ''),
+			'{{BaseCssClass}}' => $bMobile ? ' rl-mobile' : '',
 			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'{{RainloopBootData}}' => \json_encode(array(
 				'admin' => $bAdmin,
 				'language' => $sLanguage,
 				'theme' => $sTheme,
-				'mobile' => $bMobile,
-				'mobileDevice' => $bMobileDevice
+				'mobile' => $bMobile
 			))
 		);
 

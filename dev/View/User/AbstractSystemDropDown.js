@@ -18,9 +18,6 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	constructor(name) {
 		super(name, 'SystemDropDown');
 
-		this.mobile = !!Settings.app('mobile');
-		this.mobileDevice = !!Settings.app('mobileDevice');
-
 		this.allowSettings = !!Settings.capa(Capa.Settings);
 		this.allowHelp = !!Settings.capa(Capa.Help);
 

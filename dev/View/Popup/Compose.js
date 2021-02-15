@@ -1090,7 +1090,7 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	setFocusInPopup() {
-//		rl.settings.app('mobile') ||
+//		isMobile() ||
 		setTimeout(() => {
 			if (!this.to()) {
 				this.to.focused(true);

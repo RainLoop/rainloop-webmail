@@ -3,7 +3,7 @@ import ko from 'ko';
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
-import { doc } from 'Common/Globals';
+import { doc, isMobile } from 'Common/Globals';
 
 class SettingsUserStore {
 	constructor() {
@@ -34,7 +34,7 @@ class SettingsUserStore {
 			autoLogout: 30
 		});
 
-		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout());
+		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout() && !isMobile());
 
 		this.subscribers();
 	}
@@ -42,9 +42,9 @@ class SettingsUserStore {
 	subscribers() {
 		const htmlCL = doc.documentElement.classList;
 		this.layout.subscribe(value => {
-			htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
-			htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
-			htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
+			htmlCL.toggle('rl-no-preview-pane', isMobile() || Layout.NoPreview === value);
+			htmlCL.toggle('rl-side-preview-pane', !isMobile() && Layout.SidePreview === value);
+			htmlCL.toggle('rl-bottom-preview-pane', !isMobile() && Layout.BottomPreview === value);
 			dispatchEvent(new CustomEvent('rl-layout', {detail:value}));
 		});
 	}
@@ -58,7 +58,7 @@ class SettingsUserStore {
 		this.messagesPerPage(settingsGet('MPP'));
 
 		this.showImages(!!settingsGet('ShowImages'));
-		this.useCheckboxesInList(!!settingsGet('UseCheckboxesInList'));
+		this.useCheckboxesInList(!!(isMobile() || settingsGet('UseCheckboxesInList')));
 		this.allowDraftAutosave(!!settingsGet('AllowDraftAutosave'));
 		this.useThreads(!!settingsGet('UseThreads'));
 		this.replySameFolder(!!settingsGet('ReplySameFolder'));

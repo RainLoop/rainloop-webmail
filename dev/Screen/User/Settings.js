@@ -1,5 +1,5 @@
 import { Capa, KeyState } from 'Common/Enums';
-import { keyScope, leftPanelType, leftPanelDisabled, Settings } from 'Common/Globals';
+import { keyScope, leftPanelType, leftPanelDisabled, Settings, isMobile } from 'Common/Globals';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
@@ -104,7 +104,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 		keyScope(KeyState.Settings);
 		leftPanelType('');
 
-		if (Settings.app('mobile')) {
+		if (isMobile()) {
 			leftPanelDisabled(true);
 		}
 	}

@@ -2,7 +2,7 @@ import 'External/ko';
 import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Momentor';
-import { doc } from 'Common/Globals';
+import { doc, isMobile } from 'Common/Globals';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
 
 const rlContentType = 'snappymail/action',
@@ -86,7 +86,7 @@ ko.bindingHandlers.emailsTags = {
 // Start dragging selected messages
 ko.bindingHandlers.dragmessages = {
 	init: (element, fValueAccessor) => {
-		if (!rl.settings.app('mobile')) {
+		if (!isMobile()) {
 			element.addEventListener("dragstart", e => {
 				let data = fValueAccessor()(e);
 				dragImage || (dragImage = doc.getElementById('messagesDragImage'));
@@ -119,7 +119,7 @@ ko.bindingHandlers.dragmessages = {
 // Drop selected messages on folder
 ko.bindingHandlers.dropmessages = {
 	init: (element, fValueAccessor) => {
-		if (!rl.settings.app('mobile')) {
+		if (!isMobile()) {
 			const folder = fValueAccessor(),
 //				folder = ko.dataFor(element),
 				fnStop = e => {

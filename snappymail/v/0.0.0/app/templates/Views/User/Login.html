@@ -52,9 +52,7 @@
 							autocorrect="off" autocapitalize="off" spellcheck="false" style="padding-right: 35px;"
 							data-bind="textInput: additionalCode, disable: submitRequest"
 							data-i18n="[placeholder]LOGIN/LABEL_VERIFICATION_CODE" />
-						<span class="add-on">
-							<i class="fontastic">🔑</i>
-						</span>
+						<span class="add-on fontastic">🔑</span>
 					</div>
 				</div>
 				<div class="controls plugin-mark-Login-BottomControlGroup"
@@ -109,19 +107,15 @@
 			</form>
 		</div>
 		<div class="e-mobile-switcher">
-			<span data-bind="visible: !mobile">
+			<span class="hide-mobile">
 				<i class="fontastic">📱</i>
 				&nbsp;
-				<a href="./?/MobileVersion/" tabindex="-1">
-					<span data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></span>
-				</a>
+				<a href="./?/MobileVersion/" tabindex="-1" data-i18n="MOBILE/BUTTON_MOBILE_VERSION"></a>
 			</span>
-			<span data-bind="visible: mobile">
+			<span class="show-mobile">
 				<i class="fontastic">💻</i>
 				&nbsp;
-				<a href="./?/DesktopVersion/" tabindex="-1">
-					<span data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></span>
-				</a>
+				<a href="./?/DesktopVersion/" tabindex="-1" data-i18n="MOBILE/BUTTON_DESKTOP_VERSION"></a>
 			</span>
 		</div>
 	</div>

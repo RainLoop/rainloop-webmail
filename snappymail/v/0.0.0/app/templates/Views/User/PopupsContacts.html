@@ -19,15 +19,11 @@
 			</div>
 
 			<div class="btn-group">
-				<a class="btn button-delete" data-bind="command: deleteCommand">
-					<i class="fontastic">🗑</i>
-				</a>
+				<a class="btn button-delete fontastic" data-bind="command: deleteCommand">🗑</a>
 			</div>
 
 			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true">
-				<a id="contacts-more-dropdown-id" class="btn dropdown-toggle" href="#" tabindex="-1" data-toggle="dropdown">
-					<i class="fontastic" data-bind="css: {'icon-spinner': contacts.importing() || contacts.syncing()}">☰</i>
-				</a>
+				<a id="contacts-more-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-toggle="dropdown" data-bind="css: {'icon-spinner': contacts.importing() || contacts.syncing()}">☰</a>
 				<ul class="dropdown-menu g-ui-menu right-edge" role="menu" aria-labelledby="contacts-more-dropdown-id">
 					<li class="e-item" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="initDom: importUploaderButton">
@@ -35,13 +31,13 @@
 							<span data-i18n="CONTACTS/BUTTON_IMPORT"></span>
 						</a>
 					</li>
-					<li class="e-item dividerbar hide-mobile" role="presentation">
+					<li class="e-item dividerbar" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: exportCsv">
 							<i data-bind="css: {'icon-export': !contacts.exportingCsv(), 'icon-spinner': contacts.exportingCsv}"></i>
 							<span data-i18n="CONTACTS/BUTTON_EXPORT_CSV"></span>
 						</a>
 					</li>
-					<li class="e-item hide-mobile" role="presentation">
+					<li class="e-item" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="click: exportVcf">
 							<i data-bind="css: {'icon-export': !contacts.exportingVcf(), 'icon-spinner': contacts.exportingVcf}"></i>
 							<span data-i18n="CONTACTS/BUTTON_EXPORT_VCARD"></span>
@@ -79,15 +75,10 @@
 					</div>
 					<div class="e-contact-foreach g-ui-user-select-none" data-bind="foreach: contacts, visible: 0 < contacts().length">
 						<div class="e-contact-item g-ui-user-select-none" data-bind="css: lineAsCss()">
-							<div class="sidebarParent">
+							<div class="checkboxItem fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
+							<div class="nameParent actionHandle">
+								<span class="listName" data-bind="text: display"></span>
 								&nbsp;
-							</div>
-							<div class="wrapper">
-								<div class="checkboxItem fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
-								<div class="nameParent actionHandle">
-									<span class="listName" data-bind="text: display"></span>
-									&nbsp;
-								</div>
 							</div>
 						</div>
 					</div>

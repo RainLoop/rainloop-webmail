@@ -16,7 +16,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -30,7 +30,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -67,7 +67,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -83,7 +83,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -114,7 +114,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}
@@ -140,7 +140,7 @@ trait TwoFactor
 		$oAccount = $this->getAccountFromToken();
 
 		if (!$this->TwoFactorAuthProvider()->IsActive() ||
-			!$this->GetCapa(false, false, Capa::TWO_FACTOR, $oAccount))
+			!$this->GetCapa(false, Capa::TWO_FACTOR, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
 		}

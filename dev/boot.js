@@ -129,7 +129,7 @@ win.rl = {
 		if (RL_APP_DATA.Title) {
 			title += (title ? ' - ' : '') + RL_APP_DATA.Title;
 		}
-		doc.title = null == title ? '' : '' + title;
+		doc.title = title;
 	},
 
 	initData: appData => {
@@ -172,15 +172,7 @@ setInterval(setTimestamp, 60000); // 1m
 
 [eId('app-css'),eId('app-theme-link')].forEach(css => css.href = css.dataset.href);
 
-loadScript('./?/'
-	+ (options.admin ? 'Admin' : '')
-	+ 'AppData@'
-	+ (options.mobile ? 'mobile' : 'no-mobile')
-	+ (options.mobileDevice ? '-1' : '-0')
-	+ '/'
-	+ (rl.hash.get() || '0')
-	+ '/'
-	+ Math.random().toString().substr(2)
-	+ '/').then(() => {});
+loadScript(`./?/${options.admin ? 'Admin' : ''}AppData/${rl.hash.get() || '0'}/${Math.random().toString().substr(2)}/`)
+	.then(() => {});
 
 })(this);

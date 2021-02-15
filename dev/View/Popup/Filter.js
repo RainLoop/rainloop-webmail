@@ -160,7 +160,7 @@ class FilterPopupView extends AbstractViewPopup {
 	}
 
 	onShowWithDelay() {
-		if (this.isNew() && this.filter()/* && !rl.settings.app('mobile')*/) {
+		if (this.isNew() && this.filter()/* && !isMobile()*/) {
 			this.filter().nameFocused(true);
 		}
 	}

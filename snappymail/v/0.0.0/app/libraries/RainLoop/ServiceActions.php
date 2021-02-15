@@ -661,14 +661,14 @@ class ServiceActions
 		return $bJson ? \MailSo\Base\Utils::Php2js(array($sTheme, $sResult), $this->Logger()) : $sResult;
 	}
 
-	public function ServiceAppData(string $sAdd = '') : string
+	public function ServiceAppData() : string
 	{
-		return $this->localAppData(false, $sAdd);
+		return $this->localAppData(false);
 	}
 
-	public function ServiceAdminAppData(string $sAdd = '') : string
+	public function ServiceAdminAppData() : string
 	{
-		return $this->localAppData(true, $sAdd);
+		return $this->localAppData(true);
 	}
 
 	public function ServiceMobileVersion() : string
@@ -897,7 +897,7 @@ class ServiceActions
 
 		$oAccount = $this->oActions->GetAccount();
 
-		if ($oAccount && $this->oActions->GetCapa(false, false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
+		if ($oAccount && $this->oActions->GetCapa(false, Enumerations\Capa::ADDITIONAL_ACCOUNTS, $oAccount))
 		{
 			$oAccountToLogin = null;
 			$sEmail = empty($this->aPaths[2]) ? '' : \urldecode(\trim($this->aPaths[2]));
@@ -948,7 +948,7 @@ class ServiceActions
 		return $this->ErrorTemplates($sTitle, \nl2br($sDesc));
 	}
 
-	private function localAppData(bool $bAdmin = false, string $sAdd = '') : string
+	private function localAppData(bool $bAdmin = false) : string
 	{
 		\header('Content-Type: application/javascript; charset=utf-8');
 		$this->oHttp->ServerNoCache();
@@ -987,9 +987,7 @@ class ServiceActions
 		}
 
 		$sResult = 'rl.initData('
-			.\json_encode($this->oActions->AppData($bAdmin,
-				0 === \strpos($sAdd, 'mobile'), '1' === \substr($sAdd, -1),
-				$sAuthAccountHash))
+			.\json_encode($this->oActions->AppData($bAdmin, $sAuthAccountHash))
 			.');';
 
 		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'APPDATA');

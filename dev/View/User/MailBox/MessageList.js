@@ -7,7 +7,6 @@ import {
 } from 'Common/Enums';
 
 import {
-	Layout,
 	Focused,
 	ComposeType,
 	FolderType,
@@ -16,7 +15,7 @@ import {
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
-import { doc, leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
+import { doc, leftPanelDisabled, moveAction, Settings, isMobile } from 'Common/Globals';
 
 import { computedPaginatorHelper } from 'Common/UtilsUser';
 import { File } from 'Common/File';
@@ -61,7 +60,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		this.iGoToUpUpOrDownDownTimeout = 0;
 
-		this.mobile = !!Settings.app('mobile');
 		this.newMoveToFolder = !!Settings.get('NewMoveToFolder');
 
 		this.allowReload = !!Settings.capa(Capa.Reload);
@@ -125,11 +123,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.sLastSearchValue = '';
 
 		this.addComputables({
-			messageListItemTemplate: () =>
-				this.mobile || Layout.SidePreview === SettingsStore.layout()
-					? 'MailMessageListItem'
-					: 'MailMessageListItemNoPreviewPane',
-
 			messageListSearchDesc: () => {
 				const value = MessageStore.messageListEndSearch();
 				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { 'SEARCH': value }) : ''
@@ -179,9 +172,9 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			isUnSpamVisible: () =>
 				this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder(),
 
-			mobileCheckedStateShow: () => this.mobile ? 0 < MessageStore.messageListChecked().length : true,
+			mobileCheckedStateShow: () => isMobile() ? 0 < MessageStore.messageListChecked().length : true,
 
-			mobileCheckedStateHide: () => this.mobile ? !MessageStore.messageListChecked().length : true,
+			mobileCheckedStateHide: () => isMobile() ? !MessageStore.messageListChecked().length : true,
 
 			messageListFocused: () => Focused.MessageList === AppStore.focusedState()
 		});
@@ -388,7 +381,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 				return false;
 			});
 
-			if (Layout.NoPreview === SettingsStore.layout() && !this.message()) {
+			if (!SettingsStore.usePreviewPane() && !this.message()) {
 				this.selector.iFocusedNextHelper = up ? -1 : 1;
 			} else {
 				this.selector.iSelectNextHelper = up ? -1 : 1;
@@ -405,8 +398,8 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 	useAutoSelect() {
 		return !this.messageListDisableAutoSelect()
-		 && !/is:unseen/.test(this.mainMessageListSearch())
-		 && Layout.NoPreview !== SettingsStore.layout();
+			&& !/is:unseen/.test(this.mainMessageListSearch())
+			&& SettingsStore.usePreviewPane();
 	}
 
 	searchEnterAction() {
@@ -680,7 +673,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.selector.init(dom.querySelector('.b-content'), KeyState.MessageList);
 
 		dom.addEventListener('click', event => {
-			this.mobile && leftPanelDisabled(true);
+			isMobile() && leftPanelDisabled(true);
 
 			if (eqs(event, '.messageList .b-message-list-wrapper') && Focused.MessageView === AppStore.focusedState()) {
 				AppStore.focusedState(Focused.MessageList);
@@ -706,7 +699,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.initUploaderForAppend();
 		this.initShortcuts();
 
-		if (!rl.settings.app('mobile') && Settings.capa(Capa.Prefetch)) {
+		if (!isMobile() && Settings.capa(Capa.Prefetch)) {
 			ifvisible.idle(this.prefetchNextTick.bind(this));
 		}
 	}

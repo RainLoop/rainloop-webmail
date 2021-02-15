@@ -3,24 +3,22 @@
 		data-bind="css: {'message-selected': isMessageSelected, 'message-focused': !messageListFocused(), 'hideMessageListCheckbox': !useCheckboxesInList() }">
 		<div class="toolbar">
 			<div class="btn-toolbar">
-				<!-- ko if: mobile -->
 				<!-- ko if: allowFolders -->
-				<a class="btn btn-thin-2" data-bind="click: showLeft, visible: leftPanelDisabled()">
+				<a class="btn btn-thin-2 show-mobile" data-bind="click: showLeft, visible: leftPanelDisabled()">
 					<i class="icon-right-middle"></i>
 				</a>
-				<a class="btn btn-thin-2" data-bind="click: hideLeft, visible: !leftPanelDisabled()">
+				<a class="btn btn-thin-2 show-mobile" data-bind="click: hideLeft, visible: !leftPanelDisabled()">
 					<i class="icon-left-middle"></i>
 				</a>
 				<!-- /ko -->
-				<a class="btn buttonCompose" data-bind="click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_NEW_MESSAGE', css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}, visible: allowComposer && mobileCheckedStateHide()">
+				<a class="btn buttonCompose show-mobile" data-bind="click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_NEW_MESSAGE', css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}, visible: allowComposer && mobileCheckedStateHide()">
 					<i class="icon-paper-plane"></i>
 				</a>
-				<!-- /ko -->
 				<a class="btn buttonReload" data-bind="command: reloadCommand, tooltip: 'MESSAGE_LIST/BUTTON_RELOAD', visible: allowReload && mobileCheckedStateHide()">
 					<i class="icon-spinner" data-bind="css: {'not-animated': !messageListCompleteLoadingThrottleForAnimation()}"></i>
 				</a>
 				<!-- ko if: !newMoveToFolder -->
-				<div class="btn-group dropdown colored-toggle hide-on-mobile" data-bind="visible: allowMessageListActions, registerBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
+				<div class="btn-group dropdown colored-toggle hide-mobile" data-bind="visible: allowMessageListActions, registerBootstrapDropdown: true, openDropdownTrigger: moveDropdownTrigger">
 					<a id="move-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle buttonMove" data-toggle="dropdown" data-bind="command: moveCommand, tooltip: 'GLOBAL/MOVE_TO'">
 						<i class="icon-copy visible-on-ctrl-btn"></i>
 						<i class="fontastic hidden-on-ctrl-btn">📁</i>
@@ -157,7 +155,47 @@
 							<span data-i18n="MESSAGE_LIST/EMPTY_SEARCH_LIST"></span>
 						</div>
 						<div data-bind="dragmessages: getDragData">
-							<div class="messageListPlace" data-bind="template: { name: messageListItemTemplate(), foreach: messageList }"></div>
+							<div class="messageListPlace" data-bind="foreach: messageList">
+
+								<div class="messageListItem" data-bind="css: lineAsCss()">
+									<div class="checkboxMessage fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
+
+									<div class="flagParent">
+										<i class="flagOn fontastic">★</i>
+										<i class="flagOnHalf fontastic">☆</i>
+										<i class="flagOff fontastic">☆</i>
+										<!-- ⚐⚑ -->
+									</div>
+
+									<div class="senderParent actionHandle">
+										<i class="replyFlag fontastic">←</i>
+										<i class="forwardFlag fontastic">→</i>
+										<span class="sender" data-bind="text: senderEmailsString, attr: {'title': senderClearEmailsString}"></span>
+									</div>
+
+									<div class="attachmentParent actionHandle">
+										<i data-bind="css: attachmentIconClass"></i>
+									</div>
+
+									<div class="subjectParent actionHandle">
+										<b class="importantMark">!</b>
+										<span class="emptySubjectText" data-bind="text: $root.emptySubjectValue"></span>
+										<span class="subject" data-bind="text: subject"></span>
+									</div>
+
+									<div class="threadsParent" data-bind="visible: 1 < threadsLen()">
+										<span class="threads-len">
+											<span class="threads-len-data">
+												<span data-bind="text: threadsLen"></span>
+												<i class="icon-right-mini"></i>
+											</span>
+										</span>
+									</div>
+
+									<time class="actionHandle" data-moment-format="SHORT" data-moment-format-title="FULL" data-bind="moment: dateTimeStampInUTC"></time>
+								</div>
+
+							</div>
 						</div>
 						<div id="messagesDragImage"><span class="text"></span>&nbsp;<i class="icon-mail icon-white"></i></div>
 					</div>

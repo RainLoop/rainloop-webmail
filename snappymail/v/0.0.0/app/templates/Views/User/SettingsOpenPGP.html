@@ -37,9 +37,7 @@
 			<!-- ko foreach: openpgpkeysPrivate -->
 			<tr class="open-pgp-key-item">
 				<td>
-					<span class="open-pgp-key-img" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PRIVATE">
-						<i class="fontastic">🔒</i>
-					</span>
+					<span class="open-pgp-key-img fontastic" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PRIVATE">🔒</span>
 					<span class="open-pgp-key-user">
 					<!-- ko foreach: users -->
 						<div class="open-pgp-key-user-address" data-bind="text: $data"></div>
@@ -50,23 +48,17 @@
 					</a>
 				</td>
 				<td>
-					<span class="delete-open-pgp-key" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">
-						<i class="fontastic">🗑</i>
-					</span>
+					<span class="delete-open-pgp-key fontastic" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">🗑</span>
 				</td>
 				<td>
-					<span class="view-open-pgp-key" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">
-						<i class="fontastic">👁</i>
-					</span>
+					<span class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</span>
 				</td>
 			</tr>
 			<!-- /ko -->
 			<!-- ko foreach: openpgpkeysPublic -->
 			<tr class="open-pgp-key-item">
 				<td>
-					<span class="open-pgp-key-img" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PUBLIC">
-						<i class="fontastic">🔑</i>
-					</span>
+					<span class="open-pgp-key-img fontastic" data-i18n="[title]SETTINGS_OPEN_PGP/TITLE_PUBLIC">🔑</span>
 					<span class="open-pgp-key-user">
 					<!-- ko foreach: users -->
 						<div class="open-pgp-key-user-address">
@@ -79,14 +71,10 @@
 					</a>
 				</td>
 				<td>
-					<span class="delete-open-pgp-key" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">
-						<i class="fontastic">🗑</i>
-					</span>
+					<span class="delete-open-pgp-key fontastic" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">🗑</span>
 				</td>
 				<td>
-					<span class="view-open-pgp-key" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">
-						<i class="fontastic">👁</i>
-					</span>
+					<span class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</span>
 				</td>
 			</tr>
 			<!-- /ko -->
