@@ -4,31 +4,26 @@
  */
 
 html, body {
-	font-family: Arial, Verdana, Geneva, sans-serif;
 	height: 100%;
-	margin: 0;
 	overflow: hidden;
-	padding: 0;
 	line-height: 1.15; /* 1 */
 	-webkit-text-size-adjust: 100%; /* 2 */
 }
 
 body {
-	background: var(--main-bg-color, #e3e3e3);
-	color: var(--main-color, #333);
-
 	-webkit-touch-callout: none;
 
-	position: absolute;
+	position: fixed;
 	top: 0;
 	left: 0;
 	bottom: 0;
 	right: 0;
 }
 
-/*
-.rl-mobile
-*/
+html:not(.rl-mobile) {
+	min-width: 700px;
+}
+
 @media screen and (min-width: 1000px) {
 	body {
 		background-image: var(--main-bg-image);

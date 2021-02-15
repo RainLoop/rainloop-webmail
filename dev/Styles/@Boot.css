@@ -1,13 +1,12 @@
 html, body {
-	background-color: #eee;
 	font-family: "DejaVu Sans", Verdana, Geneva, "Bitstream Vera Sans", "DejaVu LGC Sans", sans-serif;
 	margin: 0;
 	padding: 0;
 }
 
 body {
-	background-color: #aaa;
-	color: #333;
+	background: var(--main-bg-color, #aaa);
+	color: var(--main-color, #333);
 }
 
 #rl-loading, #rl-loading-error {
