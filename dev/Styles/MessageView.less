@@ -577,17 +577,11 @@
 	}
 }
 
-html.rl-resizer .b-message-view-iframe-backdrop {
-	display: block !important;
-}
-
 html.rl-mobile .messageView,
 html.rl-no-preview-pane .messageView {
 
-	display: none;
-
-	&.message-selected {
-		display: block;
+	&:not(.message-selected) {
+		display: none;
 	}
 
 	.toolbar {
@@ -628,7 +622,10 @@ html.rl-message-fullscreen {
 	}
 
 	#rl-right {
-		.RL-MailMessageList, .RL-SettingsPane, .RL-SystemDropDown, .RL-MailMessageView .messageView .toolbar {
+		.RL-MailMessageList,
+		.RL-SettingsPane,
+		.RL-SystemDropDown,
+		.RL-MailMessageView .messageView .toolbar {
 			display: none !important;
 		}
 	}

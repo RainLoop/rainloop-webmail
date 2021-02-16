@@ -4,6 +4,8 @@ namespace RainLoop;
 
 class ServiceActions
 {
+	const RL_LAYOUT = 'rllayout';
+
 	/**
 	 * @var \MailSo\Base\Http
 	 */
@@ -673,14 +675,14 @@ class ServiceActions
 
 	public function ServiceMobileVersion() : string
 	{
-		Utils::SetCookie(Actions::RL_MOBILE_TYPE, 'mobile');
+		Utils::SetCookie(self::RL_LAYOUT, 'mobile', 0, null, null, null, false);
 		$this->oActions->Location('./');
 		return '';
 	}
 
 	public function ServiceDesktopVersion() : string
 	{
-		Utils::SetCookie(Actions::RL_MOBILE_TYPE, 'desktop');
+		Utils::SetCookie(self::RL_LAYOUT, 'desktop', 0, null, null, null, false);
 		$this->oActions->Location('./');
 		return '';
 	}

@@ -6,7 +6,7 @@
 					<a class="btn buttonClose fontastic" data-bind="command: closeMessageCommand">✖</a>
 				</div>
 				<div class="btn-group" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'">
-					<a class="btn btn-success buttonEdit fontastic icon-white" data-bind="command: messageEditCommand">🖉</a>
+					<a class="btn btn-success buttonEdit fontastic" data-bind="command: messageEditCommand">🖉</a>
 				</div>
 				<div class="btn-group">
 					<a class="btn button-archive" data-bind="visible: !isDraftFolder() && !isArchiveFolder() && !isArchiveDisabled(), command: archiveCommand, tooltip: 'GLOBAL/TO_ARCHIVE'">
@@ -31,11 +31,9 @@
 		<div class="b-content b-message-view-wrapper">
 			<div style="height: 100%">
 				<div class="b-message-view-backdrop" data-bind="visible: moveAction">
-					<div class="backdrop-message-wrp">
-						<div class="backdrop-message">
-							<i class="fontastic" style="padding: 0 7px; font-size: 24px; width: 24px; line-height: 24px;">📁</i>
-							<span style="vertical-align: middle; padding: 0 7px" data-i18n="MESSAGE/MESSAGE_VIEW_MOVE_DESC"></span>
-						</div>
+					<div class="backdrop-message">
+						<i class="fontastic">📁</i>
+						<span data-i18n="MESSAGE/MESSAGE_VIEW_MOVE_DESC"></span>
 					</div>
 				</div>
 				<div class="b-message-view-checked-helper" data-bind="visible: !message() && '' === messageError() && hasCheckedMessages()">
@@ -158,7 +156,7 @@
 					</div>
 
 					<div class="btn-group hide-mobile" data-bind="visible: isDraftFolder(), tooltip: 'MESSAGE/BUTTON_EDIT'" style="margin-right: 5px">
-						<a class="btn btn-success buttonEdit fontastic icon-white" data-bind="command: messageEditCommand">🖉</a>
+						<a class="btn btn-success buttonEdit fontastic" data-bind="command: messageEditCommand">🖉</a>
 					</div>
 				</div>
 

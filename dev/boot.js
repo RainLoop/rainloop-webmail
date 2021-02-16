@@ -7,6 +7,11 @@ const
 	app = eId('rl-app'),
 	options = app && app.dataset.boot && JSON.parse(app.dataset.boot) || {},
 
+	getCookie = name => {
+		let data = doc.cookie.match('(^|;) ?'+name+'=([^;]*)(;|$)');
+		return data ? decodeURIComponent(data[2]) : null;
+	},
+
 	Storage = type => {
 		let name = type+'Storage';
 		try {
@@ -18,8 +23,7 @@ const
 			const cookieName = encodeURIComponent(name+('session' === type ? win.name || (win.name = Date.now()) : ''));
 
 			// initialise if there's already data
-			let data = doc.cookie.match('(^|;) ?'+cookieName+'=([^;]*)(;|$)');
-			data = data ? decodeURIComponent(data[2]) : null;
+			let data = getCookie(cookieName);
 			data = data ? JSON.parse(data) : {};
 
 			win[name] = {
@@ -81,6 +85,9 @@ const
 if (!navigator || !navigator.cookieEnabled) {
 	doc.location.href = './?/NoCookie';
 }
+
+const layout = getCookie('rllayout');
+doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout || (!layout && 1000 > innerWidth));
 
 let pStep = 0,
 	container = eId('progressjs'),

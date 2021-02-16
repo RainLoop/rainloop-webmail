@@ -210,19 +210,6 @@ class Service
 	{
 		$sLanguage = 'en';
 		$sTheme = 'Default';
-		switch (Utils::GetCookie(Actions::RL_MOBILE_TYPE, '')) {
-			case 'mobile':
-				$bMobile = true;
-				break;
-			case 'desktop':
-				$bMobile = false;
-				break;
-			default:
-				$bMobile = UserAgent::isMobile() && (
-					$this->oActions->Config()->Get('labs', 'use_mobile_version_for_tablets', false)
-					|| !UserAgent::isTablet());
-				break;
-		}
 
 		list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme($bAdmin);
 
@@ -252,7 +239,7 @@ class Service
 			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
 			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),
 			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot.min.css'),
-			'{{BaseCssClass}}' => $bMobile ? ' rl-mobile' : '',
+			'{{BaseCssClass}}' => '',
 			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'{{RainloopBootData}}' => \json_encode(array(
 				'admin' => $bAdmin,
