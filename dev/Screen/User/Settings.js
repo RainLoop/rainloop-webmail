@@ -1,10 +1,11 @@
 import { Capa, KeyState } from 'Common/Enums';
-import { keyScope, leftPanelType, leftPanelDisabled, Settings, isMobile } from 'Common/Globals';
+import { keyScope, leftPanelType, leftPanelDisabled, Settings } from 'Common/Globals';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
 import AppStore from 'Stores/User/App';
 import AccountStore from 'Stores/User/Account';
+import { ThemeStore } from 'Stores/Theme';
 
 import { AbstractSettingsScreen, settingsAddViewModel } from 'Screen/AbstractSettings';
 
@@ -104,7 +105,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 		keyScope(KeyState.Settings);
 		leftPanelType('');
 
-		isMobile() && leftPanelDisabled(true);
+		ThemeStore.isMobile() && leftPanelDisabled(true);
 	}
 
 	setSettingsTitle() {

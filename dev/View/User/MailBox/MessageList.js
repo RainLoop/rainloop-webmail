@@ -15,7 +15,7 @@ import {
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
-import { doc, leftPanelDisabled, moveAction, Settings, isMobile } from 'Common/Globals';
+import { doc, leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
 
 import { computedPaginatorHelper } from 'Common/UtilsUser';
 import { File } from 'Common/File';
@@ -37,6 +37,7 @@ import QuotaStore from 'Stores/User/Quota';
 import SettingsStore from 'Stores/User/Settings';
 import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
+import { ThemeStore } from 'Stores/Theme';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -172,9 +173,9 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			isUnSpamVisible: () =>
 				this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder(),
 
-			mobileCheckedStateShow: () => isMobile() ? 0 < MessageStore.messageListChecked().length : true,
+			mobileCheckedStateShow: () => ThemeStore.isMobile() ? 0 < MessageStore.messageListChecked().length : true,
 
-			mobileCheckedStateHide: () => isMobile() ? !MessageStore.messageListChecked().length : true,
+			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessageStore.messageListChecked().length : true,
 
 			messageListFocused: () => Focused.MessageList === AppStore.focusedState()
 		});
@@ -673,7 +674,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.selector.init(dom.querySelector('.b-content'), KeyState.MessageList);
 
 		dom.addEventListener('click', event => {
-			isMobile() && leftPanelDisabled(true);
+			ThemeStore.isMobile() && leftPanelDisabled(true);
 
 			if (eqs(event, '.messageList .b-message-list-wrapper') && Focused.MessageView === AppStore.focusedState()) {
 				AppStore.focusedState(Focused.MessageList);
@@ -699,7 +700,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.initUploaderForAppend();
 		this.initShortcuts();
 
-		if (!isMobile() && Settings.capa(Capa.Prefetch)) {
+		if (!ThemeStore.isMobile() && Settings.capa(Capa.Prefetch)) {
 			ifvisible.idle(this.prefetchNextTick.bind(this));
 		}
 	}

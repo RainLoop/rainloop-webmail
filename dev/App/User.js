@@ -17,7 +17,14 @@ import {
 	ClientSideKeyName
 } from 'Common/EnumsUser';
 
-import { doc, createElement, $htmlCL, Settings, leftPanelDisabled, isMobile } from 'Common/Globals';
+import {
+	doc,
+	elementById,
+	createElement,
+	$htmlCL,
+	Settings,
+	leftPanelDisabled
+} from 'Common/Globals';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
@@ -50,6 +57,7 @@ import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
 import MessageStore from 'Stores/User/Message';
 import QuotaStore from 'Stores/User/Quota';
+import { ThemeStore } from 'Stores/Theme';
 
 import * as Local from 'Storage/Client';
 
@@ -866,18 +874,18 @@ class AppUser extends AbstractApp {
 					(bDisable || !$htmlCL.contains('rl-bottom-preview-pane')) ? null : 'height');
 			};
 		if (top && bottom) {
-			fDisable(false);
+			fDisable(ThemeStore.isMobile());
 			addEventListener('rl-layout', e => fDisable(Layout.BottomPreview !== e.detail));
 		}
 	}
 
 	initVerticalLayoutResizer() {
-		const left = doc.getElementById('rl-left'),
-			right = doc.getElementById('rl-right'),
+		const left = elementById('rl-left'),
+			right = elementById('rl-right'),
 			fDisable = bDisable =>
 				this.setLayoutResizer(left, right, ClientSideKeyName.FolderListSize, bDisable ? null : 'width');
 		if (left && right) {
-			fDisable(false);
+			fDisable(ThemeStore.isMobile());
 			leftPanelDisabled.subscribe(value => fDisable(value));
 		}
 	}
@@ -1022,9 +1030,7 @@ class AppUser extends AbstractApp {
 								}, 500);
 							}
 
-							if (!isMobile()) {
-								setTimeout(() => this.initVerticalLayoutResizer(), 1);
-							}
+							setTimeout(() => this.initVerticalLayoutResizer(), 1);
 						} else {
 							this.logout();
 						}

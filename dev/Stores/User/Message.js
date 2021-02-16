@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
 import { Focused, MessageSetAction } from 'Common/EnumsUser';
-import { doc } from 'Common/Globals';
+import { doc, elementById } from 'Common/Globals';
 import { pInt, pString } from 'Common/Utils';
 import { plainToHtml } from 'Common/UtilsUser';
 
@@ -493,7 +493,7 @@ class MessageUserStore {
 				if (messagesDom) {
 					id = 'rl-mgs-' + message.hash.replace(/[^a-zA-Z0-9]/g, '');
 
-					const textBody = doc.getElementById(id);
+					const textBody = elementById(id);
 					if (textBody) {
 						message.body = textBody;
 						message.fetchDataFromDom();

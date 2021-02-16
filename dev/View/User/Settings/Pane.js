@@ -1,8 +1,9 @@
 import { mailbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
-import { leftPanelDisabled, isMobile } from 'Common/Globals';
+import { leftPanelDisabled } from 'Common/Globals';
 
 import MessageStore from 'Stores/User/Message';
+import { ThemeStore } from 'Stores/Theme';
 
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
@@ -32,7 +33,7 @@ export class PaneSettingsUserView extends AbstractViewRight {
 	}
 
 	onBuild(dom) {
-		isMobile() && dom.addEventListener('click', () => leftPanelDisabled(true));
+		dom.addEventListener('click', () => ThemeStore.isMobile() && leftPanelDisabled(true));
 	}
 
 	backToMailBoxClick() {

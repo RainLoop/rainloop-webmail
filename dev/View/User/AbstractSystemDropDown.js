@@ -12,7 +12,9 @@ import { KeyboardShortcutsHelpPopupView } from 'View/Popup/KeyboardShortcutsHelp
 import { AccountPopupView } from 'View/Popup/Account';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
-import { Settings } from 'Common/Globals';
+import { doc, Settings, leftPanelDisabled } from 'Common/Globals';
+
+import { ThemeStore } from 'Stores/Theme';
 
 export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	constructor(name) {
@@ -80,6 +82,22 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 		if (this.allowContacts) {
 			showScreenPopup(ContactsPopupView);
 		}
+	}
+
+	layoutDesktop()
+	{
+		doc.cookie = 'rllayout=desktop';
+		ThemeStore.isMobile(false);
+		leftPanelDisabled(false);
+//		location.reload();
+	}
+
+	layoutMobile()
+	{
+		doc.cookie = 'rllayout=mobile';
+		ThemeStore.isMobile(true);
+		leftPanelDisabled(true);
+//		location.reload();
 	}
 
 	logoutClick() {

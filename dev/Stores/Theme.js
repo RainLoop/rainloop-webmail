@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { isMobile } from 'Common/Globals';
+import { $htmlCL } from 'Common/Globals';
 
 export const ThemeStore = {
 	themes: ko.observableArray(),
@@ -12,7 +12,7 @@ export const ThemeStore = {
 
 		this.themes(Array.isArray(themes) ? themes : []);
 		this.theme(Settings.get('Theme'));
-		if (!isMobile()) {
+		if (!this.isMobile()) {
 			this.themeBackgroundName(Settings.get('UserBackgroundName'));
 			this.themeBackgroundHash(Settings.get('UserBackgroundHash'));
 		}
@@ -20,3 +20,6 @@ export const ThemeStore = {
 };
 
 ThemeStore.theme = ko.observable('').extend({ limitedList: ThemeStore.themes });
+
+ThemeStore.isMobile = ko.observable($htmlCL.contains('rl-mobile'));
+ThemeStore.isMobile.subscribe(value => $htmlCL.toggle('rl-mobile', value));

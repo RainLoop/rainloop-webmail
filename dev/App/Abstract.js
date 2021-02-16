@@ -3,9 +3,9 @@ import ko from 'ko';
 import {
 	doc,
 	$htmlCL,
+	elementById,
 	leftPanelDisabled,
-	Settings,
-	isMobile
+	Settings
 } from 'Common/Globals';
 
 import { KeyState } from 'Common/Enums';
@@ -49,7 +49,7 @@ export class AbstractApp {
 	 * @returns {boolean}
 	 */
 	download(link) {
-		if (isMobile()) {
+		if (ThemeStore.isMobile()) {
 			open(link, '_self');
 			focus();
 		} else {
@@ -110,7 +110,7 @@ export class AbstractApp {
 		register('Select', SelectComponent);
 		register('TextArea', TextAreaComponent);
 		register('CheckboxSimple', CheckboxComponent, 'CheckboxComponent');
-		if (isMobile() || !Settings.app('materialDesign')) {
+		if (/*ThemeStore.isMobile() || */!Settings.app('materialDesign')) {
 			register('Checkbox', CheckboxComponent);
 		} else {
 			register('Checkbox', CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');
@@ -118,11 +118,8 @@ export class AbstractApp {
 
 		initOnStartOrLangChange();
 
-		if (isMobile()) {
-			leftPanelDisabled(true);
-		} else {
-			window.addEventListener('resize', () => leftPanelDisabled(767 >= window.innerWidth));
-		}
+		leftPanelDisabled(ThemeStore.isMobile());
+		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 767 >= innerWidth));
 
 		leftPanelDisabled.valueHasMutated();
 
@@ -134,9 +131,8 @@ export class AbstractApp {
 	 * @returns {void}
 	 */
 	hideLoading() {
-		const id = id => doc.getElementById(id);
-		id('rl-content').hidden = false;
-		id('rl-loading').remove();
+		elementById('rl-content').hidden = false;
+		elementById('rl-loading').remove();
 	}
 
 }

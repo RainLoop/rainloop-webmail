@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { pString } from 'Common/Utils';
 import { settings } from 'Common/Links';
-import { doc } from 'Common/Globals';
+import { doc, elementById } from 'Common/Globals';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
@@ -45,7 +45,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 			if (RoutedSettingsViewModel.__builded && RoutedSettingsViewModel.__vm) {
 				settingsScreen = RoutedSettingsViewModel.__vm;
 			} else {
-				const vmPlace = doc.getElementById('rl-settings-subscreen');
+				const vmPlace = elementById('rl-settings-subscreen');
 				if (vmPlace) {
 					settingsScreen = new RoutedSettingsViewModel();
 

@@ -1,5 +1,5 @@
 import { SaveSettingsStep } from 'Common/Enums';
-import { doc } from 'Common/Globals';
+import { doc, elementById } from 'Common/Globals';
 
 export const
 	isArray = Array.isArray,
@@ -29,7 +29,7 @@ export function pString(value) {
 export function inFocus() {
 	try {
 		return doc.activeElement && doc.activeElement.matches(
-			'input,textarea,iframe,.cke_editable'
+			'input,textarea,.cke_editable'
 		);
 	} catch (e) {
 		return false;
@@ -83,13 +83,13 @@ let __themeTimer = 0,
  * @returns {void}
  */
 export function changeTheme(value, themeTrigger = ()=>{}) {
-	const themeLink = doc.getElementById('app-theme-link'),
+	const themeLink = elementById('app-theme-link'),
 		clearTimer = () => {
 			__themeTimer = setTimeout(() => themeTrigger(SaveSettingsStep.Idle), 1000);
 			__themeJson = null;
 		};
 
-	let themeStyle = doc.getElementById('app-theme-style'),
+	let themeStyle = elementById('app-theme-style'),
 		url = (themeLink && themeLink.href) || (themeStyle && themeStyle.dataset.href);
 
 	if (url) {

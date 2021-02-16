@@ -2,8 +2,9 @@ import 'External/ko';
 import ko from 'ko';
 import { HtmlEditor } from 'Common/Html';
 import { timeToNode } from 'Common/Momentor';
-import { doc, isMobile } from 'Common/Globals';
+import { elementById } from 'Common/Globals';
 import { EmailAddressesComponent } from 'Component/EmailAddresses';
+import { ThemeStore } from 'Stores/Theme';
 
 const rlContentType = 'snappymail/action',
 
@@ -86,72 +87,68 @@ ko.bindingHandlers.emailsTags = {
 // Start dragging selected messages
 ko.bindingHandlers.dragmessages = {
 	init: (element, fValueAccessor) => {
-		if (!isMobile()) {
-			element.addEventListener("dragstart", e => {
-				let data = fValueAccessor()(e);
-				dragImage || (dragImage = doc.getElementById('messagesDragImage'));
-				if (data && dragImage) {
-					dragImage.querySelector('.text').textContent = data.uids.length;
-					let img = dragImage.querySelector('.icon-white');
-					img.classList.toggle('icon-copy', e.ctrlKey);
-					img.classList.toggle('icon-mail', !e.ctrlKey);
+		element.addEventListener("dragstart", e => {
+			let data = fValueAccessor()(e);
+			dragImage || (dragImage = elementById('messagesDragImage'));
+			if (data && dragImage && !ThemeStore.isMobile()) {
+				dragImage.querySelector('.text').textContent = data.uids.length;
+				let img = dragImage.querySelector('.icon-white');
+				img.classList.toggle('icon-copy', e.ctrlKey);
+				img.classList.toggle('icon-mail', !e.ctrlKey);
 
-					// Else Chrome doesn't show it
-					dragImage.style.left = e.clientX + 'px';
-					dragImage.style.top = e.clientY + 'px';
-					dragImage.style.right = 'auto';
+				// Else Chrome doesn't show it
+				dragImage.style.left = e.clientX + 'px';
+				dragImage.style.top = e.clientY + 'px';
+				dragImage.style.right = 'auto';
 
-					setDragAction(e, 'messages', e.ctrlKey ? 'copy' : 'move', data, dragImage);
+				setDragAction(e, 'messages', e.ctrlKey ? 'copy' : 'move', data, dragImage);
 
-					// Remove the Chrome visibility
-					dragImage.style.cssText = '';
-				} else {
-					e.preventDefault();
-				}
+				// Remove the Chrome visibility
+				dragImage.style.cssText = '';
+			} else {
+				e.preventDefault();
+			}
 
-			}, false);
-			element.addEventListener("dragend", () => dragData = null);
-			element.setAttribute('draggable', true);
-		}
+		}, false);
+		element.addEventListener("dragend", () => dragData = null);
+		element.setAttribute('draggable', true);
 	}
 };
 
 // Drop selected messages on folder
 ko.bindingHandlers.dropmessages = {
 	init: (element, fValueAccessor) => {
-		if (!isMobile()) {
-			const folder = fValueAccessor(),
-//				folder = ko.dataFor(element),
-				fnStop = e => {
-					e.preventDefault();
-					element.classList.remove('droppableHover');
-					dragTimer.stop();
-				},
-				fnHover = e => {
-					if ('messages' === getDragAction(e)) {
-						fnStop(e);
-						element.classList.add('droppableHover');
-						if (folder && folder.collapsed()) {
-							dragTimer.start(() => {
-								folder.collapsed(false);
-								rl.app.setExpandedFolder(folder.fullNameHash, true);
-							}, 500);
-						}
-					}
-				};
-			element.addEventListener("dragenter", fnHover);
-			element.addEventListener("dragover", fnHover);
-			element.addEventListener("dragleave", fnStop);
-			element.addEventListener("drop", e => {
-				fnStop(e);
-				if ('messages' === getDragAction(e) && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
-					let data = dragData.data;
-					if (folder && data && data.folder && Array.isArray(data.uids)) {
-						rl.app.moveMessagesToFolder(data.folder, data.uids, folder.fullNameRaw, data.copy && e.ctrlKey);
+		const folder = fValueAccessor(),
+//			folder = ko.dataFor(element),
+			fnStop = e => {
+				e.preventDefault();
+				element.classList.remove('droppableHover');
+				dragTimer.stop();
+			},
+			fnHover = e => {
+				if ('messages' === getDragAction(e)) {
+					fnStop(e);
+					element.classList.add('droppableHover');
+					if (folder && folder.collapsed()) {
+						dragTimer.start(() => {
+							folder.collapsed(false);
+							rl.app.setExpandedFolder(folder.fullNameHash, true);
+						}, 500);
 					}
 				}
-			});
-		}
+			};
+		element.addEventListener("dragenter", fnHover);
+		element.addEventListener("dragover", fnHover);
+		element.addEventListener("dragleave", fnStop);
+		element.addEventListener("drop", e => {
+			fnStop(e);
+			if ('messages' === getDragAction(e) && ['move','copy'].includes(e.dataTransfer.effectAllowed)) {
+				let data = dragData.data;
+				if (folder && data && data.folder && Array.isArray(data.uids)) {
+					rl.app.moveMessagesToFolder(data.folder, data.uids, folder.fullNameRaw, data.copy && e.ctrlKey);
+				}
+			}
+		});
 	}
 };
 

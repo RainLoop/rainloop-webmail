@@ -15,7 +15,7 @@ import {
 	MessageSetAction
 } from 'Common/EnumsUser';
 
-import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings, isMobile } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings } from 'Common/Globals';
 
 import { inFocus } from 'Common/Utils';
 import { mailToHelper } from 'Common/UtilsUser';
@@ -32,6 +32,7 @@ import SettingsStore from 'Stores/User/Settings';
 import AccountStore from 'Stores/User/Account';
 import FolderStore from 'Stores/User/Folder';
 import MessageStore from 'Stores/User/Message';
+import { ThemeStore } from 'Stores/Theme';
 
 import * as Local from 'Storage/Client';
 
@@ -413,7 +414,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
 		dom.addEventListener('click', event => {
-			isMobile() && leftPanelDisabled(true);
+			ThemeStore.isMobile() && leftPanelDisabled(true);
 
 			let el = eqs(event, 'a');
 			if (el) {

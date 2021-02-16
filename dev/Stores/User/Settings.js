@@ -3,7 +3,8 @@ import ko from 'ko';
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
-import { doc, isMobile } from 'Common/Globals';
+import { $htmlCL } from 'Common/Globals';
+import { ThemeStore } from 'Stores/Theme';
 
 class SettingsUserStore {
 	constructor() {
@@ -34,17 +35,16 @@ class SettingsUserStore {
 			autoLogout: 30
 		});
 
-		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout() && !isMobile());
+		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout() && !ThemeStore.isMobile());
 
 		this.subscribers();
 	}
 
 	subscribers() {
-		const htmlCL = doc.documentElement.classList;
 		this.layout.subscribe(value => {
-			htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
-			htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
-			htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
+			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
+			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
+			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
 			dispatchEvent(new CustomEvent('rl-layout', {detail:value}));
 		});
 	}
@@ -58,7 +58,7 @@ class SettingsUserStore {
 		this.messagesPerPage(settingsGet('MPP'));
 
 		this.showImages(!!settingsGet('ShowImages'));
-		this.useCheckboxesInList(!!(isMobile() || settingsGet('UseCheckboxesInList')));
+		this.useCheckboxesInList(!!(ThemeStore.isMobile() || settingsGet('UseCheckboxesInList')));
 		this.allowDraftAutosave(!!settingsGet('AllowDraftAutosave'));
 		this.useThreads(!!settingsGet('UseThreads'));
 		this.replySameFolder(!!settingsGet('ReplySameFolder'));

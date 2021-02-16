@@ -1,4 +1,4 @@
-import { doc, dropdownVisibility } from 'Common/Globals';
+import { doc, elementById, dropdownVisibility } from 'Common/Globals';
 import { StorageResultType } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
@@ -136,7 +136,7 @@ export default (App) => {
 	window.__APP_BOOT = fErrorCallback => {
 		const cb = () => setTimeout(() => {
 				if (rl.TEMPLATES) {
-					doc.getElementById('rl-templates').innerHTML = rl.TEMPLATES;
+					elementById('rl-templates').innerHTML = rl.TEMPLATES;
 					setTimeout(() => App.bootstart(), 10);
 				} else {
 					fErrorCallback();

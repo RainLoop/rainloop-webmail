@@ -1,8 +1,8 @@
 import ko from 'ko';
 import { KeyState } from 'Common/Enums';
 import { Focused } from 'Common/EnumsUser';
-
-import { keyScope, leftPanelDisabled, Settings, isMobile } from 'Common/Globals';
+import { keyScope, leftPanelDisabled, Settings } from 'Common/Globals';
+import { ThemeStore } from 'Stores/Theme';
 
 class AppUserStore {
 	constructor() {
@@ -26,15 +26,15 @@ class AppUserStore {
 			switch (value) {
 				case Focused.MessageList:
 					keyScope(KeyState.MessageList);
-					isMobile() && leftPanelDisabled(true);
+					ThemeStore.isMobile() && leftPanelDisabled(true);
 					break;
 				case Focused.MessageView:
 					keyScope(KeyState.MessageView);
-					isMobile() && leftPanelDisabled(true);
+					ThemeStore.isMobile() && leftPanelDisabled(true);
 					break;
 				case Focused.FolderList:
 					keyScope(KeyState.FolderList);
-					isMobile() && leftPanelDisabled(false);
+					ThemeStore.isMobile() && leftPanelDisabled(false);
 					break;
 				default:
 					break;

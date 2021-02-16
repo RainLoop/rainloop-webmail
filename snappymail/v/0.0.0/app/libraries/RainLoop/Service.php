@@ -241,12 +241,7 @@ class Service
 			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot.min.css'),
 			'{{BaseCssClass}}' => '',
 			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
-			'{{RainloopBootData}}' => \json_encode(array(
-				'admin' => $bAdmin,
-				'language' => $sLanguage,
-				'theme' => $sTheme,
-				'mobile' => $bMobile
-			))
+			'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0
 		);
 
 		$aTemplateParameters['{{BaseHash}}'] = \md5(

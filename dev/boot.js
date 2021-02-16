@@ -5,7 +5,7 @@ const
 	doc = document,
 	eId = id => doc.getElementById(id),
 	app = eId('rl-app'),
-	options = app && app.dataset.boot && JSON.parse(app.dataset.boot) || {},
+	admin = app && '1' == app.dataset.admin,
 
 	getCookie = name => {
 		let data = doc.cookie.match('(^|;) ?'+name+'=([^;]*)(;|$)');
@@ -121,7 +121,7 @@ win.rl = {
 		}
 	},
 	data: () => RL_APP_DATA,
-	adminArea: () => options.admin,
+	adminArea: () => admin,
 	settings: {
 		get: name => null == RL_APP_DATA[name] ? null : RL_APP_DATA[name],
 		set: (name, value) => RL_APP_DATA[name] = value,
@@ -179,7 +179,7 @@ setInterval(setTimestamp, 60000); // 1m
 
 [eId('app-css'),eId('app-theme-link')].forEach(css => css.href = css.dataset.href);
 
-loadScript(`./?/${options.admin ? 'Admin' : ''}AppData/${rl.hash.get() || '0'}/${Math.random().toString().substr(2)}/`)
+loadScript(`./?/${admin ? 'Admin' : ''}AppData/${rl.hash.get() || '0'}/${Math.random().toString().substr(2)}/`)
 	.then(() => {});
 
 })(this);
