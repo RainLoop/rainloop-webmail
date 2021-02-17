@@ -8,25 +8,33 @@ import PackageStore from 'Stores/Admin/Package';
 
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
+import { leftPanelDisabled } from 'Common/Globals';
+
 class PaneSettingsAdminView extends AbstractViewRight {
 	constructor() {
 		super('Admin/Settings/Pane', 'AdminPane');
 
 		this.version = ko.observable(rl.settings.app('version'));
 
-		this.adminManLoading = ko.computed(
-			() =>
-				'000' !==
-				[
-					DomainStore.domains.loading() ? '1' : '0',
-					PluginStore.plugins.loading() ? '1' : '0',
-					PackageStore.packages.loading() ? '1' : '0'
-				].join('')
-		);
+		this.leftPanelDisabled = leftPanelDisabled;
 
 		this.adminManLoadingVisibility = ko
-			.computed(() => (this.adminManLoading() ? 'visible' : 'hidden'))
+			.computed(() => (DomainStore.domains.loading()
+				|| PluginStore.plugins.loading()
+				|| PackageStore.packages.loading()) ? 'visible' : 'hidden')
 			.extend({ rateLimit: 300 });
+	}
+
+	hideLeft(item, event) {
+		event.preventDefault();
+		event.stopPropagation();
+		leftPanelDisabled(true);
+	}
+
+	showLeft(item, event) {
+		event.preventDefault();
+		event.stopPropagation();
+		leftPanelDisabled(false);
 	}
 
 	logoutClick() {
