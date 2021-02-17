@@ -1,15 +1,7 @@
 import ko from 'ko';
 
-class PackageAdminStore {
-	constructor() {
-		this.packages = ko.observableArray();
-		this.packages.loading = ko.observable(false).extend({ debounce: 100 });
+export const PackageAdminStore = ko.observableArray();
 
-		ko.addObservablesTo(this, {
-			packagesReal: true,
-			packagesMainUpdatable: true
-		});
-	}
-}
+PackageAdminStore.real = ko.observable(true);
 
-export default new PackageAdminStore();
+PackageAdminStore.loading = ko.observable(false).extend({ debounce: 100 });

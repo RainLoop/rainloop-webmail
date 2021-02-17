@@ -3,11 +3,11 @@ import ko from 'ko';
 
 import { StorageResultType } from 'Common/Enums';
 
-import AppStore from 'Stores/Admin/App';
-import CapaStore from 'Stores/Admin/Capa';
-import DomainStore from 'Stores/Admin/Domain';
-import PluginStore from 'Stores/Admin/Plugin';
-import PackageStore from 'Stores/Admin/Package';
+import { AppAdminStore } from 'Stores/Admin/App';
+import { CapaAdminStore } from 'Stores/Admin/Capa';
+import { DomainAdminStore } from 'Stores/Admin/Domain';
+import { PluginAdminStore } from 'Stores/Admin/Plugin';
+import { PackageAdminStore } from 'Stores/Admin/Package';
 import Remote from 'Remote/Admin/Fetch';
 
 import { SettingsAdminScreen } from 'Screen/Admin/Settings';
@@ -26,11 +26,11 @@ class AdminApp extends AbstractApp {
 	}
 
 	reloadDomainList() {
-		DomainStore.domains.loading(true);
+		DomainAdminStore.loading(true);
 		Remote.domainList((result, data) => {
-			DomainStore.domains.loading(false);
+			DomainAdminStore.loading(false);
 			if (StorageResultType.Success === result && data && data.Result) {
-				DomainStore.domains(
+				DomainAdminStore(
 					Object.entries(data.Result).map(([name, [enabled, alias]]) => ({
 						name: name,
 						disabled: ko.observable(!enabled),
@@ -43,11 +43,11 @@ class AdminApp extends AbstractApp {
 	}
 
 	reloadPluginList() {
-		PluginStore.plugins.loading(true);
+		PluginAdminStore.loading(true);
 		Remote.pluginList((result, data) => {
-			PluginStore.plugins.loading(false);
+			PluginAdminStore.loading(false);
 			if (StorageResultType.Success === result && data && data.Result) {
-				PluginStore.plugins(
+				PluginAdminStore(
 					data.Result.map(item => ({
 						name: item.Name,
 						disabled: ko.observable(!item.Enabled),
@@ -59,18 +59,16 @@ class AdminApp extends AbstractApp {
 	}
 
 	reloadPackagesList() {
-		PackageStore.packages.loading(true);
-		PackageStore.packagesReal(true);
+		PackageAdminStore.loading(true);
 		Remote.packagesList((result, data) => {
-			PackageStore.packages.loading(false);
+			PackageAdminStore.loading(false);
 			if (StorageResultType.Success === result && data && data.Result) {
-				PackageStore.packagesReal(!!data.Result.Real);
-				PackageStore.packagesMainUpdatable(!!data.Result.MainUpdatable);
+				PackageAdminStore.real(!!data.Result.Real);
 
 				let list = [];
 				const loading = {};
 
-				PackageStore.packages.forEach(item => {
+				PackageAdminStore.forEach(item => {
 					if (item && item.loading()) {
 						loading[item.file] = item;
 					}
@@ -86,9 +84,9 @@ class AdminApp extends AbstractApp {
 					}).filter(v => v);
 				}
 
-				PackageStore.packages(list);
+				PackageAdminStore(list);
 			} else {
-				PackageStore.packagesReal(false);
+				PackageAdminStore.real(false);
 			}
 		});
 	}
@@ -100,8 +98,8 @@ class AdminApp extends AbstractApp {
 	bootstart() {
 		super.bootstart();
 
-		AppStore.populate();
-		CapaStore.populate();
+		AppAdminStore.populate();
+		CapaAdminStore.populate();
 
 		this.hideLoading();
 

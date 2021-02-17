@@ -3,7 +3,7 @@ import ko from 'ko';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
-import DomainStore from 'Stores/Admin/Domain';
+import { DomainAdminStore } from 'Stores/Admin/Domain';
 
 import Remote from 'Remote/Admin/Fetch';
 
@@ -23,7 +23,7 @@ class DomainAliasPopupView extends AbstractViewPopup {
 			alias: ''
 		});
 
-		this.domains = DomainStore.domainsWithoutAliases;
+		this.domains = ko.computed(() => DomainAdminStore.filter(item => item && !item.alias));
 
 		this.domainsOptions = ko.computed(() => this.domains().map(item => ({ optValue: item.name, optText: item.name })));
 

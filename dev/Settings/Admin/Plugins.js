@@ -5,7 +5,7 @@ import { getNotification } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import PluginStore from 'Stores/Admin/Plugin';
+import { PluginAdminStore } from 'Stores/Admin/Plugin';
 
 import Remote from 'Remote/Admin/Fetch';
 
@@ -15,10 +15,10 @@ export class PluginsAdminSettings {
 	constructor() {
 		this.enabledPlugins = ko.observable(!!rl.settings.get('EnabledPlugins'));
 
-		this.plugins = PluginStore.plugins;
-		this.pluginsError = PluginStore.plugins.error;
+		this.plugins = PluginAdminStore;
+		this.pluginsError = PluginAdminStore.error;
 
-		this.visibility = ko.computed(() => (PluginStore.plugins.loading() ? 'visible' : 'hidden'));
+		this.visibility = ko.computed(() => (PluginAdminStore.loading() ? 'visible' : 'hidden'));
 
 		this.onPluginLoadRequest = this.onPluginLoadRequest.bind(this);
 		this.onPluginDisableRequest = this.onPluginDisableRequest.bind(this);
@@ -50,7 +50,7 @@ export class PluginsAdminSettings {
 	}
 
 	onShow() {
-		PluginStore.plugins.error('');
+		PluginAdminStore.error('');
 		rl.app.reloadPluginList();
 	}
 
@@ -64,9 +64,9 @@ export class PluginsAdminSettings {
 		if (StorageResultType.Success === result && data) {
 			if (!data.Result && data.ErrorCode) {
 				if (Notification.UnsupportedPluginPackage === data.ErrorCode && data.ErrorMessage && data.ErrorMessage) {
-					PluginStore.plugins.error(data.ErrorMessage);
+					PluginAdminStore.error(data.ErrorMessage);
 				} else {
-					PluginStore.plugins.error(getNotification(data.ErrorCode));
+					PluginAdminStore.error(getNotification(data.ErrorCode));
 				}
 			}
 		}

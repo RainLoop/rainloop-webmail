@@ -10,7 +10,7 @@ import { serverRequestRaw } from 'Common/Links';
 
 import FolderStore from 'Stores/User/Folder';
 
-import { File } from 'Common/File';
+import { FileInfo } from 'Common/File';
 import { AttachmentCollectionModel } from 'Model/AttachmentCollection';
 import { EmailCollectionModel } from 'Model/EmailCollection';
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -85,7 +85,7 @@ export class MessageModel extends AbstractModel {
 		this.threads = ko.observableArray();
 
 		this.addComputables({
-			attachmentIconClass: () => File.getCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : []),
+			attachmentIconClass: () => FileInfo.getCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : []),
 			threadsLen: () => this.threads.length,
 			isImportant: () => MessagePriority.High === this.priority(),
 		});
@@ -169,7 +169,7 @@ export class MessageModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	friendlySize() {
-		return File.friendlySize(this.size());
+		return FileInfo.friendlySize(this.size());
 	}
 
 	computeSenderEmail() {

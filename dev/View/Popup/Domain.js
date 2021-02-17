@@ -2,7 +2,7 @@ import { StorageResultType, Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 
-import CapaAdminStore from 'Stores/Admin/Capa';
+import { CapaAdminStore } from 'Stores/Admin/Capa';
 
 import Remote from 'Remote/Admin/Fetch';
 

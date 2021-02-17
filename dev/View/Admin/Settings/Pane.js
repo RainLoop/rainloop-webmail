@@ -2,9 +2,9 @@ import ko from 'ko';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import DomainStore from 'Stores/Admin/Domain';
-import PluginStore from 'Stores/Admin/Plugin';
-import PackageStore from 'Stores/Admin/Package';
+import { DomainAdminStore } from 'Stores/Admin/Domain';
+import { PluginAdminStore } from 'Stores/Admin/Plugin';
+import { PackageAdminStore } from 'Stores/Admin/Package';
 
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
@@ -19,9 +19,9 @@ class PaneSettingsAdminView extends AbstractViewRight {
 		this.leftPanelDisabled = leftPanelDisabled;
 
 		this.adminManLoadingVisibility = ko
-			.computed(() => (DomainStore.domains.loading()
-				|| PluginStore.plugins.loading()
-				|| PackageStore.packages.loading()) ? 'visible' : 'hidden')
+			.computed(() => (DomainAdminStore.loading()
+				|| PluginAdminStore.loading()
+				|| PackageAdminStore.loading()) ? 'visible' : 'hidden')
 			.extend({ rateLimit: 300 });
 	}
 

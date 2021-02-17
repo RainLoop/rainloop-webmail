@@ -7,7 +7,7 @@ import { i18nToNodes } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 import { FilterModel } from 'Model/Filter';
-import SieveStore from 'Stores/User/Sieve';
+import { SieveUserStore } from 'Stores/User/Sieve';
 
 import { showScreenPopup/*, command*/ } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -26,7 +26,7 @@ class SieveScriptPopupView extends AbstractViewPopup {
 			script: null
 		});
 
-		this.sieveCapabilities = SieveStore.capa.join(' ');
+		this.sieveCapabilities = SieveUserStore.capa.join(' ');
 		this.saving = false;
 
 		this.filterForDeletion = ko.observable(null).deleteAccessHelper();
@@ -41,7 +41,7 @@ class SieveScriptPopupView extends AbstractViewPopup {
 				return false;
 			}
 
-			if (!script.exists() && SieveStore.scripts.find(item => item.name() === script.name())) {
+			if (!script.exists() && SieveUserStore.scripts.find(item => item.name() === script.name())) {
 				script.nameError(true);
 				return false;
 			}
@@ -58,7 +58,7 @@ class SieveScriptPopupView extends AbstractViewPopup {
 					self.saving = false;
 
 					if (StorageResultType.Success === result && data && data.Result) {
-						script.exists() || SieveStore.scripts.push(script);
+						script.exists() || SieveUserStore.scripts.push(script);
 						script.exists(true);
 						script.hasChanges(false);
 					} else {

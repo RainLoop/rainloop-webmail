@@ -1,5 +1,5 @@
 import { i18n, i18nToNodes, trigger } from 'Common/Translator';
-import { doc, createElement, dropdownVisibility } from 'Common/Globals';
+import { doc, createElement } from 'Common/Globals';
 import { SaveSettingsStep } from 'Common/Enums';
 
 const
@@ -9,27 +9,11 @@ const
 ko.bindingHandlers.tooltip = {
 	init: (element, fValueAccessor) => {
 		const sValue = koValue(fValueAccessor());
-
-		if ('off' === element.dataset.tooltipI18n) {
-			element.title = sValue;
-		} else {
-			element.title = i18n(sValue);
-			trigger.subscribe(() =>
-				element.title = i18n(sValue)
-			);
-			dropdownVisibility.subscribe(() =>
-				element.title = i18n(sValue)
-			);
-		}
+		element.title = i18n(sValue);
+		trigger.subscribe(() => element.title = i18n(sValue));
 	},
-	update: (element, fValueAccessor) => {
-		const sValue = koValue(fValueAccessor());
-		if (sValue) {
-			element.title = 'off' === element.dataset.tooltipI18n ? sValue : i18n(sValue);
-		} else {
-			element.title = '';
-		}
-	}
+	update: (element, fValueAccessor) =>
+		element.title = i18n(koValue(fValueAccessor()))
 };
 
 ko.bindingHandlers.tooltipErrorTip = {
@@ -44,32 +28,6 @@ ko.bindingHandlers.tooltipErrorTip = {
 			element.removeAttribute('data-rainloopErrorTip');
 		}
 	}
-};
-
-ko.bindingHandlers.registerBootstrapDropdown = {
-	init: element => {
-		rl.Dropdowns.register(element);
-		element.ddBtn = new BSN.Dropdown(element.querySelector('[data-toggle="dropdown"]'));
-	}
-};
-
-ko.bindingHandlers.openDropdownTrigger = {
-	update: (element, fValueAccessor) => {
-		if (ko.unwrap(fValueAccessor())) {
-			const el = element.ddBtn;
-			el.open || el.toggle();
-//			el.focus();
-
-			rl.Dropdowns.detectVisibility();
-			fValueAccessor()(false);
-		}
-	}
-};
-
-ko.bindingHandlers.dropdownCloser = {
-	init: element => element.closest('.dropdown').addEventListener('click', event =>
-		event.target.closestWithin('.e-item', element) && element.ddBtn.toggle()
-	)
 };
 
 ko.bindingHandlers.onEnter = {
@@ -228,17 +186,6 @@ ko.extenders.limitedList = (target, limitedList) => {
 	}
 
 	return result;
-};
-
-ko.extenders.reversible = (target) => {
-	let value = target();
-
-	target.commit = () => value = target();
-
-	target.reverse = () => target(value);
-
-	target.commitedValue = () => value;
-	return target;
 };
 
 ko.extenders.toggleSubscribeProperty = (target, options) => {

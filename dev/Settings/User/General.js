@@ -14,7 +14,7 @@ import { showScreenPopup } from 'Knoin/Knoin';
 import AppStore from 'Stores/User/App';
 import { LanguageStore } from 'Stores/Language';
 import SettingsStore from 'Stores/User/Settings';
-import IdentityStore from 'Stores/User/Identity';
+import { IdentityUserStore } from 'Stores/User/Identity';
 import NotificationStore from 'Stores/User/Notification';
 import MessageStore from 'Stores/User/Message';
 
@@ -54,7 +54,7 @@ export class GeneralUserSettings {
 			layoutTrigger: SaveSettingsStep.Idle
 		});
 
-		this.identities = IdentityStore.identities;
+		this.identities = IdentityUserStore;
 
 		this.identityMain = ko.computed(() => {
 			const list = this.identities();

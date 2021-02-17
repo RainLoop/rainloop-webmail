@@ -14,4 +14,4 @@ export const LanguageStore = {
 }
 
 LanguageStore.language = ko.observable('')
-	.extend({ limitedList: LanguageStore.languages, reversible: true });
+	.extend({ limitedList: LanguageStore.languages });

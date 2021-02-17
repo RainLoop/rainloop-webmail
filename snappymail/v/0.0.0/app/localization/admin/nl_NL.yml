@@ -13,7 +13,7 @@ nl_NL:
     LABEL_DOMAINS_NAME: "Domeinen"
     LABEL_SECURITY_NAME: "Beveiliging"
     LABEL_PLUGINS_NAME: "Invoegtoepassingen"
-    LABEL_PACKAGES_NAME: "Paketten"
+    LABEL_PACKAGES_NAME: "Pakketten"
     LABEL_ABOUT_NAME: "Over"
   TAB_GENERAL:
     LEGEND_INTERFACE: "Interface"

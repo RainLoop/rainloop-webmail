@@ -17,8 +17,8 @@ export class ThemesUserSettings {
 		this.themesObjects = ko.observableArray();
 
 		this.background = {};
-		this.background.name = ThemeStore.themeBackgroundName;
-		this.background.hash = ThemeStore.themeBackgroundHash;
+		this.background.name = ThemeStore.userBackgroundName;
+		this.background.hash = ThemeStore.userBackgroundHash;
 		this.background.uploaderButton = ko.observable(null);
 		this.background.loading = ko.observable(false);
 		this.background.error = ko.observable('');

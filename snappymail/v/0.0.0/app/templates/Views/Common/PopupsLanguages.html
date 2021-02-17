@@ -7,8 +7,8 @@
 	</div>
 	<div class="modal-body" style="min-height: 150px;">
 		<div data-bind="foreach: languages">
-			<label class="lang-item" data-tooltip-i18n="off" data-bind="click: function () { $root.changeLanguage(key); }, css: {'selected': selected, 'user': user},
-				tooltip: function () { return $root.languageTooltipName(key); },
+			<label class="lang-item" data-bind="click: function () { $root.changeLanguage(key); }, css: {'selected': selected, 'user': user},
+				attr: { title: $root.languageTooltipName(key) },
 				text: fullName">
 			</label>
 		</div>

@@ -26,9 +26,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 	 * @param {Function=} fCallback
 	 */
 	setupSettings(fCallback = null) {
-		if (fCallback) {
-			fCallback();
-		}
+		fCallback && fCallback();
 	}
 
 	onRoute(subName) {

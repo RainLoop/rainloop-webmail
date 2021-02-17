@@ -6,7 +6,7 @@ import { defaultOptionsAfterRender } from 'Common/Utils';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
 import FolderStore from 'Stores/User/Folder';
-import SieveStore from 'Stores/User/Sieve';
+import { SieveUserStore } from 'Stores/User/Sieve';
 
 import { command } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -35,7 +35,7 @@ class FilterPopupView extends AbstractViewPopup {
 
 		initOnStartOrLangChange(this.populateOptions.bind(this));
 
-		SieveStore.capa.subscribe(this.populateOptions, this);
+		SieveUserStore.capa.subscribe(this.populateOptions, this);
 	}
 
 	@command()
@@ -79,7 +79,7 @@ class FilterPopupView extends AbstractViewPopup {
 
 		// this.actionTypeOptions.push({'id': FilterAction.None,
 		// 'name': i18n('GLOBAL/NONE')});
-		const modules = SieveStore.capa;
+		const modules = SieveUserStore.capa;
 		if (modules) {
 			if (modules.includes('imap4flags')) {
 				this.allowMarkAsRead(true);

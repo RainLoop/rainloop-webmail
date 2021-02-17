@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Capa, StorageResultType } from 'Common/Enums';
 
 import AccountStore from 'Stores/User/Account';
-import IdentityStore from 'Stores/User/Identity';
+import { IdentityUserStore } from 'Stores/User/Identity';
 import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -17,7 +17,7 @@ export class AccountsUserSettings {
 		this.allowIdentities = rl.settings.capa(Capa.Identities);
 
 		this.accounts = AccountStore.accounts;
-		this.identities = IdentityStore.identities;
+		this.identities = IdentityUserStore;
 
 		this.accountForDeletion = ko.observable(null).deleteAccessHelper();
 		this.identityForDeletion = ko.observable(null).deleteAccessHelper();
@@ -72,14 +72,14 @@ export class AccountsUserSettings {
 			this.identityForDeletion(null);
 
 			if (identityToRemove) {
-				IdentityStore.identities.remove(oIdentity => identityToRemove === oIdentity);
+				IdentityUserStore.remove(oIdentity => identityToRemove === oIdentity);
 				Remote.identityDelete(() => rl.app.accountsAndIdentities(), identityToRemove.id());
 			}
 		}
 	}
 
 	accountsAndIdentitiesAfterMove() {
-		Remote.accountsAndIdentitiesSortOrder(null, AccountStore.getEmailAddresses(), IdentityStore.getIDS());
+		Remote.accountsAndIdentitiesSortOrder(null, AccountStore.getEmailAddresses(), IdentityUserStore.getIDS());
 	}
 
 	onBuild(oDom) {

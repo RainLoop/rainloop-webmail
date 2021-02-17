@@ -1,5 +1,5 @@
 import { pInt } from 'Common/Utils';
-import { File } from 'Common/File';
+import { FileInfo } from 'Common/File';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
@@ -51,11 +51,11 @@ export class ComposeAttachmentModel extends AbstractModel {
 
 			friendlySize: () => {
 				const localSize = this.size();
-				return null === localSize ? '' : File.friendlySize(localSize);
+				return null === localSize ? '' : FileInfo.friendlySize(localSize);
 			},
 
-			mimeType: () => File.getContentType(this.fileName()),
-			fileExt: () => File.getExtension(this.fileName())
+			mimeType: () => FileInfo.getContentType(this.fileName()),
+			fileExt: () => FileInfo.getExtension(this.fileName())
 		});
 	}
 
@@ -96,13 +96,13 @@ export class ComposeAttachmentModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	iconClass() {
-		return File.getIconClass(this.fileExt(), this.mimeType())[0];
+		return FileInfo.getIconClass(this.fileExt(), this.mimeType())[0];
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	iconText() {
-		return File.getIconClass(this.fileExt(), this.mimeType())[1];
+		return FileInfo.getIconClass(this.fileExt(), this.mimeType())[1];
 	}
 }

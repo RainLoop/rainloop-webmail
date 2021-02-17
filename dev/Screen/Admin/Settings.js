@@ -52,9 +52,7 @@ export class SettingsAdminScreen extends AbstractSettingsScreen {
 
 		runSettingsViewModelHooks(true);
 
-		if (fCallback) {
-			fCallback();
-		}
+		fCallback && fCallback();
 	}
 
 	onShow() {

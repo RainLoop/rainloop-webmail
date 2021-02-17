@@ -27,7 +27,7 @@ import { Settings } from 'Common/Globals';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
-import IdentityStore from 'Stores/User/Identity';
+import { IdentityUserStore } from 'Stores/User/Identity';
 import AccountStore from 'Stores/User/Account';
 import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
@@ -136,7 +136,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.capaOpenPGP = PgpStore.capaOpenPGP;
 
-		this.identities = IdentityStore.identities;
+		this.identities = IdentityUserStore;
 
 		this.addObservables({
 			identitiesDropdownTrigger: false,
@@ -258,7 +258,7 @@ class ComposePopupView extends AbstractViewPopup {
 			isDraftFolderMessage: () => this.draftFolder() && this.draftUid(),
 
 			identitiesOptions: () =>
-				IdentityStore.identities.map(item => ({
+				IdentityUserStore.map(item => ({
 					'item': item,
 					'optValue': item.id(),
 					'optText': item.formattedName()
@@ -553,7 +553,7 @@ class ComposePopupView extends AbstractViewPopup {
 	findIdentityByMessage(composeType, message) {
 		let resultIndex = 1000,
 			resultIdentity = null;
-		const identities = IdentityStore.identities(),
+		const identities = IdentityUserStore(),
 			identitiesCache = {},
 			fEachHelper = (item) => {
 				if (item && item.email && identitiesCache[item.email]) {

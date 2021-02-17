@@ -2,13 +2,11 @@ import ko from 'ko';
 
 import {
 	doc,
-	$htmlCL,
 	elementById,
 	leftPanelDisabled,
 	Settings
 } from 'Common/Globals';
 
-import { KeyState } from 'Common/Enums';
 import { logoutLink } from 'Common/Links';
 import { i18nToNodes, initOnStartOrLangChange } from 'Common/Translator';
 
@@ -27,17 +25,6 @@ export class AbstractApp {
 	 */
 	constructor(Remote) {
 		this.Remote = Remote;
-
-		const refresh = (()=>dispatchEvent(new CustomEvent('rl.auto-logout-refresh'))).debounce(5000),
-			fn = (ev=>{
-				$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey);
-				refresh();
-			}).debounce(500);
-
-//		doc.addEventListener('touchstart', fn, {passive:true});
-		['mousedown','keydown','keyup'/*,'mousemove'*/].forEach(t => doc.addEventListener(t, fn));
-
-		shortcuts.add('escape,enter', '', KeyState.All, () => rl.Dropdowns.detectVisibility());
 	}
 
 	remote() {
@@ -110,7 +97,7 @@ export class AbstractApp {
 		register('Select', SelectComponent);
 		register('TextArea', TextAreaComponent);
 		register('CheckboxSimple', CheckboxComponent, 'CheckboxComponent');
-		if (/*ThemeStore.isMobile() || */!Settings.app('materialDesign')) {
+		if (!Settings.app('materialDesign')) {
 			register('Checkbox', CheckboxComponent);
 		} else {
 			register('Checkbox', CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');

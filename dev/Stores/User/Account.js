@@ -30,13 +30,6 @@ class AccountUserStore {
 		this.email(rl.settings.get('Email'));
 		this.parentEmail(rl.settings.get('ParentEmail'));
 	}
-
-	/**
-	 * @returns {boolean}
-	 */
-	isRootAccount() {
-		return !this.parentEmail();
-	}
 }
 
 export default new AccountUserStore();

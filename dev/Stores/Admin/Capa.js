@@ -1,24 +1,8 @@
 import ko from 'ko';
 import { Capa } from 'Common/Enums';
 
-class CapaAdminStore {
-	constructor() {
-		ko.addObservablesTo(this, {
-			additionalAccounts: false,
-			identities: false,
-			attachmentThumbnails: false,
-			sieve: false,
-			filters: false,
-			themes: true,
-			userBackground: false,
-			openPGP: false,
-			twoFactorAuth: false,
-			twoFactorAuthForce: false,
-			templates: false
-		});
-	}
-
-	populate() {
+export const CapaAdminStore = {
+	populate: function() {
 		let capa = rl.settings.capa;
 		this.additionalAccounts(capa(Capa.AdditionalAccounts));
 		this.identities(capa(Capa.Identities));
@@ -32,6 +16,18 @@ class CapaAdminStore {
 		this.twoFactorAuthForce(capa(Capa.TwoFactorForce));
 		this.templates(capa(Capa.Templates));
 	}
-}
+};
 
-export default new CapaAdminStore();
+ko.addObservablesTo(CapaAdminStore, {
+	additionalAccounts: false,
+	identities: false,
+	attachmentThumbnails: false,
+	sieve: false,
+	filters: false,
+	themes: true,
+	userBackground: false,
+	openPGP: false,
+	twoFactorAuth: false,
+	twoFactorAuthForce: false,
+	templates: false
+});

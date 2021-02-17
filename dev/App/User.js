@@ -6,7 +6,8 @@ import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUs
 import {
 	Capa,
 	StorageResultType,
-	Notification
+	Notification,
+	KeyState
 } from 'Common/Enums';
 
 import {
@@ -51,7 +52,7 @@ import SettingsStore from 'Stores/User/Settings';
 import NotificationStore from 'Stores/User/Notification';
 import AccountStore from 'Stores/User/Account';
 import ContactStore from 'Stores/User/Contact';
-import IdentityStore from 'Stores/User/Identity';
+import { IdentityUserStore } from 'Stores/User/Identity';
 import TemplateStore from 'Stores/User/Template';
 import FolderStore from 'Stores/User/Folder';
 import PgpStore from 'Stores/User/Pgp';
@@ -124,6 +125,17 @@ class AppUser extends AbstractApp {
 				}
 			}, 1000);
 		}
+
+		const refresh = (()=>dispatchEvent(new CustomEvent('rl.auto-logout-refresh'))).debounce(5000),
+			fn = (ev=>{
+				$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey);
+				refresh();
+			}).debounce(500);
+
+//		doc.addEventListener('touchstart', fn, {passive:true});
+		['mousedown','keydown','keyup'/*,'mousemove'*/].forEach(t => doc.addEventListener(t, fn));
+
+		shortcuts.add('escape,enter', '', KeyState.All, () => rl.Dropdowns.detectVisibility());
 	}
 
 	remote() {
@@ -480,11 +492,11 @@ class AppUser extends AbstractApp {
 
 	accountsAndIdentities() {
 		AccountStore.accounts.loading(true);
-		IdentityStore.identities.loading(true);
+		IdentityUserStore.loading(true);
 
 		Remote.accountsAndIdentities((sResult, oData) => {
 			AccountStore.accounts.loading(false);
-			IdentityStore.identities.loading(false);
+			IdentityUserStore.loading(false);
 
 			if (StorageResultType.Success === sResult && oData.Result) {
 				const counts = {},
@@ -506,9 +518,9 @@ class AppUser extends AbstractApp {
 				}
 
 				if (Array.isArray(oData.Result.Identities)) {
-					delegateRunOnDestroy(IdentityStore.identities());
+					delegateRunOnDestroy(IdentityUserStore());
 
-					IdentityStore.identities(
+					IdentityUserStore(
 						oData.Result.Identities.map(identityData => {
 							const id = pString(identityData.Id),
 								email = pString(identityData.Email),

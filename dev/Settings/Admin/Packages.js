@@ -3,28 +3,26 @@ import ko from 'ko';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
-import PackageStore from 'Stores/Admin/Package';
+import { PackageAdminStore } from 'Stores/Admin/Package';
 import Remote from 'Remote/Admin/Fetch';
 
 export class PackagesAdminSettings {
 	constructor() {
 		this.packagesError = ko.observable('');
 
-		this.packages = PackageStore.packages;
-		this.packagesReal = PackageStore.packagesReal;
-		this.packagesMainUpdatable = PackageStore.packagesMainUpdatable;
+		this.packages = PackageAdminStore;
 
 		this.packagesCurrent = ko.computed(() =>
-			this.packages.filter(item => item && item.installed && !item.compare)
+			PackageAdminStore.filter(item => item && item.installed && !item.compare)
 		);
 		this.packagesAvailableForUpdate = ko.computed(() =>
-			this.packages.filter(item => item && item.installed && !!item.compare)
+			PackageAdminStore.filter(item => item && item.installed && !!item.compare)
 		);
 		this.packagesAvailableForInstallation = ko.computed(() =>
-			this.packages.filter(item => item && !item.installed)
+			PackageAdminStore.filter(item => item && !item.installed)
 		);
 
-		this.visibility = ko.computed(() => (PackageStore.packages.loading() ? 'visible' : 'hidden'));
+		this.visibility = ko.computed(() => (PackageAdminStore.loading() ? 'visible' : 'hidden'));
 	}
 
 	onShow() {
@@ -47,7 +45,7 @@ export class PackagesAdminSettings {
 				}
 			}
 
-			this.packages.forEach(item => {
+			PackageAdminStore.forEach(item => {
 				if (item && packageToRequest && item.loading && item.loading() && packageToRequest.file === item.file) {
 					packageToRequest.loading(false);
 					item.loading(false);

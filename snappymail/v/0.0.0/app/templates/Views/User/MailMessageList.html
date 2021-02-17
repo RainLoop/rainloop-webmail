@@ -202,7 +202,7 @@
 				</div>
 			</div>
 			<div class="b-footer thm-message-list-bottom-toolbar">
-				<span data-tooltip-i18n="off" data-bind="visible: 0 < userUsageProc(), tooltip: quotaTooltip" class="e-quota">
+				<span data-bind="visible: 0 < userUsageProc(), attr: { title: quotaTooltip }" class="e-quota">
 					<span data-bind="text: userUsageProc"></span>%
 				</span>
 				<div class="pull-right">

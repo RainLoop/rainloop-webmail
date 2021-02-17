@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { File, FileType } from 'Common/File';
+import { FileInfo, FileType } from 'Common/File';
 import {
 	attachmentDownload,
 	serverRequestRaw
@@ -44,11 +44,11 @@ export class AttachmentModel extends AbstractModel {
 	static reviveFromJson(json) {
 		const attachment = super.reviveFromJson(json);
 		if (attachment) {
-			attachment.friendlySize = File.friendlySize(json.EstimatedSize);
+			attachment.friendlySize = FileInfo.friendlySize(json.EstimatedSize);
 			attachment.cidWithoutTags = attachment.cid.replace(/^<+/, '').replace(/>+$/, '');
 
-			attachment.fileNameExt = File.getExtension(attachment.fileName);
-			attachment.fileType = File.getType(attachment.fileNameExt, attachment.mimeType);
+			attachment.fileNameExt = FileInfo.getExtension(attachment.fileName);
+			attachment.fileType = FileInfo.getType(attachment.fileNameExt, attachment.mimeType);
 		}
 		return attachment;
 	}
@@ -211,13 +211,13 @@ export class AttachmentModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	iconClass() {
-		return File.getTypeIconClass(this.fileType)[0];
+		return FileInfo.getTypeIconClass(this.fileType)[0];
 	}
 
 	/**
 	 * @returns {string}
 	 */
 	iconText() {
-		return File.getTypeIconClass(this.fileType)[1];
+		return FileInfo.getTypeIconClass(this.fileType)[1];
 	}
 }

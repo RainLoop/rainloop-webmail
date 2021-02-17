@@ -16,8 +16,8 @@ import Remote from 'Remote/Admin/Fetch';
 
 import { ThemeStore } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
-import AppAdminStore from 'Stores/Admin/App';
-import CapaAdminStore from 'Stores/Admin/Capa';
+import { AppAdminStore } from 'Stores/Admin/App';
+import { CapaAdminStore } from 'Stores/Admin/Capa';
 import LanguagesPopupView from 'View/Popup/Languages';
 
 const settingsGet = rl.settings.get;
@@ -31,7 +31,7 @@ export class GeneralAdminSettings {
 		this.languagesAdmin = ko.observableArray(Array.isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
 		this.languageAdmin = ko
 			.observable(settingsGet('LanguageAdmin'))
-			.extend({ limitedList: this.languagesAdmin, reversible: true });
+			.extend({ limitedList: this.languagesAdmin });
 
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;

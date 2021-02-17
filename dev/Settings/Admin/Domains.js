@@ -3,7 +3,7 @@ import ko from 'ko';
 import { StorageResultType } from 'Common/Enums';
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import DomainStore from 'Stores/Admin/Domain';
+import { DomainAdminStore } from 'Stores/Admin/Domain';
 import Remote from 'Remote/Admin/Fetch';
 
 import { DomainPopupView } from 'View/Popup/Domain';
@@ -11,9 +11,9 @@ import { DomainAliasPopupView } from 'View/Popup/DomainAlias';
 
 export class DomainsAdminSettings {
 	constructor() {
-		this.domains = DomainStore.domains;
+		this.domains = DomainAdminStore;
 
-		this.visibility = ko.computed(() => (this.domains.loading() ? 'visible' : 'hidden'));
+		this.visibility = ko.computed(() => (DomainAdminStore.loading() ? 'visible' : 'hidden'));
 
 		this.domainForDeletion = ko.observable(null).deleteAccessHelper();
 
@@ -30,7 +30,7 @@ export class DomainsAdminSettings {
 	}
 
 	deleteDomain(domain) {
-		this.domains.remove(domain);
+		DomainAdminStore.remove(domain);
 		Remote.domainDelete(this.onDomainListChangeRequest, domain.name);
 	}
 

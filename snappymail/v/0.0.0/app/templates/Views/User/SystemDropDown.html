@@ -1,8 +1,8 @@
 <div class="b-system-drop-down g-ui-user-select-none">
 	<div class="b-toolbar">
 		<div class="btn-toolbar">
-			<div class="audioPlace" data-tooltip-i18n="off"
-					data-bind="visible: '' !== currentAudio(), tooltip: currentAudio, click: stopPlay">
+			<div class="audioPlace"
+					data-bind="visible: '' !== currentAudio(), attr: { title: currentAudio }, click: stopPlay">
 				<div class="playIcon equaliser" data-bind="css: {'animated': '' !== currentAudio()}">
 					<div class="bar first"></div>
 					<div class="bar second"></div>

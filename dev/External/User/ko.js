@@ -230,3 +230,29 @@ ko.bindingHandlers.onEsc = {
 		ko.utils.domNodeDisposal.addDisposeCallback(element, () => element.removeEventListener('keyup', fn));
 	}
 };
+
+ko.bindingHandlers.registerBootstrapDropdown = {
+	init: element => {
+		rl.Dropdowns.register(element);
+		element.ddBtn = new BSN.Dropdown(element.querySelector('[data-toggle="dropdown"]'));
+	}
+};
+
+ko.bindingHandlers.openDropdownTrigger = {
+	update: (element, fValueAccessor) => {
+		if (ko.unwrap(fValueAccessor())) {
+			const el = element.ddBtn;
+			el.open || el.toggle();
+//			el.focus();
+
+			rl.Dropdowns.detectVisibility();
+			fValueAccessor()(false);
+		}
+	}
+};
+
+ko.bindingHandlers.dropdownCloser = {
+	init: element => element.closest('.dropdown').addEventListener('click', event =>
+		event.target.closestWithin('.e-item', element) && element.ddBtn.toggle()
+	)
+};

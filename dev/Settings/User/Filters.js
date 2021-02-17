@@ -4,7 +4,7 @@ import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { StorageResultType, Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
-import SieveStore from 'Stores/User/Sieve';
+import { SieveUserStore } from 'Stores/User/Sieve';
 import Remote from 'Remote/User/Fetch';
 
 import { SieveScriptModel } from 'Model/SieveScript';
@@ -15,7 +15,7 @@ import { SieveScriptPopupView } from 'View/Popup/SieveScript';
 
 export class FiltersUserSettings {
 	constructor() {
-		this.scripts = SieveStore.scripts;
+		this.scripts = SieveUserStore.scripts;
 		this.loading = ko.observable(false).extend({ debounce: 200 });
 
 		ko.addObservablesTo(this, {
@@ -41,7 +41,7 @@ export class FiltersUserSettings {
 				this.scripts([]);
 
 				if (StorageResultType.Success === result && data && data.Result) {
-					SieveStore.capa(data.Result.Capa);
+					SieveUserStore.capa(data.Result.Capa);
 /*
 					this.scripts(
 						data.Result.Scripts.map(aItem => SieveScriptModel.reviveFromJson(aItem)).filter(v => v)
@@ -52,7 +52,7 @@ export class FiltersUserSettings {
 						value && this.scripts.push(value)
 					});
 				} else {
-					SieveStore.capa([]);
+					SieveUserStore.capa([]);
 					this.setError(
 						data && data.ErrorCode ? getNotification(data.ErrorCode) : getNotification(Notification.CantGetFilters)
 					);

@@ -6,7 +6,6 @@ const
 	app = 'application/',
 	msOffice = app+'vnd.openxmlformats-officedocument.',
 	openDoc = app+'vnd.oasis.opendocument.',
-	font = app+'x-font-',
 	sizes = ['B', 'KiB', 'MiB', 'GiB', 'TiB'],
 
 	exts = {
@@ -53,10 +52,6 @@ const
 	'bz': app+'x-bzip',
 	'bz2': app+'x-bzip2',
 	'deb': app+'x-debian-package',
-
-	// fonts
-	'psf': font+'linux-psf',
-	'ttc': font+'ttf',
 
 	// audio
 	'mp3': 'audio/mpeg',
@@ -124,7 +119,7 @@ export const FileType = {
 	Archive: 'archive'
 };
 
-export const File = {
+export const FileInfo = {
 	/**
 	 * @param {string} fileName
 	 * @returns {string}
@@ -151,8 +146,8 @@ export const File = {
 			return 'audio/'+ext;
 		if (/^(h26[134]|jpgv|mp4|webm)$/.test(ext))
 			return 'video/'+ext;
-		if (/^(otf|pcf|snf|ttf)$/.test(ext))
-			return font+ext;
+		if (/^(otf|sfnt|ttf|woff2?)$/.test(ext))
+			return 'font/'+ext;
 		if (/^(png|jpeg|gif|tiff|webp)$/.test(ext))
 			return 'image/'+ext;
 
@@ -282,7 +277,7 @@ export const File = {
 		return result;
 	},
 
-	getIconClass: (ext, mime) => File.getTypeIconClass(File.getType(ext, mime)),
+	getIconClass: (ext, mime) => FileInfo.getTypeIconClass(FileInfo.getType(ext, mime)),
 
 	/**
 	 * @param {string} sFileType
@@ -291,7 +286,7 @@ export const File = {
 	getCombinedIconClass: data => {
 		if (Array.isNotEmpty(data)) {
 			let icons = data
-				.map(item => item ? File.getIconClass(File.getExtension(item[0]), item[1])[0] : '')
+				.map(item => item ? FileInfo.getIconClass(FileInfo.getExtension(item[0]), item[1])[0] : '')
 				.validUnique();
 
 			return (icons && 1 === icons.length && 'icon-file' !== icons[0])

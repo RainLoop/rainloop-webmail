@@ -38,9 +38,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 	 */
 	setupSettings(fCallback = null) {
 		if (!Settings.capa(Capa.Settings)) {
-			if (fCallback) {
-				fCallback();
-			}
+			fCallback && fCallback();
 
 			return false;
 		}
@@ -93,9 +91,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 
 		runSettingsViewModelHooks(false);
 
-		if (fCallback) {
-			fCallback();
-		}
+		fCallback && fCallback();
 
 		return true;
 	}

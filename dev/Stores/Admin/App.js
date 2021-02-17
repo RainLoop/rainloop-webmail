@@ -1,20 +1,14 @@
 import ko from 'ko';
 
-class AppAdminStore {
-	constructor() {
-		this.weakPassword = ko.observable(false);
+export const AppAdminStore = {
+	weakPassword: ko.observable(false),
+	dataFolderAccess: ko.observable(false),
 
-		this.dataFolderAccess = ko.observable(false);
-	}
-
-	populate() {
+	populate: function() {
 		this.weakPassword(!!rl.settings.get('WeakPassword'));
 /*
-		if (settingsGet('Auth')) {
-			fetch('./data/VERSION?' + Math.random()).then(() => this.dataFolderAccess(true));
-		}
+		rl.settings.get('WeakPassword')
+			&& fetch('./data/VERSION?' + Math.random()).then(() => this.dataFolderAccess(true));
 */
 	}
-}
-
-export default new AppAdminStore();
+};
