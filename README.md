@@ -68,6 +68,7 @@ This fork of RainLoop has the following changes:
 * Added advanced Sieve scripts editor
 * Slimmed down language files
 * Replaced webpack with rollup
+* No user-agent detection (use device width)
 
 ### Removal of old JavaScript
 
@@ -113,23 +114,23 @@ RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|  116.731	|
-|app.js          	|4.215.733	|  531.730	|
-|boot.js         	|  672.433	|    4.713	|
+|admin.js        	|2.158.025	|  114.168	|
+|app.js          	|4.215.733	|  529.069	|
+|boot.js         	|  672.433	|    4.726	|
 |libs.js         	|  647.679	|  227.341	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  880.800	|
+|TOTAL           	|8.019.778	|  875.589	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   59.693	| 73.899	| 17.059	| 60.674 	| 15.161	|
-|app.min.js      	|  516.000	|  259.262	|140.430	| 74.733	|110.657 	| 62.726	|
-|boot.min.js     	|   66.456	|    2.521	| 22.553	|  1.356	| 20.043 	|  1.165	|
+|admin.min.js    	|  255.514	|   57.878	| 73.899	| 16.598	| 60.674 	| 14.745	|
+|app.min.js      	|  516.000	|  257.954	|140.430	| 74.500	|110.657 	| 62.522	|
+|boot.min.js     	|   66.456	|    2.525	| 22.553	|  1.391	| 20.043 	|  1.201	|
 |libs.min.js     	|  574.626	|  119.938	|177.280	| 43.997	|151.855 	| 39.158	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072 	|      0	|
-|TOTAL           	|1.445.204	|  441.414	|425.477	|137.145	|353.301 	|118.210	|
-|TOTAL (no admin)	|1.189.690	|  381.721	|351.061	|120.086	|292.627 	|103.049	|
+|TOTAL           	|1.445.204	|  438.295	|425.477	|136.486	|353.301 	|117.626	|
+|TOTAL (no admin)	|1.189.690	|  380.417	|351.061	|119.888	|292.627 	|102.881	|
 
 For a user its around 65% smaller and faster than traditional RainLoop.
 
@@ -139,6 +140,8 @@ For a user its around 65% smaller and faster than traditional RainLoop.
 * Cleanup unused css
 * Themes work in mobile mode
 * Bugfix invalid/conflicting css rules
+* Use flexbox
+* Remove oldschool 'float'
 * Removed html.no-css
 * Removed dev/Styles/Cmd.less
 * Removed dev/Styles/Scroll.less
@@ -160,10 +163,10 @@ For a user its around 65% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|-------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 147.624	| 46,959	| 23.959	| 20.338	|
-|app.min.css 	| 274.791	| 120.047	| 39.618	| 20.925	| 18.240	|
-|boot.css    	|       	|   1.826	|       	|    786	|    626	|
-|boot.min.css	|       	|   1.481	|       	|    698	|    548	|
+|app.css     	| 340.334	| 139.393	| 46,959	| 23.019	| 19.624	|
+|app.min.css 	| 274.791	| 114.661	| 39.618	| 20.495	| 17.899	|
+|boot.css    	|       	|   1.836	|       	|    795	|    630	|
+|boot.min.css	|       	|   1.492	|       	|    707	|    555	|
 
 
 ### Squire vs CKEditor

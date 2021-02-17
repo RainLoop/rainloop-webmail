@@ -34,9 +34,6 @@
 .icon-paper-plane::before {
   content: "\e007";
 }
-.icon-info::before {
-  content: "\e00b";
-}
 .icon-right-mini::before {
   content: "\e01e"; /* › */
 }
