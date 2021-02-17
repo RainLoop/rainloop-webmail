@@ -39,7 +39,7 @@
 			margin: 0;
 		}
 
-		.input-append .add-on i,
+		.input-append .add-on *,
 		.loginForm, .legend, .e-checkbox-icon, .g-ui-link, .language-button {
 			color: var(--login-color, @glass-m-color);
 			text-shadow: none !important;
@@ -99,7 +99,7 @@
 			}
 
 			&.error {
-				.input-append .add-on i {
+				.input-append .add-on * {
 					color: @glass-error-color;
 				}
 
@@ -123,20 +123,15 @@
 			border: 0;
 		}
 
-		.input-append .add-on i {
+		.input-append .add-on * {
 			font-size: 17px;
 			line-height: 29px;
 			outline: none !important;
 			box-shadow: none !important;
-
-			&.login-submit-icon{
-				font-size: 24px;
-				padding-top: 2px;
-				cursor: pointer;
-			}
 		}
 
-		.controls.error .add-on i, .control-group.error .add-on i {
+		.controls.error .add-on *,
+		.control-group.error .add-on * {
 			color: #b94a48;
 		}
 	}
@@ -181,19 +176,10 @@
 
 .submitting-pane {
 	position: relative;
-	&.submitting:before{
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: var(---spinner-bg, rgba(0,0,0,.3));
-		border-radius: var(--login-border-radius, 7px);
-		z-index: 1051;
-		border-radius: 8px;
+	&.submitting > * {
+		opacity: 0.3;
 	}
-	html &.submitting:after{
+	html &.submitting::after{
 		content: '';
 		position: absolute;
 		width: 60px;

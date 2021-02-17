@@ -19,12 +19,8 @@
 					<a class="btn button-delete fontastic" data-bind="command: deleteCommand, tooltip: 'GLOBAL/DELETE'">🗑</a>
 				</div>
 				<div class="btn-group">
-					<a class="btn btn-thin buttonUp" data-bind="command: goUpCommand">
-						<i class="icon-left-middle"></i>
-					</a>
-					<a class="btn btn-thin buttonDown" data-bind="command: goDownCommand">
-						<i class="icon-right-middle"></i>
-					</a>
+					<a class="btn btn-thin buttonUp fontastic" data-bind="command: goUpCommand">❮</a>
+					<a class="btn btn-thin buttonDown fontastic" data-bind="command: goDownCommand">❯</a>
 				</div>
 			</div>
 		</div>
@@ -164,9 +160,7 @@
 					<div class="messageItemHeader" data-bind="css: {'emptySubject': '' === viewSubject()}">
 						<div class="subjectParent">
 							<button class="close" data-bind="command: closeMessageCommand" style="margin-top: -2px;">×</button>
-							<span class="infoParent g-ui-user-select-none" data-bind="click: function() { showFullInfo(!showFullInfo()); }">
-								<i class="icon-info" style="padding-top: 1px;"></i>
-							</span>
+							<span class="infoParent g-ui-user-select-none fontastic" data-bind="click: function() { showFullInfo(!showFullInfo()); }">ℹ</span>
 							<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: viewIsFlagged() ? '★' : '☆', css: {'flagOn': viewIsFlagged, 'flagOff': !viewIsFlagged()}"></span>
 							<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
 							<span class="subject" data-bind="text: viewSubject, title: viewSubject, event: { 'dblclick': toggleFullScreen }"></span>
