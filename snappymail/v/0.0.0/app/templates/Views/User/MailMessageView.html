@@ -164,7 +164,7 @@
 							<span class="flagParent g-ui-user-select-none flagOff fontastic" data-bind="text: viewIsFlagged() ? '★' : '☆', css: {'flagOn': viewIsFlagged, 'flagOff': !viewIsFlagged()}"></span>
 							<b style="color: red; margin-right: 5px" data-bind="visible: viewIsImportant">!</b>
 							<span class="subject" data-bind="text: viewSubject, title: viewSubject, event: { 'dblclick': toggleFullScreen }"></span>
-							<span class="i18n emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT" data-bind="event: { 'dblclick': toggleFullScreen }"></span>
+							<span class="emptySubjectText" data-i18n="MESSAGE/EMPTY_SUBJECT_TEXT" data-bind="event: { 'dblclick': toggleFullScreen }"></span>
 						</div>
 						<div>
 							<div style="overflow: hidden;">
@@ -183,13 +183,13 @@
 								<div class="informationShortWrp">
 									<div class="informationShort" data-bind="visible: viewTo, event: { 'dblclick': toggleFullScreen }">
 										<span>
-											<span class="i18n uiLabel labelTo" data-i18n="GLOBAL/TO"
+											<span class="uiLabel labelTo" data-i18n="GLOBAL/TO"
 												></span>:&nbsp;<span class="to" data-bind="text: viewTo"></span>
 										</span>
 									</div>
 									<div class="informationShort" data-bind="visible: viewCc, event: { 'dblclick': toggleFullScreen }">
 										<span>
-											<span class="i18n uiLabel labelTo" data-i18n="GLOBAL/CC"
+											<span class="uiLabel labelTo" data-i18n="GLOBAL/CC"
 												></span>:&nbsp;<span class="to" data-bind="text: viewCc"></span>
 										</span>
 									</div>
@@ -198,30 +198,30 @@
 							<div class="informationFull" data-bind="visible: showFullInfo()">
 								<table>
 									<tr data-bind="visible: '' !== viewFrom()">
-										<td><span class="i18n uiLabel" data-i18n="GLOBAL/FROM"></span></td>
+										<td><span class="uiLabel" data-i18n="GLOBAL/FROM"></span></td>
 										<td>
 											<span class="pull-right size" data-bind="text: viewSize"></span>
 											<span class="from uiLabelValue" data-bind="text: viewFrom, title: viewFrom"></span>
 										</td>
 									</tr>
 									<tr data-bind="visible: '' !== viewTo()">
-										<td><span class="i18n uiLabel" data-i18n="GLOBAL/TO"></span></td>
+										<td><span class="uiLabel" data-i18n="GLOBAL/TO"></span></td>
 										<td><span class="to uiLabelValue" data-bind="text: viewTo, title: viewTo"></span></td>
 									</tr>
 									<tr data-bind="visible: '' !== viewCc()">
-										<td><span class="i18n uiLabel" data-i18n="GLOBAL/CC"></span></td>
+										<td><span class="uiLabel" data-i18n="GLOBAL/CC"></span></td>
 										<td><span class="cc uiLabelValue" data-bind="text: viewCc, title: viewCc"></span></td>
 									</tr>
 									<tr data-bind="visible: '' !== viewBcc()">
-										<td><span class="i18n uiLabel" data-i18n="GLOBAL/BCC"></span></td>
+										<td><span class="uiLabel" data-i18n="GLOBAL/BCC"></span></td>
 										<td><span class="bcc uiLabelValue" data-bind="text: viewBcc, title: viewBcc"></span></td>
 									</tr>
 									<tr data-bind="visible: '' !== viewReplyTo()">
-										<td><span class="i18n uiLabel" data-i18n="GLOBAL/REPLY_TO"></span></td>
+										<td><span class="uiLabel" data-i18n="GLOBAL/REPLY_TO"></span></td>
 										<td><span class="replyTo uiLabelValue" data-bind="text: viewReplyTo, title: viewReplyTo"></span></td>
 									</tr>
 									<tr data-bind="visible: 0 < viewTimeStamp()">
-										<td><span class="i18n uiLabel" data-i18n="MESSAGE/LABEL_DATE"></span></td>
+										<td><span class="uiLabel" data-i18n="MESSAGE/LABEL_DATE"></span></td>
 										<td>
 											<time class="date uiLabelValue" data-moment-format="FULL" data-bind="moment: viewTimeStamp"></time>
 											&nbsp;
@@ -249,7 +249,7 @@
 									<div class="line-loading e-strip-animation" data-bind="visible: messageLoadingThrottle()"></div>
 
 									<div class="loading g-ui-min-height-300" data-bind="visible: messageLoadingThrottle()">
-										<span class="i18n text" data-i18n="GLOBAL/LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+										<span class="text" data-i18n="GLOBAL/LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
 									</div>
 								</div>
 
@@ -257,11 +257,11 @@
 									<div class="bodySubHeader">
 										<div class="showImages" data-bind="visible: message() && message().hasImages(), click: function() { showImages(message()); }">
 											<i class="fontastic">🖼</i>
-											<span class="i18n text" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></span>
+											<span class="text" data-i18n="MESSAGE/BUTTON_SHOW_IMAGES"></span>
 										</div>
 										<div class="readReceipt" data-bind="visible: message() && !isDraftOrSentFolder() && '' !== message().readReceipt() && !message().isReadReceipt(), click: function() { readReceipt(message()); }">
 											<i class="icon-mail"></i>
-											<span class="i18n text" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
+											<span class="text" data-i18n="MESSAGE/BUTTON_NOTIFY_READ_RECEIPT"></span>
 										</div>
 										<div class="attachmentsPlace" data-bind="visible: message() && message().attachments().hasVisible(),
 											css: {'selection-mode' : showAttachmnetControls, 'unselectedAttachmentsError': highlightUnselectedAttachments}">

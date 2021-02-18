@@ -6,7 +6,7 @@
 		}
 
 		.inputKey {
-			font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+			font-family: var(--fontMono);
 		}
 
 		.key-viewer {
@@ -25,8 +25,6 @@
 			background-color: #f9f9f9;
 			border-radius: 5px;
 			padding: 10px 15px;
-			margin-top: 10px;
-			min-height: 40px;
 
 			&-wrp {
 
@@ -51,6 +49,7 @@
 				color: #333;
 				white-space: nowrap;
 				padding-bottom: 4px;
+				display: flex;
 
 				&:last-child {
 					padding-bottom: 0;
@@ -66,6 +65,7 @@
 
 				&-names {
 					color: #333;
+					width: 80%;
 
 					&.empty {
 						color: red;
@@ -79,10 +79,12 @@
 
 				&-error {
 					color: red;
+					width: 80%;
 				}
 
 				&-hash {
 					color: #aaa;
+					width: 20%;
 				}
 			}
 		}

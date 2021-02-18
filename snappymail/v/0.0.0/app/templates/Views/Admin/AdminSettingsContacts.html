@@ -45,7 +45,7 @@
 				<div class="controls">
 					<input type="text" class="span6" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 						data-bind="value: pdoDsn, saveTrigger: pdoDsnTrigger" />
-					<blockquote style="margin: 10px 0 0 0">
+					<blockquote style="margin: 0">
 						<p class="muted">
 mysql:host=127.0.0.1;port=3306;dbname=rainloop<br />
 pgsql:host=127.0.0.1;port=5432;dbname=rainloop
@@ -79,7 +79,7 @@ pgsql:host=127.0.0.1;port=5432;dbname=rainloop
 		<div data-bind="visible: 'sqlite' === contactsType()">
 			<div class="control-group">
 				<div class="controls">
-					<div class="alert alert-null-left-margin span8">
+					<div class="alert">
 						<h4 data-i18n="TAB_CONTACTS/ALERT_NOTICE"></h4>
 						<br />
 						<div data-i18n="[html]TAB_CONTACTS/HTML_ALERT_DO_NOT_USE_THIS_DATABASE"></div>

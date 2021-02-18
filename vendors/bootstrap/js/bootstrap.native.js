@@ -16,6 +16,17 @@
 					const t = e.target, href = t.href || (t.parentNode && t.parentNode.href);
 					(href && href.slice(-1) === '#') && e.preventDefault();
 				},
+				open = bool => {
+					menu && menu.classList.toggle('show', bool);
+					parent.classList.toggle('show', bool);
+					element.setAttribute('aria-expanded', bool);
+					element.open = bool;
+					if (bool) {
+						element.removeEventListener('click',clickHandler);
+					} else {
+						setTimeout(() => element.addEventListener('click',clickHandler), 1);
+					}
+				},
 				toggleEvents = () => {
 					let action = (element.open ? 'add' : 'remove') + 'EventListener';
 					doc[action]('click',dismissHandler);
@@ -63,28 +74,19 @@
 				menu = parent.querySelector('.dropdown-menu');
 				menuItems = [...menu.querySelectorAll('A')].filter(item => 'none' != item.parentNode.style.display);
 				!('tabindex' in menu) && menu.setAttribute('tabindex', '0');
-				menu.classList.add('show');
-				parent.classList.add('show');
-				element.setAttribute('aria-expanded',true);
-				element.open = true;
-				element.removeEventListener('click',clickHandler);
+				open(true);
 				setTimeout(() => {
 					setFocus( menu.getElementsByTagName('INPUT')[0] || element );
 					toggleEvents();
 				},1);
 			};
 			self.hide = () => {
-				menu.classList.remove('show');
-				parent.classList.remove('show');
-				element.setAttribute('aria-expanded',false);
-				element.open = false;
+				open(false);
 				toggleEvents();
 				setFocus(element);
-				setTimeout(() => element.Dropdown && element.addEventListener('click',clickHandler), 1);
 			};
 			self.toggle = () => element.open ? self.hide() : self.show();
-			element.addEventListener('click',clickHandler);
-			element.open = false;
+			open(false);
 			element.Dropdown = self;
 		},
 

@@ -192,7 +192,7 @@ nl_NL:
     ATTACHMENTS_UPLOAD_ERROR_DESC: "Toevoegen van bijlage(n) is nog niet gereed"
     BUTTON_REQUEST_READ_RECEIPT: "Leesbevestiging vragen"
     BUTTON_MARK_AS_IMPORTANT: "Markeer als belangrijk"
-    BUTTON_OPEN_PGP: "OpenPGP (allen bij Platte Tekst)"
+    BUTTON_OPEN_PGP: "OpenPGP (alleen bij Platte Tekst)"
     BUTTON_REQUEST_DSN: "Ontvangstbevestiging vragen"
   POPUPS_ASK:
     BUTTON_YES: "Ja"

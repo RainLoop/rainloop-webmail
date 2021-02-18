@@ -4,7 +4,7 @@
 			data-bind="visible: '' !== loadingDesc">
 			<span class="desc" data-bind="text: loadingDesc"></span>
 		</div>
-		<div class="alert alertError" data-bind="hidden: !submitError()" hidden="">
+		<div class="alert" data-bind="hidden: !submitError()" hidden="">
 			<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
 			<span data-bind="text: submitError"></span>
 			<div data-bind="visible: '' !== submitErrorAddidional()">
@@ -18,7 +18,7 @@
 				<div class="controls plugin-mark-Login-TopControlGroup"
 					data-bind="css: {'error': emailError}">
 					<div class="input-append">
-						<input type="email" class="i18n input-block-level inputEmail"
+						<input type="email" class="input-block-level inputEmail"
 							name="RainLoopEmail" id="RainLoopEmail"
 							autofocus=""
 							autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -31,7 +31,7 @@
 				</div>
 				<div class="controls" data-bind="css: {'error': passwordError}">
 					<div class="input-append">
-						<input type="password" class="i18n input-block-level inputPassword"
+						<input type="password" class="input-block-level inputPassword"
 							name="RainLoopPassword" id="RainLoopPassword"
 							autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="textInput: password, disable: submitRequest"
@@ -46,7 +46,7 @@
 				<div class="controls"
 					data-bind="visible: additionalCodeVisibility(), css: {'error': additionalCodeError}">
 					<div class="input-append">
-						<input type="text" class="i18n input-block-level inputAdditionalCode" autocomplete="off"
+						<input type="text" class="input-block-level inputAdditionalCode" autocomplete="off"
 							autocorrect="off" autocapitalize="off" spellcheck="false" style="padding-right: 35px;"
 							data-bind="textInput: additionalCode, disable: submitRequest"
 							data-i18n="[placeholder]LOGIN/LABEL_VERIFICATION_CODE" />
@@ -65,7 +65,7 @@
 				</div>
 				<div class="controls controls-submit-wrp" data-bind="hidden: hideSubmitButton">
 					<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
-						<span class="i18n i18n-animation" data-i18n="LOGIN/BUTTON_SIGN_IN"></span>
+						<span class="i18n-animation" data-i18n="LOGIN/BUTTON_SIGN_IN"></span>
 					</button>
 				</div>
 				<div class="controls clearfix" style="margin-bottom: 10px">

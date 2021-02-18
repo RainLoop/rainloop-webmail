@@ -21,11 +21,6 @@
   background-color: @grayLighter;
 }
 
-// Redeclare pull classes because of specifity
-.nav > .pull-right {
-  float: right;
-}
-
 
 
 // TABS
@@ -42,6 +37,7 @@
 }
 // Actual tabs (as links)
 .nav-tabs > li > a {
+  color: #555;
   padding-top: 8px 12px;
   margin-right: 2px;
   line-height: 14px; // keeps the overall height an even number
@@ -64,65 +60,6 @@
 }
 
 
-// DROPDOWNS
-// ---------
-
-.nav-tabs .dropdown-menu {
-  border-radius: 0 0 6px 6px; // remove the top rounded corners here since there is a hard edge above the menu
-}
-
-// Default dropdown links
-// -------------------------
-// Make carets use linkColor to start
-.nav .dropdown-toggle .caret {
-  border-top-color: @linkColor;
-  border-bottom-color: @linkColor;
-  margin-top: 6px;
-}
-.nav .dropdown-toggle:hover .caret {
-  border-top-color: @linkColorHover;
-  border-bottom-color: @linkColorHover;
-}
-/* move down carets for tabs */
-.nav-tabs .dropdown-toggle .caret {
-  margin-top: 8px;
-}
-
-// Active dropdown links
-// -------------------------
-.nav .active .dropdown-toggle .caret {
-  border-top-color: #fff;
-  border-bottom-color: #fff;
-}
-.nav-tabs .active .dropdown-toggle .caret {
-  border-top-color: @gray;
-  border-bottom-color: @gray;
-}
-
-// Active:hover dropdown links
-// -------------------------
-.nav > .dropdown.active > a:hover {
-  cursor: pointer;
-}
-
-// Open dropdowns
-// -------------------------
-.nav-tabs .open .dropdown-toggle,
-.nav > li.dropdown.open.active > a:hover {
-  color: @white;
-  background-color: @grayLight;
-  border-color: @grayLight;
-}
-.nav li.dropdown.open .caret,
-.nav li.dropdown.open.active .caret,
-.nav li.dropdown.open a:hover .caret {
-  border-top-color: @white;
-  border-bottom-color: @white;
-  opacity: 1;
-}
-
-
-
 // TABBABLE
 // --------
 
@@ -140,19 +77,4 @@
 }
 .tab-content > .active {
   display: block;
-}
-
-
-// DISABLED STATES
-// ---------------
-
-// Gray out text
-.nav > .disabled > a {
-  color: @grayLight;
-}
-// Nuke hover effects
-.nav > .disabled > a:hover {
-  text-decoration: none;
-  background-color: transparent;
-  cursor: default;
 }

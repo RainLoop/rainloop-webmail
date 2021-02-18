@@ -99,6 +99,7 @@ if ($gzip = trim(`which gzip`)) {
 	echo "\x1b[33;1m === Gzip *.js and *.css === \x1b[0m\n";
 	passthru("{$gzip} -k --best {$cmddir}/js/*.js");
 	passthru("{$gzip} -k --best {$cmddir}/js/min/*.js");
+	passthru("{$gzip} -k --best {$cmddir}/css/admin*.css");
 	passthru("{$gzip} -k --best {$cmddir}/css/app*.css");
 	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/boot.js.gz');
 	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/min/boot.min.js.gz');
@@ -108,6 +109,7 @@ if ($brotli = trim(`which brotli`)) {
 	echo "\x1b[33;1m === Brotli *.js and *.css === \x1b[0m\n";
 	passthru("{$brotli} -k --best {$cmddir}/js/*.js");
 	passthru("{$brotli} -k --best {$cmddir}/js/min/*.js");
+	passthru("{$brotli} -k --best {$cmddir}/css/admin*.css");
 	passthru("{$brotli} -k --best {$cmddir}/css/app*.css");
 	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/boot.js.br');
 	unlink(__DIR__ . '/snappymail/v/0.0.0/static/js/min/boot.min.js.br');

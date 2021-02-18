@@ -7,7 +7,7 @@
 
 (global => {
 
-	const isFunction = obj => typeof obj === 'function';
+    const isFunction = obj => typeof obj === 'function';
 
     // Crossroads --------
     //====================
@@ -124,14 +124,10 @@
         }
 
         _getParamsArray(request) {
-            var norm = this.rules.normalize_,
-                params;
-            if (isFunction(norm)) {
-                params = norm(request, this._getParamsObject(request));
-            } else {
-                params = patternLexer.getParamValues(request, this._matchRegexp);
-            }
-            return params;
+            var norm = this.rules.normalize_;
+            return isFunction(norm)
+                ? norm(request, this._getParamsObject(request))
+                : patternLexer.getParamValues(request, this._matchRegexp);
         }
 
     }
@@ -161,7 +157,6 @@
         SAVED_OPTIONAL_REGEXP = new RegExp(SAVE_OPTIONAL_PARAMS, 'g'),
         SAVED_OPTIONAL_SLASHES_REGEXP = new RegExp(SAVE_OPTIONAL_SLASHES, 'g'),
         SAVED_REQUIRED_SLASHES_REGEXP = new RegExp(SAVE_REQUIRED_SLASHES, 'g'),
-
 
         captureVals = (regex, pattern) => {
             var vals = [], match;
@@ -197,12 +192,11 @@
                 return vals;
             },
             compilePattern : pattern => {
-                pattern = pattern || '';
-                if (pattern) {
-                    pattern = untokenize(
+                pattern = pattern
+                    ? untokenize(
                         tokenize(pattern.replace(UNNECESSARY_SLASHES_REGEXP, '')).replace(ESCAPE_CHARS_REGEXP, '\\$&')
-                    );
-                }
+                    )
+                    : '';
                 return new RegExp('^'+ pattern + '/?$'); //trailing slash is optional
             }
         };

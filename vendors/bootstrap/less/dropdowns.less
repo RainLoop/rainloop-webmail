@@ -19,10 +19,8 @@
   width: 0;
   height: 0;
   vertical-align: top;
-  border-top:   4px solid @black;
-  border-right: 4px solid transparent;
-  border-left:  4px solid transparent;
-  content: "";
+  border: 4px solid transparent;
+  border-top-color: @black;
 }
 
 // Place the caret
@@ -39,7 +37,6 @@
   left: 0;
   z-index: @zindexDropdown;
   display: none; // none by default, but block on "open" of the menu
-  float: left;
   min-width: 160px;
   padding: 5px 0;
   margin: 2px 0 0; // override default ul
@@ -107,11 +104,4 @@
   & > .dropdown-menu {
     display: block;
   }
-}
-
-// Right aligned dropdowns
-// ---------------------------
-.pull-right > .dropdown-menu {
-  right: 0;
-  left: auto;
 }

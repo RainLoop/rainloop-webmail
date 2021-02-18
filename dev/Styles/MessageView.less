@@ -1,4 +1,8 @@
 
+.g-ui-min-height-300 {
+	min-height: 300px;
+}
+
 .messageView {
 
 	z-index: 100;
@@ -344,7 +348,6 @@
 			.bodyText {
 
 				color: #000;
-				font-family: Arial, Verdana, Geneva, sans-serif;
 
 				.b-text-part {
 
@@ -404,7 +407,7 @@
 						}
 						img[data-x-src]:not([src]):hover::after {
 							content: attr(data-x-src);
-							font-family: sans-serif;
+							font-family: var(--fontSans);
 							height: auto;
 							transform: translate(-25%,0);
 							width: auto;
@@ -420,7 +423,7 @@
 							background: #fff;
 							border: none;
 							border-radius: 0;
-							font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+							font-family: var(--fontMono);
 							display: block;
 							word-break: normal;
 							word-wrap: break-word;
@@ -447,14 +450,14 @@
 
 						padding: 15px;
 						/*white-space: pre-wrap;*/
-						font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+						font-family: var(--fontMono);
 
 						pre {
 							margin: 0;
 							padding: 0;
 							background: #fff;
 							border: none;
-							font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+							font-family: var(--fontMono);
 							display: block;
 							word-break: normal;
 						}
@@ -497,7 +500,6 @@
 						display: inline-block;
 						cursor: pointer;
 						color: #777;
-						/*float: left;*/
 
 						&:hover {
 							color: #111;

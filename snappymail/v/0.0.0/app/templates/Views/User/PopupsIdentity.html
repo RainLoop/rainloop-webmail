@@ -15,7 +15,7 @@
 				</div>
 				<br />
 				<div class="control-group" data-bind="visible: !owner(), css: {'error': emailHasError}">
-					<label class="i18n control-label" data-i18n="GLOBAL/EMAIL"></label>
+					<label class="control-label" data-i18n="GLOBAL/EMAIL"></label>
 					<div class="controls">
 						<input type="email" class="inputEmail input-xlarge" autofocus=""
 							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -23,13 +23,13 @@
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: owner">
-					<label class="i18n control-label" data-i18n="GLOBAL/EMAIL"></label>
+					<label class="control-label" data-i18n="GLOBAL/EMAIL"></label>
 					<div class="controls">
 						<div class="textEmail" data-bind="text: email"></div>
 					</div>
 				</div>
 				<div class="control-group">
-					<label class="i18n control-label" data-i18n="GLOBAL/NAME"></label>
+					<label class="control-label" data-i18n="GLOBAL/NAME"></label>
 					<div class="controls">
 						<input type="text" class="inputName input-xlarge"
 							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -37,7 +37,7 @@
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: showReplyTo, css: {'error': replyToHasError}">
-					<label class="i18n control-label" data-i18n="GLOBAL/REPLY_TO"></label>
+					<label class="control-label" data-i18n="GLOBAL/REPLY_TO"></label>
 					<div class="controls">
 						<input type="text" class="inputReplyTo input-xlarge"
 							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -45,7 +45,7 @@
 					</div>
 				</div>
 				<div class="control-group" data-bind="visible: showBcc, css: {'error': bccHasError}">
-					<label class="i18n control-label" data-i18n="GLOBAL/BCC"></label>
+					<label class="control-label" data-i18n="GLOBAL/BCC"></label>
 					<div class="controls">
 						<input type="text" class="inputBcc input-xlarge"
 							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -55,12 +55,12 @@
 				<div class="control-group" data-bind="visible: !showReplyTo() || !showBcc()">
 					<div class="controls">
 						<span data-bind="visible: !showReplyTo()">
-							<span class="i18n g-ui-link" data-i18n="GLOBAL/REPLY_TO"
+							<span class="g-ui-link" data-i18n="GLOBAL/REPLY_TO"
 								data-bind="click: function () { showReplyTo(true); }"></span>
 							&nbsp;&nbsp;
 						</span>
 						<span data-bind="visible: !showBcc()">
-							<span class="i18n g-ui-link" data-i18n="GLOBAL/BCC"
+							<span class="g-ui-link" data-i18n="GLOBAL/BCC"
 								data-bind="click: function () { showBcc(true); }"></span>
 						</span>
 					</div>

@@ -2,11 +2,11 @@
 	<div class="modal-header b-header-toolbar g-ui-user-select-none">
 		<a class="btn btn-large button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
 			<i class="icon-white" data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner big': sending()}"></i>
-			<span class="i18n hide-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
+			<span class="hide-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
 		</a>
 		<a class="btn button-save" data-bind="visible: allowFolders, command: saveCommand, tooltipErrorTip: savedErrorDesc, css: {'btn-danger': savedError }">
 			<i class="fontastic" data-bind="css: {'icon-spinner': saving(), 'icon-white': savedError()}">💾</i>
-			<span class="i18n hide-mobile" data-i18n="GLOBAL/SAVE"></span>
+			<span class="hide-mobile" data-i18n="GLOBAL/SAVE"></span>
 		</a>
 
 		<a class="close" data-bind="click: tryToClosePopup, tooltip: 'GLOBAL/CANCEL'">×</a>
@@ -47,7 +47,7 @@
 						<div class="pull-right">
 							<div class="btn-group dropdown colored-toggle pull-right" style="margin-right: 4px;" data-bind="registerBootstrapDropdown: true">
 								<a class="btn dropdown-toggle fontastic" data-toggle="dropdown">☰</a>
-								<ul class="dropdown-menu g-ui-menu" role="menu">
+								<ul class="dropdown-menu right-edge g-ui-menu" role="menu">
 									<li class="e-item" data-bind="click: function () { requestReadReceipt(!requestReadReceipt()); }">
 										<a class="e-link">
 											<i class="fontastic" data-bind="text: requestReadReceipt() ? '☑' : '☐'"></i>
@@ -81,15 +81,15 @@
 							<div class="btn-group pull-right">&nbsp;</div>
 						</div>
 						<span class="pull-right">
-							<span class="i18n g-ui-link" data-i18n="GLOBAL/CC"
+							<span class="g-ui-link" data-i18n="GLOBAL/CC"
 								data-bind="visible: !showCc(), click: function () { showCc(true); }"></span>
 							&nbsp;&nbsp;
 							<span data-bind="visible: !showBcc()">
-								<span class="i18n g-ui-link" data-i18n="GLOBAL/BCC"
+								<span class="g-ui-link" data-i18n="GLOBAL/BCC"
 									data-bind="click: function () { showBcc(true); }"></span>
 								&nbsp;&nbsp;
 							</span>
-							<span class="i18n g-ui-link" data-i18n="GLOBAL/REPLY_TO"
+							<span class="g-ui-link" data-i18n="GLOBAL/REPLY_TO"
 								data-bind="visible: !showReplyTo(), click: function () { showReplyTo(true); }"></span>
 							&nbsp;
 						</span>

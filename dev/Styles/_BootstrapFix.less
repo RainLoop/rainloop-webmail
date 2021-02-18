@@ -19,18 +19,14 @@ label.inline, span.inline {
 	border-bottom: 1px solid #e5e5e5;
 
 	small {
-	  font-size: @baseLineHeight * .75;
-	  color: @grayLight;
+		font-size: @baseLineHeight * .75;
+		color: @grayLight;
 	}
 }
 
 .legend + .control-group {
-   margin-top: @baseLineHeight;
-  -webkit-margin-top-collapse: separate;
-}
-
-.input-append input, .input-append select {
-	border-radius: 3px;
+	margin-top: @baseLineHeight;
+	-webkit-margin-top-collapse: separate;
 }
 
 .btn-small.btn-small-small {
@@ -44,12 +40,6 @@ label.inline, span.inline {
 
 .btn.btn-thin-2 {
 	padding: 4px 7px;
-}
-
-.btn.btn-ellipsis {
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
 }
 
 .btn.btn-transparent {
@@ -102,20 +92,8 @@ label.inline, span.inline {
 	}
 }
 
-input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
-	height: @baseLineHeight - (@rlInputBorderSize - 1) * 2;
-	line-height: @baseLineHeight - (@rlInputBorderSize - 1) * 2;
-}
-
 .alert a {
 	text-decoration: underline;
-}
-
-.alert.alert-null-left-margin {
-	margin-left: 0;
-}
-
-.alert a {
 	color: #c09853;
 }
 
@@ -127,21 +105,10 @@ input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
 	color: #b94a48;
 }
 
-.nav-tabs > li > a {
-	color: #555;
-}
-
 .form-horizontal.long-label .control-group {
 	.control-label {
 		width: 160px;
 	}
-	.controls {
-		margin-left: 180px;
-	}
-}
-
-.control-label.remove-padding-top {
-	padding-top: 0;
 }
 
 /* mobile and tablet */
@@ -160,10 +127,9 @@ input:not([type="radio"]):not([type="checkbox"]):not([type="hidden"]) {
 		.control-group {
 			.control-label {
 				text-align: left;
-				float: none;
 			}
 			.controls {
-				margin-left: 0;
+				margin-left: 10px;
 			}
 		}
 	}

@@ -10,15 +10,13 @@
 // --------
 // For clearing floats like a boss h5bp.com/q
 .clearfix {
-  &:before,
-  &:after {
+  &::before,
+  &::after {
     display: table;
     content: "";
     // Fixes Opera/contenteditable bug:
     // http://nicolasgallagher.com/micro-clearfix-hack/#comment-36952
     line-height: 0;
-  }
-  &:after {
     clear: both;
   }
 }
@@ -49,8 +47,7 @@
 // Mixin for form field states
 .formFieldState(@textColor: #555, @borderColor: #ccc, @backgroundColor: #f5f5f5) {
   // Set the text color
-  > label,
-  .help-block {
+  > label {
     color: @textColor;
   }
   // Style inputs accordingly
@@ -84,9 +81,7 @@
 
 // Table columns
 .tableColumns(@columnSpan: 1) {
-  float: none; // undo default grid column styles
   width: ((@gridColumnWidth) * @columnSpan) + (@gridGutterWidth * (@columnSpan - 1)) - 16; // 16 is total padding on left and right of table cells
-  margin-left: 0; // undo default grid column styles
 }
 
 // The Grid
@@ -101,119 +96,25 @@
     }
     .spanX (0) {}
 
-    .offsetX (@index) when (@index > 0) {
-//      (~".offset@{index}") { .offset(@index); }
-      .offset@{index} { .offset(@index); }
-      .offsetX(@index - 1);
-    }
-    .offsetX (0) {}
-
-    .offset (@columns) {
-      margin-left: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns + 1));
-    }
-
     .span (@columns) {
       width: (@gridColumnWidth * @columns) + (@gridGutterWidth * (@columns - 1));
     }
 
     .row {
       margin-left: @gridGutterWidth * -1;
-      .clearfix();
     }
 
     [class*="span"] {
-      float: left;
+      display: inline-block;
       margin-left: @gridGutterWidth;
+      vertical-align: top;
     }
 
     // Set the container width
     .container { .span(@gridColumns); }
 
-    // generate .spanX and .offsetX
-    .spanX (@gridColumns);
-    .offsetX (@gridColumns);
-
-  }
-
-  .fluid (@fluidGridColumnWidth, @fluidGridGutterWidth) {
-
-    .spanX (@index) when (@index > 0) {
-//      (~".span@{index}") { .span(@index); }
-      .span@{index} { .span(@index); }
-      .spanX(@index - 1);
-    }
-    .spanX (0) {}
-
-    .offsetX (@index) when (@index > 0) {
-//      (~'.offset@{index}') { .offset(@index); }
-//      (~'.offset@{index}:first-child') { .offsetFirstChild(@index); }
-      .offset@{index} { .offset(@index); }
-      .offset@{index}:first-child { .offsetFirstChild(@index); }
-      .offsetX(@index - 1);
-    }
-    .offsetX (0) {}
-
-    .offset (@columns) {
-      margin-left: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) + (@fluidGridGutterWidth*2);
-    }
-
-    .offsetFirstChild (@columns) {
-      margin-left: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1)) + (@fluidGridGutterWidth);
-    }
-
-    .span (@columns) {
-      width: (@fluidGridColumnWidth * @columns) + (@fluidGridGutterWidth * (@columns - 1));
-    }
-
-    .row-fluid {
-      width: 100%;
-      .clearfix();
-      [class*="span"] {
-        display: block;
-        width: 100%;
-        min-height: 30px;        // Make inputs at least the height of their button counterpart
-        box-sizing: border-box; // Makes inputs behave like true block-level elements
-        float: left;
-        margin-left: @fluidGridGutterWidth;
-      }
-      [class*="span"]:first-child {
-        margin-left: 0;
-      }
-
-      // generate .spanX and .offsetX
-      .spanX (@gridColumns);
-      .offsetX (@gridColumns);
-    }
-
-  }
-
-  .input(@gridColumnWidth, @gridGutterWidth) {
-
-    .spanX (@index) when (@index > 0) {
-//      (~"input.span@{index}, textarea.span@{index}, .uneditable-input.span@{index}") { .span(@index); }
-      input.span@{index}, textarea.span@{index}, .uneditable-input.span@{index} { .span(@index); }
-      .spanX(@index - 1);
-    }
-    .spanX (0) {}
-
-    .span(@columns) {
-      width: ((@gridColumnWidth) * @columns) + (@gridGutterWidth * (@columns - 1)) - 14;
-    }
-
-    input,
-    textarea,
-    .uneditable-input {
-      margin-left: 0; // override margin-left from core grid system
-    }
-
-    // Space grid-sized controls properly if multiple per line
-    .controls-row [class*="span"] + [class*="span"] {
-      margin-left: @gridGutterWidth;
-    }
-
     // generate .spanX
     .spanX (@gridColumns);
-
   }
 
 }

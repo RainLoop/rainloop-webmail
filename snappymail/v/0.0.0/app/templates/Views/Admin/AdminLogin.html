@@ -1,6 +1,6 @@
 <div class="b-login-content">
 	<div class="loginFormWrapper" data-bind="css: {'afterLoginHide': formHidden}">
-		<div class="alert alertError" data-bind="visible: '' !== submitError()">
+		<div class="alert" data-bind="hidden: !submitError()">
 			<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
 			<span data-bind="text: submitError"></span>
 		</div>

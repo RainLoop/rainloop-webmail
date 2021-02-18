@@ -1,22 +1,4 @@
 
-.rl-strip-animation(@rgba, @stripOpacity) {
-	background-image: linear-gradient(135deg, rgba(@rgba, @rgba, @rgba, @stripOpacity) 25%, transparent 25%,
-		transparent 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 75%,
-		transparent 75%, transparent);
-}
-
-@keyframes highlight-folder-row {
-	0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); }
-}
-
-@keyframes textLoadingAnimationKeyFrame {
-	0% { opacity: 1; } 33% { opacity: 0; } 100% { opacity: 1; }
-}
-
-@keyframes animate-stripes {
-	0% {background-position: 0 0;} 100% {background-position: 60px 0;}
-}
-
 @keyframes login-form-shake  {
   0% {transform: translateX(0);}
   12.5% {transform: translateX(-6px) rotateY(-5deg)}
@@ -41,14 +23,6 @@ html.rl-started-delay {
 	}
 }
 
-html {
-	.e-strip-animation {
-		background-size: 60px 60px;
-		.rl-strip-animation(0, 0.1);
-		animation: animate-stripes 2s linear infinite;
-	}
-}
-
 @media screen and (min-width: 1000px) {
 
 	html.rl-started-trigger .b-login-content .loginFormWrapper {
@@ -57,90 +31,38 @@ html {
 		opacity: 0.5;
 	}
 
-	html {
-		.b-login-content {
-			.alertError {
-				display: block;
-				opacity: 1;
-				transition: opacity 0.5s linear;
-			}
-			.alertError[hidden] {
-				opacity: 0;
-			}
-		}
+	.b-login-content .errorAnimated {
+		animation: login-form-shake 400ms ease-in-out;
+	}
 
-		.b-login-content .errorAnimated {
-			animation: login-form-shake 400ms ease-in-out;
-		}
+	.b-login-content .errorAnimated .buttonLogin {
+		color: #b94a48;
+		font-weight: bold;
+	}
 
-		.b-login-content .errorAnimated .buttonLogin {
-			color: #b94a48;
-			font-weight: bold;
-		}
+	.b-login-content .afterLoginHide {
+		opacity: 0;
+	}
 
-		.b-login-content .afterLoginHide {
-			opacity: 0;
-		}
+	.b-login-content .loginFormWrapper {
+		transition: all 0.3s ease-out;
+	}
 
-		.b-login-content .loginFormWrapper {
-			transition: all 0.3s ease-out;
-		}
+	.button-delete-transitions {
+		transition: all 0.2s linear;
+	}
 
-		& .button-delete-transitions {
-			transition: all 0.2s linear;
-		}
-
-		& .b-folders .e-item .anim-action-class {
-			animation: highlight-folder-row 0.5s linear;
-		}
-
-		& .b-folders .btn.buttonContacts {
-			transition: margin 0.3s linear;
-		}
-
-		& .b-folders .b-content.opacity-on-panel-disabled {
-			transition: opacity 0.3s linear;
-		}
-
-		& .messageList {
-			.messageListItem {
-				transition: max-height 400ms ease;
-			}
-			.listDragOver {
-				transition: all 400ms ease;
-			}
-		}
-
-		& .b-list-content {
-			.e-contact-item {
-				transition: max-height 400ms ease;
-			}
-		}
-
-		& .modal.b-domain-content {
-			.modal-body {
-				transition: left 500ms ease;
-			}
-		}
-
-		#rl-popups > .rl-view-model .modal {
-			transition: all .2s ease-out;
-		}
-		#rl-popups > .rl-view-model:not(.show) .modal {
-			top: -25%;
-		}
-		#rl-popups > .rl-view-model .modal.fade {
-			opacity: 1;
-		}
-		#rl-popups > .rl-view-model:not(.show) .modal.fade {
-			opacity: 0;
-		}
-
-		& .b-compose.loading .b-header-toolbar {
-			background-size: 60px 60px;
-			.rl-strip-animation(255, 0.2);
-			animation: animate-stripes 2s linear infinite;
-		}
+	#rl-popups > .rl-view-model .modal {
+		transition: all .2s ease-out;
+	}
+	#rl-popups > .rl-view-model:not(.show) .modal {
+		top: -25%;
+	}
+	#rl-popups > .rl-view-model .modal.fade {
+		opacity: 1;
+	}
+	#rl-popups > .rl-view-model:not(.show) .modal.fade {
+		opacity: 0;
 	}
 }
 
@@ -149,16 +71,4 @@ html {
 }
 #rl-popups > .rl-view-model:not(.show) {
 	background-color: rgba(0,0,0,0);
-}
-
-.textLoadingAnimationD1, .textLoadingAnimationD2, .textLoadingAnimationD3 {
-	animation: textLoadingAnimationKeyFrame 1s linear infinite 0s;
-}
-
-.textLoadingAnimationD2 {
-	animation-delay: 0.3s;
-}
-
-.textLoadingAnimationD3 {
-	animation-delay: 0.6s;
 }

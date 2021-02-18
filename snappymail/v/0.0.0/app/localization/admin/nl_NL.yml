@@ -103,7 +103,7 @@ nl_NL:
   TAB_ABOUT:
     LEGEND_ABOUT: "Over"
     LABEL_TAG_HINT: "Simpel, modern en snelle web-based e-mail client"
-    LABEL_ALL_RIGHTS_RESERVED: "Alle rechten gereserveerd."
+    LABEL_ALL_RIGHTS_RESERVED: "Alle rechten voorbehouden."
   POPUPS_DOMAIN_ALIAS:
     TITLE_ADD_DOMAIN_ALIAS: "Voeg alias toe"
     LABEL_ALIAS: "Alias"

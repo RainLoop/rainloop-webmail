@@ -4,10 +4,11 @@
 .b-contacts-content {
 
 	.control-group {
-		.control-label.fix-width {
+		.control-label {
+			padding-top: 0;
 			width: 50px;
 		}
-		.controls.fix-width {
+		.controls {
 			margin-left: 70px;
 		}
 	}
@@ -32,11 +33,9 @@
 
 		.b-header-toolbar {
 
-			height: 40px;
-
+			background-color: rgba(0,0,0,0.8);
 			color: #fff;
-
-			background-color: rgba(0,0,0,0.8) !important;
+			height: 40px;
 
 			.close {
 				color: #fff;
@@ -119,8 +118,7 @@
 			// }
 
 			.e-contact-item {
-				position: relative;
-				height: 45px;
+				display: flex;
 				max-height: 45px;
 				line-height: 45px;
 				overflow: hidden;
@@ -129,7 +127,6 @@
 				margin: 0;
 				border: 0;
 				border-left: 6px solid #eee;
-				z-index: 100;
 				border-bottom: 1px solid #ddd;
 
 				&.focused {
@@ -142,39 +139,21 @@
 				}
 
 				.checkboxItem {
-					display: inline-block;
-					float: left;
-					padding: 0 8px 0 6px;
 					line-height: 45px;
+					padding: 0 8px 0 6px;
 				}
 
 				.nameParent {
-					display: block;
-					overflow: hidden;
-					text-overflow: ellipsis;
 					color: #333;
 					font-size: 16px;
-				}
-
-				.nameParent, .emailParent {
-					white-space: nowrap;
-				}
-
-				.displayName, .displayEmail {
 					overflow: hidden;
 					text-overflow: ellipsis;
-				}
-
-				.displayImg {
-					display: inline-block;
-					float: right;
-					position: relative;
-					margin: 0 5px;
+					white-space: nowrap;
+					width: 100%;
 				}
 
 				&.checked {
 					border-left-color: #69A8F5;
-					z-index: 101;
 
 					&.focused {
 						border-left-color: darken(#69A8F5, 5%);
@@ -185,7 +164,6 @@
 
 					background-color: #fff;
 					border-left-color: #398CF2;
-					z-index: 102;
 
 					&.focused {
 						border-left-color: darken(#398CF2, 5%);
@@ -365,7 +343,6 @@
 
 		margin: 0;
 		border: 0;
-		z-index: 100;
 		border-bottom: 1px solid #ddd;
 	}
 }

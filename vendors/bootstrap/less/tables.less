@@ -37,8 +37,6 @@
     vertical-align: bottom;
   }
   // Remove top border from thead by default
-  caption + thead tr:first-child th,
-  caption + thead tr:first-child td,
   colgroup + thead tr:first-child th,
   colgroup + thead tr:first-child td,
   thead:first-child tr:first-child th,
@@ -66,9 +64,6 @@
     border-left: 1px solid @tableBorder;
   }
   // Prevent a double border
-  caption + thead tr:first-child th,
-  caption + tbody tr:first-child th,
-  caption + tbody tr:first-child td,
   colgroup + thead tr:first-child th,
   colgroup + tbody tr:first-child th,
   colgroup + tbody tr:first-child td,
@@ -99,14 +94,10 @@
   }
 
   // Special fixes to round the left border on the first td/th
-  caption + thead tr:first-child th:first-child,
-  caption + tbody tr:first-child td:first-child,
   colgroup + thead tr:first-child th:first-child,
   colgroup + tbody tr:first-child td:first-child {
     border-radius: 4px 0 0 0;
   }
-  caption + thead tr:first-child th:last-child,
-  caption + tbody tr:first-child td:last-child,
   colgroup + thead tr:first-child th:last-child,
   colgroup + tbody tr:first-child td:last-child {
     border-radius: 0 4px 0 0;
@@ -148,10 +139,8 @@
 // -----------------
 
 // Reset default grid behavior
-table [class*=span],
-.row-fluid table [class*=span] {
+table [class*=span] {
   display: table-cell;
-  float: none; // undo default grid column styles
   margin-left: 0; // undo default grid column styles
 }
 
@@ -163,39 +152,6 @@ table {
   .span4     { .tableColumns(4); }
   .span5     { .tableColumns(5); }
   .span6     { .tableColumns(6); }
-  .span7     { .tableColumns(7); }
   .span8     { .tableColumns(8); }
-  .span9     { .tableColumns(9); }
   .span10    { .tableColumns(10); }
-  .span11    { .tableColumns(11); }
-  .span12    { .tableColumns(12); }
-  .span13    { .tableColumns(13); }
-  .span14    { .tableColumns(14); }
-  .span15    { .tableColumns(15); }
-  .span16    { .tableColumns(16); }
-  .span17    { .tableColumns(17); }
-  .span18    { .tableColumns(18); }
-  .span19    { .tableColumns(19); }
-  .span20    { .tableColumns(20); }
-  .span21    { .tableColumns(21); }
-  .span22    { .tableColumns(22); }
-  .span23    { .tableColumns(23); }
-  .span24    { .tableColumns(24); }
-}
-
-
-// TABLE BACKGROUNDS
-// -----------------
-// Exact selectors below required to override .table-striped
-
-.table {
-  tbody tr.success td {
-    background-color: @successBackground;
-  }
-  tbody tr.error td {
-    background-color: @errorBackground;
-  }
-  tbody tr.info td {
-    background-color: @infoBackground;
-  }
 }

@@ -61,7 +61,7 @@
 				padding-left: 12px;
 				padding-right: 12px;
 			}
-			.inputEmail, .inputPassword {
+			.inputEmail, .inputLogin, .inputPassword {
 				padding-right: 35px;
 			}
 
@@ -145,6 +145,12 @@
 		left: 0;
 		right: 0;
 		z-index: 1;
+		display: block;
+		opacity: 1;
+		transition: opacity 0.5s linear;
+	}
+	.alert[hidden] {
+		opacity: 0;
 	}
 
 	.flag-selector {

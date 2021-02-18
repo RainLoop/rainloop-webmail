@@ -137,11 +137,12 @@ For a user its around 65% smaller and faster than traditional RainLoop.
 ### CSS changes
 
 * Solve jQuery removed "features" with native css code
-* Cleanup unused css
 * Themes work in mobile mode
 * Bugfix invalid/conflicting css rules
 * Use flexbox
+* Split app.css to have seperate admin.css
 * Remove oldschool 'float'
+* Remove unused css
 * Removed html.no-css
 * Removed dev/Styles/Cmd.less
 * Removed dev/Styles/Scroll.less
@@ -163,10 +164,12 @@ For a user its around 65% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|-------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 139.393	| 46,959	| 23.019	| 19.624	|
-|app.min.css 	| 274.791	| 114.661	| 39.618	| 20.495	| 17.899	|
-|boot.css    	|       	|   1.836	|       	|    795	|    630	|
-|boot.min.css	|       	|   1.492	|       	|    707	|    555	|
+|app.css     	| 340.334	| 115.927	| 46,959	| 19.501	| 16.699	|
+|app.min.css 	| 274.791	|  96.071	| 39.618	| 17.475	| 15.295	|
+|boot.css    	|       	|   2.066	|       	|    795	|    630	|
+|boot.min.css	|       	|   1.696	|       	|    707	|    555	|
+|admin.css    	|       	|  53.966	|       	| 10.376	|  9.070	|
+|admin.min.css	|       	|  43.137	|       	|  9.126	|  8.133	|
 
 
 ### Squire vs CKEditor

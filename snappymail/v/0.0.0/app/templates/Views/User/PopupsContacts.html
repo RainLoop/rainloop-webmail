@@ -56,7 +56,7 @@
 	</div>
 	<div class="modal-body" style="position: relative;">
 		<div class="b-list-toolbar">
-			<input type="text" class="i18n span3 e-search" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: search" />
+			<input type="text" class="span3 e-search" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: search" />
 		</div>
 		<div class="b-list-content g-ui-user-select-none" data-bind="css: {'hideContactListCheckbox': !useCheckboxesInList()}">
 			<div class="content">
@@ -76,10 +76,7 @@
 					<div class="e-contact-foreach g-ui-user-select-none" data-bind="foreach: contacts, visible: 0 < contacts().length">
 						<div class="e-contact-item g-ui-user-select-none" data-bind="css: lineAsCss()">
 							<div class="checkboxItem fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
-							<div class="nameParent actionHandle">
-								<span class="listName" data-bind="text: display"></span>
-								&nbsp;
-							</div>
+							<div class="nameParent actionHandle" data-bind="text: display"></div>
 						</div>
 					</div>
 				</div>
@@ -101,7 +98,6 @@
 			<div class="btn-group dropdown colored-toggle button-add-prop" data-bind="visible: !emptySelection(), registerBootstrapDropdown: true">
 				<a id="button-add-prop-dropdown-id" href="#" tabindex="-1" class="btn dropdown-toggle" data-toggle="dropdown">
 					<span data-i18n="CONTACTS/ADD_MENU_LABEL"></span>
-					&nbsp;&nbsp;
 					<span class="caret"></span>
 				</a>
 				<ul class="dropdown-menu g-ui-menu right-edge" style="text-align: left" tabindex="-1" role="menu" aria-labelledby="button-add-prop-dropdown-id">
@@ -146,8 +142,8 @@
 					<div data-bind="visible: !emptySelection()">
 						<div class="form-horizontal top-part">
 							<div class="control-group" data-bind="visible: !viewReadOnly() || contactHasValidName()">
-								<label class="control-label remove-padding-top fix-width fontastic iconsize24">👤</label>
-								<div class="controls fix-width">
+								<label class="control-label fontastic iconsize24">👤</label>
+								<div class="controls">
 									<div data-bind="foreach: viewPropertiesNames">
 										<div class="property-line">
 											<span class="contactValueStatic" data-bind="text: value"></span>
@@ -175,8 +171,8 @@
 								</div>
 							</div>
 							<div class="control-group" data-bind="visible: !viewReadOnly() || 0 < viewPropertiesEmails().length">
-								<label class="control-label remove-padding-top fix-width fontastic iconsize24" data-bind="tooltip: 'GLOBAL/EMAIL'">@</label>
-								<div class="controls fix-width">
+								<label class="control-label fontastic iconsize24" data-bind="tooltip: 'GLOBAL/EMAIL'">@</label>
+								<div class="controls">
 									<div data-bind="foreach: viewPropertiesEmails">
 										<div class="property-line">
 											<span class="contactValueStatic" data-bind="text: value"></span>
@@ -189,8 +185,8 @@
 								</div>
 							</div>
 							<div class="control-group" data-bind="visible: 0 < viewPropertiesPhones().length">
-								<label class="control-label remove-padding-top fix-width fontastic iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'">📞</label>
-								<div class="controls fix-width">
+								<label class="control-label fontastic iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_PHONE'">📞</label>
+								<div class="controls">
 									<div data-bind="foreach: viewPropertiesPhones">
 										<div class="property-line">
 											<span class="contactValueStatic" data-bind="text: value"></span>
@@ -202,8 +198,8 @@
 								</div>
 							</div>
 							<div class="control-group" data-bind="visible: 0 < viewPropertiesWeb().length">
-								<label class="control-label remove-padding-top fix-width fontastic iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_WEB'">🌍</label>
-								<div class="controls fix-width">
+								<label class="control-label fontastic iconsize24" data-bind="tooltip: 'CONTACTS/LABEL_WEB'">🌍</label>
+								<div class="controls">
 									<div data-bind="foreach: viewPropertiesWeb">
 										<div class="property-line">
 											<span class="contactValueLargeStatic" data-bind="text: value"></span>
@@ -212,12 +208,6 @@
 												data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup'" />
 										</div>
 									</div>
-								</div>
-							</div>
-							<div class="control-group">
-								<div class="controls fix-width">
-									<br />
-									<br />
 								</div>
 							</div>
 						</div>
