@@ -1,58 +1,125 @@
+
 .squire-toolbar {
+	padding: 2px;
+	box-shadow: none;
+	border-bottom: 1px solid #b6b6b6;
+	background: #EEE;
 	overflow-x: auto;
 	overflow-y: hidden;
 	white-space: nowrap;
 }
 
-.squire-toolgroup {
+.squire-toolbar .btn-group {
 	display: inline-block;
-	margin: 0 .25em 0 0;
 }
 
-.squire-toolgroup > button,
-.squire-toolgroup > select {
-	background: transparent;
-	border: 0;
-	box-shadow: none;
-	color: #000;
-	cursor: pointer;
-	font-size: 14px;
-	height: 1.5em;
-	line-height: 1.7;
+.squire-toolbar select {
+	font-size: 12px;
 	margin: 0;
 	padding: 0;
-	vertical-align: bottom;
-	width: 2em;
+	vertical-align: middle;
+	width: 7em;
 }
-
-.squire-toolgroup button:hover, .squire-toolgroup button.active {
-	background: #f0f0f0;
+.squire-toolbar select[data-action="fontSize"] {
+	width: 5em;
 }
-
-.squire-toolgroup select {
-	width: 7em !important;
-}
-.squire-toolgroup select[data-action="fontSize"] {
-	width: 4em !important;
-}
-.squire-toolgroup button[data-action="bold"] {
+.squire-toolbar button[data-action="bold"] {
 	font-weight: bold;
 }
-.squire-toolgroup button[data-action="italic"] {
+.squire-toolbar button[data-action="italic"] {
 	font-style: italic;
 }
 /*
-.squire-toolgroup button[data-action="underline"] {
+.squire-toolbar button[data-action="underline"] {
 	text-decoration: underline;
 }
-.squire-toolgroup button[data-action="strikethrough"] {
+.squire-toolbar button[data-action="strikethrough"] {
 	text-decoration: line-through;
 }
 */
 
-.squire-wysiwyg {
+.squire-wysiwyg, .squire-plain {
 	box-sizing: border-box;
+	font-size: 13px;
+	line-height: 16px;
+	min-height: 200px;
 	overflow: auto;
+	padding: 10px;
+}
+
+.squire-wysiwyg {
+	font-family: var(--fontSans);
+
+	ul {
+		padding-left: 40px;
+		li {
+			list-style-type: disc !important;
+		}
+	}
+
+	ol {
+		padding-left: 40px;
+		li {
+			list-style-type: decimal !important;
+		}
+	}
+
+	pre, code {
+		margin: 0;
+		padding: 0;
+		background: #fff;
+		border: none;
+		border-radius: 0;
+		font-family: var(--fontMono);
+		display: block;
+		word-break: normal;
+		word-wrap: break-word;
+		background-color: #f9f9f9;
+	}
+
+	code {
+		display: inline;
+		padding: 2px 5px;
+	}
+
+	pre {
+		padding: 5px 10px;
+		border-radius: 5px;
+		background-color: #f9f9f9;
+	}
+
+	pre > code {
+		padding: 0;
+	}
+
+	blockquote {
+		border: 0;
+		border-left: solid 2px #444;
+		margin: 5px 0 5px 5px;
+		padding-left: 5px;
+	}
+
+	blockquote p {
+		margin: 0 0 10px;
+		font-size: 14px;
+		line-height: 20px;
+	}
+
+	img {
+		vertical-align: bottom;
+	}
+
+	a {
+		color: blue;
+		text-decoration: underline;
+
+		&:visited {
+			color: #609;
+		}
+		&:active {
+			color: red;
+		}
+	}
 }
 
 /* This does make the block element focusable with mouse in Gecko and Webkit so we don't need a <BR>.
@@ -72,26 +139,24 @@ Secondly, we can't rely on MUA's what to do with :empty
 }
 */
 
-.squire-wysiwyg, .squire-plain {
-	min-height: 200px;
-	padding: .5em;
-}
-
 .squire-plain {
+	background-color: #fff;
+	border: 0;
+	border-radius: 0;
+	display: none;
+	font-family: var(--fontMono);
+	outline: none;
+	margin: 0;
+	resize: none;
+	white-space: pre-wrap;
 	width: 100%;
 }
-
-.squire-plain {
-	display: none;
-}
-.squire-mode-plain .squire-wysiwyg {
+.squire-mode-plain .squire-wysiwyg,
+.squire-mode-plain .btn-group:not(#squire-toolgroup-mode) {
 	display: none;
 }
 .squire-mode-plain .squire-plain {
 	display: block;
-}
-.squire-mode-plain .squire-toolgroup:not(#squire-toolgroup-mode) {
-	display: none;
 }
 
 /* @media (hover: none) */
@@ -104,12 +169,6 @@ Secondly, we can't rely on MUA's what to do with :empty
 	bottom: 0;
 	left: 0;
 	right: 0;
-}
-.rl-mobile .squire-toolgroup > button,
-.rl-mobile .squire-toolgroup > select {
-	height: 2.5em;
-	line-height: 2.8;
-	width: 3em;
 }
 
 .rl-mobile #rl-popups .b-compose.modal,

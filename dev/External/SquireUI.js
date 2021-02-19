@@ -353,8 +353,8 @@ class SquireUI
 			}
 		}
 
-		plain.className = 'squire-plain cke_plain cke_editable';
-		wysiwyg.className = 'squire-wysiwyg cke_wysiwyg_div cke_editable';
+		plain.className = 'squire-plain';
+		wysiwyg.className = 'squire-wysiwyg cke_editable';
 		this.mode = ''; // 'plain' | 'wysiwyg'
 		this.__plain = {
 			getRawData: () => this.plain.value,
@@ -366,14 +366,14 @@ class SquireUI
 		this.plain = plain;
 		this.wysiwyg = wysiwyg;
 
-		toolbar.className = 'squire-toolbar cke_top';
+		toolbar.className = 'squire-toolbar';
 		let touchTap;
 		for (let group in actions) {
 			if ('bidi' == group && !rl.settings.app('allowHtmlEditorBitiButtons')) {
 				continue;
 			}
 			let toolgroup = doc.createElement('div');
-			toolgroup.className = 'squire-toolgroup cke_toolgroup';
+			toolgroup.className = 'btn-group';
 			toolgroup.id = 'squire-toolgroup-'+group;
 			for (let action in actions[group]) {
 				if ('source' == action && !rl.settings.app('allowHtmlEditorSourceButton')) {
@@ -408,6 +408,7 @@ class SquireUI
 				} else {
 					input = doc.createElement('button');
 					input.type = 'button';
+					input.className = 'btn';
 					input.innerHTML = cfg.html;
 					input.action_cmd = cfg.cmd;
 					input.addEventListener('touchstart', () => touchTap = input, {passive:true});
