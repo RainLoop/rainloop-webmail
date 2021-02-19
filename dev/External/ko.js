@@ -90,7 +90,6 @@ ko.bindingHandlers.command = {
 			throw new Error('Value should be a command');
 		}
 
-		element.classList.add('command');
 		ko.bindingHandlers['FORM'==element.nodeName ? 'submit' : 'click'].init(
 			element,
 			fValueAccessor,
@@ -105,10 +104,8 @@ ko.bindingHandlers.command = {
 
 		let disabled = !command.enabled();
 
-		cl.toggle('no-disabled', !disabled);
-
 		disabled = disabled || !command.canExecute();
-		['disable','disabled'].forEach(s => cl.toggle(s, disabled));
+		cl.toggle('disabled', disabled);
 
 		if (element.matches('INPUT,TEXTAREA,BUTTON')) {
 			element.disabled = disabled;

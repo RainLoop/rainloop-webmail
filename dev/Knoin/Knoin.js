@@ -323,12 +323,7 @@ export function startScreens(screensClasses) {
 function decorateKoCommands(thisArg, commands) {
 	Object.entries(commands).forEach(([key, canExecute]) => {
 		let command = thisArg[key],
-		fn = function(...args) {
-			if (fn.enabled() && fn.canExecute()) {
-				command.apply(thisArg, args);
-			}
-			return false;
-		};
+			fn = (...args) => fn.enabled() && fn.canExecute() && command.apply(thisArg, args);
 
 //		fn.__realCanExecute = canExecute;
 //		fn.isCommand = true;
@@ -337,7 +332,7 @@ function decorateKoCommands(thisArg, commands) {
 
 		fn.canExecute = (typeof canExecute === 'function')
 			? ko.computed(() => fn.enabled() && canExecute.call(thisArg, thisArg))
-			: ko.computed(() => fn.enabled() && !!canExecute);
+			: ko.computed(() => fn.enabled());
 
 		thisArg[key] = fn;
 	});
