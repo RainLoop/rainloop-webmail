@@ -366,7 +366,7 @@ class SquireUI
 		this.plain = plain;
 		this.wysiwyg = wysiwyg;
 
-		toolbar.className = 'squire-toolbar';
+		toolbar.className = 'squire-toolbar btn-toolbar';
 		let touchTap;
 		for (let group in actions) {
 			if ('bidi' == group && !rl.settings.app('allowHtmlEditorBitiButtons')) {
@@ -386,6 +386,7 @@ class SquireUI
 					ev = 'change';
 				} else if (cfg.select) {
 					input = doc.createElement('select');
+					input.className = 'btn';
 					if (Array.isArray(cfg.select)) {
 						cfg.select.forEach(value => {
 							var option = new Option(value, value);
