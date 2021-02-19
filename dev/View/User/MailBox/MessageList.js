@@ -41,7 +41,7 @@ import { ThemeStore } from 'Stores/Theme';
 
 import Remote from 'Remote/User/Fetch';
 
-import { command, showScreenPopup, popupVisibility } from 'Knoin/Knoin';
+import { decorateKoCommands, showScreenPopup, popupVisibility } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { FolderClearPopupView } from 'View/Popup/FolderClear';
@@ -237,23 +237,33 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		MessageStore.messageListEndHash.subscribe((() =>
 			this.selector.scrollToFocused()
 		).throttle(50));
+
+		decorateKoCommands(this, {
+			clearCommand: 1,
+			reloadCommand: 1,
+			multyForwardCommand: canBeMovedHelper,
+			deleteWithoutMoveCommand: canBeMovedHelper,
+			deleteCommand: canBeMovedHelper,
+			archiveCommand: canBeMovedHelper,
+			spamCommand: canBeMovedHelper,
+			notSpamCommand: canBeMovedHelper,
+			moveCommand: canBeMovedHelper,
+			moveNewCommand: canBeMovedHelper,
+		});
 	}
 
-	@command()
 	clearCommand() {
 		if (Settings.capa(Capa.DangerousActions)) {
 			showScreenPopup(FolderClearPopupView, [FolderStore.currentFolder()]);
 		}
 	}
 
-	@command()
 	reloadCommand() {
 		if (!MessageStore.messageListCompleteLoadingThrottleForAnimation() && this.allowReload) {
 			rl.app.reloadMessageList(false, true);
 		}
 	}
 
-	@command(canBeMovedHelper)
 	multyForwardCommand() {
 		if (Settings.capa(Capa.Composer)) {
 			showScreenPopup(ComposePopupView, [
@@ -263,7 +273,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		}
 	}
 
-	@command(canBeMovedHelper)
 	deleteWithoutMoveCommand() {
 		if (Settings.capa(Capa.DangerousActions)) {
 			rl.app.deleteMessagesFromFolder(
@@ -275,7 +284,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		}
 	}
 
-	@command(canBeMovedHelper)
 	deleteCommand() {
 		rl.app.deleteMessagesFromFolder(
 			FolderType.Trash,
@@ -285,7 +293,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		);
 	}
 
-	@command(canBeMovedHelper)
 	archiveCommand() {
 		rl.app.deleteMessagesFromFolder(
 			FolderType.Archive,
@@ -295,7 +302,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		);
 	}
 
-	@command(canBeMovedHelper)
 	spamCommand() {
 		rl.app.deleteMessagesFromFolder(
 			FolderType.Spam,
@@ -305,7 +311,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		);
 	}
 
-	@command(canBeMovedHelper)
 	notSpamCommand() {
 		rl.app.deleteMessagesFromFolder(
 			FolderType.NotSpam,
@@ -315,10 +320,8 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		);
 	}
 
-	@command(canBeMovedHelper)
-	moveCommand() {} // eslint-disable-line no-empty-function
+	moveCommand() {}
 
-	@command(canBeMovedHelper)
 	moveNewCommand(vm, event) {
 		if (this.newMoveToFolder && this.mobileCheckedStateShow()) {
 			if (vm && event && event.preventDefault) {

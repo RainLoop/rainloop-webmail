@@ -4,7 +4,7 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import MessageStore from 'Stores/User/Message';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class AdvancedSearchPopupView extends AbstractViewPopup {
@@ -38,9 +38,12 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 				{ id: 365, name: i18n(prefix + 'YEAR') }
 			];
 		});
+
+		decorateKoCommands(this, {
+			searchCommand: 1
+		});
 	}
 
-	@command()
 	searchCommand() {
 		const search = this.buildSearchString();
 		if (search) {

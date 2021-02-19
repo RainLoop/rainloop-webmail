@@ -2,7 +2,7 @@ import { StorageResultType } from 'Common/Enums';
 
 import Remote from 'Remote/User/Fetch';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class TwoFactorTestPopupView extends AbstractViewPopup {
@@ -18,9 +18,12 @@ class TwoFactorTestPopupView extends AbstractViewPopup {
 		});
 
 		this.koTestedTrigger = null;
+
+		decorateKoCommands(this, {
+			testCodeCommand: self => self.code() && !self.testing()
+		});
 	}
 
-	@command((self) => self.code() && !self.testing())
 	testCodeCommand() {
 		this.testing(true);
 		Remote.testTwoFactor((result, data) => {

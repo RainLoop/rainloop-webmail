@@ -9,7 +9,7 @@ import FolderStore from 'Stores/User/Folder';
 
 import Remote from 'Remote/User/Fetch';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class FolderCreatePopupView extends AbstractViewPopup {
@@ -40,9 +40,12 @@ class FolderCreatePopupView extends AbstractViewPopup {
 		});
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
+
+		decorateKoCommands(this, {
+			createFolderCommand: self => self.simpleFolderNameValidation(self.folderName())
+		});
 	}
 
-	@command((self) => self.simpleFolderNameValidation(self.folderName()))
 	createFolderCommand() {
 		let parentFolderName = this.selectedParentValue();
 		if (!parentFolderName && 1 < FolderStore.namespace.length) {

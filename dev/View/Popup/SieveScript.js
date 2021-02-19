@@ -9,7 +9,7 @@ import Remote from 'Remote/User/Fetch';
 import { FilterModel } from 'Model/Filter';
 import { SieveUserStore } from 'Stores/User/Sieve';
 
-import { showScreenPopup/*, command*/ } from 'Knoin/Knoin';
+import { showScreenPopup/*, decorateKoCommands*/ } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { FilterPopupView } from 'View/Popup/Filter';
@@ -30,9 +30,13 @@ class SieveScriptPopupView extends AbstractViewPopup {
 		this.saving = false;
 
 		this.filterForDeletion = ko.observable(null).deleteAccessHelper();
+/*
+		decorateKoCommands(this, {
+			saveScriptCommand: 1
+		});
+*/
 	}
 
-//	@command()
 	saveScriptCommand() {
 		let self = this,
 			script = self.script();

@@ -4,7 +4,7 @@ import { settingsSaveHelperSimpleFunction, defaultOptionsAfterRender } from 'Com
 
 import { SaveSettingsStep, StorageResultType } from 'Common/Enums';
 import Remote from 'Remote/Admin/Fetch';
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 
 const settingsGet = rl.settings.get;
 
@@ -74,9 +74,12 @@ export class ContactsAdminSettings {
 		this.contactsType(settingsGet('ContactsPdoType'));
 
 		this.onTestContactsResponse = this.onTestContactsResponse.bind(this);
+
+		decorateKoCommands(this, {
+			testContactsCommand: self => self.pdoDsn() && self.pdoUser()
+		});
 	}
 
-	@command((self) => self.pdoDsn() && self.pdoUser())
 	testContactsCommand() {
 		this.testContactsSuccess(false);
 		this.testContactsError(false);

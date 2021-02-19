@@ -9,7 +9,7 @@ import PgpStore from 'Stores/User/Pgp';
 
 import { EmailModel } from 'Model/Email';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 const KEY_NAME_SUBSTR = -8,
@@ -103,9 +103,15 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 		};
 
 		this.deletePublickKey = this.deletePublickKey.bind(this);
+
+		decorateKoCommands(this, {
+			doCommand: self => !self.submitRequest() && (self.sign() || self.encrypt()),
+			selectCommand: 1,
+			addCommand: 1,
+			updateCommand: 1,
+		});
 	}
 
-	@command((self) => !self.submitRequest() && (self.sign() || self.encrypt()))
 	doCommand() {
 		let result = true,
 			privateKey = null,
@@ -237,7 +243,6 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 		return result;
 	}
 
-	@command()
 	selectCommand() {
 		const keyId = this.selectedPrivateKey(),
 			option = keyId ? this.privateKeysOptions().find(item => item && keyId === item.id) : null;
@@ -253,7 +258,6 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 		}
 	}
 
-	@command()
 	addCommand() {
 		const keyId = this.selectedPublicKey(),
 			option = keyId ? this.publicKeysOptions().find(item => item && keyId === item.id) : null;
@@ -270,7 +274,6 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 		}
 	}
 
-	@command()
 	updateCommand() {
 		this.encryptKeys.forEach(oKey =>
 			oKey.removable(!this.sign() || !this.signKey() || this.signKey().key.id !== oKey.key.id)

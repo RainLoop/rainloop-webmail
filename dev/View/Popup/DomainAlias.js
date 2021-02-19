@@ -7,7 +7,7 @@ import { DomainAdminStore } from 'Stores/Admin/Domain';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class DomainAliasPopupView extends AbstractViewPopup {
@@ -30,9 +30,12 @@ class DomainAliasPopupView extends AbstractViewPopup {
 		this.canBeSaved = ko.computed(() => !this.saving() && this.name() && this.alias());
 
 		this.onDomainAliasCreateOrSaveResponse = this.onDomainAliasCreateOrSaveResponse.bind(this);
+
+		decorateKoCommands(this, {
+			createCommand: self => self.canBeSaved()
+		});
 	}
 
-	@command((self) => self.canBeSaved())
 	createCommand() {
 		this.saving(true);
 		Remote.createDomainAlias(this.onDomainAliasCreateOrSaveResponse, this.name(), this.alias());

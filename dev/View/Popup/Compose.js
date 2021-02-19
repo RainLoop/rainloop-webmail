@@ -37,7 +37,7 @@ import Remote from 'Remote/User/Fetch';
 
 import { ComposeAttachmentModel } from 'Model/ComposeAttachment';
 
-import { command, isPopupVisible, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
+import { decorateKoCommands, isPopupVisible, showScreenPopup, hideScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
@@ -332,6 +332,14 @@ class ComposePopupView extends AbstractViewPopup {
 				this.saveCommand();
 			}
 		}, 120000);
+
+		decorateKoCommands(this, {
+			sendCommand: self => self.canBeSentOrSaved(),
+				saveCommand: self => self.canBeSentOrSaved(),
+				deleteCommand: self => self.isDraftFolderMessage(),
+				skipCommand: self => self.canBeSentOrSaved(),
+				contactsCommand: self => self.allowContacts
+		});
 	}
 
 	getMessageRequestParams(sSaveFolder)
@@ -359,7 +367,6 @@ class ComposePopupView extends AbstractViewPopup {
 		};
 	}
 
-	@command((self) => self.canBeSentOrSaved())
 	sendCommand() {
 		let sSentFolder = FolderStore.sentFolder();
 
@@ -429,7 +436,6 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	@command((self) => self.canBeSentOrSaved())
 	saveCommand() {
 		if (!this.allowFolders) {
 			return false;
@@ -454,7 +460,6 @@ class ComposePopupView extends AbstractViewPopup {
 		return true;
 	}
 
-	@command((self) => self.isDraftFolderMessage())
 	deleteCommand() {
 		if (!isPopupVisible(AskPopupView) && this.modalVisibility()) {
 			showScreenPopup(AskPopupView, [
@@ -469,7 +474,6 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	@command((self) => self.canBeSentOrSaved())
 	skipCommand() {
 		this.bSkipNextHide = true;
 
@@ -486,7 +490,6 @@ class ComposePopupView extends AbstractViewPopup {
 		this.tryToClosePopup();
 	}
 
-	@command((self) => self.allowContacts)
 	contactsCommand() {
 		if (this.allowContacts) {
 			this.skipCommand();

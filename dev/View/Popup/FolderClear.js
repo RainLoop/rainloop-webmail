@@ -6,7 +6,7 @@ import MessageStore from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class FolderClearPopupView extends AbstractViewPopup {
@@ -32,14 +32,15 @@ class FolderClearPopupView extends AbstractViewPopup {
 
 			dangerDescHtml: () => i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', { 'FOLDER': this.folderNameForClear() })
 		});
+
+		decorateKoCommands(this, {
+			clearCommand: self => {
+					const folder = self.selectedFolder();
+					return !self.clearingProcess() && null !== folder;
+				}
+		});
 	}
 
-	@command((self) => {
-		const folder = self.selectedFolder(),
-			isClearing = self.clearingProcess();
-
-		return !isClearing && null !== folder;
-	})
 	clearCommand() {
 		const folderToClear = this.selectedFolder();
 		if (folderToClear) {

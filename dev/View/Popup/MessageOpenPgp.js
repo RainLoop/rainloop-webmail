@@ -3,7 +3,7 @@ import ko from 'ko';
 import { pString } from 'Common/Utils';
 import { KeyState } from 'Common/Enums';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class MessageOpenPgpPopupView extends AbstractViewPopup {
@@ -21,9 +21,12 @@ class MessageOpenPgpPopupView extends AbstractViewPopup {
 		this.resultCallback = null;
 
 		this.sDefaultKeyScope = KeyState.PopupMessageOpenPGP;
+
+		decorateKoCommands(this, {
+			doCommand: self => !self.submitRequest()
+		});
 	}
 
-	@command((self) => !self.submitRequest())
 	doCommand() {
 		this.submitRequest(true);
 

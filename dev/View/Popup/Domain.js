@@ -6,7 +6,7 @@ import { CapaAdminStore } from 'Stores/Admin/Capa';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class DomainPopupView extends AbstractViewPopup {
@@ -162,9 +162,16 @@ class DomainPopupView extends AbstractViewPopup {
 				}
 			}
 		});
+
+		decorateKoCommands(this, {
+			createOrAddCommand: self => self.canBeSaved(),
+			testConnectionCommand: self => self.canBeTested(),
+			whiteListCommand: 1,
+			backCommand: 1,
+			sieveCommand: 1
+		});
 	}
 
-	@command((self) => self.canBeSaved())
 	createOrAddCommand() {
 		this.saving(true);
 		Remote.createOrUpdateDomain(
@@ -173,7 +180,6 @@ class DomainPopupView extends AbstractViewPopup {
 		);
 	}
 
-	@command((self) => self.canBeTested())
 	testConnectionCommand() {
 		this.page('main');
 
@@ -189,17 +195,14 @@ class DomainPopupView extends AbstractViewPopup {
 		);
 	}
 
-	@command()
 	whiteListCommand() {
 		this.page('white-list');
 	}
 
-	@command()
 	backCommand() {
 		this.page('main');
 	}
 
-	@command()
 	sieveCommand() {
 		this.sieveSettings(!this.sieveSettings());
 		this.clearTesting();

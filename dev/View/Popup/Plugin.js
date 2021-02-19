@@ -5,7 +5,7 @@ import { getNotification, i18n } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { command, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
+import { decorateKoCommands, isPopupVisible, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { AskPopupView } from 'View/Popup/Ask';
 
@@ -30,9 +30,12 @@ class PluginPopupView extends AbstractViewPopup {
 		this.sDefaultKeyScope = KeyState.All;
 
 		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
+
+		decorateKoCommands(this, {
+			saveCommand: self => self.hasConfiguration()
+		});
 	}
 
-	@command((self) => self.hasConfiguration())
 	saveCommand() {
 		const list = {};
 		list.Name = this.name();

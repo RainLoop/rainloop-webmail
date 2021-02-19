@@ -4,7 +4,7 @@ import { HtmlEditor } from 'Common/Html';
 
 import Remote from 'Remote/User/Fetch';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 import { TemplateModel } from 'Model/Template';
 
@@ -34,9 +34,12 @@ class TemplatePopupView extends AbstractViewPopup {
 		this.name.subscribe(() =>  this.nameError(false));
 
 		this.body.subscribe(() => this.bodyError(false));
+
+		decorateKoCommands(this, {
+			addTemplateCommand: self => !self.submitRequest()
+		});
 	}
 
-	@command((self) => !self.submitRequest())
 	addTemplateCommand() {
 		this.populateBodyFromEditor();
 

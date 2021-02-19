@@ -1,6 +1,6 @@
 import PgpStore from 'Stores/User/Pgp';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class AddOpenPgpKeyPopupView extends AbstractViewPopup {
@@ -17,9 +17,12 @@ class AddOpenPgpKeyPopupView extends AbstractViewPopup {
 			this.keyError(false);
 			this.keyErrorMessage('');
 		});
+
+		decorateKoCommands(this, {
+			addOpenPgpKeyCommand: 1
+		});
 	}
 
-	@command()
 	addOpenPgpKeyCommand() {
 		// eslint-disable-next-line max-len
 		const reg = /[-]{3,6}BEGIN[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[-]{3,6}[\s\S]+?[-]{3,6}END[\s]PGP[\s](PRIVATE|PUBLIC)[\s]KEY[\s]BLOCK[-]{3,6}/gi,

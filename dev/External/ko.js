@@ -86,21 +86,8 @@ ko.bindingHandlers.command = {
 	init: (element, fValueAccessor, fAllBindingsAccessor, viewModel, bindingContext) => {
 		const command = fValueAccessor();
 
-		if (!command || !command.isCommand) {
+		if (!command || !command.enabled || !command.canExecute) {
 			throw new Error('Value should be a command');
-		}
-
-		if (!command.enabled) {
-			command.enabled = ko.observable(true);
-		}
-
-		if (!command.canExecute) {
-			const __realCanExecute = command.__realCanExecute;
-			if (isFunction(__realCanExecute)) {
-				command.canExecute = ko.computed(() => command.enabled() && __realCanExecute.call(viewModel, viewModel));
-			} else {
-				command.canExecute = ko.computed(() => command.enabled() && !!__realCanExecute);
-			}
 		}
 
 		element.classList.add('command');

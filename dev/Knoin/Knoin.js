@@ -320,32 +320,27 @@ export function startScreens(screensClasses) {
 	setTimeout(() => $htmlCL.add('rl-started-delay'), 200);
 }
 
-/**
- * @param {Function} canExecute
- * @returns {Function}
- */
-function commandDecorator(canExecute = true) {
-	return (target, key, descriptor) => {
-		if (!key || !key.match(/Command$/)) {
-			throw new Error(`name "${key}" should end with Command suffix`);
-		}
-
-		const value = descriptor.value || descriptor.initializer(),
-			normCanExecute = typeof canExecute === 'function' ? canExecute : () => !!canExecute;
-
-		descriptor.value = function(...args) {
-			if (normCanExecute.call(this, this)) {
-				value.apply(this, args);
+function decorateKoCommands(thisArg, commands) {
+	Object.entries(commands).forEach(([key, canExecute]) => {
+		let command = thisArg[key],
+		fn = function(...args) {
+			if (fn.enabled() && canExecute.call(thisArg, thisArg)) {
+				command.apply(thisArg, args);
 			}
-
 			return false;
 		};
 
-		descriptor.value.__realCanExecute = normCanExecute;
-		descriptor.value.isCommand = true;
+//		fn.__realCanExecute = canExecute;
+//		fn.isCommand = true;
 
-		return descriptor;
-	};
+		fn.enabled = ko.observable(true);
+
+		fn.canExecute = (typeof canExecute === 'function')
+			? ko.computed(() => fn.enabled() && canExecute.call(thisArg, thisArg))
+			: ko.computed(() => fn.enabled() && !!canExecute);
+
+		thisArg[key] = fn;
+	});
 }
 
 /**
@@ -370,7 +365,6 @@ function settingsMenuKeysHandler(items) {
 }
 
 export {
-	commandDecorator,
-	commandDecorator as command,
+	decorateKoCommands,
 	settingsMenuKeysHandler
 };

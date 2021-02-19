@@ -5,7 +5,7 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
 class LoginAdminView extends AbstractViewCenter {
@@ -38,9 +38,12 @@ class LoginAdminView extends AbstractViewCenter {
 
 			passwordError: v => this.formError(!!v)
 		});
+
+		decorateKoCommands(this, {
+			submitCommand: self => !self.submitRequest()
+		});
 	}
 
-	@command((self) => !self.submitRequest())
 	submitCommand() {
 		this.loginError(false);
 		this.passwordError(false);

@@ -8,7 +8,7 @@ import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 import FolderStore from 'Stores/User/Folder';
 import { SieveUserStore } from 'Stores/User/Sieve';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class FilterPopupView extends AbstractViewPopup {
@@ -36,9 +36,12 @@ class FilterPopupView extends AbstractViewPopup {
 		initOnStartOrLangChange(this.populateOptions.bind(this));
 
 		SieveUserStore.capa.subscribe(this.populateOptions, this);
+
+		decorateKoCommands(this, {
+			saveFilterCommand: 1
+		});
 	}
 
-	@command()
 	saveFilterCommand() {
 		if (this.filter()) {
 			if (FilterAction.MoveTo === this.filter().actionType()) {

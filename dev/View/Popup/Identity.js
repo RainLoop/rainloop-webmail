@@ -3,7 +3,7 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 const reEmail = /^[^@\s]+@[^@\s]+$/;
@@ -61,9 +61,11 @@ class IdentityPopupView extends AbstractViewPopup {
 		this.replyTo.valueHasMutated();
 		this.bcc.valueHasMutated();
 */
+		decorateKoCommands(this, {
+			addOrEditIdentityCommand: self => !self.submitRequest()
+		});
 	}
 
-	@command((self) => !self.submitRequest())
 	addOrEditIdentityCommand() {
 		if (this.signature && this.signature.__fetchEditorValue) {
 			this.signature.__fetchEditorValue();

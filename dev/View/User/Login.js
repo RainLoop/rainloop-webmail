@@ -16,7 +16,7 @@ import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Fetch';
 
-import { command, showScreenPopup } from 'Knoin/Knoin';
+import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
 import { Settings } from 'Common/Globals';
@@ -113,13 +113,16 @@ class LoginUserView extends AbstractViewCenter {
 		if (Settings.get('AdditionalLoginError') && !this.submitError()) {
 			this.submitError(Settings.get('AdditionalLoginError'));
 		}
+
+		decorateKoCommands(this, {
+			submitCommand: self => !self.submitRequest()
+		});
 	}
 
 	windowOpenFeatures(wh) {
 		return `left=200,top=100,width=${wh},height=${wh},menubar=no,status=no,resizable=yes,scrollbars=yes`;
 	}
 
-	@command((self) => !self.submitRequest())
 	submitCommand() {
 		this.emailError(false);
 		this.passwordError(false);

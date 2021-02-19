@@ -7,7 +7,7 @@ import { CapaAdminStore } from 'Stores/Admin/Capa';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 
 const settingsGet = rl.settings.get;
 
@@ -75,9 +75,12 @@ export class SecurityAdminSettings {
 		});
 
 		this.onNewAdminPasswordResponse = this.onNewAdminPasswordResponse.bind(this);
+
+		decorateKoCommands(this, {
+			saveNewAdminPasswordCommand: self => self.adminLogin().trim() && self.adminPassword()
+		});
 	}
 
-	@command((self) => self.adminLogin().trim() && self.adminPassword())
 	saveNewAdminPasswordCommand() {
 		if (!this.adminLogin().trim()) {
 			this.adminLoginError(true);

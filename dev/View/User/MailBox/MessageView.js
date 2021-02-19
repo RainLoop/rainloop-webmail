@@ -38,7 +38,7 @@ import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Fetch';
 
-import { command, showScreenPopup, createCommand } from 'Knoin/Knoin';
+import { decorateKoCommands, showScreenPopup, createCommand } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { ComposePopupView } from 'View/Popup/Compose';
@@ -266,29 +266,32 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		addEventListener('mailbox.message-view.toggle-full-screen', () => this.toggleFullScreen());
 
 		this.attachmentPreview = this.attachmentPreview.bind(this);
+
+		decorateKoCommands(this, {
+			closeMessageCommand: 1,
+			messageVisibilityCommand: self => self.messageVisibility(),
+			messageEditCommand: self => self.messageVisibility(),
+			goUpCommand: self => !self.messageListAndMessageViewLoading(),
+			goDownCommand: self => !self.messageListAndMessageViewLoading()
+		});
 	}
 
-	@command()
 	closeMessageCommand() {
 		MessageStore.message(null);
 	}
 
-	@command((self) => self.messageVisibility())
-	messageVisibilityCommand() {} // eslint-disable-line no-empty-function
+	messageVisibilityCommand() {}
 
-	@command((self) => self.messageVisibility())
 	messageEditCommand() {
 		this.editMessage();
 	}
 
-	@command((self) => !self.messageListAndMessageViewLoading())
 	goUpCommand() {
 		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-up',
 			{detail:SettingsStore.usePreviewPane() || !!this.message()} // bForceSelect
 		));
 	}
 
-	@command((self) => !self.messageListAndMessageViewLoading())
 	goDownCommand() {
 		dispatchEvent(new CustomEvent('mailbox.message-list.selector.go-down',
 			{detail:SettingsStore.usePreviewPane() || !!this.message()} // bForceSelect

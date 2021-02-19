@@ -26,7 +26,7 @@ import { EmailModel } from 'Model/Email';
 import { ContactModel } from 'Model/Contact';
 import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty';
 
-import { command, hideScreenPopup } from 'Knoin/Knoin';
+import { decorateKoCommands, hideScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 
@@ -162,21 +162,28 @@ class ContactsPopupView extends AbstractViewPopup {
 				this.watchDirty(true);
 			}
 		});
+
+		decorateKoCommands(this, {
+			newCommand: 1,
+			deleteCommand: self => 0 < self.contactsCheckedOrSelected().length,
+			newMessageCommand: self => 0 < self.contactsCheckedOrSelected().length,
+			clearCommand: 1,
+			saveCommand: self => !self.viewSaving() && !self.viewReadOnly()
+				&& (self.contactHasValidName() || self.viewProperties.find(prop => propertyIsMail(prop) && prop.isValid())),
+			syncCommand: self => !self.contacts.syncing() && !self.contacts.importing()
+		});
 	}
 
-	@command()
 	newCommand() {
 		this.populateViewContact(null);
 		this.currentContact(null);
 	}
 
-	@command((self) => 0 < self.contactsCheckedOrSelected().length)
 	deleteCommand() {
 		this.deleteSelectedContacts();
 		this.emptySelection(true);
 	}
 
-	@command((self) => 0 < self.contactsCheckedOrSelected().length)
 	newMessageCommand() {
 		if (!rl.settings.capa(Capa.Composer)) {
 			return false;
@@ -233,15 +240,10 @@ class ContactsPopupView extends AbstractViewPopup {
 		return true;
 	}
 
-	@command()
 	clearCommand() {
 		this.search('');
 	}
 
-	@command(self =>
-		!self.viewSaving() && !self.viewReadOnly()
-			&& (self.contactHasValidName() || self.viewProperties.find(prop => propertyIsMail(prop) && prop.isValid()))
-	)
 	saveCommand() {
 		this.viewSaving(true);
 		this.viewSaveTrigger(SaveSettingsStep.Animate);
@@ -283,7 +285,6 @@ class ContactsPopupView extends AbstractViewPopup {
 		);
 	}
 
-	@command((self) => !self.contacts.syncing() && !self.contacts.importing())
 	syncCommand() {
 		rl.app.contactsSync((result, data) => {
 			if (StorageResultType.Success !== result || !data || !data.Result) {

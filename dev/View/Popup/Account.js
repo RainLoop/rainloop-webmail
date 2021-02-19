@@ -3,7 +3,7 @@ import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
 
-import { command } from 'Knoin/Knoin';
+import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class AccountPopupView extends AbstractViewPopup {
@@ -29,9 +29,12 @@ class AccountPopupView extends AbstractViewPopup {
 		this.email.subscribe(() => this.emailError(false));
 
 		this.password.subscribe(() => this.passwordError(false));
+
+		decorateKoCommands(this, {
+			addAccountCommand: self => !self.submitRequest()
+		});
 	}
 
-	@command((self) => !self.submitRequest())
 	addAccountCommand() {
 		this.emailError(!this.email().trim());
 		this.passwordError(!this.password().trim());
