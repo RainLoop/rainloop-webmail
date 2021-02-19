@@ -324,7 +324,7 @@ function decorateKoCommands(thisArg, commands) {
 	Object.entries(commands).forEach(([key, canExecute]) => {
 		let command = thisArg[key],
 		fn = function(...args) {
-			if (fn.enabled() && canExecute.call(thisArg, thisArg)) {
+			if (fn.enabled() && fn.canExecute()) {
 				command.apply(thisArg, args);
 			}
 			return false;

@@ -4,7 +4,9 @@
 const
 	doc = document,
 	meta = /Mac OS X/.test(navigator.userAgent) ? 'meta' : 'ctrl',
-	_scopes = {},
+	_scopes = {
+		all: {}
+	},
 	toArray = v => Array.isArray(v) ? v : v.split(/\s*,\s*/),
 
 	keydown = event => {
