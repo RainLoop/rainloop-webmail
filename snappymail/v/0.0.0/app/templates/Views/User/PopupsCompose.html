@@ -1,11 +1,11 @@
 <div class="modal fade b-compose" data-bind="modal: modalVisibility, css: {'loading': saving() || sending()}">
 	<div class="modal-header b-header-toolbar g-ui-user-select-none">
-		<a class="btn btn-large button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
-			<i class="icon-white" data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner big': sending()}"></i>
+		<a class="btn button-send" data-bind="command: sendCommand, tooltipErrorTip: sendErrorDesc, css: {'btn-success': sendButtonSuccess, 'btn-danger': sendError, 'btn-warning': sendSuccessButSaveError }">
+			<i data-bind="css: {'icon-paper-plane': !sending(), 'icon-spinner': sending()}"></i>
 			<span class="hide-mobile" data-i18n="COMPOSE/BUTTON_SEND"></span>
 		</a>
 		<a class="btn button-save" data-bind="visible: allowFolders, command: saveCommand, tooltipErrorTip: savedErrorDesc, css: {'btn-danger': savedError }">
-			<i class="fontastic" data-bind="css: {'icon-spinner': saving(), 'icon-white': savedError()}">💾</i>
+			<i class="fontastic" data-bind="css: {'icon-spinner': saving()}">💾</i>
 			<span class="hide-mobile" data-i18n="GLOBAL/SAVE"></span>
 		</a>
 
@@ -13,7 +13,7 @@
 		<a class="minimize-custom" data-bind="click: skipCommand, tooltip: 'COMPOSE/BUTTON_MINIMIZE'"></a>
 
 		<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
-			<i class="fontastic icon-white">🗑</i>
+			<i class="fontastic">🗑</i>
 		</a>
 		<span class="saved-text hide-mobile" data-bind="text: savedTimeText"></span>
 	</div>
@@ -155,7 +155,7 @@
 											<b data-bind="text: attachmentsCount"></b>
 											&nbsp;&nbsp;
 										</span>
-										<i data-bind="css: { 'icon-attachment': 0 === attachmentsInProcessCount(), 'icon-spinner': 0 < attachmentsInProcessCount(), 'icon-white': 0 < attachmentsInErrorCount() }"></i>
+										<i data-bind="css: { 'icon-attachment': 0 === attachmentsInProcessCount(), 'icon-spinner': 0 < attachmentsInProcessCount()}"></i>
 									</button>
 								</div>
 							</div>
@@ -180,7 +180,27 @@
 					<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
 						<span data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></span>
 					</div>
-					<ul class="attachmentList" data-bind="template: { name: 'ComposeAttachment', foreach: attachments }"></ul>
+					<ul class="attachmentList" data-bind="foreach: attachments">
+						<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
+							<div class="attachmentIconParent">
+								<div class="iconMain">
+									<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass(), visible: !uploading() || 0 === progress()"></i>
+									<i class="attachmentIconText attachmentMainIconText" data-bind="text: iconText(), visible: !uploading() || 0 === progress()"></i>
+								</div>
+								<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
+								<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
+							</div>
+							<div class="attachmentNameParent">
+								<button type="button" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</button>
+								<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+									<span class="attachmentName" data-bind="text: fileName"></span>&nbsp;
+								</div>
+								<div>
+									<span class="attachmentSize" data-bind="text: friendlySize"></span>&nbsp;
+								</div>
+							</div>
+						</li>
+					</ul>
 					<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length">
 						<span data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></span>
 					</div>

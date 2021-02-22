@@ -51,22 +51,11 @@
 
 	.attachmentIconParent {
 
-		position: relative;
-
+		position: absolute;
 		height: 56px;
 		width: 60px;
-
 		background: none;
-
-		.iconPreview, .iconBG, .iconMain, .iconProgress {
-			position: absolute;
-			top: 0;
-			left: 0;
-
-			display: inline-block;
-			width: 100%;
-			height: 100%;
-		}
+		text-align: center;
 
 		.iconProgress {
 			background: #eee;
@@ -75,21 +64,15 @@
 
 		.iconBG {
 			font-size: 18px;
-			text-align: center;
 			color: #999;
 			font-weight: bold;
 			line-height: 55px;
-			text-shadow: 0 1px 0 #fff;
 			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
 		}
 
 		.iconPreview {
 			display: none;
-
-			background: #555;
-			background-image: none;
 			background: rgba(0, 0, 0, .5) !important;
-
 			color: #fff;
 			text-shadow: 0 1px 0 #000;
 		}
@@ -111,19 +94,14 @@
 	}
 
 	.attachmentIcon {
-		margin: 6px 0 0 13px;
+		margin: 6px 0 0;
 		font-size: 36px;
 		width: 36px;
 		height: 36px;
 		color: #aaa;
-	}
 
-	.attachmentIcon  {
 		&.icon-none {
 			display: none;
-		}
-		&.icon-file-certificate {
-			margin-left: 15px;
 		}
 	}
 
@@ -134,7 +112,6 @@
 		height: 56px;
 		color: #aaa;
 		line-height: 56px;
-		text-align: center;
 		font-style: normal;
 	}
 
@@ -146,45 +123,22 @@
 	}
 */
 
-	.attachmentIconParent.hasPreview:hover {
-		.iconPreview {
-			display: inline-block;
-		}
-		.iconMain {
-			display: none;
-		}
-	}
-
-	.attachmentIconParent.hasPreplay:hover {
-		.iconPreview {
-			display: inline-block;
-		}
-		.iconMain {
-			display: none;
-		}
-	}
-
-	.showPreview, .showPreplay {
+	.showPreview, .showPreplay,
+	.attachmentIconParent.hasPreview:hover .iconMain,
+	.attachmentIconParent.hasPreplay:hover .iconMain,
+	.attachmentIconParent.hasPreview .hidePreview,
+	.attachmentIconParent.hasPreplay .hidePreview {
 		display: none;
+	}
+
+	.attachmentIconParent.hasPreview:hover .iconPreview,
+	.attachmentIconParent.hasPreplay:hover .iconPreview {
+		display: inline-block;
+	}
+
+	.attachmentIconParent.hasPreview .showPreview,
+	.attachmentIconParent.hasPreplay .showPreview {
+		display: inline;
 		cursor: pointer;
-	}
-
-	.attachmentIconParent.hasPreview {
-		.showPreview {
-			display: inline;
-		}
-
-		.hidePreview {
-			display: none;
-		}
-	}
-	.attachmentIconParent.hasPreplay {
-		.showPreplay {
-			display: inline;
-		}
-
-		.hidePreview {
-			display: none;
-		}
 	}
 }

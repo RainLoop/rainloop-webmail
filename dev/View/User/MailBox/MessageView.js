@@ -174,7 +174,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			viewFromDkimStatusIconClass:() => {
 				switch (this.viewFromDkimData()[0]) {
 					case 'none':
-						return 'icon-none iconcolor-display-none';
+						return '';
 					case 'pass':
 						return 'icon-ok iconcolor-green';
 					default:

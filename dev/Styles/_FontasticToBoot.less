@@ -19,32 +19,9 @@
 	}
 }
 
-.iconsize20 {
-	font-size: 20px;
-}
-
+/* .b-contacts-content .b-view-content */
 .iconsize24 {
 	font-size: 24px;
-}
-
-/* White icons with optional class, or on hover/active states of certain elements */
-.icon-white,
-.nav > .active > a > [class^="icon-"],
-.nav > .active > a > [class*=" icon-"] {
-	color: #fff;
-}
-
-.g-ui-menu .e-item:hover [class^="icon-"],
-.g-ui-menu .e-item:hover [class*=" icon-"] {
-	color: #fff;
-}
-
-.icon-none {
-	background-image: none !important;
-}
-
-.iconcolor-display-none {
-	display: none;
 }
 
 .iconcolor-green {
@@ -69,25 +46,21 @@
 	border: 3px solid #aaa;
 	border-top-color: #333;
 	border-radius: 100%;
+}
 
-	&.big {
-
-		height: 13px;
-		width: 13px;
-
-		margin: -1px -2px;
+.btn-success .icon-spinner {
+	border-color: #fff;
+	border-top-color: #999;
+	&.animated {
+		border-color: transparent;
+		border-top-color: #fff;
 	}
+}
 
-	&.white, &.icon-white {
-
-		border-color: #fff;
-		border-top-color: #999;
-
-		&.animated {
-			border-color: transparent;
-			border-top-color: #fff;
-		}
-	}
+.btn-large .icon-spinner {
+	height: 13px;
+	width: 13px;
+	margin: -1px -2px;
 }
 
 .icon-spinner:not(.not-animated) {

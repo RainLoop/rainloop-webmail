@@ -5,18 +5,14 @@
 
 // Base classes
 .badge {
-  font-size: @baseFontSize * .846;
-  font-weight: bold;
-  line-height: 14px; // ensure proper line-height if floated
-  color: @white;
-  vertical-align: baseline;
-  white-space: nowrap;
-  text-shadow: 0 -1px 0 rgba(0,0,0,.25);
   background-color: @grayLight;
-}
-.badge {
-  padding: 1px 9px 2px;
   border-radius: 9px;
+  color: @white;
+  font-size: 80%;
+  min-width: 1em;
+  padding: 1px 4px;
+  text-align: center;
+  text-shadow: 0 -1px 0 rgba(0,0,0,.25);
 }
 
 // Hover state, but only for links

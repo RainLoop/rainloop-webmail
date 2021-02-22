@@ -405,13 +405,7 @@ class AppUser extends AbstractApp {
 			prom
 				.then((value) => !!value)
 				.then(callback)
-				.catch(() => {
-					setTimeout(() => {
-						if (callback) {
-							callback(false); // eslint-disable-line callback-return
-						}
-					}, 1);
-				});
+				.catch(() => callback && setTimeout(() => callback(false), 1));
 		}
 	}
 

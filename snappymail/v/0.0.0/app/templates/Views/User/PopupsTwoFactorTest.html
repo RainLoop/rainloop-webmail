@@ -21,7 +21,7 @@
 		</div>
 		<div class="modal-footer">
 			<a class="btn" data-bind="command: testCodeCommand, css: { 'btn-success': true === codeStatus(), 'btn-danger': false === codeStatus() }">
-				<i data-bind="css: {'icon-ok': !testing(), 'icon-spinner': testing(), 'icon-white': true === codeStatus() || false === codeStatus() }"></i>
+				<i data-bind="css: {'icon-ok': !testing(), 'icon-spinner': testing()}"></i>
 				<span data-i18n="GLOBAL/TEST"></span>
 			</a>
 		</div>

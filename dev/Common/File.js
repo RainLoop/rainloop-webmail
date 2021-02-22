@@ -133,7 +133,7 @@ export const FileInfo = {
 	getContentType: fileName => {
 		fileName = fileName.toLowerCase().trim();
 		if ('winmail.dat' === fileName) {
-			return 'application/ms-tnef';
+			return app + 'ms-tnef';
 		}
 		let ext = fileName.split('.').pop();
 		if (/^(txt|text|def|list|in|ini|log|sql|cfg|conf|asc)$/.test(ext))
@@ -171,49 +171,42 @@ export const FileInfo = {
 		let result = FileType.Unknown;
 		const mimeTypeParts = mimeType.split('/'),
 			type = mimeTypeParts[1].replace('x-','').replace('-compressed',''),
-			match = str => type.includes(str);
+			match = str => mimeType.includes(str),
+			archive = /^(zip|7z|tar|rar|gzip|bzip|bzip2)$/;
 
 		switch (true) {
-			case 'image' === mimeTypeParts[0] || ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext):
+			case 'image' == mimeTypeParts[0] || ['png', 'jpg', 'jpeg', 'gif', 'webp'].includes(ext):
 				result = FileType.Image;
 				break;
-			case 'audio' === mimeTypeParts[0] || ['mp3', 'ogg', 'oga', 'wav'].includes(ext):
+			case 'audio' == mimeTypeParts[0] || ['mp3', 'ogg', 'oga', 'wav'].includes(ext):
 				result = FileType.Audio;
 				break;
-			case 'video' === mimeTypeParts[0] || ['mkv', 'avi'].includes(ext):
+			case 'video' == mimeTypeParts[0] || 'mkv' == ext || 'avi' == ext:
 				result = FileType.Video;
 				break;
 			case ['php', 'js', 'css'].includes(ext):
 				result = FileType.Code;
 				break;
-			case 'eml' === ext || ['message/delivery-status', 'message/rfc822'].includes(mimeType):
+			case 'eml' == ext || ['message/delivery-status', 'message/rfc822'].includes(mimeType):
 				result = FileType.Eml;
 				break;
-			case 'text/html' === mimeType || ['html'].includes(ext):
+			case 'text/html' == mimeType || 'html' == ext:
 				result = FileType.Html;
 				break;
-			case 'text' === mimeTypeParts[0] || ['txt', 'log'].includes(ext):
+			case 'text' == mimeTypeParts[0] || 'txt' == ext || 'log' == ext:
 				result = FileType.Text;
 				break;
-			case [
-					'zip',
-					'7z',
-					'tar',
-					'rar',
-					'gzip',
-					'bzip',
-					'bzip2'
-				].includes(type) || ['zip', '7z', 'tar', 'rar', 'gzip', 'bzip', 'bzip2'].includes(ext):
+			case archive.test(type) || archive.test(ext):
 				result = FileType.Archive;
 				break;
 			case 'pdf' == type || 'pdf' == ext:
 				result = FileType.Pdf;
 				break;
-			case ['application/pgp-signature', 'application/pgp-keys'].includes(mimeType) ||
+			case [app+'pgp-signature', app+'pgp-keys'].includes(mimeType) ||
 				['asc', 'pem', 'ppk'].includes(ext):
 				result = FileType.Certificate;
 				break;
-			case ['application/pkcs7-signature'].includes(mimeType) || 'p7s' == ext:
+			case [app+'pkcs7-signature'].includes(mimeType) || 'p7s' == ext:
 				result = FileType.CertificateBin;
 				break;
 			case match(msOffice+'.wordprocessingml') || match(openDoc+'.text') || match('vnd.ms-word')
@@ -228,6 +221,7 @@ export const FileInfo = {
 				break;
 			// no default
 		}
+
 		return cache[key] = result;
 	},
 
@@ -270,10 +264,11 @@ export const FileInfo = {
 				result[0] += '-chart-graph';
 				break;
 			case FileType.Pdf:
-				result['icon-none', 'pdf'];
+				result = ['icon-none', 'pdf'];
 				break;
 			// no default
 		}
+
 		return result;
 	},
 
