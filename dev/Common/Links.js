@@ -26,15 +26,10 @@ export function root(startupUrl = '') {
 /**
  * @returns {string}
  */
-export function rootAdmin() {
-	return Settings.app('adminHostUse') ? ROOT : SERVER_PREFIX + (Settings.app('adminPath') || 'admin');
-}
-
-/**
- * @returns {string}
- */
 export function logoutLink() {
-	return rl.adminArea() ? rootAdmin() : ROOT;
+	return (rl.adminArea() && !Settings.app('adminHostUse'))
+		? SERVER_PREFIX + (Settings.app('adminPath') || 'admin')
+		: ROOT;
 }
 
 /**

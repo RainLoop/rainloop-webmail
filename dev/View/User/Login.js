@@ -20,7 +20,6 @@ import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
 import { Settings } from 'Common/Globals';
-import { rootAdmin } from 'Common/Links';
 
 import { LanguagesPopupView } from 'View/Popup/Languages';
 
@@ -161,8 +160,6 @@ class LoginUserView extends AbstractViewCenter {
 								this.submitRequest(false);
 
 								setTimeout(() => this.querySelector('.inputAdditionalCode').focus(), 100);
-							} else if (oData.Admin) {
-								setTimeout(() => location.href = rootAdmin(), 100);
 							} else {
 								rl.route.reload();
 							}

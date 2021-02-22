@@ -67,7 +67,7 @@ config.paths.js = {
 			'dev/shortcuts.js',
 			'vendors/routes/hasher.js',
 			'vendors/routes/crossroads.js',
-			'vendors/jua/jua.min.js',
+			'vendors/jua/jua.js',
 			'vendors/qr.js/qr.min.js',
 			'vendors/bootstrap/js/bootstrap.native.js',
 			'vendors/knockout/build/output/knockout-latest.js',

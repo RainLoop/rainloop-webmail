@@ -82,173 +82,6 @@
 			}
 		};
 
-
-	/**
-	 * @constructor
-	 * @param {Jua} oJua
-	 * @param {Object} oOptions
-	 */
-	class XHRDriver
-	{
-		constructor(oJua, oOptions)
-		{
-			this.oXhrs = {};
-			this.oUids = {};
-			this.oJua = oJua;
-			this.oOptions = Object.assign({
-				action: '',
-				name: 'juaFile',
-				hidden: {},
-				disableMultiple: false
-			}, oOptions);
-		}
-
-		/**
-		 * @param {string} sUid
-		 */
-		regTaskUid(sUid)
-		{
-			this.oUids[sUid] = true;
-		}
-
-		/**
-		 * @param {string} sUid
-		 * @param {?} oFileInfo
-		 */
-		uploadTask(sUid, oFileInfo)
-		{
-			if (false === this.oUids[sUid] || !oFileInfo || !oFileInfo['File'])
-			{
-				return false;
-			}
-
-			try
-			{
-				const
-					self = this,
-					oXhr = new XMLHttpRequest(),
-					oFormData = new FormData(),
-					sAction = this.oOptions.action,
-					aHidden = this.oOptions.hidden,
-					fStartFunction = this.oJua.getEvent('onStart'),
-					fProgressFunction = this.oJua.getEvent('onProgress')
-				;
-
-				oXhr.open('POST', sAction, true);
-
-				if (fProgressFunction && oXhr.upload)
-				{
-					oXhr.upload.onprogress = oEvent => {
-						if (oEvent && oEvent.lengthComputable && defined(oEvent.loaded) && defined(oEvent.total))
-						{
-							fProgressFunction(sUid, oEvent.loaded, oEvent.total);
-						}
-					};
-				}
-
-				oXhr.onreadystatechange = () => {
-					if (4 === oXhr.readyState)
-					{
-						delete self.oXhrs[sUid];
-						let bResult = false,
-							oResult = null;
-						if (200 === oXhr.status)
-						{
-							try
-							{
-								oResult = JSON.parse(oXhr.responseText);
-								bResult = true;
-							}
-							catch (e)
-							{
-								console.error(e);
-							}
-						}
-						this.oJua.getEvent('onComplete')(sUid, bResult, bResult ? oResult : null);
-					}
-				};
-
-				fStartFunction && fStartFunction(sUid);
-
-				oFormData.append(this.oOptions.name, oFileInfo['File']);
-				Object.entries(aHidden).forEach(([key, value]) =>
-					oFormData.append(key, (typeof value === "function" ? value(oFileInfo) : value).toString())
-				);
-
-				oXhr.send(oFormData);
-
-				this.oXhrs[sUid] = oXhr;
-				return true;
-			}
-			catch (oError)
-			{
-				console.error(oError)
-			}
-
-			return false;
-		}
-
-		generateNewInput(oClickElement)
-		{
-			if (oClickElement)
-			{
-				const self = this,
-					oInput = doc.createElement('input'),
-					onClick = ()=>oInput.click();
-
-				oInput.type = 'file';
-				oInput.tabIndex = -1;
-				oInput.style.display = 'none';
-				oInput.multiple = !self.oOptions.disableMultiple;
-
-				oClickElement.addEventListener('click', onClick);
-
-				oInput.addEventListener('input', () => {
-					const fFileCallback = oFile => {
-						self.oJua.addNewFile(oFile);
-						setTimeout(() => {
-							oInput.remove();
-							oClickElement.removeEventListener('click', onClick);
-							self.generateNewInput(oClickElement);
-						}, 10);
-					};
-					if (oInput.files && oInput.files.length) {
-						getDataFromFiles(oInput.files, fFileCallback,
-							self.oOptions.multipleSizeLimit,
-							self.oJua.getEvent('onLimitReached')
-						);
-					} else {
-						fFileCallback({
-							'FileName': oInput.value.split('\\').pop().split('/').pop(),
-							'Size': null,
-							'Type': null,
-							'Folder': '',
-							'File' : null
-						});
-					}
-				});
-			}
-		}
-
-		cancel(sUid)
-		{
-			this.oUids[sUid] = false;
-			if (this.oXhrs[sUid])
-			{
-				try
-				{
-					this.oXhrs[sUid].abort && this.oXhrs[sUid].abort();
-				}
-				catch (oError)
-				{
-					console.error(oError);
-				}
-
-				delete this.oXhrs[sUid];
-			}
-		}
-	}
-
 	class Queue extends Array
 	{
 		constructor(limit) {
@@ -294,6 +127,10 @@
 			};
 
 			oOptions = Object.assign({
+				action: '',
+				name: 'juaFile',
+				hidden: {},
+				disableMultiple: false,
 				queueSize: 10,
 				clickElement: null,
 				dragAndDropElement: null,
@@ -302,9 +139,10 @@
 				multipleSizeLimit: iDefLimit
 			}, oOptions || {});
 
+			self.oXhrs = {};
+			self.oUids = {};
+			self.oOptions = oOptions;
 			self.oQueue = new Queue(oOptions.queueSize);
-
-			self.oDriver = new XHRDriver(self, oOptions);
 
 			let el = oOptions.clickElement;
 			if (el) {
@@ -314,7 +152,7 @@
 					el.style.display = 'inline-block';
 				}
 
-				self.oDriver.generateNewInput(el);
+				self.generateNewInput(el);
 			}
 
 			el = oOptions.dragAndDropElement;
@@ -459,14 +297,6 @@
 		}
 
 		/**
-		 * @param {string} sUid
-		 */
-		cancel(sUid)
-		{
-			this.oDriver.cancel(sUid);
-		}
-
-		/**
 		 * @param {Object} oFileInfo
 		 */
 		addNewFile(oFileInfo)
@@ -483,12 +313,152 @@
 			const fOnSelect = this.getEvent('onSelect');
 			if (oFileInfo && (!fOnSelect || (false !== fOnSelect(sUid, oFileInfo))))
 			{
-				this.oDriver.regTaskUid(sUid);
-				this.oQueue.push((...args) => this.oDriver.uploadTask(...args), sUid, oFileInfo);
+				this.oUids[sUid] = true;
+				this.oQueue.push((...args) => this.uploadTask(...args), sUid, oFileInfo);
 			}
 			else
 			{
-				this.oDriver.cancel(sUid);
+				this.cancel(sUid);
+			}
+		}
+
+		/**
+		 * @param {string} sUid
+		 * @param {?} oFileInfo
+		 */
+		uploadTask(sUid, oFileInfo)
+		{
+			if (false === this.oUids[sUid] || !oFileInfo || !oFileInfo['File'])
+			{
+				return false;
+			}
+
+			try
+			{
+				const
+					self = this,
+					oXhr = new XMLHttpRequest(),
+					oFormData = new FormData(),
+					sAction = this.oOptions.action,
+					aHidden = this.oOptions.hidden,
+					fStartFunction = this.getEvent('onStart'),
+					fProgressFunction = this.getEvent('onProgress')
+				;
+
+				oXhr.open('POST', sAction, true);
+
+				if (fProgressFunction && oXhr.upload)
+				{
+					oXhr.upload.onprogress = oEvent => {
+						if (oEvent && oEvent.lengthComputable && defined(oEvent.loaded) && defined(oEvent.total))
+						{
+							fProgressFunction(sUid, oEvent.loaded, oEvent.total);
+						}
+					};
+				}
+
+				oXhr.onreadystatechange = () => {
+					if (4 === oXhr.readyState)
+					{
+						delete self.oXhrs[sUid];
+						let bResult = false,
+							oResult = null;
+						if (200 === oXhr.status)
+						{
+							try
+							{
+								oResult = JSON.parse(oXhr.responseText);
+								bResult = true;
+							}
+							catch (e)
+							{
+								console.error(e);
+							}
+						}
+						this.getEvent('onComplete')(sUid, bResult, bResult ? oResult : null);
+					}
+				};
+
+				fStartFunction && fStartFunction(sUid);
+
+				oFormData.append(this.oOptions.name, oFileInfo['File']);
+				Object.entries(aHidden).forEach(([key, value]) =>
+					oFormData.append(key, (typeof value === "function" ? value(oFileInfo) : value).toString())
+				);
+
+				oXhr.send(oFormData);
+
+				this.oXhrs[sUid] = oXhr;
+				return true;
+			}
+			catch (oError)
+			{
+				console.error(oError)
+			}
+
+			return false;
+		}
+
+		generateNewInput(oClickElement)
+		{
+			if (oClickElement)
+			{
+				const self = this,
+					oInput = doc.createElement('input'),
+					onClick = ()=>oInput.click();
+
+				oInput.type = 'file';
+				oInput.tabIndex = -1;
+				oInput.style.display = 'none';
+				oInput.multiple = !self.oOptions.disableMultiple;
+
+				oClickElement.addEventListener('click', onClick);
+
+				oInput.addEventListener('input', () => {
+					const fFileCallback = oFile => {
+						self.addNewFile(oFile);
+						setTimeout(() => {
+							oInput.remove();
+							oClickElement.removeEventListener('click', onClick);
+							self.generateNewInput(oClickElement);
+						}, 10);
+					};
+					if (oInput.files && oInput.files.length) {
+						getDataFromFiles(oInput.files, fFileCallback,
+							self.oOptions.multipleSizeLimit,
+							self.getEvent('onLimitReached')
+						);
+					} else {
+						fFileCallback({
+							'FileName': oInput.value.split('\\').pop().split('/').pop(),
+							'Size': null,
+							'Type': null,
+							'Folder': '',
+							'File' : null
+						});
+					}
+				});
+			}
+		}
+
+		/**
+		 * @param {string} sUid
+		 */
+		cancel(sUid)
+		{
+			this.oUids[sUid] = false;
+			if (this.oXhrs[sUid])
+			{
+				try
+				{
+					this.oXhrs[sUid].abort && this.oXhrs[sUid].abort();
+				}
+				catch (oError)
+				{
+					console.error(oError);
+				}
+
+				delete this.oXhrs[sUid];
 			}
 		}
 	}
