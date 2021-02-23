@@ -47,7 +47,24 @@ const
 	findEmailAndLinks = html => html
 		.replace(url, '$1<a href="$2" target="_blank">$2</a>')
 		.replace(email, '$1<a href="mailto:$2">$2</a>'),
-	isChecked = item => item.checked();
+	isChecked = item => item.checked(),
+
+	// Removes background and color
+	// Many e-mails incorrectly only define one, not both
+	// And in dark theme mode this kills the readability
+	removeColors = html => {
+		let l;
+		do {
+			l = html.length;
+			html = html
+				.replace(/(<[^>]+);?background(-color)?\s*:[^;"']+/gi, '$1')
+				.replace(/(<[^>]+[^-]);?color\s*:[^;"']+/gi, '$1')
+				.replace(/(<[^>]+[^-])\sbgcolor="[^"]+"/gi, '$1')
+				.replace(/(<[^>]+[^-])\scolor="[^"]+"/gi, '$1');
+			//.replace(/<\/?font[^>]+>/gmi, '')
+		} while (l != html.length)
+		return html;
+	};
 
 doc.body.append(hcont);
 
@@ -499,12 +516,13 @@ class MessageUserStore {
 						message.fetchDataFromDom();
 						messagesDom.append(textBody);
 					} else {
-						let isHtml = false;
-						if (json.Html) {
-							isHtml = true;
+						let isHtml = !!json.Html;
+						if (isHtml) {
 							resultHtml = json.Html.toString();
+							if (SettingsStore.removeColors()) {
+								resultHtml = removeColors(resultHtml);
+							}
 						} else if (json.Plain) {
-							isHtml = false;
 							resultHtml = plainToHtml(json.Plain.toString());
 
 							if ((message.isPgpSigned() || message.isPgpEncrypted()) && PgpStore.capaOpenPGP()) {
@@ -534,7 +552,6 @@ class MessageUserStore {
 								resultHtml = '<pre>' + resultHtml + '</pre>';
 							}
 						} else {
-							isHtml = false;
 							resultHtml = '<pre>' + resultHtml + '</pre>';
 						}
 
@@ -552,7 +569,7 @@ class MessageUserStore {
 
 						message.body = body;
 
-						message.isHtml(!!isHtml);
+						message.isHtml(isHtml);
 						message.hasImages(!!json.HasExternals);
 
 						messagesDom.append(body);

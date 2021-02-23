@@ -1079,6 +1079,7 @@ class Actions
 
 			// user
 			'ShowImages' => (bool) $oConfig->Get('defaults', 'show_images', false),
+			'RemoveColors' => (bool) $oConfig->Get('defaults', 'remove_colors', false),
 			'MPP' => (int) $oConfig->Get('webmail', 'messages_per_page', 25),
 			'SoundNotification' => false,
 			'DesktopNotifications' => false,
@@ -1237,6 +1238,7 @@ class Actions
 
 					$aResult['EditorDefaultType'] = (string)$oSettings->GetConf('EditorDefaultType', $aResult['EditorDefaultType']);
 					$aResult['ShowImages'] = (bool)$oSettings->GetConf('ShowImages', $aResult['ShowImages']);
+					$aResult['RemoveColors'] = (bool)$oSettings->GetConf('RemoveColors', $aResult['RemoveColors']);
 					$aResult['ContactsAutosave'] = (bool)$oSettings->GetConf('ContactsAutosave', $aResult['ContactsAutosave']);
 					$aResult['MPP'] = (int)$oSettings->GetConf('MPP', $aResult['MPP']);
 					$aResult['SoundNotification'] = (bool)$oSettings->GetConf('SoundNotification', $aResult['SoundNotification']);

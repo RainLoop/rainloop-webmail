@@ -27,6 +27,7 @@ class SettingsUserStore {
 
 		ko.addObservablesTo(this, {
 			showImages: false,
+			removeColors: false,
 			useCheckboxesInList: true,
 			allowDraftAutosave: true,
 			useThreads: false,
@@ -58,6 +59,7 @@ class SettingsUserStore {
 		this.messagesPerPage(settingsGet('MPP'));
 
 		this.showImages(!!settingsGet('ShowImages'));
+		this.removeColors(!!settingsGet('RemoveColors'));
 		this.useCheckboxesInList(!!(ThemeStore.isMobile() || settingsGet('UseCheckboxesInList')));
 		this.allowDraftAutosave(!!settingsGet('AllowDraftAutosave'));
 		this.useThreads(!!settingsGet('UseThreads'));

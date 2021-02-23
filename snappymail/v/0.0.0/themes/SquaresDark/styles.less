@@ -1,7 +1,7 @@
 
 :root {
 	// MAIN
-	--main-color: #333;
+	--main-color: #fff;
 	--main-bg-color: #48525C;
 	--main-bg-image: url("@{base}images/background.jpg");
 
@@ -48,6 +48,105 @@
 }
 
 .thm-message-list-top-toolbar, .thm-message-list-bottom-toolbar {
-    background-image: linear-gradient(to bottom, #f4f4f4, #dfdfdf) !important;
+    background-image: linear-gradient(to bottom,#444,#111) !important;
     background-repeat: repeat-x !important;
+	color: #fff;
+}
+
+.btn:not(.btn-success):not(.btn-warning):not(.btn-danger) {
+	border-color: rgba(255,255,255,.15) rgba(255,255,255,.15) rgba(255,255,255,.25);
+	box-shadow: inset 0 1px 0 rgba(0,0,0,.2), 0 1px 2px rgba(255,255,255,.05);
+	color: #fff;
+	text-shadow: 0 -1px 0 rgba(255,255,255,.25);
+	background-color: #000;
+}
+.btn:not(.btn-success):not(.btn-warning):not(.btn-danger).active, .btn:not(.btn-success):not(.btn-warning):not(.btn-danger):active {
+	box-shadow: inset 0 2px 4px rgba(255,255,255,.5), 0 1px 2px rgba(255,255,255,.25);
+}
+.btn .icon-spinner {
+    border-color: #333;
+    border-top-color: #aaa;
+}
+.btn .caret {
+	border-top-color: #fff;
+}
+
+.messageList .b-message-list-wrapper {
+	border-color: #555;
+}
+
+.modal,
+.b-settins-right .b-content,
+.messageList .b-content,
+.messageView .b-content {
+	background-color: #000;
+	border-color: #555;
+	color: #fff;
+}
+
+.legend,
+.modal-header, .modal-footer,
+.table td, .table th {
+	border-color: #555;
+}
+
+.legend,
+.b-compose .b-header .e-identity,
+.messageView .b-content .messageItem {
+	color: #fff;
+}
+
+.b-compose .b-header,
+.squire-toolbar,
+.b-themes-list .e-item {
+	background-color: #222;
+	color: #fff;
+}
+
+.g-ui-link,
+.messageView .b-content .messageItemHeader .informationShort a,
+.messageView .b-content .messageItem .bodyText .b-text-part a {
+	color: #6AE;
+}
+
+.messageView .b-content .messageItemHeader,
+.messageView .b-content .messageItem .pgpEncrypted,
+.messageView .b-content .messageItem .pgpSigned,
+.messageView .b-content .messageItem .readReceipt,
+.messageView .b-content .messageItem .showImages,
+.messageView .b-content .messageItem .attachmentsPlace {
+	background-color: #222;
+	border-bottom-color: #444;
+}
+
+.messageList .b-content .messageListItem {
+	background-color: #111;
+	border-left-color: #111;
+    color: #EEE;
+}
+
+.messageList .b-content .messageListItem.focused,
+#rl-popups .b-languages-content .lang-item {
+	background-color: #222;
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th,
+#rl-popups .b-languages-content .lang-item:hover {
+	background-color: #333;
+}
+
+.messageList .b-content .messageListItem.hasUnseenSubMessage,
+.messageList .b-content .messageListItem.unseen,
+#rl-popups .b-languages-content .lang-item.user {
+    background-color: #220;
+}
+
+.messageList .b-content .messageListItem.selected {
+    background-color: #345;
+}
+
+.b-themes-list .e-item.selected,
+#rl-popups .b-languages-content .lang-item.selected {
+	background-color: #020;
 }

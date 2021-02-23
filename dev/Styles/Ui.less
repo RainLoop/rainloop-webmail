@@ -70,20 +70,23 @@
 	.e-page {
 
 		display: inline-block;
-		color: #999;
+		opacity: 0.5;
 		text-decoration: none;
 		font-size: 22px;
 		padding: 3px;
 		cursor: pointer;
 
-		&:hover .e-page-number {
-			color: #555;
+		&:hover {
+			opacity: 0.8;
+		}
+
+		&.current {
+			opacity: 1;
 		}
 
 		&.current .e-page-number {
-			font-size: 25px;
-			color: #333;
-			border-bottom: 2px solid #000;
+			font-size: 115%;
+			text-decoration: underline;
 		}
 	}
 }

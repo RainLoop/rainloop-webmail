@@ -300,8 +300,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 	detectDomBackgroundColor(dom) {
 		let color = '';
-
-		if (dom) {
+		if (dom && !SettingsStore.removeColors()) {
 			let limit = 5,
 				aC = dom;
 			while (!color && aC && limit--) {
@@ -317,7 +316,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 			color = isTransparent(color) ? '' : color;
 		}
-
 		return color;
 	}
 

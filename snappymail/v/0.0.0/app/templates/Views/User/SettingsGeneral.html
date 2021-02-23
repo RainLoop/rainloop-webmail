@@ -85,7 +85,14 @@
 						value: showImages
 					}
 				}"></div>
-				<div class="hide-mobile" data-bind="component: {
+				<div data-bind="component: {
+					name: 'Checkbox',
+					params: {
+						label: 'SETTINGS_GENERAL/LABEL_REMOVE_COLORS',
+						value: removeColors
+					}
+				}"></div>
+				<div data-bind="component: {
 					name: 'Checkbox',
 					params: {
 						label: 'SETTINGS_GENERAL/LABEL_USE_CHECKBOXES_IN_LIST',

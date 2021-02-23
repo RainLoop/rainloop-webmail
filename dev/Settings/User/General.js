@@ -39,6 +39,7 @@ export class GeneralUserSettings {
 		this.isDesktopNotificationDenied = NotificationStore.isDesktopNotificationDenied;
 
 		this.showImages = SettingsStore.showImages;
+		this.removeColors = SettingsStore.removeColors;
 		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
 		this.threadsAllowed = AppStore.threadsAllowed;
 		this.useThreads = SettingsStore.useThreads;
@@ -125,6 +126,7 @@ export class GeneralUserSettings {
 			this.editorDefaultType.subscribe(Remote.saveSettingsHelper('EditorDefaultType', null, f0));
 			this.messagesPerPage.subscribe(Remote.saveSettingsHelper('MPP', null, f1));
 			this.showImages.subscribe(Remote.saveSettingsHelper('ShowImages', v=>v?'1':'0'));
+			this.removeColors.subscribe(Remote.saveSettingsHelper('RemoveColors', v=>v?'1':'0'));
 
 			this.useCheckboxesInList.subscribe(Remote.saveSettingsHelper('UseCheckboxesInList', v=>v?'1':'0'));
 
