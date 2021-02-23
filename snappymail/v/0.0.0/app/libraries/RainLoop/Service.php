@@ -226,20 +226,15 @@ class Service
 		$LoadingDescription = $oConfig->Get('webmail', 'loading_description', 'SnappyMail');
 
 		$aTemplateParameters = array(
-			'{{BaseAppHeadScriptLink}}' => '',
-			'{{BaseAppBodyScript}}' => '',
 			'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
 			'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
 			'{{BaseAppMainCssLink}}' => $this->staticPath('css/'.($bAdmin ? 'admin' : 'app').($bAppCssDebug ? '' : '.min').'.css'),
 			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($sTheme, $bAdmin),
-			'{{BaseAppPolyfillsScriptLink}}' => '',
 			'{{BaseAppBootScriptLink}}' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'boot'.($bAppJsDebug ? '' : '.min').'.js'),
 			'{{BaseAppBootScript}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js/min/boot.min.js'),
-			'{{BaseContentSecurityPolicy}}' => '',
 			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
 			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),
 			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot.min.css'),
-			'{{BaseCssClass}}' => '',
 			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8'),
 			'{{BaseAppAdmin}}' => $bAdmin ? 1 : 0
 		);

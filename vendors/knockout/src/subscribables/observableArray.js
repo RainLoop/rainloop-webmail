@@ -32,22 +32,6 @@ ko.observableArray['fn'] = {
             this.valueHasMutated();
         }
         return removedValues;
-    },
-
-    'removeAll': function (arrayOfValues) {
-        // If you passed zero args, we remove everything
-        if (arrayOfValues === undefined) {
-            var underlyingArray = this.peek();
-            var allValues = underlyingArray.slice(0);
-            this.valueWillMutate();
-            underlyingArray.splice(0, underlyingArray.length);
-            this.valueHasMutated();
-            return allValues;
-        }
-        // If you passed an arg, we interpret it as an array of entries to remove
-        if (!arrayOfValues)
-            return [];
-        return this['remove'](value => arrayOfValues.includes(value));
     }
 };
 

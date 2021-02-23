@@ -1,4 +1,4 @@
-var arrayChangeEventName = 'arrayChange';
+const arrayChangeEventName = 'arrayChange';
 ko.extenders['trackArrayChanges'] = (target, options) => {
     // Use the provided options--each call to trackArrayChanges overwrites the previously set options
     target.compareArrayOptions = {};

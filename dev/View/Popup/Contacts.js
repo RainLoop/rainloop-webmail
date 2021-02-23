@@ -72,22 +72,6 @@ class ContactsPopupView extends AbstractViewPopup {
 
 		this.viewProperties = ko.observableArray();
 
-/*
-		// Somehow this is broken now when calling addNewProperty
-		const fFastClearEmptyListHelper = list => {
-			if (list && list.length) {
-				this.viewProperties.removeAll(list);
-				delegateRunOnDestroy(list);
-			}
-		};
-		this.addSubscribables({
-			viewPropertiesEmailsEmptyAndOnFocused: fFastClearEmptyListHelper,
-			viewPropertiesPhonesEmptyAndOnFocused: fFastClearEmptyListHelper,
-			viewPropertiesWebEmptyAndOnFocused: fFastClearEmptyListHelper,
-			viewPropertiesOtherEmptyAndOnFocused: fFastClearEmptyListHelper
-		});
-*/
-
 		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
 
 		this.selector = new Selector(
@@ -135,12 +119,7 @@ class ContactsPopupView extends AbstractViewPopup {
 			viewPropertiesPhones: () => this.viewProperties.filter(property => property.isType(ContactPropertyType.Phone)),
 
 			contactHasValidName: () => !!this.viewProperties.find(prop => propertyIsName(prop) && prop.isValid()),
-/*
-			viewPropertiesEmailsEmptyAndOnFocused: () => this.viewPropertiesEmails().filter(propertyFocused),
-			viewPropertiesPhonesEmptyAndOnFocused: () => this.viewPropertiesPhones().filter(propertyFocused),
-			viewPropertiesWebEmptyAndOnFocused: () => this.viewPropertiesWeb().filter(propertyFocused),
-			viewPropertiesOtherEmptyAndOnFocused: () => this.viewPropertiesOther().filter(propertyFocused),
-*/
+
 			contactsCheckedOrSelected: () => {
 				const checked = this.contacts.filter(item => item.checked && item.checked()),
 					selected = this.currentContact();

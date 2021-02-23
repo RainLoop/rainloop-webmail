@@ -26,28 +26,10 @@ const
 	SquireDefaultConfig = {
 /*
 		blockTag: 'P',
-		blockAttributes: null,
-		tagAttributes: {
-			blockquote: null,
-			ul: null,
-			ol: null,
-			li: null,
-			a: null
-		},
-		classNames: {
-			colour: 'colour',
-			fontFamily: 'font',
-			fontSize: 'size',
-			highlight: 'highlight'
-		},
-		leafNodeNames: leafNodeNames,
 		undo: {
 			documentSizeThreshold: -1, // -1 means no threshold
 			undoLimit: -1 // -1 means no limit
 		},
-		isInsertedHTMLSanitized: true,
-		isSetHTMLSanitized: true,
-		willCutCopy: null,
 		addLinks: true // allow_smart_html_links
 */
 		sanitizeToDOMFragment: (html, isPaste/*, squire*/) => {
@@ -179,22 +161,22 @@ class SquireUI
 								Georgia: "'URW Palladio L', Georgia, Times, serif"
 							}
 						},
-						cmd: s => squire.setFontFace(s.value)
+						cmd: s => squire.setStyle({ fontFamily: s.value })
 					},
 					fontSize: {
 						select: ['11px','13px','16px','20px','24px','30px'],
-						cmd: s => squire.setFontSize(s.value)
+						cmd: s => squire.setStyle({ fontSize: s.value })
 					}
 				},
 				colors: {
 					textColor: {
 						html: 'A<sub>▾</sub>',
-						cmd: doClr('setTextColour'),
+						cmd: doClr('setTextColor'),
 						hint: 'Text color'
 					},
 					backgroundColor: {
 						html: '🎨', /* ▧ */
-						cmd: doClr('setHighlightColour'),
+						cmd: doClr('setBackgroundColor'),
 						hint: 'Background color'
 					},
 				},
@@ -215,37 +197,37 @@ class SquireUI
 				inline: {
 					bold: {
 						html: 'B',
-						cmd: () => this.doAction('bold','B'),
+						cmd: () => this.doAction('bold'),
 						key: 'B',
 						hint: 'Bold'
 					},
 					italic: {
 						html: 'I',
-						cmd: () => this.doAction('italic','I'),
+						cmd: () => this.doAction('italic'),
 						key: 'I',
 						hint: 'Italic'
 					},
 					underline: {
 						html: '<u>U</u>',
-						cmd: () => this.doAction('underline','U'),
+						cmd: () => this.doAction('underline'),
 						key: 'U',
 						hint: 'Underline'
 					},
 					strike: {
 						html: '<s>S</s>',
-						cmd: () => this.doAction('strikethrough','S'),
+						cmd: () => this.doAction('strikethrough'),
 						key: 'Shift + 7',
 						hint: 'Strikethrough'
 					},
 					sub: {
 						html: 'Xₙ',
-						cmd: () => this.doAction('subscript','SUB'),
+						cmd: () => this.doAction('subscript'),
 						key: 'Shift + 5',
 						hint: 'Subscript'
 					},
 					sup: {
 						html: 'Xⁿ',
-						cmd: () => this.doAction('superscript','SUP'),
+						cmd: () => this.doAction('superscript'),
 						key: 'Shift + 6',
 						hint: 'Superscript'
 					}
@@ -470,11 +452,9 @@ class SquireUI
 		};
 	}
 
-	doAction(name, tag) {
-		if (this.testPresenceinSelection(tag, new RegExp('>'+tag+'\\b'))) {
-			name = 'remove' + (name.toUpperCase()[0]) + name.substr(1);
-		}
+	doAction(name) {
 		this.squire[name]();
+		this.squire.focus();
 	}
 
 	getParentNodeName(selector) {
