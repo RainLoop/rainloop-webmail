@@ -264,9 +264,9 @@
 										<div class="attachmentsPlace" data-bind="visible: message() && message().attachments().hasVisible(),
 											css: {'selection-mode' : showAttachmnetControls, 'unselectedAttachmentsError': highlightUnselectedAttachments}">
 											<ul class="attachmentList" data-bind="foreach: message() ? message().attachments() : []">
-												<li class="attachmentItem clearfix" draggable="true"
+												<li class="attachmentItem" draggable="true"
 														data-bind="visible: !isLinked, event: { 'dragstart': eventDragStart }, attr: { 'title': fileName }, css: {'checked': checked}">
-													<div class="attachmentIconParent pull-left" data-bind="css: { 'hasPreview': hasPreview(), 'hasPreplay': hasPreplay(), 'isImage': isImage() }">
+													<div class="attachmentIconParent" data-bind="css: { 'hasPreview': hasPreview(), 'hasPreplay': hasPreplay(), 'isImage': isImage() }">
 														<div class="hidePreview">
 															<div class="iconMain">
 																<i class="attachmentIcon attachmentMainIcon" data-bind="css: iconClass()"></i>
@@ -291,12 +291,8 @@
 														</div>
 													</div>
 													<div class="attachmentNameParent">
-														<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
-															<span class="attachmentName" data-bind="text: fileName"></span>&nbsp;
-														</div>
-														<div>
-															<span class="attachmentSize" data-bind="text: friendlySize"></span>&nbsp;
-														</div>
+														<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" class="attachmentName" data-bind="text: fileName"></div>
+														<div class="attachmentSize" data-bind="text: friendlySize"></div>
 													</div>
 													<div class="checkboxAttachment fontastic"
 															data-bind="text: checked() ? '☑' : '☐',
