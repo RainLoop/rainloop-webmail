@@ -92,7 +92,7 @@ ko.bindingHandlers.dragmessages = {
 			dragImage || (dragImage = elementById('messagesDragImage'));
 			if (data && dragImage && !ThemeStore.isMobile()) {
 				dragImage.querySelector('.text').textContent = data.uids.length;
-				let img = dragImage.querySelector('.icon-white');
+				let img = dragImage.querySelector('i');
 				img.classList.toggle('icon-copy', e.ctrlKey);
 				img.classList.toggle('icon-mail', !e.ctrlKey);
 

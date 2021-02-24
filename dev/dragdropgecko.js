@@ -93,7 +93,7 @@
 			if (dragSource) {
 				// get ready to start dragging
 				lastTouch = e;
-				e.preventDefault(); // prevent scrolling NOTE: this creates a bug that click will not work
+//				dragSource.style.userSelect = 'none';
 
 				// 1000 ms to wait, chrome on android triggers dragstart in 600
 				holdInterval = setTimeout(() => {
@@ -130,10 +130,6 @@
 
 	touchend = e => {
 		if (dragSource) {
-			if (!isDragging) {
-				// touched the element but didn't drag, so simulate a click
-				dispatchEvent(lastTouch, 'click', e.target);
-			}
 			// finish dragging
 			allowDrop && 'touchcancel' !== e.type && dispatchEvent(lastTouch, 'drop', lastTarget);
 			reset();
