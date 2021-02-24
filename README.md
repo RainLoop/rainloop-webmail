@@ -50,6 +50,7 @@ This fork of RainLoop has the following changes:
 * PHP mbstring extension required
 * PHP replaced pclZip with ZipArchive
 * PHP yaml extension else use the old Spyc
+* Added option to remove background/font colors from messages for real "dark mode"
 * Removed BackwardCapability (class \RainLoop\Account)
 * Removed ChangePassword (plugins won't work)
 * Removed OAuth support
@@ -114,25 +115,25 @@ RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|  110.918	|
-|app.js          	|4.215.733	|  519.708	|
+|admin.js        	|2.158.025	|  110.619	|
+|app.js          	|4.215.733	|  518.526	|
 |boot.js         	|  672.433	|    4.726	|
-|libs.js         	|  647.679	|  227.110	|
+|libs.js         	|  647.679	|  227.892	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  875.589	|
+|TOTAL           	|8.019.778	|  862.048	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   56.127	| 73.899	| 16.069	| 60.674 	| 14.274	|
-|app.min.js      	|  516.000	|  253.025	|140.430	| 73.063	|110.657 	| 61.430	|
+|admin.min.js    	|  255.514	|   55.984	| 73.899	| 16.023	| 60.674 	| 14.249	|
+|app.min.js      	|  516.000	|  252.837	|140.430	| 73.022	|110.657 	| 61.387	|
 |boot.min.js     	|   66.456	|    2.525	| 22.553	|  1.391	| 20.043 	|  1.201	|
-|libs.min.js     	|  574.626	|  119.817	|177.280	| 43.974	|151.855 	| 39.127	|
+|libs.min.js     	|  574.626	|  115.808	|177.280	| 42.810	|151.855 	| 38.115	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072 	|      0	|
-|TOTAL           	|1.445.204	|  431.494	|425.477	|134.497	|353.301 	|116.032	|
-|TOTAL (no admin)	|1.189.690	|  375.474	|351.061	|118.428	|292.627 	|101.758	|
+|TOTAL           	|1.445.204	|  427.154	|425.477	|133.246	|353.301 	|114.952	|
+|TOTAL (no admin)	|1.189.690	|  371.170	|351.061	|117.223	|292.627 	|100.703	|
 
-For a user its around 65% smaller and faster than traditional RainLoop.
+For a user its around 66% smaller and faster than traditional RainLoop.
 
 ### CSS changes
 
@@ -164,12 +165,12 @@ For a user its around 65% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|-------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 115.927	| 46,959	| 19.501	| 16.699	|
-|app.min.css 	| 274.791	|  96.071	| 39.618	| 17.475	| 15.295	|
-|boot.css    	|       	|   2.066	|       	|    795	|    630	|
-|boot.min.css	|       	|   1.696	|       	|    707	|    555	|
-|admin.css    	|       	|  53.966	|       	| 10.376	|  9.070	|
-|admin.min.css	|       	|  43.137	|       	|  9.126	|  8.133	|
+|app.css     	| 340.334	| 114.202	| 46,959	| 19.376	| 16.602	|
+|app.min.css 	| 274.791	|  94.773	| 39.618	| 17.443	| 15.286	|
+|boot.css    	|       	|   2.066	|       	|    913	|    742	|
+|boot.min.css	|       	|   1.696	|       	|    818	|    664	|
+|admin.css    	|       	|  52.698	|       	| 10.249	|  8.960	|
+|admin.min.css	|       	|  42.264	|       	|  9.089	|  8.075	|
 
 
 ### Squire vs CKEditor
