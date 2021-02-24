@@ -515,7 +515,6 @@ nl_NL:
     CURRENT_PASSWORD_INCORRECT: "Huidig wachtwoord onjuist"
     NEW_PASSWORD_SHORT: "Wachtwoord is te kort"
     NEW_PASSWORD_WEAK: "Wachtwoord is te makkelijk"
-    NEW_PASSWORD_FORBIDDEN: "Wachtwoord bevat verboden tekens"
     CONTACTS_SYNC_ERROR: "Contactpersonen synchronisatie fout"
     CANT_GET_MESSAGE_LIST: "Berichtenlijst kan niet worden opgehaald"
     CANT_GET_MESSAGE: "Bericht kan niet worden opgehaald"

@@ -13,10 +13,10 @@ class Notifications
 	const AccountTwoFactorAuthRequired = 120;
 	const AccountTwoFactorAuthError = 121;
 
-//	const CurrentPasswordIncorrect = 131;
-//	const NewPasswordShort = 132;
-//	const NewPasswordWeak = 133;
-//	const NewPasswordForbidden = 134;
+	const CouldNotSaveNewPassword = 130;
+	const CurrentPasswordIncorrect = 131;
+	const NewPasswordShort = 132;
+	const NewPasswordWeak = 133;
 
 	const ContactsSyncError = 140;
 

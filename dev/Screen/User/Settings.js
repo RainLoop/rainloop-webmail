@@ -18,6 +18,7 @@ import { TemplatesUserSettings } from 'Settings/User/Templates';
 import { FoldersUserSettings } from 'Settings/User/Folders';
 import { ThemesUserSettings } from 'Settings/User/Themes';
 import { OpenPgpUserSettings } from 'Settings/User/OpenPgp';
+import { ChangePasswordUserSettings } from 'Settings/User/ChangePassword';
 
 import { SystemDropDownSettingsUserView } from 'View/User/Settings/SystemDropDown';
 import { MenuSettingsUserView } from 'View/User/Settings/Menu';
@@ -74,6 +75,15 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 				'SettingsTemplates',
 				'SETTINGS_LABELS/LABEL_TEMPLATES_NAME',
 				'templates'
+			);
+		}
+
+		if (Settings.get('ChangePasswordIsAllowed')) {
+			settingsAddViewModel(
+				ChangePasswordUserSettings,
+				'SettingsChangePassword',
+				'GLOBAL/PASSWORD',
+				'change-password'
 			);
 		}
 

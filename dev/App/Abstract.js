@@ -48,14 +48,6 @@ export class AbstractApp {
 		return true;
 	}
 
-	/**
-	 * @param {string} token
-	 */
-	setClientSideToken(token) {
-		rl.hash.set();
-		Settings.set('AuthAccountHash', token);
-	}
-
 	logoutReload(close = false) {
 		const url = logoutLink();
 

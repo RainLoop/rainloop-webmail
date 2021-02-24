@@ -515,7 +515,6 @@ en_US:
     CURRENT_PASSWORD_INCORRECT: "Current password incorrect"
     NEW_PASSWORD_SHORT: "Password is too short"
     NEW_PASSWORD_WEAK: "Password is too easy"
-    NEW_PASSWORD_FORBIDDEN: "Password contains forbidden characters"
     CONTACTS_SYNC_ERROR: "Contacts synchronization error"
     CANT_GET_MESSAGE_LIST: "Can't get message list"
     CANT_GET_MESSAGE: "Can't get message"

@@ -171,7 +171,6 @@ es_ES:
     CURRENT_PASSWORD_INCORRECT: "La contraseña actual es incorrecta"
     NEW_PASSWORD_SHORT: "La contraseña es muy corta"
     NEW_PASSWORD_WEAK: "La contraseña es muy fácil"
-    NEW_PASSWORD_FORBIDDEN: "La contraseña contiene caracteres prohibidos"
     CONTACTS_SYNC_ERROR: "Error de sincronización de Contactos"
     CANT_GET_MESSAGE_LIST: "No se puede obtener la lista de mensajes"
     CANT_GET_MESSAGE: "No se puede obtener el mensaje"
