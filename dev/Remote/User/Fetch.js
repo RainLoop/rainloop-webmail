@@ -340,7 +340,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 			};
 		}
 
-		return this.defaultRequest(
+		this.defaultRequest(
 			fCallback,
 			'MessageList',
 			params,

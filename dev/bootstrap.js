@@ -109,8 +109,7 @@ export default (App) => {
 
 		return fetch(resource, init).then(response => {
 			if (!response.ok) {
-//				return Promise.reject('Network response error: ' + response.status);
-				throw new Error('Network response error: ' + response.status);
+				return Promise.reject('Network response error: ' + response.status);
 			}
 			/* TODO: use this for non-developers?
 			response.clone()

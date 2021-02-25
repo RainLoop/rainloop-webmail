@@ -128,7 +128,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {boolean} bDisabled
 	 */
 	domainDisable(fCallback, sName, bDisabled) {
-		return this.defaultRequest(fCallback, 'AdminDomainDisable', {
+		this.defaultRequest(fCallback, 'AdminDomainDisable', {
 			Name: sName,
 			Disabled: bDisabled ? 1 : 0
 		});
@@ -139,7 +139,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {Object} oConfig
 	 */
 	pluginSettingsUpdate(fCallback, oConfig) {
-		return this.defaultRequest(fCallback, 'AdminPluginSettingsUpdate', oConfig);
+		this.defaultRequest(fCallback, 'AdminPluginSettingsUpdate', oConfig);
 	}
 
 	/**
@@ -148,7 +148,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	 * @param {boolean} bDisabled
 	 */
 	pluginDisable(fCallback, sName, bDisabled) {
-		return this.defaultRequest(fCallback, 'AdminPluginDisable', {
+		this.defaultRequest(fCallback, 'AdminPluginDisable', {
 			Name: sName,
 			Disabled: bDisabled ? 1 : 0
 		});

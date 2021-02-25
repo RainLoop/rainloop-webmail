@@ -67,14 +67,7 @@ fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
 		oRequests[action] = controller;
 		init.signal = controller.signal;
 	}
-	return rl.fetchJSON(getURL(sGetAdd), init, sGetAdd ? null : params)
-	.then(jsonCallback)
-	.catch(err => {
-		if (err.name == 'AbortError') { // handle abort()
-			err = Notification.JsonAbort;
-		}
-		return Promise.reject(err);
-	});
+	return rl.fetchJSON(getURL(sGetAdd), init, sGetAdd ? null : params).then(jsonCallback);
 };
 
 addEventListener('unload', () => bUnload = true);
@@ -103,7 +96,7 @@ export class AbstractFetchRemote
 			abortActions.forEach(actionToAbort => abort(actionToAbort));
 		}
 
-		return fetchJSON(sAction, sGetAdd,
+		fetchJSON(sAction, sGetAdd,
 			params,
 			undefined === iTimeout ? 30000 : pInt(iTimeout),
 			data => {
@@ -163,7 +156,11 @@ export class AbstractFetchRemote
 						break;
 				}
 			}
-		);
+		)
+		.catch(err => {
+			console.error(err);
+			fCallback && fCallback(err.name == 'AbortError' ? Notification.JsonAbort : StorageResultType.Error);
+		});
 	}
 
 	/**
