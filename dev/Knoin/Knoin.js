@@ -337,6 +337,7 @@ function decorateKoCommands(thisArg, commands) {
 		thisArg[key] = fn;
 	});
 }
+ko.decorateCommands = decorateKoCommands;
 
 /**
  * @param {miced} $items

@@ -98,11 +98,6 @@ export const Notification = {
 	AccountTwoFactorAuthRequired: 120,
 	AccountTwoFactorAuthError: 121,
 
-	CouldNotSaveNewPassword: 130,
-	CurrentPasswordIncorrect: 131,
-	NewPasswordShort: 132,
-	NewPasswordWeak: 133,
-
 	ContactsSyncError: 140,
 
 	CantGetMessageList: 201,

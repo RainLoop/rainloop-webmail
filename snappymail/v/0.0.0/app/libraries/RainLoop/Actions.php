@@ -12,7 +12,6 @@ class Actions
 	use Actions\User;
 	use Actions\Raw;
 	use Actions\Response;
-	use Actions\ChangePassword;
 
 	const AUTH_TFA_SIGN_ME_TOKEN_KEY = 'rltfasmauth';
 	const AUTH_SIGN_ME_TOKEN_KEY = 'rlsmauth';
@@ -1065,7 +1064,6 @@ class Actions
 			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
 			'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false),
 			'ContactsIsAllowed' => false,
-			'ChangePasswordIsAllowed' => false,
 			'RequireTwoFactor' => false,
 			'Admin' => array(),
 			'Capa' => array(),
@@ -1117,7 +1115,6 @@ class Actions
 				$aResult['OutLogin'] = $oAccount->OutLogin();
 				$aResult['AccountHash'] = $oAccount->Hash();
 				$aResult['AccountSignMe'] = $oAccount->SignMe();
-				$aResult['ChangePasswordIsAllowed'] = $this->ChangePasswordProvider()->isPossible($oAccount);
 				$aResult['ContactsIsAllowed'] = $oAddressBookProvider->IsActive();
 				$aResult['ContactsSyncIsAllowed'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
 				$aResult['ContactsSyncInterval'] = (int)$oConfig->Get('contacts', 'sync_interval', 20);
