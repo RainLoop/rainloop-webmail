@@ -119,7 +119,6 @@ class Manager
 			$oPlugin
 				->SetName($sName)
 				->SetPath(APP_PLUGINS_PATH.$sName)
-				->SetVersion($sClassName::VERSION)
 				->SetPluginManager($this)
 				->SetPluginConfig(new \RainLoop\Config\Plugin($sName, $oPlugin->ConfigMap()))
 			;
@@ -174,7 +173,17 @@ class Manager
 			if (\class_exists($sClassName) && \is_subclass_of($sClassName, 'RainLoop\\Plugins\\AbstractPlugin')) {
 				return $sClassName;
 			}
+			else
+			{
+				\trigger_error("Invalid plugin class {$sClassName}");
+			}
 		}
+		else
+		{
+			\trigger_error("Invalid plugin name {$sName}");
+		}
+
+		return null;
 	}
 
 	public function Actions() : \RainLoop\Actions
@@ -469,10 +478,8 @@ class Manager
 
 	/**
 	 * @param mixed $mData
-	 *
-	 * @return mixed
 	 */
-	public function JsonResponseHelper(string $sFunctionName, $mData)
+	public function JsonResponseHelper(string $sFunctionName, $mData) : array
 	{
 		return $this->oActions->DefaultResponse($sFunctionName, $mData);
 	}

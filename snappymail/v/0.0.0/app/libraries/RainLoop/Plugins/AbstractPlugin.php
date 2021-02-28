@@ -41,11 +41,6 @@ abstract class AbstractPlugin
 	private $sPath;
 
 	/**
-	 * @var string
-	 */
-	private $sVersion;
-
-	/**
 	 * @var array
 	 */
 	private $aConfigMap;
@@ -57,9 +52,8 @@ abstract class AbstractPlugin
 
 	public function __construct()
 	{
-		$this->sName = '';
+		$this->sName = static::NAME;
 		$this->sPath = '';
-		$this->sVersion = '0.0';
 		$this->aConfigMap = null;
 
 		$this->oPluginManager = null;
@@ -100,11 +94,6 @@ abstract class AbstractPlugin
 		return $this->sName;
 	}
 
-	public function Version() : string
-	{
-		return $this->sVersion;
-	}
-
 	public function UseLangs(?bool $bLangs = null) : bool
 	{
 		if (null !== $bLangs)
@@ -122,7 +111,7 @@ abstract class AbstractPlugin
 
 	public function Hash() : string
 	{
-		return \md5($this->sName.'@'.$this->sVersion);
+		return \md5($this->sName . '@' . static::VERSION);
 	}
 
 	public function Supported() : string
@@ -264,7 +253,10 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
-	protected function jsonResponse(string $sFunctionName, array $aData) : self
+	/**
+	 * @return mixed false|string|array
+	 */
+	protected function jsonResponse(string $sFunctionName, array $aData)
 	{
 		if ($this->oPluginManager)
 		{
