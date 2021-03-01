@@ -58,6 +58,9 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 			throw new ClientException(static::NewPasswordWeak, null, $oActions->StaticI18N('NOTIFICATIONS/NEW_PASSWORD_WEAK'));
 		}
 /*
+
+		require __DIR__ . '/drivers/pdo.php';
+		$this->oDriver = new \ChangePasswordDriverPDO;
 		if (!$this->oDriver->ChangePassword($oAccount, $sPrevPassword, $sNewPassword)) {
 			throw new ClientException(static::CouldNotSaveNewPassword);
 		}

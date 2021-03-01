@@ -439,13 +439,6 @@ fr_FR:
     BUTTON_ADD_IDENTITY: "Ajouter une identité"
     LOADING_PROCESS: "Mise à jour de la liste des comptes"
     DEFAULT_IDENTITY_LABEL: "défaut"
-  SETTINGS_CHANGE_PASSWORD:
-    LEGEND_CHANGE_PASSWORD: "Modifier le mot de passe"
-    LABEL_CURRENT_PASSWORD: "Mot de passe actuel"
-    LABEL_NEW_PASSWORD: "Nouveau mot de passe"
-    LABEL_REPEAT_PASSWORD: "Confirmation du nouveau mot de passe"
-    BUTTON_UPDATE_PASSWORD: "Enregistrer le nouveau mot de passe"
-    ERROR_PASSWORD_MISMATCH: "Les mots de passe ne correspondent pas, merci de réessayer"
   SETTINGS_OPEN_PGP:
     BUTTON_ADD_OPEN_PGP_KEY: "Importer la clé OpenPGP"
     BUTTON_GENERATE_OPEN_PGP_KEYS: "Générer les clés OpenPGP"
@@ -513,9 +506,6 @@ fr_FR:
     ACCOUNT_NOT_ALLOWED: "Ce compte n'est pas autorisé"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Double authentification requise"
     ACCOUNT_TWO_FACTOR_AUTH_ERROR: "Erreur lors de la double authentification"
-    CURRENT_PASSWORD_INCORRECT: "Le mot de passe actuel est incorrect"
-    NEW_PASSWORD_SHORT: "Le mot de passe est trop court"
-    NEW_PASSWORD_WEAK: "Le mot de passe n'est pas assez fort"
     CONTACTS_SYNC_ERROR: "Erreur de synchronisation des contacts"
     CANT_GET_MESSAGE_LIST: "Impossible d'obtenir la liste des messages"
     CANT_GET_MESSAGE: "Impossible d'obtenir le message"

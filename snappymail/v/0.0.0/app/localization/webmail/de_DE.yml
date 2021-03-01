@@ -439,13 +439,6 @@ de_DE:
     BUTTON_ADD_IDENTITY: "Identität hinzufügen"
     LOADING_PROCESS: "Aktualisiere Kontenliste"
     DEFAULT_IDENTITY_LABEL: "Standard"
-  SETTINGS_CHANGE_PASSWORD:
-    LEGEND_CHANGE_PASSWORD: "Passwort ändern"
-    LABEL_CURRENT_PASSWORD: "Aktuelles Passwort"
-    LABEL_NEW_PASSWORD: "Neues Passwort"
-    LABEL_REPEAT_PASSWORD: "Neues Passwort bestätigen"
-    BUTTON_UPDATE_PASSWORD: "Neues Passwort setzen"
-    ERROR_PASSWORD_MISMATCH: "Passwörter stimmen nicht überein; versuchen Sie es bitte erneut"
   SETTINGS_OPEN_PGP:
     BUTTON_ADD_OPEN_PGP_KEY: "OpenPGP-Schlüssel importieren"
     BUTTON_GENERATE_OPEN_PGP_KEYS: "OpenPGP-Schlüssel generieren"
@@ -513,9 +506,6 @@ de_DE:
     ACCOUNT_NOT_ALLOWED: "Konto ist nicht zugelassen."
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Zwei-Faktor-Authentifizierung erforderlich"
     ACCOUNT_TWO_FACTOR_AUTH_ERROR: "Fehler bei Zwei-Faktor-Authentifizierung"
-    CURRENT_PASSWORD_INCORRECT: "Aktuelles Passwort falsch"
-    NEW_PASSWORD_SHORT: "Passwort ist zu kurz"
-    NEW_PASSWORD_WEAK: "Passwort ist zu einfach"
     CONTACTS_SYNC_ERROR: "Fehler bei Kontakte-Synchronisierung"
     CANT_GET_MESSAGE_LIST: "Die Nachrichtenliste ist nicht verfügbar"
     CANT_GET_MESSAGE: "Diese Nachricht ist nicht verfügbar"

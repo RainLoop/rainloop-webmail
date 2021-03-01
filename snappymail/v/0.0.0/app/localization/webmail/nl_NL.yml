@@ -438,13 +438,6 @@ nl_NL:
     BUTTON_ADD_IDENTITY: "Identiteit toevoegen"
     LOADING_PROCESS: "Account lijst aan het bijwerken"
     DEFAULT_IDENTITY_LABEL: "standaard"
-  SETTINGS_CHANGE_PASSWORD:
-    LEGEND_CHANGE_PASSWORD: "Wachtwoord aanpassen"
-    LABEL_CURRENT_PASSWORD: "Huidig wachtwoord"
-    LABEL_NEW_PASSWORD: "Nieuw wachtwoord"
-    LABEL_REPEAT_PASSWORD: "Bevestig wachtwoord"
-    BUTTON_UPDATE_PASSWORD: "Wachtwoord wijzigen"
-    ERROR_PASSWORD_MISMATCH: "Wachtwoorden zijn niet gelijk, probeer opnieuw"
   SETTINGS_OPEN_PGP:
     BUTTON_ADD_OPEN_PGP_KEY: "Importeer OpenPGP sleutel"
     BUTTON_GENERATE_OPEN_PGP_KEYS: "Genereer OpenPGP sleutels"
@@ -512,9 +505,6 @@ nl_NL:
     ACCOUNT_NOT_ALLOWED: "Account is niet toegestaan"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "2-Stap verificatie vereist"
     ACCOUNT_TWO_FACTOR_AUTH_ERROR: "2-Stap verificatie fout"
-    CURRENT_PASSWORD_INCORRECT: "Huidig wachtwoord onjuist"
-    NEW_PASSWORD_SHORT: "Wachtwoord is te kort"
-    NEW_PASSWORD_WEAK: "Wachtwoord is te makkelijk"
     CONTACTS_SYNC_ERROR: "Contactpersonen synchronisatie fout"
     CANT_GET_MESSAGE_LIST: "Berichtenlijst kan niet worden opgehaald"
     CANT_GET_MESSAGE: "Bericht kan niet worden opgehaald"

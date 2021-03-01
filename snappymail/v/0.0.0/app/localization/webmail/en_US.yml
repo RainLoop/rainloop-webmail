@@ -438,13 +438,6 @@ en_US:
     BUTTON_ADD_IDENTITY: "Add an Identity"
     LOADING_PROCESS: "Updating..."
     DEFAULT_IDENTITY_LABEL: "default"
-  SETTINGS_CHANGE_PASSWORD:
-    LEGEND_CHANGE_PASSWORD: "Change Password"
-    LABEL_CURRENT_PASSWORD: "Current password"
-    LABEL_NEW_PASSWORD: "New password"
-    LABEL_REPEAT_PASSWORD: "Confirm New Password"
-    BUTTON_UPDATE_PASSWORD: "Set New Password"
-    ERROR_PASSWORD_MISMATCH: "Passwords do not match, please try again"
   SETTINGS_OPEN_PGP:
     BUTTON_ADD_OPEN_PGP_KEY: "Import OpenPGP Key"
     BUTTON_GENERATE_OPEN_PGP_KEYS: "Generate OpenPGP Keys"
@@ -512,9 +505,6 @@ en_US:
     ACCOUNT_NOT_ALLOWED: "Account is not allowed"
     ACCOUNT_TWO_FACTOR_AUTH_REQUIRED: "Two factor verification required"
     ACCOUNT_TWO_FACTOR_AUTH_ERROR: "Two factor verification error"
-    CURRENT_PASSWORD_INCORRECT: "Current password incorrect"
-    NEW_PASSWORD_SHORT: "Password is too short"
-    NEW_PASSWORD_WEAK: "Password is too easy"
     CONTACTS_SYNC_ERROR: "Contacts synchronization error"
     CANT_GET_MESSAGE_LIST: "Can't get message list"
     CANT_GET_MESSAGE: "Can't get message"
