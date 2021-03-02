@@ -3,13 +3,11 @@ import ko from 'ko';
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
-import { $htmlCL } from 'Common/Globals';
+import { $htmlCL, Settings } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
 class SettingsUserStore {
 	constructor() {
-		this.iAutoLogoutTimer = 0;
-
 		this.layout = ko
 			.observable(Layout.SidePreview)
 			.extend({ limitedList: [Layout.SidePreview, Layout.BottomPreview, Layout.NoPreview] });
@@ -39,6 +37,17 @@ class SettingsUserStore {
 		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout() && !ThemeStore.isMobile());
 
 		this.subscribers();
+
+		let iAutoLogoutTimer;
+		this.delayLogout = (() => {
+			clearTimeout(iAutoLogoutTimer);
+			if (0 < this.autoLogout() && !Settings.get('AccountSignMe')) {
+				iAutoLogoutTimer = setTimeout(
+					rl.app.logout,
+					this.autoLogout() * 60000
+				);
+			}
+		}).throttle(5000);
 	}
 
 	subscribers() {
@@ -51,7 +60,7 @@ class SettingsUserStore {
 	}
 
 	populate() {
-		const settingsGet = rl.settings.get;
+		const settingsGet = Settings.get;
 		this.layout(pInt(settingsGet('Layout')));
 		this.editorDefaultType(settingsGet('EditorDefaultType'));
 
@@ -65,16 +74,7 @@ class SettingsUserStore {
 		this.useThreads(!!settingsGet('UseThreads'));
 		this.replySameFolder(!!settingsGet('ReplySameFolder'));
 
-		const refresh = () => {
-			clearTimeout(this.iAutoLogoutTimer);
-			if (0 < this.autoLogout() && !settingsGet('AccountSignMe')) {
-				this.iAutoLogoutTimer = setTimeout(() =>
-					dispatchEvent(new CustomEvent('rl.auto-logout'))
-				, this.autoLogout() * 60000);
-			}
-		};
-		addEventListener('rl.auto-logout-refresh', refresh);
-		refresh();
+		this.delayLogout();
 	}
 }
 

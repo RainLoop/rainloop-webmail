@@ -12,7 +12,7 @@ import { SUB_QUERY_PREFIX } from 'Common/Links';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
-//import FolderStore from 'Stores/User/Folder';
+import FolderStore from 'Stores/User/Folder';
 
 import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
@@ -771,43 +771,39 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		this.defaultRequest(fCallback, 'ClearUserBackground');
 	}
 
-	// FolderStore.foldersLoading
-	foldersReload(fTrigger) {
-		return this.abort('Folders')
-			.postRequest('Folders', fTrigger)
+	foldersReload(fCallback) {
+		this.abort('Folders')
+			.postRequest('Folders', FolderStore.foldersLoading)
 			.then(data => {
 				data = FolderCollectionModel.reviveFromJson(data.Result);
 				data && data.storeIt();
-				return true;
-			});
+				fCallback && fCallback(true);
+			})
+			.catch(() => fCallback && setTimeout(() => fCallback(false), 1));
 	}
 
-	// FolderStore.foldersLoading
-	foldersReloadWithTimeout(fTrigger) {
-		this.setTrigger(fTrigger, true);
+	foldersReloadWithTimeout() {
+		this.setTrigger(FolderStore.foldersLoading, true);
 
 		clearTimeout(this.foldersTimeout);
-		this.foldersTimeout = setTimeout(() => this.foldersReload(fTrigger), 500);
+		this.foldersTimeout = setTimeout(() => this.foldersReload(), 500);
 	}
 
-	// FolderStore.foldersDeleting
-	folderDelete(sFolderFullNameRaw, fTrigger) {
-		return this.postRequest('FolderDelete', fTrigger, {
+	folderDelete(sFolderFullNameRaw) {
+		return this.postRequest('FolderDelete', FolderStore.foldersDeleting, {
 			Folder: sFolderFullNameRaw
 		});
 	}
 
-	// FolderStore.foldersCreating
-	folderCreate(sNewFolderName, sParentName, fTrigger) {
-		return this.postRequest('FolderCreate', fTrigger, {
+	folderCreate(sNewFolderName, sParentName) {
+		return this.postRequest('FolderCreate', FolderStore.foldersCreating, {
 			Folder: sNewFolderName,
 			Parent: sParentName
 		});
 	}
 
-	// FolderStore.foldersRenaming
-	folderRename(sPrevFolderFullNameRaw, sNewFolderName, fTrigger) {
-		return this.postRequest('FolderRename', fTrigger, {
+	folderRename(sPrevFolderFullNameRaw, sNewFolderName) {
+		return this.postRequest('FolderRename', FolderStore.foldersRenaming, {
 			Folder: sPrevFolderFullNameRaw,
 			NewFolderName: sNewFolderName
 		});

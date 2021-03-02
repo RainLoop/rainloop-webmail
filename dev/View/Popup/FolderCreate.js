@@ -53,7 +53,7 @@ class FolderCreatePopupView extends AbstractViewPopup {
 		}
 
 		rl.app.foldersPromisesActionHelper(
-			Remote.folderCreate(this.folderName(), parentFolderName, FolderStore.foldersCreating),
+			Remote.folderCreate(this.folderName(), parentFolderName),
 			Notification.CantCreateFolder
 		);
 

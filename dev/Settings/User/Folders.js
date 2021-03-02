@@ -45,7 +45,7 @@ export class FoldersUserSettings {
 			Local.set(ClientSideKeyName.FoldersLashHash, '');
 
 			rl.app.foldersPromisesActionHelper(
-				Remote.folderRename(folder.fullNameRaw, nameToEdit, FolderStore.foldersRenaming),
+				Remote.folderRename(folder.fullNameRaw, nameToEdit),
 				Notification.CantRenameFolder
 			);
 
@@ -101,7 +101,7 @@ export class FoldersUserSettings {
 				FolderStore.folderList.remove(fRemoveFolder);
 
 				rl.app.foldersPromisesActionHelper(
-					Remote.folderDelete(folderToRemove.fullNameRaw, FolderStore.foldersDeleting),
+					Remote.folderDelete(folderToRemove.fullNameRaw),
 					Notification.CantDeleteFolder
 				);
 

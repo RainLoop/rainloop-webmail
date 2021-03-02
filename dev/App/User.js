@@ -126,14 +126,12 @@ class AppUser extends AbstractApp {
 			}, 1000);
 		}
 
-		const refresh = (()=>dispatchEvent(new CustomEvent('rl.auto-logout-refresh'))).debounce(5000),
-			fn = (ev=>{
-				$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey);
-				refresh();
-			}).debounce(500);
+		const fn = (ev=>$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey)).debounce(500);
+		['keydown','keyup'].forEach(t => doc.addEventListener(t, fn));
 
-//		doc.addEventListener('touchstart', fn, {passive:true});
-		['mousedown','keydown','keyup'/*,'mousemove'*/].forEach(t => doc.addEventListener(t, fn));
+		['touchstart','mousedown','mousemove','keydown'].forEach(
+			t => doc.addEventListener(t, SettingsStore.delayLogout, {passive:true})
+		);
 
 		shortcuts.add('escape,enter', '', KeyState.All, () => rl.Dropdowns.detectVisibility());
 	}
@@ -400,13 +398,7 @@ class AppUser extends AbstractApp {
 	 * @param {Function=} callback = null
 	 */
 	foldersReload(callback = null) {
-		const prom = Remote.foldersReload(FolderStore.foldersLoading);
-		if (callback) {
-			prom
-				.then((value) => !!value)
-				.then(callback)
-				.catch(() => callback && setTimeout(() => callback(false), 1));
-		}
+		Remote.foldersReload(callback);
 	}
 
 	foldersPromisesActionHelper(promise, errorDefCode) {
@@ -414,12 +406,10 @@ class AppUser extends AbstractApp {
 			.fastResolve(true)
 			.then(() => promise)
 			.then(
-				() => {
-					Remote.foldersReloadWithTimeout(FolderStore.foldersLoading);
-				},
-				(errorCode) => {
+				Remote.foldersReloadWithTimeout,
+				errorCode => {
 					FolderStore.folderListError(getNotification(errorCode, '', errorDefCode));
-					Remote.foldersReloadWithTimeout(FolderStore.foldersLoading);
+					Remote.foldersReloadWithTimeout();
 				}
 			);
 	}
@@ -982,16 +972,20 @@ class AppUser extends AbstractApp {
 								// false ? AboutUserScreen : null
 							]);
 
-							setInterval(() => this.folderInformation(getFolderInboxName()), 120000);
+							// Every 5 minutes
 							setInterval(() => {
-								const sF = FolderStore.currentFolderFullNameRaw();
-								if (getFolderInboxName() !== sF) {
-									this.folderInformation(sF);
+								const cF = FolderStore.currentFolderFullNameRaw(),
+									iF = getFolderInboxName();
+								this.folderInformation(iF);
+								if (iF !== cF) {
+									this.folderInformation(cF);
 								}
-							}, 180000);
+								this.folderInformationMultiply();
+							}, 300000);
 
-							setTimeout(() => setInterval(this.folderInformationMultiply, 120000), 300000);
+							// Every 15 minutes
 							setInterval(this.quota, 900000);
+							// Every 20 minutes
 							setInterval(this.foldersReload, 1200000);
 
 							setTimeout(this.contactsSync, 10000);
@@ -999,22 +993,18 @@ class AppUser extends AbstractApp {
 							contactsSyncInterval = 320 >= contactsSyncInterval ? contactsSyncInterval : 320;
 							setInterval(this.contactsSync, contactsSyncInterval * 60000 + 5000);
 
-							setTimeout(() => this.folderInformationMultiply(true), 2000);
-
-
 							this.accountsAndIdentities(true);
 
 							setTimeout(() => {
-								const sF = FolderStore.currentFolderFullNameRaw();
-								if (getFolderInboxName() !== sF) {
-									this.folderInformation(sF);
+								const cF = FolderStore.currentFolderFullNameRaw();
+								if (getFolderInboxName() !== cF) {
+									this.folderInformation(cF);
 								}
+								this.folderInformationMultiply(true);
 							}, 1000);
 
 							setTimeout(this.quota, 5000);
 							setTimeout(() => Remote.appDelayStart(()=>{}), 35000);
-
-							addEventListener('rl.auto-logout', () => this.logout());
 
 							if (
 								!!Settings.get('AccountSignMe') &&
@@ -1026,7 +1016,7 @@ class AppUser extends AbstractApp {
 										navigator.registerProtocolHandler(
 											'mailto',
 											location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-											'' + (Settings.get('Title') || 'SnappyMail')
+											(Settings.get('Title') || 'SnappyMail')
 										);
 									} catch (e) {} // eslint-disable-line no-empty
 
