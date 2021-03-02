@@ -24,6 +24,29 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addTemplate('templates/SettingsChangePassword.html');
 	}
 
+	public function Supported() : string
+	{
+		$oConfig = $this->Config();
+		foreach (\glob(__DIR__ . '/drivers/*.php') as $file) {
+			$name = \basename($file, '.php');
+			if ($oConfig->Get('plugin', "driver_{$name}_enabled", false)) {
+				require_once $file;
+				$class = 'ChangePasswordDriver' . $name;
+				$name = $class::NAME;
+				try
+				{
+					if ($class::isSupported()) {
+						return '';
+					}
+				}
+				catch (\Throwable $oException)
+				{
+				}
+			}
+		}
+		return 'There are no change-password drivers enabled';
+	}
+
 	public function configMapping() : array
 	{
 		$result = [];
@@ -32,7 +55,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$name = \basename($file, '.php');
 			$class = 'ChangePasswordDriver' . $name;
 			if ($class::isSupported()) {
-				$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}")
+				$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_enabled")
 					->SetLabel('Enable ' . $class::NAME)
 					->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 					->SetDescription($class::DESCRIPTION);
@@ -76,7 +99,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$oConfig = $this->Config();
 		foreach (\glob(__DIR__ . '/drivers/*.php') as $file) {
 			$name = \basename($file, '.php');
-			if ($oConfig->Get('plugin', "driver_{$name}", false)
+			if ($oConfig->Get('plugin', "driver_{$name}_enabled", false)
 			 && \RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $oConfig->Get('plugin', "driver_{$name}_allowed_emails"))
 			) {
 				require_once $file;
