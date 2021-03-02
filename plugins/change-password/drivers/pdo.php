@@ -32,7 +32,7 @@ class ChangePasswordDriverPDO
 
 	public static function isSupported() : bool
 	{
-		return true;
+		return \class_exists('PDO', false);
 	}
 
 	public static function configMapping() : array
