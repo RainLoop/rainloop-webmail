@@ -18,17 +18,17 @@ abstract class AbstractPlugin
 	/**
 	 * @var \RainLoop\Plugins\Manager
 	 */
-	private $oPluginManager;
+	private $oPluginManager = null;
 
 	/**
 	 * @var \RainLoop\Config\Plugin
 	 */
-	private $oPluginConfig;
+	private $oPluginConfig = null;
 
 	/**
 	 * @var bool
 	 */
-	private $bLangs;
+	private $bLangs = false;
 
 	/**
 	 * @var string
@@ -38,44 +38,20 @@ abstract class AbstractPlugin
 	/**
 	 * @var string
 	 */
-	private $sPath;
+	private $sPath = '';
 
 	/**
 	 * @var array
 	 */
-	private $aConfigMap;
-
-	/**
-	 * @var bool
-	 */
-	private $bPluginConfigLoaded;
+	private $aConfigMap = null;
 
 	public function __construct()
 	{
 		$this->sName = static::NAME;
-		$this->sPath = '';
-		$this->aConfigMap = null;
-
-		$this->oPluginManager = null;
-		$this->oPluginConfig = null;
-		$this->bPluginConfigLoaded = false;
-		$this->bLangs = false;
 	}
 
 	public function Config() : \RainLoop\Config\Plugin
 	{
-		if (!$this->bPluginConfigLoaded && $this->oPluginConfig)
-		{
-			$this->bPluginConfigLoaded = true;
-			if ($this->oPluginConfig->IsInited())
-			{
-				if (!$this->oPluginConfig->Load())
-				{
-					$this->oPluginConfig->Save();
-				}
-			}
-		}
-
 		return $this->oPluginConfig;
 	}
 
@@ -163,7 +139,10 @@ abstract class AbstractPlugin
 	public function SetPluginConfig(\RainLoop\Config\Plugin $oPluginConfig) : self
 	{
 		$this->oPluginConfig = $oPluginConfig;
-
+		if ($oPluginConfig->IsInited() && !$oPluginConfig->Load())
+		{
+			$oPluginConfig->Save();
+		}
 		return $this;
 	}
 

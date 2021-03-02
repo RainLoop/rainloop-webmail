@@ -178,10 +178,6 @@ class Manager
 				\trigger_error("Invalid plugin class {$sClassName}");
 			}
 		}
-		else
-		{
-			\trigger_error("Invalid plugin name {$sName}");
-		}
 
 		return null;
 	}
