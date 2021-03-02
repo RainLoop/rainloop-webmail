@@ -24,25 +24,31 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$this->addTemplate('templates/SettingsChangePassword.html');
 	}
 
-	public function Supported() : string
+	protected function getSupportedDrivers(bool $all = false) : iterable
 	{
-		$oConfig = $this->Config();
+//		foreach (\glob(__DIR__ . '/../change-password-*', GLOB_ONLYDIR) as $file) {
 		foreach (\glob(__DIR__ . '/drivers/*.php') as $file) {
-			$name = \basename($file, '.php');
-			if ($oConfig->Get('plugin', "driver_{$name}_enabled", false)) {
-				require_once $file;
-				$class = 'ChangePasswordDriver' . $name;
-				$name = $class::NAME;
-				try
-				{
+			try
+			{
+				$name = \basename($file, '.php');
+				if ($all || $this->Config()->Get('plugin', "driver_{$name}_enabled", false)) {
+					require_once $file;
+					$class = 'ChangePasswordDriver' . $name;
 					if ($class::isSupported()) {
-						return '';
+						yield $name => $class;
 					}
 				}
-				catch (\Throwable $oException)
-				{
-				}
 			}
+			catch (\Throwable $oException)
+			{
+			}
+		}
+	}
+
+	public function Supported() : string
+	{
+		foreach ($this->getSupportedDrivers() as $class) {
+			return '';
 		}
 		return 'There are no change-password drivers enabled';
 	}
@@ -50,22 +56,17 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	public function configMapping() : array
 	{
 		$result = [];
-		foreach (\glob(__DIR__ . '/drivers/*.php') as $file) {
-			require_once $file;
-			$name = \basename($file, '.php');
-			$class = 'ChangePasswordDriver' . $name;
-			if ($class::isSupported()) {
-				$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_enabled")
-					->SetLabel('Enable ' . $class::NAME)
-					->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
-					->SetDescription($class::DESCRIPTION);
-				$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_allowed_emails")
-					->SetLabel('Allowed emails')
-					->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
-					->SetDescription('Allowed emails, space as delimiter, wildcard supported. Example: user1@domain1.net user2@domain1.net *@domain2.net')
-					->SetDefaultValue('*');
-				$result = \array_merge($result, \call_user_func("{$class}::configMapping"));
-			}
+		foreach ($this->getSupportedDrivers(true) as $name => $class) {
+			$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_enabled")
+				->SetLabel('Enable ' . $class::NAME)
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
+				->SetDescription($class::DESCRIPTION);
+			$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_allowed_emails")
+				->SetLabel('Allowed emails')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::STRING_TEXT)
+				->SetDescription('Allowed emails, space as delimiter, wildcard supported. Example: user1@example.net user2@example1.net *@example2.net')
+				->SetDefaultValue('*');
+			$result = \array_merge($result, \call_user_func("{$class}::configMapping"));
 		}
 		return $result;
 	}
@@ -97,28 +98,21 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 		$bResult = false;
 		$oConfig = $this->Config();
-		foreach (\glob(__DIR__ . '/drivers/*.php') as $file) {
-			$name = \basename($file, '.php');
-			if ($oConfig->Get('plugin', "driver_{$name}_enabled", false)
-			 && \RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $oConfig->Get('plugin', "driver_{$name}_allowed_emails"))
-			) {
-				require_once $file;
-				$class = 'ChangePasswordDriver' . $name;
+		foreach ($this->getSupportedDrivers() as $name => $class) {
+			if (\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $oConfig->Get('plugin', "driver_{$name}_allowed_emails"))) {
 				$name = $class::NAME;
 				try
 				{
-					if ($class::isSupported()) {
-						$oDriver = new $class(
-							$oConfig(),
-							$oActions->Logger()
-						);
-						if (!$oDriver->ChangePassword($oAccount, $sPrevPassword, $sNewPassword)) {
-							throw new ClientException(static::CouldNotSaveNewPassword);
-						}
-						$bResult = true;
-						if ($this->oLogger) {
-							$this->oLogger->Write("{$name} password changed for {$oAccount->Email()}");
-						}
+					$oDriver = new $class(
+						$oConfig(),
+						$oActions->Logger()
+					);
+					if (!$oDriver->ChangePassword($oAccount, $sPrevPassword, $sNewPassword)) {
+						throw new ClientException(static::CouldNotSaveNewPassword);
+					}
+					$bResult = true;
+					if ($this->oLogger) {
+						$this->oLogger->Write("{$name} password changed for {$oAccount->Email()}");
 					}
 				}
 				catch (\Throwable $oException)
