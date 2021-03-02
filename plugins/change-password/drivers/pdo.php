@@ -12,7 +12,7 @@ class ChangePasswordDriverPDO
 		$pass = '',
 		$sql = '',
 		$encrypt = '',
-		$encrypt_prefix = ''; // Like: {ARGON2I} {BLF-CRYPT} {SHA512-CRYPT} {SHA256-CRYPT}
+		$encrypt_prefix = ''; // Like: {ARGON2I} {BLF-CRYPT} {SHA512-CRYPT}
 
 	/**
 	 * @var \MailSo\Log\Logger

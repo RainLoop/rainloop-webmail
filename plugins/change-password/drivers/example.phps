@@ -1,6 +1,6 @@
 <?php
 
-class ChangePasswordDriverLDAP
+class ChangePasswordDriverExample
 {
 	const
 		NAME        = 'Example',
