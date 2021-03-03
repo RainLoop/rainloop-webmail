@@ -68,64 +68,18 @@
 	reset = () => {
 		if (dragSource) {
 			clearInterval(holdInterval);
-			destroyImage();
+			// dispose of drag image element
+			img && img.remove();
 			isDragging && dispatchEvent(lastTouch, 'dragend', dragSource);
-			dragSource = lastTouch = lastTarget = dataTransfer = holdInterval = null;
+			img = imgCustom = dragSource = lastTouch = lastTarget = dataTransfer = holdInterval = null;
 			isDragging = allowDrop = false;
 		}
 	},
 
 	// get point for a touch event
 	getPoint = e => {
-		if (e && e.touches) {
-			e = e.touches[0];
-		}
+		e = e.touches ? e.touches[0] : e;
 		return { x: e.clientX, y: e.clientY };
-	},
-
-	touchstart = e => {
-		// clear all variables
-		reset();
-		// ignore events that have been handled or that involve more than one touch
-		if (e && !e.defaultPrevented && e.touches && e.touches.length < 2) {
-			// get nearest draggable element
-			dragSource = e.target.closest('[draggable]');
-			if (dragSource) {
-				// get ready to start dragging
-				lastTouch = e;
-//				dragSource.style.userSelect = 'none';
-
-				// 1000 ms to wait, chrome on android triggers dragstart in 600
-				holdInterval = setTimeout(() => {
-					// start dragging
-					dataTransfer = new DataTransfer();
-					if ((isDragging = dispatchEvent(e, 'dragstart', dragSource))) {
-						createImage(e);
-						dispatchEvent(e, 'dragenter', getTarget(e));
-					} else {
-						reset();
-					}
-				}, 1000);
-			}
-		}
-	},
-
-	touchmove = e => {
-		if (isDragging) {
-			// continue dragging
-			let target = getTarget(e);
-			lastTouch = e;
-			e.preventDefault(); // prevent scrolling
-			if (target != lastTarget) {
-				dispatchEvent(lastTouch, 'dragleave', lastTarget);
-				dispatchEvent(e, 'dragenter', target);
-				lastTarget = target;
-			}
-			moveImage(e);
-			allowDrop = !dispatchEvent(e, 'dragover', target);
-		} else {
-			reset();
-		}
 	},
 
 	touchend = e => {
@@ -137,50 +91,20 @@
 	},
 
 	// get the element at a given touch event
-	getTarget = e => {
-		let pt = getPoint(e), el = doc.elementFromPoint(pt.x, pt.y);
+	getTarget = pt => {
+		let el = doc.elementFromPoint(pt.x, pt.y);
 		while (el && getComputedStyle(el).pointerEvents == 'none') {
 			el = el.parentElement;
 		}
 		return el;
 	},
 
-	// create drag image from source element
-	createImage = e => {
-		// just in case...
-		destroyImage();
-		// create drag image from custom element or drag source
-		let src = imgCustom || dragSource;
-		img = src.cloneNode(true);
-		copyStyle(src, img);
-		let style = img.style;
-		style.top = style.left = '-9999px';
-		style.position = 'fixed';
-		style.pointerEvents = 'none';
-		style.zIndex = '999999999';
-		// if creating from drag source, apply offset and opacity
-		if (!imgCustom) {
-			imgOffset = { x: src.clientWidth / 2, y: src.clientHeight / 2 };
-			style.opacity = 0.75;
-		}
-		// add image to document
-		moveImage(e);
-		doc.body.append(img);
-	},
-
-	// dispose of drag image element
-	destroyImage = () => {
-		img && img.remove();
-		img = imgCustom = null;
-	},
-
 	// move the drag image element
-	moveImage = e => {
+	moveImage = pt => {
 		requestAnimationFrame(() => {
 			if (img) {
-				let pt = getPoint(e), s = img.style;
-				s.left = Math.round(pt.x - imgOffset.x) + 'px';
-				s.top = Math.round(pt.y - imgOffset.y) + 'px';
+				img.style.left = Math.round(pt.x - imgOffset.x) + 'px';
+				img.style.top = Math.round(pt.y - imgOffset.y) + 'px';
 			}
 		});
 	},
@@ -231,8 +155,72 @@
 	// Chrome on mobile supports drag & drop
 	if (ua.includes('mobile') && ua.includes('gecko/')) {
 		let opt = { passive: false, capture: false };
-		doc.addEventListener('touchstart', touchstart, opt);
-		doc.addEventListener('touchmove', touchmove, opt);
+
+		doc.addEventListener('touchstart', e => {
+			// clear all variables
+			reset();
+			// ignore events that have been handled or that involve more than one touch
+			if (e && !e.defaultPrevented && e.touches && e.touches.length < 2) {
+				// get nearest draggable element
+				dragSource = e.target.closest('[draggable]');
+				if (dragSource) {
+					// get ready to start dragging
+					lastTouch = e;
+//					dragSource.style.userSelect = 'none';
+
+					// 1000 ms to wait, chrome on android triggers dragstart in 600
+					holdInterval = setTimeout(() => {
+						// start dragging
+						dataTransfer = new DataTransfer();
+						if ((isDragging = dispatchEvent(e, 'dragstart', dragSource))) {
+							let pt = getPoint(e);
+
+							// create drag image from custom element or drag source
+							let src = imgCustom || dragSource;
+							img = src.cloneNode(true);
+							copyStyle(src, img);
+							let style = img.style;
+							style.top = style.left = '-9999px';
+							style.position = 'fixed';
+							style.pointerEvents = 'none';
+							style.zIndex = '999999999';
+							// if creating from drag source, apply offset and opacity
+							if (!imgCustom) {
+								imgOffset = { x: src.clientWidth / 2, y: src.clientHeight / 2 };
+								style.opacity = 0.75;
+							}
+							// add image to document
+							moveImage(pt);
+							doc.body.append(img);
+
+							dispatchEvent(e, 'dragenter', getTarget(pt));
+						} else {
+							reset();
+						}
+					}, 1000);
+				}
+			}
+		}, opt);
+
+		doc.addEventListener('touchmove', e => {
+			if (isDragging) {
+				// continue dragging
+				let pt = getPoint(e),
+					target = getTarget(pt);
+				lastTouch = e;
+				e.preventDefault(); // prevent scrolling
+				if (target != lastTarget) {
+					dispatchEvent(e, 'dragleave', lastTarget);
+					dispatchEvent(e, 'dragenter', target);
+					lastTarget = target;
+				}
+				moveImage(pt);
+				allowDrop = !dispatchEvent(e, 'dragover', target);
+			} else {
+				reset();
+			}
+		}, opt);
+
 		doc.addEventListener('touchend', touchend);
 		doc.addEventListener('touchcancel', touchend);
 	}
