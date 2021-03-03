@@ -9,33 +9,52 @@ if (isset($options['plugins'])) {
 	is_dir($destPath) || mkdir($destPath, 0777, true);
 	$manifest = [];
 	require 'snappymail/v/0.0.0/app/libraries/RainLoop/Plugins/AbstractPlugin.php';
+	$keys = [
+		'author',
+		'category',
+		'description',
+		'file',
+		'id',
+		'license',
+		'name',
+		'release',
+		'required',
+		'type',
+		'url',
+		'version'
+	];
 	foreach (glob('plugins/*', GLOB_NOSORT | GLOB_ONLYDIR) as $dir) {
-		require "{$dir}/index.php";
-		$name = basename($dir);
-		$class = new ReflectionClass(str_replace('-', '', $name) . 'Plugin');
-		$manifest_item = [];
-		foreach ($class->getConstants() as $key => $value) {
-			$manifest_item[\strtolower($key)] = $value;
-		}
-		$version = $manifest_item['version'];
-		if (0 < floatval($version)) {
-			echo "+ {$name} {$version}\n";
-			$manifest_item['type'] = 'plugin';
-			$manifest_item['id']   = $name;
-			$manifest_item['file'] = "{$dir}-{$version}.tgz";
-			ksort($manifest_item);
-			$manifest[$name] = $manifest_item;
-			$tar_destination = "{$destPath}{$name}-{$version}.tar";
-			$tgz_destination = "{$destPath}{$name}-{$version}.tgz";
-			@unlink($tgz_destination);
-			@unlink("{$tar_destination}.gz");
-			$tar = new PharData($tar_destination);
-			$tar->buildFromDirectory('./plugins/', "@{$name}@");
-			$tar->compress(Phar::GZ);
-			unlink($tar_destination);
-			rename("{$tar_destination}.gz", $tgz_destination);
-		} else {
-			echo "- {$name} {$version}\n";
+		if (is_file("{$dir}/index.php")) {
+			require "{$dir}/index.php";
+			$name = basename($dir);
+			$class = new ReflectionClass(str_replace('-', '', $name) . 'Plugin');
+			$manifest_item = [];
+			foreach ($class->getConstants() as $key => $value) {
+				$key = \strtolower($key);
+				if (in_array($key, $keys)) {
+					$manifest_item[$key] = $value;
+				}
+			}
+			$version = $manifest_item['version'];
+			if (0 < floatval($version)) {
+				echo "+ {$name} {$version}\n";
+				$manifest_item['type'] = 'plugin';
+				$manifest_item['id']   = $name;
+				$manifest_item['file'] = "{$dir}-{$version}.tgz";
+				ksort($manifest_item);
+				$manifest[$name] = $manifest_item;
+				$tar_destination = "{$destPath}{$name}-{$version}.tar";
+				$tgz_destination = "{$destPath}{$name}-{$version}.tgz";
+				@unlink($tgz_destination);
+				@unlink("{$tar_destination}.gz");
+				$tar = new PharData($tar_destination);
+				$tar->buildFromDirectory('./plugins/', "@{$name}@");
+				$tar->compress(Phar::GZ);
+				unlink($tar_destination);
+				rename("{$tar_destination}.gz", $tgz_destination);
+			} else {
+				echo "- {$name} {$version}\n";
+			}
 		}
 	}
 
