@@ -136,12 +136,16 @@ class Manager
 		{
 			foreach ($aGlob as $sPathName)
 			{
-				$sName = \basename($sPathName);
-				$sClassName = $this->loadPluginByName($sName);
-				$aList[] = array(
-					$sName,
-					$sClassName::VERSION
-				);
+				try {
+					$sName = \basename($sPathName);
+					$sClassName = $this->loadPluginByName($sName);
+					$aList[] = array(
+						$sName,
+						$sClassName::VERSION
+					);
+				} catch (\Throwable $e) {
+					\error_log($e->getMessage() . "\n\t{$sPathName}");
+				}
 			}
 		}
 		else
