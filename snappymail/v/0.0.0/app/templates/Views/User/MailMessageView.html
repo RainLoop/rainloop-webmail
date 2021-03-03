@@ -237,11 +237,8 @@
 							<div class="content-wrapper">
 
 								<div>
-									<span class="buttonFull" data-bind="click: fullScreen">
-										<i class="icon-arrows-out"></i>
-									</span>
-									<span class="buttonUnFull" data-bind="click: unFullScreen">
-										<i class="icon-arrows-in"></i>
+									<span class="buttonFull" data-bind="click: toggleFullScreen">
+										<i data-bind="css: { 'icon-arrows-out': !fullScreenMode(), 'icon-arrows-in': fullScreenMode }"></i>
 									</span>
 
 									<div class="line-loading e-strip-animation" data-bind="visible: messageLoadingThrottle()"></div>

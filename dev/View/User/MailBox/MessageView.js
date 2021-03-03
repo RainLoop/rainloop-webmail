@@ -15,7 +15,7 @@ import {
 	MessageSetAction
 } from 'Common/EnumsUser';
 
-import { $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings } from 'Common/Globals';
+import { doc, $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings } from 'Common/Globals';
 
 import { inFocus } from 'Common/Utils';
 import { mailToHelper } from 'Common/UtilsUser';
@@ -253,7 +253,13 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 				}
 			},
 
-			fullScreenMode: value => $htmlCL.toggle('rl-message-fullscreen', value)
+			fullScreenMode: value => {
+				if (this.oContent) {
+					value ? this.oContent.requestFullscreen() : doc.exitFullscreen();
+				} else {
+					$htmlCL.toggle('rl-message-fullscreen', value);
+				}
+			}
 		});
 
 		MessageStore.messageViewTrigger.subscribe(() => {
@@ -317,14 +323,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			color = isTransparent(color) ? '' : color;
 		}
 		return color;
-	}
-
-	fullScreen() {
-		this.fullScreenMode(true);
-	}
-
-	unFullScreen() {
-		this.fullScreenMode(false);
 	}
 
 	toggleFullScreen() {
@@ -403,14 +401,31 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		this.showFullInfo.subscribe(value => Local.set(ClientSideKeyName.MessageHeaderFullInfo, value ? '1' : '0'));
 
-		this.oHeaderDom = dom.querySelector('.messageItemHeader');
-		if (this.oHeaderDom) {
+		let el = dom.querySelector('.messageItemHeader');
+		this.oHeaderDom = el;
+		if (el) {
 			if (!this.resizeObserver) {
 				this.resizeObserver = new ResizeObserver(this.checkHeaderHeight.debounce(50).bind(this));
 			}
-			this.resizeObserver.observe(this.oHeaderDom);
+			this.resizeObserver.observe(el);
 		} else if (this.resizeObserver) {
 			this.resizeObserver.disconnect();
+		}
+
+		let event = 'fullscreenchange';
+		el = dom.querySelector('.b-message-view-wrapper');
+		if (!el.requestFullscreen && el.webkitRequestFullscreen) {
+			el.requestFullscreen = el.webkitRequestFullscreen;
+			event = 'webkit'+event;
+		}
+		if (el.requestFullscreen) {
+			if (!doc.exitFullscreen && doc.webkitExitFullscreen) {
+				doc.exitFullscreen = doc.webkitExitFullscreen;
+			}
+			this.oContent = el;
+			el.addEventListener(event, () =>
+				this.fullScreenMode((doc.fullscreenElement || doc.webkitFullscreenElement) === el)
+			);
 		}
 
 		const eqs = (ev, s) => ev.target.closestWithin(s, dom);

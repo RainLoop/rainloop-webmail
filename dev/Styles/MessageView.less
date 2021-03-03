@@ -217,7 +217,7 @@
 			border-radius: @rlLowBorderRadius;
 			scroll-behavior: smooth;
 
-			.buttonUnFull, .buttonFull {
+			.buttonFull {
 				display: inline-block;
 				position: fixed;
 				right: 25px;
@@ -242,10 +242,6 @@
 					background-color: #888;
 					color: #fff;
 				}
-			}
-
-			.buttonUnFull {
-				display: none;
 			}
 
 			.loading {
@@ -621,15 +617,6 @@ html.rl-message-fullscreen {
 }
 
 html:not(.rl-mobile) .messageItem {
-	.buttonFull {
-		display: none !important;
-	}
-}
-
-html.rl-message-fullscreen .messageItem {
-	.buttonUnFull {
-		display: inline-block !important;
-	}
 	.buttonFull {
 		display: none !important;
 	}
