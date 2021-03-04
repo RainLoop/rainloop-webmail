@@ -79,7 +79,13 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function configMapping() : array
 	{
-		$result = [];
+		$result = [
+			\RainLoop\Plugins\Property::NewInstance("pass_min_length")
+				->SetLabel('Password minimum length')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
+				->SetDescription('Minimum length of the password')
+				->SetDefaultValue(10),
+		];
 		foreach ($this->getSupportedDrivers(true) as $name => $class) {
 			$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_enabled")
 				->SetLabel('Enable ' . $class::NAME)
@@ -112,18 +118,19 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		$sPasswordForCheck = \trim($sNewPassword);
-		if (10 > \strlen($sPasswordForCheck)) {
+		if ($this->Config()->Get('plugin', 'pass_min_length', 10) > \strlen($sPasswordForCheck)) {
 			throw new ClientException(static::NewPasswordShort, null, $oActions->StaticI18N('NOTIFICATIONS/NEW_PASSWORD_SHORT'));
 		}
 
-		if (!\MailSo\Base\Utils::PasswordWeaknessCheck($sPasswordForCheck)) {
+		if (!static::PasswordWeaknessCheck($sPasswordForCheck)) {
 			throw new ClientException(static::NewPasswordWeak, null, $oActions->StaticI18N('NOTIFICATIONS/NEW_PASSWORD_WEAK'));
 		}
 
 		$bResult = false;
 		$oConfig = $this->Config();
 		foreach ($this->getSupportedDrivers() as $name => $class) {
-			if (\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $oConfig->Get('plugin', "driver_{$name}_allowed_emails"))) {
+			$sFoundedValue = '';
+			if (\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $oConfig->Get('plugin', "driver_{$name}_allowed_emails"), $sFoundedValue)) {
 				$name = $class::NAME;
 				try
 				{
@@ -183,6 +190,11 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		return $sPassword;
+	}
+
+	private static function PasswordWeaknessCheck(string $sPassword) : bool
+	{
+		return !!preg_match('/111|1234|password|abc|qwerty|monkey|letmein|dragon|baseball|iloveyou|trustno1|sunshine|master|welcome|shadow|ashley|football|jesus|michael|ninja|mustang|vkontakte/i', $sPassword);
 	}
 
 }
