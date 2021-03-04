@@ -210,7 +210,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 		}
 		$c = 0;
-		$re = [ '/[^0-9A-Za-z]+/g', '/[0-9]+/g', '/[A-Z]+/g', '/[a-z]+/g' ];
+		$re = [ '/[^0-9A-Za-z]+/', '/[0-9]+/', '/[A-Z]+/', '/[a-z]+/' ];
 		foreach ($re as $regex) {
 			if (\preg_match_all($regex, $sPassword, $m)) {
 				++$c;
