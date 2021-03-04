@@ -694,7 +694,9 @@ trait Admin
 
 	private static function deletePackageDir(string $sId) : bool
 	{
-		return !\is_dir(APP_PLUGINS_PATH.$sId) || \MailSo\Base\Utils::RecRmDir(APP_PLUGINS_PATH.$sId);
+		$sPath = APP_PLUGINS_PATH.$sId;
+		return (!\is_dir($sPath) || \MailSo\Base\Utils::RecRmDir($sPath))
+			&& (!\is_file("{$sPath}.phar") || \unlink("{$sPath}.phar"));
 	}
 
 	private function downloadRemotePackageByUrl(string $sUrl) : string
@@ -762,8 +764,12 @@ trait Admin
 		if ($sTmp)
 		{
 			$oArchive = new \PharData($sTmp, 0, $sRealFile);
-			if (!\is_dir(APP_PLUGINS_PATH.$sId) || static::deletePackageDir($sId)) {
-				$bResult = $oArchive->extractTo(APP_PLUGINS_PATH);
+			if (static::deletePackageDir($sId)) {
+				if ('.phar' === \substr($sRealFile, -5)) {
+					$bResult = \copy($sTmp, APP_PLUGINS_PATH . \basename($sRealFile));
+				} else {
+					$bResult = $oArchive->extractTo(APP_PLUGINS_PATH);
+				}
 				if (!$bResult) {
 					$this->Logger()->Write('Cannot extract package files: '.$oArchive->getStatusString(), \MailSo\Log\Enumerations\Type::ERROR, 'INSTALLER');
 				}

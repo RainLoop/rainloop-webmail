@@ -29,21 +29,42 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	protected function getSupportedDrivers(bool $all = false) : iterable
 	{
-//		foreach (\glob(__DIR__ . '/../change-password-*', GLOB_ONLYDIR) as $file) {
-		foreach (\glob(__DIR__ . '/drivers/*.php') as $file) {
-			try
-			{
-				$name = \basename($file, '.php');
-				if ($all || $this->Config()->Get('plugin', "driver_{$name}_enabled", false)) {
-					require_once $file;
-					$class = 'ChangePasswordDriver' . $name;
-					if ($class::isSupported()) {
-						yield $name => $class;
+		if ($phar_file = \Phar::running()) {
+			$phar = new \Phar($phar_file, \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME);
+			foreach (new \RecursiveIteratorIterator($phar) as $file) {
+				if (\preg_match('#/drivers/([a-z]+)\\.php$#Di', $file, $m)) {
+					try
+					{
+						if ($all || $this->Config()->Get('plugin', "driver_{$m[1]}_enabled", false)) {
+							require_once $file;
+							$class = 'ChangePasswordDriver' . $m[1];
+							if ($class::isSupported()) {
+								yield $m[1] => $class;
+							}
+						}
+					}
+					catch (\Throwable $oException)
+					{
 					}
 				}
 			}
-			catch (\Throwable $oException)
-			{
+		} else {
+//			foreach (\glob(__DIR__ . '/../change-password-*', GLOB_ONLYDIR) as $file) {
+			foreach (\glob(__DIR__ . '/drivers/*.php') as $file) {
+				try
+				{
+					$name = \basename($file, '.php');
+					if ($all || $this->Config()->Get('plugin', "driver_{$name}_enabled", false)) {
+						require_once $file;
+						$class = 'ChangePasswordDriver' . $name;
+						if ($class::isSupported()) {
+							yield $name => $class;
+						}
+					}
+				}
+				catch (\Throwable $oException)
+				{
+				}
 			}
 		}
 	}

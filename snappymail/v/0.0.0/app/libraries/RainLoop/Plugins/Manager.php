@@ -108,6 +108,18 @@ class Manager
 		}
 	}
 
+	protected static function getPluginPath(string $sName) : ?string
+	{
+		$sPath = APP_PLUGINS_PATH.$sName;
+		if (\is_readable("{$sPath}/index.php")) {
+			return $sPath;
+		}
+		if (\is_readable("{$sPath}.phar")) {
+			return "phar://{$sPath}.phar";
+		}
+		return null;
+	}
+
 	public function CreatePluginByName(string $sName) : ?\RainLoop\Plugins\AbstractPlugin
 	{
 		$oPlugin = null;
@@ -117,7 +129,7 @@ class Manager
 			$oPlugin = new $sClassName();
 			$oPlugin
 				->SetName($sName)
-				->SetPath(APP_PLUGINS_PATH.$sName)
+				->SetPath(static::getPluginPath($sName))
 				->SetPluginManager($this)
 				->SetPluginConfig(new \RainLoop\Config\Plugin($sName, $oPlugin->ConfigMap()))
 			;
@@ -130,12 +142,18 @@ class Manager
 	{
 		$aList = array();
 
-		$aGlob = \glob(APP_PLUGINS_PATH.'*', GLOB_ONLYDIR|GLOB_NOSORT);
+		$aGlob = \glob(APP_PLUGINS_PATH.'*');
 		if (\is_array($aGlob))
 		{
 			foreach ($aGlob as $sPathName)
 			{
-				$sName = \basename($sPathName);
+				if (\is_dir($sPathName)) {
+					$sName = \basename($sPathName);
+				} else if ('.phar' === \substr($sPathName, -5)) {
+					$sName = \basename($sPathName, '.phar');
+				} else {
+					continue;
+				}
 				$sClassName = $this->loadPluginByName($sName);
 				if ($sClassName) {
 					$aList[] = array(
@@ -164,12 +182,13 @@ class Manager
 
 	public function loadPluginByName(string $sName) : ?string
 	{
-		if (\preg_match('/^[a-z0-9\-]+$/', $sName)
-		 && \is_readable(APP_PLUGINS_PATH.$sName.'/index.php'))
-		{
+		if (\preg_match('/^[a-z0-9\\-]+$/', $sName)) {
 			$sClassName = $this->convertPluginFolderNameToClassName($sName);
 			if (!\class_exists($sClassName)) {
-				include_once APP_PLUGINS_PATH.$sName.'/index.php';
+				$sPath = static::getPluginPath($sName);
+				if (\is_readable($sPath.'/index.php')) {
+					include_once $sPath.'/index.php';
+				}
 			}
 			if (\class_exists($sClassName) && \is_subclass_of($sClassName, 'RainLoop\\Plugins\\AbstractPlugin')) {
 				return $sClassName;

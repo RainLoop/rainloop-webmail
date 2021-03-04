@@ -52,6 +52,15 @@ if (isset($options['plugins'])) {
 				$tar->compress(Phar::GZ);
 				unlink($tar_destination);
 				rename("{$tar_destination}.gz", $tgz_destination);
+				if (Phar::canWrite()) {
+					$phar_destination = "{$destPath}{$name}.phar";
+					@unlink($phar_destination);
+					$tar = new Phar($phar_destination);
+					$tar->buildFromDirectory("./plugins/{$name}/");
+					$tar->compress(Phar::GZ);
+					unlink($phar_destination);
+					rename("{$phar_destination}.gz", $phar_destination);
+				}
 			} else {
 				echo "- {$name} {$version}\n";
 			}
