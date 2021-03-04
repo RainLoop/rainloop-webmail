@@ -8,11 +8,11 @@
 
 	let pw_re = [/[^0-9A-Za-z]+/g, /[0-9]+/g, /[A-Z]+/g, /[a-z]+/g],
 		getPassStrength = v => {
-			var m,
+			let m,
 				i = v.length,
 				s = i?1:0,
 				c = 0,
-				ii = 0;
+				ii;
 			while (i--) {
 				if (v[i] != v[i+1]) {
 					++s;
@@ -24,7 +24,7 @@
 				m = v.match(pw_re[i]);
 				if (m) {
 					++c;
-					for (; ii < m.length; ++ii) {
+					for (ii = 0; ii < m.length; ++ii) {
 						if (5 > m[ii].length) {
 							++s;
 						}

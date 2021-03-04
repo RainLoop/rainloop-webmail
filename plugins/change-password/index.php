@@ -86,6 +86,13 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetDescription('Minimum length of the password')
 				->SetDefaultValue(10),
 		];
+		$result = [
+			\RainLoop\Plugins\Property::NewInstance("pass_min_strength")
+				->SetLabel('Password minimum strength')
+				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
+				->SetDescription('Minimum strength of the password in %')
+				->SetDefaultValue(60),
+		];
 		foreach ($this->getSupportedDrivers(true) as $name => $class) {
 			$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_enabled")
 				->SetLabel('Enable ' . $class::NAME)
@@ -122,7 +129,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 			throw new ClientException(static::NewPasswordShort, null, $oActions->StaticI18N('NOTIFICATIONS/NEW_PASSWORD_SHORT'));
 		}
 
-		if (!static::PasswordWeaknessCheck($sPasswordForCheck)) {
+		if ($this->Config()->Get('plugin', 'pass_min_strength', 60) > static::PasswordStrength($sPasswordForCheck)) {
 			throw new ClientException(static::NewPasswordWeak, null, $oActions->StaticI18N('NOTIFICATIONS/NEW_PASSWORD_WEAK'));
 		}
 
@@ -132,26 +139,27 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$sFoundedValue = '';
 			if (\RainLoop\Plugins\Helper::ValidateWildcardValues($oAccount->Email(), $oConfig->Get('plugin', "driver_{$name}_allowed_emails"), $sFoundedValue)) {
 				$name = $class::NAME;
+				$oLogger = $oActions->Logger();
 				try
 				{
 					$oDriver = new $class(
 						$oConfig(),
-						$oActions->Logger()
+						$oLogger
 					);
 					if (!$oDriver->ChangePassword($oAccount, $sPrevPassword, $sNewPassword)) {
 						throw new ClientException(static::CouldNotSaveNewPassword);
 					}
 					$bResult = true;
-					if ($this->oLogger) {
-						$this->oLogger->Write("{$name} password changed for {$oAccount->Email()}");
+					if ($oLogger) {
+						$oLogger->Write("{$name} password changed for {$oAccount->Email()}");
 					}
 				}
 				catch (\Throwable $oException)
 				{
-					if ($this->oLogger) {
-						$this->oLogger->Write("ERROR: {$name} password change for {$oAccount->Email()} failed");
-						$this->oLogger->WriteException($oException);
-//						$this->oLogger->WriteException($oException, \MailSo\Log\Enumerations\Type::WARNING, $name);
+					if ($oLogger) {
+						$oLogger->Write("ERROR: {$name} password change for {$oAccount->Email()} failed");
+						$oLogger->WriteException($oException);
+//						$oLogger->WriteException($oException, \MailSo\Log\Enumerations\Type::WARNING, $name);
 					}
 				}
 			}
@@ -192,9 +200,32 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return $sPassword;
 	}
 
-	private static function PasswordWeaknessCheck(string $sPassword) : bool
+	private static function PasswordStrength(string $sPassword) : int
 	{
-		return !\preg_match('/111|1234|password|abc|qwerty|monkey|letmein|dragon|baseball|iloveyou|trustno1|sunshine|master|welcome|shadow|ashley|football|jesus|michael|ninja|mustang|vkontakte/i', $sPassword);
+		$i = \strlen($sPassword);
+		$s = $i ? 1 : 0;
+		while (--$i) {
+			if ($sPassword[$i] != $sPassword[$i-1]) {
+				++$s;
+			} else {
+				$s -= 0.5;
+			}
+		}
+		$c = 0;
+		$re = [ '/[^0-9A-Za-z]+/g', '/[0-9]+/g', '/[A-Z]+/g', '/[a-z]+/g' ];
+		foreach ($re as $regex) {
+			if (\preg_match_all($regex, $sPassword, $m)) {
+				++$c;
+				foreach ($m[0] as $str) {
+					if (5 > \strlen($str)) {
+						++$s;
+					}
+				}
+			}
+		}
+		$s = ($s / 3 * $c);
+
+		return \max(0, \min(100, $s * 5));
 	}
 
 }
