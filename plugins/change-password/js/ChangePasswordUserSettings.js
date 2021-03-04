@@ -6,6 +6,35 @@
 		return;
 	}
 
+	let pw_re = [/[^0-9A-Za-z]+/g, /[0-9]+/g, /[A-Z]+/g, /[a-z]+/g],
+		getPassStrength = v => {
+			var m,
+				i = v.length,
+				s = i?1:0,
+				c = 0,
+				ii = 0;
+			while (i--) {
+				if (v[i] != v[i+1]) {
+					++s;
+				} else {
+					s -= 0.5;
+				}
+			}
+			for (i = 0; i < 4; ++i) {
+				m = v.match(pw_re[i]);
+				if (m) {
+					++c;
+					for (; ii < m.length; ++ii) {
+						if (5 > m[ii].length) {
+							++s;
+						}
+					}
+				}
+			}
+			s = (s / 3 * c);
+			return Math.max(0, Math.min(100, s * 5));
+		};
+
 	class ChangePasswordUserSettings
 	{
 		constructor() {
@@ -66,6 +95,12 @@
 			this.passwordUpdateError(false);
 			this.passwordUpdateSuccess(false);
 			current ? this.currentPasswordError(false) : this.passwordMismatch(false);
+		}
+
+		onBuild(dom) {
+			let input = dom.querySelector('.new-password'),
+				meter = dom.querySelector('.new-password-meter');
+			input && meter && input.addEventListener('input',() => meter.value = getPassStrength(input.value));
 		}
 
 		onHide() {

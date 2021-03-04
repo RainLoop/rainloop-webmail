@@ -194,7 +194,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	private static function PasswordWeaknessCheck(string $sPassword) : bool
 	{
-		return !!preg_match('/111|1234|password|abc|qwerty|monkey|letmein|dragon|baseball|iloveyou|trustno1|sunshine|master|welcome|shadow|ashley|football|jesus|michael|ninja|mustang|vkontakte/i', $sPassword);
+		return !\preg_match('/111|1234|password|abc|qwerty|monkey|letmein|dragon|baseball|iloveyou|trustno1|sunshine|master|welcome|shadow|ashley|football|jesus|michael|ninja|mustang|vkontakte/i', $sPassword);
 	}
 
 }
