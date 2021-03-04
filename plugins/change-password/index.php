@@ -97,15 +97,15 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function ChangePassword()
 	{
+		$oActions = $this->Manager()->Actions();
+		$oAccount = $oActions->GetAccount();
+
 		if (!$oAccount->Email()) {
 			throw new ClientException(static::CouldNotSaveNewPassword);
 		}
 
 		$sPrevPassword = $this->jsonParam('PrevPassword');
 		$sNewPassword = $this->jsonParam('NewPassword');
-
-		$oActions = $this->Manager()->Actions();
-		$oAccount = $oActions->GetAccount();
 
 		if ($sPrevPassword !== $oAccount->Password()) {
 			throw new ClientException(static::CurrentPasswordIncorrect, null, $oActions->StaticI18N('NOTIFICATIONS/CURRENT_PASSWORD_INCORRECT'));
