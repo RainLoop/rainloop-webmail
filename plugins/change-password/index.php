@@ -139,7 +139,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				try
 				{
 					$oDriver = new $class(
-						$oConfig(),
+						$oConfig,
 						$oLogger
 					);
 					if (!$oDriver->ChangePassword($oAccount, $sPrevPassword, $sNewPassword)) {
