@@ -48,11 +48,11 @@ This fork of RainLoop has the following changes:
 * ES2015
 * PHP 7.3+ required
 * PHP mbstring extension required
-* PHP replaced pclZip with ZipArchive
+* PHP replaced pclZip with PharData and ZipArchive
 * PHP yaml extension else use the old Spyc
 * Added option to remove background/font colors from messages for real "dark mode"
 * Removed BackwardCapability (class \RainLoop\Account)
-* Removed ChangePassword (plugins won't work)
+* Removed ChangePassword (re-implemented as plugin)
 * Removed OAuth support
 * Removed POP3 support
 * Removed background video support
@@ -70,6 +70,7 @@ This fork of RainLoop has the following changes:
 * Slimmed down language files
 * Replaced webpack with rollup
 * No user-agent detection (use device width)
+* Added support to load plugins as .phar
 
 ### Removal of old JavaScript
 
