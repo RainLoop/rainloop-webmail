@@ -72,8 +72,8 @@ abstract class AbstractPlugin
 
 	public function Description() : string
 	{
-		return static::DESCRIPTION;
-//		file_exists($oPlugin->Path().'/README') ? file_get_contents($oPlugin->Path().'/README') : ''
+		$sFile = $this->Path().'/README';
+		return \is_readable($sFile) ? \file_get_contents($sFile) : static::DESCRIPTION;
 	}
 
 	public function UseLangs(?bool $bLangs = null) : bool
