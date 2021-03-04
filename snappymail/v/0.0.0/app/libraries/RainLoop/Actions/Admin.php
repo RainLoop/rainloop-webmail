@@ -877,7 +877,7 @@ trait Admin
 			{
 				$mResult = array(
 					 'Name' => $sName,
-					 'Readme' => file_exists($oPlugin->Path().'/README') ? file_get_contents($oPlugin->Path().'/README') : '',
+					 'Readme' => $oPlugin->Description(),
 					 'Config' => array()
 				);
 

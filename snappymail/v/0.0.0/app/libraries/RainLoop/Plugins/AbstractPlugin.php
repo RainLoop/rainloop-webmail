@@ -70,6 +70,12 @@ abstract class AbstractPlugin
 		return $this->sName;
 	}
 
+	public function Description() : string
+	{
+		return static::DESCRIPTION;
+//		file_exists($oPlugin->Path().'/README') ? file_get_contents($oPlugin->Path().'/README') : ''
+	}
+
 	public function UseLangs(?bool $bLangs = null) : bool
 	{
 		if (null !== $bLangs)
@@ -144,11 +150,6 @@ abstract class AbstractPlugin
 			$oPluginConfig->Save();
 		}
 		return $this;
-	}
-
-	public function PreInit() : void
-	{
-
 	}
 
 	public function Init() : void

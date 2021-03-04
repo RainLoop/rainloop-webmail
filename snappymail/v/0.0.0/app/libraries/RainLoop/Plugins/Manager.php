@@ -96,7 +96,6 @@ class Manager
 						$oPlugin = $this->CreatePluginByName($sName);
 						if ($oPlugin)
 						{
-							$oPlugin->PreInit();
 							$oPlugin->Init();
 
 							$this->aPlugins[] = $oPlugin;
@@ -136,15 +135,13 @@ class Manager
 		{
 			foreach ($aGlob as $sPathName)
 			{
-				try {
-					$sName = \basename($sPathName);
-					$sClassName = $this->loadPluginByName($sName);
+				$sName = \basename($sPathName);
+				$sClassName = $this->loadPluginByName($sName);
+				if ($sClassName) {
 					$aList[] = array(
 						$sName,
 						$sClassName::VERSION
 					);
-				} catch (\Throwable $e) {
-					\error_log($e->getMessage() . "\n\t{$sPathName}");
 				}
 			}
 		}
@@ -168,19 +165,16 @@ class Manager
 	public function loadPluginByName(string $sName) : ?string
 	{
 		if (\preg_match('/^[a-z0-9\-]+$/', $sName)
-		 && \file_exists(APP_PLUGINS_PATH.$sName.'/index.php'))
+		 && \is_readable(APP_PLUGINS_PATH.$sName.'/index.php'))
 		{
 			$sClassName = $this->convertPluginFolderNameToClassName($sName);
 			if (!\class_exists($sClassName)) {
-				include APP_PLUGINS_PATH.$sName.'/index.php';
+				include_once APP_PLUGINS_PATH.$sName.'/index.php';
 			}
 			if (\class_exists($sClassName) && \is_subclass_of($sClassName, 'RainLoop\\Plugins\\AbstractPlugin')) {
 				return $sClassName;
 			}
-			else
-			{
-				\trigger_error("Invalid plugin class {$sClassName}");
-			}
+			\trigger_error("Invalid plugin class {$sClassName}");
 		}
 
 		return null;
@@ -222,7 +216,7 @@ class Manager
 			$aJs = $bAdminScope ? $this->aAdminJs : $this->aJs;
 			foreach ($aJs as $sFile)
 			{
-				if (\file_exists($sFile))
+				if (\is_readable($sFile))
 				{
 					$aResult[] = \file_get_contents($sFile);
 				}
@@ -247,7 +241,7 @@ class Manager
 			$aTemplates = $bAdminScope ? $this->aAdminTemplates : $this->aTemplates;
 			foreach ($aTemplates as $sFile)
 			{
-				if (\file_exists($sFile))
+				if (\is_readable($sFile))
 				{
 					$sTemplateName = \substr(\basename($sFile), 0, -5);
 					$aList[$sTemplateName] = $sFile;
