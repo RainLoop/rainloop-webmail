@@ -85,8 +85,6 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDescription('Minimum length of the password')
 				->SetDefaultValue(10),
-		];
-		$result = [
 			\RainLoop\Plugins\Property::NewInstance("pass_min_strength")
 				->SetLabel('Password minimum strength')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
