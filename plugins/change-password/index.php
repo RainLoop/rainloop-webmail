@@ -116,18 +116,16 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		$sPrevPassword = $this->jsonParam('PrevPassword');
-		$sNewPassword = $this->jsonParam('NewPassword');
-
 		if ($sPrevPassword !== $oAccount->Password()) {
 			throw new ClientException(static::CurrentPasswordIncorrect, null, $oActions->StaticI18N('NOTIFICATIONS/CURRENT_PASSWORD_INCORRECT'));
 		}
 
-		$sPasswordForCheck = \trim($sNewPassword);
-		if ($this->Config()->Get('plugin', 'pass_min_length', 10) > \strlen($sPasswordForCheck)) {
+		$sNewPassword = $this->jsonParam('NewPassword');
+		if ($this->Config()->Get('plugin', 'pass_min_length', 10) > \strlen($sNewPassword)) {
 			throw new ClientException(static::NewPasswordShort, null, $oActions->StaticI18N('NOTIFICATIONS/NEW_PASSWORD_SHORT'));
 		}
 
-		if ($this->Config()->Get('plugin', 'pass_min_strength', 60) > static::PasswordStrength($sPasswordForCheck)) {
+		if ($this->Config()->Get('plugin', 'pass_min_strength', 60) > static::PasswordStrength($sNewPassword)) {
 			throw new ClientException(static::NewPasswordWeak, null, $oActions->StaticI18N('NOTIFICATIONS/NEW_PASSWORD_WEAK'));
 		}
 
@@ -163,10 +161,12 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 			}
 		}
 
-		if ($bResult) {
-			$oAccount->SetPassword($sNewPassword);
-			$oActions->SetAuthToken($oAccount);
+		if (!$bResult) {
+			throw new ClientException(static::CouldNotSaveNewPassword);
 		}
+
+		$oAccount->SetPassword($sNewPassword);
+		$oActions->SetAuthToken($oAccount);
 
 		return $oActions->GetSpecAuthToken();
 //		return $this->jsonResponse(__FUNCTION__, $oActions->GetSpecAuthToken());
