@@ -20,7 +20,7 @@
 		lastTouch,
 		holdInterval,
 
-		img, imgCustom, imgOffset;
+		img;
 
 /*
 	class DataTransferItem
@@ -57,13 +57,25 @@
 			data[type] = value;
 		}
 
-		setDragImage(img, xOffset, yOffset) {
-			imgCustom = img;
-			imgOffset = { x: xOffset, y: yOffset };
+		constructor() {
+			this.setDragImage = setDragImage;
 		}
 	}
 
 	const
+	htmlDrag = b => doc.documentElement.classList.toggle('firefox-drag', b),
+
+	setDragImage = (src, xOffset, yOffset) => {
+		img && img.remove();
+		if (src) {
+			// create drag image from custom element or drag source
+			img = src.cloneNode(true);
+			copyStyle(src, img);
+			img._x = xOffset == null ? src.clientWidth / 2 : xOffset;
+			img._y = yOffset == null ? src.clientHeight / 2 : yOffset;
+		}
+	},
+
 	// clear all members
 	reset = () => {
 		if (dragSource) {
@@ -71,8 +83,9 @@
 			// dispose of drag image element
 			img && img.remove();
 			isDragging && dispatchEvent(lastTouch, 'dragend', dragSource);
-			img = imgCustom = dragSource = lastTouch = lastTarget = dataTransfer = holdInterval = null;
+			img = dragSource = lastTouch = lastTarget = dataTransfer = holdInterval = null;
 			isDragging = allowDrop = false;
+			htmlDrag(false);
 		}
 	},
 
@@ -103,8 +116,8 @@
 	moveImage = pt => {
 		requestAnimationFrame(() => {
 			if (img) {
-				img.style.left = Math.round(pt.x - imgOffset.x) + 'px';
-				img.style.top = Math.round(pt.y - imgOffset.y) + 'px';
+				img.style.left = Math.round(pt.x - img._x) + 'px';
+				img.style.top = Math.round(pt.y - img._y) + 'px';
 			}
 		});
 	},
@@ -173,22 +186,17 @@
 						// start dragging
 						dataTransfer = new DataTransfer();
 						if ((isDragging = dispatchEvent(e, 'dragstart', dragSource))) {
+							htmlDrag(true);
+
 							let pt = getPoint(e);
 
 							// create drag image from custom element or drag source
-							let src = imgCustom || dragSource;
-							img = src.cloneNode(true);
-							copyStyle(src, img);
+							img || setDragImage(dragSource);
 							let style = img.style;
 							style.top = style.left = '-9999px';
 							style.position = 'fixed';
 							style.pointerEvents = 'none';
 							style.zIndex = '999999999';
-							// if creating from drag source, apply offset and opacity
-							if (!imgCustom) {
-								imgOffset = { x: src.clientWidth / 2, y: src.clientHeight / 2 };
-								style.opacity = 0.75;
-							}
 							// add image to document
 							moveImage(pt);
 							doc.body.append(img);
@@ -208,7 +216,6 @@
 				let pt = getPoint(e),
 					target = getTarget(pt);
 				lastTouch = e;
-				e.preventDefault(); // prevent scrolling
 				if (target != lastTarget) {
 					dispatchEvent(e, 'dragleave', lastTarget);
 					dispatchEvent(e, 'dragenter', target);
