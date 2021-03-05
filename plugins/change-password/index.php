@@ -89,7 +89,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetLabel('Password minimum strength')
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::INT)
 				->SetDescription('Minimum strength of the password in %')
-				->SetDefaultValue(60),
+				->SetDefaultValue(70),
 		];
 		foreach ($this->getSupportedDrivers(true) as $name => $class) {
 			$result[] = \RainLoop\Plugins\Property::NewInstance("driver_{$name}_enabled")
@@ -125,7 +125,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 			throw new ClientException(static::NewPasswordShort, null, $oActions->StaticI18N('NOTIFICATIONS/NEW_PASSWORD_SHORT'));
 		}
 
-		if ($this->Config()->Get('plugin', 'pass_min_strength', 60) > static::PasswordStrength($sNewPassword)) {
+		if ($this->Config()->Get('plugin', 'pass_min_strength', 70) > static::PasswordStrength($sNewPassword)) {
 			throw new ClientException(static::NewPasswordWeak, null, $oActions->StaticI18N('NOTIFICATIONS/NEW_PASSWORD_WEAK'));
 		}
 
@@ -201,13 +201,10 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 	private static function PasswordStrength(string $sPassword) : int
 	{
 		$i = \strlen($sPassword);
-		$s = $i ? 1 : 0;
+		$max = min(100, $i * 8);
+		$s = 0;
 		while (--$i) {
-			if ($sPassword[$i] != $sPassword[$i-1]) {
-				++$s;
-			} else {
-				$s -= 0.5;
-			}
+			$s += ($sPassword[$i] != $sPassword[$i-1] ? 1 : -0.5);
 		}
 		$c = 0;
 		$re = [ '/[^0-9A-Za-z]+/', '/[0-9]+/', '/[A-Z]+/', '/[a-z]+/' ];
@@ -221,9 +218,8 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				}
 			}
 		}
-		$s = ($s / 3 * $c);
 
-		return \max(0, \min(100, $s * 5));
+		return \intval(\max(0, \min($max, $s * $c * 1.5)));
 	}
 
 }

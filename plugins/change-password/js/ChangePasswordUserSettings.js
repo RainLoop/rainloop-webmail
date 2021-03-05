@@ -10,15 +10,12 @@
 		getPassStrength = v => {
 			let m,
 				i = v.length,
-				s = i?1:0,
+				max = Math.min(100, i * 8),
+				s = 0,
 				c = 0,
 				ii;
 			while (i--) {
-				if (v[i] != v[i+1]) {
-					++s;
-				} else {
-					s -= 0.5;
-				}
+				s += (v[i] != v[i+1] ? 1 : -0.5);
 			}
 			for (i = 0; i < 4; ++i) {
 				m = v.match(pw_re[i]);
@@ -31,8 +28,7 @@
 					}
 				}
 			}
-			s = (s / 3 * c);
-			return Math.max(0, Math.min(100, s * 5));
+			return Math.max(0, Math.min(max, s * c * 1.5));
 		};
 
 	class ChangePasswordUserSettings
