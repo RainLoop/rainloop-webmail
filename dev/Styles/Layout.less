@@ -5,7 +5,7 @@
 	background-position: center;
 }
 
-#rl-center, #rl-top, #rl-bottom, #rl-left, #rl-right {
+#rl-center, #rl-top, #rl-left, #rl-right {
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -48,14 +48,8 @@ html.rl-mobile {
 	z-index: 2;
 }
 
-#rl-bottom {
-	top: auto;
-	z-index: 1;
-}
-
 #rl-left {
 	width: @rlLeftWidth;
-	min-width: 60px;
 }
 
 /*
@@ -131,7 +125,7 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
 	top: 0;
 	bottom: 0;
 	left: 0;
-	width: 500px;
+	width: 50%;
 }
 
 #rl-sub-right {
@@ -139,7 +133,7 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
 	top: 0;
 	bottom: 0;
 	right: 0;
-	left: 500px;
+	left: 50%;
 
 	.b-message-view-backdrop {
 		position: absolute;
@@ -187,6 +181,14 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
 //	-webkit-overflow-scrolling: touch;
 }
 
+.b-settings-content {
+	padding:20px 20px 20px 30px;
+}
+
+/* desktop */
+@media screen and (min-width: 1000px) {
+}
+
 /* desktop-large */
 @media screen and (min-width: 1401px) {
 	#rl-left {
@@ -198,30 +200,11 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
 	}
 
 	#rl-sub-left {
-		width: 500px;
+		width: 40%;
 	}
 
 	#rl-sub-right {
-		left: 500px;
-	}
-}
-
-/* desktop */
-@media screen and (min-width: 1000px) and (max-width: 1400px) {
-	#rl-left {
-		width: @rlLeftWidth;
-	}
-
-	#rl-right {
-		left: @rlLeftWidth;
-	}
-
-	#rl-sub-left {
-		width: 400px;
-	}
-
-	#rl-sub-right {
-		left: 400px;
+		left: 40%;
 	}
 }
 
@@ -235,17 +218,9 @@ html:not(.rl-left-panel-disabled) #rl-left.resizable > .resizer,
 		left: 155px;
 	}
 
-	#rl-sub-left {
-		width: 310px;
+	.b-settings-content {
+		padding: 10px 10px 10px 20px;
 	}
-
-	#rl-sub-right {
-		left: 310px;
-	}
-}
-
-/* tablet */
-@media screen and (min-width: 768px) and (max-width: 999px) {
 }
 
 .hidden-on-ctrl-btn,
@@ -270,10 +245,6 @@ html.rl-left-panel-disabled {
 
 		.opacity-on-panel-disabled {
 			opacity: 0.3;
-		}
-
-		.visibility-hidden-on-panel-disabled {
-			visibility: hidden;
 		}
 
 		.hide-on-panel-disabled {

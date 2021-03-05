@@ -1,7 +1,6 @@
 <div class="b-settings b-admin-right">
 	<div class="b-toolbar g-ui-user-select-none">
-		<a class="btn btn-thin-2 show-mobile fontastic" data-bind="click: hideLeft, visible: !leftPanelDisabled()">❮</a>
-		<a class="btn btn-thin-2 show-mobile fontastic" data-bind="click: showLeft, visible: leftPanelDisabled()">❯</a>
+		<a class="btn btn-thin-2 fontastic toggleLeft" data-bind="click: toggleLeft, text: leftPanelDisabled() ? '❯' : '❮'">❮</a>
 		<i class="icon-spinner" style="margin: 10px" data-bind="style: {'visibility': adminManLoadingVisibility }"></i>
 		<h4>SnappyMail - <span data-i18n="TOP_PANEL/LABEL_ADMIN_PANEL"></span></h4>
 		<a class="btn btn-logout fontastic" data-bind="click: logoutClick">⏻</a>
@@ -9,7 +8,7 @@
 	<div class="b-content">
 		<div class="content">
 			<div class="content-wrapper">
-				<div id="rl-settings-subscreen" class="b-settings-content" style="position: relative; z-index: 2"></div>
+				<div id="rl-settings-subscreen" class="b-settings-content"></div>
 			</div>
 		</div>
 	</div>

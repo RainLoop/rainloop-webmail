@@ -67,11 +67,10 @@ trait Admin
 		{
 			$this->oLogger->Write('Cannot store an admin token',
 				\MailSo\Log\Enumerations\Type::WARNING);
-
-			$sRand = '';
+			return '';
 		}
 
-		return '' === $sRand ? '' : Utils::EncodeKeyValuesQ(array('token', \md5(APP_SALT), $sRand));
+		return Utils::EncodeKeyValuesQ(array('token', \md5(APP_SALT), $sRand));
 	}
 
 	private function setCapaFromParams(\RainLoop\Config\Application $oConfig, string $sParamName, string $sCapa) : void

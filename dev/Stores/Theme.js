@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { $htmlCL } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled } from 'Common/Globals';
 
 export const ThemeStore = {
 	themes: ko.observableArray(),
@@ -17,6 +17,8 @@ export const ThemeStore = {
 			this.userBackgroundName(Settings.get('UserBackgroundName'));
 			this.userBackgroundHash(Settings.get('UserBackgroundHash'));
 		}
+
+		leftPanelDisabled(this.isMobile());
 	}
 };
 

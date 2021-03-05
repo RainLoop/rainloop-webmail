@@ -1,4 +1,3 @@
-import { leftPanelDisabled } from 'Common/Globals';
 import { KeyState } from 'Common/Enums';
 
 import { settingsMenuKeysHandler } from 'Knoin/Knoin';
@@ -10,8 +9,6 @@ class MenuSettingsAdminView extends AbstractViewLeft {
 	 */
 	constructor(screen) {
 		super('Admin/Settings/Menu', 'AdminMenu');
-
-		this.leftPanelDisabled = leftPanelDisabled;
 
 		this.menu = screen.menu;
 	}

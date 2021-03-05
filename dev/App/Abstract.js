@@ -3,7 +3,6 @@ import ko from 'ko';
 import {
 	doc,
 	elementById,
-	leftPanelDisabled,
 	Settings
 } from 'Common/Globals';
 
@@ -96,11 +95,6 @@ export class AbstractApp {
 		}
 
 		initOnStartOrLangChange();
-
-		leftPanelDisabled(ThemeStore.isMobile());
-		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 767 >= innerWidth));
-
-		leftPanelDisabled.valueHasMutated();
 
 		LanguageStore.populate();
 		ThemeStore.populate();

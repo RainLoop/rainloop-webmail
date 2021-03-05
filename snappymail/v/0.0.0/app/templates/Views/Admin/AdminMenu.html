@@ -1,11 +1,5 @@
 <div class="b-admin-left g-ui-user-select-none">
-	<div class="b-toolbar">
-        <div class="btn-group show-on-panel-disabled">
-            <a class="btn buttonResize" data-bind="click: function () { leftPanelDisabled(!leftPanelDisabled()); }">
-				<i data-bind="css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></i>
-            </a>
-        </div>
-	</div>
+	<div class="b-toolbar"></div>
 	<div class="b-content opacity-on-panel-disabled">
 		<div class="b-admin-menu" data-bind="foreach: menu">
 			<!-- ko if: disabled -->
@@ -20,5 +14,4 @@
 			<!-- /ko -->
 		</div>
 	</div>
-    <div class="b-content show-on-panel-disabled" data-bind="click: function () { leftPanelDisabled(false); }"></div>
 </div>

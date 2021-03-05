@@ -25,16 +25,10 @@ class PaneSettingsAdminView extends AbstractViewRight {
 			.extend({ rateLimit: 300 });
 	}
 
-	hideLeft(item, event) {
+	toggleLeft(item, event) {
 		event.preventDefault();
 		event.stopPropagation();
-		leftPanelDisabled(true);
-	}
-
-	showLeft(item, event) {
-		event.preventDefault();
-		event.stopPropagation();
-		leftPanelDisabled(false);
+		leftPanelDisabled(!leftPanelDisabled());
 	}
 
 	logoutClick() {

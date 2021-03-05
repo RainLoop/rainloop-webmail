@@ -1,0 +1,105 @@
+
+.UserBackground body {
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+#rl-center, #rl-top, #rl-left, #rl-right {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	padding: 0;
+	margin: 0;
+	border: 0;
+	z-index: 0;
+}
+
+#rl-content {
+	height: 100%;
+	width: 100%;
+}
+
+#rl-center {
+	min-width: 600px;
+	min-height: 400px;
+}
+
+#rl-top {
+	bottom: auto;
+	z-index: 2;
+}
+
+#rl-left {
+	width: @rlLeftWidth;
+}
+
+#rl-right {
+	z-index: 1;
+	left: @rlLeftWidth;
+}
+
+#rl-popups > .rl-view-model {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1100;
+	overflow: auto;
+	background-color: rgba(0,0,0,0.3);
+//	-webkit-overflow-scrolling: touch;
+}
+
+.b-settings-content {
+	padding:20px 20px 20px 30px;
+}
+
+/* desktop */
+@media screen and (min-width: 1000px) {
+	.toggleLeft {
+		display: none;
+	}
+}
+
+/* desktop-large */
+@media screen and (min-width: 1401px) {
+	#rl-left {
+		width: @rlLeftWidth + 20;
+	}
+
+	#rl-right {
+		left: @rlLeftWidth + 20;
+	}
+}
+
+/* mobile and tablet */
+@media screen and (max-width: 999px) {
+	.b-settings-content {
+		padding: 10px 10px 10px 20px;
+	}
+
+	#rl-center {
+		min-width: 250px;
+		min-height: 250px;
+	}
+
+	html:not(.rl-left-panel-disabled) #rl-right {
+		right: 5-@rlLeftWidth;
+	}
+
+	html.rl-left-panel-disabled {
+		#rl-left {
+			width: 0px !important;
+
+			.opacity-on-panel-disabled {
+				opacity: 0.3;
+			}
+		}
+		#rl-right {
+			left: 5px !important;
+		}
+	}
+}

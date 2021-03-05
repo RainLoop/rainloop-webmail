@@ -898,6 +898,8 @@ class AppUser extends AbstractApp {
 	bootstart() {
 		super.bootstart();
 
+		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 1000 > innerWidth));
+
 		AppStore.populate();
 		SettingsStore.populate();
 		NotificationStore.populate();
