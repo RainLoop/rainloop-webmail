@@ -2562,9 +2562,12 @@ class Squire
 				documentSizeThreshold: -1, // -1 means no threshold
 				undoLimit: -1 // -1 means no limit
 			},
-			sanitizeToDOMFragment: null,
 			addLinks: true
 		}, config, true );
+
+		if ( typeof config.sanitizeToDOMFragment !== 'function' ) {
+			config.sanitizeToDOMFragment = null;
+		}
 
 		// Users may specify block tag in lower case
 		config.blockTag = config.blockTag.toUpperCase();
@@ -3683,7 +3686,13 @@ class Squire
 	_setHTML ( html ) {
 		let root = this._root;
 		let node = root;
-		node.innerHTML = html;
+		let sanitizeToDOMFragment = this._config.sanitizeToDOMFragment;
+		if ( sanitizeToDOMFragment ) {
+			empty( node );
+			node.appendChild( sanitizeToDOMFragment( html, false, this ) );
+		} else {
+			node.innerHTML = html;
+		}
 		do {
 			fixCursor( node, root );
 		} while ( node = getNextBlock( node, root ) );
@@ -3709,7 +3718,7 @@ class Squire
 		let div, frag, child;
 
 		// Parse HTML into DOM tree
-		if ( typeof sanitizeToDOMFragment === 'function' ) {
+		if ( sanitizeToDOMFragment ) {
 			frag = sanitizeToDOMFragment( html, false, this );
 		} else {
 			div = createElement( 'DIV' );
@@ -3830,7 +3839,7 @@ class Squire
 				html = html.slice( startFragmentIndex + 20, endFragmentIndex );
 			}
 		}
-		if ( typeof sanitizeToDOMFragment === 'function' ) {
+		if ( sanitizeToDOMFragment ) {
 			frag = sanitizeToDOMFragment( html, isPaste, this );
 		} else {
 			// Wrap with <tr> if html contains dangling <td> tags
