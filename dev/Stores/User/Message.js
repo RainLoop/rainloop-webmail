@@ -57,11 +57,9 @@ const
 		do {
 			l = html.length;
 			html = html
-				.replace(/(<[^>]+);?background(-color)?\s*:[^;"']+/gi, '$1')
-				.replace(/(<[^>]+[^-]);?color\s*:[^;"']+/gi, '$1')
-				.replace(/(<[^>]+[^-])\sbgcolor="[^"]+"/gi, '$1')
-				.replace(/(<[^>]+[^-])\scolor="[^"]+"/gi, '$1');
-			//.replace(/<\/?font[^>]+>/gmi, '')
+				.replace(/(<[^>]+)[;"']\s*background(-[a-z]+)?\s*:[^;"']+/gi, '$1')
+				.replace(/(<[^>]+)[;"']\s*color\s*:[^;"']+/gi, '$1')
+				.replace(/(<[^>]+)\s(bg)?color=("[^"]+"|'[^']+')/gi, '$1');
 		} while (l != html.length)
 		return html;
 	};
