@@ -134,7 +134,6 @@ html.rl-no-preview-pane {
 		}
 
 		.listClear {
-			color: #333;
 			text-align: center;
 			padding: 10px;
 			font-size: 14px;
@@ -201,228 +200,228 @@ html.rl-no-preview-pane {
 			background-color: #f4f4f4;
 			text-align: center;
 		}
+	}
 
-		.messageListItem {
+	.messageListItem {
 
+		position: relative;
+		max-height: 60px;
+		font-size: 12px;
+		overflow: hidden;
+		cursor: pointer;
+
+		margin: 0;
+		padding: 5px 0;
+		border: 0;
+		border-bottom: 1px solid rgba(153, 153, 153, 0.2);
+		border-left: 6px solid #eee;
+
+		z-index: 100;
+
+		background-color: #f9f9f9;
+
+		&.focused {
+			background-color: #f5f5f5;
+			border-left-color: #ccc;
+		}
+
+		.importantMark {
+			display: none;
+
+			color:red;
+			margin-right:5px
+		}
+
+		&.deleted-mark {
+			opacity: .7;
+			.subjectParent {
+				text-decoration: line-through;
+			}
+		}
+
+		&.important .importantMark {
+			display: inline;
+		}
+
+		&.new {
+			max-height: 0;
+		}
+
+		&.deleted {
+			max-height: 0;
+			border-color: transparent !important;
+		}
+
+		.checkboxMessage {
+			padding: 0 8px 0 6px;
+			font-size: 16px;
+		}
+
+		.flagParent {
+			padding: 0 10px 0 5px;
+		}
+
+		time {
+			margin: 0 5px;
+			color: #999;
+			font-size: 11px;
+			white-space: nowrap;
+		}
+
+		.threadsParent {
 			position: relative;
-			max-height: 60px;
-			font-size: 12px;
+		}
+
+		.attachmentParent {
+			position: relative;
+			margin: 2px 10px 0 5px;
+			color: #666;
+			text-shadow: 0 1px 0 #eee;
+		}
+
+		.senderParent {
 			overflow: hidden;
-			cursor: pointer;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
 
-			margin: 0;
-			padding: 5px 0;
-			border: 0;
-			border-bottom: 1px solid rgba(153, 153, 153, 0.2);
-			border-left: 6px solid #eee;
+		.threadsCountParent {
+			display: inline;
+			overflow: hidden;
+			background-color: #eee;
+			padding: 1px 5px;
+			margin-right: 5px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+		}
 
-			z-index: 100;
+		.threadsCountParent.lastSelected {
+			background-color: #999;
+			border-color: #999;
+			color: #fff;
+		}
 
-			background-color: #f9f9f9;
+		.threadsCountParent:hover {
+			border-color: #666;
+		}
+
+		.subjectParent {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.subjectParent .emptySubjectText {
+			display: none;
+			font-style: italic;
+			opacity: 0.5;
+		}
+
+		&.emptySubject .subjectParent {
+			.subject {
+				display: none;
+			}
+			.emptySubjectText {
+				display: inline;
+			}
+		}
+
+		.sender, .subject {
+			margin-left: 0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.threads-len {
+			.threads-len-data {
+
+				background-color: #eee;
+				color: #666;
+				border-radius: 6px;
+				padding: 2px 0 1px 6px;
+				margin-right: 2px;
+				border: 1px solid #ccc;
+
+				&:hover {
+					background-color: #aaa;
+					border-color: #666;
+					text-shadow: 0 1px 0 #999;
+					color: #fff;
+				}
+			}
+		}
+
+		.flagOff {
+			opacity: 0.5;
+			&:hover {
+				opacity: 1;
+			}
+		}
+
+		.flagOn, .flagOnHalf {
+			color: orange;
+		}
+
+		.replyFlag, .forwardFlag {
+			display: none;
+			margin-right: 0.25em;
+		}
+
+		&.answered .replyFlag {
+			display: inline-block;
+		}
+
+		&.forwarded .forwardFlag {
+			display: inline-block;
+		}
+
+		&:not(.withAttachments) .attachmentParent {
+			display: none;
+		}
+
+		&.hasUnseenSubMessage {
+			background-color: #FFFFD9;
+			border-left-color: lighten(orange, 30%);
+			&.focused {
+				border-left-color: darken(orange, 10%);
+			}
+		}
+
+		&.unseen {
+			background-color: #FFFFD9;
+			border-left-color: orange;
+			.sender, .subjectParent {
+				font-weight: bold;
+			}
 
 			&.focused {
-				background-color: #f5f5f5;
-				border-left-color: #ccc;
+				border-left-color: darken(orange, 10%);
 			}
+		}
 
-			.importantMark {
-				display: none;
+		&.checked {
+			border-left-color: lighten(#398CF2, 10%);
 
-				color:red;
-				margin-right:5px
+			&.focused {
+				border-left-color: darken(#398CF2, 5%);
 			}
+		}
 
-			&.deleted-mark {
-				opacity: .7;
-				.subjectParent {
-					text-decoration: line-through;
-				}
+		&.selected {
+			background-color: rgba(140, 200, 255, 0.3);
+			border-bottom-color: rgba(57, 140, 242, 0.2);
+			border-left-color: #398CF2;
+			z-index: 101;
+
+			+ .messageListItem {
+				border-bottom-color: rgba(57, 140, 242, 0.3);
 			}
+		}
 
-			&.important .importantMark {
-				display: inline;
-			}
-
-			&.new {
-				max-height: 0;
-			}
-
-			&.deleted {
-				max-height: 0;
-				border-color: transparent !important;
-			}
-
-			.checkboxMessage {
-				padding: 0 8px 0 6px;
-				font-size: 16px;
-			}
-
-			.flagParent {
-				padding: 0 10px 0 5px;
-			}
-
-			time {
-				margin: 0 5px;
-				color: #999;
-				font-size: 11px;
-				white-space: nowrap;
-			}
-
-			.threadsParent {
-				position: relative;
-			}
-
-			.attachmentParent {
-				position: relative;
-				margin: 2px 10px 0 5px;
-				color: #666;
-				text-shadow: 0 1px 0 #eee;
-			}
-
-			.senderParent {
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-			}
-
-			.threadsCountParent {
-				display: inline;
-				overflow: hidden;
-				background-color: #eee;
-				padding: 1px 5px;
-				margin-right: 5px;
-				border: 1px solid #ccc;
-				border-radius: 5px;
-			}
-
-			.threadsCountParent.lastSelected {
-				background-color: #999;
-				border-color: #999;
-				color: #fff;
-			}
-
-			.threadsCountParent:hover {
-				border-color: #666;
-			}
-
-			.subjectParent {
-				overflow: hidden;
-				text-overflow: ellipsis;
-				white-space: nowrap;
-			}
-
-			.subjectParent .emptySubjectText {
-				display: none;
-				font-style: italic;
-				opacity: 0.5;
-			}
-
-			&.emptySubject .subjectParent {
-				.subject {
-					display: none;
-				}
-				.emptySubjectText {
-					display: inline;
-				}
-			}
-
-			.sender, .subject {
-				margin-left: 0;
-				overflow: hidden;
-				text-overflow: ellipsis;
-			}
-
-			.threads-len {
-				.threads-len-data {
-
-					background-color: #eee;
-					color: #666;
-					border-radius: 6px;
-					padding: 2px 0 1px 6px;
-					margin-right: 2px;
-					border: 1px solid #ccc;
-
-					&:hover {
-						background-color: #aaa;
-						border-color: #666;
-						text-shadow: 0 1px 0 #999;
-						color: #fff;
-					}
-				}
-			}
-
-			.flagOff {
-				opacity: 0.5;
-				&:hover {
-					opacity: 1;
-				}
-			}
-
-			.flagOn, .flagOnHalf {
-				color: orange;
-			}
-
-			.replyFlag, .forwardFlag {
-				display: none;
-				margin-right: 0.25em;
-			}
-
-			&.answered .replyFlag {
-				display: inline-block;
-			}
-
-			&.forwarded .forwardFlag {
-				display: inline-block;
-			}
-
-			&:not(.withAttachments) .attachmentParent {
-				display: none;
-			}
-
-			&.hasUnseenSubMessage {
-				background-color: #FFFFD9;
-				border-left-color: lighten(orange, 30%);
-				&.focused {
-					border-left-color: darken(orange, 10%);
-				}
-			}
-
-			&.unseen {
-				background-color: #FFFFD9;
-				border-left-color: orange;
-				.sender, .subjectParent {
-					font-weight: bold;
-				}
-
-				&.focused {
-					border-left-color: darken(orange, 10%);
-				}
-			}
-
-			&.checked {
-				border-left-color: lighten(#398CF2, 10%);
-
-				&.focused {
-					border-left-color: darken(#398CF2, 5%);
-				}
-			}
-
-			&.selected {
-				background-color: #DFEFFF;
-				border-bottom-color: rgba(57, 140, 242, 0.2);
-				border-left-color: #398CF2;
-				z-index: 101;
-
-				+ .messageListItem {
-					border-bottom-color: rgba(57, 140, 242, 0.3);
-				}
-			}
-
-			&:not(.flagged) .flagOn,
-			&:not(.hasFlaggedSubMessage) .flagOnHalf,
-			&.flagged .flagOff, &.hasFlaggedSubMessage .flagOff {
-				display: none;
-			}
+		&:not(.flagged) .flagOn,
+		&:not(.hasFlaggedSubMessage) .flagOnHalf,
+		&.flagged .flagOff, &.hasFlaggedSubMessage .flagOff {
+			display: none;
 		}
 	}
 
