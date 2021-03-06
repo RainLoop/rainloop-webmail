@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import {
-	Capa,
 	KeyState,
 	StorageResultType,
 	Notification,
@@ -128,7 +127,6 @@ class ComposePopupView extends AbstractViewPopup {
 		this.sLastFocusedField = 'to';
 
 		this.allowContacts = !!AppStore.contactsIsAllowed();
-		this.allowFolders = !!Settings.capa(Capa.Folders);
 
 		this.bSkipNextHide = false;
 		this.composeInEdit = AppStore.composeInEdit;
@@ -398,10 +396,6 @@ class ComposePopupView extends AbstractViewPopup {
 				}
 			}
 
-			if (!this.allowFolders) {
-				sSentFolder = UNUSED_OPTION_VALUE;
-			}
-
 			if (!sSentFolder) {
 				showScreenPopup(FolderSystemPopupView, [SetSystemFoldersNotification.Sent]);
 			} else {
@@ -437,10 +431,6 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	saveCommand() {
-		if (!this.allowFolders) {
-			return false;
-		}
-
 		if (FolderStore.draftFolderNotEnabled()) {
 			showScreenPopup(FolderSystemPopupView, [SetSystemFoldersNotification.Draft]);
 		} else {
@@ -1146,16 +1136,14 @@ class ComposePopupView extends AbstractViewPopup {
 			return false;
 		});
 
-		if (this.allowFolders) {
-			shortcuts.add('s', 'meta', KeyState.Compose, () => {
-				this.saveCommand();
-				return false;
-			});
-			shortcuts.add('save', KeyState.Compose, () => {
-				this.saveCommand();
-				return false;
-			});
-		}
+		shortcuts.add('s', 'meta', KeyState.Compose, () => {
+			this.saveCommand();
+			return false;
+		});
+		shortcuts.add('save', KeyState.Compose, () => {
+			this.saveCommand();
+			return false;
+		});
 
 		if (Settings.app('allowCtrlEnterOnCompose')) {
 			shortcuts.add('enter', 'meta', KeyState.Compose, () => {

@@ -13,7 +13,6 @@ export const dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 });
 
 export const moveAction = ko.observable(false);
 export const leftPanelDisabled = ko.observable(false);
-export const leftPanelType = ko.observable('');
 
 export const createElement = (name, attr) => {
 	let el = doc.createElement(name);
@@ -24,11 +23,6 @@ export const createElement = (name, attr) => {
 leftPanelDisabled.subscribe(value => {
 	value && moveAction() && moveAction(false);
 	$htmlCL.toggle('rl-left-panel-disabled', value);
-});
-
-leftPanelType.subscribe(sValue => {
-	$htmlCL.toggle('rl-left-panel-none', 'none' === sValue);
-	$htmlCL.toggle('rl-left-panel-short', 'short' === sValue);
 });
 
 moveAction.subscribe(value => value && leftPanelDisabled() && leftPanelDisabled(false));

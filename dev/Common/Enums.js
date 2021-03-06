@@ -18,7 +18,6 @@ export const Capa = {
 	TwoFactorForce: 'TWO_FACTOR_FORCE',
 	OpenPGP: 'OPEN_PGP',
 	Prefetch: 'PREFETCH',
-	Folders: 'FOLDERS',
 	Composer: 'COMPOSER',
 	Contacts: 'CONTACTS',
 	Reload: 'RELOAD',

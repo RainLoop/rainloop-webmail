@@ -1,6 +1,5 @@
-import { Capa } from 'Common/Enums';
 import { Focused } from 'Common/EnumsUser';
-import { doc, leftPanelDisabled, leftPanelType, moveAction, Settings } from 'Common/Globals';
+import { doc, leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
@@ -58,12 +57,6 @@ export class MailBoxUserScreen extends AbstractScreen {
 		AppStore.focusedState(Focused.MessageList);
 
 		ThemeStore.isMobile() && leftPanelDisabled(true);
-
-		if (Settings.capa(Capa.Folders)) {
-			leftPanelType('');
-		} else {
-			leftPanelType(Settings.capa(Capa.Composer) || Settings.capa(Capa.Contacts) ? 'short' : 'none');
-		}
 	}
 
 	/**

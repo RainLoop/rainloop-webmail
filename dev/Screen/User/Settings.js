@@ -1,5 +1,5 @@
 import { Capa, KeyState } from 'Common/Enums';
-import { keyScope, leftPanelType, leftPanelDisabled, Settings } from 'Common/Globals';
+import { keyScope, leftPanelDisabled, Settings } from 'Common/Globals';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
@@ -77,9 +77,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 			);
 		}
 
-		if (Settings.capa(Capa.Folders)) {
-			settingsAddViewModel(FoldersUserSettings, 'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
-		}
+		settingsAddViewModel(FoldersUserSettings, 'SettingsFolders', 'SETTINGS_LABELS/LABEL_FOLDERS_NAME', 'folders');
 
 		if (Settings.capa(Capa.Themes)) {
 			settingsAddViewModel(ThemesUserSettings, 'SettingsThemes', 'SETTINGS_LABELS/LABEL_THEMES_NAME', 'themes');
@@ -99,8 +97,6 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 	onShow() {
 		this.setSettingsTitle();
 		keyScope(KeyState.Settings);
-		leftPanelType('');
-
 		ThemeStore.isMobile() && leftPanelDisabled(true);
 	}
 

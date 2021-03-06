@@ -69,7 +69,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.allowComposer = !!Settings.capa(Capa.Composer);
 		this.allowMessageListActions = !!Settings.capa(Capa.MessageListActions);
 		this.allowDangerousActions = !!Settings.capa(Capa.DangerousActions);
-		this.allowFolders = !!Settings.capa(Capa.Folders);
 
 		this.popupVisibility = popupVisibility;
 

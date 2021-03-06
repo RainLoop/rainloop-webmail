@@ -6,7 +6,7 @@
 		</a>
 		<a class="btn buttonContacts fontastic" data-bind="visible: allowContacts, click: contactsClick, tooltip: 'GLOBAL/CONTACTS'">📇</a>
 	</div>
-	<div class="b-content opacity-on-panel-disabled" data-bind="visible: allowFolders, css: {'inbox-is-starred': isInboxStarred}">
+	<div class="b-content opacity-on-panel-disabled" data-bind="css: {'inbox-is-starred': isInboxStarred}">
 		<div class="content">
 			<div class="content-wrapper">
 				<div class="b-folders-system" data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
@@ -17,7 +17,7 @@
 		</div>
 	</div>
 	<div class="b-content show-on-panel-disabled" data-bind="click: function () { leftPanelDisabled(false); }"></div>
-	<div class="b-footer btn-toolbar hide-mobile" data-bind="visible: allowFolders">
+	<div class="b-footer btn-toolbar hide-mobile">
 		<div class="btn-group">
 			<a class="btn buttonResize" data-bind="click: function () { leftPanelDisabled(!leftPanelDisabled()); }">
 				<i data-bind="css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></i>

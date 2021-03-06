@@ -17,12 +17,10 @@ trait Folders
 		$oFolderCollection = null;
 		$this->Plugins()->RunHook('filter.folders-before', array($oAccount, $oFolderCollection));
 
-		$bUseFolders = $this->GetCapa(false, Capa::FOLDERS, $oAccount);
-
 		if (null === $oFolderCollection)
 		{
 			$oFolderCollection = $this->MailClient()->Folders('',
-				$bUseFolders ? '*' : 'INBOX',
+				'*',
 				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true),
 				(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
 			);
@@ -38,7 +36,7 @@ trait Folders
 			$this->recFoldersTypes($oAccount, $oFolderCollection, $aSystemFolders);
 			$oFolderCollection->SystemFolders = $aSystemFolders;
 
-			if ($bUseFolders && $this->Config()->Get('labs', 'autocreate_system_folders', true))
+			if ($this->Config()->Get('labs', 'autocreate_system_folders', true))
 			{
 				$bDoItAgain = false;
 
@@ -157,11 +155,6 @@ trait Folders
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, Capa::FOLDERS, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
-		}
-
 		try
 		{
 			$sFolderNameInUtf = $this->GetActionParam('Folder', '');
@@ -181,11 +174,6 @@ trait Folders
 	public function DoFolderSubscribe() : array
 	{
 		$oAccount = $this->initMailClientConnection();
-
-		if (!$this->GetCapa(false, Capa::FOLDERS, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
-		}
 
 		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 		$bSubscribe = '1' === (string) $this->GetActionParam('Subscribe', '0');
@@ -212,11 +200,6 @@ trait Folders
 	public function DoFolderCheckable() : array
 	{
 		$oAccount = $this->getAccountFromToken();
-
-		if (!$this->GetCapa(false, Capa::FOLDERS, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
-		}
 
 		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 		$bCheckable = '1' === (string) $this->GetActionParam('Checkable', '0');
@@ -263,11 +246,6 @@ trait Folders
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		if (!$this->GetCapa(false, Capa::FOLDERS, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
-		}
-
 		$sPrevFolderFullNameRaw = $this->GetActionParam('Folder', '');
 		$sNewTopFolderNameInUtf = $this->GetActionParam('NewFolderName', '');
 
@@ -290,11 +268,6 @@ trait Folders
 	public function DoFolderDelete() : array
 	{
 		$oAccount = $this->initMailClientConnection();
-
-		if (!$this->GetCapa(false, Capa::FOLDERS, $oAccount))
-		{
-			return $this->FalseResponse(__FUNCTION__);
-		}
 
 		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
 

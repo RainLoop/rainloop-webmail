@@ -40,7 +40,6 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 
 		this.allowComposer = !!Settings.capa(Capa.Composer);
 		this.allowContacts = !!AppStore.contactsIsAllowed();
-		this.allowFolders = !!Settings.capa(Capa.Folders);
 
 		this.folderListFocused = ko.computed(() => Focused.FolderList === AppStore.focusedState());
 
