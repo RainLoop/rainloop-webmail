@@ -5,8 +5,6 @@
 
 .messageView {
 
-	z-index: 100;
-
 	.toolbar {
 		position: absolute;
 		top: 0;
@@ -45,10 +43,6 @@
 				line-height: 90px;
 				padding-left: 10px;
 			}
-		}
-
-		.logoPlace {
-			text-align: center;
 		}
 
 		.b-message-view-desc {
@@ -100,408 +94,404 @@
 				}
 			}
 		}
+	}
 
-		.messageItemHeader {
+	.messageItemHeader {
 
-			padding: 10px;
-			background-color: #f8f8f8;
-			border-top: 0;
-			border-bottom: 1px solid #ddd;
-			border-top-right-radius: 5px;
-			border-top-left-radius: 5px;
-			z-index: 1;
+		padding: 10px;
+		background-color: #f8f8f8;
+		border-top: 0;
+		border-bottom: 1px solid #ddd;
+		border-top-right-radius: 5px;
+		border-top-left-radius: 5px;
+		z-index: 1;
 
-			.subjectParent {
-				font-size: 18px;
-				font-weight: bold;
+		.subjectParent {
+			font-size: 18px;
+			font-weight: bold;
+			text-overflow: ellipsis;
+			overflow: hidden;
+			white-space: nowrap;
+			margin-bottom: 8px;
+			line-height: 100%;
+			height: 22px;
+			vertical-align: middle;
+		}
+
+		.messageButtons {
+			margin-top: 5px;
+		}
+
+		.informationShort {
+			margin: 4px 50px 0 5px;
+
+			a {
+				.g-ui-link;
+			}
+
+			html.rl-mobile &{
 				text-overflow: ellipsis;
 				overflow: hidden;
 				white-space: nowrap;
-				margin-bottom: 8px;
-				line-height: 100%;
-				height: 22px;
-				vertical-align: middle;
-			}
-
-			.messageButtons {
-				margin-top: 5px;
-			}
-
-			.informationShort {
-				margin: 4px 50px 0 5px;
-
-				a {
-					.g-ui-link;
-				}
-
-				html.rl-mobile &{
-					text-overflow: ellipsis;
-					overflow: hidden;
-					white-space: nowrap;
-				}
-			}
-
-			.informationShortWrp {
-				max-height: 100px;
-				overflow-y: auto;
-				min-height: 30px;
-				margin-top: 4px;
-			}
-
-			.informationFull {
-				margin-top: 10px;
-				border: 1px solid #ddd;
-				background-color: #fff;
-				border-radius: 5px;
-				padding: 8px 0;
-				overflow: hidden;
-
-				.size {
-					margin-left: 4px;
-				}
-
-				table {
-				    width: 100%;
-				}
-
-				table, tr, td {
-					border-spacing: 0;
-				}
-
-				td {
-					padding: 0 10px;
-					vertical-align: top;
-					min-width: 43px;
-				}
-
-				td:first-child {
-					border-right: 1px solid #ddd;
-					text-align: right;
-					width: 1%;
-				}
-
-				.uiLine {
-				}
-
-				.uiLabel {
-					white-space: nowrap;
-				}
-
-				.uiLabelValue {
-					word-break: break-all;
-				}
-			}
-
-			.emptySubjectText {
-				display: none;
-				font-style: italic;
-				font-weight: normal;
-				color: #999;
-			}
-
-			&.emptySubject .emptySubjectText {
-				display: inline;
 			}
 		}
 
-		.messageItem {
+		.informationShortWrp {
+			max-height: 100px;
+			overflow-y: auto;
+			min-height: 30px;
+			margin-top: 4px;
+		}
 
-			color: #000;
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			overflow: auto;
-			-webkit-overflow-scrolling: touch;
-			border-radius: @rlLowBorderRadius;
-			scroll-behavior: smooth;
+		.informationFull {
+			margin-top: 10px;
+			border: 1px solid #999;
+			border-radius: 5px;
+			padding: 8px 0;
+			overflow: hidden;
 
-			.buttonFull {
-				display: inline-block;
-				position: fixed;
-				right: 25px;
-				bottom: 25px;
-				height: 30px;
-				width: 30px;
-				text-align: center;
-				vertical-align: middle;
-				line-height: 30px;
-				background-color: transparent;
-				background-color: #fff;
-				border: 1px solid #333;
-				color: #333;
-				z-index: 2;
-				cursor: pointer;
-				border-radius: 5px;
-				opacity: 0.5;
+			.size {
+				margin-left: 4px;
+			}
 
-				&:hover {
-					opacity: 0.8;
-					border-color: #666;
-					background-color: #888;
-					color: #fff;
+			table {
+				width: 100%;
+			}
+
+			table, tr, td {
+				border-spacing: 0;
+			}
+
+			td {
+				padding: 0 10px;
+				vertical-align: top;
+				min-width: 43px;
+			}
+
+			td:first-child {
+				border-right: 1px solid #999;
+				text-align: right;
+				width: 1%;
+			}
+
+			.uiLine {
+			}
+
+			.uiLabel {
+				white-space: nowrap;
+			}
+
+			.uiLabelValue {
+				word-break: break-all;
+			}
+		}
+
+		.emptySubjectText {
+			display: none;
+			font-style: italic;
+			font-weight: normal;
+			color: #999;
+		}
+
+		&.emptySubject .emptySubjectText {
+			display: inline;
+		}
+	}
+
+	.messageItem {
+
+		color: #000;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		overflow: auto;
+		-webkit-overflow-scrolling: touch;
+		border-radius: @rlLowBorderRadius;
+		scroll-behavior: smooth;
+
+		.buttonFull {
+			display: inline-block;
+			position: fixed;
+			right: 25px;
+			bottom: 25px;
+			height: 30px;
+			width: 30px;
+			text-align: center;
+			vertical-align: middle;
+			line-height: 30px;
+			background-color: transparent;
+			background-color: #fff;
+			border: 1px solid #333;
+			color: #333;
+			z-index: 2;
+			cursor: pointer;
+			border-radius: 5px;
+			opacity: 0.5;
+
+			&:hover {
+				opacity: 0.8;
+				border-color: #666;
+				background-color: #888;
+				color: #fff;
+			}
+		}
+
+		.loading {
+			text-align: center;
+			font-size: 24px;
+			color: grey;
+			padding-top: 50px;
+		}
+
+		.line-loading {
+			height: 0;
+		}
+
+		.showImages, .readReceipt, .pgpSigned, .pgpEncrypted {
+			cursor: pointer;
+			padding: 10px 15px;
+			border-bottom: 1px solid #ddd;
+			background-color: #eee;
+		}
+
+		.pgpInfo {
+			padding: 5px 15px;
+			border-bottom: 1px solid #ddd;
+			background-color: #fcf8e3;
+
+			&.success {
+				background-color: #e9f4ff;
+			}
+		}
+
+		.readReceipt {
+			background-color: #ffffd9;
+		}
+
+		.attachmentsPlace {
+
+			padding: 10px 10px 6px 10px;
+			background: #eee;
+			border-bottom: 1px solid #ddd;
+			position: relative;
+
+			.attachmentList {
+				margin: 0;
+			}
+
+			.checkboxAttachment {
+				display: none;
+			}
+
+			&.selection-mode {
+				.checkboxAttachment {
+					display: inline-block;
 				}
 			}
 
-			.loading {
-				text-align: center;
-				font-size: 24px;
-				color: grey;
-				padding-top: 50px;
+			&.unselectedAttachmentsError {
+				.attachmentItem {
+					box-shadow: 0 1px 4px red;
+					box-shadow: 0 1px 5px rgba(255, 0, 0, 0.4);
+					box-shadow: 0 0 0 1px rgba(255, 0, 0, 0.2), 0 1px 5px rgba(255, 0, 0, 0.3);
+				}
 			}
 
-			.line-loading {
-				height: 0;
-			}
-
-			.showImages, .readReceipt, .pgpSigned, .pgpEncrypted {
+			.controls-handle {
+				position: absolute;
+				bottom: 5px;
+				right: 8px;
+				color: #999;
 				cursor: pointer;
-				padding: 10px 15px;
-				border-bottom: 1px solid #ddd;
-				background-color: #eee;
+			}
+		}
+
+		.attachmentsControls {
+			padding: 7px 5px 7px 14px;
+			background: #e8e8e8;
+			border-bottom: 1px solid #ddd;
+		}
+
+		.rlBlockquoteSwitcher {
+
+			background-color: #eee;
+			border: 1px solid #999;
+			display: block;
+			width: 30px;
+			height: 14px;
+			line-height: 14px;
+			text-align: center;
+			cursor: pointer;
+			margin: 2em 0 10px;
+
+			opacity: 0.5;
+			&:hover {
+				opacity: 1;
+			}
+		}
+
+		.bodySubHeader {
+			z-index: 2;
+		}
+
+		.b-text-part {
+
+			height: 100%;
+
+			div[data-x-div-type=html] {
+				height: 100%;
+				div[data-x-div-type=body] {
+					height: 100%;
+				}
 			}
 
-			.pgpInfo {
-				padding: 5px 15px;
-				border-bottom: 1px solid #ddd;
-				background-color: #fcf8e3;
+			a {
+				color: blue;
+				text-decoration: underline;
+
+				&:visited {
+					color: #609;
+				}
+				&:active {
+					color: red;
+				}
+			}
+
+			blockquote {
+				border-left: 2px solid #000;
+				padding: 0 10px;
+				margin: 0;
+			}
+
+			.rl-bq-switcher.hidden-bq {
+				display: none;
+			}
+
+			&.html {
+
+				div[data-x-div-type=body] {
+					/*padding: 15px;*/
+					margin: 15px;
+				}
+
+				img {
+					max-width: 100%;
+				}
+				img[data-x-src]:not([src]) {
+					border: 1px solid #999;
+					position: relative;
+				}
+				img[data-x-src]:not([src])::after {
+					content: "🖼";
+					font-family: snappymail;
+					position: absolute;
+					top: 0;
+					left: 0;
+					color: #000;
+					background-color: #fff;
+				}
+				img[data-x-src]:not([src]):hover::after {
+					content: attr(data-x-src);
+					font-family: var(--fontSans);
+					font-size: 11px;
+					height: auto;
+					transform: translate(-25%,0);
+					width: auto;
+					width: -moz-fit-content;
+					width: -webkit-fit-content;
+					width: fit-content;
+					z-index: 1000;
+				}
+
+				pre, code {
+					margin: 0;
+					border: none;
+					word-break: normal;
+					word-wrap: break-word;
+				}
+
+				code {
+					border-radius: 0;
+					display: inline;
+					padding: 2px 5px;
+				}
+
+				pre {
+					border-radius: 5px;
+					display: block;
+					padding: 5px 10px;
+				}
+
+				pre > code {
+					padding: 0;
+				}
+			}
+
+			&.plain {
+
+				padding: 15px;
+				/*white-space: pre-wrap;*/
+				font-family: var(--fontMono);
+
+				pre {
+					margin: 0;
+					padding: 0;
+					border: none;
+					display: block;
+					word-break: normal;
+				}
+
+				pre.b-plain-openpgp {
+					display: inline-block;
+					padding: 6px 10px;
+					border: 1px dashed #666;
+					word-break: break-all;
+
+					&.success {
+						border-color: green;
+						background-color: rgba(0, 255, 0, 0.03);
+					}
+					&.error {
+						border-color: red;
+						background-color: rgba(255, 0, 0, 0.03);
+					}
+				}
+
+				blockquote {
+					border-left: 2px solid blue;
+					color: blue;
+				}
+
+				blockquote blockquote {
+					border-left: 2px solid green;
+					color: green;
+				}
+
+				blockquote blockquote blockquote {
+					border-left: 2px solid red;
+					color: red;
+				}
+			}
+
+			.b-openpgp-control {
+
+				display: inline-block;
+				cursor: pointer;
+				color: #777;
+
+				&:hover {
+					color: #111;
+				}
 
 				&.success {
-					background-color: #e9f4ff;
-				}
-			}
-
-			.readReceipt {
-				background-color: #ffffd9;
-			}
-
-			.attachmentsPlace {
-
-				padding: 10px 10px 6px 10px;
-				background: #eee;
-				border-bottom: 1px solid #ddd;
-				position: relative;
-
-				.attachmentList {
-					margin: 0;
+					color: green;
+					cursor: help;
 				}
 
-				.checkboxAttachment {
-					display: none;
-				}
-
-				&.selection-mode {
-					.checkboxAttachment {
-						display: inline-block;
-					}
-				}
-
-				&.unselectedAttachmentsError {
-					.attachmentItem {
-						box-shadow: 0 1px 4px red;
-						box-shadow: 0 1px 5px rgba(255, 0, 0, 0.4);
-						box-shadow: 0 0 0 1px rgba(255, 0, 0, 0.2), 0 1px 5px rgba(255, 0, 0, 0.3);
-					}
-				}
-
-				.controls-handle {
-					position: absolute;
-					bottom: 5px;
-					right: 8px;
-					color: #999;
-					cursor: pointer;
-				}
-			}
-
-			.attachmentsControls {
-				padding: 7px 5px 7px 14px;
-				background: #e8e8e8;
-				border-bottom: 1px solid #ddd;
-			}
-
-			.rlBlockquoteSwitcher {
-
-				background-color: #eee;
-				border: 1px solid #999;
-				display: block;
-				width: 30px;
-				height: 14px;
-				line-height: 14px;
-				text-align: center;
-				cursor: pointer;
-				margin: 2em 0 10px;
-
-				opacity: 0.5;
-				&:hover {
-					opacity: 1;
-				}
-			}
-
-			.bodySubHeader {
-				z-index: 2;
-			}
-
-			.bodyText {
-
-				.b-text-part {
-
-					height: 100%;
-
-					div[data-x-div-type=html] {
-						height: 100%;
-						div[data-x-div-type=body] {
-							height: 100%;
-						}
-					}
-
-					a {
-						color: blue;
-						text-decoration: underline;
-
-						&:visited {
-							color: #609;
-						}
-						&:active {
-							color: red;
-						}
-					}
-
-					blockquote {
-						border-left: 2px solid #000;
-						padding: 0 10px;
-						margin: 0;
-					}
-
-					.rl-bq-switcher.hidden-bq {
-						display: none;
-					}
-
-					&.html {
-
-						div[data-x-div-type=body] {
-							/*padding: 15px;*/
-							margin: 15px;
-						}
-
-						img {
-							max-width: 100%;
-						}
-						img[data-x-src]:not([src]) {
-							border: 1px solid #999;
-							position: relative;
-						}
-						img[data-x-src]:not([src])::after {
-							content: "🖼";
-							font-family: snappymail;
-							position: absolute;
-							top: 0;
-							left: 0;
-							color: #000;
-							background-color: #fff;
-						}
-						img[data-x-src]:not([src]):hover::after {
-							content: attr(data-x-src);
-							font-family: var(--fontSans);
-							font-size: 11px;
-							height: auto;
-							transform: translate(-25%,0);
-							width: auto;
-							width: -moz-fit-content;
-							width: -webkit-fit-content;
-							width: fit-content;
-							z-index: 1000;
-						}
-
-						pre, code {
-							margin: 0;
-							border: none;
-							word-break: normal;
-							word-wrap: break-word;
-						}
-
-						code {
-							border-radius: 0;
-							display: inline;
-							padding: 2px 5px;
-						}
-
-						pre {
-							border-radius: 5px;
-							display: block;
-							padding: 5px 10px;
-						}
-
-						pre > code {
-							padding: 0;
-						}
-					}
-
-					&.plain {
-
-						padding: 15px;
-						/*white-space: pre-wrap;*/
-						font-family: var(--fontMono);
-
-						pre {
-							margin: 0;
-							padding: 0;
-							border: none;
-							display: block;
-							word-break: normal;
-						}
-
-						pre.b-plain-openpgp {
-							display: inline-block;
-							padding: 6px 10px;
-							border: 1px dashed #666;
-							word-break: break-all;
-
-							&.success {
-								border-color: green;
-								background-color: rgba(0, 255, 0, 0.03);
-							}
-							&.error {
-								border-color: red;
-								background-color: rgba(255, 0, 0, 0.03);
-							}
-						}
-
-						blockquote {
-							border-left: 2px solid blue;
-							color: blue;
-						}
-
-						blockquote blockquote {
-							border-left: 2px solid green;
-							color: green;
-						}
-
-						blockquote blockquote blockquote {
-							border-left: 2px solid red;
-							color: red;
-						}
-					}
-
-					.b-openpgp-control {
-
-						display: inline-block;
-						cursor: pointer;
-						color: #777;
-
-						&:hover {
-							color: #111;
-						}
-
-						&.success {
-							color: green;
-							cursor: help;
-						}
-
-						&.error {
-							color: red;
-						}
-					}
+				&.error {
+					color: red;
 				}
 			}
 		}
