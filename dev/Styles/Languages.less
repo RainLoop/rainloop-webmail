@@ -1,40 +1,38 @@
-#rl-popups {
-	.b-languages-content {
+.b-languages-content {
 
-		&.modal {
-			width: 700px;
+	&.modal {
+		width: 700px;
+	}
+
+	.lang-item {
+		display: inline-block;
+		padding: 5px 15px;
+		margin: 2px 5px;
+		width: 180px;
+		background-color: #fff;
+		text-align: left;
+		border: 1px solid transparent;
+		border-radius: 3px;
+		position: relative;
+
+		&.user {
+			background-color: #ffd;
+			border-color: #ff5;
 		}
-
-		.lang-item {
-			display: inline-block;
-			padding: 5px 15px;
-			margin: 2px 5px;
-			width: 180px;
-			background-color: #fff;
-			text-align: left;
-			border: 1px solid transparent;
-			border-radius: 3px;
-			position: relative;
-
-			&.user {
-				background-color: #ffd;
-				border-color: #ff5;
-			}
-			&.selected {
-				background-color: #efe;
-				border-color: #9c9;
-			}
-			&.selected::after {
-				content: "✔";
-				color: #080;
-				position: absolute;
-				right: 4px;
-				font-family: snappymail;
-			}
-			&:hover {
-				background-color: #eee;
-				border-color: #ccc;
-			}
+		&.selected {
+			background-color: #efe;
+			border-color: #9c9;
+		}
+		&.selected::after {
+			content: "✔";
+			color: #080;
+			position: absolute;
+			right: 4px;
+			font-family: snappymail;
+		}
+		&:hover {
+			background-color: #eee;
+			border-color: #ccc;
 		}
 	}
 }
