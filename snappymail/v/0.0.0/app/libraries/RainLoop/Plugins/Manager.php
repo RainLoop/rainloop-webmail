@@ -80,27 +80,26 @@ class Manager
 		$this->aAdditionalJson = array();
 		$this->aProcessTemplate = array();
 
-		$this->bIsEnabled = (bool) $this->oActions->Config()->Get('plugins', 'enable', false);
-		if ($this->bIsEnabled)
-		{
-			$sList = \strtolower($this->oActions->Config()->Get('plugins', 'enabled_list', ''));
-			if (0 < \strlen($sList))
-			{
-				$aList = \explode(',', $sList);
-				$aList = \array_map('trim', $aList);
+		$oConfig = $this->oActions->Config();
+		$this->bIsEnabled = (bool) $oConfig->Get('plugins', 'enable', false);
+		if ($this->bIsEnabled) {
+			$sList = $oConfig->Get('plugins', 'enabled_list', '');
+			if (0 < \strlen($sList)) {
+				$aList = \array_map('trim', \explode(',', $sList));
+				foreach ($aList as $i => $sName) {
+					$oPlugin = $this->CreatePluginByName($sName);
+					if ($oPlugin) {
+						$oPlugin->Init();
 
-				foreach ($aList as $sName)
-				{
-					if (0 < \strlen($sName))
-					{
-						$oPlugin = $this->CreatePluginByName($sName);
-						if ($oPlugin)
-						{
-							$oPlugin->Init();
-
-							$this->aPlugins[] = $oPlugin;
-						}
+						$this->aPlugins[] = $oPlugin;
+					} else {
+						unset($aList[$i]);
 					}
+				}
+				$aList = \implode(',', \array_unique($aList));
+				if ($sList != $aList) {
+					$oConfig->Set('plugins', 'enabled_list', $aList);
+					$oConfig->Save();
 				}
 			}
 

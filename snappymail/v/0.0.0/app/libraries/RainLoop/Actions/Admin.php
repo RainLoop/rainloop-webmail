@@ -835,8 +835,7 @@ trait Admin
 			}
 		}
 
-		$aNewEnabledPlugins = \array_unique($aNewEnabledPlugins);
-		$oConfig->Set('plugins', 'enabled_list', \trim(\implode(',', $aNewEnabledPlugins), ' ,'));
+		$oConfig->Set('plugins', 'enabled_list', \trim(\implode(',', \array_unique($aNewEnabledPlugins)), ' ,'));
 
 		return $oConfig->Save();
 	}
