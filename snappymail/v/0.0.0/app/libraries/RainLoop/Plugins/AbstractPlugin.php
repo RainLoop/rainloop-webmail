@@ -236,15 +236,15 @@ abstract class AbstractPlugin
 	/**
 	 * @return mixed false|string|array
 	 */
-	protected function jsonResponse(string $sFunctionName, array $aData)
+	protected function jsonResponse(string $sFunctionName, $mData)
 	{
 		if ($this->oPluginManager)
 		{
 			return $this->oPluginManager->JsonResponseHelper(
-				$this->oPluginManager->convertPluginFolderNameToClassName($this->Name()).'::'.$sFunctionName, $aData);
+				$this->oPluginManager->convertPluginFolderNameToClassName($this->Name()).'::'.$sFunctionName, $mData);
 		}
 
-		return \json_encode($aData);
+		return \json_encode($mData);
 	}
 
 	/**

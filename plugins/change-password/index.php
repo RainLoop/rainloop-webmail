@@ -13,10 +13,11 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		DESCRIPTION = 'This plugin allows you to change passwords of email accounts';
 
 	// \RainLoop\Notifications\
-	const CouldNotSaveNewPassword = 130;
-	const CurrentPasswordIncorrect = 131;
-	const NewPasswordShort = 132;
-	const NewPasswordWeak = 133;
+	const
+		CouldNotSaveNewPassword = 130,
+		CurrentPasswordIncorrect = 131,
+		NewPasswordShort = 132,
+		NewPasswordWeak = 133;
 
 	public function Init() : void
 	{
@@ -33,11 +34,11 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 			$phar = new \Phar($phar_file, \FilesystemIterator::CURRENT_AS_FILEINFO | \FilesystemIterator::KEY_AS_FILENAME);
 			foreach (new \RecursiveIteratorIterator($phar) as $file) {
 				if (\preg_match('#/drivers/([a-z]+)\\.php$#Di', $file, $m)) {
+					$class = 'ChangePasswordDriver' . $m[1];
 					try
 					{
 						if ($all || $this->Config()->Get('plugin', "driver_{$m[1]}_enabled", false)) {
 							require_once $file;
-							$class = 'ChangePasswordDriver' . $m[1];
 							if ($class::isSupported()) {
 								yield $m[1] => $class;
 							}
@@ -45,18 +46,19 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 					}
 					catch (\Throwable $oException)
 					{
+						\trigger_error("ERROR {$class}: " . $oException->getMessage());
 					}
 				}
 			}
 		} else {
 //			foreach (\glob(__DIR__ . '/../change-password-*', GLOB_ONLYDIR) as $file) {
 			foreach (\glob(__DIR__ . '/drivers/*.php') as $file) {
+				$name = \basename($file, '.php');
+				$class = 'ChangePasswordDriver' . $name;
 				try
 				{
-					$name = \basename($file, '.php');
 					if ($all || $this->Config()->Get('plugin', "driver_{$name}_enabled", false)) {
 						require_once $file;
-						$class = 'ChangePasswordDriver' . $name;
 						if ($class::isSupported()) {
 							yield $name => $class;
 						}
@@ -64,6 +66,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				}
 				catch (\Throwable $oException)
 				{
+					\trigger_error("ERROR {$class}: " . $oException->getMessage());
 				}
 			}
 		}
@@ -112,6 +115,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		$oAccount = $oActions->GetAccount();
 
 		if (!$oAccount->Email()) {
+			\trigger_error('ChangePassword failed: empty email address');
 			throw new ClientException(static::CouldNotSaveNewPassword);
 		}
 
@@ -152,6 +156,7 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 				}
 				catch (\Throwable $oException)
 				{
+					\trigger_error("{$class} failed: {$oException->getMessage()}");
 					if ($oLogger) {
 						$oLogger->Write("ERROR: {$name} password change for {$oAccount->Email()} failed");
 						$oLogger->WriteException($oException);
@@ -162,14 +167,14 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		if (!$bResult) {
+			\trigger_error("ChangePassword failed");
 			throw new ClientException(static::CouldNotSaveNewPassword);
 		}
 
 		$oAccount->SetPassword($sNewPassword);
 		$oActions->SetAuthToken($oAccount);
 
-		return $oActions->GetSpecAuthToken();
-//		return $this->jsonResponse(__FUNCTION__, $oActions->GetSpecAuthToken());
+		return $this->jsonResponse(__FUNCTION__, $oActions->GetSpecAuthToken());
 	}
 
 	public static function encrypt(string $algo, string $password)
