@@ -247,7 +247,6 @@ class ComposePopupView extends AbstractViewPopup {
 			},
 
 			attachmentsInProcess: () => this.attachments.filter(item => item && !item.complete()),
-			attachmentsInReady: () => this.attachments.filter(item => item && item.complete()),
 			attachmentsInError: () => this.attachments.filter(item => item && item.error()),
 
 			attachmentsCount: () => this.attachments.length,
@@ -1318,8 +1317,8 @@ class ComposePopupView extends AbstractViewPopup {
 	 */
 	prepearAttachmentsForSendOrSave() {
 		const result = {};
-		this.attachmentsInReady().forEach(item => {
-			if (item && item.tempName() && item.enabled()) {
+		this.attachments.forEach(item => {
+			if (item && item.complete() && item.tempName() && item.enabled()) {
 				result[item.tempName()] = [item.fileName(), item.isInline ? '1' : '0', item.CID, item.contentLocation];
 			}
 		});
@@ -1417,7 +1416,7 @@ class ComposePopupView extends AbstractViewPopup {
 	isEmptyForm(includeAttachmentInProgress = true) {
 		const withoutAttachment = includeAttachmentInProgress
 			? !this.attachments.length
-			: !this.attachmentsInReady().length;
+			: !this.attachments.some(item => item && item.complete());
 
 		return (
 			!this.to.length &&

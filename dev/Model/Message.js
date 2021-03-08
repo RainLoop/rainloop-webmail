@@ -86,7 +86,7 @@ export class MessageModel extends AbstractModel {
 
 		this.addComputables({
 			attachmentIconClass: () => FileInfo.getCombinedIconClass(this.hasAttachments() ? this.attachmentsSpecData() : []),
-			threadsLen: () => this.threads.length,
+			threadsLen: () => this.threads().length,
 			isImportant: () => MessagePriority.High === this.priority(),
 		});
 	}
