@@ -66,11 +66,11 @@
 
 	hr {
 		margin: 10px;
-		border-top: 0 solid #000;
+		border-top: 0;
 		border-bottom: 1px solid #999;
 	}
 
-	.b-content .e-item {
+	.e-item {
 
 		overflow: hidden;
 		white-space: nowrap;
@@ -173,14 +173,14 @@
 				font-weight: bold;
 			}
 
+			&.hidden {
+				display: none;
+			}
+
 			.e-collapsed-sign {
 				cursor: pointer;
 				vertical-align: inherit;
 			}
-		}
-
-		.hidden.e-link {
-			display: none;
 		}
 
 		.b-sub-folders.collapsed {

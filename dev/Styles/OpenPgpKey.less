@@ -4,12 +4,7 @@
 	}
 }
 
-.b-open-pgp-key-view-content, .b-open-pgp-key-generate-content, .b-open-pgp-key-add-content, .b-compose-open-pgp-content, .b-message-open-pgp-content {
-
-	.inputKey {
-		font-family: var(--fontMono);
-	}
-
+.b-open-pgp-key-view-content {
 	.key-viewer {
 		max-height: 500px;
 		overflow: auto;
@@ -94,8 +89,8 @@
 		margin-top: 10px;
 		min-height: 40px;
 
-		select option.even {
-			background-color: #f5f5f5;
+		select option:nth-child(even) {
+			background-color: rgba(128, 128, 128, 0.1);
 		}
 	}
 }
@@ -139,12 +134,11 @@
 
 .b-open-pgp-key-add-content {
 	&.modal {
-
 		width: 645px;
+	}
+	.inputKey {
+		font-family: var(--fontMono);
+		width: 600px;
 
-		.inputKey {
-			width: 600px;
-
-		}
 	}
 }

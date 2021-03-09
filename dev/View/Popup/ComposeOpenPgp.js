@@ -44,15 +44,14 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 			encryptKeysView:  () => this.encryptKeys.map(oKey => (oKey ? oKey.key : null)).filter(v => v),
 
 			privateKeysOptions: () => {
-				const opts = PgpStore.openpgpkeysPrivate().map((oKey, iIndex) => {
+				const opts = PgpStore.openpgpkeysPrivate().map(oKey => {
 					if (this.signKey() && this.signKey().key.id === oKey.id) {
 						return null;
 					}
 					return oKey.users.map(user => ({
 						'id': oKey.guid,
 						'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
-						'key': oKey,
-						'class': iIndex % 2 ? 'odd' : 'even'
+						'key': oKey
 					}));
 				});
 
@@ -60,15 +59,14 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 			},
 
 			publicKeysOptions: () => {
-				const opts = PgpStore.openpgpkeysPublic().map((oKey, index) => {
+				const opts = PgpStore.openpgpkeysPublic().map(oKey => {
 					if (this.encryptKeysView().includes(oKey)) {
 						return null;
 					}
 					return oKey.users.map(user => ({
 						'id': oKey.guid,
 						'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
-						'key': oKey,
-						'class': index % 2 ? 'odd' : 'even'
+						'key': oKey
 					}));
 				});
 				return opts.flat().filter(v => v);
@@ -93,14 +91,6 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 		this.sDefaultKeyScope = KeyState.PopupComposeOpenPGP;
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
-
-		this.addOptionClass = (domOption, item) => {
-			this.defaultOptionsAfterRender(domOption, item);
-
-			if (item && undefined !== item.class && domOption) {
-				domOption.classList.add(item.class);
-			}
-		};
 
 		this.deletePublickKey = this.deletePublickKey.bind(this);
 
