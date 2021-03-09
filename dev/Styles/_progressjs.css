@@ -12,7 +12,7 @@
 	overflow: hidden;
 	position: relative;
 	transition: width .5s;
-    width: 0;
+	width: 0;
 	z-index: 2000;
 }
 
@@ -24,7 +24,7 @@
 	bottom: 0;
 	background-image: linear-gradient(45deg, rgba(255, 255, 255, 0.3) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0.3) 75%, transparent 75%, transparent);
 	background-size: 32px 32px;
-    animation: simple-pace-stripe-animation 500ms linear infinite;
+	animation: simple-pace-stripe-animation 500ms linear infinite;
 }
 
 @keyframes simple-pace-stripe-animation {
