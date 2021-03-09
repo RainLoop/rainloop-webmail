@@ -1,10 +1,4 @@
 
-.rl-strip-animation(@rgba, @stripOpacity) {
-	background-image: linear-gradient(135deg, rgba(@rgba, @rgba, @rgba, @stripOpacity) 25%, transparent 25%,
-		transparent 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 50%, rgba(@rgba, @rgba, @rgba, @stripOpacity) 75%,
-		transparent 75%, transparent);
-}
-
 @keyframes highlight-folder-row {
 	0% { transform: scale(1); }
 	50% { transform: scale(1.1); }
@@ -22,12 +16,13 @@
 	100% {background-position: 60px 0;}
 }
 
-html {
-	.e-strip-animation {
-		background-size: 60px 60px;
-		.rl-strip-animation(0, 0.1);
-		animation: animate-stripes 2s linear infinite;
-	}
+.e-strip-animation {
+	background-size: 60px 60px;
+	background-image: linear-gradient(135deg, #000 25%, #fff 25%,
+		#fff 50%, #000 50%, #000 75%,
+		#fff 75%, #fff);
+	animation: animate-stripes 2s linear infinite;
+	opacity: 0.25;
 }
 
 @media screen and (min-width: 1000px) {
@@ -65,7 +60,9 @@ html {
 
 	.b-compose.loading .b-header-toolbar {
 		background-size: 60px 60px;
-		.rl-strip-animation(255, 0.2);
+		background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%,
+			transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%,
+			transparent 75%, transparent);
 		animation: animate-stripes 2s linear infinite;
 	}
 }

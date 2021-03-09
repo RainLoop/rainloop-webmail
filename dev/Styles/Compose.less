@@ -80,10 +80,6 @@
 		background-color: #eee;
 		color: #333;
 
-		html.rl-mobile &{
-			overflow: auto;
-		}
-
 		.e-identity {
 
 			color: #333;
@@ -107,14 +103,7 @@
 
 		.e-label {
 			text-align: right;
-			width: 1%;
-			min-width: 70px;
 			padding: 6px 10px;
-
-			html.rl-mobile &{
-				min-width: 50px;
-				padding: 6px 10px 6px 0;
-			}
 		}
 
 		.e-value {
@@ -179,4 +168,10 @@
 	line-height: 20px;
 	margin-right: 15px;
 	cursor: pointer;
+}
+
+@media screen and (max-width: 700px) {
+	.b-compose .b-header .e-label {
+		padding-left: 0;
+	}
 }

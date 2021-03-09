@@ -124,15 +124,11 @@
 
 		.informationShort {
 			margin: 4px 50px 0 5px;
+			overflow: hidden;
+			text-overflow: ellipsis;
 
 			a {
 				.g-ui-link;
-			}
-
-			html.rl-mobile &{
-				text-overflow: ellipsis;
-				overflow: hidden;
-				white-space: nowrap;
 			}
 		}
 
@@ -246,7 +242,7 @@
 		}
 
 		.line-loading {
-			height: 0;
+			height: 5px;
 		}
 
 		.showImages, .readReceipt, .pgpSigned, .pgpEncrypted {
@@ -573,10 +569,6 @@ html.rl-bottom-preview-pane:not(.rl-mobile) .messageView {
 	.b-content {
 		bottom: @rlBottomMargin;
 	}
-}
-
-html .messageItem .line-loading {
-	height: 5px !important;
 }
 
 html.rl-message-fullscreen {
