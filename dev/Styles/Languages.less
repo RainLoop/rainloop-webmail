@@ -9,18 +9,19 @@
 		padding: 5px 15px;
 		margin: 2px 5px;
 		width: 180px;
-		background-color: #fff;
+		background-color: rgba(128, 128, 128, 0.1);
 		text-align: left;
 		border: 1px solid transparent;
 		border-radius: 3px;
 		position: relative;
+		cursor: pointer;
 
 		&.user {
-			background-color: #ffd;
+			background-color: rgba(255, 255, 64, .15);
 			border-color: #ff5;
 		}
 		&.selected {
-			background-color: #efe;
+			background-color: rgba(64, 255, 64, 0.2);
 			border-color: #9c9;
 		}
 		&.selected::after {
@@ -31,7 +32,7 @@
 			font-family: snappymail;
 		}
 		&:hover {
-			background-color: #eee;
+			background-color: rgba(128, 128, 128, 0.2);
 			border-color: #ccc;
 		}
 	}

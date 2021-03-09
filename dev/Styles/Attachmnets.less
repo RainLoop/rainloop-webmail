@@ -10,8 +10,7 @@
 	list-style: none;
 	line-height: 24px;
 	border: 0;
-	background-color: #fff;
-	color: #333;
+	background-color: rgba(128, 128, 128, 0.1);
 
 	box-shadow: 0 1px 4px #ccc;
 	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2);
@@ -34,8 +33,6 @@
 		top: 0;
 		right: 0;
 		padding: 1px 4px 0 5px;
-		background: #FAFAFA;
-		border: 0 solid #CCC;
 		cursor: pointer;
 	}
 
@@ -57,6 +54,14 @@
 		width: 60px;
 		text-align: center;
 
+		.iconPreview, .iconBG, .iconMain, .iconProgress {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+
 		.iconProgress {
 			background: #eee;
 			width: 0%;
@@ -64,7 +69,6 @@
 
 		.iconBG {
 			font-size: 18px;
-			color: #999;
 			font-weight: bold;
 			line-height: 55px;
 			text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -72,9 +76,6 @@
 
 		.iconPreview {
 			display: none;
-			background: rgba(0, 0, 0, .5) !important;
-			color: #fff;
-			text-shadow: 0 1px 0 #000;
 		}
 	}
 

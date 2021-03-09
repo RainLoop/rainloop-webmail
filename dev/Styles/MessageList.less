@@ -218,10 +218,8 @@ html.rl-no-preview-pane {
 
 		z-index: 100;
 
-		background-color: #f9f9f9;
-
 		&.focused {
-			background-color: #f5f5f5;
+			background-color: rgba(128, 128, 128, 0.1);
 			border-left-color: #ccc;
 		}
 
@@ -336,8 +334,7 @@ html.rl-no-preview-pane {
 			.threads-len-data {
 
 				border-radius: 6px;
-				padding: 2px 0 1px 6px;
-				margin-right: 2px;
+				padding: 2px 0 1px 4px;
 				border: 1px solid #ccc;
 
 				&:hover {
@@ -376,7 +373,7 @@ html.rl-no-preview-pane {
 		}
 
 		&.hasUnseenSubMessage {
-			background-color: #FFFFD9;
+			background-color: rgba(255, 255, 64, 0.15);
 			border-left-color: lighten(orange, 30%);
 			&.focused {
 				border-left-color: darken(orange, 10%);
@@ -384,7 +381,7 @@ html.rl-no-preview-pane {
 		}
 
 		&.unseen {
-			background-color: #FFFFD9;
+			background-color: rgba(255, 255, 64, 0.15);
 			border-left-color: orange;
 			.sender, .subjectParent {
 				font-weight: bold;
@@ -439,7 +436,7 @@ html.rl-no-preview-pane {
 
 /* desktop-large */
 @media screen and (min-width: 1401px) {
-	.messageList .b-content .messageListItem {
+	.messageList .messageListItem {
 		font-size: 13px;
 		time {
 			font-size: 13px;
@@ -490,7 +487,7 @@ html .messageList .line-loading {
 		}
 
 		.senderParent {
-			flex: 1 0 50%;
+			flex: 1 0 45%;
 		}
 
 		.flagParent {
