@@ -710,7 +710,7 @@ abstract class HtmlUtils
 			if ($oElement->hasAttribute('href'))
 			{
 				$sHref = \trim($oElement->getAttribute('href'));
-				if (!\preg_match('/^(http[s]?|ftp|skype|mailto):/i', $sHref) && '//' !== \substr($sHref, 0, 2))
+				if (!\preg_match('/^([a-z]+):/i', $sHref) && '//' !== \substr($sHref, 0, 2))
 				{
 					$oElement->setAttribute('data-x-broken-href', $sHref);
 					$oElement->setAttribute('href', 'javascript:false');
