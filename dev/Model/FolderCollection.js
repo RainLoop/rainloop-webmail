@@ -4,7 +4,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { pInt } from 'Common/Utils';
 import { ClientSideKeyName, FolderType } from 'Common/EnumsUser';
 import * as Cache from 'Common/Cache';
-import { Settings } from 'Common/Globals';
+import { Settings, SettingsGet } from 'Common/Globals';
 
 import * as Local from 'Storage/Client';
 
@@ -119,12 +119,12 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		if (
 			this.SystemFolders &&
 				!('' +
-					Settings.get('SentFolder') +
-					Settings.get('DraftFolder') +
-					Settings.get('SpamFolder') +
-					Settings.get('TrashFolder') +
-					Settings.get('ArchiveFolder') +
-					Settings.get('NullFolder'))
+					SettingsGet('SentFolder') +
+					SettingsGet('DraftFolder') +
+					SettingsGet('SpamFolder') +
+					SettingsGet('TrashFolder') +
+					SettingsGet('ArchiveFolder') +
+					SettingsGet('NullFolder'))
 		) {
 			Settings.set('SentFolder', this.SystemFolders[ServerFolderType.SENT] || null);
 			Settings.set('DraftFolder', this.SystemFolders[ServerFolderType.DRAFTS] || null);
@@ -135,11 +135,11 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			update = true;
 		}
 
-		FolderStore.sentFolder(normalizeFolder(Settings.get('SentFolder')));
-		FolderStore.draftFolder(normalizeFolder(Settings.get('DraftFolder')));
-		FolderStore.spamFolder(normalizeFolder(Settings.get('SpamFolder')));
-		FolderStore.trashFolder(normalizeFolder(Settings.get('TrashFolder')));
-		FolderStore.archiveFolder(normalizeFolder(Settings.get('ArchiveFolder')));
+		FolderStore.sentFolder(normalizeFolder(SettingsGet('SentFolder')));
+		FolderStore.draftFolder(normalizeFolder(SettingsGet('DraftFolder')));
+		FolderStore.spamFolder(normalizeFolder(SettingsGet('SpamFolder')));
+		FolderStore.trashFolder(normalizeFolder(SettingsGet('TrashFolder')));
+		FolderStore.archiveFolder(normalizeFolder(SettingsGet('ArchiveFolder')));
 
 		if (update) {
 			rl.app.Remote.saveSystemFolders(()=>{}, {
@@ -301,7 +301,7 @@ export class FolderModel extends AbstractModel {
 
 				canBeDeleted: () => !folder.isSystemFolder() && !folder.subFolders.length,
 
-				canBeSubscribed: () => !folder.isSystemFolder() && folder.selectable && rl.settings.app('useImapSubscribe'),
+				canBeSubscribed: () => !folder.isSystemFolder() && folder.selectable && Settings.app('useImapSubscribe'),
 
 				canBeSelected:   () => !folder.isSystemFolder() && folder.selectable,
 

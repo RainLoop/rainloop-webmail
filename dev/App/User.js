@@ -24,6 +24,7 @@ import {
 	createElement,
 	$htmlCL,
 	Settings,
+	SettingsGet,
 	leftPanelDisabled
 } from 'Common/Globals';
 
@@ -116,9 +117,9 @@ class AppUser extends AbstractApp {
 			this.reload();
 		}
 
-		if (Settings.get('UserBackgroundHash')) {
+		if (SettingsGet('UserBackgroundHash')) {
 			setTimeout(() => {
-				const img = userBackground(Settings.get('UserBackgroundHash'));
+				const img = userBackground(SettingsGet('UserBackgroundHash'));
 				if (img) {
 					$htmlCL.add('UserBackground');
 					doc.body.style.backgroundImage = "url("+img+")";
@@ -485,7 +486,7 @@ class AppUser extends AbstractApp {
 			if (StorageResultType.Success === sResult && oData.Result) {
 				const counts = {},
 					sAccountEmail = AccountStore.email();
-				let parentEmail = Settings.get('ParentEmail') || sAccountEmail;
+				let parentEmail = SettingsGet('ParentEmail') || sAccountEmail;
 
 				if (Array.isArray(oData.Result.Accounts)) {
 					AccountStore.accounts.forEach(oAccount =>
@@ -887,7 +888,7 @@ class AppUser extends AbstractApp {
 	}
 
 	logout() {
-		Remote.logout(() => this.logoutReload(0 < (Settings.get('ParentEmail')||{length:0}).length));
+		Remote.logout(() => this.logoutReload(0 < (SettingsGet('ParentEmail')||{length:0}).length));
 	}
 
 	bootend() {
@@ -906,18 +907,18 @@ class AppUser extends AbstractApp {
 		AccountStore.populate();
 		ContactStore.populate();
 
-		let contactsSyncInterval = pInt(Settings.get('ContactsSyncInterval'));
+		let contactsSyncInterval = pInt(SettingsGet('ContactsSyncInterval'));
 
-		const startupUrl = pString(Settings.get('StartupUrl'));
+		const startupUrl = pString(SettingsGet('StartupUrl'));
 
 		progressJs.set(90);
 
 		rl.setWindowTitle();
-		if (Settings.get('Auth')) {
+		if (SettingsGet('Auth')) {
 			if (
 				Settings.capa(Capa.TwoFactor) &&
 				Settings.capa(Capa.TwoFactorForce) &&
-				Settings.get('RequireTwoFactor')
+				SettingsGet('RequireTwoFactor')
 			) {
 				this.bootend();
 				showScreenPopup(TwoFactorConfigurationPopupView, [true]);
@@ -1010,7 +1011,7 @@ class AppUser extends AbstractApp {
 
 							// When auto-login is active
 							if (
-								Settings.get('AccountSignMe') &&
+								!!SettingsGet('AccountSignMe') &&
 								navigator.registerProtocolHandler &&
 								Settings.capa(Capa.Composer)
 							) {
@@ -1019,12 +1020,12 @@ class AppUser extends AbstractApp {
 										navigator.registerProtocolHandler(
 											'mailto',
 											location.protocol + '//' + location.host + location.pathname + '?mailto&to=%s',
-											(Settings.get('Title') || 'SnappyMail')
+											(SettingsGet('Title') || 'SnappyMail')
 										);
 									} catch (e) {} // eslint-disable-line no-empty
 
-									if (Settings.get('MailToEmail')) {
-										mailToHelper(Settings.get('MailToEmail'));
+									if (SettingsGet('MailToEmail')) {
+										mailToHelper(SettingsGet('MailToEmail'));
 									}
 								}, 500);
 							}

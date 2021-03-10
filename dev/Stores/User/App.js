@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { KeyState } from 'Common/Enums';
 import { Focused } from 'Common/EnumsUser';
-import { keyScope, leftPanelDisabled, Settings } from 'Common/Globals';
+import { keyScope, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
 class AppUserStore {
@@ -48,18 +48,18 @@ class AppUserStore {
 	}
 
 	populate() {
-		this.projectHash(Settings.get('ProjectHash'));
+		this.projectHash(SettingsGet('ProjectHash'));
 
-		this.contactsAutosave(!!Settings.get('ContactsAutosave'));
-		this.useLocalProxyForExternalImages(!!Settings.get('UseLocalProxyForExternalImages'));
+		this.contactsAutosave(!!SettingsGet('ContactsAutosave'));
+		this.useLocalProxyForExternalImages(!!SettingsGet('UseLocalProxyForExternalImages'));
 
-		this.contactsIsAllowed(!!Settings.get('ContactsIsAllowed'));
+		this.contactsIsAllowed(!!SettingsGet('ContactsIsAllowed'));
 
 		const attachmentsActions = Settings.app('attachmentsActions');
 		this.attachmentsActions(Array.isNotEmpty(attachmentsActions) ? attachmentsActions : []);
 
-		this.devEmail = Settings.get('DevEmail');
-		this.devPassword = Settings.get('DevPassword');
+		this.devEmail = SettingsGet('DevEmail');
+		this.devPassword = SettingsGet('DevPassword');
 	}
 }
 

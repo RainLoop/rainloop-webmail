@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { SettingsGet } from 'Common/Globals';
 
 class AccountUserStore {
 	constructor() {
@@ -27,8 +28,8 @@ class AccountUserStore {
 	}
 
 	populate() {
-		this.email(rl.settings.get('Email'));
-		this.parentEmail(rl.settings.get('ParentEmail'));
+		this.email(SettingsGet('Email'));
+		this.parentEmail(SettingsGet('ParentEmail'));
 	}
 }
 

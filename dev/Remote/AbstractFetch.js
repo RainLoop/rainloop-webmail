@@ -1,4 +1,5 @@
 import { StorageResultType, Notification } from 'Common/Enums';
+import { Settings } from 'Common/Globals';
 import { pInt, pString } from 'Common/Utils';
 import { serverRequest } from 'Common/Links';
 
@@ -11,7 +12,7 @@ const getURL = (add = '') => serverRequest('Json') + add,
 updateToken = data => {
 	if (data.UpdateToken) {
 		rl.hash.set();
-		rl.settings.set('AuthAccountHash', data.UpdateToken);
+		Settings.set('AuthAccountHash', data.UpdateToken);
 	}
 },
 

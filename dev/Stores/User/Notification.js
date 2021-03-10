@@ -1,6 +1,7 @@
 import ko from 'ko';
 
 import Audio from 'Common/Audio';
+import { SettingsGet } from 'Common/Globals';
 import * as Links from 'Common/Links';
 
 /**
@@ -102,8 +103,8 @@ class NotificationUserStore {
 	}
 
 	populate() {
-		this.enableSoundNotification(!!rl.settings.get('SoundNotification'));
-		this.enableDesktopNotification(!!rl.settings.get('DesktopNotifications'));
+		this.enableSoundNotification(!!SettingsGet('SoundNotification'));
+		this.enableDesktopNotification(!!SettingsGet('DesktopNotifications'));
 	}
 }
 

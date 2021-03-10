@@ -22,7 +22,7 @@ import { serverRequest } from 'Common/Links';
 import { i18n, getNotification, getUploadErrorDescByCode } from 'Common/Translator';
 import { timestampToString } from 'Common/Momentor';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
-import { Settings } from 'Common/Globals';
+import { Settings, SettingsGet } from 'Common/Globals';
 
 import AppStore from 'Stores/User/App';
 import SettingsStore from 'Stores/User/Settings';
@@ -1189,7 +1189,7 @@ class ComposePopupView extends AbstractViewPopup {
 	initUploader() {
 		if (this.composeUploaderButton()) {
 			const uploadCache = {},
-				attachmentSizeLimit = pInt(Settings.get('AttachmentLimit')),
+				attachmentSizeLimit = pInt(SettingsGet('AttachmentLimit')),
 				oJua = new Jua({
 					action: serverRequest('Upload'),
 					name: 'uploader',

@@ -1,12 +1,10 @@
 import ko from 'ko';
 
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
-
 import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
-
+import { SettingsGet } from 'Common/Globals';
 import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
-
 import { i18n, trigger as translatorTrigger, reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -44,7 +42,7 @@ export class GeneralUserSettings {
 		this.threadsAllowed = AppStore.threadsAllowed;
 		this.useThreads = SettingsStore.useThreads;
 		this.replySameFolder = SettingsStore.replySameFolder;
-		this.allowLanguagesOnSettings = !!rl.settings.get('AllowLanguagesOnSettings');
+		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
 
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
 		this.languageTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });

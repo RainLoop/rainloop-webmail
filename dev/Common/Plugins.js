@@ -1,4 +1,5 @@
 import { settingsAddViewModel } from 'Screen/AbstractSettings';
+import { SettingsGet } from 'Common/Globals';
 
 const USER_VIEW_MODELS_HOOKS = [],
 	ADMIN_VIEW_MODELS_HOOKS = [];
@@ -48,7 +49,7 @@ export function runSettingsViewModelHooks(admin) {
  * @returns {?}
  */
 rl.pluginSettingsGet = (pluginSection, name) => {
-	let plugins = rl.settings.get('Plugins');
+	let plugins = SettingsGet('Plugins');
 	plugins = plugins && null != plugins[pluginSection] ? plugins[pluginSection] : null;
 	return plugins ? (null == plugins[name] ? null : plugins[name]) : null;
 };

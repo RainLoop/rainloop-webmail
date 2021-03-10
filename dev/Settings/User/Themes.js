@@ -4,7 +4,7 @@ import { SaveSettingsStep, UploadErrorCode, Capa } from 'Common/Enums';
 import { changeTheme, convertThemeName } from 'Common/Utils';
 import { userBackground, themePreviewLink, serverRequest } from 'Common/Links';
 import { i18n } from 'Common/Translator';
-import { doc, $htmlCL } from 'Common/Globals';
+import { doc, $htmlCL, Settings } from 'Common/Globals';
 
 import { ThemeStore } from 'Stores/Theme';
 
@@ -23,7 +23,7 @@ export class ThemesUserSettings {
 		this.background.loading = ko.observable(false);
 		this.background.error = ko.observable('');
 
-		this.capaUserBackground = ko.observable(rl.settings.capa(Capa.UserBackground));
+		this.capaUserBackground = ko.observable(Settings.capa(Capa.UserBackground));
 
 		this.themeTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
 

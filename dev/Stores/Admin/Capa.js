@@ -1,9 +1,10 @@
 import ko from 'ko';
 import { Capa } from 'Common/Enums';
+import { Settings } from 'Common/Globals';
 
 export const CapaAdminStore = {
 	populate: function() {
-		let capa = rl.settings.capa;
+		const capa = Settings.capa;
 		this.additionalAccounts(capa(Capa.AdditionalAccounts));
 		this.identities(capa(Capa.Identities));
 		this.attachmentThumbnails(capa(Capa.AttachmentThumbnails));

@@ -1,15 +1,15 @@
 import ko from 'ko';
 
+import { SettingsGet } from 'Common/Globals';
 import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 
 export class BrandingAdminSettings {
 	constructor() {
-		const settingsGet = rl.settings.get;
-		this.title = ko.observable(settingsGet('Title')).idleTrigger();
-		this.loadingDesc = ko.observable(settingsGet('LoadingDescription')).idleTrigger();
-		this.faviconUrl = ko.observable(settingsGet('FaviconUrl')).idleTrigger();
+		this.title = ko.observable(SettingsGet('Title')).idleTrigger();
+		this.loadingDesc = ko.observable(SettingsGet('LoadingDescription')).idleTrigger();
+		this.faviconUrl = ko.observable(SettingsGet('FaviconUrl')).idleTrigger();
 	}
 
 	onBuild() {

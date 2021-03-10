@@ -1,25 +1,24 @@
 import ko from 'ko';
 
+import { SaveSettingsStep, StorageResultType } from 'Common/Enums';
+import { SettingsGet } from 'Common/Globals';
 import { settingsSaveHelperSimpleFunction, defaultOptionsAfterRender } from 'Common/Utils';
 
-import { SaveSettingsStep, StorageResultType } from 'Common/Enums';
 import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
-
-const settingsGet = rl.settings.get;
 
 export class ContactsAdminSettings {
 	constructor() {
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 
 		ko.addObservablesTo(this, {
-			enableContacts: !!settingsGet('ContactsEnable'),
-			contactsSync: !!settingsGet('ContactsSync'),
+			enableContacts: !!SettingsGet('ContactsEnable'),
+			contactsSync: !!SettingsGet('ContactsSync'),
 			contactsType: '',
 
-			pdoDsn: settingsGet('ContactsPdoDsn'),
-			pdoUser: settingsGet('ContactsPdoUser'),
-			pdoPassword: settingsGet('ContactsPdoPassword'),
+			pdoDsn: SettingsGet('ContactsPdoDsn'),
+			pdoUser: SettingsGet('ContactsPdoUser'),
+			pdoPassword: SettingsGet('ContactsPdoPassword'),
 
 			pdoDsnTrigger: SaveSettingsStep.Idle,
 			pdoUserTrigger: SaveSettingsStep.Idle,
@@ -32,7 +31,7 @@ export class ContactsAdminSettings {
 			testContactsErrorMessage: ''
 		});
 
-		const supportedTypes = settingsGet('supportedPdoDrivers') || [],
+		const supportedTypes = SettingsGet('supportedPdoDrivers') || [],
 			types = [{
 				id:'sqlite',
 				name:'SQLite'
@@ -71,7 +70,7 @@ export class ContactsAdminSettings {
 			this.testContactsErrorMessage('');
 		});
 
-		this.contactsType(settingsGet('ContactsPdoType'));
+		this.contactsType(SettingsGet('ContactsPdoType'));
 
 		this.onTestContactsResponse = this.onTestContactsResponse.bind(this);
 
@@ -162,7 +161,7 @@ export class ContactsAdminSettings {
 				});
 			});
 
-			this.contactsType(settingsGet('ContactsPdoType'));
+			this.contactsType(SettingsGet('ContactsPdoType'));
 		}, 50);
 	}
 }

@@ -8,6 +8,7 @@ import {
 	MessageFlagsCache
 } from 'Common/Cache';
 
+import { SettingsGet } from 'Common/Globals';
 import { SUB_QUERY_PREFIX } from 'Common/Links';
 
 import AppStore from 'Stores/User/App';
@@ -31,16 +32,15 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 * @param {?Function} fCallback
 	 */
 	folders(fCallback) {
-		const settingsGet = rl.settings.get;
 		this.defaultRequest(
 			fCallback,
 			'Folders',
 			{
-				SentFolder: settingsGet('SentFolder'),
-				DraftFolder: settingsGet('DraftFolder'),
-				SpamFolder: settingsGet('SpamFolder'),
-				TrashFolder: settingsGet('TrashFolder'),
-				ArchiveFolder: settingsGet('ArchiveFolder')
+				SentFolder: SettingsGet('SentFolder'),
+				DraftFolder: SettingsGet('DraftFolder'),
+				SpamFolder: SettingsGet('SpamFolder'),
+				TrashFolder: SettingsGet('TrashFolder'),
+				ArchiveFolder: SettingsGet('ArchiveFolder')
 			},
 			null,
 			'',

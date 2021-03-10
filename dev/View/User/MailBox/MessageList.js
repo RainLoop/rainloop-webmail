@@ -15,7 +15,7 @@ import {
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
-import { doc, leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
+import { doc, leftPanelDisabled, moveAction, Settings, SettingsGet } from 'Common/Globals';
 
 import { computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
@@ -60,7 +60,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		this.iGoToUpUpOrDownDownTimeout = 0;
 
-		this.newMoveToFolder = !!Settings.get('NewMoveToFolder');
+		this.newMoveToFolder = !!SettingsGet('NewMoveToFolder');
 
 		this.allowReload = Settings.capa(Capa.Reload);
 		this.allowSearch = Settings.capa(Capa.Search);

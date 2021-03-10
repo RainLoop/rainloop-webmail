@@ -8,6 +8,7 @@ import {
 } from 'Common/Utils';
 
 import { SaveSettingsStep } from 'Common/Enums';
+import { Settings, SettingsGet } from 'Common/Globals';
 import { reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -20,17 +21,15 @@ import { AppAdminStore } from 'Stores/Admin/App';
 import { CapaAdminStore } from 'Stores/Admin/Capa';
 import LanguagesPopupView from 'View/Popup/Languages';
 
-const settingsGet = rl.settings.get;
-
 export class GeneralAdminSettings {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
 
-		const aLanguagesAdmin = rl.settings.app('languagesAdmin');
+		const aLanguagesAdmin = Settings.app('languagesAdmin');
 		this.languagesAdmin = ko.observableArray(Array.isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
 		this.languageAdmin = ko
-			.observable(settingsGet('LanguageAdmin'))
+			.observable(SettingsGet('LanguageAdmin'))
 			.extend({ limitedList: this.languagesAdmin });
 
 		this.theme = ThemeStore.theme;
@@ -44,8 +43,8 @@ export class GeneralAdminSettings {
 		this.capaTemplates = CapaAdminStore.templates;
 
 		ko.addObservablesTo(this, {
-			allowLanguagesOnSettings: !!settingsGet('AllowLanguagesOnSettings'),
-			newMoveToFolder: !!settingsGet('NewMoveToFolder'),
+			allowLanguagesOnSettings: !!SettingsGet('AllowLanguagesOnSettings'),
+			newMoveToFolder: !!SettingsGet('NewMoveToFolder'),
 			attachmentLimitTrigger: SaveSettingsStep.Idle,
 			languageTrigger: SaveSettingsStep.Idle,
 			themeTrigger: SaveSettingsStep.Idle
@@ -56,10 +55,10 @@ export class GeneralAdminSettings {
 		this.dataFolderAccess = AppAdminStore.dataFolderAccess;
 
 		this.mainAttachmentLimit = ko
-			.observable(pInt(settingsGet('AttachmentLimit')) / (1024 * 1024))
+			.observable(pInt(SettingsGet('AttachmentLimit')) / (1024 * 1024))
 			.extend({ debounce: 500 });
 
-		this.uploadData = settingsGet('PhpUploadSizes');
+		this.uploadData = SettingsGet('PhpUploadSizes');
 		this.uploadDataDesc =
 			this.uploadData && (this.uploadData.upload_max_filesize || this.uploadData.post_max_size)
 				? [
@@ -178,7 +177,7 @@ export class GeneralAdminSettings {
 		showScreenPopup(LanguagesPopupView, [
 			this.languageAdmin,
 			this.languagesAdmin(),
-			settingsGet('UserLanguageAdmin')
+			SettingsGet('UserLanguageAdmin')
 		]);
 	}
 }

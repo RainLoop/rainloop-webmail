@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { SettingsGet } from 'Common/Globals';
 
 class ContactUserStore {
 	constructor() {
@@ -19,13 +20,12 @@ class ContactUserStore {
 	}
 
 	populate() {
-		const settingsGet = rl.settings.get;
-		this.allowContactsSync(!!settingsGet('ContactsSyncIsAllowed'));
-		this.enableContactsSync(!!settingsGet('EnableContactsSync'));
+		this.allowContactsSync(!!SettingsGet('ContactsSyncIsAllowed'));
+		this.enableContactsSync(!!SettingsGet('EnableContactsSync'));
 
-		this.contactsSyncUrl(settingsGet('ContactsSyncUrl'));
-		this.contactsSyncUser(settingsGet('ContactsSyncUser'));
-		this.contactsSyncPass(settingsGet('ContactsSyncPassword'));
+		this.contactsSyncUrl(SettingsGet('ContactsSyncUrl'));
+		this.contactsSyncUser(SettingsGet('ContactsSyncUser'));
+		this.contactsSyncPass(SettingsGet('ContactsSyncPassword'));
 	}
 }
 

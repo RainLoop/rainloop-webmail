@@ -1,20 +1,20 @@
 import ko from 'ko';
 
+import { Settings, SettingsGet } from 'Common/Globals';
 import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 
 export class LoginAdminSettings {
 	constructor() {
-		const settingsGet = rl.settings.get;
 		ko.addObservablesTo(this, {
-			determineUserLanguage: !!settingsGet('DetermineUserLanguage'),
-			determineUserDomain: !!settingsGet('DetermineUserDomain'),
-			allowLanguagesOnLogin: !!settingsGet('AllowLanguagesOnLogin'),
-			hideSubmitButton: !!rl.settings.app('hideSubmitButton')
+			determineUserLanguage: !!SettingsGet('DetermineUserLanguage'),
+			determineUserDomain: !!SettingsGet('DetermineUserDomain'),
+			allowLanguagesOnLogin: !!SettingsGet('AllowLanguagesOnLogin'),
+			hideSubmitButton: !!Settings.app('hideSubmitButton')
 		});
 
-		this.defaultDomain = ko.observable(settingsGet('LoginDefaultDomain')).idleTrigger();
+		this.defaultDomain = ko.observable(SettingsGet('LoginDefaultDomain')).idleTrigger();
 	}
 
 	onBuild() {

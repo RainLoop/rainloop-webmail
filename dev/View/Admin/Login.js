@@ -1,6 +1,7 @@
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
+import { Settings } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
@@ -12,7 +13,7 @@ class LoginAdminView extends AbstractViewCenter {
 	constructor() {
 		super('Admin/Login', 'AdminLogin');
 
-		this.hideSubmitButton = rl.settings.app('hideSubmitButton');
+		this.hideSubmitButton = Settings.app('hideSubmitButton');
 
 		this.addObservables({
 			login: '',

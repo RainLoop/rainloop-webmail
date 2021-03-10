@@ -19,7 +19,7 @@ import Remote from 'Remote/User/Fetch';
 import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewCenter } from 'Knoin/AbstractViews';
 
-import { Settings } from 'Common/Globals';
+import { Settings, SettingsGet } from 'Common/Globals';
 
 import { LanguagesPopupView } from 'View/Popup/Languages';
 
@@ -44,7 +44,7 @@ class LoginUserView extends AbstractViewCenter {
 		this.hideSubmitButton = Settings.app('hideSubmitButton');
 
 		this.addObservables({
-			loadingDesc: Settings.get('LoadingDescription'),
+			loadingDesc: SettingsGet('LoadingDescription'),
 
 			email: '',
 			password: '',
@@ -73,7 +73,7 @@ class LoginUserView extends AbstractViewCenter {
 
 		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 
-		this.allowLanguagesOnLogin = !!Settings.get('AllowLanguagesOnLogin');
+		this.allowLanguagesOnLogin = !!SettingsGet('AllowLanguagesOnLogin');
 
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
@@ -109,8 +109,8 @@ class LoginUserView extends AbstractViewCenter {
 			signMeType: iValue => this.signMe(LoginSignMeType.DefaultOn === iValue)
 		});
 
-		if (Settings.get('AdditionalLoginError') && !this.submitError()) {
-			this.submitError(Settings.get('AdditionalLoginError'));
+		if (SettingsGet('AdditionalLoginError') && !this.submitError()) {
+			this.submitError(SettingsGet('AdditionalLoginError'));
 		}
 
 		decorateKoCommands(this, {
@@ -207,7 +207,7 @@ class LoginUserView extends AbstractViewCenter {
 
 	onBuild() {
 		const signMeLocal = Local.get(ClientSideKeyName.LastSignMe),
-			signMe = (Settings.get('SignMe') || 'unused').toLowerCase();
+			signMe = (SettingsGet('SignMe') || 'unused').toLowerCase();
 
 		switch (signMe) {
 			case LoginSignMeTypeAsString.DefaultOff:

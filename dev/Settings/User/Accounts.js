@@ -1,6 +1,7 @@
 import ko from 'ko';
 
 import { Capa, StorageResultType } from 'Common/Enums';
+import { Settings } from 'Common/Globals';
 
 import AccountStore from 'Stores/User/Account';
 import { IdentityUserStore } from 'Stores/User/Identity';
@@ -13,8 +14,8 @@ import { IdentityPopupView } from 'View/Popup/Identity';
 
 export class AccountsUserSettings {
 	constructor() {
-		this.allowAdditionalAccount = rl.settings.capa(Capa.AdditionalAccounts);
-		this.allowIdentities = rl.settings.capa(Capa.Identities);
+		this.allowAdditionalAccount = Settings.capa(Capa.AdditionalAccounts);
+		this.allowIdentities = Settings.capa(Capa.Identities);
 
 		this.accounts = AccountStore.accounts;
 		this.identities = IdentityUserStore;

@@ -1,5 +1,5 @@
 import { pString, pInt } from 'Common/Utils';
-import { Settings } from 'Common/Globals';
+import { Settings, SettingsGet } from 'Common/Globals';
 
 const
 	ROOT = './',
@@ -8,7 +8,7 @@ const
 	VERSION = Settings.app('version'),
 	VERSION_PREFIX = Settings.app('webVersionPath') || 'snappymail/v/' + VERSION + '/',
 
-	getHash = () => Settings.get('AuthAccountHash') || '0';
+	getHash = () => SettingsGet('AuthAccountHash') || '0';
 
 /**
  * @returns {string}

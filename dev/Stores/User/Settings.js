@@ -3,7 +3,7 @@ import ko from 'ko';
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType } from 'Common/EnumsUser';
 import { pInt } from 'Common/Utils';
-import { $htmlCL, Settings } from 'Common/Globals';
+import { $htmlCL, SettingsGet } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
 class SettingsUserStore {
@@ -41,7 +41,7 @@ class SettingsUserStore {
 		let iAutoLogoutTimer;
 		this.delayLogout = (() => {
 			clearTimeout(iAutoLogoutTimer);
-			if (0 < this.autoLogout() && !Settings.get('AccountSignMe')) {
+			if (0 < this.autoLogout() && !SettingsGet('AccountSignMe')) {
 				iAutoLogoutTimer = setTimeout(
 					rl.app.logout,
 					this.autoLogout() * 60000
@@ -60,19 +60,18 @@ class SettingsUserStore {
 	}
 
 	populate() {
-		const settingsGet = Settings.get;
-		this.layout(pInt(settingsGet('Layout')));
-		this.editorDefaultType(settingsGet('EditorDefaultType'));
+		this.layout(pInt(SettingsGet('Layout')));
+		this.editorDefaultType(SettingsGet('EditorDefaultType'));
 
-		this.autoLogout(pInt(settingsGet('AutoLogout')));
-		this.messagesPerPage(settingsGet('MPP'));
+		this.autoLogout(pInt(SettingsGet('AutoLogout')));
+		this.messagesPerPage(SettingsGet('MPP'));
 
-		this.showImages(!!settingsGet('ShowImages'));
-		this.removeColors(!!settingsGet('RemoveColors'));
-		this.useCheckboxesInList(!!(ThemeStore.isMobile() || settingsGet('UseCheckboxesInList')));
-		this.allowDraftAutosave(!!settingsGet('AllowDraftAutosave'));
-		this.useThreads(!!settingsGet('UseThreads'));
-		this.replySameFolder(!!settingsGet('ReplySameFolder'));
+		this.showImages(!!SettingsGet('ShowImages'));
+		this.removeColors(!!SettingsGet('RemoveColors'));
+		this.useCheckboxesInList(!!(ThemeStore.isMobile() || SettingsGet('UseCheckboxesInList')));
+		this.allowDraftAutosave(!!SettingsGet('AllowDraftAutosave'));
+		this.useThreads(!!SettingsGet('UseThreads'));
+		this.replySameFolder(!!SettingsGet('ReplySameFolder'));
 
 		this.delayLogout();
 	}

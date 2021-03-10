@@ -2,6 +2,7 @@ import ko from 'ko';
 
 import { pInt, settingsSaveHelperSimpleFunction } from 'Common/Utils';
 import { Capa, SaveSettingsStep } from 'Common/Enums';
+import { Settings } from 'Common/Globals';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -14,8 +15,8 @@ import { TwoFactorConfigurationPopupView } from 'View/Popup/TwoFactorConfigurati
 
 export class SecurityUserSettings {
 	constructor() {
-		this.capaAutoLogout = rl.settings.capa(Capa.AutoLogout);
-		this.capaTwoFactor = rl.settings.capa(Capa.TwoFactor);
+		this.capaAutoLogout = Settings.capa(Capa.AutoLogout);
+		this.capaTwoFactor = Settings.capa(Capa.TwoFactor);
 
 		this.autoLogout = SettinsStore.autoLogout;
 		this.autoLogout.trigger = ko.observable(SaveSettingsStep.Idle);

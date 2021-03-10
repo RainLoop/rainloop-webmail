@@ -20,8 +20,8 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	constructor(name) {
 		super(name, 'SystemDropDown');
 
-		this.allowSettings = !!Settings.capa(Capa.Settings);
-		this.allowHelp = !!Settings.capa(Capa.Help);
+		this.allowSettings = Settings.capa(Capa.Settings);
+		this.allowHelp = Settings.capa(Capa.Help);
 
 		this.currentAudio = AppStore.currentAudio;
 

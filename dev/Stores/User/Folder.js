@@ -4,6 +4,7 @@ import { FolderType } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
+import { SettingsGet } from 'Common/Globals';
 
 class FolderUserStore {
 	constructor() {
@@ -40,7 +41,7 @@ class FolderUserStore {
 
 		this.currentFolder = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'selected'] });
 
-		this.sieveAllowFileintoInbox = !!rl.settings.get('SieveAllowFileintoInbox');
+		this.sieveAllowFileintoInbox = !!SettingsGet('SieveAllowFileintoInbox');
 
 		this.draftFolderNotEnabled = ko.computed(
 			() => !this.draftFolder() || UNUSED_OPTION_VALUE === this.draftFolder()

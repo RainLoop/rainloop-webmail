@@ -1,6 +1,7 @@
 import ko from 'ko';
 
 import { StorageResultType, Notification } from 'Common/Enums';
+import { SettingsGet } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -13,7 +14,7 @@ import { PluginPopupView } from 'View/Popup/Plugin';
 
 export class PluginsAdminSettings {
 	constructor() {
-		this.enabledPlugins = ko.observable(!!rl.settings.get('EnabledPlugins'));
+		this.enabledPlugins = ko.observable(!!SettingsGet('EnabledPlugins'));
 
 		this.plugins = PluginAdminStore;
 		this.pluginsError = PluginAdminStore.error;

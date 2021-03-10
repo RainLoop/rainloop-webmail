@@ -1,4 +1,5 @@
 import { Capa, StorageResultType } from 'Common/Enums';
+import { Settings } from 'Common/Globals';
 import { pString } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
@@ -33,7 +34,7 @@ class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 			viewEnable_: false
 		});
 
-		this.capaTwoFactor = rl.settings.capa(Capa.TwoFactor);
+		this.capaTwoFactor = Settings.capa(Capa.TwoFactor);
 
 		this.addComputables({
 			viewEnable: {

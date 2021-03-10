@@ -2,6 +2,7 @@ import 'External/Admin/ko';
 import ko from 'ko';
 
 import { StorageResultType } from 'Common/Enums';
+import { Settings, SettingsGet } from 'Common/Globals';
 
 import { AppAdminStore } from 'Stores/Admin/App';
 import { CapaAdminStore } from 'Stores/Admin/Capa';
@@ -103,11 +104,11 @@ class AdminApp extends AbstractApp {
 
 		this.hideLoading();
 
-		if (!rl.settings.app('allowAdminPanel')) {
+		if (!Settings.app('allowAdminPanel')) {
 			rl.route.root();
 			setTimeout(() => location.href = '/', 1);
 		} else {
-			if (rl.settings.get('Auth')) {
+			if (SettingsGet('Auth')) {
 				startScreens([SettingsAdminScreen]);
 			} else {
 				startScreens([LoginAdminScreen]);

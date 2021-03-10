@@ -2,6 +2,7 @@ import ko from 'ko';
 
 import { SetSystemFoldersNotification } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
+import { Settings } from 'Common/Globals';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
@@ -50,7 +51,7 @@ class FolderSystemPopupView extends AbstractViewPopup {
 		this.trashFolder = FolderStore.trashFolder;
 		this.archiveFolder = FolderStore.archiveFolder;
 
-		const settingsSet = rl.settings.set,
+		const settingsSet = Settings.set,
 			fSetSystemFolders = () => {
 				settingsSet('SentFolder', FolderStore.sentFolder());
 				settingsSet('DraftFolder', FolderStore.draftFolder());

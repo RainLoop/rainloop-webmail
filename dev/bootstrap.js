@@ -1,4 +1,4 @@
-import { doc, elementById, dropdownVisibility } from 'Common/Globals';
+import { doc, elementById, dropdownVisibility, Settings } from 'Common/Globals';
 import { StorageResultType } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
@@ -51,7 +51,7 @@ export default (App) => {
 		},
 		reload: () => {
 			rl.route.root();
-			setTimeout(() => (rl.settings.app('inIframe') ? parent : window).location.reload(), 100);
+			setTimeout(() => (Settings.app('inIframe') ? parent : window).location.reload(), 100);
 		},
 		off: () => hasher.changed.active = false,
 		on: () => hasher.changed.active = true,
@@ -91,7 +91,7 @@ export default (App) => {
 		if (postData) {
 			init.method = 'POST';
 			init.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
-			postData.XToken = rl.settings.app('token');
+			postData.XToken = Settings.app('token');
 //			init.body = JSON.stringify(postData);
 			const formData = new FormData(),
 			buildFormData = (formData, data, parentKey) => {

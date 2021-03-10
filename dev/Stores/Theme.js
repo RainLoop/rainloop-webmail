@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { $htmlCL, leftPanelDisabled } from 'Common/Globals';
+import { $htmlCL, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
 
 export const ThemeStore = {
 	themes: ko.observableArray(),
@@ -8,14 +8,13 @@ export const ThemeStore = {
 	isMobile: ko.observable($htmlCL.contains('rl-mobile')),
 
 	populate: function(){
-		const Settings = rl.settings,
-			themes = Settings.app('themes');
+		const themes = Settings.app('themes');
 
 		this.themes(Array.isArray(themes) ? themes : []);
-		this.theme(Settings.get('Theme'));
+		this.theme(SettingsGet('Theme'));
 		if (!this.isMobile()) {
-			this.userBackgroundName(Settings.get('UserBackgroundName'));
-			this.userBackgroundHash(Settings.get('UserBackgroundHash'));
+			this.userBackgroundName(SettingsGet('UserBackgroundName'));
+			this.userBackgroundHash(SettingsGet('UserBackgroundHash'));
 		}
 
 		leftPanelDisabled(this.isMobile());

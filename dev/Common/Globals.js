@@ -8,6 +8,7 @@ export const $htmlCL = doc.documentElement.classList;
 export const elementById = id => doc.getElementById(id);
 
 export const Settings = rl.settings;
+export const SettingsGet = rl.settings.get;
 
 export const dropdownVisibility = ko.observable(false).extend({ rateLimit: 0 });
 

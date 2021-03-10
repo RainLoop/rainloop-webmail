@@ -1,6 +1,7 @@
 import ko from 'ko';
 
 import { StorageResultType } from 'Common/Enums';
+import { SettingsGet } from 'Common/Globals';
 
 import { AppAdminStore } from 'Stores/Admin/App';
 import { CapaAdminStore } from 'Stores/Admin/Capa';
@@ -8,8 +9,6 @@ import { CapaAdminStore } from 'Stores/Admin/Capa';
 import Remote from 'Remote/Admin/Fetch';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
-
-const settingsGet = rl.settings.get;
 
 export class SecurityAdminSettings {
 	constructor() {
@@ -21,16 +20,16 @@ export class SecurityAdminSettings {
 		this.capaTwoFactorAuthForce = CapaAdminStore.twoFactorAuthForce;
 
 		ko.addObservablesTo(this, {
-			useLocalProxyForExternalImages: !!rl.settings.get('UseLocalProxyForExternalImages'),
+			useLocalProxyForExternalImages: !!SettingsGet('UseLocalProxyForExternalImages'),
 
-			verifySslCertificate: !!settingsGet('VerifySslCertificate'),
-			allowSelfSigned: !!settingsGet('AllowSelfSigned'),
+			verifySslCertificate: !!SettingsGet('VerifySslCertificate'),
+			allowSelfSigned: !!SettingsGet('AllowSelfSigned'),
 
 			isTwoFactorDropperShown: false,
 			twoFactorDropperUser: '',
 			twoFactorDropperUserFocused: false,
 
-			adminLogin: settingsGet('AdminLogin'),
+			adminLogin: SettingsGet('AdminLogin'),
 			adminLoginError: false,
 			adminPassword: '',
 			adminPasswordNew: '',

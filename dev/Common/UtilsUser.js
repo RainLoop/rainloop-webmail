@@ -504,5 +504,5 @@ export function mailToHelper(mailToUrl) {
 
 export function showMessageComposer(params = [])
 {
-	rl.app.showScreenPopup(params);
+	rl.app.showMessageComposer(params);
 }

@@ -1,13 +1,14 @@
 import ko from 'ko';
+import { SettingsGet } from 'Common/Globals';
 
 export const AppAdminStore = {
 	weakPassword: ko.observable(false),
 	dataFolderAccess: ko.observable(false),
 
 	populate: function() {
-		this.weakPassword(!!rl.settings.get('WeakPassword'));
+		this.weakPassword(!!SettingsGet('WeakPassword'));
 /*
-		rl.settings.get('WeakPassword')
+		SettingsGet('WeakPassword')
 			&& fetch('./data/VERSION?' + Math.random()).then(() => this.dataFolderAccess(true));
 */
 	}

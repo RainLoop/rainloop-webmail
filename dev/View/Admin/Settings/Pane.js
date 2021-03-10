@@ -8,13 +8,13 @@ import { PackageAdminStore } from 'Stores/Admin/Package';
 
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
-import { leftPanelDisabled } from 'Common/Globals';
+import { leftPanelDisabled, Settings } from 'Common/Globals';
 
 class PaneSettingsAdminView extends AbstractViewRight {
 	constructor() {
 		super('Admin/Settings/Pane', 'AdminPane');
 
-		this.version = ko.observable(rl.settings.app('version'));
+		this.version = ko.observable(Settings.app('version'));
 
 		this.leftPanelDisabled = leftPanelDisabled;
 
