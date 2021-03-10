@@ -435,8 +435,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			let el = eqs(event, 'a');
 			if (el) {
 				return !(
-					!!event &&
-					3 !== event.which &&
+					0 === event.button &&
 					mailToHelper(
 						el.href,
 						Settings.capa(Capa.Composer) ? ComposePopupView : null

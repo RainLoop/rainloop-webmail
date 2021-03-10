@@ -152,7 +152,7 @@
 		if (e && target) {
 			let evt = new Event(type, {bubbles:true,cancelable:true});
 			evt.button = 0;
-			evt.which = evt.buttons = 1;
+			evt.buttons = 1;
 			// copy event properties into new event
 			['altKey','ctrlKey','metaKey','shiftKey'].forEach(k => evt[k] = e[k]);
 			let src = e.touches ? e.touches[0] : e;

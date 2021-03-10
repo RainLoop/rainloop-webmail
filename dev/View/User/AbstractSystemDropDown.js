@@ -48,7 +48,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	}
 
 	accountClick(account, event) {
-		if (account && event && undefined !== event.which && 1 === event.which) {
+		if (account && 0 === event.button) {
 			AccountStore.accounts.loading(true);
 			setTimeout(() => AccountStore.accounts.loading(false), 1000);
 		}
