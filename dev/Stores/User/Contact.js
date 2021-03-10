@@ -1,32 +1,25 @@
 import ko from 'ko';
 import { SettingsGet } from 'Common/Globals';
 
-class ContactUserStore {
-	constructor() {
-		this.contacts = ko.observableArray();
-		this.contacts.loading = ko.observable(false).extend({ debounce: 200 });
-		this.contacts.importing = ko.observable(false).extend({ debounce: 200 });
-		this.contacts.syncing = ko.observable(false).extend({ debounce: 200 });
-		this.contacts.exportingVcf = ko.observable(false).extend({ debounce: 200 });
-		this.contacts.exportingCsv = ko.observable(false).extend({ debounce: 200 });
+export const ContactUserStore = ko.observableArray();
 
-		ko.addObservablesTo(this, {
-			allowContactsSync: false,
-			enableContactsSync: false,
-			contactsSyncUrl: '',
-			contactsSyncUser: '',
-			contactsSyncPass: ''
-		});
-	}
+ContactUserStore.loading = ko.observable(false).extend({ debounce: 200 });
+ContactUserStore.importing = ko.observable(false).extend({ debounce: 200 });
+ContactUserStore.syncing = ko.observable(false).extend({ debounce: 200 });
 
-	populate() {
-		this.allowContactsSync(!!SettingsGet('ContactsSyncIsAllowed'));
-		this.enableContactsSync(!!SettingsGet('EnableContactsSync'));
+ko.addObservablesTo(ContactUserStore, {
+	allowSync: false,
+	enableSync: false,
+	syncUrl: '',
+	syncUser: '',
+	syncPass: ''
+});
 
-		this.contactsSyncUrl(SettingsGet('ContactsSyncUrl'));
-		this.contactsSyncUser(SettingsGet('ContactsSyncUser'));
-		this.contactsSyncPass(SettingsGet('ContactsSyncPassword'));
-	}
-}
+ContactUserStore.populate = function() {
+	this.allowSync(!!SettingsGet('ContactsSyncIsAllowed'));
+	this.enableSync(!!SettingsGet('EnableContactsSync'));
 
-export default new ContactUserStore();
+	this.syncUrl(SettingsGet('ContactsSyncUrl'));
+	this.syncUser(SettingsGet('ContactsSyncUser'));
+	this.syncPass(SettingsGet('ContactsSyncPassword'));
+};

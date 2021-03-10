@@ -2,7 +2,7 @@ import ko from 'ko';
 
 // import Remote from 'Remote/User/Fetch';
 
-class TemplateUserStore {
+export const TemplateUserStore = new class {
 	constructor() {
 		this.templates = ko.observableArray();
 		this.templates.loading = ko.observable(false).extend({ debounce: 100 });
@@ -29,6 +29,4 @@ class TemplateUserStore {
 		// 	}
 		// });
 	}
-}
-
-export default new TemplateUserStore();
+};

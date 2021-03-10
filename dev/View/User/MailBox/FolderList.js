@@ -6,10 +6,10 @@ import { leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
 
-import AppStore from 'Stores/User/App';
-import SettingsStore from 'Stores/User/Settings';
-import FolderStore from 'Stores/User/Folder';
-import MessageStore from 'Stores/User/Message';
+import { AppUserStore } from 'Stores/User/App';
+import { SettingsUserStore } from 'Stores/User/Settings';
+import { FolderUserStore } from 'Stores/User/Folder';
+import { MessageUserStore } from 'Stores/User/Message';
 import { ThemeStore } from 'Stores/Theme';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -25,29 +25,29 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 
 		this.oContentScrollable = null;
 
-		this.composeInEdit = AppStore.composeInEdit;
+		this.composeInEdit = AppUserStore.composeInEdit;
 
-		this.messageList = MessageStore.messageList;
-		this.folderList = FolderStore.folderList;
-		this.folderListSystem = FolderStore.folderListSystem;
-		this.foldersChanging = FolderStore.foldersChanging;
+		this.messageList = MessageUserStore.messageList;
+		this.folderList = FolderUserStore.folderList;
+		this.folderListSystem = FolderUserStore.folderListSystem;
+		this.foldersChanging = FolderUserStore.foldersChanging;
 
 		this.moveAction = moveAction;
 
-		this.foldersListWithSingleInboxRootFolder = FolderStore.foldersListWithSingleInboxRootFolder;
+		this.foldersListWithSingleInboxRootFolder = FolderUserStore.foldersListWithSingleInboxRootFolder;
 
 		this.leftPanelDisabled = leftPanelDisabled;
 
 		this.allowComposer = Settings.capa(Capa.Composer);
-		this.allowContacts = !!AppStore.contactsIsAllowed();
+		this.allowContacts = !!AppUserStore.contactsIsAllowed();
 
-		this.folderListFocused = ko.computed(() => Focused.FolderList === AppStore.focusedState());
+		this.folderListFocused = ko.computed(() => Focused.FolderList === AppUserStore.focusedState());
 
 		this.isInboxStarred = ko.computed(
 			() =>
-				FolderStore.currentFolder() &&
-				FolderStore.currentFolder().isInbox() &&
-				MessageStore.messageListSearch().trim().includes('is:flagged')
+				FolderUserStore.currentFolder() &&
+				FolderUserStore.currentFolder().isInbox() &&
+				MessageUserStore.messageListSearch().trim().includes('is:flagged')
 		);
 	}
 
@@ -69,17 +69,17 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 					if (isMove) {
 						moveAction(false);
 						rl.app.moveMessagesToFolder(
-							FolderStore.currentFolderFullNameRaw(),
-							MessageStore.messageListCheckedOrSelectedUidsWithSubMails(),
+							FolderUserStore.currentFolderFullNameRaw(),
+							MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails(),
 							folder.fullNameRaw,
 							event.ctrlKey
 						);
 					} else {
-						if (!SettingsStore.usePreviewPane()) {
-							MessageStore.message(null);
+						if (!SettingsUserStore.usePreviewPane()) {
+							MessageUserStore.message(null);
 						}
 
-						if (folder.fullNameRaw === FolderStore.currentFolderFullNameRaw()) {
+						if (folder.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()) {
 							setFolderHash(folder.fullNameRaw, '');
 						}
 
@@ -89,7 +89,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 						);
 					}
 
-					AppStore.focusedState(Focused.MessageList);
+					AppUserStore.focusedState(Focused.MessageList);
 				}
 			};
 
@@ -144,7 +144,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 		shortcuts.add('enter,open', '', KeyState.FolderList, () => {
 			const item = qs('.b-folders .e-item .e-link:not(.hidden).focused');
 			if (item) {
-				AppStore.focusedState(Focused.MessageList);
+				AppUserStore.focusedState(Focused.MessageList);
 				item.click();
 			}
 
@@ -165,12 +165,12 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 
 //		shortcuts.add('tab', 'shift', KeyState.FolderList, () => {
 		shortcuts.add('escape,tab,arrowright', '', KeyState.FolderList, () => {
-			AppStore.focusedState(Focused.MessageList);
+			AppUserStore.focusedState(Focused.MessageList);
 			moveAction(false);
 			return false;
 		});
 
-		AppStore.focusedState.subscribe(value => {
+		AppUserStore.focusedState.subscribe(value => {
 			let el = qs('.b-folders .e-item .e-link.focused');
 			el && qs('.b-folders .e-item .e-link.focused').classList.remove('focused');
 			if (Focused.FolderList === value) {

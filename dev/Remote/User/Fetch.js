@@ -11,9 +11,9 @@ import {
 import { SettingsGet } from 'Common/Globals';
 import { SUB_QUERY_PREFIX } from 'Common/Links';
 
-import AppStore from 'Stores/User/App';
-import SettingsStore from 'Stores/User/Settings';
-import FolderStore from 'Stores/User/Folder';
+import { AppUserStore } from 'Stores/User/App';
+import { SettingsUserStore } from 'Stores/User/Settings';
+import { FolderUserStore } from 'Stores/User/Folder';
 
 import { AbstractFetchRemote } from 'Remote/AbstractFetch';
 
@@ -308,7 +308,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		sFolderFullNameRaw = pString(sFolderFullNameRaw);
 
 		const folderHash = getFolderHash(sFolderFullNameRaw),
-			useThreads = AppStore.threadsAllowed() && SettingsStore.useThreads(),
+			useThreads = AppUserStore.threadsAllowed() && SettingsUserStore.useThreads(),
 			inboxUidNext = getFolderInboxName() === sFolderFullNameRaw ? getFolderUidNext(sFolderFullNameRaw) : '';
 
 		let params = {}, sGetAdd = '';
@@ -322,7 +322,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 					iOffset,
 					iLimit,
 					sSearch,
-					AppStore.projectHash(),
+					AppUserStore.projectHash(),
 					folderHash,
 					inboxUidNext,
 					useThreads ? 1 : 0,
@@ -387,8 +387,8 @@ class RemoteUserFetch extends AbstractFetchRemote {
 					urlsafeArray([
 						sFolderFullNameRaw,
 						iUid,
-						AppStore.projectHash(),
-						AppStore.threadsAllowed() && SettingsStore.useThreads() ? 1 : 0
+						AppUserStore.projectHash(),
+						AppUserStore.threadsAllowed() && SettingsUserStore.useThreads() ? 1 : 0
 					]),
 				['Message']
 			);
@@ -467,7 +467,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 				FlagsUids: Array.isArray(uids) ? uids.join(',') : '',
 				UidNext: getFolderInboxName() === folder ? getFolderUidNext(folder) : ''
 			});
-		} else if (SettingsStore.useThreads()) {
+		} else if (SettingsUserStore.useThreads()) {
 			rl.app.reloadFlagsCurrentMessageListAndMessageFromCache();
 		}
 	}
@@ -773,7 +773,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	foldersReload(fCallback) {
 		this.abort('Folders')
-			.postRequest('Folders', FolderStore.foldersLoading)
+			.postRequest('Folders', FolderUserStore.foldersLoading)
 			.then(data => {
 				data = FolderCollectionModel.reviveFromJson(data.Result);
 				data && data.storeIt();
@@ -783,27 +783,27 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	}
 
 	foldersReloadWithTimeout() {
-		this.setTrigger(FolderStore.foldersLoading, true);
+		this.setTrigger(FolderUserStore.foldersLoading, true);
 
 		clearTimeout(this.foldersTimeout);
 		this.foldersTimeout = setTimeout(() => this.foldersReload(), 500);
 	}
 
 	folderDelete(sFolderFullNameRaw) {
-		return this.postRequest('FolderDelete', FolderStore.foldersDeleting, {
+		return this.postRequest('FolderDelete', FolderUserStore.foldersDeleting, {
 			Folder: sFolderFullNameRaw
 		});
 	}
 
 	folderCreate(sNewFolderName, sParentName) {
-		return this.postRequest('FolderCreate', FolderStore.foldersCreating, {
+		return this.postRequest('FolderCreate', FolderUserStore.foldersCreating, {
 			Folder: sNewFolderName,
 			Parent: sParentName
 		});
 	}
 
 	folderRename(sPrevFolderFullNameRaw, sNewFolderName) {
-		return this.postRequest('FolderRename', FolderStore.foldersRenaming, {
+		return this.postRequest('FolderRename', FolderUserStore.foldersRenaming, {
 			Folder: sPrevFolderFullNameRaw,
 			NewFolderName: sNewFolderName
 		});

@@ -6,7 +6,7 @@ import { pInt } from 'Common/Utils';
 import { $htmlCL, SettingsGet } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
-class SettingsUserStore {
+export const SettingsUserStore = new class {
 	constructor() {
 		this.layout = ko
 			.observable(Layout.SidePreview)
@@ -36,7 +36,12 @@ class SettingsUserStore {
 
 		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout() && !ThemeStore.isMobile());
 
-		this.subscribers();
+		this.layout.subscribe(value => {
+			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
+			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
+			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
+			dispatchEvent(new CustomEvent('rl-layout', {detail:value}));
+		});
 
 		let iAutoLogoutTimer;
 		this.delayLogout = (() => {
@@ -48,15 +53,6 @@ class SettingsUserStore {
 				);
 			}
 		}).throttle(5000);
-	}
-
-	subscribers() {
-		this.layout.subscribe(value => {
-			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
-			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
-			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
-			dispatchEvent(new CustomEvent('rl-layout', {detail:value}));
-		});
 	}
 
 	populate() {
@@ -75,6 +71,4 @@ class SettingsUserStore {
 
 		this.delayLogout();
 	}
-}
-
-export default new SettingsUserStore();
+};

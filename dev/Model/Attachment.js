@@ -8,7 +8,7 @@ import {
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-import Audio from 'Common/Audio';
+import { SMAudio } from 'Common/Audio';
 
 const bAllowPdfPreview = undefined !== navigator.mimeTypes['application/pdf'];
 
@@ -120,9 +120,9 @@ export class AttachmentModel extends AbstractModel {
 	 */
 	hasPreplay() {
 		return (
-			(Audio.supportedMp3 && this.isMp3()) ||
-			(Audio.supportedOgg && this.isOgg()) ||
-			(Audio.supportedWav && this.isWav())
+			(SMAudio.supportedMp3 && this.isMp3()) ||
+			(SMAudio.supportedOgg && this.isOgg()) ||
+			(SMAudio.supportedWav && this.isWav())
 		);
 	}
 

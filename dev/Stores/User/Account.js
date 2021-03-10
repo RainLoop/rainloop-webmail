@@ -1,36 +1,31 @@
 import ko from 'ko';
 import { SettingsGet } from 'Common/Globals';
 
-class AccountUserStore {
-	constructor() {
-		ko.addObservablesTo(this, {
-			email: '',
-			parentEmail: '',
-			signature: ''
-		});
+export const AccountUserStore = {
+	accounts: ko.observableArray(),
+	loading: ko.observable(false).extend({ debounce: 100 }),
 
-		this.accounts = ko.observableArray();
-		this.accounts.loading = ko.observable(false).extend({ debounce: 100 });
+	getEmailAddresses: () => AccountUserStore.accounts.map(item => item ? item.email : null).filter(v => v),
 
-		this.getEmailAddresses = () => this.accounts.map(item => item ? item.email : null).filter(v => v);
+	accountsUnreadCount: ko.computed(() => 0),
+	// accountsUnreadCount: ko.computed(() => {
+	// 	let result = 0;
+	// 	AccountUserStore.accounts().forEach(item => {
+	// 		if (item) {
+	// 			result += item.count();
+	// 		}
+	// 	});
+	// 	return result;
+	// }),
 
-		this.accountsUnreadCount = ko.computed(() => 0);
-		// this.accountsUnreadCount = ko.computed(() => {
-		// 	let result = 0;
-		// 	this.accounts().forEach(item => {
-		// 		if (item)
-		// 		{
-		// 			result += item.count();
-		// 		}
-		// 	});
-		// 	return result;
-		// });
+	populate: () => {
+		AccountUserStore.email(SettingsGet('Email'));
+		AccountUserStore.parentEmail(SettingsGet('ParentEmail'));
 	}
+};
 
-	populate() {
-		this.email(SettingsGet('Email'));
-		this.parentEmail(SettingsGet('ParentEmail'));
-	}
-}
-
-export default new AccountUserStore();
+ko.addObservablesTo(AccountUserStore, {
+	email: '',
+	parentEmail: '',
+	signature: ''
+});

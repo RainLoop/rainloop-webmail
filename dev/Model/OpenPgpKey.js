@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 
-import PgpStore from 'Stores/User/Pgp';
+import { PgpUserStore } from 'Stores/User/Pgp';
 
 export class OpenPgpKeyModel extends AbstractModel {
 	/**
@@ -38,7 +38,7 @@ export class OpenPgpKeyModel extends AbstractModel {
 	getNativeKey() {
 		let key = null;
 		try {
-			key = PgpStore.openpgp.key.readArmored(this.armor);
+			key = PgpUserStore.openpgp.key.readArmored(this.armor);
 			if (key && !key.err && key.keys && key.keys[0]) {
 				return key;
 			}

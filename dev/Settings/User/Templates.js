@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
 
-import TemplateStore from 'Stores/User/Template';
+import { TemplateUserStore } from 'Stores/User/Template';
 import Remote from 'Remote/User/Fetch';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -11,10 +11,10 @@ import { TemplatePopupView } from 'View/Popup/Template';
 
 export class TemplatesUserSettings {
 	constructor() {
-		this.templates = TemplateStore.templates;
+		this.templates = TemplateUserStore.templates;
 
 		this.processText = ko.computed(() =>
-			TemplateStore.templates.loading() ? i18n('SETTINGS_TEMPLETS/LOADING_PROCESS') : ''
+			TemplateUserStore.templates.loading() ? i18n('SETTINGS_TEMPLETS/LOADING_PROCESS') : ''
 		);
 		this.visibility = ko.computed(() => this.processText() ? 'visible' : 'hidden');
 

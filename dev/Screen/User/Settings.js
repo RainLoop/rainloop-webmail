@@ -3,8 +3,8 @@ import { keyScope, leftPanelDisabled, Settings } from 'Common/Globals';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
-import AppStore from 'Stores/User/App';
-import AccountStore from 'Stores/User/Account';
+import { AppUserStore } from 'Stores/User/App';
+import { AccountUserStore } from 'Stores/User/Account';
 import { ThemeStore } from 'Stores/Theme';
 
 import { AbstractSettingsScreen, settingsAddViewModel } from 'Screen/AbstractSettings';
@@ -45,7 +45,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 
 		settingsAddViewModel(GeneralUserSettings, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
-		if (AppStore.contactsIsAllowed()) {
+		if (AppUserStore.contactsIsAllowed()) {
 			settingsAddViewModel(ContactsUserSettings, 'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 		}
 
@@ -101,7 +101,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 	}
 
 	setSettingsTitle() {
-		const sEmail = AccountStore.email();
+		const sEmail = AccountUserStore.email();
 		rl.setWindowTitle((sEmail ? sEmail + ' - ' :  '') + this.sSettingsTitle);
 	}
 }

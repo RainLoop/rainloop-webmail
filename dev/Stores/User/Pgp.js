@@ -4,7 +4,7 @@ import { i18n } from 'Common/Translator';
 import { pString } from 'Common/Utils';
 import { doc } from 'Common/Globals';
 
-import AccountStore from 'Stores/User/Account';
+import { AccountUserStore } from 'Stores/User/Account';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
@@ -132,7 +132,7 @@ function domControlSignedClickHelper(store, dom, armoredMessage) {
 	};
 }
 
-class PgpUserStore {
+export const PgpUserStore = new class {
 	constructor() {
 		this.capaOpenPGP = ko.observable(false);
 
@@ -260,7 +260,7 @@ class PgpUserStore {
 	 * @returns {?}
 	 */
 	findSelfPrivateKey(password) {
-		return this.findPrivateKeyByEmail(AccountStore.email(), password);
+		return this.findPrivateKeyByEmail(AccountUserStore.email(), password);
 	}
 
 	decryptMessage(message, recipients, fCallback) {
@@ -365,6 +365,4 @@ class PgpUserStore {
 			}
 		}
 	}
-}
-
-export default new PgpUserStore();
+};

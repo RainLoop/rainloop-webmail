@@ -7,7 +7,7 @@ import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import SettinsStore from 'Stores/User/Settings';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -18,7 +18,7 @@ export class SecurityUserSettings {
 		this.capaAutoLogout = Settings.capa(Capa.AutoLogout);
 		this.capaTwoFactor = Settings.capa(Capa.TwoFactor);
 
-		this.autoLogout = SettinsStore.autoLogout;
+		this.autoLogout = SettingsUserStore.autoLogout;
 		this.autoLogout.trigger = ko.observable(SaveSettingsStep.Idle);
 
 		let i18nLogout = (key, params) => i18n('SETTINGS_SECURITY/AUTOLOGIN_' + key, params);

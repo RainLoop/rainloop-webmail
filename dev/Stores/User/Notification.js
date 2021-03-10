@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import Audio from 'Common/Audio';
+import { SMAudio } from 'Common/Audio';
 import { SettingsGet } from 'Common/Globals';
 import * as Links from 'Common/Links';
 
@@ -35,7 +35,7 @@ if (WorkerNotifications && ServiceWorkerRegistration && ServiceWorkerRegistratio
 	console.log('ServiceWorker Notifications not supported');
 }
 
-class NotificationUserStore {
+export const NotificationUserStore = new class {
 	constructor() {
 		this.enableSoundNotification = ko.observable(false);
 
@@ -58,7 +58,7 @@ class NotificationUserStore {
 	 */
 	playSoundNotification(skipSetting) {
 		if (skipSetting ? true : this.enableSoundNotification()) {
-			Audio.playNotification();
+			SMAudio.playNotification();
 		}
 	}
 
@@ -106,6 +106,4 @@ class NotificationUserStore {
 		this.enableSoundNotification(!!SettingsGet('SoundNotification'));
 		this.enableDesktopNotification(!!SettingsGet('DesktopNotifications'));
 	}
-}
-
-export default new NotificationUserStore();
+};

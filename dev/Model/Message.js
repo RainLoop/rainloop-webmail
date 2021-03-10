@@ -8,7 +8,7 @@ import { isArray } from 'Common/Utils';
 
 import { serverRequestRaw } from 'Common/Links';
 
-import FolderStore from 'Stores/User/Folder';
+import { FolderUserStore } from 'Stores/User/Folder';
 
 import { FileInfo } from 'Common/File';
 import { AttachmentCollectionModel } from 'Model/AttachmentCollection';
@@ -173,7 +173,7 @@ export class MessageModel extends AbstractModel {
 	}
 
 	computeSenderEmail() {
-		const list = [FolderStore.sentFolder(), FolderStore.draftFolder()].includes(this.folder) ? 'to' : 'from';
+		const list = [FolderUserStore.sentFolder(), FolderUserStore.draftFolder()].includes(this.folder) ? 'to' : 'from';
 		this.senderEmailsString(this[list].toString(true));
 		this.senderClearEmailsString(this[list].toStringClear());
 	}

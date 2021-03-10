@@ -5,7 +5,7 @@ import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { i18n } from 'Common/Translator';
 import { getFolderFromCacheList } from 'Common/Cache';
 
-import AccountStore from 'Stores/User/Account';
+import { AccountUserStore } from 'Stores/User/Account';
 
 import { FilterConditionModel } from 'Model/FilterCondition';
 import { AbstractModel } from 'Knoin/AbstractModel';
@@ -215,7 +215,7 @@ export class FilterModel extends AbstractModel {
 	}
 
 	setRecipients() {
-		this.actionValueFourth(AccountStore.getEmailAddresses().join(', '));
+		this.actionValueFourth(AccountUserStore.getEmailAddresses().join(', '));
 	}
 
 	/**

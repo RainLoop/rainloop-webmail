@@ -4,11 +4,11 @@ import { pString, pInt } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
 import { i18n } from 'Common/Translator';
 
-import AppStore from 'Stores/User/App';
-import AccountStore from 'Stores/User/Account';
-import SettingsStore from 'Stores/User/Settings';
-import FolderStore from 'Stores/User/Folder';
-import MessageStore from 'Stores/User/Message';
+import { AppUserStore } from 'Stores/User/App';
+import { AccountUserStore } from 'Stores/User/Account';
+import { SettingsUserStore } from 'Stores/User/Settings';
+import { FolderUserStore } from 'Stores/User/Folder';
+import { MessageUserStore } from 'Stores/User/Message';
 import { ThemeStore } from 'Stores/Theme';
 
 import { SystemDropDownMailBoxUserView } from 'View/User/MailBox/SystemDropDown';
@@ -36,12 +36,12 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 * @returns {void}
 	 */
 	updateWindowTitle() {
-		const foldersInboxUnreadCount = Settings.app('listPermanentFiltered') ? 0 : FolderStore.foldersInboxUnreadCount(),
-			email = AccountStore.email();
+		const count = Settings.app('listPermanentFiltered') ? 0 : FolderUserStore.foldersInboxUnreadCount(),
+			email = AccountUserStore.email();
 
 		rl.setWindowTitle(
 			(email
-				? '' + (0 < foldersInboxUnreadCount ? '(' + foldersInboxUnreadCount + ') ' : ' ') + email + ' - '
+				? '' + (0 < count ? '(' + count + ') ' : ' ') + email + ' - '
 				: ''
 			) + i18n('TITLES/MAILBOX')
 		);
@@ -53,8 +53,8 @@ export class MailBoxUserScreen extends AbstractScreen {
 	onShow() {
 		this.updateWindowTitle();
 
-		AppStore.focusedState(Focused.None);
-		AppStore.focusedState(Focused.MessageList);
+		AppUserStore.focusedState(Focused.None);
+		AppUserStore.focusedState(Focused.MessageList);
 
 		ThemeStore.isMobile() && leftPanelDisabled(true);
 	}
@@ -73,11 +73,11 @@ export class MailBoxUserScreen extends AbstractScreen {
 				threadUid = '';
 			}
 
-			FolderStore.currentFolder(folder);
+			FolderUserStore.currentFolder(folder);
 
-			MessageStore.messageListPage(page);
-			MessageStore.messageListSearch(search);
-			MessageStore.messageListThreadUid(threadUid);
+			MessageUserStore.messageListPage(page);
+			MessageUserStore.messageListSearch(search);
+			MessageUserStore.messageListThreadUid(threadUid);
 
 			rl.app.reloadMessageList();
 		}
@@ -89,14 +89,14 @@ export class MailBoxUserScreen extends AbstractScreen {
 	onStart() {
 		if (!this.__started) {
 			super.onStart();
-			setTimeout(() => SettingsStore.layout.valueHasMutated(), 50);
+			setTimeout(() => SettingsUserStore.layout.valueHasMutated(), 50);
 			setTimeout(() => warmUpScreenPopup(ComposePopupView), 500);
 
 			addEventListener('mailbox.inbox-unread-count', e => {
-				FolderStore.foldersInboxUnreadCount(e.detail);
+				FolderUserStore.foldersInboxUnreadCount(e.detail);
 
-				const email = AccountStore.email();
-				AccountStore.accounts.forEach(item =>
+				const email = AccountUserStore.email();
+				AccountUserStore.accounts.forEach(item =>
 					item && email === item.email && item.count(e.detail)
 				);
 

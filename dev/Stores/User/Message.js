@@ -24,12 +24,12 @@ import { EmailCollectionModel } from 'Model/EmailCollection';
 import { MessageModel } from 'Model/Message';
 import { MessageCollectionModel } from 'Model/MessageCollection';
 
-import AppStore from 'Stores/User/App';
-import AccountStore from 'Stores/User/Account';
-import FolderStore from 'Stores/User/Folder';
-import PgpStore from 'Stores/User/Pgp';
-import SettingsStore from 'Stores/User/Settings';
-import NotificationStore from 'Stores/User/Notification';
+import { AppUserStore } from 'Stores/User/App';
+import { AccountUserStore } from 'Stores/User/Account';
+import { FolderUserStore } from 'Stores/User/Folder';
+import { PgpUserStore } from 'Stores/User/Pgp';
+import { SettingsUserStore } from 'Stores/User/Settings';
+import { NotificationUserStore } from 'Stores/User/Notification';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -66,7 +66,7 @@ const
 
 doc.body.append(hcont);
 
-class MessageUserStore {
+export const MessageUserStore = new class {
 	constructor() {
 		this.staticMessage = new MessageModel();
 
@@ -128,7 +128,7 @@ class MessageUserStore {
 		);
 
 		this.messageListPageCount = ko.computed(() => {
-			const page = Math.ceil(this.messageListCount() / SettingsStore.messagesPerPage());
+			const page = Math.ceil(this.messageListCount() / SettingsUserStore.messagesPerPage());
 			return 0 >= page ? 1 : page;
 		});
 
@@ -136,7 +136,7 @@ class MessageUserStore {
 			read: this.messageListSearch,
 			write: (value) => {
 				rl.route.setHash(
-					mailBox(FolderStore.currentFolderFullNameHash(), 1, value.toString().trim(), this.messageListThreadUid())
+					mailBox(FolderUserStore.currentFolderFullNameHash(), 1, value.toString().trim(), this.messageListThreadUid())
 				);
 			}
 		});
@@ -226,11 +226,11 @@ class MessageUserStore {
 
 		this.message.subscribe(message => {
 			if (message) {
-				if (!SettingsStore.usePreviewPane()) {
-					AppStore.focusedState(Focused.MessageView);
+				if (!SettingsUserStore.usePreviewPane()) {
+					AppUserStore.focusedState(Focused.MessageView);
 				}
 			} else {
-				AppStore.focusedState(Focused.MessageList);
+				AppUserStore.focusedState(Focused.MessageList);
 
 				this.messageFullScreenMode(false);
 				this.hideMessageBodies();
@@ -262,12 +262,12 @@ class MessageUserStore {
 			if (Array.isNotEmpty(newMessages)) {
 				newMessages.forEach(item => addNewMessageCache(folder, item.Uid));
 
-				NotificationStore.playSoundNotification();
+				NotificationUserStore.playSoundNotification();
 
 				const len = newMessages.length;
 				if (3 < len) {
-					NotificationStore.displayDesktopNotification(
-						AccountStore.email(),
+					NotificationUserStore.displayDesktopNotification(
+						AccountUserStore.email(),
 						i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
 							'COUNT': len
 						}),
@@ -275,7 +275,7 @@ class MessageUserStore {
 					);
 				} else {
 					newMessages.forEach(item => {
-						NotificationStore.displayDesktopNotification(
+						NotificationUserStore.displayDesktopNotification(
 							EmailCollectionModel.reviveFromJson(item.From).toString(),
 							item.Subject,
 							{ 'Folder': item.Folder, 'Uid': item.Uid }
@@ -306,11 +306,11 @@ class MessageUserStore {
 			messageList = this.messageList,
 			currentMessage = this.message();
 
-		const trashFolder = FolderStore.trashFolder(),
-			spamFolder = FolderStore.spamFolder(),
+		const trashFolder = FolderUserStore.trashFolder(),
+			spamFolder = FolderUserStore.spamFolder(),
 			fromFolder = getFolderFromCacheList(fromFolderFullNameRaw),
 			toFolder = toFolderFullNameRaw ? getFolderFromCacheList(toFolderFullNameRaw) : null,
-			currentFolderFullNameRaw = FolderStore.currentFolderFullNameRaw(),
+			currentFolderFullNameRaw = FolderUserStore.currentFolderFullNameRaw(),
 			messages =
 				currentFolderFullNameRaw === fromFolderFullNameRaw
 					? messageList.filter(item => item && uidForRemove.includes(pInt(item.uid)))
@@ -391,7 +391,7 @@ class MessageUserStore {
 
 					rl.route.setHash(
 						mailBox(
-							FolderStore.currentFolderFullNameHash(),
+							FolderUserStore.currentFolderFullNameHash(),
 							this.messageListPage(),
 							this.messageListSearch(),
 							this.messageListThreadUid()
@@ -405,7 +405,7 @@ class MessageUserStore {
 
 						rl.route.setHash(
 							mailBox(
-								FolderStore.currentFolderFullNameHash(),
+								FolderUserStore.currentFolderFullNameHash(),
 								this.messageListPage(),
 								this.messageListSearch(),
 								this.messageListThreadUid()
@@ -418,7 +418,7 @@ class MessageUserStore {
 
 						rl.route.setHash(
 							mailBox(
-								FolderStore.currentFolderFullNameHash(),
+								FolderUserStore.currentFolderFullNameHash(),
 								this.messageListPageBeforeThread(),
 								this.messageListSearch()
 							),
@@ -454,7 +454,7 @@ class MessageUserStore {
 	 */
 	initOpenPgpControls(messageTextBody, message) {
 		messageTextBody && messageTextBody.querySelectorAll('.b-plain-openpgp:not(.inited)').forEach(node =>
-			PgpStore.initMessageBodyControls(node, message)
+			PgpUserStore.initMessageBodyControls(node, message)
 		);
 	}
 
@@ -517,13 +517,13 @@ class MessageUserStore {
 						let isHtml = !!json.Html;
 						if (isHtml) {
 							resultHtml = json.Html.toString();
-							if (SettingsStore.removeColors()) {
+							if (SettingsUserStore.removeColors()) {
 								resultHtml = removeColors(resultHtml);
 							}
 						} else if (json.Plain) {
 							resultHtml = plainToHtml(json.Plain.toString());
 
-							if ((message.isPgpSigned() || message.isPgpEncrypted()) && PgpStore.capaOpenPGP()) {
+							if ((message.isPgpSigned() || message.isPgpEncrypted()) && PgpUserStore.capaOpenPGP()) {
 								plain = pString(json.Plain);
 
 								const isPgpEncrypted = /---BEGIN PGP MESSAGE---/.test(plain);
@@ -578,7 +578,7 @@ class MessageUserStore {
 							message.showInternalImages();
 						}
 
-						if (message.hasImages() && SettingsStore.showImages()) {
+						if (message.hasImages() && SettingsUserStore.showImages()) {
 							message.showExternalImages();
 						}
 
@@ -725,7 +725,7 @@ class MessageUserStore {
 
 			this.messageListCount(iCount);
 			this.messageListSearch(pString(collection.Search));
-			this.messageListPage(Math.ceil(iOffset / SettingsStore.messagesPerPage() + 1));
+			this.messageListPage(Math.ceil(iOffset / SettingsUserStore.messagesPerPage() + 1));
 			this.messageListThreadUid(pString(data.Result.ThreadUid));
 
 			this.messageListEndFolder(collection.Folder);
@@ -740,7 +740,7 @@ class MessageUserStore {
 
 			clearNewMessageCache();
 
-			if (folder && (cached || unreadCountChange || SettingsStore.useThreads())) {
+			if (folder && (cached || unreadCountChange || SettingsUserStore.useThreads())) {
 				rl.app.folderInformation(folder.fullNameRaw, collection);
 			}
 		} else {
@@ -749,6 +749,4 @@ class MessageUserStore {
 			this.messageListError(getNotification(data && data.ErrorCode ? data.ErrorCode : Notification.CantGetMessageList));
 		}
 	}
-}
-
-export default new MessageUserStore();
+};

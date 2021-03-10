@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
-import MessageStore from 'Stores/User/Message';
+import { MessageUserStore } from 'Stores/User/Message';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -47,7 +47,7 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 	searchCommand() {
 		const search = this.buildSearchString();
 		if (search) {
-			MessageStore.mainMessageListSearch(search);
+			MessageUserStore.mainMessageListSearch(search);
 		}
 
 		this.cancelCommand();

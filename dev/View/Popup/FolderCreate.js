@@ -5,7 +5,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
 
-import FolderStore from 'Stores/User/Folder';
+import { FolderUserStore } from 'Stores/User/Folder';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -25,16 +25,14 @@ class FolderCreatePopupView extends AbstractViewPopup {
 
 		this.parentFolderSelectList = ko.computed(() => {
 			const top = [],
-				list = FolderStore.folderList(),
-				fRenameCallback = (oItem) =>
+				list = FolderUserStore.folderList(),
+				fDisableCallback = FolderUserStore.namespace
+					? item => FolderUserStore.namespace !== item.fullNameRaw.substr(0, FolderUserStore.namespace.length)
+					: null,
+				fRenameCallback = oItem =>
 					oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '';
 
 			top.push(['', '']);
-
-			let fDisableCallback = null;
-			if (FolderStore.namespace) {
-				fDisableCallback = (item) => FolderStore.namespace !== item.fullNameRaw.substr(0, FolderStore.namespace.length);
-			}
 
 			return folderListOptionsBuilder([], list, [], top, null, fDisableCallback, null, fRenameCallback);
 		});
@@ -48,8 +46,8 @@ class FolderCreatePopupView extends AbstractViewPopup {
 
 	createFolderCommand() {
 		let parentFolderName = this.selectedParentValue();
-		if (!parentFolderName && 1 < FolderStore.namespace.length) {
-			parentFolderName = FolderStore.namespace.substr(0, FolderStore.namespace.length - 1);
+		if (!parentFolderName && 1 < FolderUserStore.namespace.length) {
+			parentFolderName = FolderUserStore.namespace.substr(0, FolderUserStore.namespace.length - 1);
 		}
 
 		rl.app.foldersPromisesActionHelper(

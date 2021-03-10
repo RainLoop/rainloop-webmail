@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Capa, StorageResultType } from 'Common/Enums';
 import { Settings } from 'Common/Globals';
 
-import AccountStore from 'Stores/User/Account';
+import { AccountUserStore } from 'Stores/User/Account';
 import { IdentityUserStore } from 'Stores/User/Identity';
 import Remote from 'Remote/User/Fetch';
 
@@ -17,7 +17,8 @@ export class AccountsUserSettings {
 		this.allowAdditionalAccount = Settings.capa(Capa.AdditionalAccounts);
 		this.allowIdentities = Settings.capa(Capa.Identities);
 
-		this.accounts = AccountStore.accounts;
+		this.accounts = AccountUserStore.accounts;
+		this.loading = AccountUserStore.loading;
 		this.identities = IdentityUserStore;
 
 		this.accountForDeletion = ko.observable(null).deleteAccessHelper();
@@ -80,7 +81,7 @@ export class AccountsUserSettings {
 	}
 
 	accountsAndIdentitiesAfterMove() {
-		Remote.accountsAndIdentitiesSortOrder(null, AccountStore.getEmailAddresses(), IdentityUserStore.getIDS());
+		Remote.accountsAndIdentitiesSortOrder(null, AccountUserStore.getEmailAddresses(), IdentityUserStore.getIDS());
 	}
 
 	onBuild(oDom) {

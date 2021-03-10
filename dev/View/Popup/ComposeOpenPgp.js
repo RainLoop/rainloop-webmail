@@ -5,7 +5,7 @@ import { pString, defaultOptionsAfterRender } from 'Common/Utils';
 import { KeyState } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
-import PgpStore from 'Stores/User/Pgp';
+import { PgpUserStore } from 'Stores/User/Pgp';
 
 import { EmailModel } from 'Model/Email';
 
@@ -44,7 +44,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 			encryptKeysView:  () => this.encryptKeys.map(oKey => (oKey ? oKey.key : null)).filter(v => v),
 
 			privateKeysOptions: () => {
-				const opts = PgpStore.openpgpkeysPrivate().map(oKey => {
+				const opts = PgpUserStore.openpgpkeysPrivate().map(oKey => {
 					if (this.signKey() && this.signKey().key.id === oKey.id) {
 						return null;
 					}
@@ -59,7 +59,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 			},
 
 			publicKeysOptions: () => {
-				const opts = PgpStore.openpgpkeysPublic().map(oKey => {
+				const opts = PgpUserStore.openpgpkeysPublic().map(oKey => {
 					if (this.encryptKeysView().includes(oKey)) {
 						return null;
 					}
@@ -176,19 +176,19 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 				try {
 					if (aPublicKeys.length) {
 						if (privateKey) {
-							pgpPromise = PgpStore.openpgp.encrypt({
+							pgpPromise = PgpUserStore.openpgp.encrypt({
 								data: this.text(),
 								publicKeys: aPublicKeys,
 								privateKeys: [privateKey]
 							});
 						} else {
-							pgpPromise = PgpStore.openpgp.encrypt({
+							pgpPromise = PgpUserStore.openpgp.encrypt({
 								data: this.text(),
 								publicKeys: aPublicKeys
 							});
 						}
 					} else if (privateKey) {
-						pgpPromise = PgpStore.openpgp.sign({
+						pgpPromise = PgpUserStore.openpgp.sign({
 							data: this.text(),
 							privateKeys: [privateKey]
 						});
@@ -342,7 +342,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 			emailLine = identity.email();
 			rec.unshift(emailLine);
 
-			const keys = PgpStore.findAllPrivateKeysByEmailNotNative(emailLine);
+			const keys = PgpUserStore.findAllPrivateKeysByEmailNotNative(emailLine);
 			if (keys && keys[0]) {
 				this.signKey({
 					'users': keys[0].users || [emailLine],
@@ -359,7 +359,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 		if (rec.length) {
 			this.encryptKeys(
 				rec.map(recEmail => {
-					const keys = PgpStore.findAllPublicKeysByEmailNotNative(recEmail);
+					const keys = PgpUserStore.findAllPublicKeysByEmailNotNative(recEmail);
 					return keys
 						? keys.map(publicKey => ({
 								'empty': !publicKey,

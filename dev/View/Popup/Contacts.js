@@ -16,8 +16,8 @@ import { Selector } from 'Common/Selector';
 import { serverRequestRaw, serverRequest } from 'Common/Links';
 import { i18n, getNotification } from 'Common/Translator';
 
-import SettingsStore from 'Stores/User/Settings';
-import ContactStore from 'Stores/User/Contact';
+import { SettingsUserStore } from 'Stores/User/Settings';
+import { ContactUserStore } from 'Stores/User/Contact';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -39,8 +39,8 @@ class ContactsPopupView extends AbstractViewPopup {
 		this.bBackToCompose = false;
 		this.sLastComposeFocusedField = '';
 
-		this.allowContactsSync = ContactStore.allowContactsSync;
-		this.enableContactsSync = ContactStore.enableContactsSync;
+		this.allowContactsSync = ContactUserStore.allowSync;
+		this.enableContactsSync = ContactUserStore.enableSync;
 
 		this.addObservables({
 			search: '',
@@ -66,14 +66,14 @@ class ContactsPopupView extends AbstractViewPopup {
 			watchHash: false
 		});
 
-		this.contacts = ContactStore.contacts;
+		this.contacts = ContactUserStore;
 
 		this.viewProperties = ko.observableArray();
 
-		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
+		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 
 		this.selector = new Selector(
-			this.contacts,
+			ContactUserStore,
 			this.currentContact,
 			null,
 			'.e-contact-item .actionHandle',
@@ -119,7 +119,7 @@ class ContactsPopupView extends AbstractViewPopup {
 			contactHasValidName: () => !!this.viewProperties.find(prop => propertyIsName(prop) && prop.isValid()),
 
 			contactsCheckedOrSelected: () => {
-				const checked = this.contacts.filter(item => item.checked && item.checked()),
+				const checked = ContactUserStore.filter(item => item.checked && item.checked()),
 					selected = this.currentContact();
 
 				return selected
@@ -347,9 +347,9 @@ class ContactsPopupView extends AbstractViewPopup {
 
 			if (j) {
 				j.on('onStart', () => {
-					this.contacts.importing(true);
+					ContactUserStore.importing(true);
 				}).on('onComplete', (id, result, data) => {
-					this.contacts.importing(false);
+					ContactUserStore.importing(false);
 					this.reloadContactList();
 					if (!id || !result || !data || !data.Result) {
 						alert(i18n('CONTACTS/ERROR_IMPORT_FILE'));
@@ -360,11 +360,10 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	removeCheckedOrSelectedContactsFromList() {
-		const koContacts = this.contacts,
-			contacts = this.contactsCheckedOrSelected();
+		const contacts = this.contactsCheckedOrSelected();
 
 		let currentContact = this.currentContact(),
-			count = this.contacts.length;
+			count = ContactUserStore.length;
 
 		if (contacts.length) {
 			contacts.forEach(contact => {
@@ -383,7 +382,7 @@ class ContactsPopupView extends AbstractViewPopup {
 
 			setTimeout(() => {
 				contacts.forEach(contact => {
-					koContacts.remove(contact);
+					ContactUserStore.remove(contact);
 					delegateRunOnDestroy(contact);
 				});
 			}, 500);
@@ -459,7 +458,7 @@ class ContactsPopupView extends AbstractViewPopup {
 			offset = 0;
 		}
 
-		this.contacts.loading(true);
+		ContactUserStore.loading(true);
 		Remote.contacts(
 			(result, data) => {
 				let count = 0,
@@ -479,10 +478,10 @@ class ContactsPopupView extends AbstractViewPopup {
 
 				this.contactsCount(count);
 
-				delegateRunOnDestroy(this.contacts());
-				this.contacts(list);
+				delegateRunOnDestroy(ContactUserStore());
+				ContactUserStore(list);
 
-				this.contacts.loading(false);
+				ContactUserStore.loading(false);
 				this.viewClearSearch(!!this.search());
 			},
 			offset,
@@ -533,8 +532,8 @@ class ContactsPopupView extends AbstractViewPopup {
 		this.search('');
 		this.contactsCount(0);
 
-		delegateRunOnDestroy(this.contacts());
-		this.contacts([]);
+		delegateRunOnDestroy(ContactUserStore());
+		ContactUserStore([]);
 
 		this.sLastComposeFocusedField = '';
 

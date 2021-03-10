@@ -5,7 +5,7 @@ import { FilterConditionField, FilterConditionType } from 'Model/FilterCondition
 import { defaultOptionsAfterRender } from 'Common/Utils';
 import { i18n, initOnStartOrLangChange } from 'Common/Translator';
 
-import FolderStore from 'Stores/User/Folder';
+import { FolderUserStore } from 'Stores/User/Folder';
 import { SieveUserStore } from 'Stores/User/Sieve';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
@@ -25,7 +25,7 @@ class FilterPopupView extends AbstractViewPopup {
 		this.fTrueCallback = null;
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
-		this.folderSelectList = FolderStore.folderMenuForFilters;
+		this.folderSelectList = FolderUserStore.folderMenuForFilters;
 
 		this.selectedFolderValue.subscribe(() => this.filter() && this.filter().actionValueError(false));
 

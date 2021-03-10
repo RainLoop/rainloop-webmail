@@ -63,7 +63,7 @@ unlockEvents.forEach(type => doc.addEventListener(type, unlock, true));
  * Browsers can't play without user interaction
  */
 
-const SMAudio = new class {
+export const SMAudio = new class {
 	constructor() {
 		player || (player = createNewObject());
 
@@ -119,5 +119,3 @@ const SMAudio = new class {
 		}
 	}
 };
-
-export default SMAudio;

@@ -7,7 +7,7 @@ import { defaultOptionsAfterRender } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
-import FolderStore from 'Stores/User/Folder';
+import { FolderUserStore } from 'Stores/User/Folder';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -30,8 +30,8 @@ class FolderSystemPopupView extends AbstractViewPopup {
 		this.folderSelectList = ko.computed(() =>
 			folderListOptionsBuilder(
 				[],
-				FolderStore.folderList(),
-				FolderStore.folderListSystemNames(),
+				FolderUserStore.folderList(),
+				FolderUserStore.folderListSystemNames(),
 				[
 					['', this.sChooseOnText],
 					[UNUSED_OPTION_VALUE, this.sUnuseText]
@@ -45,28 +45,28 @@ class FolderSystemPopupView extends AbstractViewPopup {
 			)
 		);
 
-		this.sentFolder = FolderStore.sentFolder;
-		this.draftFolder = FolderStore.draftFolder;
-		this.spamFolder = FolderStore.spamFolder;
-		this.trashFolder = FolderStore.trashFolder;
-		this.archiveFolder = FolderStore.archiveFolder;
+		this.sentFolder = FolderUserStore.sentFolder;
+		this.draftFolder = FolderUserStore.draftFolder;
+		this.spamFolder = FolderUserStore.spamFolder;
+		this.trashFolder = FolderUserStore.trashFolder;
+		this.archiveFolder = FolderUserStore.archiveFolder;
 
 		const settingsSet = Settings.set,
 			fSetSystemFolders = () => {
-				settingsSet('SentFolder', FolderStore.sentFolder());
-				settingsSet('DraftFolder', FolderStore.draftFolder());
-				settingsSet('SpamFolder', FolderStore.spamFolder());
-				settingsSet('TrashFolder', FolderStore.trashFolder());
-				settingsSet('ArchiveFolder', FolderStore.archiveFolder());
+				settingsSet('SentFolder', FolderUserStore.sentFolder());
+				settingsSet('DraftFolder', FolderUserStore.draftFolder());
+				settingsSet('SpamFolder', FolderUserStore.spamFolder());
+				settingsSet('TrashFolder', FolderUserStore.trashFolder());
+				settingsSet('ArchiveFolder', FolderUserStore.archiveFolder());
 			},
 			fSaveSystemFolders = (()=>{
 				fSetSystemFolders();
 				Remote.saveSystemFolders(()=>{}, {
-					SentFolder: FolderStore.sentFolder(),
-					DraftFolder: FolderStore.draftFolder(),
-					SpamFolder: FolderStore.spamFolder(),
-					TrashFolder: FolderStore.trashFolder(),
-					ArchiveFolder: FolderStore.archiveFolder(),
+					SentFolder: FolderUserStore.sentFolder(),
+					DraftFolder: FolderUserStore.draftFolder(),
+					SpamFolder: FolderUserStore.spamFolder(),
+					TrashFolder: FolderUserStore.trashFolder(),
+					ArchiveFolder: FolderUserStore.archiveFolder(),
 					NullFolder: 'NullFolder'
 				});
 			}).debounce(1000),
@@ -75,7 +75,7 @@ class FolderSystemPopupView extends AbstractViewPopup {
 				fSaveSystemFolders();
 			};
 
-		ko.addSubscribablesTo(FolderStore, {
+		ko.addSubscribablesTo(FolderUserStore, {
 			sentFolder: fCallback,
 			draftFolder: fCallback,
 			spamFolder: fCallback,

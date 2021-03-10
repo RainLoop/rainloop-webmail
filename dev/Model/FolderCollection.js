@@ -8,8 +8,8 @@ import { Settings, SettingsGet } from 'Common/Globals';
 
 import * as Local from 'Storage/Client';
 
-import AppStore from 'Stores/User/App';
-import FolderStore from 'Stores/User/Folder';
+import { AppUserStore } from 'Stores/User/App';
+import { FolderUserStore } from 'Stores/User/Folder';
 
 import ko from 'ko';
 
@@ -102,17 +102,17 @@ export class FolderCollectionModel extends AbstractCollectionModel
 		let limit = pInt(Settings.app('folderSpecLimit'));
 		limit = 100 < limit ? 100 : 10 > limit ? 10 : limit;
 
-		FolderStore.displaySpecSetting(0 >= cnt || limit < cnt);
+		FolderUserStore.displaySpecSetting(0 >= cnt || limit < cnt);
 
-		FolderStore.folderList(this);
+		FolderUserStore.folderList(this);
 
 		if (undefined !== this.Namespace) {
-			FolderStore.namespace = this.Namespace;
+			FolderUserStore.namespace = this.Namespace;
 		}
 
-		AppStore.threadsAllowed(!!(Settings.app('useImapThread') && this.IsThreadsSupported));
+		AppUserStore.threadsAllowed(!!(Settings.app('useImapThread') && this.IsThreadsSupported));
 
-		FolderStore.folderListOptimized(!!this.Optimized);
+		FolderUserStore.folderListOptimized(!!this.Optimized);
 
 		let update = false;
 
@@ -135,19 +135,19 @@ export class FolderCollectionModel extends AbstractCollectionModel
 			update = true;
 		}
 
-		FolderStore.sentFolder(normalizeFolder(SettingsGet('SentFolder')));
-		FolderStore.draftFolder(normalizeFolder(SettingsGet('DraftFolder')));
-		FolderStore.spamFolder(normalizeFolder(SettingsGet('SpamFolder')));
-		FolderStore.trashFolder(normalizeFolder(SettingsGet('TrashFolder')));
-		FolderStore.archiveFolder(normalizeFolder(SettingsGet('ArchiveFolder')));
+		FolderUserStore.sentFolder(normalizeFolder(SettingsGet('SentFolder')));
+		FolderUserStore.draftFolder(normalizeFolder(SettingsGet('DraftFolder')));
+		FolderUserStore.spamFolder(normalizeFolder(SettingsGet('SpamFolder')));
+		FolderUserStore.trashFolder(normalizeFolder(SettingsGet('TrashFolder')));
+		FolderUserStore.archiveFolder(normalizeFolder(SettingsGet('ArchiveFolder')));
 
 		if (update) {
 			rl.app.Remote.saveSystemFolders(()=>{}, {
-				SentFolder: FolderStore.sentFolder(),
-				DraftFolder: FolderStore.draftFolder(),
-				SpamFolder: FolderStore.spamFolder(),
-				TrashFolder: FolderStore.trashFolder(),
-				ArchiveFolder: FolderStore.archiveFolder(),
+				SentFolder: FolderUserStore.sentFolder(),
+				DraftFolder: FolderUserStore.draftFolder(),
+				SpamFolder: FolderUserStore.spamFolder(),
+				TrashFolder: FolderUserStore.trashFolder(),
+				ArchiveFolder: FolderUserStore.archiveFolder(),
 				NullFolder: 'NullFolder'
 			});
 		}

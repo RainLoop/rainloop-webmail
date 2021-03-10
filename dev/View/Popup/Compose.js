@@ -24,13 +24,13 @@ import { timestampToString } from 'Common/Momentor';
 import { MessageFlagsCache, setFolderHash } from 'Common/Cache';
 import { Settings, SettingsGet } from 'Common/Globals';
 
-import AppStore from 'Stores/User/App';
-import SettingsStore from 'Stores/User/Settings';
+import { AppUserStore } from 'Stores/User/App';
+import { SettingsUserStore } from 'Stores/User/Settings';
 import { IdentityUserStore } from 'Stores/User/Identity';
-import AccountStore from 'Stores/User/Account';
-import FolderStore from 'Stores/User/Folder';
-import PgpStore from 'Stores/User/Pgp';
-import MessageStore from 'Stores/User/Message';
+import { AccountUserStore } from 'Stores/User/Account';
+import { FolderUserStore } from 'Stores/User/Folder';
+import { PgpUserStore } from 'Stores/User/Pgp';
+import { MessageUserStore } from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -126,13 +126,13 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.sLastFocusedField = 'to';
 
-		this.allowContacts = !!AppStore.contactsIsAllowed();
+		this.allowContacts = !!AppUserStore.contactsIsAllowed();
 
 		this.bSkipNextHide = false;
-		this.composeInEdit = AppStore.composeInEdit;
-		this.editorDefaultType = SettingsStore.editorDefaultType;
+		this.composeInEdit = AppUserStore.composeInEdit;
+		this.editorDefaultType = SettingsUserStore.editorDefaultType;
 
-		this.capaOpenPGP = PgpStore.capaOpenPGP;
+		this.capaOpenPGP = PgpUserStore.capaOpenPGP;
 
 		this.identities = IdentityUserStore;
 
@@ -319,8 +319,8 @@ class ComposePopupView extends AbstractViewPopup {
 		setInterval(() => {
 			if (
 				this.modalVisibility() &&
-				!FolderStore.draftFolderNotEnabled() &&
-				SettingsStore.allowDraftAutosave() &&
+				!FolderUserStore.draftFolderNotEnabled() &&
+				SettingsUserStore.allowDraftAutosave() &&
 				!this.isEmptyForm(false) &&
 				!this.saving() &&
 				!this.sending() &&
@@ -365,7 +365,7 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	sendCommand() {
-		let sSentFolder = FolderStore.sentFolder();
+		let sSentFolder = FolderUserStore.sentFolder();
 
 		this.attachmentsInProcessError(false);
 		this.attachmentsInErrorError(false);
@@ -384,7 +384,7 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 
 		if (!this.emptyToError() && !this.attachmentsInErrorError() && !this.attachmentsInProcessError()) {
-			if (SettingsStore.replySameFolder()) {
+			if (SettingsUserStore.replySameFolder()) {
 				if (
 					isArray(this.aDraftInfo) &&
 					3 === this.aDraftInfo.length &&
@@ -430,7 +430,7 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	saveCommand() {
-		if (FolderStore.draftFolderNotEnabled()) {
+		if (FolderUserStore.draftFolderNotEnabled()) {
 			showScreenPopup(FolderSystemPopupView, [SetSystemFoldersNotification.Draft]);
 		} else {
 			this.savedError(false);
@@ -438,11 +438,11 @@ class ComposePopupView extends AbstractViewPopup {
 
 			this.autosaveStart();
 
-			setFolderHash(FolderStore.draftFolder(), '');
+			setFolderHash(FolderUserStore.draftFolder(), '');
 
 			Remote.saveMessage(
 				this.saveMessageResponse.bind(this),
-				this.getMessageRequestParams(FolderStore.draftFolder())
+				this.getMessageRequestParams(FolderUserStore.draftFolder())
 			);
 		}
 
@@ -470,8 +470,8 @@ class ComposePopupView extends AbstractViewPopup {
 			this.modalVisibility() &&
 			!this.saving() &&
 			!this.sending() &&
-			!FolderStore.draftFolderNotEnabled() &&
-			SettingsStore.allowDraftAutosave()
+			!FolderUserStore.draftFolderNotEnabled() &&
+			SettingsUserStore.allowDraftAutosave()
 		) {
 			this.saveCommand();
 		}
@@ -491,8 +491,8 @@ class ComposePopupView extends AbstractViewPopup {
 	autosaveFunction() {
 		if (
 			this.modalVisibility() &&
-			!FolderStore.draftFolderNotEnabled() &&
-			SettingsStore.allowDraftAutosave() &&
+			!FolderUserStore.draftFolderNotEnabled() &&
+			SettingsUserStore.allowDraftAutosave() &&
 			!this.isEmptyForm(false) &&
 			!this.saving() &&
 			!this.sending() &&
@@ -518,7 +518,7 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	openOpenPgpPopup() {
-		if (PgpStore.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml()) {
+		if (PgpUserStore.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml()) {
 			showScreenPopup(ComposeOpenPgpPopupView, [
 				result => this.editor(editor => editor.setPlain(result)),
 				this.oEditor.getData(false),
@@ -531,10 +531,10 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	reloadDraftFolder() {
-		const draftFolder = FolderStore.draftFolder();
+		const draftFolder = FolderUserStore.draftFolder();
 		if (draftFolder && UNUSED_OPTION_VALUE !== draftFolder) {
 			setFolderHash(draftFolder, '');
-			if (FolderStore.currentFolderFullNameRaw() === draftFolder) {
+			if (FolderUserStore.currentFolderFullNameRaw() === draftFolder) {
 				rl.app.reloadMessageList(true);
 			} else {
 				rl.app.folderInformation(draftFolder);
@@ -627,9 +627,9 @@ class ComposePopupView extends AbstractViewPopup {
 				result = true;
 
 				if (this.bFromDraft) {
-					const message = MessageStore.message();
+					const message = MessageUserStore.message();
 					if (message && this.draftFolder() === message.folder && this.draftUid() === message.uid) {
-						MessageStore.message(null);
+						MessageUserStore.message(null);
 					}
 				}
 
@@ -656,7 +656,7 @@ class ComposePopupView extends AbstractViewPopup {
 		this.autosaveStop();
 
 		if (!this.bSkipNextHide) {
-			AppStore.composeInEdit(false);
+			AppUserStore.composeInEdit(false);
 			this.reset();
 		}
 
@@ -738,7 +738,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.autosaveStart();
 
-		if (AppStore.composeInEdit()) {
+		if (AppUserStore.composeInEdit()) {
 			type = type || ComposeType.Empty;
 			if (ComposeType.Empty !== type) {
 				showScreenPopup(AskPopupView, [
@@ -811,7 +811,7 @@ class ComposePopupView extends AbstractViewPopup {
 	 * @param {string=} sCustomPlainText = null
 	 */
 	initOnShow(sType, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText) {
-		AppStore.composeInEdit(true);
+		AppUserStore.composeInEdit(true);
 
 		let sFrom = '',
 			sTo = '',
@@ -825,7 +825,7 @@ class ComposePopupView extends AbstractViewPopup {
 			message = null;
 
 		const excludeEmail = {},
-			mEmail = AccountStore.email(),
+			mEmail = AccountUserStore.email(),
 			lineComposeType = sType || ComposeType.Empty;
 
 		oMessageOrArray = oMessageOrArray || null;

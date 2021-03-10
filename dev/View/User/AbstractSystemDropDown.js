@@ -1,6 +1,6 @@
-import AppStore from 'Stores/User/App';
-import AccountStore from 'Stores/User/Account';
-import MessageStore from 'Stores/User/Message';
+import { AppUserStore } from 'Stores/User/App';
+import { AccountUserStore } from 'Stores/User/Account';
+import { MessageUserStore } from 'Stores/User/Message';
 
 import { Capa, KeyState } from 'Common/Enums';
 import { settings } from 'Common/Links';
@@ -23,24 +23,25 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 		this.allowSettings = Settings.capa(Capa.Settings);
 		this.allowHelp = Settings.capa(Capa.Help);
 
-		this.currentAudio = AppStore.currentAudio;
+		this.currentAudio = AppUserStore.currentAudio;
 
-		this.accountEmail = AccountStore.email;
+		this.accountEmail = AccountUserStore.email;
 
-		this.accounts = AccountStore.accounts;
-		this.accountsUnreadCount = AccountStore.accountsUnreadCount;
+		this.accounts = AccountUserStore.accounts;
+		this.accountsLoading = AccountUserStore.loading;
+		this.accountsUnreadCount = AccountUserStore.accountsUnreadCount;
 
 		this.addObservables({
 			accountMenuDropdownTrigger: false,
 			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts)
 		});
 
-		this.allowContacts = !!AppStore.contactsIsAllowed();
+		this.allowContacts = !!AppUserStore.contactsIsAllowed();
 
 		this.addAccountClick = this.addAccountClick.bind(this);
 
-		addEventListener('audio.stop', () => AppStore.currentAudio(''));
-		addEventListener('audio.start', e => AppStore.currentAudio(e.detail));
+		addEventListener('audio.stop', () => AppUserStore.currentAudio(''));
+		addEventListener('audio.start', e => AppUserStore.currentAudio(e.detail));
 	}
 
 	stopPlay() {
@@ -49,15 +50,15 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 
 	accountClick(account, event) {
 		if (account && 0 === event.button) {
-			AccountStore.accounts.loading(true);
-			setTimeout(() => AccountStore.accounts.loading(false), 1000);
+			AccountUserStore.loading(true);
+			setTimeout(() => AccountUserStore.loading(false), 1000);
 		}
 
 		return true;
 	}
 
 	emailTitle() {
-		return AccountStore.email();
+		return AccountUserStore.email();
 	}
 
 	settingsClick() {
@@ -107,7 +108,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	onBuild() {
 		shortcuts.add('m,contextmenu', '', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
 			if (this.viewModelVisible) {
-				MessageStore.messageFullScreenMode(false);
+				MessageUserStore.messageFullScreenMode(false);
 				this.accountMenuDropdownTrigger(true);
 				return false;
 			}

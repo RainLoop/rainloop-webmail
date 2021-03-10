@@ -1,6 +1,6 @@
 import { pInt } from 'Common/Utils';
 
-import PgpStore from 'Stores/User/Pgp';
+import { PgpUserStore } from 'Stores/User/Pgp';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -31,7 +31,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 
 	generateOpenPgpKeyCommand() {
 		const userId = {},
-			openpgpKeyring = PgpStore.openpgpKeyring;
+			openpgpKeyring = PgpUserStore.openpgpKeyring;
 
 		this.emailError(!this.email().trim());
 		if (!openpgpKeyring || this.emailError()) {
@@ -48,7 +48,7 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 
 		setTimeout(() => {
 			try {
-				PgpStore.openpgp
+				PgpUserStore.openpgp
 					.generateKey({
 						userIds: [userId],
 						numBits: pInt(this.keyBitLength()),

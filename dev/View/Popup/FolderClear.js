@@ -2,7 +2,7 @@ import { StorageResultType, Notification } from 'Common/Enums';
 import { i18n, getNotification } from 'Common/Translator';
 import { setFolderHash } from 'Common/Cache';
 
-import MessageStore from 'Stores/User/Message';
+import { MessageUserStore } from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -44,8 +44,8 @@ class FolderClearPopupView extends AbstractViewPopup {
 	clearCommand() {
 		const folderToClear = this.selectedFolder();
 		if (folderToClear) {
-			MessageStore.message(null);
-			MessageStore.messageList([]);
+			MessageUserStore.message(null);
+			MessageUserStore.messageList([]);
 
 			this.clearingProcess(true);
 

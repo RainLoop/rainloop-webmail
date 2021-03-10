@@ -2,7 +2,7 @@ import { mailbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
 import { leftPanelDisabled } from 'Common/Globals';
 
-import MessageStore from 'Stores/User/Message';
+import { MessageUserStore } from 'Stores/User/Message';
 import { ThemeStore } from 'Stores/Theme';
 
 import { AbstractViewRight } from 'Knoin/AbstractViews';
@@ -15,7 +15,7 @@ export class PaneSettingsUserView extends AbstractViewRight {
 	}
 
 	onShow() {
-		MessageStore.message(null);
+		MessageUserStore.message(null);
 	}
 
 	hideLeft(item, event) {

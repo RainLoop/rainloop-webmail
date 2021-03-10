@@ -1,26 +1,26 @@
 import ko from 'ko';
 
-import AppStore from 'Stores/User/App';
-import ContactStore from 'Stores/User/Contact';
+import { AppUserStore } from 'Stores/User/App';
+import { ContactUserStore } from 'Stores/User/Contact';
 import Remote from 'Remote/User/Fetch';
 
 export class ContactsUserSettings {
 	constructor() {
-		this.contactsAutosave = AppStore.contactsAutosave;
+		this.contactsAutosave = AppUserStore.contactsAutosave;
 
-		this.allowContactsSync = ContactStore.allowContactsSync;
-		this.enableContactsSync = ContactStore.enableContactsSync;
-		this.contactsSyncUrl = ContactStore.contactsSyncUrl;
-		this.contactsSyncUser = ContactStore.contactsSyncUser;
-		this.contactsSyncPass = ContactStore.contactsSyncPass;
+		this.allowContactsSync = ContactUserStore.allowSync;
+		this.enableContactsSync = ContactUserStore.enableSync;
+		this.contactsSyncUrl = ContactUserStore.syncUrl;
+		this.contactsSyncUser = ContactUserStore.syncUser;
+		this.contactsSyncPass = ContactUserStore.syncPass;
 
 		this.saveTrigger = ko
 			.computed(() =>
 				[
-					this.enableContactsSync() ? '1' : '0',
-					this.contactsSyncUrl(),
-					this.contactsSyncUser(),
-					this.contactsSyncPass()
+					ContactUserStore.enableSync() ? '1' : '0',
+					ContactUserStore.syncUrl(),
+					ContactUserStore.syncUser(),
+					ContactUserStore.syncPass()
 				].join('|')
 			)
 			.extend({ debounce: 500 });
@@ -36,10 +36,10 @@ export class ContactsUserSettings {
 		this.saveTrigger.subscribe(() => {
 			Remote.saveContactsSyncData(
 				null,
-				this.enableContactsSync(),
-				this.contactsSyncUrl(),
-				this.contactsSyncUser(),
-				this.contactsSyncPass()
+				ContactUserStore.enableSync(),
+				ContactUserStore.syncUrl(),
+				ContactUserStore.syncUser(),
+				ContactUserStore.syncPass()
 			);
 		});
 	}

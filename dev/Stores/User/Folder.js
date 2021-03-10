@@ -6,7 +6,7 @@ import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 import { SettingsGet } from 'Common/Globals';
 
-class FolderUserStore {
+export const FolderUserStore = new class {
 	constructor() {
 		ko.addObservablesTo(this, {
 			/**
@@ -124,10 +124,6 @@ class FolderUserStore {
 			)
 		);
 
-		this.subscribers();
-	}
-
-	subscribers() {
 		const fRemoveSystemFolderType = (observable) => () => {
 			const folder = getFolderFromCacheList(observable());
 			if (folder) {
@@ -200,6 +196,4 @@ class FolderUserStore {
 
 		return result.filter((value, index, self) => self.indexOf(value) == index);
 	}
-}
-
-export default new FolderUserStore();
+};

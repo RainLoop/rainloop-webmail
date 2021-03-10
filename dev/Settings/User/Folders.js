@@ -8,7 +8,7 @@ import { removeFolderFromCacheList } from 'Common/Cache';
 
 import * as Local from 'Storage/Client';
 
-import FolderStore from 'Stores/User/Folder';
+import { FolderUserStore } from 'Stores/User/Folder';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -19,16 +19,16 @@ import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 
 export class FoldersUserSettings {
 	constructor() {
-		this.displaySpecSetting = FolderStore.displaySpecSetting;
-		this.folderList = FolderStore.folderList;
-		this.folderListOptimized = FolderStore.folderListOptimized;
-		this.folderListError = FolderStore.folderListError;
+		this.displaySpecSetting = FolderUserStore.displaySpecSetting;
+		this.folderList = FolderUserStore.folderList;
+		this.folderListOptimized = FolderUserStore.folderListOptimized;
+		this.folderListError = FolderUserStore.folderListError;
 
 		this.loading = ko.computed(() => {
-			const loading = FolderStore.foldersLoading(),
-				creating = FolderStore.foldersCreating(),
-				deleting = FolderStore.foldersDeleting(),
-				renaming = FolderStore.foldersRenaming();
+			const loading = FolderUserStore.foldersLoading(),
+				creating = FolderUserStore.foldersCreating(),
+				deleting = FolderUserStore.foldersDeleting(),
+				renaming = FolderUserStore.foldersRenaming();
 
 			return loading || creating || deleting || renaming;
 		});
@@ -64,7 +64,7 @@ export class FoldersUserSettings {
 	}
 
 	onShow() {
-		FolderStore.folderListError('');
+		FolderUserStore.folderListError('');
 	}
 /*
 	onBuild(oDom) {
@@ -98,7 +98,7 @@ export class FoldersUserSettings {
 
 				Local.set(ClientSideKeyName.FoldersLashHash, '');
 
-				FolderStore.folderList.remove(fRemoveFolder);
+				FolderUserStore.folderList.remove(fRemoveFolder);
 
 				rl.app.foldersPromisesActionHelper(
 					Remote.folderDelete(folderToRemove.fullNameRaw),
@@ -108,7 +108,7 @@ export class FoldersUserSettings {
 				removeFolderFromCacheList(folderToRemove.fullNameRaw);
 			}
 		} else if (0 < folderToRemove.privateMessageCountAll()) {
-			FolderStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
+			FolderUserStore.folderListError(getNotification(Notification.CantDeleteNonEmptyFolder));
 		}
 	}
 

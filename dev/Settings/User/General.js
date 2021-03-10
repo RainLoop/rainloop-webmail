@@ -9,12 +9,12 @@ import { i18n, trigger as translatorTrigger, reload as translatorReload, convert
 
 import { showScreenPopup } from 'Knoin/Knoin';
 
-import AppStore from 'Stores/User/App';
+import { AppUserStore } from 'Stores/User/App';
 import { LanguageStore } from 'Stores/Language';
-import SettingsStore from 'Stores/User/Settings';
+import { SettingsUserStore } from 'Stores/User/Settings';
 import { IdentityUserStore } from 'Stores/User/Identity';
-import NotificationStore from 'Stores/User/Notification';
-import MessageStore from 'Stores/User/Message';
+import { NotificationUserStore } from 'Stores/User/Notification';
+import { MessageUserStore } from 'Stores/User/Message';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -25,23 +25,23 @@ export class GeneralUserSettings {
 	constructor() {
 		this.language = LanguageStore.language;
 		this.languages = LanguageStore.languages;
-		this.messagesPerPage = SettingsStore.messagesPerPage;
+		this.messagesPerPage = SettingsUserStore.messagesPerPage;
 		this.messagesPerPageArray = MESSAGES_PER_PAGE_VALUES;
 
-		this.editorDefaultType = SettingsStore.editorDefaultType;
-		this.layout = SettingsStore.layout;
+		this.editorDefaultType = SettingsUserStore.editorDefaultType;
+		this.layout = SettingsUserStore.layout;
 
-		this.enableSoundNotification = NotificationStore.enableSoundNotification;
+		this.enableSoundNotification = NotificationUserStore.enableSoundNotification;
 
-		this.enableDesktopNotification = NotificationStore.enableDesktopNotification;
-		this.isDesktopNotificationDenied = NotificationStore.isDesktopNotificationDenied;
+		this.enableDesktopNotification = NotificationUserStore.enableDesktopNotification;
+		this.isDesktopNotificationDenied = NotificationUserStore.isDesktopNotificationDenied;
 
-		this.showImages = SettingsStore.showImages;
-		this.removeColors = SettingsStore.removeColors;
-		this.useCheckboxesInList = SettingsStore.useCheckboxesInList;
-		this.threadsAllowed = AppStore.threadsAllowed;
-		this.useThreads = SettingsStore.useThreads;
-		this.replySameFolder = SettingsStore.replySameFolder;
+		this.showImages = SettingsUserStore.showImages;
+		this.removeColors = SettingsUserStore.removeColors;
+		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
+		this.threadsAllowed = AppUserStore.threadsAllowed;
+		this.useThreads = SettingsUserStore.useThreads;
+		this.replySameFolder = SettingsUserStore.replySameFolder;
 		this.allowLanguagesOnSettings = !!SettingsGet('AllowLanguagesOnSettings');
 
 		this.languageFullName = ko.computed(() => convertLangName(this.language()));
@@ -93,11 +93,11 @@ export class GeneralUserSettings {
 	}
 
 	testSoundNotification() {
-		NotificationStore.playSoundNotification(true);
+		NotificationUserStore.playSoundNotification(true);
 	}
 
 	testSystemNotification() {
-		NotificationStore.displayDesktopNotification('SnappyMail', 'Test notification', { });
+		NotificationUserStore.displayDesktopNotification('SnappyMail', 'Test notification', { });
 	}
 
 	onBuild() {
@@ -147,14 +147,14 @@ export class GeneralUserSettings {
 			).debounce(3000));
 
 			this.useThreads.subscribe((value) => {
-				MessageStore.messageList([]);
+				MessageUserStore.messageList([]);
 				Remote.saveSettings(null, {
 					'UseThreads': value ? 1 : 0
 				});
 			});
 
 			this.layout.subscribe((value) => {
-				MessageStore.messageList([]);
+				MessageUserStore.messageList([]);
 				Remote.saveSettings(f2, {
 					'Layout': value
 				});
