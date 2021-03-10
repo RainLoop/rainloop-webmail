@@ -17,7 +17,7 @@ import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 
 import { doc, leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
 
-import { computedPaginatorHelper } from 'Common/UtilsUser';
+import { computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
 import { FileInfo } from 'Common/File';
 
 import { mailBox, serverRequest } from 'Common/Links';
@@ -45,7 +45,6 @@ import { decorateKoCommands, showScreenPopup, popupVisibility } from 'Knoin/Knoi
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { FolderClearPopupView } from 'View/Popup/FolderClear';
-import { ComposePopupView } from 'View/Popup/Compose';
 import { AdvancedSearchPopupView } from 'View/Popup/AdvancedSearch';
 
 const
@@ -63,12 +62,12 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		this.newMoveToFolder = !!Settings.get('NewMoveToFolder');
 
-		this.allowReload = !!Settings.capa(Capa.Reload);
-		this.allowSearch = !!Settings.capa(Capa.Search);
-		this.allowSearchAdv = !!Settings.capa(Capa.SearchAdv);
-		this.allowComposer = !!Settings.capa(Capa.Composer);
-		this.allowMessageListActions = !!Settings.capa(Capa.MessageListActions);
-		this.allowDangerousActions = !!Settings.capa(Capa.DangerousActions);
+		this.allowReload = Settings.capa(Capa.Reload);
+		this.allowSearch = Settings.capa(Capa.Search);
+		this.allowSearchAdv = Settings.capa(Capa.SearchAdv);
+		this.allowComposer = Settings.capa(Capa.Composer);
+		this.allowMessageListActions = Settings.capa(Capa.MessageListActions);
+		this.allowDangerousActions = Settings.capa(Capa.DangerousActions);
 
 		this.popupVisibility = popupVisibility;
 
@@ -264,12 +263,10 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	}
 
 	multyForwardCommand() {
-		if (Settings.capa(Capa.Composer)) {
-			showScreenPopup(ComposePopupView, [
-				ComposeType.ForwardAsAttachment,
-				MessageStore.messageListCheckedOrSelected()
-			]);
-		}
+		showMessageComposer([
+			ComposeType.ForwardAsAttachment,
+			MessageStore.messageListCheckedOrSelected()
+		]);
 	}
 
 	deleteWithoutMoveCommand() {
@@ -349,9 +346,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	}
 
 	composeClick() {
-		if (Settings.capa(Capa.Composer)) {
-			showScreenPopup(ComposePopupView);
-		}
+		showMessageComposer();
 	}
 
 	goToUpUpOrDownDown(up) {
@@ -750,13 +745,11 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			return false;
 		});
 
-		if (Settings.capa(Capa.Composer)) {
-			// write/compose (open compose popup)
-			shortcuts.add('w,c,new', '', [KeyState.MessageList, KeyState.MessageView], () => {
-				showScreenPopup(ComposePopupView);
-				return false;
-			});
-		}
+		// write/compose (open compose popup)
+		shortcuts.add('w,c,new', '', [KeyState.MessageList, KeyState.MessageView], () => {
+			showMessageComposer();
+			return false;
+		});
 
 		if (Settings.capa(Capa.MessageListActions)) {
 			// important - star/flag messages
@@ -806,12 +799,10 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			});
 		}
 
-		if (Settings.capa(Capa.Composer)) {
-			shortcuts.add('f,mailforward', 'shift', [KeyState.MessageList, KeyState.MessageView], () => {
-				this.multyForwardCommand();
-				return false;
-			});
-		}
+		shortcuts.add('f,mailforward', 'shift', [KeyState.MessageList, KeyState.MessageView], () => {
+			this.multyForwardCommand();
+			return false;
+		});
 
 		if (Settings.capa(Capa.Search)) {
 			// search input focus

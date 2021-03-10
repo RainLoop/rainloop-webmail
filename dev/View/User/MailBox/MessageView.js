@@ -18,7 +18,7 @@ import {
 import { doc, $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings } from 'Common/Globals';
 
 import { inFocus } from 'Common/Utils';
-import { mailToHelper } from 'Common/UtilsUser';
+import { mailToHelper, showMessageComposer } from 'Common/UtilsUser';
 
 import Audio from 'Common/Audio';
 
@@ -38,10 +38,8 @@ import * as Local from 'Storage/Client';
 
 import Remote from 'Remote/User/Fetch';
 
-import { decorateKoCommands, showScreenPopup, createCommand } from 'Knoin/Knoin';
+import { decorateKoCommands, createCommand } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
-
-import { ComposePopupView } from 'View/Popup/Compose';
 
 function isTransparent(color) {
 	return 'rgba(0, 0, 0, 0)' === color || 'transparent' === color;
@@ -82,9 +80,9 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		this.moveAction = moveAction;
 
-		this.allowComposer = !!Settings.capa(Capa.Composer);
-		this.allowMessageActions = !!Settings.capa(Capa.MessageActions);
-		this.allowMessageListActions = !!Settings.capa(Capa.MessageListActions);
+		this.allowComposer = Settings.capa(Capa.Composer);
+		this.allowMessageActions = Settings.capa(Capa.MessageActions);
+		this.allowMessageListActions = Settings.capa(Capa.MessageListActions);
 
 		this.attachmentsActions = AppStore.attachmentsActions;
 
@@ -338,7 +336,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	 * @returns {void}
 	 */
 	replyOrforward(sType) {
-		Settings.capa(Capa.Composer) && showScreenPopup(ComposePopupView, [sType, MessageStore.message()]);
+		showMessageComposer([sType, MessageStore.message()]);
 	}
 
 	checkHeaderHeight() {
@@ -436,10 +434,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			if (el) {
 				return !(
 					0 === event.button &&
-					mailToHelper(
-						el.href,
-						Settings.capa(Capa.Composer) ? ComposePopupView : null
-					)
+					mailToHelper(el.href)
 				);
 			}
 
@@ -695,14 +690,12 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	}
 
 	composeClick() {
-		if (Settings.capa(Capa.Composer)) {
-			showScreenPopup(ComposePopupView);
-		}
+		showMessageComposer();
 	}
 
 	editMessage() {
-		if (Settings.capa(Capa.Composer) && MessageStore.message()) {
-			showScreenPopup(ComposePopupView, [ComposeType.Draft, MessageStore.message()]);
+		if (MessageStore.message()) {
+			showMessageComposer([ComposeType.Draft, MessageStore.message()]);
 		}
 	}
 

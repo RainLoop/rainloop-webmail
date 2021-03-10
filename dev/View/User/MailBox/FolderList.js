@@ -15,7 +15,7 @@ import { ThemeStore } from 'Stores/Theme';
 import { showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewLeft } from 'Knoin/AbstractViews';
 
-import { ComposePopupView } from 'View/Popup/Compose';
+import { showMessageComposer } from 'Common/UtilsUser';
 import { FolderCreatePopupView } from 'View/Popup/FolderCreate';
 import { ContactsPopupView } from 'View/Popup/Contacts';
 
@@ -38,7 +38,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 
 		this.leftPanelDisabled = leftPanelDisabled;
 
-		this.allowComposer = !!Settings.capa(Capa.Composer);
+		this.allowComposer = Settings.capa(Capa.Composer);
 		this.allowContacts = !!AppStore.contactsIsAllowed();
 
 		this.folderListFocused = ko.computed(() => Focused.FolderList === AppStore.focusedState());
@@ -198,9 +198,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 	}
 
 	composeClick() {
-		if (Settings.capa(Capa.Composer)) {
-			showScreenPopup(ComposePopupView);
-		}
+		showMessageComposer();
 	}
 
 	createFolder() {

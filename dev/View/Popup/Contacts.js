@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import {
 	SaveSettingsStep,
-	Capa,
 	StorageResultType,
 	Notification,
 	KeyState
@@ -11,7 +10,7 @@ import {
 import { ComposeType } from 'Common/EnumsUser';
 
 import { pInt } from 'Common/Utils';
-import { delegateRunOnDestroy, computedPaginatorHelper } from 'Common/UtilsUser';
+import { delegateRunOnDestroy, computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
 
 import { Selector } from 'Common/Selector';
 import { serverRequestRaw, serverRequest } from 'Common/Links';
@@ -28,7 +27,6 @@ import { ContactPropertyModel, ContactPropertyType } from 'Model/ContactProperty
 
 import { decorateKoCommands, hideScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
-
 
 const CONTACTS_PER_PAGE = 50,
 	propertyIsMail = prop => prop.isType(ContactPropertyType.Email),
@@ -164,10 +162,6 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	newMessageCommand() {
-		if (!rl.settings.capa(Capa.Composer)) {
-			return false;
-		}
-
 		let aE = [],
 			toEmails = null,
 			ccEmails = null,
@@ -211,9 +205,9 @@ class ContactsPopupView extends AbstractViewPopup {
 
 			this.sLastComposeFocusedField = '';
 
-			setTimeout(() => {
-				rl.app.showComposePopupView([ComposeType.Empty, null, toEmails, ccEmails, bccEmails]);
-			}, 200);
+			setTimeout(() =>
+				showMessageComposer([ComposeType.Empty, null, toEmails, ccEmails, bccEmails])
+			, 200);
 		}
 
 		return true;
@@ -547,9 +541,7 @@ class ContactsPopupView extends AbstractViewPopup {
 		if (this.bBackToCompose) {
 			this.bBackToCompose = false;
 
-			if (rl.settings.capa(Capa.Composer)) {
-				rl.app.showComposePopupView();
-			}
+			showMessageComposer();
 		}
 	}
 }

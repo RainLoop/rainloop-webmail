@@ -1008,8 +1008,9 @@ class AppUser extends AbstractApp {
 							setTimeout(this.quota, 5000);
 							setTimeout(() => Remote.appDelayStart(()=>{}), 35000);
 
+							// When auto-login is active
 							if (
-								!!Settings.get('AccountSignMe') &&
+								Settings.get('AccountSignMe') &&
 								navigator.registerProtocolHandler &&
 								Settings.capa(Capa.Composer)
 							) {
@@ -1023,7 +1024,7 @@ class AppUser extends AbstractApp {
 									} catch (e) {} // eslint-disable-line no-empty
 
 									if (Settings.get('MailToEmail')) {
-										mailToHelper(Settings.get('MailToEmail'), ComposePopupView);
+										mailToHelper(Settings.get('MailToEmail'));
 									}
 								}, 500);
 							}
@@ -1047,9 +1048,9 @@ class AppUser extends AbstractApp {
 		setInterval(() => dispatchEvent(new CustomEvent('reload-time')), 60000);
 	}
 
-	showComposePopupView(params = [])
+	showMessageComposer(params = [])
 	{
-		showScreenPopup(ComposePopupView, params);
+		Settings.capa(Capa.Composer) && showScreenPopup(ComposePopupView, params);
 	}
 }
 

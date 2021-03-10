@@ -1,6 +1,5 @@
 import { ComposeType, FolderType } from 'Common/EnumsUser';
 import { EmailModel } from 'Model/Email';
-import { showScreenPopup } from 'Knoin/Knoin';
 import { encodeHtml } from 'Common/Html';
 import { isArray } from 'Common/Utils';
 import { doc } from 'Common/Globals';
@@ -433,10 +432,9 @@ export function computedPaginatorHelper(koCurrentPage, koPageCount) {
 
 /**
  * @param {string} mailToUrl
- * @param {Function} PopupComposeViewModel
  * @returns {boolean}
  */
-export function mailToHelper(mailToUrl, PopupComposeViewModel) {
+export function mailToHelper(mailToUrl) {
 	if (
 		mailToUrl &&
 		'mailto:' ===
@@ -445,10 +443,6 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 				.substr(0, 7)
 				.toLowerCase()
 	) {
-		if (!PopupComposeViewModel) {
-			return true;
-		}
-
 		mailToUrl = mailToUrl.toString().substr(7);
 
 		let to = [],
@@ -492,7 +486,7 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 			bcc = EmailModel.parseEmailLine(decodeURIComponent(params.bcc));
 		}
 
-		showScreenPopup(PopupComposeViewModel, [
+		showMessageComposer([
 			ComposeType.Empty,
 			null,
 			to,
@@ -506,4 +500,9 @@ export function mailToHelper(mailToUrl, PopupComposeViewModel) {
 	}
 
 	return false;
+}
+
+export function showMessageComposer(params = [])
+{
+	rl.app.showScreenPopup(params);
 }
