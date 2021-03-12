@@ -52,7 +52,7 @@ const
 	 */
 	replySubjectAdd = (prefix, subject) => {
 		prefix = prefix.toUpperCase().trim();
-		subject = subject.replace(/[\s]+/g, ' ').trim();
+		subject = subject.replace(/\s+/g, ' ').trim();
 
 		let drop = false,
 			re = 'RE' === prefix,
@@ -102,7 +102,7 @@ class ComposePopupView extends AbstractViewPopup {
 		const fEmailOutInHelper = (context, identity, name, isIn) => {
 			if (identity && context && identity[name]() && (isIn ? true : context[name]())) {
 				const identityEmail = identity[name]();
-				let list = context[name]().trim().split(/[,]/);
+				let list = context[name]().trim().split(',');
 
 				list = list.filter(email => {
 					email = email.trim();
@@ -183,6 +183,7 @@ class ComposePopupView extends AbstractViewPopup {
 			attacheMultipleAllowed: false,
 			addAttachmentEnabled: false,
 
+			// div.textAreaParent
 			composeEditorArea: null,
 
 			currentIdentity: this.identities()[0] ? this.identities()[0] : null
@@ -341,6 +342,19 @@ class ComposePopupView extends AbstractViewPopup {
 
 	getMessageRequestParams(sSaveFolder)
 	{
+		let TextIsHtml = this.oEditor.isHtml() ? 1 : 0,
+			Text = this.oEditor.getData(true);
+		if (TextIsHtml) {
+			let l;
+			do {
+				l = Text.length;
+				Text = Text
+					// Remove Microsoft Office styling
+					.replace(/(<[^>]+[;"'])\s*mso-[a-z-]+\s*:[^;"']+/gi, '$1')
+					// Remove hubspot data-hs- attributes
+					.replace(/(<[^>]+)\s+data-hs-[a-z-]+=("[^"]+"|'[^']+')/gi, '$1');
+			} while (l != Text.length)
+		}
 		return {
 			IdentityID: this.currentIdentity() ? this.currentIdentity().id() : '',
 			MessageFolder: this.draftFolder(),
@@ -351,8 +365,8 @@ class ComposePopupView extends AbstractViewPopup {
 			Bcc: this.bcc(),
 			ReplyTo: this.replyTo(),
 			Subject: this.subject(),
-			TextIsHtml: this.oEditor && this.oEditor.isHtml() ? 1 : 0,
-			Text: this.oEditor ? this.oEditor.getData(true) : '',
+			TextIsHtml: TextIsHtml,
+			Text: Text,
 			DraftInfo: this.aDraftInfo,
 			InReplyTo: this.sInReplyTo,
 			References: this.sReferences,
@@ -518,7 +532,7 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	openOpenPgpPopup() {
-		if (PgpUserStore.capaOpenPGP() && this.oEditor && !this.oEditor.isHtml()) {
+		if (PgpUserStore.capaOpenPGP() && !this.oEditor.isHtml()) {
 			showScreenPopup(ComposeOpenPgpPopupView, [
 				result => this.editor(editor => editor.setPlain(result)),
 				this.oEditor.getData(false),
@@ -670,8 +684,10 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	editor(fOnInit) {
-		if (fOnInit) {
-			if (!this.oEditor && this.composeEditorArea()) {
+		if (fOnInit && this.composeEditorArea()) {
+			if (this.oEditor) {
+				fOnInit(this.oEditor);
+			} else {
 				// setTimeout(() => {
 				this.oEditor = new HtmlEditor(
 					this.composeEditorArea(),
@@ -680,8 +696,6 @@ class ComposePopupView extends AbstractViewPopup {
 					bHtml => this.isHtml(!!bHtml)
 				);
 				// }, 1000);
-			} else if (this.oEditor) {
-				fOnInit(this.oEditor);
 			}
 		}
 	}
@@ -692,16 +706,16 @@ class ComposePopupView extends AbstractViewPopup {
 			signature = signature.replace(/{{FROM-FULL}}/g, fromLine);
 
 			if (!fromLine.includes(' ') && 0 < fromLine.indexOf('@')) {
-				fromLine = fromLine.replace(/@[\S]+/, '');
+				fromLine = fromLine.replace(/@\S+/, '');
 			}
 
 			signature = signature.replace(/{{FROM}}/g, fromLine);
 		}
 
 		return signature
-			.replace(/[\r]/g, '')
-			.replace(/[\s]{1,2}?{{FROM}}/g, '')
-			.replace(/[\s]{1,2}?{{FROM-FULL}}/g, '')
+			.replace(/\r/g, '')
+			.replace(/\s{1,2}?{{FROM}}/g, '')
+			.replace(/\s{1,2}?{{FROM-FULL}}/g, '')
 			.replace(/{{DATE}}/g, new Date().format('LLLL'))
 			.replace(/{{TIME}}/g, new Date().format('LT'))
 			.replace(/{{MOMENT:[^}]+}}/g, '');
@@ -1085,8 +1099,8 @@ class ComposePopupView extends AbstractViewPopup {
 		setTimeout(() => {
 			if (!this.to()) {
 				this.to.focused(true);
-			} else if (this.oEditor && !this.to.focused()) {
-				this.oEditor.focus();
+			} else if (!this.to.focused()) {
+				this.oEditor && this.oEditor.focus();
 			}
 		}, 100);
 	}
@@ -1470,9 +1484,7 @@ class ComposePopupView extends AbstractViewPopup {
 		this.sending(false);
 		this.saving(false);
 
-		if (this.oEditor) {
-			this.oEditor.clear();
-		}
+		this.oEditor && this.oEditor.clear();
 	}
 
 	/**
