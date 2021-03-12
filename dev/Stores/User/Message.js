@@ -57,8 +57,8 @@ const
 		do {
 			l = html.length;
 			html = html
-				.replace(/(<[^>]+)[;"']\s*background(-[a-z]+)?\s*:[^;"']+/gi, '$1')
-				.replace(/(<[^>]+)[;"']\s*color\s*:[^;"']+/gi, '$1')
+				.replace(/(<[^>]+[;"'])\s*background(-[a-z]+)?\s*:[^;"']+/gi, '$1')
+				.replace(/(<[^>]+[;"'])\s*color\s*:[^;"']+/gi, '$1')
 				.replace(/(<[^>]+)\s(bg)?color=("[^"]+"|'[^']+')/gi, '$1');
 		} while (l != html.length)
 		return html;
