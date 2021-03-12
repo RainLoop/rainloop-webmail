@@ -188,7 +188,7 @@ export class FilterModel extends AbstractModel {
 		return {
 //			'@Object': 'Object/Filter',
 			ID: this.id,
-			Enabled: this.enabled() ? '1' : '0',
+			Enabled: this.enabled() ? 1 : 0,
 			Name: this.name(),
 			Conditions: this.conditions.map(item => item.toJson()),
 			ConditionsType: this.conditionsType(),
@@ -199,9 +199,9 @@ export class FilterModel extends AbstractModel {
 			ActionValueThird: this.actionValueThird(),
 			ActionValueFourth: this.actionValueFourth(),
 
-			Keep: this.actionKeep() ? '1' : '0',
-			Stop: this.actionNoStop() ? '0' : '1',
-			MarkAsRead: this.actionMarkAsRead() ? '1' : '0'
+			Keep: this.actionKeep() ? 1 : 0,
+			Stop: this.actionNoStop() ? 0 : 1,
+			MarkAsRead: this.actionMarkAsRead() ? 1 : 0
 		};
 	}
 
@@ -236,9 +236,9 @@ export class FilterModel extends AbstractModel {
 				);
 			}
 
-			filter.actionNoStop(!json.Stop);
-			filter.actionKeep(!!json.Keep);
-			filter.actionMarkAsRead(!!json.MarkAsRead);
+			filter.actionKeep(1 == json.Keep);
+			filter.actionNoStop(0 == json.Stop);
+			filter.actionMarkAsRead(1 == json.MarkAsRead);
 		}
 		return filter;
 	}

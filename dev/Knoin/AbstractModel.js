@@ -8,7 +8,7 @@ function dispose(disposable) {
 function typeCast(curValue, newValue) {
 	switch (typeof curValue)
 	{
-	case 'boolean': return !!newValue;
+	case 'boolean': return 0 != newValue && !!newValue;
 	case 'number': return isFinite(newValue) ? parseFloat(newValue) : 0;
 	case 'string': return null != newValue ? '' + newValue : '';
 	case 'object':
