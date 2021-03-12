@@ -38,8 +38,8 @@ class AbstractView {
 		keyScope(this.sCurrentKeyScope);
 	}
 
-	cancelCommand() {} // eslint-disable-line no-empty-function
-	closeCommand() {} // eslint-disable-line no-empty-function
+	cancelCommand() {}
+	closeCommand() {}
 
 	querySelector(selectors) {
 		return this.viewModelDom.querySelector(selectors);

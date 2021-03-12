@@ -96,7 +96,7 @@ class MessageOpenPgpPopupView extends AbstractViewPopup {
 					node.textContent = el === node ? '⦿' : '○'
 				);
 
-				self.selectedKey(ko.dataFor(el)); // eslint-disable-line no-invalid-this
+				self.selectedKey(ko.dataFor(el));
 
 //				this.querySelector('.inputPassword').focus();
 			}
