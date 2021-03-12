@@ -2,6 +2,7 @@ import ko from 'ko';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 import { FilterModel } from 'Model/Filter';
+import { pString } from 'Common/Utils';
 
 const SIEVE_FILE_NAME = 'rainloop.user';
 
@@ -153,12 +154,12 @@ function filtersToSieveScript(filters)
 						subject = ':subject ' + quote(StripSpaces(paramValue)) + ' ';
 					}
 
-					paramValue = filter.actionValueThird().trim();
+					paramValue = pString(filter.actionValueThird()).trim();
 					if (paramValue.length) {
 						days = Math.max(1, parseInt(paramValue, 10));
 					}
 
-					paramValue = filter.actionValueFourth().trim()
+					paramValue = pString(filter.actionValueFourth()).trim()
 					if (paramValue.length) {
 						paramValue = paramValue.split(',').map(email =>
 							email.trim().length ? quote(email) : ''
@@ -303,7 +304,7 @@ export class SieveScriptModel extends AbstractModel
 	toJson() {
 		return {
 			name: this.name(),
-			active: this.active() ? '1' : '0',
+			active: this.active() ? 1 : 0,
 			body: this.body(),
 			filters: this.filters.map(item => item.toJson())
 		};
