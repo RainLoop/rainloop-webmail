@@ -41,10 +41,6 @@ import Remote from 'Remote/User/Fetch';
 import { decorateKoCommands, createCommand } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
-function isTransparent(color) {
-	return 'rgba(0, 0, 0, 0)' === color || 'transparent' === color;
-}
-
 class MessageViewMailBoxUserView extends AbstractViewRight {
 	constructor() {
 		super('User/MailBox/MessageView', 'MailMessageView');
@@ -68,7 +64,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		this.oMessageScrollerDom = null;
 
 		this.addObservables({
-			bodyBackgroundColor: '',
 			showAttachmnetControls: false,
 			downloadAsZipLoading: false,
 			lastReplyAction_: '',
@@ -203,8 +198,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 			lastReplyAction_: value => Local.set(ClientSideKeyName.LastReplyAction, value),
 
-			messageActiveDom: dom => this.bodyBackgroundColor(this.detectDomBackgroundColor(dom)),
-
 			message: message => {
 				this.messageActiveDom(null);
 
@@ -301,28 +294,21 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			{detail:SettingsUserStore.usePreviewPane() || !!this.message()} // bForceSelect
 		));
 	}
-
+/*
 	detectDomBackgroundColor(dom) {
 		let color = '';
 		if (dom && !SettingsUserStore.removeColors()) {
-			let limit = 5,
-				aC = dom;
-			while (!color && aC && limit--) {
-				let children = aC.children;
-				if (!children || 1 !== children.length || !children[0].matches('table,div,center')) break;
-
-				aC = children[0];
-				color = aC.style.backgroundColor || '';
-				if (!aC.matches('table')) {
-					color = isTransparent(color) ? '' : color;
+			dom.querySelectorAll('div[data-x-div-type="html"], div[data-x-div-type="body"]').forEach(node => {
+				let clr = node.style.backgroundColor || '';
+				// is transparent ?
+				if ('transparent' !== clr && !/(rgba|hsla)\(.+,\s*0\s*\)/.test(clr)) {
+					color = clr;
 				}
-			}
-
-			color = isTransparent(color) ? '' : color;
+			});
 		}
 		return color;
 	}
-
+*/
 	toggleFullScreen() {
 		try {
 			getSelection().removeAllRanges();
