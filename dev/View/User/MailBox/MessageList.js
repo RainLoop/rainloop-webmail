@@ -72,8 +72,8 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.popupVisibility = popupVisibility;
 
 		this.message = MessageUserStore.message;
-		this.messageList = MessageUserStore.messageList;
-		this.messageListDisableAutoSelect = MessageUserStore.messageListDisableAutoSelect;
+		this.messageList = MessageUserStore.list;
+		this.messageListDisableAutoSelect = MessageUserStore.listDisableAutoSelect;
 
 		this.folderList = FolderUserStore.folderList;
 
@@ -83,22 +83,21 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.selectorMessageSelected = MessageUserStore.selectorMessageSelected;
 		this.selectorMessageFocused = MessageUserStore.selectorMessageFocused;
 		this.isMessageSelected = MessageUserStore.isMessageSelected;
-		this.messageListSearch = MessageUserStore.messageListSearch;
-		this.messageListThreadUid = MessageUserStore.messageListThreadUid;
-		this.messageListError = MessageUserStore.messageListError;
+		this.messageListSearch = MessageUserStore.listSearch;
+		this.messageListThreadUid = MessageUserStore.listThreadUid;
+		this.messageListError = MessageUserStore.listError;
 		this.folderMenuForMove = FolderUserStore.folderMenuForMove;
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 
 		this.mainMessageListSearch = MessageUserStore.mainMessageListSearch;
-		this.messageListEndFolder = MessageUserStore.messageListEndFolder;
-		this.messageListEndThreadUid = MessageUserStore.messageListEndThreadUid;
+		this.messageListEndFolder = MessageUserStore.listEndFolder;
+		this.messageListEndThreadUid = MessageUserStore.listEndThreadUid;
 
-		this.messageListCheckedOrSelected = MessageUserStore.messageListCheckedOrSelected;
-		this.messageListCheckedOrSelectedUidsWithSubMails = MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails;
-		this.messageListCompleteLoadingThrottle = MessageUserStore.messageListCompleteLoadingThrottle;
-		this.messageListCompleteLoadingThrottleForAnimation =
-			MessageUserStore.messageListCompleteLoadingThrottleForAnimation;
+		this.messageListCheckedOrSelected = MessageUserStore.listCheckedOrSelected;
+		this.messageListCheckedOrSelectedUidsWithSubMails = MessageUserStore.listCheckedOrSelectedUidsWithSubMails;
+		this.messageListCompleteLoadingThrottle = MessageUserStore.listCompleteLoading;
+		this.messageListCompleteLoadingThrottleForAnimation = MessageUserStore.listLoadingAnimation;
 
 		initOnStartOrLangChange(() => this.emptySubjectValue = i18n('MESSAGE_LIST/EMPTY_SUBJECT_TEXT'));
 
@@ -124,18 +123,18 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		this.addComputables({
 			messageListSearchDesc: () => {
-				const value = MessageUserStore.messageListEndSearch();
+				const value = MessageUserStore.listEndSearch();
 				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { 'SEARCH': value }) : ''
 			},
 
-			messageListPaginator: computedPaginatorHelper(MessageUserStore.messageListPage,
-				MessageUserStore.messageListPageCount),
+			messageListPaginator: computedPaginatorHelper(MessageUserStore.listPage,
+				MessageUserStore.listPageCount),
 
 			checkAll: {
-				read: () => 0 < MessageUserStore.messageListChecked().length,
+				read: () => 0 < MessageUserStore.listChecked().length,
 				write: (value) => {
 					value = !!value;
-					MessageUserStore.messageList.forEach(message => message.checked(value));
+					MessageUserStore.list.forEach(message => message.checked(value));
 				}
 			},
 
@@ -145,8 +144,8 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			},
 
 			isIncompleteChecked: () => {
-				const c = MessageUserStore.messageListChecked().length;
-				return c && MessageUserStore.messageList.length > c;
+				const c = MessageUserStore.listChecked().length;
+				return c && MessageUserStore.list.length > c;
 			},
 
 			hasMessages: () => 0 < this.messageList.length,
@@ -173,14 +172,14 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			isUnSpamVisible: () =>
 				this.isSpamFolder() && !this.isSpamDisabled() && !this.isDraftFolder() && !this.isSentFolder(),
 
-			mobileCheckedStateShow: () => ThemeStore.isMobile() ? 0 < MessageUserStore.messageListChecked().length : true,
+			mobileCheckedStateShow: () => ThemeStore.isMobile() ? 0 < MessageUserStore.listChecked().length : true,
 
-			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessageUserStore.messageListChecked().length : true,
+			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessageUserStore.listChecked().length : true,
 
 			messageListFocused: () => Focused.MessageList === AppUserStore.focusedState()
 		});
 
-//		this.messageListChecked = MessageUserStore.messageListChecked;
+//		this.messageListChecked = MessageUserStore.listChecked;
 
 		this.hasCheckedOrSelectedLines = MessageUserStore.hasCheckedOrSelected,
 
@@ -234,7 +233,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			}
 		});
 
-		MessageUserStore.messageListEndHash.subscribe((() =>
+		MessageUserStore.listEndHash.subscribe((() =>
 			this.selector.scrollToFocused()
 		).throttle(50));
 
@@ -259,7 +258,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	}
 
 	reloadCommand() {
-		if (!MessageUserStore.messageListCompleteLoadingThrottleForAnimation() && this.allowReload) {
+		if (!MessageUserStore.listLoadingAnimation() && this.allowReload) {
 			rl.app.reloadMessageList(false, true);
 		}
 	}
@@ -267,7 +266,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	multyForwardCommand() {
 		showMessageComposer([
 			ComposeType.ForwardAsAttachment,
-			MessageUserStore.messageListCheckedOrSelected()
+			MessageUserStore.listCheckedOrSelected()
 		]);
 	}
 
@@ -276,7 +275,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			rl.app.deleteMessagesFromFolder(
 				FolderType.Trash,
 				FolderUserStore.currentFolderFullNameRaw(),
-				MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails(),
+				MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
 				false
 			);
 		}
@@ -286,7 +285,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		rl.app.deleteMessagesFromFolder(
 			FolderType.Trash,
 			FolderUserStore.currentFolderFullNameRaw(),
-			MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails(),
+			MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
 			true
 		);
 	}
@@ -295,7 +294,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		rl.app.deleteMessagesFromFolder(
 			FolderType.Archive,
 			FolderUserStore.currentFolderFullNameRaw(),
-			MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails(),
+			MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
 			true
 		);
 	}
@@ -304,7 +303,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		rl.app.deleteMessagesFromFolder(
 			FolderType.Spam,
 			FolderUserStore.currentFolderFullNameRaw(),
-			MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails(),
+			MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
 			true
 		);
 	}
@@ -313,7 +312,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		rl.app.deleteMessagesFromFolder(
 			FolderType.NotSpam,
 			FolderUserStore.currentFolderFullNameRaw(),
-			MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails(),
+			MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
 			true
 		);
 	}
@@ -352,7 +351,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	}
 
 	goToUpUpOrDownDown(up) {
-		if (MessageUserStore.messageListChecked().length) {
+		if (MessageUserStore.listChecked().length) {
 			return false;
 		}
 
@@ -416,8 +415,8 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		rl.route.setHash(
 			mailBox(
 				FolderUserStore.currentFolderFullNameHash(),
-				MessageUserStore.messageListPageBeforeThread(),
-				MessageUserStore.messageListSearch()
+				MessageUserStore.listPageBeforeThread(),
+				MessageUserStore.listSearch()
 			)
 		);
 	}
@@ -431,7 +430,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		if (MessageUserStore.hasCheckedOrSelected()) {
 			rl.app.moveMessagesToFolder(
 				FolderUserStore.currentFolderFullNameRaw(),
-				MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails(),
+				MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
 				sToFolderFullNameRaw,
 				bCopy
 			);
@@ -443,7 +442,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	getDragData(event) {
 		const item = ko.dataFor(doc.elementFromPoint(event.clientX, event.clientY));
 		item && item.checked && item.checked(true);
-		const uids = MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails();
+		const uids = MessageUserStore.listCheckedOrSelectedUidsWithSubMails();
 		item && !uids.includes(item.uid) && uids.push(item.uid);
 		return uids.length ? {
 			copy: event.ctrlKey,
@@ -479,7 +478,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 					case MessageSetAction.SetSeen:
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
 						if (folder) {
-							MessageUserStore.messageList.forEach(message => {
+							MessageUserStore.list.forEach(message => {
 								if (message.isUnseen()) {
 									++cnt;
 								}
@@ -505,7 +504,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 					case MessageSetAction.UnsetSeen:
 						folder = getFolderFromCacheList(sFolderFullNameRaw);
 						if (folder) {
-							MessageUserStore.messageList.forEach(message => {
+							MessageUserStore.list.forEach(message => {
 								if (!message.isUnseen()) {
 									++cnt;
 								}
@@ -540,7 +539,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.setAction(
 			FolderUserStore.currentFolderFullNameRaw(),
 			MessageSetAction.SetSeen,
-			MessageUserStore.messageListCheckedOrSelected()
+			MessageUserStore.listCheckedOrSelected()
 		);
 	}
 
@@ -556,7 +555,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.setAction(
 			FolderUserStore.currentFolderFullNameRaw(),
 			MessageSetAction.UnsetSeen,
-			MessageUserStore.messageListCheckedOrSelected()
+			MessageUserStore.listCheckedOrSelected()
 		);
 	}
 
@@ -564,7 +563,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.setAction(
 			FolderUserStore.currentFolderFullNameRaw(),
 			MessageSetAction.SetFlag,
-			MessageUserStore.messageListCheckedOrSelected()
+			MessageUserStore.listCheckedOrSelected()
 		);
 	}
 
@@ -572,7 +571,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.setAction(
 			FolderUserStore.currentFolderFullNameRaw(),
 			MessageSetAction.UnsetFlag,
-			MessageUserStore.messageListCheckedOrSelected()
+			MessageUserStore.listCheckedOrSelected()
 		);
 	}
 
@@ -641,18 +640,18 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			mailBox(
 				FolderUserStore.currentFolderFullNameHash(),
 				page.value,
-				MessageUserStore.messageListSearch(),
-				MessageUserStore.messageListThreadUid()
+				MessageUserStore.listSearch(),
+				MessageUserStore.listThreadUid()
 			)
 		);
 	}
 
 	gotoThread(message) {
 		if (message && 0 < message.threadsLen()) {
-			MessageUserStore.messageListPageBeforeThread(MessageUserStore.messageListPage());
+			MessageUserStore.listPageBeforeThread(MessageUserStore.listPage());
 
 			rl.route.setHash(
-				mailBox(FolderUserStore.currentFolderFullNameHash(), 1, MessageUserStore.messageListSearch(), message.uid)
+				mailBox(FolderUserStore.currentFolderFullNameHash(), 1, MessageUserStore.listSearch(), message.uid)
 			);
 		}
 	}
@@ -723,12 +722,12 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 			// delete
 			shortcuts.add('delete', 'shift', KeyState.MessageList, () => {
-				MessageUserStore.messageListCheckedOrSelected().length && this.deleteWithoutMoveCommand();
+				MessageUserStore.listCheckedOrSelected().length && this.deleteWithoutMoveCommand();
 				return false;
 			});
 //			shortcuts.add('3', 'shift', KeyState.MessageList, () => {
 			shortcuts.add('delete', '', KeyState.MessageList, () => {
-				MessageUserStore.messageListCheckedOrSelected().length && this.deleteCommand();
+				MessageUserStore.listCheckedOrSelected().length && this.deleteCommand();
 				return false;
 			});
 		}
@@ -909,7 +908,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			.on('onBodyDragLeave', () => this.dragOver(false))
 			.on('onSelect', (sUid, oData) => {
 				if (sUid && oData && 'message/rfc822' === oData.Type) {
-					MessageUserStore.messageListLoading(true);
+					MessageUserStore.listLoading(true);
 					return true;
 				}
 

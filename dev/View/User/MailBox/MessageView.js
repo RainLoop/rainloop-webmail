@@ -82,10 +82,10 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		this.attachmentsActions = AppUserStore.attachmentsActions;
 
 		this.message = MessageUserStore.message;
-//		this.messageListChecked = MessageUserStore.messageListChecked;
+//		this.messageListChecked = MessageUserStore.listChecked;
 		this.hasCheckedMessages = MessageUserStore.hasCheckedMessages;
-		this.messageListCheckedOrSelectedUidsWithSubMails = MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails;
-		this.messageLoadingThrottle = MessageUserStore.messageLoadingThrottle;
+		this.messageListCheckedOrSelectedUidsWithSubMails = MessageUserStore.listCheckedOrSelectedUidsWithSubMails;
+		this.messageLoadingThrottle = MessageUserStore.messageLoading;
 		this.messagesBodiesDom = MessageUserStore.messagesBodiesDom;
 		this.useThreads = SettingsUserStore.useThreads;
 		this.replySameFolder = SettingsUserStore.replySameFolder;
@@ -158,7 +158,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 				)
 			},
 
-			messageVisibility: () => !this.messageLoadingThrottle() && !!this.message(),
+			messageVisibility: () => !MessageUserStore.messageLoading() && !!this.message(),
 
 			canBeRepliedOrForwarded: () => !this.isDraftFolder() && this.messageVisibility(),
 
@@ -189,7 +189,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			messageFocused: () => Focused.MessageView === AppUserStore.focusedState(),
 
 			messageListAndMessageViewLoading:
-				() => MessageUserStore.messageListCompleteLoadingThrottle() || MessageUserStore.messageLoadingThrottle()
+				() => MessageUserStore.listCompleteLoading() || MessageUserStore.messageLoading()
 		});
 
 		this.addSubscribables({
@@ -255,7 +255,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		MessageUserStore.messageViewTrigger.subscribe(() => {
 			const message = this.message();
-			message ? this.viewIsFlagged(message.isFlagged()) : this.viewIsFlagged(false);
+			this.viewIsFlagged(message ? message.isFlagged() : false);
 		});
 
 		this.lastReplyAction(Local.get(ClientSideKeyName.LastReplyAction) || ComposeType.Reply);

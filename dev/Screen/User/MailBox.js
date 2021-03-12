@@ -75,9 +75,9 @@ export class MailBoxUserScreen extends AbstractScreen {
 
 			FolderUserStore.currentFolder(folder);
 
-			MessageUserStore.messageListPage(page);
-			MessageUserStore.messageListSearch(search);
-			MessageUserStore.messageListThreadUid(threadUid);
+			MessageUserStore.listPage(page);
+			MessageUserStore.listSearch(search);
+			MessageUserStore.listThreadUid(threadUid);
 
 			rl.app.reloadMessageList();
 		}

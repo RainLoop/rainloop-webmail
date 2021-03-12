@@ -70,36 +70,34 @@ export const MessageUserStore = new class {
 	constructor() {
 		this.staticMessage = new MessageModel();
 
-		this.messageList = ko.observableArray().extend({ debounce: 0 });
+		this.list = ko.observableArray().extend({ debounce: 0 });
 
 		ko.addObservablesTo(this, {
-			messageListCount: 0,
-			messageListSearch: '',
-			messageListThreadUid: '',
-			messageListPage: 1,
-			messageListPageBeforeThread: 1,
-			messageListError: '',
+			listCount: 0,
+			listSearch: '',
+			listThreadUid: '',
+			listPage: 1,
+			listPageBeforeThread: 1,
+			listError: '',
 
-			messageListEndFolder: '',
-			messageListEndSearch: '',
-			messageListEndThreadUid: '',
-			messageListEndPage: 1,
+			listEndFolder: '',
+			listEndSearch: '',
+			listEndThreadUid: '',
+			listEndPage: 1,
 
-			messageListLoading: false,
-			messageListIsNotCompleted: false,
+			listLoading: false,
+			listLoadingAnimation: false,
+			listIsNotCompleted: false,
+			listCompleteLoading: false,
 
 			selectorMessageSelected: null,
 			selectorMessageFocused: null,
 
 			// message viewer
 			message: null,
-
 			messageViewTrigger: false,
-
 			messageError: '',
-
-			messageCurrentLoading: false,
-
+			messageLoading: false,
 			messageFullScreenMode: false,
 
 			// Cache mail bodies
@@ -107,102 +105,72 @@ export const MessageUserStore = new class {
 			messageActiveDom: null
 		});
 
-		this.messageListCompleteLoadingThrottle = ko.observable(false).extend({ debounce: 200 });
-		this.messageListCompleteLoadingThrottleForAnimation = ko.observable(false);
+		this.listDisableAutoSelect = ko.observable(false).extend({ falseTimeout: 500 });
 
-		this.messageListDisableAutoSelect = ko.observable(false).extend({ falseTimeout: 500 });
+		// Computed Observables
 
-		this.messageLoadingThrottle = ko.observable(false).extend({ debounce: 50 });
-
-		this.messageLoading = ko.computed(() => this.messageCurrentLoading());
-
-		this.messageListEndHash = ko.computed(
+		this.listEndHash = ko.computed(
 			() =>
-				this.messageListEndFolder() +
+				this.listEndFolder() +
 				'|' +
-				this.messageListEndSearch() +
+				this.listEndSearch() +
 				'|' +
-				this.messageListEndThreadUid() +
+				this.listEndThreadUid() +
 				'|' +
-				this.messageListEndPage()
+				this.listEndPage()
 		);
 
-		this.messageListPageCount = ko.computed(() => {
-			const page = Math.ceil(this.messageListCount() / SettingsUserStore.messagesPerPage());
-			return 0 >= page ? 1 : page;
-		});
+		this.listPageCount = ko.computed(() =>
+			Math.max(1, Math.ceil(this.listCount() / SettingsUserStore.messagesPerPage()))
+		);
 
 		this.mainMessageListSearch = ko.computed({
-			read: this.messageListSearch,
-			write: (value) => {
+			read: this.listSearch,
+			write: value =>
 				rl.route.setHash(
-					mailBox(FolderUserStore.currentFolderFullNameHash(), 1, value.toString().trim(), this.messageListThreadUid())
-				);
-			}
-		});
-
-		this.messageListCompleteLoading = ko.computed(() => {
-			const one = this.messageListLoading(),
-				two = this.messageListIsNotCompleted();
-			return one || two;
+					mailBox(FolderUserStore.currentFolderFullNameHash(), 1, value.toString().trim(), this.listThreadUid())
+				)
 		});
 
 		this.isMessageSelected = ko.computed(() => null !== this.message());
 
-		this.messageListChecked = ko
-			.computed(() => this.messageList.filter(isChecked))
+		this.listChecked = ko
+			.computed(() => this.list.filter(isChecked))
 			.extend({ rateLimit: 0 });
 
 		this.hasCheckedMessages = ko
-			.computed(() => !!this.messageList.find(isChecked))
+			.computed(() => !!this.list.find(isChecked))
 			.extend({ rateLimit: 0 });
 
 		this.hasCheckedOrSelected = ko
 			.computed(() => !!(this.selectorMessageSelected()
 				|| this.selectorMessageFocused()
-				|| this.messageList.find(item => item.checked())))
+				|| this.list.find(item => item.checked())))
 			.extend({ rateLimit: 50 });
 
-		this.messageListCheckedOrSelected = ko.computed(() => {
-			const checked = this.messageListChecked(),
+		this.listCheckedOrSelected = ko.computed(() => {
+			const
 				selectedMessage = this.selectorMessageSelected(),
-				focusedMessage = this.selectorMessageFocused();
-
-			if (checked.length) {
-				return selectedMessage
-					? checked.concat([selectedMessage]).unique()
-					: checked;
-			}
-
-			return selectedMessage ? [selectedMessage] : (focusedMessage ? [focusedMessage] : []);
+				focusedMessage = this.selectorMessageFocused(),
+				checked = this.list.filter(item => isChecked(item) || item === selectedMessage);
+			return checked.length ? checked : (focusedMessage ? [focusedMessage] : []);
 		});
 
-		this.messageListCheckedOrSelectedUidsWithSubMails = ko.computed(() => {
+		this.listCheckedOrSelectedUidsWithSubMails = ko.computed(() => {
 			let result = [];
-			this.messageListCheckedOrSelected().forEach(message => {
-				if (message) {
-					result.push(message.uid);
-					if (1 < message.threadsLen()) {
-						result = result.concat(message.threads()).unique();
-					}
+			this.listCheckedOrSelected().forEach(message => {
+				result.push(message.uid);
+				if (1 < message.threadsLen()) {
+					result = result.concat(message.threads()).unique();
 				}
 			});
 			return result;
 		});
 
-		this.subscribers();
+		// Subscribers
 
-		this.onMessageResponse = this.onMessageResponse.bind(this);
-
-		this.purgeMessageBodyCacheThrottle = this.purgeMessageBodyCache.throttle(30000);
-	}
-
-	subscribers() {
-		let timer = 0, fn = this.messageListCompleteLoadingThrottleForAnimation;
-		this.messageListCompleteLoading.subscribe((value) => {
-			value = !!value;
-			this.messageListCompleteLoadingThrottle(value);
-
+		let timer = 0, fn = this.listLoadingAnimation;
+		this.listCompleteLoading.subscribe(value => {
 			if (value) {
 				fn(value);
 			} else if (fn()) {
@@ -216,8 +184,15 @@ export const MessageUserStore = new class {
 			}
 		});
 
-		this.messageList.subscribe(
-			(list=> {
+		this.listLoading.subscribe(value =>
+			this.listCompleteLoading(value || this.listIsNotCompleted())
+		);
+		this.listIsNotCompleted.subscribe(value =>
+			this.listCompleteLoading(value || this.listLoading())
+		);
+
+		this.list.subscribe(
+			(list => {
 				list.forEach(item =>
 					item && item.newForAnimation() && item.newForAnimation(false)
 				)
@@ -237,14 +212,16 @@ export const MessageUserStore = new class {
 			}
 		});
 
-		this.messageLoading.subscribe(value => this.messageLoadingThrottle(value));
-
-		this.messageListEndFolder.subscribe(folder => {
+		this.listEndFolder.subscribe(folder => {
 			const message = this.message();
 			if (message && folder && folder !== message.folder) {
 				this.message(null);
 			}
 		});
+
+		this.onMessageResponse = this.onMessageResponse.bind(this);
+
+		this.purgeMessageBodyCacheThrottle = this.purgeMessageBodyCache.throttle(30000);
 	}
 
 	purgeMessageBodyCache() {
@@ -303,7 +280,7 @@ export const MessageUserStore = new class {
 		uidForRemove = uidForRemove.map(mValue => pInt(mValue));
 
 		let unseenCount = 0,
-			messageList = this.messageList,
+			messageList = this.list,
 			currentMessage = this.message();
 
 		const trashFolder = FolderUserStore.trashFolder(),
@@ -349,11 +326,9 @@ export const MessageUserStore = new class {
 
 		if (messages.length) {
 			if (copy) {
-				messages.forEach(item => {
-					item.checked(false);
-				});
+				messages.forEach(item => item.checked(false));
 			} else {
-				this.messageListIsNotCompleted(true);
+				this.listIsNotCompleted(true);
 
 				messages.forEach(item => {
 					if (currentMessage && currentMessage.hash === item.hash) {
@@ -364,11 +339,7 @@ export const MessageUserStore = new class {
 					item.deleted(true);
 				});
 
-				setTimeout(() => {
-					messages.forEach(item => {
-						messageList.remove(item);
-					});
-				}, 350);
+				setTimeout(() => messages.forEach(item => messageList.remove(item)), 350);
 			}
 		}
 
@@ -380,47 +351,47 @@ export const MessageUserStore = new class {
 			setFolderHash(toFolderFullNameRaw, '');
 		}
 
-		if (this.messageListThreadUid()) {
+		if (this.listThreadUid()) {
 			if (
 				messageList.length &&
-				!!messageList.find(item => !!(item && item.deleted() && item.uid === this.messageListThreadUid()))
+				!!messageList.find(item => !!(item && item.deleted() && item.uid === this.listThreadUid()))
 			) {
 				const message = messageList.find(item => item && !item.deleted());
-				if (message && this.messageListThreadUid() !== pString(message.uid)) {
-					this.messageListThreadUid(pString(message.uid));
+				if (message && this.listThreadUid() !== pString(message.uid)) {
+					this.listThreadUid(pString(message.uid));
 
 					rl.route.setHash(
 						mailBox(
 							FolderUserStore.currentFolderFullNameHash(),
-							this.messageListPage(),
-							this.messageListSearch(),
-							this.messageListThreadUid()
+							this.listPage(),
+							this.listSearch(),
+							this.listThreadUid()
 						),
 						true,
 						true
 					);
 				} else if (!message) {
-					if (1 < this.messageListPage()) {
-						this.messageListPage(this.messageListPage() - 1);
+					if (1 < this.listPage()) {
+						this.listPage(this.listPage() - 1);
 
 						rl.route.setHash(
 							mailBox(
 								FolderUserStore.currentFolderFullNameHash(),
-								this.messageListPage(),
-								this.messageListSearch(),
-								this.messageListThreadUid()
+								this.listPage(),
+								this.listSearch(),
+								this.listThreadUid()
 							),
 							true,
 							true
 						);
 					} else {
-						this.messageListThreadUid('');
+						this.listThreadUid('');
 
 						rl.route.setHash(
 							mailBox(
 								FolderUserStore.currentFolderFullNameHash(),
-								this.messageListPageBeforeThread(),
-								this.messageListSearch()
+								this.listPageBeforeThread(),
+								this.listSearch()
 							),
 							true,
 							true
@@ -612,11 +583,11 @@ export const MessageUserStore = new class {
 						(message.folder !== selectedMessage.folder || message.uid !== selectedMessage.uid)
 					) {
 						this.selectorMessageSelected(null);
-						if (1 === this.messageList.length) {
+						if (1 === this.list.length) {
 							this.selectorMessageFocused(null);
 						}
 					} else if (!selectedMessage && message) {
-						selectedMessage = this.messageList.find(
+						selectedMessage = this.list.find(
 							subMessage =>
 								subMessage &&
 								subMessage.folder === message.folder &&
@@ -655,8 +626,10 @@ export const MessageUserStore = new class {
 	}
 
 	populateMessageBody(oMessage) {
-		if (oMessage && Remote.message(this.onMessageResponse, oMessage.folder, oMessage.uid)) {
-			this.messageCurrentLoading(true);
+		if (oMessage) {
+			this.hideMessageBodies();
+			this.messageLoading(true);
+			Remote.message(this.onMessageResponse, oMessage.folder, oMessage.uid);
 		}
 	}
 
@@ -666,10 +639,6 @@ export const MessageUserStore = new class {
 	 * @param {boolean} bCached
 	 */
 	onMessageResponse(sResult, oData, bCached) {
-		this.hideMessageBodies();
-
-		this.messageCurrentLoading(false);
-
 		if (StorageResultType.Success === sResult && oData && oData.Result) {
 			this.setMessage(oData, bCached);
 		} else if (StorageResultType.Unload === sResult) {
@@ -681,6 +650,8 @@ export const MessageUserStore = new class {
 				oData && oData.ErrorCode ? getNotification(oData.ErrorCode) : getNotification(Notification.UnknownError)
 			);
 		}
+
+		this.messageLoading(false);
 	}
 
 	/**
@@ -723,20 +694,20 @@ export const MessageUserStore = new class {
 				this.initUidNextAndNewMessages(folder.fullNameRaw, collection.UidNext, collection.NewMessages);
 			}
 
-			this.messageListCount(iCount);
-			this.messageListSearch(pString(collection.Search));
-			this.messageListPage(Math.ceil(iOffset / SettingsUserStore.messagesPerPage() + 1));
-			this.messageListThreadUid(pString(data.Result.ThreadUid));
+			this.listCount(iCount);
+			this.listSearch(pString(collection.Search));
+			this.listPage(Math.ceil(iOffset / SettingsUserStore.messagesPerPage() + 1));
+			this.listThreadUid(pString(data.Result.ThreadUid));
 
-			this.messageListEndFolder(collection.Folder);
-			this.messageListEndSearch(this.messageListSearch());
-			this.messageListEndThreadUid(this.messageListThreadUid());
-			this.messageListEndPage(this.messageListPage());
+			this.listEndFolder(collection.Folder);
+			this.listEndSearch(this.listSearch());
+			this.listEndThreadUid(this.listThreadUid());
+			this.listEndPage(this.listPage());
 
-			this.messageListDisableAutoSelect(true);
+			this.listDisableAutoSelect(true);
 
-			this.messageList(collection);
-			this.messageListIsNotCompleted(false);
+			this.list(collection);
+			this.listIsNotCompleted(false);
 
 			clearNewMessageCache();
 
@@ -744,9 +715,9 @@ export const MessageUserStore = new class {
 				rl.app.folderInformation(folder.fullNameRaw, collection);
 			}
 		} else {
-			this.messageListCount(0);
-			this.messageList([]);
-			this.messageListError(getNotification(data && data.ErrorCode ? data.ErrorCode : Notification.CantGetMessageList));
+			this.listCount(0);
+			this.list([]);
+			this.listError(getNotification(data && data.ErrorCode ? data.ErrorCode : Notification.CantGetMessageList));
 		}
 	}
 };

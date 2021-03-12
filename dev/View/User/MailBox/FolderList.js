@@ -27,7 +27,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 
 		this.composeInEdit = AppUserStore.composeInEdit;
 
-		this.messageList = MessageUserStore.messageList;
+		this.messageList = MessageUserStore.list;
 		this.folderList = FolderUserStore.folderList;
 		this.folderListSystem = FolderUserStore.folderListSystem;
 		this.foldersChanging = FolderUserStore.foldersChanging;
@@ -47,7 +47,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 			() =>
 				FolderUserStore.currentFolder() &&
 				FolderUserStore.currentFolder().isInbox() &&
-				MessageUserStore.messageListSearch().trim().includes('is:flagged')
+				MessageUserStore.listSearch().trim().includes('is:flagged')
 		);
 	}
 
@@ -70,7 +70,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 						moveAction(false);
 						rl.app.moveMessagesToFolder(
 							FolderUserStore.currentFolderFullNameRaw(),
-							MessageUserStore.messageListCheckedOrSelectedUidsWithSubMails(),
+							MessageUserStore.listCheckedOrSelectedUidsWithSubMails(),
 							folder.fullNameRaw,
 							event.ctrlKey
 						);

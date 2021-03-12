@@ -45,7 +45,7 @@ class FolderClearPopupView extends AbstractViewPopup {
 		const folderToClear = this.selectedFolder();
 		if (folderToClear) {
 			MessageUserStore.message(null);
-			MessageUserStore.messageList([]);
+			MessageUserStore.list([]);
 
 			this.clearingProcess(true);
 

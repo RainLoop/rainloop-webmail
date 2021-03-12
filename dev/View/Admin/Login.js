@@ -28,7 +28,7 @@ class LoginAdminView extends AbstractViewCenter {
 			submitError: ''
 		});
 
-		this.formError = ko.observable(false).extend({ 'falseTimeout': 500 });
+		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 
 		this.addSubscribables({
 			login: () => this.loginError(false),

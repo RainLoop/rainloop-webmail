@@ -147,14 +147,14 @@ export class GeneralUserSettings {
 			).debounce(3000));
 
 			this.useThreads.subscribe((value) => {
-				MessageUserStore.messageList([]);
+				MessageUserStore.list([]);
 				Remote.saveSettings(null, {
 					'UseThreads': value ? 1 : 0
 				});
 			});
 
 			this.layout.subscribe((value) => {
-				MessageUserStore.messageList([]);
+				MessageUserStore.list([]);
 				Remote.saveSettings(f2, {
 					'Layout': value
 				});

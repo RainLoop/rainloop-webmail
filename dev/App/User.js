@@ -146,10 +146,11 @@ class AppUser extends AbstractApp {
 	}
 
 	reloadFlagsCurrentMessageListAndMessageFromCache() {
-		MessageUserStore.messageList.forEach(message =>
+		MessageUserStore.list.forEach(message =>
 			MessageFlagsCache.initMessage(message)
 		);
 		MessageFlagsCache.initMessage(MessageUserStore.message());
+		MessageUserStore.messageViewTrigger(!MessageUserStore.messageViewTrigger());
 	}
 
 	/**
@@ -157,44 +158,44 @@ class AppUser extends AbstractApp {
 	 * @param {boolean=} bDropCurrenFolderCache = false
 	 */
 	reloadMessageList(bDropPagePosition = false, bDropCurrenFolderCache = false) {
-		let iOffset = (MessageUserStore.messageListPage() - 1) * SettingsUserStore.messagesPerPage();
+		let iOffset = (MessageUserStore.listPage() - 1) * SettingsUserStore.messagesPerPage();
 
 		if (bDropCurrenFolderCache) {
 			setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
 		}
 
 		if (bDropPagePosition) {
-			MessageUserStore.messageListPage(1);
-			MessageUserStore.messageListPageBeforeThread(1);
+			MessageUserStore.listPage(1);
+			MessageUserStore.listPageBeforeThread(1);
 			iOffset = 0;
 
 			rl.route.setHash(
 				mailBox(
 					FolderUserStore.currentFolderFullNameHash(),
-					MessageUserStore.messageListPage(),
-					MessageUserStore.messageListSearch(),
-					MessageUserStore.messageListThreadUid()
+					MessageUserStore.listPage(),
+					MessageUserStore.listSearch(),
+					MessageUserStore.listThreadUid()
 				),
 				true,
 				true
 			);
 		}
 
-		MessageUserStore.messageListLoading(true);
+		MessageUserStore.listLoading(true);
 		Remote.messageList(
 			(sResult, oData, bCached) => {
 				if (StorageResultType.Success === sResult && oData && oData.Result) {
-					MessageUserStore.messageListError('');
-					MessageUserStore.messageListLoading(false);
+					MessageUserStore.listError('');
+					MessageUserStore.listLoading(false);
 
 					MessageUserStore.setMessageList(oData, bCached);
 				} else if (StorageResultType.Unload === sResult) {
-					MessageUserStore.messageListError('');
-					MessageUserStore.messageListLoading(false);
+					MessageUserStore.listError('');
+					MessageUserStore.listLoading(false);
 				} else if (StorageResultType.Abort !== sResult) {
-					MessageUserStore.messageList([]);
-					MessageUserStore.messageListLoading(false);
-					MessageUserStore.messageListError(
+					MessageUserStore.list([]);
+					MessageUserStore.listLoading(false);
+					MessageUserStore.listError(
 						getNotification((oData && oData.ErrorCode) || Notification.CantGetMessageList)
 					);
 				}
@@ -202,8 +203,8 @@ class AppUser extends AbstractApp {
 			FolderUserStore.currentFolderFullNameRaw(),
 			iOffset,
 			SettingsUserStore.messagesPerPage(),
-			MessageUserStore.messageListSearch(),
-			MessageUserStore.messageListThreadUid()
+			MessageUserStore.listSearch(),
+			MessageUserStore.listThreadUid()
 		);
 	}
 
@@ -294,7 +295,7 @@ class AppUser extends AbstractApp {
 				}
 			}
 
-			this.reloadMessageList(!MessageUserStore.messageList.length);
+			this.reloadMessageList(!MessageUserStore.list.length);
 			this.quotaDebounce();
 		}
 	}
@@ -685,8 +686,8 @@ class AppUser extends AbstractApp {
 									}
 								} else if (unreadCountChange
 								 && folder.fullNameRaw === FolderUserStore.currentFolderFullNameRaw()
-								 && MessageUserStore.messageList.length) {
-									this.folderInformation(folder.fullNameRaw, MessageUserStore.messageList());
+								 && MessageUserStore.list.length) {
+									this.folderInformation(folder.fullNameRaw, MessageUserStore.list());
 								}
 							}
 						});
@@ -711,7 +712,7 @@ class AppUser extends AbstractApp {
 			rootUids = [];
 
 		if (undefined === messages || !messages) {
-			messages = MessageUserStore.messageListChecked();
+			messages = MessageUserStore.listChecked();
 		}
 
 		rootUids = messages.map(oMessage => oMessage && oMessage.uid ? oMessage.uid : null)
@@ -764,7 +765,6 @@ class AppUser extends AbstractApp {
 			}
 
 			this.reloadFlagsCurrentMessageListAndMessageFromCache();
-			MessageUserStore.messageViewTrigger(!MessageUserStore.messageViewTrigger());
 		}
 	}
 

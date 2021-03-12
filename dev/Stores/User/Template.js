@@ -10,10 +10,6 @@ export const TemplateUserStore = new class {
 		this.templatesNames = ko.observableArray().extend({ debounce: 1000 });
 		this.templatesNames.skipFirst = true;
 
-		this.subscribers();
-	}
-
-	subscribers() {
 		this.templates.subscribe((list) => {
 			this.templatesNames(list.map(item => (item ? item.name : null)).filter(v => v));
 		});
