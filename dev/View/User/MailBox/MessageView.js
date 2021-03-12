@@ -45,20 +45,21 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	constructor() {
 		super('User/MailBox/MessageView', 'MailMessageView');
 
-		const createCommandReplyHelper = type =>
-			createCommand(() => {
-				this.lastReplyAction(type);
-				this.replyOrforward(type);
-			}, this.canBeRepliedOrForwarded),
+		const
+			createCommandReplyHelper = type =>
+				createCommand(() => {
+					this.lastReplyAction(type);
+					this.replyOrforward(type);
+				}, this.canBeRepliedOrForwarded),
 
-		createCommandActionHelper = (folderType, useFolder) =>
-			createCommand(() => {
-				const message = this.message();
-				if (message && this.allowMessageListActions) {
-					this.message(null);
-					rl.app.deleteMessagesFromFolder(folderType, message.folder, [message.uid], useFolder);
-				}
-			}, this.messageVisibility);
+			createCommandActionHelper = (folderType, useFolder) =>
+				createCommand(() => {
+					const message = this.message();
+					if (message && this.allowMessageListActions) {
+						this.message(null);
+						rl.app.deleteMessagesFromFolder(folderType, message.folder, [message.uid], useFolder);
+					}
+				}, this.messageVisibility);
 
 		this.oHeaderDom = null;
 		this.oMessageScrollerDom = null;
@@ -82,7 +83,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		this.attachmentsActions = AppUserStore.attachmentsActions;
 
 		this.message = MessageUserStore.message;
-//		this.messageListChecked = MessageUserStore.listChecked;
 		this.hasCheckedMessages = MessageUserStore.hasCheckedMessages;
 		this.messageListCheckedOrSelectedUidsWithSubMails = MessageUserStore.listCheckedOrSelectedUidsWithSubMails;
 		this.messageLoadingThrottle = MessageUserStore.messageLoading;
@@ -266,7 +266,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		decorateKoCommands(this, {
 			closeMessageCommand: 1,
-			messageVisibilityCommand: self => self.messageVisibility(),
 			messageEditCommand: self => self.messageVisibility(),
 			goUpCommand: self => !self.messageListAndMessageViewLoading(),
 			goDownCommand: self => !self.messageListAndMessageViewLoading()
@@ -276,8 +275,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	closeMessageCommand() {
 		MessageUserStore.message(null);
 	}
-
-	messageVisibilityCommand() {}
 
 	messageEditCommand() {
 		this.editMessage();
@@ -417,7 +414,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			el = eqs(event, '.attachmentsPlace .showPreplay');
 			if (el) {
 				event.stopPropagation();
-				const attachment = ko.dataFor(el); // eslint-disable-line no-invalid-this
+				const attachment = ko.dataFor(el);
 				if (attachment && SMAudio.supported) {
 					switch (true) {
 						case SMAudio.supportedMp3 && attachment.isMp3():
@@ -441,7 +438,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			}
 
 			if (eqs(event, '.messageItemHeader .subjectParent .flagParent')) {
-				// eslint-disable-line prefer-arrow-callback
 				const message = this.message();
 				message && rl.app.messageListAction(
 					message.folder,
@@ -452,8 +448,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 			el = eqs(event, '.thread-list .flagParent');
 			if (el) {
-				// eslint-disable-line prefer-arrow-callback
-				const message = ko.dataFor(el); // eslint-disable-line no-invalid-this
+				const message = ko.dataFor(el);
 				message && message.folder && message.uid &&  rl.app.messageListAction(
 					message.folder,
 					message.isFlagged() ? MessageSetAction.UnsetFlag : MessageSetAction.SetFlag,
@@ -723,7 +718,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	 */
 	printableCheckedMessageCount() {
 		const cnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
-		return 0 < cnt ? (100 > cnt ? cnt : '99+') : ''; // eslint-disable-line no-magic-numbers
+		return 0 < cnt ? (100 > cnt ? cnt : '99+') : '';
 	}
 
 	/**

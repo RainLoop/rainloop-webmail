@@ -179,8 +179,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			messageListFocused: () => Focused.MessageList === AppUserStore.focusedState()
 		});
 
-//		this.messageListChecked = MessageUserStore.listChecked;
-
 		this.hasCheckedOrSelectedLines = MessageUserStore.hasCheckedOrSelected,
 
 		this.quotaTooltip = this.quotaTooltip.bind(this);
