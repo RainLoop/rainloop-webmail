@@ -294,21 +294,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			{detail:SettingsUserStore.usePreviewPane() || !!this.message()} // bForceSelect
 		));
 	}
-/*
-	detectDomBackgroundColor(dom) {
-		let color = '';
-		if (dom && !SettingsUserStore.removeColors()) {
-			dom.querySelectorAll('div[data-x-div-type="html"], div[data-x-div-type="body"]').forEach(node => {
-				let clr = node.style.backgroundColor || '';
-				// is transparent ?
-				if ('transparent' !== clr && !/(rgba|hsla)\(.+,\s*0\s*\)/.test(clr)) {
-					color = clr;
-				}
-			});
-		}
-		return color;
-	}
-*/
+
 	toggleFullScreen() {
 		try {
 			getSelection().removeAllRanges();
