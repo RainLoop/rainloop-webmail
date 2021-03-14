@@ -216,13 +216,6 @@ trait Admin
 		return $this->TrueResponse(__FUNCTION__);
 	}
 
-	public function DoAdminPing() : array
-	{
-		$this->IsAdminLoggined();
-
-		return $this->DefaultResponse(__FUNCTION__, true);
-	}
-
 	public function DoAdminContactsTest() : array
 	{
 		$this->IsAdminLoggined();

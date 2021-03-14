@@ -221,12 +221,6 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 		this.defaultRequest(fCallback, 'AdminPasswordUpdate', oData);
 	}
 
-	/**
-	 * @param {?Function} fCallback
-	 */
-	adminPing(fCallback) {
-		this.defaultRequest(fCallback, 'AdminPing');
-	}
 }
 
 export default new RemoteAdminFetch();
