@@ -2,8 +2,6 @@ import { StorageResultType, Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 
-import { CapaAdminStore } from 'Stores/Admin/Capa';
-
 import Remote from 'Remote/Admin/Fetch';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
@@ -56,8 +54,6 @@ class DomainPopupView extends AbstractViewPopup {
 		});
 
 		this.addComputables({
-			allowSieve: () => CapaAdminStore.filters() && CapaAdminStore.sieve(),
-
 			headerText: () => {
 				const name = this.name(),
 					aliasName = this.aliasName();
@@ -85,14 +81,13 @@ class DomainPopupView extends AbstractViewPopup {
 
 			domainIsComputed: () => {
 				const usePhpMail = this.smtpPhpMail(),
-					allowSieve = this.allowSieve(),
 					useSieve = this.useSieve();
 
 				return (
 					this.name() &&
 					this.imapServer() &&
 					this.imapPort() &&
-					(allowSieve && useSieve ? this.sieveServer() && this.sievePort() : true) &&
+					(useSieve ? this.sieveServer() && this.sievePort() : true) &&
 					((this.smtpServer() && this.smtpPort()) || usePhpMail)
 				);
 			},

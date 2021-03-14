@@ -32,7 +32,6 @@ export const Capa = {
 	Themes: 'THEMES',
 	UserBackground: 'USER_BACKGROUND',
 	Sieve: 'SIEVE',
-	Filters: 'FILTERS',
 	AttachmentThumbnails: 'ATTACHMENT_THUMBNAILS',
 	Templates: 'TEMPLATES',
 	AutoLogout: 'AUTOLOGOUT',

@@ -236,7 +236,7 @@ export class FilterModel extends AbstractModel {
 				);
 			}
 
-			filter.actionKeep(1 == json.Keep);
+			filter.actionKeep(0 != json.Keep);
 			filter.actionNoStop(0 == json.Stop);
 			filter.actionMarkAsRead(1 == json.MarkAsRead);
 		}

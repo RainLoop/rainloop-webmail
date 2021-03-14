@@ -2077,11 +2077,8 @@ class Actions
 				$aResult[] = Enumerations\Capa::OPEN_PGP;
 			}
 
-			if ($oConfig->Get('capa', 'filters', false)) {
-				$aResult[] = Enumerations\Capa::FILTERS;
-				if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve())) {
-					$aResult[] = Enumerations\Capa::SIEVE;
-				}
+			if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve())) {
+				$aResult[] = Enumerations\Capa::SIEVE;
 			}
 		}
 

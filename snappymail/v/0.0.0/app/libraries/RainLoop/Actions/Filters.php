@@ -18,20 +18,9 @@ trait Filters
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, Capa::FILTERS, $oAccount))
+		if (!$this->GetCapa(false, Capa::SIEVE, $oAccount))
 		{
 			return $this->FalseResponse(__FUNCTION__);
-		}
-
-		$aFakeFilters = null;
-
-		$this->Plugins()
-			->RunHook('filter.filters-fake', array($oAccount, &$aFakeFilters))
-		;
-
-		if ($aFakeFilters)
-		{
-			return $this->DefaultResponse(__FUNCTION__, $aFakeFilters);
 		}
 
 		return $this->DefaultResponse(__FUNCTION__, $this->FiltersProvider()->Load($oAccount));
@@ -44,7 +33,7 @@ trait Filters
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, Capa::FILTERS, $oAccount)) {
+		if (!$this->GetCapa(false, Capa::SIEVE, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -79,7 +68,7 @@ trait Filters
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, Capa::FILTERS, $oAccount)) {
+		if (!$this->GetCapa(false, Capa::SIEVE, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
@@ -95,7 +84,7 @@ trait Filters
 	{
 		$oAccount = $this->getAccountFromToken();
 
-		if (!$this->GetCapa(false, Capa::FILTERS, $oAccount)) {
+		if (!$this->GetCapa(false, Capa::SIEVE, $oAccount)) {
 			return $this->FalseResponse(__FUNCTION__);
 		}
 
