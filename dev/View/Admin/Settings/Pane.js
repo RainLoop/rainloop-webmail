@@ -2,8 +2,6 @@ import ko from 'ko';
 
 import Remote from 'Remote/Admin/Fetch';
 
-import { DomainAdminStore } from 'Stores/Admin/Domain';
-import { PluginAdminStore } from 'Stores/Admin/Plugin';
 import { PackageAdminStore } from 'Stores/Admin/Package';
 
 import { AbstractViewRight } from 'Knoin/AbstractViews';
@@ -19,10 +17,7 @@ class PaneSettingsAdminView extends AbstractViewRight {
 		this.leftPanelDisabled = leftPanelDisabled;
 
 		this.adminManLoadingVisibility = ko
-			.computed(() => (DomainAdminStore.loading()
-				|| PluginAdminStore.loading()
-				|| PackageAdminStore.loading()) ? 'visible' : 'hidden')
-			.extend({ rateLimit: 300 });
+			.computed(() => PackageAdminStore.loading() ? 'visible' : 'hidden');
 	}
 
 	toggleLeft(item, event) {

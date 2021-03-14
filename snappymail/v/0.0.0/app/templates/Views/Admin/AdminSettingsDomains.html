@@ -1,5 +1,8 @@
 <div class="b-admin-domains g-ui-user-select-none">
-	<div class="legend" data-i18n="TAB_DOMAINS/LEGEND_DOMAINS"></div>
+	<div class="legend">
+		<span data-i18n="TAB_DOMAINS/LEGEND_DOMAINS"></span>
+		<i class="icon-spinner" style="margin: 5px" data-bind="visible: domains.loading"></i>
+	</div>
 	<div>
 		<a class="btn" data-bind="click: createDomain">
 			<i class="fontastic">✚</i>

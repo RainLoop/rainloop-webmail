@@ -30,7 +30,7 @@ export class PackagesAdminSettings {
 	}
 
 	onBuild() {
-		rl.app.reloadPackagesList();
+		PackageAdminStore.fetch();
 	}
 
 	requestHelper(packageToRequest, install) {
@@ -55,7 +55,7 @@ export class PackagesAdminSettings {
 			if (StorageResultType.Success === result && data && data.Result && data.Result.Reload) {
 				location.reload();
 			} else {
-				rl.app.reloadPackagesList();
+				PackageAdminStore.fetch();
 			}
 		};
 	}

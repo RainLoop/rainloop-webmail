@@ -7,7 +7,10 @@
 		</div>
 	</div>
 
-	<div class="legend" data-i18n="TAB_PLUGINS/LEGEND_PLUGINS"></div>
+	<div class="legend">
+		<span data-i18n="TAB_PLUGINS/LEGEND_PLUGINS"></span>
+		<i class="icon-spinner" style="margin: 5px" data-bind="visible: plugins.loading"></i>
+	</div>
 
 	<div>
 		<div data-bind="component: {

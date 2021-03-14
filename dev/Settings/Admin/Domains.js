@@ -13,8 +13,6 @@ export class DomainsAdminSettings {
 	constructor() {
 		this.domains = DomainAdminStore;
 
-		this.visibility = ko.computed(() => (DomainAdminStore.loading() ? 'visible' : 'hidden'));
-
 		this.domainForDeletion = ko.observable(null).deleteAccessHelper();
 
 		this.onDomainListChangeRequest = this.onDomainListChangeRequest.bind(this);
@@ -45,7 +43,7 @@ export class DomainsAdminSettings {
 			el && ko.dataFor(el) && Remote.domain(this.onDomainLoadRequest, ko.dataFor(el).name);
 		});
 
-		rl.app.reloadDomainList();
+		DomainAdminStore.fetch();
 	}
 
 	onDomainLoadRequest(sResult, oData) {
@@ -55,6 +53,6 @@ export class DomainsAdminSettings {
 	}
 
 	onDomainListChangeRequest() {
-		rl.app.reloadDomainList();
+		DomainAdminStore.fetch();
 	}
 }

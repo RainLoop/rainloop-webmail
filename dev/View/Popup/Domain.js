@@ -7,6 +7,8 @@ import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
+import { DomainAdminStore } from 'Stores/Admin/Domain';
+
 class DomainPopupView extends AbstractViewPopup {
 	constructor() {
 		super('Domain');
@@ -250,7 +252,7 @@ class DomainPopupView extends AbstractViewPopup {
 		this.saving(false);
 		if (StorageResultType.Success === sResult && oData) {
 			if (oData.Result) {
-				rl.app.reloadDomainList();
+				DomainAdminStore.fetch();
 				this.closeCommand();
 			} else if (Notification.DomainAlreadyExists === oData.ErrorCode) {
 				this.savingError(i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));

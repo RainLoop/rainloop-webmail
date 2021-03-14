@@ -45,7 +45,7 @@ class DomainAliasPopupView extends AbstractViewPopup {
 		this.saving(false);
 		if (StorageResultType.Success === result && data) {
 			if (data.Result) {
-				rl.app.reloadDomainList();
+				DomainAdminStore.fetch();
 				this.closeCommand();
 			} else if (Notification.DomainAlreadyExists === data.ErrorCode) {
 				this.savingError(i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));

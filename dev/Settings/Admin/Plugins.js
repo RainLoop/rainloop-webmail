@@ -19,8 +19,6 @@ export class PluginsAdminSettings {
 		this.plugins = PluginAdminStore;
 		this.pluginsError = PluginAdminStore.error;
 
-		this.visibility = ko.computed(() => (PluginAdminStore.loading() ? 'visible' : 'hidden'));
-
 		this.onPluginLoadRequest = this.onPluginLoadRequest.bind(this);
 		this.onPluginDisableRequest = this.onPluginDisableRequest.bind(this);
 	}
@@ -52,7 +50,7 @@ export class PluginsAdminSettings {
 
 	onShow() {
 		PluginAdminStore.error('');
-		rl.app.reloadPluginList();
+		PluginAdminStore.fetch();
 	}
 
 	onPluginLoadRequest(result, data) {
@@ -72,6 +70,6 @@ export class PluginsAdminSettings {
 			}
 		}
 
-		rl.app.reloadPluginList();
+		PluginAdminStore.fetch();
 	}
 }
