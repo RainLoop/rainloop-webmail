@@ -442,9 +442,11 @@ abstract class PdoAbstract
 			{
 				case 'mysql':
 					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_system (
+id bigint UNSIGNED NOT NULL AUTO_INCREMENT,
 sys_name varchar(50) NOT NULL,
 value_int int UNSIGNED NOT NULL DEFAULT 0,
 value_str varchar(128) NOT NULL DEFAULT \'\',
+PRIMARY KEY(id),
 INDEX sys_name_rainloop_system_index (sys_name)
 ) /*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
 					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
