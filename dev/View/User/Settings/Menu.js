@@ -1,4 +1,4 @@
-import { KeyState } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 import { leftPanelDisabled } from 'Common/Globals';
 import { settings, mailbox } from 'Common/Links';
 import { getFolderInboxName } from 'Common/Cache';
@@ -27,7 +27,7 @@ export class MenuSettingsUserView extends AbstractViewLeft {
 			&& leftPanelDisabled(true)
 		);
 
-		shortcuts.add('arrowup,arrowdown', '', KeyState.Settings,
+		shortcuts.add('arrowup,arrowdown', '', Scope.Settings,
 			settingsMenuKeysHandler(dom.querySelectorAll('.b-settings-menu .e-item')));
 	}
 

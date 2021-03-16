@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { pString, defaultOptionsAfterRender } from 'Common/Utils';
 
-import { KeyState } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
 import { PgpUserStore } from 'Stores/User/Pgp';
@@ -87,8 +87,6 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 				this.addCommand();
 			}
 		});
-
-		this.sDefaultKeyScope = KeyState.PopupComposeOpenPGP;
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 
@@ -290,8 +288,8 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 	}
 
 	onBuild() {
-//		shortcuts.add('tab', 'shift', KeyState.PopupComposeOpenPGP, () => {
-		shortcuts.add('tab', '', KeyState.PopupComposeOpenPGP, () => {
+//		shortcuts.add('tab', 'shift', Scope.ComposeOpenPgp, () => {
+		shortcuts.add('tab', '', Scope.ComposeOpenPgp, () => {
 			let btn = this.querySelector('.inputPassword');
 			if (btn.matches(':focus')) {
 				btn = this.querySelector('.buttonDo');

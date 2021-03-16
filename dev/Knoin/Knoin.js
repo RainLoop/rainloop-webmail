@@ -111,7 +111,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 					if (value) {
 						vmDom.style.zIndex = 3000 + popupVisibilityNames.length + 10;
 						vmDom.hidden = false;
-						vm.storeAndSetKeyScope();
+						vm.storeAndSetScope();
 						popupVisibilityNames.push(vm.viewModelName);
 						requestAnimationFrame(() => { // wait just before the next paint
 							vmDom.offsetHeight; // force a reflow
@@ -120,7 +120,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 					} else {
 						vm.onHide && vm.onHide();
 						vmDom.classList.remove('show');
-						vm.restoreKeyScope();
+						vm.restoreScope();
 						popupVisibilityNames = popupVisibilityNames.filter(v=>v!==vm.viewModelName);
 					}
 					vmDom.setAttribute('aria-hidden', !value);

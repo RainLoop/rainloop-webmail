@@ -1,11 +1,10 @@
-import { KeyState } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
 	constructor() {
 		super('KeyboardShortcutsHelp');
-		this.sDefaultKeyScope = KeyState.PopupKeyboardShortcutsHelp;
 	}
 
 	onBuild(dom) {
@@ -13,7 +12,7 @@ class KeyboardShortcutsHelpPopupView extends AbstractViewPopup {
 
 //		shortcuts.add('tab', 'shift',
 		shortcuts.add('tab,arrowleft,arrowright', '',
-			KeyState.PopupKeyboardShortcutsHelp,
+			Scope.KeyboardShortcutsHelp,
 			((event, handler)=>{
 				if (event && handler) {
 					const tabs = dom.querySelectorAll('.nav.nav-tabs > li'),

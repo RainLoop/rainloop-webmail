@@ -8,7 +8,6 @@ import { ClientSideKeyName } from 'Common/EnumsUser';
 
 import { getNotification, getNotificationFromResponse, reload as translatorReload, convertLangName } from 'Common/Translator';
 
-import { AppUserStore } from 'Stores/User/App';
 import { LanguageStore } from 'Stores/Language';
 
 import * as Local from 'Storage/Client';
@@ -45,8 +44,8 @@ class LoginUserView extends AbstractViewCenter {
 		this.addObservables({
 			loadingDesc: SettingsGet('LoadingDescription'),
 
-			email: '',
-			password: '',
+			email: SettingsGet('DevEmail'),
+			password: SettingsGet('DevPassword'),
 			signMe: false,
 			additionalCode: '',
 
@@ -231,9 +230,6 @@ class LoginUserView extends AbstractViewCenter {
 				this.signMeType(LoginSignMeType.Unused);
 				break;
 		}
-
-		this.email(AppUserStore.devEmail);
-		this.password(AppUserStore.devPassword);
 
 		setTimeout(() => {
 			LanguageStore.language.subscribe((value) => {

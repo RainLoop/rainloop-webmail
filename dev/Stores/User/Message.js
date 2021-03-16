@@ -1,7 +1,7 @@
 import ko from 'ko';
 
-import { Notification } from 'Common/Enums';
-import { Focused, MessageSetAction } from 'Common/EnumsUser';
+import { Scope, Notification } from 'Common/Enums';
+import { MessageSetAction } from 'Common/EnumsUser';
 import { doc, elementById } from 'Common/Globals';
 import { pInt, pString, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 import { plainToHtml } from 'Common/UtilsUser';
@@ -202,10 +202,10 @@ export const MessageUserStore = new class {
 			message: message => {
 				if (message) {
 					if (!SettingsUserStore.usePreviewPane()) {
-						AppUserStore.focusedState(Focused.MessageView);
+						AppUserStore.focusedState(Scope.MessageView);
 					}
 				} else {
-					AppUserStore.focusedState(Focused.MessageList);
+					AppUserStore.focusedState(Scope.MessageList);
 
 					this.messageFullScreenMode(false);
 					this.hideMessageBodies();

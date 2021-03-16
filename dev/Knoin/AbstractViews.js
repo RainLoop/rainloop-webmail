@@ -1,41 +1,41 @@
 import ko from 'ko';
 
 import { inFocus, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'Common/Utils';
-import { KeyState } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 import { keyScope } from 'Common/Globals';
 import { ViewType } from 'Knoin/Knoin';
 
 class AbstractView {
-	bDisabeCloseOnEsc = false;
-	sDefaultKeyScope = KeyState.None;
-	sCurrentKeyScope = KeyState.None;
-
-	viewModelVisible = false;
-	modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
-
-	viewModelName = '';
-	viewModelDom = null;
-
 	constructor(name, templateID, type)
 	{
 		this.viewModelName = 'View/' + name;
 		this.viewModelTemplateID = templateID;
 		this.viewModelPosition = type;
+
+		this.bDisabeCloseOnEsc = false;
+		this.sDefaultScope = Scope.None;
+		this.sCurrentScope = Scope.None;
+
+		this.viewModelVisible = false;
+		this.modalVisibility = ko.observable(false).extend({ rateLimit: 0 });
+
+		this.viewModelName = '';
+		this.viewModelDom = null;
 	}
 
 	/**
 	 * @returns {void}
 	 */
-	storeAndSetKeyScope() {
-		this.sCurrentKeyScope = keyScope();
-		keyScope(this.sDefaultKeyScope);
+	storeAndSetScope() {
+		this.sCurrentScope = keyScope();
+		keyScope(this.sDefaultScope);
 	}
 
 	/**
 	 * @returns {void}
 	 */
-	restoreKeyScope() {
-		keyScope(this.sCurrentKeyScope);
+	restoreScope() {
+		keyScope(this.sCurrentScope);
 	}
 
 	cancelCommand() {}
@@ -64,6 +64,9 @@ export class AbstractViewPopup extends AbstractView
 	constructor(name)
 	{
 		super('Popup/' + name, 'Popups' + name, ViewType.Popup);
+		if (name in Scope) {
+			this.sDefaultScope = Scope[name];
+		}
 	}
 
 	/**

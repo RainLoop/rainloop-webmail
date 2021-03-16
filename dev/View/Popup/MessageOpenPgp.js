@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { pString } from 'Common/Utils';
-import { KeyState } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -19,8 +19,6 @@ class MessageOpenPgpPopupView extends AbstractViewPopup {
 		this.privateKeys = ko.observableArray();
 
 		this.resultCallback = null;
-
-		this.sDefaultKeyScope = KeyState.PopupMessageOpenPGP;
 
 		decorateKoCommands(this, {
 			doCommand: self => !self.submitRequest()
@@ -77,8 +75,8 @@ class MessageOpenPgpPopupView extends AbstractViewPopup {
 	}
 
 	onBuild(oDom) {
-//		shortcuts.add('tab', 'shift', KeyState.PopupMessageOpenPGP, () => {
-		shortcuts.add('tab', '', KeyState.PopupMessageOpenPGP, () => {
+//		shortcuts.add('tab', 'shift', Scope.MessageOpenPgp, () => {
+		shortcuts.add('tab', '', Scope.MessageOpenPgp, () => {
 			let btn = this.querySelector('.inputPassword');
 			if (btn.matches(':focus')) {
 				btn = this.querySelector('.buttonDo');

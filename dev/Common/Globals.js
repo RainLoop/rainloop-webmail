@@ -1,5 +1,5 @@
 import ko from 'ko';
-import { KeyState } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 
 export const doc = document;
 
@@ -29,24 +29,24 @@ leftPanelDisabled.subscribe(value => {
 moveAction.subscribe(value => value && leftPanelDisabled() && leftPanelDisabled(false));
 
 // keys
-export const keyScopeReal = ko.observable(KeyState.All);
+export const keyScopeReal = ko.observable(Scope.All);
 
 export const keyScope = (()=>{
-	let keyScopeFake = KeyState.All;
+	let keyScopeFake = Scope.All;
 	dropdownVisibility.subscribe(value => {
 		if (value) {
-			keyScope(KeyState.Menu);
-		} else if (KeyState.Menu === shortcuts.getScope()) {
+			keyScope(Scope.Menu);
+		} else if (Scope.Menu === shortcuts.getScope()) {
 			keyScope(keyScopeFake);
 		}
 	});
 	return ko.computed({
 		read: () => keyScopeFake,
 		write: value => {
-			if (KeyState.Menu !== value) {
+			if (Scope.Menu !== value) {
 				keyScopeFake = value;
 				if (dropdownVisibility()) {
-					value = KeyState.Menu;
+					value = Scope.Menu;
 				}
 			}
 

@@ -3,7 +3,7 @@ import ko from 'ko';
 import {
 	SaveSettingsStep,
 	Notification,
-	KeyState
+	Scope
 } from 'Common/Enums';
 
 import { ComposeType } from 'Common/EnumsUser';
@@ -93,8 +93,6 @@ class ContactsPopupView extends AbstractViewPopup {
 		this.bDropPageAfterDelete = false;
 
 		// this.saveCommandDebounce = _.debounce(this.saveCommand.bind(this), 1000);
-
-		this.sDefaultKeyScope = KeyState.ContactList;
 
 		const
 //			propertyFocused = property => !property.isValid() && !property.focused(),
@@ -490,14 +488,14 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	onBuild(dom) {
-		this.selector.init(dom.querySelector('.b-list-content'), KeyState.ContactList);
+		this.selector.init(dom.querySelector('.b-list-content'), Scope.Contacts);
 
-		shortcuts.add('delete', '', KeyState.ContactList, () => {
+		shortcuts.add('delete', '', Scope.Contacts, () => {
 			this.deleteCommand();
 			return false;
 		});
 
-		shortcuts.add('c,w', '', KeyState.ContactList, () => {
+		shortcuts.add('c,w', '', Scope.Contacts, () => {
 			this.newMessageCommand();
 			return false;
 		});

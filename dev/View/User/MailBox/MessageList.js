@@ -2,11 +2,10 @@ import ko from 'ko';
 
 import {
 	Capa,
-	KeyState
+	Scope
 } from 'Common/Enums';
 
 import {
-	Focused,
 	ComposeType,
 	FolderType,
 	MessageSetAction
@@ -175,7 +174,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessageUserStore.listChecked().length : true,
 
-			messageListFocused: () => Focused.MessageList === AppUserStore.focusedState()
+			messageListFocused: () => Scope.MessageList === AppUserStore.focusedState()
 		});
 
 		this.hasCheckedOrSelectedLines = MessageUserStore.hasCheckedOrSelected,
@@ -324,7 +323,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			}
 
 			let b = moveAction();
-			AppUserStore.focusedState(b ? Focused.MessageList : Focused.FolderList);
+			AppUserStore.focusedState(b ? Scope.MessageList : Scope.FolderList);
 			moveAction(!b);
 		}
 	}
@@ -666,13 +665,13 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	onBuild(dom) {
 		const eqs = (ev, s) => ev.target.closestWithin(s, dom);
 
-		this.selector.init(dom.querySelector('.b-content'), KeyState.MessageList);
+		this.selector.init(dom.querySelector('.b-content'), Scope.MessageList);
 
 		dom.addEventListener('click', event => {
 			ThemeStore.isMobile() && leftPanelDisabled(true);
 
-			if (eqs(event, '.messageList .b-message-list-wrapper') && Focused.MessageView === AppUserStore.focusedState()) {
-				AppUserStore.focusedState(Focused.MessageList);
+			if (eqs(event, '.messageList .b-message-list-wrapper') && Scope.MessageView === AppUserStore.focusedState()) {
+				AppUserStore.focusedState(Scope.MessageList);
 			}
 
 			let el = eqs(event, '.e-paginator .e-page');
@@ -701,7 +700,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	}
 
 	initShortcuts() {
-		shortcuts.add('enter,open', '', KeyState.MessageList, () => {
+		shortcuts.add('enter,open', '', Scope.MessageList, () => {
 			if (this.message() && this.useAutoSelect()) {
 				dispatchEvent(new CustomEvent('mailbox.message-view.toggle-full-screen'));
 				return false;
@@ -712,18 +711,18 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		if (Settings.capa(Capa.MessageListActions)) {
 			// archive (zip)
-			shortcuts.add('z', '', [KeyState.MessageList, KeyState.MessageView], () => {
+			shortcuts.add('z', '', [Scope.MessageList, Scope.MessageView], () => {
 				this.archiveCommand();
 				return false;
 			});
 
 			// delete
-			shortcuts.add('delete', 'shift', KeyState.MessageList, () => {
+			shortcuts.add('delete', 'shift', Scope.MessageList, () => {
 				MessageUserStore.listCheckedOrSelected().length && this.deleteWithoutMoveCommand();
 				return false;
 			});
-//			shortcuts.add('3', 'shift', KeyState.MessageList, () => {
-			shortcuts.add('delete', '', KeyState.MessageList, () => {
+//			shortcuts.add('3', 'shift', Scope.MessageList, () => {
+			shortcuts.add('delete', '', Scope.MessageList, () => {
 				MessageUserStore.listCheckedOrSelected().length && this.deleteCommand();
 				return false;
 			});
@@ -731,33 +730,33 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		if (Settings.capa(Capa.Reload)) {
 			// check mail
-			shortcuts.add('r', 'meta', [KeyState.FolderList, KeyState.MessageList, KeyState.MessageView], () => {
+			shortcuts.add('r', 'meta', [Scope.FolderList, Scope.MessageList, Scope.MessageView], () => {
 				this.reloadCommand();
 				return false;
 			});
 		}
 
 		// check all
-		shortcuts.add('a', 'meta', KeyState.MessageList, () => {
+		shortcuts.add('a', 'meta', Scope.MessageList, () => {
 			this.checkAll(!(this.checkAll() && !this.isIncompleteChecked()));
 			return false;
 		});
 
 		// write/compose (open compose popup)
-		shortcuts.add('w,c,new', '', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('w,c,new', '', [Scope.MessageList, Scope.MessageView], () => {
 			showMessageComposer();
 			return false;
 		});
 
 		if (Settings.capa(Capa.MessageListActions)) {
 			// important - star/flag messages
-			shortcuts.add('i', '', [KeyState.MessageList, KeyState.MessageView], () => {
+			shortcuts.add('i', '', [Scope.MessageList, Scope.MessageView], () => {
 				this.flagMessagesFast();
 				return false;
 			});
 		}
 
-		shortcuts.add('t', '', [KeyState.MessageList], () => {
+		shortcuts.add('t', '', [Scope.MessageList], () => {
 			let message = this.selectorMessageSelected();
 			if (!message) {
 				message = this.selectorMessageFocused();
@@ -772,7 +771,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		if (Settings.capa(Capa.MessageListActions)) {
 			// move
-			shortcuts.add('insert', '', KeyState.MessageList, () => {
+			shortcuts.add('insert', '', Scope.MessageList, () => {
 				if (this.newMoveToFolder) {
 					this.moveNewCommand();
 				} else {
@@ -785,33 +784,33 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		if (Settings.capa(Capa.MessageListActions)) {
 			// read
-			shortcuts.add('q', '', [KeyState.MessageList, KeyState.MessageView], () => {
+			shortcuts.add('q', '', [Scope.MessageList, Scope.MessageView], () => {
 				this.seenMessagesFast(true);
 				return false;
 			});
 
 			// unread
-			shortcuts.add('u', '', [KeyState.MessageList, KeyState.MessageView], () => {
+			shortcuts.add('u', '', [Scope.MessageList, Scope.MessageView], () => {
 				this.seenMessagesFast(false);
 				return false;
 			});
 		}
 
-		shortcuts.add('f,mailforward', 'shift', [KeyState.MessageList, KeyState.MessageView], () => {
+		shortcuts.add('f,mailforward', 'shift', [Scope.MessageList, Scope.MessageView], () => {
 			this.multyForwardCommand();
 			return false;
 		});
 
 		if (Settings.capa(Capa.Search)) {
 			// search input focus
-			shortcuts.add('/', '', [KeyState.MessageList, KeyState.MessageView], () => {
+			shortcuts.add('/', '', [Scope.MessageList, Scope.MessageView], () => {
 				this.inputMessageListSearchFocus(true);
 				return false;
 			});
 		}
 
 		// cancel search
-		shortcuts.add('escape', '', KeyState.MessageList, () => {
+		shortcuts.add('escape', '', Scope.MessageList, () => {
 			if (this.messageListSearchDesc()) {
 				this.cancelSearch();
 				return false;
@@ -824,21 +823,21 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		});
 
 		// change focused state
-		shortcuts.add('tab', 'shift', KeyState.MessageList, () => {
-			AppUserStore.focusedState(Focused.FolderList);
+		shortcuts.add('tab', 'shift', Scope.MessageList, () => {
+			AppUserStore.focusedState(Scope.FolderList);
 			return false;
 		});
-		shortcuts.add('arrowleft', '', KeyState.MessageList, () => {
-			AppUserStore.focusedState(Focused.FolderList);
+		shortcuts.add('arrowleft', '', Scope.MessageList, () => {
+			AppUserStore.focusedState(Scope.FolderList);
 			return false;
 		});
-		shortcuts.add('tab,arrowright', '', KeyState.MessageList, () => {
-			this.message() && AppUserStore.focusedState(Focused.MessageView);
+		shortcuts.add('tab,arrowright', '', Scope.MessageList, () => {
+			this.message() && AppUserStore.focusedState(Scope.MessageView);
 			return false;
 		});
 
-		shortcuts.add('arrowleft', 'meta', KeyState.MessageView, ()=>false);
-		shortcuts.add('arrowright', 'meta', KeyState.MessageView, ()=>false);
+		shortcuts.add('arrowleft', 'meta', Scope.MessageView, ()=>false);
+		shortcuts.add('arrowright', 'meta', Scope.MessageView, ()=>false);
 	}
 
 	prefetchNextTick() {

@@ -1,4 +1,4 @@
-import { KeyState } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 import { doc } from 'Common/Globals';
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
@@ -10,8 +10,6 @@ class ViewOpenPgpKeyPopupView extends AbstractViewPopup {
 			key: '',
 			keyDom: null
 		});
-
-		this.sDefaultKeyScope = KeyState.PopupViewOpenPGP;
 	}
 
 	clearPopup() {
@@ -38,7 +36,7 @@ class ViewOpenPgpKeyPopupView extends AbstractViewPopup {
 	}
 
 	onBuild() {
-		shortcuts.add('a', 'meta', KeyState.PopupViewOpenPGP, () => {
+		shortcuts.add('a', 'meta', Scope.ViewOpenPgpKey, () => {
 			this.selectKey();
 			return false;
 		});

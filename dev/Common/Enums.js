@@ -32,21 +32,21 @@ export const Capa = {
 /**
  * @enum {string}
  */
-export const KeyState = {
+export const Scope = {
 	All: 'all',
 	None: 'none',
-	ContactList: 'contact-list',
-	MessageList: 'message-list',
-	FolderList: 'folder-list',
-	MessageView: 'message-view',
-	Compose: 'compose',
-	Settings: 'settings',
-	Menu: 'menu',
-	PopupComposeOpenPGP: 'compose-open-pgp',
-	PopupMessageOpenPGP: 'message-open-pgp',
-	PopupViewOpenPGP: 'view-open-pgp',
-	PopupKeyboardShortcutsHelp: 'popup-keyboard-shortcuts-help',
-	PopupAsk: 'popup-ask'
+	Contacts: 'Contacts',
+	MessageList: 'MessageList',
+	FolderList: 'FolderList',
+	MessageView: 'MessageView',
+	Compose: 'Compose',
+	Settings: 'Settings',
+	Menu: 'Menu',
+	ComposeOpenPgp: 'ComposeOpenPgp',
+	MessageOpenPgp: 'MessageOpenPgp',
+	ViewOpenPgpKey: 'ViewOpenPgpKey',
+	KeyboardShortcutsHelp: 'KeyboardShortcutsHelp',
+	Ask: 'Ask'
 };
 
 /**

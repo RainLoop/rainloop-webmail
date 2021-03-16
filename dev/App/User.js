@@ -6,7 +6,7 @@ import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUs
 import {
 	Capa,
 	Notification,
-	KeyState
+	Scope
 } from 'Common/Enums';
 
 import {
@@ -133,7 +133,7 @@ class AppUser extends AbstractApp {
 			t => doc.addEventListener(t, SettingsUserStore.delayLogout, {passive:true})
 		);
 
-		shortcuts.add('escape,enter', '', KeyState.All, () => rl.Dropdowns.detectVisibility());
+		shortcuts.add('escape,enter', '', Scope.All, () => rl.Dropdowns.detectVisibility());
 	}
 
 	reload() {

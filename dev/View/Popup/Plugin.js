@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { KeyState, Notification } from 'Common/Enums';
+import { Scope, Notification } from 'Common/Enums';
 import { getNotification, i18n } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
@@ -27,7 +27,7 @@ class PluginPopupView extends AbstractViewPopup {
 		this.hasConfiguration = ko.computed(() => 0 < this.configures().length);
 
 		this.bDisabeCloseOnEsc = true;
-		this.sDefaultKeyScope = KeyState.All;
+		this.sDefaultScope = Scope.All;
 
 		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
 
@@ -101,7 +101,7 @@ class PluginPopupView extends AbstractViewPopup {
 	}
 
 	onBuild() {
-		shortcuts.add('escape', '', KeyState.All, () => {
+		shortcuts.add('escape', '', Scope.All, () => {
 			if (this.modalVisibility()) {
 				this.tryToClosePopup();
 			}

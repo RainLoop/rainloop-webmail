@@ -1,12 +1,12 @@
 import ko from 'ko';
 
-import { AppUserStore } from 'Stores/User/App';
+import { SettingsGet } from 'Common/Globals';
 import { ContactUserStore } from 'Stores/User/Contact';
 import Remote from 'Remote/User/Fetch';
 
 export class ContactsUserSettings {
 	constructor() {
-		this.contactsAutosave = AppUserStore.contactsAutosave;
+		this.contactsAutosave = ko.observable(!!SettingsGet('ContactsAutosave'));
 
 		this.allowContactsSync = ContactUserStore.allowSync;
 		this.enableContactsSync = ContactUserStore.enableSync;

@@ -1,4 +1,4 @@
-import { KeyState } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
@@ -18,7 +18,6 @@ class AskPopupView extends AbstractViewPopup {
 
 		this.bFocusYesOnShow = true;
 		this.bDisabeCloseOnEsc = true;
-		this.sDefaultKeyScope = KeyState.PopupAsk;
 	}
 
 	clearPopup() {
@@ -81,8 +80,8 @@ class AskPopupView extends AbstractViewPopup {
 	}
 
 	onBuild() {
-//		shortcuts.add('tab', 'shift', KeyState.PopupAsk, () => {
-		shortcuts.add('tab,arrowright,arrowleft', '', KeyState.PopupAsk, () => {
+//		shortcuts.add('tab', 'shift', Scope.Ask, () => {
+		shortcuts.add('tab,arrowright,arrowleft', '', Scope.Ask, () => {
 			let btn = this.querySelector('.buttonYes');
 			if (btn.matches(':focus')) {
 				btn = this.querySelector('.buttonNo');
@@ -91,7 +90,7 @@ class AskPopupView extends AbstractViewPopup {
 			return false;
 		});
 
-		shortcuts.add('escape', '', KeyState.PopupAsk, () => {
+		shortcuts.add('escape', '', Scope.Ask, () => {
 			this.noClick();
 			return false;
 		});

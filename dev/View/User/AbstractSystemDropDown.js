@@ -2,7 +2,7 @@ import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
 import { MessageUserStore } from 'Stores/User/Message';
 
-import { Capa, KeyState } from 'Common/Enums';
+import { Capa, Scope } from 'Common/Enums';
 import { settings } from 'Common/Links';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -36,7 +36,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts)
 		});
 
-		this.allowContacts = !!AppUserStore.contactsIsAllowed();
+		this.allowContacts = AppUserStore.contactsIsAllowed();
 
 		this.addAccountClick = this.addAccountClick.bind(this);
 
@@ -106,7 +106,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	}
 
 	onBuild() {
-		shortcuts.add('m,contextmenu', '', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
+		shortcuts.add('m,contextmenu', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
 			if (this.viewModelVisible) {
 				MessageUserStore.messageFullScreenMode(false);
 				this.accountMenuDropdownTrigger(true);
@@ -115,7 +115,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 		});
 
 		// shortcuts help
-		shortcuts.add('?,f1,help', '', [KeyState.MessageList, KeyState.MessageView, KeyState.Settings], () => {
+		shortcuts.add('?,f1,help', '', [Scope.MessageList, Scope.MessageView, Scope.Settings], () => {
 			if (this.viewModelVisible) {
 				showScreenPopup(KeyboardShortcutsHelpPopupView);
 				return false;

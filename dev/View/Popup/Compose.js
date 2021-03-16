@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import {
-	KeyState,
+	Scope,
 	Notification,
 	UploadErrorCode
 } from 'Common/Enums';
@@ -125,10 +125,9 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.sLastFocusedField = 'to';
 
-		this.allowContacts = !!AppUserStore.contactsIsAllowed();
+		this.allowContacts = AppUserStore.contactsIsAllowed();
 
 		this.bSkipNextHide = false;
-		this.composeInEdit = AppUserStore.composeInEdit;
 		this.editorDefaultType = SettingsUserStore.editorDefaultType;
 
 		this.capaOpenPGP = PgpUserStore.capaOpenPGP;
@@ -218,7 +217,6 @@ class ComposePopupView extends AbstractViewPopup {
 		});
 
 		this.bDisabeCloseOnEsc = true;
-		this.sDefaultKeyScope = KeyState.Compose;
 
 		this.tryToClosePopup = this.tryToClosePopup.debounce(200);
 
@@ -1133,42 +1131,42 @@ class ComposePopupView extends AbstractViewPopup {
 	onBuild(dom) {
 		this.initUploader();
 
-		shortcuts.add('q', 'meta', KeyState.Compose, ()=>false);
-		shortcuts.add('w', 'meta', KeyState.Compose, ()=>false);
+		shortcuts.add('q', 'meta', Scope.Compose, ()=>false);
+		shortcuts.add('w', 'meta', Scope.Compose, ()=>false);
 
-		shortcuts.add('m,contextmenu', '', KeyState.Compose, e => this.popupMenu(e));
-		shortcuts.add('m', 'ctrl', KeyState.Compose, e => this.popupMenu(e));
+		shortcuts.add('m,contextmenu', '', Scope.Compose, e => this.popupMenu(e));
+		shortcuts.add('m', 'ctrl', Scope.Compose, e => this.popupMenu(e));
 
-		shortcuts.add('escape,close', '', KeyState.Compose, () => {
+		shortcuts.add('escape,close', '', Scope.Compose, () => {
 			this.skipCommand();
 			return false;
 		});
-		shortcuts.add('arrowdown', 'meta', KeyState.Compose, () => {
+		shortcuts.add('arrowdown', 'meta', Scope.Compose, () => {
 			this.skipCommand();
 			return false;
 		});
 
-		shortcuts.add('s', 'meta', KeyState.Compose, () => {
+		shortcuts.add('s', 'meta', Scope.Compose, () => {
 			this.saveCommand();
 			return false;
 		});
-		shortcuts.add('save', KeyState.Compose, () => {
+		shortcuts.add('save', Scope.Compose, () => {
 			this.saveCommand();
 			return false;
 		});
 
 		if (Settings.app('allowCtrlEnterOnCompose')) {
-			shortcuts.add('enter', 'meta', KeyState.Compose, () => {
+			shortcuts.add('enter', 'meta', Scope.Compose, () => {
 				this.sendCommand();
 				return false;
 			});
 		}
-		shortcuts.add('mailsend', '', KeyState.Compose, () => {
+		shortcuts.add('mailsend', '', Scope.Compose, () => {
 			this.sendCommand();
 			return false;
 		});
 
-		shortcuts.add('escape,close', 'shift', KeyState.Compose, () => {
+		shortcuts.add('escape,close', 'shift', Scope.Compose, () => {
 			this.modalVisibility() && this.tryToClosePopup();
 			return false;
 		});

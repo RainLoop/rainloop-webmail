@@ -1,7 +1,6 @@
 import ko from 'ko';
 
-import { Capa, KeyState } from 'Common/Enums';
-import { Focused } from 'Common/EnumsUser';
+import { Capa, Scope } from 'Common/Enums';
 import { leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
 import { mailBox, settings } from 'Common/Links';
 import { setFolderHash } from 'Common/Cache';
@@ -39,9 +38,9 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 		this.leftPanelDisabled = leftPanelDisabled;
 
 		this.allowComposer = Settings.capa(Capa.Composer);
-		this.allowContacts = !!AppUserStore.contactsIsAllowed();
+		this.allowContacts = AppUserStore.contactsIsAllowed();
 
-		this.folderListFocused = ko.computed(() => Focused.FolderList === AppUserStore.focusedState());
+		this.folderListFocused = ko.computed(() => Scope.FolderList === AppUserStore.focusedState());
 
 		this.isInboxStarred = ko.computed(
 			() =>
@@ -89,7 +88,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 						);
 					}
 
-					AppUserStore.focusedState(Focused.MessageList);
+					AppUserStore.focusedState(Scope.MessageList);
 				}
 			};
 
@@ -117,7 +116,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 			el && fSelectFolder(el, event, false);
 		});
 
-		shortcuts.add('arrowup,arrowdown', '', KeyState.FolderList, event => {
+		shortcuts.add('arrowup,arrowdown', '', Scope.FolderList, event => {
 			let items = [], index = 0;
 			dom.querySelectorAll('.b-folders .e-item .e-link:not(.hidden)').forEach(node => {
 				if (node.offsetHeight || node.getClientRects().length) {
@@ -141,17 +140,17 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 			return false;
 		});
 
-		shortcuts.add('enter,open', '', KeyState.FolderList, () => {
+		shortcuts.add('enter,open', '', Scope.FolderList, () => {
 			const item = qs('.b-folders .e-item .e-link:not(.hidden).focused');
 			if (item) {
-				AppUserStore.focusedState(Focused.MessageList);
+				AppUserStore.focusedState(Scope.MessageList);
 				item.click();
 			}
 
 			return false;
 		});
 
-		shortcuts.add('space', '', KeyState.FolderList, () => {
+		shortcuts.add('space', '', Scope.FolderList, () => {
 			const item = qs('.b-folders .e-item .e-link:not(.hidden).focused'),
 				folder = item && ko.dataFor(item);
 			if (folder) {
@@ -163,9 +162,9 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 			return false;
 		});
 
-//		shortcuts.add('tab', 'shift', KeyState.FolderList, () => {
-		shortcuts.add('escape,tab,arrowright', '', KeyState.FolderList, () => {
-			AppUserStore.focusedState(Focused.MessageList);
+//		shortcuts.add('tab', 'shift', Scope.FolderList, () => {
+		shortcuts.add('escape,tab,arrowright', '', Scope.FolderList, () => {
+			AppUserStore.focusedState(Scope.MessageList);
 			moveAction(false);
 			return false;
 		});
@@ -173,7 +172,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 		AppUserStore.focusedState.subscribe(value => {
 			let el = qs('.b-folders .e-item .e-link.focused');
 			el && qs('.b-folders .e-item .e-link.focused').classList.remove('focused');
-			if (Focused.FolderList === value) {
+			if (Scope.FolderList === value) {
 				el = qs('.b-folders .e-item .e-link.selected');
 				el && qs('.b-folders .e-item .e-link.selected').classList.add('focused');
 			}

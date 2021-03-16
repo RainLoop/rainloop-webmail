@@ -1,4 +1,4 @@
-import { Focused } from 'Common/EnumsUser';
+import { Scope } from 'Common/Enums';
 import { doc, leftPanelDisabled, moveAction, Settings } from 'Common/Globals';
 import { pString, pInt } from 'Common/Utils';
 import { getFolderFromCacheList, getFolderFullNameRaw, getFolderInboxName } from 'Common/Cache';
@@ -53,8 +53,8 @@ export class MailBoxUserScreen extends AbstractScreen {
 	onShow() {
 		this.updateWindowTitle();
 
-		AppUserStore.focusedState(Focused.None);
-		AppUserStore.focusedState(Focused.MessageList);
+		AppUserStore.focusedState(Scope.None);
+		AppUserStore.focusedState(Scope.MessageList);
 
 		ThemeStore.isMobile() && leftPanelDisabled(true);
 	}

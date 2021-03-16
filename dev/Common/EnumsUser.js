@@ -1,16 +1,6 @@
 /* eslint quote-props: 0 */
 
 /**
- * @enum {string}
- */
-export const Focused = {
-	None: 'none',
-	MessageList: 'message-list',
-	MessageView: 'message-view',
-	FolderList: 'folder-list'
-};
-
-/**
  * @enum {number}
  */
 export const FolderType = {

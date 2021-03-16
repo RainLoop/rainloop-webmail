@@ -1,4 +1,4 @@
-import { Capa, KeyState } from 'Common/Enums';
+import { Capa, Scope } from 'Common/Enums';
 import { keyScope, leftPanelDisabled, Settings } from 'Common/Globals';
 import { runSettingsViewModelHooks } from 'Common/Plugins';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
@@ -96,7 +96,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 
 	onShow() {
 		this.setSettingsTitle();
-		keyScope(KeyState.Settings);
+		keyScope(Scope.Settings);
 		ThemeStore.isMobile() && leftPanelDisabled(true);
 	}
 

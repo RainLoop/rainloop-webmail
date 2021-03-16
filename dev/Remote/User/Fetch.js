@@ -322,7 +322,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 					iOffset,
 					iLimit,
 					sSearch,
-					AppUserStore.projectHash(),
+					SettingsGet('ProjectHash'),
 					folderHash,
 					inboxUidNext,
 					useThreads ? 1 : 0,
@@ -387,7 +387,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 					urlsafeArray([
 						sFolderFullNameRaw,
 						iUid,
-						AppUserStore.projectHash(),
+						SettingsGet('ProjectHash'),
 						AppUserStore.threadsAllowed() && SettingsUserStore.useThreads() ? 1 : 0
 					]),
 				['Message']
