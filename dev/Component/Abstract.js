@@ -1,6 +1,8 @@
 
 export class AbstractComponent {
-	disposable = [];
+	constructor() {
+		this.disposable = [];
+	}
 
 	dispose() {
 		this.disposable.forEach((funcToDispose) => {

@@ -23,14 +23,13 @@ function typeCast(curValue, newValue) {
 }
 
 export class AbstractModel {
-	subscribables = [];
-
 	constructor() {
 /*
 		if (new.target === AbstractModel) {
 			throw new Error("Can't instantiate AbstractModel!");
 		}
 */
+		this.subscribables = [];
 	}
 
 	addObservables(observables) {

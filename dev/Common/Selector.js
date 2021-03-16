@@ -1,33 +1,11 @@
 import ko from 'ko';
 
 export class Selector {
-	list;
-	listChecked;
-	isListChecked;
-
-	focusedItem;
-	selectedItem;
-
-	selectedItemUseCallback = true;
-
-	iSelectNextHelper = 0;
-	iFocusedNextHelper = 0;
-	oContentScrollable;
-
-	sItemSelector;
-	sItemSelectedSelector;
-	sItemCheckedSelector;
-	sItemFocusedSelector;
-
-	sLastUid = '';
-	oCallbacks = {};
-
 	/**
 	 * @param {koProperty} koList
 	 * @param {koProperty} koSelectedItem
 	 * @param {koProperty} koFocusedItem
 	 * @param {string} sItemSelector
-	 * @param {string} sItemSelectedSelector
 	 * @param {string} sItemCheckedSelector
 	 * @param {string} sItemFocusedSelector
 	 */
@@ -36,17 +14,28 @@ export class Selector {
 		koSelectedItem,
 		koFocusedItem,
 		sItemSelector,
-		sItemSelectedSelector,
 		sItemCheckedSelector,
 		sItemFocusedSelector
 	) {
 		this.list = koList;
-
 		this.listChecked = ko.computed(() => this.list.filter(item => item.checked())).extend({ rateLimit: 0 });
 		this.isListChecked = ko.computed(() => 0 < this.listChecked().length);
 
 		this.focusedItem = koFocusedItem || ko.observable(null);
 		this.selectedItem = koSelectedItem || ko.observable(null);
+
+		this.selectedItemUseCallback = true;
+
+		this.iSelectNextHelper = 0;
+		this.iFocusedNextHelper = 0;
+		this.oContentScrollable;
+
+		this.sItemSelector = sItemSelector;
+		this.sItemCheckedSelector = sItemCheckedSelector;
+		this.sItemFocusedSelector = sItemFocusedSelector;
+
+		this.sLastUid = '';
+		this.oCallbacks = {};
 
 		const itemSelectedThrottle = (item => this.itemSelected(item)).debounce(300);
 
@@ -80,11 +69,6 @@ export class Selector {
 
 		this.selectedItem = this.selectedItem.extend({ toggleSubscribeProperty: [this, 'selected'] });
 		this.focusedItem = this.focusedItem.extend({ toggleSubscribeProperty: [null, 'focused'] });
-
-		this.sItemSelector = sItemSelector;
-		this.sItemSelectedSelector = sItemSelectedSelector;
-		this.sItemCheckedSelector = sItemCheckedSelector;
-		this.sItemFocusedSelector = sItemFocusedSelector;
 
 		this.focusedItem.subscribe(item => item && (this.sLastUid = this.getItemUid(item)), this);
 

@@ -76,7 +76,6 @@ class ContactsPopupView extends AbstractViewPopup {
 			this.currentContact,
 			null,
 			'.e-contact-item .actionHandle',
-			'.e-contact-item.selected',
 			'.e-contact-item .checkboxItem',
 			'.e-contact-item.focused'
 		);

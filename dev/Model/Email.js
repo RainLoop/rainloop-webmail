@@ -261,11 +261,6 @@ class Tokenizer
 }
 
 class EmailModel extends AbstractModel {
-	email = '';
-	name = '';
-	dkimStatus = '';
-	dkimValue = '';
-
 	/**
 	 * @param {string=} email = ''
 	 * @param {string=} name = ''

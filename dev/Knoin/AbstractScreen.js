@@ -1,9 +1,6 @@
 export class AbstractScreen {
-	oCross = null;
-	sScreenName;
-	aViewModels;
-
 	constructor(screenName, viewModels = []) {
+		this.oCross = null;
 		this.sScreenName = screenName;
 		this.aViewModels = Array.isArray(viewModels) ? viewModels : [];
 	}

@@ -186,7 +186,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			this.selectorMessageSelected,
 			this.selectorMessageFocused,
 			'.messageListItem .actionHandle',
-			'.messageListItem.selected',
 			'.messageListItem .checkboxMessage',
 			'.messageListItem.focused'
 		);

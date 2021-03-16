@@ -19,20 +19,6 @@ export function encodeHtml(text) {
 }
 
 class HtmlEditor {
-	editor;
-	blurTimer = 0;
-
-	__resizable = false;
-	__inited = false;
-
-	onBlur = null;
-	onReady = null;
-	onModeChange = null;
-
-	element;
-
-	resize;
-
 	/**
 	 * @param {Object} element
 	 * @param {Function=} onBlur
@@ -40,6 +26,12 @@ class HtmlEditor {
 	 * @param {Function=} onModeChange
 	 */
 	constructor(element, onBlur = null, onReady = null, onModeChange = null) {
+		this.editor;
+		this.blurTimer = 0;
+
+		this.__resizable = false;
+		this.__inited = false;
+
 		this.onBlur = onBlur;
 		this.onReady = onReady;
 		this.onModeChange = onModeChange;
