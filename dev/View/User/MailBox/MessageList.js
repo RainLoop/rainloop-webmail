@@ -39,7 +39,7 @@ import { ThemeStore } from 'Stores/Theme';
 
 import Remote from 'Remote/User/Fetch';
 
-import { decorateKoCommands, showScreenPopup, popupVisibility } from 'Knoin/Knoin';
+import { decorateKoCommands, showScreenPopup, popupVisibilityNames } from 'Knoin/Knoin';
 import { AbstractViewRight } from 'Knoin/AbstractViews';
 
 import { FolderClearPopupView } from 'View/Popup/FolderClear';
@@ -67,7 +67,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.allowMessageListActions = Settings.capa(Capa.MessageListActions);
 		this.allowDangerousActions = Settings.capa(Capa.DangerousActions);
 
-		this.popupVisibility = popupVisibility;
+		this.popupVisibility = ko.computed(() => 0 < popupVisibilityNames().length);
 
 		this.message = MessageUserStore.message;
 		this.messageList = MessageUserStore.list;

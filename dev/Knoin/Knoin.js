@@ -4,8 +4,7 @@ import { doc, $htmlCL } from 'Common/Globals';
 import { isNonEmptyArray } from 'Common/Utils';
 
 let currentScreen = null,
-	defaultScreenName = '',
-	popupVisibilityNames = [];
+	defaultScreenName = '';
 
 const SCREENS = {},
 	autofocus = dom => {
@@ -13,7 +12,7 @@ const SCREENS = {},
 		af && af.focus();
 	};
 
-export const popupVisibility = ko.computed(() => 0 < popupVisibilityNames.length);
+export const popupVisibilityNames = ko.observableArray([]);
 
 export const ViewType = {
 	Popup: 'Popups',
@@ -109,7 +108,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 
 				vm.modalVisibility.subscribe(value => {
 					if (value) {
-						vmDom.style.zIndex = 3000 + popupVisibilityNames.length + 10;
+						vmDom.style.zIndex = 3000 + popupVisibilityNames().length + 10;
 						vmDom.hidden = false;
 						vm.storeAndSetScope();
 						popupVisibilityNames.push(vm.viewModelName);
@@ -121,7 +120,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 						vm.onHide && vm.onHide();
 						vmDom.classList.remove('show');
 						vm.restoreScope();
-						popupVisibilityNames = popupVisibilityNames.filter(v=>v!==vm.viewModelName);
+						popupVisibilityNames(popupVisibilityNames.filter(v=>v!==vm.viewModelName));
 					}
 					vmDom.setAttribute('aria-hidden', !value);
 				});
