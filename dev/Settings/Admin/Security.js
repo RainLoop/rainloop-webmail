@@ -2,15 +2,13 @@ import { Capa } from 'Common/Enums';
 import { Settings, SettingsGet } from 'Common/Globals';
 import { addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 
-import { AppAdminStore } from 'Stores/Admin/App';
-
 import Remote from 'Remote/Admin/Fetch';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
 
 export class SecurityAdminSettings {
 	constructor() {
-		this.weakPassword = AppAdminStore.weakPassword;
+		this.weakPassword = rl.app.weakPassword;
 
 		addObservablesTo(this, {
 			useLocalProxyForExternalImages: !!SettingsGet('UseLocalProxyForExternalImages'),

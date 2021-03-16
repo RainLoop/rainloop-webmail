@@ -27,7 +27,7 @@ export class AbstractApp {
 	}
 
 	remote() {
-		return null;
+		return this.Remote || null;
 	}
 
 	/**

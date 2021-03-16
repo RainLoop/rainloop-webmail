@@ -136,10 +136,6 @@ class AppUser extends AbstractApp {
 		shortcuts.add('escape,enter', '', KeyState.All, () => rl.Dropdowns.detectVisibility());
 	}
 
-	remote() {
-		return Remote;
-	}
-
 	reload() {
 		(Settings.app('inIframe') ? parent : window).location.reload();
 	}

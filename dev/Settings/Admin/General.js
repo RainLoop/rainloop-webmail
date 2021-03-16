@@ -19,7 +19,6 @@ import Remote from 'Remote/Admin/Fetch';
 
 import { ThemeStore } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
-import { AppAdminStore } from 'Stores/Admin/App';
 import LanguagesPopupView from 'View/Popup/Languages';
 
 export class GeneralAdminSettings {
@@ -47,12 +46,13 @@ export class GeneralAdminSettings {
 			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts),
 			capaIdentities: Settings.capa(Capa.Identities),
 			capaAttachmentThumbnails: Settings.capa(Capa.AttachmentThumbnails),
-			capaTemplates: Settings.capa(Capa.Templates)
+			capaTemplates: Settings.capa(Capa.Templates),
+			dataFolderAccess: false
 		});
 
-		this.weakPassword = AppAdminStore.weakPassword;
+		this.weakPassword = rl.app.weakPassword;
 
-		this.dataFolderAccess = AppAdminStore.dataFolderAccess;
+//		fetch('./data/VERSION?' + Math.random()).then(response => this.dataFolderAccess(response.ok));
 
 		this.mainAttachmentLimit = ko
 			.observable(pInt(SettingsGet('AttachmentLimit')) / (1024 * 1024))
