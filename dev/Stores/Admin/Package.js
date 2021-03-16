@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { isArray } from 'Common/Utils';
 import Remote from 'Remote/Admin/Fetch';
 
 export const PackageAdminStore = ko.observableArray();
@@ -23,7 +24,7 @@ PackageAdminStore.fetch = () => {
 				}
 			});
 
-			if (Array.isArray(data.Result.List)) {
+			if (isArray(data.Result.List)) {
 				list = data.Result.List.map(item => {
 					if (item) {
 						item.loading = ko.observable(loading[item.file] !== undefined);

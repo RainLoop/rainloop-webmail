@@ -1,6 +1,8 @@
 /* eslint key-spacing: 0 */
 /* eslint quote-props: 0 */
 
+import { isNonEmptyArray } from 'Common/Utils';
+
 const
 	cache = {},
 	app = 'application/',
@@ -279,7 +281,7 @@ export const FileInfo = {
 	 * @returns {string}
 	 */
 	getCombinedIconClass: data => {
-		if (Array.isNotEmpty(data)) {
+		if (isNonEmptyArray(data)) {
 			let icons = data
 				.map(item => item ? FileInfo.getIconClass(FileInfo.getExtension(item[0]), item[1])[0] : '')
 				.validUnique();

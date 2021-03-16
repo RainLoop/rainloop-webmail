@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { AbstractModel } from 'Knoin/AbstractModel';
 import { FilterModel } from 'Model/Filter';
-import { pString } from 'Common/Utils';
+import { isNonEmptyArray, pString } from 'Common/Utils';
 
 const SIEVE_FILE_NAME = 'rainloop.user';
 
@@ -327,7 +327,7 @@ export class SieveScriptModel extends AbstractModel
 		if (script) {
 			if (script.allowFilters()) {
 				script.filters(
-					Array.isNotEmpty(json.filters)
+					isNonEmptyArray(json.filters)
 						? json.filters.map(aData => FilterModel.reviveFromJson(aData)).filter(v => v)
 						: sieveScriptToFilters(script.body())
 				);

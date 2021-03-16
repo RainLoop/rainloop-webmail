@@ -1,4 +1,4 @@
-import { pString, pInt } from 'Common/Utils';
+import { isArray, isNonEmptyArray, pString, pInt } from 'Common/Utils';
 
 import {
 	getFolderHash,
@@ -440,7 +440,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		let request = true;
 		const uids = [];
 
-		if (Array.isNotEmpty(list)) {
+		if (isNonEmptyArray(list)) {
 			request = false;
 			list.forEach(messageListItem => {
 				if (!MessageFlagsCache.getFor(messageListItem.folder, messageListItem.uid)) {
@@ -464,7 +464,7 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		if (request) {
 			this.defaultRequest(fCallback, 'FolderInformation', {
 				Folder: folder,
-				FlagsUids: Array.isArray(uids) ? uids.join(',') : '',
+				FlagsUids: isArray(uids) ? uids.join(',') : '',
 				UidNext: getFolderInboxName() === folder ? getFolderUidNext(folder) : ''
 			});
 		} else if (SettingsUserStore.useThreads()) {

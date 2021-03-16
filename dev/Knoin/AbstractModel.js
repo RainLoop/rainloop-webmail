@@ -1,4 +1,4 @@
-import { addObservablesTo, addComputablesTo } from 'Common/Utils';
+import { isArray, addObservablesTo, addComputablesTo } from 'Common/Utils';
 
 function dispose(disposable) {
 	if (disposable && 'function' === typeof disposable.dispose) {
@@ -16,7 +16,7 @@ function typeCast(curValue, newValue) {
 		if (curValue.constructor.reviveFromJson) {
 			return curValue.constructor.reviveFromJson(newValue);
 		}
-		if (Array.isArray(curValue) && !Array.isArray(newValue))
+		if (isArray(curValue) && !isArray(newValue))
 			return [];
 	}
 	return newValue;

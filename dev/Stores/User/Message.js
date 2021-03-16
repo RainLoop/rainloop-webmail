@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Scope, Notification } from 'Common/Enums';
 import { MessageSetAction } from 'Common/EnumsUser';
 import { doc, elementById } from 'Common/Globals';
-import { pInt, pString, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
+import { isNonEmptyArray, pInt, pString, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 import { plainToHtml } from 'Common/UtilsUser';
 
 import {
@@ -237,7 +237,7 @@ export const MessageUserStore = new class {
 
 	initUidNextAndNewMessages(folder, uidNext, newMessages) {
 		if (getFolderInboxName() === folder && uidNext) {
-			if (Array.isNotEmpty(newMessages)) {
+			if (isNonEmptyArray(newMessages)) {
 				newMessages.forEach(item => addNewMessageCache(folder, item.Uid));
 
 				NotificationUserStore.playSoundNotification();

@@ -4,7 +4,7 @@ import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 import { SettingsGet } from 'Common/Globals';
-import { settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
+import { isArray, settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger, reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -57,7 +57,7 @@ export class GeneralUserSettings {
 
 		this.identityMain = ko.computed(() => {
 			const list = this.identities();
-			return Array.isArray(list) ? list.find(item => item && !item.id()) : null;
+			return isArray(list) ? list.find(item => item && !item.id()) : null;
 		});
 
 		this.identityMainDesc = ko.computed(() => {

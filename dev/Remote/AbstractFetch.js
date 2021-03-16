@@ -1,6 +1,6 @@
 import { Notification } from 'Common/Enums';
 import { Settings } from 'Common/Globals';
-import { pInt, pString } from 'Common/Utils';
+import { isArray, pInt, pString } from 'Common/Utils';
 import { serverRequest } from 'Common/Links';
 
 let iJsonErrorCount = 0,
@@ -169,7 +169,7 @@ export class AbstractFetchRemote
 	setTrigger(trigger, value) {
 		if (trigger) {
 			value = !!value;
-			(Array.isArray(trigger) ? trigger : [trigger]).forEach(fTrigger => {
+			(isArray(trigger) ? trigger : [trigger]).forEach(fTrigger => {
 				fTrigger && fTrigger(value);
 			});
 		}

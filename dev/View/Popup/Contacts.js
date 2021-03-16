@@ -8,7 +8,7 @@ import {
 
 import { ComposeType } from 'Common/EnumsUser';
 
-import { pInt } from 'Common/Utils';
+import { isNonEmptyArray, pInt } from 'Common/Utils';
 import { delegateRunOnDestroy, computedPaginatorHelper, showMessageComposer } from 'Common/UtilsUser';
 
 import { Selector } from 'Common/Selector';
@@ -164,7 +164,7 @@ class ContactsPopupView extends AbstractViewPopup {
 			bccEmails = null;
 
 		const aC = this.contactsCheckedOrSelected();
-		if (Array.isNotEmpty(aC)) {
+		if (isNonEmptyArray(aC)) {
 			aE = aC.map(oItem => {
 				if (oItem) {
 					const data = oItem.getNameAndEmailHelper(),
@@ -181,7 +181,7 @@ class ContactsPopupView extends AbstractViewPopup {
 			aE = aE.filter(value => !!value);
 		}
 
-		if (Array.isNotEmpty(aE)) {
+		if (isNonEmptyArray(aE)) {
 			this.bBackToCompose = false;
 
 			hideScreenPopup(ContactsPopupView);
@@ -461,7 +461,7 @@ class ContactsPopupView extends AbstractViewPopup {
 					list = [];
 
 				if (!iError && data && data.Result && data.Result.List) {
-					if (Array.isNotEmpty(data.Result.List)) {
+					if (isNonEmptyArray(data.Result.List)) {
 						data.Result.List.forEach(item => {
 							item = ContactModel.reviveFromJson(item);
 							item && list.push(item);

@@ -1,8 +1,10 @@
+import { isArray, isNonEmptyArray } from 'Common/Utils';
+
 export class AbstractScreen {
 	constructor(screenName, viewModels = []) {
 		this.oCross = null;
 		this.sScreenName = screenName;
-		this.aViewModels = Array.isArray(viewModels) ? viewModels : [];
+		this.aViewModels = isArray(viewModels) ? viewModels : [];
 	}
 
 	/**
@@ -40,7 +42,7 @@ export class AbstractScreen {
 		if (!this.__started) {
 			this.__started = true;
 			const routes = this.routes();
-			if (Array.isNotEmpty(routes)) {
+			if (isNonEmptyArray(routes)) {
 				let route = new Crossroads(),
 					fMatcher = (this.onRoute || (()=>{})).bind(this);
 

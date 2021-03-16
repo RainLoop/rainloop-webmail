@@ -4,7 +4,7 @@ import { MessagePriority } from 'Common/EnumsUser';
 import { i18n } from 'Common/Translator';
 
 import { encodeHtml } from 'Common/Html';
-import { isArray } from 'Common/Utils';
+import { isArray, isNonEmptyArray } from 'Common/Utils';
 
 import { serverRequestRaw } from 'Common/Links';
 
@@ -223,7 +223,7 @@ export class MessageModel extends AbstractModel {
 	 */
 	fromDkimData() {
 		let result = ['none', ''];
-		if (Array.isNotEmpty(this.from) && 1 === this.from.length && this.from[0] && this.from[0].dkimStatus) {
+		if (isNonEmptyArray(this.from) && 1 === this.from.length && this.from[0] && this.from[0].dkimStatus) {
 			result = [this.from[0].dkimStatus, this.from[0].dkimValue || ''];
 		}
 

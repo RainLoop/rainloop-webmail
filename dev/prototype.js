@@ -1,6 +1,5 @@
 
 (doc=>{
-	Array.isNotEmpty = array => Array.isArray(array) && array.length;
 	Array.prototype.unique = function() { return this.filter((v, i, a) => a.indexOf(v) === i); };
 	Array.prototype.validUnique = function(fn) {
 		return this.filter((v, i, a) => (fn ? fn(v) : v) && a.indexOf(v) === i);

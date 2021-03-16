@@ -1,4 +1,5 @@
 import ko from 'ko';
+import { isArray } from 'Common/Utils';
 
 export class Selector {
 	/**
@@ -79,7 +80,7 @@ export class Selector {
 
 		this.list.subscribe(
 			items => {
-				if (Array.isArray(items)) {
+				if (isArray(items)) {
 					items.forEach(item => {
 						if (item) {
 							const uid = this.getItemUid(item);
@@ -115,7 +116,7 @@ export class Selector {
 			this.focusedItem(null);
 			this.selectedItem(null);
 
-			if (Array.isArray(aItems)) {
+			if (isArray(aItems)) {
 				len = aCheckedCache.length;
 
 				aItems.forEach(item => {

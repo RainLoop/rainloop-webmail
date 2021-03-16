@@ -1,5 +1,6 @@
 import ko from 'ko';
 import { Settings, SettingsGet } from 'Common/Globals';
+import { isArray } from 'Common/Utils';
 
 export const LanguageStore = {
 	languages: ko.observableArray(),
@@ -7,7 +8,7 @@ export const LanguageStore = {
 
 	populate: function() {
 		const aLanguages = Settings.app('languages');
-		this.languages(Array.isArray(aLanguages) ? aLanguages : []);
+		this.languages(isArray(aLanguages) ? aLanguages : []);
 		this.language(SettingsGet('Language'));
 		this.userLanguage(SettingsGet('UserLanguage'));
 	}

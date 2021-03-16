@@ -1,4 +1,5 @@
 import { doc, createElement } from 'Common/Globals';
+import { isArray } from 'Common/Utils';
 import { EmailModel } from 'Model/Email';
 
 const contentType = 'snappymail/emailaddress',
@@ -204,7 +205,7 @@ export class EmailAddressesComponent {
 	_setChosen(valArr) {
 		var self = this;
 
-		if (!Array.isArray(valArr)){
+		if (!isArray(valArr)){
 			return false;
 		}
 

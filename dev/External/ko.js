@@ -1,6 +1,7 @@
 import { i18n, i18nToNodes, trigger } from 'Common/Translator';
 import { doc, createElement } from 'Common/Globals';
 import { SaveSettingsStep } from 'Common/Enums';
+import { isNonEmptyArray } from 'Common/Utils';
 
 const
 	isFunction = v => typeof v === 'function',
@@ -146,7 +147,7 @@ ko.extenders.limitedList = (target, limitedList) => {
 					const currentValue = ko.unwrap(target),
 						list = ko.unwrap(limitedList);
 
-					if (Array.isNotEmpty(list)) {
+					if (isNonEmptyArray(list)) {
 						if (list.includes(newValue)) {
 							target(newValue);
 						} else if (list.includes(currentValue, list)) {

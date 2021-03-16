@@ -16,7 +16,7 @@ import {
 
 import { doc, $htmlCL, leftPanelDisabled, keyScopeReal, moveAction, Settings } from 'Common/Globals';
 
-import { inFocus } from 'Common/Utils';
+import { isNonEmptyArray, inFocus } from 'Common/Utils';
 import { mailToHelper, showMessageComposer } from 'Common/UtilsUser';
 
 import { SMAudio } from 'Common/Audio';
@@ -80,7 +80,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 		this.allowMessageListActions = Settings.capa(Capa.MessageListActions);
 
 		const attachmentsActions = Settings.app('attachmentsActions');
-		this.attachmentsActions = ko.observableArray(Array.isNotEmpty(attachmentsActions) ? attachmentsActions : []);
+		this.attachmentsActions = ko.observableArray(isNonEmptyArray(attachmentsActions) ? attachmentsActions : []);
 
 		this.message = MessageUserStore.message;
 		this.hasCheckedMessages = MessageUserStore.hasCheckedMessages;
@@ -177,7 +177,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 			viewFromDkimStatusTitle:() => {
 				const status = this.viewFromDkimData();
-				if (Array.isNotEmpty(status)) {
+				if (isNonEmptyArray(status)) {
 					if (status[0]) {
 						return status[1] || 'DKIM: ' + status[0];
 					}

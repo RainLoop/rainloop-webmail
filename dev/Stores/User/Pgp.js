@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
-import { pString } from 'Common/Utils';
+import { isArray, isNonEmptyArray, pString } from 'Common/Utils';
 import { doc } from 'Common/Globals';
 
 import { AccountUserStore } from 'Stores/User/Account';
@@ -54,7 +54,7 @@ function domControlEncryptedClickHelper(store, dom, armoredMessage, recipients) 
 								decryptedMessage.getText()
 							);
 						} else if (validPrivateKey) {
-							const keyIds = Array.isNotEmpty(signingKeyIds) ? signingKeyIds : null,
+							const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
 								additional = keyIds
 									? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
 									: '';
@@ -110,7 +110,7 @@ function domControlSignedClickHelper(store, dom, armoredMessage) {
 						message.getText()
 					);
 				} else {
-					const keyIds = Array.isNotEmpty(signingKeyIds) ? signingKeyIds : null,
+					const keyIds = isNonEmptyArray(signingKeyIds) ? signingKeyIds : null,
 						additional = keyIds
 							? keyIds.map(item => (item && item.toHex ? item.toHex() : null)).filter(v => v).join(', ')
 							: '';
@@ -179,14 +179,14 @@ export const PgpUserStore = new class {
 	}
 
 	findPrivateKeysByEncryptionKeyIds(encryptionKeyIds, recipients, returnWrapKeys) {
-		let result = Array.isArray(encryptionKeyIds)
+		let result = isArray(encryptionKeyIds)
 			? encryptionKeyIds.map(id => {
 					const key = id && id.toHex ? this.findPrivateKeyByHex(id.toHex()) : null;
 					return key ? (returnWrapKeys ? [key] : key.getNativeKeys()) : [null];
 				}).flat().filter(v => v)
 			: [];
 
-		if (!result.length && Array.isNotEmpty(recipients)) {
+		if (!result.length && isNonEmptyArray(recipients)) {
 			result = recipients.map(sEmail => {
 				const keys = sEmail ? this.findAllPrivateKeysByEmailNotNative(sEmail) : null;
 				return keys
@@ -314,7 +314,7 @@ export const PgpUserStore = new class {
 				if (publicKeys && publicKeys.length) {
 					try {
 						const result = message.verify(publicKeys),
-							valid = (Array.isArray(result) ? result : []).find(item => item && item.valid && item.keyid);
+							valid = (isArray(result) ? result : []).find(item => item && item.valid && item.keyid);
 
 						if (valid && valid.keyid && valid.keyid && valid.keyid.toHex) {
 							fCallback(this.findPublicKeyByHex(valid.keyid.toHex()));

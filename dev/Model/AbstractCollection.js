@@ -1,3 +1,4 @@
+import { isArray } from 'Common/Utils';
 
 export class AbstractCollectionModel extends Array
 {
@@ -27,7 +28,7 @@ export class AbstractCollectionModel extends Array
 //				json[@Count]
 				json = json['@Collection'];
 			}
-			if (Array.isArray(json)) {
+			if (isArray(json)) {
 				json.forEach(item => {
 					item && itemCallback && (item = itemCallback(item, result));
 					item && result.push(item);

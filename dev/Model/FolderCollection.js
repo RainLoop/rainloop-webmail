@@ -1,7 +1,7 @@
 import { AbstractCollectionModel } from 'Model/AbstractCollection';
 
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { pInt } from 'Common/Utils';
+import { isArray, pInt } from 'Common/Utils';
 import { ClientSideKeyName, FolderType } from 'Common/EnumsUser';
 import * as Cache from 'Common/Cache';
 import { Settings, SettingsGet } from 'Common/Globals';
@@ -75,7 +75,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 
 			if (oCacheFolder) {
 				oCacheFolder.collapsed(!expandedFolders
-					|| !Array.isArray(expandedFolders)
+					|| !isArray(expandedFolders)
 					|| !expandedFolders.includes(oCacheFolder.fullNameHash));
 
 				if (oFolder.Extended) {

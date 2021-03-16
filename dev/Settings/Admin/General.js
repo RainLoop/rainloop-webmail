@@ -1,6 +1,7 @@
 import ko from 'ko';
 
 import {
+	isArray,
 	pInt,
 	settingsSaveHelperSimpleFunction,
 	changeTheme,
@@ -27,7 +28,7 @@ export class GeneralAdminSettings {
 		this.languages = LanguageStore.languages;
 
 		const aLanguagesAdmin = Settings.app('languagesAdmin');
-		this.languagesAdmin = ko.observableArray(Array.isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
+		this.languagesAdmin = ko.observableArray(isArray(aLanguagesAdmin) ? aLanguagesAdmin : []);
 		this.languageAdmin = ko
 			.observable(SettingsGet('LanguageAdmin'))
 			.extend({ limitedList: this.languagesAdmin });

@@ -1,5 +1,6 @@
 import ko from 'ko';
 import { $htmlCL, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
+import { isArray } from 'Common/Utils';
 
 export const ThemeStore = {
 	themes: ko.observableArray(),
@@ -10,7 +11,7 @@ export const ThemeStore = {
 	populate: function(){
 		const themes = Settings.app('themes');
 
-		this.themes(Array.isArray(themes) ? themes : []);
+		this.themes(isArray(themes) ? themes : []);
 		this.theme(SettingsGet('Theme'));
 		if (!this.isMobile()) {
 			this.userBackgroundName(SettingsGet('UserBackgroundName'));

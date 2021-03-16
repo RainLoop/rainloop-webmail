@@ -1,6 +1,6 @@
 import 'External/User/ko';
 
-import { pInt, pString } from 'Common/Utils';
+import { isArray, isNonEmptyArray, pInt, pString } from 'Common/Utils';
 import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUser';
 
 import {
@@ -275,7 +275,7 @@ class AppUser extends AbstractApp {
 
 	moveOrDeleteResponseHelper(iError, oData) {
 		if (!iError && FolderUserStore.currentFolder()) {
-			if (oData && Array.isArray(oData.Result) && 2 === oData.Result.length) {
+			if (oData && isArray(oData.Result) && 2 === oData.Result.length) {
 				setFolderHash(oData.Result[0], oData.Result[1]);
 			} else {
 				setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
@@ -367,7 +367,7 @@ class AppUser extends AbstractApp {
 	 * @param {boolean=} bCopy = false
 	 */
 	moveMessagesToFolder(sFromFolderFullNameRaw, aUidForMove, sToFolderFullNameRaw, bCopy) {
-		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && Array.isArray(aUidForMove) && aUidForMove.length) {
+		if (sFromFolderFullNameRaw !== sToFolderFullNameRaw && isArray(aUidForMove) && aUidForMove.length) {
 			const oFromFolder = getFolderFromCacheList(sFromFolderFullNameRaw),
 				oToFolder = getFolderFromCacheList(sToFolderFullNameRaw);
 
@@ -479,7 +479,7 @@ class AppUser extends AbstractApp {
 					sAccountEmail = AccountUserStore.email();
 				let parentEmail = SettingsGet('ParentEmail') || sAccountEmail;
 
-				if (Array.isArray(oData.Result.Accounts)) {
+				if (isArray(oData.Result.Accounts)) {
 					AccountUserStore.accounts.forEach(oAccount =>
 						counts[oAccount.email] = oAccount.count()
 					);
@@ -493,7 +493,7 @@ class AppUser extends AbstractApp {
 					);
 				}
 
-				if (Array.isArray(oData.Result.Identities)) {
+				if (isArray(oData.Result.Identities)) {
 					delegateRunOnDestroy(IdentityUserStore());
 
 					IdentityUserStore(
@@ -522,7 +522,7 @@ class AppUser extends AbstractApp {
 		Remote.templates((iError, data) => {
 			TemplateUserStore.templates.loading(false);
 
-			if (!iError && data.Result && Array.isArray(data.Result.Templates)) {
+			if (!iError && data.Result && isArray(data.Result.Templates)) {
 				delegateRunOnDestroy(TemplateUserStore.templates());
 
 				TemplateUserStore.templates(
@@ -540,7 +540,7 @@ class AppUser extends AbstractApp {
 				!iError &&
 				data &&
 				data.Result &&
-				Array.isArray(data.Result) &&
+				isArray(data.Result) &&
 				1 < data.Result.length &&
 				isPosNumeric(data.Result[0], true) &&
 				isPosNumeric(data.Result[1], true)
@@ -635,9 +635,9 @@ class AppUser extends AbstractApp {
 	 */
 	folderInformationMultiply(boot = false) {
 		const folders = FolderUserStore.getNextFolderNames();
-		if (Array.isNotEmpty(folders)) {
+		if (isNonEmptyArray(folders)) {
 			Remote.folderInformationMultiply((iError, oData) => {
-				if (!iError && oData && oData.Result && oData.Result.List && Array.isNotEmpty(oData.Result.List)) {
+				if (!iError && oData && oData.Result && oData.Result.List && isNonEmptyArray(oData.Result.List)) {
 					const utc = Date.now();
 					oData.Result.List.forEach(item => {
 						const hash = getFolderHash(item.Folder),
@@ -760,7 +760,7 @@ class AppUser extends AbstractApp {
 	 */
 	getAutocomplete(query, autocompleteCallback) {
 		Remote.suggestions((iError, data) => {
-			if (!iError && data && Array.isArray(data.Result)) {
+			if (!iError && data && isArray(data.Result)) {
 				autocompleteCallback(
 					data.Result.map(item => (item && item[0] ? new EmailModel(item[0], item[1]) : null)).filter(v => v)
 				);
@@ -776,7 +776,7 @@ class AppUser extends AbstractApp {
 	 */
 	setExpandedFolder(sFullNameHash, bExpanded) {
 		let aExpandedList = Local.get(ClientSideKeyName.ExpandedFolders);
-		if (!Array.isArray(aExpandedList)) {
+		if (!isArray(aExpandedList)) {
 			aExpandedList = [];
 		}
 

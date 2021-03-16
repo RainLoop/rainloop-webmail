@@ -3,7 +3,7 @@ import { doc, elementById } from 'Common/Globals';
 
 export const
 	isArray = Array.isArray,
-	isNonEmptyArray = Array.isNotEmpty;
+	isNonEmptyArray = array => isArray(array) && array.length;
 
 /**
  * @param {*} value
@@ -116,7 +116,7 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 		}
 		rl.fetchJSON(url, init)
 			.then(data => {
-				if (data && Array.isArray(data) && 2 === data.length) {
+				if (data && isArray(data) && 2 === data.length) {
 					if (themeLink && !themeStyle) {
 						themeStyle = doc.createElement('style');
 						themeStyle.id = 'app-theme-style';
@@ -139,7 +139,7 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 
 export function addObservablesTo(target, observables) {
 	Object.entries(observables).forEach(([key, value]) =>
-		target[key] = /*Array.isArray(value) ? ko.observableArray(value) :*/ ko.observable(value) );
+		target[key] = /*isArray(value) ? ko.observableArray(value) :*/ ko.observable(value) );
 }
 
 export function addComputablesTo(target, computables) {
