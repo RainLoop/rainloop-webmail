@@ -21,6 +21,12 @@ export class PluginsAdminSettings {
 
 		this.onPluginLoadRequest = this.onPluginLoadRequest.bind(this);
 		this.onPluginDisableRequest = this.onPluginDisableRequest.bind(this);
+
+		this.enabledPlugins.subscribe(value =>
+			Remote.saveAdminConfig(null, {
+				'EnabledPlugins': value ? 1 : 0
+			})
+		);
 	}
 
 	disablePlugin(plugin) {
@@ -39,12 +45,6 @@ export class PluginsAdminSettings {
 
 			el = event.target.closestWithin('.e-item .disabled-plugin', oDom);
 			el && ko.dataFor(el) && this.disablePlugin(ko.dataFor(el));
-		});
-
-		this.enabledPlugins.subscribe((value) => {
-			Remote.saveAdminConfig(null, {
-				'EnabledPlugins': value ? '1' : '0'
-			});
 		});
 	}
 

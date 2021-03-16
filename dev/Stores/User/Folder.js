@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { FolderType } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
-import { addObservablesTo } from 'Common/Utils';
+import { addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 import { SettingsGet } from 'Common/Globals';
@@ -125,18 +125,19 @@ export const FolderUserStore = new class {
 			)
 		);
 
-		const fRemoveSystemFolderType = (observable) => () => {
-			const folder = getFolderFromCacheList(observable());
-			if (folder) {
-				folder.type(FolderType.User);
-			}
-		};
-		const fSetSystemFolderType = (type) => (value) => {
-			const folder = getFolderFromCacheList(value);
-			if (folder) {
-				folder.type(type);
-			}
-		};
+		const
+			fRemoveSystemFolderType = (observable) => () => {
+				const folder = getFolderFromCacheList(observable());
+				if (folder) {
+					folder.type(FolderType.User);
+				}
+			},
+			fSetSystemFolderType = type => value => {
+				const folder = getFolderFromCacheList(value);
+				if (folder) {
+					folder.type(type);
+				}
+			};
 
 		this.sentFolder.subscribe(fRemoveSystemFolderType(this.sentFolder), this, 'beforeChange');
 		this.draftFolder.subscribe(fRemoveSystemFolderType(this.draftFolder), this, 'beforeChange');
@@ -144,11 +145,13 @@ export const FolderUserStore = new class {
 		this.trashFolder.subscribe(fRemoveSystemFolderType(this.trashFolder), this, 'beforeChange');
 		this.archiveFolder.subscribe(fRemoveSystemFolderType(this.archiveFolder), this, 'beforeChange');
 
-		this.sentFolder.subscribe(fSetSystemFolderType(FolderType.SentItems), this);
-		this.draftFolder.subscribe(fSetSystemFolderType(FolderType.Draft), this);
-		this.spamFolder.subscribe(fSetSystemFolderType(FolderType.Spam), this);
-		this.trashFolder.subscribe(fSetSystemFolderType(FolderType.Trash), this);
-		this.archiveFolder.subscribe(fSetSystemFolderType(FolderType.Archive), this);
+		addSubscribablesTo(this, {
+			sentFolder: fSetSystemFolderType(FolderType.SentItems),
+			draftFolder: fSetSystemFolderType(FolderType.Draft),
+			spamFolder: fSetSystemFolderType(FolderType.Spam),
+			trashFolder: fSetSystemFolderType(FolderType.Trash),
+			archiveFolder: fSetSystemFolderType(FolderType.Archive)
+		});
 	}
 
 	/**

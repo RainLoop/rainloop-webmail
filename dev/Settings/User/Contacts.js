@@ -24,23 +24,21 @@ export class ContactsUserSettings {
 				].join('|')
 			)
 			.extend({ debounce: 500 });
-	}
 
-	onBuild() {
-		this.contactsAutosave.subscribe((value) => {
+		this.contactsAutosave.subscribe(value =>
 			Remote.saveSettings(null, {
-				'ContactsAutosave': value ? '1' : '0'
-			});
-		});
+				'ContactsAutosave': value ? 1 : 0
+			})
+		);
 
-		this.saveTrigger.subscribe(() => {
+		this.saveTrigger.subscribe(() =>
 			Remote.saveContactsSyncData(
 				null,
 				ContactUserStore.enableSync(),
 				ContactUserStore.syncUrl(),
 				ContactUserStore.syncUser(),
 				ContactUserStore.syncPass()
-			);
-		});
+			)
+		);
 	}
 }

@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { Settings, SettingsGet } from 'Common/Globals';
-import { settingsSaveHelperSimpleFunction, addObservablesTo } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 
@@ -15,41 +15,32 @@ export class LoginAdminSettings {
 		});
 
 		this.defaultDomain = ko.observable(SettingsGet('LoginDefaultDomain')).idleTrigger();
-	}
 
-	onBuild() {
-		setTimeout(() => {
-			const f1 = settingsSaveHelperSimpleFunction(this.defaultDomain.trigger, this);
-
-			this.determineUserLanguage.subscribe(value =>
+		addSubscribablesTo(this, {
+			determineUserLanguage: value =>
 				Remote.saveAdminConfig(null, {
-					'DetermineUserLanguage': value ? '1' : '0'
-				})
-			);
+					'DetermineUserLanguage': value ? 1 : 0
+				}),
 
-			this.determineUserDomain.subscribe(value =>
+			determineUserDomain: value =>
 				Remote.saveAdminConfig(null, {
-					'DetermineUserDomain': value ? '1' : '0'
-				})
-			);
+					'DetermineUserDomain': value ? 1 : 0
+				}),
 
-			this.allowLanguagesOnLogin.subscribe(value =>
+			allowLanguagesOnLogin: value =>
 				Remote.saveAdminConfig(null, {
-					'AllowLanguagesOnLogin': value ? '1' : '0'
-				})
-			);
+					'AllowLanguagesOnLogin': value ? 1 : 0
+				}),
 
-			this.hideSubmitButton.subscribe(value =>
+			hideSubmitButton: value =>
 				Remote.saveAdminConfig(null, {
-					'hideSubmitButton': value ? '1' : '0'
-				})
-			);
+					'hideSubmitButton': value ? 1 : 0
+				}),
 
-			this.defaultDomain.subscribe(value =>
-				Remote.saveAdminConfig(f1, {
+			defaultDomain: value =>
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.defaultDomain.trigger, this), {
 					'LoginDefaultDomain': value.trim()
 				})
-			);
-		}, 50);
+		});
 	}
 }

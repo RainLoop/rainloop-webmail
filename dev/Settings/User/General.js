@@ -4,7 +4,7 @@ import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { SaveSettingsStep } from 'Common/Enums';
 import { EditorDefaultType, Layout } from 'Common/EnumsUser';
 import { SettingsGet } from 'Common/Globals';
-import { settingsSaveHelperSimpleFunction, addObservablesTo } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger, reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import { showScreenPopup } from 'Knoin/Knoin';
@@ -83,6 +83,68 @@ export class GeneralUserSettings {
 				{ 'id': Layout.BottomPreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT') }
 			];
 		});
+
+
+		const fReloadLanguageHelper = (saveSettingsStep) => () => {
+				this.languageTrigger(saveSettingsStep);
+				setTimeout(() => this.languageTrigger(SaveSettingsStep.Idle), 1000);
+			};
+		addSubscribablesTo(this, {
+			language: value => {
+				this.languageTrigger(SaveSettingsStep.Animate);
+				translatorReload(false, value)
+					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
+					.then(() => {
+						Remote.saveSettings(null, {
+							'Language': value
+						});
+					});
+			},
+
+			editorDefaultType:
+				Remote.saveSettingsHelper('EditorDefaultType', null,
+					settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this)),
+
+			messagesPerPage: Remote.saveSettingsHelper('MPP', null, settingsSaveHelperSimpleFunction(this.mppTrigger, this)),
+
+			showImages: Remote.saveSettingsHelper('ShowImages', v=>v?'1':'0'),
+
+			removeColors: Remote.saveSettingsHelper('RemoveColors', v=>v?'1':'0'),
+
+			useCheckboxesInList: Remote.saveSettingsHelper('UseCheckboxesInList', v=>v?'1':'0'),
+
+			enableDesktopNotification: (value =>
+				Remote.saveSettings(null, {
+					'DesktopNotifications': value ? 1 : 0
+				})
+			).debounce(3000),
+
+			enableSoundNotification: (value =>
+				Remote.saveSettings(null, {
+					'SoundNotification': value ? 1 : 0
+				})
+			).debounce(3000),
+
+			replySameFolder: (value =>
+				Remote.saveSettings(null, {
+					'ReplySameFolder': value ? 1 : 0
+				})
+			).debounce(3000),
+
+			useThreads: value => {
+				MessageUserStore.list([]);
+				Remote.saveSettings(null, {
+					'UseThreads': value ? 1 : 0
+				});
+			},
+
+			layout: value => {
+				MessageUserStore.list([]);
+				Remote.saveSettings(settingsSaveHelperSimpleFunction(this.layoutTrigger, this), {
+					'Layout': value
+				});
+			}
+		});
 	}
 
 	editMainIdentity() {
@@ -98,68 +160,6 @@ export class GeneralUserSettings {
 
 	testSystemNotification() {
 		NotificationUserStore.displayDesktopNotification('SnappyMail', 'Test notification', { });
-	}
-
-	onBuild() {
-		setTimeout(() => {
-			const f0 = settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this),
-				f1 = settingsSaveHelperSimpleFunction(this.mppTrigger, this),
-				f2 = settingsSaveHelperSimpleFunction(this.layoutTrigger, this),
-				fReloadLanguageHelper = (saveSettingsStep) => () => {
-					this.languageTrigger(saveSettingsStep);
-					setTimeout(() => this.languageTrigger(SaveSettingsStep.Idle), 1000);
-				};
-
-			this.language.subscribe((value) => {
-				this.languageTrigger(SaveSettingsStep.Animate);
-				translatorReload(false, value)
-					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
-					.then(() => {
-						Remote.saveSettings(null, {
-							'Language': value
-						});
-					});
-			});
-
-			this.editorDefaultType.subscribe(Remote.saveSettingsHelper('EditorDefaultType', null, f0));
-			this.messagesPerPage.subscribe(Remote.saveSettingsHelper('MPP', null, f1));
-			this.showImages.subscribe(Remote.saveSettingsHelper('ShowImages', v=>v?'1':'0'));
-			this.removeColors.subscribe(Remote.saveSettingsHelper('RemoveColors', v=>v?'1':'0'));
-
-			this.useCheckboxesInList.subscribe(Remote.saveSettingsHelper('UseCheckboxesInList', v=>v?'1':'0'));
-
-			this.enableDesktopNotification.subscribe((value =>
-				Remote.saveSettings(null, {
-					'DesktopNotifications': value ? 1 : 0
-				})
-			).debounce(3000));
-
-			this.enableSoundNotification.subscribe((value =>
-				Remote.saveSettings(null, {
-					'SoundNotification': value ? 1 : 0
-				})
-			).debounce(3000));
-
-			this.replySameFolder.subscribe((value =>
-				Remote.saveSettings(null, {
-					'ReplySameFolder': value ? 1 : 0
-				})
-			).debounce(3000));
-
-			this.useThreads.subscribe((value) => {
-				MessageUserStore.list([]);
-				Remote.saveSettings(null, {
-					'UseThreads': value ? 1 : 0
-				});
-			});
-
-			this.layout.subscribe((value) => {
-				MessageUserStore.list([]);
-				Remote.saveSettings(f2, {
-					'Layout': value
-				});
-			});
-		}, 50);
 	}
 
 	selectLanguage() {

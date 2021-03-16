@@ -2,7 +2,12 @@ import ko from 'ko';
 
 import { SaveSettingsStep } from 'Common/Enums';
 import { SettingsGet } from 'Common/Globals';
-import { settingsSaveHelperSimpleFunction, defaultOptionsAfterRender, addObservablesTo } from 'Common/Utils';
+import {
+	settingsSaveHelperSimpleFunction,
+	defaultOptionsAfterRender,
+	addObservablesTo,
+	addSubscribablesTo
+} from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
@@ -50,7 +55,7 @@ export class ContactsAdminSettings {
 		this.mainContactsType = ko
 			.computed({
 				read: this.contactsType,
-				write: (value) => {
+				write: value => {
 					if (value !== this.contactsType()) {
 						if (supportedTypes.includes(value)) {
 							this.contactsType(value);
@@ -64,11 +69,41 @@ export class ContactsAdminSettings {
 			})
 			.extend({ notify: 'always' });
 
-		this.contactsType.subscribe(() => {
-			this.testContactsSuccess(false);
-			this.testContactsError(false);
-			this.testContactsErrorMessage('');
-		});
+		addSubscribablesTo(this, {
+			enableContacts: value =>
+				Remote.saveAdminConfig(null, {
+					'ContactsEnable': value ? 1 : 0
+				}),
+
+			contactsSync: value =>
+				Remote.saveAdminConfig(null, {
+					'ContactsSync': value ? 1 : 0
+				}),
+
+			contactsType: value => {
+				this.testContactsSuccess(false);
+				this.testContactsError(false);
+				this.testContactsErrorMessage('');
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.contactsTypeTrigger, this), {
+					'ContactsPdoType': value.trim()
+				})
+			},
+
+			pdoDsn: value =>
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.pdoDsnTrigger, this), {
+					'ContactsPdoDsn': value.trim()
+				}),
+
+			pdoUser: value =>
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.pdoUserTrigger, this), {
+					'ContactsPdoUser': value.trim()
+				}),
+
+			pdoPassword: value =>
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.pdoPasswordTrigger, this), {
+					'ContactsPdoPassword': value.trim()
+				})
+		})
 
 		this.contactsType(SettingsGet('ContactsPdoType'));
 
@@ -116,52 +151,5 @@ export class ContactsAdminSettings {
 		this.testContactsSuccess(false);
 		this.testContactsError(false);
 		this.testContactsErrorMessage('');
-	}
-
-	onBuild() {
-		setTimeout(() => {
-			const f1 = settingsSaveHelperSimpleFunction(this.pdoDsnTrigger, this),
-				f3 = settingsSaveHelperSimpleFunction(this.pdoUserTrigger, this),
-				f4 = settingsSaveHelperSimpleFunction(this.pdoPasswordTrigger, this),
-				f5 = settingsSaveHelperSimpleFunction(this.contactsTypeTrigger, this);
-
-			this.enableContacts.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'ContactsEnable': value ? '1' : '0'
-				});
-			});
-
-			this.contactsSync.subscribe((value) => {
-				Remote.saveAdminConfig(null, {
-					'ContactsSync': value ? '1' : '0'
-				});
-			});
-
-			this.contactsType.subscribe((value) => {
-				Remote.saveAdminConfig(f5, {
-					'ContactsPdoType': value.trim()
-				});
-			});
-
-			this.pdoDsn.subscribe((value) => {
-				Remote.saveAdminConfig(f1, {
-					'ContactsPdoDsn': value.trim()
-				});
-			});
-
-			this.pdoUser.subscribe((value) => {
-				Remote.saveAdminConfig(f3, {
-					'ContactsPdoUser': value.trim()
-				});
-			});
-
-			this.pdoPassword.subscribe((value) => {
-				Remote.saveAdminConfig(f4, {
-					'ContactsPdoPassword': value.trim()
-				});
-			});
-
-			this.contactsType(SettingsGet('ContactsPdoType'));
-		}, 50);
 	}
 }

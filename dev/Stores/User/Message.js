@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Notification } from 'Common/Enums';
 import { Focused, MessageSetAction } from 'Common/EnumsUser';
 import { doc, elementById } from 'Common/Globals';
-import { pInt, pString, addObservablesTo } from 'Common/Utils';
+import { pInt, pString, addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 import { plainToHtml } from 'Common/UtilsUser';
 
 import {
@@ -170,52 +170,53 @@ export const MessageUserStore = new class {
 		// Subscribers
 
 		let timer = 0, fn = this.listLoadingAnimation;
-		this.listCompleteLoading.subscribe(value => {
-			if (value) {
-				fn(value);
-			} else if (fn()) {
-				clearTimeout(timer);
-				timer = setTimeout(() => {
+
+		addSubscribablesTo(this, {
+			listCompleteLoading: value => {
+				if (value) {
 					fn(value);
-					timer = 0;
-				}, 700);
-			} else {
-				fn(value);
-			}
-		});
-
-		this.listLoading.subscribe(value =>
-			this.listCompleteLoading(value || this.listIsNotCompleted())
-		);
-		this.listIsNotCompleted.subscribe(value =>
-			this.listCompleteLoading(value || this.listLoading())
-		);
-
-		this.list.subscribe(
-			(list => {
-				list.forEach(item =>
-					item && item.newForAnimation() && item.newForAnimation(false)
-				)
-			}).debounce(500)
-		);
-
-		this.message.subscribe(message => {
-			if (message) {
-				if (!SettingsUserStore.usePreviewPane()) {
-					AppUserStore.focusedState(Focused.MessageView);
+				} else if (fn()) {
+					clearTimeout(timer);
+					timer = setTimeout(() => {
+						fn(value);
+						timer = 0;
+					}, 700);
+				} else {
+					fn(value);
 				}
-			} else {
-				AppUserStore.focusedState(Focused.MessageList);
+			},
 
-				this.messageFullScreenMode(false);
-				this.hideMessageBodies();
-			}
-		});
+			listLoading: value =>
+				this.listCompleteLoading(value || this.listIsNotCompleted()),
 
-		this.listEndFolder.subscribe(folder => {
-			const message = this.message();
-			if (message && folder && folder !== message.folder) {
-				this.message(null);
+			listIsNotCompleted: value =>
+				this.listCompleteLoading(value || this.listLoading()),
+
+			list:
+				(list => {
+					list.forEach(item =>
+						item && item.newForAnimation() && item.newForAnimation(false)
+					)
+				}).debounce(500),
+
+			message: message => {
+				if (message) {
+					if (!SettingsUserStore.usePreviewPane()) {
+						AppUserStore.focusedState(Focused.MessageView);
+					}
+				} else {
+					AppUserStore.focusedState(Focused.MessageList);
+
+					this.messageFullScreenMode(false);
+					this.hideMessageBodies();
+				}
+			},
+
+			listEndFolder: folder => {
+				const message = this.message();
+				if (message && folder && folder !== message.folder) {
+					this.message(null);
+				}
 			}
 		});
 
