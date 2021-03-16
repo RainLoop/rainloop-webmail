@@ -7,7 +7,7 @@ import {
 	convertThemeName
 } from 'Common/Utils';
 
-import { SaveSettingsStep } from 'Common/Enums';
+import { Capa, SaveSettingsStep } from 'Common/Enums';
 import { Settings, SettingsGet } from 'Common/Globals';
 import { reload as translatorReload, convertLangName } from 'Common/Translator';
 
@@ -18,7 +18,6 @@ import Remote from 'Remote/Admin/Fetch';
 import { ThemeStore } from 'Stores/Theme';
 import { LanguageStore } from 'Stores/Language';
 import { AppAdminStore } from 'Stores/Admin/App';
-import { CapaAdminStore } from 'Stores/Admin/Capa';
 import LanguagesPopupView from 'View/Popup/Languages';
 
 export class GeneralAdminSettings {
@@ -35,19 +34,18 @@ export class GeneralAdminSettings {
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
 
-		this.capaThemes = CapaAdminStore.themes;
-		this.capaUserBackground = CapaAdminStore.userBackground;
-		this.capaAdditionalAccounts = CapaAdminStore.additionalAccounts;
-		this.capaIdentities = CapaAdminStore.identities;
-		this.capaAttachmentThumbnails = CapaAdminStore.attachmentThumbnails;
-		this.capaTemplates = CapaAdminStore.templates;
-
 		ko.addObservablesTo(this, {
 			allowLanguagesOnSettings: !!SettingsGet('AllowLanguagesOnSettings'),
 			newMoveToFolder: !!SettingsGet('NewMoveToFolder'),
 			attachmentLimitTrigger: SaveSettingsStep.Idle,
 			languageTrigger: SaveSettingsStep.Idle,
-			themeTrigger: SaveSettingsStep.Idle
+			themeTrigger: SaveSettingsStep.Idle,
+			capaThemes: Settings.capa(Capa.Themes),
+			capaUserBackground: Settings.capa(Capa.UserBackground),
+			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts),
+			capaIdentities: Settings.capa(Capa.Identities),
+			capaAttachmentThumbnails: Settings.capa(Capa.AttachmentThumbnails),
+			capaTemplates: Settings.capa(Capa.Templates)
 		});
 
 		this.weakPassword = AppAdminStore.weakPassword;
@@ -77,96 +75,61 @@ export class GeneralAdminSettings {
 		this.languageAdminFullName = ko.computed(() => convertLangName(this.languageAdmin()));
 
 		this.languageAdminTrigger = ko.observable(SaveSettingsStep.Idle).extend({ debounce: 100 });
-	}
 
-	onBuild() {
-		setTimeout(() => {
-			const f1 = settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this),
-				f2 = settingsSaveHelperSimpleFunction(this.languageTrigger, this),
-				f3 = settingsSaveHelperSimpleFunction(this.themeTrigger, this),
-				fReloadLanguageHelper = (saveSettingsStep) => () => {
-					this.languageAdminTrigger(saveSettingsStep);
-					setTimeout(() => this.languageAdminTrigger(SaveSettingsStep.Idle), 1000);
-				};
+		const fReloadLanguageHelper = (saveSettingsStep) => () => {
+				this.languageAdminTrigger(saveSettingsStep);
+				setTimeout(() => this.languageAdminTrigger(SaveSettingsStep.Idle), 1000);
+			},
+		fSaveBoolHelper = (key, fn) =>
+			value => {
+				const data = {};
+				data[key] = value ? 1 : 0;
+				Remote.saveAdminConfig(fn, data);
+			};
 
-			this.mainAttachmentLimit.subscribe(value => {
-				Remote.saveAdminConfig(f1, {
+		ko.addSubscribablesTo(this, {
+			mainAttachmentLimit: value =>
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this), {
 					'AttachmentLimit': pInt(value)
-				});
-			});
+				}),
 
-			this.language.subscribe(value => {
-				Remote.saveAdminConfig(f2, {
+			language: value =>
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.languageTrigger, this), {
 					'Language': value.trim()
-				});
-			});
+				}),
 
-			this.languageAdmin.subscribe(value => {
+			languageAdmin: value => {
 				this.languageAdminTrigger(SaveSettingsStep.Animate);
 				translatorReload(true, value)
 					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
-					.then(() => {
-						Remote.saveAdminConfig(null, {
-							'LanguageAdmin': value.trim()
-						});
-					});
-			});
+					.then(() => Remote.saveAdminConfig(null, {
+						'LanguageAdmin': value.trim()
+					}));
+			},
 
-			this.theme.subscribe(value => {
+			theme: value => {
 				changeTheme(value, this.themeTrigger);
-				Remote.saveAdminConfig(f3, {
+				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.themeTrigger, this), {
 					'Theme': value.trim()
 				});
-			});
+			},
 
-			this.capaAdditionalAccounts.subscribe(value => {
-				Remote.saveAdminConfig(null, {
-					'CapaAdditionalAccounts': value ? '1' : '0'
-				});
-			});
+			capaAdditionalAccounts: fSaveBoolHelper('CapaAdditionalAccounts'),
 
-			this.capaIdentities.subscribe(value => {
-				Remote.saveAdminConfig(null, {
-					'CapaIdentities': value ? '1' : '0'
-				});
-			});
+			capaIdentities: fSaveBoolHelper('CapaIdentities'),
 
-			this.capaTemplates.subscribe(value => {
-				Remote.saveAdminConfig(null, {
-					'CapaTemplates': value ? '1' : '0'
-				});
-			});
+			capaTemplates: fSaveBoolHelper('CapaTemplates'),
 
-			this.capaAttachmentThumbnails.subscribe(value => {
-				Remote.saveAdminConfig(null, {
-					'CapaAttachmentThumbnails': value ? '1' : '0'
-				});
-			});
+			capaAttachmentThumbnails: fSaveBoolHelper('CapaAttachmentThumbnails'),
 
-			this.capaThemes.subscribe(value => {
-				Remote.saveAdminConfig(null, {
-					'CapaThemes': value ? '1' : '0'
-				});
-			});
+			capaThemes: fSaveBoolHelper('CapaThemes'),
 
-			this.capaUserBackground.subscribe(value => {
-				Remote.saveAdminConfig(null, {
-					'CapaUserBackground': value ? '1' : '0'
-				});
-			});
+			capaUserBackground: fSaveBoolHelper('CapaUserBackground'),
 
-			this.allowLanguagesOnSettings.subscribe(value => {
-				Remote.saveAdminConfig(null, {
-					'AllowLanguagesOnSettings': value ? '1' : '0'
-				});
-			});
+			allowLanguagesOnSettings: fSaveBoolHelper('AllowLanguagesOnSettings'),
 
-			this.newMoveToFolder.subscribe(value => {
-				Remote.saveAdminConfig(null, {
-					'NewMoveToFolder': value ? '1' : '0'
-				});
-			});
-		}, 50);
+			newMoveToFolder: fSaveBoolHelper('NewMoveToFolder')
+		});
 	}
 
 	selectLanguage() {

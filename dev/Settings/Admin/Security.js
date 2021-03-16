@@ -1,9 +1,9 @@
 import ko from 'ko';
 
-import { SettingsGet } from 'Common/Globals';
+import { Capa } from 'Common/Enums';
+import { Settings, SettingsGet } from 'Common/Globals';
 
 import { AppAdminStore } from 'Stores/Admin/App';
-import { CapaAdminStore } from 'Stores/Admin/Capa';
 
 import Remote from 'Remote/Admin/Fetch';
 
@@ -12,11 +12,6 @@ import { decorateKoCommands } from 'Knoin/Knoin';
 export class SecurityAdminSettings {
 	constructor() {
 		this.weakPassword = AppAdminStore.weakPassword;
-
-		this.capaOpenPGP = CapaAdminStore.openPGP;
-
-		this.capaTwoFactorAuth = CapaAdminStore.twoFactorAuth;
-		this.capaTwoFactorAuthForce = CapaAdminStore.twoFactorAuthForce;
 
 		ko.addObservablesTo(this, {
 			useLocalProxyForExternalImages: !!SettingsGet('UseLocalProxyForExternalImages'),
@@ -36,40 +31,66 @@ export class SecurityAdminSettings {
 			adminPasswordNewError: false,
 
 			adminPasswordUpdateError: false,
-			adminPasswordUpdateSuccess: false
+			adminPasswordUpdateSuccess: false,
+
+			capaOpenPGP: Settings.capa(Capa.OpenPGP),
+			capaTwoFactorAuth: Settings.capa(Capa.TwoFactor),
+			capaTwoFactorAuthForce: Settings.capa(Capa.TwoFactorForce)
 		});
 
-		this.capaTwoFactorAuth.subscribe(value => {
-			if (!value) {
-				this.capaTwoFactorAuthForce(false);
-			}
-		});
+		ko.addSubscribablesTo(this, {
+			adminPassword: () => {
+				this.adminPasswordUpdateError(false);
+				this.adminPasswordUpdateSuccess(false);
+			},
 
-		this.verifySslCertificate.subscribe(value => {
-			if (!value) {
-				this.allowSelfSigned(true);
-			}
-		});
+			adminLogin: () => this.adminLoginError(false),
 
-		this.adminPassword.subscribe(() => {
-			this.adminPasswordUpdateError(false);
-			this.adminPasswordUpdateSuccess(false);
-		});
+			adminPasswordNew: () => {
+				this.adminPasswordUpdateError(false);
+				this.adminPasswordUpdateSuccess(false);
+				this.adminPasswordNewError(false);
+			},
 
-		this.adminLogin.subscribe(() => {
-			this.adminLoginError(false);
-		});
+			adminPasswordNew2: () => {
+				this.adminPasswordUpdateError(false);
+				this.adminPasswordUpdateSuccess(false);
+				this.adminPasswordNewError(false);
+			},
 
-		this.adminPasswordNew.subscribe(() => {
-			this.adminPasswordUpdateError(false);
-			this.adminPasswordUpdateSuccess(false);
-			this.adminPasswordNewError(false);
-		});
+			capaOpenPGP: value =>
+				Remote.saveAdminConfig(null, {
+					'CapaOpenPGP': value ? 1 : 0
+				}),
 
-		this.adminPasswordNew2.subscribe(() => {
-			this.adminPasswordUpdateError(false);
-			this.adminPasswordUpdateSuccess(false);
-			this.adminPasswordNewError(false);
+			capaTwoFactorAuth: value => {
+				value || this.capaTwoFactorAuthForce(false);
+				Remote.saveAdminConfig(null, {
+					'CapaTwoFactorAuth': value ? 1 : 0
+				});
+			},
+
+			capaTwoFactorAuthForce: value =>
+				Remote.saveAdminConfig(null, {
+					'CapaTwoFactorAuthForce': value ? 1 : 0
+				}),
+
+			useLocalProxyForExternalImages: value =>
+				Remote.saveAdminConfig(null, {
+					'UseLocalProxyForExternalImages': value ? 1 : 0
+				}),
+
+			verifySslCertificate: value => {
+				value => value || this.allowSelfSigned(true);
+				Remote.saveAdminConfig(null, {
+					'VerifySslCertificate': value ? 1 : 0
+				});
+			},
+
+			allowSelfSigned: value =>
+				Remote.saveAdminConfig(null, {
+					'AllowSelfSigned': value ? 1 : 0
+				})
 		});
 
 		this.onNewAdminPasswordResponse = this.onNewAdminPasswordResponse.bind(this);
@@ -123,44 +144,6 @@ export class SecurityAdminSettings {
 		} else {
 			this.adminPasswordUpdateError(true);
 		}
-	}
-
-	onBuild() {
-		this.capaOpenPGP.subscribe(value => {
-			Remote.saveAdminConfig(null, {
-				'CapaOpenPGP': value ? '1' : '0'
-			});
-		});
-
-		this.capaTwoFactorAuth.subscribe(value => {
-			Remote.saveAdminConfig(null, {
-				'CapaTwoFactorAuth': value ? '1' : '0'
-			});
-		});
-
-		this.capaTwoFactorAuthForce.subscribe(value => {
-			Remote.saveAdminConfig(null, {
-				'CapaTwoFactorAuthForce': value ? '1' : '0'
-			});
-		});
-
-		this.useLocalProxyForExternalImages.subscribe(value => {
-			Remote.saveAdminConfig(null, {
-				'UseLocalProxyForExternalImages': value ? '1' : '0'
-			});
-		});
-
-		this.verifySslCertificate.subscribe(value => {
-			Remote.saveAdminConfig(null, {
-				'VerifySslCertificate': value ? '1' : '0'
-			});
-		});
-
-		this.allowSelfSigned.subscribe(value => {
-			Remote.saveAdminConfig(null, {
-				'AllowSelfSigned': value ? '1' : '0'
-			});
-		});
 	}
 
 	onHide() {

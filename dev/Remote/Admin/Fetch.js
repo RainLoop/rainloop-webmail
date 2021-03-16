@@ -29,19 +29,6 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 	}
 
 	/**
-	 * @param {string} key
-	 * @param {?Function} valueFn
-	 * @param {?Function} fn
-	 */
-	saveAdminConfigHelper(key, valueFn, fn) {
-		return (value) => {
-			const data = {};
-			data[key] = valueFn ? valueFn(value) : value;
-			this.saveAdminConfig(fn || null, data);
-		};
-	}
-
-	/**
 	 * @param {?Function} fCallback
 	 * @param {boolean=} bIncludeAliases = true
 	 */

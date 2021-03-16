@@ -3,7 +3,6 @@ import 'External/Admin/ko';
 import { Settings, SettingsGet } from 'Common/Globals';
 
 import { AppAdminStore } from 'Stores/Admin/App';
-import { CapaAdminStore } from 'Stores/Admin/Capa';
 import Remote from 'Remote/Admin/Fetch';
 
 import { SettingsAdminScreen } from 'Screen/Admin/Settings';
@@ -29,7 +28,6 @@ class AdminApp extends AbstractApp {
 		super.bootstart();
 
 		AppAdminStore.populate();
-		CapaAdminStore.populate();
 
 		this.hideLoading();
 
