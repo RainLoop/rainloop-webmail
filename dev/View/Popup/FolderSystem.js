@@ -3,7 +3,7 @@ import ko from 'ko';
 import { SetSystemFoldersNotification } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
 import { Settings } from 'Common/Globals';
-import { defaultOptionsAfterRender } from 'Common/Utils';
+import { defaultOptionsAfterRender, addSubscribablesTo } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { initOnStartOrLangChange, i18n } from 'Common/Translator';
 
@@ -75,7 +75,7 @@ class FolderSystemPopupView extends AbstractViewPopup {
 				fSaveSystemFolders();
 			};
 
-		ko.addSubscribablesTo(FolderUserStore, {
+		addSubscribablesTo(FolderUserStore, {
 			sentFolder: fCallback,
 			draftFolder: fCallback,
 			spamFolder: fCallback,

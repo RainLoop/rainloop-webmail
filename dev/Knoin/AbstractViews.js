@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { inFocus } from 'Common/Utils';
+import { inFocus, addObservablesTo, addComputablesTo, addSubscribablesTo } from 'Common/Utils';
 import { KeyState } from 'Common/Enums';
 import { keyScope } from 'Common/Globals';
 import { ViewType } from 'Knoin/Knoin';
@@ -46,15 +46,15 @@ class AbstractView {
 	}
 
 	addObservables(observables) {
-		ko.addObservablesTo(this, observables);
+		addObservablesTo(this, observables);
 	}
 
 	addComputables(computables) {
-		ko.addComputablesTo(this, computables);
+		addComputablesTo(this, computables);
 	}
 
 	addSubscribables(subscribables) {
-		ko.addSubscribablesTo(this, subscribables);
+		addSubscribablesTo(this, subscribables);
 	}
 
 }

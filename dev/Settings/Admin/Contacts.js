@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { SaveSettingsStep } from 'Common/Enums';
 import { SettingsGet } from 'Common/Globals';
-import { settingsSaveHelperSimpleFunction, defaultOptionsAfterRender } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, defaultOptionsAfterRender, addObservablesTo } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 import { decorateKoCommands } from 'Knoin/Knoin';
@@ -11,7 +11,7 @@ export class ContactsAdminSettings {
 	constructor() {
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 
-		ko.addObservablesTo(this, {
+		addObservablesTo(this, {
 			enableContacts: !!SettingsGet('ContactsEnable'),
 			contactsSync: !!SettingsGet('ContactsSync'),
 			contactsType: '',

@@ -136,3 +136,16 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 			.then(clearTimer, clearTimer);
 	}
 }
+
+export function addObservablesTo(target, observables) {
+	Object.entries(observables).forEach(([key, value]) =>
+		target[key] = /*Array.isArray(value) ? ko.observableArray(value) :*/ ko.observable(value) );
+}
+
+export function addComputablesTo(target, computables) {
+	Object.entries(computables).forEach(([key, fn]) => target[key] = ko.computed(fn));
+}
+
+export function addSubscribablesTo(target, subscribables) {
+	Object.entries(subscribables).forEach(([key, fn]) => target[key].subscribe(fn));
+}

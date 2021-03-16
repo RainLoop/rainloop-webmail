@@ -1,5 +1,6 @@
 import ko from 'ko';
 import { SettingsGet } from 'Common/Globals';
+import { addObservablesTo } from 'Common/Utils';
 
 export const AccountUserStore = {
 	accounts: ko.observableArray(),
@@ -24,7 +25,7 @@ export const AccountUserStore = {
 	}
 };
 
-ko.addObservablesTo(AccountUserStore, {
+addObservablesTo(AccountUserStore, {
 	email: '',
 	parentEmail: '',
 	signature: ''

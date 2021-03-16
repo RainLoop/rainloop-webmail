@@ -1,3 +1,4 @@
+import { addObservablesTo, addComputablesTo } from 'Common/Utils';
 
 function dispose(disposable) {
 	if (disposable && 'function' === typeof disposable.dispose) {
@@ -33,11 +34,11 @@ export class AbstractModel {
 	}
 
 	addObservables(observables) {
-		ko.addObservablesTo(this, observables);
+		addObservablesTo(this, observables);
 	}
 
 	addComputables(computables) {
-		ko.addComputablesTo(this, computables);
+		addComputablesTo(this, computables);
 	}
 
 	addSubscribables(subscribables) {

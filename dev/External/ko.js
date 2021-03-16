@@ -197,14 +197,3 @@ ko.extenders.falseTimeout = (target, option) => {
 ko.observable.fn.deleteAccessHelper = function() {
 	return this.extend({ falseTimeout: 3000, toggleSubscribeProperty: [this, 'deleteAccess'] });
 };
-
-ko.addObservablesTo = (target, observables) => {
-	Object.entries(observables).forEach(([key, value]) =>
-		target[key] = /*Array.isArray(value) ? ko.observableArray(value) :*/ ko.observable(value) );
-};
-
-ko.addComputablesTo = (target, computables) =>
-	Object.entries(computables).forEach(([key, fn]) => target[key] = ko.computed(fn));
-
-ko.addSubscribablesTo = (target, subscribables) =>
-	Object.entries(subscribables).forEach(([key, fn]) => target[key].subscribe(fn));

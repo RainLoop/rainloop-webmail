@@ -1,5 +1,6 @@
 import ko from 'ko';
 import { SettingsGet } from 'Common/Globals';
+import { addObservablesTo } from 'Common/Utils';
 
 export const ContactUserStore = ko.observableArray();
 
@@ -7,7 +8,7 @@ ContactUserStore.loading = ko.observable(false).extend({ debounce: 200 });
 ContactUserStore.importing = ko.observable(false).extend({ debounce: 200 });
 ContactUserStore.syncing = ko.observable(false).extend({ debounce: 200 });
 
-ko.addObservablesTo(ContactUserStore, {
+addObservablesTo(ContactUserStore, {
 	allowSync: false,
 	enableSync: false,
 	syncUrl: '',

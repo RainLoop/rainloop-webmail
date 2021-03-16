@@ -2,13 +2,14 @@ import ko from 'ko';
 
 import { FolderType } from 'Common/EnumsUser';
 import { UNUSED_OPTION_VALUE } from 'Common/Consts';
+import { addObservablesTo } from 'Common/Utils';
 import { folderListOptionsBuilder } from 'Common/UtilsUser';
 import { getFolderInboxName, getFolderFromCacheList } from 'Common/Cache';
 import { SettingsGet } from 'Common/Globals';
 
 export const FolderUserStore = new class {
 	constructor() {
-		ko.addObservablesTo(this, {
+		addObservablesTo(this, {
 			/**
 			 * To use "checkable" option in /#/settings/folders
 			 * When true, getNextFolderNames only lists system and "checkable" folders

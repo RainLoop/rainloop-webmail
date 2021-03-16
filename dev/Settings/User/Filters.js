@@ -1,8 +1,9 @@
 import ko from 'ko';
 
-import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
+import { addObservablesTo } from 'Common/Utils';
+import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import { SieveUserStore } from 'Stores/User/Sieve';
 import Remote from 'Remote/User/Fetch';
@@ -18,7 +19,7 @@ export class FiltersUserSettings {
 		this.scripts = SieveUserStore.scripts;
 		this.loading = ko.observable(false).extend({ debounce: 200 });
 
-		ko.addObservablesTo(this, {
+		addObservablesTo(this, {
 			serverError: false,
 			serverErrorDesc: ''
 		});

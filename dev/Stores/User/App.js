@@ -2,6 +2,7 @@ import ko from 'ko';
 import { KeyState } from 'Common/Enums';
 import { Focused } from 'Common/EnumsUser';
 import { keyScope, leftPanelDisabled, Settings, SettingsGet } from 'Common/Globals';
+import { addObservablesTo } from 'Common/Utils';
 import { ThemeStore } from 'Stores/Theme';
 
 export const AppUserStore = {
@@ -26,7 +27,7 @@ export const AppUserStore = {
 	}
 };
 
-ko.addObservablesTo(AppUserStore, {
+addObservablesTo(AppUserStore, {
 	currentAudio: '',
 
 	focusedState: Focused.None,

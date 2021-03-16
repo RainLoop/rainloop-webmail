@@ -3,7 +3,7 @@ import ko from 'ko';
 import { Notification } from 'Common/Enums';
 import { Focused, MessageSetAction } from 'Common/EnumsUser';
 import { doc, elementById } from 'Common/Globals';
-import { pInt, pString } from 'Common/Utils';
+import { pInt, pString, addObservablesTo } from 'Common/Utils';
 import { plainToHtml } from 'Common/UtilsUser';
 
 import {
@@ -72,7 +72,7 @@ export const MessageUserStore = new class {
 
 		this.list = ko.observableArray().extend({ debounce: 0 });
 
-		ko.addObservablesTo(this, {
+		addObservablesTo(this, {
 			listCount: 0,
 			listSearch: '',
 			listThreadUid: '',

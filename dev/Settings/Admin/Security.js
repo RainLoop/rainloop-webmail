@@ -1,7 +1,6 @@
-import ko from 'ko';
-
 import { Capa } from 'Common/Enums';
 import { Settings, SettingsGet } from 'Common/Globals';
+import { addObservablesTo, addSubscribablesTo } from 'Common/Utils';
 
 import { AppAdminStore } from 'Stores/Admin/App';
 
@@ -13,7 +12,7 @@ export class SecurityAdminSettings {
 	constructor() {
 		this.weakPassword = AppAdminStore.weakPassword;
 
-		ko.addObservablesTo(this, {
+		addObservablesTo(this, {
 			useLocalProxyForExternalImages: !!SettingsGet('UseLocalProxyForExternalImages'),
 
 			verifySslCertificate: !!SettingsGet('VerifySslCertificate'),
@@ -38,7 +37,7 @@ export class SecurityAdminSettings {
 			capaTwoFactorAuthForce: Settings.capa(Capa.TwoFactorForce)
 		});
 
-		ko.addSubscribablesTo(this, {
+		addSubscribablesTo(this, {
 			adminPassword: () => {
 				this.adminPasswordUpdateError(false);
 				this.adminPasswordUpdateSuccess(false);

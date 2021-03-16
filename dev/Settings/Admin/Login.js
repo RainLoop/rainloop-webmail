@@ -1,13 +1,13 @@
 import ko from 'ko';
 
 import { Settings, SettingsGet } from 'Common/Globals';
-import { settingsSaveHelperSimpleFunction } from 'Common/Utils';
+import { settingsSaveHelperSimpleFunction, addObservablesTo } from 'Common/Utils';
 
 import Remote from 'Remote/Admin/Fetch';
 
 export class LoginAdminSettings {
 	constructor() {
-		ko.addObservablesTo(this, {
+		addObservablesTo(this, {
 			determineUserLanguage: !!SettingsGet('DetermineUserLanguage'),
 			determineUserDomain: !!SettingsGet('DetermineUserDomain'),
 			allowLanguagesOnLogin: !!SettingsGet('AllowLanguagesOnLogin'),

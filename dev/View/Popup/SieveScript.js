@@ -1,9 +1,9 @@
 import ko from 'ko';
 
-import { delegateRunOnDestroy } from 'Common/UtilsUser';
 import { Notification } from 'Common/Enums';
-import { getNotification } from 'Common/Translator';
-import { i18nToNodes } from 'Common/Translator';
+import { getNotification, i18nToNodes } from 'Common/Translator';
+import { addObservablesTo } from 'Common/Utils';
+import { delegateRunOnDestroy } from 'Common/UtilsUser';
 
 import Remote from 'Remote/User/Fetch';
 import { FilterModel } from 'Model/Filter';
@@ -18,7 +18,7 @@ class SieveScriptPopupView extends AbstractViewPopup {
 	constructor() {
 		super('SieveScript');
 
-		ko.addObservablesTo(this, {
+		addObservablesTo(this, {
 			saveError: false,
 			saveErrorText: '',
 			rawActive: false,

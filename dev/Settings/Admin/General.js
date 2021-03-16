@@ -4,7 +4,9 @@ import {
 	pInt,
 	settingsSaveHelperSimpleFunction,
 	changeTheme,
-	convertThemeName
+	convertThemeName,
+	addObservablesTo,
+	addSubscribablesTo
 } from 'Common/Utils';
 
 import { Capa, SaveSettingsStep } from 'Common/Enums';
@@ -34,7 +36,7 @@ export class GeneralAdminSettings {
 		this.theme = ThemeStore.theme;
 		this.themes = ThemeStore.themes;
 
-		ko.addObservablesTo(this, {
+		addObservablesTo(this, {
 			allowLanguagesOnSettings: !!SettingsGet('AllowLanguagesOnSettings'),
 			newMoveToFolder: !!SettingsGet('NewMoveToFolder'),
 			attachmentLimitTrigger: SaveSettingsStep.Idle,
@@ -87,7 +89,7 @@ export class GeneralAdminSettings {
 				Remote.saveAdminConfig(fn, data);
 			};
 
-		ko.addSubscribablesTo(this, {
+		addSubscribablesTo(this, {
 			mainAttachmentLimit: value =>
 				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this), {
 					'AttachmentLimit': pInt(value)

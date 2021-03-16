@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { MESSAGES_PER_PAGE_VALUES } from 'Common/Consts';
 import { Layout, EditorDefaultType } from 'Common/EnumsUser';
-import { pInt } from 'Common/Utils';
+import { pInt, addObservablesTo } from 'Common/Utils';
 import { $htmlCL, SettingsGet } from 'Common/Globals';
 import { ThemeStore } from 'Stores/Theme';
 
@@ -23,7 +23,7 @@ export const SettingsUserStore = new class {
 
 		this.messagesPerPage = ko.observable(20).extend({ limitedList: MESSAGES_PER_PAGE_VALUES });
 
-		ko.addObservablesTo(this, {
+		addObservablesTo(this, {
 			showImages: false,
 			removeColors: false,
 			useCheckboxesInList: true,
