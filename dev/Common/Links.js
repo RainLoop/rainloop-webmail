@@ -93,37 +93,22 @@ export function langLink(lang, isAdmin) {
  * @param {string} path
  * @returns {string}
  */
-export function staticPrefix(path) {
+export function staticLink(path) {
 	return VERSION_PREFIX + 'static/' + path;
-}
-
-/**
- * @param {string} fileName
- * @returns {string}
- */
-export function sound(fileName) {
-	return staticPrefix('sounds/' + fileName);
-}
-
-/**
- * @returns {string}
- */
-export function notificationMailIcon() {
-	return staticPrefix('css/images/icon-message-notification.png');
 }
 
 /**
  * @returns {string}
  */
 export function openPgpJs() {
-	return staticPrefix('js/min/openpgp.min.js');
+	return staticLink('js/min/openpgp.min.js');
 }
 
 /**
  * @returns {string}
  */
 export function openPgpWorkerJs() {
-	return staticPrefix('js/min/openpgp.worker.min.js');
+	return staticLink('js/min/openpgp.worker.min.js');
 }
 
 /**

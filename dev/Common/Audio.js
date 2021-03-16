@@ -108,7 +108,7 @@ export const SMAudio = new class {
 		if ('running' == audioCtx.state && (this.supportedMp3 || this.supportedOgg)) {
 			if (!notificator) {
 				notificator = createNewObject();
-				notificator.src = Links.sound('new-mail.'+ (this.supportedMp3 ? 'mp3' : 'ogg'));
+				notificator.src = Links.staticLink('sounds/new-mail.'+ (this.supportedMp3 ? 'mp3' : 'ogg'));
 			}
 			if (notificator) {
 				notificator.volume = silent ? 0.01 : 1;

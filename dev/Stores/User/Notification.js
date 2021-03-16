@@ -69,7 +69,7 @@ export const NotificationUserStore = new class {
 		if (DesktopNotifications && NotificationsGranted()) {
 			const options = {
 				body: text,
-				icon: imageSrc || Links.notificationMailIcon(),
+				icon: imageSrc || Links.staticLink('css/images/icon-message-notification.png'),
 				data: messageData
 			};
 			if (messageData && messageData.Uid) {
@@ -78,7 +78,7 @@ export const NotificationUserStore = new class {
 			if (WorkerNotifications) {
 				// Service-Worker-Allowed HTTP header to allow the scope.
 				WorkerNotifications.register('/serviceworker.js')
-//				WorkerNotifications.register(Links.staticPrefix('js/serviceworker.js'), {scope:'/'})
+//				WorkerNotifications.register(Links.staticLink('js/serviceworker.js'), {scope:'/'})
 				.then(() =>
 					WorkerNotifications.ready.then(registration =>
 						/* Show the notification */
