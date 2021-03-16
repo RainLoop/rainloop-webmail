@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { StorageResultType } from 'Common/Enums';
 import { showScreenPopup } from 'Knoin/Knoin';
 
 import { DomainAdminStore } from 'Stores/Admin/Domain';
@@ -46,8 +45,8 @@ export class DomainsAdminSettings {
 		DomainAdminStore.fetch();
 	}
 
-	onDomainLoadRequest(sResult, oData) {
-		if (StorageResultType.Success === sResult && oData && oData.Result) {
+	onDomainLoadRequest(iError, oData) {
+		if (!iError && oData && oData.Result) {
 			showScreenPopup(DomainPopupView, [oData.Result]);
 		}
 	}

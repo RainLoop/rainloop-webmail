@@ -33,13 +33,16 @@
 
 		this.saving(true);
 
-		window.rl.pluginRemoteRequest(function (sResult, oData) {
+		rl.pluginRemoteRequest(function (iError, oData) {
 
 			self.saving(false);
 
-			if (window.rl.Enums.StorageResultType.Success === sResult && oData && oData.Result)
+			if (!iError && oData && oData.Result)
 			{
 				// true
+			}
+			else if (rl.Enums.StorageResultType.Abort === iError) {
+				// show abort
 			}
 			else
 			{
@@ -58,11 +61,11 @@
 
 		this.loading(true);
 
-		window.rl.pluginRemoteRequest(function (sResult, oData) {
+		rl.pluginRemoteRequest(function (iError, oData) {
 
 			self.loading(false);
 
-			if (window.rl.Enums.StorageResultType.Success === sResult && oData && oData.Result)
+			if (!iError && oData && oData.Result)
 			{
 				self.userSkype(oData.Result.UserSkype || '');
 				self.userFacebook(oData.Result.UserFacebook || '');
@@ -72,7 +75,7 @@
 
 	};
 
-	window.rl.addSettingsViewModel(CustomUserSettings, 'PluginCustomSettingsTab',
+	rl.addSettingsViewModel(CustomUserSettings, 'PluginCustomSettingsTab',
 		'SETTINGS_CUSTOM_PLUGIN/TAB_NAME', 'custom');
 
 }());

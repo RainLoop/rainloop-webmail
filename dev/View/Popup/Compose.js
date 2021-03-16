@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import {
 	KeyState,
-	StorageResultType,
 	Notification,
 	UploadErrorCode
 } from 'Common/Enums';
@@ -602,13 +601,13 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	sendMessageResponse(statusResult, data) {
+	sendMessageResponse(iError, data) {
 		let result = false,
 			message = '';
 
 		this.sending(false);
 
-		if (StorageResultType.Success === statusResult && data && data.Result) {
+		if (!iError && data && data.Result) {
 			result = true;
 			this.modalVisibility() && this.closeCommand && this.closeCommand();
 		}
@@ -631,12 +630,12 @@ class ComposePopupView extends AbstractViewPopup {
 		this.reloadDraftFolder();
 	}
 
-	saveMessageResponse(statusResult, oData) {
+	saveMessageResponse(iError, oData) {
 		let result = false;
 
 		this.saving(false);
 
-		if (StorageResultType.Success === statusResult && oData && oData.Result) {
+		if (!iError && oData && oData.Result) {
 			if (oData.Result.NewFolder && oData.Result.NewUid) {
 				result = true;
 
@@ -1064,8 +1063,8 @@ class ComposePopupView extends AbstractViewPopup {
 
 		const downloads = this.getAttachmentsDownloadsForUpload();
 		if (isNonEmptyArray(downloads)) {
-			Remote.messageUploadAttachments((sResult, oData) => {
-				if (StorageResultType.Success === sResult && oData && oData.Result) {
+			Remote.messageUploadAttachments((iError, oData) => {
+				if (!iError && oData && oData.Result) {
 					Object.entries(oData.Result).forEach(([tempName, id]) => {
 						const attachment = this.getAttachmentById(id);
 						if (attachment) {

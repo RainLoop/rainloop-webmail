@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
 import { SieveUserStore } from 'Stores/User/Sieve';
@@ -36,11 +36,11 @@ export class FiltersUserSettings {
 			this.loading(true);
 			this.serverError(false);
 
-			Remote.filtersGet((result, data) => {
+			Remote.filtersGet((iError, data) => {
 				this.loading(false);
 				this.scripts([]);
 
-				if (StorageResultType.Success === result && data && data.Result) {
+				if (!iError && data && data.Result) {
 					SieveUserStore.capa(data.Result.Capa);
 /*
 					this.scripts(
@@ -73,7 +73,7 @@ export class FiltersUserSettings {
 		this.serverError(false);
 		Remote.filtersScriptDelete(
 			(result, data) => {
-				if (StorageResultType.Success === result && data && data.Result) {
+				if (Remote.SUCCESS === result && data && data.Result) {
 					this.scripts.remove(script);
 					delegateRunOnDestroy(script);
 				} else {
@@ -92,7 +92,7 @@ export class FiltersUserSettings {
 		this.serverError(false);
 		Remote.filtersScriptActivate(
 			(result, data) => {
-				if (StorageResultType.Success === result && data && data.Result) {
+				if (Remote.SUCCESS === result && data && data.Result) {
 					this.scripts.forEach(script => script.active(script.name() === name));
 				} else {
 					this.setError((data && data.ErrorCode)

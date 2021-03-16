@@ -1,11 +1,10 @@
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { Settings } from 'Common/Globals';
 import { pInt, pString } from 'Common/Utils';
 import { serverRequest } from 'Common/Links';
 
 let iJsonErrorCount = 0,
-	iTokenErrorCount = 0,
-	bUnload = false;
+	iTokenErrorCount = 0;
 
 const getURL = (add = '') => serverRequest('Json') + add,
 
@@ -71,8 +70,6 @@ fetchJSON = (action, sGetAdd, params, timeout, jsonCallback) => {
 	return rl.fetchJSON(getURL(sGetAdd), init, sGetAdd ? null : params).then(jsonCallback);
 };
 
-addEventListener('unload', () => bUnload = true);
-
 export class AbstractFetchRemote
 {
 	abort(sAction, bClearOnly) {
@@ -110,57 +107,34 @@ export class AbstractFetchRemote
 					updateToken(data);
 				}
 
-				let sType = 'success';
+				let iError = 0;
 				if (sAction && oRequests[sAction]) {
 					if (oRequests[sAction].__aborted) {
-						sType = 'abort';
+						iError = 2;
 					}
 					abort(sAction, true);
 				}
 
-				const fCall = () => {
-					if (StorageResultType.Success !== sType && bUnload) {
-						sType = StorageResultType.Unload;
+				if (!iError && data) {
+					if (data.Result) {
+						iJsonErrorCount = iTokenErrorCount = 0;
+					} else {
+						checkResponseError(data);
 					}
-
-					if (StorageResultType.Success === sType && data) {
-						if (data.Result) {
-							iJsonErrorCount = iTokenErrorCount = 0;
-						} else {
-							checkResponseError(data);
-						}
-					}
-
-					if (fCallback) {
-						fCallback(
-							sType,
-							StorageResultType.Success === sType ? data : null,
-							cached,
-							sAction,
-							params
-						);
-					}
-				};
-
-				switch (sType) {
-					case 'success':
-						sType = StorageResultType.Success;
-						fCall();
-						break;
-					case 'abort':
-						sType = StorageResultType.Abort;
-						fCall();
-						break;
-					default:
-						sType = StorageResultType.Error;
-						setTimeout(fCall, 300);
-						break;
 				}
+
+				fCallback && fCallback(
+					iError,
+					data,
+					cached,
+					sAction,
+					params
+				);
 			}
 		)
 		.catch(err => {
 			console.error(err);
-			fCallback && fCallback(err.name == 'AbortError' ? Notification.JsonAbort : StorageResultType.Error);
+			fCallback && fCallback(err.name == 'AbortError' ? 2 : 1);
 		});
 	}
 
@@ -220,13 +194,13 @@ export class AbstractFetchRemote
 				// backward capability
 				switch (true) {
 					case 'success' === textStatus && data && data.Result && action === data.Action:
-						type = StorageResultType.Success;
+						type = AbstractFetchRemote.SUCCESS;
 						break;
 					case 'abort' === textStatus && (!data || !data.__aborted__):
-						type = StorageResultType.Abort;
+						type = AbstractFetchRemote.ABORT;
 						break;
 					default:
-						type = StorageResultType.Error;
+						type = AbstractFetchRemote.ERROR;
 						break;
 				}
 */
@@ -234,7 +208,7 @@ export class AbstractFetchRemote
 
 				if (!data.Result || action !== data.Action) {
 					checkResponseError(data);
-					const err = data ? data.ErrorCode : null;
+					const err = data ? data.ErrorCode : 0;
 					return Promise.reject(err || Notification.JsonFalse);
 				}
 
@@ -243,3 +217,9 @@ export class AbstractFetchRemote
 		);
 	}
 }
+
+Object.assign(AbstractFetchRemote.prototype, {
+	SUCCESS : 0,
+	ERROR : 1,
+	ABORT : 2
+});

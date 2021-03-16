@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { SettingsGet } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
@@ -53,14 +53,14 @@ export class PluginsAdminSettings {
 		PluginAdminStore.fetch();
 	}
 
-	onPluginLoadRequest(result, data) {
-		if (StorageResultType.Success === result && data && data.Result) {
+	onPluginLoadRequest(iError, data) {
+		if (!iError && data && data.Result) {
 			showScreenPopup(PluginPopupView, [data.Result]);
 		}
 	}
 
-	onPluginDisableRequest(result, data) {
-		if (StorageResultType.Success === result && data) {
+	onPluginDisableRequest(iError, data) {
+		if (!iError && data) {
 			if (!data.Result && data.ErrorCode) {
 				if (Notification.UnsupportedPluginPackage === data.ErrorCode && data.ErrorMessage && data.ErrorMessage) {
 					PluginAdminStore.error(data.ErrorMessage);

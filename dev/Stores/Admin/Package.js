@@ -1,6 +1,5 @@
 import ko from 'ko';
 import Remote from 'Remote/Admin/Fetch';
-import { StorageResultType } from 'Common/Enums';
 
 export const PackageAdminStore = ko.observableArray();
 
@@ -10,9 +9,9 @@ PackageAdminStore.loading = ko.observable(false);
 
 PackageAdminStore.fetch = () => {
 	PackageAdminStore.loading(true);
-	Remote.packagesList((result, data) => {
+	Remote.packagesList((iError, data) => {
 		PackageAdminStore.loading(false);
-		if (StorageResultType.Success === result && data && data.Result) {
+		if (!iError && data && data.Result) {
 			PackageAdminStore.real(!!data.Result.Real);
 
 			let list = [];

@@ -22,20 +22,23 @@
 
 		this.loading(true);
 
-		window.rl.pluginRemoteRequest(function (sResult, oData) {
+		rl.pluginRemoteRequest(function (iError, oData) {
 
 			self.loading(false);
 
-			if (window.rl.Enums.StorageResultType.Success === sResult && oData && oData.Result)
-			{
+			if (!iError && oData && oData.Result) {
 				self.php(oData.Result.PHP || '');
+			}
+
+			if (rl.Enums.StorageResultType.Abort === iError) {
+				// show abort
 			}
 
 		}, 'JsonAdminGetData');
 
 	};
 
-	window.rl.addSettingsViewModelForAdmin(CustomAdminSettings, 'PluginCustomAdminSettingsTab',
+	rl.addSettingsViewModelForAdmin(CustomAdminSettings, 'PluginCustomAdminSettingsTab',
 		'SETTINGS_CUSTOM_ADMIN_CUSTOM_TAB_PLUGIN/TAB_NAME', 'custom');
 
 }());

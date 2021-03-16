@@ -2,8 +2,7 @@ import ko from 'ko';
 
 import {
 	Capa,
-	KeyState,
-	StorageResultType
+	KeyState
 } from 'Common/Enums';
 
 import {
@@ -853,8 +852,8 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 				addRequestedMessage(message.folder, message.uid);
 
 				Remote.message(
-					(result, data) => {
-						const next = !!(StorageResultType.Success === result && data && data.Result);
+					(iError, data) => {
+						const next = !!(!iError && data && data.Result);
 						setTimeout(() => {
 							this.bPrefetch = false;
 							next && this.prefetchNextTick();

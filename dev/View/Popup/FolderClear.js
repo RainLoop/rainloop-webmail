@@ -1,4 +1,4 @@
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { i18n, getNotification } from 'Common/Translator';
 import { setFolderHash } from 'Common/Cache';
 
@@ -54,9 +54,9 @@ class FolderClearPopupView extends AbstractViewPopup {
 
 			setFolderHash(folderToClear.fullNameRaw, '');
 
-			Remote.folderClear((result, data) => {
+			Remote.folderClear((iError, data) => {
 				this.clearingProcess(false);
-				if (StorageResultType.Success === result && data && data.Result) {
+				if (!iError && data && data.Result) {
 					rl.app.reloadMessageList(true);
 					this.cancelCommand();
 				} else {

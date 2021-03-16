@@ -1,6 +1,5 @@
 import ko from 'ko';
 import Remote from 'Remote/Admin/Fetch';
-import { StorageResultType } from 'Common/Enums';
 
 export const PluginAdminStore = ko.observableArray();
 
@@ -10,9 +9,9 @@ PluginAdminStore.error = ko.observable('');
 
 PluginAdminStore.fetch = () => {
 	PluginAdminStore.loading(true);
-	Remote.pluginList((result, data) => {
+	Remote.pluginList((iError, data) => {
 		PluginAdminStore.loading(false);
-		if (StorageResultType.Success === result && data && data.Result) {
+		if (!iError && data && data.Result) {
 			PluginAdminStore(
 				data.Result.map(item => ({
 					name: item.Name,

@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { Capa, StorageResultType } from 'Common/Enums';
+import { Capa } from 'Common/Enums';
 import { Settings } from 'Common/Globals';
 
 import { AccountUserStore } from 'Stores/User/Account';
@@ -53,8 +53,8 @@ export class AccountsUserSettings {
 			if (accountToRemove) {
 				this.accounts.remove((account) => accountToRemove === account);
 
-				Remote.accountDelete((result, data) => {
-					if (StorageResultType.Success === result && data && data.Result && data.Reload) {
+				Remote.accountDelete((iError, data) => {
+					if (!iError && data && data.Result && data.Reload) {
 						rl.route.root();
 						setTimeout(() => location.reload(), 1);
 					} else {

@@ -1,4 +1,4 @@
-import { Capa, StorageResultType } from 'Common/Enums';
+import { Capa } from 'Common/Enums';
 import { Settings } from 'Common/Globals';
 import { pString } from 'Common/Utils';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
@@ -43,8 +43,8 @@ class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 					value = !!value;
 					if (value && this.twoFactorTested()) {
 						this.viewEnable_(value);
-						Remote.enableTwoFactor((result, data) => {
-							if (StorageResultType.Success !== result || !data || !data.Result) {
+						Remote.enableTwoFactor((iError, data) => {
+							if (iError || !data || !data.Result) {
 								this.viewEnable_(false);
 							}
 						}, true);
@@ -53,8 +53,8 @@ class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 							this.viewEnable_(value);
 						}
 
-						Remote.enableTwoFactor((result, data) => {
-							if (StorageResultType.Success !== result || !data || !data.Result) {
+						Remote.enableTwoFactor((iError, data) => {
+							if (iError || !data || !data.Result) {
 								this.viewEnable_(false);
 							}
 						}, false);
@@ -148,11 +148,11 @@ class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 		);
 	}
 
-	onResult(sResult, oData) {
+	onResult(iError, oData) {
 		this.processing(false);
 		this.clearing(false);
 
-		if (StorageResultType.Success === sResult && oData && oData.Result) {
+		if (!iError && oData && oData.Result) {
 			this.viewUser(pString(oData.Result.User));
 			this.viewEnable_(!!oData.Result.Enable);
 			this.twoFactorStatus(!!oData.Result.IsSet);
@@ -176,10 +176,10 @@ class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 		}
 	}
 
-	onShowSecretResult(result, data) {
+	onShowSecretResult(iError, data) {
 		this.secreting(false);
 
-		if (StorageResultType.Success === result && data && data.Result) {
+		if (!iError && data && data.Result) {
 			this.viewSecret(pString(data.Result.Secret));
 			this.viewUrlTitle(pString(data.Result.UrlTitle));
 			this.viewUrl(qr.toDataURL({ level: 'M', size: 6, value: this.getQr() }));

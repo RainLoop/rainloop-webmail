@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { Focused, MessageSetAction } from 'Common/EnumsUser';
 import { doc, elementById } from 'Common/Globals';
 import { pInt, pString } from 'Common/Utils';
@@ -638,13 +638,10 @@ export const MessageUserStore = new class {
 	 * @param {FetchJsonDefaultResponse} oData
 	 * @param {boolean} bCached
 	 */
-	onMessageResponse(sResult, oData, bCached) {
-		if (StorageResultType.Success === sResult && oData && oData.Result) {
+	onMessageResponse(iError, oData, bCached) {
+		if (!iError && oData && oData.Result) {
 			this.setMessage(oData, bCached);
-		} else if (StorageResultType.Unload === sResult) {
-			this.message(null);
-			this.messageError('');
-		} else if (StorageResultType.Abort !== sResult) {
+		} else if (Remote.ABORT !== iError) {
 			this.message(null);
 			this.messageError(
 				oData && oData.ErrorCode ? getNotification(oData.ErrorCode) : getNotification(Notification.UnknownError)

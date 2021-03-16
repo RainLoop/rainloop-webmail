@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { KeyState, StorageResultType, Notification } from 'Common/Enums';
+import { KeyState, Notification } from 'Common/Enums';
 import { getNotification, i18n } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
@@ -52,8 +52,8 @@ class PluginPopupView extends AbstractViewPopup {
 		Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, list);
 	}
 
-	onPluginSettingsUpdateResponse(result, data) {
-		if (StorageResultType.Success === result && data && data.Result) {
+	onPluginSettingsUpdateResponse(iError, data) {
+		if (!iError && data && data.Result) {
 			this.cancelCommand();
 		} else {
 			this.saveError('');

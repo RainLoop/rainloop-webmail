@@ -1,4 +1,4 @@
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 import { HtmlEditor } from 'Common/Html';
 
@@ -53,9 +53,9 @@ class TemplatePopupView extends AbstractViewPopup {
 		this.submitRequest(true);
 
 		Remote.templateSetup(
-			(result, data) => {
+			(iError, data) => {
 				this.submitRequest(false);
-				if (StorageResultType.Success === result && data) {
+				if (!iError && data) {
 					if (data.Result) {
 						rl.app.templates();
 						this.cancelCommand();
@@ -124,11 +124,11 @@ class TemplatePopupView extends AbstractViewPopup {
 				this.bodyLoading(true);
 				this.bodyError(false);
 
-				Remote.templateGetById((result, data) => {
+				Remote.templateGetById((iError, data) => {
 					this.bodyLoading(false);
 
 					if (
-						StorageResultType.Success === result &&
+						!iError &&
 						data &&
 						TemplateModel.validJson(data.Result) &&
 						null != data.Result.Body

@@ -1,5 +1,3 @@
-import { StorageResultType } from 'Common/Enums';
-
 import Remote from 'Remote/User/Fetch';
 
 import { decorateKoCommands } from 'Knoin/Knoin';
@@ -26,9 +24,9 @@ class TwoFactorTestPopupView extends AbstractViewPopup {
 
 	testCodeCommand() {
 		this.testing(true);
-		Remote.testTwoFactor((result, data) => {
+		Remote.testTwoFactor((iError, data) => {
 			this.testing(false);
-			this.codeStatus(StorageResultType.Success === result && data && !!data.Result);
+			this.codeStatus(!iError && data && !!data.Result);
 
 			if (this.koTestedTrigger && this.codeStatus()) {
 				this.koTestedTrigger(true);

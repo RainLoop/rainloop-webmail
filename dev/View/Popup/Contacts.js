@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import {
 	SaveSettingsStep,
-	StorageResultType,
 	Notification,
 	KeyState
 } from 'Common/Enums';
@@ -224,12 +223,12 @@ class ContactsPopupView extends AbstractViewPopup {
 		const requestUid = Jua.randomId();
 
 		Remote.contactSave(
-			(sResult, oData) => {
+			(iError, oData) => {
 				let res = false;
 				this.viewSaving(false);
 
 				if (
-					StorageResultType.Success === sResult &&
+					!iError &&
 					oData &&
 					oData.Result &&
 					oData.Result.RequestUid === requestUid &&
@@ -259,8 +258,8 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	syncCommand() {
-		rl.app.contactsSync((result, data) => {
-			if (StorageResultType.Success !== result || !data || !data.Result) {
+		rl.app.contactsSync((iError, data) => {
+			if (iError || !data || !data.Result) {
 				alert(getNotification(data && data.ErrorCode ? data.ErrorCode : Notification.ContactsSyncError));
 			}
 
@@ -398,11 +397,11 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	/**
-	 * @param {string} sResult
+	 * @param {int} iError
 	 * @param {FetchJsonDefaultResponse} oData
 	 */
-	deleteResponse(sResult, oData) {
-		if (500 < (StorageResultType.Success === sResult && oData && oData.Time ? pInt(oData.Time) : 0)) {
+	deleteResponse(iError, oData) {
+		if (500 < (!iError && oData && oData.Time ? pInt(oData.Time) : 0)) {
 			this.reloadContactList(this.bDropPageAfterDelete);
 		} else {
 			setTimeout(() => {
@@ -460,11 +459,11 @@ class ContactsPopupView extends AbstractViewPopup {
 
 		ContactUserStore.loading(true);
 		Remote.contacts(
-			(result, data) => {
+			(iError, data) => {
 				let count = 0,
 					list = [];
 
-				if (StorageResultType.Success === result && data && data.Result && data.Result.List) {
+				if (!iError && data && data.Result && data.Result.List) {
 					if (Array.isNotEmpty(data.Result.List)) {
 						data.Result.List.forEach(item => {
 							item = ContactModel.reviveFromJson(item);

@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { Settings } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
@@ -59,8 +59,8 @@ class LoginAdminView extends AbstractViewCenter {
 		this.submitRequest(true);
 
 		Remote.adminLogin(
-			(sResult, oData) => {
-				if (StorageResultType.Success === sResult && oData && 'AdminLogin' === oData.Action) {
+			(iError, oData) => {
+				if (!iError && oData && 'AdminLogin' === oData.Action) {
 					if (oData.Result) {
 						rl.route.reload();
 					} else if (oData.ErrorCode) {

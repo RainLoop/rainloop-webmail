@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 import { i18nToNodes } from 'Common/Translator';
 
@@ -58,10 +58,10 @@ class SieveScriptPopupView extends AbstractViewPopup {
 			}
 
 			Remote.filtersScriptSave(
-				(result, data) => {
+				(iError, data) => {
 					self.saving = false;
 
-					if (StorageResultType.Success === result && data && data.Result) {
+					if (!iError && data && data.Result) {
 						script.exists() || SieveUserStore.scripts.push(script);
 						script.exists(true);
 						script.hasChanges(false);

@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { SaveSettingsStep, StorageResultType } from 'Common/Enums';
+import { SaveSettingsStep } from 'Common/Enums';
 import { SettingsGet } from 'Common/Globals';
 import { settingsSaveHelperSimpleFunction, defaultOptionsAfterRender } from 'Common/Utils';
 
@@ -93,12 +93,12 @@ export class ContactsAdminSettings {
 		});
 	}
 
-	onTestContactsResponse(result, data) {
+	onTestContactsResponse(iError, data) {
 		this.testContactsSuccess(false);
 		this.testContactsError(false);
 		this.testContactsErrorMessage('');
 
-		if (StorageResultType.Success === result && data && data.Result && data.Result.Result) {
+		if (!iError && data && data.Result && data.Result.Result) {
 			this.testContactsSuccess(true);
 		} else {
 			this.testContactsError(true);

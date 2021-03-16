@@ -1,4 +1,4 @@
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
 import { i18n } from 'Common/Translator';
 
@@ -205,9 +205,9 @@ class DomainPopupView extends AbstractViewPopup {
 		this.clearTesting();
 	}
 
-	onTestConnectionResponse(sResult, oData) {
+	onTestConnectionResponse(iError, oData) {
 		this.testing(false);
-		if (StorageResultType.Success === sResult && oData.Result) {
+		if (!iError && oData.Result) {
 			let bImap = false,
 				bSieve = false;
 
@@ -248,9 +248,9 @@ class DomainPopupView extends AbstractViewPopup {
 		}
 	}
 
-	onDomainCreateOrSaveResponse(sResult, oData) {
+	onDomainCreateOrSaveResponse(iError, oData) {
 		this.saving(false);
-		if (StorageResultType.Success === sResult && oData) {
+		if (!iError && oData) {
 			if (oData.Result) {
 				DomainAdminStore.fetch();
 				this.closeCommand();

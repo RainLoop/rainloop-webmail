@@ -1,4 +1,4 @@
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
@@ -46,9 +46,9 @@ class AccountPopupView extends AbstractViewPopup {
 		this.submitRequest(true);
 
 		Remote.accountSetup(
-			(result, data) => {
+			(iError, data) => {
 				this.submitRequest(false);
-				if (StorageResultType.Success === result && data) {
+				if (!iError && data) {
 					if (data.Result) {
 						rl.app.accountsAndIdentities();
 						this.cancelCommand();

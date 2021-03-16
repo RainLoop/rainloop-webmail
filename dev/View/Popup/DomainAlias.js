@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
 import { DomainAdminStore } from 'Stores/Admin/Domain';
@@ -41,9 +41,9 @@ class DomainAliasPopupView extends AbstractViewPopup {
 		Remote.createDomainAlias(this.onDomainAliasCreateOrSaveResponse, this.name(), this.alias());
 	}
 
-	onDomainAliasCreateOrSaveResponse(result, data) {
+	onDomainAliasCreateOrSaveResponse(iError, data) {
 		this.saving(false);
-		if (StorageResultType.Success === result && data) {
+		if (!iError && data) {
 			if (data.Result) {
 				DomainAdminStore.fetch();
 				this.closeCommand();

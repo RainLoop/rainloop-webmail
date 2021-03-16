@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { StorageResultType, Notification } from 'Common/Enums';
+import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
 import { PackageAdminStore } from 'Stores/Admin/Package';
@@ -34,8 +34,8 @@ export class PackagesAdminSettings {
 	}
 
 	requestHelper(packageToRequest, install) {
-		return (result, data) => {
-			if (StorageResultType.Success !== result || !data || !data.Result) {
+		return (iError, data) => {
+			if (iError || !data || !data.Result) {
 				if (data && data.ErrorCode) {
 					this.packagesError(getNotification(data.ErrorCode));
 				} else {
@@ -52,7 +52,7 @@ export class PackagesAdminSettings {
 				}
 			});
 
-			if (StorageResultType.Success === result && data && data.Result && data.Result.Reload) {
+			if (!iError && data && data.Result && data.Result.Reload) {
 				location.reload();
 			} else {
 				PackageAdminStore.fetch();

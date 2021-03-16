@@ -3,16 +3,6 @@
 /**
  * @enum {string}
  */
-export const StorageResultType = {
-	Success: 'success',
-	Abort: 'abort',
-	Error: 'error',
-	Unload: 'unload'
-};
-
-/**
- * @enum {string}
- */
 export const Capa = {
 	TwoFactor: 'TWO_FACTOR',
 	TwoFactorForce: 'TWO_FACTOR_FORCE',
@@ -142,7 +132,6 @@ export const Notification = {
 	InvalidInputArgument: 903,
 
 	JsonFalse: 950,
-	JsonAbort: 951,
 	JsonParse: 952,
 //	JsonTimeout: 953,
 

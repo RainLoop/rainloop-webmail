@@ -1,7 +1,6 @@
 import ko from 'ko';
 
 import {
-	StorageResultType,
 	Notification
 } from 'Common/Enums';
 
@@ -151,8 +150,8 @@ class LoginUserView extends AbstractViewCenter {
 
 		const fLoginRequest = (sLoginPassword) => {
 			Remote.login(
-				(sResult, oData) => {
-					if (StorageResultType.Success === sResult && oData && 'Login' === oData.Action) {
+				(iError, oData) => {
+					if (!iError && oData && 'Login' === oData.Action) {
 						if (oData.Result) {
 							if (oData.TwoFactorAuth) {
 								this.additionalCode('');

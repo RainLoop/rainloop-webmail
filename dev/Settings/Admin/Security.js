@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { StorageResultType } from 'Common/Enums';
 import { SettingsGet } from 'Common/Globals';
 
 import { AppAdminStore } from 'Stores/Admin/App';
@@ -112,8 +111,8 @@ export class SecurityAdminSettings {
 		}, 50);
 	}
 
-	onNewAdminPasswordResponse(result, data) {
-		if (StorageResultType.Success === result && data && data.Result) {
+	onNewAdminPasswordResponse(iError, data) {
+		if (!iError && data && data.Result) {
 			this.adminPassword('');
 			this.adminPasswordNew('');
 			this.adminPasswordNew2('');

@@ -1,5 +1,4 @@
 import { doc, elementById, dropdownVisibility, Settings } from 'Common/Globals';
-import { StorageResultType } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
 
 import { root } from 'Common/Links';
@@ -35,7 +34,12 @@ export default (App) => {
 	rl.i18n = i18n;
 
 	rl.Enums = {
-		StorageResultType: StorageResultType
+		StorageResultType: {
+			Success: 0,
+			Error: 1,
+			Abort: 2,
+			Unload: 3
+		}
 	};
 
 	rl.Dropdowns = [];

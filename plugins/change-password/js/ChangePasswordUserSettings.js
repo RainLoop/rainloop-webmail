@@ -106,9 +106,9 @@
 			this.newPassword2('');
 		}
 
-		onChangePasswordResponse(result, data) {
+		onChangePasswordResponse(iError, data) {
 			this.reset(false);
-			if (rl.Enums.StorageResultType.Success === result && data && data.Result) {
+			if (!iError && data && data.Result) {
 				this.currentPassword('');
 				this.newPassword('');
 				this.newPassword2('');
