@@ -23,8 +23,6 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 		this.allowSettings = Settings.capa(Capa.Settings);
 		this.allowHelp = Settings.capa(Capa.Help);
 
-		this.currentAudio = AppUserStore.currentAudio;
-
 		this.accountEmail = AccountUserStore.email;
 
 		this.accounts = AccountUserStore.accounts;
@@ -32,6 +30,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 		this.accountsUnreadCount = AccountUserStore.accountsUnreadCount;
 
 		this.addObservables({
+			currentAudio: '',
 			accountMenuDropdownTrigger: false,
 			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts)
 		});
@@ -40,8 +39,8 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 
 		this.addAccountClick = this.addAccountClick.bind(this);
 
-		addEventListener('audio.stop', () => AppUserStore.currentAudio(''));
-		addEventListener('audio.start', e => AppUserStore.currentAudio(e.detail));
+		addEventListener('audio.stop', () => this.currentAudio(''));
+		addEventListener('audio.start', e => this.currentAudio(e.detail));
 	}
 
 	stopPlay() {

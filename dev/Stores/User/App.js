@@ -8,8 +8,6 @@ export const AppUserStore = {
 };
 
 addObservablesTo(AppUserStore, {
-	currentAudio: '',
-
 	focusedState: Scope.None,
 
 	threadsAllowed: false,
