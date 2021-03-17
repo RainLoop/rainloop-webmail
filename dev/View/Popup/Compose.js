@@ -314,20 +314,6 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.resizeObserver = new ResizeObserver(this.resizerTrigger.throttle(50).bind(this));
 
-		setInterval(() => {
-			if (
-				this.modalVisibility() &&
-				!FolderUserStore.draftFolderNotEnabled() &&
-				SettingsUserStore.allowDraftAutosave() &&
-				!this.isEmptyForm(false) &&
-				!this.saving() &&
-				!this.sending() &&
-				!this.savedError()
-			) {
-				this.saveCommand();
-			}
-		}, 120000);
-
 		decorateKoCommands(this, {
 			sendCommand: self => self.canBeSentOrSaved(),
 				saveCommand: self => self.canBeSentOrSaved(),
@@ -499,29 +485,22 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	autosaveFunction() {
-		if (
-			this.modalVisibility() &&
-			!FolderUserStore.draftFolderNotEnabled() &&
-			SettingsUserStore.allowDraftAutosave() &&
-			!this.isEmptyForm(false) &&
-			!this.saving() &&
-			!this.sending() &&
-			!this.savedError()
-		) {
-			this.saveCommand();
-		}
-
-		this.autosaveStart();
-	}
-
 	autosaveStart() {
 		clearTimeout(this.iTimer);
-		this.iTimer = setTimeout(()=>this.autosaveFunction(), 60000);
-	}
+		this.iTimer = setTimeout(()=>{
+			if (this.modalVisibility()
+				&& !FolderUserStore.draftFolderNotEnabled()
+				&& SettingsUserStore.allowDraftAutosave()
+				&& !this.isEmptyForm(false)
+				&& !this.saving()
+				&& !this.sending()
+				&& !this.savedError()
+			) {
+				this.saveCommand();
+			}
 
-	autosaveStop() {
-		clearTimeout(this.iTimer);
+			this.autosaveStart();
+		}, 60000);
 	}
 
 	emailsSource(oData, fResponse) {
@@ -664,12 +643,12 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	onHide() {
-		this.autosaveStop();
+		// Stop autosave
+		clearTimeout(this.iTimer);
 
-		if (!this.bSkipNextHide) {
-			AppUserStore.composeInEdit(false);
-			this.reset();
-		}
+		AppUserStore.composeInEdit(this.bSkipNextHide);
+
+		this.bSkipNextHide || this.reset();
 
 		this.bSkipNextHide = false;
 
@@ -822,8 +801,6 @@ class ComposePopupView extends AbstractViewPopup {
 	 * @param {string=} sCustomPlainText = null
 	 */
 	initOnShow(sType, oMessageOrArray, aToEmails, aCcEmails, aBccEmails, sCustomSubject, sCustomPlainText) {
-		AppUserStore.composeInEdit(true);
-
 		let sFrom = '',
 			sTo = '',
 			sCc = '',
