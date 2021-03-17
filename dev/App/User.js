@@ -47,7 +47,6 @@ import {
 
 import { getNotification, i18n } from 'Common/Translator';
 
-import { AppUserStore } from 'Stores/User/App';
 import { SettingsUserStore } from 'Stores/User/Settings';
 import { NotificationUserStore } from 'Stores/User/Notification';
 import { AccountUserStore } from 'Stores/User/Account';
@@ -887,7 +886,6 @@ class AppUser extends AbstractApp {
 
 		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 1000 > innerWidth));
 
-		AppUserStore.populate();
 		SettingsUserStore.populate();
 		NotificationUserStore.populate();
 		AccountUserStore.populate();

@@ -125,7 +125,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.sLastFocusedField = 'to';
 
-		this.allowContacts = AppUserStore.contactsIsAllowed();
+		this.allowContacts = AppUserStore.allowContacts();
 
 		this.bSkipNextHide = false;
 		this.editorDefaultType = SettingsUserStore.editorDefaultType;

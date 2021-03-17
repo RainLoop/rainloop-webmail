@@ -4,9 +4,7 @@ import { addObservablesTo } from 'Common/Utils';
 import { ThemeStore } from 'Stores/Theme';
 
 export const AppUserStore = {
-	populate: () => {
-		AppUserStore.contactsIsAllowed(!!SettingsGet('ContactsIsAllowed'));
-	}
+	allowContacts: () => !!SettingsGet('ContactsIsAllowed')
 };
 
 addObservablesTo(AppUserStore, {
@@ -16,9 +14,7 @@ addObservablesTo(AppUserStore, {
 
 	threadsAllowed: false,
 
-	composeInEdit: false,
-
-	contactsIsAllowed: false
+	composeInEdit: false
 });
 
 AppUserStore.focusedState.subscribe(value => {

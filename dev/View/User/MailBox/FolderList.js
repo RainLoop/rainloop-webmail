@@ -38,7 +38,7 @@ export class FolderListMailBoxUserView extends AbstractViewLeft {
 		this.leftPanelDisabled = leftPanelDisabled;
 
 		this.allowComposer = Settings.capa(Capa.Composer);
-		this.allowContacts = AppUserStore.contactsIsAllowed();
+		this.allowContacts = AppUserStore.allowContacts();
 
 		this.folderListFocused = ko.computed(() => Scope.FolderList === AppUserStore.focusedState());
 

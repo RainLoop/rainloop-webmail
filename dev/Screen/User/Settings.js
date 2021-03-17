@@ -45,7 +45,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 
 		settingsAddViewModel(GeneralUserSettings, 'SettingsGeneral', 'SETTINGS_LABELS/LABEL_GENERAL_NAME', 'general', true);
 
-		if (AppUserStore.contactsIsAllowed()) {
+		if (AppUserStore.allowContacts()) {
 			settingsAddViewModel(ContactsUserSettings, 'SettingsContacts', 'SETTINGS_LABELS/LABEL_CONTACTS_NAME', 'contacts');
 		}
 

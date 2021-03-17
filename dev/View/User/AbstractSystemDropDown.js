@@ -36,7 +36,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts)
 		});
 
-		this.allowContacts = AppUserStore.contactsIsAllowed();
+		this.allowContacts = AppUserStore.allowContacts();
 
 		this.addAccountClick = this.addAccountClick.bind(this);
 
