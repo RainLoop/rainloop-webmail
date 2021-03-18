@@ -106,6 +106,7 @@ export class GeneralUserSettings {
 			showImages: value => Remote.saveSetting('ShowImages', value ? 1 : 0),
 
 			removeColors: value => {
+				MessageUserStore.messagesBodiesDom().innerHTML = '';
 				Remote.saveSetting('RemoveColors', value ? 1 : 0);
 			},
 
