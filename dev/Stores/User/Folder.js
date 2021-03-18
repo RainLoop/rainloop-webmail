@@ -157,25 +157,23 @@ export const FolderUserStore = new class {
 	/**
 	 * @returns {Array}
 	 */
-	getNextFolderNames() {
+	getNextFolderNames(ttl) {
 		const result = [],
 			limit = 10,
 			utc = Date.now(),
-			timeout = utc - 60000 * 5,
+			timeout = utc - ttl,
 			timeouts = [],
-			inboxFolderName = getFolderInboxName(),
 			bDisplaySpecSetting = this.displaySpecSetting(),
 			fSearchFunction = (list) => {
 				list.forEach(folder => {
 					if (
 						folder &&
-						inboxFolderName !== folder.fullNameRaw &&
 						folder.selectable &&
 						folder.exists &&
-						timeout > folder.interval &&
+						timeout > folder.expires &&
 						(folder.isSystemFolder() || (folder.subscribed() && (folder.checkable() || !bDisplaySpecSetting)))
 					) {
-						timeouts.push([folder.interval, folder.fullNameRaw]);
+						timeouts.push([folder.expires, folder.fullNameRaw]);
 					}
 
 					if (folder && folder.subFolders.length) {
@@ -191,7 +189,7 @@ export const FolderUserStore = new class {
 		timeouts.find(aItem => {
 			const folder = getFolderFromCacheList(aItem[1]);
 			if (folder) {
-				folder.interval = utc;
+				folder.expires = utc;
 				result.push(aItem[1]);
 			}
 

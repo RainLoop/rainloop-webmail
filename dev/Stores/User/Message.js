@@ -671,7 +671,7 @@ export const MessageUserStore = new class {
 				folder = getFolderFromCacheList(collection.Folder);
 
 			if (folder && !cached) {
-				folder.interval = Date.now();
+				folder.expires = Date.now();
 
 				setFolderHash(collection.Folder, collection.FolderHash);
 

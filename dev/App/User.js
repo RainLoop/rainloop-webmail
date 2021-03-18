@@ -81,6 +81,9 @@ import { FolderSystemPopupView } from 'View/Popup/FolderSystem';
 import { AskPopupView } from 'View/Popup/Ask';
 import { TwoFactorConfigurationPopupView } from 'View/Popup/TwoFactorConfiguration';
 
+// Every 5 minutes
+const refreshFolders = 300000;
+
 class AppUser extends AbstractApp {
 	constructor() {
 		super(Remote);
@@ -561,7 +564,7 @@ class AppUser extends AbstractApp {
 
 						const folderFromCache = getFolderFromCacheList(data.Result.Folder);
 						if (folderFromCache) {
-							folderFromCache.interval = Date.now();
+							folderFromCache.expires = Date.now();
 
 							if (data.Result.Hash) {
 								setFolderHash(data.Result.Folder, data.Result.Hash);
@@ -630,7 +633,7 @@ class AppUser extends AbstractApp {
 	 * @param {boolean=} boot = false
 	 */
 	folderInformationMultiply(boot = false) {
-		const folders = FolderUserStore.getNextFolderNames();
+		const folders = FolderUserStore.getNextFolderNames(refreshFolders);
 		if (isNonEmptyArray(folders)) {
 			Remote.folderInformationMultiply((iError, oData) => {
 				if (!iError && oData && oData.Result && oData.Result.List && isNonEmptyArray(oData.Result.List)) {
@@ -641,7 +644,7 @@ class AppUser extends AbstractApp {
 						let unreadCountChange = false;
 
 						if (folder) {
-							folder.interval = utc;
+							folder.expires = utc;
 
 							if (item.Hash) {
 								setFolderHash(item.Folder, item.Hash);
@@ -956,7 +959,6 @@ class AppUser extends AbstractApp {
 								// false ? AboutUserScreen : null
 							]);
 
-							// Every 5 minutes
 							setInterval(() => {
 								const cF = FolderUserStore.currentFolderFullNameRaw(),
 									iF = getFolderInboxName();
@@ -965,7 +967,7 @@ class AppUser extends AbstractApp {
 									this.folderInformation(cF);
 								}
 								this.folderInformationMultiply();
-							}, 300000);
+							}, refreshFolders);
 
 							// Every 15 minutes
 							setInterval(this.quota, 900000);

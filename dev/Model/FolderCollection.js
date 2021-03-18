@@ -187,7 +187,7 @@ export class FolderModel extends AbstractModel {
 		this.delimiter = '';
 		this.namespace = '';
 		this.deep = 0;
-		this.interval = 0;
+		this.expires = 0;
 
 		this.selectable = false;
 		this.exists = true;
