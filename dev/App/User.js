@@ -104,8 +104,8 @@ class AppUser extends AbstractApp {
 				if (rl.hash.check()) {
 					this.reload();
 				}
-				Remote.jsVersion((iError, oData) => {
-					if (!iError && oData && !oData.Result) {
+				Remote.jsVersion(iError => {
+					if (100 < iError) {
 						this.reload();
 					}
 				}, Settings.app('version'));
@@ -473,7 +473,7 @@ class AppUser extends AbstractApp {
 			AccountUserStore.loading(false);
 			IdentityUserStore.loading(false);
 
-			if (!iError && oData.Result) {
+			if (!iError) {
 				const counts = {},
 					sAccountEmail = AccountUserStore.email();
 				let parentEmail = SettingsGet('ParentEmail') || sAccountEmail;
@@ -521,7 +521,7 @@ class AppUser extends AbstractApp {
 		Remote.templates((iError, data) => {
 			TemplateUserStore.templates.loading(false);
 
-			if (!iError && data.Result && isArray(data.Result.Templates)) {
+			if (!iError && isArray(data.Result.Templates)) {
 				delegateRunOnDestroy(TemplateUserStore.templates());
 
 				TemplateUserStore.templates(
@@ -537,8 +537,6 @@ class AppUser extends AbstractApp {
 		Remote.quota((iError, data) => {
 			if (
 				!iError &&
-				data &&
-				data.Result &&
 				isArray(data.Result) &&
 				1 < data.Result.length &&
 				isPosNumeric(data.Result[0], true) &&
@@ -557,7 +555,7 @@ class AppUser extends AbstractApp {
 		if (folder && folder.trim()) {
 			Remote.folderInformation(
 				(iError, data) => {
-					if (!iError && data && data.Result && data.Result.Hash && data.Result.Folder) {
+					if (!iError && data.Result.Hash && data.Result.Folder) {
 						let uid = '',
 							check = false,
 							unreadCountChange = false;
@@ -636,7 +634,7 @@ class AppUser extends AbstractApp {
 		const folders = FolderUserStore.getNextFolderNames(refreshFolders);
 		if (isNonEmptyArray(folders)) {
 			Remote.folderInformationMultiply((iError, oData) => {
-				if (!iError && oData && oData.Result && oData.Result.List && isNonEmptyArray(oData.Result.List)) {
+				if (!iError && isNonEmptyArray(oData.Result.List)) {
 					const utc = Date.now();
 					oData.Result.List.forEach(item => {
 						const hash = getFolderHash(item.Folder),
@@ -759,7 +757,7 @@ class AppUser extends AbstractApp {
 	 */
 	getAutocomplete(query, autocompleteCallback) {
 		Remote.suggestions((iError, data) => {
-			if (!iError && data && isArray(data.Result)) {
+			if (!iError && isArray(data.Result)) {
 				autocompleteCallback(
 					data.Result.map(item => (item && item[0] ? new EmailModel(item[0], item[1]) : null)).filter(v => v)
 				);

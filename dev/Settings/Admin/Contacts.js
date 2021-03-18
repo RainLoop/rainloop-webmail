@@ -133,7 +133,7 @@ export class ContactsAdminSettings {
 		this.testContactsError(false);
 		this.testContactsErrorMessage('');
 
-		if (!iError && data && data.Result && data.Result.Result) {
+		if (!iError && data.Result.Result) {
 			this.testContactsSuccess(true);
 		} else {
 			this.testContactsError(true);

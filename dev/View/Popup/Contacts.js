@@ -225,8 +225,6 @@ class ContactsPopupView extends AbstractViewPopup {
 
 				if (
 					!iError &&
-					oData &&
-					oData.Result &&
 					oData.Result.RequestUid === requestUid &&
 					0 < pInt(oData.Result.ResultID)
 				) {
@@ -457,16 +455,14 @@ class ContactsPopupView extends AbstractViewPopup {
 				let count = 0,
 					list = [];
 
-				if (!iError && data && data.Result && data.Result.List) {
-					if (isNonEmptyArray(data.Result.List)) {
-						data.Result.List.forEach(item => {
-							item = ContactModel.reviveFromJson(item);
-							item && list.push(item);
-						});
+				if (!iError && isNonEmptyArray(data.Result.List)) {
+					data.Result.List.forEach(item => {
+						item = ContactModel.reviveFromJson(item);
+						item && list.push(item);
+					});
 
-						count = pInt(data.Result.Count);
-						count = 0 < count ? count : 0;
-					}
+					count = pInt(data.Result.Count);
+					count = 0 < count ? count : 0;
 				}
 
 				this.contactsCount(count);

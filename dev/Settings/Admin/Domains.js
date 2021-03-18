@@ -46,7 +46,7 @@ export class DomainsAdminSettings {
 	}
 
 	onDomainLoadRequest(iError, oData) {
-		if (!iError && oData && oData.Result) {
+		if (!iError) {
 			showScreenPopup(DomainPopupView, [oData.Result]);
 		}
 	}

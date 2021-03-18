@@ -206,7 +206,12 @@ class DomainPopupView extends AbstractViewPopup {
 
 	onTestConnectionResponse(iError, oData) {
 		this.testing(false);
-		if (!iError && oData.Result) {
+		if (iError) {
+			this.testingImapError(true);
+			this.testingSieveError(true);
+			this.testingSmtpError(true);
+			this.sieveSettings(false);
+		} else {
 			let bImap = false,
 				bSieve = false;
 
@@ -239,11 +244,6 @@ class DomainPopupView extends AbstractViewPopup {
 			} else if (bSieve && !bImap) {
 				this.sieveSettings(true);
 			}
-		} else {
-			this.testingImapError(true);
-			this.testingSieveError(true);
-			this.testingSmtpError(true);
-			this.sieveSettings(false);
 		}
 	}
 

@@ -9,7 +9,7 @@ DomainAdminStore.fetch = () => {
 	DomainAdminStore.loading(true);
 	Remote.domainList((iError, data) => {
 		DomainAdminStore.loading(false);
-		if (!iError && data && data.Result) {
+		if (!iError) {
 			DomainAdminStore(
 				Object.entries(data.Result).map(([name, [enabled, alias]]) => ({
 					name: name,

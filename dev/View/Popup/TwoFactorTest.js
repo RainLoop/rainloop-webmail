@@ -24,9 +24,9 @@ class TwoFactorTestPopupView extends AbstractViewPopup {
 
 	testCodeCommand() {
 		this.testing(true);
-		Remote.testTwoFactor((iError, data) => {
+		Remote.testTwoFactor(iError => {
 			this.testing(false);
-			this.codeStatus(!iError && data && !!data.Result);
+			this.codeStatus(!iError);
 
 			if (this.koTestedTrigger && this.codeStatus()) {
 				this.koTestedTrigger(true);

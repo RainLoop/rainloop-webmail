@@ -11,7 +11,7 @@ PluginAdminStore.fetch = () => {
 	PluginAdminStore.loading(true);
 	Remote.pluginList((iError, data) => {
 		PluginAdminStore.loading(false);
-		if (!iError && data && data.Result) {
+		if (!iError) {
 			PluginAdminStore(
 				data.Result.map(item => ({
 					name: item.Name,

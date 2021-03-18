@@ -54,7 +54,7 @@ export class AccountsUserSettings {
 				this.accounts.remove((account) => accountToRemove === account);
 
 				Remote.accountDelete((iError, data) => {
-					if (!iError && data && data.Result && data.Reload) {
+					if (!iError && data.Reload) {
 						rl.route.root();
 						setTimeout(() => location.reload(), 1);
 					} else {

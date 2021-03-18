@@ -124,7 +124,6 @@ class TemplatePopupView extends AbstractViewPopup {
 
 					if (
 						!iError &&
-						data &&
 						TemplateModel.validJson(data.Result) &&
 						null != data.Result.Body
 					) {

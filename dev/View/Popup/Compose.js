@@ -605,7 +605,7 @@ class ComposePopupView extends AbstractViewPopup {
 
 		this.saving(false);
 
-		if (!iError && oData && oData.Result) {
+		if (!iError) {
 			if (oData.Result.NewFolder && oData.Result.NewUid) {
 				result = true;
 
@@ -1032,7 +1032,7 @@ class ComposePopupView extends AbstractViewPopup {
 		const downloads = this.getAttachmentsDownloadsForUpload();
 		if (isNonEmptyArray(downloads)) {
 			Remote.messageUploadAttachments((iError, oData) => {
-				if (!iError && oData && oData.Result) {
+				if (!iError) {
 					Object.entries(oData.Result).forEach(([tempName, id]) => {
 						const attachment = this.getAttachmentById(id);
 						if (attachment) {

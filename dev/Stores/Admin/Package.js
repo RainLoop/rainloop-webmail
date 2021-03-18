@@ -12,7 +12,7 @@ PackageAdminStore.fetch = () => {
 	PackageAdminStore.loading(true);
 	Remote.packagesList((iError, data) => {
 		PackageAdminStore.loading(false);
-		if (!iError && data && data.Result) {
+		if (!iError) {
 			PackageAdminStore.real(!!data.Result.Real);
 
 			let list = [];

@@ -850,8 +850,8 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 				addRequestedMessage(message.folder, message.uid);
 
 				Remote.message(
-					(iError, data) => {
-						const next = !!(!iError && data && data.Result);
+					iError => {
+						const next = !iError;
 						setTimeout(() => {
 							this.bPrefetch = false;
 							next && this.prefetchNextTick();

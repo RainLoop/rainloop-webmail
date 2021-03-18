@@ -36,6 +36,7 @@ class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 
 		this.capaTwoFactor = Settings.capa(Capa.TwoFactor);
 
+		const fn = iError => iError && this.viewEnable_(false);
 		this.addComputables({
 			viewEnable: {
 				read: this.viewEnable_,
@@ -43,21 +44,12 @@ class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 					value = !!value;
 					if (value && this.twoFactorTested()) {
 						this.viewEnable_(value);
-						Remote.enableTwoFactor((iError, data) => {
-							if (iError || !data || !data.Result) {
-								this.viewEnable_(false);
-							}
-						}, true);
+						Remote.enableTwoFactor(fn, value);
 					} else {
 						if (!value) {
 							this.viewEnable_(value);
 						}
-
-						Remote.enableTwoFactor((iError, data) => {
-							if (iError || !data || !data.Result) {
-								this.viewEnable_(false);
-							}
-						}, false);
+						Remote.enableTwoFactor(fn, false);
 					}
 				}
 			},
@@ -152,7 +144,17 @@ class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 		this.processing(false);
 		this.clearing(false);
 
-		if (!iError && oData && oData.Result) {
+		if (iError) {
+			this.viewUser('');
+			this.viewEnable_(false);
+			this.twoFactorStatus(false);
+			this.twoFactorTested(false);
+
+			this.viewSecret('');
+			this.viewBackupCodes('');
+			this.viewUrlTitle('');
+			this.viewUrl('');
+		} else {
 			this.viewUser(pString(oData.Result.User));
 			this.viewEnable_(!!oData.Result.Enable);
 			this.twoFactorStatus(!!oData.Result.IsSet);
@@ -163,30 +165,20 @@ class TwoFactorConfigurationPopupView extends AbstractViewPopup {
 
 			this.viewUrlTitle(pString(oData.Result.UrlTitle));
 			this.viewUrl(qr.toDataURL({ level: 'M', size: 8, value: this.getQr() }));
-		} else {
-			this.viewUser('');
-			this.viewEnable_(false);
-			this.twoFactorStatus(false);
-			this.twoFactorTested(false);
-
-			this.viewSecret('');
-			this.viewBackupCodes('');
-			this.viewUrlTitle('');
-			this.viewUrl('');
 		}
 	}
 
 	onShowSecretResult(iError, data) {
 		this.secreting(false);
 
-		if (!iError && data && data.Result) {
-			this.viewSecret(pString(data.Result.Secret));
-			this.viewUrlTitle(pString(data.Result.UrlTitle));
-			this.viewUrl(qr.toDataURL({ level: 'M', size: 6, value: this.getQr() }));
-		} else {
+		if (iError) {
 			this.viewSecret('');
 			this.viewUrlTitle('');
 			this.viewUrl('');
+		} else {
+			this.viewSecret(pString(data.Result.Secret));
+			this.viewUrlTitle(pString(data.Result.UrlTitle));
+			this.viewUrl(qr.toDataURL({ level: 'M', size: 6, value: this.getQr() }));
 		}
 	}
 

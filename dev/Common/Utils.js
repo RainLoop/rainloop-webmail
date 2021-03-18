@@ -68,8 +68,8 @@ export function defaultOptionsAfterRender(domItem, item) {
  * @returns {mixed}
  */
 export function settingsSaveHelperSimpleFunction(koTrigger, context) {
-	return (type, data) => {
-		koTrigger.call(context, data && data.Result ? SaveSettingsStep.TrueResult : SaveSettingsStep.FalseResult);
+	return iError => {
+		koTrigger.call(context, iError ? SaveSettingsStep.FalseResult : SaveSettingsStep.TrueResult);
 		setTimeout(() => koTrigger.call(context, SaveSettingsStep.Idle), 1000);
 	};
 }

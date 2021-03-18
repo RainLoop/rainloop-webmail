@@ -43,11 +43,12 @@ export class SecurityUserSettings {
 
 	onBuild() {
 		if (this.capaAutoLogout) {
-			setTimeout(() => {
-				const f0 = settingsSaveHelperSimpleFunction(this.autoLogout.trigger, this);
-
-				this.autoLogout.subscribe(Remote.saveSettingsHelper('AutoLogout', pInt, f0));
-			});
+			setTimeout(() =>
+				this.autoLogout.subscribe(Remote.saveSettingsHelper(
+					'AutoLogout', pInt,
+					settingsSaveHelperSimpleFunction(this.autoLogout.trigger, this)
+				))
+			);
 		}
 	}
 }

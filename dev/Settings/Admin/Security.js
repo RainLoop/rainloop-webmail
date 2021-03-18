@@ -130,7 +130,9 @@ export class SecurityAdminSettings {
 	}
 
 	onNewAdminPasswordResponse(iError, data) {
-		if (!iError && data && data.Result) {
+		if (iError) {
+			this.adminPasswordUpdateError(true);
+		} else {
 			this.adminPassword('');
 			this.adminPasswordNew('');
 			this.adminPasswordNew2('');
@@ -138,8 +140,6 @@ export class SecurityAdminSettings {
 			this.adminPasswordUpdateSuccess(true);
 
 			this.weakPassword(!!data.Result.Weak);
-		} else {
-			this.adminPasswordUpdateError(true);
 		}
 	}
 

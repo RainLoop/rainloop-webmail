@@ -54,7 +54,7 @@ export class PluginsAdminSettings {
 	}
 
 	onPluginLoadRequest(iError, data) {
-		if (!iError && data && data.Result) {
+		if (!iError) {
 			showScreenPopup(PluginPopupView, [data.Result]);
 		}
 	}
