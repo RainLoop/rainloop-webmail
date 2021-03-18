@@ -32,11 +32,9 @@ checkResponseError = data => {
 		) {
 			++iJsonErrorCount;
 		}
-		if (window.rl && (data.ClearAuth || data.Logout || 7 < iJsonErrorCount)) {
+		if (data.ClearAuth || data.Logout || 7 < iJsonErrorCount) {
 			rl.hash.clear();
-			if (!data.ClearAuth) {
-				rl.logoutReload();
-			}
+			data.ClearAuth || rl.logoutReload();
 		}
 	}
 },
@@ -116,10 +114,16 @@ export class AbstractFetchRemote
 				}
 
 				if (!iError && data) {
+/*
+					if (sAction !== data.Action) {
+						console.log(sAction + ' !== ' + data.Action);
+					}
+*/
 					if (data.Result) {
 						iJsonErrorCount = iTokenErrorCount = 0;
 					} else {
 						checkResponseError(data);
+						iError = data.ErrorCode || Notification.UnknownError
 					}
 				}
 

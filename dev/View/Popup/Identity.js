@@ -1,4 +1,3 @@
-import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
@@ -96,17 +95,13 @@ class IdentityPopupView extends AbstractViewPopup {
 		this.submitRequest(true);
 
 		Remote.identityUpdate(
-			(iError, data) => {
+			iError => {
 				this.submitRequest(false);
-				if (!iError && data) {
-					if (data.Result) {
-						rl.app.accountsAndIdentities();
-						this.cancelCommand();
-					} else if (data.ErrorCode) {
-						this.submitError(getNotification(data.ErrorCode));
-					}
+				if (iError) {
+					this.submitError(getNotification(iError));
 				} else {
-					this.submitError(getNotification(Notification.UnknownError));
+					rl.app.accountsAndIdentities();
+					this.cancelCommand();
 				}
 			},
 			this.id,

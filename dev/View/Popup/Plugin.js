@@ -1,6 +1,6 @@
 import ko from 'ko';
 
-import { Scope, Notification } from 'Common/Enums';
+import { Scope } from 'Common/Enums';
 import { getNotification, i18n } from 'Common/Translator';
 import { isNonEmptyArray } from 'Common/Utils';
 
@@ -53,16 +53,11 @@ class PluginPopupView extends AbstractViewPopup {
 		Remote.pluginSettingsUpdate(this.onPluginSettingsUpdateResponse, list);
 	}
 
-	onPluginSettingsUpdateResponse(iError, data) {
-		if (!iError && data && data.Result) {
-			this.cancelCommand();
+	onPluginSettingsUpdateResponse(iError) {
+		if (iError) {
+			this.saveError(getNotification(iError));
 		} else {
-			this.saveError('');
-			if (data && data.ErrorCode) {
-				this.saveError(getNotification(data.ErrorCode));
-			} else {
-				this.saveError(getNotification(Notification.CantSavePluginSettings));
-			}
+			this.cancelCommand();
 		}
 	}
 

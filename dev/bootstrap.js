@@ -37,8 +37,7 @@ export default (App) => {
 		StorageResultType: {
 			Success: 0,
 			Error: 1,
-			Abort: 2,
-			Unload: 3
+			Abort: 2
 		}
 	};
 

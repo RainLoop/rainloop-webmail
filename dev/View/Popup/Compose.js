@@ -579,28 +579,21 @@ class ComposePopupView extends AbstractViewPopup {
 	}
 
 	sendMessageResponse(iError, data) {
-		let result = false,
-			message = '';
 
 		this.sending(false);
 
-		if (!iError && data && data.Result) {
-			result = true;
-			this.modalVisibility() && this.closeCommand && this.closeCommand();
-		}
-
-		if (this.modalVisibility() && !result) {
-			if (data && Notification.CantSaveMessage === data.ErrorCode) {
-				this.sendSuccessButSaveError(true);
-				this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
+		if (this.modalVisibility()) {
+			if (iError) {
+				if (Notification.CantSaveMessage === iError) {
+					this.sendSuccessButSaveError(true);
+					this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
+				} else {
+					this.sendError(true);
+					this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
+						|| getNotification(Notification.CantSendMessage));
+				}
 			} else {
-				message = getNotification(
-					data && data.ErrorCode ? data.ErrorCode : Notification.CantSendMessage,
-					data && data.ErrorMessage ? data.ErrorMessage : ''
-				);
-
-				this.sendError(true);
-				this.sendErrorDesc(message || getNotification(Notification.CantSendMessage));
+				this.closeCommand && this.closeCommand();
 			}
 		}
 

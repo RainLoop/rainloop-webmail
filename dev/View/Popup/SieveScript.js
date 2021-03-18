@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { Notification } from 'Common/Enums';
 import { getNotification, i18nToNodes } from 'Common/Translator';
 import { addObservablesTo } from 'Common/Utils';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
@@ -61,16 +60,13 @@ class SieveScriptPopupView extends AbstractViewPopup {
 				(iError, data) => {
 					self.saving = false;
 
-					if (!iError && data && data.Result) {
+					if (iError) {
+						self.saveError(true);
+						self.saveErrorText((data && data.ErrorMessageAdditional) || getNotification(iError));
+					} else {
 						script.exists() || SieveUserStore.scripts.push(script);
 						script.exists(true);
 						script.hasChanges(false);
-					} else {
-						self.saveError(true);
-						self.saveErrorText((data && data.ErrorCode)
-							? (data.ErrorMessageAdditional || getNotification(data.ErrorCode))
-							: getNotification(Notification.CantSaveFilters)
-						);
 					}
 				},
 				script

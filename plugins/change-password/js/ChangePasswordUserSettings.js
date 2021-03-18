@@ -108,25 +108,21 @@
 
 		onChangePasswordResponse(iError, data) {
 			this.reset(false);
-			if (!iError && data && data.Result) {
+			if (iError) {
+				this.passwordUpdateError(true);
+				if (131 === iError) {
+					// Notification.CurrentPasswordIncorrect
+					this.currentPasswordError(true);
+				}
+				this.errorDescription((data && data.ErrorMessageAdditional)
+					|| rl.i18n('NOTIFICATIONS/COULD_NOT_SAVE_NEW_PASSWORD'));
+			} else {
 				this.currentPassword('');
 				this.newPassword('');
 				this.newPassword2('');
 				this.passwordUpdateSuccess(true);
 				rl.hash.set();
 				rl.settings.set('AuthAccountHash', data.Result);
-			} else {
-				this.passwordUpdateError(true);
-				this.errorDescription(rl.i18n('NOTIFICATIONS/COULD_NOT_SAVE_NEW_PASSWORD'));
-				if (data) {
-					if (131 === data.ErrorCode) {
-						// Notification.CurrentPasswordIncorrect
-						this.currentPasswordError(true);
-					}
-					if (data.ErrorMessageAdditional) {
-						this.errorDescription(data.ErrorMessageAdditional);
-					}
-				}
 			}
 		}
 	}

@@ -1,4 +1,3 @@
-import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 import { HtmlEditor } from 'Common/Html';
 
@@ -53,17 +52,13 @@ class TemplatePopupView extends AbstractViewPopup {
 		this.submitRequest(true);
 
 		Remote.templateSetup(
-			(iError, data) => {
+			iError => {
 				this.submitRequest(false);
-				if (!iError && data) {
-					if (data.Result) {
-						rl.app.templates();
-						this.cancelCommand();
-					} else if (data.ErrorCode) {
-						this.submitError(getNotification(data.ErrorCode));
-					}
+				if (iError) {
+					this.submitError(getNotification(iError));
 				} else {
-					this.submitError(getNotification(Notification.UnknownError));
+					rl.app.templates();
+					this.cancelCommand();
 				}
 			},
 			this.id(),

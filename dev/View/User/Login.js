@@ -6,7 +6,7 @@ import {
 
 import { ClientSideKeyName } from 'Common/EnumsUser';
 
-import { getNotification, getNotificationFromResponse, reload as translatorReload, convertLangName } from 'Common/Translator';
+import { getNotification, reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import { LanguageStore } from 'Stores/Language';
 
@@ -150,36 +150,21 @@ class LoginUserView extends AbstractViewCenter {
 		const fLoginRequest = (sLoginPassword) => {
 			Remote.login(
 				(iError, oData) => {
-					if (!iError && oData && 'Login' === oData.Action) {
-						if (oData.Result) {
-							if (oData.TwoFactorAuth) {
-								this.additionalCode('');
-								this.additionalCodeVisibility(true);
-								this.submitRequest(false);
-
-								setTimeout(() => this.querySelector('.inputAdditionalCode').focus(), 100);
-							} else {
-								rl.route.reload();
-							}
-						} else if (oData.ErrorCode) {
-							this.submitRequest(false);
-							if ([Notification.InvalidInputArgument].includes(oData.ErrorCode)) {
-								oData.ErrorCode = Notification.AuthError;
-							}
-
-							this.submitError(getNotificationFromResponse(oData));
-
-							if (!this.submitError()) {
-								this.submitError(getNotification(Notification.UnknownError));
-							} else if (oData.ErrorMessageAdditional) {
-								this.submitErrorAddidional(oData.ErrorMessageAdditional);
-							}
-						} else {
-							this.submitRequest(false);
+					this.submitRequest(false);
+					if (iError) {
+						if (Notification.InvalidInputArgument == iError) {
+							iError = Notification.AuthError;
 						}
+						this.submitError(getNotification(iError, oData.ErrorMessage, Notification.UnknownNotification));
+						this.submitErrorAddidional((oData && oData.ErrorMessageAdditional) || '');
 					} else {
-						this.submitRequest(false);
-						this.submitError(getNotification(Notification.UnknownError));
+						if (oData.TwoFactorAuth) {
+							this.additionalCode('');
+							this.additionalCodeVisibility(true);
+							setTimeout(() => this.querySelector('.inputAdditionalCode').focus(), 100);
+						} else {
+							rl.route.reload();
+						}
 					}
 				},
 				this.email(),

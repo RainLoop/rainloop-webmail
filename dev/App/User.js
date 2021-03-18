@@ -5,7 +5,6 @@ import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUs
 
 import {
 	Capa,
-	Notification,
 	Scope
 } from 'Common/Enums';
 
@@ -179,13 +178,13 @@ class AppUser extends AbstractApp {
 		MessageUserStore.listError('');
 		Remote.messageList(
 			(iError, oData, bCached) => {
-				if (!iError && oData && oData.Result) {
+				if (iError) {
+					if (Notification.RequestAborted !== iError) {
+						MessageUserStore.list([]);
+						MessageUserStore.listError(getNotification(iError));
+					}
+				} else {
 					MessageUserStore.setMessageList(oData, bCached);
-				} else if (Remote.ABORT !== iError) {
-					MessageUserStore.list([]);
-					MessageUserStore.listError(
-						getNotification((oData && oData.ErrorCode) || Notification.CantGetMessageList)
-					);
 				}
 				MessageUserStore.listLoading(false);
 			},
@@ -273,17 +272,15 @@ class AppUser extends AbstractApp {
 	}
 
 	moveOrDeleteResponseHelper(iError, oData) {
-		if (!iError && FolderUserStore.currentFolder()) {
-			if (oData && isArray(oData.Result) && 2 === oData.Result.length) {
+		if (iError) {
+			setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
+			alert(getNotification(iError));
+		} else if (FolderUserStore.currentFolder()) {
+			if (isArray(oData.Result) && 2 === oData.Result.length) {
 				setFolderHash(oData.Result[0], oData.Result[1]);
 			} else {
 				setFolderHash(FolderUserStore.currentFolderFullNameRaw(), '');
-
-				if (oData && [Notification.CantMoveMessage, Notification.CantCopyMessage].includes(oData.ErrorCode)) {
-					alert(getNotification(oData.ErrorCode));
-				}
 			}
-
 			this.reloadMessageList(!MessageUserStore.list.length);
 			this.quotaDebounce();
 		}
@@ -763,7 +760,7 @@ class AppUser extends AbstractApp {
 				autocompleteCallback(
 					data.Result.map(item => (item && item[0] ? new EmailModel(item[0], item[1]) : null)).filter(v => v)
 				);
-			} else if (Remote.ABORT !== iError) {
+			} else if (Notification.RequestAborted !== iError) {
 				autocompleteCallback([]);
 			}
 		}, query);

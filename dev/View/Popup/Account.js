@@ -1,4 +1,3 @@
-import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/User/Fetch';
@@ -48,22 +47,12 @@ class AccountPopupView extends AbstractViewPopup {
 		Remote.accountSetup(
 			(iError, data) => {
 				this.submitRequest(false);
-				if (!iError && data) {
-					if (data.Result) {
-						rl.app.accountsAndIdentities();
-						this.cancelCommand();
-					} else {
-						this.submitError(
-							data.ErrorCode ? getNotification(data.ErrorCode) : getNotification(Notification.UnknownError)
-						);
-
-						if (data.ErrorMessageAdditional) {
-							this.submitErrorAdditional(data.ErrorMessageAdditional);
-						}
-					}
+				if (iError) {
+					this.submitError(getNotification(iError));
+					this.submitErrorAdditional((data && data.ErrorMessageAdditional) || '');
 				} else {
-					this.submitError(getNotification(Notification.UnknownError));
-					this.submitErrorAdditional('');
+					rl.app.accountsAndIdentities();
+					this.cancelCommand();
 				}
 			},
 			this.email(),

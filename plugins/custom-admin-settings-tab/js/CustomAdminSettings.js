@@ -22,11 +22,11 @@
 
 		this.loading(true);
 
-		rl.pluginRemoteRequest(function (iError, oData) {
+		rl.pluginRemoteRequest((iError, oData) => {
 
 			self.loading(false);
 
-			if (!iError && oData && oData.Result) {
+			if (!iError) {
 				self.php(oData.Result.PHP || '');
 			}
 

@@ -1,6 +1,5 @@
-import { Notification } from 'Common/Enums';
 import { pInt, pString } from 'Common/Utils';
-import { i18n } from 'Common/Translator';
+import { i18n, getNotification } from 'Common/Translator';
 
 import Remote from 'Remote/Admin/Fetch';
 
@@ -248,17 +247,13 @@ class DomainPopupView extends AbstractViewPopup {
 		}
 	}
 
-	onDomainCreateOrSaveResponse(iError, oData) {
+	onDomainCreateOrSaveResponse(iError) {
 		this.saving(false);
-		if (!iError && oData) {
-			if (oData.Result) {
-				DomainAdminStore.fetch();
-				this.closeCommand();
-			} else if (Notification.DomainAlreadyExists === oData.ErrorCode) {
-				this.savingError(i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));
-			}
+		if (iError) {
+			this.savingError(getNotification(iError));
 		} else {
-			this.savingError(i18n('ERRORS/UNKNOWN_ERROR'));
+			DomainAdminStore.fetch();
+			this.closeCommand();
 		}
 	}
 

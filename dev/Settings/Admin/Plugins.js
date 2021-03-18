@@ -60,13 +60,11 @@ export class PluginsAdminSettings {
 	}
 
 	onPluginDisableRequest(iError, data) {
-		if (!iError && data) {
-			if (!data.Result && data.ErrorCode) {
-				if (Notification.UnsupportedPluginPackage === data.ErrorCode && data.ErrorMessage && data.ErrorMessage) {
-					PluginAdminStore.error(data.ErrorMessage);
-				} else {
-					PluginAdminStore.error(getNotification(data.ErrorCode));
-				}
+		if (iError) {
+			if (Notification.UnsupportedPluginPackage === iError && data && data.ErrorMessage) {
+				PluginAdminStore.error(data.ErrorMessage);
+			} else {
+				PluginAdminStore.error(getNotification(iError));
 			}
 		}
 

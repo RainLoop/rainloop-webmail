@@ -33,11 +33,11 @@
 
 		this.saving(true);
 
-		rl.pluginRemoteRequest(function (iError, oData) {
+		rl.pluginRemoteRequest((iError, oData) => {
 
 			self.saving(false);
 
-			if (!iError && oData && oData.Result)
+			if (!iError)
 			{
 				// true
 			}
@@ -61,11 +61,11 @@
 
 		this.loading(true);
 
-		rl.pluginRemoteRequest(function (iError, oData) {
+		rl.pluginRemoteRequest((iError, oData) => {
 
 			self.loading(false);
 
-			if (!iError && oData && oData.Result)
+			if (!iError)
 			{
 				self.userSkype(oData.Result.UserSkype || '');
 				self.userFacebook(oData.Result.UserFacebook || '');

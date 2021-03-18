@@ -1,7 +1,6 @@
 import ko from 'ko';
 
-import { Notification } from 'Common/Enums';
-import { i18n } from 'Common/Translator';
+import { getNotification } from 'Common/Translator';
 
 import { DomainAdminStore } from 'Stores/Admin/Domain';
 
@@ -29,8 +28,6 @@ class DomainAliasPopupView extends AbstractViewPopup {
 
 		this.canBeSaved = ko.computed(() => !this.saving() && this.name() && this.alias());
 
-		this.onDomainAliasCreateOrSaveResponse = this.onDomainAliasCreateOrSaveResponse.bind(this);
-
 		decorateKoCommands(this, {
 			createCommand: self => self.canBeSaved()
 		});
@@ -38,21 +35,15 @@ class DomainAliasPopupView extends AbstractViewPopup {
 
 	createCommand() {
 		this.saving(true);
-		Remote.createDomainAlias(this.onDomainAliasCreateOrSaveResponse, this.name(), this.alias());
-	}
-
-	onDomainAliasCreateOrSaveResponse(iError, data) {
-		this.saving(false);
-		if (!iError && data) {
-			if (data.Result) {
+		Remote.createDomainAlias(iError => {
+			this.saving(false);
+			if (iError) {
+				this.savingError(getNotification(iError));
+			} else {
 				DomainAdminStore.fetch();
 				this.closeCommand();
-			} else if (Notification.DomainAlreadyExists === data.ErrorCode) {
-				this.savingError(i18n('ERRORS/DOMAIN_ALREADY_EXISTS'));
 			}
-		} else {
-			this.savingError(i18n('ERRORS/UNKNOWN_ERROR'));
-		}
+		}, this.name(), this.alias());
 	}
 
 	onShow() {

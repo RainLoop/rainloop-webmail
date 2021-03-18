@@ -640,15 +640,14 @@ export const MessageUserStore = new class {
 	 * @param {boolean} bCached
 	 */
 	onMessageResponse(iError, oData, bCached) {
-		if (!iError && oData && oData.Result) {
+		if (iError) {
+			if (Notification.RequestAborted !== iError) {
+				this.message(null);
+				this.messageError(getNotification(iError));
+			}
+		} else {
 			this.setMessage(oData, bCached);
-		} else if (Remote.ABORT !== iError) {
-			this.message(null);
-			this.messageError(
-				oData && oData.ErrorCode ? getNotification(oData.ErrorCode) : getNotification(Notification.UnknownError)
-			);
 		}
-
 		this.messageLoading(false);
 	}
 
@@ -663,7 +662,7 @@ export const MessageUserStore = new class {
 	}
 
 	setMessageList(data, cached) {
-		const collection = data && MessageCollectionModel.reviveFromJson(data.Result, cached);
+		const collection = MessageCollectionModel.reviveFromJson(data.Result, cached);
 		if (collection) {
 			let unreadCountChange = false;
 
@@ -715,7 +714,7 @@ export const MessageUserStore = new class {
 		} else {
 			this.listCount(0);
 			this.list([]);
-			this.listError(getNotification(data && data.ErrorCode ? data.ErrorCode : Notification.CantGetMessageList));
+			this.listError(getNotification(Notification.CantGetMessageList));
 		}
 	}
 };

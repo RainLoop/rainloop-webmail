@@ -77,6 +77,9 @@ export const SaveSettingsStep = {
  * @enum {number}
  */
 export const Notification = {
+	RequestError: 1,
+	RequestAborted: 2,
+
 	InvalidToken: 101,
 	AuthError: 102,
 	ConnectionError: 104,

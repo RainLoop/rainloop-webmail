@@ -2,7 +2,6 @@ import ko from 'ko';
 
 import {
 	SaveSettingsStep,
-	Notification,
 	Scope
 } from 'Common/Enums';
 
@@ -255,10 +254,8 @@ class ContactsPopupView extends AbstractViewPopup {
 	}
 
 	syncCommand() {
-		rl.app.contactsSync((iError, data) => {
-			if (iError || !data || !data.Result) {
-				alert(getNotification(data && data.ErrorCode ? data.ErrorCode : Notification.ContactsSyncError));
-			}
+		rl.app.contactsSync(iError => {
+			iError && alert(getNotification(iError));
 
 			this.reloadContactList(true);
 		});

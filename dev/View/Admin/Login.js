@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { Notification } from 'Common/Enums';
 import { Settings } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
@@ -59,17 +58,12 @@ class LoginAdminView extends AbstractViewCenter {
 		this.submitRequest(true);
 
 		Remote.adminLogin(
-			(iError, oData) => {
-				if (!iError && oData && 'AdminLogin' === oData.Action) {
-					if (oData.Result) {
-						rl.route.reload();
-					} else if (oData.ErrorCode) {
-						this.submitRequest(false);
-						this.submitError(getNotification(oData.ErrorCode));
-					}
+			(iError) => {
+				this.submitRequest(false);
+				if (iError) {
+					this.submitError(getNotification(iError));
 				} else {
-					this.submitRequest(false);
-					this.submitError(getNotification(Notification.UnknownError));
+					rl.route.reload();
 				}
 			},
 			this.login(),

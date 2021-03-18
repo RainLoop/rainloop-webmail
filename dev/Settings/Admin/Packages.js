@@ -35,14 +35,11 @@ export class PackagesAdminSettings {
 
 	requestHelper(packageToRequest, install) {
 		return (iError, data) => {
-			if (iError || !data || !data.Result) {
-				if (data && data.ErrorCode) {
-					this.packagesError(getNotification(data.ErrorCode));
-				} else {
-					this.packagesError(
-						getNotification(install ? Notification.CantInstallPackage : Notification.CantDeletePackage)
-					);
-				}
+			if (iError) {
+				this.packagesError(
+					getNotification(install ? Notification.CantInstallPackage : Notification.CantDeletePackage)
+//					':\n' + getNotification(iError);
+				);
 			}
 
 			PackageAdminStore.forEach(item => {
@@ -52,7 +49,7 @@ export class PackagesAdminSettings {
 				}
 			});
 
-			if (!iError && data && data.Result && data.Result.Reload) {
+			if (!iError && data.Result.Reload) {
 				location.reload();
 			} else {
 				PackageAdminStore.fetch();

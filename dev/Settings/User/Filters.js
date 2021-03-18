@@ -1,6 +1,5 @@
 import ko from 'ko';
 
-import { Notification } from 'Common/Enums';
 import { getNotification } from 'Common/Translator';
 import { addObservablesTo } from 'Common/Utils';
 import { delegateRunOnDestroy } from 'Common/UtilsUser';
@@ -41,7 +40,10 @@ export class FiltersUserSettings {
 				this.loading(false);
 				this.scripts([]);
 
-				if (!iError && data && data.Result) {
+				if (iError) {
+					SieveUserStore.capa([]);
+					this.setError(getNotification(iError));
+				} else {
 					SieveUserStore.capa(data.Result.Capa);
 /*
 					this.scripts(
@@ -52,11 +54,6 @@ export class FiltersUserSettings {
 						value = SieveScriptModel.reviveFromJson(value);
 						value && this.scripts.push(value)
 					});
-				} else {
-					SieveUserStore.capa([]);
-					this.setError(
-						data && data.ErrorCode ? getNotification(data.ErrorCode) : getNotification(Notification.CantGetFilters)
-					);
 				}
 			});
 		}
@@ -73,15 +70,12 @@ export class FiltersUserSettings {
 	deleteScript(script) {
 		this.serverError(false);
 		Remote.filtersScriptDelete(
-			(result, data) => {
-				if (Remote.SUCCESS === result && data && data.Result) {
+			(iError, data) => {
+				if (iError) {
+					this.setError((data && data.ErrorMessageAdditional) || getNotification(iError));
+				} else {
 					this.scripts.remove(script);
 					delegateRunOnDestroy(script);
-				} else {
-					this.setError((data && data.ErrorCode)
-						? (data.ErrorMessageAdditional || getNotification(data.ErrorCode))
-						: getNotification(Notification.CantActivateFiltersScript)
-					);
 				}
 			},
 			script.name()
@@ -92,14 +86,11 @@ export class FiltersUserSettings {
 		let name = script.active() ? '' : script.name();
 		this.serverError(false);
 		Remote.filtersScriptActivate(
-			(result, data) => {
-				if (Remote.SUCCESS === result && data && data.Result) {
-					this.scripts.forEach(script => script.active(script.name() === name));
+			(iError, data) => {
+				if (iError) {
+					this.setError((data && data.ErrorMessageAdditional) || iError)
 				} else {
-					this.setError((data && data.ErrorCode)
-						? (data.ErrorMessageAdditional || getNotification(data.ErrorCode))
-						: getNotification(Notification.CantActivateFiltersScript)
-					);
+					this.scripts.forEach(script => script.active(script.name() === name));
 				}
 			},
 			name

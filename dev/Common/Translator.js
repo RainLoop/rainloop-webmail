@@ -92,27 +92,15 @@ function getNotificationMessage(code) {
  * @param {*=} defCode = null
  * @returns {string}
  */
-export function getNotification(code, message = '', defCode = null) {
+export function getNotification(code, message = '', defCode = 0) {
 	code = parseInt(code, 10) || 0;
 	if (Notification.ClientViewError === code && message) {
 		return message;
 	}
 
-	defCode = defCode ? parseInt(defCode, 10) || 0 : 0;
 	return getNotificationMessage(code)
-		|| getNotificationMessage(defCode)
+		|| getNotificationMessage(parseInt(defCode, 10))
 		|| '';
-}
-
-/**
- * @param {object} response
- * @param {number} defCode = Notification.UnknownNotification
- * @returns {string}
- */
-export function getNotificationFromResponse(response, defCode = Notification.UnknownNotification) {
-	return response && response.ErrorCode
-		? getNotification(parseInt(response.ErrorCode, 10) || defCode, response.ErrorMessage || '')
-		: getNotification(defCode);
 }
 
 /**

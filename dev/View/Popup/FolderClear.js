@@ -1,4 +1,3 @@
-import { Notification } from 'Common/Enums';
 import { i18n, getNotification } from 'Common/Translator';
 import { setFolderHash } from 'Common/Cache';
 
@@ -54,17 +53,13 @@ class FolderClearPopupView extends AbstractViewPopup {
 
 			setFolderHash(folderToClear.fullNameRaw, '');
 
-			Remote.folderClear((iError, data) => {
+			Remote.folderClear(iError => {
 				this.clearingProcess(false);
-				if (!iError && data && data.Result) {
+				if (iError) {
+					this.clearingError(getNotification(iError));
+				} else {
 					rl.app.reloadMessageList(true);
 					this.cancelCommand();
-				} else {
-					if (data && data.ErrorCode) {
-						this.clearingError(getNotification(data.ErrorCode));
-					} else {
-						this.clearingError(getNotification(Notification.MailServerError));
-					}
 				}
 			}, folderToClear.fullNameRaw);
 		}
