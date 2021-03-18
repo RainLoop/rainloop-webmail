@@ -9,10 +9,10 @@ import { ThemeStore } from 'Stores/Theme';
 export const SettingsUserStore = new class {
 	constructor() {
 		this.layout = ko
-			.observable(Layout.SidePreview)
+			.observable(pInt(SettingsGet('Layout')))
 			.extend({ limitedList: [Layout.SidePreview, Layout.BottomPreview, Layout.NoPreview] });
 
-		this.editorDefaultType = ko.observable(EditorDefaultType.Html).extend({
+		this.editorDefaultType = ko.observable(SettingsGet('EditorDefaultType')).extend({
 			limitedList: [
 				EditorDefaultType.Html,
 				EditorDefaultType.Plain,
@@ -21,17 +21,17 @@ export const SettingsUserStore = new class {
 			]
 		});
 
-		this.messagesPerPage = ko.observable(20).extend({ limitedList: MESSAGES_PER_PAGE_VALUES });
+		this.messagesPerPage = ko.observable(SettingsGet('MPP')).extend({ limitedList: MESSAGES_PER_PAGE_VALUES });
 
 		addObservablesTo(this, {
-			showImages: false,
-			removeColors: false,
-			useCheckboxesInList: true,
-			allowDraftAutosave: true,
-			useThreads: false,
-			replySameFolder: false,
+			showImages: !!SettingsGet('ShowImages'),
+			removeColors: !!SettingsGet('RemoveColors'),
+			useCheckboxesInList: !!(ThemeStore.isMobile() || SettingsGet('UseCheckboxesInList')),
+			allowDraftAutosave: !!SettingsGet('AllowDraftAutosave'),
+			useThreads: !!SettingsGet('UseThreads'),
+			replySameFolder: !!SettingsGet('ReplySameFolder'),
 
-			autoLogout: 30
+			autoLogout: pInt(SettingsGet('AutoLogout'))
 		});
 
 		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout() && !ThemeStore.isMobile());
@@ -53,22 +53,5 @@ export const SettingsUserStore = new class {
 				);
 			}
 		}).throttle(5000);
-	}
-
-	populate() {
-		this.layout(pInt(SettingsGet('Layout')));
-		this.editorDefaultType(SettingsGet('EditorDefaultType'));
-
-		this.autoLogout(pInt(SettingsGet('AutoLogout')));
-		this.messagesPerPage(SettingsGet('MPP'));
-
-		this.showImages(!!SettingsGet('ShowImages'));
-		this.removeColors(!!SettingsGet('RemoveColors'));
-		this.useCheckboxesInList(!!(ThemeStore.isMobile() || SettingsGet('UseCheckboxesInList')));
-		this.allowDraftAutosave(!!SettingsGet('AllowDraftAutosave'));
-		this.useThreads(!!SettingsGet('UseThreads'));
-		this.replySameFolder(!!SettingsGet('ReplySameFolder'));
-
-		this.delayLogout();
 	}
 };

@@ -19,7 +19,7 @@ export class SecurityUserSettings {
 		this.capaTwoFactor = Settings.capa(Capa.TwoFactor);
 
 		this.autoLogout = SettingsUserStore.autoLogout;
-		this.autoLogout.trigger = ko.observable(SaveSettingsStep.Idle);
+		this.autoLogoutTrigger = ko.observable(SaveSettingsStep.Idle);
 
 		let i18nLogout = (key, params) => i18n('SETTINGS_SECURITY/AUTOLOGIN_' + key, params);
 		this.autoLogoutOptions = ko.computed(() => {
@@ -35,20 +35,16 @@ export class SecurityUserSettings {
 				{ 'id': 60 * 10, 'name': i18nLogout('HOURS_OPTION_NAME', { 'HOURS': 10 }) }
 			];
 		});
+
+		if (this.capaAutoLogout) {
+			this.autoLogout.subscribe(value => Remote.saveSetting(
+				'AutoLogout', pInt(value),
+				settingsSaveHelperSimpleFunction(this.autoLogoutTrigger, this)
+			));
+		}
 	}
 
 	configureTwoFactor() {
 		showScreenPopup(TwoFactorConfigurationPopupView);
-	}
-
-	onBuild() {
-		if (this.capaAutoLogout) {
-			setTimeout(() =>
-				this.autoLogout.subscribe(Remote.saveSettingsHelper(
-					'AutoLogout', pInt,
-					settingsSaveHelperSimpleFunction(this.autoLogout.trigger, this)
-				))
-			);
-		}
 	}
 }

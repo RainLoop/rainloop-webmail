@@ -22,6 +22,8 @@ export class OpenPgpUserSettings {
 		this.openPgpKeyForDeletion = ko.observable(null).deleteAccessHelper();
 
 		this.allowDraftAutosave = SettingsUserStore.allowDraftAutosave;
+
+		this.allowDraftAutosave.subscribe(value => Remote.saveSetting('AllowDraftAutosave', value ? 1 : 0))
 	}
 
 	addOpenPgpKey() {
@@ -60,11 +62,5 @@ export class OpenPgpUserSettings {
 				rl.app.reloadOpenPgpKeys();
 			}
 		}
-	}
-
-	onBuild() {
-		setTimeout(() => {
-			this.allowDraftAutosave.subscribe(Remote.saveSettingsHelper('AllowDraftAutosave', v=>v?'1':'0'));
-		}, 50);
 	}
 }

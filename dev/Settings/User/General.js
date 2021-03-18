@@ -84,7 +84,6 @@ export class GeneralUserSettings {
 			];
 		});
 
-
 		const fReloadLanguageHelper = (saveSettingsStep) => () => {
 				this.languageTrigger(saveSettingsStep);
 				setTimeout(() => this.languageTrigger(SaveSettingsStep.Idle), 1000);
@@ -93,56 +92,39 @@ export class GeneralUserSettings {
 			language: value => {
 				this.languageTrigger(SaveSettingsStep.Animate);
 				translatorReload(false, value)
-					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
-					.then(() => {
-						Remote.saveSettings(null, {
-							'Language': value
-						});
-					});
+					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult),
+						fReloadLanguageHelper(SaveSettingsStep.FalseResult))
+					.then(() => Remote.saveSetting('Language', value));
 			},
 
-			editorDefaultType:
-				Remote.saveSettingsHelper('EditorDefaultType', null,
-					settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this)),
+			editorDefaultType: value => Remote.saveSetting('EditorDefaultType', value,
+				settingsSaveHelperSimpleFunction(this.editorDefaultTypeTrigger, this)),
 
-			messagesPerPage: Remote.saveSettingsHelper('MPP', null, settingsSaveHelperSimpleFunction(this.mppTrigger, this)),
+			messagesPerPage: value => Remote.saveSetting('MPP', value,
+				settingsSaveHelperSimpleFunction(this.mppTrigger, this)),
 
-			showImages: Remote.saveSettingsHelper('ShowImages', v=>v?'1':'0'),
+			showImages: value => Remote.saveSetting('ShowImages', value ? 1 : 0),
 
-			removeColors: Remote.saveSettingsHelper('RemoveColors', v=>v?'1':'0'),
+			removeColors: value => {
+				Remote.saveSetting('RemoveColors', value ? 1 : 0);
+			},
 
-			useCheckboxesInList: Remote.saveSettingsHelper('UseCheckboxesInList', v=>v?'1':'0'),
+			useCheckboxesInList: value => Remote.saveSetting('UseCheckboxesInList', value ? 1 : 0),
 
-			enableDesktopNotification: (value =>
-				Remote.saveSettings(null, {
-					'DesktopNotifications': value ? 1 : 0
-				})
-			).debounce(3000),
+			enableDesktopNotification: value => Remote.saveSetting('DesktopNotifications', value ? 1 : 0),
 
-			enableSoundNotification: (value =>
-				Remote.saveSettings(null, {
-					'SoundNotification': value ? 1 : 0
-				})
-			).debounce(3000),
+			enableSoundNotification: value => Remote.saveSetting('SoundNotification', value ? 1 : 0),
 
-			replySameFolder: (value =>
-				Remote.saveSettings(null, {
-					'ReplySameFolder': value ? 1 : 0
-				})
-			).debounce(3000),
+			replySameFolder: value => Remote.saveSetting('ReplySameFolder', value ? 1 : 0),
 
 			useThreads: value => {
 				MessageUserStore.list([]);
-				Remote.saveSettings(null, {
-					'UseThreads': value ? 1 : 0
-				});
+				Remote.saveSetting('UseThreads', value ? 1 : 0);
 			},
 
 			layout: value => {
 				MessageUserStore.list([]);
-				Remote.saveSettings(settingsSaveHelperSimpleFunction(this.layoutTrigger, this), {
-					'Layout': value
-				});
+				Remote.saveSetting('Layout', value, settingsSaveHelperSimpleFunction(this.layoutTrigger, this));
 			}
 		});
 	}

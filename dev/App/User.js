@@ -130,10 +130,6 @@ class AppUser extends AbstractApp {
 		const fn = (ev=>$htmlCL.toggle('rl-ctrl-key-pressed', ev.ctrlKey)).debounce(500);
 		['keydown','keyup'].forEach(t => doc.addEventListener(t, fn));
 
-		['touchstart','mousedown','mousemove','keydown'].forEach(
-			t => doc.addEventListener(t, SettingsUserStore.delayLogout, {passive:true})
-		);
-
 		shortcuts.add('escape,enter', '', Scope.All, () => rl.Dropdowns.detectVisibility());
 	}
 
@@ -884,7 +880,6 @@ class AppUser extends AbstractApp {
 
 		addEventListener('resize', () => leftPanelDisabled(ThemeStore.isMobile() || 1000 > innerWidth));
 
-		SettingsUserStore.populate();
 		NotificationUserStore.populate();
 		AccountUserStore.populate();
 		ContactUserStore.populate();
@@ -1010,6 +1005,11 @@ class AppUser extends AbstractApp {
 									}
 								}, 500);
 							}
+
+							['touchstart','mousedown','mousemove','keydown'].forEach(
+								t => doc.addEventListener(t, SettingsUserStore.delayLogout, {passive:true})
+							);
+							SettingsUserStore.delayLogout();
 
 							setTimeout(() => this.initVerticalLayoutResizer(), 1);
 						} else {

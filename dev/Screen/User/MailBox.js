@@ -6,7 +6,6 @@ import { i18n } from 'Common/Translator';
 
 import { AppUserStore } from 'Stores/User/App';
 import { AccountUserStore } from 'Stores/User/Account';
-import { SettingsUserStore } from 'Stores/User/Settings';
 import { FolderUserStore } from 'Stores/User/Folder';
 import { MessageUserStore } from 'Stores/User/Message';
 import { ThemeStore } from 'Stores/Theme';
@@ -89,7 +88,6 @@ export class MailBoxUserScreen extends AbstractScreen {
 	onStart() {
 		if (!this.__started) {
 			super.onStart();
-			setTimeout(() => SettingsUserStore.layout.valueHasMutated(), 50);
 			setTimeout(() => warmUpScreenPopup(ComposePopupView), 500);
 
 			addEventListener('mailbox.inbox-unread-count', e => {

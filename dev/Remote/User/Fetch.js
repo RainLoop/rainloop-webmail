@@ -583,15 +583,13 @@ class RemoteUserFetch extends AbstractFetchRemote {
 
 	/**
 	 * @param {string} key
-	 * @param {?Function} valueFn
-	 * @param {?Function} fn
+	 * @param {?scalar} value
+	 * @param {?Function} fCallback
 	 */
-	saveSettingsHelper(key, valueFn, fn) {
-		return (value) => {
-			this.saveSettings(fn || null, {
-				[key]: valueFn ? valueFn(value) : value
-			});
-		};
+	saveSetting(key, value, fCallback) {
+		this.saveSettings(fCallback, {
+			[key]: value
+		});
 	}
 
 	/**
