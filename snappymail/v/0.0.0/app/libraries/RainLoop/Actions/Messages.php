@@ -556,7 +556,7 @@ trait Messages
 		$sFromFolder = $this->GetActionParam('FromFolder', '');
 		$sToFolder = $this->GetActionParam('ToFolder', '');
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
-		$bMarkAsRead = '1' === (string) $this->GetActionParam('MarkAsRead', '0');
+		$bMarkAsRead = !empty($this->GetActionParam('MarkAsRead', '0'));
 
 		$aFilteredUids = \array_filter($aUids, function (&$mUid) {
 			$mUid = (int) \trim($mUid);
