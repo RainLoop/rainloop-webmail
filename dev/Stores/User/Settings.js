@@ -10,7 +10,7 @@ export const SettingsUserStore = new class {
 	constructor() {
 		this.layout = ko
 			.observable(pInt(SettingsGet('Layout')))
-			.extend({ limitedList: [Layout.SidePreview, Layout.BottomPreview, Layout.NoPreview] });
+			.extend({ limitedList: Object.values(Layout) });
 
 		this.editorDefaultType = ko.observable(SettingsGet('EditorDefaultType')).extend({
 			limitedList: [
@@ -36,12 +36,16 @@ export const SettingsUserStore = new class {
 
 		this.usePreviewPane = ko.computed(() => Layout.NoPreview !== this.layout() && !ThemeStore.isMobile());
 
-		this.layout.subscribe(value => {
+		const toggleLayout = () => {
+			const value = ThemeStore.isMobile() ? Layout.NoPreview : this.layout();
 			$htmlCL.toggle('rl-no-preview-pane', Layout.NoPreview === value);
 			$htmlCL.toggle('rl-side-preview-pane', Layout.SidePreview === value);
 			$htmlCL.toggle('rl-bottom-preview-pane', Layout.BottomPreview === value);
 			dispatchEvent(new CustomEvent('rl-layout', {detail:value}));
-		});
+		};
+		this.layout.subscribe(toggleLayout);
+		ThemeStore.isMobile.subscribe(toggleLayout);
+		toggleLayout();
 
 		let iAutoLogoutTimer;
 		this.delayLogout = (() => {

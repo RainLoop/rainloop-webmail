@@ -845,24 +845,25 @@ class AppUser extends AbstractApp {
 	initHorizontalLayoutResizer() {
 		const top = doc.querySelector('.b-message-list-wrapper'),
 			bottom = doc.querySelector('.b-message-view-wrapper'),
-			fDisable = bDisable => {
+			fToggle = () => {
 				this.setLayoutResizer(top, bottom, ClientSideKeyName.MessageListSize,
-					(bDisable || !$htmlCL.contains('rl-bottom-preview-pane')) ? null : 'height');
+					(ThemeStore.isMobile() || Layout.BottomPreview !== SettingsUserStore.layout()) ? null : 'height');
 			};
 		if (top && bottom) {
-			fDisable(ThemeStore.isMobile());
-			addEventListener('rl-layout', e => fDisable(Layout.BottomPreview !== e.detail));
+			fToggle();
+			addEventListener('rl-layout', fToggle);
 		}
 	}
 
 	initVerticalLayoutResizer() {
 		const left = elementById('rl-left'),
 			right = elementById('rl-right'),
-			fDisable = bDisable =>
-				this.setLayoutResizer(left, right, ClientSideKeyName.FolderListSize, bDisable ? null : 'width');
+			fToggle = () =>
+				this.setLayoutResizer(left, right, ClientSideKeyName.FolderListSize,
+					(ThemeStore.isMobile() || leftPanelDisabled()) ? null : 'width');
 		if (left && right) {
-			fDisable(ThemeStore.isMobile());
-			leftPanelDisabled.subscribe(value => fDisable(value));
+			fToggle();
+			leftPanelDisabled.subscribe(fToggle);
 		}
 	}
 
