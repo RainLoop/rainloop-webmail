@@ -34,19 +34,15 @@
 	class ChangePasswordUserSettings
 	{
 		constructor() {
-			ko.addObservablesTo(this, {
-				changeProcess: false,
-
-				errorDescription: '',
-				passwordMismatch: false,
-				passwordUpdateError: false,
-				passwordUpdateSuccess: false,
-
-				currentPassword: '',
-				currentPasswordError: false,
-				newPassword: '',
-				newPassword2: '',
-			});
+			this.changeProcess = ko.observable(false);
+			this.errorDescription = ko.observable('');
+			this.passwordMismatch = ko.observable(false);
+			this.passwordUpdateError = ko.observable(false);
+			this.passwordUpdateSuccess = ko.observable(false);
+			this.currentPassword = ko.observable('');
+			this.currentPasswordError = ko.observable(false);
+			this.newPassword = ko.observable('');
+			this.newPassword2 = ko.observable('');
 
 			this.currentPassword.subscribe(() => this.resetUpdate(true));
 			this.newPassword.subscribe(() => this.resetUpdate());

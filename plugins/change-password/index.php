@@ -6,8 +6,8 @@ class ChangePasswordPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME     = 'Change Password',
-		VERSION  = '2.0',
-		RELEASE  = '2021-03-15',
+		VERSION  = '2.1',
+		RELEASE  = '2021-03-18',
 		REQUIRED = '2.4.0',
 		CATEGORY = 'Security',
 		DESCRIPTION = 'This plugin allows you to change passwords of email accounts';
