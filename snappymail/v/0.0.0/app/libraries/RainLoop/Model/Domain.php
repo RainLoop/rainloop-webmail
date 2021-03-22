@@ -61,6 +61,11 @@ class Domain implements \JsonSerializable
 	/**
 	 * @var bool
 	 */
+	private $bOutSetSender;
+
+	/**
+	 * @var bool
+	 */
 	private $bOutUsePhpMail;
 
 	/**
@@ -97,7 +102,8 @@ class Domain implements \JsonSerializable
 		string $sIncHost, int $iIncPort, int $iIncSecure, bool $bIncShortLogin,
 		bool $bUseSieve, string $sSieveHost, int $iSievePort, int $iSieveSecure,
 		string $sOutHost, int $iOutPort, int $iOutSecure, bool $bOutShortLogin,
-		bool $bOutAuth, bool $bOutUsePhpMail = false, string $sWhiteList = '')
+		bool $bOutAuth, bool $bOutSetSender, bool $bOutUsePhpMail = false,
+		string $sWhiteList = '')
 	{
 		$this->sName = $sName;
 		$this->sIncHost = $sIncHost;
@@ -110,6 +116,7 @@ class Domain implements \JsonSerializable
 		$this->iOutSecure = $iOutSecure;
 		$this->bOutShortLogin = $bOutShortLogin;
 		$this->bOutAuth = $bOutAuth;
+		$this->bOutSetSender = $bOutSetSender;
 		$this->bOutUsePhpMail = $bOutUsePhpMail;
 
 		$this->bUseSieve = $bUseSieve;
@@ -145,6 +152,7 @@ class Domain implements \JsonSerializable
 				!empty($aDomain['smtp_secure']) ? $aDomain['smtp_secure'] : '');
 
 			$bOutAuth = !empty($aDomain['smtp_auth']);
+			$bOutSetSender = !empty($aDomain['smtp_set_sender']);
 			$bOutUsePhpMail = !empty($aDomain['smtp_php_mail']);
 			$sWhiteList = (string) ($aDomain['white_list'] ?? '');
 
@@ -154,7 +162,7 @@ class Domain implements \JsonSerializable
 			$oDomain = new self($sName,
 				$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 				$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
-				$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
+				$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutSetSender, $bOutUsePhpMail,
 				$sWhiteList);
 		}
 
@@ -206,6 +214,7 @@ class Domain implements \JsonSerializable
 			'smtp_secure = "'.self::ConstConnectionSecurityTypeToStr($this->iOutSecure).'"',
 			'smtp_short_login = '.($this->bOutShortLogin ? 'On' : 'Off'),
 			'smtp_auth = '.($this->bOutAuth ? 'On' : 'Off'),
+			'smtp_set_sender = '.($this->bOutSetSender ? 'On' : 'Off'),
 			'smtp_php_mail = '.($this->bOutUsePhpMail ? 'On' : 'Off'),
 			'white_list = "'.$this->encodeIniString($this->sWhiteList).'"'
 		));
@@ -246,7 +255,8 @@ class Domain implements \JsonSerializable
 		string $sIncHost, int $iIncPort, int $iIncSecure, bool $bIncShortLogin,
 		bool $bUseSieve, string $sSieveHost, int $iSievePort, int $iSieveSecure,
 		string $sOutHost, int $iOutPort, int $iOutSecure, bool $bOutShortLogin,
-		bool $bOutAuth, bool $bOutUsePhpMail, string $sWhiteList = '') : self
+		bool $bOutAuth, bool $bOutSetSender, bool $bOutUsePhpMail,
+		string $sWhiteList = '') : self
 	{
 		$this->sIncHost = \MailSo\Base\Utils::IdnToAscii($sIncHost);
 		$this->iIncPort = $iIncPort;
@@ -263,6 +273,7 @@ class Domain implements \JsonSerializable
 		$this->iOutSecure = $iOutSecure;
 		$this->bOutShortLogin = $bOutShortLogin;
 		$this->bOutAuth = $bOutAuth;
+		$this->bOutSetSender = $bOutSetSender;
 		$this->bOutUsePhpMail = $bOutUsePhpMail;
 
 		$this->sWhiteList = \trim($sWhiteList);
@@ -340,6 +351,11 @@ class Domain implements \JsonSerializable
 		return $this->bOutAuth;
 	}
 
+	public function OutSetSender() : bool
+	{
+		return $this->bOutSetSender;
+	}
+
 	public function OutUsePhpMail() : bool
 	{
 		return $this->bOutUsePhpMail;
@@ -397,6 +413,7 @@ class Domain implements \JsonSerializable
 			'OutSecure' => $this->OutSecure(),
 			'OutShortLogin' => $this->OutShortLogin(),
 			'OutAuth' => $this->OutAuth(),
+			'OutSetSender' => $this->OutSetSender(),
 			'OutUsePhpMail' => $this->OutUsePhpMail(),
 			'WhiteList' => $this->WhiteList(),
 			'AliasName' => $this->AliasName()
@@ -421,6 +438,7 @@ class Domain implements \JsonSerializable
 			'OutSecure' => $this->OutSecure(),
 			'OutShortLogin' => $this->OutShortLogin(),
 			'OutAuth' => $this->OutAuth(),
+			'OutSetSender' => $this->OutSetSender(),
 			'OutUsePhpMail' => $this->OutUsePhpMail(),
 			'WhiteList' => $this->WhiteList(),
 			'AliasName' => $this->AliasName()

@@ -168,6 +168,7 @@ class RemoteAdminFetch extends AbstractFetchRemote {
 			OutSecure: oDomain.smtpSecure(),
 			OutShortLogin: oDomain.smtpShortLogin() ? 1 : 0,
 			OutAuth: oDomain.smtpAuth() ? 1 : 0,
+			OutSetSender: oDomain.smtpSetSender() ? 1 : 0,
 			OutUsePhpMail: oDomain.smtpPhpMail() ? 1 : 0,
 
 			WhiteList: oDomain.whiteList()

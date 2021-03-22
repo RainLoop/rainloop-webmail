@@ -131,6 +131,7 @@ zh_CN:
     LABEL_ALLOW_SIEVE_SCRIPTS: "可使用筛选脚本"
     LABEL_USE_SHORT_LOGIN: "使用短用户名登录"
     LABEL_USE_AUTH: "使用认证"
+    LABEL_SET_SENDER: "使用登录名作为发件人"
     LABEL_USE_PHP_MAIL: "使用 php mail() 函数"
     BUTTON_TEST: "测试"
     BUTTON_WHITE_LIST: "白名单"

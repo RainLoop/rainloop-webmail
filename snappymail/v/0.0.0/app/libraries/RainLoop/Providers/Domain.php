@@ -96,31 +96,33 @@ class Domain extends AbstractProvider
 
 		if ($this->bAdmin)
 		{
-			$bCreate = '1' === (string) $oActions->GetActionParam('Create', '0');
 			$sName = (string) $oActions->GetActionParam('Name', '');
-			$sIncHost = (string) $oActions->GetActionParam('IncHost', '');
-			$iIncPort = (int) $oActions->GetActionParam('IncPort', 143);
-			$iIncSecure = (int) $oActions->GetActionParam('IncSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
-			$bIncShortLogin = '1' === (string) $oActions->GetActionParam('IncShortLogin', '0');
-			$bUseSieve = '1' === (string) $oActions->GetActionParam('UseSieve', '0');
-			$sSieveHost = (string) $oActions->GetActionParam('SieveHost', '');
-			$iSievePort = (int) $oActions->GetActionParam('SievePort', 4190);
-			$iSieveSecure = (int) $oActions->GetActionParam('SieveSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
-			$sOutHost = (string) $oActions->GetActionParam('OutHost', '');
-			$iOutPort = (int) $oActions->GetActionParam('OutPort', 25);
-			$iOutSecure = (int) $oActions->GetActionParam('OutSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
-			$bOutShortLogin = '1' === (string) $oActions->GetActionParam('OutShortLogin', '0');
-			$bOutAuth = '1' === (string) $oActions->GetActionParam('OutAuth', '1');
-			$bOutUsePhpMail = '1' === (string) $oActions->GetActionParam('OutUsePhpMail', '0');
-			$sWhiteList = (string) $oActions->GetActionParam('WhiteList', '');
 
-			if (0 < \strlen($sName) && 0 < strlen($sNameForTest) && false === \strpos($sName, '*'))
+			if (0 < \strlen($sName) && 0 < \strlen($sNameForTest) && !\str_contains($sName, '*'))
 			{
 				$sNameForTest = '';
 			}
 
 			if (0 < strlen($sName) || 0 < strlen($sNameForTest))
 			{
+				$bCreate = '1' === (string) $oActions->GetActionParam('Create', '0');
+				$sIncHost = (string) $oActions->GetActionParam('IncHost', '');
+				$iIncPort = (int) $oActions->GetActionParam('IncPort', 143);
+				$iIncSecure = (int) $oActions->GetActionParam('IncSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
+				$bIncShortLogin = '1' === (string) $oActions->GetActionParam('IncShortLogin', '0');
+				$bUseSieve = '1' === (string) $oActions->GetActionParam('UseSieve', '0');
+				$sSieveHost = (string) $oActions->GetActionParam('SieveHost', '');
+				$iSievePort = (int) $oActions->GetActionParam('SievePort', 4190);
+				$iSieveSecure = (int) $oActions->GetActionParam('SieveSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
+				$sOutHost = (string) $oActions->GetActionParam('OutHost', '');
+				$iOutPort = (int) $oActions->GetActionParam('OutPort', 25);
+				$iOutSecure = (int) $oActions->GetActionParam('OutSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
+				$bOutShortLogin = '1' === (string) $oActions->GetActionParam('OutShortLogin', '0');
+				$bOutAuth = '1' === (string) $oActions->GetActionParam('OutAuth', '1');
+				$bOutSetSender = '1' === (string) $oActions->GetActionParam('OutSetSender', '0');
+				$bOutUsePhpMail = '1' === (string) $oActions->GetActionParam('OutUsePhpMail', '0');
+				$sWhiteList = (string) $oActions->GetActionParam('WhiteList', '');
+
 				$oDomain = 0 < strlen($sNameForTest) ? null : $this->Load($sName);
 				if ($oDomain instanceof \RainLoop\Model\Domain)
 				{
@@ -133,7 +135,7 @@ class Domain extends AbstractProvider
 						$oDomain->UpdateInstance(
 							$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 							$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
-							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
+							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutSetSender, $bOutUsePhpMail,
 							$sWhiteList);
 					}
 				}
@@ -142,7 +144,7 @@ class Domain extends AbstractProvider
 					$oDomain = new \RainLoop\Model\Domain(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
 						$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 						$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
-						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
+						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutSetSender, $bOutUsePhpMail,
 						$sWhiteList);
 				}
 			}
@@ -172,6 +174,7 @@ class Domain extends AbstractProvider
 			$iOutSecure = (int) $oActions->GetActionParam('OutSecure', \MailSo\Net\Enumerations\ConnectionSecurityType::NONE);
 			$bOutShortLogin = '1' === (string) $oActions->GetActionParam('OutShortLogin', '0');
 			$bOutAuth = '1' === (string) $oActions->GetActionParam('OutAuth', '1');
+			$bOutSetSender = '1' === (string) $oActions->GetActionParam('OutSetSender', '0');
 			$bOutUsePhpMail = '1' === (string) $oActions->GetActionParam('OutUsePhpMail', '0');
 			$sWhiteList = (string) $oActions->GetActionParam('WhiteList', '');
 
@@ -194,7 +197,7 @@ class Domain extends AbstractProvider
 						$oDomain->UpdateInstance(
 							$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 							$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
-							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
+							$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutSetSender, $bOutUsePhpMail,
 							$sWhiteList);
 					}
 				}
@@ -203,7 +206,7 @@ class Domain extends AbstractProvider
 					$oDomain = new \RainLoop\Model\Domain(0 < strlen($sNameForTest) ? $sNameForTest : $sName,
 						$sIncHost, $iIncPort, $iIncSecure, $bIncShortLogin,
 						$bUseSieve, $sSieveHost, $iSievePort, $iSieveSecure,
-						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutUsePhpMail,
+						$sOutHost, $iOutPort, $iOutSecure, $bOutShortLogin, $bOutAuth, $bOutSetSender, $bOutUsePhpMail,
 						$sWhiteList);
 				}
 			}

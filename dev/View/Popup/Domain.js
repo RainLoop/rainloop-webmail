@@ -47,6 +47,7 @@ class DomainPopupView extends AbstractViewPopup {
 			smtpSecure: 0,
 			smtpShortLogin: false,
 			smtpAuth: true,
+			smtpSetSender: false,
 			smtpPhpMail: false,
 			whiteList: '',
 			aliasName: '',
@@ -298,6 +299,7 @@ class DomainPopupView extends AbstractViewPopup {
 			this.smtpSecure(oDomain.OutSecure);
 			this.smtpShortLogin(!!oDomain.OutShortLogin);
 			this.smtpAuth(!!oDomain.OutAuth);
+			this.smtpSetSender(!!oDomain.OutSetSender);
 			this.smtpPhpMail(!!oDomain.OutUsePhpMail);
 			this.whiteList(oDomain.WhiteList);
 			this.aliasName(oDomain.AliasName);
@@ -333,6 +335,7 @@ class DomainPopupView extends AbstractViewPopup {
 		this.smtpSecure(0);
 		this.smtpShortLogin(false);
 		this.smtpAuth(true);
+		this.smtpSetSender(true);
 		this.smtpPhpMail(false);
 
 		this.whiteList('');

@@ -1013,6 +1013,9 @@ trait Messages
 		{
 			$oMessage->SetFrom(new \MailSo\Mime\Email(
 				$oFromIdentity->Email(), $oFromIdentity->Name()));
+			if ($oAccount->Domain()->OutSetSender()) {
+				$oMessage->SetSender(\MailSo\Mime\Email::Parse($oAccount->Email()));
+			}
 		}
 		else
 		{

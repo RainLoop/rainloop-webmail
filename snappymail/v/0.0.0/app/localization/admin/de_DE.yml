@@ -129,6 +129,7 @@ de_DE:
     LABEL_ALLOW_SIEVE_SCRIPTS: "Sieve-Skripte erlauben"
     LABEL_USE_SHORT_LOGIN: "Kurze Benutzernamen verwenden"
     LABEL_USE_AUTH: "Authentifizierung verwenden"
+    LABEL_SET_SENDER: "Verwenden Sie die Anmeldung als Absender"
     LABEL_USE_PHP_MAIL: "PHPs mail()-Funktion verwenden"
     BUTTON_TEST: "Testen"
     BUTTON_WHITE_LIST: "Whitelist"
