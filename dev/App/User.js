@@ -393,7 +393,7 @@ class AppUser extends AbstractApp {
 			.fastResolve(true)
 			.then(() => promise)
 			.then(
-				Remote.foldersReloadWithTimeout,
+				() => Remote.foldersReloadWithTimeout(),
 				errorCode => {
 					FolderUserStore.folderListError(getNotification(errorCode, '', errorDefCode));
 					Remote.foldersReloadWithTimeout();
