@@ -69,6 +69,8 @@ export class ContactsAdminSettings {
 			})
 			.extend({ notify: 'always' });
 
+		this.contactsType(SettingsGet('ContactsPdoType'));
+
 		addSubscribablesTo(this, {
 			enableContacts: value =>
 				Remote.saveAdminConfig(null, {
@@ -104,8 +106,6 @@ export class ContactsAdminSettings {
 					'ContactsPdoPassword': value.trim()
 				})
 		})
-
-		this.contactsType(SettingsGet('ContactsPdoType'));
 
 		this.onTestContactsResponse = this.onTestContactsResponse.bind(this);
 
