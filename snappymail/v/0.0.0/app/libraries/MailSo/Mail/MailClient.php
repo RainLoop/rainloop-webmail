@@ -2088,7 +2088,7 @@ class MailClient
 	/**
 	 * @throws \MailSo\Base\Exceptions\InvalidArgumentException
 	 */
-	public function folderModify(string $sPrevFolderFullNameRaw, string $sNextFolderNameInUtf, bool $bRenameOrMove, bool $bSubscribeOnModify) : self
+	protected function folderModify(string $sPrevFolderFullNameRaw, string $sNextFolderNameInUtf, bool $bRename, bool $bSubscribeOnModify) : self
 	{
 		if (0 === \strlen($sPrevFolderFullNameRaw) || 0 === \strlen($sNextFolderNameInUtf))
 		{
@@ -2099,7 +2099,7 @@ class MailClient
 		if (!$aFolders)
 		{
 			// TODO
-			throw new \MailSo\Mail\Exceptions\RuntimeException('Cannot rename non-existen folder');
+			throw new \MailSo\Mail\Exceptions\RuntimeException('Cannot '.($bRename?'rename':'move').' non-existen folder');
 		}
 
 		$sDelimiter = $aFolders[0]->Delimiter();
@@ -2119,7 +2119,7 @@ class MailClient
             \MailSo\Base\Enumerations\Charset::UTF_8,
             \MailSo\Base\Enumerations\Charset::UTF_7_IMAP);
 
-        if ($bRenameOrMove)
+        if ($bRename)
         {
             if (0 < \strlen($sDelimiter) && false !== \strpos($sNewFolderFullNameRaw, $sDelimiter))
             {

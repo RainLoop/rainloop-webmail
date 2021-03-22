@@ -800,6 +800,13 @@ class RemoteUserFetch extends AbstractFetchRemote {
 		});
 	}
 
+	folderMove(sPrevFolderFullNameRaw, sNewFolderFullName) {
+		return this.postRequest('FolderMove', FolderUserStore.foldersRenaming, {
+			Folder: sPrevFolderFullNameRaw,
+			NewFolder: sNewFolderFullName
+		});
+	}
+
 	folderRename(sPrevFolderFullNameRaw, sNewFolderName) {
 		return this.postRequest('FolderRename', FolderUserStore.foldersRenaming, {
 			Folder: sPrevFolderFullNameRaw,

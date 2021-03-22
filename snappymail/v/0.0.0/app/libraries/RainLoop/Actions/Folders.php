@@ -242,17 +242,40 @@ trait Folders
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
 	 */
+	public function DoFolderMove() : array
+	{
+		$oAccount = $this->initMailClientConnection();
+
+		try
+		{
+			$this->MailClient()->FolderMove(
+				$this->GetActionParam('Folder', ''),
+				$this->GetActionParam('NewFolder', ''),
+				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
+			);
+		}
+		catch (\Throwable $oException)
+		{
+			throw new ClientException(Notifications::CantRenameFolder, $oException);
+		}
+
+		return $this->TrueResponse(__FUNCTION__);
+	}
+
+	/**
+	 * @throws \MailSo\Base\Exceptions\Exception
+	 */
 	public function DoFolderRename() : array
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		$sPrevFolderFullNameRaw = $this->GetActionParam('Folder', '');
-		$sNewTopFolderNameInUtf = $this->GetActionParam('NewFolderName', '');
-
 		try
 		{
-			$this->MailClient()->FolderRename($sPrevFolderFullNameRaw, $sNewTopFolderNameInUtf,
-				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true));
+			$this->MailClient()->FolderRename(
+				$this->GetActionParam('Folder', ''),
+				$this->GetActionParam('NewFolderName', ''),
+				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
+			);
 		}
 		catch (\Throwable $oException)
 		{
@@ -269,12 +292,12 @@ trait Folders
 	{
 		$oAccount = $this->initMailClientConnection();
 
-		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
-
 		try
 		{
-			$this->MailClient()->FolderDelete($sFolderFullNameRaw,
-				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true));
+			$this->MailClient()->FolderDelete(
+				$this->GetActionParam('Folder', ''),
+				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true)
+			);
 		}
 		catch (\MailSo\Mail\Exceptions\NonEmptyFolder $oException)
 		{
@@ -295,11 +318,9 @@ trait Folders
 	{
 		$this->initMailClientConnection();
 
-		$sFolderFullNameRaw = $this->GetActionParam('Folder', '');
-
 		try
 		{
-			$this->MailClient()->FolderClear($sFolderFullNameRaw);
+			$this->MailClient()->FolderClear($this->GetActionParam('Folder', ''));
 		}
 		catch (\Throwable $oException)
 		{
