@@ -14,6 +14,14 @@
 				unset($load);
 			}
 
+			// PHP 8
+			if (!\function_exists('str_contains')) {
+				function str_contains(string $haystack, string $needle) : bool
+				{
+					return false !== \strpos($haystack, $needle);
+				}
+			}
+
 			ini_set('register_globals', 0);
 			ini_set('zend.ze1_compatibility_mode', 0);
 
@@ -152,6 +160,17 @@
 				if (!is_dir(APP_PRIVATE_DATA))
 				{
 					mkdir(APP_PRIVATE_DATA, 0755, true);
+					file_put_contents(APP_PRIVATE_DATA.'.htaccess', 'Require all denied');
+				}
+
+				else if (is_dir(APP_PRIVATE_DATA.'cache'))
+				{
+					foreach (new RecursiveIteratorIterator(
+						new RecursiveDirectoryIterator(APP_PRIVATE_DATA.'cache', FilesystemIterator::SKIP_DOTS),
+						RecursiveIteratorIterator::CHILD_FIRST) as $value) {
+							$value->isDir() ? rmdir($value) : unlink($value);
+					}
+					clearstatcache();
 				}
 
 				foreach (array('logs', 'cache', 'configs', 'plugins', 'storage') as $sName)
