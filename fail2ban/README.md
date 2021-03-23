@@ -2,7 +2,7 @@
 
 This modified version of RainLoop logs to the system (when syslog works in PHP).
 
-If you use other ports then http, https & 2096, modify them in /filter.d/*.conf
+If you use other ports then http, https & 2096, modify them in /jail.d/*.conf
 
 ## Systemd journal PHP-FPM
 
@@ -20,7 +20,7 @@ enabled = true
 
 ## Default log (not recommended)
 
-Modify /PATH-TO-RAINLOOP-DATA/_data_/_default_/configs/application.ini
+Modify `/PATH-TO-RAINLOOP-DATA/_data_/_default_/configs/application.ini`
 
 ```
 [logs]
