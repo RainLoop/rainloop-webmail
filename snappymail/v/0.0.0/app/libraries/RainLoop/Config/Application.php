@@ -276,7 +276,8 @@ Others:
 Examples:
   filename = "log-{date:Y-m-d}.txt"
   filename = "{date:Y-m-d}/{user:domain}/{user:email}_{user:uid}.log"
-  filename = "{user:email}-{date:Y-m-d}.txt"'),
+  filename = "{user:email}-{date:Y-m-d}.txt"
+  filename = "syslog"'),
 
 				'auth_logging' => array(false, 'Enable auth logging in a separate file (for fail2ban)'),
 				'auth_logging_filename' => array('fail2ban/auth-{date:Y-m-d}.txt'),
