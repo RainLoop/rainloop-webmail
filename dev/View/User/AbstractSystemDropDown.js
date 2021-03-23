@@ -20,6 +20,7 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	constructor(name) {
 		super(name, 'SystemDropDown');
 
+		this.allowAccounts = Settings.capa(Capa.AdditionalAccounts);
 		this.allowSettings = Settings.capa(Capa.Settings);
 		this.allowHelp = Settings.capa(Capa.Help);
 
@@ -31,13 +32,10 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 
 		this.addObservables({
 			currentAudio: '',
-			accountMenuDropdownTrigger: false,
-			capaAdditionalAccounts: Settings.capa(Capa.AdditionalAccounts)
+			accountMenuDropdownTrigger: false
 		});
 
 		this.allowContacts = AppUserStore.allowContacts();
-
-		this.addAccountClick = this.addAccountClick.bind(this);
 
 		addEventListener('audio.stop', () => this.currentAudio(''));
 		addEventListener('audio.start', e => this.currentAudio(e.detail));
@@ -61,27 +59,19 @@ export class AbstractSystemDropDownUserView extends AbstractViewRight {
 	}
 
 	settingsClick() {
-		if (Settings.capa(Capa.Settings)) {
-			rl.route.setHash(settings());
-		}
+		this.allowSettings && rl.route.setHash(settings());
 	}
 
 	settingsHelp() {
-		if (Settings.capa(Capa.Help)) {
-			showScreenPopup(KeyboardShortcutsHelpPopupView);
-		}
+		this.allowHelp && showScreenPopup(KeyboardShortcutsHelpPopupView);
 	}
 
 	addAccountClick() {
-		if (this.capaAdditionalAccounts()) {
-			showScreenPopup(AccountPopupView);
-		}
+		this.allowAccounts && showScreenPopup(AccountPopupView);
 	}
 
 	contactsClick() {
-		if (this.allowContacts) {
-			showScreenPopup(ContactsPopupView);
-		}
+		this.allowContacts && showScreenPopup(ContactsPopupView);
 	}
 
 	layoutDesktop()

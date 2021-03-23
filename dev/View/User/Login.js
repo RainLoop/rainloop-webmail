@@ -99,7 +99,18 @@ class LoginUserView extends AbstractViewCenter {
 
 			submitError: value => value || this.submitErrorAddidional(''),
 
-			signMeType: iValue => this.signMe(LoginSignMeType.DefaultOn === iValue)
+			signMeType: iValue => this.signMe(LoginSignMeType.DefaultOn === iValue),
+
+			language: value => {
+				this.langRequest(true);
+				translatorReload(false, value).then(
+					() => {
+						this.langRequest(false);
+						this.bSendLanguage = true;
+					},
+					() => this.langRequest(false)
+				);
+			}
 		});
 
 		if (SettingsGet('AdditionalLoginError') && !this.submitError()) {
@@ -191,22 +202,6 @@ class LoginUserView extends AbstractViewCenter {
 				this.signMeType(LoginSignMeType.Unused);
 				break;
 		}
-
-		setTimeout(() => {
-			LanguageStore.language.subscribe((value) => {
-				this.langRequest(true);
-
-				translatorReload(false, value).then(
-					() => {
-						this.langRequest(false);
-						this.bSendLanguage = true;
-					},
-					() => {
-						this.langRequest(false);
-					}
-				);
-			});
-		}, 50);
 	}
 
 	submitForm() {

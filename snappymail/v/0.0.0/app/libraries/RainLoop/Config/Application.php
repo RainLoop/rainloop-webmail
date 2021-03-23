@@ -165,8 +165,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'hide_x_mailer_header'       => array(true),
 				'admin_panel_host'           => array(''),
 				'admin_panel_key'            => array('admin'),
-				'content_security_policy'    => array(''),
-				'core_install_access_domain' => array('')
+				'content_security_policy'    => array('')
 			),
 
 			'ssl' => array(
