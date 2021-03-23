@@ -465,7 +465,7 @@ nl_NL:
     LABEL_UNREAD: "Markeer geselecteerde berichten als ongelezen"
     LABEL_IMPORTANT: "Belangrijk, vlag geselecteerde berichten"
     LABEL_CANCEL_SEARCH: "Zoekopdracht afbreken"
-    LABEL_FULLSCREEN_ENTER: "Bericht in volledig scherm lezen(leesvenster ingeschakeld)"
+    LABEL_FULLSCREEN_ENTER: "Bericht in volledig scherm lezen (leesvenster ingeschakeld)"
     LABEL_VIEW_MESSAGE_ENTER: "Bericht lezen (leesvenster uitgeschakeld)"
     LABEL_SWITCH_TO_MESSAGE: "Schakel focus naar bericht"
     LABEL_SWITCH_TO_FOLDER_LIST: "Schakel focus naar berichtenlijst"
