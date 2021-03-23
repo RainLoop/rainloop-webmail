@@ -113,7 +113,7 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 	 */
 	public function Connect($sServerName, $iPort,
 		$iSecurityType = \MailSo\Net\Enumerations\ConnectionSecurityType::AUTO_DETECT,
-		$bVerifySsl = false, $bAllowSelfSigned = true)
+		$bVerifySsl = false, $bAllowSelfSigned = true, $sClientCert = '')
 	{
 		$this->iRequestTime = \microtime(true);
 
