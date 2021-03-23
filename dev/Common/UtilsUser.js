@@ -216,9 +216,7 @@ rl.Utils = {
  * @param {Array} aList
  * @param {Array=} aDisabled
  * @param {Array=} aHeaderLines
- * @param {?number=} iUnDeep
  * @param {Function=} fDisableCallback
- * @param {Function=} fVisibleCallback
  * @param {Function=} fRenameCallback
  * @param {boolean=} bSystem
  * @param {boolean=} bBuildUnvisible
@@ -229,9 +227,7 @@ export function folderListOptionsBuilder(
 	aList,
 	aDisabled,
 	aHeaderLines,
-	iUnDeep,
 	fDisableCallback,
-	fVisibleCallback,
 	fRenameCallback,
 	bSystem,
 	bBuildUnvisible
@@ -246,9 +242,7 @@ export function folderListOptionsBuilder(
 
 	bBuildUnvisible = undefined === bBuildUnvisible ? false : !!bBuildUnvisible;
 	bSystem = null == bSystem ? 0 < aSystem.length : bSystem;
-	iUnDeep = null == iUnDeep ? 0 : iUnDeep;
 	fDisableCallback = null != fDisableCallback ? fDisableCallback : null;
-	fVisibleCallback = null != fVisibleCallback ? fVisibleCallback : null;
 	fRenameCallback = null != fRenameCallback ? fRenameCallback : null;
 
 	if (!isArray(aDisabled)) {
@@ -271,19 +265,17 @@ export function folderListOptionsBuilder(
 
 	bSep = true;
 	aSystem.forEach(oItem => {
-		if (fVisibleCallback ? fVisibleCallback(oItem) : true) {
-			aResult.push({
-				id: oItem.fullNameRaw,
-				name: fRenameCallback ? fRenameCallback(oItem) : oItem.name(),
-				system: true,
-				dividerbar: bSep,
-				disabled:
-					!oItem.selectable ||
-					aDisabled.includes(oItem.fullNameRaw) ||
-					(fDisableCallback ? fDisableCallback(oItem) : false)
-			});
-			bSep = false;
-		}
+		aResult.push({
+			id: oItem.fullNameRaw,
+			name: fRenameCallback ? fRenameCallback(oItem) : oItem.name(),
+			system: true,
+			dividerbar: bSep,
+			disabled:
+				!oItem.selectable ||
+				aDisabled.includes(oItem.fullNameRaw) ||
+				(fDisableCallback ? fDisableCallback(oItem) : false)
+		});
+		bSep = false;
 	});
 
 	bSep = true;
@@ -293,22 +285,20 @@ export function folderListOptionsBuilder(
 			(oItem.subscribed() || !oItem.exists || bBuildUnvisible) &&
 			(oItem.selectable || oItem.hasSubscribedSubfolders())
 		) {
-			if (fVisibleCallback ? fVisibleCallback(oItem) : true) {
-				if (FolderType.User === oItem.type() || !bSystem || oItem.hasSubscribedSubfolders()) {
-					aResult.push({
-						id: oItem.fullNameRaw,
-						name:
-							new Array(oItem.deep + 1 - iUnDeep).join(sDeepPrefix) +
-							(fRenameCallback ? fRenameCallback(oItem) : oItem.name()),
-						system: false,
-						dividerbar: bSep,
-						disabled:
-							!oItem.selectable ||
-							aDisabled.includes(oItem.fullNameRaw) ||
-							(fDisableCallback ? fDisableCallback(oItem) : false)
-					});
-					bSep = false;
-				}
+			if (FolderType.User === oItem.type() || !bSystem || oItem.hasSubscribedSubfolders()) {
+				aResult.push({
+					id: oItem.fullNameRaw,
+					name:
+						sDeepPrefix.repeat(oItem.deep + 1) +
+						(fRenameCallback ? fRenameCallback(oItem) : oItem.name()),
+					system: false,
+					dividerbar: bSep,
+					disabled:
+						!oItem.selectable ||
+						aDisabled.includes(oItem.fullNameRaw) ||
+						(fDisableCallback ? fDisableCallback(oItem) : false)
+				});
+				bSep = false;
 			}
 		}
 
@@ -319,9 +309,7 @@ export function folderListOptionsBuilder(
 					oItem.subFolders(),
 					aDisabled,
 					[],
-					iUnDeep,
 					fDisableCallback,
-					fVisibleCallback,
 					fRenameCallback,
 					bSystem,
 					bBuildUnvisible

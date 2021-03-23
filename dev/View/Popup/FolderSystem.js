@@ -39,8 +39,6 @@ class FolderSystemPopupView extends AbstractViewPopup {
 				null,
 				null,
 				null,
-				null,
-				null,
 				true
 			)
 		);

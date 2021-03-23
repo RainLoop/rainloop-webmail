@@ -104,9 +104,7 @@ export const FolderUserStore = new class {
 				this.folderListSystem(),
 				this.folderList(),
 				[this.currentFolderFullNameRaw()],
-				null,
-				null,
-				null,
+				[],
 				null,
 				(item) => (item ? item.localName() : '')
 			)
@@ -118,8 +116,6 @@ export const FolderUserStore = new class {
 				this.folderList(),
 				[this.sieveAllowFileintoInbox ? '' : 'INBOX'],
 				[['', '']],
-				null,
-				null,
 				null,
 				(item) => (item ? item.localName() : '')
 			)

@@ -23,19 +23,19 @@ class FolderCreatePopupView extends AbstractViewPopup {
 			selectedParentValue: UNUSED_OPTION_VALUE
 		});
 
-		this.parentFolderSelectList = ko.computed(() => {
-			const top = [],
-				list = FolderUserStore.folderList(),
-				fDisableCallback = FolderUserStore.namespace
+		this.parentFolderSelectList = ko.computed(() =>
+			folderListOptionsBuilder(
+				[],
+				FolderUserStore.folderList(),
+				[],
+				[['', '']],
+				FolderUserStore.namespace
 					? item => FolderUserStore.namespace !== item.fullNameRaw.substr(0, FolderUserStore.namespace.length)
 					: null,
-				fRenameCallback = oItem =>
-					oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : '';
-
-			top.push(['', '']);
-
-			return folderListOptionsBuilder([], list, [], top, null, fDisableCallback, null, fRenameCallback);
-		});
+				oItem =>
+					oItem ? (oItem.isSystemFolder() ? oItem.name() + ' ' + oItem.manageFolderSystemName() : oItem.name()) : ''
+			)
+		);
 
 		this.defaultOptionsAfterRender = defaultOptionsAfterRender;
 
