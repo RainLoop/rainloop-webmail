@@ -20,7 +20,6 @@ class TemplatePopupView extends AbstractViewPopup {
 
 			name: '',
 			nameError: false,
-			nameFocus: false,
 
 			body: '',
 			bodyLoading: false,
@@ -143,10 +142,6 @@ class TemplatePopupView extends AbstractViewPopup {
 		} else {
 			this.editorSetBody('');
 		}
-	}
-
-	onShowWithDelay() {
-		this.nameFocus(true);
 	}
 }
 

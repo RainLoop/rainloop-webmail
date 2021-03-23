@@ -20,9 +20,7 @@ class AccountPopupView extends AbstractViewPopup {
 
 			submitRequest: false,
 			submitError: '',
-			submitErrorAdditional: '',
-
-			emailFocus: false
+			submitErrorAdditional: ''
 		});
 
 		this.email.subscribe(() => this.emailError(false));
@@ -83,10 +81,6 @@ class AccountPopupView extends AbstractViewPopup {
 			this.isNew(false);
 			this.email(account.email);
 		}
-	}
-
-	onShowWithDelay() {
-		this.emailFocus(true);
 	}
 }
 

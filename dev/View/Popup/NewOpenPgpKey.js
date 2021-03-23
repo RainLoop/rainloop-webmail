@@ -11,7 +11,6 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 
 		this.addObservables({
 			email: '',
-			emailFocus: '',
 			emailError: false,
 
 			name: '',
@@ -100,10 +99,6 @@ class NewOpenPgpKeyPopupView extends AbstractViewPopup {
 
 	onShow() {
 		this.clearPopup();
-	}
-
-	onShowWithDelay() {
-		this.emailFocus(true);
 	}
 }
 

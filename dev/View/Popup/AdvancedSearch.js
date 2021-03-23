@@ -12,8 +12,6 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 		super('AdvancedSearch');
 
 		this.addObservables({
-			fromFocus: false,
-
 			from: '',
 			to: '',
 			subject: '',
@@ -142,17 +140,11 @@ class AdvancedSearchPopupView extends AbstractViewPopup {
 		this.hasAttachment(false);
 		this.starred(false);
 		this.unseen(false);
-
-		this.fromFocus(true);
 	}
 
 	onShow(search) {
 		this.clearPopup();
 		this.parseSearchStringValue(search);
-	}
-
-	onShowWithDelay() {
-		this.fromFocus(true);
 	}
 }
 

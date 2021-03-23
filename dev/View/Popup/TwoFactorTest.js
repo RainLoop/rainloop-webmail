@@ -9,7 +9,6 @@ class TwoFactorTestPopupView extends AbstractViewPopup {
 
 		this.addObservables({
 			code: '',
-			codeFocused: false,
 			codeStatus: null,
 
 			testing: false
@@ -36,7 +35,6 @@ class TwoFactorTestPopupView extends AbstractViewPopup {
 
 	clearPopup() {
 		this.code('');
-		this.codeFocused(false);
 		this.codeStatus(null);
 		this.testing(false);
 
@@ -47,10 +45,6 @@ class TwoFactorTestPopupView extends AbstractViewPopup {
 		this.clearPopup();
 
 		this.koTestedTrigger = koTestedTrigger;
-	}
-
-	onShowWithDelay() {
-		this.codeFocused(true);
 	}
 }
 

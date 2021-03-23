@@ -18,7 +18,6 @@ class FolderCreatePopupView extends AbstractViewPopup {
 
 		this.addObservables({
 			folderName: '',
-			folderNameFocused: false,
 
 			selectedParentValue: UNUSED_OPTION_VALUE
 		});
@@ -59,21 +58,16 @@ class FolderCreatePopupView extends AbstractViewPopup {
 	}
 
 	simpleFolderNameValidation(sName) {
-		return /^[^\\/]+$/g.test(sName.trim());
+		return /^[^\\/]+$/g.test(sName);
 	}
 
 	clearPopup() {
 		this.folderName('');
 		this.selectedParentValue('');
-		this.folderNameFocused(false);
 	}
 
 	onShow() {
 		this.clearPopup();
-	}
-
-	onShowWithDelay() {
-		this.folderNameFocused(true);
 	}
 }
 
