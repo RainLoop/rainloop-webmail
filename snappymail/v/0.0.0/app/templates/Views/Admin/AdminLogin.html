@@ -8,10 +8,9 @@
 			<form class="wrapper submitting-pane loginForm" action="#/" data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
 				<div class="controls" data-bind="css: {'error': loginError}">
 					<div class="input-append">
-						<input type="text" class="input-block-level inputLogin"
-							name="RainLoopAdminLogin" id="RainLoopAdminLogin"
-							autofocus=""
-							autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_LOGIN"
+						<input required="" type="text" class="input-block-level inputLogin"
+							autofocus="" autocomplete="username" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-i18n="[placeholder]LOGIN/LABEL_LOGIN"
 							data-bind="textInput: login, disable: submitRequest" />
 						<span class="add-on">
 							<i class="fontastic">👤</i>
@@ -20,9 +19,9 @@
 				</div>
 				<div class="controls" data-bind="css: {'error': passwordError}">
 					<div class="input-append">
-						<input type="password" class="input-block-level inputPassword"
-							placeholder="Password" name="RainLoopAdminPassword" id="RainLoopAdminPassword"
-							autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false" data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
+						<input required="" type="password" class="input-block-level inputPassword"
+							autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
 							data-bind="textInput: password, disable: submitRequest" />
 						<span class="add-on" tabindex="-1" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_LOGIN'">
 							<i class="fontastic" data-bind="visible: '' === password()">🔑</i>
@@ -30,13 +29,13 @@
 						</span>
 					</div>
 				</div>
-				<div class="controls controls-submit-wrp" data-bind="hidden: hideSubmitButton">
-					<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
-						<span data-i18n="LOGIN/BUTTON_LOGIN"></span>
+				<div class="controls" data-bind="hidden: hideSubmitButton">
+					<button type="submit" class="btn btn-large btn-block buttonLogin"
+						data-bind="command: submitCommand"
+						data-i18n="LOGIN/BUTTON_LOGIN">
 					</button>
 				</div>
 			</form>
 		</div>
 	</div>
 <div>
-

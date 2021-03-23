@@ -95,12 +95,7 @@ class LoginUserView extends AbstractViewCenter {
 			password: () => this.passwordError(false),
 
 			additionalCode: () => this.additionalCodeError(false),
-			additionalCodeError: bV => this.formError(!!bV),
 			additionalCodeVisibility: () => this.additionalCodeError(false),
-
-			emailError: bV => this.formError(!!bV),
-
-			passwordError: bV => this.formError(!!bV),
 
 			submitError: value => value || this.submitErrorAddidional(''),
 
@@ -116,72 +111,53 @@ class LoginUserView extends AbstractViewCenter {
 		});
 	}
 
-	windowOpenFeatures(wh) {
-		return `left=200,top=100,width=${wh},height=${wh},menubar=no,status=no,resizable=yes,scrollbars=yes`;
-	}
+	submitCommand(self, event) {
+		let email = this.email().trim(),
+			valid = event.target.form.reportValidity() && email,
+			pass = this.password(),
+			totp = this.additionalCodeVisibility(),
+			code = totp ? this.additionalCode() : '';
 
-	submitCommand() {
-		this.emailError(false);
-		this.passwordError(false);
+		this.emailError(!email);
+		this.passwordError(!pass);
+		this.formError(!valid);
+		this.additionalCodeError(totp && !code);
 
-		let error;
-		if (this.additionalCodeVisibility()) {
-			this.additionalCodeError(false);
-			if (!this.additionalCode().trim()) {
-				this.additionalCodeError(true);
-				error = '.inputAdditionalCode';
-			}
-		}
-		if (!this.password().trim()) {
-			this.passwordError(true);
-			error = '#RainLoopPassword';
-		}
-		if (!this.email().trim()) {
-			this.emailError(true);
-			error = '#RainLoopEmail';
-		}
-		if (error) {
-			this.querySelector(error).focus();
-			return false;
-		}
+		if (valid) {
+			this.submitRequest(true);
 
-		this.submitRequest(true);
-
-		const fLoginRequest = (sLoginPassword) => {
 			Remote.login(
 				(iError, oData) => {
-					this.submitRequest(false);
 					if (iError) {
+						this.submitRequest(false);
 						if (Notification.InvalidInputArgument == iError) {
 							iError = Notification.AuthError;
 						}
 						this.submitError(getNotification(iError, oData.ErrorMessage, Notification.UnknownNotification));
 						this.submitErrorAddidional((oData && oData.ErrorMessageAdditional) || '');
+					} else if (oData.TwoFactorAuth) {
+						this.submitRequest(false);
+						this.additionalCode('');
+						this.additionalCodeVisibility(true);
+						let input = this.querySelector('.inputAdditionalCode');
+						input.required = true;
+						setTimeout(() => input.focus(), 100);
 					} else {
-						if (oData.TwoFactorAuth) {
-							this.additionalCode('');
-							this.additionalCodeVisibility(true);
-							setTimeout(() => this.querySelector('.inputAdditionalCode').focus(), 100);
-						} else {
-							rl.route.reload();
-						}
+						rl.route.reload();
 					}
 				},
-				this.email(),
-				'',
-				sLoginPassword,
+				email,
+				pass,
 				!!this.signMe(),
 				this.bSendLanguage ? this.language() : '',
-				this.additionalCodeVisibility() ? this.additionalCode() : '',
-				this.additionalCodeVisibility() ? !!this.additionalCodeSignMe() : false
+				code,
+				!!(totp && this.additionalCodeSignMe())
 			);
 
 			Local.set(ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');
-		};
+		}
 
-		fLoginRequest(this.password());
-
-		return true;
+		return valid;
 	}
 
 	onShow() {
@@ -234,7 +210,7 @@ class LoginUserView extends AbstractViewCenter {
 	}
 
 	submitForm() {
-		this.submitCommand();
+//		return false;
 	}
 
 	selectLanguage() {

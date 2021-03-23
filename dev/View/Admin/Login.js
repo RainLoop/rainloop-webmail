@@ -31,12 +31,7 @@ class LoginAdminView extends AbstractViewCenter {
 
 		this.addSubscribables({
 			login: () => this.loginError(false),
-
-			password: () => this.passwordError(false),
-
-			loginError: v => this.formError(!!v),
-
-			passwordError: v => this.formError(!!v)
+			password: () => this.passwordError(false)
 		});
 
 		decorateKoCommands(this, {
@@ -44,33 +39,33 @@ class LoginAdminView extends AbstractViewCenter {
 		});
 	}
 
-	submitCommand() {
-		this.loginError(false);
-		this.passwordError(false);
+	submitCommand(self, event) {
+		const valid = event.target.form.reportValidity(),
+			name = this.login().trim(),
+			pass = this.password();
 
-		this.loginError(!this.login().trim());
-		this.passwordError(!this.password().trim());
+		this.loginError(!name);
+		this.passwordError(!pass);
+		this.formError(!valid);
 
-		if (this.loginError() || this.passwordError()) {
-			return false;
+		if (valid) {
+			this.submitRequest(true);
+
+			Remote.adminLogin(
+				iError => {
+					if (iError) {
+						this.submitRequest(false);
+						this.submitError(getNotification(iError));
+					} else {
+						rl.route.reload();
+					}
+				},
+				name,
+				pass
+			);
 		}
 
-		this.submitRequest(true);
-
-		Remote.adminLogin(
-			(iError) => {
-				this.submitRequest(false);
-				if (iError) {
-					this.submitError(getNotification(iError));
-				} else {
-					rl.route.reload();
-				}
-			},
-			this.login(),
-			this.password()
-		);
-
-		return true;
+		return valid;
 	}
 
 	onShow() {
@@ -78,7 +73,7 @@ class LoginAdminView extends AbstractViewCenter {
 	}
 
 	submitForm() {
-		this.submitCommand();
+//		return false;
 	}
 }
 

@@ -58,10 +58,10 @@ class RemoteUserFetch extends AbstractFetchRemote {
 	 * @param {string=} sAdditionalCode
 	 * @param {boolean=} bAdditionalCodeSignMe
 	 */
-	login(fCallback, sEmail, sLogin, sPassword, bSignMe, sLanguage, sAdditionalCode, bAdditionalCodeSignMe) {
+	login(fCallback, sEmail, sPassword, bSignMe, sLanguage, sAdditionalCode, bAdditionalCodeSignMe) {
 		this.defaultRequest(fCallback, 'Login', {
 			Email: sEmail,
-			Login: sLogin,
+			Login: '',
 			Password: sPassword,
 			Language: sLanguage || '',
 			AdditionalCode: sAdditionalCode || '',
