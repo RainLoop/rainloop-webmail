@@ -1,7 +1,7 @@
 import ko from 'ko';
 
 import { doc, $htmlCL } from 'Common/Globals';
-import { isNonEmptyArray } from 'Common/Utils';
+import { isNonEmptyArray, isFunction } from 'Common/Utils';
 
 let currentScreen = null,
 	defaultScreenName = '';
@@ -39,7 +39,7 @@ export function createCommand(fExecute, fCanExecute = true) {
 	fResult.enabled = ko.observable(true);
 	fResult.isCommand = true;
 
-	if (typeof fCanExecute === 'function') {
+	if (isFunction(fCanExecute)) {
 		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && fCanExecute.call(null));
 	} else {
 		fResult.canExecute = ko.computed(() => fResult && fResult.enabled() && !!fCanExecute);

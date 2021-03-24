@@ -3,7 +3,8 @@ import { doc, elementById } from 'Common/Globals';
 
 export const
 	isArray = Array.isArray,
-	isNonEmptyArray = array => isArray(array) && array.length;
+	isNonEmptyArray = array => isArray(array) && array.length,
+	isFunction = v => typeof v === 'function';
 
 /**
  * @param {*} value

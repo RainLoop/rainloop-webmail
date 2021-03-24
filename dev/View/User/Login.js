@@ -1,11 +1,8 @@
 import ko from 'ko';
 
-import {
-	Notification
-} from 'Common/Enums';
-
+import { Notification } from 'Common/Enums';
 import { ClientSideKeyName } from 'Common/EnumsUser';
-
+import { Settings, SettingsGet } from 'Common/Globals';
 import { getNotification, reload as translatorReload, convertLangName } from 'Common/Translator';
 
 import { LanguageStore } from 'Stores/Language';
@@ -16,8 +13,6 @@ import Remote from 'Remote/User/Fetch';
 
 import { decorateKoCommands, showScreenPopup } from 'Knoin/Knoin';
 import { AbstractViewCenter } from 'Knoin/AbstractViews';
-
-import { Settings, SettingsGet } from 'Common/Globals';
 
 import { LanguagesPopupView } from 'View/Popup/Languages';
 
@@ -131,8 +126,8 @@ class LoginUserView extends AbstractViewCenter {
 
 		this.emailError(!email);
 		this.passwordError(!pass);
-		this.formError(!valid);
 		this.additionalCodeError(totp && !code);
+		this.formError(!valid);
 
 		if (valid) {
 			this.submitRequest(true);

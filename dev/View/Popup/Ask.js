@@ -1,5 +1,6 @@
 import { Scope } from 'Common/Enums';
 import { i18n } from 'Common/Translator';
+import { isFunction } from 'Common/Utils';
 
 import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
@@ -32,17 +33,13 @@ class AskPopupView extends AbstractViewPopup {
 	yesClick() {
 		this.cancelCommand();
 
-		if (typeof this.fYesAction === 'function') {
-			this.fYesAction.call(null);
-		}
+		isFunction(this.fYesAction) && this.fYesAction.call(null);
 	}
 
 	noClick() {
 		this.cancelCommand();
 
-		if (typeof this.fNoAction === 'function') {
-			this.fNoAction.call(null);
-		}
+		isFunction(this.fNoAction) && this.fNoAction.call(null);
 	}
 
 	/**

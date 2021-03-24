@@ -1,7 +1,7 @@
-import { isArray, addObservablesTo, addComputablesTo } from 'Common/Utils';
+import { isArray, isFunction, addObservablesTo, addComputablesTo } from 'Common/Utils';
 
 function dispose(disposable) {
-	if (disposable && 'function' === typeof disposable.dispose) {
+	if (disposable && isFunction(disposable.dispose)) {
 		disposable.dispose();
 	}
 }

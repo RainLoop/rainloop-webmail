@@ -1,10 +1,9 @@
 import { i18n, i18nToNodes, trigger } from 'Common/Translator';
 import { doc, createElement } from 'Common/Globals';
 import { SaveSettingsStep } from 'Common/Enums';
-import { isNonEmptyArray } from 'Common/Utils';
+import { isNonEmptyArray, isFunction } from 'Common/Utils';
 
 const
-	isFunction = v => typeof v === 'function',
 	koValue = value => !ko.isObservable(value) && isFunction(value) ? value() : ko.unwrap(value);
 
 ko.bindingHandlers.tooltip = {
