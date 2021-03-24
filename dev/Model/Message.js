@@ -272,22 +272,22 @@ export class MessageModel extends AbstractModel {
 	lineAsCss() {
 		let classes = [];
 		Object.entries({
-			'deleted': this.deleted(),
+			deleted: this.deleted(),
 			'deleted-mark': this.isDeleted(),
-			'selected': this.selected(),
-			'checked': this.checked(),
-			'flagged': this.isFlagged(),
-			'unseen': this.isUnseen(),
-			'answered': this.isAnswered(),
-			'forwarded': this.isForwarded(),
-			'focused': this.focused(),
-			'important': this.isImportant(),
-			'withAttachments': this.hasAttachments(),
-			'new': this.newForAnimation(),
-			'emptySubject': !this.subject(),
-			// 'hasChildrenMessage': 1 < this.threadsLen(),
-			'hasUnseenSubMessage': this.hasUnseenSubMessage(),
-			'hasFlaggedSubMessage': this.hasFlaggedSubMessage()
+			selected: this.selected(),
+			checked: this.checked(),
+			flagged: this.isFlagged(),
+			unseen: this.isUnseen(),
+			answered: this.isAnswered(),
+			forwarded: this.isForwarded(),
+			focused: this.focused(),
+			important: this.isImportant(),
+			withAttachments: this.hasAttachments(),
+			new: this.newForAnimation(),
+			emptySubject: !this.subject(),
+			// hasChildrenMessage: 1 < this.threadsLen(),
+			hasUnseenSubMessage: this.hasUnseenSubMessage(),
+			hasFlaggedSubMessage: this.hasFlaggedSubMessage()
 		}).forEach(([key, value]) => value && classes.push(key));
 		return classes.join(' ');
 	}

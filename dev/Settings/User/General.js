@@ -68,19 +68,19 @@ export class GeneralUserSettings {
 		this.editorDefaultTypes = ko.computed(() => {
 			translatorTrigger();
 			return [
-				{ 'id': EditorDefaultType.Html, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML') },
-				{ 'id': EditorDefaultType.Plain, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN') },
-				{ 'id': EditorDefaultType.HtmlForced, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED') },
-				{ 'id': EditorDefaultType.PlainForced, 'name': i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED') }
+				{ id: EditorDefaultType.Html, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML') },
+				{ id: EditorDefaultType.Plain, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN') },
+				{ id: EditorDefaultType.HtmlForced, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_HTML_FORCED') },
+				{ id: EditorDefaultType.PlainForced, name: i18n('SETTINGS_GENERAL/LABEL_EDITOR_PLAIN_FORCED') }
 			];
 		});
 
 		this.layoutTypes = ko.computed(() => {
 			translatorTrigger();
 			return [
-				{ 'id': Layout.NoPreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT') },
-				{ 'id': Layout.SidePreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT') },
-				{ 'id': Layout.BottomPreview, 'name': i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT') }
+				{ id: Layout.NoPreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_NO_SPLIT') },
+				{ id: Layout.SidePreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_VERTICAL_SPLIT') },
+				{ id: Layout.BottomPreview, name: i18n('SETTINGS_GENERAL/LABEL_LAYOUT_HORIZONTAL_SPLIT') }
 			];
 		});
 
@@ -142,7 +142,7 @@ export class GeneralUserSettings {
 	}
 
 	testSystemNotification() {
-		NotificationUserStore.displayDesktopNotification('SnappyMail', 'Test notification', { });
+		NotificationUserStore.displayDesktopNotification('SnappyMail', 'Test notification');
 	}
 
 	selectLanguage() {

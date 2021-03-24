@@ -13,19 +13,19 @@ export class BrandingAdminSettings {
 
 		this.title.subscribe(value =>
 			Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.title.trigger, this), {
-				'Title': value.trim()
+				Title: value.trim()
 			})
 		);
 
 		this.loadingDesc.subscribe(value =>
 			Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.loadingDesc.trigger, this), {
-				'LoadingDescription': value.trim()
+				LoadingDescription: value.trim()
 			})
 		);
 
 		this.faviconUrl.subscribe(value =>
 			Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.faviconUrl.trigger, this), {
-				'FaviconUrl': value.trim()
+				FaviconUrl: value.trim()
 			})
 		);
 	}

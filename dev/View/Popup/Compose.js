@@ -226,7 +226,7 @@ class ComposePopupView extends AbstractViewPopup {
 			sendButtonSuccess: () => !this.sendError() && !this.sendSuccessButSaveError(),
 
 			savedTimeText: () =>
-				this.savedTime() ? i18n('COMPOSE/SAVED_TIME', { 'TIME': this.savedTime().format('LT') }) : '',
+				this.savedTime() ? i18n('COMPOSE/SAVED_TIME', { TIME: this.savedTime().format('LT') }) : '',
 
 			emptyToErrorTooltip: () => (this.emptyToError() ? i18n('COMPOSE/EMPTY_TO_ERROR_DESC') : ''),
 
@@ -254,9 +254,9 @@ class ComposePopupView extends AbstractViewPopup {
 
 			identitiesOptions: () =>
 				IdentityUserStore.map(item => ({
-					'item': item,
-					'optValue': item.id(),
-					'optText': item.formattedName()
+					item: item,
+					optValue: item.id(),
+					optText: item.formattedName()
 				})),
 
 			currentIdentityView: () => {
@@ -931,8 +931,8 @@ class ComposePopupView extends AbstractViewPopup {
 				case ComposeType.ReplyAll:
 					sFrom = message.fromToLine(false, true);
 					sReplyTitle = i18n('COMPOSE/REPLY_MESSAGE_TITLE', {
-						'DATETIME': sDate,
-						'EMAIL': sFrom
+						DATETIME: sDate,
+						EMAIL: sFrom
 					});
 
 					sText = sText.replace(/<img[^>]+>/g, '').replace(/<a\s[^>]+><\/a>/g, '').trim();

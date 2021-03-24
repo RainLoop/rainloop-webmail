@@ -27,7 +27,7 @@ export class ContactsUserSettings {
 
 		this.contactsAutosave.subscribe(value =>
 			Remote.saveSettings(null, {
-				'ContactsAutosave': value ? 1 : 0
+				ContactsAutosave: value ? 1 : 0
 			})
 		);
 

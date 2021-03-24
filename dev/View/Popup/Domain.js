@@ -63,13 +63,13 @@ class DomainPopupView extends AbstractViewPopup {
 				let result = '';
 
 				if (this.edit()) {
-					result = i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', { 'NAME': name });
+					result = i18n('POPUPS_DOMAIN/TITLE_EDIT_DOMAIN', { NAME: name });
 					if (aliasName) {
 						result += ' ← ' + aliasName;
 					}
 				} else {
 					result = name
-							? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { 'NAME': name })
+							? i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN_WITH_NAME', { NAME: name })
 							: i18n('POPUPS_DOMAIN/TITLE_ADD_DOMAIN');
 				}
 
@@ -78,7 +78,7 @@ class DomainPopupView extends AbstractViewPopup {
 
 			domainDesc: () => {
 				const name = this.name();
-				return !this.edit() && name ? i18n('POPUPS_DOMAIN/NEW_DOMAIN_DESC', { 'NAME': '*@' + name }) : '';
+				return !this.edit() && name ? i18n('POPUPS_DOMAIN/NEW_DOMAIN_DESC', { NAME: '*@' + name }) : '';
 			},
 
 			domainIsComputed: () => {

@@ -49,7 +49,7 @@ function domControlEncryptedClickHelper(store, dom, armoredMessage, recipients) 
 								this,
 								true,
 								i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-									'USER': validPublicKey.user + ' (' + validPublicKey.id + ')'
+									USER: validPublicKey.user + ' (' + validPublicKey.id + ')'
 								}),
 								decryptedMessage.getText()
 							);
@@ -105,7 +105,7 @@ function domControlSignedClickHelper(store, dom, armoredMessage) {
 						this,
 						true,
 						i18n('PGP_NOTIFICATIONS/GOOD_SIGNATURE', {
-							'USER': validKey.user + ' (' + validKey.id + ')'
+							USER: validKey.user + ' (' + validKey.id + ')'
 						}),
 						message.getText()
 					);

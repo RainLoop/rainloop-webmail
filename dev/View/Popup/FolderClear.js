@@ -29,7 +29,7 @@ class FolderClearPopupView extends AbstractViewPopup {
 				return folder ? folder.localName() : '';
 			},
 
-			dangerDescHtml: () => i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', { 'FOLDER': this.folderNameForClear() })
+			dangerDescHtml: () => i18n('POPUPS_CLEAR_FOLDER/DANGER_DESC_HTML_1', { FOLDER: this.folderNameForClear() })
 		});
 
 		decorateKoCommands(this, {

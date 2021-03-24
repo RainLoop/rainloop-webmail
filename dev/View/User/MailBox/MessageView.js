@@ -732,7 +732,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 				oMessage.folder,
 				oMessage.uid,
 				oMessage.readReceipt(),
-				i18n('READ_RECEIPT/SUBJECT', { 'SUBJECT': oMessage.subject() }),
+				i18n('READ_RECEIPT/SUBJECT', { SUBJECT: oMessage.subject() }),
 				i18n('READ_RECEIPT/BODY', { 'READ-RECEIPT': AccountUserStore.email() })
 			);
 

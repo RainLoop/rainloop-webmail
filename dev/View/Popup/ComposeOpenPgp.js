@@ -49,9 +49,9 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 						return null;
 					}
 					return oKey.users.map(user => ({
-						'id': oKey.guid,
-						'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
-						'key': oKey
+						id: oKey.guid,
+						name: '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
+						key: oKey
 					}));
 				});
 
@@ -64,9 +64,9 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 						return null;
 					}
 					return oKey.users.map(user => ({
-						'id': oKey.guid,
-						'name': '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
-						'key': oKey
+						id: oKey.guid,
+						name: '(' + oKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() + ') ' + user,
+						key: oKey
 					}));
 				});
 				return opts.flat().filter(v => v);
@@ -114,7 +114,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 			} else if (!this.signKey().key) {
 				this.notification(
 					i18nPGP('NO_PRIVATE_KEY_FOUND_FOR', {
-						'EMAIL': this.signKey().email
+						EMAIL: this.signKey().email
 					})
 				);
 
@@ -150,7 +150,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 					} else if (oKey && oKey.email) {
 						this.notification(
 							i18nPGP('NO_PUBLIC_KEYS_FOUND_FOR', {
-								'EMAIL': oKey.email
+								EMAIL: oKey.email
 							})
 						);
 
@@ -196,7 +196,7 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 
 					this.notification(
 						i18nPGP('PGP_ERROR', {
-							'ERROR': '' + e
+							ERROR: '' + e
 						})
 					);
 				}
@@ -211,13 +211,13 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 							.catch((e) => {
 								this.notification(
 									i18nPGP('PGP_ERROR', {
-										'ERROR': '' + e
+										ERROR: '' + e
 									})
 								);
 							});
 					} catch (e) {
 						this.notification(
-							i18nPGP('PGP_ERROR', {'ERROR': '' + e})
+							i18nPGP('PGP_ERROR', {ERROR: '' + e})
 						);
 					}
 				}
@@ -237,11 +237,11 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 
 		if (option) {
 			this.signKey({
-				'empty': !option.key,
-				'selected': ko.observable(!!option.key),
-				'users': option.key.users,
-				'hash': option.key.id.substr(KEY_NAME_SUBSTR).toUpperCase(),
-				'key': option.key
+				empty: !option.key,
+				selected: ko.observable(!!option.key),
+				users: option.key.users,
+				hash: option.key.id.substr(KEY_NAME_SUBSTR).toUpperCase(),
+				key: option.key
 			});
 		}
 	}
@@ -252,12 +252,12 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 
 		if (option) {
 			this.encryptKeys.push({
-				'empty': !option.key,
-				'selected': ko.observable(!!option.key),
-				'removable': ko.observable(!this.sign() || !this.signKey() || this.signKey().key.id !== option.key.id),
-				'users': option.key.users,
-				'hash': option.key.id.substr(KEY_NAME_SUBSTR).toUpperCase(),
-				'key': option.key
+				empty: !option.key,
+				selected: ko.observable(!!option.key),
+				removable: ko.observable(!this.sign() || !this.signKey() || this.signKey().key.id !== option.key.id),
+				users: option.key.users,
+				hash: option.key.id.substr(KEY_NAME_SUBSTR).toUpperCase(),
+				key: option.key
 			});
 		}
 	}
@@ -343,9 +343,9 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 			const keys = PgpUserStore.findAllPrivateKeysByEmailNotNative(emailLine);
 			if (keys && keys[0]) {
 				this.signKey({
-					'users': keys[0].users || [emailLine],
-					'hash': keys[0].id.substr(KEY_NAME_SUBSTR).toUpperCase(),
-					'key': keys[0]
+					users: keys[0].users || [emailLine],
+					hash: keys[0].id.substr(KEY_NAME_SUBSTR).toUpperCase(),
+					key: keys[0]
 				});
 			}
 		}
@@ -360,14 +360,14 @@ class ComposeOpenPgpPopupView extends AbstractViewPopup {
 					const keys = PgpUserStore.findAllPublicKeysByEmailNotNative(recEmail);
 					return keys
 						? keys.map(publicKey => ({
-								'empty': !publicKey,
-								'selected': ko.observable(!!publicKey),
-								'removable': ko.observable(
+								empty: !publicKey,
+								selected: ko.observable(!!publicKey),
+								removable: ko.observable(
 									!this.sign() || !this.signKey() || this.signKey().key.id !== publicKey.id
 								),
-								'users': publicKey ? publicKey.users || [recEmail] : [recEmail],
-								'hash': publicKey ? publicKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() : '',
-								'key': publicKey
+								users: publicKey ? publicKey.users || [recEmail] : [recEmail],
+								hash: publicKey ? publicKey.id.substr(KEY_NAME_SUBSTR).toUpperCase() : '',
+								key: publicKey
 						  }))
 						: [];
 				}).flat().validUnique(encryptKey => encryptKey.hash)

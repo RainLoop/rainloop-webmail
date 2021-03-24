@@ -74,12 +74,12 @@ export class ContactsAdminSettings {
 		addSubscribablesTo(this, {
 			enableContacts: value =>
 				Remote.saveAdminConfig(null, {
-					'ContactsEnable': value ? 1 : 0
+					ContactsEnable: value ? 1 : 0
 				}),
 
 			contactsSync: value =>
 				Remote.saveAdminConfig(null, {
-					'ContactsSync': value ? 1 : 0
+					ContactsSync: value ? 1 : 0
 				}),
 
 			contactsType: value => {
@@ -87,23 +87,23 @@ export class ContactsAdminSettings {
 				this.testContactsError(false);
 				this.testContactsErrorMessage('');
 				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.contactsTypeTrigger, this), {
-					'ContactsPdoType': value.trim()
+					ContactsPdoType: value.trim()
 				})
 			},
 
 			pdoDsn: value =>
 				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.pdoDsnTrigger, this), {
-					'ContactsPdoDsn': value.trim()
+					ContactsPdoDsn: value.trim()
 				}),
 
 			pdoUser: value =>
 				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.pdoUserTrigger, this), {
-					'ContactsPdoUser': value.trim()
+					ContactsPdoUser: value.trim()
 				}),
 
 			pdoPassword: value =>
 				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.pdoPasswordTrigger, this), {
-					'ContactsPdoPassword': value.trim()
+					ContactsPdoPassword: value.trim()
 				})
 		})
 
@@ -121,10 +121,10 @@ export class ContactsAdminSettings {
 		this.testing(true);
 
 		Remote.testContacts(this.onTestContactsResponse, {
-			'ContactsPdoType': this.contactsType(),
-			'ContactsPdoDsn': this.pdoDsn(),
-			'ContactsPdoUser': this.pdoUser(),
-			'ContactsPdoPassword': this.pdoPassword()
+			ContactsPdoType: this.contactsType(),
+			ContactsPdoDsn: this.pdoDsn(),
+			ContactsPdoUser: this.pdoUser(),
+			ContactsPdoPassword: this.pdoPassword()
 		});
 	}
 

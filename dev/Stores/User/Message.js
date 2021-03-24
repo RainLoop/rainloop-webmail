@@ -247,16 +247,16 @@ export const MessageUserStore = new class {
 					NotificationUserStore.displayDesktopNotification(
 						AccountUserStore.email(),
 						i18n('MESSAGE_LIST/NEW_MESSAGE_NOTIFICATION', {
-							'COUNT': len
+							COUNT: len
 						}),
-						{ 'Url': mailBox(newMessages[0].Folder, 1) }
+						{ Url: mailBox(newMessages[0].Folder, 1) }
 					);
 				} else {
 					newMessages.forEach(item => {
 						NotificationUserStore.displayDesktopNotification(
 							EmailCollectionModel.reviveFromJson(item.From).toString(),
 							item.Subject,
-							{ 'Folder': item.Folder, 'Uid': item.Uid }
+							{ Folder: item.Folder, Uid: item.Uid }
 						);
 					});
 				}

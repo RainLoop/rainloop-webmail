@@ -14,19 +14,12 @@ export const trigger = ko.observable(false);
  * @returns {string}
  */
 export function i18n(key, valueList, defaulValue) {
-	let valueName = '',
-		result = I18N_DATA[key];
+	let result = I18N_DATA[key] || defaulValue || key;
 
-	if (undefined === result) {
-		result = undefined === defaulValue ? key : defaulValue;
-	}
-
-	if (null != valueList) {
-		for (valueName in valueList) {
-			if (Object.prototype.hasOwnProperty.call(valueList, valueName)) {
-				result = result.replace('%' + valueName + '%', valueList[valueName]);
-			}
-		}
+	if (valueList) {
+		Object.entries(valueList).forEach(([key, value]) => {
+			result = result.replace('%' + key + '%', value);
+		});
 	}
 
 	return result;

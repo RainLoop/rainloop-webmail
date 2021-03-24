@@ -74,13 +74,13 @@ class PluginPopupView extends AbstractViewPopup {
 			if (isNonEmptyArray(config)) {
 				this.configures(
 					config.map(item => ({
-						'value': ko.observable(item[0]),
-						'placeholder': ko.observable(item[6]),
-						'Name': item[1],
-						'Type': item[2],
-						'Label': item[3],
-						'Default': item[4],
-						'Desc': item[5]
+						value: ko.observable(item[0]),
+						placeholder: ko.observable(item[6]),
+						Name: item[1],
+						Type: item[2],
+						Label: item[3],
+						Default: item[4],
+						Desc: item[5]
 					}))
 				);
 			}

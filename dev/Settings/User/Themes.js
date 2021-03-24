@@ -35,7 +35,7 @@ export class ThemesUserSettings {
 			changeTheme(value, this.themeTrigger);
 
 			Remote.saveSettings(null, {
-				'Theme': value
+				Theme: value
 			});
 		});
 

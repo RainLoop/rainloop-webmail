@@ -19,27 +19,27 @@ export class LoginAdminSettings {
 		addSubscribablesTo(this, {
 			determineUserLanguage: value =>
 				Remote.saveAdminConfig(null, {
-					'DetermineUserLanguage': value ? 1 : 0
+					DetermineUserLanguage: value ? 1 : 0
 				}),
 
 			determineUserDomain: value =>
 				Remote.saveAdminConfig(null, {
-					'DetermineUserDomain': value ? 1 : 0
+					DetermineUserDomain: value ? 1 : 0
 				}),
 
 			allowLanguagesOnLogin: value =>
 				Remote.saveAdminConfig(null, {
-					'AllowLanguagesOnLogin': value ? 1 : 0
+					AllowLanguagesOnLogin: value ? 1 : 0
 				}),
 
 			hideSubmitButton: value =>
 				Remote.saveAdminConfig(null, {
-					'hideSubmitButton': value ? 1 : 0
+					hideSubmitButton: value ? 1 : 0
 				}),
 
 			defaultDomain: value =>
 				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.defaultDomain.trigger, this), {
-					'LoginDefaultDomain': value.trim()
+					LoginDefaultDomain: value.trim()
 				})
 		});
 	}

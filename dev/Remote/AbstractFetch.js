@@ -162,7 +162,7 @@ export class AbstractFetchRemote
 	 */
 	jsVersion(fCallback, sVersion) {
 		this.defaultRequest(fCallback, 'Version', {
-			'Version': sVersion
+			Version: sVersion
 		});
 	}
 

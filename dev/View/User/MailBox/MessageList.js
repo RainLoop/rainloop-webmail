@@ -114,15 +114,15 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		});
 
 		// append drag and drop
-		this.dragOver = ko.observable(false).extend({ 'throttle': 1 });
-		this.dragOverEnter = ko.observable(false).extend({ 'throttle': 1 });
+		this.dragOver = ko.observable(false).extend({ throttle: 1 });
+		this.dragOverEnter = ko.observable(false).extend({ throttle: 1 });
 
 		this.sLastSearchValue = '';
 
 		this.addComputables({
 			messageListSearchDesc: () => {
 				const value = MessageUserStore.listEndSearch();
-				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { 'SEARCH': value }) : ''
+				return value ? i18n('MESSAGE_LIST/SEARCH_RESULT_FOR', { SEARCH: value }) : ''
 			},
 
 			messageListPaginator: computedPaginatorHelper(MessageUserStore.listPage,
@@ -871,9 +871,9 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 	quotaTooltip() {
 		return i18n('MESSAGE_LIST/QUOTA_SIZE', {
-			'SIZE': FileInfo.friendlySize(this.userUsageSize()),
-			'PROC': this.userUsageProc(),
-			'LIMIT': FileInfo.friendlySize(this.userQuota())
+			SIZE: FileInfo.friendlySize(this.userUsageSize()),
+			PROC: this.userUsageProc(),
+			LIMIT: FileInfo.friendlySize(this.userQuota())
 		});
 	}
 

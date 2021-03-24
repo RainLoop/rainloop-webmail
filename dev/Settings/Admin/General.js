@@ -93,12 +93,12 @@ export class GeneralAdminSettings {
 		addSubscribablesTo(this, {
 			mainAttachmentLimit: value =>
 				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.attachmentLimitTrigger, this), {
-					'AttachmentLimit': pInt(value)
+					AttachmentLimit: pInt(value)
 				}),
 
 			language: value =>
 				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.languageTrigger, this), {
-					'Language': value.trim()
+					Language: value.trim()
 				}),
 
 			languageAdmin: value => {
@@ -106,14 +106,14 @@ export class GeneralAdminSettings {
 				translatorReload(true, value)
 					.then(fReloadLanguageHelper(SaveSettingsStep.TrueResult), fReloadLanguageHelper(SaveSettingsStep.FalseResult))
 					.then(() => Remote.saveAdminConfig(null, {
-						'LanguageAdmin': value.trim()
+						LanguageAdmin: value.trim()
 					}));
 			},
 
 			theme: value => {
 				changeTheme(value, this.themeTrigger);
 				Remote.saveAdminConfig(settingsSaveHelperSimpleFunction(this.themeTrigger, this), {
-					'Theme': value.trim()
+					Theme: value.trim()
 				});
 			},
 

@@ -57,36 +57,36 @@ export class SecurityAdminSettings {
 
 			capaOpenPGP: value =>
 				Remote.saveAdminConfig(null, {
-					'CapaOpenPGP': value ? 1 : 0
+					CapaOpenPGP: value ? 1 : 0
 				}),
 
 			capaTwoFactorAuth: value => {
 				value || this.capaTwoFactorAuthForce(false);
 				Remote.saveAdminConfig(null, {
-					'CapaTwoFactorAuth': value ? 1 : 0
+					CapaTwoFactorAuth: value ? 1 : 0
 				});
 			},
 
 			capaTwoFactorAuthForce: value =>
 				Remote.saveAdminConfig(null, {
-					'CapaTwoFactorAuthForce': value ? 1 : 0
+					CapaTwoFactorAuthForce: value ? 1 : 0
 				}),
 
 			useLocalProxyForExternalImages: value =>
 				Remote.saveAdminConfig(null, {
-					'UseLocalProxyForExternalImages': value ? 1 : 0
+					UseLocalProxyForExternalImages: value ? 1 : 0
 				}),
 
 			verifySslCertificate: value => {
 				value => value || this.allowSelfSigned(true);
 				Remote.saveAdminConfig(null, {
-					'VerifySslCertificate': value ? 1 : 0
+					VerifySslCertificate: value ? 1 : 0
 				});
 			},
 
 			allowSelfSigned: value =>
 				Remote.saveAdminConfig(null, {
-					'AllowSelfSigned': value ? 1 : 0
+					AllowSelfSigned: value ? 1 : 0
 				})
 		});
 

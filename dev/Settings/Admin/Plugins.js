@@ -24,7 +24,7 @@ export class PluginsAdminSettings {
 
 		this.enabledPlugins.subscribe(value =>
 			Remote.saveAdminConfig(null, {
-				'EnabledPlugins': value ? 1 : 0
+				EnabledPlugins: value ? 1 : 0
 			})
 		);
 	}
