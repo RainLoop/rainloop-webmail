@@ -114,7 +114,13 @@
 											<span data-i18n="GLOBAL/DELETE"></span>
 										</a>
 									</li>
-									<li class="e-item" role="presentation" data-bind="visible: message() && message().hasUnsubsribeLinks()">
+									<li class="e-item" role="presentation" data-bind="command: deleteWithoutMoveCommand">
+										<a class="e-link menuitem" href="#" tabindex="-1">
+											<i class="fontastic">🗑</i>
+											<span data-i18n="MESSAGE_LIST/BUTTON_DELETE_WITHOUT_MOVE"></span>
+										</a>
+									</li>
+									<li class="e-item dividerbar" role="presentation" data-bind="visible: message() && message().hasUnsubsribeLinks()">
 										<a target="_blank" class="e-link menuitem" href="#" tabindex="-1" data-bind="attr: { href: viewUnsubscribeLink }">
 											<i class="fontastic">✖</i>
 											<span data-i18n="MESSAGE/BUTTON_UNSUBSCRIBE"></span>
