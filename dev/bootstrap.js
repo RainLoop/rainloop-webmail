@@ -29,7 +29,7 @@ export default (App) => {
 	addEventListener('click', ()=>rl.Dropdowns.detectVisibility());
 
 	rl.app = App;
-	rl.logoutReload = () => App && App.logoutReload && App.logoutReload();
+	rl.logoutReload = App.logoutReload;
 
 	rl.i18n = i18n;
 
