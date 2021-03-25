@@ -254,9 +254,9 @@ html.rl-no-preview-pane {
 			padding: 0 10px 0 5px;
 		}
 
-		time {
+		time, .sizeParent {
 			margin: 0 5px;
-			color: #999;
+			opacity: 0.6;
 			font-size: 11px;
 			white-space: nowrap;
 		}
@@ -472,7 +472,7 @@ html .messageList .line-loading {
 			line-height: 16px;
 			margin-left: 30px;
 			order: 1;
-			width: calc(100% - 60px);
+			width: calc(100% - 120px);
 		}
 
 		.senderParent {
@@ -483,8 +483,12 @@ html .messageList .line-loading {
 			order: 1;
 		}
 
-		.attachmentParent {
+		.sizeParent {
 			order: 2;
+		}
+
+		.attachmentParent {
+			order: 3;
 		}
 	}
 }
