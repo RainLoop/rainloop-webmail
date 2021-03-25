@@ -23,7 +23,7 @@
 							autocomplete="current-password" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-i18n="[placeholder]LOGIN/LABEL_PASSWORD"
 							data-bind="textInput: password, disable: submitRequest" />
-						<span class="add-on" tabindex="-1" data-bind="command: submitCommand, tooltip: 'LOGIN/BUTTON_LOGIN'">
+						<span class="add-on" tabindex="-1" data-bind="command: submitCommand" data-i18n="[title]LOGIN/BUTTON_LOGIN">
 							<i class="fontastic" data-bind="visible: '' === password()">🔑</i>
 							<button type="submit" class="btn-submit-icon-wrp login-submit-icon fontastic" data-bind="visible: '' !== password()">❯</button>
 						</span>

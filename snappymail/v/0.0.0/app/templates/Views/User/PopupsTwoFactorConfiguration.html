@@ -8,7 +8,7 @@
 			<div class="form-horizontal" data-bind="visible: capaTwoFactor" style="margin-top: 10px;">
 				<div class="control-group" data-bind="visible: twoFactorStatus">
 					<div class="controls">
-						<div style="display: inline-block" data-bind="tooltip: viewTwoFactorEnableTooltip">
+						<div style="display: inline-block" data-bind="attr:{title: viewTwoFactorEnableTooltip}">
 							<div data-bind="component: {
 								name: 'Checkbox',
 								params: {

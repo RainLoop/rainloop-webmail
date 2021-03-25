@@ -1,10 +1,10 @@
 <div class="b-folders g-ui-user-select-none" data-bind="css: {'focused': folderListFocused, 'single-root-inbox': foldersListWithSingleInboxRootFolder, 'inbox-is-starred': isInboxStarred}">
 	<div class="b-toolbar btn-toolbar hide-mobile">
-		<a class="btn buttonCompose" data-bind="visible: allowComposer, click: composeClick, tooltip: 'FOLDER_LIST/BUTTON_NEW_MESSAGE', css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}">
+		<a class="btn buttonCompose" data-bind="visible: allowComposer, click: composeClick, css: {'btn-warning': composeInEdit, 'btn-success': !composeInEdit()}" data-i18n="[title]FOLDER_LIST/BUTTON_NEW_MESSAGE">
 			<i class="icon-paper-plane"></i>
 			<span class="buttonComposeText" data-i18n="FOLDER_LIST/BUTTON_NEW_MESSAGE"></span>
 		</a>
-		<a class="btn buttonContacts fontastic" data-bind="visible: allowContacts, click: contactsClick, tooltip: 'GLOBAL/CONTACTS'">📇</a>
+		<a class="btn buttonContacts fontastic" data-bind="visible: allowContacts, click: contactsClick" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
 	</div>
 	<div class="b-content opacity-on-panel-disabled" data-bind="css: {'inbox-is-starred': isInboxStarred}">
 		<div class="content">
@@ -24,7 +24,7 @@
 			</a>
 		</div>
 		<div class="btn-group hide-on-panel-disabled">
-			<a class="btn" data-bind="click: createFolder">
+			<a class="btn" data-bind="click: createFolder" data-i18n="[title]POPUPS_CREATE_FOLDER/TITLE_CREATE_FOLDER">
 				<i data-bind="css: {'icon-folder-add': !foldersChanging(), 'icon-spinner': foldersChanging()}"></i>
 			</a>
 			<a class="btn fontastic" data-bind="click: configureFolders">⚙</a>

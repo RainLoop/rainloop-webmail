@@ -9,8 +9,8 @@
 			<span class="hide-mobile" data-i18n="GLOBAL/SAVE"></span>
 		</a>
 
-		<a class="close" data-bind="click: tryToClosePopup, tooltip: 'GLOBAL/CANCEL'">×</a>
-		<a class="minimize-custom" data-bind="click: skipCommand, tooltip: 'COMPOSE/BUTTON_MINIMIZE'"></a>
+		<a class="close" data-bind="click: tryToClosePopup" data-i18n="[title]GLOBAL/CANCEL">×</a>
+		<a class="minimize-custom" data-bind="click: skipCommand" data-i18n="[title]COMPOSE/BUTTON_MINIMIZE"></a>
 
 		<a class="btn btn-danger button-delete button-delete-transitions" data-bind="command: deleteCommand">
 			<i class="fontastic">🗑</i>
@@ -76,7 +76,7 @@
 							</div>
 							<div class="btn-group pull-right">&nbsp;</div>
 							<div class="btn-group pull-right">
-								<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand, tooltip: 'GLOBAL/CONTACTS'">📇</a>
+								<a class="btn fontastic" data-bind="visible: allowContacts, command: contactsCommand" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
 							</div>
 							<div class="btn-group pull-right">&nbsp;</div>
 						</div>
@@ -163,7 +163,7 @@
 								<div class="btn-group pull-right">
 									<a class="btn"
 										style="padding-left: 10px; padding-right: 10px;"
-										data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton, tooltip: 'COMPOSE/ATTACH_FILES'">
+										data-bind="visible: addAttachmentEnabled(), initDom: composeUploaderButton" data-i18n="[title]COMPOSE/ATTACH_FILES">
 										<sup style="font-weight: bold; font-size: 100%; top: -0.3em;">+</sup><i class="icon-attachment"></i>
 									</a>
 								</div>

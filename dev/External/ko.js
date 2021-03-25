@@ -1,20 +1,10 @@
-import { i18n, i18nToNodes, trigger } from 'Common/Translator';
+import { i18nToNodes } from 'Common/Translator';
 import { doc, createElement } from 'Common/Globals';
 import { SaveSettingsStep } from 'Common/Enums';
 import { isNonEmptyArray, isFunction } from 'Common/Utils';
 
 const
 	koValue = value => !ko.isObservable(value) && isFunction(value) ? value() : ko.unwrap(value);
-
-ko.bindingHandlers.tooltip = {
-	init: (element, fValueAccessor) => {
-		const sValue = koValue(fValueAccessor());
-		element.title = i18n(sValue);
-		trigger.subscribe(() => element.title = i18n(sValue));
-	},
-	update: (element, fValueAccessor) =>
-		element.title = i18n(koValue(fValueAccessor()))
-};
 
 ko.bindingHandlers.tooltipErrorTip = {
 	init: element => {

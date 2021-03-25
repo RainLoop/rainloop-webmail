@@ -87,8 +87,7 @@
 			</div>
 		</div>
 		<div class="modal-footer">
-			<a class="btn" data-bind="visible: $root.allowToggle, click: function() { $root.toggleFiltersRaw(); },
-				css: {'active': $root.rawActive }, tooltip: 'POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT'">
+			<a class="btn" data-bind="visible: $root.allowToggle, click: function() { $root.toggleFiltersRaw(); }, css: {'active': $root.rawActive }" data-i18n="[title]POPUPS_SIEVE_SCRIPT/BUTTON_RAW_SCRIPT">
 				<i class="icon-file-code"></i>
 			</a>
 			<a class="btn buttonSave" data-bind="visible: hasChanges, click: function() { $root.saveScriptCommand(); }, css: {'btn-danger': $root.saveError}">
