@@ -773,8 +773,8 @@ class Actions
 					$sLogFileFullPath = \APP_PRIVATE_DATA . 'logs/' . $this->compileLogFileName($sLogFileName);
 					$sLogFileDir = \dirname($sLogFileFullPath);
 
-					if (!is_dir($sLogFileDir)) {
-						mkdir($sLogFileDir, 0755, true);
+					if (!\is_dir($sLogFileDir)) {
+						\mkdir($sLogFileDir, 0755, true);
 					}
 
 					$oDriver = new \MailSo\Log\Drivers\File($sLogFileFullPath);
@@ -1009,7 +1009,6 @@ class Actions
 			'useImapThread' => (bool)$oConfig->Get('labs', 'use_imap_thread', false),
 			'useImapSubscribe' => (bool)$oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'allowAppendMessage' => (bool)$oConfig->Get('labs', 'allow_message_append', false),
-			'materialDesign' => (bool)$oConfig->Get('labs', 'use_material_design', true),
 			'folderSpecLimit' => (int)$oConfig->Get('labs', 'folders_spec_limit', 50),
 			'faviconStatus' => (bool)$oConfig->Get('labs', 'favicon_status', true),
 			'listPermanentFiltered' => '' !== \trim(Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),

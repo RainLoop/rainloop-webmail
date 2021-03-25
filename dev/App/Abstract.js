@@ -1,8 +1,6 @@
 import ko from 'ko';
 
 import {
-	doc,
-	createElement,
 	elementById,
 	Settings
 } from 'Common/Globals';
@@ -25,27 +23,6 @@ export class AbstractApp {
 	 */
 	constructor(Remote) {
 		this.Remote = Remote;
-	}
-
-	remote() {
-		return this.Remote || null;
-	}
-
-	/**
-	 * @param {string} link
-	 * @returns {boolean}
-	 */
-	download(link) {
-		if (ThemeStore.isMobile()) {
-			open(link, '_self');
-			focus();
-		} else {
-			const oLink = createElement('a');
-			oLink.href = link;
-			doc.body.appendChild(oLink).click();
-			oLink.remove();
-		}
-		return true;
 	}
 
 	logoutReload(close = false) {
@@ -75,7 +52,7 @@ export class AbstractApp {
 
 							i18nToNodes(componentInfo.element);
 
-							if (undefined !== params.inline && ko.unwrap(params.inline)) {
+							if (params.inline && ko.unwrap(params.inline)) {
 								params.element.style.display = 'inline-block';
 							}
 						}
@@ -88,12 +65,8 @@ export class AbstractApp {
 		register('Input', InputComponent);
 		register('Select', SelectComponent);
 		register('TextArea', TextAreaComponent);
+		register('Checkbox', CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');
 		register('CheckboxSimple', CheckboxComponent, 'CheckboxComponent');
-		if (!Settings.app('materialDesign')) {
-			register('Checkbox', CheckboxComponent);
-		} else {
-			register('Checkbox', CheckboxMaterialDesignComponent, 'CheckboxMaterialDesignComponent');
-		}
 
 		initOnStartOrLangChange();
 

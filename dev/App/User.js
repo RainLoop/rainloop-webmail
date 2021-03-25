@@ -867,6 +867,23 @@ class AppUser extends AbstractApp {
 		}
 	}
 
+	/**
+	 * @param {string} link
+	 * @returns {boolean}
+	 */
+	download(link) {
+		if (ThemeStore.isMobile()) {
+			open(link, '_self');
+			focus();
+		} else {
+			const oLink = createElement('a');
+			oLink.href = link;
+			doc.body.appendChild(oLink).click();
+			oLink.remove();
+		}
+		return true;
+	}
+
 	logout() {
 		Remote.logout(() => this.logoutReload((SettingsGet('ParentEmail')||{length:0}).length));
 	}

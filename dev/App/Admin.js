@@ -16,10 +16,6 @@ class AdminApp extends AbstractApp {
 		this.weakPassword = ko.observable(false);
 	}
 
-	bootend() {
-		progressJs.end();
-	}
-
 	bootstart() {
 		super.bootstart();
 
@@ -35,7 +31,7 @@ class AdminApp extends AbstractApp {
 			startScreens([LoginAdminScreen]);
 		}
 
-		this.bootend();
+		progressJs.end();
 	}
 }
 
