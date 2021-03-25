@@ -24,31 +24,18 @@ class Syslog extends \MailSo\Log\Driver
 	{
 		parent::__construct();
 
-		if (\function_exists('openlog') && \function_exists('closelog') && \defined('LOG_ODELAY') && \defined('LOG_USER'))
-		{
+		if (\is_callable('openlog')) {
 			$this->iLogLevel = \defined('LOG_INFO') ? LOG_INFO : 6;
-		}
-		else
-		{
-			$this->iLogLevel = null;
 		}
 	}
 
 	protected function writeImplementation($mDesc) : bool
 	{
-		if (null === $this->iLogLevel)
-		{
-			return false;
+		$result = false;
+		if ($this->iLogLevel && \openlog('snappymail', LOG_ODELAY, LOG_USER)) {
+			$result = \syslog($this->iLogLevel, \is_array($mDesc) ? \implode(PHP_EOL, $mDesc) : $mDesc);
+			\closelog();
 		}
-
-		if (\is_array($mDesc))
-		{
-			$mDesc = \implode($this->sNewLine, $mDesc);
-		}
-
-		\openlog('snappymail', LOG_ODELAY, LOG_USER);
-		$result = \syslog($this->iLogLevel, $mDesc);
-		\closelog();
 		return $result;
 	}
 
