@@ -1310,12 +1310,8 @@ class Actions
 		$aResult['StaticAppJsLink'] = $this->StaticPath('js/' . ($bAppJsDebug ? '' : 'min/') .
 			($bAdmin ? 'admin' : 'app') . ($bAppJsDebug ? '' : '.min') . '.js');
 
-		if ($this->Config()->Get('labs', 'use_ck_html_editor', false)) {
-			$aResult['StaticEditorJsLink'] = $this->StaticPath('ckeditor/ckeditor.js');
-		}
-
-		$aResult['EditorDefaultType'] = \in_array($aResult['EditorDefaultType'], array('Plain', 'Html', 'HtmlForced', 'PlainForced')) ?
-			$aResult['EditorDefaultType'] : 'Plain';
+		$aResult['EditorDefaultType'] = \in_array($aResult['EditorDefaultType'], array('Plain', 'Html', 'HtmlForced', 'PlainForced'))
+			? $aResult['EditorDefaultType'] : 'Plain';
 
 		// IDN
 		$aResult['Email'] = \MailSo\Base\Utils::IdnToUtf8($aResult['Email']);

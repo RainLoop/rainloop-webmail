@@ -116,23 +116,23 @@ RainLoop 1.15 vs SnappyMail
 
 |js/*           	|RainLoop 	|Snappy   	|
 |---------------	|--------:	|--------:	|
-|admin.js        	|2.158.025	|  101.796	|
-|app.js          	|4.215.733	|  501.679	|
+|admin.js        	|2.158.025	|  100.608	|
+|app.js          	|4.215.733	|  495.934	|
 |boot.js         	|  672.433	|    4.726	|
 |libs.js         	|  647.679	|  227.974	|
 |polyfills.js    	|  325.908	|        0	|
 |serviceworker.js	|        0	|      285	|
-|TOTAL           	|8.019.778	|  836.460	|
+|TOTAL           	|8.019.778	|  829.355	|
 
 |js/min/*       	|RainLoop 	|Snappy   	|RL gzip	|SM gzip	|RL brotli	|SM brotli	|
 |---------------	|--------:	|--------:	|------:	|------:	|--------:	|--------:	|
-|admin.min.js    	|  255.514	|   51.172	| 73.899	| 15.082	| 60.674 	| 13.491	|
-|app.min.js      	|  516.000	|  243.404	|140.430	| 71.302	|110.657 	| 60.167	|
-|boot.min.js     	|   66.456	|    2.525	| 22.553	|  1.391	| 20.043 	|  1.201	|
+|admin.min.js    	|  255.514	|   50.607	| 73.899	| 14.944	| 60.674 	| 13.364	|
+|app.min.js      	|  516.000	|  240.553	|140.430	| 70.291	|110.657 	| 59.309	|
+|boot.min.js     	|   66.456	|    2.442	| 22.553	|  1.371	| 20.043 	|  1.178	|
 |libs.min.js     	|  574.626	|  115.877	|177.280	| 42.809	|151.855 	| 38.099	|
 |polyfills.min.js	|   32.608	|        0	| 11.315	|      0	| 10.072 	|      0	|
-|TOTAL           	|1.445.204	|  412.978	|425.477	|130.584	|353.301 	|112.958	|
-|TOTAL (no admin)	|1.189.690	|  361.806	|351.061	|115.502	|292.627 	| 99.467	|
+|TOTAL           	|1.445.204	|  409.479	|425.477	|129.415	|353.301 	|111.950	|
+|TOTAL (no admin)	|1.189.690	|  358.872	|351.061	|114.471	|292.627 	| 98.586	|
 
 For a user its around 66% smaller and faster than traditional RainLoop.
 
@@ -166,12 +166,12 @@ For a user its around 66% smaller and faster than traditional RainLoop.
 
 |css/*       	|RainLoop	|Snappy   	|RL gzip	|SM gzip	|SM brotli	|
 |------------	|-------:	|-------:	|------:	|------:	|--------:	|
-|app.css     	| 340.334	| 107.316	| 46,959	| 18.818	| 16.150	|
-|app.min.css 	| 274.791	|  88.449	| 39.618	| 16.838	| 14.830	|
+|app.css     	| 340.334	| 107.279	| 46,959	| 18.816	| 16.160	|
+|app.min.css 	| 274.791	|  88.402	| 39.618	| 16.831	| 14.827	|
 |boot.css    	|       	|   2.066	|       	|    913	|    742	|
 |boot.min.css	|       	|   1.696	|       	|    818	|    664	|
-|admin.css    	|       	|  48.053	|       	|  9.494	|  8.310	|
-|admin.min.css	|       	|  38.740	|       	|  8.441	|  7.501	|
+|admin.css    	|       	|  46.393	|       	|  9.237	|  8.073	|
+|admin.min.css	|       	|  37.306	|       	|  8.191	|  7.282	|
 
 
 ### Squire vs CKEditor
@@ -189,8 +189,7 @@ Still TODO:
 
 CKEditor including the 7 asset requests (css,language,plugins,icons) is 633.46 KB / 180.47 KB (gzip).
 
-To use the old CKEditor, you must enable it in /data/\_data\_/\_default\_/configs/application.ini
-in the [labs] section add/edit: `use_ck_html_editor = On`
+To use the old CKEditor, you must install the plugin.
 
 ### PHP73 branch
 

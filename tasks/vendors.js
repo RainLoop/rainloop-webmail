@@ -16,37 +16,4 @@ const fontasticFontsCopy = () =>
 
 const fontastic = gulp.series(fontasticFontsClear, fontasticFontsCopy);
 
-// squire
-const squireClear = () => del('snappymail/v/' + config.devVersion + '/static/squire');
-
-const squire = gulp.series(squireClear);
-
-// ckeditor
-const ckeditorClear = () => del('snappymail/v/' + config.devVersion + '/static/ckeditor');
-
-const ckeditorCopy = () =>
-	gulp
-		.src([
-			'vendors/ckeditor/**/*',
-			'!vendors/ckeditor/samples{,/**}',
-			'!vendors/ckeditor/adapters{,/**}',
-			'!vendors/ckeditor/*.md'
-		])
-		.pipe(gulp.dest('snappymail/v/' + config.devVersion + '/static/ckeditor'));
-
-const ckeditorCopyPlugins = () =>
-	gulp
-		.src('vendors/ckeditor-plugins/**/*')
-		.pipe(gulp.dest('snappymail/v/' + config.devVersion + '/static/ckeditor/plugins'));
-
-const ckeditorSetup = () =>
-	gulp
-		.src('snappymail/v/' + config.devVersion + '/static/ckeditor/*.js')
-		.pipe(stripbom())
-		// eslint-disable-next-line quotes
-		.pipe(header('\uFEFF')) // BOM
-		.pipe(gulp.dest('snappymail/v/' + config.devVersion + '/static/ckeditor'));
-
-const ckeditor = gulp.series(ckeditorClear, ckeditorCopy, ckeditorCopyPlugins, ckeditorSetup);
-
-exports.vendors = gulp.parallel(squire, ckeditor, fontastic);
+exports.vendors = gulp.parallel(fontastic);

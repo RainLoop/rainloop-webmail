@@ -153,12 +153,6 @@ win.rl = {
 			.then(() => Promise.all([loadScript(appData.TemplatesLink), loadScript(appData.LangLink)]))
 			.then(() => loadScript(appData.StaticAppJsLink))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
-			.then(() =>
-				// Enable the old CKEditor?
-				(appData.Auth && appData.StaticEditorJsLink)
-					? loadScript(appData.StaticEditorJsLink)
-					: Promise.resolve()
-			)
 			.then(() => win.__APP_BOOT ? win.__APP_BOOT(showError) : showError())
 			.catch(e => {
 				showError();

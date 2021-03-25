@@ -1,5 +1,3 @@
-import { createCKEditor } from 'External/CKEditor.js';
-
 const
 	htmlre = /[&<>"']/g,
 	htmlmap = {
@@ -180,11 +178,11 @@ class HtmlEditor {
 				this.onReady && this.onReady();
 			};
 
-			if (window.CKEDITOR) {
-				this.editor = createCKEditor(this.element);
-				this.editor.on('instanceReady', onReady);
-			} else {
-				this.editor = new SquireUI(this.element, this.editor);
+			if (rl.createWYSIWYG) {
+				this.editor = rl.createWYSIWYG(this.element, onReady);
+			}
+			if (!this.editor) {
+				this.editor = new SquireUI(this.element);
 				setTimeout(onReady,1);
 			}
 
