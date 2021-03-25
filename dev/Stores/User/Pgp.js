@@ -2,7 +2,7 @@ import ko from 'ko';
 
 import { i18n } from 'Common/Translator';
 import { isArray, isNonEmptyArray, pString } from 'Common/Utils';
-import { doc } from 'Common/Globals';
+import { createElement } from 'Common/Globals';
 
 import { AccountUserStore } from 'Stores/User/Account';
 
@@ -361,7 +361,7 @@ export const PgpUserStore = new class {
 					verControl.addEventHandler('click', domControlSignedClickHelper(this, dom, domText));
 				}
 
-				dom.before(verControl, doc.createElement('div'));
+				dom.before(verControl, createElement('div'));
 			}
 		}
 	}

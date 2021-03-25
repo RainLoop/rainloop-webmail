@@ -2,6 +2,7 @@ import ko from 'ko';
 
 import {
 	doc,
+	createElement,
 	elementById,
 	Settings
 } from 'Common/Globals';
@@ -39,7 +40,7 @@ export class AbstractApp {
 			open(link, '_self');
 			focus();
 		} else {
-			const oLink = doc.createElement('a');
+			const oLink = createElement('a');
 			oLink.href = link;
 			doc.body.appendChild(oLink).click();
 			oLink.remove();

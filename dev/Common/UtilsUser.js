@@ -2,7 +2,7 @@ import { ComposeType, FolderType } from 'Common/EnumsUser';
 import { EmailModel } from 'Model/Email';
 import { encodeHtml } from 'Common/Html';
 import { isArray } from 'Common/Utils';
-import { doc } from 'Common/Globals';
+import { createElement } from 'Common/Globals';
 
 /**
  * @param {(string|number)} value
@@ -79,7 +79,7 @@ export function htmlToPlain(html) {
 	};
 
 	const
-		tpl = doc.createElement('template'),
+		tpl = createElement('template'),
 		convertPre = (...args) =>
 			args && 1 < args.length
 				? args[1]

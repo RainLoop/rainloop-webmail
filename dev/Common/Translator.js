@@ -1,7 +1,7 @@
 import ko from 'ko';
 import { Notification, UploadErrorCode } from 'Common/Enums';
 import { langLink } from 'Common/Links';
-import { doc } from 'Common/Globals';
+import { doc, createElement } from 'Common/Globals';
 
 let I18N_DATA = window.rainloopI18N || {};
 
@@ -122,7 +122,7 @@ export function getUploadErrorDescByCode(code) {
  */
 export function reload(admin, language) {
 	return new Promise((resolve, reject) => {
-		const script = doc.createElement('script');
+		const script = createElement('script');
 		script.onload = () => {
 			// reload the data
 			if (window.rainloopI18N) {

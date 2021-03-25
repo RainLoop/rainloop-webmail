@@ -1,5 +1,5 @@
 import { SaveSettingsStep } from 'Common/Enums';
-import { doc, elementById } from 'Common/Globals';
+import { doc, createElement, elementById } from 'Common/Globals';
 
 export const
 	isArray = Array.isArray,
@@ -119,7 +119,7 @@ export function changeTheme(value, themeTrigger = ()=>{}) {
 			.then(data => {
 				if (data && isArray(data) && 2 === data.length) {
 					if (themeLink && !themeStyle) {
-						themeStyle = doc.createElement('style');
+						themeStyle = createElement('style');
 						themeStyle.id = 'app-theme-style';
 						themeLink.after(themeStyle);
 						themeLink.remove();
