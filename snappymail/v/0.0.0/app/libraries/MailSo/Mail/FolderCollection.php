@@ -35,6 +35,11 @@ class FolderCollection extends \MailSo\Base\Collection
 	/**
 	 * @var bool
 	 */
+	public $IsSortSupported;
+
+	/**
+	 * @var bool
+	 */
 	public $Optimized;
 
 	/**
@@ -50,6 +55,7 @@ class FolderCollection extends \MailSo\Base\Collection
 		$this->FoldersHash = '';
 		$this->SystemFolders = array();
 		$this->IsThreadsSupported = false;
+		$this->IsSortSupported = false;
 		$this->Optimized = false;
 	}
 
@@ -239,6 +245,7 @@ class FolderCollection extends \MailSo\Base\Collection
 			'Namespace' => $this->GetNamespace(),
 			'FoldersHash' => $this->FoldersHash ?: '',
 			'IsThreadsSupported' => $this->IsThreadsSupported,
+			'IsSortSupported' => $this->IsSortSupported,
 			'Optimized' => $this->Optimized,
 			'CountRec' => $this->CountRec(),
 			'SystemFolders' => isset($this->SystemFolders) && \is_array($this->SystemFolders) ?

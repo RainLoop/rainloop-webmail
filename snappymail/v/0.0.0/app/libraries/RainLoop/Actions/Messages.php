@@ -24,16 +24,17 @@ trait Messages
 		$sUidNext = '';
 		$bUseThreads = false;
 		$sThreadUid = '';
+		$sSort = '';
 
 		$sRawKey = $this->GetActionParam('RawKey', '');
-		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 9);
+		$aValues = $this->getDecodedClientRawKeyValue($sRawKey, 10);
 
 		if ($aValues && 7 < \count($aValues))
 		{
-			$sFolder =(string) $aValues[0];
-			$iOffset = (int) $aValues[1];
-			$iLimit = (int) $aValues[2];
-			$sSearch = (string) $aValues[3];
+			$sFolder = (string) $aValues[2];
+			$iOffset = (int) $aValues[3];
+			$iLimit = (int) $aValues[4];
+			$sSearch = (string) $aValues[5];
 			$sUidNext = (string) $aValues[6];
 			$bUseThreads = (bool) $aValues[7];
 
@@ -41,6 +42,8 @@ trait Messages
 			{
 				$sThreadUid = isset($aValues[8]) ? (string) $aValues[8] : '';
 			}
+
+			$sSort = isset($aValues[9]) ? (string) $aValues[9] : '';
 
 			$this->verifyCacheByKey($sRawKey);
 		}
@@ -50,8 +53,9 @@ trait Messages
 			$iOffset = (int) $this->GetActionParam('Offset', 0);
 			$iLimit = (int) $this->GetActionParam('Limit', 10);
 			$sSearch = $this->GetActionParam('Search', '');
+			$sSort = $this->GetActionParam('Sort', '');
 			$sUidNext = $this->GetActionParam('UidNext', '');
-			$bUseThreads = '1' === (string) $this->GetActionParam('UseThreads', '0');
+			$bUseThreads = !empty($this->GetActionParam('UseThreads', '0'));
 
 			if ($bUseThreads)
 			{
@@ -76,10 +80,11 @@ trait Messages
 			$oMessageList = $this->MailClient()->MessageList(
 				$sFolder, $iOffset, $iLimit, $sSearch, $sUidNext,
 				$this->cacherForUids(),
-				!!$this->Config()->Get('labs', 'use_imap_sort', false),
+				!!$this->Config()->Get('labs', 'use_imap_sort', true),
 				$bUseThreads,
 				$sThreadUid,
-				''
+				'',
+				$sSort
 			);
 		}
 		catch (\Throwable $oException)
