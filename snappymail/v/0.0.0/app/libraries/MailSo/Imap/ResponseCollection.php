@@ -119,10 +119,7 @@ class ResponseCollection extends \MailSo\Base\Collection
 						}
 					}
 					$sFullNameRaw = \implode('', $sFullNameRaw);
-					if (!\strlen($sFullNameRaw)) {
-						\error_log('ResponseCollection::getFoldersResult: invalid string ' . \var_export($oResponse->ResponseList[4], true));
-						continue;
-					}
+
 					$oFolder = new Folder($sFullNameRaw,
 						$oResponse->ResponseList[3], $oResponse->ResponseList[2]);
 
