@@ -190,8 +190,3 @@ Still TODO:
 CKEditor including the 7 asset requests (css,language,plugins,icons) is 633.46 KB / 180.47 KB (gzip).
 
 To use the old CKEditor, you must install the plugin.
-
-### PHP73 branch
-
-There's a RainLoop 1.14.0 branch with only the PHP 7.3 changes at
-https://github.com/the-djmaze/snappymail/tree/php73
