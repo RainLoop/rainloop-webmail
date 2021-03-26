@@ -16,4 +16,4 @@ namespace MailSo\Imap\Exceptions;
  * @package Imap
  * @subpackage Exceptions
  */
-class LoginBadMethodException extends \MailSo\Imap\Exceptions\LoginException {}
+class LoginBadMethodException extends LoginException {}

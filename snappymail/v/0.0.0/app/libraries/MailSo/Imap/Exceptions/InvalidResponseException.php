@@ -16,4 +16,4 @@ namespace MailSo\Imap\Exceptions;
  * @package Imap
  * @subpackage Exceptions
  */
-class InvalidResponseException extends \MailSo\Imap\Exceptions\ResponseException {}
+class InvalidResponseException extends ResponseException {}

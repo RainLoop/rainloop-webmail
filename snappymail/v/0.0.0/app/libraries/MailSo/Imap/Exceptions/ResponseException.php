@@ -25,9 +25,11 @@ class ResponseException extends \MailSo\Imap\Exceptions\Exception
 
 	public function __construct(?\MailSo\Imap\ResponseCollection $oResponses = null, string $sMessage = '', int $iCode = 0, ?\Throwable $oPrevious = null)
 	{
-		parent::__construct($sMessage, $iCode, $oPrevious);
-
 		$this->oResponses = $oResponses;
+		if (!$sMessage && $response = $this->GetLastResponse()) {
+			$sMessage = $response->OptionalResponse[0] . ' ' . $response->HumanReadable;
+		}
+		parent::__construct($sMessage, $iCode, $oPrevious);
 	}
 
 	public function GetResponses() : ?\MailSo\Imap\ResponseCollection
