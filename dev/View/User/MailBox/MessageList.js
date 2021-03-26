@@ -74,6 +74,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.messageListDisableAutoSelect = MessageUserStore.listDisableAutoSelect;
 
 		this.folderList = FolderUserStore.folderList;
+		this.sortSupported = FolderUserStore.sortSupported;
 
 		this.composeInEdit = AppUserStore.composeInEdit;
 		this.leftPanelDisabled = leftPanelDisabled;
@@ -106,6 +107,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.addObservables({
 			moveDropdownTrigger: false,
 			moreDropdownTrigger: false,
+			sortDropdownTrigger: false,
 
 			dragOverArea: null,
 			dragOverBodyArea: null,
@@ -174,7 +176,18 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 			mobileCheckedStateHide: () => ThemeStore.isMobile() ? !MessageUserStore.listChecked().length : true,
 
-			messageListFocused: () => Scope.MessageList === AppUserStore.focusedState()
+			messageListFocused: () => Scope.MessageList === AppUserStore.focusedState(),
+
+			sortText: () => {
+				let mode = FolderUserStore.sortMode().split(/\s+/);
+				if ('' === mode[0]) {
+					return '📅⬇';
+				}
+				return (mode.includes('SIZE') ? '✉'
+					 : (mode.includes('FROM') ? '@'
+					 : (mode.includes('SUBJECT') ? '𝐒' : '📅')))
+					+ (mode.includes('REVERSE') ? '⬇' : '⬆');
+			}
 		});
 
 		this.hasCheckedOrSelectedLines = MessageUserStore.hasCheckedOrSelected,
@@ -244,6 +257,11 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			moveCommand: canBeMovedHelper,
 			moveNewCommand: canBeMovedHelper,
 		});
+	}
+
+	changeSort(self, event) {
+		FolderUserStore.sortMode(event.target.closest('li').dataset.sort);
+		this.reloadCommand();
 	}
 
 	clearCommand() {
