@@ -664,11 +664,28 @@ class ImapClient extends \MailSo\Net\NetClient
 		foreach ($aResult as /* @var $oImapResponse \MailSo\Imap\Response */ $oImapResponse)
 		{
 			if (\MailSo\Imap\Enumerations\ResponseType::UNTAGGED === $oImapResponse->ResponseType &&
-				$sStatus === $oImapResponse->StatusOrIndex && 5 === count($oImapResponse->ResponseList))
+				$sStatus === $oImapResponse->StatusOrIndex && 5 <= count($oImapResponse->ResponseList))
 			{
 				try
 				{
-					$oFolder = Folder::NewInstance($oImapResponse->ResponseList[4],
+					/**
+					 * A bug in the parser converts folder names that start with '[' into arrays,
+					 * and subfolders are in $oResponse->ResponseList[5+]
+					 * https://github.com/the-djmaze/snappymail/issues/1
+					 * https://github.com/the-djmaze/snappymail/issues/70
+					 * https://github.com/RainLoop/rainloop-webmail/issues/2037
+					 */
+					$sFullNameRaw = \array_slice($oResponse->ResponseList, 4);
+					foreach ($sFullNameRaw as &$name) {
+						if (\is_array($name)) {
+							$name = "[{$name[0]}]";
+						} else if (!\is_string($name)) {
+							$name = '';
+						}
+					}
+					$sFullNameRaw = \implode('', $sFullNameRaw);
+
+					$oFolder = Folder::NewInstance($sFullNameRaw,
 						$oImapResponse->ResponseList[3], $oImapResponse->ResponseList[2]);
 
 					if ($oFolder->IsInbox())
