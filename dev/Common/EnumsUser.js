@@ -17,7 +17,7 @@ export const FolderType = {
 /**
  * @enum {string}
  */
-export const FolderSortType = {
+export const FolderSortMode = {
 	DateDesc: '', // default 'REVERSE DATE'
 	DateAsc: 'DATE',
 	FromDesc: 'REVERSE FROM',

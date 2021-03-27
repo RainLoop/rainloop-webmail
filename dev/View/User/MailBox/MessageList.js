@@ -179,13 +179,15 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			messageListFocused: () => Scope.MessageList === AppUserStore.focusedState(),
 
 			sortText: () => {
-				let mode = FolderUserStore.sortMode().split(/\s+/);
-				if ('' === mode[0]) {
+				let mode = FolderUserStore.sortMode();
+				if ('' === mode) {
 					return '📅⬇';
 				}
+				mode = mode.split(/\s+/);
 				return (mode.includes('SIZE') ? '✉'
 					 : (mode.includes('FROM') ? '@'
-					 : (mode.includes('SUBJECT') ? '𝐒' : '📅')))
+					 : (mode.includes('SUBJECT') ? '𝐒'
+					 : '📅')))
 					+ (mode.includes('REVERSE') ? '⬇' : '⬆');
 			}
 		});

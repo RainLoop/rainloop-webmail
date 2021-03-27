@@ -101,8 +101,8 @@
 						</li>
 					</ul>
 				</div>
-				<div class="btn-group dropdown sortFolder" data-bind="visible: sortSupported, registerBootstrapDropdown: true, openDropdownTrigger: sortDropdownTrigger">
-					<a id="sort-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-toggle="dropdown" data-i18n="[title]GLOBAL/SORT" data-bind="text: sortText">⬇</a>
+				<div class="btn-group dropdown sortFolder" data-bind="visible: sortSupported() && mobileCheckedStateHide(), registerBootstrapDropdown: true, openDropdownTrigger: sortDropdownTrigger">
+					<a id="sort-list-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-toggle="dropdown" data-i18n="[title]MESSAGE_LIST/SORT" data-bind="text: sortText">⬇</a>
 					<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="sort-list-dropdown-id">
 						<li class="e-item" role="presentation" data-sort="DATE" data-bind="click: changeSort">
 							<a class="e-link menuitem" href="#" tabindex="-1">
@@ -130,13 +130,13 @@
 						</li>
 						<li class="e-item dividerbar" role="presentation" data-sort="SUBJECT" data-bind="click: changeSort">
 							<a class="e-link menuitem" href="#" tabindex="-1">
-								<i class="fontastic">S⬆</i>
+								<i class="fontastic">𝐒⬆</i>
 								<span data-i18n="MESSAGE_LIST/SORT_SUBJECT_ASC"></span>
 							</a>
 						</li>
 						<li class="e-item" role="presentation" data-sort="REVERSE SUBJECT" data-bind="click: changeSort">
 							<a class="e-link menuitem" href="#" tabindex="-1">
-								<i class="fontastic">S⬇</i>
+								<i class="fontastic">𝐒⬇</i>
 								<span data-i18n="MESSAGE_LIST/SORT_SUBJECT_DESC"></span>
 							</a>
 						</li>
