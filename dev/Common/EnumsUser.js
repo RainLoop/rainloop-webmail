@@ -17,6 +17,22 @@ export const FolderType = {
 /**
  * @enum {string}
  */
+export const FolderSortMode = {
+	DateDesc: '', // default 'REVERSE DATE'
+	DateAsc: 'DATE',
+	FromDesc: 'REVERSE FROM',
+	FromAsc: 'FROM',
+	SizeDesc: 'REVERSE SIZE',
+	SizeAsc: 'SIZE',
+	SubjectDesc: 'REVERSE SUBJECT',
+	SubjectAsc: 'SUBJECT'
+//	ToDesc: 'REVERSE TO',
+//	ToAsc: 'TO',
+};
+
+/**
+ * @enum {string}
+ */
 export const ComposeType = {
 	Empty: 'empty',
 	Reply: 'reply',

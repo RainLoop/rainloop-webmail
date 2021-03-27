@@ -1473,8 +1473,47 @@ class MailClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Imap\Exceptions\Exception
 	 */
-	public function GetUids(?\MailSo\Cache\CacheClient $oCacher, string $sSearch, string $sFilter, string $sFolderName, string $sFolderHash, bool $bUseSortIfSupported = false) : array
+	public function GetUids(?\MailSo\Cache\CacheClient $oCacher, string $sSearch,
+		string $sFilter, string $sFolderName, string $sFolderHash,
+		bool $bUseSortIfSupported = false, string $sSort = '') : array
 	{
+		/* TODO: Validate $sSort
+			ARRIVAL
+				Internal date and time of the message.  This differs from the
+				ON criteria in SEARCH, which uses just the internal date.
+
+			CC
+				[IMAP] addr-mailbox of the first "cc" address.
+
+			DATE
+				Sent date and time, as described in section 2.2.
+
+			FROM
+				[IMAP] addr-mailbox of the first "From" address.
+
+			REVERSE
+				Followed by another sort criterion, has the effect of that
+				criterion but in reverse (descending) order.
+				Note: REVERSE only reverses a single criterion, and does not
+				affect the implicit "sequence number" sort criterion if all
+				other criteria are identical.  Consequently, a sort of
+				REVERSE SUBJECT is not the same as a reverse ordering of a
+				SUBJECT sort.  This can be avoided by use of additional
+				criteria, e.g., SUBJECT DATE vs. REVERSE SUBJECT REVERSE
+				DATE.  In general, however, it's better (and faster, if the
+				client has a "reverse current ordering" command) to reverse
+				the results in the client instead of issuing a new SORT.
+
+			SIZE
+				Size of the message in octets.
+
+			SUBJECT
+				Base subject text.
+
+			TO
+				[IMAP] addr-mailbox of the first "To" address.
+		 */
+
 		$aResultUids = false;
 		$bUidsFromCacher = false;
 		$bUseCacheAfterSearch = true;
@@ -1482,18 +1521,13 @@ class MailClient
 		$sSerializedHash = '';
 		$sSerializedLog = '';
 
-		$bUseSortIfSupported = $bUseSortIfSupported ? !!$this->oImapClient->IsSupported('SORT') : false;
-
-		if (0 < \strlen($sSearch))
-		{
-			$bUseSortIfSupported = false;
-		}
+		$bUseSortIfSupported = $bUseSortIfSupported && !\strlen($sSearch) && $this->oImapClient->IsSupported('SORT');
 
 		$sSearchCriterias = $this->getImapSearchCriterias($sSearch, $sFilter, 0, $bUseCacheAfterSearch);
 		if ($bUseCacheAfterSearch && $oCacher && $oCacher->IsInited())
 		{
 			$sSerializedHash = 'GetUids/'.
-				($bUseSortIfSupported ? 'S': 'N').'/'.
+				($bUseSortIfSupported ? 'S' . $sSort : 'N').'/'.
 				$this->GenerateImapClientHash().'/'.
 				$sFolderName.'/'.$sSearchCriterias;
 
@@ -1522,7 +1556,7 @@ class MailClient
 		if (!\is_array($aResultUids))
 		{
 			$aResultUids = $bUseSortIfSupported ?
-				$this->oImapClient->MessageSimpleSort(array('REVERSE DATE'), $sSearchCriterias, true) :
+				$this->oImapClient->MessageSimpleSort(array($sSort ?: 'REVERSE DATE'), $sSearchCriterias, true) :
 				$this->oImapClient->MessageSimpleSearch($sSearchCriterias, true, \MailSo\Base\Utils::IsAscii($sSearchCriterias) ? '' : 'UTF-8')
 			;
 
@@ -1551,7 +1585,7 @@ class MailClient
 	public function MessageList(string $sFolderName, int $iOffset = 0, int $iLimit = 10,
 		string $sSearch = '', string $sPrevUidNext = '', ?\MailSo\Cache\CacheClient $oCacher = null,
 		bool $bUseSortIfSupported = false, bool $bUseThreadSortIfSupported = false,
-		string $sThreadUid = '', string $sFilter = '') : MessageCollection
+		string $sThreadUid = '', string $sFilter = '', string $sSort = '') : MessageCollection
 	{
 		$sFilter = \trim($sFilter);
 		$sSearch = \trim($sSearch);
@@ -1584,7 +1618,7 @@ class MailClient
 		$sUidNext = '0';
 		$sHighestModSeq = '';
 
-		$bUseSortIfSupported = $bUseSortIfSupported ? $this->oImapClient->IsSupported('SORT') : false;
+		$bUseSortIfSupported = $bUseSortIfSupported && $this->oImapClient->IsSupported('SORT');
 
 		$bUseThreadSortIfSupported = $bUseThreadSortIfSupported ?
 			($this->oImapClient->IsSupported('THREAD=REFS') || $this->oImapClient->IsSupported('THREAD=REFERENCES') || $this->oImapClient->IsSupported('THREAD=ORDEREDSUBJECT')) : false;
@@ -1630,7 +1664,7 @@ class MailClient
 		if (0 < $iMessageRealCount && !$bMessageListOptimization)
 		{
 			$mAllSortedUids = $this->GetUids($oCacher, '', $sFilter,
-				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported);
+				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $bUseSortIfSupported, $sSort);
 
 			$mAllThreads = $bUseThreadSortIfSupported ? $this->MessageListThreadsMap(
 				$oMessageCollection->FolderName, $oMessageCollection->FolderHash, $mAllSortedUids, $oCacher) : null;
@@ -2010,6 +2044,8 @@ class MailClient
 			}
 
 			$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
+
+			$oFolderCollection->IsSortSupported = $this->oImapClient->IsSupported('SORT');
 		}
 
 		return $oFolderCollection;

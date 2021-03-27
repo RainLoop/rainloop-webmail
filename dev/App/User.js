@@ -187,16 +187,18 @@ class AppUser extends AbstractApp {
 				}
 				MessageUserStore.listLoading(false);
 			},
-			FolderUserStore.currentFolderFullNameRaw(),
-			iOffset,
-			SettingsUserStore.messagesPerPage(),
-			MessageUserStore.listSearch(),
-			MessageUserStore.listThreadUid()
+			{
+				Folder: FolderUserStore.currentFolderFullNameRaw(),
+				Offset: iOffset,
+				Limit: SettingsUserStore.messagesPerPage(),
+				Search: MessageUserStore.listSearch(),
+				UidNext: MessageUserStore.listThreadUid()
+			}
 		);
 	}
 
 	recacheInboxMessageList() {
-		Remote.messageList(()=>{}, getFolderInboxName(), 0, SettingsUserStore.messagesPerPage(), '', '', true);
+		Remote.messageList(null, {Folder: getFolderInboxName()}, true);
 	}
 
 	/**
