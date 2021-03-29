@@ -36,11 +36,13 @@ trait Folders
 
 		if ($oFolderCollection instanceof \MailSo\Mail\FolderCollection)
 		{
-			foreach ($oFolderCollection as $i => $oFolder) {
+			$aFolders = $oFolderCollection->getArrayCopy();
+			foreach ($aFolders as $i => $oFolder) {
 				if (!$oFolder->IsSelectable()) {
-					unset($oFolderCollection[$i]);
+					unset($aFolders[$i]);
 				}
 			}
+			$oFolderCollection->exchangeArray(\array_values($aFolders));
 
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
