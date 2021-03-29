@@ -53,7 +53,11 @@ export class GeneralAdminSettings {
 
 		this.weakPassword = rl.app.weakPassword;
 
-//		fetch('./data/VERSION?' + Math.random()).then(response => this.dataFolderAccess(response.ok));
+		/** https://github.com/RainLoop/rainloop-webmail/issues/1924
+		if (this.weakPassword) {
+			fetch('./data/VERSION?' + Math.random()).then(response => this.dataFolderAccess(response.ok));
+		}
+		*/
 
 		this.mainAttachmentLimit = ko
 			.observable(pInt(SettingsGet('AttachmentLimit')) / (1024 * 1024))

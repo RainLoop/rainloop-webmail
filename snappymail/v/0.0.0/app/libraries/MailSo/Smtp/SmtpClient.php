@@ -162,6 +162,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 		}
 
 		if (!$type) {
+			\trigger_error("SMTP {$this->sConnectedHost} no supported AUTH options. Disable login" . ($this->IsSupported('STARTTLS') ? ' or try with STARTTLS' : ''));
 			$this->writeLogException(
 				new \MailSo\Smtp\Exceptions\LoginBadMethodException,
 				\MailSo\Log\Enumerations\Type::NOTICE, true);
