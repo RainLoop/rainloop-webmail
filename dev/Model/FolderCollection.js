@@ -10,6 +10,7 @@ import * as Local from 'Storage/Client';
 
 import { AppUserStore } from 'Stores/User/App';
 import { FolderUserStore } from 'Stores/User/Folder';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
 import ko from 'ko';
 
@@ -300,7 +301,10 @@ export class FolderModel extends AbstractModel {
 
 				canBeDeleted: () => !folder.isSystemFolder() && !folder.subFolders.length,
 
-				canBeSubscribed: () => !folder.isSystemFolder() && folder.selectable && Settings.app('useImapSubscribe'),
+				canBeSubscribed: () => !folder.isSystemFolder()
+					&& SettingsUserStore.hideUnsubscribed()
+					&& folder.selectable
+					&& Settings.app('useImapSubscribe'),
 
 				canBeSelected:   () => !folder.isSystemFolder() && folder.selectable,
 
