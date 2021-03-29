@@ -283,6 +283,8 @@ abstract class NetClient
 		{
 			switch (true)
 			{
+				case defined('STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT') && OPENSSL_VERSION_NUMBER >= 0x10101000 &&
+					\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_TLSv1_3_CLIENT | STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT):
 				case defined('STREAM_CRYPTO_METHOD_ANY_CLIENT') &&
 					\stream_socket_enable_crypto($this->rConnect, true, STREAM_CRYPTO_METHOD_ANY_CLIENT):
 				case defined('STREAM_CRYPTO_METHOD_TLS_CLIENT') &&
