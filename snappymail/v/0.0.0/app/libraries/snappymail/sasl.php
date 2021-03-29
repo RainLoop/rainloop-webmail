@@ -19,7 +19,7 @@ abstract class SASL
 		return false;
 	}
 
-	final public static function factory(string $type) : void
+	final public static function factory(string $type)
 	{
 		if (\preg_match('/^([A-Z2]+)(?:-(.+))?$/Di', $type, $m)) {
 			$class = __CLASS__ . "\\{$m[1]}";
