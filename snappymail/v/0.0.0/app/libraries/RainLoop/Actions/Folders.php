@@ -518,7 +518,7 @@ trait Folders
 				if (isset($aMap[$sName]) || isset($aMap[$sFullName]))
 				{
 					$iFolderType = isset($aMap[$sName]) ? $aMap[$sName] : $aMap[$sFullName];
-					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
+					if ((!isset($aResult[$iFolderType]) || $sName === $sFullName || "INBOX{$oFolder->Delimiter()}{$sName}" === $sFullName) && \in_array($iFolderType, array(
 						FolderType::INBOX,
 						FolderType::SENT,
 						FolderType::DRAFTS,
