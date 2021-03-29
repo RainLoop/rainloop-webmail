@@ -191,7 +191,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					$sTicket = $oContinuationResponse->ResponseList[1] ?? null;
 					if ($sTicket)
 					{
-						$sToken = $SASL->authenticate($sLogin, $sPassword, $sTicket)
+						$sToken = $SASL->authenticate($sLogin, $sPassword, $sTicket);
 
 						$sTicket = \base64_decode($sTicket);
 						$this->oLogger->Write('ticket: '.$sTicket);
