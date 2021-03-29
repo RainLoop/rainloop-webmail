@@ -124,8 +124,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 					SettingsGet('DraftFolder') +
 					SettingsGet('SpamFolder') +
 					SettingsGet('TrashFolder') +
-					SettingsGet('ArchiveFolder') +
-					SettingsGet('NullFolder'))
+					SettingsGet('ArchiveFolder'))
 		) {
 			Settings.set('SentFolder', this.SystemFolders[ServerFolderType.SENT] || null);
 			Settings.set('DraftFolder', this.SystemFolders[ServerFolderType.DRAFTS] || null);
@@ -148,8 +147,7 @@ export class FolderCollectionModel extends AbstractCollectionModel
 				DraftFolder: FolderUserStore.draftFolder(),
 				SpamFolder: FolderUserStore.spamFolder(),
 				TrashFolder: FolderUserStore.trashFolder(),
-				ArchiveFolder: FolderUserStore.archiveFolder(),
-				NullFolder: 'NullFolder'
+				ArchiveFolder: FolderUserStore.archiveFolder()
 			});
 		}
 

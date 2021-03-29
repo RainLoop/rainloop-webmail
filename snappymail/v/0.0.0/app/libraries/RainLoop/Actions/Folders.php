@@ -437,7 +437,6 @@ trait Folders
 		$oSettingsLocal->SetConf('SpamFolder', $this->GetActionParam('SpamFolder', ''));
 		$oSettingsLocal->SetConf('TrashFolder', $this->GetActionParam('TrashFolder', ''));
 		$oSettingsLocal->SetConf('ArchiveFolder', $this->GetActionParam('ArchiveFolder', ''));
-		$oSettingsLocal->SetConf('NullFolder', $this->GetActionParam('NullFolder', ''));
 
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->SettingsProvider(true)->Save($oAccount, $oSettingsLocal));

@@ -64,8 +64,7 @@ class FolderSystemPopupView extends AbstractViewPopup {
 					DraftFolder: FolderUserStore.draftFolder(),
 					SpamFolder: FolderUserStore.spamFolder(),
 					TrashFolder: FolderUserStore.trashFolder(),
-					ArchiveFolder: FolderUserStore.archiveFolder(),
-					NullFolder: 'NullFolder'
+					ArchiveFolder: FolderUserStore.archiveFolder()
 				});
 			}).debounce(1000),
 			fCallback = () => {

@@ -1224,7 +1224,6 @@ class Actions
 				$aResult['SpamFolder'] = (string)$oSettingsLocal->GetConf('SpamFolder', '');
 				$aResult['TrashFolder'] = (string)$oSettingsLocal->GetConf('TrashFolder', '');
 				$aResult['ArchiveFolder'] = (string)$oSettingsLocal->GetConf('ArchiveFolder', '');
-				$aResult['NullFolder'] = (string)$oSettingsLocal->GetConf('NullFolder', '');
 			}
 
 			if ($this->GetCapa(false, Enumerations\Capa::SETTINGS, $oAccount)) {
