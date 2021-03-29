@@ -116,12 +116,12 @@ class Folder
 
 	public function IsSelectable() : bool
 	{
-		return !\in_array('\noselect', $this->aFlagsLowerCase);
+		return !\in_array('\\noselect', $this->aFlagsLowerCase);
 	}
 
 	public function IsInbox() : bool
 	{
-		return 'INBOX' === \strtoupper($this->sFullNameRaw) || \in_array('\inbox', $this->aFlagsLowerCase);
+		return 'INBOX' === \strtoupper($this->sFullNameRaw) || \in_array('\\inbox', $this->aFlagsLowerCase);
 	}
 
 	/**

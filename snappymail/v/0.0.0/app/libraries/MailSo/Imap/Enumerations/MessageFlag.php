@@ -18,10 +18,10 @@ namespace MailSo\Imap\Enumerations;
  */
 abstract class MessageFlag
 {
-	const RECENT = '\Recent';
-	const SEEN = '\Seen';
-	const DELETED = '\Deleted';
-	const FLAGGED = '\Flagged';
-	const ANSWERED = '\Answered';
-	const DRAFT = '\Draft';
+	const RECENT = '\\Recent';
+	const SEEN = '\\Seen';
+	const DELETED = '\\Deleted';
+	const FLAGGED = '\\Flagged';
+	const ANSWERED = '\\Answered';
+	const DRAFT = '\\Draft';
 }
