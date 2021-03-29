@@ -306,7 +306,7 @@ Enables caching in the system'),
 			),
 
 			'labs' => array(
-				'ignore_folders_subscription' => array(false),
+//				'ignore_folders_subscription' => array(false),
 				'update_channel' => array('stable'),
 				'allow_prefetch' => array(true),
 				'allow_smart_html_links' => array(true),

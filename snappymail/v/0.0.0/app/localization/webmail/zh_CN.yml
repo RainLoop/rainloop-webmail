@@ -437,6 +437,7 @@ zh_CN:
     HELP_DELETE_FOLDER: "删除文件夹"
     HELP_SHOW_HIDE_FOLDER: "显示/隐藏文件夹"
     HELP_CHECK_FOR_NEW_MESSAGES: "检查/不检查新邮件"
+    HIDE_UNSUBSCRIBED: "隐藏未订阅的文件夹"
   SETTINGS_ACCOUNTS:
     LEGEND_ACCOUNTS: "账户列表"
     LEGEND_IDENTITIES: "身份"

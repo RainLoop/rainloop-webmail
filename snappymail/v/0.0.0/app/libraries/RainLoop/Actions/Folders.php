@@ -17,11 +17,17 @@ trait Folders
 		$oFolderCollection = null;
 		$this->Plugins()->RunHook('filter.folders-before', array($oAccount, $oFolderCollection));
 
+		$HideUnsubscribed = $this->Config()->Get('labs', 'use_imap_list_subscribe', true);
+		$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
+		if ($oSettingsLocal instanceof \RainLoop\Settings) {
+			$HideUnsubscribed = (bool) $oSettingsLocal->GetConf('HideUnsubscribed', $HideUnsubscribed);
+		}
+
 		if (null === $oFolderCollection)
 		{
 			$oFolderCollection = $this->MailClient()->Folders('',
 				'*',
-				!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true),
+				$HideUnsubscribed,
 				(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
 			);
 		}
@@ -127,7 +133,7 @@ trait Folders
 				if ($bDoItAgain)
 				{
 					$oFolderCollection = $this->MailClient()->Folders('', '*',
-						!!$this->Config()->Get('labs', 'use_imap_list_subscribe', true),
+						$HideUnsubscribed,
 						(int) $this->Config()->Get('labs', 'imap_folder_list_limit', 200)
 					);
 
@@ -465,14 +471,14 @@ trait Folders
 
 	private function recFoldersTypes(\RainLoop\Model\Account $oAccount, \MailSo\Mail\FolderCollection $oFolders, array &$aResult, bool $bListFolderTypes = true) : void
 	{
-		if ($oFolders && $oFolders->Count())
+		if ($oFolders->Count())
 		{
 			if ($bListFolderTypes)
 			{
 				foreach ($oFolders as $oFolder)
 				{
-					$iFolderListType = $oFolder->GetFolderListType();
-					if (!isset($aResult[$iFolderListType]) && \in_array($iFolderListType, array(
+					$iFolderType = $oFolder->GetFolderListType();
+					if (!isset($aResult[$iFolderType]) && \in_array($iFolderType, array(
 						FolderType::INBOX,
 						FolderType::SENT,
 						FolderType::DRAFTS,
@@ -481,14 +487,14 @@ trait Folders
 						FolderType::ALL
 					)))
 					{
-						$aResult[$iFolderListType] = $oFolder->FullNameRaw();
+						$aResult[$iFolderType] = $oFolder->FullNameRaw();
 					}
 				}
 
 				foreach ($oFolders as $oFolder)
 				{
 					$oSub = $oFolder->SubFolders();
-					if ($oSub && 0 < $oSub->Count())
+					if ($oSub && $oSub->Count())
 					{
 						$this->recFoldersTypes($oAccount, $oSub, $aResult, true);
 					}
@@ -521,7 +527,7 @@ trait Folders
 			foreach ($oFolders as $oFolder)
 			{
 				$oSub = $oFolder->SubFolders();
-				if ($oSub && 0 < $oSub->Count())
+				if ($oSub && $oSub->Count())
 				{
 					$this->recFoldersTypes($oAccount, $oSub, $aResult, false);
 				}

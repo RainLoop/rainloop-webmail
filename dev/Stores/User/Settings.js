@@ -30,6 +30,7 @@ export const SettingsUserStore = new class {
 			allowDraftAutosave: !!SettingsGet('AllowDraftAutosave'),
 			useThreads: !!SettingsGet('UseThreads'),
 			replySameFolder: !!SettingsGet('ReplySameFolder'),
+			hideUnsubscribed: !!SettingsGet('HideUnsubscribed'),
 
 			autoLogout: pInt(SettingsGet('AutoLogout'))
 		});

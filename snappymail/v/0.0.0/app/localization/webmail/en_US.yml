@@ -439,6 +439,7 @@ en_US:
     HELP_DELETE_FOLDER: "Delete folder"
     HELP_SHOW_HIDE_FOLDER: "Show/hide folder"
     HELP_CHECK_FOR_NEW_MESSAGES: "Check/don't check for new messages"
+    HIDE_UNSUBSCRIBED: "Hide unsubscribed folders"
   SETTINGS_ACCOUNTS:
     LEGEND_ACCOUNTS: "Accounts"
     LEGEND_IDENTITIES: "Identities"

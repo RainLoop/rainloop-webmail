@@ -2,6 +2,7 @@ import ko from 'ko';
 
 import { Notification } from 'Common/Enums';
 import { ClientSideKeyName } from 'Common/EnumsUser';
+import { Settings } from 'Common/Globals';
 import { getNotification } from 'Common/Translator';
 
 import { removeFolderFromCacheList } from 'Common/Cache';
@@ -9,6 +10,7 @@ import { removeFolderFromCacheList } from 'Common/Cache';
 import * as Local from 'Storage/Client';
 
 import { FolderUserStore } from 'Stores/User/Folder';
+import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
@@ -23,6 +25,7 @@ export class FoldersUserSettings {
 		this.folderList = FolderUserStore.folderList;
 		this.folderListOptimized = FolderUserStore.folderListOptimized;
 		this.folderListError = FolderUserStore.folderListError;
+		this.hideUnsubscribed = SettingsUserStore.hideUnsubscribed;
 
 		this.loading = ko.computed(() => {
 			const loading = FolderUserStore.foldersLoading(),
@@ -36,6 +39,9 @@ export class FoldersUserSettings {
 		this.folderForDeletion = ko.observable(null).deleteAccessHelper();
 
 		this.folderForEdit = ko.observable(null).extend({ toggleSubscribeProperty: [this, 'edited'] });
+
+		this.useImapSubscribe = Settings.app('useImapSubscribe');
+		this.hideUnsubscribed.subscribe(value => Remote.saveSetting('HideUnsubscribed', value ? 1 : 0));
 	}
 
 	folderEditOnEnter(folder) {

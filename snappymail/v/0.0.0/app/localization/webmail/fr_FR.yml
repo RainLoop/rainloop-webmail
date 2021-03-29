@@ -440,6 +440,7 @@ fr_FR:
     HELP_DELETE_FOLDER: "Supprimer le dossier"
     HELP_SHOW_HIDE_FOLDER: "Afficher/masquer le dossier"
     HELP_CHECK_FOR_NEW_MESSAGES: "Cocher/Décocher pour les nouveaux messages"
+    HIDE_UNSUBSCRIBED: "Masquer les dossiers désabonnés"
   SETTINGS_ACCOUNTS:
     LEGEND_ACCOUNTS: "Liste des comptes"
     LEGEND_IDENTITIES: "Identités"

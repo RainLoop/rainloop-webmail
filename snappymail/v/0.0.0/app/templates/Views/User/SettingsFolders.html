@@ -6,6 +6,13 @@
 			<i class="icon-spinner" style="margin-top: 5px" data-bind="visible: loading"></i>
 		</div>
 	</div>
+	<div style="border-bottom: 1px solid rgba(128,128,128,0.5);margin-bottom:20px;" data-bind="visible: useImapSubscribe, component: {
+		name: 'Checkbox',
+		params: {
+			label: 'SETTINGS_FOLDERS/HIDE_UNSUBSCRIBED',
+			value: hideUnsubscribed
+		}
+	}"></div>
 	<a class="btn" data-bind="click: createFolder">
 		<i class="icon-folder-add"></i>
 		<span data-i18n="SETTINGS_FOLDERS/BUTTON_CREATE"></span>

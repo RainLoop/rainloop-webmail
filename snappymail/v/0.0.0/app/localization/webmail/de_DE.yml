@@ -440,6 +440,7 @@ de_DE:
     HELP_DELETE_FOLDER: "Ordner löschen"
     HELP_SHOW_HIDE_FOLDER: "Ordner ein-/ausblenden"
     HELP_CHECK_FOR_NEW_MESSAGES: "Auf neue Nachrichten prüfen/nicht prüfen"
+    HIDE_UNSUBSCRIBED: "Nicht abonnierte Ordner ausblenden"
   SETTINGS_ACCOUNTS:
     LEGEND_ACCOUNTS: "Konten"
     LEGEND_IDENTITIES: "Identitäten"

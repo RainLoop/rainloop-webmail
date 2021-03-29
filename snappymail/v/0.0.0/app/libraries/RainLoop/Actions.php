@@ -1090,6 +1090,7 @@ class Actions
 			'AllowDraftAutosave' => (bool) $oConfig->Get('defaults', 'allow_draft_autosave', true),
 			'ReplySameFolder' => (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false),
 			'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
+			'HideUnsubscribed' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
 			'EnableTwoFactor' => false,
 			'ParentEmail' => '',
 			'InterfaceAnimation' => true,
@@ -1224,6 +1225,7 @@ class Actions
 				$aResult['SpamFolder'] = (string)$oSettingsLocal->GetConf('SpamFolder', '');
 				$aResult['TrashFolder'] = (string)$oSettingsLocal->GetConf('TrashFolder', '');
 				$aResult['ArchiveFolder'] = (string)$oSettingsLocal->GetConf('ArchiveFolder', '');
+				$aResult['HideUnsubscribed'] = (bool)$oSettingsLocal->GetConf('HideUnsubscribed', $aResult['HideUnsubscribed']);
 			}
 
 			if ($this->GetCapa(false, Enumerations\Capa::SETTINGS, $oAccount)) {

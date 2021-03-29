@@ -441,6 +441,7 @@ es_ES:
     HELP_DELETE_FOLDER: "Eliminar carpeta"
     HELP_SHOW_HIDE_FOLDER: "Mostrar/ocultar carpeta"
     HELP_CHECK_FOR_NEW_MESSAGES: "Chequear/no chequear nuevos mensajes"
+    HIDE_UNSUBSCRIBED: "Ocultar carpetas dadas de baja"
   SETTINGS_ACCOUNTS:
     LEGEND_ACCOUNTS: "Lista de cuentas"
     LEGEND_IDENTITIES: "Identidades"

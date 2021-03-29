@@ -368,6 +368,7 @@ trait User
 
 		$this->setSettingsFromParams($oSettingsLocal, 'UseThreads', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'ReplySameFolder', 'bool');
+		$this->setSettingsFromParams($oSettingsLocal, 'HideUnsubscribed', 'bool');
 
 		return $this->DefaultResponse(__FUNCTION__,
 			$this->SettingsProvider()->Save($oAccount, $oSettings) &&
