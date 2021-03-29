@@ -36,6 +36,12 @@ trait Folders
 
 		if ($oFolderCollection instanceof \MailSo\Mail\FolderCollection)
 		{
+			foreach ($oFolderCollection as $i => $oFolder) {
+				if (!$oFolder->IsSelectable()) {
+					unset($oFolderCollection[$i]);
+				}
+			}
+
 			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
 
 			$aSystemFolders = array();
