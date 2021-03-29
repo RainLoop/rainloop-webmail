@@ -62,11 +62,6 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 */
 	private $aResults;
 
-	/**
-	 * @var bool
-	 */
-	public $__USE_SINGLE_LINE_AUTH_PLAIN_COMMAND = false;
-
 	function __construct()
 	{
 		parent::__construct();
@@ -150,123 +145,91 @@ class SmtpClient extends \MailSo\Net\NetClient
 	{
 		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
 
-		if ($bUseAuthCramMd5IfSupported && $this->IsAuthSupported('CRAM-MD5'))
-		{
-			try
-			{
-				$this->sendRequestWithCheck('AUTH', 334, 'CRAM-MD5');
-			}
-			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-			{
-				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\LoginBadMethodException(
-						$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-					\MailSo\Log\Enumerations\Type::NOTICE, true);
-			}
-
-			$sTicket = '';
-
-			$sContinuationResponse = !empty($this->aResults[0]) ? \trim($this->aResults[0]) : '';
-			if ($sContinuationResponse && '334 ' === \substr($sContinuationResponse, 0, 4) && 0 < \strlen(\substr($sContinuationResponse, 4)))
-			{
-				$sTicket = \base64_decode(\substr($sContinuationResponse, 4));
-				$this->writeLogWithCrlf('ticket: '.$sTicket);
-			}
-
-			if (empty($sTicket))
-			{
-				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\NegativeResponseException,
-					\MailSo\Log\Enumerations\Type::NOTICE, true
-				);
-			}
-
-			try
-			{
-				$this->sendRequestWithCheck(\base64_encode($sLogin.' '.\hash_hmac('md5', $sTicket, $sPassword)), 235, '', true);
-			}
-			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-			{
-				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-						$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-					\MailSo\Log\Enumerations\Type::NOTICE, true);
+//		$encrypted = !empty(\stream_get_meta_data($this->rConnect)['crypto']);
+		$type = '';
+		$types = [
+			'SCRAM-SHA-256' => 1, // !$encrypted
+			'SCRAM-SHA-1' => 1, // !$encrypted
+			'CRAM-MD5' => $bUseAuthCramMd5IfSupported,
+			'PLAIN' => $bUseAuthPlainIfSupported,
+			'LOGIN' => 1 // $encrypted
+		];
+		foreach ($types as $sasl_type => $active) {
+			if ($active && $this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
+				$type = $sasl_type;
+				break;
 			}
 		}
-		else if ($bUseAuthPlainIfSupported && $this->IsAuthSupported('PLAIN'))
-		{
-			if ($this->__USE_SINGLE_LINE_AUTH_PLAIN_COMMAND)
-			{
-				try
-				{
-					$this->sendRequestWithCheck('AUTH', 235, 'PLAIN '.\base64_encode("\0".$sLogin."\0".$sPassword), true);
-				}
-				catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-				{
-					$this->writeLogException(
-						new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-							$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-						\MailSo\Log\Enumerations\Type::NOTICE, true);
-				}
-			}
-			else
-			{
-				try
-				{
-					$this->sendRequestWithCheck('AUTH', 334, 'PLAIN');
-				}
-				catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-				{
-					$this->writeLogException(
-						new \MailSo\Smtp\Exceptions\LoginBadMethodException(
-							$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-						\MailSo\Log\Enumerations\Type::NOTICE, true);
-				}
 
-				try
-				{
-					$this->sendRequestWithCheck(\base64_encode("\0".$sLogin."\0".$sPassword), 235, '', true);
-				}
-				catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-				{
-					$this->writeLogException(
-						new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-							$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-						\MailSo\Log\Enumerations\Type::NOTICE, true);
-				}
-			}
-		}
-		else if ($this->IsAuthSupported('LOGIN'))
-		{
-			try
-			{
-				$this->sendRequestWithCheck('AUTH', 334, 'LOGIN');
-			}
-			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-			{
-				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\LoginBadMethodException(
-						$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-					\MailSo\Log\Enumerations\Type::NOTICE, true);
-			}
-
-			try
-			{
-				$this->sendRequestWithCheck(\base64_encode($sLogin), 334, '');
-				$this->sendRequestWithCheck(\base64_encode($sPassword), 235, '', true);
-			}
-			catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
-			{
-				$this->writeLogException(
-					new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
-						$oException->GetResponses(), $oException->getMessage(), 0, $oException),
-					\MailSo\Log\Enumerations\Type::NOTICE, true);
-			}
-		}
-		else
-		{
+		if (!$type) {
 			$this->writeLogException(
 				new \MailSo\Smtp\Exceptions\LoginBadMethodException,
+				\MailSo\Log\Enumerations\Type::NOTICE, true);
+		}
+
+		$SASL = \SnappyMail\SASL::factory($type);
+		$SASL->base64 = true;
+
+		// Start authentication
+		try
+		{
+			$sResult = $this->sendRequestWithCheck('AUTH', 334, $type);
+		}
+		catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
+		{
+			$this->writeLogException(
+				new \MailSo\Smtp\Exceptions\LoginBadMethodException(
+					$oException->GetResponses(), $oException->getMessage(), 0, $oException),
+				\MailSo\Log\Enumerations\Type::NOTICE, true);
+		}
+
+		try
+		{
+			switch ($type)
+			{
+			// RFC 4616
+			case 'PLAIN':
+				$this->sendRequestWithCheck($SASL->authenticate($username, $passphrase), 235, '', true);
+				break;
+
+			case 'LOGIN':
+				$sResult = $this->sendRequestWithCheck($SASL->authenticate($username, $passphrase, $sResult), 334, '');
+				$this->sendRequestWithCheck($SASL->challenge($sResult), 235, '', true);
+				break;
+
+			// RFC 2195
+			case 'CRAM-MD5':
+				if (empty($sResult)) {
+					$this->writeLogException(
+						new \MailSo\Smtp\Exceptions\NegativeResponseException,
+						\MailSo\Log\Enumerations\Type::NOTICE, true
+					);
+				}
+				$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 235, '', true);
+				break;
+
+			// RFC 5802
+			case 'SCRAM-SHA-1':
+			case 'SCRAM-SHA-256':
+				$sResult = $this->sendRequestWithCheck($SASL->authenticate($username, $passphrase, $sResult), 234, '');
+				$sResult = $this->sendRequestWithCheck($SASL->challenge($sResult), 235, '', true);
+				$SASL->verify($sResult);
+				break;
+
+/*
+			// https://developers.google.com/gmail/imap/xoauth2-protocol
+			case 'XOAUTH2':
+				throw new \Exception('Please use app passphrases: https://support.google.com/mail/answer/185833');
+				break;
+*/
+
+			}
+		}
+		catch (\MailSo\Smtp\Exceptions\NegativeResponseException $oException)
+		{
+			$this->writeLogException(
+				new \MailSo\Smtp\Exceptions\LoginBadCredentialsException(
+					$oException->GetResponses(), $oException->getMessage(), 0, $oException),
 				\MailSo\Log\Enumerations\Type::NOTICE, true);
 		}
 
@@ -542,10 +505,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 	 * @throws \MailSo\Net\Exceptions\Exception
 	 * @throws \MailSo\Smtp\Exceptions\Exception
 	 */
-	private function sendRequestWithCheck(string $sCommand, $mExpectCode, string $sAddToCommand = '', bool $bSecureLog = false, string $sErrorPrefix = '') : void
+	private function sendRequestWithCheck(string $sCommand, $mExpectCode, string $sAddToCommand = '', bool $bSecureLog = false, string $sErrorPrefix = '') : string
 	{
 		$this->sendRequest($sCommand, $sAddToCommand, $bSecureLog);
 		$this->validateResponse($mExpectCode, $sErrorPrefix);
+		return empty($this->aResults[0]) ? '' : \substr($this->aResults[0], 4);
 	}
 
 	private function ehloOrHelo(string $sHost) : void
