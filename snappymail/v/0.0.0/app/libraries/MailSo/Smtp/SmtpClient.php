@@ -189,11 +189,11 @@ class SmtpClient extends \MailSo\Net\NetClient
 			{
 			// RFC 4616
 			case 'PLAIN':
-				$this->sendRequestWithCheck($SASL->authenticate($username, $passphrase), 235, '', true);
+				$this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword), 235, '', true);
 				break;
 
 			case 'LOGIN':
-				$sResult = $this->sendRequestWithCheck($SASL->authenticate($username, $passphrase, $sResult), 334, '');
+				$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 334, '');
 				$this->sendRequestWithCheck($SASL->challenge($sResult), 235, '', true);
 				break;
 
@@ -211,7 +211,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 			// RFC 5802
 			case 'SCRAM-SHA-1':
 			case 'SCRAM-SHA-256':
-				$sResult = $this->sendRequestWithCheck($SASL->authenticate($username, $passphrase, $sResult), 234, '');
+				$sResult = $this->sendRequestWithCheck($SASL->authenticate($sLogin, $sPassword, $sResult), 234, '');
 				$sResult = $this->sendRequestWithCheck($SASL->challenge($sResult), 235, '', true);
 				$SASL->verify($sResult);
 				break;
@@ -509,7 +509,7 @@ class SmtpClient extends \MailSo\Net\NetClient
 	{
 		$this->sendRequest($sCommand, $sAddToCommand, $bSecureLog);
 		$this->validateResponse($mExpectCode, $sErrorPrefix);
-		return empty($this->aResults[0]) ? '' : \substr($this->aResults[0], 4);
+		return empty($this->aResults[0]) ? '' : \trim(\substr($this->aResults[0], 4));
 	}
 
 	private function ehloOrHelo(string $sHost) : void

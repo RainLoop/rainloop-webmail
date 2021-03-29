@@ -162,20 +162,39 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$this->sLogginedUser = $sLogin;
 
+//		$encrypted = !empty(\stream_get_meta_data($this->rConnect)['crypto']);
+		$type = '';
+		$types = [
+//			'SCRAM-SHA-256' => 1, // !$encrypted
+//			'SCRAM-SHA-1' => 1, // !$encrypted
+			'CRAM-MD5' => $bUseAuthCramMd5IfSupported,
+			'PLAIN' => $bUseAuthPlainIfSupported,
+			'LOGIN' => 1 // $encrypted
+		];
+		foreach ($types as $sasl_type => $active) {
+			if ($active && $this->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
+				$type = $sasl_type;
+				break;
+			}
+		}
+
+		$SASL = \SnappyMail\SASL::factory($type);
+		$SASL->base64 = true;
+
 		try
 		{
-			if ($bUseAuthCramMd5IfSupported && $this->IsSupported('AUTH=CRAM-MD5'))
+			if ('CRAM-MD5' === $type)
 			{
-				$oContinuationResponse = $this->SendRequestGetResponse('AUTHENTICATE', array('CRAM-MD5'))->getLast();
+				$oContinuationResponse = $this->SendRequestGetResponse('AUTHENTICATE', array($type))->getLast();
 				if ($oContinuationResponse && Enumerations\ResponseType::CONTINUATION === $oContinuationResponse->ResponseType)
 				{
 					$sTicket = $oContinuationResponse->ResponseList[1] ?? null;
 					if ($sTicket)
 					{
+						$sToken = $SASL->authenticate($sLogin, $sPassword, $sTicket)
+
 						$sTicket = \base64_decode($sTicket);
 						$this->oLogger->Write('ticket: '.$sTicket);
-
-						$sToken = \base64_encode($sLogin.' '.\hash_hmac('md5', $sTicket, $sPassword));
 
 						if ($this->oLogger)
 						{
@@ -199,9 +218,9 @@ class ImapClient extends \MailSo\Net\NetClient
 						\MailSo\Log\Enumerations\Type::NOTICE, true);
 				}
 			}
-			else if ($bUseAuthPlainIfSupported && $this->IsSupported('AUTH=PLAIN'))
+			else if ('PLAIN' === $type)
 			{
-				$sToken = \base64_encode("\0".$sLogin."\0".$sPassword);
+				$sToken = $SASL->authenticate($sLogin, $sPassword);
 				if ($this->oLogger)
 				{
 					$this->oLogger->AddSecret($sToken);
