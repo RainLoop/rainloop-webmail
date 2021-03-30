@@ -74,7 +74,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 
 			FolderUserStore.currentFolder(folder);
 
-			MessageUserStore.listPage(page);
+			MessageUserStore.listPage(1 > page ? 1 : page);
 			MessageUserStore.listSearch(search);
 			MessageUserStore.listThreadUid(threadUid);
 
@@ -119,23 +119,15 @@ export class MailBoxUserScreen extends AbstractScreen {
 	 */
 	routes() {
 		const
-			fNormS = (request, vals) => {
-				if (request) {
-					vals[0] = decodeURI(pString(vals[0]));
-					vals[1] = pInt(vals[1]);
-				} else {
-					vals[0] = getFolderInboxName();
-					vals[1] = 1;
-				}
-				return [vals[0], 1 > vals[1] ? 1 : vals[1], decodeURI(pString(vals[2]))];
-			},
-			fNormD = (request, vals) =>
-				[decodeURI(request ? pString(vals[0]) : getFolderInboxName()), 1, decodeURI(pString(vals[1]))];
+			folder = (request, vals) => request ? decodeURI(pString(vals[0])) : getFolderInboxName(),
+			fNormS = (request, vals) => [folder(request, vals), request ? pInt(vals[1]) : 1, decodeURI(pString(vals[2]))];
 
 		return [
-			[/^([^/]*)$/, { 'normalize_': fNormS }],
-			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, { 'normalize_': fNormD }],
-			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)(?:\/(.+)\/?)?$/, { 'normalize_': fNormS }]
+			[/^([^/]*)$/, { normalize_: fNormS }],
+			[/^([a-zA-Z0-9~]+)\/(.+)\/?$/, { normalize_: (request, vals) =>
+				[folder(request, vals), 1, decodeURI(pString(vals[1]))]
+			}],
+			[/^([a-zA-Z0-9~]+)\/p([1-9][0-9]*)(?:\/(.+)\/?)?$/, { normalize_: fNormS }]
 		];
 	}
 }
