@@ -192,7 +192,7 @@ class AppUser extends AbstractApp {
 				Offset: iOffset,
 				Limit: SettingsUserStore.messagesPerPage(),
 				Search: MessageUserStore.listSearch(),
-				UidNext: MessageUserStore.listThreadUid()
+				ThreadUid: MessageUserStore.listThreadUid()
 			}
 		);
 	}
