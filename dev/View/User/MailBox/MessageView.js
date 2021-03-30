@@ -71,8 +71,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			moreDropdownTrigger: false
 		});
 
-		this.pswp = null;
-
 		this.moveAction = moveAction;
 
 		this.allowComposer = Settings.capa(Capa.Composer);
@@ -84,7 +82,6 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 
 		this.message = MessageUserStore.message;
 		this.hasCheckedMessages = MessageUserStore.hasCheckedMessages;
-		this.messageListCheckedOrSelectedUidsWithSubMails = MessageUserStore.listCheckedOrSelectedUidsWithSubMails;
 		this.messageLoadingThrottle = MessageUserStore.messageLoading;
 		this.messagesBodiesDom = MessageUserStore.messagesBodiesDom;
 		this.useThreads = SettingsUserStore.useThreads;
@@ -717,7 +714,7 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 	 * @returns {string}
 	 */
 	printableCheckedMessageCount() {
-		const cnt = this.messageListCheckedOrSelectedUidsWithSubMails().length;
+		const cnt = MessageUserStore.listCheckedOrSelectedUidsWithSubMails().length;
 		return 0 < cnt ? (100 > cnt ? cnt : '99+') : '';
 	}
 

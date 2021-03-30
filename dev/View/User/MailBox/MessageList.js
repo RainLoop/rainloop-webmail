@@ -71,7 +71,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		this.message = MessageUserStore.message;
 		this.messageList = MessageUserStore.list;
-		this.messageListDisableAutoSelect = MessageUserStore.listDisableAutoSelect;
 
 		this.folderList = FolderUserStore.folderList;
 		this.sortSupported = FolderUserStore.sortSupported;
@@ -79,22 +78,16 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.composeInEdit = AppUserStore.composeInEdit;
 		this.leftPanelDisabled = leftPanelDisabled;
 
-		this.selectorMessageSelected = MessageUserStore.selectorMessageSelected;
-		this.selectorMessageFocused = MessageUserStore.selectorMessageFocused;
 		this.isMessageSelected = MessageUserStore.isMessageSelected;
 		this.messageListSearch = MessageUserStore.listSearch;
-		this.messageListThreadUid = MessageUserStore.listThreadUid;
 		this.messageListError = MessageUserStore.listError;
 		this.folderMenuForMove = FolderUserStore.folderMenuForMove;
 
 		this.useCheckboxesInList = SettingsUserStore.useCheckboxesInList;
 
-		this.mainMessageListSearch = MessageUserStore.mainMessageListSearch;
-		this.messageListEndFolder = MessageUserStore.listEndFolder;
 		this.messageListEndThreadUid = MessageUserStore.listEndThreadUid;
 
 		this.messageListCheckedOrSelected = MessageUserStore.listCheckedOrSelected;
-		this.messageListCheckedOrSelectedUidsWithSubMails = MessageUserStore.listCheckedOrSelectedUidsWithSubMails;
 		this.messageListCompleteLoadingThrottle = MessageUserStore.listCompleteLoading;
 		this.messageListCompleteLoadingThrottleForAnimation = MessageUserStore.listLoadingAnimation;
 
@@ -139,7 +132,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			},
 
 			inputProxyMessageListSearch: {
-				read: this.mainMessageListSearch,
+				read: MessageUserStore.mainMessageListSearch,
 				write: value => this.sLastSearchValue = value
 			},
 
@@ -148,19 +141,19 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 				return c && MessageUserStore.list.length > c;
 			},
 
-			hasMessages: () => 0 < this.messageList.length,
+			hasMessages: () => 0 < MessageUserStore.list.length,
 
-			isSpamFolder: () => (FolderUserStore.spamFolder() || 0) === this.messageListEndFolder(),
+			isSpamFolder: () => (FolderUserStore.spamFolder() || 0) === MessageUserStore.listEndFolder(),
 
 			isSpamDisabled: () => UNUSED_OPTION_VALUE === FolderUserStore.spamFolder(),
 
-			isTrashFolder: () => (FolderUserStore.trashFolder() || 0) === this.messageListEndFolder(),
+			isTrashFolder: () => (FolderUserStore.trashFolder() || 0) === MessageUserStore.listEndFolder(),
 
-			isDraftFolder: () => (FolderUserStore.draftFolder() || 0) === this.messageListEndFolder(),
+			isDraftFolder: () => (FolderUserStore.draftFolder() || 0) === MessageUserStore.listEndFolder(),
 
-			isSentFolder: () => (FolderUserStore.sentFolder() || 0) === this.messageListEndFolder(),
+			isSentFolder: () => (FolderUserStore.sentFolder() || 0) === MessageUserStore.listEndFolder(),
 
-			isArchiveFolder: () => (FolderUserStore.archiveFolder() || 0) === this.messageListEndFolder(),
+			isArchiveFolder: () => (FolderUserStore.archiveFolder() || 0) === MessageUserStore.listEndFolder(),
 
 			isArchiveDisabled: () => UNUSED_OPTION_VALUE === FolderUserStore.archiveFolder(),
 
@@ -197,9 +190,9 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		this.quotaTooltip = this.quotaTooltip.bind(this);
 
 		this.selector = new Selector(
-			this.messageList,
-			this.selectorMessageSelected,
-			this.selectorMessageFocused,
+			MessageUserStore.list,
+			MessageUserStore.selectorMessageSelected,
+			MessageUserStore.selectorMessageFocused,
 			'.messageListItem .actionHandle',
 			'.messageListItem .checkboxMessage',
 			'.messageListItem.focused'
@@ -224,7 +217,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		addEventListener('mailbox.message.show', e => {
 			const sFolder = e.detail.Folder, sUid = e.detail.Uid;
 
-			const message = this.messageList.find(
+			const message = MessageUserStore.list.find(
 				item => item && sFolder === item.folder && sUid === item.uid
 			);
 
@@ -411,18 +404,18 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 	}
 
 	useAutoSelect() {
-		return !this.messageListDisableAutoSelect()
-			&& !/is:unseen/.test(this.mainMessageListSearch())
+		return !MessageUserStore.listDisableAutoSelect()
+			&& !/is:unseen/.test(MessageUserStore.mainMessageListSearch())
 			&& SettingsUserStore.usePreviewPane();
 	}
 
 	searchEnterAction() {
-		this.mainMessageListSearch(this.sLastSearchValue);
+		MessageUserStore.mainMessageListSearch(this.sLastSearchValue);
 		this.inputMessageListSearchFocus(false);
 	}
 
 	cancelSearch() {
-		this.mainMessageListSearch('');
+		MessageUserStore.mainMessageListSearch('');
 		this.inputMessageListSearchFocus(false);
 	}
 
@@ -676,7 +669,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			!this.messageListSearchDesc() &&
 			!this.messageListError() &&
 			!this.messageListEndThreadUid() &&
-			this.messageList.length &&
+			MessageUserStore.list.length &&
 			(this.isSpamFolder() || this.isTrashFolder())
 		);
 	}
@@ -776,9 +769,9 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 		}
 
 		shortcuts.add('t', '', [Scope.MessageList], () => {
-			let message = this.selectorMessageSelected();
+			let message = MessageUserStore.selectorMessageSelected();
 			if (!message) {
-				message = this.selectorMessageFocused();
+				message = MessageUserStore.selectorMessageFocused();
 			}
 
 			if (message && 0 < message.threadsLen()) {
@@ -861,7 +854,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 	prefetchNextTick() {
 		if (!this.bPrefetch && !ifvisible.now() && this.viewModelVisible) {
-			const message = this.messageList.find(
+			const message = MessageUserStore.list.find(
 				item => item && !hasRequestedMessage(item.folder, item.uid)
 			);
 			if (message) {
@@ -886,7 +879,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 	advancedSearchClick() {
 		Settings.capa(Capa.SearchAdv)
-			&& showScreenPopup(AdvancedSearchPopupView, [this.mainMessageListSearch()]);
+			&& showScreenPopup(AdvancedSearchPopupView, [MessageUserStore.mainMessageListSearch()]);
 	}
 
 	quotaTooltip() {

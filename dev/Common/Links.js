@@ -179,12 +179,13 @@ export function mailBox(folder, page = 1, search = '', threadUid = '') {
 	}
 
 	if (1 < page) {
-		result = result.replace(/[/]+$/, '') + '/p' + page;
+		result = result.replace(/\/+$/, '') + '/p' + page;
 	}
 
 	if (search) {
-		result = result.replace(/[/]+$/, '') + '/' + encodeURI(search);
+		result = result.replace(/\/+$/, '') + '/' + encodeURI(search);
 	}
 
 	return result;
 }
+

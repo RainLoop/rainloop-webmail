@@ -158,8 +158,6 @@ class ImapClient extends \MailSo\Net\NetClient
 
 		$sLogin = \MailSo\Base\Utils::IdnToAscii(\MailSo\Base\Utils::Trim($sLogin));
 
-		$sPassword = $sPassword;
-
 		$this->sLogginedUser = $sLogin;
 
 //		$encrypted = !empty(\stream_get_meta_data($this->rConnect)['crypto']);
