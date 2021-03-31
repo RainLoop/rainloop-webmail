@@ -161,13 +161,12 @@ class ImapClient extends \MailSo\Net\NetClient
 		$this->sLogginedUser = $sLogin;
 
 //		$encrypted = !empty(\stream_get_meta_data($this->rConnect)['crypto']);
-		$type = '';
+		$type = 'LOGIN'; // RFC3501 6.2.3
 		$types = [
 //			'SCRAM-SHA-256' => 1, // !$encrypted
 //			'SCRAM-SHA-1' => 1, // !$encrypted
 			'CRAM-MD5' => $bUseAuthCramMd5IfSupported,
 			'PLAIN' => $bUseAuthPlainIfSupported,
-			'LOGIN' => 1 // $encrypted
 		];
 		foreach ($types as $sasl_type => $active) {
 			if ($active && $this->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
@@ -248,12 +247,6 @@ class ImapClient extends \MailSo\Net\NetClient
 						$this->EscapeString($sPassword)
 					));
 			}
-//			else
-//			{
-//				$this->writeLogException(
-//					new Exceptions\LoginBadMethodException,
-//					\MailSo\Log\Enumerations\Type::NOTICE, true);
-//			}
 
 			if (0 < \strlen($sProxyAuthUser))
 			{
