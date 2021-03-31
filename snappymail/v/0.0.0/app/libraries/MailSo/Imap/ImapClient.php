@@ -149,7 +149,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function Login(string $sLogin, string $sPassword, string $sProxyAuthUser = '',
 		bool $bUseAuthPlainIfSupported = true, bool $bUseAuthCramMd5IfSupported = true) : self
 	{
-		if (!strlen(\trim($sLogin)) || !strlen(\trim($sPassword)))
+		if (!strlen(\trim($sLogin)) || !strlen(\trim($sPassword)) || $this->IsSupported('LOGINDISABLED'))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
@@ -190,8 +190,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					{
 						$sToken = $SASL->authenticate($sLogin, $sPassword, $sTicket);
 
-						$sTicket = \base64_decode($sTicket);
-						$this->oLogger->Write('ticket: '.$sTicket);
+						$this->oLogger->Write('ticket: '.\base64_decode($sTicket));
 
 						if ($this->oLogger)
 						{
@@ -223,7 +222,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					$this->oLogger->AddSecret($sToken);
 				}
 
-				if ($this->IsSupported('AUTH=SASL-IR') && false)
+				if ($this->IsSupported('SASL-IR'))
 				{
 					$this->SendRequestGetResponse('AUTHENTICATE', array('PLAIN', $sToken));
 				}
