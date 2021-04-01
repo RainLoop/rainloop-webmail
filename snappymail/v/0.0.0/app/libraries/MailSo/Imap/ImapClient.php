@@ -149,7 +149,7 @@ class ImapClient extends \MailSo\Net\NetClient
 	public function Login(string $sLogin, string $sPassword, string $sProxyAuthUser = '',
 		bool $bUseAuthPlainIfSupported = true, bool $bUseAuthCramMd5IfSupported = true) : self
 	{
-		if (!strlen(\trim($sLogin)) || !strlen(\trim($sPassword)) || $this->IsSupported('LOGINDISABLED'))
+		if (!strlen(\trim($sLogin)) || !strlen(\trim($sPassword)))
 		{
 			$this->writeLogException(
 				new \MailSo\Base\Exceptions\InvalidArgumentException,
@@ -161,7 +161,7 @@ class ImapClient extends \MailSo\Net\NetClient
 		$this->sLogginedUser = $sLogin;
 
 //		$encrypted = !empty(\stream_get_meta_data($this->rConnect)['crypto']);
-		$type = 'LOGIN'; // RFC3501 6.2.3
+		$type = $this->IsSupported('LOGINDISABLED') ? '' : 'LOGIN'; // RFC3501 6.2.3
 		$types = [
 //			'SCRAM-SHA-256' => 1, // !$encrypted
 //			'SCRAM-SHA-1' => 1, // !$encrypted
