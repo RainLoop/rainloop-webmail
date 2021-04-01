@@ -9,50 +9,16 @@ class Manager
 	 */
 	private $oActions;
 
-	/**
-	 * @var array
-	 */
-	private $aHooks;
-
-	/**
-	 * @var array
-	 */
-	private $aJs;
-
-	/**
-	 * @var array
-	 */
-	private $aAdminJs;
-
-	/**
-	 * @var array
-	 */
-	private $aTemplates;
-
-	/**
-	 * @var array
-	 */
-	private $aAdminTemplates;
-
-	/**
-	 * @var array
-	 */
-	private $aProcessTemplate;
-
-	/**
-	 * @var array
-	 */
-	private $aAdditionalParts;
-
-	/**
-	 * @var array
-	 */
-	private $aAdditionalJson;
-
-	/**
-	 * @var array
-	 */
-	private $aPlugins;
+	private
+		$aHooks = array(),
+		$aCss = array([], []),
+		$aJs = array([], []),
+		$aTemplates = array(),
+		$aAdminTemplates = array(),
+		$aProcessTemplate = array(),
+		$aAdditionalParts = array(),
+		$aAdditionalJson = array(),
+		$aPlugins = array();
 
 	/**
 	 * @var bool
@@ -68,17 +34,6 @@ class Manager
 	{
 		$this->oLogger = null;
 		$this->oActions = $oActions;
-		$this->aPlugins = array();
-
-		$this->aHooks = array();
-		$this->aJs = array();
-		$this->aAdminJs = array();
-		$this->aTemplates = array();
-		$this->aAdminTemplates = array();
-
-		$this->aJsonFilters = array();
-		$this->aAdditionalJson = array();
-		$this->aProcessTemplate = array();
 
 		$oConfig = $this->oActions->Config();
 		$this->bIsEnabled = (bool) $oConfig->Get('plugins', 'enable', false);
@@ -216,14 +171,20 @@ class Manager
 
 	public function HaveJs(bool $bAdminScope = false) : bool
 	{
-		$bResult = false;
+		return $this->bIsEnabled && 0 < \count($this->aJs[$bAdminScope ? 1 : 0]);
+	}
 
-		if ($this->bIsEnabled)
-		{
-			$bResult = $bAdminScope ? 0 < \count($this->aAdminJs) : 0 < \count($this->aJs);
+	public function CompileCss(bool $bAdminScope = false) : string
+	{
+		$aResult = array();
+		if ($this->bIsEnabled) {
+			foreach ($this->aCss[$bAdminScope ? 1 : 0] as $sFile) {
+				if (\is_readable($sFile)) {
+					$aResult[] = \file_get_contents($sFile);
+				}
+			}
 		}
-
-		return $bResult;
+		return \implode("\n", $aResult);
 	}
 
 	public function CompileJs(bool $bAdminScope = false) : string
@@ -231,8 +192,7 @@ class Manager
 		$aResult = array();
 		if ($this->bIsEnabled)
 		{
-			$aJs = $bAdminScope ? $this->aAdminJs : $this->aJs;
-			foreach ($aJs as $sFile)
+			foreach ($this->aJs[$bAdminScope ? 1 : 0] as $sFile)
 			{
 				if (\is_readable($sFile))
 				{
@@ -242,14 +202,6 @@ class Manager
 		}
 
 		return \implode("\n", $aResult);
-	}
-
-	/**
-	 * @todo
-	 */
-	public function CompileCss(bool $bAdminScope = false) : string
-	{
-		return '';
 	}
 
 	public function CompileTemplate(array &$aList, bool $bAdminScope = false) : void
@@ -326,18 +278,18 @@ class Manager
 		return $this;
 	}
 
+	public function AddCss(string $sFile, bool $bAdminScope = false) : self
+	{
+		if ($this->bIsEnabled) {
+			$this->aCss[$bAdminScope ? 1 : 0] = $sFile;
+		}
+		return $this;
+	}
+
 	public function AddJs(string $sFile, bool $bAdminScope = false) : self
 	{
-		if ($this->bIsEnabled)
-		{
-			if ($bAdminScope)
-			{
-				$this->aAdminJs[$sFile] = $sFile;
-			}
-			else
-			{
-				$this->aJs[$sFile] = $sFile;
-			}
+		if ($this->bIsEnabled) {
+			$this->aJs[$bAdminScope ? 1 : 0][$sFile] = $sFile;
 		}
 
 		return $this;

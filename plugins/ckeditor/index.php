@@ -4,9 +4,9 @@ class CKEditorPlugin extends \RainLoop\Plugins\AbstractPlugin
 {
 	const
 		NAME = 'CKEditor',
-		VERSION = '2.0',
-		RELEASE = '2021-03-25',
-		REQUIRED = '2.4.2',
+		VERSION = '2.1',
+		RELEASE = '2021-04-01',
+		REQUIRED = '2.4.4',
 		DESCRIPTION = 'Use CKEditor instead of Squire as WYSIWYG';
 
 	public function Init() : void
@@ -32,6 +32,7 @@ class CKEditorPlugin extends \RainLoop\Plugins\AbstractPlugin
 		}
 
 		if (\is_file("{$path}/ckeditor.js")) {
+			$this->addCss('ckeditor.less');
 			$this->addJs('ckeditor.js');
 		}
 	}

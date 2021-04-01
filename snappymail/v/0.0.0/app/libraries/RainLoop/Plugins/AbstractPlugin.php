@@ -172,6 +172,16 @@ abstract class AbstractPlugin
 		return $this;
 	}
 
+	protected function addCss(string $sFile, bool $bAdminScope = false) : self
+	{
+		if ($this->oPluginManager)
+		{
+			$this->oPluginManager->AddCss($this->sPath.'/'.$sFile, $bAdminScope);
+		}
+
+		return $this;
+	}
+
 	protected function addJs(string $sFile, bool $bAdminScope = false) : self
 	{
 		if ($this->oPluginManager)
