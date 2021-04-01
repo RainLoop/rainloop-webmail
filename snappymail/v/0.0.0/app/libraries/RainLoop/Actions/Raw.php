@@ -245,16 +245,13 @@ trait Raw
 						{
 							try
 							{
-								$oImagine = new \Imagine\Gd\Imagine();
-
-								$oImage = $oImagine->load(\stream_get_contents($rResource));
-
-								$oImage = $self->correctImageOrientation($oImage, $bDetectImageOrientation, 60);
-
+								$oImage = static::loadImage(\stream_get_contents($rResource), $bDetectImageOrientation, 60);
+								$oImage->setImageFormat('png');
+//								$oImage->setImageFormat('webp');
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut.'_thumb60x60.png')), true);
-
-								$oImage->show('png');
+								\header('Content-Type: '.$oImage->getImageMimeType());
+								echo $oImage->getImageBlob();
 							}
 							catch (\Throwable $oException)
 							{
@@ -262,23 +259,16 @@ trait Raw
 							}
 						}
 						else if ($bDetectImageOrientation &&
-							\in_array($sContentTypeOut, array('image/png', 'image/jpeg', 'image/jpg')) &&
-							\MailSo\Base\Utils::FunctionExistsAndEnabled('gd_info'))
+							\in_array($sContentTypeOut, array('image/png', 'image/jpeg', 'image/jpg', 'image/webp')))
 						{
 							try
 							{
-								$oImagine = new \Imagine\Gd\Imagine();
-
 								$sLoadedData = \stream_get_contents($rResource);
-
-								$oImage = $oImagine->load($sLoadedData);
-
-								$oImage = $self->correctImageOrientation($oImage, $bDetectImageOrientation);
-
+								$oImage = static::loadImage($sLoadedData, $bDetectImageOrientation);
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
-
-								$oImage->show($sContentTypeOut === 'image/png' ? 'png' : 'jpg');
+								\header('Content-Type: '.$oImage->getImageMimeType());
+								echo $oImage->getImageBlob();
 							}
 							catch (\Throwable $oException)
 							{
@@ -362,29 +352,21 @@ trait Raw
 			}, $sFolder, $iUid, true, $sMimeIndex);
 	}
 
-	private function correctImageOrientation(\Imagine\Image\AbstractImage $oImage, bool $bDetectImageOrientation = true, int $iThumbnailBoxSize = 0) : \Imagine\Image\AbstractImage
+	private static function loadImage(string $data, bool $bDetectImageOrientation = true, int $iThumbnailBoxSize = 0) : \SnappyMail\Image
 	{
-		$iOrientation = 1;
-		if ($bDetectImageOrientation && \MailSo\Base\Utils::FunctionExistsAndEnabled('exif_read_data') &&
-			\MailSo\Base\Utils::FunctionExistsAndEnabled('gd_info'))
-		{
-			$oMetadata = $oImage->metadata(new \Imagine\Image\Metadata\ExifMetadataReader());
-			$iOrientation = isset($oMetadata['ifd0.Orientation']) &&
-				is_numeric($oMetadata['ifd0.Orientation']) ? (int) $oMetadata['ifd0.Orientation'] : 1;
-		}
-
-		if (0 < $iThumbnailBoxSize) {
-			$oImage = $oImage->thumbnail(
-				new \Imagine\Image\Box($iThumbnailBoxSize, $iThumbnailBoxSize),
-				\Imagine\Image\ImageInterface::THUMBNAIL_OUTBOUND);
-		}
+		if (\extension_loaded('gmagick'))      { $handler = 'gmagick'; }
+		else if (\extension_loaded('imagick')) { $handler = 'imagick'; }
+		else if (\extension_loaded('gd'))      { $handler = 'gd2'; }
+		else { return null; }
+		$handler = 'SnappyMail\\Image\\'.$handler.'::createFromString';
+		$oImage = $handler($data);
 
 		// rotateImageByOrientation
-		if (0 < $iOrientation) {
-			switch ($iOrientation)
+		if ($bDetectImageOrientation) {
+			switch ($oImage->getImageOrientation())
 			{
 				case 2: // flip horizontal
-					$oImage->flipHorizontally();
+					$oImage->flopImage();
 					break;
 
 				case 3: // rotate 180
@@ -392,11 +374,11 @@ trait Raw
 					break;
 
 				case 4: // flip vertical
-					$oImage->flipVertically();
+					$oImage->flipImage();
 					break;
 
 				case 5: // vertical flip + 90 rotate
-					$oImage->flipVertically();
+					$oImage->flipImage();
 					$oImage->rotate(90);
 					break;
 
@@ -405,7 +387,7 @@ trait Raw
 					break;
 
 				case 7: // horizontal flip + 90 rotate
-					$oImage->flipHorizontally();
+					$oImage->flopImage();
 					$oImage->rotate(90);
 					break;
 
@@ -415,6 +397,13 @@ trait Raw
 			}
 		}
 
+		if (0 < $iThumbnailBoxSize) {
+			$oImage->cropThumbnailImage($iThumbnailBoxSize, $iThumbnailBoxSize);
+		}
+
+		$oImage->stripImage();
+
 		return $oImage;
 	}
+
 }
