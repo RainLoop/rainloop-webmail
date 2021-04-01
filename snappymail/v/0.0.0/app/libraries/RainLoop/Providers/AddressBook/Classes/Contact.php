@@ -163,8 +163,8 @@ class Contact implements \JsonSerializable
 
 	public function RegenerateContactStr() : void
 	{
-		$this->IdContactStr = \class_exists('SabreForRainLoop\DAV\Client') ?
-			\SabreForRainLoop\DAV\UUIDUtil::getUUID() : \MailSo\Base\Utils::Md5Rand();
+		$this->IdContactStr = \class_exists('Sabre\DAV\Client') ?
+			\Sabre\DAV\UUIDUtil::getUUID() : \MailSo\Base\Utils::Md5Rand();
 	}
 
 	public function GetEmails() : array
@@ -190,7 +190,7 @@ class Contact implements \JsonSerializable
 	{
 		$this->UpdateDependentValues();
 
-		if (!\class_exists('SabreForRainLoop\DAV\Client'))
+		if (!\class_exists('Sabre\DAV\Client'))
 		{
 			return '';
 		}
@@ -205,7 +205,7 @@ class Contact implements \JsonSerializable
 		{
 			try
 			{
-				$oVCard = \SabreForRainLoop\VObject\Reader::read($sPreVCard);
+				$oVCard = \Sabre\VObject\Reader::read($sPreVCard);
 			}
 			catch (\Throwable $oExc)
 			{
@@ -224,7 +224,7 @@ class Contact implements \JsonSerializable
 
 		if (!$oVCard)
 		{
-			$oVCard = new \SabreForRainLoop\VObject\Component\VCard();
+			$oVCard = new \Sabre\VObject\Component\VCard();
 		}
 
 		$oVCard->VERSION = '3.0';
@@ -510,7 +510,7 @@ class Contact implements \JsonSerializable
 
 		$this->Properties = array();
 
-		if (!\class_exists('SabreForRainLoop\DAV\Client'))
+		if (!\class_exists('Sabre\DAV\Client'))
 		{
 			return false;
 		}
@@ -524,7 +524,7 @@ class Contact implements \JsonSerializable
 
 		try
 		{
-			$oVCard = \SabreForRainLoop\VObject\Reader::read($sVCard);
+			$oVCard = \Sabre\VObject\Reader::read($sVCard);
 		}
 		catch (\Throwable $oExc)
 		{
@@ -621,7 +621,7 @@ class Contact implements \JsonSerializable
 				$this->addArrayPropertyHelper($aProperties, $oVCard->TEL, PropertyType::PHONE);
 			}
 
-			$sUidValue = $oVCard->UID ? (string) $oVCard->UID : \SabreForRainLoop\DAV\UUIDUtil::getUUID();
+			$sUidValue = $oVCard->UID ? (string) $oVCard->UID : \Sabre\DAV\UUIDUtil::getUUID();
 			$aProperties[] = new Property(PropertyType::UID, $sUidValue);
 
 			if (empty($this->IdContactStr))

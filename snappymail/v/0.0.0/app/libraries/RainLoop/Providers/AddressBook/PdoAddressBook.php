@@ -214,7 +214,7 @@ class PdoAddressBook
 		return $aResponse;
 	}
 
-	private function detectionPropFind(\SabreForRainLoop\DAV\Client $oClient, string $sPath) : ?array
+	private function detectionPropFind(\Sabre\DAV\Client $oClient, string $sPath) : ?array
 	{
 		$aResponse = null;
 
@@ -239,7 +239,7 @@ class PdoAddressBook
 		return $aResponse;
 	}
 
-	private function getContactsPaths(\SabreForRainLoop\DAV\Client $oClient, string $sUser, string $sPassword, string $sProxy = '') : array
+	private function getContactsPaths(\Sabre\DAV\Client $oClient, string $sUser, string $sPassword, string $sProxy = '') : array
 	{
 		$aContactsPaths = array();
 
@@ -285,7 +285,7 @@ class PdoAddressBook
 					if (empty($sNextPath))
 					{
 						$oResourceType = isset($aItem['{DAV:}resourcetype']) ? $aItem['{DAV:}resourcetype'] : null;
-						/* @var $oResourceType \SabreForRainLoop\DAV\Property\ResourceType */
+						/* @var $oResourceType \Sabre\DAV\Property\ResourceType */
 						if ($oResourceType && $oResourceType->is('{DAV:}collection'))
 						{
 							$sNextPath = $sKey;
@@ -408,7 +408,7 @@ class PdoAddressBook
 					if (!empty($sKey) && $aItem && isset($aItem['{DAV:}resourcetype']))
 					{
 						$oResourceType = $aItem['{DAV:}resourcetype'];
-						/* @var $oResourceType \SabreForRainLoop\DAV\Property\ResourceType */
+						/* @var $oResourceType \Sabre\DAV\Property\ResourceType */
 
 						if ($oResourceType && $oResourceType->is('{DAV:}collection'))
 						{
@@ -425,7 +425,7 @@ class PdoAddressBook
 		return $aContactsPaths;
 	}
 
-	private function checkContactsPath(\SabreForRainLoop\DAV\Client $oClient, string $sPath) : bool
+	private function checkContactsPath(\Sabre\DAV\Client $oClient, string $sPath) : bool
 	{
 		if (!$oClient)
 		{
@@ -456,7 +456,7 @@ class PdoAddressBook
 				if (!empty($sKey) && isset($aItem['{DAV:}resourcetype']))
 				{
 					$oResourceType = $aItem['{DAV:}resourcetype'];
-					/* @var $oResourceType \SabreForRainLoop\DAV\Property\ResourceType */
+					/* @var $oResourceType \Sabre\DAV\Property\ResourceType */
 
 					if ($oResourceType && $oResourceType->is('{DAV:}collection') &&
 						$oResourceType->is('{urn:ietf:params:xml:ns:carddav}addressbook'))
@@ -475,7 +475,7 @@ class PdoAddressBook
 		return $bGood;
 	}
 
-	public function getDavClientFromUrl(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : \SabreForRainLoop\DAV\Client
+	public function getDavClientFromUrl(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : \Sabre\DAV\Client
 	{
 		if (!\preg_match('/^http[s]?:\/\//i', $sUrl))
 		{
@@ -509,7 +509,7 @@ class PdoAddressBook
 			$aSettings['proxy'] = $sProxy;
 		}
 
-		$oClient = new \SabreForRainLoop\DAV\Client($aSettings);
+		$oClient = new \Sabre\DAV\Client($aSettings);
 		$oClient->setVerifyPeer(false);
 
 		$oClient->__UrlPath__ = $aUrl['path'];
@@ -519,9 +519,9 @@ class PdoAddressBook
 		return $oClient;
 	}
 
-	public function getDavClient(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : ?\SabreForRainLoop\DAV\Client
+	public function getDavClient(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : ?\Sabre\DAV\Client
 	{
-		if (!\class_exists('SabreForRainLoop\DAV\Client'))
+		if (!\class_exists('Sabre\DAV\Client'))
 		{
 			return null;
 		}
