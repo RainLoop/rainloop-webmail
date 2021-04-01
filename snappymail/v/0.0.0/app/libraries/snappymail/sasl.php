@@ -7,9 +7,9 @@ abstract class SASL
 	public
 		$base64 = false;
 
-	abstract public function authenticate(string $authcid, string $passphrase, ?string $authzid = null);
+	abstract public function authenticate(string $authcid, string $passphrase, ?string $authzid = null) : string;
 
-	public function challenge(string $challenge) : string
+	public function challenge(string $challenge) : ?string
 	{
 		return null;
 	}

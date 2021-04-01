@@ -120,12 +120,31 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 
 		if ($this->IsSupported('SASL'))
 		{
+//			$encrypted = !empty(\stream_get_meta_data($this->rConnect)['crypto']);
+			$type = '';
+			$types = [
+//				'SCRAM-SHA-256' => 1, // !$encrypted
+//				'SCRAM-SHA-1' => 1, // !$encrypted
+//				'CRAM-MD5' => 1, // $encrypted
+				'PLAIN' => 1, // $encrypted
+				'LOGIN' => 1 // $encrypted
+			];
+			foreach ($types as $sasl_type => $active) {
+				if ($active && $this->IsAuthSupported($sasl_type) && \SnappyMail\SASL::isSupported($sasl_type)) {
+					$type = $sasl_type;
+					break;
+				}
+			}
+
+			$SASL = \SnappyMail\SASL::factory($type);
+			$SASL->base64 = true;
+
 			$bAuth = false;
 			try
 			{
-				if ($this->IsAuthSupported('PLAIN'))
+				if ('PLAIN' === $type)
 				{
-					$sAuth = \base64_encode($sLoginAuthKey."\0".$sLogin."\0".$sPassword);
+					$sAuth = $SASL->authenticate($sLogin, $sPassword, $sLoginAuthKey);
 
 					if ($this->__USE_INITIAL_AUTH_PLAIN_COMMAND)
 					{
@@ -142,10 +161,10 @@ class ManageSieveClient extends \MailSo\Net\NetClient
 					$this->parseStartupResponse($aResponse);
 					$bAuth = true;
 				}
-				else if ($this->IsAuthSupported('LOGIN'))
+				else if ('LOGIN' === $type)
 				{
-					$sLogin = \base64_encode($sLogin);
-					$sPassword = \base64_encode($sPassword);
+					$sLogin = $SASL->authenticate($sLogin, $sPassword);
+					$sPassword = $SASL->challenge('');
 
 					$this->sendRequest('AUTHENTICATE "LOGIN"');
 					$this->sendRequest('{'.\strlen($sLogin).'+}');

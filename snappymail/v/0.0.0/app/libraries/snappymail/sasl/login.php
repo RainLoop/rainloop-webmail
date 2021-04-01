@@ -16,7 +16,7 @@ class Login extends \SnappyMail\SASL
 		return $this->encode($username);
 	}
 
-	public function challenge(string $challenge) : string
+	public function challenge(string $challenge) : ?string
 	{
 		if ($challenge && 'Password:' !== $this->decode($challenge)) {
 			throw new \Exception("invalid response: {$challenge}");

@@ -42,7 +42,7 @@ class Scram extends \SnappyMail\SASL
 		return $this->encode($this->gs2_header . $this->auth_message);
 	}
 
-	public function challenge(string $challenge) : string
+	public function challenge(string $challenge) : ?string
 	{
 		$challenge = $this->decode($challenge);
 		$values = static::parseMessage($challenge);
