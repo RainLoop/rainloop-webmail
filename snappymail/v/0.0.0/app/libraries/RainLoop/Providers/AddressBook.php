@@ -255,7 +255,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 
 						if (empty($oVCard->UID))
 						{
-							$oVCard->UID = \Sabre\DAV\UUIDUtil::getUUID();
+							$oVCard->UID = \SnappyMail\UUID::generate();
 						}
 
 						$oContact->PopulateByVCard($oVCard->UID, $oVCard->serialize());

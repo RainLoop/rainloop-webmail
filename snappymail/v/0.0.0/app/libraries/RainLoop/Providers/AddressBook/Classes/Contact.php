@@ -163,8 +163,7 @@ class Contact implements \JsonSerializable
 
 	public function RegenerateContactStr() : void
 	{
-		$this->IdContactStr = \class_exists('Sabre\DAV\Client') ?
-			\Sabre\DAV\UUIDUtil::getUUID() : \MailSo\Base\Utils::Md5Rand();
+		$this->IdContactStr = \SnappyMail\UUID::generate();
 	}
 
 	public function GetEmails() : array
@@ -621,7 +620,7 @@ class Contact implements \JsonSerializable
 				$this->addArrayPropertyHelper($aProperties, $oVCard->TEL, PropertyType::PHONE);
 			}
 
-			$sUidValue = $oVCard->UID ? (string) $oVCard->UID : \Sabre\DAV\UUIDUtil::getUUID();
+			$sUidValue = $oVCard->UID ? (string) $oVCard->UID : \SnappyMail\UUID::generate();
 			$aProperties[] = new Property(PropertyType::UID, $sUidValue);
 
 			if (empty($this->IdContactStr))
