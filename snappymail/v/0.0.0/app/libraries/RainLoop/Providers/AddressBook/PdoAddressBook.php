@@ -3,6 +3,7 @@
 namespace RainLoop\Providers\AddressBook;
 
 use \RainLoop\Providers\AddressBook\Enumerations\PropertyType;
+use \SnappyMail\DAV\Client as DAVClient;
 
 class PdoAddressBook
 	extends \RainLoop\Common\PdoAbstract
@@ -104,7 +105,7 @@ class PdoAddressBook
 		return $aResult;
 	}
 
-	private function prepearRemoteSyncData($oClient, string $sPath)
+	private function prepearRemoteSyncData(DAVClient $oClient, string $sPath)
 	{
 		$mResult = false;
 		$aResponse = null;
@@ -175,7 +176,7 @@ class PdoAddressBook
 		return $mResult;
 	}
 
-	private function davClientRequest($oClient, string $sCmd, string $sUrl, $mData = null) : ?array
+	private function davClientRequest(DAVClient $oClient, string $sCmd, string $sUrl, $mData = null) : ?array
 	{
 		\MailSo\Base\Utils::ResetTimeLimit();
 
@@ -214,7 +215,7 @@ class PdoAddressBook
 		return $aResponse;
 	}
 
-	private function detectionPropFind(\Sabre\DAV\Client $oClient, string $sPath) : ?array
+	private function detectionPropFind(DAVClient $oClient, string $sPath) : ?array
 	{
 		$aResponse = null;
 
@@ -239,7 +240,7 @@ class PdoAddressBook
 		return $aResponse;
 	}
 
-	private function getContactsPaths(\Sabre\DAV\Client $oClient, string $sUser, string $sPassword, string $sProxy = '') : array
+	private function getContactsPaths(DAVClient $oClient, string $sUser, string $sPassword, string $sProxy = '') : array
 	{
 		$aContactsPaths = array();
 
@@ -248,11 +249,6 @@ class PdoAddressBook
 
 //		[{DAV:}current-user-principal] => /cloud/remote.php/carddav/principals/admin/
 //		[{urn:ietf:params:xml:ns:carddav}addressbook-home-set] => /cloud/remote.php/carddav/addressbooks/admin/
-
-		if (!$oClient)
-		{
-			return $aContactsPaths;
-		}
 
 		$aResponse = $this->detectionPropFind($oClient, '/.well-known/carddav');
 
@@ -425,7 +421,7 @@ class PdoAddressBook
 		return $aContactsPaths;
 	}
 
-	private function checkContactsPath(\Sabre\DAV\Client $oClient, string $sPath) : bool
+	private function checkContactsPath(DAVClient $oClient, string $sPath) : bool
 	{
 		if (!$oClient)
 		{
@@ -475,7 +471,7 @@ class PdoAddressBook
 		return $bGood;
 	}
 
-	public function getDavClientFromUrl(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : \Sabre\DAV\Client
+	public function getDavClientFromUrl(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : DAVClient
 	{
 		if (!\preg_match('/^http[s]?:\/\//i', $sUrl))
 		{
@@ -509,7 +505,7 @@ class PdoAddressBook
 			$aSettings['proxy'] = $sProxy;
 		}
 
-		$oClient = new \Sabre\DAV\Client($aSettings);
+		$oClient = new DAVClient($aSettings);
 		$oClient->setVerifyPeer(false);
 
 		$oClient->__UrlPath__ = $aUrl['path'];
@@ -519,13 +515,8 @@ class PdoAddressBook
 		return $oClient;
 	}
 
-	public function getDavClient(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : ?\Sabre\DAV\Client
+	public function getDavClient(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : ?DAVClient
 	{
-		if (!\class_exists('Sabre\DAV\Client'))
-		{
-			return null;
-		}
-
 		$aMatch = array();
 		$sUserAddressBookNameName = '';
 
@@ -538,10 +529,6 @@ class PdoAddressBook
 		}
 
 		$oClient = $this->getDavClientFromUrl($sUrl, $sUser, $sPassword, $sProxy);
-		if (!$oClient)
-		{
-			return null;
-		}
 
 		$sPath = $oClient->__UrlPath__;
 
