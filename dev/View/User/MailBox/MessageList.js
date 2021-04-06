@@ -187,8 +187,6 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 
 		this.hasCheckedOrSelectedLines = MessageUserStore.hasCheckedOrSelected,
 
-		this.quotaTooltip = this.quotaTooltip.bind(this);
-
 		this.selector = new Selector(
 			MessageUserStore.list,
 			MessageUserStore.selectorMessageSelected,
@@ -887,7 +885,7 @@ export class MessageListMailBoxUserView extends AbstractViewRight {
 			SIZE: FileInfo.friendlySize(this.userUsageSize()),
 			PROC: this.userUsageProc(),
 			LIMIT: FileInfo.friendlySize(this.userQuota())
-		});
+		}).replace(/<[^>]+>/g, '');
 	}
 
 	initUploaderForAppend() {
