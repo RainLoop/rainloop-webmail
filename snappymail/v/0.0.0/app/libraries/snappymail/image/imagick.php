@@ -21,8 +21,20 @@ class IMagick extends \Imagick implements \SnappyMail\Image
 		return $imagick;
 	}
 
+	public function getOrientation() : int
+	{
+		return $this->getImageOrientation();
+	}
+
 	public function rotate(float $degrees) : bool
 	{
 		return $this->rotateImage(new \ImagickPixel(), $degrees);
+	}
+
+	public function show(?string $format = null) : void
+	{
+		$format && $this->setImageFormat($format);
+		\header('Content-Type: ' . $this->getImageMimeType());
+		echo $this;
 	}
 }

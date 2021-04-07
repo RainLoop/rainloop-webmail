@@ -51,13 +51,15 @@ class GD2 implements \SnappyMail\Image
 		$gd2->file = 'blob';
 		$gd2->type = (int) $imginfo[2];
 		$gd2->format = $format;
-		if (\is_callable('exif_read_data')) {
-			$exif = \exif_read_data('data://'.$imginfo['mime'].';base64,' . \base64_encode($data));
-			if ($exif) {
-				$gd2->orientation = \max(1, \intval($oMetadata['IFD0.Orientation'] ?? 0));
-			}
+		if (\is_callable('exif_read_data') && $exif = \exif_read_data('data://'.$imginfo['mime'].';base64,' . \base64_encode($data))) {
+			$gd2->orientation = \max(1, \intval($oMetadata['IFD0.Orientation'] ?? 0));
 		}
 		return $gd2;
+	}
+
+	public function getOrientation() : int
+	{
+		return $this->orientation;
 	}
 
 	public function rotate(float $degrees) : bool
@@ -65,7 +67,14 @@ class GD2 implements \SnappyMail\Image
 		return $this->rotateImage(0, $degrees);
 	}
 
-	private function store_image($filename) : bool
+	public function show(?string $format = null) : void
+	{
+		$format && $this->setImageFormat($format);
+		\header('Content-Type: ' . $this->getImageMimeType());
+		$this->store_image(null);
+	}
+
+	private function store_image(?string $filename) : bool
 	{
 		switch ($this->format)
 		{
@@ -179,7 +188,7 @@ class GD2 implements \SnappyMail\Image
 		return \ob_get_clean();
 	}
 
-	public function getImageMimeType()
+	public function getImageMimeType() : string
 	{
 		switch ($this->format)
 		{
@@ -196,12 +205,7 @@ class GD2 implements \SnappyMail\Image
 		case 'webp':
 			return 'image/webp';
 		}
-		return false;
-	}
-
-	public function getImageOrientation() : int
-	{
-		return $this->orientation;
+		return 'application/octet-stream';
 	}
 
 	public function rotateImage($background, $degrees)

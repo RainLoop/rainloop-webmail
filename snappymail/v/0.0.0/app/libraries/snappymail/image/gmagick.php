@@ -20,13 +20,19 @@ class GMagick extends \Gmagick implements \SnappyMail\Image
 		if (!$gmagick->readimageblob($data)) {
 			throw new \InvalidArgumentException('Failed to load image');
 		}
-		if (\is_callable('exif_read_data')) {
-			$exif = \exif_read_data('data://'.$imginfo['mime'].';base64,' . \base64_encode($data));
-			if ($exif) {
-				$gmagick->orientation = \max(1, \intval($oMetadata['IFD0.Orientation'] ?? 0));
+		if (\method_exists($gmagick, 'getImageOrientation')) {
+			$gmagick->orientation = $gmagick->getImageOrientation();
+		} else if (\is_callable('exif_read_data') && $imginfo = \getimagesizefromstring($data)) {
+			if ($exif = \exif_read_data('data://'.$imginfo['mime'].';base64,' . \base64_encode($data))) {
+				$gmagick->orientation = \max(1, \intval($exif['IFD0.Orientation'] ?? 0));
 			}
 		}
 		return $gmagick;
+	}
+
+	public function getOrientation() : int
+	{
+		return $this->orientation;
 	}
 
 	public function rotate(float $degrees) : bool
@@ -34,7 +40,14 @@ class GMagick extends \Gmagick implements \SnappyMail\Image
 		return $this->rotateImage(new \GmagickPixel(), $degrees);
 	}
 
-	public function getImageMimeType()
+	public function show(?string $format = null) : void
+	{
+		$format && $this->setImageFormat($format);
+		\header('Content-Type: ' . $this->getImageMimeType());
+		echo $this;
+	}
+
+	public function getImageMimeType() : string
 	{
 		switch (\strtolower(parent::getImageFormat()))
 		{
@@ -50,11 +63,6 @@ class GMagick extends \Gmagick implements \SnappyMail\Image
 		case 'webp':
 			return 'image/webp';
 		}
-		return false;
-	}
-
-	public function getImageOrientation() : int
-	{
-		return $this->orientation;
+		return 'application/octet-stream';
 	}
 }

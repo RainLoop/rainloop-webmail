@@ -246,12 +246,11 @@ trait Raw
 							try
 							{
 								$oImage = static::loadImage(\stream_get_contents($rResource), $bDetectImageOrientation, 60);
-								$oImage->setImageFormat('png');
-//								$oImage->setImageFormat('webp');
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut.'_thumb60x60.png')), true);
-								\header('Content-Type: '.$oImage->getImageMimeType());
-								echo $oImage->getImageBlob();
+								$oImage->show('png');
+//								$oImage->show('webp'); // Little Britain: "Safari says NO"
+								exit;
 							}
 							catch (\Throwable $oException)
 							{
@@ -267,8 +266,7 @@ trait Raw
 								$oImage = static::loadImage($sLoadedData, $bDetectImageOrientation);
 								\header('Content-Disposition: inline; '.
 									\trim(\MailSo\Base\Utils::EncodeHeaderUtf8AttributeValue('filename', $sFileNameOut)), true);
-								\header('Content-Type: '.$oImage->getImageMimeType());
-								echo $oImage->getImageBlob();
+								$oImage->show();
 							}
 							catch (\Throwable $oException)
 							{
@@ -363,7 +361,7 @@ trait Raw
 
 		// rotateImageByOrientation
 		if ($bDetectImageOrientation) {
-			switch ($oImage->getImageOrientation())
+			switch ($oImage->getOrientation())
 			{
 				case 2: // flip horizontal
 					$oImage->flopImage();
