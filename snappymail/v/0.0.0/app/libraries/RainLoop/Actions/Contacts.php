@@ -97,10 +97,7 @@ trait Contacts
 		$oAccount = $this->getAccountFromToken();
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 
-		$aFilteredUids = \array_filter($aUids, function (&$mUid) {
-			$mUid = (int) \trim($mUid);
-			return 0 < $mUid;
-		});
+		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
 		$bResult = false;
 		if (0 < \count($aFilteredUids) && $this->AddressBookProvider($oAccount)->IsActive())

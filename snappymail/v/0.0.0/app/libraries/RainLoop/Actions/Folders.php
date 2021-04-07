@@ -358,10 +358,7 @@ trait Folders
 		if (0 < strlen($sFlagsUids))
 		{
 			$aFlagsUids = explode(',', $sFlagsUids);
-			$aFlagsFilteredUids = array_filter($aFlagsUids, function (&$sUid) {
-				$sUid = (int) trim($sUid);
-				return 0 < (int) trim($sUid);
-			});
+			$aFlagsFilteredUids = \array_filter(\array_map('intval', $aFlagsUids));
 		}
 
 		$this->initMailClientConnection();

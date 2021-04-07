@@ -510,10 +510,7 @@ trait Messages
 		$sFolder = $this->GetActionParam('Folder', '');
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 
-		$aFilteredUids = \array_filter($aUids, function (&$sUid) {
-			$sUid = (int) \trim($sUid);
-			return 0 < $sUid;
-		});
+		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
 		try
 		{
@@ -563,10 +560,7 @@ trait Messages
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 		$bMarkAsRead = !empty($this->GetActionParam('MarkAsRead', '0'));
 
-		$aFilteredUids = \array_filter($aUids, function (&$mUid) {
-			$mUid = (int) \trim($mUid);
-			return 0 < $mUid;
-		});
+		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
 		if ($bMarkAsRead)
 		{
@@ -629,10 +623,7 @@ trait Messages
 		$sToFolder = $this->GetActionParam('ToFolder', '');
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
 
-		$aFilteredUids = \array_filter($aUids, function (&$mUid) {
-			$mUid = (int) \trim($mUid);
-			return 0 < $mUid;
-		});
+		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
 		try
 		{
@@ -866,10 +857,7 @@ trait Messages
 		$sFolder = $this->GetActionParam('Folder', '');
 		$bSetAction = '1' === (string) $this->GetActionParam('SetAction', '0');
 		$aUids = \explode(',', (string) $this->GetActionParam('Uids', ''));
-		$aFilteredUids = \array_filter($aUids, function (&$sUid) {
-			$sUid = (int) \trim($sUid);
-			return 0 < $sUid;
-		});
+		$aFilteredUids = \array_filter(\array_map('intval', $aUids));
 
 		try
 		{
