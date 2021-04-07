@@ -217,11 +217,11 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 					this.viewFromShort(message.fromToLine(true, true));
 					this.viewFromDkimData(message.fromDkimData());
 					this.viewToShort(message.toToLine(true, true));
-					this.viewFrom(message.fromToLine(false));
-					this.viewTo(message.toToLine(false));
-					this.viewCc(message.ccToLine(false));
-					this.viewBcc(message.bccToLine(false));
-					this.viewReplyTo(message.replyToToLine(false));
+					this.viewFrom(message.fromToLine());
+					this.viewTo(message.toToLine());
+					this.viewCc(message.ccToLine());
+					this.viewBcc(message.bccToLine());
+					this.viewReplyTo(message.replyToToLine());
 					this.viewTimeStamp(message.dateTimeStampInUTC());
 					this.viewSize(message.friendlySize());
 					this.viewLineAsCss(message.lineAsCss());

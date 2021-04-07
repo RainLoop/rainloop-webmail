@@ -211,10 +211,10 @@ export class MessageModel extends AbstractModel {
 
 	/**
 	 * @param {boolean} friendlyView
-	 * @param {boolean=} wrapWithLink = false
+	 * @param {boolean=} wrapWithLink
 	 * @returns {string}
 	 */
-	fromToLine(friendlyView, wrapWithLink = false) {
+	fromToLine(friendlyView, wrapWithLink) {
 		return this.from.toString(friendlyView, wrapWithLink);
 	}
 
@@ -232,37 +232,37 @@ export class MessageModel extends AbstractModel {
 
 	/**
 	 * @param {boolean} friendlyView
-	 * @param {boolean=} wrapWithLink = false
+	 * @param {boolean=} wrapWithLink
 	 * @returns {string}
 	 */
-	toToLine(friendlyView, wrapWithLink = false) {
+	toToLine(friendlyView, wrapWithLink) {
 		return this.to.toString(friendlyView, wrapWithLink);
 	}
 
 	/**
 	 * @param {boolean} friendlyView
-	 * @param {boolean=} wrapWithLink = false
+	 * @param {boolean=} wrapWithLink
 	 * @returns {string}
 	 */
-	ccToLine(friendlyView, wrapWithLink = false) {
+	ccToLine(friendlyView, wrapWithLink) {
 		return this.cc.toString(friendlyView, wrapWithLink);
 	}
 
 	/**
 	 * @param {boolean} friendlyView
-	 * @param {boolean=} wrapWithLink = false
+	 * @param {boolean=} wrapWithLink
 	 * @returns {string}
 	 */
-	bccToLine(friendlyView, wrapWithLink = false) {
+	bccToLine(friendlyView, wrapWithLink) {
 		return this.bcc.toString(friendlyView, wrapWithLink);
 	}
 
 	/**
 	 * @param {boolean} friendlyView
-	 * @param {boolean=} wrapWithLink = false
+	 * @param {boolean=} wrapWithLink
 	 * @returns {string}
 	 */
-	replyToToLine(friendlyView, wrapWithLink = false) {
+	replyToToLine(friendlyView, wrapWithLink) {
 		return this.replyTo.toString(friendlyView, wrapWithLink);
 	}
 
@@ -318,7 +318,7 @@ export class MessageModel extends AbstractModel {
 	 * @param {boolean=} last = false
 	 * @returns {Array}
 	 */
-	replyEmails(excludeEmails, last = false) {
+	replyEmails(excludeEmails, last) {
 		const result = [],
 			unic = undefined === excludeEmails ? {} : excludeEmails;
 
@@ -339,7 +339,7 @@ export class MessageModel extends AbstractModel {
 	 * @param {boolean=} last = false
 	 * @returns {Array.<Array>}
 	 */
-	replyAllEmails(excludeEmails, last = false) {
+	replyAllEmails(excludeEmails, last) {
 		let data = [];
 		const toResult = [],
 			ccResult = [],
@@ -364,7 +364,7 @@ export class MessageModel extends AbstractModel {
 	/**
 	 * @param {boolean=} print = false
 	 */
-	viewPopupMessage(print = false) {
+	viewPopupMessage(print) {
 		const timeStampInUTC = this.dateTimeStampInUTC() || 0,
 			ccLine = this.ccToLine(false),
 			m = 0 < timeStampInUTC ? new Date(timeStampInUTC * 1000) : null,
