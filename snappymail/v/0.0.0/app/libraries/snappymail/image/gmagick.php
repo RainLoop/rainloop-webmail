@@ -25,7 +25,7 @@ class GMagick extends \Gmagick implements \SnappyMail\Image
 			if ($exif) {
 				$gmagick->orientation = \max(1, \intval($oMetadata['IFD0.Orientation'] ?? 0));
 			}
-        }
+		}
 		return $gmagick;
 	}
 

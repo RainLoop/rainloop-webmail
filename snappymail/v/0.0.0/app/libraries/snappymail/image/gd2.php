@@ -56,7 +56,7 @@ class GD2 implements \SnappyMail\Image
 			if ($exif) {
 				$gd2->orientation = \max(1, \intval($oMetadata['IFD0.Orientation'] ?? 0));
 			}
-        }
+		}
 		return $gd2;
 	}
 
