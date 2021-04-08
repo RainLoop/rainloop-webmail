@@ -4109,6 +4109,9 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 			if (0 < \strlen(\trim($sNewPassword)))
 			{
 				$oConfig->SetPassword($sNewPassword);
+				if (\is_file($passfile) && \trim(\file_get_contents($passfile)) !== $sNewPassword) {
+					\unlink($passfile);
+				}
 			}
 
 			$bResult = $oConfig->Save();
