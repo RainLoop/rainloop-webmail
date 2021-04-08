@@ -1587,6 +1587,16 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 
 		$oSettings = null;
 
+		$passfile = APP_PRIVATE_DATA.'admin_password.txt';
+		$sPassword = $oConfig->Get('security', 'admin_password', '');
+		if (!$sPassword) {
+			$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
+			\file_put_contents($passfile, $sPassword);
+			\chmod($passfile, 0600);
+			$oConfig->SetPassword($sPassword);
+			$oConfig->Save();
+		}
+
 		if (!$bAdmin)
 		{
 			$oAccount = $this->getAccountFromToken(false);
@@ -1814,7 +1824,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 				$aResult['SubscriptionEnabled'] = (bool) \MailSo\Base\Utils::ValidateDomain($aResult['AdminDomain'], true);
 //					|| \MailSo\Base\Utils::ValidateIP($aResult['AdminDomain']);
 
-				$aResult['WeakPassword'] = (bool) $oConfig->ValidatePassword('12345');
+				$aResult['WeakPassword'] = \is_file($passfile);;
 				$aResult['CoreAccess'] = (bool) $this->rainLoopCoreAccess();
 
 				$aResult['PhpUploadSizes'] = array(
@@ -4087,6 +4097,8 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 			$this->Logger()->AddSecret($sNewPassword);
 		}
 
+		$passfile = APP_PRIVATE_DATA.'admin_password.txt';
+
 		if ($oConfig->ValidatePassword($sPassword))
 		{
 			if (0 < \strlen($sLogin))
@@ -4099,11 +4111,10 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 				$oConfig->SetPassword($sNewPassword);
 			}
 
-			$bResult = true;
+			$bResult = $oConfig->Save();
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult ?
-			($oConfig->Save() ? array('Weak' => $oConfig->ValidatePassword('12345')) : false) : false);
+		return $this->DefaultResponse(__FUNCTION__, $bResult ? array('Weak' => \is_file($passfile)) : false);
 	}
 
 	/**
@@ -5246,7 +5257,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 				'Draft Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts Mail' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
 				'Drafts Mails' => \MailSo\Imap\Enumerations\FolderType::DRAFTS,
-				
+
 				'Junk E-mail' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 
 				'Spam' => \MailSo\Imap\Enumerations\FolderType::JUNK,
@@ -5255,7 +5266,7 @@ NewThemeLink IncludeCss LoadingDescriptionEsc LangLink IncludeBackground Plugins
 				'Junk' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 				'Bulk Mail' => \MailSo\Imap\Enumerations\FolderType::JUNK,
 				'Bulk Mails' => \MailSo\Imap\Enumerations\FolderType::JUNK,
-				
+
 				'Deleted Items' => \MailSo\Imap\Enumerations\FolderType::TRASH,
 
 				'Trash' => \MailSo\Imap\Enumerations\FolderType::TRASH,
