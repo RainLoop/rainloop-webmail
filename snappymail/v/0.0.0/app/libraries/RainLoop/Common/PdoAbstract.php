@@ -50,6 +50,13 @@ abstract class PdoAbstract
 		return \strcmp(\mb_strtoupper($sStr1, 'UTF-8'), \mb_strtoupper($sStr2, 'UTF-8'));
 	}
 
+	public static function getAvailableDrivers() : array
+	{
+		return \class_exists('PDO')
+			? array_intersect(['mysql', 'sqlite', 'pgsql'], \PDO::getAvailableDrivers())
+			: [];
+	}
+
 	/**
 	 *
 	 * @throws \Exception
@@ -69,7 +76,7 @@ abstract class PdoAbstract
 		$sType = $sDsn = $sDbLogin = $sDbPassword = '';
 		list($sType, $sDsn, $sDbLogin, $sDbPassword) = $this->getPdoAccessData();
 
-		if (!\in_array($sType, array('mysql', 'sqlite', 'pgsql')))
+		if (!\in_array($sType, static::getAvailableDrivers()))
 		{
 			throw new \Exception('Unknown PDO SQL connection type');
 		}
@@ -85,7 +92,7 @@ abstract class PdoAbstract
 		try
 		{
 //			$bCaseFunc = false;
-			$oPdo = @new \PDO($sDsn, $sDbLogin, $sDbPassword);
+			$oPdo = new \PDO($sDsn, $sDbLogin, $sDbPassword);
 			if ($oPdo)
 			{
 				$sPdoType = $oPdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
@@ -93,8 +100,7 @@ abstract class PdoAbstract
 
 				if ('mysql' === $sType && 'mysql' === $sPdoType)
 				{
-					$oPdo->exec('SET NAMES utf8 COLLATE utf8_general_ci');
-//					$oPdo->exec('SET NAMES utf8');
+					$oPdo->exec('SET NAMES utf8mb4 COLLATE utf8mb4_general_ci');
 				}
 //				else if ('sqlite' === $sType && 'sqlite' === $sPdoType && $this->bSqliteCollate)
 //				{
@@ -374,13 +380,13 @@ value_int int UNSIGNED NOT NULL DEFAULT 0,
 value_str varchar(128) NOT NULL DEFAULT \'\',
 PRIMARY KEY(id),
 INDEX sys_name_rainloop_system_index (sys_name)
-) /*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;';
+) ENGINE=INNODB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;';
 					$aQ[] = 'CREATE TABLE IF NOT EXISTS rainloop_users (
 id_user int UNSIGNED NOT NULL AUTO_INCREMENT,
 rl_email varchar(128) NOT NULL DEFAULT \'\',
 PRIMARY KEY(id_user),
 INDEX rl_email_rainloop_users_index (rl_email)
-) /*!40000 ENGINE=INNODB */;';
+) ENGINE=INNODB;';
 					break;
 
 				case 'pgsql':

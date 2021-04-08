@@ -804,13 +804,10 @@ class Actions
 					(\MailSo\Base\Utils::FunctionExistsAndEnabled('php_sapi_name') ? \php_sapi_name() : '~') . ']'
 				);
 
-				$sPdo = (\class_exists('PDO') ? \implode(',', \PDO::getAvailableDrivers()) : 'off');
-				$sPdo = empty($sPdo) ? '~' : $sPdo;
-
 				$this->oLogger->Write(
 					'[APC:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('apc_fetch') ? 'on' : 'off') .
 					'][MB:' . (\MailSo\Base\Utils::FunctionExistsAndEnabled('mb_convert_encoding') ? 'on' : 'off') .
-					'][PDO:' . $sPdo .
+					'][PDO:' . (\class_exists('PDO') ? (\implode(',', \Pdo::getAvailableDrivers()) ?: '~') : 'off') .
 					'][Streams:' . \implode(',', \stream_get_transports()) .
 					']');
 
@@ -1187,7 +1184,7 @@ class Actions
 				$aResult['VerifySslCertificate'] = (bool)$oConfig->Get('ssl', 'verify_certificate', false);
 				$aResult['AllowSelfSigned'] = (bool)$oConfig->Get('ssl', 'allow_self_signed', true);
 
-				$aResult['supportedPdoDrivers'] = \class_exists('PDO') ? \PDO::getAvailableDrivers() : [];
+				$aResult['supportedPdoDrivers'] = \class_exists('PDO') ? \RainLoop\Common\PdoAbstract::getAvailableDrivers() : [];
 
 				$aResult['ContactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
 				$aResult['ContactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);
@@ -2262,7 +2259,7 @@ class Actions
 
 	public function ValidateContactPdoType(string $sType): string
 	{
-		return \in_array($sType, array('mysql', 'pgsql', 'sqlite')) ? $sType : 'sqlite';
+		return \in_array($sType, \RainLoop\Common\PdoAbstract::getAvailableDrivers()) ? $sType : 'sqlite';
 	}
 
 	/**

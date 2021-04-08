@@ -41,7 +41,7 @@ class PdoAddressBook
 
 	public function IsSupported() : bool
 	{
-		$aDrivers = \class_exists('PDO') ? \PDO::getAvailableDrivers() : array();
+		$aDrivers = static::getAvailableDrivers();
 		return \is_array($aDrivers) && \in_array($this->sDsnType, $aDrivers);
 	}
 
@@ -1628,36 +1628,36 @@ class PdoAddressBook
 
 CREATE TABLE IF NOT EXISTS rainloop_ab_contacts (
 
-	id_contact		bigint UNSIGNED		NOT NULL AUTO_INCREMENT,
-	id_contact_str	varchar(128)		NOT NULL DEFAULT '',
-	id_user			int UNSIGNED		NOT NULL,
-	display			varchar(255)		NOT NULL DEFAULT '',
-	changed			int UNSIGNED		NOT NULL DEFAULT 0,
-	deleted			tinyint UNSIGNED	NOT NULL DEFAULT 0,
-	etag			varchar(128) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL DEFAULT '',
+	id_contact		bigint UNSIGNED	 NOT NULL AUTO_INCREMENT,
+	id_contact_str	varchar(128)	 NOT NULL DEFAULT '',
+	id_user			int UNSIGNED	 NOT NULL,
+	display			varchar(255)	 NOT NULL DEFAULT '',
+	changed			int UNSIGNED	 NOT NULL DEFAULT 0,
+	deleted			tinyint UNSIGNED NOT NULL DEFAULT 0,
+	etag			varchar(128)     NOT NULL DEFAULT '' CHARACTER SET ascii COLLATE ascii_general_ci,
 
 	PRIMARY KEY(id_contact),
 	INDEX id_user_rainloop_ab_contacts_index (id_user)
 
-)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
+) ENGINE=INNODB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 CREATE TABLE IF NOT EXISTS rainloop_ab_properties (
 
-	id_prop				bigint UNSIGNED		NOT NULL AUTO_INCREMENT,
-	id_contact			bigint UNSIGNED		NOT NULL,
-	id_user				int UNSIGNED		NOT NULL,
-	prop_type			tinyint UNSIGNED	NOT NULL,
-	prop_type_str		varchar(255) /*!40101 CHARACTER SET ascii COLLATE ascii_general_ci */ NOT NULL DEFAULT '',
-	prop_value			varchar(255)		NOT NULL DEFAULT '',
-	prop_value_custom	varchar(255)		NOT NULL DEFAULT '',
-	prop_frec			int UNSIGNED		NOT NULL DEFAULT 0,
+	id_prop				bigint UNSIGNED	 NOT NULL AUTO_INCREMENT,
+	id_contact			bigint UNSIGNED	 NOT NULL,
+	id_user				int UNSIGNED	 NOT NULL,
+	prop_type			tinyint UNSIGNED NOT NULL,
+	prop_type_str		varchar(255)     NOT NULL DEFAULT '' CHARACTER SET ascii COLLATE ascii_general_ci,
+	prop_value			varchar(255)	 NOT NULL DEFAULT '',
+	prop_value_custom	varchar(255)	 NOT NULL DEFAULT '',
+	prop_frec			int UNSIGNED	 NOT NULL DEFAULT 0,
 
 	PRIMARY KEY(id_prop),
 	INDEX id_user_rainloop_ab_properties_index (id_user),
 	INDEX id_user_id_contact_rainloop_ab_properties_index (id_user, id_contact),
 	INDEX id_contact_prop_type_rainloop_ab_properties_index (id_contact, prop_type)
 
-)/*!40000 ENGINE=INNODB *//*!40101 CHARACTER SET utf8 COLLATE utf8_general_ci */;
+) ENGINE=INNODB CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
 MYSQLINITIAL;
 				break;
