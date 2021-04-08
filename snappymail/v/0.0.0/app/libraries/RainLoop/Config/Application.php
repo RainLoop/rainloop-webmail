@@ -158,7 +158,7 @@ class Application extends \RainLoop\Config\AbstractConfig
 				'openpgp'                    => array(false),
 
 				'admin_login'                => array('admin', 'Login and password for web admin panel'),
-				'admin_password'             => array(\password_hash('12345', PASSWORD_DEFAULT)),
+				'admin_password'             => array(''),
 				'allow_admin_panel'          => array(true, 'Access settings'),
 				'allow_two_factor_auth'      => array(false),
 				'force_two_factor_auth'      => array(false),

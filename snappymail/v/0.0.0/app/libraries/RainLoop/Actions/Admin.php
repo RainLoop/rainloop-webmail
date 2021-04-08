@@ -255,6 +255,8 @@ trait Admin
 			$this->Logger()->AddSecret($sNewPassword);
 		}
 
+		$passfile = APP_PRIVATE_DATA.'admin_password.txt';
+
 		if ($oConfig->ValidatePassword($sPassword))
 		{
 			if (0 < \strlen($sLogin))
@@ -265,13 +267,17 @@ trait Admin
 			if (0 < \strlen(\trim($sNewPassword)))
 			{
 				$oConfig->SetPassword($sNewPassword);
+				if (\is_file($passfile) && \trim(\file_get_contents($passfile)) !== $sNewPassword) {
+					\unlink($passfile);
+				}
 			}
 
-			$bResult = true;
+			$bResult = $oConfig->Save();
 		}
 
-		return $this->DefaultResponse(__FUNCTION__, $bResult ?
-			($oConfig->Save() ? array('Weak' => $oConfig->ValidatePassword('12345')) : false) : false);
+		return $this->DefaultResponse(__FUNCTION__, $bResult
+			? array('Weak' => \is_file($passfile))
+			: false);
 	}
 
 	public function DoAdminDomainLoad() : array

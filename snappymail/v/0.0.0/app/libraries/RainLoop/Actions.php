@@ -1101,6 +1101,16 @@ class Actions
 
 		$oSettings = null;
 
+		$passfile = APP_PRIVATE_DATA.'admin_password.txt';
+		$sPassword = $oConfig->Get('security', 'admin_password', '');
+		if (!$sPassword) {
+			$sPassword = \substr(\base64_encode(\random_bytes(16)), 0, 12);
+			\file_put_contents($passfile, $sPassword);
+			\chmod($passfile, 0600);
+			$oConfig->SetPassword($sPassword);
+			$oConfig->Save();
+		}
+
 		if (!$bAdmin) {
 			$oAccount = $this->getAccountFromToken(false);
 			if ($oAccount) {
@@ -1194,7 +1204,7 @@ class Actions
 				$aResult['ContactsPdoUser'] = (string)$oConfig->Get('contacts', 'pdo_user', '');
 				$aResult['ContactsPdoPassword'] = (string)APP_DUMMY;
 
-				$aResult['WeakPassword'] = (bool)$oConfig->ValidatePassword('12345');
+				$aResult['WeakPassword'] = \is_file($passfile);
 
 				$aResult['PhpUploadSizes'] = array(
 					'upload_max_filesize' => \ini_get('upload_max_filesize'),
