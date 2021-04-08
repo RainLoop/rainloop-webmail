@@ -17,60 +17,20 @@ namespace MailSo\Mail;
  */
 class Message implements \JsonSerializable
 {
-	/**
-	 * @var string
-	 */
-	private $sFolder;
-
-	/**
-	 * @var int
-	 */
-	private $iUid;
-
-	/**
-	 * @var string
-	 */
-	private $sSubject;
-
-	/**
-	 * @var string
-	 */
-	private $sMessageId;
-
-	/**
-	 * @var string
-	 */
-	private $sContentType;
-
-	/**
-	 * @var int
-	 */
-	private $iSize;
-
-	/**
-	 * @var int
-	 */
-	private $iInternalTimeStampInUTC;
-
-	/**
-	 * @var int
-	 */
-	private $iHeaderTimeStampInUTC;
-
-	/**
-	 * @var string
-	 */
-	private $sHeaderDate;
-
-	/**
-	 * @var array
-	 */
-	private $aFlags;
-
-	/**
-	 * @var array
-	 */
-	private $aFlagsLowerCase;
+	private
+		$sFolder = '',
+		$iUid = 0,
+		$sSubject = '',
+		$sMessageId = '',
+		$sContentType = '',
+		$iSize = 0,
+		$iSpamScore = 0,
+		$bIsSpam = false,
+		$iInternalTimeStampInUTC = 0,
+		$iHeaderTimeStampInUTC = 0,
+		$sHeaderDate = '',
+		$aFlags = [],
+		$aFlagsLowerCase = [];
 
 	/**
 	 * @var \MailSo\Mime\EmailCollection
@@ -189,23 +149,6 @@ class Message implements \JsonSerializable
 
 	function __construct()
 	{
-		$this->Clear();
-	}
-
-	public function Clear() : self
-	{
-		$this->sFolder = '';
-		$this->iUid = 0;
-		$this->sSubject = '';
-		$this->sMessageId = '';
-		$this->sContentType = '';
-		$this->iSize = 0;
-		$this->iInternalTimeStampInUTC = 0;
-		$this->iHeaderTimeStampInUTC = 0;
-		$this->sHeaderDate = '';
-		$this->aFlags = array();
-		$this->aFlagsLowerCase = array();
-
 		$this->oFrom = null;
 		$this->oSender = null;
 		$this->oReplyTo = null;
@@ -298,6 +241,16 @@ class Message implements \JsonSerializable
 	public function Size() : int
 	{
 		return $this->iSize;
+	}
+
+	public function SpamScore() : int
+	{
+		return $this->iSpamScore;
+	}
+
+	public function IsSpam() : bool
+	{
+		return $this->bIsSpam;
 	}
 
 	public function InternalTimeStampInUTC() : int
@@ -556,7 +509,7 @@ class Message implements \JsonSerializable
 				$this->sReadReceipt = \trim($oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_CONFIRM_READING_TO));
 			}
 
-			//Unsubscribe links
+			// Unsubscribe links
 			$this->aUnsubsribeLinks = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE);
 			if (empty($this->aUnsubsribeLinks))
 			{
@@ -571,6 +524,24 @@ class Message implements \JsonSerializable
 					},
 					$this->aUnsubsribeLinks
 				);
+			}
+
+			$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT);
+			if (\preg_match('/\\[([\\d\\.-]+)\\s*\\/\\s*([\\d\\.]+)\\];/', $spam, $match)) {
+				if ($threshold = \floatval($match[2])) {
+					$this->iSpamScore = \max(0, \min(100, 100 * \floatval($match[1]) / $threshold));
+				}
+				$this->bIsSpam = false !== \stripos($this->sSubject, '*** SPAM ***');
+			} else {
+				$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS);
+				if (\preg_match('/(?:hits|score)=([\\d\\.-]+)/', $spam, $value)
+				 && \preg_match('/required=([\\d\\.-]+)/', $spam, $threshold)) {
+					if ($threshold = \floatval($threshold[1])) {
+						$this->iSpamScore = \max(0, \min(100, 100 * \floatval($value[1]) / $threshold));
+					}
+				}
+				$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_FLAG);
+				$this->bIsSpam = false !== \stripos($spam, 'YES');
 			}
 
 			$sDraftInfo = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_DRAFT_INFO);
@@ -751,6 +722,8 @@ class Message implements \JsonSerializable
 			'Subject' => \trim(\MailSo\Base\Utils::Utf8Clear($this->Subject())),
 			'MessageId' => $this->MessageId(),
 			'Size' => $this->Size(),
+			'SpamScore' => $this->SpamScore(),
+			'IsSpam' => $this->IsSpam(),
 			'DateTimeStampInUTC' => $this->InternalTimeStampInUTC(),
 
 			// \MailSo\Mime\EmailCollection

@@ -54,7 +54,20 @@ abstract class Header
 	const DKIM_SIGNATURE = 'DKIM-Signature';
 	const DOMAINKEY_SIGNATURE = 'DomainKey-Signature';
 
-	const X_SPAM_STATUS = 'X-Spam-Status';
+	// SpamAssassin
+	const X_SPAM_FLAG     = 'X-Spam-Flag';     // YES/NO
+	const X_SPAM_LEVEL    = 'X-Spam-Level';    // *******
+	const X_SPAM_STATUS   = 'X-Spam-Status';   // Yes|No
+	// Rspamd
+	const X_SPAMD_RESULT  = 'X-Spamd-Result';  // default: False [7.13 / 9.00];
+	const X_SPAMD_BAR     = 'X-Spamd-Bar';     // +++++++
+	// Unknown
+	const X_SPAM_CATEGORY = 'X-Spam-Category'; // SPAM|LEGIT
+	const X_SPAM_SCORE    = 'X-Spam-Score';    // 0
+	const X_HAM_REPORT    = 'X-Ham-Report';
+	const X_MICROSOFT_ANTISPAM = 'x-microsoft-antispam:';
+
+	const X_VIRUS = 'X-Virus';
 
 	const RETURN_RECEIPT_TO = 'Return-Receipt-To';
 	const DISPOSITION_NOTIFICATION_TO = 'Disposition-Notification-To';

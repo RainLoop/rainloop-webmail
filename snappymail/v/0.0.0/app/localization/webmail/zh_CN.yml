@@ -140,6 +140,7 @@ zh_CN:
     PGP_SIGNED_MESSAGE_DESC: "由 OpenPGP 签名 (点击验证)"
     PGP_ENCRYPTED_MESSAGE_DESC: "由 OpenPGP 加密 (点击解密)"
     LINK_DOWNLOAD_AS_ZIP: "下载为zip压缩包"
+    SPAM_SCORE: "垃圾邮件分数"
   READ_RECEIPT:
     SUBJECT: "送达回执 - %SUBJECT%"
     BODY: |

@@ -133,6 +133,8 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 			viewReplyTo: '',
 			viewTimeStamp: 0,
 			viewSize: '',
+			viewSpamScore: 0,
+			viewSpamStatus: '',
 			viewLineAsCss: '',
 			viewViewLink: '',
 			viewUnsubscribeLink: '',
@@ -224,6 +226,8 @@ class MessageViewMailBoxUserView extends AbstractViewRight {
 					this.viewReplyTo(message.replyToToLine());
 					this.viewTimeStamp(message.dateTimeStampInUTC());
 					this.viewSize(message.friendlySize());
+					this.viewSpamScore(message.spamScore());
+					this.viewSpamStatus(i18n(message.isSpam() ? 'GLOBAL/SPAM' : 'GLOBAL/NOT_SPAM'));
 					this.viewLineAsCss(message.lineAsCss());
 					this.viewViewLink(message.viewLink());
 					this.viewUnsubscribeLink(message.getFirstUnsubsribeLink());

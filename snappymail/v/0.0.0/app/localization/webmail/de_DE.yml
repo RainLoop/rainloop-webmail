@@ -140,6 +140,7 @@ de_DE:
     PGP_SIGNED_MESSAGE_DESC: "OpenPGP-signierte Nachricht (klicken, um zu überprüfen)"
     PGP_ENCRYPTED_MESSAGE_DESC: "OpenPGP-verschlüsselte Nachricht (klicken, um zu entschlüsseln)"
     LINK_DOWNLOAD_AS_ZIP: "Als ZIP-Datei herunterladen"
+    SPAM_SCORE: "Spam-Score"
   READ_RECEIPT:
     SUBJECT: "Empfangsbestätigung (angezeigt) - %SUBJECT%"
     BODY: |

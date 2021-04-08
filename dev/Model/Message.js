@@ -45,6 +45,8 @@ export class MessageModel extends AbstractModel {
 		this.addObservables({
 			subject: '',
 			size: 0,
+			spamScore: 0,
+			isSpam: false,
 			dateTimeStampInUTC: 0,
 			priority: MessagePriority.Normal,
 
@@ -116,6 +118,8 @@ export class MessageModel extends AbstractModel {
 		this._reset();
 		this.subject('');
 		this.size(0);
+		this.spamScore(0);
+		this.isSpam(false);
 		this.dateTimeStampInUTC(0);
 		this.priority(MessagePriority.Normal);
 
@@ -414,6 +418,8 @@ export class MessageModel extends AbstractModel {
 			this.subject(message.subject());
 
 			this.size(message.size());
+			this.spamScore(message.spamScore());
+			this.isSpam(message.isSpam());
 			this.dateTimeStampInUTC(message.dateTimeStampInUTC());
 			this.priority(message.priority());
 

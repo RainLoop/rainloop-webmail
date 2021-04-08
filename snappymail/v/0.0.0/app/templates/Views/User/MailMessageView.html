@@ -231,6 +231,10 @@
 											(<time data-moment-format="FROMNOW" data-bind="moment: viewTimeStamp"></time>)
 										</td>
 									</tr>
+									<tr data-bind="visible: 0 < viewSpamScore()">
+										<td data-i18n="MESSAGE/SPAM_SCORE"></td>
+										<td><span data-bind="text: viewSpamScore, title: viewSpamStatus"></span>%</td>
+									</tr>
 									<tr data-bind="visible: '' !== viewFrom()">
 										<td data-i18n="POPUPS_FILTER/SELECT_FIELD_SIZE"></td>
 										<td class="size" data-bind="text: viewSize"></td>

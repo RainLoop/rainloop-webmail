@@ -153,6 +153,9 @@ class MailClient
 			\MailSo\Mime\Enumerations\Header::AUTHENTICATION_RESULTS,
 			\MailSo\Mime\Enumerations\Header::X_DKIM_AUTHENTICATION_RESULTS,
 			\MailSo\Mime\Enumerations\Header::LIST_UNSUBSCRIBE,
+			// SPAM
+			\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS,
+			\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT,
 		), true);
 //
 //		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
