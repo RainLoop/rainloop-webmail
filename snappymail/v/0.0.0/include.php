@@ -37,18 +37,14 @@
 
 			$sSite = strtolower(trim(empty($_SERVER['HTTP_HOST']) ? (empty($_SERVER['SERVER_NAME']) ? '' : $_SERVER['SERVER_NAME']) : $_SERVER['HTTP_HOST']));
 			$sSite = 'www.' === substr($sSite, 0, 4) ? substr($sSite, 4) : $sSite;
-			$sSite = preg_replace('/^.+@/', '', preg_replace('/:[\d]+$/', '', $sSite));
-			$sSite = in_array($sSite, array('localhost', '127.0.0.1', '::1', '::1/128', '0:0:0:0:0:0:0:1')) ? 'localhost' : trim($sSite);
-			$sSite = 0 === strlen($sSite) ? 'localhost' : $sSite;
+			$sSite = trim(preg_replace('/^.+@/', '', preg_replace('/:[\d]+$/', '', $sSite)));
+			$sSite = in_array($sSite, array('', 'localhost', '127.0.0.1', '::1', '::1/128', '0:0:0:0:0:0:0:1')) ? 'localhost' : $sSite;
 
 			define('APP_SITE', $sSite);
 			unset($sSite);
 
-			define('APP_DEFAULT_PRIVATE_DATA_NAME', '_default_');
-
 			$sPrivateDataFolderInternalName = defined('MULTIDOMAIN') ? APP_SITE : '';
-			define('APP_PRIVATE_DATA_NAME', 0 === strlen($sPrivateDataFolderInternalName) ? APP_DEFAULT_PRIVATE_DATA_NAME : $sPrivateDataFolderInternalName);
-			define('APP_MULTIPLY', 0 < strlen($sPrivateDataFolderInternalName) && APP_DEFAULT_PRIVATE_DATA_NAME !== APP_PRIVATE_DATA_NAME);
+			define('APP_PRIVATE_DATA_NAME', 0 === strlen($sPrivateDataFolderInternalName) ? '_default_' : $sPrivateDataFolderInternalName);
 
 			define('APP_DUMMY', '********');
 			define('APP_DEV_VERSION', '0.0.0');
@@ -142,7 +138,7 @@
 
 			define('APP_PLUGINS_PATH', APP_PRIVATE_DATA.'plugins/');
 
-			if (APP_VERSION !== $sInstalled || (APP_MULTIPLY && !is_dir(APP_PRIVATE_DATA)))
+			if (APP_VERSION !== $sInstalled || (!is_dir(APP_PRIVATE_DATA) && strlen($sPrivateDataFolderInternalName) && '_default_' !== APP_PRIVATE_DATA_NAME))
 			{
 				define('APP_INSTALLED_START', true);
 				define('APP_INSTALLED_VERSION', $sInstalled);

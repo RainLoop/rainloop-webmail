@@ -6,7 +6,7 @@ class CKEditorPlugin extends \RainLoop\Plugins\AbstractPlugin
 		NAME = 'CKEditor',
 		VERSION = '2.1',
 		RELEASE = '2021-04-01',
-		REQUIRED = '2.4.4',
+		REQUIRED = '2.5.0',
 		DESCRIPTION = 'Use CKEditor instead of Squire as WYSIWYG';
 
 	public function Init() : void
