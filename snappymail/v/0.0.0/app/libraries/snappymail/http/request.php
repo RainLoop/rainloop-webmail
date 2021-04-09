@@ -133,7 +133,7 @@ abstract class Request
 			// http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3
 			// In response to a request other than GET or HEAD, the user agent MUST NOT
 			// automatically redirect the request unless it can be confirmed by the user
-			if ($redirects-- && \in_array($result->status, array(301, 302, 303, 307)) && \in_array($method, ['GET','HEAD','PROPFIND'])) {
+			if ($redirects-- && \in_array($result->status, array(301, 302, 303, 307)) && \in_array($method, ['GET','HEAD'])) {
 				$url = $result->getRedirectLocation();
 			} else {
 				$result->final_uri = $url;

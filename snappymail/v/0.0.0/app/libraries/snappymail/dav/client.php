@@ -51,7 +51,7 @@ class Client
 		$this->HTTP->setAuth(3, $settings['userName'] ?? '', $settings['password'] ?? '');
 		$this->HTTP->max_response_kb = 0;
 		$this->HTTP->timeout = 15; // timeout in seconds.
-		$this->HTTP->max_redirects = 1;
+//		$this->HTTP->max_redirects = 0;
 	}
 
 	/**
@@ -98,7 +98,7 @@ class Client
 		$body .= '  </d:prop>' . "\n";
 		$body .= '</d:propfind>';
 
-		if (!\preg_match('/^http(s?):\/\//', $url)) {
+		if (!\preg_match('@^(https?:)?//@', $url)) {
 			// If the url starts with a slash, we must calculate the url based off
 			// the root of the base url.
 			if (0 === \strpos($url, '/')) {
@@ -112,6 +112,15 @@ class Client
 			"Depth: {$depth}",
 			'Content-Type: application/xml'
 		));
+		if (301 == $response->status) {
+			$url = preg_replace('@^(https?:)?//[^/]+/@', '/', $result->getRedirectLocation());
+			$parts = \parse_url($this->baseUri);
+			$url = $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
+			$response = $this->HTTP->doRequest('PROPFIND', $url, $body, array(
+				"Depth: {$depth}",
+				'Content-Type: application/xml'
+			));
+		}
 		if (300 <= $response->status) {
 			throw new \SnappyMail\HTTP\Exception('', $response->status, $response);
 		}
