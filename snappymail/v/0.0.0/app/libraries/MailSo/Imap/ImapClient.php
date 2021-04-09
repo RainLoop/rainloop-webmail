@@ -167,6 +167,7 @@ class ImapClient extends \MailSo\Net\NetClient
 //			'SCRAM-SHA-1' => 1, // !$encrypted
 			'CRAM-MD5' => $bUseAuthCramMd5IfSupported,
 			'PLAIN' => $bUseAuthPlainIfSupported,
+			'LOGIN' => 1,
 		];
 		foreach ($types as $sasl_type => $active) {
 			if ($active && $this->IsSupported("AUTH={$sasl_type}") && \SnappyMail\SASL::isSupported($sasl_type)) {
