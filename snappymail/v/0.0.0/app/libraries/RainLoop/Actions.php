@@ -1194,7 +1194,7 @@ class Actions
 				$aResult['VerifySslCertificate'] = (bool)$oConfig->Get('ssl', 'verify_certificate', false);
 				$aResult['AllowSelfSigned'] = (bool)$oConfig->Get('ssl', 'allow_self_signed', true);
 
-				$aResult['supportedPdoDrivers'] = \class_exists('PDO') ? \RainLoop\Common\PdoAbstract::getAvailableDrivers() : [];
+				$aResult['supportedPdoDrivers'] = \RainLoop\Common\PdoAbstract::getAvailableDrivers();
 
 				$aResult['ContactsEnable'] = (bool)$oConfig->Get('contacts', 'enable', false);
 				$aResult['ContactsSync'] = (bool)$oConfig->Get('contacts', 'allow_sync', false);

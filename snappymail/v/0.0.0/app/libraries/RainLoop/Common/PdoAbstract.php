@@ -52,8 +52,8 @@ abstract class PdoAbstract
 
 	public static function getAvailableDrivers() : array
 	{
-		return \class_exists('PDO')
-			? array_intersect(['mysql', 'sqlite', 'pgsql'], \PDO::getAvailableDrivers())
+		return \class_exists('PDO', false)
+			? \array_intersect(['mysql', 'sqlite', 'pgsql'], \PDO::getAvailableDrivers())
 			: [];
 	}
 
