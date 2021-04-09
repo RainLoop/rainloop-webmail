@@ -532,15 +532,21 @@ class Message implements \JsonSerializable
 				);
 			}
 
-			$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT);
-			if (\preg_match('/\\[([\\d\\.-]+)\\s*\\/\\s*([\\d\\.]+)\\];/', $spam, $match)) {
-				if ($threshold = \floatval($match[2])) {
-					$this->iSpamScore = \max(0, \min(100, 100 * \floatval($match[1]) / $threshold));
-					$this->sSpamResult = "{$match[1]} / {$match[2]}";
+			if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT)) {
+				if (\preg_match('/\\[([\\d\\.-]+)\\s*\\/\\s*([\\d\\.]+)\\];/', $spam, $match)) {
+					if ($threshold = \floatval($match[2])) {
+						$this->iSpamScore = \max(0, \min(100, 100 * \floatval($match[1]) / $threshold));
+						$this->sSpamResult = "{$match[1]} / {$match[2]}";
+					}
 				}
 				$this->bIsSpam = false !== \stripos($this->sSubject, '*** SPAM ***');
-			} else {
-				$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS);
+			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_BOGOSITY)) {
+				$this->sSpamResult = $spam;
+				$this->bIsSpam = !!\preg_match('/yes|spam/', $spam);
+				if (\preg_match('/spamicity=([\\d\\.]+)/', $spam, $spamicity)) {
+					$this->iSpamScore = \max(0, \min(100, \floatval($spamicity[1])));
+				}
+			} else if ($spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS)) {
 				if (\preg_match('/(?:hits|score)=([\\d\\.-]+)/', $spam, $value)
 				 && \preg_match('/required=([\\d\\.-]+)/', $spam, $required)) {
 					if ($threshold = \floatval($required[1])) {

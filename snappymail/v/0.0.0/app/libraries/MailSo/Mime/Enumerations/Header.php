@@ -61,6 +61,8 @@ abstract class Header
 	// Rspamd
 	const X_SPAMD_RESULT  = 'X-Spamd-Result';  // default: False [7.13 / 9.00];
 	const X_SPAMD_BAR     = 'X-Spamd-Bar';     // +++++++
+	// Bogofilter
+	const X_BOGOSITY      = 'X-Bogosity';
 	// Unknown
 	const X_SPAM_CATEGORY = 'X-Spam-Category'; // SPAM|LEGIT
 	const X_SPAM_SCORE    = 'X-Spam-Score';    // 0

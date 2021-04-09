@@ -156,6 +156,7 @@ class MailClient
 			// SPAM
 			\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS,
 			\MailSo\Mime\Enumerations\Header::X_SPAMD_RESULT,
+			\MailSo\Mime\Enumerations\Header::X_BOGOSITY
 		), true);
 //
 //		return \MailSo\Imap\Enumerations\FetchType::ENVELOPE;
