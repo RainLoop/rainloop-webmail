@@ -113,7 +113,7 @@ class Client
 			'Content-Type: application/xml'
 		));
 		if (300 <= $response->status) {
-			throw new \SnappyMail\HTTP\Exception('', $response->status);
+			throw new \SnappyMail\HTTP\Exception('', $response->status, $response);
 		}
 
 		/**
