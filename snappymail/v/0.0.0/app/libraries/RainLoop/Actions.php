@@ -265,18 +265,17 @@ class Actions
 					break;
 				case 'address-book':
 					// Providers\AddressBook\AddressBookInterface
-
 					$sDsn = \trim($this->Config()->Get('contacts', 'pdo_dsn', ''));
 					$sUser = \trim($this->Config()->Get('contacts', 'pdo_user', ''));
 					$sPassword = (string)$this->Config()->Get('contacts', 'pdo_password', '');
-
 					$sDsnType = $this->ValidateContactPdoType(\trim($this->Config()->Get('contacts', 'type', 'sqlite')));
 					if ('sqlite' === $sDsnType) {
-						$mResult = new Providers\AddressBook\PdoAddressBook(
-							'sqlite:' . APP_PRIVATE_DATA . 'AddressBook.sqlite', '', '', 'sqlite');
+						$sUser = $sPassword = '';
+						$sDsn = 'sqlite:' . APP_PRIVATE_DATA . 'AddressBook.sqlite';
 					} else {
-						$mResult = new Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
+						$sDsn = $sDsnType . ':' . \preg_replace('/^[a-z]+:/', '', $sDsn);
 					}
+					$mResult = new Providers\AddressBook\PdoAddressBook($sDsn, $sUser, $sPassword, $sDsnType);
 					break;
 				case 'identities':
 					$mResult = [];

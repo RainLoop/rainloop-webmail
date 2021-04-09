@@ -19,7 +19,7 @@ export class ContactsAdminSettings {
 		addObservablesTo(this, {
 			enableContacts: !!SettingsGet('ContactsEnable'),
 			contactsSync: !!SettingsGet('ContactsSync'),
-			contactsType: '',
+			contactsType: SettingsGet('ContactsPdoType'),
 
 			pdoDsn: SettingsGet('ContactsPdoDsn'),
 			pdoUser: SettingsGet('ContactsPdoUser'),
@@ -68,8 +68,6 @@ export class ContactsAdminSettings {
 				}
 			})
 			.extend({ notify: 'always' });
-
-		this.contactsType(SettingsGet('ContactsPdoType'));
 
 		addSubscribablesTo(this, {
 			enableContacts: value =>
