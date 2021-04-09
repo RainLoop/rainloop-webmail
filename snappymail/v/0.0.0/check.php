@@ -2,16 +2,6 @@
 
 	if (defined('APP_VERSION'))
 	{
-		$aRequirements = array(
-			'cURL' => extension_loaded('curl'),
-			'mbstring' => extension_loaded('mbstring'),
-			'Zlib' => extension_loaded('zlib'),
-			// enabled by default:
-			'json' => function_exists('json_decode'),
-			'libxml' => function_exists('libxml_use_internal_errors'),
-			'dom' => class_exists('DOMDocument')
-		);
-
 		if (version_compare(PHP_VERSION, '7.3.0', '<'))
 		{
 			echo '<p style="color: red">';
@@ -19,6 +9,17 @@
 			echo '</p>';
 			exit(301);
 		}
+
+		$aRequirements = array(
+			'cURL' => extension_loaded('curl'),
+//			'intl' => function_exists('idn_to_ascii'),
+			'mbstring' => extension_loaded('mbstring'),
+			'Zlib' => extension_loaded('zlib'),
+			// enabled by default:
+			'json' => function_exists('json_decode'),
+			'libxml' => function_exists('libxml_use_internal_errors'),
+			'dom' => class_exists('DOMDocument')
+		);
 
 		if (in_array(false, $aRequirements))
 		{
