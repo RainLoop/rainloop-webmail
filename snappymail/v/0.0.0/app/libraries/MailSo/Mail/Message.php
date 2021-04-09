@@ -25,6 +25,7 @@ class Message implements \JsonSerializable
 		$sContentType = '',
 		$iSize = 0,
 		$iSpamScore = 0,
+		$sSpamResult = '',
 		$bIsSpam = false,
 		$iInternalTimeStampInUTC = 0,
 		$iHeaderTimeStampInUTC = 0,
@@ -246,6 +247,11 @@ class Message implements \JsonSerializable
 	public function SpamScore() : int
 	{
 		return $this->iSpamScore;
+	}
+
+	public function SpamResult() : string
+	{
+		return $this->sSpamResult;
 	}
 
 	public function IsSpam() : bool
@@ -530,14 +536,16 @@ class Message implements \JsonSerializable
 			if (\preg_match('/\\[([\\d\\.-]+)\\s*\\/\\s*([\\d\\.]+)\\];/', $spam, $match)) {
 				if ($threshold = \floatval($match[2])) {
 					$this->iSpamScore = \max(0, \min(100, 100 * \floatval($match[1]) / $threshold));
+					$this->sSpamResult = "{$match[1]} / {$match[2]}";
 				}
 				$this->bIsSpam = false !== \stripos($this->sSubject, '*** SPAM ***');
 			} else {
 				$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_STATUS);
 				if (\preg_match('/(?:hits|score)=([\\d\\.-]+)/', $spam, $value)
-				 && \preg_match('/required=([\\d\\.-]+)/', $spam, $threshold)) {
-					if ($threshold = \floatval($threshold[1])) {
+				 && \preg_match('/required=([\\d\\.-]+)/', $spam, $required)) {
+					if ($threshold = \floatval($required[1])) {
 						$this->iSpamScore = \max(0, \min(100, 100 * \floatval($value[1]) / $threshold));
+						$this->sSpamResult = "{$value[1]} / {$required[1]}";
 					}
 				}
 				$spam = $oHeaders->ValueByName(\MailSo\Mime\Enumerations\Header::X_SPAM_FLAG);
@@ -723,6 +731,7 @@ class Message implements \JsonSerializable
 			'MessageId' => $this->MessageId(),
 			'Size' => $this->Size(),
 			'SpamScore' => $this->SpamScore(),
+			'SpamResult' => $this->SpamResult(),
 			'IsSpam' => $this->IsSpam(),
 			'DateTimeStampInUTC' => $this->InternalTimeStampInUTC(),
 
