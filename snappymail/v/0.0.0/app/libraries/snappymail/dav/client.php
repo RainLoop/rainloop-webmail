@@ -51,7 +51,7 @@ class Client
 		$this->HTTP->setAuth(3, $settings['userName'] ?? '', $settings['password'] ?? '');
 		$this->HTTP->max_response_kb = 0;
 		$this->HTTP->timeout = 15; // timeout in seconds.
-		$this->HTTP->follow_location = false;
+		$this->HTTP->max_redirects = 1;
 	}
 
 	/**

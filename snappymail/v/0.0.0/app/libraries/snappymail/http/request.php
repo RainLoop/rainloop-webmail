@@ -15,7 +15,7 @@ abstract class Request
 		$timeout = 5, // timeout in seconds.
 		$max_response_kb = 1024,
 		$user_agent,
-		$follow_location = true,
+		$max_redirects = 0,
 		$verify_peer = false,
 		$proxy = null;
 
@@ -110,9 +110,12 @@ abstract class Request
 		$method = \strtoupper($method);
 		$url    = $request_url;
 		$etime  = \time() + $this->timeout;
-		if (\is_array($body)) { $body = \http_build_query($body, '', '&'); }
+		$redirects = \max(0, $this->max_redirects);
+		if (\is_array($body)) {
+			$body = \http_build_query($body, '', '&');
+		}
 		if ($body && 'GET' === $method) {
-			$url .= (\strpos($url, '?')?'&':'?').$body;
+			$url .= (\strpos($url, '?') ? '&' : '?') . $body;
 			$body = null;
 		}
 		do
@@ -130,7 +133,7 @@ abstract class Request
 			// http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.3
 			// In response to a request other than GET or HEAD, the user agent MUST NOT
 			// automatically redirect the request unless it can be confirmed by the user
-			if ($this->follow_location && \is_null($body) && \in_array($result->status, array(301, 302, 303, 307))) {
+			if ($redirects-- && \in_array($result->status, array(301, 302, 303, 307)) && \in_array($method, ['GET','HEAD','PROPFIND'])) {
 				$url = $result->getRedirectLocation();
 			} else {
 				$result->final_uri = $url;
