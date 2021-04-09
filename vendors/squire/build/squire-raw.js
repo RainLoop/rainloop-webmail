@@ -1381,13 +1381,13 @@ const
 		},
 		fontFamily: {
 			regexp: notWS,
-			replace: ( doc, classNames, family ) => createElement( 'SPAN', {
+			replace: ( doc, family ) => createElement( 'SPAN', {
 				style: 'font-family:' + family
 			})
 		},
 		fontSize: {
 			regexp: notWS,
-			replace: ( doc, classNames, size ) => createElement( 'SPAN', {
+			replace: ( doc, size ) => createElement( 'SPAN', {
 				style: 'font-size:' + size
 			})
 		},
@@ -1411,7 +1411,7 @@ const
 		return el;
 	},
 
-	replaceStyles = ( node, parent, config ) => {
+	replaceStyles = node => {
 		let style = node.style;
 		let attr, converter, css, newTreeBottom, newTreeTop, el;
 
@@ -1419,7 +1419,7 @@ const
 			converter = styleToSemantic[ attr ];
 			css = style[ attr ];
 			if ( css && converter.regexp.test( css ) ) {
-				el = converter.replace( doc, config.classNames, css );
+				el = converter.replace( doc, css );
 				if ( el.nodeName === node.nodeName &&
 						el.className === node.className ) {
 					continue;
