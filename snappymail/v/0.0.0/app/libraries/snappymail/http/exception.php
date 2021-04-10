@@ -71,7 +71,7 @@ class Exception extends \Exception
 		if ($response) {
 			if (\in_array($code, array(301, 302, 303, 307))) {
 				$message = $response->getRedirectLocation() . "\n" . $message;
-			} else if (405 === $code && ($allow = $this->getHeader('allow'))) {
+			} else if (405 === $code && ($allow = $response->getHeader('allow'))) {
 				$message = (\is_array($allow) ? $allow[0] : $allow) . "\n" . $message;
 			}
 		}
