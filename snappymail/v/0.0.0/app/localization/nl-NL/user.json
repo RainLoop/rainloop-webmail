@@ -32,8 +32,6 @@
     "LOGIN": {
         "LABEL_LOGIN": "Inlognaam",
         "LABEL_SIGN_ME": "Aangemeld blijven",
-        "LABEL_VERIFICATION_CODE": "Verificatie Code",
-        "LABEL_DONT_ASK_VERIFICATION_CODE": "Vraag 2 weken niet naar code",
         "BUTTON_SIGN_IN": "Aanmelden",
         "LABEL_FORGOT_PASSWORD": "Wachtwoord vergeten",
         "LABEL_REGISTRATION": "Registratie"

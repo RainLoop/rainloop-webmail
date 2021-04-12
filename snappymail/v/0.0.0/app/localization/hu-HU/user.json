@@ -32,8 +32,6 @@
     "LOGIN": {
         "LABEL_LOGIN": "Bejelentkezés",
         "LABEL_SIGN_ME": "Megjegyzés",
-        "LABEL_VERIFICATION_CODE": "Megerősítő kód",
-        "LABEL_DONT_ASK_VERIFICATION_CODE": "Két hétig ne kérje a kódot",
         "BUTTON_SIGN_IN": "Belépés",
         "LABEL_FORGOT_PASSWORD": "Elfelejtett jelszó",
         "LABEL_REGISTRATION": "Regisztráció"

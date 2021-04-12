@@ -32,8 +32,6 @@
     "LOGIN": {
         "LABEL_LOGIN": "Login",
         "LABEL_SIGN_ME": "Remember Me",
-        "LABEL_VERIFICATION_CODE": "Verification Code",
-        "LABEL_DONT_ASK_VERIFICATION_CODE": "Don't ask for the code for 2 weeks",
         "BUTTON_SIGN_IN": "Sign In",
         "LABEL_FORGOT_PASSWORD": "Forgot password",
         "LABEL_REGISTRATION": "Registration"

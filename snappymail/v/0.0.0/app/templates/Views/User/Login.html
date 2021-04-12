@@ -39,25 +39,6 @@
 						</span>
 					</div>
 				</div>
-				<div class="controls" data-bind="visible: additionalCodeVisibility(), css: {'error': additionalCodeError}">
-					<div class="input-append">
-						<input type="text" class="input-block-level inputAdditionalCode"
-							inputmode="numeric"
-							autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="padding-right: 35px;"
-							data-bind="textInput: additionalCode, disable: submitRequest"
-							data-i18n="[placeholder]LOGIN/LABEL_VERIFICATION_CODE" />
-						<span class="add-on"><i class="fontastic">🔑</i></span>
-					</div>
-				</div>
-				<div class="controls" data-bind="visible: additionalCodeVisibility()">
-					<div class="additionalCodeSignMeLabel" data-bind="component: {
-						name: 'CheckboxSimple',
-						params: {
-							label: 'LOGIN/LABEL_DONT_ASK_VERIFICATION_CODE',
-							value: additionalCodeSignMe
-						}
-					}"></div>
-				</div>
 				<div id="plugin-Login-BottomControlGroup"></div>
 				<div class="controls" data-bind="hidden: hideSubmitButton">
 					<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">

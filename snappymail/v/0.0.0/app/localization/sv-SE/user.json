@@ -32,8 +32,6 @@
     "LOGIN": {
         "LABEL_LOGIN": "Användarnamn",
         "LABEL_SIGN_ME": "Kom ihåg mig",
-        "LABEL_VERIFICATION_CODE": "Verifikationskod",
-        "LABEL_DONT_ASK_VERIFICATION_CODE": "Fråga inte efter koden på  2 veckor",
         "BUTTON_SIGN_IN": "Logga in",
         "LABEL_FORGOT_PASSWORD": "Glömt lösenord",
         "LABEL_REGISTRATION": "Registrera"

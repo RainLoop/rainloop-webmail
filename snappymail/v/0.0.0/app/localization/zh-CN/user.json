@@ -32,8 +32,6 @@
     "LOGIN": {
         "LABEL_LOGIN": "登录",
         "LABEL_SIGN_ME": "记住我",
-        "LABEL_VERIFICATION_CODE": "验证码",
-        "LABEL_DONT_ASK_VERIFICATION_CODE": "在两周内不再询问验证码",
         "BUTTON_SIGN_IN": "登录",
         "LABEL_FORGOT_PASSWORD": "忘记密码",
         "LABEL_REGISTRATION": "注册"

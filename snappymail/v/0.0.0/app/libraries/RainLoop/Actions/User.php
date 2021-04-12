@@ -26,9 +26,6 @@ trait User
 		$sLanguage = $this->GetActionParam('Language', '');
 		$bSignMe = '1' === (string) $this->GetActionParam('SignMe', '0');
 
-		$sAdditionalCode = $this->GetActionParam('AdditionalCode', '');
-		$bAdditionalCodeSignMe = '1' === (string) $this->GetActionParam('AdditionalCodeSignMe', '0');
-
 		$oAccount = null;
 
 		$this->Logger()->AddSecret($sPassword);
@@ -36,8 +33,7 @@ trait User
 		try
 		{
 			$oAccount = $this->LoginProcess($sEmail, $sPassword,
-				$bSignMe ? $this->generateSignMeToken($sEmail) : '',
-				$sAdditionalCode, $bAdditionalCodeSignMe);
+				$bSignMe ? $this->generateSignMeToken($sEmail) : '');
 		}
 		catch (ClientException $oException)
 		{
