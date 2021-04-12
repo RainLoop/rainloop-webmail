@@ -70,10 +70,11 @@ class Exception extends \Exception
 	{
 		if ($response) {
 			if (\in_array($code, array(301, 302, 303, 307))) {
-				$message = $response->getRedirectLocation() . "\n" . $message;
+				$message = \trim("{$response->getRedirectLocation()}\n{$message}");
 			} else if (405 === $code && ($allow = $response->getHeader('allow'))) {
-				$message = (\is_array($allow) ? $allow[0] : $allow) . "\n" . $message;
+				$message = \trim((\is_array($allow) ? $allow[0] : $allow) . "\n{$message}");
 			}
+			$message = \trim("{$message}\n{$response->body}");
 		}
 		if (isset(static::CODES[$code])) {
 			$message = "{$code} " . static::CODES[$code] . ($message ? ": {$message}" : '');
