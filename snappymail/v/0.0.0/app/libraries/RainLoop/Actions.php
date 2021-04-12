@@ -1415,8 +1415,7 @@ class Actions
 	/**
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function LoginProcess(string &$sEmail, string &$sPassword, string $sSignMeToken = '',
-								 string $sAdditionalCode = '', bool $bAdditionalCodeSignMe = false): Model\Account
+	public function LoginProcess(string &$sEmail, string &$sPassword, string $sSignMeToken = ''): Model\Account
 	{
 		$sInputEmail = $sEmail;
 

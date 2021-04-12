@@ -42,7 +42,6 @@ class LoginUserView extends AbstractViewCenter {
 			email: SettingsGet('DevEmail'),
 			password: SettingsGet('DevPassword'),
 			signMe: false,
-			additionalCode: '',
 
 			emailError: false,
 			passwordError: false,
@@ -55,9 +54,6 @@ class LoginUserView extends AbstractViewCenter {
 
 			langRequest: false,
 
-			additionalCodeError: false,
-			additionalCodeSignMe: false,
-			additionalCodeVisibility: false,
 			signMeType: LoginSignMeType.Unused
 		});
 
@@ -83,14 +79,9 @@ class LoginUserView extends AbstractViewCenter {
 		this.addSubscribables({
 			email: () => {
 				this.emailError(false);
-				this.additionalCode('');
-				this.additionalCodeVisibility(false);
 			},
 
 			password: () => this.passwordError(false),
-
-			additionalCode: () => this.additionalCodeError(false),
-			additionalCodeVisibility: () => this.additionalCodeError(false),
 
 			submitError: value => value || this.submitErrorAddidional(''),
 
@@ -120,13 +111,10 @@ class LoginUserView extends AbstractViewCenter {
 	submitCommand(self, event) {
 		let email = this.email().trim(),
 			valid = event.target.form.reportValidity() && email,
-			pass = this.password(),
-			totp = this.additionalCodeVisibility(),
-			code = totp ? this.additionalCode() : '';
+			pass = this.password();
 
 		this.emailError(!email);
 		this.passwordError(!pass);
-		this.additionalCodeError(totp && !code);
 		this.formError(!valid);
 
 		if (valid) {
@@ -148,9 +136,7 @@ class LoginUserView extends AbstractViewCenter {
 				email,
 				pass,
 				!!this.signMe(),
-				this.bSendLanguage ? this.language() : '',
-				code,
-				!!(totp && this.additionalCodeSignMe())
+				this.bSendLanguage ? this.language() : ''
 			);
 
 			Local.set(ClientSideKeyName.LastSignMe, this.signMe() ? '-1-' : '-0-');
