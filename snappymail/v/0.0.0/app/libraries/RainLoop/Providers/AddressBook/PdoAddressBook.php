@@ -1628,13 +1628,13 @@ class PdoAddressBook
 
 CREATE TABLE IF NOT EXISTS rainloop_ab_contacts (
 
-	id_contact		bigint UNSIGNED	 NOT NULL AUTO_INCREMENT,
-	id_contact_str	varchar(128)	 NOT NULL DEFAULT '',
-	id_user			int UNSIGNED	 NOT NULL,
-	display			varchar(255)	 NOT NULL DEFAULT '',
-	changed			int UNSIGNED	 NOT NULL DEFAULT 0,
-	deleted			tinyint UNSIGNED NOT NULL DEFAULT 0,
-	etag			varchar(128)     NOT NULL DEFAULT '' CHARACTER SET ascii COLLATE ascii_general_ci,
+	id_contact     bigint UNSIGNED  NOT NULL AUTO_INCREMENT,
+	id_contact_str varchar(128)     NOT NULL DEFAULT '',
+	id_user        int UNSIGNED     NOT NULL,
+	display        varchar(255)     NOT NULL DEFAULT '',
+	changed        int UNSIGNED     NOT NULL DEFAULT 0,
+	deleted        tinyint UNSIGNED NOT NULL DEFAULT 0,
+	etag           varchar(128)     CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL DEFAULT '',
 
 	PRIMARY KEY(id_contact),
 	INDEX id_user_rainloop_ab_contacts_index (id_user)
@@ -1643,14 +1643,14 @@ CREATE TABLE IF NOT EXISTS rainloop_ab_contacts (
 
 CREATE TABLE IF NOT EXISTS rainloop_ab_properties (
 
-	id_prop				bigint UNSIGNED	 NOT NULL AUTO_INCREMENT,
-	id_contact			bigint UNSIGNED	 NOT NULL,
-	id_user				int UNSIGNED	 NOT NULL,
-	prop_type			tinyint UNSIGNED NOT NULL,
-	prop_type_str		varchar(255)     NOT NULL DEFAULT '' CHARACTER SET ascii COLLATE ascii_general_ci,
-	prop_value			varchar(255)	 NOT NULL DEFAULT '',
-	prop_value_custom	varchar(255)	 NOT NULL DEFAULT '',
-	prop_frec			int UNSIGNED	 NOT NULL DEFAULT 0,
+	id_prop           bigint UNSIGNED  NOT NULL AUTO_INCREMENT,
+	id_contact        bigint UNSIGNED  NOT NULL,
+	id_user           int UNSIGNED     NOT NULL,
+	prop_type         tinyint UNSIGNED NOT NULL,
+	prop_type_str     varchar(255)     CHARACTER SET ascii COLLATE ascii_general_ci NOT NULL DEFAULT '',
+	prop_value        varchar(255)     NOT NULL DEFAULT '',
+	prop_value_custom varchar(255)     NOT NULL DEFAULT '',
+	prop_frec         int UNSIGNED     NOT NULL DEFAULT 0,
 
 	PRIMARY KEY(id_prop),
 	INDEX id_user_rainloop_ab_properties_index (id_user),
@@ -1666,26 +1666,26 @@ MYSQLINITIAL;
 				$sInitial = <<<POSTGRESINITIAL
 
 CREATE TABLE rainloop_ab_contacts (
-	id_contact		bigserial		PRIMARY KEY,
-	id_contact_str	varchar(128)	NOT NULL DEFAULT '',
-	id_user			integer			NOT NULL,
-	display			varchar(255)	NOT NULL DEFAULT '',
-	changed			integer			NOT NULL default 0,
-	deleted			integer			NOT NULL default 0,
-	etag			varchar(128)	NOT NULL DEFAULT ''
+	id_contact     bigserial    PRIMARY KEY,
+	id_contact_str varchar(128) NOT NULL DEFAULT '',
+	id_user        integer      NOT NULL,
+	display        varchar(255) NOT NULL DEFAULT '',
+	changed        integer      NOT NULL default 0,
+	deleted        integer      NOT NULL default 0,
+	etag           varchar(128) NOT NULL DEFAULT ''
 );
 
 CREATE INDEX id_user_rainloop_ab_contacts_index ON rainloop_ab_contacts (id_user);
 
 CREATE TABLE rainloop_ab_properties (
-	id_prop				bigserial		PRIMARY KEY,
-	id_contact			integer			NOT NULL,
-	id_user				integer			NOT NULL,
-	prop_type			integer			NOT NULL,
-	prop_type_str		varchar(255)	NOT NULL DEFAULT '',
-	prop_value			text			NOT NULL DEFAULT '',
-	prop_value_custom	text			NOT NULL DEFAULT '',
-	prop_frec			integer			NOT NULL default 0
+	id_prop           bigserial    PRIMARY KEY,
+	id_contact        integer      NOT NULL,
+	id_user           integer      NOT NULL,
+	prop_type         integer      NOT NULL,
+	prop_type_str     varchar(255) NOT NULL DEFAULT '',
+	prop_value        text         NOT NULL DEFAULT '',
+	prop_value_custom text         NOT NULL DEFAULT '',
+	prop_frec         integer      NOT NULL default 0
 );
 
 CREATE INDEX id_user_rainloop_ab_properties_index ON rainloop_ab_properties (id_user);
@@ -1698,26 +1698,26 @@ POSTGRESINITIAL;
 				$sInitial = <<<SQLITEINITIAL
 
 CREATE TABLE rainloop_ab_contacts (
-	id_contact		integer		NOT NULL PRIMARY KEY,
-	id_contact_str	text		NOT NULL DEFAULT '',
-	id_user			integer		NOT NULL,
-	display			text		NOT NULL DEFAULT '',
-	changed			integer		NOT NULL DEFAULT 0,
-	deleted			integer		NOT NULL DEFAULT 0,
-	etag			text		NOT NULL DEFAULT ''
+	id_contact     integer NOT NULL PRIMARY KEY,
+	id_contact_str text    NOT NULL DEFAULT '',
+	id_user        integer NOT NULL,
+	display        text    NOT NULL DEFAULT '',
+	changed        integer NOT NULL DEFAULT 0,
+	deleted        integer NOT NULL DEFAULT 0,
+	etag           text    NOT NULL DEFAULT ''
 );
 
 CREATE INDEX id_user_rainloop_ab_contacts_index ON rainloop_ab_contacts (id_user);
 
 CREATE TABLE rainloop_ab_properties (
-	id_prop				integer		NOT NULL PRIMARY KEY,
-	id_contact			integer		NOT NULL,
-	id_user				integer		NOT NULL,
-	prop_type			integer		NOT NULL,
-	prop_type_str		text		NOT NULL DEFAULT '',
-	prop_value			text		NOT NULL DEFAULT '',
-	prop_value_custom	text		NOT NULL DEFAULT '',
-	prop_frec			integer		NOT NULL DEFAULT 0
+	id_prop           integer NOT NULL PRIMARY KEY,
+	id_contact        integer NOT NULL,
+	id_user           integer NOT NULL,
+	prop_type         integer NOT NULL,
+	prop_type_str     text    NOT NULL DEFAULT '',
+	prop_value        text    NOT NULL DEFAULT '',
+	prop_value_custom text    NOT NULL DEFAULT '',
+	prop_frec         integer NOT NULL DEFAULT 0
 );
 
 CREATE INDEX id_user_rainloop_ab_properties_index ON rainloop_ab_properties (id_user);
