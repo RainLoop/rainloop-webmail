@@ -266,11 +266,10 @@ export const FileInfo = {
 				result[0] += '-chart-graph';
 				break;
 			case FileType.Pdf:
-				result = ['icon-none', 'pdf'];
+				result[1] = 'pdf';
 				break;
 			// no default
 		}
-
 		return result;
 	},
 
