@@ -5,8 +5,6 @@ import { Capa, SaveSettingsStep } from 'Common/Enums';
 import { Settings } from 'Common/Globals';
 import { i18n, trigger as translatorTrigger } from 'Common/Translator';
 
-import { showScreenPopup } from 'Knoin/Knoin';
-
 import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
