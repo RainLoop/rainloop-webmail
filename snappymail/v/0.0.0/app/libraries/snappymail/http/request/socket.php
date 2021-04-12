@@ -91,7 +91,7 @@ class Socket extends \SnappyMail\HTTP\Request
 			$response_headers[] = $data;
 			$chunked |= \preg_match('#Transfer-Encoding:.*chunked#i', $data);
 
-			if (401 === $code && $this->auth['user']) {
+			if (401 === $code && $this->auth['user'] && !isset($extra_headers['Authorization'])) {
 				// Basic authentication
 				if ($this->auth['type'] & self::AUTH_BASIC && \preg_match("/WWW-Authenticate:\\s+Basic\\s+realm=([^\\r\\n]*)/i", $data, $match)) {
 					$extra_headers['Authorization'] = "Authorization: Basic " . \base64_encode($this->auth['user'] . ':' . $this->auth['pass']);

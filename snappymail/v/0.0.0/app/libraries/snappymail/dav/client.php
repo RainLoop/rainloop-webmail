@@ -46,7 +46,7 @@ class Client
 		}
 		$this->baseUri = $settings['baseUri'];
 
-		$this->HTTP = \SnappyMail\HTTP\Request::factory('socket');
+		$this->HTTP = \SnappyMail\HTTP\Request::factory(/*'socket'*/);
 		$this->HTTP->proxy = $settings['proxy'] ?? null;
 		$this->HTTP->setAuth(3, $settings['userName'] ?? '', $settings['password'] ?? '');
 		$this->HTTP->max_response_kb = 0;

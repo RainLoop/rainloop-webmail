@@ -94,7 +94,13 @@ class CURL extends \SnappyMail\HTTP\Request
 
 	protected function fetchHeader($ch, $header)
 	{
-		$this->response_headers[] = \rtrim($header);
+		static $headers = [];
+		if (!\strlen(\rtrim($header))) {
+			$this->response_headers = $headers;
+			$headers = [];
+		} else {
+			$headers[] = \rtrim($header);
+		}
 		return \strlen($header);
 	}
 
