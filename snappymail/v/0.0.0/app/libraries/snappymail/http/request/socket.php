@@ -148,6 +148,7 @@ class Socket extends \SnappyMail\HTTP\Request
 						\fwrite($this->stream, $tmp);
 						$chunk -= \strlen($tmp);
 					}
+					"\r\n" === \fread($sock, 2);
 				} else {
 					\fwrite($this->stream, \fread($sock, 1024));
 				}
@@ -163,6 +164,7 @@ class Socket extends \SnappyMail\HTTP\Request
 						$body .= $tmp;
 						$chunk -= \strlen($tmp);
 					}
+					"\r\n" === \fread($sock, 2);
 				} else {
 					$body .= \fread($sock, 1024);
 				}
