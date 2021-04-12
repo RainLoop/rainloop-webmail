@@ -16,10 +16,6 @@ export class SecurityAdminSettings {
 			verifySslCertificate: !!SettingsGet('VerifySslCertificate'),
 			allowSelfSigned: !!SettingsGet('AllowSelfSigned'),
 
-			isTwoFactorDropperShown: false,
-			twoFactorDropperUser: '',
-			twoFactorDropperUserFocused: false,
-
 			adminLogin: SettingsGet('AdminLogin'),
 			adminLoginError: false,
 			adminPassword: '',
@@ -30,9 +26,7 @@ export class SecurityAdminSettings {
 			adminPasswordUpdateError: false,
 			adminPasswordUpdateSuccess: false,
 
-			capaOpenPGP: Settings.capa(Capa.OpenPGP),
-			capaTwoFactorAuth: Settings.capa(Capa.TwoFactor),
-			capaTwoFactorAuthForce: Settings.capa(Capa.TwoFactorForce)
+			capaOpenPGP: Settings.capa(Capa.OpenPGP)
 		});
 
 		addSubscribablesTo(this, {
@@ -58,18 +52,6 @@ export class SecurityAdminSettings {
 			capaOpenPGP: value =>
 				Remote.saveAdminConfig(null, {
 					CapaOpenPGP: value ? 1 : 0
-				}),
-
-			capaTwoFactorAuth: value => {
-				value || this.capaTwoFactorAuthForce(false);
-				Remote.saveAdminConfig(null, {
-					CapaTwoFactorAuth: value ? 1 : 0
-				});
-			},
-
-			capaTwoFactorAuthForce: value =>
-				Remote.saveAdminConfig(null, {
-					CapaTwoFactorAuthForce: value ? 1 : 0
 				}),
 
 			useLocalProxyForExternalImages: value =>
@@ -120,15 +102,6 @@ export class SecurityAdminSettings {
 		return true;
 	}
 
-	showTwoFactorDropper() {
-		this.twoFactorDropperUser('');
-		this.isTwoFactorDropperShown(true);
-
-		setTimeout(() => {
-			this.twoFactorDropperUserFocused(true);
-		}, 50);
-	}
-
 	onNewAdminPasswordResponse(iError, data) {
 		if (iError) {
 			this.adminPasswordUpdateError(true);
@@ -147,9 +120,5 @@ export class SecurityAdminSettings {
 		this.adminPassword('');
 		this.adminPasswordNew('');
 		this.adminPasswordNew2('');
-
-		this.isTwoFactorDropperShown(false);
-		this.twoFactorDropperUser('');
-		this.twoFactorDropperUserFocused(false);
 	}
 }

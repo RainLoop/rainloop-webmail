@@ -275,10 +275,6 @@
         "LABEL_KEY": "Privé sleutel",
         "BUTTON_DECRYPT": "Decrypt"
     },
-    "POPUPS_TWO_FACTOR_TEST": {
-        "TITLE_TEST_CODE": "2-Stap verificatie test",
-        "LABEL_CODE": "Code"
-    },
     "POPUPS_FILTER": {
         "TITLE_CREATE_FILTER": "Filter toevoegen",
         "TITLE_EDIT_FILTER": "Filter aanpassen",
@@ -336,25 +332,6 @@
         "NOTIFICATION_TRASH": "U heeft nog geen \"Verwijderde items\" folder aangeduid waar de verwijderde berichten geplaatst worden.\nIndien u berichten permanent wilt verwijderen, kies de \"Niet gebruiken\" optie.\n",
         "NOTIFICATION_ARCHIVE": "U heeft nog geen \"Archief\" map aangeduid waar de gearchiveerde berichten geplaatst worden."
     },
-    "POPUPS_TWO_FACTOR_CFG": {
-        "LEGEND_TWO_FACTOR_AUTH": "2-Stap verificatie",
-        "LABEL_ENABLE_TWO_FACTOR": "Gebruik 2-Stap verificatie",
-        "LABEL_TWO_FACTOR_USER": "Gebruikersnaam",
-        "LABEL_TWO_FACTOR_STATUS": "Status",
-        "LABEL_TWO_FACTOR_SECRET": "Geheime sleutel",
-        "LABEL_TWO_FACTOR_BACKUP_CODES": "Backup codes",
-        "BUTTON_CREATE": "Nieuwe geheime sleutel aanmaken",
-        "BUTTON_ACTIVATE": "Activate",
-        "LINK_TEST": "test",
-        "BUTTON_SHOW_SECRET": "Bekijk geheime sleutel",
-        "BUTTON_HIDE_SECRET": "Verberg geheime sleutel",
-        "TWO_FACTOR_REQUIRE_DESC": "Uw account vereist 2-Stap verificatie configuratie.",
-        "TWO_FACTOR_SECRET_CONFIGURED_DESC": "Geconfigureerd",
-        "TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC": "Niet geconfigureerd",
-        "TWO_FACTOR_SECRET_DESC": "Importeer deze informatie in uw Google Authenticator-client (of andere TOTP-client) door gebruik te maken van de QR code hier beneden of door de code handmatig in te voeren.",
-        "TWO_FACTOR_BACKUP_CODES_DESC": "Als u geen codes ontvangt via de Google Authenticator kunt u de backup codes gebruiken om in te loggen. Na gebruik van de backup code wordt deze inactief.",
-        "TWO_FACTOR_SECRET_TEST_BEFORE_DESC": "U kunt 2-stap verificatie niet activeren voordat u het succesvol getest heeft."
-    },
     "TITLES": {
         "LOGIN": "Inloggen",
         "MAILBOX": "Mailbox",
@@ -397,7 +374,6 @@
     },
     "SETTINGS_SECURITY": {
         "LEGEND_SECURITY": "Beveiliging",
-        "LABEL_CONFIGURE_TWO_FACTOR": "Configureer 2-stap verificatie",
         "LABEL_AUTOLOGOUT": "Automatisch uitloggen",
         "AUTOLOGIN_NEVER_OPTION_NAME": "Nooit",
         "AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minuten",
@@ -543,8 +519,6 @@
         "CONNECTION_ERROR": "Kan geen verbinding maken met de Server",
         "DOMAIN_NOT_ALLOWED": "Domein is niet toegestaan",
         "ACCOUNT_NOT_ALLOWED": "Account is niet toegestaan",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "2-Stap verificatie vereist",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "2-Stap verificatie fout",
         "CONTACTS_SYNC_ERROR": "Contactpersonen synchronisatie fout",
         "CANT_GET_MESSAGE_LIST": "Berichtenlijst kan niet worden opgehaald",
         "CANT_GET_MESSAGE": "Bericht kan niet worden opgehaald",

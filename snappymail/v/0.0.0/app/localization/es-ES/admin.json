@@ -76,8 +76,6 @@
     },
     "TAB_SECURITY": {
         "LEGEND_SECURITY": "Seguridad",
-        "LABEL_ALLOW_TWO_STEP": "Activar la verificación de 2 pasos",
-        "LABEL_FORCE_TWO_STEP": "Forzar la Autenticación en 2 pasos",
         "LABEL_USE_IMAGE_PROXY": "Utilizar un proxy local para mostrar imágenes externas",
         "LABEL_ALLOW_OPEN_PGP": "Permitir OpenPGP",
         "LABEL_SHOW_PHP_INFO": "Mostrar información de PHP",
@@ -176,8 +174,6 @@
         "CONNECTION_ERROR": "No se puede conectar al servidor",
         "DOMAIN_NOT_ALLOWED": "Dominio no permitido",
         "ACCOUNT_NOT_ALLOWED": "La cuenta no está permitida",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "La verificación en 2 pasos es obligatoria",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "Error en la verificación de dos pasos",
         "CURRENT_PASSWORD_INCORRECT": "La contraseña actual es incorrecta",
         "NEW_PASSWORD_SHORT": "La contraseña es muy corta",
         "NEW_PASSWORD_WEAK": "La contraseña es muy fácil",

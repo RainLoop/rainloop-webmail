@@ -76,8 +76,6 @@
     },
     "TAB_SECURITY": {
         "LEGEND_SECURITY": "Biztonság",
-        "LABEL_ALLOW_TWO_STEP": "2 lépcsős hitelesítés engedélyezése",
-        "LABEL_FORCE_TWO_STEP": "2 lépcsős hitelesítés kényszerítése",
         "LABEL_USE_IMAGE_PROXY": "Helyi proxy használata a külső képekhez",
         "LABEL_ALLOW_OPEN_PGP": "OpenPGP engedélyezése",
         "LABEL_SHOW_PHP_INFO": "PHP információ megjelenítése",
@@ -176,8 +174,6 @@
         "CONNECTION_ERROR": "Nem lehet csatlakozni a szerverhez",
         "DOMAIN_NOT_ALLOWED": "A domain nem engedélyezett",
         "ACCOUNT_NOT_ALLOWED": "A fiók nem engedélyezett",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "Kétlépcsős hitelesítés szükséges",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "Kétlépcsős hitelesítés hiba",
         "CURRENT_PASSWORD_INCORRECT": "A jelenlegi jelszó érvénytelen",
         "NEW_PASSWORD_SHORT": "A jelszó túl rövid",
         "NEW_PASSWORD_WEAK": "A jelszó túl könnyű",

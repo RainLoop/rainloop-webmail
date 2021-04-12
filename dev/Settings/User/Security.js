@@ -11,12 +11,9 @@ import { SettingsUserStore } from 'Stores/User/Settings';
 
 import Remote from 'Remote/User/Fetch';
 
-import { TwoFactorConfigurationPopupView } from 'View/Popup/TwoFactorConfiguration';
-
 export class SecurityUserSettings {
 	constructor() {
 		this.capaAutoLogout = Settings.capa(Capa.AutoLogout);
-		this.capaTwoFactor = Settings.capa(Capa.TwoFactor);
 
 		this.autoLogout = SettingsUserStore.autoLogout;
 		this.autoLogoutTrigger = ko.observable(SaveSettingsStep.Idle);
@@ -42,9 +39,5 @@ export class SecurityUserSettings {
 				settingsSaveHelperSimpleFunction(this.autoLogoutTrigger, this)
 			));
 		}
-	}
-
-	configureTwoFactor() {
-		showScreenPopup(TwoFactorConfigurationPopupView);
 	}
 }

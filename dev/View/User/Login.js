@@ -141,13 +141,6 @@ class LoginUserView extends AbstractViewCenter {
 						}
 						this.submitError(getNotification(iError, oData.ErrorMessage, Notification.UnknownNotification));
 						this.submitErrorAddidional((oData && oData.ErrorMessageAdditional) || '');
-					} else if (oData.TwoFactorAuth) {
-						this.submitRequest(false);
-						this.additionalCode('');
-						this.additionalCodeVisibility(true);
-						let input = this.querySelector('.inputAdditionalCode');
-						input.required = true;
-						setTimeout(() => input.focus(), 100);
 					} else {
 						rl.route.reload();
 					}

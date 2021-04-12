@@ -76,8 +76,6 @@
     },
     "TAB_SECURITY": {
         "LEGEND_SECURITY": "安全",
-        "LABEL_ALLOW_TWO_STEP": "允许两步验证",
-        "LABEL_FORCE_TWO_STEP": "强制使用两步验证",
         "LABEL_USE_IMAGE_PROXY": "对外部图片使用本地代理",
         "LABEL_ALLOW_OPEN_PGP": "允许使用 OpenPGP",
         "LABEL_SHOW_PHP_INFO": "显示 PHP 信息",
@@ -176,8 +174,6 @@
         "CONNECTION_ERROR": "无法连接到服务器",
         "DOMAIN_NOT_ALLOWED": "域名不被允许",
         "ACCOUNT_NOT_ALLOWED": "账户不允许",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "需要两步验证",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "两步验证错误",
         "CURRENT_PASSWORD_INCORRECT": "当前密码不正确",
         "NEW_PASSWORD_SHORT": "密码太短",
         "NEW_PASSWORD_WEAK": "密码过于简单",

@@ -6,52 +6,6 @@
 				<div data-bind="component: {
 					name: 'Checkbox',
 					params: {
-						value: capaTwoFactorAuth,
-						label: 'TAB_SECURITY/LABEL_ALLOW_TWO_STEP',
-						inline: true
-					}
-				}"></div>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
-						value: capaTwoFactorAuthForce,
-						enable: capaTwoFactorAuth,
-						label: 'TAB_SECURITY/LABEL_FORCE_TWO_STEP',
-						inline: true
-					}
-				}"></div>
-			</div>
-		</div>
-	</div>
-<!--
-	<div class="form-horizontal">
-		<div class="control-group" data-bind="visible: isTwoFactorDropperShown()">
-			<div class="controls">
-				<div class="input-append">
-					<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
-						data-bind="textInput: twoFactorDropperUser, hasfocus: twoFactorDropperUserFocused" placeholder="Email"/>
-					<button class="btn">
-						<i class="icon-spinner" data-bind="visible: true"></i>
-						<span data-bind="visible: false">OK</span>
-					</button>
-				</div>
-			</div>
-		</div>
-		<div class="control-group" data-bind="visible: !isTwoFactorDropperShown()">
-			<div class="controls">
-				<span class="g-ui-link" data-bind="click: showTwoFactorDropper">Drop user keys</span>
-			</div>
-		</div>
-	</div>
-	<br />
--->
-	<div class="form-horizontal">
-		<div class="control-group">
-			<div class="controls">
-				<div data-bind="component: {
-					name: 'Checkbox',
-					params: {
 						value: useLocalProxyForExternalImages,
 						label: 'TAB_SECURITY/LABEL_USE_IMAGE_PROXY'
 					}

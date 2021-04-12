@@ -15,7 +15,6 @@ trait User
 	use Folders;
 	use Messages;
 	use Templates;
-	use TwoFactor;
 
 	/**
 	 * @throws \MailSo\Base\Exceptions\Exception
@@ -34,15 +33,6 @@ trait User
 
 		$this->Logger()->AddSecret($sPassword);
 
-		if ('sleep@sleep.dev' === $sEmail && 0 < \strlen($sPassword) &&
-			\is_numeric($sPassword) && $this->Config()->Get('debug', 'enable', false) &&
-			0 < (int) $sPassword && 30 > (int) $sPassword
-		)
-		{
-			\sleep((int) $sPassword);
-			throw new ClientException(Notifications::AuthError);
-		}
-
 		try
 		{
 			$oAccount = $this->LoginProcess($sEmail, $sPassword,
@@ -51,17 +41,7 @@ trait User
 		}
 		catch (ClientException $oException)
 		{
-			if ($oException &&
-				Notifications::AccountTwoFactorAuthRequired === $oException->getCode())
-			{
-				return $this->DefaultResponse(__FUNCTION__, true, array(
-					'TwoFactorAuth' => true
-				));
-			}
-			else
-			{
-				throw $oException;
-			}
+			throw $oException;
 		}
 
 		$this->AuthToken($oAccount);
@@ -363,8 +343,6 @@ trait User
 		$this->setSettingsFromParams($oSettings, 'UseCheckboxesInList', 'bool');
 		$this->setSettingsFromParams($oSettings, 'AllowDraftAutosave', 'bool');
 		$this->setSettingsFromParams($oSettings, 'AutoLogout', 'int');
-
-		$this->setSettingsFromParams($oSettings, 'EnableTwoFactor', 'bool');
 
 		$this->setSettingsFromParams($oSettingsLocal, 'UseThreads', 'bool');
 		$this->setSettingsFromParams($oSettingsLocal, 'ReplySameFolder', 'bool');

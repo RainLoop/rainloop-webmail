@@ -275,10 +275,6 @@
         "LABEL_KEY": "Private Key",
         "BUTTON_DECRYPT": "Decrypt"
     },
-    "POPUPS_TWO_FACTOR_TEST": {
-        "TITLE_TEST_CODE": "Zwei-Faktor-Authentifizierung",
-        "LABEL_CODE": "Code"
-    },
     "POPUPS_FILTER": {
         "TITLE_CREATE_FILTER": "Filter erstellen?",
         "TITLE_EDIT_FILTER": "Filter bearbeiten?",
@@ -336,25 +332,6 @@
         "NOTIFICATION_TRASH": "Sie haben keinen  \"Papierkorb\"-Systemordner gewählt, in dem die gelöschten Nachrichten abgelegt werden.\nFalls Sie gelöschte Nachrichten endgültig löschen möchten, wählen Sie die Option \"Nicht anwenden\".\n",
         "NOTIFICATION_ARCHIVE": "Sie haben keinen \"Archiv\"-Systemordner gewählt, in dem die archivierten Nachrichten abgelegt werden."
     },
-    "POPUPS_TWO_FACTOR_CFG": {
-        "LEGEND_TWO_FACTOR_AUTH": "Zwei-Faktor-Authentifizierung",
-        "LABEL_ENABLE_TWO_FACTOR": "Zwei-Faktor-Authentifizierung aktivieren",
-        "LABEL_TWO_FACTOR_USER": "Benutzer",
-        "LABEL_TWO_FACTOR_STATUS": "Status",
-        "LABEL_TWO_FACTOR_SECRET": "Geheimnis",
-        "LABEL_TWO_FACTOR_BACKUP_CODES": "Sicherungscodes",
-        "BUTTON_CREATE": "Neues Geheimnis erstellen",
-        "BUTTON_ACTIVATE": "Aktivieren",
-        "LINK_TEST": "test",
-        "BUTTON_SHOW_SECRET": "Geheimnis einblenden",
-        "BUTTON_HIDE_SECRET": "Geheminis ausblenden",
-        "TWO_FACTOR_REQUIRE_DESC": "Ihr Benutzerkonto erfordert die Einrichtung der Zwei-Faktor-Authentifizierung.",
-        "TWO_FACTOR_SECRET_CONFIGURED_DESC": "Konfiguriert",
-        "TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC": "Nicht konfiguriert",
-        "TWO_FACTOR_SECRET_DESC": "Importieren Sie diese Information in Ihre Google-Authenticator-Anwendung (oder andere TOTP-Anwendung), indem Sie den unten bereitgestellten QR-Code verwenden oder den Code manuell eingeben.",
-        "TWO_FACTOR_BACKUP_CODES_DESC": "Sollten Sie keine Codes über den Google Authenticator erhalten, können Sie einen Sicherungscode zur Anmeldung verwenden. Der Sicherungscode wird inaktiv, sobald Sie ihn zur Anmeldung verwendet haben.",
-        "TWO_FACTOR_SECRET_TEST_BEFORE_DESC": "Sie können diese Einstellung nicht ohne vorherigen Test verändern."
-    },
     "TITLES": {
         "LOGIN": "Anmeldung",
         "MAILBOX": "Postfach",
@@ -397,7 +374,6 @@
     },
     "SETTINGS_SECURITY": {
         "LEGEND_SECURITY": "Sicherheit",
-        "LABEL_CONFIGURE_TWO_FACTOR": "Zwei-Faktor-Authentifizierung konfigurieren",
         "LABEL_AUTOLOGOUT": "Automatische Abmeldung",
         "AUTOLOGIN_NEVER_OPTION_NAME": "Nie",
         "AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% Minute(n)",
@@ -543,8 +519,6 @@
         "CONNECTION_ERROR": "Serververbindung kann nicht hergestellt werden",
         "DOMAIN_NOT_ALLOWED": "Diese Domain ist nicht zugelassen.",
         "ACCOUNT_NOT_ALLOWED": "Konto ist nicht zugelassen.",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "Zwei-Faktor-Authentifizierung erforderlich",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "Fehler bei Zwei-Faktor-Authentifizierung",
         "CONTACTS_SYNC_ERROR": "Fehler bei Kontakte-Synchronisierung",
         "CANT_GET_MESSAGE_LIST": "Die Nachrichtenliste ist nicht verfügbar",
         "CANT_GET_MESSAGE": "Diese Nachricht ist nicht verfügbar",

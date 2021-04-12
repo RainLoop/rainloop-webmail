@@ -76,8 +76,6 @@
     },
     "TAB_SECURITY": {
         "LEGEND_SECURITY": "Säkerhet",
-        "LABEL_ALLOW_TWO_STEP": "Låt 2-tvåstegsverifiering",
-        "LABEL_FORCE_TWO_STEP": "Driva 2-tvåstegsverifiering",
         "LABEL_USE_IMAGE_PROXY": "Använd lokal proxy för externa bilder",
         "LABEL_ALLOW_OPEN_PGP": "Tillåt OpenPGP",
         "LABEL_SHOW_PHP_INFO": "Visa PHP-information",
@@ -176,8 +174,6 @@
         "CONNECTION_ERROR": "Kan inte ansluta till servern",
         "DOMAIN_NOT_ALLOWED": "Domänen är inte tillåten",
         "ACCOUNT_NOT_ALLOWED": "Kontot är inte tillåtet",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "Två faktor kontroll som krävs",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "Två faktor verifiering fel",
         "CURRENT_PASSWORD_INCORRECT": "Nuvarande lösenord är fel",
         "NEW_PASSWORD_SHORT": "Lösenordet är för kort",
         "NEW_PASSWORD_WEAK": "Lösenordet är för lätt",
