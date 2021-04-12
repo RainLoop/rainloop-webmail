@@ -76,8 +76,6 @@
     },
     "TAB_SECURITY": {
         "LEGEND_SECURITY": "Security",
-        "LABEL_ALLOW_TWO_STEP": "Allow 2-Step Verification",
-        "LABEL_FORCE_TWO_STEP": "Enforce 2-Step Verification",
         "LABEL_USE_IMAGE_PROXY": "Use local proxy for external images",
         "LABEL_ALLOW_OPEN_PGP": "Allow OpenPGP",
         "LABEL_SHOW_PHP_INFO": "Show PHP information",
@@ -176,8 +174,6 @@
         "CONNECTION_ERROR": "Can't connect to server",
         "DOMAIN_NOT_ALLOWED": "Domain is not allowed",
         "ACCOUNT_NOT_ALLOWED": "Account is not allowed",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "Two factor verification required",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "Two factor verification error",
         "CURRENT_PASSWORD_INCORRECT": "Current password incorrect",
         "NEW_PASSWORD_SHORT": "Password is too short",
         "NEW_PASSWORD_WEAK": "Password is too easy",

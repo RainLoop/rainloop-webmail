@@ -283,10 +283,6 @@ class Actions
 				case 'suggestions':
 					$mResult = [];
 					break;
-				case 'two-factor-auth':
-					// Providers\TwoFactorAuth\TwoFactorAuthInterface
-					$mResult = new Providers\TwoFactorAuth\TotpTwoFactorAuth();
-					break;
 			}
 		}
 
@@ -1059,7 +1055,6 @@ class Actions
 			'StartupUrl' => \trim(\ltrim(\trim($oConfig->Get('labs', 'startup_url', '')), '#/')),
 			'SieveAllowFileintoInbox' => (bool)$oConfig->Get('labs', 'sieve_allow_fileinto_inbox', false),
 			'ContactsIsAllowed' => false,
-			'RequireTwoFactor' => false,
 			'Admin' => array(),
 			'Capa' => array(),
 			'Plugins' => array(),
@@ -1087,7 +1082,6 @@ class Actions
 			'ReplySameFolder' => (bool) $oConfig->Get('defaults', 'mail_reply_same_folder', false),
 			'ContactsAutosave' => (bool) $oConfig->Get('defaults', 'contacts_autosave', true),
 			'HideUnsubscribed' => (bool) $oConfig->Get('labs', 'use_imap_list_subscribe', true),
-			'EnableTwoFactor' => false,
 			'ParentEmail' => '',
 			'InterfaceAnimation' => true,
 			'UserBackgroundName' => '',
@@ -1170,18 +1164,6 @@ class Actions
 			}
 
 			$aResult['Capa'] = $this->Capa(false, $oAccount);
-
-			if ($aResult['Auth'] && !$aResult['RequireTwoFactor']) {
-				if ($this->GetCapa(false, Enumerations\Capa::TWO_FACTOR, $oAccount) &&
-					$this->GetCapa(false, Enumerations\Capa::TWO_FACTOR_FORCE, $oAccount) &&
-					$this->TwoFactorAuthProvider()->IsActive()) {
-					$aData = $this->getTwoFactorInfo($oAccount, true);
-
-					$aResult['RequireTwoFactor'] = !$aData ||
-						!isset($aData['User'], $aData['IsSet'], $aData['Enable']) ||
-						!($aData['IsSet'] && $aData['Enable']);
-				}
-			}
 		} else {
 			$aResult['Auth'] = $this->IsAdminLoggined(false);
 			if ($aResult['Auth']) {
@@ -1260,8 +1242,6 @@ class Actions
 						$aResult['UserBackgroundName'] = (string)$oSettings->GetConf('UserBackgroundName', $aResult['UserBackgroundName']);
 						$aResult['UserBackgroundHash'] = (string)$oSettings->GetConf('UserBackgroundHash', $aResult['UserBackgroundHash']);
 					}
-
-					$aResult['EnableTwoFactor'] = (bool)$oSettings->GetConf('EnableTwoFactor', $aResult['EnableTwoFactor']);
 				}
 
 				if ($oSettingsLocal instanceof Settings) {
@@ -1436,7 +1416,7 @@ class Actions
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
 	public function LoginProcess(string &$sEmail, string &$sPassword, string $sSignMeToken = '',
-								 string $sAdditionalCode = '', bool $bAdditionalCodeSignMe = false, bool $bSkipTwoFactorAuth = false): Model\Account
+								 string $sAdditionalCode = '', bool $bAdditionalCodeSignMe = false): Model\Account
 	{
 		$sInputEmail = $sEmail;
 
@@ -1542,49 +1522,6 @@ class Actions
 			$this->loginErrorDelay();
 			$this->LoggerAuthHelper($oAccount, $this->getAdditionalLogParamsByUserLogin($sInputEmail));
 			throw $oException;
-		}
-
-		// 2FA
-		if (!$bSkipTwoFactorAuth && $this->TwoFactorAuthProvider()->IsActive()) {
-			$aData = $this->getTwoFactorInfo($oAccount);
-			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable']) {
-				$sSecretHash = \md5(APP_SALT . $aData['Secret'] . Utils::Fingerprint());
-				$sSecretCookieHash = Utils::GetCookie(self::AUTH_TFA_SIGN_ME_TOKEN_KEY, '');
-
-				if (empty($sSecretCookieHash) || $sSecretHash !== $sSecretCookieHash) {
-					$sAdditionalCode = \trim($sAdditionalCode);
-					if (empty($sAdditionalCode)) {
-						$this->Logger()->Write('TFA: Required Code for ' . $oAccount->ParentEmailHelper() . ' account.');
-
-						throw new Exceptions\ClientException(Notifications::AccountTwoFactorAuthRequired);
-					} else {
-						$this->Logger()->Write('TFA: Verify Code for ' . $oAccount->ParentEmailHelper() . ' account.');
-
-						$bUseBackupCode = false;
-						if (6 < \strlen($sAdditionalCode) && !empty($aData['BackupCodes'])) {
-							$aBackupCodes = \explode(' ', \trim(\preg_replace('/[^\d]+/', ' ', $aData['BackupCodes'])));
-							$bUseBackupCode = \in_array($sAdditionalCode, $aBackupCodes);
-
-							if ($bUseBackupCode) {
-								$this->removeBackupCodeFromTwoFactorInfo($oAccount->ParentEmailHelper(), $sAdditionalCode);
-							}
-						}
-
-						if (!$bUseBackupCode && !$this->TwoFactorAuthProvider()->VerifyCode($aData['Secret'], $sAdditionalCode)) {
-							$this->loginErrorDelay();
-
-							$this->LoggerAuthHelper($oAccount);
-
-							throw new Exceptions\ClientException(Notifications::AccountTwoFactorAuthError);
-						}
-
-						if ($bAdditionalCodeSignMe) {
-							Utils::SetCookie(self::AUTH_TFA_SIGN_ME_TOKEN_KEY, $sSecretHash,
-								\time() + 60 * 60 * 24 * 14);
-						}
-					}
-				}
-			}
 		}
 
 		try {
@@ -2081,16 +2018,6 @@ class Actions
 
 			if ($bAdmin || ($oAccount && $oAccount->Domain()->UseSieve())) {
 				$aResult[] = Enumerations\Capa::SIEVE;
-			}
-		}
-
-		if ($oConfig->Get('security', 'allow_two_factor_auth', false) &&
-			($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount()))) {
-			$aResult[] = Enumerations\Capa::TWO_FACTOR;
-
-			if ($oConfig->Get('security', 'force_two_factor_auth', false) &&
-				($bAdmin || ($oAccount && !$oAccount->IsAdditionalAccount()))) {
-				$aResult[] = Enumerations\Capa::TWO_FACTOR_FORCE;
 			}
 		}
 

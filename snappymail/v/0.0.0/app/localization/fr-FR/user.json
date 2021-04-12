@@ -275,10 +275,6 @@
         "LABEL_KEY": "Clé Privée",
         "BUTTON_DECRYPT": "Déchiffrer"
     },
-    "POPUPS_TWO_FACTOR_TEST": {
-        "TITLE_TEST_CODE": "Test d'authentification en deux étapes",
-        "LABEL_CODE": "Code"
-    },
     "POPUPS_FILTER": {
         "TITLE_CREATE_FILTER": "Créer un filtre ?",
         "TITLE_EDIT_FILTER": "Mettre à jour le filtre ?",
@@ -336,25 +332,6 @@
         "NOTIFICATION_TRASH": "Vous n'avez pas sélectionné de dossier \"Corbeille\" où placer les messages supprimés.\nSi vous ne souhaitez pas supprimer définitivement les messages, sélectionnez l'option \"Ne pas utiliser\".\n",
         "NOTIFICATION_ARCHIVE": "Vous n'avez pas sélectionné de dossier \"Archive\" où placer les messages archivés.\n"
     },
-    "POPUPS_TWO_FACTOR_CFG": {
-        "LEGEND_TWO_FACTOR_AUTH": "Authentification en deux étapes",
-        "LABEL_ENABLE_TWO_FACTOR": "Activer l'authentification en deux étapes",
-        "LABEL_TWO_FACTOR_USER": "Utilisateur",
-        "LABEL_TWO_FACTOR_STATUS": "Statut",
-        "LABEL_TWO_FACTOR_SECRET": "Secret",
-        "LABEL_TWO_FACTOR_BACKUP_CODES": "Code de sauvegarde",
-        "BUTTON_CREATE": "Créer une nouvelle clé secrète",
-        "BUTTON_ACTIVATE": "Activer",
-        "LINK_TEST": "test",
-        "BUTTON_SHOW_SECRET": "Montrer la clé secrète",
-        "BUTTON_HIDE_SECRET": "Masquer la clé secrète",
-        "TWO_FACTOR_REQUIRE_DESC": "Votre compte requiert la configuration d'une vérification en deux étapes.",
-        "TWO_FACTOR_SECRET_CONFIGURED_DESC": "Configuré",
-        "TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC": "Non configuré",
-        "TWO_FACTOR_SECRET_DESC": "Importez ces informations dans votre client Google Authenticator (ou un autre client TOTP) en utilisant le code QR fourni ci-dessous ou en entrant les valeurs manuellement.",
-        "TWO_FACTOR_BACKUP_CODES_DESC": "Si vous ne pouvez pas recevoir les codes par Google Authenticator, vous pouvez utiliser les codes de sauvegarde pour vous connecter. Après avoir fait cela, il deviendra inactif.",
-        "TWO_FACTOR_SECRET_TEST_BEFORE_DESC": "Vous ne pouvez pas modifier ce paramètre avant de l'avoir essayé."
-    },
     "TITLES": {
         "LOGIN": "Identifiant",
         "MAILBOX": "Boîte mail",
@@ -397,7 +374,6 @@
     },
     "SETTINGS_SECURITY": {
         "LEGEND_SECURITY": "Sécurité",
-        "LABEL_CONFIGURE_TWO_FACTOR": "Configurer l'authentification en deux étapes",
         "LABEL_AUTOLOGOUT": "Déconnexion automatique",
         "AUTOLOGIN_NEVER_OPTION_NAME": "Jamais",
         "AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minute(s)",
@@ -543,8 +519,6 @@
         "CONNECTION_ERROR": "Serveur injoignable",
         "DOMAIN_NOT_ALLOWED": "Ce domaine n'est pas autorisé",
         "ACCOUNT_NOT_ALLOWED": "Ce compte n'est pas autorisé",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "Double authentification requise",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "Erreur lors de la double authentification",
         "CONTACTS_SYNC_ERROR": "Erreur de synchronisation des contacts",
         "CANT_GET_MESSAGE_LIST": "Impossible d'obtenir la liste des messages",
         "CANT_GET_MESSAGE": "Impossible d'obtenir le message",

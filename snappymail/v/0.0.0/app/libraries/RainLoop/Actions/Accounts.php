@@ -39,7 +39,7 @@ trait Accounts
 			throw new ClientException(Notifications::AccountDoesNotExist);
 		}
 
-		$oNewAccount = $this->LoginProcess($sEmail, $sPassword, '', '', false, true);
+		$oNewAccount = $this->LoginProcess($sEmail, $sPassword);
 		$oNewAccount->SetParentEmail($sParentEmail);
 
 		$aAccounts[$oNewAccount->Email()] = $oNewAccount->GetAuthToken();

@@ -64,7 +64,7 @@ export class SettingsUserScreen extends AbstractSettingsScreen {
 			settingsAddViewModel(FiltersUserSettings, 'SettingsFilters', 'SETTINGS_LABELS/LABEL_FILTERS_NAME', 'filters');
 		}
 
-		if (Settings.capa(Capa.AutoLogout) || Settings.capa(Capa.TwoFactor)) {
+		if (Settings.capa(Capa.AutoLogout)) {
 			settingsAddViewModel(SecurityUserSettings, 'SettingsSecurity', 'SETTINGS_LABELS/LABEL_SECURITY_NAME', 'security');
 		}
 

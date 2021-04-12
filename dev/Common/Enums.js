@@ -4,8 +4,6 @@
  * @enum {string}
  */
 export const Capa = {
-	TwoFactor: 'TWO_FACTOR',
-	TwoFactorForce: 'TWO_FACTOR_FORCE',
 	OpenPGP: 'OPEN_PGP',
 	Prefetch: 'PREFETCH',
 	Composer: 'COMPOSER',
@@ -85,9 +83,6 @@ export const Notification = {
 	ConnectionError: 104,
 	DomainNotAllowed: 109,
 	AccountNotAllowed: 110,
-
-	AccountTwoFactorAuthRequired: 120,
-	AccountTwoFactorAuthError: 121,
 
 	ContactsSyncError: 140,
 

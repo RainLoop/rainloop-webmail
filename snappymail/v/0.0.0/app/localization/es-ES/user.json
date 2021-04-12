@@ -275,10 +275,6 @@
         "LABEL_KEY": "Clave privada",
         "BUTTON_DECRYPT": "Descifrar"
     },
-    "POPUPS_TWO_FACTOR_TEST": {
-        "TITLE_TEST_CODE": "Prueba de verificación de 2 pasos",
-        "LABEL_CODE": "Código"
-    },
     "POPUPS_FILTER": {
         "TITLE_CREATE_FILTER": "¿Crear un filtro?",
         "TITLE_EDIT_FILTER": "¿Actualizar un filtro?",
@@ -336,25 +332,6 @@
         "NOTIFICATION_TRASH": "Usted no ha seleccionado la carpeta del sistema para alojar los mensajes enviados a la \"Papelera\" .\nSi desea eliminar los mensajes permanentemente, por favor seleccione la opción \"No usar\".\n",
         "NOTIFICATION_ARCHIVE": "Usted no ha seleccionado la carpeta del sistema para alojar los mensajes enviados al \"Archivo\"."
     },
-    "POPUPS_TWO_FACTOR_CFG": {
-        "LEGEND_TWO_FACTOR_AUTH": "Verificación de 2 Pasos",
-        "LABEL_ENABLE_TWO_FACTOR": "Activar la verificación de 2 pasos",
-        "LABEL_TWO_FACTOR_USER": "Usuario",
-        "LABEL_TWO_FACTOR_STATUS": "Estado",
-        "LABEL_TWO_FACTOR_SECRET": "Clave secreta",
-        "LABEL_TWO_FACTOR_BACKUP_CODES": "Códigos de copia de seguridad",
-        "BUTTON_CREATE": "Crear nueva clave secreta",
-        "BUTTON_ACTIVATE": "Activate",
-        "LINK_TEST": "probar",
-        "BUTTON_SHOW_SECRET": "Mostrar clave secreta",
-        "BUTTON_HIDE_SECRET": "Ocultar clave secreta",
-        "TWO_FACTOR_REQUIRE_DESC": "Se requiere que configure la verificación de 2-pasos.",
-        "TWO_FACTOR_SECRET_CONFIGURED_DESC": "Configurado",
-        "TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC": "No configurado",
-        "TWO_FACTOR_SECRET_DESC": "Importar esta información en su cliente Google Authenticator (u otro cliente TOTP) utilizando el código QR ​​se indica debajo o introduciendo el código manualmente.",
-        "TWO_FACTOR_BACKUP_CODES_DESC": "Si usted no puede recibir los códigos a través de Google Authenticator, puede utilizar códigos de copia de seguridad para firmar pulg Después de que usted ha utilizado un código de copia de seguridad para iniciar sesión, se convertirá en inactiva.",
-        "TWO_FACTOR_SECRET_TEST_BEFORE_DESC": "You can't change this setting before test."
-    },
     "TITLES": {
         "LOGIN": "Ingresar",
         "MAILBOX": "Buzón",
@@ -397,7 +374,6 @@
     },
     "SETTINGS_SECURITY": {
         "LEGEND_SECURITY": "Seguridad",
-        "LABEL_CONFIGURE_TWO_FACTOR": "Configurar verificación de 2-Pasos",
         "LABEL_AUTOLOGOUT": "Salir Automáticamente",
         "AUTOLOGIN_NEVER_OPTION_NAME": "Nunca",
         "AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minuto(s)",
@@ -543,8 +519,6 @@
         "CONNECTION_ERROR": "No se puede conectar al servidor",
         "DOMAIN_NOT_ALLOWED": "Dominio no permitido",
         "ACCOUNT_NOT_ALLOWED": "La cuenta no está permitida",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "Factor de verificación en dos pasos requerido",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "Error de verificación en dos pasos",
         "CONTACTS_SYNC_ERROR": "Error de sincronización de Contactos",
         "CANT_GET_MESSAGE_LIST": "No se puede obtener la lista de mensajes",
         "CANT_GET_MESSAGE": "No se puede obtener el mensaje",

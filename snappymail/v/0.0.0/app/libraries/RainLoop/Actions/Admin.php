@@ -86,12 +86,6 @@ trait Admin
 			case Capa::TEMPLATES:
 				$this->setConfigFromParams($oConfig, $sParamName, 'capa', 'x-templates', 'bool');
 				break;
-			case Capa::TWO_FACTOR:
-				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'allow_two_factor_auth', 'bool');
-				break;
-			case Capa::TWO_FACTOR_FORCE:
-				$this->setConfigFromParams($oConfig, $sParamName, 'security', 'force_two_factor_auth', 'bool');
-				break;
 			case Capa::ATTACHMENT_THUMBNAILS:
 				$this->setConfigFromParams($oConfig, $sParamName, 'interface', 'show_attachment_thumbnail', 'bool');
 				break;
@@ -157,8 +151,6 @@ trait Admin
 		$this->setCapaFromParams($oConfig, 'CapaAdditionalAccounts', Capa::ADDITIONAL_ACCOUNTS);
 		$this->setCapaFromParams($oConfig, 'CapaIdentities', Capa::IDENTITIES);
 		$this->setCapaFromParams($oConfig, 'CapaTemplates', Capa::TEMPLATES);
-		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuth', Capa::TWO_FACTOR);
-		$this->setCapaFromParams($oConfig, 'CapaTwoFactorAuthForce', Capa::TWO_FACTOR_FORCE);
 		$this->setCapaFromParams($oConfig, 'CapaOpenPGP', Capa::OPEN_PGP);
 		$this->setCapaFromParams($oConfig, 'CapaThemes', Capa::THEMES);
 		$this->setCapaFromParams($oConfig, 'CapaUserBackground', Capa::USER_BACKGROUND);

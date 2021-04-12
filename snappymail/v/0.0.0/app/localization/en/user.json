@@ -275,10 +275,6 @@
         "LABEL_KEY": "Private Key",
         "BUTTON_DECRYPT": "Decrypt"
     },
-    "POPUPS_TWO_FACTOR_TEST": {
-        "TITLE_TEST_CODE": "2-Step verification test",
-        "LABEL_CODE": "Code"
-    },
     "POPUPS_FILTER": {
         "TITLE_CREATE_FILTER": "Create a filter?",
         "TITLE_EDIT_FILTER": "Update filter?",
@@ -336,25 +332,6 @@
         "NOTIFICATION_TRASH": "You haven't selected \"Trash\" system folder deleted messages are placed to.\nIf you wish to remove messages permanently, please select \"Do not use\" option.\n",
         "NOTIFICATION_ARCHIVE": "You haven't selected \"Archive\" system folder achived messages are placed to."
     },
-    "POPUPS_TWO_FACTOR_CFG": {
-        "LEGEND_TWO_FACTOR_AUTH": "2-Step Verification (TOTP)",
-        "LABEL_ENABLE_TWO_FACTOR": "Enable 2-Step verification",
-        "LABEL_TWO_FACTOR_USER": "User",
-        "LABEL_TWO_FACTOR_STATUS": "Status",
-        "LABEL_TWO_FACTOR_SECRET": "Secret",
-        "LABEL_TWO_FACTOR_BACKUP_CODES": "Backup codes",
-        "BUTTON_CREATE": "Create a secret",
-        "BUTTON_ACTIVATE": "Activate",
-        "LINK_TEST": "test",
-        "BUTTON_SHOW_SECRET": "Show Secret",
-        "BUTTON_HIDE_SECRET": "Hide Secret",
-        "TWO_FACTOR_REQUIRE_DESC": "Your account requires 2-Step verification configuration.",
-        "TWO_FACTOR_SECRET_CONFIGURED_DESC": "Configured",
-        "TWO_FACTOR_SECRET_NOT_CONFIGURED_DESC": "Not configured",
-        "TWO_FACTOR_SECRET_DESC": "Import this info into your Google Authenticator client (or other TOTP client) using the provided QR code below or by entering the code manually.\n",
-        "TWO_FACTOR_BACKUP_CODES_DESC": "If you can't receive codes via Google Authenticator (or other TOTP client), you can use backup codes to sign in. After you’ve used a backup code to sign in, it will become inactive.\n",
-        "TWO_FACTOR_SECRET_TEST_BEFORE_DESC": "You can't change this setting before test."
-    },
     "TITLES": {
         "LOGIN": "Login",
         "MAILBOX": "MailBox",
@@ -397,7 +374,6 @@
     },
     "SETTINGS_SECURITY": {
         "LEGEND_SECURITY": "Security",
-        "LABEL_CONFIGURE_TWO_FACTOR": "Configure 2-Step verification",
         "LABEL_AUTOLOGOUT": "Auto Logout",
         "AUTOLOGIN_NEVER_OPTION_NAME": "Never",
         "AUTOLOGIN_MINUTES_OPTION_NAME": "%MINUTES% minute(s)",
@@ -543,8 +519,6 @@
         "CONNECTION_ERROR": "Can't connect to server",
         "DOMAIN_NOT_ALLOWED": "Domain is not allowed",
         "ACCOUNT_NOT_ALLOWED": "Account is not allowed",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "Two factor verification required",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "Two factor verification error",
         "CONTACTS_SYNC_ERROR": "Contacts synchronization error",
         "CANT_GET_MESSAGE_LIST": "Can't get message list",
         "CANT_GET_MESSAGE": "Can't get message",

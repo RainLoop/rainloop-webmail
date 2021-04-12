@@ -10,9 +10,6 @@ class Notifications
 	const DomainNotAllowed = 109;
 	const AccountNotAllowed = 110;
 
-	const AccountTwoFactorAuthRequired = 120;
-	const AccountTwoFactorAuthError = 121;
-
 	const ContactsSyncError = 140;
 
 	const CantGetMessageList = 201;

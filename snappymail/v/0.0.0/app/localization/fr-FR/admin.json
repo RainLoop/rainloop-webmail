@@ -76,8 +76,6 @@
     },
     "TAB_SECURITY": {
         "LEGEND_SECURITY": "Sécurité",
-        "LABEL_ALLOW_TWO_STEP": "Autoriser l'authentification en deux étapes",
-        "LABEL_FORCE_TWO_STEP": "Forcer l'authentification en deux étapes",
         "LABEL_USE_IMAGE_PROXY": "Utiliser un proxy local pour les images externes",
         "LABEL_ALLOW_OPEN_PGP": "Autoriser OpenPGP",
         "LABEL_SHOW_PHP_INFO": "Voir les informations PHP",
@@ -176,8 +174,6 @@
         "CONNECTION_ERROR": "Serveur injoignable",
         "DOMAIN_NOT_ALLOWED": "Ce domaine n'est pas autorisé",
         "ACCOUNT_NOT_ALLOWED": "Ce compte n'est pas autorisé",
-        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "Double authentification requise",
-        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "Erreur lors de la double authentification",
         "CURRENT_PASSWORD_INCORRECT": "Le mot de passe actuel est incorrect",
         "NEW_PASSWORD_SHORT": "Le mot de passe est trop court",
         "NEW_PASSWORD_WEAK": "Le mot de passe n'est pas assez fort",
