@@ -264,13 +264,9 @@
 				margin: 0;
 			}
 
-			.checkboxAttachment {
-				display: none;
-			}
-
-			&.selection-mode {
+			&:not(.selection-mode) {
 				.checkboxAttachment {
-					display: inline-block;
+					display: none;
 				}
 			}
 
