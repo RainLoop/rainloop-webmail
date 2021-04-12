@@ -510,12 +510,30 @@ class Manager
 			{
 				if ($oPlugin->UseLangs())
 				{
-					$sPath = $oPlugin->Path();
+					$sPath = $oPlugin->Path().'/langs/';
+					$aPLang = [];
+					if (\is_file("{$sPath}en.ini")) {
+						$aPLang = \parse_ini_file("{$sPath}en.ini", true);
+					} else if (\is_file("{$sPath}en.json")) {
+						$aPLang = \json_decode(\file_get_contents("{$sPath}en.json"), true);
+					}
+					if ($aPLang) {
+						$aLang = \array_replace_recursive($aLang, $aPLang);
+					}
 
-					\RainLoop\Utils::ReadAndAddLang($sPath.'/langs/en.ini', $aLang);
 					if ('en' !== $sLang)
 					{
-						\RainLoop\Utils::ReadAndAddLang($sPath.'/langs/'.$sLang.'.ini', $aLang);
+						$aPLang = [];
+						if (\is_file("{$sPath}{$sLang}.ini")) {
+							$aPLang = \parse_ini_file("{$sPath}{$sLang}.ini", true);
+						} else if (\is_file($sPath.\strtr($sLang,'-','_').'.ini')) {
+							$aPLang = \parse_ini_file($sPath.\strtr($sLang,'-','_').'.ini', true);
+						} else if (\is_file("{$sPath}{$sLang}.json")) {
+							$aPLang = \json_decode(\file_get_contents("{$sPath}{$sLang}.json"), true);
+						}
+						if ($aPLang) {
+							$aLang = \array_replace_recursive($aLang, $aPLang);
+						}
 					}
 				}
 			}

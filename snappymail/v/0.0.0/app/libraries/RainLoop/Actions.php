@@ -1009,8 +1009,8 @@ class Actions
 			'faviconStatus' => (bool)$oConfig->Get('labs', 'favicon_status', true),
 			'listPermanentFiltered' => '' !== \trim(Api::Config()->Get('labs', 'imap_message_list_permanent_filter', '')),
 			'themes' => $this->GetThemes(),
-			'languages' => $this->GetLanguages(false),
-			'languagesAdmin' => $this->GetLanguages(true),
+			'languages' => \SnappyMail\L10n::getLanguages(false),
+			'languagesAdmin' => \SnappyMail\L10n::getLanguages(true),
 			'attachmentsActions' => $aAttachmentsActions
 		), $bAdmin ? array(
 			'adminHostUse' => '' !== $oConfig->Get('security', 'admin_panel_host', ''),
@@ -2223,47 +2223,43 @@ class Actions
 
 	public function ValidateLanguage(string $sLanguage, string $sDefault = '', bool $bAdmin = false, bool $bAllowEmptyResult = false): string
 	{
-		$sResult = '';
-		$aLang = $this->GetLanguages($bAdmin);
+		$aLang = \SnappyMail\L10n::getLanguages($bAdmin);
 
-		$aHelper = array('en' => 'en_us', 'ar' => 'ar_sa', 'cs' => 'cs_cz', 'no' => 'nb_no', 'ua' => 'uk_ua',
-			'cn' => 'zh_cn', 'zh' => 'zh_cn', 'tw' => 'zh_tw', 'fa' => 'fa_ir');
+		$aHelper = array(
+			'ar' => 'ar-SA',
+			'cs' => 'cs-CZ',
+			'no' => 'nb-NO',
+			'ua' => 'uk-UA',
+			'cn' => 'zh-CN',
+			'zh' => 'zh-CN',
+			'tw' => 'zh-TW',
+			'fa' => 'fa-IR'
+		);
 
-		$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : $sLanguage;
-		$sDefault = isset($aHelper[$sDefault]) ? $aHelper[$sDefault] : $sDefault;
-
-		$sLanguage = \strtolower(\str_replace('-', '_', $sLanguage));
-		if (2 === strlen($sLanguage)) {
-			$sLanguage = $sLanguage . '_' . $sLanguage;
-		}
-
-		$sDefault = \strtolower(\str_replace('-', '_', $sDefault));
-		if (2 === strlen($sDefault)) {
-			$sDefault = $sDefault . '_' . $sDefault;
-		}
-
-		$sLanguage = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
-			return \strtoupper($aData[0]);
-		}, $sLanguage);
-
-		$sDefault = \preg_replace_callback('/_([a-zA-Z0-9]{2})$/', function ($aData) {
-			return \strtoupper($aData[0]);
-		}, $sDefault);
+		$sLanguage = isset($aHelper[$sLanguage]) ? $aHelper[$sLanguage] : \strtr($sLanguage, '_', '-');
+		$sDefault  = isset($aHelper[$sDefault])  ? $aHelper[$sDefault]  : \strtr($sDefault, '_', '-');
 
 		if (\in_array($sLanguage, $aLang)) {
-			$sResult = $sLanguage;
+			return $sLanguage;
 		}
 
-		if (empty($sResult) && !empty($sDefault) && \in_array($sDefault, $aLang)) {
-			$sResult = $sDefault;
+		$sLangCountry = \preg_replace_callback('/-([a-zA-Z]{2})$/', function ($aData) {
+			return \strtoupper($aData[0]);
+		}, $sLanguage);
+		if (\in_array($sLangCountry, $aLang)) {
+			return $sLangCountry;
 		}
 
-		if (empty($sResult) && !$bAllowEmptyResult) {
-			$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en_US');
-			$sResult = \in_array($sResult, $aLang) ? $sResult : 'en_US';
+		if (\in_array($sDefault, $aLang)) {
+			return $sDefault;
 		}
 
-		return $sResult;
+		if ($bAllowEmptyResult) {
+			return '';
+		}
+
+		$sResult = $this->Config()->Get('webmail', $bAdmin ? 'language_admin' : 'language', 'en');
+		return \in_array($sResult, $aLang) ? $sResult : 'en';
 	}
 
 	public function ValidateContactPdoType(string $sType): string
@@ -2329,44 +2325,6 @@ class Actions
 		}
 
 		return $aCache;
-	}
-
-	/**
-	 * @staticvar array $aCache
-	 */
-	public function GetLanguages(bool $bAdmin = false): array
-	{
-		static $aCache = array();
-		$sDir = APP_VERSION_ROOT_PATH . 'app/localization/' . ($bAdmin ? 'admin' : 'webmail') . '/';
-
-		if (isset($aCache[$sDir])) {
-			return $aCache[$sDir];
-		}
-
-		$aTop = array();
-		$aList = array();
-
-		if (\is_dir($sDir)) {
-			$rDirH = \opendir($sDir);
-			if ($rDirH) {
-				while (($sFile = \readdir($rDirH)) !== false) {
-					if ('.' !== $sFile[0] && \is_file($sDir . '/' . $sFile) && '.yml' === \substr($sFile, -4)) {
-						$sLang = \substr($sFile, 0, -4);
-						if (0 < \strlen($sLang) && 'always' !== $sLang && '_source.en' !== $sLang) {
-							\array_push($aList, $sLang);
-						}
-					}
-				}
-
-				\closedir($rDirH);
-			}
-		}
-
-		\sort($aTop);
-		\sort($aList);
-
-		$aCache[$sDir] = \array_merge($aTop, $aList);
-		return $aCache[$sDir];
 	}
 
 	public function ProcessTemplate(string $sName, string $sHtml): string
@@ -2458,17 +2416,11 @@ class Actions
 
 		if (null === $aLang) {
 			$sLang = $this->ValidateLanguage($sLang, 'en');
-
-			$aLang = array();
-//			Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/i18n/langs.ini', $aLang);
-//			Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'langs/'.$sLang.'.ini', $aLang);
-			Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH . 'app/localization/langs.yml', $aLang);
-			Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH . 'app/localization/webmail/' . $sLang . '.yml', $aLang);
-
+			$aLang = \SnappyMail\L10n::load($sLang, 'static');
 			$this->Plugins()->ReadLang($sLang, $aLang);
 		}
 
-		return isset($aLang[$sKey]) ? $aLang[$sKey] : $sKey;
+		return $aLang[$aKey] ?? $sKey;
 	}
 
 	public function StaticPath(string $sPath): string

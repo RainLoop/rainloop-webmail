@@ -3,7 +3,7 @@ import { Notification, UploadErrorCode } from 'Common/Enums';
 import { langLink } from 'Common/Links';
 import { doc, createElement } from 'Common/Globals';
 
-let I18N_DATA = window.rainloopI18N || {};
+let I18N_DATA = window.snappymailI18N || {};
 
 export const trigger = ko.observable(false);
 
@@ -14,7 +14,8 @@ export const trigger = ko.observable(false);
  * @returns {string}
  */
 export function i18n(key, valueList, defaulValue) {
-	let result = I18N_DATA[key] || defaulValue || key;
+	let path = key.split('/'),
+		result = I18N_DATA[path[0]][path[1]] || defaulValue || key;
 
 	if (valueList) {
 		Object.entries(valueList).forEach(([key, value]) => {
@@ -75,7 +76,7 @@ function getNotificationMessage(code) {
 	let key = getKeyByValue(Notification, code);
 	if (key) {
 		key = i18nKey(key).replace('_NOTIFICATION', '_ERROR');
-		return I18N_DATA['NOTIFICATIONS/' + key];
+		return I18N_DATA.NOTIFICATIONS[key];
 	}
 }
 
@@ -125,13 +126,13 @@ export function reload(admin, language) {
 		const script = createElement('script');
 		script.onload = () => {
 			// reload the data
-			if (window.rainloopI18N) {
-				I18N_DATA = window.rainloopI18N || {};
+			if (window.snappymailI18N) {
+				I18N_DATA = window.snappymailI18N;
 				i18nToNodes(doc);
 				dispatchEvent(new CustomEvent('reload-time'));
 				trigger(!trigger());
 			}
-			window.rainloopI18N = null;
+			window.snappymailI18N = null;
 			script.remove();
 			resolve();
 		};
@@ -150,7 +151,7 @@ export function reload(admin, language) {
  */
 export function convertLangName(language, isEng = false) {
 	return i18n(
-		'LANGS_NAMES' + (true === isEng ? '_EN' : '') + '/LANG_' + language.toUpperCase().replace(/[^a-zA-Z0-9]+/g, '_'),
+		'LANGS_NAMES' + (true === isEng ? '_EN' : '') + '/' + language,
 		null,
 		language
 	);

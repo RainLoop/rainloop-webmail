@@ -679,18 +679,18 @@ class ServiceActions
 
 	public function ServiceNoScript() : string
 	{
-		return $this->localError($this->oActions->StaticI18N('STATIC/NO_SCRIPT_TITLE'), $this->oActions->StaticI18N('STATIC/NO_SCRIPT_DESC'));
+		return $this->localError($this->oActions->StaticI18N('NO_SCRIPT_TITLE'), $this->oActions->StaticI18N('NO_SCRIPT_DESC'));
 	}
 
 	public function ServiceNoCookie() : string
 	{
-		return $this->localError($this->oActions->StaticI18N('STATIC/NO_COOKIE_TITLE'), $this->oActions->StaticI18N('STATIC/NO_COOKIE_DESC'));
+		return $this->localError($this->oActions->StaticI18N('NO_COOKIE_TITLE'), $this->oActions->StaticI18N('NO_COOKIE_DESC'));
 	}
 
 	public function ServiceBadBrowser() : string
 	{
-		$sTitle = $this->oActions->StaticI18N('STATIC/BAD_BROWSER_TITLE');
-		$sDesc = \nl2br($this->oActions->StaticI18N('STATIC/BAD_BROWSER_DESC'));
+		$sTitle = $this->oActions->StaticI18N('BAD_BROWSER_TITLE');
+		$sDesc = \nl2br($this->oActions->StaticI18N('BAD_BROWSER_DESC'));
 
 		\header('Content-Type: text/html; charset=utf-8');
 		return \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/BadBrowser.html'), array(
@@ -929,7 +929,7 @@ class ServiceActions
 			'{{ErrorHeader}}' => $sTitle,
 			'{{ErrorDesc}}' => $sDesc,
 			'{{BackLinkVisibilityStyle}}' => $bShowBackLink ? 'display:inline-block' : 'display:none',
-			'{{BackLink}}' => $this->oActions->StaticI18N('STATIC/BACK_LINK'),
+			'{{BackLink}}' => $this->oActions->StaticI18N('BACK_LINK'),
 			'{{BackHref}}' => './'
 		));
 	}
@@ -1012,44 +1012,32 @@ class ServiceActions
 
 	private function compileLanguage(string $sLanguage, bool $bAdmin = false) : string
 	{
-		$aResultLang = array();
+		$sLanguage = \strtr($sLanguage, '_', '-');
 
-		Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/langs.yml', $aResultLang);
-		Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
-			($bAdmin ? 'admin' : 'webmail').'/_source.en.yml', $aResultLang);
-		Utils::ReadAndAddLang(APP_VERSION_ROOT_PATH.'app/localization/'.
-			($bAdmin ? 'admin' : 'webmail').'/'.$sLanguage.'.yml', $aResultLang);
+		$aResultLang = \json_decode(\file_get_contents(APP_VERSION_ROOT_PATH.'app/localization/langs.json'), true);
+		$langs = \array_flip(\SnappyMail\L10n::getLanguages($bAdmin));
+		$aResultLang['LANGS_NAMES'] = \array_intersect_key($aResultLang['LANGS_NAMES'], $langs);
+		$aResultLang['LANGS_NAMES_EN'] = \array_intersect_key($aResultLang['LANGS_NAMES_EN'], $langs);
+
+		$aResultLang = \array_replace_recursive(
+			$aResultLang,
+			\SnappyMail\L10n::load($sLanguage, ($bAdmin ? 'admin' : 'user'))
+		);
 
 		$this->Plugins()->ReadLang($sLanguage, $aResultLang);
 
-		$sResult = '';
-		$aLangKeys = \array_keys($aResultLang);
-		foreach ($aLangKeys as $sKey)
-		{
-			$sString = isset($aResultLang[$sKey]) ? $aResultLang[$sKey] : $sKey;
-			if (\is_array($sString))
-			{
-				$sString = \implode("\n", $sString);
-			}
-
-			$sResult .= '"'.\str_replace('"', '\\"', \str_replace('\\', '\\\\', $sKey)).'":'
-				.'"'.\str_replace(array("\r", "\n", "\t"), array('\r', '\n', '\t'),
-					\str_replace('"', '\\"', \str_replace('\\', '\\\\', $sString))).'",';
-		}
-		$sResult = $sResult ? '{'.\substr($sResult, 0, -1).'}' : 'null';
-
-		$sLanguage = strtr($sLanguage, '_', '-');
+		$sResult = \json_encode($aResultLang, JSON_UNESCAPED_UNICODE);
 
 		$sTimeFormat = '';
 		$options = [$sLanguage, \substr($sLanguage, 0, 2), 'en'];
 		foreach ($options as $lang) {
-			$sFileName = APP_VERSION_ROOT_PATH.'app/localization/relativetimeformat/'.$lang.'.js';
+			$sFileName = APP_VERSION_ROOT_PATH.'app/localization/'.$lang.'/relativetimeformat.js';
 			if (\is_file($sFileName)) {
 				$sTimeFormat = \preg_replace('/^\\s+/', '', \file_get_contents($sFileName));
 				break;
 			}
 		}
 
-		return "document.documentElement.lang = '{$sLanguage}';\nwindow.rainloopI18N={$sResult};\nDate.defineRelativeTimeFormat({$sTimeFormat});";
+		return "document.documentElement.lang = '{$sLanguage}';\nwindow.snappymailI18N={$sResult};\nDate.defineRelativeTimeFormat({$sTimeFormat});";
 	}
 }

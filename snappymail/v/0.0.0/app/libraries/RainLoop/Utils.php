@@ -133,52 +133,6 @@ class Utils
 		return $sResult;
 	}
 
-	public static function ReadAndAddLang(string $sFileName, array &$aResultLang) : void
-	{
-		if (\file_exists($sFileName))
-		{
-			if ('.yml' === \substr($sFileName, -4))
-			{
-				$aLang = \yaml_parse_file($sFileName);
-				if (\is_array($aLang))
-				{
-					\reset($aLang);
-					$sLangKey = \key($aLang);
-					if (isset($aLang[$sLangKey]) && \is_array($aLang[$sLangKey]))
-					{
-						$aLang = $aLang[$sLangKey];
-					}
-					else
-					{
-						$aLang = null;
-					}
-				}
-			}
-			else
-			{
-				$aLang = static::CustomParseIniFile($sFileName, true);
-			}
-
-			if (\is_array($aLang))
-			{
-				foreach ($aLang as $sKey => $mValue)
-				{
-					if (\is_array($mValue))
-					{
-						foreach ($mValue as $sSecKey => $mSecValue)
-						{
-							$aResultLang[$sKey.'/'.$sSecKey] = $mSecValue;
-						}
-					}
-					else
-					{
-						$aResultLang[$sKey] = $mValue;
-					}
-				}
-			}
-		}
-	}
-
 	public static function FolderFiles(string $sDir, string $sType = '') : array
 	{
 		$aResult = array();

@@ -1,0 +1,9 @@
+{
+	"BACK_LINK": "Aktualisieren",
+	"NO_SCRIPT_TITLE": "Diese Anwendung benötigt JavaScript.",
+	"NO_SCRIPT_DESC": "Ihr Browser unterstützt JavaScript nicht.\nAktivieren Sie bitte die JavaScript-Unterstützung in Ihrem Browser und versuchen Sie es erneut.\n",
+	"NO_COOKIE_TITLE": "Diese Anwendung benötigt Cookies.",
+	"NO_COOKIE_DESC": "Ihr Browser unterstützt Cookies nicht.\nAktivieren Sie bitte die Cookie-Unterstützung in Ihrem Browser und versuchen Sie es erneut.\n",
+	"BAD_BROWSER_TITLE": "Ihr Browser ist veraltet.",
+	"BAD_BROWSER_DESC": "Um alle Funktionen dieser Anwendung nutzen zu können,\nsollten Sie einen der folgenden Browser herunterladen und installieren\n"
+}

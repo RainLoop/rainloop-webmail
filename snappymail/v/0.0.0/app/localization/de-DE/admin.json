@@ -1,0 +1,217 @@
+{
+    "LOGIN": {
+        "LABEL_LOGIN": "Benutzer",
+        "LABEL_PASSWORD": "Passwort",
+        "BUTTON_LOGIN": "Im Adminpanel anmelden"
+    },
+    "TOP_PANEL": {
+        "LABEL_ADMIN_PANEL": "Adminpanel"
+    },
+    "TABS_LABELS": {
+        "LABEL_GENERAL_NAME": "Allgemein",
+        "LABEL_LOGIN_NAME": "Anmeldung",
+        "LABEL_BRANDING_NAME": "Branding",
+        "LABEL_CONTACTS_NAME": "Kontakte",
+        "LABEL_DOMAINS_NAME": "Domains",
+        "LABEL_SECURITY_NAME": "Sicherheit",
+        "LABEL_PLUGINS_NAME": "Plugins",
+        "LABEL_PACKAGES_NAME": "Pakete",
+        "LABEL_ABOUT_NAME": "Über"
+    },
+    "TAB_GENERAL": {
+        "LEGEND_INTERFACE": "Oberfläche",
+        "LABEL_LANGUAGE": "Sprache",
+        "LABEL_LANGUAGE_ADMIN": "Sprache (Admin)",
+        "LABEL_THEME": "Thema",
+        "LABEL_ALLOW_LANGUAGES_ON_SETTINGS": "Sprachauswahl in den Einstellungen zulassen",
+        "LABEL_ALLOW_THEMES_ON_SETTINGS": "Themaauswahl in den Einstellungen zulassen",
+        "LABEL_ALLOW_BACKGROUND_ON_SETTINGS": "Hintergrundauswahl in den Einstellungen zulassen",
+        "LABEL_NEW_FOLDER_MOVE": "Neue \"Verschieben nach\"-Schaltfläche",
+        "LABEL_SHOW_THUMBNAILS": "Vorschaubilder anzeigen (Anhänge)",
+        "LEGEND_MAIN": "Allgemein",
+        "LABEL_ATTACHMENT_SIZE_LIMIT": "Größenlimit für Anhänge",
+        "LABEL_ALLOW_ADDITIONAL_ACCOUNTS": "Zusätzliche Konten erlauben",
+        "LABEL_ALLOW_IDENTITIES": "Mehrere Identitäten erlauben",
+        "LABEL_ALLOW_TEMPLATES": "Vorlagen erlauben",
+        "ALERT_DATA_ACCESS": "Data folder is accessible. Please configure your web server to hide the data folder from external access. Read more here:",
+        "ALERT_WARNING": "Warnung!",
+        "HTML_ALERT_WEAK_PASSWORD": "Sie verwenden das Standard-Admin-Passwort.\n<br \/>\nBitte <strong><a href=\"#\/security\">ändern<\/a><\/strong> Sie\naus Sicherheitsgründen das Passwort jetzt.\n"
+    },
+    "TAB_LOGIN": {
+        "LEGEND_LOGIN_SCREEN": "Anmeldebildschirm",
+        "LABEL_DEFAULT_DOMAIN": "Standarddomain",
+        "LABEL_DETERMINE_USER_DOMAIN": "Versuche Domain des Benutzers zu ermitteln",
+        "LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Sprachauswahl bei der Anmeldung zulassen",
+        "LABEL_DETERMINE_USER_LANGUAGE": "Versuche Sprache des Benutzers zu ermitteln",
+        "LABEL_HIDE_SUBMIT_BUTTON": "Die Schaltfläche 'Anmelden' ausblenden",
+        "LABEL_FORGOT_PASSWORD_LINK_URL": "Forgot password url",
+        "LABEL_REGISTRATION_LINK_URL": "Register url"
+    },
+    "TAB_BRANDING": {
+        "LEGEND_BRANDING": "Branding",
+        "LABEL_PAGE_TITLE": "Seitentitel",
+        "LABEL_LOADING_DESCRIPTION": "Ladevorgang-Beschreibung",
+        "LABEL_FAVICON_URL": "Favicon"
+    },
+    "TAB_CONTACTS": {
+        "LEGEND_CONTACTS": "Kontakte",
+        "LEGEND_STORAGE": "Speicher (PDO)",
+        "LABEL_ENABLE_CONTACTS": "Kontakte aktivieren",
+        "LABEL_ALLOW_SYNC": "Kontakte-Synchronisierung erlauben (mit externem CardDAV-Server)",
+        "LABEL_STORAGE_TYPE": "Typ",
+        "LABEL_STORAGE_DSN": "DSN",
+        "LABEL_STORAGE_USER": "Benutzer",
+        "LABEL_STORAGE_PASSWORD": "Passwort",
+        "BUTTON_TEST": "Testen",
+        "ALERT_NOTICE": "Hinweis!",
+        "HTML_ALERT_DO_NOT_USE_THIS_DATABASE": "Verwenden Sie diesen Datenbanktyp nicht bei einer hohen Anzahl aktiver Benutzer.",
+        "HTML_ALERT_DOES_NOT_SUPPORTED": "Ihr System unterstützt keine Kontakte.\n<br \/>\nSie müssen die <strong>PDO-Erweiterung (SQLite \/ MySQL \/ PostgreSQL)<\/strong> auf Ihrem Server installieren oder aktivieren.\n"
+    },
+    "TAB_DOMAINS": {
+        "LEGEND_DOMAINS": "Domains",
+        "BUTTON_ADD_DOMAIN": "Domain hinzufügen",
+        "BUTTON_ADD_ALIAS": "Alias hinzufügen",
+        "DELETE_ARE_YOU_SURE": "Sind Sie sicher?",
+        "HTML_DOMAINS_HELPER": "Liste der Domains, die Webmail abrufen darf.\n<br \/>\nKlicken Sie auf den Namen, um die Domain zu konfigurieren.\n"
+    },
+    "TAB_SECURITY": {
+        "LEGEND_SECURITY": "Sicherheit",
+        "LABEL_ALLOW_TWO_STEP": "Zwei-Faktor-Authentifizierung erlauben",
+        "LABEL_FORCE_TWO_STEP": "Zwei-Faktor-Authentifizierung erzwingen",
+        "LABEL_USE_IMAGE_PROXY": "Lokalen Proxy für externe Bilder verwenden",
+        "LABEL_ALLOW_OPEN_PGP": "OpenPGP erlauben",
+        "LABEL_SHOW_PHP_INFO": "PHP-Informationen anzeigen",
+        "LEGEND_ADMIN_PANEL_ACCESS_CREDENTIALS": "Adminpanel-Zugangsdaten",
+        "LABEL_CURRENT_PASSWORD": "Aktuelles Passwort",
+        "LABEL_NEW_LOGIN": "Neuer Benutzer",
+        "LABEL_NEW_PASSWORD": "Neues Passwort",
+        "LABEL_REPEAT_PASSWORD": "Wiederholen",
+        "BUTTON_UPDATE_PASSWORD": "Passwort aktualisieren",
+        "LEGEND_SSL": "SSL",
+        "LABEL_REQUIRE_VERIFICATION": "Verlangen, dass das verwendete SSL-Zertifikat beglaubigt ist (IMAP\/SMTP)",
+        "LABEL_ALLOW_SELF_SIGNED": "Selbst-signierte Zertifikate erlauben"
+    },
+    "TAB_PLUGINS": {
+        "LEGEND_PLUGINS": "Plugins",
+        "LABEL_ENABLE_PLUGINS": "Plugins aktivieren",
+        "ALERT_NO_PLUGINS": "Es wurden noch keine Plugins installiert.",
+        "LINK_INSTALL_NEW": "Hier klicken, um Plugins zu installieren!",
+        "HINT_CLICK_NAME": "Klicken Sie auf den Namen, um das Plugin zu konfigurieren."
+    },
+    "TAB_PACKAGES": {
+        "LEGEND_AVAILABLE_FOR_UPDATE": "Zur Aktualisierung verfügbar",
+        "LEGEND_AVAILABLE_FOR_INSTALLATION": "Zur Installation verfügbar",
+        "LEGEND_INSTALLED_PACKAGES": "Installierte Pakete",
+        "ALERT_CANNOT_ACCESS_REPOSITORY": "Auf das Plugin-Repository kann derzeit nicht zugegriffen werden."
+    },
+    "TAB_ABOUT": {
+        "LEGEND_ABOUT": "Über",
+        "LABEL_TAG_HINT": "Einfacher, moderner und schneller webbasierter E-Mail-Client",
+        "LABEL_ALL_RIGHTS_RESERVED": "Alle Rechte vorbehalten."
+    },
+    "POPUPS_DOMAIN_ALIAS": {
+        "TITLE_ADD_DOMAIN_ALIAS": "Alias hinzufügen",
+        "LABEL_ALIAS": "Alias",
+        "LABEL_DOMAIN": "Domain",
+        "BUTTON_CLOSE": "Schließen",
+        "BUTTON_ADD": "Hinzufügen"
+    },
+    "POPUPS_DOMAIN": {
+        "TITLE_ADD_DOMAIN": "Domain hinzufügen",
+        "TITLE_ADD_DOMAIN_WITH_NAME": "Domain \"%NAME%\" hinzufügen",
+        "TITLE_EDIT_DOMAIN": "Domain \"%NAME%\" bearbeiten",
+        "LABEL_NAME": "Name",
+        "NAME_HELPER": "Platzhalter unterstützt",
+        "LABEL_IMAP": "IMAP",
+        "LABEL_SMTP": "SMTP",
+        "LABEL_SIEVE": "SIEVE",
+        "LABEL_SERVER": "Server",
+        "LABEL_PORT": "Port",
+        "LABEL_SECURE": "Sicherheit",
+        "LABEL_WHITE_LIST": "Whitelist",
+        "SECURE_OPTION_NONE": "Ohne",
+        "SECURE_OPTION_SSL": "SSL\/TLS",
+        "SECURE_OPTION_STARTTLS": "STARTTLS",
+        "LABEL_ALLOW_SIEVE_SCRIPTS": "Sieve-Skripte erlauben",
+        "LABEL_USE_SHORT_LOGIN": "Kurze Benutzernamen verwenden",
+        "LABEL_USE_AUTH": "Authentifizierung verwenden",
+        "LABEL_SET_SENDER": "Verwenden Sie die Anmeldung als Absender",
+        "LABEL_USE_PHP_MAIL": "PHPs mail()-Funktion verwenden",
+        "BUTTON_TEST": "Testen",
+        "BUTTON_WHITE_LIST": "Whitelist",
+        "BUTTON_SIEVE_CONFIGURATION": "Sieve-Konfiguration",
+        "BUTTON_BACK_TO_IMAP": "Zurück zu IMAP-Einstellungen",
+        "BUTTON_BACK": "Zurück",
+        "BUTTON_CLOSE": "Schließen",
+        "BUTTON_ADD": "Hinzufügen",
+        "BUTTON_UPDATE": "Aktualisieren",
+        "NEW_DOMAIN_DESC": "Diese Domain Konfiguration wird es dir möglich machen <br \/>mit <i>%NAME%<\/i> Mailadressen zu arbeiten.",
+        "WHITE_LIST_ALERT": "Liste der User, die Webmail abrufen darf.\nVerwenden Sie Leerzeichen als Trenner.\n"
+    },
+    "POPUPS_PLUGIN": {
+        "TITLE_PLUGIN": "Plugin",
+        "DESC_NOTHING_TO_CONFIGURE": "Nichts zu konfigurieren",
+        "BUTTON_CLOSE": "Schließen",
+        "BUTTON_SAVE": "Speichern"
+    },
+    "POPUPS_ASK": {
+        "DESC_WANT_CLOSE_THIS_WINDOW": "Sind Sie sicher, dass Sie dieses Fenster schließen möchten?"
+    },
+    "POPUPS_LANGUAGES": {
+        "TITLE_LANGUAGES": "Wählen Sie Ihre Sprache"
+    },
+    "HINTS": {
+        "BETA": "Beta",
+        "UNSTABLE": "Nicht stabil",
+        "WARNING": "Warnung!"
+    },
+    "ERRORS": {
+        "DOMAIN_ALREADY_EXISTS": "Domain existiert bereits",
+        "UNKNOWN_ERROR": "Unbekannter Fehler"
+    },
+    "NOTIFICATIONS": {
+        "INVALID_TOKEN": "Ungültiger Token",
+        "AUTH_ERROR": "Authentifizierung fehlgeschlagen",
+        "ACCESS_ERROR": "Zugriffsfehler",
+        "CONNECTION_ERROR": "Serververbindung kann nicht hergestellt werden",
+        "DOMAIN_NOT_ALLOWED": "Diese Domain ist nicht zugelassen.",
+        "ACCOUNT_NOT_ALLOWED": "Konto ist nicht zugelassen.",
+        "ACCOUNT_TWO_FACTOR_AUTH_REQUIRED": "Zwei-Faktor-Authentifizierung erforderlich",
+        "ACCOUNT_TWO_FACTOR_AUTH_ERROR": "Fehler bei Zwei-Faktor-Authentifizierung",
+        "CURRENT_PASSWORD_INCORRECT": "Aktuelles Passwort falsch",
+        "NEW_PASSWORD_SHORT": "Passwort ist zu kurz",
+        "NEW_PASSWORD_WEAK": "Passwort ist zu einfach",
+        "CONTACTS_SYNC_ERROR": "Fehler bei Kontakte-Synchronisierung",
+        "CANT_GET_MESSAGE_LIST": "Die Nachrichtenliste ist nicht verfügbar",
+        "CANT_GET_MESSAGE": "Diese Nachricht ist nicht verfügbar",
+        "CANT_DELETE_MESSAGE": "Diese Nachricht kann nicht gelöscht werden",
+        "CANT_COPY_MESSAGE": "Diese Nachricht kann nicht kopiert werden",
+        "CANT_MOVE_MESSAGE": "Diese Nachricht kann nicht verschoben werden",
+        "CANT_SAVE_MESSAGE": "Diese Nachricht kann nicht gespeichert werden",
+        "CANT_SEND_MESSAGE": "Diese Nachricht kann nicht gesendet werden",
+        "INVALID_RECIPIENTS": "Ungültige Empfängeradressen",
+        "CANT_SAVE_FILTERS": "Die Filter können nicht gespeichert werden",
+        "CANT_GET_FILTERS": "Die Filter sind nicht verfügbar",
+        "FILTERS_ARE_NOT_CORRECT": "Die Filter sind fehlerhaft",
+        "CANT_CREATE_FOLDER": "Dieser Ordner kann nicht angelegt werden",
+        "CANT_RENAME_FOLDER": "Dieser Ordner kann nicht umbenannt werden",
+        "CANT_DELETE_FOLDER": "Dieser Ordner kann nicht gelöscht werden",
+        "CANT_DELETE_NON_EMPTY_FOLDER": "Der Ordner kann nicht gelöscht werden; er ist nicht leer",
+        "CANT_SUBSCRIBE_FOLDER": "Dieser Ordner kann nicht abonniert werden",
+        "CANT_UNSUBSCRIBE_FOLDER": "Das Abonnement dieses Ordners kann nicht gelöscht werden",
+        "CANT_SAVE_SETTINGS": "Einstellungen können nicht gespeichert werden",
+        "CANT_SAVE_PLUGIN_SETTINGS": "Einstellungen können nicht gespeichert werden",
+        "DOMAIN_ALREADY_EXISTS": "Diese Domain existiert bereits",
+        "CANT_INSTALL_PACKAGE": "Paket konnte nicht installiert werden",
+        "CANT_DELETE_PACKAGE": "Paket konnte nicht entfernt werden",
+        "INVALID_PLUGIN_PACKAGE": "Plugin-Paket ist ungültig",
+        "UNSUPPORTED_PLUGIN_PACKAGE": "Plugin-Paket wird nicht unterstützt",
+        "DEMO_SEND_MESSAGE_ERROR": "Dieses Demokonto darf aus Sicherheitsgründen keine Nachrichten an externe E-Mail-Adressen versenden!",
+        "DEMO_ACCOUNT_ERROR": "Aus Sicherheitsgründen ist dieses Konto nicht zu dieser Aktion berechtigt!",
+        "ACCOUNT_ALREADY_EXISTS": "Dieses Konto existiert bereits",
+        "ACCOUNT_DOES_NOT_EXIST": "Dieser Account existiert nicht.",
+        "MAIL_SERVER_ERROR": "Beim Zugriff auf den E-Mail-Server trat ein Fehler auf.",
+        "INVALID_INPUT_ARGUMENT": "Ungültige Eingabe",
+        "UNKNOWN_ERROR": "Unbekannter Fehler"
+    }
+}

@@ -1,3 +1,20 @@
-https://www.transifex.com/rainloop/rainloop-webmail/
-https://tools.ietf.org/html/bcp47
-relativetimeformat based on Unicode CLDR
+Directory names are based on https://tools.ietf.org/html/bcp47
+
+This also allows languages like: Welsh/Kymrisch or Frisian
+
+locale examples: en, en-US, nl, nl-NL
+	2*3ALPHA            ; shortest ISO 639 code
+	["-" extlang]       ; sometimes followed by extended language subtags
+
+https://tools.ietf.org/html/rfc1766
+https://tools.ietf.org/html/rfc3066
+https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes
+https://en.wikipedia.org/wiki/IETF_language_tag
+http://www.unc.edu/~rowlett/units/codes/country.htm
+http://www.w3.org/WAI/ER/IG/ert/iso639.htm
+http://www.loc.gov/standards/iso639-2/
+http://www.unicode.org/onlinedat/countries.html
+https://www.iana.org/assignments/language-subtag-registry
+
+
+relativetimeformat.js data is based on Unicode CLDR
