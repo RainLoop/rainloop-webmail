@@ -113,9 +113,10 @@ class Client
 			'Content-Type: application/xml'
 		));
 		if (301 == $response->status) {
-			$location = $result->getRedirectLocation();
+			// Like: RewriteRule ^\.well-known/carddav /nextcloud/remote.php/dav [R=301,L]
+			$location = $response->getRedirectLocation();
 			\trigger_error("Redirect {$url} to {$location}");
-			$url = \preg_replace('@^(https?:)?//[^/]+/@', '/', $location);
+			$url = \preg_replace('@^(https?:)?//[^/]+[/$]@', '/', $location);
 			$parts = \parse_url($this->baseUri);
 			$url = $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
 			$response = $this->HTTP->doRequest('PROPFIND', $url, $body, array(
