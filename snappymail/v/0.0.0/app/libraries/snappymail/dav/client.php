@@ -113,7 +113,9 @@ class Client
 			'Content-Type: application/xml'
 		));
 		if (301 == $response->status) {
-			$url = preg_replace('@^(https?:)?//[^/]+/@', '/', $result->getRedirectLocation());
+			$location = $result->getRedirectLocation();
+			\trigger_error("Redirect {$url} to {$location}");
+			$url = \preg_replace('@^(https?:)?//[^/]+/@', '/', $location);
 			$parts = \parse_url($this->baseUri);
 			$url = $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
 			$response = $this->HTTP->doRequest('PROPFIND', $url, $body, array(
@@ -122,7 +124,7 @@ class Client
 			));
 		}
 		if (300 <= $response->status) {
-			throw new \SnappyMail\HTTP\Exception('', $response->status, $response);
+			throw new \SnappyMail\HTTP\Exception("PROPFIND {$url}", $response->status, $response);
 		}
 
 		/**
