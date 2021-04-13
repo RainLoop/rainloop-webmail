@@ -10,9 +10,7 @@
 	</div>
 	<div class="modal-body">
 		<form class="form-horizontal plugin-form" action="#/" onsubmit="return false;">
-			<div class="well" data-bind="visible: !hasConfiguration()">
-				<span data-i18n="POPUPS_PLUGIN/DESC_NOTHING_TO_CONFIGURE"></span>
-			</div>
+			<div class="well" data-bind="visible: !hasConfiguration()" data-i18n="POPUPS_PLUGIN/DESC_NOTHING_TO_CONFIGURE"></div>
 			<div class="alert" data-bind="visible: '' !== saveError()">
 				<button type="button" class="close" data-bind="click: function () { saveError('') }">×</button>
 				<span data-bind="text: saveError"></span>

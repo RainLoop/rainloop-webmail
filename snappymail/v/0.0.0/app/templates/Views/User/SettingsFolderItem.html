@@ -7,9 +7,8 @@
 			data-bind="value: nameForEdit, visible: edited, hasfocus: edited, onEnter: function () { $root.folderEditOnEnter($data); }, onEsc: function () { $root.folderEditOnEsc($data); }" />
 		&nbsp;
 		<span class="folder-system-name" data-bind="text: manageFolderSystemName, visible: isSystemFolder"></span>
-		<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function() { $root.deleteFolder($data); }">
-			<span data-i18n="GLOBAL/ARE_YOU_SURE"></span>
-		</a>
+		<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function() { $root.deleteFolder($data); }"
+			data-i18n="GLOBAL/ARE_YOU_SURE"></a>
 	</td>
 	<td data-i18n="[title]SETTINGS_FOLDERS/HELP_DELETE_FOLDER">
 		<span class="delete-folder e-action fontastic" data-bind="visible: canBeDeleted() && !deleteAccess(), click: function (oFolder) { $root.folderForDeletion(oFolder); }">🗑</span>

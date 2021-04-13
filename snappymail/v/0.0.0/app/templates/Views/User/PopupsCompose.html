@@ -22,9 +22,7 @@
 			<div class="g-ui-table">
 				<div class="e-row" style="height: 40px;">
 					<div class="e-cell e-label">
-						<label class="control-label">
-							<span data-i18n="GLOBAL/FROM"></span>
-						</label>
+						<label class="control-label" data-i18n="GLOBAL/FROM"></label>
 					</div>
 					<div class="e-cell e-value">
 						<div class="dropdown pull-left" data-bind="registerBootstrapDropdown: true, openDropdownTrigger: identitiesDropdownTrigger">
@@ -97,43 +95,33 @@
 				</div>
 				<div class="e-row">
 					<div class="e-cell e-label">
-						<label class="control-label" data-bind="css: {'error-to': emptyToError}">
-							<span data-i18n="GLOBAL/TO"
-								data-bind="tooltipErrorTip: emptyToErrorTooltip"></span>
-						</label>
+						<label class="control-label" data-bind="css: {'error-to': emptyToError}, tooltipErrorTip: emptyToErrorTooltip"
+							data-i18n="GLOBAL/TO"</label>
 					</div>
 					<div class="e-cell e-value">
 						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: to, autoCompleteSource: emailsSource" />
 					</div>
 				</div>
 				<div class="e-row cc-row" data-bind="visible: showCc">
-					<div class="e-cell e-label">
-						<span data-i18n="GLOBAL/CC"></span>
-					</div>
+					<div class="e-cell e-label" data-i18n="GLOBAL/CC"></div>
 					<div class="e-cell e-value">
 						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: cc, autoCompleteSource: emailsSource" />
 					</div>
 				</div>
 				<div class="e-row bcc-row" data-bind="visible: showBcc">
-					<div class="e-cell e-label">
-						<span data-i18n="GLOBAL/BCC"></span>
-					</div>
+					<div class="e-cell e-label" data-i18n="GLOBAL/BCC"></div>
 					<div class="e-cell e-value">
 						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: bcc, autoCompleteSource: emailsSource" />
 					</div>
 				</div>
 				<div class="e-row reply-to-row" data-bind="visible: showReplyTo">
-					<div class="e-cell e-label">
-						<span data-i18n="GLOBAL/REPLY_TO"></span>
-					</div>
+					<div class="e-cell e-label" data-i18n="GLOBAL/REPLY_TO"></div>
 					<div class="e-cell e-value">
 						<input type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" data-bind="emailsTags: replyTo, autoCompleteSource: emailsSource" />
 					</div>
 				</div>
 				<div class="e-row">
-					<div class="e-cell e-label">
-						<span data-i18n="GLOBAL/SUBJECT"></span>
-					</div>
+					<div class="e-cell e-label" data-i18n="GLOBAL/SUBJECT"></div>
 					<div class="e-cell e-value">
 						<input type="text" size="70" autocomplete="off" data-bind="textInput: subject" />
 					</div>
@@ -177,9 +165,8 @@
 		<div class="attachmentAreaParent b-content" data-bind="visible: attachmentsPlace">
 			<div class="content">
 				<div class="content-wrapper">
-					<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}">
-						<span data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></span>
-					</div>
+					<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}"
+						data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
 					<ul class="attachmentList" data-bind="foreach: attachments">
 						<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
 							<div class="attachmentIconParent">
@@ -201,9 +188,8 @@
 							</div>
 						</li>
 					</ul>
-					<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length">
-						<span data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></span>
-					</div>
+					<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length"
+						data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></div>
 				</div>
 			</div>
 		</div>

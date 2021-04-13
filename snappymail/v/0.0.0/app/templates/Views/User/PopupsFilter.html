@@ -34,9 +34,8 @@
 						<div data-bind="visible: 0 < conditions().length, foreach: conditions">
 							<div data-bind="template: {'name': template(), 'data': $data}"></div>
 						</div>
-						<div data-bind="visible: 0 === conditions().length">
-							<span data-i18n="POPUPS_FILTER/ALL_INCOMING_MESSAGES_DESC"></span>
-						</div>
+						<div data-bind="visible: 0 === conditions().length"
+							data-i18n="POPUPS_FILTER/ALL_INCOMING_MESSAGES_DESC"></div>
 						<br />
 						<a class="btn" data-bind="click: addCondition, i18nInit: true">
 							<i class="fontastic">✚</i>

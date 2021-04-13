@@ -318,9 +318,8 @@
 												<i class="fontastic iconcolor-red" data-bind="visible: downloadAsZipError">✖</i>
 												<i class="icon-file-zip" data-bind="visible: !downloadAsZipError(),
 													css: {'icon-file-zip': !downloadAsZipLoading(), 'icon-spinner': downloadAsZipLoading()}"></i>
-												<span class="g-ui-link" data-bind="click: downloadAsZip">
-													<span data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></span>
-												</span>
+												<span class="g-ui-link" data-bind="click: downloadAsZip"
+													data-i18n="MESSAGE/LINK_DOWNLOAD_AS_ZIP"></span>
 											</span>
 
 											<button type="button" class="close" style="margin-right: 5px;"

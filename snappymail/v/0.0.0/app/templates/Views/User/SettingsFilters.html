@@ -31,9 +31,8 @@
 						</td>
 						<td class="e-action" class="script-name" data-bind="text: name()"></td>
 						<td>
-							<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oScript) { $root.deleteScript(oScript); }">
-								<span data-i18n="GLOBAL/ARE_YOU_SURE"></span>
-							</a>
+							<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oScript) { $root.deleteScript(oScript); }"
+								data-i18n="GLOBAL/ARE_YOU_SURE"></a>
 						</td>
 						<td>
 							<span class="delete-script fontastic" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oScript) { $root.scriptForDeletion(oScript); }">🗑</span>

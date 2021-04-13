@@ -178,9 +178,7 @@
 							<i class="fontastic" data-bind="click: cancelThreadUid">⬅</i>
 							<span data-i18n="MESSAGE_LIST/BACK_TO_MESSAGE_LIST"></span>
 						</div>
-						<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc()">
-							<span data-bind="text: messageListSearchDesc"></span>
-						</div>
+						<div class="listSearchDesc" data-bind="visible: '' !== messageListSearchDesc(), text: messageListSearchDesc"></div>
 						<div class="listDragOver" data-bind="css: {'viewAppendArea': dragOver() && '' === messageListError() && !popupVisibility(), 'dragOverEnter': dragOverEnter }, initDom: dragOverArea">
 							<i class="fontastic e-icon">⬇</i>
 							<span data-i18n="MESSAGE_LIST/PUT_MESSAGE_HERE"></span>
@@ -191,16 +189,17 @@
 						<div class="listError" data-bind="visible: !dragOver() && '' !== messageListError()">
 							<span class="error" data-bind="text: messageListError"></span>
 						</div>
-						<div class="listEmptyList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' === messageListSearch()">
-							<span data-i18n="MESSAGE_LIST/EMPTY_LIST"></span>
-						</div>
+						<div class="listEmptyList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' === messageListSearch()"
+							data-i18n="MESSAGE_LIST/EMPTY_LIST"></div>
 						<div class="listEmptyListLoading" data-bind="visible: !dragOver() && 0 === messageList().length &&
 							messageListCompleteLoadingThrottle() && '' === messageListError()">
-							<span data-i18n="GLOBAL/LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+							<span data-i18n="GLOBAL/LOADING"></span>
+							<span class="textLoadingAnimationD1">.</span>
+							<span class="textLoadingAnimationD2">.</span>
+							<span class="textLoadingAnimationD3">.</span>
 						</div>
-						<div class="listEmptySearchList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' !== messageListSearch()">
-							<span data-i18n="MESSAGE_LIST/EMPTY_SEARCH_LIST"></span>
-						</div>
+						<div class="listEmptySearchList" data-bind="visible: !dragOver() && 0 === messageList().length && !messageListCompleteLoadingThrottle() && '' === messageListError() && '' !== messageListSearch()"
+							data-i18n="MESSAGE_LIST/EMPTY_SEARCH_LIST"></div>
 						<div data-bind="dragmessages: getDragData">
 							<div class="messageListPlace" data-bind="foreach: messageList">
 

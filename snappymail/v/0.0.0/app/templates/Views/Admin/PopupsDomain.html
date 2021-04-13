@@ -24,16 +24,10 @@
 			</div>
 			<div class="row">
 				<div class="span5">
-					<div class="legend imap-header" data-bind="visible: !sieveSettings(), css: { 'testing-done': testingDone, 'testing-error': testingImapError }">
-						<span data-placement="bottom" data-bind="tooltipErrorTip: testingImapErrorDesc">
-							<span data-i18n="POPUPS_DOMAIN/LABEL_IMAP"></span>
-						</span>
-					</div>
-					<div class="legend sieve-header" data-bind="visible: sieveSettings(), css: { 'testing-done': testingDone, 'testing-error': testingSieveError }">
-						<span data-placement="bottom" data-bind="tooltipErrorTip: testingSieveErrorDesc">
-							<span data-i18n="POPUPS_DOMAIN/LABEL_SIEVE"></span>
-						</span>
-					</div>
+					<div class="legend imap-header" data-bind="visible: !sieveSettings(), css: { 'testing-done': testingDone, 'testing-error': testingImapError }, tooltipErrorTip: testingImapErrorDesc"
+						data-i18n="POPUPS_DOMAIN/LABEL_IMAP"></div>
+					<div class="legend sieve-header" data-bind="visible: sieveSettings(), css: { 'testing-done': testingDone, 'testing-error': testingSieveError }, tooltipErrorTip: testingSieveErrorDesc"
+						data-i18n="POPUPS_DOMAIN/LABEL_SIEVE"></div>
 					<div data-bind="visible: !sieveSettings()">
 						<div class="row">
 							<div class="span3">
@@ -139,11 +133,8 @@
 					</div>
 				</div>
 				<div class="span5">
-					<div class="legend smtp-header" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }">
-						<span data-placement="bottom" data-bind="tooltipErrorTip: testingSmtpErrorDesc">
-							<span data-i18n="POPUPS_DOMAIN/LABEL_SMTP"></span>
-						</span>
-					</div>
+					<div class="legend smtp-header" data-bind="css: { 'testing-done': testingDone, 'testing-error': testingSmtpError }, tooltipErrorTip: testingSmtpErrorDesc"
+						data-i18n="POPUPS_DOMAIN/LABEL_SMTP"></div>
 					<div data-bind="visible: !smtpPhpMail()">
 						<div class="row">
 							<div class="span3">

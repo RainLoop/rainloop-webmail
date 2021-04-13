@@ -70,9 +70,8 @@
 								<span class="filter-sub-name" data-bind="text: nameSub()"></span>
 							</td>
 							<td>
-								<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oFilter) { $root.deleteFilter(oFilter); }">
-									<span data-i18n="GLOBAL/ARE_YOU_SURE"></span>
-								</a>
+								<a class="btn btn-small btn-small-small btn-danger pull-right button-confirm-delete button-delete-transitions" data-bind="css: {'delete-access': deleteAccess()}, click: function(oFilter) { $root.deleteFilter(oFilter); }"
+									data-i18n="GLOBAL/ARE_YOU_SURE"></a>
 							</td>
 							<td>
 								<span class="delete-filter fontastic" data-bind="visible: !deleteAccess() && canBeDeleted(), click: function (oFilter) { $root.filterForDeletion(oFilter); }">🗑</span>

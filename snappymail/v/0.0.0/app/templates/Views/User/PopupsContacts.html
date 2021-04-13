@@ -64,15 +64,16 @@
 					<div class="listClear" data-bind="visible: viewClearSearch() && '' !== search()">
 						<span class="g-ui-link" data-i18n="CONTACTS/CLEAR_SEARCH" data-bind="command: clearCommand"></span>
 					</div>
-					<div class="listEmptyList" data-bind="visible: 0 === contacts().length && '' === search() && !contacts.loading()">
-						<span data-i18n="CONTACTS/EMPTY_LIST"></span>
-					</div>
+					<div class="listEmptyList" data-bind="visible: 0 === contacts().length && '' === search() && !contacts.loading()"
+						data-i18n="CONTACTS/EMPTY_LIST"></div>
 					<div class="listEmptyListLoading" data-bind="visible: 0 === contacts().length && '' === search() && contacts.loading()">
-						<span data-i18n="GLOBAL/LOADING"></span><span class="textLoadingAnimationD1">.</span><span class="textLoadingAnimationD2">.</span><span class="textLoadingAnimationD3">.</span>
+						<span data-i18n="GLOBAL/LOADING"></span>
+						<span class="textLoadingAnimationD1">.</span>
+						<span class="textLoadingAnimationD2">.</span>
+						<span class="textLoadingAnimationD3">.</span>
 					</div>
-					<div class="listEmptySearchList" data-bind="visible: 0 === contacts().length && '' !== search() && !contacts.loading()">
-						<span data-i18n="CONTACTS/EMPTY_SEARCH"></span>
-					</div>
+					<div class="listEmptySearchList" data-bind="visible: 0 === contacts().length && '' !== search() && !contacts.loading()"
+						data-i18n="CONTACTS/EMPTY_SEARCH"></div>
 					<div class="e-contact-foreach g-ui-user-select-none" data-bind="foreach: contacts, visible: 0 < contacts().length">
 						<div class="e-contact-item g-ui-user-select-none" data-bind="css: lineAsCss()">
 							<div class="checkboxItem fontastic" data-bind="text: checked() ? '☑' : '☐'"></div>
@@ -136,9 +137,8 @@
 		<div class="b-view-content" data-bind="css: {'read-only': viewReadOnly}">
 			<div class="content">
 				<div class="content-wrapper">
-					<div class="b-contact-view-desc" data-bind="visible: emptySelection">
-						<span data-i18n="CONTACTS/CONTACT_VIEW_DESC"></span>
-					</div>
+					<div class="b-contact-view-desc" data-bind="visible: emptySelection"
+						data-i18n="CONTACTS/CONTACT_VIEW_DESC"></div>
 					<div data-bind="visible: !emptySelection()">
 						<div class="form-horizontal top-part">
 							<div class="control-group" data-bind="visible: !viewReadOnly() || contactHasValidName()">
