@@ -1,0 +1,29 @@
+<div class="modal fade b-two-factor-test-content g-ui-user-select-none" data-bind="modal: modalVisibility">
+	<div>
+		<div class="modal-header">
+			<button type="button" class="close" data-bind="command: cancelCommand">×</button>
+			<h3 data-i18n="POPUPS_TWO_FACTOR_TEST/TITLE_TEST_CODE"></h3>
+		</div>
+		<div class="modal-body">
+			<div class="form-horizontal">
+				<br />
+				<div class="control-group">
+					<label class="control-label">
+						<span data-i18n="POPUPS_TWO_FACTOR_TEST/LABEL_CODE"></span>
+					</label>
+					<div class="controls">
+						<input type="text" class="uiInput inputName"
+							autofocus="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+							data-bind="textInput: code, onEnter: testCodeCommand" />
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<a class="btn" data-bind="command: testCodeCommand, css: { 'btn-success': true === codeStatus(), 'btn-danger': false === codeStatus() }">
+				<i data-bind="css: {'icon-ok': !testing(), 'icon-spinner': testing()}"></i>
+				<span data-i18n="GLOBAL/TEST"></span>
+			</a>
+		</div>
+	</div>
+</div>

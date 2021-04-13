@@ -1,5 +1,7 @@
 import { settingsAddViewModel } from 'Screen/AbstractSettings';
 import { SettingsGet } from 'Common/Globals';
+import { showScreenPopup } from 'Knoin/Knoin';
+import { AbstractViewPopup } from 'Knoin/AbstractViews';
 
 const USER_VIEW_MODELS_HOOKS = [],
 	ADMIN_VIEW_MODELS_HOOKS = [];
@@ -53,3 +55,6 @@ rl.pluginSettingsGet = (pluginSection, name) => {
 	plugins = plugins && null != plugins[pluginSection] ? plugins[pluginSection] : null;
 	return plugins ? (null == plugins[name] ? null : plugins[name]) : null;
 };
+
+rl.showPluginPopup = showScreenPopup;
+rl.pluginPopupView = AbstractViewPopup;
