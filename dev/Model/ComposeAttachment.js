@@ -96,13 +96,6 @@ export class ComposeAttachmentModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	iconClass() {
-		return FileInfo.getIconClass(this.fileExt(), this.mimeType())[0];
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	iconText() {
-		return FileInfo.getIconClass(this.fileExt(), this.mimeType())[1];
+		return FileInfo.getIconClass(this.fileExt(), this.mimeType());
 	}
 }
