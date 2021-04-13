@@ -140,11 +140,11 @@ class PdoAddressBook
 				if (!empty($sKey) && is_array($aItem))
 				{
 					$aItem = \array_change_key_case($aItem, \CASE_LOWER);
-					if (isset($aItem['{dav:}getetag']))
+					if (isset($aItem['{DAV:}getetag']))
 					{
 						$aMatch = array();
 						if (\preg_match('/\/([^\/?]+)$/', $sKey, $aMatch) && !empty($aMatch[1]) &&
-							(!$aItem['{dav:}resourcetype'] || !$aItem['{dav:}resourcetype']->is('{DAV:}collection')))
+							(!$aItem['{DAV:}resourcetype'] || !$aItem['{DAV:}resourcetype']->is('{DAV:}collection')))
 						{
 							$sVcfFileName = \urldecode(\urldecode($aMatch[1]));
 							$sKeyID = \preg_replace('/\.vcf$/i', '', $sVcfFileName);
@@ -153,16 +153,16 @@ class PdoAddressBook
 								'deleted' => false,
 								'uid' => $sKeyID,
 								'vcf' => $sVcfFileName,
-								'etag' => \trim(\trim($aItem['{dav:}getetag']), '"\''),
+								'etag' => \trim(\trim($aItem['{DAV:}getetag']), '"\''),
 								'lastmodified' => '',
 								'changed' => 0
 							);
 
-							if (isset($aItem['{dav:}getlastmodified']))
+							if (isset($aItem['{DAV:}getlastmodified']))
 							{
-								$mResult[$sKeyID]['lastmodified'] = $aItem['{dav:}getlastmodified'];
+								$mResult[$sKeyID]['lastmodified'] = $aItem['{DAV:}getlastmodified'];
 								$mResult[$sKeyID]['changed'] = \MailSo\Base\DateTimeHelper::ParseRFC2822DateString(
-									$aItem['{dav:}getlastmodified']);
+									$aItem['{DAV:}getlastmodified']);
 							}
 							else
 							{
