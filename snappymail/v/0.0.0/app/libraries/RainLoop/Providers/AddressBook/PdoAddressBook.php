@@ -139,7 +139,7 @@ class PdoAddressBook
 					{
 						$aMatch = array();
 						if (\preg_match('/\/([^\/?]+)$/', $sKey, $aMatch) && !empty($aMatch[1]) &&
-							(!$aItem['{dav:}resourcetype'] || !$aItem['{dav:}resourcetype']->is('{DAV:}collection')))
+							(!$aItem['{dav:}resourcetype'] || !\in_array('{DAV:}collection', $aItem['{dav:}resourcetype'])))
 						{
 							$sVcfFileName = \urldecode(\urldecode($aMatch[1]));
 							$sKeyID = \preg_replace('/\.vcf$/i', '', $sVcfFileName);
@@ -280,9 +280,7 @@ class PdoAddressBook
 
 					if (empty($sNextPath))
 					{
-						$oResourceType = isset($aItem['{DAV:}resourcetype']) ? $aItem['{DAV:}resourcetype'] : null;
-						/* @var $oResourceType \Sabre\DAV\Property\ResourceType */
-						if ($oResourceType && $oResourceType->is('{DAV:}collection'))
+						if (isset($aItem['{DAV:}resourcetype']) && \in_array('{DAV:}collection', $aItem['{DAV:}resourcetype']))
 						{
 							$sNextPath = $sKey;
 							continue;
@@ -403,15 +401,10 @@ class PdoAddressBook
 				{
 					if (!empty($sKey) && $aItem && isset($aItem['{DAV:}resourcetype']))
 					{
-						$oResourceType = $aItem['{DAV:}resourcetype'];
-						/* @var $oResourceType \Sabre\DAV\Property\ResourceType */
-
-						if ($oResourceType && $oResourceType->is('{DAV:}collection'))
+						if (\in_array('{DAV:}collection', $aItem['{DAV:}resourcetype'])
+						 && \in_array('{urn:ietf:params:xml:ns:carddav}addressbook', $aItem['{DAV:}resourcetype']))
 						{
-							if ($oResourceType->is('{urn:ietf:params:xml:ns:carddav}addressbook'))
-							{
-								$aContactsPaths[$sKey] = isset($aItem['{DAV:}displayname']) ? \trim($aItem['{DAV:}displayname']) : '';
-							}
+							$aContactsPaths[$sKey] = isset($aItem['{DAV:}displayname']) ? \trim($aItem['{DAV:}displayname']) : '';
 						}
 					}
 				}
@@ -451,11 +444,8 @@ class PdoAddressBook
 			{
 				if (!empty($sKey) && isset($aItem['{DAV:}resourcetype']))
 				{
-					$oResourceType = $aItem['{DAV:}resourcetype'];
-					/* @var $oResourceType \Sabre\DAV\Property\ResourceType */
-
-					if ($oResourceType && $oResourceType->is('{DAV:}collection') &&
-						$oResourceType->is('{urn:ietf:params:xml:ns:carddav}addressbook'))
+					if (\in_array('{DAV:}collection', $aItem['{DAV:}resourcetype'])
+					 && \in_array('{urn:ietf:params:xml:ns:carddav}addressbook', $aItem['{DAV:}resourcetype']))
 					{
 						$bGood = true;
 					}
@@ -471,7 +461,7 @@ class PdoAddressBook
 		return $bGood;
 	}
 
-	public function getDavClientFromUrl(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : DAVClient
+	private function getDavClientFromUrl(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : DAVClient
 	{
 		if (!\preg_match('/^http[s]?:\/\//i', $sUrl))
 		{
@@ -515,7 +505,7 @@ class PdoAddressBook
 		return $oClient;
 	}
 
-	public function getDavClient(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : ?DAVClient
+	private function getDavClient(string $sUrl, string $sUser, string $sPassword, string $sProxy = '') : ?DAVClient
 	{
 		$aMatch = array();
 		$sUserAddressBookNameName = '';
