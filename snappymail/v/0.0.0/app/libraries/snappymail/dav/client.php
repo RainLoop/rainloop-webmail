@@ -143,19 +143,21 @@ class Client
 			throw new \InvalidArgumentException('The passed data is not valid XML');
 		}
 
-		$ns = \array_search('urn:DAV', $responseXML->getNamespaces(true));
-		$ns = $ns ? "{$ns}:" : '';
+		$ns = \array_search('urn:DAV', $responseXML->getNamespaces(true)) ?: 'd';
 //		$ns_card = \array_search('urn:ietf:params:xml:ns:carddav', $responseXML->getNamespaces(true));
 
 		$result = array();
 
-		foreach ($responseXML->xpath("{$ns}response") as $response) {
-			$href = $response->xpath("{$ns}href");
+		$responseXML->registerXPathNamespace($ns, 'urn:DAV');
+		foreach ($responseXML->xpath("{$ns}:response") as $response) {
+			$response->registerXPathNamespace($ns, 'urn:DAV');
+			$href = $response->xpath("{$ns}:href");
 			$href = (string) $href[0];
 
 			$properties = array();
-			foreach ($response->xpath("{$ns}propstat") as $propStat) {
-				$status = $propStat->xpath("{$ns}status");
+			foreach ($response->xpath("{$ns}:propstat") as $propStat) {
+				$propStat->registerXPathNamespace($ns, 'urn:DAV');
+				$status = $propStat->xpath("{$ns}:status");
 				list($httpVersion, $statusCode, $message) = \explode(' ', (string)$status[0], 3);
 
 				$properties[$statusCode] = static::parseProperties(\dom_import_simplexml($propStat));

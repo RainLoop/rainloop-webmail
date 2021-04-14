@@ -27,6 +27,9 @@ trait CardDAV
 			$this->oLogger->WriteException($oException);
 		}
 
+		/**
+		 * find every <response><href>*.vcf</href> with empty <resourcetype/>
+		 */
 		if (\is_array($aResponse))
 		{
 			$mResult = array();
@@ -35,7 +38,6 @@ trait CardDAV
 				$sKey = \rtrim(\trim($sKey), '\\/');
 				if (!empty($sKey) && is_array($aItem))
 				{
-					$aItem = \array_change_key_case($aItem, \CASE_LOWER);
 					if (isset($aItem['{DAV:}getetag']))
 					{
 						$aMatch = array();

@@ -43,7 +43,7 @@ abstract class DateTimeHelper
 		}
 
 		$sDateTime = \trim(\preg_replace('/ \([a-zA-Z0-9]+\)$/', '', $sDateTime));
-		$oDateTime = \DateTime::createFromFormat('D, d M Y H:i:s O', $sDateTime, \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
+		$oDateTime = \DateTime::createFromFormat(\DateTime::RFC822, $sDateTime, static::GetUtcTimeZoneObject());
 		return $oDateTime ? $oDateTime->getTimestamp() : 0;
 	}
 
@@ -61,10 +61,10 @@ abstract class DateTimeHelper
 
 		if (\preg_match('/^[a-z]{2,4}, /i', $sDateTime)) // RFC2822 ~ "Thu, 10 Jun 2010 08:58:33 -0700 (PDT)"
 		{
-			return \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sDateTime);
+			return static::ParseRFC2822DateString($sDateTime);
 		}
 
-		$oDateTime = \DateTime::createFromFormat('d-M-Y H:i:s O', $sDateTime, \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
+		$oDateTime = \DateTime::createFromFormat('d-M-Y H:i:s O', $sDateTime, static::GetUtcTimeZoneObject());
 		return $oDateTime ? $oDateTime->getTimestamp() : 0;
 	}
 
@@ -79,20 +79,21 @@ abstract class DateTimeHelper
 			return 0;
 		}
 
-		$oDateTime = \DateTime::createFromFormat('Y-m-d H:i:s O', $sDateTime, \MailSo\Base\DateTimeHelper::GetUtcTimeZoneObject());
+		$oDateTime = \DateTime::createFromFormat('Y-m-d H:i:s O', $sDateTime, static::GetUtcTimeZoneObject());
 		return $oDateTime ? $oDateTime->getTimestamp() : 0;
 	}
 
 	/**
 	 * Parse date string formated as "2015-05-08T14:32:18.483-07:00"
+	 * DateTime::RFC3339_EXTENDED
 	 */
 	public static function TryToParseSpecEtagFormat(string $sDateTime) : int
 	{
-		$sDateTime = \trim(\preg_replace('/ \([a-zA-Z0-9]+\)$/', '', \trim($sDateTime)));
-		$sDateTime = \trim(\preg_replace('/(:[\d]{2})\.[\d]{3}/', '$1', \trim($sDateTime)));
-		$sDateTime = \trim(\preg_replace('/(-[\d]{2})T([\d]{2}:)/', '$1 $2', \trim($sDateTime)));
-		$sDateTime = \trim(\preg_replace('/([\-+][\d]{2}):([\d]{2})$/', ' $1$2', \trim($sDateTime)));
+		$sDateTime = \preg_replace('/ \([a-zA-Z0-9]+\)$/', '', \trim($sDateTime));
+		$sDateTime = \preg_replace('/(:[\d]{2})\.[\d]{3}/', '$1', \trim($sDateTime));
+		$sDateTime = \preg_replace('/(-[\d]{2})T([\d]{2}:)/', '$1 $2', \trim($sDateTime));
+		$sDateTime = \preg_replace('/([\-+][\d]{2}):([\d]{2})$/', ' $1$2', \trim($sDateTime));
 
-		return \MailSo\Base\DateTimeHelper::ParseDateStringType1($sDateTime);
+		return static::ParseDateStringType1($sDateTime);
 	}
 }
