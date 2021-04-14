@@ -57,8 +57,6 @@ class Manager
 					$oConfig->Save();
 				}
 			}
-
-			$this->RunHook('api.bootstrap.plugins');
 		}
 	}
 

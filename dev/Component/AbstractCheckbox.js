@@ -27,7 +27,6 @@ class AbstractCheckbox extends AbstractComponent {
 		this.inline = !!params.inline;
 
 		this.labeled = undefined !== params.label;
-		this.labelAnimated = !!params.labelAnimated;
 	}
 
 	click() {

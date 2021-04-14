@@ -871,7 +871,7 @@ class Actions
 		}
 	}
 
-	public function LoginProvide(string $sEmail, string $sLogin, string $sPassword, string $sSignMeToken = '', string $sClientCert = '', bool $bThrowProvideException = false): ?Model\Account
+	protected function LoginProvide(string $sEmail, string $sLogin, string $sPassword, string $sSignMeToken = '', string $sClientCert = '', bool $bThrowProvideException = false): ?Model\Account
 	{
 		$oAccount = null;
 		if (0 < \strlen($sEmail) && 0 < \strlen($sLogin) && 0 < \strlen($sPassword)) {
@@ -879,7 +879,7 @@ class Actions
 			if ($oDomain) {
 				if ($oDomain->ValidateWhiteList($sEmail, $sLogin)) {
 					$oAccount = new Model\Account($sEmail, $sLogin, $sPassword, $oDomain, $sSignMeToken, '', '', $sClientCert);
-					$this->Plugins()->RunHook('filter.acount', array($oAccount));
+					$this->Plugins()->RunHook('filter.account', array($oAccount));
 
 					if ($bThrowProvideException && !$oAccount) {
 						throw new Exceptions\ClientException(Notifications::AuthError);
@@ -1419,7 +1419,7 @@ class Actions
 	{
 		$sInputEmail = $sEmail;
 
-		$this->Plugins()->RunHook('filter.login-credentials.step-1', array(&$sEmail, &$sPassword));
+		$this->Plugins()->RunHook('login.credentials.step-1', array(&$sEmail));
 
 		$sEmail = \MailSo\Base\Utils::Trim($sEmail);
 		if ($this->Config()->Get('login', 'login_lowercase', true)) {
@@ -1486,7 +1486,7 @@ class Actions
 			}
 		}
 
-		$this->Plugins()->RunHook('filter.login-credentials.step-2', array(&$sEmail, &$sPassword));
+		$this->Plugins()->RunHook('login.credentials.step-2', array(&$sEmail, &$sPassword));
 
 		if (false === \strpos($sEmail, '@') || 0 === \strlen($sPassword)) {
 			$this->loginErrorDelay();
@@ -1501,11 +1501,9 @@ class Actions
 			$sLogin = \MailSo\Base\Utils::StrToLowerIfAscii($sLogin);
 		}
 
-		$this->Plugins()->RunHook('filter.login-credentials', array(&$sEmail, &$sLogin, &$sPassword));
+		$this->Plugins()->RunHook('login.credentials', array(&$sEmail, &$sLogin, &$sPassword));
 
 		$this->Logger()->AddSecret($sPassword);
-
-		$this->Plugins()->RunHook('event.login-pre-login-provide', array());
 
 		$oAccount = null;
 		$sClientCert = \trim($this->Config()->Get('ssl', 'client_cert', ''));
@@ -1516,7 +1514,7 @@ class Actions
 				throw new Exceptions\ClientException(Notifications::AuthError);
 			}
 
-			$this->Plugins()->RunHook('event.login-post-login-provide', array($oAccount));
+			$this->Plugins()->RunHook('login.success', array($oAccount));
 		} catch (\Throwable $oException) {
 			$this->loginErrorDelay();
 			$this->LoggerAuthHelper($oAccount, $this->getAdditionalLogParamsByUserLogin($sInputEmail));

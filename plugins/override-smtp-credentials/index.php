@@ -10,7 +10,7 @@ class OverrideSmtpCredentialsPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function Init() : void
 	{
-		$this->addHook('filter.smtp-credentials', 'FilterSmtpCredentials');
+		$this->addHook('smtp.credentials', 'FilterSmtpCredentials');
 	}
 
 	/**

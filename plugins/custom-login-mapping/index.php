@@ -10,7 +10,7 @@ class CustomLoginMappingPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function Init() : void
 	{
-		$this->addHook('filter.login-credentials', 'FilterLoginСredentials');
+		$this->addHook('login.credentials', 'FilterLoginCredentials');
 	}
 
 	/**
@@ -20,7 +20,7 @@ class CustomLoginMappingPlugin extends \RainLoop\Plugins\AbstractPlugin
 	 *
 	 * @throws \RainLoop\Exceptions\ClientException
 	 */
-	public function FilterLoginСredentials(&$sEmail, &$sLogin, &$sPassword)
+	public function FilterLoginCredentials(&$sEmail, &$sLogin, &$sPassword)
 	{
 		$sMapping = \trim($this->Config()->Get('plugin', 'mapping', ''));
 		if (!empty($sMapping))

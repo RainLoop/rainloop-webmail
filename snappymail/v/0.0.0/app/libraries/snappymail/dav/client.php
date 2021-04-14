@@ -10,21 +10,7 @@ namespace SnappyMail\DAV;
 
 class Client
 {
-	/**
-	 * The propertyMap is a key-value array.
-	 *
-	 * If you use the propertyMap, any {DAV:}multistatus responses with the
-	 * proeprties listed in this array, will automatically be mapped to a
-	 * respective class.
-	 *
-	 * The {DAV:}resourcetype property is automatically added. This maps to
-	 * Sabre\DAV\Property\ResourceType
-	 *
-	 * @var array
-	 */
-	public $propertyMap = array(
-//		'{DAV:}resourcetype' => 'SnappyMail\\DAV\\Property\\ResourceType'
-	);
+//	public $__UrlPath__;
 
 	protected $baseUri;
 
@@ -63,6 +49,40 @@ class Client
 	}
 
 	/**
+	 * Performs an actual HTTP request, and returns the result.
+	 *
+	 * If the specified url is relative, it will be expanded based on the base url.
+	 */
+	public function request(string $method, string $url = '', string $body = null, array $headers = array()) : \SnappyMail\HTTP\Response
+	{
+		if (!\preg_match('@^(https?:)?//@', $url)) {
+			// If the url starts with a slash, we must calculate the url based off
+			// the root of the base url.
+			if (0 === \strpos($url, '/')) {
+				$parts = \parse_url($this->baseUri);
+				$url = $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
+			} else {
+				$url = $this->baseUri . $url;
+			}
+		}
+		$response = $this->HTTP->doRequest('PROPFIND', $url, $body, $headers);
+		if (301 == $response->status) {
+			// Like: RewriteRule ^\.well-known/carddav /nextcloud/remote.php/dav [R=301,L]
+			$location = $response->getRedirectLocation();
+			\trigger_error("Redirect {$url} to {$location}");
+			$url = \preg_replace('@^(https?:)?//[^/]+[/$]@', '/', $location);
+			$parts = \parse_url($this->baseUri);
+			$url = $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
+			$response = $this->HTTP->doRequest('PROPFIND', $url, $body, $headers);
+		}
+		if (300 <= $response->status) {
+			throw new \SnappyMail\HTTP\Exception("PROPFIND {$url}", $response->status, $response);
+		}
+
+		return $response;
+	}
+
+	/**
 	 * Does a PROPFIND request
 	 *
 	 * The list of requested properties must be specified as an array, in clark
@@ -98,35 +118,10 @@ class Client
 		$body .= '  </d:prop>' . "\n";
 		$body .= '</d:propfind>';
 
-		if (!\preg_match('@^(https?:)?//@', $url)) {
-			// If the url starts with a slash, we must calculate the url based off
-			// the root of the base url.
-			if (0 === \strpos($url, '/')) {
-				$parts = \parse_url($this->baseUri);
-				$url = $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
-			} else {
-				$url = $this->baseUri . $url;
-			}
-		}
-		$response = $this->HTTP->doRequest('PROPFIND', $url, $body, array(
+		$response = $this->request('PROPFIND', $url, $body, array(
 			"Depth: {$depth}",
 			'Content-Type: application/xml'
 		));
-		if (301 == $response->status) {
-			// Like: RewriteRule ^\.well-known/carddav /nextcloud/remote.php/dav [R=301,L]
-			$location = $response->getRedirectLocation();
-			\trigger_error("Redirect {$url} to {$location}");
-			$url = \preg_replace('@^(https?:)?//[^/]+[/$]@', '/', $location);
-			$parts = \parse_url($this->baseUri);
-			$url = $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
-			$response = $this->HTTP->doRequest('PROPFIND', $url, $body, array(
-				"Depth: {$depth}",
-				'Content-Type: application/xml'
-			));
-		}
-		if (300 <= $response->status) {
-			throw new \SnappyMail\HTTP\Exception("PROPFIND {$url}", $response->status, $response);
-		}
 
 		/**
 		 * Parse the WebDAV multistatus response body
@@ -148,26 +143,22 @@ class Client
 			throw new \InvalidArgumentException('The passed data is not valid XML');
 		}
 
-		$responseXML->registerXPathNamespace('d', 'urn:DAV');
+		$ns = \array_search('urn:DAV', $responseXML->getNamespaces(true));
+		$ns = $ns ? "{$ns}:" : '';
+//		$ns_card = \array_search('urn:ietf:params:xml:ns:carddav', $responseXML->getNamespaces(true));
 
 		$result = array();
 
-		foreach ($responseXML->xpath('d:response') as $response) {
-			$response->registerXPathNamespace('d', 'urn:DAV');
-			$href = $response->xpath('d:href');
+		foreach ($responseXML->xpath("{$ns}response") as $response) {
+			$href = $response->xpath("{$ns}href");
 			$href = (string) $href[0];
 
 			$properties = array();
-
-			foreach ($response->xpath('d:propstat') as $propStat) {
-				$propStat->registerXPathNamespace('d', 'urn:DAV');
-				$status = $propStat->xpath('d:status');
+			foreach ($response->xpath("{$ns}propstat") as $propStat) {
+				$status = $propStat->xpath("{$ns}status");
 				list($httpVersion, $statusCode, $message) = \explode(' ', (string)$status[0], 3);
 
-				// Only using the propertymap for results with status 200.
-				$propertyMap = $statusCode === '200' ? $this->propertyMap : array();
-
-				$properties[$statusCode] = static::parseProperties(\dom_import_simplexml($propStat), $propertyMap);
+				$properties[$statusCode] = static::parseProperties(\dom_import_simplexml($propStat));
 			}
 
 			$result[$href] = $properties;
@@ -218,14 +209,10 @@ class Client
 	 * If no value was given (self-closing element) null will be used as the
 	 * value. This is used in for example PROPFIND requests.
 	 *
-	 * Complex values are supported through the propertyMap argument. The
-	 * propertyMap should have the clark-notation properties as it's keys, and
-	 * classnames as values.
-	 *
 	 * When any of these properties are found, the fromDOMElement() method will be
 	 * (statically) called. The result of this method is used as the value.
 	 */
-	protected static function parseProperties(\DOMElement $parentNode, array $propertyMap = array()) : array
+	protected static function parseProperties(\DOMElement $parentNode) : array
 	{
 		$propList = array();
 		foreach ($parentNode->childNodes as $propNode) {
@@ -234,8 +221,11 @@ class Client
 					/* If there are no elements in here, we actually get 1 text node, this special case is dedicated to netdrive */
 					if (XML_ELEMENT_NODE == $propNodeData->nodeType) {
 						$propertyName = self::toClarkNotation($propNodeData);
-						if (isset($propertyMap[$propertyName])) {
-							$propList[$propertyName] = \call_user_func(array($propertyMap[$propertyName], 'fromDOMElement'), $propNodeData);
+						if ('{DAV:}resourcetype' === $propertyName) {
+							$propList[$propertyName] = [];
+							foreach ($propNodeData->childNodes as $resourcetype) {
+								$propList[$propertyName][] = self::toClarkNotation($resourcetype);
+							}
 						} else {
 							$propList[$propertyName] = $propNodeData->textContent;
 						}
@@ -245,5 +235,4 @@ class Client
 		}
 		return $propList;
 	}
-
 }

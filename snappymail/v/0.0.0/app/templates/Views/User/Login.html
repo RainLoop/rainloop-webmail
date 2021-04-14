@@ -6,18 +6,14 @@
 		<div class="alert" data-bind="hidden: !submitError()" hidden="">
 			<button type="button" class="close" data-bind="click: function () { submitError('') }">×</button>
 			<span data-bind="text: submitError"></span>
-			<div data-bind="visible: '' !== submitErrorAddidional()">
-				<br />
-				<span data-bind="text: submitErrorAddidional"></span>
-			</div>
+			<p data-bind="visible: '' !== submitErrorAddidional(), text: submitErrorAddidional"></p>
 		</div>
 		<div class="wrapper-parent">
 			<form class="wrapper submitting-pane loginForm" action="#/"
 				data-bind="submit: submitForm, css: {'errorAnimated': formError, 'submitting': submitRequest()}">
 				<div class="controls" data-bind="css: {'error': emailError}">
 					<div class="input-append">
-						<input required="" type="text" class="input-block-level inputEmail"
-							pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
+						<input required="" type="text" class="input-block-level inputEmail" pattern="[^@\s]+(@[^\s]+)?" inputmode="email"
 							autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="textInput: email, disable: submitRequest"
 							data-i18n="[placeholder]GLOBAL/EMAIL" />
@@ -41,9 +37,9 @@
 				</div>
 				<div id="plugin-Login-BottomControlGroup"></div>
 				<div class="controls" data-bind="hidden: hideSubmitButton">
-					<button type="submit" class="btn btn-large btn-block buttonLogin" data-bind="command: submitCommand">
-						<span class="i18n-animation" data-i18n="LOGIN/BUTTON_SIGN_IN"></span>
-					</button>
+					<button type="submit" class="btn btn-large btn-block buttonLogin"
+						data-bind="command: submitCommand"
+						data-i18n="LOGIN/BUTTON_SIGN_IN"></button>
 				</div>
 				<div class="controls clearfix" style="margin-bottom: 10px">
 					<div class="pull-right language-buttons">
@@ -57,7 +53,6 @@
 						name: 'CheckboxSimple',
 						params: {
 							label: 'LOGIN/LABEL_SIGN_ME',
-							labelAnimated: true,
 							value: signMe
 						}
 					}"></div>

@@ -10,8 +10,6 @@ import { AbstractModel } from 'Knoin/AbstractModel';
 
 import { SMAudio } from 'Common/Audio';
 
-const bAllowPdfPreview = undefined !== navigator.mimeTypes['application/pdf'];
-
 export class AttachmentModel extends AbstractModel {
 	constructor() {
 		super();
@@ -92,27 +90,21 @@ export class AttachmentModel extends AbstractModel {
 	 * @returns {boolean}
 	 */
 	isText() {
-		return (
-			FileType.Text === this.fileType ||
-			FileType.Eml === this.fileType ||
-			FileType.Certificate === this.fileType ||
-			FileType.Html === this.fileType ||
-			FileType.Code === this.fileType
-		);
+		return FileType.Text === this.fileType || FileType.Eml === this.fileType;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
-	isPdf() {
-		return FileType.Pdf === this.fileType;
+	pdfPreview() {
+		return null != navigator.mimeTypes['application/pdf'] && FileType.Pdf === this.fileType;
 	}
 
 	/**
 	 * @returns {boolean}
 	 */
 	hasPreview() {
-		return this.isImage() || (this.isPdf() && bAllowPdfPreview) || this.isText();
+		return this.isImage() || this.pdfPreview() || this.isText();
 	}
 
 	/**
@@ -158,39 +150,20 @@ export class AttachmentModel extends AbstractModel {
 	/**
 	 * @returns {string}
 	 */
-	linkPreviewAsPlain() {
-		return serverRequestRaw('ViewAsPlain', this.download);
-	}
-
-	/**
-	 * @returns {string}
-	 */
 	linkPreviewMain() {
 		let result = '';
 		switch (true) {
 			case this.isImage():
-			case this.isPdf() && bAllowPdfPreview:
+			case this.pdfPreview():
 				result = this.linkPreview();
 				break;
 			case this.isText():
-				result = this.linkPreviewAsPlain();
+				result = serverRequestRaw('ViewAsPlain', this.download);
 				break;
 			// no default
 		}
 
 		return result;
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	generateTransferDownloadUrl() {
-		let link = this.linkDownload();
-		if ('http' !== link.substr(0, 4)) {
-			link = location.protocol + '//' + location.host + location.pathname + link;
-		}
-
-		return this.mimeType + ':' + this.fileName + ':' + link;
 	}
 
 	/**
@@ -201,7 +174,11 @@ export class AttachmentModel extends AbstractModel {
 	eventDragStart(attachment, event) {
 		const localEvent = event.originalEvent || event;
 		if (attachment && localEvent && localEvent.dataTransfer && localEvent.dataTransfer.setData) {
-			localEvent.dataTransfer.setData('DownloadURL', this.generateTransferDownloadUrl());
+			let link = this.linkDownload();
+			if ('http' !== link.substr(0, 4)) {
+				link = location.protocol + '//' + location.host + location.pathname + link;
+			}
+			localEvent.dataTransfer.setData('DownloadURL', this.mimeType + ':' + this.fileName + ':' + link);
 		}
 
 		return true;
@@ -211,13 +188,6 @@ export class AttachmentModel extends AbstractModel {
 	 * @returns {string}
 	 */
 	iconClass() {
-		return FileInfo.getTypeIconClass(this.fileType)[0];
-	}
-
-	/**
-	 * @returns {string}
-	 */
-	iconText() {
-		return FileInfo.getTypeIconClass(this.fileType)[1];
+		return FileInfo.getTypeIconClass(this.fileType);
 	}
 }

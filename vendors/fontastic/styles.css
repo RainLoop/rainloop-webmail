@@ -55,13 +55,13 @@
 .icon-file-code::before {
   content: "\e030";
 }
-.icon-file-chart-graph::before {
+.icon-file-presentation::before {
   content: "\e031"; /* 📊 */
 }
-.icon-file-zip::before {
+.icon-file-archive::before {
   content: "\e032";
 }
-.icon-file-music::before {
+.icon-file-audio::before {
   content: "\e033";
 }
 .icon-file-text::before {
@@ -76,10 +76,10 @@
 .icon-attachment::before {
   content: "📎";
 }
-.icon-file-excel::before {
+.icon-file-spreadsheet::before {
   content: "\e03a";
 }
-.icon-file-movie::before {
+.icon-file-video::before {
   content: "\e03b";
 }
 .icon-folder-add::before {
