@@ -1513,8 +1513,6 @@ class Actions
 			if (!$oAccount) {
 				throw new Exceptions\ClientException(Notifications::AuthError);
 			}
-
-			$this->Plugins()->RunHook('login.success', array($oAccount));
 		} catch (\Throwable $oException) {
 			$this->loginErrorDelay();
 			$this->LoggerAuthHelper($oAccount, $this->getAdditionalLogParamsByUserLogin($sInputEmail));
