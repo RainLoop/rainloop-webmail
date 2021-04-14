@@ -31,7 +31,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 //		$this->addCss('style.less');
 		$this->addJs('js/TwoFactorAuthSettings.js');
 
-		$this->addHook('login.success', 'LoginProcess');
+		$this->addHook('login.success', 'DoLogin');
 
 		$this->addJsonHook('GetTwoFactorInfo', 'DoGetTwoFactorInfo');
 		$this->addJsonHook('CreateTwoFactorSecret', 'DoCreateTwoFactorSecret');
@@ -56,12 +56,10 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		];
 	}
 
-	// Stripped from \RainLoop\Actions::LoginProcess
-	public function LoginProcess(\RainLoop\Model\Account $oAccount)
+	public function DoLogin(\RainLoop\Model\Account $oAccount)
 	{
-		$bSkipTwoFactorAuth = !!$this->Manager()->Actions()->GetAccount();
-		// 2FA
-		if (!$bSkipTwoFactorAuth && $this->TwoFactorAuthProvider($oAccount)) {
+		// Stripped from \RainLoop\Actions::LoginProcess
+		if ($this->TwoFactorAuthProvider($oAccount)) {
 			$aData = $this->getTwoFactorInfo($oAccount);
 			if ($aData && isset($aData['IsSet'], $aData['Enable']) && !empty($aData['Secret']) && $aData['IsSet'] && $aData['Enable']) {
 				$sSecretHash = \md5(APP_SALT . $aData['Secret'] . Utils::Fingerprint());
@@ -104,6 +102,15 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 				}
 			}
 		}
+/*
+		// Stripped from \RainLoop\Actions\User::DoLogin
+		if (Notifications::AccountTwoFactorAuthRequired === $oException->getCode())
+		{
+			return $this->DefaultResponse(__FUNCTION__, true, array(
+				'TwoFactorAuth' => true
+			));
+		}
+*/
 	}
 
 	public function DoGetTwoFactorInfo() : array
@@ -257,14 +264,10 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	private $oTwoFactorAuthProvider;
 	protected function TwoFactorAuthProvider(\RainLoop\Model\Account $oAccount) : ?TwoFactorAuthInterface
 	{
-		if (!$this->Manager()->Actions()->GetCapa(false, static::Capa_TWO_FACTOR, $oAccount)) {
-			return null;
-		}
-
 //		if ($this->Config()->Get('plugin', 'allow_two_factor_auth', 0))
 //		if ($this->Config()->Get('plugin', 'force_two_factor_auth', 0))
 
-		if (!$this->oTwoFactorAuthProvider) {
+		if (!$this->oTwoFactorAuthProvider && $this->Manager()->Actions()->GetCapa(false, static::Capa_TWO_FACTOR, $oAccount)) {
 			require __DIR__ . '/providers/interface.php';
 			require __DIR__ . '/providers/totp.php';
 			$this->oTwoFactorAuthProvider = new TwoFactorAuthTotp();
