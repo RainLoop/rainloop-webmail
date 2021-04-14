@@ -285,21 +285,18 @@ class Account
 
 		$oPlugins->RunHook('filter.imap-credentials', array($this, &$aImapCredentials));
 
-		$oPlugins->RunHook('event.imap-pre-connect', array($this, $aImapCredentials['UseConnect'], $aImapCredentials));
-
-		if ($aImapCredentials['UseConnect'])
-		{
+		$oPlugins->RunHook('imap.before-connect', array($this, $oMailClient, $aImapCredentials));
+		if ($aImapCredentials['UseConnect']) {
 			$oMailClient
 				->Connect($aImapCredentials['Host'], $aImapCredentials['Port'],
 					$aImapCredentials['Secure'], $aImapCredentials['VerifySsl'],
 					$aImapCredentials['AllowSelfSigned'], $aImapCredentials['ClientCert']);
 
 		}
+		$oPlugins->RunHook('imap.after-connect', array($this, $oMailClient, $aImapCredentials));
 
-		$oPlugins->RunHook('event.imap-pre-login', array($this, $aImapCredentials['UseAuth'], $aImapCredentials));
-
-		if ($aImapCredentials['UseAuth'])
-		{
+		$oPlugins->RunHook('imap.before-login', array($this, $oMailClient, $aImapCredentials));
+		if ($aImapCredentials['UseAuth']) {
 			if (0 < \strlen($aImapCredentials['ProxyAuthUser']) &&
 				0 < \strlen($aImapCredentials['ProxyAuthPassword']))
 			{
@@ -315,8 +312,7 @@ class Account
 
 			$bLogin = true;
 		}
-
-		$oPlugins->RunHook('event.imap-post-login', array($this, $aImapCredentials['UseAuth'], $bLogin, $aImapCredentials));
+		$oPlugins->RunHook('imap.after-login', array($this, $oMailClient, $bLogin, $aImapCredentials));
 
 		return $bLogin;
 	}
@@ -326,7 +322,7 @@ class Account
 		$bLogin = false;
 
 		$aSmtpCredentials = array(
-			'UseConnect' => true,
+			'UseConnect' => !$bUsePhpMail,
 			'UseAuth' => $this->DomainOutAuth(),
 			'UsePhpMail' => $bUsePhpMail,
 			'Ehlo' => \MailSo\Smtp\SmtpClient::EhloHelper(),
@@ -343,23 +339,20 @@ class Account
 			'UseAuthCramMd5IfSupported' => !!$oConfig->Get('labs', 'smtp_use_auth_cram_md5', true)
 		);
 
-		$oPlugins->RunHook('filter.smtp-credentials', array($this, &$aSmtpCredentials));
+		$oPlugins->RunHook('smtp.credentials', array($this, &$aSmtpCredentials));
 
 		$bUsePhpMail = $aSmtpCredentials['UsePhpMail'];
 
-		$oPlugins->RunHook('event.smtp-pre-connect', array($this, $aSmtpCredentials['UseConnect'], $aSmtpCredentials));
-
-		if ($aSmtpCredentials['UseConnect'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
-		{
+		$oPlugins->RunHook('smtp.before-connect', array($this, $oSmtpClient, $aSmtpCredentials));
+		if ($aSmtpCredentials['UseConnect']) {
 			$oSmtpClient->Connect($aSmtpCredentials['Host'], $aSmtpCredentials['Port'],
 				$aSmtpCredentials['Secure'], $aSmtpCredentials['VerifySsl'], $aSmtpCredentials['AllowSelfSigned'],
 				'', $aSmtpCredentials['Ehlo']
 			);
 		}
+		$oPlugins->RunHook('smtp.after-connect', array($this, $oSmtpClient, $aSmtpCredentials));
 
-		$oPlugins->RunHook('event.smtp-post-connect', array($this, $aSmtpCredentials['UseConnect'], $aSmtpCredentials));
-		$oPlugins->RunHook('event.smtp-pre-login', array($this, $aSmtpCredentials['UseAuth'], $aSmtpCredentials));
-
+		$oPlugins->RunHook('smtp.before-login', array($this, $oSmtpClient, $aSmtpCredentials));
 		if ($aSmtpCredentials['UseAuth'] && !$aSmtpCredentials['UsePhpMail'] && $oSmtpClient)
 		{
 			$oSmtpClient->Login($aSmtpCredentials['Login'], $aSmtpCredentials['Password'],
@@ -367,8 +360,7 @@ class Account
 
 			$bLogin = true;
 		}
-
-		$oPlugins->RunHook('event.smtp-post-login', array($this, $aSmtpCredentials['UseAuth'], $bLogin, $aSmtpCredentials));
+		$oPlugins->RunHook('smtp.after-login', array($this, $oSmtpClient, $bLogin, $aSmtpCredentials));
 
 		return $bLogin;
 	}
@@ -390,34 +382,24 @@ class Account
 			'InitialAuthPlain' => !!$oConfig->Get('ssl', 'sieve_auth_plain_initial', true)
 		);
 
-		$oPlugins->RunHook('filter.sieve-credentials', array($this, &$aSieveCredentials));
+		$oPlugins->RunHook('sieve.credentials', array($this, &$aSieveCredentials));
 
-		$oPlugins->RunHook('event.sieve-pre-connect', array($this, $aSieveCredentials['UseConnect'], $aSieveCredentials));
+		$oSieveClient->__USE_INITIAL_AUTH_PLAIN_COMMAND = $aSieveCredentials['InitialAuthPlain'];
 
-		if ($oSieveClient)
-		{
-			$oSieveClient->__USE_INITIAL_AUTH_PLAIN_COMMAND = $aSieveCredentials['InitialAuthPlain'];
-
-			if ($aSieveCredentials['UseConnect'])
-			{
-				$oSieveClient->Connect($aSieveCredentials['Host'], $aSieveCredentials['Port'],
-					$aSieveCredentials['Secure'], $aSieveCredentials['VerifySsl'], $aSieveCredentials['AllowSelfSigned']
-				);
-			}
+		$oPlugins->RunHook('sieve.before-connect', array($this, $oSieveClient, $aSieveCredentials));
+		if ($aSieveCredentials['UseConnect']) {
+			$oSieveClient->Connect($aSieveCredentials['Host'], $aSieveCredentials['Port'],
+				$aSieveCredentials['Secure'], $aSieveCredentials['VerifySsl'], $aSieveCredentials['AllowSelfSigned']
+			);
 		}
+		$oPlugins->RunHook('sieve.after-connect', array($this, $oSieveClient, $aSieveCredentials));
 
-		$oPlugins->RunHook('event.sieve-post-connect', array($this, $aSieveCredentials['UseConnect'], $aSieveCredentials));
-
-		$oPlugins->RunHook('event.sieve-pre-login', array($this, $aSieveCredentials['UseAuth'], $aSieveCredentials));
-
-		if ($aSieveCredentials['UseAuth'])
-		{
+		$oPlugins->RunHook('event.sieve-pre-login', array($this, $oSieveClient, $aSieveCredentials));
+		if ($aSieveCredentials['UseAuth']) {
 			$oSieveClient->Login($aSieveCredentials['Login'], $aSieveCredentials['Password']);
-
 			$bLogin = true;
 		}
-
-		$oPlugins->RunHook('event.sieve-post-login', array($this, $aSieveCredentials['UseAuth'], $bLogin, $aSieveCredentials));
+		$oPlugins->RunHook('sieve.after-login', array($this, $oSieveClient, $bLogin, $aSieveCredentials));
 
 		return $bLogin;
 	}

@@ -10,7 +10,7 @@ class BlackListPlugin extends \RainLoop\Plugins\AbstractPlugin
 
 	public function Init() : void
 	{
-		$this->addHook('filter.login-credentials', 'FilterLoginCredentials');
+		$this->addHook('login.credentials', 'FilterLoginCredentials');
 	}
 
 	/**
