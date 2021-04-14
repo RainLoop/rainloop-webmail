@@ -9,7 +9,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		VERSION  = '2.0',
 		RELEASE  = '2021-04-13',
 		REQUIRED = '2.5.0',
-		CATEGORY = 'Security',
+		CATEGORY = 'Login',
 		DESCRIPTION = 'This plugin allows you to to have TOTP';
 
 	// \RainLoop\Notifications\
@@ -29,13 +29,77 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 	{
 		$this->UseLangs(true);
 
+//		$this->addCss('style.less');
 		$this->addJs('js/TwoFactorAuthSettings.js');
+/*
+		$this->addHook('api.bootstrap.plugins');
+		$this->addHook('event.imap-post-login');
+		$this->addHook('event.imap-pre-connect');
+		$this->addHook('event.imap-pre-login');
+		$this->addHook('event.login-post-login-provide');
+		$this->addHook('event.login-pre-login-provide');
+		$this->addHook('event.sieve-post-connect');
+		$this->addHook('event.sieve-post-login');
+		$this->addHook('event.sieve-pre-connect');
+		$this->addHook('event.sieve-pre-login');
+		$this->addHook('event.smtp-post-connect');
+		$this->addHook('event.smtp-post-login');
+		$this->addHook('event.smtp-pre-connect');
+		$this->addHook('event.smtp-pre-login');
+		$this->addHook('filter.acount');
+		$this->addHook('filter.action-params');
+		$this->addHook('filter.app-data');
+		$this->addHook('filter.application-config');
+		$this->addHook('filter.build-message');
+		$this->addHook('filter.build-read-receipt-message');
+		$this->addHook('filter.domain');
+		$this->addHook('filter.fabrica');
+		$this->addHook('filter.folders-before');
+		$this->addHook('filter.folders-complete');
+		$this->addHook('filter.folders-post');
+		$this->addHook('filter.folders-system-types');
+		$this->addHook('filter.http-paths');
+		$this->addHook('filter.http-query');
+		$this->addHook('filter.imap-credentials');
+		$this->addHook('filter.json-response');
+		$this->addHook('filter.login-credentials');
+		$this->addHook('filter.login-credentials.step-1');
+		$this->addHook('filter.login-credentials.step-2');
+		$this->addHook('filter.message-html'
+		$this->addHook('filter.message-plain');
+		$this->addHook('filter.message-rcpt');
+		$this->addHook('filter.read-receipt-message-plain');
+		$this->addHook('filter.result-message');
+		$this->addHook('filter.save-message');
+		$this->addHook('filter.send-message');
+		$this->addHook('filter.send-message-stream');
+		$this->addHook('filter.send-read-receipt-message');
+		$this->addHook('filter.sieve-credentials');
+		$this->addHook('filter.smtp-credentials');
+		$this->addHook('filter.smtp-from');
+		$this->addHook('filter.smtp-hidden-rcpt');
+		$this->addHook('filter.smtp-message-stream');
+		$this->addHook('filter.system-folders-names');
+		$this->addHook('filter.upload-response');
+		$this->addHook('json.action-post-call');
+		$this->addHook('json.action-pre-call');
+		$this->addHook('json.suggestions-input-parameters');
+		$this->addHook('json.suggestions-post');
+		$this->addHook('json.suggestions-pre');
+		$this->addHook('main.default-response');
+		$this->addHook('main.default-response-data');
+		$this->addHook('main.default-response-data');
+		$this->addHook('main.default-response-error-data');
+		$this->addHook('main.fabrica');
+		$this->addHook('service.app-delay-start-begin');
+		$this->addHook('service.app-delay-start-end');
+*/
 
 		$this->addJsonHook('GetTwoFactorInfo', 'DoGetTwoFactorInfo');
 		$this->addJsonHook('CreateTwoFactorSecret', 'DoCreateTwoFactorSecret');
 		$this->addJsonHook('ShowTwoFactorSecret', 'DoShowTwoFactorSecret');
 		$this->addJsonHook('EnableTwoFactor', 'DoEnableTwoFactor');
-		$this->addJsonHook('TestTwoFactorInfo', 'DoTestTwoFactorInfo');
+		$this->addJsonHook('VerifyTwoFactorCode', 'DoVerifyTwoFactorCode');
 		$this->addJsonHook('ClearTwoFactorInfo', 'DoClearTwoFactorInfo');
 
 		$this->addTemplate('templates/TwoFactorAuthSettings.html');
@@ -53,7 +117,6 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 				->SetType(\RainLoop\Enumerations\PluginPropertyType::BOOL)
 		];
 	}
-
 
 	public function DoGetTwoFactorInfo() : array
 	{
@@ -155,7 +218,7 @@ class TwoFactorAuthPlugin extends \RainLoop\Plugins\AbstractPlugin
 		return $this->DefaultResponse(__FUNCTION__, $bResult);
 	}
 
-	public function DoTestTwoFactorInfo() : array
+	public function DoVerifyTwoFactorCode() : array
 	{
 		$oAccount = $this->getAccountFromToken();
 

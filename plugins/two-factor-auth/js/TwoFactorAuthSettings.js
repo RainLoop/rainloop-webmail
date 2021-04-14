@@ -15,38 +15,10 @@ const
 	Remote = new class {
 		/**
 		 * @param {?Function} fCallback
-		 */
-		getTwoFactor(fCallback) {
-			rl.pluginRemoteRequest(fCallback, 'GetTwoFactorInfo');
-		}
-
-		/**
-		 * @param {?Function} fCallback
-		 */
-		createTwoFactor(fCallback) {
-			rl.pluginRemoteRequest(fCallback, 'CreateTwoFactorSecret');
-		}
-
-		/**
-		 * @param {?Function} fCallback
-		 */
-		clearTwoFactor(fCallback) {
-			rl.pluginRemoteRequest(fCallback, 'ClearTwoFactorInfo');
-		}
-
-		/**
-		 * @param {?Function} fCallback
-		 */
-		showTwoFactorSecret(fCallback) {
-			rl.pluginRemoteRequest(fCallback, 'ShowTwoFactorSecret');
-		}
-
-		/**
-		 * @param {?Function} fCallback
 		 * @param {string} sCode
 		 */
-		testTwoFactor(fCallback, sCode) {
-			rl.pluginRemoteRequest(fCallback, 'TestTwoFactorInfo', {
+		verifyCode(fCallback, sCode) {
+			rl.pluginRemoteRequest(fCallback, 'VerifyTwoFactorCode', {
 				Code: sCode
 			});
 		}
@@ -59,13 +31,6 @@ const
 			rl.pluginRemoteRequest(fCallback, 'EnableTwoFactor', {
 				Enable: bEnable ? 1 : 0
 			});
-		}
-
-		/**
-		 * @param {?Function} fCallback
-		 */
-		clearTwoFactorInfo(fCallback) {
-			rl.pluginRemoteRequest(fCallback, 'ClearTwoFactorInfo');
 		}
 	};
 
@@ -135,7 +100,7 @@ class TwoFactorAuthSettings
 
 	showSecret() {
 		this.secreting(true);
-		Remote.showTwoFactorSecret(this.onShowSecretResult);
+		rl.pluginRemoteRequest(this.onShowSecretResult, 'ShowTwoFactorSecret');
 	}
 
 	hideSecret() {
@@ -147,7 +112,7 @@ class TwoFactorAuthSettings
 
 	createTwoFactor() {
 		this.processing(true);
-		Remote.createTwoFactor(this.onResult);
+		rl.pluginRemoteRequest(this.onResult, 'CreateTwoFactorSecret');
 	}
 
 	logout() {
@@ -167,7 +132,7 @@ class TwoFactorAuthSettings
 		this.twoFactorTested(false);
 
 		this.clearing(true);
-		Remote.clearTwoFactor(this.onResult);
+		rl.pluginRemoteRequest(this.onResult, 'ClearTwoFactorInfo');
 	}
 
 	onShow(bLock) {
@@ -236,7 +201,7 @@ class TwoFactorAuthSettings
 	onBuild() {
 		if (this.capaTwoFactor) {
 			this.processing(true);
-			Remote.getTwoFactor(this.onResult);
+			rl.pluginRemoteRequest(this.onResult, 'GetTwoFactorInfo');
 		}
 	}
 }
@@ -261,7 +226,7 @@ class TwoFactorAuthTestPopupView extends rl.pluginPopupView {
 
 	testCodeCommand() {
 		this.testing(true);
-		Remote.testTwoFactor(iError => {
+		Remote.verifyCode(iError => {
 			this.testing(false);
 			this.codeStatus(!iError);
 
