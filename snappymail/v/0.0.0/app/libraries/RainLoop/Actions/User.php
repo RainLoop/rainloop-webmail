@@ -34,6 +34,7 @@ trait User
 		{
 			$oAccount = $this->LoginProcess($sEmail, $sPassword,
 				$bSignMe ? $this->generateSignMeToken($sEmail) : '');
+			$this->Plugins()->RunHook('login.success', array($oAccount));
 		}
 		catch (ClientException $oException)
 		{
