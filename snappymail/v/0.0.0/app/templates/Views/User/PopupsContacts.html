@@ -5,25 +5,17 @@
 
 		<div class="btn-toolbar">
 
-			<div class="btn-group">
-				<a class="btn button-create-contact" data-bind="command: newCommand">
-					<i class="fontastic">✚</i>
-					<span data-i18n="CONTACTS/BUTTON_ADD_CONTACT"></span>
-				</a>
-			</div>
+			<a class="btn button-create-contact" data-bind="command: newCommand">
+				<i class="fontastic">✚</i>
+				<span data-i18n="CONTACTS/BUTTON_ADD_CONTACT"></span>
+			</a>
 
-			<div class="btn-group">
-				<a class="btn btn-success button-new-message" data-bind="command: newMessageCommand">
-					<i class="icon-mail"></i>
-				</a>
-			</div>
+			<a class="btn btn-success button-new-message fontastic" data-bind="command: newMessageCommand">✉</a>
 
-			<div class="btn-group">
-				<a class="btn button-delete fontastic" data-bind="command: deleteCommand">🗑</a>
-			</div>
+			<a class="btn button-delete fontastic" data-bind="command: deleteCommand">🗑</a>
 
-			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true">
-				<a id="contacts-more-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-toggle="dropdown" data-bind="css: {'icon-spinner': contacts.importing() || contacts.syncing()}">☰</a>
+			<div class="btn-group dropdown colored-toggle" data-bind="registerBootstrapDropdown: true, visible: !contacts.importing() && !contacts.syncing()">
+				<a id="contacts-more-dropdown-id" class="btn dropdown-toggle fontastic" href="#" tabindex="-1" data-toggle="dropdown">☰</a>
 				<ul class="dropdown-menu g-ui-menu right-edge" role="menu" aria-labelledby="contacts-more-dropdown-id">
 					<li class="e-item" role="presentation">
 						<a class="e-link menuitem" href="#" tabindex="-1" data-bind="initDom: importUploaderButton">
@@ -51,7 +43,7 @@
 					</li>
 				</ul>
 			</div>
-
+			<span data-bind="visible: contacts.importing() || contacts.syncing()" class="btn"><i class="icon-spinner"></i></span>
 		</div>
 	</div>
 	<div class="modal-body" style="position: relative;">

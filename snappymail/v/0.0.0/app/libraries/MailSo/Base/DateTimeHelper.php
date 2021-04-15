@@ -43,8 +43,7 @@ abstract class DateTimeHelper
 		}
 
 		$sDateTime = \trim(\preg_replace('/ \([a-zA-Z0-9]+\)$/', '', $sDateTime));
-		$oDateTime = \DateTime::createFromFormat(\DateTime::RFC822, $sDateTime, static::GetUtcTimeZoneObject())
-			?: \DateTime::createFromFormat('D, d M Y H:i:s O', $sDateTime, static::GetUtcTimeZoneObject());
+		$oDateTime = \DateTime::createFromFormat(\DateTime::RFC2822, $sDateTime, static::GetUtcTimeZoneObject());
 		return $oDateTime ? $oDateTime->getTimestamp() : 0;
 	}
 
