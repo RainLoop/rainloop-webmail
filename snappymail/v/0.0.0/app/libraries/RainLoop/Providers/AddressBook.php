@@ -223,7 +223,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 	{
 		$iCount = 0;
 
-		if (\class_exists('Sabre\DAV\Client') && $this->IsActive() && \is_string($sVcfData))
+		if ($this->IsActive() && \is_string($sVcfData))
 		{
 			$sVcfData = \trim($sVcfData);
 			if ("\xef\xbb\xbf" === \substr($sVcfData, 0, 3))

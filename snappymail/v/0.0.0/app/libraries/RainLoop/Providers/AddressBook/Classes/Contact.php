@@ -189,11 +189,6 @@ class Contact implements \JsonSerializable
 	{
 		$this->UpdateDependentValues();
 
-		if (!\class_exists('Sabre\DAV\Client'))
-		{
-			return '';
-		}
-
 		if ("\xef\xbb\xbf" === \substr($sPreVCard, 0, 3))
 		{
 			$sPreVCard = \substr($sPreVCard, 3);
@@ -508,11 +503,6 @@ class Contact implements \JsonSerializable
 		}
 
 		$this->Properties = array();
-
-		if (!\class_exists('Sabre\DAV\Client'))
-		{
-			return false;
-		}
 
 		if (!empty($sEtag))
 		{

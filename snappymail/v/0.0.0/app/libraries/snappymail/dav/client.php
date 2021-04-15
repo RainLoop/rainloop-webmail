@@ -12,6 +12,10 @@ class Client
 {
 //	public $__UrlPath__;
 
+	const
+		NS_DAV  = 'urn:DAV',
+		NS_CARDDAV = 'urn:ietf:params:xml:ns:carddav';
+
 	protected $baseUri;
 
 	/**
@@ -150,20 +154,31 @@ class Client
 
 		$responseXML->registerXPathNamespace($ns, 'urn:DAV');
 		foreach ($responseXML->xpath("{$ns}:response") as $response) {
-			$response->registerXPathNamespace($ns, 'urn:DAV');
-			$href = $response->xpath("{$ns}:href");
-			$href = (string) $href[0];
-
 			$properties = array();
+			$response->registerXPathNamespace($ns, 'urn:DAV');
 			foreach ($response->xpath("{$ns}:propstat") as $propStat) {
+				// Parse all WebDAV properties
+				$propList = array();
 				$propStat->registerXPathNamespace($ns, 'urn:DAV');
-				$status = $propStat->xpath("{$ns}:status");
-				list($httpVersion, $statusCode, $message) = \explode(' ', (string)$status[0], 3);
-
-				$properties[$statusCode] = static::parseProperties(\dom_import_simplexml($propStat));
+				foreach ($propStat->xpath("{$ns}:prop") as $prop) {
+					foreach ($prop->xpath("*") as $element) {
+						$propertyName = self::toClarkNotation($element);
+						if ('{DAV:}resourcetype' === $propertyName) {
+							$propList[$propertyName] = [];
+							foreach ($element->xpath("*") as $resourcetype) {
+								$propList[$propertyName][] = self::toClarkNotation($resourcetype);
+							}
+						} else {
+							$propList[$propertyName] = (string) $element;
+//							$propList[$propertyName] = \dom_import_simplexml($element)->textContent;
+						}
+					}
+				}
+				list($httpVersion, $statusCode, $message) = \explode(' ', $propStat->children('urn:DAV')->status, 3);
+				$properties[$statusCode] = $propList;
 			}
 
-			$result[$href] = $properties;
+			$result[(string) $response->children('urn:DAV')->href] = $properties;
 		}
 
 		if (0 === $depth) {
@@ -188,53 +203,12 @@ class Client
 	 * Elements encoded with the urn:DAV namespace will
 	 * be returned as if they were in the DAV: namespace. This is to avoid
 	 * compatibility problems.
-	 *
-	 * This function will return null if a nodetype other than an Element is passed.
 	 */
-	public static function toClarkNotation(\DOMNode $dom) : ?string
+	public static function toClarkNotation(\SimpleXMLElement $element) : string
 	{
 		// Mapping back to the real namespace, in case it was dav
 		// Mapping to clark notation
-		return XML_ELEMENT_NODE === $dom->nodeType
-			? '{' . ('urn:DAV' == $dom->namespaceURI ? 'DAV:' : $dom->namespaceURI) . '}' . $dom->localName
-			: null;
-	}
-
-	/**
-	 * Parses all WebDAV properties out of a DOM Element
-	 *
-	 * Generally WebDAV properties are enclosed in {DAV:}prop elements. This
-	 * method helps by going through all these and pulling out the actual
-	 * propertynames, making them array keys and making the property values,
-	 * well.. the array values.
-	 *
-	 * If no value was given (self-closing element) null will be used as the
-	 * value. This is used in for example PROPFIND requests.
-	 *
-	 * When any of these properties are found, the fromDOMElement() method will be
-	 * (statically) called. The result of this method is used as the value.
-	 */
-	protected static function parseProperties(\DOMElement $parentNode) : array
-	{
-		$propList = array();
-		foreach ($parentNode->childNodes as $propNode) {
-			if ('{DAV:}prop' === self::toClarkNotation($propNode)) {
-				foreach ($propNode->childNodes as $propNodeData) {
-					/* If there are no elements in here, we actually get 1 text node, this special case is dedicated to netdrive */
-					if (XML_ELEMENT_NODE == $propNodeData->nodeType) {
-						$propertyName = self::toClarkNotation($propNodeData);
-						if ('{DAV:}resourcetype' === $propertyName) {
-							$propList[$propertyName] = [];
-							foreach ($propNodeData->childNodes as $resourcetype) {
-								$propList[$propertyName][] = self::toClarkNotation($resourcetype);
-							}
-						} else {
-							$propList[$propertyName] = $propNodeData->textContent;
-						}
-					}
-				}
-			}
-		}
-		return $propList;
+		$ns = \array_values($element->getNamespaces())[0];
+		return '{' . ('urn:DAV' == $ns ? 'DAV:' : $ns) . '}' . $element->getName();
 	}
 }
