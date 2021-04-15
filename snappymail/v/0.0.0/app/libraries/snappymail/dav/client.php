@@ -170,7 +170,6 @@ class Client
 							}
 						} else {
 							$propList[$propertyName] = (string) $element;
-//							$propList[$propertyName] = \dom_import_simplexml($element)->textContent;
 						}
 					}
 				}

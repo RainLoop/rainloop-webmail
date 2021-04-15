@@ -43,7 +43,8 @@ abstract class DateTimeHelper
 		}
 
 		$sDateTime = \trim(\preg_replace('/ \([a-zA-Z0-9]+\)$/', '', $sDateTime));
-		$oDateTime = \DateTime::createFromFormat(\DateTime::RFC822, $sDateTime, static::GetUtcTimeZoneObject());
+		$oDateTime = \DateTime::createFromFormat(\DateTime::RFC822, $sDateTime, static::GetUtcTimeZoneObject())
+			?: \DateTime::createFromFormat('D, d M Y H:i:s O', $sDateTime, static::GetUtcTimeZoneObject());
 		return $oDateTime ? $oDateTime->getTimestamp() : 0;
 	}
 
@@ -85,10 +86,14 @@ abstract class DateTimeHelper
 
 	/**
 	 * Parse date string formated as "2015-05-08T14:32:18.483-07:00"
-	 * DateTime::RFC3339_EXTENDED
 	 */
 	public static function TryToParseSpecEtagFormat(string $sDateTime) : int
 	{
+		$oDateTime = \DateTime::createFromFormat(\DateTime::RFC3339_EXTENDED, $sDateTime, static::GetUtcTimeZoneObject());
+		if ($oDateTime) {
+			return $oDateTime->getTimestamp();
+		}
+
 		$sDateTime = \preg_replace('/ \([a-zA-Z0-9]+\)$/', '', \trim($sDateTime));
 		$sDateTime = \preg_replace('/(:[\d]{2})\.[\d]{3}/', '$1', \trim($sDateTime));
 		$sDateTime = \preg_replace('/(-[\d]{2})T([\d]{2}:)/', '$1 $2', \trim($sDateTime));
