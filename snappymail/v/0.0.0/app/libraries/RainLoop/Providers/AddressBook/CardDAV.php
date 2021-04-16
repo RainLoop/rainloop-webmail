@@ -79,7 +79,7 @@ trait CardDAV
 		return $mResult;
 	}
 
-	protected function davClientRequest(DAVClient $oClient, string $sCmd, string $sUrl, $mData = null) : ?array
+	protected function davClientRequest(DAVClient $oClient, string $sCmd, string $sUrl, $mData = null) : ?\SnappyMail\HTTP\Response
 	{
 		\MailSo\Base\Utils::ResetTimeLimit();
 
@@ -91,18 +91,17 @@ trait CardDAV
 //			$this->oLogger->Write($mData, \MailSo\Log\Enumerations\Type::INFO, 'DAV');
 //		}
 
-		$aResponse = null;
 		try
 		{
 			if (('PUT' === $sCmd || 'POST' === $sCmd) && null !== $mData)
 			{
-				$aResponse = $oClient->request($sCmd, $sUrl, $mData, array(
+				return $oClient->request($sCmd, $sUrl, $mData, array(
 					'Content-Type' => 'text/vcard; charset=utf-8'
 				));
 			}
 			else
 			{
-				$aResponse = $oClient->request($sCmd, $sUrl);
+				return $oClient->request($sCmd, $sUrl);
 			}
 
 //			if ('GET' === $sCmd)
@@ -115,7 +114,7 @@ trait CardDAV
 			$this->oLogger->WriteException($oException);
 		}
 
-		return $aResponse;
+		return null;
 	}
 
 	private function detectionPropFind(DAVClient $oClient, string $sPath) : ?array

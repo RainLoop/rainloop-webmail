@@ -185,9 +185,9 @@ class PdoAddressBook
 					if (0 < \strlen($mExsistenRemoteID))
 					{
 						$oResponse = $this->davClientRequest($oClient, 'GET', $sPath.$mExsistenRemoteID);
-						if ($oResponse && isset($oResponse['headers'], $oResponse['body']))
+						if ($oResponse)
 						{
-							$sExsistensBody = \trim($oResponse['body']);
+							$sExsistensBody = \trim($oResponse->body);
 						}
 
 //						$this->oLogger->WriteDump($sExsistensBody);
@@ -196,11 +196,10 @@ class PdoAddressBook
 					$oResponse = $this->davClientRequest($oClient, 'PUT',
 						$sPath.(0 < \strlen($mExsistenRemoteID) ? $mExsistenRemoteID : $oContact->CardDavNameUri()),
 						$oContact->ToVCard($sExsistensBody, $this->oLogger)."\r\n\r\n");
-
-					if ($oResponse && isset($oResponse['headers'], $oResponse['headers']['etag']))
+					if ($oResponse)
 					{
-						$sEtag = \trim(\trim($oResponse['headers']['etag']), '"\'');
-						$sDate = !empty($oResponse['headers']['date']) ? \trim($oResponse['headers']['date']) : '';
+						$sEtag = \trim(\trim($oResponse->getHeader('etag')), '"\'');
+						$sDate = \trim($oResponse->getHeader('date'));
 						if (!empty($sEtag))
 						{
 							$iChanged = empty($sDate) ? \time() : \MailSo\Base\DateTimeHelper::ParseRFC2822DateString($sDate);
@@ -227,9 +226,9 @@ class PdoAddressBook
 					$aDatabaseSyncData[$sKey]['id_contact'] : '';
 
 				$oResponse = $this->davClientRequest($oClient, 'GET', $sPath.$aData['vcf']);
-				if ($oResponse && isset($oResponse['headers'], $oResponse['body']))
+				if ($oResponse)
 				{
-					$sBody = \trim($oResponse['body']);
+					$sBody = \trim($oResponse->body);
 					if (!empty($sBody))
 					{
 						$oContact = null;
@@ -244,7 +243,7 @@ class PdoAddressBook
 						}
 
 						$oContact->PopulateByVCard($aData['uid'], $sBody,
-							!empty($oResponse['headers']['etag']) ? \trim(\trim($oResponse['headers']['etag']), '"\'') : '',
+							\trim(\trim($oResponse->getHeader('etag')), '"\''),
 							$this->oLogger);
 
 						$this->ContactSave($sEmail, $oContact);
