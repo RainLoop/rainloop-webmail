@@ -34,8 +34,6 @@ module.exports = {
 		'Crossroads': "readonly",
 		// vendors/jua
 		'Jua': "readonly",
-		// vendors/qr.js
-		'qr': "readonly",
 		// vendors/bootstrap/bootstrap.native.js
 		'BSN': "readonly"
 	},
