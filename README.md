@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/the-djmaze/snappymail">
-    <img width="200" heigth="200" src="https://snappymail.eu/static/img/logo-256x256.png">
+    <img src="https://snappymail.eu/static/img/logo-256x256.png">
   </a>
   <br>
   <h1>SnappyMail</h1>
@@ -71,6 +71,9 @@ This fork of RainLoop has the following changes:
 * Replaced webpack with rollup
 * No user-agent detection (use device width)
 * Added support to load plugins as .phar
+* Replaced old Sabre library
+* AddressBook Contacts support MySQL/MariaDB utf8mb4
+* Prevent Google FLoC
 
 ### Removal of old JavaScript
 

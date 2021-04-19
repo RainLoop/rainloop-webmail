@@ -184,7 +184,7 @@ class ImapClient extends \MailSo\Net\NetClient
 			if (0 === \strpos($type, 'SCRAM-SHA-'))
 			{
 				$sAuthzid = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
-				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid*/));
+				$this->sendRaw($SASL->authenticate($sLogin, $sPassword/*, $sAuthzid*/), true);
 				$sChallenge = $SASL->challenge($this->getResponseValue($this->getResponse(), Enumerations\ResponseType::CONTINUATION));
 				if ($this->oLogger) {
 					$this->oLogger->AddSecret($sChallenge);
@@ -211,12 +211,24 @@ class ImapClient extends \MailSo\Net\NetClient
 					$this->oLogger->AddSecret($sAuth);
 				}
 				if ($this->IsSupported('SASL-IR')) {
-					$this->SendRequestGetResponse('AUTHENTICATE', array('PLAIN', $sAuth));
+					$this->SendRequestGetResponse('AUTHENTICATE', array($type, $sAuth));
 				} else {
-					$this->SendRequestGetResponse('AUTHENTICATE', array('PLAIN'));
+					$this->SendRequestGetResponse('AUTHENTICATE', array($type));
 					$this->sendRaw($sAuth, true, '*******');
 					$this->getResponse();
 				}
+			}
+			else if ($this->IsSupported('LOGINDISABLED'))
+			{
+				$sB64 = $this->getResponseValue($this->SendRequestGetResponse('AUTHENTICATE', array($type)), Enumerations\ResponseType::CONTINUATION);
+				$this->sendRaw($SASL->authenticate($sLogin, $sPassword, $sB64), true);
+				$this->getResponse();
+				$sPass = $SASL->challenge(''/*UGFzc3dvcmQ6*/);
+				if ($this->oLogger) {
+					$this->oLogger->AddSecret($sPass);
+				}
+				$this->sendRaw($sPass, true, '*******');
+				$this->getResponse();
 			}
 			else
 			{
@@ -224,7 +236,6 @@ class ImapClient extends \MailSo\Net\NetClient
 				{
 					$this->oLogger->AddSecret($this->EscapeString($sPassword));
 				}
-
 				$this->SendRequestGetResponse('LOGIN',
 					array(
 						$this->EscapeString($sLogin),
