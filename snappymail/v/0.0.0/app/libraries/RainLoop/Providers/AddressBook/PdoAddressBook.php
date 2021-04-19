@@ -229,25 +229,53 @@ class PdoAddressBook
 				if ($oResponse)
 				{
 					$sBody = \trim($oResponse->body);
+
+					// Remove UTF-8 BOM
+					if ("\xef\xbb\xbf" === \substr($sBody, 0, 3))
+					{
+						$sBody = \substr($sBody, 3);
+					}
+
 					if (!empty($sBody))
 					{
-						$oContact = null;
-						if ($mExsistenContactID)
+						$oVCard = null;
+						try
 						{
-							$oContact = $this->GetContactByID($sEmail, $mExsistenContactID);
+							$oVCard = \Sabre\VObject\Reader::read($sBody);
+						}
+						catch (\Throwable $oExc)
+						{
+							if ($this->oLogger)
+							{
+								$this->oLogger->WriteException($oExc);
+								$this->oLogger->WriteDump($sBody);
+							}
 						}
 
-						if (!$oContact)
+						if ($oVCard instanceof \Sabre\VObject\Component\VCard)
 						{
-							$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
+							$oVCard->UID = $aData['uid'];
+
+							$oContact = null;
+							if ($mExsistenContactID)
+							{
+								$oContact = $this->GetContactByID($sEmail, $mExsistenContactID);
+							}
+							if (!$oContact)
+							{
+								$oContact = new Classes\Contact();
+							}
+
+							$oContact->PopulateByVCard(
+								$oVCard,
+								\trim(\trim($oResponse->getHeader('etag')), '"\'')
+							);
+
+							$this->ContactSave($sEmail, $oContact);
+							unset($oContact);
+//						} else if ($this->oLogger) {
+//							$this->oLogger->WriteDump($sBody);
 						}
-
-						$oContact->PopulateByVCard($aData['uid'], $sBody,
-							\trim(\trim($oResponse->getHeader('etag')), '"\''),
-							$this->oLogger);
-
-						$this->ContactSave($sEmail, $oContact);
-						unset($oContact);
 					}
 				}
 			}
@@ -296,7 +324,7 @@ class PdoAddressBook
 		return true;
 	}
 
-	public function ContactSave(string $sEmail, \RainLoop\Providers\AddressBook\Classes\Contact $oContact, bool $bSyncDb = true) : bool
+	public function ContactSave(string $sEmail, Classes\Contact $oContact, bool $bSyncDb = true) : bool
 	{
 		if ($bSyncDb)
 		{
@@ -370,7 +398,7 @@ class PdoAddressBook
 			if (0 < $iIdContact)
 			{
 				$aParams = array();
-				foreach ($oContact->Properties as /* @var $oProp \RainLoop\Providers\AddressBook\Classes\Property */ $oProp)
+				foreach ($oContact->Properties as /* @var $oProp Classes\Property */ $oProp)
 				{
 					$iFreq = $oProp->Frec;
 					if ($oProp->IsEmail() && isset($aFreq[$oProp->Value]))
@@ -580,7 +608,7 @@ class PdoAddressBook
 						if (0 < $iIdContact)
 						{
 							$aIdContacts[] = $iIdContact;
-							$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
+							$oContact = new Classes\Contact();
 
 							$oContact->IdContact = (string) $iIdContact;
 							$oContact->IdContactStr = isset($aItem['id_contact_str']) ? (string) $aItem['id_contact_str'] : '';
@@ -617,7 +645,7 @@ class PdoAddressBook
 									$iId = (int) $aItem['id_contact'];
 									if (0 < $iId && isset($aContacts[$iId]))
 									{
-										$oProperty = new \RainLoop\Providers\AddressBook\Classes\Property();
+										$oProperty = new Classes\Property();
 										$oProperty->IdProperty = (int) $aItem['id_prop'];
 										$oProperty->Type = (int) $aItem['prop_type'];
 										$oProperty->TypeStr = isset($aItem['prop_type_str']) ? (string) $aItem['prop_type_str'] : '';
@@ -651,7 +679,7 @@ class PdoAddressBook
 	/**
 	 * @param mixed $mID
 	 */
-	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?\RainLoop\Providers\AddressBook\Classes\Contact
+	public function GetContactByID(string $sEmail, $mID, bool $bIsStrID = false) : ?Classes\Contact
 	{
 		$mID = \trim($mID);
 
@@ -691,7 +719,7 @@ class PdoAddressBook
 					$iIdContact = $aItem && isset($aItem['id_contact']) ? (int) $aItem['id_contact'] : 0;
 					if (0 < $iIdContact)
 					{
-						$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
+						$oContact = new Classes\Contact();
 
 						$oContact->IdContact = (string) $iIdContact;
 						$oContact->IdContactStr = isset($aItem['id_contact_str']) ? (string) $aItem['id_contact_str'] : '';
@@ -723,7 +751,7 @@ class PdoAddressBook
 							{
 								if ((string) $oContact->IdContact === (string) $aItem['id_contact'])
 								{
-									$oProperty = new \RainLoop\Providers\AddressBook\Classes\Property();
+									$oProperty = new Classes\Property();
 									$oProperty->IdProperty = (int) $aItem['id_prop'];
 									$oProperty->Type = (int) $aItem['prop_type'];
 									$oProperty->TypeStr = isset($aItem['prop_type_str']) ? (string) $aItem['prop_type_str'] : '';
@@ -1031,13 +1059,13 @@ class PdoAddressBook
 
 		if (0 < \count($aEmailsToCreate))
 		{
-			$oContact = new \RainLoop\Providers\AddressBook\Classes\Contact();
+			$oContact = new Classes\Contact();
 			foreach ($aEmailsToCreate as $oEmail)
 			{
 				if ('' !== \trim($oEmail->GetEmail()))
 				{
-					$oPropEmail = new \RainLoop\Providers\AddressBook\Classes\Property();
-					$oPropEmail->Type = \RainLoop\Providers\AddressBook\Enumerations\PropertyType::EMAIl;
+					$oPropEmail = new Classes\Property();
+					$oPropEmail->Type = Enumerations\PropertyType::EMAIl;
 					$oPropEmail->Value = \trim($oEmail->GetEmail(true));
 
 					$oContact->Properties[] = $oPropEmail;
@@ -1060,8 +1088,8 @@ class PdoAddressBook
 
 					if (0 < \strlen($sFirst))
 					{
-						$oPropName = new \RainLoop\Providers\AddressBook\Classes\Property();
-						$oPropName->Type = \RainLoop\Providers\AddressBook\Enumerations\PropertyType::FIRST_NAME;
+						$oPropName = new Classes\Property();
+						$oPropName->Type = Enumerations\PropertyType::FIRST_NAME;
 						$oPropName->Value = \trim($sFirst);
 
 						$oContact->Properties[] = $oPropName;
@@ -1069,8 +1097,8 @@ class PdoAddressBook
 
 					if (0 < \strlen($sLast))
 					{
-						$oPropName = new \RainLoop\Providers\AddressBook\Classes\Property();
-						$oPropName->Type = \RainLoop\Providers\AddressBook\Enumerations\PropertyType::LAST_NAME;
+						$oPropName = new Classes\Property();
+						$oPropName->Type = Enumerations\PropertyType::LAST_NAME;
 						$oPropName->Value = \trim($sLast);
 
 						$oContact->Properties[] = $oPropName;

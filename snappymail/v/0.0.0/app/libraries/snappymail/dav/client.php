@@ -69,7 +69,7 @@ class Client
 				$url = $this->baseUri . $url;
 			}
 		}
-		$response = $this->HTTP->doRequest('PROPFIND', $url, $body, $headers);
+		$response = $this->HTTP->doRequest($method, $url, $body, $headers);
 		if (301 == $response->status) {
 			// Like: RewriteRule ^\.well-known/carddav /nextcloud/remote.php/dav [R=301,L]
 			$location = $response->getRedirectLocation();
@@ -77,10 +77,10 @@ class Client
 			$url = \preg_replace('@^(https?:)?//[^/]+[/$]@', '/', $location);
 			$parts = \parse_url($this->baseUri);
 			$url = $parts['scheme'] . '://' . $parts['host'] . (isset($parts['port'])?':' . $parts['port']:'') . $url;
-			$response = $this->HTTP->doRequest('PROPFIND', $url, $body, $headers);
+			$response = $this->HTTP->doRequest($method, $url, $body, $headers);
 		}
 		if (300 <= $response->status) {
-			throw new \SnappyMail\HTTP\Exception("PROPFIND {$url}", $response->status, $response);
+			throw new \SnappyMail\HTTP\Exception("{$method} {$url}", $response->status, $response);
 		}
 
 		return $response;

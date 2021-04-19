@@ -253,12 +253,7 @@ class AddressBook extends \RainLoop\Providers\AbstractProvider
 					{
 						\MailSo\Base\Utils::ResetTimeLimit();
 
-						if (empty($oVCard->UID))
-						{
-							$oVCard->UID = \SnappyMail\UUID::generate();
-						}
-
-						$oContact->PopulateByVCard($oVCard->UID, $oVCard->serialize());
+						$oContact->PopulateByVCard($oVCard);
 
 						if (0 < \count($oContact->Properties))
 						{
