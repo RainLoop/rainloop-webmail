@@ -28,6 +28,9 @@ RewriteRule cpsess.* https://%{HTTP_HOST}/ [L,R=301]
 	Header set X-XSS-Protection "1; mode=block"
 	Header set Service-Worker-Allowed "/"
 
+	# Google FLoC
+	Header set Permissions-Policy "interest-cohort=()"
+
 	RewriteCond %{HTTP:Accept-encoding} br
 	RewriteCond "%{REQUEST_FILENAME}\.br" -s
 	RewriteRule "^(.+)" "$1\.br" [L,T=text/javascript,QSA]

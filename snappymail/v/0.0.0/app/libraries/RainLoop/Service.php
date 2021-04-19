@@ -41,6 +41,8 @@ class Service
 
 		\header('Referrer-Policy: no-referrer');
 		\header('X-Content-Type-Options: nosniff');
+
+		// Google FLoC
 		\header('Permissions-Policy: interest-cohort=()');
 
 		$sContentSecurityPolicy = \trim($this->oActions->Config()->Get('security', 'content_security_policy', '')) ?: APP_DEFAULT_CSP;
