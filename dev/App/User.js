@@ -886,7 +886,7 @@ class AppUser extends AbstractApp {
 	}
 
 	logout() {
-		Remote.logout(() => this.logoutReload((SettingsGet('ParentEmail')||{length:0}).length));
+		Remote.logout(() => rl.logoutReload((SettingsGet('ParentEmail')||{length:0}).length));
 	}
 
 	bootend() {
