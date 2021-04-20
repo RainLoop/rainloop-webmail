@@ -72,11 +72,11 @@ const
 	p = win.progressJs = {
 		set: percent => progress.style.width = Math.min(percent, 100) + '%',
 		end: () => {
-			if (container) {
+			if (progress) {
 				p.set(100);
 				setTimeout(() => {
-					container.remove();
-					container = progress = null;
+					progress.remove();
+					progress = null;
 				}, 600);
 			}
 		}
@@ -90,8 +90,7 @@ const layout = getCookie('rllayout');
 doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout || (!layout && 1000 > innerWidth));
 
 let pStep = 0,
-	container = eId('progressjs'),
-	progress = container.querySelector('.progressjs-inner'),
+	progress = eId('progressjs'),
 
 	RL_APP_DATA = {};
 
