@@ -17,9 +17,7 @@
 							autofocus="" autocomplete="email" autocorrect="off" autocapitalize="off" spellcheck="false"
 							data-bind="textInput: email, disable: submitRequest"
 							data-i18n="[placeholder]GLOBAL/EMAIL" />
-						<span class="add-on">
-							<i class="icon-mail"></i>
-						</span>
+						<span class="add-on icon-mail"></span>
 					</div>
 				</div>
 				<div class="controls" data-bind="css: {'error': passwordError}">
@@ -63,15 +61,15 @@
 					<div class="forgot-link pull-left" data-bind="visible: '' !== forgotPasswordLinkUrl"
 						style="text-align: center">
 						<a href="#" target="_blank" class="g-ui-link"
-							data-bind="attr: {href: forgotPasswordLinkUrl}, css: {'pull-right': '' !== registrationLinkUrl}"><span
-								data-i18n="LOGIN/LABEL_FORGOT_PASSWORD"></span></a>
+							data-bind="attr: {href: forgotPasswordLinkUrl}, css: {'pull-right': '' !== registrationLinkUrl}"
+							data-i18n="LOGIN/LABEL_FORGOT_PASSWORD"></a>
 					</div>
 					&nbsp;
 					<div class="registration-link pull-right"
 						data-bind="visible: '' !== registrationLinkUrl" style="text-align: center">
 						<a href="#" target="_blank" class="g-ui-link"
-							data-bind="attr: {href: registrationLinkUrl}, css: {'pull-left': '' !== forgotPasswordLinkUrl}"><span
-								data-i18n="LOGIN/LABEL_REGISTRATION"></span></a>
+							data-bind="attr: {href: registrationLinkUrl}, css: {'pull-left': '' !== forgotPasswordLinkUrl}"
+							data-i18n="LOGIN/LABEL_REGISTRATION"></a>
 					</div>
 				</div>
 			</form>
