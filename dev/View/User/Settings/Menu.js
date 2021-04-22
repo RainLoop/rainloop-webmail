@@ -21,7 +21,7 @@ export class MenuSettingsUserView extends AbstractViewLeft {
 	onBuild(dom) {
 		dom.addEventListener('click', event =>
 			ThemeStore.isMobile()
-			&& event.target.closest('.b-settings-menu a', dom)
+			&& event.target.closestWithin('.b-settings-menu a', dom)
 			&& leftPanelDisabled(true)
 		);
 	}

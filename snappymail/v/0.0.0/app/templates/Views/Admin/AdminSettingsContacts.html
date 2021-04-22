@@ -95,12 +95,6 @@ host=127.0.0.1;port=5432;dbname=snappymail
 				</div>
 			</div>
 		</div>
-		<div class="control-group" data-bind="visible: '' !== testContactsErrorMessage()">
-			<div class="controls">
-				<div class="row">
-					<div class="alert span8" data-bind="text: testContactsErrorMessage"></div>
-				</div>
-			</div>
-		</div>
+		<div class="alert span8" data-bind="text: testContactsErrorMessage, visible: '' !== testContactsErrorMessage()"></div>
 	</div>
 </div>

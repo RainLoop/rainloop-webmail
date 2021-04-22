@@ -12,15 +12,13 @@ import Remote from 'Remote/Admin/Fetch';
 
 import { PluginPopupView } from 'View/Popup/Plugin';
 
-export class PluginsAdminSettings {
+export class PluginsAdminSettings
+{
 	constructor() {
 		this.enabledPlugins = ko.observable(!!SettingsGet('EnabledPlugins'));
 
 		this.plugins = PluginAdminStore;
 		this.pluginsError = PluginAdminStore.error;
-
-		this.onPluginLoadRequest = this.onPluginLoadRequest.bind(this);
-		this.onPluginDisableRequest = this.onPluginDisableRequest.bind(this);
 
 		this.enabledPlugins.subscribe(value =>
 			Remote.saveAdminConfig(null, {
@@ -30,44 +28,36 @@ export class PluginsAdminSettings {
 	}
 
 	disablePlugin(plugin) {
-		plugin.disabled(!plugin.disabled());
-		Remote.pluginDisable(this.onPluginDisableRequest, plugin.name, plugin.disabled());
+		let b = !plugin.disabled();
+		plugin.disabled(b);
+		Remote.pluginDisable((iError, data) => {
+			if (iError) {
+				PluginAdminStore.error(
+					(Notification.UnsupportedPluginPackage === iError && data && data.ErrorMessage)
+					? data.ErrorMessage
+					: getNotification(iError)
+				);
+			}
+			PluginAdminStore.fetch();
+		}, plugin.name, b);
 	}
 
 	configurePlugin(plugin) {
-		Remote.plugin(this.onPluginLoadRequest, plugin.name);
+		Remote.plugin((iError, data) => iError || showScreenPopup(PluginPopupView, [data.Result]), plugin.name);
 	}
 
 	onBuild(oDom) {
 		oDom.addEventListener('click', event => {
-			let el = event.target.closestWithin('.e-item .configure-plugin-action', oDom);
+			let el = event.target.closestWithin('.configure-plugin-action', oDom);
 			el && ko.dataFor(el) && this.configurePlugin(ko.dataFor(el));
 
-			el = event.target.closestWithin('.e-item .disabled-plugin', oDom);
+			el = event.target.closestWithin('.disabled-plugin', oDom);
 			el && ko.dataFor(el) && this.disablePlugin(ko.dataFor(el));
 		});
 	}
 
 	onShow() {
 		PluginAdminStore.error('');
-		PluginAdminStore.fetch();
-	}
-
-	onPluginLoadRequest(iError, data) {
-		if (!iError) {
-			showScreenPopup(PluginPopupView, [data.Result]);
-		}
-	}
-
-	onPluginDisableRequest(iError, data) {
-		if (iError) {
-			if (Notification.UnsupportedPluginPackage === iError && data && data.ErrorMessage) {
-				PluginAdminStore.error(data.ErrorMessage);
-			} else {
-				PluginAdminStore.error(getNotification(iError));
-			}
-		}
-
 		PluginAdminStore.fetch();
 	}
 }
