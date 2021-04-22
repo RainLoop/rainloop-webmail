@@ -506,7 +506,7 @@ class ServiceActions
 				if (\method_exists($this->oActions, $sMethodName))
 				{
 					@\header('X-Raw-Action: '.$sMethodName, true);
-					@\header('Content-Security-Policy: script-src \'none\'; child-src \'none\'', true);
+					@\header('Content-Security-Policy: script-src \'none\'; child-src \'none\' docs.google.com apis.google.com', true);
 
 					$sRawError = '';
 					$this->oActions->SetActionParams(array(
