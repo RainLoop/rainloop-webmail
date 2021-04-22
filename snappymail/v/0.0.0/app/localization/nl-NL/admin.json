@@ -43,9 +43,7 @@
 		"LABEL_DETERMINE_USER_DOMAIN": "Probeer gebruikersdomein te bepalen",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Sta taal selectie toe in het login scherm",
 		"LABEL_DETERMINE_USER_LANGUAGE": "Probeer gebruiker taal te bepalen",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Verberg de 'Aanmelden' knop",
-		"LABEL_FORGOT_PASSWORD_LINK_URL": "Forgot password url",
-		"LABEL_REGISTRATION_LINK_URL": "Register url"
+		"LABEL_HIDE_SUBMIT_BUTTON": "Verberg de 'Aanmelden' knop"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Huisstijl",

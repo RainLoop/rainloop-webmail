@@ -57,9 +57,6 @@ class LoginUserView extends AbstractViewCenter {
 			signMeType: LoginSignMeType.Unused
 		});
 
-		this.forgotPasswordLinkUrl = Settings.app('forgotPasswordLinkUrl');
-		this.registrationLinkUrl = Settings.app('registrationLinkUrl');
-
 		this.formError = ko.observable(false).extend({ falseTimeout: 500 });
 
 		this.allowLanguagesOnLogin = !!SettingsGet('AllowLanguagesOnLogin');

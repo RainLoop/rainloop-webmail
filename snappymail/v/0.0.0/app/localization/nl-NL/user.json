@@ -32,9 +32,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "Inlognaam",
 		"LABEL_SIGN_ME": "Aangemeld blijven",
-		"BUTTON_SIGN_IN": "Aanmelden",
-		"LABEL_FORGOT_PASSWORD": "Wachtwoord vergeten",
-		"LABEL_REGISTRATION": "Registratie"
+		"BUTTON_SIGN_IN": "Aanmelden"
 	},
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Account toevoegen",

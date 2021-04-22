@@ -54,22 +54,6 @@
 				}"></div>
 
 			</div>
-			<div class="controls clearfix"
-				data-bind="visible: '' !== forgotPasswordLinkUrl || '' !== registrationLinkUrl">
-				<div class="forgot-link pull-left" data-bind="visible: '' !== forgotPasswordLinkUrl"
-					style="text-align: center">
-					<a href="#" target="_blank" class="g-ui-link"
-						data-bind="attr: {href: forgotPasswordLinkUrl}, css: {'pull-right': '' !== registrationLinkUrl}"
-						data-i18n="LOGIN/LABEL_FORGOT_PASSWORD"></a>
-				</div>
-				&nbsp;
-				<div class="registration-link pull-right"
-					data-bind="visible: '' !== registrationLinkUrl" style="text-align: center">
-					<a href="#" target="_blank" class="g-ui-link"
-						data-bind="attr: {href: registrationLinkUrl}, css: {'pull-left': '' !== forgotPasswordLinkUrl}"
-						data-i18n="LOGIN/LABEL_REGISTRATION"></a>
-				</div>
-			</div>
 		</form>
 	</div>
 </div>

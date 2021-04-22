@@ -32,9 +32,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "登录",
 		"LABEL_SIGN_ME": "记住我",
-		"BUTTON_SIGN_IN": "登录",
-		"LABEL_FORGOT_PASSWORD": "忘记密码",
-		"LABEL_REGISTRATION": "注册"
+		"BUTTON_SIGN_IN": "登录"
 	},
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "添加账户",

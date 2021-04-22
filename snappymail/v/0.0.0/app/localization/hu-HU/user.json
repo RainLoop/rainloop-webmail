@@ -32,9 +32,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "Bejelentkezés",
 		"LABEL_SIGN_ME": "Megjegyzés",
-		"BUTTON_SIGN_IN": "Belépés",
-		"LABEL_FORGOT_PASSWORD": "Elfelejtett jelszó",
-		"LABEL_REGISTRATION": "Regisztráció"
+		"BUTTON_SIGN_IN": "Belépés"
 	},
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Fiók hozzáadás",

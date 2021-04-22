@@ -43,9 +43,7 @@
 		"LABEL_DETERMINE_USER_DOMAIN": "Försök att bestämma användardomän",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Tillåt språkändringar på inloggningsskärmen",
 		"LABEL_DETERMINE_USER_LANGUAGE": "Försök att bestämma användarens språk",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button",
-		"LABEL_FORGOT_PASSWORD_LINK_URL": "Forgot password url",
-		"LABEL_REGISTRATION_LINK_URL": "Register url"
+		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Branding",

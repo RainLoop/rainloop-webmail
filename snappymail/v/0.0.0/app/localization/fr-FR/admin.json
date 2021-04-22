@@ -43,9 +43,7 @@
 		"LABEL_DETERMINE_USER_DOMAIN": "Deviner le domaine de l'utilisateur",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Permettre la sélection de la langue sur l'écran de connexion",
 		"LABEL_DETERMINE_USER_LANGUAGE": "Deviner la langue de l'utilisateur",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Masquer le bouton 'Se connecter'",
-		"LABEL_FORGOT_PASSWORD_LINK_URL": "Forgot password url",
-		"LABEL_REGISTRATION_LINK_URL": "Register url"
+		"LABEL_HIDE_SUBMIT_BUTTON": "Masquer le bouton 'Se connecter'"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Logo & Marque",

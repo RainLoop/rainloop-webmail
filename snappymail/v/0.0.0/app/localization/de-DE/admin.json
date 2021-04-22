@@ -43,9 +43,7 @@
 		"LABEL_DETERMINE_USER_DOMAIN": "Versuche Domain des Benutzers zu ermitteln",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Sprachauswahl bei der Anmeldung zulassen",
 		"LABEL_DETERMINE_USER_LANGUAGE": "Versuche Sprache des Benutzers zu ermitteln",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Die Schaltfläche 'Anmelden' ausblenden",
-		"LABEL_FORGOT_PASSWORD_LINK_URL": "Forgot password url",
-		"LABEL_REGISTRATION_LINK_URL": "Register url"
+		"LABEL_HIDE_SUBMIT_BUTTON": "Die Schaltfläche 'Anmelden' ausblenden"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Branding",

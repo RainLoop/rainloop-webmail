@@ -32,9 +32,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "Login",
 		"LABEL_SIGN_ME": "Remember Me",
-		"BUTTON_SIGN_IN": "Sign In",
-		"LABEL_FORGOT_PASSWORD": "Forgot password",
-		"LABEL_REGISTRATION": "Registration"
+		"BUTTON_SIGN_IN": "Sign In"
 	},
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Add Account",

@@ -43,9 +43,7 @@
 		"LABEL_DETERMINE_USER_DOMAIN": "尝试判断用户使用的域名",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "允许在登录界面选择语言",
 		"LABEL_DETERMINE_USER_LANGUAGE": "尝试判断用户使用语言",
-		"LABEL_HIDE_SUBMIT_BUTTON": "隐藏“登录”按钮",
-		"LABEL_FORGOT_PASSWORD_LINK_URL": "Forgot password url",
-		"LABEL_REGISTRATION_LINK_URL": "Register url"
+		"LABEL_HIDE_SUBMIT_BUTTON": "隐藏“登录”按钮"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Logo",

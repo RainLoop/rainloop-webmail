@@ -995,8 +995,6 @@ class Actions
 			'allowHtmlEditorSourceButton' => (bool)$oConfig->Get('labs', 'allow_html_editor_source_button', false),
 			'allowHtmlEditorBitiButtons' => (bool)$oConfig->Get('labs', 'allow_html_editor_biti_buttons', false),
 			'allowCtrlEnterOnCompose' => (bool)$oConfig->Get('labs', 'allow_ctrl_enter_on_compose', false),
-			'forgotPasswordLinkUrl' => \trim($oConfig->Get('login', 'forgot_password_link_url', '')),
-			'registrationLinkUrl' => \trim($oConfig->Get('login', 'registration_link_url', '')),
 			'hideSubmitButton' => (bool)$oConfig->Get('login', 'hide_submit_button', true),
 			'useImapThread' => (bool)$oConfig->Get('labs', 'use_imap_thread', false),
 			'useImapSubscribe' => (bool)$oConfig->Get('labs', 'use_imap_list_subscribe', true),

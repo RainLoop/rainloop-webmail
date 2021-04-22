@@ -43,9 +43,7 @@
 		"LABEL_DETERMINE_USER_DOMAIN": "Próbálja megállapítani a felhasználó domainjét",
 		"LABEL_ALLOW_LANGUAGES_ON_LOGIN": "Nyel választás engedélyezése a bejelentkező képernyőn",
 		"LABEL_DETERMINE_USER_LANGUAGE": "Próbálja megállapítani a felhasználó nyelvét",
-		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button",
-		"LABEL_FORGOT_PASSWORD_LINK_URL": "Forgot password url",
-		"LABEL_REGISTRATION_LINK_URL": "Register url"
+		"LABEL_HIDE_SUBMIT_BUTTON": "Hide the 'Sign In' button"
 	},
 	"TAB_BRANDING": {
 		"LEGEND_BRANDING": "Arculat",

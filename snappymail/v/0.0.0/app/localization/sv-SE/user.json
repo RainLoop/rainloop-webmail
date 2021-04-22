@@ -32,9 +32,7 @@
 	"LOGIN": {
 		"LABEL_LOGIN": "Användarnamn",
 		"LABEL_SIGN_ME": "Kom ihåg mig",
-		"BUTTON_SIGN_IN": "Logga in",
-		"LABEL_FORGOT_PASSWORD": "Glömt lösenord",
-		"LABEL_REGISTRATION": "Registrera"
+		"BUTTON_SIGN_IN": "Logga in"
 	},
 	"TOP_TOOLBAR": {
 		"BUTTON_ADD_ACCOUNT": "Lägg till konto",
