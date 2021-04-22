@@ -319,6 +319,10 @@ class ChangePasswordPostfixAdminDriver implements \RainLoop\Providers\ChangePass
 			case 'sha512-crypt':
 				$sResult = '{SHA512-CRYPT}' . crypt($sPassword,'$6$'.$sSalt);
 				break;
+				
+			case 'argon2i':
+				$sResult = '{ARGON2I}' . password_hash($sPassword, PASSWORD_ARGON2I);
+				break;
 
 			case 'mysql_encrypt':
 			  if($this->sEngine == 'MySQL'){
