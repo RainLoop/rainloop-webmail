@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://github.com/RainLoop/rainloop-webmail">
-    <img width="200" heigth="200" src="https://www.rainloop.net/static/img/logo-256x256-tiny.png">
+    <img width="200" height="200" src="https://www.rainloop.net/static/img/logo-256x256-tiny.png">
   </a>
   <br>
   <h1>RainLoop Webmail</h1>
