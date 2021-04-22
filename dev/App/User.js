@@ -5,6 +5,7 @@ import { isPosNumeric, delegateRunOnDestroy, mailToHelper } from 'Common/UtilsUs
 
 import {
 	Capa,
+	Notification,
 	Scope
 } from 'Common/Enums';
 
