@@ -748,12 +748,6 @@ class ComposePopupView extends AbstractViewPopup {
 		}
 	}
 
-	onWarmUp() {
-		if (this.modalVisibility && !this.modalVisibility()) {
-			this.editor(editor => editor.modeWysiwyg());
-		}
-	}
-
 	/**
 	 * @param {Function} fKoValue
 	 * @param {Array} emails
@@ -1146,6 +1140,8 @@ class ComposePopupView extends AbstractViewPopup {
 		ro.header = dom.querySelector('.b-header');
 		ro.toolbar = dom.querySelector('.b-header-toolbar');
 		ro.els = [dom.querySelector('.textAreaParent'), dom.querySelector('.attachmentAreaParent')];
+
+		this.editor(editor => editor.modeWysiwyg());
 	}
 
 	/**

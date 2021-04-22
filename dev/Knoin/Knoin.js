@@ -153,7 +153,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 	return ViewModelClass && ViewModelClass.__vm;
 }
 
-function getScreenPopupViewModel(ViewModelClassToShow) {
+export function getScreenPopupViewModel(ViewModelClassToShow) {
 	return (buildViewModel(ViewModelClassToShow) && ViewModelClassToShow.__dom) && ViewModelClassToShow.__vm;
 }
 
@@ -173,15 +173,6 @@ export function showScreenPopup(ViewModelClassToShow, params = []) {
 
 		vm.onShow && vm.onShow(...params);
 	}
-}
-
-/**
- * @param {Function} ViewModelClassToShow
- * @returns {void}
- */
-export function warmUpScreenPopup(ViewModelClassToShow) {
-	const vm = getScreenPopupViewModel(ViewModelClassToShow);
-	vm && vm.onWarmUp && vm.onWarmUp();
 }
 
 /**

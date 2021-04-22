@@ -15,7 +15,7 @@ import { FolderListMailBoxUserView } from 'View/User/MailBox/FolderList';
 import { MessageListMailBoxUserView } from 'View/User/MailBox/MessageList';
 import { MessageViewMailBoxUserView } from 'View/User/MailBox/MessageView';
 
-import { warmUpScreenPopup } from 'Knoin/Knoin';
+import { getScreenPopupViewModel } from 'Knoin/Knoin';
 
 import { AbstractScreen } from 'Knoin/AbstractScreen';
 
@@ -88,7 +88,7 @@ export class MailBoxUserScreen extends AbstractScreen {
 	onStart() {
 		if (!this.__started) {
 			super.onStart();
-			setTimeout(() => warmUpScreenPopup(ComposePopupView), 500);
+			setTimeout(() => getScreenPopupViewModel(ComposePopupView), 500);
 
 			addEventListener('mailbox.inbox-unread-count', e => {
 				FolderUserStore.foldersInboxUnreadCount(e.detail);
