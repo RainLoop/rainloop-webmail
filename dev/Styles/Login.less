@@ -11,126 +11,119 @@
 	}
 }
 
-@glass-color: #fff !important;
-@glass-error-color: #f76260 !important;
-@glass-m-color: rgba(255, 255, 255, .8) !important;
+@glass-color: #fff;
+@glass-error-color: #f76260;
+@glass-m-color: rgba(255, 255, 255, .8);
 
 .b-login-content {
 
 	.loginFormWrapper {
 		position: relative;
+	}
 
-		.descWrapper {
-			margin-bottom: 10px;
-			text-align: center;
+	.descWrapper {
+		color: var(--loading-color, #000);
+		font-size: 30px;
+		margin-bottom: 10px;
+		text-align: center;
+		text-shadow: var(--loading-text-shadow);
+	}
 
-			.desc {
-				font-size: 30px;
-				color: var(--loading-color, #000);
-				text-shadow: var(--loading-text-shadow);
-			}
-		}
+	.loginForm {
+		background-color: var(--login-bg-color, rgba(0, 0, 0, .5));
+		border: var(--login-border, 1px solid rgba(255, 255, 255, .2));
+		border-radius: var(--login-border-radius, 7px);
+		box-shadow: var(--login-box-shadow);
+		color: var(--login-color, @glass-m-color);
+		margin: 0;
 
-		.loginForm {
-			background-color: var(--login-bg-color, rgba(0, 0, 0, .5));
-			border: var(--login-border, 1px solid rgba(255, 255, 255, .2));
-			border-radius: var(--login-border-radius, 7px);
-			box-shadow: var(--login-box-shadow);
-			margin: 0;
-		}
-
-		.input-append .add-on *,
-		.loginForm, .legend, .e-checkbox-icon, .g-ui-link, .language-button {
+		* {
 			color: var(--login-color, @glass-m-color);
-			text-shadow: none !important;
 		}
 
-		.controls, .control-group {
-			margin-bottom: 25px;
-		}
-
-		.wrapper {
-			padding: 40px 40px 20px 40px;
-		}
-
-		.controls {
-			.inputLoginForm, .inputEmail, .inputLogin, .inputPassword {
-				font-size: 18px;
-				height: 40px;
-				line-height: 20px;
-				padding-left: 12px;
-				padding-right: 12px;
-			}
-			.inputEmail, .inputLogin, .inputPassword {
-				padding-right: 35px;
-			}
-
-			input, .btn {
-				border: 1px solid none !important;
-				background: none !important;
-				outline: none !important;
-				text-shadow: none !important;
-				box-shadow: none !important;
-
-				color: @glass-color;
-				border-color: @glass-m-color;
+		.controls.error {
+			.input-append .add-on,
+			.input-append .add-on * {
+				color: @glass-error-color;
 			}
 
 			input {
-
-				&:placeholder {
-					color: @glass-color;
-					text-shadow: none !important;
-				}
-
-				&:focus, &:hover {
-					border-color: @glass-color;
-				}
-			}
-
-			.btn {
-
-				text-transform: uppercase;
-				font-size: 13px;
-
-				&:hover, &:active {
-					border-color: @glass-color;
-				}
-			}
-
-			&.error {
-				.input-append .add-on * {
-					color: @glass-error-color;
-				}
-
-				input {
-					color: @glass-error-color;
-					border-color: @glass-error-color;
-				}
+				color: @glass-error-color;
+				border-color: @glass-error-color;
 			}
 		}
+	}
 
-		.signMeLabel .e-checkbox {
-			margin-top: 5px;
+	.controls, .control-group {
+		margin-bottom: 25px;
+	}
+
+	.wrapper {
+		padding: 40px 40px 20px 40px;
+	}
+
+	.controls {
+		.inputLoginForm, .inputLogin, .inputPassword {
+			font-size: 18px;
+			height: 40px;
+			line-height: 20px;
+			padding-left: 12px;
+			padding-right: 12px;
+		}
+		.inputLogin, .inputPassword {
+			padding-right: 35px;
 		}
 
-		.input-append .add-on {
-			margin-left: -1.5em;
-			position: relative;
-			font-size: 17px;
-			line-height: 29px;
-			top: 6px;
+		input, .btn {
+			border: 1px solid none;
+			background: none !important;
+			text-shadow: none;
+			box-shadow: none;
+
+			color: @glass-color;
+			border-color: @glass-m-color;
 		}
 
-		.input-append .add-on * {
-			font-size: 17px;
-			line-height: 29px;
+		input {
+
+			&:placeholder {
+				color: @glass-color;
+				text-shadow: none;
+			}
+
+			&:focus, &:hover {
+				border-color: @glass-color;
+			}
 		}
 
-		.controls.error .add-on *,
-		.control-group.error .add-on * {
-			color: #b94a48;
+		.btn {
+
+			text-transform: uppercase;
+			font-size: 13px;
+
+			&:hover, &:active {
+				border-color: @glass-color;
+			}
 		}
+	}
+
+	.signMeLabel .e-checkbox {
+		margin-top: 5px;
+	}
+
+	.input-append .add-on {
+		margin-left: -1.5em;
+		position: absolute;
+		font-size: 17px;
+		line-height: 29px;
+		right: 6px;
+		top: 6px;
+		z-index: 10;
+	}
+
+	.input-append .add-on * {
+		font-size: 17px;
+		line-height: 29px;
 	}
 
 	.buttonLogin {
@@ -160,7 +153,6 @@
 
 	.language-button {
 		padding: 5px;
-		outline: none;
 		text-decoration: none;
 	}
 }
@@ -207,6 +199,5 @@
 	display: inline-block;
 	margin: 0;
 	padding: 0;
-	outline: none;
 	cursor: pointer;
 }
