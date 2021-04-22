@@ -48,26 +48,22 @@
 						}"></div>
 
 					<div class="key-list" data-bind="visible: encrypt">
-						<div class="key-list-wrp empty" data-bind="visible: !encryptKeys() || encryptKeys().length === 0">
+						<div class="key-list-wrp empty" data-bind="visible: encryptKeys().length === 0">
 							No public keys selected
 						</div>
-						<div class="key-list-wrp" data-bind="visible: encryptKeys() && encryptKeys().length > 0">
-							<!-- ko foreach: encryptKeys -->
-								<div class="key-list__item">
-									<div class="key-list__item-hash" data-bind="visible: !empty">
-										(<span data-bind="text: hash"></span>)
-									</div>
-									<div class="key-list__item-names"  data-bind="css: {'empty': empty}">
-									<!-- ko foreach: users -->
-										<div class="key-list__item-name" data-bind="text: $data"></div>
-									<!-- /ko -->
-									</div>
-									<div class="key-list__item-error" data-bind="visible: empty">
-										(Public key not found)
-									</div>
-									<div class="key-list__item-delete fontastic" data-bind="click: removable() ? $parent.deletePublickKey : null, css: {'disabled': !removable()}">🗑</div>
+						<div class="key-list-wrp" data-bind="visible: encryptKeys().length > 0, foreach: encryptKeys">
+							<div class="key-list__item">
+								<div class="key-list__item-hash" data-bind="visible: !empty">
+									(<span data-bind="text: hash"></span>)
 								</div>
-							<!-- /ko -->
+								<div class="key-list__item-names"  data-bind="css: {'empty': empty}, foreach: users">
+									<div class="key-list__item-name" data-bind="text: $data"></div>
+								</div>
+								<div class="key-list__item-error" data-bind="visible: empty">
+									(Public key not found)
+								</div>
+								<div class="key-list__item-delete fontastic" data-bind="click: removable() ? $parent.deletePublickKey : null, css: {'disabled': !removable()}">🗑</div>
+							</div>
 						</div>
 					</div>
 				</div>

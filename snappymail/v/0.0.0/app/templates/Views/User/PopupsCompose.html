@@ -31,14 +31,12 @@
 								data-bind="text: currentIdentityView, dropdownCloser: true, css: {'multiply': 1 < identitiesOptions().length }">
 							</a>
 							<!-- ko if: 1 < identitiesOptions().length -->
-								<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="identity-label-id">
-									<!-- ko foreach: identitiesOptions -->
-										<li class="e-item" role="presentation">
-											<a class="e-link menuitem" tabindex="-1" href="javascript:void(0);" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }">
-												<span data-bind="text: optText"></span>
-											</a>
-										</li>
-									<!-- /ko -->
+								<ul class="dropdown-menu g-ui-menu" role="menu" aria-labelledby="identity-label-id" data-bind="foreach: identitiesOptions">
+									<li class="e-item" role="presentation">
+										<a class="e-link menuitem" tabindex="-1" href="javascript:void(0);" data-bind="click: function (oIdentity) { $root.selectIdentity(oIdentity); return true; }">
+											<span data-bind="text: optText"></span>
+										</a>
+									</li>
 								</ul>
 							<!-- /ko -->
 						</div>
