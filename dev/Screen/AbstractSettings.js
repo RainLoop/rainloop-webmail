@@ -126,8 +126,7 @@ export class AbstractSettingsScreen extends AbstractScreen {
 				this.menu.push({
 					route: SettingsViewModel.__rlSettingsData.Route,
 					label: SettingsViewModel.__rlSettingsData.Label,
-					selected: ko.observable(false),
-					disabled: false
+					selected: ko.observable(false)
 				});
 			}
 		});

@@ -36,42 +36,27 @@
 
 .b-settings-menu {
 
-	.e-item {
-		overflow: hidden;
-		text-decoration: none;
-	}
-
-	.e-link {
-		position: relative;
+	a {
+		background-color: transparent;
+		color: var(--settings-menu-color, #333);
+		cursor: pointer;
 		display: block;
+		font-size: 18px;
 		height: 30px;
 		line-height: 29px;
-		font-size: 18px;
-		z-index: 1;
-		cursor: default;
-
-		background-color: transparent;
-		color: var(--settings-menu-disabled-color, #666);
-
+		overflow: hidden;
 		padding: 4px 10px;
-
 		text-decoration: none;
 	}
 
-	.e-item.selectable .e-link {
-		cursor: pointer;
-		color: var(--settings-menu-color, #333);
+	a:focus, a:hover {
+		background-color: var(--settings-menu-hover-bg-color, #333);
+		color: var(--settings-menu-hover-color, #eee);
 	}
 
-	.e-item.selectable {
-		&:hover .e-link{
-			background-color: var(--settings-menu-hover-bg-color, #333);
-			color: var(--settings-menu-hover-color, #eee);
-		}
-		&.selected .e-link {
-			background-color: var(--settings-menu-selected-bg-color, #333);
-			color: var(--settings-menu-selected-color, #eee);
-		}
+	a.selected {
+		background-color: var(--settings-menu-selected-bg-color, #333);
+		color: var(--settings-menu-selected-color, #eee);
 	}
 }
 
