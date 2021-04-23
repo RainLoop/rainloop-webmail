@@ -11,31 +11,18 @@ export class CheckboxMaterialDesignComponent extends AbstractCheckbox {
 		this.animationBox = ko.observable(false).extend({ falseTimeout: 200 });
 		this.animationCheckmark = ko.observable(false).extend({ falseTimeout: 200 });
 
-		this.animationBoxSetTrue = this.animationBoxSetTrue.bind(this);
-		this.animationCheckmarkSetTrue = this.animationCheckmarkSetTrue.bind(this);
-
 		this.disposable.push(
-			this.value.subscribe((value) => {
-				this.triggerAnimation(value);
-			}, this)
+			this.value.subscribe(value => this.triggerAnimation(value), this)
 		);
-	}
-
-	animationBoxSetTrue() {
-		this.animationBox(true);
-	}
-
-	animationCheckmarkSetTrue() {
-		this.animationCheckmark(true);
 	}
 
 	triggerAnimation(box) {
 		if (box) {
-			this.animationBoxSetTrue();
-			setTimeout(this.animationCheckmarkSetTrue, 200);
+			this.animationBox(true);
+			setTimeout(()=>this.animationCheckmark(true), 200);
 		} else {
-			this.animationCheckmarkSetTrue();
-			setTimeout(this.animationBoxSetTrue, 200);
+			this.animationCheckmark(true);
+			setTimeout(()=>this.animationBox(true), 200);
 		}
 	}
 }

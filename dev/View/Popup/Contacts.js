@@ -90,7 +90,7 @@ class ContactsPopupView extends AbstractViewPopup {
 
 		this.bDropPageAfterDelete = false;
 
-		// this.saveCommandDebounce = _.debounce(this.saveCommand.bind(this), 1000);
+		// this.saveCommandDebounce = this.saveCommand.bind(this).debounce(1000);
 
 		const
 //			propertyFocused = property => !property.isValid() && !property.focused(),
@@ -382,23 +382,15 @@ class ContactsPopupView extends AbstractViewPopup {
 
 	deleteSelectedContacts() {
 		if (this.contactsCheckedOrSelected().length) {
-			Remote.contactsDelete(this.deleteResponse.bind(this), this.contactsCheckedOrSelectedUids());
+			Remote.contactsDelete((iError, oData) => {
+				if (500 < (!iError && oData && oData.Time ? pInt(oData.Time) : 0)) {
+					this.reloadContactList(this.bDropPageAfterDelete);
+				} else {
+					setTimeout(() => this.reloadContactList(this.bDropPageAfterDelete), 500);
+				}
+			}, this.contactsCheckedOrSelectedUids());
 
 			this.removeCheckedOrSelectedContactsFromList();
-		}
-	}
-
-	/**
-	 * @param {int} iError
-	 * @param {FetchJsonDefaultResponse} oData
-	 */
-	deleteResponse(iError, oData) {
-		if (500 < (!iError && oData && oData.Time ? pInt(oData.Time) : 0)) {
-			this.reloadContactList(this.bDropPageAfterDelete);
-		} else {
-			setTimeout(() => {
-				this.reloadContactList(this.bDropPageAfterDelete);
-			}, 500);
 		}
 	}
 

@@ -220,8 +220,6 @@ export const MessageUserStore = new class {
 			}
 		});
 
-		this.onMessageResponse = this.onMessageResponse.bind(this);
-
 		this.purgeMessageBodyCacheThrottle = this.purgeMessageBodyCache.throttle(30000);
 	}
 
@@ -630,25 +628,18 @@ export const MessageUserStore = new class {
 		if (oMessage) {
 			this.hideMessageBodies();
 			this.messageLoading(true);
-			Remote.message(this.onMessageResponse, oMessage.folder, oMessage.uid);
+			Remote.message((iError, oData, bCached) => {
+				if (iError) {
+					if (Notification.RequestAborted !== iError) {
+						this.message(null);
+						this.messageError(getNotification(iError));
+					}
+				} else {
+					this.setMessage(oData, bCached);
+				}
+				this.messageLoading(false);
+			}, oMessage.folder, oMessage.uid);
 		}
-	}
-
-	/**
-	 * @param {string} sResult
-	 * @param {FetchJsonDefaultResponse} oData
-	 * @param {boolean} bCached
-	 */
-	onMessageResponse(iError, oData, bCached) {
-		if (iError) {
-			if (Notification.RequestAborted !== iError) {
-				this.message(null);
-				this.messageError(getNotification(iError));
-			}
-		} else {
-			this.setMessage(oData, bCached);
-		}
-		this.messageLoading(false);
 	}
 
 	/**

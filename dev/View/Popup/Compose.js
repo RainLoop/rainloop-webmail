@@ -419,7 +419,24 @@ class ComposePopupView extends AbstractViewPopup {
 				setFolderHash(sSentFolder, '');
 
 				Remote.sendMessage(
-					this.sendMessageResponse.bind(this),
+					(iError, data) => {
+						this.sending(false);
+						if (this.modalVisibility()) {
+							if (iError) {
+								if (Notification.CantSaveMessage === iError) {
+									this.sendSuccessButSaveError(true);
+									this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
+								} else {
+									this.sendError(true);
+									this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
+										|| getNotification(Notification.CantSendMessage));
+								}
+							} else {
+								this.closeCommand && this.closeCommand();
+							}
+						}
+						this.reloadDraftFolder();
+					},
 					this.getMessageRequestParams(sSentFolder)
 				);
 			}
@@ -438,7 +455,40 @@ class ComposePopupView extends AbstractViewPopup {
 			setFolderHash(FolderUserStore.draftFolder(), '');
 
 			Remote.saveMessage(
-				this.saveMessageResponse.bind(this),
+				(iError, oData) => {
+					let result = false;
+
+					this.saving(false);
+
+					if (!iError) {
+						if (oData.Result.NewFolder && oData.Result.NewUid) {
+							result = true;
+
+							if (this.bFromDraft) {
+								const message = MessageUserStore.message();
+								if (message && this.draftFolder() === message.folder && this.draftUid() === message.uid) {
+									MessageUserStore.message(null);
+								}
+							}
+
+							this.draftFolder(oData.Result.NewFolder);
+							this.draftUid(oData.Result.NewUid);
+
+							this.savedTime(new Date);
+
+							if (this.bFromDraft) {
+								setFolderHash(this.draftFolder(), '');
+							}
+						}
+					}
+
+					if (!result) {
+						this.savedError(true);
+						this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
+					}
+
+					this.reloadDraftFolder();
+				},
 				this.getMessageRequestParams(FolderUserStore.draftFolder())
 			);
 		}
@@ -576,63 +626,6 @@ class ComposePopupView extends AbstractViewPopup {
 			this.currentIdentity(identity.item);
 			this.setSignatureFromIdentity(identity.item);
 		}
-	}
-
-	sendMessageResponse(iError, data) {
-
-		this.sending(false);
-
-		if (this.modalVisibility()) {
-			if (iError) {
-				if (Notification.CantSaveMessage === iError) {
-					this.sendSuccessButSaveError(true);
-					this.savedErrorDesc(i18n('COMPOSE/SAVED_ERROR_ON_SEND').trim());
-				} else {
-					this.sendError(true);
-					this.sendErrorDesc(getNotification(iError, data && data.ErrorMessage)
-						|| getNotification(Notification.CantSendMessage));
-				}
-			} else {
-				this.closeCommand && this.closeCommand();
-			}
-		}
-
-		this.reloadDraftFolder();
-	}
-
-	saveMessageResponse(iError, oData) {
-		let result = false;
-
-		this.saving(false);
-
-		if (!iError) {
-			if (oData.Result.NewFolder && oData.Result.NewUid) {
-				result = true;
-
-				if (this.bFromDraft) {
-					const message = MessageUserStore.message();
-					if (message && this.draftFolder() === message.folder && this.draftUid() === message.uid) {
-						MessageUserStore.message(null);
-					}
-				}
-
-				this.draftFolder(oData.Result.NewFolder);
-				this.draftUid(oData.Result.NewUid);
-
-				this.savedTime(new Date);
-
-				if (this.bFromDraft) {
-					setFolderHash(this.draftFolder(), '');
-				}
-			}
-		}
-
-		if (!result) {
-			this.savedError(true);
-			this.savedErrorDesc(getNotification(Notification.CantSaveMessage));
-		}
-
-		this.reloadDraftFolder();
 	}
 
 	onHide() {
