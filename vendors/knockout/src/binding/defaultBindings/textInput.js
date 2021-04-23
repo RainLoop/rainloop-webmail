@@ -12,7 +12,6 @@ ko.bindingHandlers['textInput'] = {
             var elementValue = element.value;
             if (previousElementValue !== elementValue) {
                 // Provide a way for tests to know exactly which event was processed
-                if (DEBUG && event) element['_ko_textInputProcessedEvent'] = event.type;
                 previousElementValue = elementValue;
                 ko.expressionRewriting.writeValueToProperty(valueAccessor(), allBindings, 'textInput', elementValue);
             }
@@ -25,8 +24,7 @@ ko.bindingHandlers['textInput'] = {
                 // updates that are from the previous state of the element, usually due to techniques
                 // such as rateLimit. Such updates, if not ignored, can cause keystrokes to be lost.
                 elementValueBeforeEvent = element.value;
-                var handler = DEBUG ? updateModel.bind(element, {type: event.type}) : updateModel;
-                timeoutHandle = ko.utils.setTimeout(handler, 4);
+                timeoutHandle = ko.utils.setTimeout(updateModel, 4);
             }
         };
 
@@ -53,18 +51,7 @@ ko.bindingHandlers['textInput'] = {
         var onEvent = (event, handler) =>
             ko.utils.registerEventHandler(element, event, handler);
 
-        if (DEBUG && ko.bindingHandlers['textInput']['_forceUpdateOn']) {
-            // Provide a way for tests to specify exactly which events are bound
-            ko.bindingHandlers['textInput']['_forceUpdateOn'].forEach(eventName => {
-                if (eventName.slice(0,5) == 'after') {
-                    onEvent(eventName.slice(5), deferUpdateModel);
-                } else {
-                    onEvent(eventName, updateModel);
-                }
-            });
-        } else {
-            onEvent('input', updateModel);
-        }
+        onEvent('input', updateModel);
 
         // Bind to the change event so that we can catch programmatic updates of the value that fire this event.
         onEvent('change', updateModel);

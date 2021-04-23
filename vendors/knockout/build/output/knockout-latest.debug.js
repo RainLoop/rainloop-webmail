@@ -215,24 +215,25 @@ ko.utils.domData = new (function () {
     };
 })();
 
-ko.utils.domNodeDisposal = new (function () {
+ko.utils.domNodeDisposal = (() => {
     var domDataKey = ko.utils.domData.nextKey();
     var cleanableNodeTypes = { 1: true, 8: true, 9: true };       // Element, Comment, Document
     var cleanableNodeTypesWithDescendants = { 1: true, 9: true }; // Element, Document
 
-    function getDisposeCallbacksCollection(node, createIfNotFound) {
+    const getDisposeCallbacksCollection = (node, createIfNotFound) => {
         var allDisposeCallbacks = ko.utils.domData.get(node, domDataKey);
         if ((allDisposeCallbacks === undefined) && createIfNotFound) {
             allDisposeCallbacks = [];
             ko.utils.domData.set(node, domDataKey, allDisposeCallbacks);
         }
         return allDisposeCallbacks;
-    }
-    function destroyCallbacksCollection(node) {
-        ko.utils.domData.set(node, domDataKey, undefined);
-    }
+    },
 
-    function cleanSingleNode(node) {
+    destroyCallbacksCollection = node => {
+        ko.utils.domData.set(node, domDataKey, undefined);
+    },
+
+    cleanSingleNode = node => {
         // Run all the dispose callbacks
         var callbacks = getDisposeCallbacksCollection(node, false);
         if (callbacks) {
@@ -246,12 +247,11 @@ ko.utils.domNodeDisposal = new (function () {
 
         // Clear any immediate-child comment nodes, as these wouldn't have been found by
         // node.getElementsByTagName("*") in cleanNode() (comment nodes aren't elements)
-        if (cleanableNodeTypesWithDescendants[node.nodeType]) {
-            cleanNodesInList(node.childNodes, true/*onlyComments*/);
-        }
-    }
+        cleanableNodeTypesWithDescendants[node.nodeType]
+        && cleanNodesInList(node.childNodes, true/*onlyComments*/);
+    },
 
-    function cleanNodesInList(nodeList, onlyComments) {
+    cleanNodesInList = (nodeList, onlyComments) => {
         var cleanedNodes = [], lastCleanedNode;
         for (var i = 0; i < nodeList.length; i++) {
             if (!onlyComments || nodeList[i].nodeType === 8) {
@@ -261,7 +261,7 @@ ko.utils.domNodeDisposal = new (function () {
                 }
             }
         }
-    }
+    };
 
     return {
         addDisposeCallback : (node, callback) => {
@@ -274,8 +274,7 @@ ko.utils.domNodeDisposal = new (function () {
             var callbacksCollection = getDisposeCallbacksCollection(node, false);
             if (callbacksCollection) {
                 ko.utils.arrayRemoveItem(callbacksCollection, callback);
-                if (callbacksCollection.length == 0)
-                    destroyCallbacksCollection(node);
+                callbacksCollection.length || destroyCallbacksCollection(node);
             }
         },
 
@@ -286,9 +285,8 @@ ko.utils.domNodeDisposal = new (function () {
                     cleanSingleNode(node);
 
                     // ... then its descendants, where applicable
-                    if (cleanableNodeTypesWithDescendants[node.nodeType]) {
-                        cleanNodesInList(node.getElementsByTagName("*"));
-                    }
+                    cleanableNodeTypesWithDescendants[node.nodeType]
+                    && cleanNodesInList(node.getElementsByTagName("*"));
                 }
             });
 
@@ -297,8 +295,7 @@ ko.utils.domNodeDisposal = new (function () {
 
         removeNode : node => {
             ko.cleanNode(node);
-            if (node.parentNode)
-                node.parentNode.removeChild(node);
+            node.parentNode && node.parentNode.removeChild(node);
         }
     };
 })();
@@ -454,6 +451,7 @@ class koSubscription
     }
 
     disposeWhenNodeIsRemoved(node) {
+        // MutationObserver ?
         this._node = node;
         ko.utils.domNodeDisposal.addDisposeCallback(node, this._domNodeDisposalCallback = this.dispose.bind(this));
     }
@@ -990,7 +988,7 @@ ko.extenders['trackArrayChanges'] = (target, options) => {
 };
 var computedState = Symbol('_state');
 
-ko.computed = function (evaluatorFunctionOrOptions, options) {
+ko.computed = (evaluatorFunctionOrOptions, options) => {
     if (typeof evaluatorFunctionOrOptions === "object") {
         // Single-parameter syntax - everything is on this "options" param
         options = evaluatorFunctionOrOptions;
@@ -1061,11 +1059,6 @@ ko.computed = function (evaluatorFunctionOrOptions, options) {
         ko.utils.extend(computedObservable, deferEvaluationOverrides);
     }
 
-    if (DEBUG) {
-        // #1731 - Aid debugging by exposing the computed's options
-        computedObservable["_options"] = options;
-    }
-
     if (state.disposeWhenNodeIsRemoved) {
         // Since this computed is associated with a DOM node, and we don't want to dispose the computed
         // until the DOM node is *removed* from the document (as opposed to never having been in the document),
@@ -1089,7 +1082,7 @@ ko.computed = function (evaluatorFunctionOrOptions, options) {
     // Attach a DOM node disposal callback so that the computed will be proactively disposed as soon as the node is
     // removed using ko.removeNode. But skip if isActive is false (there will never be any dependencies to dispose).
     if (state.disposeWhenNodeIsRemoved && computedObservable.isActive()) {
-        ko.utils.domNodeDisposal.addDisposeCallback(state.disposeWhenNodeIsRemoved, state.domNodeDisposalCallback = function () {
+        ko.utils.domNodeDisposal.addDisposeCallback(state.disposeWhenNodeIsRemoved, state.domNodeDisposalCallback = () => {
             computedObservable.dispose();
         });
     }
@@ -1124,6 +1117,26 @@ function computedBeginDependencyDetectionCallback(subscribable, id) {
             subscribable._notifyNextChangeIfValueIsDifferent();
         }
     }
+}
+
+function evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyDetectionContext) {
+	// This function is really part of the evaluateImmediate_CallReadWithDependencyDetection logic.
+	// You'd never call it from anywhere else. Factoring it out means that evaluateImmediate_CallReadWithDependencyDetection
+	// can be independent of try/finally blocks, which contributes to saving about 40% off the CPU
+	// overhead of computed evaluation (on V8 at least).
+
+	try {
+		return state.readFunction();
+	} finally {
+		ko.dependencyDetection.end();
+
+		// For each subscription no longer being used, remove it from the active subscriptions list and dispose it
+		if (dependencyDetectionContext.disposalCount && !state.isSleeping) {
+			ko.utils.objectForEach(dependencyDetectionContext.disposalCandidates, computedDisposeDependencyCallback);
+		}
+
+		state.isStale = state.isDirty = false;
+	}
 }
 
 var computedFn = {
@@ -1274,7 +1287,7 @@ var computedFn = {
         state.dependencyTracking = {};
         state.dependenciesCount = 0;
 
-        var newValue = this.evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyDetectionContext);
+        var newValue = evaluateImmediate_CallReadThenEndDependencyDetection(state, dependencyDetectionContext);
 
         if (!state.dependenciesCount) {
             computedObservable.dispose();
@@ -1291,7 +1304,6 @@ var computedFn = {
             }
 
             state.latestValue = newValue;
-            if (DEBUG) computedObservable._latestValue = newValue;
 
             computedObservable["notifySubscribers"](state.latestValue, "spectate");
 
@@ -1308,25 +1320,6 @@ var computedFn = {
         }
 
         return changed;
-    },
-    evaluateImmediate_CallReadThenEndDependencyDetection: (state, dependencyDetectionContext) => {
-        // This function is really part of the evaluateImmediate_CallReadWithDependencyDetection logic.
-        // You'd never call it from anywhere else. Factoring it out means that evaluateImmediate_CallReadWithDependencyDetection
-        // can be independent of try/finally blocks, which contributes to saving about 40% off the CPU
-        // overhead of computed evaluation (on V8 at least).
-
-        try {
-            return state.readFunction();
-        } finally {
-            ko.dependencyDetection.end();
-
-            // For each subscription no longer being used, remove it from the active subscriptions list and dispose it
-            if (dependencyDetectionContext.disposalCount && !state.isSleeping) {
-                ko.utils.objectForEach(dependencyDetectionContext.disposalCandidates, computedDisposeDependencyCallback);
-            }
-
-            state.isStale = state.isDirty = false;
-        }
     },
     peek: function (evaluate) {
         // By default, peek won't re-evaluate, except while the computed is sleeping or to get the initial value when "deferEvaluation" is set.
@@ -3386,7 +3379,6 @@ ko.bindingHandlers['textInput'] = {
             var elementValue = element.value;
             if (previousElementValue !== elementValue) {
                 // Provide a way for tests to know exactly which event was processed
-                if (DEBUG && event) element['_ko_textInputProcessedEvent'] = event.type;
                 previousElementValue = elementValue;
                 ko.expressionRewriting.writeValueToProperty(valueAccessor(), allBindings, 'textInput', elementValue);
             }
@@ -3399,8 +3391,7 @@ ko.bindingHandlers['textInput'] = {
                 // updates that are from the previous state of the element, usually due to techniques
                 // such as rateLimit. Such updates, if not ignored, can cause keystrokes to be lost.
                 elementValueBeforeEvent = element.value;
-                var handler = DEBUG ? updateModel.bind(element, {type: event.type}) : updateModel;
-                timeoutHandle = ko.utils.setTimeout(handler, 4);
+                timeoutHandle = ko.utils.setTimeout(updateModel, 4);
             }
         };
 
@@ -3427,18 +3418,7 @@ ko.bindingHandlers['textInput'] = {
         var onEvent = (event, handler) =>
             ko.utils.registerEventHandler(element, event, handler);
 
-        if (DEBUG && ko.bindingHandlers['textInput']['_forceUpdateOn']) {
-            // Provide a way for tests to specify exactly which events are bound
-            ko.bindingHandlers['textInput']['_forceUpdateOn'].forEach(eventName => {
-                if (eventName.slice(0,5) == 'after') {
-                    onEvent(eventName.slice(5), deferUpdateModel);
-                } else {
-                    onEvent(eventName, updateModel);
-                }
-            });
-        } else {
-            onEvent('input', updateModel);
-        }
+        onEvent('input', updateModel);
 
         // Bind to the change event so that we can catch programmatic updates of the value that fire this event.
         onEvent('change', updateModel);
