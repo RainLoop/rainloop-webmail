@@ -1439,14 +1439,12 @@ class MailClient
 			if (0 < \count($aFetchResponse))
 			{
 				$aFetchIndexArray = array();
-				$oFetchResponseItem = null;
 				foreach ($aFetchResponse as /* @var $oFetchResponseItem \MailSo\Imap\FetchResponse */ $oFetchResponseItem)
 				{
-					$aFetchIndexArray[($bIndexAsUid)
+					$aFetchIndexArray[$bIndexAsUid
 						? $oFetchResponseItem->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::UID)
-						: $oFetchResponseItem->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::INDEX)] =& $oFetchResponseItem;
-
-					unset($oFetchResponseItem);
+						: $oFetchResponseItem->GetFetchValue(\MailSo\Imap\Enumerations\FetchType::INDEX)
+					] = $oFetchResponseItem;
 				}
 
 				foreach ($aRequestIndexOrUids as $iFUid)
@@ -1979,8 +1977,6 @@ class MailClient
 
 	public function Folders(string $sParent = '', string $sListPattern = '*', bool $bUseListSubscribeStatus = true, int $iOptimizationLimit = 0) : ?FolderCollection
 	{
-		$oFolderCollection = null;
-
 		$aImapSubscribedFoldersHelper = null;
 		if ($bUseListSubscribeStatus)
 		{
@@ -2000,56 +1996,102 @@ class MailClient
 		}
 
 		$aFolders = $this->oImapClient->FolderList($sParent, $sListPattern);
+		if (!$aFolders) {
+			return null;
+		}
 
-		if ($aFolders)
+		$aMailFoldersHelper = array();
+		foreach ($aFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder)
 		{
-			$aMailFoldersHelper = array();
+			$aMailFoldersHelper[] = new Folder($oImapFolder,
+				(null === $aImapSubscribedFoldersHelper || \in_array($oImapFolder->FullNameRaw(), $aImapSubscribedFoldersHelper)) ||
+				$oImapFolder->IsInbox()
+			);
+		}
 
-			foreach ($aFolders as /* @var $oImapFolder \MailSo\Imap\Folder */ $oImapFolder)
+		$iCount = \count($aMailFoldersHelper);
+		$aMailFoldersHelper = $this->folderListOptimization($aMailFoldersHelper, $iOptimizationLimit);
+		if (!$aMailFoldersHelper) {
+			return null;
+		}
+
+		$oFolderCollection = new FolderCollection;
+		$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
+		$oFolderCollection->IsSortSupported = $this->oImapClient->IsSupported('SORT');
+		$oFolderCollection->Optimized = $iCount !== \count($aMailFoldersHelper);
+
+		$aSortedByLenImapFolders = array();
+		foreach ($aMailFoldersHelper as /* @var $oMailFolder Folder */ $oMailFolder)
+		{
+			$aSortedByLenImapFolders[$oMailFolder->FullNameRaw()] = $oMailFolder;
+		}
+		unset($aMailFoldersHelper);
+
+		$aAddedFolders = array();
+		foreach ($aSortedByLenImapFolders as /* @var $oMailFolder Folder */ $oMailFolder)
+		{
+			$sDelimiter = $oMailFolder->Delimiter();
+			$aFolderExplode = \explode($sDelimiter, $oMailFolder->FullNameRaw());
+
+			if (1 < \count($aFolderExplode))
 			{
-				$aMailFoldersHelper[] = new Folder($oImapFolder,
-					(null === $aImapSubscribedFoldersHelper || \in_array($oImapFolder->FullNameRaw(), $aImapSubscribedFoldersHelper)) ||
-					$oImapFolder->IsInbox()
-				);
-			}
+				\array_pop($aFolderExplode);
 
-			$iCount = \count($aMailFoldersHelper);
-			$aMailFoldersHelper = $this->folderListOptimization($aMailFoldersHelper, $iOptimizationLimit);
+				$sNonExistenFolderFullNameRaw = '';
+				foreach ($aFolderExplode as $sFolderExplodeItem)
+				{
+					$sNonExistenFolderFullNameRaw .= (0 < \strlen($sNonExistenFolderFullNameRaw))
+						? $sDelimiter.$sFolderExplodeItem : $sFolderExplodeItem;
 
-			if ($aMailFoldersHelper)
-			{
-				$oFolderCollection = new FolderCollection;
-				$oFolderCollection->InitByUnsortedMailFolderArray($aMailFoldersHelper);
-
-				$oFolderCollection->Optimized = $iCount !== \count($aMailFoldersHelper);
+					if (!isset($aSortedByLenImapFolders[$sNonExistenFolderFullNameRaw]))
+					{
+						try
+						{
+							$aAddedFolders[$sNonExistenFolderFullNameRaw] =
+								Folder::NewNonExistenInstance($sNonExistenFolderFullNameRaw, $sDelimiter);
+						}
+						catch (\Throwable $oExc)
+						{
+							unset($oExc);
+						}
+					}
+				}
 			}
 		}
 
-		if ($oFolderCollection)
+		$aSortedByLenImapFolders = \array_merge($aSortedByLenImapFolders, $aAddedFolders);
+		unset($aAddedFolders);
+
+		\uasort($aSortedByLenImapFolders, function ($oFolderA, $oFolderB) {
+			return \strnatcmp($oFolderA->FullNameRaw(), $oFolderB->FullNameRaw());
+		});
+
+		foreach ($aSortedByLenImapFolders as $oMailFolder)
 		{
-			$oFolderCollection->SortByCallback(function ($oFolderA, $oFolderB) {
-				$sA = \strtoupper($oFolderA->FullNameRaw());
-				$sB = \strtoupper($oFolderB->FullNameRaw());
-				switch (true)
-				{
-					case 'INBOX' === $sA:
-						return -1;
-					case 'INBOX' === $sB:
-						return 1;
-				}
+			$oFolderCollection->AddWithPositionSearch($oMailFolder);
+			unset($oMailFolder);
+		}
 
-				return \strnatcasecmp($oFolderA->FullName(), $oFolderB->FullName());
-			});
+		unset($aSortedByLenImapFolders);
 
-			$oNamespace = $this->oImapClient->GetNamespace();
-			if ($oNamespace)
+		$oFolderCollection->SortByCallback(function ($oFolderA, $oFolderB) {
+			$sA = \strtoupper($oFolderA->FullNameRaw());
+			$sB = \strtoupper($oFolderB->FullNameRaw());
+			switch (true)
 			{
-				$oFolderCollection->SetNamespace($oNamespace->GetPersonalNamespace());
+				case 'INBOX' === $sA:
+					return -1;
+				case 'INBOX' === $sB:
+					return 1;
 			}
 
-			$oFolderCollection->IsThreadsSupported = $this->IsThreadsSupported();
+			return \strnatcasecmp($oFolderA->FullName(), $oFolderB->FullName());
+		});
 
-			$oFolderCollection->IsSortSupported = $this->oImapClient->IsSupported('SORT');
+		$oNamespace = $this->oImapClient->GetNamespace();
+		if ($oNamespace)
+		{
+			$oFolderCollection->SetNamespace($oNamespace->GetPersonalNamespace());
 		}
 
 		return $oFolderCollection;
