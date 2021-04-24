@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" bootstrap="vendor/autoload.php">
+  <listeners>
+    <listener class="PHPUnit_Util_Log_VCR" file="vendor/php-vcr/phpunit-testlistener-vcr/PHPUnit/Util/Log/VCR.php" />
+    </listeners>
+    <testsuites>
+      <testsuite name="Unsplash Wrapper Test Suite">
+        <directory>./tests/</directory>
+      </testsuite>
+    </testsuites>
+    <logging>
+      <log type="coverage-clover" target="build/logs/clover.xml"/>
+    </logging>
+    <filter>
+     <whitelist processUncoveredFilesFromWhitelist="true">
+       <directory suffix=".php">./src</directory>
+     </whitelist>
+    </filter>
+</phpunit>

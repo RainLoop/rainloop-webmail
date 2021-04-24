@@ -1,0 +1,19 @@
+{
+    "name": "bloodyaltair/unsplash-bg-updater-for-rainloop",
+    "description": "Unsplash random background for Rainloop Webmail!",
+    "type": "plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "BloodyAltair",
+            "email": "me@bloody.pw"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "unsplash/unsplash": "^2.4"
+    },
+    "require-dev": {
+        "symfony/var-dumper": "*"
+    }
+}

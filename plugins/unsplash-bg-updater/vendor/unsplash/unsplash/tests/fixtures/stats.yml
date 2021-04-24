@@ -1,0 +1,35 @@
+[{
+    "request": {
+        "method": "GET",
+        "url": "https:\/\/api.unsplash.com\/stats\/total",
+        "headers": {
+            "Host": "api.unsplash.com",
+            "Accept-Encoding": null,
+            "User-Agent": "GuzzleHttp\/6.0.2 curl\/7.38.0 PHP\/5.6.11",
+            "Authorization": "Bearer 582c5d7ebe28bd707751a43c8e22dc5c0a4ba0a60dbe69d520677f47b7cfcc1b",
+            "Accept": null
+        }
+    },
+    "response": {
+        "status": {
+            "http_version": "1.1",
+            "code": "200",
+            "message": "OK"
+        },
+        "headers": {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Request-Method": "*",
+            "Cache-Control": "max-age=7200, public",
+            "Content-Type": "application\/json",
+            "Content-Length": "44",
+            "ETag": "W\/\"272769f6e39311c95c71681c7da60888\"",
+            "X-Request-Id": "829f5c0a-4fe0-4f62-8821-53bf30cbf8e2",
+            "X-RateLimit-Limit": "450",
+            "X-RateLimit-Remaining": "447",
+            "X-Runtime": "0.026500",
+            "Connection": "keep-alive",
+            "Server": "thin"
+        },
+        "body": "{\"photo_downloads\":189,\"batch_downloads\":31}"
+    }
+}]
