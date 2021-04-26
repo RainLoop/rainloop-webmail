@@ -4,35 +4,22 @@ namespace RainLoop\Actions;
 
 trait Themes
 {
-/*
-		$sTheme = $oConfig->Get('webmail', 'theme', 'Default');
-		if (!$bAdmin && $oAccount) {
-			$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-			if ($this->GetCapa(false, Enumerations\Capa::SETTINGS, $oAccount)) {
-				if ($oSettingsLocal instanceof Settings) {
-					if ($this->GetCapa(false, Enumerations\Capa::THEMES, $oAccount)) {
-						$sTheme = (string) $oSettingsLocal->GetConf('Theme', $sTheme);
-		$sTheme = $this->ValidateTheme($sTheme);
-		$aResult['Theme'] = $sTheme;
-		$aResult['NewThemeLink'] = $this->ThemeLink($sTheme, $bAdmin);
-
-			if ($oConfig->Get('webmail', 'allow_themes', false)) {
-				$aResult[] = Enumerations\Capa::THEMES;
-			}
-*/
-
 	public function GetTheme(bool $bAdmin): string
 	{
-		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
-		if (!$bAdmin) {
-			if ($oAccount = $this->GetAccount()) {
-				$oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount);
-				if ($oSettingsLocal instanceof Settings) {
-					$sTheme = $oSettingsLocal->GetConf('Theme', $sTheme);
-				}
-			}
+		static $sTheme;
+		if ($sTheme) {
+			return $sTheme;
 		}
-		return $this->ValidateTheme($sTheme) ?: 'Default';
+		$sTheme = $this->Config()->Get('webmail', 'theme', 'Default');
+		if (!$bAdmin
+		 && ($oAccount = $this->getAccountFromToken(false))
+		 && $this->GetCapa(false, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount)
+		 && $this->GetCapa(false, \RainLoop\Enumerations\Capa::THEMES, $oAccount)
+		 && ($oSettingsLocal = $this->SettingsProvider(true)->Load($oAccount))) {
+			$sTheme = (string) $oSettingsLocal->GetConf('Theme', $sTheme);
+		}
+		$sTheme = $this->ValidateTheme($sTheme) ?: 'Default';
+		return $sTheme;
 	}
 
 	/**
@@ -95,9 +82,9 @@ trait Themes
 		return $aCache;
 	}
 
-	public function ThemeLink(string $sTheme, bool $bAdmin): string
+	public function ThemeLink(bool $bAdmin): string
 	{
-		return './?/Css/0/' . ($bAdmin ? 'Admin' : 'User') . '/-/' . $sTheme . '/-/' . $this->StaticCache() . '/Hash/-/';
+		return './?/Css/0/' . ($bAdmin ? 'Admin' : 'User') . '/-/' . $this->GetTheme($bAdmin) . '/-/' . $this->StaticCache() . '/Hash/-/';
 	}
 
 	public function ValidateTheme(string $sTheme): string

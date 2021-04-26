@@ -505,43 +505,6 @@ class ServiceActions
 		return $sResult;
 	}
 
-	public function ServiceTemplates() : string
-	{
-		$sResult = '';
-		\header('Content-Type: application/javascript; charset=utf-8');
-
-		$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
-		if ($bCacheEnabled)
-		{
-			$this->oActions->verifyCacheByKey($this->sQuery);
-		}
-
-		$bAdmin = false !== \strpos($this->sQuery, 'Admin');
-
-		$sCacheFileName = '';
-		if ($bCacheEnabled)
-		{
-			$sCacheFileName = KeyPathHelper::TemplatesCache($bAdmin, $this->oActions->Plugins()->Hash());
-			$sResult = $this->Cacher()->Get($sCacheFileName);
-		}
-
-		if (0 === \strlen($sResult))
-		{
-			$sResult = $this->compileTemplates($bAdmin);
-			if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
-			{
-				$this->Cacher()->Set($sCacheFileName, $sResult);
-			}
-		}
-
-		if ($bCacheEnabled)
-		{
-			$this->oActions->cacheByKey($this->sQuery);
-		}
-
-		return $sResult;
-	}
-
 	public function ServicePlugins() : string
 	{
 		$sResult = '';
@@ -599,13 +562,6 @@ class ServiceActions
 		if (!empty($this->aPaths[4]))
 		{
 			$sTheme = $this->oActions->ValidateTheme($this->aPaths[4]);
-			$sRealTheme = $sTheme;
-
-			$bCustomTheme = '@custom' === \substr($sTheme, -7);
-			if ($bCustomTheme)
-			{
-				$sRealTheme = \substr($sTheme, 0, -7);
-			}
 
 			$bCacheEnabled = $this->Config()->Get('labs', 'cache_system_data', true);
 			if ($bCacheEnabled)
@@ -624,25 +580,7 @@ class ServiceActions
 			{
 				try
 				{
-					$oLess = new \LessPHP\lessc();
-					$oLess->setFormatter('compressed');
-
-					$aResult = array();
-
-					$sThemeFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sRealTheme.'/styles.less';
-
-					if (\is_file($sThemeFile))
-					{
-						$aResult[] = '@base: "'
-							. ($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath())
-							. 'themes/'.$sRealTheme.'/";';
-
-						$aResult[] = \file_get_contents($sThemeFile);
-					}
-
-					$aResult[] = $this->Plugins()->CompileCss($bAdmin);
-
-					$sResult = $oLess->compile(\implode("\n", $aResult));
+					$sResult = $this->compileCss($sTheme);
 
 					if ($bCacheEnabled)
 					{
@@ -987,6 +925,34 @@ class ServiceActions
 		return $sResult;
 	}
 
+	public function compileCss(string $sTheme) : string
+	{
+		$bCustomTheme = '@custom' === \substr($sTheme, -7);
+		if ($bCustomTheme) {
+			$sTheme = \substr($sTheme, 0, -7);
+		}
+
+		$oLess = new \LessPHP\lessc();
+		$oLess->setFormatter('compressed');
+
+		$aResult = array();
+
+		$sThemeFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.less';
+
+		if (\is_file($sThemeFile))
+		{
+			$aResult[] = '@base: "'
+				. ($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath())
+				. 'themes/'.$sTheme.'/";';
+
+			$aResult[] = \file_get_contents($sThemeFile);
+		}
+
+		$aResult[] = $this->Plugins()->CompileCss($bAdmin);
+
+		return $oLess->compile(\implode("\n", $aResult));
+	}
+
 	public function compileTemplates(bool $bAdmin = false, bool $bJsOutput = true) : string
 	{
 		$aTemplates = array();
@@ -1026,7 +992,7 @@ class ServiceActions
 
 		$this->Plugins()->ReadLang($sLanguage, $aResultLang);
 
-		$sResult = \json_encode($aResultLang, JSON_UNESCAPED_UNICODE);
+		$sResult = \json_encode($aResultLang, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
 
 		$sTimeFormat = '';
 		$options = [$sLanguage, \substr($sLanguage, 0, 2), 'en'];

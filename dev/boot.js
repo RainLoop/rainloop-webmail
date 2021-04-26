@@ -144,10 +144,6 @@ win.rl = {
 		rl.hash.set();
 
 		if (appData) {
-			if (appData.NewThemeLink) {
-				eId('app-theme-link').href = appData.NewThemeLink;
-			}
-
 			loadScript(appData.StaticLibJsLink)
 			.then(() => loadScript(appData.StaticAppJsLink))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())

@@ -4,44 +4,6 @@ namespace RainLoop\Actions;
 
 trait Localization
 {
-/*
-		'DetermineUserLanguage' => (bool)$oConfig->Get('login', 'determine_user_language', true),
-		'AllowLanguagesOnSettings' => (bool) $oConfig->Get('webmail', 'allow_languages_on_settings', true),
-		'AllowLanguagesOnLogin' => (bool) $oConfig->Get('login', 'allow_languages_on_login', true),
-		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
-		$sLanguageAdmin = $oConfig->Get('webmail', 'language_admin', 'en');
-
-		$UserLanguageRaw = $this->detectUserLanguage($bAdmin);
-
-		if (!$bAdmin) {
-			$oAccount = $this->getAccountFromToken(false);
-			if ($oAccount) {
-				$oSettings = $this->SettingsProvider()->Load($oAccount);
-				if ($oSettings instanceof Settings) {
-					if ($this->GetCapa(false, Enumerations\Capa::SETTINGS, $oAccount)) {
-						if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
-							$sLanguage = (string)$oSettings->GetConf('Language', $sLanguage);
-						}
-					}
-				}
-			}
-			if (!$aResult['Auth']) {
-				if ($oConfig->Get('login', 'allow_languages_on_login', true) &&
-					$oConfig->Get('login', 'determine_user_language', true)) {
-					$sLanguage = $this->ValidateLanguage($UserLanguageRaw, $sLanguage, false);
-				}
-			}
-		}
-
-		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
-		$aResult['LanguageAdmin'] = $this->ValidateLanguage($sLanguageAdmin, '', true);
-
-		$aResult['UserLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
-
-//		$aResult['LangLink'] = './?/Lang/0/' . ($bAdmin ? 'Admin' : 'App') . '/' .
-//			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']) . '/' . $sStaticCache . '/';
-*/
-
 	public function GetLanguage(bool $bAdmin = false): string
 	{
 		$oConfig = $this->Config();
@@ -49,12 +11,10 @@ trait Localization
 			$sLanguage = $oConfig->Get('webmail', 'language_admin', 'en');
 		} else {
 			$sLanguage = $oConfig->Get('webmail', 'language', 'en');
-//			$oAccount = $this->getAccountFromToken(false);
-			if ($oAccount = $this->GetAccount()) {
-				$oSettings = $this->SettingsProvider()->Load($oAccount);
-				if ($oSettings instanceof Settings) {
-//					if ($this->GetCapa(false, Enumerations\Capa::SETTINGS, $oAccount)) {
-//						if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)) {
+			if ($oAccount = $this->getAccountFromToken(false)) {
+				if ($oConfig->Get('webmail', 'allow_languages_on_settings', true)
+				 && $this->GetCapa(false, \RainLoop\Enumerations\Capa::SETTINGS, $oAccount)
+				 && ($oSettings = $this->SettingsProvider()->Load($oAccount))) {
 					$sLanguage = $oSettings->GetConf('Language', $sLanguage);
 				}
 			} else if ($oConfig->Get('login', 'allow_languages_on_login', true) && $oConfig->Get('login', 'determine_user_language', true)) {

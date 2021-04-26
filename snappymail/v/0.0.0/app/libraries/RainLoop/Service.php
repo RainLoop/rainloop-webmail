@@ -170,6 +170,7 @@ class Service
 
 			if (0 === \strlen($sResult))
 			{
+//				$aTemplateParameters['{{BaseAppThemeCss}}'] = $this->oServiceActions->compileCss($this->oActions->GetTheme($bAdmin));
 				$aTemplateParameters['{{BaseLanguage}}'] = $this->oServiceActions->compileLanguage($sLanguage, $bAdmin);
 				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
@@ -228,7 +229,7 @@ class Service
 			'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
 			'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
 			'{{BaseAppMainCssLink}}' => $this->staticPath('css/'.($bAdmin ? 'admin' : 'app').($bAppCssDebug ? '' : '.min').'.css'),
-			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($this->oActions->GetTheme($bAdmin), $bAdmin),
+			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($bAdmin),
 			'{{BaseAppBootScript}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js/min/boot.min.js'),
 //			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
 			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),

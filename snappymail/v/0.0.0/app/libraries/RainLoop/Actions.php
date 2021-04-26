@@ -1026,7 +1026,7 @@ class Actions
 
 		/*
 		required by Index.html and rl.js:
-		NewThemeLink TemplatesLink LangLink PluginsLink AuthAccountHash
+		PluginsLink AuthAccountHash
 		*/
 
 		$value = \ini_get('upload_max_filesize');
@@ -1107,7 +1107,6 @@ class Actions
 		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
 		$sLanguageAdmin = $oConfig->Get('webmail', 'language_admin', 'en');
 		$UserLanguageRaw = $this->detectUserLanguage($bAdmin);
-		$sTheme = $oConfig->Get('webmail', 'theme', 'Default');
 
 		if (!$bAdmin) {
 			$oAccount = $this->getAccountFromToken(false);
@@ -1202,10 +1201,6 @@ class Actions
 					if ($oSettingsLocal instanceof Settings) {
 						$aResult['UseThreads'] = (bool)$oSettingsLocal->GetConf('UseThreads', $aResult['UseThreads']);
 						$aResult['ReplySameFolder'] = (bool)$oSettingsLocal->GetConf('ReplySameFolder', $aResult['ReplySameFolder']);
-
-						if ($this->GetCapa(false, Enumerations\Capa::THEMES, $oAccount)) {
-							$sTheme = (string)$oSettingsLocal->GetConf('Theme', $sTheme);
-						}
 					}
 				}
 			}
@@ -1262,9 +1257,7 @@ class Actions
 
 		$sStaticCache = $this->StaticCache();
 
-		$sTheme = $this->ValidateTheme($sTheme);
-		$aResult['Theme'] = $sTheme;
-		$aResult['NewThemeLink'] = $this->ThemeLink($sTheme, $bAdmin);
+		$aResult['Theme'] = $this->GetTheme($bAdmin);
 
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
 		$aResult['UserLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
