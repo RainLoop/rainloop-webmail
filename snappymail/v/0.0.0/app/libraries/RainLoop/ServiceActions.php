@@ -489,7 +489,7 @@ class ServiceActions
 
 			if (0 === \strlen($sResult))
 			{
-				$sResult = $this->compileLanguage($sLanguage, $bAdmin);
+				$sResult = $this->oActions->compileLanguage($sLanguage, $bAdmin);
 				if ($bCacheEnabled && 0 < \strlen($sCacheFileName))
 				{
 					$this->Cacher()->Set($sCacheFileName, $sResult);
@@ -580,7 +580,7 @@ class ServiceActions
 			{
 				try
 				{
-					$sResult = $this->compileCss($sTheme);
+					$sResult = $this->oActions->compileCss($sTheme, $bAdmin);
 
 					if ($bCacheEnabled)
 					{
@@ -883,26 +883,31 @@ class ServiceActions
 		\header('Content-Type: application/javascript; charset=utf-8');
 		$this->oHttp->ServerNoCache();
 
-		$sAuthAccountHash = '';
-		if (!$bAdmin && 0 === \strlen($this->oActions->GetSpecAuthLogoutTokenWithDeletion()))
-		{
-			$sAuthAccountHash = $this->oActions->GetSpecAuthTokenWithDeletion();
-			if (empty($sAuthAccountHash))
-			{
-				$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
-			}
+		$sResult = 'rl.initData('
+			.\json_encode($this->oActions->AppData($bAdmin, $this->getAuthAccountHash($bAdmin)))
+			.');';
 
-			if (empty($sAuthAccountHash))
-			{
-				$oAccount = $this->oActions->GetAccountFromSignMeToken();
-				if ($oAccount)
-				{
-					try
+		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'APPDATA');
+
+		return $sResult;
+	}
+
+	public function getAuthAccountHash(bool $bAdmin) : string
+	{
+		static $sAuthAccountHash = null;
+		if (null === $sAuthAccountHash) {
+			$sAuthAccountHash = '';
+			if (!$bAdmin && 0 === \strlen($this->oActions->GetSpecAuthLogoutTokenWithDeletion())) {
+				$sAuthAccountHash = $this->oActions->GetSpecAuthTokenWithDeletion();
+				if (empty($sAuthAccountHash)) {
+					$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
+				}
+				if (empty($sAuthAccountHash)) {
+					$oAccount = $this->oActions->GetAccountFromSignMeToken();
+					if ($oAccount) try
 					{
 						$this->oActions->CheckMailConnection($oAccount);
-
 						$this->oActions->AuthToken($oAccount);
-
 						$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
 					}
 					catch (\Throwable $oException)
@@ -911,46 +916,10 @@ class ServiceActions
 						$this->oActions->ClearSignMeData($oAccount);
 					}
 				}
+				$this->oActions->SetSpecAuthToken($sAuthAccountHash);
 			}
-
-			$this->oActions->SetSpecAuthToken($sAuthAccountHash);
 		}
-
-		$sResult = 'rl.initData('
-			.\json_encode($this->oActions->AppData($bAdmin, $sAuthAccountHash))
-			.');';
-
-		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'APPDATA');
-
-		return $sResult;
-	}
-
-	public function compileCss(string $sTheme) : string
-	{
-		$bCustomTheme = '@custom' === \substr($sTheme, -7);
-		if ($bCustomTheme) {
-			$sTheme = \substr($sTheme, 0, -7);
-		}
-
-		$oLess = new \LessPHP\lessc();
-		$oLess->setFormatter('compressed');
-
-		$aResult = array();
-
-		$sThemeFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.less';
-
-		if (\is_file($sThemeFile))
-		{
-			$aResult[] = '@base: "'
-				. ($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath())
-				. 'themes/'.$sTheme.'/";';
-
-			$aResult[] = \file_get_contents($sThemeFile);
-		}
-
-		$aResult[] = $this->Plugins()->CompileCss($bAdmin);
-
-		return $oLess->compile(\implode("\n", $aResult));
+		return $sAuthAccountHash;
 	}
 
 	public function compileTemplates(bool $bAdmin = false, bool $bJsOutput = true) : string
@@ -974,36 +943,5 @@ class ServiceActions
 		unset($aTemplates);
 
 		return $bJsOutput ? 'rl.TEMPLATES='.\MailSo\Base\Utils::Php2js($sHtml, $this->Logger()).';' : $sHtml;
-	}
-
-	public function compileLanguage(string $sLanguage, bool $bAdmin = false) : string
-	{
-		$sLanguage = \strtr($sLanguage, '_', '-');
-
-		$aResultLang = \json_decode(\file_get_contents(APP_VERSION_ROOT_PATH.'app/localization/langs.json'), true);
-		$langs = \array_flip(\SnappyMail\L10n::getLanguages($bAdmin));
-		$aResultLang['LANGS_NAMES'] = \array_intersect_key($aResultLang['LANGS_NAMES'], $langs);
-		$aResultLang['LANGS_NAMES_EN'] = \array_intersect_key($aResultLang['LANGS_NAMES_EN'], $langs);
-
-		$aResultLang = \array_replace_recursive(
-			$aResultLang,
-			\SnappyMail\L10n::load($sLanguage, ($bAdmin ? 'admin' : 'user'))
-		);
-
-		$this->Plugins()->ReadLang($sLanguage, $aResultLang);
-
-		$sResult = \json_encode($aResultLang, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
-
-		$sTimeFormat = '';
-		$options = [$sLanguage, \substr($sLanguage, 0, 2), 'en'];
-		foreach ($options as $lang) {
-			$sFileName = APP_VERSION_ROOT_PATH.'app/localization/'.$lang.'/relativetimeformat.js';
-			if (\is_file($sFileName)) {
-				$sTimeFormat = \preg_replace('/^\\s+/', '', \file_get_contents($sFileName));
-				break;
-			}
-		}
-
-		return "document.documentElement.lang = '{$sLanguage}';\nwindow.snappymailI18N={$sResult};\nDate.defineRelativeTimeFormat({$sTimeFormat});";
 	}
 }

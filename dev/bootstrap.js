@@ -3,7 +3,7 @@ import { i18n } from 'Common/Translator';
 
 import { root } from 'Common/Links';
 
-export default (App) => {
+export default App => {
 
 	addEventListener('keydown', event => {
 		event = event || window.event;
@@ -136,10 +136,10 @@ export default (App) => {
 	};
 
 	window.__APP_BOOT = () => {
-		const cb = () => setTimeout(() => {
-				setTimeout(() => App.bootstart(), 10);
-				window.__APP_BOOT = null;
-			}, 10);
+		const cb = () => {
+			window.__APP_BOOT = null;
+			App.bootstart();
+		};
 		('loading' !== doc.readyState) ? cb() : doc.addEventListener('DOMContentLoaded', cb);
 	};
 };

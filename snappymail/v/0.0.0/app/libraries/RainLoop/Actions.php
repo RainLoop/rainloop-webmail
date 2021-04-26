@@ -15,7 +15,6 @@ class Actions
 	use Actions\Localization;
 	use Actions\Themes;
 
-	const AUTH_TFA_SIGN_ME_TOKEN_KEY = 'rltfasmauth';
 	const AUTH_SIGN_ME_TOKEN_KEY = 'rlsmauth';
 	const AUTH_MAILTO_TOKEN_KEY = 'rlmailtoauth';
 	const AUTH_SPEC_TOKEN_KEY = 'rlspecauth';
@@ -511,9 +510,9 @@ class Actions
 	{
 		$sResult = Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY, '');
 		if (0 < strlen($sResult)) {
+			// TODO: Browser F5 issue
 			Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
 		}
-
 		return $sResult;
 	}
 
@@ -1015,12 +1014,8 @@ class Actions
 		) : array());
 	}
 
-	public function AppData(bool $bAdmin, string $sAuthAccountHash = ''): array
+	public function AppData(bool $bAdmin, string $sAuthAccountHash): array
 	{
-		if (0 < \strlen($sAuthAccountHash) && \preg_match('/[^_\-\.a-zA-Z0-9]/', $sAuthAccountHash)) {
-			$sAuthAccountHash = '';
-		}
-
 		$oAccount = null;
 		$oConfig = $this->Config();
 
@@ -1088,7 +1083,7 @@ class Actions
 			'UserBackgroundHash' => ''
 		);
 
-		if (0 < \strlen($sAuthAccountHash)) {
+		if (\strlen($sAuthAccountHash) && !\preg_match('/[^_\-\.a-zA-Z0-9]/', $sAuthAccountHash)) {
 			$aResult['AuthAccountHash'] = $sAuthAccountHash;
 		}
 
@@ -1105,7 +1100,6 @@ class Actions
 		}
 
 		$sLanguage = $oConfig->Get('webmail', 'language', 'en');
-		$sLanguageAdmin = $oConfig->Get('webmail', 'language_admin', 'en');
 		$UserLanguageRaw = $this->detectUserLanguage($bAdmin);
 
 		if (!$bAdmin) {
@@ -1258,23 +1252,21 @@ class Actions
 		$sStaticCache = $this->StaticCache();
 
 		$aResult['Theme'] = $this->GetTheme($bAdmin);
+		$aResult['NewThemeLink'] = $this->ThemeLink($bAdmin);
 
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
 		$aResult['UserLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
 		if ($bAdmin) {
-			$aResult['LanguageAdmin'] = $this->ValidateLanguage($sLanguageAdmin, '', true);
+			$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
 			$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
 		}
+		$aResult['LangLink'] = './?/Lang/0/' . ($bAdmin ? 'Admin' : 'App') . '/' .
+			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']) . '/' . $sStaticCache . '/';
 
 		$aResult['PluginsLink'] = '';
 		if (0 < $this->Plugins()->Count() && $this->Plugins()->HaveJs($bAdmin)) {
 			$aResult['PluginsLink'] = './?/Plugins/0/' . ($bAdmin ? 'Admin' : 'User') . '/' . $sStaticCache . '/';
 		}
-
-//		$aResult['LangLink'] = './?/Lang/0/' . ($bAdmin ? 'Admin' : 'App') . '/' .
-//			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']) . '/' . $sStaticCache . '/';
-
-//		$aResult['TemplatesLink'] = './?/Templates/0/' . ($bAdmin ? 'Admin' : 'App') . '/' . $sStaticCache . '/';
 
 		$bAppJsDebug = !!$this->Config()->Get('labs', 'use_app_debug_js', false);
 

@@ -114,4 +114,35 @@ trait Localization
 
 		return $aLang[$aKey] ?? $sKey;
 	}
+
+	public function compileLanguage(string $sLanguage, bool $bAdmin = false) : string
+	{
+		$sLanguage = \strtr($sLanguage, '_', '-');
+
+		$aResultLang = \json_decode(\file_get_contents(APP_VERSION_ROOT_PATH.'app/localization/langs.json'), true);
+		$langs = \array_flip(\SnappyMail\L10n::getLanguages($bAdmin));
+		$aResultLang['LANGS_NAMES'] = \array_intersect_key($aResultLang['LANGS_NAMES'], $langs);
+		$aResultLang['LANGS_NAMES_EN'] = \array_intersect_key($aResultLang['LANGS_NAMES_EN'], $langs);
+
+		$aResultLang = \array_replace_recursive(
+			$aResultLang,
+			\SnappyMail\L10n::load($sLanguage, ($bAdmin ? 'admin' : 'user'))
+		);
+
+		$this->Plugins()->ReadLang($sLanguage, $aResultLang);
+
+		$sResult = \json_encode($aResultLang, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_NUMERIC_CHECK);
+
+		$sTimeFormat = '';
+		$options = [$sLanguage, \substr($sLanguage, 0, 2), 'en'];
+		foreach ($options as $lang) {
+			$sFileName = APP_VERSION_ROOT_PATH.'app/localization/'.$lang.'/relativetimeformat.js';
+			if (\is_file($sFileName)) {
+				$sTimeFormat = \preg_replace('/^\\s+/', '', \file_get_contents($sFileName));
+				break;
+			}
+		}
+
+		return "document.documentElement.lang = '{$sLanguage}';\nwindow.snappymailI18N={$sResult};\nDate.defineRelativeTimeFormat({$sTimeFormat});";
+	}
 }

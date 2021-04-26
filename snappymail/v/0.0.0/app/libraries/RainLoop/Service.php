@@ -159,19 +159,25 @@ class Service
 			}
 
 			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
-			$sLanguage = $this->oActions->GetLanguage($bAdmin);
+
+			// TODO: Browser F5 issue
+//			$this->oServiceActions->getAuthAccountHash($bAdmin);
+//			$sLanguage = $this->oActions->GetLanguage($bAdmin);
 
 			$sCacheFileName = '';
 			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true) && !empty($aTemplateParameters['{{BaseHash}}']))
 			{
-				$sCacheFileName = 'TMPL:'.$sLanguage.$aTemplateParameters['{{BaseHash}}'];
+				// TODO: Browser F5 issue
+//				$sCacheFileName = 'TMPL:'.$sLanguage.$aTemplateParameters['{{BaseHash}}'];
+				$sCacheFileName = 'TMPL:'.$aTemplateParameters['{{BaseHash}}'];
 				$sResult = $this->oActions->Cacher()->Get($sCacheFileName);
 			}
 
 			if (0 === \strlen($sResult))
 			{
 //				$aTemplateParameters['{{BaseAppThemeCss}}'] = $this->oServiceActions->compileCss($this->oActions->GetTheme($bAdmin));
-				$aTemplateParameters['{{BaseLanguage}}'] = $this->oServiceActions->compileLanguage($sLanguage, $bAdmin);
+				// TODO: Browser F5 issue
+//				$aTemplateParameters['{{BaseLanguage}}'] = $this->oServiceActions->compileLanguage($sLanguage, $bAdmin);
 				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
@@ -231,7 +237,6 @@ class Service
 			'{{BaseAppMainCssLink}}' => $this->staticPath('css/'.($bAdmin ? 'admin' : 'app').($bAppCssDebug ? '' : '.min').'.css'),
 			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($bAdmin),
 			'{{BaseAppBootScript}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js/min/boot.min.js'),
-//			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
 			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),
 			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot.min.css'),
 			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8'),

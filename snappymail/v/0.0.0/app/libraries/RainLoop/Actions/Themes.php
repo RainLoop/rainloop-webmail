@@ -89,7 +89,33 @@ trait Themes
 
 	public function ValidateTheme(string $sTheme): string
 	{
-		return \in_array($sTheme, $this->GetThemes()) ?
-			$sTheme : $this->Config()->Get('themes', 'default', 'Default');
+		return \in_array($sTheme, $this->GetThemes()) ? $sTheme : $this->Config()->Get('themes', 'default', 'Default');
+	}
+
+	public function compileCss(string $sTheme, bool $bAdmin) : string
+	{
+		$bCustomTheme = '@custom' === \substr($sTheme, -7);
+		if ($bCustomTheme) {
+			$sTheme = \substr($sTheme, 0, -7);
+		}
+
+		$oLess = new \LessPHP\lessc();
+		$oLess->setFormatter('compressed');
+
+		$aResult = array();
+
+		$sThemeFile = ($bCustomTheme ? APP_INDEX_ROOT_PATH : APP_VERSION_ROOT_PATH).'themes/'.$sTheme.'/styles.less';
+
+		if (\is_file($sThemeFile)) {
+			$aResult[] = '@base: "'
+				. ($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath())
+				. 'themes/'.$sTheme.'/";';
+
+			$aResult[] = \file_get_contents($sThemeFile);
+		}
+
+		$aResult[] = $this->Plugins()->CompileCss($bAdmin);
+
+		return $oLess->compile(\implode("\n", $aResult));
 	}
 }
