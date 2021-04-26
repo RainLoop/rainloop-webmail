@@ -1304,20 +1304,19 @@ class Actions
 		return $aResult;
 	}
 
-	private function requestSleep(int $iWait = 1, int $iDelay = 1): void
+	protected function requestSleep(int $iDelay = 1): void
 	{
-		if (0 < $iDelay && 0 < $iWait) {
-			if ($iWait > \time() - $_SERVER['REQUEST_TIME_FLOAT']) {
-				\sleep($iDelay);
-			}
+		$time = \microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'];
+		if ($iDelay > $time) {
+			\usleep(($iDelay - $time) * 1000000);
 		}
 	}
 
-	private function loginErrorDelay(): void
+	protected function loginErrorDelay(): void
 	{
 		$iDelay = (int)$this->Config()->Get('labs', 'login_fault_delay', 0);
 		if (0 < $iDelay) {
-			$this->requestSleep(1, $iDelay);
+			$this->requestSleep($iDelay);
 		}
 	}
 
