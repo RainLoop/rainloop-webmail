@@ -1,4 +1,4 @@
-import { doc, elementById, dropdownVisibility, Settings } from 'Common/Globals';
+import { doc, dropdownVisibility, Settings } from 'Common/Globals';
 import { i18n } from 'Common/Translator';
 
 import { root } from 'Common/Links';
@@ -135,15 +135,9 @@ export default (App) => {
 		});
 	};
 
-	window.__APP_BOOT = fErrorCallback => {
+	window.__APP_BOOT = () => {
 		const cb = () => setTimeout(() => {
-				if (rl.TEMPLATES) {
-					elementById('rl-templates').innerHTML = rl.TEMPLATES;
-					setTimeout(() => App.bootstart(), 10);
-				} else {
-					fErrorCallback();
-				}
-
+				setTimeout(() => App.bootstart(), 10);
 				window.__APP_BOOT = null;
 			}, 10);
 		('loading' !== doc.readyState) ? cb() : doc.addEventListener('DOMContentLoaded', cb);

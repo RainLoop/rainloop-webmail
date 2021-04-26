@@ -1010,7 +1010,7 @@ class ServiceActions
 		return $bJsOutput ? 'rl.TEMPLATES='.\MailSo\Base\Utils::Php2js($sHtml, $this->Logger()).';' : $sHtml;
 	}
 
-	private function compileLanguage(string $sLanguage, bool $bAdmin = false) : string
+	public function compileLanguage(string $sLanguage, bool $bAdmin = false) : string
 	{
 		$sLanguage = \strtr($sLanguage, '_', '-');
 

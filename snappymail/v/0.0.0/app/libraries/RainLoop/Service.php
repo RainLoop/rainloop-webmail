@@ -159,22 +159,23 @@ class Service
 			}
 
 			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
+			$sLanguage = $this->oActions->GetLanguage($bAdmin);
 
 			$sCacheFileName = '';
 			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true) && !empty($aTemplateParameters['{{BaseHash}}']))
 			{
-				$sCacheFileName = 'TMPL:'.$aTemplateParameters['{{BaseHash}}'];
+				$sCacheFileName = 'TMPL:'.$sLanguage.$aTemplateParameters['{{BaseHash}}'];
 				$sResult = $this->oActions->Cacher()->Get($sCacheFileName);
 			}
 
 			if (0 === \strlen($sResult))
 			{
-//				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
+				$aTemplateParameters['{{BaseLanguage}}'] = $this->oServiceActions->compileLanguage($sLanguage, $bAdmin);
+				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
 				$sResult = Utils::ClearHtmlOutput($sResult);
-				if (0 < \strlen($sCacheFileName))
-				{
+				if ($sCacheFileName) {
 					$this->oActions->Cacher()->Set($sCacheFileName, $sResult);
 				}
 			}
@@ -209,13 +210,8 @@ class Service
 		return $this->oActions->StaticPath($sPath);
 	}
 
-	private function indexTemplateParameters(bool $bAdmin = false) : array
+	private function indexTemplateParameters(bool $bAdmin) : array
 	{
-		$sLanguage = 'en';
-		$sTheme = 'Default';
-
-		list($sLanguage, $sTheme) = $this->oActions->GetLanguageAndTheme($bAdmin);
-
 		$oConfig = $this->oActions->Config();
 
 		$bAppJsDebug = !!$oConfig->Get('labs', 'use_app_debug_js', false);
@@ -232,10 +228,9 @@ class Service
 			'{{BaseAppFaviconPngLinkTag}}' => $sFaviconPngLink ? '<link type="image/png" rel="shortcut icon" href="'.$sFaviconPngLink.'" />' : '',
 			'{{BaseAppFaviconTouchLinkTag}}' => $sAppleTouchLink ? '<link type="image/png" rel="apple-touch-icon" href="'.$sAppleTouchLink.'" />' : '',
 			'{{BaseAppMainCssLink}}' => $this->staticPath('css/'.($bAdmin ? 'admin' : 'app').($bAppCssDebug ? '' : '.min').'.css'),
-			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($sTheme, $bAdmin),
-			'{{BaseAppBootScriptLink}}' => $this->staticPath('js/'.($bAppJsDebug ? '' : 'min/').'boot'.($bAppJsDebug ? '' : '.min').'.js'),
+			'{{BaseAppThemeCssLink}}' => $this->oActions->ThemeLink($this->oActions->GetTheme($bAdmin), $bAdmin),
 			'{{BaseAppBootScript}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/js/min/boot.min.js'),
-			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
+//			'{{BaseDir}}' => false && \in_array($sLanguage, array('ar', 'he', 'ur')) ? 'rtl' : 'ltr',
 			'{{BaseAppManifestLink}}' => $this->staticPath('manifest.json'),
 			'{{BaseAppBootCss}}' => \file_get_contents(APP_VERSION_ROOT_PATH.'static/css/boot.min.css'),
 			'{{LoadingDescriptionEsc}}' => \htmlspecialchars($LoadingDescription, ENT_QUOTES|ENT_IGNORE, 'UTF-8'),

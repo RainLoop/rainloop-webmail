@@ -149,7 +149,6 @@ win.rl = {
 			}
 
 			loadScript(appData.StaticLibJsLink)
-			.then(() => Promise.all([loadScript(appData.TemplatesLink), loadScript(appData.LangLink)]))
 			.then(() => loadScript(appData.StaticAppJsLink))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
 			.then(() => win.__APP_BOOT ? win.__APP_BOOT(showError) : showError())
