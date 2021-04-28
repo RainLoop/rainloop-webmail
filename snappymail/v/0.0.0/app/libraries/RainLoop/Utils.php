@@ -14,8 +14,6 @@ class Utils
 	 */
 	static $CookieDefaultSecure = null;
 
-	static $Cookies = null;
-
 	public static function EncryptString(string $sString, string $sKey) : string
 	{
 		return \MailSo\Base\Crypt::Encrypt($sString, $sKey);
@@ -188,21 +186,11 @@ class Utils
 	 */
 	public static function GetCookie(string $sName, $mDefault = null)
 	{
-		if (null === static::$Cookies)
-		{
-			static::$Cookies = \is_array($_COOKIE) ? $_COOKIE : array();
-		}
-
-		return isset(static::$Cookies[$sName]) ? static::$Cookies[$sName] : $mDefault;
+		return isset($_COOKIE[$sName]) ? $_COOKIE[$sName] : $mDefault;
 	}
 
 	public static function SetCookie(string $sName, string $sValue = '', int $iExpire = 0, ?string $sPath = null, ?string $sDomain = null, ?bool $bSecure = null, bool $bHttpOnly = true)
 	{
-		if (null === static::$Cookies)
-		{
-			static::$Cookies = \is_array($_COOKIE) ? $_COOKIE : array();
-		}
-
 		if (null === $sPath)
 		{
 			$sPath = static::$CookieDefaultPath;
@@ -214,7 +202,7 @@ class Utils
 			$bSecure = static::$CookieDefaultSecure;
 		}
 
-		static::$Cookies[$sName] = $sValue;
+		$_COOKIE[$sName] = $sValue;
 		\setcookie($sName, $sValue, array(
 			'expires' => $iExpire,
 			'path' => $sPath,
@@ -227,22 +215,18 @@ class Utils
 
 	public static function ClearCookie(string $sName)
 	{
-		if (null === static::$Cookies)
-		{
-			static::$Cookies = \is_array($_COOKIE) ? $_COOKIE : array();
+		if (isset($_COOKIE[$sName])) {
+			$sPath = static::$CookieDefaultPath;
+			unset($_COOKIE[$sName]);
+			\setcookie($sName, '', array(
+				'expires' => \time() - 3600 * 24 * 30,
+				'path' => $sPath && 0 < \strlen($sPath) ? $sPath : '/',
+//				'domain' => null,
+				'secure' => static::$CookieDefaultSecure,
+				'httponly' => true,
+				'samesite' => 'Strict'
+			));
 		}
-
-		$sPath = static::$CookieDefaultPath;
-
-		unset(static::$Cookies[$sName]);
-		\setcookie($sName, '', array(
-			'expires' => \time() - 3600 * 24 * 30,
-			'path' => $sPath && 0 < \strlen($sPath) ? $sPath : '/',
-//			'domain' => null,
-			'secure' => static::$CookieDefaultSecure,
-			'httponly' => true,
-			'samesite' => 'Strict'
-		));
 	}
 
 	public static function UrlEncode(string $sV, bool $bEncode = false) : string

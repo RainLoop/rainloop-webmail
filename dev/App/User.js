@@ -101,9 +101,6 @@ class AppUser extends AbstractApp {
 		setInterval(() => {
 			const currentTime = Date.now();
 			if (currentTime > (lastTime + interval + 1000)) {
-				if (rl.hash.check()) {
-					this.reload();
-				}
 				Remote.jsVersion(iError => {
 					if (100 < iError) {
 						this.reload();
@@ -112,10 +109,6 @@ class AppUser extends AbstractApp {
 			}
 			lastTime = currentTime;
 		}, interval);
-
-		if (rl.hash.check()) {
-			this.reload();
-		}
 
 		if (SettingsGet('UserBackgroundHash')) {
 			setTimeout(() => {

@@ -187,12 +187,6 @@ class ServiceActions
 		if (\is_array($aResponseItem))
 		{
 			$aResponseItem['Time'] = (int) ((\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
-
-			$sUpdateToken = $this->oActions->GetUpdateAuthToken();
-			if ($sUpdateToken)
-			{
-				$aResponseItem['UpdateToken'] = $sUpdateToken;
-			}
 		}
 
 		$this->Plugins()->RunHook('filter.json-response', array($sAction, &$aResponseItem));
@@ -889,16 +883,14 @@ class ServiceActions
 		return $sResult;
 	}
 
+	// rlspecauth / AuthAccountHash
 	public function getAuthAccountHash(bool $bAdmin) : string
 	{
 		static $sAuthAccountHash = null;
 		if (null === $sAuthAccountHash) {
 			$sAuthAccountHash = '';
 			if (!$bAdmin && 0 === \strlen($this->oActions->GetSpecAuthLogoutTokenWithDeletion())) {
-				$sAuthAccountHash = $this->oActions->GetSpecAuthTokenWithDeletion();
-				if (empty($sAuthAccountHash)) {
-					$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
-				}
+				$sAuthAccountHash = $this->oActions->GetSpecAuthTokenCookie() ?: $this->oActions->GetSpecAuthToken();
 				if (empty($sAuthAccountHash)) {
 					$oAccount = $this->oActions->GetAccountFromSignMeToken();
 					if ($oAccount) try

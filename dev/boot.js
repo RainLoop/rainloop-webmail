@@ -38,12 +38,6 @@ const
 		}
 		return win[name];
 	},
-	STORAGE_KEY = '__rlA',
-	TIME_KEY = '__rlT',
-	AUTH_KEY = 'AuthAccountHash',
-	storage = Storage('session'),
-	timestamp = () => Math.round(Date.now() / 1000),
-	setTimestamp = () => storage.setItem(TIME_KEY, timestamp()),
 
 	showError = () => {
 		eId('rl-loading').hidden = true;
@@ -91,33 +85,13 @@ doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout || (!layou
 
 let pStep = 0,
 	progress = eId('progressjs'),
-
+	rlspecauth = '',
 	RL_APP_DATA = {};
 
 win.rl = {
 	hash: {
-		// getHash
-		get: () => storage.getItem(STORAGE_KEY) || null,
-		// setHash
-		set: () => {
-			storage.setItem(STORAGE_KEY, RL_APP_DATA && RL_APP_DATA[AUTH_KEY]
-				? RL_APP_DATA[AUTH_KEY] : '');
-			setTimestamp();
-		},
-		// clearHash
-		clear: () => {
-			storage.setItem(STORAGE_KEY, '');
-			setTimestamp();
-		},
-		// checkTimestamp
-		check: () => {
-			if (timestamp() > (parseInt(storage.getItem(TIME_KEY) || 0, 10) || 0) + 3600000) {
-				// 60m
-				rl.hash.clear();
-				return true;
-			}
-			return false;
-		}
+		get: () => rlspecauth || '0',
+		clear: () => rlspecauth = ''
 	},
 	data: () => RL_APP_DATA,
 	adminArea: () => admin,
@@ -140,8 +114,7 @@ win.rl = {
 
 	initData: appData => {
 		RL_APP_DATA = appData;
-
-		rl.hash.set();
+		rlspecauth = appData['AuthAccountHash'];
 
 		if (appData) {
 			loadScript(appData.StaticLibJsLink)
@@ -162,12 +135,9 @@ p.set(1);
 
 Storage('local');
 
-// init section
-setInterval(setTimestamp, 60000); // 1m
-
 eId('app-css').href = eId('app-css').dataset.href;
 
-loadScript(`./?/${admin ? 'Admin' : ''}AppData/${rl.hash.get() || '0'}/${Math.random().toString().substr(2)}/`)
+loadScript(`./?/${admin ? 'Admin' : ''}AppData/${rl.hash.get()}/${Math.random().toString().substr(2)}/`)
 	.then(() => {});
 
 })(this);

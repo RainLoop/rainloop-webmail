@@ -112,11 +112,6 @@ class Actions
 	private $sSpecAuthToken;
 
 	/**
-	 * @var string
-	 */
-	private $sUpdateAuthToken;
-
-	/**
 	 * @access private
 	 */
 	function __construct()
@@ -140,7 +135,6 @@ class Actions
 		$this->oSuggestionsProvider = null;
 
 		$this->sSpecAuthToken = '';
-		$this->sUpdateAuthToken = '';
 		$this->bIsJson = false;
 
 		$oConfig = $this->Config();
@@ -156,13 +150,6 @@ class Actions
 		return $this;
 	}
 
-	public function SetUpdateAuthToken(string $sUpdateAuthToken): self
-	{
-		$this->sUpdateAuthToken = $sUpdateAuthToken;
-
-		return $this;
-	}
-
 	public function SetIsJson(bool $bIsJson): self
 	{
 		$this->bIsJson = $bIsJson;
@@ -173,11 +160,6 @@ class Actions
 	public function GetSpecAuthToken(): string
 	{
 		return $this->sSpecAuthToken;
-	}
-
-	public function GetUpdateAuthToken(): string
-	{
-		return $this->sUpdateAuthToken;
 	}
 
 	public function GetIsJson(): bool
@@ -506,7 +488,7 @@ class Actions
 		}
 	}
 
-	public function GetSpecAuthTokenWithDeletion(): string
+	public function GetSpecAuthTokenCookie(): string
 	{
 		return Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY, '');
 	}
