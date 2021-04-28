@@ -18,9 +18,6 @@ class AdminApp extends AbstractApp {
 
 	bootstart() {
 		super.bootstart();
-
-		this.hideLoading();
-
 		if (!Settings.app('allowAdminPanel')) {
 			rl.route.root();
 			setTimeout(() => location.href = '/', 1);
@@ -30,8 +27,7 @@ class AdminApp extends AbstractApp {
 		} else {
 			startScreens([LoginAdminScreen]);
 		}
-
-		progressJs.end();
+		this.hideLoading();
 	}
 }
 

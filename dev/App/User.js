@@ -883,11 +883,6 @@ class AppUser extends AbstractApp {
 		Remote.logout(() => rl.logoutReload((SettingsGet('ParentEmail')||{length:0}).length));
 	}
 
-	bootend() {
-		progressJs.end();
-		this.hideLoading();
-	}
-
 	bootstart() {
 		super.bootstart();
 
@@ -901,16 +896,12 @@ class AppUser extends AbstractApp {
 
 		const startupUrl = pString(SettingsGet('StartupUrl'));
 
-		progressJs.set(90);
-
 		rl.setWindowTitle();
 		if (SettingsGet('Auth')) {
 			rl.setWindowTitle(i18n('GLOBAL/LOADING'));
 
 			this.foldersReload(value => {
 				try {
-					this.bootend();
-
 					if (value) {
 						if (startupUrl) {
 							rl.route.setHash(root(startupUrl), true);
@@ -954,6 +945,7 @@ class AppUser extends AbstractApp {
 							Settings.capa(Capa.Settings) ? SettingsUserScreen : null
 							// false ? AboutUserScreen : null
 						]);
+						this.hideLoading();
 
 						setInterval(() => {
 							const cF = FolderUserStore.currentFolderFullNameRaw(),
@@ -1024,8 +1016,8 @@ class AppUser extends AbstractApp {
 			});
 
 		} else {
-			this.bootend();
 			startScreens([LoginUserScreen]);
+			this.hideLoading();
 		}
 
 		setInterval(() => dispatchEvent(new CustomEvent('reload-time')), 60000);

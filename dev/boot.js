@@ -42,7 +42,6 @@ const
 	showError = () => {
 		eId('rl-loading').hidden = true;
 		eId('rl-loading-error').hidden = false;
-		p.end();
 	},
 
 	loadScript = src => {
@@ -51,29 +50,12 @@ const
 		}
 		return new Promise((resolve, reject) => {
 			const script = doc.createElement('script');
-			script.onload = () => {
-				p.set(pStep += step);
-				resolve();
-			};
+			script.onload = () => resolve();
 			script.onerror = () => reject(new Error(src));
 			script.src = src;
 //			script.async = true;
 			doc.head.append(script);
 		});
-	},
-
-	step = 100 / 7,
-	p = win.progressJs = {
-		set: percent => progress.style.width = Math.min(percent, 100) + '%',
-		end: () => {
-			if (progress) {
-				p.set(100);
-				setTimeout(() => {
-					progress.remove();
-					progress = null;
-				}, 600);
-			}
-		}
 	};
 
 if (!navigator || !navigator.cookieEnabled) {
@@ -83,9 +65,13 @@ if (!navigator || !navigator.cookieEnabled) {
 const layout = getCookie('rllayout');
 doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout || (!layout && 1000 > innerWidth));
 
-let pStep = 0,
-	progress = eId('progressjs'),
+let progress = eId('progressjs'),
 	RL_APP_DATA = {};
+
+if (progress) {
+	progress.remove();
+	progress = null;
+}
 
 win.rl = {
 	data: () => RL_APP_DATA,
@@ -124,8 +110,6 @@ win.rl = {
 		}
 	}
 };
-
-p.set(1);
 
 Storage('local');
 
