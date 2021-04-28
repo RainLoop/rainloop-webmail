@@ -11,7 +11,7 @@ class IMagick extends \Imagick implements \SnappyMail\Image
 		$this->clear();
 	}
 
-	public static function createFromString(string $data)
+	public static function createFromString(string &$data)
 	{
 		$imagick = new static();
 		if (!$imagick->readImageBlob($data)) {

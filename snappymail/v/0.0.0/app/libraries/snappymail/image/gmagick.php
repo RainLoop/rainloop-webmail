@@ -14,7 +14,7 @@ class GMagick extends \Gmagick implements \SnappyMail\Image
 		$this->clear();
 	}
 
-	public static function createFromString(string $data)
+	public static function createFromString(string &$data)
 	{
 		$gmagick = new static();
 		if (!$gmagick->readimageblob($data)) {
