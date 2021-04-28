@@ -161,13 +161,11 @@ class Utils
 	public static function ClearHtmlOutput(string $sHtml) : string
 	{
 //		return $sHtml;
-		return \trim(\str_replace('> <', '><',
-			\str_replace('" />', '"/>',
-			\preg_replace('/[\s]+&nbsp;/i', '&nbsp;',
-			\preg_replace('/&nbsp;[\s]+/i', '&nbsp;',
-			\preg_replace('/[\r\n\t]+/', ' ',
-			$sHtml
-		))))));
+		return \preg_replace(
+			['@"\\s*/>@', '/\\s*&nbsp;/i', '/&nbsp;\\s*/i', '/[\\r\\n\\t]+/', '/>\\s+</'],
+			['">', '&nbsp;', '&nbsp;', ' ', '><'],
+			\trim($sHtml)
+		);
 	}
 
 	public static function CompileTemplates(array &$aList, string $sDirName, string $sNameSuffix = '')

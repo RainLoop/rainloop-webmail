@@ -576,18 +576,15 @@ class ServiceActions
 				$sResult = $this->Cacher()->Get($sCacheFileName);
 			}
 
-			if (0 === \strlen($sResult))
+			if (!$sResult)
 			{
 				try
 				{
 					$sResult = $this->oActions->compileCss($sTheme, $bAdmin);
 
-					if ($bCacheEnabled)
+					if ($bCacheEnabled && $sCacheFileName)
 					{
-						if (0 < \strlen($sCacheFileName))
-						{
-							$this->Cacher()->Set($sCacheFileName, $sResult);
-						}
+						$this->Cacher()->Set($sCacheFileName, $sResult);
 					}
 				}
 				catch (\Throwable $oException)

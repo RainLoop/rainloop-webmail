@@ -89,7 +89,6 @@ class Service
 	private function localHandle() : self
 	{
 		$sResult = '';
-		$bCached = false;
 
 		$sQuery = $this->oActions->ParseQueryAuthString();
 
@@ -145,7 +144,7 @@ class Service
 
 		if ($bIndex)
 		{
-			header('Content-Type: text/html; charset=utf-8');
+			\header('Content-Type: text/html; charset=utf-8');
 			$this->oHttp->ServerNoCache();
 
 			if (!\is_dir(APP_DATA_FOLDER_PATH) || !\is_writable(APP_DATA_FOLDER_PATH))
@@ -170,8 +169,9 @@ class Service
 				$sResult = $this->oActions->Cacher()->Get($sCacheFileName);
 			}
 
-			if (0 === \strlen($sResult))
-			{
+			if ($sResult) {
+				$sResult .= '<!--cached-->';
+			} else {
 				$aTemplateParameters['{{BaseAppThemeCss}}'] = $this->oActions->compileCss($this->oActions->GetTheme($bAdmin), $bAdmin);
 				$aTemplateParameters['{{BaseLanguage}}'] = $this->oActions->compileLanguage($sLanguage, $bAdmin);
 				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
@@ -182,20 +182,8 @@ class Service
 					$this->oActions->Cacher()->Set($sCacheFileName, $sResult);
 				}
 			}
-			else
-			{
-				$bCached = true;
-			}
-
-			$sResult .= '<!--';
-			$sResult .= '[time:'.\substr(\microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 0, 6);
-			$sResult .= '][AGPLv3';
-			$sResult .= '][cached:'.($bCached ? 'true' : 'false');
-//			$sResult .= '][hash:'.$aTemplateParameters['{{BaseHash}}'];
-//			$sResult .= '][session:'.\md5(Utils::GetShortToken());
-			$sResult .= ']-->';
 		}
-		else if (!headers_sent())
+		else if (!\headers_sent())
 		{
 			\header('X-XSS-Protection: 1; mode=block');
 		}
