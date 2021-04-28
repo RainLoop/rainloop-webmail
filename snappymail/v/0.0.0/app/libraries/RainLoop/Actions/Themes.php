@@ -108,7 +108,7 @@ trait Themes
 
 		if (\is_file($sThemeFile)) {
 			$aResult[] = '@base: "'
-				. ($bCustomTheme ? Utils::WebPath() : Utils::WebVersionPath())
+				. ($bCustomTheme ? \RainLoop\Utils::WebPath() : \RainLoop\Utils::WebVersionPath())
 				. 'themes/'.$sTheme.'/";';
 
 			$aResult[] = \file_get_contents($sThemeFile);
