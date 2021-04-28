@@ -508,12 +508,7 @@ class Actions
 
 	public function GetSpecAuthTokenWithDeletion(): string
 	{
-		$sResult = Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY, '');
-		if (0 < strlen($sResult)) {
-			// TODO: Browser F5 issue
-			Utils::ClearCookie(self::AUTH_SPEC_TOKEN_KEY);
-		}
-		return $sResult;
+		return Utils::GetCookie(self::AUTH_SPEC_TOKEN_KEY, '');
 	}
 
 	public function GetSpecAuthLogoutTokenWithDeletion(): string
@@ -1252,7 +1247,6 @@ class Actions
 		$sStaticCache = $this->StaticCache();
 
 		$aResult['Theme'] = $this->GetTheme($bAdmin);
-		$aResult['NewThemeLink'] = $this->ThemeLink($bAdmin);
 
 		$aResult['Language'] = $this->ValidateLanguage($sLanguage, '', false);
 		$aResult['UserLanguage'] = $this->ValidateLanguage($UserLanguageRaw, '', false, true);
@@ -1260,8 +1254,6 @@ class Actions
 			$aResult['LanguageAdmin'] = $this->ValidateLanguage($oConfig->Get('webmail', 'language_admin', 'en'), '', true);
 			$aResult['UserLanguageAdmin'] = $this->ValidateLanguage($UserLanguageRaw, '', true, true);
 		}
-		$aResult['LangLink'] = './?/Lang/0/' . ($bAdmin ? 'Admin' : 'App') . '/' .
-			($bAdmin ? $aResult['LanguageAdmin'] : $aResult['Language']) . '/' . $sStaticCache . '/';
 
 		$aResult['PluginsLink'] = '';
 		if (0 < $this->Plugins()->Count() && $this->Plugins()->HaveJs($bAdmin)) {

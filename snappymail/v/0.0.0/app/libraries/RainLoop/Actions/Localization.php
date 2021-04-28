@@ -143,6 +143,6 @@ trait Localization
 			}
 		}
 
-		return "document.documentElement.lang = '{$sLanguage}';\nwindow.snappymailI18N={$sResult};\nDate.defineRelativeTimeFormat({$sTimeFormat});";
+		return "document.documentElement.lang = '{$sLanguage}';\nrl.I18N={$sResult};\nrl.relativeTime = {$sTimeFormat};";
 	}
 }

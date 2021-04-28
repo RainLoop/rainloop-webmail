@@ -144,12 +144,7 @@ win.rl = {
 		rl.hash.set();
 
 		if (appData) {
-			if (appData.NewThemeLink) {
-				eId('app-theme-link').href = appData.NewThemeLink;
-			}
-
 			loadScript(appData.StaticLibJsLink)
-			.then(() => loadScript(appData.LangLink))
 			.then(() => loadScript(appData.StaticAppJsLink))
 			.then(() => appData.PluginsLink ? loadScript(appData.PluginsLink) : Promise.resolve())
 			.then(() => win.__APP_BOOT ? win.__APP_BOOT(showError) : showError())
@@ -170,7 +165,7 @@ Storage('local');
 // init section
 setInterval(setTimestamp, 60000); // 1m
 
-[eId('app-css'),eId('app-theme-link')].forEach(css => css.href = css.dataset.href);
+eId('app-css').href = eId('app-css').dataset.href;
 
 loadScript(`./?/${admin ? 'Admin' : ''}AppData/${rl.hash.get() || '0'}/${Math.random().toString().substr(2)}/`)
 	.then(() => {});

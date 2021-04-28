@@ -158,26 +158,22 @@ class Service
 				return $this;
 			}
 
-			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
+			$this->oServiceActions->getAuthAccountHash($bAdmin);
+			$sLanguage = $this->oActions->GetLanguage($bAdmin);
 
-			// TODO: Browser F5 issue
-//			$this->oServiceActions->getAuthAccountHash($bAdmin);
-//			$sLanguage = $this->oActions->GetLanguage($bAdmin);
+			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
 
 			$sCacheFileName = '';
 			if ($this->oActions->Config()->Get('labs', 'cache_system_data', true) && !empty($aTemplateParameters['{{BaseHash}}']))
 			{
-				// TODO: Browser F5 issue
-//				$sCacheFileName = 'TMPL:'.$sLanguage.$aTemplateParameters['{{BaseHash}}'];
-				$sCacheFileName = 'TMPL:'.$aTemplateParameters['{{BaseHash}}'];
+				$sCacheFileName = 'TMPL:'.$sLanguage.$aTemplateParameters['{{BaseHash}}'];
 				$sResult = $this->oActions->Cacher()->Get($sCacheFileName);
 			}
 
 			if (0 === \strlen($sResult))
 			{
-//				$aTemplateParameters['{{BaseAppThemeCss}}'] = $this->oServiceActions->compileCss($this->oActions->GetTheme($bAdmin));
-				// TODO: Browser F5 issue
-//				$aTemplateParameters['{{BaseLanguage}}'] = $this->oServiceActions->compileLanguage($sLanguage, $bAdmin);
+				$aTemplateParameters['{{BaseAppThemeCss}}'] = $this->oActions->compileCss($this->oActions->GetTheme($bAdmin), $bAdmin);
+				$aTemplateParameters['{{BaseLanguage}}'] = $this->oActions->compileLanguage($sLanguage, $bAdmin);
 				$aTemplateParameters['{{BaseTemplates}}'] = $this->oServiceActions->compileTemplates($bAdmin, false);
 				$sResult = \strtr(\file_get_contents(APP_VERSION_ROOT_PATH.'app/templates/Index.html'), $aTemplateParameters);
 
