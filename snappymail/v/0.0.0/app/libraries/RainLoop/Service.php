@@ -25,7 +25,24 @@ class Service
 		$this->oActions = Api::Actions();
 
 		$this->oServiceActions = new ServiceActions($this->oHttp, $this->oActions);
+	}
 
+	/**
+	 * @staticvar bool $bOne
+	 */
+	public static function Handle() : bool
+	{
+		static $bOne = null;
+		if (null === $bOne)
+		{
+			$bOne = (new self)->RunResult();
+		}
+
+		return $bOne;
+	}
+
+	public function RunResult() : bool
+	{
 		if ($this->oActions->Config()->Get('debug', 'enable', false))
 		{
 			\error_reporting(E_ALL);
@@ -64,36 +81,11 @@ class Service
 			exit(0);
 		}
 
-		$this->localHandle();
-	}
-
-	public function RunResult() : bool
-	{
-		return true;
-	}
-
-	/**
-	 * @staticvar bool $bOne
-	 */
-	public static function Handle() : bool
-	{
-		static $bOne = null;
-		if (null === $bOne)
-		{
-			$bOne = (new self)->RunResult();
-		}
-
-		return $bOne;
-	}
-
-	private function localHandle() : self
-	{
-		$sResult = '';
-
-		$sQuery = $this->oActions->ParseQueryAuthString();
+		$sQuery = $this->oActions->ParseQueryString();
 
 		$this->oActions->Plugins()->RunHook('filter.http-query', array(&$sQuery));
 		$aPaths = \explode('/', $sQuery);
+//		unset($aPaths[1]); // was the rlspecauth/AuthAccountHash token
 		$this->oActions->Plugins()->RunHook('filter.http-paths', array(&$aPaths));
 
 		$bAdmin = false;
@@ -108,6 +100,8 @@ class Service
 		{
 			$bAdmin = true;
 		}
+
+		$bAdmin || $this->oActions->getAuthAccountHash();
 
 		if ($this->oHttp->IsPost())
 		{
@@ -124,6 +118,7 @@ class Service
 		}
 
 		$bIndex = true;
+		$sResult = '';
 		if (0 < \count($aPaths) && !empty($aPaths[0]) && !$bAdmin && 'index' !== \strtolower($aPaths[0]))
 		{
 			$bIndex = false;
@@ -157,7 +152,6 @@ class Service
 				return $this;
 			}
 
-			$this->oServiceActions->getAuthAccountHash($bAdmin);
 			$sLanguage = $this->oActions->GetLanguage($bAdmin);
 
 			$aTemplateParameters = $this->indexTemplateParameters($bAdmin);
@@ -193,7 +187,8 @@ class Service
 		unset($sResult);
 
 		$this->oActions->BootEnd();
-		return $this;
+
+		return true;
 	}
 
 	private function staticPath(string $sPath) : string

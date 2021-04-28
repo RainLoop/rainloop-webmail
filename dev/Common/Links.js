@@ -38,7 +38,7 @@ export function logoutLink() {
  */
 export function serverRequestRaw(type, hash, customSpecSuffix) {
 	return SERVER_PREFIX + '/Raw/' + SUB_QUERY_PREFIX + '/'
-		+ (null == customSpecSuffix ? rl.hash.get() : customSpecSuffix) + '/'
+		+ (null == customSpecSuffix ? '0' : customSpecSuffix) + '/'
 		+ (type
 			? type + '/' + (hash ? SUB_QUERY_PREFIX + '/' + hash : '')
 			: '')
@@ -59,7 +59,7 @@ export function attachmentDownload(download, customSpecSuffix) {
  * @returns {string}
  */
 export function serverRequest(type) {
-	return SERVER_PREFIX + '/' + type + '/' + SUB_QUERY_PREFIX + '/' + rl.hash.get() + '/';
+	return SERVER_PREFIX + '/' + type + '/' + SUB_QUERY_PREFIX + '/0/';
 }
 
 /**

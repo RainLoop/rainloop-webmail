@@ -28,7 +28,6 @@ export class AbstractApp {
 	logoutReload(close = false) {
 		const url = logoutLink();
 
-		rl.hash.clear();
 		close && window.close && window.close();
 
 		if (location.href !== url) {

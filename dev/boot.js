@@ -85,14 +85,9 @@ doc.documentElement.classList.toggle('rl-mobile', 'mobile' === layout || (!layou
 
 let pStep = 0,
 	progress = eId('progressjs'),
-	rlspecauth = '',
 	RL_APP_DATA = {};
 
 win.rl = {
-	hash: {
-		get: () => rlspecauth || '0',
-		clear: () => rlspecauth = ''
-	},
 	data: () => RL_APP_DATA,
 	adminArea: () => admin,
 	settings: {
@@ -114,7 +109,6 @@ win.rl = {
 
 	initData: appData => {
 		RL_APP_DATA = appData;
-		rlspecauth = appData['AuthAccountHash'];
 
 		if (appData) {
 			loadScript(appData.StaticLibJsLink)
@@ -137,7 +131,7 @@ Storage('local');
 
 eId('app-css').href = eId('app-css').dataset.href;
 
-loadScript(`./?/${admin ? 'Admin' : ''}AppData/${rl.hash.get()}/${Math.random().toString().substr(2)}/`)
+loadScript(`./?/${admin ? 'Admin' : ''}AppData/0/${Math.random().toString().substr(2)}/`)
 	.then(() => {});
 
 })(this);

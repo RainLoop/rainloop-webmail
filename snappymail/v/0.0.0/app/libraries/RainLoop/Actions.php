@@ -296,7 +296,7 @@ class Actions
 		}
 	}
 
-	public function ParseQueryAuthString(): string
+	public function ParseQueryString(): string
 	{
 		$sQuery = \trim($this->Http()->GetQueryString());
 
@@ -318,14 +318,31 @@ class Actions
 			}
 		}
 
-		if ('' === $this->GetSpecAuthToken()) {
-			$aPaths = \explode('/', $sQuery);
-			if (!empty($aPaths[0]) && !empty($aPaths[1]) && '_' === substr($aPaths[1], 0, 1)) {
-				$this->SetSpecAuthToken($aPaths[1]);
-			}
-		}
-
 		return $sQuery;
+	}
+
+	// rlspecauth / AuthAccountHash
+	public function getAuthAccountHash() : string
+	{
+		if ('' === $this->sSpecAuthToken && !\strlen($this->GetSpecAuthLogoutTokenWithDeletion())) {
+			$sAuthAccountHash = $this->GetSpecAuthTokenCookie() ?: $this->GetSpecAuthToken();
+			if (empty($sAuthAccountHash)) {
+				$oAccount = $this->GetAccountFromSignMeToken();
+				if ($oAccount) try
+				{
+					$this->CheckMailConnection($oAccount);
+					$this->AuthToken($oAccount);
+					$sAuthAccountHash = $this->GetSpecAuthToken();
+				}
+				catch (\Throwable $oException)
+				{
+					$oException = null;
+					$this->ClearSignMeData($oAccount);
+				}
+			}
+			$this->SetSpecAuthToken($sAuthAccountHash);
+		}
+		return $this->GetSpecAuthToken();
 	}
 
 	private function compileLogParams(string $sLine, ?Model\Account $oAccount = null, bool $bUrlEncode = false, array $aAdditionalParams = array()): string
@@ -343,7 +360,7 @@ class Actions
 
 		if (false !== \strpos($sLine, '{imap:') || false !== \strpos($sLine, '{smtp:')) {
 			if (!$oAccount) {
-				$this->ParseQueryAuthString();
+				$this->getAuthAccountHash();
 				$oAccount = $this->getAccountFromToken(false);
 			}
 
@@ -397,7 +414,7 @@ class Actions
 
 			if (\preg_match('/\{user:(email|login|domain)\}/i', $sLine)) {
 				if (!$oAccount) {
-					$this->ParseQueryAuthString();
+					$this->getAuthAccountHash();
 					$oAccount = $this->getAccountFromToken(false);
 				}
 
@@ -991,14 +1008,14 @@ class Actions
 		) : array());
 	}
 
-	public function AppData(bool $bAdmin, string $sAuthAccountHash): array
+	public function AppData(bool $bAdmin): array
 	{
 		$oAccount = null;
 		$oConfig = $this->Config();
 
 		/*
 		required by Index.html and rl.js:
-		PluginsLink AuthAccountHash
+		PluginsLink
 		*/
 
 		$value = \ini_get('upload_max_filesize');
@@ -1013,7 +1030,6 @@ class Actions
 			'Auth' => false,
 			'AccountHash' => '',
 			'AccountSignMe' => false,
-			'AuthAccountHash' => '',
 			'MailToEmail' => '',
 			'Email' => '',
 			'DevEmail' => '',
@@ -1059,10 +1075,6 @@ class Actions
 			'UserBackgroundName' => '',
 			'UserBackgroundHash' => ''
 		);
-
-		if (\strlen($sAuthAccountHash) && !\preg_match('/[^_\-\.a-zA-Z0-9]/', $sAuthAccountHash)) {
-			$aResult['AuthAccountHash'] = $sAuthAccountHash;
-		}
 
 		$oSettings = null;
 

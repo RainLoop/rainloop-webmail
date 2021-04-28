@@ -168,11 +168,6 @@ class ServiceActions
 
 			if (\is_array($aResponseItem) && $oException instanceof Exceptions\ClientException)
 			{
-				if ('Folders' === $sAction)
-				{
-					$aResponseItem['ClearAuth'] = true;
-				}
-
 				if ($oException->getLogoutOnException())
 				{
 					$aResponseItem['Logout'] = true;
@@ -875,40 +870,12 @@ class ServiceActions
 		$this->oHttp->ServerNoCache();
 
 		$sResult = 'rl.initData('
-			.\json_encode($this->oActions->AppData($bAdmin, $this->getAuthAccountHash($bAdmin)))
+			.\json_encode($this->oActions->AppData($bAdmin))
 			.');';
 
 		$this->Logger()->Write($sResult, \MailSo\Log\Enumerations\Type::INFO, 'APPDATA');
 
 		return $sResult;
-	}
-
-	// rlspecauth / AuthAccountHash
-	public function getAuthAccountHash(bool $bAdmin) : string
-	{
-		static $sAuthAccountHash = null;
-		if (null === $sAuthAccountHash) {
-			$sAuthAccountHash = '';
-			if (!$bAdmin && 0 === \strlen($this->oActions->GetSpecAuthLogoutTokenWithDeletion())) {
-				$sAuthAccountHash = $this->oActions->GetSpecAuthTokenCookie() ?: $this->oActions->GetSpecAuthToken();
-				if (empty($sAuthAccountHash)) {
-					$oAccount = $this->oActions->GetAccountFromSignMeToken();
-					if ($oAccount) try
-					{
-						$this->oActions->CheckMailConnection($oAccount);
-						$this->oActions->AuthToken($oAccount);
-						$sAuthAccountHash = $this->oActions->GetSpecAuthToken();
-					}
-					catch (\Throwable $oException)
-					{
-						$oException = null;
-						$this->oActions->ClearSignMeData($oAccount);
-					}
-				}
-				$this->oActions->SetSpecAuthToken($sAuthAccountHash);
-			}
-		}
-		return $sAuthAccountHash;
 	}
 
 	public function compileTemplates(bool $bAdmin = false, bool $bJsOutput = true) : string

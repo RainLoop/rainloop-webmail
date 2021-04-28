@@ -24,9 +24,8 @@ checkResponseError = data => {
 		) {
 			++iJsonErrorCount;
 		}
-		if (data.ClearAuth || data.Logout || 7 < iJsonErrorCount) {
-			rl.hash.clear();
-			data.ClearAuth || rl.logoutReload();
+		if (data.Logout || 7 < iJsonErrorCount) {
+			rl.logoutReload();
 		}
 	}
 },
