@@ -78,18 +78,9 @@
 	}
 
 	.account-item {
-
-		.icon-ok {
+		&:not(.current) i:first-child,
+		&.current i + i {
 			display: none;
-		}
-
-		&.current {
-			.icon-ok {
-				display: inline-block;
-			}
-			.icon-user {
-				display: none;
-			}
 		}
 	}
 
