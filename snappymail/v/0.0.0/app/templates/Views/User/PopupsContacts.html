@@ -46,9 +46,9 @@
 			<span data-bind="visible: contacts.importing() || contacts.syncing()" class="btn"><i class="icon-spinner"></i></span>
 		</div>
 	</div>
-	<div class="modal-body" style="position: relative;">
+	<div class="modal-body">
 		<div class="b-list-toolbar">
-			<input type="text" class="span3 e-search" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: search" />
+			<input type="search" class="span3 e-search" placeholder="Search" autocorrect="off" autocapitalize="off" data-i18n="[placeholder]GLOBAL/SEARCH" data-bind="value: search" />
 		</div>
 		<div class="b-list-content g-ui-user-select-none" data-bind="css: {'hideContactListCheckbox': !useCheckboxesInList()}">
 			<div class="content">
@@ -138,8 +138,8 @@
 								<div class="controls">
 									<div data-bind="foreach: viewPropertiesNames">
 										<div class="property-line">
-											<span class="contactValueStatic" data-bind="text: value"></span>
-											<input type="text" class="contactValueInput"
+											<span data-bind="text: value"></span>
+											<input type="text"
 												autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 												data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}" />
 										</div>
@@ -147,14 +147,14 @@
 									<div data-bind="visible: 0 < viewPropertiesOther().length, foreach: viewPropertiesOther">
 										<div class="property-line">
 											<!-- ko if: !largeValue() -->
-											<span class="contactValueStatic" data-bind="text: value"></span>
-											<input type="text" class="contactValueInput"
+											<span data-bind="text: value"></span>
+											<input type="text"
 												autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 												data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}" />
 											<!-- /ko -->
 											<!-- ko if: largeValue -->
-											<span class="contactValueTextAreaStatic" data-bind="text: value"></span>
-											<textarea class="contactValueTextArea"
+											<span data-bind="text: value"></span>
+											<textarea
 												autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 												data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup', attr: {'placeholder': placeholderValue}"></textarea>
 											<!-- /ko -->
@@ -167,8 +167,8 @@
 								<div class="controls">
 									<div data-bind="foreach: viewPropertiesEmails">
 										<div class="property-line">
-											<span class="contactValueStatic" data-bind="text: value"></span>
-											<input type="text" class="contactValueInput"
+											<span data-bind="text: value"></span>
+											<input type="text"
 												autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 												data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup'" />
 										</div>
@@ -181,8 +181,8 @@
 								<div class="controls">
 									<div data-bind="foreach: viewPropertiesPhones">
 										<div class="property-line">
-											<span class="contactValueStatic" data-bind="text: value"></span>
-											<input type="text" class="contactValueInput"
+											<span data-bind="text: value"></span>
+											<input type="text"
 												autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 												data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup'" />
 										</div>
@@ -194,8 +194,8 @@
 								<div class="controls">
 									<div data-bind="foreach: viewPropertiesWeb">
 										<div class="property-line">
-											<span class="contactValueLargeStatic" data-bind="text: value"></span>
-											<input type="text" class="contactValueInputLarge" placeholder="https://"
+											<span data-bind="text: value"></span>
+											<input type="text" placeholder="https://"
 												autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
 												data-bind="value: value, hasfocus: focused, valueUpdate: 'keyup'" />
 										</div>
