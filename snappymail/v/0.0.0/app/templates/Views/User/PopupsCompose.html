@@ -161,32 +161,28 @@
 		</div>
 
 		<div class="attachmentAreaParent b-content" data-bind="visible: attachmentsPlace">
-			<div class="content">
-				<div class="content-wrapper">
-					<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}"
-						data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
-					<ul class="attachmentList" data-bind="foreach: attachments">
-						<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
-							<div class="attachmentIconParent">
-								<i class="iconMain" data-bind="css: iconClass(), visible: !uploading() || 0 === progress()"></i>
-								<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
-								<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
-							</div>
-							<div class="attachmentNameParent">
-								<button type="button" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</button>
-								<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
-									<span class="attachmentName" data-bind="text: fileName"></span>&nbsp;
-								</div>
-								<div>
-									<span class="attachmentSize" data-bind="text: friendlySize"></span>&nbsp;
-								</div>
-							</div>
-						</li>
-					</ul>
-					<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length"
-						data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></div>
-				</div>
-			</div>
+			<div class="b-attachment-place" data-bind="visible: addAttachmentEnabled() && dragAndDropEnabled() && dragAndDropVisible(), initDom: composeUploaderDropPlace, css: {'dragAndDropOver': dragAndDropOver}"
+				data-i18n="COMPOSE/ATTACH_DROP_FILES_DESC"></div>
+			<ul class="attachmentList" data-bind="foreach: attachments">
+				<li class="attachmentItem" data-bind="attr: { 'title': title }, css: { 'waiting': waiting, 'error': '' !== error() }">
+					<div class="attachmentIconParent">
+						<i class="iconMain" data-bind="css: iconClass(), visible: !uploading() || 0 === progress()"></i>
+						<div class="iconProgress" data-bind="attr: { 'style': progressStyle }, visible: uploading"></div>
+						<div class="iconBG" data-bind="text: progressText, visible: uploading"></div>
+					</div>
+					<div class="attachmentNameParent">
+						<button type="button" class="close pull-right" style="margin-top:-4px;" data-bind="click: cancel">×</button>
+						<div style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+							<span class="attachmentName" data-bind="text: fileName"></span>&nbsp;
+						</div>
+						<div>
+							<span class="attachmentSize" data-bind="text: friendlySize"></span>&nbsp;
+						</div>
+					</div>
+				</li>
+			</ul>
+			<div class="no-attachments-desc" data-bind="visible: 0 === attachments().length"
+				data-i18n="COMPOSE/NO_ATTACHMENTS_HERE_DESC"></div>
 		</div>
 
 		<div class="textAreaParent" data-bind="visible: !attachmentsPlace(), initDom: composeEditorArea"></div>

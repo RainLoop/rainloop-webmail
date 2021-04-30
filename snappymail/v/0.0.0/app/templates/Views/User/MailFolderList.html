@@ -6,15 +6,11 @@
 		</a>
 		<a class="btn buttonContacts fontastic" data-bind="visible: allowContacts, click: contactsClick" data-i18n="[title]GLOBAL/CONTACTS">📇</a>
 	</div>
-	<div class="b-content opacity-on-panel-disabled" data-bind="css: {'inbox-is-starred': isInboxStarred}">
-		<div class="content">
-			<div class="content-wrapper">
-				<div class="b-folders-system" data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
-				<hr/>
-				<div class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderList }"></div>
-				<div class="move-action-content-wrapper" data-bind="visible: moveAction"></div>
-			</div>
-		</div>
+	<div class="b-content" data-bind="css: {'inbox-is-starred': isInboxStarred}">
+		<div class="b-folders-system" data-bind="template: { name: 'MailFolderListSystemItem', foreach: folderListSystem }"></div>
+		<hr/>
+		<div class="b-folders-user" data-bind="template: { name: 'MailFolderListItem', foreach: folderList }"></div>
+		<div class="move-action-content-wrapper" data-bind="visible: moveAction"></div>
 	</div>
 	<div class="b-content show-on-panel-disabled" data-bind="click: function () { leftPanelDisabled(false); }"></div>
 	<div class="b-footer btn-toolbar hide-mobile">

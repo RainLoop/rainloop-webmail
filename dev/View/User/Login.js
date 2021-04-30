@@ -46,8 +46,6 @@ class LoginUserView extends AbstractViewCenter {
 			emailError: false,
 			passwordError: false,
 
-			formHidden: false,
-
 			submitRequest: false,
 			submitError: '',
 			submitErrorAddidional: '',

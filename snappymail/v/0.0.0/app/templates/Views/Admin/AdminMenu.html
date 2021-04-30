@@ -1,7 +1,3 @@
-<div class="b-admin-left">
-	<div class="b-content opacity-on-panel-disabled">
-		<nav class="b-admin-menu" data-bind="foreach: menu">
-			<a data-bind="css: {'selected': selected }, attr: { 'href': $root.link(route), 'data-i18n': label }"></a>
-		</nav>
-	</div>
-</div>
+<nav data-bind="foreach: menu">
+	<a data-bind="css: {'selected': selected }, attr: { 'href': $root.link(route), 'data-i18n': label }"></a>
+</nav>

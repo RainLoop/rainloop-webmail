@@ -1,14 +1,12 @@
-
-.rl-view-model {
-	&.RL-Login, &.RL-AdminLogin {
-		position: fixed;
-		left: 50%;
-		top: 50%;
-		transform: translate(-50%, -50%);
-		width: 100%;
-		max-width: 450px;
-		z-index: 5;
-	}
+.RL-Login, .RL-AdminLogin {
+	position: fixed;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	min-width: 250px;
+	max-width: 600px;
+	z-index: 5;
 }
 
 @glass-color: #fff;
@@ -17,9 +15,7 @@
 
 .b-login-content {
 
-	.loginFormWrapper {
-		position: relative;
-	}
+	position: relative;
 
 	.descWrapper {
 		color: var(--loading-color, #000);
@@ -29,13 +25,19 @@
 		text-shadow: var(--loading-text-shadow);
 	}
 
-	.loginForm {
+	.controls, .control-group {
+		margin-bottom: 25px;
+	}
+
+	form {
 		background-color: var(--login-bg-color, rgba(0, 0, 0, .5));
 		border: var(--login-border, 1px solid rgba(255, 255, 255, .2));
 		border-radius: var(--login-border-radius, 7px);
 		box-shadow: var(--login-box-shadow);
 		color: var(--login-color, @glass-m-color);
 		margin: 0;
+		padding: 40px 40px 20px 40px;
+		position: relative;
 
 		* {
 			color: var(--login-color, @glass-m-color);
@@ -52,14 +54,28 @@
 				border-color: @glass-error-color;
 			}
 		}
-	}
 
-	.controls, .control-group {
-		margin-bottom: 25px;
-	}
+		&.submitting > * {
+			opacity: 0.3;
+		}
 
-	.wrapper {
-		padding: 40px 40px 20px 40px;
+		&.submitting::after{
+			content: '';
+			position: absolute;
+			width: 60px;
+			height: 60px;
+			top: 50%;
+			left: 50%;
+			margin-top: -30px;
+			margin-left: -30px;
+
+			border: 8px solid transparent;
+			border-top-color: var(--spinner-color, #fff);
+			animation: loginRotation 1s infinite ease-in-out;
+
+			border-radius: 50%;
+			z-index: 1052;
+		}
 	}
 
 	.controls {
@@ -158,8 +174,8 @@
 }
 
 @media screen and (max-width: 480px) {
-	.b-login-content .loginFormWrapper {
-		.wrapper {
+	.b-login-content {
+		form {
 			padding: 30px 4vw 10px;
 		}
 	}
@@ -167,30 +183,6 @@
 
 @keyframes loginRotation {
 	to   {transform: rotate(1turn);}
-}
-
-.submitting-pane {
-	position: relative;
-	&.submitting > * {
-		opacity: 0.3;
-	}
-	html &.submitting::after{
-		content: '';
-		position: absolute;
-		width: 60px;
-		height: 60px;
-		top: 50%;
-		left: 50%;
-		margin-top: -30px;
-		margin-left: -30px;
-
-		border: 8px solid transparent;
-		border-top-color: var(--spinner-color, #fff);
-		animation: loginRotation 1s infinite ease-in-out;
-
-		border-radius: 50%;
-		z-index: 1052;
-	}
 }
 
 .btn-submit-icon-wrp {

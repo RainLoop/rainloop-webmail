@@ -1,17 +1,13 @@
 <div class="b-settins-left">
-	<div class="b-content opacity-on-panel-disabled">
+	<div class="b-content">
 		<nav class="b-settings-menu" data-bind="foreach: menu">
 			<a data-bind="css: {'selected': selected }, attr: { 'href': $root.link(route), 'data-i18n': label }"></a>
 		</nav>
 	</div>
 	<div class="b-content show-on-panel-disabled" data-bind="click: function () { leftPanelDisabled(false); }"></div>
 	<div class="b-footer">
-		<div class="btn-toolbar">
-			<div class="btn-group">
-				<a class="btn buttonResize" data-bind="click: function () { leftPanelDisabled(!leftPanelDisabled()); }">
-					<i data-bind="css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></i>
-				</a>
-			</div>
-		</div>
+		<a class="btn buttonResize" data-bind="click: function () { leftPanelDisabled(!leftPanelDisabled()); }">
+			<i data-bind="css: {'icon-resize-out': leftPanelDisabled(), 'icon-resize-in': !leftPanelDisabled()}"></i>
+		</a>
 	</div>
 </div>

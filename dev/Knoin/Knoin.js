@@ -18,7 +18,7 @@ export const ViewType = {
 	Popup: 'Popups',
 	Left: 'Left',
 	Right: 'Right',
-	Center: 'Center'
+	Content: 'Content'
 };
 
 /**
@@ -76,7 +76,7 @@ function buildViewModel(ViewModelClass, vmScreen) {
 		let vmDom = null;
 		const vm = new ViewModelClass(vmScreen),
 			position = vm.viewModelPosition || '',
-			vmPlace = position ? doc.querySelector('#rl-content #rl-' + position.toLowerCase()) : null;
+			vmPlace = position ? doc.getElementById('rl-' + position.toLowerCase()) : null;
 
 		ViewModelClass.__builded = true;
 		ViewModelClass.__vm = vm;
