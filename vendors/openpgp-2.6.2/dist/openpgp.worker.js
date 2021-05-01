@@ -1,4 +1,3 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 // GPG4Browsers - An OpenPGP implementation in javascript
 // Copyright (C) 2011 Recurity Labs GmbH
 //
@@ -16,10 +15,6 @@
 // License along with this library; if not, write to the Free Software
 // Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-/* globals self: true */
-
-self.window = {}; // to make UMD bundles work
-
 importScripts('openpgp.js');
 var openpgp = window.openpgp;
 
@@ -32,7 +27,7 @@ openpgp.crypto.random.randomBuffer.init(MAX_SIZE_RANDOM_BUFFER);
  * Handle messages from the main window.
  * @param  {Object} event   Contains event type and data
  */
-self.onmessage = function(event) {
+self.onmessage = event => {
   var msg = event.data || {};
 
   switch (msg.event) {
@@ -101,4 +96,3 @@ function response(event) {
   }
   self.postMessage(event, openpgp.util.getTransferables.call(openpgp.util, event.data));
 }
-},{}]},{},[1]);

@@ -37,8 +37,8 @@ const jsServiceWorker = () => {
 // OpenPGP
 const jsOpenPGP = () => {
 	return gulp
-		.src('vendors/openpgp-2.6.2/dist/openpgp.min.js')
-		.pipe(gulp.dest(config.paths.staticMinJS));
+		.src('vendors/openpgp-2.6.2/dist/openpgp.js')
+		.pipe(gulp.dest(config.paths.staticJS));
 };
 
 // OpenPGP Worker
