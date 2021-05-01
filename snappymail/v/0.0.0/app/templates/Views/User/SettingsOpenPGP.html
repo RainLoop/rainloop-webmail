@@ -1,7 +1,5 @@
 <div class="b-settings-open-pgp g-ui-user-select-none">
-	<div class="form-horizontal">
-		<div class="legend">OpenPGP</div>
-	</div>
+	<div class="legend">OpenPGP</div>
 	<button class="btn" data-bind="click: addOpenPgpKey">
 		<i class="icon-list-add"></i>
 		<span data-i18n="SETTINGS_OPEN_PGP/BUTTON_ADD_OPEN_PGP_KEY"></span>
@@ -46,9 +44,7 @@
 				<td>
 					<span class="delete-open-pgp-key fontastic" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">🗑</span>
 				</td>
-				<td>
-					<span class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</span>
-				</td>
+				<td class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</td>
 			</tr>
 		</tbody><tbody data-bind="foreach: openpgpkeysPublic">
 			<tr class="open-pgp-key-item">
@@ -65,9 +61,7 @@
 				<td>
 					<span class="delete-open-pgp-key fontastic" data-bind="visible: !deleteAccess(), click: function (openPgpKey) { $root.openPgpKeyForDeletion(openPgpKey); }">🗑</span>
 				</td>
-				<td>
-					<span class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</span>
-				</td>
+				<td class="view-open-pgp-key fontastic" data-bind="click: function (openPgpKey) { $root.viewOpenPgpKey(openPgpKey); }">👁</td>
 			</tr>
 		</tbody>
 	</table>
