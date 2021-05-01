@@ -675,7 +675,7 @@ class ImapClient extends \MailSo\Net\NetClient
 					 * https://github.com/the-djmaze/snappymail/issues/70
 					 * https://github.com/RainLoop/rainloop-webmail/issues/2037
 					 */
-					$sFullNameRaw = \array_slice($oResponse->ResponseList, 4);
+					$sFullNameRaw = \array_slice($oImapResponse->ResponseList, 4);
 					foreach ($sFullNameRaw as &$name) {
 						if (\is_array($name)) {
 							$name = "[{$name[0]}]";
