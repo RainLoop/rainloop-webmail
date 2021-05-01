@@ -37,14 +37,14 @@ const jsServiceWorker = () => {
 // OpenPGP
 const jsOpenPGP = () => {
 	return gulp
-		.src('node_modules/openpgp/dist/openpgp.min.js')
+		.src('vendors/openpgp-2.6.2/dist/openpgp.min.js')
 		.pipe(gulp.dest(config.paths.staticMinJS));
 };
 
 // OpenPGP Worker
 const jsOpenPGPWorker = () => {
 	return gulp
-		.src('node_modules/openpgp/dist/openpgp.worker.min.js')
+		.src('vendors/openpgp-2.6.2/dist/openpgp.worker.min.js')
 		.pipe(gulp.dest(config.paths.staticMinJS));
 };
 
